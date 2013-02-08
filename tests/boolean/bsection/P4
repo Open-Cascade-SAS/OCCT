@@ -3,9 +3,9 @@ explode m
 # primitives : m_1 m_3 m_4 m_5
 # m_2 : Bloc
 compound m_1 m_3 m_5 c1
-bsection s c1 m_2 -2d -a
+bsection s c1 m_2
 # PB
-bsection s2 m_4 m_2 -2d -a
+bsection s2 m_4 m_2 
 compound s s2 result
 
 set length 682.142

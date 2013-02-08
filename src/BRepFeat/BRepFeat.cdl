@@ -22,49 +22,49 @@
 
 package BRepFeat 
 
-	---Purpose: BRepFeat is necessary for the
-    	-- creation and manipulation of both form and mechanical features in a
-    	-- Boundary Representation framework. Form features can be depressions or
-    	-- protrusions and include the following types:
-    	-- -          Cylinder
-    	-- -          Draft Prism
-    	-- -          Prism
-    	-- -          Revolved feature
-    	-- -          Pipe
-    	-- Depending on whether you wish to make a depression or a protrusion,
-    	-- you can choose your operation type between the following:
-    	-- - removing matter (a Boolean cut: Fuse setting 0)
-    	-- - adding matter (Boolean fusion: Fuse setting 1)
-    	--   The semantics of form feature creation is based on the
-    	-- construction of shapes:
-    	-- -          for a certain length in a certain direction
-    	-- -          up to a limiting face
-    	-- -          from a limiting face at a height
-    	-- -          above and/or below a plane
-    	-- The shape defining the construction of a feature can be either a
-    	-- supporting edge or a concerned area of a face.
-    	-- In case of supporting edge, this contour can be attached to a face
-    	-- of the basis shape by binding. When the contour is bound to this face,
-    	-- the information that the contour will slide on the face becomes
-    	-- available to the relevant class methods. In case of the concerned
-    	-- area of a face, you could, for example, cut it out and move it at
-    	-- a different height, which will define the limiting face of a
-    	-- protrusion or depression. Topological definition with local
-    	-- operations of this sort makes calculations simpler and faster
-    	-- than a global operation. The latter would entail a second phase of
-    	-- removing unwanted matter to get the same result.
-    	-- Mechanical features include ribs - protrusions - and grooves (or
-    	-- slots) - depressions along planar (linear) surfaces or revolution surfaces.
-    	-- The semantics of mechanical features is based on giving
-    	-- thickness to a contour. This thickness can either be unilateral
-    	-- - on one side of the contour - or bilateral - on both sides. As in
-    	-- the semantics of form features, the thickness is defined by
-    	-- construction of shapes in specific contexts.
-    	-- However, in case of mechanical features, development contexts
-    	-- differ. Here they include extrusion:
-    	-- -          to a limiting face of the basis shape
-    	-- -          to or from a limiting plane
-    	-- -          to a height.
+        ---Purpose: BRepFeat is necessary for the
+            -- creation and manipulation of both form and mechanical features in a
+            -- Boundary Representation framework. Form features can be depressions or
+            -- protrusions and include the following types:
+            -- -          Cylinder
+            -- -          Draft Prism
+            -- -          Prism
+            -- -          Revolved feature
+            -- -          Pipe
+            -- Depending on whether you wish to make a depression or a protrusion,
+            -- you can choose your operation type between the following:
+            -- - removing matter (a Boolean cut: Fuse setting 0)
+            -- - adding matter (Boolean fusion: Fuse setting 1)
+            --   The semantics of form feature creation is based on the
+            -- construction of shapes:
+            -- -          for a certain length in a certain direction
+            -- -          up to a limiting face
+            -- -          from a limiting face at a height
+            -- -          above and/or below a plane
+            -- The shape defining the construction of a feature can be either a
+            -- supporting edge or a concerned area of a face.
+            -- In case of supporting edge, this contour can be attached to a face
+            -- of the basis shape by binding. When the contour is bound to this face,
+            -- the information that the contour will slide on the face becomes
+            -- available to the relevant class methods. In case of the concerned
+            -- area of a face, you could, for example, cut it out and move it at
+            -- a different height, which will define the limiting face of a
+            -- protrusion or depression. Topological definition with local
+            -- operations of this sort makes calculations simpler and faster
+            -- than a global operation. The latter would entail a second phase of
+            -- removing unwanted matter to get the same result.
+            -- Mechanical features include ribs - protrusions - and grooves (or
+            -- slots) - depressions along planar (linear) surfaces or revolution surfaces.
+            -- The semantics of mechanical features is based on giving
+            -- thickness to a contour. This thickness can either be unilateral
+            -- - on one side of the contour - or bilateral - on both sides. As in
+            -- the semantics of form features, the thickness is defined by
+            -- construction of shapes in specific contexts.
+            -- However, in case of mechanical features, development contexts
+            -- differ. Here they include extrusion:
+            -- -          to a limiting face of the basis shape
+            -- -          to or from a limiting plane
+            -- -          to a height.
 
 uses BRepBuilderAPI,
      LocOpe,
@@ -80,52 +80,54 @@ uses BRepBuilderAPI,
      Geom2dAdaptor,
      TopAbs, 
      --modified by NIZNHY-PKV Thu Mar 21 18:31:59 2002  f 
-     BRepAlgoAPI,      
+     BRepAlgoAPI, 
+     BOPAlgo, 
+     BOPDS, 
+     BOPCol, 
+     BOPTools
+     --BOP
      --modified by NIZNHY-PKV Thu Mar 21 18:32:02 2002  t
-     BOP
-	     
+
+             
 is
 
     enumeration StatusError is 
-    	---Purpose: Discribes the error.
-    	OK,
-	BadDirect,
-	BadIntersect,
-	EmptyBaryCurve,
-	EmptyCutResult,
-	FalseSide,
-    	IncDirection,
-	IncSlidFace,
-	IncParameter,
-    	IncTypes,
-	IntervalOverlap,
-    	InvFirstShape,
-	InvOption,
-	InvShape,
-	LocOpeNotDone,
-	LocOpeInvNotDone,
-	NoExtFace,
-	NoFaceProf,
-	NoGluer,
-	NoIntersectF,
-	NoIntersectU,
-	NoParts,
-	NoProjPt,
-	NotInitialized,
-	NotYetImplemented,
-	NullRealTool,
-    	NullToolF,
-       	NullToolU
+            ---Purpose: Discribes the error.
+            OK,
+        BadDirect,
+        BadIntersect,
+        EmptyBaryCurve,
+        EmptyCutResult,
+        FalseSide,
+            IncDirection,
+        IncSlidFace,
+        IncParameter,
+            IncTypes,
+        IntervalOverlap,
+            InvFirstShape,
+        InvOption,
+        InvShape,
+        LocOpeNotDone,
+        LocOpeInvNotDone,
+        NoExtFace,
+        NoFaceProf,
+        NoGluer,
+        NoIntersectF,
+        NoIntersectU,
+        NoParts,
+        NoProjPt,
+        NotInitialized,
+        NotYetImplemented,
+        NullRealTool,
+            NullToolF,
+               NullToolU
 
     end StatusError;
 
 
-    deferred class Builder;    -- inherits MakeShape from BRepBuilderAPI
+    class Builder;             -- inherits BOP from BOPAlgo
     
-    class LocalOperation;      -- inherits Builder from BRepFeat;
-
     class MakeCylindricalHole; -- inherits Builder from BRepFeat;
-
 
     class SplitShape;          -- inherits MakeShape from BRepBuilderAPI;
 
@@ -149,86 +151,86 @@ is
 
     enumeration Status is   -- to be completed
 
-    	NoError,
-    	InvalidPlacement,
-       	HoleTooLong
+            NoError,
+            InvalidPlacement,
+               HoleTooLong
 
     end Status;
     
     enumeration PerfSelection is 
 
-    	NoSelection,
-    	SelectionFU,
-	SelectionU,
-	SelectionSh,
-	SelectionShU
-    	---Purpose: To declare the type of selection semantics for local operation Perform methods
-    	-- -   NoSelection
-    	-- -   SelectionFU - selection of a face up to which a
-    	--   local operation will be performed
-    	-- -   SelectionU - selection of a point up to which a
-    	--   local operation will be performed
-    	-- -   SelectionSh - selection of a shape on which a
-    	--   local operation will be performed
-    	-- -   SelectionShU - selection of a shape up to which a
-    	--   local operation will be performed.
+            NoSelection,
+            SelectionFU,
+        SelectionU,
+        SelectionSh,
+        SelectionShU
+            ---Purpose: To declare the type of selection semantics for local operation Perform methods
+            -- -   NoSelection
+            -- -   SelectionFU - selection of a face up to which a
+            --   local operation will be performed
+            -- -   SelectionU - selection of a point up to which a
+            --   local operation will be performed
+            -- -   SelectionSh - selection of a shape on which a
+            --   local operation will be performed
+            -- -   SelectionShU - selection of a shape up to which a
+            --   local operation will be performed.
     end PerfSelection;
     
 
     SampleEdges(S : Shape from TopoDS;
-    	        Pt: in out SequenceOfPnt from TColgp);
+                    Pt: in out SequenceOfPnt from TColgp);
 
 
 
     Barycenter(S :        Shape from TopoDS;
-    	       Pt: in out Pnt   from gp); 
-	       
+                   Pt: in out Pnt   from gp); 
+               
     ParametricBarycenter(S :        Shape from TopoDS;
-    	                 C :        Curve from Geom)
-			  
-    	returns Real from Standard;
+                             C :        Curve from Geom)
+                          
+            returns Real from Standard;
 
     ParametricMinMax(S :         Shape      from TopoDS;
-    	             C :         Curve      from Geom;
-    	    	     prmin : out Real       from Standard;
-    	    	     prmax : out Real       from Standard;
-    	    	     prbmin: out Real       from Standard;
-    	    	     prbmax: out Real       from Standard;
-    	    	     flag :  out Boolean    from Standard;
-    	    	     Ori  :  Boolean from Standard = Standard_False);
-	---Purpose:  Ori = True taking account the orientation
-		
+                         C :         Curve      from Geom;
+                             prmin : out Real       from Standard;
+                             prmax : out Real       from Standard;
+                             prbmin: out Real       from Standard;
+                             prbmax: out Real       from Standard;
+                             flag :  out Boolean    from Standard;
+                             Ori  :  Boolean from Standard = Standard_False);
+        ---Purpose:  Ori = True taking account the orientation
+                
     IsInside(F1 :        Face from TopoDS;
-    	     F2 :        Face from TopoDS)
-			  
-    	returns Boolean from Standard;
+                 F2 :        Face from TopoDS)
+                          
+            returns Boolean from Standard;
 
     IsInOut (FC :        FClass2d from BRepTopAdaptor;
-	     AC :        Curve    from Geom2dAdaptor)
+             AC :        Curve    from Geom2dAdaptor)
 
-	     
-	returns Boolean from Standard;     
+             
+        returns Boolean from Standard;     
 
  --   TangSli(E :        Edge  from TopoDS;
- --   	    F :        Shape from TopoDS)
-			  
- --   	returns Boolean from Standard;
+ --               F :        Shape from TopoDS)
+                          
+ --           returns Boolean from Standard;
 
 
     FaceUntil (S :         Shape from TopoDS;
-    	       F : in out  Face  from TopoDS);
-	       
+                   F : in out  Face  from TopoDS);
+               
 
     Tool (SRef :         Shape       from TopoDS;
-	  Fac  :         Face        from TopoDS;
-    	  Orf  :         Orientation from TopAbs)
-	     
-	returns Solid from TopoDS;     
+          Fac  :         Face        from TopoDS;
+              Orf  :         Orientation from TopAbs)
+             
+        returns Solid from TopoDS;     
 
     Print(SE  : StatusError  from BRepFeat; S  : in out OStream) returns OStream;
-    	---Purpose: Prints the Error description of the State <St> as a String on
-    	--          the Stream <S> and returns <S>.
-    	--          
-    	---C++: return &
+            ---Purpose: Prints the Error description of the State <St> as a String on
+            --          the Stream <S> and returns <S>.
+            --          
+            ---C++: return &
           
 end BRepFeat;

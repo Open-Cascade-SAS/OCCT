@@ -1,5 +1,5 @@
-puts "TODO OCC12345 ALL: result is not a topological shape!!!"
-puts "TODO OCC12345 ALL: TEST INCOMPLETE"
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC12345 ALL: Error : The square of result shape is"
 
 puts "========="
 puts " OCC497 "

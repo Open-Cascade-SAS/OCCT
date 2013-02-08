@@ -1,0 +1,157 @@
+-- Created by: Peter KURNEV
+-- Copyright (c) 1999-2012 OPEN CASCADE SAS
+--
+-- The content of this file is subject to the Open CASCADE Technology Public
+-- License Version 6.5 (the "License"). You may not use the content of this file
+-- except in compliance with the License. Please obtain a copy of the License
+-- at http://www.opencascade.org and read it completely before using this file.
+--
+-- The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+-- main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+--
+-- The Original Code and all software distributed under the License is
+-- distributed on an "AS IS" basis, without warranty of any kind, and the
+-- Initial Developer hereby disclaims all such warranties, including without
+-- limitation, any warranties of merchantability, fitness for a particular
+-- purpose or non-infringement. Please see the License for the specific terms
+-- and conditions governing the rights and limitations under the License.
+
+
+class Curve from BOPDS 
+
+	---Purpose:  
+    	-- The class BOPDS_Curve is to store  
+    	-- the information about intersection curve 
+
+uses 
+    Box from Bnd,
+    Curve from IntTools, 
+    ListOfInteger from BOPCol, 
+    BaseAllocator from BOPCol, 
+    ListOfPaveBlock from BOPDS, 
+    PaveBlock from BOPDS 
+    
+--raises
+
+is 
+    Create 
+    	returns Curve from BOPDS;  
+    ---C++: alias "virtual ~BOPDS_Curve();" 
+    ---C++: inline  
+	---Purpose:  
+    	--- Empty contructor  
+    	--- 
+    Create (theAllocator: BaseAllocator from BOPCol) 
+    	returns Curve from BOPDS;      
+    ---C++: inline   
+     	---Purpose:  
+    	---  Contructor    
+    	---  <theAllocator> - the allocator to manage the memory     
+    	---  
+	
+    SetCurve(me:out; 
+    	     theC:Curve from IntTools);  
+    ---C++: inline  
+    	---Purpose: 
+    	--- Modifier   
+	--- Sets the curve <theC> 
+	 
+    Curve(me)
+    	returns Curve from IntTools; 
+    ---C++: return const &  
+    ---C++: inline 
+      	---Purpose: 
+    	--- Selector   
+	--- Returns the curve  
+	 
+    SetBox(me:out; 
+    	    theBox:Box from Bnd); 
+    ---C++: inline 
+     	---Purpose: 
+    	--- Modifier   
+	--- Sets the bounding box <theBox> of the curve 
+	 
+    Box(me) 
+    	returns Box from Bnd; 
+    ---C++: return const &    
+    ---C++: inline 
+     	---Purpose: 
+    	--- Selector   
+	--- Returns the bounding box of the curve 
+	 
+    ChangeBox(me:out) 
+    	returns Box from Bnd; 
+    ---C++: return  &    
+    ---C++: inline  
+    	---Purpose: 
+    	--- Selector/Modifier  
+	--- Returns the bounding box of the curve 
+    SetPaveBlocks(me:out; 
+    	    theLPB:ListOfPaveBlock from BOPDS); 
+	     
+    PaveBlocks (me) 
+        returns ListOfPaveBlock from BOPDS;  
+    ---C++: return const &   
+    ---C++: inline       
+     	---Purpose: 
+    	--- Selector   
+	--- Returns the list of pave blocks  
+    	--- of the curve 
+	 
+    ChangePaveBlocks (me:out) 
+        returns ListOfPaveBlock from BOPDS; 
+    ---C++: return & 
+    ---C++: inline      
+      	---Purpose: 
+    	--- Selector/Modifier   
+	--- Returns the list of pave blocks   
+	--- of the curve  
+	
+    InitPaveBlock1(me:out); 
+    ---C++: inline 
+    	---Purpose: 
+	--- Creates  initial pave block   
+	--- of the curve   
+	
+    ChangePaveBlock1(me:out) 
+    	returns PaveBlock from BOPDS; 
+    ---C++: return &  
+    ---C++: inline  
+    	---Purpose:  
+	--- Selector/Modifier 
+	--- Returns  initial pave block   
+	--- of the curve   
+
+    TechnoVertices (me) 
+    	returns ListOfInteger from BOPCol; 
+    ---C++: return const &  
+    ---C++: inline      
+     	---Purpose:  
+	--- Selector
+	--- Returns list of indices of technologic vertices   
+	--- of the curve    
+	
+    ChangeTechnoVertices (me:out) 
+    	returns ListOfInteger from BOPCol; 
+    ---C++:  return & 
+    ---C++: inline  
+     	---Purpose:  
+	--- Selector/Modifier 
+	--- Returns list of indices of technologic vertices   
+	--- of the curve   
+	 
+    HasEdge(me) 
+    	returns Boolean from Standard;  
+    ---C++: inline 
+    	---Purpose:  
+	--- Query 
+	--- Returns true if at least one pave block of the curve  
+    	--  has edge  
+fields 
+    myAllocator      : BaseAllocator from BOPCol is protected;
+    myCurve          : Curve from IntTools is protected; 
+    myPaveBlocks     : ListOfPaveBlock from BOPDS is protected; 
+    myTechnoVertices : ListOfInteger from BOPCol is protected;  
+    myBox            : Box from Bnd is protected; 
+
+end Curve;

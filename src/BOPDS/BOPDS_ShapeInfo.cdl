@@ -1,0 +1,193 @@
+-- Created by: Peter KURNEV
+-- Copyright (c) 1999-2012 OPEN CASCADE SAS
+--
+-- The content of this file is subject to the Open CASCADE Technology Public
+-- License Version 6.5 (the "License"). You may not use the content of this file
+-- except in compliance with the License. Please obtain a copy of the License
+-- at http://www.opencascade.org and read it completely before using this file.
+--
+-- The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+-- main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+--
+-- The Original Code and all software distributed under the License is
+-- distributed on an "AS IS" basis, without warranty of any kind, and the
+-- Initial Developer hereby disclaims all such warranties, including without
+-- limitation, any warranties of merchantability, fitness for a particular
+-- purpose or non-infringement. Please see the License for the specific terms
+-- and conditions governing the rights and limitations under the License.
+
+
+class ShapeInfo from BOPDS 
+
+	---Purpose: 
+    	-- The class BOPDS_ShapeInfo is to store  
+    	-- handy information about shape
+uses 
+    Box   from Bnd, 
+    Shape from TopoDS, 
+    BaseAllocator from BOPCol, 
+    ListOfInteger from BOPCol, 
+    ShapeEnum from TopAbs 
+	
+--raises
+
+is
+    Create 
+    	returns ShapeInfo from BOPDS;  
+    ---C++: alias "virtual ~BOPDS_ShapeInfo();" 
+    ---C++: inline 
+     	---Purpose:  
+    	--- Empty contructor  
+    	---    
+    Create (theAllocator: BaseAllocator from BOPCol) 
+    	returns ShapeInfo from BOPDS;
+    ---C++: inline 
+    	---Purpose:   
+     	---  Contructor    
+    	---  theAllocator - the allocator to manage the memory     
+    	---   
+    SetShape(me:out; 
+    	    theS: Shape from TopoDS); 
+    ---C++: inline  
+    	---Purpose: 
+    	--- Modifier   
+	--- Sets the shape <theS>
+    Shape(me) 
+       returns Shape from TopoDS; 
+    ---C++: return const &       
+    ---C++: inline 
+     	---Purpose: 
+	--- Selector 
+	--- Returns the shape    
+     
+    SetShapeType(me:out; 
+    	    theType: ShapeEnum from TopAbs); 
+    ---C++: inline  
+      	---Purpose: 
+    	--- Modifier   
+	--- Sets the type of shape theType 
+	
+    ShapeType(me) 
+    	returns ShapeEnum from TopAbs; 
+    ---C++: inline  
+    	---Purpose: 
+	--- Selector 
+        --- Returns the type of shape   
+     
+    SetBox(me:out; 
+    	    theBox:Box from Bnd); 
+    ---C++: inline 
+    	---Purpose:      
+     	--- Modifier   
+	--- Sets the boundung box of the shape theBox
+	
+	
+    Box(me) 
+    	returns Box from Bnd; 
+    ---C++: return const &    
+    ---C++: inline 
+    	---Purpose: 
+	--- Selector 
+        --- Returns the boundung box of the shape  
+     
+    ChangeBox(me:out) 
+    	returns Box from Bnd; 
+    ---C++: return  &    
+    ---C++: inline   
+    	---Purpose: 
+	--- Selector/Modifier 
+        --- Returns the boundung box of the shape 
+    
+    SubShapes(me) 
+    	returns ListOfInteger from BOPCol;  
+    ---C++: return const & 
+    ---C++: inline 
+    	---Purpose: 
+	--- Selector 
+        --- Returns the list of indices of sub-shapes 
+
+    ChangeSubShapes(me:out) 
+    	returns ListOfInteger from BOPCol;  
+    ---C++: return & 
+    ---C++: inline 
+    	---Purpose: 
+	--- Selector/ Modifier
+        --- Returns the list of indices of sub-shapes 
+  
+    HasSubShape(me; 
+    	    theI:Integer from Standard) 
+	returns Boolean from Standard;   
+    ---C++: inline  
+        ---Purpose: 
+	--- Query
+        --- Returns true if the shape has sub-shape with 
+        --- index theI 
+	 
+    HasReference(me) 
+     	returns Boolean from Standard;  
+    ---C++: inline  
+     	--- Query
+        --- Returns true if the shape has a reference information 
+
+    SetReference(me:out; 
+     	   theI: Integer from Standard); 
+    ---C++: inline    
+	---Purpose:      
+     	--- Modifier   
+	--- Sets the index of a reference information 
+	 
+    Reference(me) 
+     	returns Integer from Standard; 	     
+    ---C++: inline   
+     	---Purpose:      
+     	--- Selector   
+	--- Returns the index of a reference information 
+     
+    HasBRep(me) 
+	returns Boolean from Standard;   
+    ---C++: inline 
+    	---Purpose: 
+	--- Query
+        --- Returns true if the shape has boundary representation   
+    -- 
+    ---  Flag 
+    --  
+    HasFlag(me) 
+	returns Boolean from Standard;   
+    ---C++: inline  
+    	---Purpose: 
+    	--- Query
+        --- Returns true if there is flag.  
+     
+    HasFlag(me; 
+    	    theFlag:out Integer from Standard) 
+	returns Boolean from Standard;   
+    ---C++: inline  
+    	---Purpose: 
+    	--- Query
+        --- Returns true if there is flag.  
+    	--- Returns the the  flag theFlag  
+      
+    SetFlag(me:out; 
+    	    theI:Integer from Standard); 
+    ---C++: inline  
+    	---Purpose:      
+     	--- Modifier   
+	--- Sets the flag 
+    Flag(me) 
+     	returns Integer from Standard; 	     
+    ---C++: inline 
+     	---Purpose:  
+    	--- Returns the flag  
+
+    Dump(me); 
+
+fields
+    myShape    : Shape from TopoDS is protected; 
+    myType     : ShapeEnum from TopAbs is protected;         
+    myBox      : Box from Bnd is protected; 
+    mySubShapes: ListOfInteger from BOPCol is protected; 
+    myReference: Integer from Standard is protected; 
+    myFlag     : Integer from Standard is protected;  
+    
+end ShapeInfo;

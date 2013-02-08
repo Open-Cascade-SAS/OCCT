@@ -32,7 +32,7 @@ class Fuse from BRepAlgoAPI inherits BooleanOperation from BRepAlgoAPI
 
 uses
     Shape from TopoDS, 
-    DSFiller from BOPTools
+    PaveFiller from BOPAlgo
 
 is
     Create (S1,S2 : Shape from TopoDS)  
@@ -40,7 +40,7 @@ is
 	---Purpose: Constructs a fuse of shapes aS1 and aS2.
 	 
     Create (S1,S2 : Shape from TopoDS; 
-    	    aDSF:DSFiller from BOPTools)  
+    	    aDSF:PaveFiller from BOPAlgo)  
     	returns Fuse from BRepAlgoAPI; 
     
     	---Purpose: Constructs a new shape that is a fuse of shapes aS1 and aS2 using aDSFiller. 

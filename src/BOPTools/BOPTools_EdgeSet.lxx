@@ -1,0 +1,147 @@
+// Created by: Peter KURNEV
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Edge.hxx>
+#include <BRep_Tool.hxx>
+
+//=======================================================================
+//function : 
+//purpose  : 
+//=======================================================================
+  inline BOPTools_EdgeSet::BOPTools_EdgeSet()
+{
+}
+//=======================================================================
+//function : 
+//purpose  : 
+//=======================================================================
+  inline BOPTools_EdgeSet::BOPTools_EdgeSet(const Handle(NCollection_BaseAllocator)& theObj)
+:
+  myMap(100, theObj),
+  myEdges(theObj)
+{
+}
+//=======================================================================
+//function : ~
+//purpose  : 
+//=======================================================================
+  inline BOPTools_EdgeSet::~BOPTools_EdgeSet()
+{
+}
+//=======================================================================
+//function : Clear
+//purpose  : 
+//=======================================================================
+  inline void BOPTools_EdgeSet::Clear()
+{
+  myMap.Clear();
+  myEdges.Clear();
+}
+//=======================================================================
+//function : SetShape
+//purpose  : 
+//=======================================================================
+  inline void BOPTools_EdgeSet::SetShape(const TopoDS_Shape& theShape)
+{
+  myShape=theShape;
+}
+//=======================================================================
+//function : Shape
+//purpose  : 
+//=======================================================================
+  inline const TopoDS_Shape& BOPTools_EdgeSet::Shape()const
+{
+  return myShape;
+}
+//=======================================================================
+//function : AddEdge
+//purpose  : 
+//=======================================================================
+  inline void BOPTools_EdgeSet::AddEdge(const TopoDS_Edge& theEdge)
+{
+  if (!BRep_Tool::Degenerated(theEdge)){
+    myEdges.Append(theEdge);
+    myMap.Add(theEdge);
+  }
+}
+//=======================================================================
+//function : AddEdges
+//purpose  : 
+//=======================================================================
+  inline void BOPTools_EdgeSet::AddEdges(const BOPCol_ListOfShape& theLS)
+{
+  BOPCol_ListIteratorOfListOfShape aIt;
+  //
+  aIt.Initialize(theLS);
+  for (; aIt.More(); aIt.Next()) {
+    const TopoDS_Edge& aE=(*(TopoDS_Edge*)&aIt.Value());
+    AddEdge(aE);
+  }
+}
+//=======================================================================
+//function : AddEdges
+//purpose  : 
+//=======================================================================
+  inline void BOPTools_EdgeSet::AddEdges(const TopoDS_Shape& theFace)
+{
+  TopExp_Explorer aExp(theFace, TopAbs_EDGE);
+  for(; aExp.More(); aExp.Next()) {
+    const TopoDS_Edge& aE=(*(TopoDS_Edge*)&aExp.Current());
+    AddEdge(aE);
+  }
+}
+//=======================================================================
+//function : Get 
+//purpose  : 
+//=======================================================================
+  inline void BOPTools_EdgeSet::Get(BOPCol_ListOfShape& theLS)const
+{
+  BOPCol_ListIteratorOfListOfShape aIt;
+  //
+  aIt.Initialize(myEdges);
+  for (; aIt.More(); aIt.Next()) {
+    const TopoDS_Shape& aS=aIt.Value();
+    theLS.Append(aS);
+  }
+}
+//=======================================================================
+//function : Contains
+//purpose  : 
+//=======================================================================
+  inline Standard_Boolean BOPTools_EdgeSet::Contains(const BOPTools_EdgeSet& theOther)const
+{
+  Standard_Integer aNbEOther, aNbE;
+  Standard_Boolean bRet;
+  BOPCol_ListIteratorOfListOfShape aIt;
+  //
+  aNbE=0;
+  aNbEOther=theOther.myEdges.Extent();
+  aIt.Initialize(theOther.myEdges);
+  for (; aIt.More(); aIt.Next()) {
+    const TopoDS_Shape& aS=aIt.Value();
+    bRet=myMap.Contains(aS);
+    if (!bRet) {
+      return bRet;
+    }
+    ++aNbE;
+  }
+  bRet=(aNbE==aNbEOther);
+  //
+  return bRet;
+}

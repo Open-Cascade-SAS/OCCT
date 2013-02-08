@@ -1,0 +1,180 @@
+-- Created by: Peter KURNEV
+-- Copyright (c) 1999-2012 OPEN CASCADE SAS
+--
+-- The content of this file is subject to the Open CASCADE Technology Public
+-- License Version 6.5 (the "License"). You may not use the content of this file
+-- except in compliance with the License. Please obtain a copy of the License
+-- at http://www.opencascade.org and read it completely before using this file.
+--
+-- The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+-- main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+--
+-- The Original Code and all software distributed under the License is
+-- distributed on an "AS IS" basis, without warranty of any kind, and the
+-- Initial Developer hereby disclaims all such warranties, including without
+-- limitation, any warranties of merchantability, fitness for a particular
+-- purpose or non-infringement. Please see the License for the specific terms
+-- and conditions governing the rights and limitations under the License.
+
+
+
+class CommonBlock from BOPDS 
+    inherits TShared from MMgt   
+	---Purpose: 
+     
+    	---Purpose:  
+	-- The class BOPDS_CommonBlock is to store  
+    	-- the information about pave blocks that have  
+    	--  geometry coincidence (in  terms of a tolerance)  with
+    	--  a) other pave block(s) 
+    	--  b) face(s)
+
+uses 
+    ListOfInteger from BOPCol,  
+    BaseAllocator from BOPCol,
+    PaveBlock from BOPDS,
+    ListOfPaveBlock from BOPDS
+
+--raises
+
+is 
+    Create 
+    	returns CommonBlock from BOPDS; 
+	---Purpose:  
+    	--- Empty contructor  
+    	---  
+	 
+    Create (theAllocator: BaseAllocator from BOPCol) 
+    	returns CommonBlock from BOPDS;      
+    	---Purpose:  
+    	---  Contructor    
+    	---  <theAllocator> - the allocator to manage the memory     
+    	---  
+	
+    AddPaveBlock(me:mutable; 
+	    aPB : PaveBlock from BOPDS); 
+      	---Purpose: 
+    	--- Modifier   
+	--- Adds the pave block <aPB> to the list of pave blocks    
+	--- of the common block 
+	
+    AddPaveBlocks(me:mutable; 
+    	    aLPB:ListOfPaveBlock from BOPDS);
+     	---Purpose: 
+    	--- Modifier   
+	--- Adds the list of pave blocks <aLPB>  
+    	--- to the list of pave blocks  
+	--- of the common block 
+	
+    AddFace(me:mutable; 
+	    aF : Integer from Standard); 
+     	---Purpose: 
+    	--- Modifier   
+	--- Adds the index of the face <aF>  
+    	--- to the list of indices of faces  
+	--- of the common block 
+	
+    AddFaces (me:mutable; 
+    	    aLF:ListOfInteger from BOPCol); 
+	---Purpose: 
+    	--- Modifier   
+	--- Adds the list of indices of faces <aLF>  
+    	--- to the list of indices of faces 
+	--- of the common block  
+	 
+    PaveBlocks(me) 
+    	returns ListOfPaveBlock from BOPDS; 
+    ---C++:  return const &  
+    	---Purpose: 
+    	--- Selector   
+	--- Returns the list of pave blocks  
+    	--- of the common block  
+	
+    Faces (me) 
+    	returns ListOfInteger from BOPCol; 
+    ---C++:  return const &  
+     	---Purpose: 
+    	--- Selector   
+	--- Returns the list of indices of faces  
+    	--- of the common block   
+	
+    PaveBlock1  (me) 
+    	returns  PaveBlock from BOPDS; 
+    ---C++:  return const &	
+	---Purpose: 
+    	--- Selector   
+	--- Returns the first pave block  
+    	--- of the common block   
+    	
+    PaveBlockOnEdge  (me:mutable;  
+    	    theIndex: Integer from Standard) 
+    	returns  PaveBlock from BOPDS; 
+    ---C++:  return  &	   
+     	---Purpose: 
+    	--- Selector   
+	--- Returns the pave block that belongs 
+        --- to the edge with index <theIx> 	 
+	
+    IsPaveBlockOnFace  (me;  
+    	    theIndex: Integer from Standard) 
+    	returns  Boolean from Standard; 
+     	---Purpose: 
+    	--- Query   
+	--- Returns true if the common block contains 
+    	--  a pave block that belongs  
+    	--- to the face with index <theIx> 
+
+    IsPaveBlockOnEdge  (me;  
+    	    theIndex: Integer from Standard) 
+    	returns  Boolean from Standard;   
+	---Purpose: 
+    	--- Query   
+	--- Returns true if the common block contains 
+    	--  a pave block that belongs  
+    	--- to the edge with index <theIx> 
+
+    Contains(me; 
+    	    thePB:PaveBlock from BOPDS) 
+	returns Boolean from Standard; 
+    	---Purpose: 
+    	--- Query   
+	--- Returns true if the common block contains 
+    	--  a pave block that is equal  to <thePB>  
+
+    Contains(me; 
+    	    theF: Integer from Standard) 
+	returns Boolean from Standard;
+      	---Purpose: 
+    	--- Query   
+	--- Returns true if the common block contains 
+    	--  the face with index equal  to <theF>   
+	
+    SetEdge(me:mutable; 
+    	    theEdge:Integer from Standard); 
+	---Purpose: 
+    	--- Modifier   
+	--- Assign the index <theEdge> as the edge index  
+    	--- to all pave blocks of the common block 
+
+    Edge(me) 
+        returns Integer from Standard; 
+	---Purpose: 
+    	--- Selector   
+	--- Returns the index of the edge  
+    	--- of  all pave blocks of the common block 
+    
+    Dump(me); 
+    
+fields 
+    myPaveBlocks: ListOfPaveBlock from BOPDS  is protected;  
+    myFaces     : ListOfInteger   from BOPCol is protected;  
+      	    
+end CommonBlock;
+
+
+
+
+
+
+
+

@@ -23,7 +23,7 @@ if { [regexp {Faulty} $che_f] } {
     puts "Faulty ${BugNumber} : checkshape is wrong for f"
 }
 
-bsection result sh f -a
+bsection result sh f -n2d
 
 regexp {nb alone Vertices : ([-0-9.+eE]+)} [checksection result] full Vertices
 

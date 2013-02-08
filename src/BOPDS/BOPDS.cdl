@@ -1,0 +1,113 @@
+-- Created by: Peter KURNEV
+-- Copyright (c) 1999-2012 OPEN CASCADE SAS
+--
+-- The content of this file is subject to the Open CASCADE Technology Public
+-- License Version 6.5 (the "License"). You may not use the content of this file
+-- except in compliance with the License. Please obtain a copy of the License
+-- at http://www.opencascade.org and read it completely before using this file.
+--
+-- The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+-- main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+--
+-- The Original Code and all software distributed under the License is
+-- distributed on an "AS IS" basis, without warranty of any kind, and the
+-- Initial Developer hereby disclaims all such warranties, including without
+-- limitation, any warranties of merchantability, fitness for a particular
+-- purpose or non-infringement. Please see the License for the specific terms
+-- and conditions governing the rights and limitations under the License.
+
+
+package BOPDS 
+
+  ---Purpose:  
+  -- The package contains classes that implements  
+  -- the data structure for  
+  -- general fuse and boolean operation algorithms
+
+uses
+    MMgt,
+    TCollection, 
+    TColStd,    
+    gp,         
+    Bnd,        
+    TopAbs,      
+    TopoDS, 
+    TopTools, 
+    IntTools,    
+    --    	     
+    BOPCol
+is 
+    --
+    -- classes 
+    --
+    class ShapeInfo; 
+    class IndexRange;  
+    class DS;  
+    class PassKey;   
+    class PassKeyBoolean;   
+    class PassKeyMapHasher;   
+    class Tools;   
+    class Iterator;   
+    class Pave;    
+    class PaveMapHasher;
+    class PaveBlock;   
+    class CommonBlock;   
+    class SubIterator;
+    class Point;
+    class Curve;
+    class FaceInfo; 
+    class IteratorSI;
+    --
+    --  pointers
+    --
+    pointer PDS to DS from BOPDS;
+    pointer PIterator to Iterator from BOPDS;
+    --
+    -- primitives
+    --
+    imported VectorOfShapeInfo  from BOPDS;
+    imported VectorOfIndexRange from BOPDS; 
+    imported ListOfPassKeyBoolean from BOPDS; 
+    imported ListIteratorOfListOfPassKeyBoolean from BOPDS; 
+    imported DataMapOfIntegerListOfInteger from BOPDS; 
+    imported MapOfPassKey from BOPDS; 
+    imported MapOfPassKeyBoolean from BOPDS; 
+    imported VectorOfListOfPassKeyBoolean from BOPDS; 
+    imported ListOfPave from BOPDS; 
+    imported ListOfPaveBlock from BOPDS; 
+    imported VectorOfListOfPaveBlock from BOPDS; 
+    imported DataMapOfPaveBlockListOfPaveBlock from BOPDS; 
+    imported MapOfPaveBlock from BOPDS; 
+    imported DataMapOfPaveBlockListOfInteger from BOPDS; 
+    imported DataMapOfPassKeyListOfPaveBlock from BOPDS; 
+    imported CoupleOfPaveBlocks from BOPDS; 
+    imported DataMapOfShapeCoupleOfPaveBlocks from BOPDS; 
+    imported MapOfCommonBlock from BOPDS; 
+    imported VectorOfFaceInfo from BOPDS;  
+    imported MapOfPave from BOPDS;
+    imported IndexedDataMapOfPaveBlockListOfPaveBlock from BOPDS;
+    imported DataMapOfIntegerListOfPaveBlock from BOPDS;
+    imported IndexedMapOfPaveBlock from BOPDS;
+    imported IndexedDataMapOfPaveBlockListOfInteger from BOPDS;
+    imported IndexedDataMapOfShapeCoupleOfPaveBlocks from BOPDS;
+    --  
+    imported Interf   from BOPDS;   
+    imported InterfVV from BOPDS;   
+    imported InterfVE from BOPDS;   
+    imported InterfVF from BOPDS;   
+    imported InterfEE from BOPDS;   
+    imported InterfEF from BOPDS;   
+    imported InterfFF from BOPDS;   
+    --
+    imported VectorOfInterfVV from BOPDS; 
+    imported VectorOfInterfVE from BOPDS; 
+    imported VectorOfInterfVF from BOPDS; 
+    imported VectorOfInterfEE from BOPDS; 
+    imported VectorOfInterfEF from BOPDS; 
+    imported VectorOfInterfFF from BOPDS; 
+    --  
+    imported VectorOfPoint   from BOPDS; 
+    imported VectorOfCurve from BOPDS; 
+    --
+end BOPDS;
+

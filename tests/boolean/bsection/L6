@@ -1,5 +1,5 @@
 restore [locate_data_file GEN746_nofog.rle] a
 explode a
-bsection result a_1 a_2 -2d -a
+bsection result a_1 a_2
 
 set length 556.6

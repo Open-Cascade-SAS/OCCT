@@ -32,7 +32,7 @@ class Common from BRepAlgoAPI inherits BooleanOperation from BRepAlgoAPI
 
 uses
     Shape from TopoDS, 
-    DSFiller from BOPTools
+    PaveFiller from BOPAlgo
 
 is
     Create (S1,S2 : Shape from TopoDS)  
@@ -40,7 +40,7 @@ is
 	---Purpose: Constructs a common part for shapes aS1 and aS2 .
  
     Create (S1,S2 : Shape from TopoDS; 
-    	    aDSF:DSFiller from BOPTools)  
+    	    aDSF:PaveFiller from BOPAlgo)  
     	returns Common from BRepAlgoAPI;
 end Common;
 --- Purpose: Constructs a common part for shapes aS1 and aS2 using aDSFiller

@@ -22,15 +22,14 @@
 #include <BRepAlgoAPI_Fuse.ixx>
 
 #include <BRepAlgoAPI_BooleanOperation.hxx>
-#include <BOP_Operation.hxx>
 
 //=======================================================================
 //function : BRepAlgoAPI_Fuse
 //purpose  : 
 //=======================================================================
-BRepAlgoAPI_Fuse::BRepAlgoAPI_Fuse(const TopoDS_Shape& S1, 
-				     const TopoDS_Shape& S2)
-: BRepAlgoAPI_BooleanOperation(S1, S2, BOP_FUSE)
+  BRepAlgoAPI_Fuse::BRepAlgoAPI_Fuse(const TopoDS_Shape& S1, 
+                                     const TopoDS_Shape& S2)
+: BRepAlgoAPI_BooleanOperation(S1, S2, BOPAlgo_FUSE)
 {
   BRepAlgoAPI_BooleanOperation* pBO=
     (BRepAlgoAPI_BooleanOperation*) (void*) this;
@@ -42,9 +41,9 @@ BRepAlgoAPI_Fuse::BRepAlgoAPI_Fuse(const TopoDS_Shape& S1,
 //purpose  : 
 //=======================================================================
   BRepAlgoAPI_Fuse::BRepAlgoAPI_Fuse(const TopoDS_Shape& S1, 
-				     const TopoDS_Shape& S2,
-				     const BOPTools_DSFiller& aDSF)
-: BRepAlgoAPI_BooleanOperation(S1, S2, aDSF, BOP_FUSE)
+                                     const TopoDS_Shape& S2,
+                                     const BOPAlgo_PaveFiller& aDSF)
+: BRepAlgoAPI_BooleanOperation(S1, S2, aDSF, BOPAlgo_FUSE)
 {
   BRepAlgoAPI_BooleanOperation* pBO=
     (BRepAlgoAPI_BooleanOperation*) (void*) this;

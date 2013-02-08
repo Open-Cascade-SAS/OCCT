@@ -38,7 +38,7 @@ uses
     FClass2d             from IntTools, 
     SequenceOfRoots      from IntTools,
     SequenceOfCommonPrts from IntTools, 
-    Context              from IntTools,
+    Context              from BOPInt,
     Range                from IntTools 
     
 --raises
@@ -103,13 +103,13 @@ is
 	---
      
     SetContext (me: in out;  
-    	    theContext: Context from IntTools);
+    	    theContext: Context from BOPInt);
     	---Purpose:
 	--- Sets the intersecton context 
 	---
  
     Context (me) 
-	returns  Context from IntTools; 
+	returns  Context from BOPInt; 
     ---C++:return const & 	
     	---Purpose:
 	--- Gets the intersecton context 
@@ -264,7 +264,7 @@ fields
     myErrorStatus     :  Integer from Standard;    
     
 ---  internal  members     
-    myContext         :  Context from IntTools;
+    myContext         :  Context from BOPInt;
     myProjectableRanges: SequenceOfRanges from IntTools;    
     myFClass2d         : FClass2d from IntTools; 
     myFuncArray       :  CArray1OfReal from IntTools; 

@@ -46,7 +46,8 @@
 #include <Extrema_ExtCS.hxx>
 #include <Extrema_ExtPS.hxx>
 #include <IntTools.hxx>
-#include <IntTools_Context.hxx>
+#include <BOPInt_Context.hxx>
+#include <IntTools_Tools.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <IntCurveSurface_HInter.hxx>
 #include <IntCurveSurface_IntersectionPoint.hxx>
@@ -280,7 +281,7 @@ void IntTools_BeanFaceIntersector::Init(const BRepAdaptor_Curve&   theCurve,
 // function: SetContext
 // purpose: 
 // ==================================================================================
-void IntTools_BeanFaceIntersector::SetContext(const Handle(IntTools_Context)& theContext) 
+void IntTools_BeanFaceIntersector::SetContext(const Handle(BOPInt_Context)& theContext) 
 {
   myContext = theContext;
 }
@@ -288,7 +289,7 @@ void IntTools_BeanFaceIntersector::SetContext(const Handle(IntTools_Context)& th
 // function: Context
 // purpose: 
 // ==================================================================================
-const Handle(IntTools_Context)& IntTools_BeanFaceIntersector::Context()const
+const Handle(BOPInt_Context)& IntTools_BeanFaceIntersector::Context()const
 {
   return myContext;
 }
@@ -327,13 +328,13 @@ void IntTools_BeanFaceIntersector::Perform()
 {
   myIsDone = Standard_False;
   myResults.Clear();
-  Standard_Boolean bRet; 
+  Standard_Integer bRet; 
   Standard_Integer aDiscretization = 30; 
   Standard_Real aRelativeDeflection = 0.01;
   myDeflection = aRelativeDeflection;
   //
   if (myContext.IsNull()) {
-    myContext=new IntTools_Context;
+    myContext=new BOPInt_Context;
   }
   //
   if(myCurve.GetType()==GeomAbs_Line && mySurface.GetType()==GeomAbs_Plane) {
@@ -409,12 +410,18 @@ void IntTools_BeanFaceIntersector::Perform()
     }
     //
     bRet=FastComputeExactIntersection();
-    if(bRet) {
+    if(bRet == 1) {
       IntTools_Range aRange(myFirstParameter, myLastParameter);
       myResults.Append(aRange);
       myIsDone = Standard_True;
       return;
+    } 
+    //modified by NIZHNY-EMV Fri Apr 20 09:38:08 2012
+    else if (bRet == 2) {
+      myIsDone = Standard_True;
+      return;
     }
+    //modified by NIZHNY-EMV Fri Apr 20 09:38:10 2012
 
 
 //     Standard_Boolean coinside = TestCoinside(myCurve,mySurface);
@@ -714,13 +721,13 @@ void IntTools_BeanFaceIntersector::ComputeAroundExactIntersection()
 // function: FastComputeExactIntersection
 // purpose: 
 // ==================================================================================
-Standard_Boolean IntTools_BeanFaceIntersector::FastComputeExactIntersection() 
+Standard_Integer IntTools_BeanFaceIntersector::FastComputeExactIntersection() 
 {
-  Standard_Boolean aresult;
+  Standard_Integer aresult;
   GeomAbs_CurveType aCT;
   GeomAbs_SurfaceType aST;
   //
-  aresult = Standard_False;
+  aresult = 0;
   aCT=myCurve.GetType();
   aST=mySurface.GetType();
   //
@@ -737,7 +744,7 @@ Standard_Boolean IntTools_BeanFaceIntersector::FastComputeExactIntersection()
       if((surfPlane.Distance(myCurve.Value(myFirstParameter)) < myCriteria) &&
 	 (surfPlane.Distance(myCurve.Value(myLastParameter)) < myCriteria)) {
 	myRangeManager.InsertRange(myFirstParameter, myLastParameter, 2);
-	aresult = Standard_True;
+	aresult = 1;
       }
     }
     else { // else 1
@@ -815,7 +822,7 @@ Standard_Boolean IntTools_BeanFaceIntersector::FastComputeExactIntersection()
 	//
 	if(insertRange) {
 	  myRangeManager.InsertRange(myFirstParameter, myLastParameter, 2);
-	  aresult = Standard_True;
+	  aresult = 1;
 	}
       }//if(anAngle < Precision::Angular()) {
     }//else { // else 1
@@ -850,7 +857,7 @@ Standard_Boolean IntTools_BeanFaceIntersector::FastComputeExactIntersection()
 	  	  
 	  if(adist < myCriteria) { // Abs is important function here
 	    myRangeManager.InsertRange(myFirstParameter, myLastParameter, 2);
-	    aresult = Standard_True;
+	    aresult = 1;
 	  }
 	}
       }
@@ -870,7 +877,7 @@ Standard_Boolean IntTools_BeanFaceIntersector::FastComputeExactIntersection()
 	  
 	  if(adist < myCriteria) {
 	    myRangeManager.InsertRange(myFirstParameter, myLastParameter, 2);
-	    aresult = Standard_True;
+	    aresult = 1;
 	  }
 	}
       }
@@ -922,12 +929,31 @@ Standard_Boolean IntTools_BeanFaceIntersector::FastComputeExactIntersection()
 	    break;
 	  }
 	}
+        //modified by NIZHNY-EMV Fri Apr 20 08:45:29 2012
+        //
+        if (!bFlag) {
+          Standard_Real U, V, aTm;
+          gp_Pnt aPm;
+          gp_Pnt2d aP2d;
+          //
+          aTm = IntTools_Tools::IntermediatePoint(myFirstParameter, myLastParameter);
+          aPm = myCurve.Value(aTm);
+          ElSLib::Parameters(aCyl, aPm, U, V);
+          aP2d.SetCoord(U,V);
+          //
+          bFlag = !(myContext->IsPointInOnFace(mySurface.Face(), aP2d));
+        }
 	//
 	if (!bFlag){
 	  myRangeManager.InsertRange(myFirstParameter, myLastParameter, 2);
-	  aresult = Standard_True;
+	  aresult = 1;
 	  return aresult;
 	} 
+        else {
+          aresult = 2;
+          return aresult;
+        }
+        //modified by NIZHNY-EMV Fri Apr 20 08:45:32 2012
       }
       
     }//if(aCT==GeomAbs_Line) {

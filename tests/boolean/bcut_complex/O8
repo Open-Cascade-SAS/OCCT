@@ -1,5 +1,4 @@
 ## cts20461
-puts "TODO #22911 ALL: Faulty shapes in variables faulty_1 to faulty_"
 puts "TODO #22911 ALL: Error : The area of the resulting shape is"
 
 restore [locate_data_file cts20461.rle] a

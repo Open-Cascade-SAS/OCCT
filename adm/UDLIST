@@ -92,8 +92,6 @@ t TKG3d
 t TKGeomBase
 p AppBlend
 p ApproxInt
-p BOP
-p BOPTColStd
 p BOPTools
 p BRepAlgo
 p BRepAlgoAPI
@@ -124,7 +122,6 @@ p BiTgte
 p Bisector
 p Blend
 p BlendFunc
-p BooleanOperations
 p ChFi2d
 p ChFi3d
 p ChFiDS
@@ -489,3 +486,7 @@ t TKQADraw
 p QADNaming
 p QABugs
 p Font
+p BOPAlgo
+p BOPDS
+p BOPCol
+p BOPInt

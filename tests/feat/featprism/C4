@@ -5,7 +5,6 @@ nexplode cyl F
 
 puts "*"
 #puts "TODO OCC22810 All:Faulty .*"
-puts "TODO OCC22810 ALL:Faulty shapes in variables faulty_1 to faulty_3"
 puts "TODO OCC22810 ALL:Error : The area of the resulting shape is"
 ttranslate cont 0 0 -100
 

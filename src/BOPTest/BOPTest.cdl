@@ -17,43 +17,32 @@
 -- purpose or non-infringement. Please see the License for the specific terms
 -- and conditions governing the rights and limitations under the License.
 
-
 package BOPTest 
+---Purpose: 
 
-	---Purpose: 
-	--          
 uses
+    gp,
     Draw,
-    TCollection, 
-    gp, 
+    DBRep, 
+    TopAbs,    	     
     TopoDS,
-    DBRep
-is
-    class  DrawableShape; 
-	 
-    AllCommands(DI : in out Interpretor from Draw);
-	---Purpose: Defines all commands. 
-	 
-    MTestCommands(DI : in out Interpretor from Draw);	    		 
-
-    TSTCommands  (DI : in out Interpretor from Draw);	
-
-    EFCommands  (DI : in out Interpretor from Draw);	
-
-    LowCommands (DI : in out Interpretor from Draw);	
-
-    BOPCommands (DI : in out Interpretor from Draw);	
-
-    WSplitCommands(DI : in out Interpretor from Draw);	
-
-    CurveCommands(DI : in out Interpretor from Draw);	
-
-    TolerCommands(DI : in out Interpretor from Draw);	
-
-    CheckCommands(DI : in out Interpretor from Draw);	 
+    TopTools, 
+    BOPCol,    
+    BOPDS,    
+    BOPAlgo 
+     
+is  
     
-    Factory (theDI : in out Interpretor from Draw);
-    ---Purpose: Loads all Draw commands for Geometry & Topology. Used for plugin.
-         
-end BOPTest; 
-
+    class Objects; 
+    class DrawableShape; 
+    -- 
+    AllCommands        (aDI:out Interpretor from Draw);
+    BOPCommands        (aDI:out Interpretor from Draw); 
+    CheckCommands      (aDI:out Interpretor from Draw); 
+    TolerCommands      (aDI:out Interpretor from Draw); 
+    LowCommands        (aDI:out Interpretor from Draw); 
+    ObjCommands        (aDI:out Interpretor from Draw);
+    PartitionCommands  (aDI:out Interpretor from Draw);
+    Factory            (aDI:out Interpretor from Draw);
+    
+end BOPTest;

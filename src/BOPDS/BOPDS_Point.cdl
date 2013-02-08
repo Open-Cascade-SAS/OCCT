@@ -1,0 +1,103 @@
+-- Created by: Peter KURNEV
+-- Copyright (c) 1999-2012 OPEN CASCADE SAS
+--
+-- The content of this file is subject to the Open CASCADE Technology Public
+-- License Version 6.5 (the "License"). You may not use the content of this file
+-- except in compliance with the License. Please obtain a copy of the License
+-- at http://www.opencascade.org and read it completely before using this file.
+--
+-- The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+-- main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+--
+-- The Original Code and all software distributed under the License is
+-- distributed on an "AS IS" basis, without warranty of any kind, and the
+-- Initial Developer hereby disclaims all such warranties, including without
+-- limitation, any warranties of merchantability, fitness for a particular
+-- purpose or non-infringement. Please see the License for the specific terms
+-- and conditions governing the rights and limitations under the License.
+
+
+class Point from BOPDS 
+
+	---Purpose: 
+    	-- The class BOPDS_Point is to store  
+    	-- the information about intersection point 
+uses
+    Pnt from gp, 
+    Pnt2d from gp 
+    
+--raises
+
+is 
+    Create 
+    	returns Point from BOPDS; 
+    ---C++: alias "virtual ~BOPDS_Point();" 
+    ---C++: inline 
+    	---Purpose:  
+    	--- Empty contructor  
+    	---  
+	
+    SetPnt(me:out; 
+    	    thePnt:Pnt from gp); 
+    ---C++: inline 
+    	---Purpose: 
+    	--- Modifier   
+	--- Sets 3D point <thePnt>  
+	
+    Pnt(me)  
+    	returns Pnt from gp; 
+    ---C++: return const & 
+    ---C++: inline  
+    	---Purpose: 
+    	--- Selector   
+	--- Returns 3D point 
+    
+    SetPnt2D1(me:out; 
+    	    thePnt:Pnt2d from gp); 
+    ---C++: inline	 
+     	---Purpose: 
+    	--- Modifier   
+	--- Sets 2D point on the first face <thePnt> 
+	 
+    Pnt2D1(me)  
+    	returns Pnt2d from gp; 
+    ---C++: return const & 
+    ---C++: inline  
+    	---Purpose: 
+    	--- Selector 
+	--- Returns 2D point on the first face <thePnt> 
+    SetPnt2D2(me:out; 
+    	    thePnt:Pnt2d from gp); 
+    ---C++: inline 
+    	---Purpose: 
+    	--- Modifier   
+	--- Sets 2D point on the second face <thePnt> 	 
+     
+    Pnt2D2(me)  
+    	returns Pnt2d from gp; 
+    ---C++: return const & 
+    ---C++: inline  
+    	---Purpose: 
+    	--- Selector 
+	--- Returns 2D point on the second face <thePnt>  
+	
+    SetIndex(me:out;  
+    	    theIndex: Integer from Standard); 
+    ---C++: inline      
+     	---Purpose: 
+    	--- Modifier
+	--- Sets the index of the vertex <theIndex>
+    Index(me)  
+    	returns Integer from Standard; 
+    ---C++: inline  
+    	---Purpose: 
+    	--- Selector 
+	--- Returns index of the vertex   
+	
+fields
+    myPnt :Pnt from gp is protected; 
+    myPnt2D1:Pnt2d from gp is protected; 
+    myPnt2D2:Pnt2d from gp is protected; 
+    myIndex : Integer from Standard is protected;    
+
+end Point;

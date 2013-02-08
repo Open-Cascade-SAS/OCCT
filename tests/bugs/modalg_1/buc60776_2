@@ -9,7 +9,7 @@ restore [locate_data_file buc60776d.brep] b
 checkshape b
 bsection result a b
 
-set length 111.405
+set length 112.906
 
 set 2dviewer 1
 

@@ -18,7 +18,7 @@ mkface f s
 plane pl 0 0 -0.410 0 0 1
 mkface p pl 0 10 -5 5
 
-bsection result f p -2d
+bsection result f p -na
 
 set nb_v_good 2
 set nb_e_good 1

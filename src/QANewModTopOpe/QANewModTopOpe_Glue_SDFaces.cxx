@@ -429,14 +429,14 @@ QANewModTopOpe_Glue::PerformSDFaces()
     if (!isAnalitic(aFirstFace))
       continue;
 
-    if (QANewModTopOpe_Tools::HasSameDomain(myDSFiller, aFirstFace)) {
+    if (QANewModTopOpe_Tools::HasSameDomain(myBuilder, aFirstFace)) {
 
       if(!aHasSDF) aHasSDF = Standard_True;
 
       TopTools_ListOfShape               aLOfSDFace;
       TopTools_ListIteratorOfListOfShape anIter;
 
-      QANewModTopOpe_Tools::SameDomain(myDSFiller, aFirstFace, aLOfSDFace);
+      QANewModTopOpe_Tools::SameDomain(myBuilder, aFirstFace, aLOfSDFace);
       anIter.Initialize(aLOfSDFace);
 
       for(; anIter.More(); anIter.Next()) {
@@ -583,7 +583,7 @@ QANewModTopOpe_Glue::PerformSDFaces()
 	}
       }
     }
-
+      
     // remove items from the data map
     for(TopTools_ListIteratorOfListOfShape anIt(aShapesToRemove); anIt.More(); anIt.Next())
       myMapModif.UnBind(anIt.Value());

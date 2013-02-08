@@ -84,7 +84,7 @@ GetShape D $Com1:2 Pr
 NewCommand D
 explode Pr E
 AddDriver D Attach Cyl
-set Sel1 [AttachShape D Pr_5 ${Prism} ${Prism} 0]; ## set attachment
+set Sel1 [AttachShape D Pr_6 ${Prism} ${Prism} 0]; ## set attachment
 set Cyl [AddCyl D 70 515 ${Sel1}]
 ComputeFun D $Cyl:1
 GetShape D $Cyl:1:2 CylS

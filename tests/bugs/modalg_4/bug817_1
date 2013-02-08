@@ -1,6 +1,3 @@
-puts "TODO OCC12345 ALL: OCC817: Error"
-puts "TODO OCC12345 ALL: Error : The square of result shape is"
-
 pload QAcommands
 
 puts "============"
@@ -29,4 +26,4 @@ if {${percent} > ${percent_max}} {
 }
 
 set 2dviewer 0
-set square 0
+set square 6000

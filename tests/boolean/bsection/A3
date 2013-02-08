@@ -1,5 +1,5 @@
 restore [locate_data_file a2] a
 restore [locate_data_file b2_bsect] b
-bsection result a b
+bsection result a b -n2d
 
 set length 25.1327

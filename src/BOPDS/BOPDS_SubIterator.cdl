@@ -1,0 +1,138 @@
+-- Created by: Peter KURNEV
+-- Copyright (c) 1999-2012 OPEN CASCADE SAS
+--
+-- The content of this file is subject to the Open CASCADE Technology Public
+-- License Version 6.5 (the "License"). You may not use the content of this file
+-- except in compliance with the License. Please obtain a copy of the License
+-- at http://www.opencascade.org and read it completely before using this file.
+--
+-- The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+-- main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+--
+-- The Original Code and all software distributed under the License is
+-- distributed on an "AS IS" basis, without warranty of any kind, and the
+-- Initial Developer hereby disclaims all such warranties, including without
+-- limitation, any warranties of merchantability, fitness for a particular
+-- purpose or non-infringement. Please see the License for the specific terms
+-- and conditions governing the rights and limitations under the License.
+
+class SubIterator from BOPDS 
+     
+	---Purpose: 
+    	-- The class BOPDS_SubIterator is  
+    	--  1.to compute intersections between two sub-sets of 
+    	--    BRep sub-shapes  
+    	--    of arguments of an operation (see the class BOPDS_DS)
+	--    in terms of theirs bounding boxes           
+    	--  2.provides interface to iterare the pairs of  
+	--    intersected sub-shapes of given type     
+	
+uses  
+    ShapeEnum from TopAbs, 
+    BaseAllocator from BOPCol, 
+    ListOfInteger from BOPCol, 
+    PListOfInteger from BOPCol,  
+    DS  from BOPDS,
+    PDS from BOPDS, 
+    PassKeyBoolean from BOPDS, 
+    ListOfPassKeyBoolean from BOPDS,
+    ListIteratorOfListOfPassKeyBoolean from BOPDS, 
+    VectorOfListOfPassKeyBoolean from BOPDS 
+    
+    
+--raises
+
+is 
+    Create   
+    	returns SubIterator from BOPDS;
+    ---C++: alias "Standard_EXPORT virtual ~BOPDS_SubIterator();" 
+     	---Purpose:  
+    	--- Empty contructor  
+    	---   
+	 
+    Create (theAllocator: BaseAllocator from BOPCol)  
+    	returns SubIterator from BOPDS;
+    	---Purpose:  
+    	---  Contructor    
+    	---  theAllocator - the allocator to manage the memory     
+    	---  
+	 
+    SetDS(me:out; 
+    	    pDS:PDS from BOPDS); 
+     	---Purpose: 
+	--- Modifier 
+	--- Sets the data structure <pDS> to process 
+	 
+    DS(me) 
+      returns DS from BOPDS; 
+    ---C++:return const & 
+    	---Purpose: 
+	--- Selector 
+	--- Returns the data structure  
+	
+    SetSubSet1(me:out; 
+    	    theLI:ListOfInteger from BOPCol); 
+        ---Purpose: 
+	--- Modifier 
+	--- Sets the first set of indices  <theLI> to process 
+	 
+    SubSet1(me)
+    	returns ListOfInteger from BOPCol; 
+    ---C++:return const &   
+    	---Purpose: 
+	--- Selector
+	--- Returns the first set of indices to process 
+   
+    SetSubSet2(me:out; 
+    	    theLI:ListOfInteger from BOPCol); 
+     	---Purpose: 
+	--- Modifier 
+	--- Sets the second set of indices  <theLI> to process 
+    SubSet2(me)
+    	returns ListOfInteger from BOPCol; 
+    ---C++:return const & 
+    	---Purpose: 
+	--- Selector
+	--- Returns the second set of indices to process   
+	 
+    Initialize(me:out); 
+    	---Purpose:  
+     	--- Initializes the  iterator 
+     
+    More(me)  
+    	returns Boolean from Standard; 
+  	---Purpose: 
+	--- Returns  true if still there are pairs 
+        --  of intersected shapes  
+	 
+    Next(me:out); 
+     	---Purpose: 
+	--- Moves iterations ahead  
+	
+    Value(me;  
+    	    theIndex1:out Integer from Standard;
+    	    theIndex2:out Integer from Standard); 
+    	---Purpose: 
+	--- Returns indices (DS) of intersected shapes 
+	--- theIndex1 - the index of the first shape  
+	--- theIndex2 - the index of the second shape 
+	
+    Prepare(me:out) 
+    	is virtual; 
+      	---Purpose: 
+	--- Perform the intersection algorithm and prepare  
+    	--- the results to be used  
+	 
+    Intersect(me:out) 
+    	is virtual protected; 
+    	    	     
+
+fields 
+    myAllocator:  BaseAllocator from BOPCol is protected; 
+    myDS       :  PDS from BOPDS is protected;  
+    myList     :  ListOfPassKeyBoolean from BOPDS is protected;  
+    myIterator :  ListIteratorOfListOfPassKeyBoolean from BOPDS is protected; 
+    mySubSet1  :  PListOfInteger from BOPCol is protected; 
+    mySubSet2  :  PListOfInteger from BOPCol is protected;  
+    
+end SubIterator;

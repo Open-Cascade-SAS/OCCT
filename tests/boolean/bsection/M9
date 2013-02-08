@@ -16,7 +16,7 @@ compound result
 repeat 21 {
   plane p_$i 0 $i*100 0  0 1 0
   mkface f_$i p_$i
-  bsection s_$i b f_$i -2d -a
+  bsection s_$i b f_$i
   compound result s_$i result
   set dist [expr $i * 100]
   puts "OK Section:$dist"

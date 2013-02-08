@@ -208,7 +208,7 @@ SplitEdgeComplete (const TopoDS_Edge& theEdge,
 
 static void
 SplitEdge (const TopoDS_Edge          &theEdge,
-	   const BOPTools_PDSFiller   &thePDSFiller,
+	   const BOPAlgo_PPaveFiller  &thePDSFiller,
 	   const TopTools_MapOfShape  &theEdgesValid,
 	   const Standard_Boolean      useMap,
 	         TopTools_ListOfShape &theListSplits)
@@ -446,13 +446,13 @@ QANewModTopOpe_Glue::PerformShell()
     hasSolid2 = Standard_True;
 
   if (hasSolid1 && hasSolid2)
-    myOperation = BOP_FUSE;
+    myOperation = BOPAlgo_FUSE;
   else if (hasSolid1)
-    myOperation = BOP_CUT21;
+    myOperation = BOPAlgo_CUT21;
   else if (hasSolid2)
-    myOperation = BOP_CUT;
+    myOperation = BOPAlgo_CUT;
   else
-    myOperation = BOP_SECTION;
+    myOperation = BOPAlgo_SECTION;
 
   BRepAlgoAPI_BooleanOperation::Build();
   if (!BuilderCanWork())
@@ -885,7 +885,7 @@ QANewModTopOpe_Glue::PerformShell()
 static TopoDS_Face
 SplitFaceBoundary (const TopoDS_Face& theFace,
 		   BRepTools_Substitution& theSubst,
-		   const BOPTools_PDSFiller   &thePDSFiller,
+		   const BOPAlgo_PPaveFiller &thePDSFiller,
 		   const TopTools_MapOfShape& theEdgesValid,
 		   const Standard_Boolean useMap,
 		   TopTools_DataMapOfShapeListOfShape& theMapModif)

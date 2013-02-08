@@ -47,12 +47,12 @@
 
 
 static void Baryc(const TopoDS_Shape&,
-		  gp_Pnt&);
+                  gp_Pnt&);
 
 static void BoxParameters(const TopoDS_Shape&,
-			  const gp_Ax1&,
-			  Standard_Real&,
-			  Standard_Real&);
+                          const gp_Ax1&,
+                          Standard_Real&,
+                          Standard_Real&);
 
 
 //=======================================================================
@@ -62,34 +62,34 @@ static void BoxParameters(const TopoDS_Shape&,
 
 void BRepFeat_MakeCylindricalHole::Perform(const Standard_Real Radius)
 {
-  if (myBuilder.OriginalShape().IsNull() || !myAxDef) {
+  if (Object().IsNull() || !myAxDef) {
     Standard_ConstructionError::Raise();
   }
 
   myIsBlind = Standard_False;
   myStatus = BRepFeat_NoError;
 
-  LocOpe_CurveShapeIntersector theASI(myAxis,myBuilder.OriginalShape());
+  LocOpe_CurveShapeIntersector theASI(myAxis,Object());
   if (!theASI.IsDone() || theASI.NbPoints() <= 0) {
     myStatus = BRepFeat_InvalidPlacement;
     return;
   }
   
-  TopTools_ListOfShape theList;
-  for (Standard_Integer i=1; i<= theASI.NbPoints(); i++) {
-    theList.Append(theASI.Point(i).Face());
-  }
+  //TopTools_ListOfShape theList;
+  //for (Standard_Integer i=1; i<= theASI.NbPoints(); i++) {
+  //  theList.Append(theASI.Point(i).Face());
+  //}
 
   // It is not possible to use infinite cylinder for topological operations.
   Standard_Real PMin,PMax;
-  BoxParameters(myBuilder.OriginalShape(),myAxis,PMin,PMax);
+  BoxParameters(Object(),myAxis,PMin,PMax);
   Standard_Real Heigth = 2.*(PMax-PMin);
   gp_XYZ theOrig = myAxis.Location().XYZ();
   theOrig += ((3.*PMin-PMax)/2.) * myAxis.Direction().XYZ();
   gp_Pnt p1_ao1(theOrig); gp_Ax2 a1_ao1(p1_ao1,myAxis.Direction());
   BRepPrim_Cylinder theCylinder(a1_ao1,
-				Radius,
-				Heigth);
+                                Radius,
+                                Heigth);
 
   // Probably it is better to make cut directly
 
@@ -105,7 +105,11 @@ void BRepFeat_MakeCylindricalHole::Perform(const Standard_Real Radius)
 
 //  BRepTools::Dump(theTool,cout);
   Standard_Boolean Fuse = Standard_False;
-  myBuilder.Perform(theTool,theList,Fuse);
+  //
+  AddTool(theTool);
+  SetOperation(Fuse);
+  BOPAlgo_Builder::Perform();
+  //myBuilder.Perform(theTool,theList,Fuse);
 //  myBuilder.PerformResult();
 }
 
@@ -116,10 +120,10 @@ void BRepFeat_MakeCylindricalHole::Perform(const Standard_Real Radius)
 //=======================================================================
 
 void BRepFeat_MakeCylindricalHole::PerformThruNext(const Standard_Real Radius,
-						   const Standard_Boolean Cont)
+                                                   const Standard_Boolean Cont)
 {
 
-  if (myBuilder.OriginalShape().IsNull() || !myAxDef) {
+  if (Object().IsNull() || !myAxDef) {
     Standard_ConstructionError::Raise();
   }
 
@@ -127,13 +131,13 @@ void BRepFeat_MakeCylindricalHole::PerformThruNext(const Standard_Real Radius,
   myValidate = Cont;
   myStatus = BRepFeat_NoError;
 
-  LocOpe_CurveShapeIntersector theASI(myAxis,myBuilder.OriginalShape());
+  LocOpe_CurveShapeIntersector theASI(myAxis,Object());
   if (!theASI.IsDone()) {
     myStatus = BRepFeat_InvalidPlacement;
     return;
   }
   
-  Standard_Real First=0.,Last=0.,prm;
+  Standard_Real First=0.,Last=0.;
   Standard_Integer IndFrom,IndTo;
   TopAbs_Orientation theOr;
   Standard_Boolean ok = theASI.LocalizeAfter(0.,theOr,IndFrom,IndTo);
@@ -142,12 +146,12 @@ void BRepFeat_MakeCylindricalHole::PerformThruNext(const Standard_Real Radius,
       First = theASI.Point(IndFrom).Parameter();
       ok = theASI.LocalizeAfter(IndTo,theOr,IndFrom,IndTo);
       if (ok) {
-	if (theOr != TopAbs_REVERSED) {
-	  ok = Standard_False;
-	}
-	else {
-	  Last = theASI.Point(IndTo).Parameter();
-	}
+        if (theOr != TopAbs_REVERSED) {
+          ok = Standard_False;
+        }
+        else {
+          Last = theASI.Point(IndTo).Parameter();
+        }
       }
       
     }
@@ -155,12 +159,12 @@ void BRepFeat_MakeCylindricalHole::PerformThruNext(const Standard_Real Radius,
       Last = theASI.Point(IndTo).Parameter();
       ok = theASI.LocalizeBefore(IndFrom,theOr,IndFrom,IndTo);
       if (ok) {
-	if (theOr != TopAbs_FORWARD) {
-	  ok = Standard_False;
-	}
-	else {
-	  First = theASI.Point(IndFrom).Parameter();
-	}
+        if (theOr != TopAbs_FORWARD) {
+          ok = Standard_False;
+        }
+        else {
+          First = theASI.Point(IndFrom).Parameter();
+        }
       }
     }
   }
@@ -169,7 +173,7 @@ void BRepFeat_MakeCylindricalHole::PerformThruNext(const Standard_Real Radius,
     return;
   }
 
-  TopTools_ListOfShape theList;
+  /*TopTools_ListOfShape theList;
   for (Standard_Integer i=1; i<= theASI.NbPoints(); i++) {
     prm = theASI.Point(i).Parameter();
     if (prm >= First && prm <= Last) {
@@ -178,18 +182,18 @@ void BRepFeat_MakeCylindricalHole::PerformThruNext(const Standard_Real Radius,
     else if (prm > Last) {
       break;
     }
-  }
+  }*/
 
   // It is not possible to use infinite cylinder for topological operations.
   Standard_Real PMin,PMax;
-  BoxParameters(myBuilder.OriginalShape(),myAxis,PMin,PMax);
+  BoxParameters(Object(),myAxis,PMin,PMax);
   Standard_Real Heigth = 2.*(PMax-PMin);
   gp_XYZ theOrig = myAxis.Location().XYZ();
   theOrig += ((3.*PMin-PMax)/2.) * myAxis.Direction().XYZ();
   gp_Pnt p2_ao1(theOrig); gp_Ax2 a2_ao1(p2_ao1,myAxis.Direction());
   BRepPrim_Cylinder theCylinder(a2_ao1,
-				Radius,
-				Heigth);
+                                Radius,
+                                Heigth);
 
   BRep_Builder B;
   TopoDS_Solid theTool;
@@ -202,12 +206,17 @@ void BRepFeat_MakeCylindricalHole::PerformThruNext(const Standard_Real Radius,
 
   //  BRepTools::Dump(theTool,cout);
   Standard_Boolean Fuse = Standard_False;
-  myBuilder.Perform(theTool,theList,Fuse);
-  myBuilder.BuildPartsOfTool();
+  //myBuilder.Perform(theTool,theList,Fuse);
+  //myBuilder.BuildPartsOfTool();
+  AddTool(theTool);
+  SetOperation(Fuse);
+  BOPAlgo_Builder::Perform();
+  TopTools_ListOfShape parts;
+  PartsOfTool(parts);
 
 
   Standard_Integer nbparts = 0;
-  TopTools_ListIteratorOfListOfShape its(myBuilder.PartsOfTool());
+  TopTools_ListIteratorOfListOfShape its(parts);
   for (; its.More(); its.Next()) {
     nbparts ++;
   }
@@ -221,38 +230,42 @@ void BRepFeat_MakeCylindricalHole::PerformThruNext(const Standard_Real Radius,
     TopoDS_Shape tokeep;
     Standard_Real parbar,parmin = Last;
     gp_Pnt Barycentre;
-    for (its.Initialize(myBuilder.PartsOfTool()); its.More(); its.Next()) {
+    for (its.Initialize(parts); its.More(); its.Next()) {
       Baryc(its.Value(),Barycentre);
       parbar = ElCLib::LineParameter(myAxis,Barycentre);
       if (parbar >= First && parbar <= Last && parbar <= parmin) {
-	parmin = parbar;
-	tokeep = its.Value();
+        parmin = parbar;
+        tokeep = its.Value();
       }
     }
 
     if (tokeep.IsNull()) { // preserve the closest interval
 
       Standard_Real dmin = RealLast();
-      for (its.Initialize(myBuilder.PartsOfTool()); its.More(); its.Next()) {
-	Baryc(its.Value(),Barycentre);
-	parbar = ElCLib::LineParameter(myAxis,Barycentre);
-	if (parbar < First) {
-	  if (First - parbar < dmin ) {
-	    dmin = First-parbar;
-	    tokeep = its.Value();
-	  }
-	  else { // parbar > Last
-	    if (parbar - Last < dmin) {
-	      dmin = parbar-Last;
-	      tokeep = its.Value();
-	    }
-	  }
-	}
+      for (its.Initialize(parts); its.More(); its.Next()) {
+        Baryc(its.Value(),Barycentre);
+        parbar = ElCLib::LineParameter(myAxis,Barycentre);
+        if (parbar < First) {
+          if (First - parbar < dmin ) {
+            dmin = First-parbar;
+            tokeep = its.Value();
+          }
+          else { // parbar > Last
+            if (parbar - Last < dmin) {
+              dmin = parbar-Last;
+              tokeep = its.Value();
+            }
+          }
+        }
       }
     }
-    for (its.Initialize(myBuilder.PartsOfTool()); its.More(); its.Next()) {
-      if (!tokeep.IsSame(its.Value())) {
-	myBuilder.RemovePart(its.Value());
+    for (its.Initialize(parts); its.More(); its.Next()) {
+      //if (!tokeep.IsSame(its.Value())) {
+      //  myBuilder.RemovePart(its.Value());
+      //}
+      if (tokeep.IsSame(its.Value())) {
+        KeepPart(its.Value());
+        break;
       }
     }
   }
@@ -265,10 +278,10 @@ void BRepFeat_MakeCylindricalHole::PerformThruNext(const Standard_Real Radius,
 //=======================================================================
 
 void BRepFeat_MakeCylindricalHole::PerformUntilEnd(const Standard_Real Radius,
-						   const Standard_Boolean Cont)
+                                                   const Standard_Boolean Cont)
 {
 
-  if (myBuilder.OriginalShape().IsNull() || !myAxDef) {
+  if (Object().IsNull() || !myAxDef) {
     Standard_ConstructionError::Raise();
   }
 
@@ -276,7 +289,7 @@ void BRepFeat_MakeCylindricalHole::PerformUntilEnd(const Standard_Real Radius,
   myValidate = Cont;
   myStatus = BRepFeat_NoError;
 
-  LocOpe_CurveShapeIntersector theASI(myAxis,myBuilder.OriginalShape());
+  LocOpe_CurveShapeIntersector theASI(myAxis,Object());
   if (!theASI.IsDone()) {
     myStatus = BRepFeat_InvalidPlacement;
     return;
@@ -296,12 +309,12 @@ void BRepFeat_MakeCylindricalHole::PerformUntilEnd(const Standard_Real Radius,
       First = theASI.Point(IndFrom).Parameter();
       ok = theASI.LocalizeBefore(theASI.NbPoints()+1,theOr,IndFrom,IndTo);
       if (ok) {
-	if (theOr != TopAbs_REVERSED) {
-	  ok = Standard_False;
-	}
-	else {
-	  Last = theASI.Point(IndTo).Parameter();
-	}
+        if (theOr != TopAbs_REVERSED) {
+          ok = Standard_False;
+        }
+        else {
+          Last = theASI.Point(IndTo).Parameter();
+        }
       }
     }
   }
@@ -323,14 +336,14 @@ void BRepFeat_MakeCylindricalHole::PerformUntilEnd(const Standard_Real Radius,
 
   // It is not possible to use infinite cylinder for topological operations.
   Standard_Real PMin,PMax;
-  BoxParameters(myBuilder.OriginalShape(),myAxis,PMin,PMax);
+  BoxParameters(Object(),myAxis,PMin,PMax);
   Standard_Real Heigth = 2.*(PMax-PMin);
   gp_XYZ theOrig = myAxis.Location().XYZ();
   theOrig += ((3.*PMin-PMax)/2.) * myAxis.Direction().XYZ();
   gp_Pnt p3_ao1(theOrig); gp_Ax2 a3_ao1(p3_ao1,myAxis.Direction());
   BRepPrim_Cylinder theCylinder(a3_ao1,
-				Radius,
-				Heigth);
+                                Radius,
+                                Heigth);
 
   BRep_Builder B;
   TopoDS_Solid theTool;
@@ -343,12 +356,16 @@ void BRepFeat_MakeCylindricalHole::PerformUntilEnd(const Standard_Real Radius,
 
   //  BRepTools::Dump(theTool,cout);
   Standard_Boolean Fuse = Standard_False;
-  myBuilder.Perform(theTool,theList,Fuse);
-  myBuilder.BuildPartsOfTool();
-
+  //myBuilder.Perform(theTool,theList,Fuse);
+  //myBuilder.BuildPartsOfTool();
+  AddTool(theTool);
+  SetOperation(Fuse);
+  BOPAlgo_Builder::Perform();
+  TopTools_ListOfShape parts;
+  PartsOfTool(parts);
 
   Standard_Integer nbparts = 0;
-  TopTools_ListIteratorOfListOfShape its(myBuilder.PartsOfTool());
+  TopTools_ListIteratorOfListOfShape its(parts);
   for (; its.More(); its.Next()) {
     nbparts ++;
   }
@@ -360,15 +377,14 @@ void BRepFeat_MakeCylindricalHole::PerformUntilEnd(const Standard_Real Radius,
   if (nbparts >= 2) { // preserve everything above the First 
     Standard_Real parbar;
     gp_Pnt Barycentre;
-    for (its.Initialize(myBuilder.PartsOfTool()); its.More(); its.Next()) {
+    for (its.Initialize(parts); its.More(); its.Next()) {
       Baryc(its.Value(),Barycentre);
       parbar = ElCLib::LineParameter(myAxis,Barycentre);
-      if (parbar < First) {
-	myBuilder.RemovePart(its.Value());
+      if (parbar > First) {
+        KeepPart(its.Value());
       }
     }
   }
-//  myBuilder.PerformResult();
 }
 
 
@@ -378,12 +394,12 @@ void BRepFeat_MakeCylindricalHole::PerformUntilEnd(const Standard_Real Radius,
 //=======================================================================
 
 void BRepFeat_MakeCylindricalHole::Perform(const Standard_Real Radius,
-					   const Standard_Real PFrom,
-					   const Standard_Real PTo,
-					   const Standard_Boolean Cont)
+                                           const Standard_Real PFrom,
+                                           const Standard_Real PTo,
+                                           const Standard_Boolean Cont)
 {
 
-  if (myBuilder.OriginalShape().IsNull() || !myAxDef) {
+  if (Object().IsNull() || !myAxDef) {
     Standard_ConstructionError::Raise();
   }
 
@@ -391,7 +407,7 @@ void BRepFeat_MakeCylindricalHole::Perform(const Standard_Real Radius,
   myValidate = Cont;
   myStatus = BRepFeat_NoError;
 
-  LocOpe_CurveShapeIntersector theASI(myAxis,myBuilder.OriginalShape());
+  LocOpe_CurveShapeIntersector theASI(myAxis,Object());
   if (!theASI.IsDone()) {
     myStatus = BRepFeat_InvalidPlacement;
     return;
@@ -420,12 +436,12 @@ void BRepFeat_MakeCylindricalHole::Perform(const Standard_Real Radius,
       First = theASI.Point(IndFrom).Parameter();
       ok = theASI.LocalizeBefore(thePTo,theOr,IndFrom,IndTo);
       if (ok) {
-	if (theOr == TopAbs_FORWARD) {
-	  ok = theASI.LocalizeAfter(IndTo,theOr,IndFrom,IndTo);
-	}
-	if (ok && theOr == TopAbs_REVERSED) {
-	  Last = theASI.Point(IndTo).Parameter();
-	}
+        if (theOr == TopAbs_FORWARD) {
+          ok = theASI.LocalizeAfter(IndTo,theOr,IndFrom,IndTo);
+        }
+        if (ok && theOr == TopAbs_REVERSED) {
+          Last = theASI.Point(IndTo).Parameter();
+        }
       }
     }
   }
@@ -448,15 +464,15 @@ void BRepFeat_MakeCylindricalHole::Perform(const Standard_Real Radius,
 
   // // It is not possible to use infinite cylinder for topological operations.
   Standard_Real PMin,PMax;
-  BoxParameters(myBuilder.OriginalShape(),myAxis,PMin,PMax);
+  BoxParameters(Object(),myAxis,PMin,PMax);
   Standard_Real Heigth = 2.*(PMax-PMin);
   gp_XYZ theOrig = myAxis.Location().XYZ();
   theOrig += ((3.*PMin-PMax)/2.) * myAxis.Direction().XYZ();
 
   gp_Pnt p4_ao1(theOrig); gp_Ax2 a4_ao1(p4_ao1,myAxis.Direction());
   BRepPrim_Cylinder theCylinder(a4_ao1,
-				Radius,
-				Heigth);
+                                Radius,
+                                Heigth);
 
   BRep_Builder B;
   TopoDS_Solid theTool;
@@ -469,12 +485,16 @@ void BRepFeat_MakeCylindricalHole::Perform(const Standard_Real Radius,
 
   //  BRepTools::Dump(theTool,cout);
   Standard_Boolean Fuse = Standard_False;
-  myBuilder.Perform(theTool,theList,Fuse);
-  myBuilder.BuildPartsOfTool();
-
+  //myBuilder.Perform(theTool,theList,Fuse);
+  //myBuilder.BuildPartsOfTool();
+  AddTool(theTool);
+  SetOperation(Fuse);
+  BOPAlgo_Builder::Perform();
+  TopTools_ListOfShape parts;
+  PartsOfTool(parts);
 
   Standard_Integer nbparts = 0;
-  TopTools_ListIteratorOfListOfShape its(myBuilder.PartsOfTool());
+  TopTools_ListIteratorOfListOfShape its(parts);
   for (; its.More(); its.Next()) {
     nbparts ++;
   }
@@ -488,15 +508,14 @@ void BRepFeat_MakeCylindricalHole::Perform(const Standard_Real Radius,
     TopoDS_Shape tokeep;
     Standard_Real parbar;
     gp_Pnt Barycentre;
-    for (its.Initialize(myBuilder.PartsOfTool()); its.More(); its.Next()) {
+    for (its.Initialize(parts); its.More(); its.Next()) {
       Baryc(its.Value(),Barycentre);
       parbar = ElCLib::LineParameter(myAxis,Barycentre);
-      if (parbar < First || parbar > Last) {
-	myBuilder.RemovePart(its.Value());
+      if (!(parbar < First || parbar > Last)) {
+        KeepPart(its.Value());
       }
     }
   }
-//  myBuilder.PerformResult();
 }
 
 
@@ -506,11 +525,11 @@ void BRepFeat_MakeCylindricalHole::Perform(const Standard_Real Radius,
 //=======================================================================
 
 void BRepFeat_MakeCylindricalHole::PerformBlind(const Standard_Real Radius,
-						const Standard_Real Length,
-						const Standard_Boolean Cont)
+                                                const Standard_Real Length,
+                                                const Standard_Boolean Cont)
 {
 
-  if (myBuilder.OriginalShape().IsNull() || !myAxDef || Length <= 0.) {
+  if (Object().IsNull() || !myAxDef || Length <= 0.) {
     Standard_ConstructionError::Raise();
   }
 
@@ -518,7 +537,7 @@ void BRepFeat_MakeCylindricalHole::PerformBlind(const Standard_Real Radius,
   myValidate = Cont;
   myStatus = BRepFeat_NoError;
 
-  LocOpe_CurveShapeIntersector theASI(myAxis,myBuilder.OriginalShape());
+  LocOpe_CurveShapeIntersector theASI(myAxis,Object());
   if (!theASI.IsDone()) {
     myStatus = BRepFeat_InvalidPlacement;
     return;
@@ -569,7 +588,7 @@ void BRepFeat_MakeCylindricalHole::PerformBlind(const Standard_Real Radius,
 
   //// It is not possible to use infinite cylinder for topological operations.
   Standard_Real PMin,PMax;
-  BoxParameters(myBuilder.OriginalShape(),myAxis,PMin,PMax);
+  BoxParameters(Object(),myAxis,PMin,PMax);
   if (PMin > Length) {
     myStatus = BRepFeat_InvalidPlacement;
     return;
@@ -580,8 +599,8 @@ void BRepFeat_MakeCylindricalHole::PerformBlind(const Standard_Real Radius,
   theOrig += ((3.*PMin-Length)/2.) * myAxis.Direction().XYZ();
   gp_Pnt p5_ao1(theOrig); gp_Ax2 a5_ao1(p5_ao1,myAxis.Direction());
   BRepPrim_Cylinder theCylinder(a5_ao1,
-				Radius,
-				Heigth);
+                                Radius,
+                                Heigth);
 
   BRep_Builder B;
   TopoDS_Solid theTool;
@@ -594,12 +613,16 @@ void BRepFeat_MakeCylindricalHole::PerformBlind(const Standard_Real Radius,
 
   //  BRepTools::Dump(theTool,cout);
   Standard_Boolean Fuse = Standard_False;
-  myBuilder.Perform(theTool,theList,Fuse);
-  myBuilder.BuildPartsOfTool();
-
+  //myBuilder.Perform(theTool,theList,Fuse);
+  //myBuilder.BuildPartsOfTool();
+  AddTool(theTool);
+  SetOperation(Fuse);
+  BOPAlgo_Builder::Perform();
+  TopTools_ListOfShape parts;
+  PartsOfTool(parts);
 
   Standard_Integer nbparts = 0;
-  TopTools_ListIteratorOfListOfShape its(myBuilder.PartsOfTool());
+  TopTools_ListIteratorOfListOfShape its(parts);
   for (; its.More(); its.Next()) {
     nbparts ++;
   }
@@ -612,37 +635,35 @@ void BRepFeat_MakeCylindricalHole::PerformBlind(const Standard_Real Radius,
     TopoDS_Shape tokeep;
     Standard_Real parbar,parmin = RealLast();
     gp_Pnt Barycentre;
-    for (its.Initialize(myBuilder.PartsOfTool()); its.More(); its.Next()) {
+    for (its.Initialize(parts); its.More(); its.Next()) {
       Baryc(its.Value(),Barycentre);
       parbar = ElCLib::LineParameter(myAxis,Barycentre);
       if (parbar >= First && parbar <= parmin) {
-	parmin = parbar;
-	tokeep = its.Value();
+        parmin = parbar;
+        tokeep = its.Value();
       }
     }
 
     if (tokeep.IsNull()) { // preserve the closest interval
 
       Standard_Real dmin = RealLast();
-      for (its.Initialize(myBuilder.PartsOfTool()); its.More(); its.Next()) {
-	Baryc(its.Value(),Barycentre);
-	parbar = ElCLib::LineParameter(myAxis,Barycentre);
-	if (Abs(First - parbar) < dmin ) {
-	  dmin = Abs(First-parbar);
-	  tokeep = its.Value();
-	}
+      for (its.Initialize(parts); its.More(); its.Next()) {
+        Baryc(its.Value(),Barycentre);
+        parbar = ElCLib::LineParameter(myAxis,Barycentre);
+        if (Abs(First - parbar) < dmin ) {
+          dmin = Abs(First-parbar);
+          tokeep = its.Value();
+        }
       }
     }
-    for (its.Initialize(myBuilder.PartsOfTool()); its.More(); its.Next()) {
-      if (!tokeep.IsSame(its.Value())) {
-	myBuilder.RemovePart(its.Value());
+    for (its.Initialize(parts); its.More(); its.Next()) {
+      if (tokeep.IsSame(its.Value())) {
+        KeepPart(its.Value());
+        break;
       }
     }
   }
-//  myBuilder.PerformResult();
 }
-
-
 
 //=======================================================================
 //function : Build
@@ -652,31 +673,16 @@ void BRepFeat_MakeCylindricalHole::PerformBlind(const Standard_Real Radius,
 void BRepFeat_MakeCylindricalHole::Build ()
 {
   if (myStatus == BRepFeat_NoError) {
-    myBuilder.PerformResult();
-    if (myBuilder.IsDone()) {
+    PerformResult();
+    if (!ErrorStatus()) {
       myStatus = (myValidate) ? Validate() : BRepFeat_NoError;
       if (myStatus == BRepFeat_NoError) {
-	Done();
-	myShape = myBuilder.ResultingShape();
-
-	// creation of the Map.
-	myMap.Clear();
-	TopExp_Explorer ex;
-	for (ex.Init(myShape, TopAbs_FACE); ex.More(); ex.Next()) {
-	  myMap.Add(ex.Current());
-	}
-      }
-      else {
-	NotDone();
+        myShape = Shape();
       }
     }
     else {
-      NotDone();
       myStatus = BRepFeat_InvalidPlacement; // why not
     }
-  }
-  else {
-    NotDone();
   }
 }
 
@@ -689,11 +695,11 @@ void BRepFeat_MakeCylindricalHole::Build ()
 BRepFeat_Status BRepFeat_MakeCylindricalHole::Validate ()
 {
   BRepFeat_Status thestat = BRepFeat_NoError;
-  TopExp_Explorer ex(myBuilder.ResultingShape(),TopAbs_FACE);
+  TopExp_Explorer ex(Shape(),TopAbs_FACE);
   if (myIsBlind) { // limit of the hole
     for (; ex.More(); ex.Next()) {
       if (ex.Current().IsSame(myTopFace) ) {
-	break;
+        break;
       }
     }
     if (!ex.More()) {
@@ -703,12 +709,12 @@ BRepFeat_Status BRepFeat_MakeCylindricalHole::Validate ()
   else {
     for (; ex.More(); ex.Next()) {
       if (ex.Current().IsSame(myTopFace) ) {
-	return BRepFeat_InvalidPlacement;
+        return BRepFeat_InvalidPlacement;
       }
     }
     for (ex.ReInit(); ex.More(); ex.Next()) {
       if (ex.Current().IsSame(myBotFace) ) {
-	return BRepFeat_InvalidPlacement;
+        return BRepFeat_InvalidPlacement;
       }
     }
   }
@@ -733,9 +739,9 @@ void Baryc(const TopoDS_Shape& S, gp_Pnt& B)
       C = BRep_Tool::Curve(E,L,First,Last);
       C = Handle(Geom_Curve)::DownCast(C->Transformed(L.Transformation()));
       for (i=1;i<=11; i++) {
-	prm = ((11-i)*First + (i-1)*Last)/10.;
-	Bar += C->Value(prm).XYZ();
-	nbp++;
+        prm = ((11-i)*First + (i-1)*Last)/10.;
+        Bar += C->Value(prm).XYZ();
+        nbp++;
       }
     }
   }
@@ -745,9 +751,9 @@ void Baryc(const TopoDS_Shape& S, gp_Pnt& B)
 
 
 void BoxParameters(const TopoDS_Shape& S,
-		   const gp_Ax1& Axis,
-		   Standard_Real& parmin,
-		   Standard_Real& parmax)
+                   const gp_Ax1& Axis,
+                   Standard_Real& parmin,
+                   Standard_Real& parmax)
 {
 
   // calculate the parameters of a bounding box in the direction of the axis of the hole
@@ -765,10 +771,10 @@ void BoxParameters(const TopoDS_Shape& S,
     for (j=2; j<=3; j++) {
       P.SetY(c[j]);
       for (k=4; k<=5; k++) {
-	P.SetZ(c[k]);
-	param = ElCLib::LineParameter(Axis,P);
-	parmin = Min(param,parmin);
-	parmax = Max(param,parmax);
+        P.SetZ(c[k]);
+        param = ElCLib::LineParameter(Axis,P);
+        parmin = Min(param,parmin);
+        parmax = Max(param,parmax);
       }
     }
   }

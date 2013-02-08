@@ -1,0 +1,330 @@
+// Created by: Peter KURNEV
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
+
+//#include <BOPTools_Set.ixx>
+
+#include <TopExp_Explorer.hxx>
+#include <BRep_Tool.hxx>
+
+
+static 
+  inline Standard_Boolean operator<(const TopoDS_Shape& theS1,
+				    const TopoDS_Shape& theS2);
+static 
+  inline void SortShell(const int n, TopoDS_Shape *a); 
+
+static 
+  inline Standard_Integer NormalizedIds(const Standard_Integer aId,
+					const Standard_Integer aDiv);
+//=======================================================================
+//function : 
+//purpose  : 
+//=======================================================================
+  inline BOPTools_Set::BOPTools_Set() 
+:
+  myAllocator(NCollection_BaseAllocator::CommonBaseAllocator()),
+  myShapes(myAllocator)
+{
+  myNbShapes=0;
+  mySum=0;
+  myUpper=432123;
+}
+//=======================================================================
+//function : 
+//purpose  : 
+//=======================================================================
+  inline BOPTools_Set::BOPTools_Set(const Handle(NCollection_BaseAllocator)& theAllocator) 
+:
+  myAllocator(theAllocator),
+  myShapes(myAllocator)
+{ 
+  myNbShapes=0;
+  mySum=0;  
+  myUpper=432123;
+}
+//=======================================================================
+//function :~ 
+//purpose  : 
+//=======================================================================
+  inline BOPTools_Set::~BOPTools_Set()
+{
+  Clear();
+}
+//=======================================================================
+//function : Clear
+//purpose  : 
+//=======================================================================
+  inline void BOPTools_Set::Clear()
+{ 
+  myNbShapes=0;
+  mySum=0;
+  myShapes.Clear();
+}
+//=======================================================================
+//function : NbShapes
+//purpose  : 
+//=======================================================================
+  inline Standard_Integer BOPTools_Set::NbShapes()const
+{
+  return myNbShapes;
+}
+//=======================================================================
+//function :Assign
+//purpose  : 
+//=======================================================================
+  inline BOPTools_Set& BOPTools_Set::Assign(const BOPTools_Set& theOther)
+{ 
+  BOPCol_ListIteratorOfListOfShape aIt;
+  //
+  myShape=theOther.myShape;
+  myNbShapes=theOther.myNbShapes;
+  mySum=theOther.mySum;
+  myUpper=theOther.myUpper;
+  myAllocator=theOther.myAllocator;
+  //
+  myShapes.Clear();
+  aIt.Initialize(theOther.myShapes);
+  for (; aIt.More(); aIt.Next()) {
+    const TopoDS_Shape& aSx=aIt.Value();
+    myShapes.Append(aSx);
+  }
+  return *this;
+}
+//=======================================================================
+//function : Shape
+//purpose  : 
+//=======================================================================
+  inline const TopoDS_Shape& BOPTools_Set::Shape()const
+{
+  return myShape;
+}
+//=======================================================================
+//function : Add
+//purpose  : 
+//=======================================================================
+  inline void BOPTools_Set::Add(const TopoDS_Shape& theS,
+				const TopAbs_ShapeEnum theType)
+{
+  if (theType==TopAbs_EDGE) {
+    AddEdges(theS);
+    return;
+  }
+  //
+  Standard_Integer i, aNb, aId, aIdN;
+  TopoDS_Shape *pShapes;
+  TopExp_Explorer aExp;
+  // 
+  myNbShapes=0;
+  mySum=0;
+  myShape=theS;
+  //
+  aExp.Init(theS, theType);
+  for (aNb=0; aExp.More(); aExp.Next(), ++aNb) {
+  }
+  //
+  if (!aNb) {
+    return;
+  }
+  //
+  myNbShapes=aNb;
+  pShapes=(TopoDS_Shape *)myAllocator->Allocate(aNb*sizeof(TopoDS_Shape));
+  //
+  aExp.ReInit();
+  for (i=0; aExp.More(); aExp.Next(),++i) {
+    const TopoDS_Shape& aSx=aExp.Current();
+    new (pShapes+i) TopoDS_Shape();
+    pShapes[i]=aSx;
+  }
+  //
+  SortShell(aNb, pShapes);
+  //
+  myShapes.Clear();
+  for (i=0; i<aNb; ++i) {
+    const TopoDS_Shape& aSx=pShapes[i];
+    myShapes.Append(aSx);
+    //
+    aId=aSx.HashCode(myUpper);
+    aIdN=NormalizedIds(aId, aNb);
+    mySum+=aIdN;
+  }
+  //
+  for (i=0; i<aNb; ++i) {
+    pShapes[i].~TopoDS_Shape();
+  }
+  myAllocator->Free((Standard_Address&)pShapes); 
+}
+//=======================================================================
+//function : AddEdges
+//purpose  : 
+//=======================================================================
+  inline void BOPTools_Set::AddEdges(const TopoDS_Shape& theS)
+{
+  Standard_Integer i, aNb, aId, aIdN;
+  TopoDS_Shape *pShapes;
+  TopExp_Explorer aExp;
+  // 
+  myNbShapes=0;
+  mySum=0;
+  myShape=theS;
+  //
+  aExp.Init(theS, TopAbs_EDGE);
+  for (aNb=0; aExp.More(); aExp.Next()) {
+    const TopoDS_Edge& aE=(*(TopoDS_Edge*)(&aExp.Current()));
+    if (!BRep_Tool::Degenerated(aE)) {
+      ++aNb;
+    }
+  }
+  //
+  if (!aNb) {
+    return;
+  }
+  //
+  myNbShapes=aNb;
+  pShapes=(TopoDS_Shape *)myAllocator->Allocate(aNb*sizeof(TopoDS_Shape));
+  //
+  i=0;
+  aExp.ReInit();
+  for (; aExp.More(); aExp.Next()) {
+    const TopoDS_Shape& aSx=aExp.Current();
+    const TopoDS_Edge& aE=(*(TopoDS_Edge*)(&aSx));
+    if (!BRep_Tool::Degenerated(aE)) {
+      new (pShapes+i) TopoDS_Shape();
+      pShapes[i]=aSx;
+      ++i;
+    }
+  }
+  //
+  SortShell(aNb, pShapes);
+  //
+  myShapes.Clear();
+  for (i=0; i<aNb; ++i) {
+    const TopoDS_Shape& aSx=pShapes[i];
+    myShapes.Append(aSx);
+    //
+    aId=aSx.HashCode(myUpper);
+    aIdN=NormalizedIds(aId, aNb);
+    mySum+=aIdN;
+  }
+  //
+  for (i=0; i<aNb; ++i) {
+    pShapes[i].~TopoDS_Shape();
+  }
+  myAllocator->Free((Standard_Address&)pShapes); 
+}
+//=======================================================================
+//function : IsEqual
+//purpose  : 
+//=======================================================================
+  inline Standard_Boolean BOPTools_Set::IsEqual(const BOPTools_Set& theOther)const
+{
+  Standard_Boolean bRet;
+  //
+  bRet=Standard_False;
+  //
+  if (theOther.myNbShapes!=myNbShapes) {
+    return bRet;
+  }
+  //
+  BOPCol_ListIteratorOfListOfShape aIt1, aIt2;
+  //
+  aIt1.Initialize(myShapes);
+  aIt2.Initialize(theOther.myShapes);
+  for (; aIt1.More()||aIt2.More(); aIt1.Next(), aIt2.Next()) {
+    const TopoDS_Shape& aSx1=aIt1.Value();
+    const TopoDS_Shape& aSx2=aIt2.Value();
+    if (aSx1.TShape().operator->() != aSx2.TShape().operator->()) {
+      return bRet;
+    }
+  }
+  return !bRet;
+}
+//=======================================================================
+//function : HashCode
+//purpose  : 
+//=======================================================================
+  inline Standard_Integer BOPTools_Set::HashCode(const Standard_Integer theUpper)const
+{
+  return ::HashCode(mySum, theUpper);
+}
+//=======================================================================
+// function: NormalizedIds
+// purpose : 
+//=======================================================================
+Standard_Integer NormalizedIds(const Standard_Integer aId,
+			      const Standard_Integer aDiv)
+{
+  Standard_Integer aMax, aTresh, aIdRet;
+  //
+  aIdRet=aId;
+  aMax=::IntegerLast();
+  aTresh=aMax/aDiv;
+  if (aId>aTresh) {
+    aIdRet=aId%aTresh;
+  }
+  return aIdRet;
+}
+
+//=======================================================================
+//function : operator<
+//purpose  : 
+//=======================================================================
+Standard_Boolean operator<(const TopoDS_Shape& theS1,
+			   const TopoDS_Shape& theS2)
+{
+  Standard_Address aAddr1, aAddr2;
+  //
+  const Handle(TopoDS_TShape)& aTS1=theS1.TShape();
+  aAddr1=aTS1.operator->();
+  //
+  const Handle(TopoDS_TShape)& aTS2=theS2.TShape();
+  aAddr2=aTS2.operator->();
+  //
+  return (aAddr1<aAddr2);
+}
+//=======================================================================
+// function: SortShell
+// purpose : 
+//=======================================================================
+void SortShell(const int n, TopoDS_Shape *a) 
+{
+  int nd, i, j, l, d=1;
+  TopoDS_Shape x;
+  //
+  while(d<=n) {
+    d*=2;
+  }
+  //
+  while (d) {
+    d=(d-1)/2;
+    //
+    nd=n-d;
+    for (i=0; i<nd; ++i) {
+      j=i;
+    m30:;
+      l=j+d;
+      if (a[l] < a[j]){
+	x=a[j];
+	a[j]=a[l];
+	a[l]=x;
+	j-=d;
+	if (j > -1) goto m30;
+      }//if (a[l] < a[j]){
+    }//for (i=0; i<nd; ++i) 
+  }//while (1)
+}

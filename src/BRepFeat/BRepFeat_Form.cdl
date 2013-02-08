@@ -23,33 +23,33 @@
 
 deferred class Form from BRepFeat inherits MakeShape from BRepBuilderAPI
 
-    	---Purpose:  Provides general functions to build form features.
-    	-- Form features can be depressions or protrusions and include the following types:
-    	-- -          Cylinder
-    	-- -          Draft Prism
-    	-- -          Prism
-    	-- -          Revolved feature
-    	-- -          Pipe
-    	-- In each case, you have a choice of operation type between the following:
-    	-- -          removing matter (a Boolean cut: Fuse setting 0)
-    	-- -          adding matter (Boolean fusion: Fuse setting 1)
-    	-- The semantics of form feature creation is based on the construction of shapes:
-    	-- -      along a length
-    	-- -      up to a limiting face
-    	-- -      from a limiting face to a  height
-    	-- -      above and/or below a plane
-    	-- The shape defining construction of the feature can be either the
-    	-- supporting edge or the concerned area of a face.
-    	-- In case of the supporting edge, this contour can be attached to a
-    	-- face of the basis shape by binding. When the contour is bound to this
-    	-- face, the information that the contour will slide on the face
-    	-- becomes available to the relevant class methods. In case of the
-    	-- concerned area of a face, you could, for example, cut it out and
-    	-- move it to a different height which will define the limiting face of a
-    	-- protrusion or depression.
-    	-- Topological definition with local operations of this sort makes
-    	-- calculations simpler and faster than a global operation. The latter
-    	-- would entail a second phase of removing unwanted matter to get the same result.
+            ---Purpose:  Provides general functions to build form features.
+            -- Form features can be depressions or protrusions and include the following types:
+            -- -          Cylinder
+            -- -          Draft Prism
+            -- -          Prism
+            -- -          Revolved feature
+            -- -          Pipe
+            -- In each case, you have a choice of operation type between the following:
+            -- -          removing matter (a Boolean cut: Fuse setting 0)
+            -- -          adding matter (Boolean fusion: Fuse setting 1)
+            -- The semantics of form feature creation is based on the construction of shapes:
+            -- -      along a length
+            -- -      up to a limiting face
+            -- -      from a limiting face to a  height
+            -- -      above and/or below a plane
+            -- The shape defining construction of the feature can be either the
+            -- supporting edge or the concerned area of a face.
+            -- In case of the supporting edge, this contour can be attached to a
+            -- face of the basis shape by binding. When the contour is bound to this
+            -- face, the information that the contour will slide on the face
+            -- becomes available to the relevant class methods. In case of the
+            -- concerned area of a face, you could, for example, cut it out and
+            -- move it to a different height which will define the limiting face of a
+            -- protrusion or depression.
+            -- Topological definition with local operations of this sort makes
+            -- calculations simpler and faster than a global operation. The latter
+            -- would entail a second phase of removing unwanted matter to get the same result.
 
 uses Shape                     from TopoDS,
      Face                      from TopoDS,
@@ -64,31 +64,30 @@ uses Shape                     from TopoDS,
      StatusError               from BRepFeat, 
      HBuilder                  from TopOpeBRepBuild, 
     --modified by NIZNHY-PKV Thu Mar 21 17:09:08 2002  f 
-     BooleanOperation          from BRepAlgoAPI, 
-     --modified by NIZNHY-PKV Thu Mar 21 17:09:11 2002  t 
-     HistoryCollector from BOP
+     BooleanOperation          from BRepAlgoAPI
+     --modified by NIZNHY-PKV Thu Mar 21 17:09:11 2002  t  
 is
 
     Initialize;
     
-	---Purpose: Redefines the empty constructor.
-	---C++: inline
+        ---Purpose: Redefines the empty constructor.
+        ---C++: inline
 
 ---  Methods redefined from BRepBuilderAPI_MakeShape
 
     Modified(me: in out; F: Shape from TopoDS)
-    	---Purpose: returns the list of generated Faces.
-    	---C++:     return const &
-	---Level: Public
+            ---Purpose: returns the list of generated Faces.
+            ---C++:     return const &
+        ---Level: Public
     returns ListOfShape from TopTools
     is redefined;
     
 
     Generated(me: in out; S: Shape from TopoDS)
-    	---Purpose: returns a list of the created faces
-    	--          from the shape <S>.
-    	---C++:     return const &
-	---Level: Public
+            ---Purpose: returns a list of the created faces
+            --          from the shape <S>.
+            ---C++:     return const &
+        ---Level: Public
     returns ListOfShape from TopTools
     is redefined;
 
@@ -99,36 +98,36 @@ is
 
 
     FirstShape (me)
-    	---Purpose: Returns the list  of shapes created  at the bottom  of
-    	--          the created form.  It may be an empty list.
+            ---Purpose: Returns the list  of shapes created  at the bottom  of
+            --          the created form.  It may be an empty list.
     returns ListOfShape from TopTools;
-     	---C++: return const&
+             ---C++: return const&
 
 
     LastShape (me)
-    	---Purpose: Returns  the list of shapes  created at the top of the
-    	--          created form.  It may be an empty list.
+            ---Purpose: Returns  the list of shapes  created at the top of the
+            --          created form.  It may be an empty list.
     returns ListOfShape from TopTools;
-     	---C++: return const&
+             ---C++: return const&
 
     NewEdges(me)
-    	---Purpose: Returns a list of the limiting and glueing edges
-    	-- generated by the feature. These edges did not originally
-    	-- exist in the basis shape.
-    	-- The list provides the information necessary for
-    	-- subsequent addition of fillets. It may be an empty list.
+            ---Purpose: Returns a list of the limiting and glueing edges
+            -- generated by the feature. These edges did not originally
+            -- exist in the basis shape.
+            -- The list provides the information necessary for
+            -- subsequent addition of fillets. It may be an empty list.
         ---C++: return const&
  returns ListOfShape from TopTools;
 
     TgtEdges(me)
         ---Purpose: Returns a list of the tangent edges among the limiting
-    	-- and glueing edges generated by the feature. These
-    	-- edges did not originally exist in the basis shape and are
-    	-- tangent to the face against which the feature is built.
-    	-- The list provides the information necessary for
-    	-- subsequent addition of fillets. It may be an empty list.
-    	-- If an edge is tangent, no fillet is possible, and the edge
-    	-- must subsequently be removed if you want to add a fillet.
+            -- and glueing edges generated by the feature. These
+            -- edges did not originally exist in the basis shape and are
+            -- tangent to the face against which the feature is built.
+            -- The list provides the information necessary for
+            -- subsequent addition of fillets. It may be an empty list.
+            -- If an edge is tangent, no fillet is possible, and the edge
+            -- must subsequently be removed if you want to add a fillet.
         ---C++: return const&
  returns ListOfShape from TopTools;
 
@@ -136,101 +135,95 @@ is
     BasisShapeValid(me: in out)
         --- Purpose: Initializes the topological construction if the basis shape is present.
         ---C++: inline
-	is static;
+        is static;
 
 
     GeneratedShapeValid(me: in out)
-    	---Purpose: Initializes the topological construction if the generated shape S is present.
+            ---Purpose: Initializes the topological construction if the generated shape S is present.
         ---C++: inline
-	is static;
+        is static;
 
 
     ShapeFromValid(me: in out)
-    	---Purpose:
-    	-- Initializes the topological construction if the shape is
-    	-- present from the specified integer on.
+            ---Purpose:
+            -- Initializes the topological construction if the shape is
+            -- present from the specified integer on.
         ---C++: inline
- 	is static;
+         is static;
 
 
     ShapeUntilValid(me: in out)
-    	--- Purpose:
-    	-- Initializes the topological construction if the shape is
-    	-- present until the specified integer.
-    	     ---C++: inline
-    	    	is static;
+            --- Purpose:
+            -- Initializes the topological construction if the shape is
+            -- present until the specified integer.
+                 ---C++: inline
+                        is static;
 
 
     GluedFacesValid(me: in out)
          ---Purpose:
-    	-- Initializes the topological construction if the glued face is present.
-    	     ---C++: inline
-    	     is static;
+            -- Initializes the topological construction if the glued face is present.
+                 ---C++: inline
+                 is static;
 
     SketchFaceValid(me: in out)
-    	--- Purpose:
-    	-- Initializes the topological construction if the sketch face
-    	-- is present. If the sketch face is inside the basis shape,
-    	-- local operations such as glueing can be performed.    
-    	     ---C++: inline
-    	    	is static;
+            --- Purpose:
+            -- Initializes the topological construction if the sketch face
+            -- is present. If the sketch face is inside the basis shape,
+            -- local operations such as glueing can be performed.    
+                 ---C++: inline
+                        is static;
 
     PerfSelectionValid(me: in out)
-    	--- Purpose: Initializes the topological construction if the selected face is present.  
+            --- Purpose: Initializes the topological construction if the selected face is present.  
         ---C++: inline
- 	is static;
+         is static;
 
 
     GlobalPerform(me: in out)
-    	---Purpose: General perform method...
+            ---Purpose: General perform method...
 
-    	is static protected;
+            is static protected;
 
 
     Curves(me: in out; S : in out SequenceOfCurve from TColGeom)
     
-	is deferred;
+        is deferred;
     
 
     BarycCurve(me: in out)
     
-    	returns Curve from Geom
-	is deferred;
+            returns Curve from Geom
+        is deferred;
 
 
 -- Protected implementation methods
 
     UpdateDescendants(me: in out; G: Gluer from LocOpe)
     
-    	is static protected;
+            is static protected;
 
 --modified by NIZNHY-PKV Thu Mar 21 18:42:53 2002  f
     UpdateDescendants(me: in out;  
-    	       aBOP: BooleanOperation from BRepAlgoAPI;   
-	       SResult  : Shape    from TopoDS;
+                   aBOP: BooleanOperation from BRepAlgoAPI;   
+               SResult  : Shape    from TopoDS;
                SkipFace : Boolean  from Standard = Standard_False)
-    	is static protected;
+            is static protected;
 --modified by NIZNHY-PKV Thu Mar 21 18:42:50 2002  t
 
-    UpdateDescendants(me: in out;  
-    	       aHistory : HistoryCollector from BOP;   
-	       SResult  : Shape    from TopoDS;
-               SkipFace : Boolean  from Standard = Standard_False)
-    	is static protected;
- 
    UpdateDescendants(me: in out;  
               B        : HBuilder from TopOpeBRepBuild;
-	      SResult  : Shape    from TopoDS;
+              SResult  : Shape    from TopoDS;
               SkipFace : Boolean  from Standard = Standard_False)
     
-    	is static protected;
+            is static protected;
     TransformShapeFU(me: in out; flag: Integer from Standard)
-    	returns Boolean from Standard
-    	is protected;
+            returns Boolean from Standard
+            is protected;
 
 
     CurrentStatusError(me)
-    	returns StatusError from BRepFeat;
+            returns StatusError from BRepFeat;
 
 
 fields
@@ -256,7 +249,7 @@ fields
     
 
     mySbOK    : Boolean                   from Standard;
-    mySkOK    : Boolean                   from Standard;	
+    mySkOK    : Boolean                   from Standard;        
     myGSOK    : Boolean                   from Standard;
     mySFOK    : Boolean                   from Standard;
     mySUOK    : Boolean                   from Standard;

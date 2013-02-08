@@ -48,7 +48,7 @@ uses
     BRepClass3d, 
     TColgp, 
     MMgt, 
-    Geom2dHatch
+    BOPInt
 
 is
     	
@@ -113,23 +113,11 @@ is
     	---Purpose: class provides the Face/Face algorithm
     --- 
 
-    class  ShrunkRange;
-    	---Purpose: class provides computing and storage of shrunk range
-	---         for an edge bounded by two vertices
-    
-    class  Context;
-    	---Purpose: class is a container of a large number of reusable
-	---         projection and classification algorithms
-	
     class  Tools; 
     	---Purpose: class is a container of usefull geometrical and
 	---         topological algorithms
     
     generic class CArray1;   
-    ---
-    ---                          P  o  i  n  t  e  r  s  	        
-    --- 
-    --pointer PContext to Context from IntTools;  
     ---
     ---                 I  n  s  t  a  n  t  i  a  t  i  o  n  s  
     ---   

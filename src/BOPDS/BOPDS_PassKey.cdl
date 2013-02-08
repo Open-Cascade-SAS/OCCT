@@ -1,0 +1,159 @@
+-- Created by: Peter KURNEV
+-- Copyright (c) 2010-2012 OPEN CASCADE SAS
+-- Copyright (c) 2007-2010 CEA/DEN, EDF R&D, OPEN CASCADE
+-- Copyright (c) 2003-2007 OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN, CEDRAT,
+--                         EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
+--
+-- The content of this file is subject to the Open CASCADE Technology Public
+-- License Version 6.5 (the "License"). You may not use the content of this file
+-- except in compliance with the License. Please obtain a copy of the License
+-- at http://www.opencascade.org and read it completely before using this file.
+--
+-- The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+-- main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+--
+-- The Original Code and all software distributed under the License is
+-- distributed on an "AS IS" basis, without warranty of any kind, and the
+-- Initial Developer hereby disclaims all such warranties, including without
+-- limitation, any warranties of merchantability, fitness for a particular
+-- purpose or non-infringement. Please see the License for the specific terms
+-- and conditions governing the rights and limitations under the License.
+
+
+class PassKey from BOPDS 
+
+	---Purpose: 
+	--  The class BOPDS_PassKey is to provide 
+        --  possibility to map objects that  
+    	--  have a set of integer IDs as a base        
+
+uses
+    Shape from TopoDS, 
+    ListOfInteger from BOPCol,
+    PInteger from BOPCol, 
+    BaseAllocator from BOPCol
+
+--raises
+
+is 
+    Create  
+    	returns PassKey from BOPDS; 
+    ---C++: inline 
+    ---C++: alias "virtual ~BOPDS_PassKey();" 
+    	---Purpose:  
+    	--- Empty contructor  
+    	---   
+	 
+    Create (theAllocator: BaseAllocator from BOPCol)  
+    	returns PassKey from BOPDS;  
+    ---C++: inline 
+	---Purpose:  
+    	---  Contructor    
+    	---  theAllocator - the allocator to manage the memory     
+    	---  
+	      
+    Create(Other:PassKey from BOPDS) 
+    	returns PassKey from BOPDS; 
+    ---C++: inline    
+    ---C++: alias "BOPDS_PassKey& operator =(const BOPDS_PassKey& Other);" 
+    	---Purpose:  
+    	---  Copy Contructor 
+	 
+    Clear(me:out); 
+    ---C++: inline  
+    	---Purpose:  
+    	---  Clear the contents 
+	 
+    SetIds(me:out; 
+    	    theI1  :Integer from Standard); 
+    ---C++: inline      
+     	---Purpose: 
+	--- Modifier 
+	--- Sets one Id <theI1>   
+	
+    SetIds(me:out; 
+    	    theI1 :Integer from Standard; 
+    	    theI2 :Integer from Standard);  
+    ---C++: inline      
+     	---Purpose: 
+	--- Modifier 
+	--- Sets two Id <theI1>,<theI2>    
+	
+    SetIds(me:out; 
+    	    theI1 :Integer from Standard;    
+    	    theI2 :Integer from Standard;    
+    	    theI3 :Integer from Standard);  
+    ---C++: inline  
+    	---Purpose: 
+	--- Modifier 
+	--- Sets three Id <theI1>,<theI2>,<theI3>    
+    SetIds(me:out; 
+    	    theI1 :Integer from Standard;    
+    	    theI2 :Integer from Standard;    
+    	    theI3 :Integer from Standard;    
+    	    theI4 :Integer from Standard); 
+    ---C++: inline  
+    	---Purpose: 
+	--- Modifier 
+	--- Sets four Id <theI1>,<theI2>,<theI3>,<theI4>    
+    SetIds(me:out; 
+    	    theLI:ListOfInteger from BOPCol); 
+	---Purpose: 
+	--- Modifier 
+	--- Sets the list of Id <theLI> 
+
+    NbIds(me) 
+	returns Integer  from Standard; 
+    ---C++: inline  
+    	---Purpose: 
+	--- Selector
+	--- Returns the number of Ids> 
+     
+    IsEqual(me; 
+    	    theOther:PassKey from BOPDS) 
+	returns Boolean from Standard;   		     
+    ---C++: inline 
+     	---Purpose: 
+	--- Query
+	--- Returns true if the PassKey is equal to <the theOther> 
+
+    HashCode(me; 
+	    theUpper : Integer  from Standard)  
+    	returns Integer from Standard;   	 
+    ---C++: inline	 
+    	---Purpose: 
+	--- Query
+	--- Returns hash  code 
+ 
+    Id(me; 
+    	    theIndex: Integer  from Standard)  
+    	returns  Integer from Standard;
+    ---C++: inline  
+    	---Purpose: 
+	--- Selector
+	--- Returns Id of index <theIndex>  
+     
+    Ids(me; 
+    	    theI1 :out Integer from Standard;    
+    	    theI2 :out Integer from Standard);
+    ---C++: inline 
+    	---Purpose:  
+    	--- Selector
+	--- Returns the first two Ids <theI1>,<theI2> 
+	
+    Dump(me; 
+    	aHex:Integer from Standard=0);
+     
+    Allocate(me:out; 
+    	    theSize:Integer from Standard) 
+    	returns PInteger from BOPCol 
+    	is protected; 
+    ---C++: inline
+	
+fields  
+    myAllocator : BaseAllocator from BOPCol is protected;
+    myNbIds: Integer from Standard is protected;  
+    mySum  : Integer from Standard is protected;  
+    myPtr  : PInteger from BOPCol is protected;  
+     
+end PassKey;

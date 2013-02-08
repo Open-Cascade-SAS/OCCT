@@ -17,50 +17,18 @@
 
 #include <QANewModTopOpe_Tools.ixx>
 
-#include <BooleanOperations_ShapesDataStructure.hxx>
-#include <BOPTools_InterferencePool.hxx>
-#include <BOPTools_VVInterference.hxx>
-#include <BOPTools_VEInterference.hxx>
-#include <BOPTools_VSInterference.hxx>
-#include <BOPTools_EEInterference.hxx>
-#include <BOPTools_ESInterference.hxx>
-#include <BOPTools_SSInterference.hxx>
-#include <BOPTools_CArray1OfSSInterference.hxx>
-#include <BOPTools_CArray1OfESInterference.hxx>
-#include <BOPTools_CArray1OfEEInterference.hxx>
-#include <BOPTools_CArray1OfVVInterference.hxx>
-#include <BOPTools_CArray1OfVEInterference.hxx>
-#include <BOPTools_CArray1OfVSInterference.hxx>
-#include <BOPTools_DSFiller.hxx>
-#include <BOPTools_PCurveMaker.hxx>
-#include <BOPTools_DEProcessor.hxx>
-#include <BOPTools_Tools3D.hxx>
-#include <BOPTools_SplitShapesPool.hxx>
-#include <BOPTools_PaveBlock.hxx>
-#include <BOPTools_CommonBlock.hxx>
-#include <BOPTools_CommonBlockPool.hxx>
-#include <BOPTools_ListOfPaveBlock.hxx>
-#include <BOPTools_ListOfCommonBlock.hxx>
-#include <BOPTools_ListIteratorOfListOfPaveBlock.hxx>
-#include <BOPTools_ListIteratorOfListOfCommonBlock.hxx>
-#include <BOPTools_StateFiller.hxx>
-#include <BOPTools_Curve.hxx>
-
 #include <BRepAlgoAPI_Cut.hxx>
 #include <BRepAlgoAPI_Common.hxx>
 
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Edge.hxx>
-#include <BOP_WireEdgeSet.hxx>
-#include <BOP_SDFWESFiller.hxx>
-#include <BOP_FaceBuilder.hxx>
 
 #include <BRepTools.hxx>
 #include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
 #include <Geom_Surface.hxx>
-#include <IntTools_Context.hxx>
+#include <BOPInt_Context.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopExp.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
@@ -75,64 +43,74 @@
 #include <TColStd_ListOfInteger.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 
+#include <BOPAlgo_PaveFiller.hxx>
+#include <BOPDS_DS.hxx>
+#include <BOPAlgo_Builder.hxx>
+#include <BOPAlgo_BOP.hxx>
+#include <IntTools_CommonPrt.hxx>
+#include <TopTools_ListIteratorOfListOfShape.hxx>
+#include <BOPDS_CommonBlock.hxx>
+#include <BOPTools_AlgoTools3D.hxx>
+
 static Standard_Boolean CheckSameDomainFaceInside(const TopoDS_Face& theFace1,
-						  const TopoDS_Face& theFace2);
+                                                  const TopoDS_Face& theFace2);
 
 static Standard_Boolean AddShapeToHistoryMap(const TopoDS_Shape& theOldShape,
-					     const TopoDS_Shape& theNewShape,
-					     TopTools_IndexedDataMapOfShapeListOfShape& theHistoryMap);
+                                             const TopoDS_Shape& theNewShape,
+                                             TopTools_IndexedDataMapOfShapeListOfShape& theHistoryMap);
 
 static void FillEdgeHistoryMap(BRepAlgoAPI_BooleanOperation&              theBOP,
-			       TopTools_IndexedDataMapOfShapeListOfShape& theHistoryMap);
+                               TopTools_IndexedDataMapOfShapeListOfShape& theHistoryMap);
 
 static void SortVertexOnEdge(const TopoDS_Edge&          theEdge,
-			     const TopTools_ListOfShape& theListOfVertex,
-			     TopTools_ListOfShape&       theListOfVertexSorted);
+                             const TopTools_ListOfShape& theListOfVertex,
+                             TopTools_ListOfShape&       theListOfVertexSorted);
+
+static TopAbs_State GetEdgeState(const BOPDS_PDS& pDS,
+                                 const Handle(BOPDS_PaveBlock)& aPB);
 
 // ========================================================================================
 // function: NbPoints
 // purpose:
 // ========================================================================================
-Standard_Integer QANewModTopOpe_Tools::NbPoints(const BOPTools_PDSFiller& theDSFiller) 
+Standard_Integer QANewModTopOpe_Tools::NbPoints(const BOPAlgo_PPaveFiller& theDSFiller) 
 {
-  Standard_Integer i = 0, anbpoints = 0;
-  const BooleanOperations_ShapesDataStructure& aDS = theDSFiller->DS();
-  BOPTools_InterferencePool* anIntrPool = (BOPTools_InterferencePool*)&theDSFiller->InterfPool();
-  BOPTools_CArray1OfSSInterference& aFFs = anIntrPool->SSInterferences();
-  Standard_Integer aNb=aFFs.Extent();
+  Standard_Integer i, anbpoints, aNb;
+  //
+  const BOPDS_PDS& pDS = theDSFiller->PDS();
+  anbpoints = 0;
 
-  for (i = 1; i <= aNb; i++) {
-    BOPTools_SSInterference& aFFi = aFFs(i);
-    TColStd_ListOfInteger& anAloneVertices = aFFi.AloneVertices();
-    anbpoints += anAloneVertices.Extent();
+  //FF
+  BOPDS_VectorOfInterfFF& aFFs=pDS->InterfFF();
+  aNb=aFFs.Extent();
+  for (i = 0; i < aNb; ++i) {
+    BOPDS_InterfFF& aFF=aFFs(i);
+    const BOPDS_VectorOfPoint& aVP=aFF.Points();
+    anbpoints += aVP.Extent();
   }
-  BOPTools_CArray1OfESInterference& aEFs = anIntrPool->ESInterferences();
+
+  //EF
+  BOPDS_VectorOfInterfEF& aEFs=pDS->InterfEF();
   aNb = aEFs.Extent();
-
-  for (i = 1; i <= aNb; i++) {
-    BOPTools_ESInterference& aESInterf = aEFs(i);
-    Standard_Integer anIndex = aESInterf.NewShape();
-
-    if(anIndex == 0)
-      continue;
-
-    if(aDS.GetShapeType(anIndex) == TopAbs_VERTEX)
+  for (i = 0; i < aNb; ++i) {
+    BOPDS_InterfEF& aEF=aEFs(i);
+    IntTools_CommonPrt aCP = aEF.CommonPart();
+    if(aCP.Type() == TopAbs_VERTEX) {
       anbpoints++;
+    }
   }
-
-  BOPTools_CArray1OfEEInterference& aEEs = anIntrPool->EEInterferences();
+       
+  //EE
+  BOPDS_VectorOfInterfEE& aEEs=pDS->InterfEE();
   aNb = aEEs.Extent();
-
-  for (i = 1; i <= aNb; i++) {
-    BOPTools_EEInterference& aEEInterf = aEEs(i);
-    Standard_Integer anIndex = aEEInterf.NewShape();
-
-    if(anIndex == 0)
-      continue;
-
-    if(aDS.GetShapeType(anIndex) == TopAbs_VERTEX)
+  for (i = 0; i < aNb; ++i) {
+    BOPDS_InterfEE& aEE=aEEs(i);
+    IntTools_CommonPrt aCP = aEE.CommonPart();
+    if(aCP.Type() == TopAbs_VERTEX) {
       anbpoints++;
+    }
   }
+
   return anbpoints;
 }
 
@@ -140,273 +118,146 @@ Standard_Integer QANewModTopOpe_Tools::NbPoints(const BOPTools_PDSFiller& theDSF
 // function: NewVertex
 // purpose:
 // ========================================================================================
-TopoDS_Shape QANewModTopOpe_Tools::NewVertex(const BOPTools_PDSFiller& theDSFiller, 
-					const Standard_Integer    theIndex) 
+TopoDS_Shape QANewModTopOpe_Tools::NewVertex(const BOPAlgo_PPaveFiller& theDSFiller, 
+                                             const Standard_Integer     theIndex) 
 {
   TopoDS_Shape aVertex;
+  Standard_Integer i, j, anbpoints, aNb, aNbP;
+  //
+  const BOPDS_PDS& pDS = theDSFiller->PDS();
+  anbpoints = 0;
 
-  Standard_Integer i = 0, anbpoints = 0;
-  const BooleanOperations_ShapesDataStructure& aDS = theDSFiller->DS();
-  BOPTools_InterferencePool* anIntrPool = (BOPTools_InterferencePool*)&theDSFiller->InterfPool();
-  BOPTools_CArray1OfSSInterference& aFFs = anIntrPool->SSInterferences();
-  Standard_Integer aNb=aFFs.Extent();
-
-  for (i = 1; i <= aNb; i++) {
-    BOPTools_SSInterference& aFFi = aFFs(i);
-    TColStd_ListOfInteger& anAloneVertices = aFFi.AloneVertices();
-    TColStd_ListIteratorOfListOfInteger anIt(anAloneVertices);
-
-    for(; anIt.More(); anIt.Next()) {
+  //FF
+  BOPDS_VectorOfInterfFF& aFFs=pDS->InterfFF();
+  aNb=aFFs.Extent();
+  for (i = 0; i < aNb; ++i) {
+    BOPDS_InterfFF& aFF=aFFs(i);
+    const BOPDS_VectorOfPoint& aVP=aFF.Points();
+    aNbP = aVP.Extent();
+    for(j = 0; j < aNbP; ++j) {
       anbpoints++;
-
-      if(theIndex == anbpoints) {
-	return aDS.Shape(anIt.Value());
+      //
+      if (theIndex == anbpoints) {
+        const BOPDS_Point& aNP = aVP(j);
+        return pDS->Shape(aNP.Index());
       }
     }
   }
-  BOPTools_CArray1OfESInterference& aEFs = anIntrPool->ESInterferences();
+
+  //EF
+  BOPDS_VectorOfInterfEF& aEFs=pDS->InterfEF();
   aNb = aEFs.Extent();
-
-  for (i = 1; i <= aNb; i++) {
-    BOPTools_ESInterference& aESInterf = aEFs(i);
-    Standard_Integer anIndex = aESInterf.NewShape();
-
-    if(anIndex == 0)
-      continue;
-
-    if(aDS.GetShapeType(anIndex) == TopAbs_VERTEX) {
+  for (i = 0; i < aNb; ++i) {
+    BOPDS_InterfEF& aEF=aEFs(i);
+    IntTools_CommonPrt aCP = aEF.CommonPart();
+    if(aCP.Type() == TopAbs_VERTEX) {
       anbpoints++;
-
-      if(theIndex == anbpoints) {
-	return aDS.Shape(anIndex);
+      //
+      if (theIndex == anbpoints) {
+        return pDS->Shape(aEF.IndexNew());
       }
     }
   }
-
-  BOPTools_CArray1OfEEInterference& aEEs = anIntrPool->EEInterferences();
+       
+  //EE
+  BOPDS_VectorOfInterfEE& aEEs=pDS->InterfEE();
   aNb = aEEs.Extent();
-
-  for (i = 1; i <= aNb; i++) {
-    BOPTools_EEInterference& aEEInterf = aEEs(i);
-    Standard_Integer anIndex = aEEInterf.NewShape();
-
-    if(anIndex == 0)
-      continue;
-
-    if(aDS.GetShapeType(anIndex) == TopAbs_VERTEX) {
+  for (i = 0; i < aNb; ++i) {
+    BOPDS_InterfEE& aEE=aEEs(i);
+    IntTools_CommonPrt aCP = aEE.CommonPart();
+    if(aCP.Type() == TopAbs_VERTEX) {
       anbpoints++;
-
-      if(theIndex == anbpoints) {
-	return aDS.Shape(anIndex);
+      //
+      if (theIndex == anbpoints) {
+        return pDS->Shape(aEE.IndexNew());
       }
     }
   }
+
   return aVertex;
 }
 
+
 // ========================================================================================
-// function: HasSameDomain
+// function: HasDomain
 // purpose:
 // ========================================================================================
-Standard_Boolean QANewModTopOpe_Tools::HasSameDomain(const BOPTools_PDSFiller& theDSFiller,
-						const TopoDS_Shape&       theFace) 
+Standard_Boolean QANewModTopOpe_Tools::HasSameDomain(const BOPAlgo_PBOP& theBuilder, 
+                                                     const TopoDS_Shape& theFace) 
 {
-  if(theFace.IsNull() || (theFace.ShapeType() != TopAbs_FACE))
-    return Standard_False;
-  const BOPTools_PaveFiller& aPaveFiller = theDSFiller->PaveFiller();
-  BOPTools_PCurveMaker aPCurveMaker(aPaveFiller);
-  aPCurveMaker.Do();
-
-  BOPTools_DEProcessor aDEProcessor(aPaveFiller);
-  aDEProcessor.Do();
-
-  const BooleanOperations_ShapesDataStructure& aDS = theDSFiller->DS();
-  BOPTools_InterferencePool* pIntrPool = (BOPTools_InterferencePool*)&theDSFiller->InterfPool();
-  BOPTools_CArray1OfSSInterference& aFFs = pIntrPool->SSInterferences();
+  Standard_Integer bRet;
+  bRet = Standard_False;
   //
-  Standard_Boolean bFlag;
-  Standard_Integer i, aNb, nF1, nF2, iZone, aNbSps, iSenseFlag;
-  gp_Dir aDNF1, aDNF2;
+  if(theFace.IsNull() || (theFace.ShapeType() != TopAbs_FACE))
+    return bRet;
 
-  aNb=aFFs.Extent();
+  BOPCol_ListIteratorOfListOfShape aIt;
+  const BOPCol_DataMapOfShapeListOfShape& aImages = theBuilder->Images();
+  if (!aImages.IsBound(theFace)) {
+    return bRet;
+  }
+  const BOPCol_ListOfShape& aLF=aImages.Find(theFace);
+  
+  if (aLF.Extent() == 0) {
+    return bRet;
+  }
+  const BOPCol_DataMapOfShapeShape& aShapesSD = theBuilder->ShapesSD();
 
-  for (i = 1; i <= aNb; i++) {
-    bFlag=Standard_False;
-    
-    BOPTools_SSInterference& aFF=aFFs(i);
-    
-    nF1=aFF.Index1();
-    nF2=aFF.Index2();
-    const TopoDS_Face& aF1 = TopoDS::Face(aDS.Shape(nF1));
-    const TopoDS_Face& aF2 = TopoDS::Face(aDS.Shape(nF2));
-
-    if(!theFace.IsSame(aF1) && !theFace.IsSame(aF2))
-      continue;
-
-    const BOPTools_ListOfPaveBlock& aLPB = aFF.PaveBlocks();
-    aNbSps = aLPB.Extent();
-
-    if (!aNbSps) {
-      continue;
-    }
-    const BOPTools_PaveBlock& aPB = aLPB.First();
-    const TopoDS_Edge& aSpE = TopoDS::Edge(aDS.Shape(aPB.Edge()));
-    
-    BOPTools_Tools3D::GetNormalToFaceOnEdge (aSpE, aF1, aDNF1); 
-    BOPTools_Tools3D::GetNormalToFaceOnEdge (aSpE, aF2, aDNF2);
-    iSenseFlag=BOPTools_Tools3D::SenseFlag (aDNF1, aDNF2);
-
-    if (iSenseFlag==1 || iSenseFlag==-1) {
-    //
-    //
-      TopoDS_Face aF1FWD=aF1;
-      aF1FWD.Orientation (TopAbs_FORWARD);
-      
-      BOP_WireEdgeSet aWES (aF1FWD);
-      BOP_SDFWESFiller aWESFiller(nF1, nF2, *theDSFiller);
-      aWESFiller.SetSenseFlag(iSenseFlag);
-      aWESFiller.SetOperation(BOP_COMMON);
-      aWESFiller.Do(aWES);
-      
-      BOP_FaceBuilder aFB;
-      aFB.Do(aWES);
-      const TopTools_ListOfShape& aLF=aFB.NewFaces();
-
-      iZone = 0;
-      TopTools_ListIteratorOfListOfShape anIt(aLF);
-
-      for (; anIt.More(); anIt.Next()) {
-	const TopoDS_Shape& aFR=anIt.Value();
-
-	if (aFR.ShapeType()==TopAbs_FACE) {
-	  const TopoDS_Face& aFaceResult=TopoDS::Face(aFR);
-	  //
-	  Standard_Boolean bIsValidIn2D, bNegativeFlag;
-	  bIsValidIn2D=BOPTools_Tools3D::IsValidArea (aFaceResult, bNegativeFlag);
-
-	  if (bIsValidIn2D) { 
-
-	    if(CheckSameDomainFaceInside(aFaceResult, aF2)) {
-	      iZone = 1;
-	      break;
-	    }
-	  }
-	}
-      }
-
-      if (iZone) { 
-	bFlag = Standard_True;
-	aFF.SetStatesMap(aWESFiller.StatesMap());
-      }
-    }
-    aFF.SetTangentFacesFlag(bFlag);
-    aFF.SetSenseFlag (iSenseFlag);
-
-    if(bFlag) {
-      return Standard_True;
+  aIt.Initialize(aLF);
+  for (; aIt.More(); aIt.Next()) {
+    const TopoDS_Shape& aFsp = aIt.Value();
+    if (aShapesSD.IsBound(aFsp)) {
+      bRet = Standard_True;
+      break;
     }
   }
-  return Standard_False;
+
+  return bRet;
 }
 
 // ========================================================================================
 // function: SameDomain
 // purpose:
 // ========================================================================================
-void QANewModTopOpe_Tools::SameDomain(const BOPTools_PDSFiller& theDSFiller,
-				 const TopoDS_Shape&       theFace,
-				 TopTools_ListOfShape&     theResultList) 
+void QANewModTopOpe_Tools::SameDomain(const BOPAlgo_PBOP&   theBuilder, 
+                                      const TopoDS_Shape&   theFace,
+                                      TopTools_ListOfShape& theResultList) 
 {
   theResultList.Clear();
 
   if(theFace.IsNull() || (theFace.ShapeType() != TopAbs_FACE))
     return;
-  const BOPTools_PaveFiller& aPaveFiller = theDSFiller->PaveFiller();
-  BOPTools_PCurveMaker aPCurveMaker(aPaveFiller);
-  aPCurveMaker.Do();
 
-  BOPTools_DEProcessor aDEProcessor(aPaveFiller);
-  aDEProcessor.Do();
-
-  const BooleanOperations_ShapesDataStructure& aDS = theDSFiller->DS();
-  BOPTools_InterferencePool* pIntrPool = (BOPTools_InterferencePool*)&theDSFiller->InterfPool();
-  BOPTools_CArray1OfSSInterference& aFFs = pIntrPool->SSInterferences();
-  //
-  Standard_Integer i, aNb, nF1, nF2,  aNbSps, iSenseFlag;
-  gp_Dir aDNF1, aDNF2;
-
-  aNb=aFFs.Extent();
-
-  for (i = 1; i <= aNb; i++) {
-    BOPTools_SSInterference& aFF=aFFs(i);
-    
-    nF1=aFF.Index1();
-    nF2=aFF.Index2();
-    const TopoDS_Face& aF1 = TopoDS::Face(aDS.Shape(nF1));
-    const TopoDS_Face& aF2 = TopoDS::Face(aDS.Shape(nF2));
-
-    if(!theFace.IsSame(aF1) && !theFace.IsSame(aF2))
-      continue;
-
-    if(aFF.IsTangentFaces()) {
-      if(theFace.IsSame(aF1))
-	theResultList.Append(aF2);
-      else
-	theResultList.Append(aF1);
-      continue;
-    }
-
-    const BOPTools_ListOfPaveBlock& aLPB = aFF.PaveBlocks();
-    aNbSps = aLPB.Extent();
-
-    if (!aNbSps) {
-      continue;
-    }
-    const BOPTools_PaveBlock& aPB = aLPB.First();
-    const TopoDS_Edge& aSpE = TopoDS::Edge(aDS.Shape(aPB.Edge()));
-    
-    BOPTools_Tools3D::GetNormalToFaceOnEdge (aSpE, aF1, aDNF1); 
-    BOPTools_Tools3D::GetNormalToFaceOnEdge (aSpE, aF2, aDNF2);
-    iSenseFlag=BOPTools_Tools3D::SenseFlag (aDNF1, aDNF2);
-
-    if (iSenseFlag==1 || iSenseFlag==-1) {
-    //
-    //
-      TopoDS_Face aF1FWD=aF1;
-      aF1FWD.Orientation (TopAbs_FORWARD);
-      
-      BOP_WireEdgeSet aWES (aF1FWD);
-      BOP_SDFWESFiller aWESFiller(nF1, nF2, *theDSFiller);
-      aWESFiller.SetSenseFlag(iSenseFlag);
-      aWESFiller.SetOperation(BOP_COMMON);
-      aWESFiller.Do(aWES);
-      
-      BOP_FaceBuilder aFB;
-      aFB.Do(aWES);
-      const TopTools_ListOfShape& aLF=aFB.NewFaces();
-
-      TopTools_ListIteratorOfListOfShape anIt(aLF);
-
-      for (; anIt.More(); anIt.Next()) {
-	const TopoDS_Shape& aFR=anIt.Value();
-
-	if (aFR.ShapeType()==TopAbs_FACE) {
-	  const TopoDS_Face& aFaceResult=TopoDS::Face(aFR);
-	  //
-	  Standard_Boolean bIsValidIn2D, bNegativeFlag;
-	  bIsValidIn2D=BOPTools_Tools3D::IsValidArea (aFaceResult, bNegativeFlag);
-
-	  if (bIsValidIn2D) { 
-
-	    if(CheckSameDomainFaceInside(aFaceResult, aF2)) {
-	      if(theFace.IsSame(aF1))
-		theResultList.Append(aF2);
-	      else
-		theResultList.Append(aF1);
-	      break;
-	    }
-	  }
-	}
+  BOPCol_ListIteratorOfListOfShape aIt;
+  const BOPCol_ListOfShape& aLF=theBuilder->Splits().Find(theFace);
+  
+  if (aLF.Extent() == 0) {
+    return;
+  }
+  const BOPCol_DataMapOfShapeShape& aShapesSD = theBuilder->ShapesSD();
+  const BOPCol_DataMapOfShapeShape& aOrigins = theBuilder->Origins();
+  
+  aIt.Initialize(aLF);
+  for (; aIt.More(); aIt.Next()) {
+    const TopoDS_Shape& aFSp = aIt.Value();
+    if (aShapesSD.IsBound(aFSp)) {
+      const TopoDS_Shape& aFSD = aShapesSD.Find(aFSp);
+      const TopoDS_Shape& aFOr = aOrigins.Find(aFSD);
+      if (theFace.IsEqual(aFOr)) {
+        BOPCol_DataMapIteratorOfDataMapOfShapeShape aItSD;
+        aItSD.Initialize(aShapesSD);
+        for (; aItSD.More(); aItSD.Next()) {
+          const TopoDS_Shape& aS = aItSD.Value();
+          if (aFSD.IsEqual(aS)) {
+            const TopoDS_Shape& aSK = aItSD.Key();
+            const TopoDS_Shape& aSKOr = aOrigins.Find(aSK);
+            if (!aSKOr.IsEqual(theFace)) {
+              theResultList.Append(aSKOr);
+            }
+          }
+        }
+      } else {
+        theResultList.Append(aFOr);
       }
     }
   }
@@ -416,45 +267,35 @@ void QANewModTopOpe_Tools::SameDomain(const BOPTools_PDSFiller& theDSFiller,
 // function: IsSplit
 // purpose:
 // ========================================================================================
-Standard_Boolean QANewModTopOpe_Tools::IsSplit(const BOPTools_PDSFiller& theDSFiller,
-					  const TopoDS_Shape&       theEdge,
-					  const TopAbs_State        theState) 
+Standard_Boolean QANewModTopOpe_Tools::IsSplit(const BOPAlgo_PPaveFiller& theDSFiller,
+                                          const TopoDS_Shape&       theEdge,
+                                          const TopAbs_State        theState) 
 {
   if(theEdge.IsNull() || (theEdge.ShapeType() != TopAbs_EDGE))
     return Standard_False;
-  const BOPTools_SplitShapesPool& aSplitShapesPool = theDSFiller->SplitShapesPool();
-  const BooleanOperations_ShapesDataStructure& aDS = theDSFiller->DS();
 
-  const BooleanOperations_IndexedDataMapOfShapeInteger& aMap1 = aDS.ShapeIndexMap(1);
-  const BooleanOperations_IndexedDataMapOfShapeInteger& aMap2 = aDS.ShapeIndexMap(2);
-  Standard_Integer anIndex = 0;
-
-  if(aMap1.Contains(theEdge))
-    anIndex = aDS.ShapeIndex(theEdge, 1);
-  else if(aMap2.Contains(theEdge))
-    anIndex = aDS.ShapeIndex(theEdge, 2);
-  else
+  Standard_Integer index, nSp;
+  //
+  const BOPDS_PDS& pDS = theDSFiller->PDS();
+  index = pDS->Index(theEdge);
+  if (index == -1) {
     return Standard_False;
-
-  const BOPTools_ListOfPaveBlock& aSplits = aSplitShapesPool(aDS.RefEdge(anIndex));
-  BOPTools_ListIteratorOfListOfPaveBlock aPBIt(aSplits);
-
-  for (; aPBIt.More(); aPBIt.Next()) {
-    BOPTools_PaveBlock& aPB = aPBIt.Value();
-    Standard_Integer    nSp = aPB.Edge();
-    TopAbs_State aSplitState = BOPTools_StateFiller::ConvertState(aDS.GetState(nSp));
-
-    if(aSplitState == theState)
-      return Standard_True;
   }
 
-//   if(theState == TopAbs_ON) {
-//     const BOPTools_CommonBlockPool& aCommonBlockPool= theDSFiller->CommonBlockPool();
-//     const BOPTools_ListOfCommonBlock& aCBlocks = aCommonBlockPool(aDS.RefEdge(anIndex));
+  const BOPDS_ListOfPaveBlock& aLPB = pDS->PaveBlocks(index);
+  BOPDS_ListIteratorOfListOfPaveBlock aPBIt;
+  aPBIt.Initialize(aLPB);
+  for (; aPBIt.More(); aPBIt.Next()) {
+    const Handle(BOPDS_PaveBlock)& aPB = aPBIt.Value();
+    nSp = aPB->Edge();
 
-//     if(!aCBlocks.IsEmpty()) 
-//       return Standard_True;
-//   }
+    TopAbs_State aSplitState = GetEdgeState(pDS, aPB);
+
+    if(aSplitState == theState) {
+      return Standard_True;
+    }
+  }
+
   return Standard_False;
 }
 
@@ -462,63 +303,38 @@ Standard_Boolean QANewModTopOpe_Tools::IsSplit(const BOPTools_PDSFiller& theDSFi
 // function: Splits
 // purpose:
 // ========================================================================================
-void QANewModTopOpe_Tools::Splits(const BOPTools_PDSFiller& theDSFiller,
-			     const TopoDS_Shape&       theEdge,
-			     const TopAbs_State        theState,
-			     TopTools_ListOfShape&     theResultList) 
+void QANewModTopOpe_Tools::Splits(const BOPAlgo_PPaveFiller& theDSFiller,
+                             const TopoDS_Shape&       theEdge,
+                             const TopAbs_State        theState,
+                             TopTools_ListOfShape&     theResultList) 
 {
   theResultList.Clear();
 
   if(theEdge.IsNull() || (theEdge.ShapeType() != TopAbs_EDGE))
     return;
-  const BOPTools_SplitShapesPool& aSplitShapesPool = theDSFiller->SplitShapesPool();
-  const BooleanOperations_ShapesDataStructure& aDS = theDSFiller->DS();
 
-  const BooleanOperations_IndexedDataMapOfShapeInteger& aMap1 = aDS.ShapeIndexMap(1);
-  const BooleanOperations_IndexedDataMapOfShapeInteger& aMap2 = aDS.ShapeIndexMap(2);
-  Standard_Integer anIndex = 0;
-
-  if(aMap1.Contains(theEdge))
-    anIndex = aDS.ShapeIndex(theEdge, 1);
-  else if(aMap2.Contains(theEdge))
-    anIndex = aDS.ShapeIndex(theEdge, 2);
-  else
+  Standard_Integer index, nSp;
+  //
+  const BOPDS_PDS& pDS = theDSFiller->PDS();
+  index = pDS->Index(theEdge);
+  if (index == -1) {
     return;
-
-  const BOPTools_ListOfPaveBlock& aSplits = aSplitShapesPool(aDS.RefEdge(anIndex));
-  BOPTools_ListIteratorOfListOfPaveBlock aPBIt(aSplits);
-//   TopTools_MapOfShape aMapE;
-
-  for (; aPBIt.More(); aPBIt.Next()) {
-    BOPTools_PaveBlock& aPB = aPBIt.Value();
-    Standard_Integer    nSp = aPB.Edge();
-    TopAbs_State aSplitState = BOPTools_StateFiller::ConvertState(aDS.GetState(nSp));
-
-    if(aSplitState == theState) {
-      TopoDS_Shape aSplit = aDS.Shape(nSp);
-      theResultList.Append(aSplit);
-//       aMapE.Add(aSplit);
-    }
   }
 
-//   if(theState == TopAbs_ON) {
-//     const BOPTools_CommonBlockPool& aCommonBlockPool= theDSFiller->CommonBlockPool();
-//     const BOPTools_ListOfCommonBlock& aCBlocks = aCommonBlockPool(aDS.RefEdge(anIndex));
-//     BOPTools_ListIteratorOfListOfCommonBlock anIt(aCBlocks);
-    
-//     for(; anIt.More(); anIt.Next()) {
-//       const BOPTools_CommonBlock& aCB = anIt.Value();
-//       BOPTools_CommonBlock* pCB=(BOPTools_CommonBlock*) &aCB;
-//       BOPTools_PaveBlock& aPB = pCB->PaveBlock1(anIndex);
-//       Standard_Integer    nSp = aPB.Edge();
-//       TopoDS_Shape aSplit = aDS.Shape(nSp);
+  const BOPDS_ListOfPaveBlock& aLPB = pDS->PaveBlocks(index);
+  BOPDS_ListIteratorOfListOfPaveBlock aPBIt;
+  aPBIt.Initialize(aLPB);
+  for (; aPBIt.More(); aPBIt.Next()) {
+    const Handle(BOPDS_PaveBlock)& aPB = aPBIt.Value();
+    nSp = aPB->Edge();
 
-//       if(aMapE.Contains(aSplit))
-// 	continue;
-//       theResultList.Append(aSplit);
-//       aMapE.Add(aSplit);
-//     }
-//   }
+    TopAbs_State aSplitState = GetEdgeState(pDS, aPB);
+
+    if(aSplitState == theState) {
+      TopoDS_Shape aSplit = pDS->Shape(nSp);
+      theResultList.Append(aSplit);
+    }
+  }
 }
 
 // ========================================================================================
@@ -526,7 +342,7 @@ void QANewModTopOpe_Tools::Splits(const BOPTools_PDSFiller& theDSFiller,
 // purpose:
 // ========================================================================================
 Standard_Boolean QANewModTopOpe_Tools::SplitE(const TopoDS_Edge&    theEdge,
-					 TopTools_ListOfShape& theSplits) 
+                                         TopTools_ListOfShape& theSplits) 
 {
   // prequesitory : <Eanc> is a valid edge.
   TopAbs_Orientation oEanc = theEdge.Orientation();
@@ -582,45 +398,44 @@ Standard_Boolean QANewModTopOpe_Tools::SplitE(const TopoDS_Edge&    theEdge,
 // function: EdgeCurveAncestors
 // purpose:
 // ========================================================================================
- Standard_Boolean QANewModTopOpe_Tools::EdgeCurveAncestors(const BOPTools_PDSFiller& theDSFiller,
-						      const TopoDS_Shape&       theEdge,
-						      TopoDS_Shape&             theFace1,
-						      TopoDS_Shape&             theFace2) 
+ Standard_Boolean QANewModTopOpe_Tools::EdgeCurveAncestors(const BOPAlgo_PPaveFiller& theDSFiller,
+                                                      const TopoDS_Shape&       theEdge,
+                                                      TopoDS_Shape&             theFace1,
+                                                      TopoDS_Shape&             theFace2) 
 {
   theFace1.Nullify();
   theFace2.Nullify();
+  //
+  Standard_Integer i, j, aNb, aNbC, nE, nF1, nF2;
+  BOPDS_ListIteratorOfListOfPaveBlock aIt;
 
-  const BooleanOperations_ShapesDataStructure& aDS = theDSFiller->DS();
-  BOPTools_InterferencePool* anIntrPool = (BOPTools_InterferencePool*)&theDSFiller->InterfPool();
-  BOPTools_CArray1OfSSInterference& aFFs = anIntrPool->SSInterferences();
-  Standard_Integer aNb = aFFs.Extent();
-  Standard_Integer i = 0, j = 0;
+  const BOPDS_PDS& pDS = theDSFiller->PDS();
+  BOPDS_VectorOfInterfFF& aFFs=pDS->InterfFF();
 
-  for (i = 1; i <= aNb; i++) {
-    BOPTools_SSInterference& aFFi = aFFs(i);
-    BOPTools_SequenceOfCurves& aBCurves = aFFi.Curves();
-    Standard_Integer aNbCurves = aBCurves.Length();
-
-    for (j = 1; j <= aNbCurves; j++) {
-      BOPTools_Curve& aBC = aBCurves(j);
-      const BOPTools_ListOfPaveBlock& aSectEdges = aBC.NewPaveBlocks();
-      
-      BOPTools_ListIteratorOfListOfPaveBlock aPBIt(aSectEdges);
-
-      for (; aPBIt.More(); aPBIt.Next()) {
-	BOPTools_PaveBlock& aPB=aPBIt.Value();
-	Standard_Integer nSect = aPB.Edge();
-
-	if(theEdge.IsSame(aDS.Shape(nSect))) {
-	  Standard_Integer nF1 = aFFi.Index1();
-	  Standard_Integer nF2 = aFFi.Index2();
-	  theFace1 = aDS.Shape(nF1);
-	  theFace2 = aDS.Shape(nF2);
-	  return Standard_True;
-	}
+  aNb=aFFs.Extent();
+  for (i = 0; i < aNb; ++i) {
+    BOPDS_InterfFF& aFF=aFFs(i);
+    
+    const BOPDS_VectorOfCurve& aVC = aFF.Curves();
+    aNbC = aVC.Extent();
+    for (j = 0; j < aNbC; ++j) {
+      const BOPDS_Curve& aNC = aVC(j);
+      const BOPDS_ListOfPaveBlock& aLPB = aNC.PaveBlocks();
+      aIt.Initialize(aLPB);
+      for (; aIt.More(); aIt.Next()) {
+        const Handle(BOPDS_PaveBlock)& aPB = aIt.Value();
+        nE = aPB->Edge();
+        const TopoDS_Shape& aE = pDS->Shape(nE);
+        if (theEdge.IsSame(aE)) {
+          aFF.Indices(nF1, nF2);
+          theFace1 = pDS->Shape(nF1);
+          theFace2 = pDS->Shape(nF2);
+          return Standard_True;
+        }
       }
     }
   }
+
   return Standard_False;
 }
 
@@ -628,76 +443,77 @@ Standard_Boolean QANewModTopOpe_Tools::SplitE(const TopoDS_Edge&    theEdge,
 // function: EdgeSectionAncestors
 // purpose:
 // ========================================================================================
-Standard_Boolean QANewModTopOpe_Tools::EdgeSectionAncestors(const BOPTools_PDSFiller& theDSFiller,
-						       const TopoDS_Shape&       theEdge,
-						       TopTools_ListOfShape&     LF1,
-						       TopTools_ListOfShape&     LF2,
-						       TopTools_ListOfShape&     LE1,
-						       TopTools_ListOfShape&     LE2) 
+Standard_Boolean QANewModTopOpe_Tools::EdgeSectionAncestors(const BOPAlgo_PPaveFiller& theDSFiller,
+                                                            const TopoDS_Shape&       theEdge,
+                                                            TopTools_ListOfShape&     LF1,
+                                                            TopTools_ListOfShape&     LF2,
+                                                            TopTools_ListOfShape&     LE1,
+                                                            TopTools_ListOfShape&     LE2) 
 {
   if(theEdge.ShapeType() != TopAbs_EDGE)
     return Standard_False;
-  const BooleanOperations_ShapesDataStructure& aDS = theDSFiller->DS();
-  Standard_Integer i = 0, nb = 0;
-  nb = aDS.NumberOfSourceShapes();
+  
+  const BOPDS_PDS& pDS = theDSFiller->PDS();
+  Standard_Integer i = 0, nb = 0, nF, nE, nEOr;
+  BOPCol_MapOfInteger aMIF;
+  nb = pDS->NbSourceShapes();
 
-  for(i = 1; i <= nb; i++) {
-    if(aDS.GetShapeType(i) != TopAbs_EDGE)
-      continue;
-
-    const BOPTools_CommonBlockPool&   aCommonBlockPool = theDSFiller->CommonBlockPool();
-    const BOPTools_ListOfCommonBlock& aCBlocks         = aCommonBlockPool(aDS.RefEdge(i));
-    BOPTools_ListIteratorOfListOfCommonBlock anIt(aCBlocks);
-    
-    for(; anIt.More(); anIt.Next()) {
-      const BOPTools_CommonBlock& aCB    = anIt.Value();
-      BOPTools_CommonBlock*       pCB    = (BOPTools_CommonBlock*) &aCB;
-      BOPTools_PaveBlock&         aPB    = pCB->PaveBlock1(i);
-      Standard_Integer            nSp    = aPB.Edge();
-      TopoDS_Shape                aSplit = aDS.Shape(nSp);
-
-      if(!theEdge.IsSame(aSplit))
-	continue;
-
-      if(aDS.Rank(i) == 1)
-	LE1.Append(aDS.Shape(i));
-      else
-	LE2.Append(aDS.Shape(i));
-      Standard_Integer nFace = aCB.Face();
-
-      if(aCB.Face()) {
-	if(aDS.Rank(nFace) == 1)
-	  LF1.Append(aDS.Shape(nFace));
-	else
-	  LF2.Append(aDS.Shape(nFace));
-      }
-      // find edge ancestors.begin
-      TopTools_IndexedMapOfShape aMapF;
-      Standard_Integer j = 0, k = 0;
-
-      for(j = 1; j <= aDS.NumberOfAncestors(i); j++) {
-	Standard_Integer aAncestor1 = aDS.GetAncestor(i, j);
-
-	for(k = 1; k <= aDS.NumberOfAncestors(aAncestor1); k++) {
-	  Standard_Integer aAncestor2 = aDS.GetAncestor(aAncestor1, k);
-
-	  if(aDS.GetShapeType(aAncestor2) == TopAbs_FACE) {
-	    const TopoDS_Shape& aFace = aDS.Shape(aAncestor2);
-
-	    if(aMapF.Contains(aFace))
-	      continue;
-
-	    if(aDS.Rank(i) == 1)
-	      LF1.Append(aFace);
-	    else
-	      LF2.Append(aFace);
-	    aMapF.Add(aFace);
-	  }
-	}
-      }
-      // find edge ancestors.end
-    }
+  nE = pDS->Index(theEdge);
+  const BOPDS_ListOfPaveBlock& aLPB1 = pDS->PaveBlocks(nE);
+  if (!aLPB1.Extent()) {
+    return Standard_False;
   }
+
+  const Handle(BOPDS_PaveBlock)& aPB1 = aLPB1.First();
+  const Handle(BOPDS_CommonBlock)& aCB=aPB1->CommonBlock();
+  if (aCB.IsNull()) {
+    return Standard_False;
+  }
+  
+  const BOPCol_ListOfInteger& aLIF = aCB->Faces();
+  BOPCol_ListIteratorOfListOfInteger aItLI;
+  aItLI.Initialize(aLIF);
+  for ( ; aItLI.More(); aItLI.Next()) {
+    nF = aItLI.Value();
+    if(pDS->Rank(nF) == 0)
+      LF1.Append(pDS->Shape(nF));
+    else
+      LF2.Append(pDS->Shape(nF));
+    
+    aMIF.Add(nF);
+  }
+
+  const BOPDS_ListOfPaveBlock& aLPB = aCB->PaveBlocks();
+  BOPDS_ListIteratorOfListOfPaveBlock aItPB;
+  aItPB.Initialize(aLPB);
+  for (; aItPB.More(); aItPB.Next()) {
+    const Handle(BOPDS_PaveBlock)& aPB = aItPB.Value();
+    nEOr = aPB->OriginalEdge();
+
+    if(pDS->Rank(nEOr) == 0)
+      LE1.Append(pDS->Shape(nEOr));
+    else
+      LE2.Append(pDS->Shape(nEOr));
+
+    //find edge ancestors
+    for(i = 0; i < nb; ++i) {
+      const BOPDS_ShapeInfo& aSI = pDS->ShapeInfo(i);
+      if(aSI.ShapeType() != TopAbs_FACE) {
+        continue;
+      }
+      const BOPCol_ListOfInteger& aSubShapes = aSI.SubShapes();
+      aItLI.Initialize(aSubShapes);
+      for (; aItLI.More(); aItLI.Next()) {
+        if (nEOr == aItLI.Value()) {
+          if (aMIF.Add(i)) {
+            if(pDS->Rank(i) == 0) LF1.Append(pDS->Shape(i));
+            else LF2.Append(pDS->Shape(i));
+          }//if (aMIF.Add(i)) {
+        }//if (nEOr == aItLI.Value()) {
+      }//for (; aItLI.More(); aItLI.Next()) {
+    }//for(i = 0; i < nb; ++i) {
+  }
+
   Standard_Boolean r = (!LF1.IsEmpty() && !LF2.IsEmpty());
   r = r && (!LE1.IsEmpty() || !LE2.IsEmpty());
   return r;
@@ -708,37 +524,45 @@ Standard_Boolean QANewModTopOpe_Tools::EdgeSectionAncestors(const BOPTools_PDSFi
 // purpose:
 // ========================================================================================
 Standard_Boolean QANewModTopOpe_Tools::BoolOpe(const TopoDS_Shape& theFace1,
-					  const TopoDS_Shape& theFace2,
-					  Standard_Boolean&   IsCommonFound,
-					  TopTools_IndexedDataMapOfShapeListOfShape& theHistoryMap) 
+                                               const TopoDS_Shape& theFace2,
+                                               Standard_Boolean&   IsCommonFound,
+                                               TopTools_IndexedDataMapOfShapeListOfShape& theHistoryMap) 
 {
   IsCommonFound = Standard_False;
   theHistoryMap.Clear();
+  gp_Dir aDNF1, aDNF2;
+  Standard_Integer iSenseFlag;
 
-  BOPTools_DSFiller aDSFiller;
-  aDSFiller.SetShapes(theFace1, theFace2);
-
-  if (!aDSFiller.IsDone()) {
+  BOPAlgo_PaveFiller aDSFiller;
+  BOPCol_ListOfShape aLS;
+  aLS.Append(theFace1);
+  aLS.Append(theFace2);
+  aDSFiller.SetArguments(aLS);
+  
+  aDSFiller.Perform();
+  if (aDSFiller.ErrorStatus()) {
     return Standard_False;
   }
-  aDSFiller.Perform();
-  const BooleanOperations_ShapesDataStructure& aDS = aDSFiller.DS();
-  BOPTools_InterferencePool* anIntrPool = (BOPTools_InterferencePool*)&aDSFiller.InterfPool();
-  Standard_Integer aNb = 0;
+  
+  const BOPDS_PDS& pDS = aDSFiller.PDS();
+
+  Standard_Integer aNb = 0, aNbSps;
   Standard_Integer i = 0, j = 0;
   TopTools_IndexedMapOfShape aMapV;
+
   {
     BRepAlgoAPI_Common aCommon(theFace1, theFace2, aDSFiller);
 
     if(!aCommon.IsDone()) {
       return Standard_False;
     }
+
     TopExp_Explorer anExp(aCommon.Shape(), TopAbs_FACE);
-    
     if(!anExp.More()) {
       IsCommonFound = Standard_False;
       return Standard_True;
     }
+
     IsCommonFound = Standard_True;
     TopExp::MapShapes(aCommon.Shape(), TopAbs_VERTEX, aMapV);
     // fill edge history.begin
@@ -746,54 +570,75 @@ Standard_Boolean QANewModTopOpe_Tools::BoolOpe(const TopoDS_Shape& theFace1,
     // fill edge history.end
 
     // fill face history.begin
-    BOPTools_CArray1OfSSInterference& aFFs = anIntrPool->SSInterferences();
+    BOPDS_VectorOfInterfFF& aFFs = pDS->InterfFF();
     aNb = aFFs.Extent();
     Standard_Boolean bReverseFlag = Standard_True;
     Standard_Boolean fillhistory = Standard_True;
 
-    for (i=1; i<=aNb; i++) {
-      BOPTools_SSInterference& aFF = aFFs(i);
+    for (i=0; i<aNb; ++i) {
+      BOPDS_InterfFF& aFF = aFFs(i);
+      Standard_Integer nF1, nF2;
+      aFF.Indices(nF1, nF2);
+    
+      const TopoDS_Face& aF1 = *(TopoDS_Face*)(&pDS->Shape(nF1));
+      const TopoDS_Face& aF2 = *(TopoDS_Face*)(&pDS->Shape(nF2));
 
-      if(aFF.SenseFlag() == 1) {
-	fillhistory = Standard_True;
-	bReverseFlag = Standard_False;
+      BOPCol_ListOfInteger aLSE;
+      pDS->SharedEdges(nF1, nF2, aLSE, aDSFiller.Allocator());
+      aNbSps = aLSE.Extent();
+      
+      if (!aNbSps) {
+        fillhistory = Standard_False;
+        continue;
       }
-      else if(aFF.SenseFlag() == -1) {
-	fillhistory = Standard_True;
-	bReverseFlag = Standard_True;
+      
+      Standard_Integer nE = aLSE.First();
+      const TopoDS_Edge& aSpE = *(TopoDS_Edge*)(&pDS->Shape(nE));
+    
+      BOPTools_AlgoTools3D::GetNormalToFaceOnEdge (aSpE, aF1, aDNF1); 
+      BOPTools_AlgoTools3D::GetNormalToFaceOnEdge (aSpE, aF2, aDNF2);
+      iSenseFlag=BOPTools_AlgoTools3D::SenseFlag (aDNF1, aDNF2);
+
+      if(iSenseFlag == 1) {
+        fillhistory = Standard_True;
+        bReverseFlag = Standard_False;
+      }
+      else if(iSenseFlag == -1) {
+        fillhistory = Standard_True;
+        bReverseFlag = Standard_True;
       }
       else
-	fillhistory = Standard_False;
+        fillhistory = Standard_False;
     }
 
     if(fillhistory) {
 
       for(; anExp.More(); anExp.Next()) {
-	TopoDS_Shape aResShape = anExp.Current();
+        TopoDS_Shape aResShape = anExp.Current();
 
-	if(theFace1.Orientation() == aResShape.Orientation()) {
-	  AddShapeToHistoryMap(theFace1, aResShape, theHistoryMap);
+        if(theFace1.Orientation() == aResShape.Orientation()) {
+          AddShapeToHistoryMap(theFace1, aResShape, theHistoryMap);
 
-	  if(bReverseFlag)
-	    aResShape.Reverse();
-	  AddShapeToHistoryMap(theFace2, aResShape, theHistoryMap);
-	}
-	else if(theFace2.Orientation() == aResShape.Orientation()) {
-	  AddShapeToHistoryMap(theFace2, aResShape, theHistoryMap);
+          if(bReverseFlag)
+            aResShape.Reverse();
+          AddShapeToHistoryMap(theFace2, aResShape, theHistoryMap);
+        }
+        else if(theFace2.Orientation() == aResShape.Orientation()) {
+          AddShapeToHistoryMap(theFace2, aResShape, theHistoryMap);
 
-	  if(bReverseFlag)
-	    aResShape.Reverse();
-	  AddShapeToHistoryMap(theFace1, aResShape, theHistoryMap);
-	}
-	else {
-	  aResShape.Orientation(theFace1.Orientation());
-	  AddShapeToHistoryMap(theFace1, aResShape, theHistoryMap);
-	  aResShape.Orientation(theFace2.Orientation());
+          if(bReverseFlag)
+            aResShape.Reverse();
+          AddShapeToHistoryMap(theFace1, aResShape, theHistoryMap);
+        }
+        else {
+          aResShape.Orientation(theFace1.Orientation());
+          AddShapeToHistoryMap(theFace1, aResShape, theHistoryMap);
+          aResShape.Orientation(theFace2.Orientation());
 
-	  if(bReverseFlag)
-	    aResShape.Reverse();
-	  AddShapeToHistoryMap(theFace2, aResShape, theHistoryMap);
-	}
+          if(bReverseFlag)
+            aResShape.Reverse();
+          AddShapeToHistoryMap(theFace2, aResShape, theHistoryMap);
+        }
       }
     }
     // fill face history.end
@@ -841,71 +686,56 @@ Standard_Boolean QANewModTopOpe_Tools::BoolOpe(const TopoDS_Shape& theFace1,
   }
   
   // fill vertex history.begin
-  BOPTools_CArray1OfVVInterference& aVVs = anIntrPool->VVInterferences();
+  BOPDS_VectorOfInterfVV& aVVs = pDS->InterfVV();
   aNb = aVVs.Extent();
 
-  for (i = 1; i <= aNb; i++) {
-    BOPTools_VVInterference& aVVi = aVVs(i);
-    Standard_Integer aNewShapeIndex = aVVi.NewShape();
-
-    if(aNewShapeIndex == 0)
+  for (i = 0; i < aNb; ++i) {
+    BOPDS_InterfVV& aVVi = aVVs(i);
+    if (!aVVi.HasIndexNew()) {
       continue;
-    const TopoDS_Shape& aNewVertex = aDS.Shape(aNewShapeIndex);
+    }
+    Standard_Integer aNewShapeIndex = aVVi.IndexNew();
 
-    if(!aMapV.Contains(aNewVertex))
+    const TopoDS_Shape& aNewVertex = pDS->Shape(aNewShapeIndex);
+
+    if(!aMapV.Contains(aNewVertex)) {
       continue;
-    const TopoDS_Shape& aV1 = aDS.Shape(aVVi.Index1());
-    const TopoDS_Shape& aV2 = aDS.Shape(aVVi.Index2());
+    }
+    
+    const TopoDS_Shape& aV1 = pDS->Shape(aVVi.Index1());
+    const TopoDS_Shape& aV2 = pDS->Shape(aVVi.Index2());
     AddShapeToHistoryMap(aV1, aNewVertex, theHistoryMap);
     AddShapeToHistoryMap(aV2, aNewVertex, theHistoryMap);
   }
-  BOPTools_CArray1OfVEInterference& aVEs = anIntrPool->VEInterferences();
+
+  BOPDS_VectorOfInterfVE& aVEs = pDS->InterfVE();
   aNb = aVEs.Extent();
 
-  for (i = 1; i <= aNb; i++) {
-    BOPTools_VEInterference& aVEi = aVEs(i);
-    Standard_Integer aNewShapeIndex = aVEi.NewShape();
-
-    if(aNewShapeIndex == 0)
-      continue;
-    const TopoDS_Shape& aNewVertex = aDS.Shape(aNewShapeIndex);
+  for (i = 0; i < aNb; ++i) {
+    BOPDS_InterfVE& aVEi = aVEs(i);
+    
+    Standard_Integer anIndex = aVEi.Index1();
+    const TopoDS_Shape& aNewVertex = pDS->Shape(anIndex);
 
     if(!aMapV.Contains(aNewVertex))
       continue;
-    Standard_Integer anIndex = 0;
 
-    if(aDS.GetShapeType(aVEi.Index1()) == TopAbs_VERTEX)
-      anIndex = aVEi.Index1();
-    else if(aDS.GetShapeType(aVEi.Index2()) == TopAbs_VERTEX)
-      anIndex = aVEi.Index2();
-    else
-      continue;
-    const TopoDS_Shape& aV = aDS.Shape(anIndex);
-    AddShapeToHistoryMap(aV, aNewVertex, theHistoryMap);
+    AddShapeToHistoryMap(aNewVertex, aNewVertex, theHistoryMap);
   }
-  BOPTools_CArray1OfVSInterference& aVSs = anIntrPool->VSInterferences();
+
+  BOPDS_VectorOfInterfVF& aVSs = pDS->InterfVF();
   aNb = aVSs.Extent();
 
-  for (i = 1; i <= aNb; i++) {
-    BOPTools_VSInterference& aVSi = aVSs(i);
-    Standard_Integer aNewShapeIndex = aVSi.NewShape();
+  for (i = 0; i < aNb; ++i) {
+    BOPDS_InterfVF& aVSi = aVSs(i);
 
-    if(aNewShapeIndex == 0)
-      continue;
-    const TopoDS_Shape& aNewVertex = aDS.Shape(aNewShapeIndex);
+    Standard_Integer anIndex = aVSi.Index1();
+    const TopoDS_Shape& aNewVertex = pDS->Shape(anIndex);
 
     if(!aMapV.Contains(aNewVertex))
       continue;
-    Standard_Integer anIndex = 0;
 
-    if(aDS.GetShapeType(aVSi.Index1()) == TopAbs_VERTEX)
-      anIndex = aVSi.Index1();
-    else if(aDS.GetShapeType(aVSi.Index2()) == TopAbs_VERTEX)
-      anIndex = aVSi.Index2();
-    else
-      continue;
-    const TopoDS_Shape& aV = aDS.Shape(anIndex);
-    AddShapeToHistoryMap(aV, aNewVertex, theHistoryMap);
+    AddShapeToHistoryMap(aNewVertex, aNewVertex, theHistoryMap);
   }
   // fill vertex history.end
   return Standard_True;
@@ -918,14 +748,15 @@ Standard_Boolean QANewModTopOpe_Tools::BoolOpe(const TopoDS_Shape& theFace1,
 //          theFace1's edges and tolerance of theFace2
 // -----------------------------------------------------------------
 Standard_Boolean CheckSameDomainFaceInside(const TopoDS_Face& theFace1,
-					   const TopoDS_Face& theFace2) {
+                                           const TopoDS_Face& theFace2) {
 
   Standard_Real umin = 0., umax = 0., vmin = 0., vmax = 0.;
   BRepTools::UVBounds(theFace1, umin, umax, vmin, vmax);
-  IntTools_Context aContext;
+  Handle(BOPInt_Context) aContext;
   Handle(Geom_Surface) aSurface = BRep_Tool::Surface(theFace1);
   Standard_Real aTolerance = BRep_Tool::Tolerance(theFace1);
 
+  aContext = new BOPInt_Context;
   TopExp_Explorer anExpE(theFace1, TopAbs_EDGE);
 
   for(; anExpE.More(); anExpE.Next()) {
@@ -939,7 +770,7 @@ Standard_Boolean CheckSameDomainFaceInside(const TopoDS_Face& theFace1,
   Standard_Real adeltau = (umax - umin) / (nbpoints + 1);
   Standard_Real adeltav = (vmax - vmin) / (nbpoints + 1);
   Standard_Real U = umin + adeltau;
-  GeomAPI_ProjectPointOnSurf& aProjector = aContext.ProjPS(theFace2);
+  GeomAPI_ProjectPointOnSurf& aProjector = aContext->ProjPS(theFace2);
 
   for(Standard_Integer i = 1; i <= nbpoints; i++, U+=adeltau) {
     Standard_Real V = vmin + adeltav;
@@ -947,15 +778,15 @@ Standard_Boolean CheckSameDomainFaceInside(const TopoDS_Face& theFace1,
     for(Standard_Integer j = 1; j <= nbpoints; j++, V+=adeltav) {
       gp_Pnt2d aPoint(U,V);
 
-      if(aContext.IsPointInFace(theFace1, aPoint)) {
-	gp_Pnt aP3d = aSurface->Value(U, V);
-	aProjector.Perform(aP3d);
+      if(aContext->IsPointInFace(theFace1, aPoint)) {
+        gp_Pnt aP3d = aSurface->Value(U, V);
+        aProjector.Perform(aP3d);
 
-	if(aProjector.IsDone()) {
+        if(aProjector.IsDone()) {
 
-	  if(aProjector.LowerDistance() > aTolerance)
-	    return Standard_False;
-	}
+          if(aProjector.LowerDistance() > aTolerance)
+            return Standard_False;
+        }
       }
     }
   }
@@ -968,8 +799,8 @@ Standard_Boolean CheckSameDomainFaceInside(const TopoDS_Face& theFace1,
 // purpose: 
 // --------------------------------------------------------------------------------------------
 Standard_Boolean AddShapeToHistoryMap(const TopoDS_Shape& theOldShape,
-				      const TopoDS_Shape& theNewShape,
-				      TopTools_IndexedDataMapOfShapeListOfShape& theHistoryMap) {
+                                      const TopoDS_Shape& theNewShape,
+                                      TopTools_IndexedDataMapOfShapeListOfShape& theHistoryMap) {
 
   if(!theHistoryMap.Contains(theOldShape)) {
     TopTools_ListOfShape aList;
@@ -1000,7 +831,7 @@ Standard_Boolean AddShapeToHistoryMap(const TopoDS_Shape& theOldShape,
 // purpose: 
 // --------------------------------------------------------------------------------------------
 void FillEdgeHistoryMap(BRepAlgoAPI_BooleanOperation&              theBOP,
-			TopTools_IndexedDataMapOfShapeListOfShape& theHistoryMap) {
+                        TopTools_IndexedDataMapOfShapeListOfShape& theHistoryMap) {
 
   TopExp_Explorer anExp;
   anExp.Init(theBOP.Shape1(), TopAbs_EDGE);
@@ -1031,8 +862,8 @@ void FillEdgeHistoryMap(BRepAlgoAPI_BooleanOperation&              theBOP,
 // purpose: 
 // --------------------------------------------------------------------------------------------
 void SortVertexOnEdge(const TopoDS_Edge&          theEdge,
-		      const TopTools_ListOfShape& theListOfVertex,
-		      TopTools_ListOfShape&       theListOfVertexSorted) {
+                      const TopTools_ListOfShape& theListOfVertex,
+                      TopTools_ListOfShape&       theListOfVertexSorted) {
 
   TopTools_DataMapOfIntegerShape mapiv;// mapiv.Find(iV) = V
   TColStd_IndexedMapOfReal mappar;     // mappar.FindIndex(parV) = iV
@@ -1062,4 +893,29 @@ void SortVertexOnEdge(const TopoDS_Edge&          theEdge,
     const TopoDS_Shape& v = mapiv.Find(iv);
     theListOfVertexSorted.Append(v);
   }
+}
+
+// --------------------------------------------------------------------------------------------
+// static function: GetEdgeState
+// purpose: 
+// --------------------------------------------------------------------------------------------
+  static TopAbs_State GetEdgeState(const BOPDS_PDS& pDS,
+                                   const Handle(BOPDS_PaveBlock)& aPB) 
+{
+  Standard_Integer j, aNbFI;
+  Standard_Boolean bIn;
+  TopAbs_State aState = TopAbs_ON;
+  //
+  const BOPDS_VectorOfFaceInfo& aVFI = pDS->FaceInfoPool();
+  aNbFI = aVFI.Extent();
+  //
+  for (j = 0; j < aNbFI; ++j) {
+    const BOPDS_FaceInfo& aFI = aVFI(j);
+    bIn = aFI.PaveBlocksIn().Contains(aPB);
+    if (bIn) {
+      aState = TopAbs_IN;
+      break;
+    }
+  }
+  return aState;
 }

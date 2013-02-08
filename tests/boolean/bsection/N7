@@ -1,3 +1,14 @@
+if { [array get env os_type] != "" } {
+	set os $env(os_type)
+}
+if { [string compare $os "windows"] == 0 } {
+	puts "TODO #22911 ALL: An exception was caught"
+	puts "TODO #22911 ALL: \\*\\* Exception \\*\\*.*"
+	puts "TODO #22911 ALL: TEST INCOMPLETE"
+} else {
+	puts "TODO #22911 ALL: TEST INCOMPLETE"
+}
+
 cpulimit 900
 
 restore [locate_data_file lh3d_ro1.brep] a
@@ -7,7 +18,7 @@ set i 1
 repeat 199 {
 plane p_$i 0 $i*100 0  0 1 0
 mkface f_$i p_$i
-bsection s_$i a f_$i -2d -a
+bsection s_$i a f_$i
 compound result s_$i result
 display s_$i
 clear f_$i

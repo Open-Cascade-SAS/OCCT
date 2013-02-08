@@ -1,6 +1,7 @@
-BOPTColStd
-BOPTools
-BOP
-BooleanOperations
 IntTools
 BRepAlgoAPI
+BOPCol
+BOPInt
+BOPDS
+BOPAlgo
+BOPTools

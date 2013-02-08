@@ -33,7 +33,7 @@ uses
     SequenceOfCurves from IntTools,
     LineConstructor from IntTools,
     SequenceOfPntOn2Faces from IntTools, 
-    Context from IntTools
+    Context from BOPInt
     
     
 
@@ -142,12 +142,12 @@ is
     	is  protected; 
  
     SetContext(me:out; 
-    	  aContext : Context from IntTools); 
+    	  aContext : Context from BOPInt); 
      	---Purpose:
 	--- Sets the intersecton context 
 	
     Context(me) 
-    	returns Context from IntTools; 
+    	returns Context from BOPInt; 
     ---C++:  return const & 	
     	---Purpose:
 	--- Gets the intersecton context	
@@ -178,9 +178,7 @@ fields
     
     myListOfPnts  : ListOfPntOn2S from IntSurf;   
     
-    --modified by NIZNHY-PKV Tue Jan 31 08:27:18 2012f	
-    myContext     : Context from  IntTools;	 
-    --modified by NIZNHY-PKV Tue Jan 31 08:27:21 2012t
+    myContext     : Context from  BOPInt;	 
 
 end FaceFace from IntTools;
 

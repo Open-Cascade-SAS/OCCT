@@ -46,7 +46,8 @@
 #include <gp_Pln.hxx>
 #include <gp_Cylinder.hxx>
 
-#include <BRepFeat_LocalOperation.hxx>
+//#include <BRepFeat_LocalOperation.hxx>
+#include <BRepFeat_Builder.hxx>
 #include <BRepFeat_MakeCylindricalHole.hxx>
 #include <BRepFeat_SplitShape.hxx>
 #include <BRepFeat_Gluer.hxx>
@@ -156,9 +157,17 @@ static Standard_Integer Loc(Draw_Interpretor& theCommands,
 //    LF.Append(TopoDS::Face(DBRep::Get(a[i+5],TopAbs_FACE)));
   }
 
-  BRepFeat_LocalOperation BLoc(S);
-  BLoc.Perform(T,LF,Fuse);
-  BLoc.BuildPartsOfTool();
+  //BRepFeat_LocalOperation BLoc(S);
+  //BLoc.Perform(T,LF,Fuse);
+  //BLoc.BuildPartsOfTool();
+  TopTools_ListOfShape parts;
+  BRepFeat_Builder BLoc;
+  BLoc.Init(S,T);
+  BLoc.SetOperation(Fuse);
+  //BRepFeat_LocalOperation BLoc;
+  //BLoc.Init(S,T,Fuse);
+  BLoc.Perform();
+  BLoc.PartsOfTool(parts);
 
 #if 0
   char newname[1024];
@@ -167,7 +176,7 @@ static Standard_Integer Loc(Draw_Interpretor& theCommands,
   while (*p != '\0') p++;
   *p = '_';
   p++;
-  TopTools_ListIteratorOfListOfShape its(BLoc.PartsOfTool());
+  TopTools_ListIteratorOfListOfShape its(parts);
   dout.Clear();
   i = 0;
   for (; its.More(); its.Next()) {
@@ -185,29 +194,29 @@ static Standard_Integer Loc(Draw_Interpretor& theCommands,
 //      S = TopoDS::Shell(DBRep::Get(".",TopAbs_SHELL));
       Draw::LastPick(qq,ww,ee,button);
       if (!S.IsNull()) {
-
-	switch (button) {
-	case 1:
-	  BLoc.RemovePart(S);
-	  break;
-	case 2:
-	  BLoc.ActivatePart(S);
-	  break;
-	default:
-	  {}
-	}
+        
+        switch (button) {
+        case 1:
+          //BLoc.RemovePart(S);
+          break;
+        case 2:
+          BLoc.KeepPart(S);
+          break;
+        default:
+          {}
+        }
       }
       else {
-	button = 3;
+        button = 3;
       }
 
     } while (button != 3);
   }
 #endif
-  BLoc.Build();
-  if (BLoc.IsDone()) {
+  BLoc.PerformResult();
+  if (!BLoc.ErrorStatus()) {
 //    dout.Clear();
-    DBRep::Set(a[1],BLoc);
+    DBRep::Set(a[1],BLoc.Shape());
     dout.Flush();
     return 0;
   }
@@ -240,9 +249,9 @@ static Standard_Integer HOLE1(Draw_Interpretor& theCommands,
   }
 
   theHole.Build();
-  if (theHole.IsDone()) {
+  if (!theHole.ErrorStatus()) {
 //    dout.Clear();
-    DBRep::Set(a[1],theHole);
+    DBRep::Set(a[1],theHole.Shape());
     dout.Flush();
     return 0;
   }
@@ -266,9 +275,9 @@ static Standard_Integer HOLE2(Draw_Interpretor& theCommands,
   theHole.PerformThruNext(Radius,WithControl);
 
   theHole.Build();
-  if (theHole.IsDone()) {
+  if (!theHole.ErrorStatus()) {
 //    dout.Clear();
-    DBRep::Set(a[1],theHole);
+    DBRep::Set(a[1],theHole.Shape());
     dout.Flush();
     return 0;
   }
@@ -291,9 +300,9 @@ static Standard_Integer HOLE3(Draw_Interpretor& theCommands,
   theHole.Init(S,gp_Ax1(Or,Di));
   theHole.PerformUntilEnd(Radius,WithControl);
   theHole.Build();
-  if (theHole.IsDone()) {
+  if (!theHole.ErrorStatus()) {
 //    dout.Clear();
-    DBRep::Set(a[1],theHole);
+    DBRep::Set(a[1],theHole.Shape());
     dout.Flush();
     return 0;
   }
@@ -318,9 +327,9 @@ static Standard_Integer HOLE4(Draw_Interpretor& theCommands,
   theHole.Init(S,gp_Ax1(Or,Di));
   theHole.PerformBlind(Radius,Length,WithControl);
   theHole.Build();
-  if (theHole.IsDone()) {
+  if (!theHole.ErrorStatus()) {
 //    dout.Clear();
-    DBRep::Set(a[1],theHole);
+    DBRep::Set(a[1],theHole.Shape());
     dout.Flush();
     return 0;
   }
@@ -1079,12 +1088,16 @@ static Standard_Integer Debou(Draw_Interpretor& theCommands,
 //    LF2.Append(TopoDS::Face(DBRep::Get(a[i],TopAbs_FACE)));
   }
 
-  BRepFeat_LocalOperation BLoc(S);
-  BLoc.Perform(LF,LF2,Fuse);
-  BLoc.Build();
-  if (BLoc.IsDone()) {
+  //BRepFeat_LocalOperation BLoc(S);
+  //BLoc.Perform(LF,LF2,Fuse);
+  //BLoc.Build();
+  BRepFeat_Builder BLoc;
+  BLoc.Init(S, S);
+  BLoc.Perform();
+  BLoc.PerformResult();
+  if (!BLoc.ErrorStatus()) {
 //    dout.Clear();
-    DBRep::Set(a[1],BLoc);
+    DBRep::Set(a[1],BLoc.Shape());
     dout.Flush();
     return 0;
   }

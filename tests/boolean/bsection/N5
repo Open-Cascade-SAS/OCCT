@@ -6,7 +6,7 @@ compound result
 repeat 155 {
 plane p_$i 0 0 $i*100 0 0 1
 mkface f_$i p_$i
-bsection s_$i a f_$i -2d -a
+bsection s_$i a f_$i
 compound result s_$i result
 display s_$i
 clear f_$i

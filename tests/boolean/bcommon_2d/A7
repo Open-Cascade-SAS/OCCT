@@ -2,5 +2,5 @@ restore [locate_data_file case_1_solid.brep] a
 restore [locate_data_file case_1_wire3.brep] b
 bcommon result b a
 set length 942.478
-set nbsh_v 4
+set nbsh_v 2
 set nbsh_e 4

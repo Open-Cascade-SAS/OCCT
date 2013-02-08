@@ -12,19 +12,20 @@ checkshape trTool
 #puts "Tolerance trTool"
 #computetolerance trTool
 
-# create halfspace
-vertex v  10000 15000 -15000
-halfspace hs trTool 10000 15000 -15000
-#puts "Tolerance hs"
-#computetolerance hs
-
+#building the result using general fuse algorithm
+#without building halfspace
+bclearobjects
+bcleartools
+baddobjects part trTool
 #*************************************************
-if [catch {bcut result part hs} catch_result] {
+if [catch {bfillds; bbuild r} catch_result] {
     puts "Faulty BUC60533: function CUT works wrongly"
 } else {
     puts " BUC60533 OK: function CUT works properly"
 }
 #*************************************************
+explode r
+copy r_1 result
 
 #set che [checkshape res r]
 #set err [lindex $che [expr [llength $che] - 1]]

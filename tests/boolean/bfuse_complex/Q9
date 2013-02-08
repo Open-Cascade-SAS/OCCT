@@ -11,6 +11,6 @@ bcut rcut2 tool2 base
 
 explode rcut2
 
-bfuse result base rcut2_1
+bfuse result base rcut2_2
 
 set square 13822.2

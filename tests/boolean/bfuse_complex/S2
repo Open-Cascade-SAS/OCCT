@@ -11,9 +11,9 @@ bcut res pr sh
 
 explode res
 
-bfuse res2 sh res_2
+bfuse res2 sh res_3
 
-bfuse result sh res_3
+bfuse result sh res_2
 
 
 set square 3734.83

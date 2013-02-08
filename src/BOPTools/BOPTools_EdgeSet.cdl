@@ -1,0 +1,80 @@
+-- Created by: Peter KURNEV
+-- Copyright (c) 1999-2012 OPEN CASCADE SAS
+--
+-- The content of this file is subject to the Open CASCADE Technology Public
+-- License Version 6.5 (the "License"). You may not use the content of this file
+-- except in compliance with the License. Please obtain a copy of the License
+-- at http://www.opencascade.org and read it completely before using this file.
+--
+-- The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+-- main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+--
+-- The Original Code and all software distributed under the License is
+-- distributed on an "AS IS" basis, without warranty of any kind, and the
+-- Initial Developer hereby disclaims all such warranties, including without
+-- limitation, any warranties of merchantability, fitness for a particular
+-- purpose or non-infringement. Please see the License for the specific terms
+-- and conditions governing the rights and limitations under the License.
+ 
+class EdgeSet from BOPTools 
+
+
+uses 
+    Shape from TopoDS, 
+    Edge from TopoDS,
+    ShapeEnum from TopAbs,  
+    BaseAllocator from BOPCol, 
+    MapOfShape from BOPCol, 
+    ListOfShape from BOPCol 
+    
+--raises
+
+is 
+    Create 
+    	returns EdgeSet from BOPTools;  
+    ---C++: alias "virtual ~BOPTools_EdgeSet();"  
+    ---C++: inline 
+     
+    Create (theAllocator: BaseAllocator from BOPCol)
+    	returns EdgeSet from BOPTools; 
+    ---C++: inline   
+     
+    SetShape(me:out; 
+    	    theS:Shape from TopoDS); 
+    ---C++: inline  
+     
+    Shape(me) 
+    	 returns Shape from TopoDS; 
+    ---C++: return const & 
+    ---C++: inline  
+    
+    AddEdge(me:out; 
+    	    theEdge:Edge from TopoDS); 
+    ---C++: inline 
+
+    AddEdges(me:out; 
+    	    theLS:ListOfShape from BOPCol);  
+
+    AddEdges(me:out; 
+    	    theFace:Shape from TopoDS); 
+    ---C++: inline 
+     
+    Clear(me:out);
+    ---C++: inline 
+    
+    Get(me; 
+	    theLS:out ListOfShape from BOPCol);     
+    ---C++: inline 
+    
+    Contains(me; 
+	    theSet:EdgeSet from BOPTools) 
+    	returns Boolean from Standard; 
+    ---C++: inline
+    
+     
+fields  
+    myShape  : Shape from TopoDS is protected;   
+    myMap    : MapOfShape from BOPCol is protected;   
+    myEdges : ListOfShape from BOPCol is protected;   
+	    
+end EdgeSet; 

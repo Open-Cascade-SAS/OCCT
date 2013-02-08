@@ -33,7 +33,7 @@ uses
     SequenceOfRoots    from IntTools,
     MarkedRangeSet     from IntTools,
     SequenceOfRanges   from IntTools,
-    Context            from IntTools,
+    Context            from BOPInt,
     ExtCS              from Extrema,
     ProjectPointOnSurf from GeomAPI,
     Edge               from TopoDS,
@@ -128,12 +128,12 @@ is
 	---
 
     SetContext(me: in out;  
-    	    theContext: Context from IntTools);
+    	    theContext: Context from BOPInt);
     	---Purpose:
 	--- Sets the intersecton context
 	---
     Context(me) 
-    	returns Context from IntTools; 
+    	returns Context from BOPInt; 
     ---C++:  return const & 	
     ---Purpose:
 	--- Gets the intersecton context
@@ -173,9 +173,9 @@ is
 
     ComputeLinePlane(me: in out)
     	is private;
-
+ 
     FastComputeExactIntersection(me: in out)
-    	returns Boolean from Standard is private;
+        returns Integer from Standard is private; 
 
     ComputeUsingExtremum(me: in out)
     	is private;
@@ -247,7 +247,7 @@ fields
     myProjector      : ProjectPointOnSurf from GeomAPI;
     myRangeManager   : MarkedRangeSet from IntTools;
     myDeflection     : Real from Standard;
-    myContext        : Context from IntTools;
+    myContext        : Context from BOPInt;
     
     -- results
     myResults        : SequenceOfRanges from IntTools;

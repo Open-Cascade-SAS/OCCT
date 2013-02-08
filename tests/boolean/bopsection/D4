@@ -13,4 +13,4 @@ updatetolerance b 1
 bop a b
 bopsection result
 
-set length 529.118
+set length 523.479

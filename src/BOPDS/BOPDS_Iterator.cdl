@@ -1,0 +1,129 @@
+-- Created by: Peter KURNEV
+-- Copyright (c) 2010-2012 OPEN CASCADE SAS
+-- Copyright (c) 2007-2010 CEA/DEN, EDF R&D, OPEN CASCADE
+-- Copyright (c) 2003-2007 OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN, CEDRAT,
+--                         EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
+--
+-- The content of this file is subject to the Open CASCADE Technology Public
+-- License Version 6.5 (the "License"). You may not use the content of this file
+-- except in compliance with the License. Please obtain a copy of the License
+-- at http://www.opencascade.org and read it completely before using this file.
+--
+-- The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+-- main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+--
+-- The Original Code and all software distributed under the License is
+-- distributed on an "AS IS" basis, without warranty of any kind, and the
+-- Initial Developer hereby disclaims all such warranties, including without
+-- limitation, any warranties of merchantability, fitness for a particular
+-- purpose or non-infringement. Please see the License for the specific terms
+-- and conditions governing the rights and limitations under the License.
+
+
+
+class Iterator from BOPDS 
+     
+	---Purpose:  
+    	-- The class BOPDS_Iterator is  
+    	--  1.to compute intersections between BRep sub-shapes  
+    	--    of arguments of an operation (see the class BOPDS_DS)
+	--    in terms of theirs bounding boxes           
+    	--  2.provides interface to iterare the pairs of  
+	--    intersected sub-shapes of given type     	  
+
+uses  
+    BaseAllocator from BOPCol,
+    ShapeEnum from TopAbs, 
+    DS  from BOPDS,
+    PDS from BOPDS, 
+    PassKeyBoolean from BOPDS, 
+    ListOfPassKeyBoolean from BOPDS,
+    ListIteratorOfListOfPassKeyBoolean from BOPDS, 
+    VectorOfListOfPassKeyBoolean from BOPDS
+
+--raises
+
+is 
+    Create   
+    	returns Iterator from BOPDS;
+    ---C++: alias "Standard_EXPORT virtual ~BOPDS_Iterator();" 
+    	---Purpose:  
+    	--- Empty contructor  
+    	---   
+	
+    Create (theAllocator: BaseAllocator from BOPCol)  
+    	returns Iterator from BOPDS; 
+	---Purpose:  
+    	---  Contructor    
+    	---  theAllocator - the allocator to manage the memory     
+    	---  
+	
+    SetDS(me:out; 
+    	    pDS:PDS from BOPDS); 
+     	---Purpose: 
+	--- Modifier 
+	--- Sets the data structure <pDS> to process 
+	 
+    DS(me) 
+      returns DS from BOPDS; 
+    ---C++:return const & 
+    	---Purpose: 
+	--- Selector 
+	--- Returns the data structure 
+ 
+    Initialize(me: out;  
+    	    theType1: ShapeEnum from TopAbs;
+    	    theType2: ShapeEnum from TopAbs); 
+	---Purpose: 
+	--- Initializes the  iterator 
+	--- theType1 - the first type of shape           	 
+	--- theType2 - the second type of shape           	 
+
+    More(me)  
+    	returns Boolean from Standard; 
+  	---Purpose: 
+	--- Returns  true if still there are pairs 
+        --  of intersected shapes 
+
+    Next(me:out); 
+     	---Purpose: 
+	--- Moves iterations ahead 
+
+    Value(me;  
+    	    theIndex1:out Integer from Standard;
+    	    theIndex2:out Integer from Standard;
+    	    theWithSubShape: out Boolean from Standard); 
+	---Purpose: 
+	--- Returns indices (DS) of intersected shapes 
+	--- theIndex1 - the index of the first shape  
+	--- theIndex2 - the index of the second shape 
+	--- theWithSubShape - flag. True if the sub-shapes of 
+	---  shapes are intersected 
+	 
+    Prepare(me:out) 
+    	is virtual;  
+	---Purpose: 
+	--- Perform the intersection algorithm and prepare  
+    	--- the results to be used       
+      
+    ExpectedLength(me) 
+    	returns Integer from Standard;  
+	---Purpose:  
+	--- Returns the number of intersections founded 
+	 
+    BlockLength(me) 
+    	returns Integer from Standard; 
+    	---Purpose:  
+	--- Returns the block length 
+    
+    Intersect(me:out) 
+    	is virtual protected; 
+
+fields  
+    myAllocator:  BaseAllocator from BOPCol is protected;
+    myLength   :  Integer from Standard is protected;
+    myDS       :  PDS from BOPDS is protected;  
+    myLists    :  VectorOfListOfPassKeyBoolean from BOPDS is protected;  
+    myIterator :  ListIteratorOfListOfPassKeyBoolean from BOPDS is protected; 
+
+end Iterator;

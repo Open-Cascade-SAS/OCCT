@@ -1,0 +1,351 @@
+-- Created by: Peter KURNEV
+-- Copyright (c) 2010-2012 OPEN CASCADE SAS
+-- Copyright (c) 2007-2010 CEA/DEN, EDF R&D, OPEN CASCADE
+-- Copyright (c) 2003-2007 OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN, CEDRAT,
+--                         EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
+--
+-- The content of this file is subject to the Open CASCADE Technology Public
+-- License Version 6.5 (the "License"). You may not use the content of this file
+-- except in compliance with the License. Please obtain a copy of the License
+-- at http://www.opencascade.org and read it completely before using this file.
+--
+-- The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+-- main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+--
+-- The Original Code and all software distributed under the License is
+-- distributed on an "AS IS" basis, without warranty of any kind, and the
+-- Initial Developer hereby disclaims all such warranties, including without
+-- limitation, any warranties of merchantability, fitness for a particular
+-- purpose or non-infringement. Please see the License for the specific terms
+-- and conditions governing the rights and limitations under the License.
+
+
+class PaveFiller from BOPAlgo 
+   inherits Algo from BOPAlgo 
+    ---Purpose: 
+
+uses 
+    Pnt from gp,   
+    Vertex from TopoDS,
+    Face from TopoDS, 
+    Edge from TopoDS,
+     
+    BaseAllocator from BOPCol, 
+    ListOfShape from BOPCol, 
+    MapOfInteger from BOPCol, 
+    ListOfInteger from BOPCol, 
+    DataMapOfShapeInteger from BOPCol,   
+    IndexedDataMapOfShapeInteger from BOPCol,   
+    DataMapOfIntegerListOfInteger from BOPCol, 
+    DataMapOfShapeListOfShape from BOPCol,
+    IndexedDataMapOfShapeListOfShape from BOPCol,
+    --  
+    Context from BOPInt,
+    -- 
+    SectionAttribute from BOPAlgo, 
+    
+    DS  from BOPDS,
+    PDS from BOPDS, 
+    Iterator  from BOPDS, 
+    PIterator from BOPDS, 
+    PaveBlock from BOPDS, 
+    Curve from BOPDS,  
+    IndexedDataMapOfShapeCoupleOfPaveBlocks from BOPDS,
+    MapOfPaveBlock from BOPDS,  
+    ListOfPaveBlock from BOPDS, 
+    ListOfPave from BOPDS, 
+    ListOfPntOn2S from IntSurf, 
+    Curve from IntTools,
+    
+    DataMapOfPaveBlockListOfPaveBlock from BOPDS, 
+    VectorOfCurve from BOPDS 
+     
+--raises
+
+is 
+    Create 
+      returns PaveFiller from BOPAlgo;  
+    ---C++: alias "Standard_EXPORT virtual ~BOPAlgo_PaveFiller();"
+     
+    Create (theAllocator: BaseAllocator from BOPCol) 
+      returns PaveFiller from BOPAlgo;   
+	
+    DS(me:out) 
+      returns DS from BOPDS; 
+    ---C++:return  const &   
+    
+      
+    PDS(me:out) 
+      returns PDS from BOPDS; 
+     
+    Iterator(me:out) 
+      returns PIterator from BOPDS;  
+    ---C++:return const & 
+     
+    Arguments(me) 
+      returns ListOfShape from BOPCol; 
+    ---C++: return const & 
+    ---C++: alias "Standard_EXPORT void SetArguments(const BOPCol_ListOfShape& theLS);" 
+
+    Context(me:out) 
+      returns Context from BOPInt;  
+       
+    SetSectionAttribute(me:out; 
+        theSecAttr : SectionAttribute from BOPAlgo); 
+         
+    Perform(me:out) 
+      is redefined;   
+    --  
+    -- protected methods 
+    -- 
+    Clear(me:out) 
+      is virtual protected;  
+          
+    Init(me:out) 
+      is virtual protected;
+      
+    PerformVV(me:out) 
+      is virtual protected;   
+     
+    PerformVE(me:out) 
+      is virtual protected;  
+     
+    PerformVF(me:out) 
+      is virtual protected;  
+	 
+    PerformEE(me:out) 
+      is virtual protected; 
+	  
+    PerformEF(me:out) 
+      is virtual protected; 
+     
+    PerformFF(me:out) 
+      is virtual protected;
+     
+    
+    TreatVerticesEE(me:out) 
+      is protected; 
+
+    MakeSplitEdges(me:out) 
+      is protected;   
+        
+    MakeBlocks(me:out) 
+      is protected; 
+	 
+    MakePCurves(me:out) 
+      is protected; 
+	 
+    ProcessDE(me:out) 
+      is protected;  
+       
+    FillShrunkData(me:out; 
+        thePB:out PaveBlock from BOPDS) 
+      is protected;   
+	 
+    PerformVerticesEE(me:out; 
+        theMVCPB:out IndexedDataMapOfShapeCoupleOfPaveBlocks from BOPDS; 
+        theAllocator:out BaseAllocator from BOPCol) 
+      returns Integer from Standard 
+      is protected; 
+	 
+    PerformVerticesEF(me:out; 
+        theMVCPB:out IndexedDataMapOfShapeCoupleOfPaveBlocks from BOPDS; 
+        theAllocator:out BaseAllocator from BOPCol) 
+      returns Integer from Standard 
+      is protected; 
+     
+    CheckFacePaves(me:out; 
+        theVnew:Vertex from TopoDS; 
+        theMIF:MapOfInteger from BOPCol) 
+      returns Boolean from Standard 
+      is protected;  
+	  
+    CheckFacePaves(myclass; 
+        theN:Integer from Standard; 
+        theMIFOn:MapOfInteger from BOPCol; 
+        theMIFIn:MapOfInteger from BOPCol) 
+      returns Boolean from Standard 
+      is protected;  
+	 
+    IsExistingVertex(me; 
+        theP:Pnt from gp; 
+        theTol:Real from Standard; 
+        theMVOn:MapOfInteger from BOPCol) 
+      returns Boolean from Standard 
+      is protected; 
+	 
+    PutPaveOnCurve(me:out; 
+        theMVOn:MapOfInteger from BOPCol; 
+        theTolR3D:Real from Standard; 
+        theNC:out Curve from BOPDS; 
+        nF1:Integer from Standard; 
+        nF2:Integer from Standard;
+        theMVEF:MapOfInteger from BOPCol) 
+      is protected;  
+
+    ExtendedTolerance(me:out; 
+        nV:Integer from Standard; 
+        aMI:MapOfInteger from BOPCol; 
+        aTolVExt:out Real from  Standard) 
+      returns Boolean from  Standard 
+      is protected;
+	 
+    PutBoundPaveOnCurve(me:out;  
+        theF1: Face from TopoDS;  
+        theF2: Face from TopoDS;  
+        theTolR3D:Real from Standard; 
+        theNC:out Curve from BOPDS;  
+        theMVOnIn:out MapOfInteger from BOPCol;
+        theMVB:out MapOfInteger from BOPCol) 
+      is protected; 
+
+    IsExistingPaveBlock(me:out; 
+        thePB:PaveBlock from BOPDS;  
+        theNC:Curve from BOPDS;
+        theTolR3D:Real from Standard; 
+        theMPB:MapOfPaveBlock from BOPDS; 
+        thePBOut:out PaveBlock from BOPDS)
+      returns Boolean from Standard 
+      is protected;  
+ 
+    IsExistingPaveBlock(me:out; 
+        thePB:PaveBlock from BOPDS;  
+        theNC:Curve from BOPDS;
+        theTolR3D:Real from Standard; 
+        theLSE:ListOfInteger from BOPCol) 
+      returns Boolean from Standard 
+      is protected;   
+     
+    PostTreatFF(me:out; 
+        theMSCPB:out IndexedDataMapOfShapeCoupleOfPaveBlocks from BOPDS; 
+        theMVI:out DataMapOfShapeInteger from BOPCol;  
+        theDMExEd:out DataMapOfPaveBlockListOfPaveBlock from BOPDS;
+        theAllocator:out BaseAllocator from BOPCol) 
+      returns Integer from Standard 
+      is protected; 
+    --
+    --  Treatment of degenerated edges  
+    -- 
+    FindPaveBlocks(me:out;  
+        theV:Integer from Standard; 
+        theF:Integer from Standard; 
+        theLPB:out ListOfPaveBlock from BOPDS) 
+      is protected; 
+
+    FillPaves(me:out;  
+        theV:Integer from Standard; 
+        theE:Integer from Standard; 
+        theF:Integer from Standard; 
+        theLPB: ListOfPaveBlock from BOPDS; 
+        thePB: PaveBlock from BOPDS) 
+      is protected; 
+	 
+    MakeSplitEdge(me:out;  
+        theV:Integer from Standard; 
+        theF:Integer from Standard) 
+      is protected;  
+    	 
+    GetEFPnts(me:out;
+        nF1 : Integer from Standard;
+        nF2 : Integer from Standard;
+        aListOfPnts: out ListOfPntOn2S from IntSurf)
+      is protected; 
+       
+    PutEFPavesOnCurve(me:out; 
+        nF1        : Integer from Standard; 
+        nF2        : Integer from Standard; 
+        theNC      : out Curve from BOPDS; 
+        theMVEF    : MapOfInteger from BOPCol)  
+      is protected;
+ 
+    PutStickPavesOnCurve(me:out; 
+        nF1        : Integer from Standard; 
+        nF2        : Integer from Standard; 
+        theNC      : out Curve from BOPDS; 
+        theMVStick : MapOfInteger from BOPCol)
+      is protected; 
+ 
+    GetStickVertices(me:out; 
+        nF1        : Integer from Standard; 
+        nF2        : Integer from Standard; 
+        theMVStick : out MapOfInteger from BOPCol;
+        theMVEFk   : out MapOfInteger from BOPCol)
+      is protected; 
+ 
+    GetFullFaceMap(me:out; 
+        nF    : Integer from Standard; 
+        theMI : out MapOfInteger from BOPCol) 
+      is protected; 
+       
+       
+    RemoveUsedVertices(me:out; 
+        theNC : out Curve from BOPDS; 
+        theMV : out MapOfInteger from BOPCol)  
+      is protected;
+ 
+    PutPaveOnCurve(me:out; 
+        nV        : Integer from Standard; 
+        theTolR3D : Real from Standard;
+        theNC     : Curve from BOPDS;
+        thePB     : out PaveBlock from BOPDS) 
+      is protected;
+ 
+    ProcessExistingPaveBlocks(me:out; 
+        theInt     : Integer from Standard; 
+        theMPBOnIn : MapOfPaveBlock from BOPDS; 
+        theMSCPB   : out IndexedDataMapOfShapeCoupleOfPaveBlocks from BOPDS; 
+        theMVI     : out DataMapOfShapeInteger from BOPCol; 
+        theMVB     : MapOfInteger from BOPCol; 
+        theMPB     : out MapOfPaveBlock from BOPDS)
+      is  protected;        
+ 
+    UpdateExistingPaveBlocks(me:out; 
+        thePB   : PaveBlock from BOPDS;
+        theLPB  : out ListOfPaveBlock from BOPDS; 
+        nF1     : Integer from Standard; 
+        nF2     : Integer from Standard)
+      is protected;
+ 
+    TreatNewVertices(me:out; 
+        theMVI    : IndexedDataMapOfShapeInteger from BOPCol; 
+        theImages : out IndexedDataMapOfShapeListOfShape from BOPCol) 
+      is protected;
+ 
+    PutClosingPaveOnCurve (me:out; 
+        aNC :out Curve from BOPDS)  
+      is protected; 
+    ---Purpose: 	     
+    --- Put paves on the curve <aBC> in case when <aBC>   
+    --- is closed 3D-curve  
+     
+    PreparePostTreatFF(me:out; 
+        aInt   : Integer from Standard; 
+        aPB    : PaveBlock from BOPDS;  
+        aMSCPB : out IndexedDataMapOfShapeCoupleOfPaveBlocks from BOPDS; 
+        aMVI   : out DataMapOfShapeInteger from BOPCol; 
+        aVC    : out VectorOfCurve from BOPDS)
+      is protected; 
+    ---Purpose: 
+    ---Keeps data for post treatment 
+     
+    RefineFaceInfoOn(me:out) 
+      is protected; 
+    ---Purpose: 
+    --- Refines the state On for the all faces having 
+    --- state information 
+
+    UpdateFaceInfo(me:out;
+        theDME:out DataMapOfPaveBlockListOfPaveBlock from BOPDS) 
+      is protected; 
+    ---Purpose: 
+    ---Updates the information about faces
+
+      
+fields  
+    myArguments   : ListOfShape from BOPCol is protected;  
+    myDS          : PDS from BOPDS is protected; 
+    myIterator    : PIterator from BOPDS is protected; 
+    myContext     : Context from BOPInt is protected;   
+    mySectionAttribute : SectionAttribute from BOPAlgo is protected;
+
+end PaveFiller;

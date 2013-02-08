@@ -24,28 +24,29 @@ uses
     Edge from TopoDS,
     Shape from TopoDS,
     State from TopAbs,
-    PDSFiller from BOPTools,
+    PPaveFiller from BOPAlgo, 
+    PBOP from BOPAlgo,
     ListOfShape from TopTools,
     IndexedDataMapOfShapeListOfShape from TopTools
 
 is
 
-    NbPoints(myclass; theDSFiller: PDSFiller from BOPTools)
+    NbPoints(myclass; theDSFiller: PPaveFiller from BOPAlgo)
     	returns Integer from Standard;
 
-    NewVertex(myclass; theDSFiller: PDSFiller from BOPTools;
+    NewVertex(myclass; theDSFiller: PPaveFiller from BOPAlgo;
     	    	       theIndex   : Integer from Standard)
     	returns Shape from TopoDS;
 
-    HasSameDomain(myclass; theDSFiller: PDSFiller from BOPTools;
+    HasSameDomain(myclass; theBuilder: PBOP from BOPAlgo;
     	    	    	   theFace    : Shape from TopoDS)
     	returns Boolean from Standard;
     
-    SameDomain(myclass; theDSFiller: PDSFiller from BOPTools;
+    SameDomain(myclass; theBuilder: PBOP from BOPAlgo;
     	    	    	theFace    : Shape from TopoDS;
     	    	    	theResultList: out ListOfShape from TopTools);
 
-    IsSplit(myclass; theDSFiller: PDSFiller from BOPTools;
+    IsSplit(myclass; theDSFiller: PPaveFiller from BOPAlgo;
     	    	     theEdge    : Shape from TopoDS;
     	    	     theState   : State from TopAbs)
     	returns Boolean from Standard;
@@ -53,7 +54,7 @@ is
 	---         arguments of which was solids or compounds of solids.
 	---
 
-    Splits(myclass; theDSFiller: PDSFiller from BOPTools;
+    Splits(myclass; theDSFiller: PPaveFiller from BOPAlgo;
     	    	    theEdge    : Shape from TopoDS;
     	    	    theState   : State from TopAbs;
     	    	    theResultList: out ListOfShape from TopTools);
@@ -65,13 +66,13 @@ is
     	    	    theSplits: out ListOfShape from TopTools)
     	returns Boolean from Standard;
 
-    EdgeCurveAncestors(myclass; theDSFiller: PDSFiller from BOPTools;
+    EdgeCurveAncestors(myclass; theDSFiller: PPaveFiller from BOPAlgo;
     	    	    	    	theEdge    : Shape from TopoDS;
 				theFace1   : out Shape from TopoDS;
 				theFace2   : out Shape from TopoDS)
     	returns Boolean from Standard;
     
-    EdgeSectionAncestors(myclass; theDSFiller: PDSFiller from BOPTools;
+    EdgeSectionAncestors(myclass; theDSFiller: PPaveFiller from BOPAlgo;
     	    	    	    	  theEdge    : Shape from TopoDS;
     	    	    	    	  LF1,LF2    : out ListOfShape from TopTools;
 				  LE1,LE2 : out ListOfShape from TopTools)

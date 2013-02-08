@@ -1,4 +1,3 @@
--- Created on: 2000-11-16
 -- Created by: Peter KURNEV
 -- Copyright (c) 2000-2012 OPEN CASCADE SAS
 --
@@ -17,372 +16,67 @@
 -- purpose or non-infringement. Please see the License for the specific terms
 -- and conditions governing the rights and limitations under the License.
 
+package BOPTools 
 
-package  BOPTools
+        ---Purpose: 
 
-    ---Purpose:  
-    ---          Contains main and auxiliary classes to fill the   
-    ---          Data Structure (DS) to provide  boolean  
-    ---          operations between a couple BRep shapes.  
-    --- 
-     
-uses   
+uses
     gp,  
     Bnd,
-    TopAbs,
+    TopAbs, 
+    Geom,   
+    Geom2d,
+    GeomAPI, 
+    BRepClass3d,
     TopoDS, 
     TopTools, 
-    TCollection, 
-    TColStd,  
-    SortTools, 
-    Geom, 
-    Geom2d, 
+    IntTools,   
     ProjLib,
-    BooleanOperations,
-    BOPTColStd,
-    IntTools 
+    --                 
+    BOPCol, 
+    BOPInt 
+is 
+
+    -- 
+    -- classes
+    -- 
+    class ShapeSet; 
+    class EdgeSet; 
+    class AlgoTools; 
+    class Set; 
+    class SetMapHasher;  
+    class AlgoTools2D; 
+    class AlgoTools3D;
+    -- 
+    imported MapOfSet;
+    imported DataMapOfShapeSet;
+    --
+    -- primitives
+    --
+    imported ListOfShapeSet from BOPTools;
+    imported ListOfEdgeSet from BOPTools;
+    imported ConnexityBlock from BOPTools;
+    imported ListOfConnexityBlock from BOPTools;
+    imported CoupleOfShape from BOPTools;
+    imported ListOfCoupleOfShape from BOPTools;
+    --
+    --  static methods 
+    -- 
+    MapShapes(S : Shape from TopoDS;
+                  M : in out MapOfShape from BOPCol); 
+               
+    MapShapes(S : Shape from TopoDS;
+                  M : in out IndexedMapOfShape from BOPCol); 
+              
+    MapShapes(S : Shape from TopoDS;
+                  T : ShapeEnum from TopAbs;
+                  M : in out IndexedMapOfShape from BOPCol);
+          
+
+    MapShapesAndAncestors
+            (S  : Shape from TopoDS;
+             TS : ShapeEnum from TopAbs;
+         TA : ShapeEnum from TopAbs;
+         M  : in out IndexedDataMapOfShapeListOfShape from BOPCol);
     
-is   
-    ---
-    ---                     E  n  u  m  e  r  a  t  i  o  n  s            
-    ---  
-    enumeration IntersectionStatus is
-    	INTERSECTED,
-	BOUNDINGBOXINTERSECTED,
-	BOUNDINGBOXOFSUBSHAPESINTERSECTED,
-	NONINTERSECTED,
-    	UNKNOWN
-    	end IntersectionStatus;
-	
-    enumeration CheckStatus is
-    	CHKUNKNOWN,
-        VERTEXVERTEX,
-    	VERTEXEDGE,
-	VERTEXFACE,
-	EDGEEDGE,
-    	EDGEEDGECOMBLK,
-    	EDGEFACE,
-	EDGEFACECOMBLK,
-	FACEFACE,
-	BADSHRANKRANGE,
-	NULLSRANKRANGE
-	end CheckStatus;
-    ---
-    ---                          T  h  e    C  l  a  s  s  e  s  	        
-    ---  
-     
-    ---                                        +==========================+    
-    ---                                        !    Fillers and friends   !
-    ---                                        +==========================+ 
-    class PaveFiller;     
-     	---Purpose: 
-    	--- Class that provides   
-	--- 1. computation of interferences of all types    
-	--- 2. storing the interferences in interferences' pool     
-	--- 3. building new vertices, edges and storing them in the DS         
-	--- 4. preparing the information about PaveBlocks, CommonBlocks         
-	---
-    class DSFiller;  
-    	---Purpose: 
-    	--- Class that provides  
-        --- 1. creation of the data structure (DS)    	 
-        --- 2. creation of the interferences' pool   	 
-        --- 3. invokation of PaveFiller->Perform() to fill the DS 
-    	---   
-	--- 
-    class DEProcessor;   
-    	---Purpose: 
-    	--- Class to compute and store in interferences' pool 
-	--- and DS  the following values        
-    	--- for degenerated edges 
-	--- 1.  Paves/Pave set(s)
-	--- 2.  Split parts 
-	--- 3.  States (3D) for split parts 
-	---  
-    class PCurveMaker; 
-    	---Purpose: 
-    	--- Class to compute  p-curves for the edges and theirs  
-        --- split parts
-	---
-
-    class SolidStateFiller;  
-    	---Purpose: 
-    	--- Class to compute states (3D)  for the edges  (and theirs  
-	--- split parts), vertices, wires, faces, shells
-	---
-    class StateFiller; 
-	---Purpose: 
-    	--- Root class for state fillers
-	--- 
-    class WireStateFiller; 
-	---Purpose: 
-    	--- Class to compute states (3D)  for the edges  (and theirs  
-	--- split parts), vertices, wires 
-        --- 
-    ---                                        +================================+    
-    ---                                        !    Paves and Blocks of Paves   !
-    ---                                        +================================+ 
-    class Pave;   
-    	---Purpose: 
-    	--- Class for storing info about a vertex on an edge  
-	---
-    class PaveBlock;   
-    	---Purpose: 
-    	--- Class for storing info about a couple  
-    	--- of neighbouring paves on an edge 
-	---
-    class PaveSet;    
-    	---Purpose: 
-    	--- Class for storing/sorting paves that  belong to an edge 
-	--- 
-    
-    class PaveBlockIterator; 
-    	---Purpose: 
-    	--- Class providing iterations for PaveSet to   
-        --- have the right order of paves along the edge           	 
-	---   
-    class ComparePave; 
-    	---Purpose: 
-    	--- Class providing interface necessary for sorting     
-        --- paves along the edge           	 
-	--- 
-    class CommonBlock; 
-    	---Purpose: 
-    	--- Class for storing info about a couple  
-    	--- of pave blocks that are considered as common 
-	---  
-    class CommonBlockAPI; 
-    	---Purpose: 
-    	--- Class that provide useful tools to manage with  
-    	--- List Of Common  Block-s
-	---  
-   
-     
-    
-    ---                                        +==============+    
-    ---                                        ! Intrferences !
-    ---                                        +==============+ 
-    class ShapeShapeInterference;  
-    	---Purpose: 
-    	--- Root class for storing  an  Interference        
-	--- between a couple BRep shapes  
-	--- 
-    class VVInterference;  
-    	---Purpose: 
-    	--- Class for storing  an Verex/Vertex 
-    	--- interference     
-	--- 
-    class VSInterference;  
-    	---Purpose: 
-    	--- Class for storing  an Verex/Face 
-    	--- interference     
-	--- 
-    class VEInterference;  
-   	---Purpose: 
-    	--- Class for storing  an Verex/Edge 
-    	--- interference     
-	--- 
-    class EEInterference;  
-    	---Purpose: 
-    	--- Class for storing  an Edge/Edge 
-    	--- interference     
-	--- 
-    class ESInterference;  
-    	---Purpose: 
-    	--- Class for storing  an Edge/Face 
-    	--- interference     
-	--- 
-    class SSInterference; 
-    	---Purpose: 
-    	--- Class for storing  an Face/Face 
-    	--- interference     
-	--- 
-    class Interference;  
-    	---Purpose: 
-    	--- Class for storing information about an  
-    	--- interference     
-	--- 
-    class InterferenceLine; 
-	---Purpose: 
-    	--- Class for storing information about all  
-    	--- interferences for given shape 
-        ---	 
-    class InterferencePool; 
-     	---Purpose: 
-    	--- Class for storing information about  
-    	--- results of all interferences for all shapes 
-    	--- 
-    
-    ---                                        +=======+    
-    ---                                        ! Tools !
-    ---                                        +=======+ 
-    class Tools;  
-    class Tools2D; 
-    class Tools3D;  
-    ---                                        +=============+    
-    ---                                        ! Miscellanea !
-    ---                                        +=============+ 
-    
-    
-    class DEInfo; 
-    	---Purpose: 
-    	--- Class for storing  information about  
-    	--- a degenerated edge 
-      	--- 
-    class PointBetween;  
-    	---Purpose: 
-    	--- Class for storing geometry information about  
-    	--- a point between neighbouring paves along 
-	--- an edge 
-      	--- 
-    class Curve;  
-	---Purpose: 
-    	--- Class for storing information about  
-    	--- intersection curve and set of paves on it     
-    	---     
-    class CoupleOfInteger;    
-
-    
-    class Checker;    
-    	---Purpose: 
-    	--- Class that provides the algorithm 
-    	--- to  check a shape on self-interference.    
-    	---       
-    
-    class CheckResult;
-    	---Purpose: provides a container to store faulty
-	---         sub - shapes in tested shape with type of
-	---         detected faulty
-    
-    ---
-    ---                          P  o  i  n  t  e  r  s  	        
-    ---
-    pointer PInterferencePool to InterferencePool from BOPTools;
-    pointer PPaveFiller to PaveFiller from BOPTools; 
-    pointer PDSFiller to DSFiller from BOPTools;   
-    pointer PShapeShapeInterference to  ShapeShapeInterference from BOPTools; 
-    ---
-    ---                 I  n  s  t  a  n  t  i  a  t  i  o  n  s  
-    ---   
-    class ListOfCoupleOfInteger instantiates 
-    	List from TCollection (CoupleOfInteger from BOPTools);  	    	     
-
-    class ListOfInterference instantiates 
-    	List from TCollection (Interference from BOPTools);  
-
-    class  CArray1OfInterferenceLine instantiates  
-        CArray1 from BOPTColStd(InterferenceLine from BOPTools);
-     
-    class  CArray1OfSSInterference instantiates  
-    	CArray1 from BOPTColStd(SSInterference from BOPTools); 
-	 
-    class  CArray1OfESInterference instantiates  
-    	CArray1 from BOPTColStd(ESInterference from BOPTools);  
-	 
-    class  CArray1OfVSInterference instantiates  
-    	CArray1 from BOPTColStd(VSInterference from BOPTools);  
-
-    class  CArray1OfEEInterference instantiates  
-    	CArray1 from BOPTColStd(EEInterference from BOPTools); 
-
-    class  CArray1OfVEInterference instantiates  
-    	CArray1 from BOPTColStd(VEInterference from BOPTools);
-
-    class  CArray1OfVVInterference instantiates  
-    	CArray1 from BOPTColStd(VVInterference from BOPTools);   
-     
-    class PavePool instantiates   
-        CArray1 from BOPTColStd(PaveSet from BOPTools); 
-        
-    class ListOfPave instantiates  
-    	List from TCollection(Pave);   
-	
-    class ListOfCommonBlock  instantiates  
-    	List    from TCollection(CommonBlock from BOPTools); 
-      
-    class ListOfPaveBlock  instantiates  
-    	List    from TCollection(PaveBlock from BOPTools); 
-     
-    class CommonBlockPool    instantiates  
-    	CArray1 from BOPTColStd (ListOfCommonBlock from BOPTools); 
-
-    class SplitShapesPool instantiates  
-    	CArray1 from BOPTColStd (ListOfPaveBlock from  BOPTools); 
-     
-    class  Array1OfPave instantiates  
-    	Array1 from TCollection (Pave from BOPTools); 
-      
-    class  CArray1OfPave instantiates  
-    	CArray1 from BOPTColStd (Pave from BOPTools); 
-     
-    class QuickSortPave instantiates  
-    	QuickSort from SortTools   (Pave from BOPTools, 
-	    	    	    	    Array1OfPave from BOPTools, 
-	    	    	    	    ComparePave from BOPTools); 
-
-    class IndexedDataMapOfIntegerState instantiates  
-    	IndexedDataMap from TCollection  (Integer from Standard, 
-	    	    	    	    	  StateOfShape from BooleanOperations,
-	    	    	    	    	  MapIntegerHasher from TColStd);	 
-
-    class SequenceOfCurves instantiates  
-    	Sequence from TCollection(Curve from BOPTools);
-
-    class IndexedDataMapOfShapeWithState instantiates  
-    	IndexedDataMap from TCollection  (Shape          from TopoDS, 
-	    	    	    	    	  StateOfShape from BooleanOperations,
-	    	    	    	    	  ShapeMapHasher from TopTools);  
-    class  ListOfShapeEnum  instantiates 	 
-    	List from TCollection(ShapeEnum from TopAbs); 				  
-
-    class IndexedDataMapOfIntegerDEInfo instantiates  
-    	IndexedDataMap from TCollection  (Integer from Standard, 
-	    	    	    	    	  DEInfo from BOPTools,
-	    	    	    	    	  MapIntegerHasher from TColStd);	
-    
-    class Array2OfIntersectionStatus instantiates 
-	Array2 from TCollection (IntersectionStatus from BOPTools);
-	
-    class HArray2OfIntersectionStatus instantiates 
-    	HArray2 from TCollection (IntersectionStatus from BOPTools,
-    	    	    	    	  Array2OfIntersectionStatus from BOPTools);
-				  
-     class ListOfCheckResults instantiates 
-    	List from TCollection (CheckResult from BOPTools);
-
-    class RoughShapeIntersector; 
-    class IteratorOfCoupleOfShape; 
-    class SSIntersectionAttribute;
-
--- 
---  additions 
---
-    class CoupleOfIntegerMapHasher; 
-    class PaveBlockMapHasher;
-     
-    class IndexedMapOfCoupleOfInteger instantiates
-    	IndexedMap from TCollection(CoupleOfInteger from BOPTools,
-                                    CoupleOfIntegerMapHasher from BOPTools); 
-				    
-    class IndexedDataMapOfIntegerPaveSet instantiates  
-    	IndexedDataMap from TCollection  (Integer from Standard, 
-	    	    	    	    	  PaveSet from BOPTools,
-	    	    	    	    	  MapIntegerHasher from TColStd);	
-    class IMapOfPaveBlock instantiates  
-     	IndexedMap from TCollection(PaveBlock from BOPTools, 
-	    	    	    	    PaveBlockMapHasher from BOPTools);
-	  
-    class IDMapOfPaveBlockIMapOfPaveBlock instantiates  
-    	IndexedDataMap from TCollection  (PaveBlock from BOPTools , 
-	    	    	    	    	  IMapOfPaveBlock from BOPTools,
-	    	    	    	    	  PaveBlockMapHasher from BOPTools); 
-	 
-    class IDMapOfPaveBlockIMapOfInteger instantiates  
-    	IndexedDataMap from TCollection  (PaveBlock from BOPTools , 
-	    	    	    	    	  IndexedMapOfInteger from TColStd,
-	    	    	    	    	  PaveBlockMapHasher from BOPTools);				   
-					  
-    class SequenceOfPaveBlock instantiates  
-    	Sequence from TCollection(PaveBlock from BOPTools);
-
-end  BOPTools;
+end BOPTools;

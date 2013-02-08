@@ -1,0 +1,240 @@
+-- Created by: Peter KURNEV
+-- Copyright (c) 2010-2012 OPEN CASCADE SAS
+-- Copyright (c) 2007-2010 CEA/DEN, EDF R&D, OPEN CASCADE
+-- Copyright (c) 2003-2007 OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN, CEDRAT,
+--                         EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
+--
+-- The content of this file is subject to the Open CASCADE Technology Public
+-- License Version 6.5 (the "License"). You may not use the content of this file
+-- except in compliance with the License. Please obtain a copy of the License
+-- at http://www.opencascade.org and read it completely before using this file.
+--
+-- The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+-- main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+--
+-- The Original Code and all software distributed under the License is
+-- distributed on an "AS IS" basis, without warranty of any kind, and the
+-- Initial Developer hereby disclaims all such warranties, including without
+-- limitation, any warranties of merchantability, fitness for a particular
+-- purpose or non-infringement. Please see the License for the specific terms
+-- and conditions governing the rights and limitations under the License.
+
+class Builder from BOPAlgo 
+    inherits BuilderShape from BOPAlgo 
+	
+---Purpose:   
+
+uses   
+    ShapeEnum from TopAbs,
+    Shape from TopoDS, 
+    ListOfShape from TopTools,  
+    --  
+    BaseAllocator from BOPCol,
+    ListOfInteger from BOPCol, 
+    ListOfShape from BOPCol, 
+    MapOfShape from BOPCol, 
+    DataMapOfShapeShape from BOPCol, 
+    DataMapOfShapeListOfShape from BOPCol,  
+    Context from BOPInt,
+    PDS from BOPDS, 
+    PaveFiller  from BOPAlgo,
+    PPaveFiller from BOPAlgo 
+    
+    
+--raises
+
+is
+ 
+    Create 
+    returns Builder from BOPAlgo;  
+    ---C++: alias "Standard_EXPORT virtual ~BOPAlgo_Builder();" 
+     
+    Create (theAllocator: BaseAllocator from BOPCol) 
+    returns Builder from BOPAlgo; 
+	
+    Clear(me:out) 
+    is virtual;  
+     
+    PPaveFiller(me:out) 
+      returns PPaveFiller from BOPAlgo;
+ 
+    PDS(me:out) 
+      returns PDS from BOPDS;
+ 
+    AddArgument (me:out;  
+        theShape: Shape from TopoDS) 
+    is virtual; 
+     
+    Arguments(me) 
+    returns ListOfShape from BOPCol; 
+    ---C++: return const & 
+      
+	 
+    Perform(me:out) 
+    is redefined; 
+	 
+    PerformWithFiller(me:out; 
+    theFiller: PaveFiller from BOPAlgo) 
+    is virtual; 
+     
+    --
+    --  History  support 
+    -- 
+    PrepareHistory (me:out) 
+    ---Purpose:  Prepare information for history support  
+    is redefined protected;   
+	
+    Generated (me:out;  
+        theS : Shape from TopoDS)
+    ---Purpose: Returns the  list of shapes generated from the
+    --          shape theS. 
+    returns ListOfShape from TopTools
+    is redefined;
+    ---C++: return const & 
+
+    Modified (me:out;  
+        theS : Shape from TopoDS)
+    ---Purpose: Returns the list of shapes modified from the shape
+    --          theS. 
+    returns ListOfShape from TopTools
+    is redefined;
+    ---C++: return const &  
+
+    IsDeleted (me:out;  
+        theS : Shape from TopoDS) 
+    ---Purpose: Returns true if the shape theS has been deleted.
+    returns Boolean from Standard  
+    is redefined;  
+        
+    -- 
+    --  Debug 
+    -- 
+    Images(me) 
+    returns DataMapOfShapeListOfShape from BOPCol; 
+    ---C++: return const &	  
+
+
+    -- 
+    -- protected methods  
+    --  
+    PerformInternal(me:out; 
+    thePF: PaveFiller from BOPAlgo) 
+    is virtual protected;  
+  
+    CheckData(me:out) 
+    is redefined protected;  
+	 
+    Prepare(me:out) 
+    is virtual protected; 
+
+    FillImagesVertices(me:out)  
+    is protected;  
+      
+    FillImagesEdges(me:out)  
+    is protected;   
+	 
+	
+    BuildResult(me:out; 
+        theType: ShapeEnum from TopAbs) 
+    is virtual protected;   
+	 
+    IsInterferred(me; 
+        theS:Shape from TopoDS) 
+    returns Boolean from Standard; 
+	 
+    FillImagesContainers(me:out; 
+        theType:ShapeEnum from TopAbs) 
+    is protected;    
+      
+    FillImagesCompounds(me:out)
+    is protected;    
+
+    FillImagesContainer(me:out; 
+        theS:Shape from TopoDS; 
+        theType:ShapeEnum from TopAbs) 
+    is protected; 
+
+    FillImagesCompound(me:out; 
+        theS:Shape from TopoDS; 
+        theMF:out MapOfShape from BOPCol) 
+    is protected;  
+
+    FillImagesFaces (me:out)  
+    is protected;  
+	 
+    BuildSplitFaces (me:out)  
+    is virtual protected;  
+	 
+    FillSameDomainFaces (me:out) 
+    is protected;  
+ 
+    FillImagesFaces1 (me:out) 
+    is protected;   
+     
+    FillInternalVertices(me:out; 
+        theLF:out ListOfShape from BOPCol; 
+        theLIV:out ListOfInteger from BOPCol)  
+    is protected; 
+    --	 
+    -- solids
+    --
+    FillImagesSolids(me:out)  
+    is protected;  
+	 
+    BuildDraftSolid(me:out; 
+        theSolid:Shape from TopoDS; 
+        theDraftSolid:out Shape from TopoDS;
+        theLIF:out ListOfShape from BOPCol)  
+    is protected;
+ 
+    FillIn3DParts(me:out; 
+        theInParts:out DataMapOfShapeListOfShape from BOPCol; 
+        theDraftSolids:out DataMapOfShapeShape from BOPCol; 
+        theAllocator:BaseAllocator from BOPCol)  
+    is virtual protected;   
+     
+    BuildSplitSolids(me:out; 
+        theInParts:out DataMapOfShapeListOfShape from BOPCol; 
+        theDraftSolids:out DataMapOfShapeShape from BOPCol; 
+        theAllocator:BaseAllocator from BOPCol)  
+    is protected;  
+	 
+    FillInternalShapes(me:out)  
+    is protected; 
+    --	 
+    -- misc
+    --
+    PostTreat  (me:out)  
+    is virtual protected;   
+  
+    Origins(me) 
+    returns DataMapOfShapeShape from BOPCol; 
+    ---C++: return const &
+    ---Purpose:  Returns myOrigins. 
+    
+    ShapesSD(me) 
+    returns DataMapOfShapeShape from BOPCol; 
+    ---C++: return const & 
+    ---Purpose:  Returns myShapesSD. 
+     
+    Splits (me) 
+    returns DataMapOfShapeListOfShape from BOPCol; 
+    ---C++: return const &	  
+    ---Purpose:  Returns mySplits. 
+    
+fields 
+    myArguments  : ListOfShape from BOPCol is protected; 
+    myMapFence   : MapOfShape from BOPCol is protected; 
+    myPaveFiller : PPaveFiller from BOPAlgo is protected;  
+    myDS         : PDS from BOPDS is protected; 
+    myContext    : Context from BOPInt is protected;   
+    myEntryPoint : Integer from Standard is protected;
+    -- 
+    myImages     : DataMapOfShapeListOfShape from BOPCol is protected;  
+    myShapesSD   : DataMapOfShapeShape from BOPCol is protected;   
+    --
+    mySplits     : DataMapOfShapeListOfShape from BOPCol is protected; 
+    myOrigins    : DataMapOfShapeShape from BOPCol is protected; 
+
+end Builder;
+

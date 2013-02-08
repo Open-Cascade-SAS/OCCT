@@ -18,42 +18,24 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #include <BRepAlgoAPI_BooleanOperation.ixx>
 
-#include <BOP_Builder.hxx>
-#include <BOP_Section.hxx>
-#include <BOP_ShellShell.hxx>
-#include <BOP_SolidSolid.hxx>
-#include <BOP_ShellSolid.hxx>
-#include <BOP_WireWire.hxx>
-#include <BOP_WireShell.hxx>
-#include <BOP_WireSolid.hxx>
-#include <BOPTools_DSFiller.hxx>
-#include <BOPTools_Tools3D.hxx>
-#include <BOP_EmptyBuilder.hxx>
-
-#include <BOP_WireSolidHistoryCollector.hxx>
-#include <BOP_ShellSolidHistoryCollector.hxx>
-#include <BOP_SolidSolidHistoryCollector.hxx>
-#include <BOP_SectionHistoryCollector.hxx>
 #include <BRepLib_FuseEdges.hxx>
 #include <TopExp.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 
-static Handle(BOP_HistoryCollector) MakeCollector(const TopoDS_Shape&       theShape1,
-						  const TopoDS_Shape&       theShape2,
-						  const BOP_Operation       theOperation);
-
+#include <BOPAlgo_PaveFiller.hxx>
+#include <BOPAlgo_BOP.hxx>
+#include <BOPDS_DS.hxx>
 
 //=======================================================================
 //function : BRepAlgoAPI_BooleanOperation
 //purpose  : 
 //=======================================================================
   BRepAlgoAPI_BooleanOperation::BRepAlgoAPI_BooleanOperation(const TopoDS_Shape& aS1, 
-							     const TopoDS_Shape& aS2,
-							     const BOP_Operation anOp)
+                                                             const TopoDS_Shape& aS2,
+                                                             const BOPAlgo_Operation anOp)
 : 
   myS1(aS1),
   myS2(aS2),
@@ -71,9 +53,9 @@ static Handle(BOP_HistoryCollector) MakeCollector(const TopoDS_Shape&       theS
 //purpose  : 
 //=======================================================================
   BRepAlgoAPI_BooleanOperation::BRepAlgoAPI_BooleanOperation(const TopoDS_Shape& aS1, 
-							     const TopoDS_Shape& aS2,
-							     const BOPTools_DSFiller& aDSFiller,
-							     const BOP_Operation anOp)
+                                                             const TopoDS_Shape& aS2,
+                                                             const BOPAlgo_PaveFiller& aDSFiller,
+                                                             const BOPAlgo_Operation anOp)
 : 
   myS1(aS1),
   myS2(aS2),
@@ -86,7 +68,7 @@ static Handle(BOP_HistoryCollector) MakeCollector(const TopoDS_Shape&       theS
   myFuseEdges(Standard_False)
 {
   if ((Standard_Address) &aDSFiller!=NULL) {
-    myDSFiller=(BOPTools_PDSFiller)&aDSFiller;
+    myDSFiller=(BOPAlgo_PaveFiller*)&aDSFiller;
   }
 }
 //=======================================================================
@@ -103,12 +85,16 @@ static Handle(BOP_HistoryCollector) MakeCollector(const TopoDS_Shape&       theS
     delete myDSFiller;
     myDSFiller=NULL;
   }
+
+  //
+  myModifFaces.Clear();
+  myEdgeMap.Clear();
 }
 //=======================================================================
 //function : SetOperation
 //purpose  : 
 //=======================================================================
-  void BRepAlgoAPI_BooleanOperation::SetOperation (const BOP_Operation anOp)
+  void BRepAlgoAPI_BooleanOperation::SetOperation (const BOPAlgo_Operation anOp)
 {
   myOperation=anOp;
 }
@@ -116,7 +102,7 @@ static Handle(BOP_HistoryCollector) MakeCollector(const TopoDS_Shape&       theS
 //function : Operation
 //purpose  : 
 //=======================================================================
-  BOP_Operation BRepAlgoAPI_BooleanOperation::Operation ()const
+  BOPAlgo_Operation BRepAlgoAPI_BooleanOperation::Operation ()const
 {
   return myOperation;
 }
@@ -175,13 +161,15 @@ const TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::Modified(const TopoDS_
     return myGenerated;
   }
   else {
-    const TopTools_ListOfShape& aLM=myBuilder->Modified(aS);
+    myGenerated = myBuilder->Modified(aS);
 
     if(myFuseEdges) {
-      return RefinedList(aLM);
+      TopTools_ListOfShape theLS;
+      theLS.Assign(myGenerated);
+      //
+      RefinedList(theLS);
     }
-
-    return aLM;
+    return myGenerated;
   }
 }
 
@@ -191,28 +179,13 @@ const TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::Modified(const TopoDS_
 //=======================================================================
   Standard_Boolean BRepAlgoAPI_BooleanOperation::IsDeleted(const TopoDS_Shape& aS) 
 {
-
-//   Standard_Boolean bDeleted = Standard_True; 
-//   if (myBuilder==NULL) {
-//     return bDeleted; 
-//   }
-//   else {
-//     bDeleted=myBuilder->IsDeleted(aS);
-//     return bDeleted;    
-//   }
-  if(myHistory.IsNull()) {
-    Standard_Boolean bDeleted = Standard_True; 
-
-    if (myBuilder==NULL) {
-      return bDeleted; 
-    }
-    else {
-      bDeleted = myBuilder->IsDeleted(aS);
-      return bDeleted;    
-    }
+  Standard_Boolean bDeleted = Standard_True; 
+  if (myBuilder != NULL) {
+    bDeleted=myBuilder->IsDeleted(aS);
   }
-  return myHistory->IsDeleted(aS);
+  return bDeleted; 
 }
+
 //=======================================================================
 //function : PrepareFiller
 //purpose  : 
@@ -227,7 +200,7 @@ const TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::Modified(const TopoDS_
     return bIsNewFiller;
   }
   //
-  if (myOperation==BOP_UNKNOWN) {
+  if (myOperation==BOPAlgo_UNKNOWN) {
     myErrorStatus=6;
     return bIsNewFiller;
   }
@@ -235,22 +208,18 @@ const TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::Modified(const TopoDS_
   if (myDSFiller==NULL) {
     bIsNewFiller=!bIsNewFiller;
 
-    myDSFiller=new BOPTools_DSFiller;
+    myDSFiller=new BOPAlgo_PaveFiller;
     //
     if (myDSFiller==NULL) {
       myErrorStatus=4;
       return bIsNewFiller;
     }
     //
-    myDSFiller->SetShapes(myS1, myS2);
-    if (!myDSFiller->IsDone()) {
-      myErrorStatus=3;
-      if (myDSFiller!=NULL) {
-	delete myDSFiller;
-	myDSFiller = NULL;
-	return bIsNewFiller;
-      }
-    }
+    BOPCol_ListOfShape aLS;
+    aLS.Append(myS1);
+    aLS.Append(myS2);
+    //
+    myDSFiller->SetArguments(aLS);
   }
 
   return bIsNewFiller;
@@ -261,7 +230,8 @@ const TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::Modified(const TopoDS_
 //=======================================================================
   void BRepAlgoAPI_BooleanOperation::Build()
 {
-  Standard_Boolean bIsDone, bIsNewFiller;
+  Standard_Boolean bIsNewFiller;
+  Standard_Integer iErr;
   //
   myBuilderCanWork=Standard_False;
   NotDone();
@@ -283,127 +253,26 @@ const TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::Modified(const TopoDS_
     myBuilder=NULL;
   }
   //
-  const TopoDS_Shape& aS1 = myDSFiller->Shape1();
-  const TopoDS_Shape& aS2 = myDSFiller->Shape2();
+  const TopoDS_Shape& aS1 = myS1;
+  const TopoDS_Shape& aS2 = myS2;
   //
   myShape.Nullify();
-  // 
-  // SECTION
-  //
-  if (myOperation==BOP_SECTION) {
-    myBuilder=new BOP_Section;
-  }
-  // 
-  // COMMON, FUSE, CUT12, CUT21
-  //
-  else if (myOperation==BOP_COMMON || myOperation==BOP_FUSE ||
-	   myOperation==BOP_CUT    || myOperation==BOP_CUT21) {
-    //
-    // Check whether one or both of the arguments is(are) empty shape(s)
-    // If yes, create BOP_EmptyBuilder object and build the result fast.
-    {
-      Standard_Boolean bIsEmptyShape1, bIsEmptyShape2;
-      
-      bIsEmptyShape1=BOPTools_Tools3D::IsEmptyShape(aS1);
-      bIsEmptyShape2=BOPTools_Tools3D::IsEmptyShape(aS2);
-      //
-      if (bIsEmptyShape1 || bIsEmptyShape2) {
-	myBuilder=new BOP_EmptyBuilder;
-	//
-	if (myBuilder==NULL) {
-	  myErrorStatus=7;
-	  return ;
-	}
-	//
-	myBuilder->SetShapes(aS1, aS2);
-	myBuilder->SetOperation (myOperation);
-	myBuilder->DoWithFiller (*myDSFiller);
-	
-	bIsDone=myBuilder->IsDone();
-	
-	if (bIsDone) {
-	  myErrorStatus=0;
-	  myBuilderCanWork=Standard_True;
-	  myShape=myBuilder->Result();
-	  Done(); 
-	}
-	else {
-	  myErrorStatus=100+myBuilder->ErrorStatus();
-	  NotDone();
-	}
-	return;
-      }
-    }
-    //
-    TopAbs_ShapeEnum aT1, aT2;
 
-    aT1=aS1.ShapeType();
-    aT2=aS2.ShapeType();
-    //
-    // Shell / Shell
-    if (aT1==TopAbs_SHELL && aT2==TopAbs_SHELL) {
-      myBuilder=new BOP_ShellShell;
-    }
-    //
-    // Solid / Solid
-    else if (aT1==TopAbs_SOLID && aT2==TopAbs_SOLID) {
-      myBuilder=new BOP_SolidSolid;
-    }
-    //
-    // Shell / Solid
-    else if ((aT1==TopAbs_SOLID && aT2==TopAbs_SHELL)
-	     ||
-	     (aT2==TopAbs_SOLID && aT1==TopAbs_SHELL)) {
-      myBuilder=new BOP_ShellSolid;
-    }
-    //
-    // Wire / Wire
-    else if (aT1==TopAbs_WIRE && aT2==TopAbs_WIRE){
-      myBuilder=new BOP_WireWire;
-    }
-    //
-    // Wire / Shell
-    else if ((aT1==TopAbs_WIRE  && aT2==TopAbs_SHELL)
-	     ||
-	     (aT2==TopAbs_WIRE  && aT1==TopAbs_SHELL)) {
-      myBuilder=new BOP_WireShell;
-    }
-    //
-    // Wire / Shell
-    else if ((aT1==TopAbs_WIRE  && aT2==TopAbs_SOLID)
-	     ||
-	     (aT2==TopAbs_WIRE  && aT1==TopAbs_SOLID)) {
-      myBuilder=new BOP_WireSolid;
-    }
-    else {
-      myErrorStatus=5;
-      return ;
-    }
-  }
+  myBuilder=new BOPAlgo_BOP;
+  myBuilder->AddArgument(aS1);
+  myBuilder->AddTool(aS2);
+  myBuilder->SetOperation(myOperation);
   //
-  if (myBuilder==NULL) {
-    myErrorStatus=7;
-    return ;
-  }
-  //
-  myBuilder->SetShapes(aS1, aS2);
-  myBuilder->SetOperation (myOperation);
-
-  myHistory = MakeCollector(aS1, aS2, myOperation);
-  myBuilder->SetHistoryCollector(myHistory);
-
-  myBuilder->DoWithFiller (*myDSFiller);
-
-  bIsDone=myBuilder->IsDone();
-  
-  if (bIsDone) {
+  myBuilder->PerformWithFiller(*myDSFiller);
+  iErr = myBuilder->ErrorStatus();
+  if (!iErr) {
     myErrorStatus=0;
     myBuilderCanWork=Standard_True;
-    myShape=myBuilder->Result();
+    myShape=myBuilder->Shape();
     Done(); 
-  }
+  } 
   else {
-    myErrorStatus=100+myBuilder->ErrorStatus();
+    myErrorStatus=100+iErr;
     NotDone();
   }
 }
@@ -419,17 +288,43 @@ const  TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::SectionEdges()
     myGenerated.Clear();
     return myGenerated;
   }
-  else {
-    const TopTools_ListOfShape& aLM=myBuilder->SectionEdges();
-
-    if(myFuseEdges) {
-      return RefinedList(aLM);
+  //
+  Standard_Integer aNb, i, j, aNbCurves, nE;
+  BOPDS_ListIteratorOfListOfPaveBlock anIt;
+  //
+  const BOPDS_PDS& pDS = myDSFiller->PDS();
+  BOPDS_VectorOfInterfFF& aFFs=pDS->InterfFF();
+  myGenerated.Clear();
+  //
+  aNb=aFFs.Extent();
+  for (i = 0; i < aNb; i++) {
+    BOPDS_InterfFF& aFFi=aFFs(i);
+    const BOPDS_VectorOfCurve& aSeqOfCurve=aFFi.Curves();
+    //
+    aNbCurves=aSeqOfCurve.Extent();
+    for (j=0; j<aNbCurves; j++) {
+      const BOPDS_Curve& aCurve=aSeqOfCurve(j);
+      const BOPDS_ListOfPaveBlock& aSectEdges = aCurve.PaveBlocks();
+      //
+      anIt.Initialize(aSectEdges);
+      for(; anIt.More(); anIt.Next()) {
+        const Handle(BOPDS_PaveBlock)& aPB = anIt.Value();
+        nE = aPB->Edge();
+        const TopoDS_Shape& aE = pDS->Shape(nE);
+        myGenerated.Append(aE);
+      }
     }
-
-    return aLM;
   }
+  //
+  if(myFuseEdges) {
+    TopTools_ListOfShape theLS;
+    theLS.Assign(myGenerated);
+    //
+    RefinedList(theLS);
+  }
+  //
+  return myGenerated;
 }
-//
 
 // ================================================================================================
 // function: Modified2
@@ -437,17 +332,34 @@ const  TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::SectionEdges()
 // ================================================================================================
 const TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::Modified2(const TopoDS_Shape& aS) 
 {
-  if(myHistory.IsNull()) {
+  if (myBuilder==NULL) {
     myGenerated.Clear();
     return myGenerated;
   }
-
-  if(myFuseEdges) {
-    const TopTools_ListOfShape& aL = myHistory->Modified(aS);
-    return RefinedList(aL);
+  //
+  BOPCol_ListOfShape aLS;
+  BOPCol_ListIteratorOfListOfShape aIt;
+  myGenerated.Clear();
+  //
+  const BOPCol_DataMapOfShapeListOfShape& aImages = myBuilder->Images();
+  if (aImages.IsBound(aS)) {
+    aLS = aImages.Find(aS);
+  } else {
+    myGenerated.Append(aS);
   }
-
-  return myHistory->Modified(aS);
+  //
+  aIt.Initialize(aLS);
+  for (;aIt.More(); aIt.Next()) {
+    myGenerated.Append(aIt.Value());
+  }
+  //
+  if (myFuseEdges) {
+    TopTools_ListOfShape theLS;
+    theLS.Assign(myGenerated);
+    //
+    RefinedList(theLS);
+  }
+  return myGenerated;
 }
 
 // ================================================================================================
@@ -456,17 +368,17 @@ const TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::Modified2(const TopoDS
 // ================================================================================================
 const TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::Generated(const TopoDS_Shape& S) 
 {
-  if(myHistory.IsNull()) {
+  if (myBuilder==NULL) {
     myGenerated.Clear();
     return myGenerated;
   }
- 
+  //
   if(myFuseEdges) {
-    const TopTools_ListOfShape& aL = myHistory->Generated(S);
+    const TopTools_ListOfShape& aL = myBuilder->Generated(S);
     return RefinedList(aL);
   }
-
-  return myHistory->Generated(S);
+  
+  return myBuilder->Generated(S);
 }
 
 // ================================================================================================
@@ -475,10 +387,10 @@ const TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::Generated(const TopoDS
 // ================================================================================================
 Standard_Boolean BRepAlgoAPI_BooleanOperation::HasModified() const
 {
-  if(myHistory.IsNull()) {
+  if (myBuilder==NULL) {
     return Standard_False;
   }
-  return myHistory->HasModified();
+  return myBuilder->HasModified();
 }
 
 // ================================================================================================
@@ -487,10 +399,10 @@ Standard_Boolean BRepAlgoAPI_BooleanOperation::HasModified() const
 // ================================================================================================
 Standard_Boolean BRepAlgoAPI_BooleanOperation::HasGenerated() const
 {
-  if(myHistory.IsNull()) {
+  if (myBuilder==NULL) {
     return Standard_False;
   }
-  return myHistory->HasGenerated();
+  return myBuilder->HasGenerated();
 }
 
 // ================================================================================================
@@ -499,10 +411,10 @@ Standard_Boolean BRepAlgoAPI_BooleanOperation::HasGenerated() const
 // ================================================================================================
 Standard_Boolean BRepAlgoAPI_BooleanOperation::HasDeleted() const
 {
-  if(myHistory.IsNull()) {
+  if (myBuilder==NULL) {
     return Standard_False;
   }
-  return myHistory->HasDeleted();
+  return myBuilder->HasDeleted();
 }
 //=======================================================================
 //function : RefineEdges
@@ -511,7 +423,6 @@ Standard_Boolean BRepAlgoAPI_BooleanOperation::HasDeleted() const
 
   void BRepAlgoAPI_BooleanOperation::RefineEdges ()
 {
-
   if(myFuseEdges) return; //Edges have been refined yet
 
   BRepLib_FuseEdges FE(myShape);
@@ -540,7 +451,6 @@ Standard_Boolean BRepAlgoAPI_BooleanOperation::HasDeleted() const
     FE.ResultEdges(aResultEdges);
     FE.Faces(myModifFaces);
     myFuseEdges = Standard_True;
-
     
     Standard_Integer i;
     for(i = 1; i <= nle; ++i) {
@@ -548,11 +458,10 @@ Standard_Boolean BRepAlgoAPI_BooleanOperation::HasDeleted() const
       const TopTools_ListOfShape& aListOfOldEdges = aFusedEdges(i);
       TopTools_ListIteratorOfListOfShape anIter(aListOfOldEdges);
       for(; anIter.More(); anIter.Next()) {
-	myEdgeMap.Bind(anIter.Value(), aNewE);
+        myEdgeMap.Bind(anIter.Value(), aNewE);
       }
     }
   }
-  
 }
 
 //=======================================================================
@@ -572,21 +481,21 @@ const TopTools_ListOfShape&
 
     if(anS.ShapeType() == TopAbs_EDGE) {
       if(myEdgeMap.IsBound(anS)) {
-	const TopoDS_Shape& aNewEdge = myEdgeMap.Find(anS);
-	if(aMap.Add(aNewEdge)) {
-	  myGenerated.Append(aNewEdge);
-	}
+        const TopoDS_Shape& aNewEdge = myEdgeMap.Find(anS);
+        if(aMap.Add(aNewEdge)) {
+          myGenerated.Append(aNewEdge);
+        }
       }
       else {
-	myGenerated.Append(anS);
+        myGenerated.Append(anS);
       }
     }
     else if (anS.ShapeType() == TopAbs_FACE) {
       if(myModifFaces.IsBound(anS)) {
-	myGenerated.Append(myModifFaces.Find(anS));
+        myGenerated.Append(myModifFaces.Find(anS));
       }
       else {
-	myGenerated.Append(anS);
+        myGenerated.Append(anS);
       }
     }
     else {
@@ -597,61 +506,3 @@ const TopTools_ListOfShape&
   return myGenerated;
 
 }
-// -----------------------------------------------------------------------------------------
-// static function: MakeCollector
-// purpose:
-// -----------------------------------------------------------------------------------------
-Handle(BOP_HistoryCollector) MakeCollector(const TopoDS_Shape&       theShape1,
-					   const TopoDS_Shape&       theShape2,
-					   const BOP_Operation       theOperation) {
-
-  Handle(BOP_HistoryCollector) aresult;
-
-  if(theOperation == BOP_SECTION) {
-    aresult = new BOP_SectionHistoryCollector(theShape1, theShape2);
-    return aresult;
-  }
-
-  TopAbs_ShapeEnum aT1, aT2;
-
-  aT1 = theShape1.ShapeType();
-  aT2 = theShape2.ShapeType();
-  //
-  // Shell / Shell
-  if (aT1==TopAbs_SHELL && aT2==TopAbs_SHELL) {
-    //     aresult = new BOP_ShellShellHistoryCollector(theShape1, theShape2, theOperation, theDSFiller);
-  }
-  //
-  // Solid / Solid
-  else if (aT1==TopAbs_SOLID && aT2==TopAbs_SOLID) {
-    aresult = new BOP_SolidSolidHistoryCollector(theShape1, theShape2, theOperation);
-  }
-  //
-  // Shell / Solid
-  else if ((aT1==TopAbs_SOLID && aT2==TopAbs_SHELL)
-	   ||
-	   (aT2==TopAbs_SOLID && aT1==TopAbs_SHELL)) {
-    aresult = new BOP_ShellSolidHistoryCollector(theShape1, theShape2, theOperation);
-  }
-  //
-  // Wire / Wire
-  else if (aT1==TopAbs_WIRE && aT2==TopAbs_WIRE){
-    //     aresult = new BOP_WireWireHistoryCollector(theShape1, theShape2, theOperation, theDSFiller);
-  }
-  //
-  // Wire / Shell
-  else if ((aT1==TopAbs_WIRE  && aT2==TopAbs_SHELL)
-	   ||
-	   (aT2==TopAbs_WIRE  && aT1==TopAbs_SHELL)) {
-    //     aresult = new BOP_WireShellHistoryCollector(theShape1, theShape2, theOperation, theDSFiller);
-  }
-  //
-  // Wire / Shell
-  else if ((aT1==TopAbs_WIRE  && aT2==TopAbs_SOLID)
-	   ||
-	   (aT2==TopAbs_WIRE  && aT1==TopAbs_SOLID)) {
-    aresult = new BOP_WireSolidHistoryCollector(theShape1, theShape2, theOperation);
-  }
-  return aresult;
-}
-

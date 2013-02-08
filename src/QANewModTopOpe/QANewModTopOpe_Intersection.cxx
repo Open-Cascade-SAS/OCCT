@@ -32,11 +32,11 @@
 #include <TopTools_ListOfShape.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <BRepTools.hxx>
-#include <BOPTools_SSIntersectionAttribute.hxx>
-#include <BOPTools_DSFiller.hxx>
 #include <TopTools_MapOfShape.hxx>
 #include <TopoDS_Edge.hxx>
 #include <QANewModTopOpe_Tools.hxx>
+
+#include <BOPAlgo_PaveFiller.hxx>
 
 
 static Standard_Boolean NoFaces(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
@@ -52,7 +52,7 @@ static Standard_Boolean NoFaces(const TopoDS_Shape& S1, const TopoDS_Shape& S2)
 
 QANewModTopOpe_Intersection::QANewModTopOpe_Intersection( const TopoDS_Shape& theObject1, 
 					        const TopoDS_Shape& theObject2 )
-: BRepAlgoAPI_BooleanOperation( theObject1, theObject2, BOP_SECTION)
+: BRepAlgoAPI_BooleanOperation( theObject1, theObject2, BOPAlgo_SECTION)
 {
   myMapGener.Clear();
 
@@ -137,9 +137,8 @@ QANewModTopOpe_Intersection::QANewModTopOpe_Intersection( const TopoDS_Shape& th
   //
   if (bIsNewFiller) {
     //Prepare the DS
-    BOPTools_SSIntersectionAttribute aSectionAttribute(Standard_True, 
-						       Standard_False, Standard_False);
-    myDSFiller->Perform(aSectionAttribute);
+    myDSFiller->Perform();
+
   }
 
   Build();

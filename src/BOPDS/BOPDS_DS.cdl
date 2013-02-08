@@ -1,0 +1,576 @@
+-- Created by: Peter KURNEV
+-- Copyright (c) 1999-2012 OPEN CASCADE SAS
+--
+-- The content of this file is subject to the Open CASCADE Technology Public
+-- License Version 6.5 (the "License"). You may not use the content of this file
+-- except in compliance with the License. Please obtain a copy of the License
+-- at http://www.opencascade.org and read it completely before using this file.
+--
+-- The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+-- main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+--
+-- The Original Code and all software distributed under the License is
+-- distributed on an "AS IS" basis, without warranty of any kind, and the
+-- Initial Developer hereby disclaims all such warranties, including without
+-- limitation, any warranties of merchantability, fitness for a particular
+-- purpose or non-infringement. Please see the License for the specific terms
+-- and conditions governing the rights and limitations under the License.
+
+
+class DS from BOPDS 
+
+        ---Purpose: 
+            -- The class BOPDS_DS provides the control 
+        -- the data structure for  
+            -- partition and  boolean operation algorithms 
+        -- 
+            -- The data structure has the  following contents: 
+        --  1. the arguments of an operation [myArguments];
+        --  2  the information about arguments/new shapes  
+        --     and their sub-shapes (type of the shape,  
+        --     bounding box, etc) [myLines]; 
+        --  3. each argument shape(and its subshapes)  
+            --     has/have own range of indices (rank)     
+            --  4. pave blocks on source edges [myPaveBlocksPool];     
+        --  5. the state of source faces  [myFaceInfoPool]   
+        --  6  the collection of same domain shapes [myShapesSD]    
+        --  7  the collection of interferences  [myInterfTB, 
+        --     myInterfVV,..myInterfFF] 
+        
+uses  
+    ShapeEnum     from TopAbs,
+    Shape         from TopoDS,
+    -- 
+    ListOfShape from BOPCol,  
+    DataMapOfIntegerInteger from BOPCol,
+    DataMapOfShapeInteger   from BOPCol, 
+    ListOfInteger           from BOPCol, 
+    MapOfInteger            from BOPCol, 
+    BaseAllocator           from BOPCol, 
+    --
+    ShapeInfo  from BOPDS, 
+    IndexRange from BOPDS, 
+    VectorOfIndexRange from BOPDS,
+    VectorOfShapeInfo  from BOPDS, 
+    VectorOfListOfPaveBlock from BOPDS,  
+    ListOfPaveBlock    from BOPDS,  
+    ListOfPave from BOPDS,
+    PaveBlock from BOPDS,  
+    CommonBlock from BOPDS,
+    MapOfPaveBlock from BOPDS, 
+    IndexedMapOfPaveBlock from BOPDS, 
+    VectorOfFaceInfo from BOPDS, 
+    FaceInfo from BOPDS, 
+    --  
+    MapOfPassKey     from BOPDS, 
+    --
+    VectorOfInterfVV from BOPDS,
+    VectorOfInterfVE from BOPDS,
+    VectorOfInterfVF from BOPDS,
+    VectorOfInterfEE from BOPDS,
+    VectorOfInterfEF from BOPDS, 
+    VectorOfInterfFF from BOPDS
+    
+--raises
+
+is
+    Create 
+            returns DS from BOPDS; 
+    ---C++: alias "Standard_EXPORT virtual ~BOPDS_DS();"  
+            ---Purpose:  
+            --- Empty contructor  
+            ---     
+    Create (theAllocator: BaseAllocator from BOPCol) 
+            returns DS from BOPDS;  
+            ---Purpose:  
+            ---  Contructor    
+            ---  theAllocator - the allocator to manage the memory     
+            ---     
+  
+    Clear(me:out); 
+            ---Purpose:  
+        --  Clears the contents 
+         
+    Allocator(me) 
+            returns BaseAllocator from BOPCol; 
+    ---C++: return const &         
+             ---Purpose:  
+            --- Selector  
+            --- 
+        
+    SetArguments(me:out; 
+                theLS:ListOfShape from BOPCol); 
+            ---Purpose: 
+        --- Modifier 
+        --- Sets the arguments [theLS] of an operation  
+         
+    Arguments(me) 
+            returns ListOfShape from BOPCol;  
+    ---C++: return const &         
+             ---Purpose:  
+            --- Selector  
+            --- Returns the arguments of an operation 
+         
+    Init(me:out); 
+            ---Purpose: 
+              --- Initializes the data structure for 
+        --  the arguments 
+         
+    NbShapes(me) 
+            returns Integer from Standard; 
+            ---Purpose:  
+            --- Selector  
+            --- Returns the total number of shapes stored   
+         
+    NbSourceShapes(me) 
+            returns Integer from Standard; 
+        ---Purpose:  
+            --- Selector  
+            --- Returns the total number of source shapes stored    
+ 
+    NbRanges(me) 
+            returns Integer from Standard; 
+        ---Purpose:  
+            --- Selector  
+            --- Returns the number of index ranges     
+    
+    Range(me; 
+                theIndex:Integer from Standard) 
+            returns IndexRange from BOPDS; 
+    ---C++: return const & 
+             ---Purpose:  
+            --- Selector  
+            --- Returns the index range "i"      
+     
+    Rank (me; 
+                theIndex:Integer from Standard) 
+        returns Integer from Standard; 
+            ---Purpose: 
+            --- Selector   
+            --- Returns the rank of the shape of index "i"  
+            
+    IsNewShape(me; 
+                theIndex:Integer from Standard) 
+        returns Boolean from Standard; 
+            ---Purpose:  
+            --- Returns true if the shape of index "i" is not 
+        --- the source shape/sub-shape 
+         
+    --
+    --  shapes and auxiliary info  
+    --
+    Append(me:out; 
+                theSI:ShapeInfo from BOPDS) 
+            returns Integer from Standard; 
+            ---Purpose: 
+            --- Modifier  
+        --- Appends the information about the shape [theSI] 
+        --- to the data structure  
+        --- Returns the index of theSI in the data structure 
+         
+    Append(me:out;  
+                theS:Shape from TopoDS) 
+            returns Integer from Standard; 
+            ---Purpose:  
+            --- Modifier  
+        --- Appends the default information about the shape [theS] 
+        --- to the data structure  
+        --- Returns the index of theS in the data structure  
+        
+    ShapeInfo(me; 
+                theIndex:Integer from Standard) 
+        returns ShapeInfo from BOPDS; 
+    ---C++: return const & 
+            ---Purpose: 
+        --- Selector 
+        --- Returns the information about the shape  
+        --- with index theIndex 
+         
+    ChangeShapeInfo(me:out; 
+                theIndex:Integer from Standard) 
+        returns ShapeInfo from BOPDS; 
+    ---C++: return &  
+            ---Purpose:      
+            --- Selector/Modifier
+        --- Returns the information about the shape  
+        --- with index theIndex 
+    
+    Shape(me; 
+                theIndex:Integer from Standard) 
+        returns Shape from TopoDS; 
+    ---C++: return const &   
+             ---Purpose:  
+            --- Selector
+        --- Returns the shape  
+        --  with index theIndex 
+     
+    Index(me; 
+                theS:Shape from TopoDS) 
+            returns Integer from Standard; 
+            ---Purpose:  
+            --- Selector
+        --- Returns the index  of the shape theS 
+
+    -- 
+    -- pave blocks
+    -- 
+    PaveBlocksPool(me)  
+            returns VectorOfListOfPaveBlock from BOPDS; 
+    ---C++: return const &  
+            ---Purpose:  
+            --- Selector
+        --- Returns the information about pave blocks on source edges 
+
+    ChangePaveBlocksPool(me:out)  
+            returns VectorOfListOfPaveBlock from BOPDS; 
+    ---C++: return &  
+            ---Purpose:  
+            --- Selector/Modifier
+        --- Returns the information about pave blocks on source edges  
+
+    HasPaveBlocks(me; 
+                theIndex:Integer from Standard)  
+        returns Boolean from Standard; 
+            ---Purpose:  
+            --- Query
+        --- Returns true if the shape with index theIndex has the 
+        --- information about pave blocks 
+     
+    PaveBlocks (me; 
+                theIndex:Integer from Standard) 
+        returns ListOfPaveBlock from BOPDS; 
+    ---C++: return const &  
+            ---Purpose:  
+            --- Selector
+        --- Returns the pave blocks for the shape with index theIndex  
+
+    ChangePaveBlocks (me:out; 
+                theIndex:Integer from Standard) 
+        returns ListOfPaveBlock from BOPDS; 
+    ---C++: return & 
+              ---Purpose:  
+            --- Selector/Modifier
+        --- Returns the pave blocks for the shape with index theIndex 
+         
+    InitPaveBlocks(me:out; 
+                theIndex:Integer from Standard) 
+            is protected;  
+        ---Purpose:  
+        --- Initializes the pave blocks for the shape with index theIndex
+     
+    UpdatePaveBlocks(me:out);  
+            ---Purpose:  
+        --- Update the pave blocks for the all shapes in data structure 
+        
+    UpdatePaveBlock(me:out; 
+                thePB:PaveBlock from BOPDS);  
+             ---Purpose:  
+        --- Update the pave block thePB 
+         
+    UpdateCommonBlock(me:out; 
+                theCB:CommonBlock from BOPDS); 
+            ---Purpose:   
+            --- Update the common block theCB 
+    -- 
+    -- face info
+    --   
+    FaceInfoPool(me) 
+        returns VectorOfFaceInfo from BOPDS; 
+    ---C++: return const &   
+             ---Purpose:  
+            --- Selector
+        --- Returns the information about state of faces  
+        
+    HasFaceInfo(me; 
+                theIndex:Integer from Standard)  
+        returns Boolean from Standard;  
+        ---Purpose:   
+            --- Query
+        --- Returns true if the shape with index theIndex has the 
+        --- information about state of face  
+        
+    FaceInfo(me; 
+               theIndex:Integer from Standard) 
+            returns FaceInfo from BOPDS; 
+    ---C++: return const & 
+            ---Purpose:  
+            --- Selector
+        --- Returns the state of face with index theIndex    
+
+    ChangeFaceInfo(me:out; 
+                theIndex:Integer from Standard) 
+            returns FaceInfo from BOPDS; 
+    ---C++: return  & 
+             ---Purpose:  
+            --- Selector/Modifier
+        --- Returns the state of face with index theIndex  
+        
+    InitFaceInfo(me:out; 
+                theIndex:Integer from Standard) 
+            is protected; 
+        ---Purpose:  
+        --- Initializes the state of face with index theIndex 
+         
+    UpdateFaceInfoIn(me:out; 
+                theIndex:Integer from Standard); 
+            ---Purpose:  
+        --- Update the state In of face with index theIndex    
+        
+    UpdateFaceInfoOn(me:out; 
+                theIndex:Integer from Standard); 
+            ---Purpose:  
+        --- Update the state On of face with index theIndex   
+
+    FaceInfoOn(me:out;  
+                theIndex:Integer from Standard;  
+            theMPB:out IndexedMapOfPaveBlock from BOPDS;
+            theMVP:out MapOfInteger from BOPCol);  
+        ---Purpose:  
+            --- Selector
+        --- Returns the state On  
+            --- [theMPB,theMVP] of face with index theIndex 
+         
+    FaceInfoIn(me:out;  
+                theIndex:Integer from Standard;  
+            theMPB:out IndexedMapOfPaveBlock from BOPDS;
+            theMVP:out MapOfInteger from BOPCol);  
+            ---Purpose:  
+            --- Selector
+        --- Returns the state In  
+            --- [theMPB,theMVP] of face with index theIndex 
+     
+    AloneVertices(me; 
+                theF:Integer from Standard; 
+                theLI:out ListOfInteger from BOPCol); 
+              ---Purpose:   
+            --- Selector
+        --- Returns the indices of alone vertices  
+            --- for the face with index theIndex 
+         
+    RefineFaceInfoOn(me:out);  
+            ---Purpose:   
+        --- Refine the state On for the all faces having 
+        --- state information 
+    -- 
+    --  ++ 
+    --
+    VerticesOnIn(me; 
+                theF1:Integer from Standard; 
+                theF2:Integer from Standard; 
+                theMI:out MapOfInteger from BOPCol; 
+                aMPB: out MapOfPaveBlock from BOPDS); 
+        ---Purpose:   
+        --- Returns the indices of vertices and pave blocks 
+        --- that  are On/In for the faces with indices theF1, theF2  
+        
+    SharedEdges(me:out; 
+                theF1:Integer from Standard; 
+                theF2:Integer from Standard; 
+                theLI:out ListOfInteger from BOPCol; 
+                theAllocator:BaseAllocator from BOPCol); 
+             ---Purpose:   
+        --- Returns the indices of edges that are  shared 
+        --- for the faces with indices theF1, theF2  
+    -- 
+    -- same domain shapes
+    --  
+    ShapesSD (me:out) 
+        returns DataMapOfIntegerInteger from BOPCol; 
+    ---C++: return &   
+             ---Purpose:  
+            --- Selector
+        --- Returns the collection same domain shapes  
+        
+    AddShapeSD(me:out; 
+                theIndex:Integer from Standard;  
+            theIndexSD:Integer from Standard); 
+        ---Purpose:  
+            --- Modifier
+        --- Adds the information about same domain shapes  
+        --- with indices theIndex, theIndexSD  
+         
+    HasShapeSD(me; 
+                theIndex:Integer from Standard;  
+            theIndexSD:out Integer from Standard) 
+        returns Boolean from Standard;  
+            ---Purpose:   
+            --- Query
+        --- Returns true if the shape with index theIndex has the 
+        --- same domain shape. In this case theIndexSD will contain 
+        --  the index of same domain shape found
+    --
+    -- interferences
+    --  
+    InterfVV(me:out) 
+            returns VectorOfInterfVV from BOPDS; 
+    ---C++: return &  
+    ---C++: inline  
+            ---Purpose:  
+            --- Selector/Modifier
+        --- Returns the collection of interferences Vertex/Vertex   
+     
+    InterfVE(me:out) 
+            returns VectorOfInterfVE from BOPDS; 
+    ---C++: return &  
+    ---C++: inline   
+            ---Purpose:  
+            --- Selector/Modifier
+        --- Returns the collection of interferences Vertex/Edge  
+     
+    InterfVF(me:out) 
+            returns VectorOfInterfVF from BOPDS; 
+    ---C++: return &  
+    ---C++: inline  
+            ---Purpose:  
+            --- Selector/Modifier
+        --- Returns the collection of interferences Vertex/Face  
+     
+    InterfEE(me:out) 
+            returns VectorOfInterfEE from BOPDS; 
+    ---C++: return &  
+    ---C++: inline 
+            ---Purpose:  
+            --- Selector/Modifier
+        --- Returns the collection of interferences Edge/Edge  
+     
+    InterfEF(me:out) 
+            returns VectorOfInterfEF from BOPDS; 
+    ---C++: return &  
+    ---C++: inline 
+            ---Purpose:  
+            --- Selector/Modifier
+        --- Returns the collection of interferences Edge/Face  
+
+    InterfFF(me:out) 
+            returns VectorOfInterfFF from BOPDS; 
+    ---C++: return &  
+    ---C++: inline  
+            ---Purpose:  
+            --- Selector/Modifier
+        --- Returns the collection of interferences Face/Face  
+    
+    AddInterf(me:out; 
+                theI1:Integer from Standard;
+                theI2:Integer from Standard); 
+    ---C++: inline 
+            ---Purpose:  
+            --- Modifier
+        --- Adds the information about an interference between  
+        --- shapes with indices theI1, theI2 to the summary 
+        --- table of interferences 
+         
+    HasInterf(me; 
+                theI:Integer from Standard)
+        returns Boolean from Standard; 
+            ---Purpose: 
+            --- Query
+        --- Returns true if the shape with index theI    
+        --- is interferred
+          
+    HasInterf(me; 
+                theI1:Integer from Standard;  
+            theI2:Integer from Standard) 
+        returns Boolean from Standard; 
+    ---C++: inline 
+            ---Purpose: 
+            --- Query
+        --- Returns true if the shapes with indices theI1, theI2    
+        --- are interferred 
+         
+    HasInterfShapeSubShapes(me; 
+            theI1:Integer from Standard;  
+            theI2:Integer from Standard) 
+        returns Boolean from Standard; 
+            ---Purpose: 
+            --- Query
+        --- Returns true if the shape with index theI1 is interfered 
+        --- with any of sub-shapes of the shapes with index theI2
+ 
+    HasInterfSubShapes(me; 
+            theI1:Integer from Standard;  
+            theI2:Integer from Standard) 
+        returns Boolean from Standard; 
+            ---Purpose: 
+            --- Query
+        --- Returns true if the shapes with indices theI1, theI2    
+        --- have interferred sub-shapes    
+ 
+    Interferences(me) 
+         returns MapOfPassKey from BOPDS; 
+    ---C++: return const &   
+    ---C++: inline 
+            ---Purpose:  
+            --- Selector
+        --- Returns the table of interferences 
+    -- 
+    -- debug
+    -- 
+    Dump(me);     
+    -- 
+    -- protected methods 
+    -- 
+    InitShape(me:out;  
+                theIndex:Integer from Standard;
+                theS:Shape from TopoDS; 
+                theAllocator:out BaseAllocator from BOPCol;   
+            theMSI:out DataMapOfShapeInteger from BOPCol) 
+            is protected;  
+             
+    CheckCoincidence(me:out; 
+                thePB1:PaveBlock from BOPDS;
+                thePB2:PaveBlock from BOPDS)
+            returns Boolean from Standard 
+            is protected;
+ 
+    SortPaveBlocks(me:out; 
+                theCB:CommonBlock from BOPDS);
+ 
+    IsToSort(me:out; 
+                theCB:CommonBlock from BOPDS; 
+                theI:out Integer from Standard) 
+             returns Boolean from Standard;
+     
+    IsSubShape(me:out; 
+                theI1:Integer from Standard; 
+                theI2:Integer from Standard) 
+             returns Boolean from Standard; 
+ 
+    Paves(me:out; 
+                theIndex:Integer from Standard; 
+                theLP:out ListOfPave from BOPDS);
+            ---Purpose: Fills theLP with sorted paves  
+            -- of the shape with index theIndex   
+             
+     UpdateEdgeTolerance(me:out; 
+                 theIndex:Integer from Standard; 
+                 theTolerance:Real from Standard); 
+             ---Purpose: 
+             --- Updates tolerance of the sub-shapes of the shape with index <theIndex>.
+             ---
+               
+fields  
+    myAllocator        : BaseAllocator from BOPCol is protected;
+    myArguments        : ListOfShape from BOPCol is protected;   
+    --contents         
+    myNbShapes         : Integer from Standard is protected;     
+    myNbSourceShapes   : Integer from Standard is protected;       
+    myRanges           : VectorOfIndexRange from BOPDS is protected;    
+    myLines            : VectorOfShapeInfo  from BOPDS is protected;   
+    myMapShapeIndex    : DataMapOfShapeInteger from BOPCol is protected;
+    -- 
+    myPaveBlocksPool   : VectorOfListOfPaveBlock from BOPDS is protected; 
+    myFaceInfoPool     : VectorOfFaceInfo  from BOPDS is protected; 
+    --                 
+    --same domain shapes 
+    myShapesSD         : DataMapOfIntegerInteger from BOPCol is protected;  
+    -- 
+    --interferences 
+    myInterfTB         : MapOfPassKey     from BOPDS is protected; 
+    myInterfVV         : VectorOfInterfVV from BOPDS is protected;
+    myInterfVE         : VectorOfInterfVE from BOPDS is protected;
+    myInterfVF         : VectorOfInterfVF from BOPDS is protected;
+    myInterfEE         : VectorOfInterfEE from BOPDS is protected;
+    myInterfEF         : VectorOfInterfEF from BOPDS is protected;
+    myInterfFF         : VectorOfInterfFF from BOPDS is protected;
+ 
+end DS;

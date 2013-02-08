@@ -10,6 +10,6 @@ bcut res1 tool base
 
 explode res1 So
 
-bfuse result base res1_2
+bfuse result base res1_1
 
 set square 181990

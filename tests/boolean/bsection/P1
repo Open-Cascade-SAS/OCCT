@@ -2,6 +2,6 @@ restore [locate_data_file CIN901_intcqhmi.rle] m
 explode m
 compound m_1 m_3 c1
 compound m_2 m_4 c2
-bsection result c1 c2 -2d -a
+bsection result c1 c2
 
 set length 40.5172

@@ -250,27 +250,27 @@ void QANewBRepNaming_ImportShape::LoadC0Edges(const TopoDS_Shape& S,
       const TopTools_ListOfShape& aList1 = edgeNaborFaces.Find(anEdge1);
       TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itr(edgeNaborFaces);
       for (; itr.More(); itr.Next()) {
-	TopoDS_Shape anEdge2 = itr.Key();
-	if (anEdge1.IsSame(anEdge2)) continue;
-	const TopTools_ListOfShape& aList2 = itr.Value();
-	// compare lists of the neighbour faces of edge1 and edge2
-	if (aList1.Extent() == aList2.Extent()) {
-	  Standard_Integer aMatches = 0;
-	  for(TopTools_ListIteratorOfListOfShape aLIter1(aList1);aLIter1.More();aLIter1.Next())
-	    for(TopTools_ListIteratorOfListOfShape aLIter2(aList2);aLIter2.More();aLIter2.Next())
-	      if (aLIter1.Value().IsSame(aLIter2.Value())) aMatches++;
-	  if (aMatches == aList1.Extent()) {
-	    aC0=Standard_True;
-	    TNaming_Builder bC0Edge(Tagger->NewChild());
-	    bC0Edge.Generated(anEdge2);
+        TopoDS_Shape anEdge2 = itr.Key();
+        if (anEdge1.IsSame(anEdge2)) continue;
+        const TopTools_ListOfShape& aList2 = itr.Value();
+        // compare lists of the neighbour faces of edge1 and edge2
+        if (aList1.Extent() == aList2.Extent()) {
+          Standard_Integer aMatches = 0;
+          for(TopTools_ListIteratorOfListOfShape aLIter1(aList1);aLIter1.More();aLIter1.Next())
+            for(TopTools_ListIteratorOfListOfShape aLIter2(aList2);aLIter2.More();aLIter2.Next())
+              if (aLIter1.Value().IsSame(aLIter2.Value())) aMatches++;
+          if (aMatches == aList1.Extent()) {
+            aC0=Standard_True;
+            TNaming_Builder bC0Edge(Tagger->NewChild());
+            bC0Edge.Generated(anEdge2);
             aEdgesToRemove.Append (anEdge2);
-	  }
-	}
+          }
+        }
       }
       // remove items from the data map
       for(TopTools_ListIteratorOfListOfShape anIt(aEdgesToRemove); anIt.More(); anIt.Next())
         edgeNaborFaces.UnBind(anIt.Value());
-    }
+      }
     if (aC0) {
       TNaming_Builder bC0Edge(Tagger->NewChild());
       bC0Edge.Generated(anEdge1);

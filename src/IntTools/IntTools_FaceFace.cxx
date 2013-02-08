@@ -111,15 +111,13 @@
 #include <BRepTools.hxx>
 #include <BRepAdaptor_Surface.hxx>
 
-#include <BOPTColStd_Dump.hxx>
-
 #include <IntTools_Curve.hxx>
 #include <IntTools_Tools.hxx>
 #include <IntTools_Tools.hxx>
 #include <IntTools_TopolTool.hxx>
 #include <IntTools_PntOnFace.hxx>
 #include <IntTools_PntOn2Faces.hxx>
-#include <IntTools_Context.hxx>
+#include <BOPInt_Context.hxx>
 #include <IntSurf_ListIteratorOfListOfPntOn2S.hxx>
 
 static
@@ -193,7 +191,7 @@ static
 					const Standard_Boolean                         theAvoidLConstructor,
 					IntPatch_SequenceOfLine&                       theNewLines,
 					Standard_Real&                                 theReachedTol3d,
-					const Handle(IntTools_Context)& );
+					const Handle(BOPInt_Context)& );
 
 static 
   Standard_Boolean ParameterOutOfBoundary(const Standard_Real       theParameter, 
@@ -203,7 +201,7 @@ static
 					  const Standard_Real       theOtherParameter,
 					  const Standard_Boolean    bIncreasePar,
 					  Standard_Real&            theNewParameter,
-					  const Handle(IntTools_Context)& );
+					  const Handle(BOPInt_Context)& );
 
 static 
   Standard_Boolean IsCurveValid(Handle(Geom2d_Curve)& thePCurve);
@@ -232,7 +230,7 @@ static
 				       Handle(TColgp_HArray1OfPnt2d)&       theResultOnS1,
 				       Handle(TColgp_HArray1OfPnt2d)&       theResultOnS2,
 				       Handle(TColStd_HArray1OfReal)&       theResultRadius,
-				       const Handle(IntTools_Context)& );
+				       const Handle(BOPInt_Context)& );
 
 static
   Standard_Boolean FindPoint(const gp_Pnt2d&     theFirstPoint,
@@ -306,7 +304,7 @@ static
 				   const Handle(GeomAdaptor_HSurface) myHS2,
 				   const TopoDS_Face& aF1,
 				   const TopoDS_Face& aF2,
-				   const Handle(IntTools_Context)& aCtx);
+				   const Handle(BOPInt_Context)& aCtx);
 
 static
   Standard_Boolean CheckPCurve(const Handle(Geom2d_Curve)& aPC, 
@@ -324,7 +322,7 @@ static
 				       const Handle(GeomAdaptor_HSurface)& myHS2,
 				       const TopoDS_Face& aF1,
 				       const TopoDS_Face& aF2,
-				       const Handle(IntTools_Context)& aCtx);
+				       const Handle(BOPInt_Context)& aCtx);
 
 //=======================================================================
 //function : 
@@ -345,7 +343,7 @@ IntTools_FaceFace::IntTools_FaceFace()
 //function : SetContext
 //purpose  : 
 //======================================================================= 
-void IntTools_FaceFace::SetContext(const Handle(IntTools_Context)& aContext)
+void IntTools_FaceFace::SetContext(const Handle(BOPInt_Context)& aContext)
 {
   myContext=aContext;
 }
@@ -353,7 +351,7 @@ void IntTools_FaceFace::SetContext(const Handle(IntTools_Context)& aContext)
 //function : Context
 //purpose  : 
 //======================================================================= 
-const Handle(IntTools_Context)& IntTools_FaceFace::Context()const
+const Handle(BOPInt_Context)& IntTools_FaceFace::Context()const
 {
   return myContext;
 }
@@ -464,7 +462,7 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
   BRepAdaptor_Surface aBAS1, aBAS2;
   //
   if (myContext.IsNull()) {
-    myContext=new IntTools_Context;
+    myContext=new BOPInt_Context;
   }
   //
   mySeqOfCurve.Clear();
@@ -1040,6 +1038,47 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
       myTolReached3d=sqrt(aD2max);
     }
   }//else if ((aType1==GeomAbs_Plane && aType2==GeomAbs_Sphere) ...
+  else if (!myApprox) {
+    Standard_Integer i, aNbP, j ;
+    Standard_Real aT1, aT2, dT, aD2, aD2Max, aEps, aT11, aT12;
+    //
+    aD2Max=0.;
+    aNbLin=mySeqOfCurve.Length();
+    //
+    for (i=1; i<=aNbLin; ++i) {
+      const IntTools_Curve& aIC=mySeqOfCurve(i);
+      const Handle(Geom_Curve)& aC3D=aIC.Curve();
+      const Handle(Geom2d_Curve)& aC2D1=aIC.FirstCurve2d();
+      const Handle(Geom2d_Curve)& aC2D2=aIC.SecondCurve2d();
+      //
+      if (aC3D.IsNull()) {
+	continue;
+      }
+      const Handle(Geom_BSplineCurve)& aBC=
+	Handle(Geom_BSplineCurve)::DownCast(aC3D);
+      if (aBC.IsNull()) {
+	continue;
+      }
+      //
+      aT1=aBC->FirstParameter();
+      aT2=aBC->LastParameter();
+      //
+      aEps=0.0001*(aT2-aT1);
+      aNbP=11;
+      dT=(aT2-aT1)/aNbP;
+      for (j=1; j<aNbP-1; ++j) {
+	aT11=aT1+j*dT;
+	aT12=aT11+dT;
+	aD2=FindMaxSquareDistance(aT11, aT12, aEps, aC3D, aC2D1, aC2D2,
+				  myHS1, myHS2, myFace1, myFace2, myContext);
+	if (aD2>aD2Max) {
+	  aD2Max=aD2;
+	}
+      }
+    }//for (i=1; i<=aNbLin; ++i) {
+    myTolReached3d=sqrt(aD2Max);
+  }
+  //modified by NIZNHY-PKV Thu Aug 30 13:31:12 2012t
 }
 //=======================================================================
 //function : MakeCurve
@@ -2274,9 +2313,6 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
       }
     }
   }
-  if (C2d.IsNull()) {
-    BOPTColStd_Dump::PrintMessage("BuildPCurves()=> Echec ProjLib\n");
-  }
 }
 
 //=======================================================================
@@ -2686,8 +2722,8 @@ Handle(Geom2d_BSplineCurve) MakeBSpline2d(const Handle(IntPatch_WLine)& theWLine
 // because inside degenerated zone of the surface the approx. algo.
 // uses wrong values of normal, etc., and resulting curve will have
 // oscillations that we would not like to have. 
-                                                 
  
+
 
 static
   Standard_Boolean IsDegeneratedZone(const gp_Pnt2d& aP2d,
@@ -3244,7 +3280,7 @@ Standard_Integer ComputeTangentZones( const Handle(GeomAdaptor_HSurface)& theSur
 				     Handle(TColgp_HArray1OfPnt2d)&       theResultOnS1,
 				     Handle(TColgp_HArray1OfPnt2d)&       theResultOnS2,
 				     Handle(TColStd_HArray1OfReal)&       theResultRadius,
-				     const Handle(IntTools_Context)& aContext)
+				     const Handle(BOPInt_Context)& aContext)
 {
   Standard_Integer aResult = 0;
   if ( !CheckTangentZonesExist( theSurface1, theSurface2 ) )
@@ -3456,7 +3492,7 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
 				      const Standard_Boolean                         theAvoidLConstructor,
 				      IntPatch_SequenceOfLine&                       theNewLines,
 				      Standard_Real&                                 theReachedTol3d,
-				      const Handle(IntTools_Context)& aContext) 
+				      const Handle(BOPInt_Context)& aContext) 
 {
 
   Standard_Boolean bRet, bAvoidLineConstructor;
@@ -4181,7 +4217,7 @@ Standard_Boolean ParameterOutOfBoundary(const Standard_Real       theParameter,
 					const Standard_Real       theOtherParameter,
 					const Standard_Boolean    bIncreasePar,
 					Standard_Real&            theNewParameter,
-					const Handle(IntTools_Context)& aContext)
+					const Handle(BOPInt_Context)& aContext)
 {
   Standard_Boolean bIsComputed = Standard_False;
   theNewParameter = theParameter;
@@ -4785,7 +4821,7 @@ Standard_Real FindMaxSquareDistance (const Standard_Real aT1,
 				     const Handle(GeomAdaptor_HSurface)& myHS2,
 				     const TopoDS_Face& myFace1,
 				     const TopoDS_Face& myFace2,
-				     const Handle(IntTools_Context)& myContext)
+				     const Handle(BOPInt_Context)& myContext)
 {
   Standard_Real aA, aB, aCf, aX1, aX2, aF1, aF2, aX, aF;
   //
@@ -4839,7 +4875,7 @@ Standard_Real MaxSquareDistance (const Standard_Real aT,
 				 const Handle(GeomAdaptor_HSurface) myHS2,
 				 const TopoDS_Face& aF1,
 				 const TopoDS_Face& aF2,
-				 const Handle(IntTools_Context)& aCtx)
+				 const Handle(BOPInt_Context)& aCtx)
 {
   Standard_Boolean bIsDone;
   Standard_Integer i;

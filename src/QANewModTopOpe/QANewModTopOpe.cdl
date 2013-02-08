@@ -29,7 +29,8 @@ uses
     TopAbs,
     BRepTools, 
     gp,
-    BOPTools
+    BOPAlgo, 
+    BOPDS
  
 is 
   

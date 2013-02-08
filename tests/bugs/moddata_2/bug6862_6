@@ -2,7 +2,6 @@ puts "============"
 puts "OCC6862"
 puts "============"
 puts ""
-puts "TODO OCC111111 ALL: Faulty OCC6862"
 
 #######################################################################
 # Tool for checking arguments of Boolean Operations

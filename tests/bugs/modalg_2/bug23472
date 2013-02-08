@@ -9,7 +9,7 @@ puts ""
 restore [locate_data_file bug23472_f1.brep] f1
 restore [locate_data_file bug23472_f2.brep] f2
 
-bsection result f1 f2 -2d
+bsection result f1 f2
 
 regexp {Mass +: +([-0-9.+eE]+)} [lprops result] full l      
 

@@ -13,7 +13,7 @@ checkshape ss
 
 plane pl1 25680.2288 21428 9995 1 0 0
 mkface f1 pl1 -1 11 -5 5
-bsection result ss f1 -a
+bsection result ss f1 -n2d
 
 set good_len 10.0009
 regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} [maxtolerance result] full tol

@@ -1,0 +1,97 @@
+-- Created by: Peter KURNEV
+-- Copyright (c) 1999-2012 OPEN CASCADE SAS
+--
+-- The content of this file is subject to the Open CASCADE Technology Public
+-- License Version 6.5 (the "License"). You may not use the content of this file
+-- except in compliance with the License. Please obtain a copy of the License
+-- at http://www.opencascade.org and read it completely before using this file.
+--
+-- The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+-- main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+--
+-- The Original Code and all software distributed under the License is
+-- distributed on an "AS IS" basis, without warranty of any kind, and the
+-- Initial Developer hereby disclaims all such warranties, including without
+-- limitation, any warranties of merchantability, fitness for a particular
+-- purpose or non-infringement. Please see the License for the specific terms
+-- and conditions governing the rights and limitations under the License.
+
+class Pave from BOPDS  
+
+	---Purpose: 
+    	-- The class BOPDS_Pave is to store  
+    	-- information about vertex on an edge 
+--uses
+--raises
+
+is 
+    Create 
+    	returns Pave from BOPDS; 
+    ---C++: alias "Standard_EXPORT virtual ~BOPDS_Pave();"   
+    ---C++: inline  
+    	---Purpose:  
+    	--- Empty contructor  
+    	---  
+     
+    SetIndex(me:out;  
+    	    theIndex: Integer from Standard); 
+    ---C++: inline    
+    	---Purpose:   
+	--- Modifier   
+	--- Sets the index of vertex <theIndex>
+	
+    Index(me)  
+    	returns Integer from Standard; 
+    ---C++: inline  
+     	---Purpose: 
+    	--- Selector   
+	--- Returns the index of vertex 
+    SetParameter(me:out;  
+    	    theParameter: Real from Standard); 
+    ---C++: inline      
+     	---Purpose:   
+	--- Modifier   
+	--- Sets the parameter of vertex <theParameter> 
+	
+    Parameter(me)  
+    	returns Real from Standard; 
+    ---C++: inline     	
+    	---Purpose: 
+    	--- Selector   
+	--- Returns the parameter of vertex
+    Contents(me; 
+    	    theIndex:out Integer from Standard; 
+	    theParameter:out Real from Standard); 
+    ---C++: inline 
+       	---Purpose: 
+    	--- Selector  
+    	--- Returns the index of vertex <theIndex>  
+	--- Returns the parameter of vertex <theParameter> 
+	
+    IsLess(me; 
+    	    theOther:  Pave from BOPDS) 
+    	returns Boolean from Standard;  
+    ---C++: alias operator <	 
+    ---C++: inline  
+    	---Purpose: 
+    	--- Query  
+    	--- Returns true if thr parameter od this is less   
+    	--  than the parameter of  <theOther> 
+    
+    IsEqual(me; 
+    	    theOther:  Pave from BOPDS) 
+    	returns Boolean from Standard;  
+    ---C++: alias operator == 
+    ---C++: inline  
+     	---Purpose: 
+    	--- Query  
+    	--- Returns true if thr parameter od this is equal   
+    	--  to the parameter of  <theOther> 
+	 
+    Dump(me); 
+
+fields 
+    myIndex    : Integer from Standard is protected;     
+    myParameter: Real from Standard is protected;     
+
+end Pave;

@@ -1,5 +1,5 @@
 restore [locate_data_file pro14151a.rle] a
 restore [locate_data_file CFI_pro14fjq.rle] b
-bsection result a b -2d
+bsection result a b
 
 set length 49.9609

@@ -51,14 +51,15 @@ uses
     Shape from TopoDS,
     Surface from Geom,
     Curve   from Geom2d,
-    DSFiller from BOPTools,
+    PaveFiller from BOPAlgo,
     ListOfShape from TopTools
     
 is
         Create (S1,S2 : Shape from TopoDS; 
-    	    aDSF:DSFiller from BOPTools;
+    	    aDSF:PaveFiller from BOPAlgo;
     	    PerformNow : Boolean = Standard_True)  
     	returns Section from BRepAlgoAPI;
+    ---C++: alias "Standard_EXPORT virtual ~BRepAlgoAPI_Section(){}"   
 
     Create(Sh1,Sh2 : Shape from TopoDS;
     	   PerformNow : Boolean = Standard_True)

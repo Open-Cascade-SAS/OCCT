@@ -12,5 +12,5 @@ mkface f1 p1
 
 bsection result a f1
 
-set length 5534.74
+set length 5364.73
 set 2dviewer 0

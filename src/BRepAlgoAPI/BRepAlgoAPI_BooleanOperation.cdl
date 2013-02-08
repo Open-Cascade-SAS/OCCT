@@ -19,6 +19,8 @@
 -- and conditions governing the rights and limitations under the License.
 
 -- modified by  Peter KURNEV   Tue Mar  5 14:01:51 2002
+-- modified by  Eugeny MALTCHIKOV Wed Jul 04 11:13:01 2012 
+
 
 deferred class BooleanOperation from BRepAlgoAPI
     inherits MakeShape from BRepBuilderAPI
@@ -37,11 +39,11 @@ uses
 
     Shape       from TopoDS,
     ListOfShape from TopTools,
-    Operation   from BOP,  
-    PBuilder    from BOP, 	     
-    HistoryCollector from BOP,
-    PDSFiller from BOPTools, 
-    DSFiller from BOPTools, 
+    Operation   from BOPAlgo, 
+    BOP         from BOPAlgo,
+    PBOP        from BOPAlgo, 
+    PaveFiller  from BOPAlgo, 
+    PPaveFiller from BOPAlgo,
     DataMapOfIntegerListOfShape  from  TopTools, 
     DataMapOfIntegerShape  from  TopTools,
     DataMapOfShapeShape  from  TopTools 
@@ -50,23 +52,23 @@ is
 
     Initialize (S1 :Shape from TopoDS; 
     	    	S2 :Shape from TopoDS; 
-    	    	anOperation:Operation from BOP);
+    	    	anOperation:Operation from BOPAlgo);
     	---Purpose: Prepares the operations for S1 and S2.
      
     Initialize (S1   :Shape from TopoDS; 
     	    	S2   :Shape from TopoDS; 
-		aDSF :DSFiller from BOPTools;   							     
-    	    	anOperation:Operation from BOP); 
+		aDSF :PaveFiller from BOPAlgo;   							     
+    	    	anOperation:Operation from BOPAlgo); 
     	---Purpose: Prepares the operations for S1 and S2.
 
     SetOperation (me:out; 
-    	    anOp:  Operation from BOP); 
+    	    anOp:  Operation from BOPAlgo); 
     	---Purpose:  Sets the type of Boolean operation to perform      
-    	---          It can be BOP_SECTION 
-    	---                    BOP_COMMON 
-    	---                    BOP_FUSE 
-    	---                    BOP_CUT 
-    	---                    BOP_CUT21 
+    	---          It can be BOPAlgo_SECTION 
+    	---                    BOPAlgo_COMMON 
+    	---                    BOPAlgo_FUSE 
+    	---                    BOPAlgo_CUT 
+    	---                    BOPAlgo_CUT21 
     	--- 
 	 
 
@@ -89,7 +91,7 @@ is
     	---C++: return const &
      
     Operation  (me) 
-    	returns Operation from BOP;
+    	returns Operation from BOPAlgo;
     	---Purpose: Returns the type of Boolean Operation that has been performed.  
 	 
     FuseEdges(me)  returns  Boolean  from  Standard;
@@ -189,15 +191,13 @@ is
     	---C++:  return const &
 
 fields
-    myS1             : Shape from TopoDS       is protected;
-    myS2             : Shape from TopoDS       is protected;
-    myBuilderCanWork : Boolean from Standard   is protected;   
-    myOperation      : Operation from BOP      is protected;  
-    myErrorStatus    : Integer from Standard   is protected;  	     
-    myDSFiller       : PDSFiller from BOPTools is protected; 
-    myBuilder        : PBuilder  from BOP      is protected;
-
-    myHistory        : HistoryCollector from BOP is protected;
+    myS1             : Shape from TopoDS        is protected;
+    myS2             : Shape from TopoDS        is protected;
+    myBuilderCanWork : Boolean from Standard    is protected;   
+    myOperation      : Operation from BOPAlgo   is protected;  
+    myErrorStatus    : Integer from Standard    is protected;  	     
+    myDSFiller       : PPaveFiller from BOPAlgo is protected; 
+    myBuilder        : PBOP from BOPAlgo        is protected;
 
     myEntryType      : Integer     from Standard;   
 

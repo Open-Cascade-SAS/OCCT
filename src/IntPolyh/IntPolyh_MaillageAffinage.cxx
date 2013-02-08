@@ -2338,7 +2338,7 @@ void CalculPtsInterTriEdgeCoplanaires2(const Standard_Integer TriSurfID,
     Standard_Real pe2p= Cote.Dot(PE2);
     Standard_Real pt1p= Cote.Dot(PT1);
     Standard_Real pt2p= Cote.Dot(PT2);
-    Standard_Real lambda1 =0.,lambda2 =0.,alpha1 =0.,alpha2 =0.;
+    Standard_Real lambda1=0., lambda2=0., alpha1=0., alpha2=0.;
     IntPolyh_Point PEP1,PTP1,PEP2,PTP2;
 
     if (pe1p>pe2p) {

@@ -6,9 +6,6 @@ mkplane cont cont
 
 puts "*"
 
-puts "TODO OCC22810 ALL:Error in featperform"
-puts "TODO OCC22810 ALL:Error : The feat grid cannot be built."
-
 restore [locate_data_file CFE900_cts21gbs.rle] base
 restore [locate_data_file cts21322_face.rle] wire
 
@@ -24,4 +21,4 @@ if { [catch { featperform prism result } ] != 0 } {
   puts "Error in featperform"
 }
 
-set square 0
+set square 683.581

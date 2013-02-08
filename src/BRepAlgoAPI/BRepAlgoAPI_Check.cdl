@@ -1,0 +1,129 @@
+-- Created on: 2012-12-17
+-- Created by: Eugeny MALTCHIKOV
+-- Copyright (c) 2012-2012 OPEN CASCADE SAS
+--
+-- The content of this file is subject to the Open CASCADE Technology Public
+-- License Version 6.5 (the "License"). You may not use the content of this file
+-- except in compliance with the License. Please obtain a copy of the License
+-- at http://www.opencascade.org and read it completely before using this file.
+--
+-- The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+-- main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+--
+-- The Original Code and all software distributed under the License is
+-- distributed on an "AS IS" basis, without warranty of any kind, and the
+-- Initial Developer hereby disclaims all such warranties, including without
+-- limitation, any warranties of merchantability, fitness for a particular
+-- purpose or non-infringement. Please see the License for the specific terms
+-- and conditions governing the rights and limitations under the License.
+
+class Check from BRepAlgoAPI
+    ---Purpose:  
+    -- The class Check provides a diagnostic tool for checking  
+    -- single shape or couple of shapes. 
+    -- Single shape is checking on topological validity, small edges  
+    -- and self-interference. For couple of shapes added check 
+    -- on validity for boolean operation of given type.
+    -- 
+    -- The class provides two ways of checking shape(-s)
+    -- 1. Constructors 
+    --    BRepAlgoAPI_Check aCh(theS); 
+    --    Standard_Boolean bV=aCh.IsValid();     
+    -- 2. Methods SetData and Perform 
+    --    BRepAlgoAPI_Check aCh; 
+    --    aCh.SetData(theS1, theS2, BOPAlgo_FUSE, Standard_False); 
+    --    aCh.Perform(); 
+    --    Standard_Boolean bV=aCh.IsValid();     
+ 
+uses 
+    Shape from TopoDS, 
+    Operation from BOPAlgo, 
+    PArgumentAnalyzer from BOPAlgo, 
+    ListOfCheckResult from BOPAlgo
+ 
+is
+    Create  
+    returns Check from BRepAlgoAPI; 
+    ---C++: alias "Standard_EXPORT virtual ~BRepAlgoAPI_Check();"  
+    ---Purpose:  Empty constructor. 
+     
+    Create( 
+        theS   : Shape   from TopoDS; 
+        bTestSE : Boolean from Standard = Standard_True; 
+        bTestSI : Boolean from Standard = Standard_True) 
+    returns Check from BRepAlgoAPI;  
+    ---Purpose:  Constructor for checking single shape. 
+    -- It calls methods  
+    -- Init(theS, TopoDS_Shape(), BOPAlgo_UNKNOWN, bTestSE, bTestSI) 
+    -- and Perform().
+    -- Params:   
+    --  theS   - the shape that should be checked; 
+    --  bTestSE - flag that specifies whether check on small edges  
+    --            should be performed; by default it is set to TRUE;
+    --  bTestSI - flag that specifies whether check on self-interference 
+    --            should be performed; by default it is set to TRUE;
+     
+    Create( 
+        theS1   : Shape     from TopoDS; 
+        theS2   : Shape     from TopoDS; 
+        theOp   : Operation from BOPAlgo = BOPAlgo_UNKNOWN;
+        bTestSE : Boolean   from Standard = Standard_True; 
+        bTestSI : Boolean   from Standard = Standard_True) 
+    returns Check from BRepAlgoAPI; 
+    ---Purpose: Constructor for couple of shapes.  
+    -- It calls methods  
+    -- Init(theS1, theS2, theOp, bTestSE, bTestSI) and Perform().
+    -- Params: 
+    --  theS1, theS2 - the initial shapes. 
+    --  theOp - the type of Boolean Operation; 
+    --          if it is not defined (set to UNKNOWN) for each shape
+    --          performed check as for single shape. 
+    --  bTestSE - flag that specifies whether check on small edges  
+    --            should be performed; by default it is set to TRUE;
+    --  bTestSI - flag that specifies whether check on self-interference 
+    --            should be performed; by default it is set to TRUE; 
+      
+    Init(me:out; 
+        theS1   : Shape     from TopoDS; 
+        theS2   : Shape     from TopoDS; 
+        theOp   : Operation from BOPAlgo;
+        bTestSE : Boolean   from Standard; 
+        bTestSI : Boolean   from Standard)
+      is protected;  
+    ---Purpose: Initialyzes data.
+ 
+    SetData(me:out; 
+        theS   : Shape   from TopoDS; 
+        bTestSE : Boolean from Standard = Standard_True; 
+        bTestSI : Boolean from Standard = Standard_True);
+    ---Purpose: Sets data for check by Init method.
+    -- The method provides alternative way for checking single shape. 
+     
+    SetData(me:out; 
+        theS1   : Shape     from TopoDS; 
+        theS2   : Shape     from TopoDS; 
+        theOp   : Operation from BOPAlgo = BOPAlgo_UNKNOWN;
+        bTestSE : Boolean   from Standard = Standard_True; 
+        bTestSI : Boolean   from Standard = Standard_True);
+    ---Purpose: Sets data for check by Init method.
+    -- The method provides alternative way for checking couple of shapes.
+    
+    Perform(me:out);
+    ---Purpose: Performs the check. 
+     
+    IsValid(me:out) 
+      returns Boolean from Standard; 
+    ---Purpose: Shows whether shape(s) valid or not. 
+     
+    Result(me:out) 
+      returns ListOfCheckResult from BOPAlgo;  
+    ---C++: return const&
+    ---Purpose: Returns faulty shapes.
+    
+fields  
+  myS1, myS2 : Shape from TopoDS is protected;  
+  myAnalyzer : PArgumentAnalyzer from BOPAlgo is protected;
+  myResult   : ListOfCheckResult from BOPAlgo is protected;
+   
+end BooleanOperation;
+

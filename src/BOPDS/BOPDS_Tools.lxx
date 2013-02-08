@@ -1,0 +1,66 @@
+// Created by: Peter KURNEV
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
+//=======================================================================
+// function: HasBRep
+// purpose: 
+//=======================================================================
+  inline Standard_Boolean BOPDS_Tools::HasBRep(const TopAbs_ShapeEnum aTi)
+{
+  return (aTi==TopAbs_VERTEX || aTi==TopAbs_EDGE || aTi==TopAbs_FACE);
+}//=======================================================================
+//function : TypeToInteger
+//purpose  : 
+//=======================================================================
+  inline Standard_Integer BOPDS_Tools::TypeToInteger(const TopAbs_ShapeEnum aType1,
+						     const TopAbs_ShapeEnum aType2)
+{
+  Standard_Integer iRet, iT1, iT2, iX;
+  //
+  iRet=-1;
+  iT1=(Standard_Integer)aType1;
+  iT2=(Standard_Integer)aType2;
+  //
+  iX=iT2*10+iT1;
+  switch (iX) {
+    case 77:
+      iRet=5; // VV
+      break;
+    case 76:
+    case 67:
+      iRet=4; // VE
+      break;
+    case 74:
+    case 47:
+      iRet=2; // VF
+      break;
+    case 66:
+      iRet=3; // EE
+      break;
+    case 64:
+    case 46:
+      iRet=1; // EF
+      break;
+    case 44:
+      iRet=0; // FF
+      break;
+    default:
+      break;
+  }
+  return iRet; 
+}

@@ -20,7 +20,7 @@ if { [regexp {Faulty} $che_a] } {
 set Y 4
 plane pl 0 ${Y} 0 0 1 0
 mkface f pl
-bsection result a f -2d -a
+bsection result a f
 
 
     

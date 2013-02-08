@@ -1,0 +1,77 @@
+-- Created by: Peter KURNEV
+-- Copyright (c) 1999-2012 OPEN CASCADE SAS
+--
+-- The content of this file is subject to the Open CASCADE Technology Public
+-- License Version 6.5 (the "License"). You may not use the content of this file
+-- except in compliance with the License. Please obtain a copy of the License
+-- at http://www.opencascade.org and read it completely before using this file.
+--
+-- The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+-- main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+--
+-- The Original Code and all software distributed under the License is
+-- distributed on an "AS IS" basis, without warranty of any kind, and the
+-- Initial Developer hereby disclaims all such warranties, including without
+-- limitation, any warranties of merchantability, fitness for a particular
+-- purpose or non-infringement. Please see the License for the specific terms
+-- and conditions governing the rights and limitations under the License.
+
+class WireSplitter from BOPAlgo 
+    	inherits Algo from BOPAlgo 
+	 
+	---Purpose: 
+
+uses   
+    Wire from TopoDS, 
+    BaseAllocator from BOPCol, 
+    ListOfShape from BOPCol, 
+    WireEdgeSet from BOPAlgo,
+    PWireEdgeSet from BOPAlgo, 
+    ConnexityBlock from BOPTools, 
+    ListOfConnexityBlock from BOPTools 
+    
+    
+--raises
+
+is 
+    Create 
+    	returns WireSplitter from BOPAlgo; 
+    ---C++: alias "Standard_EXPORT virtual ~BOPAlgo_WireSplitter();" 
+     
+    Create(theAllocator: BaseAllocator from BOPCol)  
+    	returns WireSplitter from BOPAlgo; 
+     
+    SetWES(me:out; 
+    	    theWES: WireEdgeSet from BOPAlgo);  
+    
+    
+    WES(me:out) 
+    	returns WireEdgeSet from BOPAlgo; 
+    ---C++:  return &  
+
+    Perform(me:out) 
+	is redefined; 
+	 
+    MakeWire(myclass; 
+    	    theLE:out ListOfShape from BOPCol; 
+    	    theW :out Wire from TopoDS);  
+    ---C++: inline 
+     
+    CheckData(me:out) 
+	is redefined protected;    
+	
+    MakeConnexityBlocks(me:out)  
+    	is protected;  
+     
+    MakeWires(me:out)  
+    	is protected;  
+	 
+    SplitBlock(me:out; 
+    	    theCB:out ConnexityBlock from BOPTools)  
+    	is protected; 
+    
+fields 
+    myWES   : PWireEdgeSet from BOPAlgo is protected;
+    myLCB   : ListOfConnexityBlock from BOPTools is protected; 
+    
+end WireSplitter;

@@ -33,7 +33,10 @@ uses
     TCollection,
     TopTools,
     GeomAbs,
-    BRepAlgo
+    BRepAlgo, 
+    BOPAlgo, 
+    BOPDS, 
+    BOPTools
 
 is
     enumeration Type is 

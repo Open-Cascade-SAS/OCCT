@@ -31,8 +31,7 @@ class Cut from BRepAlgoAPI inherits BooleanOperation from BRepAlgoAPI
 
 uses
     Shape from TopoDS,
-    DSFiller from BOPTools, 
-    Operation from BOP
+    PaveFiller from BOPAlgo
 
 is
     Create (S1,S2 : Shape from TopoDS)  
@@ -40,8 +39,9 @@ is
 	---Purpose: Shape aS2 cuts shape aS1. The
     	-- resulting shape is a new shape produced by the cut operation.
 	
+
     Create (S1,S2 : Shape from TopoDS; 
-    	    aDSF  : DSFiller  from BOPTools; 
+    	    aDSF  : PaveFiller  from BOPAlgo; 
     	    bFWD  : Boolean from Standard=Standard_True)  
     	returns Cut from BRepAlgoAPI;	 
     	--- Purpose: Constructs a new shape cut from

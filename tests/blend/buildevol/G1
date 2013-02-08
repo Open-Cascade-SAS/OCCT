@@ -1,7 +1,3 @@
-puts "TODO OCC22817 All: exception.+There are no suitable edges"
-puts "TODO OCC22817 All: \\*\\* Exception \\*\\*"
-puts "TODO OCC22817 All: TEST INCOMPLETE"
-
 pcylinder s1 3 10 
 pcylinder s2 4 16 
 trotate s2 0 0 0 1 0 0 80
@@ -14,4 +10,4 @@ mkevol result s
 updatevol s_2 0 0.3*SCALE1 1 0.5*SCALE1 2 0.3*SCALE1
 buildevol
 
-set square 0
+set square 20125.9

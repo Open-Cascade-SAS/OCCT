@@ -1,6 +1,5 @@
-puts "TODO OCC22911 ALL: Error : The bsection is not valid."
 restore [locate_data_file a49] a
 restore [locate_data_file b49] b
 bsection result a b
 
-set length 0
+set length 122.155

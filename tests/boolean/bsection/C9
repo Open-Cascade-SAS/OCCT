@@ -2,4 +2,4 @@ restore [locate_data_file a40] a
 restore [locate_data_file b40] b
 bsection result a b
 
-set length 39.8158
+set length 50.8667

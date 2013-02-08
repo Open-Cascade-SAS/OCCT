@@ -18,8 +18,8 @@
 // and conditions governing the rights and limitations under the License.
 
 
-
 #include <BOPTest_DrawableShape.ixx>
+#include <stdio.h>
 
 #include <TopoDS.hxx>
 #include <TopoDS_Iterator.hxx>
@@ -57,10 +57,8 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 
-
-
 //=======================================================================
-//function : BOPTest_DrawableShape::BOPTest_DrawableShape
+//function : 
 //purpose  : 
 //=======================================================================
 BOPTest_DrawableShape::BOPTest_DrawableShape (const TopoDS_Shape& aShape,
@@ -81,7 +79,7 @@ BOPTest_DrawableShape::BOPTest_DrawableShape (const TopoDS_Shape& aShape,
 }
 
 //=======================================================================
-//function : BOPTest_DrawableShape::BOPTest_DrawableShape
+//function : 
 //purpose  : 
 //=======================================================================
   BOPTest_DrawableShape::BOPTest_DrawableShape (const TopoDS_Shape& aShape,

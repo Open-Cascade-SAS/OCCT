@@ -95,9 +95,9 @@ uses
    TopoDS, 
    gp,
    Geom,
-   Geom2d,
-   BOP,  
-   BOPTools,
+   Geom2d, 
+   BOPAlgo, 
+   BOPDS,
    BRepBuilderAPI   
 is
 	     
@@ -116,5 +116,9 @@ is
     class Section;                       
     	---Purpose: Perform the operation SECTION. 
 	--- 
-	
+    class Check;
+        ---Purpose: Check shapes on validity for boolean
+        --- operation.
+
 end BRepAlgoAPI;
+

@@ -1,0 +1,83 @@
+-- Created by: Peter KURNEV
+-- Copyright (c) 1999-2012 OPEN CASCADE SAS
+--
+-- The content of this file is subject to the Open CASCADE Technology Public
+-- License Version 6.5 (the "License"). You may not use the content of this file
+-- except in compliance with the License. Please obtain a copy of the License
+-- at http://www.opencascade.org and read it completely before using this file.
+--
+-- The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+-- main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+--
+-- The Original Code and all software distributed under the License is
+-- distributed on an "AS IS" basis, without warranty of any kind, and the
+-- Initial Developer hereby disclaims all such warranties, including without
+-- limitation, any warranties of merchantability, fitness for a particular
+-- purpose or non-infringement. Please see the License for the specific terms
+-- and conditions governing the rights and limitations under the License.
+
+
+class Tools from BOPInt 
+
+	---Purpose: 
+
+uses 
+    Box from Bnd,
+    Lin from gp, 
+    Pln from gp, 
+    Pnt from gp, 
+    Curve from Geom, 
+         
+    Edge from TopoDS, 
+    Face from TopoDS,
+    Range from IntTools, 
+    CommonPrt from IntTools
+--raises
+
+is 
+    
+	 
+    CheckCurve(myclass; 
+    	    theC:Curve from Geom;  
+    	    theTol:Real from Standard; 
+    	    theBox:out Box from Bnd) 
+    	returns Boolean from Standard;   
+     
+    IsOnPave(myclass; 
+    	    theT:Real from Standard;  
+	    theRange:Range from IntTools; 
+    	    theTol: Real from Standard) 
+    	returns Boolean from Standard;  
+
+
+    VertexParameters(myclass; 
+	    theCP:CommonPrt from IntTools; 
+    	    theT1:out Real from Standard;  
+    	    theT2:out Real from Standard);  
+
+    VertexParameter(myclass; 
+	    theCP:CommonPrt from IntTools; 
+    	    theT:out Real from Standard); 
+	 
+    IsOnPave1(myclass; 
+    	    theT:Real from Standard;  
+	    theRange:Range from IntTools; 
+    	    theTol: Real from Standard) 
+    	returns Boolean from Standard;     
+     
+    SegPln(myclass; 
+    	    theLin   :  Lin from gp; 
+	    theTLin1 :  Real from Standard; 
+	    theTLin2 :  Real from Standard; 
+    	    theTolLin:  Real from Standard;   
+	    thePln   :  Pln  from gp; 
+	    theTolPln:  Real from Standard; 
+    	    theP     :out Pnt from gp;   
+	    theT     :out Real from Standard;  
+    	    theTolP  :out Real from Standard; 
+	    theTmin  :out Real from Standard; 
+    	    theTmax  :out Real from Standard) 
+    	returns Integer from Standard;     
+--fields
+
+end Tools;

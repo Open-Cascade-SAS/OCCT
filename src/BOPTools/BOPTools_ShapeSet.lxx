@@ -1,0 +1,190 @@
+// Created by: Peter KURNEV
+// Copyright (c) 1999-2012 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Edge.hxx>
+#include <BRep_Tool.hxx>
+
+//=======================================================================
+//function : 
+//purpose  : 
+//=======================================================================
+  inline BOPTools_ShapeSet::BOPTools_ShapeSet()
+{
+}
+//=======================================================================
+//function : 
+//purpose  : 
+//=======================================================================
+  inline BOPTools_ShapeSet::BOPTools_ShapeSet(const Handle(NCollection_BaseAllocator)& theObj)
+:
+  myMap(100, theObj)
+{
+}
+//=======================================================================
+//function : ~
+//purpose  : 
+//=======================================================================
+  inline BOPTools_ShapeSet::~BOPTools_ShapeSet()
+{
+}
+//=======================================================================
+//function : Clear
+//purpose  : 
+//=======================================================================
+  inline void BOPTools_ShapeSet::Clear()
+{
+  myMap.Clear();
+}
+//=======================================================================
+//function : SetShape
+//purpose  : 
+//=======================================================================
+  inline void BOPTools_ShapeSet::SetShape(const TopoDS_Shape& theShape)
+{
+  myShape=theShape;
+}
+//=======================================================================
+//function : Shape
+//purpose  : 
+//=======================================================================
+  inline const TopoDS_Shape& BOPTools_ShapeSet::Shape()const
+{
+  return myShape;
+}
+
+//=======================================================================
+//function : Add
+//purpose  : 
+//=======================================================================
+  inline void BOPTools_ShapeSet::Add(const TopoDS_Shape& theShape)
+{
+  myMap.Add(theShape);
+}
+//=======================================================================
+//function : Add
+//purpose  : 
+//=======================================================================
+  inline void BOPTools_ShapeSet::Add(const TopoDS_Shape& theShape,
+				     const TopAbs_ShapeEnum theType)
+{
+  TopExp_Explorer aExp(theShape, theType);
+  for(; aExp.More(); aExp.Next()) {
+    const TopoDS_Shape& aS=aExp.Current();
+    myMap.Add(aS);
+  }
+}
+//=======================================================================
+//function : Add
+//purpose  : 
+//=======================================================================
+  inline void BOPTools_ShapeSet::Add(const BOPCol_ListOfShape& theLS)
+{
+  BOPCol_ListIteratorOfListOfShape aIt;
+  //
+  aIt.Init(theLS);
+  for (; aIt.More(); aIt.Next()) {
+    const TopoDS_Shape& aS=aIt.Value();
+    myMap.Add(aS);
+  }
+}
+//=======================================================================
+//function : AddEdge
+//purpose  : 
+//=======================================================================
+  inline void BOPTools_ShapeSet::AddEdge(const TopoDS_Edge& theEdge)
+{
+  if (!BRep_Tool::Degenerated(theEdge)){
+    myMap.Add(theEdge);
+  }
+}
+//=======================================================================
+//function : AddEdges
+//purpose  : 
+//=======================================================================
+  inline void BOPTools_ShapeSet::AddEdges(const BOPCol_ListOfShape& theLS)
+{
+  BOPCol_ListIteratorOfListOfShape aIt;
+  //
+  aIt.Initialize(theLS);
+  for (; aIt.More(); aIt.Next()) {
+    const TopoDS_Edge& aE=(*(TopoDS_Edge*)&aIt.Value());
+    AddEdge(aE);
+  }
+}
+//=======================================================================
+//function : AddEdges
+//purpose  : 
+//=======================================================================
+  inline void BOPTools_ShapeSet::AddEdges(const TopoDS_Shape& theFace)
+{
+  TopExp_Explorer aExp(theFace, TopAbs_EDGE);
+  for(; aExp.More(); aExp.Next()) {
+    const TopoDS_Edge& aE=(*(TopoDS_Edge*)&aExp.Current());
+    AddEdge(aE);
+  }
+}
+//=======================================================================
+//function : Get 
+//purpose  : 
+//=======================================================================
+  inline void BOPTools_ShapeSet::Get(BOPCol_ListOfShape& theLS)const
+{
+  BOPCol_MapIteratorOfMapOfOrientedShape aIt;
+  //
+  aIt.Initialize(myMap);
+  for (; aIt.More(); aIt.Next()) {
+    const TopoDS_Shape& aS=aIt.Value();
+    theLS.Append(aS);
+  }
+}
+//=======================================================================
+//function : Contains
+//purpose  : 
+//=======================================================================
+  inline Standard_Boolean BOPTools_ShapeSet::Contains(const BOPTools_ShapeSet& theOther)const
+{
+  Standard_Boolean bRet;
+  BOPCol_MapIteratorOfMapOfOrientedShape aIt;
+  //
+  aIt.Initialize(theOther.myMap);
+  for (; aIt.More(); aIt.Next()) {
+    const TopoDS_Shape& aS=aIt.Value();
+    bRet=myMap.Contains(aS);
+    if (!bRet) {
+      break;
+    }
+  }
+  return bRet;
+}
+//=======================================================================
+//function : Subtract
+//purpose  : 
+//=======================================================================
+  inline void BOPTools_ShapeSet::Subtract(const BOPTools_ShapeSet& theOther)
+{
+  BOPCol_MapIteratorOfMapOfOrientedShape aIt;
+  //
+  aIt.Initialize(theOther.myMap);
+  for (; aIt.More(); aIt.Next()) {
+    const TopoDS_Shape& aS=aIt.Value();
+    if (myMap.Contains(aS)) {
+      myMap.Remove(aS);
+    }
+  }
+}

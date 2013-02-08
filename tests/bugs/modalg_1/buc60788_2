@@ -1,6 +1,3 @@
-puts "TODO OCC12345 ALL: Faulty : result should be a shell, but not a compound of faces"
-puts "TODO OCC12345 ALL: Error : The square of result shape is"
-
 puts "========"
 puts "BUC60788"
 puts "case 3"
@@ -20,10 +17,10 @@ set nb_info [nbshapes result]
 regexp {COMPOUND +: +([-0-9.+eE]+)} $nb_info full err
 regexp {SHELL +: +([-0-9.+eE]+)} $nb_info full err1
 
-if { $err != 0 || $err1 != 1} {
+if { $err != 1 || $err1 != 1} {
   puts "Faulty : result should be a shell, but not a compound of faces"
 } else {
   puts "BUC60788 - OK"
 }
-set square 0
+set square 150200
 set 2dviewer 0

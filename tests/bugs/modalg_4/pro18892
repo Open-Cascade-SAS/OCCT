@@ -13,7 +13,7 @@ restore [locate_data_file pro18892.rle] a
 checkshape a
 
 explode a
-bsection result a_1 a_2 -2d -a
+bsection result a_1 a_2
 explode result
 
 mkcurve c result_1

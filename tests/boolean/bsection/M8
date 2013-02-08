@@ -16,7 +16,7 @@ set i -5
 while {$i < 0} {
   plane p_$i $i*1000 0 0 1 0 0
   mkface f_$i p_$i
-  bsection s_$i b f_$i -2d -a
+  bsection s_$i b f_$i
   compound result s_$i result
   set dist [expr $i * 1000]
   puts "OK Section$i:$dist"
@@ -27,7 +27,7 @@ incr i 5
 while {$i <= 30} {
   plane p_$i $i*1000 0 0 1 0 0
   mkface f_$i p_$i
-  bsection s_$i b f_$i -2d -a
+  bsection s_$i b f_$i
   compound result s_$i result
   set dist [expr $i * 1000]
   puts "OK Section$i:$dist"
@@ -37,7 +37,7 @@ incr i 20
 while {$i <= 105} {
   plane p_$i $i*1000 0 0 1 0 0
   mkface f_$i p_$i
-  bsection s_$i b f_$i -2d -a
+  bsection s_$i b f_$i
   compound result s_$i result
   set dist [expr $i * 1000]
   puts "OK Section$i:$dist"

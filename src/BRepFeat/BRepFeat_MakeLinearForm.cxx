@@ -25,7 +25,6 @@
 #include <BRepFeat.hxx>
 
 #include <LocOpe.hxx>
-#include <LocOpe_Builder.hxx>
 #include <LocOpe_LinearForm.hxx>
 #include <LocOpe_Gluer.hxx>
 #include <LocOpe_FindEdges.hxx>

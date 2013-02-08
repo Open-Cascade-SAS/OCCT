@@ -1,0 +1,186 @@
+// Created by: Peter KURNEV
+// Copyright (c) 2010-2012 OPEN CASCADE SAS
+// Copyright (c) 2007-2010 CEA/DEN, EDF R&D, OPEN CASCADE
+// Copyright (c) 2003-2007 OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN, CEDRAT,
+//                         EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
+//=======================================================================
+//function : 
+//purpose  : 
+//=======================================================================
+  inline BOPDS_FaceInfo::BOPDS_FaceInfo()
+:
+  myAllocator(NCollection_BaseAllocator::CommonBaseAllocator()),
+  myIndex(-1),
+  myPaveBlocksIn(100, myAllocator),
+  myVerticesIn(100, myAllocator),
+  myPaveBlocksOn(100, myAllocator),
+  myVerticesOn(100, myAllocator),
+  myPaveBlocksSc(100, myAllocator),
+  myVerticesSc(100, myAllocator)
+{
+}
+//=======================================================================
+//function : 
+//purpose  : 
+//=======================================================================
+  inline BOPDS_FaceInfo::BOPDS_FaceInfo(const Handle(NCollection_BaseAllocator)& theAllocator)
+:
+  myAllocator(theAllocator),
+  myIndex(-1),
+  myPaveBlocksIn(100, myAllocator),
+  myVerticesIn(100, myAllocator),
+  myPaveBlocksOn(100, myAllocator),
+  myVerticesOn(100, myAllocator),
+  myPaveBlocksSc(100, myAllocator),
+  myVerticesSc(100, myAllocator)
+{
+}
+//=======================================================================
+//function : ~
+//purpose  : 
+//=======================================================================
+  inline BOPDS_FaceInfo::~BOPDS_FaceInfo()
+{
+  Clear();
+}
+//=======================================================================
+//function : Clear
+//purpose  : 
+//=======================================================================
+  inline void BOPDS_FaceInfo::Clear()
+{
+  myPaveBlocksIn.Clear();
+  myVerticesIn.Clear();
+  myPaveBlocksOn.Clear();
+  myVerticesOn.Clear();
+}
+//=======================================================================
+//function : SetIndex
+//purpose  : 
+//=======================================================================
+  inline void BOPDS_FaceInfo::SetIndex(const Standard_Integer theI)
+{
+  myIndex=theI;
+}
+//=======================================================================
+//function : Index
+//purpose  : 
+//=======================================================================
+  inline Standard_Integer BOPDS_FaceInfo::Index()const
+{
+  return myIndex;
+}
+//=======================================================================
+//function : PaveBlockIn
+//purpose  : 
+//=======================================================================
+  inline const BOPDS_IndexedMapOfPaveBlock& BOPDS_FaceInfo::PaveBlocksIn()const
+{
+  return myPaveBlocksIn;
+}
+//=======================================================================
+//function : ChangePaveBlocksIn
+//purpose  : 
+//=======================================================================
+  inline BOPDS_IndexedMapOfPaveBlock& BOPDS_FaceInfo::ChangePaveBlocksIn()
+{
+  return myPaveBlocksIn;
+}
+//=======================================================================
+//function : VerticesIn
+//purpose  : 
+//=======================================================================
+  inline const BOPCol_MapOfInteger& BOPDS_FaceInfo::VerticesIn()const
+{
+  return myVerticesIn;
+}
+//=======================================================================
+//function : ChangeVerticesIn
+//purpose  : 
+//=======================================================================
+  inline  BOPCol_MapOfInteger& BOPDS_FaceInfo::ChangeVerticesIn()
+{
+  return myVerticesIn;
+}
+// On
+//=======================================================================
+//function : PaveBlocksOn
+//purpose  : 
+//=======================================================================
+  inline const BOPDS_IndexedMapOfPaveBlock& BOPDS_FaceInfo::PaveBlocksOn()const
+{
+  return myPaveBlocksOn;
+}
+//=======================================================================
+//function : ChangePaveBlocksOn
+//purpose  : 
+//=======================================================================
+  inline BOPDS_IndexedMapOfPaveBlock& BOPDS_FaceInfo::ChangePaveBlocksOn()
+{
+  return myPaveBlocksOn;
+}
+//=======================================================================
+//function : VerticesOn
+//purpose  : 
+//=======================================================================
+  inline const BOPCol_MapOfInteger& BOPDS_FaceInfo::VerticesOn()const
+{
+  return myVerticesOn;
+}
+//=======================================================================
+//function : ChangeVerticesOn
+//purpose  : 
+//=======================================================================
+  inline BOPCol_MapOfInteger& BOPDS_FaceInfo::ChangeVerticesOn()
+{
+  return myVerticesOn;
+}
+// Sc
+//=======================================================================
+//function : PaveBlocksSc
+//purpose  : 
+//=======================================================================
+  inline const BOPDS_IndexedMapOfPaveBlock& BOPDS_FaceInfo::PaveBlocksSc()const
+{
+  return myPaveBlocksSc;
+}
+//=======================================================================
+//function : ChangePaveBlocksSc
+//purpose  : 
+//=======================================================================
+  inline BOPDS_IndexedMapOfPaveBlock& BOPDS_FaceInfo::ChangePaveBlocksSc()
+{
+  return myPaveBlocksSc;
+}
+//=======================================================================
+//function : VerticesSc
+//purpose  : 
+//=======================================================================
+  inline const BOPCol_MapOfInteger& BOPDS_FaceInfo::VerticesSc()const
+{
+  return myVerticesSc;
+}
+//=======================================================================
+//function : ChangeVerticesSc
+//purpose  : 
+//=======================================================================
+  inline BOPCol_MapOfInteger& BOPDS_FaceInfo::ChangeVerticesSc()
+{
+  return myVerticesSc;
+}

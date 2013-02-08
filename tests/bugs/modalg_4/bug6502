@@ -13,7 +13,7 @@ restore [locate_data_file OCC6502.brep] a
 plane pl 100 0 0 1 0 0
 mkface f pl
 
-if { [catch { bsection result a f -a } catch_result] } {
+if { [catch { bsection result a f -n2d } catch_result] } {
     puts "Faulty ${BugNumber}"
 } 
 

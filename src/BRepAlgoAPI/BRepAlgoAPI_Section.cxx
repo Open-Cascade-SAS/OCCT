@@ -19,6 +19,7 @@
 // and conditions governing the rights and limitations under the License.
 
 // modified by Michael KLOKOV  Wed Mar  6 15:01:25 2002
+// modified by  Eugeny MALTCHIKOV Wed Jul 04 11:13:01 2012 
 
 #include <BRepAlgoAPI_Section.ixx>
 
@@ -27,19 +28,7 @@
 #include <BRepBuilderAPI_MakeShell.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <BOP_Section.hxx>
-#include <BOPTools_SSIntersectionAttribute.hxx>
 
-#include <BOPTools_SplitShapesPool.hxx>
-#include <BOPTools_InterferencePool.hxx>
-
-#include <BOPTools_PaveBlock.hxx>
-#include <BOPTools_PaveFiller.hxx>
-#include <BooleanOperations_ShapesDataStructure.hxx>
-#include <BOPTools_ListOfPaveBlock.hxx>
-#include <BOPTools_ListIteratorOfListOfPaveBlock.hxx>
-#include <BOPTools_SSInterference.hxx>
-#include <BOPTools_Curve.hxx>
 #include <TopExp.hxx>
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <TopTools_MapOfShape.hxx>
@@ -47,7 +36,9 @@
 #include <TopoDS_Face.hxx>
 #include <BRep_Tool.hxx>
 
-#include <BOP_SectionHistoryCollector.hxx>
+#include <BOPAlgo_PaveFiller.hxx>
+#include <BOPAlgo_BOP.hxx>
+#include <BOPDS_DS.hxx>
 
 static TopoDS_Shape MakeShape(const Handle(Geom_Surface)& S)
 {
@@ -56,19 +47,19 @@ static TopoDS_Shape MakeShape(const Handle(Geom_Surface)& S)
   else return BRepBuilderAPI_MakeShell(S);
 }
 
-static Standard_Boolean HasAncestorFaces(const BOPTools_DSFiller& theDSFiller, 
-					 const TopoDS_Shape&      E,
-					 TopoDS_Shape&            F1,
-					 TopoDS_Shape&            F2);
+static Standard_Boolean HasAncestorFaces(const BOPAlgo_PPaveFiller& theDSFiller, 
+                                         const TopoDS_Shape&      E,
+                                         TopoDS_Shape&            F1,
+                                         TopoDS_Shape&            F2);
 
 //=======================================================================
 //function : Constructor
 //purpose  : 
 //=======================================================================
 BRepAlgoAPI_Section::BRepAlgoAPI_Section(const TopoDS_Shape& Sh1,
-					 const TopoDS_Shape& Sh2,
-					 const Standard_Boolean PerformNow)
-: BRepAlgoAPI_BooleanOperation(Sh1, Sh2, BOP_SECTION)
+                                         const TopoDS_Shape& Sh2,
+                                         const Standard_Boolean PerformNow)
+: BRepAlgoAPI_BooleanOperation(Sh1, Sh2, BOPAlgo_SECTION)
 {
   InitParameters();
   myparameterschanged = Standard_True;
@@ -77,15 +68,16 @@ BRepAlgoAPI_Section::BRepAlgoAPI_Section(const TopoDS_Shape& Sh1,
     //     StdFail_NotDone::Raise("BRepAlgoAPI_Section : Shape NULL");
     myshapeisnull = Standard_True;
   }
-  if (PerformNow)
+  if (PerformNow) {
     Build();
+  }
 }
 
 BRepAlgoAPI_Section::BRepAlgoAPI_Section(const TopoDS_Shape&      aS1, 
-					 const TopoDS_Shape&      aS2,
-					 const BOPTools_DSFiller& aDSF,
-					 const Standard_Boolean   PerformNow)
-: BRepAlgoAPI_BooleanOperation(aS1, aS2, aDSF, BOP_SECTION)
+                                         const TopoDS_Shape&      aS2,
+                                         const BOPAlgo_PaveFiller& aDSF,
+                                         const Standard_Boolean   PerformNow)
+: BRepAlgoAPI_BooleanOperation(aS1, aS2, aDSF, BOPAlgo_SECTION)
 {
   InitParameters();
   myparameterschanged = Standard_True;
@@ -95,7 +87,7 @@ BRepAlgoAPI_Section::BRepAlgoAPI_Section(const TopoDS_Shape&      aS1,
     myshapeisnull = Standard_True;
   }
 
-  if(PerformNow) {
+  if (PerformNow) {
     Build();
   }
 }
@@ -106,9 +98,9 @@ BRepAlgoAPI_Section::BRepAlgoAPI_Section(const TopoDS_Shape&      aS1,
 //purpose  : 
 //=======================================================================
 BRepAlgoAPI_Section::BRepAlgoAPI_Section(const TopoDS_Shape&    Sh,
-					 const gp_Pln&          Pl,
-					 const Standard_Boolean PerformNow)
-: BRepAlgoAPI_BooleanOperation(Sh, MakeShape(new Geom_Plane(Pl)), BOP_SECTION)
+                                         const gp_Pln&          Pl,
+                                         const Standard_Boolean PerformNow)
+: BRepAlgoAPI_BooleanOperation(Sh, MakeShape(new Geom_Plane(Pl)), BOPAlgo_SECTION)
 {
   InitParameters();
   myparameterschanged = Standard_True;
@@ -117,8 +109,9 @@ BRepAlgoAPI_Section::BRepAlgoAPI_Section(const TopoDS_Shape&    Sh,
     //     StdFail_NotDone::Raise("BRepAlgoAPI_Section : Shape NULL");
     myshapeisnull = Standard_True;
   }
-  if (PerformNow)
+  if (PerformNow) {
     Build();
+  }
 }
 
 //=======================================================================
@@ -126,9 +119,9 @@ BRepAlgoAPI_Section::BRepAlgoAPI_Section(const TopoDS_Shape&    Sh,
 //purpose  : 
 //=======================================================================
 BRepAlgoAPI_Section::BRepAlgoAPI_Section(const TopoDS_Shape&         Sh,
-					       const Handle(Geom_Surface)& Sf,
-					       const Standard_Boolean      PerformNow)
-: BRepAlgoAPI_BooleanOperation(Sh, MakeShape(Sf), BOP_SECTION)
+                                               const Handle(Geom_Surface)& Sf,
+                                               const Standard_Boolean      PerformNow)
+: BRepAlgoAPI_BooleanOperation(Sh, MakeShape(Sf), BOPAlgo_SECTION)
 {
   InitParameters();
   myparameterschanged = Standard_True;
@@ -137,8 +130,9 @@ BRepAlgoAPI_Section::BRepAlgoAPI_Section(const TopoDS_Shape&         Sh,
 //     StdFail_NotDone::Raise("BRepAlgoAPI_Section : Shape NULL");
     myshapeisnull = Standard_True;
   }
-  if (PerformNow)
+  if (PerformNow) {
     Build();
+  }
 }
 
 //=======================================================================
@@ -146,9 +140,9 @@ BRepAlgoAPI_Section::BRepAlgoAPI_Section(const TopoDS_Shape&         Sh,
 //purpose  : 
 //=======================================================================
 BRepAlgoAPI_Section::BRepAlgoAPI_Section(const Handle(Geom_Surface)& Sf,
-					       const TopoDS_Shape&         Sh,
-					       const Standard_Boolean      PerformNow)
-: BRepAlgoAPI_BooleanOperation(MakeShape(Sf), Sh, BOP_SECTION)
+                                               const TopoDS_Shape&         Sh,
+                                               const Standard_Boolean      PerformNow)
+: BRepAlgoAPI_BooleanOperation(MakeShape(Sf), Sh, BOPAlgo_SECTION)
 {
   InitParameters();
   myparameterschanged = Standard_True;
@@ -157,8 +151,9 @@ BRepAlgoAPI_Section::BRepAlgoAPI_Section(const Handle(Geom_Surface)& Sf,
 //     StdFail_NotDone::Raise("BRepAlgoAPI_Section : Shape NULL");
     myshapeisnull = Standard_True;
   }
-  if (PerformNow)
+  if (PerformNow) {
     Build();
+  }
 }
 
 //=======================================================================
@@ -166,9 +161,9 @@ BRepAlgoAPI_Section::BRepAlgoAPI_Section(const Handle(Geom_Surface)& Sf,
 //purpose  : 
 //=======================================================================
 BRepAlgoAPI_Section::BRepAlgoAPI_Section(const Handle(Geom_Surface)& Sf1,
-					       const Handle(Geom_Surface)& Sf2,
-					       const Standard_Boolean      PerformNow)
-: BRepAlgoAPI_BooleanOperation(MakeShape(Sf1), MakeShape(Sf2), BOP_SECTION)
+                                               const Handle(Geom_Surface)& Sf2,
+                                               const Standard_Boolean      PerformNow)
+: BRepAlgoAPI_BooleanOperation(MakeShape(Sf1), MakeShape(Sf2), BOPAlgo_SECTION)
 {
   InitParameters();
   myparameterschanged = Standard_True;
@@ -178,8 +173,9 @@ BRepAlgoAPI_Section::BRepAlgoAPI_Section(const Handle(Geom_Surface)& Sf1,
     myshapeisnull = Standard_True;
   }
 
-  if (PerformNow)
+  if (PerformNow) {
     Build();
+  }
 }
 
 //=======================================================================
@@ -193,7 +189,7 @@ void BRepAlgoAPI_Section::Init1(const TopoDS_Shape& S1)
       myS1 = S1;
 
       if(!myS2.IsNull()) {
-	myshapeisnull = Standard_False;
+        myshapeisnull = Standard_False;
       }
       myparameterschanged = Standard_True;
     }
@@ -239,7 +235,7 @@ void BRepAlgoAPI_Section::Init2(const TopoDS_Shape& S2)
       myS2 = S2;
 
       if(!myS1.IsNull()) {
-	myshapeisnull = Standard_False;
+        myshapeisnull = Standard_False;
       }
       myparameterschanged = Standard_True;
     }
@@ -324,9 +320,6 @@ void BRepAlgoAPI_Section::Build()
   }
 
   if(myparameterschanged) {
-
-    myBuilderCanWork = Standard_False;
-
     Standard_Boolean bIsNewFiller = PrepareFiller();
     //
     if (myErrorStatus!=1) {
@@ -336,30 +329,13 @@ void BRepAlgoAPI_Section::Build()
     }
     //
     if (bIsNewFiller) {
-      //Prepare the DS
-      BOPTools_SSIntersectionAttribute aSectionAttribute(myApprox, myComputePCurve1, myComputePCurve2);
-      myDSFiller->Perform(aSectionAttribute);
+      BOPAlgo_SectionAttribute theSecAttr(myApprox, myComputePCurve1, myComputePCurve2);
+      myDSFiller->SetSectionAttribute(theSecAttr);
+      myDSFiller->Perform();
     }
-    BOP_Section* aSectionAlgo = new BOP_Section();
-    aSectionAlgo->SetShapes(myS1, myS2);
-
-    myHistory = new BOP_SectionHistoryCollector(myS1, myS2);
-    aSectionAlgo->SetHistoryCollector(myHistory);
-
-    aSectionAlgo->DoWithFiller(*myDSFiller);
-
-    myBuilder = aSectionAlgo;
-
-    if(aSectionAlgo->IsDone()) {
-      myErrorStatus=0;
-      myBuilderCanWork=Standard_True;
-      myShape = aSectionAlgo->Result();
-      Done();
-    }
-    else {
-      myErrorStatus = 100 + aSectionAlgo->ErrorStatus();
-      NotDone();
-    }    
+    //
+    BRepAlgoAPI_BooleanOperation::Build();
+    //
     myparameterschanged = Standard_False;
   }
 }
@@ -379,7 +355,7 @@ Standard_Boolean BRepAlgoAPI_Section::HasAncestorFaceOn1(const TopoDS_Shape& E, 
     return aResult;
   }
   TopoDS_Shape F1, F2;
-  aResult = HasAncestorFaces(*myDSFiller, E, F1, F2);
+  aResult = HasAncestorFaces(myDSFiller, E, F1, F2);
 
   if(F1.IsNull()) {
     return Standard_False;
@@ -403,7 +379,7 @@ Standard_Boolean BRepAlgoAPI_Section::HasAncestorFaceOn2(const TopoDS_Shape& E,T
     return aResult;
   }
   TopoDS_Shape F1, F2;
-  aResult = HasAncestorFaces(*myDSFiller, E, F1, F2);
+  aResult = HasAncestorFaces(myDSFiller, E, F1, F2);
 
   if(F2.IsNull()) {
     return Standard_False;
@@ -430,7 +406,7 @@ Handle(Geom2d_Curve) BRepAlgoAPI_Section::PCurveOn1(const TopoDS_Shape& E) const
       aResult = BRep_Tool::CurveOnSurface(anEdge, aFace, f, l);
 
       if(!aResult->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve))) {
-	aResult = new Geom2d_TrimmedCurve(aResult, f, l);
+        aResult = new Geom2d_TrimmedCurve(aResult, f, l);
       }
     }
   }
@@ -455,7 +431,7 @@ Handle(Geom2d_Curve) BRepAlgoAPI_Section::PCurveOn2(const TopoDS_Shape& E) const
       aResult = BRep_Tool::CurveOnSurface(anEdge, aFace, f, l);
       
       if(!aResult->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve))) {
-	aResult = new Geom2d_TrimmedCurve(aResult, f, l);
+        aResult = new Geom2d_TrimmedCurve(aResult, f, l);
       }
     }
   }
@@ -479,69 +455,59 @@ void BRepAlgoAPI_Section::InitParameters()
 // static function : HasAncestorFaces
 // purpose  : 
 // ------------------------------------------------------------------------
-static Standard_Boolean HasAncestorFaces(const BOPTools_DSFiller& theDSFiller, 
-					 const TopoDS_Shape&      E,
-					 TopoDS_Shape&            F1,
-					 TopoDS_Shape&            F2) {
+static Standard_Boolean HasAncestorFaces(const BOPAlgo_PPaveFiller& theDSFiller, 
+                                         const TopoDS_Shape&      E,
+                                         TopoDS_Shape&            F1,
+                                         TopoDS_Shape&            F2) {
 
-  BOPTools_PaveFiller* aPaveFiller = (BOPTools_PaveFiller*) &theDSFiller.PaveFiller();
-  const BOPTools_CArray1OfSSInterference& aFFs = aPaveFiller->InterfPool()->SSInterferences();
-  const BooleanOperations_ShapesDataStructure& aDS = theDSFiller.DS();
-  Standard_Integer aNb = aFFs.Extent();
-  Standard_Integer i = 0;
+  Standard_Integer aNb, i, j, nE, nF1, nF2, aNbCurves;;
+  //
+  const BOPDS_PDS& pDS = theDSFiller->PDS();
+  BOPDS_VectorOfInterfFF& aFFs=pDS->InterfFF();
+  //
+  aNb=aFFs.Extent();
 
-  for (i = 1; i <= aNb; i++) {
-    BOPTools_SSInterference* aFFi = (BOPTools_SSInterference*) &aFFs(i);
-    const BOPTools_SequenceOfCurves& aSeqOfCurve = aFFi->Curves();
-    
-    for(Standard_Integer j = 1; j <= aSeqOfCurve.Length(); j++) {
-      const BOPTools_Curve& aCurve = aSeqOfCurve.Value(j);
-      BOPTools_ListIteratorOfListOfPaveBlock anIt(aCurve.NewPaveBlocks());
+  for (i = 0; i < aNb; i++) {
+    BOPDS_InterfFF& aFFi=aFFs(i);
+    aFFi.Indices(nF1, nF2);
+    //
+    //section edges
+    const BOPDS_VectorOfCurve& aSeqOfCurve=aFFi.Curves();
+    aNbCurves=aSeqOfCurve.Extent();
+    for (j=0; j<aNbCurves; j++) {
+      const BOPDS_Curve& aCurve=aSeqOfCurve(j);
+
+      const BOPDS_ListOfPaveBlock& aSectEdges = aCurve.PaveBlocks();
+
+      BOPDS_ListIteratorOfListOfPaveBlock anIt;
+      anIt.Initialize(aSectEdges);
 
       for(; anIt.More(); anIt.Next()) {
-	const BOPTools_PaveBlock& aPB = anIt.Value();
-	Standard_Integer anIndex = aPB.Edge();
-
-	if(anIndex <= 0)
-	  continue;
-
-	if(E.IsSame(aDS.Shape(anIndex))) {
-	  for(Standard_Integer fIt = 0; fIt < 2; fIt++) {
-	    anIndex = (fIt == 0) ? aFFi->Index1() : aFFi->Index2();
-	    
-	    if(anIndex > 0) {
-	      if (fIt == 0)
-		F1 = aDS.Shape(anIndex);
-	      else
-		F2 = aDS.Shape(anIndex);
-	    }
-	  }
-	  return Standard_True;
-	}
+        const Handle(BOPDS_PaveBlock)& aPB = anIt.Value();
+        nE = aPB->Edge();
+        if(nE < 0)  continue;
+        //
+        if(E.IsSame(pDS->Shape(nE))) {
+          F1 = pDS->Shape(nF1);
+          F2 = pDS->Shape(nF2);
+          return Standard_True;
+        }
       }
     }
 
-    BOPTools_ListIteratorOfListOfPaveBlock anIt(aFFi->PaveBlocks());
-    
-    for(; anIt.More(); anIt.Next()) {
-      const BOPTools_PaveBlock& aPB = anIt.Value();
-      Standard_Integer anIndex = aPB.Edge();
-
-      if(anIndex <= 0)
-	continue;
-      
-      if(E.IsSame(aDS.Shape(anIndex))) {
-	for(Standard_Integer fIt = 0; fIt < 2; fIt++) {
-	  anIndex = (fIt == 0) ? aFFi->Index1() : aFFi->Index2();
-	  
-	  if(anIndex > 0) {
-	    if (fIt == 0)
-	      F1 = aDS.Shape(anIndex);
-	    else
-	      F2 = aDS.Shape(anIndex);
-	  }
-	}
-	return Standard_True;
+    //existing pave blocks
+    BOPCol_ListOfInteger aLSE;
+    BOPCol_ListIteratorOfListOfInteger aItLSE;
+    //
+    pDS->SharedEdges(nF1, nF2, aLSE, theDSFiller->Allocator());
+    aItLSE.Initialize(aLSE);
+    for (; aItLSE.More(); aItLSE.Next()) {
+      nE = aItLSE.Value();
+      //
+      if(E.IsSame(pDS->Shape(nE))) {
+        F1 = pDS->Shape(nF1);
+        F2 = pDS->Shape(nF2);
+        return Standard_True;
       }
     }
   }

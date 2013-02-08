@@ -1,5 +1,4 @@
 // Created on: 2000-03-16
-// Created by: Peter KURNEV
 // Copyright (c) 2000-2012 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
@@ -71,8 +70,8 @@ static
 //
 static 
   void ProcessVertex(const TopoDS_Vertex&,
-		     const TopTools_ListOfShape&,
-		     const TopTools_ListOfShape&);
+                     const TopTools_ListOfShape&,
+                     const TopTools_ListOfShape&);
 static
   void ProcessEdge(const TopoDS_Edge&, const Standard_Real);
 
