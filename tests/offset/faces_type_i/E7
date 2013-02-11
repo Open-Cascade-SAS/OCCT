@@ -1,19 +1,6 @@
-set os "ALL"
-if {[array get env os_type] != ""} {
-  set os $env(os_type)
-}
-
-if {
-       [string compare $os "Mandriva2010"] == 0
-   } {
-  puts "TODO OCC23068 $os: An exception was caught"
-  puts "TODO OCC23068 $os: \\*\\* Exception \\*\\*"
-  puts "TODO OCC23068 $os: TEST INCOMPLETE"
-} else {
-  puts "TODO OCC23068 $os: Faulty shapes in variables faulty_1 to faulty_1"
-  puts "TODO OCC23068 $os: Error : The offset is not valid. "
-  puts "TODO OCC23068 $os: Error : The area of face result_5 of the resulting shape is negative."
-}
+puts "TODO OCC23068 ALL: Faulty shapes in variables faulty_1 to faulty_1"
+puts "TODO OCC23068 ALL: Error : The offset is not valid. "
+puts "TODO OCC23068 ALL: Error : The area of face result_5 of the resulting shape is negative."
 
 ellipse w1 0 0 0 15 10
 mkedge w1 w1 0 pi/2

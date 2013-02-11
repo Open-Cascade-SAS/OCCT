@@ -5,8 +5,6 @@ if { [string compare $os "windows"] == 0 } {
 	puts "TODO #22911 ALL: An exception was caught"
 	puts "TODO #22911 ALL: \\*\\* Exception \\*\\*.*"
 	puts "TODO #22911 ALL: TEST INCOMPLETE"
-} else {
-	puts "TODO #22911 ALL: TEST INCOMPLETE"
 }
 
 cpulimit 900

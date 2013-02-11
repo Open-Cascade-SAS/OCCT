@@ -1,3 +1,5 @@
+puts "TODO #23667 Mandriva2010: Faulty shapes in variables faulty_1 to faulty_"
+
 #C2----------------------------------------------
 puts "TODO #23211 Debian40: Error: The tolerance of result shape is too big"
 
