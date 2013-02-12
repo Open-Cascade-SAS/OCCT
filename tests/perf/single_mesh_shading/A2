@@ -1,0 +1,9 @@
+puts "3D visualization performance tests"
+puts "Move V3d View with 1 MeshVS_Mesh (+ AIS trihedron)"
+puts "Object haves shading mode"
+
+
+set D_x 10000
+for {set i 1} {$i < 100} {incr i} {
+    vmoveview ${D_x} 0 0 1
+}

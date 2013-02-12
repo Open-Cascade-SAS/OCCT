@@ -1,0 +1,9 @@
+puts "3D visualization performance tests"
+puts "Turn V3d View with 1 AIS-object (+ AIS trihedron)"
+puts "Object haves wireframe mode"
+
+
+set A_z 0.10
+for {set i 1} {$i < 100} {incr i} {
+    vturnview 0 0 ${A_z} 1
+}

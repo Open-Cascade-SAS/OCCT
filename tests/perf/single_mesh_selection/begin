@@ -1,0 +1,6 @@
+pload XSDRAW
+vinit
+meshfromstl m [locate_data_file b.stl]
+vtrihedron tri
+
+vzoom 0.1

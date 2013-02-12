@@ -1,0 +1,9 @@
+puts "3D visualization performance tests"
+puts "Size V3d View with 27 MeshVS_Mesh (+ AIS trihedron)"
+puts "Objects have wireframe mode"
+
+
+set Size 1000
+for {set i 1} {$i < 70} {incr i} {
+    vsetviewsize [expr ${Size} - 10 * $i]
+}

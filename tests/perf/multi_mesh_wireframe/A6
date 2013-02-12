@@ -1,0 +1,9 @@
+puts "3D visualization performance tests"
+puts "Zoom V3d View with 27 MeshVS_Mesh (+ AIS trihedron)"
+puts "Objects have wireframe mode"
+
+
+set Zoom 1.05
+for {set i 1} {$i < 20} {incr i} {
+    vzoom ${Zoom}
+}

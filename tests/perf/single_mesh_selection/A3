@@ -1,0 +1,12 @@
+puts "3D visualization performance tests"
+puts "Display/erase 1 MeshVS_Mesh"
+puts "Object haves shrink mode"
+
+
+meshdispmode m 3
+
+dchrono tmr start
+
+for {set i 1} {$i < 100} {incr i} {
+    meshhide m; meshshow m
+}

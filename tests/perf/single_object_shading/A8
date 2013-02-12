@@ -1,0 +1,8 @@
+puts "3D visualization performance tests"
+puts "Redraw V3d View with 1 AIS-object (+ AIS trihedron)"
+puts "Object haves shading mode"
+
+
+for {set i 1} {$i < 100} {incr i} {
+    vrepaint
+}

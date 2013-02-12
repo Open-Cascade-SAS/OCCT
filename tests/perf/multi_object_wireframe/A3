@@ -1,0 +1,11 @@
+puts "3D visualization performance tests"
+puts "Translate V3d View with 27 AIS-objects (+ AIS trihedron)"
+puts "Objects have wireframe mode"
+
+
+set D_x 10
+set D_y 10
+set D_z 10
+for {set i 1} {$i < 30} {incr i} {
+    vtranslateview ${D_x} ${D_y} ${D_z} 1
+}

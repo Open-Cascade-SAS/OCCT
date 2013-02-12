@@ -1,0 +1,17 @@
+puts "3D visualization performance tests"
+puts "Interactive selection of whole MeshVS_Mesh object by rectangular selection for MeshVS_Mesh"
+puts "Object haves wireframe mode"
+
+
+meshdispmode m 1
+meshselmode m 0
+
+dchrono tmr start
+
+set x1 180; set y1 180; set x2 225; set y2 230
+set x11 5; set y11 5
+
+for {set i 1} {$i < 100} {incr i} {
+    vselect $x1 $y1 $x2 $y2 1
+    vselect $x11 $y11
+}

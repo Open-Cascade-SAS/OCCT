@@ -1,0 +1,69 @@
+pload XSDRAW
+vinit
+
+meshfromstl m [locate_data_file b.stl]
+meshfromstl m2 [locate_data_file b2.stl]
+meshfromstl m3 [locate_data_file b3.stl]
+meshfromstl m4 [locate_data_file b4.stl]
+meshfromstl m5 [locate_data_file b5.stl]
+meshfromstl m6 [locate_data_file b6.stl]
+meshfromstl m7 [locate_data_file b7.stl]
+meshfromstl m8 [locate_data_file b8.stl]
+meshfromstl m9 [locate_data_file b9.stl]
+
+meshfromstl m11 [locate_data_file b11.stl]
+meshfromstl m12 [locate_data_file b12.stl]
+meshfromstl m13 [locate_data_file b13.stl]
+meshfromstl m14 [locate_data_file b14.stl]
+meshfromstl m15 [locate_data_file b15.stl]
+meshfromstl m16 [locate_data_file b16.stl]
+meshfromstl m17 [locate_data_file b17.stl]
+meshfromstl m18 [locate_data_file b18.stl]
+meshfromstl m19 [locate_data_file b19.stl]
+
+meshfromstl m21 [locate_data_file b21.stl]
+meshfromstl m22 [locate_data_file b22.stl]
+meshfromstl m23 [locate_data_file b23.stl]
+meshfromstl m24 [locate_data_file b24.stl]
+meshfromstl m25 [locate_data_file b25.stl]
+meshfromstl m26 [locate_data_file b26.stl]
+meshfromstl m27 [locate_data_file b27.stl]
+meshfromstl m28 [locate_data_file b28.stl]
+meshfromstl m29 [locate_data_file b29.stl]
+
+vtrihedron tri
+
+set dispmode 1
+meshdispmode m  ${dispmode}
+meshdispmode m2 ${dispmode}
+meshdispmode m3 ${dispmode}
+meshdispmode m4 ${dispmode}
+meshdispmode m5 ${dispmode}
+meshdispmode m6 ${dispmode}
+meshdispmode m7 ${dispmode}
+meshdispmode m8 ${dispmode}
+meshdispmode m9 ${dispmode}
+
+meshdispmode m11 ${dispmode}
+meshdispmode m12 ${dispmode}
+meshdispmode m13 ${dispmode}
+meshdispmode m14 ${dispmode}
+meshdispmode m15 ${dispmode}
+meshdispmode m16 ${dispmode}
+meshdispmode m17 ${dispmode}
+meshdispmode m18 ${dispmode}
+meshdispmode m19 ${dispmode}
+
+meshdispmode m21 ${dispmode}
+meshdispmode m22 ${dispmode}
+meshdispmode m23 ${dispmode}
+meshdispmode m24 ${dispmode}
+meshdispmode m25 ${dispmode}
+meshdispmode m26 ${dispmode}
+meshdispmode m27 ${dispmode}
+meshdispmode m28 ${dispmode}
+meshdispmode m29 ${dispmode}
+
+vzoom 0.5
+
+dchrono tmr start

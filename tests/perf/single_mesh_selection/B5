@@ -1,0 +1,18 @@
+puts "3D visualization performance tests"
+puts "Interactive selection of sub-objects (FACES) by point-and-click for MeshVS_Mesh"
+puts "Object haves wireframe mode"
+
+
+meshdispmode m 1
+meshselmode m 8
+
+dchrono tmr start
+
+set x 205
+set y 185
+set x2 10
+set y2 10
+for {set i 1} {$i < 100} {incr i} {
+    vselect $x $y
+    vselect $x2 $y2
+}

@@ -1,0 +1,42 @@
+puts "3D visualization performance tests"
+puts "Activation of WHOLE MESH selection mode for MeshVS_Mesh object in V3d View with 27 MeshVS_Mesh objects (+ AIS trihedron)"
+puts "Object haves wireframe mode"
+
+
+set dispmode 1
+meshdispmode m  ${dispmode}
+meshdispmode m2 ${dispmode}
+meshdispmode m3 ${dispmode}
+meshdispmode m4 ${dispmode}
+meshdispmode m5 ${dispmode}
+meshdispmode m6 ${dispmode}
+meshdispmode m7 ${dispmode}
+meshdispmode m8 ${dispmode}
+meshdispmode m9 ${dispmode}
+
+meshdispmode m11 ${dispmode}
+meshdispmode m12 ${dispmode}
+meshdispmode m13 ${dispmode}
+meshdispmode m14 ${dispmode}
+meshdispmode m15 ${dispmode}
+meshdispmode m16 ${dispmode}
+meshdispmode m17 ${dispmode}
+meshdispmode m18 ${dispmode}
+meshdispmode m19 ${dispmode}
+
+meshdispmode m21 ${dispmode}
+meshdispmode m22 ${dispmode}
+meshdispmode m23 ${dispmode}
+meshdispmode m24 ${dispmode}
+meshdispmode m25 ${dispmode}
+meshdispmode m26 ${dispmode}
+meshdispmode m27 ${dispmode}
+meshdispmode m28 ${dispmode}
+meshdispmode m29 ${dispmode}
+
+dchrono tmr start
+
+for {set i 1} {$i < 100} {incr i} {
+    meshselmode m 0
+    meshselmode m -1
+}

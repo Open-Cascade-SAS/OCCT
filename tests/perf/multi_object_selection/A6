@@ -1,0 +1,13 @@
+puts "3D visualization performance tests"
+puts "Activation of WIRE selection mode for AIS-object in V3d View with 27 AIS-objects (+ AIS trihedron)"
+puts "Object haves wireframe mode"
+
+
+vsetdispmode 0
+
+dchrono tmr start
+
+for {set i 1} {$i < 100} {incr i} {
+    vselmode 3 1
+    vselmode 3 0
+}

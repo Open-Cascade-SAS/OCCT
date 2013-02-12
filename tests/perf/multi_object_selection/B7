@@ -1,0 +1,18 @@
+puts "3D visualization performance tests"
+puts "Interactive selection of sub-objects (VERTEX) by point-and-click for AIS-object in V3d View with 27 AIS-objects (+ AIS trihedron)"
+puts "Object haves wireframe mode"
+
+
+vsetdispmode 0
+vselmode 1 1
+
+dchrono tmr start
+
+set x 262
+set y 205
+set x2 10
+set y2 10
+for {set i 1} {$i < 100} {incr i} {
+    vselect $x $y
+    vselect $x2 $y2
+}

@@ -1,0 +1,47 @@
+puts "3D visualization performance tests"
+puts "Interactive selection of sub-objects (FACES) by rectangular selection for MeshVS_Mesh object in V3d View with 27 MeshVS_Mesh objects (+ AIS trihedron)"
+puts "Object haves wireframe mode"
+
+
+set dispmode 1
+meshdispmode m  ${dispmode}
+meshdispmode m2 ${dispmode}
+meshdispmode m3 ${dispmode}
+meshdispmode m4 ${dispmode}
+meshdispmode m5 ${dispmode}
+meshdispmode m6 ${dispmode}
+meshdispmode m7 ${dispmode}
+meshdispmode m8 ${dispmode}
+meshdispmode m9 ${dispmode}
+
+meshdispmode m11 ${dispmode}
+meshdispmode m12 ${dispmode}
+meshdispmode m13 ${dispmode}
+meshdispmode m14 ${dispmode}
+meshdispmode m15 ${dispmode}
+meshdispmode m16 ${dispmode}
+meshdispmode m17 ${dispmode}
+meshdispmode m18 ${dispmode}
+meshdispmode m19 ${dispmode}
+
+meshdispmode m21 ${dispmode}
+meshdispmode m22 ${dispmode}
+meshdispmode m23 ${dispmode}
+meshdispmode m24 ${dispmode}
+meshdispmode m25 ${dispmode}
+meshdispmode m26 ${dispmode}
+meshdispmode m27 ${dispmode}
+meshdispmode m28 ${dispmode}
+meshdispmode m29 ${dispmode}
+
+meshselmode m 8
+
+dchrono tmr start
+
+set x1 240; set y1 210; set x2 290; set y2 270
+set x11 5; set y11 5
+
+for {set i 1} {$i < 100} {incr i} {
+    vselect $x1 $y1 $x2 $y2 1
+    vselect $x11 $y11
+}

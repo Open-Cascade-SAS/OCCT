@@ -1,0 +1,9 @@
+pload XSDRAW
+vinit
+meshfromstl m [locate_data_file b.stl]
+vtrihedron tri
+meshdispmode m 2
+
+vzoom 0.1
+
+dchrono tmr start

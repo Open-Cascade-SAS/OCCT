@@ -1,0 +1,12 @@
+puts "3D visualization performance tests"
+puts "Display/erase 1 AIS-object"
+puts "Object haves wireframe mode"
+
+
+vsetdispmode 0
+
+dchrono tmr start
+
+for {set i 1} {$i < 100} {incr i} {
+    verase b; vdisplay b
+}
