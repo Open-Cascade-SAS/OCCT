@@ -49,7 +49,7 @@ proc Visualization:depends { } {
 }
 
 proc Visualization:acdepends { } {
-    return [list X11 GL FREETYPE FTGL]
+    return [list X11 GL FREETYPE]
 }
 
 ;#
