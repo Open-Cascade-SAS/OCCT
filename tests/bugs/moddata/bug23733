@@ -1,0 +1,40 @@
+puts "================"
+puts "CR23733"
+puts "================"
+puts ""
+###############################################
+## PCurve for edge on face creation failure
+###############################################
+
+pload DCAF TOPTEST
+
+Open [locate_data_file bug_glue_edges_GEOM.sgd] D
+
+GetShape D 0:1:9686:1:1:2 s1
+GetShape D 0:1:9449:1:1:2 s2
+explode s1 e
+explode s2 f
+
+#should create pcurve
+bhaspc s1_100 s2_2 do
+#should report OK
+set info1 [bhaspc s1_100 s2_2]
+if { [regexp {No} ${info1}] == 1 } {
+    puts "Faulty: No 2D curves detected"
+}
+
+#should create pcurve
+bhaspc s1_40 s2_54 do
+#should report OK
+set info2 [bhaspc s1_40 s2_54]
+if { [regexp {No} ${info2}] == 1 } {
+    puts "Faulty: No 2D curves detected"
+}
+
+#should create pcurve
+bhaspc s1_22 s2_123 do
+#should report OK
+set info3 [bhaspc s1_22 s2_123]
+if { [regexp {No} ${info3}] == 1 } {
+    puts "Faulty: No 2D curves detected"
+}
