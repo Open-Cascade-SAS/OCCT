@@ -1,0 +1,13 @@
+puts "================"
+puts "CR23743"
+puts "================"
+puts ""
+#######################################################################
+# AIS_Triangulation crashes if Poly_Triangulation has no normals
+#######################################################################
+
+vinit
+vdrawsphere result 100
+vfit
+
+set only_screen 1

@@ -56,14 +56,9 @@ void AIS_Triangulation::Compute(const Handle(PrsMgr_PresentationManager3d)& aPre
     case 0:
       const TColgp_Array1OfPnt& nodes = myTriangulation->Nodes();             //Nodes
       const Poly_Array1OfTriangle& triangles = myTriangulation->Triangles();  //Triangle
-      const TShort_Array1OfShortReal& normals = myTriangulation->Normals();   //Normal
 
-      Standard_Boolean hasVNormals  = Standard_False;
-      Standard_Boolean hasVColors   = Standard_False;
-      if( normals.Length() > 0 )
-        hasVNormals = Standard_True;
-      if( myFlagColor == 1 )
-        hasVColors = Standard_True; 
+      Standard_Boolean hasVNormals = myTriangulation->HasNormals();
+      Standard_Boolean hasVColors  = (myFlagColor == 1);
 
       Handle(Graphic3d_ArrayOfTriangles) anArray =
          new Graphic3d_ArrayOfTriangles ( myNbNodes,        //maxVertexs
@@ -80,13 +75,46 @@ void AIS_Triangulation::Compute(const Handle(PrsMgr_PresentationManager3d)& aPre
       Standard_Integer j;
 
       Standard_Real ambient = aspect->FrontMaterial().Ambient();
-      for ( i = nodes.Lower(); i<= nodes.Upper(); i++ ){ 
-        if( myFlagColor == 1 )
-          anArray->AddVertex( nodes(i), AttenuateColor(myColor->Value(i),ambient));
-        if( myFlagColor == 0 )
-          anArray->AddVertex( nodes(i) );
-        j = (i - nodes.Lower()) * 3;
-        anArray->SetVertexNormal(i, normals(j+1), normals(j+2), normals(j+3));
+      if (hasVNormals)
+      {
+        const TShort_Array1OfShortReal& normals = myTriangulation->Normals();
+        if (hasVColors)
+        {
+          const TColStd_Array1OfInteger& colors = myColor->Array1();
+          for ( i = nodes.Lower(); i <= nodes.Upper(); i++ )
+          {
+            j = (i - nodes.Lower()) * 3;
+            anArray->AddVertex(nodes(i), AttenuateColor(colors(i), ambient));
+            anArray->SetVertexNormal(i, normals(j+1), normals(j+2), normals(j+3));
+          }
+        }
+        else // !hasVColors
+        {
+          for ( i = nodes.Lower(); i <= nodes.Upper(); i++ )
+          {
+            j = (i - nodes.Lower()) * 3;
+            anArray->AddVertex(nodes(i));
+            anArray->SetVertexNormal(i, normals(j+1), normals(j+2), normals(j+3));
+          }
+        }
+      }
+      else // !hasVNormals
+      {
+        if (hasVColors)
+        {
+          const TColStd_Array1OfInteger& colors = myColor->Array1();
+          for ( i = nodes.Lower(); i <= nodes.Upper(); i++ )
+          {
+            anArray->AddVertex(nodes(i), AttenuateColor(colors(i), ambient));
+          }
+        }
+        else // !hasVColors
+        {
+          for ( i = nodes.Lower(); i <= nodes.Upper(); i++ )
+          {
+            anArray->AddVertex(nodes(i));
+          }
+        }
       }
 
       Standard_Integer indexTriangle[3] = {0,0,0};
