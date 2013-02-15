@@ -661,22 +661,27 @@ static Standard_Boolean InitialPoint(const gp_Pnt& Point,
         // as initial point for aPrjPS, so we switch them
 	gp_Vec2d D;
 	
-	if(U == Uinf && mySurface->IsUPeriodic())
+	if((Abs(U - Uinf) < mySurface->UResolution(Precision::PConfusion())) &&
+                                                        mySurface->IsUPeriodic())
         { 
 	  d1(t, U, V, D, myCurve, mySurface);
 	  if (D.X() < 0) U = Usup;
 	}
-	else if(U == Usup && mySurface->IsUPeriodic())
-        {
+	else if((Abs(U - Usup) < mySurface->UResolution(Precision::PConfusion())) &&
+                                                        mySurface->IsUPeriodic())
+    {
 	  d1(t, U, V, D, myCurve, mySurface);
 	  if (D.X() > 0) U = Uinf;
 	}
-	if(V == Vinf && mySurface->IsVPeriodic()) 
+
+	if((Abs(V - Vinf) < mySurface->VResolution(Precision::PConfusion())) && 
+                                                        mySurface->IsVPeriodic()) 
         {
 	  d1(t, U, V, D, myCurve, mySurface);
 	  if (D.Y() < 0) V = Vsup;
 	}
-	else if(V == Vsup && mySurface->IsVPeriodic())
+	else if((Abs(V - Vsup) <= mySurface->VResolution(Precision::PConfusion())) &&
+                                                        mySurface->IsVPeriodic())
         {
 	  d1(t, U, V, D, myCurve, mySurface);
 	  if (D.Y() > 0) V = Vinf;
