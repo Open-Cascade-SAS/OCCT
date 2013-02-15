@@ -231,35 +231,38 @@
 {
   myOperation = myFuse ? BOPAlgo_FUSE : BOPAlgo_CUT;
   //
-  Prepare();
-  //
-  RebuildFaces();
-  //
-  FillImagesContainers(TopAbs_SHELL);
-  if (myErrorStatus) {
-    return;
-  }
-  //
-  FillImagesSolids();
-  if (myErrorStatus) {
-    return;
-  }
-  //
-  CheckSolidImages();
-  //
-  BuildResult(TopAbs_SOLID);
-  if (myErrorStatus) {
-    return;
-  }
-  // 
-  FillImagesCompounds();
-  if (myErrorStatus) {
-    return;
-  }
-  //
-  BuildResult(TopAbs_COMPOUND);
-  if (myErrorStatus) {
-    return;
+  if (!myShapes.IsEmpty()) {
+    //
+    Prepare(); 
+    //
+    RebuildFaces();
+    //
+    FillImagesContainers(TopAbs_SHELL);
+    if (myErrorStatus) {
+      return;
+    }
+    //
+    FillImagesSolids();
+    if (myErrorStatus) {
+      return;
+    }
+    //
+    CheckSolidImages();
+    //
+    BuildResult(TopAbs_SOLID);
+    if (myErrorStatus) {
+      return;
+    }
+    // 
+    FillImagesCompounds();
+    if (myErrorStatus) {
+      return;
+    }
+    //
+    BuildResult(TopAbs_COMPOUND);
+    if (myErrorStatus) {
+      return;
+    }
   }
   //
   BuildShape();

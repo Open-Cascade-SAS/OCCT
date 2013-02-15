@@ -26,6 +26,9 @@ class Builder from BRepFeat
     --          kept parts of the tool.
     --          Input data: a) DS;
     --                      b) The kept parts of the tool;
+    --                         If the map of the kept parts of the tool 
+    --                         is not filled boolean operation of the 
+    --                         given type will be performed;
     --                      c) Operation required.
     --          Steps: a) Fill myShapes, myRemoved maps; 
     --                 b) Rebuild edges and faces; 
