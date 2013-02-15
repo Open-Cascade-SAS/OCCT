@@ -369,6 +369,6 @@
   void BOPAlgo_Builder::PostTreat()
 {
   //BRepLib::SameParameter(myShape, 1.e-7, Standard_True);
-  BOPTools_AlgoTools::CorrectTolerances(myShape, 0.01);
+  BOPTools_AlgoTools::CorrectTolerances(myShape, 0.05);
   BOPTools_AlgoTools::CorrectShapeTolerances(myShape);
 }

@@ -121,7 +121,7 @@
   void BOPInt_ShrunkRange::Perform()
 {
   Standard_Real aCF, aCL, aTolE, aTolV1, aTolV2, t1, t11, t1C, t2, t12, t2C;
-  Standard_Real aCoeff, dt1, dt2, aR;
+  Standard_Real aCoeff, dt1, dt2, aR, anEps;
   Standard_Integer pri;
   Standard_Boolean bInf1, bInf2, bAppr;
   GeomAbs_CurveType aCurveType;
@@ -130,6 +130,7 @@
   myErrorStatus=0;
   myTS1=-99;
   myTS2=myTS1;
+  anEps = 1.e-8;
   //
   aTolE =BRep_Tool::Tolerance(myEdge);
   aTolV1=BRep_Tool::Tolerance(myV1);
@@ -159,7 +160,7 @@
   }
   //
   bAppr = (fabs(t2 - t1) > 100) ? Standard_False : Standard_True;
-  if (fabs(t2 - t1) < Precision::PConfusion()) {
+  if (fabs(t2 - t1) < anEps) {
     myErrorStatus=7;
     return;
   }
@@ -429,7 +430,7 @@
     t2C=t1C+0.1*(t2-t1C);
   }
   //
-  if (t2C-t1C < Precision::PConfusion()) {
+  if (t2C-t1C < anEps) {
     myErrorStatus = 7;
     return;
   }
