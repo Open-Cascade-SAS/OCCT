@@ -19,7 +19,6 @@
 // and conditions governing the rights and limitations under the License.
 
 #include <Graphic3d_TextureRoot.ixx>
-#include <Graphic3d_GraphicDevice.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 
 #include <Image_AlienPixMap.hxx>

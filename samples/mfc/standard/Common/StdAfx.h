@@ -24,26 +24,12 @@
 #include "Standard_ShortReal.hxx"
 #pragma warning(  default : 4244 )        // Issue warning 4244
 
-#include <V2d_Viewer.hxx>
-#include <V2d_View.hxx>
-#include <AIS2D_InteractiveContext.hxx>
-#include <WNT_WDriver.hxx>
-
 #include <Standard.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_Shape.hxx>
-#include <Graphic3d_WNTGraphicDevice.hxx>
 #include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
 #include <WNT_Window.hxx>
-
-#include <AIS2D_InteractiveObject.hxx>
-#include <Graphic2d_SetOfCurves.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <Prs2d_AspectLine.hxx>
-#include <Graphic2d_Array1OfVertex.hxx>
-#include <Graphic2d_Polyline.hxx>
-#include <Graphic2d_Text.hxx>
 
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_IsoAspect.hxx>

@@ -21,7 +21,7 @@
 
 package Viewer
 
-uses  MMgt,TCollection,Aspect,Quantity
+uses  MMgt,TCollection,Graphic3d,Quantity
   
 is
 

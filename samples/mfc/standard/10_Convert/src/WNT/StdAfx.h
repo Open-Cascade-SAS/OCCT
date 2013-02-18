@@ -29,10 +29,11 @@
 
 #include <Standard.hxx>
 
+#include <Aspect_DisplayConnection.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_Shape.hxx>
 #include <AIS_Point.hxx>
-#include <Graphic3d_WNTGraphicDevice.hxx>
+#include <Graphic3d.hxx>
 #include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
 #include <WNT_Window.hxx>

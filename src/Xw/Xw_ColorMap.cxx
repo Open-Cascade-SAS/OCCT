@@ -28,6 +28,7 @@
 #include <Xw_ColorMap.ixx>
 #include <Quantity_Color.hxx>
 #include <Standard_ShortReal.hxx>
+#include <Standard_PCharacter.hxx>
 
 // Routines C a declarer en extern
 //extern "C" {

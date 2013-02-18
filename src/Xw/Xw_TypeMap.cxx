@@ -21,6 +21,7 @@
 #include <Aspect_TypeOfLine.hxx>
 #include <Aspect_LineStyle.hxx>
 #include <Standard_ShortReal.hxx>
+#include <Standard_PCharacter.hxx>
 #include <TShort_Array1OfShortReal.hxx>
 #include <TColQuantity_Array1OfLength.hxx>
 

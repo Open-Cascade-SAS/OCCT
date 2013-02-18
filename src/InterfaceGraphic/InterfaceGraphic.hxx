@@ -21,7 +21,7 @@
 
 #ifdef WNT
   #include <InterfaceGraphic_WNT.hxx>
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
   #include <InterfaceGraphic_Cocoa.hxx>
 #else
   #include <InterfaceGraphic_X11.hxx>

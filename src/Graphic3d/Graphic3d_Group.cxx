@@ -39,7 +39,6 @@
 #include <Graphic3d_Group.ixx>
 #include <Graphic3d_Group.pxx>
 
-#include <Graphic3d_GraphicDevice.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_StructureManager.hxx>
 #include <Graphic3d_TransModeFlags.hxx>
@@ -101,10 +100,8 @@ MyListOfPArray()
   MyCGroup.PickId.IsSet = 0,
   MyCGroup.PickId.Value = 0;
 
-  Handle(Aspect_GraphicDriver) agd =
-    ((MyStructure->StructureManager ())->GraphicDevice ())->GraphicDriver ();
+  MyGraphicDriver = (MyStructure->StructureManager())->GraphicDriver();
 
-  MyGraphicDriver = *(Handle(Graphic3d_GraphicDriver) *) &agd;
 
   MyGraphicDriver->Group (MyCGroup);
 

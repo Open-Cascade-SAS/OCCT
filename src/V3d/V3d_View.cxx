@@ -3310,37 +3310,6 @@ Standard_Boolean V3d_View::Dump (const Standard_CString      theFile,
 }
 
 ////////////////////////////////////////////////////////////////
-Standard_Boolean V3d_View::Dump (const Standard_CString          theFile,
-                                 const Aspect_FormatOfSheetPaper theFormat,
-                                 const Graphic3d_BufferType&     theBufferType)
-{
-  // convert Aspect_FormatOfSheetPaper size to pixel ...
-  Quantity_Length anSPWidth, anSPHeight;
-  Aspect::ValuesOfFOSP (theFormat, anSPWidth, anSPHeight);
-
-  // adjusting to the ratio width/height ...
-  Quantity_Length aWinWidth, aWinHeight;
-  MyWindow->MMSize (aWinWidth, aWinHeight);
-  Standard_Integer aPixelWidth, aPixelHeight;
-  MyWindow->Size (aPixelWidth, aPixelHeight);
-
-  Quantity_Factor aScale = Min (anSPWidth / aWinWidth, anSPHeight / aWinHeight);
-  aPixelWidth  = Standard_Integer (aPixelWidth  * aScale);
-  aPixelHeight = Standard_Integer (aPixelHeight * aScale);
-
-  Image_AlienPixMap anImage;
-  ToPixMap (anImage, aPixelWidth, aPixelHeight, theBufferType);
-  OSD_Environment anEnvGamma ("CSF_GAMMA_CORRECTION");
-  TCollection_AsciiString strGamma (anEnvGamma.Value());
-  if (!anImage.IsEmpty() && !strGamma.IsEmpty())
-  {
-    Standard_Real aGammaValue = strGamma.RealValue();
-    anImage.AdjustGamma (aGammaValue);
-  }
-  return anImage.Save (theFile);
-}
-
-////////////////////////////////////////////////////////////////
 Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
                                      const Standard_Integer      theWidth,
                                      const Standard_Integer      theHeight,

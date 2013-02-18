@@ -237,3 +237,8 @@ Standard_Integer Graphic3d_GraphicDriver::Trace () const {
   return MyTraceLevel;
 
 }
+
+const Handle(Aspect_DisplayConnection)& Graphic3d_GraphicDriver::GetDisplayConnection() const
+{
+  return myDisplayConnection;
+}

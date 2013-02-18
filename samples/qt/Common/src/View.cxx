@@ -16,11 +16,11 @@
 
 #include <Visual3d_View.hxx>
 #include <Graphic3d_ExportFormat.hxx>
+#include <Graphic3d_GraphicDriver.hxx>
 #include <QWindowsStyle>
   
 #if defined(_WIN32) || defined(__WIN32__)
 #include <WNT_Window.hxx>
-#include <Graphic3d_WNTGraphicDevice.hxx>
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
 #include <Cocoa_Window.hxx>
 #else
@@ -31,9 +31,10 @@
 #include <X11/Xmu/StdCmap.h>
 #include <X11/Xlib.h>
 #include <Xw_Window.hxx>
-#include <Graphic3d_GraphicDevice.hxx>
 #include <QColormap>
 #endif
+
+#include <Aspect_DisplayConnection.hxx>
 
 // the key for multi selection :
 #define MULTISELECTIONKEY Qt::ShiftModifier
@@ -167,16 +168,14 @@ void View::init()
   myView = myContext->CurrentViewer()->CreateView();
 #if defined(_WIN32) || defined(__WIN32__)
   Aspect_Handle aWindowHandle = (Aspect_Handle )winId();
-  Handle(WNT_Window) hWnd = new WNT_Window (Handle(Graphic3d_WNTGraphicDevice)::DownCast (myContext->CurrentViewer()->Device()),
-                                            aWindowHandle);
+  Handle(WNT_Window) hWnd = new WNT_Window (aWindowHandle);
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
   NSView* aViewHandle = (NSView* )winId();
   Handle(Cocoa_Window) hWnd = new Cocoa_Window (aViewHandle);
 #else
   Aspect_Handle aWindowHandle = (Aspect_Handle )winId();
-  Handle(Xw_Window) hWnd = new Xw_Window (Handle(Graphic3d_GraphicDevice)::DownCast (myContext->CurrentViewer()->Device()),
-                                          aWindowHandle,
-                                          Xw_WQ_SAMEQUALITY);
+  Handle(Aspect_DisplayConnection) aDispConnection = myContext->CurrentViewer()->Driver()->GetDisplayConnection();
+  Handle(Xw_Window) hWnd = new Xw_Window (aDispConnection, aWindowHandle);
 #endif // WNT
   myView->SetWindow (hWnd);
   if (!hWnd->IsMapped())

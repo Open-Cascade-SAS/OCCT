@@ -9,13 +9,10 @@
 #include <Quantity_Factor.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>
-#include <Handle_PrsMgr_PresentationManager2d.hxx>
-#include <Handle_Graphic2d_GraphicObject.hxx>
 #include <Standard_Integer.hxx>
 #include <Handle_SelectMgr_Selection.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
-#include <AIS2D_InteractiveObject.hxx>
 
 DEFINE_STANDARD_HANDLE(Sample2D_Image,AIS2D_InteractiveObject)
 class Sample2D_Image : public AIS2D_InteractiveObject {

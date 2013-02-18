@@ -36,6 +36,7 @@
 #include <Handle_OpenGl_Workspace.hxx>
 
 #include <Aspect_Display.hxx>
+#include <Aspect_DisplayConnection.hxx>
 #include <Aspect_GradientFillMethod.hxx>
 #include <Aspect_FillMethod.hxx>
 #include <Aspect_CLayer2d.hxx>
@@ -89,8 +90,7 @@ public:
   //! Constructor
   Standard_EXPORT OpenGl_GraphicDriver (const Standard_CString theShrName);
 
-  Standard_EXPORT Standard_Boolean Begin (const Standard_CString ADisplay);
-  Standard_EXPORT Standard_Boolean Begin (const Aspect_Display ADisplay);
+  Standard_EXPORT Standard_Boolean Begin (const Handle(Aspect_DisplayConnection)& theDisplayConnection);
   Standard_EXPORT void End ();
   Standard_EXPORT Standard_Integer InquireLightLimit ();
   Standard_EXPORT void InquireMat (const Graphic3d_CView& ACView, TColStd_Array2OfReal& AMatO, TColStd_Array2OfReal& AMatM);

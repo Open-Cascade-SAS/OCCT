@@ -21,6 +21,7 @@
 #include <Aspect_TypeOfMarker.hxx>
 #include <Aspect_MarkerStyle.hxx>
 #include <Standard_ShortReal.hxx>
+#include <Standard_PCharacter.hxx>
 #include <TShort_Array1OfShortReal.hxx>
 #include <TColStd_Array1OfBoolean.hxx>
 

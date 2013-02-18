@@ -126,8 +126,7 @@ CViewer3dView::CViewer3dView()
     myDegenerateModeIsOn=Standard_True;
     m_Pen = NULL;
 	NbActiveLights=2; // There are 2 default active lights
-	myGraphicDriver = Handle(Graphic3d_GraphicDriver)::DownCast( 
-		((CViewer3dApp*)AfxGetApp())->GetGraphicDevice()->GraphicDriver() );
+	myGraphicDriver = ((CViewer3dApp*)AfxGetApp())->GetGraphicDriver();
 }
 
 CViewer3dView::~CViewer3dView()
@@ -158,11 +157,7 @@ void CViewer3dView::OnInitialUpdate()
     // store for restore state after rotation (witch is in Degenerated mode)
     myDegenerateModeIsOn = Standard_True;
 
-
-	Handle(Graphic3d_WNTGraphicDevice) theGraphicDevice = 
-		((CViewer3dApp*)AfxGetApp())->GetGraphicDevice();
-    
-    Handle(WNT_Window) aWNTWindow = new WNT_Window(theGraphicDevice,GetSafeHwnd ());
+    Handle(WNT_Window) aWNTWindow = new WNT_Window(GetSafeHwnd ());
     myView->SetWindow(aWNTWindow);
     if (!aWNTWindow->IsMapped()) aWNTWindow->Map();
 

@@ -372,29 +372,34 @@ is
 	-- An example when we have 1 view and 1 window
 	-- -------------------------------------------
 	--
-	-- // Define a graphic device
-	-- Handle(Graphic3d_GraphicDevice) GD =
-	--			new Graphic3d_GraphicDevice ("dummy:0.0");
+  -- Handle(Aspect_DisplayConnection) aDisplayConnection;
+  -- 
+  -- // Display connection initialization only needed on Linux platform
+  -- // and on Mac OS X, in cases when you use Xlib for windows drawing.
+  -- aDisplayConnection = new Aspect_DisplayConnection();
+  --
+  -- // Graphic driver initialization
+  -- Handle(Graphic3d_GraphicDriver) aGraphicDriver = 
+  --   Graphic3d::InitGraphicDriver (aDisplayConnection);
 	--
 	-- // Define a view manager
-	-- Handle(Visual3d_ViewManager) VM = new Visual3d_ViewManager (GD);
+	-- Handle(Visual3d_ViewManager) aVisualManager = new Visual3d_ViewManager (aGraphicDriver);
 	--
 	-- // Define a view
-	-- Handle(Visual3d_View) V = new Visual3d_View (VM);
+	-- Handle(Visual3d_View) aView = new Visual3d_View (aVisaulManager);
 	--
 	-- // Define a window
-	-- Handle(Xw_Window) W = new Xw_Window
-	--	(GD, "Graphic View 1", 0.695, 0.695, 0.600, 0.600,
-	--		Xw_WQ_3DQUALITY, Quantity_NOC_MATRAGRAY);
+	-- Handle(Xw_Window) aWindow = new Xw_Window
+	--	(aDisplayConnection, "Graphic View 1", 0.695, 0.695, 0.600, 0.600, Quantity_NOC_MATRAGRAY);
 	--
 	-- // Associate the view and the window
-	-- V->SetWindow (W);
+	-- aView->SetWindow (aWindow);
 	--
 	-- // Map the window
-	-- W->Map ();
+	-- aWindow->Map ();
 	--
 	-- // Activate the view
-	-- V->Activate ();
+	-- aView->Activate ();
 	--
 
 	SetWindow ( me		: mutable;
@@ -423,40 +428,6 @@ is
 	raises ViewDefinitionError from Visual3d is static;
 	---Purpose:
 	--	    After this call, each view is mapped in an unique window.
-	--
-	-- Programming example :
-	--
-	-- An example when we have 1 view and 1 widget
-	-- -------------------------------------------
-	--
-	-- // Define a graphic device
-	-- Handle(Graphic3d_GraphicDevice) GD =
-	--			new Graphic3d_GraphicDevice ("dummy:0.0");
-	--
-	-- // Define a view manager
-	-- Handle(Visual3d_ViewManager) VM = new Visual3d_ViewManager (GD);
-	--
-	-- // Define a view
-	-- Handle(Visual3d_View) V = new Visual3d_View (VM);
-	--
-	-- // Define a widget
-	-- Widget DA = GLwCreateMDrawingArea (Widget parent, char *name,
-        --                             ArgList arglist, Cardinal argcount);
-	-- Handle(Xw_Window) W = new Xw_Window(DA);
-	--
-	-- // Define the graphic context
-	-- GLXContext CTX = glXCreateContext(...)
-	-- // Define the graphic call back and client data
-	-- Handle(Object_View) myObject = new Object_View(...);
-	-- static void DisplayCallback( Window w, XtPointer client_data,
-	--			XtPointer call_data)
-	-- { .... }
-	-- // Associate the view and the widget
-	-- V->SetWindow (W, CTX, DisplayCallback, myObject);
-	--
-	-- // Activate the view
-	-- V->Activate ();
-	--
 
 	Update ( me	: mutable )
 		is static;
@@ -1084,6 +1055,7 @@ is
 	---Level: Internal
 	---Purpose: Returns the associated GraphicDriver.
 	---Category: Internal methods
+  ---C++: return const &
 
 	HaveTheSameOwner ( me;
 			   AStructure	: Structure from Graphic3d )

@@ -17,30 +17,17 @@
 -- purpose or non-infringement. Please see the License for the specific terms
 -- and conditions governing the rights and limitations under the License.
 
--- Modified:	GG  28/01/00 G004 Add gamma correction value in Dump methods.
---	         	GG  07/03/00 G004 Add MMSize() method
---              TCL 26/10/00 G002 SetBackground(aName: CString) method
---		GG  28/11/00 G002 Add BackgroundImage(),
---				      BackgroundFillMethod(),
---				      HBackground() methods.
---		SAV 24/11/01 SetBackground(Quantity_Color)
-
 deferred class Window from Aspect
 
 inherits
 	TShared from MMgt
 
-	---Purpose: This class allows the definition of a window
-        -- Warning: The position and size for the creation of the window
-        --          are defined in Device Screen Unit (DSU)
-        --          floating [0,1] space.
-
 uses
         Background         from Aspect,
         GradientBackground from Aspect,
-        GraphicDevice      from Aspect,
         TypeOfResize       from Aspect,
         FillMethod         from Aspect,
+        GradientFillMethod from Aspect,
         Handle             from Aspect,
         Ratio              from Quantity,
         Parameter          from Quantity,
@@ -53,7 +40,7 @@ raises
 	WindowError	from Aspect
 
 is
-	Initialize(aGraphicDevice: GraphicDevice from Aspect);
+	Initialize;
 	---Level: Public
 	---Purpose: Initializes the datas of a Window.
 
@@ -62,63 +49,35 @@ is
 	---------------------------------------------------
 
 	SetBackground ( me	: mutable;
-			ABack	: Background from Aspect ) is deferred;
+			ABack	: Background from Aspect );
 	---Level: Public
 	---Purpose: Modifies the window background.
 	---Category: Methods to modify the class definition
 
     SetBackground ( me : mutable ;
-                    BackColor : NameOfColor from Quantity ) is deferred;
+                    theNameOfColor : NameOfColor from Quantity );
     ---Level: Public
     ---Purpose: Modifies the window background from a Named Color.
     ---Category: Methods to modify the class definition
 
-    SetBackground ( me : mutable; color : Color from Quantity ) is deferred;
+    SetBackground ( me : mutable; color : Color from Quantity );
     ---Level: Public
     ---Purpose: Modifies the window background.
     ---Category: Methods to modify the class definition
 
     SetBackground( me: mutable;
-		aName : CString from Standard;
-		aMethod : FillMethod from Aspect = Aspect_FM_CENTERED)
-    returns Boolean from Standard is deferred;
-    ---Level: Public
-    ---Purpose: Loads the window background from an image file <aName>
-    -- defined with a supported format XWD,GIF or BMP
-    -- and returns TRUE if the operation is successfull.
-    ---Category: Methods to modify the class definition
-
-    SetBackground( me: mutable;
-		aBitmap: Handle from Aspect) is deferred;
-    ---Level: Advanced
-    ---Purpose: Loads the window background from a predefined bitmap.
-    --  Warning: the bitmap and window must have the same depth.
-    ---Category: Methods to modify the class definition
-
-    SetBackground( me: mutable;
-		   ABackground: GradientBackground from Aspect) is deferred;
+		   ABackground: GradientBackground from Aspect);
     ---Level: Public
     ---Purpose: Modifies the window gradient background.
     ---Category: Methods to modify the class definition
 
-    SetDoubleBuffer ( me : mutable ;
-                          DBmode : Boolean from Standard )
-    ---Level: Advanced
-    ---Purpose: Activates/Deactivates the Double Buffering capability
-    --          for this window.
-    --  Warning: Double Buffering is always DISABLE by default
-    --          If there is not enought ressources to activate the
-    --          double-buffering the DB mode flag can be set to FALSE.
+    SetBackground( me: mutable;
+		   theFirstColor:  Color from Quantity;
+                   theSecondColor: Color from Quantity;
+                   theFillMethod:  GradientFillMethod from Aspect);
+    ---Level: Public
+    ---Purpose: Modifies the window gradient background.
     ---Category: Methods to modify the class definition
-        is deferred;
-
-    Flush ( me )
-    ---Level: Advanced
-    ---Purpose: Flushs all graphics to the screen and Swap the Double
-    --          buffer if Enable
-    ---Category: Methods to modify the class definition
-    ---Trigger: Raises if Something is WRONG at Drawing Time.
-        raises WindowError from Aspect is deferred;
 
 	Map ( me )
 		raises WindowError from Aspect is deferred;
@@ -151,86 +110,6 @@ is
         ---Purpose: Destroy the Window
         ---Category: Methods to modify the class definition
 
-	Clear (me)
-		raises WindowError from Aspect is deferred;
-	---Level: Public
-	---Purpose: Clear The Window in the Background Color
-	---Category: Methods to modify the class definition
-
-	ClearArea (me;
-		XCenter, YCenter: Integer from Standard;
-		Width , Height: Integer from Standard)
-		raises WindowError from Aspect is deferred;
-	---Level: Public
-	---Purpose: Clear The Window Area defined in PIXELS
-	--	    in the Background Color
-	---Category: Methods to modify the class definition
-
-        Restore(me)
-	---Level: Public
-	---Purpose: Restore the BackingStored Window <me>.
-	---Category: Methods to modify the class definition
-        ---Trigger: Raises if BackingStore() is disable.
-		raises WindowError from Aspect is deferred;
-
-	RestoreArea (me;
-		XCenter, YCenter: Integer from Standard;
-		Width , Height: Integer from Standard)
-	---Level: Public
-	---Purpose: Restore the BackingStored Window Area
-	--	    defined in PIXELS.
-	---Category: Methods to modify the class definition
-        ---Trigger: Raises if BackingStore() is disable.
-		raises WindowError from Aspect is deferred;
-
-        Dump ( me ; aFilename : CString from Standard;
-		    aGammaValue: Real from Standard = 1.0) returns Boolean
-        ---Level: Advanced
-        ---Purpose: Dumps the Window to an image file (PNG, BMP, JPEG, GIF) with
-        --an optional gamma correction value according to the graphic system
-        --and returns TRUE if the dump occurs normaly.
-        ---Category: Methods to modify the class definition
-        ---Trigger: Raises if Window is not defined properly
-        raises WindowError from Aspect is deferred;
-
-        DumpArea ( me ; aFilename : CString from Standard ;
-                    Xc, Yc : Integer from Standard ;
-                    Width, Height : Integer from Standard;
-		    aGammaValue: Real from Standard = 1.0 ) returns Boolean
-        ---Level: Advanced
-        ---Purpose: Dumps the Window Area defined by his center and PIXEL size
-        -- to an image file with
-        -- an optional gamma correction value according to the graphic system
-        --and returns TRUE if the dump occurs normaly.
-        ---Category: Methods to modify the class definition
-        ---Trigger: Raises if Window is not defined properly
-        --          or the area is out of the Window.
-        raises WindowError from Aspect is deferred;
-
-        Load ( me ; aFilename : CString from Standard) returns Boolean
-        ---Level: Advanced
-        ---Purpose: Loads the XWD file to this Window.
-        -- Returns TRUE if the loading occurs normaly.
-  	--  Warning: Note that the Window is enlarged automatically
-	--when the image size is too large for this window.
-        ---Category: Methods to modify the class definition
-        ---Trigger: Raises if Window is not defined properly
-        raises WindowError from Aspect is deferred;
-
-        LoadArea ( me ; aFilename : CString from Standard ;
-                    Xc, Yc : Integer from Standard ;
-                    Width, Height : Integer from Standard ) returns Boolean
-        ---Level: Advanced
-        ---Purpose: Loads the XWD file to Window Area defined by his center
-	--and PIXEL size
-        -- Returns TRUE if the loading occurs normaly.
-        --  Warning: Note that the Image is zoomed automatically
-        --when the image size is too large for this window area.
-        ---Category: Methods to modify the class definition
-        ---Trigger: Raises if Window is not defined properly
-        --          or the area is out of the Window.
-        raises WindowError from Aspect is deferred;
-
 	----------------------------
 	-- Category: Inquire methods
 	----------------------------
@@ -240,11 +119,6 @@ is
 	---Purpose: Returns the window background.
 	---Category: Inquire methods
 
-	BackgroundImage ( me ) returns CString from Standard;
-	---Level: Public
-	---Purpose: Returns the current image background string
-	-- or NULL if nothing is defined.
-
 	BackgroundFillMethod( me ) returns FillMethod from Aspect;
 	---Level: Public
 	---Purpose: Returns the current image background fill mode.
@@ -252,18 +126,6 @@ is
 	GradientBackground ( me ) returns GradientBackground from Aspect;
 	---Level: Public
 	---Purpose: Returns the window gradient background.
-
-	HBackground ( me )
-	returns Handle from Aspect;
-	---Level:  Advanced
-	---Purpose: Returns the background bitmap handle or
-	-- 0 when nothing is defined
-	---C++:     inline
-
-	GraphicDevice ( me ) returns GraphicDevice from Aspect;
-	---Level: Public
-	---Purpose: Returns the Graphic Device associated to this Window.
-	---Category: Inquire methods
 
 	IsMapped ( me ) returns Boolean from Standard is deferred;
 	---Level: Public
@@ -289,24 +151,10 @@ is
         ---Category: Inquire methods
 
         Position ( me ;
-                X1, Y1 ,X2, Y2 : out Parameter from Quantity)
-        is deferred;
-        ---Level: Public
-        ---Purpose: Returns The Window POSITION in DSU
-        ---Category: Inquire methods
-
-        Position ( me ;
                 X1, Y1, X2, Y2 : out Integer from Standard )
         is deferred;
         ---Level: Public
         ---Purpose: Returns The Window POSITION in PIXEL
-        ---Category: Inquire methods
-
-	Size ( me ;
-		Width, Height : out Parameter from Quantity )
-        is deferred;
-	---Level: Public
-	---Purpose: Returns The Window SIZE in DSU
         ---Category: Inquire methods
 
         Size ( me ;
@@ -316,61 +164,9 @@ is
         ---Purpose: Returns The Window SIZE in PIXEL
         ---Category: Inquire methods
 
-	MMSize ( me ;
-		Width, Height : out Real from Standard )
-        is deferred;
-	---Level: Public
-	---Purpose: Returns The Window SIZE in MM
-        ---Category: Inquire methods
-
-        Convert ( me ; PV : Integer from Standard )
-        returns Parameter from Quantity  is deferred;
-        ---Level: Public
-        ---Purpose: Returns the DSU value depending of the PIXEL value.
-        ---Category: Inquire methods
-
-        Convert ( me ; DV : Parameter from Quantity )
-        returns Integer from Standard  is deferred;
-        ---Level: Public
-        ---Purpose: Returns the PIXEL value depending of the DSU value.
-        ---Category: Inquire methods
-
-        Convert ( me ;
-                  PX, PY : Integer from Standard ;
-                  DX, DY : out Parameter from Quantity )  is deferred;
-        ---Level: Public
-        ---Purpose: Returns the DSU position depending of the PIXEL position.
-        ---Category: Inquire methods
-
-        Convert ( me ;
-                  DX, DY : Parameter from Quantity ;
-                  PX, PY : out Integer from Standard )  is deferred;
-        ---Level: Public
-        ---Purpose: Returns the PIXEL position depending of the DSU position.
-        ---Category: Inquire methods
-
-	BackingStore(me) returns Boolean from Standard is deferred;
-	---Level: Advanced
-        ---Purpose: Returns the BackingStore capability for this Window .
-        --          If Answer is True Exposure can be recovered by
-        --          Restore RestoreArea methods .
-        --          If Answer is False,Application must Redraw
-	--	    the exposed area.
-        ---Category: Inquire methods
-
-        DoubleBuffer ( me )
-        returns Boolean from Standard  is deferred;
-        ---Level: Advanced
-        ---Purpose: Returns the DoubleBuffer state.
-        ---Category: Inquire methods
-
 fields
-        MyGraphicDevice	: GraphicDevice from Aspect is protected;
         MyBackground : Background from Aspect is protected;
-        MyBackgroundImage : AsciiString from TCollection is protected;
-        MyBackgroundFillMethod : FillMethod from Aspect is protected;
-        MyHBackground   : Handle from Aspect is protected;
         MyGradientBackground   : GradientBackground from Aspect is protected;
+        MyBackgroundFillMethod : FillMethod from Aspect is protected;
         MyIsVirtual : Boolean from Standard is protected;
-
 end Window;

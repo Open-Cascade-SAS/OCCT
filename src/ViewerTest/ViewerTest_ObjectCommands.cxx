@@ -2494,7 +2494,6 @@ static int VDrawText (Draw_Interpretor& di, Standard_Integer argc, const char** 
 #include <TShort_HArray1OfShortReal.hxx>
 
 #include <AIS_Triangulation.hxx>
-#include <Aspect_GraphicDevice.hxx>
 #include <StdPrs_ToolShadedShape.hxx>
 #include <Poly_Connect.hxx>
 #include <TColgp_Array1OfDir.hxx>

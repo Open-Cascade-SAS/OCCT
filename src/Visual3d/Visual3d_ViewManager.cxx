@@ -93,8 +93,8 @@
 
 //-Constructors
 
-Visual3d_ViewManager::Visual3d_ViewManager (const Handle(Aspect_GraphicDevice)& aDevice):
-Graphic3d_StructureManager (aDevice),
+Visual3d_ViewManager::Visual3d_ViewManager (const Handle(Graphic3d_GraphicDriver)& theDriver):
+Graphic3d_StructureManager (theDriver),
 MyDefinedView (),
 MyViewGenId (View_IDMIN+((View_IDMIN+View_IDMAX)/(Visual3d_ViewManager::Limit ()))*(Visual3d_ViewManager::CurrentId ()-1),View_IDMIN+((View_IDMIN+View_IDMAX)/(Visual3d_ViewManager::Limit ()))*Visual3d_ViewManager::CurrentId ()-1),
 MyZBufferAuto (Standard_False),
@@ -105,9 +105,7 @@ MyTransparency (Standard_False)
   myLayerIds.Add (0);
   myLayerSeq.Append (0);
 
-  Handle(Aspect_GraphicDriver) agd = aDevice->GraphicDriver ();
-
-  MyGraphicDriver = *(Handle(Graphic3d_GraphicDriver) *) &agd;
+  MyGraphicDriver = theDriver;
 }
 
 //-Destructors

@@ -33,14 +33,6 @@
 #include <Draw.hxx>
 #include <Draw_Appli.hxx>
 #include <DBRep.hxx>
-#include <Graphic3d_GraphicDevice.hxx>
-#include <Xw_GraphicDevice.hxx>
-#include <Xw_WindowQuality.hxx>
-#include <Xw_Window.hxx>
-#include <Graphic3d_GraphicDevice.hxx>
-#include <Xw_GraphicDevice.hxx>
-#include <Xw_WindowQuality.hxx>
-#include <Xw_Window.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
@@ -55,75 +47,65 @@
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <AIS_ListOfInteractive.hxx>
 #include <Aspect_Window.hxx>
+#include <Aspect_DisplayConnection.hxx>
+#include <Graphic3d.hxx>
+#include <Graphic3d_GraphicDriver.hxx>
 
-
-#ifndef WNT
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#else
+#if defined(_WIN32) || defined(__WIN32__)
 #include <WNT_WClass.hxx>
 #include <WNT_Window.hxx>
-#include <Graphic3d_WNTGraphicDevice.hxx>
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+#include <Cocoa_Window.hxx>
+#else
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <Xw_WindowQuality.hxx>
+#include <Xw_Window.hxx>
 #endif
-
-
-
-
 
 //==============================================================================
 //  GLOBAL VARIABLES
 //==============================================================================
 #define ZCLIPWIDTH 1.
 
-#ifdef WNT
-
-static Handle(Graphic3d_WNTGraphicDevice) GetDevice() { 
-  static Handle(Graphic3d_WNTGraphicDevice) myDevice;
-  static int first = 1;
-  if ( first ) myDevice = new Graphic3d_WNTGraphicDevice();
-  first = 0;
-  return myDevice;
+static Handle(Aspect_DisplayConnection)& GetDisplayConnection()
+{
+  static Handle(Aspect_DisplayConnection) aDisplayConnection;
+  static Standard_Boolean isFirst = Standard_True;
+  if (isFirst)
+  {
+    aDisplayConnection = new Aspect_DisplayConnection();
+    isFirst = Standard_False;
+  }
+  return aDisplayConnection;
 }
-
-#else
-
-static Handle(Graphic3d_GraphicDevice)& GetDevice() {
-  static Handle(Graphic3d_GraphicDevice) myDevice;
-  static int first = 1;
-  if ( first ) myDevice = new Graphic3d_GraphicDevice (getenv("DISPLAY"),Xw_TOM_READONLY);
-  first = 0;
-  return myDevice;
-}
-
-//static Display *display;
-
-#endif
-
 
 Standard_IMPORT Standard_Boolean Draw_VirtualWindows;
 
 //=======================================================================
 //function : MakeViewer
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 Handle(V3d_Viewer) ViewerTest_Tool::MakeViewer (const Standard_CString theTitle)
 {
-#ifdef WNT
-  Handle(Aspect_Window) window = new WNT_Window (GetDevice(), theTitle,
+#if defined(_WIN32) || defined(__WIN32__)
+  Handle(Aspect_Window) window = new WNT_Window (theTitle,
                                                  Handle(WNT_WClass)::DownCast (ViewerTest::WClass()),
                                                  WS_OVERLAPPEDWINDOW, 0, 460, 409, 409, Quantity_NOC_BLACK);
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+  Handle(Aspect_Window) window = new Cocoa_Window (theTitle, 0, 460, 409, 409);
 #else
-  Handle(Aspect_Window) window = new Xw_Window (GetDevice(), theTitle,
-                                                0, 460, 409, 409, Xw_WQ_3DQUALITY, Quantity_NOC_BLACK);
+  Handle(Aspect_Window) window = new Xw_Window (GetDisplayConnection(), theTitle,
+                                                0, 460, 409, 409, Quantity_NOC_BLACK);
 #endif
   window->SetVirtual (Draw_VirtualWindows);
   window->Map();
 
   // Viewer
-  Handle(Aspect_GraphicDevice) theDevice = GetDevice();
+  Handle(Graphic3d_GraphicDriver) aDriver = Graphic3d::InitGraphicDriver (GetDisplayConnection());
   TCollection_ExtendedString NameOfWindow("Visu3D");
-  Handle(V3d_Viewer) a3DViewer = new V3d_Viewer(theDevice,NameOfWindow.ToExtString());
+  Handle(V3d_Viewer) a3DViewer = new V3d_Viewer(aDriver,NameOfWindow.ToExtString());
 
   a3DViewer->SetDefaultBackgroundColor(Quantity_NOC_BLACK);
   a3DViewer->SetDefaultLights();

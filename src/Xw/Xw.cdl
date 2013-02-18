@@ -70,14 +70,6 @@ is
         ---Purpose: Creates the X Markmap
         ---Category: Classes
 
-        class GraphicDevice;
-        ---Purpose: Creates the X Device (Connexion & Visual)
-        ---Category: Classes
-
-        class IconBox;
-        ---Purpose: Creates the X Icon Box
-        ---Category: Classes
-
         -------------------------
         -- Category: Enumerations
         -------------------------

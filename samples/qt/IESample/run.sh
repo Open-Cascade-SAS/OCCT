@@ -10,7 +10,7 @@ STATION=$host
 RES_DIR="${aSamplePath}/res"
 
 aSystem=`uname -s`
-if [ "$aSystem" == "Darwin" ]; then
+if [ "$aSystem" == "Darwin" ] && [ "$MACOSX_USE_GLX" != "true" ]; then
   if [ "${CASDEB}" == "d" ]; then
     BIN_DIR="${aSamplePath}/build/Debug/IESample.app/Contents/MacOS"
   else
@@ -30,7 +30,7 @@ export PATH
 
 if test ! -r "${BIN_DIR}/IESample"; then
   echo "Executable \"${BIN_DIR}/IESample\" not found."
-  if [ "$aSystem" == "Darwin" ]; then
+  if [ "$aSystem" == "Darwin" ] && [ "$MACOSX_USE_GLX" != "true" ]; then
     echo "Probably you don't compile the application. Build it with Xcode."
   else
     echo "Probably you don't compile the application. Execute \"make\"."

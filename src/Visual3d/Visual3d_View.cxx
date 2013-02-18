@@ -142,7 +142,6 @@
 #include <Graphic3d_DataStructureManager.hxx>
 
 #include <Graphic3d_GraphicDriver.hxx>
-#include <Graphic3d_GraphicDevice.hxx>
 
 #include <Graphic3d_Vector.hxx>
 #include <Graphic3d_Vertex.hxx>
@@ -294,10 +293,7 @@ Standard_Real um, vm, uM, vM;
         MyCView.GDisplayCB = 0;
         MyCView.GClientData = 0;
 
-Handle(Aspect_GraphicDriver) agd =
-        (MyViewManager->GraphicDevice ())->GraphicDriver ();
-
-        MyGraphicDriver = *(Handle(Graphic3d_GraphicDriver) *) &agd;
+        MyGraphicDriver = MyViewManager->GraphicDriver();
 
 }
 
@@ -430,10 +426,7 @@ Standard_Real um, vm, uM, vM;
         MyCView.GDisplayCB = 0;
         MyCView.GClientData = 0;
 
-Handle(Aspect_GraphicDriver) agd =
-        (MyViewManager->GraphicDevice ())->GraphicDriver ();
-
-        MyGraphicDriver = *(Handle(Graphic3d_GraphicDriver) *) &agd;
+        MyGraphicDriver = MyViewManager->GraphicDriver();
 
 }
 
@@ -3529,7 +3522,7 @@ Standard_Boolean Visual3d_View::DegenerateModeIsOn () const {
 
 }
 
-Handle(Aspect_GraphicDriver) Visual3d_View::GraphicDriver () const {
+const Handle(Aspect_GraphicDriver)& Visual3d_View::GraphicDriver () const {
 
         return MyGraphicDriver;
 

@@ -106,8 +106,4 @@ fields
 	MyExtendedDisplay	: Address from Standard ;
 	MyExtendedMarkMap 	: Address from Standard ;
 
-friends
-
-	class GraphicDevice from Xw
-
 end MarkMap ;

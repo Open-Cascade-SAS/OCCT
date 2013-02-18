@@ -11,7 +11,7 @@ private:
 	Handle_V3d_Viewer myViewer;
 	Handle_V3d_View myView;
 	Handle_AIS_InteractiveContext myAISContext;
-	Handle_Graphic3d_WNTGraphicDevice myGraphicDevice;
+	Handle_Graphic3d_GraphicDriver myGraphicDriver;
 public:
 	__declspec(dllexport) bool InitViewer(void* wnd);
 	__declspec(dllexport) bool ImportBRep(char* filename);

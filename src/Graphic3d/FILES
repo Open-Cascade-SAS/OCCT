@@ -46,7 +46,6 @@ Graphic3d_CTransPersStruct.hxx
 Graphic3d_CTransPersStruct.cxx
 Graphic3d_NListOfHAsciiString.hxx
 Graphic3d_AspectText3d.cxx
-Graphic3d_WNTGraphicDevice.cxx
 Graphic3d_PtrFrameBuffer.hxx
 Graphic3d_BufferType.hxx
 Graphic3d_Vec2.hxx

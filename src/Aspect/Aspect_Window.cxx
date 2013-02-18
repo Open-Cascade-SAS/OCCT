@@ -45,29 +45,16 @@
 
 //-Constructors
 
-Aspect_Window::Aspect_Window (const Handle(Aspect_GraphicDevice)& aGraphicDevice)
-: MyGraphicDevice(aGraphicDevice),
-  MyBackground(),
-  MyBackgroundImage(),
+Aspect_Window::Aspect_Window()
+: MyBackground(),
   MyGradientBackground(),
-  MyBackgroundFillMethod(Aspect_FM_NONE),
-  MyHBackground(0)
+  MyBackgroundFillMethod(Aspect_FM_NONE)
 {
-}
-
-Handle(Aspect_GraphicDevice) Aspect_Window::GraphicDevice() const
-{
-  return MyGraphicDevice;
 }
 
 Aspect_Background Aspect_Window::Background() const
 {
   return MyBackground;
-}
-
-Standard_CString Aspect_Window::BackgroundImage() const
-{
-  return MyBackgroundImage.ToCString();
 }
 
 Aspect_FillMethod Aspect_Window::BackgroundFillMethod() const
@@ -88,4 +75,33 @@ Standard_Boolean Aspect_Window::IsVirtual() const
 void Aspect_Window::SetVirtual (const Standard_Boolean theVirtual)
 {
   MyIsVirtual = theVirtual;
+}
+
+void Aspect_Window::SetBackground (const Aspect_Background& theBackground)
+{
+  SetBackground (theBackground.Color());
+}
+
+void Aspect_Window::SetBackground (const Quantity_NameOfColor theNameOfColor)
+{
+  MyBackground.SetColor (theNameOfColor);
+}
+
+void Aspect_Window::SetBackground (const Quantity_Color& theColor)
+{
+  MyBackground.SetColor (theColor);
+}
+
+void Aspect_Window::SetBackground (const Aspect_GradientBackground& theBackground)
+{
+  Quantity_Color aFirstColor, aSecondColor;
+  theBackground.Colors (aFirstColor, aSecondColor);
+  SetBackground (aFirstColor, aSecondColor, theBackground.BgGradientFillMethod());
+}
+
+void Aspect_Window::SetBackground (const Quantity_Color& theFirstColor,
+                                   const Quantity_Color& theSecondColor,
+                                   const Aspect_GradientFillMethod theFillMethod)
+{
+  MyGradientBackground.SetColors (theFirstColor, theSecondColor, theFillMethod);
 }

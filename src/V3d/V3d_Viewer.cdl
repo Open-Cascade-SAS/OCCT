@@ -47,7 +47,7 @@ inherits
 
 uses
 
-        GraphicDevice from Aspect,
+        GraphicDriver from Graphic3d,
         TypeOfUpdate from V3d,
         TypeOfVisualization from V3d,
         TypeOfShadingModel from V3d,
@@ -90,7 +90,7 @@ raises
 
 is
 
-        Create ( Device     : GraphicDevice from Aspect;
+        Create ( theDriver  : GraphicDriver from Graphic3d;
              aName          : ExtString from Standard;
              aDomain        : CString from Standard = "";
              ViewSize       : Length from Quantity = 1000.0 ;
@@ -103,7 +103,7 @@ is
              DefaultComputedMode: Boolean from Standard = Standard_True;
              SurfaceDetail  : TypeOfSurfaceDetail  from V3d = V3d_TEX_NONE)
         returns mutable Viewer from V3d
-        ---Purpose: Create a Viewer on the given device with the given parameters  or
+        ---Purpose: Create a Viewer with the given graphic driver and the given parameters  or
         --          with their default values.
         --          Currently creating of more than 100 viewer instances 
 	      --          is not supported and leads to an exception.
@@ -112,9 +112,7 @@ is
         ---Purpose:        If the size of the view is <= 0
         --      if ComputedMode is false, only the degenerate mode will be used.
         --
-        --  Warning: Client must creates a graphic-device of type
-        --            Graphic3d_GraphicDevice under UNIX
-        --         or Graphic3d_WNTGraphicDevice under WindowsNT
+        --  Warning: Client must creates a graphic driver
 
         CreateView (me: mutable) returns mutable View from V3d;
         ---Level: Public

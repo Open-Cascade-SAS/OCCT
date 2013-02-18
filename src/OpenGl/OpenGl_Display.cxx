@@ -48,7 +48,7 @@ namespace
 
 /*----------------------------------------------------------------------*/
 
-OpenGl_Display::OpenGl_Display (const Standard_CString theDisplay)
+OpenGl_Display::OpenGl_Display (const Handle(Aspect_DisplayConnection)& theDisplayConnection)
 : myDisplay(NULL),
   myFacilities(myDefaultFacilities),
   myDBuffer(Standard_True),
@@ -66,43 +66,7 @@ OpenGl_Display::OpenGl_Display (const Standard_CString theDisplay)
 #if (defined(_WIN32) || defined(__WIN32__)) || (defined(__APPLE__) && !defined(MACOSX_USE_GLX))
   myDisplay = TheDummyDisplay;
 #else
-  if (theDisplay != NULL && *theDisplay != '\0')
-  {
-    OSD_Environment aDispEnv ("DISPLAY", theDisplay);
-    aDispEnv.Build();
-  }
-
-  // Specifies the hardware display name, which determines the
-  // display and communications domain to be used.
-  // On a POSIX system, if the display_name is NULL, it defaults
-  // to the value of the DISPLAY environment variable.
-  myDisplay = XOpenDisplay (NULL);
-#endif
-
-  Init();
-}
-
-/*----------------------------------------------------------------------*/
-
-OpenGl_Display::OpenGl_Display (const Aspect_Display theDisplay)
-: myDisplay(NULL),
-  myFacilities(myDefaultFacilities),
-  myDBuffer(Standard_True),
-  myDither(Standard_True),
-  myBackDither(Standard_False),
-  myWalkthrough(Standard_False),
-  mySymPerspective(Standard_False),
-  myOffsetFactor(1.F),
-  myOffsetUnits(0.F),
-  myAntiAliasingMode(3),
-  myLinestyleBase(0),
-  myPatternBase(0),
-  myMarkerBase(0)
-{
-#if (defined(_WIN32) || defined(__WIN32__))
-  myDisplay = TheDummyDisplay;
-#else
-  myDisplay = theDisplay;
+  myDisplay = theDisplayConnection->GetDisplay();
 #endif
 
   Init();

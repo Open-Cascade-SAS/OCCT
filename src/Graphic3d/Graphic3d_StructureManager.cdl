@@ -41,7 +41,6 @@ uses
         SequenceOfInteger       from TColStd,
 
 	GenId			from Aspect,
-	GraphicDevice           from Aspect,
 	TypeOfHighlightMethod	from Aspect,
 	TypeOfUpdate		from Aspect,
 
@@ -52,7 +51,8 @@ uses
 	AspectText3d		from Graphic3d,
 	Structure		from Graphic3d,
 	MapOfStructure		from Graphic3d,
-	SequenceOfStructure	from Graphic3d
+	SequenceOfStructure	from Graphic3d,
+    GraphicDriver    from Graphic3d
 
 raises
 
@@ -60,7 +60,7 @@ raises
 
 is
 
-	Initialize ( aDevice	: GraphicDevice from Aspect )
+	Initialize ( theDriver: GraphicDriver from Graphic3d )
 	---Level: Public
 	---Purpose: Initialises the ViewManager.
 	--  Currently creating of more than 100 viewer instances 
@@ -411,11 +411,12 @@ is
 	---Purpose: Transforms the structure <AStructure>.
 	---Category: Private methods
 
-	GraphicDevice ( me )
-		returns GraphicDevice from Aspect;
+	GraphicDriver ( me )
+		returns GraphicDriver from Graphic3d;
 	---Level: Internal
-	---Purpose: Returns the graphic device of <me>.
+	---Purpose: Returns the graphic driver of <me>.
 	---Category: Private methods
+  ---C++: return const &
 
 	Invisible ( me		: mutable;
 		    AStructure	: Structure from Graphic3d )
@@ -530,7 +531,7 @@ fields
 	MyStructGenId		:	GenId from Aspect is protected;
 
 
-	MyGraphicDevice		:	GraphicDevice from Aspect is protected;
+	MyGraphicDriver		:	GraphicDriver from Graphic3d is protected;
 
 friends
 

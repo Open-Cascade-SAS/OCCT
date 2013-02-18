@@ -20,6 +20,7 @@
 #include <windows.h>
 #include <WNT_WClass.ixx>
 
+#include <Standard_PCharacter.hxx>
 #include <InterfaceGraphic_WNT.hxx>
 
 #include <string.h>

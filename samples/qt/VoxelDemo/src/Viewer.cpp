@@ -8,26 +8,29 @@
 #include <QMouseEvent>
 
 #include <WNT_Window.hxx>
-#include <Graphic3d_WNTGraphicDevice.hxx>
 
 #include <Voxel_Prs.hxx>
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
+#include <Aspect_DisplayConnection.hxx>
+#include <Graphic3d.hxx>
+#include <Graphic3d_GraphicDriver.hxx>
 
-static Handle(Graphic3d_WNTGraphicDevice) device;
+static Handle(Graphic3d_GraphicDriver) Viewer_aGraphicDriver;
 
 Viewer::Viewer(QWidget* parent):QWidget(parent)
 {
-    if(device.IsNull())
+    if (myGraphicDriver.IsNull())
     {
-        device = new Graphic3d_WNTGraphicDevice();
-        if (!device->GraphicDriver().IsNull())
-        {
-            myGraphicDriver = Handle(OpenGl_GraphicDriver)::DownCast(device->GraphicDriver());
-        }
+      if (Viewer_aGraphicDriver.IsNull())
+      {
+        Handle(Aspect_DisplayConnection) aDisplayConnection;
+        Viewer_aGraphicDriver = Graphic3d::InitGraphicDriver (aDisplayConnection);
+      }
+      myGraphicDriver = Handle(OpenGl_GraphicDriver)::DownCast(Viewer_aGraphicDriver);
     }
-    
-	Handle(V3d_Viewer) aViewer = new V3d_Viewer(device, TCollection_ExtendedString("Visu3D").ToExtString(), "",
+
+	Handle(V3d_Viewer) aViewer = new V3d_Viewer(myGraphicDriver, TCollection_ExtendedString("Visu3D").ToExtString(), "",
                                                 1000, V3d_XposYnegZpos,
                                                 Quantity_NOC_GRAY30, V3d_ZBUFFER, V3d_GOURAUD, V3d_WAIT,
                                                 true, true, V3d_TEX_NONE);
@@ -39,13 +42,8 @@ Viewer::Viewer(QWidget* parent):QWidget(parent)
     myIC = new AIS_InteractiveContext(aViewer);
     myIC->SetDeviationCoefficient(1.e-3);
 
-    int       windowHandle = (int) winId();
-    short     hi, lo;
-
-    lo = (short) windowHandle;
-    hi = (short) (windowHandle >> 16);
-    Handle(WNT_Window) hWnd =
-        new WNT_Window(Handle(Graphic3d_WNTGraphicDevice)::DownCast(aViewer->Device()), (int) hi, (int) lo);
+    Aspect_Handle aWindowHandle = (Aspect_Handle )winId();
+    Handle(WNT_Window) hWnd = new WNT_Window (aWindowHandle);
 
     myView->SetWindow(hWnd);
     if(!hWnd->IsMapped())

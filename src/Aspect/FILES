@@ -1,3 +1,4 @@
+EXTERNLIB
 Aspect_WOKSteps.edl
 Aspect_CMPLRS.edl
 Aspect_FStream.hxx
@@ -19,3 +20,6 @@ Aspect_Drawable.hxx
 Aspect_PolygonOffsetMode.hxx
 Aspect_GradientBackground.cxx
 Aspect_Convert.hxx
+Aspect_DisplayConnection.hxx
+Aspect_DisplayConnection.cxx
+Aspect_DisplayConnection_Handle.hxx

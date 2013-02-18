@@ -467,15 +467,6 @@ is
     ---Purpose: For grouping together primitives in a structure
     ---Category: Classes
 
-    class GraphicDevice;
-    ---Purpose: Defines a physical graphic device allowing to
-    --          shares graphical ressources.
-    ---Category: Classes
-
-    class WNTGraphicDevice;
-    ---Purpose:  Defines a physical graphic device for Windows NT
-    ---Category: Classes
-
     class MaterialAspect;
     ---Purpose: Aspect attributes of a 3d face.
     ---Category: Classes
@@ -614,5 +605,16 @@ is
         ST_BSP_Tree   -- sorting by BSPTree (slow, but fine result )
 
         end SortType;
+
+    ----------------------------
+    -- Category: Package methods
+    ----------------------------
+
+    InitGraphicDriver (theDisplayConnection: DisplayConnection_Handle from Aspect)
+       returns GraphicDriver from Graphic3d
+       raises  DriverDefinitionError from Aspect;
+    ---Purpose: Initialize graphic driver and returns Handle to it.
+
+    
 
 end Graphic3d;

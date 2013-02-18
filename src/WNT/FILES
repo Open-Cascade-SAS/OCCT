@@ -21,10 +21,7 @@ W95_Allocator.cxx
 WNT_Allocator.cxx
 WNT_ColorRef.cxx
 WNT_Dword.cxx
-WNT_IconBox_1.cxx
-WNT_ImageProcessor.cxx
 WNT_LogFont.cxx
 WNT_Long.cxx
 WNT_Uint.cxx
 WNT_WindowData.cxx
-WNT_WndProc.cxx

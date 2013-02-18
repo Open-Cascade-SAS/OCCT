@@ -9,14 +9,12 @@
 #include <QColor>
 #include <QColorDialog>
 
-#ifndef WNT
-#include <Graphic3d_GraphicDevice.hxx>
-#else
-#include <Graphic3d_WNTGraphicDevice.hxx>
-#endif
-
+#include <Aspect_DisplayConnection.hxx>
 #include <AIS_InteractiveObject.hxx>
+#include <Graphic3d.hxx>
 #include <Graphic3d_NameOfMaterial.hxx>
+#include <Graphic3d_GraphicDriver.hxx>
+#include <TCollection_AsciiString.hxx>
 
 Handle(V3d_Viewer) DocumentCommon::Viewer( const Standard_CString aDisplay,
 				                     const Standard_ExtString aName,
@@ -26,21 +24,20 @@ Handle(V3d_Viewer) DocumentCommon::Viewer( const Standard_CString aDisplay,
 				                     const Standard_Boolean ComputedMode,
 				                     const Standard_Boolean aDefaultComputedMode )
 {
-#ifndef WNT
-static Handle(Graphic3d_GraphicDevice) defaultdevice;
-    if( defaultdevice.IsNull() )
-        defaultdevice = new Graphic3d_GraphicDevice( aDisplay );
-   return new V3d_Viewer(defaultdevice,aName,aDomain,ViewSize,ViewProj,
-						 Quantity_NOC_GRAY30,V3d_ZBUFFER,V3d_GOURAUD,V3d_WAIT,
-						 ComputedMode,aDefaultComputedMode,V3d_TEX_NONE);
-#else
-static Handle(Graphic3d_WNTGraphicDevice) defaultdevice;
-    if( defaultdevice.IsNull() )
-        defaultdevice = new Graphic3d_WNTGraphicDevice();
-   return new V3d_Viewer(defaultdevice,aName,aDomain,ViewSize,ViewProj,
-	   Quantity_NOC_GRAY30,V3d_ZBUFFER,V3d_GOURAUD,V3d_WAIT,
-	   ComputedMode,aDefaultComputedMode,V3d_TEX_NONE);
+  static Handle(Graphic3d_GraphicDriver) aGraphicDriver;
+
+  if (aGraphicDriver.IsNull())
+  {
+    Handle(Aspect_DisplayConnection) aDisplayConnection;
+#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+    aDisplayConnection = new Aspect_DisplayConnection (aDisplay);
 #endif
+    aGraphicDriver = Graphic3d::InitGraphicDriver (aDisplayConnection);
+  }
+
+  return new V3d_Viewer(aGraphicDriver,aName,aDomain,ViewSize,ViewProj,
+           Quantity_NOC_GRAY30,V3d_ZBUFFER,V3d_GOURAUD,V3d_WAIT,
+           ComputedMode,aDefaultComputedMode,V3d_TEX_NONE);
 }
 
 DocumentCommon::DocumentCommon( const int theIndex, ApplicationCommonWindow* app )

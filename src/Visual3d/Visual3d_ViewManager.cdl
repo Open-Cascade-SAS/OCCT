@@ -35,7 +35,6 @@ uses
         MapOfInteger            from TColStd,
 
 	GenId			from Aspect,
-	GraphicDevice           from Aspect,
 	Window			from Aspect,
 	TypeOfHighlightMethod	from Aspect,
 
@@ -55,7 +54,7 @@ uses
 
 is
 
-	Create ( aDevice	: GraphicDevice from Aspect)
+	Create ( theDriver: GraphicDriver from Graphic3d)
 		returns mutable ViewManager from Visual3d;
 	---Level: Public
 	---Purpose: Creates a 3D visualizer.

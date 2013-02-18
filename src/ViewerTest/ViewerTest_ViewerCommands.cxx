@@ -56,6 +56,8 @@
 #include <V3d_LayerMgrPointer.hxx>
 #include <Aspect_TypeOfLine.hxx>
 #include <Image_Diff.hxx>
+#include <Aspect_DisplayConnection.hxx>
+#include <Graphic3d.hxx>
 
 #ifdef WNT
 #undef DrawText
@@ -65,7 +67,6 @@
 #include <cstdlib>
 
 #if defined(_WIN32) || defined(__WIN32__)
-  #include <Graphic3d_WNTGraphicDevice.hxx>
   #include <WNT_WClass.hxx>
   #include <WNT_Window.hxx>
 
@@ -74,12 +75,9 @@
     #pragma warning (disable:4996)
   #endif
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-  #include <Graphic3d_GraphicDevice.hxx>
   #include <Cocoa_Window.hxx>
   #include <tk.h>
 #else
-  #include <Graphic3d_GraphicDevice.hxx>
-  #include <Xw_GraphicDevice.hxx>
   #include <Xw_WindowQuality.hxx>
   #include <Xw_Window.hxx>
   #include <X11/Xlib.h> /* contains some dangerous #defines such as Status, True etc. */
@@ -100,21 +98,11 @@ extern const Handle(NIS_InteractiveContext)& TheNISContext();
 extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
 
 #if defined(_WIN32) || defined(__WIN32__)
-static Handle(Graphic3d_WNTGraphicDevice)& GetG3dDevice(){
-  static Handle(Graphic3d_WNTGraphicDevice) GD;
-  return GD;
-}
-
 static Handle(WNT_Window)& VT_GetWindow() {
   static Handle(WNT_Window) WNTWin;
   return WNTWin;
 }
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-static Handle(Graphic3d_GraphicDevice)& GetG3dDevice()
-{
-  static Handle(Graphic3d_GraphicDevice) aGraphicDevice;
-  return aGraphicDevice;
-}
 static Handle(Cocoa_Window)& VT_GetWindow()
 {
   static Handle(Cocoa_Window) aWindow;
@@ -122,10 +110,6 @@ static Handle(Cocoa_Window)& VT_GetWindow()
 }
 extern void ViewerTest_SetCocoaEventManagerView (const Handle(Cocoa_Window)& theWindow);
 #else
-static Handle(Graphic3d_GraphicDevice)& GetG3dDevice(){
-  static Handle(Graphic3d_GraphicDevice) GD;
-  return GD;
-}
 static Handle(Xw_Window)& VT_GetWindow(){
   static Handle(Xw_Window) XWWin;
   return XWWin;
@@ -134,6 +118,12 @@ static Display *display;
 
 static void VProcessEvents(ClientData,int);
 #endif
+
+static Handle(Graphic3d_GraphicDriver)& GetGraphicDriver()
+{
+  static Handle(Graphic3d_GraphicDriver) aGraphicDriver;
+  return aGraphicDriver;
+}
 
 static Standard_Boolean DegenerateMode = Standard_True;
 
@@ -218,15 +208,15 @@ void ViewerTest::ViewerInit (const Standard_Integer thePxLeft,  const Standard_I
 
   if (isFirst)
   {
-    // Create the Graphic device
+    Handle(Aspect_DisplayConnection) aDisplayConnection = new Aspect_DisplayConnection();
+    if (GetGraphicDriver().IsNull())
+    {
+      GetGraphicDriver() = Graphic3d::InitGraphicDriver (aDisplayConnection);
+    }
 #if defined(_WIN32) || defined(__WIN32__)
-    if (GetG3dDevice().IsNull()) GetG3dDevice() = new Graphic3d_WNTGraphicDevice();
     if (VT_GetWindow().IsNull())
     {
-      // Create the Graphic device and the window
-      Handle(WNT_GraphicDevice) g_Device = new WNT_GraphicDevice();
-
-      VT_GetWindow() = new WNT_Window (g_Device, "Test3d",
+      VT_GetWindow() = new WNT_Window ("Test3d",
                                        Handle(WNT_WClass)::DownCast (WClass()),
                                        WS_OVERLAPPEDWINDOW,
                                        aPxLeft, aPxTop,
@@ -234,10 +224,6 @@ void ViewerTest::ViewerInit (const Standard_Integer thePxLeft,  const Standard_I
                                        Quantity_NOC_BLACK);
     }
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-    if (GetG3dDevice().IsNull())
-    {
-      GetG3dDevice() = new Graphic3d_GraphicDevice (getenv ("DISPLAY"), Xw_TOM_READONLY);
-    }
     if (VT_GetWindow().IsNull())
     {
       VT_GetWindow() = new Cocoa_Window ("Test3d",
@@ -246,15 +232,12 @@ void ViewerTest::ViewerInit (const Standard_Integer thePxLeft,  const Standard_I
       ViewerTest_SetCocoaEventManagerView (VT_GetWindow());
     }
 #else
-    if (GetG3dDevice().IsNull()) GetG3dDevice() =
-      new Graphic3d_GraphicDevice (getenv ("DISPLAY"), Xw_TOM_READONLY);
     if (VT_GetWindow().IsNull())
     {
-      VT_GetWindow() = new Xw_Window (GetG3dDevice(),
+      VT_GetWindow() = new Xw_Window (aDisplayConnection,
                                       "Test3d",
                                       aPxLeft, aPxTop,
                                       aPxWidth, aPxHeight,
-                                      Xw_WQ_3DQUALITY,
                                       Quantity_NOC_BLACK);
     }
 #endif
@@ -265,9 +248,9 @@ void ViewerTest::ViewerInit (const Standard_Integer thePxLeft,  const Standard_I
 
     TCollection_ExtendedString NameOfWindow("Visu3D");
 
-    a3DViewer = new V3d_Viewer(GetG3dDevice(), NameOfWindow.ToExtString());
+    a3DViewer = new V3d_Viewer(GetGraphicDriver(), NameOfWindow.ToExtString());
     NameOfWindow = TCollection_ExtendedString("Collector");
-    a3DCollector = new V3d_Viewer(GetG3dDevice(), NameOfWindow.ToExtString());
+    a3DCollector = new V3d_Viewer(GetGraphicDriver(), NameOfWindow.ToExtString());
     a3DViewer->SetDefaultBackgroundColor(Quantity_NOC_BLACK);
     a3DCollector->SetDefaultBackgroundColor(Quantity_NOC_STEELBLUE);
     Handle(NIS_View) aView = Handle(NIS_View)::DownCast(ViewerTest::CurrentView());
@@ -1359,8 +1342,7 @@ static void OSWindowSetup()
 
   Window  window   = VT_GetWindow()->XWindow();
 
-  Standard_Address theDisplay = GetG3dDevice()->XDisplay();
-  display = (Display * ) theDisplay;
+  display = GetGraphicDriver()->GetDisplayConnection()->GetDisplay();
   //  display = (Display *)GetG3dDevice()->XDisplay();
 
   XSynchronize(display, 1);
@@ -1475,12 +1457,11 @@ void ViewerTest_InitViewerTest (const Handle(AIS_InteractiveContext)& context)
   Handle(V3d_View) view = viewer->ActiveView();
   if (viewer->MoreActiveViews()) ViewerTest::CurrentView(view);
   ViewerTest::ResetEventManager();
-  Handle(Aspect_GraphicDevice) device = viewer->Device();
   Handle(Aspect_Window) window = view->Window();
 #if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
   // X11
   VT_GetWindow() = Handle(Xw_Window)::DownCast(window);
-  GetG3dDevice() = Handle(Graphic3d_GraphicDevice)::DownCast(device);
+  GetGraphicDriver() = viewer->Driver();
   OSWindowSetup();
   static int first = 1;
   if ( first ) {
@@ -2851,8 +2832,8 @@ static int VVbo (Draw_Interpretor& theDI,
     return 1;
   }
 
-  Handle(Graphic3d_GraphicDriver) aDriver =
-         Handle(Graphic3d_GraphicDriver)::DownCast (aContextAIS->CurrentViewer()->Device()->GraphicDriver());
+  Handle(Graphic3d_GraphicDriver) aDriver = aContextAIS->CurrentViewer()->Driver();
+
   if (aDriver.IsNull())
   {
     std::cerr << "Graphic driver not available.\n";
@@ -2888,8 +2869,8 @@ static int VMemGpu (Draw_Interpretor& theDI,
     return 1;
   }
 
-  Handle(Graphic3d_GraphicDriver) aDriver =
-         Handle(Graphic3d_GraphicDriver)::DownCast (aContextAIS->CurrentViewer()->Device()->GraphicDriver());
+  Handle(Graphic3d_GraphicDriver) aDriver = aContextAIS->CurrentViewer()->Driver();
+
   if (aDriver.IsNull())
   {
     std::cerr << "Graphic driver not available.\n";
@@ -3107,21 +3088,21 @@ static int VDiffImage (Draw_Interpretor& theDI, Standard_Integer theArgNb, const
 //           1) single click selection
 //           2) selection with rectangle having corners at pixel positions (x1,y1) and (x2,y2)
 //           3) selection with polygon having corners at
-//           pixel positions (x1,y1),...,(xn,yn) 
+//           pixel positions (x1,y1),...,(xn,yn)
 //           4) any of these selections with shift button pressed
 //=======================================================================
 static Standard_Integer VSelect (Draw_Interpretor& di,
                                  Standard_Integer argc,
                                  const char ** argv)
 {
-  if(argc < 3) 
+  if(argc < 3)
   {
     di << "Usage : " << argv[0] << " x1 y1 [x2 y2 [... xn yn]] [shift_selection = 1|0]" << "\n";
     return 1;
   }
 
   Handle(AIS_InteractiveContext) myAIScontext = ViewerTest::GetAISContext();
-  if(myAIScontext.IsNull()) 
+  if(myAIScontext.IsNull())
   {
     di << "use 'vinit' command before " << argv[0] << "\n";
     return 1;
@@ -3166,20 +3147,20 @@ static Standard_Integer VSelect (Draw_Interpretor& di,
 
 //=======================================================================
 //function : VMoveTo
-//purpose  : Emulates cursor movement to defined pixel position     
+//purpose  : Emulates cursor movement to defined pixel position
 //=======================================================================
 static Standard_Integer VMoveTo (Draw_Interpretor& di,
                                 Standard_Integer argc,
                                 const char ** argv)
 {
-  if(argc != 3) 
+  if(argc != 3)
   {
     di << "Usage : " << argv[0] << " x y" << "\n";
     return 1;
   }
 
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  if(aContext.IsNull()) 
+  if(aContext.IsNull())
   {
     di << "use 'vinit' command before " << argv[0] << "\n";
     return 1;
@@ -3190,19 +3171,19 @@ static Standard_Integer VMoveTo (Draw_Interpretor& di,
 
 //=======================================================================
 //function : VViewParams
-//purpose  : Gets or sets AIS View characteristics      
+//purpose  : Gets or sets AIS View characteristics
 //=======================================================================
 static Standard_Integer VViewParams (Draw_Interpretor& di,
                                 Standard_Integer argc,
                                 const char ** argv)
 {
-  if ( argc != 1 && argc != 13) 
+  if ( argc != 1 && argc != 13)
   {
     di << "Usage : " << argv[0] << "\n";
     return 1;
   }
   Handle (V3d_View) anAISView = ViewerTest::CurrentView ();
-  if ( anAISView.IsNull () ) 
+  if ( anAISView.IsNull () )
   {
     di << "use 'vinit' command before " << argv[0] << "\n";
     return 1;
@@ -3255,7 +3236,7 @@ static Standard_Integer VViewParams (Draw_Interpretor& di,
 
 //=======================================================================
 //function : VChangeSelected
-//purpose  : Adds the shape to selection or remove one from it    
+//purpose  : Adds the shape to selection or remove one from it
 //=======================================================================
 static Standard_Integer VChangeSelected (Draw_Interpretor& di,
                                 Standard_Integer argc,
@@ -3289,7 +3270,7 @@ static Standard_Integer VChangeSelected (Draw_Interpretor& di,
     {
       aContext->AddOrRemoveSelected(anAISObject);
     }
-    else 
+    else
     {
       aContext->AddOrRemoveCurrentObject(anAISObject);
     }
@@ -3299,20 +3280,20 @@ static Standard_Integer VChangeSelected (Draw_Interpretor& di,
 
 //=======================================================================
 //function : VZClipping
-//purpose  : Gets or sets ZClipping mode, width and depth   
+//purpose  : Gets or sets ZClipping mode, width and depth
 //=======================================================================
 static Standard_Integer VZClipping (Draw_Interpretor& di,
                                 Standard_Integer argc,
                                 const char ** argv)
 {
-  if(argc>4) 
+  if(argc>4)
   {
     di << "Usage : " << argv[0] << " [mode] [depth  width]" << "\n"
       <<"mode = OFF|BACK|FRONT|SLICE depth = [0..1] width = [0..1]" << "\n";
     return -1;
   }
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-  if(aContext.IsNull()) 
+  if(aContext.IsNull())
   {
     di << "use 'vinit' command before " << argv[0] << "\n";
     return 1;
@@ -3372,7 +3353,7 @@ static Standard_Integer VZClipping (Draw_Interpretor& di,
         di << "Bad mode; Usage : " << argv[0] << " [mode] [depth width]" << "\n"
           << "mode = OFF|BACK|FRONT|SLICE depth = [0..1] width = [0..1]" << "\n";
         return 1;
-      } 
+      }
       aView->SetZClippingType(aZClippingMode);
     }
     if(argc >2)
@@ -3388,7 +3369,7 @@ static Standard_Integer VZClipping (Draw_Interpretor& di,
         aDepth = atof(argv[2]);
         aWidth = atof(argv[3]);
       }
-      
+
       if(aDepth<0. || aDepth>1.)
       {
         di << "Bad depth; Usage : " << argv[0] << " [mode] [depth width]" << "\n"
@@ -3412,7 +3393,7 @@ static Standard_Integer VZClipping (Draw_Interpretor& di,
 
 //=======================================================================
 //function : VNbSelected
-//purpose  : Returns number of selected objects  
+//purpose  : Returns number of selected objects
 //=======================================================================
 static Standard_Integer VNbSelected (Draw_Interpretor& di,
                                 Standard_Integer argc,
@@ -3435,7 +3416,7 @@ static Standard_Integer VNbSelected (Draw_Interpretor& di,
 
 //=======================================================================
 //function : VAntialiasing
-//purpose  : Switches altialiasing on or off  
+//purpose  : Switches altialiasing on or off
 //=======================================================================
 static Standard_Integer VAntialiasing (Draw_Interpretor& di,
                                 Standard_Integer argc,
@@ -3466,7 +3447,7 @@ static Standard_Integer VAntialiasing (Draw_Interpretor& di,
 
 //=======================================================================
 //function : VPurgeDisplay
-//purpose  : Switches altialiasing on or off  
+//purpose  : Switches altialiasing on or off
 //=======================================================================
 static Standard_Integer VPurgeDisplay (Draw_Interpretor& di,
                                 Standard_Integer argc,
@@ -3580,7 +3561,7 @@ static Standard_Integer VTranslateView (Draw_Interpretor& di,
   Standard_Real Dy = atof(argv[2]);
   Standard_Real Dz = atof(argv[3]);
   Standard_Boolean aStart = Standard_True;
-  if (argc == 5) 
+  if (argc == 5)
   {
       aStart = (atoi(argv[4]) > 0);
   }
@@ -3611,7 +3592,7 @@ static Standard_Integer VTurnView (Draw_Interpretor& di,
   Standard_Real Ay = atof(argv[2]);
   Standard_Real Az = atof(argv[3]);
   Standard_Boolean aStart = Standard_True;
-  if (argc == 5) 
+  if (argc == 5)
   {
       aStart = (atoi(argv[4]) > 0);
   }
@@ -3771,7 +3752,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "- gets or sets current view characteristics",
     __FILE__,VViewParams, group);
   theCommands.Add("vchangeselected",
-    "vchangeselected shape" 
+    "vchangeselected shape"
     "- adds to shape to selection or remove one from it",
 		__FILE__, VChangeSelected, group);
   theCommands.Add("vzclipping",

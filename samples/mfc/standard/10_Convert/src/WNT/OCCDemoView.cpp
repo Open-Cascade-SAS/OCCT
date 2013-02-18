@@ -70,8 +70,7 @@ COCCDemoView::COCCDemoView()
   myCurrentMode = CurAction3d_Nothing;
   myVisMode = VIS_SHADE;
   m_Pen = NULL;
-  myGraphicDriver = Handle(Graphic3d_GraphicDriver)::DownCast( 
-    ((COCCDemoApp*)AfxGetApp())->GetGraphicDevice()->GraphicDriver() );
+  myGraphicDriver = ((COCCDemoApp*)AfxGetApp())->GetGraphicDriver();
 }
 
 COCCDemoView::~COCCDemoView()
@@ -99,10 +98,7 @@ void COCCDemoView::OnInitialUpdate()
   
   myView = GetDocument()->GetViewer()->CreateView();
 
-  Handle(Graphic3d_WNTGraphicDevice) theGraphicDevice = 
-    ((COCCDemoApp*)AfxGetApp())->GetGraphicDevice();
-  
-  Handle(WNT_Window) aWNTWindow = new WNT_Window(theGraphicDevice,GetSafeHwnd ());
+  Handle(WNT_Window) aWNTWindow = new WNT_Window(GetSafeHwnd ());
   myView->SetWindow(aWNTWindow);
   if (!aWNTWindow->IsMapped()) aWNTWindow->Map();
 

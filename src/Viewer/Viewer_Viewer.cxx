@@ -31,21 +31,21 @@ return nm;
 #define nm _nm()
 #endif // LOPTIM
 
-Viewer_Viewer::Viewer_Viewer(const Handle(Aspect_GraphicDevice)& aDevice,
+Viewer_Viewer::Viewer_Viewer(const Handle(Graphic3d_GraphicDriver)& theDriver,
 			     const Standard_ExtString aName,
 			     const Standard_CString aDomain,
 			     const Standard_Integer aNextCount)
 :myNextCount(aNextCount),
 myDomain(TCollection_AsciiString(aDomain)),
 myName(TCollection_ExtendedString(aName)),
-myDevice(aDevice)
+myDriver(theDriver)
 {}
 
 Standard_CString Viewer_Viewer::Domain() const {
   return myDomain.ToCString();
 }
-Handle(Aspect_GraphicDevice) Viewer_Viewer::Device() const {
-  return myDevice;
+const Handle(Graphic3d_GraphicDriver)& Viewer_Viewer::Driver() const {
+  return myDriver;
 }
 
 Standard_ExtString Viewer_Viewer::NextName () const {

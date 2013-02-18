@@ -105,8 +105,4 @@ fields
 	MyExtendedDisplay 	: Address from Standard;
 	MyExtendedFontMap 	: Address from Standard;
 
-friends
-
-	class GraphicDevice from Xw
-
 end FontMap;

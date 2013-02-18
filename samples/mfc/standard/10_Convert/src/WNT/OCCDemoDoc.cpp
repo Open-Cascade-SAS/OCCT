@@ -43,10 +43,10 @@ END_MESSAGE_MAP()
 COCCDemoDoc::COCCDemoDoc()
 {
 	// TODO: add one-time construction code here
-	Handle(Graphic3d_WNTGraphicDevice) theGraphicDevice = 
-		((COCCDemoApp*)AfxGetApp())->GetGraphicDevice();
+	Handle(Graphic3d_GraphicDriver) aGraphicDriver = 
+		((COCCDemoApp*)AfxGetApp())->GetGraphicDriver();
 
-	myViewer = new V3d_Viewer(theGraphicDevice,(short *) "Visu3D");
+	myViewer = new V3d_Viewer(aGraphicDriver,(short *) "Visu3D");
 	myViewer->SetDefaultLights();
 	myViewer->SetLightOn();
   myViewer->SetDefaultBackgroundColor(Quantity_TOC_RGB, 0.,0.,0.);

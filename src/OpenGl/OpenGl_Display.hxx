@@ -28,6 +28,7 @@
 #include <NCollection_DataMap.hxx>
 
 #include <Aspect_Display.hxx>
+#include <Aspect_DisplayConnection.hxx>
 #include <Aspect_Drawable.hxx>
 #include <Aspect_TypeOfLine.hxx>
 #include <Aspect_TypeOfMarker.hxx>
@@ -65,8 +66,7 @@ struct OpenGl_TextParam;
 class OpenGl_Display : public MMgt_TShared
 {
  public:
-  OpenGl_Display (const Standard_CString ADisplay);
-  OpenGl_Display (const Aspect_Display ADisplay);
+  OpenGl_Display (const Handle(Aspect_DisplayConnection)& theDisplayConnection);
   virtual ~OpenGl_Display ();
 
   Aspect_Display GetDisplay () const { return myDisplay; }

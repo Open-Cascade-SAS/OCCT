@@ -28,32 +28,15 @@
 
 //=======================================================================
 //function : Begin
-//purpose  : 
+//purpose  :
 //=======================================================================
 
-Standard_Boolean OpenGl_GraphicDriver::Begin (const Standard_CString ADisplay)
+Standard_Boolean OpenGl_GraphicDriver::Begin (const Handle(Aspect_DisplayConnection)& theDisplayConnection)
 {
+  myDisplayConnection = theDisplayConnection;
   try
   {
-    openglDisplay = new OpenGl_Display(ADisplay);
-    return Standard_True;
-  }
-  catch (Standard_Failure)
-  {
-  }
-  return Standard_False;
-}
-
-//=======================================================================
-//function : Begin
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean OpenGl_GraphicDriver::Begin (const Aspect_Display ADisplay)
-{
-  try
-  {
-    openglDisplay = new OpenGl_Display(ADisplay);
+    openglDisplay = new OpenGl_Display (myDisplayConnection);
     return Standard_True;
   }
   catch (Standard_Failure)

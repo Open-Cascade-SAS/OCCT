@@ -152,10 +152,7 @@ void CAnimationView3D::OnInitialUpdate()
     // store for restore state after rotation (witch is in Degenerated mode)
     myDegenerateModeIsOn = myView->DegenerateModeIsOn();
 
-	Handle(Graphic3d_WNTGraphicDevice) theGraphicDevice = 
-		((CAnimationApp*)AfxGetApp())->GetGraphicDevice();
-    
-    Handle(WNT_Window) aWNTWindow = new WNT_Window(theGraphicDevice,GetSafeHwnd ());
+    Handle(WNT_Window) aWNTWindow = new WNT_Window(GetSafeHwnd ());
     myView->SetWindow(aWNTWindow);
     if (!aWNTWindow->IsMapped()) aWNTWindow->Map();
 

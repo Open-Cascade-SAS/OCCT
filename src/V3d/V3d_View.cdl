@@ -1594,26 +1594,6 @@ is
         --          extension must be one of ".png",".bmp",".jpg",".gif".
         --          Returns FALSE when the dump has failed
 
-        Dump ( me: mutable;
-               theFile       : CString from Standard;
-               theFormat     : FormatOfSheetPaper from Aspect;
-               theBufferType : BufferType from Graphic3d = Graphic3d_BT_RGB )
-    returns Boolean from Standard;
-        ---Level: Public
-        ---Purpose: dump the full contents of the view with a
-        --          different scale according  to the required sheet
-        --          paper size (format) and the ratio
-        --          width/height of the view.
-    --          and returns FALSE when the dump has failed
-    --  Warning : the file name extension must be one of
-    --      ".png",".bmp",".jpg",".gif"
-    --       but make becarefull about the time to dump and
-    --       resulting file size especially for the A0 format.
-    --       NOTE that you can use after any standard system utility
-    --       for editing or sending the image file to a laser printer.
-    --       (i.e: Microsoft Photo Editor on Windows system
-    --        or Image Viewer on SUN system)
-
       Print (me; hPrnDC: Handle from Aspect = NULL;
              showDialog: Boolean = Standard_True;
              showBackground : Boolean = Standard_True;

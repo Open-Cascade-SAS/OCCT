@@ -25,31 +25,10 @@
 
 #include <Image_AlienPixMap.hxx>
 #include <Aspect_Convert.hxx>
-#include <Aspect_GraphicDevice.hxx>
 #include <Aspect_WindowDefinitionError.hxx>
 
 IMPLEMENT_STANDARD_HANDLE (Cocoa_Window, Aspect_Window)
 IMPLEMENT_STANDARD_RTTIEXT(Cocoa_Window, Aspect_Window)
-
-//! Dummy device class implementation
-class Cocoa_GraphicDevice : public Aspect_GraphicDevice
-{
-
-public:
-
-  virtual Handle_Aspect_GraphicDriver GraphicDriver() const
-  {
-    return NULL;
-  }
-
-  DEFINE_STANDARD_RTTI(Cocoa_GraphicDevice)
-
-};
-
-DEFINE_STANDARD_HANDLE(Cocoa_GraphicDevice, Aspect_GraphicDevice)
-
-IMPLEMENT_STANDARD_HANDLE (Cocoa_GraphicDevice, Aspect_GraphicDevice)
-IMPLEMENT_STANDARD_RTTIEXT(Cocoa_GraphicDevice, Aspect_GraphicDevice)
 
 static Standard_Integer getScreenBottom()
 {
@@ -83,7 +62,7 @@ Cocoa_Window::Cocoa_Window (const Standard_CString theTitle,
                             const Standard_Integer thePxTop,
                             const Standard_Integer thePxWidth,
                             const Standard_Integer thePxHeight)
-: Aspect_Window (new Cocoa_GraphicDevice()),
+: Aspect_Window (),
   myHWindow (NULL),
   myHView   (NULL),
   myXLeft   (thePxLeft),
@@ -131,7 +110,7 @@ Cocoa_Window::Cocoa_Window (const Standard_CString theTitle,
 // purpose  :
 // =======================================================================
 Cocoa_Window::Cocoa_Window (NSView* theViewNS)
-: Aspect_Window (new Cocoa_GraphicDevice()),
+: Aspect_Window (),
   myHWindow (NULL),
   myHView   ([theViewNS retain]),
   myXLeft   (0),
@@ -187,101 +166,6 @@ void Cocoa_Window::SetHView (NSView* theView)
     myHView = NULL;
   }
   myHView = [theView retain];
-}
-
-// =======================================================================
-// function : DoubleBuffer
-// purpose  :
-// =======================================================================
-Standard_Boolean Cocoa_Window::DoubleBuffer() const
-{
-  return Standard_True;
-}
-
-// =======================================================================
-// function : SetBackground
-// purpose  :
-// =======================================================================
-void Cocoa_Window::SetBackground (const Aspect_Background& theBackground)
-{
-  SetBackground (theBackground.Color());
-}
-
-// =======================================================================
-// function : SetBackground
-// purpose  :
-// =======================================================================
-void Cocoa_Window::SetBackground (const Quantity_NameOfColor theBackColor)
-{
-  SetBackground (Quantity_Color (theBackColor));
-}
-
-// =======================================================================
-// function : SetBackground
-// purpose  :
-// =======================================================================
-void Cocoa_Window::SetBackground (const Aspect_Handle theBackPixmap)
-{
-  //
-}
-
-// =======================================================================
-// function : SetBackground
-// purpose  :
-// =======================================================================
-Standard_Boolean Cocoa_Window::SetBackground (const Standard_CString  theFileName,
-                                              const Aspect_FillMethod theMethod)
-{
-  return Standard_False;
-}
-
-// =======================================================================
-// function : SetBackground
-// purpose  :
-// =======================================================================
-void Cocoa_Window::SetBackground (const Quantity_Color& theColor)
-{
-  //
-}
-
-// =======================================================================
-// function : SetBackground
-// purpose  :
-// =======================================================================
-void Cocoa_Window::SetBackground (const Aspect_GradientBackground& theGrBackground)
-{
-  Quantity_Color aColor1, aColor2;
-  theGrBackground.Colors (aColor1, aColor2);
-  SetBackground (aColor1, aColor2, theGrBackground.BgGradientFillMethod());
-}
-
-// =======================================================================
-// function : SetBackground
-// purpose  :
-// =======================================================================
-void Cocoa_Window::SetBackground (const Quantity_Color&           theColor1,
-                                  const Quantity_Color&           theColor2,
-                                  const Aspect_GradientFillMethod theMethod)
-{
-  //
-}
-
-// =======================================================================
-// function : SetDoubleBuffer
-// purpose  :
-// =======================================================================
-void Cocoa_Window::SetDoubleBuffer (const Standard_Boolean )
-{
-  //
-}
-
-// =======================================================================
-// function : Flush
-// purpose  :
-// =======================================================================
-void Cocoa_Window::Flush() const
-{
-  Restore();
 }
 
 // =======================================================================
@@ -377,122 +261,6 @@ Standard_Boolean Cocoa_Window::DoMapping() const
 }
 
 // =======================================================================
-// function : Clear
-// purpose  :
-// =======================================================================
-void Cocoa_Window::Clear() const
-{
-  //
-}
-
-// =======================================================================
-// function : ClearArea
-// purpose  :
-// =======================================================================
-void Cocoa_Window::ClearArea (const Standard_Integer Xc,
-                              const Standard_Integer Yc,
-                              const Standard_Integer Width,
-                              const Standard_Integer Height) const
-{
-  //
-}
-
-// =======================================================================
-// function : Restore
-// purpose  :
-// =======================================================================
-void Cocoa_Window::Restore() const
-{
-  //
-}
-
-// =======================================================================
-// function : RestoreArea
-// purpose  :
-// =======================================================================
-void Cocoa_Window::RestoreArea (const Standard_Integer Xc,
-                                const Standard_Integer Yc,
-                                const Standard_Integer Width,
-                                const Standard_Integer Height) const
-{
-  //
-}
-
-// =======================================================================
-// function : Dump
-// purpose  :
-// =======================================================================
-Standard_Boolean Cocoa_Window::Dump (const Standard_CString theFilename,
-                                     const Standard_Real    theGammaValue) const
-{
-  /*Image_AlienPixMap anImg;
-  if (!ToPixMap (anImg) || anImg.IsEmpty())
-  {
-    return Standard_False;
-  }
-  if (Abs (theGammaValue - 1.0) > 0.001)
-  {
-    anImg.AdjustGamma (theGammaValue);
-  }
-  return anImg.Save (theFilename);*/
-  return Standard_False;
-}
-
-// =======================================================================
-// function : DumpArea
-// purpose  :
-// =======================================================================
-Standard_Boolean Cocoa_Window::DumpArea (const Standard_CString theFilename,
-                                         const Standard_Integer theCenterX,
-                                         const Standard_Integer theCenterY,
-                                         const Standard_Integer theWidth,
-                                         const Standard_Integer theHeight,
-                                         const Standard_Real    theGammaValue) const
-{
-  return Standard_False;
-}
-
-// =======================================================================
-// function : ToPixMap
-// purpose  :
-// =======================================================================
-/*Standard_Boolean Cocoa_Window::ToPixMap (Image_PixMap& thePixMap) const
-{
-  return Standard_False;
-}*/
-
-// =======================================================================
-// function : Load
-// purpose  :
-// =======================================================================
-Standard_Boolean Cocoa_Window::Load (const Standard_CString theFilename) const
-{
-  return Standard_False;
-}
-
-// =======================================================================
-// function : LoadArea
-// purpose  :
-// =======================================================================
-Standard_Boolean Cocoa_Window::LoadArea (const Standard_CString theFilename,
-                                         const Standard_Integer theCenterX,
-                                         const Standard_Integer theCenterY,
-                                         const Standard_Integer theWidth,
-                                         const Standard_Integer theHeight) const
-{
-  return Standard_False;
-}
-
-// =======================================================================
-// function : BackingStore
-// purpose  :
-// =======================================================================
-Standard_Boolean Cocoa_Window::BackingStore() const
-{
-  return Standard_False;
-}
-
-// =======================================================================
 // function : Ratio
 // purpose  :
 // =======================================================================
@@ -511,28 +279,8 @@ Quantity_Ratio Cocoa_Window::Ratio() const
 // function : Position
 // purpose  :
 // =======================================================================
-void Cocoa_Window::Position (Quantity_Parameter& X1, Quantity_Parameter& Y1,
-                             Quantity_Parameter& X2, Quantity_Parameter& Y2) const
-{
-  //
-}
-
-// =======================================================================
-// function : Position
-// purpose  :
-// =======================================================================
 void Cocoa_Window::Position (Standard_Integer& X1, Standard_Integer& Y1,
                              Standard_Integer& X2, Standard_Integer& Y2) const
-{
-  //
-}
-
-// =======================================================================
-// function : Size
-// purpose  :
-// =======================================================================
-void Cocoa_Window::Size (Quantity_Parameter& theWidth,
-                         Quantity_Parameter& theHeight) const
 {
   //
 }
@@ -552,56 +300,4 @@ void Cocoa_Window::Size (Standard_Integer& theWidth,
   NSRect aBounds = [myHView bounds];
   theWidth  = (Standard_Integer )aBounds.size.width;
   theHeight = (Standard_Integer )aBounds.size.height;
-}
-
-// =======================================================================
-// function : MMSize
-// purpose  :
-// =======================================================================
-void Cocoa_Window::MMSize (Standard_Real& theWidth,
-                           Standard_Real& theHeight) const
-{
-  //
-}
-
-// =======================================================================
-// function : Convert
-// purpose  :
-// =======================================================================
-Quantity_Parameter Cocoa_Window::Convert (const Standard_Integer PV) const
-{
-  return 0.0; ///
-}
-
-// =======================================================================
-// function : Convert
-// purpose  :
-// =======================================================================
-Standard_Integer Cocoa_Window::Convert (const Quantity_Parameter DV) const
-{
-  return 0; ////
-}
-
-// =======================================================================
-// function : Convert
-// purpose  :
-// =======================================================================
-void Cocoa_Window::Convert (const Standard_Integer PX,
-                            const Standard_Integer PY,
-                            Quantity_Parameter&    DX,
-                            Quantity_Parameter&    DY) const
-{
-  //
-}
-
-// =======================================================================
-// function : Convert
-// purpose  :
-// =======================================================================
-void Cocoa_Window::Convert (const Quantity_Parameter DX,
-                            const Quantity_Parameter DY,
-                            Standard_Integer&        PX,
-                            Standard_Integer&        PY) const
-{
-  //
 }

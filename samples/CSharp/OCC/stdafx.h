@@ -23,9 +23,11 @@
 #include <PTColStd_PersistentTransientMap.hxx>
 #include <TCollection_AsciiString.hxx>
 //for OCC graphic
+#include <Aspect_DisplayConnection.hxx>
 #include <WNT_Window.hxx>
-#include <Graphic3d_WNTGraphicDevice.hxx>
 #include <Quantity_NameOfColor.hxx>
+#include <Graphic3d.hxx>
+#include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_NameOfMaterial.hxx>
 //for object display
 #include <V3d_Viewer.hxx>

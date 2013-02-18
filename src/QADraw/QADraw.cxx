@@ -34,24 +34,23 @@
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
 #include <AIS_InteractiveContext.hxx>
-#include <Graphic3d_GraphicDevice.hxx>
 #include <Draw.hxx>
 #include <Draw_Window.hxx>
 #include <Draw_Viewer.hxx>
 #include <Aspect_WindowDriver.hxx>
 #include <stdio.h>
+#include <Aspect_DisplayConnection.hxx>
+#include <Graphic3d.hxx>
 
 #if ! defined(WNT)
 #include <Xw_Window.hxx>
 //#include <Xm/Xm.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include <Xw_GraphicDevice.hxx>
 #include <Xw_Cextern.hxx>
 #include <unistd.h>
 #else
 #include <WNT.h>
-#include <WNT_GraphicDevice.hxx>
 #include <WNT_Window.hxx>
 #include <io.h>
 #endif
@@ -479,14 +478,15 @@ static Standard_Integer QAAISGetColorCoord (Draw_Interpretor& di, Standard_Integ
   Standard_Integer QAAIS_WindowSize_X = 0;
   Standard_Integer QAAIS_WindowSize_Y = 0;
   QAAISWindow->Size(QAAIS_WindowSize_X, QAAIS_WindowSize_Y);
-  Handle (Graphic3d_GraphicDevice) QAAIS_GraphicDevice = new Graphic3d_GraphicDevice (getenv ("DISPLAY"));
+  Handle(Aspect_DisplayConnection) aDisplayConnection = new Aspect_DisplayConnection();
+  Handle(Graphic3d_GraphicDriver)  aGraphicDriver = Graphic3d::InitGraphicDriver (aDisplayConnection);
 
   Draw_Window QAAIS_CoordWindow ("coordinate", 421, 205, 200, 60);
   QAAIS_CoordWindow.DisplayWindow ();
   QAAIS_CoordWindow.SetColor (12);
 
-  Handle (Xw_Window) QAAIS_ColorWindow = new Xw_Window (QAAIS_GraphicDevice, "color", 0.4074, 0.678, 0.1962, 0.06, Xw_WQ_3DQUALITY, Quantity_NOC_BLACK);
-  Handle (V3d_Viewer) QAAIS_ColorViewer = new V3d_Viewer (QAAIS_GraphicDevice, Standard_ExtString ("COLOR"));
+  Handle (Xw_Window) QAAIS_ColorWindow = new Xw_Window (aDisplayConnection, "color", 0.4074, 0.678, 0.1962, 0.06, Quantity_NOC_BLACK);
+  Handle (V3d_Viewer) QAAIS_ColorViewer = new V3d_Viewer (aGraphicDriver, Standard_ExtString ("COLOR"));
   Handle (V3d_View) QAAIS_ColorView = QAAIS_ColorViewer -> CreateView ();
   QAAIS_ColorWindow -> Map ();
   QAAIS_ColorView -> SetWindow (QAAIS_ColorWindow);

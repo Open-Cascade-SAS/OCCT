@@ -19,6 +19,7 @@
 
 #include <Xw_WidthMap.ixx>
 #include <Aspect_WidthOfLine.hxx>
+#include <Standard_PCharacter.hxx>
 
 // Routines C a declarer en extern
 //extern "C" {

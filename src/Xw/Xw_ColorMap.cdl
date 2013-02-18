@@ -307,7 +307,6 @@ fields
 
 friends
 
-	class GraphicDevice from Xw,
 	class Window from Xw
 
 end ColorMap;

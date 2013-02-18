@@ -23,7 +23,6 @@
 
 #include <ViewerTest.hxx>
 
-#include <Aspect_GraphicDevice.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <Draw.hxx>
@@ -217,7 +216,7 @@ static Standard_Integer VUserDraw (Draw_Interpretor& di,
     return 1;
   }
 
-  Handle(OpenGl_GraphicDriver) aDriver = Handle(OpenGl_GraphicDriver)::DownCast (aContext->CurrentViewer()->Device()->GraphicDriver());
+  Handle(OpenGl_GraphicDriver) aDriver = Handle(OpenGl_GraphicDriver)::DownCast (aContext->CurrentViewer()->Driver());
   if (aDriver.IsNull())
   {
     std::cerr << "Graphic driver not available.\n";
@@ -411,8 +410,8 @@ static int VImmediateFront (Draw_Interpretor& theDI,
     return 1;
   }
 
-  Handle(Graphic3d_GraphicDriver) aDriver =
-         Handle(Graphic3d_GraphicDriver)::DownCast (aContextAIS->CurrentViewer()->Device()->GraphicDriver());
+  Handle(Graphic3d_GraphicDriver) aDriver = aContextAIS->CurrentViewer()->Driver();
+
   if (aDriver.IsNull())
   {
     std::cerr << "Graphic driver not available.\n";

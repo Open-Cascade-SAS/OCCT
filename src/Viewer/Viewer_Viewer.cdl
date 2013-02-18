@@ -23,10 +23,10 @@ deferred class Viewer from Viewer inherits TShared from MMgt
 
 uses
     AsciiString,ExtendedString from TCollection,
-    GraphicDevice from Aspect
+    GraphicDriver from Graphic3d
     
 is
-    Initialize( aDevice: GraphicDevice from Aspect;
+    Initialize( aDriver: GraphicDriver from Graphic3d;
                 aName: ExtString from Standard;
                 aDomain: CString from Standard;
                 aNextCount: Integer from Standard);
@@ -34,8 +34,9 @@ is
     Update(me: mutable) is deferred;
 
 
-    Device(me) returns mutable GraphicDevice from Aspect
+    Driver(me) returns mutable GraphicDriver from Graphic3d
     is static;
+    ---C++: return const &
     
     NextName(me) returns ExtString from Standard
     is static;
@@ -49,5 +50,5 @@ fields
     	myNextCount: Integer from Standard;
         myDomain: AsciiString from TCollection;    
         myName: ExtendedString from TCollection;
-        myDevice: GraphicDevice from Aspect;
+        myDriver: GraphicDriver from Graphic3d;
 end Viewer  from Viewer;

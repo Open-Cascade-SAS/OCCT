@@ -4,7 +4,7 @@
 #pragma warning( disable : 4800 )
 OCCViewer::OCCViewer(void)
 {
-	myGraphicDevice=NULL;
+	myGraphicDriver=NULL;
 	myViewer=NULL;
 	myView=NULL;
 	myAISContext=NULL;
@@ -17,22 +17,27 @@ OCCViewer::~OCCViewer(void)
 
 bool OCCViewer::InitViewer(void* wnd)
 {
-	try {
-			myGraphicDevice = new  Graphic3d_WNTGraphicDevice();
-		} catch (Standard_Failure) {
-			return false;
-		}
-	TCollection_ExtendedString a3DName("Visu3D");
-	myViewer = new V3d_Viewer( myGraphicDevice, a3DName.ToExtString(),"", 1000.0, 
-									V3d_XposYnegZpos, Quantity_NOC_GRAY30,
-									V3d_ZBUFFER,V3d_GOURAUD,V3d_WAIT, 
-									Standard_True, Standard_False);
+  try
+  {
+    Handle(Aspect_DisplayConnection) aDisplayConnection;
+    myGraphicDriver = Graphic3d::InitGraphicDriver (aDisplayConnection);
+  }
+  catch (Standard_Failure)
+  {
+    return false;
+  }
+
+  TCollection_ExtendedString a3DName("Visu3D");
+  myViewer = new V3d_Viewer (myGraphicDriver, a3DName.ToExtString(),"", 1000.0, 
+                             V3d_XposYnegZpos, Quantity_NOC_GRAY30,
+                             V3d_ZBUFFER,V3d_GOURAUD,V3d_WAIT, 
+                             Standard_True, Standard_False);
 
 	myViewer->Init();
 	myViewer->SetDefaultLights();
 	myViewer->SetLightOn();
 	myView = myViewer->CreateView();
-	Handle(WNT_Window) aWNTWindow = new WNT_Window(myGraphicDevice, reinterpret_cast<HWND> (wnd));
+	Handle(WNT_Window) aWNTWindow = new WNT_Window (reinterpret_cast<HWND> (wnd));
 	myView->SetWindow(aWNTWindow);
 	if (!aWNTWindow->IsMapped()) 
 		 aWNTWindow->Map();
@@ -543,9 +548,12 @@ void OCCViewer::CreateNewView(void* wnd)
 	if (myAISContext.IsNull())
 		return;
 	myView = myAISContext->CurrentViewer()->CreateView();
-	if (myGraphicDevice.IsNull())
-			myGraphicDevice = new  Graphic3d_WNTGraphicDevice();
-	Handle(WNT_Window) aWNTWindow = new WNT_Window(myGraphicDevice, reinterpret_cast<HWND> (wnd));
+	if (myGraphicDriver.IsNull())
+    {
+      Handle(Aspect_DisplayConnection) aDisplayConnection;
+      myGraphicDriver = Graphic3d::InitGraphicDriver (aDisplayConnection);
+    }
+	Handle(WNT_Window) aWNTWindow = new WNT_Window (reinterpret_cast<HWND> (wnd));
 	myView->SetWindow(aWNTWindow);
 	Standard_Integer w=100, h=100;
 	aWNTWindow->Size(w,h);

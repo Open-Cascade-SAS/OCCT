@@ -1,5 +1,7 @@
 @ECHO OFF
 
+call ../../../env.bat %1 %2 %3
+
 IF NOT DEFINED CASROOT GOTO ERR_CASROOT
 
 IF NOT EXIST "%CASROOT%\win32\bin\TKernel.dll" GOTO ERR_CASCADE

@@ -28,7 +28,6 @@
 
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_Shape.hxx>
-#include <Graphic3d_WNTGraphicDevice.hxx>
 #include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
 #include <WNT_Window.hxx>

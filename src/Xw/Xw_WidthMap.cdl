@@ -104,8 +104,4 @@ fields
 	MyExtendedDisplay 	:	Address from Standard ;
 	MyExtendedWidthMap 	:	Address from Standard ;
 
-friends
-
-	class GraphicDevice from Xw
-
 end WidthMap ;

@@ -33,7 +33,8 @@ COCCDemoApp::COCCDemoApp()
 	SampleName = "";
   try
   {
-    myGraphicDevice = new Graphic3d_WNTGraphicDevice;
+    Handle(Aspect_DisplayConnection) aDisplayConnection;
+    myGraphicDriver = Graphic3d::InitGraphicDriver (aDisplayConnection);
   }
 	catch(Standard_Failure)
 	{

@@ -77,7 +77,7 @@ static Standard_Integer StructureManager_CurrentId = 0;
 
 //-Constructors
 
-Graphic3d_StructureManager::Graphic3d_StructureManager (const Handle(Aspect_GraphicDevice)& aDevice):
+Graphic3d_StructureManager::Graphic3d_StructureManager (const Handle(Graphic3d_GraphicDriver)& theDriver):
 MyDisplayedStructure (),
 MyHighlightedStructure (),
 MyVisibleStructure (),
@@ -130,7 +130,7 @@ Standard_Integer Limit  = Graphic3d_StructureManager::Limit ();
         MyAspectFillArea3d      = new Graphic3d_AspectFillArea3d ();
 
         MyUpdateMode            = Aspect_TOU_WAIT;
-        MyGraphicDevice         = aDevice;
+        MyGraphicDriver         = theDriver;
 
 }
 
@@ -392,8 +392,8 @@ Standard_Integer Graphic3d_StructureManager::CurrentId () {
 
 }
 
-Handle(Aspect_GraphicDevice) Graphic3d_StructureManager::GraphicDevice () const {
+const Handle(Graphic3d_GraphicDriver)& Graphic3d_StructureManager::GraphicDriver () const {
 
-        return (MyGraphicDevice);
+        return (MyGraphicDriver);
 
 }

@@ -1,7 +1,4 @@
-// Created on: 1993-10-19
-// Created by: Stephane CALLEGARI
-// Copyright (c) 1993-1999 Matra Datavision
-// Copyright (c) 1999-2012 OPEN CASCADE SAS
+// Copyright (c) 2013 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -18,8 +15,13 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+#ifndef _Aspect_DisplayConnection_Handle_H__
+#define _Aspect_DisplayConnection_Handle_H__
 
+#include <Handle_Standard_Transient.hxx>
 
-#include <Aspect_GraphicDevice.ixx>
+class Aspect_DisplayConnection;
+DEFINE_STANDARD_HANDLE(Aspect_DisplayConnection, Standard_Transient)
+typedef Handle(Aspect_DisplayConnection) Aspect_DisplayConnection_Handle;
 
-Aspect_GraphicDevice::Aspect_GraphicDevice () {}
+#endif // _Aspect_DisplayConnection_Handle_H__

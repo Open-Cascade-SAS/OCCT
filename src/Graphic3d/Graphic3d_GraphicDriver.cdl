@@ -57,6 +57,7 @@ uses
     Handle              from Aspect,
     Display             from Aspect,
     PrintAlgo           from Aspect,
+    DisplayConnection_Handle from Aspect,
 
     AspectLine3d        from Graphic3d,
     AspectMarker3d      from Graphic3d,
@@ -107,17 +108,11 @@ is
     -- Category: Init methods
     -------------------------
 
-    Begin ( me          : mutable;
-            ADisplay    : CString from Standard )
-        returns Boolean from Standard
-        is deferred;
-    ---Purpose: call_togl_begin
-
-        Begin ( me              : mutable;
-                ADisplay        : Display from Aspect )
-                returns Boolean from Standard
-                is deferred;
-        ---Purpose: call_togl_begin_display
+    Begin (me: mutable;
+           theDisplayConnection: DisplayConnection_Handle from Aspect)
+       returns Boolean from Standard
+       is deferred;
+    ---Purpose: Starts graphic driver with given connection
 
     End ( me    : mutable )
         is deferred;
@@ -1071,9 +1066,16 @@ is
     --            returns Standard_False if fails
     --  ABD Integration support of system fonts (using FTGL and FreeType)
 
+    GetDisplayConnection (me)
+       returns DisplayConnection_Handle from Aspect;
+    ---C++: return const &
+
+    ---Purpose: returns Handle to display connection
+
 fields
 
-    MyTraceLevel    : Integer from Standard is protected;
-    MySharedLibrary : SharedLibrary from OSD is protected;
+    MyTraceLevel       : Integer from Standard is protected;
+    MySharedLibrary    : SharedLibrary from OSD is protected;
+    myDisplayConnection: DisplayConnection_Handle from Aspect is protected;
 
 end GraphicDriver from Graphic3d;

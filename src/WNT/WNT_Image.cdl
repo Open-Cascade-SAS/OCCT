@@ -53,8 +53,4 @@ class Image from WNT inherits TShared from MMgt
     myImage    : Address from Standard is protected;
     myHashCode : Integer from Standard is protected;
 
- friends
- 
-    class ImageManager from WNT
-
 end Image;

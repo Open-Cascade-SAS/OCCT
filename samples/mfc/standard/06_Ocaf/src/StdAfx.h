@@ -92,7 +92,6 @@
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 #include <Graphic3d_NameOfMaterial.hxx>
-#include <Graphic3d_WNTGraphicDevice.hxx>
 #include <MMgt_TShared.hxx>
 #include <OSD_Environment.hxx>
 #include <Precision.hxx>
@@ -100,7 +99,6 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Projector.hxx>
 #include <Prs3d_Text.hxx>
-#include <PrsMgr_PresentationManager2d.hxx>
 #include <Quantity_Factor.hxx>
 #include <Quantity_Length.hxx>
 #include <Quantity_NameOfColor.hxx>
@@ -126,9 +124,6 @@
 #include <StdPrs_Curve.hxx>
 #include <StdPrs_Point.hxx>
 #include <StdPrs_PoleCurve.hxx>
-#include <StdSelect_SensitiveText2d.hxx>
-#include <StdSelect_TextProjector2d.hxx>
-#include <StdSelect_ViewerSelector2d.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_HArray1OfPnt2d.hxx>
@@ -149,7 +144,6 @@
 #include <UnitsAPI.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
-#include <WNT_WDriver.hxx>
 #include <WNT_Window.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>

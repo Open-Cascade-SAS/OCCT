@@ -25,8 +25,8 @@ class COCCDemoApp : public OCC_BaseApp
 {
 public:
   COCCDemoApp();
-  Handle(Graphic3d_WNTGraphicDevice)	  GetGraphicDevice() const 
-  { return myGraphicDevice; } ;
+  Handle(Graphic3d_GraphicDriver)	  GetGraphicDriver() const 
+  { return myGraphicDriver; } ;
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -44,7 +44,7 @@ public:
 	DECLARE_MESSAGE_MAP()
 
 private:
-  Handle(Graphic3d_WNTGraphicDevice) myGraphicDevice;
+  Handle(Graphic3d_GraphicDriver) myGraphicDriver;
 
 };
 

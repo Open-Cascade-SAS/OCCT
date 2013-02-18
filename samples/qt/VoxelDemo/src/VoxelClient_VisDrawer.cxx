@@ -17,6 +17,8 @@
 
 #include "VoxelClient_VisDrawer.h"
 
+#include <OpenGl_GlCore11.hxx>
+
 #include <ElSLib.hxx>
 #include <gp_Dir.hxx>
 #include <Geom_Plane.hxx>
@@ -29,9 +31,7 @@
 #include <OpenGl_Element.hxx>
 #include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_NamedStatus.hxx>
-
-#include <GL/gl.h>
-#include <GL/glu.h>
+#include <OpenGl_Workspace.hxx>
 
 /**************************************************************************/
 

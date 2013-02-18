@@ -90,7 +90,6 @@
 #include <Graphic3d_Structure.ixx>
 #include <Graphic3d_Structure.pxx>
 
-#include <Graphic3d_GraphicDevice.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_MaterialAspect.hxx>
 
@@ -191,11 +190,8 @@ MyHighlightColor (Quantity_NOC_WHITE)
   MyCStructure.TransformPersistence.Point.y = 0.0;
   MyCStructure.TransformPersistence.Point.z = 0.0;
   /* ABD 29/10/04  Transform Persistence of Presentation( pan, zoom, rotate ) */
-  Handle(Aspect_GraphicDriver) agd =
-    (AManager->GraphicDevice ())->GraphicDriver ();
 
-  MyGraphicDriver = *(Handle(Graphic3d_GraphicDriver) *) &agd;
-
+  MyGraphicDriver = AManager->GraphicDriver();
   MyGraphicDriver->Structure (MyCStructure);
 
 #ifdef TRACE

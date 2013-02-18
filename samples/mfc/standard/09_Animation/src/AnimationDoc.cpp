@@ -49,11 +49,11 @@ CAnimationDoc::CAnimationDoc()
 	StaticCount++;
 	myCount = StaticCount;
 
-	Handle(Graphic3d_WNTGraphicDevice) theGraphicDevice = 
-		((CAnimationApp*)AfxGetApp())->GetGraphicDevice();
+	Handle(Graphic3d_GraphicDriver) aGraphicDriver = 
+		((CAnimationApp*)AfxGetApp())->GetGraphicDriver();
 
     TCollection_ExtendedString a3DName("Visu3D");
-	myViewer = new V3d_Viewer(theGraphicDevice,a3DName.ToExtString(),"", 1000.0, 
+	myViewer = new V3d_Viewer(aGraphicDriver,a3DName.ToExtString(),"", 1000.0, 
                               V3d_XposYnegZpos, Quantity_NOC_GRAY30,
                               V3d_ZBUFFER,V3d_GOURAUD,V3d_WAIT, 
                               Standard_True, Standard_False);
@@ -86,7 +86,7 @@ CAnimationDoc::CAnimationDoc()
 	TCHAR tchBuf[80];
 
 	CString CASROOTValue = ((GetEnvironmentVariable("CASROOT", tchBuf, 80) > 0) ? tchBuf : NULL); 
-	aString = (CASROOTValue + "\\..\\data\\occ");	
+	aString = (CASROOTValue + "\\data\\occ");	
 
 	char DataDirPath[200];
 	strcpy_s(DataDirPath, aString);

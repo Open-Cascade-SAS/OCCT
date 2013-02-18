@@ -49,15 +49,12 @@
 #include <Viewer_BadValue.hxx>
 #include <V3d_OrthographicView.hxx>
 #include <V3d_PerspectiveView.hxx>
-#ifdef WNT
-#include <WNT_GraphicDevice.hxx>
-#endif
 
 /*----------------------------------------------------------------------*/
 
 //-Constructor:
-V3d_Viewer::V3d_Viewer(const Handle(Aspect_GraphicDevice)& Device , const Standard_ExtString aName, const Standard_CString aDomain,const Standard_Real ViewSize , const V3d_TypeOfOrientation ViewProj , const Quantity_NameOfColor ViewBackground , const V3d_TypeOfVisualization Visualization , const V3d_TypeOfShadingModel ShadingModel , const V3d_TypeOfUpdate UpdateMode, const Standard_Boolean ComputedMode , const Standard_Boolean DefaultComputedMode , const V3d_TypeOfSurfaceDetail SurfaceDetail )  
-:Viewer_Viewer(Device,aName,aDomain,-1),
+V3d_Viewer::V3d_Viewer(const Handle(Graphic3d_GraphicDriver)& theDriver , const Standard_ExtString aName, const Standard_CString aDomain,const Standard_Real ViewSize , const V3d_TypeOfOrientation ViewProj , const Quantity_NameOfColor ViewBackground , const V3d_TypeOfVisualization Visualization , const V3d_TypeOfShadingModel ShadingModel , const V3d_TypeOfUpdate UpdateMode, const Standard_Boolean ComputedMode , const Standard_Boolean DefaultComputedMode , const V3d_TypeOfSurfaceDetail SurfaceDetail )  
+:Viewer_Viewer(theDriver,aName,aDomain,-1),
 MyDefinedViews(),
 MyActiveViews(),
 MyDefinedLights(),
@@ -78,7 +75,7 @@ myDisplayPlaneLength(ViewSize)
 #endif 
 {
 
-  MyViewer = new Visual3d_ViewManager(Device) ;
+  MyViewer = new Visual3d_ViewManager(theDriver) ;
   // san (16/09/2010): It has been decided to turn depth test ON
   // by default, as this is important for new font rendering
   // (without it, there are numerous texture rendering artefacts)
