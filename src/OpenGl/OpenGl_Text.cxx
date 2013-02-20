@@ -505,7 +505,7 @@ void OpenGl_Text::drawText (const Handle(OpenGl_PrinterContext)& thePrintCtx,
       glDrawArrays (GL_TRIANGLES, 0, GLsizei(aVerts->GetElemsNb()));
 
       glBindTexture (GL_TEXTURE_2D, 0);
-      aTCrds->UnbindFixed (theCtx, GL_VERTEX_ARRAY);
+      aTCrds->UnbindFixed (theCtx, GL_TEXTURE_COORD_ARRAY);
       aVerts->UnbindFixed (theCtx, GL_VERTEX_ARRAY);
     }
   }
