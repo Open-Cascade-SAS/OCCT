@@ -155,11 +155,18 @@ static
   //
   aNb=myArguments.Extent();
   if (aNb!=myNbArgs) {
-    myErrorStatus=10; // invalid number of arguments
+    if (aNb!=1 || !(myArgs[0].IsSame(myArgs[1]))) {
+      myErrorStatus=10; // invalid number of arguments
+      return;
+    }
+  }
+  //
+  if (!myPaveFiller) {
+    myErrorStatus=101; 
     return;
   }
   //
-  BOPAlgo_Builder::CheckData();
+  myErrorStatus=myPaveFiller->ErrorStatus();
   if (myErrorStatus) {
     return;
   }
@@ -187,20 +194,20 @@ static
   }
   //
   if (myOperation==BOPAlgo_UNKNOWN) {
-    myErrorStatus=14; // non-licit oprtation
+    myErrorStatus=14; // non-licit operation
     return;
   }
   else if (myDims[0]<myDims[1]) {
     if (myOperation==BOPAlgo_FUSE ||
         myOperation==BOPAlgo_CUT21) {
-      myErrorStatus=14; // non-licit oprtation for the arguments
+      myErrorStatus=14; // non-licit operation for the arguments
       return;
     }
   }
   else if (myDims[0]>myDims[1]) {
     if (myOperation==BOPAlgo_FUSE ||
         myOperation==BOPAlgo_CUT) {
-      myErrorStatus=14; // non-licit oprtation for the arguments
+      myErrorStatus=14; // non-licit operation for the arguments
       return;
     }
   }
