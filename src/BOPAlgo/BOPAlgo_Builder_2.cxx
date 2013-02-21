@@ -268,7 +268,6 @@ static
       }
       //aFR.Orientation(anOriF);
       aLFIm.Append(aFR);
-      myOrigins.Bind(aFR, aF);
     }
     //
     mySplits.Bind(aF, aLFIm); 
@@ -290,6 +289,8 @@ static
   BOPCol_ListIteratorOfListOfShape aItF1, aItF2;
   BOPTools_ListOfCoupleOfShape aLCS;  
   BOPCol_ListIteratorOfListOfShape aItLS;
+  BOPCol_MapOfShape aMF;
+  BOPCol_MapIteratorOfMapOfShape aItMF;
   //
   myErrorStatus=0;
   //
@@ -342,14 +343,37 @@ static
     const BOPDS_FaceInfo& aFI1=myDS->FaceInfo(nF1);
     const BOPDS_FaceInfo& aFI2=myDS->FaceInfo(nF2);
     bFlag=HasPaveBlocksOnIn(aFI1, aFI2);
-    if (!bFlag) {
-      continue;
-    }
     //
     const TopoDS_Face& aF1=(*(TopoDS_Face*)(&myDS->Shape(nF1)));
     const TopoDS_Face& aF2=(*(TopoDS_Face*)(&myDS->Shape(nF2)));
-    bFlag=mySplits.IsBound(aF1) && mySplits.IsBound(aF2);
+    bFlag=bFlag && (mySplits.IsBound(aF1) && mySplits.IsBound(aF2));
+    //
     if (!bFlag) {
+      //case when the faces have shared bounds
+      if (!aMSST.IsBound(aF1)) {
+        BOPTools_Set aST1(aAllocator);
+        aMSST.Bind(aF1, aST1);
+        BOPTools_Set& aST=aMSST.ChangeFind(aF1);
+        aST.AddEdges(aF1);
+      }
+      //
+      if (!aMSST.IsBound(aF2)) {
+        BOPTools_Set aST2(aAllocator);
+        aMSST.Bind(aF2, aST2);
+        BOPTools_Set& aST=aMSST.ChangeFind(aF2);
+        aST.AddEdges(aF2);
+      }
+      //
+      const BOPTools_Set& aST1=aMSST.Find(aF1);
+      const BOPTools_Set& aST2=aMSST.Find(aF2);
+      if (aST1.IsEqual(aST2)) {
+        bFlag=BOPTools_AlgoTools::AreFacesSameDomain(aF1, aF2, myContext);
+        if (bFlag) {
+          FillMap(aF1, aF2, aDMSLS, aAllocator);
+          aMF.Add(aF1);
+          aMF.Add(aF2);
+        }
+      }
       continue;
     }
     //
@@ -408,6 +432,14 @@ static
     }
   }
   //
+  aItMF.Initialize(aMF);
+  for (; aItMF.More(); aItMF.Next()){
+    const TopoDS_Shape& aF = aItMF.Value();
+    //
+    BOPCol_ListOfShape aLS;
+    aLS.Append(aF);
+    mySplits.Bind(aF, aLS);
+  }
   //-----------------------------------------------------scope t
   aMSST.Clear();
   aMBlocks.Clear();
@@ -463,6 +495,13 @@ static
     FillInternalVertices(aLFIm, aLIAV);
     //
     myImages.Bind(aF, aLFIm); 
+    //
+    //fill myOrigins
+    aItLS.Initialize(aLFIm);
+    for (; aItLS.More(); aItLS.Next()) {
+      const TopoDS_Face& aFSp=(*(TopoDS_Face*)(&aItLS.Value()));
+      myOrigins.Bind(aFSp, aF);
+    }
   }// for (i=0; i<aNbS; ++i) {
 }
 //=======================================================================
