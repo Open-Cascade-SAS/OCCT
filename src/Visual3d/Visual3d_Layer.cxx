@@ -321,7 +321,7 @@ void Visual3d_Layer::TextSize (const Standard_CString AText,  const Standard_Rea
     Visual3d_LayerDefinitionError::Raise
     ("One primitive is already open !");
 
-  MyGraphicDriver->TextSize (AText, AHeight, aWidth, anAscent, aDescent);
+  MyGraphicDriver->TextSize (AText, (Standard_ShortReal)AHeight, aWidth, anAscent, aDescent);
   AWidth = aWidth;
   AnAscent = anAscent;
   ADescent = aDescent;

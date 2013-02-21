@@ -137,9 +137,9 @@ void StdPrs_ToolShadedShape::Normal(const TopoDS_Face&  aFace,
       }
 
       Standard_Integer j = (i - UVNodes.Lower()) * 3;
-      Normals->SetValue(j + 1, Nor(i).X());
-      Normals->SetValue(j + 2, Nor(i).Y());
-      Normals->SetValue(j + 3, Nor(i).Z());
+      Normals->SetValue(j + 1, (Standard_ShortReal)Nor(i).X());
+      Normals->SetValue(j + 2, (Standard_ShortReal)Nor(i).Y());
+      Normals->SetValue(j + 3, (Standard_ShortReal)Nor(i).Z());
 
       if (aFace.Orientation() == TopAbs_REVERSED) (Nor(i)).Reverse();
 
@@ -179,9 +179,9 @@ void StdPrs_ToolShadedShape::Normal(const TopoDS_Face&  aFace,
       Nor(i) = gp_Dir(eqPlan);
 
       Standard_Integer j = (i - Nodes.Lower()) * 3;
-      Normals->SetValue(j + 1, Nor(i).X());
-      Normals->SetValue(j + 2, Nor(i).Y());
-      Normals->SetValue(j + 3, Nor(i).Z());
+      Normals->SetValue(j + 1, (Standard_ShortReal)Nor(i).X());
+      Normals->SetValue(j + 2, (Standard_ShortReal)Nor(i).Y());
+      Normals->SetValue(j + 3, (Standard_ShortReal)Nor(i).Z());
 
       if (aFace.Orientation() == TopAbs_REVERSED) (Nor(i)).Reverse();
 

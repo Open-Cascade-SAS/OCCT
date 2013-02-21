@@ -221,12 +221,14 @@ Standard_Boolean Select3D_SensitiveGroup::Matches(const Standard_Real X,
                                                   Standard_Real& DMin) 
 {
   myLastRank = 0;
-  myLastTol = aTol;
+  myLastTol = (Standard_ShortReal)aTol;
   for(Select3D_ListIteratorOfListOfSensitive It(myList);It.More();It.Next()){
     myLastRank++;
     if (It.Value()->Matches (X, Y, aTol, DMin))
     {
-      myX = X; myY = Y; myLastTol = aTol;
+      myX = (Standard_ShortReal)X;
+      myY = (Standard_ShortReal)Y;
+      myLastTol = (Standard_ShortReal)aTol;
       // compute and validate the depth (will call ::ComputeDepth())
       return Select3D_SensitiveEntity::Matches (X, Y, aTol, DMin);
     }

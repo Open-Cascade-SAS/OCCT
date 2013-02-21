@@ -359,7 +359,8 @@ Standard_Real Sx, Sy, Sz;
           MyCView.Orientation.IsCustomMatrix = 1;
           for ( i = 0; i < 4; i++)
             for ( j = 0; j < 4; j++)
-              MyCView.Orientation.ModelViewMatrix[i][j] = MyViewOrientation.MyModelViewMatrix->Value(i,j);
+              MyCView.Orientation.ModelViewMatrix[i][j] =
+                (Standard_ShortReal)MyViewOrientation.MyModelViewMatrix->Value(i,j);
         }
         else {
           MyCView.Orientation.IsCustomMatrix = 0;
@@ -395,7 +396,8 @@ Standard_Real um, vm, uM, vM;
           MyCView.Mapping.IsCustomMatrix = 1;
           for ( i = 0; i < 4; i++)
             for ( j = 0; j < 4; j++)
-              MyCView.Mapping.ProjectionMatrix[i][j] = MyViewMapping.MyProjectionMatrix->Value(i,j);
+              MyCView.Mapping.ProjectionMatrix[i][j] =
+                (Standard_ShortReal)MyViewMapping.MyProjectionMatrix->Value(i,j);
         }
         else {
           MyCView.Mapping.IsCustomMatrix = 0;
@@ -1340,7 +1342,7 @@ Standard_Real um, vm, uM, vM;
           for (i = 0; i < 4; i++)
             for (j = 0; j < 4; j++)
               MyCView.Mapping.ProjectionMatrix[i][j] =
-                MyViewMapping.MyProjectionMatrix->Value(i,j);
+                (Standard_ShortReal)MyViewMapping.MyProjectionMatrix->Value(i,j);
         }
 
         MyMatOfMapIsEvaluated   = Standard_False;
@@ -1408,7 +1410,7 @@ Standard_Real um, vm, uM, vM;
           for (i = 0; i < 4; i++)
             for (j = 0; j < 4; j++)
               MyCView.Mapping.ProjectionMatrix[i][j] =
-                MyViewMapping.MyProjectionMatrix->Value(i,j);
+                (Standard_ShortReal)MyViewMapping.MyProjectionMatrix->Value(i,j);
         }
 
         MyMatOfMapIsEvaluated   = Standard_False;

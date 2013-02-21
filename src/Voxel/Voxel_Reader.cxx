@@ -359,7 +359,7 @@ Standard_Boolean Voxel_Reader::ReadFloatAsciiVoxels(const TCollection_ExtendedSt
 	  return Standard_False;
 	}
       }
-      value = Atof(line);
+      value = (Standard_ShortReal)Atof(line);
 
       // Set value
       if (!((Standard_ShortReal**)((Voxel_DS*)myFloatVoxels)->myData)[i1])

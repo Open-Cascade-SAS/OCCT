@@ -634,9 +634,8 @@ Graphic3d_Vertex Visual3d_ViewManager::ConvertCoord (const Handle(Aspect_Window)
 Graphic3d_CView TheCView;
 Graphic3d_Vertex Point;
 
-	if (! ViewExists (AWindow, TheCView))
-	    Point.SetCoord (RealLast (), RealLast (), RealLast ());
-	else {
+	if (ViewExists (AWindow, TheCView))
+        {
 Standard_Integer Width, Height;
 Standard_ShortReal x, y, z;
 Standard_Boolean Result;
@@ -753,8 +752,6 @@ Standard_Boolean BResult;
 
 		if (WCT != 0.)
 		    Point.SetCoord (WCX/WCT, WCY/WCT, WCZ/WCT);
-		else
-		    Point.SetCoord (RealLast (), RealLast (), RealLast ());
 	    }
 	}
 
@@ -768,7 +765,7 @@ void Visual3d_ViewManager::ConvertCoordWithProj (const Handle(Aspect_Window)& AW
 Graphic3d_CView TheCView;
 
         if (! ViewExists (AWindow, TheCView)) {
-	    Point.SetCoord (RealLast (), RealLast (), RealLast ());
+	    Point.SetCoord (0., 0., 0.);
 	    Proj.SetCoord (0., 0., 0.);
         }
 	else {
@@ -893,7 +890,7 @@ Standard_Boolean BResult;
 		if (WCT != 0.)
 		    Point.SetCoord (WCX/WCT, WCY/WCT, WCZ/WCT);
 		else
-		    Point.SetCoord (RealLast (), RealLast (), RealLast ());
+		    Point.SetCoord (0., 0., 0.);
 
                 // Define projection ray
 		NPCZ	= 10.0;

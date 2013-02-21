@@ -166,10 +166,11 @@ TCollection_ExtendedString::TCollection_ExtendedString
       mylength = nbSymbols(astring);
       mystring = Allocate(ROUNDMEM((mylength+1)*2));
       if(!ConvertToUnicode (astring))
+      {
 #ifdef DEB
 	cout <<"UTF8 decoding failure..." <<endl;
 #endif
-      ;
+      }
     }
   }
   else {
