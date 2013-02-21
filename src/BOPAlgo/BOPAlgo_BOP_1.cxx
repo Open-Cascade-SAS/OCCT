@@ -34,6 +34,7 @@
 #include <BOPCol_MapOfShape.hxx>
 
 #include <BRep_Builder.hxx>
+#include <TopExp_Explorer.hxx>
 
 
 //=======================================================================
@@ -43,68 +44,100 @@
   void BOPAlgo_BOP::BuildSection()
 {
 
-  Standard_Integer i, aNb, nE, aNbPB, j;
+  Standard_Integer i, j, k, nE, nF1, nF2, aNbPB, aNbFF;
+  Standard_Boolean bFlag;
   TopoDS_Shape aRC;
   BRep_Builder aBB;
   BOPCol_MapOfShape aME;
-  BOPDS_ListIteratorOfListOfPaveBlock aItLPB;
+  BOPCol_IndexedMapOfShape aME1, aME2;
   //
   myErrorStatus=0;
   //
   BOPTools_AlgoTools::MakeContainer(TopAbs_COMPOUND, aRC);  
-  //1. Common Blocks
-  const BOPDS_VectorOfListOfPaveBlock& aPBP=myDS->PaveBlocksPool();
-  aNb=aPBP.Extent();
-  for (i=0; i<aNb; ++i) {
-    const BOPDS_ListOfPaveBlock& aLPB=aPBP(i);
+  BOPDS_VectorOfInterfFF& aFFs=myDS->InterfFF();
+  aNbFF=aFFs.Extent();
+  //
+  for (i=0; i<aNbFF; ++i) {
+    BOPDS_InterfFF& aFF=aFFs(i);
+    aFF.Indices(nF1, nF2);
+    const BOPDS_FaceInfo& aFI1=myDS->FaceInfo(nF1);
+    const BOPDS_FaceInfo& aFI2=myDS->FaceInfo(nF2);
     //
-    aItLPB.Initialize(aLPB);
-    for (; aItLPB.More(); aItLPB.Next()) {
-      const Handle(BOPDS_PaveBlock)& aPB=aItLPB.Value();
-      if (aPB->IsCommonBlock()) {
-        const Handle(BOPDS_CommonBlock)& aCB=aPB->CommonBlock();
-        const Handle(BOPDS_PaveBlock)& aPB1=aCB->PaveBlock1();
-        nE=aPB1->Edge();
-        const TopoDS_Shape& aE=myDS->Shape(nE);
-        if (aME.Add(aE)) {
-          aBB.Add(aRC, aE);
-        }
-      }
-    }
-  }
-  //2. Section Edges
-  const BOPDS_VectorOfFaceInfo& aFIP=myDS->FaceInfoPool();
-  aNb=aFIP.Extent();
-  for (i=0; i<aNb; ++i) {
-    const BOPDS_FaceInfo& aFI=aFIP(i);
-    const BOPDS_IndexedMapOfPaveBlock& aMPB=aFI.PaveBlocksSc();
+    const BOPDS_IndexedMapOfPaveBlock& aMPBIn1=aFI1.PaveBlocksIn();
+    const BOPDS_IndexedMapOfPaveBlock& aMPBOn1=aFI1.PaveBlocksOn();
+    const BOPDS_IndexedMapOfPaveBlock& aMPBSc1=aFI1.PaveBlocksSc();
     //
-    aNbPB=aMPB.Extent();
+    const BOPDS_IndexedMapOfPaveBlock& aMPBIn2=aFI2.PaveBlocksIn();
+    const BOPDS_IndexedMapOfPaveBlock& aMPBOn2=aFI2.PaveBlocksOn();
+    //
+    //1. Section edges
+    aNbPB = aMPBSc1.Extent();
     for (j=1; j<=aNbPB; ++j) {
-      const Handle(BOPDS_PaveBlock)& aPB=aMPB(j);
+      const Handle(BOPDS_PaveBlock)& aPB=aMPBSc1(j);
       nE=aPB->Edge();
       const TopoDS_Shape& aE=myDS->Shape(nE);
       if (aME.Add(aE)) {
         aBB.Add(aRC, aE);
       }
     }
-  }
-  //3. Shared Edges
-  BOPCol_IndexedMapOfShape aMEO, aMET;
-  BOPCol_MapIteratorOfMapOfShape aItME;
-  //
-  BOPTools::MapShapes(myArgs[0], TopAbs_EDGE, aMEO);
-  BOPTools::MapShapes(myArgs[1], TopAbs_EDGE, aMET);
-  //
-  aItME.Initialize(aMEO);
-  for (; aItME.More(); aItME.Next()) {
-    const TopoDS_Shape& aE = aItME.Value();
-    if (aMET.Contains(aE)) {
-      if (aME.Add(aE)) {
-        aBB.Add(aRC, aE);
+    //2. Common edges
+    BOPDS_IndexedMapOfPaveBlock aMPB[4] = {aMPBOn2, aMPBIn1, aMPBIn2, aMPBOn1};
+    for (k = 0; k < 3; ++k) {
+      aNbPB = aMPB[k].Extent();
+      for (j=1; j<=aNbPB; ++j) {
+        const Handle(BOPDS_PaveBlock)& aPB=aMPB[k](j);
+        bFlag = (k==0) ? aMPB[3].Contains(aPB) :
+          (aMPB[k-1].Contains(aPB) || aMPB[k+1].Contains(aPB));
+        if (bFlag) {
+          nE=aPB->Edge();
+          const TopoDS_Shape& aE=myDS->Shape(nE);
+          if (aME.Add(aE)) {
+            aBB.Add(aRC, aE);
+          }
+        }
+      }
+    }
+    //3. Shared edges
+    aME1.Clear();
+    aME2.Clear();
+    //
+    const TopoDS_Face& aF1=(*(TopoDS_Face *)(&myDS->Shape(nF1)));
+    const TopoDS_Face& aF2=(*(TopoDS_Face *)(&myDS->Shape(nF2)));
+    //
+    BOPTools::MapShapes(aF1, TopAbs_EDGE, aME1);
+    BOPTools::MapShapes(aF2, TopAbs_EDGE, aME2);
+    //
+    aNbPB = aME1.Extent();
+    for (j=1; j<=aNbPB; ++j) {
+      const TopoDS_Shape& aE = aME1(j);
+      if (aME2.Contains(aE)) {
+        if (aME.Add(aE)) {
+          aBB.Add(aRC, aE);
+        }
       }
     }
   }
-
+  //
+  //case when arguments are the same
+  if (!aNbFF) {
+    if (myArgs[0].IsSame(myArgs[1])) {
+      TopExp_Explorer anExpF, anExpE;
+      //
+      anExpF.Init(myArgs[0], TopAbs_FACE);
+      for(; anExpF.More(); anExpF.Next()) {
+        const TopoDS_Shape& aF = anExpF.Current();
+        //
+        anExpE.Init(aF, TopAbs_EDGE);
+        for (; anExpE.More(); anExpE.Next()) {
+          const TopoDS_Shape& aE = anExpE.Current();
+          //
+          if (aME.Add(aE)) {
+            aBB.Add(aRC, aE);
+          }
+        }
+      }
+    }
+  }
+  //
   myShape=aRC;
 }
