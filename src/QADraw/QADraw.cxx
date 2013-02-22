@@ -423,11 +423,6 @@ extern int ViewerMainLoop (Standard_Integer argc, const char ** argv);
 #else
 Standard_EXPORT int ViewerMainLoop (Standard_Integer argc, const char ** argv);
 #endif
-#if ! defined(WNT)
-extern int ViewerMainLoop2d (Standard_Integer argc, const char ** argv);
-#else
-Standard_EXPORT int ViewerMainLoop2d (Standard_Integer argc, const char ** argv);
-#endif
 
 static Standard_Integer QAAISGetMousePoint (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
@@ -456,24 +451,18 @@ static Standard_Integer QAAISGetMousePoint (Draw_Interpretor& di, Standard_Integ
 static Standard_Integer QAAISGetColorCoord (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
 #if ! defined(WNT)
-  if ( argc > 2 ) {
-    di << "Usage : " << argv[0] << " [3d|2d]" << "\n";
+  if ( argc > 1 ) {
+    di << "Usage : " << argv[0] << "\n";
     return 1;
   }
   Handle(Xw_Window) QAAISWindow;
 
-  Standard_Boolean is3d = 1;
-
-  if(argc == 1 || !strcmp(argv[1],"3d")) {
-
-    Handle (V3d_View) QAAIS_MainView = ViewerTest::CurrentView ();
-    if ( QAAIS_MainView.IsNull () ) {
-      di << "You must initialize AISViewer before this command." << "\n";
-      return 1;
-    }
-    QAAISWindow = Handle(Xw_Window)::DownCast (QAAIS_MainView->V3d_View::Window());
-    is3d = 1;
+  Handle (V3d_View) QAAIS_MainView = ViewerTest::CurrentView ();
+  if ( QAAIS_MainView.IsNull () ) {
+    di << "You must initialize AISViewer before this command." << "\n";
+    return 1;
   }
+  QAAISWindow = Handle(Xw_Window)::DownCast (QAAIS_MainView->V3d_View::Window());
 
   Standard_Integer QAAIS_WindowSize_X = 0;
   Standard_Integer QAAIS_WindowSize_Y = 0;
@@ -507,15 +496,14 @@ static Standard_Integer QAAISGetColorCoord (Draw_Interpretor& di, Standard_Integ
   Standard_Integer argccc = 5;
   const char *bufff[] = { "A", "B", "C", "D", "E" };
   const char **argvvv = (const char **) bufff;
-  while ( is3d ? ViewerMainLoop (argccc, argvvv) : ViewerMainLoop2d (argccc, argvvv)) {
+  while (ViewerMainLoop (argccc, argvvv)) {
     Handle(TColStd_HSequenceOfReal) aSeq;
     Image_PixMap anImage;
-    if(is3d)
-    {
-      ViewerTest::GetMousePosition (QAAIS_MousePoint_X, QAAIS_MousePoint_Y);
-      Handle (V3d_View) QAAIS_MainView = ViewerTest::CurrentView();
-      QAAIS_MainView->ToPixMap (anImage, QAAIS_WindowSize_X, QAAIS_WindowSize_Y);
-    }
+
+    ViewerTest::GetMousePosition (QAAIS_MousePoint_X, QAAIS_MousePoint_Y);
+    Handle (V3d_View) QAAIS_MainView = ViewerTest::CurrentView();
+    QAAIS_MainView->ToPixMap (anImage, QAAIS_WindowSize_X, QAAIS_WindowSize_Y);
+
     aSeq = GetColorOfPixel (anImage, QAAIS_MousePoint_X, QAAIS_MousePoint_Y, 0);
 
     QAAIS_ColorRED = aSeq->Value(1);
@@ -704,7 +692,7 @@ void QADraw::CommonCommands(Draw_Interpretor& theCommands)
   theCommands.Add("QARebuild","QARebuild command_name",__FILE__,QARebuild,group);
   theCommands.Add("QAGetPixelColor", "QAGetPixelColor coordinate_X coordinate_Y [color_R color_G color_B]", __FILE__,QAAISGetPixelColor, group);
   theCommands.Add("QAGetMousePoint", "QAGetMousePoint", __FILE__,QAAISGetMousePoint, group);
-  theCommands.Add("QAGetColorCoord", "QAGetColorCoord [3d|2d]", __FILE__,QAAISGetColorCoord, group);
+  theCommands.Add("QAGetColorCoord", "QAGetColorCoord", __FILE__,QAAISGetColorCoord, group);
   theCommands.Add("vtri_orig",
 		  "vtri_orig         : vtri_orig trihedron_name  -  draws axis origin lines",
 		  __FILE__,VTrihedronOrigins,group);
