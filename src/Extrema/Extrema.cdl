@@ -53,12 +53,15 @@ is
     enumeration ExtFlag is ExtFlag_MIN, ExtFlag_MAX, ExtFlag_MINMAX;
 
     enumeration ExtAlgo is ExtAlgo_Grad, ExtAlgo_Tree;
+    
+    enumeration ElementType is Node, UIsoEdge, VIsoEdge, Face;
 
     class CurveTool;
     class Curve2dTool;
 
     generic class Point;
     class POnSurf;
+    class POnSurfParams;
 
     generic class ExtPSOfRev;
     
@@ -173,6 +176,9 @@ is
     class Array2OfPOnSurf     instantiates 
     	Array2 from TCollection(POnSurf);
 	
+    class Array2OfPOnSurfParams instantiates 
+    	Array2 from TCollection(POnSurfParams);
+	
 
     class HArray1OfPOnCurv    instantiates 
     	HArray1 from TCollection(POnCurv, Array1OfPOnCurv);
@@ -192,6 +198,9 @@ is
 	
     class HArray2OfPOnSurf    instantiates 
     	HArray2 from TCollection(POnSurf, Array2OfPOnSurf);
+	
+    class HArray2OfPOnSurfParams instantiates 
+    	HArray2 from TCollection(POnSurfParams, Array2OfPOnSurfParams);
 	
 
     class SequenceOfPOnCurv   instantiates 

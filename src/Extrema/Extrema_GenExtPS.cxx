@@ -172,7 +172,69 @@ Standard_Boolean Bnd_SphereUBTreeSelectorMax::Accept(const Standard_Integer& the
   return Standard_False;
 }
 
+/*
+ * This function computes the point on surface parameters on edge.
+ * if it coincides with theParam0 or theParam1, it is returned.
+ */
+static Extrema_POnSurfParams ComputeEdgeParameters
+      (const Standard_Boolean       IsUEdge,
+       const Extrema_POnSurfParams &theParam0,
+       const Extrema_POnSurfParams &theParam1,
+       const Adaptor3d_SurfacePtr  &theSurf,
+       const gp_Pnt                &thePoint,
+       const Standard_Real          theDiffTol)
+{
+  const Standard_Real aSqrDist01 =
+    theParam0.Value().SquareDistance(theParam1.Value());
 
+  if (aSqrDist01 <= theDiffTol) {
+    // The points are confused. Get the first point and change its type.
+    return theParam0;
+  } else {
+    const Standard_Real aDiffDist =
+      Abs(theParam0.GetSqrDistance() - theParam1.GetSqrDistance());
+
+    if (aDiffDist >= aSqrDist01 - theDiffTol) {
+      // The shortest distance is one of the nodes.
+      if (theParam0.GetSqrDistance() > theParam1.GetSqrDistance()) {
+        // The shortest distance is the point 1.
+        return theParam1;
+      } else {
+        // The shortest distance is the point 0.
+        return theParam0;
+      }
+    } else {
+      // The shortest distance is inside the edge.
+      gp_XYZ aPoP(thePoint.XYZ().Subtracted(theParam0.Value().XYZ()));
+      gp_XYZ aPoP1(theParam1.Value().XYZ().Subtracted(theParam0.Value().XYZ()));
+      Standard_Real aRatio = aPoP.Dot(aPoP1)/aSqrDist01;
+      Standard_Real aU[2];
+      Standard_Real aV[2];
+
+      theParam0.Parameter(aU[0], aV[0]);
+      theParam1.Parameter(aU[1], aV[1]);
+  
+      Standard_Real aUPar = aU[0];
+      Standard_Real aVPar = aV[0];
+
+      if (IsUEdge) {
+        aUPar += aRatio*(aU[1] - aU[0]);
+      } else {
+        aVPar += aRatio*(aV[1] - aV[0]);
+      }
+
+      Extrema_POnSurfParams aParam(aUPar, aVPar, theSurf->Value(aUPar, aVPar));
+      Standard_Integer anIndices[2];
+
+      theParam0.GetIndices(anIndices[0], anIndices[1]);
+      aParam.SetElementType(IsUEdge ? Extrema_UIsoEdge : Extrema_VIsoEdge);
+      aParam.SetSqrDistance(thePoint.SquareDistance(aParam.Value()));
+      aParam.SetIndices(anIndices[0], anIndices[1]);
+
+      return aParam;
+    }
+  }
+}
 
 //=============================================================================
 
@@ -474,64 +536,209 @@ void Extrema_GenExtPS::GetGridPoints( const Adaptor3d_Surface& theSurf)
   
 }
 
-void Extrema_GenExtPS::BuildGrid()
+void Extrema_GenExtPS::BuildGrid(const gp_Pnt &thePoint)
 {
-  //if grid was already built do nothing
-  if(myInit)
-    return;
-  
-  //build parametric grid in case of a complex surface geometry (BSpline and Bezier surfaces)
- GetGridPoints(*myS);
-  
-  //build grid in other cases 
-  if( myUParams.IsNull() )
-  {
-    Standard_Real PasU = myusup - myumin;
-    Standard_Real U0 = PasU / myusample / 100.;
-    PasU = (PasU - U0) / (myusample - 1);
-    U0 = U0/2. + myumin;
-    myUParams = new TColStd_HArray1OfReal(1,myusample );
-    Standard_Integer NoU;
-    Standard_Real U = U0;
-    for ( NoU = 1 ; NoU <= myusample; NoU++, U += PasU) 
-      myUParams->SetValue(NoU, U);
-
-  }
-
-  if( myVParams.IsNull())
-  {
-    Standard_Real PasV = myvsup - myvmin;
-    Standard_Real V0 = PasV / myvsample / 100.;
-    PasV = (PasV - V0) / (myvsample - 1);
-    V0 = V0/2. + myvmin;
-    
-    myVParams = new TColStd_HArray1OfReal(1,myvsample );
-    Standard_Integer  NoV;
-    Standard_Real V = V0;
-   
-    for ( NoV = 1, V = V0; NoV <= myvsample; NoV++, V += PasV)
-      myVParams->SetValue(NoV, V);
-  }
-  //If flag was changed and extrema not reinitialized Extrema would fail
-  mypoints = new TColgp_HArray2OfPnt(0,myusample+1,0,myvsample+1);
-  // Calculation of distances
-
   Standard_Integer NoU, NoV;
- 
+
+  //if grid was already built skip its creation
+  if (!myInit) {
+    //build parametric grid in case of a complex surface geometry (BSpline and Bezier surfaces)
+    GetGridPoints(*myS);
+    
+    //build grid in other cases 
+    if( myUParams.IsNull() )
+    {
+      Standard_Real PasU = myusup - myumin;
+      Standard_Real U0 = PasU / myusample / 100.;
+      PasU = (PasU - U0) / (myusample - 1);
+      U0 = U0/2. + myumin;
+      myUParams = new TColStd_HArray1OfReal(1,myusample );
+      Standard_Integer NoU;
+      Standard_Real U = U0;
+      for ( NoU = 1 ; NoU <= myusample; NoU++, U += PasU) 
+        myUParams->SetValue(NoU, U);
+    }
+  
+    if( myVParams.IsNull())
+    {
+      Standard_Real PasV = myvsup - myvmin;
+      Standard_Real V0 = PasV / myvsample / 100.;
+      PasV = (PasV - V0) / (myvsample - 1);
+      V0 = V0/2. + myvmin;
+      
+      myVParams = new TColStd_HArray1OfReal(1,myvsample );
+      Standard_Integer  NoV;
+      Standard_Real V = V0;
+     
+      for ( NoV = 1, V = V0; NoV <= myvsample; NoV++, V += PasV)
+        myVParams->SetValue(NoV, V);
+    }
+
+    //If flag was changed and extrema not reinitialized Extrema would fail
+    myPoints = new Extrema_HArray2OfPOnSurfParams
+      (0, myusample + 1, 0, myvsample + 1);
+    // Calculation of distances
+  
+    for ( NoU = 1 ; NoU <= myusample; NoU++ ) {
+      for ( NoV = 1 ; NoV <= myvsample; NoV++) {
+        gp_Pnt aP1 = myS->Value(myUParams->Value(NoU), myVParams->Value(NoV));
+        Extrema_POnSurfParams aParam
+          (myUParams->Value(NoU), myVParams->Value(NoV), aP1);
+
+        aParam.SetElementType(Extrema_Node);
+        aParam.SetIndices(NoU, NoV);
+        myPoints->SetValue(NoU, NoV, aParam);
+      }
+    }
+
+    // Fill boundary with negative square distance.
+    // It is used for computation of Maximum.
+    for (NoV = 0; NoV <= myvsample + 1; NoV++) {
+      myPoints->ChangeValue(0, NoV).SetSqrDistance(-1.);
+      myPoints->ChangeValue(myusample + 1, NoV).SetSqrDistance(-1.);
+    }
+
+    for (NoU = 1; NoU <= myusample; NoU++) {
+      myPoints->ChangeValue(NoU, 0).SetSqrDistance(-1.);
+      myPoints->ChangeValue(NoU, myvsample + 1).SetSqrDistance(-1.);
+    }
+    
+    myInit = Standard_True;
+  }
+
+  // Compute distances to mesh.
+  // Step 1. Compute distances to nodes.
   for ( NoU = 1 ; NoU <= myusample; NoU++ ) {
     for ( NoV = 1 ; NoV <= myvsample; NoV++) {
-      gp_Pnt P1 = myS->Value(myUParams->Value(NoU), myVParams->Value(NoV));
-      mypoints->SetValue(NoU,NoV,P1);
+      Extrema_POnSurfParams &aParam = myPoints->ChangeValue(NoU, NoV);
+
+      aParam.SetSqrDistance(thePoint.SquareDistance(aParam.Value()));
     }
   }
-  
-  myInit = Standard_True;
+
+  // For search of minimum compute distances to mesh.
+  if(myFlag == Extrema_ExtFlag_MIN || myFlag == Extrema_ExtFlag_MINMAX) 
+  {
+    // This is the tolerance of difference of squared values.
+    // No need to set it too small.
+    const Standard_Real aDiffTol = mytolu + mytolv;
+
+    // Step 2. Compute distances to edges.
+    // Assume UEdge(i, j) = { Point(i, j); Point(i + 1, j    ) }
+    // Assume VEdge(i, j) = { Point(i, j); Point(i,     j + 1) }
+    Handle(Extrema_HArray2OfPOnSurfParams) aUEdgePntParams =
+          new Extrema_HArray2OfPOnSurfParams(1, myusample - 1, 1, myvsample);
+    Handle(Extrema_HArray2OfPOnSurfParams) aVEdgePntParams =
+          new Extrema_HArray2OfPOnSurfParams(1, myusample, 1, myvsample - 1);
+
+    for ( NoU = 1 ; NoU <= myusample; NoU++ ) {
+      for ( NoV = 1 ; NoV <= myvsample; NoV++) {
+        const Extrema_POnSurfParams &aParam0 = myPoints->Value(NoU, NoV);
+
+        if (NoU < myusample) {
+          // Compute parameters to UEdge.
+          const Extrema_POnSurfParams &aParam1 = myPoints->Value(NoU + 1, NoV);
+          Extrema_POnSurfParams aUEdgeParam = ComputeEdgeParameters
+              (Standard_True, aParam0, aParam1, myS, thePoint, aDiffTol);
+
+          aUEdgePntParams->SetValue(NoU, NoV, aUEdgeParam);
+        }
+
+        if (NoV < myvsample) {
+          // Compute parameters to VEdge.
+          const Extrema_POnSurfParams &aParam1 = myPoints->Value(NoU, NoV + 1);
+          Extrema_POnSurfParams aVEdgeParam = ComputeEdgeParameters
+              (Standard_False, aParam0, aParam1, myS, thePoint, aDiffTol);
+
+          aVEdgePntParams->SetValue(NoU, NoV, aVEdgeParam);
+        }
+      }
+    }
+
+    // Step 3. Compute distances to faces.
+    // Assume myFacePntParams(i, j) =
+    // { Point(i, j); Point(i + 1, j); Point(i + 1, j + 1); Point(i, j + 1) }
+    //   Or
+    // { UEdge(i, j); VEdge(i + 1, j); UEdge(i, j + 1); VEdge(i, j) }
+    myFacePntParams = 
+          new Extrema_HArray2OfPOnSurfParams(0, myusample, 0, myvsample);
+    Standard_Real aSqrDist01;
+    Standard_Real aDiffDist;
+    Standard_Boolean isOut;
+
+    for ( NoU = 1 ; NoU < myusample; NoU++ ) {
+      for ( NoV = 1 ; NoV < myvsample; NoV++) {
+        const Extrema_POnSurfParams &aUE0 = aUEdgePntParams->Value(NoU, NoV);
+        const Extrema_POnSurfParams &aUE1 = aUEdgePntParams->Value(NoU, NoV+1);
+        const Extrema_POnSurfParams &aVE0 = aVEdgePntParams->Value(NoU, NoV);
+        const Extrema_POnSurfParams &aVE1 = aVEdgePntParams->Value(NoU+1, NoV);
+
+        aSqrDist01 = aUE0.Value().SquareDistance(aUE1.Value());
+        aDiffDist = Abs(aUE0.GetSqrDistance() - aUE1.GetSqrDistance());
+        isOut = Standard_False;
+
+        if (aDiffDist >= aSqrDist01 - aDiffTol) {
+          // The projection is outside the face.
+          isOut = Standard_True;
+        } else {
+          aSqrDist01 = aVE0.Value().SquareDistance(aVE1.Value());
+          aDiffDist = Abs(aVE0.GetSqrDistance() - aVE1.GetSqrDistance());
+
+          if (aDiffDist >= aSqrDist01 - aDiffTol) {
+            // The projection is outside the face.
+            isOut = Standard_True;
+          }
+        }
+
+        if (isOut) {
+          // Get the closest point on an edge.
+          const Extrema_POnSurfParams &aUEMin =
+            aUE0.GetSqrDistance() < aUE1.GetSqrDistance() ? aUE0 : aUE1;
+          const Extrema_POnSurfParams &aVEMin =
+            aVE0.GetSqrDistance() < aVE1.GetSqrDistance() ? aVE0 : aVE1;
+          const Extrema_POnSurfParams &aEMin =
+            aUEMin.GetSqrDistance() < aVEMin.GetSqrDistance() ? aUEMin : aVEMin;
+
+          myFacePntParams->SetValue(NoU, NoV, aEMin);
+        } else {
+          // Find closest point inside the face.
+          Standard_Real aU[2];
+          Standard_Real aV[2];
+          Standard_Real aUPar;
+          Standard_Real aVPar;
+
+          // Compute U parameter.
+          aUE0.Parameter(aU[0], aV[0]);
+          aUE1.Parameter(aU[1], aV[1]);
+          aUPar = 0.5*(aU[0] + aU[1]);
+          // Compute V parameter.
+          aVE0.Parameter(aU[0], aV[0]);
+          aVE1.Parameter(aU[1], aV[1]);
+          aVPar = 0.5*(aV[0] + aV[1]);
+
+          Extrema_POnSurfParams aParam(aUPar, aVPar, myS->Value(aUPar, aVPar));
+
+          aParam.SetElementType(Extrema_Face);
+          aParam.SetSqrDistance(thePoint.SquareDistance(aParam.Value()));
+          aParam.SetIndices(NoU, NoV);
+          myFacePntParams->SetValue(NoU, NoV, aParam);
+        }
+      }
+    }
+
+    // Fill boundary with RealLast square distance.
+    for (NoV = 0; NoV <= myvsample; NoV++) {
+      myFacePntParams->ChangeValue(0, NoV).SetSqrDistance(RealLast());
+      myFacePntParams->ChangeValue(myusample, NoV).SetSqrDistance(RealLast());
+    }
+
+    for (NoU = 1; NoU < myusample; NoU++) {
+      myFacePntParams->ChangeValue(NoU, 0).SetSqrDistance(RealLast());
+      myFacePntParams->ChangeValue(NoU, myvsample).SetSqrDistance(RealLast());
+    }
+  }
 }
 
-
-
-
-  
 /*
 a- Constitution of the table of distances (TbDist(0,myusample+1,0,myvsample+1)):
    ---------------------------------------------------------------
@@ -585,13 +792,15 @@ void Extrema_GenExtPS::BuildTree()
 }
 
 void Extrema_GenExtPS::FindSolution(const gp_Pnt& P, 
-                                    const math_Vector& UV, 
-                                    const Standard_Integer theNoU, 
-                                    const Standard_Integer theNoV, const Extrema_ExtFlag f)
+                                    const Extrema_POnSurfParams &theParams)
 {
   math_Vector Tol(1,2);
   Tol(1) = mytolu;
   Tol(2) = mytolv;
+
+  math_Vector UV(1, 2);
+
+  theParams.Parameter(UV(1), UV(2));
 
   math_Vector UVinf(1,2), UVsup(1,2);
   UVinf(1) = myumin;
@@ -606,89 +815,11 @@ void Extrema_GenExtPS::FindSolution(const gp_Pnt& P,
 
   Standard_Integer aNbMaxIter = 100;
 
-  gp_Pnt PStart = myS->Value(UV(1), UV(2));
-  Standard_Real DistStart = P.SquareDistance(PStart);
+  gp_Pnt PStart = theParams.Value();
+  Standard_Real DistStart = theParams.GetSqrDistance();
   Standard_Real DistSol = DistStart;
   
   math_FunctionSetRoot S (myF,UV,Tol,UVinf,UVsup, aNbMaxIter);
-  Standard_Boolean ToResolveOnSubgrid = Standard_False;
-  Standard_Boolean NewSolution = Standard_False;
-  if (f == Extrema_ExtFlag_MIN)
-  {
-    if(S.IsDone())
-    {
-      root = S.Root();
-      myF.Value(root, errors);
-      gp_Pnt PSol = myS->Value(root(1), root(2));
-      DistSol = P.SquareDistance(PSol);
-      if(Abs(errors(1)) > eps || Abs(errors(2)) > eps || DistStart < DistSol)
-      {
-        //try to improve solution on subgrid of sample points
-        ToResolveOnSubgrid = Standard_True;
-      }
-    }
-    else
-    {
-      //keep found roots and try to find solution
-      Standard_Integer nbExt = myF.NbExt();
-      Standard_Integer k = 1;
-      for( ; k <= nbExt; k++)
-      {
-        Standard_Real aD = myF.SquareDistance(k);
-        if(aD < DistSol)
-        {
-          DistSol = aD;
-          myF.Point(k).Parameter(UV(1),UV(2));
-          NewSolution = Standard_True;
-        }
-      }
-      ToResolveOnSubgrid = Standard_True;
-    }
-    
-    if (ToResolveOnSubgrid)
-    {
-      //extension of interval to find new solution
-      Standard_Real u1 = theNoU == 1 ? myumin : myUParams->Value(theNoU-1), 
-        u2 = theNoU == myusample ? myusup : myUParams->Value(theNoU + 1);
-      Standard_Real v1 = theNoV == 1 ? myvmin : myVParams->Value(theNoV-1),
-        v2 = theNoV == myvsample ? myvsup : myVParams->Value(theNoV + 1);
-            
-      Standard_Real du = (u2 - u1)/(nbsubsample-1);
-      Standard_Real dv = (v2 - v1)/(nbsubsample-1);
-      Standard_Real u, v;
-      Standard_Real dist;
-      
-      //try to find solution on subgrid
-      Standard_Integer Nu, Nv;
-      Standard_Integer minU = 0;
-      Standard_Integer minV = 0;
-      for (Nu = 1, u = u1; Nu < nbsubsample; Nu++, u += du) {
-        for (Nv = 1, v = v1; Nv < nbsubsample; Nv++, v += dv) {
-          gp_Pnt Puv = myS->Value(u, v);
-          dist = P.SquareDistance(Puv);
-          
-          if(dist < DistSol) {
-            UV(1) = u;
-            UV(2) = v;
-            NewSolution = Standard_True;
-            DistSol = dist;
-            minU = Nu;
-            minV = Nv;
-          }
-        }
-      }
-      
-      if(NewSolution) {
-        //try to precise
-        UVinf(1) = u1 + (minU == 1 ? 0 : minU - 2) * du;
-        UVinf(2) = v1 + (minV == 1 ? 0 : minV - 2) * dv;
-        UVsup(1) = u1 + (minU == nbsubsample ? nbsubsample : minU +1) * du;;
-        UVsup(2) = v1 + (minV == nbsubsample ? nbsubsample : minV +1) * dv;
-        math_FunctionSetRoot S (myF,UV,Tol,UVinf,UVsup, aNbMaxIter);
-
-      }
-    } //end of if (ToResolveOnSubgrid)
-  } //end of if (f == Extrema_ExtFlag_MIN)
   
   myDone = Standard_True;
 }
@@ -711,84 +842,114 @@ void Extrema_GenExtPS::Perform(const gp_Pnt& P)
   myDone = Standard_False;
   myF.SetPoint(P);
   
-  math_Vector UV(1,2);
-
   if(myAlgo == Extrema_ExtAlgo_Grad)
   {
-    BuildGrid();
+    BuildGrid(P);
     Standard_Integer NoU,NoV;
-
-    TColStd_Array2OfReal TheDist(0, myusample+1, 0, myvsample+1);
-    
-    for ( NoU = 1 ; NoU <= myusample; NoU++) {
-      for ( NoV = 1; NoV <= myvsample; NoV++) {
-        TheDist(NoU, NoV) = P.SquareDistance(mypoints->Value(NoU, NoV));
-      }
-    }
-
-   
-
-    Standard_Real Dist;
 
     if(myFlag == Extrema_ExtFlag_MIN || myFlag == Extrema_ExtFlag_MINMAX) 
     {
-      for (NoV = 0; NoV <= myvsample+1; NoV++) {
-        TheDist(0,NoV) = RealLast();
-        TheDist(myusample+1,NoV) = RealLast();
-      }
-      for (NoU = 1; NoU <= myusample; NoU++) {
-        TheDist(NoU,0) = RealLast();
-        TheDist(NoU,myvsample+1) = RealLast();
-      }
-      for (NoU = 1; NoU <= myusample; NoU++) {
-        for (NoV = 1; NoV <= myvsample; NoV++) {
-            Dist = TheDist(NoU,NoV);
-            if ((TheDist(NoU-1,NoV-1) >= Dist) &&
-              (TheDist(NoU-1,NoV  ) >= Dist) &&
-              (TheDist(NoU-1,NoV+1) >= Dist) &&
-              (TheDist(NoU  ,NoV-1) >= Dist) &&
-              (TheDist(NoU  ,NoV+1) >= Dist) &&
-              (TheDist(NoU+1,NoV-1) >= Dist) &&
-              (TheDist(NoU+1,NoV  ) >= Dist) &&
-              (TheDist(NoU+1,NoV+1) >= Dist)) {
-                //Create array of UV vectors to calculate min
-                
-                UV(1) = myUParams->Value(NoU);
-                UV(2) = myVParams->Value(NoV);
-                FindSolution(P, UV, NoU, NoV, Extrema_ExtFlag_MIN);
+      Extrema_ElementType anElemType;
+      Standard_Integer iU;
+      Standard_Integer iV;
+      Standard_Integer iU2;
+      Standard_Integer iV2;
+      Standard_Boolean isMin;
+      Standard_Integer i;
+
+      for (NoU = 1; NoU < myusample; NoU++) {
+        for (NoV = 1; NoV < myvsample; NoV++) {
+          const Extrema_POnSurfParams &aParam =
+            myFacePntParams->Value(NoU, NoV);
+
+          isMin = Standard_False;
+          anElemType = aParam.GetElementType();
+
+          if (anElemType == Extrema_Face) {
+            isMin = Standard_True;
+          } else {
+            // Check if it is a boundary edge or corner vertex.
+            aParam.GetIndices(iU, iV);
+
+            if (anElemType == Extrema_UIsoEdge) {
+              isMin = (iV == 1 || iV == myvsample);
+            } else if (anElemType == Extrema_VIsoEdge) {
+              isMin = (iU == 1 || iU == myusample);
+            } else if (anElemType == Extrema_Node) {
+              isMin = (iU == 1 || iU == myusample) &&
+                      (iV == 1 || iV == myvsample);
             }
-         
+
+            if (!isMin) {
+              // This is a middle element.
+              if (anElemType == Extrema_UIsoEdge ||
+                (anElemType == Extrema_Node && (iU == 1 || iU == myusample))) {
+                // Check the down face.
+                const Extrema_POnSurfParams &aDownParam =
+                    myFacePntParams->Value(NoU, NoV - 1);
+
+                if (aDownParam.GetElementType() == anElemType) {
+                  aDownParam.GetIndices(iU2, iV2);
+                  isMin = (iU == iU2 && iV == iV2);
+                }
+              } else if (anElemType == Extrema_VIsoEdge ||
+                (anElemType == Extrema_Node && (iV == 1 || iV == myvsample))) {
+                // Check the right face.
+                const Extrema_POnSurfParams &aRightParam =
+                    myFacePntParams->Value(NoU - 1, NoV);
+
+                if (aRightParam.GetElementType() == anElemType) {
+                  aRightParam.GetIndices(iU2, iV2);
+                  isMin = (iU == iU2 && iV == iV2);
+                }
+              } else if (iU == NoU && iV == NoV) {
+                // Check the lower-left node. For this purpose it is necessary
+                // to check lower-left, lower and left faces.
+                isMin = Standard_True;
+
+                const Extrema_POnSurfParams *anOtherParam[3] =
+                { &myFacePntParams->Value(NoU, NoV - 1),     // Down
+                  &myFacePntParams->Value(NoU - 1, NoV - 1), // Lower-left
+                  &myFacePntParams->Value(NoU - 1, NoV) };   // Left
+
+                for (i = 0; i < 3 && isMin; i++) {
+                  if (anOtherParam[i]->GetElementType() == Extrema_Node) {
+                    anOtherParam[i]->GetIndices(iU2, iV2);
+                    isMin = (iU == iU2 && iV == iV2);
+                  } else {
+                    isMin = Standard_False;
+                  }
+                }
+              }
+            }
+          }
+
+          if (isMin) {
+            FindSolution(P, aParam);
+          }
         }
       }
     }
     
     if(myFlag == Extrema_ExtFlag_MAX || myFlag == Extrema_ExtFlag_MINMAX)
     {
-      for (NoV = 0; NoV <= myvsample+1; NoV++) {
-        TheDist(0,NoV) = RealFirst();
-        TheDist(myusample+1,NoV) = RealFirst();
-      }
-      for (NoU = 1; NoU <= myusample; NoU++) {
-        TheDist(NoU,0) = RealFirst();
-        TheDist(NoU,myvsample+1) = RealFirst();
-      }
+      Standard_Real Dist;
+
       for (NoU = 1; NoU <= myusample; NoU++) {
         for (NoV = 1; NoV <= myvsample; NoV++) {
-            Dist = TheDist(NoU,NoV);
-            if ((TheDist(NoU-1,NoV-1) <= Dist) &&
-              (TheDist(NoU-1,NoV  ) <= Dist) &&
-              (TheDist(NoU-1,NoV+1) <= Dist) &&
-              (TheDist(NoU  ,NoV-1) <= Dist) &&
-              (TheDist(NoU  ,NoV+1) <= Dist) &&
-              (TheDist(NoU+1,NoV-1) <= Dist) &&
-              (TheDist(NoU+1,NoV  ) <= Dist) &&
-              (TheDist(NoU+1,NoV+1) <= Dist)) {
-                //Create array of UV vectors to calculate max
-                UV(1) = myUParams->Value(NoU);
-                UV(2) = myVParams->Value(NoV);
-                FindSolution(P, UV, NoU, NoV, Extrema_ExtFlag_MAX);
-            }
-         }
+          Dist = myPoints->Value(NoU, NoV).GetSqrDistance();
+          if ((myPoints->Value(NoU-1,NoV-1).GetSqrDistance() <= Dist) &&
+              (myPoints->Value(NoU-1,NoV  ).GetSqrDistance() <= Dist) &&
+              (myPoints->Value(NoU-1,NoV+1).GetSqrDistance() <= Dist) &&
+              (myPoints->Value(NoU  ,NoV-1).GetSqrDistance() <= Dist) &&
+              (myPoints->Value(NoU  ,NoV+1).GetSqrDistance() <= Dist) &&
+              (myPoints->Value(NoU+1,NoV-1).GetSqrDistance() <= Dist) &&
+              (myPoints->Value(NoU+1,NoV  ).GetSqrDistance() <= Dist) &&
+              (myPoints->Value(NoU+1,NoV+1).GetSqrDistance() <= Dist)) {
+            // Find maximum.
+            FindSolution(P, myPoints->Value(NoU, NoV));
+          }
+        }
       }
     }
   }
@@ -804,12 +965,13 @@ void Extrema_GenExtPS::Perform(const gp_Pnt& P)
       Standard_Integer aNbSel = mySphereUBTree->Select( aSelector );
       //TODO: check if no solution in binary tree
       Bnd_Sphere& aSph = aSelector.Sphere();
+      Standard_Real aU = myUParams->Value(aSph.U());
+      Standard_Real aV = myVParams->Value(aSph.V());
+      Extrema_POnSurfParams aParams(aU, aV, myS->Value(aU, aV));
 
-      UV(1) = myUParams->Value(aSph.U());//U0 + (aSph.U() - 1) * PasU;
-      UV(2) = myVParams->Value(aSph.V());//V0 + (aSph.V() - 1) * PasV;
-
-      //FindSolution(P, UV, PasU, PasV, Extrema_ExtFlag_MIN);
-      FindSolution(P, UV, aSph.U(), aSph.V(), Extrema_ExtFlag_MIN);
+      aParams.SetSqrDistance(P.SquareDistance(aParams.Value()));
+      aParams.SetIndices(aSph.U(), aSph.V());
+      FindSolution(P, aParams);
     }
     if(myFlag == Extrema_ExtFlag_MAX || myFlag == Extrema_ExtFlag_MINMAX)
     {
@@ -820,12 +982,14 @@ void Extrema_GenExtPS::Perform(const gp_Pnt& P)
       Standard_Integer aNbSel = mySphereUBTree->Select( aSelector );
       //TODO: check if no solution in binary tree
       Bnd_Sphere& aSph = aSelector.Sphere();
-      UV(1) = myUParams->Value(aSph.U());
-      UV(2) = myVParams->Value(aSph.V());
-      //UV(1) = U0 + (aSph.U() - 1) * PasU;
-      //UV(2) = V0 + (aSph.V() - 1) * PasV;
+      Standard_Real aU = myUParams->Value(aSph.U());
+      Standard_Real aV = myVParams->Value(aSph.V());
+      Extrema_POnSurfParams aParams(aU, aV, myS->Value(aU, aV));
 
-      FindSolution(P, UV, aSph.U(),aSph.V(), Extrema_ExtFlag_MAX);
+      aParams.SetSqrDistance(P.SquareDistance(aParams.Value()));
+      aParams.SetIndices(aSph.U(), aSph.V());
+
+      FindSolution(P, aParams);
     }
   }
 }
