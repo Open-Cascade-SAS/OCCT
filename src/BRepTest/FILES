@@ -16,4 +16,3 @@ BRepTest_TopologyCommands.cxx
 BRepTest_OtherCommands.cxx
 BRepTest_CheckCommands.cxx
 BRepTest_ProjectionCommands.cxx
-BRepTest_ShellCommands.cxx

@@ -103,8 +103,6 @@ is
     ProjectionCommands(DI : in out Interpretor from Draw);
 	---Purpose: Defines the commands to project a wire on a shape.
 	--          
-    ShellCommands(DI : in out Interpretor from Draw);
-	---Purpose: Defines the commands to prepare shell commands.
 
 end BRepTest;
 
