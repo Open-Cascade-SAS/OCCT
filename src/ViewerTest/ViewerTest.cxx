@@ -54,6 +54,7 @@
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <Aspect_InteriorStyle.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
+#include <Graphic3d_AspectLine3d.hxx>
 #include <Image_AlienPixMap.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_IsoAspect.hxx>
@@ -702,6 +703,121 @@ Handle(AIS_InteractiveObject) DetectedFromContext(
   return ret;
 }
 
+//==============================================================================
+//function : CopyIsoAspect
+//purpose  : Returns copy Prs3d_IsoAspect with new number of isolines.
+//==============================================================================
+static Handle(Prs3d_IsoAspect) CopyIsoAspect
+      (const Handle(Prs3d_IsoAspect) &theIsoAspect,
+       const Standard_Integer theNbIsos)
+{
+  Quantity_Color    aColor;
+  Aspect_TypeOfLine aType;
+  Standard_Real     aWidth;
+
+  theIsoAspect->Aspect()->Values(aColor, aType, aWidth);
+
+  Handle(Prs3d_IsoAspect) aResult =
+    new Prs3d_IsoAspect(aColor, aType, aWidth, theNbIsos);
+
+  return aResult;
+}
+
+//==============================================================================
+//function : visos
+//purpose  : Returns or sets the number of U- and V- isos and isIsoOnPlane flag
+//Draw arg : [name1 ...] [nbUIsos nbVIsos IsoOnPlane(0|1)]
+//==============================================================================
+static int visos (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (TheAISContext().IsNull()) {
+    di << argv[0] << " Call 'vinit' before!\n";
+    return 1;
+  }
+
+  if (argc <= 1) {
+    di << "Current number of isos : " <<
+      TheAISContext()->IsoNumber(AIS_TOI_IsoU) << " " <<
+      TheAISContext()->IsoNumber(AIS_TOI_IsoV) << "\n";
+    di << "IsoOnPlane mode is " <<
+      (TheAISContext()->IsoOnPlane() ? "ON" : "OFF") << "\n";
+
+    return 0;
+  }
+
+  Standard_Integer aLastInd = argc - 1;
+  Standard_Boolean isChanged = Standard_False;
+  Standard_Integer aNbUIsos;
+  Standard_Integer aNbVIsos;
+
+  if (aLastInd >= 3) {
+    Standard_Boolean isIsoOnPlane = Standard_False;
+
+    if (strcmp(argv[aLastInd], "1") == 0) {
+      isIsoOnPlane = Standard_True;
+      isChanged    = Standard_True;
+    } else if (strcmp(argv[aLastInd], "0") == 0) {
+      isIsoOnPlane = Standard_False;
+      isChanged    = Standard_True;
+    }
+
+    if (isChanged) {
+      aNbVIsos = Draw::Atoi(argv[aLastInd - 1]);
+      aNbUIsos = Draw::Atoi(argv[aLastInd - 2]);
+      aLastInd -= 3;
+
+      di << "New number of isos : " << aNbUIsos << " " << aNbVIsos << "\n";
+      di << "New IsoOnPlane mode is " << (isIsoOnPlane ? "ON" : "OFF") << "\n";
+
+      TheAISContext()->IsoOnPlane(isIsoOnPlane);
+
+      if (aLastInd == 0) {
+        // If there are no shapes provided set the default numbers.
+        TheAISContext()->SetIsoNumber(aNbUIsos, AIS_TOI_IsoU);
+        TheAISContext()->SetIsoNumber(aNbVIsos, AIS_TOI_IsoV);
+      }
+    }
+  }
+
+  Standard_Integer i;
+
+  for (i = 1; i <= aLastInd; i++) {
+    TCollection_AsciiString name(argv[i]);
+    Standard_Boolean IsBound = GetMapOfAIS().IsBound2(name);
+
+    if (IsBound) {
+      const Handle(Standard_Transient) anObj = GetMapOfAIS().Find2(name);
+      if (anObj->IsKind(STANDARD_TYPE(AIS_InteractiveObject))) {
+        const Handle(AIS_InteractiveObject) aShape =
+        Handle(AIS_InteractiveObject)::DownCast (anObj);
+        Handle(AIS_Drawer) CurDrawer = aShape->Attributes();
+        Handle(Prs3d_IsoAspect) aUIso = CurDrawer->UIsoAspect();
+        Handle(Prs3d_IsoAspect) aVIso = CurDrawer->VIsoAspect();
+
+        if (isChanged) {
+          CurDrawer->SetUIsoAspect(CopyIsoAspect(aUIso, aNbUIsos));
+          CurDrawer->SetVIsoAspect(CopyIsoAspect(aVIso, aNbVIsos));
+          TheAISContext()->SetLocalAttributes
+                  (aShape, CurDrawer, Standard_False);
+          TheAISContext()->Redisplay(aShape);
+        } else {
+          di << "Number of isos for " << argv[i] << " : "
+             << aUIso->Number() << " " << aVIso->Number() << "\n";
+        }
+      } else {
+        di << argv[i] << ": Not an AIS interactive object!\n";
+      }
+    } else {
+      di << argv[i] << ": Use 'vdisplay' before\n";
+    }
+  }
+
+  if (isChanged) {
+    TheAISContext()->UpdateCurrentViewer();
+  }
+
+  return 0;
+}
 
 //==============================================================================
 //function : VDispAreas,VDispSensitive,...
