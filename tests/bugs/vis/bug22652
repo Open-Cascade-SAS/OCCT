@@ -1,0 +1,49 @@
+puts "============"
+puts "OCC22652"
+puts "============"
+puts ""
+#######################################################################
+# No mesh for face (regression)
+#######################################################################
+
+set BugNumber OCC22652
+
+pload ALL
+
+restore [locate_data_file OCC22652-faceNoMesh.brep] result
+vinit
+vdisplay result
+vfit
+
+vsetdispmode 1
+
+set tri_info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
+regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
+regexp {Maximal deflection +([-0-9.+eE]+)} $tri_info full defl
+
+set status 0
+
+if { ${tri} > 0 } {
+   puts "triangles: OK ${BugNumber}"
+} else {
+   puts "triangles: Faulty ${BugNumber}"
+   set status 1
+}
+
+if { ${nod} > 0 } {
+   puts "nodes: OK ${BugNumber}"
+} else {
+   puts "nodes: Faulty ${BugNumber}"
+   set status 1
+}
+
+# Resume
+puts ""
+if { ${status} != 0 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+
+set only_screen 1

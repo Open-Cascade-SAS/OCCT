@@ -1,0 +1,110 @@
+puts "========"
+puts "OCC349"
+puts "========"
+puts ""
+puts "2. Fitall with hidden line removal algorithm works incorrect in the perspective view"
+
+vinit
+box b 100 900 300
+vdisplay b
+
+OCC280 1 1
+
+vfit
+
+set x1 165
+set y1 109
+
+set x2 380
+set y2 26
+
+set x3 215
+set y3 130
+
+set x4 31
+set y4 199
+
+set x5 188
+set y5 254
+
+set x6 351
+set y6 177
+
+set x7 216
+set y7 287
+
+set x8 22
+set y8 373
+
+set x9 2
+set y9 249
+
+set x10 345
+set y10 92
+
+set x11 393
+set y11 109
+
+set x12 52
+set y12 284
+
+set Black_R 0
+set Black_G 0
+set Black_B 0
+
+set Yellow_R 1
+set Yellow_G 1
+set Yellow_B 0
+
+#
+#              ___________2________________
+#             /|                          /|
+#            / |                         / |
+#           /  |                        /  |
+#          /   |                       /   |
+#         /    |                      /    |
+#        1     |                     3     |
+#       /      |                    /      |
+#      /       |                   /       |
+#     /        |                  /        |
+#    /         |                 /         |
+#   ----------------4------------          |
+#   |          |                |          |
+#   |          |                |          |
+#   |          |                |          |
+#   |         10                |         11
+#   |          |                |          |
+#   |          |                |          |
+#   |          |                |          |
+#   |          |                |          |
+#   |          |                |          |
+#   9          |               12          |
+#   |          |___________6____|__________|
+#   |         /                 |         /
+#   |        /                  |        /
+#   |       /                   |       /
+#   |      /                    |      /
+#   |     5                     |     /
+#   |    /                      |    7
+#   |   /                       |   /
+#   |  /                        |  /
+#   | /                         | /
+#   |/                          |/
+#   |--------------8------------|
+#
+#
+
+checkcolor ${x1}  ${y1}  ${Yellow_R} ${Yellow_G} ${Yellow_B}
+checkcolor ${x2}  ${y2}  ${Yellow_R} ${Yellow_G} ${Yellow_B}
+checkcolor ${x3}  ${y3}  ${Yellow_R} ${Yellow_G} ${Yellow_B}
+checkcolor ${x4}  ${y4}  ${Yellow_R} ${Yellow_G} ${Yellow_B}
+checkcolor ${x7}  ${y7}  ${Yellow_R} ${Yellow_G} ${Yellow_B}
+checkcolor ${x8}  ${y8}  ${Yellow_R} ${Yellow_G} ${Yellow_B}
+checkcolor ${x9}  ${y9}  ${Yellow_R} ${Yellow_G} ${Yellow_B}
+checkcolor ${x11} ${y11} ${Yellow_R} ${Yellow_G} ${Yellow_B}
+checkcolor ${x12} ${y12} ${Yellow_R} ${Yellow_G} ${Yellow_B}
+checkcolor ${x5}  ${y5}  ${Black_R} ${Black_G} ${Black_B}
+checkcolor ${x6}  ${y6}  ${Black_R} ${Black_G} ${Black_B}
+checkcolor ${x10} ${y10} ${Black_R} ${Black_G} ${Black_B}
+
+set only_screen 0

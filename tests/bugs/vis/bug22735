@@ -1,0 +1,78 @@
+puts "========"
+puts "OCC22735"
+puts "========"
+puts ""
+###########################################################
+# Data races in BRepMesh working in parallel mode
+###########################################################
+
+set BugNumber OCC22735
+
+vinit
+vsetdispmode 1
+mpparallel 1
+
+restore [locate_data_file OCC22735-march_cube.brep] result
+
+vdisplay result
+
+set tri_info [trinfo result]
+regexp { +([-0-9.+eE]+) +triangles} $tri_info full tri
+regexp { +([-0-9.+eE]+) +nodes} $tri_info full nod
+regexp {Maximal deflection +([-0-9.+eE]+)} $tri_info full defl
+
+set good_tri  48
+set good_nod  96
+set good_defl 0
+
+proc GetPercent {Value GoodValue} {
+    set Percent 0.
+    if {${GoodValue} != 0.} {
+	set Percent [expr abs(${Value} - ${GoodValue}) / abs(double(${GoodValue})) * 100.]
+    } elseif {${Value} != 0.} {
+	set Percent [expr abs(${GoodValue} - ${Value}) / abs(double(${Value})) * 100.]
+    } else {
+	set Percent 0.
+    }
+    return ${Percent}
+}
+set percent_max 0.1
+set status 0
+
+set triangle_percent [GetPercent ${tri} ${good_tri}]
+puts "triangle_percent = ${triangle_percent}"
+if { ${triangle_percent} > ${percent_max} } {
+   puts "triangle: Faulty ${BugNumber}"
+   set status 1
+} else {
+   puts "triangle: OK ${BugNumber}"
+}
+
+set node_percent [GetPercent ${nod} ${good_nod}]
+puts "node_percent = ${node_percent}"
+if { ${node_percent} > ${percent_max} } {
+   puts "node: Faulty ${BugNumber}"
+   set status 1
+} else {
+   puts "node: OK ${BugNumber}"
+}
+
+set deflection_percent [GetPercent ${defl} ${good_defl}]
+puts "deflection_percent = ${deflection_percent}"
+if { ${deflection_percent} > ${percent_max} } {
+   puts "deflection: Faulty ${BugNumber}"
+   set status 1
+} else {
+   puts "deflection: OK ${BugNumber}"
+}
+
+# Resume
+puts ""
+if { ${status} != 0 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+
+vfit
+set only_screen 1

@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC21798"
+puts "============"
+puts ""
+#######################################################################
+# Attached face hangs during vizualization in OCC Viewer 3D .
+#######################################################################
+
+set BugNumber OCC21798
+
+restore [locate_data_file OCC21798.brep] result
+vinit
+vdisplay result
+vfit
+
+vsetdispmode 1
+vfit
+
+set only_screen 1

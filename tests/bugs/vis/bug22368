@@ -1,0 +1,34 @@
+puts "========================"
+puts "OCC22368"
+puts "========================"
+puts ""
+#######################################################################
+# AIS_Trihedron's highlight presentation isn't updated on trihedron relocation
+#######################################################################
+
+set BugNumber OCC22368
+
+vinit
+vtrihedron trihedron
+OCC74_set trihedron 3
+
+set x1 200
+set x2 220
+set x3 210
+
+set y 190
+
+vselect ${x3} ${y}
+
+set new_x 100
+set new_y 100
+set new_z 100
+
+vsetlocation trihedron ${new_x} ${new_y} ${new_z}
+
+set status 0
+for {set i ${x1} } {$i <= ${x2} } {incr i} {
+    checkcolor ${i} ${y} 0 0 0
+}
+
+set only_screen 1

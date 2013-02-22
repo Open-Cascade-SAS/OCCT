@@ -1,0 +1,29 @@
+puts "============"
+puts "OCC22507"
+puts "============"
+puts ""
+#######################################################################
+# Regression: shading of face is bad (wrong normals)
+#######################################################################
+
+set BugNumber OCC22507
+
+restore [locate_data_file OCC22507-bug589_f77_badshading.brep] result
+vinit
+vdisplay result
+vfit
+
+vsetdispmode 1
+
+set x 200
+set y 220
+
+set RED_R1   0.96470499038696289
+set GREEN_R1 0.68627399206161499
+set BLUE_R1  0.12156800180673599
+
+vmoveto $x $y
+
+checkcolor $x $y ${RED_R1} ${GREEN_R1} ${BLUE_R1}
+
+set only_screen 1
