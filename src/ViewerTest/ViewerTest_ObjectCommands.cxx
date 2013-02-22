@@ -3896,7 +3896,8 @@ static Standard_Integer VSetSelectionMode(Draw_Interpretor& di,
   // Check the arguments 
   if(argc != 3 && argc != 4)
   {
-    std::cout << "vselmode error : expects at least 2 arguments\n"; 
+    std::cout << "vselmode error : expects at least 2 arguments.\n"
+      << "Type help "<< argv[0] <<" for more information."; 
     return 1; // TCL_ERROR
   }
 
@@ -4683,7 +4684,24 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     __FILE__, VConnectShape, group);
 
   theCommands.Add("vselmode", 
-    "vselmode : [object] mode On/Off (1/0)", 
+    "vselmode : [object] mode_number is_turned_on=(1|0)\n"
+    "  switches selection mode for the determined object or\n"
+    "  for all objects in context.\n"
+    "  mode_number is non-negative integer that has different\n"
+    "    meaning for different interactive object classes.\n"
+    "    For shapes the following mode_number values are allowed:\n"
+    "      0 - shape\n"
+    "      1 - vertex\n"
+    "      2 - edge\n"
+    "      3 - wire\n"
+    "      4 - face\n"
+    "      5 - shell\n"
+    "      6 - solid\n"
+    "      7 - compsolid\n"
+    "      8 - compound\n"
+    "  is_turned_on is:\n"
+    "    1 if mode is to be switched on\n"
+    "    0 if mode is to be switched off\n", 
     __FILE__, VSetSelectionMode, group);
 
   theCommands.Add("vtriangle",
