@@ -12,7 +12,9 @@ catch { pload XDE }
 
 igesbrep [locate_data_file OCC22165-cub_spain.igs] result *
 
+decho off
 set Log [data c]
+decho on
 
 set LogLength [llength ${Log}]
 
