@@ -33,18 +33,37 @@
 
 #include <BRepClass3d_SolidClassifier.hxx>
 #include <BRepClass_FaceClassifier.hxx>
+
 #include <BRep_Tool.hxx>
+#include <BRep_CurveRepresentation.hxx>
+#include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
+#include <BRep_TEdge.hxx>
+#include <BRep_GCurve.hxx>
 
 #include <Draw.hxx>
 #include <DBRep.hxx>
 #include <DrawTrSurf.hxx>
 
+#include <BOPTools_AlgoTools2D.hxx>
+
 static
   void PrintState (Draw_Interpretor& aDI,
                    const TopAbs_State& aState);
+static
+  Handle(Geom2d_Curve) CurveOnSurface(const TopoDS_Edge& E, 
+                                      const TopoDS_Face& F,
+                                      Standard_Real& First,
+                                      Standard_Real& Last);
+static
+  Handle(Geom2d_Curve) CurveOnSurface(const TopoDS_Edge& E, 
+                                      const Handle(Geom_Surface)& S,
+                                      const TopLoc_Location& L,
+                                      Standard_Real& First,
+                                      Standard_Real& Last);
 
 static  Standard_Integer bclassify   (Draw_Interpretor& , Standard_Integer , const char** );
 static  Standard_Integer b2dclassify (Draw_Interpretor& , Standard_Integer , const char** );
+static  Standard_Integer bhaspc      (Draw_Interpretor& , Standard_Integer , const char** );
 
 //=======================================================================
 //function : LowCommands
@@ -61,8 +80,9 @@ static  Standard_Integer b2dclassify (Draw_Interpretor& , Standard_Integer , con
                   __FILE__, bclassify   , g);
   theCommands.Add("b2dclassify"  , "Use >bclassify Face Point2d [Tol2D=Tol(Face)] ",
                   __FILE__, b2dclassify , g);
+  theCommands.Add("bhaspc"       , "Use >bhaspc Edge Face [do]",
+                  __FILE__, bhaspc      , g);
 }
-
 
 //=======================================================================
 //function : bclassify
@@ -166,6 +186,51 @@ Standard_Integer b2dclassify (Draw_Interpretor& aDI,
 }
 
 //=======================================================================
+//function : bhaspc
+//purpose  : 
+//=======================================================================
+Standard_Integer bhaspc (Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if (n<3) {
+    di << " Use bhaspc> Edge Face [do]\n";
+    return 1;
+  }
+
+  TopoDS_Shape S1 = DBRep::Get(a[1]);
+  TopoDS_Shape S2 = DBRep::Get(a[2]);
+  
+  if (S1.IsNull() || S2.IsNull()) {
+    di << " Null shapes are not allowed \n";
+    return 1;
+  }
+  if (S1.ShapeType()!=TopAbs_EDGE || S2.ShapeType()!=TopAbs_FACE) {
+    di << " Type mismatch\n";
+    return 1;
+  }
+  //
+  const TopoDS_Edge& aE=TopoDS::Edge(S1);
+  const TopoDS_Face& aF=TopoDS::Face(S2);
+  Standard_Real f2D, l2D; 
+
+  Handle(Geom2d_Curve) C2D=CurveOnSurface(aE, aF, f2D, l2D);
+  
+  if (C2D.IsNull()) {
+    di << " No 2D Curves detected\n";
+  }
+  else {
+    di << " Ok Edge has P-Curve on this Face\n";
+  }
+  
+  if (n==4) {
+    if (!strcmp(a[3], "do")) {
+      BOPTools_AlgoTools2D::BuildPCurveForEdgeOnFace(aE, aF);  
+    }
+  }
+
+  return 0;
+}
+
+//=======================================================================
 //function : PrintState
 //purpose  : 
 //=======================================================================
@@ -200,3 +265,55 @@ void PrintState (Draw_Interpretor& aDI,
   aDI<<sbf;
   
 }
+
+//=======================================================================
+//function : CurveOnSurface
+//purpose  : 
+//=======================================================================
+Handle(Geom2d_Curve) CurveOnSurface(const TopoDS_Edge& E, 
+                                    const TopoDS_Face& F,
+                                    Standard_Real& First,
+                                    Standard_Real& Last)
+{
+  TopLoc_Location l;
+  const Handle(Geom_Surface)& S = BRep_Tool::Surface(F,l);
+  TopoDS_Edge aLocalEdge = E;
+  if (F.Orientation() == TopAbs_REVERSED) {
+    aLocalEdge.Reverse();
+  }
+  return CurveOnSurface(aLocalEdge,S,l,First,Last);
+}
+
+static Handle(Geom2d_Curve) nullPCurve;
+//=======================================================================
+//function : CurveOnSurface
+//purpose  : 
+//=======================================================================
+Handle(Geom2d_Curve) CurveOnSurface(const TopoDS_Edge& E, 
+                                    const Handle(Geom_Surface)& S,
+                                    const TopLoc_Location& L,
+                                    Standard_Real& First,
+                                    Standard_Real& Last)
+{
+  TopLoc_Location l = L.Predivided(E.Location());
+  Standard_Boolean Eisreversed = (E.Orientation() == TopAbs_REVERSED);
+
+  // find the representation
+  BRep_ListIteratorOfListOfCurveRepresentation itcr
+    ((*((Handle(BRep_TEdge)*)&E.TShape()))->ChangeCurves());
+
+  while (itcr.More()) {
+    const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
+    if (cr->IsCurveOnSurface(S,l)) {
+      const Handle(BRep_GCurve)& GC = *((Handle(BRep_GCurve)*)&cr);
+      GC->Range(First,Last);
+      if (GC->IsCurveOnClosedSurface() && Eisreversed)
+        return GC->PCurve2();
+      else
+        return GC->PCurve();
+    }
+    itcr.Next();
+  }
+  return nullPCurve;
+}
+
