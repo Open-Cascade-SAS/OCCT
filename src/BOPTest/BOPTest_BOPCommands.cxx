@@ -34,7 +34,6 @@
 #include <BOPAlgo_PaveFiller.hxx>
 #include <BOPAlgo_Operation.hxx>
 #include <BOPAlgo_BOP.hxx>
-#include <BOPAlgo_SectionAttribute.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPTest_DrawableShape.hxx>
 #include <BOPCol_ListOfShape.hxx>
@@ -45,6 +44,11 @@
 #include <DrawTrSurf.hxx>
 #include <Draw_Color.hxx>
 #include <Draw.hxx>
+#include <BRepAlgoAPI_BooleanOperation.hxx>
+#include <BRepAlgoAPI_Common.hxx>
+#include <BRepAlgoAPI_Fuse.hxx>
+#include <BRepAlgoAPI_Cut.hxx>
+#include <BRepAlgoAPI_Section.hxx>
 
 //
 static BOPAlgo_PaveFiller* pPF=NULL;
@@ -307,14 +311,18 @@ Standard_Integer  bsection(Draw_Interpretor& di,
     return 1;
   }
 
-  BOPAlgo_SectionAttribute aSec(Standard_True, Standard_True, Standard_True);
+  Standard_Boolean bApp, bPC1, bPC2;
+  //
+  bApp = Standard_True;
+  bPC1 = Standard_True;
+  bPC2 = Standard_True;
+  
   Standard_Boolean isbadparameter = Standard_False;
   
   if(n > 4) {
     const char* key1 = a[4];
     const char* key2 = (n > 5) ? a[5] : NULL;
     const char* pcurveconf = NULL;
-    Standard_Boolean approx = Standard_True;
 
 #ifdef WNT
     if (key1 && (!strcasecmp(key1,"-n2d") || !strcasecmp(key1,"-n2d1") || !strcasecmp(key1,"-n2d2"))) {
@@ -329,7 +337,7 @@ Standard_Integer  bsection(Draw_Interpretor& di,
 #else 
       if(!strncasecmp(key1,"-na", 3)) {
 #endif
-        approx = Standard_False;
+        bApp = Standard_False;
       }
       else {
         isbadparameter = Standard_True;
@@ -341,7 +349,7 @@ Standard_Integer  bsection(Draw_Interpretor& di,
 #else 
       if (!strncasecmp(key2,"-na", 3)) {
 #endif
-        approx = Standard_False;
+        bApp = Standard_False;
       }
       else {
         isbadparameter = Standard_True;
@@ -354,7 +362,7 @@ Standard_Integer  bsection(Draw_Interpretor& di,
 #else 
       if (!strncasecmp(pcurveconf, "-n2d1", 5)) {
 #endif
-        aSec.PCurveOnS1(Standard_False);
+        bPC1 = Standard_False;
       }
       else {
 #ifdef WNT
@@ -362,7 +370,7 @@ Standard_Integer  bsection(Draw_Interpretor& di,
 #else 
         if (!strncasecmp(pcurveconf, "-n2d2", 5)) {
 #endif
-          aSec.PCurveOnS2(Standard_False);
+          bPC2 = Standard_False;
         }
         else {
 #ifdef WNT
@@ -370,49 +378,32 @@ Standard_Integer  bsection(Draw_Interpretor& di,
 #else 
           if (!strncasecmp(pcurveconf, "-n2d", 4)) {
 #endif
-            aSec.PCurveOnS1(Standard_False);
-            aSec.PCurveOnS2(Standard_False);
+            bPC1 = Standard_False;
+            bPC2 = Standard_False;
           }
         }
       }
     }
-    aSec.Approximation(approx);
   }
       
-  if(!isbadparameter) {	
-    BOPCol_ListOfShape aLC;
-    Handle(NCollection_BaseAllocator)aAL=new NCollection_IncAllocator;
+  if(!isbadparameter) {
     Standard_Integer iErr;
     char buf[80];
     //
-    aLC.Append(aS1);
-    aLC.Append(aS2);
-    BOPAlgo_PaveFiller aPF(aAL);
-    aPF.SetArguments(aLC);
-    aPF.SetSectionAttribute(aSec);
+    BRepAlgoAPI_Section aSec(aS1, aS2, Standard_False);
+    aSec.Approximation(bApp);
+    aSec.ComputePCurveOn1(bPC1);
+    aSec.ComputePCurveOn2(bPC2);
     //
-    aPF.Perform();
-    iErr=aPF.ErrorStatus();
-    if (iErr) {
+    aSec.Build();
+    iErr=aSec.ErrorStatus();
+    if (!aSec.IsDone()) {
       Sprintf(buf, " ErrorStatus : %d\n",  iErr);
       di << buf;
       return 0;
     }
     //
-    BOPAlgo_BOP aBOP;
-    aBOP.AddArgument(aS1);
-    aBOP.AddTool(aS2);
-    aBOP.SetOperation(BOPAlgo_SECTION);
-    //
-    aBOP.PerformWithFiller(aPF);
-    iErr=aBOP.ErrorStatus();
-    if (iErr) {
-      Sprintf(buf, " ErrorStatus : %d\n",  iErr);
-      di << buf;
-      return 0;
-    }
-    //
-    const TopoDS_Shape& aR=aBOP.Shape();
+    const TopoDS_Shape& aR=aSec.Shape();
     if (aR.IsNull()) {
       di << " null shape\n";
       return 0;
@@ -440,14 +431,7 @@ Standard_Integer bsmt (Draw_Interpretor& di,
   TopoDS_Shape aS1, aS2;
   BOPCol_ListOfShape aLC;
   //
-  if (aOp==BOPAlgo_SECTION) {
-    if (n<4) {
-      di << " use bsection r s1 s2\n";
-      return 1;
-    }
-  }
-  //
-  else if (n!=4) {
+  if (n!=4) {
     di << " use bx r s1 s2\n";
     return 1;
   }
@@ -459,7 +443,6 @@ Standard_Integer bsmt (Draw_Interpretor& di,
     di << " null shapes are not allowed \n";
     return 1;
   }
-  //
   aLC.Append(aS1);
   aLC.Append(aS2);
   //
@@ -476,21 +459,28 @@ Standard_Integer bsmt (Draw_Interpretor& di,
     return 0;
   }
   //
-  BOPAlgo_BOP aBOP;
+  BRepAlgoAPI_BooleanOperation* pBuilder=NULL;
+  // 
+  if (aOp==BOPAlgo_COMMON) {
+    pBuilder=new BRepAlgoAPI_Common(aS1, aS2, aPF);
+  }
+  else if (aOp==BOPAlgo_FUSE) {
+    pBuilder=new BRepAlgoAPI_Fuse(aS1, aS2, aPF);
+  }
+  else if (aOp==BOPAlgo_CUT) {
+    pBuilder=new BRepAlgoAPI_Cut (aS1, aS2, aPF);
+  }
+  else if (aOp==BOPAlgo_CUT21) {
+    pBuilder=new BRepAlgoAPI_Cut(aS1, aS2, aPF, Standard_False);
+  }
   //
-  aBOP.AddArgument(aS1);
-  aBOP.AddTool(aS2);
-  aBOP.SetOperation(aOp);
-  //
-  aBOP.PerformWithFiller(aPF);
-  iErr=aBOP.ErrorStatus();
-  if (iErr) {
+  iErr = pBuilder->ErrorStatus();
+  if (!pBuilder->IsDone()) {
     Sprintf(buf, " ErrorStatus : %d\n",  iErr);
     di << buf;
     return 0;
   }
-  //
-  const TopoDS_Shape& aR=aBOP.Shape();
+  const TopoDS_Shape& aR=pBuilder->Shape();
   if (aR.IsNull()) {
     di << " null shape\n";
     return 0;

@@ -20,6 +20,9 @@
 
 #include <BRepAlgoAPI_BooleanOperation.ixx>
 
+#include <BRepAlgoAPI.hxx>
+#include <BRepAlgoAPI_Check.hxx>
+
 #include <BRepLib_FuseEdges.hxx>
 #include <TopExp.hxx>
 #include <TopTools_MapOfShape.hxx>
@@ -233,6 +236,13 @@ const TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::Modified(const TopoDS_
   Standard_Boolean bIsNewFiller;
   Standard_Integer iErr;
   //
+  //dump arguments and result of boolean operation in tcl script
+  char *pathdump = getenv("CSF_DEBUG_BOP");
+  Standard_Boolean isDump = (pathdump != NULL),
+                   isDumpArgs = Standard_False,
+                   isDumpRes = Standard_False;
+  Standard_CString aPath = pathdump;
+  //
   myBuilderCanWork=Standard_False;
   NotDone();
   //
@@ -256,6 +266,11 @@ const TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::Modified(const TopoDS_
   const TopoDS_Shape& aS1 = myS1;
   const TopoDS_Shape& aS2 = myS2;
   //
+  if (isDump) {
+    BRepAlgoAPI_Check aChekArgs(aS1, aS2, myOperation);
+    isDumpArgs = !aChekArgs.IsValid();
+  }
+  //
   myShape.Nullify();
 
   myBuilder=new BOPAlgo_BOP;
@@ -269,6 +284,15 @@ const TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::Modified(const TopoDS_
     myErrorStatus=0;
     myBuilderCanWork=Standard_True;
     myShape=myBuilder->Shape();
+    //
+    if (isDump) {
+      BRepAlgoAPI_Check aCheckRes(myShape);
+      isDumpRes = !aCheckRes.IsValid();
+      if (isDumpArgs || isDumpRes) {
+        BRepAlgoAPI::DumpOper(aPath, aS1, aS2, myShape, myOperation, isDumpArgs);
+      }
+    }
+    //
     Done(); 
   } 
   else {

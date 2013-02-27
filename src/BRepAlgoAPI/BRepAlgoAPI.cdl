@@ -114,11 +114,20 @@ is
     	---Purpose: Perform the boolean operation CUT.
  	---    
     class Section;                       
-    	---Purpose: Perform the operation SECTION. 
-	--- 
+        ---Purpose: Perform the operation SECTION. 
+        --- 
     class Check;
         ---Purpose: Check shapes on validity for boolean
         --- operation.
+ 
+    DumpOper( theFilePath : CString from Standard;
+              theShape1 : Shape from TopoDS;
+              theShape2 : Shape from TopoDS;
+              theResult : Shape from TopoDS;
+              theOperation : Operation from BOPAlgo;
+              isNonValidArgs : Boolean from Standard );
+        ---Purpose: Dump arguments and result of boolean operation in the file specified by path.
+        ---Level: Public
 
 end BRepAlgoAPI;
 
