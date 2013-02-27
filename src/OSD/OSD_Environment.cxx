@@ -275,7 +275,7 @@ void OSD_Environment :: SetValue ( const TCollection_AsciiString& Value ) {
 
 TCollection_AsciiString OSD_Environment :: Value () {
 
- Standard_PCharacter pBuff;
+ Standard_PCharacter pBuff=0;
  DWORD            dwSize = 0;
  char*            envVal = NULL;
 
