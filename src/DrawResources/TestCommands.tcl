@@ -1175,7 +1175,7 @@ proc _log_html {file log {title {}}} {
     # add images if present
     set imgbasename [file rootname [file tail $file]]
     foreach img [lsort [glob -nocomplain -directory [file dirname $file] -tails ${imgbasename}*.gif ${imgbasename}*.png ${imgbasename}*.jpg]] {
-	puts $fd "<p><img src=\"$img\"/><p>"
+	puts $fd "<p>[file tail $img]<br><img src=\"$img\"/><p>"
     }
 
     # print log body, trying to add HTML links to script files on lines like
