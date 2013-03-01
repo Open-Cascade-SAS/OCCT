@@ -1,3 +1,5 @@
+puts "TODO ?CR23788 ALL: Failed units"
+
 #Drivers' nick-names:
 #Box|Sph|Cyl|Cut|Fuse|Prism|SecRevol|FulRevol|PTxyz|PTALine|PRLine|PMirr|Fillet|Attach|XAttach
 # order of functions recomputation should be defined out of the tool (by end user)
