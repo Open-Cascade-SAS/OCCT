@@ -1,0 +1,20 @@
+puts "========================"
+puts " OCC599"
+puts "========================"
+puts ""
+#########################################################
+## Result of BOPFUSE operation is unclosed shape inspite of source solids are valid
+#########################################################
+
+restore [locate_data_file OCC600_1.brep] a
+checkshape a
+restore [locate_data_file OCC600_2.brep] b
+checkshape b
+
+bop b a
+bopfuse result
+
+set square 679784
+set 2dviewer 0
+
+

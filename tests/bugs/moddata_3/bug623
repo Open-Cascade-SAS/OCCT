@@ -1,0 +1,30 @@
+puts "================"
+puts "OCC623"
+puts "================"
+puts ""
+####################
+## InCorrect Data in PCurve
+####################
+
+##cpulimit 4000
+
+pload XDE
+
+stepread [locate_data_file OCC623.step] a *
+
+dchrono h reset
+dchrono h start
+nurbsconvert result a_1
+dchrono h stop
+set TimeList [dchrono h show]
+
+regexp {Elapsed time: +([-0-9.+eE]+)} $TimeList full ElapsedTime
+puts "ElapsedTime = ${ElapsedTime}"
+
+fsameparameter result
+checkshape result
+
+set square 32.1968
+set 2dviewer 0
+
+

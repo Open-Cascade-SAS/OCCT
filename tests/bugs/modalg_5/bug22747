@@ -1,0 +1,33 @@
+puts "============"
+puts "OCC22747"
+puts "============"
+puts ""
+###########################################################################
+# Progress indicator in sewing algorithm
+###########################################################################
+
+set BugNumber OCC22747
+
+pload XSDRAW
+
+restore [locate_data_file OCC22765.brep] a
+vinit
+XProgress -t
+set List1 [sewing result 0.1 a]
+if { [string compare $List1 ""] != 0 } {
+    puts "Error: XProgress should not have any output in this mode"
+} else {
+    puts "Mode -t works properly"
+}
+
+puts "----------------------"
+XProgress +t
+set List2 [sewing result 0.1 a]
+if { [regexp "Progress:" $List2] != 1 } {
+    puts "Error: XProgress should have output in this mode"
+} else {
+    puts "Mode +t works properly"
+}
+
+set 2dviewer 0
+

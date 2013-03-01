@@ -1,0 +1,28 @@
+puts "Output with mistake is correct!"
+puts "TODO BUC60634 ALL: An exception was caught"
+puts "=================="
+puts "BUC60634"
+puts "=================="
+
+sphere s 10
+mkshell sh s
+explode sh f
+
+decho off
+catch {draft r sh 0 0 1 10 shape} first
+catch {draft result sh_1 0 0 1 10 shape} second
+decho on
+
+if { [regexp {Standard_ConstructionError:} $first] != 1 } {
+    puts "Faulty : not suitablle exception"
+} else {
+    puts "Output is correct"
+}
+
+if { [regexp {External} $second] != 1 } {
+    puts "Faulty : not suitablle exception"
+} else {
+    puts "Output is correct"
+}
+
+
