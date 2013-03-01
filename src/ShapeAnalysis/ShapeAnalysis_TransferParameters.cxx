@@ -57,7 +57,7 @@ void ShapeAnalysis_TransferParameters::Init(const TopoDS_Edge& E, const TopoDS_F
 {
   myScale = 1.;
   myShift = 0.;
-  Standard_Real l,f,l2d,f2d;
+  Standard_Real l,f,l2d = 0.0,f2d = 0.0;
   TopLoc_Location L;
   myEdge = E;
   ShapeAnalysis_Edge sae;

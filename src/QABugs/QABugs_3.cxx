@@ -1003,11 +1003,11 @@ static Standard_Integer BUC60724(Draw_Interpretor& di, Standard_Integer /*argc*/
 {
   TCollection_AsciiString as1("");
   TCollection_AsciiString as2('\0');
-  if((as1.ToCString()!=NULL) || (as1.ToCString() != ""))
-    di << "Faulty : the first string is not zero string : " << as1.ToCString() << "\n";
+  if(as1.ToCString() == NULL || as1.Length() != 0 || as1.ToCString()[0] != '\0')
+    di << "Error : the first string is not zero string : " << as1.ToCString() << "\n";
 
-  if((as2.ToCString()!=NULL) || (as2.ToCString() != ""))
-    di << "Faulty : the second string is not zero string : " << as2.ToCString() << "\n";
+  if(as2.ToCString() == NULL || as2.Length() != 0 || as2.ToCString()[0] != '\0')
+    di << "Error : the second string is not zero string : " << as2.ToCString() << "\n";
   
   return 0;
 }

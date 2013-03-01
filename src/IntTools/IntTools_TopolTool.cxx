@@ -111,7 +111,7 @@ void IntTools_TopolTool::ComputeSamplePoints()
   myU0 = uinf;
   myV0 = vinf;
 
-  Standard_Integer nbsu,nbsv;
+  Standard_Integer nbsu = 0,nbsv = 0;
   GeomAbs_SurfaceType typS = myS->GetType();
 
   switch(typS) {

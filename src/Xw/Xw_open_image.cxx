@@ -64,8 +64,8 @@ XW_EXT_WINDOW *pwindow = (XW_EXT_WINDOW*)awindow;
 XW_EXT_IMAGEDATA *pimage ;
 XW_EXT_COLORMAP *pcolormap ;
 //int i,pad ;
-int pad ;
-char *cdata ;
+int pad = 0;
+char *cdata = NULL;
 
     if( !Xw_isdefine_window(pwindow) ) {
         /*ERROR*Bad EXT_WINDOW Address*/
@@ -100,8 +100,10 @@ char *cdata ;
         return (NULL) ;
     }
 
-    if( !(pimage = Xw_add_imagedata_structure(sizeof(XW_EXT_IMAGEDATA))) ) 
-								return (NULL) ;
+    if( !(pimage = Xw_add_imagedata_structure(sizeof(XW_EXT_IMAGEDATA))) ) {
+        Xw_free(cdata);
+        return (NULL) ;
+    }
 
     pimage->pimageinfo = aimageinfo ;
     pimage->pcolormap = pcolormap = _COLORMAP ;
