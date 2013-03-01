@@ -181,7 +181,12 @@ Standard_Boolean Draw_BlackBackGround = Standard_True;
 //======================================================
 Draw_Window* Draw_Window::firstWindow = NULL;
 
+// X11 specific part
 #if !defined(__APPLE__) || defined(MACOSX_USE_GLX)
+#include <Aspect_DisplayConnection.hxx>
+
+static Handle(Aspect_DisplayConnection) Draw_DisplayConnection;
+
 //=======================================================================
 //function : Draw_Window
 //purpose  :
@@ -1091,17 +1096,21 @@ Standard_Boolean Init_Appli()
   Tk_GeometryRequest(mainWindow, 200, 200);
 
 #if !defined(__APPLE__) || defined(MACOSX_USE_GLX)
-  if (Draw_WindowDisplay == NULL) {
-    Draw_WindowDisplay = XOpenDisplay(NULL);
-    // Replaced Tk_Display(mainWindow) with XOpenDisplay; On Mac OS X Tk_Display
-    // returns a pointer to Display structure defined in system Tcl/Tk libraries.
-    // This structure differs from structure defined in X11 library and
-    // this caused DRAWEXE crash on startup.
+  if (Draw_DisplayConnection.IsNull())
+  {
+    try
+    {
+      Draw_DisplayConnection = new Aspect_DisplayConnection();
+    }
+    catch (Standard_Failure)
+    {
+      std::cout << "Cannot open display. Interpret commands in batch mode." << std::endl;
+      return Standard_False;      
+    }
   }
-  if (Draw_WindowDisplay == NULL) {
-    cout << "Cannot open display : "<<XDisplayName(NULL)<<endl;
-    cout << "Interpret commands in batch mode."<<endl;
-    return Standard_False;
+  if (Draw_WindowDisplay == NULL)
+  {
+    Draw_WindowDisplay = Draw_DisplayConnection->GetDisplay();
   }
   //
   // synchronize the display server : could be done within Tk_Init
