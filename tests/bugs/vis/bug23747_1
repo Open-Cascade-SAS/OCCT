@@ -1,0 +1,28 @@
+puts "============"
+puts "CR23747"
+puts "Check that enabling environment mapping does not break text rendering"
+puts "============"
+puts ""
+
+vinit
+vclear
+vaxo
+vtrihedron t
+box b 10 20 30
+vdisplay b
+vsetdispmode b 1
+vfit
+# To fit trihedron labels into the view
+vzoom 0.25
+
+vdump $imagedir/${casename}_before_envmap.png
+
+puts "Checking that text labels at trihedron axes are displayed correctly when env mapping is turned ON"
+vtextureenv on 7
+
+vdump $imagedir/${casename}_with_envmap.png
+
+puts "Checking that text labels at trihedron axes are displayed correctly when env mapping is turned OFF"
+vtextureenv off
+
+vdump $imagedir/${casename}_after_envmap.png

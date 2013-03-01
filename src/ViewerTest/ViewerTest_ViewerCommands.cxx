@@ -32,6 +32,10 @@
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_ExportFormat.hxx>
+#include <Graphic3d_NameOfTextureEnv.hxx>
+#include <Graphic3d_TextureEnv.hxx>
+#include <Graphic3d_TextureParams.hxx>
+#include <Graphic3d_TypeOfTextureFilter.hxx>
 #include <ViewerTest.hxx>
 #include <ViewerTest_EventManager.hxx>
 #include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
@@ -3602,6 +3606,149 @@ static Standard_Integer VTurnView (Draw_Interpretor& di,
   return 0;
 }
 
+//==============================================================================
+//function : VTextureEnv
+//purpose  : ENables or disables environment mapping
+//==============================================================================
+class OCC_TextureEnv : public Graphic3d_TextureEnv
+{
+public:
+  OCC_TextureEnv(const Standard_CString FileName);
+  OCC_TextureEnv(const Graphic3d_NameOfTextureEnv aName);
+  void SetTextureParameters(const Standard_Boolean theRepeatFlag,
+                            const Standard_Boolean theModulateFlag,
+                            const Graphic3d_TypeOfTextureFilter theFilter,
+                            const Standard_ShortReal theXScale,
+                            const Standard_ShortReal theYScale,
+                            const Standard_ShortReal theXShift,
+                            const Standard_ShortReal theYShift,
+                            const Standard_ShortReal theAngle);
+  DEFINE_STANDARD_RTTI(OCC_TextureEnv);
+};
+DEFINE_STANDARD_HANDLE(OCC_TextureEnv, Graphic3d_TextureEnv);
+IMPLEMENT_STANDARD_HANDLE(OCC_TextureEnv, Graphic3d_TextureEnv);
+IMPLEMENT_STANDARD_RTTIEXT(OCC_TextureEnv, Graphic3d_TextureEnv);
+
+OCC_TextureEnv::OCC_TextureEnv(const Standard_CString theFileName)
+  : Graphic3d_TextureEnv(theFileName)
+{
+}
+
+OCC_TextureEnv::OCC_TextureEnv(const Graphic3d_NameOfTextureEnv theTexId)
+  : Graphic3d_TextureEnv(theTexId)
+{
+}
+
+void OCC_TextureEnv::SetTextureParameters(const Standard_Boolean theRepeatFlag,
+                                          const Standard_Boolean theModulateFlag,
+                                          const Graphic3d_TypeOfTextureFilter theFilter,
+                                          const Standard_ShortReal theXScale,
+                                          const Standard_ShortReal theYScale,
+                                          const Standard_ShortReal theXShift,
+                                          const Standard_ShortReal theYShift,
+                                          const Standard_ShortReal theAngle)
+{
+  myParams->SetRepeat     (theRepeatFlag);
+  myParams->SetModulate   (theModulateFlag);
+  myParams->SetFilter     (theFilter);
+  myParams->SetScale      (Graphic3d_Vec2(theXScale, theYScale));
+  myParams->SetTranslation(Graphic3d_Vec2(theXShift, theYShift));
+  myParams->SetRotation   (theAngle);
+}
+
+static int VTextureEnv (Draw_Interpretor& theDI, Standard_Integer theArgNb, const char** theArgVec)
+{
+  // get the active view
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  if (aView.IsNull())
+  {
+    std::cerr << "No active view. Please call vinit.\n";
+    return 1;
+  }
+
+  // Checking the input arguments
+  Standard_Boolean anEnableFlag = Standard_False;
+  Standard_Boolean isOk         = theArgNb >= 2;
+  if (isOk)
+  {
+    TCollection_AsciiString anEnableOpt(theArgVec[1]);
+    anEnableFlag = anEnableOpt.IsEqual("on");
+    isOk         = anEnableFlag || anEnableOpt.IsEqual("off");
+  }
+  if (anEnableFlag)
+  {
+    isOk = (theArgNb == 3 || theArgNb == 11);
+    if (isOk)
+    {
+      TCollection_AsciiString aTextureOpt(theArgVec[2]);
+      isOk = (!aTextureOpt.IsIntegerValue() ||
+             (aTextureOpt.IntegerValue() >= 0 && aTextureOpt.IntegerValue() < Graphic3d_NOT_ENV_UNKNOWN));
+
+      if (isOk && theArgNb == 11)
+      {
+        TCollection_AsciiString aRepeatOpt  (theArgVec[3]),
+                                aModulateOpt(theArgVec[4]),
+                                aFilterOpt  (theArgVec[5]),
+                                aSScaleOpt  (theArgVec[6]),
+                                aTScaleOpt  (theArgVec[7]),
+                                aSTransOpt  (theArgVec[8]),
+                                aTTransOpt  (theArgVec[9]),
+                                anAngleOpt  (theArgVec[10]);
+        isOk = ((aRepeatOpt.  IsEqual("repeat")   || aRepeatOpt.  IsEqual("clamp")) &&
+                (aModulateOpt.IsEqual("modulate") || aModulateOpt.IsEqual("decal")) &&
+                (aFilterOpt.  IsEqual("nearest")  || aFilterOpt.  IsEqual("bilinear") || aFilterOpt.IsEqual("trilinear")) &&
+                aSScaleOpt.IsRealValue() && aTScaleOpt.IsRealValue() &&
+                aSTransOpt.IsRealValue() && aTTransOpt.IsRealValue() &&
+                anAngleOpt.IsRealValue());
+      }
+    }
+  }
+
+  if (!isOk)
+  {
+    std::cerr << "Usage :" << std::endl;
+    std::cerr << theArgVec[0] << " off" << std::endl;
+    std::cerr << theArgVec[0] << " on {index_of_std_texture(0..7)|texture_file_name} [{clamp|repeat} {decal|modulate} {nearest|bilinear|trilinear} scale_s scale_t translation_s translation_t rotation_degrees]" << std::endl;
+    return 1;
+  }
+
+  if (anEnableFlag)
+  {
+    TCollection_AsciiString aTextureOpt(theArgVec[2]);
+    Handle(OCC_TextureEnv) aTexEnv = aTextureOpt.IsIntegerValue() ?
+                                     new OCC_TextureEnv((Graphic3d_NameOfTextureEnv)aTextureOpt.IntegerValue()) :
+                                     new OCC_TextureEnv(theArgVec[2]);
+
+    if (theArgNb == 11)
+    {
+      TCollection_AsciiString aRepeatOpt(theArgVec[3]), aModulateOpt(theArgVec[4]), aFilterOpt(theArgVec[5]);
+      aTexEnv->SetTextureParameters(
+        aRepeatOpt.  IsEqual("repeat"),
+        aModulateOpt.IsEqual("modulate"),
+        aFilterOpt.  IsEqual("nearest") ? Graphic3d_TOTF_NEAREST :
+                                          aFilterOpt.IsEqual("bilinear") ? Graphic3d_TOTF_BILINEAR :
+                                                                           Graphic3d_TOTF_TRILINEAR,
+        (Standard_ShortReal)Draw::Atof(theArgVec[6]),
+        (Standard_ShortReal)Draw::Atof(theArgVec[7]),
+        (Standard_ShortReal)Draw::Atof(theArgVec[8]),
+        (Standard_ShortReal)Draw::Atof(theArgVec[9]),
+        (Standard_ShortReal)Draw::Atof(theArgVec[10])
+        );
+    }
+    aView->SetTextureEnv(aTexEnv);
+    aView->SetSurfaceDetail(V3d_TEX_ENVIRONMENT);
+  }
+  else // Disabling environment mapping
+  {
+    aView->SetSurfaceDetail(V3d_TEX_NONE);
+    Handle(Graphic3d_TextureEnv) aTexture;
+    aView->SetTextureEnv(aTexture); // Passing null handle to clear the texture data
+  }
+
+  aView->Redraw();
+  return 0;
+}
+
 //=======================================================================
 //function : ViewerCommands
 //purpose  :
@@ -3781,4 +3928,18 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vturnview",
     "vturnview Ax Ay Az [Start = 1|0]",
     __FILE__,VTurnView,group);
+  theCommands.Add("vtextureenv",
+    "Enables or disables environment mapping in the 3D view, loading the texture from the given standard "
+    "or user-defined file and optionally applying texture mapping parameters\n"
+    "                  Usage:\n"
+    "                  vtextureenv off - disables environment mapping\n"
+    "                  vtextureenv on {std_texture|texture_file_name} [rep mod flt ss st ts tt rot] - enables environment mapping\n"
+    "                              std_texture = (0..7)\n"
+    "                              rep         = {clamp|repeat}\n"
+    "                              mod         = {decal|modulate}\n"
+    "                              flt         = {nearest|bilinear|trilinear}\n"
+    "                              ss, st      - scale factors for s and t texture coordinates\n"
+    "                              ts, tt      - translation for s and t texture coordinates\n"
+    "                              rot         - texture rotation angle in degrees",
+    __FILE__, VTextureEnv, group);
 }
