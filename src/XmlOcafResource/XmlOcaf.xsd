@@ -53,6 +53,7 @@
           </sequence>
           <attribute name="date" type="date" use="required"/>
           <attribute name="schemav" type="nonNegativeInteger" use="required"/>
+          <attribute name="DocVersion" type="nonNegativeInteger" use="required"/>
           <attribute name="objnb" type="nonNegativeInteger" use="required"/>
         </complexType>
       </element>                                        <!-- END 'info' -->

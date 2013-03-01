@@ -1,0 +1,10 @@
+set FileSuffix "std"
+
+# Create a new document and set UndoLimit
+NewDocument D MDTV-Standard
+UndoLimit D 100
+
+# Open a transaction
+NewCommand D
+
+set subgroup "ocaf_std"

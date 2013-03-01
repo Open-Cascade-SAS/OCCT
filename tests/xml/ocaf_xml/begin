@@ -1,0 +1,11 @@
+set SchemaFile [locate_data_file XmlOcaf.xsd]
+set FileSuffix "xml"
+
+# Create a new document and set UndoLimit
+NewDocument D XmlOcaf
+UndoLimit D 100
+
+# Open a transaction
+NewCommand D
+
+set subgroup "ocaf_xml"

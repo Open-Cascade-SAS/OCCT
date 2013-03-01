@@ -1,0 +1,18 @@
+if { [string compare $subgroup "xcaf_xml"] == 0 } {
+    puts "TODO ?OCC23768 ALL: Error : File is not valid"
+    puts "TODO ?OCC23768 ALL: Error at line"
+}
+    
+set aTestName "SATCOM1"
+puts $aTestName
+
+ReadStep D [locate_data_file 1_SATCOM_BIRD_7.stp]
+
+# Save the document
+set aFile $WorkDirectory/${aTestName}.${FileSuffix}
+
+SaveToFile D $aFile
+
+# Restore the document
+Close D
+Open ${aFile} DD

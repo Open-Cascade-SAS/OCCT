@@ -1,0 +1,64 @@
+set aTestName "caf001-K3"
+puts ${aTestName}
+
+# Add an attribute to a data framework
+set aSetX1 10
+set aSetY1 20
+set aSetZ1 30
+set aSetDX1 100
+set aSetDY1 200
+set aSetDZ1 300
+
+box aBox1 ${aSetX1} ${aSetY1} ${aSetZ1} ${aSetDX1} ${aSetDY1} ${aSetDZ1}
+
+set aBoundingBox1 [bounding aBox1]
+set X1_Box1 [lindex ${aBoundingBox1} 0]
+set Y1_Box1 [lindex ${aBoundingBox1} 1]
+set Z1_Box1 [lindex ${aBoundingBox1} 2]
+set X2_Box1 [lindex ${aBoundingBox1} 3]
+set Y2_Box1 [lindex ${aBoundingBox1} 4]
+set Z2_Box1 [lindex ${aBoundingBox1} 5]
+
+set aLabel 0:2
+SetShape D ${aLabel} aBox1
+
+# Close/Open the transaction
+NewCommand D
+
+# Save the document
+set aFile $WorkDirectory/${aTestName}.${FileSuffix}
+
+SaveToFile D $aFile
+
+# Restore the document
+Close D
+Open ${aFile} DD
+
+# Get a value of the attribute
+set IsDone [catch {GetShape DD ${aLabel} aBox5} aResult]
+if { ${IsDone} != 0 } {
+    puts "Error : Get a value of TDataStd_Shape attribute from restoring document"
+} else {
+    set aBoundingBox5 [bounding aBox5]
+    set X1_Box5 [lindex ${aBoundingBox5} 0]
+    set Y1_Box5 [lindex ${aBoundingBox5} 1]
+    set Z1_Box5 [lindex ${aBoundingBox5} 2]
+    set X2_Box5 [lindex ${aBoundingBox5} 3]
+    set Y2_Box5 [lindex ${aBoundingBox5} 4]
+    set Z2_Box5 [lindex ${aBoundingBox5} 5]
+
+    if { ${X1_Box1} != ${X1_Box5} || 
+     ${Y1_Box1} != ${Y1_Box5} || 
+     ${Z1_Box1} != ${Z1_Box5} || 
+     ${X2_Box1} != ${X2_Box5} || 
+     ${Y2_Box1} != ${Y2_Box5} || 
+     ${Z2_Box1} != ${Z2_Box5} } {
+	puts "X1_Box1=${X1_Box1} X1_Box5=${X1_Box5}"
+	puts "Y1_Box1=${Y1_Box1} Y1_Box5=${Y1_Box5}"
+	puts "Z1_Box1=${Z1_Box1} Z1_Box5=${Z1_Box5}"
+	puts "X2_Box1=${X2_Box1} X2_Box5=${X2_Box5}"
+	puts "Y2_Box1=${Y2_Box1} Y2_Box5=${Y2_Box5}"
+	puts "Z2_Box1=${Z2_Box1} Z2_Box5=${Z2_Box5}"
+	puts "Error : et a value of TDataStd_Shape attribute from restoring document"
+    }
+}

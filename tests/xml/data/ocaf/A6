@@ -1,0 +1,26 @@
+set aTestName "caf001-F3"
+puts ${aTestName}
+
+# Add an attribute to a data framework
+set aSetAttr1 "New Attribute"
+set aLabel 0:2
+Label D ${aLabel}
+SetComment D ${aLabel} ${aSetAttr1}
+
+# Close/Open the transaction
+NewCommand D
+
+# Save the document
+set aFile $WorkDirectory/${aTestName}.${FileSuffix}
+
+SaveToFile D $aFile
+
+# Restore the document
+Close D
+Open ${aFile} DD
+
+# Get a value of the attribute
+set IsDone [catch {set aGetAttr3 [GetComment DD ${aLabel}]} aResult]
+if { ${IsDone} != 0 || ${aSetAttr1}!=${aGetAttr3} } {
+    puts "Error : Get a value of TDataStd_Comment attribute from restoring document"
+}

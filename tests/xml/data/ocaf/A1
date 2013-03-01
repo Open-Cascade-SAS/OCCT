@@ -1,0 +1,24 @@
+set aTestName "caf001-A3"
+
+# Add an attribute to a data framework
+set aSetAttr1 100
+set aLabel 0:2
+SetInteger D ${aLabel} ${aSetAttr1}
+
+# Close/Open the transaction
+NewCommand D
+
+# Save the document
+set aFile $WorkDirectory/${aTestName}.${FileSuffix}
+
+SaveToFile D $aFile
+
+# Restore the document
+Close D
+Open ${aFile} DD
+
+# Get a value of the attribute
+set IsDone [catch {set aGetAttr3 [GetInteger DD ${aLabel}]} aResult]
+if { ${IsDone} != 0 || ${aSetAttr1}!=${aGetAttr3} } {
+    puts "Error : Get a value of TDataStd_Integer attribute from restoring document"
+}

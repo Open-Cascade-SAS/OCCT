@@ -1,0 +1,12 @@
+pload XDE
+
+set FileSuffix "dxc"
+
+# Create a new document and set UndoLimit
+NewDocument D MDTV-XCAF
+UndoLimit D 100
+
+# Open a transaction
+NewCommand D
+
+set subgroup "xcaf_dxc"

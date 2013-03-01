@@ -1,0 +1,26 @@
+set aTestName "caf005-B3"
+puts ${aTestName}
+
+# Add an attribute to a data framework
+set aLabel1 0:2
+NewDirectory D ${aLabel1}
+set aName1 Label1
+SetName D ${aLabel1} ${aName1}
+
+# Close/Open the transaction
+NewCommand D
+
+# Save the document
+set aFile $WorkDirectory/${aTestName}.${FileSuffix}
+
+SaveToFile D $aFile
+
+# Restore the document
+Close D
+Open ${aFile} DD
+
+# Get a value of the attribute
+set IsDone [catch {set aGetName1 [GetName DD ${aLabel1}]} aResult]
+if { ${IsDone} != 0 || ${aName1}!=${aGetName1} } {
+    puts "Error : Get a value of TDataStd_Directory attribute from restoring document"
+}

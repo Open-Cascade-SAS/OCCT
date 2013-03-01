@@ -47,6 +47,7 @@
       <extension base="ocaf:AbsListIntegerAttributeType">
         <attribute name="first" type="int" default="1"/>
         <attribute name="last" type="int" use="required"/>
+        <attribute name="delta" type="int" use="required"/>
       </extension>
     </complexContent>
   </complexType>
@@ -58,6 +59,7 @@
       <extension base="ocaf:AbsListRealAttributeType">
         <attribute name="first" type="int" default="1"/>
         <attribute name="last" type="int" use="required"/>
+        <attribute name="delta" type="int" use="required"/>
       </extension>
     </complexContent>
   </complexType>
