@@ -55,7 +55,7 @@
 #include <Geom2dInt_Geom2dCurveTool.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_Circle.hxx>
-
+#include <Extrema_LocateExtPC.hxx>
 
 //=======================================================================
 //function : ProjectOnSegments
@@ -86,58 +86,6 @@ static void ProjectOnSegments (const Adaptor3d_Curve& AC, const gp_Pnt& P3D,
   uMin = Max (uMin, param-delta);
 }
 
-
-//=======================================================================
-//function : CurveNewton
-//purpose  : Newton algo on curve (study S4030)
-//=======================================================================
-
-static Standard_Boolean CurveNewton(const Standard_Real paramPrev,
- 				    const Adaptor3d_Curve& Ad,
-				    const gp_Pnt& P3D,
-				    const Standard_Real /*preci*/,
-				    Standard_Real& param,
-				    const Standard_Real cf,
-				    const Standard_Real cl)
-{
-  //szv#4:S4163:12Mar99 optimized
-  Standard_Real uMin = cf, uMax = cl;
-
-  Standard_Real Tol = Precision::Confusion();
-  Standard_Real Tol2 = Tol*Tol, rs2p = 1.e+10;
-  Standard_Real X = paramPrev;
-
-  for ( Standard_Integer i=0; i<20; i++) {
-    gp_Vec v1, v2;
-    gp_Pnt pnt;
-    Ad.D2 (X, pnt, v1, v2);
-    Standard_Real nv1 = v1.SquareMagnitude();
-    if (nv1 < 1e-10) break;
-    
-    gp_Vec rs (P3D, pnt);
-    Standard_Real D = nv1 + (rs * v2);
-    if ( fabs( D ) <1e-10) break;
-    
-    Standard_Real dX = -(rs *v1)/D;
-    X += dX;
-    
-    Standard_Real rs2 = rs.SquareMagnitude();
-    if (rs2 > 4.*rs2p) break;
-    rs2p = rs2;
-    
-    if ( fabs(dX) > 1e-12) continue;
-     
-    if (X < uMin || X > uMax) break;
-    
-    Standard_Real rsn = rs * v1;
-    if (rsn*rsn/nv1 > Tol2) break;
-    param = X;
-    return Standard_True;
-  }
-
-  // cout <<"NewtonC: failed after " << i+1 << " iterations (fail " << fail << " )" << endl; 
-  return Standard_False;
-}
 
 //=======================================================================
 //function : Project
@@ -260,50 +208,28 @@ Standard_Real ShapeAnalysis_Curve::ProjectAct(const Adaptor3d_Curve& C3D,
 					      Standard_Real& param) const
        
 {
-  Standard_Boolean useExtrema = Standard_True; //:i5
-
-#ifdef WNT
-  //:i5 abv 11 Sep 98: UKI60195.igs on NT: hanging on null-length bsplines
-  if (C3D.IsClosed() && C3D.GetType()==GeomAbs_BSplineCurve) {
-    Handle(Geom_BSplineCurve) bspl = C3D.BSpline();
-    Standard_Real prec2 = gp::Resolution();
-    prec2 *= prec2;
-    gp_Pnt p0 = bspl->Pole(1), p1;
-    for ( Standard_Integer i=2; i <= bspl->NbPoles(); i++, p0 = p1 ) {
-      p1 = bspl->Pole(i);
-      if ( p0.SquareDistance ( p1 ) <= prec2 ) { 
-	useExtrema = Standard_False;
-	break;
+  Standard_Boolean OK = Standard_False;
+  try {
+    OCC_CATCH_SIGNALS
+    Extrema_ExtPC myExtPC(P3D,C3D);
+    if ( myExtPC.IsDone() && ( myExtPC.NbExt() > 0) ) {
+      Standard_Real dist2, dist2Min = myExtPC.SquareDistance(1);
+      Standard_Integer index = 1;
+      for ( Standard_Integer i = 2; i <= myExtPC.NbExt(); i++) {
+        dist2 = myExtPC.SquareDistance(i);
+        if ( dist2 < dist2Min) { dist2Min = dist2; index = i; }
       }
+      param = (myExtPC.Point(index)).Parameter();
+      proj  = (myExtPC.Point(index)).Value();
+      OK = Standard_True;
     }
   }
-#endif
-
-  Standard_Boolean OK = Standard_False;
-  if ( useExtrema ) { //:i5 //szv#4:S4163:12Mar99 try moved into if
-    try {
-      OCC_CATCH_SIGNALS
-      Extrema_ExtPC myExtPC(P3D,C3D);
-      //Standard_Boolean done = myExtPC.IsDone() && ( myExtPC.NbExt() > 0); //szv#4:S4163:12Mar99 not needed
-      if ( myExtPC.IsDone() && ( myExtPC.NbExt() > 0) ) {
-	Standard_Real dist2, dist2Min = myExtPC.SquareDistance(1);
-	Standard_Integer index = 1;
-	for ( Standard_Integer i = 2; i <= myExtPC.NbExt(); i++) {
-	  dist2 = myExtPC.SquareDistance(i);
-	  if ( dist2 < dist2Min) { dist2Min = dist2; index = i; }
-	}
-	param = (myExtPC.Point(index)).Parameter();
-	proj  = (myExtPC.Point(index)).Value();
-	OK = Standard_True;
-      }
-    }
-    catch(Standard_Failure) {
-      OK = Standard_False;
+  catch(Standard_Failure) {
+    OK = Standard_False;
 #ifdef DEB //:s5
-      cout << "\nWarning: ShapeAnalysis_Curve::ProjectAct(): Exception in Extrema_ExtPC: "; 
-      Standard_Failure::Caught()->Print(cout); cout << endl;
+    cout << "\nWarning: ShapeAnalysis_Curve::ProjectAct(): Exception in Extrema_ExtPC: "; 
+    Standard_Failure::Caught()->Print(cout); cout << endl;
 #endif
-    }
   }
 
   //szv#4:S4163:12Mar99 moved
@@ -391,13 +317,17 @@ Standard_Real ShapeAnalysis_Curve::ProjectAct(const Adaptor3d_Curve& C3D,
         //  on tente ceci : 21 points sur la courbe, quel est le plus proche
 	distmin = Precision::Infinite();
 	ProjectOnSegments (C3D,P3D,25,uMin,uMax,distmin,proj,param);
-	if (distmin <= preci) return distmin;
-	if (CurveNewton(param, C3D, P3D, preci, param, uMin, uMax)) { //:S4030
-	  C3D.D0(param, proj);
+	if (distmin <= preci) 
+          return distmin;
+        Extrema_LocateExtPC aProjector (P3D, C3D, param/*U0*/, uMin, uMax, preci/*TolU*/);
+        if (aProjector.IsDone())
+        {
+          param = aProjector.Point().Parameter();
+          proj = aProjector.Point().Value();
           Standard_Real aDistNewton = P3D.Distance(proj);
-          if(aDistNewton < aModMin)
+          if (aDistNewton < aModMin)
             return aDistNewton;
-	}
+        }
         // cout <<"newton failed"<<endl;    
 	ProjectOnSegments (C3D,P3D,40,uMin,uMax,distmin,proj,param);
 	if (distmin <= preci) return distmin;
@@ -505,12 +435,13 @@ Standard_Real ShapeAnalysis_Curve::NextProject(const Standard_Real paramPrev,
   Standard_Real uMin = C3D.FirstParameter();
   Standard_Real uMax = C3D.LastParameter();
   
-  if (CurveNewton(paramPrev, C3D, P3D, preci, param, uMin, uMax)) { 
-    C3D.D0(param, proj);
+  Extrema_LocateExtPC aProjector (P3D, C3D, paramPrev/*U0*/, uMin, uMax, preci/*TolU*/);
+  if (aProjector.IsDone()){
+    param = aProjector.Point().Parameter();
+    proj = aProjector.Point().Value();
     return P3D.Distance(proj);
   }
-
-  return Project(C3D, P3D, preci, proj, param);
+  return Project(C3D, P3D, preci, proj, param, Standard_False);
 }
 
 //=======================================================================
