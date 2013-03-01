@@ -1,5 +1,3 @@
-puts "TODO OCC12345 ALL: Tcl Exception:"
-puts "TODO OCC12345 ALL: TEST INCOMPLETE"
 puts "============"
 puts "OCC23226"
 puts "============"
@@ -170,7 +168,7 @@ proc check_primitive {name1 r g b args} {
 # turned on (vbo_enable = 1)
 
 for {set vbo_enable 0} {$vbo_enable < 2} {incr vbo_enable} {
-
+	vinit
 	if { $vbo_enable == 0 } { 
 	    vvbo 0
     	    puts "TEST WITH VBO is OFF"
@@ -180,7 +178,7 @@ for {set vbo_enable 0} {$vbo_enable < 2} {incr vbo_enable} {
 	    puts "TEST WITH VBO is ON"
 	}
 	
-	vinit
+##	vinit
 	veraseall
 	vclear
 
@@ -189,117 +187,63 @@ for {set vbo_enable 0} {$vbo_enable < 2} {incr vbo_enable} {
 	vpoint point2 -145 0 0
 
 	# ****************************** Graphic3d_ArrayOfPoints ****************************** #
-	set IntermediateResult 1
 	puts "Graphic3d_ArrayOfPoints: TEST"
 	# 
 	# 1: verticies
 	#
 	generate_points 60 0 0   $colorY_R $colorY_G $colorY_B
 	eval vdrawparray pt01 points $vbo_enable $pts01 $pts02 $pts03 $pts04 $pts05 $pts06
-	#
-	# Final result
-	#
-	if { [ check_primitive pt01 $colorY_R $colorY_G $colorY_B ] == 0 } {
-		puts "WARNING! definition by verticies failed"
-		puts "WARNING! Graphic3d_ArrayOfPoints: FAILED"
-		set status 1
-	} else {
-		puts "Graphic3d_ArrayOfPoints: PASSED"
-	}
-
 
 	# ****************************** Graphic3d_ArrayOfSegments ****************************** #
-	set IntermediateResult 1
 	puts "Graphic3d_ArrayOfSegments: TEST"
 	#
 	# 1: verticies
 	#
 	generate_points 50 0 0   $colorY_R $colorY_G $colorY_B
 	eval vdrawparray seg01 segments $vbo_enable $pts02 $pts01 $pts01 $pts03 $pts03 $pts05 $pts05 $pts06 $pts06 $pts04 $pts04 $pts02
-	if { [ check_primitive seg01 $colorY_R $colorY_G $colorY_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies failed" }
 	#
 	# 2: edges
 	#
 	generate_points 40 0 0   $colorR_R $colorR_G $colorR_B
 	eval vdrawparray seg02 segments $vbo_enable $pts01 $pts02 $pts03 $pts04 $pts05 $pts06 e 1 e 2 e 2 e 4 e 4 e 6 e 6 e 5 e 5 e 3 e 3 e 1
-	if { [ check_primitive seg02 $colorR_R $colorR_G $colorR_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies and edges failed" }
-	#
-	# Final result
-	#
-	if { $IntermediateResult == 0 } {
-		puts "WARNING! Graphic3d_ArrayOfSegments: FAILED"
-		set status 1
-	} else {
-		puts "Graphic3d_ArrayOfSegments: PASSED"
-	}
-
 
 	# ****************************** Graphic3d_ArrayOfPolylines ****************************** #
-	set IntermediateResult 1
 	puts "Graphic3d_ArrayOfPolylines: TEST"
 	#
 	# 1: verticies
 	#
 	generate_points 30 0 0   $colorY_R $colorY_G $colorY_B
 	eval vdrawparray pline01 polylines $vbo_enable $pts02 $pts01 $pts03 $pts05 $pts06 $pts04 $pts02
-	if { [ check_primitive pline01 $colorY_R $colorY_G $colorY_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies failed" }
 	#
 	# 2: edges
 	#
 	generate_points 20 0 0   $colorR_R $colorR_G $colorR_B
 	eval vdrawparray pline02 polylines $vbo_enable $pts01 $pts02 $pts03 $pts04 $pts05 $pts06 e 2 e 4 e 6 e 5 e 3 e 1 e 2
-	if { [ check_primitive pline02 $colorR_R $colorR_G $colorR_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies and edges failed" }
 	#
 	# 3: bounds
 	#
 	generate_points 10 0 0   $colorY_R $colorY_G $colorY_B
 	eval vdrawparray pline03 polylines $vbo_enable ( b 3 ( $pts02 $pts01 $pts03 )), ( b 4 ( $pts03 $pts05 $pts06 $pts04 )), ( b 2 ( $pts04 $pts02 ))
-	if { [ check_primitive pline03 $colorY_R $colorY_G $colorY_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies and bounds failed" }
 	#
 	# 4: verticies, bounds and edges
 	#
 	generate_points 0 0 0   $colorR_R $colorR_G $colorR_B
 	eval vdrawparray pline04 polylines $vbo_enable $pts01 $pts02 $pts03 $pts04 $pts05 $pts06 ( b 4 ( e 2 e 1 e 3 e 5 )), ( b 4 ( e 5 e 6 e 4 e 2 ))
-	if { [ check_primitive pline04 $colorR_R $colorR_G $colorR_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies, bounds and edges failed" }
-	#
-	# Final result
-	#
-	if { $IntermediateResult == 0 } {
-		puts "WARNING! Graphic3d_ArrayOfPolylines: FAILED"
-		set status 1
-	} else {
-		puts "Graphic3d_ArrayOfPolylines: PASSED"
-	}
-
 
 	# ****************************** Graphic3d_ArrayOfTriangles ****************************** #
-	set IntermediateResult 1
 	puts "Graphic3d_ArrayOfTriangles: TEST"
 	#
 	# 1: verticies 
 	#
 	generate_points   -10 0 0   $colorB_R $colorB_G $colorB_B
 	eval vdrawparray t01 triangles $vbo_enable ( $pts03 $pts02 $pts01 ) , ( $pts03 $pts04 $pts02 ) , ( $pts04 $pts03 $pts06 ) , ( $pts06 $pts03 $pts05 )
-	if { [ check_primitive t01 $colorB_R $colorB_G $colorB_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies failed" }
 	#
 	# 2: by edges
 	#
 	generate_points -20 0 0   $colorG_R $colorG_G $colorG_B
 	eval vdrawparray t02 triangles $vbo_enable $pts01 $pts02 $pts03 $pts04 $pts05 $pts06 e 6 e 3 e 5 e 6 e 4 e 3 e 1 e 3 e 2 e 2 e 3 e 4
-	if { [ check_primitive t02 $colorG_R $colorG_G $colorG_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies and egdes failed" }
-	#
-	# Final result
-	#
-	if { $IntermediateResult == 0 } {
-		puts "WARNING! Graphic3d_ArrayOfTriangles: FAILED"
-		set status 1
-	} else {
-		puts "Graphic3d_ArrayOfTriangles: PASSED"
-	}
-
 
 	# ****************************** Graphic3d_ArrayOfTriangleFans ****************************** #
-	set IntermediateResult 1
 	puts "Graphic3d_ArrayOfTriangleFans: TEST"
 	#
 	# 1: verticies
@@ -307,26 +251,13 @@ for {set vbo_enable 0} {$vbo_enable < 2} {incr vbo_enable} {
 	generate_points -30 0 0    $colorB_R $colorB_G $colorB_B
 	eval vdrawparray tfan01 trianglefans $vbo_enable ( $pts02 $pts01 $pts03 $pts04 )
 	eval vdrawparray tfan02 trianglefans $vbo_enable ( $pts03 $pts05 $pts06 $pts04 )
-	if { [ check_primitive tfan01 $colorB_R $colorB_G $colorB_B tfan02 ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies failed" }
 	#
 	# 2: bounds and verticies
 	#
 	generate_points -40 0 0   $colorG_R $colorG_G $colorG_B
 	eval vdrawparray tfan03 trianglefans $vbo_enable ( b 4 ( $pts02 $pts01 $pts03 $pts04 )), ( b 4 ( $pts03 $pts05 $pts06 $pts04 ))
-	if { [ check_primitive tfan03 $colorG_R $colorG_G $colorG_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies and bounds failed" }
-	#
-	# Final result
-	#
-	if { $IntermediateResult == 0 } {
-		puts "WARNING! Graphic3d_ArrayOfTriangleFans: FAILED"
-		set status 1
-	} else {
-		puts "Graphic3d_ArrayOfTriangleFans: PASSED"
-	}
-
 
 	# ****************************** Graphic3d_ArrayOfTriangleStrips ****************************** #
-	set IntermediateResult 1
 	puts "Graphic3d_ArrayOfTriangleStrips: TEST"
 	#
 	# 1: verticies
@@ -334,26 +265,13 @@ for {set vbo_enable 0} {$vbo_enable < 2} {incr vbo_enable} {
 	generate_points -50 0 0    $colorB_R $colorB_G $colorB_B
 	eval vdrawparray tstrip01 trianglestrips $vbo_enable ( $pts06 $pts04 $pts03 $pts02 $pts01 )
 	eval vdrawparray tstrip02 trianglestrips $vbo_enable ( $pts03 $pts05 $pts06 )
-	if { [ check_primitive tstrip01 $colorB_R $colorB_G $colorB_B tstrip02 ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies failed" }
 	#
 	# 2: bounds and verticies
 	#
 	generate_points -60 0 0    $colorG_R $colorG_G $colorG_B
 	eval vdrawparray tstrip03 trianglestrips $vbo_enable ( b 5 ( $pts06 $pts04 $pts03 $pts02 $pts01 )) , ( b 3 ( $pts03 $pts05 $pts06 ))
-	if { [ check_primitive tstrip03 $colorG_R $colorG_G $colorG_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies and bounds failed" }
-	#
-	# Final result
-	#
-	if { $IntermediateResult == 0 } {
-		puts "WARNING! Graphic3d_ArrayOfTriangleStrips: FAILED"
-		set status 1
-	} else {
-		puts "Graphic3d_ArrayOfTriangleStrips: PASSED"
-	}
-
 
 	# ****************************** Graphic3d_ArrayOfQuadrangles ****************************** #
-	set IntermediateResult 1
 	puts "Graphic3d_ArrayOfQuadrangles: TEST"
 	#
 	# 1: verticies
@@ -361,86 +279,47 @@ for {set vbo_enable 0} {$vbo_enable < 2} {incr vbo_enable} {
 	generate_points -70 0 0    $colorB_R $colorB_G $colorB_B
 	eval vdrawparray q01 quads $vbo_enable ( $pts01 $pts03 $pts04 $pts02 )
 	eval vdrawparray q02 quads $vbo_enable ( $pts03 $pts05 $pts06 $pts04 )
-	if { [ check_primitive q01 $colorB_R $colorB_G $colorB_B q02 ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies failed" }
 	#
 	# 2: verticies and edges
 	#
 	generate_points -80 0 0    $colorG_R $colorG_G $colorG_B
 	eval vdrawparray q03 quads $vbo_enable $pts01 $pts02 $pts03 $pts04 $pts05 $pts06 e 1 e 3 e 4 e 2 e 3 e 5 e 6 e 4
-	if { [ check_primitive q03 $colorG_R $colorG_G $colorG_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies and edges failed" }
-	#
-	# Final result
-	#
-	if { $IntermediateResult == 0 } {
-		puts "WARNING! Graphic3d_ArrayOfQuadrangles: FAILED"
-		set status 1
-	} else {
-		puts "Graphic3d_ArrayOfQuadrangles: PASSED"
-	}
-
 
 	# ****************************** Graphic3d_ArrayOfQuadrangleStrips ****************************** #
-	set IntermediateResult 1
 	puts "Graphic3d_ArrayOfQuadrangleStrips: TEST"
 	#
 	# 1: verticies
 	#
 	generate_points -90 0 0    $colorB_R $colorB_G $colorB_B
 	eval vdrawparray qstrips01 quadstrips $vbo_enable ( $pts02 $pts01 $pts04 $pts03 $pts06 $pts05 )
-	if { [ check_primitive qstrips01 $colorB_R $colorB_G $colorB_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies failed" }
 	#
 	# 2: verticies and edges
 	#
 	generate_points -100 0 0    $colorG_R $colorG_G $colorG_B
 	eval vdrawparray qstrips02 quadstrips $vbo_enable ( b 4 ( $pts02 $pts01 $pts04 $pts03 )) , ( b 4 ( $pts04 $pts03 $pts06 $pts05 ))
-	if { [ check_primitive qstrips02 $colorG_R $colorG_G $colorG_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies and edges failed" }
-	#
-	# Final result
-	#
-	if { $IntermediateResult == 0 } {
-		puts "WARNING! Graphic3d_ArrayOfQuadrangleStrips: FAILED"
-		set status 1
-	} else {
-		puts "Graphic3d_ArrayOfQuadrangleStrips: PASSED"
-	}
-
 
 	# ****************************** Graphic3d_ArrayOfPolygons ****************************** #
-	set IntermediateResult 1
 	puts "Graphic3d_ArrayOfPolygons: TEST"
 	#
 	# 1: verticies
 	#
 	generate_points -110 0 0    $colorB_R $colorB_G $colorB_B
 	eval vdrawparray poly01 polygons $vbo_enable ( $pts04 $pts02 $pts01 $pts03 $pts05 $pts06 )
-	if { [ check_primitive poly01 $colorB_R $colorB_G $colorB_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies failed" }
 	#
 	# 2: verticies and bounds
 	#
 	generate_points -120 0 0   $colorG_R $colorG_G $colorG_B
 	eval vdrawparray poly02 polygons $vbo_enable ( b 5 ( $pts04 $pts02 $pts01 $pts03 $pts06 )) , ( b 3 ( $pts06 $pts03 $pts05 ))
-	if { [ check_primitive poly02 $colorG_R $colorG_G $colorG_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies and bounds failed" }
 	#
 	# 3: verticies and edges
 	#
 	generate_points -130 0 0   $colorB_R $colorB_G $colorB_B
 	eval vdrawparray poly03 polygons $vbo_enable $pts01 $pts02 $pts03 $pts04 $pts05 $pts06 e 4 e 2 e 1 e 3 e 5 e 6
-	if { [ check_primitive poly03 $colorB_R $colorB_G $colorB_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies and edges failed" }
 	#
 	# 4: vertices, bounds and edges
 	#
 	generate_points -140 0 0   $colorG_R $colorG_G $colorG_B
 	eval vdrawparray poly04 polygons $vbo_enable $pts01 $pts02 $pts03 $pts04 $pts05 $pts06 ( b 5 ( e 4 e 2 e 1 e 3 e 6 )), ( b 3 ( e 6 e 3 e 5 ))
-	if { [ check_primitive poly04 $colorG_R $colorG_G $colorG_B ] == 0 } { set IntermediateResult 0; puts "WARNING! definition by verticies, bounds and edges failed" }
-	#
-	# Final result
-	#
-	if { $IntermediateResult == 0 } {
-		puts "WARNING! Graphic3d_ArrayOfPolygons: FAILED"
-		set status 1
-	} else {
-		puts "Graphic3d_ArrayOfPolygons: PASSED"
-	}
 	
 	vtop
 	vfit
@@ -455,11 +334,14 @@ for {set vbo_enable 0} {$vbo_enable < 2} {incr vbo_enable} {
 rename generate_points ""
 rename check_primitive ""
 
-if { ${status} == 0 } {
-	puts "BUG OK ${BUGNUMBER}"
+checkcolor 200 200 $colorG_R $colorG_G $colorG_B
+checkcolor 220 200 $colorB_R $colorB_G $colorB_B
+if { $stat == 1 } {
+    puts "BUG OK ${BUGNUMBER}"
 } else {
-	puts "BUG FAULTY ${BUGNUMBER}"
+    puts "BUG FAULTY ${BUGNUMBER}"
 }
 
 set only_screen 1
+
 

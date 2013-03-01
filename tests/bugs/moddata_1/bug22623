@@ -1,4 +1,4 @@
-puts "TODO ?#22623 ALL: Exception"
+puts "TODO ?#22623 ALL: \\*\\* Exception"
 puts "TODO ?#22623 ALL: An exception was caught"
 
 puts "============"

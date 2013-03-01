@@ -1,6 +1,3 @@
-puts "TODO OCC22611 ALL: Tcl Exception: invalid command name"
-puts "TODO OCC22611 ALL: TEST INCOMPLETE"
-
 puts "========"
 puts "OCC22611"
 puts "========"

@@ -6,7 +6,9 @@ puts ""
 
 cpulimit 9000
 pload XDE
-if [catch {igesbrep [locate_data_file lh3d_px1.igs] a *} catch_result] { 
+
+set filepath [locate_data_file lh3d_px1.igs]
+if [catch {igesbrep $filepath a *} catch_result] { 
     puts "Faulty OCC343: here is reading problem"
 } else {
     puts "Reading OCC343  OK"
@@ -56,7 +58,7 @@ if [catch {igesbrep [locate_data_file lh3d_px1.igs] a *} catch_result] {
 	# Second sewing
 	#
 
-	if [catch {igesbrep [locate_data_file lh3d_px1.igs] a *} catch_result] {
+	if [catch {igesbrep $filepath a *} catch_result] {
 	    puts "Faulty OCC343: here is reading problem"
         } else {
 	    puts "Reading OCC343  OK"

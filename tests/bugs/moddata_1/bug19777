@@ -8,7 +8,8 @@ puts ""
 
 set BugNumber OCC19777
 
-if [catch { restore [locate_data_file OCC19777.brep] result} catch_result] { 
+set filepath [locate_data_file OCC19777.brep]
+if [catch { restore $filepath result} catch_result] { 
   puts "Error ${BugNumber}: there is reading problem"
 } else {
 

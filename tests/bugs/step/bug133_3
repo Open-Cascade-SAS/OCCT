@@ -1,6 +1,4 @@
 puts "TODO OCC12345 ALL: Exception Raised while reading Step File"
-puts "TODO OCC12345 ALL: Tcl Exception"
-puts "TODO OCC12345 ALL: TEST INCOMPLETE"
 
 puts "========================"
 puts "BUC60991"
@@ -12,9 +10,12 @@ puts ""
 ##Exception when translating a STEP file to Open CASCADE (loading phase).
 #######################################################
 
-stepread [locate_data_file buc60990.stp] a *
-
-tpcompound result
+set filepath [locate_data_file buc60990.stp]
+if {[catch {stepread $filepath a *}]} {
+    puts "Error: Exception Raised while reading Step File"
+} else {
+    tpcompound result
+}
 
 set 2dviewer 0
 

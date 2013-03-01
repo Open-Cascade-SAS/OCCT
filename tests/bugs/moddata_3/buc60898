@@ -1,5 +1,3 @@
-puts "TODO OCC12345 ALL: Faulty BUC60898: here is reading problem"
-
 puts "==========="
 puts "  BUC60898"
 puts "==========="
@@ -7,8 +5,8 @@ puts ""
 
 pload XDE
 
-if [catch { igesbrep [locate_data_file $filedir/buc60898.igs] a *} result] { 
-## rename to BUC60898.igs
+set filepath [locate_data_file BUC60898.igs]
+if [catch { igesbrep $filepath a *} result] { 
     puts "Faulty BUC60898: here is reading problem"
 } else {
     puts "BUC60898 OK"
@@ -19,7 +17,7 @@ if [catch { igesbrep [locate_data_file $filedir/buc60898.igs] a *} result] {
     } else {
 	puts " BUC60898 OK: function SEWING works without except"
     }
-    set square 0
+    set square 798.266
     set 2dviewer 0
 }
 

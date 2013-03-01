@@ -17,7 +17,8 @@ puts ""
 
 set BugNumber OCC22670
 
-if { [catch { readstl res_mesh [locate_data_file OMF6391_box.stl] } catch_result] } {
+set filepath [locate_data_file OMF6391_box.stl]
+if { [catch { readstl res_mesh $filepath } catch_result] } {
     puts "Faulty ${BugNumber}: here is reading problem"
 } else {
     set nbshapes_res_mesh [nbshapes res_mesh]

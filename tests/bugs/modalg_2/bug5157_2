@@ -13,7 +13,8 @@ catch { pload XDE }
 
 set BugNumber OCC5157
 
-if { [catch { stepread [locate_data_file OCC5157.stp] a * } catch_result] } {
+set filepath [locate_data_file OCC5157.stp]
+if { [catch { stepread $filepath a * } catch_result] } {
     puts "Faulty ${BugNumber} : here is reading problem"
 } else {
     tpcompound result

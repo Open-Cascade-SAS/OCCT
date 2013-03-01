@@ -1,7 +1,3 @@
-puts "TODO ?OCC12345 ALL: Error: Document not saved"
-puts "TODO ?OCC12345 ALL: Error: Object obj2 not found"
-puts "TODO ?OCC12345 ALL: Tcl Exception: Error: Object obj2 not found"
-puts "TODO ?OCC12345 ALL: TEST INCOMPLETE"
 puts "============"
 puts "OCC21231"
 puts "============"

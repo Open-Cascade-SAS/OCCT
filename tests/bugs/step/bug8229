@@ -8,7 +8,8 @@ puts ""
 
 set BugNumber OCC8229
 
-if [catch { stepread [locate_data_file OCC8229.stp] a * } res] {
+set filepath [locate_data_file OCC8229.stp]
+if [catch { stepread $filepath a * } res] {
     puts "Faulty ${BugNumber}"
 } else {
     puts "OK ${BugNumber}"

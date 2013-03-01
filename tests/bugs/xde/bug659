@@ -8,7 +8,8 @@ puts ""
 
 param read.surfacecurve.mode -2
 
-if [catch { igesbrep [locate_data_file D44-11325-6.igs] a 6425 } res] {
+set filepath [locate_data_file D44-11325-6.igs]
+if [catch { igesbrep $filepath a 6425 } res] {
    puts "Faulty OCC659 first: here is reading problem"
 }
 

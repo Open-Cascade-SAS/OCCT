@@ -8,8 +8,9 @@ puts ""
 
 set BugNumber OCC5027
 
-if [catch { stepread [locate_data_file OCC5027.stp] a * } res] {
-   puts "Warning ${BugNumber} : here is reading problem"
+set filepath [locate_data_file OCC5027.stp]
+if [catch { stepread $filepath a * } res] {
+   puts "Error ${BugNumber} : here is reading problem"
 } else {
     tpcompound result
     

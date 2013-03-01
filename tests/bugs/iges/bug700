@@ -10,7 +10,8 @@ puts ""
 ## The attached file calnnot be read with OCC4.0, while read successfully with OCC3.0
 ##########################################################
 
-if [ catch {igesbrep [locate_data_file OCC700.igs]} res ] {
+set filepath [locate_data_file OCC700.igs]
+if [ catch {igesbrep $filepath} res ] {
     puts "Faulty OCC700"
 } else {
     set index [lsearch $res Faulty]

@@ -12,7 +12,8 @@ cpulimit 2500
 
 set BugNumber OCC210
 
-if [catch { stepread [locate_data_file UKI60591.stp] a * } result] {
+set filepath [locate_data_file UKI60591.stp]
+if [catch { stepread $filepath a * } result] {
     puts "Faulty ${BugNumber}: here is reading problem"
 } else {
     puts "Reading ${BugNumber} OK"

@@ -11,7 +11,8 @@ puts ""
 set BugNumber OCC9531
 
 set IsOk 1
-if {[catch {igesread [locate_data_file 919-001-T02-04-CP-VL.igs] OCC9531a *}]} {
+set filepath [locate_data_file 919-001-T02-04-CP-VL.igs]
+if {[catch {igesread $filepath OCC9531a *}]} {
    puts "Faulty ${BugNumber} : here is reading problem"
    set IsOk 0
 }

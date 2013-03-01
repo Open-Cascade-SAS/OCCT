@@ -23,7 +23,7 @@ puts "display trihedron"
 vtrihedron vtr
 
 puts "display textured box"
-catch { vtexture box [locate_data_file OCC5988_2d_floor.rgb] }
+vtexture box [locate_data_file OCC5988_2d_floor.rgb]
 
 set x 200
 set y 200

@@ -255,6 +255,28 @@ static Standard_Integer OCC23595 (Draw_Interpretor& di, Standard_Integer /*argc*
   return 0;
 }
 
+#include <ExprIntrp_GenExp.hxx>
+Standard_Integer OCC22611 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
+{
+
+  if (argc != 3) {
+    di << "Usage : " << argv[0] << " string nb\n";
+    return 1;
+  }
+
+  TCollection_AsciiString aToken = argv[1];
+  Standard_Integer aNb = atoi(argv[2]);
+
+  Handle(ExprIntrp_GenExp) aGen = ExprIntrp_GenExp::Create();
+  for (Standard_Integer i=0; i < aNb; i++)
+  {
+    aGen->Process(aToken);
+    Handle(Expr_GeneralExpression) aExpr = aGen->Expression();
+  }
+
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -264,6 +286,7 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC23237", "OCC23237", __FILE__, OCC23237, group); 
   theCommands.Add ("OCC22980", "OCC22980", __FILE__, OCC22980, group);
   theCommands.Add ("OCC23595", "OCC23595", __FILE__, OCC23595, group);
+  theCommands.Add ("OCC22611", "OCC22611 string nb", __FILE__, OCC22611, group);
 
   return;
 }
