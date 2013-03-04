@@ -39,7 +39,7 @@
 // Primary definitions
 #define OCC_VERSION_MAJOR         6
 #define OCC_VERSION_MINOR         5
-#define OCC_VERSION_MAINTENANCE   4
+#define OCC_VERSION_MAINTENANCE   5
 
 //! This macro must be commented in official release, and set to non-empty 
 //! string in other situations, to identify specifics of the version, e.g.:
@@ -51,7 +51,7 @@
 // Derived (manually): version as real and string (major.minor)
 #define OCC_VERSION               6.5
 #define OCC_VERSION_STRING       "6.5"
-#define OCC_VERSION_COMPLETE     "6.5.4"
+#define OCC_VERSION_COMPLETE     "6.5.5"
 
 //! Derived: extended version as string ("major.minor.maintenance.dev")
 #ifdef OCC_VERSION_DEVELOPMENT
