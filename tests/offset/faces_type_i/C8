@@ -1,7 +1,17 @@
-puts "TODO OCC23068 ALL: Error : The offset is not valid"
-psphere s 15 90
-trotate s 0 0 0 0 0 1 90
+puts "TODO OCC23068 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO ?OCC23068 ALL: Error : The volume of the resulting shape is"
+puts "TODO ?OCC23068 ALL: Exception"
+puts "TODO ?OCC23068 ALL: An exception was caught"
+puts "TODO ?OCC23068 ALL: TEST INCOMPLETE"
 
-OFFSETSHAPE -1 {s_2 s_3} $calcul $type
+ellipse w1 0 0 0 15 10
+mkedge w1 w1 0 pi/2
+trotate w1 0 0 0 1 0 0 90
+polyline w2 0 0 10 0 0 -10 25 0 -10 15 0 0
+wire w w1 w2
+mkplane w w
+revol s w 0 0 0 0 0 1 270
+
+OFFSETSHAPE -1 {} $calcul $type
 
 set volume 0

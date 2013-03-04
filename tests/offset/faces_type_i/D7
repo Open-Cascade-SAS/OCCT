@@ -1,5 +1,14 @@
-ptorus s 10 10 0 45
+puts "TODO ?OCC23068 Mandriva2010: Error: bsection of the result and s is not equal to zero"
+puts "TODO ?OCC23068 Mandriva2010: Error : The volume of the resulting shape "
+puts "TODO ?OCC23068 Mandriva2010: Faulty shapes in variables faulty_1 to faulty_"
+ellipse w1 0 0 0 15 10
+mkedge w1 w1 0 pi/2
+trotate w1 0 0 0 1 0 0 90
+polyline w2 0 0 10 0 0 -10 25 0 -10 15 0 0
+wire w w1 w2
+mkplane w w
+revol s w 0 0 0 0 0 1 360
 
-OFFSETSHAPE -1 {s_2 s_3} $calcul $type
+OFFSETSHAPE -1 {} $calcul $type
 
-set volume 923.572
+set volume 13139
