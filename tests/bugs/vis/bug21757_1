@@ -1,0 +1,23 @@
+puts "============"
+puts "OCC21757"
+puts "============"
+puts ""
+#######################################################################
+# Funny (giraffe-like) shading of torus meshed with specific parameters (WNT)
+#######################################################################
+
+set BugNumber OCC21757
+
+vinit
+vsetdispmode 1
+vclear
+
+# variant 1: mesh explicitly
+ptorus result 200 50 45
+incmesh result 0.4 
+vdisplay result
+vfit
+checkcolor 200 200 0.89 0.63 0.109
+
+set only_screen 1
+

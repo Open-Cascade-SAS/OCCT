@@ -6,8 +6,8 @@ puts ""
 ## Projection algorithm produces incomplete 2D-Curve
 ####################################################################
 
-restore [locate_data_file bug23703_c2x.brep] c
-restore [locate_data_file bug23703_s1.brep] s
+restore [locate_data_file bug23703_c2x.draw] c
+restore [locate_data_file bug23703_s1.draw] s
 
 mkface f s
 pcurve f
