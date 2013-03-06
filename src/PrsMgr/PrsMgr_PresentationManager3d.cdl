@@ -49,7 +49,7 @@ uses
     --NameOfPhysicalMaterial  from Graphic3d,
     Presentation         from PrsMgr,
     Presentation3d       from PrsMgr,
-    View                 from Viewer,
+    View                 from V3d,
     ShadingAspect        from Prs3d,
     Presentation         from Prs3d
 is
@@ -88,7 +88,7 @@ is
     ---Purpose: stores <aPrs> in a list of structure to be displayed
     --          in immediate mode. will be taken in account in EndDraw Method.
     
-    EndDraw(me: mutable; aView: View from Viewer; DoubleBuffer: Boolean from Standard = Standard_False)
+    EndDraw(me: mutable; theView: View from V3d; DoubleBuffer: Boolean from Standard = Standard_False)
     is redefined static;
 
     	    

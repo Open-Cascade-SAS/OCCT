@@ -86,7 +86,6 @@ uses
         Quantity,
         TColQuantity,
         Resource,
-        Viewer,
         MMgt
 
 is
@@ -296,9 +295,6 @@ is
         class GenId;
         ---Purpose: Creates and controles all identifiers.
         ---Category: Classes
-
-        deferred class GraphicDriver;
-        ---Purpose: Defines a graphic driver (3d library)
 
         class FontStyle;
         ---Purpose: Defines a Font Style

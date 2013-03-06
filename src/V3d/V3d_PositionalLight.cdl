@@ -51,7 +51,7 @@ uses
 	Vertex from Graphic3d,
 	Group from Graphic3d
 	
-raises BadValue from Viewer
+raises BadValue from V3d
 
 is
 
@@ -71,8 +71,8 @@ is
 	--		A1,A2 being the two factors of attenuation
 	--	 	Length is the distance of the isolated source
 	--	    from the surface.
-	raises BadValue from Viewer;
-	---Purpose:  Warning!  raises BadValue from Viewer
+	raises BadValue from V3d;
+	---Purpose:  Warning!  raises BadValue from V3d
 	--          if one of the attenuation coefficients is not between 0 et 1.
 
     	Create ( VM : mutable Viewer ; Xt,Yt,Zt : Coordinate;
@@ -93,8 +93,8 @@ is
     	--          F = 1/(A1 + A2*Length) where:
     	--          -   A1,A2 are the two attenuation factors, and
     	--          -   Length is the distance from the isolated source.
-	raises BadValue from Viewer;
-	---Purpose:  Warning! raises BadValue from Viewer
+	raises BadValue from V3d;
+	---Purpose:  Warning! raises BadValue from V3d
 	--          if one of the attenuation coefficients is not between 0 et 1.
 
 
@@ -106,10 +106,10 @@ is
 	---Level: Public
 	---Purpose: Defines the position of the light source.
 
-	    SetAttenuation( me : mutable; A1,A2 : Coefficient ) raises BadValue from Viewer is static;
+	    SetAttenuation( me : mutable; A1,A2 : Coefficient ) raises BadValue from V3d is static;
 	---Level: Public
 	---Purpose: Defines the attenuation factors.
-	--  Warning: raises BadValue from Viewer
+	--  Warning: raises BadValue from V3d
 	--          if one of the attenuation coefficients is not between 0 et 1.
 
      	---------------------------------------------------

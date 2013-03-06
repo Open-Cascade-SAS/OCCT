@@ -54,7 +54,7 @@
 #include <Visual3d_PickDescriptor.hxx>
 #include <Visual3d_HSequenceOfPickPath.hxx>
 #include <Visual3d_PickPath.hxx>
-#include <Viewer_BadValue.hxx>
+#include <V3d_BadValue.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Vec.hxx>
@@ -105,7 +105,7 @@ void V3d_DirectionalLight::SetDirection(const V3d_TypeOfOrientation Direction) {
 
 void V3d_DirectionalLight::SetDirection(const Standard_Real Vx, const Standard_Real Vy, const Standard_Real Vz) {
 
-  Viewer_BadValue_Raise_if( sqrt( Vx*Vx + Vy*Vy + Vz*Vz ) <= 0.,"V3d_DirectionalLight::SetDirection, null vector" );
+  V3d_BadValue_Raise_if( sqrt( Vx*Vx + Vy*Vy + Vz*Vz ) <= 0.,"V3d_DirectionalLight::SetDirection, null vector" );
 
   Graphic3d_Vector V(Vx,Vy,Vz) ;
   V.Normalize() ;

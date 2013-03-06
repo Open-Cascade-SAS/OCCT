@@ -45,7 +45,7 @@ uses
 	Vertex from Graphic3d,
 	Group from Graphic3d
 
-raises BadValue from Viewer
+raises BadValue from V3d
 
 is
 
@@ -69,8 +69,8 @@ is
 	--	    The concentration factor determines the dispersion 
 	--	    of the light on the surface, the default value
 	--	    (1.0) corresponds to a minimum of dispersion .
-        raises BadValue from Viewer;
-	---Purpose:  Warning! raises BadValue from Viewer  -
+        raises BadValue from V3d;
+	---Purpose:  Warning! raises BadValue from V3d  -
 	--	If one of the coefficients is not between 0 and 1 .
 	--	If the lighting angle is <= 0 ou > PI .
 	
@@ -87,8 +87,8 @@ is
 	--          Xt,Yt,Zt : Coordinate of light source Target.
 	--          Xp,Yp,Zp : Coordinate of light source Position.
 	--          The others parameters describe before.
-        raises BadValue from Viewer;
-	---Purpose:  Warning! raises BadValue from Viewer  -
+        raises BadValue from V3d;
+	---Purpose:  Warning! raises BadValue from V3d  -
 	--	If one of the coefficients is not between 0 and 1 .
 	--	If the lighting angle is <= 0 ou > PI .
 
@@ -100,7 +100,7 @@ is
 	---Level: Public
 	---Purpose: Defines the position of the light source.
 
-    	SetDirection ( me : mutable; Vx, Vy, Vz : Parameter ) raises BadValue from Viewer is static;
+    	SetDirection ( me : mutable; Vx, Vy, Vz : Parameter ) raises BadValue from V3d is static;
 	---Level: Public
 	---Purpose : Defines the direction of the light source.
 	--	If the normal vector is NULL.
@@ -110,21 +110,21 @@ is
 	---Purpose : Defines the direction of the light source
 	--	     according to a predefined directional vector.
 
-        SetAttenuation( me : mutable; A1,A2 : Coefficient ) raises BadValue from Viewer is static;
+        SetAttenuation( me : mutable; A1,A2 : Coefficient ) raises BadValue from V3d is static;
 	---Level: Public
     	---Purpose: Defines the coefficients of attenuation.
-	--  Warning! raises BadValue from Viewer 
+	--  Warning! raises BadValue from V3d 
 	--	    if one of the coefficient is <0 ou >1 .
     
-        SetConcentration( me : mutable; C : Coefficient ) raises BadValue from Viewer is static;
+        SetConcentration( me : mutable; C : Coefficient ) raises BadValue from V3d is static;
 	---Level: Public
     	---Purpose: Defines the coefficient of concentration.
 	--	if the coefficient is <0 ou >1 .
 	
-    	SetAngle ( me : mutable; Angle : PlaneAngle ) raises BadValue from Viewer is static;
+    	SetAngle ( me : mutable; Angle : PlaneAngle ) raises BadValue from V3d is static;
 	---Level: Public
 	---Purpose: Defines the spot angle in RADIANS.
-	--  Warning: raises BadValue from from Viewer
+	--  Warning: raises BadValue from from V3d
 	--	If the angle is <= 0 ou > PI .
 	
         ---------------------------------------------------

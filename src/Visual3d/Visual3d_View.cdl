@@ -75,7 +75,6 @@ uses
 
     Background              from Aspect,
     GradientBackground      from Aspect,
-    GraphicDriver           from Aspect,
     Window                  from Aspect,
     TypeOfUpdate            from Aspect,
     TypeOfHighlightMethod   from Aspect,
@@ -1050,7 +1049,7 @@ is
 	---Category: Private methods
 
 	GraphicDriver ( me )
-		returns GraphicDriver from Aspect
+		returns GraphicDriver from Graphic3d
 		is static;
 	---Level: Internal
 	---Purpose: Returns the associated GraphicDriver.

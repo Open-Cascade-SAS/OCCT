@@ -39,7 +39,7 @@ uses
 
 raises
 
-        BadValue from Viewer
+        BadValue from V3d
 	
 is
 
@@ -86,8 +86,8 @@ is
 	--	    TAN(Angle/2) = Size/Length       
 	--	    	Size expresses the smallest dimension of the window.
     	--	        Length expresses the focal length.
-	raises BadValue from Viewer 
-	---Purpose:  Warning! raises BadValue from Viewer 
+	raises BadValue from V3d
+	---Purpose:  Warning! raises BadValue from V3d
 	--	    if the opening angle is <= 0 or >= PI 
         is static;
 	
@@ -102,7 +102,7 @@ is
 	--		angle of opening of the perspective in RADIANS,
 	--      aspect ratio of window width to its height and 
 	--      near and far clipping planes
-	raises BadValue from Viewer 
+	raises BadValue from V3d
 	--	    if the opening angle is <= 0 or >= PI or
     --      the ZNear<0, ZFar<0 or ZNear>=Zfar.
         is static;

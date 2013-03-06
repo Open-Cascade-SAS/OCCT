@@ -53,7 +53,7 @@ uses
         Structure from Graphic3d
 	
 raises
-	BadValue from Viewer
+	BadValue from V3d
 
 is
 

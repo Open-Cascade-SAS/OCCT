@@ -54,7 +54,7 @@
 #include <Visual3d_PickDescriptor.hxx>
 #include <Visual3d_HSequenceOfPickPath.hxx>
 #include <Visual3d_PickPath.hxx>
-#include <Viewer_BadValue.hxx>
+#include <V3d_BadValue.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Vec.hxx>
@@ -74,7 +74,7 @@ V3d_PositionalLight::V3d_PositionalLight(const Handle(V3d_Viewer)& VM, const Sta
   Graphic3d_Vertex P(X,Y,Z) ;
   Graphic3d_Vertex T(0.,0.,0.);
 
-  Viewer_BadValue_Raise_if ( A1 < 0 || A1 > 1. || A2 < 0 || A2 > 1,
+  V3d_BadValue_Raise_if ( A1 < 0 || A1 > 1. || A2 < 0 || A2 > 1,
 			 "V3d_PositionalLight, bad coefficients");
   
   MyType = V3d_POSITIONAL ;
@@ -89,7 +89,7 @@ V3d_PositionalLight::V3d_PositionalLight(const Handle(V3d_Viewer)& VM, const Sta
   Graphic3d_Vertex T(Xt,Yt,Zt) ;
   Graphic3d_Vertex P(Xp,Yp,Zp) ;
   
-  Viewer_BadValue_Raise_if ( A1 < 0 || A1 > 1. || A2 < 0 || A2 > 1,
+  V3d_BadValue_Raise_if ( A1 < 0 || A1 > 1. || A2 < 0 || A2 > 1,
 			 "V3d_PositionalLight, bad coefficients");
   
   MyType = V3d_POSITIONAL ;
@@ -108,7 +108,7 @@ void V3d_PositionalLight::SetPosition(const Standard_Real Xp, const Standard_Rea
 void V3d_PositionalLight::SetAttenuation(const Standard_Real A1, const Standard_Real A2) {
 
 
-  Viewer_BadValue_Raise_if ( A1 < 0 || A1 > 1. || A2 < 0 || A2 > 1,
+  V3d_BadValue_Raise_if ( A1 < 0 || A1 > 1. || A2 < 0 || A2 > 1,
 			 "V3d_PositionalLight::SetAttenuation, bad coefficients");
 
   MyLight->SetAttenuation1(A1) ;

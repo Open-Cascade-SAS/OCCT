@@ -28,7 +28,7 @@
 --                                      Add ShowGridEcho() private method
 --          SAV - 26/11/02 -> Add new field to store grid echo aspect
 
-class Viewer from V3d
+class Viewer from V3d inherits TShared from MMgt
 
         ---Version:
 
@@ -40,10 +40,6 @@ class Viewer from V3d
         ---Keywords: Viewer,Default Attributes
 
         ---References:
-
-inherits
-
-        Viewer from Viewer
 
 uses
 
@@ -86,29 +82,29 @@ uses
 
 raises
 
-        BadValue from Viewer
+        BadValue from V3d
 
 is
 
-        Create ( theDriver  : GraphicDriver from Graphic3d;
-             aName          : ExtString from Standard;
-             aDomain        : CString from Standard = "";
-             ViewSize       : Length from Quantity = 1000.0 ;
-             ViewProj       : TypeOfOrientation from V3d= V3d_XposYnegZpos ;
-             ViewBackground : NameOfColor from Quantity = Quantity_NOC_GRAY30;
-             Visualization  : TypeOfVisualization from V3d = V3d_ZBUFFER;
-             ShadingModel   : TypeOfShadingModel  from V3d = V3d_GOURAUD ;
-             UpdateMode     : TypeOfUpdate from V3d = V3d_WAIT;
-             ComputedMode   : Boolean from Standard = Standard_True;
-             DefaultComputedMode: Boolean from Standard = Standard_True;
-             SurfaceDetail  : TypeOfSurfaceDetail  from V3d = V3d_TEX_NONE)
+        Create (theDriver         : GraphicDriver from Graphic3d;
+                theName           : ExtString from Standard;
+                theDomain         : CString from Standard = "";
+                theViewSize       : Length from Quantity = 1000.0 ;
+                theViewProj       : TypeOfOrientation from V3d= V3d_XposYnegZpos ;
+                theViewBackground : NameOfColor from Quantity = Quantity_NOC_GRAY30;
+                theVisualization  : TypeOfVisualization from V3d = V3d_ZBUFFER;
+                theShadingModel   : TypeOfShadingModel  from V3d = V3d_GOURAUD ;
+                theUpdateMode     : TypeOfUpdate from V3d = V3d_WAIT;
+                theComputedMode   : Boolean from Standard = Standard_True;
+                theDefaultComputedMode: Boolean from Standard = Standard_True;
+                theSurfaceDetail  : TypeOfSurfaceDetail  from V3d = V3d_TEX_NONE)
         returns mutable Viewer from V3d
         ---Purpose: Create a Viewer with the given graphic driver and the given parameters  or
         --          with their default values.
         --          Currently creating of more than 100 viewer instances 
 	      --          is not supported and leads to an exception.
 	      --          This limitation might be addressed in some future OCCT releases.
-        raises BadValue from Viewer ;
+        raises BadValue from V3d ;
         ---Purpose:        If the size of the view is <= 0
         --      if ComputedMode is false, only the degenerate mode will be used.
         --
@@ -137,7 +133,7 @@ is
         ---Purpose: Activates a particular view in the Viewer .
         --            Must be call if the Window attached to the view
         --            has been Deiconified .
-                raises BadValue from Viewer;
+                raises BadValue from V3d;
         --        If the view is not mapped on the window.
 
         SetViewOff (me:mutable);
@@ -150,10 +146,10 @@ is
         ---Purpose: Deactivates a particular view in the Viewer.
         --            Must be call if the Window attached to the view
         --            has been Iconified .
-                raises BadValue from Viewer;
+                raises BadValue from V3d;
         --        If the view is not mapped on the window.
 
-        Update (me:mutable ) is redefined static;
+        Update (me:mutable ) is static;
         ---Level: Public
         ---Purpose: Deprecated, Redraw() should be used instead.
 
@@ -218,7 +214,7 @@ is
         ---Level: Public
         ---Purpose: Gives a default size for the creation of views of
         --            the viewer.
-                raises BadValue from Viewer;
+                raises BadValue from V3d;
         --        If the size of the view is <= 0
 
         SetDefaultViewProj (me:mutable; Orientation : TypeOfOrientation );
@@ -281,13 +277,13 @@ is
         SetLightOn(me:mutable; MyLight : Light from V3d )
         ---Level: Public
         ---Purpose: Activates MyLight in the viewer.
-                raises BadValue from Viewer;
+                raises BadValue from V3d;
         --        If No More Light can be activated in MyViewer .
 
         SetLightOn(me:mutable)
         ---Level: Public
         ---Purpose: Activates all the lights defined in this viewer.
-                raises BadValue from Viewer;
+                raises BadValue from V3d;
         --        If No More Light can be activated in MyViewer .
 
         SetLightOff(me:mutable; MyLight : Light  from V3d );
@@ -696,7 +692,24 @@ is
         -- from lowest layer to highest ( foreground ). The first layer ID
         -- in sequence is the default layer that can't be removed.
 
+        Driver(me) returns mutable GraphicDriver from Graphic3d
+        is static;
+        ---C++: return const &
+
+        NextName(me) returns ExtString from Standard
+        is static;
+
+        Domain(me) returns CString from  Standard
+        is static;
+        
+        IncrCount(me:mutable) is static protected;
+
 fields
+
+        myNextCount: Integer        from Standard;
+        myDriver:    GraphicDriver  from Graphic3d;
+        myName:      ExtendedString from TCollection;
+        myDomain:    AsciiString    from TCollection;
 
         MyViewer:               ViewManager from Visual3d ;
         MyDefinedViews:                ListOfTransient from V3d;

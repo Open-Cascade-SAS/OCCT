@@ -60,7 +60,7 @@ void V3d_View::Move(const Standard_Real Dx, const Standard_Real Dy, const Standa
     MyViewReferenceUp = MyViewOrientation.ViewReferenceUp() ;
     if (!ScreenAxis(MyViewReferencePlane,MyViewReferenceUp,
 		MyXscreenAxis,MyYscreenAxis,MyZscreenAxis))
-	Viewer_BadValue::Raise ("V3d_View::Move, alignment of Eye,At,Up");
+	V3d_BadValue::Raise ("V3d_View::Move, alignment of Eye,At,Up");
   }
   MyXscreenAxis.Coord(XX,XY,XZ) ; 
   MyYscreenAxis.Coord(YX,YY,YZ) ; 
@@ -71,7 +71,7 @@ void V3d_View::Move(const Standard_Real Dx, const Standard_Real Dy, const Standa
   Yeye = Zrp*Ypn + Dx*XY + Dy*YY + Dz*ZY ;
   Zeye = Zrp*Zpn + Dx*XZ + Dy*YZ + Dz*ZZ ;
   Zrp = sqrt( Xeye*Xeye + Yeye*Yeye + Zeye*Zeye ) ;
-  Viewer_BadValue_Raise_if( Zrp <= 0. ,"V3d_View::Move:: Eye,At are Confused");
+  V3d_BadValue_Raise_if( Zrp <= 0. ,"V3d_View::Move:: Eye,At are Confused");
 #ifdef DEB
   Standard_Real focale = 
 #endif
@@ -122,7 +122,7 @@ void V3d_View::Move(const Standard_Real Length, const Standard_Boolean Start) {
   Yeye = Zrp*Ypn + Vy*Length ; 
   Zeye = Zrp*Zpn + Vz*Length ;
   Zrp = sqrt( Xeye*Xeye + Yeye*Yeye + Zeye*Zeye ) ;
-  Viewer_BadValue_Raise_if( Zrp <= 0. ,"V3d_View::Move:: Eye,At are Confused");
+  V3d_BadValue_Raise_if( Zrp <= 0. ,"V3d_View::Move:: Eye,At are Confused");
   
 #ifdef DEB
   Standard_Real focale = 
@@ -185,7 +185,7 @@ void V3d_View::Translate(const Standard_Real Dx, const Standard_Real Dy, const S
     MyProjReferencePoint = MyViewMapping.ProjectionReferencePoint();
     if (!ScreenAxis(MyViewReferencePlane,MyViewReferenceUp,
 		MyXscreenAxis,MyYscreenAxis,MyZscreenAxis))
-	Viewer_BadValue::Raise ("V3d_View::Translate, alignment of Eye,At,Up");
+	V3d_BadValue::Raise ("V3d_View::Translate, alignment of Eye,At,Up");
   }
   MyXscreenAxis.Coord(XX,XY,XZ) ; 
   MyYscreenAxis.Coord(YX,YY,YZ) ; 

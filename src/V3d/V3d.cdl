@@ -47,7 +47,6 @@ package V3d
 
 
 uses
-        Viewer,
         TColStd,
         Graphic3d,
         Visual3d,
@@ -77,6 +76,7 @@ is
         --Category: The Exceptions
         --------------------------
 
+        exception BadValue inherits OutOfRange;
         exception UnMapped inherits DomainError;
 
         -----------------------------
@@ -181,7 +181,7 @@ is
         class Viewer;
         ---Purpose: Provides the services of a 3D viewer.
 
-        deferred class View;
+        class View;
         ---Purpose: Provides a set of services common to all types of view.
 
         class OrthographicView;

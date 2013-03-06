@@ -26,7 +26,6 @@ uses
        TypeOfColorScalePosition from Aspect,
        ColorMap                 from Aspect,
        SequenceOfColor          from Aspect,
-       View                     from Viewer,
        Color                    from Quantity,
        AsciiString              from TCollection,
        ExtendedString           from TCollection,

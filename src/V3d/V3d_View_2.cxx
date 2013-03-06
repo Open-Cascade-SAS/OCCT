@@ -54,10 +54,10 @@ void V3d_View::SetLightOn( const Handle(V3d_Light)& TheLight ) {
 
   if( !MyActiveLights.Contains(TheLight)){
 #ifdef GER61454
-    Viewer_BadValue_Raise_if( MyActiveLights.Extent() >= MyView->LightLimit(),
+    V3d_BadValue_Raise_if( MyActiveLights.Extent() >= MyView->LightLimit(),
 			  "too many lights");
 #else
-//    Viewer_BadValue_Raise_if( MyActiveLights.Extent() >= Visual3d_Light::Limit(),
+//    V3d_BadValue_Raise_if( MyActiveLights.Extent() >= Visual3d_Light::Limit(),
 //			  "too many lights");
 #endif
     MyActiveLights.Append(TheLight) ;
@@ -123,14 +123,14 @@ void V3d_View::SetPlaneOn( const Handle(V3d_Plane)& ThePlane ) {
 
 #ifdef GER61454
   if( !MyActivePlanes.Contains(ThePlane)) {
-    Viewer_BadValue_Raise_if( MyActivePlanes.Extent() >= MyView->PlaneLimit(), "too many planes");
+    V3d_BadValue_Raise_if( MyActivePlanes.Extent() >= MyView->PlaneLimit(), "too many planes");
     MyActivePlanes.Append(ThePlane) ;
   }
   MyViewContext.SetClipPlaneOn(ThePlane->Plane()) ;
   MyView->SetContext(MyViewContext);
 #else 	//GER61454
   if( !MyActivePlanes.Contains(ThePlane)) {
-    Viewer_BadValue_Raise_if( MyActivePlanes.Extent() >= Visual3d_ClipPlane::Limit(), "too many planes");
+    V3d_BadValue_Raise_if( MyActivePlanes.Extent() >= Visual3d_ClipPlane::Limit(), "too many planes");
     MyActivePlanes.Append(ThePlane) ;
     MyViewContext.SetClipPlaneOn(ThePlane->Plane()) ;
     
@@ -156,7 +156,7 @@ void V3d_View::SetPlaneOn( ) {
 #ifdef GER61454
   for(MyViewer->InitDefinedPlanes();MyViewer->MoreDefinedPlanes();MyViewer->NextDefinedPlanes()) {
     if(!MyActivePlanes.Contains(MyViewer->DefinedPlane())) {
-      Viewer_BadValue_Raise_if( MyActivePlanes.Extent() >= MyView->PlaneLimit(), "too many planes");
+      V3d_BadValue_Raise_if( MyActivePlanes.Extent() >= MyView->PlaneLimit(), "too many planes");
       MyActivePlanes.Append(MyViewer->DefinedPlane());
     }
     MyViewContext.SetClipPlaneOn(MyViewer->DefinedPlane()->Plane());
@@ -165,7 +165,7 @@ void V3d_View::SetPlaneOn( ) {
 #else	//GER61454
   for(MyViewer->InitDefinedPlanes();MyViewer->MoreDefinedPlanes();MyViewer->NextDefinedPlanes()) {
     if(!MyActivePlanes.Contains(MyViewer->DefinedPlane())) {
-      Viewer_BadValue_Raise_if( MyActivePlanes.Extent() >=  Visual3d_ClipPlane::Limit(),
+      V3d_BadValue_Raise_if( MyActivePlanes.Extent() >=  Visual3d_ClipPlane::Limit(),
 			    "too many planes");
       MyActivePlanes.Append(MyViewer->DefinedPlane());
       MyViewContext.SetClipPlaneOn(MyViewer->DefinedPlane()->Plane());

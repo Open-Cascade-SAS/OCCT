@@ -67,7 +67,7 @@
 
 V3d_SpotLight::V3d_SpotLight(const Handle(V3d_Viewer)& VM, const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const V3d_TypeOfOrientation Direction, const Quantity_NameOfColor Name, const Standard_Real A1, const Standard_Real A2, const Standard_Real CN, const Standard_Real AN):V3d_PositionLight(VM) {
 
-  Viewer_BadValue_Raise_if( A1 < 0 || A1 > 1. || A2 < 0 || A2 > 1  
+  V3d_BadValue_Raise_if( A1 < 0 || A1 > 1. || A2 < 0 || A2 > 1  
 			|| AN < 0. || AN > M_PI, "V3d_SpotLight, bad coefficient or angle");
 
   Quantity_Color C(Name) ;
@@ -84,7 +84,7 @@ V3d_SpotLight::V3d_SpotLight(const Handle(V3d_Viewer)& VM, const Standard_Real X
 
 V3d_SpotLight::V3d_SpotLight(const Handle(V3d_Viewer)& VM, const Standard_Real Xt, const Standard_Real Yt, const Standard_Real Zt, const Standard_Real Xp, const Standard_Real Yp, const Standard_Real Zp, const Quantity_NameOfColor Name, const Standard_Real A1, const Standard_Real A2, const Standard_Real CN, const Standard_Real AN):V3d_PositionLight(VM) {
 
-  Viewer_BadValue_Raise_if( A1 < 0 || A1 > 1. || A2 < 0 || A2 > 1  
+  V3d_BadValue_Raise_if( A1 < 0 || A1 > 1. || A2 < 0 || A2 > 1  
 			|| AN < 0. || AN > M_PI, "V3d_SpotLight, bad coefficient or angle");
 
   Quantity_Color C(Name) ;
@@ -121,7 +121,7 @@ void V3d_SpotLight::SetDirection(const V3d_TypeOfOrientation Direction) {
 
 void V3d_SpotLight::SetAttenuation(const Standard_Real A1, const Standard_Real A2) {
 
-  Viewer_BadValue_Raise_if( A1 < 0 || A1 > 1. || A2 < 0 || A2 > 1 ,
+  V3d_BadValue_Raise_if( A1 < 0 || A1 > 1. || A2 < 0 || A2 > 1 ,
 			"V3d_SpotLight::SetAttenuation, bad coefficients");
 
   MyLight->SetAttenuation1(A1) ;
@@ -131,7 +131,7 @@ void V3d_SpotLight::SetAttenuation(const Standard_Real A1, const Standard_Real A
 void V3d_SpotLight::SetConcentration(const Standard_Real C) {
 
   
-  Viewer_BadValue_Raise_if( C < 0 || C > 1.,
+  V3d_BadValue_Raise_if( C < 0 || C > 1.,
 			"V3d_SpotLight::SetConcentration, bad coefficient");
 
   MyLight->SetConcentration(C) ;
@@ -139,7 +139,7 @@ void V3d_SpotLight::SetConcentration(const Standard_Real C) {
 
 void V3d_SpotLight::SetAngle(const Standard_Real Angle) {
 
-  Viewer_BadValue_Raise_if( Angle <= 0. || Angle >= M_PI,
+  V3d_BadValue_Raise_if( Angle <= 0. || Angle >= M_PI,
 			"V3d_SpotLight::SetAngle, bad angle");
   MyLight->SetAngle(Angle) ;
 

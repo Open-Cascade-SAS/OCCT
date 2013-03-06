@@ -1,7 +1,6 @@
 Aspect
 InterfaceGraphic
 SelectBasics
-Viewer
 Xw
 AlienImage
 Image
@@ -10,4 +9,3 @@ WNT
 Cocoa
 TColQuantity
 Font
-

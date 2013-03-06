@@ -44,7 +44,7 @@ uses
 	Group from Graphic3d,
 	View from V3d
 
-raises BadValue from Viewer
+raises BadValue from V3d
 
 is
 
@@ -76,11 +76,11 @@ is
 	---Purpose : Defines the direction of the light source
 	--	     by a predefined orientation.
 
-    	SetDirection ( me : mutable; Xm, Ym, Zm : Parameter ) raises BadValue from Viewer is static;
+    	SetDirection ( me : mutable; Xm, Ym, Zm : Parameter ) raises BadValue from V3d is static;
 	---Level: Public
 	---Purpose : Defines the direction of the light source by the predefined
     	-- vector Xm,Ym,Zm.
-	--  Warning: raises  BadValue from Viewer if the vector is null.
+	--  Warning: raises  BadValue from V3d if the vector is null.
 
         SetDisplayPosition (me : mutable; X,Y,Z : Coordinate) is static;
 	---Level: Public

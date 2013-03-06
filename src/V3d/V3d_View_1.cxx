@@ -60,7 +60,7 @@ void V3d_View::SetZClippingDepth(const Standard_Real Depth) {
 
 void V3d_View::SetZClippingWidth(const Standard_Real Width) {
   Standard_Real Front,Back,Depth ;
-  Viewer_BadValue_Raise_if( Width <= 0.,"V3d_View::SetZClippingWidth, bad width");
+  V3d_BadValue_Raise_if( Width <= 0.,"V3d_View::SetZClippingWidth, bad width");
 
   Front = MyViewContext.ZClippingFrontPlane() ;
   Back = MyViewContext.ZClippingBackPlane() ;
@@ -136,7 +136,7 @@ void V3d_View::SetZCueingDepth(const Standard_Real Depth) {
 
 void V3d_View::SetZCueingWidth(const Standard_Real Width) {
   Standard_Real Front,Back,Depth ;
-  Viewer_BadValue_Raise_if( Width <= 0.,"V3d_View::SetZCueingWidth, bad width");
+  V3d_BadValue_Raise_if( Width <= 0.,"V3d_View::SetZCueingWidth, bad width");
 
   Front = MyViewContext.DepthCueingFrontPlane() ;
   Back = MyViewContext.DepthCueingBackPlane() ;

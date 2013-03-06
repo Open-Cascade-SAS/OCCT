@@ -160,7 +160,7 @@ To solve the problem (for lack of a better solution) I make 2 passes.
 #include <Image_AlienPixMap.hxx>
 #include <V3d.hxx>
 #include <V3d_View.ixx>
-#include <Viewer_BadValue.hxx>
+#include <V3d_BadValue.hxx>
 #include <Standard_ShortReal.hxx>
 #include <gp_Dir.hxx>
 #include <TColStd_Array2OfReal.hxx>
@@ -682,7 +682,7 @@ void V3d_View::SetAxis(const Standard_Real X, const Standard_Real Y, const Stand
   Standard_Real D,Nx = Vx,Ny = Vy,Nz = Vz ;
 
   D = Sqrt( Vx*Vx + Vy*Vy + Vz*Vz ) ;
-  Viewer_BadValue_Raise_if ( D <= 0. , "V3d_View::SetAxis, bad axis");
+  V3d_BadValue_Raise_if ( D <= 0. , "V3d_View::SetAxis, bad axis");
   Nx /= D ; Ny /= D ; Nz /= D ;
   MyDefaultViewPoint.SetCoord(X,Y,Z) ;
   MyDefaultViewAxis.SetCoord(Nx,Ny,Nz) ;
@@ -771,7 +771,7 @@ void V3d_View::Rotate(const Standard_Real ax, const Standard_Real ay, const Stan
     MyViewReferenceUp = MyViewOrientation.ViewReferenceUp() ;
     if (!ScreenAxis(MyViewReferencePlane,MyViewReferenceUp,
       MyXscreenAxis,MyYscreenAxis,MyZscreenAxis))
-      Viewer_BadValue::Raise ("V3d_View::Rotate, alignment of Eye,At,Up");
+      V3d_BadValue::Raise ("V3d_View::Rotate, alignment of Eye,At,Up");
   }
 
   InitMatrix(Matrix) ;
@@ -823,7 +823,7 @@ void V3d_View::Rotate(const Standard_Real ax, const Standard_Real ay, const Stan
     MyViewReferenceUp = MyViewOrientation.ViewReferenceUp() ;
     if (!ScreenAxis(MyViewReferencePlane,MyViewReferenceUp,
       MyXscreenAxis,MyYscreenAxis,MyZscreenAxis))
-      Viewer_BadValue::Raise ("V3d_View::Rotate, alignment of Eye,At,Up");
+      V3d_BadValue::Raise ("V3d_View::Rotate, alignment of Eye,At,Up");
   }
 
   InitMatrix(Matrix) ;
@@ -973,7 +973,7 @@ void V3d_View::Turn(const Standard_Real ax, const Standard_Real ay, const Standa
     MyViewReferenceUp = MyViewOrientation.ViewReferenceUp() ;
     if (!ScreenAxis(MyViewReferencePlane,MyViewReferenceUp,
       MyXscreenAxis,MyYscreenAxis,MyZscreenAxis))
-      Viewer_BadValue::Raise ("V3d_View::Turn, alignment of Eye,At,Up");
+      V3d_BadValue::Raise ("V3d_View::Turn, alignment of Eye,At,Up");
   }
 
   InitMatrix(Matrix) ;
@@ -1099,7 +1099,7 @@ void V3d_View::SetTwist(const Standard_Real angle)
       MyXscreenAxis,MyYscreenAxis,MyZscreenAxis) ;
   }
 
-  Viewer_BadValue_Raise_if( !TheStatus,"V3d_ViewSetTwist, alignment of Eye,At,Up,");
+  V3d_BadValue_Raise_if( !TheStatus,"V3d_ViewSetTwist, alignment of Eye,At,Up,");
 
   MyViewReferencePoint = MyViewOrientation.ViewReferencePoint() ;
   RotAxis(MyViewReferencePoint,MyZscreenAxis,Angle,Matrix) ;
@@ -1132,7 +1132,7 @@ void V3d_View::SetEye(const Standard_Real X,const Standard_Real Y,const Standard
   MyViewReferenceUp = MyViewOrientation.ViewReferenceUp() ;
   Xpn = X - Xat ; Ypn = Y - Yat ; Zpn = Z - Zat ;
   Zrp = Sqrt(Xpn*Xpn + Ypn*Ypn + Zpn*Zpn) ;
-  Viewer_BadValue_Raise_if( Zrp <= 0. , "V3d_View::SetEye:: Eye,At are Confused");
+  V3d_BadValue_Raise_if( Zrp <= 0. , "V3d_View::SetEye:: Eye,At are Confused");
 
   Xpn /= Zrp ; Ypn /= Zrp ; Zpn /= Zrp ;
   MyViewReferencePlane.SetCoord(Xpn,Ypn,Zpn) ;
@@ -1171,9 +1171,9 @@ void V3d_View::SetDepth(const Standard_Real Depth)
 {
   Standard_Real Xrp,Yrp,Zrp ;
 #ifdef IMP250200
-  Viewer_BadValue_Raise_if( Depth == 0. ,"V3d_View::SetDepth, bad depth");
+  V3d_BadValue_Raise_if( Depth == 0. ,"V3d_View::SetDepth, bad depth");
 #else
-  Viewer_BadValue_Raise_if( Depth <= 0. ,"V3d_View::SetDepth, bad depth");
+  V3d_BadValue_Raise_if( Depth <= 0. ,"V3d_View::SetDepth, bad depth");
 #endif
 
   MyViewReferencePoint = MyViewOrientation.ViewReferencePoint() ;
@@ -1231,7 +1231,7 @@ void V3d_View::SetProj( const Standard_Real Vx,const Standard_Real Vy, const Sta
 {
   Standard_Real Angle ;
 
-  Viewer_BadValue_Raise_if( Sqrt(Vx*Vx + Vy*Vy + Vz*Vz) <= 0.,
+  V3d_BadValue_Raise_if( Sqrt(Vx*Vx + Vy*Vy + Vz*Vz) <= 0.,
     "V3d_View::SetProj, null projection vector");
 
   Angle = Twist() ;
@@ -1290,7 +1290,7 @@ void V3d_View::SetAt(const Standard_Real X,const Standard_Real Y,const Standard_
   Xeye = Zrp*Xpn + Xat ; Yeye = Zrp*Ypn + Yat ; Zeye = Zrp*Zpn + Zat ;
   Xpn = Xeye - X ; Ypn = Yeye - Y ; Zpn = Zeye - Z ;
   Zrp = Sqrt(Xpn*Xpn + Ypn*Ypn + Zpn*Zpn) ;
-  Viewer_BadValue_Raise_if( Zrp <= 0.,
+  V3d_BadValue_Raise_if( Zrp <= 0.,
     "V3d_View::SetAt, Eye,At are Confused");
 
   Xpn /= Zrp ; Ypn /= Zrp ; Zpn /= Zrp ;
@@ -1332,7 +1332,7 @@ void V3d_View::SetAt(const Standard_Real X,const Standard_Real Y,const Standard_
 void V3d_View::SetUp(const Standard_Real Vx,const Standard_Real Vy,const Standard_Real Vz)
 {
   Standard_Boolean TheStatus ;
-  Viewer_BadValue_Raise_if( Sqrt(Vx*Vx + Vy*Vy + Vz*Vz) <= 0. ,
+  V3d_BadValue_Raise_if( Sqrt(Vx*Vx + Vy*Vy + Vz*Vz) <= 0. ,
     "V3d_View::SetUp, nullUp vector");
 
   MyViewReferencePlane = MyViewOrientation.ViewReferencePlane() ;
@@ -1355,7 +1355,7 @@ void V3d_View::SetUp(const Standard_Real Vx,const Standard_Real Vy,const Standar
     TheStatus = ScreenAxis(MyViewReferencePlane,MyViewReferenceUp,
       MyXscreenAxis,MyYscreenAxis,MyZscreenAxis) ;
   }
-  Viewer_BadValue_Raise_if( !TheStatus,"V3d_View::Setup, alignment of Eye,At,Up");
+  V3d_BadValue_Raise_if( !TheStatus,"V3d_View::Setup, alignment of Eye,At,Up");
 
   MyViewReferenceUp = MyYscreenAxis ;
   MyViewOrientation.SetViewReferenceUp(MyViewReferenceUp) ;
@@ -1386,7 +1386,7 @@ void V3d_View::SetUp( const V3d_TypeOfOrientation Orientation )
     TheStatus = ScreenAxis(MyViewReferencePlane,MyViewReferenceUp,
       MyXscreenAxis,MyYscreenAxis,MyZscreenAxis) ;
   }
-  Viewer_BadValue_Raise_if( !TheStatus, "V3d_View::SetUp, alignment of Eye,At,Up");
+  V3d_BadValue_Raise_if( !TheStatus, "V3d_View::SetUp, alignment of Eye,At,Up");
 
   MyViewReferenceUp = MyYscreenAxis ;
   MyViewOrientation.SetViewReferenceUp(MyViewReferenceUp) ;
@@ -1434,7 +1434,7 @@ void V3d_View::Reset( const Standard_Boolean update )
 void V3d_View::Panning(const Standard_Real Dx, const Standard_Real Dy, const Quantity_Factor aZoomFactor, const Standard_Boolean Start)
 {
   Standard_Real Umin,Vmin,Umax,Vmax,Xrp,Yrp,Zrp,Dxv,Dyv ;
-  Viewer_BadValue_Raise_if( aZoomFactor <= 0.,"V3d_View::Panning, bad zoom factor");
+  V3d_BadValue_Raise_if( aZoomFactor <= 0.,"V3d_View::Panning, bad zoom factor");
 
   if( Start ) {
     MyProjReferencePoint = MyViewMapping.ProjectionReferencePoint() ;
@@ -1443,7 +1443,7 @@ void V3d_View::Panning(const Standard_Real Dx, const Standard_Real Dy, const Qua
     MyYwindowCenter = (Vmin + Vmax)/2. ;
     MyWindowWidth = Abs(Umax - Umin) ;
     MyWindowHeight = Abs(Vmax - Vmin) ;
-    Viewer_BadValue_Raise_if( MyWindowWidth <= 0. || MyWindowHeight <= 0. ,
+    V3d_BadValue_Raise_if( MyWindowWidth <= 0. || MyWindowHeight <= 0. ,
       "V3d_View::Panning, Window Size is NULL");
   }
   MyProjReferencePoint.Coord(Xrp,Yrp,Zrp) ;
@@ -1477,7 +1477,7 @@ void V3d_View::SetCenter(const Standard_Real Xc, const Standard_Real Yc)
   MyXwindowCenter = Xrp = Xc ; MyYwindowCenter = Yrp = Yc ;
   MyViewMapping.WindowLimit(Umin,Vmin,Umax,Vmax) ;
   MyWindowWidth = Abs(Umax - Umin) ; MyWindowHeight = Abs(Vmax - Vmin) ;
-  Viewer_BadValue_Raise_if( MyWindowWidth <= 0. || MyWindowHeight <= 0. ,
+  V3d_BadValue_Raise_if( MyWindowWidth <= 0. || MyWindowHeight <= 0. ,
     "V3d_View::SetCenter, Window Size is NULL");
 
   Umin = Xc - MyWindowWidth/2. ; Vmin = Yc - MyWindowHeight/2. ;
@@ -1495,7 +1495,7 @@ void V3d_View::SetSize(const Standard_Real Size)
 {
   Standard_Real Umin,Vmin,Umax,Vmax,Rap ;
 
-  Viewer_BadValue_Raise_if(  Size  <= 0.,
+  V3d_BadValue_Raise_if(  Size  <= 0.,
     "V3d_View::SetSize, Window Size is NULL");
 
 
@@ -1534,7 +1534,7 @@ void V3d_View::SetZSize(const Standard_Real Size)
     if( Zmax <= MyViewMapping.FrontPlaneDistance() ) return;
   }
 #else
-  Viewer_BadValue_Raise_if(  Size  <= 0.,
+  V3d_BadValue_Raise_if(  Size  <= 0.,
     "V3d_View::SetZSize, Window ZSize is NULL");
 #endif
 
@@ -1563,7 +1563,7 @@ void V3d_View::SetZSize(const Standard_Real Size)
 void V3d_View::SetZoom(const Standard_Real Coef,const Standard_Boolean Start)
 {
   Standard_Real Umin,Vmin,Umax,Vmax,Dxv,Dyv ;
-  Viewer_BadValue_Raise_if( Coef <= 0.,"V3d_View::SetZoom, bad coefficient");
+  V3d_BadValue_Raise_if( Coef <= 0.,"V3d_View::SetZoom, bad coefficient");
 
   if( Start ) {
     MyViewMapping.WindowLimit(Umin,Vmin,Umax,Vmax) ;
@@ -1598,7 +1598,7 @@ void V3d_View::SetScale( const Standard_Real Coef )
   Standard_Real Umin,Vmin,Umax,Vmax,Xrp,Yrp,Dxv,Dyv ;
   Visual3d_ViewMapping VMD = MyView->ViewMappingDefault() ;
 
-  Viewer_BadValue_Raise_if( Coef <= 0. ,"V3d_View::SetScale, bad coefficient");
+  V3d_BadValue_Raise_if( Coef <= 0. ,"V3d_View::SetScale, bad coefficient");
 
   VMD.WindowLimit(Umin,Vmin,Umax,Vmax) ;
   Dxv = Abs(Umax - Umin) ; Dyv = Abs(Vmax - Vmin) ;
@@ -1616,7 +1616,7 @@ void V3d_View::SetAxialScale( const Standard_Real Sx, const Standard_Real Sy, co
 {
   Standard_Real Xmin,Ymin,Zmin,Xmax,Ymax,Zmax,U,V,W ;
   Standard_Real Umin,Vmin,Wmin,Umax,Vmax,Wmax ;
-  Viewer_BadValue_Raise_if( Sx <= 0. || Sy <= 0. || Sz <= 0.,"V3d_View::SetAxialScale, bad coefficient");
+  V3d_BadValue_Raise_if( Sx <= 0. || Sy <= 0. || Sz <= 0.,"V3d_View::SetAxialScale, bad coefficient");
 
   MyViewOrientation.SetAxialScale( Sx, Sy, Sz );
   Aspect_TypeOfUpdate updateMode = MyView->ViewManager()->UpdateMode();
@@ -2586,7 +2586,7 @@ void V3d_View::SetViewingVolume(const Standard_Real Left, const Standard_Real Ri
 {
   Standard_Real Umin,Vmin,Umax,Vmax,Xrp,Yrp,Zrp;
 
-  Viewer_BadValue_Raise_if ( ZNear <= 0. || ZFar <= 0. || ZNear >= ZFar, "V3d_View::SetVolume, bad distances");
+  V3d_BadValue_Raise_if ( ZNear <= 0. || ZFar <= 0. || ZNear >= ZFar, "V3d_View::SetVolume, bad distances");
 
   MyProjReferencePoint = MyViewMapping.ProjectionReferencePoint() ;
   MyProjReferencePoint.Coord(Xrp,Yrp,Zrp) ;
@@ -2900,7 +2900,7 @@ void V3d_View::ZoomAtPoint(const Standard_Integer mouseStartX,
 
     Standard_Real dzoom = fabs(d) / 100.0 + 1.0;
     dzoom = (d > 0) ?  dzoom : 1.0 / dzoom;
-    Viewer_BadValue_Raise_if( dzoom <= 0.,"V3d_View::ZoomAtPoint, bad coefficient");
+    V3d_BadValue_Raise_if( dzoom <= 0.,"V3d_View::ZoomAtPoint, bad coefficient");
 
     Standard_Real Umin,Vmin,Umax,Vmax;
     MyViewMapping.WindowLimit(Umin,Vmin,Umax,Vmax);
@@ -2988,7 +2988,7 @@ void V3d_View::FitAll(const Handle(Aspect_Window)& aWindow,
   Standard_Integer Xpixel,Ypixel;
   //Standard_Integer Xleft,Yup,Xright,Ylow ;
 
-  Viewer_BadValue_Raise_if( (Xmin == Xmax) || (Ymin == Ymax) ,
+  V3d_BadValue_Raise_if( (Xmin == Xmax) || (Ymin == Ymax) ,
     "V3d_View::FitAll, Window Size is NULL");
 
   MyProjReferencePoint = MyViewMapping.ProjectionReferencePoint() ;
@@ -3256,7 +3256,7 @@ void V3d_View::SetPlotter(const Handle(Graphic3d_Plotter)& aPlotter)
 
 void V3d_View::Plot()
 {
-  Viewer_BadValue_Raise_if( !MyPlotter.IsNull(), "view has no plotter");
+  V3d_BadValue_Raise_if( !MyPlotter.IsNull(), "view has no plotter");
   MyView->Plot(MyPlotter);
 }
 
@@ -3455,4 +3455,16 @@ Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
   }
   cView->ptrFBO = aPrevFBOPtr;
   return isSuccess;
+}
+
+void V3d_View::ImmediateUpdate() const
+{
+  if (myImmediateUpdate) Update();
+}
+
+Standard_Boolean V3d_View::SetImmediateUpdate (const Standard_Boolean theImmediateUpdate)
+{
+  Standard_Boolean aPreviousMode = myImmediateUpdate;
+  myImmediateUpdate = theImmediateUpdate;
+  return aPreviousMode;
 }

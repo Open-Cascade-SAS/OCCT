@@ -31,7 +31,7 @@
 
 #include <V3d.hxx>
 #include <V3d_Plane.ixx>
-#include <Viewer_BadValue.hxx>
+#include <V3d_BadValue.hxx>
 
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_ArrayOfQuadrangles.hxx>
@@ -42,7 +42,7 @@
 
 V3d_Plane::V3d_Plane(const Standard_Real A, const Standard_Real B, const Standard_Real C, const Standard_Real D)
 {
-  Viewer_BadValue_Raise_if( sqrt(A*A + B*B + C*C) <= 0., "V3d_Plane::V3d_Plane, bad plane coefficients");
+  V3d_BadValue_Raise_if( sqrt(A*A + B*B + C*C) <= 0., "V3d_Plane::V3d_Plane, bad plane coefficients");
 
   MyPlane = new Visual3d_ClipPlane(A,B,C,D) ;
 }
@@ -51,7 +51,7 @@ V3d_Plane::V3d_Plane(const Standard_Real A, const Standard_Real B, const Standar
 
 void V3d_Plane::SetPlane(const Standard_Real A, const Standard_Real B, const Standard_Real C, const Standard_Real D)
 {
-  Viewer_BadValue_Raise_if( sqrt(A*A + B*B + C*C) <= 0., "V3d_Plane::SetPlane, bad plane coefficients");
+  V3d_BadValue_Raise_if( sqrt(A*A + B*B + C*C) <= 0., "V3d_Plane::SetPlane, bad plane coefficients");
 
   MyPlane->SetPlane(A,B,C,D) ;
   if( IsDisplayed() )

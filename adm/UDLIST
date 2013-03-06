@@ -223,7 +223,6 @@ p StdPrs
 p StdSelect
 p TColQuantity
 p V3d
-p Viewer
 p Visual3d
 p Voxel
 p WNT

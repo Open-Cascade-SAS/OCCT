@@ -162,12 +162,9 @@ void PrsMgr_PresentationManager3d::BeginDraw()
 //purpose  : 
 //=======================================================================
 
-void PrsMgr_PresentationManager3d::EndDraw(const Handle(Viewer_View)& aView, const Standard_Boolean DoubleBuffer) {
-  
-  
-  Handle(V3d_View) v;
-  v =*((Handle(V3d_View)*)&aView);
-  if (!v->TransientManagerBeginDraw(DoubleBuffer,Standard_True))
+void PrsMgr_PresentationManager3d::EndDraw(const Handle(V3d_View)& theView, const Standard_Boolean DoubleBuffer)
+{
+  if (!theView->TransientManagerBeginDraw (DoubleBuffer, Standard_True))
   {
     myImmediateMode = Standard_False;
     return;

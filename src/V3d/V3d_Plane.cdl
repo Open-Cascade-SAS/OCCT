@@ -45,7 +45,7 @@ uses
 
 raises
 
-        BadValue from Viewer
+        BadValue from V3d
 
 is
 
@@ -61,8 +61,8 @@ is
 	---Level : Public
         ---Purpose: Creates a clipping plane using the equation :
         --          <A>*X + <B>*Y + <C>*Z + <D> = 0.0
-	raises BadValue from Viewer;
-	---Purpose:  Warning! raises BadValue from Viewer
+	raises BadValue from V3d;
+	---Purpose:  Warning! raises BadValue from V3d
 	--          if the norm of the plane is NULL.
 
         --------------------------------------------------------
@@ -72,8 +72,8 @@ is
 	SetPlane( me : mutable; A,B,C,D : Parameter)
 	---Level : Public
 	---Purpose: Modifies the plane equation.
-	raises BadValue from Viewer
-	---Purpose:  Warning! raises BadValue from Viewer
+	raises BadValue from V3d
+	---Purpose:  Warning! raises BadValue from V3d
 	--          if the norm of the plane is NULL.
 	--	If the norm of the plane is NULL.
         is static;

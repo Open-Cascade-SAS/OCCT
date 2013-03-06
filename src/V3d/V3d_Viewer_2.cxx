@@ -20,7 +20,7 @@
 #include <V3d_DirectionalLight.hxx>
 #include <V3d_PositionalLight.hxx>
 #include <V3d_AmbientLight.hxx>
-#include <Viewer_BadValue.hxx>
+#include <V3d_BadValue.hxx>
 #include <V3d.hxx>				       
 void V3d_Viewer::UpdateLights() {
 
@@ -33,7 +33,7 @@ void V3d_Viewer::SetLightOn( const Handle(V3d_Light)& TheLight ) {
 
 
   if(!MyActiveLights.Contains(TheLight)) {
-//    Viewer_BadValue_Raise_if( MyActiveLights.Extent() >= Visual3d_Light::Limit(),
+//    V3d_BadValue_Raise_if( MyActiveLights.Extent() >= Visual3d_Light::Limit(),
 //				 "too many lights");
       MyActiveLights.Append(TheLight) ;
   }
@@ -54,7 +54,7 @@ void V3d_Viewer::SetLightOn() {
 
   for (InitDefinedLights();MoreDefinedLights();NextDefinedLights()) {
     if(!MyActiveLights.Contains(DefinedLight())) {
-//      Viewer_BadValue_Raise_if( MyActiveLights.Extent() >= Visual3d_Light::Limit(),
+//      V3d_BadValue_Raise_if( MyActiveLights.Extent() >= Visual3d_Light::Limit(),
 //				   "too many lights");
       MyActiveLights.Append(DefinedLight());
       for (InitActiveViews();MoreActiveViews();NextActiveViews()) {

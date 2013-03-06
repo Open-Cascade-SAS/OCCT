@@ -18,7 +18,7 @@
 -- purpose or non-infringement. Please see the License for the specific terms
 -- and conditions governing the rights and limitations under the License.
 
-deferred class GraphicDriver from Graphic3d inherits GraphicDriver from Aspect
+deferred class GraphicDriver from Graphic3d inherits TShared
 
     ---Version:
 
@@ -51,7 +51,6 @@ uses
 
     Array1OfEdge        from Aspect,
     CLayer2d            from Aspect,
-    GraphicDriver       from Aspect,
     TypeOfTriedronEcho  from Aspect,
     TypeOfTriedronPosition  from Aspect,
     Handle              from Aspect,

@@ -30,7 +30,7 @@ inherits TShared from MMgt
 uses 
     Presentation from PrsMgr,
     PresentableObject from PrsMgr,
-    View from Viewer,
+    View from V3d,
     ListOfTransient from TColStd
     
 
@@ -151,7 +151,7 @@ is
 	-- aPresentableObject with the mode aMode from the
 	-- list of objects in immediate mode.
 
-    EndDraw(me: mutable; aView: View from Viewer; DoubleBuffer: Boolean from Standard = Standard_False)
+    EndDraw(me: mutable; aView: View from V3d; DoubleBuffer: Boolean from Standard = Standard_False)
         ---Purpose:  Allows rapid drawing of the view aView by avoiding
 	-- an update of the whole background. If DoubleBuffer
 	-- is true, the background is drawn.

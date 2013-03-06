@@ -3524,7 +3524,7 @@ Standard_Boolean Visual3d_View::DegenerateModeIsOn () const {
 
 }
 
-const Handle(Aspect_GraphicDriver)& Visual3d_View::GraphicDriver () const {
+const Handle(Graphic3d_GraphicDriver)& Visual3d_View::GraphicDriver () const {
 
         return MyGraphicDriver;
 

@@ -42,7 +42,7 @@ uses
 	Vertex from Graphic3d,
 	Group from Graphic3d
 
-raises BadValue from Viewer
+raises BadValue from V3d
 
 is
 
@@ -61,10 +61,10 @@ is
 	---Purpose: Defines the target of the light (the center 
 	--          of the sphere)
 
-        SetRadius ( me : mutable; Radius : Parameter) raises BadValue from Viewer is static;
+        SetRadius ( me : mutable; Radius : Parameter) raises BadValue from V3d is static;
 	---Level: Public
 	---Purpose: Define the radius.
-	---Warning: raises BadValue from Viewer if the radius is <= 0	or if the light is directional
+	---Warning: raises BadValue from V3d if the radius is <= 0	or if the light is directional
 	
         OnHideFace (me : mutable; aView : View from V3d);
 	---Level: Public

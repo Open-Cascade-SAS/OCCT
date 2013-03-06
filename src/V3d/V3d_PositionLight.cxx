@@ -39,7 +39,7 @@
 #include <Visual3d_PickDescriptor.hxx>
 #include <Visual3d_HSequenceOfPickPath.hxx>
 #include <Visual3d_PickPath.hxx>
-#include <Viewer_BadValue.hxx>
+#include <V3d_BadValue.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Vec.hxx>
@@ -74,8 +74,8 @@ void V3d_PositionLight::SetTarget(const Standard_Real X, const Standard_Real Y, 
 
 void V3d_PositionLight::SetRadius(const Standard_Real Radius) {
 
-  Viewer_BadValue_Raise_if( Radius <= 0. , "V3d_PositionLight::SetRadius, bad radius");
-  Viewer_BadValue_Raise_if( MyType == V3d_DIRECTIONAL , "V3d_PositionLight::SetRadius, bad light type");
+  V3d_BadValue_Raise_if( Radius <= 0. , "V3d_PositionLight::SetRadius, bad radius");
+  V3d_BadValue_Raise_if( MyType == V3d_DIRECTIONAL , "V3d_PositionLight::SetRadius, bad light type");
 
   Standard_Real X0,Y0,Z0, Xn,Yn,Zn, Xp,Yp,Zp;
   

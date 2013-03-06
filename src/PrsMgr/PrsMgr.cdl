@@ -40,7 +40,7 @@ uses
     TopLoc,
     Prs3d,Graphic3d,
     Quantity,Geom,
-    Viewer, 
+    V3d, 
     TColStd, 
     gp
  

@@ -126,9 +126,7 @@ Handle(Visual3d_Layer) UnderLayer = AView->UnderLayer ();
 	}
 
 	// Begin rendering
-	Handle(Aspect_GraphicDriver) agd = AView->GraphicDriver ();
-
-	theGraphicDriver = *(Handle(Graphic3d_GraphicDriver) *) &agd;
+	theGraphicDriver = AView->GraphicDriver();
 
 	if (theGraphicDriver->BeginImmediatMode
 		(theCView, UnderCLayer, OverCLayer, DoubleBuffer, RetainMode))
@@ -170,10 +168,8 @@ void Visual3d_TransientManager::ClearDraw (const Handle(Visual3d_View)& AView,
     OverCLayer = AView->OverLayer()->CLayer();
     theCView.ptrOverLayer = (CALL_DEF_LAYER *) &OverCLayer;
   }
-	Handle(Aspect_GraphicDriver) agd = AView->GraphicDriver ();
 
-	theGraphicDriver = *(Handle(Graphic3d_GraphicDriver) *) &agd;
-
+	theGraphicDriver = AView->GraphicDriver();
 	theGraphicDriver->ClearImmediatMode (theCView, aFlush);
 }
 
@@ -205,9 +201,8 @@ Standard_Boolean Visual3d_TransientManager::BeginAddDraw (const Handle(Visual3d_
     OverCLayer = AView->OverLayer()->CLayer();
     theCView.ptrOverLayer = (CALL_DEF_LAYER *) &OverCLayer;
   }
-	Handle(Aspect_GraphicDriver) agd = AView->GraphicDriver ();
 
-	theGraphicDriver = *(Handle(Graphic3d_GraphicDriver) *) &agd;
+	theGraphicDriver = AView->GraphicDriver ();
 
 	if (theGraphicDriver->BeginAddMode (theCView))
   {
