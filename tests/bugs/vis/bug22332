@@ -1,0 +1,41 @@
+puts "============"
+puts "OCC22332"
+puts "============"
+puts ""
+
+######################################################
+# 
+######################################################
+
+set BUGNUMBER OCC22332
+
+vinit
+vclear
+box b 100 100 100
+vsetdispmode b 1
+vdisplay b
+vtrihedron tri
+vfit
+ 
+vmoveto 0 0
+
+# TEST LINEWIDTH
+# draw a 10px horizontal line at (10,10) - (400,10)
+vlayerline 10 10 400 10 10
+
+checkcolor 15 5 1 0 0
+checkcolor 15 13 1 0 0
+checkcolor 15 14 0 0 0
+
+# TEST LINETYPE
+# draw a slashed 10px horizontal line at (10,10) - (400,10)
+vlayerline 10 10 400 10 10 1
+
+checkcolor 23 10 1 0 0
+checkcolor 25 10 1 0 0
+checkcolor 26 10 0 0 0
+checkcolor 30 10 0 0 0
+checkcolor 32 10 1 0 0
+
+set only_screen 1
+

@@ -1,0 +1,51 @@
+puts "============"
+puts "OCC22595"
+puts "============"
+puts ""
+######################################################
+# gp_Mat's constructors incompletely initilize memory
+######################################################
+
+set BugNumber OCC22595
+pload QAcommands
+
+set Min_ListLength 11
+
+set List [ OCC22595 ]
+
+set status 0
+set ListLength [llength ${List}]
+
+if { ${ListLength} != ${Min_ListLength}} {
+   set status 1
+   puts "Error: ListLength = ${ListLength}"
+}
+
+set index0 0
+set M11  [lindex ${List} [expr ${index0} +2]]
+set M12  [lindex ${List} [expr ${index0} + 3 ]]
+set M13  [lindex ${List} [expr ${index0} + 4 ]]
+set M21  [lindex ${List} [expr ${index0} + 5 ]]
+set M22  [lindex ${List} [expr ${index0} + 6 ]]
+set M23  [lindex ${List} [expr ${index0} + 7 ]]
+set M31  [lindex ${List} [expr ${index0} + 8 ]]
+set M32  [lindex ${List} [expr ${index0} + 9 ]]
+set M33  [lindex ${List} [expr ${index0} + 10 ]]
+
+if { ${M11} != 0 || ${M12} != 0 || ${M13} != 0 } {
+   set status 1
+}
+if { ${M21} != 0 || ${M22} != 0 || ${M23} != 0 } {
+   set status 1
+}
+if { ${M31} != 0 || ${M32} != 0 || ${M33} != 0 } {
+   set status 1
+}
+if { $status != 0 } {
+    puts  "Faulty $BugNumber"
+} else {
+    puts  "OK $BugNumber"
+}
+
+
+

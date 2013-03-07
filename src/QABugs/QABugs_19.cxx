@@ -277,6 +277,16 @@ Standard_Integer OCC22611 (Draw_Interpretor& di, Standard_Integer argc, const ch
   return 0;
 }
 
+Standard_Integer OCC22595 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
+{
+  gp_Mat M0;
+  di << "M0 = "
+  << " {" << M0(1,1) << "} {" << M0(1,2) << "} {" << M0(1,3) <<"}"
+  << " {" << M0(2,1) << "} {" << M0(2,2) << "} {" << M0(2,3) <<"}"
+  << " {" << M0(1,1) << "} {" << M0(1,2) << "} {" << M0(1,3) <<"}";
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -287,6 +297,7 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC22980", "OCC22980", __FILE__, OCC22980, group);
   theCommands.Add ("OCC23595", "OCC23595", __FILE__, OCC23595, group);
   theCommands.Add ("OCC22611", "OCC22611 string nb", __FILE__, OCC22611, group);
+  theCommands.Add ("OCC22595", "OCC22595", __FILE__, OCC22595, group);
 
   return;
 }
