@@ -1,0 +1,22 @@
+puts "================"
+puts "OCC23777"
+puts "================"
+puts ""
+#######################################################################
+# 2D-Classifier algorithm produces wrong results for a point and face.
+#######################################################################
+
+set BugNumber OCC23777
+
+restore [locate_data_file bug23777_b1.brep] b1
+
+point p2D 0.062260538576946696 249583.00418413401
+
+set info [b2dclassify b1 p2D]
+set check [regexp "IN" $info]
+
+if { ${check} == 1 } {
+    puts "OK ${BugNumber}"
+} else {
+    puts "Faulty ${BugNumber}"
+}
