@@ -61,6 +61,15 @@ static
 			const Handle(Adaptor3d_HSurface)& Surf2,
 			IntPatch_SequenceOfLine& aSLin);
 
+static Standard_Boolean IsPointOnLine(const IntSurf_PntOn2S        &thePOn2S,
+                                      const Handle(IntPatch_WLine) &theWLine,
+                                      const Standard_Real           Deflection);
+
+static void AddWLine(IntPatch_SequenceOfLine      &theLines,
+                     const Handle(IntPatch_WLine) &theWLine,
+                     const Standard_Real           Deflection);
+
+
 //==================================================================================
 // function : 
 // purpose  : 
@@ -144,7 +153,6 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
   Standard_Integer nbLigSec = Interference.NbSectionLines();
   Standard_Integer nbTanZon = Interference.NbTangentZones();
 
-  Standard_Integer NbPntOn2SOnLine;
   Standard_Integer NbLigCalculee = 0;
 
   Standard_Real U1,U2,V1,V2;
@@ -292,56 +300,11 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
 	    NbLigCalculee = SLin.Length();
 	    Standard_Integer l;
 	    for( l=1; (l <= NbLigCalculee) && (dminiPointLigne >= SeuildPointLigne); l++) { 
-	      Handle(IntPatch_WLine)& testwline = *((Handle(IntPatch_WLine)*)&SLin.ChangeValue(l));
-	      if( (testwline->IsOutSurf1Box(gp_Pnt2d(pu1,pv1))==Standard_False) &&
-		  (testwline->IsOutSurf2Box(gp_Pnt2d(pu2,pv2))==Standard_False) &&
-		  (testwline->IsOutBox(StartPOn2S.Value())==Standard_False) ) { 
-		NbPntOn2SOnLine = testwline->NbPnts();
-		Standard_Integer ll;
-		for( ll=1; (ll < NbPntOn2SOnLine) && (dminiPointLigne >= SeuildPointLigne); ll++) { 
-		  const gp_Pnt &Pa = testwline->Point(ll).Value();
-		  const gp_Pnt &Pb = testwline->Point(ll+1).Value();
-		  const gp_Pnt &PStart = StartPOn2S.Value();
-		  gp_Vec AM(Pa,PStart);
-		  gp_Vec MB(PStart,Pb);
-		  Standard_Real AMMB = AM.Dot(MB);		    
-		  if(AMMB > 0.0) {
-		    gp_Dir ABN(Pb.X()-Pa.X(),Pb.Y()-Pa.Y(),Pb.Z()-Pa.Z());
-		    Standard_Real lan =  ABN.X()*AM.X()+ABN.Y()*AM.Y()+ABN.Z()*AM.Z();
-		    gp_Vec AH(lan*ABN.X(),lan*ABN.Y(),lan*ABN.Z());
-		    gp_Vec HM(AM.X()-AH.X(),AM.Y()-AH.Y(),AM.Z()-AH.Z());
-		    Standard_Real d = 0.0;
-		    if(HM.X() < Deflection) { 
-		      d+=HM.X()*HM.X();
-		      if(HM.Y() < Deflection) { 
-			d+=HM.Y()*HM.Y(); 
-			if(HM.Z() < Deflection)
-			  d+=HM.Z()*HM.Z(); 
-			else
-			  d=Deflection2;
-		      }
-		      else
-			d=Deflection2;
-		    } 
-		    else 
-		      d=Deflection2; 
+	      const Handle(IntPatch_WLine)& testwline = *((Handle(IntPatch_WLine)*)&SLin.Value(l));
 
-		    if(d<Deflection2)
-		      dminiPointLigne = 0.0;
-		  }
-		  else {
-		    Standard_Real dab = Pa.SquareDistance(Pb);
-		    Standard_Real dap = Pa.SquareDistance(PStart);
-		    if(dap < dab)
-		      dminiPointLigne=0;
-		    else { 
-		      Standard_Real dbp = Pb.SquareDistance(PStart);
-		      if(dbp < dab)
-			dminiPointLigne=0;
-		    }
-		  }
-		}
-	      }
+              if (IsPointOnLine(StartPOn2S, testwline, Deflection)) {
+                dminiPointLigne = 0.0;
+              }
 	    } // for ( l ...
 
 	    if(dminiPointLigne > SeuildPointLigne) { 
@@ -350,10 +313,19 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
 		if(PW.NbPoints()>2) { 
 		  RejetLigne = Standard_False;
 		  Point3dDebut = PW.Value(1).Value();
-		  Point3dFin   = PW.Value(PW.NbPoints()).Value();
+                  const IntSurf_PntOn2S& PointFin = PW.Value(PW.NbPoints());
+                  Point3dFin   = PointFin.Value();
 		  for( ver = 1 ; (!RejetLigne) && (ver<= NbLigCalculee) ; ver++) { 
 		    const Handle(IntPatch_WLine)& verwline = *((Handle(IntPatch_WLine)*)&SLin.Value(ver));
-		    const IntSurf_PntOn2S& verPointDebut = verwline->Point(1);
+
+                    // Check end point if it is on existing line.
+                    // Start point is checked before.
+                    if (IsPointOnLine(PointFin, verwline, Deflection)) {
+                      RejetLigne = Standard_True; 
+                      break;
+                    }
+
+                    const IntSurf_PntOn2S& verPointDebut = verwline->Point(1);
 		    const IntSurf_PntOn2S& verPointFin = verwline->Point(verwline->NbPnts());
 		    if( Point3dDebut.Distance(verPointDebut.Value()) <= TolTangency ) { 
 		      if(Point3dFin.Distance(verPointFin.Value()) <= TolTangency)
@@ -407,7 +379,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
 		    }
 
 		    lignetrouvee = Standard_True;
-		    SLin.Append(wline);
+                    AddWLine(SLin, wline, Deflection);
 		    empt = Standard_False;
 		  }// !RejetLigne
 		}// PW.NbPoints()>2
@@ -466,56 +438,11 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
 	dminiPointLigne = SeuildPointLigne + SeuildPointLigne; 
 	Standard_Integer l;
 	for( l = 1; (l <= NbLigCalculee) && (dminiPointLigne >= SeuildPointLigne); l++)	{ 
-	  Handle(IntPatch_WLine)& testwline = *((Handle(IntPatch_WLine)*)&SLin.ChangeValue(l));
-	  if( (testwline->IsOutSurf1Box(gp_Pnt2d(pu1,pv1))==Standard_False) &&
-	      (testwline->IsOutSurf2Box(gp_Pnt2d(pu2,pv2))==Standard_False) &&
-	      (testwline->IsOutBox(StartPOn2S.Value())==Standard_False) ) { 
-	    NbPntOn2SOnLine = testwline->NbPnts();
-	    Standard_Integer ll;
-	    for( ll = 1; (ll < NbPntOn2SOnLine) && (dminiPointLigne >= SeuildPointLigne); ll++)	{ 
-	      const gp_Pnt& Pa = testwline->Point(ll).Value();
-	      const gp_Pnt& Pb = testwline->Point(ll+1).Value();
-	      const gp_Pnt& PStart=StartPOn2S.Value();
-	      gp_Vec AM(Pa,PStart);
-	      gp_Vec MB(PStart,Pb);
-	      Standard_Real AMMB = AM.Dot(MB);
-	      if(AMMB > 0.0) {
-		gp_Dir ABN(Pb.X()-Pa.X(),Pb.Y()-Pa.Y(),Pb.Z()-Pa.Z());
-		Standard_Real lan =  ABN.X()*AM.X()+ABN.Y()*AM.Y()+ABN.Z()*AM.Z();
-		gp_Vec AH(lan*ABN.X(),lan*ABN.Y(),lan*ABN.Z());
-		gp_Vec HM(AM.X()-AH.X(),AM.Y()-AH.Y(),AM.Z()-AH.Z()); 
-		Standard_Real d = 0.0;
-		if(HM.X() < Deflection)	{ 
-		  d+=HM.X()*HM.X();
-		  if(HM.Y() < Deflection) { 
-		    d+=HM.Y()*HM.Y(); 
-		    if(HM.Z() < Deflection)
-		      d+=HM.Z()*HM.Z(); 
-		    else
-		      d=Deflection2;
-		  }
-		  else
-		    d=Deflection2;
-		} 
-		else
-		  d=Deflection2;
+	  const Handle(IntPatch_WLine)& testwline = *((Handle(IntPatch_WLine)*)&SLin.Value(l));
 
-		if(d<Deflection2)
-		  dminiPointLigne = 0.0;
-	      }
-	      else { 
-		Standard_Real dab = Pa.Distance(Pb);
-		Standard_Real dap = Pa.Distance(PStart);
-		if(dap < dab)
-		  dminiPointLigne=0;
-		else { 
-		  Standard_Real dbp = Pb.Distance(PStart);
-		  if(dbp < dab)
-		    dminiPointLigne=0;
-		}
-	      }		
-	    }// for( ll ...
-	  }// if ...
+          if (IsPointOnLine(StartPOn2S, testwline, Deflection)) {
+            dminiPointLigne = 0.0;
+          }
 	}// for( l ...
 
 	if(dminiPointLigne > SeuildPointLigne) { 
@@ -524,9 +451,18 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
 	    if(PW.NbPoints()>2)	{ 
 	      RejetLigne = Standard_False;
 	      Point3dDebut = PW.Value(1).Value();
-	      Point3dFin   = PW.Value(PW.NbPoints()).Value();
+              const IntSurf_PntOn2S& PointFin = PW.Value(PW.NbPoints());
+              Point3dFin   = PointFin.Value();
 	      for(ver=1 ; (!RejetLigne) && (ver<= NbLigCalculee) ; ver++) { 
 		const Handle(IntPatch_WLine)& verwline = *((Handle(IntPatch_WLine)*)&SLin.Value(ver));
+
+                // Check end point if it is on existing line.
+                // Start point is checked before.
+                if (IsPointOnLine(PointFin, verwline, Deflection)) {
+                  RejetLigne = Standard_True; 
+                  break;
+                }
+
 		const IntSurf_PntOn2S& verPointDebut = verwline->Point(1);
 		const IntSurf_PntOn2S& verPointFin   = verwline->Point(verwline->NbPnts());
 		if(Point3dDebut.Distance(verPointDebut.Value()) < TolTangency)
@@ -581,7 +517,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
 		  wline->AddVertex(vtx);
 		}
 
-		SLin.Append(wline);
+                AddWLine(SLin, wline, Deflection);
 		empt = Standard_False;
 	      }// if !RejetLigne
 	    }// PW.NbPoints()>2
@@ -700,7 +636,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
 	    NbLigCalculee = SLin.Length();
 	    Standard_Integer l;
 	    for( l = 1; (l <= NbLigCalculee) && (dminiPointLigne >= SeuildPointLigne); l++) { 
-	      Handle(IntPatch_WLine)& testwline = *((Handle(IntPatch_WLine)*)&SLin.ChangeValue(l));
+	      const Handle(IntPatch_WLine)& testwline = *((Handle(IntPatch_WLine)*)&SLin.Value(l));
 	      if( (testwline->IsOutSurf1Box(gp_Pnt2d(pu1,pv1))==Standard_False) &&
 		  (testwline->IsOutSurf2Box(gp_Pnt2d(pu2,pv2))==Standard_False) &&
 		  (testwline->IsOutBox(StartPOn2S.Value())==Standard_False) ) { 
@@ -869,7 +805,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
 	  dminiPointLigne = SeuildPointLigne + SeuildPointLigne; 
 	  Standard_Integer l;
 	  for( l = 1; (l <= NbLigCalculee) && (dminiPointLigne >= SeuildPointLigne); l++) { 
-	    Handle(IntPatch_WLine)& testwline = *((Handle(IntPatch_WLine)*)&SLin.ChangeValue(l));
+	    const Handle(IntPatch_WLine)& testwline = *((Handle(IntPatch_WLine)*)&SLin.Value(l));
 	    if( (testwline->IsOutSurf1Box(gp_Pnt2d(pu1,pv1))==Standard_False) &&
 	        (testwline->IsOutSurf2Box(gp_Pnt2d(pu2,pv2))==Standard_False) &&
 	        (testwline->IsOutBox(StartPOn2S.Value())==Standard_False) ) { 
@@ -1422,56 +1358,11 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
       NbLigCalculee = SLin.Length();
       Standard_Integer l;
       for( l = 1; (l <= NbLigCalculee) && (dminiPointLigne >= SeuildPointLigne); l++) { 
-        Handle(IntPatch_WLine)& testwline = *((Handle(IntPatch_WLine)*)&SLin.ChangeValue(l));
-        if( (testwline->IsOutSurf1Box(gp_Pnt2d(pu1,pv1))==Standard_False) &&
-           (testwline->IsOutSurf2Box(gp_Pnt2d(pu2,pv2))==Standard_False) &&
-           (testwline->IsOutBox(StartPOn2S.Value())==Standard_False) )	{
-          NbPntOn2SOnLine = testwline->NbPnts();
-          Standard_Integer ll;
-          for( ll = 1; (ll < NbPntOn2SOnLine) && (dminiPointLigne >= SeuildPointLigne); ll++) { 
-            const gp_Pnt &Pa = testwline->Point(ll).Value();
-            const gp_Pnt &Pb = testwline->Point(ll+1).Value();
-            const gp_Pnt &PStart = StartPOn2S.Value();
-            gp_Vec AM(Pa,PStart);
-            gp_Vec MB(PStart,Pb);
-            Standard_Real AMMB = AM.Dot(MB);		    
-            if(AMMB > 0.0) {
-              gp_Dir ABN(Pb.X()-Pa.X(),Pb.Y()-Pa.Y(),Pb.Z()-Pa.Z());
-              Standard_Real lan =  ABN.X()*AM.X()+ABN.Y()*AM.Y()+ABN.Z()*AM.Z();
-              gp_Vec AH(lan*ABN.X(),lan*ABN.Y(),lan*ABN.Z());
-              gp_Vec HM(AM.X()-AH.X(),AM.Y()-AH.Y(),AM.Z()-AH.Z());
-              Standard_Real d = 0.0;
-              if(HM.X() < Deflection) { 
-                d+=HM.X()*HM.X();
-                if(HM.Y() < Deflection) { 
-                  d+=HM.Y()*HM.Y(); 
-                  if(HM.Z() < Deflection)
-                    d+=HM.Z()*HM.Z(); 
-                  else
-                    d=Deflection2;
-                }
-                else
-                  d=Deflection2;
-              } 
-              else
-                d=Deflection2; 
-              
-              if(d<Deflection2)
-                dminiPointLigne = 0.0;
-            }
-            else {
-              Standard_Real dab = Pa.SquareDistance(Pb);
-              Standard_Real dap = Pa.SquareDistance(PStart);
-              if(dap < dab)
-                dminiPointLigne=0;
-              else { 
-                Standard_Real dbp = Pb.SquareDistance(PStart);
-                if(dbp < dab)
-                  dminiPointLigne=0;
-              }
-            }
-          }// for( ll ...
-        }// if ...
+        const Handle(IntPatch_WLine)& testwline = *((Handle(IntPatch_WLine)*)&SLin.Value(l));
+
+        if (IsPointOnLine(StartPOn2S, testwline, Deflection)) {
+          dminiPointLigne = 0.0;
+        }
       }// for( l ...
       
       if(dminiPointLigne > SeuildPointLigne) {
@@ -1480,9 +1371,18 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
           if(PW.NbPoints()>2) {
             RejetLigne = Standard_False;
             Point3dDebut = PW.Value(1).Value();
-            Point3dFin   = PW.Value(PW.NbPoints()).Value();
+            const IntSurf_PntOn2S& PointFin = PW.Value(PW.NbPoints());
+            Point3dFin   = PointFin.Value();
             for( ver = 1 ; (!RejetLigne) && (ver<= NbLigCalculee) ; ver++) { 
               const Handle(IntPatch_WLine)& verwline = *((Handle(IntPatch_WLine)*)&SLin.Value(ver));
+
+              // Check end point if it is on existing line.
+              // Start point is checked before.
+              if (IsPointOnLine(PointFin, verwline, Deflection)) {
+                RejetLigne = Standard_True; 
+                break;
+              }
+
               const IntSurf_PntOn2S& verPointDebut = verwline->Point(1);
               const IntSurf_PntOn2S& verPointFin = verwline->Point(verwline->NbPnts());
               if(Point3dDebut.Distance(verPointDebut.Value()) <= TolTangency) { 
@@ -1673,7 +1573,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
                 }
               }// SLin.Length > 0
               
-              SLin.Append(wline);
+              AddWLine(SLin, wline, Deflection);
               empt = Standard_False;
             }// !RejetLigne
           }// PW points > 2
@@ -2125,56 +2025,11 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
 	      NbLigCalculee = SLin.Length();
 	      Standard_Integer l;
 	      for( l = 1; (l <= NbLigCalculee) && (dminiPointLigne >= SeuildPointLigne); l++) { 
-		Handle(IntPatch_WLine)& testwline = *((Handle(IntPatch_WLine)*)&SLin.ChangeValue(l));
-		if( (testwline->IsOutSurf1Box(gp_Pnt2d(pu1,pv1))==Standard_False) &&
-		    (testwline->IsOutSurf2Box(gp_Pnt2d(pu2,pv2))==Standard_False) &&
-		    (testwline->IsOutBox(StartPOn2S.Value())==Standard_False) )	{
-		  NbPntOn2SOnLine = testwline->NbPnts();
-		  Standard_Integer ll;
-		  for( ll = 1; (ll < NbPntOn2SOnLine) && (dminiPointLigne >= SeuildPointLigne); ll++) { 
-		    const gp_Pnt &Pa = testwline->Point(ll).Value();
-		    const gp_Pnt &Pb = testwline->Point(ll+1).Value();
-		    const gp_Pnt &PStart = StartPOn2S.Value();
-		    gp_Vec AM(Pa,PStart);
-		    gp_Vec MB(PStart,Pb);
-		    Standard_Real AMMB = AM.Dot(MB);		    
-		    if(AMMB > 0.0) {
-		      gp_Dir ABN(Pb.X()-Pa.X(),Pb.Y()-Pa.Y(),Pb.Z()-Pa.Z());
-		      Standard_Real lan =  ABN.X()*AM.X()+ABN.Y()*AM.Y()+ABN.Z()*AM.Z();
-		      gp_Vec AH(lan*ABN.X(),lan*ABN.Y(),lan*ABN.Z());
-		      gp_Vec HM(AM.X()-AH.X(),AM.Y()-AH.Y(),AM.Z()-AH.Z());
-		      Standard_Real d = 0.0;
-		      if(HM.X() < Deflection) { 
-			d+=HM.X()*HM.X();
-			if(HM.Y() < Deflection) { 
-			  d+=HM.Y()*HM.Y(); 
-			  if(HM.Z() < Deflection)
-			    d+=HM.Z()*HM.Z(); 
-			  else
-			    d=Deflection2;
-			}
-			else
-			  d=Deflection2;
-		      } 
-		      else
-			d=Deflection2; 
+		const Handle(IntPatch_WLine)& testwline = *((Handle(IntPatch_WLine)*)&SLin.Value(l));
 
-		      if(d<Deflection2)
-			dminiPointLigne = 0.0;
-		    }
-		    else {
-		      Standard_Real dab = Pa.SquareDistance(Pb);
-		      Standard_Real dap = Pa.SquareDistance(PStart);
-		      if(dap < dab)
-			dminiPointLigne=0;
-		      else { 
-			Standard_Real dbp = Pb.SquareDistance(PStart);
-			if(dbp < dab)
-			  dminiPointLigne=0;
-		      }
-		    }
-		  }// for( ll ...
-		}// if ...
+                if (IsPointOnLine(StartPOn2S, testwline, Deflection)) {
+                  dminiPointLigne = 0.0;
+                }
 	      }// for( l ...
 
 	      if(dminiPointLigne > SeuildPointLigne) {
@@ -2425,7 +2280,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
 			}
 		      }// SLin.Length > 0
 
-		      SLin.Append(wline);
+                      AddWLine(SLin, wline, Deflection);
 		      empt = Standard_False;
 		    }// !RejetLigne
 		  }// PW points > 2
@@ -2506,70 +2361,12 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
 	  for(Standard_Integer l=1; 
 	      (l <= NbLigCalculee) && (dminiPointLigne >= SeuildPointLigne); 
 	      l++) { 
-	    Handle(IntPatch_WLine)& testwline = *((Handle(IntPatch_WLine)*)&SLin.ChangeValue(l));
-	
-	    if(  (testwline->IsOutSurf1Box(gp_Pnt2d(pu1,pv1))==Standard_False)
-	       &&(testwline->IsOutSurf2Box(gp_Pnt2d(pu2,pv2))==Standard_False)
-	       &&(testwline->IsOutBox(StartPOn2S.Value())==Standard_False)) { 
-	      
-	      
-	      //-- Handle(IntPatch_WLine) testwline=Handle(IntPatch_WLine)::DownCast(SLin.Value(l));
-	      NbPntOn2SOnLine = testwline->NbPnts();
-	      for(Standard_Integer ll=1; 
-		  (ll < NbPntOn2SOnLine) && (dminiPointLigne >= SeuildPointLigne); 
-		  ll++) { 
-		const gp_Pnt& Pa = testwline->Point(ll).Value();
-		const gp_Pnt& Pb = testwline->Point(ll+1).Value();
-		const gp_Pnt& PStart=StartPOn2S.Value();
-		gp_Vec AM(Pa,PStart);
-		gp_Vec MB(PStart,Pb);
-		Standard_Real AMMB = AM.Dot(MB);
-		if(AMMB > 0.0) {
-		  gp_Dir ABN(Pb.X()-Pa.X(),Pb.Y()-Pa.Y(),Pb.Z()-Pa.Z());
-		  Standard_Real lan =  ABN.X()*AM.X()+ABN.Y()*AM.Y()+ABN.Z()*AM.Z();
-		  gp_Vec AH(lan*ABN.X(),lan*ABN.Y(),lan*ABN.Z());
-		  gp_Vec HM(AM.X()-AH.X(),AM.Y()-AH.Y(),AM.Z()-AH.Z()); 
-		  
-		  Standard_Real d = 0.0;
-		  if(HM.X() < Deflection) { 
-		    d+=HM.X()*HM.X();
-		    if(HM.Y() < Deflection) { 
-		      d+=HM.Y()*HM.Y(); 
-		      if(HM.Z() < Deflection) { 
-			d+=HM.Z()*HM.Z(); 
-		      }
-		      else { 
-			d=Deflection2;
-		      }
-		    }
-		    else { 
-		      d=Deflection2;
-		    }
-		  } 
-		  else { 
-		    d=Deflection2; 
-		  }
-		  if(d<Deflection2) { 
-		    dminiPointLigne = 0.0;
-		  }
-		}
-		else { 
-		  Standard_Real dab = Pa.Distance(Pb);
-		  Standard_Real dap = Pa.Distance(PStart);
-		  if(dap < dab) { 
-		    dminiPointLigne=0;
-		  }
-		  else { 
-		    Standard_Real dbp = Pb.Distance(PStart);
-		    if(dbp < dab) { 
-		      dminiPointLigne=0;
-		    }
-		  }
-		}		
-	      }
-	    } //-- rejection sur les boites 
-	  }
+	    const Handle(IntPatch_WLine)& testwline = *((Handle(IntPatch_WLine)*)&SLin.Value(l));
 
+            if (IsPointOnLine(StartPOn2S, testwline, Deflection)) {
+              dminiPointLigne = 0.0;
+            }
+	  }
 
 	  //-- Fin d exploration des lignes
 	  if(dminiPointLigne > SeuildPointLigne) { 
@@ -2590,11 +2387,20 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
 		//-----------------------------------------------
 		RejetLigne = Standard_False;
 		Point3dDebut = PW.Value(1).Value();
-		Point3dFin   = PW.Value(PW.NbPoints()).Value();
+                const IntSurf_PntOn2S& PointFin = PW.Value(PW.NbPoints());
+                Point3dFin   = PointFin.Value();
 		
 		for(ver=1 ; (!RejetLigne) && (ver<= NbLigCalculee) ; ver++) { 
 		  const Handle(IntPatch_WLine)& verwline = *((Handle(IntPatch_WLine)*)&SLin.Value(ver));
 		  //-- Handle(IntPatch_WLine) verwline=Handle(IntPatch_WLine)::DownCast(SLin.Value(ver));
+
+                  // Check end point if it is on existing line.
+                  // Start point is checked before.
+                  if (IsPointOnLine(PointFin, verwline, Deflection)) {
+                    RejetLigne = Standard_True; 
+                    break;
+                  }
+
 		  const IntSurf_PntOn2S& verPointDebut = verwline->Point(1);
 		  const IntSurf_PntOn2S& verPointFin   = verwline->Point(verwline->NbPnts());
 		  if(Point3dDebut.Distance(verPointDebut.Value()) < TolTangency) { 
@@ -2656,7 +2462,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
 		    }
 		    
 		  //---------------
-		  SLin.Append(wline);
+                  AddWLine(SLin, wline, Deflection);
 		  empt = Standard_False;
 		  
 		}
@@ -2685,7 +2491,6 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
   SLin.Clear();  
   Standard_Real Deflection2 = Deflection*Deflection;
   
-  Standard_Integer NbPntOn2SOnLine;
   Standard_Integer NbLigCalculee = 0;
   Standard_Real U1,U2,V1,V2;
   Standard_Real pu1,pu2,pv1,pv2;
@@ -2738,73 +2543,13 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
       for(Standard_Integer l=1; 
 	  (l <= NbLigCalculee) && (dminiPointLigne >= SeuildPointLigne); 
 	  l++) { 
-	const Handle(IntPatch_WLine)& testwline = *((Handle(IntPatch_WLine)*)&SLin.Value(l));
-	
-	if(  (testwline->IsOutSurf1Box(gp_Pnt2d(pu1,pv1))==Standard_False)
-	   &&(testwline->IsOutSurf2Box(gp_Pnt2d(pu2,pv2))==Standard_False)
-	   &&(testwline->IsOutBox(StartPOn2S.Value())==Standard_False)) { 
-	  
-	  NbPntOn2SOnLine = testwline->NbPnts();
-	  for(Standard_Integer ll=1; 
-	      (ll < NbPntOn2SOnLine) && (dminiPointLigne >= SeuildPointLigne); 
-	      ll++) { 
-	    
-	    const gp_Pnt& Pa = testwline->Point(ll).Value();
-	    const gp_Pnt& Pb = testwline->Point(ll+1).Value();
-	    const gp_Pnt& PStart=StartPOn2S.Value();
-	    gp_Vec AM(Pa,PStart);
-	    gp_Vec MB(PStart,Pb);
-	    Standard_Real AMMB = AM.Dot(MB);
-	    if(AMMB > 0.0) {
-	      gp_Dir ABN(Pb.X()-Pa.X(),Pb.Y()-Pa.Y(),Pb.Z()-Pa.Z());
-	      Standard_Real lan =  ABN.X()*AM.X()+ABN.Y()*AM.Y()+ABN.Z()*AM.Z();
-	      gp_Vec AH(lan*ABN.X(),lan*ABN.Y(),lan*ABN.Z());
-	      gp_Vec HM(AM.X()-AH.X(),AM.Y()-AH.Y(),AM.Z()-AH.Z()); 
-	      
-	      Standard_Real d = 0.0;
-	      if(HM.X() < Deflection) { 
-		d+=HM.X()*HM.X();
-		if(HM.Y() < Deflection) { 
-		  d+=HM.Y()*HM.Y(); 
-		  if(HM.Z() < Deflection) { 
-		    d+=HM.Z()*HM.Z(); 
-		  }
-		  else { 
-		    d=Deflection2;
-		  }
-		}
-		else { 
-		  d=Deflection2;
-		}
-	      } 
-	      else { 
-		d=Deflection2; 
-	      }
-	      if(d<Deflection2) { 
-		dminiPointLigne = 0.0;
-	      }
-	    }
-	    else { 
-	      Standard_Real dab = Pa.Distance(Pb);
-	      Standard_Real dap = Pa.Distance(PStart);
-	      if(dap < dab) { 
-		dminiPointLigne=0;
-	      }
-	      else { 
-		Standard_Real dbp = Pb.Distance(PStart);
-		if(dbp < dab) { 
-		  dminiPointLigne=0;
-		}
-	      }
-	    }
-	  }
-	} //-- Rejections Boites 
-	//--	  else { 
-	//--	    cout<<" Rejet Boites "<<endl;
-	//--	  }
+        const Handle(IntPatch_WLine)& testwline = *((Handle(IntPatch_WLine)*)&SLin.Value(l));
+
+        if (IsPointOnLine(StartPOn2S, testwline, Deflection)) {
+          dminiPointLigne = 0.0;
+        }
       }
-      
-      
+
       //-- Fin d exploration des lignes
       if(dminiPointLigne > SeuildPointLigne) { 
 	//---------------------------------------------------
@@ -2822,11 +2567,20 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
 	    //-----------------------------------------------
 	    RejetLigne = Standard_False;
 	    Point3dDebut = PW.Value(1).Value();
-	    Point3dFin   = PW.Value(PW.NbPoints()).Value();
+            const IntSurf_PntOn2S& PointFin = PW.Value(PW.NbPoints());
+            Point3dFin   = PointFin.Value();
 	    
 	    for(ver=1 ; (!RejetLigne) && (ver<= NbLigCalculee) ; ver++) { 
 	      const Handle(IntPatch_WLine)& verwline = *((Handle(IntPatch_WLine)*)&SLin.Value(ver));
 	      //-- Handle(IntPatch_WLine) verwline=Handle(IntPatch_WLine)::DownCast(SLin.Value(ver));
+
+              // Check end point if it is on existing line.
+              // Start point is checked before.
+              if (IsPointOnLine(PointFin, verwline, Deflection)) {
+                RejetLigne = Standard_True; 
+                break;
+              }
+
 	      const IntSurf_PntOn2S& verPointDebut = verwline->Point(1);
 	      const IntSurf_PntOn2S& verPointFin   = verwline->Point(verwline->NbPnts());
 	      if(Point3dDebut.Distance(verPointDebut.Value()) < TolTangency) { 
@@ -2888,7 +2642,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
 	      }
 	      
 	      //---------------
-	      SLin.Append(wline);
+              AddWLine(SLin, wline, Deflection);
 	      empt = Standard_False;
 	      
 	    }
@@ -3395,4 +3149,139 @@ void IntPatch_PrmPrmIntersection::PointDepart(Handle(IntSurf_LineOn2S)& LineOn2S
     }
   }
   while(ok);
+}
+
+//==================================================================================
+// function : IsPointOnLine
+// purpose  : 
+//==================================================================================
+
+Standard_Boolean IsPointOnLine(const IntSurf_PntOn2S        &thePOn2S,
+                               const Handle(IntPatch_WLine) &theWLine,
+                               const Standard_Real           Deflection)
+{
+  Standard_Boolean isOnLine = Standard_False;
+  Standard_Real Deflection2 = Deflection*Deflection;
+  Standard_Real pu1, pu2, pv1, pv2;
+
+  thePOn2S.Parameters(pu1, pv1, pu2, pv2);
+
+  if ((theWLine->IsOutSurf1Box(gp_Pnt2d(pu1, pv1)) == Standard_False) &&
+      (theWLine->IsOutSurf2Box(gp_Pnt2d(pu2, pv2)) == Standard_False) &&
+      (theWLine->IsOutBox(thePOn2S.Value())        == Standard_False)) {
+    const Standard_Integer NbPntOn2SOnLine = theWLine->NbPnts();
+    Standard_Integer ll;
+
+    for (ll=1; ll < NbPntOn2SOnLine && !isOnLine; ll++) {
+      const gp_Pnt &Pa     = theWLine->Point(ll).Value();
+      const gp_Pnt &Pb     = theWLine->Point(ll+1).Value();
+      const gp_Pnt &PStart = thePOn2S.Value();
+      const gp_Vec  AM(Pa, PStart);
+      const gp_Vec  MB(PStart,Pb);
+      const Standard_Real AMMB = AM.Dot(MB);
+
+      if(AMMB > 0.0) {
+        gp_Dir ABN(Pb.X() - Pa.X(), Pb.Y() - Pa.Y(), Pb.Z() - Pa.Z());
+        Standard_Real lan =  ABN.X()*AM.X() + ABN.Y()*AM.Y() + ABN.Z()*AM.Z();
+        gp_Vec AH(lan*ABN.X(), lan*ABN.Y(), lan*ABN.Z());
+        gp_Vec HM(AM.X() - AH.X(), AM.Y() - AH.Y(), AM.Z() - AH.Z());
+        Standard_Real d = 0.0;
+  
+        if(HM.X() < Deflection) {
+          d += HM.X()*HM.X();
+
+          if(HM.Y() < Deflection) {
+            d += HM.Y()*HM.Y();
+
+            if(HM.Z() < Deflection) {
+              d += HM.Z()*HM.Z();
+            } else {
+              d = Deflection2;
+            }
+          } else {
+            d = Deflection2;
+          }
+        } else {
+          d = Deflection2;
+        }
+
+        if(d < Deflection2) {
+          isOnLine = Standard_True;
+        }
+      } else {
+        Standard_Real dab = Pa.SquareDistance(Pb);
+        Standard_Real dap = Pa.SquareDistance(PStart);
+
+        if(dap < dab) {
+          isOnLine = Standard_True;
+        } else {
+          Standard_Real dbp = Pb.SquareDistance(PStart);
+
+          if(dbp < dab) {
+            isOnLine = Standard_True;
+          }
+        }
+      }
+    }
+  }
+
+  return isOnLine;
+}
+
+//==================================================================================
+// function : AddWLine
+// purpose  : 
+//==================================================================================
+
+void AddWLine(IntPatch_SequenceOfLine      &theLines,
+              const Handle(IntPatch_WLine) &theWLine,
+              const Standard_Real           Deflection)
+{
+  Standard_Integer i = 1;
+  Standard_Integer aNbLines = theLines.Length();
+  Standard_Boolean isToRemove;
+
+  // Check each line of theLines if it is on theWLine.
+  while (i <= aNbLines) {
+    Handle(IntPatch_WLine) aWLine =
+      Handle(IntPatch_WLine)::DownCast(theLines.Value(i));
+    
+    isToRemove = Standard_False;
+
+    if (aWLine.IsNull() == Standard_False) {
+      // Check the middle point.
+      Standard_Integer aMidIndex = (aWLine->NbPnts() + 1)/2;
+
+      if (aMidIndex > 0) {
+        const IntSurf_PntOn2S &aPnt = aWLine->Point(aMidIndex);
+
+        if (IsPointOnLine(aPnt, theWLine, Deflection)) {
+          // Middle point is on theWLine. Check vertices.
+          isToRemove = Standard_True;
+
+          Standard_Integer j;
+          const Standard_Integer aNbVtx = aWLine->NbVertex();
+
+          for (j = 1; j <= aNbVtx; j++) {
+            const IntPatch_Point &aPoint = aWLine->Vertex(j);
+
+            if (!IsPointOnLine(aPoint.PntOn2S(), theWLine, Deflection)) {
+              isToRemove = Standard_False;
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    if (isToRemove) {
+      theLines.Remove(i);
+      aNbLines--;
+    } else {
+      i++;
+    }
+  }
+
+  // Add theWLine to the sequence of lines.
+  theLines.Append(theWLine);
 }
