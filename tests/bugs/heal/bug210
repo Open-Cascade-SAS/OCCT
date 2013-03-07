@@ -1,3 +1,4 @@
+puts "TODO CR23794 ALL: Faulty shapes in variables faulty_1 to faulty_"
 puts "========="
 puts " OCC210 "
 puts "========="

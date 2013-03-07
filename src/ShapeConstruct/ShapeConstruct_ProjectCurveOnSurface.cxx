@@ -993,7 +993,6 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformAdvanced (Handle(G
       Standard_Real dist = pnt2d(1).SquareDistance(pnt2d(NbPnt2d));
       Standard_Real dPreci = Precision::PConfusion()*Precision::PConfusion();
       if(dist >= dPreci) {
-        Standard_Real tol2 = dPreci*dPreci;
         gp_Vec2d avec (pnt2d(1),pnt2d(NbPnt2d));
         gp_Dir2d adir (avec);
         gp_Lin2d alin (pnt2d(1),adir);
@@ -1002,7 +1001,7 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformAdvanced (Handle(G
           Standard_Real dist2 = pnt2d(1).SquareDistance(pnt2d(i));
           Standard_Real step = pnt2d(1).Distance(pnt2d(NbPnt2d))/(NbPnt2d-1);
           Standard_Real ddist = Abs(pnt2d(1).Distance(pnt2d(i))-step*(i-1));
-          if( devia>tol2 || (dist2-dist)>dPreci || ddist>1.e-3*step ) {
+          if( devia>dPreci || (dist2-dist)>dPreci || ddist>1.e-3*step ) {
             IsLine = Standard_False;
             i = NbPnt2d;
           }
