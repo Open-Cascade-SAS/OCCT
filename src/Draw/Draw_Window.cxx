@@ -79,7 +79,11 @@ defaultPrompt:
       errChannel = Tcl_GetStdChannel(TCL_STDERR);
       if (code != TCL_OK) {
         if (errChannel) {
+#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 5)))
+          Tcl_Write(errChannel, Tcl_GetStringResult(Interp), -1);
+#else
           Tcl_Write(errChannel, Interp->result, -1);
+#endif
           Tcl_Write(errChannel, "\n", 1);
         }
         Tcl_AddErrorInfo(Interp,
@@ -1086,7 +1090,11 @@ Standard_Boolean Init_Appli()
   mainWindow =
   Tk_MainWindow(interp) ;
   if (mainWindow == NULL) {
+#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 5)))
+    fprintf(stderr, "%s\n", Tcl_GetStringResult(interp));
+#else
     fprintf(stderr, "%s\n", interp->result);
+#endif
     exit(1);
   }
   Tk_Name(mainWindow) =
@@ -2081,7 +2089,11 @@ static DWORD WINAPI tkLoop(VOID)
       Standard_Integer res = Tk_Init (interp);
       if (res != TCL_OK)
       {
+#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 5)))
+        cout << "tkLoop: error in Tk initialization. Tcl reported: " << Tcl_GetStringResult(interp) << endl;
+#else
         cout << "tkLoop: error in Tk initialization. Tcl reported: " << interp->result << endl;
+#endif
       }
     }
     catch (Standard_Failure)
@@ -2092,7 +2104,11 @@ static DWORD WINAPI tkLoop(VOID)
     mainWindow = Tk_MainWindow (interp);
     if (mainWindow == NULL)
     {
+#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 5)))
+      fprintf (stderr, "%s\n", Tcl_GetStringResult(interp));
+#else
       fprintf (stderr, "%s\n", interp->result);
+#endif
       cout << "tkLoop: Tk_MainWindow() returned NULL. Exiting...\n";
       Tcl_Exit (0);
     }
