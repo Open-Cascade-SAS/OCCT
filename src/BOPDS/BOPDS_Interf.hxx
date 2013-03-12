@@ -545,14 +545,14 @@ class BOPDS_InterfFF  : public BOPDS_Interf {
    * @param theNbPoints
    *   number of intersection points
    */
-  void Init(const Standard_Size theNbCurves,
-	    const Standard_Size theNbPoints) {
-    if (theNbCurves) {
+  void Init(const Standard_Integer theNbCurves,
+            const Standard_Integer theNbPoints) {
+    if (theNbCurves>0) {
       myCurves.SetStartSize(theNbCurves);
       myCurves.SetIncrement(theNbCurves);
       myCurves.Init();
     }
-    if (theNbPoints) {
+    if (theNbPoints>0) {
       myPoints.SetStartSize(theNbPoints);
       myPoints.SetIncrement(theNbPoints);
       myPoints.Init();

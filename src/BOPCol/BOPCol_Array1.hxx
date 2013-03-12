@@ -70,7 +70,7 @@ template <class Type> class BOPCol_MemBlock {
       Standard_Size i;
       //
       for (i=0; i<mySize; ++i) {
-	myData[i].~Type();
+        myData[i].~Type();
       }
       myAllocator->Free((Standard_Address&)myData); 
       //
@@ -97,13 +97,13 @@ template <class Type> class BOPCol_MemBlock {
   }
   // SetRange
   void SetRange(const Standard_Integer theI1,
-		const Standard_Integer theI2) {
+                const Standard_Integer theI2) {
     myI1=theI1;
     myI2=theI2;
   }
   // Range
   void Range(Standard_Integer& theI1,
-	     Standard_Integer& theI2) const {
+             Standard_Integer& theI2) const {
     theI1=myI1;
     theI2=myI2;
   }
@@ -113,7 +113,7 @@ template <class Type> class BOPCol_MemBlock {
   }
   // SetValue
   void SetValue(const Standard_Integer theIndex,
-		const Type& theValue) {
+                const Type& theValue) {
     *(myData+theIndex-myI1)=theValue;
   }
   // Value
@@ -193,31 +193,31 @@ template <class Type> class BOPCol_Array1 {
     myExtent=0;
   }
   // SetStartSize
-  void SetStartSize(const Standard_Size theSize) {
+  void SetStartSize(const Standard_Integer theSize) {
     if (theSize>0) {
       myStartSize=theSize;
     }
   }
   // SetIncrement
-  void SetIncrement(const Standard_Size theSize){
+  void SetIncrement(const Standard_Integer theSize){
     if (theSize>0) {
       myIncrement=theSize;
     }
   }
   // Increment
-  Standard_Size Increment()const {
+  Standard_Integer Increment()const {
     return myIncrement;
   }
   // Extent
-  Standard_Size Extent()const {
+  Standard_Integer Extent()const {
     return myExtent;
   }
   // Size
-  Standard_Size Size()const {
+  Standard_Integer Size()const {
     return myExtent;
   }
   // Size
-  Standard_Size Length()const {
+  Standard_Integer Length()const {
     return myExtent;
   }
   // Init
@@ -228,7 +228,7 @@ template <class Type> class BOPCol_Array1 {
   Standard_Integer Append();
   // SetValue
   void SetValue(const Standard_Integer theIndex,
-		const Type& theValue);
+                const Type& theValue);
   // Value
   const Type& operator()(const Standard_Integer theIndex)const;
   //
@@ -250,9 +250,9 @@ template <class Type> class BOPCol_Array1 {
   //==========
   // fields
  protected:
-  Standard_Size myStartSize;
-  Standard_Size myIncrement;
-  Standard_Size myExtent;
+  Standard_Integer myStartSize;
+  Standard_Integer myIncrement;
+  Standard_Integer myExtent;
   Type myDfltItem;
   BOPCol_MemBlock<Type> * myPBlock; 
   BOPCol_MemBlock<Type> * myPBlock1; 
@@ -287,8 +287,8 @@ template <class Type>
     while(1) {
       pNext=pBlock->myNext;
       if(!pNext) {
-	myPBlock=pBlock;
-	break;
+        myPBlock=pBlock;
+        break;
       }
       pBlock=pNext;
     }
@@ -324,8 +324,8 @@ template <class Type>
     while(1) {
       pNext=pBlock->myNext;
       if(!pNext) {
-	myPBlock=pBlock;
-	break;
+        myPBlock=pBlock;
+        break;
       }
       pBlock=pNext;
     }
@@ -352,7 +352,7 @@ template <class Type>
 //=======================================================================
 template <class Type> 
   void BOPCol_Array1<Type>::SetValue(const Standard_Integer theIndex,
-				     const Type& theValue) {
+                                     const Type& theValue) {
     if (FindBlock(theIndex)) {
       myPBlock->SetValue(theIndex, theValue);
     }
@@ -418,8 +418,8 @@ template <class Type>
     i2=myStartSize-1;
     do {
       if (theIndex>=i1 && theIndex<=i2) {
-	*xPBlock=pBlock;
-	return !bRet;
+        *xPBlock=pBlock;
+        return !bRet;
       }
       //
       i1=i2+1;
