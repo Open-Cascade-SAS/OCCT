@@ -1,0 +1,39 @@
+puts "================"
+puts "OCC23773"
+puts "================"
+puts ""
+######################################################################################
+# Can not read names in STEP file
+######################################################################################
+pload DCAF
+
+ReadStep d1 [locate_data_file bug23773_2012-or-136-004-014-izzi-asm_PCAM.stp]
+set info1 [GetName d1 0:1:1:1:9]
+set info2 [GetName d1 0:1:1:1:8]
+set info3 [GetName d1 0:1:1:1:4]
+set info4 [GetName d1 0:1:1:1:7]
+set info5 [GetName d1 0:1:1:1:6]
+set info6 [GetName d1 0:1:1:1:5]
+set info7 [GetName d1 0:1:1:1:3]
+
+if { [regexp "2012-OR-136-004-014-X" $info1] != 1 } {
+   puts "Faulty : Label 0:1:1:1:9 is incorrect"
+}
+if { [regexp "2012-OR-136-004-014-X1" $info2] != 1 } {
+   puts "Faulty : Label 0:1:1:1:8 is incorrect"
+}
+if { [regexp "2012-OR-136-004-014-X2" $info3] != 1 } {
+   puts "Faulty : Label 0:1:1:1:4 is incorrect"
+}
+if { [regexp "2012-OR-136-004-014-X3" $info4] != 1 } {
+   puts "Faulty : Label 0:1:1:1:7 is incorrect"
+}
+if { [regexp "2012-OR-136-004-014-X4" $info5] != 1 } {
+   puts "Faulty : Label 0:1:1:1:6 is incorrect"
+}
+if { [regexp "2012-OR-136-004-014-X5" $info6] != 1 } {
+   puts "Faulty : Label 0:1:1:1:5 is incorrect"
+}
+if { [regexp "2012-OR-136-004-014-X6" $info7] != 1 } {
+   puts "Faulty : Label 0:1:1:1:3 is incorrect"
+}
