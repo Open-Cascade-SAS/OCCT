@@ -21,8 +21,8 @@
 
 #include <Standard_Integer.hxx>
 #include <gp_Pnt2d.hxx>
-#include <Select2D_SensitiveEntity.hxx>
-#include <Handle_SelectBasics_EntityOwner.hxx>
+#include <Select3D_SensitiveEntity.hxx>
+#include <SelectBasics_EntityOwner.hxx>
 #include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
 class SelectBasics_EntityOwner;
@@ -32,57 +32,38 @@ class gp_Pnt2d;
 #include <Geom2d_Curve.hxx>
 
 
-DEFINE_STANDARD_HANDLE(ISession2D_SensitiveCurve,Select2D_SensitiveEntity)
-class ISession2D_SensitiveCurve : public Select2D_SensitiveEntity {
+DEFINE_STANDARD_HANDLE(ISession2D_SensitiveCurve,Select3D_SensitiveEntity)
+class ISession2D_SensitiveCurve : public Select3D_SensitiveEntity {
 
 public:
 
  // Methods PUBLIC
  // 
-Standard_EXPORT ISession2D_SensitiveCurve(const Handle(SelectBasics_EntityOwner)& OwnerId,
-                                        const Handle(Geom2d_Curve)& C,
-                                        const Standard_Real CDeflect,
-                                        const Standard_Integer      MaxRect  = 3);
-inline   void SetMaxBoxes(const Standard_Integer MaxRect) ;
-inline virtual  Standard_Integer MaxBoxes() const;
+  Standard_EXPORT ISession2D_SensitiveCurve(const Handle(SelectBasics_EntityOwner)& OwnerId,
+                                            const Handle(Geom2d_Curve)& C,
+                                            const Standard_Real CDeflect,
+                                            const Standard_Integer      MaxRect  = 3);
+  inline   void SetMaxBoxes(const Standard_Integer MaxRect) ;
+  inline virtual  Standard_Integer MaxBoxes() const;
 
-inline   void SetCurve(const Handle(Geom2d_Curve) aCurve) ;
-inline   Handle(Geom2d_Curve) GetCurve() ;
+  inline   void SetCurve(const Handle(Geom2d_Curve) aCurve) ;
+  inline   Handle(Geom2d_Curve) GetCurve() ;
 
-void     Compute();
+  void     Compute();
 
+  Standard_EXPORT   void Areas(SelectBasics_ListOfBox2d& aSeq) ;
+  Standard_EXPORT   Standard_Boolean Matches(const Standard_Real XMin,const Standard_Real YMin,const Standard_Real XMax,const Standard_Real YMax,const Standard_Real aTol) ;
+  Standard_EXPORT   Standard_Boolean Matches(const Standard_Real X,const Standard_Real Y,const Standard_Real aTol,Standard_Real& DMin) ;
+  Handle(TColgp_HArray1OfPnt2d) SensitivePolygon();
 
-Standard_EXPORT   void Areas(SelectBasics_ListOfBox2d& aSeq) ;
-
-Standard_EXPORT   Standard_Boolean Matches(const Standard_Real XMin,const Standard_Real YMin,const Standard_Real XMax,const Standard_Real YMax,const Standard_Real aTol) ;
-Standard_EXPORT   Standard_Boolean Matches(const Standard_Real X,const Standard_Real Y,const Standard_Real aTol,Standard_Real& DMin) ;
-
-Handle(TColgp_HArray1OfPnt2d) SensitivePolygon();
-
-DEFINE_STANDARD_RTTI(ISession2D_SensitiveCurve)
-
-protected:
-
- // Methods PROTECTED
- // 
-
-
- // Fields PROTECTED
- //
-
+  DEFINE_STANDARD_RTTI(ISession2D_SensitiveCurve)
 
 private: 
-
- // Methods PRIVATE
- // 
-
-
  // Fields PRIVATE
  //
-Standard_Real myCDeflect;
-Standard_Integer     myMaxRect;
-Handle(Geom2d_Curve) myCurve;
-
+Standard_Real                 myCDeflect;
+Standard_Integer              myMaxRect;
+Handle(Geom2d_Curve)          myCurve;
 Handle(TColgp_HArray1OfPnt2d) myPolyP2d;
 
 };
@@ -101,9 +82,5 @@ SetCurve(const Handle(Geom2d_Curve) aCurve)
 inline Handle(Geom2d_Curve) ISession2D_SensitiveCurve::
 GetCurve() 
 {return myCurve;} 
-
-// other inline functions and methods (like "C++: function call" methods)
-//
-
 
 #endif

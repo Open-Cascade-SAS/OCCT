@@ -11,7 +11,7 @@
 #include <OCC_3dView.h>
 #include <res\resource.h>
 
-BEGIN_MESSAGE_MAP(CImportExportApp, OCC_3dApp)
+BEGIN_MESSAGE_MAP(CImportExportApp, OCC_App)
 	//{{AFX_MSG_MAP(CSerializeApp)
 	ON_COMMAND(ID_FILE_OPEN, OnFileOpen)
 	//}}AFX_MSG_MAP
@@ -20,16 +20,19 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CImportExportApp construction
 
-CImportExportApp::CImportExportApp()
+CImportExportApp::CImportExportApp() : OCC_App()
 {
-	// Set the local system units
-    try
-    {  UnitsAPI::SetLocalSystem(UnitsAPI_MDTV); }
-    catch (Standard_Failure)
-    {
-    AfxMessageBox("Fatal Error in units initialisation");
-    }
-	SampleName = "ImportExport";	//for about dialog
+  // Set the local system units
+  try
+  {
+    UnitsAPI::SetLocalSystem (UnitsAPI_MDTV);
+  }
+  catch (Standard_Failure)
+  {
+    AfxMessageBox ("Fatal Error in units initialisation");
+  }
+
+  SampleName = "ImportExport"; //for about dialog
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -111,7 +114,7 @@ void CImportExportApp::OnFileOpen()
 				  NULL );
   
 
-	CString initdir(((OCC_BaseApp*) AfxGetApp())->GetInitDataDir());
+	CString initdir(((OCC_App*) AfxGetApp())->GetInitDataDir());
 	initdir += "\\Data";
 
 	dlg.m_ofn.lpstrInitialDir = initdir;

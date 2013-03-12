@@ -9,7 +9,6 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
-#include <ISession2D/ISession2D_InteractiveContext.h>
 #include "SelectionDialog.h"
 #include <OCC_3dDoc.h>
 
@@ -18,42 +17,41 @@ class CHLRDoc : public OCC_3dBaseDoc
 public:
 
 protected: // create from serialization only
-	CHLRDoc();
-	DECLARE_DYNCREATE(CHLRDoc)
-// Attributes
+  CHLRDoc();
+  DECLARE_DYNCREATE(CHLRDoc)
+  // Attributes
 public:
 
-// Implementation
+  // Implementation
 public:
-	virtual ~CHLRDoc();
-	void Fit();
+  virtual ~CHLRDoc();
+  void Fit();
 #ifdef _DEBUG
-	virtual void AssertValid() const;
-	virtual void Dump(CDumpContext& dc) const;
+  virtual void AssertValid() const;
+  virtual void Dump(CDumpContext& dc) const;
 #endif
 protected:
 
-// Generated message map functions
+  // Generated message map functions
 protected:
-	//{{AFX_MSG(CHLRDoc)
-	afx_msg void OnWindowNew3d();
-	afx_msg void OnWindowNew2d();
-	afx_msg void OnFileImportBrep();
-	afx_msg void OnBUTTONTest2DProperties();
-	afx_msg void OnBUTTONHLRDialog();
+  //{{AFX_MSG(CHLRDoc)
+  afx_msg void OnWindowNew3d();
+  afx_msg void OnWindowNew2d();
+  afx_msg void OnFileImportBrep();
+  afx_msg void OnBUTTONHLRDialog();
   //}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+  DECLARE_MESSAGE_MAP()
 
 public :
-void ActivateFrame(CRuntimeClass* pViewClass, int nCmdShow = SW_RESTORE  );
+  void ActivateFrame(CRuntimeClass* pViewClass, int nCmdShow = SW_RESTORE  );
 
 private:
-  Handle_V2d_Viewer my2DViewer;
-  Handle_ISession2D_InteractiveContext myInteractiveContext2D;
+  Handle_V3d_Viewer my2DViewer;
+  Handle_AIS_InteractiveContext myInteractiveContext2D;
 public :
-	Handle_V2d_Viewer GetViewer2D()  { return my2DViewer; };
-  	Handle_ISession2D_InteractiveContext& GetInteractiveContext2D(){ return myInteractiveContext2D; };
-    void FitAll2DViews(Standard_Boolean UpdateViewer=Standard_False);
+  Handle_V3d_Viewer GetViewer2D()  { return my2DViewer; };
+  Handle_AIS_InteractiveContext& GetInteractiveContext2D(){ return myInteractiveContext2D; };
+  void FitAll2DViews(Standard_Boolean UpdateViewer=Standard_False);
 
 public :
   CSelectionDialog* myCSelectionDialog;

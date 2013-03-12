@@ -8,23 +8,23 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
-#include <OCC_3dApp.h>
+#include <OCC_App.h>
 
-class CViewer3dApp : public OCC_3dApp
+class CViewer3dApp : public OCC_App
 {
 public:
-	CViewer3dApp();
+
+  CViewer3dApp();
 
 // Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CViewer3dApp)
-	public:
-	virtual BOOL InitInstance();
-	//}}AFX_VIRTUAL
+  // ClassWizard generated virtual function overrides
+  //{{AFX_VIRTUAL(CViewer3dApp)
+  public:
+  virtual BOOL InitInstance();
+  //}}AFX_VIRTUAL
 
-	DECLARE_MESSAGE_MAP()
+  DECLARE_MESSAGE_MAP()
 };
-
 
 /////////////////////////////////////////////////////////////////////////////
 

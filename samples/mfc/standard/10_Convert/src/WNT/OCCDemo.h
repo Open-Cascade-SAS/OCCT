@@ -14,40 +14,40 @@
 
 #include "resource.h"       // main symbols
 
-#include <OCC_BaseApp.h>
+#include <OCC_App.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // COCCDemoApp:
 // See OCCDemo.cpp for the implementation of this class
 //
 
-class COCCDemoApp : public OCC_BaseApp
+class COCCDemoApp : public OCC_App
 {
 public:
+
   COCCDemoApp();
-  Handle(Graphic3d_GraphicDriver)	  GetGraphicDriver() const 
-  { return myGraphicDriver; } ;
+
+  Handle(Graphic3d_GraphicDriver) GetGraphicDriver() const { return myGraphicDriver; }
 
 // Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(COCCDemoApp)
-	public:
-	virtual BOOL InitInstance();
-	//}}AFX_VIRTUAL
+  // ClassWizard generated virtual function overrides
+  //{{AFX_VIRTUAL(COCCDemoApp)
+  public:
+  virtual BOOL InitInstance();
+  //}}AFX_VIRTUAL
 
 // Implementation
-	//{{AFX_MSG(COCCDemoApp)
-	//afx_msg void OnAppAbout();
-		// NOTE - the ClassWizard will add and remove member functions here.
-		//    DO NOT EDIT what you see in these blocks of generated code !
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+  //{{AFX_MSG(COCCDemoApp)
+  //afx_msg void OnAppAbout();
+    // NOTE - the ClassWizard will add and remove member functions here.
+    //    DO NOT EDIT what you see in these blocks of generated code !
+  //}}AFX_MSG
+  DECLARE_MESSAGE_MAP()
 
 private:
+
   Handle(Graphic3d_GraphicDriver) myGraphicDriver;
-
 };
-
 
 /////////////////////////////////////////////////////////////////////////////
 

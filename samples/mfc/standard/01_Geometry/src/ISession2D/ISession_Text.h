@@ -11,24 +11,20 @@
 
 #include <Standard_Macro.hxx>
 #include <Standard_DefineHandle.hxx>
-
 #include <TCollection_AsciiString.hxx>
 #include <Aspect_TypeOfText.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
 #include <Quantity_Factor.hxx>
 #include <Quantity_PlaneAngle.hxx>
-#include <Handle_PrsMgr_PresentationManager2d.hxx>
-#include <Handle_Graphic2d_GraphicObject.hxx>
-#include <Handle_SelectMgr_Selection.hxx>
+#include <PrsMgr_PresentationManager3d.hxx>
+#include <SelectMgr_Selection.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
 #include <Standard_CString.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 
 class TCollection_AsciiString;
-class PrsMgr_PresentationManager2d;
-class Graphic2d_GraphicObject;
 class SelectMgr_Selection;
 
 DEFINE_STANDARD_HANDLE(ISession_Text,AIS_InteractiveObject)
@@ -80,32 +76,15 @@ inline   void                    SetScale  (const Quantity_Factor aNewScale) ;
 
 DEFINE_STANDARD_RTTI(ISession_Text)
 
-
-protected:
-
- // Methods PROTECTED
- // 
-
-
- // Fields PROTECTED
- //
-
-
 private: 
 
- // Methods PRIVATE
- // 
-
-void Compute          (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
-                       const Handle(Prs3d_Presentation)& aPresentation,
-                       const Standard_Integer aMode);
-void Compute          (const Handle(Prs3d_Projector)& aProjector,
-                       const Handle(Prs3d_Presentation)& aPresentation);
-void Compute          (const Handle(PrsMgr_PresentationManager2d)& aPresentationManager,
-                       const Handle(Graphic2d_GraphicObject)& aGrObj,
-                       const Standard_Integer unMode = 0) ;
-void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection,
-                       const Standard_Integer unMode) ;
+  void Compute          (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
+                        const Handle(Prs3d_Presentation)& aPresentation,
+                        const Standard_Integer aMode);
+  void Compute          (const Handle(Prs3d_Projector)& aProjector,
+                        const Handle(Prs3d_Presentation)& aPresentation);
+  void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection,
+                        const Standard_Integer unMode) ;
 
 
  // Fields PRIVATE

@@ -8,27 +8,27 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
-#include <OCC_3dApp.h>
+#include <OCC_App.h>
 
-class CAnimationApp : public OCC_3dApp
+class CAnimationApp : public OCC_App
 {
 public:
-	CAnimationApp();
+
+  CAnimationApp();
 
 //{{AFX_MSG(CAnimationApp)
-	afx_msg void OnAppAbout();
-		// NOTE - the ClassWizard will add and remove member functions here.
-		//    DO NOT EDIT what you see in these blocks of generated code !
-	//}}AFX_MSG
-   DECLARE_MESSAGE_MAP()
+  afx_msg void OnAppAbout();
+    // NOTE - the ClassWizard will add and remove member functions here.
+    //    DO NOT EDIT what you see in these blocks of generated code !
+  //}}AFX_MSG
+  DECLARE_MESSAGE_MAP()
 // Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CAnimationApp)
-	public:
-	virtual BOOL InitInstance();
-	//}}AFX_VIRTUAL
+  // ClassWizard generated virtual function overrides
+  //{{AFX_VIRTUAL(CAnimationApp)
+  public:
+  virtual BOOL InitInstance();
+  //}}AFX_VIRTUAL
 };
-
 
 /////////////////////////////////////////////////////////////////////////////
 

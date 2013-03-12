@@ -13,9 +13,9 @@
 /////////////////////////////////////////////////////////////////////////////
 // CTriangulationApp construction
 
-CTriangulationApp::CTriangulationApp()
+CTriangulationApp::CTriangulationApp() : OCC_App()
 {
-	SampleName = "TopologyTriangulation";	//for about dialog
+  SampleName = "TopologyTriangulation"; //for about dialog
 }
 
 /////////////////////////////////////////////////////////////////////////////

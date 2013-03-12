@@ -8,39 +8,36 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
-#include <OCC_3dApp.h>
+#include <OCC_App.h>
 #include "OcafDoc.h"
 #include "TOCAF_Application.hxx"
 
 
-class COcafApp : public OCC_3dApp
+class COcafApp : public OCC_App
 {
-
 public:
-	COcafApp();
-	~COcafApp();
+
+  COcafApp();
 
 // Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(COcafApp)
-	public:
-	virtual BOOL InitInstance();
-	//}}AFX_VIRTUAL
-	void OnFileOpen();
-// CasCade :
+  // ClassWizard generated virtual function overrides
+  //{{AFX_VIRTUAL(COcafApp)
+  public:
+  virtual BOOL InitInstance();
+  //}}AFX_VIRTUAL
+  void OnFileOpen();
 public:
-    // =========================================
-    // =========================================
-	Handle_TOcaf_Application GetApp() {return myApp;}
+  Handle_TOcaf_Application GetApp() {return myApp;}
 
 private :
-	Handle_TOcaf_Application myApp; 
- 	BOOL IsViewExisting(CDocument* pDoc,CRuntimeClass* pViewClass,CView*& pView); 	 
-    CMultiDocTemplate* pDocTemplateForView3d;
+  BOOL IsViewExisting(CDocument* pDoc,CRuntimeClass* pViewClass,CView*& pView);
 
-// End CasCade
-	DECLARE_MESSAGE_MAP()
+private:
 
+  Handle_TOcaf_Application myApp;
+  CMultiDocTemplate* pDocTemplateForView3d;
+
+  DECLARE_MESSAGE_MAP()
 };
 
 /////////////////////////////////////////////////////////////////////////////

@@ -26,9 +26,9 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CViewer3dApp construction
 
-CViewer3dApp::CViewer3dApp()
+CViewer3dApp::CViewer3dApp() : OCC_App()
 {
-	SampleName = "Viewer3d";	//for about dialog
+  SampleName = "Viewer3d"; //for about dialog
 }
 
 /////////////////////////////////////////////////////////////////////////////

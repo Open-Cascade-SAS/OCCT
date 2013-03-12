@@ -4,17 +4,8 @@
 
 #include <ISession2D_SensitiveCurve.h>
 
-IMPLEMENT_STANDARD_HANDLE(ISession2D_SensitiveCurve,Select2D_SensitiveEntity)
-IMPLEMENT_STANDARD_RTTIEXT(ISession2D_SensitiveCurve,Select2D_SensitiveEntity)
-
-#include <Bnd_Box2d.hxx>
-#include <gp_Lin2d.hxx>
-#include <gp_Dir2d.hxx>
-#include <gp_Vec2d.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <SelectBasics_BasicTool.hxx>
-#include "GCPnts_TangentialDeflection.hxx"
-#include "Geom2dAdaptor_Curve.hxx"
+IMPLEMENT_STANDARD_HANDLE(ISession2D_SensitiveCurve,Select3D_SensitiveEntity)
+IMPLEMENT_STANDARD_RTTIEXT(ISession2D_SensitiveCurve,Select3D_SensitiveEntity)
 
 //=====================================================
 // Function : Create
@@ -27,7 +18,7 @@ ISession2D_SensitiveCurve(const Handle(SelectBasics_EntityOwner)& OwnerId,
                         const Handle(Geom2d_Curve)& C,
                         const Standard_Real CDeflect,
                         const Standard_Integer MaxRect):
-Select2D_SensitiveEntity(OwnerId),
+Select3D_SensitiveEntity(OwnerId),
 myMaxRect(MaxRect),
 myCurve(C),
 myCDeflect(CDeflect)

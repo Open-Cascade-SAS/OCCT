@@ -8,18 +8,20 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
-#include <OCC_3dApp.h>
+#include <OCC_App.h>
 
-class CTriangulationApp : public OCC_3dApp
+class CTriangulationApp : public OCC_App
 {
 public:
-	CTriangulationApp();
+
+  CTriangulationApp();
+
 // Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CTriangulationApp)
-	public:
-	virtual BOOL InitInstance();
-	//}}AFX_VIRTUAL
+  // ClassWizard generated virtual function overrides
+  //{{AFX_VIRTUAL(CTriangulationApp)
+  public:
+  virtual BOOL InitInstance();
+  //}}AFX_VIRTUAL
 };
 
 /////////////////////////////////////////////////////////////////////////////

@@ -1,5 +1,5 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
+// Microsoft Visual C++ generated include file.
 // Used by OCC_Resource.rc
 //
 #define IDR_POPUP                       116
@@ -20,6 +20,8 @@
 #define IDD_COLORMESH                   552
 #define IDB_coloredmesh                 554
 #define IDC_RICHEDIT_ResultDialog       1001
+#define IDC_EDIT1                       1004
+#define IDC_README                      1005
 #define ID_WINDOW_NEW3D                 1151
 #define ID_OBJECT_DISPLAYALL            1201
 #define ID_OBJECT_MATERIAL              1205
@@ -132,7 +134,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        119
 #define _APS_NEXT_COMMAND_VALUE         40034
-#define _APS_NEXT_CONTROL_VALUE         1000
+#define _APS_NEXT_CONTROL_VALUE         1006
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

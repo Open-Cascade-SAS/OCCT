@@ -2,6 +2,9 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
+#include <AIS_Shape.hxx>
+#include <AIS_LocalContext.hxx>
+#include <TopoDS_Face.hxx>
 #include "OCC_2dDoc.h"
 
 
@@ -24,12 +27,11 @@ protected:
 // Generated message map functions
 protected:
 	//{{AFX_MSG(CViewer2dDoc)
-	afx_msg void OnBUTTONTest2DProperties();
 	afx_msg void OnBUTTONTestText();
    	afx_msg void OnBUTTONTestMarkers();
 	afx_msg void OnBUTTONTestLine();
 	afx_msg void OnBUTTONErase();
-	afx_msg void OnBUTTONTestFase();
+	afx_msg void OnBUTTONTestFace();
 	afx_msg void OnBUTTONTestRect();
 	afx_msg void OnBUTTONTestCurve();
 	afx_msg void OnBUTTONTestImage();

@@ -8,38 +8,38 @@
 
 class CChildFrame2D : public OCC_BaseChildFrame
 {
-	DECLARE_DYNCREATE(CChildFrame2D)
+  DECLARE_DYNCREATE(CChildFrame2D)
 public:
-	CChildFrame2D();
+  CChildFrame2D();
 
-// Attributes
-public:
-
-// Operations
+  // Attributes
 public:
 
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CChildFrame2D)
-	public:
-	virtual void ActivateFrame(int nCmdShow = -1);
-	//}}AFX_VIRTUAL
-
-// Implementation
+  // Operations
 public:
-	virtual ~CChildFrame2D();
+
+  // Overrides
+  // ClassWizard generated virtual function overrides
+  //{{AFX_VIRTUAL(CChildFrame2D)
+public:
+  virtual void ActivateFrame(int nCmdShow = -1);
+  //}}AFX_VIRTUAL
+
+  // Implementation
+public:
+  virtual ~CChildFrame2D();
 #ifdef _DEBUG
-	virtual void AssertValid() const;
-	virtual void Dump(CDumpContext& dc) const;
+  virtual void AssertValid() const;
+  virtual void Dump(CDumpContext& dc) const;
 #endif
 
-// Generated message map functions
+  // Generated message map functions
 protected:
-	//CToolBar m_wndToolBar;
-	//{{AFX_MSG(CChildFrame2D)
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+  //CToolBar m_wndToolBar;
+  //{{AFX_MSG(CChildFrame2D)
+  afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+  //}}AFX_MSG
+  DECLARE_MESSAGE_MAP()
 };
 
 /////////////////////////////////////////////////////////////////////////////

@@ -45,14 +45,6 @@ void ISession2D_Shape::SetNbIsos(Standard_Integer& aNbIsos)
 
 };
 
-
-/* virtual private */ void ISession2D_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,const Handle(Prs3d_Presentation)& aPresentation,const Standard_Integer aMode) 
-{
-}
-/* virtual private */ void ISession2D_Shape::Compute(const Handle(Prs3d_Projector)& aProjector,const Handle(Prs3d_Presentation)& aPresentation)
-{
-}
-
 void ISession2D_Shape::BuildAlgo() 
 {
   myAlgo = new HLRBRep_Algo();
@@ -72,12 +64,11 @@ void ISession2D_Shape::BuildPolyAlgo()
   myPolyAlgo->Update();
 }
 
-/* virtual private */ void ISession2D_Shape::Compute(const Handle(PrsMgr_PresentationManager2d)& aPresentationManager,
-			     const Handle(Graphic2d_GraphicObject)& aGrObj,
+void ISession2D_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
+			     const Handle(Prs3d_Presentation)& aPresentation,
 			     const Standard_Integer aMode) 
 {
   Standard_Integer TheMode = aMode;
-
   Standard_Boolean DrawHiddenLine= Standard_True;
   if (TheMode >= 1000)
   {
@@ -95,175 +86,227 @@ void ISession2D_Shape::BuildPolyAlgo()
   TopoDS_Shape Rg1LineVCompound;
   TopoDS_Shape RgNLineVCompound;
   TopoDS_Shape OutLineVCompound;
-  TopoDS_Shape IsoLineVCompound;  // only fro Exact algo
+  TopoDS_Shape IsoLineVCompound;  // only for Exact algo
   TopoDS_Shape HCompound;
   TopoDS_Shape Rg1LineHCompound;
   TopoDS_Shape RgNLineHCompound;
   TopoDS_Shape OutLineHCompound;
-  TopoDS_Shape IsoLineHCompound;  // only fro Exact algo
+  TopoDS_Shape IsoLineHCompound;  // only for Exact algo
 
   if (UsePolyAlgo)
-    {
-      if (myPolyAlgo.IsNull()) BuildPolyAlgo();
-      HLRBRep_PolyHLRToShape aPolyHLRToShape;
-      aPolyHLRToShape.Update(myPolyAlgo);
+  {
+    if (myPolyAlgo.IsNull()) BuildPolyAlgo();
+    HLRBRep_PolyHLRToShape aPolyHLRToShape;
+    aPolyHLRToShape.Update(myPolyAlgo);
 
-      VCompound        = aPolyHLRToShape.VCompound();
-      Rg1LineVCompound = aPolyHLRToShape.Rg1LineVCompound();
-      RgNLineVCompound = aPolyHLRToShape.RgNLineVCompound();
-      OutLineVCompound = aPolyHLRToShape.OutLineVCompound();
-      HCompound        = aPolyHLRToShape.HCompound();
-      Rg1LineHCompound = aPolyHLRToShape.Rg1LineHCompound();
-      RgNLineHCompound = aPolyHLRToShape.RgNLineHCompound();
-      OutLineHCompound = aPolyHLRToShape.OutLineHCompound();
-    }
-    else
-    {
-      if (myAlgo.IsNull()) BuildAlgo();
-      HLRBRep_HLRToShape aHLRToShape(myAlgo);
-
-      VCompound        = aHLRToShape.VCompound();
-      Rg1LineVCompound = aHLRToShape.Rg1LineVCompound();
-      RgNLineVCompound = aHLRToShape.RgNLineVCompound();
-      OutLineVCompound = aHLRToShape.OutLineVCompound();
-      IsoLineVCompound = aHLRToShape.IsoLineVCompound();
-      HCompound        = aHLRToShape.HCompound();
-      Rg1LineHCompound = aHLRToShape.Rg1LineHCompound();
-      RgNLineHCompound = aHLRToShape.RgNLineHCompound();
-      OutLineHCompound = aHLRToShape.OutLineHCompound();
-      IsoLineHCompound = aHLRToShape.IsoLineHCompound();
-    }
-
-  if (UsePolyAlgo)
-    {
-      Handle(Graphic2d_SetOfSegments) aSetOfVSegmentsHighLighted = new Graphic2d_SetOfSegments(aGrObj);
-      Handle(Graphic2d_SetOfSegments) aSetOfVSegments            = new Graphic2d_SetOfSegments(aGrObj);
-
-      if (TheMode == 1) DrawCompound(VCompound         , aSetOfVSegmentsHighLighted);
-      else            DrawCompound(VCompound         , aSetOfVSegments);
-      if (TheMode == 2) DrawCompound(Rg1LineVCompound  , aSetOfVSegmentsHighLighted);
-      else            DrawCompound(Rg1LineVCompound  , aSetOfVSegments);      
-      if (TheMode == 3) DrawCompound(RgNLineVCompound  , aSetOfVSegmentsHighLighted);
-      else            DrawCompound(RgNLineVCompound  , aSetOfVSegments);
-      if (TheMode == 4) DrawCompound(OutLineVCompound  , aSetOfVSegmentsHighLighted);
-      else            DrawCompound(OutLineVCompound  , aSetOfVSegments);
-
-      aSetOfVSegmentsHighLighted->SetColorIndex (1);
-      aSetOfVSegmentsHighLighted->SetWidthIndex (1);
-      aSetOfVSegmentsHighLighted->SetTypeIndex  (1);
-      aSetOfVSegments->SetColorIndex (2);
-      aSetOfVSegments->SetWidthIndex (2);
-     if (DrawHiddenLine)
-      {
-        Handle(Graphic2d_SetOfSegments) aSetOfHSegmentsHighLighted = new Graphic2d_SetOfSegments(aGrObj);
-        Handle(Graphic2d_SetOfSegments) aSetOfHSegments            = new Graphic2d_SetOfSegments(aGrObj);
-        if (TheMode == 6) DrawCompound(HCompound         , aSetOfHSegmentsHighLighted);
-        else            DrawCompound(HCompound         , aSetOfHSegments);
-        if (TheMode == 7) DrawCompound(Rg1LineHCompound  , aSetOfHSegmentsHighLighted);
-        else            DrawCompound(Rg1LineHCompound  , aSetOfHSegments);
-        if (TheMode == 8) DrawCompound(RgNLineHCompound  , aSetOfHSegmentsHighLighted);
-        else            DrawCompound(RgNLineHCompound  , aSetOfHSegments);
-        if (TheMode == 9) DrawCompound(OutLineHCompound  , aSetOfHSegmentsHighLighted);
-        else            DrawCompound(OutLineHCompound  , aSetOfHSegments);
-
-        aSetOfVSegments->SetTypeIndex  (2);
-        aSetOfHSegmentsHighLighted->SetColorIndex (3);
-        aSetOfHSegmentsHighLighted->SetWidthIndex (3);
-        aSetOfHSegmentsHighLighted->SetTypeIndex  (3);
-        aSetOfHSegments->SetColorIndex (4);
-        aSetOfHSegments->SetWidthIndex (4);
-        aSetOfHSegments->SetTypeIndex  (4);
-      }
+    VCompound        = aPolyHLRToShape.VCompound();
+    Rg1LineVCompound = aPolyHLRToShape.Rg1LineVCompound();
+    RgNLineVCompound = aPolyHLRToShape.RgNLineVCompound();
+    OutLineVCompound = aPolyHLRToShape.OutLineVCompound();
+    HCompound        = aPolyHLRToShape.HCompound();
+    Rg1LineHCompound = aPolyHLRToShape.Rg1LineHCompound();
+    RgNLineHCompound = aPolyHLRToShape.RgNLineHCompound();
+    OutLineHCompound = aPolyHLRToShape.OutLineHCompound();
   }
   else
   {
-      Handle(Graphic2d_SetOfCurves) aSetOfVCurvesHighLighted = new Graphic2d_SetOfCurves(aGrObj);
-      Handle(Graphic2d_SetOfCurves) aSetOfVCurves            = new Graphic2d_SetOfCurves(aGrObj);
+    if (myAlgo.IsNull()) BuildAlgo();
+    HLRBRep_HLRToShape aHLRToShape(myAlgo);
 
-      if (TheMode == 1)  DrawCompound(VCompound         , aSetOfVCurvesHighLighted);
-      else             DrawCompound(VCompound         , aSetOfVCurves);
-      if (TheMode == 2)  DrawCompound(Rg1LineVCompound  , aSetOfVCurvesHighLighted);
-      else             DrawCompound(Rg1LineVCompound  , aSetOfVCurves);      
-      if (TheMode == 3)  DrawCompound(RgNLineVCompound  , aSetOfVCurvesHighLighted);
-      else             DrawCompound(RgNLineVCompound  , aSetOfVCurves);
-      if (TheMode == 4)  DrawCompound(OutLineVCompound  , aSetOfVCurvesHighLighted);
-      else             DrawCompound(OutLineVCompound  , aSetOfVCurves);
-      if (TheMode == 5)  DrawCompound(IsoLineVCompound  , aSetOfVCurvesHighLighted);
-      else             DrawCompound(IsoLineVCompound  , aSetOfVCurves);
-      aSetOfVCurvesHighLighted->SetColorIndex (1);
-      aSetOfVCurvesHighLighted->SetWidthIndex (1);
-      aSetOfVCurvesHighLighted->SetTypeIndex  (1);
-      aSetOfVCurves->SetColorIndex (2);
-      aSetOfVCurves->SetWidthIndex (2);
-      aSetOfVCurves->SetTypeIndex  (2);
+    VCompound        = aHLRToShape.VCompound();
+    Rg1LineVCompound = aHLRToShape.Rg1LineVCompound();
+    RgNLineVCompound = aHLRToShape.RgNLineVCompound();
+    OutLineVCompound = aHLRToShape.OutLineVCompound();
+    IsoLineVCompound = aHLRToShape.IsoLineVCompound();
+    HCompound        = aHLRToShape.HCompound();
+    Rg1LineHCompound = aHLRToShape.Rg1LineHCompound();
+    RgNLineHCompound = aHLRToShape.RgNLineHCompound();
+    OutLineHCompound = aHLRToShape.OutLineHCompound();
+    IsoLineHCompound = aHLRToShape.IsoLineHCompound();
+  }
 
-     if (DrawHiddenLine)
+  if (UsePolyAlgo)
+  {
+    Handle(Prs3d_LineAspect) aLineAspectHighlighted = new Prs3d_LineAspect(Quantity_NOC_ALICEBLUE,
+      Aspect_TOL_DOTDASH,1);
+    Handle(Prs3d_LineAspect) aLineAspect = new Prs3d_LineAspect(Quantity_NOC_WHITE,
+      Aspect_TOL_SOLID,1);
+
+
+    switch(TheMode)
+    {
+    case (1):
       {
-        Handle(Graphic2d_SetOfCurves) aSetOfHCurvesHighLighted = new Graphic2d_SetOfCurves(aGrObj);
-        Handle(Graphic2d_SetOfCurves) aSetOfHCurves            = new Graphic2d_SetOfCurves(aGrObj);
-        if (TheMode == 6)  DrawCompound(HCompound         , aSetOfHCurvesHighLighted);
-        else               DrawCompound(HCompound         , aSetOfHCurves);
-        if (TheMode == 7)  DrawCompound(Rg1LineHCompound  , aSetOfHCurvesHighLighted);
-        else               DrawCompound(Rg1LineHCompound  , aSetOfHCurves);
-        if (TheMode == 8)  DrawCompound(RgNLineHCompound  , aSetOfHCurvesHighLighted);
-        else               DrawCompound(RgNLineHCompound  , aSetOfHCurves);
-        if (TheMode == 9)  DrawCompound(OutLineHCompound  , aSetOfHCurvesHighLighted);
-        else               DrawCompound(OutLineHCompound  , aSetOfHCurves);
-        if (TheMode == 10) DrawCompound(IsoLineHCompound  , aSetOfHCurvesHighLighted);
-        else               DrawCompound(IsoLineHCompound  , aSetOfHCurves);
-
-        aSetOfHCurvesHighLighted->SetColorIndex (3);
-        aSetOfHCurvesHighLighted->SetWidthIndex (3);
-        aSetOfHCurvesHighLighted->SetTypeIndex  (3);
-        aSetOfHCurves->SetColorIndex (4);
-        aSetOfHCurves->SetWidthIndex (4);
-        aSetOfHCurves->SetTypeIndex  (4);
+        DrawCompound(aPresentation, VCompound, aLineAspectHighlighted);
+        break;
       }
+    case (2):
+      {
+        DrawCompound(aPresentation, Rg1LineVCompound, aLineAspectHighlighted);
+        break;
+      }
+    case (3):
+      {
+        DrawCompound(aPresentation, RgNLineVCompound, aLineAspectHighlighted);
+        break;
+      }
+    case (4):
+      {
+        DrawCompound(aPresentation, OutLineVCompound, aLineAspectHighlighted);
+        break;
+      }
+    default:
+      {
+        DrawCompound(aPresentation,VCompound, aLineAspect);
+        DrawCompound(aPresentation,Rg1LineVCompound, aLineAspect);
+        DrawCompound(aPresentation,RgNLineVCompound, aLineAspect);
+        DrawCompound(aPresentation,OutLineVCompound, aLineAspect);
+      }
+    }
+
+    if (DrawHiddenLine)
+    {
+      Handle(Prs3d_LineAspect) aLineAspectHighlighted = new Prs3d_LineAspect(Quantity_NOC_RED,
+        Aspect_TOL_DOTDASH,2);
+      Handle(Prs3d_LineAspect) aLineAspect = new Prs3d_LineAspect(Quantity_NOC_BLUE1,
+        Aspect_TOL_DOTDASH,1);
+
+      switch(TheMode)
+      {
+      case (6):
+        {
+          DrawCompound(aPresentation, HCompound, aLineAspectHighlighted);
+          break;
+        }
+      case (7):
+        {
+          DrawCompound(aPresentation, Rg1LineHCompound, aLineAspectHighlighted);
+          break;
+        }
+      case (8):
+        {
+          DrawCompound(aPresentation, RgNLineHCompound, aLineAspectHighlighted);
+          break;
+        }
+      case (9):
+        {
+          DrawCompound(aPresentation, OutLineHCompound, aLineAspectHighlighted);
+          break;
+        }
+      default:
+        {
+          DrawCompound(aPresentation, HCompound, aLineAspect);
+          DrawCompound(aPresentation, Rg1LineHCompound, aLineAspect);
+          DrawCompound(aPresentation, RgNLineHCompound, aLineAspect);
+          DrawCompound(aPresentation, OutLineHCompound, aLineAspect);
+        }
+      }
+    }
+  }
+  else
+  {
+    Handle(Prs3d_LineAspect) aLineAspectHighlighted = new Prs3d_LineAspect(Quantity_NOC_RED,
+      Aspect_TOL_SOLID,2);
+    Handle(Prs3d_LineAspect) aLineAspect = new Prs3d_LineAspect(Quantity_NOC_WHITE,
+      Aspect_TOL_SOLID,1);  
+
+    switch (TheMode)
+    {
+    case (1):
+      {
+        DrawCompound(aPresentation, VCompound, aLineAspectHighlighted);
+        break;
+      }
+    case (2):
+      {
+        DrawCompound(aPresentation, Rg1LineVCompound, aLineAspectHighlighted);
+        break;
+      }
+    case (3):
+      {
+        DrawCompound(aPresentation, RgNLineVCompound, aLineAspectHighlighted);
+        break;
+      }
+    case (4):
+      {
+        DrawCompound(aPresentation, OutLineVCompound, aLineAspectHighlighted);
+        break;
+      }
+    case (5):
+      {
+        DrawCompound(aPresentation, IsoLineVCompound, aLineAspectHighlighted);
+        break;
+      }
+    default:
+      {
+        DrawCompound(aPresentation, VCompound, aLineAspect);
+        DrawCompound(aPresentation, Rg1LineVCompound, aLineAspect);
+        DrawCompound(aPresentation, RgNLineVCompound, aLineAspect);
+        DrawCompound(aPresentation, OutLineVCompound, aLineAspect);
+        DrawCompound(aPresentation, IsoLineVCompound , aLineAspect);
+      }
+    }
+
+    if (DrawHiddenLine)
+    {
+      Handle(Prs3d_LineAspect) aLineAspectHighlighted = new Prs3d_LineAspect(Quantity_NOC_RED,
+        Aspect_TOL_DOT,2);
+      Handle(Prs3d_LineAspect) aLineAspect = new Prs3d_LineAspect(Quantity_NOC_ALICEBLUE,
+        Aspect_TOL_DOT,1);  
+
+            switch(TheMode)
+      {
+      case (6):
+        {
+          DrawCompound(aPresentation, HCompound, aLineAspectHighlighted);
+          break;
+        }
+      case (7):
+        {
+          DrawCompound(aPresentation, Rg1LineHCompound, aLineAspectHighlighted);
+          break;
+        }
+      case (8):
+        {
+          DrawCompound(aPresentation, RgNLineHCompound, aLineAspectHighlighted);
+          break;
+        }
+      case (9):
+        {
+          DrawCompound(aPresentation, OutLineHCompound, aLineAspectHighlighted);
+          break;
+        }
+      case (10):
+        {
+          DrawCompound(aPresentation, IsoLineHCompound, aLineAspectHighlighted);
+          break;
+        }
+      default:
+        {
+          DrawCompound(aPresentation, HCompound, aLineAspect);
+          DrawCompound(aPresentation, Rg1LineHCompound, aLineAspect);
+          DrawCompound(aPresentation, RgNLineHCompound, aLineAspect);
+          DrawCompound(aPresentation, OutLineHCompound, aLineAspect);
+          DrawCompound(aPresentation, IsoLineHCompound, aLineAspect);
+        }
+      }
+    }
   }
 }
 
-
-void ISession2D_Shape::DrawCompound(TopoDS_Shape& aCompound,const Handle(Graphic2d_SetOfSegments)& aSetOfSegments)
+void ISession2D_Shape::DrawCompound(const Handle(Prs3d_Presentation)& thePresentation,
+                                   const TopoDS_Shape& theCompound, 
+                                   const Handle(Prs3d_LineAspect) theAspect)
 {
-  if (aCompound.IsNull())
+  if (theCompound.IsNull())
     return;
-
-  TopExp_Explorer ex(aCompound,TopAbs_EDGE);
-  while (ex.More()) {
-    const TopoDS_Edge& CurrentEdge = TopoDS::Edge(ex.Current());
-    const TopoDS_Vertex& FirstVertex=TopExp::FirstVertex(CurrentEdge);
-    const TopoDS_Vertex& LastVertex =TopExp::LastVertex(CurrentEdge);
-    gp_Pnt FirstPoint = BRep_Tool::Pnt(FirstVertex);
-    gp_Pnt LastPoint  = BRep_Tool::Pnt(LastVertex);
-    aSetOfSegments->Add(FirstPoint.X(),FirstPoint.Y(),LastPoint.X(),LastPoint.Y());
-    ex.Next();
-  }
-}
-
-void ISession2D_Shape::DrawCompound(TopoDS_Shape& aCompound,const Handle(Graphic2d_SetOfCurves)& aSetOfCurves)
-{
-  if (aCompound.IsNull())
-    return;
-
-  TopExp_Explorer ex(aCompound,TopAbs_EDGE);
-  Handle(Geom2d_Curve) aCurve;
-  Handle(Geom_Surface) aSurface;
-  TopLoc_Location L;
-  Standard_Real f,l;
-  while (ex.More()) {
-    const TopoDS_Edge& CurrentEdge = TopoDS::Edge(ex.Current());
-    ASSERT(CurrentEdge.Location().IsIdentity());
-    BRep_Tool::CurveOnSurface(CurrentEdge,aCurve,aSurface,L,f,l);
-    ASSERT(L.IsIdentity());
-    Handle(Geom2d_TrimmedCurve) c= new Geom2d_TrimmedCurve(aCurve,f,l);
-    ASSERT(!c.IsNull());
-    aSetOfCurves->Add(c);
-    ex.Next();
-  }
+  myDrawer->SetWireAspect(theAspect);
+  StdPrs_WFDeflectionShape::Add(thePresentation,TopoDS_Shape(theCompound),myDrawer);
 }
 
 void ISession2D_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
 				      const Standard_Integer aMode) 
-{ 
+{
+
 }
 

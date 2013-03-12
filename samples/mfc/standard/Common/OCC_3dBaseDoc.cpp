@@ -7,7 +7,7 @@
 #include "OCC_3dBaseDoc.h"
 
 #include "OCC_3dView.h"
-#include "OCC_3dApp.h"
+#include "OCC_App.h"
 #include <res\OCC_Resource.h>
 #include "ImportExport/ImportExport.h"
 #include "AISDialogs.h"
@@ -15,29 +15,28 @@
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 
 BEGIN_MESSAGE_MAP(OCC_3dBaseDoc, OCC_BaseDoc)
-	//{{AFX_MSG_MAP(OCC_3dBaseDoc)
-	ON_COMMAND(ID_FILE_IMPORT_BREP, OnFileImportBrep)
-	ON_COMMAND(ID_FILE_EXPORT_BREP, OnFileExportBrep)
-	ON_COMMAND(ID_OBJECT_ERASE, OnObjectErase)
-	ON_UPDATE_COMMAND_UI(ID_OBJECT_ERASE, OnUpdateObjectErase)
-	ON_COMMAND(ID_OBJECT_COLOR, OnObjectColor)
-	ON_UPDATE_COMMAND_UI(ID_OBJECT_COLOR, OnUpdateObjectColor)
-	ON_COMMAND(ID_OBJECT_SHADING, OnObjectShading)
-	ON_UPDATE_COMMAND_UI(ID_OBJECT_SHADING, OnUpdateObjectShading)
-	ON_COMMAND(ID_OBJECT_WIREFRAME, OnObjectWireframe)
-	ON_UPDATE_COMMAND_UI(ID_OBJECT_WIREFRAME, OnUpdateObjectWireframe)
-	ON_COMMAND(ID_OBJECT_TRANSPARENCY, OnObjectTransparency)
-	ON_UPDATE_COMMAND_UI(ID_OBJECT_TRANSPARENCY, OnUpdateObjectTransparency)
-	ON_COMMAND(ID_OBJECT_MATERIAL, OnObjectMaterial)
-	ON_UPDATE_COMMAND_UI(ID_OBJECT_MATERIAL, OnUpdateObjectMaterial)
-	ON_COMMAND(ID_OBJECT_DISPLAYALL, OnObjectDisplayall)
-	ON_UPDATE_COMMAND_UI(ID_OBJECT_DISPLAYALL, OnUpdateObjectDisplayall)
-	ON_COMMAND(ID_OBJECT_REMOVE, OnObjectRemove)
-	ON_UPDATE_COMMAND_UI(ID_OBJECT_REMOVE, OnUpdateObjectRemove)
-	//}}AFX_MSG_MAP
-	ON_COMMAND_EX_RANGE(ID_OBJECT_MATERIAL_BRASS,ID_OBJECT_MATERIAL_DEFAULT, OnObjectMaterialRange)
-	ON_UPDATE_COMMAND_UI_RANGE(ID_OBJECT_MATERIAL_BRASS,ID_OBJECT_MATERIAL_DEFAULT, OnUpdateObjectMaterialRange)
-
+  //{{AFX_MSG_MAP(OCC_3dBaseDoc)
+  ON_COMMAND(ID_FILE_IMPORT_BREP, OnFileImportBrep)
+  ON_COMMAND(ID_FILE_EXPORT_BREP, OnFileExportBrep)
+  ON_COMMAND(ID_OBJECT_ERASE, OnObjectErase)
+  ON_UPDATE_COMMAND_UI(ID_OBJECT_ERASE, OnUpdateObjectErase)
+  ON_COMMAND(ID_OBJECT_COLOR, OnObjectColor)
+  ON_UPDATE_COMMAND_UI(ID_OBJECT_COLOR, OnUpdateObjectColor)
+  ON_COMMAND(ID_OBJECT_SHADING, OnObjectShading)
+  ON_UPDATE_COMMAND_UI(ID_OBJECT_SHADING, OnUpdateObjectShading)
+  ON_COMMAND(ID_OBJECT_WIREFRAME, OnObjectWireframe)
+  ON_UPDATE_COMMAND_UI(ID_OBJECT_WIREFRAME, OnUpdateObjectWireframe)
+  ON_COMMAND(ID_OBJECT_TRANSPARENCY, OnObjectTransparency)
+  ON_UPDATE_COMMAND_UI(ID_OBJECT_TRANSPARENCY, OnUpdateObjectTransparency)
+  ON_COMMAND(ID_OBJECT_MATERIAL, OnObjectMaterial)
+  ON_UPDATE_COMMAND_UI(ID_OBJECT_MATERIAL, OnUpdateObjectMaterial)
+  ON_COMMAND(ID_OBJECT_DISPLAYALL, OnObjectDisplayall)
+  ON_UPDATE_COMMAND_UI(ID_OBJECT_DISPLAYALL, OnUpdateObjectDisplayall)
+  ON_COMMAND(ID_OBJECT_REMOVE, OnObjectRemove)
+  ON_UPDATE_COMMAND_UI(ID_OBJECT_REMOVE, OnUpdateObjectRemove)
+  //}}AFX_MSG_MAP
+  ON_COMMAND_EX_RANGE(ID_OBJECT_MATERIAL_BRASS,ID_OBJECT_MATERIAL_DEFAULT, OnObjectMaterialRange)
+  ON_UPDATE_COMMAND_UI_RANGE(ID_OBJECT_MATERIAL_BRASS,ID_OBJECT_MATERIAL_DEFAULT, OnUpdateObjectMaterialRange)
 END_MESSAGE_MAP()
 
 
@@ -47,118 +46,129 @@ END_MESSAGE_MAP()
 
 OCC_3dBaseDoc::OCC_3dBaseDoc()
 {
-	AfxInitRichEdit();
-	
-	Handle(Graphic3d_WNTGraphicDevice) theGraphicDevice = 
-		((OCC_3dApp*)AfxGetApp())->GetGraphicDevice();
-	
-	myViewer = new V3d_Viewer(theGraphicDevice,(short *) "Visu3D");
-	myViewer->SetDefaultLights();
-	myViewer->SetLightOn();
-	myAISContext =new AIS_InteractiveContext(myViewer);
+  AfxInitRichEdit();
+
+  Handle(Graphic3d_GraphicDriver) aGraphicDriver = 
+    ((OCC_App*)AfxGetApp())->GetGraphicDriver();
+
+  myViewer = new V3d_Viewer (aGraphicDriver, Standard_ExtString("Visu3D") );
+  myViewer->SetDefaultLights();
+  myViewer->SetLightOn();
+  myAISContext = new AIS_InteractiveContext (myViewer);
 }
 
-OCC_3dBaseDoc::~OCC_3dBaseDoc()
+//-----------------------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------------------
+void OCC_3dBaseDoc::DragEvent (const Standard_Integer theMouseX,
+                               const Standard_Integer theMouseY,
+                               const Standard_Integer theState,
+                               const Handle(V3d_View)& theView)
 {
+  // TheState == -1  button down
+  // TheState ==  0  move
+  // TheState ==  1  button up
 
-}
+  static Standard_Integer aStartDragX = 0;
+  static Standard_Integer aStartDragY = 0;
 
-
-void OCC_3dBaseDoc::DragEvent(const Standard_Integer  x        ,
-				                  const Standard_Integer  y        ,
-				                  const Standard_Integer  TheState ,
-                                  const Handle(V3d_View)& aView    )
-{
-
-    // TheState == -1  button down
-	// TheState ==  0  move
-	// TheState ==  1  button up
-
-    static Standard_Integer theButtonDownX=0;
-    static Standard_Integer theButtonDownY=0;
-
-	if (TheState == -1)
-    {
-      theButtonDownX=x;
-      theButtonDownY=y;
-    }
-	if (TheState == 1)
+  if (theState == -1)
   {
-     myAISContext->Select(theButtonDownX,theButtonDownY,x,y,aView);
+    // button down
+    aStartDragX = theMouseX;
+    aStartDragY = theMouseY;
+  }
+
+  if (theState == 1)
+  {
+    // button up
+    myAISContext->Select (aStartDragX, aStartDragY,
+                          theMouseX, theMouseY,
+                          theView);
   }
 }
 
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void OCC_3dBaseDoc::InputEvent(const Standard_Integer  x     ,
-				                   const Standard_Integer  y     ,
-                                   const Handle(V3d_View)& aView ) 
+void OCC_3dBaseDoc::InputEvent (const Standard_Integer theMouseX,
+                                const Standard_Integer theMouseY,
+                                const Handle(V3d_View)& theView)
 {
-   myAISContext->Select(); 
+  myAISContext->MoveTo (theMouseX, theMouseY, theView);
+  myAISContext->Select();
 }
 
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void OCC_3dBaseDoc::MoveEvent(const Standard_Integer  x       ,
-                                  const Standard_Integer  y       ,
-                                  const Handle(V3d_View)& aView   ) 
+void OCC_3dBaseDoc::MoveEvent (const Standard_Integer theMouseX,
+                               const Standard_Integer theMouseY,
+                               const Handle(V3d_View)& theView)
 {
-      myAISContext->MoveTo(x,y,aView);
+  myAISContext->MoveTo (theMouseX, theMouseY, theView);
 }
 
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void OCC_3dBaseDoc::ShiftMoveEvent(const Standard_Integer  x       ,
-                                  const Standard_Integer  y       ,
-                                  const Handle(V3d_View)& aView   ) 
+void OCC_3dBaseDoc::ShiftMoveEvent (const Standard_Integer theMouseX,
+                                    const Standard_Integer theMouseY,
+                                    const Handle(V3d_View)& theView)
 {
-      myAISContext->MoveTo(x,y,aView);
+  myAISContext->MoveTo (theMouseX, theMouseY, theView);
 }
 
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void OCC_3dBaseDoc::ShiftDragEvent(const Standard_Integer  x        ,
-									   const Standard_Integer  y        ,
-									   const Standard_Integer  TheState ,
-                                       const Handle(V3d_View)& aView    ) 
+void OCC_3dBaseDoc::ShiftDragEvent (const Standard_Integer theMouseX,
+                                    const Standard_Integer theMouseY,
+                                    const Standard_Integer theState,
+                                    const Handle(V3d_View)& theView)
 {
-    static Standard_Integer theButtonDownX=0;
-    static Standard_Integer theButtonDownY=0;
+  // TheState == -1  button down
+  // TheState ==  0  move
+  // TheState ==  1  button up
 
-	if (TheState == -1)
-    {
-      theButtonDownX=x;
-      theButtonDownY=y;
-    }
+  static Standard_Integer aStartDragX = 0;
+  static Standard_Integer aStartDragY = 0;
 
-	if (TheState == 0)
-	  myAISContext->ShiftSelect(theButtonDownX,theButtonDownY,x,y,aView);  
+  if (theState == -1)
+  {
+    // button down
+    aStartDragX = theMouseX;
+    aStartDragY = theMouseY;
+  }
+
+  if (theState == 0)
+  {
+    // button up
+    myAISContext->ShiftSelect (aStartDragX, aStartDragY,
+                               theMouseX, theMouseY,
+                               theView);
+  }
 }
-
 
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void OCC_3dBaseDoc::ShiftInputEvent(const Standard_Integer  x       ,
-									    const Standard_Integer  y       ,
-                                        const Handle(V3d_View)& aView   ) 
+void OCC_3dBaseDoc::ShiftInputEvent (const Standard_Integer theMouseX,
+                                     const Standard_Integer theMouseY,
+                                     const Handle(V3d_View)& theView)
 {
-	myAISContext->ShiftSelect(); 
+  myAISContext->ShiftSelect();
 }
 
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void  OCC_3dBaseDoc::Popup(const Standard_Integer  x,
-							   const Standard_Integer  y ,
-                               const Handle(V3d_View)& aView   ) 
+void  OCC_3dBaseDoc::Popup (const Standard_Integer theMouseX,
+                            const Standard_Integer theMouseY,
+                            const Handle(V3d_View)& theView)
 {
   Standard_Integer PopupMenuNumber=0;
- myAISContext->InitCurrent();
+  myAISContext->InitCurrent();
   if (myAISContext->MoreCurrent())
     PopupMenuNumber=1;
 
@@ -176,9 +186,9 @@ void  OCC_3dBaseDoc::Popup(const Standard_Integer  x,
    	pPopup->EnableMenuItem(5, MF_BYPOSITION | MF_DISABLED | MF_GRAYED);
    }
 
-  POINT winCoord = { x , y };
+  POINT winCoord = { theMouseX , theMouseY };
   Handle(WNT_Window) aWNTWindow=
-  Handle(WNT_Window)::DownCast(aView->Window());
+  Handle(WNT_Window)::DownCast(theView->Window());
   ClientToScreen ( (HWND)(aWNTWindow->HWindow()),&winCoord);
   pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON , winCoord.x, winCoord.y , 
                          AfxGetMainWnd());
@@ -239,20 +249,12 @@ void OCC_3dBaseDoc::OnObjectColor()
 }
 void OCC_3dBaseDoc::OnUpdateObjectColor(CCmdUI* pCmdUI) 
 {
-	/*
-  bool OneOrMoreIsDisplayed = false;
-  for (myAISContext->InitCurrent();myAISContext->MoreCurrent ();myAISContext->NextCurrent ())
-    if (myAISContext->IsDisplayed(myAISContext->Current())) OneOrMoreIsDisplayed=true;
-  pCmdUI->Enable (OneOrMoreIsDisplayed);	
-  */
   bool OneOrMoreIsShadingOrWireframe = false;
   for (myAISContext->InitCurrent();myAISContext->MoreCurrent ();myAISContext->NextCurrent ())
     if (myAISContext->IsDisplayed(myAISContext->Current(),0)
 		||myAISContext->IsDisplayed(myAISContext->Current(),1)) 
 		OneOrMoreIsShadingOrWireframe=true;
   pCmdUI->Enable (OneOrMoreIsShadingOrWireframe);	
- 
-
 }
 
 void OCC_3dBaseDoc::OnObjectErase() 
@@ -298,12 +300,11 @@ void OCC_3dBaseDoc::OnUpdateObjectShading(CCmdUI* pCmdUI)
 
 void OCC_3dBaseDoc::OnObjectMaterial() 
 {
-    CDialogMaterial DialBox(myAISContext);
-	DialBox.DoModal();
-	CMDIFrameWnd *pFrame =  (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
-	CMDIChildWnd *pChild =  (CMDIChildWnd *) pFrame->GetActiveFrame();
-	OCC_3dView *pView = (OCC_3dView *) pChild->GetActiveView();
-//	pView->Redraw();
+  CDialogMaterial DialBox(myAISContext);
+  DialBox.DoModal();
+  CMDIFrameWnd *pFrame =  (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
+  CMDIChildWnd *pChild =  (CMDIChildWnd *) pFrame->GetActiveFrame();
+  OCC_3dView *pView = (OCC_3dView *) pChild->GetActiveView();
 }
 
 void OCC_3dBaseDoc::OnUpdateObjectMaterial(CCmdUI* pCmdUI) 
@@ -397,6 +398,6 @@ void OCC_3dBaseDoc::OnUpdateObjectRemove(CCmdUI* pCmdUI)
 void OCC_3dBaseDoc::SetMaterial(Graphic3d_NameOfMaterial Material) 
 {
   for (myAISContext->InitCurrent();myAISContext->MoreCurrent ();myAISContext->NextCurrent ())
-		myAISContext->SetMaterial (myAISContext->Current(),
-         (Graphic3d_NameOfMaterial)(Material));
+    myAISContext->SetMaterial (myAISContext->Current(),
+    (Graphic3d_NameOfMaterial)(Material));
 }

@@ -8,22 +8,25 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
-#include <OCC_3dApp.h>
+#include <OCC_App.h>
 
-class CModelingApp : public OCC_3dApp
+class CModelingApp : public OCC_App
 {
 public:
-	CModelingApp();
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CModelingApp)
-	public:
-	virtual BOOL InitInstance();
-	//}}AFX_VIRTUAL
-private:
-	CToolBar *m_pToolBar2;
-};
 
+  CModelingApp();
+
+// Overrides
+  // ClassWizard generated virtual function overrides
+  //{{AFX_VIRTUAL(CModelingApp)
+  public:
+  virtual BOOL InitInstance();
+  //}}AFX_VIRTUAL
+
+private:
+
+  CToolBar *m_pToolBar2;
+};
 
 /////////////////////////////////////////////////////////////////////////////
 

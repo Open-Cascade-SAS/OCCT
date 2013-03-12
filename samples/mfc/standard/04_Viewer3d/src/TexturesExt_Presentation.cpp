@@ -145,7 +145,7 @@ Handle_AIS_TexturedShape TexturesExt_Presentation::Texturize(const TopoDS_Shape&
   TCollection_AsciiString TFileName;
   // load texture from file if it is not an integer value
   // integer value indicates a number of texture in predefined TexturesExt enumeration
-  CString initfile(((OCC_BaseApp*) AfxGetApp())->GetInitDataDir());
+  CString initfile(((OCC_App*) AfxGetApp())->GetInitDataDir());
   initfile += "\\Data\\";
   if (!aTFileName.IsIntegerValue())
   {
@@ -174,7 +174,7 @@ Standard_Boolean TexturesExt_Presentation::loadShape(TopoDS_Shape& aShape,
                                          TCollection_AsciiString aFileName)
 {
   // create a TopoDS_Shape -> read from a brep file
-  CString initfile(((OCC_BaseApp*) AfxGetApp())->GetInitDataDir());
+  CString initfile(((OCC_App*) AfxGetApp())->GetInitDataDir());
   initfile += "\\Data\\";
   initfile += aFileName.ToCString();
 

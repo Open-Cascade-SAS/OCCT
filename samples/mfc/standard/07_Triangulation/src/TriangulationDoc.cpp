@@ -407,39 +407,28 @@ void CTriangulationDoc::OnUpdateBUTTONPrev(CCmdUI* pCmdUI)
 
 void CTriangulationDoc::OnDumpView() 
 {
-  // save current directory and restore it on exit
-  char aCurPath[MAX_PATH];
-  ::GetCurrentDirectory(MAX_PATH, aCurPath);
-
-  ::SetCurrentDirectory(myLastPath);
-
-  CFileDialog *aDlg = new CFileDialog(false, "gif", "OCCView.gif", 
-    OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, "GIF Files (*.gif)|*.gif||", NULL);
-
-  int result = aDlg->DoModal();
-  if ( result == IDOK) 
+  CFileDialog aDlg (false, "gif", "OCCView.gif", OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
+    "GIF  Files (*.GIF)|*.gif|"
+    "BMP  Files (*.BMP)|*.bmp|"
+    "PNG  Files (*.PNG)|*.png|"
+    "JPEG Files (*.JPEG)|*.jpeg|"
+    "PPM  Files (*.PPM)|*.ppm|"
+    "TIFF Files (*.TIFF)|*.tiff|"
+    "TGA  Files (*.TGA)|*.tga|"
+    "EXR  Files (*.EXR)|*.exr||", NULL);
+  if (aDlg.DoModal() != IDOK)
   {
-    CString aFileName = aDlg->GetFileName();
-    delete aDlg;
-
-    POSITION pos = GetFirstViewPosition();
-    while (pos != NULL)
-    {
-      OCC_3dView* pView = (OCC_3dView*) GetNextView(pos);
-      pView->UpdateWindow();
-    }       
-
-    myViewer->InitActiveViews();
-    Handle(V3d_View) aView = myViewer->ActiveView();
-    char aStrFileName[MAX_PATH];
-    strcpy_s(aStrFileName, aFileName);
-    aView->Dump(aStrFileName);
+    return;
   }
-  else 
-    delete aDlg;
-  
-  ::GetCurrentDirectory(MAX_PATH, myLastPath);
-  ::SetCurrentDirectory(aCurPath);
+
+  for (POSITION aPos = GetFirstViewPosition(); aPos != NULL;)
+  {
+    OCC_3dView* pView = (OCC_3dView* )GetNextView (aPos);
+    pView->UpdateWindow();
+  }
+  myViewer->InitActiveViews();
+  Handle(V3d_View) aView = myViewer->ActiveView();
+  aView->Dump (aDlg.GetPathName());
 }
 
 void CTriangulationDoc::Fit()

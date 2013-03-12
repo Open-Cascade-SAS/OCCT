@@ -8,29 +8,29 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
-#include <OCC_3dApp.h>
+#include <OCC_App.h>
 #include <GeometryDoc.h>
 
-class CGeometryApp : public OCC_3dApp
+class CGeometryApp : public OCC_App
 {
 public:
-	CGeometryApp();
-    ~CGeometryApp();
-    // =========================================
-	CFrameWnd*  CreateView2D(CGeometryDoc* pDoc);
-    // =========================================
-    // =========================================
+  CGeometryApp();
+  ~CGeometryApp();
+  // =========================================
+  CFrameWnd*  CreateView2D(CGeometryDoc* pDoc);
+  // =========================================
+  // =========================================
 
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CGeometryApp)
-	public:
-	virtual BOOL InitInstance();
-	//}}AFX_VIRTUAL
+  // Overrides
+  // ClassWizard generated virtual function overrides
+  //{{AFX_VIRTUAL(CGeometryApp)
+public:
+  virtual BOOL InitInstance();
+  //}}AFX_VIRTUAL
 private :
-     BOOL IsViewExisting(CDocument* pDoc,CRuntimeClass* pViewClass,CView*& pView); 	 
-     CMultiDocTemplate* pDocTemplateForView3d;
-	 CMultiDocTemplate* pDocTemplateForView2d;
+  BOOL IsViewExisting(CDocument* pDoc,CRuntimeClass* pViewClass,CView*& pView); 	 
+  CMultiDocTemplate* pDocTemplateForView3d;
+  CMultiDocTemplate* pDocTemplateForView2d;
 
 };
 

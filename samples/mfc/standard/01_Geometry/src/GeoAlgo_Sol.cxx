@@ -34,7 +34,7 @@
 //=============================================================================
 GeoAlgo_Sol::GeoAlgo_Sol():myIsDone(Standard_False)
 {
-	
+
 }
 
 
@@ -115,7 +115,6 @@ void GeoAlgo_Sol::Build(const TColgp_SequenceOfXYZ& seqOfXYZ)
 //=============================================================================
 Handle(Geom_BSplineSurface) GeoAlgo_Sol::Surface() const
 {
-
   return myGround;
 }
 
@@ -139,15 +138,15 @@ Standard_Boolean GeoAlgo_Sol::IsDone() const
 //=============================================================================
 Handle(Geom_BSplineSurface) GeoAlgo_Sol::Read(const Standard_CString aGroundName)
 {
-// This methods read a file of points ans build a surface using plate algorithm
+  // This methods read a file of points ans build a surface using plate algorithm
 
   myIsDone = Standard_True;
   Standard_Integer nbPnt=0;
 
-// Read points from the file
+  // Read points from the file
   filebuf fic;
   istream in(&fic);
-  
+
   if (!fic.open(aGroundName,ios::in)){
     cout << " impossible to open a file : "<<aGroundName<<endl;
     myIsDone = Standard_False;
@@ -159,9 +158,9 @@ Handle(Geom_BSplineSurface) GeoAlgo_Sol::Read(const Standard_CString aGroundName
   Standard_Real x,y,z;
   while (!in.fail()|| !in.eof()){
     if (in >> x && in >> y && in >> z){
-	  pntXYZ.SetX(x);
-	  pntXYZ.SetY(y);
-	  pntXYZ.SetZ(z);
+      pntXYZ.SetX(x);
+      pntXYZ.SetY(y);
+      pntXYZ.SetZ(z);
       nbPnt++;
       seqOfXYZ.Append(pntXYZ);
     }
@@ -169,12 +168,4 @@ Handle(Geom_BSplineSurface) GeoAlgo_Sol::Read(const Standard_CString aGroundName
   fic.close();
   Build(seqOfXYZ);
   return myGround;
-
 }
-
-
-
-
-
-
-

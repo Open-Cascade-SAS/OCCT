@@ -276,8 +276,6 @@ BEGIN
         MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
         MENUITEM "&Close",                      ID_FILE_CLOSE
         MENUITEM SEPARATOR
-        MENUITEM "CasCade Properties...",       ID_MENU_CASCADE_PROPERTIES
-        MENUITEM SEPARATOR
         MENUITEM "Export Image...",             ID_FILE_EXPORT_IMAGE
         MENUITEM SEPARATOR
         MENUITEM "E&xit",                       ID_APP_EXIT
@@ -296,7 +294,7 @@ BEGIN
     END
     POPUP "&Help"
     BEGIN
-        MENUITEM "&About Viewer2d...",      ID_APP_ABOUT
+        MENUITEM "&About Viewer2d...",          ID_APP_ABOUT
     END
 END
 
@@ -315,7 +313,7 @@ BEGIN
     END
     POPUP "&Help"
     BEGIN
-        MENUITEM "&About Viewer2d...",      ID_APP_ABOUT
+        MENUITEM "&About Viewer2d...",          ID_APP_ABOUT
     END
 END
 

@@ -460,7 +460,6 @@ void CViewer3dDoc::OnObjectErase()
 	OCC_3dBaseDoc::OnObjectErase(); 
 	if(myOffsetDlg && myOffsetDlg->IsWindowVisible())
 		myOffsetDlg->UpdateValues();
-
 }
 
 void CViewer3dDoc::OnObjectDisplayall() 
@@ -469,7 +468,6 @@ void CViewer3dDoc::OnObjectDisplayall()
 	OCC_3dBaseDoc::OnObjectDisplayall(); 
 	if(myOffsetDlg && myOffsetDlg->IsWindowVisible())
 		myOffsetDlg->UpdateValues();
-
 }
 
 Handle_User_Cylinder CViewer3dDoc::GetCylinder()
@@ -521,76 +519,84 @@ void CViewer3dDoc::InputEvent(const Standard_Integer  x     ,
 				                   const Standard_Integer  y     ,
                                    const Handle(V3d_View)& aView ) 
 {
-	if(myOffsetDlg && myOffsetDlg->IsWindowVisible())
-		myOffsetDlg->UpdateValues();
+  if (myOffsetDlg && myOffsetDlg->IsWindowVisible())
+    myOffsetDlg->UpdateValues();
 
-	Quantity_Color CSFColor ;
- 	COLORREF MSColor ;
-	myAISContext->Select(); 
-// Change the color of a selected face in a user cylinder
- 	if (myState == FACE_COLOR) {
- 		myAISContext->InitSelected();
-		if (myAISContext->MoreSelected()) {
-			//Handle_AIS_InteractiveObject Current = myAISContext->Current() ;
-			Handle_AIS_InteractiveObject Current = myAISContext->SelectedInteractive() ;
-  			if ( Current->HasColor () ) {
-        		CSFColor = myAISContext->Color(Current);
-		       	MSColor = RGB (CSFColor.Red()*255.,CSFColor.Green()*255.,CSFColor.Blue()*255.);
-  			}
-  			else {
-  				MSColor = RGB ( 255,255,255 ) ;
-  			}
-    
-  			CColorDialog dlgColor(MSColor);
-  			if (dlgColor.DoModal() == IDOK) {
-  				MSColor = dlgColor.GetColor();
-  				CSFColor = Quantity_Color (GetRValue(MSColor)/255.,
-  										   GetGValue(MSColor)/255.,
-  										   GetBValue(MSColor)/255.,Quantity_TOC_RGB); 
-  				TopoDS_Shape S = myAISContext->SelectedShape();
-  				Handle(Geom_Surface) Surface = BRep_Tool::Surface(TopoDS::Face(S));
-  				if (Surface->IsKind(STANDARD_TYPE(Geom_Plane)))
-  					//Handle(User_Cylinder)::DownCast(myAISContext->Current())->SetPlanarFaceColor(CSFColor.Name());
-					Handle(User_Cylinder)::DownCast(myAISContext->SelectedInteractive())->SetPlanarFaceColor(CSFColor.Name());
-  				else
-  					//Handle(User_Cylinder)::DownCast(myAISContext->Current())->SetCylindricalFaceColor(CSFColor.Name());
-					Handle(User_Cylinder)::DownCast(myAISContext->SelectedInteractive())->SetCylindricalFaceColor(CSFColor.Name());
-  				//myAISContext->Redisplay(myAISContext->Current());
-				myAISContext->Redisplay(myAISContext->SelectedInteractive());
-  				myState = -1;
-  				myAISContext->CloseLocalContext();
-  			}
-  		}
-  TCollection_AsciiString Message ("\
-  TopoDS_Shape S = myAISContext->SelectedShape();  \n\
-  \n\
-  Handle(Geom_Surface) Surface = BRep_Tool::Surface(TopoDS::Face(S));  \n\
-  \n\
-  if (Surface->IsKind(STANDARD_TYPE(Geom_Plane)))  \n\
-  	Handle(User_Cylinder)::DownCast(myAISContext->Current())->SetPlanarFaceColor(CSFColor.Name());  \n\
-  else  \n\
-  	Handle(User_Cylinder)::DownCast(myAISContext->Current())->SetCylindricalFaceColor(CSFColor.Name());  \n\
-  \n\
-  myAISContext->Redisplay(myAISContext->Current());  \n\
-  \n\
-  myAISContext->CloseLocalContext();  \n\
-  \n\
-  \n\
-  NOTE: a User_Cylinder is an object defined by the user.  \n\
-  The User_Cylinder class inherit from the AIS_InteractiveObject   \n\
-  Cascade class, it's use is the same as an AIS_InteractiveObject.   \n\
-  Methods SetPlanarFaceColor and SetCylindricalFaceColor are also  \n\
-  defined in the User_Cylinder class.   \n\
-  \n");
-  
-  	CString text(Message.ToCString());
-  	myCResultDialog.SetTitle(CString("Change face color"));
-  	myCResultDialog.SetText(text);
-  	SetTitle(CString("Change face color"));
-  
-  	}
+  Quantity_Color CSFColor;
+  COLORREF MSColor;
+  myAISContext->Select(); 
+
+  // Change the color of a selected face in a user cylinder
+  if (myState == FACE_COLOR)
+  {
+    myAISContext->InitSelected();
+    if (myAISContext->MoreSelected())
+    {
+      Handle_AIS_InteractiveObject Current = myAISContext->SelectedInteractive();
+      if (Current->HasColor())
+      {
+        CSFColor = myAISContext->Color (Current);
+        MSColor = RGB (CSFColor.Red()*255.0, CSFColor.Green()*255.0, CSFColor.Blue()*255.0);
+      }
+      else 
+      {
+        MSColor = RGB (255, 255, 255);
+      }
+
+      CColorDialog dlgColor(MSColor);
+      if (dlgColor.DoModal() == IDOK)
+      {
+        MSColor = dlgColor.GetColor();
+        CSFColor = Quantity_Color (GetRValue (MSColor)/255.0,
+                                   GetGValue (MSColor)/255.0,
+                                   GetBValue (MSColor)/255.0,
+                                   Quantity_TOC_RGB);
+
+        TopoDS_Shape S = myAISContext->SelectedShape();
+        Handle(Geom_Surface) Surface = BRep_Tool::Surface (TopoDS::Face(S));
+        if (Surface->IsKind (STANDARD_TYPE (Geom_Plane)))
+        {
+          Handle(User_Cylinder)::DownCast (myAISContext->SelectedInteractive())
+            ->SetPlanarFaceColor (CSFColor.Name());
+        }
+        else
+        {
+          Handle(User_Cylinder)::DownCast (myAISContext->SelectedInteractive())
+            ->SetCylindricalFaceColor (CSFColor.Name());
+        }
+
+        myAISContext->Redisplay (myAISContext->SelectedInteractive());
+        myState = -1;
+        myAISContext->CloseLocalContext();
+      }
+    }
+
+    TCollection_AsciiString aMessage ("  TopoDS_Shape S = myAISContext->SelectedShape(); \n"
+                                      "  \n"
+                                      "  Handle(Geom_Surface) Surface = BRep_Tool::Surface(TopoDS::Face(S));"
+                                      "  if (Surface->IsKind(STANDARD_TYPE(Geom_Plane))) \n"
+                                      "    Handle(User_Cylinder)::DownCast(myAISContext->Current())->SetPlanarFaceColor(CSFColor.Name()); \n"
+                                      "  else \n"
+                                      "    Handle(User_Cylinder)::DownCast(myAISContext->Current())->SetCylindricalFaceColor(CSFColor.Name()); \n"
+                                      "  \n"
+                                      "  myAISContext->Redisplay(myAISContext->Current()); \n"
+                                      "  \n"
+                                      "  myAISContext->CloseLocalContext(); \n"
+                                      "  \n"
+                                      "  \n"
+                                      "  NOTE: a User_Cylinder is an object defined by the user. \n"
+                                      "  The User_Cylinder class inherit from the AIS_InteractiveObject \n"
+                                      "  Cascade class, it's use is the same as an AIS_InteractiveObject. \n"
+                                      "  Methods SetPlanarFaceColor and SetCylindricalFaceColor are also \n"
+                                      "  defined in the User_Cylinder class. \n"
+                                      "  \n");
+
+    CString aMsgStr (aMessage.ToCString());
+    myCResultDialog.SetTitle (CString ("Change face color"));
+    myCResultDialog.SetText (aMsgStr);
+    SetTitle (CString ("Change face color"));
+  }
 }
-
 
 //-----------------------------------------------------------------------------------------
 //
@@ -600,9 +606,9 @@ void CViewer3dDoc::ShiftDragEvent(const Standard_Integer  x        ,
 									   const Standard_Integer  TheState ,
                                        const Handle(V3d_View)& aView    ) 
 {
-    OCC_3dBaseDoc::ShiftDragEvent(x,y,TheState,aView);
-	if(myOffsetDlg && myOffsetDlg->IsWindowVisible())
-		myOffsetDlg->UpdateValues();
+  OCC_3dBaseDoc::ShiftDragEvent(x,y,TheState,aView);
+  if(myOffsetDlg && myOffsetDlg->IsWindowVisible())
+    myOffsetDlg->UpdateValues();
 }
 
 
@@ -614,33 +620,29 @@ void CViewer3dDoc::ShiftInputEvent(const Standard_Integer  x       ,
 									    const Standard_Integer  y       ,
                                         const Handle(V3d_View)& aView   ) 
 {
-    OCC_3dBaseDoc::ShiftInputEvent(x,y,aView);
-	if(myOffsetDlg && myOffsetDlg->IsWindowVisible())
-		myOffsetDlg->UpdateValues();
-
+  OCC_3dBaseDoc::ShiftInputEvent(x,y,aView);
+  if(myOffsetDlg && myOffsetDlg->IsWindowVisible())
+    myOffsetDlg->UpdateValues();
 }
 
 void CViewer3dDoc::OnObjectColoredMesh() 
 {
   for(myAISContext->InitCurrent();myAISContext->MoreCurrent();myAISContext->NextCurrent())
-	  if (myAISContext->Current()->IsKind(STANDARD_TYPE(User_Cylinder))){
-		myAISContext->ClearPrs(myAISContext->Current(),6,Standard_False);
-			myAISContext->RecomputePrsOnly(myAISContext->Current(),Standard_False);
-			myAISContext->SetDisplayMode(myAISContext->Current(),6);
-	  }
-	
+    if (myAISContext->Current()->IsKind(STANDARD_TYPE(User_Cylinder)))
+    {
+      myAISContext->ClearPrs(myAISContext->Current(),6,Standard_False);
+      myAISContext->RecomputePrsOnly(myAISContext->Current(),Standard_False);
+      myAISContext->SetDisplayMode(myAISContext->Current(),6);
+    }
 }
 
 void CViewer3dDoc::OnUpdateObjectColoredMesh(CCmdUI* pCmdUI) 
 {
   bool CylinderIsCurrentAndDisplayed = false;
   for (myAISContext->InitCurrent();myAISContext->MoreCurrent ();myAISContext->NextCurrent ())
-    //if ((myAISContext->IsDisplayed(myAISContext->Current(),1) || myAISContext->IsDisplayed(myAISContext->Current(),0))
-	//	&& myAISContext->Current()->IsKind(STANDARD_TYPE(User_Cylinder))) 
 	if(myAISContext->Current()->IsKind(STANDARD_TYPE(User_Cylinder)))
 		CylinderIsCurrentAndDisplayed=true;
   pCmdUI->Enable (CylinderIsCurrentAndDisplayed);	
-	
 }
 
 void CViewer3dDoc::OnUpdateObjectWireframe(CCmdUI* pCmdUI) 
@@ -700,19 +702,6 @@ void CViewer3dDoc::OnUpdateOptionsTrihedronStaticTrihedron(CCmdUI* pCmdUI)
 	
 }
 
-/*
-void CViewer3dDoc::OnUpdateObjectColor(CCmdUI* pCmdUI) 
-{
-  bool OneOrMoreInShadingOrWireframe = false;
-  for (myAISContext->InitCurrent();myAISContext->MoreCurrent ();myAISContext->NextCurrent ())
-    if (myAISContext->IsDisplayed(myAISContext->Current(),1)
-		|| myAISContext->IsDisplayed(myAISContext->Current(),0)) 
-		OneOrMoreInShadingOrWireframe = true;
-  pCmdUI->Enable (OneOrMoreInShadingOrWireframe);	
-	
-}
-*/
-
 void  CViewer3dDoc::Popup( const Standard_Integer  x,
 						   const Standard_Integer  y ,
                            const Handle(V3d_View)& aView   ) 
@@ -747,85 +736,82 @@ void  CViewer3dDoc::Popup( const Standard_Integer  x,
   pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON , winCoord.x, winCoord.y , 
                          AfxGetMainWnd());
 }
+
 //Set faces selection mode
 void CViewer3dDoc::OnFaces() 
 {
-	myAISContext->CloseAllContexts();
-	myAISContext->OpenLocalContext();
-	myAISContext->ActivateStandardMode(TopAbs_FACE);
+  myAISContext->CloseAllContexts();
+  myAISContext->OpenLocalContext();
+  myAISContext->ActivateStandardMode (TopAbs_FACE);
 
-TCollection_AsciiString Message ("\
-myAISContext->OpenLocalContext();  \n\
-\n\
-myAISContext->ActivateStandardMode(TopAbs_FACE);  \n\
-\n");
+  TCollection_AsciiString aMessage ("  myAISContext->OpenLocalContext(); \n"
+                                    "  \n"
+                                    "  myAISContext->ActivateStandardMode(TopAbs_FACE); \n"
+                                    "  \n");
 
-	CString text(Message.ToCString());
-	myCResultDialog.SetTitle(CString("Standard mode: TopAbs_FACE"));
-	myCResultDialog.SetText(text);
-	SetTitle(CString("Standard mode: TopAbs_FACE"));
+  CString aMsgStr (aMessage.ToCString());
+  myCResultDialog.SetTitle (CString("Standard mode: TopAbs_FACE"));
+  myCResultDialog.SetText (aMsgStr);
+  SetTitle (CString ("Standard mode: TopAbs_FACE"));
 }
 
 //Set edges selection mode
 void CViewer3dDoc::OnEdges() 
 {
-	myAISContext->CloseAllContexts();
-	myAISContext->OpenLocalContext();
-	myAISContext->ActivateStandardMode(TopAbs_EDGE);	
+  myAISContext->CloseAllContexts();
+  myAISContext->OpenLocalContext();
+  myAISContext->ActivateStandardMode(TopAbs_EDGE);
 
-TCollection_AsciiString Message ("\
-myAISContext->OpenLocalContext();  \n\
-\n\
-myAISContext->ActivateStandardMode(TopAbs_EDGE);  \n\
-\n");
+  TCollection_AsciiString aMessage ("  myAISContext->OpenLocalContext(); \n"
+                                    "  \n"
+                                    "  myAISContext->ActivateStandardMode(TopAbs_EDGE); \n"
+                                    "  \n");
 
-	CString text(Message.ToCString());
-	myCResultDialog.SetTitle(CString("Standard mode: TopAbs_EDGE"));
-	myCResultDialog.SetText(text);
-	SetTitle(CString("Standard mode: TopAbs_EDGE"));
+  CString aMsgStr (aMessage.ToCString());
+  myCResultDialog.SetTitle (CString ("Standard mode: TopAbs_EDGE"));
+  myCResultDialog.SetText (aMsgStr);
+  SetTitle (CString ("Standard mode: TopAbs_EDGE"));
 }
 
 // Set vertices selection mode
 void CViewer3dDoc::OnVertices() 
 {
-	myAISContext->CloseAllContexts();
-	myAISContext->OpenLocalContext();
-	myAISContext->ActivateStandardMode(TopAbs_VERTEX);	
+  myAISContext->CloseAllContexts();
+  myAISContext->OpenLocalContext();
+  myAISContext->ActivateStandardMode (TopAbs_VERTEX);
 
-TCollection_AsciiString Message ("\
-myAISContext->OpenLocalContext();  \n\
-\n\
-myAISContext->ActivateStandardMode(TopAbs_VERTEX);  \n\
-\n");
+  TCollection_AsciiString aMessage ("  myAISContext->OpenLocalContext(); \n"
+                                    "  \n"
+                                    "  myAISContext->ActivateStandardMode(TopAbs_VERTEX); \n"
+                                    "  \n");
 
-	CString text(Message.ToCString());
-	myCResultDialog.SetTitle(CString("Standard mode: TopAbs_VERTEX"));
-	myCResultDialog.SetText(text);
-	SetTitle(CString("Standard mode: TopAbs_VERTEX"));
+  CString aMsgStr (aMessage.ToCString());
+  myCResultDialog.SetTitle (CString ("Standard mode: TopAbs_VERTEX"));
+  myCResultDialog.SetText (aMsgStr);
+  SetTitle (CString ("Standard mode: TopAbs_VERTEX"));
 }
 
 //Neutral selection mode
 void CViewer3dDoc::OnNeutral() 
 {
-	myAISContext->CloseAllContexts();	
+  myAISContext->CloseAllContexts();
 
-TCollection_AsciiString Message ("\
-myAISContext->CloseAllContexts();  \n\
-\n");
+  TCollection_AsciiString aMessage ("  myAISContext->CloseAllContexts(); \n"
+                                    "  \n");
 
-	CString text(Message.ToCString());
-	myCResultDialog.SetTitle(CString("Standard mode: Neutral"));
-	myCResultDialog.SetText(text);
-	SetTitle(CString("Standard mode: Neutral"));
+  CString aMsgStr (aMessage.ToCString());
+  myCResultDialog.SetTitle (CString ("Standard mode: Neutral"));
+  myCResultDialog.SetText (aMsgStr);
+  SetTitle (CString ("Standard mode: Neutral"));
 }
 
 // Change the color of faces on a user cylinder
 void CViewer3dDoc::OnUsercylinderChangefacecolor() 
 {
-	myAISContext->OpenLocalContext();
-	myAISContext->Activate(myAISContext->Current(),4);
-	myState = FACE_COLOR;
-// see the following of treatment in inputevent
+  myAISContext->OpenLocalContext();
+  myAISContext->Activate(myAISContext->Current(),4);
+  myState = FACE_COLOR;
+  // see the following of treatment in inputevent
 }
 
 // Make 3d fillets on solids
@@ -833,167 +819,170 @@ void CViewer3dDoc::OnUsercylinderChangefacecolor()
 // before running this function
 void CViewer3dDoc::OnFillet3d() 
 {
-    if(	!myAISContext->HasOpenedContext())
+  if (!myAISContext->HasOpenedContext())
+  {
+    AfxMessageBox("It is necessary to activate the edges selection mode\n"
+                  "and select edges on an object before \nrunning this function");
+    return;
+  }
+
+  myAISContext->InitSelected();
+  if (myAISContext->MoreSelected()) 
+  {
+    Handle(AIS_Shape) S = Handle(AIS_Shape)::DownCast (myAISContext->SelectedInteractive());
+
+    if (S.IsNull())
     {
-        AfxMessageBox("It is necessary to activate the edges selection mode\n\
-and select edges on an object before \nrunning this function");
-        return;
+      AfxMessageBox("It is necessary to activate the edges selection mode\n"
+                    "and select edges on an object before \nrunning this function");
+      return;
     }
-    
-	myAISContext->InitSelected();
-	if (myAISContext->MoreSelected()) {	
-			Handle(AIS_Shape) S = Handle(AIS_Shape)::DownCast(myAISContext->SelectedInteractive());
-			
-			if (S.IsNull()){
-				AfxMessageBox("It is necessary to activate the edges selection mode\n\
-and select edges on an object before \nrunning this function");
-				return;
-			}
-		
-			TopoDS_Shape Sh=S->Shape();
-	
-			BRepFilletAPI_MakeFillet aFillet(Sh);
-				
-			for (myAISContext->InitSelected(); myAISContext->MoreSelected(); myAISContext->NextSelected())								
-			{
-                TopoDS_Edge anEdge;
-				try {
-					anEdge=TopoDS::Edge(myAISContext->SelectedShape());
-				}
-	            catch(Standard_Failure)
-		        {
-				}
-				
-				if (anEdge.IsNull())
-                {
-                    AfxMessageBox("It is necessary to activate the edges selection mode\n\
-and select edges on an object before \nrunning this function");
-                    return;
-                }
-			}
 
-			BoxRadius dlg(NULL,10.);
-			if (dlg.DoModal() == IDOK){
-				for (myAISContext->InitSelected(); myAISContext->MoreSelected(); myAISContext->NextSelected()){
-                TopoDS_Edge anEdge = TopoDS::Edge(myAISContext->SelectedShape());
-				aFillet.Add(dlg.m_radius,anEdge);
-				}
-			}
-			else return;
+    TopoDS_Shape Sh=S->Shape();
 
-            TopoDS_Shape aNewShape;
-//            if(!aFillet.IsDone())
-            try{
-               aNewShape = aFillet.Shape();
-            }
-            catch(Standard_Failure)
-            {
-               AfxMessageBox("Error During Fillet computation");
-               return;
-            }
-            S ->Set(aNewShape);
-			myAISContext->Redisplay(S);						
-			
-	}
-TCollection_AsciiString Message ("\
-Handle(AIS_Shape) S = Handle(AIS_Shape)::DownCast(myAISContext->Interactive());  \n\
-\n\
-BRepAPI_MakeFillet aFillet(S->Shape());   \n\
-\n\
-TopoDS_Edge anEdge=TopoDS::Edge(myAISContext->SelectedShape());  \n\
-\n\
-aFillet.Add(dlg.m_radius,anEdge);  \n\
-\n\
-TopoDS_Shape aNewShape = aFillet.Shape();  \n\
-\n\
-S ->Set(aNewShape);  \n\
-\n\
-myAISContext->Redisplay(S);  \n\
-\n");
+    BRepFilletAPI_MakeFillet aFillet(Sh);
 
-	CString text(Message.ToCString());
-	myCResultDialog.SetTitle(CString("Make a fillet"));
-	myCResultDialog.SetText(text);
-	SetTitle(CString("Make a fillet"));
+    for (myAISContext->InitSelected(); myAISContext->MoreSelected(); myAISContext->NextSelected())
+    {
+      TopoDS_Shape aSelShape = myAISContext->SelectedShape();
+      if (aSelShape.ShapeType() != TopAbs_EDGE)
+      {
+        AfxMessageBox("It is necessary to activate the edges selection mode\n\
+                      and select edges on an object before \nrunning this function");
+        return;
+      }
+    }
+
+    BoxRadius dlg(NULL,10.);
+    if (dlg.DoModal() == IDOK)
+    {
+      for (myAISContext->InitSelected(); myAISContext->MoreSelected(); myAISContext->NextSelected())
+      {
+        TopoDS_Edge anEdge = TopoDS::Edge(myAISContext->SelectedShape());
+        aFillet.Add(dlg.m_radius,anEdge);
+      }
+    }
+    else
+    {
+      return;
+    }
+
+    TopoDS_Shape aNewShape;
+    try
+    {
+      aNewShape = aFillet.Shape();
+    }
+    catch (Standard_Failure)
+    {
+      AfxMessageBox("Error During Fillet computation");
+      return;
+    }
+
+    S ->Set (aNewShape);
+    myAISContext->Redisplay (S);
+  }
+
+  TCollection_AsciiString aMessage ("  Handle(AIS_Shape) S = Handle(AIS_Shape)::DownCast(myAISContext->Interactive()); \n"
+                                    "  \n"
+                                    "  BRepAPI_MakeFillet aFillet(S->Shape()); \n"
+                                    "  \n"
+                                    "  TopoDS_Edge anEdge=TopoDS::Edge(myAISContext->SelectedShape()); \n"
+                                    "  \n"
+                                    "  aFillet.Add(dlg.m_radius,anEdge); \n"
+                                    "  \n"
+                                    "  TopoDS_Shape aNewShape = aFillet.Shape(); \n"
+                                    "  \n"
+                                    "  S->Set(aNewShape); \n"
+                                    "  \n"
+                                    "  myAISContext->Redisplay(S); \n"
+                                    "  \n");
+
+  CString aMsgStr (aMessage.ToCString());
+  myCResultDialog.SetTitle (CString ("Make a fillet"));
+  myCResultDialog.SetText (aMsgStr);
+  SetTitle (CString ("Make a fillet"));
 }
+
 // Create and display a circle with standard tools
 void CViewer3dDoc::OnCircle() 
 {
-	gp_Ax2 ax2(gp_Pnt(0., 0., 0.), gp_Dir(0., 0., -1.));
-	Handle(Geom_Circle) C = new Geom_Circle(ax2, 300);
-//	GC_MakeCircle C(gp_Pnt(-100.,-300.,0.),gp_Pnt(-50.,-200.,0.),gp_Pnt(-10.,-250.,0.));
-//	Handle(AIS_Circle) anAISCirc = new AIS_Circle(C.Value());
-	Handle(AIS_Circle) anAISCirc = new AIS_Circle(C);
-	myAISContext->Display(anAISCirc);
+  gp_Ax2 anAx2 (gp_Pnt (0., 0., 0.), gp_Dir(0., 0., -1.));
+  Handle(Geom_Circle) aGeomCircle = new Geom_Circle (anAx2, 300);
 
-TCollection_AsciiString Message ("\
-GC_MakeCircle C(gp_Pnt(-100.,-300.,0.),gp_Pnt(-50.,-200.,0.),gp_Pnt(-10.,-250.,0.));  \n\
-\n\
-Handle(AIS_Circle) anAISCirc = new AIS_Circle(C.Value());  \n\
-\n\
-myAISContext->Display(anAISCirc);  \n\
-\n");
+  // the lines above substitute
+  // GC_MakeCircle C(gp_Pnt(-100.,-300.,0.),gp_Pnt(-50.,-200.,0.),gp_Pnt(-10.,-250.,0.));
+  // Handle(AIS_Circle) anAISCirc = new AIS_Circle(C.Value());
 
-	CString text(Message.ToCString());
-	myCResultDialog.SetTitle(CString("Create a circle"));
-	myCResultDialog.SetText(text);
-	SetTitle(CString("Create a circle"));
+  Handle(AIS_Circle) anAISCirc = new AIS_Circle(aGeomCircle);
+  myAISContext->Display (anAISCirc);
+
+  TCollection_AsciiString aMessage ("  GC_MakeCircle C(gp_Pnt(-100.,-300.,0.),gp_Pnt(-50.,-200.,0.),gp_Pnt(-10.,-250.,0.)); \n"
+                                    "  \n"
+                                    "  Handle(AIS_Circle) anAISCirc = new AIS_Circle(C.Value()); \n"
+                                    "  \n"
+                                    "  myAISContext->Display(anAISCirc); \n"
+                                    "  \n");
+
+  CString aMsgStr (aMessage.ToCString());
+  myCResultDialog.SetTitle (CString ("Create a circle"));
+  myCResultDialog.SetText (aMsgStr);
+  SetTitle (CString ("Create a circle"));
 }
 
 void CViewer3dDoc::OnLine() 
 {
-	// TODO: Add your command handler code here
-	gp_Lin L(gp_Pnt(0.,0.,0.),gp_Dir(1.,0.,0.));
-	Handle(Geom_Line) aLine = new Geom_Line(L);
-	Handle(AIS_Line) anAISLine = new AIS_Line(aLine);
-	myAISContext->Display(anAISLine);	
+  // TODO: Add your command handler code here
+  gp_Lin aGpLin (gp_Pnt (0., 0., 0.), gp_Dir(1., 0., 0.));
+  Handle(Geom_Line) aGeomLin = new Geom_Line (aGpLin);
+  Handle(AIS_Line) anAISLine = new AIS_Line (aGeomLin);
+  myAISContext->Display (anAISLine);
 
-TCollection_AsciiString Message ("\
-gp_Lin L(gp_Pnt(0.,0.,0.),gp_Dir(1.,0.,0.));  \n\
-\n\
-Handle(Geom_Line) aLine = new Geom_Line(L);  \n\
-\n\
-Handle(AIS_Line) anAISLine = new AIS_Line(aLine); \n\
-\n\
-myAISContext->Display(anAISLine);  \n\
-\n");
+  TCollection_AsciiString aMessage ("  gp_Lin L(gp_Pnt(0.,0.,0.),gp_Dir(1.,0.,0.)); \n"
+                                    "  \n"
+                                    "  Handle(Geom_Line) aLine = new Geom_Line(L); \n"
+                                    "  \n"
+                                    "  Handle(AIS_Line) anAISLine = new AIS_Line(aLine); \n"
+                                    "  \n"
+                                    "  myAISContext->Display(anAISLine); \n"
+                                    "  \n");
 
-	CString text(Message.ToCString());
-	myCResultDialog.SetTitle(CString("Create a line"));
-	myCResultDialog.SetText(text);
-	SetTitle(CString("Create a line"));
+  CString aMsgStr (aMessage.ToCString());
+  myCResultDialog.SetTitle (CString("Create a line"));
+  myCResultDialog.SetText (aMsgStr);
+  SetTitle (CString ("Create a line"));
 }
 
 void CViewer3dDoc::OnNbisos() 
 {
-	int nu = myAISContext->DefaultDrawer()->UIsoAspect()->Number();
-	int nv = myAISContext->DefaultDrawer()->VIsoAspect()->Number();
-	DlgIsos dlg(NULL,nu,nv);
-	if (dlg.DoModal() == IDOK) {
-		myAISContext->DefaultDrawer()->UIsoAspect()->SetNumber(dlg.m_isou);
-		myAISContext->DefaultDrawer()->VIsoAspect()->SetNumber(dlg.m_isov);
+  int aNumU = myAISContext->DefaultDrawer()->UIsoAspect()->Number();
+  int aNumV = myAISContext->DefaultDrawer()->VIsoAspect()->Number();
 
-TCollection_AsciiString Message ("\
-myAISContext->DefaultDrawer()->UIsoAspect()->SetNumber(dlg.m_isou);  \n\
-\n\
-myAISContext->DefaultDrawer()->VIsoAspect()->SetNumber(dlg.m_isov);  \n\
-\n");
+  DlgIsos aDlg (NULL, aNumU, aNumV);
 
-	CString text(Message.ToCString());
-	myCResultDialog.SetTitle(CString("Iso Aspect"));
-	myCResultDialog.SetText(text);
-	SetTitle(CString("Iso Aspect"));
+  if (aDlg.DoModal() == IDOK)
+  {
+    myAISContext->DefaultDrawer()->UIsoAspect()->SetNumber (aDlg.m_isou);
+    myAISContext->DefaultDrawer()->VIsoAspect()->SetNumber (aDlg.m_isov);
 
-	}
+    TCollection_AsciiString aMessage ("  myAISContext->DefaultDrawer()->UIsoAspect()->SetNumber(dlg.m_isou); \n"
+                                      "  \n"
+                                      "  myAISContext->DefaultDrawer()->VIsoAspect()->SetNumber(dlg.m_isov); \n"
+                                      "  \n");
+
+    CString aMsgStr (aMessage.ToCString());
+    myCResultDialog.SetTitle (CString("Iso Aspect"));
+    myCResultDialog.SetText (aMsgStr);
+    SetTitle (CString ("Iso Aspect"));
+  }
 }
 
 BOOL CViewer3dDoc::OnNewDocument()
 {
-	if (!CDocument::OnNewDocument())
-		return FALSE;
+  if (!CDocument::OnNewDocument())
+    return FALSE;
 
-	// TODO: add reinitialization code here
-	// (SDI documents will reuse this document)
+  // TODO: add reinitialization code here
+  // (SDI documents will reuse this document)
   SetTitle(myPresentation->GetName());
 
   myAISContext->EraseAll(Standard_False);
@@ -1006,7 +995,7 @@ BOOL CViewer3dDoc::OnNewDocument()
     pView->Reset();
   }  
 
-	return TRUE;
+  return TRUE;
 }
 
 void CViewer3dDoc::OnFileNew()
@@ -1048,7 +1037,7 @@ void CViewer3dDoc::DoSample()
       Standard_SStream aSStream;
       aSStream << "An exception was caught: " << Standard_Failure::Caught() << ends;
       Standard_CString aMsg = aSStream.str().c_str();
-//      aSStream.rdbuf()->freeze(0);   // allow deletion of dynamic array
+      //      aSStream.rdbuf()->freeze(0);   // allow deletion of dynamic array
       AfxMessageBox (aMsg);
     }
   }
@@ -1125,39 +1114,28 @@ void CViewer3dDoc::OnUpdateBUTTONEnd(CCmdUI* pCmdUI)
 
 void CViewer3dDoc::OnDumpView() 
 {
-  // save current directory and restore it on exit
-  char aCurPath[MAX_PATH];
-  ::GetCurrentDirectory(MAX_PATH, aCurPath);
-
-  ::SetCurrentDirectory(myLastPath);
-
-  CFileDialog *aDlg = new CFileDialog(false, "gif", "OCCView.gif", 
-    OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, "GIF Files (*.gif)|*.gif||", NULL);
-
-  int result = aDlg->DoModal();
-  if ( result == IDOK) 
+  CFileDialog aDlg (false, "gif", "OCCView.gif", OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
+    "GIF  Files (*.GIF)|*.gif|"
+    "BMP  Files (*.BMP)|*.bmp|"
+    "PNG  Files (*.PNG)|*.png|"
+    "JPEG Files (*.JPG)|*.jpg|"
+    "PPM  Files (*.PPM)|*.ppm|"
+    "TIFF Files (*.TIFF)|*.tiff|"
+    "TGA  Files (*.TGA)|*.tga|"
+    "EXR  Files (*.EXR)|*.exr||", NULL);
+  if (aDlg.DoModal() != IDOK)
   {
-    CString aFileName = aDlg->GetFileName();
-    delete aDlg;
-
-    POSITION pos = GetFirstViewPosition();
-    while (pos != NULL)
-    {
-      CViewer3dView* pView = (CViewer3dView*) GetNextView(pos);
-      pView->UpdateWindow();
-    }       
-
-    myViewer->InitActiveViews();
-    Handle(V3d_View) aView = myViewer->ActiveView();
-    char aStrFileName[MAX_PATH];
-    strcpy_s(aStrFileName, aFileName);
-    aView->Dump(aStrFileName);
+    return;
   }
-  else 
-    delete aDlg;
-  
-  ::GetCurrentDirectory(MAX_PATH, myLastPath);
-  ::SetCurrentDirectory(aCurPath);
+
+  for (POSITION aPos = GetFirstViewPosition(); aPos != NULL;)
+  {
+    CViewer3dView* pView = (CViewer3dView* )GetNextView (aPos);
+    pView->UpdateWindow();
+  }
+  myViewer->InitActiveViews();
+  Handle(V3d_View) aView = myViewer->ActiveView();
+  aView->Dump (aDlg.GetPathName());
 }
 
 void CViewer3dDoc::Start()

@@ -8,27 +8,27 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
-#include <OCC_3dApp.h>
+#include <OCC_App.h>
 #include "HLRDoc.h"
 //#include "CutAndPasteSession.h"
 
-class CHLRApp : public OCC_3dApp
+class CHLRApp : public OCC_App
 {
 public:
-	CHLRApp();
-	~CHLRApp();
-	virtual BOOL InitInstance();
-	
-    // =========================================
-	CFrameWnd*  CreateView2D(CHLRDoc* pDoc);
-    // =========================================
-	CFrameWnd*  CreateView3D(CHLRDoc* pDoc);
-    // =========================================
+  CHLRApp();
+  ~CHLRApp();
+  virtual BOOL InitInstance();
+
+  // =========================================
+  CFrameWnd*  CreateView2D(CHLRDoc* pDoc);
+  // =========================================
+  CFrameWnd*  CreateView3D(CHLRDoc* pDoc);
+  // =========================================
 
 private :
-	 BOOL IsViewExisting(CDocument* pDoc,CRuntimeClass* pViewClass,CView*& pView); 	 
-     CMultiDocTemplate* pDocTemplateForView3d;
-	 CMultiDocTemplate* pDocTemplateForView2d;
+  BOOL IsViewExisting(CDocument* pDoc,CRuntimeClass* pViewClass,CView*& pView);
+  CMultiDocTemplate* pDocTemplateForView3d;
+  CMultiDocTemplate* pDocTemplateForView2d;
 };
 
 /////////////////////////////////////////////////////////////////////////////

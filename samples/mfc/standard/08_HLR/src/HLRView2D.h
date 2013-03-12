@@ -18,49 +18,49 @@
 class CHLRView2D : public OCC_2dView
 {
 protected: // create from serialization only
-	CHLRView2D();
-	DECLARE_DYNCREATE(CHLRView2D)
+  CHLRView2D();
+  DECLARE_DYNCREATE(CHLRView2D)
 
 
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CHLRView2D)
-	protected:
-	virtual void OnInitialUpdate(); // called first time after construct
-    //}}AFX_VIRTUAL
+  // Overrides
+  // ClassWizard generated virtual function overrides
+  //{{AFX_VIRTUAL(CHLRView2D)
+protected:
+  virtual void OnInitialUpdate(); // called first time after construct
+  //}}AFX_VIRTUAL
 
 // Implementation
 public:
-	virtual ~CHLRView2D();
-	CHLRDoc* GetDocument();
-    virtual void DragEvent2D       (const Standard_Integer  x       ,
-	    			        const Standard_Integer  y       ,
-		    		        const Standard_Integer  TheState);
-    virtual void InputEvent2D      (const Standard_Integer  x       ,
-	    			        const Standard_Integer  y       );  
-    virtual void MoveEvent2D       (const Standard_Integer  x       ,
-                            const Standard_Integer  y       ); 
-    virtual void MultiMoveEvent2D  (const Standard_Integer  x       ,
-                            const Standard_Integer  y       ); 
-    virtual void MultiDragEvent2D  (const Standard_Integer  x       ,
-	    				    const Standard_Integer  y       ,
-		    			    const Standard_Integer  TheState); 
-    virtual void MultiInputEvent2D (const Standard_Integer  x       ,
-	    				    const Standard_Integer  y       ); 
+  virtual ~CHLRView2D();
+  CHLRDoc* GetDocument();
+  virtual void DragEvent2D (const Standard_Integer x,
+                            const Standard_Integer y,
+                            const Standard_Integer TheState);
+  virtual void InputEvent2D (const Standard_Integer x,
+                            const Standard_Integer y);
+  virtual void MoveEvent2D (const Standard_Integer x,
+                            const Standard_Integer y );
+  virtual void MultiMoveEvent2D (const Standard_Integer x,
+                                const Standard_Integer y );
+  virtual void MultiDragEvent2D (const Standard_Integer x,
+                                const Standard_Integer y ,
+                                const Standard_Integer TheState);
+  virtual void MultiInputEvent2D (const Standard_Integer x,
+                                  const Standard_Integer y );
 #ifdef _DEBUG
-	virtual void AssertValid() const;
-	virtual void Dump(CDumpContext& dc) const;
+  virtual void AssertValid() const;
+  virtual void Dump(CDumpContext& dc) const;
 #endif
 
 protected:
 
 // Generated message map functions
 protected:
-	//{{AFX_MSG(CHLRView2D)
-		// NOTE - the ClassWizard will add and remove member functions here.
-		//    DO NOT EDIT what you see in these blocks of generated code !
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+  //{{AFX_MSG(CHLRView2D)
+  // NOTE - the ClassWizard will add and remove member functions here.
+  //    DO NOT EDIT what you see in these blocks of generated code !
+  //}}AFX_MSG
+  DECLARE_MESSAGE_MAP()
 
 };
 /////////////////////////////////////////////////////////////////////////////

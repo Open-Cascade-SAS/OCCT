@@ -9,9 +9,6 @@
 IMPLEMENT_STANDARD_HANDLE(ISession_Curve,AIS_InteractiveObject)
 IMPLEMENT_STANDARD_RTTIEXT(ISession_Curve,AIS_InteractiveObject)
 
-#include "StdPrs_Curve.hxx"
-#include "GeomAdaptor_Curve.hxx"
-#include "StdPrs_PoleCurve.hxx"
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;

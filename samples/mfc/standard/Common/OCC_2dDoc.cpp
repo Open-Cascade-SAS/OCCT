@@ -6,7 +6,7 @@
 
 #include "OCC_2dDoc.h"
 
-#include "OCC_2dApp.h"
+#include "OCC_App.h"
 #include "OCC_2dView.h"
 
 IMPLEMENT_DYNCREATE(OCC_2dDoc, CDocument)
@@ -15,80 +15,59 @@ IMPLEMENT_DYNCREATE(OCC_2dDoc, CDocument)
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-OCC_2dDoc::OCC_2dDoc()
+OCC_2dDoc::OCC_2dDoc() : OCC_BaseDoc()
 {
-	// Get the Graphic Device from the application 
-	Handle(WNT_GraphicDevice) theGraphicDevice = 
-	  ((OCC_2dApp*)AfxGetApp())->GetGraphicDevice();
+  // Get the Graphic Driver from the application 
+  Handle(Graphic3d_GraphicDriver) aGraphicDriver = 
+    ((OCC_App*)AfxGetApp())->GetGraphicDriver();
 
-	// create the Viewer
-	TCollection_ExtendedString Name("Viewer 2D");
-	TCollection_AsciiString Domain("My Domain");
-	my2DViewer = new V2d_Viewer(theGraphicDevice,
-							  Name.ToExtString(),
-							  Domain.ToCString());
+  // create the Viewer
+  TCollection_ExtendedString aName ("Viewer 2D");
+  TCollection_AsciiString aDomain ("My Domain");
 
-	// set default values for grids
-	my2DViewer->SetCircularGridValues(0,0,10,8,0);
-	my2DViewer->SetRectangularGridValues(0,0,10,10,0);
+  myViewer = new V3d_Viewer (aGraphicDriver,
+                             aName.ToExtString(),
+                             aDomain.ToCString());
 
-	myAISInteractiveContext2D = new AIS2D_InteractiveContext(my2DViewer);
+  myViewer->SetDefaultLights();
+  myViewer->SetLightOn();
+  myViewer->SetDefaultViewProj (V3d_Zpos);
 
-	
-	AfxInitRichEdit();
-	myCResultDialog.Create(CResultDialog::IDD,NULL);
+  // set default values for grids
+  myViewer->SetCircularGridValues (0, 0, 10, 8, 0);
+  myViewer->SetRectangularGridValues (0, 0, 10, 10, 0);
 
-	RECT dlgrect;
-	myCResultDialog.GetWindowRect(&dlgrect);
-	LONG width = dlgrect.right-dlgrect.left;
-	LONG height = dlgrect.bottom-dlgrect.top;
+  myAISContext = new AIS_InteractiveContext (myViewer);
 
-	RECT MainWndRect;
-	AfxGetApp()->m_pMainWnd->GetWindowRect(&MainWndRect);
-	LONG left = MainWndRect.left+3;
-	LONG top = MainWndRect.top + 108;
-	//LONG height = MainWndRect.bottom - MainWndRect.top;
-
-	myCResultDialog.MoveWindow(left,top,width,height);
-	
+  AfxInitRichEdit();
 }
 
-OCC_2dDoc::~OCC_2dDoc()
+void OCC_2dDoc::FitAll2DViews(Standard_Boolean theUpdateViewer)
 {
-
-}
-
-void OCC_2dDoc::FitAll2DViews(Standard_Boolean UpdateViewer)
-{
-  if (UpdateViewer)   my2DViewer->Update();
-  POSITION position = GetFirstViewPosition();
-  while (position != (POSITION)NULL)
+  if (theUpdateViewer)
   {
-    OCC_2dView* pCurrentView = (OCC_2dView*)GetNextView(position);
-    ASSERT_VALID(pCurrentView);
-    pCurrentView->GetV2dView()->Fitall();
+    myViewer->Update();
+  }
+
+  POSITION aPosition = GetFirstViewPosition();
+  while (aPosition != (POSITION)NULL)
+  {
+    OCC_2dView* aCurrentView = (OCC_2dView*)GetNextView (aPosition);
+    ASSERT_VALID (aCurrentView);
+    aCurrentView->GetV2dView()->FitAll();
   }
 }
 
-void OCC_2dDoc::UpdateResultDialog(UINT anID,TCollection_AsciiString aMessage)
+void OCC_2dDoc::MoveEvent(const Standard_Integer theMouseX,
+                          const Standard_Integer theMouseY,
+                          const Handle(V3d_View)& theView)
 {
-    CString text(aMessage.ToCString());
-    myCResultDialog.SetText(text);
-
-    CString s;
-    if (! s.LoadString( anID )) AfxMessageBox("Error Loading String: ");
-    CString Title = s.Left( s.Find( '\n' ));
-    myCResultDialog.SetTitle(Title);
-    SetTitle(Title);
-//    myCResultDialog.ShowWindow(SW_RESTORE);
+  myAISContext->MoveTo (theMouseX, theMouseY, theView);
 }
 
-void OCC_2dDoc::UpdateResultDialog(CString& title,TCollection_AsciiString aMessage)
+void OCC_2dDoc::ShiftMoveEvent(const Standard_Integer theMouseX,
+                               const Standard_Integer theMouseY,
+                               const Handle(V3d_View)& theView)
 {
-    CString text(aMessage.ToCString());
-    myCResultDialog.SetText(text);
-    myCResultDialog.SetTitle(title);
-    SetTitle(title);
-//    myCResultDialog.ShowWindow(SW_RESTORE);
+  myAISContext->MoveTo (theMouseX, theMouseY, theView);
 }
-

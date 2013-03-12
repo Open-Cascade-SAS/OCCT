@@ -143,48 +143,24 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
-#include <Graphic2d_Array1OfVertex.hxx>
-#include <Graphic2d_Buffer.hxx>
-#include <Graphic2d_CircleMarker.hxx>
-#include <Graphic2d_DisplayList.hxx>
-#include <Graphic2d_Drawer.hxx>
-#include <Graphic2d_PolyLine.hxx>
-#include <Graphic2d_Segment.hxx>
-#include <Graphic2d_SetOfCurves.hxx>
-#include <Graphic2d_SetOfSegments.hxx>
-#include <Graphic2d_Text.hxx>
-#include <Graphic2d_Vertex.hxx>
-#include <Graphic2d_View.hxx>
-#include <Graphic3d_WNTGraphicDevice.hxx>
 #include <MMgt_TShared.hxx>
 #include <OSD_Environment.hxx>
 #include <Precision.hxx>
 #include <Prs3d_IsoAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Text.hxx>
-#include <PrsMgr_PresentationManager2d.hxx>
 #include <Quantity_Factor.hxx>
 #include <Quantity_Length.hxx>
 #include <Quantity_NameOfColor.hxx>
 #include <Quantity_PhysicalQuantity.hxx>
 #include <Quantity_PlaneAngle.hxx>
 #include <Quantity_TypeOfColor.hxx>
-#include <Select2D_SensitiveArc.hxx>
-#include <Select2D_SensitiveBox.hxx>
-#include <Select2D_SensitiveEntity.hxx>
-#include <Select2D_SensitiveSegment.hxx>
 #include <SelectBasics_BasicTool.hxx>
 #include <SelectBasics_ListOfBox2d.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 #include <SelectMgr_Selection.hxx>
 #include <SelectMgr_SelectionManager.hxx>
-
-// for opencasdade
-
-//#include <Session_Selection.hxx>
-//#include <Session_Session.hxx>
-//#include <ShapeSchema.hxx>
 
 #include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>
@@ -198,9 +174,6 @@
 #include <StdPrs_Curve.hxx>
 #include <StdPrs_Point.hxx>
 #include <StdPrs_PoleCurve.hxx>
-#include <StdSelect_SensitiveText2d.hxx>
-#include <StdSelect_TextProjector2d.hxx>
-#include <StdSelect_ViewerSelector2d.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_HArray1OfPnt2d.hxx>
@@ -216,11 +189,8 @@
 #include <TopoDS_Solid.hxx>
 #include <TopTools_HSequenceOfShape.hxx>
 #include <UnitsAPI.hxx>
-#include <V2d_View.hxx>
-#include <V2d_Viewer.hxx>
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
-#include <WNT_WDriver.hxx>
 #include <WNT_Window.hxx>
 
 #include <HLRAlgo_Projector.hxx>

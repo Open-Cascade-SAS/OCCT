@@ -15,15 +15,14 @@
 /////////////////////////////////////////////////////////////////////////////
 // CGeometryApp construction
 
-CGeometryApp::CGeometryApp()
+CGeometryApp::CGeometryApp() : OCC_App()
 {
-	SampleName = "Geometry";	//for about dialog
-
+  SampleName = "Geometry";	//for about dialog
 }
 
 CGeometryApp::~CGeometryApp()
 {
-    delete pDocTemplateForView2d;
+  delete pDocTemplateForView2d;
 }
 /////////////////////////////////////////////////////////////////////////////
 // The one and only CGeometryApp object
@@ -35,58 +34,57 @@ CGeometryApp theApp;
 
 BOOL CGeometryApp::InitInstance()
 {
-    AfxInitRichEdit();
-	AfxEnableControlContainer();
+  AfxInitRichEdit();
+  AfxEnableControlContainer();
 
-	// Standard initialization
-	// If you are not using these features and wish to reduce the size
-	//  of your final executable, you should remove from the following
-	//  the specific initialization routines you do not need.
+  // Standard initialization
+  // If you are not using these features and wish to reduce the size
+  //  of your final executable, you should remove from the following
+  //  the specific initialization routines you do not need.
 
-	// Change the registry key under which our settings are stored.
-	// You should modify this string to be something appropriate
-	// such as the name of your company or organization.
-	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
+  // Change the registry key under which our settings are stored.
+  // You should modify this string to be something appropriate
+  // such as the name of your company or organization.
+  SetRegistryKey(_T("Local AppWizard-Generated Applications"));
 
-	LoadStdProfileSettings();  // Load standard INI file options (including MRU)
+  LoadStdProfileSettings();  // Load standard INI file options (including MRU)
 
-	// Register the application's document templates.  Document templates
-	//  serve as the connection between documents, frame windows and views.
+  // Register the application's document templates.  Document templates
+  //  serve as the connection between documents, frame windows and views.
 
-	pDocTemplateForView3d = new CMultiDocTemplate(
-		IDR_3DTYPE,
-		RUNTIME_CLASS(CGeometryDoc),
-		RUNTIME_CLASS(CChildFrame), // custom MDI child frame
-		RUNTIME_CLASS(CGeometryView));
-	AddDocTemplate(pDocTemplateForView3d);
-    
-    pDocTemplateForView2d = new CMultiDocTemplate(
-		IDR_2DTYPE,
-		RUNTIME_CLASS(CGeometryDoc),
-		RUNTIME_CLASS(CChildFrame2D), // custom MDI child frame
-		RUNTIME_CLASS(CGeometryView2D));
-	//AddDocTemplate(pDocTemplateForView2d);
+  pDocTemplateForView3d = new CMultiDocTemplate(
+    IDR_3DTYPE,
+    RUNTIME_CLASS(CGeometryDoc),
+    RUNTIME_CLASS(CChildFrame), // custom MDI child frame
+    RUNTIME_CLASS(CGeometryView));
+  AddDocTemplate(pDocTemplateForView3d);
 
-	// create main MDI Frame window
-	CMainFrame* pMainFrame = new CMainFrame;
-	if (!pMainFrame->LoadFrame(IDR_MAINFRAME))
-		return FALSE;
-	m_pMainWnd = pMainFrame;
+  pDocTemplateForView2d = new CMultiDocTemplate(
+    IDR_2DTYPE,
+    RUNTIME_CLASS(CGeometryDoc),
+    RUNTIME_CLASS(CChildFrame2D), // custom MDI child frame
+    RUNTIME_CLASS(CGeometryView2D));
+  //AddDocTemplate(pDocTemplateForView2d);
 
-	// Parse command line for standard shell commands, DDE, file open
-	CCommandLineInfo cmdInfo;
-	ParseCommandLine(cmdInfo);
+  // create main MDI Frame window
+  CMainFrame* pMainFrame = new CMainFrame;
+  if (!pMainFrame->LoadFrame(IDR_MAINFRAME))
+    return FALSE;
+  m_pMainWnd = pMainFrame;
 
-	// Dispatch commands specified on the command line
-	if (!ProcessShellCommand(cmdInfo))
-		return FALSE;
+  // Parse command line for standard shell commands, DDE, file open
+  CCommandLineInfo cmdInfo;
+  ParseCommandLine(cmdInfo);
 
-	// The main window has been initialized, so show and update it.
-	pMainFrame->ShowWindow(m_nCmdShow);
-	pMainFrame->UpdateWindow();
+  // Dispatch commands specified on the command line
+  if (!ProcessShellCommand(cmdInfo))
+    return FALSE;
 
+  // The main window has been initialized, so show and update it.
+  pMainFrame->ShowWindow(m_nCmdShow);
+  pMainFrame->UpdateWindow();
 
-	return TRUE;
+  return TRUE;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -117,10 +115,10 @@ BOOL CGeometryApp::IsViewExisting(CDocument * pDoc, CRuntimeClass * pViewClass, 
     CView* pCurrentView = pDoc->GetNextView(position);
     ASSERT_VALID(pCurrentView);
     if (pCurrentView->IsKindOf(pViewClass))
-	{
+    {
       pView = pCurrentView;
-	  return TRUE;
-	}
+      return TRUE;
+    }
   }
   return FALSE;
 }

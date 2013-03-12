@@ -4936,7 +4936,7 @@ void CModelingDoc::InputEvent(const Standard_Integer  x     ,
 					"Points Files (*.pass)|*.pass; |All Files (*.*)|*.*||", 
 					NULL );
 
-			CString initdir(((OCC_BaseApp*) AfxGetApp())->GetInitDataDir());
+			CString initdir(((OCC_App*) AfxGetApp())->GetInitDataDir());
 			initdir += "\\Data\\TangentSurface";
 
 			dlg.m_ofn.lpstrInitialDir = initdir;

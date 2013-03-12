@@ -5,7 +5,7 @@
 
 #include "OCC_2dView.h"
 
-#include "OCC_2dApp.h"
+#include "OCC_App.h"
 #include "OCC_2dDoc.h"
 #include "resource2d\RectangularGrid.h"
 #include "resource2d\CircularGrid.h"
@@ -68,25 +68,22 @@ END_MESSAGE_MAP()
 
 OCC_2dView::OCC_2dView()
 {
-	// TODO: add construction code here
+  // TODO: add construction code here
   myCurrentMode = CurAction2d_Nothing;
   m_Pen = NULL;
 }
 
 OCC_2dView::~OCC_2dView()
 {
-  Handle(V2d_Viewer) aViewer = myV2dView->Viewer();
-  aViewer->RemoveView(myV2dView);
+  myV2dView->Remove();
   if (m_Pen) delete m_Pen;
-
 }
 
 BOOL OCC_2dView::PreCreateWindow(CREATESTRUCT& cs)
 {
-	// TODO: Modify the Window class or styles here by modifying
-	//  the CREATESTRUCT cs
-
-	return CView::PreCreateWindow(cs);
+  // TODO: Modify the Window class or styles here by modifying
+  //  the CREATESTRUCT cs
+  return CView::PreCreateWindow(cs);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -94,51 +91,64 @@ BOOL OCC_2dView::PreCreateWindow(CREATESTRUCT& cs)
 
 void OCC_2dView::OnDraw(CDC* pDC)
 {
-	if (!myV2dView.IsNull())
-	myV2dView->Update();
+  if (!myV2dView.IsNull())
+    myV2dView->Update();
 }
 
 void OCC_2dView::OnInitialUpdate()
 {
-	CView::OnInitialUpdate();
+  CView::OnInitialUpdate();
 
-	Handle(WNT_Window) aWNTWindow;
-	aWNTWindow = new WNT_Window(((OCC_2dApp*)AfxGetApp())->GetGraphicDevice(),GetSafeHwnd());	  
-    aWNTWindow->SetBackground(Quantity_NOC_MATRAGRAY);
+  Handle(WNT_Window) aWNTWindow = new WNT_Window(GetSafeHwnd(),Quantity_NOC_MATRAGRAY);	  
+  myV2dView =((OCC_2dDoc*)GetDocument())->GetViewer2D()->CreateView();
+  myV2dView->SetWindow(aWNTWindow);
+  myV2dView->SetZClippingType(V3d_OFF);
+  myV2dView->SetSurfaceDetail(V3d_TEX_ALL);
+  // initialize the grids dialogs
+  TheRectangularGridDialog.Create(CRectangularGrid::IDD, NULL);
+  TheCircularGridDialog.Create(CCircularGrid::IDD, NULL);
+  TheRectangularGridDialog.SetViewer (((OCC_2dDoc*)GetDocument())->GetViewer2D());
+  TheCircularGridDialog.SetViewer (((OCC_2dDoc*)GetDocument())->GetViewer2D());
 
-	Handle(WNT_WDriver)  aDriver= new WNT_WDriver(aWNTWindow);
-	myV2dView = new V2d_View(aDriver, ((OCC_2dDoc*)GetDocument())->GetViewer2D(),0,0,50);
-
-    // initialyse the grids dialogs
-    TheRectangularGridDialog.Create(CRectangularGrid::IDD, NULL);
-    TheCircularGridDialog.Create(CCircularGrid::IDD, NULL);
-    TheRectangularGridDialog.SetViewer (((OCC_2dDoc*)GetDocument())->GetViewer2D());
-    TheCircularGridDialog.SetViewer (((OCC_2dDoc*)GetDocument())->GetViewer2D());
-
-	Standard_Integer w=100 , h=100 ;   /* Debug Matrox                         */
-	aWNTWindow->Size (w,h) ;           /* Keeps me unsatisfied (rlb).....      */
-	                                   /* Resize is not supposed to be done on */
-	                                   /* Matrox                               */
-	                                   /* I suspect another problem elsewhere  */
-	::PostMessage ( GetSafeHwnd () , WM_SIZE , SIZE_RESTORED , w + h*65536 ) ;
+  Standard_Integer w=100 , h=100 ;   /* Debug Matrox                         */
+  aWNTWindow->Size (w,h) ;           /* Keeps me unsatisfied (rlb).....      */
+  /* Resize is not supposed to be done on */
+  /* Matrox                               */
+  /* I suspect another problem elsewhere  */
+  ::PostMessage ( GetSafeHwnd () , WM_SIZE , SIZE_RESTORED , w + h*65536 ) ;
 
 }
 
 void OCC_2dView::OnFileExportImage()
 {
-CFileDialog dlg(FALSE,_T("*.BMP"),NULL,OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-               _T("BMP Files (*.BMP)|*.bmp |GIF Files (*.GIF)|*.gif | PNG Files (*.PNG)|*.png"
-                  "|JPEG Files (*.JPEG)|*.jpeg | PPM Files (*.PPM)|*.ppm | TIFF Files (*.TIFF)"
-                  "|*.tiff | TGA Files (*.TGA)|*.tga | EXR Files (*.EXR)|*.exr||"), 
-               NULL );
+  LPCTSTR filter;
+  filter = _T("EXR Files (*.EXR)|*.exr|TGA Files (*.TGA)|*.tga|TIFF Files (*.TIFF)|*.tiff|"
+              "PPM Files (*.PPM)|*.ppm|JPEG Files(*.JPEG)|*.jpeg|PNG Files (*.PNG)|*.png|"
+              "GIF Files (*.GIF)|*.gif|BMP Files (*.BMP)|*.bmp|PS Files (*.PS)|*.ps|"
+              "EPS Files (*.EPS)|*.eps|TEX Files (*.TEX)|*.tex|PDF Files (*.PDF)|*.pdf"
+              "|SVG Files (*.SVG)|*.svg|PGF Files (*.PGF)|*.pgf|EMF Files (*.EMF)|*.emf||");
+  CFileDialog dlg(FALSE,_T("*.BMP"),NULL,OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
+                  filter, 
+                  NULL );
+
 
 if (dlg.DoModal() == IDOK) 
 {
- SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
- CString filename = dlg.GetPathName();
- Handle(WNT_Window) aWNTWindow=
- Handle(WNT_Window)::DownCast(myV2dView->Driver()->Window());
- aWNTWindow->Dump ((Standard_CString)(LPCTSTR)filename);
+  SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
+  CString aFileName = dlg.GetPathName();
+  CString ext = dlg.GetFileExt();
+  if (!(ext.CompareNoCase("ps")) || !(ext.CompareNoCase("emf"))
+    || !(ext.CompareNoCase("pdf")) || !(ext.CompareNoCase("eps"))
+    || !(ext.CompareNoCase("tex")) || !(ext.CompareNoCase("svg"))
+    || !(ext.CompareNoCase("pgf")))
+  {
+    Graphic3d_ExportFormat exFormat;
+    if (!(ext.CompareNoCase("ps"))) exFormat = Graphic3d_EF_PostScript;
+    else             exFormat = Graphic3d_EF_EnhPostScript;
+    myV2dView->View()->Export( aFileName, exFormat );
+    return;
+  }
+  myV2dView->Dump(aFileName);
  SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 }
 }
@@ -149,27 +159,30 @@ if (dlg.DoModal() == IDOK)
 #ifdef _DEBUG
 void OCC_2dView::AssertValid() const
 {
-	CView::AssertValid();
+  CView::AssertValid();
 }
 
 void OCC_2dView::Dump(CDumpContext& dc) const
 {
-	CView::Dump(dc);
+  CView::Dump(dc);
 }
 
-CDocument* OCC_2dView::GetDocument() // non-debug version is inline
+OCC_2dDoc* OCC_2dView::GetDocument() // non-debug version is inline
 {
-	//ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(OCC_2dDoc)));
-	return m_pDocument;
+  //ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(OCC_2dDoc)));
+  return (OCC_2dDoc*)m_pDocument;
 }
 #endif //_DEBUG
-#include <V2d_RectangularGrid.hxx>
 void OCC_2dView::OnBUTTONGridRectLines() 
 {
-  Handle(V2d_Viewer) aViewer = myV2dView->Viewer();
-  aViewer->SetGridColor(Quantity_Color(Quantity_NOC_WHITE), Quantity_Color(Quantity_NOC_WHITE));
-  aViewer->ActivateGrid(Aspect_GT_Rectangular,
-						   Aspect_GDM_Lines);
+  Handle(V3d_Viewer) aViewer = myV2dView->Viewer();
+  Handle(Graphic3d_AspectMarker3d) aGridAspect = new Graphic3d_AspectMarker3d(Aspect_TOM_BALL,Quantity_NOC_WHITE,2);
+  aViewer->SetGridEcho(aGridAspect);
+  Standard_Integer aWidth=0, aHeight=0, anOffset=0;
+  myV2dView->Window()->Size(aWidth,aHeight);
+  aViewer->SetRectangularGridGraphicValues(aWidth,aHeight,anOffset);
+  aViewer->ActivateGrid(Aspect_GT_Rectangular, Aspect_GDM_Lines);
+  FitAll();
   
   if (TheCircularGridDialog.IsWindowVisible())
   {
@@ -181,10 +194,15 @@ void OCC_2dView::OnBUTTONGridRectLines()
 
 void OCC_2dView::OnBUTTONGridRectPoints() 
 {
-  Handle(V2d_Viewer) aViewer = myV2dView->Viewer();
-  aViewer->ActivateGrid(Aspect_GT_Rectangular,
-						   Aspect_GDM_Points);
-  aViewer->SetGridColor(Quantity_Color(Quantity_NOC_WHITE), Quantity_Color(Quantity_NOC_WHITE));
+  Handle(V3d_Viewer) aViewer = myV2dView->Viewer();
+  Handle(Graphic3d_AspectMarker3d) aGridAspect = new Graphic3d_AspectMarker3d(Aspect_TOM_BALL,Quantity_NOC_WHITE,2);
+  aViewer->SetGridEcho(aGridAspect);
+  Standard_Integer aWidth=0, aHeight=0, anOffset=0;
+  myV2dView->Window()->Size(aWidth,aHeight);
+  aViewer->SetRectangularGridGraphicValues(aWidth,aHeight,anOffset);
+  aViewer->ActivateGrid(Aspect_GT_Rectangular, Aspect_GDM_Points);
+  FitAll();
+
   if (TheCircularGridDialog.IsWindowVisible())
   {
     TheCircularGridDialog.ShowWindow(SW_HIDE);
@@ -195,10 +213,14 @@ void OCC_2dView::OnBUTTONGridRectPoints()
 
 void OCC_2dView::OnBUTTONGridCircLines() 
 {
-  Handle(V2d_Viewer) aViewer = myV2dView->Viewer();
-  aViewer->SetGridColor(Quantity_Color(Quantity_NOC_WHITE), Quantity_Color(Quantity_NOC_WHITE));
-  aViewer->ActivateGrid(Aspect_GT_Circular,
-						   Aspect_GDM_Lines);
+  Handle(V3d_Viewer) aViewer = myV2dView->Viewer();
+  Handle(Graphic3d_AspectMarker3d) aGridAspect = new Graphic3d_AspectMarker3d(Aspect_TOM_BALL,Quantity_NOC_WHITE,2);
+  aViewer->SetGridEcho(aGridAspect);
+  Standard_Integer aWidth=0, aHeight=0, anOffset=0;
+  myV2dView->Window()->Size(aWidth,aHeight);
+  aViewer->SetCircularGridGraphicValues(aWidth>aHeight?aWidth:aHeight,anOffset);
+  aViewer->ActivateGrid(Aspect_GT_Circular, Aspect_GDM_Lines);
+  FitAll();
  
 
   if (TheRectangularGridDialog.IsWindowVisible())
@@ -211,10 +233,14 @@ void OCC_2dView::OnBUTTONGridCircLines()
 
 void OCC_2dView::OnBUTTONGridCircPoints() 
 {
-  Handle(V2d_Viewer) aViewer = myV2dView->Viewer();
-  aViewer->SetGridColor(Quantity_Color(Quantity_NOC_WHITE), Quantity_Color(Quantity_NOC_WHITE)); 
-  aViewer->ActivateGrid(Aspect_GT_Circular,
-						   Aspect_GDM_Points);
+  Handle(V3d_Viewer) aViewer = myV2dView->Viewer();
+  Handle(Graphic3d_AspectMarker3d) aGridAspect = new Graphic3d_AspectMarker3d(Aspect_TOM_BALL,Quantity_NOC_WHITE,2);
+  aViewer->SetGridEcho(aGridAspect);
+  Standard_Integer aWidth=0, aHeight=0, anOffset=0;
+  myV2dView->Window()->Size(aWidth,aHeight);
+  aViewer->SetCircularGridGraphicValues(aWidth>aHeight?aWidth:aHeight,anOffset);
+  aViewer->ActivateGrid(Aspect_GT_Circular, Aspect_GDM_Points);
+  FitAll();
   if (TheRectangularGridDialog.IsWindowVisible())
   {
     TheRectangularGridDialog.ShowWindow(SW_HIDE);
@@ -225,32 +251,32 @@ void OCC_2dView::OnBUTTONGridCircPoints()
 
 void OCC_2dView::OnBUTTONGridValues() 
 {
-  Handle(V2d_Viewer) aViewer = myV2dView->Viewer();
+  Handle(V3d_Viewer) aViewer = myV2dView->Viewer();
   Aspect_GridType  TheGridtype = aViewer->GridType();
 
   switch( TheGridtype ) 
   {
-    case  Aspect_GT_Rectangular:
-      TheRectangularGridDialog.UpdateValues();
-      TheRectangularGridDialog.ShowWindow(SW_SHOW);
-	break;
-    case  Aspect_GT_Circular:
-      TheCircularGridDialog.UpdateValues();
-      TheCircularGridDialog.ShowWindow(SW_SHOW);
-	break;
-    default :
-		Standard_Failure::Raise("invalid Aspect_GridType");
+  case  Aspect_GT_Rectangular:
+    TheRectangularGridDialog.UpdateValues();
+    TheRectangularGridDialog.ShowWindow(SW_SHOW);
+    break;
+  case  Aspect_GT_Circular:
+    TheCircularGridDialog.UpdateValues();
+    TheCircularGridDialog.ShowWindow(SW_SHOW);
+    break;
+  default :
+    Standard_Failure::Raise("invalid Aspect_GridType");
   }
 }
 void OCC_2dView::OnUpdateBUTTONGridValues(CCmdUI* pCmdUI) 
 {
-  Handle(V2d_Viewer) aViewer = myV2dView->Viewer();
+  Handle(V3d_Viewer) aViewer = myV2dView->Viewer();
   pCmdUI-> Enable( aViewer->IsActive() );
 }
 
 void OCC_2dView::OnBUTTONGridCancel() 
-{	
-  Handle(V2d_Viewer) aViewer = myV2dView->Viewer();
+{
+  Handle(V3d_Viewer) aViewer = myV2dView->Viewer();
   aViewer->DeactivateGrid();
   TheRectangularGridDialog.ShowWindow(SW_HIDE);
   TheCircularGridDialog.ShowWindow(SW_HIDE);
@@ -258,7 +284,7 @@ void OCC_2dView::OnBUTTONGridCancel()
 }
 void OCC_2dView::OnUpdateBUTTONGridCancel(CCmdUI* pCmdUI) 
 {
-  Handle(V2d_Viewer) aViewer = myV2dView->Viewer();
+  Handle(V3d_Viewer) aViewer = myV2dView->Viewer();
   pCmdUI-> Enable( aViewer->IsActive() );	
 }
 
@@ -269,118 +295,115 @@ void OCC_2dView::OnLButtonDown(UINT nFlags, CPoint point)
   myXmax=point.x;  myYmax=point.y;
 
   if ( nFlags & CASCADESHORTCUTKEY ) 
-	  {
-	    // Button MB1 down Control :start zomming 
-        // 
-	  }
-	else // if ( MULTISELECTIONKEY )
-	  {
-        switch (myCurrentMode)
-        {
-         case CurAction2d_Nothing : // start a drag
-             DragEvent2D(point.x,point.y,-1);
-         break;
-         case CurAction2d_DynamicZooming : // nothing
-         break;
-         case CurAction2d_WindowZooming : // nothing
-         break;
-         case CurAction2d_DynamicPanning :// nothing
-         break;
-         case CurAction2d_GlobalPanning :// nothing
-        break;
-        default :
-           Standard_Failure::Raise(" incompatible Current Mode ");
-        break;
-        }
+  {
+    // Button MB1 down Control :start zomming 
+    // 
+  }
+  else // if ( MULTISELECTIONKEY )
+  {
+    switch (myCurrentMode)
+    {
+    case CurAction2d_Nothing : // start a drag
+      DragEvent2D(point.x,point.y,-1);
+      break;
+    case CurAction2d_DynamicZooming : // nothing
+      break;
+    case CurAction2d_WindowZooming : // nothing
+      break;
+    case CurAction2d_DynamicPanning :// nothing
+      break;
+    case CurAction2d_GlobalPanning :// nothing
+      break;
+    default :
+      Standard_Failure::Raise(" incompatible Current Mode ");
+      break;
     }
+  }
 }
 
 
 void OCC_2dView::OnLButtonUp(UINT nFlags, CPoint point) 
 {
-	// TODO: Add your message handler code here and/or call default
-   if ( nFlags & CASCADESHORTCUTKEY ) 
-	  {
-        return;
-	  }
-	else // if ( Ctrl )
-	  {
-        switch (myCurrentMode)
-        {
-         case CurAction2d_Nothing :
-         if (point.x == myXmin && point.y == myYmin)
-         { // no offset between down and up --> selectEvent
-            myXmax=point.x;  
-            myYmax=point.y;
-            if (nFlags & MULTISELECTIONKEY )
-              MultiInputEvent2D(point.x,point.y);
-            else
-              InputEvent2D     (point.x,point.y);
-         } else
-         {
-            DrawRectangle2D(myXmin,myYmin,myXmax,myYmax,Standard_False);
-            myXmax=point.x;  
-            myYmax=point.y;
-		    if (nFlags & MULTISELECTIONKEY)
-				MultiDragEvent2D(point.x,point.y,1);
-			else
-				DragEvent2D(point.x,point.y,1);
-         }
-         break;
-         case CurAction2d_DynamicZooming :
-             // 
-	       myCurrentMode = CurAction2d_Nothing;
-         break;
-         case CurAction2d_WindowZooming :
-           myXmax=point.x;     myYmax=point.y;
-           DrawRectangle2D(myXmin,myYmin,myXmax,myYmax,Standard_False,LongDash);
-	       if ((abs(myXmin-myXmax)>ValZWMin) || (abs(myYmin-myYmax)>ValZWMin))
-					 // Test if the zoom window is greater than a minimale window.
-			{
-			  // Do the zoom window between Pmin and Pmax
-			  myV2dView->WindowFit(myXmin,myYmin,myXmax,myYmax);  
-			}  
-	       myCurrentMode = CurAction2d_Nothing;
-         break;
-         case CurAction2d_DynamicPanning :
-           myCurrentMode = CurAction2d_Nothing;
-         break;
-         case CurAction2d_GlobalPanning :
-	       myV2dView->Place(point.x,point.y,myCurZoom); 
-	       myCurrentMode = CurAction2d_Nothing;
-        break;
-        default :
-           Standard_Failure::Raise(" incompatible Current Mode ");
-        break;
-        } //switch (myCurrentMode)
-    } //	else // if ( CASCADESHORTCUTKEY )	
+  // TODO: Add your message handler code here and/or call default
+  if ( nFlags & CASCADESHORTCUTKEY ) 
+  {
+    return;
+  }
+  else // if ( Ctrl )
+  {
+    switch (myCurrentMode)
+    {
+    case CurAction2d_Nothing :
+      if (point.x == myXmin && point.y == myYmin)
+      { // no offset between down and up --> selectEvent
+        myXmax=point.x;  
+        myYmax=point.y;
+        if (nFlags & MULTISELECTIONKEY )
+          MultiInputEvent2D(point.x,point.y);
+        else
+          InputEvent2D     (point.x,point.y);
+      } else
+      {
+        DrawRectangle2D(myXmin,myYmin,myXmax,myYmax,Standard_False);
+        myXmax=point.x;  
+        myYmax=point.y;
+        if (nFlags & MULTISELECTIONKEY)
+          MultiDragEvent2D(point.x,point.y,1);
+        else
+          DragEvent2D(point.x,point.y,1);
+      }
+      break;
+    case CurAction2d_DynamicZooming :
+      // 
+      myCurrentMode = CurAction2d_Nothing;
+      break;
+    case CurAction2d_WindowZooming :
+      myXmax=point.x;     myYmax=point.y;
+      DrawRectangle2D(myXmin,myYmin,myXmax,myYmax,Standard_False,LongDash);
+      if ((abs(myXmin-myXmax)>ValZWMin) || (abs(myYmin-myYmax)>ValZWMin))
+        // Test if the zoom window is greater than a minimale window.
+      {
+        // Do the zoom window between Pmin and Pmax
+        myV2dView->WindowFit(myXmin,myYmin,myXmax,myYmax);  
+      }  
+      myCurrentMode = CurAction2d_Nothing;
+      break;
+    case CurAction2d_DynamicPanning :
+      myCurrentMode = CurAction2d_Nothing;
+      break;
+    case CurAction2d_GlobalPanning :
+      myV2dView->Place(point.x,point.y,myCurZoom); 
+      myCurrentMode = CurAction2d_Nothing;
+      break;
+    default :
+      Standard_Failure::Raise(" incompatible Current Mode ");
+      break;
+    } //switch (myCurrentMode)
+  } //	else // if ( CASCADESHORTCUTKEY )	
 }
 
 void OCC_2dView::OnMButtonDown(UINT nFlags, CPoint point) 
 {
-   if ( nFlags & CASCADESHORTCUTKEY ) 
-	  {
-      	// Button MB2 down + CASCADESHORTCUTKEY : panning init  
-        // 
-	  }
-
+  if ( nFlags & CASCADESHORTCUTKEY ) 
+  {
+    // Button MB2 down + CASCADESHORTCUTKEY : panning init  
+    // 
+  }
 }
 
 void OCC_2dView::OnMButtonUp(UINT nFlags, CPoint point) 
 {
-   if ( nFlags & CASCADESHORTCUTKEY ) 
-	  {
-      	// Button MB2 up + CASCADESHORTCUTKEY : panning stop 
-        // 
-	  }
-
+  if ( nFlags & CASCADESHORTCUTKEY ) 
+  {
+    // Button MB2 up + CASCADESHORTCUTKEY : panning stop 
+  }
 }
 
 void OCC_2dView::OnRButtonDown(UINT nFlags, CPoint point) 
 {
 #ifdef POPUPONBUTTONDOWN
    if ( !(nFlags & CASCADESHORTCUTKEY) ) 
-	    Popup2D(point.x,point.y);
+     Popup2D(point.x,point.y);
 #endif
 }
 
@@ -388,110 +411,110 @@ void OCC_2dView::OnRButtonUp(UINT nFlags, CPoint point)
 {
 #ifndef POPUPONBUTTONDOWN
    if ( !(nFlags & CASCADESHORTCUTKEY) ) 
-	    Popup2D(point.x,point.y);
+    Popup2D(point.x,point.y);
 #endif
 }
 
 void OCC_2dView::OnMouseMove(UINT nFlags, CPoint point) 
 {
-    //   ============================  LEFT BUTTON =======================
+  //   ============================  LEFT BUTTON =======================
   if ( (nFlags & MK_LBUTTON) &! (nFlags & MK_RBUTTON) ) // Left + Right is specific
+  {
+    if ( nFlags & CASCADESHORTCUTKEY ) 
     {
-     if ( nFlags & CASCADESHORTCUTKEY ) 
-	  {
-	    // move with MB1 and CASCADESHORTCUTKEY : on the dynamic zooming  
-	    // Do the zoom in function of mouse's coordinates  
-	    myV2dView->Zoom(myXmax,myYmax,point.x,point.y); 
-	    // save the current mouse coordinate in min 
-		myXmax = point.x; 
-        myYmax = point.y;	
-	  }
-	  else // if ( CASCADESHORTCUTKEY )
-	  {
-        switch (myCurrentMode)
-        {
-         case CurAction2d_Nothing :
-		   myXmax = point.x;     myYmax = point.y;	
-           DrawRectangle2D(myXmin,myYmin,myXmax,myYmax,Standard_False);
-       	  DragEvent2D(myXmax,myYmax,0);  
-           DrawRectangle2D(myXmin,myYmin,myXmax,myYmax,Standard_True);
-         break;
-         case CurAction2d_DynamicZooming :
-	       myV2dView->Zoom(myXmax,myYmax,point.x,point.y); 
-	       // save the current mouse coordinate in min \n";
-	       myXmax=point.x;  myYmax=point.y;
-         break;
-         case CurAction2d_WindowZooming :
-		   myXmax = point.x; myYmax = point.y;	
-           DrawRectangle2D(myXmin,myYmin,myXmax,myYmax,Standard_False,LongDash);
-           DrawRectangle2D(myXmin,myYmin,myXmax,myYmax,Standard_True,LongDash);
-         break;
-         case CurAction2d_DynamicPanning :
-		   myV2dView->Pan(point.x-myXmax,myYmax-point.y); // Realize the panning
-		   myXmax = point.x; myYmax = point.y;	
-         break;
-         case CurAction2d_GlobalPanning : // nothing           
+      // move with MB1 and CASCADESHORTCUTKEY : on the dynamic zooming  
+      // Do the zoom in function of mouse's coordinates  
+      myV2dView->Zoom(myXmax,myYmax,point.x,point.y);
+      // save the current mouse coordinate in min 
+      myXmax = point.x; 
+      myYmax = point.y;	
+    }
+    else // if ( CASCADESHORTCUTKEY )
+    {
+      switch (myCurrentMode)
+      {
+      case CurAction2d_Nothing :
+        myXmax = point.x;     myYmax = point.y;	
+        DrawRectangle2D(myXmin,myYmin,myXmax,myYmax,Standard_False);
+        DragEvent2D(myXmax,myYmax,0);  
+        DrawRectangle2D(myXmin,myYmin,myXmax,myYmax,Standard_True);
         break;
-        default :
-           Standard_Failure::Raise(" incompatible Current Mode ");
+      case CurAction2d_DynamicZooming :
+        myV2dView->Zoom(myXmax,myYmax,point.x,point.y);
+        // save the current mouse coordinate in min \n";
+        myXmax=point.x;  myYmax=point.y;
         break;
-        }//  switch (myCurrentMode)
-      }// if ( nFlags & CASCADESHORTCUTKEY )  else 
-    } else //   if ( nFlags & MK_LBUTTON) 
+      case CurAction2d_WindowZooming :
+        myXmax = point.x; myYmax = point.y;	
+        DrawRectangle2D(myXmin,myYmin,myXmax,myYmax,Standard_False,LongDash);
+        DrawRectangle2D(myXmin,myYmin,myXmax,myYmax,Standard_True,LongDash);
+        break;
+      case CurAction2d_DynamicPanning :
+        myV2dView->Pan(point.x-myXmax,myYmax-point.y); // Realize the panning
+        myXmax = point.x; myYmax = point.y;	
+        break;
+      case CurAction2d_GlobalPanning : // nothing           
+        break;
+      default :
+        Standard_Failure::Raise(" incompatible Current Mode ");
+        break;
+      }//  switch (myCurrentMode)
+    }// if ( nFlags & CASCADESHORTCUTKEY )  else 
+  } else //   if ( nFlags & MK_LBUTTON) 
     //   ============================  MIDDLE BUTTON =======================
     if ( nFlags & MK_MBUTTON)
     {
-     if ( nFlags & CASCADESHORTCUTKEY ) 
-	  {
-		myV2dView->Pan(point.x-myXmax,myYmax-point.y); // Realize the panning
-		myXmax = point.x; myYmax = point.y;	
+      if ( nFlags & CASCADESHORTCUTKEY ) 
+      {
+        myV2dView->Pan(point.x-myXmax,myYmax-point.y); // Realize the panning
+        myXmax = point.x; myYmax = point.y;	
 
-	  }
+      }
     } else //  if ( nFlags & MK_MBUTTON)
-    //   ============================  RIGHT BUTTON =======================
-    if ( (nFlags & MK_RBUTTON) &! (nFlags & MK_LBUTTON) ) // Left + Right is specific
-    {
-    }else //if ( nFlags & MK_RBUTTON)
-    if ( (nFlags & MK_RBUTTON) && (nFlags & MK_LBUTTON) )
-    {
-      // in case of Left + Right : same as Middle
-     if ( nFlags & CASCADESHORTCUTKEY ) 
-	  {
-		myV2dView->Pan(point.x-myXmax,myYmax-point.y); // Realize the panning
-		myXmax = point.x; myYmax = point.y;	
-	  }
-    }else //if ( nFlags & MK_RBUTTON)&& (nFlags & MK_LBUTTON) 
-    //   ============================  NO BUTTON =======================
-    {  // No buttons 
-	  myXmax = point.x; myYmax = point.y;	
-	  if (nFlags & MULTISELECTIONKEY)
-		MultiMoveEvent2D(point.x,point.y);
-	  else
-		MoveEvent2D(point.x,point.y);
-    }
+      //   ============================  RIGHT BUTTON =======================
+      if ( (nFlags & MK_RBUTTON) &! (nFlags & MK_LBUTTON) ) // Left + Right is specific
+      {
+      }else //if ( nFlags & MK_RBUTTON)
+        if ( (nFlags & MK_RBUTTON) && (nFlags & MK_LBUTTON) )
+        {
+          // in case of Left + Right : same as Middle
+          if ( nFlags & CASCADESHORTCUTKEY ) 
+          {
+            myV2dView->Pan(point.x-myXmax,myYmax-point.y); // Realize the panning
+            myXmax = point.x; myYmax = point.y;	
+          }
+        }else //if ( nFlags & MK_RBUTTON)&& (nFlags & MK_LBUTTON) 
+          //   ============================  NO BUTTON =======================
+        {  // No buttons 
+          myXmax = point.x; myYmax = point.y;	
+          if (nFlags & MULTISELECTIONKEY)
+            MultiMoveEvent2D(point.x,point.y);
+          else
+            MoveEvent2D(point.x,point.y);
+        }
 }
 
 
 void OCC_2dView::OnSize(UINT nType, int cx, int cy) 
 {
-    // Take care : This fonction is call before OnInitialUpdate
-	if (!myV2dView.IsNull())
-      myV2dView->MustBeResized(V2d_TOWRE_ENLARGE_OBJECTS); 
+  // Take care : This fonction is call before OnInitialUpdate
+  if (!myV2dView.IsNull())
+    myV2dView->MustBeResized(); 
 
 }
 
 void OCC_2dView::OnBUTTONFitAll() 
 {
-  myV2dView->Fitall();
+  myV2dView->FitAll();
 }
 
 void OCC_2dView::OnBUTTONGlobPanning() 
 {
   //save the current zoom value
-  myCurZoom = myV2dView->Zoom();  
+  myCurZoom = myV2dView->Scale();  
 
   // Do a Global Zoom 
-  //myV2dView->Fitall();
+  myV2dView->FitAll();
 
   // Set the mode
   myCurrentMode = CurAction2d_GlobalPanning;
@@ -510,104 +533,102 @@ void OCC_2dView::OnBUTTONZoomWin()
 }
 void OCC_2dView::OnChangeBackground() 
 {
-	Standard_Real R1, G1, B1;
-    Handle(Aspect_WindowDriver) aWindowDriver = myV2dView->Driver();
-    Handle(Aspect_Window) aWindow = aWindowDriver->Window();
-    Aspect_Background ABack = aWindow->Background();
-    Quantity_Color aColor = ABack.Color();
-    aColor.Values(R1,G1,B1,Quantity_TOC_RGB);
-	COLORREF m_clr ;
-	m_clr = RGB(R1*255,G1*255,B1*255);
+  Standard_Real R1, G1, B1;
+  Handle(Aspect_Window) aWindow = myV2dView->Window();
+  Aspect_Background ABack = aWindow->Background();
+  Quantity_Color aColor = ABack.Color();
+  aColor.Values(R1,G1,B1,Quantity_TOC_RGB);
+  COLORREF m_clr ;
+  m_clr = RGB(R1*255,G1*255,B1*255);
 
-	CColorDialog dlgColor(m_clr);
-	if (dlgColor.DoModal() == IDOK)
-	{
-		m_clr = dlgColor.GetColor();
-		R1 = GetRValue(m_clr)/255.;
-		G1 = GetGValue(m_clr)/255.;
-		B1 = GetBValue(m_clr)/255.;
-        aColor.SetValues(R1,G1,B1,Quantity_TOC_RGB);
-        ABack.SetColor(aColor);
-        aWindow->SetBackground(ABack);
-        myV2dView->Update();
-	}	
+  CColorDialog dlgColor(m_clr);
+  if (dlgColor.DoModal() == IDOK)
+  {
+    m_clr = dlgColor.GetColor();
+    R1 = GetRValue(m_clr)/255.;
+    G1 = GetGValue(m_clr)/255.;
+    B1 = GetBValue(m_clr)/255.;
+    aColor.SetValues(R1,G1,B1,Quantity_TOC_RGB);
+    myV2dView->SetBackgroundColor(aColor);
+    myV2dView->Update();
+  }	
 }
 
 
 void OCC_2dView::OnUpdateBUTTON2DGlobPanning(CCmdUI* pCmdUI) 
 {
-    pCmdUI->SetCheck (myCurrentMode == CurAction2d_GlobalPanning);
-	pCmdUI->Enable   (myCurrentMode != CurAction2d_GlobalPanning);	
+  pCmdUI->SetCheck (myCurrentMode == CurAction2d_GlobalPanning);
+  pCmdUI->Enable   (myCurrentMode != CurAction2d_GlobalPanning);
 }
 
 void OCC_2dView::OnUpdateBUTTON2DPanning(CCmdUI* pCmdUI) 
 {
-    pCmdUI->SetCheck (myCurrentMode == CurAction2d_DynamicPanning);
-	pCmdUI->Enable   (myCurrentMode != CurAction2d_DynamicPanning);		
+  pCmdUI->SetCheck (myCurrentMode == CurAction2d_DynamicPanning);
+  pCmdUI->Enable   (myCurrentMode != CurAction2d_DynamicPanning);
 }
 
 void OCC_2dView::OnUpdateBUTTON2DZoomProg(CCmdUI* pCmdUI) 
 {
-    pCmdUI->SetCheck (myCurrentMode == CurAction2d_DynamicZooming);
-	pCmdUI->Enable   (myCurrentMode != CurAction2d_DynamicZooming);	
+  pCmdUI->SetCheck (myCurrentMode == CurAction2d_DynamicZooming);
+  pCmdUI->Enable   (myCurrentMode != CurAction2d_DynamicZooming);
 }
 
 void OCC_2dView::OnUpdateBUTTON2DZoomWin(CCmdUI* pCmdUI) 
 {
-    pCmdUI->SetCheck (myCurrentMode == CurAction2d_WindowZooming);
-	pCmdUI->Enable   (myCurrentMode != CurAction2d_WindowZooming);		
+  pCmdUI->SetCheck (myCurrentMode == CurAction2d_WindowZooming);
+  pCmdUI->Enable   (myCurrentMode != CurAction2d_WindowZooming);		
 }
 
 
-void OCC_2dView::DrawRectangle2D(const Standard_Integer  MinX    ,
-					                    const Standard_Integer  MinY    ,
-                                        const Standard_Integer  MaxX ,
-					                    const Standard_Integer  MaxY ,
-					                    const Standard_Boolean  Draw , 
-                                        const LineStyle aLineStyle)
+void OCC_2dView::DrawRectangle2D(const Standard_Integer  MinX,
+                              const Standard_Integer  MinY,
+                              const Standard_Integer  MaxX,
+                              const Standard_Integer  MaxY,
+                              const Standard_Boolean  Draw, 
+                              const LineStyle aLineStyle)
 {
-    static int m_DrawMode;
-    if  (!m_Pen && aLineStyle ==Solid )
-        {m_Pen = new CPen(PS_SOLID, 1, RGB(0,0,0)); m_DrawMode = R2_MERGEPENNOT;}
-    else if (!m_Pen && aLineStyle ==Dot )
-        {m_Pen = new CPen(PS_DOT, 1, RGB(0,0,0));   m_DrawMode = R2_XORPEN;}
-    else if (!m_Pen && aLineStyle == ShortDash)
-        {m_Pen = new CPen(PS_DASH, 1, RGB(255,0,0));	m_DrawMode = R2_XORPEN;}
-    else if (!m_Pen && aLineStyle == LongDash)
-        {m_Pen = new CPen(PS_DASH, 1, RGB(0,0,0));	m_DrawMode = R2_NOTXORPEN;}
-    else if (aLineStyle == Default) 
-        { m_Pen = NULL;	m_DrawMode = R2_MERGEPENNOT;}
+  static int m_DrawMode;
+  if  (!m_Pen && aLineStyle ==Solid )
+  {m_Pen = new CPen(PS_SOLID, 1, RGB(0,0,0)); m_DrawMode = R2_MERGEPENNOT;}
+  else if (!m_Pen && aLineStyle ==Dot )
+  {m_Pen = new CPen(PS_DOT, 1, RGB(0,0,0));   m_DrawMode = R2_XORPEN;}
+  else if (!m_Pen && aLineStyle == ShortDash)
+  {m_Pen = new CPen(PS_DASH, 1, RGB(255,0,0));	m_DrawMode = R2_XORPEN;}
+  else if (!m_Pen && aLineStyle == LongDash)
+  {m_Pen = new CPen(PS_DASH, 1, RGB(0,0,0));	m_DrawMode = R2_NOTXORPEN;}
+  else if (aLineStyle == Default) 
+  { m_Pen = NULL;	m_DrawMode = R2_MERGEPENNOT;}
 
-    CPen* aOldPen;
-    CClientDC clientDC(this);
-    if (m_Pen) aOldPen = clientDC.SelectObject(m_Pen);
-    clientDC.SetROP2(m_DrawMode);
+  CPen* aOldPen;
+  CClientDC clientDC(this);
+  if (m_Pen) aOldPen = clientDC.SelectObject(m_Pen);
+  clientDC.SetROP2(m_DrawMode);
 
-    static		Standard_Integer StoredMinX, StoredMaxX, StoredMinY, StoredMaxY;
-    static		Standard_Boolean m_IsVisible;
+  static		Standard_Integer StoredMinX, StoredMaxX, StoredMinY, StoredMaxY;
+  static		Standard_Boolean m_IsVisible;
 
-    if ( m_IsVisible && !Draw) // move or up  : erase at the old position 
-    {
-     clientDC.MoveTo(StoredMinX,StoredMinY); clientDC.LineTo(StoredMinX,StoredMaxY); 
-     clientDC.LineTo(StoredMaxX,StoredMaxY); 
-	 clientDC.LineTo(StoredMaxX,StoredMinY); clientDC.LineTo(StoredMinX,StoredMinY);
-     m_IsVisible = false;
-    }
+  if ( m_IsVisible && !Draw) // move or up  : erase at the old position 
+  {
+    clientDC.MoveTo(StoredMinX,StoredMinY); clientDC.LineTo(StoredMinX,StoredMaxY); 
+    clientDC.LineTo(StoredMaxX,StoredMaxY); 
+    clientDC.LineTo(StoredMaxX,StoredMinY); clientDC.LineTo(StoredMinX,StoredMinY);
+    m_IsVisible = false;
+  }
 
-    StoredMinX = min ( MinX, MaxX );
-    StoredMinY = min ( MinY, MaxY );
-    StoredMaxX = max ( MinX, MaxX );
-    StoredMaxY = max ( MinY, MaxY);
+  StoredMinX = min ( MinX, MaxX );
+  StoredMinY = min ( MinY, MaxY );
+  StoredMaxX = max ( MinX, MaxX );
+  StoredMaxY = max ( MinY, MaxY);
 
-    if (Draw) // move : draw
-    {
-     clientDC.MoveTo(StoredMinX,StoredMinY); clientDC.LineTo(StoredMinX,StoredMaxY); 
-     clientDC.LineTo(StoredMaxX,StoredMaxY); 
-	 clientDC.LineTo(StoredMaxX,StoredMinY); clientDC.LineTo(StoredMinX,StoredMinY);
-     m_IsVisible = true;
-   }
+  if (Draw) // move : draw
+  {
+    clientDC.MoveTo(StoredMinX,StoredMinY); clientDC.LineTo(StoredMinX,StoredMaxY); 
+    clientDC.LineTo(StoredMaxX,StoredMaxY); 
+    clientDC.LineTo(StoredMaxX,StoredMinY); clientDC.LineTo(StoredMinX,StoredMinY);
+    m_IsVisible = true;
+  }
 
-    if (m_Pen) clientDC.SelectObject(aOldPen);
+  if (m_Pen) clientDC.SelectObject(aOldPen);
 }
 
 
@@ -617,33 +638,33 @@ void OCC_2dView::DrawRectangle2D(const Standard_Integer  MinX    ,
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void OCC_2dView::DragEvent2D(const Standard_Integer  x        ,
-						  const Standard_Integer  y        ,
-						  const Standard_Integer  TheState )
+void OCC_2dView::DragEvent2D(const Standard_Integer  x,
+                            const Standard_Integer  y,
+                            const Standard_Integer  TheState)
 {
   // TheState == -1  button down
   // TheState ==  0  move
   // TheState ==  1  button up
 
-    static Standard_Integer theButtonDownX=0;
-    static Standard_Integer theButtonDownY=0;
+  static Standard_Integer theButtonDownX=0;
+  static Standard_Integer theButtonDownY=0;
 
-	if (TheState == -1)
-    {
-      theButtonDownX=x;
-      theButtonDownY=y;
-    }
+  if (TheState == -1)
+  {
+    theButtonDownX=x;
+    theButtonDownY=y;
+  }
 
   if (TheState == 0)
   {
-  	((OCC_2dDoc*)GetDocument())->GetInteractiveContext2D()->MoveTo(theButtonDownX,theButtonDownY,x,y,myV2dView);
+    ((OCC_2dDoc*)GetDocument())->GetInteractiveContext()->MoveTo(x,y,myV2dView);
+    ((OCC_2dDoc*)GetDocument())->GetInteractiveContext()->Select(theButtonDownX,theButtonDownY,x,y,myV2dView);
   }
 
   if (TheState == 1)
   {
-  	((OCC_2dDoc*)GetDocument())->GetInteractiveContext2D()->Select(true);
+    ((OCC_2dDoc*)GetDocument())->GetInteractiveContext()->Select(true);
   }
-
 }
 
 
@@ -651,64 +672,62 @@ void OCC_2dView::DragEvent2D(const Standard_Integer  x        ,
 //
 //-----------------------------------------------------------------------------------------
 void OCC_2dView::InputEvent2D(const Standard_Integer  x     ,
-						   const Standard_Integer  y     ) 
+                              const Standard_Integer  y     ) 
 {
-	((OCC_2dDoc*)GetDocument())->GetInteractiveContext2D()->Select(true);
-
+  ((OCC_2dDoc*)GetDocument())->GetInteractiveContext()->Select(true);
 }
 
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void OCC_2dView::MoveEvent2D(const Standard_Integer  x       ,
-						  const Standard_Integer  y       ) 
+void OCC_2dView::MoveEvent2D(const Standard_Integer  x,
+                            const Standard_Integer  y) 
 {
-  static bool LastIsGridActiveStatus = Standard_True;
-  if (myV2dView->Viewer()->IsActive() )  // about the grid
-    { myV2dView->ShowHit(x,y); LastIsGridActiveStatus = Standard_True;}
-  if (!myV2dView->Viewer()->IsActive() && LastIsGridActiveStatus )  // about the grid
-    {myV2dView->EraseHit(); LastIsGridActiveStatus = Standard_False;}
-
-	((OCC_2dDoc*)GetDocument())->GetInteractiveContext2D()->MoveTo(x,y,myV2dView);	
-
-
+  if(myV2dView->Viewer()->Grid()->IsActive())
+  {
+    Quantity_Length aGridX=0,aGridY=0,aGridZ=0;
+    myV2dView->ConvertToGrid(x,y,aGridX,aGridY,aGridZ);
+    //View is not updated automatically in ConvertToGrid
+    myV2dView->Update();
+  }
+  ((OCC_2dDoc*)GetDocument())->GetInteractiveContext()->MoveTo(x,y,myV2dView);
 }
 
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void OCC_2dView::MultiMoveEvent2D(const Standard_Integer  x       ,
-							   const Standard_Integer  y      ) 
+void OCC_2dView::MultiMoveEvent2D(const Standard_Integer  x,
+                                  const Standard_Integer  y) 
 {
 // MultiMoveEvent2D means we move the mouse in a multi selection mode
-((OCC_2dDoc*)GetDocument())->GetInteractiveContext2D()->MoveTo(x,y,myV2dView);
-
+((OCC_2dDoc*)GetDocument())->GetInteractiveContext()->MoveTo(x,y,myV2dView);
 }
 
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
 void OCC_2dView::MultiDragEvent2D(const Standard_Integer  x        ,
-							   const Standard_Integer  y        ,
-							   const Standard_Integer  TheState) 
+                                  const Standard_Integer  y        ,
+                                  const Standard_Integer  TheState) 
 {
-    static Standard_Integer theButtonDownX=0;
-    static Standard_Integer theButtonDownY=0;
+  static Standard_Integer theButtonDownX=0;
+  static Standard_Integer theButtonDownY=0;
 
-	if (TheState == -1)
-    {
-      theButtonDownX=x;
-      theButtonDownY=y;
-    }
+  if (TheState == -1)
+  {
+    theButtonDownX=x;
+    theButtonDownY=y;
+  }
 
   if (TheState == 0)
   {
-	((OCC_2dDoc*)GetDocument())->GetInteractiveContext2D()->MoveTo(theButtonDownX,theButtonDownY,x,y,myV2dView);
+    ((OCC_2dDoc*)GetDocument())->GetInteractiveContext()->MoveTo(x,y,myV2dView);
+    ((OCC_2dDoc*)GetDocument())->GetInteractiveContext()->ShiftSelect(theButtonDownX,theButtonDownY,x,y,myV2dView);;
   }
 
   if (TheState == 1)
   {
-  	((OCC_2dDoc*)GetDocument())->GetInteractiveContext2D()->ShiftSelect(true);
+    ((OCC_2dDoc*)GetDocument())->GetInteractiveContext()->ShiftSelect(true);
   }
 }
 
@@ -717,16 +736,16 @@ void OCC_2dView::MultiDragEvent2D(const Standard_Integer  x        ,
 //
 //-----------------------------------------------------------------------------------------
 void OCC_2dView::MultiInputEvent2D(const Standard_Integer  x       ,
-								const Standard_Integer  y       ) 
+                                  const Standard_Integer  y       ) 
 {
-	((OCC_2dDoc*)GetDocument())->GetInteractiveContext2D()->ShiftSelect(true);
+  ((OCC_2dDoc*)GetDocument())->GetInteractiveContext()->ShiftSelect(true);
 }
 
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
 void  OCC_2dView::Popup2D(const Standard_Integer  x,
-					   const Standard_Integer  y ) 
+                         const Standard_Integer  y ) 
 {
   CMenu menu;
   CMenu* pPopup ;
@@ -739,14 +758,11 @@ void  OCC_2dView::Popup2D(const Standard_Integer  x,
 
   // display the popup
   POINT winCoord = { x , y };
-
-
   ClientToScreen ( &winCoord);
   pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON , winCoord.x, winCoord.y , AfxGetMainWnd());
-	
 }
 
 void OCC_2dView::FitAll()
 {
-  myV2dView->Fitall();
+  myV2dView->FitAll();
 }

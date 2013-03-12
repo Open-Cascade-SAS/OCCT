@@ -14,15 +14,6 @@ static char THIS_FILE[]=__FILE__;
 IMPLEMENT_STANDARD_HANDLE(ISession_Surface,AIS_InteractiveObject)
 IMPLEMENT_STANDARD_RTTIEXT(ISession_Surface,AIS_InteractiveObject)
 
-#include "GeomAdaptor_Surface.hxx"
-#include "StdPrs_WFSurface.hxx"
-#include "StdPrs_WFPoleSurface.hxx"
-#include "GeomAdaptor_HSurface.hxx"
-#include "AIS_Drawer.hxx"
-#include "Prs3d_IsoAspect.hxx"
-#include "StdPrs_WFDeflectionShape.hxx"
-#include "StdPrs_ShadedSurface.hxx"
-
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////

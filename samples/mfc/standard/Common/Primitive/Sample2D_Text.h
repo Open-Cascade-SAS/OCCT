@@ -2,98 +2,73 @@
 #define _Sample2D_Text_HeaderFile
 #include <Standard_Macro.hxx>
 #include <Standard_DefineHandle.hxx>
+#include <Graphic3d_HorizontalTextAlignment.hxx>
+#include <Graphic3d_VerticalTextAlignment.hxx>
+#include <TCollection_AsciiString.hxx>
 
 
-
-DEFINE_STANDARD_HANDLE(Sample2D_Text,AIS2D_InteractiveObject)
-class Sample2D_Text : public AIS2D_InteractiveObject {
+DEFINE_STANDARD_HANDLE(Sample2D_Text,AIS_InteractiveObject)
+class Sample2D_Text : public AIS_InteractiveObject 
+{
 
 public:
 
- // Methods PUBLIC
- // 
-Standard_EXPORT Sample2D_Text   (const TCollection_AsciiString& aText,
-                 const Standard_Real            anX          = 0   ,
-                 const Standard_Real            anY          = 0   ,
-                 const Aspect_TypeOfText        aType        = Aspect_TOT_SOLID,
-                 const Quantity_PlaneAngle      anAngle      = 0.0 ,
-                 const Standard_Real            aSlant       = 0.0 ,
-                 const Standard_Integer         aColorIndex  = 0   ,
-                 const Standard_Integer         aFontIndex   = 1   ,
-                 const Quantity_Factor          aScale       = 1   ,
-                 const Standard_Boolean         aIsUnderline = Standard_False,
-                 const Standard_Boolean         aIsZoomable  = Standard_True,
-                 const Graphic2d_TypeOfAlignment aTypeOfAlignment = Graphic2d_TOA_LEFT);
-
-Standard_EXPORT virtual void SetContext(const Handle(AIS2D_InteractiveContext)& theContext);
+Standard_EXPORT 
+  Sample2D_Text  (const TCollection_AsciiString& theText,const gp_Pnt&  thePosition,
+                 const Aspect_TypeOfText        theType        = Aspect_TOT_SOLID,
+                 const Quantity_PlaneAngle      theAngle      = 0.0 ,
+                 const Quantity_Color           theColor       = Quantity_NOC_YELLOW,
+                 const Font_FontAspect          theFontAspect  = Font_FA_Regular,
+                 const Standard_CString         theFont        = "Courier",
+                 const Standard_Real          theHeight       = 1,
+                 const Graphic3d_HorizontalTextAlignment  theHAlign      = Graphic3d_HTA_LEFT,
+                 const Graphic3d_VerticalTextAlignment  theVAlign      = Graphic3d_VTA_BOTTOM,
+                 const Standard_Boolean         theIsZoomable  = Standard_True);
 
 inline   TCollection_AsciiString GetText() const {  return myText ; }
-inline   void                    SetText(const TCollection_AsciiString& atext) {  myText = atext; }
-inline   void                    GetCoord(Standard_Real& X, Standard_Real& Y) const {  X = myX;  Y = myY; }
-inline   void                    SetCoord(const Standard_Real X, const Standard_Real Y) {  myX = X ;  myY = Y ; }
-inline   Aspect_TypeOfText       GetTypeOfText() const {  return myTypeOfText; }
-inline   void                    SetTypeOfText(const Aspect_TypeOfText aNewTypeOfText) {  myTypeOfText = aNewTypeOfText; }
+inline   void                    SetText(const TCollection_AsciiString& theText) {  myText = theText; }
+inline   void                    GetCoord(gp_Pnt& thePosition) const {  thePosition=gp_Pnt(myPosition); }
+inline   void                    SetCoord(const gp_Pnt& thePosition) {  myPosition = thePosition; }
+inline   Standard_Integer        GetTypeOfText() const {  return myTypeOfText; }
+inline   void                    SetTypeOfText(const Aspect_TypeOfText theTypeOfText) {  myTypeOfText = theTypeOfText; }
 inline   Standard_Real           GetAngle() const {  return myAngle; }
-inline   void                    SetAngle(const Standard_Real aNewAngle) {  myAngle = aNewAngle; }
-inline   Standard_Real           GetSlant() const {  return mySlant; }
-inline   void                    SetSlant(const Standard_Real aNewSlant) {  mySlant = aNewSlant; }
-inline   Standard_Integer        GetColorIndex() const {  return myColorIndex; }
-inline   void                    SetColorIndex(const Standard_Integer aNewColorIndex) {  myColorIndex = aNewColorIndex; }
-inline   Standard_Integer        GetFontIndex() const { return myFontIndex; }
-inline   void                    SetFontIndex(const Standard_Integer aNewFontIndex) {  myFontIndex = aNewFontIndex; }
+inline   void                    SetAngle(const Standard_Real theAngle) {  myAngle = theAngle; }
+inline   Quantity_Color          GetColor() const {  return myColor; }
+inline   void                    SetColor(const Quantity_Color theColor) {  myColor = theColor; }
 inline   Quantity_Factor         GetScale() const {  return myScale; }
-inline   void                    SetScale  (const Quantity_Factor aNewScale) {  myScale  = aNewScale; }
-inline   Standard_Boolean        GetIsUnderline() const {return myIsUnderline;}
-inline   void                    SetIsUnderline(const Standard_Boolean aNewIsUnderline) { myIsUnderline = aNewIsUnderline;}
+inline   void                    SetScale  (const Quantity_Factor theScale) {  myScale  = theScale; }
 inline   Standard_Boolean        GetIsZoomable() const { return myIsZoomable; }
-inline   void                    SetIsZoomable(const Standard_Boolean aNewIsZoomable) { myIsZoomable = aNewIsZoomable;}
-inline   Graphic2d_TypeOfAlignment GetTypeOfAlignment() const { return myTypeOfAlignment;}
-inline   void                    SetTypeOfAlignment(const Graphic2d_TypeOfAlignment aNewTypeOfAlignment) { myTypeOfAlignment= aNewTypeOfAlignment;}
-
+inline   void                    SetIsZoomable(const Standard_Boolean theIsZoomable) { myIsZoomable = theIsZoomable;}
 
 
 DEFINE_STANDARD_RTTI(Sample2D_Text)
 
-
-protected:
-
-
- // Methods PROTECTED
- // 
-
-
- // Fields PROTECTED
- //
-
-
 private: 
+ 
+ void Compute (  const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
+                  const Handle(Prs3d_Presentation)& aPresentation,
+                  const Standard_Integer aMode);
 
- // Methods PRIVATE
- // 
+ void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection,
+                           const Standard_Integer aMode)
+ {
 
- // Fields PRIVATE
- //
+ }
+
+
 TCollection_AsciiString   myText            ; 
-Standard_Real             myX               ;
-Standard_Real             myY               ;
+gp_Pnt                    myPosition        ;
 Aspect_TypeOfText         myTypeOfText      ;
 Standard_Real             myAngle           ;
-Standard_Real             mySlant           ;
-Standard_Integer          myColorIndex      ;
-Standard_Integer          myFontIndex       ;
+Quantity_Color            myColor           ;
+Standard_CString          myFont            ;
 Quantity_Factor           myScale           ;
-Standard_Real             myWidth           ;
 Standard_Real             myHeight          ;
-Standard_Real             myXoffset         ;
-Standard_Real             myYoffset         ;
-
-Standard_Boolean          myIsUnderline     ; 
+Font_FontAspect           myFontAspect      ; 
 Standard_Boolean          myIsZoomable      ;
-Graphic2d_TypeOfAlignment myTypeOfAlignment ;
+Graphic3d_HorizontalTextAlignment   myHAlign ;
+Graphic3d_VerticalTextAlignment     myVAlign ;
+
 };
-
-// other inline functions and methods (like "C++: function call" methods)
-//
-
 
 #endif

@@ -4,7 +4,7 @@
 
 #include "stdafx.h"
 #include "ImportExport.h"
-#include <OCC_BaseApp.h>
+#include <OCC_App.h>
 
 #include "SaveCSFDBDlg.h"
 

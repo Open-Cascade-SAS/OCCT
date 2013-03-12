@@ -17,28 +17,25 @@ DEFINE_STANDARD_HANDLE(ISession_Point,AIS_InteractiveObject)
 class ISession_Point : public AIS_InteractiveObject  
 {
 public:
-	ISession_Point();
-    ISession_Point(Standard_Real X,Standard_Real Y ,Standard_Real Z);
-    ISession_Point(gp_Pnt2d& aPoint,Standard_Real Elevation = 0);
-    ISession_Point(gp_Pnt& aPoint);
-
-	virtual ~ISession_Point();
-    DEFINE_STANDARD_RTTI(ISession_Point)
+  ISession_Point();
+  ISession_Point(Standard_Real X,Standard_Real Y ,Standard_Real Z);
+  ISession_Point(gp_Pnt2d& aPoint,Standard_Real Elevation = 0);
+  ISession_Point(gp_Pnt& aPoint);
+  virtual ~ISession_Point();
+  DEFINE_STANDARD_RTTI(ISession_Point)
 
 private :
 
-void Compute          (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
-                       const Handle(Prs3d_Presentation)& aPresentation,
-                       const Standard_Integer aMode);
-void Compute          (const Handle(Prs3d_Projector)& aProjector,
-                       const Handle(Prs3d_Presentation)& aPresentation) ;
-void Compute          (const Handle(PrsMgr_PresentationManager2d)& aPresentationManager,
-                       const Handle(Graphic2d_GraphicObject)& aGrObj,
-                       const Standard_Integer unMode = 0) ;
-void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection,
-                       const Standard_Integer unMode) ;
+  void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
+                const Handle(Prs3d_Presentation)& aPresentation,
+                const Standard_Integer aMode);
+  void Compute (const Handle(Prs3d_Projector)& aProjector,
+                const Handle(Prs3d_Presentation)& aPresentation);
 
-gp_Pnt myPoint;
+  void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection,
+                        const Standard_Integer unMode);
+
+  gp_Pnt myPoint;
 
 };
 

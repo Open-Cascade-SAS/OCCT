@@ -8,32 +8,32 @@
 
 class CChildFrame : public OCC_BaseChildFrame
 {
-	DECLARE_DYNCREATE(CChildFrame)
+  DECLARE_DYNCREATE(CChildFrame)
 public:
-	CChildFrame();
+  CChildFrame();
 
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CChildFrame)
-	public:
-	virtual void ActivateFrame(int nCmdShow = -1);
-	virtual BOOL DestroyWindow();
-	//}}AFX_VIRTUAL
-
-// Implementation
+  // Overrides
+  // ClassWizard generated virtual function overrides
+  //{{AFX_VIRTUAL(CChildFrame)
 public:
-	virtual ~CChildFrame();
+  virtual void ActivateFrame(int nCmdShow = -1);
+  virtual BOOL DestroyWindow();
+  //}}AFX_VIRTUAL
+
+  // Implementation
+public:
+  virtual ~CChildFrame();
 #ifdef _DEBUG
-	virtual void AssertValid() const;
-	virtual void Dump(CDumpContext& dc) const;
+  virtual void AssertValid() const;
+  virtual void Dump(CDumpContext& dc) const;
 #endif
 
-// Generated message map functions
+  // Generated message map functions
 protected:
-	//{{AFX_MSG(CChildFrame)
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+  //{{AFX_MSG(CChildFrame)
+  afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+  //}}AFX_MSG
+  DECLARE_MESSAGE_MAP()
 };
 
 /////////////////////////////////////////////////////////////////////////////

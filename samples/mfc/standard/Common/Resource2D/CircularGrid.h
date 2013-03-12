@@ -19,7 +19,7 @@ class Standard_EXPORT CCircularGrid : public CDialog
 // Construction
 public:
 	CCircularGrid(CWnd* pParent = NULL);   // standard constructor
-    void SetViewer(Handle(V2d_Viewer) aViewer) { myViewer = aViewer; } ;
+    void SetViewer(Handle(V3d_Viewer) aViewer) { myViewer = aViewer; } ;
 	void UpdateValues();
 // Dialog Data
 	//{{AFX_DATA(CCircularGrid)
@@ -55,7 +55,7 @@ protected:
     void UpdateDialogData();
 
 private :
-	Handle(V2d_Viewer)  myViewer;
+	Handle(V3d_Viewer)  myViewer;
 
     Quantity_Length     SavedXOrigin,SavedYOrigin,SavedRadiusStep;
 	Standard_Integer    SavedDivisionNumber;

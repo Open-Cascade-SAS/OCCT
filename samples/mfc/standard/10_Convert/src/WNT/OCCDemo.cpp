@@ -26,19 +26,17 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // COCCDemoApp construction
 
-COCCDemoApp::COCCDemoApp()
+COCCDemoApp::COCCDemoApp() : OCC_App()
 {
-	// TODO: add construction code here,
-	// Place all significant initialization in InitInstance
-	SampleName = "";
+  SampleName = "";
   try
   {
     Handle(Aspect_DisplayConnection) aDisplayConnection;
     myGraphicDriver = Graphic3d::InitGraphicDriver (aDisplayConnection);
   }
-	catch(Standard_Failure)
-	{
-    AfxMessageBox("Fatal Error During Graphic Initialisation");
+  catch (Standard_Failure)
+  {
+    AfxMessageBox ("Fatal Error During Graphic Initialisation");
   }
 }
 

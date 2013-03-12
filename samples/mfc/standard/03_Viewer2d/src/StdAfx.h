@@ -72,169 +72,109 @@
 # pragma comment (lib,"TKernel.lib")
 */
 
-#include <Standard_ErrorHandler.hxx>
+#include <AIS_Drawer.hxx>
+#include <AIS_Circle.hxx>
+#include <AIS_Line.hxx>
+#include <AIS_InteractiveContext.hxx>
+#include <AIS_InteractiveObject.hxx>
+#include <AIS_LocalContext.hxx>
+#include <AIS_TexturedShape.hxx>
 
-#include <WNT_Window.hxx>
-
-
-#include <V2d_Viewer.hxx>
-
-#include <V2d_View.hxx>
-
-#include <WNT_GraphicDevice.hxx>
-#include <Aspect_WindowDriver.hxx>
-
-#include "gp_Pnt2d.hxx"
-#include "Geom2d_Curve.hxx"
-#include "GCE2d_MakeSegment.hxx"
-#include "gp_Pnt2d.hxx"
-
-#include <Graphic2d_SetOfCurves.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-#include <Bnd_Box2d.hxx>
-#include <BndLib_Add2dCurve.hxx>
-#include <Precision.hxx>
-#include <Select2D_SensitiveBox.hxx>
-#include <Select2D_SensitiveSegment.hxx>
-#include <gp_Circ2d.hxx>
-#include <gp_Dir2d.hxx>
-#include <gp_Ax2d.hxx>
-
-#include <Select2D_SensitiveArc.hxx>
-#include <Geom2d_Curve.hxx>
-#include <GeomTools_Curve2dSet.hxx>
-#include <Geom2d_TrimmedCurve.hxx>
-#include <gp_Pnt2d.hxx>
-#include <GCE2d_MakeSegment.hxx>
-#include <gp_Vec2d.hxx>
-#include <OSD_Environment.hxx>
-#include <Graphic2d_Array1OfVertex.hxx>
-#include <Graphic2d_PolyLine.hxx>
-
-#include "SelectMgr_Selection.hxx"
-
-
-#include <Quantity_Length.hxx>
+#include <Aspect_MarkMapEntry.hxx>
+#include <Aspect_ColorMapEntry.hxx>
+#include <Aspect_ColorScale.hxx>
+#include <Aspect_GenericColorMap.hxx>
+#include <Aspect_ColorMap.hxx>
+#include <Aspect_FontMap.hxx>
+#include <Aspect_MarkMap.hxx>
+#include <Aspect_TypeMap.hxx>
+#include <Aspect_WidthMap.hxx>
 #include <Aspect_TypeOfline.hxx>
 #include <Aspect_WidthOfline.hxx>
-#include <Standard_Integer.hxx>
-#include <SelectMgr_SelectableObject.hxx>
-#include <Handle_PrsMgr_PresentationManager2d.hxx>
-#include <Handle_Graphic2d_GraphicObject.hxx>
-#include <Handle_SelectMgr_Selection.hxx>
-#include <Standard_OStream.hxx>
-#include <Standard_IStream.hxx>
-#include <Standard_CString.hxx>
-
-#include "Geom2d_Curve.hxx"
-
-
 #include <Aspect_Window.hxx>
 #include <Aspect_Background.hxx>
-#include <SelectMgr_EntityOwner.hxx>
-#include <SelectMgr_SelectionManager.hxx>
-#include <V2d_Viewer.hxx>
-#include <V2d_View.hxx>
+#include <Aspect_TypeOfText.hxx>
 
-#include <PrsMgr_PresentationManager2d.hxx>
-#include <StdSelect_ViewerSelector2d.hxx>
-
-#include "SelectMgr_SelectableObject.hxx"
-
-#include <Handle_V2d_Viewer.hxx>
-#include <Handle_PrsMgr_PresentationManager2d.hxx>
-#include <Handle_SelectMgr_SelectionManager.hxx>
-#include <Handle_StdSelect_ViewerSelector2d.hxx>
-#include <MMgt_TShared.hxx>
-#include <Handle_SelectMgr_SelectableObject.hxx>
-#include <Standard_Boolean.hxx>
-#include <Handle_V2d_View.hxx>
-#include <Graphic2d_Buffer.hxx>
-
-class V2d_Viewer;
-class PrsMgr_PresentationManager2d;
-class SelectMgr_SelectionManager;
-#include <StdSelect_ViewerSelector2d.hxx>
-class SelectMgr_SelectableObject;
-class V2d_View;
-#include <SelectMgr_SelectableObject.hxx>
-
-class ISession2D_InteractiveObject;
-#include <SelectMgr_EntityOwner.hxx>
-
+#include <BRepPrimAPI_MakeBox.hxx>
+#include <BRep_Builder.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepTools.hxx>
 #include <Bnd_Box2d.hxx>
-#include <gp_Lin2d.hxx>
-#include <gp_Dir2d.hxx>
-#include <gp_Vec2d.hxx>
-#include <TColgp_Array1OfPnt2d.hxx>
-#include <SelectBasics_BasicTool.hxx>
+#include <BndLib_Add2dCurve.hxx>
+
+#include <GCE2d_MakeSegment.hxx>
 #include <GCPnts_TangentialDeflection.hxx>
-#include <Geom2dAdaptor_Curve.hxx>
-
-#include <Standard_Integer.hxx>
-#include <gp_Pnt2d.hxx>
-#include <Select2D_SensitiveEntity.hxx>
-#include <Handle_SelectBasics_EntityOwner.hxx>
-#include <Standard_Boolean.hxx>
-#include <Standard_Real.hxx>
-class SelectBasics_EntityOwner;
-class gp_Pnt2d;
-#include <SelectBasics_ListOfBox2d.hxx>
-#include "TColgp_HArray1OfPnt2d.hxx"
 #include <Geom2d_Curve.hxx>
-
-#include <Graphic2d_Text.hxx>
-#include <Select2D_SensitiveBox.hxx>
-#include <Graphic2d_Segment.hxx>
+#include <Geom_CartesianPoint.hxx>
+#include <Geom_Circle.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Line.hxx>
+#include <Geom2d_Curve.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <GeomTools_Curve2dSet.hxx>
+#include <Graphic3d_AspectText3d.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Graphic3d_AspectMarker3d.hxx>
+#include <Graphic3d_StructureManager.hxx>
+#include <Graphic3d_Texture1Dsegment.hxx>
+#include <gp_Ax2d.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Dir2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
+#include <HLRAlgo_Projector.hxx>
+#include <MMgt_TShared.hxx>
 #include <OSD_Environment.hxx>
-#include <Graphic2d_View.hxx>
-#include <Graphic2d_Drawer.hxx>
-#include "PrsMgr_PresentationManager2d.hxx"
-#include "SelectMgr_Selection.hxx"
-#include "Graphic2d_Array1OfVertex.hxx"
-#include "Graphic2d_Polyline.hxx"
-#include "Graphic2d_Vertex.hxx"
-#include "Graphic2d_DisplayList.hxx"
+#include <Precision.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_PlaneAspect.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Quantity_Factor.hxx>
+#include <Quantity_Length.hxx>
+#include <Quantity_PlaneAngle.hxx>
+#include <SelectBasics_ListOfBox2d.hxx>
+#include <SelectBasics_BasicTool.hxx>
+#include <SelectMgr_EntityOwner.hxx>
+#include <SelectMgr_Selection.hxx>
+#include <SelectMgr_SelectableObject.hxx>
+#include <SelectMgr_SelectionManager.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Real.hxx>
+#include <Standard_Integer.hxx>
+#include <SelectMgr_Selection.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
 #include <Standard_CString.hxx>
-#include <SelectMgr_SelectableObject.hxx>
-
-#include <TCollection_AsciiString.hxx>
-#include <Aspect_TypeOfText.hxx>
+#include <Standard_Boolean.hxx>
 #include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
-#include <Quantity_Factor.hxx>
-#include <Quantity_PlaneAngle.hxx>
-#include <Handle_PrsMgr_PresentationManager2d.hxx>
-#include <Handle_Graphic2d_GraphicObject.hxx>
-#include <Handle_SelectMgr_Selection.hxx>
-
-class TCollection_AsciiString;
-class Graphic2d_GraphicObject;
-#include <SelectMgr_EntityOwner.hxx>
-#include "Aspect_MarkMap.hxx"
-#include "V2d_View.hxx"
-#include "Aspect_ColorMap.hxx"
-#include "Aspect_FontMap.hxx"
-#include "Aspect_MarkMap.hxx"
-#include "Aspect_TypeMap.hxx"
-#include "Aspect_WidthMap.hxx"
-#include "Aspect_MarkMap.hxx"
-#include "StdSelect_TextProjector2d.hxx"
-#include "StdSelect_SensitiveText2d.hxx"
-#include "WNT_FontMapEntry.hxx"
-#include "WNT_WDriver.hxx"
-#include "HLRAlgo_Projector.hxx"
-
-#include "AIS2D_InteractiveContext.hxx"
-#include "AIS2D_InteractiveObject.hxx"
-
-#include "Graphic2d_TypeOfPolygonFilling.hxx"
-#include "Prs2d_AspectLine.hxx"
-
+#include <Standard_OStream.hxx>
+#include <Standard_IStream.hxx>
+#include <Standard_CString.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TColgp_Array1OfPnt2d.hxx>
+#include <TColgp_HArray1OfPnt2d.hxx>
+#include <TopoDS_Shape.hxx>
+#include <TopoDS.hxx>
+#include <Visual3d_ViewManager.hxx>
+#include <V3d_View.hxx>
+#include <V3d_Viewer.hxx>
+#include <WNT_Window.hxx>
 
 #include <..\res\resource.h>
+
+class ISession2D_InteractiveObject;
+
+class V3d_Viewer;
+class SelectMgr_SelectableObject;
+class TCollection_AsciiString;
+class SelectBasics_EntityOwner;
+class gp_Pnt2d;
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.

@@ -2,110 +2,56 @@
 
 #include "Sample2D_Markers.h"
 
-IMPLEMENT_STANDARD_HANDLE(Sample2D_Markers,AIS2D_InteractiveObject)
-IMPLEMENT_STANDARD_RTTIEXT(Sample2D_Markers,AIS2D_InteractiveObject)
-
-#include "Graphic2d_Marker.hxx"
-#include "Graphic2d_PolylineMarker.hxx"
-#include "Graphic2d_CircleMarker.hxx"
-#include "Graphic2d_EllipsMarker.hxx"
+IMPLEMENT_STANDARD_HANDLE(Sample2D_Markers,AIS_InteractiveObject)
+IMPLEMENT_STANDARD_RTTIEXT(Sample2D_Markers,AIS_InteractiveObject)
 
 // generic marker
-Sample2D_Markers::Sample2D_Markers (Standard_Integer    anIndex    , 
-                                    Quantity_Length     aXPosition ,
-                                    Quantity_Length     aYPosition ,
-                                    Quantity_Length     aWidth     ,
-                                    Quantity_Length     anHeight   ,
-                                    Quantity_PlaneAngle anAngle    )
-    :myListVertex(0,0),AIS2D_InteractiveObject()
+Sample2D_Markers::Sample2D_Markers (const Quantity_Length theXPosition , 
+                   const Quantity_Length theYPosition ,
+                   const Aspect_TypeOfMarker theMarkerType,
+                   const Quantity_Color theColor,
+                   const Standard_Real theScaleOrId)
+                   :AIS_InteractiveObject(),myListVertex(1,1)
 {
-  myCurrentTypeOfMarker = Sample2D_CTOM_Generic;
-  myIndex      = anIndex;
-  myXPosition  = aXPosition;
-  myYPosition  = aYPosition; 
-  myWidth      = aWidth    ;
-  myHeight     = anHeight  ;
-  myAngle      = anAngle   ; 
+  myXPosition = theXPosition;
+  myYPosition = theYPosition;
+  myMarkerType = theMarkerType;
+  myColor = theColor;
+  myIndex = theScaleOrId;
+}
+
+Sample2D_Markers::Sample2D_Markers (const Quantity_Length theXPosition , 
+                   const Quantity_Length theYPosition ,
+                   const Graphic3d_Array1OfVertex& theListVertex,
+                   const Aspect_TypeOfMarker theMarkerType,
+                   const Quantity_Color theColor,
+                   const Standard_Real theScaleOrId)
+                   :AIS_InteractiveObject(),myListVertex(1,6)
+{
+  myXPosition = theXPosition;
+  myYPosition = theYPosition;
+  myMarkerType = theMarkerType;
+  myColor = theColor;
+  myIndex = theScaleOrId;
+  myListVertex = theListVertex;
 }
 
 
-// Polyline marker
-Sample2D_Markers::Sample2D_Markers (Quantity_Length          aXPosition , 
-                    Quantity_Length          aYPosition ,
-                    const Graphic2d_Array1OfVertex& aListVertex)
-    :myListVertex(1,aListVertex.Length()),AIS2D_InteractiveObject()
+void Sample2D_Markers::Compute (  const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
+                  const Handle(Prs3d_Presentation)& aPresentation,
+                  const Standard_Integer aMode)
 {
-  myCurrentTypeOfMarker = Sample2D_CTOM_Polyline;
-  myXPosition  = aXPosition;
-  myYPosition  = aYPosition; 
-  myListVertex = aListVertex;
+  if(myMarkerType == Aspect_TOM_USERDEFINED)
+  {
+    Handle(Graphic3d_AspectMarker3d) aMarker = new Graphic3d_AspectMarker3d(Aspect_TOM_POINT,myColor,myIndex);
+    Prs3d_Root::CurrentGroup(aPresentation)->SetGroupPrimitivesAspect(aMarker);
+    Prs3d_Root::CurrentGroup(aPresentation)->MarkerSet(myListVertex);
+  }
+  else
+  {
+    Handle(Graphic3d_AspectMarker3d) aMarker = new Graphic3d_AspectMarker3d(myMarkerType,myColor,myIndex);
+    aPresentation->SetPrimitivesAspect(aMarker);
+    Graphic3d_Vertex aV3d(myXPosition, myYPosition, 0.); 
+    Prs3d_Root::CurrentGroup(aPresentation)->Marker(aV3d);
+  }
 }
-
-// circle marker
-Sample2D_Markers::Sample2D_Markers (Quantity_Length aXPosition , 
-                    Quantity_Length aYPosition ,
-                    Quantity_Length X          ,
-                    Quantity_Length Y          ,
-   	                Quantity_Length Radius     )
-    :myListVertex(0,0),AIS2D_InteractiveObject()
-{
-  myCurrentTypeOfMarker = Sample2D_CTOM_Circle;
-  myXPosition  = aXPosition;
-  myYPosition  = aYPosition; 
-  myX          = X ;
-  myY          = Y ;
-  myRadius     =  Radius  ;
-}
-
-// ellips marker
-Sample2D_Markers::Sample2D_Markers (Quantity_Length     aXPosition  , 
-                    Quantity_Length     aYPosition  ,
-                    Quantity_Length     X           ,
-                    Quantity_Length     Y           ,
-	            Quantity_Length     MajorRadius ,
-                    Quantity_Length     MinorRadius ,
-                    Quantity_PlaneAngle anAngle     )
-    :myListVertex(0,0),AIS2D_InteractiveObject()
-{
-  myCurrentTypeOfMarker = Sample2D_CTOM_Ellips;
-  myXPosition   = aXPosition;
-  myYPosition   = aYPosition; 
-  myX           = X ;
-  myY           = Y ;
-  myMajorRadius = MajorRadius;
-  myMinorRadius = MinorRadius;
-  myAngle       = anAngle;
-}
-
-void Sample2D_Markers::SetContext(const Handle(AIS2D_InteractiveContext)& theContext) 
-{
-
-	AIS2D_InteractiveObject::SetContext(theContext);
-
-	if (myCurrentTypeOfMarker == Sample2D_CTOM_Generic) {
-		if ( myIndex == 0 ) {
-			Handle(Graphic2d_Marker) aMarker= 
-			new Graphic2d_Marker(this,myXPosition ,myYPosition);
-		}
-		else {
-			Handle(Graphic2d_Marker) aMarker= 
-			new Graphic2d_Marker(this,myIndex,myXPosition ,myYPosition,myWidth,myHeight,myAngle);
-		}
-
-	}
-
- if (myCurrentTypeOfMarker == Sample2D_CTOM_Polyline)
-   Handle(Graphic2d_PolylineMarker) aMarker= 
-      new Graphic2d_PolylineMarker(this,myXPosition,myYPosition,myListVertex);
-
- if (myCurrentTypeOfMarker == Sample2D_CTOM_Circle)
-   Handle(Graphic2d_CircleMarker) aMarker= 
-      new Graphic2d_CircleMarker(this,myXPosition,myYPosition,myX ,myY,myRadius  );
-
- if (myCurrentTypeOfMarker == Sample2D_CTOM_Ellips)
-   Handle(Graphic2d_EllipsMarker) aMarker= 
-      new Graphic2d_EllipsMarker(this,myXPosition,myYPosition,myX,myY,myMajorRadius,myMinorRadius,myAngle );
-
-}
-
-

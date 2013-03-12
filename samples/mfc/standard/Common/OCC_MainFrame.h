@@ -9,7 +9,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include <OCC_BaseApp.h>
+#include <OCC_App.h>
 
 enum OCC_MainFrm{
 	without_AIS_TB,

@@ -3,9 +3,9 @@
 
 #include <Standard_Macro.hxx>
 #include <Standard_DefineHandle.hxx>
-
-DEFINE_STANDARD_HANDLE(Sample2D_Markers,AIS2D_InteractiveObject)
-class Sample2D_Markers : public AIS2D_InteractiveObject {
+#include <Graphic3d_Array1OfVertex.hxx>
+DEFINE_STANDARD_HANDLE(Sample2D_Markers,AIS_InteractiveObject)
+class Sample2D_Markers : public AIS_InteractiveObject {
 
 enum Sample2D_CurrentTypeOfMarker {
 Sample2D_CTOM_Generic,
@@ -16,78 +16,48 @@ Sample2D_CTOM_Ellips
 
 public:
 
- // Methods PUBLIC
- // 
- // generic marker
- Standard_EXPORT Sample2D_Markers (Standard_Integer    anIndex    , 
-                   Quantity_Length     aXPosition ,
-                   Quantity_Length     aYPosition ,
-                   Quantity_Length     aWidth     ,
-                   Quantity_Length     anHeight   ,
-                   Quantity_PlaneAngle anAngle    );
+ // Generic marker
+ Standard_EXPORT Sample2D_Markers (const Quantity_Length theXPosition , 
+                   const Quantity_Length theYPosition ,
+                   const Aspect_TypeOfMarker theMarkerType,
+                   const Quantity_Color theColor,
+                   const Standard_Real theScaleOrId=5.0);
 
  // Polyline marker
- Standard_EXPORT Sample2D_Markers (Quantity_Length          aXPosition , 
-                   Quantity_Length          aYPosition ,
-                   const Graphic2d_Array1OfVertex& aListVertex);
- // circle marker
- Standard_EXPORT Sample2D_Markers (Quantity_Length aXPosition , 
-                   Quantity_Length aYPosition ,
-                   Quantity_Length X          ,
-                   Quantity_Length Y          ,
-		   Quantity_Length Radius    );
- // ellips marker
- Standard_EXPORT Sample2D_Markers (Quantity_Length     aXPosition  , 
-                   Quantity_Length     aYPosition  ,
-                   Quantity_Length     X           ,
-                   Quantity_Length     Y           ,
-		   Quantity_Length     MajorRadius ,
-                   Quantity_Length     MinorRadius ,
-                   Quantity_PlaneAngle anAngle     );
+  Standard_EXPORT Sample2D_Markers (const Quantity_Length theXPosition , 
+                   const Quantity_Length theYPosition ,
+                   const Graphic3d_Array1OfVertex& theListVertex,
+                   const Aspect_TypeOfMarker theMarkerType,
+                   const Quantity_Color theColor,
+                   const Standard_Real theScaleOrId=2.0);
+
 
 DEFINE_STANDARD_RTTI(Sample2D_Markers)
 
-
-protected:
-
- // Methods PROTECTED
- // 
-
-
- // Fields PROTECTED
- //
-
-
 private: 
 
- // Methods PRIVATE
- // 
-Standard_EXPORT virtual void SetContext(const Handle(AIS2D_InteractiveContext)& theContext);
+virtual void Compute (  const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
+                  const Handle(Prs3d_Presentation)& aPresentation,
+                  const Standard_Integer aMode);
 
- // Fields PRIVATE
- //
+virtual void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection,
+                           const Standard_Integer aMode){} ;
+
+
+Standard_EXPORT virtual void SetContext(const Handle(AIS_InteractiveContext)& theContext){};
+
+
+
 Sample2D_CurrentTypeOfMarker myCurrentTypeOfMarker;
-
 Quantity_Length          myXPosition   ; 
 Quantity_Length          myYPosition   ; 
-// specific generic markers
-Standard_Integer         myIndex       ;
+Aspect_TypeOfMarker      myMarkerType;
+Quantity_Color           myColor;
 Quantity_Length          myWidth       ;
 Quantity_Length          myHeight      ;
+Standard_Real         myIndex       ;//myScaleOrId
 // specific polyline marker
-Graphic2d_Array1OfVertex myListVertex  ;
-// specific circle & ellips markers
-Quantity_Length          myX           ;
-Quantity_Length          myY           ;
-// specific circle marker
-Quantity_Length          myRadius      ;
-// specific ellips marker
-Quantity_Length          myMajorRadius ;
-Quantity_Length          myMinorRadius ;
-
-Quantity_PlaneAngle      myAngle       ;
-
-
+Graphic3d_Array1OfVertex myListVertex  ;
 };
 
 

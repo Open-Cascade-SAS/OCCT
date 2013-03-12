@@ -14,17 +14,17 @@ DEFINE_STANDARD_HANDLE(ISession_Direction,AIS_InteractiveObject)
 class ISession_Direction : public AIS_InteractiveObject  
 {
 public:
-	TCollection_ExtendedString myText;
-	void SetText(TCollection_ExtendedString& aText);
-	ISession_Direction();
-    ISession_Direction(gp_Pnt& aPnt,gp_Dir&   aDir,Standard_Real aLength=1,Standard_Real anArrowLength=1);
-    ISession_Direction(gp_Pnt& aPnt,gp_Vec&   aVec,Standard_Real anArrowLength=1);
+  TCollection_ExtendedString myText;
+  void SetText(TCollection_ExtendedString& aText);
+  ISession_Direction();
+  ISession_Direction(gp_Pnt& aPnt,gp_Dir&   aDir,Standard_Real aLength=1,Standard_Real anArrowLength=1);
+  ISession_Direction(gp_Pnt& aPnt,gp_Vec&   aVec,Standard_Real anArrowLength=1);
 
-    ISession_Direction(gp_Pnt2d& aPnt2d,gp_Dir2d&   aDir2d,Standard_Real aLength=1);
-    ISession_Direction(gp_Pnt2d& aPnt2d,gp_Vec2d&   aVec2d);
+  ISession_Direction(gp_Pnt2d& aPnt2d,gp_Dir2d&   aDir2d,Standard_Real aLength=1);
+  ISession_Direction(gp_Pnt2d& aPnt2d,gp_Vec2d&   aVec2d);
 
-	virtual ~ISession_Direction();
-    DEFINE_STANDARD_RTTI(ISession_Direction)
+  virtual ~ISession_Direction();
+  DEFINE_STANDARD_RTTI(ISession_Direction)
 
 private:
 
@@ -33,9 +33,6 @@ private:
                           const Standard_Integer aMode);
     void Compute         (const Handle(Prs3d_Projector)& aProjector,
                           const Handle(Prs3d_Presentation)& aPresentation) ;
-    virtual  void Compute(const Handle(PrsMgr_PresentationManager2d)& aPresentationManager,
-                          const Handle(Graphic2d_GraphicObject)& aGrObj,
-                          const Standard_Integer aMode = 0) ;
     void ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,const Standard_Integer aMode) ;
 
     gp_Pnt myPnt;

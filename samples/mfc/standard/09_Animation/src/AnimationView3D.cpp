@@ -237,19 +237,24 @@ CAnimationDoc* CAnimationView3D::GetDocument() // non-debug version is inline
 // CAnimationView3D message handlers
 void CAnimationView3D::OnFileExportImage()
 {
-  CFileDialog dlg(FALSE,_T("*.BMP"),NULL,OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-                  _T("BMP Files (*.BMP)|*.bmp |GIF Files (*.GIF)|*.gif | PNG Files (*.PNG)|*.png"
-                     "|JPEG Files (*.JPEG)|*.jpeg | PPM Files (*.PPM)|*.ppm | TIFF Files (*.TIFF)"
-                     "|*.tiff | TGA Files (*.TGA)|*.tga | EXR Files (*.EXR)|*.exr||"), 
-                  NULL );
-
-  if (dlg.DoModal() == IDOK) 
+  CFileDialog aDlg (FALSE, "*.BMP", NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
+    "BMP  Files (*.BMP)|*.bmp|"
+    "GIF  Files (*.GIF)|*.gif|"
+    "PNG  Files (*.PNG)|*.png|"
+    "JPEG Files (*.JPEG)|*.jpeg|"
+    "PPM  Files (*.PPM)|*.ppm|"
+    "TIFF Files (*.TIFF)|*.tiff|"
+    "TGA  Files (*.TGA)|*.tga|"
+    "EXR  Files (*.EXR)|*.exr||",
+    NULL);
+  if (aDlg.DoModal() != IDOK)
   {
-    SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-    CString aFileName = dlg.GetPathName();
-    myView->Dump(aFileName);
-    SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
+    return;
   }
+
+  SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
+  myView->Dump (aDlg.GetPathName());
+  SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 }
 
 void CAnimationView3D::OnSize(UINT nType, int cx, int cy) 

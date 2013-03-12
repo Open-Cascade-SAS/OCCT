@@ -10,7 +10,7 @@
 #endif // _MSC_VER > 1000
 
 #include "OCC_BaseView.h"
-#include "OCC_3dBaseDoc.h"
+#include "OCC_3dDoc.h"
 #include <Standard_Macro.hxx>
 
 enum CurAction3d { 
@@ -29,7 +29,7 @@ public:
 	OCC_3dView();
 	virtual ~OCC_3dView();
 
-	OCC_3dBaseDoc* GetDocument();
+	OCC_3dDoc* GetDocument();
 	void FitAll() {   if ( !myView.IsNull() ) myView->FitAll();  myView->ZFitAll(); };
 	void Redraw() {   if ( !myView.IsNull() ) myView->Redraw(); };
 
@@ -113,8 +113,8 @@ protected:
 };
 
 #ifndef _DEBUG  // debug version in OCC_3dView.cpp
-inline OCC_3dBaseDoc* OCC_3dView::GetDocument()
-   { return (OCC_3dBaseDoc*)m_pDocument; }
+inline OCC_3dDoc* OCC_3dView::GetDocument()
+   { return (OCC_3dDoc*)m_pDocument; }
 #endif
 
 #endif // !defined(AFX_OCC_3DVIEW_H__1F4065AE_39C4_11D7_8611_0060B0EE281E__INCLUDED_)

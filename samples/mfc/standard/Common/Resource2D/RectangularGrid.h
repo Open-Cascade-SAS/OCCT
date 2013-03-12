@@ -19,7 +19,7 @@ class Standard_EXPORT CRectangularGrid : public CDialog
 // Construction
 public:
 	CRectangularGrid(CWnd* pParent = NULL);   // standard constructor
-    void SetViewer(Handle(V2d_Viewer) aViewer) { myViewer = aViewer; } ;
+    void SetViewer(Handle(V3d_Viewer) aViewer) { myViewer = aViewer; } ;
 	void UpdateValues();
 
 // Dialog Data
@@ -56,7 +56,7 @@ protected:
     void UpdateDialogData();
 
 private :
-  Handle(V2d_Viewer) myViewer;
+  Handle(V3d_Viewer) myViewer;
 
   Quantity_Length  SavedXOrigin,SavedYOrigin , SavedXStep, SavedYStep;
   Quantity_PlaneAngle SavedRotationAngle ;		

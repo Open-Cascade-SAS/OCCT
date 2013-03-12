@@ -33,26 +33,20 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // COcafApp construction
 
-COcafApp::COcafApp()
+COcafApp::COcafApp() : OCC_App()
 {
-// CasCade :
-	SetSamplePath("06_Ocaf");
-	myApp = new TOcaf_Application();
-// End CasCade
-	SampleName = "OCAF";	//for about dialog
+  SetSamplePath("06_Ocaf");
+  myApp = new TOcaf_Application();
+  SampleName = "OCAF"; //for about dialog
 
-    try
-    {  UnitsAPI::SetLocalSystem(UnitsAPI_MDTV); }
-    catch (Standard_Failure)
-    {
+  try
+  {
+    UnitsAPI::SetLocalSystem(UnitsAPI_MDTV);
+  }
+  catch (Standard_Failure)
+  {
     AfxMessageBox("Fatal Error in units initialisation");
-    }
-}
-
-COcafApp::~COcafApp()
-{
-// Warning : delete only template you don't declare by AddDocTemplate
-//    if( pDocTemplateForView3d) delete pDocTemplateForView3d;
+  }
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -138,7 +132,7 @@ BOOL COcafApp::IsViewExisting(CDocument * pDoc, CRuntimeClass * pViewClass, CVie
 
 //================================================================
 // Function : COcafApp::OnFileOpen()
-///Purpose  : 
+// Purpose  :
 //================================================================
 void COcafApp::OnFileOpen() 
 {

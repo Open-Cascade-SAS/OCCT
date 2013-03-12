@@ -33,32 +33,19 @@ class Geom_BSplineSurface;
 #include <Standard_Macro.hxx>
 #endif
 
-class GeoAlgo_Sol  {
+class GeoAlgo_Sol
+{
 
 public:
 
  // Methods PUBLIC
  // 
-Standard_EXPORT GeoAlgo_Sol();
-Standard_EXPORT GeoAlgo_Sol(const Standard_CString aGroundName);
-Standard_EXPORT   void Build(const Standard_CString aGroundName) ;
-Standard_EXPORT   void Build(const TColgp_SequenceOfXYZ& aSeqofPoints) ;
-Standard_EXPORT   Handle_Geom_BSplineSurface Surface() const;
-Standard_EXPORT   Standard_Boolean IsDone() const;
-
-
-
-
-
-protected:
-
- // Methods PROTECTED
- // 
-
-
- // Fields PROTECTED
- //
-
+  Standard_EXPORT GeoAlgo_Sol();
+  Standard_EXPORT GeoAlgo_Sol(const Standard_CString aGroundName);
+  Standard_EXPORT void Build(const Standard_CString aGroundName) ;
+  Standard_EXPORT void Build(const TColgp_SequenceOfXYZ& aSeqofPoints) ;
+  Standard_EXPORT Handle_Geom_BSplineSurface Surface() const;
+  Standard_EXPORT Standard_Boolean IsDone() const;
 
 private: 
 
@@ -66,13 +53,10 @@ private:
  // 
 Standard_EXPORT   Handle_Geom_BSplineSurface Read(const Standard_CString aGroundName) ;
 
-
-
  // Fields PRIVATE
  //
 Handle_Geom_BSplineSurface myGround;
 Standard_Boolean myIsDone;
-
 
 };
 

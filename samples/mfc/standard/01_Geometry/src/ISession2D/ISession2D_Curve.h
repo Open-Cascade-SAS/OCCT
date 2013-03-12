@@ -10,9 +10,7 @@
 #include <Aspect_WidthOfline.hxx>
 #include <Standard_Integer.hxx>
 #include <SelectMgr_SelectableObject.hxx>
-#include <Handle_PrsMgr_PresentationManager2d.hxx>
-#include <Handle_Graphic2d_GraphicObject.hxx>
-#include <Handle_SelectMgr_Selection.hxx>
+#include <SelectMgr_Selection.hxx>
 #include <Standard_OStream.hxx>
 #include <Standard_IStream.hxx>
 #include <Standard_CString.hxx>
@@ -21,7 +19,6 @@ class TColGeom2d_HSequenceOfCurve;
 class PrsMgr_PresentationManager2d;
 class Graphic2d_GraphicObject;
 class SelectMgr_Selection;
-class ISession2D_ObjectOwner;
 
 #include "Geom2d_Curve.hxx"
 
@@ -32,81 +29,56 @@ class ISession2D_Curve : public AIS_InteractiveObject {
 
 public:
 
- // Methods PUBLIC
- // 
+  // Methods PUBLIC
+  // 
 
-         ISession2D_Curve
-                    (const Handle_Geom2d_Curve aGeom2dCurve,
-                     const Aspect_TypeOfLine aTypeOfline = Aspect_TOL_SOLID,
-                     const Aspect_WidthOfLine aWidthOfLine = Aspect_WOL_MEDIUM,
-                     const Standard_Integer aColorIndex = 4);
+  ISession2D_Curve
+    (const Handle_Geom2d_Curve aGeom2dCurve,
+    const Aspect_TypeOfLine aTypeOfline = Aspect_TOL_SOLID,
+    const Aspect_WidthOfLine aWidthOfLine = Aspect_WOL_MEDIUM,
+    const Standard_Integer aColorIndex = 4);
 
-inline   Standard_Integer        NbPossibleSelection() const;
+  inline   Standard_Integer   NbPossibleSelection() const;
 
-inline   Aspect_TypeOfLine  GetTypeOfLine
-                              () const;
-inline   void               SetTypeOfLine
-                              (const Aspect_TypeOfLine aNewTypeOfLine) ;
-inline   Aspect_WidthOfLine GetWidthOfLine
-                              () const;
-inline   void               SetWidthOfLine
-                              (const Aspect_WidthOfLine aNewWidthOfLine) ;
-inline   Standard_Integer   GetColorIndex
-                              () const;
-inline   void               SetColorIndex
-                              (const Standard_Integer aNewColorIndex) ;
+  inline   Aspect_TypeOfLine  GetTypeOfLine() const;
+  inline   void SetTypeOfLine(const Aspect_TypeOfLine aNewTypeOfLine);
 
-inline   Standard_Boolean  GetDisplayPole
-                              () const;
-inline   void               SetDisplayPole
-                              (const Standard_Boolean aNewDisplayPole) ;
+  inline   Aspect_WidthOfLine GetWidthOfLine() const;
+  inline   void SetWidthOfLine(const Aspect_WidthOfLine aNewWidthOfLine);
 
-inline   Standard_Boolean  ISession2D_Curve::GetDisplayCurbure
-                              () const;
-inline   void               ISession2D_Curve::SetDisplayCurbure
-                              (const Standard_Boolean aNewDisplayCurbure);
+  inline   Standard_Integer GetColorIndex() const;
+  inline   void SetColorIndex(const Standard_Integer aNewColorIndex) ;
 
+  inline   Standard_Boolean GetDisplayPole() const;
+  inline   void SetDisplayPole(const Standard_Boolean aNewDisplayPole) ;
 
-inline   Standard_Real  GetDiscretisation
-                              () const;
-inline   void               SetDiscretisation
-                              (const Standard_Real aNewDiscretisation) ;
+  inline   Standard_Boolean ISession2D_Curve::GetDisplayCurbure() const;
+  inline   void ISession2D_Curve::SetDisplayCurbure
+                (const Standard_Boolean aNewDisplayCurbure);
 
+  inline   Standard_Real GetDiscretisation() const;
+  inline   void SetDiscretisation(const Standard_Real aNewDiscretisation) ;
 
-DEFINE_STANDARD_RTTI(ISession2D_Curve)
-
-
-protected:
-
- // Methods PROTECTED
- // 
-
-
- // Fields PROTECTED
- //
-
+  DEFINE_STANDARD_RTTI(ISession2D_Curve)
 
 private: 
 
- // Methods PRIVATE
- // 
-virtual  void Compute(const Handle(PrsMgr_PresentationManager2d)& aPresentationManager,const Handle(Graphic2d_GraphicObject)& aGrObj,const Standard_Integer aMode = 0) ;
-void ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,const Standard_Integer aMode) ;
+  // Methods PRIVATE
+  // 
+  virtual  void Compute(const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,const Handle(Prs3d_Presentation)& aPresentation,const Standard_Integer aMode = 0) ;
+  void ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,const Standard_Integer aMode) ;
 
-
- // Fields PRIVATE
- //
-Handle_Geom2d_Curve myGeom2dCurve;
-Aspect_TypeOfLine   myTypeOfLine;
-Aspect_WidthOfLine  myWidthOfLine;
-Standard_Integer    myColorIndex;
-Standard_Boolean    myDisplayPole;
-Standard_Boolean    myDisplayCurbure;
-Standard_Real       myDiscretisation;
-Standard_Real       myradiusmax ;
-Standard_Real       myradiusratio ;
-
-
+  // Fields PRIVATE
+  //
+  Handle_Geom2d_Curve myGeom2dCurve;
+  Aspect_TypeOfLine   myTypeOfLine;
+  Aspect_WidthOfLine  myWidthOfLine;
+  Standard_Integer    myColorIndex;
+  Standard_Boolean    myDisplayPole;
+  Standard_Boolean    myDisplayCurbure;
+  Standard_Real       myDiscretisation;
+  Standard_Real       myradiusmax ;
+  Standard_Real       myradiusratio ;
 };
 
 
@@ -116,14 +88,14 @@ Standard_Real       myradiusratio ;
 
 inline   Standard_Integer  ISession2D_Curve::NbPossibleSelection() const
 {
-return 1;
+  return 1;
 }
 
 inline  Aspect_TypeOfLine ISession2D_Curve::GetTypeOfLine() const
 {
   return myTypeOfLine ;
 }
- 
+
 inline  void ISession2D_Curve::SetTypeOfLine(const Aspect_TypeOfLine aNewTypeOfLine) 
 {
   myTypeOfLine = aNewTypeOfLine;
@@ -150,37 +122,37 @@ inline  void ISession2D_Curve::SetColorIndex(const Standard_Integer aNewColorInd
 }
 
 inline   Standard_Boolean  ISession2D_Curve::GetDisplayPole
-                              () const
+() const
 {
-return myDisplayPole;
+  return myDisplayPole;
 }
 inline   void               ISession2D_Curve::SetDisplayPole
-                              (const Standard_Boolean aNewDisplayPole)
+(const Standard_Boolean aNewDisplayPole)
 {
-myDisplayPole = aNewDisplayPole;
+  myDisplayPole = aNewDisplayPole;
 }
 
 inline   Standard_Boolean  ISession2D_Curve::GetDisplayCurbure
-                              () const
+() const
 {
-return myDisplayCurbure;
+  return myDisplayCurbure;
 }
 inline   void               ISession2D_Curve::SetDisplayCurbure
-                              (const Standard_Boolean aNewDisplayCurbure)
+(const Standard_Boolean aNewDisplayCurbure)
 {
-myDisplayCurbure = aNewDisplayCurbure;
+  myDisplayCurbure = aNewDisplayCurbure;
 }
 
- 
+
 inline   Standard_Real  ISession2D_Curve::GetDiscretisation
-                              () const
+() const
 {
-return myDiscretisation;
+  return myDiscretisation;
 }
 inline   void               ISession2D_Curve::SetDiscretisation
-                              (const Standard_Real aNewDiscretisation) 
+(const Standard_Real aNewDiscretisation) 
 {
-myDiscretisation = aNewDiscretisation;
+  myDiscretisation = aNewDiscretisation;
 }
 
 

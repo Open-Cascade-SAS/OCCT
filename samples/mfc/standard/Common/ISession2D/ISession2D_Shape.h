@@ -6,12 +6,9 @@
 #include "TopoDS_Shape.hxx"
 
 #include "SelectMgr_SelectableObject.hxx"  
-#include "SelectMgr_SelectableObject.hxx"  
+#include "Graphic3d_ArrayOfPolylines.hxx"  
 #include "AIS_InteractiveObject.hxx"  
 
-
-#include <Graphic2d_SetOfSegments.hxx>
-#include <Graphic2d_SetOfCurves.hxx>
 #include <HLRAlgo_Projector.hxx>
 #include <HLRBRep_Algo.hxx>
 #include <HLRBRep_PolyAlgo.hxx>
@@ -52,14 +49,10 @@ private:
 void BuildAlgo();
 void BuildPolyAlgo();
 
+void DrawCompound(const Handle(Prs3d_Presentation)& thePresentation,const TopoDS_Shape& theCompound, const Handle(Prs3d_LineAspect) theAspect);
+
 
 Standard_EXPORT virtual  void Compute(const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,const Handle(Prs3d_Presentation)& aPresentation,const Standard_Integer aMode = 0) ;
-Standard_EXPORT virtual  void Compute(const Handle(Prs3d_Projector)& aProjector,const Handle(Prs3d_Presentation)& aPresentation) ;
-
-
-virtual void Compute(const Handle(PrsMgr_PresentationManager2d)& aPresentationManager,const Handle(Graphic2d_GraphicObject)& aGrObj,const Standard_Integer aMode = 0) ;
-virtual void DrawCompound(TopoDS_Shape& aCompound,const Handle(Graphic2d_SetOfSegments)& aSetOfSegments);
-virtual void DrawCompound(TopoDS_Shape& aCompound,const Handle(Graphic2d_SetOfCurves)& aSetOfCurves);
 
 virtual void ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,const Standard_Integer aMode) ;
 

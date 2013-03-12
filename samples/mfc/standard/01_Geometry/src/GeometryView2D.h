@@ -12,62 +12,46 @@
 #include <OCC_2dView.h>
 
 /////////////////////////////////////////////////////////////////////////////
-/*
-enum CurrentAction2d { 
-  CurAction_Nothing,
-  CurAction_DynamicZooming,
-  CurAction_WindowZooming,
-  CurAction_DynamicPanning,
-  CurAction_GlobalPanning,
-};
-*/
+
 #define ValZWMin 1
-
-
 
 class CGeometryView2D : public OCC_2dView
 {
 protected: // create from serialization only
-	CGeometryView2D();
-	DECLARE_DYNCREATE(CGeometryView2D)
+  CGeometryView2D();
+  DECLARE_DYNCREATE(CGeometryView2D)
 
-// Attributes
+  // Attributes
 public:
-	CGeometryDoc* GetDocument();
+  CGeometryDoc* GetDocument();
 public:
-
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CNSGViewBib)
-	public:
-	virtual void OnDraw(CDC* pDC);  // overridden to draw this view
-	virtual void OnInitialUpdate(); // called first time after construct
-
-	//}}AFX_VIRTUAL
-
-
-
-// Implementation
+  // Overrides
+  // ClassWizard generated virtual function overrides
 public:
-	virtual ~CGeometryView2D();
+  virtual void OnDraw(CDC* pDC);  // overridden to draw this view
+  virtual void OnInitialUpdate(); // called first time after construct
+
+  // Implementation
+public:
+  virtual ~CGeometryView2D();
 #ifdef _DEBUG
-	virtual void AssertValid() const;
-	virtual void Dump(CDumpContext& dc) const;
+  virtual void AssertValid() const;
+  virtual void Dump(CDumpContext& dc) const;
 #endif
 
-// Generated message map functions
+  // Generated message map functions
 protected:
-	//{{AFX_MSG(CGeometryView2D)
-	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-	afx_msg void OnMButtonDown(UINT nFlags, CPoint point);
-	afx_msg void OnMButtonUp(UINT nFlags, CPoint point);
-	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
-	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
-	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-	afx_msg void OnSize(UINT nType, int cx, int cy);
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+  //{{AFX_MSG(CGeometryView2D)
+  afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+  afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+  afx_msg void OnMButtonDown(UINT nFlags, CPoint point);
+  afx_msg void OnMButtonUp(UINT nFlags, CPoint point);
+  afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
+  afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
+  afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+  afx_msg void OnSize(UINT nType, int cx, int cy);
+  //}}AFX_MSG
+  DECLARE_MESSAGE_MAP()
 };
 
 #ifndef _DEBUG  // debug version in NSGViewBibliotheque.cpp

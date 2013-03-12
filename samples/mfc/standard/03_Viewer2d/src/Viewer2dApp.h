@@ -8,18 +8,20 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include <OCC_2dApp.h>
+#include <OCC_App.h>
 
-class CViewer2dApp : public OCC_2dApp
+class CViewer2dApp : public OCC_App
 {
 public:
-	CViewer2dApp();
+
+  CViewer2dApp();
+
 // Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CViewer2dApp)
-	public:
-	virtual BOOL InitInstance();
-	//}}AFX_VIRTUAL
+  // ClassWizard generated virtual function overrides
+  //{{AFX_VIRTUAL(CViewer2dApp)
+  public:
+  virtual BOOL InitInstance();
+  //}}AFX_VIRTUAL
 };
 
 

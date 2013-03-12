@@ -15,6 +15,12 @@
 win32
 win64
 
+# standard names of directories for objects and binaries for samples
+bin
+obj
+Debug
+Release
+
 # project files and artifacts
 /adm/msvc
 /adm/wnt
@@ -23,6 +29,7 @@ win64
 /adm/make
 /adm/cmake
 *.vcproj*user
+*.csproj*user
 *.ncb
 *.suo
 *.sdf

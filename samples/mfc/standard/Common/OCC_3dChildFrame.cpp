@@ -33,19 +33,19 @@ OCC_3dChildFrame::~OCC_3dChildFrame()
 
 int OCC_3dChildFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) 
 {
-	if (CMDIChildWnd::OnCreate(lpCreateStruct) == -1)
-		return -1;
-	
-	if (!m_wndToolBar.Create(this) || !m_wndToolBar.LoadToolBar(IDR_3dCHILDFRAME))
-	{
-		TRACE0("Failed to create toolbar\n");
-		return -1; // fail to create
-	}
+  if (CMDIChildWnd::OnCreate(lpCreateStruct) == -1)
+    return -1;
 
-	m_wndToolBar.SetBarStyle(m_wndToolBar.GetBarStyle() | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC);
-	m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
-	EnableDocking(CBRS_ALIGN_ANY);
-	DockControlBar(&m_wndToolBar);
-	
-	return 0;
+  if (!m_wndToolBar.Create(this) || !m_wndToolBar.LoadToolBar(IDR_3dCHILDFRAME))
+  {
+    TRACE0("Failed to create toolbar\n");
+    return -1; // fail to create
+  }
+
+  m_wndToolBar.SetBarStyle(m_wndToolBar.GetBarStyle() | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC);
+  m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
+  EnableDocking(CBRS_ALIGN_ANY);
+  DockControlBar(&m_wndToolBar);
+
+  return 0;
 }

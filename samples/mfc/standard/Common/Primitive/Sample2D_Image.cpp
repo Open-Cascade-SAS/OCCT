@@ -1,92 +1,44 @@
 #include "stdafx.h"
 
 #include "Sample2D_Image.h"
-#include <Graphic2d_View.hxx>
 
-IMPLEMENT_STANDARD_HANDLE(Sample2D_Image,AIS2D_InteractiveObject)
-IMPLEMENT_STANDARD_RTTIEXT(Sample2D_Image,AIS2D_InteractiveObject)
+IMPLEMENT_STANDARD_HANDLE(Sample2D_Image,AIS_TexturedShape)
+IMPLEMENT_STANDARD_RTTIEXT(Sample2D_Image,AIS_TexturedShape)
 
-#include <Graphic2d_ImageFile.hxx>
-Sample2D_Image::Sample2D_Image(OSD_File& aFile,
-                               const Quantity_Length X,       // = 0.0
-                               const Quantity_Length Y,       // = 0.0
-                               const Quantity_Length adx,     // = 0.0
-                               const Quantity_Length ady,     // = 0.0
-                               const Aspect_CardinalPoints aTypeOfPlacement,// = Aspect_CP_Center
-                               const Quantity_Factor aScale)  // = 1.0
-    :AIS2D_InteractiveObject()
+Sample2D_Image::Sample2D_Image(TCollection_AsciiString& aFileName,
+                               const Quantity_Length X,
+                               const Quantity_Length Y,
+                               const Quantity_Factor aScale)
+    :AIS_TexturedShape(TopoDS_Shape())
 {
-
-  myFile            = aFile            ;
-  myX               = X                ;
-  myY               = Y                ;
-  myDx              = adx              ;  
-  myDy              = ady              ;     
-  myTypeOfPlacement = aTypeOfPlacement ;
-  myScale           = aScale           ;
-
+  myFilename = aFileName;
+  myX = X;
+  myY = Y;  
+  myScale = aScale;
+}
+void Sample2D_Image::MakeShape()
+{
+  Handle(Graphic3d_Texture1D) anImageTexture = 
+    new Graphic3d_Texture1Dsegment(myFilename);
+  Standard_Real coeff = (Standard_Real)(anImageTexture->GetImage()->Height())/
+    (anImageTexture->GetImage()->Width())*myScale;
+  TopoDS_Edge E1 = BRepBuilderAPI_MakeEdge(gp_Pnt(myX,myY,0.), gp_Pnt(100*myScale+myX,myY,0.));
+  TopoDS_Edge E2 = BRepBuilderAPI_MakeEdge(gp_Pnt(100*myScale+myX,myY,0.), gp_Pnt(100*myScale+myX,100*coeff+myY,0.));
+  TopoDS_Edge E3 = BRepBuilderAPI_MakeEdge(gp_Pnt(100*myScale+myX,100*coeff+myY,0.), gp_Pnt(myX,100*coeff+myY,0.));
+  TopoDS_Edge E4 = BRepBuilderAPI_MakeEdge(gp_Pnt(myX,100*coeff+myY,0.), gp_Pnt(myX,myY,0.));
+  TopoDS_Wire anImageBounds = BRepBuilderAPI_MakeWire(E1,E2,E3,E4);
+  myFace = BRepBuilderAPI_MakeFace(gp_Pln(gp_Pnt(0,0,0),gp_Dir(0,0,1)),anImageBounds);
 }
 
-Sample2D_Image::Sample2D_Image(Standard_CString& aFileName,
-                               const Quantity_Length X,       // = 0.0
-                               const Quantity_Length Y,       // = 0.0
-                               const Quantity_Length adx,     // = 0.0
-                               const Quantity_Length ady,     // = 0.0
-                               const Aspect_CardinalPoints aTypeOfPlacement,// = Aspect_CP_Center
-                               const Quantity_Factor aScale) // = 1.0)
-    :AIS2D_InteractiveObject()
+void Sample2D_Image::SetContext(const Handle(AIS_InteractiveContext)& theContext) 
 {
-  TCollection_AsciiString TheDependentName(aFileName);
-  OSD_Path aPath(TheDependentName);
-  OSD_File aFile(aPath);
-  myFile            = aFile            ;
-  myX               = X                ;
-  myY               = Y                ;
-  myDx              = adx              ;  
-  myDy              = ady              ;     
-  myTypeOfPlacement = aTypeOfPlacement ;
-  myScale           = aScale           ;
-
-  //Attach a graphic view to this object
-}
-
-void Sample2D_Image::SetContext(const Handle(AIS2D_InteractiveContext)& theContext) 
-{
-
   if(theContext.IsNull() || theContext->CurrentViewer().IsNull()) return;
+  AIS_InteractiveObject::SetContext(theContext);
+  MakeShape();
+  this->Set(TopoDS_Shape(myFace));
+  this->SetTextureFileName(myFilename);
 
-  AIS2D_InteractiveObject::SetContext(theContext);
-  Graphic2d_GraphicObject::SetView(theContext->CurrentViewer()->View());
-
-
-  Handle(Graphic2d_ImageFile) aGraphic2dImageFile = new Graphic2d_ImageFile (
-                             this,
-			                 myFile,
-			                 myX, 
-			                 myY,
-			                 myDx,
-			                 myDy,
-			                 myTypeOfPlacement,
-			                 myScale); 
-  if (myIsZoomable)
-    aGraphic2dImageFile->SetZoomable(Standard_True);
 }
-
-Standard_CString Sample2D_Image::GetFileName() const
-{
-  static OSD_Path aPath;
-  myFile.Path(aPath);
-  return aPath.Name().ToCString();
-}
-
-void Sample2D_Image::SetFileName(const Standard_CString aFileName) 
-{
-  TCollection_AsciiString TheDependentName(aFileName);
-  OSD_Path aPath(TheDependentName);
-  OSD_File aFile(aPath);
-  myFile = aFile;
-}
-
 
 
 

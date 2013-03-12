@@ -122,22 +122,19 @@ void CSelectionDialog::OnDisplay(bool isFit)
 {
 	GetDlgItem(IDC_DUMMYBUTTON)->SetRedraw(true);
 	if(!myDisplay) {
-	    Handle(Graphic3d_WNTGraphicDevice) theGraphicDevice = 
-			((CHLRApp*)AfxGetApp())->GetGraphicDevice();
+	    Handle(Graphic3d_GraphicDriver) aGraphicDriver = 
+			((CHLRApp*)AfxGetApp())->GetGraphicDriver();
 
-		myActiveViewer = new V3d_Viewer(theGraphicDevice,(short *) "Visu3D");
+		myActiveViewer = new V3d_Viewer(aGraphicDriver,(short *) "Visu3D");
 		myActiveViewer->SetDefaultLights();
 		myActiveViewer->SetLightOn();
 		myActiveView = myActiveViewer->CreateView();
 
-		Handle(WNT_Window) aWNTWindow = new WNT_Window(theGraphicDevice,
-								       GetDlgItem(IDC_DUMMYBUTTON)->GetSafeHwnd(),
-				                       Quantity_NOC_GRAY);
+		Handle(WNT_Window) aWNTWindow = new WNT_Window(GetDlgItem(IDC_DUMMYBUTTON)->GetSafeHwnd(),
+				                                          Quantity_NOC_GRAY);
 
-	    aWNTWindow->SetDoubleBuffer(Standard_False);
-
-	    if (m_DegeneratedModeOn) myActiveView->SetDegenerateModeOn();
-		myActiveView->SetWindow(aWNTWindow);
+	  if (m_DegeneratedModeOn) myActiveView->SetDegenerateModeOn();
+		  myActiveView->SetWindow(aWNTWindow);
 
 		myInteractiveContext = new AIS_InteractiveContext(myActiveViewer);
 
@@ -210,7 +207,7 @@ void CSelectionDialog::OnGetShape()
 void CSelectionDialog::Apply() 
 {
   SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-  myDoc->GetInteractiveContext2D()->EraseAll(Standard_False);
+  myDoc->GetInteractiveContext2D()->EraseAll(/*Standard_False*/);
   UpdateData(true);
 
   Standard_Integer DisplayMode = m_DisplayMode;
@@ -312,108 +309,112 @@ void CSelectionDialog::OnHApparentContour()
 { Apply(); }
 
 void CSelectionDialog::OnChangeEDITNBIsos() 
-{ 
-	UpdateData(true);
-	myDisplayableShape->SetNbIsos(m_NbIsos);
-	Apply(); 
+{
+  UpdateData(true);
+  myDisplayableShape->SetNbIsos(m_NbIsos);
+  Apply(); 
 }
 void CSelectionDialog::OnAlgo() 
-{ ShowHideButton();
+{
+  ShowHideButton();
   Apply();
 }
 
 void CSelectionDialog::OnPolyAlgo() 
-{ ShowHideButton();	
+{
+  ShowHideButton();
   Apply();
 }
 
 void CSelectionDialog::OnDrawHiddenLine() 
 {
   UpdateData(true);
-  if (m_DisplayMode >=6 ) 
-  { m_DisplayMode=0;
-    UpdateData(false); }
-  ShowHideButton();	
-  Apply();	
+  if(m_DisplayMode >=6 )
+  {
+    m_DisplayMode=0;
+    UpdateData(false);
+  }
+  ShowHideButton();
+  Apply();
 }
 
 void CSelectionDialog::OnUpdate2D() 
 {
-    SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-    myDoc->ActivateFrame(RUNTIME_CLASS(OCC_2dView),SW_NORMAL);
-    UpdateProjector();
-	Apply();                                        
-    SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
+  SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
+  myDoc->ActivateFrame(RUNTIME_CLASS(OCC_2dView),SW_NORMAL);
+  UpdateProjector();
+  Apply();                                        
+  SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 }
 
 void CSelectionDialog::OnTopView() 
 {
-    myActiveView->SetProj(V3d_Zpos);
-	OnDisplay(true);
+  myActiveView->SetProj(V3d_Zpos);
+  OnDisplay(true);
 }
 
 void CSelectionDialog::OnBottomView() 
 {
-    myActiveView->SetProj(V3d_Zneg);
-	OnDisplay(true);
+  myActiveView->SetProj(V3d_Zneg);
+  OnDisplay(true);
 }
 
 void CSelectionDialog::OnLeftView() 
 {
-    myActiveView->SetProj(V3d_Ypos);
-	OnDisplay(true);
+  myActiveView->SetProj(V3d_Ypos);
+  OnDisplay(true);
 }
 
 void CSelectionDialog::OnRightView() 
 {
-    myActiveView->SetProj(V3d_Yneg);
-	OnDisplay(true);
+  myActiveView->SetProj(V3d_Yneg);
+  OnDisplay(true);
 }
 
 void CSelectionDialog::OnFrontView() 
 {
-    myActiveView->SetProj(V3d_Xpos);
-	OnDisplay(true);
+  myActiveView->SetProj(V3d_Xpos);
+  OnDisplay(true);
 }
 
 void CSelectionDialog::OnBackView() 
 {
-    myActiveView->SetProj(V3d_Xneg);
-	OnDisplay(true);
+  myActiveView->SetProj(V3d_Xneg);
+  OnDisplay(true);
 }
 
 void CSelectionDialog::OnAxoView() 
 {
-    myActiveView->SetProj(V3d_XposYnegZpos);
-	OnDisplay(true);
+  myActiveView->SetProj(V3d_XposYnegZpos);
+  OnDisplay(true);
 }
 
 void CSelectionDialog::OnDegeneratedMode() 
 {
-	UpdateData(true);
+  UpdateData(true);
 
-    if(m_DegeneratedModeOn)
-    {
-	  myActiveView->SetDegenerateModeOn();
-	  m_DegeneratedModeOn = Standard_True;
-    }
-    else
-    {
-      SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-	  myActiveView->SetDegenerateModeOff();
-	  m_DegeneratedModeOn = Standard_False;
-      SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
-    }
-	OnDisplay(false);
+  if(m_DegeneratedModeOn)
+  {
+    myActiveView->SetDegenerateModeOn();
+    m_DegeneratedModeOn = Standard_True;
+  }
+  else
+  {
+    SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
+    myActiveView->SetDegenerateModeOff();
+    m_DegeneratedModeOn = Standard_False;
+    SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
+  }
+  OnDisplay(false);
 }
 
 void CSelectionDialog::OnLButtonDown(UINT nFlags, CPoint point) 
 {
-	CDialog::OnLButtonDown(nFlags, point);
+  CDialog::OnLButtonDown(nFlags, point);
 
-	if ((myPosMinX > point.x)||(myPosMaxX < point.x) ||
-		(myPosMinY > point.y) ||(myPosMaxY < point.y))
-		return;
+  if ((myPosMinX > point.x)||(myPosMaxX < point.x) ||
+    (myPosMinY > point.y) ||(myPosMaxY < point.y))
+    return;
 
   //  save the current mouse coordinate
   myXmax=point.x;  myYmax=point.y;
@@ -421,91 +422,88 @@ void CSelectionDialog::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CSelectionDialog::OnLButtonUp(UINT nFlags, CPoint point) 
 {
-	CDialog::OnLButtonUp(nFlags, point);
+  CDialog::OnLButtonUp(nFlags, point);
 
-	if ((myPosMinX > point.x)||(myPosMaxX < point.x) ||
-		(myPosMinY > point.y) ||(myPosMaxY < point.y))
-		return;
+  if ((myPosMinX > point.x)||(myPosMaxX < point.x) ||
+    (myPosMinY > point.y) ||(myPosMaxY < point.y))
+    return;
 }
 
 void CSelectionDialog::OnRButtonDown(UINT nFlags, CPoint point) 
 {
-	CDialog::OnRButtonDown(nFlags, point);
+  CDialog::OnRButtonDown(nFlags, point);
 
-	if ((myPosMinX > point.x)||(myPosMaxX < point.x) ||
-		(myPosMinY > point.y) ||(myPosMaxY < point.y))
-		return;
+  if ((myPosMinX > point.x)||(myPosMaxX < point.x) ||
+    (myPosMinY > point.y) ||(myPosMaxY < point.y))
+    return;
 
-   if ( nFlags & CASCADESHORTCUTKEY ) 
-	  {
-	    if (!m_DegeneratedModeOn)
-	      myActiveView->SetDegenerateModeOn();
-	    myActiveView->StartRotation(point.x,point.y);  
-		OnDisplay(false);
-	  }
+  if ( nFlags & CASCADESHORTCUTKEY ) 
+  {
+    if (!m_DegeneratedModeOn)
+      myActiveView->SetDegenerateModeOn();
+    myActiveView->StartRotation(point.x,point.y);  
+    OnDisplay(false);
+  }
 }
 
 void CSelectionDialog::OnRButtonUp(UINT nFlags, CPoint point) 
 {
-	CDialog::OnRButtonUp(nFlags, point);
+  CDialog::OnRButtonUp(nFlags, point);
 
-	if ((myPosMinX > point.x)||(myPosMaxX < point.x) ||
-		(myPosMinY > point.y) ||(myPosMaxY < point.y))
-		return;
+  if ((myPosMinX > point.x)||(myPosMaxX < point.x) ||
+    (myPosMinY > point.y) ||(myPosMaxY < point.y))
+    return;
 
-    SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-    // reset tyhe good Degenerated mode according to the strored one
-    //   --> dynamic rotation may have change it 
-    if (!m_DegeneratedModeOn)  
-      myActiveView->SetDegenerateModeOff();
-     else
-      myActiveView->SetDegenerateModeOn();
-    OnDisplay(false);
-    SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
+  SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
+  // reset tyhe good Degenerated mode according to the strored one
+  //   --> dynamic rotation may have change it 
+  if (!m_DegeneratedModeOn)  
+    myActiveView->SetDegenerateModeOff();
+  else
+    myActiveView->SetDegenerateModeOn();
+  OnDisplay(false);
+  SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 }
 
 void CSelectionDialog::OnMouseMove(UINT nFlags, CPoint point) 
 {
-	CDialog::OnMouseMove(nFlags, point);
+  CDialog::OnMouseMove(nFlags, point);
 
-	if ((myPosMinX > point.x)||(myPosMaxX < point.x) ||
-		(myPosMinY > point.y) ||(myPosMaxY < point.y))
-		return;
+  if ((myPosMinX > point.x)||(myPosMaxX < point.x) ||
+    (myPosMinY > point.y) ||(myPosMaxY < point.y))
+    return;
 
-    //   ============================  LEFT BUTTON =======================
   if ( nFlags & MK_LBUTTON)
+  {//left button
+    if ( nFlags & CASCADESHORTCUTKEY ) 
     {
-     if ( nFlags & CASCADESHORTCUTKEY ) 
-	  {
-	    // move with MB1 and Control : on the dynamic zooming  
-	    // Do the zoom in function of mouse's coordinates  
-	    myActiveView->Zoom(myXmax,myYmax,point.x,point.y); 
-	    // save the current mouse coordinate 
-		myXmax = point.x;    myYmax = point.y;	
-      }// if ( nFlags & CASCADESHORTCUTKEY )  else 
-    } else //   if ( nFlags & MK_LBUTTON) 
-    //   ============================  MIDDLE BUTTON =======================
-    if ( nFlags & MK_MBUTTON)
+      // move with MB1 and Control : on the dynamic zooming  
+      // Do the zoom in function of mouse's coordinates  
+      myActiveView->Zoom(myXmax,myYmax,point.x,point.y); 
+      // save the current mouse coordinate 
+      myXmax = point.x;    myYmax = point.y;	
+    }// if ( nFlags & CASCADESHORTCUTKEY )  else 
+  }
+  else if ( nFlags & MK_MBUTTON)
+  {
+    if ( nFlags & CASCADESHORTCUTKEY ) 
     {
-     if ( nFlags & CASCADESHORTCUTKEY ) 
-	  {
-		myActiveView->Pan(point.x-myXmax,myYmax-point.y); // Realize the panning
-		myXmax = point.x; myYmax = point.y;	
-	  }
-    } else //  if ( nFlags & MK_MBUTTON)
-    //   ============================  RIGHT BUTTON =======================
-    if ( nFlags & MK_RBUTTON)
+      myActiveView->Pan(point.x-myXmax,myYmax-point.y); // Realize the panning
+      myXmax = point.x; myYmax = point.y;	
+    }
+  }
+  else if ( nFlags & MK_RBUTTON)
+  {//right button
+    if ( nFlags & CASCADESHORTCUTKEY ) 
     {
-     if ( nFlags & CASCADESHORTCUTKEY ) 
-	  {
-      	 myActiveView->Rotation(point.x,point.y);
-	  }
-    } else //if ( nFlags & MK_RBUTTON)
-    //   ============================  NO BUTTON =======================
-    {  // No buttons 
-	  myXmax = point.x; myYmax = point.y;	
-   }
-	OnDisplay(false);
+      myActiveView->Rotation(point.x,point.y);
+    }
+  } 
+  else
+  {// No buttons 
+    myXmax = point.x; myYmax = point.y;	
+  }
+  OnDisplay(false);
 }
 
 void CSelectionDialog::OnOK() 
@@ -515,7 +513,6 @@ void CSelectionDialog::OnOK()
 
 void CSelectionDialog::OnPaint() 
 {
-	CPaintDC dc(this); // device context for painting
-	
-	OnDisplay(false);
+  CPaintDC dc(this); // device context for painting
+  OnDisplay(false);
 }

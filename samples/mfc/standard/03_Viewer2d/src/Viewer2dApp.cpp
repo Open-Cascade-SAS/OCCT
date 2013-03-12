@@ -19,11 +19,10 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CViewer2dApp construction
 
-CViewer2dApp::CViewer2dApp()
+CViewer2dApp::CViewer2dApp() : OCC_App()
 {
-	SampleName = "Viewer2d";	//for about dialog
+  SampleName = "Viewer2d"; //for about dialog
 }
-
 
 /////////////////////////////////////////////////////////////////////////////
 // The one and only CViewer2dApp object

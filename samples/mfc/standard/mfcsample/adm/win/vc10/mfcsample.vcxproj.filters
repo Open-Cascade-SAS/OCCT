@@ -45,9 +45,6 @@
     <ClCompile Include="..\..\..\src\mfcsample.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Common\OCC_2dApp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Common\OCC_2dChildFrame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -55,9 +52,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Common\OCC_2dView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Common\OCC_3dApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Common\OCC_3dBaseDoc.cpp">
@@ -72,7 +66,7 @@
     <ClCompile Include="..\..\..\..\Common\OCC_3dView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Common\OCC_BaseApp.cpp">
+    <ClCompile Include="..\..\..\..\Common\OCC_App.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Common\OCC_BaseChildFrame.cpp">
@@ -111,32 +105,17 @@
     <ClCompile Include="..\..\..\..\Common\Resource2D\RectangularGrid.cpp">
       <Filter>Source Files\Resource2D-src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Common\Primitive\Sample2D_Curve.cpp">
-      <Filter>Source Files\Primitive-src</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Common\Primitive\Sample2D_Face.cpp">
       <Filter>Source Files\Primitive-src</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Common\Primitive\Sample2D_Image.cpp">
       <Filter>Source Files\Primitive-src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Common\Primitive\Sample2D_Line.cpp">
-      <Filter>Source Files\Primitive-src</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Common\Primitive\Sample2D_Markers.cpp">
-      <Filter>Source Files\Primitive-src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Common\Primitive\Sample2D_Rectagle.cpp">
       <Filter>Source Files\Primitive-src</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Common\Primitive\Sample2D_Text.cpp">
       <Filter>Source Files\Primitive-src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Common\ISession2D\ISession2D_InteractiveContext.cpp">
-      <Filter>Source Files\ISession2D-src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Common\ISession2D\ISession2D_ObjectOwner.cpp">
-      <Filter>Source Files\ISession2D-src</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Common\ISession2D\ISession2D_Shape.cpp">
       <Filter>Source Files\ISession2D-src</Filter>
@@ -154,9 +133,6 @@
     <ClInclude Include="..\..\..\..\Common\ImportExport\ImportExport.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Common\OCC_2dApp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\Common\OCC_2dChildFrame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -164,9 +140,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Common\OCC_2dView.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Common\OCC_3dApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Common\OCC_3dBaseDoc.h">
@@ -181,7 +154,7 @@
     <ClInclude Include="..\..\..\..\Common\OCC_3dView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Common\OCC_BaseApp.h">
+    <ClInclude Include="..\..\..\..\Common\OCC_App.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Common\OCC_BaseChildFrame.h">
@@ -223,32 +196,17 @@
     <ClInclude Include="..\..\..\..\Common\Resource2D\RectangularGrid.h">
       <Filter>Header Files\Resource2D-headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Common\Primitive\Sample2D_Curve.h">
-      <Filter>Header Files\Primitive-headers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\Common\Primitive\Sample2D_Face.h">
       <Filter>Header Files\Primitive-headers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Common\Primitive\Sample2D_Image.h">
       <Filter>Header Files\Primitive-headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Common\Primitive\Sample2D_Line.h">
-      <Filter>Header Files\Primitive-headers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\Common\Primitive\Sample2D_Markers.h">
-      <Filter>Header Files\Primitive-headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Common\Primitive\Sample2D_Rectangle.h">
       <Filter>Header Files\Primitive-headers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Common\Primitive\Sample2D_Text.h">
       <Filter>Header Files\Primitive-headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Common\ISession2D\ISession2D_InteractiveContext.h">
-      <Filter>Header Files\ISession2D-headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Common\ISession2D\ISession2D_ObjectOwner.h">
-      <Filter>Header Files\ISession2D-headers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Common\ISession2D\ISession2D_Shape.h">
       <Filter>Header Files\ISession2D-headers</Filter>

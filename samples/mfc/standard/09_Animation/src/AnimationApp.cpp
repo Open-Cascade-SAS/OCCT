@@ -11,7 +11,7 @@
 #include "AnimationView3D.h"
 #include "..\..\Common\res\OCC_Resource.h"
 
-BEGIN_MESSAGE_MAP(CAnimationApp, OCC_3dApp)
+BEGIN_MESSAGE_MAP(CAnimationApp, OCC_App)
 	//{{AFX_MSG_MAP(CAnimationApp)
 	ON_COMMAND(ID_APP_ABOUT, OnAppAbout)
 		// NOTE - the ClassWizard will add and remove mapping macros here.
@@ -23,9 +23,9 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CAnimationApp construction
 
-CAnimationApp::CAnimationApp()
+CAnimationApp::CAnimationApp() : OCC_App()
 {
-	SampleName = "Animation";		//for about dialog
+  SampleName = "Animation"; //for about dialog
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -92,7 +92,7 @@ void CAnimationApp::OnAppAbout()
 	CMDIChildWnd *pChild =  (CMDIChildWnd *) pFrame->GetActiveFrame();
 	CAnimationView3D *pView = (CAnimationView3D *) pChild->GetActiveView();
 	pView -> OnStop();
-	OCC_3dApp::OnAppAbout();
+	OCC_App::OnAppAbout();
 	pView -> OnRestart();
 }
 
