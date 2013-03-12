@@ -337,14 +337,6 @@ void TopOpeBRep_EdgesFiller::SetShapeTransition(const TopOpeBRep_Point2d& P2D,
     if ( ! myE2.IsNull() ) T1.Index(ie2);
     if ( ! myE1.IsNull() ) T2.Index(ie1);
   }
-  else if (pointofsegment && !esd) {
-    T1.ShapeBefore(TopAbs_FACE);T1.ShapeAfter(TopAbs_FACE);
-    T2.ShapeBefore(TopAbs_FACE);T2.ShapeAfter(TopAbs_FACE);
-    if ( ! myF1.IsNull() ) if1 = myPDS->AddShape(myF1,1);
-    if ( ! myF2.IsNull() ) if2 = myPDS->AddShape(myF2,2);
-    if ( ! myF1.IsNull() ) T2.Index(if1);
-    if ( ! myF2.IsNull() ) T1.Index(if2);
-  }
   else {
     T1.ShapeBefore(TopAbs_FACE);T1.ShapeAfter(TopAbs_FACE);
     T2.ShapeBefore(TopAbs_FACE);T2.ShapeAfter(TopAbs_FACE);
