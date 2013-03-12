@@ -1,0 +1,28 @@
+puts "========="
+puts "OCC22027"
+puts "========="
+puts ""
+###########################################################
+# Bop command between two faces raises exception
+###########################################################
+
+circle c 0 0 0 25
+ellipse e 0 0 0 25 10
+mkedge c c
+mkedge e e
+wire w1 c
+wire w2 e
+mkplane f1 w1
+mkplane f2 w2
+bop f1 f2
+bopcut result
+
+set square 1178.1
+set nb_v_good 2
+set nb_e_good 4
+set nb_w_good 2
+set nb_f_good 2
+
+set 2dviewer 0
+
+
