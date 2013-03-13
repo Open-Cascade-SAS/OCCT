@@ -67,10 +67,10 @@ static Standard_Integer order(const Adaptor3d_Curve& C)
     return 5;
 
   case GeomAbs_BezierCurve :
-    return Min(24, 2*C.Bezier()->Degree());
+    return Min(24, 2*C.Degree());
 
   case GeomAbs_BSplineCurve :
-    return Min(24, 2*C.BSpline()->NbPoles()-1);
+    return Min(24, 2*C.NbPoles()-1);
     
     default :
       return 10;
