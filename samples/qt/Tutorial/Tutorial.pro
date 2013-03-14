@@ -1,16 +1,31 @@
 TEMPLATE = app
 CONFIG += debug_and_release qt
+QT += qt3support
 
 TARGET = Tutorial
 
-HEADERS = src/*.h
-SOURCES = src/*.cxx
+SAMPLESROOT = $$(CASROOT)/samples/qt
 
+HEADERS   = src/*.h \
+            $${SAMPLESROOT}/Common/src/*.h \
+            $${SAMPLESROOT}/Interface/src/*.h
 
-TS_FILES = ./src/Common-icon.ts \
-           ./src/Common-string.ts \
-           ./src/Tutorial-icon.ts \
-	   ./src/Tutorial-string.ts
+SOURCES   = src/*.cxx \
+            $${SAMPLESROOT}/Common/src/*.cxx \
+            $${SAMPLESROOT}/Interface/src/*.cxx
+
+TS_FILES  = $${SAMPLESROOT}/Common/src/Common-icon.ts \
+            $${SAMPLESROOT}/Common/src/Common-string.ts \
+            ./src/Tutorial-icon.ts \
+            ./src/Tutorial-string.ts
+
+RES_FILES = $${SAMPLESROOT}/Common/res/* \
+            ./res/*
+
+RES_DIR   = $$quote($$(RES_DIR))
+
+INCLUDEPATH += $$quote($${SAMPLESROOT}/Common/src)
+INCLUDEPATH += $$quote($${SAMPLESROOT}/Interface/src)
 
 DEFINES = CSFDB
 
@@ -157,16 +172,34 @@ win32 {
     DEFINES +=WNT WIN32 NO_COMMONSAMPLE_EXPORTS NO_IESAMPLE_EXPORTS
 }
 
-LIBS += -lTKernel -lPTKernel -lTKMath -lTKService -lTKV3d -lTKV2d \
+LIBS += -lTKernel -lPTKernel -lTKMath -lTKService -lTKV3d \
         -lTKBRep -lTKIGES -lTKSTL -lTKVRML -lTKSTEP -lTKSTEPAttr -lTKSTEP209 \
         -lTKSTEPBase -lTKShapeSchema -lTKGeomBase -lTKGeomAlgo -lTKG3d -lTKG2d \
         -lTKXSBase -lTKPShape -lTKShHealing -lTKHLR -lTKTopAlgo -lTKMesh -lTKPrim \
         -lTKCDF -lTKBool -lTKBO -lTKFillet -lTKOffset \
 
+!exists($${RES_DIR}) {
+    win32 {
+        system(mkdir $${RES_DIR})
+    } else {
+        system(mkdir -p $${RES_DIR})
+    }
+}
+
 lrelease.name = LRELEASE ${QMAKE_FILE_IN}
-lrelease.commands = lrelease ${QMAKE_FILE_IN} -qm ./res/${QMAKE_FILE_BASE}.qm
-lrelease.output = ./res/${QMAKE_FILE_BASE}.qm
+lrelease.commands = lrelease ${QMAKE_FILE_IN} -qm $${RES_DIR}/${QMAKE_FILE_BASE}.qm
+lrelease.output = ${QMAKE_FILE_BASE}.qm
 lrelease.input = TS_FILES
-lrelease.clean = ./res/${QMAKE_FILE_BASE}.qm
+lrelease.clean = $${RES_DIR}/${QMAKE_FILE_BASE}.qm
 lrelease.CONFIG += no_link target_predeps
 QMAKE_EXTRA_COMPILERS += lrelease
+
+copy_res.name = Copy resource ${QMAKE_FILE_IN}
+copy_res.output = ${QMAKE_FILE_BASE}${QMAKE_FILE_EXT}
+copy_res.clean = $${RES_DIR}/${QMAKE_FILE_BASE}${QMAKE_FILE_EXT}
+copy_res.input = RES_FILES
+copy_res.CONFIG += no_link target_predeps
+win32: copy_res.commands = type ${QMAKE_FILE_IN} > $${RES_DIR}/${QMAKE_FILE_BASE}${QMAKE_FILE_EXT}
+unix:  copy_res.commands = cp -f ${QMAKE_FILE_IN} $${RES_DIR}
+QMAKE_EXTRA_COMPILERS += copy_res
+

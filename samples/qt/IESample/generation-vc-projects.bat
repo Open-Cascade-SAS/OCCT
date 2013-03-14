@@ -6,6 +6,7 @@ REM second argument specifies architecture) (win32 or win64)
 REM third argument specifies Debug or Release mode
 
 call .\..\..\..\env.bat %1 %2 %3
+call %~dp0env.bat
 
 if not "%1" == "" (
     if /I "%1" == "vc8" (

@@ -17,6 +17,10 @@ if test `uname -s` == "Darwin" && test "${WOKHOME}" == ""; then
    exit 1
 fi
 
+host=`uname -s`
+export STATION=$host
+export RES_DIR=${aSamplePath}/${STATION}/res
+
 export PATH=${QTDIR}/bin:${PATH}
 
 source $CASROOT/env.sh

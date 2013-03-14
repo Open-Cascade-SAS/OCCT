@@ -4,11 +4,6 @@ export aSamplePath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 if [ -e "${aSamplePath}/env.sh" ]; then source "${aSamplePath}/env.sh"; fi
 cd $aSamplePath
 
-host=`uname -s`
-STATION=$host
-
-RES_DIR="${aSamplePath}/res"
-
 aSystem=`uname -s`
 if [ "$aSystem" == "Darwin" ] && [ "$MACOSX_USE_GLX" != "true" ]; then
   if [ "${CASDEB}" == "d" ]; then
