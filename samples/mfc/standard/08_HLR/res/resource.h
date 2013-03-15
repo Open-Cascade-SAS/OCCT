@@ -1,5 +1,5 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
+// Microsoft Visual C++ generated include file.
 // Used by HLR.rc
 //
 #define ID_MENU_CASCADE_PROPERTIES      150
@@ -102,7 +102,7 @@
 #define IDC_STATIC_NbIsos               1520
 #define IDC_DrawHiddenLine              1521
 #define ID_Update2D                     1522
-#define IDC_DegeneratedMode             1523
+#define IDC_HlrModeIsOn                 1523
 #define IDC_TopView                     1529
 #define IDC_DUMMYBUTTON                 1530
 #define IDC_BottomView                  1531
@@ -112,6 +112,7 @@
 #define IDC_FrontView                   1535
 #define IDC_AxoView                     1536
 #define ID_BUTTON_HLRDialog             32795
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

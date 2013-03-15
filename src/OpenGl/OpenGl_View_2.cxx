@@ -637,13 +637,6 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
                           const Aspect_CLayer2d& ACUnderLayer,
                           const Aspect_CLayer2d& ACOverLayer)
 {
-  // Reset FLIST status after modification of myBackfacing
-  if (myResetFLIST)
-  {
-    AWorkspace->NamedStatus &= ~OPENGL_NS_FLIST;
-    myResetFLIST = Standard_False;
-  }
-
   // Store and disable current clipping planes
   GLint maxplanes;
   glGetIntegerv(GL_MAX_CLIP_PLANES, &maxplanes);
@@ -1054,123 +1047,73 @@ D = -[Px,Py,Pz] dot |Nx|
       AWorkspace->NamedStatus &= ~OPENGL_NS_ANTIALIASING;
   }
 
-  Standard_Boolean isAnimationListOpen = Standard_False;
+  // Clear status bitfields
+  AWorkspace->NamedStatus &= ~(OPENGL_NS_2NDPASSNEED | OPENGL_NS_2NDPASSDO);
 
-  // Request for update of animation mode?
-  if ( (AWorkspace->NamedStatus & OPENGL_NS_UPDATEAM) != 0 )
+  // Added PCT for handling of textures
+  switch (mySurfaceDetail)
   {
-    // Request to rebuild display list
-    myAnimationListReady = Standard_False;
-    // Reset request for update of animation mode
-    AWorkspace->NamedStatus &= ~OPENGL_NS_UPDATEAM;
-  }
+    case Visual3d_TOD_NONE:
+      AWorkspace->NamedStatus |= OPENGL_NS_FORBIDSETTEX;
+      AWorkspace->DisableTexture();
+      // Render the view
+      RenderStructs(AWorkspace);
+      break;
 
-  // Is in animation mode?
-  if ( AWorkspace->NamedStatus & OPENGL_NS_ANIMATION )
-  {
-    // Is the animation list ready?
-    if (myAnimationListReady)
-    {
-      // Execute the animation list
-      glCallList(myAnimationListIndex);
-    }
-    else
-    {
-      // Update the animation list
-      if ( AWorkspace->NamedStatus & OPENGL_NS_FLIST )
+    case Visual3d_TOD_ENVIRONMENT:
+      AWorkspace->NamedStatus |= OPENGL_NS_FORBIDSETTEX;
+      AWorkspace->EnableTexture (myTextureEnv);
+      // Render the view
+      RenderStructs(AWorkspace);
+      AWorkspace->DisableTexture();
+      break;
+
+    case Visual3d_TOD_ALL:
+      // First pass
+      AWorkspace->NamedStatus &= ~OPENGL_NS_FORBIDSETTEX;
+      // Render the view
+      RenderStructs(AWorkspace);
+      AWorkspace->DisableTexture();
+
+      // Second pass
+      if (AWorkspace->NamedStatus & OPENGL_NS_2NDPASSNEED)
       {
-        if (myAnimationListIndex == 0)
-          myAnimationListIndex = glGenLists(1);
-
-        if (myAnimationListIndex != 0)
-        {
-          glNewList(myAnimationListIndex, GL_COMPILE_AND_EXECUTE);
-          isAnimationListOpen = Standard_True;
-        }
-      }
-      else
-        AWorkspace->NamedStatus |= OPENGL_NS_FLIST;
-    }
-  }
-  else
-    myAnimationListReady = Standard_False;
-
-  if (!myAnimationListReady)
-  {
-    // Clear status bitfields
-    AWorkspace->NamedStatus &= ~(OPENGL_NS_2NDPASSNEED | OPENGL_NS_2NDPASSDO);
-
-    // Added PCT for handling of textures
-    switch (mySurfaceDetail)
-    {
-      case Visual3d_TOD_NONE:
-        AWorkspace->NamedStatus |= OPENGL_NS_FORBIDSETTEX;
-        AWorkspace->DisableTexture();
-        // Render the view
-        RenderStructs(AWorkspace);
-        break;
-
-      case Visual3d_TOD_ENVIRONMENT:
-        AWorkspace->NamedStatus |= OPENGL_NS_FORBIDSETTEX;
+        AWorkspace->NamedStatus |= OPENGL_NS_2NDPASSDO;
         AWorkspace->EnableTexture (myTextureEnv);
+
+        /* sauvegarde de quelques parametres OpenGL */
+        GLint blend_dst, blend_src;
+        GLint zbuff_f;
+        GLboolean zbuff_w;
+        glGetBooleanv(GL_DEPTH_WRITEMASK, &zbuff_w);
+        glGetIntegerv(GL_DEPTH_FUNC, &zbuff_f);
+        glGetIntegerv(GL_BLEND_DST, &blend_dst);
+        glGetIntegerv(GL_BLEND_SRC, &blend_src);
+        GLboolean zbuff_state = glIsEnabled(GL_DEPTH_TEST);
+        GLboolean blend_state = glIsEnabled(GL_BLEND);
+
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_BLEND);
+
+        glDepthFunc(GL_EQUAL);
+        glDepthMask(GL_FALSE);
+        glEnable(GL_DEPTH_TEST);
+
+        AWorkspace->NamedStatus |= OPENGL_NS_FORBIDSETTEX;
+
         // Render the view
         RenderStructs(AWorkspace);
         AWorkspace->DisableTexture();
-        break;
 
-      case Visual3d_TOD_ALL:
-        // First pass
-        AWorkspace->NamedStatus &= ~OPENGL_NS_FORBIDSETTEX;
-        // Render the view
-        RenderStructs(AWorkspace);
-        AWorkspace->DisableTexture();
+        /* restauration des parametres OpenGL */
+        glBlendFunc(blend_src, blend_dst);
+        if (!blend_state) glDisable(GL_BLEND);
 
-        // Second pass
-        if (AWorkspace->NamedStatus & OPENGL_NS_2NDPASSNEED)
-        {
-          AWorkspace->NamedStatus |= OPENGL_NS_2NDPASSDO;
-          AWorkspace->EnableTexture (myTextureEnv);
-
-          /* sauvegarde de quelques parametres OpenGL */
-          GLint blend_dst, blend_src;
-          GLint zbuff_f;
-          GLboolean zbuff_w;
-          glGetBooleanv(GL_DEPTH_WRITEMASK, &zbuff_w);
-          glGetIntegerv(GL_DEPTH_FUNC, &zbuff_f);
-          glGetIntegerv(GL_BLEND_DST, &blend_dst);
-          glGetIntegerv(GL_BLEND_SRC, &blend_src);
-          GLboolean zbuff_state = glIsEnabled(GL_DEPTH_TEST);
-          GLboolean blend_state = glIsEnabled(GL_BLEND);
-
-          glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-          glEnable(GL_BLEND);
-
-          glDepthFunc(GL_EQUAL);
-          glDepthMask(GL_FALSE);
-          glEnable(GL_DEPTH_TEST);
-
-          AWorkspace->NamedStatus |= OPENGL_NS_FORBIDSETTEX;
-
-          // Render the view
-          RenderStructs(AWorkspace);
-          AWorkspace->DisableTexture();
-
-          /* restauration des parametres OpenGL */
-          glBlendFunc(blend_src, blend_dst);
-          if (!blend_state) glDisable(GL_BLEND);
-
-          glDepthFunc(zbuff_f);
-          glDepthMask(zbuff_w);
-          if (!zbuff_state) glDisable(GL_DEPTH_FUNC);
-        }
-        break;
-    }
-
-    if (isAnimationListOpen)
-    {
-      glEndList();
-      myAnimationListReady = Standard_True;
-    }
+        glDepthFunc(zbuff_f);
+        glDepthMask(zbuff_w);
+        if (!zbuff_state) glDisable(GL_DEPTH_FUNC);
+      }
+      break;
   }
 
   // Resetting GL parameters according to the default aspects
@@ -1265,14 +1208,7 @@ void OpenGl_View::RenderStructs (const Handle(OpenGl_Workspace) &AWorkspace)
   myZLayers.Render (AWorkspace);
 
   //TsmPopAttri(); /* restore previous graphics context; before update lights */
-
-  if ( AWorkspace->DegenerateModel > 1 )
-  {
-    glLineWidth ( aspect_line->Width() );
-    if ( aspect_line->Type() != Aspect_TOL_SOLID ) glEnable ( GL_LINE_STIPPLE );
-  }
-
-  glPopAttrib ();
+  glPopAttrib();
 }
 
 /*----------------------------------------------------------------------*/

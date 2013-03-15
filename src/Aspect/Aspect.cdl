@@ -52,8 +52,6 @@
 --   Add GDM_None in enum GridDrawMode.
 -- Modified: 25-JAN-00 : VKH
 --   Add class PixMap
--- Modified: 26-JAN-00 : EUG/GG G003
---   Add enum TypeOfDegenerateModel
 -- Modified: 23-FEB-00 : GG
 --   Returns format name in ValuesOfFOSP() internal method.
 -- Modified: 27-03-02 RIC120302 GG Add imported class 
@@ -790,18 +788,6 @@ is
                                          TOFM_BACK_SIDE,
                                          TOFM_FRONT_SIDE
         end TypeOfFacingModel;
-
-        enumeration TypeOfDegenerateModel is
-         TDM_NONE,
-         TDM_TINY,
-         TDM_WIREFRAME,
-         TDM_MARKER,
-         TDM_BBOX,
-         TDM_AUTO
-        end TypeOfDegenerateModel;
-        ---Purpose: Defines type of degeneration model of the
-        --          graphic structure.
-        ---Category: The enumerations
 
         enumeration FillMethod is
           FM_NONE,

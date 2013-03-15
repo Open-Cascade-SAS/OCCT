@@ -39,8 +39,6 @@ public:
     Distinguish (0),
     BackFace (0),
     Edge (0),
-    DegenerationMode (0),
-    SkipRatio (0.0f),
     PolygonOffsetMode   (0),
     PolygonOffsetFactor (0.0f),
     PolygonOffsetUnits  (0.0f)
@@ -75,9 +73,6 @@ public:
   CALL_DEF_MATERIAL Back;
 
   Graphic3d_CTexture Texture;
-
-  int   DegenerationMode;
-  float SkipRatio;
 
   int   PolygonOffsetMode;
   float PolygonOffsetFactor;

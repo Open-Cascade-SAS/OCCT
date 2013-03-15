@@ -73,8 +73,6 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_Display)& theDisplay,
                                     const Handle(OpenGl_Context)& theShareCtx)
 : OpenGl_Window (theDisplay, theCWindow, theGContext, theShareCtx),
   NamedStatus (0),
-  DegenerateModel (0),
-  SkipRatio (0.F),
   HighlightColor (&myDefaultHighlightColor),
   //
   myIsTransientOpen (Standard_False),
@@ -146,8 +144,6 @@ Standard_Boolean OpenGl_Workspace::Activate()
   if (!OpenGl_Window::Activate())
     return Standard_False;
 
-  DegenerateModel         = 0;
-  SkipRatio               = 0.0f;
   ViewMatrix_applied      = &myDefaultMatrix;
   StructureMatrix_applied = &myDefaultMatrix;
 
@@ -162,11 +158,7 @@ Standard_Boolean OpenGl_Workspace::Activate()
 // =======================================================================
 void OpenGl_Workspace::UseTransparency (const Standard_Boolean theFlag)
 {
-  if ((myUseTransparency ? 1 : 0) != (theFlag ? 1 : 0))
-  {
-    myUseTransparency = theFlag;
-    EraseAnimation();
-  }
+  myUseTransparency = theFlag;
 }
 
 //=======================================================================

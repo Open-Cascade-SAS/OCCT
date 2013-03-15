@@ -45,7 +45,6 @@ static void call_util_transpose_mat (float tmat[16], float mat[4][4])
 OpenGl_Structure::OpenGl_Structure ()
 : myTransformation(NULL),
   myTransPers(NULL),
-  myDegenerateModel(NULL),
   myAspectLine(NULL),
   myAspectFace(NULL),
   myAspectMarker(NULL),
@@ -64,7 +63,6 @@ OpenGl_Structure::~OpenGl_Structure()
   Release (Handle(OpenGl_Context)());
   delete myTransformation;  myTransformation  = NULL;
   delete myTransPers;       myTransPers       = NULL;
-  delete myDegenerateModel; myDegenerateModel = NULL;
 }
 
 /*----------------------------------------------------------------------*/
@@ -88,17 +86,6 @@ void OpenGl_Structure::SetTransformPersistence(const CALL_DEF_TRANSFORM_PERSISTE
   myTransPers->pointX = ATransPers.Point.x;
   myTransPers->pointY = ATransPers.Point.y;
   myTransPers->pointZ = ATransPers.Point.z;
-}
-
-/*----------------------------------------------------------------------*/
-
-void OpenGl_Structure::SetDegenerateModel (const Standard_Integer AMode, const float ASkipRatio)
-{
-  if (!myDegenerateModel)
-    myDegenerateModel = new DEGENERATION;
-
-  myDegenerateModel->mode = AMode;
-  myDegenerateModel->skipRatio = ASkipRatio;
 }
 
 /*----------------------------------------------------------------------*/
@@ -338,26 +325,6 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
   if ( myTransPers && myTransPers->mode != 0 )
   {
     trans_pers = AWorkspace->ActiveView()->BeginTransformPersistence( myTransPers );
-  }
-
-  // Apply degeneration
-  if (myDegenerateModel)
-  {
-    if ( AWorkspace->NamedStatus & OPENGL_NS_DEGENERATION )
-    {
-      AWorkspace->DegenerateModel = myDegenerateModel->mode;
-      switch ( AWorkspace->DegenerateModel )
-      {
-        case 0: break;
-
-        default:
-          glLineWidth ( 1.0 );
-          glDisable   ( GL_LINE_STIPPLE );
-
-        case 1:
-          AWorkspace->SkipRatio = myDegenerateModel->skipRatio;
-      }
-    }
   }
 
   // Apply aspects

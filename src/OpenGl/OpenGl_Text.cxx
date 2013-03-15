@@ -382,11 +382,6 @@ void OpenGl_Text::StringSize (const Handle(OpenGl_Context)& theCtx,
 // =======================================================================
 void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
-  if (theWorkspace->DegenerateModel > 0 && theWorkspace->SkipRatio >= 1.0f)
-  {
-    return;
-  }
-
   const OpenGl_AspectText* aTextAspect = theWorkspace->AspectText (Standard_True);
   const Handle(OpenGl_Texture) aPrevTexture = theWorkspace->DisableTexture();
 

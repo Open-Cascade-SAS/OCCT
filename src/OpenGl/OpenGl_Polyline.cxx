@@ -59,7 +59,7 @@ void OpenGl_Polyline::Render (const Handle(OpenGl_Workspace)& theWorkspace) cons
   glDisable (GL_TEXTURE_1D);
   glDisable (GL_TEXTURE_2D);
 
-  glBegin (theWorkspace->DegenerateModel != 3 ? GL_LINE_STRIP : GL_POINTS);
+  glBegin (GL_LINE_STRIP);
 
   // Use highlight colors
   glColor3fv ((theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT) ? theWorkspace->HighlightColor->rgb : anAspectLine->Color().rgb);

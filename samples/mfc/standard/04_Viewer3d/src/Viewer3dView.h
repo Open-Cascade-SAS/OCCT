@@ -67,9 +67,9 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
-	int scaleX;
-	int scaleY;
-    int scaleZ;
+  int scaleX;
+  int scaleY;
+  int scaleZ;
 
 protected:
 
@@ -125,28 +125,27 @@ protected:
 	DECLARE_MESSAGE_MAP()
 private:
 	enum VisMode { VIS_WIREFRAME, VIS_SHADE, VIS_HLR };
-	VisMode              myVisMode;
+	VisMode                        myVisMode;
 	
-	Handle_V3d_View     myView;
-	Handle_Graphic3d_GraphicDriver myGraphicDriver;
-    View3D_CurrentAction myCurrentMode;
-    Standard_Integer     myXmin;
-    Standard_Integer     myYmin;  
-    Standard_Integer     myXmax;
-    Standard_Integer	 myYmax;
-	Standard_Integer myWidth;
-	Standard_Integer myHeight;
+  Handle_V3d_View                myView;
+  Handle_Graphic3d_GraphicDriver myGraphicDriver;
+  View3D_CurrentAction           myCurrentMode;
+  Standard_Integer               myXmin;
+  Standard_Integer               myYmin;
+  Standard_Integer               myXmax;
+  Standard_Integer               myYmax;
+  Standard_Integer               myWidth;
+  Standard_Integer               myHeight;
 
-
-    Standard_Integer     NbActiveLights;
-    Quantity_Factor      myCurZoom;
-    Standard_Boolean     myDegenerateModeIsOn;
-	Handle_V3d_AmbientLight	 myCurrent_AmbientLight;
-	Handle_V3d_SpotLight	 myCurrent_SpotLight;
-	Handle_V3d_PositionalLight	 myCurrent_PositionalLight;
-	Handle_V3d_DirectionalLight	 myCurrent_DirectionalLight;
-	Handle_V3d_Plane myPlane;
-    Handle_AIS_Shape myShape;
+  Standard_Integer               NbActiveLights;
+  Standard_Boolean               myHlrModeIsOn;
+  Quantity_Factor                myCurZoom;
+  Handle_V3d_AmbientLight        myCurrent_AmbientLight;
+  Handle_V3d_SpotLight           myCurrent_SpotLight;
+  Handle_V3d_PositionalLight     myCurrent_PositionalLight;
+  Handle_V3d_DirectionalLight    myCurrent_DirectionalLight;
+  Handle_V3d_Plane               myPlane;
+  Handle_AIS_Shape               myShape;
 
 private:
 	enum LineStyle { Solid, Dot, ShortDash, LongDash, Default };

@@ -467,13 +467,6 @@ void OpenGl_GraphicDriver::TransformStructure (const Graphic3d_CStructure& ACStr
     astructure->SetTransformation(&(ACStructure.Transformation[0][0]));
 }
 
-void OpenGl_GraphicDriver::DegenerateStructure (const Graphic3d_CStructure& ACStructure)
-{
-  OpenGl_Structure *astructure = (OpenGl_Structure *)ACStructure.ptrStructure;
-  if (astructure)
-    astructure->SetDegenerateModel( ACStructure.ContextFillArea.DegenerationMode, ACStructure.ContextFillArea.SkipRatio );
-}
-
 void OpenGl_GraphicDriver::Transparency (const Graphic3d_CView& ACView, const Standard_Boolean AFlag)
 {
   const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;

@@ -16,11 +16,8 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #ifndef VIEW_PXX_INCLUDED
 #define VIEW_PXX_INCLUDED
-
-#define G003	// EUG Manage computed mode activation flag
 
 // views identifiers : possible range
 #define View_IDMIN	1
@@ -30,8 +27,6 @@
 
 #define MyMatOfMapIsEvaluated   MyCBitFields.bool1
 #define MyMatOfOriIsEvaluated   MyCBitFields.bool2
-#define DegenerateModeIsActive  MyCBitFields.bool3
-#define AnimationModeIsActive   MyCBitFields.bool4
 #define IsInitialized           MyCBitFields.bool5
 #define ComputedModeIsActive    MyCBitFields.bool6
 

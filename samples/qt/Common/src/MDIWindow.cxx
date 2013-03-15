@@ -60,7 +60,7 @@ DocumentCommon* MDIWindow::getDocument()
 	return myDocument;
 }
 
-void MDIWindow::closeEvent(QCloseEvent* e)
+void MDIWindow::closeEvent(QCloseEvent* )
 {
 	emit sendCloseView(this);
 }

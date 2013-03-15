@@ -129,7 +129,7 @@ static Handle(Graphic3d_GraphicDriver)& GetGraphicDriver()
   return aGraphicDriver;
 }
 
-static Standard_Boolean DegenerateMode = Standard_True;
+static Standard_Boolean MyHLRIsOn = Standard_False;
 
 #define ZCLIPWIDTH 1.
 
@@ -280,9 +280,6 @@ void ViewerTest::ViewerInit (const Standard_Integer thePxLeft,  const Standard_I
     a3DViewer->SetDefaultBackgroundColor(Quantity_NOC_BLACK);
 
     Handle (V3d_View) V = ViewerTest::CurrentView();
-
-    V->SetDegenerateModeOn();
-    DegenerateMode = V->DegenerateModeIsOn();
     //    V->SetWindow(VT_GetWindow(), NULL, MyViewProc, NULL);
 
     V->SetZClippingDepth(0.5);
@@ -352,10 +349,8 @@ void VT_ProcessKeyPress (const char* buf_ret)
   else if ( !strcasecmp(buf_ret, "H") ) {
     // HLR
     cout << "HLR" << endl;
-
-    if (aView->DegenerateModeIsOn()) ViewerTest::CurrentView()->SetDegenerateModeOff();
-    else aView->SetDegenerateModeOn();
-    DegenerateMode = aView->DegenerateModeIsOn();
+    aView->SetComputedMode (!aView->ComputedMode());
+    MyHLRIsOn = aView->ComputedMode();
   }
   else if ( !strcasecmp(buf_ret, "S") ) {
     // SHADING
@@ -557,7 +552,10 @@ void VT_ProcessButton1Release (Standard_Boolean theIsShift)
 void VT_ProcessButton3Press()
 {
   Start_Rot = 1;
-  ViewerTest::CurrentView()->SetDegenerateModeOn();
+  if (MyHLRIsOn)
+  {
+    ViewerTest::CurrentView()->SetComputedMode (Standard_False);
+  }
   ViewerTest::CurrentView()->StartRotation( X_ButtonPress, Y_ButtonPress );
 }
 
@@ -570,7 +568,10 @@ void VT_ProcessButton3Release()
   if (Start_Rot)
   {
     Start_Rot = 0;
-    if (!DegenerateMode) ViewerTest::CurrentView()->SetDegenerateModeOff();
+    if (MyHLRIsOn)
+    {
+      ViewerTest::CurrentView()->SetComputedMode (Standard_True);
+    }
   }
 }
 

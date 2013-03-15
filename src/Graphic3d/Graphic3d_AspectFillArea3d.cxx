@@ -17,17 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-// Modified     1/08/97 ; PCT : Ajout texture mapping
-//		26/01/00 ; EUG/GG degeneration management (G003)
-//			Add SetDegenerateModel() and DegenerateModel() methods
-// JR 02.01.100 : Initialization order of fields in contructors
-//		29/09/00 ; GG Add SetDefaultDegerateModel() and
-//			DefaultDegenerateModel() class methods
-//              22/03/04 ; SAN : OCC4895 High-level interface for controlling polygon offsets 
-
-
-//-Version	
-
 //-Design	Declaration of variables specific to the context
 //		of tracing of facets 3D
 
@@ -39,57 +28,19 @@
 //		Additionally, it has more than one definition of material
 //		for internal and external faces.
 
-//-References	
-
-//-Language	C++ 2.0
-
-//-Declarations
-
 // for the class
 #include <Graphic3d_AspectFillArea3d.ixx>
 
-// OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
 #include <Aspect_PolygonOffsetMode.hxx>
-// OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
-
 #include <Standard_Boolean.hxx>
 
-//-Aliases
-
-//-Global data definitions
-static Aspect_TypeOfDegenerateModel theDefaultDegenerateModel = Aspect_TDM_WIREFRAME;
-static Quantity_Ratio theDefaultDegenerateRatio = 0.0;
-
-//	-- la matiere
-//	MyFrontMaterial		:	MaterialAspect;
-//	MyBackMaterial		:	MaterialAspect;
-
-//	-- flag de distinction entre faces internes et externes
-//	DistinguishModeActive	:	Standard_Boolean;
-
-//	-- flag de trace des aretes
-//	EdgeModeActive		:	Standard_Boolean;
-
-//	-- flag d'affichage des polygones tournant le dos
-//	BackFaceRemovalActive	:	Standard_Boolean;
-
-//-Constructors
-
-//-Destructors
-
-//-Methods, in order
-
 Graphic3d_AspectFillArea3d::Graphic3d_AspectFillArea3d ():
-DistinguishModeActive (Standard_False), EdgeModeActive (Standard_False), BackFaceRemovalActive (Standard_False),  MyTextureMapState(Standard_False), MyFrontMaterial (), MyBackMaterial () {
-  MyDegenerateModel = theDefaultDegenerateModel;
-  MyDegenerateRatio = theDefaultDegenerateRatio;
-
-  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
+DistinguishModeActive (Standard_False), EdgeModeActive (Standard_False), BackFaceRemovalActive (Standard_False),  MyTextureMapState(Standard_False), MyFrontMaterial (), MyBackMaterial ()
+{
   // By default, aspect do not change current polygon offset parameters
   MyPolygonOffsetMode   = Aspect_POM_Fill;
   MyPolygonOffsetFactor = 1.;
   MyPolygonOffsetUnits  = 0.;
-  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
 }
 
 // (InteriorStyle, InteriorColor, EdgeColor, EdgeLineType, EdgeLineWidth)
@@ -99,15 +50,10 @@ DistinguishModeActive (Standard_False), EdgeModeActive (Standard_False), BackFac
 
 Graphic3d_AspectFillArea3d::Graphic3d_AspectFillArea3d (const Aspect_InteriorStyle InteriorStyle, const Quantity_Color& InteriorColor, const Quantity_Color& EdgeColor, const Aspect_TypeOfLine EdgeLineType, const Standard_Real EdgeLineWidth, const Graphic3d_MaterialAspect& FrontMaterial, const Graphic3d_MaterialAspect& BackMaterial):
 Aspect_AspectFillArea (InteriorStyle, InteriorColor, EdgeColor, EdgeLineType, EdgeLineWidth), DistinguishModeActive (Standard_False), EdgeModeActive (Standard_False), BackFaceRemovalActive (Standard_False), MyTextureMap(), MyTextureMapState(Standard_False), MyFrontMaterial (FrontMaterial), MyBackMaterial (BackMaterial) {
-  MyDegenerateModel = theDefaultDegenerateModel;
-  MyDegenerateRatio = theDefaultDegenerateRatio;
-
-  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
   // By default, aspect do not change current polygon offset parameters
   MyPolygonOffsetMode   = Aspect_POM_Fill;
   MyPolygonOffsetFactor = 1.;
   MyPolygonOffsetUnits  = 0.;
-  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
 }
 
 void Graphic3d_AspectFillArea3d::SetBackMaterial (const Graphic3d_MaterialAspect& AMaterial) {
@@ -219,34 +165,6 @@ Standard_Boolean Graphic3d_AspectFillArea3d::TextureMapState() const
   return MyTextureMapState;
 }
 
-void Graphic3d_AspectFillArea3d::SetDefaultDegenerateModel(
-	const Aspect_TypeOfDegenerateModel aModel,
-	const Quantity_Ratio aRatio) {
-  theDefaultDegenerateModel = aModel;
-  theDefaultDegenerateRatio = aRatio;
-}
-
-void Graphic3d_AspectFillArea3d::SetDegenerateModel(
-	const Aspect_TypeOfDegenerateModel aModel,
-	const Quantity_Ratio aRatio) {
-
-  MyDegenerateModel = aModel;
-  MyDegenerateRatio = aRatio;
-}
-
-Aspect_TypeOfDegenerateModel Graphic3d_AspectFillArea3d::DefaultDegenerateModel(
-			Quantity_Ratio& aRatio) {
-  aRatio = theDefaultDegenerateRatio;
-  return theDefaultDegenerateModel;
-}
-
-Aspect_TypeOfDegenerateModel Graphic3d_AspectFillArea3d::DegenerateModel(
-			Quantity_Ratio& aRatio) const {
-  aRatio = MyDegenerateRatio;
-  return MyDegenerateModel;
-}
-
-// OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
 void Graphic3d_AspectFillArea3d::SetPolygonOffsets(const Standard_Integer    aMode,
                                                    const Standard_ShortReal  aFactor,
                                                    const Standard_ShortReal  aUnits) {
@@ -262,4 +180,3 @@ void Graphic3d_AspectFillArea3d::PolygonOffsets(Standard_Integer&    aMode,
   aFactor = MyPolygonOffsetFactor;
   aUnits  = MyPolygonOffsetUnits;
 }
-// OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 

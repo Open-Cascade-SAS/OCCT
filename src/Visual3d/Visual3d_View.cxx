@@ -48,7 +48,6 @@
       ??-11-97  : CAL ; Retrait de la dependance avec math. Calcul developpe.
       ??-11-97  : CAL ; Ajout de NumberOfDisplayedStructures
       07-08-97  : PCT ; ajout support texture mapping
-      05-01-98  : CAL ; Ajout de AnimationMode
       15-01-98  : FMN ; FRA60019 calcul Ratio pour MyViewMappingReset
       15-01-98  : CAL ; Ajout de la transformation d'une TOS_COMPUTED
       26-01-98  : CAL ; Ajout de la methode HaveTheSameOwner
@@ -84,9 +83,6 @@
 //                      when the view shading model is NONE.
 
 #define GER61454        //GG 14-09-99 Activates model clipping planes
-
-#define G003            //EUG 30-09-00 Degeneration management
-//                                     Backfacing management
 
 #define RIC120302       //GG Add a NEW SetWindow method which enable
 //                      to connect a graphic widget and context to OGL.
@@ -276,16 +272,9 @@ Standard_Real um, vm, uM, vM;
         MyMatOfMapIsEvaluated   = Standard_False;
         MyMatOfOriIsEvaluated   = Standard_False;
 
-        DegenerateModeIsActive  = Standard_False;
-        AnimationModeIsActive   = Standard_False;
-
         IsInitialized = Standard_False;
-#ifdef G003
-        MyCView.IsDegenerates     = 0;
-        MyCView.IsDegeneratesPrev = 0;
         ComputedModeIsActive      = Standard_False;
         MyCView.Backfacing        = 0;
-#endif  // G003
 
         MyCView.ptrUnderLayer = 0;
         MyCView.ptrOverLayer = 0;
@@ -415,12 +404,7 @@ Standard_Real um, vm, uM, vM;
         MyMatOfOriIsEvaluated   = Standard_False;
 
         IsInitialized = Standard_False;
-#ifdef G003
-        AnimationModeIsActive     = Standard_False;
-        MyCView.IsDegenerates     = 0;
-        MyCView.IsDegeneratesPrev = 0;
         ComputedModeIsActive      = Standard_False;
-#endif  // G003
 
         MyCView.ptrUnderLayer = 0;
         MyCView.ptrOverLayer = 0;
@@ -1935,11 +1919,7 @@ void Visual3d_View::ChangeDisplayPriority (const Handle(Graphic3d_Structure)& AS
         if (! IsDisplayed (AStructure)) return;
 
 Standard_Integer Index = IsComputed (AStructure);
-#ifdef G003
-        if (  Index != 0 && ComputedMode () && !DegenerateModeIsOn ()  )
-#else
-        if ((Index != 0) && (! DegenerateModeIsOn ()))
-#endif  // G003
+        if (Index != 0 && ComputedMode())
         {
 #ifdef TRACE
 	Standard_Integer StructId = MyCOMPUTEDSequence.Value (Index)->Identification ();
@@ -2120,14 +2100,10 @@ Standard_Integer Index = IsComputed (AStructure);
                 return;
         }
 
-        // Mode degenerated active
-#ifdef G003
-        if (  !ComputedMode () || DegenerateModeIsOn ()  )
-                                        Answer = Visual3d_TOA_YES;
-#else
-        if (DegenerateModeIsOn ()) Answer = Visual3d_TOA_YES;
-;
-#endif  // G003
+        if (!ComputedMode())
+        {
+          Answer = Visual3d_TOA_YES;
+        }
 
         if (Answer == Visual3d_TOA_YES ) {
 #ifdef TRACE_DISPLAY
@@ -2364,13 +2340,10 @@ Standard_Integer StructId;
         if (IsDisplayed (AStructure)) {
 Visual3d_TypeOfAnswer Answer = AcceptDisplay (AStructure);
 
-                // Degenerated mode is active
-#ifdef G003
-                if (  !ComputedMode () || DegenerateModeIsOn ()  )
-                                        Answer = Visual3d_TOA_YES;
-#else
-                if (DegenerateModeIsOn ()) Answer = Visual3d_TOA_YES;
-#endif  // G003
+                if (!ComputedMode())
+                {
+                  Answer = Visual3d_TOA_YES;
+                }
 
                 if (Answer != Visual3d_TOA_COMPUTE) {
                         MyGraphicDriver->EraseStructure (
@@ -2387,12 +2360,8 @@ Standard_Integer Index = IsComputed (AStructure);
         cout << "Index : " << Index << "\n";
         cout << flush;
 #endif
-#ifdef G003
-                    if (  Index != 0 && ComputedMode () &&
-                                                !DegenerateModeIsOn ()  )
-#else
-                    if ((Index != 0) && (! DegenerateModeIsOn ()))
-#endif  // G003
+
+                    if (Index != 0 && ComputedMode())
                     {
                         StructId =
                         MyCOMPUTEDSequence.Value (Index)->Identification ();
@@ -3021,12 +2990,10 @@ Standard_Integer Length = MyCOMPUTEDSequence.Length ();
         for (i=1; i<=Length; i++)
             (MyCOMPUTEDSequence.Value (i))->SetHLRValidation (Standard_False);
 
-        // if the degenerated node is active, nothing is recomputed
-#ifdef G003
-        if (  DegenerateModeIsOn () || !ComputedMode ()  ) return;
-#else
-        if (DegenerateModeIsOn ()) return;
-#endif  // G003
+        if (!ComputedMode())
+        {
+          return;
+        }
 
         /*
          * Force HLRValidation to False on all structures
@@ -3046,10 +3013,6 @@ Standard_Integer Length = MyCOMPUTEDSequence.Length ();
          * Remove structures that were calculated for the
          * previous orientation.
          * Recalculation of new structures.
-         * Passage of the degenerated mode ON to OFF =>
-         * Remove structures that were calculated before
-         * the degenerated mode passed to ON.
-         * Recalculate new structures.
          */
 Graphic3d_MapIteratorOfMapOfStructure S1Iterator (MyDisplayedStructure);
 Visual3d_TypeOfAnswer Answer;
@@ -3085,11 +3048,7 @@ Graphic3d_SequenceOfStructure FooSequence;
 }
 
 void Visual3d_View::ReCompute (const Handle(Graphic3d_Structure)& AStructure) {
-#ifdef G003
-        if ( DegenerateModeIsOn () || !ComputedMode () ) return;
-#else
-        if (DegenerateModeIsOn()) return;
-#endif  // G003
+        if (!ComputedMode()) return;
 
         if (IsDeleted ()) return;
 
@@ -3231,330 +3190,23 @@ Standard_Boolean ComputeShading = ((ViewType == Visual3d_TOV_SHADING) &&
 
 }
 
-void
-#ifdef G003
-Visual3d_View::SetAnimationModeOn ( const Standard_Boolean degenerate ) {
-#else
-Visual3d_View::SetAnimationModeOn () {
-#endif
-
-        if (AnimationModeIsOn ()) return;
-
-        AnimationModeIsActive   = Standard_True;
-#ifdef G003
-        if ( degenerate )
-          SetDegenerateModeOn ();
-        else
-          SetDegenerateModeOff ();
-#endif  // G003
-        MyGraphicDriver->BeginAnimation (MyCView);
-
-}
-
-void Visual3d_View::SetAnimationModeOff () {
-
-        if (! AnimationModeIsOn ()) return;
-
-        AnimationModeIsActive   = Standard_False;
-#ifdef G003
-        SetDegenerateModeOff ();
-#endif  // G003
-        MyGraphicDriver->EndAnimation (MyCView);
-
-}
-
-Standard_Boolean Visual3d_View::AnimationModeIsOn () const {
-
-        return AnimationModeIsActive;
-
-}
-
-void Visual3d_View::SetDegenerateModeOn () {
-
-#ifdef TRACE
-        cout << "Visual3d_View" << MyCView.ViewId
-             << "::SetDegenerateModeOn ();\n";
-        cout << flush;
-#endif
-
-        // If the degenerated mode is already active, nothing is recalculated
-        if (DegenerateModeIsOn ()) return;
-        DegenerateModeIsActive = Standard_True;
-
-#ifdef G003
-        MyCView.IsDegenerates  = 1;
-#else
-        /*
-         * Change of activity of the degenerated mode
-         * Remove structures that were calculated
-         * and displayed when the mode was off.
-         * Display of non-calculated structures.
-         */
-Graphic3d_MapIteratorOfMapOfStructure S1Iterator (MyDisplayedStructure);
-Visual3d_TypeOfAnswer Answer;
-Standard_Integer StructId;
-
-        while (S1Iterator.More ()) {
-
-                Answer  = AcceptDisplay (S1Iterator.Key ());
-                // If the structure was calculated, the previous one is
-                // removed and the new one is displayed
-                // (This is the role of passage into degenerated mode)
-
-                if (Answer == Visual3d_TOA_COMPUTE) {
-Standard_Integer Index = IsComputed (S1Iterator.Key ());
-                    if (Index != 0) {
-                        StructId =
-                        MyCOMPUTEDSequence.Value (Index)->Identification ();
-#ifdef TRACE_COMP
-        cout << "Structure " << S1Iterator.Key ()->Identification ()
-             << " calculated, in the view "
-             << Identification () << ", by structure "
-             << StructId << " passes in degenerated mode.\n";
-        cout << "Remove" << StructId << " then display "
-             << S1Iterator.Key ()->Identification () << "\n";
-        cout << flush;
-#endif
-                        MyGraphicDriver->EraseStructure
-                                (MyCView, *(Graphic3d_CStructure *)MyCOMPUTEDSequence.Value (Index)->CStructure ());
-                        MyGraphicDriver->DisplayStructure (
-                                MyCView,
-                                *(Graphic3d_CStructure *)S1Iterator.Key ()->CStructure (),
-                                int (S1Iterator.Key ()->DisplayPriority ())
-                        );
-                    }
-                    else {
-                        // Else is impossible)
-                        // If the mode was not degenerated previously, the
-                        // calculated structure associated to S1Iterator.Key ()
-                        // really exists and Index != 0
-                    }
-                }
-
-                // S1Iterator.Next () is located on the next structure
-                S1Iterator.Next ();
-        }
-#endif  //G003
-}
-
-void Visual3d_View::SetDegenerateModeOff () {
-
-#ifdef TRACE
-        cout << "Visual3d_View" << MyCView.ViewId
-             << "::SetDegenerateModeOff ();\n";
-        cout << flush;
-#endif
-
-        // If the degenerated mode is already inactive, nothing is recalculated
-        if (! DegenerateModeIsOn ()) return;
-
-        DegenerateModeIsActive  = Standard_False;
-
-#ifdef G003
-        MyCView.IsDegenerates  = 0;
-#else
-        /*
-         * Change of activity of degenerated mode
-         * Remove structures that were displayed
-         * when the mode was on.
-         * Calculation of structures.
-         */
-Graphic3d_MapIteratorOfMapOfStructure S1Iterator (MyDisplayedStructure);
-Visual3d_TypeOfAnswer Answer;
-Standard_Integer StructId;
-
-        Standard_Integer i      = MyDisplayedStructure.Extent ();
-
-        while (S1Iterator.More ()) {
-
-                Answer  = AcceptDisplay (S1Iterator.Key ());
-                // If the structure was calculated, the previous one is
-                // removed and the new one is displayed
-                // (This is the role of passage into degenerated mode)
-
-                if (Answer == Visual3d_TOA_COMPUTE) {
-Standard_Integer Index = IsComputed (S1Iterator.Key ());
-                    if (Index != 0) {
-                        StructId =
-                        MyCOMPUTEDSequence.Value (Index)->Identification ();
-#ifdef TRACE_COMP
-        cout << "Structure " << S1Iterator.Key ()->Identification ()
-             << " calculated, in the view "
-             << Identification () << ", by the structure "
-             << StructId << " passes into normal mode.\n";
-        cout << "Remove " << S1Iterator.Key ()->Identification ()
-             << " then display " << StructId << "\n";
-        cout << flush;
-#endif
-                        MyGraphicDriver->EraseStructure
-                                (MyCView,
-                                *(Graphic3d_CStructure *)S1Iterator.Key ()->CStructure ());
-                        MyGraphicDriver->DisplayStructure (
-                                MyCView,
-                                *(Graphic3d_CStructure *)MyCOMPUTEDSequence.Value (Index)->CStructure (),
-                                int (S1Iterator.Key ()->DisplayPriority ())
-                        );
-
-                        Display (S1Iterator.Key (), Aspect_TOU_WAIT);
-
-                        if ((S1Iterator.Key ())->IsHighlighted()) {
-                           if (! (MyCOMPUTEDSequence.Value (Index))->IsHighlighted()) {
-                                (MyCOMPUTEDSequence.Value (Index))->SetHighlightColor
-                                        ((S1Iterator.Key ())->HighlightColor ());
-                                (MyCOMPUTEDSequence.Value (Index))->GraphicHighlight (Aspect_TOHM_COLOR);
-                            }
-                        }
-                    }
-                    else {
-                        // Else is impossible
-                        // Degenerated mode was activated before display of the
-                        // structure. So the structure was displayed in the
-                        // degenerated mode, but the calculated structure didn't exist.
-                        // It is calculated.
-
-        // Compute + Validation
-Handle(Graphic3d_Structure) AStructure = (S1Iterator.Key ());
-#ifdef OLD
-Handle(Graphic3d_Structure) TheStructure = AStructure->Compute (this);
-#else
-Handle(Graphic3d_Structure) TheStructure;
-TColStd_Array2OfReal ATrsf (0, 3, 0, 3);
-        AStructure->Transform (ATrsf);
-        if (Index != 0) {
-TColStd_Array2OfReal Ident (0, 3, 0, 3);
-Standard_Integer ii, jj;
-        for (ii=0; ii<=3; ii++)
-            for (jj=0; jj<=3; jj++)
-                Ident (ii, jj) = (ii == jj ? 1.0 : 0.0);
-            TheStructure = MyCOMPUTEDSequence.Value (Index);
-            TheStructure->SetTransform (Ident, Graphic3d_TOC_REPLACE);
-            if (AStructure->IsTransformed ()) {
-                AStructure->Compute (this, ATrsf, TheStructure);
-            }
-            else {
-                AStructure->Compute (this, TheStructure);
-            }
-        }
-        else {
-            if (AStructure->IsTransformed ()) {
-                TheStructure = AStructure->Compute (this, ATrsf);
-            }
-            else {
-                TheStructure = AStructure->Compute (this);
-            }
-        }
-#endif
-        TheStructure->SetHLRValidation (Standard_True);
-
-// Return type of visualisation of the view
-Visual3d_TypeOfVisualization ViewType = MyContext.Visualization ();
-
-// Of which type will be the computed ?
-Standard_Boolean ComputeWireframe = ((ViewType == Visual3d_TOV_WIREFRAME) &&
-        ((S1Iterator.Key ())->ComputeVisual () != Graphic3d_TOS_SHADING));
-
-Standard_Boolean ComputeShading = ((ViewType == Visual3d_TOV_SHADING) &&
-        ((S1Iterator.Key ())->ComputeVisual () != Graphic3d_TOS_WIREFRAME));
-
-                        if (ComputeWireframe)
-                            TheStructure->SetVisual (Graphic3d_TOS_WIREFRAME);
-                        if (ComputeShading)
-                            TheStructure->SetVisual (Graphic3d_TOS_SHADING);
-
-                        if ((S1Iterator.Key ())->IsHighlighted()) {
-                            TheStructure->SetHighlightColor
-                                ((S1Iterator.Key ())->HighlightColor ());
-                            TheStructure->GraphicHighlight (Aspect_TOHM_COLOR);
-                        }
-
-                        // Make range
-Standard_Integer Result = 0;
-Standard_Integer Length = MyTOCOMPUTESequence.Length ();
-                        // Find structure <S1Iterator.Key ()>
-                        // in the sequence of structures to be calculated
-                        StructId = (S1Iterator.Key ())->Identification ();
-                        for (i=1; i<=Length && Result==0; i++)
-                          if ((MyTOCOMPUTESequence.Value (i))->Identification () ==
-                            StructId) Result    = i;
-                        if (Result != 0)
-                          MyCOMPUTEDSequence.ChangeValue (Result) = TheStructure;
-                        else {
-                          // hlhsr and the associated new compute are added
-#ifdef TRACE_LENGTH
-        if (MyTOCOMPUTESequence.Length () != MyCOMPUTEDSequence.Length ()) {
-                cout << "In Visual3d_View::SetDegenerateModeOff, ";
-                cout << "TOCOMPUTE " << MyTOCOMPUTESequence.Length ()
-                     << " != COMPUTED " << MyCOMPUTEDSequence.Length ()
-                     << "\n" << flush;
-        }
-#endif
-                          MyTOCOMPUTESequence.Append (S1Iterator.Key ());
-                          MyCOMPUTEDSequence.Append (TheStructure);
-#ifdef TRACE_LENGTH
-        if (MyTOCOMPUTESequence.Length () != MyCOMPUTEDSequence.Length ())
-                cout << "\tTOCOMPUTE " << MyTOCOMPUTESequence.Length ()
-                     << " != COMPUTED " << MyCOMPUTEDSequence.Length ()
-                     << "\n" << flush;
-#endif
-                        }
-
-                        // The degenerated is removed and the calculated is displayed
-                        MyGraphicDriver->EraseStructure
-                                (MyCView,
-                                *(Graphic3d_CStructure *)(S1Iterator.Key ()->CStructure ()));
-                        MyGraphicDriver->DisplayStructure (
-                                MyCView,
-                                *(Graphic3d_CStructure *)TheStructure->CStructure (),
-                                int (S1Iterator.Key ()->DisplayPriority ())
-                        );
-                    }
-                }
-
-                // S1Iterator.Next () is located on the next structure
-                S1Iterator.Next ();
-        }
-
-        if (MyViewManager->UpdateMode () == Aspect_TOU_ASAP) Update ();
-#endif  //G003
-}
-
-Standard_Boolean Visual3d_View::DegenerateModeIsOn () const {
-
-        return DegenerateModeIsActive;
-
-}
-
 const Handle(Graphic3d_GraphicDriver)& Visual3d_View::GraphicDriver () const {
 
         return MyGraphicDriver;
 
 }
 
-void Visual3d_View::Plot (const Handle(Graphic3d_Plotter)& APlotter) const {
-
-Graphic3d_MapIteratorOfMapOfStructure S1Iterator (MyDisplayedStructure);
-
-        while (S1Iterator.More ()) {
-
-                if (DegenerateModeIsOn ())
-                        // As the  mode is degenerated the displayed structure
-                        // is plotted without taking into account if it is calculated or not
-                        (S1Iterator.Key ())->Plot (APlotter);
-                else {
-Standard_Integer Index = IsComputed (S1Iterator.Key ());
-                        // As the  mode is not degenerated the displayed structure
-                        // is plotted as if it was not calculated, otherwise the
-                        // associated calculated structure is plotted.
-                        if (Index == 0)
-                            (S1Iterator.Key ())->Plot (APlotter);
-                        else
-                            (MyCOMPUTEDSequence.Value (Index))->Plot (APlotter);
-                }
-
-                // S1Iterator.Next () is located on the next structure
-                S1Iterator.Next ();
-        }
-
+void Visual3d_View::Plot (const Handle(Graphic3d_Plotter)& thePlotter) const
+{
+  for (Graphic3d_MapIteratorOfMapOfStructure S1Iterator (MyDisplayedStructure); S1Iterator.More(); S1Iterator.Next())
+  {
+    Standard_Integer Index = IsComputed (S1Iterator.Key ());
+    // displayed structure is plotted as if it was not calculated
+    if (Index == 0)
+      (S1Iterator.Key ())->Plot (thePlotter);
+    else
+      (MyCOMPUTEDSequence.Value (Index))->Plot (thePlotter);
+  }
 }
 
 Standard_Integer Visual3d_View::HaveTheSameOwner (const Handle(Graphic3d_Structure)& AStructure) const {
@@ -3924,13 +3576,13 @@ Handle(Visual3d_ViewManager) Visual3d_View::ViewManager() const
   return MyPtrViewManager;
 }
 
-#ifdef G003
-void Visual3d_View :: SetComputedMode ( const Standard_Boolean aMode ) {
-
- if (  (  (aMode &&  ComputedModeIsActive) ||
-         (!aMode && !ComputedModeIsActive)
-       ) || DegenerateModeIsOn ()
- ) return;
+void Visual3d_View :: SetComputedMode ( const Standard_Boolean aMode )
+{
+  if ((aMode &&  ComputedModeIsActive) ||
+     (!aMode && !ComputedModeIsActive))
+  {
+    return;
+  }
 
  Graphic3d_MapIteratorOfMapOfStructure S1Iterator ( MyDisplayedStructure );
  Visual3d_TypeOfAnswer                 Answer;
@@ -4175,7 +3827,6 @@ Visual3d_TypeOfBackfacingModel Visual3d_View :: BackFacingModel () const {
  return Visual3d_TOBM_DISABLE;
 
 }  // end Visual3d_View :: BackFacingModel
-#endif  // G003
 
 void Visual3d_View::EnableDepthTest( const Standard_Boolean enable ) const
 {

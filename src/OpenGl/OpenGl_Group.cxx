@@ -160,7 +160,6 @@ void OpenGl_Group::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
   }
 
   // Render group elements
-  Handle(OpenGl_Texture) aPrevTexture; // temporary disabled texture
   for (OpenGl_ElementNode* aNodeIter = myFirst; aNodeIter != NULL; aNodeIter = aNodeIter->next)
   {
     switch (aNodeIter->type)
@@ -171,27 +170,9 @@ void OpenGl_Group::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
       case TelText:
       {
         glDisable (GL_LIGHTING);
-
         if (isImmediate)
         {
           glDepthMask (GL_FALSE);
-        }
-        else if ((theWorkspace->NamedStatus & OPENGL_NS_ANIMATION) != 0 &&
-                 (theWorkspace->NamedStatus & OPENGL_NS_WIREFRAME) == 0 &&
-                  theWorkspace->DegenerateModel != 0)
-        {
-          glDisable (GL_DEPTH_TEST);
-          if (theWorkspace->NamedStatus & OPENGL_NS_TEXTURE)
-          {
-            aPrevTexture = theWorkspace->DisableTexture();
-          }
-          theWorkspace->NamedStatus |= OPENGL_NS_WIREFRAME;
-        }
-
-        if (!aPrevTexture.IsNull())
-        {
-          theWorkspace->EnableTexture (aPrevTexture);
-          aPrevTexture.Nullify();
         }
 
         aNodeIter->elem->Render (theWorkspace);
@@ -206,13 +187,6 @@ void OpenGl_Group::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
         if (isImmediate)
         {
           glDepthMask(GL_FALSE);
-        }
-        else if ((theWorkspace->NamedStatus & OPENGL_NS_ANIMATION) != 0 &&
-                 (theWorkspace->NamedStatus & OPENGL_NS_WIREFRAME) != 0 &&
-                  theWorkspace->DegenerateModel < 2)
-        {
-          glEnable (GL_DEPTH_TEST);
-          theWorkspace->NamedStatus &= ~OPENGL_NS_WIREFRAME;
         }
 
         if (theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT)

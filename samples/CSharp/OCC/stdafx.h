@@ -51,6 +51,7 @@
 #include <gp_Ax2.hxx>
 #include <Geom_Axis2Placement.hxx>
 //csfdb I/E
+#include <Message_ProgressIndicator.hxx>
 #include <FSD_File.hxx>
 #include <ShapeSchema.hxx>
 #include <Storage_Data.hxx>

@@ -246,13 +246,8 @@ public:
 
   OpenGl_LayerList myZLayers;
 
-  int myAnimationListIndex;
-  Standard_Boolean myAnimationListReady;
-
   const TEL_TRANSFORM_PERSISTENCE *myTransPers;
   Standard_Boolean myIsTransPers;
-
-  Standard_Boolean myResetFLIST;
 
  public:
   DEFINE_STANDARD_ALLOC

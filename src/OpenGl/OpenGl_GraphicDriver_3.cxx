@@ -31,7 +31,6 @@ void OpenGl_GraphicDriver::ClearGroup (const Graphic3d_CGroup& theCGroup)
     return;
 
   ((OpenGl_Group* )theCGroup.ptrGroup)->Release (GetSharedContext());
-  InvalidateAllWorkspaces();
 }
 
 void OpenGl_GraphicDriver::FaceContextGroup (const Graphic3d_CGroup& theCGroup,
@@ -41,7 +40,6 @@ void OpenGl_GraphicDriver::FaceContextGroup (const Graphic3d_CGroup& theCGroup,
     return;
 
   ((OpenGl_Group* )theCGroup.ptrGroup)->SetAspectFace (GetSharedContext(), theCGroup.ContextFillArea, theNoInsert);
-  InvalidateAllWorkspaces();
 }
 
 void OpenGl_GraphicDriver::Group (Graphic3d_CGroup& theCGroup)
@@ -50,7 +48,6 @@ void OpenGl_GraphicDriver::Group (Graphic3d_CGroup& theCGroup)
   if (aStructure)
   {
     theCGroup.ptrGroup = aStructure->AddGroup();
-    InvalidateAllWorkspaces();
   }
 }
 
@@ -60,7 +57,6 @@ void OpenGl_GraphicDriver::LineContextGroup (const Graphic3d_CGroup& theCGroup,
   if (!theCGroup.ContextLine.IsDef || theCGroup.ptrGroup == NULL) return;
 
   ((OpenGl_Group* )theCGroup.ptrGroup)->SetAspectLine (theCGroup.ContextLine, theNoInsert);
-  InvalidateAllWorkspaces();
 }
 
 void OpenGl_GraphicDriver::MarkerContextGroup (const Graphic3d_CGroup& theCGroup,
@@ -69,7 +65,6 @@ void OpenGl_GraphicDriver::MarkerContextGroup (const Graphic3d_CGroup& theCGroup
   if (!theCGroup.ContextMarker.IsDef || theCGroup.ptrGroup == NULL) return;
 
   ((OpenGl_Group* )theCGroup.ptrGroup)->SetAspectMarker (theCGroup.ContextMarker, theNoInsert);
-  InvalidateAllWorkspaces();
 }
 
 void OpenGl_GraphicDriver::MarkerContextGroup (const Graphic3d_CGroup& theCGroup,
@@ -87,7 +82,6 @@ void OpenGl_GraphicDriver::MarkerContextGroup (const Graphic3d_CGroup& theCGroup
   if (theCGroup.ptrGroup != NULL)
   {
     ((OpenGl_Group* )theCGroup.ptrGroup)->SetAspectMarker (theCGroup.ContextMarker, theNoInsert);
-    InvalidateAllWorkspaces();
   }
 }
 
@@ -98,7 +92,6 @@ void OpenGl_GraphicDriver::RemoveGroup (const Graphic3d_CGroup& theCGroup)
     return;
 
   aStructure->RemoveGroup (GetSharedContext(), (const OpenGl_Group* )theCGroup.ptrGroup);
-  InvalidateAllWorkspaces();
 }
 
 void OpenGl_GraphicDriver::TextContextGroup (const Graphic3d_CGroup& theCGroup,
@@ -108,5 +101,4 @@ void OpenGl_GraphicDriver::TextContextGroup (const Graphic3d_CGroup& theCGroup,
     return;
 
   ((OpenGl_Group* )theCGroup.ptrGroup)->SetAspectText (theCGroup.ContextText, theNoInsert);
-  InvalidateAllWorkspaces();
 }

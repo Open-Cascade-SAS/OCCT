@@ -23,10 +23,6 @@
 --              0312/99  ; GG : BUC60488 Why the field DistinguishModeActive
 --                      field is not accessible properly ?
 --                      workaround : Move the Material fields at end.
---              26/01/00 ; EUG/GG degeneration management (G003)
---                       Add SetDegenerateModel() and DegenerateModel() methods
---              29/09/00 ; GG degeneration management (G003)
---                       Add SetDefaultDegenerateModel() and DefaultDegenerateModel() methods
 --              22/03/04 ; OCC4895 SAN High-level interface for controlling polygon offsets
 
 class AspectFillArea3d from Graphic3d inherits AspectFillArea from Aspect
@@ -51,7 +47,6 @@ uses
 
         TypeOfLine      from Aspect,    
         InteriorStyle   from Aspect,
-        TypeOfDegenerateModel from Aspect, 
 
         MaterialAspect  from Graphic3d,
         TextureMap      from Graphic3d
@@ -170,36 +165,6 @@ is
         SetTextureMapOn(me  :  mutable);
         SetTextureMapOff(me :  mutable);
 
-        SetDefaultDegenerateModel ( myclass;
-                aModel     : TypeOfDegenerateModel from Aspect =
-                                                Aspect_TDM_WIREFRAME;
-                aRatio : Ratio from Quantity = 0.0);
-        ---Level: Public
-        ---Purpose: Sets the default model of degeneration for the polygons
-        --      which is taking in account at creation time of any
-        --      graphic structure until the model is change using
-        --      SetDegenerateModel() method.
-        ---Category: Methods to manage the structure degeneration
-
-        SetDegenerateModel ( me : mutable;
-                aModel     : TypeOfDegenerateModel from Aspect =
-                                                Aspect_TDM_WIREFRAME;
-                aRatio : Ratio from Quantity = 0.0);
-        ---Level: Public
-        ---Purpose: Sets the model of degeneration for the polygons
-        --   according to the degenerate ratio >= 0. & <= 1. where :
-        --   <aRatio> = 0. indicate that all polygons of the graphic structure
-        --      are displayed.
-        --   <aRatio> = 1. indicate that nothing is displayed in the graphic
-        --      structure.
-        --   When <ARatio> is > 0 & < 1. the corresponding amount
-        --   of polygons are displayed in the graphic structure with a
-        --   random method.     
-        --  Warning: the degenerate structure is shown only when
-        -- the animation and degenerate flags are set to TRUE
-        -- in V3d_View::SetAnimationMode(..)
-        ---Category: Methods to manage the structure degeneration
-        
         -- 22-03-04 OCC4895 SAN High-level interface for controlling polygon offsets
         SetPolygonOffsets ( me : mutable;
                             aMode   : Integer from Standard;
@@ -272,22 +237,6 @@ is
         TextureMapState(me) 
             returns  Boolean  from  Standard;
 
-        DegenerateModel ( me ;
-                aRatio: out Ratio from Quantity )
-                returns TypeOfDegenerateModel from Aspect;
-        ---Level: Public
-        ---Purpose: returns the current degeneration model and ratio
-        --  for the polygons
-        ---Category: Inquire methods
-
-        DefaultDegenerateModel ( myclass ;
-                aRatio: out Ratio from Quantity )
-                returns TypeOfDegenerateModel from Aspect;
-        ---Level: Public
-        ---Purpose: returns the default degeneration model and ratio
-        --  for the polygons
-        ---Category: Inquire methods
-        
         -- 22-03-04 OCC4895 SAN High-level interface for controlling polygon offsets
         PolygonOffsets ( me;
                          aMode   : out Integer from Standard;
@@ -298,7 +247,7 @@ is
         ---Category: Inquire methods    
         
         
---
+--
 
 fields
 
@@ -335,10 +284,6 @@ fields
         MyFrontMaterial         :       MaterialAspect from Graphic3d;
         MyBackMaterial          :       MaterialAspect from Graphic3d;
 
-        -- the degenate model
-        MyDegenerateModel       :       TypeOfDegenerateModel from Aspect;
-        MyDegenerateRatio       :       Ratio from Quantity;
-        
         -- 22-03-04 OCC4895 SAN High-level interface for controlling polygon offsets
         -- polygon offsets
         MyPolygonOffsetMode     :       Integer from Standard;

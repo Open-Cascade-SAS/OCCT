@@ -423,11 +423,6 @@ is
         is deferred;
     ---Purpose: call_togl_transformstructure
 
-        DegenerateStructure ( me                        : mutable;
-                              ACStructure       : CStructure from Graphic3d )
-                is deferred;
-        ---Purpose: call_togl_degeneratestructure
-
     Transparency ( me       : mutable;
                    ACView   : CView from Graphic3d;
                    AFlag    : Boolean from Standard )
@@ -617,20 +612,6 @@ is
                                    zmax : ShortReal from Standard)
     ---Purpose: call_togl_graduatedtrihedron_minmaxvalues
     is deferred;
-
-    ---------------------------
-    -- Category: Animation mode
-    ---------------------------
-
-    BeginAnimation ( me : mutable;
-             ACView : CView from Graphic3d)
-        is deferred;
-    ---Purpose: call_togl_begin_animation
-
-    EndAnimation ( me   : mutable;
-               ACView   : CView from Graphic3d)
-        is deferred;
-    ---Purpose: call_togl_end_animation
 
     ----------------------------------
     -- Category: Ajout mode methods

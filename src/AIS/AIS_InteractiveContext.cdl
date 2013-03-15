@@ -25,8 +25,6 @@
 --   GG  :  GER61351 17/11/1999 Change SetColor() with a compatible i
 --	    Quantity_Color instead the restricted NameOfColor.
 --          Add SetCurrentFacingModel() methods
---   EUG :  G003 05/11/1999 Degeneration mode support
---              Add SetDegenerateModel() methods
 --   GG  : IMP140200 Add SetSelectedAspect() method
 --   GG  : 25/05/00 BUC60688 Add SetSensitivity() methods 
 --   VSV : 22/05/01 Add Selection by polygon
@@ -143,7 +141,6 @@ uses
     Location              from TopLoc,
     EntityOwner           from SelectMgr,
     TypeOfFacingModel 	  from Aspect,
-    TypeOfDegenerateModel from Aspect,
     Array1OfPnt2d         from TColgp,
     Transformation 	  from Geom
 
@@ -702,33 +699,6 @@ is
 -- Standard_False, the presentation of the Interactive
 -- Object activates the selection mode; the object is
 -- displayed but no viewer will be updated.
-        
-    SetDegenerateModel ( me : mutable;
-         	aniobj  : InteractiveObject from AIS;
-                aModel  : TypeOfDegenerateModel from Aspect =
-                                                Aspect_TDM_WIREFRAME;
-                aRatio : Ratio from Quantity = 0.0);
-    ---Level: Public
-    ---Purpose: Sets the model of degeneration for the shaded representation
-    --   of the object <aniobj>
-    --   according to the degenerate ratio >= 0. & <= 1. where :
-    --   <aRatio> = 0. indicate that all polygons of the object
-    --      will be displayed.
-    --   <aRatio> = 1. indicate that no polygons will be displayed !!
-    --   When <ARatio> is > 0 & < 1. the corresponding amount
-    --   of object polygons will be displayed with a random method.
-    --  Warning: the degenerate structure is shown only when
-    -- the animation and degenerate flags are set to TRUE
-    -- in V3d_View::SetAnimationMode(..)
-    ---Category: Methods to manage the object degeneration
-
-    SetDegenerateModel (
-     me         : mutable;
-     aModel     : TypeOfDegenerateModel from Aspect;
-     aSkipRatio : Ratio                 from Quantity = 0.0
-    ) is static;
-    ---Purpose: Defines the degenerate method to apply on the shaded 
-    --  representation of all objects.
 
     SetLocalAttributes(me      : mutable; 
     	    	       aniobj  : InteractiveObject from AIS;

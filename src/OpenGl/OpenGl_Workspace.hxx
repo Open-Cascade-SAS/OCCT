@@ -110,12 +110,6 @@ public:
 
   void DisplayCallback (const Graphic3d_CView& theCView, int theReason);
 
-  // szvgl: defined in OpenGl_Workspace_1.cxx
-  void BeginAnimation (const Standard_Boolean theUseDegeneration,
-                       const Standard_Boolean theUpdateAM);
-  void EndAnimation();
-  void EraseAnimation();
-
   Standard_Boolean SetImmediateModeDrawToFront (const Standard_Boolean theDrawToFrontBuffer);
   Standard_Boolean BeginAddMode();
   void EndAddMode();
@@ -142,9 +136,6 @@ public:
   //// RELATED TO STATUS ////
 
   Standard_Integer   NamedStatus;
-
-  Standard_Integer   DegenerateModel;
-  Standard_ShortReal SkipRatio;
 
   const TEL_COLOUR* HighlightColor;
 

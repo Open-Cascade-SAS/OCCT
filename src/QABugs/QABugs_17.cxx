@@ -567,9 +567,10 @@ static Standard_Integer OCC280 (Draw_Interpretor& di, Standard_Integer argc, con
   ViewerTest::UnsetEventManager();
   ViewerTest::SetEventManager (new ViewerTest_EventManager (aNewView, ViewerTest::GetAISContext()));
 
-  if (HLR == 1) {
-    di << "HLR" << "\n";
-    aNewView->SetDegenerateModeOff();
+  if (HLR == 1)
+  {
+    di << "HLR\n";
+    aNewView->SetComputedMode (Standard_True);
   }
 
   return 0;

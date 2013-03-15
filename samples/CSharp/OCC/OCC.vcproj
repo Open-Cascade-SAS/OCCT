@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="OCC"
 	ProjectGUID="{DCB139CF-2190-412E-B72F-8B080CC01422}"
 	Keyword="Win32Proj"
@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="TKV3d.lib TKV2d.lib TKHLR.lib TKService.lib TKBool.lib TKPShape.lib TKMath.lib TKBO.lib TKernel.lib TKPrim.lib TKTopAlgo.lib TKBRep.lib TKGeomAlgo.lib TKG2d.lib TKG3d.lib PTKernel.lib TKShapeSchema.lib TKXSBase.lib TKIGES.lib TKSTEP.lib TKSTEP209.lib TKSTEPAttr.lib TKSTEPBase.lib TKShHealing.lib TKSTL.lib TKVRML.lib"
+				AdditionalDependencies="TKV3d.lib TKHLR.lib TKService.lib TKBool.lib TKPShape.lib TKMath.lib TKBO.lib TKernel.lib TKPrim.lib TKTopAlgo.lib TKBRep.lib TKGeomAlgo.lib TKG2d.lib TKG3d.lib PTKernel.lib TKShapeSchema.lib TKXSBase.lib TKIGES.lib TKSTEP.lib TKSTEP209.lib TKSTEPAttr.lib TKSTEPBase.lib TKShHealing.lib TKSTL.lib TKVRML.lib"
 				OutputFile="$(OutDir)/OCC.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(CSF_OPT_LIB32D)"
@@ -144,7 +144,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="TKV3d.lib TKV2d.lib TKHLR.lib TKService.lib TKBool.lib TKPShape.lib TKMath.lib TKBO.lib TKernel.lib TKPrim.lib TKTopAlgo.lib TKBRep.lib TKGeomAlgo.lib TKG2d.lib TKG3d.lib PTKernel.lib TKShapeSchema.lib TKXSBase.lib TKIGES.lib TKSTEP.lib TKSTEP209.lib TKSTEPAttr.lib TKSTEPBase.lib TKShHealing.lib TKSTL.lib TKVRML.lib"
+				AdditionalDependencies="TKV3d.lib TKHLR.lib TKService.lib TKBool.lib TKPShape.lib TKMath.lib TKBO.lib TKernel.lib TKPrim.lib TKTopAlgo.lib TKBRep.lib TKGeomAlgo.lib TKG2d.lib TKG3d.lib PTKernel.lib TKShapeSchema.lib TKXSBase.lib TKIGES.lib TKSTEP.lib TKSTEP209.lib TKSTEPAttr.lib TKSTEPBase.lib TKShHealing.lib TKSTL.lib TKVRML.lib"
 				OutputFile="$(OutDir)/OCC.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(CSF_OPT_LIB32)"

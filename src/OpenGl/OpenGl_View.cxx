@@ -100,11 +100,8 @@ OpenGl_View::OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext)
   myVisualization(AContext.Visualization),
   myIntShadingMethod(TEL_SM_GOURAUD),
   myAntiAliasing(Standard_False),
-  myAnimationListIndex(0),
-  myAnimationListReady(Standard_False),
   myTransPers(&myDefaultTransPers),
-  myIsTransPers(Standard_False),
-  myResetFLIST(Standard_False)
+  myIsTransPers(Standard_False)
 {
   // Initialize matrices
   memcpy(myOrientationMatrix,myDefaultMatrix,sizeof(Tmatrix3));
@@ -144,11 +141,6 @@ void OpenGl_View::ReleaseGlResources (const Handle(OpenGl_Context)& theCtx)
     glDeleteTextures (1, (GLuint*)&(myBgTexture.TexId));
     myBgTexture.TexId = 0;
   }
-  if (myAnimationListIndex)
-  {
-    glDeleteLists ((GLuint )myAnimationListIndex, 1);
-    myAnimationListIndex = 0;
-  }
 }
 
 void OpenGl_View::SetTextureEnv (const Handle(OpenGl_Context)&       theCtx,
@@ -172,10 +164,9 @@ void OpenGl_View::SetTextureEnv (const Handle(OpenGl_Context)&       theCtx,
 
 /*----------------------------------------------------------------------*/
 
-void OpenGl_View::SetBackfacing (const Standard_Integer AMode)
+void OpenGl_View::SetBackfacing (const Standard_Integer theMode)
 {
-  myBackfacing = AMode;
-  myResetFLIST = Standard_True;
+  myBackfacing = theMode;
 }
 
 /*----------------------------------------------------------------------*/

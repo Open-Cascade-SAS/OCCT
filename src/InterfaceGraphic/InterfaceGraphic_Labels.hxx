@@ -16,10 +16,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-/*
- * 24/01/00 EUG : G003 add Structure_LABDegenerateModel value
-*/
-
 #ifndef LABELS_HXX_INCLUDED
 #define LABELS_HXX_INCLUDED
 
@@ -55,9 +51,6 @@
 
 /* structure, hierarchy */
 #define Structure_LABConnect	33
-
-/* structure degenerate model */
-#define Structure_LABDegenerateModel 34
 
 /* view, index */
 #define View_LABViewIndex	10

@@ -157,7 +157,6 @@ public:
   Standard_EXPORT void SetPlane (const Graphic3d_CView& ACView);
   Standard_EXPORT void SetVisualisation (const Graphic3d_CView& ACView);
   Standard_EXPORT void TransformStructure (const Graphic3d_CStructure& ACStructure);
-  Standard_EXPORT void DegenerateStructure (const Graphic3d_CStructure& ACStructure);
   Standard_EXPORT void Transparency (const Graphic3d_CView& ACView, const Standard_Boolean AFlag);
   Standard_EXPORT void Update (const Graphic3d_CView& ACView, const Aspect_CLayer2d& ACUnderLayer, const Aspect_CLayer2d& ACOverLayer);
   Standard_EXPORT Standard_Boolean View (Graphic3d_CView& ACView);
@@ -179,8 +178,6 @@ public:
   Standard_EXPORT void GraduatedTrihedronDisplay (const Graphic3d_CView& view, const Graphic3d_CGraduatedTrihedron& cubic);
   Standard_EXPORT void GraduatedTrihedronErase (const Graphic3d_CView& view);
   Standard_EXPORT void GraduatedTrihedronMinMaxValues (const Standard_ShortReal xmin, const Standard_ShortReal ymin, const Standard_ShortReal zmin, const Standard_ShortReal xmax, const Standard_ShortReal ymax, const Standard_ShortReal zmax);
-  Standard_EXPORT void BeginAnimation (const Graphic3d_CView& ACView);
-  Standard_EXPORT void EndAnimation (const Graphic3d_CView& ACView);
   Standard_EXPORT Standard_Boolean SetImmediateModeDrawToFront (const Graphic3d_CView& theCView,
                                                                 const Standard_Boolean theDrawToFrontBuffer);
   Standard_EXPORT Standard_Boolean BeginAddMode (const Graphic3d_CView& ACView);
@@ -325,9 +322,6 @@ private:
   //! Method to retrieve valid GL context.
   //! Could return NULL-handle if no window created by this driver.
   Standard_EXPORT const Handle(OpenGl_Context)& GetSharedContext() const;
-
-  //! Deprecated.
-  void InvalidateAllWorkspaces();
 
 public:
 

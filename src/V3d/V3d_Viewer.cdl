@@ -106,8 +106,6 @@ is
 	      --          This limitation might be addressed in some future OCCT releases.
         raises BadValue from V3d ;
         ---Purpose:        If the size of the view is <= 0
-        --      if ComputedMode is false, only the degenerate mode will be used.
-        --
         --  Warning: Client must creates a graphic driver
 
         CreateView (me: mutable) returns mutable View from V3d;

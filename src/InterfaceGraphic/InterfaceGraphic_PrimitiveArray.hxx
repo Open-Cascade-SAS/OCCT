@@ -30,7 +30,6 @@ PARRAY and DARRAY primitives, used in OpenGl package for presentation
 */
 
 #include <InterfaceGraphic_telem.hxx>
-#include <InterfaceGraphic_degeneration.hxx>
 
 #define MVERTICE 1
 #define MVNORMAL 2

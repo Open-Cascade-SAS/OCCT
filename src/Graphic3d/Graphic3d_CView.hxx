@@ -93,8 +93,6 @@ public:
     Active (0),
     ptrUnderLayer (NULL),
     ptrOverLayer  (NULL),
-    IsDegenerates     (0),
-    IsDegeneratesPrev (0),
     Backfacing  (0),
     GDisplayCB  (NULL),
     GClientData (NULL),
@@ -127,8 +125,6 @@ public:
   void* ptrUnderLayer;
   void* ptrOverLayer;
 
-  int   IsDegenerates;
-  int   IsDegeneratesPrev;
   int   Backfacing;
 
   Aspect_RenderingContext    GContext;

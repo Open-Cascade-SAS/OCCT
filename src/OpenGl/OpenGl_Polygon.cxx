@@ -589,7 +589,7 @@ void OpenGl_Polygon::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
     front_lighting_model = 0;
   }
 
-  if( interior_style != Aspect_IS_EMPTY && AWorkspace->DegenerateModel < 2 )
+  if( interior_style != Aspect_IS_EMPTY)
   {
     if ( front_lighting_model )
       glEnable(GL_LIGHTING);
@@ -609,14 +609,7 @@ void OpenGl_Polygon::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
   glDisable(GL_TEXTURE_1D);
   glDisable(GL_TEXTURE_2D);
 
-  switch ( AWorkspace->DegenerateModel )
-  {
-    default:
-      draw_edges ( edge_colour, interior_style, AWorkspace );
-      break;
-    case 3:  /* marker degeneration */
-      break;
-  }
+  draw_edges ( edge_colour, interior_style, AWorkspace );
 
   glPopAttrib(); /* skt: GL_ENABLE_BIT*/
 }

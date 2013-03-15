@@ -34,7 +34,6 @@ xx-xx-xx : xxx ; Creation.
 23-12-97 : FMN ; Suppression TelBackInteriorStyle, TelBackInteriorStyleIndex
 et TelBackInteriorShadingMethod
 30-11-98 : FMN ; S3819 : Textes toujours visibles
-21-09-99 : EUG : G003 : Degeneration management
 16-06-00 : ATS,SPK : G005 : Group of new primitives: TelParray
 22-03-04 : SAN : OCC4895 High-level interface for controlling polygon offsets
 
@@ -107,7 +106,6 @@ typedef  enum
   TelTextStyle,
   TelTextDisplayType, 
   TelTextColourSubTitle, 
-  TelDegenerationMode,
   TelTextZoomable,//Text Zoomable attributes
   TelTextAngle,//Text Angle attributes
   TelTextFontAspect,//Text Font Aspect attributes 

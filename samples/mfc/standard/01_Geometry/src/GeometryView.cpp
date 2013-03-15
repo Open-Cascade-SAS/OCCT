@@ -139,9 +139,11 @@ void CGeometryView::OnLButtonDown(UINT nFlags, CPoint point)
       break;
     case  CurAction3d_DynamicRotation :
       // SetCursor(AfxGetApp()->LoadStandardCursor());
-      if (!myDegenerateModeIsOn)
-        myView->SetDegenerateModeOn();
-      myView->StartRotation(point.x,point.y);  
+      if (myHlrModeIsOn)
+      {
+        myView->SetComputedMode (Standard_False);
+      }
+      myView->StartRotation (point.x, point.y);
       break;
     default :
       Standard_Failure::Raise(" incompatible Current Mode ");
@@ -231,31 +233,25 @@ void CGeometryView::OnMButtonUp(UINT nFlags, CPoint point)
 
 void CGeometryView::OnRButtonDown(UINT nFlags, CPoint point) 
 {
-  if ( nFlags & MK_CONTROL ) 
+  if ( nFlags & MK_CONTROL )
   {
-    // SetCursor(AfxGetApp()->LoadStandardCursor());   
-    if (!myDegenerateModeIsOn)
-      myView->SetDegenerateModeOn();
-    myView->StartRotation(point.x,point.y);  
+    // SetCursor(AfxGetApp()->LoadStandardCursor());
+    if (myHlrModeIsOn)
+    {
+      myView->SetComputedMode (Standard_False);
+    }
+    myView->StartRotation (point.x, point.y);
   }
   else // if ( Ctrl )
   {
-    Popup(point.x,point.y);
-  }	
+    Popup (point.x, point.y);
+  }
 }
 
 void CGeometryView::OnRButtonUp(UINT nFlags, CPoint point) 
 {
   SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-  if (!myDegenerateModeIsOn)
-  {  
-    myView->SetDegenerateModeOff();
-    myDegenerateModeIsOn = Standard_False;
-  } else
-  {
-    myView->SetDegenerateModeOn();
-    myDegenerateModeIsOn = Standard_True;
-  }
+  myView->SetComputedMode (myHlrModeIsOn);
   SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 }
 
@@ -341,16 +337,16 @@ void CGeometryView::OnMouseMove(UINT nFlags, CPoint point)
       }
 }
 
-void CGeometryView::OnUpdateBUTTONHlrOff(CCmdUI* pCmdUI) 
+void CGeometryView::OnUpdateBUTTONHlrOff (CCmdUI* pCmdUI)
 {
-  pCmdUI->SetCheck (myDegenerateModeIsOn);
-  pCmdUI->Enable   (!myDegenerateModeIsOn);	
+  pCmdUI->SetCheck (!myHlrModeIsOn);
+  pCmdUI->Enable   (myHlrModeIsOn);
 }
 
-void CGeometryView::OnUpdateBUTTONHlrOn(CCmdUI* pCmdUI) 
+void CGeometryView::OnUpdateBUTTONHlrOn (CCmdUI* pCmdUI)
 {
-  pCmdUI->SetCheck (!myDegenerateModeIsOn);
-  pCmdUI->Enable   (myDegenerateModeIsOn);	
+  pCmdUI->SetCheck (myHlrModeIsOn);
+  pCmdUI->Enable   (!myHlrModeIsOn);
 }
 
 void CGeometryView::OnUpdateBUTTONPanGlo(CCmdUI* pCmdUI) 

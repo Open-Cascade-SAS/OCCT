@@ -39,109 +39,6 @@
 
 #include <BRepPrimAPI_MakeBox.hxx>
 
-static Standard_Integer BUC60753 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  if(argc!=3)
-  {
-    di << "Usage : " << argv[0] << " mode (0 <=mode<=5) ratio (0.0<=ration<=1.0)" <<"\n";
-    return -1;
-  }
-
-  Handle(AIS_InteractiveContext) myAISContext = ViewerTest::GetAISContext();
-  if(myAISContext.IsNull()) {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return 1;
-  }
-           
-  Standard_Real Alpha = M_PI/10.;
-  Standard_Real CosAlpha = Cos (Alpha);
-  Standard_Real SinAlpha = Sin (Alpha);
-  Standard_Real MoinsCosAlpha = Cos (-Alpha);
-  Standard_Real MoinsSinAlpha = Sin (-Alpha);
-  TColStd_Array2OfReal TrsfI (0, 3, 0, 3);
-  TColStd_Array2OfReal TrsfX (0, 3, 0, 3);
-  TColStd_Array2OfReal TrsfY (0, 3, 0, 3);
-  TColStd_Array2OfReal TrsfZ (0, 3, 0, 3);
-  TColStd_Array2OfReal Trsfx (0, 3, 0, 3);
-  TColStd_Array2OfReal Trsfy (0, 3, 0, 3);
-  TColStd_Array2OfReal Trsfz (0, 3, 0, 3);
-  Standard_Integer i,j;
-  for (i=0; i<=3; i++)
-    for (j=0; j<=3; j++)
-      if (i == j) { 
-	TrsfX.SetValue (i, j, 1.0);
-	TrsfY.SetValue (i, j, 1.0);
-	TrsfZ.SetValue (i, j, 1.0);
-	Trsfx.SetValue (i, j, 1.0);
-	Trsfy.SetValue (i, j, 1.0);
-	Trsfz.SetValue (i, j, 1.0);
-	TrsfI.SetValue (i, j, 1.0);
-      } else { 
-	TrsfX.SetValue (i, j, 0.0);
-	TrsfY.SetValue (i, j, 0.0);
-	TrsfZ.SetValue (i, j, 0.0);
-	Trsfx.SetValue (i, j, 0.0);
-	Trsfy.SetValue (i, j, 0.0);
-	Trsfz.SetValue (i, j, 0.0);
-	TrsfI.SetValue (i, j, 0.0);
-      }
-	
-  // Rotation Alpha autour de l'axe X
-  TrsfX.SetValue (1, 1, CosAlpha);
-  TrsfX.SetValue (2, 2, CosAlpha);
-  TrsfX.SetValue (1, 2, -SinAlpha);
-  TrsfX.SetValue (2, 1, SinAlpha);
-  
-  // Rotation Alpha autour de l'axe Y
-  TrsfY.SetValue (0, 0, CosAlpha);
-  TrsfY.SetValue (2, 2, CosAlpha);
-  TrsfY.SetValue (0, 2, SinAlpha);
-  TrsfY.SetValue (2, 0, -SinAlpha);
-  
-  // Rotation Alpha autour de l'axe Z
-  TrsfZ.SetValue (0, 0, CosAlpha);
-  TrsfZ.SetValue (1, 1, CosAlpha);
-  TrsfZ.SetValue (0, 1, -SinAlpha);
-  TrsfZ.SetValue (1, 0, SinAlpha);
-  
-  // Rotation -Alpha autour de l'axe X
-  Trsfx.SetValue (1, 1, MoinsCosAlpha);
-  Trsfx.SetValue (2, 2, MoinsCosAlpha);
-  Trsfx.SetValue (1, 2, -MoinsSinAlpha);
-  Trsfx.SetValue (2, 1, MoinsSinAlpha);
-  
-  // Rotation -Alpha autour de l'axe Y
-  Trsfy.SetValue (0, 0, MoinsCosAlpha);
-  Trsfy.SetValue (2, 2, MoinsCosAlpha);
-  Trsfy.SetValue (0, 2, MoinsSinAlpha);
-	Trsfy.SetValue (2, 0, -MoinsSinAlpha);
-  
-  // Rotation -Alpha autour de l'axe Z
-  Trsfz.SetValue (0, 0, MoinsCosAlpha);
-  Trsfz.SetValue (1, 1, MoinsCosAlpha);
-  Trsfz.SetValue (0, 1, -MoinsSinAlpha);
-  Trsfz.SetValue (1, 0, MoinsSinAlpha);
-  
-  Handle(V3d_View) myV3dView = ViewerTest::CurrentView();
-  
-  myV3dView->SetAnimationMode(Standard_True,Standard_True);
-  myAISContext-> SetDegenerateModel((Aspect_TypeOfDegenerateModel) Draw::Atoi(argv[1]),Draw::Atof(argv[2]));
-  
-//		  Timer.Reset ();
-//		  Timer.Start ();
-  myV3dView->SetAnimationModeOn();
-  myV3dView->SetComputedMode ( Standard_False );
-  for (i=0;i<40;i++) {
-    myV3dView->View()->SetTransform (Trsfz);
-    myV3dView->View()->Update ();
-  }
-  myV3dView->SetAnimationModeOff();
-//		  Timer.Stop ();
-//		  Timer.Show (cout);   
-
-  return 0;
-}
-
 static Standard_Integer  OCC162 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if ( argc != 2 ) {
@@ -260,7 +157,6 @@ static Standard_Integer OCC1651 (Draw_Interpretor& di, Standard_Integer argc, co
 void QABugs::Commands_8(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
-  theCommands.Add("BUC60753", "BUC60753 mode ratio", __FILE__, BUC60753, group);
   theCommands.Add("OCC162", "OCC162 name", __FILE__, OCC162, group);
   theCommands.Add("OCC172", "OCC172", __FILE__, OCC172, group);
   theCommands.Add("OCC204", "OCC204 updateviewer=0/1", __FILE__, OCC204, group);

@@ -32,7 +32,7 @@ CSelectionDialog::CSelectionDialog(CHLRDoc* aDoc,CWnd* pParent /*=NULL*/)
 	m_DisplayMode = 0;
 	m_NbIsos      = 2;
 	m_DrawHiddenLine = TRUE;
-	m_DegeneratedModeOn = TRUE;
+	m_HlrModeIsOn = FALSE;
 	//}}AFX_DATA_INIT
 }
 
@@ -44,7 +44,7 @@ void CSelectionDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Radio(pDX, IDC_DisplayDefault, m_DisplayMode);
 	DDX_Text(pDX, IDC_EDIT_NBIsos, m_NbIsos);
 	DDX_Check(pDX, IDC_DrawHiddenLine, m_DrawHiddenLine);
-	DDX_Check(pDX, IDC_DegeneratedMode, m_DegeneratedModeOn);
+	DDX_Check(pDX, IDC_HlrModeIsOn, m_HlrModeIsOn);
 	//}}AFX_DATA_MAP
 }
 
@@ -80,7 +80,7 @@ BEGIN_MESSAGE_MAP(CSelectionDialog, CDialog)
 	ON_WM_RBUTTONUP()
 	ON_WM_MOUSEMOVE()
 	ON_BN_CLICKED(IDC_DrawHiddenLine, OnDrawHiddenLine)
-	ON_BN_CLICKED(IDC_DegeneratedMode, OnDegeneratedMode)
+	ON_BN_CLICKED(IDC_HlrModeIsOn,    OnHlrMode)
 	ON_WM_DRAWITEM()
 	ON_WM_PAINT()
 	//}}AFX_MSG_MAP
@@ -121,30 +121,30 @@ BOOL CSelectionDialog::OnInitDialog()
 void CSelectionDialog::OnDisplay(bool isFit) 
 {
 	GetDlgItem(IDC_DUMMYBUTTON)->SetRedraw(true);
-	if(!myDisplay) {
-	    Handle(Graphic3d_GraphicDriver) aGraphicDriver = 
-			((CHLRApp*)AfxGetApp())->GetGraphicDriver();
+	if (!myDisplay)
+  {
+    Handle(Graphic3d_GraphicDriver) aGraphicDriver = ((CHLRApp*)AfxGetApp())->GetGraphicDriver();
 
-		myActiveViewer = new V3d_Viewer(aGraphicDriver,(short *) "Visu3D");
-		myActiveViewer->SetDefaultLights();
-		myActiveViewer->SetLightOn();
-		myActiveView = myActiveViewer->CreateView();
+    myActiveViewer = new V3d_Viewer(aGraphicDriver,(short *) "Visu3D");
+    myActiveViewer->SetDefaultLights();
+    myActiveViewer->SetLightOn();
+    myActiveView = myActiveViewer->CreateView();
 
-		Handle(WNT_Window) aWNTWindow = new WNT_Window(GetDlgItem(IDC_DUMMYBUTTON)->GetSafeHwnd(),
-				                                          Quantity_NOC_GRAY);
+    Handle(WNT_Window) aWNTWindow = new WNT_Window (GetDlgItem(IDC_DUMMYBUTTON)->GetSafeHwnd(),
+                                                    Quantity_NOC_GRAY);
+    myActiveView->SetComputedMode (m_HlrModeIsOn);
+    myActiveView->SetWindow(aWNTWindow);
 
-	  if (m_DegeneratedModeOn) myActiveView->SetDegenerateModeOn();
-		  myActiveView->SetWindow(aWNTWindow);
+    myInteractiveContext = new AIS_InteractiveContext(myActiveViewer);
 
-		myInteractiveContext = new AIS_InteractiveContext(myActiveViewer);
+    // TRIHEDRON
+    Handle(Geom_Axis2Placement) aTrihedronAxis=new Geom_Axis2Placement(gp::XOY());
+    myTrihedron=new AIS_Trihedron(aTrihedronAxis);
 
-		// TRIHEDRON
-		Handle(Geom_Axis2Placement) aTrihedronAxis=new Geom_Axis2Placement(gp::XOY());
-		myTrihedron=new AIS_Trihedron(aTrihedronAxis);
-
-		myInteractiveContext->Display(myTrihedron);
+    myInteractiveContext->Display(myTrihedron);
 	}
-	if(isFit) {
+	if (isFit)
+  {
 		myActiveView->ZFitAll();
 		myActiveView->FitAll();
 	}
@@ -389,20 +389,18 @@ void CSelectionDialog::OnAxoView()
   OnDisplay(true);
 }
 
-void CSelectionDialog::OnDegeneratedMode() 
+void CSelectionDialog::OnHlrMode()
 {
   UpdateData(true);
 
-  if(m_DegeneratedModeOn)
+  if (!m_HlrModeIsOn)
   {
-    myActiveView->SetDegenerateModeOn();
-    m_DegeneratedModeOn = Standard_True;
+    myActiveView->SetComputedMode (m_HlrModeIsOn);
   }
   else
   {
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-    myActiveView->SetDegenerateModeOff();
-    m_DegeneratedModeOn = Standard_False;
+    myActiveView->SetComputedMode (m_HlrModeIsOn);
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
   }
   OnDisplay(false);
@@ -433,16 +431,20 @@ void CSelectionDialog::OnRButtonDown(UINT nFlags, CPoint point)
 {
   CDialog::OnRButtonDown(nFlags, point);
 
-  if ((myPosMinX > point.x)||(myPosMaxX < point.x) ||
-    (myPosMinY > point.y) ||(myPosMaxY < point.y))
-    return;
-
-  if ( nFlags & CASCADESHORTCUTKEY ) 
+  if ((myPosMinX > point.x) || (myPosMaxX < point.x) ||
+      (myPosMinY > point.y) || (myPosMaxY < point.y))
   {
-    if (!m_DegeneratedModeOn)
-      myActiveView->SetDegenerateModeOn();
-    myActiveView->StartRotation(point.x,point.y);  
-    OnDisplay(false);
+    return;
+  }
+
+  if ( nFlags & CASCADESHORTCUTKEY )
+  {
+    if (m_HlrModeIsOn)
+    {
+      myActiveView->SetComputedMode (Standard_False);
+    }
+    myActiveView->StartRotation (point.x, point.y);
+    OnDisplay (false);
   }
 }
 
@@ -450,17 +452,16 @@ void CSelectionDialog::OnRButtonUp(UINT nFlags, CPoint point)
 {
   CDialog::OnRButtonUp(nFlags, point);
 
-  if ((myPosMinX > point.x)||(myPosMaxX < point.x) ||
-    (myPosMinY > point.y) ||(myPosMaxY < point.y))
+  if ((myPosMinX > point.x) || (myPosMaxX < point.x) ||
+      (myPosMinY > point.y) || (myPosMaxY < point.y))
+  {
     return;
+  }
 
   SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-  // reset tyhe good Degenerated mode according to the strored one
-  //   --> dynamic rotation may have change it 
-  if (!m_DegeneratedModeOn)  
-    myActiveView->SetDegenerateModeOff();
-  else
-    myActiveView->SetDegenerateModeOn();
+  // reset tyhe good HLR mode according to the strored one
+  //   --> dynamic rotation may have change it
+  myActiveView->SetComputedMode (m_HlrModeIsOn);
   OnDisplay(false);
   SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 }

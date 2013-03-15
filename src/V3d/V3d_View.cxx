@@ -96,14 +96,6 @@ To solve the problem (for lack of a better solution) I make 2 passes.
 //        (reported in the viewer)
 //      -> Add SetProjModel() methods.
 
-#define G003    //EUG 04-10-99
-//      -> computed mode management
-//         Add SetComputedMode(..) method
-//      -> animation mode management
-//         Add SetAnimationMode()
-//      -> backfacing management
-//         Add SetBackFacingModel() method
-
 #define G004    //VKH 15-11-99
 //      -> Add Dump() methods
 //      -> GG 07/03/00 Use the new MMSize()
@@ -179,15 +171,7 @@ To solve the problem (for lack of a better solution) I make 2 passes.
 #include <Aspect_FontMap.hxx>
 #include <TColStd_HSequenceOfInteger.hxx>
 
-#ifdef G003
-# define V3d_FLAG_ANIMATION     0x00000001
-# define V3d_FLAG_DEGENERATION  0x00000002
-# define V3d_FLAG_COMPUTATION   0x00000004
-#endif  // G003
-
-// Tumble
-#include <OSD_Timer.hxx>
-static OSD_Timer FullTimer;
+#define V3d_FLAG_COMPUTATION   0x00000004
 
 // Perspective
 #include <OSD_Environment.hxx>
@@ -377,10 +361,6 @@ MyProjModel(V3d_TPM_SCREEN)
 #ifndef IMP240100
 #endif  //IMP240100
 
-#ifdef G003
-  MyAnimationFlags = 0;
-#endif  // G003
-
 #ifdef IMP210200
   MyTransparencyFlag = Standard_False;
 #endif
@@ -423,10 +403,6 @@ MyProjModel(V3d_TPM_SCREEN)
   VM->AddView(this) ;
   Init();
   myImmediateUpdate = Standard_True;
-
-#ifdef G003
-  MyAnimationFlags = 0;
-#endif
 }
 
 /*----------------------------------------------------------------------*/
@@ -3085,103 +3061,6 @@ void V3d_View::Rotation(const Standard_Integer X,
 #endif
 }
 
-void V3d_View::SetAnimationModeOn () {
-#ifdef G003
-  if ( MyAnimationFlags & V3d_FLAG_ANIMATION ) {
-    if( ComputedMode() ) {  // Deactivates computed mode during animation
-      MyAnimationFlags |= V3d_FLAG_COMPUTATION;
-      Standard_Boolean immediatUpdate = myImmediateUpdate;
-      myImmediateUpdate = Standard_False;
-      SetComputedMode(Standard_False);
-      myImmediateUpdate = immediatUpdate;
-    }
-    MyView -> SetAnimationModeOn ( MyAnimationFlags & V3d_FLAG_DEGENERATION );
-  }
-#else
-  MyView->SetAnimationModeOn();
-#endif
-}
-
-void V3d_View::SetAnimationModeOff () {
-#ifdef G003
-  if ( MyAnimationFlags & V3d_FLAG_ANIMATION ) {
-    MyView -> SetAnimationModeOff ();
-    if ( MyAnimationFlags & V3d_FLAG_COMPUTATION ) {
-      // Reactivates computed mode after animation
-      MyAnimationFlags &= ~V3d_FLAG_COMPUTATION;
-      SetComputedMode(Standard_True);
-    } else if( MyAnimationFlags & V3d_FLAG_DEGENERATION ) {
-      Update();
-    }
-  }
-#else
-  MyView->SetAnimationModeOff();
-#endif
-}
-
-Standard_Boolean V3d_View::AnimationModeIsOn () const
-{
-  return MyView->AnimationModeIsOn();
-}
-
-#ifdef G003
-void V3d_View :: SetAnimationMode
-(
- const Standard_Boolean anAnimationFlag,
- const Standard_Boolean aDegenerationFlag
- )
-{
-  if ( anAnimationFlag )
-    MyAnimationFlags |= V3d_FLAG_ANIMATION;
-  else
-    MyAnimationFlags &= ~V3d_FLAG_ANIMATION;
-
-  if ( aDegenerationFlag )
-    MyAnimationFlags |= V3d_FLAG_DEGENERATION;
-  else
-    MyAnimationFlags &= ~V3d_FLAG_DEGENERATION;
-
-}  // end V3d_View :: SetAnimationMode
-
-Standard_Boolean V3d_View::AnimationMode( Standard_Boolean& isDegenerate ) const
-{
-  isDegenerate = MyAnimationFlags & V3d_FLAG_DEGENERATION;
-  return MyAnimationFlags & V3d_FLAG_ANIMATION;
-}
-#endif
-
-void V3d_View::SetDegenerateModeOn()
-{
-#ifdef G003
-  SetComputedMode(Standard_False);
-#else
-  MyView->SetDegenerateModeOn();
-  ImmediateUpdate();
-#endif
-}
-
-void V3d_View::SetDegenerateModeOff()
-{
-#ifdef G003
-  SetComputedMode(Standard_True);
-#else
-  if(myComputedMode) {
-    MyView->SetDegenerateModeOff();
-    ImmediateUpdate();
-  }
-#endif
-}
-
-Standard_Boolean V3d_View::DegenerateModeIsOn() const
-{
-#ifdef G003
-  return !ComputedMode();
-#else
-  return MyView->DegenerateModeIsOn();
-#endif
-}
-
-#ifdef G003
 void V3d_View :: SetComputedMode ( const Standard_Boolean aMode )
 {
   if( aMode ) {
@@ -3210,7 +3089,6 @@ V3d_TypeOfBackfacingModel V3d_View :: BackFacingModel () const
 {
   return V3d_TypeOfBackfacingModel(MyView -> BackFacingModel ());
 }
-#endif
 
 Standard_Boolean V3d_View::TransientManagerBeginDraw(const Standard_Boolean DoubleBuffer,const Standard_Boolean RetainMode) const
 {
@@ -3230,16 +3108,9 @@ Standard_Boolean V3d_View::TransientManagerBeginAddDraw() const
 void V3d_View::Init()
 {
   myComputedMode = MyViewer->ComputedMode();
-#ifdef G003
   if( !myComputedMode || !MyViewer->DefaultComputedMode() ) {
     SetComputedMode(Standard_False);
   }
-#else
-  if(!myComputedMode)
-    MyView->SetDegenerateModeOn();
-  else
-    if(!MyViewer->DefaultComputedMode()) MyView->SetDegenerateModeOn();
-#endif
 
 #ifdef IMP240100
   OSD_Environment env_walkthrow("CSF_WALKTHROUGH");
@@ -3258,42 +3129,6 @@ void V3d_View::Plot()
 {
   V3d_BadValue_Raise_if( !MyPlotter.IsNull(), "view has no plotter");
   MyView->Plot(MyPlotter);
-}
-
-Standard_Real V3d_View::Tumble (const Standard_Integer NbImages, const Standard_Boolean AnimationMode)
-{
-  FullTimer.Reset ();
-  FullTimer.Start ();
-
-  if (AnimationMode) MyView->SetAnimationModeOn();
-  Standard_Integer i;
-  Standard_Real delta = 0.01;
-  Standard_Real xangle, yangle;
-  xangle = yangle = delta*int(NbImages/3);
-
-  Rotate (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Standard_True);
-  for (i=1; i<=int(NbImages/3); i++)
-    Rotate (delta*i, 0.0, 0.0, 0.0, 0.0, 0.0, Standard_False);
-  for (i=1; i<=int(NbImages/3); i++)
-    Rotate (xangle, delta*i, 0.0, 0.0, 0.0, 0.0, Standard_False);
-  for (i=1; i<=int(NbImages/3); i++)
-    Rotate (xangle, yangle, delta*i, 0.0, 0.0, 0.0, Standard_False);
-  if (AnimationMode) MyView->SetAnimationModeOff();
-
-  FullTimer.Stop ();
-  cout << "For " << NbImages << " Images : " << endl;
-  FullTimer.Show (cout);
-  cout << flush;
-
-  Standard_Real Seconds, CPUtime;
-  Standard_Integer Minutes, Hours;
-
-  FullTimer.Show (Seconds, Minutes, Hours, CPUtime);
-  cout << "Result " << (AnimationMode ? "with " : "without ")
-    << "display list : " << NbImages/CPUtime << " images/Second."
-    << endl;
-
-  return NbImages/CPUtime;
 }
 
 #include <Aspect.hxx>

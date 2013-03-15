@@ -83,28 +83,18 @@ END_MESSAGE_MAP()
 // CAnimationView3D construction/destruction
 
 CAnimationView3D::CAnimationView3D()
+: myXmin (0),
+  myYmin (0),
+  myXmax (0),
+  myYmax (0),
+  myCurZoom (0.0),
+  myHlrModeIsOn (Standard_False),
+  myCurrentMode  (CurrentAction3d_Nothing),
+  m_FlySens  (500.0),
+  m_TurnSens (M_PI / 40.0),
+  m_Pen (NULL)
 {
-	// TODO: add construction code here
-
-    myXmin=0;
-    myYmin=0;  
-    myXmax=0;
-    myYmax=0;
-    myCurZoom=0;
-    // will be set in OnInitial update, but, for more security :
-    myCurrentMode = CurrentAction3d_Nothing;
-    myDegenerateModeIsOn=Standard_True;
-    m_Pen = NULL;
-
-	myXmin=0;
-    myYmin=0;  
-    myXmax=0;
-    myYmax=0;
-    myCurZoom=0;
-
-    // will be set in OnInitial update, but, for more security :
-	m_FlySens = 500. ;
-	m_TurnSens = M_PI / 40. ;
+  // TODO: add construction code here
 }
 
 CAnimationView3D::~CAnimationView3D()
@@ -136,61 +126,60 @@ void CAnimationView3D::OnDraw(CDC* pDC)
 }
 void CAnimationView3D::OnInitialUpdate() 
 {
-	CView::OnInitialUpdate();
+  CView::OnInitialUpdate();
 
-	// TODO: Add your specialized code here and/or call the base class
-	    // TODO: Add your specialized code here and/or call the base class
-//	myView = GetDocument()->GetViewer()->CreateView();
+  // TODO: Add your specialized code here and/or call the base class
+  //	myView = GetDocument()->GetViewer()->CreateView();
 
-	Handle(V3d_Viewer) aViewer ;
-	
-    aViewer = GetDocument()->GetViewer() ;
-	aViewer->DefaultPerspectiveView () ;
-	aViewer->SetDefaultTypeOfView ( V3d_PERSPECTIVE ) ;
-    myView = aViewer->CreateView();
+  Handle(V3d_Viewer) aViewer;
 
-    // store for restore state after rotation (witch is in Degenerated mode)
-    myDegenerateModeIsOn = myView->DegenerateModeIsOn();
+  aViewer = GetDocument()->GetViewer();
+  aViewer->DefaultPerspectiveView();
+  aViewer->SetDefaultTypeOfView (V3d_PERSPECTIVE);
+  myView = aViewer->CreateView();
 
-    Handle(WNT_Window) aWNTWindow = new WNT_Window(GetSafeHwnd ());
-    myView->SetWindow(aWNTWindow);
-    if (!aWNTWindow->IsMapped()) aWNTWindow->Map();
+  // store for restore state after rotation (witch is in Degenerated mode)
+  myHlrModeIsOn = myView->ComputedMode();
 
-    // store the mode ( nothing , dynamic zooming, dynamic ... )
-    myCurrentMode = CurrentAction3d_Nothing;
-	CFrameWnd* pParentFrm = GetParentFrame();
-	pParentFrm->ActivateFrame(SW_SHOWMAXIMIZED);
+  Handle(WNT_Window) aWNTWindow = new WNT_Window (GetSafeHwnd());
+  myView->SetWindow(aWNTWindow);
+  if (!aWNTWindow->IsMapped()) aWNTWindow->Map();
 
-	Standard_Integer w=100 , h=100 ;   /* Debug Matrox                         */
-	aWNTWindow->Size (w,h) ;           /* Keeps me unsatisfied (rlb).....      */
-	                                   /* Resize is not supposed to be done on */
-	                                   /* Matrox                               */
-	                                   /* I suspect another problem elsewhere  */
-	::PostMessage ( GetSafeHwnd () , WM_SIZE , SIZE_RESTORED , w + h*65536 ) ;
+  // store the mode ( nothing , dynamic zooming, dynamic ... )
+  myCurrentMode = CurrentAction3d_Nothing;
+  CFrameWnd* pParentFrm = GetParentFrame();
+  pParentFrm->ActivateFrame(SW_SHOWMAXIMIZED);
 
-	myPView = Handle(V3d_PerspectiveView)::DownCast (myView);
+  Standard_Integer w=100 , h=100 ;   /* Debug Matrox                         */
+  aWNTWindow->Size (w,h) ;           /* Keeps me unsatisfied (rlb).....      */
+                                   /* Resize is not supposed to be done on */
+                                   /* Matrox                               */
+                                   /* I suspect another problem elsewhere  */
+  ::PostMessage ( GetSafeHwnd () , WM_SIZE , SIZE_RESTORED , w + h*65536 ) ;
 
-	m_Tune.Create ( IDD_TUNE , NULL ) ;
-	
-	RECT dlgrect;
-	m_Tune.GetWindowRect(&dlgrect);
-	LONG width = dlgrect.right-dlgrect.left;
-	LONG height = dlgrect.bottom-dlgrect.top;
-	RECT MainWndRect;
-	AfxGetApp()->m_pMainWnd->GetWindowRect(&MainWndRect);
-	LONG left = MainWndRect.left+3;
-	LONG top = MainWndRect.top + 112;
-	m_Tune.MoveWindow(left,top,width,height);
-	
-	m_Tune.m_pView = this ;
+  myPView = Handle(V3d_PerspectiveView)::DownCast (myView);
 
-	m_Tune.ShowWindow ( SW_HIDE );
+  m_Tune.Create ( IDD_TUNE , NULL ) ;
 
-    // store the mode ( nothing , dynamic zooming, dynamic ... )
+  RECT dlgrect;
+  m_Tune.GetWindowRect(&dlgrect);
+  LONG width = dlgrect.right-dlgrect.left;
+  LONG height = dlgrect.bottom-dlgrect.top;
+  RECT MainWndRect;
+  AfxGetApp()->m_pMainWnd->GetWindowRect(&MainWndRect);
+  LONG left = MainWndRect.left+3;
+  LONG top = MainWndRect.top + 112;
+  m_Tune.MoveWindow(left,top,width,height);
 
-    myCurrentMode = CurrentAction3d_Nothing;
+  m_Tune.m_pView = this ;
 
-	ReloadData () ;
+  m_Tune.ShowWindow ( SW_HIDE );
+
+  // store the mode ( nothing , dynamic zooming, dynamic ... )
+
+  myCurrentMode = CurrentAction3d_Nothing;
+
+  ReloadData () ;
 
 }
 
@@ -285,15 +274,15 @@ void CAnimationView3D::OnBUTTONAxo()
 
 void CAnimationView3D::OnBUTTONHlrOff() 
 {
-  myView->SetDegenerateModeOn();
-  myDegenerateModeIsOn = Standard_True;
+  myHlrModeIsOn = Standard_False;
+  myView->SetComputedMode (myHlrModeIsOn);
 }
 
 void CAnimationView3D::OnBUTTONHlrOn() 
 {
   SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-  myView->SetDegenerateModeOff();
-  myDegenerateModeIsOn = Standard_False;
+  myHlrModeIsOn = Standard_True;
+  myView->SetComputedMode (myHlrModeIsOn);
   SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 }
 
@@ -373,9 +362,11 @@ void CAnimationView3D::OnLButtonDown(UINT nFlags, CPoint point)
          case CurrentAction3d_GlobalPanning :// noting
         break;
         case  CurrentAction3d_DynamicRotation :
-			if (!myDegenerateModeIsOn)
-			  myView->SetDegenerateModeOn();
-			myView->StartRotation(point.x,point.y);  
+          if (myHlrModeIsOn)
+          {
+            myView->SetComputedMode (Standard_False);
+          }
+          myView->StartRotation (point.x, point.y);
         break;
 		case  CurrentAction3d_Fly :
 			KillTimer (1) ;
@@ -479,31 +470,25 @@ void CAnimationView3D::OnMButtonUp(UINT nFlags, CPoint point)
 
 void CAnimationView3D::OnRButtonDown(UINT nFlags, CPoint point) 
 {
-   if ( nFlags & MK_CONTROL ) 
-	  {
-        // SetCursor(AfxGetApp()->LoadStandardCursor());   
-	    if (!myDegenerateModeIsOn)
-	      myView->SetDegenerateModeOn();
-	      myView->StartRotation(point.x,point.y);  
-	  }
-	else // if ( Ctrl )
-	  {
-	    GetDocument()->Popup(point.x,point.y,myView);
-      }	
+  if ( nFlags & MK_CONTROL )
+  {
+    // SetCursor(AfxGetApp()->LoadStandardCursor());
+    if (myHlrModeIsOn)
+    {
+      myView->SetComputedMode (Standard_False);
+    }
+    myView->StartRotation (point.x, point.y);
+  }
+  else // if ( Ctrl )
+  {
+    GetDocument()->Popup(point.x,point.y,myView);
+  }
 }
 
 void CAnimationView3D::OnRButtonUp(UINT nFlags, CPoint point) 
 {
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-    if (!myDegenerateModeIsOn)
-    {  
-      myView->SetDegenerateModeOff();
-      myDegenerateModeIsOn = Standard_False;
-    } else
-    {
-      myView->SetDegenerateModeOn();
-      myDegenerateModeIsOn = Standard_True;
-    }
+    myView->SetComputedMode (myHlrModeIsOn);
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 }
 
@@ -598,14 +583,14 @@ void CAnimationView3D::OnMouseMove(UINT nFlags, CPoint point)
 
 void CAnimationView3D::OnUpdateBUTTONHlrOff(CCmdUI* pCmdUI) 
 {
-    pCmdUI->SetCheck (myDegenerateModeIsOn);
-	pCmdUI->Enable   (!myDegenerateModeIsOn);	
+  pCmdUI->SetCheck (!myHlrModeIsOn);
+  pCmdUI->Enable   (myHlrModeIsOn);
 }
 
 void CAnimationView3D::OnUpdateBUTTONHlrOn(CCmdUI* pCmdUI) 
 {
-    pCmdUI->SetCheck (!myDegenerateModeIsOn);
-	pCmdUI->Enable   (myDegenerateModeIsOn);	
+  pCmdUI->SetCheck (myHlrModeIsOn);
+  pCmdUI->Enable   (!myHlrModeIsOn);
 }
 
 void CAnimationView3D::OnUpdateBUTTONPanGlo(CCmdUI* pCmdUI) 

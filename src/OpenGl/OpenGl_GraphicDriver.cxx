@@ -95,19 +95,6 @@ Standard_ShortReal OpenGl_GraphicDriver::DefaultTextHeight() const
 }
 
 // =======================================================================
-// function : InvalidateAllWorkspaces
-// purpose  : ex-TsmInitUpdateState, deprecated, need to decide what to do with EraseAnimation() call
-// =======================================================================
-void OpenGl_GraphicDriver::InvalidateAllWorkspaces()
-{
-  for (NCollection_DataMap<Standard_Integer, Handle(OpenGl_Workspace)>::Iterator anIt (myMapOfWS);
-       anIt.More(); anIt.Next())
-  {
-    anIt.ChangeValue()->EraseAnimation();
-  }
-}
-
-// =======================================================================
 // function : ToUseVBO
 // purpose  :
 // =======================================================================

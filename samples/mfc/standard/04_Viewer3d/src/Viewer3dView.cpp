@@ -101,38 +101,32 @@ END_MESSAGE_MAP()
 // CViewer3dView construction/destruction
 
 CViewer3dView::CViewer3dView()
+: scaleX (1),
+  scaleY (1),
+  scaleZ (1),
+  myVisMode (VIS_SHADE),
+  myCurrentMode (CurAction3d_Nothing),
+  myXmin (0),
+  myYmin (0),
+  myXmax (0),
+  myYmax (0),
+  myCurZoom (0.0),
+  myWidth  (0),
+  myHeight (0),
+  NbActiveLights (2), // There are 2 default active lights
+  myHlrModeIsOn (Standard_False),
+  m_Pen (NULL),
+  myAxisKey (0),
+  myScaleDirection (0)
 {
-	// TODO: add construction code here
-    myXmin=0;
-    myYmin=0;  
-    myXmax=0;
-    myYmax=0;
-    myCurZoom=0;
-	myWidth=0;
-	myHeight=0;
-
-    scaleX = 1;
-    scaleY = 1;
-    scaleZ = 1;
-
-	myAxisKey = 0;
-	myScaleDirection = 0;
-
-
-	myVisMode = VIS_SHADE;
-
-    // will be set in OnInitial update, but, for more security :
-    myCurrentMode = CurAction3d_Nothing;
-    myDegenerateModeIsOn=Standard_True;
-    m_Pen = NULL;
-	NbActiveLights=2; // There are 2 default active lights
-	myGraphicDriver = ((CViewer3dApp*)AfxGetApp())->GetGraphicDriver();
+  // TODO: add construction code here
+  myGraphicDriver = ((CViewer3dApp*)AfxGetApp())->GetGraphicDriver();
 }
 
 CViewer3dView::~CViewer3dView()
 {
-	myView->Remove();
-    if (m_Pen) delete m_Pen;
+  myView->Remove();
+  if (m_Pen) delete m_Pen;
 }
 
 BOOL CViewer3dView::PreCreateWindow(CREATESTRUCT& cs)
@@ -147,31 +141,29 @@ BOOL CViewer3dView::PreCreateWindow(CREATESTRUCT& cs)
 // CViewer3dView drawing
 void CViewer3dView::OnInitialUpdate() 
 {
-	CView::OnInitialUpdate();
-	
-	
-    myView = GetDocument()->GetViewer()->CreateView();
+  CView::OnInitialUpdate();
 
-    // set the default mode in wireframe ( not hidden line ! )
-    myView->SetDegenerateModeOn();
-    // store for restore state after rotation (witch is in Degenerated mode)
-    myDegenerateModeIsOn = Standard_True;
+  myView = GetDocument()->GetViewer()->CreateView();
 
-    Handle(WNT_Window) aWNTWindow = new WNT_Window(GetSafeHwnd ());
-    myView->SetWindow(aWNTWindow);
-    if (!aWNTWindow->IsMapped()) aWNTWindow->Map();
+  // store for restore state after rotation (witch is in Degenerated mode)
+  myHlrModeIsOn = Standard_False;
+  myView->SetComputedMode (myHlrModeIsOn);
 
-//	Standard_Integer w=100 , h=100 ;   /* Debug Matrox                         */
-//	aWNTWindow->Size (w,h) ;           /* Keeps me unsatisfied (rlb).....      */
-	                                   /* Resize is not supposed to be done on */
-	                                   /* Matrox                               */
-	                                   /* I suspect another problem elsewhere  */
-//	::PostMessage ( GetSafeHwnd () , WM_SIZE , SIZE_RESTORED , w + h*65536 ) ;
+  Handle(WNT_Window) aWNTWindow = new WNT_Window (GetSafeHwnd());
+  myView->SetWindow(aWNTWindow);
+  if (!aWNTWindow->IsMapped()) aWNTWindow->Map();
 
-    // store the mode ( nothing , dynamic zooming, dynamic ... )
-    myCurrentMode = CurAction3d_Nothing;
-	myVisMode = VIS_SHADE;
-	RedrawVisMode();
+  //	Standard_Integer w=100 , h=100 ;   /* Debug Matrox                         */
+  //	aWNTWindow->Size (w,h) ;           /* Keeps me unsatisfied (rlb).....      */
+                                         /* Resize is not supposed to be done on */
+                                         /* Matrox                               */
+                                         /* I suspect another problem elsewhere  */
+  //	::PostMessage ( GetSafeHwnd () , WM_SIZE , SIZE_RESTORED , w + h*65536 ) ;
+
+  // store the mode ( nothing , dynamic zooming, dynamic ... )
+  myCurrentMode = CurAction3d_Nothing;
+  myVisMode = VIS_SHADE;
+  RedrawVisMode();
 }
 
 void CViewer3dView::OnDraw(CDC* pDC)
@@ -325,30 +317,28 @@ GetDocument()->UpdateResultMessageDlg("SetProj",Message);
 
 void CViewer3dView::OnBUTTONHlrOff() 
 {
-  myView->SetDegenerateModeOn();
-  myDegenerateModeIsOn = Standard_True;
+  myHlrModeIsOn = Standard_False;
+  myView->SetComputedMode (myHlrModeIsOn);
 
-TCollection_AsciiString Message("\
-myView->SetDegenerateModeOn();\n\
-  ");
+  TCollection_AsciiString aMsg ("myView->SetComputedMode (Standard_False);\n"
+                                "  ");
 
   // Update The Result Message Dialog
-GetDocument()->UpdateResultMessageDlg("SetDegenerateModeOn",Message);
+  GetDocument()->UpdateResultMessageDlg ("SetComputedMode", aMsg);
 }
 
 void CViewer3dView::OnBUTTONHlrOn() 
 {
   SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-  myView->SetDegenerateModeOff();
-  myDegenerateModeIsOn = Standard_False;
+  myHlrModeIsOn = Standard_True;
+  myView->SetComputedMode (myHlrModeIsOn);
   SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 
-TCollection_AsciiString Message("\
-myView->SetDegenerateModeOff();\n\
-  ");
+  TCollection_AsciiString aMsg ("myView->SetComputedMode (Standard_True);\n"
+                                "  ");
 
   // Update The Result Message Dialog
-GetDocument()->UpdateResultMessageDlg("SetDegenerateModeOff",Message);
+  GetDocument()->UpdateResultMessageDlg ("SetComputedMode", aMsg);
 }
 
 void CViewer3dView::OnBUTTONPan() 
@@ -414,10 +404,12 @@ void CViewer3dView::OnLButtonDown(UINT nFlags, CPoint point)
          case CurAction3d_GlobalPanning :// noting
         break;
         case  CurAction3d_DynamicRotation :
-			if (!myDegenerateModeIsOn)
-			  myView->SetDegenerateModeOn();
-			myView->StartRotation(point.x,point.y);  
-        break;
+          if (myHlrModeIsOn)
+          {
+            myView->SetComputedMode (Standard_False);
+          }
+          myView->StartRotation (point.x, point.y);
+          break;
         case  CurAction3d_BeginPositionalLight :
 			{
 			p1 = ConvertClickToPoint(point.x,point.y,myView);
@@ -573,7 +565,7 @@ void CViewer3dView::OnLButtonUp(UINT nFlags, CPoint point)
          }
          break;
          case CurAction3d_DynamicZooming :
-             // SetCursor(AfxGetApp()->LoadStandardCursor());         
+             // SetCursor(AfxGetApp()->LoadStandardCursor());
 	       myCurrentMode = CurAction3d_Nothing;
          break;
          case CurAction3d_WindowZooming :
@@ -607,7 +599,7 @@ void CViewer3dView::OnMButtonDown(UINT nFlags, CPoint point)
    if ( nFlags & MK_CONTROL ) 
 	  {
       	// Button MB2 down Control : panning init  
-        // SetCursor(AfxGetApp()->LoadStandardCursor());   
+        // SetCursor(AfxGetApp()->LoadStandardCursor());
 	  }
 }
 
@@ -616,38 +608,32 @@ void CViewer3dView::OnMButtonUp(UINT nFlags, CPoint point)
    if ( nFlags & MK_CONTROL ) 
 	  {
       	// Button MB2 down Control : panning init  
-        // SetCursor(AfxGetApp()->LoadStandardCursor());   
+        // SetCursor(AfxGetApp()->LoadStandardCursor());
 	  }
 }
 
 void CViewer3dView::OnRButtonDown(UINT nFlags, CPoint point) 
 {
-   if ( nFlags & MK_CONTROL ) 
-	  {
-        // SetCursor(AfxGetApp()->LoadStandardCursor());   
-	    if (!myDegenerateModeIsOn)
-	      myView->SetDegenerateModeOn();
-	      myView->StartRotation(point.x,point.y);  
-	  }
-	else // if ( Ctrl )
-	  {
-	    GetDocument()->Popup(point.x,point.y,myView);
-      }	
+  if ( nFlags & MK_CONTROL )
+  {
+    // SetCursor(AfxGetApp()->LoadStandardCursor());
+    if (myHlrModeIsOn)
+    {
+      myView->SetComputedMode (Standard_False);
+    }
+    myView->StartRotation (point.x, point.y);
+  }
+  else // if ( Ctrl )
+  {
+    GetDocument()->Popup (point.x, point.y, myView);
+  }
 }
 
 void CViewer3dView::OnRButtonUp(UINT nFlags, CPoint point) 
 {
-    SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-    if (!myDegenerateModeIsOn)
-    {  
-      myView->SetDegenerateModeOff();
-      myDegenerateModeIsOn = Standard_False;
-    } else
-    {
-      myView->SetDegenerateModeOn();
-      myDegenerateModeIsOn = Standard_True;
-    }
-    SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
+  SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
+  myView->SetComputedMode (myHlrModeIsOn);
+  SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 }
 
 void CViewer3dView::OnMouseMove(UINT nFlags, CPoint point) 
@@ -779,16 +765,16 @@ void CViewer3dView::OnMouseMove(UINT nFlags, CPoint point)
 	}
 }
 
-void CViewer3dView::OnUpdateBUTTONHlrOff(CCmdUI* pCmdUI) 
+void CViewer3dView::OnUpdateBUTTONHlrOff (CCmdUI* pCmdUI)
 {
-    pCmdUI->SetCheck (myDegenerateModeIsOn);
-	pCmdUI->Enable   (!myDegenerateModeIsOn);	
+  pCmdUI->SetCheck (!myHlrModeIsOn);
+  pCmdUI->Enable   (myHlrModeIsOn);
 }
 
-void CViewer3dView::OnUpdateBUTTONHlrOn(CCmdUI* pCmdUI) 
+void CViewer3dView::OnUpdateBUTTONHlrOn (CCmdUI* pCmdUI)
 {
-    pCmdUI->SetCheck (!myDegenerateModeIsOn);
-	pCmdUI->Enable   (myDegenerateModeIsOn);	
+  pCmdUI->SetCheck (myHlrModeIsOn);
+  pCmdUI->Enable   (!myHlrModeIsOn);
 }
 
 void CViewer3dView::OnUpdateBUTTONPanGlo(CCmdUI* pCmdUI) 

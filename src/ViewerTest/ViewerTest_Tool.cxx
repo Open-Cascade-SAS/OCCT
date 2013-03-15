@@ -113,7 +113,6 @@ Handle(V3d_Viewer) ViewerTest_Tool::MakeViewer (const Standard_CString theTitle)
 
   // View
   Handle (V3d_View) V = a3DViewer->CreateView();
-  V->SetDegenerateModeOn();
   V->SetWindow(window);
   V->SetZClippingDepth(0.5);
   V->SetZClippingWidth(ZCLIPWIDTH/2.);

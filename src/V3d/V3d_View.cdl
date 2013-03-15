@@ -37,15 +37,6 @@
 --              -> Add ConvertToGrid() methods,
 --                 the Compute() internal method become private.
 --              -> Add SetProjModel() method.
---      EUG - 25/01/00 : G003
---              -> Add methods SetAnimationMode() and
---                  AnimationMode()
---              -> Add methods SetComputedMode() and
---                  ComputedMode()
---                 Warning : SetDegenerateModeOn() and Off()
---                 become obsolete.
---              -> Add methods SetBackFacingModel() and
---                  BackFacingModel()
 --      VKH - 15/11/99 : G004
 --              -> Add method Dump()
 --      GG  - IMP210200
@@ -1427,78 +1418,6 @@ is
         --
                 returns Boolean from Standard;
 
-        ---------------------------------------------------
-        -- Category: Methods to modify the class definition
-        --           Animation Mode
-        ---------------------------------------------------
-
-        SetAnimationModeOn ( me : mutable )
-                is static;
-        ---Level: Advanced
-        ---Purpose: Activates animation mode.
-        --      When the animation mode is activated in the view,
-        --      all Graphic3d_Structure are stored in a graphic object.
-        ---Category: Methods to modify the class definition
-
-        SetAnimationModeOff ( me        : mutable )
-                is static;
-        ---Level: Advanced
-        ---Purpose: Deactivates the animation mode.
-        ---Category: Methods to modify the class definition
-
-        AnimationModeIsOn ( me )
-                returns Boolean from Standard
-                is static;
-        ---Level: Advanced
-        ---Purpose: Returns the activity of the animation mode.
-        ---Category: Inquire methods
-
-        SetAnimationMode ( me                : mutable;
-                           anAnimationFlag   : Boolean from Standard = Standard_True;
-                           aDegenerationFlag : Boolean from Standard = Standard_False
-        ) is static;
-        ---Level    : Advanced
-        ---Purpose  : Enable/Disable animation/degeneration mode
-        ---Category : Methods to modify the class definition
-
-    AnimationMode ( me; isDegenerate: out Boolean from Standard )
-                returns Boolean from Standard
-                is static;
-        ---Level    : Advanced
-        ---Purpose  : Returns the animation and degenerate status.
-        ---Category: Inquire methods
-
-        ---------------------------------------------------
-        -- Category: Methods to modify the class definition
-        --           Degenerate Mode
-        ---------------------------------------------------
-
-        SetDegenerateModeOn ( me        : mutable )
-                is static;
-        ---Level    : Obsolete
-        ---Purpose: Activates degenerate mode.
-        --      When the degenerate mode is activated in the view,
-        --      all Graphic3d_Structure with the type TOS_COMPUTED
-        --      displayed in this view are not computed.
-    --  Warning: Obsolete method , use SetComputedMode()
-        ---Category: Methods to modify the class definition
-
-        SetDegenerateModeOff ( me       : mutable )
-                is static;
-        ---Level    : Obsolete
-        ---Purpose: Deactivates the degenerate mode.
-        --  Category: Methods to modify the class definition
-        --  Warning: if the computed mode has been disabled in the
-        --          viewer the mode will remain degenerated.
-    --  Warning: Obsolete method , use SetComputedMode()
-
-        DegenerateModeIsOn ( me )
-                returns Boolean from Standard
-                is static;
-        ---Level    : Obsolete
-        ---Purpose: Returns the activity of the degenerate mode.
-        ---Category: Inquire methods
-
         SetComputedMode ( me : mutable; aMode : Boolean from Standard )
         is static;
         ---Level: Advanced
@@ -1575,17 +1494,6 @@ is
         ---Purpose: Defines or Updates the activity of the
         --          grid in <me>
         ---Category: Methods to modify the class definition
-
-        Tumble ( me            : mutable;
-                 NbImages      : Integer from Standard = 314;
-                 AnimationMode : Boolean from Standard = Standard_False )
-                returns Real from Standard
-                is static;
-        ---Level   : Advanced
-        ---Purpose: Animates the view <me>
-        --          Returns the number of images per second
-        --          if <AnimationMode> is Standard_True, the animation mode
-        --          is activated.
 
         Dump ( me: mutable;
                theFile       : CString from Standard;
@@ -1743,7 +1651,6 @@ fields
         MyGridEchoGroup                 :       Group from Graphic3d;
 
     MyProjModel         :   TypeOfProjectionModel from V3d is protected;
-    MyAnimationFlags        :   Integer from Standard;
 
     MyTransparencyFlag      : Boolean from Standard;
     myImmediateUpdate: Boolean from Standard is protected;

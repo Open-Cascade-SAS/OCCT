@@ -57,31 +57,3 @@ void OpenGl_GraphicDriver::End ()
   // So we disable this destructor here until openglDisplay not moved to  OpenGl_GraphicDriver class definition.
   ///openglDisplay.Nullify();
 }
-
-//=======================================================================
-//function : BeginAnimation
-//purpose  : 
-//=======================================================================
-
-void OpenGl_GraphicDriver::BeginAnimation (const Graphic3d_CView& ACView)
-{
-  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
-  if (aCView)
-  {
-    const Standard_Boolean UpdateAM = (ACView.IsDegenerates && !ACView.IsDegeneratesPrev) || (!ACView.IsDegenerates && ACView.IsDegeneratesPrev);
-    aCView->WS->BeginAnimation(ACView.IsDegenerates != 0,UpdateAM);
-    ((Graphic3d_CView*)(&ACView))->IsDegeneratesPrev = ACView.IsDegenerates; //szvgl: temporary
-  }
-}
-
-//=======================================================================
-//function : EndAnimation
-//purpose  : 
-//=======================================================================
-
-void OpenGl_GraphicDriver::EndAnimation (const Graphic3d_CView& ACView)
-{
-  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
-  if (aCView)
-    aCView->WS->EndAnimation();
-}

@@ -29,7 +29,7 @@ public:
   int		m_DisplayMode;
   int		m_NbIsos;
   BOOL	m_DrawHiddenLine;
-  BOOL	m_DegeneratedModeOn;
+  BOOL	m_HlrModeIsOn;
   //}}AFX_DATA
 
   // Overrides
@@ -75,7 +75,7 @@ protected:
   afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
   afx_msg void OnMouseMove(UINT nFlags, CPoint point);
   afx_msg void OnDrawHiddenLine();
-  afx_msg void OnDegeneratedMode();
+  afx_msg void OnHlrMode();
   afx_msg void OnPaint();
   //}}AFX_MSG
   DECLARE_MESSAGE_MAP()

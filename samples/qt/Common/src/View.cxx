@@ -144,7 +144,7 @@ myViewActions( 0 )
     }
 #endif
     myCurrentMode = CurAction3d_Nothing;
-    myDegenerateModeIsOn = Standard_True;
+    myHlrModeIsOn = Standard_False;
     setMouseTracking( true );
 
     initViewActions();
@@ -186,7 +186,7 @@ void View::init()
   myView->MustBeResized();
 }
 
-void View::paintEvent( QPaintEvent * e )
+void View::paintEvent( QPaintEvent *  )
 {
 //  QApplication::syncX();
     if( myFirst )
@@ -197,7 +197,7 @@ void View::paintEvent( QPaintEvent * e )
     myView->Redraw();
 }
 
-void View::resizeEvent( QResizeEvent * e)
+void View::resizeEvent( QResizeEvent * )
 {
 //  QApplication::syncX();
     if( !myView.IsNull() )
@@ -286,16 +286,16 @@ void View::reset()
 void View::hlrOff()
 {
     QApplication::setOverrideCursor( Qt::WaitCursor );
-    myView->SetDegenerateModeOn();
-    myDegenerateModeIsOn = Standard_True;
+    myHlrModeIsOn = Standard_False;
+    myView->SetComputedMode (myHlrModeIsOn);
     QApplication::restoreOverrideCursor();
 }
 
 void View::hlrOn()
 {
     QApplication::setOverrideCursor( Qt::WaitCursor );
-    myView->SetDegenerateModeOff();
-    myDegenerateModeIsOn = Standard_False;
+    myHlrModeIsOn = Standard_True;
+    myView->SetComputedMode (myHlrModeIsOn);
     QApplication::restoreOverrideCursor();
 }
 
@@ -580,8 +580,10 @@ void View::onLButtonDown( const int/*Qt::MouseButtons*/ nFlags, const QPoint poi
       case CurAction3d_GlobalPanning:
            break;
       case CurAction3d_DynamicRotation:
-           if ( !myDegenerateModeIsOn )
-	           myView->SetDegenerateModeOn();
+           if (myHlrModeIsOn)
+           {
+	           myView->SetComputedMode (Standard_False);
+           }
            myView->StartRotation( point.x(), point.y() );
            break;
       default:
@@ -592,7 +594,7 @@ void View::onLButtonDown( const int/*Qt::MouseButtons*/ nFlags, const QPoint poi
   activateCursor( myCurrentMode );
 }
 
-void View::onMButtonDown( const int/*Qt::MouseButtons*/ nFlags, const QPoint point )
+void View::onMButtonDown( const int/*Qt::MouseButtons*/ nFlags, const QPoint /*point*/ )
 {
   if ( nFlags & CASCADESHORTCUTKEY )
     myCurrentMode = CurAction3d_DynamicPanning;
@@ -603,8 +605,10 @@ void View::onRButtonDown( const int/*Qt::MouseButtons*/ nFlags, const QPoint poi
 {
   if ( nFlags & CASCADESHORTCUTKEY )
   {
-    if ( !myDegenerateModeIsOn )
-      myView->SetDegenerateModeOn();
+    if (myHlrModeIsOn)
+    {
+      myView->SetComputedMode (Standard_False);
+    }
     myCurrentMode = CurAction3d_DynamicRotation;
     myView->StartRotation( point.x(), point.y() );
   }
@@ -676,13 +680,13 @@ void View::onLButtonUp( Qt::MouseButtons nFlags, const QPoint point )
     ApplicationCommonWindow::getApplication()->onSelectionChanged();
 }
 
-void View::onMButtonUp( Qt::MouseButtons nFlags, const QPoint point )
+void View::onMButtonUp( Qt::MouseButtons /*nFlags*/, const QPoint /*point*/ )
 {
     myCurrentMode = CurAction3d_Nothing;
     activateCursor( myCurrentMode );
 }
 
-void View::onRButtonUp( Qt::MouseButtons nFlags, const QPoint point )
+void View::onRButtonUp( Qt::MouseButtons /*nFlags*/, const QPoint point )
 {
     if ( myCurrentMode == CurAction3d_Nothing )
         Popup( point.x(), point.y() );
@@ -691,16 +695,7 @@ void View::onRButtonUp( Qt::MouseButtons nFlags, const QPoint point )
         QApplication::setOverrideCursor( Qt::WaitCursor );
         // reset tyhe good Degenerated mode according to the strored one
         //   --> dynamic rotation may have change it
-        if ( !myDegenerateModeIsOn )
-        {
-            myView->SetDegenerateModeOff();
-            myDegenerateModeIsOn = Standard_False;
-        }
-        else
-        {
-            myView->SetDegenerateModeOn();
-            myDegenerateModeIsOn = Standard_True;
-        }
+        myView->SetComputedMode (myHlrModeIsOn);
         QApplication::restoreOverrideCursor();
         myCurrentMode = CurAction3d_Nothing;
     }
@@ -783,7 +778,7 @@ void View::DragEvent( const int x, const int y, const int TheState )
     }
 }
 
-void View::InputEvent( const int x, const int y )
+void View::InputEvent( const int /*x*/, const int /*y*/ )
 {
   myContext->Select();
   emit selectionChanged();
@@ -816,13 +811,13 @@ void View::MultiDragEvent( const int x, const int y, const int TheState )
     }
 }
 
-void View::MultiInputEvent( const int x, const int y )
+void View::MultiInputEvent( const int /*x*/, const int /*y*/ )
 {
   myContext->ShiftSelect();
   emit selectionChanged();
 }
 
-void View::Popup( const int x, const int y )
+void View::Popup( const int /*x*/, const int /*y*/ )
 {
   ApplicationCommonWindow* stApp = ApplicationCommonWindow::getApplication();
   QWorkspace* ws = ApplicationCommonWindow::getWorkspace();
@@ -865,7 +860,7 @@ void View::Popup( const int x, const int y )
     w->setFocus();
 }
 
-void View::addItemInPopup( QMenu* theMenu)
+void View::addItemInPopup( QMenu* /*theMenu*/)
 {
 }
 

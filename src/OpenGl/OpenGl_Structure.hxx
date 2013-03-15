@@ -47,8 +47,6 @@ public:
 
   void SetTransformPersistence (const CALL_DEF_TRANSFORM_PERSISTENCE &ATransPers);
 
-  void SetDegenerateModel (const Standard_Integer AMode, const float ASkipRatio);
-
   void SetAspectLine (const CALL_DEF_CONTEXTLINE &AContext);
   void SetAspectFace (const Handle(OpenGl_Context)&   theCtx,
                       const CALL_DEF_CONTEXTFILLAREA& theAspect);
@@ -103,7 +101,6 @@ protected:
   //Structure_LABBegin
   OpenGl_Matrix*             myTransformation;
   TEL_TRANSFORM_PERSISTENCE* myTransPers;
-  DEGENERATION*              myDegenerateModel;
   OpenGl_AspectLine*         myAspectLine;
   OpenGl_AspectFace*         myAspectFace;
   OpenGl_AspectMarker*       myAspectMarker;

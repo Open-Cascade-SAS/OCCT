@@ -53,8 +53,6 @@
 //      30/11/98 ; FMN : S4069. Textes always visible.
 //      22/03/04 ; SAN : OCC4895 High-level interface for controlling polygon offsets
 
-#define G003    //EUG 26/01/00 Degeneration management
-
 #define BUC60918        //GG 31/05/01 A transparente structure priority must have the
 //                      MAX_PRIORITY value so, the highlighted structure must have
 //                      MAX_PRIORITY-1 value.
@@ -984,13 +982,6 @@ Graphic3d_MATERIAL_PHYSIC : Graphic3d_MATERIAL_ASPECT;
   {
     CTXF->SetTextureMapOff();
   }
-#ifdef G003
-  Aspect_TypeOfDegenerateModel dMode = Aspect_TypeOfDegenerateModel(
-    MyCStructure.ContextFillArea.DegenerationMode);
-  Quantity_Ratio dRatio =
-    MyCStructure.ContextFillArea.SkipRatio;
-  CTXF->SetDegenerateModel(dMode,dRatio);
-#endif  // G003
 
   // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
   CTXF->SetPolygonOffsets(MyCStructure.ContextFillArea.PolygonOffsetMode,
@@ -1081,12 +1072,6 @@ void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectFill
   MyCStructure.ContextFillArea.LineType           = int (ALType);
   MyCStructure.ContextFillArea.Width              = float (AWidth);
   MyCStructure.ContextFillArea.Hatch              = int (CTX->HatchStyle ());
-#ifdef G003
-  Quantity_Ratio ratio;
-  MyCStructure.ContextFillArea.DegenerationMode =
-    int (CTX->DegenerateModel(ratio));
-  MyCStructure.ContextFillArea.SkipRatio = float (ratio);
-#endif  // G003
 
   /*** Front and Back face ***/
   MyCStructure.ContextFillArea.Distinguish        = CTX->Distinguish () ? 1:0;
@@ -1239,9 +1224,6 @@ void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectFill
   // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
 
   MyGraphicDriver->ContextStructure (MyCStructure);
-#ifdef G003
-  MyGraphicDriver -> DegenerateStructure (MyCStructure);
-#endif
 
   // CAL 14/04/95
   // Attributes are "IsSet" during the first update
@@ -2142,13 +2124,6 @@ void Graphic3d_Structure::UpdateStructure (const Handle(Graphic3d_AspectLine3d)&
   MyCStructure.ContextFillArea.LineType           = int (ALType);
   MyCStructure.ContextFillArea.Width              = float (AWidth);
   MyCStructure.ContextFillArea.Hatch              = int (CTXF->HatchStyle ());
-#ifdef G003
-  Quantity_Ratio ratio;
-  MyCStructure.ContextFillArea.DegenerationMode =
-    int (CTXF->DegenerateModel(ratio));
-  MyCStructure.ContextFillArea.SkipRatio = float (ratio);
-#endif  // G003
-
 
   /*** Front and Back face ***/
   MyCStructure.ContextFillArea.Distinguish = CTXF->Distinguish () ? 1:0;

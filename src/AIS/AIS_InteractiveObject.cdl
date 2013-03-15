@@ -21,8 +21,6 @@
 --   GG  :  GER61351 17/11/1999 Change SetColor() with a compatible 
 --              Quantity_Color instead the restricted NameOfColor.
 --          Add SetCurrentFacingModel() methods
---   EUG :  G003 05/11/1999 Degeneration mode support
---              Add SetDegenerateModel() methods
 --   GG :   IMP140100 Add HasPresentation() and Presentation() methods
 --                    Add SetAspect() method
 --   SAN :  OCC4895 22/03/04 High-level interface for controlling polygon offsets
@@ -73,7 +71,6 @@ uses
     InteractiveContext   from AIS,
     KindOfInteractive    from AIS,
     TypeOfFacingModel    from Aspect,
-    TypeOfDegenerateModel from Aspect,
     Transformation       from Geom,
     Presentation         from Prs3d,
     BasicAspect          from Prs3d,
@@ -531,31 +528,6 @@ is
     	---C++: inline
     State(me) returns Integer from Standard ;
     	---C++: inline
-
-    SetDegenerateModel ( me : mutable;
-                aModel     : TypeOfDegenerateModel from Aspect =
-                                                Aspect_TDM_WIREFRAME;
-                aRatio : Ratio from Quantity = 0.0) is virtual;
-    	---Level: Public
-    	---Purpose: Sets the model of degeneration for the shaded representation 
-    	--   according to the degenerate ratio >= 0. & <= 1. where :
-    	--   <aRatio> = 0. indicate that all polygons of the object 
-    	--      will be displayed.
-    	--   <aRatio> = 1. indicate that no polygons will be displayed !!
-    	--   When <ARatio> is > 0 & < 1. the corresponding amount
-    	--   of object polygons will be displayed with a random method.
-    	--  Warning: the degenerate structure is shown only when
-    	--  the animation and degenerate flags are set to TRUE
-    	--  in V3d_View::SetAnimationMode(..)
-    	--  Category: Methods to manage the object degeneration
-
-    DegenerateModel ( me ;
-                aRatio: out Ratio from Quantity ) 
-        returns TypeOfDegenerateModel from Aspect is virtual;
-    	---Level: Public
-    	---Purpose: returns the current degeneration model and ratio 
-    	--  for the polygons
-    	---Category: Inquire methods
 
     SetTransformation ( me : mutable;
                 aTranformation: Transformation from Geom;

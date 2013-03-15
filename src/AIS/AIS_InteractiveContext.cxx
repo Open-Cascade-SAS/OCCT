@@ -23,12 +23,6 @@
 #define BUC60577        //GG_101099     Enable to compute correctly
 //                      transparency with more than one object in the view.
 
-//GER61351        //GG_171199     Enable to set an object RGB color instead a restricted object NameOfColor.
-
-#define G003            //EUG_26/01/00 Degenerate support (G003)
-
-//IMP140200       //GG Add SetSelectedAspect() method.
-
 #define BUC60632        //GG 15/03/00 Add protection on SetDisplayMode()
 //                      method, compute only authorized presentation.
 
@@ -2494,45 +2488,6 @@ void AIS_InteractiveContext::UnsetTransparency(const Handle(AIS_InteractiveObjec
   if(updateviewer)
     UpdateCurrentViewer();
 }
-
-//=======================================================================
-//function : SetDegenerateModel
-//purpose  : 
-//=======================================================================
-
-#ifdef G003
-void AIS_InteractiveContext :: SetDegenerateModel (
-                          const Handle( AIS_InteractiveObject )& anObject,
-                          const Aspect_TypeOfDegenerateModel   aModel,
-                          const Quantity_Ratio                 aRatio
-                               ) {
- if (  !anObject.IsNull ()  ) {
-  if (  !anObject -> HasInteractiveContext ()  ) 
-                                anObject -> SetContext ( this );
-  anObject->SetDegenerateModel(aModel,aRatio);
-
- }  // end if
-}  // end AIS_InteractiveContext :: SetDegenerateModel
-
-void AIS_InteractiveContext :: SetDegenerateModel (
-                           const Aspect_TypeOfDegenerateModel aModel,
-                           const Quantity_Ratio            aRatio
-                               ) {
-
- AIS_DataMapIteratorOfDataMapOfIOStatus it ( myObjects );
-
- while (  it.More ()  ) {
-
-  Handle( AIS_InteractiveObject ) obj = it.Key ();
-
-  obj->SetDegenerateModel(aModel,aRatio);
-
-  it.Next ();
-
- }  // end while
-
-}  // end AIS_InteractiveContext :: SetDegenerateModel
-#endif
 
 //=======================================================================
 //function : SetSelectedAspect

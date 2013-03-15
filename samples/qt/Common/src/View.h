@@ -117,7 +117,7 @@ private:
     Standard_Integer                myXmax;
     Standard_Integer                myYmax;
     Quantity_Factor                 myCurZoom;
-    Standard_Boolean                myDegenerateModeIsOn;
+    Standard_Boolean                myHlrModeIsOn;
     QList<QAction*>*                myViewActions;
     QRubberBand*                    myRectBand; //!< selection rectangle rubber band
 };

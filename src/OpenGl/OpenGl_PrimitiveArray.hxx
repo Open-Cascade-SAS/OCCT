@@ -76,26 +76,6 @@ private:
   void DrawEdges (const TEL_COLOUR*               theEdgeColour,
                   const Handle(OpenGl_Workspace)& theWorkspace) const;
 
-  void DrawDegeneratesAsPoints (const TEL_COLOUR* theEdgeColour,
-                                const float       theSkipRatio) const;
-  void DrawDegeneratesAsLines (const TEL_COLOUR*               theEdgeColour,
-                               const Handle(OpenGl_Workspace)& theWorkspace) const;
-  void DrawDegeneratesAsBBoxs (const TEL_COLOUR* theEdgeColour) const;
-
-  void DrawDegeneratesPointsAsPoints() const;
-  void DrawDegeneratesLinesAsPoints() const;
-  void DrawDegeneratesLinesAsLines (const float theSkipRatio) const;
-  void DrawDegeneratesTrianglesAsPoints() const;
-  void DrawDegeneratesTrianglesAsLines (const float theSkipRatio) const;
-  void DrawDegeneratesTrianglestripsAsPoints() const;
-  void DrawDegeneratesTrianglestripsAsLines (const float theSkipRatio) const;
-  void DrawDegeneratesQuadranglesAsPoints() const;
-  void DrawDegeneratesQuadranglesAsLines (const float theSkipRatio) const;
-  void DrawDegeneratesQuadranglestripsAsPoints() const;
-  void DrawDegeneratesQuadranglestripsAsLines (const float theSkipRatio) const;
-  void DrawDegeneratesPolygonsAsPoints() const;
-  void DrawDegeneratesPolygonsAsLines (const float theSkipRatio) const;
-
 protected:
 
   //! Destructor

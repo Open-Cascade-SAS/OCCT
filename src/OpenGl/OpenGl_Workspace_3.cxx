@@ -87,7 +87,6 @@ void OpenGl_Workspace::ClearImmediatMode (const Graphic3d_CView& theCView,
   glGetBooleanv (GL_DOUBLEBUFFER, &isDoubleBuffer);
   if (!myBackBufferRestored || !myTransientDrawToFront || !isDoubleBuffer)
   {
-    EraseAnimation();
     Redraw1 (theCView, *((CALL_DEF_LAYER* )theCView.ptrUnderLayer), *((CALL_DEF_LAYER* )theCView.ptrOverLayer), theToFlush);
 
     // After a redraw,

@@ -131,22 +131,21 @@ public:
 	Handle_V3d_View&    GetView() { return myView;};
 	void                DisplayTuneDialog();
 private:
-//    CurrentAction3d      myCurrentMode;
-    Standard_Integer     myXmin;
-    Standard_Integer     myYmin;  
-    Standard_Integer     myXmax;
-    Standard_Integer     myYmax;
-    Quantity_Factor      myCurZoom;
-    Standard_Boolean     myDegenerateModeIsOn;
+  Standard_Integer     myXmin;
+  Standard_Integer     myYmin;
+  Standard_Integer     myXmax;
+  Standard_Integer     myYmax;
+  Quantity_Factor      myCurZoom;
+  Standard_Boolean     myHlrModeIsOn;
 
-	Handle_V3d_PerspectiveView myPView;
+  Handle_V3d_PerspectiveView myPView;
 
-    View3D_CurrentAction myCurrentMode;
-    double               m_Atx  , m_Aty  , m_Atz  ;
-	double               m_Eyex , m_Eyey , m_Eyez ;
-	double               m_FlySens ;
-	double               m_TurnSens ;
-	double               m_Focus ;
+  View3D_CurrentAction myCurrentMode;
+  double               m_Atx  , m_Aty  , m_Atz  ;
+  double               m_Eyex , m_Eyey , m_Eyez ;
+  double               m_FlySens ;
+  double               m_TurnSens ;
+  double               m_Focus ;
 
 private:
 	enum LineStyle { Solid, Dot, ShortDash, LongDash, Default };

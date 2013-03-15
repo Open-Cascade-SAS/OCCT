@@ -78,13 +78,13 @@ void OCCViewer::RedrawView(void)
 void OCCViewer::SetDegenerateModeOn(void)
 {
 	if (!myView.IsNull())
-		myView->SetDegenerateModeOn();
+		myView->SetComputedMode (Standard_False);
 }
 
 void OCCViewer::SetDegenerateModeOff(void)
 {
 	if (!myView.IsNull())
-		myView->SetDegenerateModeOff();
+		myView->SetComputedMode (Standard_True);
 }
 
 void OCCViewer::WindowFitAll(int Xmin, int Ymin, int Xmax, int Ymax)

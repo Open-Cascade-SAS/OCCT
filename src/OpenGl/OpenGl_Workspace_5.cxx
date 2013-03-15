@@ -428,13 +428,9 @@ const OpenGl_Matrix * OpenGl_Workspace::SetViewMatrix(const OpenGl_Matrix *AMatr
   OpenGl_Transposemat3( &lmat, StructureMatrix_applied );
 
   glMatrixMode (GL_MODELVIEW);
-
-  if ( (NamedStatus & OPENGL_NS_ANIMATION) == 0 )
-  {
-    OpenGl_Matrix rmat;
-    OpenGl_Multiplymat3( &rmat, &lmat, ViewMatrix_applied );
-    glLoadMatrixf((const GLfloat *) rmat.mat);
-  }
+  OpenGl_Matrix rmat;
+  OpenGl_Multiplymat3 (&rmat, &lmat, ViewMatrix_applied);
+  glLoadMatrixf ((const GLfloat* )rmat.mat);
 
   return ViewMatrix_old;
 }
@@ -450,17 +446,9 @@ const OpenGl_Matrix * OpenGl_Workspace::SetStructureMatrix(const OpenGl_Matrix *
   OpenGl_Transposemat3( &lmat, AMatrix );
 
   glMatrixMode (GL_MODELVIEW);
-
-  if ( (NamedStatus & OPENGL_NS_ANIMATION) == 0 )
-  {
-    OpenGl_Matrix rmat;
-    OpenGl_Multiplymat3( &rmat, &lmat, ViewMatrix_applied );
-    glLoadMatrixf((const GLfloat *) rmat.mat);
-  }
-  else
-  {
-    glMultMatrixf((const GLfloat *) lmat.mat);
-  }
+  OpenGl_Matrix rmat;
+  OpenGl_Multiplymat3 (&rmat, &lmat, ViewMatrix_applied);
+  glLoadMatrixf ((const GLfloat* )rmat.mat);
 
   return StructureMatrix_old;
 }

@@ -57,19 +57,18 @@ END_MESSAGE_MAP()
 // OCC_3dView construction/destruction
 
 OCC_3dView::OCC_3dView()
+: myCurrentMode (CurAction3d_Nothing),
+  myXmin (0),
+  myYmin (0),
+  myXmax (0),
+  myYmax (0),
+  myCurZoom (0.0),
+  myWidth  (0),
+  myHeight (0),
+  myHlrModeIsOn (Standard_False),
+  m_Pen (NULL)
 {
   // TODO: add construction code here
-  myXmin=0;
-  myYmin=0;  
-  myXmax=0;
-  myYmax=0;
-  myCurZoom=0;
-  myWidth=0;
-  myHeight=0;
-  // will be set in OnInitial update, but, for more security :
-  myCurrentMode = CurAction3d_Nothing;
-  myDegenerateModeIsOn=Standard_True;
-  m_Pen = NULL;
 }
 
 OCC_3dView::~OCC_3dView()
@@ -94,11 +93,9 @@ void OCC_3dView::OnInitialUpdate()
 
   myView = GetDocument()->GetViewer()->CreateView();
 
-  // set the default mode in wireframe ( not hidden line ! )
-  myView->SetDegenerateModeOn();
   // store for restore state after rotation (which is in Degenerated mode)
-  myDegenerateModeIsOn = Standard_True;
-
+  myHlrModeIsOn = Standard_False;
+  myView->SetComputedMode (myHlrModeIsOn);
 
   Handle(Graphic3d_GraphicDriver) aGraphicDriver = 
     ((OCC_App*)AfxGetApp())->GetGraphicDriver();
@@ -229,15 +226,15 @@ void OCC_3dView::OnBUTTONAxo()
 
 void OCC_3dView::OnBUTTONHlrOff() 
 {
-  myView->SetDegenerateModeOn();
-  myDegenerateModeIsOn = Standard_True;
+  myHlrModeIsOn = Standard_False;
+  myView->SetComputedMode (myHlrModeIsOn);
 }
 
 void OCC_3dView::OnBUTTONHlrOn() 
 {
   SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-  myView->SetDegenerateModeOff();
-  myDegenerateModeIsOn = Standard_False;
+  myHlrModeIsOn = Standard_True;
+  myView->SetComputedMode (myHlrModeIsOn);
   SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 }
 
@@ -309,8 +306,11 @@ void OCC_3dView::OnLButtonDown(UINT nFlags, CPoint point)
     case CurAction3d_GlobalPanning :// noting
       break;
     case  CurAction3d_DynamicRotation :
-      if (!myDegenerateModeIsOn)
-        myView->SetDegenerateModeOn();
+      if (myHlrModeIsOn)
+      {
+        myView->SetComputedMode (Standard_False);
+      }
+
       myView->StartRotation(point.x,point.y);  
       break;
     default :
@@ -373,16 +373,14 @@ void OCC_3dView::OnLButtonUp(UINT nFlags, CPoint point)
       break;
     case  CurAction3d_DynamicRotation :
       myCurrentMode = CurAction3d_Nothing;
-      if (!myDegenerateModeIsOn)
-      {  
+      if (myHlrModeIsOn)
+      {
         CWaitCursor aWaitCursor;
-        myView->SetDegenerateModeOff();
-        myDegenerateModeIsOn = Standard_False;
+        myView->SetComputedMode (myHlrModeIsOn);
       }
       else
       {
-        myView->SetDegenerateModeOn();
-        myDegenerateModeIsOn = Standard_True;
+        myView->SetComputedMode (myHlrModeIsOn);
       }
       break;
     default :
@@ -412,10 +410,12 @@ void OCC_3dView::OnMButtonUp(UINT nFlags, CPoint point)
 
 void OCC_3dView::OnRButtonDown(UINT nFlags, CPoint point) 
 {
-  if ( nFlags & MK_CONTROL ) 
-  { 
-    if (!myDegenerateModeIsOn)
-      myView->SetDegenerateModeOn();
+  if ( nFlags & MK_CONTROL )
+  {
+    if (myHlrModeIsOn)
+    {
+      myView->SetComputedMode (Standard_False);
+    }
     myView->StartRotation(point.x,point.y);  
   }
   else // if ( Ctrl )
@@ -427,15 +427,7 @@ void OCC_3dView::OnRButtonDown(UINT nFlags, CPoint point)
 void OCC_3dView::OnRButtonUp(UINT nFlags, CPoint point) 
 {
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-    if (!myDegenerateModeIsOn)
-    {  
-      myView->SetDegenerateModeOff();
-      myDegenerateModeIsOn = Standard_False;
-    } else
-    {
-      myView->SetDegenerateModeOn();
-      myDegenerateModeIsOn = Standard_True;
-    }
+    myView->SetComputedMode (myHlrModeIsOn);
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 }
 
@@ -574,14 +566,14 @@ void OCC_3dView::DrawRectangle(const Standard_Integer  MinX    ,
 
 void OCC_3dView::OnUpdateBUTTONHlrOff(CCmdUI* pCmdUI) 
 {
-    pCmdUI->SetCheck (myDegenerateModeIsOn);
-	pCmdUI->Enable   (!myDegenerateModeIsOn);	
+  pCmdUI->SetCheck (!myHlrModeIsOn);
+  pCmdUI->Enable   (myHlrModeIsOn);
 }
 
-void OCC_3dView::OnUpdateBUTTONHlrOn(CCmdUI* pCmdUI) 
+void OCC_3dView::OnUpdateBUTTONHlrOn(CCmdUI* pCmdUI)
 {
-    pCmdUI->SetCheck (!myDegenerateModeIsOn);
-	pCmdUI->Enable   (myDegenerateModeIsOn);	
+  pCmdUI->SetCheck (myHlrModeIsOn);
+  pCmdUI->Enable   (!myHlrModeIsOn);
 }
 
 void OCC_3dView::OnUpdateBUTTONPanGlo(CCmdUI* pCmdUI) 
