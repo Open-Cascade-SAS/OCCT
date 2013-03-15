@@ -1,4 +1,0 @@
-#include <gp_Pnt.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <Prs3d_Presentation.hxx>
-#include <Sphere_Sphere.hxx>
