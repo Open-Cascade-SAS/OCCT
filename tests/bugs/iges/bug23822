@@ -1,0 +1,14 @@
+puts "========"
+puts "CR23822"
+puts "========"
+puts ""
+#########################################################
+## SIGSEGV 'segmentation violation' during writing IGES
+#########################################################
+
+ReadIges D [locate_data_file ball_bearing.igs]
+
+set aFile ${imagedir}/bug23822_new_file.igs
+file delete -force ${aFile}
+
+WriteIges D ${aFile}

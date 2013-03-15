@@ -170,14 +170,16 @@ Standard_Boolean IGESControl_Writer::AddShape (const TopoDS_Shape& theShape)
   //#34 22.10.98 rln BUC60081
   Bnd_Box box;
   BRepBndLib::Add (Shape, box);
-  Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
-  box.Get (aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
-  gs.MaxMaxCoords (gp_XYZ (aXmax / gs.UnitValue(),
-			   aYmax / gs.UnitValue(),
-			   aZmax / gs.UnitValue()));
-  gs.MaxMaxCoords (gp_XYZ (aXmin / gs.UnitValue(),
-			   aYmin / gs.UnitValue(),
-			   aZmin / gs.UnitValue()));
+  if (!(box.IsVoid() || box.IsOpenXmax() || box.IsOpenYmax() || box.IsOpenZmax() || box.IsOpenXmin() || box.IsOpenYmin() || box.IsOpenZmin())){
+    Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
+    box.Get (aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
+    gs.MaxMaxCoords (gp_XYZ (aXmax / gs.UnitValue(),
+	     		     aYmax / gs.UnitValue(),
+	  		     aZmax / gs.UnitValue()));
+    gs.MaxMaxCoords (gp_XYZ (aXmin / gs.UnitValue(),
+ 			     aYmin / gs.UnitValue(),
+			     aZmin / gs.UnitValue()));
+  }
 
   themod->SetGlobalSection(gs);
 
