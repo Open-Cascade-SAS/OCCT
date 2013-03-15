@@ -287,6 +287,106 @@ Standard_Integer OCC22595 (Draw_Interpretor& di, Standard_Integer argc, const ch
   return 0;
 }
 
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
+#include <BRepExtrema_DistShapeShape.hxx>
+#include <BRepTools.hxx>
+
+Standard_Boolean static OCC23774Test(const TopoDS_Face& grossPlateFace, const TopoDS_Shape& originalWire, Draw_Interpretor& di)
+{
+  BRepExtrema_DistShapeShape distShapeShape(grossPlateFace,originalWire,Extrema_ExtFlag_MIN);
+  if(!distShapeShape.IsDone()) {
+    di <<"Distance ShapeShape is Not Done\n";
+    return Standard_False;
+  }
+
+  if(distShapeShape.Value() > 0.01) {
+    di << "Wrong Dist = " <<distShapeShape.Value() << "\n";
+    return Standard_False;
+  } else
+    di << "Dist0 = " <<distShapeShape.Value() <<"\n";
+
+  //////////////////////////////////////////////////////////////////////////
+  /// First Flip Y
+  const gp_Pnt2d axis1P1(1474.8199035519228,1249.9995745636970);
+  const gp_Pnt2d axis1P2(1474.8199035519228,1250.9995745636970);
+
+  gp_Vec2d mirrorVector1(axis1P1,axis1P2);
+
+  gp_Trsf2d mirror1;
+  mirror1.SetMirror(gp_Ax2d(axis1P1,mirrorVector1));
+
+  BRepBuilderAPI_Transform transformer1(mirror1);
+  transformer1.Perform(originalWire);
+  if(!transformer1.IsDone()) {
+    di << "Not Done1 " << "\n";
+    return Standard_False;
+  }
+  const TopoDS_Shape& step1ModifiedShape = transformer1.ModifiedShape(originalWire);
+  
+  BRepExtrema_DistShapeShape distShapeShape1(grossPlateFace,step1ModifiedShape,Extrema_ExtFlag_MIN);
+  if(!distShapeShape1.IsDone())
+    return Standard_False;
+  if(distShapeShape1.Value() > 0.01) {
+    di << "Dist = " <<distShapeShape1.Value() <<"\n";
+    return Standard_False;
+  } else
+    di << "Dist1 = " <<distShapeShape1.Value() <<"\n";
+
+  //////////////////////////////////////////////////////////////////////////
+  /// Second flip Y
+  transformer1.Perform(step1ModifiedShape);
+  if(!transformer1.IsDone()) {
+    di << "Not Done1 \n";
+    return Standard_False;
+  }
+  const TopoDS_Shape& step2ModifiedShape = transformer1.ModifiedShape(step1ModifiedShape);
+  BRepTools::Write(step2ModifiedShape, Standard_CString ("SecondMirrorWire.brep"));
+
+  //This is identity matrix for values but for type is gp_Rotation ?!
+  gp_Trsf2d mirror11 = mirror1;
+  mirror11.PreMultiply(mirror1);
+
+  BRepExtrema_DistShapeShape distShapeShape2(grossPlateFace,step2ModifiedShape);//,Extrema_ExtFlag_MIN);
+  if(!distShapeShape2.IsDone())
+    return Standard_False;
+
+  //This last test case give error (the value is 1008.8822038689706)
+  if(distShapeShape2.Value() > 0.01) {
+    di  << "Wrong Dist2 = " <<distShapeShape2.Value() <<"\n";
+    Standard_Integer N = distShapeShape2.NbSolution();
+    di << "Nb = " <<N <<"\n";
+    for (Standard_Integer i=1;i <= N;i++)
+        di <<"Sol(" <<i<<") = " <<distShapeShape2.PointOnShape1(i).Distance(distShapeShape2.PointOnShape2(i)) <<"\n";
+    return Standard_False;
+  }
+  di << "Distance2 = " <<distShapeShape2.Value() <<"\n";
+ 
+  return Standard_True;
+}
+static Standard_Integer OCC23774(Draw_Interpretor& di, Standard_Integer n, const char** a)
+{ 
+
+  if (n != 3) {
+	di <<"OCC23774: invalid number of input parameters\n";
+	return 1;
+  }
+
+  const char *ns1 = (a[1]), *ns2 = (a[2]);
+  TopoDS_Shape S1(DBRep::Get(ns1)), S2(DBRep::Get(ns2));
+  if (S1.IsNull() || S2.IsNull()) {
+	di <<"OCC23774: Null input shapes\n";
+	return 1;
+  }
+  const TopoDS_Face& aFace  = TopoDS::Face(S1);
+  if(!OCC23774Test(aFace, S2, di))
+	di << "Something is wrong\n";
+
+ return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -298,6 +398,7 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC23595", "OCC23595", __FILE__, OCC23595, group);
   theCommands.Add ("OCC22611", "OCC22611 string nb", __FILE__, OCC22611, group);
   theCommands.Add ("OCC22595", "OCC22595", __FILE__, OCC22595, group);
+  theCommands.Add ("OCC23774", "OCC23774 shape1 shape2", __FILE__, OCC23774, group);
 
   return;
 }

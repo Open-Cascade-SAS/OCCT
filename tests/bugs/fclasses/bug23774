@@ -1,0 +1,74 @@
+puts "==========="
+puts "OCC23774"
+puts "==========="
+######################################################
+# Incorrect conversion from gp_Trsf2d to gp_Trsf
+######################################################
+
+pload QAcommands
+pload TOPTEST
+
+set BugNumber OCC23774
+
+restore [locate_data_file bug23774_GrossPlateFace.brep] face
+restore [locate_data_file bug23774_OriginalWire.brep] wire
+
+set Info [OCC23774 face wire]
+
+regexp {Dist0 += +([-0-9.+eE]+)} ${Info} full Dist0
+regexp {Dist1 += +([-0-9.+eE]+)} ${Info} full Dist1
+regexp {Distance2 += +([-0-9.+eE]+)} ${Info} full Distance2
+puts "Dist0 = ${Dist0}"
+puts "Dist1 = ${Dist1}"
+puts "Distance2 = ${Distance2}"
+
+set face_tolerance [maxtolerance face]
+regexp { +Face +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} ${face_tolerance} full F_MaxFaceTolerance
+regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} ${face_tolerance} full F_MaxEdgeTolerance
+regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} ${face_tolerance} full F_MaxVertexTolerance
+
+set wire_tolerance [maxtolerance wire]
+regexp { +Face +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} ${face_tolerance} full W_MaxFaceTolerance
+regexp { +Edge +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} ${face_tolerance} full W_MaxEdgeTolerance
+regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} ${face_tolerance} full W_MaxVertexTolerance
+
+set max_tolerance ${F_MaxFaceTolerance}
+if { ${F_MaxEdgeTolerance} > ${max_tolerance} } {
+   set max_tolerance ${F_MaxEdgeTolerance}
+}
+if { ${F_MaxVertexTolerance} > ${max_tolerance} } {
+   set max_tolerance ${F_MaxVertexTolerance}
+}
+if { ${W_MaxFaceTolerance} > ${max_tolerance} } {
+   set max_tolerance ${W_MaxFaceTolerance}
+}
+if { ${W_MaxEdgeTolerance} > ${max_tolerance} } {
+   set max_tolerance ${W_MaxEdgeTolerance}
+}
+if { ${W_MaxVertexTolerance} > ${max_tolerance} } {
+   set max_tolerance ${W_MaxVertexTolerance}
+}
+puts "max_tolerance = ${max_tolerance}"
+
+set status 0
+set Dist0_GoodValue 0.
+set Dist1_GoodValue 0.
+set Distance2_GoodValue 0.
+
+if { [expr abs(${Dist0} - ${Dist0_GoodValue})] > ${max_tolerance} } {
+   set status 1
+}
+if { [expr abs(${Dist1} - ${Dist1_GoodValue})] > ${max_tolerance} } {
+   set status 1
+}
+if { [expr abs(${Distance2} - ${Distance2_GoodValue})] > ${max_tolerance} } {
+   set status 1
+}
+
+# Resume
+puts ""
+if { ${status} != 0 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}

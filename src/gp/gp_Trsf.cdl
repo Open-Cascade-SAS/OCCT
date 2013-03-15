@@ -64,7 +64,6 @@ is
         --- Purpose : Returns the identity transformation.
 
   Create(T : Trsf2d from gp) returns Trsf from gp;
-        ---C++: inline
         ---Purpose: Creates  a 3D transformation from the 2D transformation T.
         -- The resulting transformation has a homogeneous
         -- vectorial part, V3, and a translation part, T3, built from T:

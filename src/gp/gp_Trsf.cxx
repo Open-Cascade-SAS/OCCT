@@ -27,6 +27,30 @@
 #include <gp.hxx>
 #include <Standard_ConstructionError.hxx>
 
+
+//=======================================================================
+//function : gp_Trsf
+//purpose  : Constructor from 2d
+//=======================================================================
+
+gp_Trsf::gp_Trsf (const gp_Trsf2d& T) : 
+scale(T.ScaleFactor()),
+shape(T.Form()),
+loc(T.TranslationPart().X(),T.TranslationPart().Y(), 0.0)
+{
+  const gp_Mat2d& M = T.HVectorialPart();
+  matrix(1,1) = M(1,1);
+  matrix(1,2) = M(1,2);
+  matrix(2,1) = M(2,1);
+  matrix(2,2) = M(2,2);
+  matrix(3,3) = 1.;
+  if (shape == gp_Ax1Mirror)
+  {
+    scale = 1;
+    matrix.Multiply(-1);
+  }
+}
+
 //=======================================================================
 //function : SetMirror
 //purpose  : 

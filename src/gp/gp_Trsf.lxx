@@ -32,19 +32,6 @@ matrix(1,0,0, 0,1,0, 0,0,1),
 loc(0.0, 0.0, 0.0)
 {}
 
-inline gp_Trsf::gp_Trsf (const gp_Trsf2d& T) : 
-scale(T.ScaleFactor()),
-shape(T.Form()),
-loc(T.TranslationPart().X(),T.TranslationPart().Y(), 0.0)
-{
-  const gp_Mat2d& M = T.HVectorialPart();
-  matrix(1,1) = M(1,1);
-  matrix(1,2) = M(1,2);
-  matrix(2,1) = M(2,1);
-  matrix(2,2) = M(2,2);
-  matrix(3,3) = 1.;
-}
-
 inline void gp_Trsf::SetMirror (const gp_Pnt& P) 
 {
   shape = gp_PntMirror;
