@@ -23,8 +23,13 @@
 @ifnotdefined ( %Xw_WOKSteps_EDL ) then
 ---@set %Xw_WOKSteps_EDL = "";
 
+-- Use GLX or Cocoa
+@ifnotdefined ( %MACOSX_USE_GLX ) then
+  @set %MACOSX_USE_GLX = "${MACOSX_USE_GLX}";
+@endif;
+
 --- Insert your stuff Here
-@if ( %Station == "wnt" ) then
+@if ( %Station == "wnt" || (%Station == "mac" && %MACOSX_USE_GLX != "true")) then
     -- Pas d'Xw sur Windows NT
     @set %WOKSteps_ObjGroup  = "";
     @set %WOKSteps_DepGroup  = "";

@@ -75,11 +75,13 @@
 #include <Visual3d_PickPath.hxx>
 #include <Visual3d_SetIteratorOfSetOfView.hxx>
 
-#ifndef WNT
-# include <Xw_Window.hxx>
-#else
+#if defined (_WIN32) || defined(__WIN32__)
 # include <WNT_Window.hxx>
-#endif  // WNT
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+# include <Cocoa_Window.hxx>
+#else
+# include <Xw_Window.hxx>
+#endif
 
 //-Aliases
 
@@ -954,15 +956,17 @@ Standard_Boolean Exist = Standard_False;
 	// Parse the list of views to find
 	// a view with the specified window
 	Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
-	int TheWindowIdOfView;
 
-#ifndef WNT
-const Handle(Xw_Window) THEWindow = *(Handle(Xw_Window) *) &AWindow;
-	int TheSpecifiedWindowId = int (THEWindow->XWindow ());
+#if defined(_WIN32) || defined(__WIN32__)
+  const Handle(WNT_Window) THEWindow = Handle(WNT_Window)::DownCast (AWindow);
+  int TheSpecifiedWindowId = int (THEWindow->HWindow ());
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+  const Handle(Cocoa_Window) THEWindow = Handle(Cocoa_Window)::DownCast (AWindow);
+  NSView* TheSpecifiedWindowId = THEWindow->HView();
 #else
-const Handle(WNT_Window) THEWindow = *(Handle(WNT_Window) *) &AWindow;
-	int TheSpecifiedWindowId = int (THEWindow->HWindow ());
-#endif  // WNT
+  const Handle(Xw_Window) THEWindow = Handle(Xw_Window)::DownCast (AWindow);
+  int TheSpecifiedWindowId = int (THEWindow->XWindow ());
+#endif
 
 	while ((! Exist) && (MyIterator.More ())) {
 
@@ -970,12 +974,15 @@ const Handle(WNT_Window) THEWindow = *(Handle(WNT_Window) *) &AWindow;
 		((MyIterator.Value ())->IsActive ()) ) {
 
 const Handle(Aspect_Window) AspectWindow = (MyIterator.Value ())->Window ();
-#ifndef WNT
-const Handle(Xw_Window) theWindow = *(Handle(Xw_Window) *) &AspectWindow;
-	TheWindowIdOfView = int (theWindow->XWindow ());
+#if defined(_WIN32) || defined(__WIN32__)
+   const Handle(WNT_Window) theWindow = Handle(WNT_Window)::DownCast (AspectWindow);
+   int TheWindowIdOfView = int (theWindow->HWindow ());
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+   const Handle(Cocoa_Window) theWindow = Handle(Cocoa_Window)::DownCast (AspectWindow);
+   NSView* TheWindowIdOfView = theWindow->HView();
 #else
-const Handle(WNT_Window) theWindow = *(Handle(WNT_Window) *) &AspectWindow;
-	TheWindowIdOfView = int (theWindow->HWindow ());
+   const Handle(Xw_Window) theWindow = Handle(Xw_Window)::DownCast (AspectWindow);
+   int TheWindowIdOfView = int (theWindow->XWindow ());
 #endif  // WNT
 		// Comparaison on window IDs
 		if (TheWindowIdOfView == TheSpecifiedWindowId) {

@@ -210,7 +210,6 @@ p Aspect
 p DsgPrs
 p Graphic3d
 p Image
-p ImageUtility
 p MeshVS
 p NIS
 p OpenGl

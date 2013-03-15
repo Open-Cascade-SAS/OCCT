@@ -21,7 +21,12 @@
 
   @uses "CSF.edl";
 
-  @if ( %Station == "wnt" ) then
+-- Use GLX or Cocoa
+@ifnotdefined ( %MACOSX_USE_GLX ) then
+  @set %MACOSX_USE_GLX = "${MACOSX_USE_GLX}";
+@endif;
+
+  @if ( %Station == "wnt" || (%Station == "mac" && %MACOSX_USE_GLX != "true")) then
     -- Pas de compile sur WNT
     @set %WOKUMake_Steps = "src";
   @endif;

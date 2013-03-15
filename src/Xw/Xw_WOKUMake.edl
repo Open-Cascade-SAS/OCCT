@@ -22,9 +22,14 @@ sss
 @ifnotdefined ( %Xw_WOKUMake_EDL ) then
 @set %Xw_WOKUMake_EDL = "";
 
+-- Use GLX or Cocoa
+@ifnotdefined ( %MACOSX_USE_GLX ) then
+  @set %MACOSX_USE_GLX = "${MACOSX_USE_GLX}";
+@endif;
+
 --- Insert your stuff Here
 
-@if ( %Station == "wnt" ) then
+@if ( %Station == "wnt" || (%Station == "mac" && %MACOSX_USE_GLX != "true")) then
 	@set %WOKUMake_Steps = "*src xcpp.fill(src)  xcpp.src(xcpp.fill)  xcpp.header(xcpp.fill) .xcpp.template(xcpp.fill) obj.inc";
 @endif;	
 @endif;

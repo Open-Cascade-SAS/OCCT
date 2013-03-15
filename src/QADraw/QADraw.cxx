@@ -450,7 +450,7 @@ static Standard_Integer QAAISGetMousePoint (Draw_Interpretor& di, Standard_Integ
 
 static Standard_Integer QAAISGetColorCoord (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
-#if ! defined(WNT)
+#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
   if ( argc > 1 ) {
     di << "Usage : " << argv[0] << "\n";
     return 1;
