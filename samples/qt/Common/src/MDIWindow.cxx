@@ -93,7 +93,7 @@ void MDIWindow::dump()
 
 	QString datadir = (QString(getenv("CASROOT")) + "/../data/images");
 	static QString filter;
-  filter = "Images Files (*.bmp *.gif *.xwd *.ps *.eps *.tex *.pdf *.svg *.pgf)";
+  filter = "Images Files (*.bmp *.ppm *.png *.jpg *.tiff *.tga *.gif *.exr *.ps *.eps *.tex *.pdf *.svg *.pgf)";
 	QFileDialog fd ( 0 );
 	fd.setModal( true );
 	fd.setFilter( filter );
