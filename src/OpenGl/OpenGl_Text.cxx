@@ -90,10 +90,13 @@ namespace
 
     if (isBold)
     {
-      sprintf (thePsFont, "%s-%s", TheFamily[aFontId], "Bold");
       if (isItalic)
       {
-        sprintf (thePsFont, "%s%s", thePsFont, TheItalic[aFontId]);
+        sprintf (thePsFont, "%s-Bold%s", TheFamily[aFontId], TheItalic[aFontId]);
+      }
+      else
+      {
+        sprintf (thePsFont, "%s-Bold", TheFamily[aFontId]);
       }
     }
     else if (isItalic)
