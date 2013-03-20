@@ -74,7 +74,7 @@ inline void AIS_InteractiveObject::Color(Quantity_Color& aColor) const
 }
 
 inline Standard_Boolean AIS_InteractiveObject::HasWidth() const 
-{return (!myOwnWidth == 0.);}
+{return !(myOwnWidth == 0.);}
 
 inline Standard_Real AIS_InteractiveObject::Width() const 
 {return myOwnWidth;}
