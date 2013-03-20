@@ -1160,8 +1160,6 @@ switch ( report.type ) {
             else
             {
               IsDragged = Standard_True;
-              X_ButtonPress = X_ButtonPress;
-              Y_ButtonPress = Y_ButtonPress;
               DragFirst = Standard_True;
             }
           }
@@ -1234,11 +1232,6 @@ switch ( report.type ) {
         break;
       case MotionNotify:
         {
-          //    XEvent dummy;
-
-          X_Motion = report.xmotion.x;
-          Y_Motion = report.xmotion.y;
-
           if( IsDragged )
           {
             Aspect_Handle aWindow = VT_GetWindow()->XWindow();
@@ -1248,17 +1241,16 @@ switch ( report.type ) {
             if( !DragFirst )
               XDrawRectangle( display, aWindow, gc, min( X_ButtonPress, X_Motion ), min( Y_ButtonPress, Y_Motion ), abs( X_Motion-X_ButtonPress ), abs( Y_Motion-Y_ButtonPress ) );
 
-            X_Motion = X_Motion;
-            Y_Motion = Y_Motion;
+            X_Motion = report.xmotion.x;
+            Y_Motion = report.xmotion.y;
             DragFirst = Standard_False;
 
-            //cout << "draw rect : " << X_Motion << ", " << Y_Motion << endl;
             XDrawRectangle( display, aWindow, gc, min( X_ButtonPress, X_Motion ), min( Y_ButtonPress, Y_Motion ), abs( X_Motion-X_ButtonPress ), abs( Y_Motion-Y_ButtonPress ) );
           }
           else
           {
-
-            //cout << "MotionNotify " << X_Motion << "," << Y_Motion << endl;
+            X_Motion = report.xmotion.x;
+            Y_Motion = report.xmotion.y;
 
             // remove all the ButtonMotionMask
             while( XCheckMaskEvent( display, ButtonMotionMask, &report) ) ;
