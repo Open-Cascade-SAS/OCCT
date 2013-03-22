@@ -990,8 +990,39 @@ void BRepMesh_FastDiscret::Add( const TopoDS_Edge&                  theEdge,
 
       TopLoc_Location L;
       Standard_Integer nbpmin = 2;
-      if (cons.GetType() == GeomAbs_Circle) nbpmin = 4; //OCC287
-      BRepMesh_GeomTool GT(cons, wFirst, wLast, 0.5*myAngle, otherdefedge, nbpmin);
+      const GeomAbs_CurveType aCurveType = cons.GetType();
+      if ( aCurveType == GeomAbs_Circle )
+        nbpmin = 4; //OCC287
+
+      BRepMesh_GeomTool GT(cons, wFirst, wLast, 0.5 * myAngle, otherdefedge, nbpmin);
+
+      if ( aCurveType == GeomAbs_BSplineCurve )
+      {
+        const Standard_Integer aNbInt = cons.NbIntervals( GeomAbs_C1 );
+        if ( aNbInt > 0 )
+        {
+          TColStd_Array1OfReal anIntervals( 1, aNbInt + 1 );
+          cons.Intervals( anIntervals, GeomAbs_C1 );
+          for ( Standard_Integer aIntIt = 1; aIntIt <= aNbInt; ++aIntIt )
+          {
+            const Standard_Real& aStartInt = anIntervals.Value( aIntIt );
+            const Standard_Real& anEndInt  = anIntervals.Value( aIntIt + 1 );
+
+            BRepMesh_GeomTool aDetalizator( cons, aStartInt, anEndInt,
+              0.5 * myAngle, otherdefedge, nbpmin );
+
+            Standard_Integer aNbAddNodes = aDetalizator.NbPoints();
+            for ( Standard_Integer aNodeIt = 1; aNodeIt <= aNbAddNodes; ++aNodeIt )
+            {
+              Standard_Real aParam;
+              gp_Pnt        aPoint3d;
+              gp_Pnt2d      aPoint2d;
+              aDetalizator.Value( cons, theGFace, aNodeIt, aParam, aPoint3d, aPoint2d );
+              GT.AddPoint( aPoint3d, aParam, Standard_False );
+            }
+          }
+        }
+      }
 
       // PTv, chl/922/G9, Take into account internal vertices
       // it is necessary for internal edges, which do not split other edges, by their vertex
