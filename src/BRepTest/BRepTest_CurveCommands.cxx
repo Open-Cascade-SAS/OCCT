@@ -1639,6 +1639,30 @@ Standard_Integer edgeintersector(Draw_Interpretor& di,
   return 0;
 
 }
+
+//=======================================================================
+//function : concatC0wire
+//purpose  : 
+//=======================================================================
+
+Standard_Integer concatC0wire(Draw_Interpretor&, Standard_Integer n, const char** c)
+{
+  if ( n < 3 ) return 1;                               
+  
+  TopoDS_Shape S = DBRep::Get(c[2],TopAbs_WIRE) ;
+
+  if (S.IsNull())
+    return 1;                            //test if the shape is empty
+  
+  TopoDS_Wire W = TopoDS::Wire(S) ;
+  TopoDS_Shape res;
+
+
+  res = BRepAlgo::ConcatenateWireC0(W);              //treatment
+  DBRep::Set(c[1], res);
+  return 0;
+}
+
 //=======================================================================
 //function : concatwire
 //purpose  : reduce the multiply degree of the knots to the minimum without
@@ -1827,6 +1851,12 @@ void  BRepTest::CurveCommands(Draw_Interpretor& theCommands)
   theCommands.Add("reducepcurves",
 		  "reducepcurves shape1 shape2 ...",
 		  reducepcurves, g);
+
+  theCommands.Add("concatC0wire",
+		  "concatC0wire result wire",
+		  __FILE__,
+		  concatC0wire,
+		  g);
 
   theCommands.Add("concatwire",
 		  "concatwire result wire [option](G1/C1)",

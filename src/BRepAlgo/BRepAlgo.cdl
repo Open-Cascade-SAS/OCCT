@@ -118,6 +118,12 @@ is
     --          Option can be G1 or C1.
     returns Wire from TopoDS;
 
+    ConcatenateWireC0(Wire   :   Wire  from TopoDS)         
+    ---Purpose: this method makes an edge from a wire.
+    --          Junction points between edges of wire may be sharp,
+    --          resulting curve of the resulting edge may be C0.
+    returns Edge from TopoDS;
+
     --BRepAlgoAPI  f 
 
     IsValid(S: Shape from TopoDS) 
