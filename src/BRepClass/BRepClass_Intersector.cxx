@@ -209,6 +209,10 @@ void RefineTolerance(const TopoDS_Face& aF,
       aTolX=-aTolX;
     }
     //
+    if (aTolX < Precision::Confusion()) {
+      aTolX = Precision::Confusion();
+    }
+    //
     if (aTolX<aTolZ) {
       aTolZ=aTolX;
     }
