@@ -905,7 +905,12 @@ void BRepMesh_FastDiscret::Add( const TopoDS_Edge&                  theEdge,
     }
     myVertices.Bind(pBegin, ipf);
   }
-  theUV = BRepMesh_FastDiscretFace::FindUV(pBegin, uvFirst, ipf, theGFace, mindist, myLocation2d);
+
+  Handle(BRepMesh_FaceAttribute) aFaceAttribute;
+  GetFaceAttribute ( theFace, aFaceAttribute );
+  theUV = BRepMesh_FastDiscretFace::FindUV(pBegin, uvFirst, 
+    ipf, theGFace, mindist, aFaceAttribute, myLocation2d);
+
   BRepMesh_Vertex vf(theUV, ipf, BRepMesh_Frontier);
   Standard_Integer ivf = myStructure->AddNode(vf);
 
@@ -936,7 +941,10 @@ void BRepMesh_FastDiscret::Add( const TopoDS_Edge&                  theEdge,
       myVertices.Bind(pEnd,ipl);
     }
   }
-  theUV = BRepMesh_FastDiscretFace::FindUV(pEnd, uvLast, ipl, theGFace, mindist, myLocation2d);
+
+  theUV = BRepMesh_FastDiscretFace::FindUV(pEnd, uvLast, ipl, 
+    theGFace, mindist, aFaceAttribute, myLocation2d);
+
   BRepMesh_Vertex vl(theUV, ipl, BRepMesh_Frontier);
   Standard_Integer ivl= myStructure->AddNode(vl);
 
@@ -1395,7 +1403,12 @@ Standard_Boolean BRepMesh_FastDiscret::Update(const TopoDS_Edge&          theEdg
           myVertices.Bind(pBegin,ipf);
         }
         NewNodInStruct(1) = ipf;
-        theUV = BRepMesh_FastDiscretFace::FindUV(pBegin, uvFirst, ipf, gFace, mindist, myLocation2d);
+
+        Handle(BRepMesh_FaceAttribute) aFaceAttribute;
+        GetFaceAttribute ( theFace, aFaceAttribute );
+        theUV = BRepMesh_FastDiscretFace::FindUV(pBegin, uvFirst, ipf, 
+          gFace, mindist, aFaceAttribute, myLocation2d);
+
         BRepMesh_Vertex vf(theUV,ipf,BRepMesh_Frontier);
         iv1 = myStructure->AddNode(vf);
         isv1 = myVemap.FindIndex(iv1);
@@ -1432,7 +1445,9 @@ Standard_Boolean BRepMesh_FastDiscret::Update(const TopoDS_Edge&          theEdg
           }
         }
         NewNodInStruct(nbnodes) = ipl;
-        theUV = BRepMesh_FastDiscretFace::FindUV(pEnd, uvLast, ipl, gFace, mindist, myLocation2d);
+        theUV = BRepMesh_FastDiscretFace::FindUV(pEnd, uvLast, ipl, 
+          gFace, mindist, aFaceAttribute, myLocation2d);
+
         BRepMesh_Vertex vl(theUV,ipl,BRepMesh_Frontier);
         
         ivl = myStructure->AddNode(vl);

@@ -112,7 +112,8 @@ is
                 theXY           : Pnt2d                             from gp;
                 theIp           : Integer                           from Standard; 
                 theSFace        : HSurface                          from BRepAdaptor; 
-                theMinDist      : Real                              from  Standard;
+                theMinDist      : Real                              from Standard;
+                theFaceAttribute: FaceAttribute                     from BRepMesh;
                 theLocation2dMap: in out DataMapOfIntegerListOfXY   from BRepMesh)
           returns XY from gp;
 
