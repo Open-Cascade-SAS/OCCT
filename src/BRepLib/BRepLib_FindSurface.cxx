@@ -78,30 +78,30 @@ static Standard_Real Controle(const TColgp_SequenceOfPnt& thePoints,
 
   return dfMaxDist;
 }
-
 //=======================================================================
 //function : Is2DConnected
 //purpose  : Return true if the last vertex of theEdge1 coincides with
 //           the first vertex of theEdge2 in parametric space of theFace
 //=======================================================================
-
-inline static Standard_Boolean Is2DConnected( const TopoDS_Edge& theEdge1,
-                                              const TopoDS_Edge& theEdge2,
-                                              const TopoDS_Face& theFace )
+inline static Standard_Boolean Is2DConnected(const TopoDS_Edge& theEdge1,
+					     const TopoDS_Edge& theEdge2,
+					     const Handle(Geom_Surface)& theSurface,
+					     const TopLoc_Location& theLocation)
 {
   Standard_Real f,l;
+  //TopLoc_Location aLoc;
   Handle(Geom2d_Curve) aCurve;
   gp_Pnt2d p1, p2;
 
   // get 2D points
-  aCurve   = BRep_Tool::CurveOnSurface( theEdge1, theFace,f,l );
+  aCurve=BRep_Tool::CurveOnSurface(theEdge1, theSurface, theLocation, f, l);
   p1       = aCurve->Value( theEdge1.Orientation() == TopAbs_FORWARD ? l : f );
-  aCurve   = BRep_Tool::CurveOnSurface( theEdge2,  theFace,f,l );
+  aCurve=BRep_Tool::CurveOnSurface(theEdge2, theSurface, theLocation, f, l);
   p2       = aCurve->Value(  theEdge2.Orientation() == TopAbs_FORWARD ? f : l );
 
   // compare 2D points
-  BRepAdaptor_Surface aSurface( theFace );
-  TopoDS_Vertex    aV = TopExp::FirstVertex( theEdge2, /*CumOri=*/Standard_True );
+  GeomAdaptor_Surface aSurface( theSurface );
+  TopoDS_Vertex    aV = TopExp::FirstVertex( theEdge2, Standard_True );
   Standard_Real tol3D = BRep_Tool::Tolerance( aV );
   Standard_Real tol2D = aSurface.UResolution( tol3D ) + aSurface.VResolution( tol3D );
   Standard_Real dist2 = p1.SquareDistance( p2 );
@@ -114,15 +114,17 @@ inline static Standard_Boolean Is2DConnected( const TopoDS_Edge& theEdge1,
 //           parametric space of theSurface
 //=======================================================================
 
-static Standard_Boolean Is2DClosed( const TopoDS_Shape&         theShape,
-                                    const Handle(Geom_Surface)& theSurface)
+static Standard_Boolean Is2DClosed(const TopoDS_Shape&         theShape,
+                                   const Handle(Geom_Surface)& theSurface,
+				   const TopLoc_Location& theLocation)
 {
   try
   {
     // get a wire theShape 
     TopExp_Explorer aWireExp( theShape, TopAbs_WIRE );
-    if ( !aWireExp.More() )
+    if ( !aWireExp.More() ) {
       return Standard_False;
+    }
     TopoDS_Wire aWire = TopoDS::Wire( aWireExp.Current() );
     // a tmp face
     TopoDS_Face aTmpFace = BRepLib_MakeFace( theSurface, Precision::PConfusion() );
@@ -130,32 +132,31 @@ static Standard_Boolean Is2DClosed( const TopoDS_Shape&         theShape,
     // check topological closeness using wire explorer, if the wire is not closed
     // the 1st and the last vertices of wire are different
     BRepTools_WireExplorer aWireExplorer( aWire, aTmpFace );
-    if ( !aWireExplorer.More())
+    if ( !aWireExplorer.More()) {
       return Standard_False;
+    }
     // remember the 1st and the last edges of aWire
     TopoDS_Edge aFisrtEdge = aWireExplorer.Current(), aLastEdge = aFisrtEdge;
     // check if edges connected topologically (that is assured by BRepTools_WireExplorer)
     // are connected in 2D
     TopoDS_Edge aPrevEdge = aFisrtEdge;
-    for ( aWireExplorer.Next(); aWireExplorer.More(); aWireExplorer.Next() )
-    {
+    for ( aWireExplorer.Next(); aWireExplorer.More(); aWireExplorer.Next() )    {
       aLastEdge = aWireExplorer.Current();
-      if ( !Is2DConnected( aPrevEdge, aLastEdge, aTmpFace ))
+      if ( !Is2DConnected( aPrevEdge, aLastEdge, theSurface, theLocation)) { 
         return false;
+      }
       aPrevEdge = aLastEdge;
     }
     // wire is closed if ( 1st vertex of aFisrtEdge ) ==
     // ( last vertex of aLastEdge ) in 2D
-    TopoDS_Vertex aV1 = TopExp::FirstVertex( aFisrtEdge, /*CumOri=*/Standard_True );
-    TopoDS_Vertex aV2 = TopExp::LastVertex( aLastEdge, /*CumOri=*/Standard_True );
-    return ( aV1.IsSame( aV2 ) && Is2DConnected( aLastEdge, aFisrtEdge, aTmpFace ));
+    TopoDS_Vertex aV1 = TopExp::FirstVertex( aFisrtEdge, Standard_True );
+    TopoDS_Vertex aV2 = TopExp::LastVertex( aLastEdge, Standard_True );
+    return ( aV1.IsSame( aV2 ) && Is2DConnected( aLastEdge, aFisrtEdge, theSurface, theLocation));
   }
-  catch ( Standard_Failure )
-  {
+  catch ( Standard_Failure )  {
     return Standard_False;
   }
 }
-
 //=======================================================================
 //function : BRepLib_FindSurface
 //purpose  : 
@@ -250,7 +251,7 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
     if (!mySurface.IsNull())
       // if S is e.g. the bottom face of a cylinder, mySurface can be the
       // lateral (cylindrical) face of the cylinder; reject an improper mySurface
-      if ( !OnlyClosed || Is2DClosed( S, mySurface ))
+      if ( !OnlyClosed || Is2DClosed( S, mySurface, myLocation ))
         break;
   }
 
@@ -540,3 +541,4 @@ TopLoc_Location BRepLib_FindSurface::Location() const
 {
   return myLocation;
 }
+

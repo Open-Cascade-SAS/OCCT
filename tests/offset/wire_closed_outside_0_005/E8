@@ -1,18 +1,7 @@
-set os "ALL"
-if {[array get env os_type] != ""} {
-  set os $env(os_type)
-}
+puts "TODO ?OCC23068 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO ?OCC23068 ALL: Error : result is not a topological shape"
+puts "TODO ?OCC23068 ALL: Error : The offset cannot be built."
 
-if {
-        [string compare $os "Mandriva2010"] == 0
-    ||  [string compare $os "Debian40"    ] == 0
-    ||  [string compare $os "Mandriva2008"] == 0  
-   } {
-  puts "TODO OCC23068 $os: Faulty shapes in variables faulty_1 to faulty_26"
-} else {
-  puts "TODO OCC23068 $os: Error : result is not a topological shape"
-  puts "TODO OCC23068 $os: Error : The offset cannot be built."
-}
 restore [locate_data_file offset_wire_059.brep] s
 
 set length 347.204

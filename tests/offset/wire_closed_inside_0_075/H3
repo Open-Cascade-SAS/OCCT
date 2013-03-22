@@ -1,4 +1,4 @@
-puts "TODO OCC23068 ALL: Faulty shapes in variables faulty_1 to faulty_6"
+puts "TODO OCC23068 ALL: Faulty shapes in variables faulty_1 to faulty_"
 restore [locate_data_file offset_wire_089.brep] s
 
 set length 1110.06
