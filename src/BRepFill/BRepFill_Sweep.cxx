@@ -1685,6 +1685,7 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
  myContinuity  = GeomAbs_C2;
  myDegmax      = 11;
  mySegmax      = 30;
+ myForceApproxC1 = Standard_False;
 }
 
 //=======================================================================
@@ -1750,6 +1751,17 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
 {
   myAngMin = Max (MinAngle, Precision::Angular());
   myAngMax = Min (MaxAngle, 6.28);
+}
+
+//=======================================================================
+//function : SetForceApproxC1
+//purpose  : Set the flag that indicates attempt to approximate
+//           a C1-continuous surface if a swept surface proved
+//           to be C0.
+//=======================================================================
+ void BRepFill_Sweep::SetForceApproxC1(const Standard_Boolean ForceApproxC1)
+{
+  myForceApproxC1 = ForceApproxC1;
 }
 
 ///=======================================================================
@@ -1820,6 +1832,7 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
     // Curve by iso value
     GeomFill_Sweep Sweep(myLoc->Law(ipath), KPart);
     Sweep.SetTolerance(myTol3d, myBoundTol, myTol2d, myTolAngular);
+    Sweep.SetForceApproxC1(myForceApproxC1);
     Sweep.Build(mySec->Law(isec), myApproxStyle, myContinuity, myDegmax, mySegmax);
     if (!Sweep.IsDone())  
       return Standard_False;
@@ -1985,6 +1998,7 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
 
     GeomFill_Sweep Sweep(myLoc->Law(IPath), KPart);
     Sweep.SetTolerance(myTol3d, myBoundTol, myTol2d, myTolAngular);
+    Sweep.SetForceApproxC1(myForceApproxC1);
 
     // Case of evolutionary section, definition of parametric correspondence
     if (!constSection) {
@@ -2491,13 +2505,13 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
 //purpose  : Construt the result of sweeping
 //======================================================================
  void BRepFill_Sweep::Build(const BRepFill_TransitionStyle Transition,
-			    const GeomFill_ApproxStyle Approx,
 			    const GeomAbs_Shape Continuity,
+			    const GeomFill_ApproxStyle Approx,
 			    const Standard_Integer Degmax,
 			    const Standard_Integer Segmax) 
 {
-  myApproxStyle = Approx;
   myContinuity  = Continuity;
+  myApproxStyle = Approx;
   myDegmax = Degmax;
   mySegmax = Segmax;
 

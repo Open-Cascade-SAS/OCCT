@@ -66,6 +66,12 @@ is
     	---Level:  Public   
     	---See Also:GeomFill_IsCorrectedFrenet
     
+    SetDiscrete(me  :  mutable);
+    	---Purpose: Set a Discrete trihedron  
+        --          to  perform  the  sweeping
+    	---Level:  Public   
+    	---See Also:GeomFill_IsDiscreteTrihedron
+    
     Set(me  :  mutable;  Axe  :  Ax2  from  gp); 
     	---Purpose: Set  an  fixed  trihedron  to  perform  the  sweeping 
          --         all sections will be parallel.
@@ -105,6 +111,13 @@ is
         -- Else  the  Normal  is  defined  by the vector  PQ. 
 
         ---Level: Public
+
+    SetForceApproxC1(me  :  mutable;
+    	    	     ForceApproxC1 : Boolean from Standard);
+	---Purpose: Set the flag that indicates attempt to approximate
+	--          a C1-continuous surface if a swept surface proved
+	--          to be C0.
+
 
 -- =================================
 --  Methodes to define section(s)
@@ -271,8 +284,9 @@ fields
 
   myTol3d       :  Real; 
   myBoundTol    :  Real;  
-  myTolAngular  :  Real;  
+  myTolAngular  :  Real;
   angmin,  angmax  :  Real; 
+  myForceApproxC1 : Boolean;
   
   myLaw         :  Function         from  Law;    
   myLocation    :  LocationLaw      from  BRepFill; 

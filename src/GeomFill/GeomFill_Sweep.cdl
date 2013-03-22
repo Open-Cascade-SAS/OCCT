@@ -78,7 +78,12 @@ is
            --                 beetween tangents on the section law and
            --                 tangent of iso-v on approximed surface
 
-                     
+   SetForceApproxC1(me  :  in  out;
+    	    	    ForceApproxC1 : Boolean from Standard);
+   ---Purpose: Set the flag that indicates attempt to approximate
+   --          a C1-continuous surface if a swept surface proved
+   --          to be C0.
+   			                         
     ExchangeUV(me)
     	---Purpose: returns true if sections are U-Iso
          -- This can be produce in some cases when <WithKpart> is True.
@@ -184,8 +189,9 @@ fields
     First,  Last  :  Real;
     SFirst,  SLast:  Real;  
     Tol3d,  BoundTol,  Tol2d,  TolAngular  :  Real;     
-    SError        :  Real;      
-     
+    SError        :  Real;
+    myForceApproxC1  :  Boolean;
+         
     myLoc      :  LocationLaw  from GeomFill;
     mySec      :  SectionLaw   from GeomFill;
     mySurface  :  Surface from Geom;

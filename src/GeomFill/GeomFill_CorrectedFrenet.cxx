@@ -44,6 +44,7 @@
 #include <Geom_BSplineCurve.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 
+
 #ifdef DEB
 static Standard_Boolean Affich=0;
 #endif
@@ -89,6 +90,30 @@ static void draw(const Handle(Law_Function)& law)
   dout.Flush();
 }
 #endif
+
+
+static Standard_Real ComputeTorsion(const Standard_Real Param,
+                                    const Handle(Adaptor3d_HCurve)& aCurve)
+{
+  Standard_Real Torsion;
+  
+  gp_Pnt aPoint;
+  gp_Vec DC1, DC2, DC3;
+  aCurve->D3(Param, aPoint, DC1, DC2, DC3);
+  gp_Vec DC1crossDC2 = DC1 ^ DC2;
+  Standard_Real Norm_DC1crossDC2 = DC1crossDC2.Magnitude();
+
+  Standard_Real DC1DC2DC3 = DC1crossDC2 * DC3 ; //mixed product
+
+  Standard_Real Tol = gp::Resolution();
+  Standard_Real SquareNorm_DC1crossDC2 = Norm_DC1crossDC2 * Norm_DC1crossDC2;
+  if (SquareNorm_DC1crossDC2 <= Tol)
+    Torsion = 0.;
+  else
+    Torsion = DC1DC2DC3 / SquareNorm_DC1crossDC2 ;
+
+  return Torsion;
+}
 
 //===============================================================
 // Function : smoothlaw
@@ -280,13 +305,25 @@ static Standard_Boolean FindPlane ( const Handle(Adaptor3d_HCurve)& c,
 }
 
 //===============================================================
-// Function : 
+// Function : Constructor
 // Purpose :
 //===============================================================
 GeomFill_CorrectedFrenet::GeomFill_CorrectedFrenet() 
  : isFrenet(Standard_False)
 {
   frenet = new GeomFill_Frenet();
+  myForEvaluation = Standard_False;
+}
+
+//===============================================================
+// Function : Constructor
+// Purpose :
+//===============================================================
+GeomFill_CorrectedFrenet::GeomFill_CorrectedFrenet(const Standard_Boolean ForEvaluation) 
+ : isFrenet(Standard_False)
+{
+  frenet = new GeomFill_Frenet();
+  myForEvaluation = ForEvaluation;
 }
 
 Handle(GeomFill_TrihedronLaw) GeomFill_CorrectedFrenet::Copy() const
@@ -314,6 +351,7 @@ Handle(GeomFill_TrihedronLaw) GeomFill_CorrectedFrenet::Copy() const
       {
 	// No probleme isFrenet
 	isFrenet = Standard_True;
+        break;
       }
      default :
        { 
@@ -382,8 +420,12 @@ Handle(GeomFill_TrihedronLaw) GeomFill_CorrectedFrenet::Copy() const
   for(i = 1; i <= NbI; i++) {
     NbStep = Max(Standard_Integer((T(i+1) - T(i))/AvStep), 3);
     Step = (T(i+1) - T(i))/NbStep;
-    if(!InitInterval(T(i), T(i+1), Step, StartAng, Tangent, Normal, AT, AN, Func, SeqPoles, SeqAngle, SeqTangent, SeqNormal))
-      if(isFrenet) isFrenet = Standard_False;
+    if(!InitInterval(T(i), T(i+1), Step, StartAng, Tangent, Normal, AT, AN, Func,
+                     SeqPoles, SeqAngle, SeqTangent, SeqNormal))
+    {
+      if(isFrenet)
+        isFrenet = Standard_False;
+    }
     Handle(Law_Composite)::DownCast(EvolAroundT)->ChangeLaws().Append(Func);
   }
   if(myTrimmed->IsPeriodic()) 
@@ -402,7 +444,7 @@ Handle(GeomFill_TrihedronLaw) GeomFill_CorrectedFrenet::Copy() const
     HArrTangent->ChangeValue(i) = SeqTangent(i); 
     HArrNormal->ChangeValue(i) = SeqNormal(i); 
   };
-
+  
 #if DRAW
   if (Affich) {
     draw(EvolAroundT);
@@ -431,6 +473,7 @@ Handle(GeomFill_TrihedronLaw) GeomFill_CorrectedFrenet::Copy() const
   TColStd_SequenceOfReal EvolAT;
   Standard_Real Param = First, LengthMin, L, norm;
   Standard_Boolean isZero = Standard_True, isConst = Standard_True;
+  const Standard_Real minnorm = 1.e-16;
   Standard_Integer i;
   gp_Pnt PonC;
   gp_Vec D1;
@@ -446,7 +489,9 @@ Handle(GeomFill_TrihedronLaw) GeomFill_CorrectedFrenet::Copy() const
   Standard_Real angleAT, currParam, currStep = Step;
 
   Handle( Geom_Plane ) aPlane;
-  Standard_Boolean isPlanar = FindPlane( myCurve, aPlane );
+  Standard_Boolean isPlanar = Standard_False;
+  if (!myForEvaluation)
+    isPlanar = FindPlane( myCurve, aPlane );
 
   i = 1;
   currParam = Param;
@@ -493,13 +538,21 @@ Handle(GeomFill_TrihedronLaw) GeomFill_CorrectedFrenet::Copy() const
 
       //Evaluate the Next step
       CS.D1(Param, PonC, D1);
-      L = Max(PonC.XYZ().Modulus()/2, LengthMin);
+      
+      L = PonC.XYZ().Modulus()/2;
       norm = D1.Magnitude(); 
-      if (norm < Precision::Confusion()) {
-	norm = Precision::Confusion();
+      if (norm <= gp::Resolution())
+      {
+        //norm = 2.*gp::Resolution();
+        norm = minnorm;
       }
       currStep = L / norm;
-      if  (currStep > Step) currStep = Step;//default value
+      if (currStep <= gp::Resolution()) //L = 0 => curvature = 0, linear segment
+        currStep = Step;
+      if (currStep < Precision::Confusion()) //too small step
+        currStep = Precision::Confusion();
+      if  (currStep > Step) //too big step
+        currStep = Step;//default value
     }
     else 
       currStep /= 2; // Step too long !
@@ -885,6 +938,59 @@ Standard_Real GeomFill_CorrectedFrenet::GetAngleAT(const Standard_Real Param) co
  frenet->SetInterval(First, Last);
  if (!isFrenet) TLaw =  EvolAroundT->Trim(First, Last,
 					  Precision::PConfusion()/2);
+}
+
+//===============================================================
+// Function : EvaluateBestMode
+// Purpose :
+//===============================================================
+GeomFill_Trihedron GeomFill_CorrectedFrenet::EvaluateBestMode()
+{
+  if (EvolAroundT.IsNull())
+    return GeomFill_IsFrenet; //Frenet
+
+  const Standard_Real MaxAngle = 3.*M_PI/4.;
+  const Standard_Real MaxTorsion = 100.;
+  
+  Standard_Real Step, u, v, tmin, tmax;
+  Standard_Integer NbInt, i, j, k = 1;
+  NbInt = EvolAroundT->NbIntervals(GeomAbs_CN);
+  TColStd_Array1OfReal Int(1, NbInt+1);
+  EvolAroundT->Intervals(Int, GeomAbs_CN);
+  gp_Pnt2d old;
+  gp_Vec2d aVec, PrevVec;
+
+  Standard_Integer NbSamples = 10;
+  for(i = 1; i <= NbInt; i++){
+    tmin = Int(i);
+    tmax = Int(i+1);
+    Standard_Real Torsion = ComputeTorsion(tmin, myTrimmed);
+    if (Abs(Torsion) > MaxTorsion)
+      return GeomFill_IsDiscreteTrihedron; //DiscreteTrihedron
+      
+    Handle(Law_Function) trimmedlaw = EvolAroundT->Trim(tmin, tmax, Precision::PConfusion()/2);
+    Step = (Int(i+1)-Int(i))/NbSamples;
+    for (j = 0; j <= NbSamples; j++) { 
+      u = tmin + j*Step;
+      v = trimmedlaw->Value(u);
+      gp_Pnt2d point2d(u,v);
+      if (j != 0)
+      {
+        aVec.SetXY(point2d.XY() - old.XY());
+        if (k > 2)
+        {
+          Standard_Real theAngle = PrevVec.Angle(aVec);
+          if (Abs(theAngle) > MaxAngle)
+            return GeomFill_IsDiscreteTrihedron; //DiscreteTrihedron
+        }
+        PrevVec = aVec;
+      }
+      old = point2d;
+      k++;
+    }
+  }
+
+  return GeomFill_IsCorrectedFrenet; //CorrectedFrenet
 }
 
 //===============================================================

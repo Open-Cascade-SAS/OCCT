@@ -431,6 +431,7 @@ static Standard_Integer setsweep(Draw_Interpretor& di,
     di << "   -FR : Tangent and Normal are given by Frenet trihedron" <<"\n";
     di << "   -CF : Tangente is given by Frenet," << "\n";
     di << "         the Normal is computed to minimize the torsion " << "\n";
+    di << "   -DT : discrete trihedron" << "\n";
     di << "   -DX Surf : Tangent and Normal are given by Darboux trihedron," <<"\n";     
     di << "       Surf have to be a shell or a face" <<"\n";
     di << "   -CN dx dy dz : BiNormal is given by dx dy dz" << "\n";
@@ -449,6 +450,9 @@ static Standard_Integer setsweep(Draw_Interpretor& di,
   }
   else if (!strcmp(a[1],"-CF")) {
     Sweep->SetMode(Standard_False);
+  }
+  else if (!strcmp(a[1],"-DT")) {
+    Sweep->SetDiscreteMode();
   }
   else if (!strcmp(a[1],"-DX")) {
     if (n!=3) {

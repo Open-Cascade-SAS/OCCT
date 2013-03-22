@@ -41,8 +41,8 @@ uses
     Edge   from TopoDS,
     Vertex from TopoDS,  
     Pnt    from  gp,
-    Trsf  from  gp 
-    
+    Trsf   from  gp,
+    Trihedron from GeomFill
 
 raises
     DomainError from Standard, 
@@ -57,6 +57,21 @@ is
              GeneratePartCase : Boolean from Standard = Standard_False) 
     returns Pipe from BRepFill;
     
+    SetMode(me : in out;
+    	    aMode : Trihedron from GeomFill);
+    	---Purpose: Set the mode of sweeping
+    	--          It can be:
+    	--          - Frenet
+    	--          - Corrected Frenet
+    	--          - Discrete Trihedron
+    	--          By default the mode is Corrected Frenet
+    
+    SetForceApproxC1(me : in out;
+    	    	     ForceApproxC1 : Boolean from Standard);
+	---Purpose: Set the flag that indicates attempt to approximate
+	--          a C1-continuous surface if a swept surface proved
+	--          to be C0.
+
     Perform (me : in out;  Spine   : Wire from TopoDS; 
     	    	    	   Profile : Shape from TopoDS;
                            GeneratePartCase : Boolean from Standard = Standard_False) 
@@ -175,4 +190,7 @@ fields
      
     myDegmax  : Integer from Standard;
     mySegmax  : Integer from Standard;
+    myMode    : Trihedron from GeomFill;
+    myForceApproxC1 : Boolean from Standard;
+    
 end Pipe;

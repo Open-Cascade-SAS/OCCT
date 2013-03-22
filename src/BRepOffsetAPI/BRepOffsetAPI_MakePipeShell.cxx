@@ -50,6 +50,15 @@ BRepOffsetAPI_MakePipeShell::BRepOffsetAPI_MakePipeShell(const TopoDS_Wire& Spin
 }
 
 //=======================================================================
+//function : SetDiscreteMode
+//purpose  : 
+//=======================================================================
+ void BRepOffsetAPI_MakePipeShell::SetDiscreteMode() 
+{
+  myPipe->SetDiscrete();
+}
+
+//=======================================================================
 //function : SetMode
 //purpose  : 
 //=======================================================================
@@ -185,8 +194,9 @@ void BRepOffsetAPI_MakePipeShell::Delete( const TopoDS_Shape& Profile)
   }
   return Status;
 }
+
 //=======================================================================
-//function : SetTransitionMode
+//function : SetTolerance
 //purpose  : 
 //=======================================================================
  void BRepOffsetAPI_MakePipeShell::SetTolerance(const Standard_Real Tol3d,
@@ -194,6 +204,17 @@ void BRepOffsetAPI_MakePipeShell::Delete( const TopoDS_Shape& Profile)
 					 const Standard_Real TolAngular)
 {
  myPipe->SetTolerance(Tol3d, BoundTol, TolAngular);
+}
+
+//=======================================================================
+//function : SetForceApproxC1
+//purpose  : Set the flag that indicates attempt to approximate
+//           a C1-continuous surface if a swept surface proved
+//           to be C0.
+//=======================================================================
+ void BRepOffsetAPI_MakePipeShell::SetForceApproxC1(const Standard_Boolean ForceApproxC1)
+{
+  myPipe->SetForceApproxC1(ForceApproxC1);
 }
 
 //=======================================================================

@@ -37,7 +37,8 @@ uses
  HArray1OfReal  from TColStd, 
  SequenceOfReal from TColStd, 
  HArray1OfVec   from TColgp, 
- SequenceOfVec  from TColgp
+ SequenceOfVec  from TColgp,
+ Trihedron      from GeomFill
  
 raises
  OutOfRange,  ConstructionError
@@ -45,11 +46,14 @@ is
 
    Create returns CorrectedFrenet from GeomFill;
 
+   Create (ForEvaluation: Boolean)
+   returns CorrectedFrenet from GeomFill;
+
    Copy(me)   
    returns  TrihedronLaw  from  GeomFill          
    is  redefined;
  
-   Init(me: mutable)   
+   Init(me: mutable)
    is  static  private; 
  
    InitInterval(me; First, Last, Step: Real;   
@@ -59,7 +63,7 @@ is
                 SeqPoles:   out SequenceOfReal from TColStd; 
                 SeqAngle:   out SequenceOfReal from TColStd; 
                 SeqTangent: out SequenceOfVec from TColgp; 
-                SeqNormal:  out SequenceOfVec from TColgp) 
+                SeqNormal:  out SequenceOfVec from TColgp)
    returns Boolean 
    --- Purpose:  Computes BSpline representation of Normal evolution at one  
    --- interval of continuity of Frenet. Returns True if FuncInt = 0
@@ -142,6 +146,20 @@ is
     	OutOfRange from Standard 
     is redefined;  
      
+     
+--  ===================  To define the best trihedron mode  ===============
+     
+    EvaluateBestMode(me : mutable)
+    returns Trihedron from GeomFill;
+    ---Purpose: Tries to define the best trihedron mode
+    --          for the curve. It can be:
+    --          - Frenet
+    --          - CorrectedFrenet
+    --          - DiscreteTrihedron
+    --          Warning: the CorrectedFrenet must be constructed
+    --          with option ForEvaluation = True,
+    --          the curve must be set by method SetCurve.
+     
 	  
 --  ===================  To help   computation of  Tolerance   ===============	 
     GetAverageLaw(me  :  mutable;
@@ -165,11 +183,13 @@ is
     is redefined;
 
 fields 
-   frenet         : Frenet           from  GeomFill; 
-   EvolAroundT    : Function         from  Law; 
-   TLaw           : Function         from  Law; 
-   AT,  AN        : Vec              from  gp;
-   isFrenet       : Boolean; 
+   frenet          : Frenet           from  GeomFill; 
+   EvolAroundT     : Function         from  Law; 
+   TLaw            : Function         from  Law; 
+   AT,  AN         : Vec              from  gp;
+   isFrenet        : Boolean; 
+   myForEvaluation : Boolean;
+   
    ---OCC78
    HArrPoles      : HArray1OfReal    from  TColStd;
    HArrAngle      : HArray1OfReal    from  TColStd;

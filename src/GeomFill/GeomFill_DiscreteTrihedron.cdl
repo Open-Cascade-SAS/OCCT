@@ -1,7 +1,6 @@
--- Created on: 1997-12-19
--- Created by: Philippe MANGIN
--- Copyright (c) 1997-1999 Matra Datavision
--- Copyright (c) 1999-2012 OPEN CASCADE SAS
+-- Created on: 2013-02-05
+-- Created by: Julia GERASIMOVA
+-- Copyright (c) 2001-2013 OPEN CASCADE SAS
 --
 -- The content of this file is subject to the Open CASCADE Technology Public
 -- License Version 6.5 (the "License"). You may not use the content of this file
@@ -19,26 +18,30 @@
 -- and conditions governing the rights and limitations under the License.
 
 
-
-class Frenet from GeomFill 
+class DiscreteTrihedron from GeomFill
     inherits TrihedronLaw  from  GeomFill 
     
-       	---Purpose: Defined Frenet Trihedron  Law         
+       	---Purpose: Defined Discrete Trihedron Law.        
+       	--          The requirement for path curve is only G1.
+       	--          The result is C0-continuous surface
+       	--          that can be later approximated to C1.
 
 uses
- HCurve from  Adaptor3d, 
- Shape  from  GeomAbs, 
- Array1OfReal   from TColStd,  
- Pnt    from  gp,
- Vec    from  gp,  
- HArray1OfReal from TColStd, 
- HArray1OfBoolean from TColStd
+    HCurve from  Adaptor3d, 
+    Shape  from  GeomAbs, 
+    Pnt    from  gp,
+    Vec    from  gp,
+    Array1OfReal from TColStd,
+    Frenet from GeomFill,
+    HSequenceOfAx2 from GeomFill,
+    HSequenceOfReal from TColStd
+
 raises
  OutOfRange,  ConstructionError
 is  
 
    Create  
-      returns Frenet from GeomFill 
+      returns DiscreteTrihedron from GeomFill 
       raises  ConstructionError; 
     
    Copy(me)   
@@ -60,7 +63,7 @@ is
       Tangent    : out  Vec  from  gp; 
       Normal     : out  Vec  from  gp; 
       BiNormal   : out  Vec  from  gp)
-      ---Purpose: compute Triedrhon on curve at parameter <Param>         
+      ---Purpose: compute Trihedron on curve at parameter <Param>         
    returns Boolean  is  redefined;
 	
    D1(me : mutable;
@@ -71,9 +74,11 @@ is
       DNormal    : out  Vec  from  gp;                 
       BiNormal   : out  Vec  from  gp; 
       DBiNormal  : out  Vec  from  gp)
-      ---Purpose: compute Triedrhon and  derivative Trihedron  on curve
+      ---Purpose: compute Trihedron and  derivative Trihedron  on curve
       --          at parameter <Param>                
       --  Warning : It used only for C1 or C2 aproximation
+      --  For the moment it returns null values for DTangent, DNormal
+      --  and DBiNormal.
    returns Boolean  
    is  redefined; 
    
@@ -91,6 +96,8 @@ is
       ---Purpose: compute  Trihedron on curve          
       --          first and seconde  derivatives.
       --  Warning : It used only for C2 aproximation
+      --  For the moment it returns null values for DTangent, DNormal
+      --  DBiNormal, D2Tangent, D2Normal, D2BiNormal.
    returns Boolean
    is  redefined; 
 --
@@ -119,7 +126,7 @@ is
       ATangent    : out  Vec  from  gp; 
       ANormal     : out  Vec  from  gp; 
       ABiNormal   : out  Vec  from  gp) 
-     ---Purpose: Get average value of Tangent(t) and Normal(t) it is usfull to 
+     ---Purpose: Get average value of Tangent(t) and Normal(t) it is usful to 
      --          make fast approximation of rational  surfaces.        
   is  redefined;
 
@@ -135,64 +142,13 @@ is
     returns  Boolean   
     is redefined;  
     
-   IsSingular(me; U: Real; Index: out Integer)     
-   returns  Boolean 
-   is  private; 
-
-   DoSingular(me: mutable; U: Real; Index: Integer;  
-              Tangent, BiNormal: out Vec from gp; 
-              n, k, TFlag, BNFlag: out Integer;
-	      Delta: out Real)
-    returns Boolean
-    is private; 
-
-   SingularD0(me : mutable; 
-      Param: Real; Index:  Integer;
-      Tangent    : out  Vec  from  gp; 
-      Normal     : out  Vec  from  gp; 
-      BiNormal   : out  Vec  from  gp;
-      Delta      : out  Real)
-      ---Purpose: computes Triedrhon on curve at parameter <Param>         
-   returns Boolean   
-   is private;
-
-   SingularD1(me : mutable;
-      Param: Real; Index:  Integer;   
-      Tangent    : out  Vec  from  gp;  
-      DTangent   : out  Vec  from  gp; 
-      Normal     : out  Vec  from  gp; 
-      DNormal    : out  Vec  from  gp;                 
-      BiNormal   : out  Vec  from  gp; 
-      DBiNormal  : out  Vec  from  gp;
-      Delta      : out  Real)
-    ---Purpose: computes Triedrhon and  derivative Trihedron  on curve
-      --          at parameter <Param>                
-      --  Warning : It used only for C1 or C2 aproximation     
-   returns Boolean
-   is private;     
-
-   SingularD2(me : mutable;
-      Param: Real; Index:  Integer;       
-      Tangent    : out  Vec  from  gp;  
-      DTangent   : out  Vec  from  gp; 
-      D2Tangent  : out  Vec  from  gp; 
-      Normal     : out  Vec  from  gp; 
-      DNormal    : out  Vec  from  gp;                 
-      D2Normal   : out  Vec  from  gp; 
-      BiNormal   : out  Vec  from  gp; 
-      DBiNormal  : out  Vec  from  gp; 
-      D2BiNormal : out  Vec  from  gp;
-      Delta      : out  Real)
-      ---Purpose: computes  Trihedron on curve          
-      --          first and seconde  derivatives.
-      --  Warning : It used only for C2 aproximation
-   returns Boolean
-   is private; 
 
 fields 
-   P         :  Pnt  from  gp;
-   mySngl    :  HArray1OfReal from TColStd;  
-   mySnglLen :  HArray1OfReal from TColStd;    
-   isSngl    :  Boolean  from  Standard;  -- True  if  there  is  some 
-                                          -- singular points
-end Frenet;
+
+   myPoint      : Pnt  from  gp;
+   myTrihedrons : HSequenceOfAx2  from GeomFill;
+   myKnots      : HSequenceOfReal from TColStd;
+   myFrenet     : Frenet  from GeomFill;
+   myUseFrenet  : Boolean from Standard;
+   
+end DiscreteTrihedron;

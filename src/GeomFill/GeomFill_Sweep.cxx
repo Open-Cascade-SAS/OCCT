@@ -68,6 +68,7 @@
 #include <Approx_SweepApproximation.hxx>
 #include <AdvApprox_PrefAndRec.hxx>
 #include <AdvApprox_ApproxAFunction.hxx>
+#include <GeomConvert_ApproxSurface.hxx>
 
 #include <Precision.hxx>
 #include <ElCLib.hxx>
@@ -121,6 +122,7 @@ GeomFill_Sweep::GeomFill_Sweep(const Handle(GeomFill_LocationLaw)& Location,
   myLoc =  Location;
   myKPart =  WithKpart;
   SetTolerance(1.e-4);
+  myForceApproxC1 = Standard_False;
 
   myLoc->GetDomain(First, Last);
   SFirst = SLast = 30.081996;
@@ -156,6 +158,18 @@ GeomFill_Sweep::GeomFill_Sweep(const Handle(GeomFill_LocationLaw)& Location,
   Tol2d =Tolerance2d;
   TolAngular = ToleranceAngular;
 }
+
+//=======================================================================
+//Function : SetForceApproxC1
+//Purpose  : Set the flag that indicates attempt to approximate
+//           a C1-continuous surface if a swept surface proved
+//           to be C0.
+//=======================================================================
+ void GeomFill_Sweep::SetForceApproxC1(const Standard_Boolean ForceApproxC1)
+{
+  myForceApproxC1 = ForceApproxC1;
+}
+
 
 //===============================================================
 // Function : ExchangeUV
@@ -298,56 +312,101 @@ GeomFill_Sweep::GeomFill_Sweep(const Handle(GeomFill_LocationLaw)& Location,
 		    Approx.UDegree(),  Approx.VDegree(),
 		    mySec->IsUPeriodic());
     SError = Approx. MaxErrorOnSurf();
+
+    if (myForceApproxC1 && !mySurface->IsCNv(1))
+    {
+      Standard_Real theTol = 1.e-4;
+      GeomAbs_Shape theUCont = GeomAbs_C1, theVCont = GeomAbs_C1;
+      Standard_Integer degU = 14, degV = 14;
+      Standard_Integer nmax = 16;
+      Standard_Integer thePrec = 1;  
+      
+      GeomConvert_ApproxSurface ConvertApprox(mySurface,theTol,theUCont,theVCont,
+                                              degU,degV,nmax,thePrec);
+      if (ConvertApprox.HasResult())
+      {
+        mySurface = ConvertApprox.Surface();
+        myCurve2d = new  (TColGeom2d_HArray1OfCurve) (1, 2);
+        CError =  new (TColStd_HArray2OfReal) (1,2, 1,2);
+
+        const Handle(Geom_BSplineSurface)& BSplSurf =
+          Handle(Geom_BSplineSurface)::DownCast(mySurface);
+        
+        gp_Dir2d D(0., 1.);
+        gp_Pnt2d P(BSplSurf->UKnot(1), 0);
+        Handle(Geom2d_Line) LC1 = new (Geom2d_Line) (P, D);
+        Handle(Geom2d_TrimmedCurve) TC1 =
+          new (Geom2d_TrimmedCurve) (LC1, 0, BSplSurf->VKnot(BSplSurf->NbVKnots()));
+        
+        myCurve2d->SetValue(1, TC1);
+        CError->SetValue(1, 1, 0.);
+        CError->SetValue(2, 1, 0.);
+ 
+        P.SetCoord(BSplSurf->UKnot(BSplSurf->NbUKnots()), 0);
+        Handle(Geom2d_Line) LC2 = new (Geom2d_Line) (P, D);
+        Handle(Geom2d_TrimmedCurve) TC2 = 
+          new (Geom2d_TrimmedCurve) (LC2, 0, BSplSurf->VKnot(BSplSurf->NbVKnots()));
+        
+        myCurve2d->SetValue(myCurve2d->Length(), TC2);
+        CError->SetValue(1, myCurve2d->Length(), 0.);
+        CError->SetValue(2, myCurve2d->Length(), 0.);
+        
+        SError = theTol;
+      }
+    } //if (!mySurface->IsCNv(1))
     
     // Les Courbes 2d
-    myCurve2d = new  (TColGeom2d_HArray1OfCurve) (1, 2+myLoc->TraceNumber());
-    CError =  new (TColStd_HArray2OfReal) (1,2, 1, 2+myLoc->TraceNumber());
-    Standard_Integer kk,ii, ifin = 1, ideb;
-
-    if (myLoc->HasFirstRestriction()) {
-      ideb = 1;
-    }
-     else {
-       ideb = 2;
-     }
-    ifin += myLoc->TraceNumber();
-    if (myLoc->HasLastRestriction()) ifin++;
-
-    for (ii=ideb, kk=1; ii<=ifin; ii++, kk++) {
-      Handle(Geom2d_BSplineCurve) C 
-	= new (Geom2d_BSplineCurve) (Approx.Curve2dPoles(kk),
-				     Approx.Curves2dKnots(),
-				     Approx.Curves2dMults(),
-				     Approx.Curves2dDegree());
-      myCurve2d->SetValue(ii, C);
-      CError->SetValue(1, ii,  Approx.Max2dError(kk));
-      CError->SetValue(2, ii,  Approx.Max2dError(kk));
-    }
-
-    // Si les courbes de restriction, ne sont pas calcules, on prend
-    // les iso Bords.
-    if (! myLoc->HasFirstRestriction()) {
-      gp_Dir2d D(0., 1.);
-      gp_Pnt2d P(UKnots(UKnots.Lower()), 0);
-      Handle(Geom2d_Line) LC = new (Geom2d_Line) (P, D);
-      Handle(Geom2d_TrimmedCurve) TC = new (Geom2d_TrimmedCurve)
-	(LC, First, Last);
-
-      myCurve2d->SetValue(1, TC);
-      CError->SetValue(1, 1, 0.);
-      CError->SetValue(2, 1, 0.);
-    }
- 
-    if (! myLoc->HasLastRestriction()) {
-      gp_Dir2d D(0., 1.);
-      gp_Pnt2d P(UKnots(UKnots.Upper()), 0);
-      Handle(Geom2d_Line) LC = new (Geom2d_Line) (P, D);
-      Handle(Geom2d_TrimmedCurve) TC = 
-	new (Geom2d_TrimmedCurve) (LC, First, Last);
-      myCurve2d->SetValue(myCurve2d->Length(), TC);
-      CError->SetValue(1, myCurve2d->Length(), 0.);
-      CError->SetValue(2, myCurve2d->Length(), 0.);
-    }
+    if (myCurve2d.IsNull())
+    {
+      myCurve2d = new  (TColGeom2d_HArray1OfCurve) (1, 2+myLoc->TraceNumber());
+      CError =  new (TColStd_HArray2OfReal) (1,2, 1, 2+myLoc->TraceNumber());
+      Standard_Integer kk,ii, ifin = 1, ideb;
+      
+      if (myLoc->HasFirstRestriction()) {
+        ideb = 1;
+      }
+      else {
+        ideb = 2;
+      }
+      ifin += myLoc->TraceNumber();
+      if (myLoc->HasLastRestriction()) ifin++;
+      
+      for (ii=ideb, kk=1; ii<=ifin; ii++, kk++) {
+        Handle(Geom2d_BSplineCurve) C 
+          = new (Geom2d_BSplineCurve) (Approx.Curve2dPoles(kk),
+                                       Approx.Curves2dKnots(),
+                                       Approx.Curves2dMults(),
+                                       Approx.Curves2dDegree());
+        myCurve2d->SetValue(ii, C);
+        CError->SetValue(1, ii,  Approx.Max2dError(kk));
+        CError->SetValue(2, ii,  Approx.Max2dError(kk));
+      }
+      
+      // Si les courbes de restriction, ne sont pas calcules, on prend
+      // les iso Bords.
+      if (! myLoc->HasFirstRestriction()) {
+        gp_Dir2d D(0., 1.);
+        gp_Pnt2d P(UKnots(UKnots.Lower()), 0);
+        Handle(Geom2d_Line) LC = new (Geom2d_Line) (P, D);
+        Handle(Geom2d_TrimmedCurve) TC = new (Geom2d_TrimmedCurve)
+          (LC, First, Last);
+        
+        myCurve2d->SetValue(1, TC);
+        CError->SetValue(1, 1, 0.);
+        CError->SetValue(2, 1, 0.);
+      }
+      
+      if (! myLoc->HasLastRestriction()) {
+        gp_Dir2d D(0., 1.);
+        gp_Pnt2d P(UKnots(UKnots.Upper()), 0);
+        Handle(Geom2d_Line) LC = new (Geom2d_Line) (P, D);
+        Handle(Geom2d_TrimmedCurve) TC = 
+          new (Geom2d_TrimmedCurve) (LC, First, Last);
+        myCurve2d->SetValue(myCurve2d->Length(), TC);
+        CError->SetValue(1, myCurve2d->Length(), 0.);
+        CError->SetValue(2, myCurve2d->Length(), 0.);
+      }
+    } //if (myCurve2d.IsNull())
   } 
   return Ok;
 }

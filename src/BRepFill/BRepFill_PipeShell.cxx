@@ -52,6 +52,7 @@
 #include <GeomFill_TrihedronLaw.hxx>
 #include <GeomFill_CorrectedFrenet.hxx>
 #include <GeomFill_Frenet.hxx>
+#include <GeomFill_DiscreteTrihedron.hxx>
 #include <GeomFill_Fixed.hxx>
 #include <GeomFill_ConstantBiNormal.hxx>
 #include <GeomFill_SectionLaw.hxx>
@@ -211,6 +212,7 @@ BRepFill_PipeShell::BRepFill_PipeShell(const TopoDS_Wire& Spine)
                       :  mySpine(Spine), 
 			 myTrihedron(GeomFill_IsCorrectedFrenet),
 			 myTransition(BRepFill_Modified),
+                         myForceApproxC1(Standard_False),
 			 myStatus(GeomFill_PipeOk)
 {
   myLocation.Nullify();
@@ -241,6 +243,23 @@ BRepFill_PipeShell::BRepFill_PipeShell(const TopoDS_Wire& Spine)
     myTrihedron = GeomFill_IsFrenet;
     TLaw = new (GeomFill_CorrectedFrenet) ();
   }
+  Handle(GeomFill_CurveAndTrihedron) Loc = 
+    new (GeomFill_CurveAndTrihedron) (TLaw);
+  myLocation = new (BRepFill_Edge3DLaw) (mySpine, Loc);
+  mySection.Nullify(); //It is required to relocalize sections.
+}
+
+//=======================================================================
+//function : SetDiscrete
+//purpose  : Define a law of Discrete Trihedron
+//=======================================================================
+ void BRepFill_PipeShell::SetDiscrete() 
+{
+  Handle(GeomFill_TrihedronLaw) TLaw;
+
+  myTrihedron = GeomFill_IsDiscreteTrihedron;
+  TLaw = new (GeomFill_DiscreteTrihedron) ();
+
   Handle(GeomFill_CurveAndTrihedron) Loc = 
     new (GeomFill_CurveAndTrihedron) (TLaw);
   myLocation = new (BRepFill_Edge3DLaw) (mySpine, Loc);
@@ -382,6 +401,17 @@ BRepFill_PipeShell::BRepFill_PipeShell(const TopoDS_Wire& Spine)
     myLocation = new (BRepFill_Edge3DLaw) (mySpine, Loc);  
   }    
   mySection.Nullify(); //It is required to relocalize the sections.
+}
+
+//=======================================================================
+//function : SetForceApproxC1
+//purpose  : Set the flag that indicates attempt to approximate
+//           a C1-continuous surface if a swept surface proved
+//           to be C0.
+//=======================================================================
+void BRepFill_PipeShell::SetForceApproxC1(const Standard_Boolean ForceApproxC1)
+{
+  myForceApproxC1 = ForceApproxC1;
 }
 
 //=======================================================================
@@ -629,9 +659,13 @@ BRepFill_PipeShell::BRepFill_PipeShell(const TopoDS_Wire& Spine)
   BRepFill_Sweep MkSw(mySection, myLocation, Standard_True);
   MkSw.SetTolerance(myTol3d, myBoundTol, 1.e-5, myTolAngular);
   MkSw.SetAngularControl(angmin, angmax);
+  MkSw.SetForceApproxC1(myForceApproxC1);
   MkSw.SetBounds(TopoDS::Wire(myFirst), 
 		 TopoDS::Wire(myLast));
-  MkSw.Build(myTransition);
+  GeomAbs_Shape theContinuity = GeomAbs_C2;
+  if (myTrihedron == GeomFill_IsDiscreteTrihedron)
+    theContinuity = GeomAbs_C0;
+  MkSw.Build(myTransition, theContinuity);
 
   myStatus = myLocation->GetStatus();
   Ok =  (MkSw.IsDone() && (myStatus == GeomFill_PipeOk));

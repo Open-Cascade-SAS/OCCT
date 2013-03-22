@@ -73,6 +73,10 @@ is
         --          to  perform  the  sweeping 
     	--	 If IsFrenet is false, a corrected Frenet trihedron is used.
     
+    SetDiscreteMode(me  :  in  out);
+    	---Purpose: Sets a Discrete trihedron  
+        --          to  perform  the  sweeping 
+    
     SetMode(me  :  in  out;  Axe  :  Ax2  from  gp); 
     	---Purpose: Sets  a  fixed  trihedron  to  perform  the  sweeping 
         --         all sections will be parallel.
@@ -109,6 +113,7 @@ is
         -- Else  the  Normal  is  defined  by the vector  PQ. 
 
         ---Level: Public
+
 
 -- =================================
 --  Methodes to define section(s)
@@ -212,6 +217,12 @@ is
     	-- - boundary tolerance BoundTol
     	-- - angular tolerance TolAngular.
         
+    SetForceApproxC1(me  :  in  out;
+    	    	     ForceApproxC1 : Boolean from Standard);
+	---Purpose: Set the flag that indicates attempt to approximate
+	--          a C1-continuous surface if a swept surface proved
+	--          to be C0.
+
     SetTransitionMode(me  :  in  out;  
     	              Mode  :TransitionMode  from  BRepBuilderAPI  =  BRepBuilderAPI_Transformed)  
 	---Purpose: Sets the transition mode to manage discontinuities on

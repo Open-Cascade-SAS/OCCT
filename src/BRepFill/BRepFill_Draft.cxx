@@ -525,7 +525,7 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
   BRepFill_Sweep Sweep(mySec, myLoc, Standard_True);
   Sweep.SetTolerance(myTol);
   Sweep.SetAngularControl(angmin, angmax);
-  Sweep.Build(myStyle, GeomFill_Location, myCont);
+  Sweep.Build(myStyle, myCont);
   if (Sweep.IsDone()) {
     myShape = Sweep.Shape();
     myShell = TopoDS::Shell(myShape);

@@ -80,10 +80,17 @@ is
    --   Transition "Round" replace the Transition "Right"          
    is  static; 
 		     
+   SetForceApproxC1(me:  in  out;
+    	    	    ForceApproxC1 : Boolean from Standard);
+	---Purpose: Set the flag that indicates attempt to approximate
+	--          a C1-continuous surface if a swept surface proved
+	--          to be C0.
+
+		     
    Build(me : in  out; 
          Transition : TransitionStyle  =  BRepFill_Modified;    
-         Approx     : ApproxStyle = GeomFill_Location; 
          Continuity : Shape  from  GeomAbs   = GeomAbs_C2;
+         Approx     : ApproxStyle = GeomFill_Location; 
 	 Degmax     : Integer = 11;
          Segmax     : Integer = 30); 
 	 
@@ -170,6 +177,7 @@ fields
   myContinuity     :  Shape from  GeomAbs; 
   myDegmax         :  Integer; 
   mySegmax         :  Integer;
+  myForceApproxC1  :  Boolean;
   myShape          :  Shape from  TopoDS; 
   myLoc            :  LocationLaw  from  BRepFill; 
   mySec            :  SectionLaw   from  BRepFill; 

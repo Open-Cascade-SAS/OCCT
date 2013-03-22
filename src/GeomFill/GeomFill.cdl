@@ -67,7 +67,7 @@ is
     enumeration Trihedron 
     is IsCorrectedFrenet, IsFixed, IsFrenet, IsConstantNormal, IsDarboux, 
      IsGuideAC,  IsGuidePlan, 
-      IsGuideACWithContact,  IsGuidePlanWithContact end;
+      IsGuideACWithContact,  IsGuidePlanWithContact, IsDiscreteTrihedron  end;
     
     class Filling;
 	---Purpose: Root class for Filling;
@@ -195,6 +195,13 @@ is
     class SequenceOfTrsf
     	instantiates Sequence  from TCollection (Trsf from gp); 
 
+    class SequenceOfAx2
+    	instantiates Sequence from TCollection (Ax2 from gp);
+
+    class HSequenceOfAx2
+    	instantiates HSequence from TCollection (Ax2 from gp,
+	    	    	    	    	    	 SequenceOfAx2 from GeomFill);
+
     --
     -- private classes
     -- 
@@ -226,6 +233,7 @@ is
     	class Fixed;
         class Frenet; 
         class CorrectedFrenet;
+	class DiscreteTrihedron;
 	class ConstantBiNormal; 
 	class Darboux; 
 	class DraftTrihedron; 

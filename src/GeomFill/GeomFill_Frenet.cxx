@@ -326,11 +326,13 @@ Handle(GeomFill_TrihedronLaw) GeomFill_Frenet::Copy() const
 {
   Standard_Real norm;
   Standard_Integer Index;
+  Standard_Real Delta = 0.;
   if(IsSingular(Param, Index)) 
-    if (SingularD0(Param, Index, Tangent, Normal, BiNormal))
+    if (SingularD0(Param, Index, Tangent, Normal, BiNormal, Delta))
       return Standard_True;
 
-  myTrimmed->D2(Param, P, Tangent, BiNormal);
+  Standard_Real theParam = Param + Delta;
+  myTrimmed->D2(theParam, P, Tangent, BiNormal);
   Tangent.Normalize();
   BiNormal = Tangent.Crossed(BiNormal);
   norm = BiNormal.Magnitude();
@@ -360,13 +362,15 @@ Handle(GeomFill_TrihedronLaw) GeomFill_Frenet::Copy() const
                                       gp_Vec& DBiNormal) 
 {
   Standard_Integer Index;
+  Standard_Real Delta = 0.;
   if(IsSingular(Param, Index)) 
-    if (SingularD1(Param, Index, Tangent, DTangent, Normal, DNormal, BiNormal, DBiNormal))
+    if (SingularD1(Param, Index, Tangent, DTangent, Normal, DNormal, BiNormal, DBiNormal, Delta))
       return Standard_True;
 
 //  Standard_Real Norma;
+  Standard_Real theParam = Param + Delta;
   gp_Vec DC1, DC2, DC3;
-  myTrimmed->D3(Param, P, DC1, DC2, DC3);
+  myTrimmed->D3(theParam, P, DC1, DC2, DC3);
   Tangent = DC1.Normalized();
 
   //if (DC2.Magnitude() <= NullTol || Tangent.Crossed(DC2).Magnitude() <= NullTol) {
@@ -412,16 +416,19 @@ Handle(GeomFill_TrihedronLaw) GeomFill_Frenet::Copy() const
                                       gp_Vec& D2BiNormal) 
 {
   Standard_Integer Index;
+  Standard_Real Delta = 0.;
   if(IsSingular(Param, Index)) 
     if(SingularD2(Param, Index, Tangent, DTangent, D2Tangent, 
                   Normal, DNormal, D2Normal, 
-                  BiNormal, DBiNormal, D2BiNormal))
+                  BiNormal, DBiNormal, D2BiNormal,
+                  Delta))
       return Standard_True;
 
 //  Standard_Real Norma;
+  Standard_Real theParam = Param + Delta;
   gp_Vec DC1, DC2, DC3, DC4;
-  myTrimmed->D3(Param, P, DC1, DC2, DC3);
-  DC4 = myTrimmed->DN(Param, 4);
+  myTrimmed->D3(theParam, P, DC1, DC2, DC3);
+  DC4 = myTrimmed->DN(theParam, 4);
 
   Tangent = DC1.Normalized();
 
@@ -604,9 +611,11 @@ Standard_Boolean GeomFill_Frenet::DoSingular(const Standard_Real U,
                                              Standard_Integer& n, 
                                              Standard_Integer& k, 
                                              Standard_Integer& TFlag,
-                                             Standard_Integer& BNFlag)
+                                             Standard_Integer& BNFlag,
+                                             Standard_Real& Delta)
 {
   Standard_Integer i, MaxN = 20;
+  Delta = 0.;
   Standard_Real h;
   h = 2*mySnglLen->Value(Index);
 
@@ -615,7 +624,8 @@ Standard_Boolean GeomFill_Frenet::DoSingular(const Standard_Real U,
   TFlag = 1;
   BNFlag = 1;
   GetInterval(A, B);
-  if (U >= (A + B)/2) h = -h;
+  if (U >= (A + B)/2)
+    h = -h;
   for(i = 1; i <= MaxN; i++) {
     Tangent = myTrimmed->DN(U, i);
     if(Tangent.Magnitude() > Precision::Confusion()) break;
@@ -641,7 +651,12 @@ Standard_Boolean GeomFill_Frenet::DoSingular(const Standard_Real U,
 	break;
       }
   }
-  if (i > MaxN) return Standard_False;
+  if (i > MaxN)
+  {
+    Delta = h;
+    return Standard_False;
+  }
+  
   BiNormal.Normalize();
   k = i;
 
@@ -657,11 +672,14 @@ Standard_Boolean GeomFill_Frenet::DoSingular(const Standard_Real U,
                                               const Standard_Integer Index,
                                               gp_Vec& Tangent,
                                               gp_Vec& Normal,
-                                              gp_Vec& BiNormal) 
+                                              gp_Vec& BiNormal,
+                                              Standard_Real& Delta)
 {
   Standard_Integer n, k, TFlag, BNFlag;
   if(!DoSingular(Param, Index, Tangent, BiNormal, 
-                 n, k, TFlag, BNFlag)) return Standard_False;
+                 n, k, TFlag, BNFlag, Delta))
+    return Standard_False;
+  
   Tangent *= TFlag;
   BiNormal *= BNFlag;
   Normal = BiNormal;
@@ -674,10 +692,12 @@ Standard_Boolean GeomFill_Frenet::DoSingular(const Standard_Real U,
                                               const Standard_Integer Index,
                                               gp_Vec& Tangent,gp_Vec& DTangent,
                                               gp_Vec& Normal,gp_Vec& DNormal,
-                                              gp_Vec& BiNormal,gp_Vec& DBiNormal) 
+                                              gp_Vec& BiNormal,gp_Vec& DBiNormal,
+                                              Standard_Real& Delta) 
 {
   Standard_Integer n, k, TFlag, BNFlag;
-  if(!DoSingular(Param, Index, Tangent, BiNormal, n, k, TFlag, BNFlag)) return Standard_False;
+  if(!DoSingular(Param, Index, Tangent, BiNormal, n, k, TFlag, BNFlag, Delta))
+    return Standard_False;
 
   gp_Vec F, DF, Dtmp;
   F = myTrimmed->DN(Param, n);
@@ -715,10 +735,11 @@ Standard_Boolean GeomFill_Frenet::DoSingular(const Standard_Real U,
                                               gp_Vec& D2Normal,
                                               gp_Vec& BiNormal,
                                               gp_Vec& DBiNormal,
-                                              gp_Vec& D2BiNormal) 
+                                              gp_Vec& D2BiNormal,
+                                              Standard_Real& Delta)
 {
   Standard_Integer n, k, TFlag, BNFlag;
-  if(!DoSingular(Param, Index, Tangent, BiNormal, n, k, TFlag, BNFlag)) 
+  if(!DoSingular(Param, Index, Tangent, BiNormal, n, k, TFlag, BNFlag, Delta)) 
     return Standard_False;
 
   gp_Vec F, DF, D2F, Dtmp1, Dtmp2;
