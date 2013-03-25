@@ -1,5 +1,3 @@
-puts "TODO ?CR23788 ALL: Failed units"
-
 #1 - create box using more flexible set of commands
 NewCommand D
 set B2 [AddObject D];			## add object

@@ -1,5 +1,3 @@
-puts "TODO ?CR23788 ALL: Failed units"
-puts "TODO ?CR23788 ALL: DNaming_SolveFlatFrom: Driver failed"
 #1 - create 4 Pnts
 NewCommand D
 AddDriver D PntXYZ PntRLT Line3D Attach;
