@@ -54,7 +54,7 @@ if { [string compare $bug_area ""] != 0 } {
     if { $rel_tol == 100 } {
 	puts "TODO $bug_area All:^\\s*Error  : The meshing algo cannot create mesh.\\s*$"
     } else {
-	puts "TODO $bug_area All:^\\s*Error   : area by triangles differs from the actual area by \[-.0-9\]+ %\\s*$"
+	puts "TODO ?$bug_area All:^\\s*Error   : area by triangles differs from the actual area by \[-.0-9\]+ %\\s*$"
     }
 }
 
@@ -83,7 +83,7 @@ if { [string compare $bug_cross ""] != 0 } {
 # It may be different for different OS
     foreach os_cross [array names nbcross] {
 	if { $nbcross($os_cross) != 0 } { 
-	    puts "TODO $bug_cross $os_cross:^\\s*Error: Cross face errors: $nbcross($os_cross)\\b\\s*"
+	    puts "TODO $bug_cross $os_cross:Error: Cross face errors"
 	}
     }
 }
@@ -103,7 +103,7 @@ if { [string compare $bug_freenodes ""] != 0 } {
 # It may be different for different OS
     foreach os_freenodes [array names nbfreenodes] {
 	if { $nbfreenodes($os_freenodes) != 0 } { 
-	    puts "TODO $bug_freenodes $os_freenodes:^\\s*Error: Free nodes: $nbfreenodes($os_freenodes)\\b\\s*"
+	    puts "TODO $bug_freenodes $os_freenodes:Error: Free nodes"
 	}
     }
 }

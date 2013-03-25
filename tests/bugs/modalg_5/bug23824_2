@@ -19,7 +19,7 @@ setsweep -DT
 addsweep profile
 buildsweep result
 
-set square 8997.97
+set square 8805.92
 
 set nb_v_good 2
 set nb_e_good 3

@@ -240,3 +240,14 @@ proc checktrend {listval delta tolerance message} {
     # check if deviation is clearly within a range
     return [expr abs ($mean - $delta) <= $sigma && $sigma <= $tolerance]
 }
+
+# Check if area of triangles is valid
+proc CheckTriArea {shape {eps 0}} {
+  upvar #0 $shape result
+  set area [triarea result $eps]
+  set t_area [lindex $area 0]
+  set g_area [expr abs([lindex $area 1])]
+  puts "area by triangles: $t_area"
+  puts "area by geometry:  $g_area"
+  expr ($t_area - $g_area) / $g_area * 100
+}
