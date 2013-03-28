@@ -1339,14 +1339,12 @@ Standard_Integer TCollection_AsciiString::Search
   if (size) {
     int k,j;
     int i = 0;
-    Standard_Boolean find = Standard_False; 
-    while ( i < mylength-size+1 && !find) {
+    while ( i < mylength-size+1 ) {
       k = i++;
       j = 0;
       while (j < size && mystring[k++] == what[j++])
-        if (j == size) find = Standard_True;
+        if (j == size) return i;
     }
-    if (find)  return i;
   }
   return -1;
 }
