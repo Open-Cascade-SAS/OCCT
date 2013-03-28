@@ -990,14 +990,12 @@ Standard_Integer TCollection_AsciiString::Search
   if (size) {
     int k,j;
     int i = 0;
-    Standard_Boolean find = Standard_False; 
-    while ( i < mylength-size+1 && !find) {
+    while ( i < mylength-size+1 ) {
       k = i++;
       j = 0;
       while (j < size && mystring[k++] == swhat[j++])
-        if (j == size) find = Standard_True;
+        if (j == size) return i;
     }
-    if (find)  return i;
   }
   return -1;
 }
@@ -1013,14 +1011,12 @@ Standard_Integer TCollection_AsciiString::SearchFromEnd
   if (size) {
     int k,j;
     int i = mylength-1;
-    Standard_Boolean find = Standard_False; 
-    while ( i >= size-1 && !find) {
+    while ( i >= size-1 ) {
       k = i--;
       j = size-1;
       while (j >= 0 && mystring[k--] == what[j--])
-        if (j == -1) find = Standard_True;
+        if (j == -1) return i-size+3;
     }
-    if (find)  return i-size+3;
   }
   return -1;
 }
@@ -1037,14 +1033,12 @@ Standard_Integer TCollection_AsciiString::SearchFromEnd
     Standard_CString swhat = what.mystring;  
     int k,j;
     int i = mylength-1;
-    Standard_Boolean find = Standard_False; 
-    while ( i >= size-1 && !find) {
+    while ( i >= size-1 ) {
       k = i--;
       j = size-1;
       while (j >= 0 && mystring[k--] == swhat[j--])
-        if (j == -1) find = Standard_True;
+        if (j == -1) return i-size+3;
     }
-    if (find)  return i-size+3;
   }
   return -1;
 }
