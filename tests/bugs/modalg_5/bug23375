@@ -1,0 +1,23 @@
+puts "========================"
+puts "OCC23375"
+puts "========================" 
+puts ""
+#######################################################################
+# (OCC 6.5.3 regression) BRepBuilderAPI_Sewing returns wrong result
+#######################################################################
+
+restore [locate_data_file bug23375_Volute1.brep] v
+
+explode v
+sewing result 0.01 v_1 v_2
+
+checkshape result
+
+set tolmaxres [tolmax result]
+regexp {max tol = ([-0-9.+eE]+)} $tolmaxres full MaxTolerance
+set CMP_TOL 1.e-4
+if { ${MaxTolerance} > ${CMP_TOL} } {
+   puts "Error: invalid tolerance"
+}
+
+set 2dviewer 1

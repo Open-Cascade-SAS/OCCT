@@ -1,0 +1,33 @@
+puts "========================"
+puts "OCC23375"
+puts "========================" 
+puts ""
+#######################################################################
+# (OCC 6.5.3 regression) BRepBuilderAPI_Sewing returns wrong result
+#######################################################################
+
+restore [locate_data_file bug23375_Pump1.brep] p
+
+sewing result 0.1 p
+
+checkshape result
+
+set whatis_result [whatis result]
+
+if { [regexp {SHELL} ${whatis_result}] != 1 } {
+  puts "Error: invalid result shape; SHELL"
+}
+if { [regexp {FORWARD} ${whatis_result}] != 1 } {
+  puts "Error: invalid result shape; FORWARD"
+}
+if { [regexp {Modified} ${whatis_result}] != 1 } {
+  puts "Error: invalid result shape; Modified"
+}
+if { [regexp {Orientable} ${whatis_result}] != 1 } {
+  puts "Error: invalid result shape; Orientable"
+}
+if { [regexp {Closed} ${whatis_result}] != 1 } {
+  puts "Error: invalid result shape; Closed"
+}
+
+set 2dviewer 1

@@ -1131,7 +1131,7 @@ void BRepBuilderAPI_Sewing::EvaluateDistances(TopTools_SequenceOfShape& sequence
         ProjectPointsOnCurve(ptsRef,c3d,first,last,arrDist,arrPara,arrProj,Standard_False);
       for( j = 1; j <= npt; j++ )
       {
-        if(arrDist(j) < 0. || arrDist(j) > myTolerance)
+        if(arrDist(j) < 0.)
           continue;
         if(dist < arrDist(j))
           dist = arrDist(j);
@@ -4301,7 +4301,7 @@ void BRepBuilderAPI_Sewing::ProjectPointsOnCurve(const TColgp_Array1OfPnt& arrPn
               }
             }
           }
-          if (distProj2 < worktol * worktol) {
+          if (distProj2 < worktol * worktol || !isConsiderEnds) {
             arrDist(i1) = sqrt (distProj2);
             arrPara(i1) = paramProj;
             arrProj(i1) = ptProj;
