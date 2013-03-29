@@ -52,7 +52,7 @@ void BuildPolyAlgo();
 void DrawCompound(const Handle(Prs3d_Presentation)& thePresentation,const TopoDS_Shape& theCompound, const Handle(Prs3d_LineAspect) theAspect);
 
 
-Standard_EXPORT virtual  void Compute(const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,const Handle(Prs3d_Presentation)& aPresentation,const Standard_Integer aMode = 0) ;
+Standard_EXPORT virtual  void Compute(const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,const Handle(Prs3d_Presentation)& thePresentation,const Standard_Integer theMode = 0) ;
 
 virtual void ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,const Standard_Integer aMode) ;
 
