@@ -1,0 +1,74 @@
+puts "============"
+puts "OCC23852"
+puts "============"
+puts ""
+#######################################################################
+# OSD_Path interprets unc paths incorrectly
+#######################################################################
+
+pload DCAF
+
+set BugNumber OCC23852
+
+set OS_platform $tcl_platform(platform)
+puts "OS = ${OS_platform}"
+
+if { [string compare ${OS_platform} "windows"] == 0 } {
+
+   # Windows, #1
+   set OSD_Path "\\\\Server\\Shared\\Folder\\File.Extension"
+   puts "OSD_Path = ${OSD_Path}"
+
+   set Log [OSDPath ${OSD_Path}]
+   #
+   if { [regexp "Trek +: +\\|\\|Server\\|Shared\\|Folder" ${Log}] != 1 } {
+      puts "${BugNumber}, Trek, #1: Error"
+   }
+   #
+   if { [regexp "Name +: +File" ${Log}] != 1 } {
+      puts "${BugNumber}, Name, #1: Error"
+   }
+   #
+   if { [regexp "Extension +: +.Extension" ${Log}] != 1 } {
+      puts "${BugNumber}, Extension, #1: Error"
+   }
+
+   # Windows, #2
+   set OSD_Path "//Server/Shared/Folder/File.Extension"
+   puts "OSD_Path = ${OSD_Path}"
+
+   set Log [OSDPath ${OSD_Path}]
+   #
+   if { [regexp "Trek +: +||Server|Shared|Folder" ${Log}] != 1 } {
+      puts "${BugNumber}, Trek, #2: Error"
+   }
+   #
+   if { [regexp "Name +: +File" ${Log}] != 1 } {
+      puts "${BugNumber}, Name, #2: Error"
+   }
+   #
+   if { [regexp "Extension +: +.Extension" ${Log}] != 1 } {
+      puts "${BugNumber}, Extension, #2: Error"
+   }
+
+}
+
+if { [string compare ${OS_platform} "unix"] == 0 } {
+   # Linux
+   set OSD_Path "//Server/Shared/Folder/File.Extension"
+   puts "OSD_Path = ${OSD_Path}"
+
+   set Log [OSDPath ${OSD_Path}]
+   #
+   if { [regexp "Trek +: +||Server|Shared|Folder" ${Log}] != 1 } {
+      puts "${BugNumber}, Trek: Error"
+   }
+   #
+   if { [regexp "Name +: +File" ${Log}] != 1 } {
+      puts "${BugNumber}, Name: Error"
+   }
+   #
+   if { [regexp "Extension +: +.Extension" ${Log}] != 1 } {
+      puts "${BugNumber}, Extension: Error"
+   }
+}
