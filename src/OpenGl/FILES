@@ -30,14 +30,10 @@ OpenGl_Text.hxx
 OpenGl_Text.cxx
 OpenGl_TextFormatter.hxx
 OpenGl_TextFormatter.cxx
-OpenGl_Polyline.hxx
-OpenGl_Polyline.cxx
 OpenGl_Marker.hxx
 OpenGl_Marker.cxx
 OpenGl_MarkerSet.hxx
 OpenGl_MarkerSet.cxx
-OpenGl_Polygon.hxx
-OpenGl_Polygon.cxx
 OpenGl_PrimitiveArray.hxx
 OpenGl_PrimitiveArray.cxx
 Handle_OpenGl_Workspace.hxx

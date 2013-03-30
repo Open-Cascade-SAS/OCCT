@@ -1,8 +1,6 @@
 InterfaceGraphic.hxx
 InterfaceGraphic_Aspect.hxx
 InterfaceGraphic_Graphic3d.hxx
-InterfaceGraphic_Labels.hxx
-InterfaceGraphic_Portability.hxx
 InterfaceGraphic_Visual3d.hxx
 InterfaceGraphic_WNT.hxx
 InterfaceGraphic_X11.hxx

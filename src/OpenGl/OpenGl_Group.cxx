@@ -164,7 +164,6 @@ void OpenGl_Group::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
   {
     switch (aNodeIter->type)
     {
-      case TelPolyline:
       case TelMarker:
       case TelMarkerSet:
       case TelText:
@@ -178,31 +177,6 @@ void OpenGl_Group::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
         aNodeIter->elem->Render (theWorkspace);
         break;
       }
-
-      case TelPolygon:
-      case TelPolygonIndices:
-      case TelQuadrangle:
-      case TelTriangleMesh:
-      {
-        if (isImmediate)
-        {
-          glDepthMask(GL_FALSE);
-        }
-
-        if (theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT)
-        {
-          theWorkspace->DisablePolygonOffset();
-        }
-
-        aNodeIter->elem->Render (theWorkspace);
-
-        if (theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT)
-        {
-          theWorkspace->EnablePolygonOffset();
-        }
-        break;
-      }
-
       default:
       {
         aNodeIter->elem->Render (theWorkspace);
