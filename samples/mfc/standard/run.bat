@@ -1,23 +1,24 @@
-echo %4
-if "%4" EQU "" (
+@echo off
+
+if ["%4"] == [""] (
   echo Launch selected sample as follows: 
-  echo Run.bat [^vc8^|^vc9^|^vc10^] [^win32^|^win64^] [^Release^|^Debug^] [^SampleName^]
+  echo Run.bat [^vc8^|^vc9^|^vc10^|^vc11^] [^win32^|^win64^] [^Release^|^Debug^] [^SampleName^]
   echo Use option -d to run Debug mode
-  EXIT /B
+  exit /B
 )
 
-call ../../../env.bat %1 %2 %3
-call %~dp0env.bat
+call "%~dp0..\..\..\env.bat" %1 %2 %3
+call "%~dp0env.bat"
 
-IF NOT EXIST %BIN_DIR%\%4.exe goto ERR_EXE
+if not exist "%~dp0%BIN_DIR%\%4.exe" goto err_exe
 
-start %BIN_DIR%\%4.exe
+"%~dp0%BIN_DIR%\%4.exe"
 
-GOTO END
+goto eof
 
-:ERR_EXE
-ECHO Executable %BIN_DIR%\%~n1.exe not found."
-ECHO Probably you didn't compile the application.
-EXIT /B
+:err_exe
+echo Executable %~dp0%BIN_DIR%\%4.exe not found.
+echo Probably you didn't compile the application.
+exit /B
 
-:END
+:eof

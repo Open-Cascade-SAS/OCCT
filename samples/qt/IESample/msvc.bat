@@ -1,4 +1,8 @@
-call ../../../env.bat %1 %2 %3
-call %~dp0env.bat
-if not ["%CASDEB%"] == [""] call ../../../msvc.bat %VCVER% win%ARCH% %CASDEB% IESample-%VCVER%.sln
-if ["%CASDEB%"] == [""] call ../../../msvc.bat %VCVER% win%ARCH% "" IESample-%VCVER%.sln
+call "%~dp0..\..\..\env.bat" %1 %2 %3
+call "%~dp0env.bat"
+
+if ["%CASDEB%"] == [""] (
+  call "%~dp0..\..\..\msvc.bat" %VCVER% win%ARCH% "" "%~dp0IESample-%VCVER%.sln"
+) else (
+  call "%~dp0..\..\..\msvc.bat" %VCVER% win%ARCH% %CASDEB% "%~dp0IESample-%VCVER%.sln"
+)
