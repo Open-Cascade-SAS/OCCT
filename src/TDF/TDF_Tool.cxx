@@ -181,9 +181,12 @@ static Standard_Boolean TDF_Tool_DescendantRef
 	// CLE
 	// const Handle(TDF_Attribute)& att = attMItr.Key();
 	Handle(TDF_Attribute) att = attMItr.Key();
-	// ENDCLE
-	if (aFilter.IsKept(att) && !att->Label().IsDescendant(aRefLabel))
-	  return Standard_False;
+        if (!att.IsNull() && !att->Label().IsNull())
+        {
+	  // ENDCLE
+	  if (aFilter.IsKept(att) && !att->Label().IsDescendant(aRefLabel))
+	    return Standard_False;
+        }
       }
       ds->Clear();
     }
