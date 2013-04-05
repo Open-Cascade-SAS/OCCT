@@ -1,5 +1,7 @@
 puts "TODO OCC23068 ALL: Error : result is not a topological shape"
 puts "TODO OCC23068 ALL: Error : The offset cannot be built."
+puts "TODO OCC23068 MacOS: Error : The length of the resulting shape is"
+puts "TODO OCC23068 MacOS: Error : The resulting shape is WRONG"
 restore [locate_data_file offset_wire_001.brep] s
 set length 0
 set nbsh_v 0

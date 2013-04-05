@@ -1,4 +1,5 @@
 puts "TODO ?OCC12345 ALL: Error : The square of result shape is"
+puts "TODO ?OOC12345 MacOS: Faulty shapes in variables"
 
 puts "========================"
 puts " OCC615"

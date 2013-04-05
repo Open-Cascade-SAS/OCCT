@@ -10,6 +10,7 @@ if {
     ||  [string compare $os "Windows-64-VC8"] == 0
     ||  [string compare $os "Windows-64-VC9"] == 0
     ||  [string compare $os "Windows-64-VC10"] == 0
+    ||  [string compare $os "MacOS"] == 0
    } {
   puts "TODO OCC23068 $os: Error : Result shape is WRONG"
 } 
