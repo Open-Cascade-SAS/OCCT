@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename trj2_io1-ug-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 12 )  Summary  = 0  ( 12 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 17  ( 17 )   Summary  = 121  ( 121 )
+STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 17  ( 17 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 40  ( 40 )
+TOLERANCE   : MaxTol   =   1.00005e-007  (         1e-005 )  AvgTol   =  1.000040078e-007  (  6.417511167e-006 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 1  ( 1 )  N2Labels = 0  ( 0 )   TotalLabels = 2  ( 2 )   NameLabels = 1  ( 1 )   ColorLabels = 2  ( 2 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 2  ( 2 )
+COLORS      : Colors   = RED YELLOW  ( RED YELLOW )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

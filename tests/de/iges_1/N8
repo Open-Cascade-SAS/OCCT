@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename SurfW.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 1006 )  Summary  = 0  ( 1006 )
+CHECKSHAPE  : Wires    = 2  ( 2 )  Faces    = 2  ( 2 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 97  ( 97 )   Summary  = 26757  ( 26757 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 97  ( 97 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 13280  ( 13280 )
+TOLERANCE   : MaxTol   =   0.0124350083  (   0.0124350083 )  AvgTol   =  0.0003833463156  (  0.0003833463156 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 97  ( 188 )  N2Labels = 0  ( 0 )   TotalLabels = 98  ( 189 )   NameLabels = 98  ( 189 )   ColorLabels = 97  ( 188 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = BLACK  ( BLACK )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

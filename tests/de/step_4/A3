@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename 16.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 4  ( 9 )  Summary  = 4  ( 9 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 9  ( 9 )  Shell    = 9  ( 9 )  Face     = 103  ( 103 )   Summary  = 654  ( 654 )
+STATSHAPE   : Solid    = 9  ( 9 )  Shell    = 9  ( 9 )  Face     = 103  ( 103 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 244  ( 244 )
+TOLERANCE   : MaxTol   = 0.0008797425518  ( 0.0008797425526 )  AvgTol   =  0.0001332476521  (  0.0001332731309 )
+LABELS      : N0Labels = 14  ( 14 )  N1Labels = 13  ( 13 )  N2Labels = 0  ( 0 )   TotalLabels = 27  ( 27 )   NameLabels = 27  ( 27 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

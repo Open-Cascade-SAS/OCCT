@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename cdc1-fatigue-2.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 876  ( 220 )  Summary  = 876  ( 220 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 1 )  Shell    = 0  ( 1 )  Face     = 471  ( 471 )   Summary  = 6964  ( 3122 )
+STATSHAPE   : Solid    = 0  ( 1 )  Shell    = 0  ( 1 )  Face     = 471  ( 471 )   FreeWire = 0  ( 0 )   FreeEdge  = 6 ( 6 )   SharedEdge = 3004  ( 1323 )
+TOLERANCE   : MaxTol   =  0.01171066357  (  0.01550345628 )  AvgTol   =  0.0001752022955  (  0.001202555083 )
+LABELS      : N0Labels = 7  ( 7 )  N1Labels = 471  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 478  ( 7 )   NameLabels = 7  ( 7 )   ColorLabels = 477  ( 7 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 2  ( 2 )
+COLORS      : Colors   = BLUE1 DARKOLIVEGREEN1  ( BLUE1 DARKOLIVEGREEN1 )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

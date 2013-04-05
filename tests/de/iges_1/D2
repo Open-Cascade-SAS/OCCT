@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename GER61123-1.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 2 )  Summary  = 0  ( 2 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 519  ( 519 )   Summary  = 6139  ( 6139 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 519  ( 519 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 2502  ( 2502 )
+TOLERANCE   : MaxTol   =   0.8632897705  (   0.8632897802 )  AvgTol   =   0.04019572889  (    0.0401958388 )
+LABELS      : N0Labels = 519  ( 519 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 519  ( 519 )   NameLabels = 519  ( 519 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

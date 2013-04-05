@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: PROPS : Faulty" 
+
+
+set filename trj12_pm10-ct-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 12  ( 12 )  Shell    = 12  ( 12 )  Face     = 61  ( 61 )   Summary  = 316  ( 316 )
+STATSHAPE   : Solid    = 17  ( 17 )  Shell    = 17  ( 17 )  Face     = 93  ( 93 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 98  ( 98 )
+TOLERANCE   : MaxTol   =   1.00005e-007  (   1.00005e-007 )  AvgTol   =  1.000038209e-007  (  1.000038209e-007 )
+LABELS      : N0Labels = 17  ( 17 )  N1Labels = 25  ( 25 )  N2Labels = 0  ( 0 )   TotalLabels = 42  ( 42 )   NameLabels = 42  ( 42 )   ColorLabels = 12  ( 12 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 17  ( 42 )  Volume   = 13  ( 13 )  Area     = 13  ( 13 )
+NCOLORS     : NColors  = 3  ( 3 )
+COLORS      : Colors   = CYAN1 GREEN LIGHTSKYBLUE3  ( CYAN1 GREEN LIGHTSKYBLUE3 )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

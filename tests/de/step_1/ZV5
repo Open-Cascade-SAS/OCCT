@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename trj8_c2-pe-203.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 1  ( 1 )  Face     = 1  ( 1 )   Summary  = 11  ( 11 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 1  ( 1 )  Face     = 1  ( 1 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 4  ( 4 )
+TOLERANCE   : MaxTol   =   1.00005e-007  (   1.00005e-007 )  AvgTol   =  1.000046154e-007  (  1.000046154e-007 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 1  ( 1 )  N2Labels = 0  ( 0 )   TotalLabels = 2  ( 2 )   NameLabels = 1  ( 1 )   ColorLabels = 1  ( 1 )   LayerLabels = 1  ( 1 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 1  ( 1 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = BLUE1  ( BLUE1 )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 06___PRT_ALL_SURFS  ( 06___PRT_ALL_SURFS )
+
+}

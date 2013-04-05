@@ -1,0 +1,23 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
+
+
+set filename trj7_pm5-ug-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 9  ( 184 )  Summary  = 9  ( 184 )
+CHECKSHAPE  : Wires    = 2  ( 0 )  Faces    = 2  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 236  ( 236 )   Summary  = 1654  ( 1655 )
+STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 236  ( 236 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 653  ( 653 )
+TOLERANCE   : MaxTol   =   0.9036712736  ( 0.004380869839 )  AvgTol   =  0.002836223222  (  0.0001546087099 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 34  ( 34 )  N2Labels = 0  ( 0 )   TotalLabels = 35  ( 35 )   NameLabels = 1  ( 1 )   ColorLabels = 35  ( 35 )   LayerLabels = 1  ( 1 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 11  ( 11 )
+COLORS      : Colors   = DARKORCHID FIREBRICK3 GRAY40 GRAY77 LIGHTPINK3 LIGHTSEAGREEN OLIVEDRAB OLIVEDRAB4 ROYALBLUE SIENNA3 TAN4  ( DARKORCHID FIREBRICK3 GRAY40 GRAY77 LIGHTPINK3 LIGHTSEAGREEN OLIVEDRAB OLIVEDRAB4 ROYALBLUE SIENNA3 TAN4 )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 50  ( 50 )
+
+}

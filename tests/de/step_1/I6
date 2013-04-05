@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename RU.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 14  ( 16 )  Summary  = 14  ( 16 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 17  ( 17 )  Shell    = 17  ( 17 )  Face     = 98  ( 98 )   Summary  = 642  ( 627 )
+STATSHAPE   : Solid    = 17  ( 17 )  Shell    = 17  ( 17 )  Face     = 98  ( 98 )   FreeWire = 0  ( 0 )   FreeEdge  = 15 ( 15 )   SharedEdge = 207  ( 207 )
+TOLERANCE   : MaxTol   =   1.00005e-007  (   1.00005e-007 )  AvgTol   =  1.000039537e-007  (  1.000039537e-007 )
+LABELS      : N0Labels = 19  ( 19 )  N1Labels = 18  ( 18 )  N2Labels = 0  ( 0 )   TotalLabels = 37  ( 37 )   NameLabels = 37  ( 37 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

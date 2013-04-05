@@ -1,0 +1,25 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
+puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
+puts "TODO CR23096 Mandriva2010: Error : 3 differences with reference data found :"
+
+set LinuxDiff 3
+set filename 53921163S0.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 51  ( 35 )  Summary  = 51  ( 35 )
+CHECKSHAPE  : Wires    = 0  ( 14 )  Faces    = 9  ( 15 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 3  ( 3 )  Face     = 568  ( 566 )   Summary  = 3706  ( 3711 )
+STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 3  ( 3 )  Face     = 568  ( 566 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 1543  ( 1546 )
+TOLERANCE   : MaxTol   =    61.30318124  (    60.87483475 )  AvgTol   =     1.474406352  (     1.657562353 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

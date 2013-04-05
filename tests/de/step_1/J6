@@ -1,0 +1,23 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 Mandriva2010: Error : 2 differences with reference data found :"
+puts "TODO CR23096 Mandriva2010: STATSHAPE : Faulty"
+
+set LinuxDiff 2
+set LinuxFaulties {STATSHAPE}
+set filename bm1_pe_t4.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 2 )  Warnings = 17  ( 27 )  Summary  = 17  ( 29 )
+CHECKSHAPE  : Wires    = 2  ( 2 )  Faces    = 3  ( 3 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 12  ( 12 )  Face     = 15  ( 15 )   Summary  = 149  ( 149 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 12  ( 12 )  Face     = 15  ( 15 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 59  ( 59 )
+TOLERANCE   : MaxTol   =    1562.051497  (    1562.051497 )  AvgTol   =     202.2827086  (     209.6352005 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

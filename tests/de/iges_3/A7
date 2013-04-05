@@ -1,0 +1,23 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename t_cat_424_002_sgi_hybdrw_vw_dosenhalter_standard.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 569 )  Warnings = 211  ( 8396 )  Summary  = 211  ( 8965 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 9171  ( 9171 )   Summary  = 288453  ( 288510 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 9171  ( 9171 )   FreeWire = 998  ( 1096 )   FreeEdge  = 28215 ( 28215 )   SharedEdge = 122324  ( 122275 )
+TOLERANCE   : MaxTol   =   0.6990645152  (   0.6305328468 )  AvgTol   =  0.0005441107262  (  0.0003780896454 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 31624  ( 37142 )  N2Labels = 0  ( 0 )   TotalLabels = 31625  ( 37143 )   NameLabels = 31621  ( 36777 )   ColorLabels = 31624  ( 37142 )   LayerLabels = 29174  ( 34054 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 4  ( 4 )
+COLORS      : Colors   = GOLD3 MAGENTA1 WHITE YELLOW  ( GOLD3 MAGENTA1 WHITE YELLOW )
+NLAYERS     : NLayers  = 36  ( 36 )
+LAYERS      : Layers   = 1 101 102 103 104 105 106 107 108 110 111 112 113 116 117 118 123 190 192 2 200 22 229 241 253 3 34 50 51 52 54 55 56 57 58 59  ( 1 101 102 103 104 105 106 107 108 110 111 112 113 116 117 118 123 190 192 2 200 22 229 241 253 3 34 50 51 52 54 55 56 57 58 59 )
+
+}

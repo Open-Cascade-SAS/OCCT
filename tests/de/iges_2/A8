@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: COLORS : Faulty" 
+
+
+set filename kegel.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 25  ( 330 )  Summary  = 25  ( 330 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 157  ( 157 )   Summary  = 3724  ( 3723 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 157  ( 157 )   FreeWire = 34  ( 34 )   FreeEdge  = 473 ( 473 )   SharedEdge = 1477  ( 1477 )
+TOLERANCE   : MaxTol   =   0.9504514132  (    1.074871981 )  AvgTol   =    0.0174083983  (   0.01757881129 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 545  ( 1285 )  N2Labels = 0  ( 0 )   TotalLabels = 546  ( 1286 )   NameLabels = 546  ( 645 )   ColorLabels = 545  ( 1285 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 6  ( 7 )
+COLORS      : Colors   = GREEN GREEN4 MAGENTA1 WHITE YELLOW YELLOW3  ( BLUE1 GREEN GREEN4 MAGENTA1 WHITE YELLOW YELLOW3 )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

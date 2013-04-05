@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename trj7_b1-ct-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 2  ( 13 )  Summary  = 2  ( 13 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 403  ( 403 )   Summary  = 2339  ( 2339 )
+STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 403  ( 403 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 985  ( 985 )
+TOLERANCE   : MaxTol   =  0.00694845675  ( 0.006948526234 )  AvgTol   =  0.001372890784  (  0.001372901267 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 30  ( 30 )  N2Labels = 0  ( 0 )   TotalLabels = 31  ( 31 )   NameLabels = 1  ( 1 )   ColorLabels = 31  ( 31 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 2  ( 2 )
+COLORS      : Colors   = CYAN1 LIGHTSTEELBLUE1  ( CYAN1 LIGHTSTEELBLUE1 )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename trj8_b1-ec-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 3  ( 29 )  Summary  = 3  ( 29 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 414  ( 414 )   Summary  = 2770  ( 2770 )
+STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 414  ( 414 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 1194  ( 1194 )
+TOLERANCE   : MaxTol   =   0.1776286449  (   0.1776286449 )  AvgTol   =  0.002097091066  (  0.002097522075 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 28  ( 28 )  N2Labels = 0  ( 0 )   TotalLabels = 29  ( 29 )   NameLabels = 1  ( 1 )   ColorLabels = 29  ( 29 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 1  ( 1 )  Volume   = 1  ( 1 )  Area     = 1  ( 1 )
+NCOLORS     : NColors  = 2  ( 2 )
+COLORS      : Colors   = BLUE4 MATRAGRAY  ( BLUE4 MATRAGRAY )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

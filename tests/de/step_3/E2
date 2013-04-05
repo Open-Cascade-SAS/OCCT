@@ -1,0 +1,25 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
+puts "TODO CR23096 Mandriva2010: Error : 3 differences with reference data found :"
+puts "TODO CR23096 Mandriva2010: TOLERANCE : Faulty"
+
+set LinuxDiff 3
+set LinuxFaulties {TOLERANCE}
+set filename ct_exhaust-A.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 24  ( 0 )  Summary  = 24  ( 0 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 3  ( 3 )  Shell    = 5  ( 3 )  Face     = 43  ( 43 )   Summary  = 640  ( 631 )
+STATSHAPE   : Solid    = 3  ( 3 )  Shell    = 5  ( 3 )  Face     = 43  ( 43 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 289  ( 282 )
+TOLERANCE   : MaxTol   = 0.0003171897371  ( 0.0003171897371 )  AvgTol   =  3.783050085e-005  (  3.82262146e-005 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 7  ( 7 )  N2Labels = 0  ( 0 )   TotalLabels = 10  ( 10 )   NameLabels = 5  ( 5 )   ColorLabels = 3  ( 3 )   LayerLabels = 5  ( 5 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = WHITE  ( WHITE )
+NLAYERS     : NLayers  = 2  ( 2 )
+LAYERS      : Layers   = 0 2  ( 0 2 )
+
+}

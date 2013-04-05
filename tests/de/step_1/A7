@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename trj3_s1-id-203.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 33  ( 32 )  Summary  = 33  ( 32 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 8  ( 8 )  Shell    = 8  ( 8 )  Face     = 101  ( 101 )   Summary  = 604  ( 604 )
+STATSHAPE   : Solid    = 11  ( 11 )  Shell    = 11  ( 11 )  Face     = 134  ( 134 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 221  ( 221 )
+TOLERANCE   : MaxTol   = 0.0002663670698  ( 0.0002663644067 )  AvgTol   =  6.037718226e-006  (  6.059069808e-006 )
+LABELS      : N0Labels = 13  ( 13 )  N1Labels = 18  ( 23 )  N2Labels = 0  ( 5 )   TotalLabels = 31  ( 41 )   NameLabels = 27  ( 27 )   ColorLabels = 12  ( 12 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 3  ( 3 )
+COLORS      : Colors   = BLUE1 RED YELLOW  ( BLUE1 RED YELLOW )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

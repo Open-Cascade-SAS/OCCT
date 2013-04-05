@@ -1,0 +1,24 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: COLORS : Faulty" 
+puts "TODO CR23096 ALL: LAYERS : Faulty" 
+
+
+set filename BUC60192.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 369 )  Warnings = 22  ( 979 )  Summary  = 22  ( 1348 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 73  ( 73 )   Summary  = 13303  ( 13310 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 73  ( 73 )   FreeWire = 409  ( 414 )   FreeEdge  = 4891 ( 4891 )   SharedEdge = 5892  ( 5893 )
+TOLERANCE   : MaxTol   =   0.6679845366  (   0.6679845366 )  AvgTol   =  0.004666698119  (  0.004573791805 )
+LABELS      : N0Labels = 4  ( 4 )  N1Labels = 740  ( 1738 )  N2Labels = 0  ( 0 )   TotalLabels = 744  ( 1742 )   NameLabels = 744  ( 1222 )   ColorLabels = 740  ( 1738 )   LayerLabels = 208  ( 819 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 4  ( 7 )
+COLORS      : Colors   = GREEN MAGENTA4 RED WHITE  ( BLUE1 CYAN1 GREEN MAGENTA1 MAGENTA4 RED WHITE )
+NLAYERS     : NLayers  = 6  ( 8 )
+LAYERS      : Layers   = 200 214 240 4 51 7  ( 192 200 214 221 240 4 51 7 )
+
+}

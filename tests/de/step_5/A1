@@ -1,0 +1,23 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 Windows: CHECKSHAPE : Faulty" 
+puts "TODO CR23096 Windows: STATSHAPE : Faulty" 
+puts "TODO CR23096 Windows: TOLERANCE : Faulty" 
+puts "TODO CR23096 Mandriva2010: TEST INCOMPLETE"
+
+set filename Z8INV5.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 129  ( 603 )  Summary  = 129  ( 603 )
+CHECKSHAPE  : Wires    = 37  ( 33 )  Faces    = 30  ( 28 )  Shells   = 1  ( 1 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 22  ( 22 )  Shell    = 24  ( 24 )  Face     = 1528  ( 1523 )   Summary  = 11256  ( 11229 )
+STATSHAPE   : Solid    = 22  ( 22 )  Shell    = 24  ( 24 )  Face     = 1528  ( 1523 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 4799  ( 4789 )
+TOLERANCE   : MaxTol   =    13.30495478  (    7.159520237 )  AvgTol   =   0.03971617353  (   0.03398500929 )
+LABELS      : N0Labels = 25  ( 25 )  N1Labels = 23  ( 23 )  N2Labels = 0  ( 0 )   TotalLabels = 48  ( 48 )   NameLabels = 48  ( 48 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

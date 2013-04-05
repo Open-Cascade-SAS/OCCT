@@ -1,0 +1,24 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: PROPS : Faulty" 
+puts "TODO CR23096 ALL: LAYERS : Faulty" 
+
+
+set filename trj9_c2-pe-203.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 1  ( 0 )  Face     = 1  ( 1 )   Summary  = 16  ( 16 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 1  ( 0 )  Face     = 1  ( 1 )   FreeWire = 0  ( 0 )   FreeEdge  = 1 ( 1 )   SharedEdge = 5  ( 5 )
+TOLERANCE   : MaxTol   =         1e-007  (         1e-007 )  AvgTol   =          1e-007  (          1e-007 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 2  ( 3 )  N2Labels = 0  ( 0 )   TotalLabels = 3  ( 4 )   NameLabels = 1  ( 1 )   ColorLabels = 2  ( 2 )   LayerLabels = 0  ( 1 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 1 )
+NCOLORS     : NColors  = 2  ( 2 )
+COLORS      : Colors   = BLUE1 YELLOW  ( BLUE1 YELLOW )
+NLAYERS     : NLayers  = 0  ( 1 )
+LAYERS      : Layers   =   ( 06___PRT_ALL_SURFS )
+
+}

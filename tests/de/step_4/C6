@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename bm4_sd_conn_d.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 3  ( 3 )  Shell    = 3  ( 3 )  Face     = 501  ( 501 )   Summary  = 3639  ( 3639 )
+STATSHAPE   : Solid    = 57  ( 57 )  Shell    = 57  ( 57 )  Face     = 1912  ( 1912 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 1478  ( 1478 )
+TOLERANCE   : MaxTol   =         1e-007  (         1e-007 )  AvgTol   =          1e-007  (          1e-007 )
+LABELS      : N0Labels = 5  ( 5 )  N1Labels = 32  ( 32 )  N2Labels = 0  ( 0 )   TotalLabels = 37  ( 37 )   NameLabels = 36  ( 36 )   ColorLabels = 4  ( 4 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 4  ( 4 )
+COLORS      : Colors   = GREEN MEDIUMTURQUOISE RED YELLOW  ( GREEN MEDIUMTURQUOISE RED YELLOW )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

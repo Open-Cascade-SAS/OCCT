@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename bm2_sd_exhaust-A.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 8  ( 8 )  Shell    = 8  ( 8 )  Face     = 112  ( 112 )   Summary  = 805  ( 805 )
+STATSHAPE   : Solid    = 8  ( 8 )  Shell    = 8  ( 8 )  Face     = 112  ( 112 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 324  ( 324 )
+TOLERANCE   : MaxTol   = 0.0001034148615  ( 0.0001551206729 )  AvgTol   =  5.552218587e-006  (  8.27498499e-006 )
+LABELS      : N0Labels = 8  ( 8 )  N1Labels = 41  ( 41 )  N2Labels = 0  ( 0 )   TotalLabels = 49  ( 49 )   NameLabels = 8  ( 8 )   ColorLabels = 41  ( 41 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = RED  ( RED )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

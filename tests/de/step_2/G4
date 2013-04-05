@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename Inventor_Container.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 31  ( 34 )  Summary  = 31  ( 34 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 2  ( 2 )  Shell    = 2  ( 2 )  Face     = 300  ( 300 )   Summary  = 1570  ( 1570 )
+STATSHAPE   : Solid    = 2  ( 2 )  Shell    = 2  ( 2 )  Face     = 300  ( 300 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 631  ( 631 )
+TOLERANCE   : MaxTol   =  0.02983526473  (  0.02983526473 )  AvgTol   =  0.000466907808  (  0.0004669562427 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 2  ( 2 )  N2Labels = 0  ( 0 )   TotalLabels = 5  ( 5 )   NameLabels = 5  ( 5 )   ColorLabels = 2  ( 2 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 2  ( 2 )
+COLORS      : Colors   = GRAY80 SPRINGGREEN3  ( GRAY80 SPRINGGREEN3 )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

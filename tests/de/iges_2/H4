@@ -1,0 +1,23 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: COLORS : Faulty" 
+puts "TODO CR23096 ALL: LAYERS : Faulty" 
+
+set filename UKI60028-2.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 16  ( 149 )  Warnings = 84  ( 1016 )  Summary  = 100  ( 1165 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 124  ( 124 )   Summary  = 7690  ( 7731 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 124  ( 124 )   FreeWire = 219  ( 254 )   FreeEdge  = 1870 ( 1870 )   SharedEdge = 3105  ( 3106 )
+TOLERANCE   : MaxTol   =   0.9970503224  (   0.9970502696 )  AvgTol   =   0.01722887906  (   0.02184796555 )
+LABELS      : N0Labels = 9  ( 9 )  N1Labels = 896  ( 1689 )  N2Labels = 0  ( 0 )   TotalLabels = 905  ( 1698 )   NameLabels = 905  ( 1233 )   ColorLabels = 896  ( 1690 )   LayerLabels = 864  ( 1657 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 6  ( 7 )
+COLORS      : Colors   = BLUE1 LEMONCHIFFON1 RED RED4 WHITE YELLOW  ( BLUE1 GREEN LEMONCHIFFON1 RED RED4 WHITE YELLOW )
+NLAYERS     : NLayers  = 12  ( 16 )
+LAYERS      : Layers   = 11 12 13 20 249 252 50 52 54 55 60 71  ( 10 11 12 13 20 246 249 252 50 52 54 55 60 65 70 71 )
+
+}

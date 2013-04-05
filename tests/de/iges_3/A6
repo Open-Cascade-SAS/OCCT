@@ -1,0 +1,23 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: COLORS : Faulty" 
+puts "TODO CR23096 ALL: LAYERS : Faulty" 
+
+set filename catia01_s.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 16  ( 3 )  Warnings = 118  ( 313 )  Summary  = 134  ( 316 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 145  ( 145 )   Summary  = 3869  ( 3869 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 145  ( 145 )   FreeWire = 64  ( 64 )   FreeEdge  = 617 ( 617 )   SharedEdge = 1627  ( 1627 )
+TOLERANCE   : MaxTol   =   0.0521262172  (   0.0521264751 )  AvgTol   =  0.0004299527196  (  0.0004227153137 )
+LABELS      : N0Labels = 2  ( 2 )  N1Labels = 346  ( 756 )  N2Labels = 0  ( 0 )   TotalLabels = 348  ( 758 )   NameLabels = 348  ( 478 )   ColorLabels = 347  ( 757 )   LayerLabels = 336  ( 744 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 2  ( 3 )
+COLORS      : Colors   = RED WHITE  ( RED WHITE YELLOW )
+NLAYERS     : NLayers  = 6  ( 7 )
+LAYERS      : Layers   = 1 2 242 243 244 3  ( 1 11 2 242 243 244 3 )
+
+}

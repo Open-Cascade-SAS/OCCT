@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: LAYERS : Faulty" 
+
+
+set filename bm4_db_conn_a.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 60  ( 3 )  Shell    = 60  ( 3 )  Face     = 2526  ( 504 )   Summary  = 17140  ( 3803 )
+STATSHAPE   : Solid    = 114  ( 114 )  Shell    = 114  ( 114 )  Face     = 4044  ( 4044 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 6988  ( 1556 )
+TOLERANCE   : MaxTol   = 1.593845682e-007  ( 1.593845682e-007 )  AvgTol   =  1.001858532e-007  (  1.001858532e-007 )
+LABELS      : N0Labels = 6  ( 7 )  N1Labels = 31  ( 33 )  N2Labels = 0  ( 0 )   TotalLabels = 37  ( 40 )   NameLabels = 37  ( 36 )   ColorLabels = 3  ( 3 )   LayerLabels = 3  ( 35 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 3  ( 3 )
+COLORS      : Colors   = CYAN1 WHITE YELLOW  ( CYAN1 WHITE YELLOW )
+NLAYERS     : NLayers  = 3  ( 6 )
+LAYERS      : Layers   = 1 10 5  ( {  0} {  1} {  5} { 10} 200 255 )
+
+}

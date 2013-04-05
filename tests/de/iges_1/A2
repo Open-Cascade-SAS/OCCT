@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename buc40130.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 38  ( 38 )  Summary  = 38  ( 38 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 3312  ( 3312 )   Summary  = 38865  ( 38865 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 3312  ( 3312 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 15941  ( 15941 )
+TOLERANCE   : MaxTol   =   0.9010557082  (   0.9010557089 )  AvgTol   =  0.005653402654  (  0.005653402896 )
+LABELS      : N0Labels = 3312  ( 3312 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 3312  ( 3312 )   NameLabels = 3312  ( 3312 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

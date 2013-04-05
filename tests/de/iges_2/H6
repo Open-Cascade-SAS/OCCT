@@ -1,0 +1,23 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: COLORS : Faulty" 
+
+
+set filename UKI60302.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 93 )  Warnings = 14  ( 129 )  Summary  = 14  ( 222 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 4  ( 4 )   Summary  = 438  ( 236 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 4  ( 4 )   FreeWire = 7  ( 7 )   FreeEdge  = 135 ( 135 )   SharedEdge = 151  ( 84 )
+TOLERANCE   : MaxTol   =         1e-005  ( 1.000100002e-007 )  AvgTol   =  9.941935484e-007  (  1.00000086e-007 )
+LABELS      : N0Labels = 5  ( 5 )  N1Labels = 23  ( 33 )  N2Labels = 0  ( 0 )   TotalLabels = 28  ( 38 )   NameLabels = 28  ( 38 )   ColorLabels = 23  ( 33 )   LayerLabels = 23  ( 33 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 4  ( 5 )
+COLORS      : Colors   = GOLD3 GREEN LIGHTSEAGREEN YELLOW  ( GOLD3 GREEN LIGHTSEAGREEN RED YELLOW )
+NLAYERS     : NLayers  = 2  ( 2 )
+LAYERS      : Layers   = 201 254  ( 201 254 )
+
+}

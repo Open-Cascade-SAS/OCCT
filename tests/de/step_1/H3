@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename Inventor_FrameHinge.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 8  ( 8 )  Summary  = 8  ( 8 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 6  ( 6 )  Shell    = 6  ( 6 )  Face     = 226  ( 226 )   Summary  = 1397  ( 1397 )
+STATSHAPE   : Solid    = 12  ( 12 )  Shell    = 12  ( 12 )  Face     = 452  ( 452 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 544  ( 544 )
+TOLERANCE   : MaxTol   = 1.000100003e-007  ( 1.000100003e-007 )  AvgTol   =  1.000054901e-007  (  1.000054901e-007 )
+LABELS      : N0Labels = 9  ( 9 )  N1Labels = 10  ( 10 )  N2Labels = 0  ( 0 )   TotalLabels = 19  ( 19 )   NameLabels = 19  ( 19 )   ColorLabels = 6  ( 6 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 2  ( 2 )
+COLORS      : Colors   = GOLDENROD3 GRAY66  ( GOLDENROD3 GRAY66 )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

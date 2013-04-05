@@ -1,0 +1,23 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: COLORS : Faulty" 
+puts "TODO CR23096 ALL: LAYERS : Faulty"
+
+set filename UKI60028-1.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 8  ( 150 )  Warnings = 75  ( 789 )  Summary  = 83  ( 939 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 159  ( 159 )   Summary  = 7582  ( 7682 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 159  ( 159 )   FreeWire = 189  ( 284 )   FreeEdge  = 1726 ( 1726 )   SharedEdge = 3035  ( 3035 )
+TOLERANCE   : MaxTol   =   0.6023944505  (   0.6023945025 )  AvgTol   =  0.007299345438  (    0.0087526096 )
+LABELS      : N0Labels = 8  ( 8 )  N1Labels = 949  ( 1807 )  N2Labels = 0  ( 0 )   TotalLabels = 957  ( 1815 )   NameLabels = 955  ( 1258 )   ColorLabels = 949  ( 1807 )   LayerLabels = 917  ( 1774 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 12  ( 14 )
+COLORS      : Colors   = BLUE1 CHOCOLATE2 DARKGOLDENROD4 DEEPSKYBLUE2 GOLD4 GREEN KHAKI1 KHAKI2 LEMONCHIFFON1 RED WHITE YELLOW  ( BLUE1 CHOCOLATE2 DARKGOLDENROD4 DEEPSKYBLUE2 FIREBRICK4 GOLD4 GREEN KHAKI1 KHAKI2 LEMONCHIFFON1 RED TURQUOISE4 WHITE YELLOW )
+NLAYERS     : NLayers  = 10  ( 13 )
+LAYERS      : Layers   = 12 13 23 249 252 50 52 54 60 71  ( 12 13 23 244 246 249 252 50 52 54 60 70 71 )
+
+}

@@ -1,0 +1,27 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 Windows: STATSHAPE : Faulty" 
+puts "TODO CR23096 Windows: TOLERANCE : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 Mandriva2010: Error : 5 differences with reference data found :"
+puts "TODO CR23096 Mandriva2010: CHECKSHAPE : Faulty"
+
+set LinuxDiff 5
+set LinuxFaulties {CHECKSHAPE}
+set filename USA60022.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
+TPSTAT      : Faulties = 21  ( 0 )  Warnings = 167  ( 1988 )  Summary  = 188  ( 1988 )
+CHECKSHAPE  : Wires    = 8  ( 13 )  Faces    = 9  ( 15 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 658  ( 634 )   Summary  = 25063  ( 24992 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 658  ( 634 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 11916  ( 11871 )
+TOLERANCE   : MaxTol   =      6.4081268  (    1.331845935 )  AvgTol   =  0.001845464281  (  0.002198928582 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 627  ( 634 )  N2Labels = 0  ( 0 )   TotalLabels = 628  ( 635 )   NameLabels = 628  ( 635 )   ColorLabels = 627  ( 635 )   LayerLabels = 627  ( 635 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 2  ( 2 )
+COLORS      : Colors   = GREEN RED  ( GREEN RED )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 10  ( 10 )
+
+}

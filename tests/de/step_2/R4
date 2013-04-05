@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+
+
+set filename tr9_r0801-sd.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 7  ( 0 )  Summary  = 7  ( 0 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 3  ( 3 )  Shell    = 3  ( 3 )  Face     = 165  ( 165 )   Summary  = 1320  ( 1320 )
+STATSHAPE   : Solid    = 3  ( 3 )  Shell    = 3  ( 3 )  Face     = 165  ( 165 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 528  ( 528 )
+TOLERANCE   : MaxTol   = 6.887498394e-007  ( 6.887503258e-007 )  AvgTol   =  1.348970841e-007  (  1.348970739e-007 )
+LABELS      : N0Labels = 4  ( 4 )  N1Labels = 28  ( 28 )  N2Labels = 0  ( 0 )   TotalLabels = 32  ( 32 )   NameLabels = 7  ( 7 )   ColorLabels = 28  ( 28 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 4  ( 4 )
+COLORS      : Colors   = BLACK RED3 ROYALBLUE2 STEELBLUE1  ( BLACK RED3 ROYALBLUE2 STEELBLUE1 )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

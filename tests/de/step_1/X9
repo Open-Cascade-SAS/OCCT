@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename trj5_s1-in-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 8  ( 9 )  Summary  = 8  ( 9 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 8  ( 8 )  Shell    = 8  ( 8 )  Face     = 108  ( 108 )   Summary  = 689  ( 689 )
+STATSHAPE   : Solid    = 11  ( 11 )  Shell    = 11  ( 11 )  Face     = 146  ( 146 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 270  ( 270 )
+TOLERANCE   : MaxTol   = 0.0006380410651  ( 0.0006380410622 )  AvgTol   =  1.220932663e-005  (  1.22093266e-005 )
+LABELS      : N0Labels = 13  ( 13 )  N1Labels = 14  ( 14 )  N2Labels = 0  ( 0 )   TotalLabels = 27  ( 27 )   NameLabels = 27  ( 27 )   ColorLabels = 8  ( 8 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 8  ( 8 )
+COLORS      : Colors   = BLUE3 CYAN1 DEEPSKYBLUE3 INDIANRED2 RED3 SANDYBROWN SPRINGGREEN3 YELLOW3  ( BLUE3 CYAN1 DEEPSKYBLUE3 INDIANRED2 RED3 SANDYBROWN SPRINGGREEN3 YELLOW3 )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

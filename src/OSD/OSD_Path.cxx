@@ -1588,7 +1588,7 @@ static Standard_Integer RemoveExtraSeparator(TCollection_AsciiString& aString) {
 #ifdef _WIN32
   if (len > 1 && aString.Value(1) == '/' && aString.Value(2) == '/')
     start = 2;
-#endif  
+#endif 
   for (i = j = start ; j <= len ; i++,j++) {
       Standard_Character c = aString.Value(j) ;
       aString.SetValue(i,c) ;

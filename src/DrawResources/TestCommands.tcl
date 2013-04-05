@@ -49,7 +49,7 @@ proc test {group grid casename {echo 0}} {
     if { "$echo" == "-echo" } { set echo t }
 
     # run test
-    uplevel _run_test $dir $group $gridname $casefile $echo
+    uplevel _run_test $dir $group $gridname $casefile $echo 
 
     # check log
     if { ! $echo } {
@@ -776,7 +776,7 @@ proc locate_data_file {filename} {
     }
 
     # raise error
-    error [join [list "Error: file $filename could not be found" \
+    error [join [list "File $filename could not be found" \
 		      "(should be in paths indicated by CSF_TestDataPath environment variable, " \
                       "or in subfolder data in the script directory)"] "\n"]
 }
@@ -885,14 +885,11 @@ proc _run_test {scriptsdir group gridname casefile echo} {
 		set optarg [lindex $args end-1]
 		if { $optarg == "stdout" || $optarg == "stderr" || $optarg == "-newline" } {
 		    dlog add [lindex $args end]
+		} else {
+		    eval puts-saved $args
 		}
 	    } else {
 		dlog add [lindex $args end]
-	    }
-
-	    # reproduce original puts
-	    if { $_tests_verbose } {
-		eval puts-saved $args
 	    }
 	}
     }
@@ -903,6 +900,7 @@ proc _run_test {scriptsdir group gridname casefile echo} {
 	uplevel set casename [file tail $casefile]
 	uplevel set groupname $group
 	uplevel set gridname $gridname
+	uplevel set dirname  $scriptsdir
 
 	# set variables for saving of images if not yet set
 	if { ! [uplevel info exists imagedir] } {

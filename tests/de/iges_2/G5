@@ -1,0 +1,24 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: COLORS : Faulty" 
+puts "TODO CR23096 Mandriva2010: Error : 4 differences with reference data found :"
+
+set LinuxDiff 4
+set filename PRO11641.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 68  ( 1653 )  Summary  = 68  ( 1653 )
+CHECKSHAPE  : Wires    = 21  ( 14 )  Faces    = 7  ( 7 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1424  ( 1424 )   Summary  = 25321  ( 24502 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1424  ( 1424 )   FreeWire = 23  ( 23 )   FreeEdge  = 461 ( 461 )   SharedEdge = 11249  ( 10724 )
+TOLERANCE   : MaxTol   =  0.01698924283  (  0.04210111627 )  AvgTol   =  0.0004712655806  (  0.0008247631181 )
+LABELS      : N0Labels = 1784  ( 1784 )  N1Labels = 0  ( 2178 )  N2Labels = 0  ( 0 )   TotalLabels = 1784  ( 3962 )   NameLabels = 1784  ( 1784 )   ColorLabels = 1761  ( 3962 )   LayerLabels = 1761  ( 1784 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 7  ( 8 )
+COLORS      : Colors   = BLUE1 CYAN1 GREEN MAGENTA1 RED WHITE YELLOW  ( BLACK BLUE1 CYAN1 GREEN MAGENTA1 RED WHITE YELLOW )
+NLAYERS     : NLayers  = 5  ( 5 )
+LAYERS      : Layers   = 1 11 214 239 4  ( 1 11 214 239 4 )
+
+}

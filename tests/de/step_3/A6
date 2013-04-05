@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename bm4_ug_seal_a.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 4  ( 11 )  Summary  = 4  ( 11 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 3  ( 3 )  Shell    = 5  ( 5 )  Face     = 33  ( 33 )   Summary  = 179  ( 180 )
+STATSHAPE   : Solid    = 3  ( 3 )  Shell    = 5  ( 5 )  Face     = 33  ( 33 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 66  ( 66 )
+TOLERANCE   : MaxTol   = 0.006927894742  (  0.00692789498 )  AvgTol   =  0.0002919501977  (  0.0002926166774 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 3  ( 2 )  N2Labels = 0  ( 0 )   TotalLabels = 4  ( 3 )   NameLabels = 1  ( 1 )   ColorLabels = 3  ( 2 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 2  ( 2 )
+COLORS      : Colors   = GREEN MEDIUMSEAGREEN  ( GREEN MEDIUMSEAGREEN )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename BUC50047.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
+TPSTAT      : Faulties = 0  ( 2 )  Warnings = 49  ( 109 )  Summary  = 49  ( 111 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 102  ( 102 )   Summary  = 2277  ( 2277 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 102  ( 102 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 1027  ( 1027 )
+TOLERANCE   : MaxTol   =   0.9428103106  (   0.9428103191 )  AvgTol   =   0.04703881931  (   0.04704464574 )
+LABELS      : N0Labels = 102  ( 102 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 102  ( 102 )   NameLabels = 102  ( 102 )   ColorLabels = 0  ( 0 )   LayerLabels = 102  ( 102 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 1  ( 1 )
+
+}

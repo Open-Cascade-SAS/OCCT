@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename r_87-ug.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 10  ( 10 )  Face     = 10  ( 10 )   Summary  = 125  ( 123 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 10  ( 10 )  Face     = 10  ( 10 )   FreeWire = 0  ( 0 )   FreeEdge  = 2 ( 2 )   SharedEdge = 44  ( 44 )
+TOLERANCE   : MaxTol   = 8.886924154e-005  ( 8.886893947e-005 )  AvgTol   =  2.639044129e-005  (  2.639042883e-005 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 4  ( 4 )  N2Labels = 0  ( 0 )   TotalLabels = 7  ( 7 )   NameLabels = 5  ( 5 )   ColorLabels = 2  ( 2 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = FORESTGREEN  ( FORESTGREEN )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

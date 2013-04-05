@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename trj4_pm2-ug-203.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 44  ( 491 )  Summary  = 44  ( 491 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 81  ( 81 )  Shell    = 82  ( 82 )  Face     = 2729  ( 2729 )   Summary  = 17298  ( 17298 )
+STATSHAPE   : Solid    = 99  ( 99 )  Shell    = 100  ( 100 )  Face     = 3044  ( 3044 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 6924  ( 6924 )
+TOLERANCE   : MaxTol   = 0.009468939314  (  0.02905820302 )  AvgTol   =  0.0002648844815  (  0.0002774930587 )
+LABELS      : N0Labels = 91  ( 91 )  N1Labels = 102  ( 102 )  N2Labels = 0  ( 0 )   TotalLabels = 193  ( 193 )   NameLabels = 193  ( 193 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 91  ( 91 )  Volume   = 91  ( 91 )  Area     = 91  ( 91 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

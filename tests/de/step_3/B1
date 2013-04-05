@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: PROPS : Faulty" 
+
+
+set filename trj7_pm5-id-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 237  ( 237 )  Summary  = 237  ( 237 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 16  ( 16 )  Shell    = 16  ( 16 )  Face     = 494  ( 494 )   Summary  = 3402  ( 3355 )
+STATSHAPE   : Solid    = 26  ( 26 )  Shell    = 26  ( 26 )  Face     = 874  ( 874 )   FreeWire = 0  ( 0 )   FreeEdge  = 58 ( 58 )   SharedEdge = 1179  ( 1179 )
+TOLERANCE   : MaxTol   = 0.001020031074  (  0.00102003115 )  AvgTol   =  6.808274139e-006  (  6.808274478e-006 )
+LABELS      : N0Labels = 27  ( 27 )  N1Labels = 257  ( 257 )  N2Labels = 0  ( 0 )   TotalLabels = 284  ( 284 )   NameLabels = 54  ( 54 )   ColorLabels = 242  ( 242 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 15  ( 32 )  Volume   = 15  ( 15 )  Area     = 15  ( 15 )
+NCOLORS     : NColors  = 6  ( 6 )
+COLORS      : Colors   = DEEPSKYBLUE2 DODGERBLUE2 MAGENTA1 ORANGE ORANGERED RED  ( DEEPSKYBLUE2 DODGERBLUE2 MAGENTA1 ORANGE ORANGERED RED )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

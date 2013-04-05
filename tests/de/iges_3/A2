@@ -1,0 +1,24 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: COLORS : Faulty" 
+puts "TODO CR23096 ALL: LAYERS : Faulty" 
+puts "TODO CR23096 Mandriva2010: Error : 5 differences with reference data found :"
+
+set LinuxDiff 5
+set filename UKI60094.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 4  ( 33 )  Warnings = 115  ( 322 )  Summary  = 119  ( 355 )
+CHECKSHAPE  : Wires    = 0  ( 4 )  Faces    = 1  ( 2 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 419  ( 159 )   Summary  = 7845  ( 4462 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 419  ( 419 )   FreeWire = 66  ( 114 )   FreeEdge  = 430 ( 430 )   SharedEdge = 3347  ( 1895 )
+TOLERANCE   : MaxTol   =    5.365866916  (    2716.882548 )  AvgTol   =    0.0223796226  (     5.135986013 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 325  ( 1838 )  N2Labels = 0  ( 0 )   TotalLabels = 328  ( 1841 )   NameLabels = 328  ( 424 )   ColorLabels = 325  ( 1838 )   LayerLabels = 193  ( 1573 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 6  ( 7 )
+COLORS      : Colors   = GREEN MATRABLUE RED RED4 WHITE YELLOW  ( GREEN MAGENTA1 MATRABLUE RED RED4 WHITE YELLOW )
+NLAYERS     : NLayers  = 2  ( 3 )
+LAYERS      : Layers   = 1 253  ( 1 2 253 )
+
+}

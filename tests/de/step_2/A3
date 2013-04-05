@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
+
+
+set filename tr9_r0501-ug.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 5  ( 403 )  Summary  = 5  ( 403 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 4  ( 0 )  Shells   = 1  ( 0 )   Solids   = 1 ( 0 )
+NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 532  ( 532 )   Summary  = 3359  ( 3359 )
+STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 532  ( 532 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 1299  ( 1299 )
+TOLERANCE   : MaxTol   = 1.956041309e-005  ( 0.0003145873437 )  AvgTol   =  8.842932047e-007  (  7.695997601e-006 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 1  ( 1 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = MAGENTA1  ( MAGENTA1 )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

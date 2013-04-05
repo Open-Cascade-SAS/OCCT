@@ -1,0 +1,24 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: COLORS : Faulty" 
+
+
+set filename PUNZONE.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 1 )  Warnings = 0  ( 1 )  Summary  = 0  ( 2 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 1046  ( 2771 )  Summary  = 1046  ( 2771 )
+CHECKSHAPE  : Wires    = 2  ( 2 )  Faces    = 4  ( 4 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1127  ( 1125 )   Summary  = 44255  ( 44256 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1127  ( 1125 )   FreeWire = 26  ( 26 )   FreeEdge  = 1197 ( 1197 )   SharedEdge = 20967  ( 20967 )
+TOLERANCE   : MaxTol   =  0.08512566596  (  0.08512566591 )  AvgTol   =  0.005307091322  (  0.005307835441 )
+LABELS      : N0Labels = 1155  ( 1155 )  N1Labels = 0  ( 1504 )  N2Labels = 0  ( 0 )   TotalLabels = 1155  ( 2659 )   NameLabels = 1155  ( 2265 )   ColorLabels = 1125  ( 2659 )   LayerLabels = 1125  ( 1125 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 4 )
+COLORS      : Colors   = GREEN  ( GREEN MAGENTA1 RED YELLOW )
+NLAYERS     : NLayers  = 2  ( 2 )
+LAYERS      : Layers   = 16 18  ( 16 18 )
+
+}

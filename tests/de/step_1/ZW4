@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename ug_as1.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 14 )  Summary  = 0  ( 14 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 5  ( 5 )  Shell    = 5  ( 5 )  Face     = 39  ( 39 )   Summary  = 269  ( 269 )
+STATSHAPE   : Solid    = 18  ( 18 )  Shell    = 18  ( 18 )  Face     = 125  ( 125 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 91  ( 91 )
+TOLERANCE   : MaxTol   = 1.000100003e-007  (         1e-005 )  AvgTol   =  1.00006917e-007  (  2.879948407e-006 )
+LABELS      : N0Labels = 9  ( 9 )  N1Labels = 13  ( 13 )  N2Labels = 0  ( 0 )   TotalLabels = 22  ( 22 )   NameLabels = 22  ( 22 )   ColorLabels = 5  ( 5 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = GREEN  ( GREEN )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

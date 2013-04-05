@@ -1,0 +1,12 @@
+pload DCAF
+pload TOPTEST
+pload XDE
+
+cpulimit 1500
+
+# Create a new document and set UndoLimit
+NewDocument D MDTV-XCAF
+UndoLimit D 100
+
+# Open a transaction
+NewCommand D

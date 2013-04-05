@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
+
+
+set filename 612319029MB-HEAD-CYLINDER.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 1860  ( 2189 )  Summary  = 1860  ( 2189 )
+CHECKSHAPE  : Wires    = 38  ( 28 )  Faces    = 38  ( 28 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 17  ( 17 )  Face     = 6173  ( 6173 )   Summary  = 41190  ( 41175 )
+STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 17  ( 17 )  Face     = 6173  ( 6173 )   FreeWire = 0  ( 0 )   FreeEdge  = 4 ( 4 )   SharedEdge = 17493  ( 17486 )
+TOLERANCE   : MaxTol   =  0.07753055119  (  0.07753055119 )  AvgTol   =  0.0008197574906  (  0.0007583013203 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 2  ( 2 )  N2Labels = 0  ( 0 )   TotalLabels = 5  ( 5 )   NameLabels = 5  ( 5 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

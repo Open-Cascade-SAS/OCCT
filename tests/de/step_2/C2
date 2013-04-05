@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename TUBE.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 38  ( 52 )  Summary  = 38  ( 52 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 29  ( 29 )  Shell    = 29  ( 29 )  Face     = 656  ( 656 )   Summary  = 4410  ( 4320 )
+STATSHAPE   : Solid    = 91  ( 91 )  Shell    = 91  ( 91 )  Face     = 2181  ( 2181 )   FreeWire = 0  ( 0 )   FreeEdge  = 180 ( 180 )   SharedEdge = 1715  ( 1715 )
+TOLERANCE   : MaxTol   = 0.0002458755248  ( 0.0002458755245 )  AvgTol   =  6.914949323e-006  (  6.914949866e-006 )
+LABELS      : N0Labels = 53  ( 53 )  N1Labels = 114  ( 137 )  N2Labels = 0  ( 23 )   TotalLabels = 167  ( 213 )   NameLabels = 167  ( 168 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

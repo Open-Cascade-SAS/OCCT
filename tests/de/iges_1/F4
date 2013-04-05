@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename scenrio2.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 26 )  Summary  = 0  ( 26 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 23  ( 23 )   Summary  = 993  ( 993 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 23  ( 23 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 468  ( 468 )
+TOLERANCE   : MaxTol   =   0.7088972898  (   0.7088972898 )  AvgTol   =  0.007706834255  (  0.007716106329 )
+LABELS      : N0Labels = 23  ( 23 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 23  ( 23 )   NameLabels = 23  ( 23 )   ColorLabels = 23  ( 23 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = GRAY  ( GRAY )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

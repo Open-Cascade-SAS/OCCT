@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename trj6_pm4-in-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 135  ( 135 )  Summary  = 135  ( 135 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 17  ( 17 )  Shell    = 17  ( 17 )  Face     = 609  ( 609 )   Summary  = 3807  ( 3807 )
+STATSHAPE   : Solid    = 27  ( 27 )  Shell    = 27  ( 27 )  Face     = 738  ( 738 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 1527  ( 1527 )
+TOLERANCE   : MaxTol   = 0.003481079391  ( 0.003481079389 )  AvgTol   =  0.0001334080552  (  0.0001334936167 )
+LABELS      : N0Labels = 19  ( 19 )  N1Labels = 28  ( 28 )  N2Labels = 0  ( 0 )   TotalLabels = 47  ( 47 )   NameLabels = 47  ( 47 )   ColorLabels = 17  ( 17 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 12  ( 12 )
+COLORS      : Colors   = BLACK BLUE3 GRAY51 GRAY66 LIGHTGOLDENROD4 LIGHTSLATEGRAY LIGHTSTEELBLUE4 SANDYBROWN SIENNA SIENNA3 SPRINGGREEN3 YELLOW3  ( BLACK BLUE3 GRAY51 GRAY66 LIGHTGOLDENROD4 LIGHTSLATEGRAY LIGHTSTEELBLUE4 SANDYBROWN SIENNA SIENNA3 SPRINGGREEN3 YELLOW3 )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
+
+
+set filename bm2_db_t4-A.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 10  ( 6 )  Summary  = 10  ( 6 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 17  ( 15 )  Face     = 17  ( 17 )   Summary  = 208  ( 169 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 17  ( 15 )  Face     = 17  ( 17 )   FreeWire = 0  ( 0 )   FreeEdge  = 5 ( 5 )   SharedEdge = 72  ( 71 )
+TOLERANCE   : MaxTol   = 0.001403080873  ( 0.004988239556 )  AvgTol   =  0.0001282768841  (  0.0006150874603 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 79  ( 79 )  N2Labels = 0  ( 0 )   TotalLabels = 80  ( 80 )   NameLabels = 1  ( 1 )   ColorLabels = 62  ( 62 )   LayerLabels = 79  ( 79 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = GREEN  ( GREEN )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 0  ( {  0} )
+
+}

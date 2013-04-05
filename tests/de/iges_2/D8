@@ -1,0 +1,25 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: COLORS : Faulty" 
+puts "TODO CR23096 Mandriva2010: Error : 3 differences with reference data found :"
+puts "TODO CR23096 Mandriva2010: NBSHAPES : Faulty"
+
+set LinuxDiff 3
+set LinuxFaulties {NBSHAPES}
+set filename USA60231.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 1 )  Warnings = 0  ( 0 )  Summary  = 0  ( 1 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 650  ( 1843 )  Summary  = 650  ( 1843 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 692  ( 692 )   Summary  = 17131  ( 17129 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 692  ( 692 )   FreeWire = 5  ( 5 )   FreeEdge  = 36 ( 36 )   SharedEdge = 7867  ( 7869 )
+TOLERANCE   : MaxTol   = 1.089725986e-005  ( 1.089659651e-005 )  AvgTol   =  1.975835146e-006  (  9.652818162e-006 )
+LABELS      : N0Labels = 693  ( 693 )  N1Labels = 10  ( 1400 )  N2Labels = 0  ( 0 )   TotalLabels = 703  ( 2093 )   NameLabels = 693  ( 1341 )   ColorLabels = 692  ( 2093 )   LayerLabels = 692  ( 2093 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 3  ( 4 )
+COLORS      : Colors   = CYAN1 WHITE YELLOW  ( CYAN1 GREEN3 WHITE YELLOW )
+NLAYERS     : NLayers  = 2  ( 2 )
+LAYERS      : Layers   = 10 3  ( 10 3 )
+
+}

@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
+
+
+set filename ims006.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 82  ( 1042 )  Summary  = 82  ( 1042 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 152  ( 152 )   Summary  = 11105  ( 11105 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 152  ( 152 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 5400  ( 5400 )
+TOLERANCE   : MaxTol   = 1.340794119e-005  (         1e-005 )  AvgTol   =  3.186484805e-006  (  9.90797456e-006 )
+LABELS      : N0Labels = 152  ( 152 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 152  ( 152 )   NameLabels = 152  ( 152 )   ColorLabels = 152  ( 152 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = WHITE  ( WHITE )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

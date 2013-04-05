@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename bm4_ug_conn_a.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 4 )  Summary  = 0  ( 4 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 3  ( 3 )  Shell    = 3  ( 3 )  Face     = 497  ( 497 )   Summary  = 3615  ( 3615 )
+STATSHAPE   : Solid    = 57  ( 57 )  Shell    = 57  ( 57 )  Face     = 1908  ( 1908 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 1468  ( 1468 )
+TOLERANCE   : MaxTol   = 1.000100003e-007  (         1e-005 )  AvgTol   =  1.000093825e-007  (  1.175359303e-007 )
+LABELS      : N0Labels = 5  ( 5 )  N1Labels = 31  ( 31 )  N2Labels = 0  ( 0 )   TotalLabels = 36  ( 36 )   NameLabels = 36  ( 36 )   ColorLabels = 3  ( 3 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 2  ( 2 )
+COLORS      : Colors   = MEDIUMSEAGREEN YELLOW  ( MEDIUMSEAGREEN YELLOW )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

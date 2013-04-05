@@ -1,0 +1,24 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
+puts "TODO CR23096 Mandriva2010: Error : 2 differences with reference data found :"
+
+set LinuxDiff 2
+
+set filename bm1_sy_exhaust.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 21  ( 12 )  Summary  = 21  ( 12 )
+CHECKSHAPE  : Wires    = 4  ( 0 )  Faces    = 3  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 3  ( 4 )  Shell    = 4  ( 4 )  Face     = 35  ( 35 )   Summary  = 293  ( 266 )
+STATSHAPE   : Solid    = 3  ( 4 )  Shell    = 4  ( 4 )  Face     = 35  ( 35 )   FreeWire = 0  ( 0 )   FreeEdge  = 24 ( 24 )   SharedEdge = 105  ( 103 )
+TOLERANCE   : MaxTol   = 6.104502198e-006  (         1e-005 )  AvgTol   =  9.526607749e-007  (  2.904829547e-006 )
+LABELS      : N0Labels = 4  ( 4 )  N1Labels = 31  ( 31 )  N2Labels = 0  ( 0 )   TotalLabels = 35  ( 35 )   NameLabels = 7  ( 7 )   ColorLabels = 0  ( 0 )   LayerLabels = 28  ( 28 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = {}  ( {} )
+
+}

@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename scenrio1.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 5  ( 25 )  Summary  = 5  ( 25 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 30  ( 30 )   Summary  = 693  ( 693 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 30  ( 30 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 316  ( 316 )
+TOLERANCE   : MaxTol   =  0.01590471793  (  0.01590471327 )  AvgTol   =  0.0001153880329  (  0.0001201847625 )
+LABELS      : N0Labels = 30  ( 30 )  N1Labels = 0  ( 12 )  N2Labels = 0  ( 0 )   TotalLabels = 30  ( 42 )   NameLabels = 30  ( 32 )   ColorLabels = 30  ( 42 )   LayerLabels = 30  ( 42 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 2  ( 2 )
+COLORS      : Colors   = GREEN RED  ( GREEN RED )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 21  ( 21 )
+
+}

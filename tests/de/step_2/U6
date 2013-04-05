@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename trj7_pm5-ts-203.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 22 )  Summary  = 0  ( 22 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 16  ( 16 )  Shell    = 16  ( 16 )  Face     = 494  ( 494 )   Summary  = 3259  ( 3259 )
+STATSHAPE   : Solid    = 26  ( 26 )  Shell    = 26  ( 26 )  Face     = 874  ( 874 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 1135  ( 1135 )
+TOLERANCE   : MaxTol   = 0.001020030728  ( 0.001020030728 )  AvgTol   =  6.898953015e-006  (  6.898953015e-006 )
+LABELS      : N0Labels = 21  ( 21 )  N1Labels = 485  ( 485 )  N2Labels = 0  ( 0 )   TotalLabels = 506  ( 506 )   NameLabels = 42  ( 42 )   ColorLabels = 476  ( 476 )   LayerLabels = 16  ( 16 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 7  ( 7 )
+COLORS      : Colors   = DEEPSKYBLUE2 DODGERBLUE2 MAGENTA1 ORANGE ORANGERED RED WHITE  ( DEEPSKYBLUE2 DODGERBLUE2 MAGENTA1 ORANGE ORANGERED RED WHITE )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 000  ( 000 )
+
+}

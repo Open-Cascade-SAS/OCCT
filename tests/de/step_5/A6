@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename r1001_ac.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 3 )  Warnings = 1882  ( 1890 )  Summary  = 1882  ( 1893 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 21  ( 21 )  Shell    = 22  ( 22 )  Face     = 2608  ( 2608 )   Summary  = 16815  ( 16739 )
+STATSHAPE   : Solid    = 49  ( 49 )  Shell    = 50  ( 50 )  Face     = 3808  ( 3808 )   FreeWire = 0  ( 0 )   FreeEdge  = 76 ( 76 )   SharedEdge = 6881  ( 6881 )
+TOLERANCE   : MaxTol   =  0.00334862762  ( 0.003348661106 )  AvgTol   =  7.78998243e-006  (  7.81141201e-006 )
+LABELS      : N0Labels = 25  ( 25 )  N1Labels = 52  ( 52 )  N2Labels = 0  ( 0 )   TotalLabels = 77  ( 77 )   NameLabels = 77  ( 77 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

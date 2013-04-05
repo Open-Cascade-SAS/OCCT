@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename trj4_pm2-ac-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 7  ( 7 )  Shell    = 7  ( 7 )  Face     = 132  ( 132 )   Summary  = 839  ( 839 )
+STATSHAPE   : Solid    = 7  ( 7 )  Shell    = 7  ( 7 )  Face     = 132  ( 132 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 328  ( 328 )
+TOLERANCE   : MaxTol   = 0.0003598691586  ( 0.0003598691585 )  AvgTol   =  3.390213597e-005  (  3.390213594e-005 )
+LABELS      : N0Labels = 8  ( 8 )  N1Labels = 7  ( 7 )  N2Labels = 0  ( 0 )   TotalLabels = 15  ( 15 )   NameLabels = 15  ( 15 )   ColorLabels = 7  ( 7 )   LayerLabels = 7  ( 7 )
+PROPS       : Centroid = 8  ( 8 )  Volume   = 8  ( 8 )  Area     = 8  ( 8 )
+NCOLORS     : NColors  = 6  ( 6 )
+COLORS      : Colors   = BLUE1 GREEN MAGENTA1 RED WHITE YELLOW  ( BLUE1 GREEN MAGENTA1 RED WHITE YELLOW )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 0  ( 0 )
+
+}

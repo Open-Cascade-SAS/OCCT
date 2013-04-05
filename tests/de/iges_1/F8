@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename UK2.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 26  ( 96 )  Summary  = 26  ( 96 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 71  ( 71 )   Summary  = 1714  ( 1714 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 71  ( 71 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 780  ( 780 )
+TOLERANCE   : MaxTol   =   0.6714388732  (   0.6714388722 )  AvgTol   =   0.03709378851  (    0.0370998158 )
+LABELS      : N0Labels = 71  ( 71 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 71  ( 71 )   NameLabels = 71  ( 71 )   ColorLabels = 0  ( 0 )   LayerLabels = 71  ( 71 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 1  ( 1 )
+
+}

@@ -1,0 +1,713 @@
+# Main script in this test grid; does all the job.
+# Individual test scripts are used only to specify data file and reference
+# test data (expected values of test execution).
+# The procedure is:
+# - load specified data file
+# - check transfer status, shape, and attributes against expected values
+# - write data to 
+
+# Set flag dump_file to 1 in order to regenerate script files with actual data
+# used as reference. In this mode all tests intentionaly report failure. 
+set dump_file 0
+########################################################################
+set mist_Second 0; set mist_w 0; set mist 0; set isIGES 0;
+############################################ DATA c  ################
+set dfal_First 0; set dwar_First 0; set dcomp_First 0
+set dfal_Second 0; set dwar_Second 0; set dcomp_Second 0
+############################################# TPSTAT c  ##############
+set fal_First 0; set war_First 0; set comp_First 0
+set fal_Second 0; set war_Second 0; set comp_Second 0
+###################################### DECAF information ##########
+set nblev0_First 0; set nblev1_First 0; set nblev2_First 0; set nblev_total_First 0; set nbshname_First 0;
+set nbshcolor_First 0; set nbshlayer_First 0;
+set nbcentroid_First 0; set nbvolume_First 0; set nbarea_First 0;
+set nbcolor_First 0; set colors_First ""; set nblayer_First 0; set layers_First "";
+set nblev0_Second 0; set nblev1_Second 0; set nblev2_Second 0; set nblev_total_Second 0; set nbshname_Second 0;
+set nbshcolor_Second 0; set nbshlayer_Second 0;
+set nbcentroid_Second 0; set nbvolume_Second 0; set nbarea_Second 0;
+set nbcolor_Second 0; set colors_Second ""; set nblayer_Second 0; set layers_Second "";
+############################################# TOLERANCE ############
+set MaxTol_First 0; set AvgTol_First 0
+set MaxTol_Second 0; set AvgTol_Second 0
+############################################# STATSHAPE ############
+set sol_First 0; set she_First 0; set fac_First 0; set fwir_First 0; set fedg_First 0; set sedg_First 0
+set sol_Second 0; set she_Second 0; set fac_Second 0; set fwir_Second 0; set fedg_Second 0; set sedg_Second 0
+############################################# NBSHAPES #############
+set fa_First 0; set sh_First 0; set so_First 0; set co_First 0; set shpp_First 0
+set fa_Second 0; set sh_Second 0; set so_Second 0; set co_Second 0; set shpp_Second 0
+###################################### CHECKSHAPE ##################
+set chwi_First 0; set chfa_First 0; set chsh_First 0; set chso_First 0
+set chwi_Second 0; set chfa_Second 0; set chsh_Second 0; set chso_Second 0
+###################################################################
+set ref_Compare 0
+set todo_msg ""
+set todo_mask "puts \"TODO CR23096 ALL: "
+set Mandriva_todo_mask "puts \"TODO CR23096 Mandriva2010:"
+set end_line "\" \n"
+##################################################################
+
+# Read original file
+if { [string length $filename] > 1} {
+    set ext [file extension $filename]
+    set ReadCommand ReadStep
+    set WriteCommand WriteStep
+    set isIGES 0
+    if { $ext == ".igs" || $ext == ".iges" }  {
+        set ReadCommand ReadIges
+        set WriteCommand WriteIges
+        set isIGES 1
+    }
+    if {[info exist ProductMode] && $ProductMode == "OFF"} {
+       set tmp [param read.step.product.mode OFF]
+    }
+    set path_file [locate_data_file $filename]
+    if { [catch { $ReadCommand D_First $path_file } catch_result] } {
+        set err_msg "Error: First - file was not read - exception "
+	puts $err_msg
+	append todo_msg $todo_mask $err_msg $end_line
+        set mist 1
+    }
+
+} else {
+  set mist 1
+}
+
+# Get information about translation
+if { $mist < 1} {           
+    puts ""
+   
+    set tps_2 [data c]
+    if { [llength $tps_2] > 0 } {
+	# Finding all strings with warnings
+	set a [regexp -all -inline {[\t ]+([-0-9.+eE]+)[\t ]+W:} $tps_2]
+	# Extracting counts of warnings
+	set b [regexp -all -inline {([-0-9.+eE]+)} $a]
+	# Calculating total number of warnings 
+	foreach i $b {set dwar_First [expr $dwar_First + $i]}
+	set dwar_First [expr $dwar_First/4]
+
+	# Finding all strings with faulties
+	set a [regexp -all -inline {[\t ]+([-0-9.+eE]+)[\t ]+F:} $tps_2]
+	# Extracting counts of faulties
+	set b [regexp -all -inline {([-0-9.+eE]+)} $a]
+	# Calculating total number of faulties 
+	foreach i $b {set dfal_First [expr $dfal_First + $i]}
+	set dfal_First [expr $dfal_First/4]
+	# Calculating total number of faulties and warnings
+	set dcomp_First [expr $dfal_First + $dwar_First]
+
+    } else {
+	puts " DATA c checking was NOT provided"
+    }
+
+    puts ""
+    set tps_1 [tpstat c]
+    set colvo [llength $tps_1]
+    if { ${colvo} > 0 } {
+    	# Finding all strings with warnings
+	set a [regexp -all -inline {[\t ]+([-0-9.+eE]+)[\t ]+W:} $tps_1]
+	# Extracting counts of warnings
+	set b [regexp -all -inline {([-0-9.+eE]+)} $a]
+	# Calculating total number of warnings 
+	foreach i $b {set war_First [expr $war_First + $i]}
+	set war_First [expr $war_First/4]
+
+	# Finding all strings with faulties
+	set a [regexp -all -inline {[\t ]+([-0-9.+eE]+)[\t ]+F:} $tps_1]
+	# Extracting counts of faulties
+	set b [regexp -all -inline {([-0-9.+eE]+)} $a]
+	# Calculating total number of faulties 
+	foreach i $b {set fal_First [expr $fal_First + $i]}
+	set fal_First [expr $fal_First/4]
+	# Calculating total number of faulties and warnings
+	set comp_First [expr $fal_First + $war_First]
+	
+
+    } else {
+	puts " TPSTAT c checking was NOT provided"
+    } 
+    
+    # Get DECAF information about (color, layers and properties)
+    puts ""
+   
+    set xst [ XStat D_First ] 
+
+    if { [llength $xst] > 0 } {
+	regexp {level +N +0 +: +([-0-9.+eE]+)} $xst full nblev0_First    
+	regexp {level +N +1 +: +([-0-9.+eE]+)} $xst full nblev1_First
+	regexp {level +N +2 +: +([-0-9.+eE]+)} $xst full nblev2_First
+	regexp {Total +number +of +labels +for +shapes +in +the +document += +([-0-9.+eE]+)} $xst full nblev_total_First
+	regexp {Number +of +labels +with +name += +([-0-9.+eE]+)} $xst full nbshname_First
+	regexp {Number +of +labels +with +color +link += +([-0-9.+eE]+)} $xst full nbshcolor_First
+	regexp {Number +of +labels +with +layer +link += +([-0-9.+eE]+)} $xst full nbshlayer_First
+	regexp {Number +of +Centroid Props += +([-0-9.+eE]+)} $xst full nbcentroid_First
+	regexp {Number +of +Volume Props += +([-0-9.+eE]+)} $xst full nbvolume_First
+	regexp {Number +of +Area Props += +([-0-9.+eE]+)} $xst full nbarea_First
+	regexp {Number +of +colors += +([-0-9.+eE]+)} $xst full nbcolor_First
+	regexp {Number +of +colors += +[-0-9.+eE]+\n([^\n]*)} $xst full colors_First
+	regexp {Number +of +layers += +([-0-9.+eE]+)} $xst full nblayer_First
+	regexp {Number +of +layers += +[-0-9.+eE]+\n([^\n]*)} $xst full layers_First
+    } else {
+	puts " DECAF information was NOT provided"
+    }
+
+    # Get shape for standard analysis
+    puts ""
+    if { [catch { XGetOneShape res_1 D_First } catch_result] } {
+       	set err_msg ""Error : First - cannot get shape from document - exception"
+	puts $err_msg
+	append todo_msg $todo_mask $err_msg $end_line
+       	set mist 1
+    }
+    if { $mist < 1 && [info exists res_1] == 0 } {
+    	set err_msg "Error : First - cannot read any relevant data from the file"
+	puts $err_msg
+	append todo_msg $todo_mask $err_msg $end_line
+	set mist 1
+    }
+
+   
+    if { $mist < 1 } {
+	# Standard analysis
+	puts ""
+
+	set tol [tolerance res_1]
+         
+	if { [llength $tol] > 0 } {
+	    regexp {Tolerance +MAX=([-0-9.+eE]+) +AVG=([-0-9.+eE]+) +MIN=[-0-9.+eE]+} $tol full MaxTol_First AvgTol_First
+	} else {
+	    puts " TOLERANCE checking was NOT provided"
+	}
+	
+	puts ""
+	
+	set tps_3 [ statshape res_1] 
+	set col [llength $tps_3]
+	if { ${col} > 0 } {
+	    regexp {([-0-9.+eE]+)\t+ +EDGE \(Free\)} $tps_3 full fedg_First
+	    regexp {([-0-9.+eE]+)\t+ +EDGE \(Shared\)} $tps_3 full sedg_First
+	    regexp {([-0-9.+eE]+)\t+ +WIRE \(Free\)} $tps_3 full fwir_First
+	    regexp {([-0-9.+eE]+)\t+ +FACE} $tps_3 full fac_First
+	    regexp {([-0-9.+eE]+)\t+ +SHELL} $tps_3 full she_First
+	    regexp {([-0-9.+eE]+)\t+ +SOLID} $tps_3 full sol_First
+	} else {
+	    puts " STATSHAPE checking was NOT provided"
+	} 
+	puts ""
+	
+
+	set nbs [ nbshapes res_1]
+	if { [llength ${nbs}] > 0 } {
+	    regexp {FACE +: +([-0-9.+eE]+)} $nbs full fa_First
+	    regexp {SHELL +: +([-0-9.+eE]+)} $nbs full sh_First
+	    regexp {SOLID +: +([-0-9.+eE]+)} $nbs full so_First
+            regexp {COMPOUND +: +([-0-9.+eE]+)} $nbs full co_First
+	    regexp {SHAPE +: +([-0-9.+eE]+)} $nbs full shpp_First
+	} else {
+	    puts " NBSHAPES checking was NOT provided"
+	} 
+	
+
+	set chbr [checkshape res_1 ff]
+	if { [llength ${chbr}] > 0 } {
+	    regexp {WIRE\t+: +([-0-9.+eE]+).+} $chbr full chwi_First
+	    regexp {FACE\t+: +([-0-9.+eE]+).+} $chbr full chfa_First
+	    regexp {SHELL\t+: +([-0-9.+eE]+).+} $chbr full chsh_First
+	    regexp {SOLID\t+: +([-0-9.+eE]+).+} $chbr full chso_First
+	} else {
+	    puts " CHECKSHAPE checking was NOT provided"
+	} 
+    }
+}
+# Writing file
+if { $mist < 1} {
+    puts " "
+    puts "-----------------------------WRITING FILE ------------------------------"
+    file delete $imagedir/${casename}_D_First$ext
+    if { [catch { $WriteCommand D_First $imagedir/${casename}_D_First$ext } catch_result] } {
+       	set err_msg "Error: First - file was not written - exception"
+	puts $err_msg
+	append todo_msg $todo_mask $err_msg $end_line
+	set mist_w 1
+    }
+    if { $mist_w < 1 } {
+	
+        if { [catch { $ReadCommand D_Second $imagedir/${casename}_D_First$ext } catch_result] } {
+	    set err_msg "Errorr: Second - file was not read - exception"
+	    puts $err_msg
+	    append todo_msg $todo_mask $err_msg $end_line
+    	    set mist_Second 1
+	}
+    }
+    catch {[file delete $imagedir/${casename}_D_First$ext]}
+    # Close the document
+   
+    if { [catch { Close D_First } catch_result] } {
+	set err_msg "Error : cannot close a document D_First - exception"
+	puts $err_msg
+	append todo_msg $todo_mask $err_msg $end_line
+	#set mist 1
+    }
+}
+
+if { $mist_w > 0 || $mist_Second > 0 } {
+    set mist 2
+}
+
+# Get information about translation
+if { $mist < 1} {           
+    puts ""
+    
+    set tps_2 [data c]
+    if { [llength $tps_2] > 0 } {
+	# Finding all strings with warnings
+	set a [regexp -all -inline {[\t ]+([-0-9.+eE]+)[\t ]+W:} $tps_2]
+	# Extracting counts of warnings
+	set b [regexp -all -inline {([-0-9.+eE]+)} $a]
+	# Calculating total number of warnings 
+	foreach i $b {set dwar_Second [expr $dwar_Second + $i]}
+	set dwar_Second [expr $dwar_Second/4]
+
+	# Finding all strings with faulties
+	set a [regexp -all -inline {[\t ]+([-0-9.+eE]+)[\t ]+F:} $tps_2]
+	# Extracting counts of faulties
+	set b [regexp -all -inline {([-0-9.+eE]+)} $a]
+	# Calculating total number of faulties 
+	foreach i $b {set dfal_Second [expr $dfal_Second + $i]}
+	set dfal_Second [expr $dfal_Second/4]
+	# Calculating total number of faulties and warnings
+	set dcomp_Second [expr $dfal_Second + $dwar_Second]
+	
+
+    } else {
+	puts " DATA c checking was NOT provided"
+    }
+
+    puts ""
+   
+    set tps_1 [tpstat c]
+    set colvo [llength $tps_1]
+    if { ${colvo} > 0 } {
+    	# Finding all strings with warnings
+	set a [regexp -all -inline {[\t ]+([-0-9.+eE]+)[\t ]+W:} $tps_1]
+	# Extracting counts of warnings
+	set b [regexp -all -inline {([-0-9.+eE]+)} $a]
+	# Calculating total number of warnings 
+	foreach i $b {set war_Second [expr $war_Second + $i]}
+	set war_Second [expr $war_Second/4]
+
+	# Finding all strings with faulties
+	set a [regexp -all -inline {[\t ]+([-0-9.+eE]+)[\t ]+F:} $tps_1]
+	# Extracting counts of faulties
+	set b [regexp -all -inline {([-0-9.+eE]+)} $a]
+	# Calculating total number of faulties 
+	foreach i $b {set fal_Second [expr $fal_Second + $i]}
+	set fal_Second [expr $fal_Second/4]
+	# Calculating total number of faulties and warnings
+	set comp_Second [expr $fal_Second + $war_Second]
+	
+
+    } else {
+	puts " TPSTAT c checking was NOT provided"
+    }
+    
+    # Get DECAF information about (color, layers and properties)
+    puts ""
+   
+    set xst [ XStat D_Second ] 
+    if { [llength $xst] > 0 } {
+	regexp {level +N +0 +: +([-0-9.+eE]+)} $xst full nblev0_Second    
+	regexp {level +N +1 +: +([-0-9.+eE]+)} $xst full nblev1_Second
+	regexp {level +N +2 +: +([-0-9.+eE]+)} $xst full nblev2_Second
+	regexp {Total +number +of +labels +for +shapes +in +the +document += +([-0-9.+eE]+)} $xst full nblev_total_Second
+	regexp {Number +of +labels +with +name += +([-0-9.+eE]+)} $xst full nbshname_Second
+	regexp {Number +of +labels +with +color +link += +([-0-9.+eE]+)} $xst full nbshcolor_Second
+	regexp {Number +of +labels +with +layer +link += +([-0-9.+eE]+)} $xst full nbshlayer_Second
+	regexp {Number +of +Centroid Props += +([-0-9.+eE]+)} $xst full nbcentroid_Second
+	regexp {Number +of +Volume Props += +([-0-9.+eE]+)} $xst full nbvolume_Second
+	regexp {Number +of +Area Props += +([-0-9.+eE]+)} $xst full nbarea_Second
+	regexp {Number +of +colors += +([-0-9.+eE]+)} $xst full nbcolor_Second
+	regexp {Number +of +colors += +[-0-9.+eE]+\n([^\n]*)} $xst full colors_Second
+	regexp {Number +of +layers += +([-0-9.+eE]+)} $xst full nblayer_Second
+	regexp {Number +of +layers += +[-0-9.+eE]+\n([^\n]*)} $xst full layers_Second
+    } else {
+	puts " DECAF information was NOT provided"
+    }
+    # Get shape for standard analysis
+    puts ""
+    if { [catch { XGetOneShape res_2 D_Second } catch_result] } {
+       	set err_msg "Error : Second - cannot get shape from document - exception"
+	puts $err_msg
+	append todo_msg $todo_mask $err_msg $end_line
+        set mist 1
+    }
+    if { $mist < 1 &&  [info exists res_2] == 0 } {
+       	set err_msg "Error : Second - cannot read any relevant data from the file"
+	puts $err_msg
+	append todo_msg $todo_mask $err_msg $end_line
+    	
+    	set mist_Second 1
+    	set mist 1
+    }
+    
+    if { $mist < 1} {  
+	# Standard analysis
+	puts ""
+
+	set tol [tolerance res_2]
+	if { [llength $tol] > 0 } {
+	    regexp {Tolerance +MAX=([-0-9.+eE]+) +AVG=([-0-9.+eE]+) +MIN=[-0-9.+eE]+} $tol full MaxTol_Second AvgTol_Second
+	} else {
+	    puts " TOLERANCE checking was NOT provided"
+	}
+	
+	puts ""
+
+	set tps_3 [ statshape res_2] 
+	set col [llength $tps_3]
+	if { ${col} > 0 } {
+	    regexp {([-0-9.+eE]+)\t+ +EDGE \(Free\)} $tps_3 full fedg_Second
+	    regexp {([-0-9.+eE]+)\t+ +EDGE \(Shared\)} $tps_3 full sedg_Second
+	    regexp {([-0-9.+eE]+)\t+ +WIRE \(Free\)} $tps_3 full fwir_Second
+	    regexp {([-0-9.+eE]+)\t+ +FACE} $tps_3 full fac_Second
+	    regexp {([-0-9.+eE]+)\t+ +SHELL} $tps_3 full she_Second
+	    regexp {([-0-9.+eE]+)\t+ +SOLID} $tps_3 full sol_Second
+	} else {
+	    puts " STATSHAPE checking was NOT provided"
+	} 
+	puts ""
+	
+
+	set nbs [ nbshapes res_2]
+	if { [llength ${nbs}] > 0 } {
+	    regexp {FACE +: +([-0-9.+eE]+)} $nbs full fa_Second
+	    regexp {SHELL +: +([-0-9.+eE]+)} $nbs full sh_Second
+	    regexp {SOLID +: +([-0-9.+eE]+)} $nbs full so_Second
+	    regexp {COMPOUND +: +([-0-9.+eE]+)} $nbs full co_Second
+	    regexp {SHAPE +: +([-0-9.+eE]+)} $nbs full shpp_Second
+	} else {
+	    puts " NBSHAPES checking was NOT provided"
+	} 
+	
+
+	set chbr [checkshape res_2 ff]
+	if { [llength ${chbr}] > 0 } {
+	    regexp {WIRE\t+: +([-0-9.+eE]+).+} $chbr full chwi_Second
+	    regexp {FACE\t+: +([-0-9.+eE]+).+} $chbr full chfa_Second
+	    regexp {SHELL\t+: +([-0-9.+eE]+).+} $chbr full chsh_Second
+	    regexp {SOLID\t+: +([-0-9.+eE]+).+} $chbr full chso_Second
+	} else {
+	    puts " CHECKSHAPE checking was NOT provided"
+	} 
+    }
+}
+
+#Collect results of loop back test
+
+if { $mist < 1 } {
+    set dat_check "DATA : OK"
+    set tpst_check "TPSTAT : OK"
+    set check_check "CHECKSHAPE : OK"
+    set nbsh_check "NBSHAPES : OK"
+    set ststh_check "STATSHAPE : OK"
+    set toler_check "TOLERANCE : OK"
+    set lbls_check "LABELS : OK"
+    set prps_check "PROPS : OK"
+    set clrs_check "COLORS : OK"
+    set lrs_check "LAYERS : OK"
+   
+    if { $dcomp_First <  $dcomp_Second ||  $dfal_First < $dfal_Second } {
+	set dat_check "DATA : Faulty"
+	append todo_msg $todo_mask $dat_check $end_line
+    }
+    if { $fal_First < $fal_Second || $war_First < $war_Second } {
+       	
+	set tpst_check "TPSTAT : Faulty"
+	append todo_msg $todo_mask $tpst_check $end_line
+    } 
+    if { $chwi_First < $chwi_Second || $chfa_First < $chfa_Second || $chsh_First < $chsh_Second || $chso_First < $chso_Second } {
+	set check_check "CHECKSHAPE : Faulty" 
+	append todo_msg $todo_mask $check_check $end_line
+    }
+    if { ($isIGES == 0 && $shpp_First > $shpp_Second) || 
+         ($isIGES == 1 && ($shpp_First - $co_First) > ($shpp_Second - $co_Second))} {
+	set nbsh_check "NBSHAPES : Faulty" 
+	append todo_msg $todo_mask $nbsh_check $end_line
+    }
+    if { $sol_First < $sol_Second || $she_First < $she_Second || $fac_First < $fac_Second || $fwir_First < $fwir_Second || $fedg_First < $fedg_Second} {
+	set ststh_check "STATSHAPE : Faulty"
+	append todo_msg $todo_mask $ststh_check $end_line
+    }
+   
+    if { ([expr 1.*($MaxTol_Second - $MaxTol_First)] > [expr 0.0001 * $MaxTol_First] && [expr 1. * abs($MaxTol_First-$MaxTol_Second)] > 0.0000001) || ($MaxTol_Second == 0 && $MaxTol_First > 0)} {
+	set toler_check "TOLERANCE : Faulty"
+	append todo_msg $todo_mask $toler_check $end_line
+    }
+    
+    if { $nblev0_First != $nblev0_Second || $nblev1_First != $nblev1_Second || $nblev2_First != $nblev2_Second || $nblev_total_First != $nblev_total_Second || $nbshname_First != $nbshname_Second || $nbshcolor_First != $nbshcolor_Second || $nbshlayer_First != $nbshlayer_Second } {
+	set lbls_check "LABELS : Faulty"
+	append todo_msg $todo_mask $lbls_check $end_line
+    }
+    if { $nbcentroid_First != $nbcentroid_Second || $nbvolume_First != $nbvolume_Second || $nbarea_First != $nbarea_Second } {
+	set prps_check "PROPS : Faulty"
+	append todo_msg $todo_mask $prps_check $end_line
+    }
+    if { $nbcolor_First != $nbcolor_Second } {
+	set clrs_check "COLORS : Faulty"
+	append todo_msg $todo_mask $clrs_check $end_line
+    }
+    if { $nblayer_First != $nblayer_Second } {
+	set lrs_check "LAYERS : Faulty"
+	append todo_msg $todo_mask $lrs_check $end_line
+    }
+}
+
+if { $mist != 1 } {  
+  puts "" 
+  set result ""
+  append result [format "DATA        : Faulties = %s  ( %s )  Warnings = %s  ( %s )  Summary  = %s  ( %s )\n" \
+	      $dfal_Second $dfal_First $dwar_Second $dwar_First $dcomp_Second $dcomp_First ] 
+  append result [format "TPSTAT      : Faulties = %s  ( %s )  Warnings = %s  ( %s )  Summary  = %s  ( %s )\n" \
+	      $fal_Second $fal_First $war_Second $war_First $comp_Second $comp_First ] 
+  append result [format "CHECKSHAPE  : Wires    = %s  ( %s )  Faces    = %s  ( %s )  Shells   = %s  ( %s )   Solids   = %s ( %s )\n" \
+	      $chwi_Second $chwi_First $chfa_Second $chfa_First $chsh_Second $chsh_First $chso_Second $chso_First ]
+  append result [format "NBSHAPES    : Solid    = %s  ( %s )  Shell    = %s  ( %s )  Face     = %s  ( %s )   Summary  = %s  ( %s )\n" \
+	      $so_Second $so_First $sh_Second $sh_First $fa_Second $fa_First $shpp_Second $shpp_First ]
+  append result [format "STATSHAPE   : Solid    = %s  ( %s )  Shell    = %s  ( %s )  Face     = %s  ( %s )   FreeWire = %s  ( %s )   FreeEdge  = %s ( %s )   SharedEdge = %s  ( %s )\n" \
+	      $sol_Second $sol_First $she_Second $she_First $fac_Second $fac_First $fwir_Second $fwir_First $fedg_Second $fedg_First $sedg_Second $sedg_First ] 
+  append result [format "TOLERANCE   : MaxTol   = %14.10g  ( %14.10g )  AvgTol   =  %14.10g  (  %14.10g )\n" \
+	      $MaxTol_Second $MaxTol_First $AvgTol_Second $AvgTol_First ]
+  append result [format "LABELS      : N0Labels = %s  ( %s )  N1Labels = %s  ( %s )  N2Labels = %s  ( %s )   TotalLabels = %s  ( %s )   NameLabels = %s  ( %s )   ColorLabels = %s  ( %s )   LayerLabels = %s  ( %s )\n" \
+	      $nblev0_Second $nblev0_First $nblev1_Second $nblev1_First $nblev2_Second $nblev2_First $nblev_total_Second $nblev_total_First $nbshname_Second $nbshname_First $nbshcolor_Second $nbshcolor_First $nbshlayer_Second $nbshlayer_First ]
+  append result [format "PROPS       : Centroid = %s  ( %s )  Volume   = %s  ( %s )  Area     = %s  ( %s )\n" \
+	      $nbcentroid_Second $nbcentroid_First $nbvolume_Second $nbvolume_First $nbarea_Second $nbarea_First ]
+  append result [format "NCOLORS     : NColors  = %s  ( %s )\n" \
+	      $nbcolor_Second $nbcolor_First ]
+  append result [format "COLORS      : Colors   = %s  ( %s )\n" \
+	      [lsort $colors_Second] [lsort $colors_First] ]
+  append result [format "NLAYERS     : NLayers  = %s  ( %s )\n" \
+	      $nblayer_Second $nblayer_First ]
+  append result [format "LAYERS      : Layers   = %s  ( %s )\n" \
+	      [lsort $layers_Second] [lsort $layers_First] ]
+}
+
+puts ""
+puts ""
+puts "########################### RESULTS ###############################"
+puts ""
+puts "========================== Loop Back test ========================="
+puts ""
+if {$mist == 1 }  {
+    set err_msg "Error : Here is reading problem"
+    puts $err_msg
+    append todo_msg $todo_mask $err_msg $end_line
+} else {
+    puts "File was read PROPERLY - OK"
+    puts ""
+    if {$mist_w > 0 }  {
+	set err_msg "Error : Here is writing problem"
+	puts $err_msg
+        append todo_msg $todo_mask $err_msg $end_line
+    } else {
+	puts "File was write PROPERLY - OK"
+	puts ""
+	if {$mist_Second > 0 } {
+	    set err_msg "Error : Here is reading problem for writing file"
+	    puts $err_msg
+            append todo_msg $todo_mask $err_msg $end_line
+        } else {
+	    puts "Writing file was read PROPERLY - OK"
+	    puts ""
+	    puts $dat_check
+	    puts $tpst_check
+	    puts $check_check
+	    puts $nbsh_check
+	    puts $ststh_check
+	    puts $toler_check
+	    puts $lbls_check
+	    puts $prps_check
+	    puts $clrs_check
+	    puts $lrs_check
+	    puts ""
+	    if { $todo_msg != "" } {
+	        puts $result
+	        puts ""
+	    }
+    	}
+    }	
+}
+
+
+set err_compare_ref ""
+
+# Put reference data to the test script file if option "dump" is set
+if { $dump_file == 1 } { 
+    set fd_stream  [open $dirname/$groupname/$gridname/$casename w] 
+    puts $fd_stream "# !!!! This file is generated automatically, do not edit manually! See end script"
+    if { $todo_msg != "" } {
+        puts  $fd_stream $todo_msg 
+        puts $fd_stream ""
+    }
+    if {[info exist LinuxFaulties] && [llength $LinuxFaulties] != 0} {
+        for {set i 0} { $i < [llength $LinuxFaulties] } { incr i } {
+            puts $fd_stream "$Mandriva_todo_mask [lindex $LinuxFaulties $i] : Faulty $end_line"
+        }
+    }
+    if {[info exist LinuxDiff] && $LinuxDiff != 0} {
+        puts $fd_stream "$Mandriva_todo_mask Error : $LinuxDiff differences with reference data found :$end_line"
+    }
+
+    if {[info exist LinuxDiff] && $LinuxDiff != 0} {
+        puts $fd_stream "set LinuxDiff $LinuxDiff"
+        set LinuxDiff 0
+    }
+    if {[info exist LinuxFaulties] && [llength $LinuxFaulties] != 0} {
+        puts $fd_stream "set LinuxFaulties \{$LinuxFaulties\}"
+        set LinuxFaulties {}
+    }
+    if {[info exist ProductMode] && $ProductMode == "OFF"} {
+       puts $fd_stream "set ProductMode OFF"
+    }
+    puts $fd_stream "set filename $filename"
+    if { $mist != 1 } {
+        puts $fd_stream "" 
+        puts $fd_stream "set ref_data \{"
+        puts $fd_stream $result
+        puts $fd_stream "\}"
+    }
+    close $fd_stream 
+} elseif { $mist != 1 } {
+    puts "========================== Comparision with reference data ========"
+    puts ""
+    # Comparision of reference data with obtained result
+    set ref_list [split $ref_data \n]
+    set cur_list [split $result \n]
+    set nb_ref [llength $ref_list]
+    set nb_cur [llength $cur_list]
+    for { set i 0 } { $i < $nb_cur } { incr i } {
+        set j [expr $i +1]
+	set refstr [lindex $ref_list $j]
+	set curstr [lindex $cur_list $i]
+        set isSplit 0;
+        set isOK 1; 
+
+        if {[regexp "DATA        :" $refstr]} {
+            set isSplit 1; 
+            set data_ref [split $refstr " "]
+            set data_cur [split $curstr " "]
+            set k_ref 1; set k_cur 1
+	    for { set k 1 } { $k <= 2 } { incr k } {
+                while {[string is integer -strict [lindex $data_ref $k_ref]] == 0} {incr k_ref}
+                while {[string is integer -strict [lindex $data_cur $k_cur]] == 0} {incr k_cur}
+                set ref_number [lindex $data_ref $k_ref]
+                set cur_number [lindex $data_cur $k_cur]
+                incr k_ref
+                incr k_cur
+                if { $cur_number > $ref_number} {
+                     set isOK 0
+                   }
+            }
+        }
+        if {[regexp "TPSTAT      :" $refstr]} {
+            set isSplit 1; 
+            set data_ref [split $refstr " "]
+            set data_cur [split $curstr " "]
+            set k_ref 1; set k_cur 1
+	    for { set k 1 } { $k <= 2 } { incr k } {
+                while {[string is integer -strict [lindex $data_ref $k_ref]] == 0} {incr k_ref}
+                while {[string is integer -strict [lindex $data_cur $k_cur]] == 0} {incr k_cur}
+                set ref_number [lindex $data_ref $k_ref]
+                set cur_number [lindex $data_cur $k_cur]
+                incr k_ref
+                incr k_cur
+                if { $cur_number > $ref_number} {
+                     set isOK 0
+                   }
+            }
+        }
+        if {[regexp "CHECKSHAPE  :" $refstr]} {
+            set isSplit 1; 
+            set data_ref [split $refstr " "]
+            set data_cur [split $curstr " "]
+            set k_ref 1; set k_cur 1
+	    for { set k 1 } { $k <= 8 } { incr k } {
+                while {[string is integer -strict [lindex $data_ref $k_ref]] == 0} {incr k_ref}
+                while {[string is integer -strict [lindex $data_cur $k_cur]] == 0} {incr k_cur}
+                set ref_number [lindex $data_ref $k_ref]
+                set cur_number [lindex $data_cur $k_cur]
+                incr k_ref
+                incr k_cur
+                if { $cur_number > $ref_number} {
+                     set isOK 0
+                   }
+            }
+        }
+
+        if {[regexp "TOLERANCE   :" $refstr]} {
+            set isSplit 1;
+            set data_ref [split $refstr " "]
+            set data_cur [split $curstr " "]
+            set k_ref 1; set k_cur 1
+	    for { set k 1 } { $k <= 4 } { incr k } {
+                while {[string is double -strict [lindex $data_ref $k_ref]] == 0} {incr k_ref}
+                while {[string is double -strict [lindex $data_cur $k_cur]] == 0} {incr k_cur}
+                set ref_number [lindex $data_ref $k_ref]
+                set cur_number [lindex $data_cur $k_cur]
+                incr k_ref
+                incr k_cur
+                if { [expr 1. * ($cur_number-$ref_number)] > 0.0001 &&
+                     [expr 1. * ($cur_number-$ref_number)] > [expr 0.01 * $ref_number]} {
+                     set isOK 0
+                   }
+            }
+        }
+
+
+        if {$isSplit == 0} {
+            if {$refstr != $curstr} {set isOK 0}
+        }
+   	 
+	if { $isOK == 0}  {
+	    incr ref_Compare
+	    append err_compare_ref " Reference data - $refstr\n"
+	    append err_compare_ref " Current data   - $curstr\n"
+	    append err_compare_ref "----------------------------------------------\n"
+	}
+    }
+}
+ 
+if { $dump_file != 0 } {
+    puts "Error : Running in regeneration mode, comparision was not performed!"
+    if { $mist != 1 } {
+      	 puts "Generation of test file $groupname/$gridname/$casename successful"
+    } else {
+      	 puts "Generation of reference data failed"
+    }
+} else {
+    if { $ref_Compare > 0} {
+        puts "Error : $ref_Compare differences with reference data found :\n$err_compare_ref"
+    } else {
+        puts "Comparision of current result with reference data - OK\n"
+    }    
+}
+
+puts "--------------------------------------------------------------------"
+puts ""
+
+clear
+smallview
+if { $mist < 1 } {
+    if { [info exists res_2] && [isdraw res_2] } {
+	donly res_2
+    }
+}
+fit
+xwd $imagedir/${test_image}.gif
+if { $mist < 1 } {
+   if { [catch { Close D_Second } catch_result] } {
+      puts "Error : cannot close a document D_Second"
+   }
+}
+set ProductMode ON
+
+puts "TEST COMPLETED"

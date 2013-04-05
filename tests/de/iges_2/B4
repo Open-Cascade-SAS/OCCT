@@ -1,0 +1,23 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: COLORS : Faulty" 
+puts "TODO CR23096 Mandriva2010: Error : 3 differences with reference data found :"
+
+set LinuxDiff 3
+set filename Case.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 267  ( 552 )  Summary  = 267  ( 552 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 208  ( 208 )   Summary  = 2995  ( 2995 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 208  ( 208 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 1276  ( 1276 )
+TOLERANCE   : MaxTol   =   0.7043468651  (   0.7043466394 )  AvgTol   =  0.006003817527  (  0.006001251728 )
+LABELS      : N0Labels = 1  ( 2 )  N1Labels = 208  ( 208 )  N2Labels = 0  ( 0 )   TotalLabels = 209  ( 210 )   NameLabels = 1  ( 2 )   ColorLabels = 208  ( 209 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 2 )
+COLORS      : Colors   = DEEPSKYBLUE1  ( DEEPSKYBLUE1 WHITE )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

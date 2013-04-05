@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename trj4_s1-tu-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 11  ( 21 )  Summary  = 11  ( 21 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 8  ( 8 )  Shell    = 8  ( 8 )  Face     = 137  ( 137 )   Summary  = 818  ( 818 )
+STATSHAPE   : Solid    = 11  ( 11 )  Shell    = 11  ( 11 )  Face     = 180  ( 180 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 314  ( 314 )
+TOLERANCE   : MaxTol   = 0.0004751822636  ( 0.0004751822636 )  AvgTol   =  8.52301535e-006  (  8.525894359e-006 )
+LABELS      : N0Labels = 13  ( 13 )  N1Labels = 14  ( 14 )  N2Labels = 0  ( 0 )   TotalLabels = 27  ( 27 )   NameLabels = 27  ( 27 )   ColorLabels = 8  ( 8 )   LayerLabels = 8  ( 8 )
+PROPS       : Centroid = 13  ( 13 )  Volume   = 13  ( 13 )  Area     = 13  ( 13 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = GREEN  ( GREEN )
+NLAYERS     : NLayers  = 8  ( 8 )
+LAYERS      : Layers   = 010 020 030 040 050 060 070 256  ( 010 020 030 040 050 060 070 256 )
+
+}

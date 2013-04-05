@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 ALL: COLORS : Faulty" 
+
+
+set filename OPEL5.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 7 )  Warnings = 10  ( 139 )  Summary  = 10  ( 146 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 28  ( 28 )   Summary  = 4089  ( 4089 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 28  ( 28 )   FreeWire = 20  ( 20 )   FreeEdge  = 1183 ( 1183 )   SharedEdge = 1433  ( 1433 )
+TOLERANCE   : MaxTol   =  0.09192532719  (  0.09192532719 )  AvgTol   =  0.0005521202206  (  0.0005525790618 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 1153  ( 1298 )  N2Labels = 0  ( 0 )   TotalLabels = 1154  ( 1299 )   NameLabels = 1154  ( 1195 )   ColorLabels = 1153  ( 1298 )   LayerLabels = 1153  ( 1298 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 5  ( 6 )
+COLORS      : Colors   = BLUE1 CYAN1 GOLDENROD2 GREEN YELLOW  ( BLUE1 CYAN1 GOLDENROD2 GREEN RED YELLOW )
+NLAYERS     : NLayers  = 5  ( 5 )
+LAYERS      : Layers   = 14 3 4 5 7  ( 14 3 4 5 7 )
+
+}

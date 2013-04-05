@@ -1,0 +1,24 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 Mandriva2010: Error : 3 differences with reference data found :"
+
+set LinuxDiff 3
+set filename r76sy.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 1  ( 4 )  Warnings = 68  ( 104 )  Summary  = 69  ( 108 )
+CHECKSHAPE  : Wires    = 2  ( 0 )  Faces    = 2  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 23  ( 23 )  Shell    = 46  ( 47 )  Face     = 193  ( 194 )   Summary  = 1329  ( 1357 )
+STATSHAPE   : Solid    = 23  ( 23 )  Shell    = 46  ( 47 )  Face     = 193  ( 194 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 494  ( 504 )
+TOLERANCE   : MaxTol   =   0.0205434719  (   0.0293421419 )  AvgTol   =  0.0005051457413  (   0.00101833544 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 67  ( 67 )  N2Labels = 0  ( 0 )   TotalLabels = 70  ( 70 )   NameLabels = 5  ( 5 )   ColorLabels = 46  ( 45 )   LayerLabels = 42  ( 45 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 2  ( 2 )
+COLORS      : Colors   = GREEN ROYALBLUE  ( GREEN ROYALBLUE )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = X  ( X )
+
+}

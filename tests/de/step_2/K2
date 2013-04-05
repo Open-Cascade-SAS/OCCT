@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename bm4_id_seal_a.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 38  ( 38 )  Summary  = 38  ( 38 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 3  ( 3 )  Face     = 48  ( 48 )   Summary  = 244  ( 244 )
+STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 3  ( 3 )  Face     = 48  ( 48 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 86  ( 86 )
+TOLERANCE   : MaxTol   =         1e-007  (         1e-007 )  AvgTol   =          1e-007  (          1e-007 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 44  ( 44 )  N2Labels = 0  ( 0 )   TotalLabels = 45  ( 45 )   NameLabels = 1  ( 1 )   ColorLabels = 45  ( 45 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 3  ( 3 )
+COLORS      : Colors   = DODGERBLUE2 RED YELLOW  ( DODGERBLUE2 RED YELLOW )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

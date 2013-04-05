@@ -1,0 +1,23 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename CATIA01.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 480 )  Warnings = 328  ( 4630 )  Summary  = 328  ( 5110 )
+CHECKSHAPE  : Wires    = 1  ( 0 )  Faces    = 1  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 732  ( 732 )   Summary  = 60875  ( 60888 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 732  ( 732 )   FreeWire = 1612  ( 1613 )   FreeEdge  = 16359 ( 16359 )   SharedEdge = 22931  ( 22935 )
+TOLERANCE   : MaxTol   =   0.6032674714  (     20.1302013 )  AvgTol   =  0.001486791291  (  0.007274283982 )
+LABELS      : N0Labels = 4  ( 4 )  N1Labels = 11017  ( 17451 )  N2Labels = 0  ( 0 )   TotalLabels = 11021  ( 17455 )   NameLabels = 10620  ( 12665 )   ColorLabels = 11018  ( 17452 )   LayerLabels = 10917  ( 17301 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 17  ( 17 )
+COLORS      : Colors   = BLUE1 CYAN1 DARKGOLDENROD1 DARKSLATEGRAY1 GREEN GREEN4 LIGHTPINK1 MAGENTA1 MEDIUMPURPLE1 MEDIUMSPRINGGREEN PURPLE RED RED3 ROYALBLUE2 SEAGREEN2 WHITE YELLOW  ( BLUE1 CYAN1 DARKGOLDENROD1 DARKSLATEGRAY1 GREEN GREEN4 LIGHTPINK1 MAGENTA1 MEDIUMPURPLE1 MEDIUMSPRINGGREEN PURPLE RED RED3 ROYALBLUE2 SEAGREEN2 WHITE YELLOW )
+NLAYERS     : NLayers  = 16  ( 16 )
+LAYERS      : Layers   = 1 101 102 104 106 107 108 152 154 156 158 2 240 255 6 7  ( 1 101 102 104 106 107 108 152 154 156 158 2 240 255 6 7 )
+
+}

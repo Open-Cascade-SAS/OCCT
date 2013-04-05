@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename PRO10372.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 3  ( 3 )  Summary  = 3  ( 3 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 4  ( 4 )  Shell    = 4  ( 4 )  Face     = 10  ( 10 )   Summary  = 62  ( 62 )
+STATSHAPE   : Solid    = 4  ( 4 )  Shell    = 4  ( 4 )  Face     = 10  ( 10 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 20  ( 20 )
+TOLERANCE   : MaxTol   =         1e-007  (         1e-007 )  AvgTol   =          1e-007  (          1e-007 )
+LABELS      : N0Labels = 5  ( 5 )  N1Labels = 18  ( 19 )  N2Labels = 0  ( 0 )   TotalLabels = 23  ( 24 )   NameLabels = 9  ( 9 )   ColorLabels = 18  ( 19 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 4  ( 4 )
+COLORS      : Colors   = BLUE1 GREEN RED YELLOW  ( BLUE1 GREEN RED YELLOW )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

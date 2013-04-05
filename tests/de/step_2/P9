@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename r_47-sd.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 10  ( 10 )  Shell    = 10  ( 10 )  Face     = 696  ( 696 )   Summary  = 4505  ( 4505 )
+STATSHAPE   : Solid    = 10  ( 10 )  Shell    = 10  ( 10 )  Face     = 696  ( 696 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 1819  ( 1819 )
+TOLERANCE   : MaxTol   = 3.748730253e-007  ( 3.749497799e-007 )  AvgTol   =  1.004579305e-007  (  1.004580612e-007 )
+LABELS      : N0Labels = 13  ( 13 )  N1Labels = 14  ( 14 )  N2Labels = 0  ( 0 )   TotalLabels = 27  ( 27 )   NameLabels = 25  ( 25 )   ColorLabels = 12  ( 12 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 8  ( 8 )
+COLORS      : Colors   = BLUEVIOLET CHARTREUSE3 GOLD3 RED RED2 SEAGREEN1 WHITE YELLOW  ( BLUEVIOLET CHARTREUSE3 GOLD3 RED RED2 SEAGREEN1 WHITE YELLOW )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

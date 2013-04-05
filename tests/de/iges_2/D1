@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+set filename support_rampe.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 4  ( 2 )  Warnings = 5  ( 171 )  Summary  = 9  ( 173 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 169  ( 169 )   Summary  = 5348  ( 5348 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 169  ( 169 )   FreeWire = 49  ( 49 )   FreeEdge  = 945 ( 945 )   SharedEdge = 2041  ( 2041 )
+TOLERANCE   : MaxTol   =   0.1765497108  (   0.1765497101 )  AvgTol   =  0.0004156673869  (  0.0004156040142 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 981  ( 2195 )  N2Labels = 0  ( 0 )   TotalLabels = 982  ( 2196 )   NameLabels = 982  ( 1142 )   ColorLabels = 981  ( 2195 )   LayerLabels = 981  ( 2195 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 6  ( 6 )
+COLORS      : Colors   = BLUE1 CYAN1 GREEN MAGENTA1 WHITE YELLOW  ( BLUE1 CYAN1 GREEN MAGENTA1 WHITE YELLOW )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 200  ( 200 )
+
+}

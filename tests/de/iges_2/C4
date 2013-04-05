@@ -1,0 +1,24 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 Mandriva2010: Error : 1 differences with reference data found :"
+
+set LinuxDiff 1
+set filename PRO14323.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 29  ( 233 )  Summary  = 29  ( 233 )
+CHECKSHAPE  : Wires    = 1  ( 1 )  Faces    = 1  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 153  ( 153 )   Summary  = 3505  ( 3508 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 153  ( 153 )   FreeWire = 21  ( 21 )   FreeEdge  = 435 ( 435 )   SharedEdge = 1385  ( 1387 )
+TOLERANCE   : MaxTol   =   0.9672552763  (   0.7767538966 )  AvgTol   =   0.01279554984  (   0.01322061361 )
+LABELS      : N0Labels = 564  ( 564 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 564  ( 564 )   NameLabels = 564  ( 564 )   ColorLabels = 543  ( 564 )   LayerLabels = 543  ( 564 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 2  ( 2 )
+COLORS      : Colors   = CYAN1 GRAY57  ( CYAN1 GRAY57 )
+NLAYERS     : NLayers  = 2  ( 2 )
+LAYERS      : Layers   = 1 25  ( 1 25 )
+
+}

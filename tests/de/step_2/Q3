@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename rp1sd.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 5  ( 5 )  Shell    = 5  ( 5 )  Face     = 153  ( 153 )   Summary  = 890  ( 890 )
+STATSHAPE   : Solid    = 9  ( 9 )  Shell    = 9  ( 9 )  Face     = 300  ( 300 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 353  ( 353 )
+TOLERANCE   : MaxTol   = 5.891184164e-007  ( 5.884665384e-007 )  AvgTol   =  1.983626303e-007  (  1.982839941e-007 )
+LABELS      : N0Labels = 7  ( 7 )  N1Labels = 7  ( 7 )  N2Labels = 0  ( 0 )   TotalLabels = 14  ( 14 )   NameLabels = 14  ( 14 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

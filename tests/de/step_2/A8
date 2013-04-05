@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
+
+
+set filename CTS18541.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 22  ( 0 )  Summary  = 22  ( 0 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 331  ( 6 )  Face     = 331  ( 331 )   Summary  = 4133  ( 3684 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 331  ( 6 )  Face     = 331  ( 331 )   FreeWire = 0  ( 0 )   FreeEdge  = 123 ( 123 )   SharedEdge = 1459  ( 1459 )
+TOLERANCE   : MaxTol   =  0.04894014846  (  0.04894014846 )  AvgTol   =  0.0001169607933  (  0.0001689666831 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 2  ( 2 )  N2Labels = 0  ( 0 )   TotalLabels = 5  ( 5 )   NameLabels = 5  ( 5 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 0  ( 0 )
+COLORS      : Colors   =   (  )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

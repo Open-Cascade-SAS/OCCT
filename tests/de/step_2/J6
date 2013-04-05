@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename bm4_ct_conn.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 33 )  Summary  = 0  ( 33 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 3  ( 3 )  Shell    = 3  ( 3 )  Face     = 504  ( 504 )   Summary  = 4626  ( 4420 )
+STATSHAPE   : Solid    = 57  ( 57 )  Shell    = 57  ( 57 )  Face     = 2022  ( 2022 )   FreeWire = 0  ( 0 )   FreeEdge  = 412 ( 412 )   SharedEdge = 1762  ( 1762 )
+TOLERANCE   : MaxTol   = 1.000100003e-007  ( 1.000100003e-007 )  AvgTol   =  1.000090691e-007  (  1.000090691e-007 )
+LABELS      : N0Labels = 7  ( 7 )  N1Labels = 239  ( 239 )  N2Labels = 0  ( 0 )   TotalLabels = 246  ( 246 )   NameLabels = 40  ( 40 )   ColorLabels = 209  ( 209 )   LayerLabels = 209  ( 209 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 4  ( 4 )
+COLORS      : Colors   = BLUE1 CYAN1 RED YELLOW  ( BLUE1 CYAN1 RED YELLOW )
+NLAYERS     : NLayers  = 4  ( 4 )
+LAYERS      : Layers   = 0 1 10 5  ( 0 1 10 5 )
+
+}

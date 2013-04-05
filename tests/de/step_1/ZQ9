@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename trj2_io1-ct-203.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 29  ( 29 )   Summary  = 193  ( 193 )
+STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 29  ( 29 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 70  ( 70 )
+TOLERANCE   : MaxTol   = 0.0007775016544  ( 0.0007775016545 )  AvgTol   =  6.182586659e-005  (  6.182586649e-005 )
+LABELS      : N0Labels = 1  ( 1 )  N1Labels = 26  ( 26 )  N2Labels = 0  ( 0 )   TotalLabels = 27  ( 27 )   NameLabels = 1  ( 1 )   ColorLabels = 27  ( 27 )   LayerLabels = 1  ( 1 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 3  ( 3 )
+COLORS      : Colors   = BLUE1 RED YELLOW  ( BLUE1 RED YELLOW )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 0  ( 0 )
+
+}

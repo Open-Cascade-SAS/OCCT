@@ -1,0 +1,23 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename PRO8843.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 3  ( 0 )  Warnings = 10  ( 32 )  Summary  = 13  ( 32 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 25  ( 25 )  Shell    = 42  ( 45 )  Face     = 195  ( 198 )   Summary  = 1276  ( 1343 )
+STATSHAPE   : Solid    = 25  ( 25 )  Shell    = 42  ( 45 )  Face     = 195  ( 198 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 467  ( 496 )
+TOLERANCE   : MaxTol   =  0.01438603118  (   0.0293421074 )  AvgTol   =  0.0002702515297  (  0.001025315229 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 61  ( 67 )  N2Labels = 0  ( 0 )   TotalLabels = 64  ( 70 )   NameLabels = 5  ( 5 )   ColorLabels = 42  ( 45 )   LayerLabels = 42  ( 45 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 2  ( 2 )
+COLORS      : Colors   = GREEN ROYALBLUE  ( GREEN ROYALBLUE )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = X  ( X )
+
+}

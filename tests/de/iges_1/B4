@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 Mandriva2010: Error : 1 differences with reference data found :"
+
+set LinuxDiff 1
+set filename t500core.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 169  ( 429 )  Summary  = 169  ( 429 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 674  ( 674 )   Summary  = 9625  ( 9625 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 674  ( 674 )   FreeWire = 0  ( 0 )   FreeEdge  = 28 ( 28 )   SharedEdge = 4104  ( 4104 )
+TOLERANCE   : MaxTol   =   0.9813254857  (     320.715769 )  AvgTol   =  0.002671919158  (   0.06743198887 )
+LABELS      : N0Labels = 702  ( 702 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 702  ( 702 )   NameLabels = 702  ( 702 )   ColorLabels = 16  ( 16 )   LayerLabels = 702  ( 702 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = WHITE  ( WHITE )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 115  ( 115 )
+
+}

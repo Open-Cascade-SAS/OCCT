@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename trj6_k1-sd-214.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 2  ( 2 )  Face     = 57  ( 57 )   Summary  = 363  ( 363 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 2  ( 2 )  Face     = 57  ( 57 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 147  ( 147 )
+TOLERANCE   : MaxTol   = 4.531032216e-007  ( 4.53103015e-007 )  AvgTol   =  1.197112472e-007  (  1.197112451e-007 )
+LABELS      : N0Labels = 4  ( 4 )  N1Labels = 3  ( 3 )  N2Labels = 0  ( 0 )   TotalLabels = 7  ( 7 )   NameLabels = 7  ( 7 )   ColorLabels = 2  ( 2 )   LayerLabels = 0  ( 0 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = MEDIUMTURQUOISE  ( MEDIUMTURQUOISE )
+NLAYERS     : NLayers  = 0  ( 0 )
+LAYERS      : Layers   =   (  )
+
+}

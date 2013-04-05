@@ -1,0 +1,18 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+set filename USA60337.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 7  ( 157 )  Summary  = 7  ( 157 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 52  ( 52 )   Summary  = 851  ( 851 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 52  ( 52 )   FreeWire = 0  ( 0 )   FreeEdge  = 3 ( 3 )   SharedEdge = 372  ( 372 )
+TOLERANCE   : MaxTol   =   0.2057401816  (    0.205740183 )  AvgTol   =  0.001181147318  (  0.001181149489 )
+LABELS      : N0Labels = 55  ( 55 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 55  ( 55 )   NameLabels = 55  ( 55 )   ColorLabels = 53  ( 53 )   LayerLabels = 55  ( 55 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 2  ( 2 )
+COLORS      : Colors   = CYAN1 MAGENTA1  ( CYAN1 MAGENTA1 )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 6  ( 6 )
+
+}

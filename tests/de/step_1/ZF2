@@ -1,0 +1,21 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
+set filename ct_as1-A.stp
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 14 )  Summary  = 0  ( 14 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 5  ( 5 )  Shell    = 5  ( 5 )  Face     = 53  ( 53 )   Summary  = 366  ( 366 )
+STATSHAPE   : Solid    = 12  ( 12 )  Shell    = 12  ( 12 )  Face     = 112  ( 112 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 126  ( 126 )
+TOLERANCE   : MaxTol   = 1.000100003e-007  ( 1.000100003e-007 )  AvgTol   =  1.000055896e-007  (  1.000055896e-007 )
+LABELS      : N0Labels = 7  ( 7 )  N1Labels = 13  ( 28 )  N2Labels = 0  ( 0 )   TotalLabels = 20  ( 35 )   NameLabels = 20  ( 20 )   ColorLabels = 5  ( 5 )   LayerLabels = 5  ( 20 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = VIOLET  ( VIOLET )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 1  ( 1 )
+
+}

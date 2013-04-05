@@ -1,0 +1,22 @@
+# !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+puts "TODO CR23096 Mandriva2010: Error : 1 differences with reference data found :"
+
+set LinuxDiff 1
+set filename CTS18546-1.igs
+
+set ref_data {
+DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 292  ( 1100 )  Summary  = 292  ( 1100 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 900  ( 900 )   Summary  = 18228  ( 18221 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 900  ( 900 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 8220  ( 8213 )
+TOLERANCE   : MaxTol   = 0.004034169186  ( 0.004034577888 )  AvgTol   =  7.892309606e-006  (  1.210857047e-005 )
+LABELS      : N0Labels = 900  ( 900 )  N1Labels = 0  ( 929 )  N2Labels = 0  ( 0 )   TotalLabels = 900  ( 1829 )   NameLabels = 900  ( 900 )   ColorLabels = 900  ( 1829 )   LayerLabels = 900  ( 1829 )
+PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
+NCOLORS     : NColors  = 1  ( 1 )
+COLORS      : Colors   = YELLOW  ( YELLOW )
+NLAYERS     : NLayers  = 1  ( 1 )
+LAYERS      : Layers   = 1  ( 1 )
+
+}
