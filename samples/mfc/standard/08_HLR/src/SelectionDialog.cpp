@@ -32,7 +32,7 @@ CSelectionDialog::CSelectionDialog(CHLRDoc* aDoc,CWnd* pParent /*=NULL*/)
   m_DisplayMode = 0;
   m_NbIsos      = 2;
   m_DrawHiddenLine = TRUE;
-  m_DegeneratedModeOn = TRUE;
+  m_HlrModeIsOn = TRUE;
   //}}AFX_DATA_INIT
 }
 
@@ -44,7 +44,7 @@ void CSelectionDialog::DoDataExchange(CDataExchange* pDX)
   DDX_Radio(pDX, IDC_DisplayDefault, m_DisplayMode);
   DDX_Text(pDX, IDC_EDIT_NBIsos, m_NbIsos);
   DDX_Check(pDX, IDC_DrawHiddenLine, m_DrawHiddenLine);
-  DDX_Check(pDX, IDC_DegeneratedMode, m_DegeneratedModeOn);
+  DDX_Check(pDX, IDC_HlrModeIsOn, m_HlrModeIsOn);
   //}}AFX_DATA_MAP
 }
 
@@ -80,7 +80,7 @@ BEGIN_MESSAGE_MAP(CSelectionDialog, CDialog)
   ON_WM_RBUTTONUP()
   ON_WM_MOUSEMOVE()
   ON_BN_CLICKED(IDC_DrawHiddenLine, OnDrawHiddenLine)
-  ON_BN_CLICKED(IDC_DegeneratedMode, OnDegeneratedMode)
+  ON_BN_CLICKED(IDC_HlrModeIsOn, OnHlrMode)
   ON_WM_DRAWITEM()
   ON_WM_PAINT()
   //}}AFX_MSG_MAP
