@@ -70,8 +70,9 @@ static Standard_Boolean Affich = 0;
 
 BRepFill_Pipe::BRepFill_Pipe()
 {
-  myDegmax = 10;
+  myDegmax = 11;
   mySegmax = 100;
+  myContinuity = GeomAbs_C2;
   myMode = GeomFill_IsCorrectedFrenet;
   myForceApproxC1 = Standard_False;
 }
@@ -84,42 +85,26 @@ BRepFill_Pipe::BRepFill_Pipe()
 
 BRepFill_Pipe::BRepFill_Pipe(const TopoDS_Wire&  Spine,
 			     const TopoDS_Shape& Profile,
+                             const GeomFill_Trihedron aMode,
+                             const Standard_Boolean ForceApproxC1,
 			     const Standard_Boolean KPart)
+                             
 {
-  myDegmax = 10;
+  myDegmax = 11;
   mySegmax = 100;
+  
   myMode = GeomFill_IsCorrectedFrenet;
-  myForceApproxC1 = Standard_False;
-  Perform(Spine, Profile, KPart);
-}
-
-//=======================================================================
-//function : SetMode
-//purpose  : Set the mode of sweeping
-//           It can be:
-//           - Frenet
-//           - Corrected Frenet
-//           - Discrete Trihedron
-//=======================================================================
-
-void BRepFill_Pipe::SetMode(const GeomFill_Trihedron aMode)
-{
   if (aMode == GeomFill_IsFrenet ||
       aMode == GeomFill_IsCorrectedFrenet ||
       aMode == GeomFill_IsDiscreteTrihedron)
     myMode = aMode;
-}
 
-//=======================================================================
-//function : SetForceApproxC1
-//purpose  : Set the flag that indicates attempt to approximate
-//           a C1-continuous surface if a swept surface proved
-//           to be C0.
-//=======================================================================
-
-void BRepFill_Pipe::SetForceApproxC1(const Standard_Boolean ForceApproxC1)
-{
+  myContinuity = GeomAbs_C2;
+  if (myMode == GeomFill_IsDiscreteTrihedron)
+    myContinuity = GeomAbs_C0;
+  
   myForceApproxC1 = ForceApproxC1;
+  Perform(Spine, Profile, KPart);
 }
 
 
@@ -411,7 +396,7 @@ TopoDS_Wire BRepFill_Pipe::PipeLine(const gp_Pnt& Point) const
  // Sweeping
  BRepFill_Sweep MkSw(Section, myLoc, Standard_True);
  MkSw.SetForceApproxC1(myForceApproxC1);
- MkSw.Build( BRepFill_Modified, GeomAbs_C2, GeomFill_Location, myDegmax, mySegmax );
+ MkSw.Build( BRepFill_Modified, myContinuity, GeomFill_Location, myDegmax, mySegmax );
  TopoDS_Shape aLocalShape = MkSw.Shape();
  return TopoDS::Wire(aLocalShape);
 // return TopoDS::Wire(MkSw.Shape());
@@ -537,7 +522,7 @@ TopoDS_Shape BRepFill_Pipe::MakeShape(const TopoDS_Shape& S,
 	new (BRepFill_ShapeLaw) (TopoDS::Vertex(TheS));
       BRepFill_Sweep MkSw(Section, myLoc, Standard_True);
       MkSw.SetForceApproxC1(myForceApproxC1);
-      MkSw.Build( BRepFill_Modified, GeomAbs_C2, GeomFill_Location, myDegmax, mySegmax );
+      MkSw.Build( BRepFill_Modified, myContinuity, GeomFill_Location, myDegmax, mySegmax );
       result = MkSw.Shape();
     }
 
@@ -548,7 +533,7 @@ TopoDS_Shape BRepFill_Pipe::MakeShape(const TopoDS_Shape& S,
       MkSw.SetBounds(TopoDS::Wire(TheFirst), 
 		     TopoDS::Wire(TheLast));
       MkSw.SetForceApproxC1(myForceApproxC1);
-      MkSw.Build( BRepFill_Modified, GeomAbs_C2, GeomFill_Location, myDegmax, mySegmax );
+      MkSw.Build( BRepFill_Modified, myContinuity, GeomFill_Location, myDegmax, mySegmax );
       result = MkSw.Shape();
 
       // Labeling of elements

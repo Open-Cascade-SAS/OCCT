@@ -69,7 +69,7 @@ static TopAbs_Orientation Orientation(const TopoDS_Shape&,
 
 LocOpe_Pipe::LocOpe_Pipe(const TopoDS_Wire& Spine,
 			 const TopoDS_Shape& Profile) : 
-	   myPipe(Spine,Profile,Standard_False)
+	   myPipe(Spine,Profile)
 {
 
   TopoDS_Shape Result = myPipe.Shape();

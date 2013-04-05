@@ -282,7 +282,7 @@ static Handle(Geom2d_Curve) Couture(const TopoDS_Edge& E,
 
 static Standard_Boolean CheckSameParameter 
 (const Handle(Adaptor3d_HCurve)&   C3d,
- Handle(Geom2d_Curve)&           Pcurv,
+ const Handle(Geom2d_Curve)&           Pcurv,
  const Handle(Adaptor3d_HSurface)& S,
  const Standard_Real             tol3d,
  Standard_Real&                  tolreached)
@@ -1457,6 +1457,15 @@ static TopoDS_Edge BuildEdge(const Handle(Geom_Surface)& S,
   if (sing) B.Range(E, S, Loc, 
 		    Iso->FirstParameter(), 
 		    Iso->LastParameter());
+
+  Standard_Real MaxTol = 1.e-4;
+  Standard_Real theTol;
+  GeomAdaptor_Curve GAiso(Iso);
+  Handle(GeomAdaptor_HCurve) GAHiso = new GeomAdaptor_HCurve(GAiso);
+  GeomAdaptor_Surface GAsurf(S);
+  Handle(GeomAdaptor_HSurface) GAHsurf = new GeomAdaptor_HSurface(GAsurf);
+  CheckSameParameter( GAHiso, L, GAHsurf, MaxTol, theTol);
+  B.UpdateEdge(E, theTol);
 
   return E;
 }

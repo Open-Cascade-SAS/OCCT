@@ -133,23 +133,51 @@ static Standard_Integer revol(Draw_Interpretor& ,
 // pipe
 //=======================================================================
 
-static Standard_Integer pipe(Draw_Interpretor& ,
+static Standard_Integer pipe(Draw_Interpretor& di,
 			     Standard_Integer n, const char** a)
 {
-  if ( n < 4) return 1;
+  if (n == 1)
+  {
+    di << "pipe result Wire_spine Profile [Mode [Approx]]" << "\n";
+    di << "Mode = 0 - CorrectedFrenet," << "\n";
+    di << "     = 1 - Frenet," << "\n";
+    di << "     = 2 - DiscreteTrihedron" << "\n";
+    di << "Approx - force C1-approximation if result is C0" << "\n";
+    return 0;
+  }
+  
+  if (n > 1 && n < 4) return 1;
 
   TopoDS_Shape Spine = DBRep::Get(a[2],TopAbs_WIRE);
   if ( Spine.IsNull()) return 1;
 
   TopoDS_Shape Profile = DBRep::Get(a[3]);
   if ( Profile.IsNull()) return 1;
+
+  GeomFill_Trihedron Mode = GeomFill_IsCorrectedFrenet;
+  if (n >= 5)
+  {
+    Standard_Integer iMode = atoi(a[4]);
+    if (iMode == 1)
+      Mode = GeomFill_IsFrenet;
+    else if (iMode == 2)
+      Mode = GeomFill_IsDiscreteTrihedron;
+  }
+
+  Standard_Boolean ForceApproxC1 = Standard_False;
+  if (n >= 6)
+    ForceApproxC1 = Standard_True;
   
-  TopoDS_Shape S = BRepOffsetAPI_MakePipe(TopoDS::Wire(Spine),Profile);
+  TopoDS_Shape S = BRepOffsetAPI_MakePipe(TopoDS::Wire(Spine),
+                                          Profile,
+                                          Mode,
+                                          ForceApproxC1);
 
   DBRep::Set(a[1],S);
   
   return 0;
 }
+
 //=======================================================================
 
 static Standard_Integer geompipe(Draw_Interpretor& ,
@@ -827,7 +855,7 @@ void  BRepTest::SweepCommands(Draw_Interpretor& theCommands)
 		  __FILE__,revol,g);
   
   theCommands.Add("pipe",
-		  "pipe result Wire_spine Profile",
+		  "pipe result Wire_spine Profile [Mode [Approx]], no args to get help",
 		  __FILE__,pipe,g);
   
   theCommands.Add("evolved",
