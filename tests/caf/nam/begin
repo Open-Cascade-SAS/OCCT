@@ -1,0 +1,110 @@
+# File : begin
+if { [array get Draw_Groups "TOPOLOGY Check commands"] == "" } {
+    pload TOPTEST
+    pload VISUALIZATION
+}
+pload XDE
+pload QAcommands
+
+if { [info exists imagedir] == 0 } {
+   set imagedir .
+}
+if { [info exists test_image] == 0 } {
+   set test_image photo
+}
+
+set scriptdir [file dirname [info script]]
+
+set mistake 0
+
+#################### procedure GetDigit returns digit (cutted) from string ####################
+proc GetDigit {s} {
+  set res ""
+  for {set a 0} {$a < [string length $s]} {incr a} {
+    if {[string index $s $a]>="0" && [string index $s $a]<="9"} {
+        set res [set res][string index $s $a]
+    } else {
+      if {[string index $s $a]=="e" || [string index $s $a]=="-"} {
+        set res [set res][string index $s $a]
+      } else {return $res}
+    } else {return $res}
+  }
+  return $res
+}
+
+#################### procedure ShapeCenter returns (three coords string) center of given shape
+proc ShapeCenter {s} {
+puts $s
+  global $s
+  return [CenterOfShape $s]
+#  set ss [explode $s V]
+#  if {[llength $ss] == 0} {set ss $s}
+#  set x 0
+#  set y 0
+#  set z 0
+#  for {set a 0} {[lindex $ss $a] != ""} {incr a} {
+#    set dmp [dump [lindex $ss $a]]
+#    set fromindex [lsearch $dmp Elementary]
+#    if {$fromindex != -1} {
+#      set x [expr $x+[GetDigit [lindex $dmp [expr $fromindex+6]]]]
+#      set y [expr $y+[GetDigit [lindex $dmp [expr $fromindex+12]]]]
+#      set z [expr $z+[GetDigit [lindex $dmp [expr $fromindex+18]]]]
+#    }
+#    set fromindex [lsearch $dmp "3D"]
+#    set x [expr $x+[GetDigit [lindex $dmp [expr $fromindex+2]]]]
+#    set y [expr $y+[GetDigit [lindex $dmp [expr $fromindex+3]]]]
+#    set z [expr $z+[GetDigit [lindex $dmp [expr $fromindex+4]]]]
+#  }
+#  set x [expr $x/[llength $ss]]
+#  set y [expr $y/[llength $ss]]
+#  set z [expr $z/[llength $ss]]
+#  return "$x $y $z"
+}
+
+#################### procedure IsSame returns true, if given shapes has same TShapes ####################
+proc IsSame {s1 s2} {
+  global $s1 $s2
+puts "$s1 $s2"
+  if {[IsSameShapes $s1 $s2] == 1} {return 1}
+  return 0
+#
+#  set d1 [dump $s1]
+#  set d2 [dump $s1]
+#  if {[llength $d1]<10 || [llength $d2]<10} {
+#	return 0
+#  }
+#
+#  if {[lindex [dump $s1] 28] == [lindex [dump $s2] 28]} {
+#    if {[lindex [dump $s1] 29] == [lindex [dump $s2] 29]} {return 1}
+#  }
+#  return 0
+}
+
+#################### procedure NextLabel set lab as next label of lab at this level ####################
+proc NextLabel {lab} {
+  upvar 1 $lab l
+  set i [string last ":" "[set l]"]
+  if {$i == -1} {set l [expr [set l]+1]} else {
+    set l [string range [set l] 0 $i][expr 1+[string range [set l] [expr $i+1] [string length [set l]]]]
+  }
+}
+
+#################### checking the naming at myLab label ( tests at myNameLab label ) ####################
+#################### show errors, increments working labels                          ####################
+proc Checking {Name} {
+  global D IsDone TestError
+  upvar 1 myLab l1 myNameLab l2
+
+  set bad ""
+  if {[catch {set bad [CheckNaming D $l2 1 Label $l1 1 1 1]}]} {
+	set IsDone 0
+	set TestError "$TestError # $Name naming failed at label $l2 with exception"
+  } else {
+    if {[llength $bad] > 0} {
+	set IsDone 0
+  	set TestError "$TestError # $Name naming failed at label $l2 sublabels $bad"
+    }
+  }
+  NextLabel l1
+  NextLabel l2
+}

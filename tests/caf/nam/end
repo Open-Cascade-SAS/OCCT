@@ -1,0 +1,18 @@
+puts " "
+puts "----------------------------------------------------------------------------------------------------------------------------------"
+puts " "
+if {$IsDone == 0 } { 
+	puts "Test errors:"
+        set err ""
+        for {set i 1} {[lindex $TestError $i]!=""} {incr i} {
+          if {[lindex $TestError $i] == "#"} {
+	    puts $err
+	    set err ""
+          } else {set err "$err [lindex $TestError $i]"}
+        }
+        puts $err
+	puts "ERROR OCCURS DURING TEST - FAULTY"
+} else { puts "TEST COMPLETED"}
+
+# puts "TEST COMPLETED"
+#exit

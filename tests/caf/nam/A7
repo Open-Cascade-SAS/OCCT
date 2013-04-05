@@ -1,0 +1,167 @@
+set Test "Primitives at selection naming test"
+set IsDone 1
+set TestError ""
+
+if {[catch {set TestLab}] == 1} {
+	NewDocument D
+	set TestLab 0:1
+}
+
+set myLab [set TestLab]:1
+set myNameLab [set TestLab]:105
+
+#################### prepare source shapes ####################
+# label #1 - box
+NameBox D $myLab 10 20 30
+GetShape D $myLab b
+explode b F
+NextLabel myLab
+
+# label #2 - cutted cylinder
+NameCylinder D $myLab 10 20 1 1
+NextLabel myLab
+
+# label #3 - full cylinder
+NameCylinder D $myLab 20 30 0 1
+NextLabel myLab
+
+# label #4 - spere
+NameSphere D $myLab 10 5 15 5 0 0 0 1
+NextLabel myLab
+
+#################### prism: infinite, at box and cylinder faces, at closed wire ####################
+
+### MPV:naming is not allowed for infinity prism
+#SelectShape D $myLab b_1 b
+#set PrevLab $myLab
+#NextLabel myLab
+#NamePrism D $myLab $PrevLab 10 1 1 1 1
+#Checking "NamePrism infinity"
+
+
+SelectShape D $myLab b_2 b
+set PrevLab $myLab
+NextLabel myLab
+NextLabel myNameLab
+NamePrism D $myLab $PrevLab 10 1 1 1
+Checking NamePrism
+
+GetShape D [set TestLab]:3 c
+explode c F
+set vv [explode c_1 V]
+set cf c_1
+if {[llength $vv] > 1} {
+  set vv [explode c_2 V]
+  set cf c_2
+}
+
+SelectShape D $myLab $cf c
+set PrevLab $myLab
+NextLabel myLab
+NextLabel myNameLab
+NamePrism D $myLab $PrevLab 10 1 1 1
+Checking "NamePrism at circle"
+
+GetShape D [set TestLab]:2 cutc
+explode cutc F
+
+set cc [explode cutc_2 W]
+SelectShape D $myLab $cc cutc
+set PrevLab $myLab
+NextLabel myLab
+NextLabel myNameLab
+NamePrism D $myLab $PrevLab 10 1 1 1
+Checking "NamePrism at wire"
+
+#################### revolution: box face and cylinder closed wire ####################
+GetShape D [set TestLab]:1 b
+explode b F
+SelectShape D $myLab b_2 b
+set PrevLab $myLab
+NextLabel myLab
+NextLabel myNameLab
+explode b_2 E
+set cb [CopyShape b_2_1]
+ttranslate $cb 30 30 0
+BuildNamedShape D $myLab SELECTION $cb $cb
+set Axis $myLab
+NextLabel myLab
+NextLabel myNameLab
+NameRevol D $myLab $PrevLab $Axis 10
+Checking "NameRevol at box face"
+
+GetShape D [set TestLab]:2 cutc
+explode cutc W
+NameImportShape D $myLab cutc_1
+set PrevLab $myLab
+NextLabel myLab
+NextLabel myNameLab
+explode cutc_1 E
+set cc [CopyShape cutc_1_2]
+ttranslate $cc 20 40 0
+BuildNamedShape D $myLab SELECTION $cc $cc
+set Axis $myLab
+NextLabel myLab
+NextLabel myNameLab
+NameRevol D $myLab $PrevLab $Axis
+Checking "NameRevol at cylinder face"
+
+#################### fillet: at box wire, cylinder (not lateral) edge ####################
+GetShape D [set TestLab]:1 b
+explode b F
+explode b_3 W
+SelectShape D $myLab b_3_1 b
+set PrevLab $myLab
+NextLabel myLab
+NextLabel myNameLab
+NameFillet D $myLab [set TestLab]:1 $PrevLab 3
+Checking "NameFillet at box wire"
+
+GetShape D [set TestLab]:3 c
+explode c E
+set ce c_1
+if {[llength [explode $ce V]] > 1} {set ce c_2}
+SelectShape D $myLab $ce c
+set PrevLab $myLab
+NextLabel myLab
+NextLabel myNameLab
+NameFillet D $myLab [set TestLab]:3 $PrevLab 3
+Checking "NameFillet at cylinder edge"
+
+#################### chamfer: at cutted cylinder top wire, cylinder (not lateral) edge ####################
+GetShape D [set TestLab]:2 cutc
+set cutf [explode cutc F]
+set cuttop cutc_1
+for {set i 1} {[lindex $cutf $i]!=""} {incr i} {
+  if {[lindex [CenterOfShape [lindex $cutf $i]] 2] > [lindex [CenterOfShape $cuttop] 2]} {set cuttop [lindex $cutf $i]}
+}
+SelectShape D $myLab $cuttop cutc
+set PrevLab $myLab
+NextLabel myLab
+NextLabel myNameLab
+set cutw [explode $cuttop W]
+SelectShape D $myLab $cutw cutc
+set WireLab $myLab
+NextLabel myLab
+NextLabel myNameLab
+NameChamfer D $myLab [set TestLab]:2 $WireLab $PrevLab 2 3
+Checking "NameChamfer at cutted cylinder wire"
+
+GetShape D [set TestLab]:3 c
+set cf [explode c F]
+set cbottom c_1
+for {set i 1} {[lindex $cf $i]!=""} {incr i} {
+  if {[lindex [CenterOfShape [lindex $cf $i]] 2] < [lindex [CenterOfShape $cbottom] 2]} {set cbottom [lindex $cf $i]}
+}
+SelectShape D $myLab $cbottom c
+set PrevLab $myLab
+NextLabel myLab
+NextLabel myNameLab
+set ce [explode $cbottom E]
+SelectShape D $myLab $ce c
+set WireLab $myLab
+NextLabel myLab
+NextLabel myNameLab
+NameChamfer D $myLab [set TestLab]:3 $WireLab $PrevLab 4 3
+Checking "NameChamfer at cylinder bottom edge"
+

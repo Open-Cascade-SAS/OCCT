@@ -1,0 +1,147 @@
+set Test "TNaming_Tool test"
+set IsDone 1
+set TestError ""
+
+if {[catch {set TestLab}] == 1} {
+	NewDocument D
+	set TestLab 0:1
+}
+
+#################### make triangle face ####################
+vertex v1 0 0 0
+vertex v2 0 100 0
+vertex v3 100 0 0
+line l1 0 0 0 0 1 0
+line l2 0 100 0 1 -1 0
+line l3 100 0 0 -1 0 0
+mkedge e1 l1 v1 v2
+mkedge e2 l2 v2 v3
+mkedge e3 l3 v3 v1
+wire w e1 e2 e3
+plane pl 0 0 1
+mkface f pl w
+
+#################### load it to the DF ####################
+BuildNamedShape D [set TestLab]:1 PRIMITIVE f
+for {set a 1} {$a <= 3} {incr a} {
+  set lab [set TestLab]:1:$a
+  BuildNamedShape D $lab PRIMITIVE e$a
+}
+
+#################### make prism at face and load ####################
+prism p f 0 0 100
+BuildNamedShape D [set TestLab]:2 PRIMITIVE p
+
+explode p F
+set needgenerate ""
+set primitivelabel 2
+for {set a 1} {$a <= 5} {incr a} {
+  set ex [explode p_$a E]
+  if {[llength $ex] == 4} {
+	for {set i 1} {$i <= 3} {incr i} {
+	  for {set j 1} {$j <= 3} {incr j} {
+	    if {[IsSameShapes e$i [lindex $ex $j]]==1} {
+		if {[string compare $needgenerate ""] == 0} {set needgenerate "e$i p_$a"} else {set needgenerate "$needgenerate e$i p_$a"}
+	    }
+	  }
+	}
+  } else {
+	BuildNamedShape D [set TestLab]:2:$primitivelabel PRIMITIVE p_$a
+	incr primitivelabel
+  }
+}
+BuildNamedShape D [set TestLab]:2:1 GENERATED [lindex $needgenerate 0] [lindex $needgenerate 1] [lindex $needgenerate 2] [lindex $needgenerate 3] [lindex $needgenerate 4] [lindex $needgenerate 5]
+
+#################### make box, cut prism, load ####################
+box b 0 0 20 100 100 20
+explode b F
+BuildNamedShape D [set TestLab]:3 PRIMITIVE b
+for {set a 1} {$a <= 6} {incr a} {
+  BuildNamedShape D [set TestLab]:3:$a PRIMITIVE b_$a
+}
+
+cut c p b
+BuildNamedShape D [set TestLab]:4 MODIFY p c
+explode c F
+set needgenerate ""
+set needmodify ""
+set py ""
+set px ""
+set pxy ""
+set p0 ""
+set pz ""
+
+for {set i 1} {$i<=5} {incr i} {
+  set center [CenterOfShape p_$i]
+  if {[lindex $center 0] == 50} {
+    if {[lindex $center 1] == 50} {set pxy p_$i} else {set px p_$i}
+  } else {if {[lindex $center 1] == 50} {set py p_$i}}
+}
+for {set i 1} {$i <= 10} {incr i} {
+  set center [CenterOfShape c_$i]
+  if {[lindex $center 0] == 50} {
+    if {[lindex $center 1] == 50} {set needgenerate "$pxy c_$i $needgenerate"} else {
+     set needgenerate "$px c_$i $needgenerate"}
+  } else {if {[lindex $center 1] == 50} {set needgenerate "$py c_$i $needgenerate"} else {
+      if {[lindex $center 2] == 20} {set needmodify "b_5 c_$i $needmodify"}
+      if {[lindex $center 2] == 40} {set needmodify "b_6 c_$i $needmodify"}
+    }
+  }
+}
+BuildNamedShape D [set TestLab]:4:1 MODIFY [lindex $needgenerate 0] [lindex $needgenerate 1] [lindex $needgenerate 2] [lindex $needgenerate 3] [lindex $needgenerate 4] [lindex $needgenerate 5] [lindex $needgenerate 6] [lindex $needgenerate 7] [lindex $needgenerate 8] [lindex $needgenerate 9] [lindex $needgenerate 10] [lindex $needgenerate 11]
+BuildNamedShape D [set TestLab]:4:2 GENERATED [lindex $needmodify 0] [lindex $needmodify 1] [lindex $needmodify 2] [lindex $needmodify 3] b_1 b_1
+
+#################### test TNamig_Tool::NamedShape commmand ####################
+set names "e1 e2 e3 p p_1 p_2 p_3 p_5 b b_1 b_2 b_3 b_4 b_5 b_6 c c_1 c_2 c_3 c_5 c_6 c_7 c_8 c_9 c_10"
+set entities "1:1 1:2 1:3 2 2:1 2:1 2:1 2:3 3 3:1 3:2 3:3 3:4 3:5 3:6 4 4:1 4:1 4:2 4:1 4:1 4:1 4:2 2:3 4:1"
+
+for {set i 0} {[string compare [lindex $names $i] ""] != 0} {incr i} {
+#  puts "name = [lindex $names $i], entity = [lindex $entities $i]"
+  set r [NamedShape D [lindex $names $i]]
+  if {[string compare $r "[set TestLab]:[lindex $entities $i]"] != 0} {
+#	puts "error"
+    set IsDone 0
+    set TestError "$TestError # NamedShape: need [set TestLab]:[lindex $entities $i] label, got $r"
+  }
+}
+#################### test TNaming_Tool::CurrentShape command ####################
+set entities "1 1:1 1:2 1:3 2 2:1 2:2 2:3 3 3:1 3:2 3:3 3:4 3:5 3:6 4 4:1 4:2"
+# rem: f p_4 c_4 are same, p_5 c_9 are same
+set names "c_4 e1 e2 e3 c # p_4 c_9 b b_1 b_2 b_3 b_4 b_5 b_6 c # #"
+
+for {set i 0} {[string compare [lindex $entities $i] ""] != 0} {incr i} {
+  CurrentShape D "[set TestLab]:[lindex $entities $i]" r
+  if {[string compare [lindex $names $i] "#"] == 0} {
+    set a [explode r F]
+    if {[expr {([llength $a]!=6 && ($i==5 || $i==16)) || ([llength $a]!=2 && $i==17)}]} {
+	set IsDone 0
+	set TestError "$TestError # CurrentShape shape at [set TestLab]:[lindex $entities $i] has bad compound"
+    }
+  } else {
+    if {[IsSameShapes r [lindex $names $i]]!=1} {
+	set IsDone 0
+	set TestError "$TestError # CurrentShape shape at [set TestLab]:[lindex $entities $i] and [lindex $names $i] is not same"
+    }
+  }
+}
+
+#################### test TNaming_Tool::GetShape command ####################
+set entities "1 1:1 1:2 1:3 2 2:1 2:2 2:3 3 3:1 3:2 3:3 3:4 3:5 3:6 4 4:1 4:2"
+# rem: f p_4 c_4 are same, p_5 c_9 are same
+set names "c_4 e1 e2 e3 p # p_4 c_9 b b_1 b_2 b_3 b_4 b_5 b_6 c # #"
+
+for {set i 0} {[string compare [lindex $entities $i] ""] != 0} {incr i} {
+  GetShape D "[set TestLab]:[lindex $entities $i]" r
+  if {[string compare [lindex $names $i] "#"] == 0} {
+    set a [explode r F]
+    if {[expr {([llength $a]!=3 && $i==5) || ([llength $a]!=6 && $i==16) || ([llength $a]!=2 && $i==17)}]} {
+	set IsDone 0
+	set TestError "$TestError # GetShape shape at [set TestLab]:[lindex $entities $i] has bad compound"
+    }
+  } else {
+    if {[IsSameShapes r [lindex $names $i]]!=1} {
+	set IsDone 0
+	set TestError "$TestError # GetShape shape at [set TestLab]:[lindex $entities $i] and [lindex $names $i] is not same"
+    }
+  }
+}

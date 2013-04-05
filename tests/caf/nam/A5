@@ -1,0 +1,98 @@
+#################### select shape and check selection procedure ####################
+proc Select {lab shape context} {
+  global D IsDone TestError
+  upvar 1 $shape myshape $context mycontext
+  set res ""
+  if {[string compare $context ""] == 0} {
+    if {[catch {set res [SelectShape D $lab myshape]}]} {
+	set IsDone 0
+	set TestError "$TestError # SelectShape bad result for args: $lab myshape"
+    }
+  } else {
+    if {[catch {set res [SelectShape D $lab myshape mycontext]}]} {
+	set IsDone 0
+	set TestError "$TestError # SelectShape bad result for args: $lab myshape"
+    }
+  }
+  return [CenterOfShape myshape]
+}
+
+if {[catch {set TestLab}] == 1} {
+	NewDocument D
+	set TestLab 0:1
+}
+
+set IsDone 1
+source ${scriptdir}/A3
+set Test "TNaming_Selector test"
+if {$IsDone == 0} {
+	set TestError " # Can't test iterators becouse of Tool errors: # $TestError"
+} else {
+
+#################### selection and checking shapes ####################
+
+### IDENTIFY NAMING
+set res1 [Select "[set TestLab]:10:1" f ""]
+set res2 [Select "[set TestLab]:10:2" e1 f]
+set res3 [Select "[set TestLab]:10:3" e2 ""]
+### INTERSECTION NAMING (complex : with GENERATION and IDENTITY)
+set res4 [Select "[set TestLab]:10:4" v1 "f"]
+explode b E
+set res5 [Select "[set TestLab]:10:5" b_1 "b"]
+puts [dump $res5]
+explode b V
+set res6 [Select "[set TestLab]:10:6" b_1 "b"]
+explode c E
+# labels 7-24
+
+if {0} {
+
+for {set i 1} {$i <= 18} {incr i} {
+  set res[expr $i+6] [Select "[set TestLab]:10:[expr $i+6]" c_$i "c"]
+}
+explode c F
+# labels 25-32
+for {set i 1} {$i <= 8} {incr i} {
+  set res[expr $i+24] [Select "[set TestLab]:10:[expr $i+24]" c_$i "c"]
+}
+#################### simple GENERATION naming ####################
+#explode p F
+##labels 33-35
+#for {set i 1} {$i <= 3} {incr i} {
+#  set res[expr $i+32] [Select "[set TestLab]:10:[expr $i+32]" p_$i "p"]
+#}
+explode c So
+set res33 [Select "[set TestLab]:10:33" c_1 c]
+set res34 [Select "[set TestLab]:10:34" c_2 c]
+####################### simple MODIFUNTIL naming ####################
+set res35 [Select "[set TestLab]:10:35" c ""]
+
+#################### solve selection checking with empty valid map ####################
+for {set i 1} {$i <= 35} {incr i} {
+  if {[catch {SolveSelection D [set TestLab]:10:$i}]} {
+	set IsDone 0
+	set TestError "$TestError # SolveSelection failed for label [set TestLab]:10:$i"
+  } else {
+    GetShape D [set TestLab]:10:$i r
+    if {[string compare [CenterOfShape r] [set res$i]] != 0} {
+	set IsDone 0
+	set TestError "$TestError # SolveSelection result not same for lab $i : [CenterOfShape r] and [set res$i]"
+    }
+  }
+}
+#################### with setted valid map ####################
+
+}
+
+puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+
+if {[catch {SolveSelection D [set TestLab]:10:4 [set TestLab]:1:1}] == 0} {
+  set IsDone 0
+  set TestError "$TestError # SolveSelection is not failed with deficit of valid map (label [set TestLab]:10:4)"
+}
+#if {[catch {SolveSelection D [set TestLab]:10:4 [set TestLab]:1:1 [set TestLab]:1:3}] == 1} {
+#  set IsDone 0
+#  set TestError "$TestError # SolveSelection failed for good valid map (label [set TestLab]:10:4)"
+#}
+
+}

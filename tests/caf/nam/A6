@@ -1,0 +1,52 @@
+set Test "Primitives naming test"
+set IsDone 1
+set TestError ""
+
+if {[catch {set TestLab}] == 1} {
+	NewDocument D
+	set TestLab 0:1
+}
+
+set myLab [set TestLab]:1
+set myNameLab [set TestLab]:101
+
+#################### box ####################
+NameBox D $myLab 10 20 30
+Checking "Box as solid"
+
+#################### cylinder: cutted and full ####################
+NameCylinder D $myLab 10 20 1 1
+Checking "Cutted cylinder as solid"
+
+NameCylinder D $myLab 20 30 0 1
+Checking "Cylinder as solid"
+
+NameCylinder D $myLab 15 15 0 0
+Checking "Cylinder as shell"
+
+#################### sphere: cutted and full ####################
+NameSphere D $myLab 20 10 15 5 0.1 0.2 0.3 1
+Checking "Cutted sphere as solid"
+
+NameSphere D $myLab 5 15 15 5 0.1 0.2 0.3 0
+Checking "Cutted sphere as shell"
+
+NameSphere D $myLab 10 5 15 5 0 0 0 1
+Checking "Sphere as solid"
+
+NameSphere D $myLab 15 20 15 5 0 0 0 0
+Checking "Sphere as shell"
+
+#################### import brep shapes from "forimport" directory ####################
+
+erase
+set shapes_list {compound.brep compsol.brep HV_O1.brep HV_T1.brep HW_T0.brep HW_T3.brep SH_O.brep solid1.brep}
+foreach shape $shapes_list {
+    restore [locate_data_file ${shape}] s
+    disp s
+    fit
+    NameImportShape D $myLab s
+    erase
+}
+
+# if {$IsDone==0} {puts "not done"} else {puts done}

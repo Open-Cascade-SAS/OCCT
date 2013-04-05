@@ -1,0 +1,129 @@
+if {[catch {set TestLab}] == 1} {
+	NewDocument D
+	set TestLab 0:1
+}
+
+set IsDone 1
+source ${scriptdir}/A1
+
+if {$IsDone == 0} {
+	set Test "TNaming_Iterator test"
+	set IsDone 0
+	set TestError " # Can't test iterators becouse of Builder errors"
+} else {
+
+set Test "TNaming_Iterator test"
+set IsDone 1
+set TestError ""
+
+set labels "1 1:1 1:2 2 2:1 2:2 3 3:1 3:2 4:1 5 5:1 6 6:1"
+set myNewShapesOutput "PRIMITIVE 1 PRIMITIVE 3 PRIMITIVE 3 GENERATED 1 GENERATED 3 GENERATED 3 MODIFY 1 MODIFY 3 MODIFY 3 DELETE 0 MODIFY 1 MODIFY 2 SELECTED 1 SELECTED 2"
+set myOldShapesOutput "PRIMITIVE 0 PRIMITIVE 0 PRIMITIVE 0 GENERATED 1 GENERATED 3 GENERATED 3 MODIFY 1 MODIFY 3 MODIFY 3 DELETE 2 MODIFY 1 MODIFY 2 SELECTED 1 SELECTED 2"
+set myAllNewShapesOutput "3 14 2 2 3 5 1 1 2 0 0 0 0 2"
+set myAllOldShapesOutput "0 0 0 1 3 3 2 6 5 0 3 5 3 2"
+
+set r ""
+for {set i 0} {[lindex $labels $i]!=""} {incr i} {
+  set lab [set TestLab]:[lindex $labels $i]
+
+#################### Iterator ####################
+  if {[catch {GetNewShapes D $lab}] == 1} {
+	set IsDone 0
+	set TestError "$TestError # GetNewShapes at label $lab"
+  } else {
+	set r [GetNewShapes D $lab]
+	set oldr "[lindex $myNewShapesOutput [expr $i*2]] [lindex $myNewShapesOutput [expr $i*2+1]]"
+	if { $r != $oldr } {
+	  set IsDone 0
+	  set TestError "$TestError # GetNewShapes at label $lab: need $oldr, but got $r"
+	}
+  }
+
+#################### Iterator ####################
+  if {[catch {GetOldShapes D $lab}] == 1} {
+	set IsDone 0
+	set TestError "$TestError # GetOldShapes at label $lab"
+  } else {
+	set r [GetOldShapes D $lab]
+	set oldr "[lindex $myOldShapesOutput [expr $i*2]] [lindex $myOldShapesOutput [expr $i*2+1]]"
+	if { $r != $oldr } {
+	  set IsDone 0
+	  set TestError "$TestError # GetOldShapes at label $lab: need $oldr, but got $r"
+	}
+  }
+
+#################### NewShapesIterator ####################
+  if {[catch {GetAllNewShapes D $lab}] == 1} {
+	set IsDone 0
+	set TestError "$TestError # GetAllNewShapes at label $lab"
+  } else {
+	set r [GetAllNewShapes D $lab]
+	set oldr "[lindex $myAllNewShapesOutput $i]"
+	if { $r != $oldr } {
+	  set IsDone 0
+	  set TestError "$TestError # GetAllNewShapes at label $lab: need $oldr, but got $r"
+	}
+  }
+
+#################### OldShapesIterator ####################
+  if {[catch {GetAllOldShapes D $lab}] == 1} {
+	set IsDone 0
+	set TestError "$TestError # GetAllOldShapes at label $lab"
+  } else {
+	set r [GetAllOldShapes D $lab]
+	set oldr "[lindex $myAllOldShapesOutput $i]"
+	if { $r != $oldr } {
+	  set IsDone 0
+	  set TestError "$TestError # GetAllOldShapes at label $lab: need $oldr, but got $r"
+	}
+  }
+
+}
+
+#################### SameShapesIterator && NewShapesIterator ####################
+set mySame "1 2 2 1 3 2 1 2 1 1 2 1 3 2 1 3 4 3 4 1 2"
+
+GetAllNewShapes D [set TestLab]:1:1 o
+GetAllOldShapes D [set TestLab]:3:1 u
+
+set shapes "b o_1_1 o_1_2 o_1_3 o_1_4 o_1_5 o_1_6 o_1_7 o_1_8 o_2_1 o_2_2 o_2_3 o_2_4 o_2_5 o_2_6 u_3_1 u_3_2 u_1_1 u_1_2 u_2_1 u_2_2"
+
+for {set i 0} {[lindex $shapes $i]!=""} {incr i} {
+  if {[catch {GetSameShapes D [lindex $shapes $i]}] == 1} {
+	set IsDone 0
+	set TestError "$TestError # GetSameShapes D for [lindex $shapes $i]"
+  } else { if {[lindex $mySame $i] != [llength [GetSameShapes D [lindex $shapes $i]]]} {
+	set IsDone 0
+	set TestError "$TestError # GetSameShapes D for [lindex $shapes $i]: \
+                       [lindex $mySame $i] != [llength [GetSameShapes D [lindex $shapes $i]]]"
+    }
+  }
+}
+
+set myr "u_2_1 o_2_1 u_1_2 u_3_2 u_1_1 u_3_1 u_1_1 o_2_4 u_1_1 o_1_4 u_3_1 o_2_4 u_3_1 o_1_4 o_2_6 o_1_6 o_2_5 o_1_5 o_2_5 o_1_2 o_2_4 o_1_4 o_2_3 o_1_8 o_2_2 o_1_7 o_1_5 o_1_2"
+
+for {set i 0} {[lindex $myr $i]!=""} {incr i 2} {
+  if {[IsSameShapes [lindex $myr $i] [lindex $myr [expr $i+1]]]!=1} {
+    set IsDone 0
+    set TestError "$TestError # [lindex $myr $i] and [lindex $myr [expr $i+1]] not equal"
+  }
+}
+
+for {set i 1} {[lindex $shapes $i]!=""} {incr i} {
+  for {set j 0} {$j < $i} {incr j} {
+    if {[IsSameShapes [lindex $shapes $i] [lindex $shapes $j]]==1} {
+	set r "[lindex $shapes $i] [lindex $shapes $j]"
+	set yes 0
+	for {set k 0} {[lindex $myr $k]!=""} {incr k 2} {
+	  if {[lindex $myr $k] == [lindex $r 0]} {if {[lindex $myr [expr $k+1]] == [lindex $r 1]} {set yes 1}}
+	  if {[lindex $myr $k] == [lindex $r 1]} {if {[lindex $myr [expr $k+1]] == [lindex $r 0]} {set yes 1}}
+	}
+	if {$yes == 0} {
+	  set IsDone 0
+	  set TestError "$TestError # $r not equal"
+      }
+    }
+  }
+}
+
+}

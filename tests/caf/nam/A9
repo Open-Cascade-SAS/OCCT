@@ -1,0 +1,45 @@
+set Test "Specific operations naming test"
+set IsDone 1
+set TestError ""
+
+if {[catch {set TestLab}] == 1} {
+	NewDocument D
+	set TestLab 0:1
+}
+
+set myLab [set TestLab]:1
+set myNameLab [set TestLab]:100
+
+#################### two boxes glueing ####################
+NameBox D $myLab 20 30 40
+set Box1Lab $myLab
+NextLabel myLab
+NextLabel myNameLab
+box b 20 10 20 20 30 40 
+NameImportShape D $myLab b
+set Box2Lab $myLab
+NextLabel myLab
+NextLabel myNameLab
+NameGlue D $myLab $Box1Lab $Box2Lab
+Checking "Two boxes glueing"
+
+#################### 3-faces shell and 2-faces shell glueing ####################
+restore [locate_data_file HH_O.brep] object
+restore [locate_data_file HH_T.brep] tool
+global object
+NameImportShape D $myLab object
+set ObjectLab $myLab
+NextLabel myLab
+NextLabel myNameLab
+global tool
+NameImportShape D $myLab tool
+set ToolLab $myLab
+NextLabel myLab
+NextLabel myNameLab
+NameGlue D $myLab $ObjectLab $ToolLab
+Checking "Two shells glueing"
+
+#################### import box with broken edges and internal vertex at the face ####################
+restore [locate_data_file brockenedgesbox.brep] bbox
+NameImportShape D $myLab object
+Checking "Box with broken edges"
