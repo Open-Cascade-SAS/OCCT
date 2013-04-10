@@ -139,11 +139,12 @@ Standard_Integer bop (Draw_Interpretor& di, Standard_Integer n, const char** a)
   aLC.Append(aS1);
   aLC.Append(aS2);
   //
-  if (!pPF) {
+  if (pPF!=NULL) {
     delete pPF;
-    Handle(NCollection_BaseAllocator)aAL=new NCollection_IncAllocator;
-    pPF=new BOPAlgo_PaveFiller(aAL);
+    pPF=NULL;
   }
+  Handle(NCollection_BaseAllocator)aAL=new NCollection_IncAllocator;
+  pPF=new BOPAlgo_PaveFiller(aAL);
   //
   pPF->SetArguments(aLC);
   //

@@ -12,13 +12,13 @@ puts ""
 
 set BugNumber OCC7287
 
-set NCycles 1000
+set NCycles 100
 box b1 10 10 10 100 100 100
 box b2 50 50 50
-bop b1 b2
 
 set listmem {}
 for {set i 1} {${i} <= ${NCycles}} {incr i } {
+    bop b1 b2
     bopcommon r
 
     lappend listmem [meminfo h]
