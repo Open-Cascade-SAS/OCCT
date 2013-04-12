@@ -1,34 +1,34 @@
 puts "================"
-puts "OCC22818"
+puts "OCC23512"
 puts "================"
 puts ""
 #######################################################################################
-# Wrong triangulation of Revolution surface with slice angle <= 180 degree
+# Incorrect triangulation on revolution shape
 ######################################################################################
 
-set BugNumber OCC22818
+set BugNumber OCC23512
 
-pcone result 10 0 10 180
+restore [locate_data_file bug23512_rev_bad_shading.brep] result
 
-checkshape result
+vinit
+tclean result
 
-set square 479.224
+incmesh result 0.000001
 
-set nb_v_good 4
-set nb_e_good 7
-set nb_w_good 4
-set nb_f_good 4
+vsetdispmode 1
+vdisplay result
+vaxo
+vfit
+
+set nb_v_good 6
+set nb_e_good 14
+set nb_w_good 8
+set nb_f_good 7
 set nb_sh_good 1
 set nb_sol_good 1
 set nb_compsol_good 0
 set nb_compound_good 0
-set nb_shape_good 21
-
-vinit
-vdisplay result
-vsetdispmode 1
-vfit
-vzfit
+set nb_shape_good 37
 
 # relative tolerance (%)
 set rel_tol 1
