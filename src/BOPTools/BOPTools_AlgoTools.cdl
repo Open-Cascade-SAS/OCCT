@@ -310,12 +310,7 @@ is
     --- in  terms of BRepCheck_InvalidPointOnCurve.   
     ---
     --fields 
-     
-    CorrectPoint (myclass; 
-        thePnt:Pnt from gp; 
-        thePL:Plane from Geom; 
-        theNewPnt:out Pnt from gp);
-     
+ 
     --copy from BOPTools_AlgoTools.cdl
     MakeNewVertex  (myclass;  
         aP1 : Pnt  from  gp;  
@@ -433,19 +428,6 @@ is
     ---Purpose:  
     --- Returns TRUE if PaveBlock <aPB> lays on the face <aF>, i.e 
     --- the <PB> is IN or ON in 2D of <aF> 
-     
-                   
-    GetProjectPoint(myclass; 
-        aF    : Face from TopoDS; 
-        aPF   : Pnt from  gp; 
-        aF1   : Face from TopoDS; 
-        aPF1  : out Pnt from  gp;
-        aDNF1 : out Dir from gp;
-        theContext : out Context from BOPInt) 
-      returns Boolean from Standard; 
-    ---Purpose: 
-    --- Computes projection of the point <aP> on the face <theFace>. 
-    --- Returns TRUE if projection is done. 
      
     IsMicroEdge(myclass; 
         theEdge    : Edge from TopoDS; 

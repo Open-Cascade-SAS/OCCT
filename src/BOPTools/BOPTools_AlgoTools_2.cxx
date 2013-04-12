@@ -19,6 +19,8 @@
 
 #include <BOPTools_AlgoTools.ixx>
 
+#include <Precision.hxx>
+
 #include <TopoDS.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Edge.hxx>
