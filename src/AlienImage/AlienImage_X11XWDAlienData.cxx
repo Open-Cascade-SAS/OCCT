@@ -29,7 +29,7 @@
 #define TEST	//GG_140699
 //		Check file extension, must be ".xwd".
 
-#ifndef WNT
+#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
 # include <X11/Xlib.h>
 #endif  // WNT
 #include <Aspect_GenericColorMap.hxx>

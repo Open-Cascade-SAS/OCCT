@@ -13,7 +13,6 @@ Draw_Viewer.hxx
 Draw_Viewer.hxx
 Draw_Window.cxx
 Draw_Window.hxx
-Draw_WindowBase.hxx
 Draw_PInterp.hxx
 Draw_CommandFunction.hxx
 DrawRessource.h

@@ -16,7 +16,7 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-#ifndef WNT
+#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
 # include <X11/Xlib.h>
 #endif  // WNT
 #include <AlienImage_X11XWDFileHeader.hxx>

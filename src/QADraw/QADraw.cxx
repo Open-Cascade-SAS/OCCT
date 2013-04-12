@@ -17,11 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
-#if defined(WNT)
-#include <windows.h>
-#endif
 #include <QADraw.hxx>
 #include <QADraw_DataMapOfAsciiStringOfAddress.hxx>
 #include <Draw_Interpretor.hxx>
@@ -41,18 +36,13 @@
 #include <stdio.h>
 #include <Aspect_DisplayConnection.hxx>
 #include <Graphic3d.hxx>
+#include <Aspect_Window.hxx>
 
-#if ! defined(WNT)
-#include <Xw_Window.hxx>
-//#include <Xm/Xm.h>
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <Xw_Cextern.hxx>
-#include <unistd.h>
+#if defined(_WIN32) || defined(__WIN32__)
+#  include <windows.h>
+#  include <io.h>
 #else
-#include <WNT.h>
-#include <WNT_Window.hxx>
-#include <io.h>
+#  include <unistd.h>
 #endif
 
 #include <tcl.h>
@@ -448,88 +438,11 @@ static Standard_Integer QAAISGetMousePoint (Draw_Interpretor& di, Standard_Integ
   return 0;
 }
 
-static Standard_Integer QAAISGetColorCoord (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
-  if ( argc > 1 ) {
-    di << "Usage : " << argv[0] << "\n";
-    return 1;
-  }
-  Handle(Xw_Window) QAAISWindow;
-
-  Handle (V3d_View) QAAIS_MainView = ViewerTest::CurrentView ();
-  if ( QAAIS_MainView.IsNull () ) {
-    di << "You must initialize AISViewer before this command." << "\n";
-    return 1;
-  }
-  QAAISWindow = Handle(Xw_Window)::DownCast (QAAIS_MainView->V3d_View::Window());
-
-  Standard_Integer QAAIS_WindowSize_X = 0;
-  Standard_Integer QAAIS_WindowSize_Y = 0;
-  QAAISWindow->Size(QAAIS_WindowSize_X, QAAIS_WindowSize_Y);
-  Handle(Aspect_DisplayConnection) aDisplayConnection = new Aspect_DisplayConnection();
-  Handle(Graphic3d_GraphicDriver)  aGraphicDriver = Graphic3d::InitGraphicDriver (aDisplayConnection);
-
-  Draw_Window QAAIS_CoordWindow ("coordinate", 421, 205, 200, 60);
-  QAAIS_CoordWindow.DisplayWindow ();
-  QAAIS_CoordWindow.SetColor (12);
-
-  Handle (Xw_Window) QAAIS_ColorWindow = new Xw_Window (aDisplayConnection, "color", 0.4074, 0.678, 0.1962, 0.06, Quantity_NOC_BLACK);
-  Handle (V3d_Viewer) QAAIS_ColorViewer = new V3d_Viewer (aGraphicDriver, Standard_ExtString ("COLOR"));
-  Handle (V3d_View) QAAIS_ColorView = QAAIS_ColorViewer -> CreateView ();
-  QAAIS_ColorWindow -> Map ();
-  QAAIS_ColorView -> SetWindow (QAAIS_ColorWindow);
-  QAAIS_ColorView -> SetBackgroundColor (Quantity_NOC_BLACK);
-  QAAIS_ColorView -> Redraw ();
-
-  Standard_Integer QAAIS_MousePoint_X = 0;
-  Standard_Integer QAAIS_MousePoint_Y = 0;
-  Standard_Character QAAIS_MousePointX[32];
-  Sprintf (QAAIS_MousePointX, "X : %d", QAAIS_MousePoint_X);
-  Standard_Character QAAIS_MousePointY[32];
-  Sprintf (QAAIS_MousePointY, "Y : %d", QAAIS_MousePoint_Y);
-  Standard_ShortReal QAAIS_ColorRED = 0;
-  Standard_ShortReal QAAIS_ColorGRN = 0;
-  Standard_ShortReal QAAIS_ColorBLU = 0;
-  Quantity_Color QAAIS_ShowingColor;
-  QAAIS_ShowingColor.SetValues (QAAIS_ColorRED, QAAIS_ColorGRN, QAAIS_ColorBLU, Quantity_TOC_RGB);
-  Standard_Integer argccc = 5;
-  const char *bufff[] = { "A", "B", "C", "D", "E" };
-  const char **argvvv = (const char **) bufff;
-  while (ViewerMainLoop (argccc, argvvv)) {
-    Handle(TColStd_HSequenceOfReal) aSeq;
-    Image_PixMap anImage;
-
-    ViewerTest::GetMousePosition (QAAIS_MousePoint_X, QAAIS_MousePoint_Y);
-    Handle (V3d_View) QAAIS_MainView = ViewerTest::CurrentView();
-    QAAIS_MainView->ToPixMap (anImage, QAAIS_WindowSize_X, QAAIS_WindowSize_Y);
-
-    aSeq = GetColorOfPixel (anImage, QAAIS_MousePoint_X, QAAIS_MousePoint_Y, 0);
-
-    QAAIS_ColorRED = aSeq->Value(1);
-    QAAIS_ColorGRN = aSeq->Value(2);
-    QAAIS_ColorBLU = aSeq->Value(3);
-    QAAIS_ShowingColor.SetValues (QAAIS_ColorRED, QAAIS_ColorGRN, QAAIS_ColorBLU, Quantity_TOC_RGB);
-    QAAIS_ColorView -> SetBackgroundColor (QAAIS_ShowingColor);
-    QAAIS_ColorView -> Redraw ();
-    QAAIS_CoordWindow.Clear();
-    Sprintf (QAAIS_MousePointX, "X : %d", QAAIS_MousePoint_X);
-    Sprintf (QAAIS_MousePointY, "Y : %d", QAAIS_MousePoint_Y);
-    QAAIS_CoordWindow.DrawString (30, 35, QAAIS_MousePointX);
-    QAAIS_CoordWindow.DrawString (125, 35, QAAIS_MousePointY);
-  }
-  QAAIS_CoordWindow.Destroy ();
-#endif //WNT
-    return 0;
-}
-
 //==============================================================================
 //  VIEWER GLOBALs
 //==============================================================================
 #ifndef WNT
 extern Draw_Viewer dout;
-extern Display*         Draw_WindowDisplay;
-extern Colormap         Draw_WindowColorMap;
 #else
 Standard_IMPORT Draw_Viewer dout;
 #endif
@@ -692,7 +605,6 @@ void QADraw::CommonCommands(Draw_Interpretor& theCommands)
   theCommands.Add("QARebuild","QARebuild command_name",__FILE__,QARebuild,group);
   theCommands.Add("QAGetPixelColor", "QAGetPixelColor coordinate_X coordinate_Y [color_R color_G color_B]", __FILE__,QAAISGetPixelColor, group);
   theCommands.Add("QAGetMousePoint", "QAGetMousePoint", __FILE__,QAAISGetMousePoint, group);
-  theCommands.Add("QAGetColorCoord", "QAGetColorCoord", __FILE__,QAAISGetColorCoord, group);
   theCommands.Add("vtri_orig",
 		  "vtri_orig         : vtri_orig trihedron_name  -  draws axis origin lines",
 		  __FILE__,VTrihedronOrigins,group);

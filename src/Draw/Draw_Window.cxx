@@ -134,10 +134,6 @@ defaultPrompt:
 # include <strings.h>
 #endif
 
-
-#include <Draw_WindowBase.hxx>
-#include <X11/XWDFile.h>
-
 #include <stdio.h>
 #include <tk.h>
 
@@ -174,10 +170,7 @@ static Standard_Boolean tty;        /* Non-zero means standard input is a
 
 static unsigned long thePixels[MAXCOLOR];
 
-
-Display*         Draw_WindowDisplay = NULL;
 Standard_Integer Draw_WindowScreen = 0;
-Colormap         Draw_WindowColorMap;
 Standard_Boolean Draw_BlackBackGround = Standard_True;
 
 
@@ -187,9 +180,20 @@ Draw_Window* Draw_Window::firstWindow = NULL;
 
 // X11 specific part
 #if !defined(__APPLE__) || defined(MACOSX_USE_GLX)
+#include <X11/Xutil.h>
 #include <Aspect_DisplayConnection.hxx>
 
+Display* Draw_WindowDisplay = NULL;
+Colormap Draw_WindowColorMap;
 static Handle(Aspect_DisplayConnection) Draw_DisplayConnection;
+
+// Base_Window struct definition
+//===================================
+struct Base_Window
+{
+  GC gc;
+  XSetWindowAttributes xswa;
+};
 
 //=======================================================================
 //function : Draw_Window
@@ -597,6 +601,7 @@ void Draw_Window::Hide()
 //=======================================================================
 void Draw_Window::Destroy()
 {
+  XFreeGC (Draw_WindowDisplay, base.gc);
   XDestroyWindow(Draw_WindowDisplay, win);
   win = 0;
   if (myBuffer != 0)
