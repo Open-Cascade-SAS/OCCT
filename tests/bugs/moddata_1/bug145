@@ -10,7 +10,7 @@ set listmem {}
 set i_max 10000
 OCC145 [locate_data_file OCC145.brep] ${i_max}
 
-lappend listmem [expr [meminfo w] / 1024]
+lappend listmem [meminfo h]
 if { [checktrend $listmem 0 1 "Memory leak detected"] } {
     puts "No memory leak, $i iterations"
     break

@@ -64,6 +64,7 @@ public:
     MemWorkingSetPeak, //!< Peak working set size
     MemSwapUsage,      //!< Space allocated for the pagefile
     MemSwapUsagePeak,  //!< Peak space allocated for the pagefile
+    MemHeapUsage,      //!< Total space allocated from the heap
     MemCounter_NB      //!< Indicates total counters number
   };
 

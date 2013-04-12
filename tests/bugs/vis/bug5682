@@ -18,8 +18,8 @@ vfit
 catch {vselmode 4 1}
 vclear
 
-lappend listmem [expr [meminfo w] / 1024]
+lappend listmem [meminfo h]
 if { [checktrend $listmem 0 1 "Memory leak detected"] } {
-   puts "No memory leak"
-   break
+    puts "No memory leak"
+    break
 }

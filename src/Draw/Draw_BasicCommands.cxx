@@ -664,6 +664,10 @@ static int dmeminfo (Draw_Interpretor& theDI,
     {
       theDI << Standard_Real (aMemInfo.Value (OSD_MemInfo::MemVirtual)) << " ";
     }
+    else if (anArg == "heap" || anArg == "h")
+    {
+      theDI << Standard_Real (aMemInfo.Value (OSD_MemInfo::MemHeapUsage)) << " ";
+    }
     else if (anArg == "wset" || anArg == "w")
     {
       theDI << Standard_Real (aMemInfo.Value (OSD_MemInfo::MemWorkingSet)) << " ";
@@ -719,7 +723,7 @@ void Draw::BasicCommands(Draw_Interpretor& theCommands)
                   "debug memory allocation/deallocation, w/o args for help",
                   __FILE__, mallochook, g);
   theCommands.Add ("meminfo",
-    "meminfo [virt|v] [wset|w] [wsetpeak] [swap] [swappeak] [private]"
+    "meminfo [virt|v] [heap|h] [wset|w] [wsetpeak] [swap] [swappeak] [private]"
     " : memory counters for this process",
 	  __FILE__, dmeminfo, g);
 

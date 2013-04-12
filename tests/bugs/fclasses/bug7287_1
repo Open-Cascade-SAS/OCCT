@@ -21,9 +21,9 @@ set listmem {}
 for {set i 1} {${i} <= ${NCycles}} {incr i } {
     bopcut r
     
-    lappend listmem [expr [meminfo w] / 1024]
+    lappend listmem [meminfo h]
     if { [checktrend $listmem 0 1 "Memory leak detected"] } {
-	puts "No memory leak, $i iterations"
-	break
+        puts "No memory leak, $i iterations"
+        break
     }
 }

@@ -234,7 +234,7 @@ proc checktrend {listval delta tolerance message} {
     # check if deviation is definitely too big
     if { abs ($mean - $delta) > 2. * $sigma } {
         puts "Checking trend failed: mean delta per step = $mean, sigma = $sigma, expected delta = $delta"
-        puts "Error : $message"
+        error "$message"
     }
 
     # check if deviation is clearly within a range
