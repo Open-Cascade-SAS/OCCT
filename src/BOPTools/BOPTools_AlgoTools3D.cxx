@@ -88,10 +88,11 @@ static
 //purpose  : 
 //=======================================================================
   void BOPTools_AlgoTools3D::DoSplitSEAMOnFace (const TopoDS_Edge& aSplit,
-                                            const TopoDS_Face& aF)
+                                                const TopoDS_Face& aF)
 {
-  Standard_Boolean bIsUPeriodic, bIsLeft;
-  Standard_Real aTol, a, b, anUPeriod, aT, anU, dU=1.e-7, anU1;
+  Standard_Boolean bIsUPeriodic, bIsVPeriodic, bIsLeft;
+  Standard_Real aTol, a, b, anUPeriod, anVPeriod, aT, anU, dU=1.e-7, anU1,
+                anV, dV=1.e-7, anV1;
   Standard_Real aScPr;
   gp_Pnt2d aP2D;
   gp_Vec2d aVec2D;
@@ -104,73 +105,94 @@ static
   //
   aSp=aSplit;
   aSp.Orientation(TopAbs_FORWARD);
-  
   aTol=BRep_Tool::Tolerance(aSp);
-
+  //
   aS=BRep_Tool::Surface(aF);
   bIsUPeriodic=aS->IsUPeriodic();
-  
-  anUPeriod=0.;
-  if (bIsUPeriodic) {
-    anUPeriod=aS->UPeriod();
-  }
-  else {
-    Standard_Boolean bIsUClosed;
+  bIsVPeriodic=aS->IsVPeriodic();
+  //
+  anUPeriod = bIsUPeriodic ? aS->UPeriod() : 0.;
+  anVPeriod = bIsVPeriodic ? aS->VPeriod() : 0.;
+  //
+  if (!bIsUPeriodic && !bIsVPeriodic) {
+    Standard_Boolean bIsUClosed, bIsVClosed;
     Standard_Real aUmin, aUmax, aVmin, aVmax;
     Handle(Geom_BSplineSurface) aBS;
     Handle(Geom_BezierSurface) aBZ;
     //
     bIsUClosed=Standard_False;
+    bIsVClosed=Standard_False;
     aBS=Handle(Geom_BSplineSurface)::DownCast(aS);
     aBZ=Handle(Geom_BezierSurface) ::DownCast(aS);
     //
     if (!aBS.IsNull()) {
       bIsUClosed=aBS->IsUClosed();
+      bIsVClosed=aBS->IsVClosed();
       aBS->Bounds(aUmin, aUmax, aVmin, aVmax);
     }
     else if (!aBZ.IsNull()) {
       bIsUClosed=aBZ->IsUClosed();
+      bIsVClosed=aBZ->IsVClosed();
       aBZ->Bounds(aUmin, aUmax, aVmin, aVmax);
     }
-    if (!bIsUClosed) {
+    if (!bIsUClosed && !bIsVClosed) {
       return;
     }
     //
-    anUPeriod=aUmax-aUmin;
+    if (bIsUClosed) {
+      anUPeriod=aUmax-aUmin;
+    }
+    if (bIsVClosed) {
+      anVPeriod=aVmax-aVmin;
+    }
   }
   //
   C2D1=BRep_Tool::CurveOnSurface(aSp, aF, a, b);
   //
   aT=BOPTools_AlgoTools2D::IntermediatePoint(a, b);
   C2D1->D1(aT, aP2D, aVec2D);
-  gp_Dir2d aDir2D1(aVec2D);
-  
-  //
-  gp_Dir2d aDOY(0.,1.);
-  aScPr=aDir2D1*aDOY;
-  //
+  gp_Dir2d aDir2D1(aVec2D), aDOX(-1.,0.), aDOY(0.,1.);
   //
   anU=aP2D.X();
-  if (fabs (anU) < dU) {
-    bIsLeft=Standard_True;
-    anU1=anU+anUPeriod;
+  anV=aP2D.Y();
+  //
+  anU1=anU;
+  anV1=anV;
+  //
+  if (anUPeriod > 0.){
+    if (fabs (anU) < dU) {
+      bIsLeft=Standard_True;
+      anU1=anU+anUPeriod;
+    }
+    else if (fabs (anU-anUPeriod) < dU) {
+      bIsLeft=Standard_False;
+      anU1=anU-anUPeriod;
+    }
   }
-  else if (fabs (anU-anUPeriod) < dU) {
-    bIsLeft=Standard_False;
-    anU1=anU-anUPeriod;
+  //
+  if (anVPeriod > 0.) {
+    if (fabs (anV) < dV) {
+      bIsLeft=Standard_True;
+      anV1=anV+anVPeriod;
+    }
+    else if (fabs (anV-anVPeriod) < dV) {
+      bIsLeft=Standard_False;
+      anV1=anV-anVPeriod;
+    }
   }
-  else {
+  //
+  if (anU1==anU && anV1==anV) {
     return;
   }
   //
-  
-  
+  aScPr = (anU1==anU) ? aDir2D1*aDOX : aDir2D1*aDOY;
+  //
   aTmpC1=Handle(Geom2d_Curve)::DownCast(C2D1->Copy());
   Handle(Geom2d_TrimmedCurve) aC1 = new Geom2d_TrimmedCurve(aTmpC1, a, b);
-
+  //
   aTmpC2=Handle(Geom2d_Curve)::DownCast(C2D1->Copy());
   Handle(Geom2d_TrimmedCurve) aC2 = new Geom2d_TrimmedCurve(aTmpC2, a, b);
-  gp_Vec2d aTrV(anU1-anU, 0.);
+  gp_Vec2d aTrV(anU1-anU, anV1-anV);
   aC2->Translate(aTrV);
   //
   if (!bIsLeft) {
@@ -189,7 +211,6 @@ static
       BB.UpdateEdge(aSp, aC2, aC1, aF, aTol);
     }
   }
-  //
 }
 
 //=======================================================================
