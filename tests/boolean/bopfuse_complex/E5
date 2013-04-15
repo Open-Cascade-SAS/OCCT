@@ -1,3 +1,6 @@
+puts "TODO #23828 MacOS: Tcl Exception:  null shapes are not allowed"
+puts "TODO #23828 MacOS: TEST INCOMPLETE"
+
 restore [locate_data_file OCC62.brep] sh
 explode sh
 

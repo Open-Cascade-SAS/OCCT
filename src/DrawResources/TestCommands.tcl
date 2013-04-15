@@ -1517,7 +1517,7 @@ proc _tests_platform_def {} {
 
     # use detailed mapping for various versions of Lunix
     # (note that mapping is rather non-uniform, for historical reasons)
-    if { $env(os_type) == "unix" && ! [catch {exec cat /etc/issue} issue] } {
+    if { $tcl_platform(os) == "Linux" && ! [catch {exec cat /etc/issue} issue] } {
 	if { [regexp {Mandriva[ \tA-Za-z]+([0-9]+)} $issue res num] } {
 	    set env(os_type) Mandriva$num
 	} elseif { [regexp {Red Hat[ \tA-Za-z]+([0-9]+)} $issue res num] } {
@@ -1534,6 +1534,8 @@ proc _tests_platform_def {} {
 	if { [exec uname -m] == "x86_64" } {
 	    set env(os_type) "$env(os_type)-64"
 	}
+    } elseif { $tcl_platform(os) == "Darwin" } {
+        set env(os_type) MacOS
     }
 }
 _tests_platform_def

@@ -2,6 +2,9 @@ puts "================"
 puts "OCC288"
 puts "================"
 puts ""
+puts "TODO #23828 MacOS: Tcl Exception: result is not a topological shape!!!"
+puts "TODO #23828 MacOS: TEST INCOMPLETE"
+
 #######################################################################################
 # Currently meshing (for shading) of some shapes looks incorrect
 ######################################################################################
