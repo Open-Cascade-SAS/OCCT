@@ -44,9 +44,9 @@ if { [file exists ${aFile}] } {
    puts "Export to TEX file was done"
    set filesize [file size ${aFile}]
    puts "Size of TEX file = $filesize"
-   	if { $filesize >= 1500 } {
-   	   puts "Faulty : Export to TEX file was done but size of file is incorrect"
-	   }
-	   } else {
-	      puts "Faulty : Export to TEX file was not done"
-	      }
+   if { $filesize > 1500 } {
+      puts "Faulty : Export to TEX file was done but size of file is incorrect"
+   }
+} else {
+   puts "Faulty : Export to TEX file was not done"
+}
