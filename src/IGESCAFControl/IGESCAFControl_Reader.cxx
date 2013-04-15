@@ -40,6 +40,7 @@
 #include <IGESData_LevelListEntity.hxx>
 #include <TCollection_HAsciiString.hxx>
 #include <XCAFDoc_ShapeMapTool.hxx>
+#include <IGESBasic_SubfigureDef.hxx>
 
 //=======================================================================
 //function : IGESCAFControl_Reader
@@ -233,6 +234,19 @@ Standard_Boolean IGESCAFControl_Reader::Transfer (Handle(TDocStd_Document) &doc)
         }
       }
     }
+
+    //Checks that current entity is a subfigure
+    Handle(IGESBasic_SubfigureDef) aSubfigure = Handle(IGESBasic_SubfigureDef)::DownCast (ent);
+    if (GetNameMode() && !aSubfigure.IsNull() && STool->Search (S, L, Standard_True, Standard_True))
+    {
+      //In this case we attach subfigure name to the label, instead of default "COMPOUND"
+      Handle(TCollection_HAsciiString) aName = aSubfigure->Name();
+      aName->LeftAdjust();
+      aName->RightAdjust();
+      TCollection_ExtendedString anExtStrName (aName->ToCString());
+      TDataStd_Name::Set (L, anExtStrName);
+    }
+
   }
 
   CTool->ReverseChainsOfTreeNodes();

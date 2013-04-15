@@ -1,0 +1,18 @@
+puts "============"
+puts "OCC23895"
+puts "============"
+puts ""
+#################################################################
+# XCAF document shoud store names for subfigures from IGES files
+#################################################################
+
+ReadIges D [locate_data_file bug23895_test.igs]
+
+set aName [XCheckProps D 0 0:1:1:2]
+
+if { [regexp "ARROW" "$aName"] } {
+    puts "Ok: Subfigure name has been read correctly."
+} else {
+    puts "Error: Subfigure name has not been read."
+}
+
