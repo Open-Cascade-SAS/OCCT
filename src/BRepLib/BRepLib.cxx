@@ -1040,8 +1040,8 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
       }
       
       // Eval tol2d to compute SameRange
-      Standard_Real UResol = GAS.UResolution(Tolerance);
-      Standard_Real VResol = GAS.VResolution(Tolerance);
+      Standard_Real UResol = Max(GAS.UResolution(Tolerance), Precision::PConfusion());
+      Standard_Real VResol = Max(GAS.VResolution(Tolerance), Precision::PConfusion());
       Standard_Real Tol2d  = Min(UResol, VResol);
       for(Standard_Integer i = 0; i < 2; i++){
 	Handle(Geom2d_Curve) curPC = PC[i];
