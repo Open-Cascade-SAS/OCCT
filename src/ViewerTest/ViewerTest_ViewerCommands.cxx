@@ -29,6 +29,12 @@
 #include <windows.h>
 #endif
 
+#include <AIS_Shape.hxx>
+#include <AIS_Drawer.hxx>
+#include <AIS_InteractiveObject.hxx>
+#include <AIS_ListOfInteractive.hxx>
+#include <AIS_ListIteratorOfListOfInteractive.hxx>
+#include <DBRep.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_ExportFormat.hxx>
@@ -321,6 +327,108 @@ static int VInit (Draw_Interpretor& , Standard_Integer argc, const char** argv)
 }
 
 //==============================================================================
+//function : VHLR
+//purpose  : hidden lines removal algorithm
+//==============================================================================
+
+static int VHLR (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (ViewerTest::CurrentView().IsNull())
+  {
+    di << argv[0] << ": Call vinit before this command, please.\n";
+    return 1;
+  }
+
+  if (argc != 2)
+  {
+    di << argv[0] << ": Wrong number of command arguments.\n"
+      << "Type help " << argv[0] << " for more information.\n";
+    return 1;
+  }
+
+  Standard_Boolean isHLROn =
+    (!strcasecmp (argv[1], "on")) ? Standard_True : Standard_False;
+
+  if (isHLROn == MyHLRIsOn)
+  {
+    return 0;
+  }
+
+  MyHLRIsOn = isHLROn;
+  ViewerTest::CurrentView()->SetComputedMode (MyHLRIsOn);
+
+  return 0;
+}
+
+//==============================================================================
+//function : VHLRType
+//purpose  : change type of using HLR algorithm
+//==============================================================================
+
+static int VHLRType (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (ViewerTest::CurrentView().IsNull())
+  {
+    di << argv[0] << ": Call vinit before this command, please.\n";
+    return 1;
+  }
+
+  if (argc < 2)
+  {
+    di << argv[0] << ": Wrong number of command arguments.\n"
+      << "Type help " << argv[0] << " for more information.\n";
+    return 1;
+  }
+
+  Prs3d_TypeOfHLR aTypeOfHLR =
+    (!strcasecmp (argv[1], "algo")) ? Prs3d_TOH_Algo : Prs3d_TOH_PolyAlgo;
+
+  if (argc == 2)
+  {
+    AIS_ListOfInteractive aListOfShapes;
+    ViewerTest::GetAISContext()->DisplayedObjects (aListOfShapes);
+    ViewerTest::GetAISContext()->DefaultDrawer()->SetTypeOfHLR(aTypeOfHLR);
+    for (AIS_ListIteratorOfListOfInteractive anIter(aListOfShapes);
+      anIter.More(); anIter.Next())
+    {
+      Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(anIter.Value());
+      if (aShape.IsNull())
+        continue;
+      if (aShape->TypeOfHLR() != aTypeOfHLR)
+        aShape->SetTypeOfHLR (aTypeOfHLR);
+      if (MyHLRIsOn)
+        aShape->Redisplay();
+    }
+    ViewerTest::CurrentView()->Update();
+    return 0;
+  }
+  else
+  {
+    for (Standard_Integer i = 2; i < argc; ++i)
+    {
+      ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
+      TCollection_AsciiString aName (argv[i]);
+
+      if (!aMap.IsBound2 (aName))
+      {
+        di << argv[0] << ":" << " Wrong shape name:" << aName.ToCString() << ".\n";
+        continue;
+      }
+      Handle(AIS_Shape) anAISObject =
+        Handle(AIS_Shape)::DownCast (aMap.Find2(aName));
+      if (anAISObject.IsNull())
+        continue;
+      anAISObject->SetTypeOfHLR (aTypeOfHLR);
+      if (MyHLRIsOn)
+        anAISObject->Redisplay();
+    }
+    ViewerTest::CurrentView()->Update();
+  }
+
+  return 0;
+}
+
+//==============================================================================
 //function : VT_ProcessKeyPress
 //purpose  : Handle KeyPress event from a CString
 //==============================================================================
@@ -351,6 +459,48 @@ void VT_ProcessKeyPress (const char* buf_ret)
     cout << "HLR" << endl;
     aView->SetComputedMode (!aView->ComputedMode());
     MyHLRIsOn = aView->ComputedMode();
+  }
+  else if ( !strcasecmp(buf_ret, "P") ) {
+    // Type of HLR
+    Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+    if (aContext->DefaultDrawer()->TypeOfHLR() == Prs3d_TOH_Algo)
+      aContext->DefaultDrawer()->SetTypeOfHLR(Prs3d_TOH_PolyAlgo);
+    else
+      aContext->DefaultDrawer()->SetTypeOfHLR(Prs3d_TOH_Algo);
+    if (aContext->NbCurrents()==0 || aContext->NbSelected() == 0)
+    {
+      AIS_ListOfInteractive aListOfShapes;
+      aContext->DisplayedObjects(aListOfShapes);
+      for (AIS_ListIteratorOfListOfInteractive anIter(aListOfShapes);
+        anIter.More(); anIter.Next())
+      {
+        Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(anIter.Value());
+        if (aShape.IsNull())
+          continue;
+        if (aShape->TypeOfHLR() == Prs3d_TOH_PolyAlgo)
+          aShape->SetTypeOfHLR (Prs3d_TOH_Algo);
+        else
+          aShape->SetTypeOfHLR (Prs3d_TOH_PolyAlgo);
+        aShape->Redisplay();
+      }
+    }
+    else
+    {
+      for (aContext->InitCurrent();aContext->MoreCurrent();aContext->NextCurrent())
+      {
+        Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast(aContext->Current());
+        if (aShape.IsNull())
+          continue;
+        if(aShape->TypeOfHLR() == Prs3d_TOH_PolyAlgo)
+          aShape->SetTypeOfHLR (Prs3d_TOH_Algo);
+        else
+          aShape->SetTypeOfHLR (Prs3d_TOH_PolyAlgo);
+        aShape->Redisplay();
+      }
+    }
+
+    aContext->UpdateCurrentViewer();
+    
   }
   else if ( !strcasecmp(buf_ret, "S") ) {
     // SHADING
@@ -3935,4 +4085,17 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "                              ts, tt      - translation for s and t texture coordinates\n"
     "                              rot         - texture rotation angle in degrees",
     __FILE__, VTextureEnv, group);
+  theCommands.Add("vhlr" ,
+    "is_enabled={on|off}"
+    " - Hidden line removal algorithm:"
+    " - is_enabled: if is on HLR algorithm is applied\n",
+    __FILE__,VHLR,group);
+  theCommands.Add("vhlrtype" ,
+    "algo_type={algo|polyalgo} [shape_1 ... shape_n]"
+    " - Changes the type of HLR algorithm using for shapes."
+    " - algo_type: if equals to algo, exact HLR algorithm is applied;\n"
+    "   if equals to polyalgo, polygonal HLR algorithm is applied."
+    "If shapes are not given HLR algoithm of given type is applied"
+    " to all shapes in the view\n",
+    __FILE__,VHLRType,group);
 }

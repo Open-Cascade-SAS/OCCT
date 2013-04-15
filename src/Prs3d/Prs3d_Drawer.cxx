@@ -37,7 +37,8 @@ Prs3d_Drawer::Prs3d_Drawer(): myNbPoints(30),myIsoOnPlane(Standard_False),
  myHLRAngle(20*M_PI/180),
  myLineDrawArrow(Standard_False),
  myDrawHiddenLine(Standard_False),
- myFaceBoundaryDraw(Standard_False)
+ myFaceBoundaryDraw(Standard_False),
+ myTypeOfHLR(Prs3d_TOH_PolyAlgo)
 {
 } 
 
@@ -480,4 +481,24 @@ Handle_Prs3d_LineAspect Prs3d_Drawer::FaceBoundaryAspect ()
   }
 
   return myFaceBoundaryAspect;
+}
+
+// =======================================================================
+// function : SetTypeOfHLR
+// purpose  : set type of HLR algorithm
+// =======================================================================
+
+void Prs3d_Drawer::SetTypeOfHLR ( const Prs3d_TypeOfHLR theTypeOfHLR) 
+{
+  myTypeOfHLR = theTypeOfHLR;
+}
+
+// =======================================================================
+// function : TypeOfHLR
+// purpose  : gets type of HLR algorithm
+// =======================================================================
+
+Prs3d_TypeOfHLR Prs3d_Drawer::TypeOfHLR ( ) const
+{
+  return myTypeOfHLR;
 }

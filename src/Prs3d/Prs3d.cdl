@@ -64,6 +64,16 @@ is
         enumeration TypeOfLinePicking is TOLP_Point,
 	                                 TOLP_Segment
 	end TypeOfLinePicking;
+        
+        enumeration TypeOfHLR is TOH_NotSet,
+                                 TOH_PolyAlgo,
+                                 TOH_Algo;
+            ---Purpose: Declares types of hidden line removal algorithm.
+            --TOH_Algo enables using of exact HLR algorithm.
+            --TOH_PolyAlgo enables using of polygonal HLR algorithm.
+            --TOH_NotSet is used by AIS_Drawer class, it means that the drawer should return the global value.
+            --For more details see AIS_Drawer class, AIS_Shape::Compute() method and
+            --HLRAlgo package from TKHLR toolkit.
 
         class Presentation;
     	---Purpose: defines the presentation object. This object can be

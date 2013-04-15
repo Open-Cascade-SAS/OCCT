@@ -47,7 +47,8 @@ uses
     Array1OfReal    from TColStd,
     Array1OfInteger from TColStd,
     Edge            from TopoDS,
-    Curve           from BRepAdaptor
+    Curve           from BRepAdaptor,
+    BSplineCurve    from Geom
      
 raises
     NoSuchObject        from Standard,
@@ -72,6 +73,12 @@ is
     
     Curve(me : in out; E : Edge from TopoDS)
 	---Purpose: Sets the 3D curve to be projected.
+    is static;
+    
+    GetCurve(me) returns Curve from BRepAdaptor
+	---Purpose: Returns the 3D curve.
+	---C++: return const &
+    	---C++: inline
     is static;
     
     Parameter2d(me; P3d : Real from Standard) returns Real from Standard
@@ -305,7 +312,22 @@ is
     	OutOfRange   from Standard  -- if TP has not length NbPoles
     is static;
     
+    Poles(me; aCurve : BSplineCurve from Geom;
+    	      TP : in out Array1OfPnt2d from TColgp)
+    raises 
+    	NoSuchObject from Standard, -- if rational
+    	OutOfRange   from Standard  -- if TP has not length NbPoles
+    is static;
+    
     PolesAndWeights(me; TP : in out Array1OfPnt2d from TColgp;
+                        TW : in out Array1OfReal  from TColStd)
+    raises 
+    	NoSuchObject from Standard, -- if not rational
+    	OutOfRange   from Standard  -- if TW has not length NbPoles
+    is static;
+    
+    PolesAndWeights(me; aCurve : BSplineCurve from Geom;
+    	    	    	TP : in out Array1OfPnt2d from TColgp;
                         TW : in out Array1OfReal  from TColStd)
     raises 
     	NoSuchObject from Standard, -- if not rational

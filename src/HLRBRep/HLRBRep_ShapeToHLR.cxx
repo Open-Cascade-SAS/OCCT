@@ -203,7 +203,11 @@ HLRBRep_ShapeToHLR::ExploreFace(const Handle(HLRTopoBRep_OutLiner)& S,
     Standard_Integer ne = 0;
     
     for (Ex2.Init(Ex1.Current(), TopAbs_EDGE); Ex2.More(); Ex2.Next())
-      ne++;
+    {
+      const TopoDS_Edge& anEdge = TopoDS::Edge(Ex2.Current());
+      if (!BRep_Tool::Degenerated(anEdge))
+        ne++;
+    }
     
     fd.SetWire (nw, ne);
     ne = 0;
@@ -211,8 +215,10 @@ HLRBRep_ShapeToHLR::ExploreFace(const Handle(HLRTopoBRep_OutLiner)& S,
     for (Ex2.Init(Ex1.Current(), TopAbs_EDGE);
 	 Ex2.More();
 	 Ex2.Next()) {
-      ne++;
       const TopoDS_Edge& E = TopoDS::Edge(Ex2.Current());
+      if (BRep_Tool::Degenerated(E))
+        continue;
+      ne++;
       Standard_Integer ie   = EM.FindIndex(E);
       TopAbs_Orientation orient = E.Orientation();
       Standard_Boolean Int  = TopDS.IsIntLFaceEdge(F,E);

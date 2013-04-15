@@ -1,0 +1,26 @@
+puts "==========="
+puts "OCC23709"
+puts "==========="
+puts ""
+##################################
+# Redesign of hlrtest command
+##################################
+
+set x_coord 183
+set y_coord 267
+
+restore [locate_data_file bug23709_surfcone.brep] result
+vinit
+vdisplay result
+vrotate 35 0 0
+vfit
+vhlr on
+vhlrtype algo result
+
+checkcolor $x_coord $y_coord 1 1 0
+
+set only_screen 1
+
+
+
+

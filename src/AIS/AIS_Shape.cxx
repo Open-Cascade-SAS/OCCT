@@ -340,7 +340,15 @@ void AIS_Shape::Compute(const Handle(Prs3d_Projector)& aProjector,
   {
     try {
       OCC_CATCH_SIGNALS
-      StdPrs_HLRPolyShape::Add(aPresentation,SH,myDrawer,aProjector);
+      switch (TypeOfHLR()) {
+        case Prs3d_TOH_Algo:
+          StdPrs_HLRShape::Add (aPresentation, SH, myDrawer, aProjector);
+          break;
+        case Prs3d_TOH_PolyAlgo:
+        default:
+          StdPrs_HLRPolyShape::Add (aPresentation, SH, myDrawer, aProjector);
+          break;
+      }
     }
     catch (Standard_Failure) {
 #ifdef DEB

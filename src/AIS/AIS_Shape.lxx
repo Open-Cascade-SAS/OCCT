@@ -18,7 +18,7 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
+#include <AIS_Drawer.hxx>
 
 inline void AIS_Shape::Set(const TopoDS_Shape& ashap)
 {
@@ -32,3 +32,12 @@ AIS_Shape::Shape() const
   return myshape;
 }
 
+inline void AIS_Shape::SetTypeOfHLR (const Prs3d_TypeOfHLR theTypeOfHLR) 
+{
+  myDrawer->SetTypeOfHLR (theTypeOfHLR);
+}
+
+inline Prs3d_TypeOfHLR AIS_Shape::TypeOfHLR ( ) const
+{
+  return myDrawer->TypeOfHLR();
+}

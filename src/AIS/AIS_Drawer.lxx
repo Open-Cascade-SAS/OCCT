@@ -99,3 +99,13 @@ inline Standard_Boolean AIS_Drawer::IsOwnFaceBoundaryDraw () const
 
 inline Standard_Boolean AIS_Drawer::IsOwnFaceBoundaryAspect () const
 { return !myFaceBoundaryAspect.IsNull (); }
+
+inline void AIS_Drawer::SetTypeOfHLR (const Prs3d_TypeOfHLR theTypeOfHLR) 
+{
+  myTypeOfHLR = theTypeOfHLR;
+}
+
+inline Prs3d_TypeOfHLR AIS_Drawer::TypeOfHLR ( ) const
+{
+  return (myTypeOfHLR == Prs3d_TOH_NotSet) ? myLink->TypeOfHLR() : myTypeOfHLR;
+}

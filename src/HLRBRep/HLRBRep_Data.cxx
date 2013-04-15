@@ -820,7 +820,7 @@ void HLRBRep_Data::Update (const HLRAlgo_Projector& P)
     fd->Side(FS.IsSide(tol,myToler*10));
     Standard_Boolean inverted = Standard_False;
     if (fd->WithOutL() && !fd->Side()) {
-      inverted = OrientOutLine(face,*fd);
+      //inverted = OrientOutLine(face,*fd);
       OrientOthEdge(face,*fd);
     }
     if (fd->Side()) {

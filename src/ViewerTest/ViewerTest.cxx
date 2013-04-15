@@ -3351,129 +3351,6 @@ static Standard_Integer vr(Draw_Interpretor& , Standard_Integer , const char** a
   Ctx->Display(ais);
   return 0;
 }
-//============================================================================
-#include <HLRAlgo_Projector.hxx>
-#include <Prs3d_Projector.hxx>
-#include <gp.hxx>
-Standard_Integer hlrtest(Draw_Interpretor&,   Standard_Integer n,   const char** a)
-{
-
-  /*Handle(AIS2D_InteractiveContext) aContext2D = Viewer2dTest::GetAIS2DContext();
-  /////////////////////
-  TopoDS_Shape aShape =  DBRep::Get(a[1]);
-  aContext2D->EraseAll(Standard_True);
-  //Standard_Integer aPolyAlgo = 0;
-  Standard_Boolean IsPoly = Standard_False;
-  gp_Ax2 anAx2 = gp::XOY();
-
-  //if(n > 2) aPolyAlgo = Draw::Atoi(a[2]);
-
-  //IsPoly = aPolyAlgo > 0;
-
-  TopoDS_Shape aResult = aShape;
-
-
-  if (n == 11)
-  {
-    Standard_Real x = Draw::Atof(a[2]);
-    Standard_Real y = Draw::Atof(a[3]);
-    Standard_Real z = Draw::Atof(a[4]);
-
-    Standard_Real dx = Draw::Atof(a[5]);
-    Standard_Real dy = Draw::Atof(a[6]);
-    Standard_Real dz = Draw::Atof(a[7]);
-
-    Standard_Real dx1 = Draw::Atof(a[8]);
-    Standard_Real dy1 = Draw::Atof(a[9]);
-    Standard_Real dz1 = Draw::Atof(a[10]);
-
-    gp_Pnt anOrigin (x, y, z);
-    gp_Dir aNormal  (dx, dy, dz);
-    gp_Dir aDX      (dx1, dy1, dz1);
-    anAx2 = gp_Ax2(anOrigin, aNormal, aDX);
-  }
-
-
-  HLRAlgo_Projector aProjector(anAx2);
-
-  //Prs3d_Projector aProjector_t(Standard_False,1, 0,0,1,0,0,1000,0,1,0);
-
-  //aProjector =  aProjector_t.Projector();
-
-  Handle(AIS2D_ProjShape) myDisplayableShape =
-    new AIS2D_ProjShape(aProjector,0,IsPoly, Standard_False);
-
-  myDisplayableShape->ShowEdges(Standard_True, Standard_False,
-				Standard_False, Standard_True, Standard_False);
-
-  myDisplayableShape->Add( aResult );
-
-
-  aContext2D->Display( myDisplayableShape,Standard_True );
-  aContext2D->UpdateCurrentViewer();*/
-
-  return 0;
-}
-
-Standard_Integer phlrtest(Draw_Interpretor&,   Standard_Integer n,   const char** a)
-{
-
-  /*Handle(AIS2D_InteractiveContext) aContext2D = Viewer2dTest::GetAIS2DContext();
-  /////////////////////
-  TopoDS_Shape aShape =  DBRep::Get(a[1]);
-  aContext2D->EraseAll(Standard_True);
-  //Standard_Integer aPolyAlgo = 0;
-  Standard_Boolean IsPoly = Standard_True;
-  gp_Ax2 anAx2 = gp::XOY();
-
-  //if(n > 2) aPolyAlgo = Draw::Atoi(a[2]);
-
-  //IsPoly = aPolyAlgo > 0;
-
-  TopoDS_Shape aResult = aShape;
-
-
-  if (n == 11)
-  {
-    Standard_Real x = Draw::Atof(a[2]);
-    Standard_Real y = Draw::Atof(a[3]);
-    Standard_Real z = Draw::Atof(a[4]);
-
-    Standard_Real dx = Draw::Atof(a[5]);
-    Standard_Real dy = Draw::Atof(a[6]);
-    Standard_Real dz = Draw::Atof(a[7]);
-
-    Standard_Real dx1 = Draw::Atof(a[8]);
-    Standard_Real dy1 = Draw::Atof(a[9]);
-    Standard_Real dz1 = Draw::Atof(a[10]);
-
-    gp_Pnt anOrigin (x, y, z);
-    gp_Dir aNormal  (dx, dy, dz);
-    gp_Dir aDX      (dx1, dy1, dz1);
-    anAx2 = gp_Ax2(anOrigin, aNormal, aDX);
-  }
-
-
-  HLRAlgo_Projector aProjector(anAx2);
-
-  //Prs3d_Projector aProjector_t(Standard_False,1, 0,0,1,0,0,1000,0,1,0);
-
-  //aProjector =  aProjector_t.Projector();
-
-  Handle(AIS2D_ProjShape) myDisplayableShape =
-    new AIS2D_ProjShape(aProjector,0,IsPoly, Standard_False);
-
-  myDisplayableShape->ShowEdges(Standard_True, Standard_False,
-				Standard_False, Standard_True, Standard_False);
-
-  myDisplayableShape->Add( aResult );
-
-
-  aContext2D->Display( myDisplayableShape,Standard_True );
-  aContext2D->UpdateCurrentViewer();*/
-
-  return 0;
-}
 
 //==============================================================================
 //function : ViewerTest::Commands
@@ -3677,9 +3554,6 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 
   theCommands.Add("vr", "vr : reading of the shape",
 		  __FILE__,vr, group);
-
-  theCommands.Add("hlrtest"       , "Usage: hlrtest s1 s2 ...", __FILE__, hlrtest, group);
-  theCommands.Add("phlrtest"       , "Usage: hlrtest s1 s2 ...", __FILE__, phlrtest, group);
 
 }
 

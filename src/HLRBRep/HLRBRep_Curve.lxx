@@ -46,6 +46,14 @@ inline BRepAdaptor_Curve& HLRBRep_Curve::Curve()
 { return myCurve; }
 
 //=======================================================================
+//function : GetCurve
+//purpose  : 
+//=======================================================================
+
+inline const BRepAdaptor_Curve& HLRBRep_Curve::GetCurve() const
+{ return myCurve; }
+
+//=======================================================================
 //function : Value3D
 //purpose  : 
 //=======================================================================

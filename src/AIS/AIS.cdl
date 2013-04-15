@@ -157,7 +157,7 @@ uses
 is
     
     
-    enumeration DisplayMode is WireFrame, Shaded, QuickHLR, ExactHLR;
+    enumeration DisplayMode is WireFrame, Shaded;
     	 ---Purpose:
     	 -- Sets display modes other than neutral point ones,
     	 -- for interactive objects. The possibilities include:

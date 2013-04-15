@@ -67,7 +67,8 @@ uses
     Selection             from SelectMgr,
     KindOfInteractive     from AIS,
     Transformation        from Geom,
-    Drawer                from Prs3d
+    Drawer                from Prs3d,
+    TypeOfHLR             from Prs3d
  is
 
     Create(shap: Shape from TopoDS) 
@@ -161,7 +162,13 @@ uses
     	-- already set, false is returned.
 
 
-
+    SetTypeOfHLR(me: mutable; theTypeOfHLR: TypeOfHLR from Prs3d);
+    ---Purpose: Sets the type of HLR algorithm used by the shape
+    ---C++: inline
+    
+    TypeOfHLR(me) returns TypeOfHLR from Prs3d;
+    ---Purpose: Gets the type of HLR algorithm
+    ---C++: inline
 
 
                     ---Category: Redefine Compute Methods...

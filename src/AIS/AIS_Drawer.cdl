@@ -65,7 +65,8 @@ uses
     TypeOfDeflection from Aspect,
     NameOfColor from Quantity,
     PlaneAngle from Quantity,
-    Length from Quantity
+    Length from Quantity,
+    TypeOfHLR from Prs3d
 
 is
     Create returns mutable Drawer from AIS;
@@ -124,8 +125,17 @@ is
 	 --          sets myOwnHLRDeviationAngle and  myPreviousHLRDeviationAngle
     is redefined static;
 
+    SetTypeOfHLR(me: mutable; theTypeOfHLR: TypeOfHLR from Prs3d)
+    is redefined;
+    ---Purpose: Sets the type of HLR algorithm
+    --          used by drawer's interactive objects
+    ---C++: inline
     
-	
+    TypeOfHLR(me) returns TypeOfHLR from Prs3d
+    is redefined;
+    ---Purpose: Returns the type of HLR algorithm currently in use.
+    ---C++: inline
+
     DeviationCoefficient(me) returns Real from Standard
      	 ---Purpose: Drawings of curves or patches are made with respect
     	 -- to a maximal chordal deviation. A Deviation coefficient
@@ -626,9 +636,8 @@ fields
     
     myhasOwnHLRDeviationAngle        : Boolean from Standard;
     myOwnHLRDeviationAngle           : Real from Standard; 
-    myPreviousHLRDeviationAngle      : Real from Standard; 	 	
-
-	myHasOwnFaceBoundaryDraw         : Boolean from Standard;
+    myPreviousHLRDeviationAngle      : Real from Standard;
+    myHasOwnFaceBoundaryDraw         : Boolean from Standard;
 end Drawer;
  
 

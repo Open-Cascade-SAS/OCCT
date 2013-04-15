@@ -23,9 +23,16 @@
 #include <BRepLib_MakeEdge2d.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
+#include <BRep_Tool.hxx>
+#include <TopoDS.hxx>
+#include <TopExp.hxx>
+#include <BRepLib_MakeVertex.hxx>
+#include <BRep_Builder.hxx>
+
 
 //=======================================================================
 //function : MakeEdge
@@ -42,90 +49,119 @@ TopoDS_Edge HLRBRep::MakeEdge (const HLRBRep_Curve& ec,
 
   switch (ec.GetType())
   {
-    case GeomAbs_Line:
-      Edg = BRepLib_MakeEdge2d(ec.Line(),sta,end);
-      break;
-
-    case GeomAbs_Circle:
-      Edg = BRepLib_MakeEdge2d(ec.Circle(),sta,end);
-      break;
-
-	case GeomAbs_Ellipse:
-      Edg = BRepLib_MakeEdge2d(ec.Ellipse(),sta,end);
-      break;
-
-	case GeomAbs_Hyperbola:
-      Edg = BRepLib_MakeEdge2d(ec.Hyperbola(),sta,end);
-      break;
-
-	case GeomAbs_Parabola:
-      Edg = BRepLib_MakeEdge2d(ec.Parabola(),sta,end);
-      break;
-
-    case GeomAbs_BezierCurve: {
-      TColgp_Array1OfPnt2d Poles(1,ec.NbPoles());
-      Handle(Geom2d_BezierCurve) ec2d;
-      if (ec.IsRational()) {
-        TColStd_Array1OfReal Weights(1,ec.NbPoles());
-        ec.PolesAndWeights(Poles,Weights);
-        ec2d = new Geom2d_BezierCurve(Poles,Weights);
+  case GeomAbs_Line:
+    Edg = BRepLib_MakeEdge2d(ec.Line(),sta,end);
+    break;
+    
+  case GeomAbs_Circle:
+    Edg = BRepLib_MakeEdge2d(ec.Circle(),sta,end);
+    break;
+    
+  case GeomAbs_Ellipse:
+    Edg = BRepLib_MakeEdge2d(ec.Ellipse(),sta,end);
+    break;
+    
+  case GeomAbs_Hyperbola:
+    Edg = BRepLib_MakeEdge2d(ec.Hyperbola(),sta,end);
+    break;
+    
+  case GeomAbs_Parabola:
+    Edg = BRepLib_MakeEdge2d(ec.Parabola(),sta,end);
+    break;
+    
+  case GeomAbs_BezierCurve: {
+    TColgp_Array1OfPnt2d Poles(1,ec.NbPoles());
+    Handle(Geom2d_BezierCurve) ec2d;
+    if (ec.IsRational()) {
+      TColStd_Array1OfReal Weights(1,ec.NbPoles());
+      ec.PolesAndWeights(Poles,Weights);
+      ec2d = new Geom2d_BezierCurve(Poles,Weights);
+    }
+    else {
+      ec.Poles(Poles);
+      ec2d = new Geom2d_BezierCurve(Poles);
+    }
+    BRepLib_MakeEdge2d mke2d(ec2d,sta,end);
+    if (mke2d.IsDone())
+      Edg = mke2d.Edge();
+    break;
+  }
+    
+  case GeomAbs_BSplineCurve: {
+    Handle(Geom2d_BSplineCurve) ec2d;
+    GeomAdaptor_Curve GAcurve = ec.GetCurve().Curve();
+    TopoDS_Edge anEdge = ec.GetCurve().Edge();
+    Standard_Real fpar, lpar;
+    Handle(Geom_Curve) aCurve = BRep_Tool::Curve(anEdge, fpar, lpar);
+    const Handle(Geom_BSplineCurve)& BSplCurve = Handle(Geom_BSplineCurve)::DownCast(aCurve);
+    Handle(Geom_BSplineCurve) theCurve = Handle(Geom_BSplineCurve)::DownCast(BSplCurve->Copy());
+    if (theCurve->IsPeriodic() && !GAcurve.IsClosed())
+    {
+      theCurve->Segment(sta, end);
+      TColgp_Array1OfPnt2d    Poles(1, theCurve->NbPoles());
+      TColStd_Array1OfReal    knots(1, theCurve->NbKnots());
+      TColStd_Array1OfInteger mults(1, theCurve->NbKnots());
+      //-- ec.KnotsAndMultiplicities(knots,mults);
+      theCurve->Knots(knots);
+      theCurve->Multiplicities(mults);
+      if (theCurve->IsRational()) {
+        TColStd_Array1OfReal Weights(1, theCurve->NbPoles());
+        ec.PolesAndWeights(theCurve, Poles, Weights);
+        ec2d = new Geom2d_BSplineCurve(Poles, Weights, knots, mults,
+                                       theCurve->Degree(), theCurve->IsPeriodic());
       }
       else {
-        ec.Poles(Poles);
-        ec2d = new Geom2d_BezierCurve(Poles);
+        ec.Poles(theCurve, Poles);
+        ec2d = new Geom2d_BSplineCurve(Poles, knots, mults,
+                                       theCurve->Degree(), theCurve->IsPeriodic());
       }
-      BRepLib_MakeEdge2d mke2d(ec2d,sta,end);
-      if (mke2d.IsDone())
-        Edg = mke2d.Edge();
-      break;
     }
-
-	case GeomAbs_BSplineCurve: {
+    else
+    {
       TColgp_Array1OfPnt2d    Poles(1,ec.NbPoles());
       TColStd_Array1OfReal    knots(1,ec.NbKnots());
       TColStd_Array1OfInteger mults(1,ec.NbKnots());
       //-- ec.KnotsAndMultiplicities(knots,mults);
       ec.Knots(knots);
       ec.Multiplicities(mults);
-      Handle(Geom2d_BSplineCurve) ec2d;
       if (ec.IsRational()) {
         TColStd_Array1OfReal Weights(1,ec.NbPoles());
         ec.PolesAndWeights(Poles,Weights);
-        ec2d = new Geom2d_BSplineCurve(Poles,Weights,knots,mults,ec.Degree());
+        ec2d = new Geom2d_BSplineCurve(Poles,Weights,knots,mults,ec.Degree(),ec.IsPeriodic());
       }
       else {
         ec.Poles(Poles);
-        ec2d = new Geom2d_BSplineCurve(Poles,knots,mults,ec.Degree());
+        ec2d = new Geom2d_BSplineCurve(Poles,knots,mults,ec.Degree(),ec.IsPeriodic());
       }
-      BRepLib_MakeEdge2d mke2d(ec2d,sta,end);
-      if (mke2d.IsDone())
-        Edg = mke2d.Edge();
-      break;
     }
-
-	default: {
-      const Standard_Integer nbPnt = 15;
-      TColgp_Array1OfPnt2d    Poles(1,nbPnt);
-      TColStd_Array1OfReal    knots(1,nbPnt);
-      TColStd_Array1OfInteger mults(1,nbPnt);
-      mults.Init(1);
-      mults(1    ) = 2;
-      mults(nbPnt) = 2;
-      const Standard_Real step = (U2-U1)/(nbPnt-1);
-      Standard_Real par3d = U1;
-      for (Standard_Integer i = 1; i < nbPnt; i++) {
-        Poles(i) = ec.Value(par3d);
-        knots(i) = par3d;
-        par3d += step;
-      }
-      Poles(nbPnt) = ec.Value(U2);
-      knots(nbPnt) = U2;
-      
-      Handle(Geom2d_BSplineCurve) ec2d = new Geom2d_BSplineCurve(Poles,knots,mults,1);
-      BRepLib_MakeEdge2d mke2d(ec2d,sta,end);
-      if (mke2d.IsDone())
-        Edg = mke2d.Edge();
+    BRepLib_MakeEdge2d mke2d(ec2d, sta, end);
+    if (mke2d.IsDone())
+      Edg = mke2d.Edge();
+    break;
+  }
+  default: {
+    const Standard_Integer nbPnt = 15;
+    TColgp_Array1OfPnt2d    Poles(1,nbPnt);
+    TColStd_Array1OfReal    knots(1,nbPnt);
+    TColStd_Array1OfInteger mults(1,nbPnt);
+    mults.Init(1);
+    mults(1    ) = 2;
+    mults(nbPnt) = 2;
+    const Standard_Real step = (U2-U1)/(nbPnt-1);
+    Standard_Real par3d = U1;
+    for (Standard_Integer i = 1; i < nbPnt; i++) {
+      Poles(i) = ec.Value(par3d);
+      knots(i) = par3d;
+      par3d += step;
     }
+    Poles(nbPnt) = ec.Value(U2);
+    knots(nbPnt) = U2;
+    
+    Handle(Geom2d_BSplineCurve) ec2d = new Geom2d_BSplineCurve(Poles,knots,mults,1);
+    BRepLib_MakeEdge2d mke2d(ec2d,sta,end);
+    if (mke2d.IsDone())
+      Edg = mke2d.Edge();
+  }
   }
   return Edg;
 }

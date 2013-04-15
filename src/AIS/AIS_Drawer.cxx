@@ -31,6 +31,7 @@ myHasOwnFaceBoundaryDraw (Standard_False)
 {
   SetMaximalParameterValue(500000.);
   myLink->SetMaximalParameterValue(500000.);
+  SetTypeOfHLR (Prs3d_TOH_NotSet);
 } 
 
 
@@ -103,7 +104,6 @@ void AIS_Drawer::SetHLRAngle ( const Standard_Real anAngle )
   myOwnHLRDeviationAngle     = anAngle ;
   myhasOwnHLRDeviationAngle    = Standard_True;   
 }
-
 
 /////// Get
 //=======================================================================

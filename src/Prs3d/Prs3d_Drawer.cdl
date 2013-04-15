@@ -47,7 +47,8 @@ uses
     TypeOfDeflection from Aspect,
     NameOfColor from Quantity,
     PlaneAngle from Quantity,
-    Length from Quantity
+    Length from Quantity,
+    TypeOfHLR from Prs3d
 
 is
     Create returns mutable Drawer from Prs3d;
@@ -160,6 +161,15 @@ is
     IsoOnPlane(me) returns Boolean from Standard 
 	---Purpose: Returns True if the drawing of isos on planes is enabled.
     is virtual;
+    
+    SetTypeOfHLR(me: mutable; theTypeOfHLR: TypeOfHLR from Prs3d)
+    is virtual;
+    ---Purpose: Sets the type of HLR algorithm
+    --          used by drawer's interactive objects
+    
+    TypeOfHLR(me) returns TypeOfHLR from Prs3d
+    is virtual;
+     ---Purpose: Gets the myTypeOfHLR value
 
 
 -- 
@@ -561,7 +571,8 @@ fields
 	    myLengthAspect: LengthAspect from Prs3d is protected;
 	    myAngleAspect: AngleAspect from Prs3d is protected;
 	    myRadiusAspect: RadiusAspect from Prs3d is protected;
-            mySectionAspect: LineAspect from Prs3d is protected;
-        myFaceBoundaryDraw    : Boolean from Standard is protected;
-        myFaceBoundaryAspect  : LineAspect from Prs3d is protected;
+      mySectionAspect: LineAspect from Prs3d is protected;
+      myFaceBoundaryDraw    : Boolean from Standard is protected;
+      myFaceBoundaryAspect  : LineAspect from Prs3d is protected;
+      myTypeOfHLR           : TypeOfHLR from Prs3d is protected;
 end Drawer;

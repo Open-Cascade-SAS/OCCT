@@ -521,6 +521,26 @@ void  HLRBRep_Curve::Poles (TColgp_Array1OfPnt2d& TP) const
 }
 
 //=======================================================================
+//function : Poles
+//purpose  : 
+//=======================================================================
+
+void  HLRBRep_Curve::Poles (const Handle(Geom_BSplineCurve)& aCurve,
+			    TColgp_Array1OfPnt2d& TP) const
+{
+  Standard_Integer i1 = TP.Lower();
+  Standard_Integer i2 = TP.Upper();
+  TColgp_Array1OfPnt TP3(i1,i2);
+  //-- HLRBRep_BCurveTool::Poles(myCurve,TP3);
+  aCurve->Poles(TP3);
+
+  for (Standard_Integer i = i1; i <= i2; i++) {
+    ((HLRAlgo_Projector*) myProj)->Transform(TP3(i));
+    TP(i).SetCoord(TP3(i).X(),TP3(i).Y());
+  }
+}
+
+//=======================================================================
 //function : PolesAndWeights
 //purpose  : 
 //=======================================================================
@@ -545,6 +565,30 @@ void  HLRBRep_Curve::PolesAndWeights (TColgp_Array1OfPnt2d& TP,
     HB->Weights(TW);
     //-- (HLRBRep_BCurveTool::Bezier(myCurve))->PolesAndWeights(TP3,TW);
   }
+  for (Standard_Integer i = i1; i <= i2; i++) {
+    ((HLRAlgo_Projector*) myProj)->Transform(TP3(i));
+    TP(i).SetCoord(TP3(i).X(),TP3(i).Y());
+  }
+}
+
+//=======================================================================
+//function : PolesAndWeights
+//purpose  : 
+//=======================================================================
+
+void  HLRBRep_Curve::PolesAndWeights (const Handle(Geom_BSplineCurve)& aCurve,
+				      TColgp_Array1OfPnt2d& TP,
+				      TColStd_Array1OfReal& TW) const
+{
+  Standard_Integer i1 = TP.Lower();
+  Standard_Integer i2 = TP.Upper();
+  TColgp_Array1OfPnt TP3(i1,i2);
+  //-- HLRBRep_BCurveTool::PolesAndWeights(myCurve,TP3,TW);
+  
+  aCurve->Poles(TP3);
+  aCurve->Weights(TW);  
+    //-- (HLRBRep_BCurveTool::BSpline(myCurve))->PolesAndWeights(TP3,TW);
+
   for (Standard_Integer i = i1; i <= i2; i++) {
     ((HLRAlgo_Projector*) myProj)->Transform(TP3(i));
     TP(i).SetCoord(TP3(i).X(),TP3(i).Y());

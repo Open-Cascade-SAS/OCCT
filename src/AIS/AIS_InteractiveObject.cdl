@@ -300,8 +300,6 @@ is
     	-- The range of possibilities currently proposed is the following:
     	-- -   AIS_WireFrame
     	-- -   AIS_Shaded
-    	-- -   AIS_QuickHLR
-    	-- -   AIS_ExactHLR
     	--   This range can, however, be extended through the creation of new display modes.
     
     UnsetDisplayMode(me : mutable);
@@ -315,8 +313,6 @@ is
     	-- The range of possibilities is the following:
     	-- -   AIS_WireFrame
     	-- -   AIS_Shaded
-    	-- -   AIS_QuickHLR
-    	-- -   AIS_ExactHLR
     	--   This range can, however, be extended through the
     	-- creation of new display modes.
 
