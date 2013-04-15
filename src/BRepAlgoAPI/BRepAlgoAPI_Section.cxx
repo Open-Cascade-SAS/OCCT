@@ -389,56 +389,6 @@ Standard_Boolean BRepAlgoAPI_Section::HasAncestorFaceOn2(const TopoDS_Shape& E,T
 }
 
 //=======================================================================
-//function : PCurveOn1
-//purpose  : 
-//=======================================================================
-Handle(Geom2d_Curve) BRepAlgoAPI_Section::PCurveOn1(const TopoDS_Shape& E) const
-{
-  Handle(Geom2d_Curve) aResult;
-  
-  if(myComputePCurve1) {
-    TopoDS_Shape aShape;
-
-    if(HasAncestorFaceOn1(E, aShape)) {
-      const TopoDS_Edge& anEdge = TopoDS::Edge(E);
-      const TopoDS_Face& aFace  = TopoDS::Face(aShape);
-      Standard_Real f, l;
-      aResult = BRep_Tool::CurveOnSurface(anEdge, aFace, f, l);
-
-      if(!aResult->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve))) {
-        aResult = new Geom2d_TrimmedCurve(aResult, f, l);
-      }
-    }
-  }
-  return aResult;
-}
-
-//=======================================================================
-//function : PCurveOn2
-//purpose  : 
-//=======================================================================
-Handle(Geom2d_Curve) BRepAlgoAPI_Section::PCurveOn2(const TopoDS_Shape& E) const
-{
-  Handle(Geom2d_Curve) aResult;
-  
-  if(myComputePCurve2) {
-    TopoDS_Shape aShape;
-
-    if(HasAncestorFaceOn2(E, aShape)) {
-      const TopoDS_Edge& anEdge = TopoDS::Edge(E);
-      const TopoDS_Face& aFace  = TopoDS::Face(aShape);
-      Standard_Real f, l;
-      aResult = BRep_Tool::CurveOnSurface(anEdge, aFace, f, l);
-      
-      if(!aResult->IsKind(STANDARD_TYPE(Geom2d_TrimmedCurve))) {
-        aResult = new Geom2d_TrimmedCurve(aResult, f, l);
-      }
-    }
-  }
-  return aResult;
-}
-
-//=======================================================================
 //function : InitParameters
 //purpose  : 
 //=======================================================================
@@ -460,18 +410,17 @@ static Standard_Boolean HasAncestorFaces(const BOPAlgo_PPaveFiller& theDSFiller,
                                          TopoDS_Shape&            F1,
                                          TopoDS_Shape&            F2) {
 
-  Standard_Integer aNb, i, j, nE, nF1, nF2, aNbCurves;;
+  Standard_Integer aNb, i, j, nE, nF1, nF2, aNbCurves;
   //
   const BOPDS_PDS& pDS = theDSFiller->PDS();
   BOPDS_VectorOfInterfFF& aFFs=pDS->InterfFF();
   //
   aNb=aFFs.Extent();
-
+  //section edges
   for (i = 0; i < aNb; i++) {
     BOPDS_InterfFF& aFFi=aFFs(i);
     aFFi.Indices(nF1, nF2);
     //
-    //section edges
     const BOPDS_VectorOfCurve& aSeqOfCurve=aFFi.Curves();
     aNbCurves=aSeqOfCurve.Extent();
     for (j=0; j<aNbCurves; j++) {
@@ -492,22 +441,6 @@ static Standard_Boolean HasAncestorFaces(const BOPAlgo_PPaveFiller& theDSFiller,
           F2 = pDS->Shape(nF2);
           return Standard_True;
         }
-      }
-    }
-
-    //existing pave blocks
-    BOPCol_ListOfInteger aLSE;
-    BOPCol_ListIteratorOfListOfInteger aItLSE;
-    //
-    pDS->SharedEdges(nF1, nF2, aLSE, theDSFiller->Allocator());
-    aItLSE.Initialize(aLSE);
-    for (; aItLSE.More(); aItLSE.Next()) {
-      nE = aItLSE.Value();
-      //
-      if(E.IsSame(pDS->Shape(nE))) {
-        F1 = pDS->Shape(nF1);
-        F2 = pDS->Shape(nF2);
-        return Standard_True;
       }
     }
   }

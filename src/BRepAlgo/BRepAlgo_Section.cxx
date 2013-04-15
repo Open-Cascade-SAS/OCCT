@@ -321,51 +321,6 @@ static TopoDS_Shape MakeShape(const Handle(Geom_Surface)& );
 }
 
 //=======================================================================
-//function : PCurve1
-//purpose  : 
-//=======================================================================
-  Handle(Geom2d_Curve) BRepAlgo_Section::PCurveOn1(const TopoDS_Shape& E) const
-{
-  Handle(Geom2d_Curve) PC;
-  const TopOpeBRepTool_GeomTool& GT = myHBuilder->BuildTool().GetGeomTool();
-  if (!GT.CompPC1()) return PC;
-
-  TopoDS_Shape F1,F2; Standard_Integer iC;
-  Standard_Boolean res = myHBuilder->EdgeCurveAncestors(E,F1,F2,iC);
-  if ( !res ) return PC;
-
-  const TopoDS_Edge& EE = TopoDS::Edge(E);
-  const TopoDS_Face& FF = TopoDS::Face(F1);
-  Standard_Real f,l; PC = BRep_Tool::CurveOnSurface(EE,FF,f,l);
-  Handle(Geom2d_TrimmedCurve) TC = new Geom2d_TrimmedCurve(PC,f,l);
-
-  return TC;
-}
-
-//=======================================================================
-//function : PCurve2
-//purpose  : 
-//=======================================================================
-  Handle(Geom2d_Curve) BRepAlgo_Section::PCurveOn2(const TopoDS_Shape& E) const
-{
-  Handle(Geom2d_Curve) PC;
-  const TopOpeBRepTool_GeomTool& GT = myHBuilder->BuildTool().GetGeomTool();
-  if (!GT.CompPC2()) return PC;
-
-  TopoDS_Shape F1,F2;
-  Standard_Integer iC;
-  Standard_Boolean res = myHBuilder->EdgeCurveAncestors(E,F1,F2,iC);
-  if ( !res ) return PC;
-
-  const TopoDS_Edge& EE = TopoDS::Edge(E);
-  const TopoDS_Face& FF = TopoDS::Face(F2);
-  Standard_Real f,l; PC = BRep_Tool::CurveOnSurface(EE,FF,f,l);
-  Handle(Geom2d_TrimmedCurve) TC = new Geom2d_TrimmedCurve(PC,f,l);
-
-  return TC;
-}
-
-//=======================================================================
 //function : InitParameters
 //purpose  : initialize the fields of the class
 //=======================================================================
