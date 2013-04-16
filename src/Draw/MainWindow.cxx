@@ -41,7 +41,7 @@ extern Standard_Boolean Draw_IsConsoleSubsystem;
 |
 |
 \*--------------------------------------------------------*/
-LONG APIENTRY WndProc(HWND hWndFrame, UINT wMsg, WPARAM wParam, LONG lParam )
+LRESULT APIENTRY WndProc(HWND hWndFrame, UINT wMsg, WPARAM wParam, LPARAM lParam )
 {
   HWND hWndClient;	
   switch(wMsg)

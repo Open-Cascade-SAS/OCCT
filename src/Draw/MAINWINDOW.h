@@ -33,7 +33,7 @@
 */
 #include <Windows.h>
 
-LONG APIENTRY WndProc(HWND, UINT, WPARAM, LONG);
+LRESULT APIENTRY WndProc(HWND, UINT, WPARAM, LPARAM);
 BOOL CreateProc(HWND);
 VOID DestroyProc(HWND);
 BOOL CommandProc(HWND, WPARAM, LPARAM);

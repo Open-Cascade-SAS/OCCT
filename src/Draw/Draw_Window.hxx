@@ -435,7 +435,7 @@ public:
   __Draw_API static void SelectNoWait (HANDLE&,int&,int&,int&);
 
   // Procedure de fenetre
-  __Draw_API static LONG APIENTRY DrawProc (HWND,UINT,WPARAM,LONG);
+  __Draw_API static LRESULT APIENTRY DrawProc (HWND,UINT,WPARAM,LPARAM);
 
 private:
 

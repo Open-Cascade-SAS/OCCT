@@ -1389,7 +1389,7 @@ void OpenGl_View::CreateBackgroundTexture (const Standard_CString  theFilePath,
     {
       for (Standard_Size aCol = 0; aCol < anImage.SizeX(); ++aCol)
       {
-        aSrcColor = anImageLoaded.PixelColor (aCol, aRow);
+        aSrcColor = anImageLoaded.PixelColor ((Standard_Integer )aCol, (Standard_Integer )aRow);
         Image_ColorRGB& aColor = aDataNew.ChangeValue (aRow, aCol);
         aColor.r() = int(255.0 * aSrcColor.Red());
         aColor.g() = int(255.0 * aSrcColor.Green());

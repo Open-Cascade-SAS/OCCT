@@ -81,10 +81,9 @@ HWND CreateCommandWindow(HWND hWnd, int nitem)
 /*--------------------------------------------------------*\
 |  COMMAND WINDOW PROCEDURE
 \*--------------------------------------------------------*/
-LONG APIENTRY CommandProc(HWND hWnd, UINT wMsg, WPARAM wParam, LONG lParam )
+LRESULT APIENTRY CommandProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam )
 {
   HWND hWndEdit;
-  int index; // Nb of characters in the buffer of hWndEdit
   MINMAXINFO* lpmmi;
 
   switch(wMsg)
@@ -102,12 +101,15 @@ LONG APIENTRY CommandProc(HWND hWnd, UINT wMsg, WPARAM wParam, LONG lParam )
           break;
 
     case WM_SIZE :
+    {
     			hWndEdit = (HWND)GetWindowLong(hWnd, CLIENTWND);          
     			MoveWindow(hWndEdit, 0, 0, LOWORD(lParam), HIWORD(lParam), TRUE);
-            // Place the cursor at the end of the buffer
-          index =  SendMessage(hWnd, WM_GETTEXTLENGTH, 0l, 0l);
+          // Place the cursor at the end of the buffer
+          // Nb of characters in the buffer of hWndEdit
+          LRESULT index = SendMessage(hWnd, WM_GETTEXTLENGTH, 0l, 0l);
           SendMessage(hWnd, EM_SETSEL, index, index); 
     			break;
+    }
 
     case WM_SETFOCUS :
     			hWndEdit = (HWND)GetWindowLong(hWnd, CLIENTWND);
@@ -122,7 +124,7 @@ LONG APIENTRY CommandProc(HWND hWnd, UINT wMsg, WPARAM wParam, LONG lParam )
 
 
 
-LONG APIENTRY EditProc(HWND, UINT, WPARAM, LONG);
+LRESULT APIENTRY EditProc(HWND, UINT, WPARAM, LPARAM);
 /*--------------------------------------------------------*\
 |  COMMAND CREATE PROCEDURE
 \*--------------------------------------------------------*/
@@ -176,7 +178,7 @@ int GetCommand(HWND hWnd, char* buffer)
   int again = 1;
   char temp[COMMANDSIZE]="";
 
-  int nbLine = SendMessage(hWnd, EM_GETLINECOUNT, 0l, 0l);
+  int nbLine = (int )SendMessage(hWnd, EM_GETLINECOUNT, 0l, 0l);
   
   int nbChar = 0;
   buffer[0]='\0';
@@ -187,7 +189,7 @@ int GetCommand(HWND hWnd, char* buffer)
       WORD* nbMaxChar = (WORD*)temp;
       *nbMaxChar = COMMANDSIZE-1;
       
-      int nbCharRead = SendMessage(hWnd, EM_GETLINE, nbLine-1, (LPARAM)temp);
+      int nbCharRead = (int )SendMessage(hWnd, EM_GETLINE, nbLine-1, (LPARAM)temp);
       nbChar += nbCharRead ;
       int cmp = strncmp(temp, PROMPT, 10);
       temp[nbCharRead]='\0';
@@ -208,14 +210,14 @@ extern char console_command[1000];
 /*--------------------------------------------------------*\
 |  EDIT WINDOW PROCEDURE
 \*--------------------------------------------------------*/
-LONG APIENTRY EditProc(HWND hWnd, UINT wMsg, WPARAM wParam, LONG lParam )
+LRESULT APIENTRY EditProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam )
 {
   char buffer[COMMANDSIZE];	
 	POINT pos;
 	BOOL rep;
-	static int nbline; // Process the buffer of the edit window 
-  int index;
-    
+	static LRESULT nbline; // Process the buffer of the edit window 
+  LRESULT index;
+
   switch(wMsg)
   {
   case WM_CHAR :

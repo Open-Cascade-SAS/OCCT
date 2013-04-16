@@ -429,27 +429,25 @@ void WNT_Window :: doCreate (
                     const Quantity_NameOfColor         aBackColor
                    )
 {
-  LONG            uData;
-  WINDOWPLACEMENT wp;
-
   ZeroMemory (&myExtraData, sizeof (WNT_WindowData));
 
   myHWindow        = aHandle;
   myHParentWindow  = GetParent ((HWND )aHandle);
-  uData            = GetWindowLongPtr ((HWND )aHandle, GWLP_USERDATA);
+  LONG_PTR uData   = GetWindowLongPtr ((HWND )aHandle, GWLP_USERDATA);
   myUsrData        = Standard_Address(-1);
 
   SetBackground (aBackColor);
 
   myExtraData.WNT_Window_Ptr = (void* )this;
 
-  if (uData != (LONG )&myExtraData)
+  if (uData != (LONG_PTR )&myExtraData)
   {
     myUsrData = (Standard_Address )SetWindowLongPtr ((HWND )myHWindow, GWLP_USERDATA, (LONG_PTR )&myExtraData);
   }
 
   myExtraData.dwFlags = WDF_FOREIGN;
 
+  WINDOWPLACEMENT wp;
   wp.length = sizeof (WINDOWPLACEMENT);
   GetWindowPlacement ((HWND )myHWindow, &wp);
 

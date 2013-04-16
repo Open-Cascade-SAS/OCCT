@@ -1365,7 +1365,7 @@ HWND DrawWindow::CreateDrawWindow(HWND hWndClient, int nitem)
 /*--------------------------------------------------------*\
 |  DRAW WINDOW PROCEDURE
 \*--------------------------------------------------------*/
-LONG APIENTRY DrawWindow::DrawProc(HWND hWnd, UINT wMsg, WPARAM wParam, LONG lParam )
+LRESULT APIENTRY DrawWindow::DrawProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam )
 {
   DrawWindow* localObjet = (DrawWindow*)GetWindowLong(hWnd, CLIENTWND);
   if (!localObjet)
@@ -1490,15 +1490,15 @@ DrawWindow::~DrawWindow()
 void DrawWindow::Init(Standard_Integer theXLeft, Standard_Integer theYTop,
                       Standard_Integer theWidth, Standard_Integer theHeight)
 {
-  if (win == 0)
+  if (win == NULL)
   {
     win = CreateDrawWindow(hWndClientMDI, 0);
   }
 
   // include decorations in the window dimensions
   // to reproduce same behaviour of Xlib window.
-  DWORD aWinStyle   = GetWindowLongPtr (win, GWL_STYLE);
-  DWORD aWinStyleEx = GetWindowLongPtr (win, GWL_EXSTYLE);
+  DWORD aWinStyle   = GetWindowLong (win, GWL_STYLE);
+  DWORD aWinStyleEx = GetWindowLong (win, GWL_EXSTYLE);
   HMENU aMenu       = GetMenu (win);
 
   RECT aRect;
@@ -1820,7 +1820,7 @@ void DrawWindow::DrawString(int x,int y, char* text)
   HDC hDC = GetDC(win);
   HDC aWorkDC = myUseBuffer ? GetMemDC(hDC) : hDC;
 
-  TextOut(aWorkDC, x, y, text, strlen(text));
+  TextOut(aWorkDC, x, y, text, (int )strlen(text));
 
   if (myUseBuffer) ReleaseMemDC(aWorkDC);
   ReleaseDC(win,hDC);

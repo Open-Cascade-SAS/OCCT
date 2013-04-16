@@ -299,7 +299,7 @@ Standard_Boolean OpenGl_Context::CheckExtension (const char* theExtName) const
     std::cerr << "CheckExtension called with NULL string!\n";
     return Standard_False;
   }
-  int anExtNameLen = strlen (theExtName);
+  const size_t anExtNameLen = strlen (theExtName);
 
   // available since OpenGL 3.0
   // and the ONLY way to check extensions with OpenGL 3.1+ core profile
@@ -333,7 +333,7 @@ Standard_Boolean OpenGl_Context::CheckExtension (const char* theExtName) const
   const char* aPtrEnd = aPtrIter + strlen (anExtString);
   while (aPtrIter < aPtrEnd)
   {
-    int n = strcspn (aPtrIter, " ");
+    const size_t n = strcspn (aPtrIter, " ");
     if ((n == anExtNameLen) && (strncmp (aPtrIter, theExtName, anExtNameLen) == 0))
     {
       return Standard_True;
