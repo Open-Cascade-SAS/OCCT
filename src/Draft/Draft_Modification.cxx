@@ -58,6 +58,7 @@
 #include <Precision.hxx>
 
 #include <BRep_Builder.hxx>
+#include <BRepTools.hxx>
 
 //=======================================================================
 //function : Draft_Modification
@@ -422,23 +423,34 @@ Standard_Boolean Draft_Modification::NewCurve2d(const TopoDS_Edge& E,
 	      (typs == STANDARD_TYPE(Geom_ConicalSurface));
 
   if ( JeRecadre) {
-    gp_Pnt2d PF,PL;
-    BRep_Tool::UVPoints(E,F,PF,PL);
-    gp_Pnt2d NewPF = C->Value(Fp);
-    gp_Vec2d vectra(2.*M_PI,0.);
-
-    if (NewPF.Translated(vectra).SquareDistance(PF) 
-	< NewPF.SquareDistance(PF)) {
-      C->Translate(vectra);
-      
+    Standard_Boolean bTranslate;
+    Standard_Real aD2, aT1, aT2;
+    gp_Pnt2d  PF, NewPF, aP2DT;
+    gp_Vec2d aV2DT, vectra(2.*M_PI,0.);
+    Handle(Geom2d_Curve) aC2DE;
+    //
+    aC2DE=BRep_Tool::CurveOnSurface(E, F, aT1, aT2);
+    //
+    PF=aC2DE->Value(0.5*(aT1+aT2));
+    //
+    NewPF=C->Value(0.5*(Fp+Lp));
+    //
+    aD2=NewPF.SquareDistance(PF);
+    //
+    bTranslate=Standard_False;
+    if (NewPF.Translated(vectra).SquareDistance(PF) < aD2) {
+      aV2DT=vectra;
+      bTranslate=!bTranslate; //True
     }
-    else if (NewPF.Translated(-vectra).SquareDistance(PF) 
-	     < NewPF.SquareDistance(PF)) {
-      C->Translate(-vectra);
-      
+    else if (NewPF.Translated(-vectra).SquareDistance(PF) < aD2) {
+      aV2DT=-vectra;
+      bTranslate=!bTranslate; //True
+    }
+    //
+    if (bTranslate) {
+      C->Translate(aV2DT);
     }
   }
-
   return Standard_True;
 }
 

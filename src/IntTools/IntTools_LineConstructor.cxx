@@ -735,6 +735,7 @@ void IntTools_LineConstructor::TreatCircle(const Handle(IntPatch_Line)& aLine,
     return;
   }
   //----------------------------------------
+  Standard_Boolean bFound;
   Standard_Integer aNbVtx, aNbVtxWas, i;
   Standard_Real aTolPC, aT, aT1, aT2, aTmid, aTwoPI, aTolPC1;
   Standard_Real aU1, aV1, aU2, aV2;
@@ -747,6 +748,7 @@ void IntTools_LineConstructor::TreatCircle(const Handle(IntPatch_Line)& aLine,
   aTwoPI=M_PI+M_PI;
   aTolPC=Precision::PConfusion();
   aNbVtxWas=GeomInt_LineTool::NbVertex(aLine);
+  
   aNbVtx=aNbVtxWas+2;
   //-------------------------------------2
   aTS1=myHS1->GetType();
@@ -761,7 +763,7 @@ void IntTools_LineConstructor::TreatCircle(const Handle(IntPatch_Line)& aLine,
   pVtx=new IntTools_RealWithFlag [aNbVtx];
   //
   pVtx[0].SetValue(0.);
-  pVtx[1].SetValue(2.*M_PI);
+  pVtx[1].SetValue(aTwoPI);
   //
   for(i=1; i<=aNbVtxWas; ++i) {
     aT=GeomInt_LineTool::Vertex(aLine, i).ParameterOnLine();
@@ -774,6 +776,27 @@ void IntTools_LineConstructor::TreatCircle(const Handle(IntPatch_Line)& aLine,
   RejectNearBeacons(aNbVtx, pVtx, aTolPC1, aTS1, aTS2);
   //
   RejectDuplicates(aNbVtx, pVtx, aTolPC);
+  //
+  if ((aType==IntPatch_Circle || aType==IntPatch_Ellipse)&& aNbVtx>2) { // zz
+    bFound=Standard_False;
+    for(i=1; i<=aNbVtxWas; ++i) {
+      aT=GeomInt_LineTool::Vertex(aLine, i).ParameterOnLine();
+      if (fabs(aT) < aTolPC1 || fabs(aT-aTwoPI) < aTolPC1) {
+	bFound=!bFound;
+	break;
+      }
+    }
+    if (!bFound) {
+      aT=pVtx[1].Value()+aTwoPI;
+      pVtx[aNbVtx-1].SetValue(aT);
+      //
+      for(i=0; i<aNbVtx; ++i) { 
+	aT=pVtx[i+1].Value();
+	pVtx[i].SetValue(aT);
+      }
+      --aNbVtx;
+    }
+  }
   //
   for(i=0; i<aNbVtx-1; ++i) { 
     aT1=pVtx[i].Value();

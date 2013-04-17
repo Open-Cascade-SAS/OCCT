@@ -26,7 +26,7 @@ if {${rc1} < 0.} {
 } else {
   puts "Good value of parametric range rc1"
 }
-if {${rc2} > ${2_PI}} {
+if {${rc2} < ${2_PI}} {
   puts "Error: Bad value of parametric range rc2"
 } else {
   puts "Good value of parametric range rc2"
