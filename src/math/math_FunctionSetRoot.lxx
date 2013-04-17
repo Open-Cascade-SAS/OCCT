@@ -66,3 +66,7 @@ inline Standard_Integer math_FunctionSetRoot::NbIterations() const{
   return Kount;
 }    
 
+inline Standard_Boolean math_FunctionSetRoot::IsDivergent() const
+{
+  return myIsDivergent;
+}

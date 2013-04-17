@@ -616,7 +616,8 @@ math_FunctionSetRoot::math_FunctionSetRoot(math_FunctionSetWithDerivatives& F,
 					   const math_Vector& Tolerance,
 					   const math_Vector& infBound,
 					   const math_Vector& supBound,
-					   const Standard_Integer NbIterations) :
+					   const Standard_Integer NbIterations,
+					   Standard_Boolean theStopOnDivergent) :
                                            Delta(1, F.NbVariables()),
                                            Sol(1, F.NbVariables()),
                                            DF(1, F.NbEquations(),
@@ -646,7 +647,7 @@ math_FunctionSetRoot::math_FunctionSetRoot(math_FunctionSetWithDerivatives& F,
     Tol(i) =Tolerance(i);
   }
   Itermax = NbIterations;
-  Perform(F, StartingPoint, infBound, supBound);
+  Perform(F, StartingPoint, infBound, supBound, theStopOnDivergent);
 }
 
 math_FunctionSetRoot::math_FunctionSetRoot(math_FunctionSetWithDerivatives& F,
@@ -698,7 +699,8 @@ void math_FunctionSetRoot::SetTolerance(const math_Vector& Tolerance)
 void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
 				   const math_Vector& StartingPoint,
 	     		           const math_Vector& InfBound,
-			           const math_Vector& SupBound) 
+			           const math_Vector& SupBound,
+			           Standard_Boolean theStopOnDivergent)
 {
   Standard_Integer Ninc = F.NbVariables(), Neq = F.NbEquations();
   
@@ -729,6 +731,16 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
   Sol = StartingPoint;
   Kount = 0;
 
+  //
+  myIsDivergent = Standard_False;
+  for (i = 1; i <= Ninc; i++)
+  {
+    myIsDivergent |= (Sol(i) < InfBound(i)) | (SupBound(i) < Sol(i));
+  }
+  if (theStopOnDivergent & myIsDivergent)
+  {
+    return;
+  }
   // Verification de la validite des inconnues par rapport aux bornes.
   // Recentrage sur les bornes si pas valide.
   for ( i = 1; i <= Ninc; i++) {
@@ -739,7 +751,10 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
   // Calcul de la premiere valeur de F et de son gradient
   if(!F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1)) {
     Done = Standard_False;
-    State = F.GetStateNumber();
+    if (!theStopOnDivergent || !myIsDivergent)
+    {
+      State = F.GetStateNumber();
+    }
     return;
   }
   Ambda2 = Gnr1;
@@ -752,8 +767,12 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
   FSR_DEBUG("    F2 Initial = " << F2)
 
   if ((F2 <= Eps) || (Gnr1 <= Eps2)) {
-    Done = Standard_True;
-    State = F.GetStateNumber();
+    Done = Standard_False;
+    if (!theStopOnDivergent || !myIsDivergent)
+    {
+      Done = Standard_True;
+      State = F.GetStateNumber();
+    }
     return;
   }
 
@@ -765,11 +784,15 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
 
     SearchDirection(DF, GH, FF, ChangeDirection, InvLengthMax, DH, Dy);
     if (Abs(Dy) <= Eps) {
-      Done = Standard_True;
-      ////modified by jgv, 31.08.2011////
-      F.Value(Sol, FF); //update F before GetStateNumber
-      ///////////////////////////////////
-      State = F.GetStateNumber();
+      Done = Standard_False;
+      if (!theStopOnDivergent || !myIsDivergent)
+      {
+        Done = Standard_True;
+        ////modified by jgv, 31.08.2011////
+        F.Value(Sol, FF); //update F before GetStateNumber
+        ///////////////////////////////////
+        State = F.GetStateNumber();
+      }
       return;
     }
     if (ChangeDirection) {
@@ -784,6 +807,16 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
     for( i = Sol.Lower(); i <= Sol.Upper(); i++) { 
       Sol(i) = Sol(i) + Ambda * DH(i);
     }
+    //
+    for (i = 1; i <= Ninc; i++)
+    {
+      myIsDivergent |= (Sol(i) < InfBound(i)) | (SupBound(i) < Sol(i));
+    }
+    if (theStopOnDivergent & myIsDivergent)
+    {
+      return;
+    }
+    //
     Sort = Bounds(InfBound, SupBound, Tol, Sol, SolSave,
 		  Constraints, Delta, isNewSol);
 
@@ -793,7 +826,10 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
 //      F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1);
       if(!F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1)) {
         Done = Standard_False;
-        State = F.GetStateNumber();
+        if (!theStopOnDivergent || !myIsDivergent)
+        {
+          State = F.GetStateNumber();
+        }
         return;
       }
     }
@@ -803,11 +839,15 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
     FSR_DEBUG("Direction     = " << ChangeDirection)
 
     if ((F2 <= Eps) || (Gnr1 <= Eps2)) {
-      Done = Standard_True;
-      ////modified by jgv, 31.08.2011////
-      F.Value(Sol, FF); //update F before GetStateNumber
-      ///////////////////////////////////
-      State = F.GetStateNumber();
+      Done = Standard_False;
+      if (!theStopOnDivergent || !myIsDivergent)
+      {
+        Done = Standard_True;
+        ////modified by jgv, 31.08.2011////
+        F.Value(Sol, FF); //update F before GetStateNumber
+        ///////////////////////////////////
+        State = F.GetStateNumber();
+      }
       return;
     }
 
@@ -833,6 +873,16 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
 	    for( i = Sol.Lower(); i <= Sol.Upper(); i++) {
 	      Sol(i) = Sol(i) + Ambda * DH(i);
 	    }
+      //
+      for (i = 1; i <= Ninc; i++)
+      {
+        myIsDivergent |= (Sol(i) < InfBound(i)) | (SupBound(i) < Sol(i));
+      }
+      if (theStopOnDivergent & myIsDivergent)
+      {
+        return;
+      }
+      //
 	    Stop = Bounds(InfBound, SupBound, Tol, Sol, SolSave, 
 			  Constraints, Delta, isNewSol);
 	    FSR_DEBUG(" Augmentation de lambda")
@@ -861,6 +911,16 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
 	      }
 	      else {
 	        Sol = SolSave+Delta;
+          //
+          for (i = 1; i <= Ninc; i++)
+          {
+            myIsDivergent |= (Sol(i) < InfBound(i)) | (SupBound(i) < Sol(i));
+          }
+          if (theStopOnDivergent & myIsDivergent)
+          {
+            return;
+          }
+          //
 	        Sort = Bounds(InfBound, SupBound, Tol, Sol, SolSave,
 	          Constraints, Delta, isNewSol);
 	      }
@@ -873,19 +933,26 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
 //            F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1);
             if(!F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1)) {
               Done = Standard_False;
-              State = F.GetStateNumber();
+              if (!theStopOnDivergent || !myIsDivergent)
+              {
+                State = F.GetStateNumber();
+              }
               return;
             }
           }
 	  Dy = GH*DH;
 	  if (Abs(Dy) <= Eps) {
-	    Done = Standard_True;
 	    if (F2 > OldF)
               Sol = SolSave;
-            ////modified by jgv, 31.08.2011////
-            F.Value(Sol, FF); //update F before GetStateNumber
-            ///////////////////////////////////
-	    State = F.GetStateNumber();
+      Done = Standard_False;
+      if (!theStopOnDivergent || !myIsDivergent)
+      {
+        Done = Standard_True;
+              ////modified by jgv, 31.08.2011////
+              F.Value(Sol, FF); //update F before GetStateNumber
+              ///////////////////////////////////
+        State = F.GetStateNumber();
+      }
 	    return;
 	  }
 	  if (DescenteIter >= 10) {
@@ -926,6 +993,16 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
 	    for( i = Sol.Lower(); i <= Sol.Upper(); i++) { 
 	      Sol(i) = Sol(i) + Ambda * DH(i);
 	    }
+      //
+      for (i = 1; i <= Ninc; i++)
+      {
+        myIsDivergent |= (Sol(i) < InfBound(i)) | (SupBound(i) < Sol(i));
+      }
+      if (theStopOnDivergent & myIsDivergent)
+      {
+        return;
+      }
+      //
 	    Sortbis = Bounds(InfBound, SupBound, Tol, Sol, SolSave,
 			     Constraints, Delta, isNewSol);
 
@@ -934,7 +1011,10 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
 //              F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1);
               if(!F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1)) {
                 Done = Standard_False;
-                State = F.GetStateNumber();
+                if (!theStopOnDivergent || !myIsDivergent)
+                {
+                  State = F.GetStateNumber();
+                }
                 return;
               }
             }
@@ -956,6 +1036,16 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
 	      for( i = Sol.Lower(); i <= Sol.Upper(); i++) {
 		Sol(i) = Sol(i) + Ambda * DH(i);
 	      }
+        //
+        for (i = 1; i <= Ninc; i++)
+        {
+          myIsDivergent |= (Sol(i) < InfBound(i)) | (SupBound(i) < Sol(i));
+        }
+        if (theStopOnDivergent & myIsDivergent)
+        {
+          return;
+        }
+        //
 	      Sortbis = Bounds(InfBound, SupBound, Tol, Sol, SolSave,
 			       Constraints, Delta, isNewSol);     
 	    }
@@ -964,7 +1054,10 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
 //              F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1);
               if(!F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1)) {
                 Done = Standard_False;
-                State = F.GetStateNumber();
+                if (!theStopOnDivergent || !myIsDivergent)
+                {
+                  State = F.GetStateNumber();
+                }
                 return;
               }
             }
@@ -986,13 +1079,26 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
 	  }
 	  else {
 	    Sol = SolSave + Delta;
+      //
+      for (i = 1; i <= Ninc; i++)
+      {
+        myIsDivergent |= (Sol(i) < InfBound(i)) | (SupBound(i) < Sol(i));
+      }
+      if (theStopOnDivergent & myIsDivergent)
+      {
+        return;
+      }
+      //
 	    Sort = Bounds(InfBound, SupBound, Tol, Sol, SolSave,
 	      Constraints, Delta, isNewSol);
             if (isNewSol) {
 //              F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1);
               if(!F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1)) {
                 Done = Standard_False;
-                State = F.GetStateNumber();
+                if (!theStopOnDivergent || !myIsDivergent)
+                {
+                  State = F.GetStateNumber();
+                }
                 return;
               }
 	    }
@@ -1027,11 +1133,15 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
 	if (PreviousMinimum < F2) {
 	  Sol = SolSave;
 	}
-	Done = Standard_True;
-        ////modified by jgv, 31.08.2011////
-        F.Value(Sol, FF); //update F before GetStateNumber
-        ///////////////////////////////////
-	State = F.GetStateNumber();
+  Done = Standard_False;
+  if (!theStopOnDivergent || !myIsDivergent)
+  {
+    Done = Standard_True;
+          ////modified by jgv, 31.08.2011////
+          F.Value(Sol, FF); //update F before GetStateNumber
+          ///////////////////////////////////
+    State = F.GetStateNumber();
+  }
 	return;
       }
     }
@@ -1046,8 +1156,12 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
 	  if (!ChangeDirection) ChangeDirection = Standard_True;
 	  else 
     {
-      Done = Standard_True;
-      State = F.GetStateNumber();
+      Done = Standard_False;
+      if (!theStopOnDivergent || !myIsDivergent)
+      {
+        Done = Standard_True;
+        State = F.GetStateNumber();
+      }
       return; //  si un gain inf a 5% on sort
     }
 	}
@@ -1070,11 +1184,15 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
 	  Delta(i) = PreviousSolution(i) - Sol(i);
 	}
 	if (IsSolutionReached(F)) {
-	  Done = Standard_True;
-          ////modified by jgv, 31.08.2011////
-          F.Value(Sol, FF); //update F before GetStateNumber
-          ///////////////////////////////////
-	  State = F.GetStateNumber();
+    Done = Standard_False;
+    if (!theStopOnDivergent || !myIsDivergent)
+    {
+      Done = Standard_True;
+            ////modified by jgv, 31.08.2011////
+            F.Value(Sol, FF); //update F before GetStateNumber
+            ///////////////////////////////////
+      State = F.GetStateNumber();
+    }
 	  return;
 	}
       }
@@ -1086,19 +1204,28 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
 //	F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1);
 	if(!F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1)) {
 	  Done = Standard_False;
-	  State = F.GetStateNumber();
+    if (!theStopOnDivergent || !myIsDivergent)
+    {
+      State = F.GetStateNumber();
+    }
 	  return;
 	}
       }
       else 
       {
         
-        State = F.GetStateNumber();
+        if (!theStopOnDivergent || !myIsDivergent)
+        {
+          State = F.GetStateNumber();
+        }
         return; // y a plus d'issues
       }
     }
   }
-  State = F.GetStateNumber();
+  if (!theStopOnDivergent || !myIsDivergent)
+  {
+    State = F.GetStateNumber();
+  }
 }
 
 

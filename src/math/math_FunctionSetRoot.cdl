@@ -82,7 +82,7 @@ is
 
     Create(F: in out FunctionSetWithDerivatives; StartingPoint: Vector;
     	   Tolerance: Vector; infBound, supBound: Vector;
-	   NbIterations: Integer = 100)
+	   NbIterations: Integer = 100; theStopOnDivergent : Boolean from Standard = Standard_False)
        ---Purpose: is used to improve the root of the function F
        --          from the initial guess StartingPoint.
        --          The maximum number of iterations allowed is given 
@@ -105,8 +105,8 @@ is
     
     
     Perform(me: in out; F: in out FunctionSetWithDerivatives;
-    	    StartingPoint: Vector;
-    	    infBound, supBound: Vector)
+        StartingPoint: Vector;
+        infBound, supBound: Vector; theStopOnDivergent : Boolean from Standard = Standard_False)
        ---Purpose: Improves the root of function F from the initial guess
        -- StartingPoint. infBound and supBound may be given to constrain the solution.
        -- Warning
@@ -231,6 +231,10 @@ is
 
     is static;
 
+    IsDivergent(me)
+      returns Boolean
+      is static;
+
     
 fields
 
@@ -260,5 +264,6 @@ Temp1            : Vector;
 Temp2            : Vector;
 Temp3            : Vector;
 Temp4            : Vector;
+myIsDivergent    : Boolean from Standard;
 
 end FunctionSetRoot;
