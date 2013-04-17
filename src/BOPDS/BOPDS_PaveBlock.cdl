@@ -230,7 +230,6 @@ is
 	 
     RealPaveBlock(me) 
     returns PaveBlock from BOPDS;  
-    ---C++: return const &  
     ---Purpose: 
     --- Selector  
     --- Returns the real common block  
@@ -283,7 +282,6 @@ fields
     myTS2          :  Real from Standard is protected;   
     myShrunkBox    :  Box   from Bnd is protected;  
     --dummies
-    myPB           :  PaveBlock from  BOPDS  is protected; 
     myMFence       :  MapOfInteger from BOPCol is protected;   
  
 end PaveBlock;

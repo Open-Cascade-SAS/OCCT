@@ -705,7 +705,6 @@ static
 {
   Standard_Boolean bHasReference;
   Standard_Integer aRef;
-  BOPDS_ListOfPaveBlock* pLPB;
   //
   BOPDS_ShapeInfo& aSI=ChangeShapeInfo(theI);
   bHasReference=aSI.HasReference();
@@ -714,9 +713,7 @@ static
   }
   //
   aRef=aSI.Reference();
-  const BOPDS_ListOfPaveBlock& aLPB=myPaveBlocksPool(aRef);
-  pLPB=(BOPDS_ListOfPaveBlock*)&aLPB;
-  return *pLPB;
+  return myPaveBlocksPool(aRef);
 }
 //=======================================================================
 //function : InitPaveBlocks
@@ -772,11 +769,10 @@ static
     aPB->AppendExtPave1(aPave);
   }
   //
-  iRef=myPaveBlocksPool.Append()-1;
+  iRef = myPaveBlocksPool.Append() - 1;
   BOPDS_ListOfPaveBlock &aLPB=myPaveBlocksPool(iRef);
   //
   aPB->Update(aLPB, Standard_False);
-  //
   aSI.SetReference(iRef);
 }
 //=======================================================================
@@ -1363,7 +1359,7 @@ static
       else {
         aItLPB.Initialize(aLPB);
         for (; aItLPB.More(); aItLPB.Next()) {
-          const Handle(BOPDS_PaveBlock)& aPB=aItLPB.Value()->RealPaveBlock();
+          const Handle(BOPDS_PaveBlock) aPB=aItLPB.Value()->RealPaveBlock();
           nSp=aPB->Edge();
           aMI.Add(nSp);
         }
@@ -1387,7 +1383,7 @@ static
       else {
         aItLPB.Initialize(aLPB);
         for (; aItLPB.More(); aItLPB.Next()) {
-          const Handle(BOPDS_PaveBlock)& aPB=aItLPB.Value()->RealPaveBlock();
+          const Handle(BOPDS_PaveBlock) aPB=aItLPB.Value()->RealPaveBlock();
           nSp=aPB->Edge();
           if (aMI.Contains(nSp)) {
             theLI.Append(nSp);

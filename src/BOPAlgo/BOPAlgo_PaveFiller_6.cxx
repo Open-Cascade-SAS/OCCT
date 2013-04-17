@@ -663,7 +663,7 @@ static void ToleranceFF(const TopoDS_Face& aF1,
           }
           for (; aItLPB.More(); aItLPB.Next()) {
             const Handle(BOPDS_PaveBlock)& aPBx=aItLPB.Value();
-            const Handle(BOPDS_PaveBlock)& aPBRx=aPBx->RealPaveBlock();
+            const Handle(BOPDS_PaveBlock) aPBRx=aPBx->RealPaveBlock();
             //
             // update vertices of paves
             aPave[0]=aPBx->Pave1();

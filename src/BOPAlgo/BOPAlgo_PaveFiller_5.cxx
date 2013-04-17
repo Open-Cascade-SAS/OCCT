@@ -126,7 +126,7 @@
     for (; aIt.More(); aIt.Next()) {
       Handle(BOPDS_PaveBlock)& aPB=aIt.ChangeValue();
       //
-      const Handle(BOPDS_PaveBlock)& aPBR=aPB->RealPaveBlock();
+      const Handle(BOPDS_PaveBlock) aPBR=aPB->RealPaveBlock();
       if (aMPBF.Contains(aPBR)) {
         continue;
       }

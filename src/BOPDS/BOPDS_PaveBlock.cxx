@@ -398,16 +398,13 @@ void SortShell(const int n, BOPDS_Pave *a)
 //function : RealPaveBlock
 //purpose  : 
 //=======================================================================
-  const Handle(BOPDS_PaveBlock)& BOPDS_PaveBlock::RealPaveBlock()const
+  Handle(BOPDS_PaveBlock) BOPDS_PaveBlock::RealPaveBlock()const
 {
   if (IsCommonBlock()) {
     const Handle(BOPDS_PaveBlock)& aPB1=myCommonBlock->PaveBlock1();
     return aPB1;
   }
-  //
-  Handle_BOPDS_PaveBlock* pPB=(Handle_BOPDS_PaveBlock*)&myPB;
-  *pPB=this;
-  return myPB;
+  return this;
 }
 // ShrunkData
 //=======================================================================
