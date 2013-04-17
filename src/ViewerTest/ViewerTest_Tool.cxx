@@ -59,7 +59,6 @@
 #else
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include <Xw_WindowQuality.hxx>
 #include <Xw_Window.hxx>
 #endif
 
@@ -96,8 +95,7 @@ Handle(V3d_Viewer) ViewerTest_Tool::MakeViewer (const Standard_CString theTitle)
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
   Handle(Aspect_Window) window = new Cocoa_Window (theTitle, 0, 460, 409, 409);
 #else
-  Handle(Aspect_Window) window = new Xw_Window (GetDisplayConnection(), theTitle,
-                                                0, 460, 409, 409, Quantity_NOC_BLACK);
+  Handle(Aspect_Window) window = new Xw_Window (GetDisplayConnection(), theTitle, 0, 460, 409, 409);
 #endif
   window->SetVirtual (Draw_VirtualWindows);
   window->Map();
@@ -122,7 +120,7 @@ Handle(V3d_Viewer) ViewerTest_Tool::MakeViewer (const Standard_CString theTitle)
 
 //=======================================================================
 //function : MakeContext
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 Handle(AIS_InteractiveContext)  ViewerTest_Tool::MakeContext (const Standard_CString title)
@@ -134,7 +132,7 @@ Handle(AIS_InteractiveContext)  ViewerTest_Tool::MakeContext (const Standard_CSt
 
 //=======================================================================
 //function : InitViewerTest
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 // ********* next method is defined in ViewerTest_ViewerCommands.hxx ****
@@ -142,7 +140,7 @@ extern void ViewerTest_InitViewerTest (const Handle(AIS_InteractiveContext)&);
 // **********************************************************************
 
 void  ViewerTest_Tool::InitViewerTest (const Handle(AIS_InteractiveContext)& context)
-{  
+{
   ViewerTest_InitViewerTest (context);
-} 
+}
 

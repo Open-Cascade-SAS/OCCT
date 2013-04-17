@@ -56,7 +56,6 @@ uses
     Graphic3d,
     Image,
     MMgt,
-    Xw,
     WNT,
     OSD,
     Font

@@ -173,7 +173,7 @@ void View::init()
   NSView* aViewHandle = (NSView* )winId();
   Handle(Cocoa_Window) hWnd = new Cocoa_Window (aViewHandle);
 #else
-  Aspect_Handle aWindowHandle = (Aspect_Handle )winId();
+  Window aWindowHandle = (Window )winId();
   Handle(Aspect_DisplayConnection) aDispConnection = myContext->CurrentViewer()->Driver()->GetDisplayConnection();
   Handle(Xw_Window) hWnd = new Xw_Window (aDispConnection, aWindowHandle);
 #endif // WNT

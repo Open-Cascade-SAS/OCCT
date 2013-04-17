@@ -15,14 +15,14 @@ XShow D
 vfit
 vsetdispmode 1
 
-if { [string compare $tcl_platform(platform) "windows"] != 0 } {
-    set x1 150
-    set y1 210
-} else {
-    set x1 240
-    set y1 299
-}
-checkcolor $x1 $y1 0.67 0.67 0.67
+puts "Point color test:"
+set x1 310
+set y1 225
+set r1 0.04
+set g1 0.04
+set b1 0.67
+
+checkcolor $x1 $y1 $r1 $g1 $b1
 
 set only_screen 1
 

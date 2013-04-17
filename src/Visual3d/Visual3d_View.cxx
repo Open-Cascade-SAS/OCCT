@@ -464,7 +464,7 @@ void Visual3d_View::SetWindow (const Handle(Aspect_Window)& theWindow)
 #else
   const Handle(Xw_Window) aWin    = Handle(Xw_Window)::DownCast (theWindow);
   MyCView.DefWindow.XWindow       = aWin->XWindow();
-  MyCView.DefWindow.XParentWindow = aWin->XParentWindow();
+  //MyCView.DefWindow.XParentWindow = aWin->XParentWindow();
 #endif
 
         Standard_Integer Width, Height;
@@ -1091,7 +1091,7 @@ void Visual3d_View::SetViewOrientation (const Visual3d_ViewOrientation& VO) {
         if (IsDeleted ()) return;
 
         MyViewOrientation       = VO;
-        
+
         Standard_Real X, Y, Z;
         // Tests on modification of parameters.
         Standard_Boolean VUPIsModified  = Standard_False;
@@ -1166,9 +1166,9 @@ void Visual3d_View::SetViewOrientation (const Visual3d_ViewOrientation& VO) {
 
         MyMatOfOriIsEvaluated = !VUPIsModified && !VRPIsModified
                               && !VRUIsModified && !ScaleIsModified;
-    
+
         if (! IsDefined ()) return;
-        
+
         Standard_Boolean AWait = Standard_False;        // => immediate update
         MyGraphicDriver->ViewOrientation (MyCView, AWait);
         IsInitialized = Standard_True;
@@ -1276,7 +1276,7 @@ void Visual3d_View::ViewOrientationReset () {
         // Restart if one of parameters is modified
         if (!IsInitialized || VUPIsModified || VRPIsModified
             || VRUIsModified || ScaleIsModified || CustomIsModified) {
-              
+
         MyMatOfOriIsEvaluated = !VUPIsModified && !VRPIsModified
                               && !VRUIsModified && !ScaleIsModified;
 

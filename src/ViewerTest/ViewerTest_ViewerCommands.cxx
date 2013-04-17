@@ -88,7 +88,6 @@
   #include <Cocoa_Window.hxx>
   #include <tk.h>
 #else
-  #include <Xw_WindowQuality.hxx>
   #include <Xw_Window.hxx>
   #include <X11/Xlib.h> /* contains some dangerous #defines such as Status, True etc. */
   #include <X11/Xutil.h>
@@ -247,8 +246,7 @@ void ViewerTest::ViewerInit (const Standard_Integer thePxLeft,  const Standard_I
       VT_GetWindow() = new Xw_Window (aDisplayConnection,
                                       "Test3d",
                                       aPxLeft, aPxTop,
-                                      aPxWidth, aPxHeight,
-                                      Quantity_NOC_BLACK);
+                                      aPxWidth, aPxHeight);
     }
 #endif
     VT_GetWindow()->SetVirtual (Draw_VirtualWindows);

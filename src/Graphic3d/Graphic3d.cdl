@@ -74,7 +74,6 @@ uses
     Quantity,
     Aspect,
     MMgt,
-    Xw,
     WNT,
     Image,
     AlienImage,
