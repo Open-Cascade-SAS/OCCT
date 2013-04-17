@@ -47,6 +47,7 @@
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRepAlgo_Cut.hxx>
 
+
 static Standard_Integer OCC230 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if ( argc != 4) {
@@ -386,6 +387,8 @@ static Standard_Integer OCC23774(Draw_Interpretor& di, Standard_Integer n, const
 
  return 0;
 }
+
+#include <Geom_SurfaceOfRevolution.hxx> 
 
 static Standard_Integer OCC23683 (Draw_Interpretor& di, Standard_Integer argc,const char ** argv)
 {
