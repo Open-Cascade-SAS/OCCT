@@ -104,7 +104,7 @@ package BSplCLib
     --  . Curves and Surfaces for Computer Aided Geometric Design,
     --    a practical guide Gerald Farin
 
-uses TColStd, gp, TColgp, math
+uses TColStd, gp, TColgp, math, GeomAbs
 
 
 is
@@ -352,6 +352,15 @@ is
     ---Purpose:
     --  Analyses the distribution of multiplicities between
     --  the knot FromK1 and the Knot ToK2.
+
+    KnotAnalysis (Degree     : Integer;
+                  Periodic   : Boolean;
+                  CKnots     : Array1OfReal from TColStd;
+                  CMults     : Array1OfInteger from TColStd;
+                  KnotForm   : out BSplKnotDistribution from GeomAbs;
+                  MaxKnotMult: out Integer);
+    ---Purpose: Analyzes the array of knots.
+    --          Returns the form and the maximum knot multiplicity.
 
     Reparametrize (U1, U2 : Real;
     	    	   Knots : in out Array1OfReal from TColStd);

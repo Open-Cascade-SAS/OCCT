@@ -88,60 +88,6 @@ static void CheckSurfaceData
 }
 
 //=======================================================================
-//function : KnotAnalysis
-//purpose  : Internal use only.
-//=======================================================================
-
-static void KnotAnalysis
-(const Standard_Integer         Degree,
- const TColStd_Array1OfReal&    CKnots,
- const TColStd_Array1OfInteger& CMults,
- GeomAbs_BSplKnotDistribution&  KnotForm,
- Standard_Integer&              MaxKnotMult)
-{
-  KnotForm = GeomAbs_NonUniform;
-
-  BSplCLib_KnotDistribution KSet = 
-    BSplCLib::KnotForm (CKnots, 1, CKnots.Length());
-  
-
-  if (KSet == BSplCLib_Uniform) {
-    BSplCLib_MultDistribution MSet =
-      BSplCLib::MultForm (CMults, 1, CMults.Length());
-    switch (MSet) {
-    case BSplCLib_NonConstant   :       
-      break;
-    case BSplCLib_Constant      : 
-      if (CKnots.Length() == 2) {
-	KnotForm = GeomAbs_PiecewiseBezier;
-      }
-      else {
-	if (CMults (1) == 1)  KnotForm = GeomAbs_Uniform;   
-      }
-      break;
-    case BSplCLib_QuasiConstant :   
-      if (CMults (1) == Degree + 1) {
-	Standard_Real M = CMults (2);
-	if (M == Degree )   KnotForm = GeomAbs_PiecewiseBezier;
-	else if  (M == 1)   KnotForm = GeomAbs_QuasiUniform;
-      }
-      break;
-    }
-  }
-  
-  Standard_Integer FirstKM = BSplCLib::FirstUKnotIndex (Degree, CMults);
-  Standard_Integer LastKM  = BSplCLib::LastUKnotIndex  (Degree, CMults);
-  MaxKnotMult = 0;
-  if (LastKM - FirstKM != 1) {
-    Standard_Integer Multi;
-    for (Standard_Integer i = FirstKM + 1; i < LastKM; i++) {
-      Multi = CMults (i);
-      MaxKnotMult = Max (MaxKnotMult, Multi);
-    }
-  }
-}
-
-//=======================================================================
 //function : Rational
 //purpose  : Internal use only.
 //=======================================================================
@@ -1297,7 +1243,7 @@ void Geom_BSplineSurface::UpdateUKnots()
 {
 
   Standard_Integer MaxKnotMult = 0;
-  KnotAnalysis (udeg, 
+  BSplCLib::KnotAnalysis (udeg, uperiodic,
 		uknots->Array1(), 
 		umults->Array1(), 
 		uknotSet, MaxKnotMult);
@@ -1337,7 +1283,7 @@ void Geom_BSplineSurface::UpdateUKnots()
 void Geom_BSplineSurface::UpdateVKnots()
 {
   Standard_Integer MaxKnotMult = 0;
-  KnotAnalysis (vdeg, 
+  BSplCLib::KnotAnalysis (vdeg, vperiodic,
 		vknots->Array1(), 
 		vmults->Array1(), 
 		vknotSet, MaxKnotMult);

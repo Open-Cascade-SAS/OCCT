@@ -229,19 +229,16 @@ Geom_OffsetSurface::Geom_OffsetSurface ( const Handle(Surface)& S,
 					 const Standard_Real             Offset ) 
  : offsetValue (Offset) 
 {
-  
   Handle(Geom_OffsetSurface) Off_S;
   Off_S = Handle(Geom_OffsetSurface)::DownCast(S);
   if (!Off_S.IsNull()) {
-     offsetValue += Off_S->Offset();
-     basisSurf   = Handle(Surface)::DownCast(Off_S->BasisSurface()->Copy());
-   }
-  else {
-    basisSurf = Handle(Surface)::DownCast(S->Copy());
-    if (S->Continuity() == GeomAbs_C0) 
-      Standard_ConstructionError::Raise("Offset with no C1 Surface");
+    offsetValue += Off_S->Offset();
+    SetBasisSurface (Off_S->BasisSurface());
   }
-  equivSurf = Surface();
+  else {
+    SetBasisSurface(S);
+  }
+
 //
 // Tolerance en dur pour l'instant ,mais on devrait la proposer dans le constructeur
 // et la mettre en champ, on pourrait utiliser par exemple pour l'extraction d'iso 
@@ -258,11 +255,45 @@ Geom_OffsetSurface::Geom_OffsetSurface ( const Handle(Surface)& S,
 //purpose  : 
 //=======================================================================
 
-void Geom_OffsetSurface::SetBasisSurface (const Handle(Surface)& S) {
+void Geom_OffsetSurface::SetBasisSurface (const Handle(Surface)& S)
+{
+  Handle(Surface) aBasisSurf = Handle(Surface)::DownCast(S->Copy());
 
-  basisSurf = Handle(Surface)::DownCast(S->Copy());
+  // Basis surface must be at least C1
+  if (aBasisSurf->Continuity() == GeomAbs_C0)
+  {
+    // For B-splines it is sometimes possible to increase continuity by removing 
+    // unnecessarily duplicated knots
+    if (aBasisSurf->IsKind(STANDARD_TYPE(Geom_BSplineSurface)))
+    {
+      Handle(Geom_BSplineSurface) aBSurf = Handle(Geom_BSplineSurface)::DownCast(aBasisSurf);
+      Standard_Integer uDegree = aBSurf->UDegree(), vDegree = aBSurf->VDegree();
+      Standard_Real Toler = Precision::Confusion();
+      Standard_Integer start = aBSurf->IsUPeriodic() ? 1 :  aBSurf->FirstUKnotIndex(),
+                       finish = aBSurf->IsUPeriodic() ? aBSurf->NbUKnots() :  aBSurf->LastUKnotIndex();
+      for (Standard_Integer i = start; i <= finish; i++)
+      {
+        Standard_Integer mult = aBSurf->UMultiplicity(i);
+        if ( mult == uDegree )
+          aBSurf->RemoveUKnot(i,uDegree - 1, Toler);
+      }
+      start = aBSurf->IsVPeriodic() ? 1 :  aBSurf->FirstVKnotIndex();
+      finish = aBSurf->IsVPeriodic() ? aBSurf->NbVKnots() :  aBSurf->LastVKnotIndex();
+      for (Standard_Integer i = start; i <= finish; i++)
+      {
+        Standard_Integer mult = aBSurf->VMultiplicity(i);
+        if ( mult == vDegree )
+          aBSurf->RemoveVKnot(i,vDegree - 1, Toler);
+      }
+    }
+
+    // Raise exception if still C0
+    if (aBasisSurf->Continuity() == GeomAbs_C0)
+      Standard_ConstructionError::Raise("Offset with no C1 Surface");
+  }
+
+  basisSurf = aBasisSurf;
   equivSurf = Surface();
-  if (S->Continuity() == GeomAbs_C0)  Standard_ConstructionError::Raise();
 }
 
 

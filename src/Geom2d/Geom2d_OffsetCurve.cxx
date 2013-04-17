@@ -84,16 +84,11 @@ Geom2d_OffsetCurve::Geom2d_OffsetCurve (const Handle(Curve)& C,
 {
   if (C->DynamicType() == STANDARD_TYPE(Geom2d_OffsetCurve)) {
     Handle(OffsetCurve) OC = Handle(OffsetCurve)::DownCast(C);
-    if ((OC->BasisCurve())->Continuity() == GeomAbs_C0)  
-      Standard_ConstructionError::Raise();
-
-    basisCurve = Handle(Curve)::DownCast((OC->BasisCurve())->Copy());
+    SetBasisCurve (OC->BasisCurve());
     offsetValue += OC->Offset();
-  } else {
-    if (C->Continuity() == GeomAbs_C0)  
-      Standard_ConstructionError::Raise();
-
-    basisCurve = Handle(Curve)::DownCast(C->Copy());
+  }
+  else {
+    SetBasisCurve(C);
   }
 }
 
@@ -125,8 +120,34 @@ Standard_Real Geom2d_OffsetCurve::ReversedParameter( const Standard_Real U) cons
 
 void Geom2d_OffsetCurve::SetBasisCurve (const Handle(Curve)& C) 
 {
-  if (C->Continuity() == GeomAbs_C0)  Standard_ConstructionError::Raise();
-  basisCurve = Handle(Geom2d_Curve)::DownCast(C->Copy());
+  Handle(Geom2d_Curve) aBasisCurve = Handle(Geom2d_Curve)::DownCast(C->Copy());
+
+  // Basis curve must be at least C1
+  if (aBasisCurve->Continuity() == GeomAbs_C0)
+  {
+    // For B-splines it is sometimes possible to increase continuity by removing 
+    // unnecessarily duplicated knots
+    if (aBasisCurve->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)))
+    {
+      Handle(Geom2d_BSplineCurve) aBCurve = Handle(Geom2d_BSplineCurve)::DownCast(aBasisCurve);
+      Standard_Integer degree = aBCurve->Degree();
+      Standard_Real Toler = 1e-7;
+      Standard_Integer start = aBCurve->IsPeriodic() ? 1 :  aBCurve->FirstUKnotIndex(),
+                       finish = aBCurve->IsPeriodic() ? aBCurve->NbKnots() :  aBCurve->LastUKnotIndex();
+      for (Standard_Integer i = start; i <= finish; i++)
+      {
+        Standard_Integer mult = aBCurve->Multiplicity(i);
+        if ( mult == degree )
+          aBCurve->RemoveKnot(i,degree - 1, Toler);
+      }
+    }
+
+    // Raise exception if still C0
+    if (aBasisCurve->Continuity() == GeomAbs_C0)
+      Standard_ConstructionError::Raise("Offset on C0 curve");
+  }
+
+  basisCurve = aBasisCurve;
 }
 
 //=======================================================================

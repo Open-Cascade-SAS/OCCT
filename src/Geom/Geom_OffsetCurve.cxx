@@ -89,14 +89,12 @@ Handle(Geom_Geometry) Geom_OffsetCurve::Copy () const {
 Geom_OffsetCurve::Geom_OffsetCurve (const Handle(Curve)& C,
 				    const Standard_Real           Offset, 
 				    const Dir&           V      )
- : direction(V), offsetValue(Offset) {
-  
+ : direction(V), offsetValue(Offset)
+{
   if (C->DynamicType() == STANDARD_TYPE(Geom_OffsetCurve)) {
     Handle(OffsetCurve) OC = Handle(OffsetCurve)::DownCast(C);
-    if ((OC->BasisCurve())->Continuity() == GeomAbs_C0)  
-      Standard_ConstructionError::Raise();
+    SetBasisCurve (OC->BasisCurve());
 
-    basisCurve = Handle(Curve)::DownCast((OC->BasisCurve())->Copy());
     Standard_Real PrevOff = OC->Offset();
     gp_Vec V1(OC->Direction());
     gp_Vec V2(direction);
@@ -109,9 +107,9 @@ Geom_OffsetCurve::Geom_OffsetCurve (const Handle(Curve)& C,
       offsetValue = -Vdir.Magnitude();
       direction.SetXYZ((-Vdir).XYZ());
     }
-  } else {
-    if (C->Continuity() == GeomAbs_C0) Standard_ConstructionError::Raise();
-    basisCurve = Handle(Curve)::DownCast(C->Copy()); // DownCast: 10-03-93
+  }
+  else {
+    SetBasisCurve(C);
   }
 }
 
@@ -188,10 +186,36 @@ Standard_Real Geom_OffsetCurve::Period () const
 //purpose  : 
 //=======================================================================
 
-void Geom_OffsetCurve::SetBasisCurve (const Handle(Curve)& C) {
+void Geom_OffsetCurve::SetBasisCurve (const Handle(Curve)& C)
+{
+  Handle(Curve) aBasisCurve = Handle(Curve)::DownCast(C->Copy());
 
-  if (C->Continuity() == GeomAbs_C0) Standard_ConstructionError::Raise();
-  basisCurve = Handle(Curve)::DownCast(C->Copy()); // DownCast: 10-03-93
+  // Basis curve must be at least C1
+  if (aBasisCurve->Continuity() == GeomAbs_C0)
+  {
+    // For B-splines it is sometimes possible to increase continuity by removing 
+    // unnecessarily duplicated knots
+    if (aBasisCurve->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
+    {
+      Handle(Geom_BSplineCurve) aBCurve = Handle(Geom_BSplineCurve)::DownCast(aBasisCurve);
+      Standard_Integer degree = aBCurve->Degree();
+      Standard_Real Toler = Precision::Confusion();
+      Standard_Integer start = aBCurve->IsPeriodic() ? 1 :  aBCurve->FirstUKnotIndex(),
+                       finish = aBCurve->IsPeriodic() ? aBCurve->NbKnots() :  aBCurve->LastUKnotIndex();
+      for (Standard_Integer i = start; i <= finish; i++)
+      {
+        Standard_Integer mult = aBCurve->Multiplicity(i);
+        if ( mult == degree )
+          aBCurve->RemoveKnot(i,degree - 1, Toler);
+      }
+    }
+
+    // Raise exception if still C0
+    if (aBasisCurve->Continuity() == GeomAbs_C0)
+      Standard_ConstructionError::Raise("Offset on C0 curve");
+  }
+
+  basisCurve = aBasisCurve;
 }
 
 

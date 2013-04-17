@@ -387,6 +387,26 @@ static Standard_Integer OCC23774(Draw_Interpretor& di, Standard_Integer n, const
  return 0;
 }
 
+static Standard_Integer OCC23683 (Draw_Interpretor& di, Standard_Integer argc,const char ** argv)
+{
+  if (argc < 2) {
+    di<<"Usage: " << argv[0] << " invalid number of arguments"<<"\n";
+    return 1;
+  }
+
+  Standard_Integer ucontinuity = 1;
+  Standard_Integer vcontinuity = 1;
+  Standard_Boolean iscnu = false;
+  Standard_Boolean iscnv = false;
+  
+  Handle(Geom_Surface) aSurf = DrawTrSurf::GetSurface(argv[1]);
+
+  QCOMPARE (aSurf->IsCNu (ucontinuity), iscnu);
+  QCOMPARE (aSurf->IsCNv (vcontinuity), iscnv);
+
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -399,6 +419,7 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC22611", "OCC22611 string nb", __FILE__, OCC22611, group);
   theCommands.Add ("OCC22595", "OCC22595", __FILE__, OCC22595, group);
   theCommands.Add ("OCC23774", "OCC23774 shape1 shape2", __FILE__, OCC23774, group);
+  theCommands.Add ("OCC23683", "OCC23683 shape", __FILE__, OCC23683, group);
 
   return;
 }
