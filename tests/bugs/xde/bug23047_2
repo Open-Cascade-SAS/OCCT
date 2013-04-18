@@ -1,3 +1,5 @@
+puts "TODO ?OCC23047 ALL: Tcl Exception: can't read"
+puts "TODO ?OCC23047 ALL: TEST INCOMPLETE"
 puts "================"
 puts "OCC23047"
 puts "================"
@@ -20,14 +22,14 @@ QARebuild Xdump
 
 set xd [Xdump D]
 
-set FreeShapes 0
 
 regexp {Free Shapes: ([-0-9.+eE]+)} $xd full FreeShapes
 puts "FreeShapes=${FreeShapes}"
 
-if { ${FreeShapes} == 0 } {
-   puts "OK ${BugNumber}"
-} else {
+if { ${FreeShapes} != 0 } {
    puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"   
 }
+
 

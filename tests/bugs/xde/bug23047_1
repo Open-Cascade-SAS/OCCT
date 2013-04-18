@@ -21,14 +21,13 @@ QARebuild Xdump
 
 set xd [Xdump D]
 
-set FreeShapes 0
-
 regexp {Free Shapes: ([-0-9.+eE]+)} $xd full FreeShapes
 puts "FreeShapes=${FreeShapes}"
 
-if { ${FreeShapes} == 1 } {
-   puts "OK ${BugNumber}"
-} else {
+if { ${FreeShapes} != 1 } {
    puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
 }
+
 
