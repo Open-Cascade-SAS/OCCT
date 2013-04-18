@@ -19,15 +19,9 @@
 
 
 package QADraw
-    uses Draw,
-         TCollection
+    uses Draw
 is
     
-    class DataMapOfAsciiStringOfAddress instantiates 
-		    DataMap from TCollection(AsciiString from TCollection,
-					     Address from Standard,
-					     AsciiString from TCollection);
-
     CommonCommands(DI : in out Interpretor from Draw);
     ---Purpose: Define specicial commands for AIS.
 

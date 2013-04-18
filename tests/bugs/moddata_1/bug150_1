@@ -15,12 +15,6 @@ puts ""
 puts ""
 puts "Bug's advancement"
 puts "#################"
-puts ""
-puts "Customer version                  Development version"
-puts "Status : CLOSED                   Status : CLOSED"
-puts "Resolution : LIMITATION           Resolution : LIMITATION"
-puts "Leave as CLOSED LIMITATION        Leave as CLOSED LIMITATION"
-puts ""
 
 restore [locate_data_file OCC150_compsolid_nofuse.brep] sh 
 explode sh

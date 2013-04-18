@@ -2,11 +2,10 @@ puts "TODO OCC11111 ALL: Error : Result shape is WRONG"
 
 puts "============"
 puts "OCC21652"
-puts "Customer : TATA"
 puts "============"
 puts ""
 #######################################################################
-# TATA-08-005 Problem with offset on the wire
+# Problem with offset on the wire
 #######################################################################
 
 set BugNumber OCC21652

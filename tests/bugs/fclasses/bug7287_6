@@ -21,7 +21,7 @@ for {set i 1} {${i} <= ${NCycles}} {incr i } {
     bopsection r
 
     lappend listmem [meminfo h]
-    if { [checktrend $listmem 0 1 "Memory leak detected"] } {
+    if { [checktrend $listmem 0 100 "Memory leak detected"] } {
         puts "No memory leak, $i iterations"
         break
     }

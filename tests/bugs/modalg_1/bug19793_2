@@ -8,7 +8,7 @@ puts ""
 # Fuse problem of symetrical shapes. Appendix for NPAL19789
 #######################################################################
 
-cpulimit 300
+cpulimit 500
 #cpulimit 4500
 set BugNumber OCC19793
 

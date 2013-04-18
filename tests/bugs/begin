@@ -10,13 +10,13 @@ if { [array get Draw_Groups "TOPOLOGY Check commands"] == "" } {
 # to prevent loops limit to 16 minutes
 cpulimit 1000
 
-#set script_dir [file dirname [info script]]/script
-# if { [info exist WorkDirectory] == 0 } {
-#    set WorkDirectory "/tmp"
-#    if { [array get env TEMP] != "" } {
-#	set WorkDirectory "$env(TEMP)"
-#	}
-#    }
+# On Windows with VC, in typical configuration gl2ps is built with Release
+# mode only which will fail in Debug mode; add TODO for that case in order
+# to handle it once for all tests that can use vexport command
+if { [regexp {Debug mode} [dversion]] } {
+    puts "TODO ?#23540 windows: Error: export of image.*failed"
+    puts "TODO ?#23540 windows: Error: The file has been exported.*different size \[(\]0 "
+}
 
 if { [info exists imagedir] == 0 } {
    set imagedir .
@@ -217,7 +217,7 @@ proc checktrend {listval delta tolerance message} {
         set mean [expr $mean + ($val - $prev)]
         set prev $val
     }
-    set mean [expr $mean / $nbval]
+    set mean [expr $mean / ($nbval - 1)]
 
     # calculate dispersion
     set sigma 0.
@@ -227,12 +227,12 @@ proc checktrend {listval delta tolerance message} {
         set sigma [expr $sigma + $d * $d]
         set prev $val
     }
-    set sigma [expr sqrt ($sigma / ($nbval - 1))]
+    set sigma [expr sqrt ($sigma / ($nbval - 2))]
 
     puts "Checking trend: nb = $nbval, mean delta = $mean, sigma = $sigma"
 
     # check if deviation is definitely too big
-    if { abs ($mean - $delta) > 2. * $sigma } {
+    if { abs ($mean - $delta) > $tolerance + 2. * $sigma } {
         puts "Checking trend failed: mean delta per step = $mean, sigma = $sigma, expected delta = $delta"
         error "$message"
     }

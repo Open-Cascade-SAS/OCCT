@@ -7,7 +7,6 @@ puts "================"
 puts ""
 #######################################################################################
 # OSD::SetSignal : not all FLT exceptions are catched
-# Various improvements of RINA LH3D-3H project
 # Correct handling of exceptions on WNT
 #######################################################################################
 

@@ -18,7 +18,6 @@
 // and conditions governing the rights and limitations under the License.
 
 #include <QADraw.hxx>
-#include <QADraw_DataMapOfAsciiStringOfAddress.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Image_AlienPixMap.hxx>
 #include <V3d_View.hxx>
@@ -47,250 +46,7 @@
 
 #include <tcl.h>
 
-#if ! defined(STDOUT_FILENO)
-#define STDOUT_FILENO fileno(stdout)
-#endif
-
-// mkv 15.07.03
-#if ! defined(STDERR_FILENO)
-#define STDERR_FILENO fileno(stderr)
-#endif
-
-Draw_Interpretor *thePCommands = NULL;
-
-#if ! defined(WNT)
-//extern Draw_Interpretor theCommands;
-
-extern void (*Draw_BeforeCommand)();
-extern void (*Draw_AfterCommand)(Standard_Integer);
-#else
-//Standard_EXPORT Draw_Interpretor theCommands;
-
-Standard_EXPORT void (*Draw_BeforeCommand)();
-Standard_EXPORT void (*Draw_AfterCommand)(Standard_Integer);
-#endif
-
-
 #include <Draw_PluginMacro.hxx>
-
-// avoid warnings on 'extern "C"' functions returning C++ classes
-#ifdef WNT
-#pragma warning(4:4190)
-#endif
-
-
-int st_err = 0;
-
-void (*Draw_BeforeCommand_old)();
-void (*Draw_AfterCommand_old)(Standard_Integer);
-
-static Standard_Boolean should_be_printed = Standard_True;
-
-static Standard_Boolean shouldDUP() {
-  // MKV 30.03.05
-#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
-  const Standard_Character * adup = Tcl_GetVar(thePCommands->Interp(),
-					 "QA_DUP",TCL_GLOBAL_ONLY);
-#else
-  Standard_Character * adup = Tcl_GetVar(thePCommands->Interp(),
-					 "QA_DUP",TCL_GLOBAL_ONLY);
-#endif
-  Standard_Integer aDUP=1;
-  if((adup != NULL) && (Draw::Atof(adup) == 0)) {
-    aDUP = 0;
-  }
-
-  return aDUP;
-}
-
-static void before() {
-  should_be_printed = Standard_True;
-  if(Draw_BeforeCommand_old) (*Draw_BeforeCommand_old) ();
-}
-
-static void  after(Standard_Integer a)
-{
-  if(Draw_AfterCommand_old) (*Draw_AfterCommand_old) (a);
-  if(!should_be_printed) {
-//    Tcl_ResetResult(theCommands.Interp());
-  }
-}
-
-static QADraw_DataMapOfAsciiStringOfAddress stFuncMap;
-
-  // MKV 30.03.05
-#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
-static Standard_Integer (*CommandCmd_Old)
-(ClientData clientData, Tcl_Interp *interp,
- Standard_Integer argc, const char* argv[]) = NULL;
-#else
-static Standard_Integer (*CommandCmd_Old)
-(ClientData clientData, Tcl_Interp *interp,
- Standard_Integer argc, char* argv[]) = NULL;
-#endif
-
-  // MKV 30.03.05
-#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
-static Standard_Integer CommandCmd
-(ClientData clientData, Tcl_Interp *interp,
- Standard_Integer argc, const char* argv[])
-#else
-static Standard_Integer CommandCmd
-(ClientData clientData, Tcl_Interp *interp,
- Standard_Integer argc, char* argv[])
-#endif
-{
-  Standard_Integer old_out = 0;
-  Standard_Integer old_err = 0;
-  Standard_Integer fd_out = 0;
-  Standard_Integer fd_err = 0;
-
-  FILE * aFile_out = NULL;
-  FILE * aFile_err = NULL;
-
-  char *nameo = NULL;
-  char *namee = NULL;
-#ifdef WNT
-  if(strlen(getenv("TEMP")) == 0) {
-    cerr << "The TEMP variable is not set." << endl;
-    aFile_out = tmpfile();
-    aFile_err = tmpfile();
-  } else {
-    nameo = _tempnam(getenv("TEMP"),"tmpo");
-    namee = _tempnam(getenv("TEMP"),"tmpe");
-    aFile_out=fopen(nameo, "w+");
-    aFile_err=fopen(namee, "w+");
-  }
-#else
-    aFile_out = tmpfile();
-    aFile_err = tmpfile();
-#endif
-  fd_out = fileno(aFile_out);
-  fd_err = fileno(aFile_err);
-  if(fd_out !=-1 && fd_err !=-1) {
-    old_err = dup(STDERR_FILENO);
-    old_out = dup(STDOUT_FILENO);
-    dup2(fd_err,STDERR_FILENO);
-    dup2(fd_out,STDOUT_FILENO);
-  } else
-    cout << "Faulty : Can not create temporary file."   << endl;
-
-  Standard_Integer clen = sizeof(Standard_Character);
-
-  Standard_Character * QA = getenv("QA_print_command");
-  if((QA != NULL) && (!strcmp(QA,"1"))) {
-    for(Standard_Integer i=0;i<argc;i++) {
-      write(st_err,argv[i],clen*strlen(argv[i]));
-      write(st_err," ",clen);
-    }
-    write(st_err,"\n",clen);
-  }
-
-  // MKV 30.03.05
-#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
-  TCollection_AsciiString aName((char *) argv[0]);
-#else
-  TCollection_AsciiString aName(argv[0]);
-#endif
-
-  Standard_Integer res = 0;
-
-  if(stFuncMap.IsBound(aName)) {
-    // MKV 30.03.05
-#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
-    CommandCmd_Old  = (int(*)(void*, Tcl_Interp*, int, const char**))  stFuncMap((char *) argv[0]);
-#else
-    CommandCmd_Old  = (int(*)(void*, Tcl_Interp*, int, char**))  stFuncMap(argv[0]);
-#endif
-    res = (*CommandCmd_Old) (clientData,interp,argc,argv);
-  }
-
-  fflush(stderr);
-  fflush(stdout);
-  close(STDERR_FILENO);
-  close(STDOUT_FILENO);
-  dup2(old_err,STDERR_FILENO);
-  dup2(old_out,STDOUT_FILENO);
-  close(old_err);
-  close(old_out);
-
-  Standard_Character buf[256];
-  Standard_Integer len = 0;
-
-  rewind(aFile_err);
-  while((len = read(fd_err,buf,clen*255)/clen) > 0) {
-    buf[len]='\0';
-    if(shouldDUP()) {
-      (*thePCommands) << buf;
-    } else {
-      write(st_err,buf,clen*len);
-    }
-  }
-  close(fd_err);
-
-  rewind(aFile_out);
-  buf[0] = '\0';
-  len = 0;
-  while((len = read(fd_out,buf,clen*255)/clen) > 0) {
-    buf[len]='\0';
-    if(shouldDUP()) {
-      (*thePCommands) << buf;
-    } else {
-      write(st_err,buf,clen*len);
-    }
-  }
-  close(fd_out);
-
-  if(shouldDUP()) {
-    Standard_Character *Result = (Standard_Character *)thePCommands->Result();
-    if(Result[0] != '\0') {
-      Standard_Integer pos = 0;
-      Standard_Integer rlen = strlen(Result);
-      while(pos < rlen) {
-	Standard_Integer nb = 256;
-	if((rlen - pos) <= 256) {
-	  nb = rlen - pos;
-	}
-	write(st_err,Result+pos,nb*clen);
-	pos += nb;
-      }
-      write(st_err,"\n",clen);
-      should_be_printed = Standard_False  ;
-    }
-  } //else {
-  if(nameo)
-    free(nameo);
-  if(namee)
-    free(namee);
-  return res;
-}
-
-static Standard_Integer QARebuild (Draw_Interpretor& di, Standard_Integer /*n*/, const char ** a)
-{
-
-  Tcl_CmdInfo *infoPtr = new Tcl_CmdInfo;
-
-  if(!strcmp(a[0],a[1]))
-    return 0;
-
-  char* var_a = (char*)a[1];
-  Standard_Integer res = Tcl_GetCommandInfo(di.Interp(),var_a,infoPtr);
-  if(res && (infoPtr->proc != &CommandCmd)) {
-    TCollection_AsciiString aName(var_a);
-    if (!stFuncMap.IsBound(aName)) {
-      stFuncMap.Bind(aName, (Standard_Address) infoPtr->proc);
-
-      infoPtr->proc = &CommandCmd;
-#if TCL_MAJOR_VERSION == 8 && TCL_MINOR_VERSION == 3
-      infoPtr->isNativeObjectProc = 0;
-      infoPtr->objProc = NULL;
-#endif
-      Tcl_SetCommandInfo(di.Interp(),var_a,infoPtr);
-    }
-  }
-
-  return 0;
-}
 
 Handle(TColStd_HSequenceOfReal) GetColorOfPixel (const Image_PixMap&    theImage,
                                                  const Standard_Integer theCoordinateX,
@@ -408,45 +164,6 @@ static Standard_Integer QAAISGetPixelColor (Draw_Interpretor& theDi,
   return 0;
 }
 
-#if ! defined(WNT)
-extern int ViewerMainLoop (Standard_Integer argc, const char ** argv);
-#else
-Standard_EXPORT int ViewerMainLoop (Standard_Integer argc, const char ** argv);
-#endif
-
-static Standard_Integer QAAISGetMousePoint (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
-{
-  if ( argc != 1 ) {
-    di << "Usage : " << argv[0] << "\n";
-    return 1;
-  }
-  Handle (V3d_View) QAAISView = ViewerTest::CurrentView ();
-  if ( QAAISView.IsNull () ) {
-    di << "You must initialize AISViewer before this command." << "\n";
-    return 1;
-  }
-  Standard_Integer QAAISMouseCoordinateX = 0;
-  Standard_Integer QAAISMouseCoordinateY = 0;
-  Standard_Integer argccc = 5;
-  const char *bufff[] = { "A", "B", "C", "D", "E" };
-  const char **argvvv = (const char **) bufff;
-  while ( ViewerMainLoop (argccc, argvvv) ) {
-    ViewerTest::GetMousePosition (QAAISMouseCoordinateX, QAAISMouseCoordinateY);
-  }
-  ViewerTest::GetMousePosition (QAAISMouseCoordinateX, QAAISMouseCoordinateY);
-  di << "X-coordinate: " << QAAISMouseCoordinateX << "; Y-coordinate: " << QAAISMouseCoordinateY << "\n";
-  return 0;
-}
-
-//==============================================================================
-//  VIEWER GLOBALs
-//==============================================================================
-#ifndef WNT
-extern Draw_Viewer dout;
-#else
-Standard_IMPORT Draw_Viewer dout;
-#endif
-
 //=======================================================================
 #if ! defined(WNT)
 extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
@@ -525,86 +242,11 @@ static int VTrihedronOrigins(Draw_Interpretor& di,
   return 0;
 }
 
-#include <Draw_Viewer.hxx>
-#include <Draw.hxx>
-
-static Standard_Integer ViewId(const Standard_CString a)
-{
-  Standard_Integer id = Draw::Atoi(a);
-  if ((id < 0) || (id >= MAXVIEW)) {
-    cout << "Incorrect view-id, must be in 0.."<<MAXVIEW-1<<endl;
-    return -1;
-  }
-  if (!dout.HasView(id)) {
-    cout <<"View "<<id<<" does not exist."<<endl;
-    return -1;
-  }
-  return id;
-}
-
-#include <Draw_Display.hxx>
-
-//=======================================================================
-// QArename
-//=======================================================================
-
-static Standard_Integer QArename(Draw_Interpretor& di, Standard_Integer n, const char** a)
-{
-  if (n < 3) return 1;
-  Standard_Boolean cop = !strcasecmp(a[0],"copy");
-
-  Handle(Draw_Drawable3D) D;
-  for (Standard_Integer i = 1; i < n; i += 2) {
-    if (i+1 >= n) return 0;
-    D = Draw::Get(a[i]);
-    if (!D.IsNull()) {
-      if (cop)
-	D = D->Copy();
-      else
-	// clear old name
-	Draw::Set(a[i],Handle(Draw_Drawable3D()));
-
-      Draw::Set(a[i+1],D);
-    }
-  }
-  return 0;
-}
-
-//#if defined(V2D)
-//#include <AIS2D_InteractiveContext.hxx>
-//static Standard_Integer QANbSelected2d (Draw_Interpretor& /*di*/, Standard_Integer argc, char** argv)
-//{
-//  if(argc != 1) {
-//    cout << "Usage : " << argv[0] << endl;
-//    return 1;
-//  }
-//  Handle(AIS2D_InteractiveContext) aContext = Viewer2dTest::GetAIS2DContext();
-//  if(aContext.IsNull()) {
-//    cerr << "use 'v2dinit' command before " << argv[0] << endl;
-//    return 1;
-//  }
-//  cout << aContext->NbSelected() << endl;
-//  return 0;
-//}
-//#endif
-
 void QADraw::CommonCommands(Draw_Interpretor& theCommands)
 {
-  ios::sync_with_stdio();
-
-  st_err = dup(STDERR_FILENO);
-
-  Draw_BeforeCommand_old = Draw_BeforeCommand;
-  Draw_AfterCommand_old  = Draw_AfterCommand;
-
-  Draw_BeforeCommand = &before;
-  Draw_AfterCommand  = &after;
-
   const char* group = "QA_Commands";
 
-  theCommands.Add("QARebuild","QARebuild command_name",__FILE__,QARebuild,group);
   theCommands.Add("QAGetPixelColor", "QAGetPixelColor coordinate_X coordinate_Y [color_R color_G color_B]", __FILE__,QAAISGetPixelColor, group);
-  theCommands.Add("QAGetMousePoint", "QAGetMousePoint", __FILE__,QAAISGetMousePoint, group);
   theCommands.Add("vtri_orig",
 		  "vtri_orig         : vtri_orig trihedron_name  -  draws axis origin lines",
 		  __FILE__,VTrihedronOrigins,group);
@@ -612,48 +254,15 @@ void QADraw::CommonCommands(Draw_Interpretor& theCommands)
 // adding commands "rename" leads to the fact that QA commands doesn't work properly OCC23410, use function "renamevar"
 // theCommands.Add("rename","rename name1 toname1 name2 toname2 ...",__FILE__,QArename,group);
 }
-/*
-extern "C" int Tkqadraw_Init(Tcl_Interp *);
 
-int Tkqadraw_Init(Tcl_Interp * ) {
-
-  ios::sync_with_stdio();
-
-  QADraw::CommonCommands(theCommands);
-  QADraw::AdditionalCommands(theCommands);
-
-  ViewerTest::Commands (theCommands);
-  ViewerTest::ViewerCommands (theCommands);
-
-  Viewer2dTest::Commands(theCommands);
-//   if (Tcl_PkgProvide(theCommands.Interp(), "Qa", "1.0") != TCL_OK) {
-//     return TCL_ERROR;
-//   }
-
-  return TCL_OK;
-}
-*/
 //==============================================================================
 // QADraw::Factory
 //==============================================================================
 void QADraw::Factory(Draw_Interpretor& theCommands)
 {
-  thePCommands = &theCommands;
-
   // definition of QA Command
   QADraw::CommonCommands(theCommands);
   QADraw::AdditionalCommands(theCommands);
-
-  //ViewerTest::Commands (theCommands);
-  //ViewerTest::ViewerCommands (theCommands);
-
-//#if defined(V2D)
-//    Viewer2dTest::Commands(theCommands);
-//#endif
-
-//#ifdef DEB
-//      cout << "Draw Plugin : QA commands are loaded" << endl;
-//#endif
 }
 
 // Declare entry point PLUGINFACTORY

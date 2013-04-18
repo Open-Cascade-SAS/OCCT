@@ -71,15 +71,6 @@ if { [file readable $draw_appli_init_file] } {
   }
 } 
 
-# Temporary: load specific QA commands and handlers
-if {[array get env QA_DUMP] != "" && $env(QA_DUMP) == "1"} {
-    set env(CSF_DrawPluginQADefaults) $env(CASROOT)/src/DrawResources/.
-    catch {pload FULL}
-    catch {pload -DrawPluginProducts OMF CANONICALRECOGNITION EMESH PARASOLID DXF SAT }
-    catch {pload QAcommands}
-    catch {source $env(CSF_DrawPluginQADefaults)/QARebuildCommands}
-}
-
 # on Windows, set special handler to update automatically environment variables
 # in C subsystem when Tcl environment changes (see Mantis issue #23197)
 if { $tcl_platform(platform) == "windows" && ! [catch {dgetenv PATH} res] } {

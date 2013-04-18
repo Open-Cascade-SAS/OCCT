@@ -1,5 +1,0 @@
-foreach h [array names Draw_Groups] {
-	foreach f $Draw_Groups($h) {
-		QARebuild $f
-	}
-}

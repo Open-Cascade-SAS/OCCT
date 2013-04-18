@@ -4,7 +4,7 @@ puts "================"
 puts ""
 
 ########################################################
-## Exception is raised in the SAMTECH Application during visualization. (#2054)
+## Exception is raised in the application during visualization. (#2054)
 ########################################################
 
 restore [locate_data_file OCC316.brep] result 

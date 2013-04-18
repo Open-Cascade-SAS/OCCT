@@ -2080,10 +2080,16 @@ static int VExport(Draw_Interpretor& di, Standard_Integer argc, const char** arg
     return 1;
   }
 
-  if (!V3dView->View()->Export (argv[1], anExpFormat))
+  try {
+    if (!V3dView->View()->Export (argv[1], anExpFormat))
+    {
+      di << "Error: export of image to " << aFormatStr << " failed!\n";
+    }
+  }
+  catch (Standard_Failure)
   {
-    std::cout << "Export failed!\n";
-    return 1;
+    di << "Error: export of image to " << aFormatStr << " failed";
+    di << " (exception: " << Standard_Failure::Caught()->GetMessageString() << ")";
   }
   return 0;
 }

@@ -1,0 +1,6 @@
+# On Windows with VC, in typical configuration gl2ps is built with Release
+# mode only which will fail in Debug
+if { [regexp {Debug mode} [dversion]] } {
+    puts "TODO ?#23540 windows: Error: export of image.*failed"
+    puts "TODO ?#23540 windows: Error: The file has been exported.*different size \[(\]0 "
+}

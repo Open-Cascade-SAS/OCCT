@@ -2,9 +2,6 @@ if { [array get env os_type] != "" } {
     set os $env(os_type)
 }
 puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
-if { [string compare $os "windows"] != 0 } {
-    puts "TODO OCC12345 ALL: TEST INCOMPLETE"
-}
 puts "================"
 puts "OCC54"
 puts "================"
@@ -13,7 +10,7 @@ puts ""
 ## Exception is raised during command "small" in DRAW on attached shape.
 ####################################################
 
-cpulimit 300
+cpulimit 500
 restore [locate_data_file OCC54.brep] result
 
 checkshape result

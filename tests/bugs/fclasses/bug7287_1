@@ -6,6 +6,9 @@ puts ""
 # Problem of Memory Leak
 ######################################################
 
+puts "TODO ?#23901 ALL: Memory leak detected"
+puts "TODO ?#23901 ALL: TEST INCOMPLETE"
+
 #
 # Result is Null shape
 #

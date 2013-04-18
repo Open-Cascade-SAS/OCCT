@@ -18,8 +18,6 @@ ttranslate b 1 0 0
 XAddShape D b
 XRemoveShape D 0:1:1:1 1
 
-QARebuild Xdump
-
 set xd [Xdump D]
 
 

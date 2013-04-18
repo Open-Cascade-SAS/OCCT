@@ -1,7 +1,7 @@
 FAILED /\bFaulty\b/ error
 IGNORE /Error on Record/ message during loading file
 IGNORE /Software error/ message in tpstat
-IGNORE /Syntax error/ message if data c
+IGNORE /Syntax error/ message in data c
 IGNORE /Transfer error/ message in tpstat
 IGNORE /Operator FixShape failed with exception/ message during reading
 IGNORE /Error on writing file/ message during writing file
@@ -9,3 +9,4 @@ IGNORE /StepFile Error/ message during loading step file
 IGNORE /StepToTopoDS, GeometricSet/exception
 IGNORE /OSD_Exception_ACCESS_VIOLATION/ exception during reading step
 IGNORE /Exception Raised while reading Step File/ exception during reading step file
+IGNORE /Warning: ShapeFix_.* Exception/ internal exceptions caught by FixShape

@@ -17,8 +17,6 @@ ttranslate b 1 0 0
 XAddShape D b
 XRemoveShape D 0:1:1:1 0
 
-QARebuild Xdump
-
 set xd [Xdump D]
 
 regexp {Free Shapes: ([-0-9.+eE]+)} $xd full FreeShapes

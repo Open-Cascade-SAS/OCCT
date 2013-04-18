@@ -5,7 +5,7 @@ puts "OCC353"
 puts "================"
 puts ""
 ##########################################################
-## Attached DRAW command "TATA_const" hangs in Geom2dGcc_Circ2d3Tan.
+## Attached DRAW command hangs in Geom2dGcc_Circ2d3Tan.
 ##########################################################
 
 if [catch { OCC353 }] {

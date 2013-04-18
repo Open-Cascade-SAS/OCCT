@@ -1,6 +1,6 @@
 puts "TODO OCC11111 ALL: TEST INCOMPLETE"
 
-cpulimit 30
+cpulimit 500
 
 puts "============"
 puts "OCC22759"

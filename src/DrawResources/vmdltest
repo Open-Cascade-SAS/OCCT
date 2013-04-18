@@ -1,3 +1,0 @@
-#!/bin/sh
-
-exec wishx -file $DRAWHOME/Consultation.tcl

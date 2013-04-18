@@ -4,7 +4,6 @@ puts "OCC2707"
 puts "================"
 #######################################################################################
 # AIS_LC::AddOrRemoveSelected(Handle(SelectMgr_EntityOwner), ..) works too slow
-# Various improvements of RINA LH3D-3H project
 #######################################################################################
 
 box b1 10 10 10
