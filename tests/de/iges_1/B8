@@ -1,5 +1,6 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 set filename CTS18542-2.igs
+puts "TODO ?CR23096 ALL: TPSTAT : Faulty" 
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
