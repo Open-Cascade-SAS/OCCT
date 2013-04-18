@@ -1,8 +1,9 @@
 puts "TODO ?#22911 ALL: An exception was caught"
 puts "TODO ?#22911 ALL: \\*\\* Exception \\*\\*.*"
+puts "TODO ?OCC12345 ALL: Process killed by CPU limit"
 puts "TODO ?#22911 ALL: TEST INCOMPLETE"
 
-cpulimit 900
+cpulimit 1200
 
 restore [locate_data_file lh3d_ro1.brep] a
 isos a 0

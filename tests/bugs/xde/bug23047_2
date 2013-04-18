@@ -20,7 +20,6 @@ XRemoveShape D 0:1:1:1 1
 
 set xd [Xdump D]
 
-
 regexp {Free Shapes: ([-0-9.+eE]+)} $xd full FreeShapes
 puts "FreeShapes=${FreeShapes}"
 

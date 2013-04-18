@@ -1,6 +1,7 @@
+puts "TODO ?OCC12345 ALL: Process killed by CPU limit"
 puts "TODO OCC11111 ALL: TEST INCOMPLETE"
 
-cpulimit 500
+cpulimit 30
 
 puts "============"
 puts "OCC22759"
