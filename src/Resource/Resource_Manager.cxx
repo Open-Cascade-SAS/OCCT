@@ -294,7 +294,7 @@ Standard_Boolean Resource_Manager::Save() const
 
   Resource_LexicalCompare Comp;
   Standard_Integer NbKey = myUserMap.Extent();
-  TColStd_Array1OfAsciiString KeyArray(1,NbKey);
+  TColStd_Array1OfAsciiString KeyArray(1,NbKey+1); // 1 more item is added to allow saving empty resource
   Resource_DataMapIteratorOfDataMapOfAsciiStringAsciiString Iter(myUserMap);
 
   for ( Index = 1; Iter.More(); Iter.Next())

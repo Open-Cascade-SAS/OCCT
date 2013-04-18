@@ -165,17 +165,17 @@ void  BSplSLib::RationalDerivative(const Standard_Integer UDeg,
     index_w  = iiM1;
     
     for (jj = 0 ; jj < MinM1 ; jj++) {
-      RArray[index_v] = HomogeneousArray[index_v1]; index_v++; index_v1++;
-      RArray[index_v] = HomogeneousArray[index_v1]; index_v++; index_v1++;
-      RArray[index_v] = HomogeneousArray[index_v1]; index_v++; index_v1++;
-      StoreW[index_w] = HomogeneousArray[index_v1]; index_w++; index_v1++;
+      RArray[index_v++] = HomogeneousArray[index_v1++];
+      RArray[index_v++] = HomogeneousArray[index_v1++];
+      RArray[index_v++] = HomogeneousArray[index_v1++];
+      StoreW[index_w++] = HomogeneousArray[index_v1++];
     }
 
     for (jj = MinM1 ; jj < M1 ; jj++) {
-      RArray[index_v] = 0.0e0                     ; index_v++; index_v1++;
-      RArray[index_v] = 0.0e0                     ; index_v++; index_v1++;
-      RArray[index_v] = 0.0e0                     ; index_v++; index_v1++;
-      StoreW[index_w] = HomogeneousArray[index_v1]; index_w++; index_v1++;
+      RArray[index_v++] = 0.;
+      RArray[index_v++] = 0.;
+      RArray[index_v++] = 0.;
+      StoreW[index_w++] = 0.;
     }
     index_u1 += M4;
     index_u  += M3;
@@ -186,10 +186,10 @@ void  BSplSLib::RationalDerivative(const Standard_Integer UDeg,
   for (ii = MinN1 ; ii < N1 ; ii++) {
     
     for (jj = 0 ; jj < M1 ; jj++) {  
-      RArray[index_v] = 0.0e0; index_v++;
-      RArray[index_v] = 0.0e0; index_v++;
-      RArray[index_v] = 0.0e0; index_v++;
-      StoreW[index_w] = 0.0e0; index_w++;
+      RArray[index_v++] = 0.0e0;
+      RArray[index_v++] = 0.0e0;
+      RArray[index_v++] = 0.0e0;
+      StoreW[index_w++] = 0.0e0;
     }
   } 
 
