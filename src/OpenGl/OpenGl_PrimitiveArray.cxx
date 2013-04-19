@@ -85,7 +85,8 @@ Standard_Boolean OpenGl_PrimitiveArray::BuildVBO (const Handle(OpenGl_Workspace)
     return Standard_False;
   }
 
-  if (myPArray->edges != NULL)
+  if (myPArray->edges != NULL
+   && myPArray->num_edges > 0)
   {
     myVbos[VBOEdges] = new OpenGl_IndexBuffer();
     if (!myVbos[VBOEdges]->Init (aGlCtx, 1, myPArray->num_edges, (GLuint* )myPArray->edges))
