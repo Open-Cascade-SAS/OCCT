@@ -58,13 +58,6 @@
 #include <gp_Trsf.hxx>
 #include <TCollection_AsciiString.hxx>
 
-#ifdef WNT
-# include <WNT_Window.hxx>
-#else
-# include <Xw_Window.hxx>
-#endif
-
-
 V3d_SpotLight::V3d_SpotLight(const Handle(V3d_Viewer)& VM, const Standard_Real X, const Standard_Real Y, const Standard_Real Z, const V3d_TypeOfOrientation Direction, const Quantity_NameOfColor Name, const Standard_Real A1, const Standard_Real A2, const Standard_Real CN, const Standard_Real AN):V3d_PositionLight(VM) {
 
   V3d_BadValue_Raise_if( A1 < 0 || A1 > 1. || A2 < 0 || A2 > 1  

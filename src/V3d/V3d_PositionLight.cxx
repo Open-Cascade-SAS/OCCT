@@ -46,11 +46,6 @@
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
 #include <TCollection_AsciiString.hxx>
-#ifdef WNT
-# include <WNT_Window.hxx>
-#else
-# include <Xw_Window.hxx>
-#endif
 
 V3d_PositionLight::V3d_PositionLight(const Handle(V3d_Viewer)& VM) : V3d_Light(VM) {
 }
