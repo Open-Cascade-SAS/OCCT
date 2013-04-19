@@ -27,8 +27,7 @@ if {[array get env os_type] != ""} {
     set os $env(os_type)
 }
 
-if { [regexp "indows" $os ] == 1 } {
-    set env(CSF_TestDataPath) "$env(CSF_TestDataPath);$env(CASROOT)"
+if { [regexp "indows" $os] } {
     if {[regexp -nocase {jdk} $env(PATH)] || [regexp -nocase {java} $env(PATH)]} {
 	set Java "java"
     } else {
@@ -36,7 +35,6 @@ if { [regexp "indows" $os ] == 1 } {
     }
 } else {
     catch {set Java $env(JAVAHOME)/bin/java}
-    set env(CSF_TestDataPath) "$env(CSF_TestDataPath):$env(CASROOT)"
 }
 
 set SchemaFile    ""
