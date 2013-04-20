@@ -58,14 +58,12 @@ is
 
 
     ------------------------------------------------------------
-    SetTextureFileName( me: mutable; 
-    	    	    	TextureFileName: AsciiString from TCollection) 
+    SetTextureFileName( me: mutable;
+                        TextureFileName: AsciiString from TCollection)
     is virtual;
-			
-			
-    	---Purpose : Sets the name of the texture file to map. The accepted
-    	--      file types are those used in AlienImage with extensions
-    	--      such as xwd, bmp, gif, rgb, ras, rs and more.
+    ---Purpose : Sets the name of the texture file to map. The accepted
+    --      file types are those used in Image_AlienPixMap with extensions
+    --      such as rgb, png, jpg and more.
 
 
     ------------------------------------------------------------

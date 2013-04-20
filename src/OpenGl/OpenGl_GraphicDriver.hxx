@@ -31,7 +31,6 @@
 #include <Handle_TColStd_HArray1OfReal.hxx>
 #include <Quantity_PlaneAngle.hxx>
 #include <Quantity_NameOfColor.hxx>
-#include <Handle_AlienImage_AlienImage.hxx>
 #include <Handle_OpenGl_View.hxx>
 #include <Handle_OpenGl_Workspace.hxx>
 
@@ -74,7 +73,6 @@ class Quantity_Color;
 class Graphic3d_Vertex;
 class Aspect_Array1OfEdge;
 class TCollection_ExtendedString;
-class AlienImage_AlienImage;
 class Image_PixMap;
 class TColStd_HArray1OfReal;
 class Handle(OpenGl_Workspace);

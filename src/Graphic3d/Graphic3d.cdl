@@ -76,7 +76,6 @@ uses
     MMgt,
     WNT,
     Image,
-    AlienImage,
     gp,
     Font
 is

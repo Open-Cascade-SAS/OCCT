@@ -129,7 +129,6 @@ uses
         TransientManager                  from Visual3d,
         TypeOfTriedronEcho                from Aspect,
         TypeOfTriedronPosition            from Aspect,
-        FormatOfSheetPaper                from Aspect,
         RenderingContext                  from Aspect,
         GraphicCallbackProc               from Aspect,
         FillMethod                        from Aspect,

@@ -46,7 +46,6 @@ uses
 
     PlaneAngle          from Quantity,
 
-    AlienImage          from AlienImage,
     PixMap              from Image,
 
     Array1OfEdge        from Aspect,

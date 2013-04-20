@@ -29,7 +29,7 @@ package MeshVS
 
 uses
   Quantity, AIS, PrsMgr, Prs3d, SelectMgr, TColStd, SelectBasics,
-  Graphic3d, gp, TCollection, Bnd, TColgp, Select3D, TopLoc, Aspect, AlienImage
+  Graphic3d, gp, TCollection, Bnd, TColgp, Select3D, TopLoc, Aspect
 
 is
     ---Purpose: The integer keys for most useful constants attuning mesh presentation appearence

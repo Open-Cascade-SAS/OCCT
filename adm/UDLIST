@@ -205,7 +205,6 @@ t TKTopAlgo
 t TKXMesh
 n InterfaceGraphic
 p AIS
-p AlienImage
 p Aspect
 p DsgPrs
 p Graphic3d

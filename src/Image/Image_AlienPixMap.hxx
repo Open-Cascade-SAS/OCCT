@@ -21,7 +21,6 @@
 #define _Image_AlienPixMap_H__
 
 #include <Image_PixMap.hxx>
-#include <Image_TypeOfImage.hxx>
 
 class TCollection_AsciiString;
 struct FIBITMAP;
