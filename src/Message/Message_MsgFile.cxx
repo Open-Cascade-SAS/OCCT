@@ -349,11 +349,19 @@ const TCollection_ExtendedString &Message_MsgFile::Msg (const TCollection_AsciiS
     return aDataMap.Find (theKeyword);
 
   // if not found, generate error message
-  static const TCollection_ExtendedString aDefPrefix ("Unknown message invoked with the keyword: ");
+  // to minimize risk of data races when running concurrently, set the static variables
+  // only if they are empty; this gives a possibility to enforce calling this method
+  // upfront to initialize these variables and only read access them afterwards. However
+  // theKeyword is no longer appended. aDefPrefix remained unchanged to not break some
+  // logs which might expect the previous value
+  static const TCollection_ExtendedString aDefPrefix ("Unknown message invoked with the keyword");
   static const TCollection_AsciiString aPrefixCode ("Message_Msg_BadKeyword");
   static TCollection_ExtendedString aFailureMessage;
-  if (aDataMap.IsBound (aPrefixCode))
-    aFailureMessage = aDataMap.Find (aPrefixCode) + " " + theKeyword;
-  else aFailureMessage = aDefPrefix + theKeyword;
+  if (aFailureMessage.Length() == 0) {
+     if (aDataMap.IsBound (aPrefixCode))
+       aFailureMessage = aDataMap.Find (aPrefixCode);
+     else
+       aFailureMessage = aDefPrefix;
+  }
   return aFailureMessage;
 }
