@@ -67,6 +67,11 @@ public: \
     return *this; \
   } \
   \
+  C1& operator*() const \
+  { \
+    return *(C1 *)ControlAccess(); \
+  } \
+  \
   C1* operator->() const \
   { \
     return (C1 *)ControlAccess(); \
