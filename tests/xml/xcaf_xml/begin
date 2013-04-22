@@ -1,4 +1,4 @@
-set SchemaFile [locate_data_file XmlXcaf.xsd]
+set SchemaFile [file join $env(CASROOT) src XmlOcafResource XmlXcaf.xsd]
 
 pload XDE
 set FileSuffix "xml"

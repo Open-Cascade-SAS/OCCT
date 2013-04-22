@@ -1,4 +1,4 @@
-set SchemaFile [locate_data_file XmlOcaf.xsd]
+set SchemaFile [file join $env(CASROOT) src XmlOcafResource XmlOcaf.xsd]
 set FileSuffix "xml"
 
 # Create a new document and set UndoLimit
