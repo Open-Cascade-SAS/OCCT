@@ -5,6 +5,7 @@ puts "TODO CR23096 ALL: LABELS : Faulty"
 puts "TODO CR23096 Mandriva2010: Error : 3 differences with reference data found :"
 puts "TODO CR23096 Mandriva2010: STATSHAPE : Faulty" 
 puts "TODO CR23096 Mandriva2010: TOLERANCE : Faulty"
+puts "TODO ?CR23096 ALL: CHECKSHAPE : Faulty"
 
 set LinuxDiff 3
 set LinuxFaulties {STATSHAPE TOLERANCE}

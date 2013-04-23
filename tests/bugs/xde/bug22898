@@ -3,7 +3,7 @@
 # check that the result is good shape with expected area
 
 set anOS $tcl_platform(os)
-if { ${anOS} == "Darwin" } {
+if { ${anOS} == "Linux" } {
   dlocale LC_ALL fr_FR
 } else {
   dlocale LC_ALL French
