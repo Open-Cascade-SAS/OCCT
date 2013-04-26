@@ -25,8 +25,7 @@
 #include <OSD_Path.hxx>
 #include <stdio.h>
 
-
-static  char defmess[30];
+static char defmess[31];
 
 //  Fonctions Satisfies offertes en standard ...
 
@@ -243,18 +242,18 @@ Standard_CString  Interface_Static::CDef
   }
   if (part[0] == 'e') {
     Standard_Integer nume = 0;
-    sscanf (part,"%s %d",defmess,&nume);
+    sscanf (part,"%30s %d",defmess,&nume);
     return stat->EnumVal(nume);
   }
   if (part[0] == 'i') {
     Standard_Integer ilim;
     if (!stat->IntegerLimit((part[2] == 'a'),ilim)) return "";
-    Sprintf(defmess,"%d",ilim);   return defmess;
+    Sprintf(defmess,"%d",ilim);  return defmess;
   }
   if (part[0] == 'r') {
     Standard_Real rlim;
     if (!stat->RealLimit((part[2] == 'a'),rlim)) return "";
-    Sprintf(defmess,"%f",rlim);   return defmess;
+    Sprintf(defmess,"%f",rlim);  return defmess;
   }
   if (part[0] == 'u') return stat->UnitDef();
   return "";
@@ -280,7 +279,7 @@ Standard_Integer  Interface_Static::IDef
     if (part[1] == 'm') return (match ? 1 : 0);
     if (part[1] == 'v') {
       char vale[50];
-      sscanf (part,"%s %s",defmess,vale);
+      sscanf (part,"%30s %50s",defmess,vale);
       return stat->EnumCase (vale);
     }
   }

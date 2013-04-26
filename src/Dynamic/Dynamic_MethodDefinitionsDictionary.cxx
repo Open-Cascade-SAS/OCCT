@@ -74,11 +74,11 @@ void Dynamic_MethodDefinitionsDictionary::Creates(const Standard_CString afilena
 {
   Standard_Boolean group;
   Standard_Integer fr,i,begin,end,endline;
-  char line[255];
-  char name[80];
-  char mode[80];
-  char type[80];
-  char value[80],value1[80],value2[80],value3[80];
+  char line[256];
+  char name[81];
+  char mode[81];
+  char type[81];
+  char value[81],value1[81],value2[81],value3[81];
   Handle(Dynamic_CompiledMethod) methoddefinition;
   Handle(Dynamic_Parameter) parameter;
   
@@ -99,7 +99,7 @@ void Dynamic_MethodDefinitionsDictionary::Creates(const Standard_CString afilena
   
   for(;;)
     {
-      for(i=0; i<255; i++) line[i] = 0;
+      memset(line,0,sizeof(line));
 
       file.getline(line,255);
       if(!file)break;
@@ -133,20 +133,19 @@ void Dynamic_MethodDefinitionsDictionary::Creates(const Standard_CString afilena
 		}
 	    }
 
-	  for(i=0; i<80; i++)name[i]=0;
+      memset(name,0,sizeof(name));
 
 	  endline = 0;
 	  for(i=begin+1; i<=end-1; i++)name[endline++] = line[i];
 
-	  for(i=0; i<80; i++)mode   [i] = 0;
-	  for(i=0; i<80; i++)type   [i] = 0;
-	  for(i=0; i<80; i++)value  [i] = 0;
-	  for(i=0; i<80; i++)value1 [i] = 0;
-	  for(i=0; i<80; i++)value2 [i] = 0;
-	  for(i=0; i<80; i++)value3 [i] = 0;
+      memset(mode,  0x00,sizeof(mode));
+      memset(type,  0x00,sizeof(type));
+      memset(value, 0x00,sizeof(value));
+      memset(value1,0x00,sizeof(value1));
+      memset(value2,0x00,sizeof(value2));
+      memset(value3,0x00,sizeof(value3));
 
-	  //	  fr = sscanf(&line[end+1],"%s%s%80c",&mode,&type,&value);
-	  fr = sscanf(&line[end+1],"%s%s%80c",mode,type,value);
+	  fr = sscanf(&line[end+1],"%80s%80s%80c",mode,type,value);
 	  if(fr == -1) continue;
 
 	  group = Standard_False;

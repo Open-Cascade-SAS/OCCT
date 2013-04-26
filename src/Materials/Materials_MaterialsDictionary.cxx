@@ -65,10 +65,10 @@ Materials_MaterialsDictionary::Materials_MaterialsDictionary()
   Standard_Integer i,fr,begin,end,lengthname;
   //char* filename;
   
-  char line[255];
-  char name[80];
-  char type[80];
-  char value1[80],value2[80],value3[80];
+  char line[256];
+  char name[81];
+  char type[81];
+  char value1[81],value2[81],value3[81];
   Handle(Materials_MaterialsSequence) materialssequence;
   Handle(Materials_Material) material;
   Handle(Materials_Color) pcolor;
@@ -92,7 +92,7 @@ Materials_MaterialsDictionary::Materials_MaterialsDictionary()
   
   for(;;)
     {
-      for(i=0; i<255; i++) line[i]=0;
+      memset(line,0,sizeof(line));
       file.getline(line,255);
       if(!file)break;
 
@@ -125,18 +125,17 @@ Materials_MaterialsDictionary::Materials_MaterialsDictionary()
 		}
 	    }
 
-	  for(i=0; i<80; i++)name[i]=0;
+      memset(name, 0, sizeof(name));
 
 	  lengthname = 0;
 	  for(i=begin+1; i<=end-1; i++)name[lengthname++] = line[i];
 
-	  for(i=0; i<80; i++)type   [i] = 0;
-	  for(i=0; i<80; i++)value1 [i] = 0;
-	  for(i=0; i<80; i++)value2 [i] = 0;
-	  for(i=0; i<80; i++)value3 [i] = 0;
+      memset(type,  0,sizeof(type));
+      memset(value1,0,sizeof(value1));
+      memset(value2,0,sizeof(value2));
+      memset(value3,0,sizeof(value3));
 
-	  //          fr = sscanf(&line[end+1],"%s%s%s%s",&type,&value1,&value2,&value3);
-          fr = sscanf(&line[end+1],"%s%s%s%s",type,value1,value2,value3);
+          fr = sscanf(&line[end+1],"%80s%80s%80s%80s",type,value1,value2,value3);
 
           if(fr == -1) continue;
 

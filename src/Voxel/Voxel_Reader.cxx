@@ -42,8 +42,8 @@ Standard_Boolean Voxel_Reader::Read(const TCollection_ExtendedString& file)
   // Read the header
   Standard_Byte type; // 0 - bool, 1 - color, 2 - float
   Voxel_VoxelFileFormat format;
-  Standard_Character svoxels[8], sformat[8], stype[8];
-  fscanf(f, "%s %s %s\n", svoxels, sformat, stype);
+  Standard_Character svoxels[9], sformat[9], stype[9];
+  fscanf(f, "%8s %8s %8s\n", svoxels, sformat, stype);
   fclose(f);
 
   // Take format, type of voxels.
@@ -148,7 +148,7 @@ Standard_Boolean Voxel_Reader::ReadBoolAsciiVoxels(const TCollection_ExtendedStr
   FILE* f = fopen(TCollection_AsciiString(file, '?').ToCString(), "r");
   if (!f)
     return Standard_False;
-  Standard_Character line[64], sx[32], sy[32], sz[32];
+  Standard_Character line[65], sx[33], sy[33], sz[33];
 
   // Header: skip it
   fgets(line, 64, f);
@@ -156,13 +156,13 @@ Standard_Boolean Voxel_Reader::ReadBoolAsciiVoxels(const TCollection_ExtendedStr
   // Location, size, number of splits
   Standard_Integer nbx = 0, nby = 0, nbz = 0;
   Standard_Real x = 0.0, y = 0.0, z = 0.0, xlen = 0.0, ylen = 0.0, zlen = 0.0;
-  if (fscanf(f, "%s %s %s\n", sx, sy, sz) != 3)
+  if (fscanf(f, "%32s %32s %32s\n", sx, sy, sz) != 3)
   {
     fclose(f);
     return Standard_False;
   }
   x = Atof(sx); y = Atof(sy); z = Atof(sz);
-  if (fscanf(f, "%s %s %s\n", sx, sy, sz) != 3)
+  if (fscanf(f, "%32s %32s %32s\n", sx, sy, sz) != 3)
   {
     fclose(f);
     return Standard_False;
@@ -225,7 +225,7 @@ Standard_Boolean Voxel_Reader::ReadColorAsciiVoxels(const TCollection_ExtendedSt
   FILE* f = fopen(TCollection_AsciiString(file, '?').ToCString(), "r");
   if (!f)
     return Standard_False;
-  Standard_Character line[64], sx[32], sy[32], sz[32];
+  Standard_Character line[65], sx[33], sy[33], sz[33];
 
   // Header: skip it
   fgets(line, 64, f);
@@ -233,13 +233,13 @@ Standard_Boolean Voxel_Reader::ReadColorAsciiVoxels(const TCollection_ExtendedSt
   // Location, size, number of splits
   Standard_Integer nbx = 0, nby = 0, nbz = 0;
   Standard_Real x = 0.0, y = 0.0, z = 0.0, xlen = 0.0, ylen = 0.0, zlen = 0.0;
-  if (fscanf(f, "%s %s %s\n", sx, sy, sz) != 3)
+  if (fscanf(f, "%32s %32s %32s\n", sx, sy, sz) != 3)
   {
     fclose(f);
     return Standard_False;
   }
   x = Atof(sx); y = Atof(sy); z = Atof(sz);
-  if (fscanf(f, "%s %s %s\n", sx, sy, sz) != 3)
+  if (fscanf(f, "%32s %32s %32s\n", sx, sy, sz) != 3)
   {
     fclose(f);
     return Standard_False;
@@ -302,7 +302,7 @@ Standard_Boolean Voxel_Reader::ReadFloatAsciiVoxels(const TCollection_ExtendedSt
   FILE* f = fopen(TCollection_AsciiString(file, '?').ToCString(), "r");
   if (!f)
     return Standard_False;
-  Standard_Character line[64], sx[32], sy[32], sz[32];
+  Standard_Character line[65], sx[33], sy[33], sz[33];
 
   // Header: skip it
   fgets(line, 64, f);
@@ -310,13 +310,13 @@ Standard_Boolean Voxel_Reader::ReadFloatAsciiVoxels(const TCollection_ExtendedSt
   // Location, size, number of splits
   Standard_Integer nbx = 0, nby = 0, nbz = 0;
   Standard_Real x = 0.0, y = 0.0, z = 0.0, xlen = 0.0, ylen = 0.0, zlen = 0.0;
-  if (fscanf(f, "%s %s %s\n", sx, sy, sz) != 3)
+  if (fscanf(f, "%32s %32s %32s\n", sx, sy, sz) != 3)
   {
     fclose(f);
     return Standard_False;
   }
   x = Atof(sx); y = Atof(sy); z = Atof(sz);
-  if (fscanf(f, "%s %s %s\n", sx, sy, sz) != 3)
+  if (fscanf(f, "%32s %32s %32s\n", sx, sy, sz) != 3)
   {
     fclose(f);
     return Standard_False;
@@ -345,7 +345,7 @@ Standard_Boolean Voxel_Reader::ReadFloatAsciiVoxels(const TCollection_ExtendedSt
       fgets(line, 64, f);
       if (has_slice(line))
       {
-	if (sscanf(line, "%d %d %s\n", &i1, &i2, line) != 3)
+	if (sscanf(line, "%d %d %64s\n", &i1, &i2, line) != 3)
         {
 	  fclose(f);
 	  return Standard_False;
@@ -353,7 +353,7 @@ Standard_Boolean Voxel_Reader::ReadFloatAsciiVoxels(const TCollection_ExtendedSt
       }
       else
       {
-	if (sscanf(line, "%d %s\n", &i2, line) != 2)
+	if (sscanf(line, "%d %64s\n", &i2, line) != 2)
         {
 	  fclose(f);
 	  return Standard_False;
@@ -383,7 +383,7 @@ Standard_Boolean Voxel_Reader::ReadBoolBinaryVoxels(const TCollection_ExtendedSt
     return Standard_False;
 
   // Header: skip it
-  Standard_Character line[64];
+  Standard_Character line[65];
   fgets(line, 64, f);
   
   // Location, size, number of splits
@@ -438,7 +438,7 @@ Standard_Boolean Voxel_Reader::ReadColorBinaryVoxels(const TCollection_ExtendedS
     return Standard_False;
 
   // Header: skip it
-  Standard_Character line[64];
+  Standard_Character line[65];
   fgets(line, 64, f);
   
   // Location, size, number of splits
@@ -493,7 +493,7 @@ Standard_Boolean Voxel_Reader::ReadFloatBinaryVoxels(const TCollection_ExtendedS
     return Standard_False;
 
   // Header: skip it
-  Standard_Character line[64];
+  Standard_Character line[65];
   fgets(line, 64, f);
   
   // Location, size, number of splits

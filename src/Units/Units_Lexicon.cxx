@@ -89,9 +89,9 @@ void Units_Lexicon::Creates(const Standard_CString afilename)
 
     // split line to parts
     char chain[31], oper[11], coeff[31];
-    for (int i=0; i < 31; i++) chain[i] = '\0';
-    for (int i=0; i < 11; i++) oper[i]  = '\0';
-    for (int i=0; i < 31; i++) coeff[i] = '\0';
+    memset(chain,0x00,sizeof(chain));
+    memset(oper,0x00,sizeof(oper));
+    memset(coeff,0x00,sizeof(coeff));
 
     sscanf (line, "%30c%10c%30c", chain, oper, coeff);
 

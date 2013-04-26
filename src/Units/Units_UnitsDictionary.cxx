@@ -161,16 +161,16 @@ void Units_UnitsDictionary::Creates(const Standard_CString afilename)
       // for basic SI dimensions (mass, length, time, ...)
       char name[41];
       char MM[11], LL[11], TT[11], II[11], tt[11], NN[11], JJ[11], PP[11], SS[11];
-      for (i=0; i < 41; i++) name[i] = '\0';
-      for (i=0; i < 11; i++) MM[i] = '\0';
-      for (i=0; i < 11; i++) LL[i] = '\0';
-      for (i=0; i < 11; i++) TT[i] = '\0';
-      for (i=0; i < 11; i++) II[i] = '\0';
-      for (i=0; i < 11; i++) tt[i] = '\0';
-      for (i=0; i < 11; i++) NN[i] = '\0';
-      for (i=0; i < 11; i++) JJ[i] = '\0';
-      for (i=0; i < 11; i++) PP[i] = '\0';
-      for (i=0; i < 11; i++) SS[i] = '\0';
+      memset(name,0x00,sizeof(name));
+      memset(MM,0x00,sizeof(MM));
+      memset(LL,0x00,sizeof(LL));
+      memset(TT,0x00,sizeof(TT));
+      memset(II,0x00,sizeof(II));
+      memset(tt,0x00,sizeof(tt));
+      memset(NN,0x00,sizeof(NN));
+      memset(JJ,0x00,sizeof(JJ));
+      memset(PP,0x00,sizeof(PP));
+      memset(SS,0x00,sizeof(SS));
 
       sscanf (line, "%40c%10c%10c%10c%10c%10c%10c%10c%10c%10c",
 		    name, MM, LL, TT, II, tt, NN, JJ, PP, SS);
@@ -222,10 +222,10 @@ void Units_UnitsDictionary::Creates(const Standard_CString afilename)
       // - factor (27 symbols)
       // - base unit (27 symbols)
       char unite[52], symbol[28], convert[28], unit2[28];
-      for (i=0; i < 52; i++) unite  [i] = '\0';
-      for (i=0; i < 28; i++) symbol [i] = '\0';
-      for (i=0; i < 28; i++) convert[i] = '\0';
-      for (i=0; i < 28; i++) unit2  [i] = '\0';
+      memset(unite,  0x00,sizeof(unite));
+      memset(symbol, 0x00,sizeof(symbol));
+      memset(convert,0x00,sizeof(convert));
+      memset(unit2,  0x00,sizeof(unit2));
 
       sscanf (line, "%51c%27c%27c%27c", unite, symbol, convert, unit2);
 

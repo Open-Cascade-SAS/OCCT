@@ -72,10 +72,10 @@ Dynamic_FuzzyDefinitionsDictionary::Dynamic_FuzzyDefinitionsDictionary()
 void Dynamic_FuzzyDefinitionsDictionary::Creates(const Standard_CString afilename)
 {
   Standard_Integer fr,i,begin,end,endline;
-  char line[255];
-  char name[80];
-  char type[80];
-  char value[80],value1[80],value2[80],value3[80];
+  char line[256];
+  char name[81];
+  char type[81];
+  char value[81],value1[81],value2[81],value3[81];
   Handle(Dynamic_FuzzyDefinition) fuzzydefinition;
   Handle(Dynamic_Parameter) parameter;
   
@@ -96,7 +96,7 @@ void Dynamic_FuzzyDefinitionsDictionary::Creates(const Standard_CString afilenam
   
   for(;;)
     {
-      for(i=0; i<255; i++) line[i] = 0;
+      memset(line,0,sizeof(line));
 
       file.getline(line,255);
       if(!file)break;
@@ -130,19 +130,18 @@ void Dynamic_FuzzyDefinitionsDictionary::Creates(const Standard_CString afilenam
 		}
 	    }
 
-	  for(i=0; i<80; i++)name[i]=0;
+      memset(name,0,sizeof(name));
 
 	  endline = 0;
 	  for(i=begin+1; i<=end-1; i++)name[endline++] = line[i];
 
-	  for(i=0; i<80; i++)type   [i] = 0;
-	  for(i=0; i<80; i++)value  [i] = 0;
-	  for(i=0; i<80; i++)value1 [i] = 0;
-	  for(i=0; i<80; i++)value2 [i] = 0;
-	  for(i=0; i<80; i++)value3 [i] = 0;
+      memset(type,0,sizeof(type));
+      memset(value,0,sizeof(value));
+      memset(value1,0,sizeof(value1));
+      memset(value2,0,sizeof(value2));
+      memset(value3,0,sizeof(value3));
 
-//	  fr = sscanf(&line[end+1],"%s%80c",&type,&value);
-	  fr = sscanf(&line[end+1],"%s%80c",type,value);
+	  fr = sscanf(&line[end+1],"%80s%80c",type,value);
 	  if(fr == -1) continue;
 
 	  begin = 0;
