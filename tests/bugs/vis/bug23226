@@ -325,8 +325,8 @@ for {set vbo_enable 0} {$vbo_enable < 2} {incr vbo_enable} {
 	vfit
 	
 	# dump resulted image
-	if { $vbo_enable == 0 } { vfeedback; vdump $ImageName1 }
-	if { $vbo_enable == 1 } { vfeedback; vdump $ImageName2 }
+	if { $vbo_enable == 0 } { vfeedback; vdump ${imagedir}/$ImageName1 }
+	if { $vbo_enable == 1 } { vfeedback; vdump ${imagedir}/$ImageName2 }
 
 }
 

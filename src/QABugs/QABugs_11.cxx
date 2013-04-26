@@ -2702,14 +2702,15 @@ static Standard_Integer OCC7141 (Draw_Interpretor& di, Standard_Integer argc, co
 {
   int nCount = 10;
 
-  if (argc > 2)
+  if (argc > 3)
     {
-      di << "Usage : " << argv[0] << " [nCount]" << "\n";
+      di << "Usage : " << argv[0] << " [nCount] path" << "\n";
       return 1;
     }
 
-  if (argc > 1)
+  if (argc > 2)
     nCount = Draw::Atoi(argv[1]);
+    TCollection_AsciiString aFilePath = argv[2];
   STEPCAFControl_Writer writer;
   Handle_TDocStd_Document document;
   document = new TDocStd_Document("Pace Test-StepExporter-");
@@ -2725,7 +2726,7 @@ static Standard_Integer OCC7141 (Draw_Interpretor& di, Standard_Integer argc, co
     OCC_CATCH_SIGNALS
     if( writer.Transfer(document, mode)) {
       IFSelect_ReturnStatus stat =
-	writer.Write("TestExportStructure.step");
+	writer.Write(aFilePath.ToCString());
     }
   }
   catch(OSD_Exception_STACK_OVERFLOW) {
@@ -2738,6 +2739,10 @@ static Standard_Integer OCC7141 (Draw_Interpretor& di, Standard_Integer argc, co
   }
   di << argv[0] << " : Finish" << "\n";
   
+  if( remove("TestExportStructure.step") != 0 ) {
+     perror( "Error deleting file" );
+  }
+
   return 0;
 }
 
@@ -5417,7 +5422,7 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC6046", "OCC6046 nb_of_vectors size", __FILE__, OCC6046, group);
   theCommands.Add("OCC5698", "OCC5698 wire", __FILE__, OCC5698, group);
   theCommands.Add("OCC6143", "OCC6143", __FILE__, OCC6143, group);
-  theCommands.Add("OCC7141", "OCC7141 [nCount]", __FILE__, OCC7141, group);
+  theCommands.Add("OCC7141", "OCC7141 [nCount] aPath", __FILE__, OCC7141, group);
   theCommands.Add("OCC7372", "OCC7372", __FILE__, OCC7372, group);
   theCommands.Add("OCC8169", "OCC8169 edge1 edge2 plane", __FILE__, OCC8169, group);
   theCommands.Add("OCC10138", "OCC10138 lower upper", __FILE__, OCC10138, group);

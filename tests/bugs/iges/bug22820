@@ -6,16 +6,14 @@ puts ""
 # OCCT IGES writer loses plane information
 ######################################################################################
 
-pload XDE
-
 box b 1 1 1
 set b_info [dump b]
 if { [regexp BSplineSurface ${b_info}] } {
    puts "Error in dump b"
 }
 
-brepiges b 0
-igesbrep . bb *
+brepiges b ${imagedir}/22820.igs
+igesbrep ${imagedir}/22820.igs bb *
 
 set types_info [listtypes]
 puts "types_info=${types_info}"
@@ -23,7 +21,7 @@ if { [regexp BSplineSurface ${types_info}] } {
    puts "Error in listtypes"
 }
 
-igesbrep . bb *
+igesbrep ${imagedir}/22820.igs bb *
 set bb_info [dump bb]
 if { [regexp BSplineSurface ${bb_info}] } {
    puts "Error in dump bb"

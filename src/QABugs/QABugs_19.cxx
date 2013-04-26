@@ -344,7 +344,6 @@ Standard_Boolean static OCC23774Test(const TopoDS_Face& grossPlateFace, const To
     return Standard_False;
   }
   const TopoDS_Shape& step2ModifiedShape = transformer1.ModifiedShape(step1ModifiedShape);
-  BRepTools::Write(step2ModifiedShape, Standard_CString ("SecondMirrorWire.brep"));
 
   //This is identity matrix for values but for type is gp_Rotation ?!
   gp_Trsf2d mirror11 = mirror1;
