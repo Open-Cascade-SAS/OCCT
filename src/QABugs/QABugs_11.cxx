@@ -2739,10 +2739,6 @@ static Standard_Integer OCC7141 (Draw_Interpretor& di, Standard_Integer argc, co
   }
   di << argv[0] << " : Finish" << "\n";
   
-  if( remove("TestExportStructure.step") != 0 ) {
-     perror( "Error deleting file" );
-  }
-
   return 0;
 }
 

@@ -9,10 +9,11 @@ puts ""
 pload QAcommands
 
 set BugNumber OCC7141
+set aFile ${imagedir}/TestExportStructure.step
+file delete -force ${aFile}
 
-file delete ${imagedir}/TestExportStructure.step
 set nCount 20
-if [catch { set List [OCC7141 ${nCount} ${imagedir}/TestExportStructure.step] } result] {
+if [catch { set List [OCC7141 ${nCount} ${aFile}] } result] {
    puts "${BugNumber}: Faulty"
 } else {
    puts "${BugNumber}: OK"
