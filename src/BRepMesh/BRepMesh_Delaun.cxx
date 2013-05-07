@@ -349,26 +349,24 @@ void BRepMesh_Delaun::CreateTriangles ( const Standard_Integer theVertexIndex,
       else
         isSensOK = ( aDist12 < 0. && aDist23 < 0.);
         
-      Standard_Integer aNewEdge1, aNewEdge3, aNewTriangle;
       if ( isSensOK )
       {
-        aNewEdge1 = myMeshData->AddLink( 
-          BRepMesh_Edge( theVertexIndex, aFirstNode, BRepMesh_Free ) );
+        BRepMesh_Edge aNewEdge1 (theVertexIndex, aFirstNode, BRepMesh_Free);
+        BRepMesh_Edge aNewEdge3 (aLastNode, theVertexIndex, BRepMesh_Free);
+
+        Standard_Integer iNewEdge1 = myMeshData->AddLink (aNewEdge1);
+        Standard_Integer iNewEdge3 = myMeshData->AddLink (aNewEdge3);
           
-        aNewEdge3 = myMeshData->AddLink(
-          BRepMesh_Edge( aLastNode, theVertexIndex, BRepMesh_Free ) );
-          
-        aNewTriangle = myMeshData->AddElement(
-          BRepMesh_Triangle( Abs( aNewEdge1 ), anEdges.Key(), Abs( aNewEdge3 ), 
-                             ( aNewEdge1 > 0 ), isPositive, ( aNewEdge3 > 0 ),
-                             BRepMesh_Free) );
+        BRepMesh_Triangle aNewTri (Abs (iNewEdge1), anEdges.Key(), Abs (iNewEdge3),
+                                   (iNewEdge1 > 0), isPositive, (iNewEdge3 > 0),
+                                   BRepMesh_Free);
+        Standard_Integer iNewTri = myMeshData->AddElement(aNewTri);
 
         Standard_Boolean isCircleCreated = 
-          myCircles.Add( aVertexCoord, aFirstVertex.Coord(), aLastVertex.Coord(),
-                         aNewTriangle );
+          myCircles.Add (aVertexCoord, aFirstVertex.Coord(), aLastVertex.Coord(), iNewTri);
                          
         if ( !isCircleCreated )
-          myMeshData->RemoveElement( aNewTriangle );
+          myMeshData->RemoveElement (iNewTri);
       }
       else
       {
@@ -379,17 +377,15 @@ void BRepMesh_Delaun::CreateTriangles ( const Standard_Integer theVertexIndex,
           
         if ( aVEdge1.SquareModulus() > aVEdge3.SquareModulus() )
         {
-          aNewEdge1 = myMeshData->AddLink(
-            BRepMesh_Edge( theVertexIndex, aFirstNode, BRepMesh_Free ) );
-            
-          anExternalEdges.Append( Abs( aNewEdge1) );
+          BRepMesh_Edge aNewEdge (theVertexIndex, aFirstNode, BRepMesh_Free);
+          Standard_Integer iNewEdge = myMeshData->AddLink(aNewEdge);
+          anExternalEdges.Append (Abs (iNewEdge));
         }
         else
         {
-          aNewEdge1 = myMeshData->AddLink(
-            BRepMesh_Edge( aLastNode, theVertexIndex, BRepMesh_Free ) );
-            
-          anExternalEdges.Append( Abs( aNewEdge3 ) );
+          BRepMesh_Edge aNewEdge (aLastNode, theVertexIndex, BRepMesh_Free);
+          Standard_Integer iNewEdge = myMeshData->AddLink (aNewEdge);
+          anExternalEdges.Append (Abs (iNewEdge));
         }
       }
     }
@@ -537,7 +533,7 @@ void BRepMesh_Delaun::CleanupMesh()
   BRepMesh_MapOfIntegerInteger aLoopEdges( 10, myMeshData->Allocator() );
   ListOfInteger aTrianglesList;
 
-  while ( Standard_True )
+  for(;;)
   {
     aTrianglesList.Clear();
     aLoopEdges.Clear();
