@@ -48,7 +48,7 @@ class NCollection_IncAllocator : public NCollection_BaseAllocator
   // ---------- PUBLIC METHODS ----------
 
   //! Constructor
-  Standard_EXPORT NCollection_IncAllocator (const size_t theBlockSize = 24600);
+  Standard_EXPORT NCollection_IncAllocator (const size_t theBlockSize = DefaultBlockSize);
 
   //! Allocate memory with given size. Returns NULL on failure
   Standard_EXPORT virtual void* Allocate        (const size_t size);
@@ -77,6 +77,8 @@ class NCollection_IncAllocator : public NCollection_BaseAllocator
   //!   for future allocations.
   Standard_EXPORT void          Reset           (const Standard_Boolean
                                                  doReleaseMem=Standard_True);
+
+  static const size_t DefaultBlockSize = 24600;
 
  protected:
   struct         IBlock;

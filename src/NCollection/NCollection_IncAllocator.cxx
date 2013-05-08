@@ -185,10 +185,10 @@ NCollection_IncAllocator::NCollection_IncAllocator (const size_t theBlockSize)
     Debug_Create(this);
 #endif
   const size_t aSize = IMEM_SIZE(sizeof(IBlock)) +
-      IMEM_SIZE((theBlockSize > 2*sizeof(IBlock)) ? theBlockSize : 24600);
+      IMEM_SIZE((theBlockSize > 2*sizeof(IBlock)) ? theBlockSize : DefaultBlockSize);
   IBlock * const aBlock = (IBlock *) malloc (aSize * sizeof(aligned_t));
   myFirstBlock = aBlock;
-  mySize = aSize;
+  mySize = aSize - IMEM_SIZE(sizeof(IBlock));
   myMemSize = aSize * sizeof(aligned_t);
   if (aBlock == NULL)
     Standard_OutOfMemory::Raise("NCollection_IncAllocator: out of memory");
@@ -229,6 +229,8 @@ void * NCollection_IncAllocator::Allocate (const size_t aSize)
     aResult = (aligned_t *) allocateNewBlock (cSize+1);
     if (aResult)
       myFirstBlock -> p_free_space = myFirstBlock -> p_end_block;
+    else
+      Standard_OutOfMemory::Raise("NCollection_IncAllocator: out of memory");
   } else
     if (cSize <= IMEM_FREE(myFirstBlock)) {
       /* If the requested size fits into the free space in the 1st block  */
@@ -250,6 +252,20 @@ void * NCollection_IncAllocator::Allocate (const size_t aSize)
         aResult = (aligned_t *) allocateNewBlock (mySize);
         if (aResult)
           myFirstBlock -> p_free_space = aResult + cSize;
+        else
+        {
+          const size_t aDefault = IMEM_SIZE(DefaultBlockSize);
+          if (cSize > aDefault)
+              Standard_OutOfMemory::Raise("NCollection_IncAllocator: out of memory");
+          else
+          {            
+            aResult = (aligned_t *) allocateNewBlock (aDefault);
+            if (aResult)
+              myFirstBlock -> p_free_space = aResult + cSize;
+            else
+              Standard_OutOfMemory::Raise("NCollection_IncAllocator: out of memory");
+          }
+        }
       }
     }
   return aResult;
@@ -299,11 +315,16 @@ void * NCollection_IncAllocator::Reallocate (void         * theAddress,
 //   - extension of terminating allocation when the new size is too big
 // In both cases create a new memory block, allocate memory and copy there
 // the reallocated memory.
-  aligned_t * aResult = (aligned_t *) allocateNewBlock (mySize);
+  size_t cMaxSize = mySize > cNewSize ? mySize : cNewSize;
+  aligned_t * aResult = (aligned_t *) allocateNewBlock (cMaxSize);
   if (aResult) {
     myFirstBlock -> p_free_space = aResult + cNewSize;
     for (unsigned i = 0; i < cOldSize; i++)
       aResult[i] = anAddress[i];
+  }
+  else
+  {
+    Standard_OutOfMemory::Raise("NCollection_IncAllocator: out of memory");
   }
   return aResult;
 }
@@ -406,7 +427,5 @@ void * NCollection_IncAllocator::allocateNewBlock (const size_t cSize)
     aResult = (aligned_t *) IMEM_ALIGN(&aBlock[1]);
     myMemSize += aSz * sizeof(aligned_t);
   }
-  else
-    Standard_OutOfMemory::Raise("NCollection_IncAllocator: out of memory");
   return aResult;
 }
