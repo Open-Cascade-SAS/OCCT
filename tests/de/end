@@ -702,7 +702,7 @@ if { $mist < 1 } {
     }
 }
 fit
-xwd $imagedir/${test_image}.gif
+xwd $imagedir/${test_image}.png
 if { $mist < 1 } {
    if { [catch { Close D_Second } catch_result] } {
       puts "Error : cannot close a document D_Second"

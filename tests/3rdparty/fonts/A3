@@ -6,7 +6,7 @@ puts ""
 
 vtrihedron trihedr
 
-set aFileHandle [open "$::env(CASROOT)/data/step/screw.step" r]
+set aFileHandle [open [locate_data_file screw.step] r]
 set aText [read $aFileHandle]
 close $aFileHandle
 
