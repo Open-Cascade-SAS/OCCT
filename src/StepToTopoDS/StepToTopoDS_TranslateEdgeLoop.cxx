@@ -291,14 +291,16 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
     StepEdge1 = StepEdge;                         //
     Handle(StepShape_EdgeCurve) EC = Handle(StepShape_EdgeCurve)::DownCast(StepEdge);
     Handle(StepGeom_Curve) C = EC->EdgeGeometry();
-    if (C->IsKind(STANDARD_TYPE(StepGeom_SurfaceCurve))) {
-      Handle(StepGeom_SurfaceCurve) Sc = Handle(StepGeom_SurfaceCurve)::DownCast(C);
-      C = Sc->Curve3d();
+    if (!C.IsNull()){
+      if (C->IsKind(STANDARD_TYPE(StepGeom_SurfaceCurve))) {
+        Handle(StepGeom_SurfaceCurve) Sc = Handle(StepGeom_SurfaceCurve)::DownCast(C);
+        C = Sc->Curve3d();
 //      if (modepcurve != 3) {
 //	lastpcurve = StepToTopoDS_GeometricTool::PCurve (Sc,StepSurf,StepPCurve1);
 //	if (StepPCurve1 == StepPCurve) modepcurve = -1;
 //	StepPCurve = StepPCurve1;
 //      }
+      }
     }
 ////    else if (C->IsKind(STANDARD_TYPE(StepGeom_Polyline))) {  }
 //    else if (C->IsKind(STANDARD_TYPE(StepGeom_Pcurve))) {
@@ -462,8 +464,12 @@ void StepToTopoDS_TranslateEdgeLoop::Init(const Handle(StepShape_FaceBound)& Fac
       // --------------------------------------------
       // CASE 1 : The Edge Geometry is of Pcurve Type
       // --------------------------------------------
-      
-      if (C->IsKind(STANDARD_TYPE(StepGeom_Pcurve))) {
+      if (C.IsNull())
+      {
+	aTool.ComputePCurve(Standard_True);
+	hasPcurve = Standard_False;
+      }
+      else if (C->IsKind(STANDARD_TYPE(StepGeom_Pcurve))) {
 	Handle(StepGeom_Pcurve) StepPCurve = Handle(StepGeom_Pcurve)::DownCast(C);
 	C2d = myTranEdge.MakePCurve (StepPCurve,ConvSurf);
 	// -- Statistics --
