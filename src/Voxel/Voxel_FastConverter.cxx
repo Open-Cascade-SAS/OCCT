@@ -121,7 +121,7 @@ void Voxel_FastConverter::Init()
   TopExp_Explorer expl(myShape, TopAbs_FACE);
   for (; expl.More(); expl.Next())
   {
-    TopoDS_Face F = TopoDS::Face(expl.Current());
+    const TopoDS_Face & F = TopoDS::Face(expl.Current());
     Handle(Poly_Triangulation) T = BRep_Tool::Triangulation(F, L);
     if (T.IsNull() || (T->Deflection() > myDeflection))
     {
@@ -141,9 +141,10 @@ void Voxel_FastConverter::Init()
   expl.Init(myShape, TopAbs_FACE);
   for (; expl.More(); expl.Next())
   {
-    TopoDS_Face F = TopoDS::Face(expl.Current());
+    const TopoDS_Face & F = TopoDS::Face(expl.Current());
     Handle(Poly_Triangulation) T = BRep_Tool::Triangulation(F, L);
-    myNbTriangles += T->NbTriangles();
+    if (T.IsNull() == Standard_False)
+      myNbTriangles += T->NbTriangles();
   }
 }
 
@@ -188,8 +189,10 @@ Standard_Boolean Voxel_FastConverter::Convert(Standard_Integer&      progress,
   TopExp_Explorer expl(myShape, TopAbs_FACE);
   for (; expl.More(); expl.Next())
   {
-    TopoDS_Face F = TopoDS::Face(expl.Current());
+    const TopoDS_Face & F = TopoDS::Face(expl.Current());
     Handle(Poly_Triangulation) T = BRep_Tool::Triangulation(F, L);
+    if (T.IsNull())
+      continue;
 
     gp_Trsf trsf;
     Standard_Boolean transform = !L.IsIdentity();
