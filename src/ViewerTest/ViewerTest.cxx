@@ -3375,27 +3375,32 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 		  __FILE__, visos, group);
 
   theCommands.Add("vdisplay",
-		  "vdisplay         : vdisplay2 name1 [name2] ... [name n] ",
+		  "vdisplay name1 [name2] ... [name n]"
+      "\n\t\t: Displays named objects",
 		  __FILE__,VDisplay2,group);
 
   theCommands.Add("verase",
-		  "verase      : verase2 [name1] ...  [name n] ",
+      "verase [name1] ...  [name n]"
+      "\n\t\t: Erases selected or named objects."
+      "\n\t\t: If there are no selected or named objects the whole viewer is erased.",
 		  __FILE__,VErase2,group);
 
   theCommands.Add("vdonly",
-		  "vdonly         : vdonly2 [name1] ...  [name n]",
+		  "vdonly [name1] ...  [name n]"
+      "\n\t\t: Displays only selected or named objects",
 		  __FILE__,VDonly2,group);
 
   theCommands.Add("vdisplayall",
-		  "vdisplayall         : vdisplayall",
+		  "Displays all erased interactive objects (see vdir and vstate)",
 		  __FILE__,VDisplayAll,group);
 
   theCommands.Add("veraseall",
-		  "veraseall        : veraseall ",
+		  "Erases all objects displayed in the viewer",
 		  __FILE__,VEraseAll,group);
 
   theCommands.Add("verasetype",
-		  "verasetype        : verasetype <Type>  \n\t erase all the displayed objects of one given kind (see vtypes)",
+		  "verasetype <Type>"
+      "\n\t\t: Erase all the displayed objects of one given kind (see vtypes)",
 		  __FILE__,VEraseType,group);
 
   theCommands.Add("vdisplaytype",
@@ -3411,38 +3416,51 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 		  __FILE__,VDispMode,group);
 
   theCommands.Add("vsetdispmode",
-		  "vsetdispmode    : vsetdispmode [name] mode(1,2,..): no name -> on selected objects ",
+		  "vsetdispmode [name] mode(1,2,..)"
+      "\n\t\t: Sets display mode for all, selected or named objects.",
 		  __FILE__,VDispMode,group);
 
   theCommands.Add("vunsetdispmode",
-		  "vunsetdispmode : vunsetdispmode [name] mode(1,2,..): no name -> on selected objects",
+		  "vunsetdispmode [name]"
+      "\n\t\t: Unsets custom display mode for selected or named objects.",
 		  __FILE__,VDispMode,group);
 
   theCommands.Add("vdir",
-		  "vdir",
+		  "Lists all objects displayed in 3D viewer",
 		  __FILE__,VDebug,group);
 
   theCommands.Add("vdump",
-                  "<filename>.{png|bmp|jpg|gif} [buffer={rgb|rgba|depth}] [width height]\n\t\t: Dump contents of viewer window to PNG, BMP, JPEG or GIF file",
+    #ifdef HAVE_FREEIMAGE
+      "<filename>.{png|bmp|jpg|gif} [buffer={rgb|rgba|depth}] [width height]"
+      "\n\t\t: Dumps contents of viewer window to PNG, BMP, JPEG or GIF file",
+    #else
+      "<filename>.{ppm} [buffer={rgb|rgba|depth}] [width height]"
+      "\n\t\t: Dumps contents of viewer window to PPM image file",
+    #endif
 		  __FILE__,VDump,group);
 
   theCommands.Add("vsub",      "vsub 0/1 (off/on) [obj]        : Subintensity(on/off) of selected objects",
 		  __FILE__,VSubInt,group);
 
   theCommands.Add("vsetcolor",
-		  "vsetcolor         : vsetcolor [name of shape] ColorName",
+		  "vsetcolor [name] ColorName"
+      "\n\t\t: Sets color for all, selected or named objects.",
 		  __FILE__,VColor2,group);
 
   theCommands.Add("vunsetcolor",
-		  "vunsetcolor     : vunsetcolor   [name of shape] ",
+		  "vunsetcolor [name]"
+      "\n\t\t: Resets color for all, selected or named objects.",
 		  __FILE__,VColor2,group);
 
   theCommands.Add("vsettransparency",
-		  "vsettransparency          : vtransparency [name of shape] TransparenctCoef (0 -> 1)",
+		  "vsettransparency [name] Coefficient"
+      "\n\t\t: Sets transparency for all, selected or named objects."
+      "\n\t\t: The Coefficient may be between 0.0 (opaque) and 1.0 (fully transparent).",
 		  __FILE__,VTransparency,group);
 
   theCommands.Add("vunsettransparency",
-		  "vunsettransparency          : vtransparency [name of shape]",
+		  "vunsettransparency [name]"
+      "\n\t\t: Resets transparency for all, selected or named objects.",
 		  __FILE__,VTransparency,group);
 
   theCommands.Add("vsetmaterial",
@@ -3537,7 +3555,9 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 		  "vunsetActivatedModes:   vunsetam  ",
 		  __FILE__,VActivatedMode,group);
 
-  theCommands.Add("vstate",   "vstate [Name1] ... [NameN] :No arg, select currents; no currrent select all  ",
+  theCommands.Add("vstate",
+      "vstate [name1] ... [nameN]"
+      "\n\t\t: Reports show/hidden state for selected or named objects",
 		  __FILE__,VState,group);
 
   theCommands.Add("vpickshapes",
