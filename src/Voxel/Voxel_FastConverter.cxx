@@ -123,7 +123,7 @@ void Voxel_FastConverter::Init()
   {
     TopoDS_Face F = TopoDS::Face(expl.Current());
     Handle(Poly_Triangulation) T = BRep_Tool::Triangulation(F, L);
-    if (T.IsNull() || fabs(T->Deflection() - myDeflection) > Precision::Confusion())
+    if (T.IsNull() || (T->Deflection() > myDeflection))
     {
       triangulate = Standard_True;
       break;
