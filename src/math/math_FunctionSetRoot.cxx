@@ -180,6 +180,13 @@ Standard_Boolean  MyDirFunction::Value(const math_Vector& Sol,
 
     F2 = 0.5 * (FF.Norm2());
     GH.TMultiply(DF, FF);
+    for(Standard_Integer i = GH.Lower(); i <= GH.Upper(); i++) 
+    {
+      if(Precision::IsInfinite((GH.Value(i))))
+      {
+        return Standard_False;
+      }
+    }
     Gnr1 = GH.Norm2();
     return Standard_True;
   }
