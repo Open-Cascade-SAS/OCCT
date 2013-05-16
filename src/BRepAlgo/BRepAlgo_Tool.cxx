@@ -90,7 +90,13 @@ TopoDS_Shape BRepAlgo_Tool::Deboucle3D(const TopoDS_Shape& S,
 	  NbSub++;
 	}
       }
-      if (NbSub == 0) SS = TopoDS_Shape();
+      if (NbSub == 0)
+        {
+#ifdef DEB
+        cout << "No subhape in shape!" << endl;
+#endif
+        SS = TopoDS_Shape();
+        }
     }
     break;
   default:

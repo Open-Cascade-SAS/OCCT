@@ -1489,22 +1489,23 @@ Standard_Integer mkoffset(Draw_Interpretor& di,
   BRepOffsetAPI_MakeOffset Paral;  
   TopoDS_Shape Base = DBRep::Get(a[2],TopAbs_FACE);
 
-  if ( Base.IsNull()) {
+  if ( Base.IsNull())
+    {
     Base = DBRep::Get(a[2]);
     if (Base.IsNull()) return 1;
     Paral.Init(GeomAbs_Arc);
     TopExp_Explorer exp;
-    for (exp.Init(Base,TopAbs_WIRE); exp.More(); exp.Next()) {
+    for (exp.Init(Base,TopAbs_WIRE); exp.More(); exp.Next())
+      {
       TopoDS_Wire aLocalShape = TopoDS::Wire(exp.Current());
       Paral.AddWire(aLocalShape);
-//      Paral.AddWire(TopoDS::Wire(exp.Current()));
+      }
     }
-  }
-  else {
+  else
+    {
     Base.Orientation(TopAbs_FORWARD);
-//    Base = TopoDS::Face(Base.Oriented(TopAbs_FORWARD));
     Paral.Init(TopoDS::Face(Base));
-  }
+    }
 
   Standard_Real U, dU;
   Standard_Integer Nb;
@@ -1512,24 +1513,31 @@ Standard_Integer mkoffset(Draw_Interpretor& di,
   Nb = Draw::Atoi(a[3]);
 
   Standard_Real Alt = 0.;
-  if ( n == 6) Alt = Draw::Atof(a[5]);
+  if ( n == 6)
+    Alt = Draw::Atof(a[5]);
+
   Standard_Integer Compt = 1;
 
-  for ( Standard_Integer i = 1; i <= Nb; i++) {
+  for ( Standard_Integer i = 1; i <= Nb; i++)
+    {
     U = i * dU;
     Paral.Perform(U,Alt);
-    if ( !Paral.IsDone()) {
-      //cout << " Parali aux fraises" << endl;
-      di << " Parali aux fraises" << "\n";
-    }
-    else {
+
+    if ( !Paral.IsDone())
+      {
+      di << " Error: Offset is not done." << "\n";
+      return 1;
+      }
+    else
+      {
       Sprintf(name,"%s_%d", a[1], Compt++);
       char* temp = name; // portage WNT
       DBRep::Set(temp,Paral.Shape());
+      }
     }
-  }
+
   return 0;
-}
+  }
 
 //=======================================================================
 //function : pickface

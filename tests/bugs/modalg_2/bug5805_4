@@ -1,3 +1,9 @@
+puts "TODO ?OCC23748 ALL: ERROR. offsetperform operation not done."
+puts "TODO ?OCC23748 ALL: Faulty OCC5805 : offsetshape is wrong"
+puts "TODO ?OCC23748 ALL: Faulty OCC5805 : tolmax is wrong"
+puts "TODO ?OCC23748 ALL: Tcl Exception: can't read"
+puts "TODO ?OCC23748 ALL: TEST INCOMPLETE"
+
 puts "============"
 puts "OCC5805"
 puts "============"

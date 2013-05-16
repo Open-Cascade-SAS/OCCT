@@ -1025,18 +1025,28 @@ Standard_Integer offsetonface(Draw_Interpretor&, Standard_Integer n, const char*
 //purpose  : 
 //=======================================================================
 
-Standard_Integer offsetperform(Draw_Interpretor&,
-			       Standard_Integer n, const char** a)
-{
-  if ( n < 2) return 1;
+Standard_Integer offsetperform(Draw_Interpretor& theCommands,
+                               Standard_Integer theNArg, const char** a)
+  {
+  if ( theNArg < 2) return 1;
 
-  if (theYaBouchon) TheOffset.MakeThickSolid ();
-  else              TheOffset.MakeOffsetShape();
+  if (theYaBouchon)
+    TheOffset.MakeThickSolid ();
+  else
+    TheOffset.MakeOffsetShape();
 
-  DBRep::Set(a[1],TheOffset.Shape());
-  
+  if(TheOffset.IsDone())
+    {
+    DBRep::Set(a[1],TheOffset.Shape());
+    }
+  else
+    {
+    theCommands << "ERROR. offsetperform operation not done.";
+    return 1;
+    }
+
   return 0;
-}
+  }
 
 
 //=======================================================================

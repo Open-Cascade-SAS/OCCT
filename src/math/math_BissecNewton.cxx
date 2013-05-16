@@ -79,7 +79,7 @@ void math_BissecNewton::Perform(math_FunctionWithDerivative& F,
       dxold = dx;
       dx = 0.5 * (xh - xl);
       x = xl + dx;
-      if(xl == x) {
+      if(Abs(dx) < XTol) {
 	TheStatus = math_OK;
 	Done = Standard_True;
 	return;

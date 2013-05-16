@@ -227,6 +227,26 @@ static void MakeOffset
  BRepFill_IndexedDataMapOfOrientedShapeListOfShape& Map,
  const Handle(Geom_Plane)&                   RefPlane);
 
+
+
+//=======================================================================
+//function : CheckFace
+//purpose  : Check if face contains an edge with C0 continuity
+//=======================================================================
+//
+static void CheckFace(const TopoDS_Face& theFace)
+  {
+  TopExp_Explorer ex(theFace,TopAbs_EDGE);
+  for(; ex.More(); ex.Next())
+    {
+    TopoDS_Edge anEdge=TopoDS::Edge(ex.Current());
+    Standard_Real f,l;
+    const Handle(Geom2d_Curve) C = BRep_Tool::CurveOnSurface(anEdge,theFace,f,l);
+    if (C->Continuity() == GeomAbs_C0)
+      Standard_ConstructionError::Raise("Initial shape contains an edge with C0 continuity");
+    }
+  }
+
 //=======================================================================
 //function : KPartCircle
 //purpose  : 
@@ -314,7 +334,6 @@ BRepFill_OffsetWire::BRepFill_OffsetWire(const TopoDS_Face&     Spine,
   Init(Spine,Join);
 }
 
-
 //=======================================================================
 //function : Init
 //purpose  : 
@@ -332,6 +351,8 @@ void BRepFill_OffsetWire::Init(const TopoDS_Face&     Spine,
 //  mySpine    = TopoDS::Face(Spine.Oriented(TopAbs_FORWARD));
   myJoinType = Join;
 
+  CheckFace(mySpine);
+  
   myMap.Clear();
   myMapSpine.Clear();
   //------------------------------------------------------------------
@@ -588,6 +609,14 @@ void BRepFill_OffsetWire::Perform (const Standard_Real Offset,
 	BRepMAT2d_BisectingLocus newBilo;
 	BRepMAT2d_LinkTopoBilo newLink;
 	newBilo.Compute(newExp,1,MAT_Left);
+
+  if(!newBilo.IsDone())
+    {
+    myShape.Nullify();
+    myIsDone = Standard_False;
+    return;
+    }
+
 	newLink.Perform(newExp,newBilo);
 	PerformWithBiLo(myWorkSpine,Offset,newBilo,newLink,myJoinType,Alt);
 
@@ -602,12 +631,18 @@ void BRepFill_OffsetWire::Perform (const Standard_Real Offset,
       PerformWithBiLo(myWorkSpine,Offset,myBilo,myLink,myJoinType,Alt);
     }
 
-  } catch (Standard_Failure) {
+  }
+  catch (...)//Every exception was caught.
+    {
     myShape.Nullify();
     myIsDone = Standard_False;
-
+    cout<<"An exception was caught in BRepFill_OffsetWire::Perform : ";
+    Standard_Failure::Caught()->Print(cout);
+    cout<<endl;
+    
     return;
   }
+
 //  Modified by skv - Fri Jul  8 11:21:38 2005 OCC9145 End
 //  Modified by Sergey KHROMOV - Thu Mar 14 10:48:15 2002 Begin
   TopExp_Explorer anExp(myShape, TopAbs_WIRE);
@@ -1372,6 +1407,8 @@ void BRepFill_OffsetWire::FixHoles()
       TopoDS_Wire& Base = TopoDS::Wire( UnclosedWires(1) );
       TopoDS_Vertex Vf, Vl;
       TopExp::Vertices( Base, Vf, Vl );
+      if(Vf.IsNull() || Vl.IsNull())
+        Standard_Failure::Raise("BRepFill_OffsetWire::FixHoles(): Wrong wire.");
       gp_Pnt Pf, Pl;
       Pf = BRep_Tool::Pnt(Vf);
       Pl = BRep_Tool::Pnt(Vl);
@@ -2388,4 +2425,4 @@ static void QuasiFleche(const Adaptor3d_Curve& C,
 		Parameters,Points);
   }
 }
-			
+

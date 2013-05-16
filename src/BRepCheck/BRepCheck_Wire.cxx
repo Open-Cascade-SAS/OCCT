@@ -421,7 +421,7 @@ Standard_Boolean IsDistanceIn2DTolerance (const BRepAdaptor_Surface& aFaceSurfac
     {
     cout << endl;
     cout << "--------Function IsDistanceIn2DTolerance(...)----------"								<< endl;
-    cout << "--- BRepCheck Wire: Closed2d -> Error"																	<< endl;
+    cout << "--- BRepCheck Wire: Not closed in 2d"																  << endl;
     cout << "*****************************************************"									<< endl;
     cout << "*dumin = " << dumin << "; dumax = " << dumax														<< endl;
     cout << "* dvmin = " << dvmin << "; dvmax = " << dvmax													<< endl;
@@ -470,7 +470,7 @@ Standard_Boolean IsDistanceIn2DTolerance (const BRepAdaptor_Surface& aFaceSurfac
     {
     cout << endl;
     cout << "--------Function IsDistanceIn2DTolerance(...)----------"							<< endl;
-    cout << "--- BRepCheck Wire: Closed2d -> Error"																<< endl;
+    cout << "--- BRepCheck Wire: Not closed in 2d"  															<< endl;
     cout << "*****************************************************"								<< endl;
     cout << "* Dist = " << Dist	<< " > Tol2d = " <<	aTol2d												<< endl;
     cout << "*****************************************************"								<< endl;

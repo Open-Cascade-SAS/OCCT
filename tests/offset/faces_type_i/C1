@@ -1,6 +1,7 @@
-puts "TODO OCC23068 ALL: Faulty shapes in variables faulty_1 to faulty_1 "
-puts "TODO OCC23068 ALL: Error : The offset is not valid"
-puts "TODO OCC23068 ALL: Error : The area of face result_4 of the resulting shape is negative."
+puts "TODO ?OCC23748 ALL: ERROR. offsetperform operation not done."
+puts "TODO ?OCC23748 ALL: Tcl Exception: ERROR. offsetperform operation not done."
+puts "TODO ?OCC23748 ALL: TEST INCOMPLETE"
+
 psphere s 15 -90 60 270
 
 OFFSETSHAPE 1 {s_4} $calcul $type

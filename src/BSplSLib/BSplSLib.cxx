@@ -269,30 +269,29 @@ void  BSplSLib::RationalDerivative(const Standard_Integer UDeg,
 //  The first direction to compute (smaller degree) is returned 
 //  and the poles are stored according to this direction.
 
-static Standard_Boolean  PrepareEval
-(const Standard_Real            U,
- const Standard_Real            V,
- const Standard_Integer         Uindex,
- const Standard_Integer         Vindex,
- const Standard_Integer         UDegree,
- const Standard_Integer         VDegree,
- const Standard_Boolean         URat,
- const Standard_Boolean         VRat,
- const Standard_Boolean         UPer,
- const Standard_Boolean         VPer,
- const TColgp_Array2OfPnt&      Poles,
- const TColStd_Array2OfReal&    Weights,
- const TColStd_Array1OfReal&    UKnots,
- const TColStd_Array1OfReal&    VKnots,
- const TColStd_Array1OfInteger& UMults,
- const TColStd_Array1OfInteger& VMults,
- Standard_Real& u1,     // first  parameter to use
- Standard_Real& u2,     // second parameter to use
- Standard_Integer& d1,  // first degree
- Standard_Integer& d2,  // second degree
- Standard_Boolean& rational,
- BSplSLib_DataContainer& dc)
-{
+static Standard_Boolean  PrepareEval (const Standard_Real            U,
+                                      const Standard_Real            V,
+                                      const Standard_Integer         Uindex,
+                                      const Standard_Integer         Vindex,
+                                      const Standard_Integer         UDegree,
+                                      const Standard_Integer         VDegree,
+                                      const Standard_Boolean         URat,
+                                      const Standard_Boolean         VRat,
+                                      const Standard_Boolean         UPer,
+                                      const Standard_Boolean         VPer,
+                                      const TColgp_Array2OfPnt&      Poles,
+                                      const TColStd_Array2OfReal&    Weights,
+                                      const TColStd_Array1OfReal&    UKnots,
+                                      const TColStd_Array1OfReal&    VKnots,
+                                      const TColStd_Array1OfInteger& UMults,
+                                      const TColStd_Array1OfInteger& VMults,
+                                      Standard_Real& u1,     // first  parameter to use
+                                      Standard_Real& u2,     // second parameter to use
+                                      Standard_Integer& d1,  // first degree
+                                      Standard_Integer& d2,  // second degree
+                                      Standard_Boolean& rational,
+                                      BSplSLib_DataContainer& dc)
+  {
   rational = URat || VRat;
   Standard_Integer uindex = Uindex;
   Standard_Integer vindex = Vindex;
@@ -300,27 +299,37 @@ static Standard_Boolean  PrepareEval
   Standard_Integer UKUpper = UKnots.Upper();
   Standard_Integer VKLower = VKnots.Lower();
   Standard_Integer VKUpper = VKnots.Upper();
-  if (UDegree <= VDegree) {
+
+  if (UDegree <= VDegree)
+    {
     // compute the indices
     if (uindex < UKLower || uindex > UKUpper)
       BSplCLib::LocateParameter(UDegree,UKnots,UMults,U,UPer,uindex,u1);
-    else u1 = U;
+    else
+      u1 = U;
+
     if (vindex < VKLower || vindex > VKUpper)
       BSplCLib::LocateParameter(VDegree,VKnots,VMults,V,VPer,vindex,u2);
-    else u2 = V;
+    else
+      u2 = V;
+
     // get the knots
     d1 = UDegree;
     d2 = VDegree;
     BSplCLib::BuildKnots(UDegree,uindex,UPer,UKnots,UMults,*dc.knots1);
     BSplCLib::BuildKnots(VDegree,vindex,VPer,VKnots,VMults,*dc.knots2);
-    if (&UMults == NULL) uindex -= UKLower + UDegree;
-    else                 uindex  = BSplCLib::PoleIndex
-      (UDegree,uindex,UPer,UMults);
-    if (&VMults == NULL) vindex -= VKLower + VDegree;
-    else                 vindex  = BSplCLib::PoleIndex
-      (VDegree,vindex,VPer,VMults);
+    
+    if (&UMults == NULL)
+      uindex -= UKLower + UDegree;
+    else
+      uindex  = BSplCLib::PoleIndex(UDegree,uindex,UPer,UMults);
+
+    if (&VMults == NULL)
+      vindex -= VKLower + VDegree;
+    else
+      vindex  = BSplCLib::PoleIndex(VDegree,vindex,VPer,VMults);
+
     // get the poles
-//    Standard_Integer i,j,k,ip,jp;
     Standard_Integer i,j,ip,jp;
     Standard_Real w, *pole = dc.poles;
     d1 = UDegree;
@@ -329,90 +338,149 @@ static Standard_Boolean  PrepareEval
     Standard_Integer PUpperRow = Poles.UpperRow();
     Standard_Integer PLowerCol = Poles.LowerCol();
     Standard_Integer PUpperCol = Poles.UpperCol();
-    if (rational) { // verify if locally non rational
+
+    // verify if locally non rational
+    if (rational) 
+      {
       rational = Standard_False;
       ip = PLowerRow + uindex;
       jp = PLowerCol + vindex;
+      
+      if(ip < PLowerRow)	ip = PUpperRow;
+      if(jp < PLowerCol)	jp = PUpperCol;
+      
       w  = Weights.Value(ip,jp);
       Standard_Real eps = Epsilon(w);
       Standard_Real dw;
-      
-      for (i = 0; i <= UDegree && !rational; i++) {
-	jp = PLowerCol + vindex;
-	
-	for (j = 0; j <= VDegree && !rational; j++) {
-	  dw = Weights.Value(ip,jp) - w;
-	  if (dw < 0) dw = - dw;
-	  rational = dw > eps;
-	  jp++;
-	  if (jp > PUpperCol) jp = PLowerCol;
-	}
-	ip++;
-	if (ip > PUpperRow) ip = PLowerRow;
+
+      for (i = 0; i <= UDegree && !rational; i++)
+        {
+        jp = PLowerCol + vindex;
+
+        if(jp < PLowerCol)
+          jp = PUpperCol;
+
+        for (j = 0; j <= VDegree && !rational; j++)
+          {
+          dw = Weights.Value(ip,jp) - w;
+          if (dw < 0)
+            dw = - dw;
+
+          rational = (dw > eps);
+
+          jp++;
+
+          if (jp > PUpperCol)
+            jp = PLowerCol;
+          }
+
+        ip++;
+
+        if (ip > PUpperRow)
+          ip = PLowerRow;
+
+        }
       }
-    }
+
     // copy the poles
     ip = PLowerRow + uindex;
-    if (rational) {
-    
-      for (i = 0; i <= d1; i++) {
-	jp = PLowerCol + vindex;
-	
-	for (j = 0; j <= d2; j++) {
-	  const gp_Pnt& P = Poles  .Value(ip,jp);
-	  pole[3] = w     = Weights.Value(ip,jp);
-	  pole[0] = P.X() * w;
-	  pole[1] = P.Y() * w;
-	  pole[2] = P.Z() * w;
-	  pole   += 4;
-	  jp++;
-	  if (jp > PUpperCol) jp = PLowerCol;
-	}
-	ip++;
-	if (ip > PUpperRow) ip = PLowerRow;
+
+    if(ip < PLowerRow)
+      ip = PUpperRow;
+
+    if (rational)
+      {
+      for (i = 0; i <= d1; i++)
+        {
+        jp = PLowerCol + vindex;
+
+        if(jp < PLowerCol)
+          jp = PUpperCol;
+
+        for (j = 0; j <= d2; j++)
+          {
+          const gp_Pnt& P = Poles  .Value(ip,jp);
+          pole[3] = w     = Weights.Value(ip,jp);
+          pole[0] = P.X() * w;
+          pole[1] = P.Y() * w;
+          pole[2] = P.Z() * w;
+          pole   += 4;
+          jp++;
+
+          if (jp > PUpperCol)
+            jp = PLowerCol;
+          }
+
+        ip++;
+
+        if (ip > PUpperRow)
+          ip = PLowerRow;
+
+        }
       }
-    }
-    else {
-    
-      for (i = 0; i <= d1; i++) {
-	jp = PLowerCol + vindex;
-	
-	for (j = 0; j <= d2; j++) {
-	  const gp_Pnt& P = Poles.Value(ip,jp);
-	  pole[0] = P.X();
-	  pole[1] = P.Y();
-	  pole[2] = P.Z();
-	  pole   += 3;
-	  jp++;
-	  if (jp > PUpperCol) jp = PLowerCol;
-	}
-	ip++;
-	if (ip > PUpperRow) ip = PLowerRow;
+    else
+      {
+      for (i = 0; i <= d1; i++)
+        {
+        jp = PLowerCol + vindex;
+        
+        if(jp < PLowerCol)
+          jp = PUpperCol;
+
+        for (j = 0; j <= d2; j++)
+          {
+          const gp_Pnt& P = Poles.Value(ip,jp);
+          pole[0] = P.X();
+          pole[1] = P.Y();
+          pole[2] = P.Z();
+          pole   += 3;
+          jp++;
+
+          if (jp > PUpperCol)
+            jp = PLowerCol;
+          }
+
+        ip++;
+        
+        if (ip > PUpperRow)
+          ip = PLowerRow;
+        }
       }
-    }
+
     return Standard_True;
-  }
-  else {
+    }
+  else
+    {
     // compute the indices
     if (uindex < UKLower || uindex > UKUpper)
       BSplCLib::LocateParameter(UDegree,UKnots,UMults,U,UPer,uindex,u2);
-    else u2 = U;
+    else
+      u2 = U;
+
     if (vindex < VKLower || vindex > VKUpper)
       BSplCLib::LocateParameter(VDegree,VKnots,VMults,V,VPer,vindex,u1);
-    else u1 = V;
+    else
+      u1 = V;
+
     // get the knots
+
     d2 = UDegree;
     d1 = VDegree;
+
     BSplCLib::BuildKnots(UDegree,uindex,UPer,UKnots,UMults,*dc.knots2);
     BSplCLib::BuildKnots(VDegree,vindex,VPer,VKnots,VMults,*dc.knots1);
-    if (&UMults == NULL) uindex -= UKLower + UDegree;
-    else                 uindex  = BSplCLib::PoleIndex
-      (UDegree,uindex,UPer,UMults);
-    if (&VMults == NULL) vindex -= VKLower + VDegree;
-    else                 vindex  = BSplCLib::PoleIndex
-      (VDegree,vindex,VPer,VMults);
+
+    if (&UMults == NULL)
+      uindex -= UKLower + UDegree;
+    else
+      uindex  = BSplCLib::PoleIndex(UDegree,uindex,UPer,UMults);
+
+    if (&VMults == NULL)
+      vindex -= VKLower + VDegree;
+    else
+      vindex  = BSplCLib::PoleIndex(VDegree,vindex,VPer,VMults);
+
     // get the poles
-//    Standard_Integer i,j,k,ip,jp;
     Standard_Integer i,j,ip,jp;
     Standard_Real w, *pole = dc.poles;
     d1 = VDegree;
@@ -421,70 +489,121 @@ static Standard_Boolean  PrepareEval
     Standard_Integer PUpperRow = Poles.UpperRow();
     Standard_Integer PLowerCol = Poles.LowerCol();
     Standard_Integer PUpperCol = Poles.UpperCol();
-    if (rational) { // verify if locally non rational
+
+    // verify if locally non rational
+    if (rational)
+      { 
       rational = Standard_False;
       ip = PLowerRow + uindex;
       jp = PLowerCol + vindex;
+      
+      if(ip < PLowerRow)
+        ip = PUpperRow;
+
+      if(jp < PLowerCol)
+        jp = PUpperCol;
+
       w  = Weights.Value(ip,jp);
       Standard_Real eps = Epsilon(w);
       Standard_Real dw;
-      
-      for (i = 0; i <= UDegree && !rational; i++) {
-	jp = PLowerCol + vindex;
-	
-	for (j = 0; j <= VDegree && !rational; j++) {
-	  dw = Weights.Value(ip,jp) - w;
-	  if (dw < 0) dw = - dw;
-	  rational = dw > eps;
-	  jp++;
-	  if (jp > PUpperCol) jp = PLowerCol;
-	}
-	ip++;
-	if (ip > PUpperRow) ip = PLowerRow;
+
+      for (i = 0; i <= UDegree && !rational; i++)
+        {
+        jp = PLowerCol + vindex;
+
+        if(jp < PLowerCol)
+          jp = PUpperCol;
+
+        for (j = 0; j <= VDegree && !rational; j++)
+          {
+          dw = Weights.Value(ip,jp) - w;
+          if (dw < 0) dw = - dw;
+          rational = dw > eps;
+
+          jp++;
+
+          if (jp > PUpperCol)
+            jp = PLowerCol;
+          }
+
+        ip++;
+
+        if (ip > PUpperRow)
+          ip = PLowerRow;
+
+        }
       }
-    }
+
     // copy the poles
     jp = PLowerCol + vindex;
-    if (rational) {
-    
-      for (i = 0; i <= d1; i++) {
-	ip = PLowerRow + uindex;
-	
-	for (j = 0; j <= d2; j++) {
-	  const gp_Pnt& P = Poles  .Value(ip,jp);
-	  pole[3] = w     = Weights.Value(ip,jp);
-	  pole[0] = P.X() * w;
-	  pole[1] = P.Y() * w;
-	  pole[2] = P.Z() * w;
-	  pole   += 4;
-	  ip++;
-	  if (ip > PUpperRow) ip = PLowerRow;
-	}
-	jp++;
-	if (jp > PUpperCol) jp = PLowerCol;
+
+    if(jp < PLowerCol)
+      jp = PUpperCol;
+
+    if (rational)
+      {
+      for (i = 0; i <= d1; i++)
+        {
+        ip = PLowerRow + uindex;
+
+        if(ip < PLowerRow)
+          ip = PUpperRow;
+
+        for (j = 0; j <= d2; j++)
+          {
+          const gp_Pnt& P = Poles.Value(ip,jp);
+          pole[3] = w     = Weights.Value(ip,jp);
+          pole[0] = P.X() * w;
+          pole[1] = P.Y() * w;
+          pole[2] = P.Z() * w;
+          pole   += 4;
+          ip++;
+
+          if (ip > PUpperRow)
+            ip = PLowerRow;
+
+          }
+
+        jp++;
+
+        if (jp > PUpperCol)
+          jp = PLowerCol;
+
+        }
       }
-    }
-    else {
-    
-      for (i = 0; i <= d1; i++) {
-	ip = PLowerRow + uindex;
-	
-	for (j = 0; j <= d2; j++) {
-	  const gp_Pnt& P = Poles.Value(ip,jp);
-	  pole[0] = P.X();
-	  pole[1] = P.Y();
-	  pole[2] = P.Z();
-	  pole   += 3;
-	  ip++;
-	  if (ip > PUpperRow) ip = PLowerRow;
-	}
-	jp++;
-	if (jp > PUpperCol) jp = PLowerCol;
+    else
+      {
+      for (i = 0; i <= d1; i++)
+        {
+        ip = PLowerRow + uindex;
+
+        if(ip < PLowerRow)
+          ip = PUpperRow;
+
+        for (j = 0; j <= d2; j++)
+          {
+          const gp_Pnt& P = Poles.Value(ip,jp);
+          pole[0] = P.X();
+          pole[1] = P.Y();
+          pole[2] = P.Z();
+          pole   += 3;
+          ip++;
+
+          if (ip > PUpperRow)
+            ip = PLowerRow;
+          }
+
+        jp++;
+
+        if (jp > PUpperCol)
+          jp = PLowerCol;
+
+        }
       }
-    }
+
     return Standard_False;
+    }
   }
-}
 
 //=======================================================================
 //function : D0

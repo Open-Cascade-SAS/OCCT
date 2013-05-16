@@ -1,6 +1,6 @@
-puts "TODO OCC23068 ALL: Faulty shapes in variables faulty_1 to faulty_1"
-puts "TODO OCC23068 ALL: Error : The offset is not valid. "
-puts "TODO OCC23068 ALL: Error : The area of face result_5 of the resulting shape is negative."
+puts "TODO ?OCC23748 ALL: ERROR. offsetperform operation not done."
+puts "TODO ?OCC23748 ALL: Tcl Exception: ERROR. offsetperform operation not done."
+puts "TODO ?OCC23748 ALL: TEST INCOMPLETE"
 
 ellipse w1 0 0 0 15 10
 mkedge w1 w1 0 pi/2

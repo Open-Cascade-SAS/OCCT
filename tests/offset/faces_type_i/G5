@@ -1,5 +1,8 @@
-puts "TODO ?OCC23068 Mandriva2010: Error : The offset is not valid"
-puts "TODO OCC23068 Mandriva2010: Error : The volume of the resulting shape "
+puts "TODO ?OCC23068 ALL: Error : The offset is not valid"
+puts "TODO ?OCC23068 ALL: Error : The volume of the resulting shape "
+puts "TODO ?OCC23748 ALL: ERROR. offsetperform operation not done."
+puts "TODO ?OCC23748 ALL: Tcl Exception: ERROR.offsetperform operation not done."
+puts "TODO ?OCC23748 ALL: TEST INCOMPLETE"
 
 ellipse w1 0 0 0 15 10
 mkedge w1 w1 0 pi/2

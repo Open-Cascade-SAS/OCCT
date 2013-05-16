@@ -259,55 +259,87 @@ static void BuildDomains(TopoDS_Face&               myFace,
 //purpose  : 
 //=======================================================================
 
-void BRepOffsetAPI_MakeOffset::Perform(const Standard_Real Offset, 
-				 const Standard_Real Alt)
-{
+void BRepOffsetAPI_MakeOffset::Perform( const Standard_Real Offset,
+                                       const Standard_Real Alt)
+  {
   StdFail_NotDone_Raise_if ( !myIsInitialized,
-			    "BRepOffsetAPI_MakeOffset : Perform without Init");
+                         "BRepOffsetAPI_MakeOffset : Perform without Init");
 
-  Standard_Integer i = 1;
-  BRepFill_ListIteratorOfListOfOffsetWire itOW;  
-  TopoDS_Compound Res;
-  BRep_Builder    B;
-  B.MakeCompound (Res);
+  try
+    {
+    Standard_Integer i = 1;
+    BRepFill_ListIteratorOfListOfOffsetWire itOW;
+    TopoDS_Compound Res;
+    BRep_Builder    B;
+    B.MakeCompound (Res);
+    myLastIsLeft = (Offset <= 0);
+    
+    if( Offset <= 0. )
+      {
+      if( myLeft.IsEmpty() )
+        {
+        //  Modified by Sergey KHROMOV - Fri Apr 27 14:35:26 2001 Begin
+        BuildDomains(myFace,myWires,myLeft,myJoin, Standard_False);
+        //  Modified by Sergey KHROMOV - Fri Apr 27 14:35:26 2001 End
+        }
 
-  myLastIsLeft = (Offset <= 0);
-  
-  if (Offset <= 0.) {
-    if (myLeft.IsEmpty()) {
-//  Modified by Sergey KHROMOV - Fri Apr 27 14:35:26 2001 Begin
-      BuildDomains(myFace,myWires,myLeft,myJoin, Standard_False);
-//  Modified by Sergey KHROMOV - Fri Apr 27 14:35:26 2001 End
-    }
-    for (itOW.Initialize(myLeft); itOW.More(); itOW.Next()) {
-      BRepFill_OffsetWire& Algo = itOW.Value();
-      Algo.Perform(Abs(Offset),Alt);
-      if (Algo.IsDone() && !Algo.Shape().IsNull()) {
-	B.Add(Res,Algo.Shape());
-	if (i == 1) myShape = Algo.Shape();
-	i++;
+      for (itOW.Initialize(myLeft); itOW.More(); itOW.Next())
+        {
+        BRepFill_OffsetWire& Algo = itOW.Value();
+        Algo.Perform(Abs(Offset),Alt);
+        if (Algo.IsDone() && !Algo.Shape().IsNull())
+          {
+          B.Add(Res,Algo.Shape());
+          if (i == 1)
+            myShape = Algo.Shape();
+
+          i++;
+          }
+        }
       }
+    else
+      {
+      if (myRight.IsEmpty())
+        {
+        //  Modified by Sergey KHROMOV - Fri Apr 27 14:35:28 2001 Begin
+        BuildDomains(myFace,myWires,myRight,myJoin, Standard_True);
+        //  Modified by Sergey KHROMOV - Fri Apr 27 14:35:35 2001 End
+        }
+
+      for(itOW.Initialize(myRight); itOW.More(); itOW.Next())
+        {
+        BRepFill_OffsetWire& Algo = itOW.Value();
+        Algo.Perform(Offset,Alt);
+        
+        if (Algo.IsDone() && !Algo.Shape().IsNull())
+          {
+          B.Add(Res,Algo.Shape());
+
+          if (i == 1)
+            myShape = Algo.Shape();
+
+          i++;
+          }
+        }
+      }
+
+    if( i > 2 )
+      myShape = Res;
+
+    if(myShape.IsNull())
+      NotDone();
+    else
+      Done();
+    }
+  catch(...) //Every exception was caught.
+    {
+    cout<<"An exception was caught in BRepOffsetAPI_MakeOffset::Perform : ";
+    Standard_ConstructionError::Caught()->Print(cout); 
+    cout<<endl;
+    NotDone();
+    myShape.Nullify();
     }
   }
-  else {
-    if (myRight.IsEmpty()) {
-//  Modified by Sergey KHROMOV - Fri Apr 27 14:35:28 2001 Begin
-      BuildDomains(myFace,myWires,myRight,myJoin, Standard_True);
-//  Modified by Sergey KHROMOV - Fri Apr 27 14:35:35 2001 End
-    }
-    for (itOW.Initialize(myRight); itOW.More(); itOW.Next()) {
-      BRepFill_OffsetWire& Algo = itOW.Value();
-      Algo.Perform(Offset,Alt);
-      if (Algo.IsDone() && !Algo.Shape().IsNull()) {
-	B.Add(Res,Algo.Shape());
-	if (i == 1) myShape = Algo.Shape();
-	i++;
-      }
-    }
-  }
-  if (i > 2) myShape = Res;
-  Done();
-}
 
 //=======================================================================
 //function : Build

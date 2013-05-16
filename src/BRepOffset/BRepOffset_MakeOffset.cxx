@@ -801,16 +801,33 @@ void BRepOffset_MakeOffset::MakeThickSolid()
       Glue.Add (exp.Current());
     } 
     Standard_Boolean YaResult = 0;
-    if (!myOffsetShape.IsNull()) {
-      for (exp.Init(myOffsetShape,TopAbs_FACE);exp.More(); exp.Next()) {
-	YaResult = 1;
-	Glue.Add (exp.Current().Reversed());
+    if (!myOffsetShape.IsNull())
+      {
+      for (exp.Init(myOffsetShape,TopAbs_FACE);exp.More(); exp.Next())
+        {
+        YaResult = 1;
+        Glue.Add (exp.Current().Reversed());
+        }
+#ifdef DEB
+      if(YaResult == 0)
+        {
+        cout << "OffsetShape does not contain a FACES." << endl;
+        }
+#endif
       }
-    }
-    if (YaResult == 0) {
+#ifdef DEB
+    else
+      {
+      cout << "OffsetShape is null!" << endl;
+      }
+#endif
+
+    if (YaResult == 0)
+      {
       myDone = Standard_False;
       return;
-    }
+      }
+
     myOffsetShape = Glue.Shells();
     for (exp.Init(myOffsetShape,TopAbs_SHELL); exp.More(); exp.Next()) {
       B.Add(Res,exp.Current());

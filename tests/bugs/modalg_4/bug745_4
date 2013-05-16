@@ -1,6 +1,9 @@
-puts "TODO OCC12345 ALL: Faulty : Result shape is NULL shape"
-puts "TODO OCC12345 ALL: Exception: result is not a topological shape!!!"
-puts "TODO OCC12345 ALL: TEST INCOMPLETE"
+puts "TODO ?OCC23748 ALL: An exception was caught"
+puts "TODO ?OCC23748 ALL: \\*\\* Exception "
+puts "TODO ?OCC23748 ALL: Error: Offset is not done."
+puts "TODO ?OCC23748 ALL: Faulty OCC745"
+puts "TODO ?OCC12345 ALL: Exception: result is not a topological shape!!!"
+puts "TODO ?OCC12345 ALL: TEST INCOMPLETE"
 
 pload QAcommands
 
