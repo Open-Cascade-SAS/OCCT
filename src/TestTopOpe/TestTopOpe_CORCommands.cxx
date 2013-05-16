@@ -73,6 +73,9 @@
 #include <Draw_Color.hxx>
 #include <DBRep.hxx>
 
+#include <Extrema_ExtFlag.hxx>
+#include <Extrema_ExtAlgo.hxx>
+
 #ifdef DRAW
 #include <TopOpeBRepTool_DRAW.hxx>
 #endif
@@ -671,16 +674,57 @@ static Standard_Integer pntonc2d(Draw_Interpretor& di, Standard_Integer n, const
 
 static Standard_Integer projponf(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
-  if (n < 3) return 1;
+  if (n < 3) {
+    di << "projponf f pnt [extrema flag: -min/-max/-minmax] [extrema algo: -g(grad)/-t(tree)]\n";
+    return 1;
+  }
+  //
   TopoDS_Shape aLocalShape = DBRep::Get(a[1]);
   TopoDS_Face f = TopoDS::Face(aLocalShape);
-//  TopoDS_Face f = TopoDS::Face(DBRep::Get(a[1]));
-  if (f.IsNull()) {di<<"null shape"<<"\n";return 1;}
-  gp_Pnt p; DrawTrSurf::GetPoint(a[2], p);
-  Standard_Real dist=0.; gp_Pnt2d uv; Standard_Boolean ok = FUN_tool_projPonF(p,f,uv,dist);
-  if (!ok) {di<<"projection failed"<<"\n"; return 1;}
-  gp_Pnt pproj; ok = FUN_tool_value(uv,f,pproj);
-  if (!ok) {di<<"projection failed"<<"\n"; return 1;}
+  //
+  if (f.IsNull()) {
+    di<<"null shape"<<"\n";
+    return 1;
+  }
+  //
+  Standard_Real dist=0.;
+  Standard_Boolean ok;
+  gp_Pnt2d uv;
+  gp_Pnt p, pproj; 
+  Extrema_ExtAlgo aExtAlgo = Extrema_ExtAlgo_Grad;
+  Extrema_ExtFlag aExtFlag = Extrema_ExtFlag_MINMAX;
+  //
+  DrawTrSurf::GetPoint(a[2], p);
+  //
+  if (n > 3) {
+    const char* key1 = a[3];
+    const char* key2 = (n > 4) ? a[4] : NULL;
+    if (key1) {
+      if (!strcasecmp(key1,"-min")) {
+        aExtFlag = Extrema_ExtFlag_MIN;
+      } else if (!strcasecmp(key1,"-max")) {
+        aExtFlag = Extrema_ExtFlag_MAX;
+      } else {
+        aExtAlgo = (!strcasecmp(key1,"-t")) ? Extrema_ExtAlgo_Tree : aExtAlgo;
+      }
+    }
+    if (key2) {
+      aExtAlgo = (!strcasecmp(key2,"-t")) ? Extrema_ExtAlgo_Tree : aExtAlgo;
+    }
+  }
+  ok = FUN_tool_projPonF(p, f, uv, dist, aExtFlag, aExtAlgo);
+  //
+  if (!ok) {
+    di<<"projection failed"<<"\n"; 
+    return 1;
+  }
+  //
+  ok = FUN_tool_value(uv,f,pproj);
+  if (!ok) {
+    di<<"projection failed"<<"\n"; 
+    return 1;
+  }
+  //
   di<<"proj dist = "<<dist<<" uvproj = ("<<uv.X()<<" "<<uv.Y();
   di<<"); pproj = ("<<pproj.X()<<" "<<pproj.Y()<<" "<<pproj.Z()<<")"<<"\n";
   return 0;
@@ -878,7 +922,9 @@ void TestTopOpe::CORCommands(Draw_Interpretor& theCommands)
   theCommands.Add("classibnd2d","classibnd2d W1 W2 F i",    __FILE__, classifBnd2d, g);
   theCommands.Add("pntonc",     "pntonc par C3d",           __FILE__, pntonc, g);
   theCommands.Add("pntonc2d",   "pntonc2d par C2d S",       __FILE__, pntonc2d, g);
-  theCommands.Add("projponf",   "projponf f pnt",           __FILE__, projponf, g);
+  theCommands.Add("projponf",   
+                  "projponf f pnt [extrema flag: -min/-max/-minmax] [extrema algo: -g(grad)/-t(tree)]",
+                                                            __FILE__, projponf, g);
   theCommands.Add("tolmax",     "tolmax s",                 __FILE__, tolmax, g);
   theCommands.Add("normal",     "normal f p3d length",      __FILE__, normal, g);
   theCommands.Add("curvature",  "curvature f x y z",        __FILE__, curvature , g);

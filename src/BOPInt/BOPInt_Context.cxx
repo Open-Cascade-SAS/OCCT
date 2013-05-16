@@ -215,7 +215,9 @@
     //
     pProjPS=(GeomAPI_ProjectPointOnSurf*)myAllocator->Allocate(sizeof(GeomAPI_ProjectPointOnSurf));
     new (pProjPS) GeomAPI_ProjectPointOnSurf();
-    pProjPS->Init(aS ,Umin, Usup, Vmin, Vsup, anEpsT);
+    pProjPS->Init(aS ,Umin, Usup, Vmin, Vsup, anEpsT, Extrema_ExtAlgo_Tree);
+    Extrema_ExtPS& anExtAlgo = const_cast<Extrema_ExtPS&>(pProjPS->Extrema());
+    anExtAlgo.SetFlag(Extrema_ExtFlag_MIN);
     //
     anAdr=(Standard_Address)pProjPS;
     myProjPSMap.Bind(aF, anAdr);
