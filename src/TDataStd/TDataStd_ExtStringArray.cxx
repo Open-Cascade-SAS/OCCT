@@ -99,17 +99,19 @@ void TDataStd_ExtStringArray::SetValue(const Standard_Integer index, const TColl
 
 
 //=======================================================================
-//function : GetValue
+//function : Value
 //purpose  : 
 //=======================================================================
 
-TCollection_ExtendedString TDataStd_ExtStringArray::Value (const Standard_Integer index) const 
+const TCollection_ExtendedString& TDataStd_ExtStringArray::Value (const Standard_Integer index) const 
 {
-  if(myValue.IsNull()) return TCollection_ExtendedString();
-  return myValue->Value(index); 
+    if (myValue.IsNull()) 
+    {
+        static TCollection_ExtendedString staticEmptyValue;
+        return staticEmptyValue;
+    }
+    return myValue->Value(index); 
 }
-
-
 
 //=======================================================================
 //function : Lower

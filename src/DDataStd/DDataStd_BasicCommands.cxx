@@ -952,12 +952,9 @@ static Standard_Integer DDataStd_GetExtStringArray (Draw_Interpretor& di,
     return 1;
   }
   
-  TCollection_ExtendedString anExtendedString;
-  TCollection_AsciiString anAsciiString;
   for(Standard_Integer i = A->Lower(); i<=A->Upper(); i++){
-    anExtendedString = A->Value(i);
-    anAsciiString = TCollection_AsciiString (A->Value(i),'?');
-    //cout << anAsciiString.ToCString() << endl;
+    const TCollection_ExtendedString& anExtendedString = A->Value(i);
+    TCollection_AsciiString anAsciiString(A->Value(i),'?');
     di << anAsciiString.ToCString();
     if(i<A->Upper())  
       di<<" ";

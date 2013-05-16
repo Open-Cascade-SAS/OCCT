@@ -64,6 +64,7 @@ is
     Value (me; Index : Integer from Standard)
     ---Purpose: Returns the value of  the  <Index>th element of the array
     --
+    ---C++: return const &
     ---C++: alias operator ()
     returns ExtendedString from TCollection;
 
