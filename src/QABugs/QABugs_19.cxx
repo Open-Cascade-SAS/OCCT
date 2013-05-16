@@ -409,6 +409,63 @@ static Standard_Integer OCC23683 (Draw_Interpretor& di, Standard_Integer argc,co
   return 0;
 }
 
+#include <gp_Ax1.hxx>
+#include <gp_Ax22d.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom2d_Circle.hxx>
+#include <Geom2d_TrimmedCurve.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepPrimAPI_MakeRevol.hxx>
+#include <Geom2d_OffsetCurve.hxx>
+
+static int test_offset(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  // Check the command arguments
+  if ( argc != 1 )
+  {
+    di << "Error: " << argv[0] << " - invalid number of arguments" << "\n";
+    di << "Usage: type help " << argv[0] << "\n";
+    return 1; // TCL_ERROR
+  }
+
+  gp_Ax1 RotoAx( gp::Origin(), gp::DZ() );
+  gp_Ax22d Ax2( gp::Origin2d(), gp::DY2d(), gp::DX2d() );
+  Handle(Geom_Surface) Plane = new Geom_Plane( gp::YOZ() );
+
+  di << "<<<< Preparing sample surface of revolution based on trimmed curve >>>>" << "\n";
+  di << "-----------------------------------------------------------------------" << "\n";
+
+  Handle(Geom2d_Circle) C2d1 = new Geom2d_Circle(Ax2, 1.0);
+  Handle(Geom2d_TrimmedCurve) C2d1Trimmed = new Geom2d_TrimmedCurve(C2d1, 0.0, M_PI/2.0);
+  TopoDS_Edge E1 = BRepBuilderAPI_MakeEdge(C2d1Trimmed, Plane);
+
+  DBRep::Set("e1", E1);
+
+  BRepPrimAPI_MakeRevol aRevolBuilder1(E1, RotoAx);
+  TopoDS_Face F1 = TopoDS::Face( aRevolBuilder1.Shape() );
+
+  DBRep::Set("f1", F1);
+
+  di << "Result: f1" << "\n";
+
+  di << "<<<< Preparing sample surface of revolution based on offset curve  >>>>" << "\n";
+  di << "-----------------------------------------------------------------------" << "\n";
+
+  Handle(Geom2d_OffsetCurve) C2d2Offset = new Geom2d_OffsetCurve(C2d1Trimmed, -0.5);
+  TopoDS_Edge E2 = BRepBuilderAPI_MakeEdge(C2d2Offset, Plane);
+
+  DBRep::Set("e2", E2);
+
+  BRepPrimAPI_MakeRevol aRevolBuilder2(E2, RotoAx);
+  TopoDS_Face F2 = TopoDS::Face( aRevolBuilder2.Shape() );
+
+  DBRep::Set("f2", F2);
+
+  di << "Result: f2" << "\n";
+
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -422,6 +479,7 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC22595", "OCC22595", __FILE__, OCC22595, group);
   theCommands.Add ("OCC23774", "OCC23774 shape1 shape2", __FILE__, OCC23774, group);
   theCommands.Add ("OCC23683", "OCC23683 shape", __FILE__, OCC23683, group);
+  theCommands.Add ("test_offset", "test_offset", __FILE__, test_offset, group);
 
   return;
 }

@@ -79,6 +79,7 @@
 #include <IGESGeom_TransformationMatrix.hxx>
 
 #include <Interface_Macros.hxx>
+#include <Interface_Static.hxx>
 
 #include <Precision.hxx>
 
@@ -89,6 +90,8 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <BSplCLib.hxx>
 #include <GeomConvert_ApproxCurve.hxx>
+
+#include <ShapeCustom_BSplineRestriction.hxx>
 
 // Pour toutes les courbes infinies soit 
 // Udeb <= -Precision::Infinite() et/ou Ufin >= Precision::Infinite()
@@ -826,6 +829,12 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve
   Standard_Real U2 = Ufin;
   if (Precision::IsNegativeInfinite(Udeb)) U1 = -Precision::Infinite();
   if (Precision::IsPositiveInfinite(Ufin)) U2 = Precision::Infinite();
+
+  if (Interface_Static::IVal("write.iges.offset.mode") == 0)
+  {
+    res = TransferCurve(GeomConvert::CurveToBSplineCurve(start),U1,U2);
+    return res;
+  }
 
   Handle(Geom_Curve) Curve = start->BasisCurve();
   Standard_Real Deb = Curve->FirstParameter();

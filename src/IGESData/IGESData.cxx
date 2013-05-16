@@ -132,6 +132,13 @@ static Handle(IGESData_DefaultSpecific)   speci;
   Interface_Static::Init ("XSTEP","write.iges.plane.mode",'&',"eval Plane");
   Interface_Static::Init ("XSTEP","write.iges.plane.mode",'&',"eval BSpline");
   Interface_Static::SetIVal ("write.iges.plane.mode",0);
+
+   //ika added parameter for writing offset curves like BSplines 12.04.2013 
+  Interface_Static::Init ("XSTEP","write.iges.offset.mode",'e',"");
+  Interface_Static::Init ("XSTEP","write.iges.offset.mode",'&',"ematch 0");
+  Interface_Static::Init ("XSTEP","write.iges.offset.mode",'&',"eval On");
+  Interface_Static::Init ("XSTEP","write.iges.offset.mode",'&',"eval Off");
+  Interface_Static::SetIVal ("write.iges.offset.mode",0);
   // Message File for IGES
   // -----------------
 
