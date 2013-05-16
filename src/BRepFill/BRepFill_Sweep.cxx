@@ -2065,143 +2065,141 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
   Standard_Boolean exuv, singu, singv;
   Handle(Geom_Surface) S;
 
-  if (! vclose) {
-    // (2.0) return preexisting Edges and vertices
-    TopoDS_Edge E;
-    if (! FirstShape.IsNull() && (IFirst==1)) {
-      mySec->Init(FirstShape);
-      for (isec=1; isec<=NbLaw; isec++) {
-	E = mySec->CurrentEdge();
-	VEdge(isec, 1) = E;
-	 if (E.Orientation() == TopAbs_REVERSED)
-	   Vertex(isec+1, 1) = TopExp::FirstVertex(E);
-	 else 
-	   Vertex(isec+1, 1) =  TopExp::LastVertex(E);
-	UpdateVertex(IFirst-1, isec+1, 
-		     TabErr(isec, 1), Vi(1),  Vertex(isec+1, 1));
-       }
-      if (VEdge(1, 1).Orientation() == TopAbs_REVERSED)
-	Vertex(1, 1) =  TopExp::LastVertex(TopoDS::Edge(VEdge(1, 1)));
-      else
-	Vertex(1, 1) = TopExp::FirstVertex(TopoDS::Edge(VEdge(1, 1)));
-      UpdateVertex(IFirst-1, 1, 
-		   TabErr(1, 1), Vi(1),  Vertex(1, 1));
+  // (2.0) return preexisting Edges and vertices
+  TopoDS_Edge E;
+  if (! FirstShape.IsNull() && (IFirst==1)) {
+    mySec->Init(FirstShape);
+    for (isec=1; isec<=NbLaw; isec++) {
+      E = mySec->CurrentEdge();
+      VEdge(isec, 1) = E;
+      if (E.Orientation() == TopAbs_REVERSED)
+        Vertex(isec+1, 1) = TopExp::FirstVertex(E);
+      else 
+        Vertex(isec+1, 1) =  TopExp::LastVertex(E);
+      UpdateVertex(IFirst-1, isec+1, 
+                   TabErr(isec, 1), Vi(1),  Vertex(isec+1, 1));
     }
-    else { // Otherwise construct vertices
-      Standard_Real u, v, aux;
-      Standard_Boolean ureverse;
-      for (isec=1; isec<=NbLaw+1; isec++) {
-	// Return data
-	if (isec >NbLaw) {
-	  S = TabS(NbLaw, 1);
-	  ureverse = UReverse(NbLaw, 1);
-	  exuv = ExchUV(NbLaw, 1);
-	}
-	else  {
-	  S = TabS(isec, 1);
-	  ureverse = UReverse(isec, 1);
-	  exuv = ExchUV(isec, 1);
-	}
-	S->Bounds(UFirst, ULast, VFirst, VLast);
-
-	// Choice of parameters
-	if (ureverse) {
-	  if (exuv) {
-	    aux = VFirst; VFirst = VLast; VLast = aux;	  
-	  }
-	  else {
-	    aux = UFirst; UFirst = ULast; ULast = aux;
-	  }
-	}
-	if (isec!= NbLaw+1) {
-	  u = UFirst;
-	  v = VFirst;
-	}
-	else {
-	  if (exuv) {
-	    u = UFirst;
-	    v = VLast;
-	  }
-	  else {
-	    u = ULast;
-	    v = VFirst;
-	  }
-	}
-
-	// construction of vertices
-	B.MakeVertex(TopoDS::Vertex(Vertex(isec, 1)), 
-		     S->Value(u,v), 
-		     mySec->VertexTol(isec-1,Vi(1)));
+    if (VEdge(1, 1).Orientation() == TopAbs_REVERSED)
+      Vertex(1, 1) =  TopExp::LastVertex(TopoDS::Edge(VEdge(1, 1)));
+    else
+      Vertex(1, 1) = TopExp::FirstVertex(TopoDS::Edge(VEdge(1, 1)));
+    UpdateVertex(IFirst-1, 1, 
+                 TabErr(1, 1), Vi(1),  Vertex(1, 1));
+  }
+  else { // Otherwise construct vertices
+    Standard_Real u, v, aux;
+    Standard_Boolean ureverse;
+    for (isec=1; isec<=NbLaw+1; isec++) {
+      // Return data
+      if (isec >NbLaw) {
+        S = TabS(NbLaw, 1);
+        ureverse = UReverse(NbLaw, 1);
+        exuv = ExchUV(NbLaw, 1);
       }
-   }
-
-    if (! LastShape.IsNull() && (ILast==myLoc->NbLaw()+1) ) {
-      mySec->Init(LastShape);
-      for (isec=1; isec<=NbLaw; isec++) {
-	E = mySec->CurrentEdge();
-	VEdge(isec, NbPath+1) = E;
-	if (E.Orientation() == TopAbs_REVERSED)
-	   Vertex(isec+1, NbPath+1) = TopExp::FirstVertex(E);
-	else 
-	  Vertex(isec+1, NbPath+1) = TopExp::LastVertex(E);
-	UpdateVertex(ILast-1, isec+1, TabErr(isec, NbPath), 
-		     Vi(NbPath+1),  Vertex(isec+1, NbPath+1));
+      else {
+        S = TabS(isec, 1);
+        ureverse = UReverse(isec, 1);
+        exuv = ExchUV(isec, 1);
       }
-      if (VEdge(1,  NbPath+1).Orientation() == TopAbs_REVERSED)
-	Vertex(1,  NbPath+1) =  
-	  TopExp::LastVertex(TopoDS::Edge(VEdge(1,  NbPath+1)));
-      else
-	Vertex(1,  NbPath+1) = 
-	  TopExp::FirstVertex(TopoDS::Edge(VEdge(1, NbPath+1)));
-      UpdateVertex(ILast-1, 1, 
-		   TabErr(1, NbPath), Vi(NbPath+1),  Vertex(1, NbPath+1 ));
-    }    
-    else {
-      Standard_Real u, v, aux;
-      Standard_Boolean ureverse;
-      for (isec=1; isec<=NbLaw+1; isec++) {
-	// Return data
-	if (isec >NbLaw) {
-	  S = TabS(NbLaw, NbPath);
-	  ureverse = UReverse(NbLaw, NbPath);
-	  exuv = ExchUV(NbLaw, NbPath);
-	}
-	else  {
-	  S = TabS(isec, NbPath);
-	  ureverse = UReverse(isec, NbPath);
-	  exuv = ExchUV(isec, NbPath);
-	}
-	S->Bounds(UFirst, ULast, VFirst, VLast);
+      S->Bounds(UFirst, ULast, VFirst, VLast);
 
-	// Choice of parametres
-	if (ureverse) {
-	  if (exuv) {
-	    aux = VFirst; VFirst = VLast; VLast = aux;	  
-	  }
-	  else {
-	    aux = UFirst; UFirst = ULast; ULast = aux;
-	  }
-	}
-	if (isec == NbLaw+1) {
-	  u = ULast;
-	  v = VLast;
-	}
-	else {
-	  if (exuv) {
-	    u = ULast;
-	    v = VFirst;
-	  }
-	  else {
-	    u = UFirst;
-	    v = VLast;
-	  }
-	}
-
-	// construction of vertex
-	B.MakeVertex(TopoDS::Vertex(Vertex(isec, NbPath+1)), 
-		     S->Value(u,v), 
-		     mySec->VertexTol(isec-1, Vi(NbPath+1)));
+      // Choice of parameters
+      if (ureverse) {
+        if (exuv) {
+          aux = VFirst; VFirst = VLast; VLast = aux;	  
+        }
+        else {
+          aux = UFirst; UFirst = ULast; ULast = aux;
+        }
       }
+      if (isec!= NbLaw+1) {
+        u = UFirst;
+        v = VFirst;
+      }
+      else {
+        if (exuv) {
+          u = UFirst;
+          v = VLast;
+        }
+        else {
+          u = ULast;
+          v = VFirst;
+        }
+      }
+
+      // construction of vertices
+      B.MakeVertex(TopoDS::Vertex(Vertex(isec, 1)), 
+                   S->Value(u,v), 
+                   mySec->VertexTol(isec-1,Vi(1)));
+    }
+  }
+
+  if (! LastShape.IsNull() && (ILast==myLoc->NbLaw()+1) ) {
+    mySec->Init(LastShape);
+    for (isec=1; isec<=NbLaw; isec++) {
+      E = mySec->CurrentEdge();
+      VEdge(isec, NbPath+1) = E;
+      if (E.Orientation() == TopAbs_REVERSED)
+        Vertex(isec+1, NbPath+1) = TopExp::FirstVertex(E);
+      else 
+        Vertex(isec+1, NbPath+1) = TopExp::LastVertex(E);
+      UpdateVertex(ILast-1, isec+1, TabErr(isec, NbPath), 
+                   Vi(NbPath+1),  Vertex(isec+1, NbPath+1));
+    }
+    if (VEdge(1,  NbPath+1).Orientation() == TopAbs_REVERSED)
+      Vertex(1,  NbPath+1) =  
+        TopExp::LastVertex(TopoDS::Edge(VEdge(1,  NbPath+1)));
+    else
+      Vertex(1,  NbPath+1) = 
+        TopExp::FirstVertex(TopoDS::Edge(VEdge(1, NbPath+1)));
+    UpdateVertex(ILast-1, 1, 
+                 TabErr(1, NbPath), Vi(NbPath+1),  Vertex(1, NbPath+1 ));
+  }    
+  else {
+    Standard_Real u, v, aux;
+    Standard_Boolean ureverse;
+    for (isec=1; isec<=NbLaw+1; isec++) {
+      // Return data
+      if (isec >NbLaw) {
+        S = TabS(NbLaw, NbPath);
+        ureverse = UReverse(NbLaw, NbPath);
+        exuv = ExchUV(NbLaw, NbPath);
+      }
+      else {
+        S = TabS(isec, NbPath);
+        ureverse = UReverse(isec, NbPath);
+        exuv = ExchUV(isec, NbPath);
+      }
+      S->Bounds(UFirst, ULast, VFirst, VLast);
+
+      // Choice of parametres
+      if (ureverse) {
+        if (exuv) {
+          aux = VFirst; VFirst = VLast; VLast = aux;	  
+        }
+        else {
+          aux = UFirst; UFirst = ULast; ULast = aux;
+        }
+      }
+      if (isec == NbLaw+1) {
+        u = ULast;
+        v = VLast;
+      }
+      else {
+        if (exuv) {
+          u = ULast;
+          v = VFirst;
+        }
+        else {
+          u = UFirst;
+          v = VLast;
+        }
+      }
+
+      // construction of vertex
+      B.MakeVertex(TopoDS::Vertex(Vertex(isec, NbPath+1)), 
+                   S->Value(u,v), 
+                   mySec->VertexTol(isec-1, Vi(NbPath+1)));
     }
   }
 

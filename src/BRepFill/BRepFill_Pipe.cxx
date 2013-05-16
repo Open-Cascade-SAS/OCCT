@@ -849,13 +849,7 @@ TopoDS_Shape BRepFill_Pipe::ShareFaces
       anExp.Init(myFaces->Value(ii, jj), TopAbs_EDGE);
   
       for (; anExp.More(); anExp.Next()) {
-        if (aMapBndEdgeIndex.IsBound(anExp.Current())) {
-          // This is not boundary edge. Remove it.
-          aMapBndEdgeIndex.UnBind(anExp.Current());
-        } else {
-          // Add boundary edge.
-          aMapBndEdgeIndex.Bind(anExp.Current(), ii);
-        }
+        aMapBndEdgeIndex.Bind(anExp.Current(), ii);
       }
     }
 
