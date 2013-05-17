@@ -759,10 +759,12 @@ proc locate_data_file {filename} {
 	    while {[llength $dir] != 0} { 
 	        set name [lindex $dir 0]
 		set dir [lrange $dir 1 end]
-		eval lappend dir [glob -nocomplain -directory $name -type d *]
+                # skip directories starting with dot
+                if { [regexp {^[.]} $name] } { continue }
 		if { [file exists $name/$filename] } {
 		    return [file normalize $name/$filename]
 		}
+		eval lappend dir [glob -nocomplain -directory $name -type d *]
 	    }
 	}
     }
