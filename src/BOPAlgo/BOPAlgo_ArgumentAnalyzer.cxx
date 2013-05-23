@@ -348,6 +348,13 @@ void BOPAlgo_ArgumentAnalyzer::TestSelfInterferences()
           continue;
         }
         //
+        if (aTypeInt == 4) {
+          BOPDS_InterfEF& aEF=aEFs(i);
+          if (aEF.CommonPart().Type()==TopAbs_SHAPE) {
+            continue;
+          }
+        }
+        //
         const TopoDS_Shape& aS1 = theDS->Shape(nI1);
         const TopoDS_Shape& aS2 = theDS->Shape(nI2);
         //
