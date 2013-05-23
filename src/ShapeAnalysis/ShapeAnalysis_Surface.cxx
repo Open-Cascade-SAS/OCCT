@@ -997,9 +997,14 @@ gp_Pnt2d ShapeAnalysis_Surface::ValueOfUV(const gp_Pnt& P3D,const Standard_Real 
 //  Forcer appel a IsU-VClosed
 	if (myUCloseVal < 0) IsUClosed();
 	if (myVCloseVal < 0) IsVClosed();
-	//modified by rln during fixing CSR # BUC60035 entity #D231
-	Standard_Real du = Min (myUDelt, SurfAdapt.UResolution (preci)),
-	              dv = Min (myVDelt, SurfAdapt.VResolution (preci));
+    Standard_Real du = 0., dv = 0.;
+    //extension of the surface range is limited to non-offset surfaces as the latter
+    //can throw exception (e.g. Geom_UndefinedValue) when computing value - see id23943
+    if (!mySurf->IsKind (STANDARD_TYPE (Geom_OffsetSurface))) {
+      //modified by rln during fixing CSR # BUC60035 entity #D231
+      du = Min (myUDelt, SurfAdapt.UResolution (preci));
+      dv = Min (myVDelt, SurfAdapt.VResolution (preci));
+    }
         myExtSrf = mySurf;
 	Standard_Real Tol = Precision::PConfusion();
         myExtPS.SetFlag (Extrema_ExtFlag_MIN);
