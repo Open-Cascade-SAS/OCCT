@@ -21,6 +21,7 @@
 #include <XmlMDataStd_BooleanArrayDriver.ixx>
 #include <TDataStd_BooleanArray.hxx>
 #include <TColStd_HArray1OfByte.hxx>
+#include <NCollection_LocalArray.hxx>
 #include <XmlObjMgt.hxx>
 
 IMPLEMENT_DOMSTRING (FirstIndexString, "first")
@@ -93,9 +94,10 @@ Standard_Boolean XmlMDataStd_BooleanArrayDriver::Paste(const XmlObjMgt_Persisten
   Handle(TDataStd_BooleanArray) aBooleanArray = Handle(TDataStd_BooleanArray)::DownCast(theTarget);
   aBooleanArray->Init(aFirstInd, aLastInd);
   Standard_Integer length = aLastInd - aFirstInd + 1;
-  Handle(TColStd_HArray1OfByte) array = new TColStd_HArray1OfByte(0, length >> 3);
+  Handle(TColStd_HArray1OfByte) hArr = new TColStd_HArray1OfByte(0, length >> 3);
+  TColStd_Array1OfByte& arr = hArr->ChangeArray1();
 
-  Standard_Integer i = 0, upper = array->Upper();
+  Standard_Integer i = 0, upper = arr.Upper();
   Standard_CString aValueStr = Standard_CString(XmlObjMgt::GetStringValue(anElement).GetString());
   for (; i <= upper; i++)
   {
@@ -108,9 +110,9 @@ Standard_Boolean XmlMDataStd_BooleanArrayDriver::Paste(const XmlObjMgt_Persisten
       WriteMessage (aMessageString);
       return Standard_False;
     }
-    array->SetValue(i, (Standard_Byte) aValue);
+    arr.SetValue(i, (Standard_Byte) aValue);
   }
-  aBooleanArray->SetInternalArray(array);
+  aBooleanArray->SetInternalArray(hArr);
   
   return Standard_True;
 }
@@ -127,17 +129,27 @@ void XmlMDataStd_BooleanArrayDriver::Paste(const Handle(TDF_Attribute)& theSourc
 
   Standard_Integer aL = aBooleanArray->Lower();
   Standard_Integer anU = aBooleanArray->Upper();
-  TCollection_AsciiString aValueStr;
 
   theTarget.Element().setAttribute(::FirstIndexString(), aL);
   theTarget.Element().setAttribute(::LastIndexString(), anU);
 
-  const Handle(TColStd_HArray1OfByte)& array = aBooleanArray->InternalArray();
-  Standard_Integer lower = array->Lower(), i = lower, upper = array->Upper();
+  const Handle(TColStd_HArray1OfByte)& hArr = aBooleanArray->InternalArray();
+  const TColStd_Array1OfByte& arr = hArr->Array1();
+
+  // Allocation of 4 chars for each byte.
+  Standard_Integer iChar = 0;
+  NCollection_LocalArray<Standard_Character> str;
+  if (arr.Length())
+    str.Allocate(4 * arr.Length() + 1);
+
+  // Convert integers - compressed boolean values, to a string.
+  Standard_Integer lower = arr.Lower(), i = lower, upper = arr.Upper();
   for (; i <= upper; i++)
   {
-    aValueStr += TCollection_AsciiString((Standard_Integer) array->Value(i));
-    aValueStr += ' ';
+    const Standard_Byte& byte = arr.Value(i);
+    iChar += Sprintf(&(str[iChar]), "%d ", byte);
   }
-  XmlObjMgt::SetStringValue (theTarget, aValueStr.ToCString(), Standard_True);
+
+  if (arr.Length())
+    XmlObjMgt::SetStringValue (theTarget, (Standard_Character*)str, Standard_True);
 }

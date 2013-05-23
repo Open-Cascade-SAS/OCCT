@@ -28,7 +28,7 @@
 
 #include <BSplSLib.ixx>
 #include <PLib.hxx>
-#include <PLib_LocalArray.hxx>
+#include <NCollection_LocalArray.hxx>
 #include <BSplCLib.hxx>
 #include <TColgp_Array2OfXYZ.hxx>
 #include <TColgp_Array1OfXYZ.hxx>
@@ -63,8 +63,6 @@ struct BSplSLib_DataContainer
   Standard_Real knots2[2*25];
   Standard_Real ders[48];
 };
-
-typedef PLib_LocalArray BSplSLib_LocalArray;
 
 //**************************************************************************
 //                     Evaluation methods
@@ -141,9 +139,9 @@ void  BSplSLib::RationalDerivative(const Standard_Integer UDeg,
   M3 = (M1 << 1) + M1;
   M4 = (VDeg + 1) << 2;
   
-  BSplSLib_LocalArray StoreDerivatives (All ? 0 : ii * 3);
+  NCollection_LocalArray<Standard_Real> StoreDerivatives (All ? 0 : ii * 3);
   Standard_Real *RArray = (All ? &RDerivatives : (Standard_Real*)StoreDerivatives);
-  BSplSLib_LocalArray StoreW (ii);  
+  NCollection_LocalArray<Standard_Real> StoreW (ii);  
   Standard_Real *HomogeneousArray = &HDerivatives; 
   Standard_Real denominator,Pii,Pip,Pjq;
   
@@ -1314,7 +1312,7 @@ void  BSplSLib::Iso(const Standard_Real            Param,
   
   // compute local knots
   
-  BSplSLib_LocalArray locknots1 (2*Degree);  
+  NCollection_LocalArray<Standard_Real> locknots1 (2*Degree);  
   BSplCLib::LocateParameter(Degree,Knots,Mults,u,Periodic,index,u);
   BSplCLib::BuildKnots(Degree,index,Periodic,Knots,Mults,*locknots1);
   if (&Mults == NULL)
@@ -1341,7 +1339,7 @@ void  BSplSLib::Iso(const Standard_Real            Param,
     l2 = Poles.UpperRow();
   }
   
-  BSplSLib_LocalArray locpoles ((Degree+1) * (l2-f2+1) * dim);
+  NCollection_LocalArray<Standard_Real> locpoles ((Degree+1) * (l2-f2+1) * dim);
   
   Standard_Real w, *pole = locpoles;
   index += f1;
@@ -2105,7 +2103,7 @@ void  BSplSLib::CacheD0(const Standard_Real                  UParameter,
     new_parameter[1] = (VParameter - VCacheParameter) / VSpanLenght ; 
     dimension = 3 * (VDegree + 1) ;
   }
-  BSplSLib_LocalArray locpoles(dimension);
+  NCollection_LocalArray<Standard_Real> locpoles(dimension);
   
   PLib::NoDerivativeEvalPolynomial(new_parameter[0],
 		       max_degree,
@@ -2263,7 +2261,7 @@ void  BSplSLib::CacheD1(const Standard_Real                  UParameter,
     my_vec_max = (Standard_Real *) &aVecU ;
   }
 
-  BSplSLib_LocalArray locpoles (2 * dimension);
+  NCollection_LocalArray<Standard_Real> locpoles (2 * dimension);
   
   PLib::EvalPolynomial(new_parameter[0],
 		       1,
@@ -2527,7 +2525,7 @@ void  BSplSLib::CacheD2(const Standard_Real                  UParameter,
     my_vec_max_max = (Standard_Real *) &aVecUU ;
   }
 
-  BSplSLib_LocalArray locpoles (3 * dimension);
+  NCollection_LocalArray<Standard_Real> locpoles (3 * dimension);
   
   //
   // initialize in case min or max degree are less than 2

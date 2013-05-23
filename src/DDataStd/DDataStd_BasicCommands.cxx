@@ -64,7 +64,11 @@
 #include <TDF_Reference.hxx>
 #include <TDataStd_UAttribute.hxx>
 #include <TDataStd_IntegerArray.hxx>
+#include <TDataStd_BooleanArray.hxx>
 #include <TDataStd_RealArray.hxx>
+#include <TDataStd_BooleanList.hxx>
+#include <TDataStd_IntegerList.hxx>
+#include <TDataStd_RealList.hxx>
 #include <TDataStd_Variable.hxx>
 #include <TDataStd_ExtStringArray.hxx>
 #include <TDF_ChildIterator.hxx>
@@ -91,6 +95,9 @@
 #include <TColStd_PackedMapOfInteger.hxx>
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 #include <TDataStd_ByteArray.hxx>
+#include <TDataStd_ListIteratorOfListOfByte.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <TColStd_ListIteratorOfListOfReal.hxx>
 
 #include <Standard_Macro.hxx>
 #ifdef OptJr
@@ -1167,6 +1174,130 @@ static Standard_Integer DDataStd_SetByteArray (Draw_Interpretor& di,
 } 
 
 //=======================================================================
+//function : SetBooleanArray (DF, entry, isDelta, From, To, elmt1, elmt2, ...  )
+//=======================================================================
+static Standard_Integer DDataStd_SetBooleanArray (Draw_Interpretor& di,
+                                                  Standard_Integer nb, 
+                                                  const char** arg) 
+{
+  if (nb > 6) 
+  {  
+    Handle(TDF_Data) DF;
+    if (!DDF::GetDF(arg[1],DF))
+        return 1; 
+
+    TDF_Label label;
+    DDF::AddLabel(DF, arg[2], label);
+    Standard_Integer isDelta = Draw::Atoi(arg[3]);
+    Standard_Integer From = Draw::Atoi(arg[4]), To = Draw::Atoi( arg[5] ), j;
+    di << "Array of Standard_Boolean with bounds from = " << From  << " to = " << To  << "\n";
+    Handle(TDataStd_BooleanArray) A = TDataStd_BooleanArray::Set(label, From, To);
+    
+    j = 6;
+    for(Standard_Integer i = From; i<=To; i++) 
+    {
+      Standard_Integer ival = Draw::Atoi(arg[j]);
+      if(ival > 1) 
+      {
+        cout << "Bad value = " << ival<< ". 0 or 1 is expected." << endl;
+        return 1;
+      }
+      A->SetValue(i, (Standard_Boolean)ival); 
+      j++;
+    }
+    return 0; 
+  }
+  di << "DDataStd_SetBooleanArray: Error" << "\n";
+  return 1; 
+} 
+
+//=======================================================================
+//function : SetBooleanList (DF, entry, elmt1, elmt2, ...  )
+//=======================================================================
+static Standard_Integer DDataStd_SetBooleanList (Draw_Interpretor& di,
+                                                 Standard_Integer nb, 
+                                                 const char** arg) 
+{
+  if (nb > 2) 
+  {  
+    Handle(TDF_Data) DF;
+    if (!DDF::GetDF(arg[1],DF))
+        return 1; 
+
+    TDF_Label label;
+    DDF::AddLabel(DF, arg[2], label);
+    Handle(TDataStd_BooleanList) A = TDataStd_BooleanList::Set(label);
+    for(Standard_Integer i = 3; i <= nb - 1; i++) 
+    {
+      Standard_Integer ival = Draw::Atoi(arg[i]);
+      if(ival > 1) 
+      {
+        cout << "Bad value = " << ival<< ". 0 or 1 is expected." << endl;
+        return 1;
+      }
+      A->Append((Standard_Boolean)ival); 
+    }
+    return 0; 
+  }
+  di << "DDataStd_SetBooleanList: Error" << "\n";
+  return 1; 
+} 
+
+//=======================================================================
+//function : SetIntegerList (DF, entry, elmt1, elmt2, ...  )
+//=======================================================================
+static Standard_Integer DDataStd_SetIntegerList (Draw_Interpretor& di,
+                                                 Standard_Integer nb, 
+                                                 const char** arg) 
+{
+  if (nb > 2) 
+  {  
+    Handle(TDF_Data) DF;
+    if (!DDF::GetDF(arg[1],DF))
+        return 1; 
+
+    TDF_Label label;
+    DDF::AddLabel(DF, arg[2], label);
+    Handle(TDataStd_IntegerList) A = TDataStd_IntegerList::Set(label);
+    for(Standard_Integer i = 3; i <= nb - 1; i++) 
+    {
+      Standard_Integer ival = Draw::Atoi(arg[i]);
+      A->Append(ival); 
+    }
+    return 0; 
+  }
+  di << "DDataStd_SetIntegerList: Error" << "\n";
+  return 1; 
+} 
+
+//=======================================================================
+//function : SetRealList (DF, entry, elmt1, elmt2, ...  )
+//=======================================================================
+static Standard_Integer DDataStd_SetRealList (Draw_Interpretor& di,
+                                              Standard_Integer nb, 
+                                              const char** arg) 
+{
+  if (nb > 2) 
+  {  
+    Handle(TDF_Data) DF;
+    if (!DDF::GetDF(arg[1],DF))
+        return 1; 
+
+    TDF_Label label;
+    DDF::AddLabel(DF, arg[2], label);
+    Handle(TDataStd_RealList) A = TDataStd_RealList::Set(label);
+    for(Standard_Integer i = 3; i <= nb - 1; i++) 
+    {
+      Standard_Real fval = Draw::Atof(arg[i]);
+      A->Append(fval); 
+    }
+    return 0; 
+  }
+  di << "DDataStd_SetRealList: Error" << "\n";
+  return 1; 
+} 
+
+//=======================================================================
 //function : GetByteArray (DF, entry )
 //=======================================================================
 static Standard_Integer DDataStd_GetByteArray (Draw_Interpretor& di,
@@ -1198,6 +1329,41 @@ static Standard_Integer DDataStd_GetByteArray (Draw_Interpretor& di,
   di<<"\n";
   return 0; 
 } 
+
+//=======================================================================
+//function : GetBooleanArray (DF, entry )
+//=======================================================================
+static Standard_Integer DDataStd_GetBooleanArray (Draw_Interpretor& di,
+                                                  Standard_Integer, 
+                                                  const char** arg) 
+{   
+  Handle(TDF_Data) DF;
+  if (!DDF::GetDF(arg[1],DF)) 
+      return 1;  
+
+  TDF_Label label;
+  if ( !DDF::FindLabel(DF, arg[2], label) ) 
+  {
+    di << "No label for entry"  << "\n";
+    return 1;
+  }
+ 
+  Handle(TDataStd_BooleanArray) A;
+  if ( !label.FindAttribute(TDataStd_BooleanArray::GetID(), A) ) 
+  {
+    di << "There is no TDataStd_BooleanArray at label"  << "\n";
+    return 1;
+  }
+  
+  for (Standard_Integer i = A->Lower(); i<=A->Upper(); i++)
+  {
+    di << (Standard_Integer) A->Value(i);
+    if (i < A->Upper())  
+     di << " ";
+  }
+  di << "\n";
+  return 0; 
+}
 
 //=======================================================================
 //function : ChangeByteArray (DF, entry, indx, val )
@@ -1259,6 +1425,112 @@ static Standard_Integer DDataStd_ChangeByteArray (Draw_Interpretor& di,
   di << "DDataStd_ChangeByteArray: Error" << "\n";
   return 1; 
 }
+
+//=======================================================================
+//function : GetBooleanList (DF, entry )
+//=======================================================================
+static Standard_Integer DDataStd_GetBooleanList (Draw_Interpretor& di,
+                                                 Standard_Integer, 
+                                                 const char** arg) 
+{   
+  Handle(TDF_Data) DF;
+  if (!DDF::GetDF(arg[1],DF)) 
+      return 1;  
+
+  TDF_Label label;
+  if ( !DDF::FindLabel(DF, arg[2], label) ) 
+  {
+    di << "No label for entry"  << "\n";
+    return 1;
+  }
+ 
+  Handle(TDataStd_BooleanList) A;
+  if ( !label.FindAttribute(TDataStd_BooleanList::GetID(), A) ) 
+  {
+    di << "There is no TDataStd_BooleanList at label"  << "\n";
+    return 1;
+  }
+  
+  const TDataStd_ListOfByte& bList = A->List();
+  TDataStd_ListIteratorOfListOfByte itr(bList);
+  for (; itr.More(); itr.Next())
+  {
+    di << (Standard_Integer) itr.Value() << " ";
+  }
+  di << "\n";
+  return 0; 
+}
+
+//=======================================================================
+//function : GetIntegerList (DF, entry )
+//=======================================================================
+static Standard_Integer DDataStd_GetIntegerList (Draw_Interpretor& di,
+                                                 Standard_Integer, 
+                                                 const char** arg) 
+{   
+  Handle(TDF_Data) DF;
+  if (!DDF::GetDF(arg[1],DF)) 
+      return 1;  
+
+  TDF_Label label;
+  if ( !DDF::FindLabel(DF, arg[2], label) ) 
+  {
+    di << "No label for entry"  << "\n";
+    return 1;
+  }
+ 
+  Handle(TDataStd_IntegerList) A;
+  if ( !label.FindAttribute(TDataStd_IntegerList::GetID(), A) ) 
+  {
+    di << "There is no TDataStd_IntegerList at label"  << "\n";
+    return 1;
+  }
+  
+  const TColStd_ListOfInteger& iList = A->List();
+  TColStd_ListIteratorOfListOfInteger itr(iList);
+  for (; itr.More(); itr.Next())
+  {
+    di << itr.Value() << " ";
+  }
+  di << "\n";
+  return 0; 
+}
+
+//=======================================================================
+//function : GetRealList (DF, entry )
+//=======================================================================
+static Standard_Integer DDataStd_GetRealList (Draw_Interpretor& di,
+                                              Standard_Integer, 
+                                              const char** arg) 
+{   
+  Handle(TDF_Data) DF;
+  if (!DDF::GetDF(arg[1],DF)) 
+      return 1;  
+
+  TDF_Label label;
+  if ( !DDF::FindLabel(DF, arg[2], label) ) 
+  {
+    di << "No label for entry"  << "\n";
+    return 1;
+  }
+ 
+  Handle(TDataStd_RealList) A;
+  if ( !label.FindAttribute(TDataStd_RealList::GetID(), A) ) 
+  {
+    di << "There is no TDataStd_RealList at label"  << "\n";
+    return 1;
+  }
+  
+  const TColStd_ListOfReal& iList = A->List();
+  TColStd_ListIteratorOfListOfReal itr(iList);
+  for (; itr.More(); itr.Next())
+  {
+    di << itr.Value() << " ";
+  }
+  di << "\n";
+  return 0; 
+}
+
 //=======================================================================
 //function : SetIntPackedMap (DF, entry, isDelta, key1, key2, ...
 //=======================================================================
@@ -1320,7 +1592,7 @@ static Standard_Integer DDataStd_GetIntPackedMap (Draw_Interpretor& di,
     TColStd_MapIteratorOfPackedMapOfInteger itr(aMap);
     for (Standard_Integer j = 1; itr.More(); itr.Next(),j++){
       Standard_Integer aKey(itr.Key());
-      cout << "Key ("<< j <<")"<<" = " << aKey << endl;;
+      di << aKey << " ";
       }
     return 0; 
   }
@@ -2397,6 +2669,22 @@ void DDataStd::BasicCommands (Draw_Interpretor& theCommands)
                    "SetAsciiString (DF, entry, String  )",
                    __FILE__, DDataStd_SetAsciiString, g);
 
+  theCommands.Add ("SetBooleanArray", 
+                   "SetBooleanArray (DF, entry, isDelta, From, To, elmt1, elmt2, ...  )",
+                   __FILE__, DDataStd_SetBooleanArray, g);
+
+  theCommands.Add ("SetBooleanList", 
+                   "SetBooleanList (DF, entry, elmt1, elmt2, ...  )",
+                   __FILE__, DDataStd_SetBooleanList, g);
+
+  theCommands.Add ("SetIntegerList", 
+                   "SetIntegerList (DF, entry, elmt1, elmt2, ...  )",
+                   __FILE__, DDataStd_SetIntegerList, g);
+
+  theCommands.Add ("SetRealList", 
+                   "SetRealList (DF, entry, elmt1, elmt2, ...  )",
+                   __FILE__, DDataStd_SetRealList, g);
+
 
   // GET
 
@@ -2415,7 +2703,6 @@ void DDataStd::BasicCommands (Draw_Interpretor& theCommands)
   theCommands.Add ("GetRealArray", 
                    "GetRealArray (DF, entry )",
                    __FILE__, DDataStd_GetRealArray, g);
-
 
   theCommands.Add ("GetByteArray", 
                    "GetByteArray (DF, entry )",
@@ -2458,10 +2745,25 @@ void DDataStd::BasicCommands (Draw_Interpretor& theCommands)
                    "SetRelation (DF, entry, expression, var1[, var2, ...])",
                    __FILE__, DDataStd_SetRelation, g);
 
-
   theCommands.Add ("DumpRelation", 
                    "DumpRelation (DF, entry)",
                    __FILE__, DDataStd_DumpRelation, g);
+
+  theCommands.Add ("GetBooleanArray", 
+                   "GetBooleanArray (DF, entry )",
+                   __FILE__, DDataStd_GetBooleanArray, g);
+
+  theCommands.Add ("GetBooleanList", 
+                   "GetBooleanList (DF, entry )",
+                   __FILE__, DDataStd_GetBooleanList, g);
+
+  theCommands.Add ("GetIntegerList", 
+                   "GetIntegerList (DF, entry )",
+                   __FILE__, DDataStd_GetIntegerList, g);
+
+  theCommands.Add ("GetRealList", 
+                   "GetRealList (DF, entry )",
+                   __FILE__, DDataStd_GetRealList, g);
 
 
 

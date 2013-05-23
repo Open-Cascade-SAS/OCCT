@@ -23,7 +23,7 @@
 // Modified: 19/02/1997 by JCT :  EvalPoly2Var added
 
 #include <PLib.ixx>
-#include <PLib_LocalArray.hxx>
+#include <NCollection_LocalArray.hxx>
 #include <math_Matrix.hxx> 
 #include <math_Gauss.hxx> 
 #include <Standard_ConstructionError.hxx>
@@ -192,8 +192,8 @@ void  PLib::RationalDerivative(const Standard_Integer Degree,
   Standard_Real *RationalArray = &RDers;
   Standard_Real Factor ;
   Standard_Integer ii, Index, OtherIndex, Index1, Index2, jj;
-  PLib_LocalArray binomial_array;
-  PLib_LocalArray derivative_storage;
+  NCollection_LocalArray<Standard_Real> binomial_array;
+  NCollection_LocalArray<Standard_Real> derivative_storage;
   if (Dimension == 3) {
     Standard_Integer DeRequest1 = DerivativeRequest + 1;
     Standard_Integer MinDegRequ = DerivativeRequest;
@@ -412,8 +412,8 @@ void  PLib::RationalDerivatives(const Standard_Integer DerivativeRequest,
   Standard_Integer ii, Index, Index1, Index2, jj;
   Standard_Integer DeRequest1 = DerivativeRequest + 1;
   
-  PLib_LocalArray binomial_array (DeRequest1);
-  PLib_LocalArray derivative_storage;
+  NCollection_LocalArray<Standard_Real> binomial_array (DeRequest1);
+  NCollection_LocalArray<Standard_Real> derivative_storage;
 
   for (ii = 0 ; ii < DeRequest1 ; ii++) {
     binomial_array[ii] = 1.0e0 ;
@@ -1945,7 +1945,7 @@ PLib::EvalLagrange(const Standard_Real                   Parameter,
   if (local_request >= Degree) {
     local_request = Degree ;
   }
-  PLib_LocalArray divided_differences_array ((Degree + 1) * Dimension);
+  NCollection_LocalArray<Standard_Real> divided_differences_array ((Degree + 1) * Dimension);
   //
   //  Build the divided differences array
   //
@@ -2075,7 +2075,7 @@ Standard_Integer PLib::EvalCubicHermite
   if (local_request >= Degree) {
     local_request = Degree ;
   }   
-  PLib_LocalArray divided_differences_array ((Degree + 1) * Dimension);
+  NCollection_LocalArray<Standard_Real> divided_differences_array ((Degree + 1) * Dimension);
 
   for (ii = 0, jj = 0  ; ii < 2 ; ii++, jj+= 2) {
     ParametersArray[jj] =

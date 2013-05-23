@@ -29,6 +29,7 @@
 #include <XmlMDF_ADriver.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDataStd_IntPackedMap.hxx>
+#include <NCollection_LocalArray.hxx>
 #include <XmlMDataStd.hxx>
 
 IMPLEMENT_DOMSTRING (IntPackedMapSize, "mapsize")
@@ -154,14 +155,21 @@ void XmlMDataStd_IntPackedMapDriver::Paste (const Handle(TDF_Attribute)& theSour
   theTarget.Element().setAttribute(::IntPackedMapSize(), aSize);
   theTarget.Element().setAttribute(::IsDeltaOn(),aS->GetDelta());
 
-  TCollection_AsciiString aValueString;
-  if(aSize) {
+  if(aSize)
+  {
+    // Allocation of 12 chars for each integer including the space.
+    // An example: -2 147 483 648
+    Standard_Integer iChar = 0;
+    NCollection_LocalArray<Standard_Character> str(12 * aSize + 1);
+
     TColStd_MapIteratorOfPackedMapOfInteger anIt(aS->GetMap());
-    for(;anIt.More();anIt.Next()) {
-      aValueString += TCollection_AsciiString(anIt.Key());
-      aValueString += ' ';
+    for(;anIt.More();anIt.Next()) 
+    {
+      const Standard_Integer intValue = anIt.Key();
+      iChar += Sprintf(&(str[iChar]), "%d ", intValue);
     }
+
     // No occurrence of '&', '<' and other irregular XML characters
-    XmlObjMgt::SetStringValue (theTarget, aValueString.ToCString(), Standard_True);
+    XmlObjMgt::SetStringValue (theTarget, (Standard_Character*)str, Standard_True);
   }
 }

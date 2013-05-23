@@ -17,31 +17,31 @@
 // and conditions governing the rights and limitations under the License.
 
 
-#ifndef _PLib_LocalArray_HeaderFile
-#define _PLib_LocalArray_HeaderFile
+#ifndef _NCollection_LocalArray_HeaderFile
+#define _NCollection_LocalArray_HeaderFile
 
 #include <Standard.hxx>
 #include <Standard_TypeDef.hxx>
 
-//! Auxiliary class optimizing creation of array buffer for
-//! evaluation of bspline (using stack allocation for small arrays)
-class PLib_LocalArray
+//! Auxiliary class optimizing creation of array buffer 
+//! (using stack allocation for small arrays).
+template<class theItem> class NCollection_LocalArray
 {
 public:
 
-  // 1K * sizeof (double) = 8K
+  // 1K * sizeof (theItem)
   static const size_t MAX_ARRAY_SIZE = 1024;
 
-  PLib_LocalArray (const size_t theSize)
+  NCollection_LocalArray (const size_t theSize)
   : myPtr (myBuffer)
   {
     Allocate(theSize);
   }
 
-  PLib_LocalArray()
+  NCollection_LocalArray ()
   : myPtr (myBuffer) {}
 
-  virtual ~PLib_LocalArray()
+  virtual ~NCollection_LocalArray()
   {
     Deallocate();
   }
@@ -50,20 +50,20 @@ public:
   {
     Deallocate();
     if (theSize > MAX_ARRAY_SIZE)
-      myPtr = (Standard_Real*)Standard::Allocate (theSize * sizeof(Standard_Real));
+      myPtr = (theItem*)Standard::Allocate (theSize * sizeof(theItem));
     else
       myPtr = myBuffer;
   }
 
-  operator Standard_Real*() const
+  operator theItem*() const
   {
     return myPtr;
   }
 
 private:
 
-  PLib_LocalArray (const PLib_LocalArray& );
-  PLib_LocalArray& operator= (const PLib_LocalArray& );
+  NCollection_LocalArray (const NCollection_LocalArray& );
+  NCollection_LocalArray& operator= (const NCollection_LocalArray& );
 
 protected:
 
@@ -75,9 +75,9 @@ protected:
 
 protected:
 
-  Standard_Real  myBuffer[MAX_ARRAY_SIZE];
-  Standard_Real* myPtr;
+  theItem  myBuffer[MAX_ARRAY_SIZE];
+  theItem* myPtr;
 
 };
 
-#endif
+#endif // _NCollection_LocalArray_HeaderFile

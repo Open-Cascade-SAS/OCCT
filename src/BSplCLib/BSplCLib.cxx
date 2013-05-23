@@ -34,7 +34,7 @@
 
 #include <BSplCLib.ixx>
 #include <PLib.hxx>
-#include <PLib_LocalArray.hxx>
+#include <NCollection_LocalArray.hxx>
 #include <Precision.hxx>
 #include <Standard_NotImplemented.hxx>
 
@@ -66,8 +66,6 @@ public:
   // (see math_Matrix implementation)
   Standard_Real myBuffer[27*27];
 };
-
-typedef PLib_LocalArray BSplCLib_LocalArray;
 
 //=======================================================================
 //function : Hunt
@@ -3226,7 +3224,7 @@ void  BSplCLib::Eval
     if (NewRequest > Degree) {
       NewRequest = Degree ;
     }
-    BSplCLib_LocalArray LocalRealArray((LocalRequest + 1)*ArrayDimension);
+    NCollection_LocalArray<Standard_Real> LocalRealArray((LocalRequest + 1)*ArrayDimension);
     Index = 0 ;
     Inverse = 1.0e0 ;
 
@@ -3421,7 +3419,7 @@ void  BSplCLib::Eval
     if (NewRequest > Degree) {
       NewRequest = Degree ;
     }
-    BSplCLib_LocalArray LocalRealArray((LocalRequest + 1)*ArrayDimension);
+    NCollection_LocalArray<Standard_Real> LocalRealArray((LocalRequest + 1)*ArrayDimension);
 
     Index = 0 ;
     Inverse = 1.0e0 ;

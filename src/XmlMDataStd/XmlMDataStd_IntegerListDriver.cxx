@@ -21,6 +21,7 @@
 #include <XmlMDataStd_IntegerListDriver.ixx>
 #include <TDataStd_IntegerList.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <NCollection_LocalArray.hxx>
 #include <XmlObjMgt.hxx>
 
 IMPLEMENT_DOMSTRING (FirstIndexString, "first")
@@ -127,18 +128,21 @@ void XmlMDataStd_IntegerListDriver::Paste(const Handle(TDF_Attribute)& theSource
   Handle(TDataStd_IntegerList) anIntList = Handle(TDataStd_IntegerList)::DownCast(theSource);
 
   Standard_Integer anU = anIntList->Extent();
-  TCollection_AsciiString aValueStr;
-
   theTarget.Element().setAttribute(::LastIndexString(), anU);
   if (anU >= 1)
   {
+    // Allocation of 12 chars for each integer including the space.
+    // An example: -2 147 483 648
+    Standard_Integer iChar = 0;
+    NCollection_LocalArray<Standard_Character> str(12 * anU + 1);
     TColStd_ListIteratorOfListOfInteger itr(anIntList->List());
     for (; itr.More(); itr.Next())
     {
-      aValueStr += TCollection_AsciiString(itr.Value());
-      aValueStr += ' ';
+      const Standard_Integer& intValue = itr.Value();
+      iChar += Sprintf(&(str[iChar]), "%d ", intValue);
     }
+
+    // No occurrence of '&', '<' and other irregular XML characters
+    XmlObjMgt::SetStringValue (theTarget, (Standard_Character*)str, Standard_True);
   }
-  // No occurrence of '&', '<' and other irregular XML characters
-  XmlObjMgt::SetStringValue (theTarget, aValueStr.ToCString(), Standard_True);
 }

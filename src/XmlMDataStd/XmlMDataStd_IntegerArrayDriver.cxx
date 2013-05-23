@@ -21,6 +21,7 @@
 
 #include <XmlMDataStd_IntegerArrayDriver.ixx>
 #include <TDataStd_IntegerArray.hxx>
+#include <NCollection_LocalArray.hxx>
 #include <XmlObjMgt.hxx>
 #include <XmlMDataStd.hxx>
 
@@ -154,21 +155,36 @@ void XmlMDataStd_IntegerArrayDriver::Paste
 {
   Handle(TDataStd_IntegerArray) anIntArray =
     Handle(TDataStd_IntegerArray)::DownCast(theSource);
+  const Handle(TColStd_HArray1OfInteger)& hIntArray = anIntArray->Array();
+  const TColStd_Array1OfInteger& intArray = hIntArray->Array1();
+  Standard_Integer aL = intArray.Lower(), anU = intArray.Upper();
 
-  Standard_Integer aL = anIntArray->Lower(), anU = anIntArray->Upper();
-  TCollection_AsciiString aValueStr;
-
-  if (aL != 1) theTarget.Element().setAttribute (::FirstIndexString(), aL);
+  if (aL != 1) 
+    theTarget.Element().setAttribute(::FirstIndexString(), aL);
   theTarget.Element().setAttribute(::LastIndexString(), anU);
   theTarget.Element().setAttribute(::IsDeltaOn(), anIntArray->GetDelta());
 
+  // Allocation of 12 chars for each integer including the space.
+  // An example: -2 147 483 648
+  Standard_Integer iChar = 0;
+  NCollection_LocalArray<Standard_Character> str;
+  if (intArray.Length())
+    str.Allocate(12 * intArray.Length() + 1);
+
   Standard_Integer i = aL;
-  while (1) {
-    aValueStr += TCollection_AsciiString(anIntArray->Value(i));
-    if (i >= anU) break;
-    aValueStr += ' ';
+  while (1) 
+  {
+    const Standard_Integer& intValue = intArray.Value(i);
+    iChar += Sprintf(&(str[iChar]), "%d ", intValue);
+    if (i >= anU)
+      break;
     ++i;
   }
-  // No occurrence of '&', '<' and other irregular XML characters
-  XmlObjMgt::SetStringValue (theTarget, aValueStr.ToCString(), Standard_True);
+
+  if (intArray.Length())
+  {
+    // No occurrence of '&', '<' and other irregular XML characters
+    str[iChar - 1] = '\0';
+    XmlObjMgt::SetStringValue (theTarget, (Standard_Character*)str, Standard_True);
+  }
 }

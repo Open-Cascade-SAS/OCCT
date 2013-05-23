@@ -21,6 +21,7 @@
 #include <XmlMDataStd_BooleanListDriver.ixx>
 #include <TDataStd_BooleanList.hxx>
 #include <TDataStd_ListIteratorOfListOfByte.hxx>
+#include <NCollection_LocalArray.hxx>
 #include <XmlObjMgt.hxx>
 
 IMPLEMENT_DOMSTRING (FirstIndexString, "first")
@@ -127,18 +128,18 @@ void XmlMDataStd_BooleanListDriver::Paste(const Handle(TDF_Attribute)& theSource
   Handle(TDataStd_BooleanList) aBooleanList = Handle(TDataStd_BooleanList)::DownCast(theSource);
 
   Standard_Integer anU = aBooleanList->Extent();
-  TCollection_AsciiString aValueStr;
-
   theTarget.Element().setAttribute(::LastIndexString(), anU);
   if (anU >= 1)
   {
+    // Allocation of 1 char for each boolean value + a space.
+    Standard_Integer iChar = 0;
+    NCollection_LocalArray<Standard_Character> str(2 * anU + 1);
     TDataStd_ListIteratorOfListOfByte itr(aBooleanList->List());
     for (; itr.More(); itr.Next())
     {
-      aValueStr += TCollection_AsciiString(itr.Value());
-      aValueStr += ' ';
+      const Standard_Byte& byte = itr.Value();
+      iChar += Sprintf(&(str[iChar]), "%d ", byte);
     }
+    XmlObjMgt::SetStringValue (theTarget, (Standard_Character*)str, Standard_True);
   }
-  // No occurrence of '&', '<' and other irregular XML characters
-  XmlObjMgt::SetStringValue (theTarget, aValueStr.ToCString(), Standard_True);
 }

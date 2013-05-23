@@ -21,6 +21,7 @@
 #include <XmlMDataStd_RealListDriver.ixx>
 #include <TDataStd_RealList.hxx>
 #include <TColStd_ListIteratorOfListOfReal.hxx>
+#include <NCollection_LocalArray.hxx>
 #include <XmlObjMgt.hxx>
 
 IMPLEMENT_DOMSTRING (FirstIndexString, "first")
@@ -135,18 +136,19 @@ void XmlMDataStd_RealListDriver::Paste(const Handle(TDF_Attribute)& theSource,
   Handle(TDataStd_RealList) aRealList = Handle(TDataStd_RealList)::DownCast(theSource);
 
   Standard_Integer anU = aRealList->Extent();
-  TCollection_AsciiString aValueStr;
-
   theTarget.Element().setAttribute(::LastIndexString(), anU);
   if (anU >= 1)
   {
+    // Allocation of 25 chars for each double value including the space:
+    // An example: -3.1512678732195273e+020
+    Standard_Integer iChar = 0;
+    NCollection_LocalArray<Standard_Character> str(25 * anU + 1);
     TColStd_ListIteratorOfListOfReal itr(aRealList->List());
     for (; itr.More(); itr.Next())
     {
-      aValueStr += TCollection_AsciiString(itr.Value());
-      aValueStr += ' ';
+      const Standard_Real& realValue = itr.Value();
+      iChar += Sprintf(&(str[iChar]), "%.17g ", realValue);
     }
+    XmlObjMgt::SetStringValue (theTarget, (Standard_Character*)str, Standard_True);
   }
-  // No occurrence of '&', '<' and other irregular XML characters
-  XmlObjMgt::SetStringValue (theTarget, aValueStr.ToCString(), Standard_True);
 }

@@ -74,6 +74,7 @@ NCollection_UtfString.hxx
 NCollection_UtfString.lxx
 NCollection_String.hxx
 
+NCollection_LocalArray.hxx
 NCollection_SparseArray.hxx
 NCollection_SparseArrayBase.hxx
 NCollection_SparseArrayBase.cxx
