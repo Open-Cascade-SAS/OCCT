@@ -25,6 +25,7 @@ uses
     BaseAllocator from BOPCol, 
     IndexedDataMapOfIntegerListOfInteger from BOPCol,  
     DataMapOfIntegerListOfInteger from BOPCol, 
+    PDS from BOPDS, 
     PaveBlock from BOPDS,  
     IndexedDataMapOfPaveBlockListOfInteger from BOPDS, 
     IndexedDataMapOfPaveBlockListOfPaveBlock from BOPDS, 
@@ -47,7 +48,8 @@ is
  
     PerformCommonBlocks(myclass; 
         theMBlocks  :out IndexedDataMapOfPaveBlockListOfPaveBlock from BOPDS; 
-        theAllocator:out BaseAllocator from BOPCol);  
+        theAllocator:out BaseAllocator from BOPCol; 
+        pDS: out PDS from BOPDS);
     
     FillMap(myclass; 
         tneN1:Integer from Standard; 
@@ -70,7 +72,8 @@ is
  
     PerformCommonBlocks(myclass; 
         theMBlocks  :IndexedDataMapOfPaveBlockListOfInteger from BOPDS; 
-        theAllocator:out BaseAllocator from BOPCol);  
+        theAllocator:out BaseAllocator from BOPCol; 
+        pDS: out PDS from BOPDS);
 --fields
 
 end Tools;

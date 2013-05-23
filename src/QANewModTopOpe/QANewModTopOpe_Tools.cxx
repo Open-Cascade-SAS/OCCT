@@ -465,7 +465,7 @@ Standard_Boolean QANewModTopOpe_Tools::EdgeSectionAncestors(const BOPAlgo_PPaveF
   }
 
   const Handle(BOPDS_PaveBlock)& aPB1 = aLPB1.First();
-  const Handle(BOPDS_CommonBlock)& aCB=aPB1->CommonBlock();
+  const Handle(BOPDS_CommonBlock)& aCB=pDS->CommonBlock(aPB1);
   if (aCB.IsNull()) {
     return Standard_False;
   }

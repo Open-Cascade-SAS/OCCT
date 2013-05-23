@@ -92,14 +92,14 @@
       aItPB.Initialize(aLPB);
       for (; aItPB.More(); aItPB.Next()) {
         const Handle(BOPDS_PaveBlock)& aPB=aItPB.Value();
-        const Handle(BOPDS_PaveBlock)& aPBR=aPB->RealPaveBlock();
+        const Handle(BOPDS_PaveBlock)& aPBR=myDS->RealPaveBlock(aPB);
         //
         nSpR=aPBR->Edge();
         const TopoDS_Shape& aSpR=myDS->Shape(nSpR);
         aLS.Append(aSpR);
         myOrigins.Bind(aSpR, aE);
         //
-        if (aPB->IsCommonBlockOnEdge()) {
+        if (myDS->IsCommonBlockOnEdge(aPB)) {
           nSp=aPB->Edge();
           const TopoDS_Shape& aSp=myDS->Shape(nSp);
           myShapesSD.Bind(aSp, aSpR);

@@ -83,6 +83,7 @@ static
   myPaveBlocksPool(myAllocator),
   myFaceInfoPool(myAllocator),
   myShapesSD(100, myAllocator),
+  myMapPBCB(100, myAllocator),
   myInterfTB(100, myAllocator),
   myInterfVV(myAllocator),
   myInterfVE(myAllocator),
@@ -108,6 +109,7 @@ static
   myPaveBlocksPool(myAllocator),
   myFaceInfoPool(myAllocator),
   myShapesSD(100, myAllocator),
+  myMapPBCB(100, myAllocator),
   myInterfTB(100, myAllocator),
   myInterfVV(myAllocator),
   myInterfVE(myAllocator),
@@ -143,6 +145,7 @@ static
   myPaveBlocksPool.Clear();
   myFaceInfoPool.Clear();
   myShapesSD.Clear();
+  myMapPBCB.Clear();
   myInterfTB.Clear();
   myInterfVV.Clear();
   myInterfVE.Clear();
@@ -963,11 +966,82 @@ static
       aItPB.Initialize(aLPBxN);
       for (; aItPB.More(); aItPB.Next()) {
         aPB=aItPB.ChangeValue();
-        aPB->SetCommonBlock(aCBx);
+        SetCommonBlock(aPB, aCBx);
       }
     }
   }
 }
+
+//=======================================================================
+// function: RealPaveBlock
+// purpose: 
+//=======================================================================
+  Handle(BOPDS_PaveBlock) BOPDS_DS::RealPaveBlock
+    (const Handle(BOPDS_PaveBlock)& thePB) const
+{
+  if (IsCommonBlock(thePB)) {
+    const Handle(BOPDS_CommonBlock)& aCB = CommonBlock(thePB);
+    const Handle(BOPDS_PaveBlock)& aPB = aCB->PaveBlock1();
+    return aPB;
+  }
+  return thePB;
+}
+
+//=======================================================================
+// function: IsCommonBlockOnEdge
+// purpose: 
+//=======================================================================
+  Standard_Boolean BOPDS_DS::IsCommonBlockOnEdge
+    (const Handle(BOPDS_PaveBlock)& thePB) const
+{
+  if (IsCommonBlock(thePB)) {
+    const Handle(BOPDS_CommonBlock)& aCB = CommonBlock(thePB);
+    return aCB->PaveBlocks().Extent()>1;
+  } 
+  return Standard_False;
+}
+
+//=======================================================================
+//function : IsCommonBlock
+//purpose  : 
+//=======================================================================
+  Standard_Boolean BOPDS_DS::IsCommonBlock
+    (const Handle(BOPDS_PaveBlock)& thePB) const
+{
+  return myMapPBCB.IsBound(thePB);
+}
+
+//=======================================================================
+//function : CommonBlock
+//purpose  : 
+//=======================================================================
+  const Handle(BOPDS_CommonBlock)& BOPDS_DS::CommonBlock
+    (const Handle(BOPDS_PaveBlock)& thePB) const
+{
+  Handle(BOPDS_CommonBlock) aNullCB;
+  //
+  const Handle(BOPDS_CommonBlock)& aCB = 
+    IsCommonBlock(thePB) ? myMapPBCB.Find(thePB) : aNullCB;
+  //
+  return aCB;
+}
+
+//=======================================================================
+//function : SetCommonBlock
+//purpose  : 
+//=======================================================================
+  void BOPDS_DS::SetCommonBlock(const Handle(BOPDS_PaveBlock)& thePB,
+                                const Handle(BOPDS_CommonBlock)& theCB)
+{
+  if (IsCommonBlock(thePB)) {
+    Handle(BOPDS_CommonBlock)& aCB = myMapPBCB.ChangeFind(thePB);
+    aCB=theCB;
+  }
+  else {
+    myMapPBCB.Bind(thePB, theCB);
+  }
+}
+
 //
 // FaceInfo
 //
@@ -1108,14 +1182,8 @@ static
         aPB->Indices(nV1, nV2);
         theMI.Add(nV1);
         theMI.Add(nV2);
-        if (aPB->IsCommonBlock()) {
-          const Handle(BOPDS_CommonBlock)& aCB=aPB->CommonBlock();
-          const Handle(BOPDS_PaveBlock)& aPB1=aCB->PaveBlock1();
-          theMPB.Add(aPB1);
-        }
-        else {
-          theMPB.Add(aPB);
-        }
+        Handle(BOPDS_PaveBlock) aPBR=RealPaveBlock(aPB);
+        theMPB.Add(aPBR);
       }
     }//if (aSIE.ShapeType()==TopAbs_EDGE) 
     else {
@@ -1162,8 +1230,8 @@ static
         aItPB.Initialize(aLPB);
         for (; aItPB.More(); aItPB.Next()) {
           const Handle(BOPDS_PaveBlock)& aPB=aItPB.Value();
-          if (aPB->IsCommonBlock()) {
-            const Handle(BOPDS_CommonBlock)& aCB=aPB->CommonBlock();
+          if (IsCommonBlock(aPB)) {
+            const Handle(BOPDS_CommonBlock)& aCB=CommonBlock(aPB);
             if (aCB->Contains(theF)) {
               const Handle(BOPDS_PaveBlock)& aPB1=aCB->PaveBlock1();
               theMPB.Add(aPB1);
@@ -1359,7 +1427,7 @@ static
       else {
         aItLPB.Initialize(aLPB);
         for (; aItLPB.More(); aItLPB.Next()) {
-          const Handle(BOPDS_PaveBlock) aPB=aItLPB.Value()->RealPaveBlock();
+          const Handle(BOPDS_PaveBlock) aPB=RealPaveBlock(aItLPB.Value());
           nSp=aPB->Edge();
           aMI.Add(nSp);
         }
@@ -1383,7 +1451,7 @@ static
       else {
         aItLPB.Initialize(aLPB);
         for (; aItLPB.More(); aItLPB.Next()) {
-          const Handle(BOPDS_PaveBlock) aPB=aItLPB.Value()->RealPaveBlock();
+          const Handle(BOPDS_PaveBlock) aPB=RealPaveBlock(aItLPB.Value());
           nSp=aPB->Edge();
           if (aMI.Contains(nSp)) {
             theLI.Append(nSp);

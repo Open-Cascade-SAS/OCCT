@@ -327,7 +327,7 @@
   //=========================================
   // post treatment
   //=========================================
-  BOPAlgo_Tools::PerformCommonBlocks(aMPBLPB, aAllocator);
+  BOPAlgo_Tools::PerformCommonBlocks(aMPBLPB, aAllocator, myDS);
   PerformVerticesEE(aMVCPB, aAllocator);
   //-----------------------------------------------------scope t
   aMPBLPB.Clear();
@@ -457,11 +457,11 @@
     Handle(BOPDS_PaveBlock) aPB=aMPBLI.FindKey(i);
     nE=aPB->OriginalEdge();
     // 3
-    if (!aPB->IsCommonBlock()) {
+    if (!myDS->IsCommonBlock(aPB)) {
       myDS->UpdatePaveBlock(aPB);
     }
     else {
-      const Handle(BOPDS_CommonBlock)& aCB=aPB->CommonBlock();
+      const Handle(BOPDS_CommonBlock)& aCB=myDS->CommonBlock(aPB);
       myDS->UpdateCommonBlock(aCB);
     }    
   }//for (; aItMPBLI.More(); aItMPBLI.Next()) {

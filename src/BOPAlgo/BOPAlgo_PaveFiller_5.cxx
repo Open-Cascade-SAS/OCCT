@@ -126,7 +126,7 @@
     for (; aIt.More(); aIt.Next()) {
       Handle(BOPDS_PaveBlock)& aPB=aIt.ChangeValue();
       //
-      const Handle(BOPDS_PaveBlock) aPBR=aPB->RealPaveBlock();
+      const Handle(BOPDS_PaveBlock) aPBR=myDS->RealPaveBlock(aPB);
       if (aMPBF.Contains(aPBR)) {
         continue;
       }
@@ -293,7 +293,7 @@
   //=========================================
   // post treatment
   //=========================================
-  BOPAlgo_Tools::PerformCommonBlocks(aMPBLI, aAllocator);
+  BOPAlgo_Tools::PerformCommonBlocks(aMPBLI, aAllocator, myDS);
   PerformVerticesEF(aMVCPB, aAllocator);
   //
   // Update FaceInfoIn for all faces having EF common parts
@@ -438,11 +438,11 @@
     Handle(BOPDS_PaveBlock) aPB=aMPBLI.FindKey(i);
     nE=aPB->OriginalEdge();
     // 3
-    if (!aPB->IsCommonBlock()) {
+    if (!myDS->IsCommonBlock(aPB)) {
       myDS->UpdatePaveBlock(aPB);
     }
     else {
-      const Handle(BOPDS_CommonBlock)& aCB=aPB->CommonBlock();
+      const Handle(BOPDS_CommonBlock)& aCB=myDS->CommonBlock(aPB);
       myDS->UpdateCommonBlock(aCB);
     }    
   }//for (; aItMPBLI.More(); aItMPBLI.Next()) {

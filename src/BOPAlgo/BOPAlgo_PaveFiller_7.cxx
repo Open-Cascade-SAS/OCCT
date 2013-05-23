@@ -120,7 +120,7 @@ static void UpdateVertices(const TopoDS_Edge& aE,
     aItPB.Initialize(aLPB);
     for (; aItPB.More(); aItPB.Next()) {
       aPB=aItPB.Value();
-      const Handle(BOPDS_CommonBlock)& aCB=aPB->CommonBlock();
+      const Handle(BOPDS_CommonBlock)& aCB=myDS->CommonBlock(aPB);
       bCB=!aCB.IsNull();
       if (bCB) {
         myDS->SortPaveBlocks(aCB);
@@ -207,7 +207,7 @@ static void UpdateVertices(const TopoDS_Edge& aE,
     aItMPB.Initialize(aMPBOn);
     for(; aItMPB.More(); aItMPB.Next()) {
       const Handle(BOPDS_PaveBlock)& aPB=aItMPB.Value();
-      if (aPB->IsCommonBlockOnEdge()) {
+      if (myDS->IsCommonBlockOnEdge(aPB)) {
         nE=aPB->Edge();
         const TopoDS_Edge& aE=(*(TopoDS_Edge *)(&myDS->Shape(nE)));
         //
@@ -289,7 +289,7 @@ static void UpdateVertices(const TopoDS_Edge& aE,
       bV2=myDS->IsNewShape(nV2);
       //
       if (!(bV1 || bV2)) {
-        if (!aPB->IsCommonBlock()) {
+        if (!myDS->IsCommonBlock(aPB)) {
           // the PB seems to be untouced
           aLPB.Clear();
           continue;

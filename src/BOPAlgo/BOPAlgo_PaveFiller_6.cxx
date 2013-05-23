@@ -386,7 +386,7 @@ static void ToleranceFF(const TopoDS_Face& aF1,
         if (bExist) {
           if (aMPBAdd.Add(aPBOut)) {
             Standard_Boolean bInBothFaces = Standard_True;
-            if (!aPBOut->IsCommonBlock()) {
+            if (!myDS->IsCommonBlock(aPBOut)) {
               Standard_Integer nE;
               Standard_Real aTolE;
               //
@@ -663,7 +663,7 @@ static void ToleranceFF(const TopoDS_Face& aF1,
           }
           for (; aItLPB.More(); aItLPB.Next()) {
             const Handle(BOPDS_PaveBlock)& aPBx=aItLPB.Value();
-            const Handle(BOPDS_PaveBlock) aPBRx=aPBx->RealPaveBlock();
+            const Handle(BOPDS_PaveBlock) aPBRx=aPDS->RealPaveBlock(aPBx);
             //
             // update vertices of paves
             aPave[0]=aPBx->Pave1();
@@ -1713,7 +1713,7 @@ void BOPAlgo_PaveFiller::RemoveUsedVertices(BOPDS_Curve& aNC,
   BOPDS_IndexedMapOfPaveBlock& aMPBIn2 = aFI2.ChangePaveBlocksIn();
   //
   // remove old pave blocks
-  const Handle(BOPDS_CommonBlock)& aCB1 = aPBf->CommonBlock();
+  const Handle(BOPDS_CommonBlock)& aCB1 = myDS->CommonBlock(aPBf);
   bCB = !aCB1.IsNull();
   BOPDS_ListOfPaveBlock aLPB1;
   //
@@ -1757,7 +1757,7 @@ void BOPAlgo_PaveFiller::RemoveUsedVertices(BOPDS_Curve& aNC,
         aPB2n->SetEdge(aPB->Edge());
         aPB2n->SetOriginalEdge(nE);
         aCB->AddPaveBlock(aPB2n);
-        aPB2n->SetCommonBlock(aCB);
+        myDS->SetCommonBlock(aPB2n, aCB);
         myDS->ChangePaveBlocks(nE).Append(aPB2n);
       }
       aCB->AddFaces(aFaces);
@@ -1781,7 +1781,7 @@ void BOPAlgo_PaveFiller::RemoveUsedVertices(BOPDS_Curve& aNC,
     Standard_Boolean bCom = BOPTools_AlgoTools::IsBlockInOnFace(aShrR, aF, aE, myContext);
     if (bCom) {
       if (bCB) {
-        aCB = aPB->CommonBlock();
+        aCB = myDS->CommonBlock(aPB);
         aCB->AddFace(nF);
       } else {
         aCB = new BOPDS_CommonBlock;
@@ -1789,7 +1789,7 @@ void BOPAlgo_PaveFiller::RemoveUsedVertices(BOPDS_Curve& aNC,
         aCB->AddFace(nF1);
         aCB->AddFace(nF2);
         //
-        aPB->SetCommonBlock(aCB);
+        myDS->SetCommonBlock(aPB, aCB);
       }
       aMPB.Add(aPB);
     }

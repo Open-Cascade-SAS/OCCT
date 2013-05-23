@@ -90,6 +90,7 @@ is
     imported IndexedMapOfPaveBlock from BOPDS;
     imported IndexedDataMapOfPaveBlockListOfInteger from BOPDS;
     imported IndexedDataMapOfShapeCoupleOfPaveBlocks from BOPDS;
+    imported DataMapOfPaveBlockCommonBlock from BOPDS;
     --  
     imported Interf   from BOPDS;   
     imported InterfVV from BOPDS;   

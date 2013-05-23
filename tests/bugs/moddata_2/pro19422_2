@@ -11,8 +11,10 @@ restore [locate_data_file pro19422c.brep] shape
 checkshape shape
 restore [locate_data_file pro19422d.brep] tool
 checkshape tool
+explode tool
+bfuse tool tool_1 tool_2
 
 bcut result shape tool
 
-set square 2369.43
+set square 2282.26
 set 2dviewer 0

@@ -30,8 +30,7 @@ uses
     MapOfInteger from BOPCol,
     Pave from BOPDS,
     ListOfPave from BOPDS, 
-    ListOfPaveBlock from BOPDS,
-    CommonBlock from BOPDS 
+    ListOfPaveBlock from BOPDS
     
 --raises
 
@@ -198,41 +197,7 @@ is
     --- Returns true if the extra paves contain the pave 
     --- with given value of the parameter <thePrm> 
     ---  <theTol>  - the value of the tolerance to compare 
-	 
-    -- 
-    -- common block   
-    -- 
-    SetCommonBlock(me:mutable; 
-        theCB:CommonBlock from BOPDS); 
-    ---Purpose: 
-    --- Modifier  
-    --- Sets the common block <theCB> 
-	 
-    CommonBlock(me) 
-    returns CommonBlock from BOPDS;     
-    ---C++: return const & 
-    ---Purpose: 
-    --- Selector  
-    --- Returns the common block 
-	 
-    IsCommonBlock(me) 
-    returns Boolean from Standard; 
-    ---Purpose: 
-    --- Query 
-    --- Returns true if the pave block is common block    
-     
-    IsCommonBlockOnEdge(me)  
-    returns Boolean from Standard; 	 
-    ---Purpose: 
-    --- Query 
-    --- Returns true if the pave block is common block 
-    --- that contains at least one pave block  
-	 
-    RealPaveBlock(me) 
-    returns PaveBlock from BOPDS;  
-    ---Purpose: 
-    --- Selector  
-    --- Returns the real common block  
+ 
     -- 
     -- shrunk data   
     -- 
@@ -275,8 +240,6 @@ fields
     myPave2        :  Pave from BOPDS is protected;
     --extras 
     myExtPaves     :  ListOfPave from BOPDS is protected; 
-    --common block 
-    myCommonBlock  :  CommonBlock from BOPDS is protected; 
     --shrunk data  
     myTS1          :  Real from Standard is protected;     
     myTS2          :  Real from Standard is protected;   

@@ -62,7 +62,8 @@ uses
     VectorOfFaceInfo from BOPDS, 
     FaceInfo from BOPDS, 
     --  
-    MapOfPassKey     from BOPDS, 
+    MapOfPassKey     from BOPDS,  
+    DataMapOfPaveBlockCommonBlock from BOPDS,
     --
     VectorOfInterfVV from BOPDS,
     VectorOfInterfVE from BOPDS,
@@ -270,7 +271,44 @@ is
     UpdateCommonBlock(me:out; 
                 theCB:CommonBlock from BOPDS); 
             ---Purpose:   
-            --- Update the common block theCB 
+            --- Update the common block theCB  
+             
+    IsCommonBlock(me; 
+                thePB:PaveBlock from BOPDS)
+        returns Boolean from Standard; 
+    ---Purpose: 
+    --- Query 
+    --- Returns true if the pave block is common block     
+     
+    CommonBlock(me; 
+                thePB:PaveBlock from BOPDS)
+        returns CommonBlock from BOPDS;     
+    ---C++: return const & 
+    ---Purpose: 
+    --- Selector  
+    --- Returns the common block  
+     
+    SetCommonBlock(me:out; 
+                thePB:PaveBlock from BOPDS;
+                theCB:CommonBlock from BOPDS); 
+    ---Purpose: 
+    --- Modifier  
+    --- Sets the common block <theCB>  
+ 
+    RealPaveBlock(me; 
+                thePB:PaveBlock from BOPDS) 
+    returns PaveBlock from BOPDS;
+    ---Purpose: 
+    --- Selector  
+    --- Returns the real first pave block  
+ 
+    IsCommonBlockOnEdge(me; 
+                thePB:PaveBlock from BOPDS)   
+    returns Boolean from Standard; 	 
+    ---Purpose: 
+    --- Query 
+    --- Returns true if common block contains more then one pave block 
+    
     -- 
     -- face info
     --   
@@ -558,7 +596,8 @@ fields
     myLines            : VectorOfShapeInfo  from BOPDS is protected;   
     myMapShapeIndex    : DataMapOfShapeInteger from BOPCol is protected;
     -- 
-    myPaveBlocksPool   : VectorOfListOfPaveBlock from BOPDS is protected; 
+    myPaveBlocksPool   : VectorOfListOfPaveBlock from BOPDS is protected;  
+    myMapPBCB          : DataMapOfPaveBlockCommonBlock from BOPDS is protected;
     myFaceInfoPool     : VectorOfFaceInfo  from BOPDS is protected; 
     --                 
     --same domain shapes 

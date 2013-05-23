@@ -356,56 +356,7 @@ void SortShell(const int n, BOPDS_Pave *a)
     }//for (i=0; i<nd; ++i) 
   }//while (1)
 }
-//
-// Common block   
-//
-//=======================================================================
-//function : SetCommonBlock
-//purpose  : 
-//=======================================================================
-  void BOPDS_PaveBlock::SetCommonBlock(const Handle(BOPDS_CommonBlock)& theCB)
-{
-  myCommonBlock=theCB;
-}
-//=======================================================================
-//function : CommonBlock
-//purpose  : 
-//=======================================================================
-  const Handle(BOPDS_CommonBlock)& BOPDS_PaveBlock::CommonBlock()const
-{
-  return myCommonBlock;
-}
-//=======================================================================
-//function : IsCommonBlock
-//purpose  : 
-//=======================================================================
-  Standard_Boolean BOPDS_PaveBlock::IsCommonBlock()const
-{
-  return (!myCommonBlock.IsNull());
-}
-//=======================================================================
-//function : IsCommonBlockOnEdge
-//purpose  : 
-//=======================================================================
-  Standard_Boolean BOPDS_PaveBlock::IsCommonBlockOnEdge()const
-{
-  if (!myCommonBlock.IsNull()) {
-    return (myCommonBlock->PaveBlocks().Extent()>1);
-  }
-  return Standard_False;
-}
-//=======================================================================
-//function : RealPaveBlock
-//purpose  : 
-//=======================================================================
-  Handle(BOPDS_PaveBlock) BOPDS_PaveBlock::RealPaveBlock()const
-{
-  if (IsCommonBlock()) {
-    const Handle(BOPDS_PaveBlock)& aPB1=myCommonBlock->PaveBlock1();
-    return aPB1;
-  }
-  return this;
-}
+
 // ShrunkData
 //=======================================================================
 //function : HasShrunkData
@@ -452,4 +403,3 @@ void SortShell(const int n, BOPDS_Pave *a)
   myPave2.Dump();
   printf(" }");
 }
-

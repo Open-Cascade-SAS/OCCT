@@ -6,9 +6,6 @@ puts ""
 # Problem of Memory Leak
 ######################################################
 
-puts "TODO ?#23901 ALL: Memory leak detected"
-puts "TODO ?#23901 ALL: TEST INCOMPLETE"
-
 #
 # Result is Null shape
 #
@@ -25,7 +22,7 @@ for {set i 1} {${i} <= ${NCycles}} {incr i } {
     bopcut r
     
     lappend listmem [meminfo h]
-    if { [checktrend $listmem 0 1 "Memory leak detected"] } {
+    if { [checktrend $listmem 0 100 "Memory leak detected"] } {
         puts "No memory leak, $i iterations"
         break
     }

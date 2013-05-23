@@ -17,6 +17,7 @@
 // and conditions governing the rights and limitations under the License.
 
 #include <BOPAlgo_Tools.ixx>
+#include <BOPDS_DS.hxx>
 #include <BOPDS_MapOfPaveBlock.hxx>
 #include <BOPDS_IndexedMapOfPaveBlock.hxx>
 #include <BOPDS_CommonBlock.hxx>
@@ -265,7 +266,8 @@
 //purpose  : 
 //=======================================================================
   void BOPAlgo_Tools::PerformCommonBlocks(BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock& aMPBLPB,
-                                          Handle(NCollection_BaseAllocator)& aAllocator)
+                                          Handle(NCollection_BaseAllocator)& aAllocator,
+                                          BOPDS_PDS& pDS)
 {
   Standard_Integer aNbCB;
   //
@@ -297,7 +299,7 @@
       aItLPB.Initialize(aLPB);
       for (; aItLPB.More(); aItLPB.Next()) {
         const Handle(BOPDS_PaveBlock)& aPBx=aItLPB.Value();
-        aPBx->SetCommonBlock(aCB);
+        pDS->SetCommonBlock(aPBx, aCB);
       }
     }//if (aNbPB>1) {
   }
@@ -307,7 +309,8 @@
 //purpose  : 
 //=======================================================================
   void BOPAlgo_Tools::PerformCommonBlocks(const BOPDS_IndexedDataMapOfPaveBlockListOfInteger& aMPBLI,
-                                          Handle(NCollection_BaseAllocator)& )//aAllocator)
+                                          Handle(NCollection_BaseAllocator)& ,//aAllocator
+                                          BOPDS_PDS& pDS)
 {
   Standard_Integer nF, i, aNb;
   BOPCol_ListIteratorOfListOfInteger aItLI;
@@ -317,8 +320,8 @@
   aNb=aMPBLI.Extent();
   for (i=1; i<=aNb; ++i) {
     aPB=aMPBLI.FindKey(i);
-    if (aPB->IsCommonBlock()) {
-      aCB=aPB->CommonBlock();
+    if (pDS->IsCommonBlock(aPB)) {
+      aCB=pDS->CommonBlock(aPB);
     }
     else {
       aCB=new BOPDS_CommonBlock;
@@ -331,6 +334,6 @@
       nF=aItLI.Value();
       aCB->AddFace(nF);
     }
-    aPB->SetCommonBlock(aCB);
+    pDS->SetCommonBlock(aPB, aCB);
   }
 }
