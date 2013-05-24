@@ -68,12 +68,10 @@ Standard_ErrorHandler::Standard_ErrorHandler () :
 {
   myThread   = GetThreadID();
 
-  if (Standard::IsReentrant())
-    theMutex.Lock();
+  theMutex.Lock();
   myPrevious = Top;
   Top        = this;
-  if (Standard::IsReentrant())
-    theMutex.Unlock();
+  theMutex.Unlock();
 }
 
 
@@ -100,8 +98,7 @@ void Standard_ErrorHandler::Destroy()
 void Standard_ErrorHandler::Unlink()
 {
   // put a lock on the stack
-  if (Standard::IsReentrant())
-    theMutex.Lock();
+  theMutex.Lock();
   
   Standard_ErrorHandler* aPrevious = 0;
   Standard_ErrorHandler* aCurrent = Top;
@@ -113,8 +110,7 @@ void Standard_ErrorHandler::Unlink()
   }
   
   if(aCurrent==0) {
-    if (Standard::IsReentrant())
-      theMutex.Unlock();
+    theMutex.Unlock();
     return;
   }
   
@@ -126,8 +122,7 @@ void Standard_ErrorHandler::Unlink()
     aPrevious->myPrevious=aCurrent->myPrevious;
   }
   myPrevious = 0;
-  if (Standard::IsReentrant())
-    theMutex.Unlock();
+  theMutex.Unlock();
 
   // unlink and destroy all registered callbacks
   Standard_Address aPtr = aCurrent->myCallbackPtr;
@@ -226,8 +221,7 @@ Standard_ErrorHandler* Standard_ErrorHandler::FindHandler(const Standard_Handler
                                                           const Standard_Boolean theUnlink)
 {
   // lock the stack
-  if (Standard::IsReentrant())
-    theMutex.Lock();
+  theMutex.Lock();
     
   // Find the current ErrorHandler Accordin tread
   Standard_ErrorHandler* aPrevious = 0;
@@ -272,8 +266,7 @@ Standard_ErrorHandler* Standard_ErrorHandler::FindHandler(const Standard_Handler
       aStop = Standard_True;
     }
   }
-  if (Standard::IsReentrant())
-    theMutex.Unlock();
+  theMutex.Unlock();
   
   return anActive;
 }

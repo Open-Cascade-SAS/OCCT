@@ -39,12 +39,3 @@ Standard_Integer Standard_MMgrRoot::Purge(Standard_Boolean)
 {
   return 0;
 }
-
-//=======================================================================
-//function : SetReentrant
-//purpose  : 
-//=======================================================================
-
-void Standard_MMgrRoot::SetReentrant(Standard_Boolean)
-{
-}

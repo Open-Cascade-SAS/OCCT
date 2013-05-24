@@ -183,9 +183,7 @@ void NCollection_BaseAllocator::StandardCallBack
                      const Standard_Size /*theSize*/)
 {
   static Standard_Mutex aMutex;
-  Standard_Boolean isReentrant = Standard::IsReentrant();
-  if (isReentrant)
-    aMutex.Lock();
+  aMutex.Lock();
   // statistics by storage size
   NCollection_DataMap<Standard_Size, StorageInfo>& aStMap = StorageMap();
   if (!aStMap.IsBound(theRoundSize))
@@ -230,8 +228,7 @@ void NCollection_BaseAllocator::StandardCallBack
     }
   }
 
-  if (isReentrant)
-    aMutex.Unlock();
+  aMutex.Unlock();
 }
 
 //=======================================================================

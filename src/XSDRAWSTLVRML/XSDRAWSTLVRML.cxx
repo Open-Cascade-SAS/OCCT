@@ -98,10 +98,8 @@ static Standard_Integer writestl
 	Standard_Boolean isInParallel = Standard_False;
     if (argc > 3) {
       isASCIIMode = (Draw::Atoi(argv[3]) == 0);
-      if (argc > 4) {
+      if (argc > 4)
         isInParallel = (Draw::Atoi(argv[4]) == 1);
-        Standard::SetReentrant(isInParallel);
-      }
     }
     StlAPI_Writer aWriter;
     aWriter.ASCIIMode() = isASCIIMode;

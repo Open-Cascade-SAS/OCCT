@@ -95,8 +95,7 @@ class Standard_MMgrOpt : public Standard_MMgrRoot
                          const Standard_Boolean aMMap       = Standard_True,
                          const Standard_Size    aCellSize   = 200,
                          const Standard_Integer aNbPages    = 10000,
-                         const Standard_Size    aThreshold  = 40000,
-                         const Standard_Boolean isReentrant = Standard_False);
+                         const Standard_Size    aThreshold  = 40000);
 
   //! Frees all free lists and pools allocated for small blocks 
   Standard_EXPORT virtual ~Standard_MMgrOpt();
@@ -117,11 +116,6 @@ class Standard_MMgrOpt : public Standard_MMgrRoot
   //! Release medium-sized blocks of memory in free lists to the system.
   //! Returns number of actually freed blocks
   Standard_EXPORT virtual Standard_Integer Purge(Standard_Boolean isDestroyed);
-
-  //! Set reentrant mode on or off.
-  //! Note: This method may be called only when no any other thread can 
-  //!       access this object simultaneously
-  Standard_EXPORT virtual void SetReentrant(Standard_Boolean isReentrant);
 
   //! Declaration of a type pointer to the callback function that
   //! should accept the following arguments: <br>
@@ -174,7 +168,6 @@ protected:
   
   Standard_Mutex   myMutex;         //!< Mutex to protect free lists data
   Standard_Mutex   myMutexPools;    //!< Mutex to protect small block pools data
-  Standard_Boolean myReentrant;     //!< Use mutex to provide correct reentrant behaviour
 };
 
 #endif

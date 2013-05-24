@@ -153,24 +153,4 @@ is
     --           and clears the list. 
     --           Returns non-zero if some memory has been actually freed.
 
-    IsReentrant returns Boolean from Standard;
-    ---Purpose: Returns boolean flag indicating whether OCCT is
-    --          operating in reentrant mode. This flag affects OCCT 
-    --          memory manager, exception and signal handling,
-    --          operations with handles etc., making them thread-safe.
-    --
-    --          By default, this flag is set to False, in order 
-    --          to avoid performance reduction due to locking.
-    --
-    --          In multithreaded applications this flag must be set to 
-    --          True, either by calling method SetReentrant(),
-    --          or by defining environment variable MMGT_REENTRANT.
-
-    SetReentrant (isReentrant: Boolean from Standard);
-    ---Purpose: Sets boolean flag indicating whether OCCT is
-    --          operating in reentrant mode. 
-    --          See method IsReentrant() for more information.
-    --          Note: This method may be called only when no any other
-    --                thread using OCCT exists
-
 end Standard;

@@ -49,7 +49,6 @@
 #include <OSD_Timer.hxx>
 #include <Transfer_TransferOutput.hxx>
 #include <ShapeExtend_Explorer.hxx>
-#include <Message_ProgressSentry.hxx>
 #include <Message_Messenger.hxx>
 #include <Transfer_ActorOfTransientProcess.hxx>
 #include <IGESToBRep_Actor.hxx>

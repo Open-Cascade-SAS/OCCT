@@ -208,8 +208,6 @@ static Standard_Integer incrementalmesh(Draw_Interpretor& di, Standard_Integer n
   di << "Incremental Mesh, multi-threading "
     << (isInParallel ? "ON\n" : "OFF\n");
   
-  Standard::SetReentrant(isInParallel);
-
   BRepMesh_IncrementalMesh MESH(aShape, aDeflection, Standard_False, 0.5, isInParallel);
   Standard_Integer statusFlags = MESH.GetStatusFlags();  
 

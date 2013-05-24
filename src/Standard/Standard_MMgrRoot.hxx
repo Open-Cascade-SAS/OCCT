@@ -74,12 +74,6 @@ class Standard_MMgrRoot
   //!
   //! Default implementation does nothing and returns 0.
   Standard_EXPORT virtual Standard_Integer Purge(Standard_Boolean isDestroyed=Standard_False);
-
-  //! Set reentrant mode on or off.
-  //! Note: This method may be called only when no any other thread can 
-  //!       access this object simultaneously.
-  //! Default implementation does nothing.
-  Standard_EXPORT virtual void SetReentrant(Standard_Boolean isReentrant);
 };
 
 #endif

@@ -98,13 +98,10 @@ static Standard_Size CATCH_ID = 0;
 static void Debug_Create(Standard_Address theAlloc)
 {
   static Standard_Mutex aMutex;
-  Standard_Boolean isReentrant = Standard::IsReentrant();
-  if (isReentrant)
-    aMutex.Lock();
+  aMutex.Lock();
   StorageIDMap().Bind(theAlloc, ++CurrentID);
   StorageIDSet().Add(CurrentID);
-  if (isReentrant)
-    aMutex.Unlock();
+  aMutex.Unlock();
   if (CurrentID == CATCH_ID)
   {
     // Place for break point for creation of investigated allocator
@@ -120,17 +117,14 @@ static void Debug_Create(Standard_Address theAlloc)
 static void Debug_Destroy(Standard_Address theAlloc)
 {
   static Standard_Mutex aMutex;
-  Standard_Boolean isReentrant = Standard::IsReentrant();
-  if (isReentrant)
-    aMutex.Lock();
+  aMutex.Lock();
   if (StorageIDMap().IsBound(theAlloc))
   {
     Standard_Size anID = StorageIDMap()(theAlloc);
     StorageIDSet().Remove(anID);
     StorageIDMap().UnBind(theAlloc);
   }
-  if (isReentrant)
-    aMutex.Unlock();
+  aMutex.Unlock();
 }
 
 //=======================================================================

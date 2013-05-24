@@ -38,9 +38,6 @@
 #define OCCT_MMGT_OPT_DEFAULT 0
 #endif
 
-// Global reentrant flag
-static Standard_Boolean Standard_IsReentrant = Standard_True;
-
 //=======================================================================
 //class    : Standard_MMgrFactory 
 //purpose  : Container for pointer to memory manager;
@@ -94,10 +91,6 @@ Standard_MMgrFactory::Standard_MMgrFactory()
   }
 #endif
 
-  aVar = getenv ("MMGT_REENTRANT");
-  if ( aVar != NULL ) 
-    Standard_IsReentrant = (atoi (aVar) != 0);
-
   switch (anAllocId)
   {
     case 1:  // OCCT optimized memory allocator
@@ -106,7 +99,7 @@ Standard_MMgrFactory::Standard_MMgrFactory()
       Standard_Integer aCellSize   = (aVar = getenv ("MMGT_CELLSIZE" )) ?  atoi (aVar) : 200;
       Standard_Integer aNbPages    = (aVar = getenv ("MMGT_NBPAGES"  )) ?  atoi (aVar) : 1000;
       Standard_Integer aThreshold  = (aVar = getenv ("MMGT_THRESHOLD")) ?  atoi (aVar) : 40000;
-      myFMMgr = new Standard_MMgrOpt (toClear, bMMap, aCellSize, aNbPages, aThreshold, Standard_IsReentrant);
+      myFMMgr = new Standard_MMgrOpt (toClear, bMMap, aCellSize, aNbPages, aThreshold);
       break;
     }
     case 2:  // TBB memory allocator
@@ -219,25 +212,4 @@ Standard_Address Standard::Reallocate(Standard_Address& aStorage,
 Standard_Integer Standard::Purge()
 {
   return GetMMgr()->Purge();
-}
-
-//=======================================================================
-//function : IsReentrant
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean Standard::IsReentrant()
-{
-  return Standard_IsReentrant;
-}
-
-//=======================================================================
-//function : SetReentrant
-//purpose  : 
-//=======================================================================
-
-void Standard::SetReentrant (const Standard_Boolean isReentrant)
-{
-  Standard_IsReentrant = isReentrant;
-  GetMMgr()->SetReentrant (isReentrant);
 }
