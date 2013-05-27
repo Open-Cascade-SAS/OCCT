@@ -278,7 +278,7 @@ Standard_Integer  Interface_Static::IDef
     if (part[1] == 'c') return (endcase - startcase + 1);
     if (part[1] == 'm') return (match ? 1 : 0);
     if (part[1] == 'v') {
-      char vale[50];
+      char vale[51];
       sscanf (part,"%30s %50s",defmess,vale);
       return stat->EnumCase (vale);
     }
