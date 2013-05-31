@@ -92,7 +92,8 @@ Standard_Boolean IntPCy (const IntSurf_Quadric& Quad1,
 			 const Standard_Real TolTang,
 			 const Standard_Boolean Reversed,
 			 Standard_Boolean& Empty,
-			 IntPatch_SequenceOfLine& slin)
+			 IntPatch_SequenceOfLine& slin,
+                         const Standard_Real H)
 
 {
   gp_Pln Pl;
@@ -110,7 +111,7 @@ Standard_Boolean IntPCy (const IntSurf_Quadric& Quad1,
     Pl = Quad2.Plane();
     Cy = Quad1.Cylinder();
   }
-  inter.Perform(Pl,Cy,Tolang,TolTang);
+  inter.Perform(Pl,Cy,Tolang,TolTang,H);
   if (!inter.IsDone()) {return Standard_False;}
   typint = inter.TypeInter();
   Standard_Integer NbSol = inter.NbSolutions();

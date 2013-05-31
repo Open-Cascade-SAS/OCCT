@@ -376,8 +376,10 @@ PERFORM(const gp_Hypr& H,const IntAna_Quadric& Quad) {
 
 
 IntAna_IntConicQuad::IntAna_IntConicQuad (const gp_Lin& L, const gp_Pln& P,
-					  const Standard_Real Tolang) {
-  Perform(L,P,Tolang);
+                                          const Standard_Real Tolang,
+                                          const Standard_Real Tol,
+                                          const Standard_Real Len) {
+  Perform(L,P,Tolang,Tol,Len);
 }
 
 
@@ -408,7 +410,9 @@ IntAna_IntConicQuad::IntAna_IntConicQuad (const gp_Hypr& H, const gp_Pln& P,
 
 
 void IntAna_IntConicQuad::Perform (const gp_Lin& L, const gp_Pln& P,
-				   const Standard_Real Tolang) {
+                                   const Standard_Real Tolang,
+                                   const Standard_Real Tol,
+                                   const Standard_Real Len) {
   
   // Tolang represente la tolerance angulaire a partir de laquelle on considere
   // que l angle entre 2 vecteurs est nul. On raisonnera sur le cosinus de cet
@@ -426,9 +430,22 @@ void IntAna_IntConicQuad::Perform (const gp_Lin& L, const gp_Pln& P,
 
   Direc=A*Al+B*Bl+C*Cl;
   Dis = A*Orig.X() + B*Orig.Y() + C*Orig.Z() + D;
-
+  //
+  parallel=Standard_False;
   if (Abs(Direc) < Tolang) {
-    parallel= Standard_True;
+    parallel=Standard_True;
+    if (Len!=0 && Direc!=0) {
+      //check the distance from bounding point of the line to the plane
+      gp_Pnt aP1, aP2;
+      //
+      aP1.SetCoord(Orig.X()-Dis*A, Orig.Y()-Dis*B, Orig.Z()-Dis*C);
+      aP2.SetCoord(aP1.X()+Len*Al, aP1.Y()+Len*Bl, aP1.Z()+Len*Cl);
+      if (P.Distance(aP2) > Tol) {
+        parallel=Standard_False;
+      } 
+    }
+  }
+  if (parallel) {
     if (Abs(Dis) < Tolang) {
       inquadric=Standard_True;
     }
@@ -441,9 +458,9 @@ void IntAna_IntConicQuad::Perform (const gp_Lin& L, const gp_Pln& P,
     inquadric=Standard_False;
     nbpts = 1;
     paramonc [0] = - Dis/Direc;
-    pnts[0].SetCoord(Orig.X()+paramonc[0]*Al
-		     , Orig.Y()+paramonc[0]*Bl
-		     , Orig.Z()+paramonc[0]*Cl);
+    pnts[0].SetCoord(Orig.X()+paramonc[0]*Al,
+                     Orig.Y()+paramonc[0]*Bl,
+                     Orig.Z()+paramonc[0]*Cl);
   }
   done=Standard_True;
 }

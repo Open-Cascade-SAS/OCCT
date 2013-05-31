@@ -93,33 +93,38 @@ is
 
     Create(P : Pln      from gp; 
            C : Cylinder from gp; 
-           Tolang,Tol: Real from Standard)
-    
-	---Purpose: Creates the intersection between a plane and a cylinder.
-    	--          TolAng is the angular tolerance used to determine
-    	--          if the axis of the cylinder is parallel to the plane.
-    	--          Tol is the tolerance used to determine if the result
-    	--          is a circle or an ellipse. If the maximum distance between
-    	--          the ellipse solution and the circle centered at the ellipse
-    	--          center is less than Tol, the result will be the circle.
+           Tolang,Tol: Real from Standard; 
+           H : Real from Standard = 0)
+    ---Purpose: Creates the intersection between a plane and a cylinder.
+    --          TolAng is the angular tolerance used to determine
+    --          if the axis of the cylinder is parallel to the plane.
+    --          Tol is the tolerance used to determine if the result
+    --          is a circle or an ellipse. If the maximum distance between
+    --          the ellipse solution and the circle centered at the ellipse
+    --          center is less than Tol, the result will be the circle. 
+    --          H is the height of the cylinder <Cyl>. It is  used to check
+    --          whether the plane and cylinder are parallel.
 
-    	returns QuadQuadGeo from IntAna;
+    returns QuadQuadGeo from IntAna;
 	
 
     Perform(me: in out; 
             P : Pln      from gp; 
             C : Cylinder from gp; 
-            Tolang,Tol: Real from Standard)
+            Tolang,Tol: Real from Standard; 
+            H :Real from Standard = 0)
     
-	---Purpose: Intersects a plane and a cylinder.
-    	--          TolAng is the angular tolerance used to determine
-    	--          if the axis of the cylinder is parallel to the plane.
-    	--          Tol is the tolerance used to determine if the result
-    	--          is a circle or an ellipse. If the maximum distance between
-    	--          the ellipse solution and the circle centered at the ellipse
-    	--          center is less than Tol, the result will be the circle.
+    ---Purpose: Intersects a plane and a cylinder.
+    --          TolAng is the angular tolerance used to determine
+    --          if the axis of the cylinder is parallel to the plane.
+    --          Tol is the tolerance used to determine if the result
+    --          is a circle or an ellipse. If the maximum distance between
+    --          the ellipse solution and the circle centered at the ellipse
+    --          center is less than Tol, the result will be the circle.
+    --          H is the height of the cylinder <Cyl>. It is  used to check
+    --          whether the plane and cylinder are parallel.
 
-    	is static;
+    is static;
 	
 
     Create(P : Pln    from gp; 

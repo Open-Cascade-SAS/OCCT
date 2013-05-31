@@ -356,7 +356,8 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
   IntAna_QuadQuadGeo::IntAna_QuadQuadGeo( const gp_Pln& P
        ,const gp_Cylinder& Cl
        ,const Standard_Real Tolang
-       ,const Standard_Real Tol)
+       ,const Standard_Real Tol
+       ,const Standard_Real H)
     : done(Standard_False),
       nbint(0),
       typeres(IntAna_Empty),
@@ -370,16 +371,17 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
       myPChar(0,0,0)
 {
   InitTolerances();
-  Perform(P,Cl,Tolang,Tol);
+  Perform(P,Cl,Tolang,Tol,H);
 }
 //=======================================================================
 //function : Perform
 //purpose  : 
 //=======================================================================
   void IntAna_QuadQuadGeo::Perform( const gp_Pln& P
-				   ,const gp_Cylinder& Cl
-				   ,const Standard_Real Tolang
-				   ,const Standard_Real Tol) 
+                                   ,const gp_Cylinder& Cl
+                                   ,const Standard_Real Tolang
+                                   ,const Standard_Real Tol
+                                   ,const Standard_Real H) 
 {
   done = Standard_False;
   Standard_Real dist,radius;
@@ -422,7 +424,7 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
     }
 
   nbint = 0;
-  IntAna_IntConicQuad inter(axec,P,tolang);
+  IntAna_IntConicQuad inter(axec,P,tolang,Tol,H);
 
   if (inter.IsParallel()) {
     // Le resultat de l intersection Plan-Cylindre est de type droite.

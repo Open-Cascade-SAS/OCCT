@@ -144,23 +144,31 @@ is
 ----------------------------------------------------------------------
 
     Create(L : Lin from gp; P: Pln from gp; 
-           Tolang: Real from Standard)
+           Tolang: Real from Standard;  
+           Tol : Real from Standard = 0;
+           Len : Real from Standard = 0)
     
-	---Purpose: Intersection between a line and a plane.
-	--          Tolang is used to determine if the angle between two
-	--          vectors is null.
+        ---Purpose: Intersection between a line and a plane.
+        --          Tolang is used to determine if the angle between two
+        --          vectors is null. 
+        --          Tol is used to check the distance between line and plane 
+        --          on the distance <Len> from the origin of the line.
     
-    	returns IntConicQuad from IntAna;
-	
+    returns IntConicQuad from IntAna;
+
 
     Perform(me: in out;
-            L : Lin from gp; P: Pln from gp; Tolang: Real from Standard)
+            L : Lin from gp; P: Pln from gp; Tolang: Real from Standard;  
+            Tol : Real from Standard = 0;
+            Len : Real from Standard = 0)
+  
+        ---Purpose: Intersects a line and a plane.
+        --          Tolang is used to determine if the angle between two
+        --          vectors is null.
+        --          Tol is used to check the distance between line and plane 
+        --          on the distance <Len> from the origin of the line.
     
-	---Purpose: Intersects a line and a plane.
-	--          Tolang is used to determine if the angle between two
-	--          vectors is null.
-    
-    	is static;
+    is static;
 	
 
     Create(C : Circ from gp; P: Pln from gp; 

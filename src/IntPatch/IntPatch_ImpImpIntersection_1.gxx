@@ -32,7 +32,8 @@ static Standard_Boolean IntPCy (const IntSurf_Quadric&,
 				const Standard_Real,
 				const Standard_Boolean,
 				Standard_Boolean&,
-				IntPatch_SequenceOfLine&);
+				IntPatch_SequenceOfLine&,
+                                const Standard_Real H=0.);
 
 
 static Standard_Boolean IntPSp (const IntSurf_Quadric&,
