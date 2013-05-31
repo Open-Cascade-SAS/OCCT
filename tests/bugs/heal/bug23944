@@ -1,0 +1,27 @@
+puts "============"
+puts "OCC23944"
+puts "============"
+puts ""
+###################################################
+## Typo in ShapeCustom_RestrictionParameters leading to wrong approximation results
+###################################################
+
+set BugNumber OCC23944
+
+restore [locate_data_file bug23944_s.brep] s
+
+mkface f s
+
+set info [bsplres result f 1e-4 1e-9 15 100 C1 C2 0 1]
+
+# Resume
+puts ""
+if { [regexp {Debug mode} [dversion]] } {
+   if { [regexp {Surface is aproximated with continuity 0} $info] } {
+      puts "OK ${BugNumber}"
+   } else {
+      puts "Faulty ${BugNumber}"
+   }
+} else {
+   puts "Test for debug mode only"
+}

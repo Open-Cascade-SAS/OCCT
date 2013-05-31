@@ -28,8 +28,8 @@
 
 ShapeCustom_RestrictionParameters::ShapeCustom_RestrictionParameters()
 {
-  myGMaxSeg = 15;
-  myGMaxDegree = 10000;
+  myGMaxSeg = 10000;
+  myGMaxDegree = 15;
   
   myConvPlane         = Standard_False;
   //myConvElementarySurf = Standard_False;
