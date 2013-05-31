@@ -29,9 +29,6 @@ Standard_EXPORT Handle(Storage_CallBack)  CallBackSelection(const TCollection_As
 // Read_TypeSelection
 //
 #define Storage_BEGIN_READ_SELECTION(schema) \
-                  extern "C" { \
-                  Standard_EXPORT Handle(Storage_Schema) Create##schema() { return new schema; } \
-			     } \
                   Handle(Storage_CallBack) schema::CallBackSelection(const TCollection_AsciiString& rt) const \
                                              { \
 					      Handle(Standard_Persistent) p; \
