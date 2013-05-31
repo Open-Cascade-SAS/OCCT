@@ -377,7 +377,7 @@ is
   
     Span (me;Side :Integer; Ideb,Ifin:Integer; 
     	     OutIdeb,OutIfin:out Integer; 
-    	     NbKnots : Integer ) 
+    	     FKIndx, LKIndx : Integer ) 
     is  private; 
 
     IfUVBound (me;U,V :Real;Ideb,Ifin,IVdeb,IVfin :out Integer; 

@@ -1254,20 +1254,22 @@ Standard_Boolean GeomAdaptor_Surface::IfUVBound(const Standard_Real U,
                                                 const Standard_Integer VSide) const
 {
   Standard_Integer Ideb,Ifin;
+  Standard_Integer anUFKIndx = myBspl->FirstUKnotIndex(), 
+    anULKIndx = myBspl->LastUKnotIndex(), 
+    aVFKIndx = myBspl->FirstVKnotIndex(), aVLKIndx = myBspl->LastVKnotIndex();
   myBspl->LocateU(U, PosTol, Ideb, Ifin, Standard_False);
   Standard_Boolean Local = (Ideb == Ifin);
-  Span(USide,Ideb,Ifin,Ideb,Ifin,myBspl->NbUKnots());
+  Span(USide,Ideb,Ifin,Ideb,Ifin,anUFKIndx,anULKIndx);
   Standard_Integer IVdeb,IVfin;
   myBspl->LocateV(V, PosTol, IVdeb, IVfin, Standard_False); 
   if(IVdeb == IVfin) Local = Standard_True;
-  Span(VSide,IVdeb,IVfin,IVdeb,IVfin,myBspl->NbVKnots());
+  Span(VSide,IVdeb,IVfin,IVdeb,IVfin,aVFKIndx,aVLKIndx);
 
   IOutDeb=Ideb;   IOutFin=Ifin; 
   IOutVDeb=IVdeb; IOutVFin=IVfin;
 
   return Local;
 }     
-
 //=======================================================================
 //function : Span <private>
 //purpose  : locates U,V parameters if U=UFirst or U=ULast, 
@@ -1280,21 +1282,22 @@ void GeomAdaptor_Surface::Span(const Standard_Integer Side,
                                const Standard_Integer Ifin,
                                Standard_Integer& OutIdeb,
                                Standard_Integer& OutIfin,
-                               const Standard_Integer NbKnots) const
+                               const Standard_Integer theFKIndx,
+                               const Standard_Integer theLKIndx) const
 {
   if(Ideb!=Ifin)//not a knot
   { 
-    if(Ideb<1)                 { OutIdeb=1; OutIfin=2; }
-	else if(Ifin>NbKnots)      { OutIdeb=NbKnots-1; OutIfin=NbKnots; }
-	else if(Ideb>=(NbKnots-1)) { OutIdeb=NbKnots-1; OutIfin=NbKnots; }
-	else if(Ifin<=2)           { OutIdeb=1; OutIfin=2; }
+    if(Ideb<theFKIndx)                 { OutIdeb=theFKIndx; OutIfin=theFKIndx+1; }
+	else if(Ifin>theLKIndx)      { OutIdeb=theLKIndx-1; OutIfin=theLKIndx; }
+	else if(Ideb>=(theLKIndx-1)) { OutIdeb=theLKIndx-1; OutIfin=theLKIndx; }
+	else if(Ifin<=theFKIndx+1)           { OutIdeb=theFKIndx; OutIfin=theFKIndx+1; }
 	else if(Ideb>Ifin)         { OutIdeb=Ifin-1;   OutIfin=Ifin; }
 	else                       { OutIdeb=Ideb;   OutIfin=Ifin; }
   }
   else
   {
-    if(Ideb<=1){ OutIdeb=1;   OutIfin=2;}//first knot
-    else if(Ifin>=NbKnots) { OutIdeb=NbKnots-1;OutIfin=NbKnots;}//last knot
+    if(Ideb<=theFKIndx){ OutIdeb=theFKIndx;   OutIfin=theFKIndx+1;}//first knot
+    else if(Ifin>=theLKIndx) { OutIdeb=theLKIndx-1;OutIfin=theLKIndx;}//last knot
     else
     {
 	  if(Side==-1){OutIdeb=Ideb-1;   OutIfin=Ifin;}

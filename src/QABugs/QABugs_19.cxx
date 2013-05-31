@@ -565,6 +565,69 @@ static int test_offset(Draw_Interpretor& di, Standard_Integer argc, const char**
   return 0;
 }
 
+#include <GeomAdaptor_Surface.hxx>
+#include <Draw.hxx>
+//=======================================================================
+//function : OCC23945
+//purpose  : 
+//=======================================================================
+
+static Standard_Integer OCC23945 (Draw_Interpretor& di,Standard_Integer n, const char** a)
+{
+  if (n < 5) return 1;
+
+  Handle(Geom_Surface) aS = DrawTrSurf::GetSurface(a[1]);
+  if (aS.IsNull()) return 1;
+
+  GeomAdaptor_Surface GS(aS);
+
+  Standard_Real U = Draw::Atof(a[2]);
+  Standard_Real V = Draw::Atof(a[3]);
+
+  Standard_Boolean DrawPoint = ( n%3 == 2);
+  if ( DrawPoint) n--;
+
+  gp_Pnt P;
+  if (n >= 13) {
+    gp_Vec DU,DV;
+    if (n >= 22) {
+      gp_Vec D2U,D2V,D2UV;
+      GS.D2(U,V,P,DU,DV,D2U,D2V,D2UV);
+      Draw::Set(a[13],D2U.X());
+      Draw::Set(a[14],D2U.Y());
+      Draw::Set(a[15],D2U.Z());
+      Draw::Set(a[16],D2V.X());
+      Draw::Set(a[17],D2V.Y());
+      Draw::Set(a[18],D2V.Z());
+      Draw::Set(a[19],D2UV.X());
+      Draw::Set(a[20],D2UV.Y());
+      Draw::Set(a[21],D2UV.Z());
+    }
+    else
+      GS.D1(U,V,P,DU,DV);
+
+    Draw::Set(a[7],DU.X());
+    Draw::Set(a[8],DU.Y());
+    Draw::Set(a[9],DU.Z());
+    Draw::Set(a[10],DV.X());
+    Draw::Set(a[11],DV.Y());
+    Draw::Set(a[12],DV.Z());
+  }
+  else 
+    GS.D0(U,V,P);
+
+  if ( n > 6) {
+    Draw::Set(a[4],P.X());
+    Draw::Set(a[5],P.Y());
+    Draw::Set(a[6],P.Z());
+  }
+  if ( DrawPoint) {
+    DrawTrSurf::Set(a[n],P);
+  }
+
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -581,5 +644,12 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC23952sweep", "OCC23952sweep nbupoles shape", __FILE__, OCC23952sweep, group);
   theCommands.Add ("OCC23952intersect", "OCC23952intersect nbsol shape1 shape2", __FILE__, OCC23952intersect, group);
   theCommands.Add ("test_offset", "test_offset", __FILE__, test_offset, group);
+<<<<<<< HEAD
+  theCommands.Add("OCC23945", "OCC23945 surfname U V X Y Z [DUX DUY DUZ DVX DVY DVZ [D2UX D2UY D2UZ D2VX D2VY D2VZ D2UVX D2UVY D2UVZ]]", __FILE__, OCC23945,group);
+  return;}
+=======
+  theCommands.Add ("OCC23945", "OCC23945 surfname U V X Y Z [DUX DUY DUZ DVX DVY DVZ [D2UX D2UY D2UZ D2VX D2VY D2VZ D2UVX D2UVY D2UVZ]]", __FILE__, OCC23945, group);
+
   return;
 }
+>>>>>>> d003487... Add new draw-command for testing tis fix
