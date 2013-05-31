@@ -328,8 +328,9 @@ Standard_Boolean IntWalk_IWalking::TestArretPassage
 	    }
 	  }
 	  if (Arrive) {
-	    static math_Vector bidF(1,1);
-	    static math_Matrix bidD(1,1,1,2);
+	    Standard_Real abidF[1], abidD[1][2];
+	    math_Vector bidF(abidF,1,1);
+	    math_Matrix bidD(abidD,1,1,1,2);
         sp.Values(UV,bidF,bidD);
 	    break;
 	  }
@@ -570,8 +571,9 @@ Standard_Boolean IntWalk_IWalking::TestArretAjout
 	Arrive = Standard_True; 
 	UV(1) = U1;
 	UV(2) = V1;
-	static math_Vector bidF(1,1);
-	static math_Matrix bidD(1,1,1,2);
+	Standard_Real abidF[1], abidD[1][2];
+	math_Vector bidF(abidF,1,1);
+	math_Matrix bidD(abidD,1,1,1,2);
     sp.Values(UV,bidF,bidD);
 	break;
       }
@@ -667,8 +669,9 @@ void IntWalk_IWalking::TestArretCadre
           }
 	}
 	if (Found) {
-	  static math_Vector bidF(1,1);
-	  static math_Matrix bidD(1,1,1,2);
+	  Standard_Real abidF[1], abidD[1][2];
+	  math_Vector bidF(abidF,1,1);
+	  math_Matrix bidD(abidD,1,1,1,2);
       sp.Values(UV,bidF,bidD);
 	  Standard_Integer NBP =  Line->NbPoints();
 	  Standard_Integer Indextg;	  
@@ -742,8 +745,9 @@ void IntWalk_IWalking::TestArretCadre
       }
       if (Found) {
 	Irang = -Irang; // jag 941017
-	static math_Vector bidF(1,1);
-	static math_Matrix bidD(1,1,1,2);
+	Standard_Real abidF[1], abidD[1][2];
+	math_Vector bidF(abidF,1,1);
+	math_Matrix bidD(abidD,1,1,1,2);
     sp.Values(UV,bidF,bidD);
 	return;
       }

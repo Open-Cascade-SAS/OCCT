@@ -54,7 +54,8 @@ void IntStart_SearchInside::Perform (TheFunction& Func,
 
   done = Standard_False;
   list.Clear();
-  static math_Vector Binf(1,2), Bsup(1,2), UVap(1,2),toler(1,2);
+  Standard_Real aBinf[2], aBsup[2], aUVap[2], atoler[2];
+  math_Vector Binf(aBinf,1,2), Bsup(aBsup,1,2), UVap(aUVap,1,2), toler(atoler,1,2);
   gp_Pnt psol;
   Standard_Boolean testpnt;
   Standard_Integer i,j,nbpt;
@@ -140,7 +141,8 @@ void IntStart_SearchInside::Perform (TheFunction& Func,
       //-- gp_Pnt Pmilieu = ThePSurfaceTool::Value(PS,0.5*(u1+u2),0.5*(v1+v2));
       gp_Pnt Pextrm1 = ThePSurfaceTool::Value(PS,u1,v1);
       gp_Pnt Pextrm2 = ThePSurfaceTool::Value(PS,u2,v2);
-      static math_Vector Valf(1,1);
+      Standard_Real aValf[1];
+      math_Vector Valf(aValf,1,1);
       Func.Value(UVap,Valf);
       Standard_Real rvalf = Valf(1);
       Standard_Real DistPP = Pextrm1.SquareDistance(Pextrm2);

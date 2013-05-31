@@ -21,6 +21,13 @@
 
 //#define DEBUG 0 
 
+namespace {
+//OCC431(apo): modified ->
+static const Standard_Real CosRef2D =  Cos(M_PI/9.0),  AngRef2D = M_PI/2.0; 
+
+static const Standard_Real d = 7.0;
+}
+
 IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection()
 
 // tester si fleche respectee en calculant un majorant de fleche 
@@ -37,9 +44,6 @@ IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection()
 // tester s il n y a pas changement de rive
 //  
 {
-  static Standard_Integer STATIC_BLOCAGE_SUR_PAS_TROP_GRAND = 0;
-  static Standard_Integer STATIC_PRECEDENT_INFLEXION = 0;
-
   if(line->NbPoints() ==1 ) { 
     STATIC_BLOCAGE_SUR_PAS_TROP_GRAND=STATIC_PRECEDENT_INFLEXION=0;
   }
@@ -126,10 +130,7 @@ IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection()
     return(IntWalk_ArretSurPointPrecedent);
   }
   //==================================================================================
-  //OCC431(apo): modified ->
-  static Standard_Real CosRef2D =  Cos(M_PI/9.0),  AngRef2D = M_PI/2.0; 
-
-  static Standard_Real /*tolArea = 100.0,*/ d = 7.0;
+  
   Standard_Real tolArea = 100.0;
   if (ResoU1 < Precision::PConfusion() ||
       ResoV1 < Precision::PConfusion() ||

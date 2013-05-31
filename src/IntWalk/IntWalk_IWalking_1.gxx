@@ -31,7 +31,9 @@ IntWalk_IWalking::IntWalk_IWalking (const Standard_Real Epsilon,
       fleche(Deflection),
       pas(Increment),
       tolerance(1,2),
-      epsilon(Epsilon*Epsilon)
+      epsilon(Epsilon*Epsilon),
+      NbPointsConfondusConsecutifs(0),
+      EpsilonSembleTropGrand(0)
 {
 }
 

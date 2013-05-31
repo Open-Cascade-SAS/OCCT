@@ -163,9 +163,10 @@ void ComputeTangency (const IntPatch_TheSOnBounds& solrst,
   gp_Pnt2d p2d;
   gp_Vec2d d2d;
   //
-  static math_Vector X(1, 2);
-  static math_Vector F(1, 1);
-  static math_Matrix D(1, 1, 1, 2); 
+  double aX[2], aF[1], aD[1][2];
+  math_Vector X(aX, 1, 2);
+  math_Vector F(aF, 1, 1);
+  math_Matrix D(aD, 1, 1, 1, 2); 
   //
   seqlength = 0;
   NbPoints = solrst.NbPoints();

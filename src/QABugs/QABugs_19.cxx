@@ -387,8 +387,107 @@ static Standard_Integer OCC23774(Draw_Interpretor& di, Standard_Integer n, const
  return 0;
 }
 
-#include <Geom_SurfaceOfRevolution.hxx> 
+#include <GeomConvert_ApproxSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Draw.hxx>
+#include <OSD_Thread.hxx>
+static void GeomConvertTest (Draw_Interpretor& di, Standard_Integer theTargetNbUPoles, Standard_CString theFileName)
+{
+	Handle(Geom_Surface) aSurf = DrawTrSurf::GetSurface(theFileName);
+	GeomConvert_ApproxSurface aGAS (aSurf, 1e-4, GeomAbs_C1, GeomAbs_C1, 9, 9, 100, 1);
+	if (!aGAS.IsDone()) {
+		di << "ApproxSurface is not done!" << "\n";
+		return;
+	}
+	const Handle(Geom_BSplineSurface)& aBSurf = aGAS.Surface();
+	if (aBSurf.IsNull()) {
+		di << "BSplineSurface is not created!" << "\n";
+		return;
+	}
+	di << "Number of UPoles:" << aBSurf->NbUPoles() << "\n";
+	QCOMPARE (aBSurf->NbUPoles(), theTargetNbUPoles);
+}
 
+struct aData {
+	Draw_Interpretor* di;
+	Standard_Integer nbupoles;
+	Standard_CString filename;
+};
+
+Standard_EXPORT Standard_Address convert(Standard_Address data)
+{
+	aData* info = (aData*) data;
+	GeomConvertTest(*(info->di),info->nbupoles,info->filename);
+	return NULL;
+}
+
+static Standard_Integer OCC23952sweep (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
+{
+	if (argc != 3) {
+		di << "Usage: " << argv[0] << " invalid number of arguments" << "\n";
+		return 1;
+	}
+	struct aData aStorage;
+	aStorage.di = &di;
+	aStorage.nbupoles = Draw::Atoi(argv[1]); 
+	aStorage.filename = argv[2];
+
+	OSD_Thread aThread1(convert);
+	aThread1.Run(&aStorage);
+	GeomConvertTest(di,aStorage.nbupoles,aStorage.filename);
+
+	return 0;
+}
+
+#include <GeomInt_IntSS.hxx>
+static void GeomIntSSTest (Draw_Interpretor& di, Standard_Integer theNbSol, Standard_CString theFileName1, Standard_CString theFileName2)
+{
+	Handle(Geom_Surface) aSurf1 = DrawTrSurf::GetSurface(theFileName1);
+	Handle(Geom_Surface) aSurf2 = DrawTrSurf::GetSurface(theFileName2);
+	GeomInt_IntSS anInter;
+	anInter.Perform(aSurf1, aSurf2, Precision::Confusion(), Standard_True);
+	if (!anInter.IsDone()) {
+		di << "An intersection is not done!" << "\n";
+		return;
+	}
+
+	di << "Number of Lines:" << anInter.NbLines() << "\n";
+	QCOMPARE (anInter.NbLines(), theNbSol);
+}
+
+struct aNewData {
+	Draw_Interpretor* di;
+	Standard_Integer nbsol;
+	Standard_CString filename1;
+	Standard_CString filename2;
+};
+Standard_EXPORT Standard_Address convert_inter(Standard_Address data)
+{
+	aNewData* info = (aNewData*) data;
+	GeomIntSSTest(*(info->di),info->nbsol,info->filename1,info->filename2);
+	return NULL;
+}
+
+static Standard_Integer OCC23952intersect (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
+{
+	if (argc != 4) {
+		di << "Usage: " << argv[0] << " invalid number of arguments" << "\n";
+		return 1;
+	}
+	struct aNewData aStorage;
+	aStorage.di = &di;
+	aStorage.nbsol = Draw::Atoi(argv[1]); 
+	aStorage.filename1 = argv[2];
+	aStorage.filename2 = argv[3];
+
+	OSD_Thread aThread1(convert_inter);
+	aThread1.Run(&aStorage);
+	GeomIntSSTest(di,aStorage.nbsol,aStorage.filename1,aStorage.filename2);
+
+	return 0;
+}
+
+#include <Geom_SurfaceOfRevolution.hxx> 
 static Standard_Integer OCC23683 (Draw_Interpretor& di, Standard_Integer argc,const char ** argv)
 {
   if (argc < 2) {
@@ -479,7 +578,8 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC22595", "OCC22595", __FILE__, OCC22595, group);
   theCommands.Add ("OCC23774", "OCC23774 shape1 shape2", __FILE__, OCC23774, group);
   theCommands.Add ("OCC23683", "OCC23683 shape", __FILE__, OCC23683, group);
+  theCommands.Add ("OCC23952sweep", "OCC23952sweep nbupoles shape", __FILE__, OCC23952sweep, group);
+  theCommands.Add ("OCC23952intersect", "OCC23952intersect nbsol shape1 shape2", __FILE__, OCC23952intersect, group);
   theCommands.Add ("test_offset", "test_offset", __FILE__, test_offset, group);
-
   return;
 }

@@ -310,5 +310,6 @@ fields
     firstd2            : Dir2d    from gp;
 
     myIntersectionOn2S : TheInt2S ;
-
+    STATIC_BLOCAGE_SUR_PAS_TROP_GRAND : Integer from Standard;
+    STATIC_PRECEDENT_INFLEXION        : Integer from Standard;
 end PWalking;

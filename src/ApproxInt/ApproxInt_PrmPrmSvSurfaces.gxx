@@ -105,7 +105,8 @@ Standard_Boolean ApproxInt_PrmPrmSvSurfaces::Compute( Standard_Real& u1
 
   MyIsTangent = Standard_True;
 
-  static TColStd_Array1OfReal Param(1,4);
+  Standard_Real aParam[4];//stack vs heap allocation
+  TColStd_Array1OfReal Param (aParam[0],1,4);
   Param(1) = u1; Param(2) = v1;
   Param(3) = u2; Param(4) = v2;
   math_FunctionSetRoot  Rsnld(MyIntersectionOn2S.Function());

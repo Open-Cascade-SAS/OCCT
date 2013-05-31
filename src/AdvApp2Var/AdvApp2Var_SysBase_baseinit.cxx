@@ -25,8 +25,11 @@
 static int init_STBAS(void)
 {
   int ICODE = 0;
+  //allocation tables are now local, so no global initialization is required
+#if 0
   // Init du Tableau des allocs
   AdvApp2Var_SysBase::mainial_();
+#endif
   // Init de LEC IBB IMP
   AdvApp2Var_SysBase::macinit_(&ICODE, &ICODE);
   //

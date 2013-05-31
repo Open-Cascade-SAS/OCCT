@@ -34,6 +34,7 @@ uses
 
 is
 
+    Create returns HInterTool from IntPatch;
 
 -- Pour polyedres
 
@@ -61,12 +62,12 @@ is
 
 -- Methodes pour recherche des points interieurs
 
-    NbSamplePoints(myclass; S: HSurface from Adaptor3d)
+    NbSamplePoints(me: in out; S: HSurface from Adaptor3d)
 
     	returns Integer from Standard;
 
 
-    SamplePoint(myclass; S    : HSurface from Adaptor3d;
+    SamplePoint(me; S: HSurface from Adaptor3d;
     	    	         Index: Integer from Standard;
                          U,V: out Real from Standard);
 
@@ -220,5 +221,8 @@ is
     
     	returns Boolean from Standard;
 
+fields
+
+    uinf,vinf,usup,vsup: Real from Standard;
 
 end HInterTool;

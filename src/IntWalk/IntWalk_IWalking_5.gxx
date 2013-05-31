@@ -16,6 +16,15 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+namespace {
+  static const Standard_Real CosRef3D = 0.98;// regle par tests dans U4 
+                                             // correspond a 11.478 d
+  static const Standard_Real CosRef2D = 0.88; // correspond a 25 d
+  static const Standard_Integer MaxDivision = 60;  // nombre maxi de division 
+                                                   // du pas a cause de
+                                              // l  angle trop grand en 2d (U4)
+}
+
 IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection
   (TheIWFunction& sp,
    const Standard_Boolean Finished,
@@ -49,18 +58,10 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection
   
   IntWalk_StatusDeflection Status = IntWalk_OK;
 
-  static const Standard_Real CosRef3D = 0.98;// regle par tests dans U4 
-                                             // correspond a 11.478 d
-  static const Standard_Real CosRef2D = 0.88; // correspond a 25 d
-  static const Standard_Integer MaxDivision = 60;  // nombre maxi de division 
-                                                   // du pas a cause de
-                                              // l  angle trop grand en 2d (U4)
   //---------------------------------------------------------------------------------
   //-- lbr le 4 Avril 95 : On peut se trouver ds le cas ou Status renvoie point
   //-- confondus   si epsilon est assez grand (1e-11) . Dans ce cas on boucle 
   //-- sans jamais changer les valeurs envoyees a Rsnld. 
-  static Standard_Integer NbPointsConfondusConsecutifs = 0 ;
-  static Standard_Integer EpsilonSembleTropGrand       = 0 ; 
   //---------------------------------------------------------------------------------
   Standard_Real Paramu, Paramv, StepU,StepV;
   Standard_Real Cosi, Cosi2, Norme;

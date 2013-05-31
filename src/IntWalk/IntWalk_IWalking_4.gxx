@@ -52,8 +52,9 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 {
 
   Standard_Integer I,N;
-  static math_Vector BornInf(1,2),BornSup(1,2);
-  static math_Vector Uvap(1,2);// parameters of current approach
+  Standard_Real aBornInf[2], aBornSup[2], aUVap[2];
+  math_Vector BornInf(aBornInf,1,2), BornSup(aBornSup,1,2);
+  math_Vector Uvap(aUVap,1,2);// parameters of current approach
   Standard_Real PasC;  // rate of advancement on the tangent
   Standard_Real PasCu; // rate of advancement current by U
   Standard_Real PasCv; // step of advancement current by V

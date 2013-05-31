@@ -185,8 +185,11 @@ Standard_Boolean ApproxInt_ImpPrmSvSurfaces::Compute( Standard_Real& u1
   }
 
 
-  static math_Vector BornInf(1,2),BornSup(1,2),F(1,1),X(1,2),Tolerance(1,2);
-  static math_Matrix D(1, 1, 1, 2); 
+  Standard_Real aBornInf[2],aBornSup[2],aF[1],aX[2],aTolerance[2];
+  math_Vector BornInf(aBornInf,1,2),BornSup(aBornSup,1,2),F(aF,1,1),
+    X(aX,1,2),Tolerance(aTolerance,1,2);
+  Standard_Real aD[1][2];
+  math_Matrix D(aD,1, 1, 1, 2); 
 
   Standard_Real binfu,bsupu,binfv,bsupv;
   binfu = ThePSurfaceTool::FirstUParameter(MyPSurf);

@@ -201,10 +201,7 @@ static void  Solve(math_FunctionWithDerivative& F,
 
 #define NEWSEQ 1 
 
-#if NEWSEQ
-TColStd_SequenceOfReal StaticSol;
-
-#endif
+static const Standard_Integer methode = 1;  //-- 1:(Nv Traitement)  3:(Nv + Ancien +check)  2:(Ancien) 
 
 math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
 				       const Standard_Real A,
@@ -222,7 +219,9 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
   }
 #endif
  
-  static Standard_Integer methode = 1;  //-- 1:(Nv Traitement)  3:(Nv + Ancien +check)  2:(Ancien) 
+#if NEWSEQ
+  TColStd_SequenceOfReal StaticSol;
+#endif
   Sol.Clear();
   NbStateSol.Clear();
   if(methode & 1) { 

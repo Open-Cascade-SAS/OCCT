@@ -84,7 +84,9 @@ IntWalk_PWalking::IntWalk_PWalking(const ThePSurface& Caro1,
        fleche(Deflection),
        tolconf(Epsilon),
        sensCheminement(1),
-       myIntersectionOn2S(Caro1,Caro2,TolTangency)
+       myIntersectionOn2S(Caro1,Caro2,TolTangency),
+       STATIC_BLOCAGE_SUR_PAS_TROP_GRAND(0),
+       STATIC_PRECEDENT_INFLEXION(0)
 {
   Standard_Real KELARG=20.;
   //
@@ -222,7 +224,9 @@ IntWalk_PWalking::IntWalk_PWalking(const ThePSurface& Caro1,
        fleche(Deflection),
        tolconf(Epsilon),
        sensCheminement(1),       
-       myIntersectionOn2S(Caro1,Caro2,TolTangency)
+       myIntersectionOn2S(Caro1,Caro2,TolTangency),
+       STATIC_BLOCAGE_SUR_PAS_TROP_GRAND(0),
+       STATIC_PRECEDENT_INFLEXION(0)
 {
   Standard_Real KELARG=20.;
   //

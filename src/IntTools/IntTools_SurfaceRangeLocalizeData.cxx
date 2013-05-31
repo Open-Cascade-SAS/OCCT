@@ -225,13 +225,11 @@ const gp_Pnt &IntTools_SurfaceRangeLocalizeData::GetPointInFrame
                        (const Standard_Integer theUIndex,
 			const Standard_Integer theVIndex) const
 {
-  static gp_Pnt aNullPnt(0., 0., 0.);
-
   Standard_Integer aFrmUInd = theUIndex + myUIndMin - 1;
   Standard_Integer aFrmVInd = theVIndex + myVIndMin - 1;
 
   if (aFrmUInd > myUIndMax || aFrmVInd > myVIndMax)
-    return aNullPnt;
+    return gp::Origin();
 
   return myGridPoints->Value(aFrmUInd, aFrmVInd);
 }

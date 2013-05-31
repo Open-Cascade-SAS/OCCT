@@ -378,7 +378,7 @@
   InternalUVValue(theta,U,V,A,B,C,cost,sint,SigneSqrtDis);
   //
   Pt = Value(theta);
-  if(Abs(SigneSqrtDis)<0.0000000001  || Abs(A)<0.0000001) return(Standard_False);
+  if(Abs(A)<0.0000001 || Abs(SigneSqrtDis)<0.0000000001) return(Standard_False);
   
   
   //-- Approximation de la derivee (mieux que le calcul mathematique!)

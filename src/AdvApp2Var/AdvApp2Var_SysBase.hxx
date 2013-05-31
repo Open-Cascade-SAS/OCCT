@@ -28,14 +28,17 @@
 #endif
 
 class AdvApp2Var_SysBase {
- public: 
+ public:
+  Standard_EXPORT AdvApp2Var_SysBase();
+  Standard_EXPORT ~AdvApp2Var_SysBase();
+  
   //
-  Standard_EXPORT static int mainial_();
+  Standard_EXPORT int mainial_();
 
   Standard_EXPORT static int macinit_(int *, 
 				      int *);
   //
-  Standard_EXPORT static int mcrdelt_(integer *iunit, 
+  Standard_EXPORT int mcrdelt_(integer *iunit, 
 				      integer *isize, 
 				      void *t, 
 				      intptr_t *iofset, 
@@ -45,7 +48,7 @@ class AdvApp2Var_SysBase {
 				      void *tin, 
 				      void *tout);
 
-  Standard_EXPORT static int mcrrqst_(integer *iunit, 
+  Standard_EXPORT int mcrrqst_(integer *iunit, 
 				      integer *isize, 
 				      void *t, 
 				      intptr_t *iofset, 
@@ -59,23 +62,23 @@ class AdvApp2Var_SysBase {
   Standard_EXPORT static int e__wsle ();
   Standard_EXPORT static int s__wsfe ();
   Standard_EXPORT static int s__wsle ();
-  Standard_EXPORT static int macrai4_(integer *nbelem, 
+  Standard_EXPORT int macrai4_(integer *nbelem, 
 				      integer *maxelm, 
 				      integer *itablo,
 				      intptr_t *iofset,
 				      integer *iercod);
-  Standard_EXPORT static int macrar8_(integer *nbelem, 
+  Standard_EXPORT int macrar8_(integer *nbelem, 
 				      integer *maxelm,
 				      doublereal *xtablo, 
 				      intptr_t *iofset, 
 				      integer *iercod);
-  Standard_EXPORT static int macrdi4_(integer *nbelem, 
+  Standard_EXPORT int macrdi4_(integer *nbelem, 
 				      integer *maxelm, 
 				      integer *itablo, 
 				      intptr_t *iofset, 
 				      integer *iercod);
 
-  Standard_EXPORT static int macrdr8_(integer *nbelem,
+  Standard_EXPORT int macrdr8_(integer *nbelem,
 				      integer *maxelm, 
 				      doublereal *xtablo, 
 				      intptr_t *iofset, 
@@ -105,6 +108,64 @@ class AdvApp2Var_SysBase {
   Standard_EXPORT static void mvriraz_(integer *taille,
 				       void*adt);
   
+private:
+  int macrchk_();
+  int mcrlist_(integer *ier) const;
+
+  /* Maximum number of allowed allocation requests.
+     Currently the maximum known number of requests is 7 - see
+     AdvApp2Var_MathBase::mmresol_(). So the current value is a safe margin and
+     a reasonable balance to not provoke stack overflow (especially in
+     multi-threaded execution). Previous number of 1000 was excessive but
+     tolerable when used for static memory.
+  */
+  static const int MAX_ALLOC_NB = 32;
+  
+  enum {
+    static_allocation = 0, /* indicates static allocation, currently not used */
+    heap_allocation   = 1  /* indicates heap allocation */
+  };
+  
+  /* Describes an individual memory allocation request.
+     See format description in the AdvApp2Var_SysBase.cxx.
+     The field order is preserved and the sizes are chosen to minimize
+     memory footprint. Fields containing address have the intptr_t type
+     for easier arithmetic and to avoid casts in the source code.
+
+     No initialization constructor should be provided to avoid wasting
+     time when allocating a field mcrgene_.
+  */
+  struct mitem {
+    unsigned char   prot;
+    unsigned char   unit; //unit of allocation: 1, 2, 4 or 8
+    integer         reqsize;
+    intptr_t        loc;
+    intptr_t        offset;
+    unsigned char   alloctype; // static_allocation or heap_allocation
+    integer         size;
+    intptr_t        addr;
+    integer         userzone; //not used
+    intptr_t        startaddr;
+    intptr_t        endaddr;
+    integer         rank;
+  };
+  
+  struct {
+    mitem           icore[MAX_ALLOC_NB];
+    integer         ncore;
+    unsigned char   lprot;
+  } mcrgene_;
+
+  /* Contains statistics on allocation requests.
+     Index 0 corresponds to static_allocation, 1 - to heap allocation.
+     nrqst - number of allocation requests;
+     ndelt - number of deallocation requests;
+     nbyte - current number of allocated bytes;
+     mbyte - maximum number of ever allocated bytes.
+  */
+  struct {
+    integer nrqst[2], ndelt[2], nbyte[2], mbyte[2];
+  } mcrstac_; 
 };
 
 #endif

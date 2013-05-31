@@ -457,7 +457,7 @@ void IntPatch_RstInt::PutVertexOnLine (Handle(IntPatch_Line)& L,
 // Si OnFirst = True, c est que la surface Surf correspond a la 1ere
 // surface donnee aux algo d intersection.
 
-  static   IntPatch_SearchPnt Commun;
+  IntPatch_SearchPnt Commun;
 
   Standard_Real U,V,W;
   Standard_Real U1,V1,U2,V2;

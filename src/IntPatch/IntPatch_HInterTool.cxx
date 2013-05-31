@@ -37,8 +37,10 @@
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 
-static Standard_Real uinf,vinf,usup,vsup;
-
+IntPatch_HInterTool::IntPatch_HInterTool() :
+    uinf (0.), vinf (0.), usup (0.), vsup (0.)
+{
+}
 
 Standard_Integer IntPatch_HInterTool::NbSamplesV (const Handle(Adaptor3d_HSurface)& S,
                                                   const Standard_Real, const Standard_Real)
@@ -136,7 +138,7 @@ Standard_Integer IntPatch_HInterTool::NbSamplePoints (const Handle(Adaptor3d_HSu
 void IntPatch_HInterTool::SamplePoint (const Handle(Adaptor3d_HSurface)& S,
                                        const Standard_Integer Index,
                                        Standard_Real& U,
-                                       Standard_Real& V )
+                                       Standard_Real& V ) const
 {
   Standard_Integer nbIntU = 1+NbSamplesU(S,uinf,usup);
   nbIntU>>=1;

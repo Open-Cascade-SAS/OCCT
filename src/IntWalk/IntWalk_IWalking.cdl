@@ -62,11 +62,6 @@ raises   NotDone    from StdFail,
 
 is
 
-    Create
-    
-    	returns IWalking from IntWalk; 
-
-
     Create(Epsilon, Deflection, Step : Real from Standard)
     
 	---Purpose: Deflection is the maximum deflection admitted between two 
@@ -303,6 +298,7 @@ fields
     previousd2d         : Dir2d             from gp;
     seqAjout            : SequenceOfInteger from TColStd; 
     lines               : SequenceOfIWLine;
-
+    NbPointsConfondusConsecutifs: Integer   from Standard;
+    EpsilonSembleTropGrand      : Integer   from Standard;
 end IWalking;
 

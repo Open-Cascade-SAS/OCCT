@@ -42,9 +42,20 @@
 #include <math_IntegerVector.hxx>
 #include <math_Matrix.hxx>
 
-static Standard_Real at, bt, ct;
-#define PYTHAG(a,b) ((at=fabs(a)) > (bt=fabs(b)) ? \
-(ct=bt/at,at*sqrt(1.0+ct*ct)) : (bt ? (ct=at/bt,bt*sqrt(1.0+ct*ct)) : 0.0))
+namespace {
+static inline Standard_Real PYTHAG (const Standard_Real a, const Standard_Real b)
+{
+  Standard_Real at = fabs (a), bt = fabs (b), ct = 0.;
+  if (at > bt) {
+    ct = bt / at;
+    ct = at * sqrt (1.0 + ct * ct);
+  } else if (bt) {
+    ct = at / bt;
+    ct = bt * sqrt (1.0 + ct * ct);
+  }
+  return ct;
+}
+}
 
 #define SIGN(a,b) ((b) >= 0.0 ? fabs(a) : -fabs(a))
 

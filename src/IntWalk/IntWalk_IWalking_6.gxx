@@ -58,9 +58,10 @@ void IntWalk_IWalking::MakeWalkingPoint
     Psol.SetValue(sp.Point(),reversed, U, V);
   }
   else if (Case == 11 || Case == 12 ) {
-    static math_Vector UV(1, 2);
-    static math_Vector FF(1, 1);
-    static math_Matrix DD(1, 1, 1, 2); 
+    Standard_Real aUV[2], aFF[1], aDD[1][2];
+    math_Vector UV(aUV,1, 2);
+    math_Vector FF(aFF,1, 1);
+    math_Matrix DD(aDD,1, 1, 1, 2); 
     UV(1) = U;
     UV(2) = V;
     sp.Values(UV, FF, DD);
@@ -85,9 +86,10 @@ void IntWalk_IWalking::OpenLine(const Standard_Integer N,
 {
   ThePointOfPath PathPnt;
 
-  static math_Vector UV(1, 2);
-  static math_Vector FF(1, 1);
-  static math_Matrix DD(1, 1, 1, 2); 
+  Standard_Real aUV[2], aFF[1], aDD[1][2];
+  math_Vector UV(aUV,1, 2);
+  math_Vector FF(aFF,1, 1);
+  math_Matrix DD(aDD,1, 1, 1, 2); 
 
   previousPoint = Line->Value(1);  
   if (!reversed) {
