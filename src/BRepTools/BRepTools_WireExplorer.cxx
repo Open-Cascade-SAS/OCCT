@@ -353,21 +353,21 @@ void  BRepTools_WireExplorer::Next()
       aNextPC = BRep_Tool::CurveOnSurface(aNextEdge, myFace, aPar21, aPar22);
 
       if (aPrevPC.IsNull() || aNextPC.IsNull()) {
-	myEdge = TopoDS_Edge();
-	return;
+	      myEdge = TopoDS_Edge();
+	      return;
       }
 
       if (myEdge.Orientation() == TopAbs_FORWARD)
-	aPrevPar = aPar12;
+	      aPrevPar = aPar12;
       else
-	aPrevPar = aPar11;
+	      aPrevPar = aPar11;
 
       if (aNextEdge.Orientation() == TopAbs_FORWARD) {
-	aNextFPar = aPar21;
-	aNextLPar = aPar22;
+	      aNextFPar = aPar21;
+	      aNextLPar = aPar22;
       } else {
-	aNextFPar = aPar22;
-	aNextLPar = aPar21;
+	      aNextFPar = aPar22;
+	      aNextLPar = aPar21;
       }
 
       gp_Pnt2d aPPrev  = aPrevPC->Value(aPrevPar);
@@ -375,8 +375,8 @@ void  BRepTools_WireExplorer::Next()
       gp_Pnt2d aPNextL = aNextPC->Value(aNextLPar);
 
       if (aPPrev.SquareDistance(aPNextF) > aPPrev.SquareDistance(aPNextL)) {
-	myEdge = TopoDS_Edge();
-	return;
+	      myEdge = TopoDS_Edge();
+	      return;
       }
     }
 //  Modified by Sergey KHROMOV - Fri Jun 21 11:08:16 2002 End
@@ -390,177 +390,194 @@ void  BRepTools_WireExplorer::Next()
       // At first degenerated edges.
       TopoDS_Edge E = myEdge;
       if (SelectDegenerated(l,E)) {
-	myEdge = E;
-	return;
+	      myEdge = E;
+	      return;
       }
       // At second double edges.
       E = myEdge;
       if (SelectDouble(myDoubles,l,E)) {
-	myEdge = E;
-	return;
+	      myEdge = E;
+	      return;
       }
 
       TopTools_ListIteratorOfListOfShape it(l); 
       Standard_Boolean notfound = Standard_True;
       while (it.More()) {
-	if (!it.Value().IsSame(myEdge)) {
-	  myEdge = TopoDS::Edge(it.Value());
-	  l.Remove(it);
-	  notfound = Standard_False;
-	  break;
-	}
-	it.Next();
+	      if (!it.Value().IsSame(myEdge)) {
+	        myEdge = TopoDS::Edge(it.Value());
+	        l.Remove(it);
+	        notfound = Standard_False;
+	        break;
+	      }
+	      it.Next();
       }
       
       if(notfound) {
-	myEdge = TopoDS_Edge();
-	return;
+	      myEdge = TopoDS_Edge();
+	      return;
       }
 
     }
     else
+    {
+      // If we have more than one edge attached to the list
+      // probably wire that we explore contains a loop or loops.
+      Standard_Real dfFPar = 0., dfLPar = 0.;
+      Handle(Geom2d_Curve) aPCurve = BRep_Tool::CurveOnSurface (myEdge, myFace, dfFPar, dfLPar);
+      if(aPCurve.IsNull())
       {
-	// If we have more than one edge attached to the list
-	// probably wire that we explore contains a loop or loops.
-	Standard_Real dfFPar = 0., dfLPar = 0.;
-	Handle(Geom2d_Curve) aPCurve = BRep_Tool::CurveOnSurface (myEdge, myFace, dfFPar, dfLPar);
-	if(aPCurve.IsNull())
-	  {
-	    myEdge = TopoDS_Edge();
-	    return;
-	  }
-	// Note: current < myVertex > which is last on < myEdge >
-	//       equals in 2D to following 2D points:
-	//       edge is FORWARD  - point with MAX parameter on PCurve;
-	//       edge is REVERSED - point with MIN parameter on PCurve.
+        myEdge = TopoDS_Edge();
+        return;
+      }
+      // Note: current < myVertex > which is last on < myEdge >
+      //       equals in 2D to following 2D points:
+      //       edge is FORWARD  - point with MAX parameter on PCurve;
+      //       edge is REVERSED - point with MIN parameter on PCurve.
 
-	// Get 2D point equals to < myVertex > in 2D for current edge.
-	gp_Pnt2d PRef;
-	if( myEdge.Orientation() == TopAbs_REVERSED )
-	  aPCurve->D0(dfFPar, PRef);
-	else 
-	  aPCurve->D0(dfLPar, PRef);
+      // Get 2D point equals to < myVertex > in 2D for current edge.
+      gp_Pnt2d PRef;
+      if( myEdge.Orientation() == TopAbs_REVERSED )
+        aPCurve->D0(dfFPar, PRef);
+      else 
+        aPCurve->D0(dfLPar, PRef);
 
-	// Get next 2D point from current edge's PCurve with parameter
-	// F + dP (REV) or L - dP (FOR)
-	Standard_Boolean isrevese = ( myEdge.Orientation() == TopAbs_REVERSED );
-	Standard_Real dfMPar = GetNextParamOnPC(aPCurve,PRef,dfFPar,dfLPar,myTolU,myTolV,isrevese);
+      // Get next 2D point from current edge's PCurve with parameter
+      // F + dP (REV) or L - dP (FOR)
+      Standard_Boolean isrevese = ( myEdge.Orientation() == TopAbs_REVERSED );
+      Standard_Real dfMPar = GetNextParamOnPC(aPCurve,PRef,dfFPar,dfLPar,myTolU,myTolV,isrevese);
 
-	gp_Pnt2d PRefm;
-	aPCurve->D0(dfMPar, PRefm);
-	// Get vector from PRef to PRefm
-	gp_Vec2d anERefDir(PRef,PRefm);
-	// Search the list of edges looking for the edge having hearest
-	// 2D point of connected vertex to current one and smallest angle.
-	// First process all degenerated edges, then - all others.
+      gp_Pnt2d PRefm;
+      aPCurve->D0(dfMPar, PRefm);
+      // Get vector from PRef to PRefm
+      gp_Vec2d anERefDir(PRef,PRefm);
+      // Search the list of edges looking for the edge having hearest
+      // 2D point of connected vertex to current one and smallest angle.
+      // First process all degenerated edges, then - all others.
 
-	TopTools_ListIteratorOfListOfShape it;
-	Standard_Integer k = 1, kMin = 0, iDone = 0;
-	Standard_Boolean isDegenerated = Standard_True;
-	Standard_Real dmin = RealLast();
-	Standard_Real dfMinAngle = 3.0*M_PI, dfCurAngle = 3.0*M_PI;
+      TopTools_ListIteratorOfListOfShape it;
+      Standard_Integer k = 1, kMin = 0, iDone = 0;
+      Standard_Boolean isDegenerated = Standard_True;
+      Standard_Real dmin = RealLast();
+      Standard_Real dfMinAngle = 3.0*M_PI, dfCurAngle = 3.0*M_PI;
 
-	for(iDone = 0; iDone < 2; iDone++)
-	  {
-	    it.Initialize(l);
-	    while( it.More() )
-	      {
-		const TopoDS_Edge& E = TopoDS::Edge(it.Value());
-		if( E.IsSame(myEdge) )
-		  {
-		    it.Next();
-		    k++;
-		    continue;
-		  }
-		
-		TopoDS_Vertex aVert1, aVert2;
-		TopExp::Vertices (E, aVert1, aVert2, Standard_True);
-		if( aVert1.IsNull() || aVert2.IsNull() )
-		  {
-		    it.Next();
-		    k++;
-		    continue;
-		  }
-		
-		aPCurve = BRep_Tool::CurveOnSurface (E, myFace, dfFPar, dfLPar);
-		if( aPCurve.IsNull() )
-		  {
-		    it.Next();
-		    k++;
-		    continue;
-		  }
-		
-		gp_Pnt2d aPEb, aPEe;
-		if( aVert1.IsSame(aVert2) == isDegenerated )
-		  {
-		    if( E.Orientation() == TopAbs_REVERSED )
-		      aPCurve->D0(dfLPar, aPEb);
-		    else	
-		      aPCurve->D0(dfFPar, aPEb);
+      for(iDone = 0; iDone < 2; iDone++)
+      {
+        it.Initialize(l);
+        while( it.More() )
+        {
+	        const TopoDS_Edge& E = TopoDS::Edge(it.Value());
+	        if( E.IsSame(myEdge) )
+	        {
+	          it.Next();
+	          k++;
+	          continue;
+	        }
+  		
+	        TopoDS_Vertex aVert1, aVert2;
+	        TopExp::Vertices (E, aVert1, aVert2, Standard_True);
+	        if( aVert1.IsNull() || aVert2.IsNull() )
+          {
+            it.Next();
+            k++;
+            continue;
+          }
+  		
+	        aPCurve = BRep_Tool::CurveOnSurface (E, myFace, dfFPar, dfLPar);
+	        if( aPCurve.IsNull() )
+          {
+            it.Next();
+            k++;
+            continue;
+          }
+    		
+	        gp_Pnt2d aPEb, aPEe;
+	        if( aVert1.IsSame(aVert2) == isDegenerated )
+	        {
+	          if( E.Orientation() == TopAbs_REVERSED )
+	            aPCurve->D0(dfLPar, aPEb);
+	          else	
+	            aPCurve->D0(dfFPar, aPEb);
 
-		    if( Abs(dfLPar-dfFPar) > Precision::PConfusion() )
-		      {
-			isrevese = ( E.Orientation() == TopAbs_REVERSED );
-			isrevese = !isrevese;
-			Standard_Real aEPm = GetNextParamOnPC(aPCurve,aPEb,dfFPar,dfLPar,myTolU,myTolV,isrevese);
-			
-			aPCurve->D0 (aEPm, aPEe);
-			gp_Vec2d anEDir(aPEb, aPEe);
-			dfCurAngle = Abs( anEDir.Angle(anERefDir) );
-		      }
+	          if( Abs(dfLPar-dfFPar) > Precision::PConfusion() )
+	          {
+		          isrevese = ( E.Orientation() == TopAbs_REVERSED );
+		          isrevese = !isrevese;
+		          Standard_Real aEPm = GetNextParamOnPC(aPCurve,aPEb,dfFPar,dfLPar,myTolU,myTolV,isrevese);
+        			
+		          aPCurve->D0 (aEPm, aPEe);
+              if(aPEb.SquareDistance(aPEe) <= gp::Resolution())
+              {
+                //seems to be very short curve
+                gp_Vec2d aD;
+                aPCurve->D1(aEPm, aPEe, aD);
+	              if( E.Orientation() == TopAbs_REVERSED )
+                  aPEe.SetXY(aPEb.XY()-aD.XY());
+	              else	
+                  aPEe.SetXY(aPEb.XY()+aD.XY());
 
-		    if( dfCurAngle <= dfMinAngle )
-		      {
-			Standard_Real d = PRef.SquareDistance(aPEb);
-			if( d <= Precision::PConfusion() )
-			  d = 0.;
-			if( Abs(aPEb.X()-PRef.X()) < myTolU  &&  Abs(aPEb.Y()-PRef.Y()) < myTolV )
-			  {
-			    if( d <= dmin )
-			      {
-				dfMinAngle = dfCurAngle;
-				kMin = k;
-				dmin = d;
-			      }
-			  }
-		      }
-		  }
-		it.Next();
-		k++;
-	      }// while it
+                if(aPEb.SquareDistance(aPEe) <= gp::Resolution())
+                {
+                  it.Next();
+                  k++;
+                  continue;
+                }
+              }
+		          gp_Vec2d anEDir(aPEb, aPEe);
+		          dfCurAngle = Abs( anEDir.Angle(anERefDir) );
+	          }
 
-	    if( kMin == 0 )
-	      {
-		isDegenerated = Standard_False;
-		k = 1;
-		dmin = RealLast();
-	      }
-	    else
-	      break;
-	  }// for iDone
+	          if( dfCurAngle <= dfMinAngle )
+	          {
+		          Standard_Real d = PRef.SquareDistance(aPEb);
+		          if( d <= Precision::PConfusion() )
+		            d = 0.;
+		          if( Abs(aPEb.X()-PRef.X()) < myTolU  &&  Abs(aPEb.Y()-PRef.Y()) < myTolV )
+		          {
+		            if( d <= dmin )
+		            {
+			            dfMinAngle = dfCurAngle;
+			            kMin = k;
+			            dmin = d;
+		            }
+		          }
+	          }
+	        }
+	        it.Next();
+	        k++;
+        }// while it
 
-	if(kMin == 0)
-	  {
-	    // probably unclosed in 2d space wire
-	    myEdge = TopoDS_Edge();
-	    return;
-	  }
+        if( kMin == 0 )
+        {
+	        isDegenerated = Standard_False;
+	        k = 1;
+	        dmin = RealLast();
+        }
+        else
+          break;
+      }// for iDone
 
-	// Selection the edge.
-	it.Initialize(l);
-	k = 1;
-	while( it.More() )
-	  {
-	    if( k == kMin )
-	      {
-		myEdge = TopoDS::Edge(it.Value());
-		l.Remove(it);
-		break;
-	      }
-	    it.Next();
-	    k++;
-	  }
-      }//else face != NULL && l > 1
+      if(kMin == 0)
+      {
+        // probably unclosed in 2d space wire
+        myEdge = TopoDS_Edge();
+        return;
+      }
+
+      // Selection the edge.
+      it.Initialize(l);
+      k = 1;
+      while( it.More() )
+      {
+        if( k == kMin )
+        {
+          myEdge = TopoDS::Edge(it.Value());
+          l.Remove(it);
+          break;
+        }
+        it.Next();
+        k++;
+      }
+    }//else face != NULL && l > 1
   }//else l > 1
 }
 
