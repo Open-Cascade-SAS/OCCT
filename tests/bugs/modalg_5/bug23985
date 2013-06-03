@@ -15,10 +15,10 @@ bsection result b1 b2
 
 set expl [explode result]
 
-set length [llength $expl]
-puts "Result is $length section edge"
+set ll [llength $expl]
+puts "Result is $ll section edge"
 
-if {$length > 0} {
+if {$ll > 0} {
     puts "${BugNumber} OK"
 } else {
     puts "Faulty ${BugNumber}"
