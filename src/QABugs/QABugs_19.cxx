@@ -435,6 +435,7 @@ static Standard_Integer OCC23952sweep (Draw_Interpretor& di, Standard_Integer ar
 	OSD_Thread aThread1(convert);
 	aThread1.Run(&aStorage);
 	GeomConvertTest(di,aStorage.nbupoles,aStorage.filename);
+	cout << "result of thread: " << aThread1.Wait() << endl;
 
 	return 0;
 }
@@ -483,6 +484,7 @@ static Standard_Integer OCC23952intersect (Draw_Interpretor& di, Standard_Intege
 	OSD_Thread aThread1(convert_inter);
 	aThread1.Run(&aStorage);
 	GeomIntSSTest(di,aStorage.nbsol,aStorage.filename1,aStorage.filename2);
+	cout << "result of thread: " << aThread1.Wait() << endl;
 
 	return 0;
 }

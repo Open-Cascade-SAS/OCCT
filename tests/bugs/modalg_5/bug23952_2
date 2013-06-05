@@ -1,0 +1,21 @@
+puts "================"
+puts "OCC23952"
+puts "================"
+puts ""
+###########################################################################################
+# Improving thread-safety of intersections, approximations and other modeling algorithms
+###########################################################################################
+
+pload QAcommands
+restore [locate_data_file bug23952_s1.draw] a
+restore [locate_data_file bug23952_s2.draw] b
+
+set NbLines 5
+set info [OCC23952intersect $NbLines a b]
+
+if { [regexp "theNbSol: OK" $info] != 1 } {
+    puts "Error : Number of intersections is incorrect"
+} else {
+    puts "OK: Number of intersections is correct"
+}
+
