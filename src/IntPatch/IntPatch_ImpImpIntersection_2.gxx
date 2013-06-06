@@ -101,7 +101,12 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
       case GeomAbs_Cylinder:
 	{
 	  quad2.SetValue(S2->Cylinder());
-          Standard_Real H = S1->LastVParameter() - S1->FirstVParameter();
+          Standard_Real VMin, VMax, H;
+          //
+          VMin = S1->FirstVParameter();
+          VMax = S1->LastVParameter();
+          H = (Precision::IsNegativeInfinite(VMin) || 
+               Precision::IsPositiveInfinite(VMax)) ? 0 : (VMax - VMin);
 	  if (!IntPCy(quad1,quad2,Tolang,TolTang,Standard_False,empt,slin,H)) {
 	    return;
 	  }
@@ -158,7 +163,12 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
       case GeomAbs_Plane:
 	{
 	  quad2.SetValue(S2->Plane());
-          Standard_Real H = S1->LastVParameter() - S1->FirstVParameter();
+          Standard_Real VMin, VMax, H;
+          //
+          VMin = S1->FirstVParameter();
+          VMax = S1->LastVParameter();
+          H = (Precision::IsNegativeInfinite(VMin) || 
+               Precision::IsPositiveInfinite(VMax)) ? 0 : (VMax - VMin);
 	  if (!IntPCy(quad1,quad2,Tolang,TolTang,Standard_True,empt,slin,H)) {
 	    return;
 	  }
