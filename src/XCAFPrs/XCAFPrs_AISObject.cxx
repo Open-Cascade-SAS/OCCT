@@ -260,10 +260,10 @@ void XCAFPrs_AISObject::AddStyledItem (const XCAFPrs_Style &style,
       Standard_Real prevcoeff ;
       Standard_Real newcoeff  ; 
       
-      if (OwnDeviationAngle(newangle,prevangle) ||
-	  OwnDeviationCoefficient(newcoeff,prevcoeff))
-	if (Abs (newangle - prevangle) > Precision::Angular() ||
-	    Abs (newcoeff - prevcoeff) > Precision::Confusion()  ) { 
+      Standard_Boolean isOwnDeviationAngle = OwnDeviationAngle(newangle,prevangle);
+      Standard_Boolean isOwnDeviationCoefficient = OwnDeviationCoefficient(newcoeff,prevcoeff);
+      if (((Abs (newangle - prevangle) > Precision::Angular()) && isOwnDeviationAngle) ||
+          ((Abs (newcoeff - prevcoeff) > Precision::Confusion()) && isOwnDeviationCoefficient)) { 
 #ifdef DEB
 	  cout << "AIS_Shape : compute"<<endl;
 	  cout << "newangl   : " << newangle << " # de " << "prevangl  : " << prevangle << " OU "<<endl;

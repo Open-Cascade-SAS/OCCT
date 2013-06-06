@@ -273,12 +273,11 @@ void AIS_TexturedShape::Compute (const Handle(PrsMgr_PresentationManager3d)& /*t
       Standard_Real prevcoeff;
       Standard_Real newcoeff;
 
-      if (OwnDeviationAngle (newangle, prevangle) || OwnDeviationCoefficient (newcoeff, prevcoeff))
-      {
-        if (Abs (newangle - prevangle) > Precision::Angular() || Abs (newcoeff - prevcoeff) > Precision::Confusion())
-        {
-          BRepTools::Clean (myshape);
-        }
+      Standard_Boolean isOwnDeviationAngle = OwnDeviationAngle(newangle,prevangle);
+      Standard_Boolean isOwnDeviationCoefficient = OwnDeviationCoefficient(newcoeff,prevcoeff);
+      if (((Abs (newangle - prevangle) > Precision::Angular()) && isOwnDeviationAngle) ||
+          ((Abs (newcoeff - prevcoeff) > Precision::Confusion()) && isOwnDeviationCoefficient)) {
+        BRepTools::Clean (myshape);
       }
       if (myshape.ShapeType() > TopAbs_FACE)
       {

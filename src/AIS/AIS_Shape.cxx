@@ -225,18 +225,17 @@ void AIS_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
       Standard_Real prevcoeff ;
       Standard_Real newcoeff  ; 
       
-      
-      if (OwnDeviationAngle(newangle,prevangle) ||
-          OwnDeviationCoefficient(newcoeff,prevcoeff))
-        if (Abs (newangle - prevangle) > Precision::Angular() ||
-            Abs (newcoeff - prevcoeff) > Precision::Confusion()  ) { 
+      Standard_Boolean isOwnDeviationAngle = OwnDeviationAngle(newangle,prevangle);
+      Standard_Boolean isOwnDeviationCoefficient = OwnDeviationCoefficient(newcoeff,prevcoeff);
+      if (((Abs (newangle - prevangle) > Precision::Angular()) && isOwnDeviationAngle) ||
+          ((Abs (newcoeff - prevcoeff) > Precision::Confusion()) && isOwnDeviationCoefficient)) { 
 #ifdef DEB
-          cout << "AIS_Shape : compute"<<endl;
-          cout << "newangl   : " << newangle << " # de " << "prevangl  : " << prevangle << " OU "<<endl;
-          cout << "newcoeff  : " << newcoeff << " # de " << "prevcoeff : " << prevcoeff << endl;
+        cout << "AIS_Shape : compute"<<endl;
+        cout << "newangl   : " << newangle << " # de " << "prevangl  : " << prevangle << " OU "<<endl;
+        cout << "newcoeff  : " << newcoeff << " # de " << "prevcoeff : " << prevcoeff << endl;
 #endif
-          BRepTools::Clean(myshape);
-        }
+        BRepTools::Clean(myshape);
+      }
       
       //shading only on face...
       if ((Standard_Integer) myshape.ShapeType()>4)
@@ -326,9 +325,10 @@ void AIS_Shape::Compute(const Handle(Prs3d_Projector)& aProjector,
 // coefficients for calculation
 
   Standard_Real prevangle, newangle ,prevcoeff,newcoeff ; 
-  if (OwnHLRDeviationAngle(newangle,prevangle) || OwnHLRDeviationCoefficient(newcoeff, prevcoeff))
-    if (Abs (newangle - prevangle) > Precision::Angular() ||
-        Abs (newcoeff - prevcoeff) > Precision::Confusion()  ) { 
+  Standard_Boolean isOwnHLRDeviationAngle = OwnHLRDeviationAngle(newangle,prevangle);
+  Standard_Boolean isOwnHLRDeviationCoefficient = OwnHLRDeviationCoefficient(newcoeff,prevcoeff);
+  if (((Abs (newangle - prevangle) > Precision::Angular()) && isOwnHLRDeviationAngle) ||
+      ((Abs (newcoeff - prevcoeff) > Precision::Confusion()) && isOwnHLRDeviationCoefficient)) {
 #ifdef DEB
       cout << "AIS_Shape : compute"<<endl;
       cout << "newangle  : " << newangle << " # de " << "prevangl  : " << prevangle << " OU "<<endl;
