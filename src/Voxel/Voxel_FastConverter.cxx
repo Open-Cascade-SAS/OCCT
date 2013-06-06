@@ -217,8 +217,18 @@ Standard_Boolean Voxel_FastConverter::Convert(Standard_Integer&      progress,
     for (; itriangle <= nb_triangles; itriangle++)
     {
       ithread_triangle++;
-      if (ithread_triangle < start_thread_triangle || ithread_triangle > end_thread_triangle)
-	continue;
+      if (ithread_triangle < start_thread_triangle )
+        continue;
+      if (ithread_triangle > end_thread_triangle)
+      {
+        if (ithread == 1)
+          progress = 100;
+#ifdef CONV_DUMP
+        if (ithread == 1)
+          printf("Progress = %d  \r", progress);
+#endif
+        return Standard_True;
+      }
 
       const Poly_Triangle& t = triangles.Value(itriangle);
       t.Get(n1, n2, n3);
@@ -227,9 +237,9 @@ Standard_Boolean Voxel_FastConverter::Convert(Standard_Integer&      progress,
       gp_Pnt p3 = nodes.Value(n3);
       if (transform)
       {
-	p1.Transform(trsf);
-	p2.Transform(trsf);
-	p3.Transform(trsf);
+        p1.Transform(trsf);
+        p2.Transform(trsf);
+        p3.Transform(trsf);
       }
 
       // Get boundary box of the triangle
