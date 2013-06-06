@@ -112,9 +112,18 @@ Standard_Integer Voxel_DS::GetNbZ() const
 void Voxel_DS::GetCenter(const Standard_Integer ix, const Standard_Integer iy, const Standard_Integer iz,
 			 Standard_Real&         xc, Standard_Real&         yc, Standard_Real&         zc) const
 {
-  xc = myX + ix * myDX + myHalfDX;
-  yc = myY + iy * myDY + myHalfDY;
-  zc = myZ + iz * myDZ + myHalfDZ;
+  GetOrigin(ix, iy, iz, xc, yc, zc);
+  xc += myHalfDX;
+  yc += myHalfDY;
+  zc += myHalfDZ;
+}
+
+void Voxel_DS::GetOrigin(const Standard_Integer ix, const Standard_Integer iy, const Standard_Integer iz,
+			 Standard_Real&         x0, Standard_Real&         y0, Standard_Real&         z0) const
+{
+  x0 = myX + ix * myDX;
+  y0 = myY + iy * myDY;
+  z0 = myZ + iz * myDZ;
 }
 
 // The method uses a chordial approach to find the index of voxel by co-ordinate.

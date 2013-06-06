@@ -78,6 +78,15 @@ is
 	      yc : out Real from Standard;
 	      zc : out Real from Standard);
     ---Purpose: Returns the center point of a voxel with co-ordinates (ix, iy, iz).
+	
+    GetOrigin(me;
+    	      ix : Integer from Standard;
+    	      iy : Integer from Standard;
+    	      iz : Integer from Standard;
+	      x0 : out Real from Standard;
+	      y0 : out Real from Standard;
+	      z0 : out Real from Standard);
+    ---Purpose: Returns the origin point of a voxel with co-ordinates (ix, iy, iz).
 
     GetVoxel(me;
 	     x  : Real from Standard;
