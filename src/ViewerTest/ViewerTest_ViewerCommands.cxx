@@ -48,6 +48,9 @@
 #include <Visual3d_View.hxx>
 #include <Visual3d_ViewManager.hxx>
 #include <V3d_LayerMgr.hxx>
+#include <NCollection_DoubleMap.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_Vector.hxx>
 #include <NIS_View.hxx>
 #include <NIS_Triangulated.hxx>
 #include <NIS_InteractiveContext.hxx>
@@ -118,23 +121,52 @@ static Handle(Cocoa_Window)& VT_GetWindow()
   return aWindow;
 }
 extern void ViewerTest_SetCocoaEventManagerView (const Handle(Cocoa_Window)& theWindow);
+extern void SetCocoaWindowTitle (const Handle(Cocoa_Window)& theWindow, Standard_CString theTitle);
+extern void GetCocoaScreenResolution (Standard_Integer& theWidth, Standard_Integer& theHeight);
+
 #else
 static Handle(Xw_Window)& VT_GetWindow(){
   static Handle(Xw_Window) XWWin;
   return XWWin;
 }
-static Display *display;
 
 static void VProcessEvents(ClientData,int);
 #endif
 
-static Handle(Graphic3d_GraphicDriver)& GetGraphicDriver()
+static Handle(Aspect_DisplayConnection)& GetDisplayConnection()
 {
-  static Handle(Graphic3d_GraphicDriver) aGraphicDriver;
-  return aGraphicDriver;
+  static Handle(Aspect_DisplayConnection) aDisplayConnection;
+  return aDisplayConnection;
 }
 
+static void SetDisplayConnection (const Handle(Aspect_DisplayConnection)& theDisplayConnection)
+{
+  GetDisplayConnection() = theDisplayConnection;
+}
+
+#if defined(_WIN32) || defined(__WIN32__) || (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+Aspect_Handle GetWindowHandle(const Handle(Aspect_Window)& theWindow)
+{
+  Aspect_Handle aWindowHandle = NULL;
+#if defined(_WIN32) || defined(__WIN32__)
+  const Handle (WNT_Window) aWindow = Handle(WNT_Window)::DownCast (theWindow);
+  if (!aWindow.IsNull())
+    return aWindow->HWindow();
+#elif (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+  const Handle (Xw_Window) aWindow = Handle(Xw_Window)::DownCast (theWindow);
+  if (!aWindow.IsNull())
+  return aWindow->XWindow();
+#endif
+  return aWindowHandle;
+}
+#endif
+
 static Standard_Boolean MyHLRIsOn = Standard_False;
+
+NCollection_DoubleMap <TCollection_AsciiString, Handle(V3d_View)> ViewerTest_myViews;
+static NCollection_DoubleMap <TCollection_AsciiString, Handle(AIS_InteractiveContext)> ViewerTest_myContexts;
+static NCollection_DoubleMap <TCollection_AsciiString, Handle(Graphic3d_GraphicDriver)> ViewerTest_myDrivers;
+
 
 #define ZCLIPWIDTH 1.
 
@@ -189,123 +221,509 @@ const Handle(MMgt_TShared)& ViewerTest::WClass()
 }
 
 //==============================================================================
+//function : CreateName
+//purpose  : Create numerical name for new object in theMap
+//==============================================================================
+template <typename ObjectType>
+TCollection_AsciiString CreateName (const NCollection_DoubleMap <TCollection_AsciiString, ObjectType>& theObjectMap,
+                                    const TCollection_AsciiString& theDefaultString)
+{
+  if (theObjectMap.IsEmpty())
+    return theDefaultString + TCollection_AsciiString(1);
+
+  Standard_Integer aNextKey = 1;
+  Standard_Boolean isFound = Standard_False;
+  while (!isFound)
+  {
+    TCollection_AsciiString aStringKey = theDefaultString + TCollection_AsciiString(aNextKey);
+    // Look for objects with default names
+    if (theObjectMap.IsBound1(aStringKey))
+    {
+      aNextKey++;
+    }
+    else
+      isFound = Standard_True;
+  }
+
+  return theDefaultString + TCollection_AsciiString(aNextKey);
+}
+
+//==============================================================================
+//structure : ViewerTest_Names
+//purpose   : Allow to operate with full view name: driverName/viewerName/viewName
+//==============================================================================
+struct ViewerTest_Names
+{
+private:
+  TCollection_AsciiString myDriverName;
+  TCollection_AsciiString myViewerName;
+  TCollection_AsciiString myViewName;
+
+public:
+
+  const TCollection_AsciiString& GetDriverName () const
+  {
+    return myDriverName;
+  }
+  void SetDriverName (const TCollection_AsciiString& theDriverName)
+  {
+    myDriverName = theDriverName;
+  }
+  const TCollection_AsciiString& GetViewerName () const
+  {
+    return myViewerName;
+  }
+  void SetViewerName (const TCollection_AsciiString& theViewerName)
+  {
+    myViewerName = theViewerName;
+  }
+  const TCollection_AsciiString& GetViewName () const
+  {
+    return myViewName;
+  }
+  void SetViewName (const TCollection_AsciiString& theViewName)
+  {
+    myViewName = theViewName;
+  }
+
+  //===========================================================================
+  //function : Constructor for ViewerTest_Names
+  //purpose  : Get view, viewer, driver names from custom string
+  //===========================================================================
+
+  ViewerTest_Names (const TCollection_AsciiString& theInputString)
+  {
+    TCollection_AsciiString aName(theInputString);
+    if (theInputString.IsEmpty())
+    {
+      // Get current configuration
+      if (ViewerTest_myDrivers.IsEmpty())
+        myDriverName = CreateName<Handle(Graphic3d_GraphicDriver)>
+          (ViewerTest_myDrivers, TCollection_AsciiString("Driver"));
+      else
+        myDriverName = ViewerTest_myDrivers.Find2
+        (ViewerTest::GetAISContext()->CurrentViewer()->Driver());
+
+      if(ViewerTest_myContexts.IsEmpty())
+      {
+        myViewerName = CreateName <Handle(AIS_InteractiveContext)>
+          (ViewerTest_myContexts, TCollection_AsciiString (myDriverName + "/Viewer"));
+      }
+      else
+        myViewerName = ViewerTest_myContexts.Find2 (ViewerTest::GetAISContext());
+
+        myViewName = CreateName <Handle(V3d_View)>
+          (ViewerTest_myViews, TCollection_AsciiString(myViewerName + "/View"));
+    }
+    else
+    {
+      // There is at least view name
+      Standard_Integer aParserNumber = 0;
+      for (Standard_Integer i = 0; i < 3; ++i)
+      {
+        Standard_Integer aParserPos = aName.SearchFromEnd("/");
+        if(aParserPos != -1)
+        {
+          aParserNumber++;
+          aName.Split(aParserPos-1);
+        }
+        else
+          break;
+      }
+      if (aParserNumber == 0)
+      {
+        // Only view name
+        if (!ViewerTest::GetAISContext().IsNull())
+        {
+          myDriverName = ViewerTest_myDrivers.Find2
+          (ViewerTest::GetAISContext()->CurrentViewer()->Driver());
+          myViewerName = ViewerTest_myContexts.Find2
+          (ViewerTest::GetAISContext());
+        }
+        else
+        {
+          // There is no opened contexts here, need to create names for viewer and driver
+          myDriverName = CreateName<Handle(Graphic3d_GraphicDriver)>
+            (ViewerTest_myDrivers, TCollection_AsciiString("Driver"));
+
+          myViewerName = CreateName <Handle(AIS_InteractiveContext)>
+            (ViewerTest_myContexts, TCollection_AsciiString (myDriverName + "/Viewer"));
+        }
+        myViewName = TCollection_AsciiString(myViewerName + "/" + theInputString);
+      }
+      else if (aParserNumber == 1)
+      {
+        // Here is viewerName/viewName
+        if (!ViewerTest::GetAISContext().IsNull())
+          myDriverName = ViewerTest_myDrivers.Find2
+          (ViewerTest::GetAISContext()->CurrentViewer()->Driver());
+        else
+        {
+          // There is no opened contexts here, need to create name for driver
+          myDriverName = CreateName<Handle(Graphic3d_GraphicDriver)>
+            (ViewerTest_myDrivers, TCollection_AsciiString("Driver"));
+        }
+        myViewerName = TCollection_AsciiString(myDriverName + "/" + aName);
+
+        myViewName = TCollection_AsciiString(myDriverName + "/" + theInputString);
+      }
+      else
+      {
+        //Here is driverName/viewerName/viewName
+        myDriverName = TCollection_AsciiString(aName);
+
+        TCollection_AsciiString aViewerName(theInputString);
+        aViewerName.Split(aViewerName.SearchFromEnd("/") - 1);
+        myViewerName = TCollection_AsciiString(aViewerName);
+
+        myViewName = TCollection_AsciiString(theInputString);
+      }
+    }
+  }
+};
+
+//==============================================================================
+//function : FindContextByView
+//purpose  : Find AIS_InteractiveContext by View
+//==============================================================================
+
+Handle(AIS_InteractiveContext) FindContextByView (const Handle(V3d_View)& theView)
+{
+  Handle(AIS_InteractiveContext) anAISContext;
+
+  for (NCollection_DoubleMap<TCollection_AsciiString, Handle(AIS_InteractiveContext)>::Iterator
+       anIter (ViewerTest_myContexts); anIter.More(); anIter.Next())
+  {
+    if (anIter.Value()->CurrentViewer() == theView->Viewer())
+       return anIter.Key2();
+  }
+  return anAISContext;
+}
+
+
+//==============================================================================
+//function : SetWindowTitle
+//purpose  : Set window title
+//==============================================================================
+
+void SetWindowTitle (const Handle(Aspect_Window)& theWindow,
+                     Standard_CString theTitle)
+{
+#if defined(_WIN32) || defined(__WIN32__)
+  SetWindowText ((HWND)Handle(WNT_Window)::DownCast(theWindow)->HWindow(),
+    theTitle);
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+  SetCocoaWindowTitle (Handle(Cocoa_Window)::DownCast(theWindow), theTitle);
+#else
+  if(GetDisplayConnection()->GetDisplay())
+  {
+    Window aWindow =
+      Handle(Xw_Window)::DownCast(theWindow)->XWindow();
+    XStoreName (GetDisplayConnection()->GetDisplay(), aWindow , theTitle);
+  }
+#endif
+}
+
+//==============================================================================
+//function : IsWindowOverlapped
+//purpose  : Check if theWindow overlapp another view
+//==============================================================================
+
+Standard_Boolean IsWindowOverlapped (const Standard_Integer thePxLeft,
+                                     const Standard_Integer thePxTop,
+                                     const Standard_Integer thePxRight,
+                                     const Standard_Integer thePxBottom,
+                                     TCollection_AsciiString& theViewId)
+{
+  for(NCollection_DoubleMap <TCollection_AsciiString, Handle(V3d_View)>::Iterator
+      anIter(ViewerTest_myViews); anIter.More(); anIter.Next())
+  {
+    Standard_Integer aTop = 0,
+      aLeft = 0,
+      aRight = 0,
+      aBottom = 0;
+    anIter.Value()->Window()->Position(aLeft, aTop, aRight, aBottom);
+    if ((thePxLeft >= aLeft && thePxLeft <= aRight && thePxTop >= aTop && thePxTop <= aBottom) ||
+        (thePxLeft >= aLeft && thePxLeft <= aRight && thePxBottom >= aTop && thePxBottom <= aBottom) ||
+        (thePxRight >= aLeft && thePxRight <= aRight && thePxTop >= aTop && thePxTop <= aBottom) ||
+        (thePxRight >= aLeft && thePxRight <= aRight && thePxBottom >= aTop && thePxBottom <= aBottom))
+    {
+      theViewId = anIter.Key1();
+      return Standard_True;
+    }
+  }
+  return Standard_False;
+}
+
+// Workaround: to create and delete non-orthographic views outside ViewerTest
+void ViewerTest::RemoveViewName (const TCollection_AsciiString& theName)
+{
+  ViewerTest_myViews.UnBind1 (theName);
+}
+
+void ViewerTest::InitViewName (const TCollection_AsciiString& theName,
+                               const Handle(V3d_View)& theView)
+{
+  ViewerTest_myViews.Bind (theName, theView);
+}
+
+TCollection_AsciiString ViewerTest::GetCurrentViewName ()
+{
+  return ViewerTest_myViews.Find2( ViewerTest::CurrentView());
+}
+//==============================================================================
 //function : ViewerInit
 //purpose  : Create the window viewer and initialize all the global variable
 //==============================================================================
 
-void ViewerTest::ViewerInit (const Standard_Integer thePxLeft,  const Standard_Integer thePxTop,
-                             const Standard_Integer thePxWidth, const Standard_Integer thePxHeight)
+TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft,
+                                                const Standard_Integer thePxTop,
+                                                const Standard_Integer thePxWidth,
+                                                const Standard_Integer thePxHeight,
+                                                Standard_CString theViewName,
+                                                Standard_CString theDisplayName)
 {
-  static Standard_Boolean isFirst = Standard_True;
-
   // Default position and dimension of the viewer window.
   // Note that left top corner is set to be sufficiently small to have
   // window fit in the small screens (actual for remote desktops, see #23003).
   // The position corresponds to the window's client area, thus some
   // gap is added for window frame to be visible.
+
   Standard_Integer aPxLeft   = 20;
   Standard_Integer aPxTop    = 40;
   Standard_Integer aPxWidth  = 409;
   Standard_Integer aPxHeight = 409;
-  if (thePxWidth != 0 && thePxHeight != 0)
-  {
-    aPxLeft   = thePxLeft;
-    aPxTop    = thePxTop;
-    aPxWidth  = thePxWidth;
+  Standard_Boolean toCreateViewer = Standard_False;
+
+
+  Handle(Graphic3d_GraphicDriver) aGraphicDriver;
+  ViewerTest_Names aViewNames(theViewName);
+  if (ViewerTest_myViews.IsBound1 (aViewNames.GetViewName ()))
+    aViewNames.SetViewName (aViewNames.GetViewerName() + "/" + CreateName<Handle(V3d_View)>(ViewerTest_myViews, "View"));
+
+  if (thePxLeft != 0)
+    aPxLeft = thePxLeft;
+  if (thePxTop != 0)
+    aPxTop = thePxTop;
+  if (thePxWidth != 0)
+    aPxWidth = thePxWidth;
+  if (thePxHeight != 0)
     aPxHeight = thePxHeight;
+ 
+  // Get graphic driver (create it or get from another view)
+  if (!ViewerTest_myDrivers.IsBound1 (aViewNames.GetDriverName()))
+  {
+    // Get connection string
+  #if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+    TCollection_AsciiString aDisplayName(theDisplayName);
+    if (aDisplayName.IsEmpty())
+      SetDisplayConnection (new Aspect_DisplayConnection ());
+    else
+      SetDisplayConnection (new Aspect_DisplayConnection (aDisplayName));
+
+  #else
+    SetDisplayConnection (new Aspect_DisplayConnection ());
+  #endif
+    aGraphicDriver = Graphic3d::InitGraphicDriver (GetDisplayConnection());
+    ViewerTest_myDrivers.Bind (aViewNames.GetDriverName(), aGraphicDriver);
+    toCreateViewer = Standard_True;
+  }
+  else
+  {
+    aGraphicDriver = ViewerTest_myDrivers.Find1(aViewNames.GetDriverName());
   }
 
-  if (isFirst)
+  //Dispose the window if input parameters are default
+  if (!ViewerTest_myViews.IsEmpty() && thePxLeft == 0 && thePxTop == 0)
   {
-    Handle(Aspect_DisplayConnection) aDisplayConnection = new Aspect_DisplayConnection();
-    if (GetGraphicDriver().IsNull())
-    {
-      GetGraphicDriver() = Graphic3d::InitGraphicDriver (aDisplayConnection);
-    }
+    Standard_Integer aTop = 0,
+                     aLeft = 0,
+                     aRight = 0,
+                     aBottom = 0,
+                     aScreenWidth = 0,
+                     aScreenHeight = 0;
+
+    // Get screen resolution
 #if defined(_WIN32) || defined(__WIN32__)
-    if (VT_GetWindow().IsNull())
+    RECT aWindowSize;
+    GetClientRect(GetDesktopWindow(), &aWindowSize);
+    aScreenHeight = aWindowSize.bottom;
+    aScreenWidth = aWindowSize.right;
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+    GetCocoaScreenResolution (aScreenWidth, aScreenHeight);
+#else
+    Screen *aScreen = DefaultScreenOfDisplay(GetDisplayConnection()->GetDisplay());
+    aScreenWidth = WidthOfScreen(aScreen);
+    aScreenHeight = HeightOfScreen(aScreen);
+#endif
+
+    TCollection_AsciiString anOverlappedViewId("");
+    Standard_Boolean isOverlapped = Standard_False;
+    while (isOverlapped = IsWindowOverlapped (aPxLeft, aPxTop, aPxLeft + aPxWidth, aPxTop + aPxHeight, anOverlappedViewId))
     {
-      VT_GetWindow() = new WNT_Window ("Test3d",
+      ViewerTest_myViews.Find1(anOverlappedViewId)->Window()->Position (aLeft, aTop, aRight, aBottom);
+
+      if (IsWindowOverlapped (aRight + 20, aPxTop, aRight + 20 + aPxWidth, aPxTop + aPxHeight, anOverlappedViewId)
+        && aRight + 2*aPxWidth + 40 > aScreenWidth)
+      {
+        if (aBottom + aPxHeight + 40 > aScreenHeight)
+        {
+          aPxLeft = 20;
+          aPxTop = 40;
+          break;
+        }
+        aPxLeft = 20;
+        aPxTop = aBottom + 40;
+      }
+      else
+        aPxLeft = aRight + 20;
+    }
+  }
+
+  // Get viewer name
+  TCollection_AsciiString aTitle("3D View - ");
+  aTitle = aTitle + aViewNames.GetViewName() + "(*)";
+
+  // Change name of current active window
+  if (!ViewerTest::CurrentView().IsNull())
+  {
+    TCollection_AsciiString aTitle("3D View - ");
+    aTitle = aTitle
+      + ViewerTest_myViews.Find2 (ViewerTest::CurrentView());
+    SetWindowTitle (ViewerTest::CurrentView()->Window(), aTitle.ToCString());
+  }
+
+  // Create viewer
+  Handle(V3d_Viewer) a3DViewer, a3DCollector;
+  // If it's the single view, we first look for empty context
+  if (ViewerTest_myViews.IsEmpty() && !ViewerTest_myContexts.IsEmpty())
+  {
+    NCollection_DoubleMap <TCollection_AsciiString, Handle(AIS_InteractiveContext)>::Iterator
+      anIter(ViewerTest_myContexts);
+    if (anIter.More())
+      ViewerTest::SetAISContext (anIter.Value());
+    a3DViewer = ViewerTest::GetAISContext()->CurrentViewer();
+    a3DCollector= ViewerTest::GetAISContext()->Collector();
+  }
+  else if (ViewerTest_myContexts.IsBound1(aViewNames.GetViewerName()))
+  {
+    ViewerTest::SetAISContext(ViewerTest_myContexts.Find1(aViewNames.GetViewerName()));
+    a3DViewer = ViewerTest::GetAISContext()->CurrentViewer();
+    a3DCollector= ViewerTest::GetAISContext()->Collector();
+  }
+  else if (a3DViewer.IsNull() || a3DCollector.IsNull())
+  {
+    toCreateViewer = Standard_True;
+    TCollection_ExtendedString NameOfWindow("Viewer3D");
+    a3DViewer = new V3d_Viewer(aGraphicDriver, NameOfWindow.ToExtString());
+
+    NameOfWindow = TCollection_ExtendedString("Collector");
+    a3DCollector = new V3d_Viewer(aGraphicDriver, NameOfWindow.ToExtString());
+
+    a3DViewer->SetDefaultBackgroundColor(Quantity_NOC_BLACK);
+    a3DCollector->SetDefaultBackgroundColor(Quantity_NOC_STEELBLUE);
+  }
+
+  // AIS context setup
+  if (ViewerTest::GetAISContext().IsNull() ||
+      !(ViewerTest_myContexts.IsBound1(aViewNames.GetViewerName())))
+  {
+    Handle(AIS_InteractiveContext) aContext =
+      new AIS_InteractiveContext(a3DViewer, a3DCollector);
+    ViewerTest::SetAISContext (aContext);
+    ViewerTest_myContexts.Bind (aViewNames.GetViewerName(), ViewerTest::GetAISContext());
+  }
+  else
+    ViewerTest::ResetEventManager();
+
+  // Create window
+#if defined(_WIN32) || defined(__WIN32__)
+      VT_GetWindow() = new WNT_Window (aTitle.ToCString(),
                                        Handle(WNT_WClass)::DownCast (WClass()),
                                        WS_OVERLAPPEDWINDOW,
                                        aPxLeft, aPxTop,
                                        aPxWidth, aPxHeight,
                                        Quantity_NOC_BLACK);
-    }
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-    if (VT_GetWindow().IsNull())
-    {
-      VT_GetWindow() = new Cocoa_Window ("Test3d",
+      VT_GetWindow() = new Cocoa_Window (aTitle.ToCString(),
                                          aPxLeft, aPxTop,
                                          aPxWidth, aPxHeight);
       ViewerTest_SetCocoaEventManagerView (VT_GetWindow());
-    }
 #else
-    if (VT_GetWindow().IsNull())
-    {
-      VT_GetWindow() = new Xw_Window (aDisplayConnection,
-                                      "Test3d",
+      VT_GetWindow() = new Xw_Window (aGraphicDriver->GetDisplayConnection(),
+                                      aTitle.ToCString(),
                                       aPxLeft, aPxTop,
                                       aPxWidth, aPxHeight);
-    }
 #endif
-    VT_GetWindow()->SetVirtual (Draw_VirtualWindows);
+  VT_GetWindow()->SetVirtual (Draw_VirtualWindows);
 
-    Handle(V3d_Viewer) a3DViewer, a3DCollector;
-    // Viewer and View creation
+  // NIS setup
+  Handle(NIS_View) aView = new NIS_View (a3DViewer, VT_GetWindow());
+  
+  ViewerTest::CurrentView(aView);
+  ViewerTest_myViews.Bind (aViewNames.GetViewName(), aView);
+  TheNISContext()->AttachView (aView);
 
-    TCollection_ExtendedString NameOfWindow("Visu3D");
+  // Setup for X11 or NT
+  OSWindowSetup();
 
-    a3DViewer = new V3d_Viewer(GetGraphicDriver(), NameOfWindow.ToExtString());
-    NameOfWindow = TCollection_ExtendedString("Collector");
-    a3DCollector = new V3d_Viewer(GetGraphicDriver(), NameOfWindow.ToExtString());
-    a3DViewer->SetDefaultBackgroundColor(Quantity_NOC_BLACK);
-    a3DCollector->SetDefaultBackgroundColor(Quantity_NOC_STEELBLUE);
-    Handle(NIS_View) aView = Handle(NIS_View)::DownCast(ViewerTest::CurrentView());
-    if (aView.IsNull())
-    {
-      //Handle(V3d_View) a3DViewCol = a3DViewer->CreateView();
-      aView = new NIS_View (a3DViewer, VT_GetWindow());
-      ViewerTest::CurrentView(aView);
-      TheNISContext()->AttachView (aView);
-    }
+  // Set parameters for V3d_View and V3d_Viewer
+  const Handle (V3d_View) aV3dView = ViewerTest::CurrentView();
+  aV3dView->SetComputedMode(Standard_False);
+  MyHLRIsOn = aV3dView->ComputedMode();
+  aV3dView->SetZClippingDepth(0.5);
+  aV3dView->SetZClippingWidth(ZCLIPWIDTH/2.);
 
-    // AIS setup
-    if ( ViewerTest::GetAISContext().IsNull() ) {
-      Handle(AIS_InteractiveContext) C =
-        new AIS_InteractiveContext(a3DViewer,a3DCollector);
-      ViewerTest::SetAISContext(C);
-    }
-
-    // Setup for X11 or NT
-    OSWindowSetup();
-    // Viewer and View creation
-
-    a3DViewer->SetDefaultBackgroundColor(Quantity_NOC_BLACK);
-
-    Handle (V3d_View) V = ViewerTest::CurrentView();
-    //    V->SetWindow(VT_GetWindow(), NULL, MyViewProc, NULL);
-
-    V->SetZClippingDepth(0.5);
-    V->SetZClippingWidth(ZCLIPWIDTH/2.);
+  a3DViewer->SetDefaultBackgroundColor(Quantity_NOC_BLACK);
+  if (toCreateViewer)
+  {
     a3DViewer->SetDefaultLights();
     a3DViewer->SetLightOn();
+  }
 
   #if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
   #if TCL_MAJOR_VERSION  < 8
-    Tk_CreateFileHandler((void*)ConnectionNumber(display),
+  Tk_CreateFileHandler((void*)XConnectionNumber(GetDisplayConnection()->GetDisplay()),
       TK_READABLE, VProcessEvents, (ClientData) VT_GetWindow()->XWindow() );
   #else
-    Tk_CreateFileHandler(ConnectionNumber(display),
+  Tk_CreateFileHandler(XConnectionNumber(GetDisplayConnection()->GetDisplay()),
       TK_READABLE, VProcessEvents, (ClientData) VT_GetWindow()->XWindow() );
   #endif
   #endif
 
-    isFirst = Standard_False;
-  }
-
   VT_GetWindow()->Map();
+  
+  // Set the handle of created view in the event manager
+  ViewerTest::ResetEventManager();
+
   ViewerTest::CurrentView()->Redraw();
+
+  aView.Nullify();
+  a3DViewer.Nullify();
+  a3DCollector.Nullify();
+
+  return aViewNames.GetViewName();
+}
+
+//==============================================================================
+//function : SplitParameter
+//purpose  : Split parameter string to parameter name an patameter value
+//==============================================================================
+Standard_Boolean SplitParameter (const TCollection_AsciiString& theString,
+                                      TCollection_AsciiString& theName,
+                                      TCollection_AsciiString& theValue)
+{
+  Standard_Integer aParamNameEnd = theString.FirstLocationInSet("=",1, theString.Length());
+  if (aParamNameEnd == 0)
+    return Standard_False;
+  TCollection_AsciiString aString(theString);
+  if (aParamNameEnd != 0)
+  {
+    theValue = aString.Split(aParamNameEnd);
+    aString.Split(aString.Length()-1);
+    theName = aString;
+  }
+  return Standard_True;
 }
 
 //==============================================================================
@@ -314,13 +732,67 @@ void ViewerTest::ViewerInit (const Standard_Integer thePxLeft,  const Standard_I
 //    Use Tk_CreateFileHandler on UNIX to cath the X11 Viewer event
 //==============================================================================
 
-static int VInit (Draw_Interpretor& , Standard_Integer argc, const char** argv)
+static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const char** theArgVec)
 {
-  Standard_Integer aPxLeft   = (argc > 1) ? Draw::Atoi (argv[1]) : 0;
-  Standard_Integer aPxTop    = (argc > 2) ? Draw::Atoi (argv[2]) : 0;
-  Standard_Integer aPxWidth  = (argc > 3) ? Draw::Atoi (argv[3]) : 0;
-  Standard_Integer aPxHeight = (argc > 4) ? Draw::Atoi (argv[4]) : 0;
-  ViewerTest::ViewerInit (aPxLeft, aPxTop, aPxWidth, aPxHeight);
+if (theArgsNb > 9)
+  {
+    theDi << theArgVec[0] << ": incorrect number of command arguments.\n"
+      << "Type help for more information.\n";
+    return 1;
+  }
+  TCollection_AsciiString aViewName (""),
+                          aDisplayName ("");
+  Standard_Integer aPxLeft = 0,
+                  aPxTop = 0,
+                  aPxWidth = 0,
+                  aPxHeight = 0;
+
+  for (Standard_Integer i = 1; i < theArgsNb; ++i)
+  {
+    TCollection_AsciiString aName = "", aValue = "";
+    if(!SplitParameter (TCollection_AsciiString(theArgVec[i]),aName,aValue) && theArgsNb == 2)
+    {
+      // In case of syntax: vinit ViewName
+      aViewName = theArgVec[1];
+    }
+    else
+    {
+      if (aName == "name")
+      {
+        aViewName = aValue;
+      }
+      else if (aName == "l" || aName == "left")
+        aPxLeft = aValue.IntegerValue();
+      else if (aName == "t" || aName == "top")
+        aPxTop = aValue.IntegerValue();
+#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+      else if (aName == "display")
+        aDisplayName = aValue;
+#endif
+      else if (aName == "w" || aName == "width")
+        aPxWidth = aValue.IntegerValue();
+      else if (aName == "h" || aName == "height")
+        aPxHeight = aValue.IntegerValue();
+      else
+      {
+        theDi << theArgVec[0] << ": Warning: unknown parameter " << aName.ToCString() << ".\n";
+      }
+    }
+  }
+
+  ViewerTest_Names aViewNames (aViewName);
+  if (ViewerTest_myViews.IsBound1 (aViewNames.GetViewName ()))
+  {
+    TCollection_AsciiString aCommand("vactivate ");
+    aCommand = aCommand + aViewNames.GetViewName();
+    theDi.Eval(aCommand.ToCString());
+    return 0;
+  }
+
+  TCollection_AsciiString aViewId = ViewerTest::ViewerInit (aPxLeft, aPxTop, aPxWidth, aPxHeight,
+                                                            aViewName.ToCString(),
+                                                            aDisplayName.ToCString());
+  cout << theArgVec[0] << ": 3D View - " << aViewId << " was created.\n";
   return 0;
 }
 
@@ -423,6 +895,338 @@ static int VHLRType (Draw_Interpretor& di, Standard_Integer argc, const char** a
     ViewerTest::CurrentView()->Update();
   }
 
+  return 0;
+}
+
+//==============================================================================
+//function : FindViewIdByWindowHandle
+//purpose  : Find theView Id in the map of views by window handle
+//==============================================================================
+#if defined(_WIN32) || defined(__WIN32__) || (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+TCollection_AsciiString FindViewIdByWindowHandle(const Aspect_Handle theWindowHandle)
+{
+  for (NCollection_DoubleMap<TCollection_AsciiString, Handle(V3d_View)>::Iterator
+       anIter(ViewerTest_myViews); anIter.More(); anIter.Next())
+  {
+    Aspect_Handle aWindowHandle = GetWindowHandle(anIter.Value()->Window());
+    if (aWindowHandle == theWindowHandle)
+      return anIter.Key1();
+  }
+  return TCollection_AsciiString("");
+}
+#endif
+
+//==============================================================================
+//function : ActivateView
+//purpose  : Make the view active
+//==============================================================================
+
+void ActivateView (const TCollection_AsciiString& theViewName)
+{
+  const Handle(V3d_View) aView = ViewerTest_myViews.Find1(theViewName);
+  if (!aView.IsNull())
+  {
+    Handle(AIS_InteractiveContext) anAISContext = FindContextByView(aView);
+    if (!anAISContext.IsNull())
+    {
+      if (!ViewerTest::CurrentView().IsNull())
+      {
+        TCollection_AsciiString aTitle("3D View - ");
+        aTitle = aTitle + ViewerTest_myViews.Find2 (ViewerTest::CurrentView());
+        SetWindowTitle (ViewerTest::CurrentView()->Window(), aTitle.ToCString());
+      }
+
+      ViewerTest::CurrentView (aView);
+      // Update degenerate mode
+      MyHLRIsOn = ViewerTest::CurrentView()->ComputedMode();
+      ViewerTest::SetAISContext (anAISContext);
+      TCollection_AsciiString aTitle = TCollection_AsciiString("3D View - ");
+      aTitle = aTitle + theViewName + "(*)";
+      SetWindowTitle (ViewerTest::CurrentView()->Window(), aTitle.ToCString());
+#if defined(_WIN32) || defined(__WIN32__)
+      VT_GetWindow() = Handle(WNT_Window)::DownCast(ViewerTest::CurrentView()->Window());
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+      VT_GetWindow() = Handle(Cocoa_Window)::DownCast(ViewerTest::CurrentView()->Window());
+#else
+      VT_GetWindow() = Handle(Xw_Window)::DownCast(ViewerTest::CurrentView()->Window());
+#endif
+      SetDisplayConnection(ViewerTest::CurrentView()->Viewer()->Driver()->GetDisplayConnection());
+      ViewerTest::CurrentView()->Redraw();
+    }
+  }
+}
+
+//==============================================================================
+//function : RemoveView
+//purpose  : Close and remove view from display, clear maps if neccessary
+//==============================================================================
+void ViewerTest::RemoveView (const TCollection_AsciiString& theViewName, const Standard_Boolean isContextRemoved)
+{
+  if (!ViewerTest_myViews.IsBound1(theViewName))
+  {
+    cout << "Wrong view name\n";
+    return;
+  }
+
+  // Activate another view if it's active now
+  if (ViewerTest_myViews.Find1(theViewName) == ViewerTest::CurrentView())
+  {
+    if (ViewerTest_myViews.Extent() > 1)
+    {
+      TCollection_AsciiString aNewViewName;
+      for (NCollection_DoubleMap <TCollection_AsciiString, Handle(V3d_View)> :: Iterator
+           anIter(ViewerTest_myViews); anIter.More(); anIter.Next())
+        if (anIter.Key1() != theViewName)
+        {
+          aNewViewName = anIter.Key1();
+          break;
+        }
+        ActivateView (aNewViewName);
+    }
+    else
+    {
+      Handle(V3d_View) anEmptyView;
+#if defined(_WIN32) || defined(__WIN32__)
+      Handle(WNT_Window) anEmptyWindow;
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+      Handle(Cocoa_Window) anEmptyWindow;
+#else
+      Handle(Xw_Window) anEmptyWindow;
+#endif
+      VT_GetWindow() = anEmptyWindow;
+      ViewerTest::CurrentView (anEmptyView);
+      if (isContextRemoved)
+      {
+        Handle(AIS_InteractiveContext) anEmptyContext;
+        ViewerTest::SetAISContext(anEmptyContext);
+      }
+    }
+  }
+
+  // Delete view
+  Handle(V3d_View) aView = ViewerTest_myViews.Find1(theViewName);
+  Handle(AIS_InteractiveContext) aCurrentContext = FindContextByView(aView);
+
+  // Remove view resources
+  TheNISContext()->DetachView(Handle(NIS_View)::DownCast(aView));
+  ViewerTest_myViews.UnBind1(theViewName);
+  aView->Remove();
+
+#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+  XFlush (GetDisplayConnection()->GetDisplay());
+#endif
+
+  // Keep context opened only if the closed view is last to avoid
+  // unused empty contexts
+  if (!aCurrentContext.IsNull())
+  {
+    // Check if there are more difined views in the viewer
+    aCurrentContext->CurrentViewer()->InitDefinedViews();
+    if ((isContextRemoved || ViewerTest_myContexts.Size() != 1) && !aCurrentContext->CurrentViewer()->MoreDefinedViews())
+    {
+      // Remove driver if there is no viewers that use it
+      Standard_Boolean isRemoveDriver = Standard_True;
+      for(NCollection_DoubleMap<TCollection_AsciiString, Handle(AIS_InteractiveContext)>::Iterator
+          anIter(ViewerTest_myContexts); anIter.More(); anIter.Next())
+      {
+        if (aCurrentContext != anIter.Key2() &&
+          aCurrentContext->CurrentViewer()->Driver() == anIter.Value()->CurrentViewer()->Driver())
+        {
+          isRemoveDriver = Standard_False;
+          break;
+        }
+      }
+      if(isRemoveDriver)
+      {
+        ViewerTest_myDrivers.UnBind2 (aCurrentContext->CurrentViewer()->Driver());
+      #if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+        #if TCL_MAJOR_VERSION  < 8
+        Tk_DeleteFileHandler((void*)XConnectionNumber(aCurrentContext->CurrentViewer()->Driver()->GetDisplayConnection()->GetDisplay()));
+        #else
+        Tk_DeleteFileHandler(XConnectionNumber(aCurrentContext->CurrentViewer()->Driver()->GetDisplayConnection()->GetDisplay()));
+        #endif
+      #endif
+      }
+
+      ViewerTest_myContexts.UnBind2(aCurrentContext);
+    }
+  }
+  cout << "3D View - " << theViewName << " was deleted.\n";
+
+}
+
+//==============================================================================
+//function : VClose
+//purpose  : Remove the view defined by its name
+//==============================================================================
+
+static int VClose (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const char** theArgVec)
+{
+  if (theArgsNb < 2)
+  {
+    theDi << theArgVec[0] << ": incorrect number of command arguments.\n"
+      << "Type help " << theArgVec[0] << " for more information.\n";
+    return 1;
+  }
+
+  if (ViewerTest_myViews.IsEmpty())
+  {
+    theDi << theArgVec[0] <<": there is no views to close.\n";
+    return 0;
+  }
+
+  TCollection_AsciiString anInputString(theArgVec[1]);
+  
+  // Create list to iterate and remove views from the map of views
+  NCollection_List<TCollection_AsciiString> aViewList;
+  if (TCollection_AsciiString::ISSIMILAR (anInputString, TCollection_AsciiString("ALL")))
+  {
+    for (NCollection_DoubleMap<TCollection_AsciiString, Handle(V3d_View)>::Iterator anIter(ViewerTest_myViews);
+         anIter.More(); anIter.Next())
+    {
+      aViewList.Append(anIter.Key1());
+    }
+  }
+  else
+  {
+    ViewerTest_Names aViewNames(anInputString);
+    aViewList.Append(aViewNames.GetViewName());
+  }
+
+  Standard_Boolean isContextRemoved = (theArgsNb == 3 && atoi(theArgVec[2])==1) ? Standard_False : Standard_True;
+  for (NCollection_List<TCollection_AsciiString>::Iterator anIter(aViewList);
+       anIter.More(); anIter.Next())
+  {
+    ViewerTest::RemoveView(anIter.Value(), isContextRemoved);
+  }
+
+  return 0;
+}
+
+//==============================================================================
+//function : VActivate
+//purpose  : Activate the view defined by its ID
+//==============================================================================
+
+static int VActivate (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const char** theArgVec)
+{
+  if (theArgsNb > 2)
+  {
+    theDi << theArgVec[0] << ": wrong number of command arguments.\n"
+    << "Usage: " << theArgVec[0] << " ViewID\n";
+    return 1;
+  }
+  if(theArgsNb == 1)
+  {
+    theDi.Eval("vviewlist");
+    return 0;
+  }
+
+  TCollection_AsciiString aNameString(theArgVec[1]);
+  if (TCollection_AsciiString::ISSIMILAR (aNameString, TCollection_AsciiString("NONE")))
+  {
+    TCollection_AsciiString aTitle("3D View - ");
+    aTitle = aTitle + ViewerTest_myViews.Find2(ViewerTest::CurrentView());
+    SetWindowTitle (ViewerTest::CurrentView()->Window(), aTitle.ToCString());
+    Handle(V3d_View) anEmptyView;
+#if defined(_WIN32) || defined(__WIN32__)
+    Handle(WNT_Window) anEmptyWindow;
+#elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+    Handle(Cocoa_Window) anEmptyWindow;
+#else
+    Handle(Xw_Window) anEmptyWindow;
+#endif
+    VT_GetWindow() = anEmptyWindow;
+    ViewerTest::CurrentView (anEmptyView);
+    ViewerTest::ResetEventManager();
+    theDi << theArgVec[0] << ": all views are inactive\n";
+    return 0;
+  }
+
+  ViewerTest_Names aViewNames(aNameString);
+
+  // Check if this view exists in the viewer with the driver
+  if (!ViewerTest_myViews.IsBound1(aViewNames.GetViewName()))
+  {
+    theDi << "Wrong view name\n";
+    return 1;
+  }
+
+  // Check if it is active already
+  if (ViewerTest::CurrentView() == ViewerTest_myViews.Find1(aViewNames.GetViewName()))
+  {
+    theDi << theArgVec[0] << ": the view is active already\n";
+    return 0;
+  }
+
+  ActivateView (aViewNames.GetViewName());
+  return 0;
+}
+
+//==============================================================================
+//function : VViewList
+//purpose  : Print current list of views per viewer and graphic driver ID
+//           shared between viewers
+//==============================================================================
+
+static int VViewList (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const char** theArgVec)
+{
+  if (theArgsNb > 2)
+  {
+    theDi << theArgVec[0] << ": Wrong number of command arguments\n"
+      << "Usage: " << theArgVec[0];
+    return 1;
+  }
+  if (ViewerTest_myContexts.Size() < 1)
+    return 0;
+
+  TCollection_AsciiString aNameString(theArgsNb==2?theArgVec[1]:"");
+  Standard_Boolean isTreeView =
+    TCollection_AsciiString::ISSIMILAR (aNameString, TCollection_AsciiString("long"))?
+    Standard_False:Standard_True;
+
+  if (isTreeView)
+    theDi << theArgVec[0] <<":\n";
+
+    for (NCollection_DoubleMap <TCollection_AsciiString, Handle(Graphic3d_GraphicDriver)>::Iterator
+      aDriverIter(ViewerTest_myDrivers); aDriverIter.More(); aDriverIter.Next())
+    {
+      if (isTreeView)
+        theDi << aDriverIter.Key1() << ":\n";
+
+      for (NCollection_DoubleMap <TCollection_AsciiString, Handle(AIS_InteractiveContext)>::Iterator
+        aContextIter(ViewerTest_myContexts); aContextIter.More(); aContextIter.Next())
+      {
+        if (aContextIter.Key1().Search(aDriverIter.Key1()) != -1)
+        {
+          if (isTreeView)
+          {
+            TCollection_AsciiString aContextName(aContextIter.Key1());
+            theDi << " " << aContextName.Split(aDriverIter.Key1().Length() + 1) << ":" << "\n";
+          }
+
+          for (NCollection_DoubleMap <TCollection_AsciiString, Handle(V3d_View)>::Iterator
+            aViewIter(ViewerTest_myViews); aViewIter.More(); aViewIter.Next())
+          {
+            if (aViewIter.Key1().Search(aContextIter.Key1()) != -1)
+            {
+              TCollection_AsciiString aViewName(aViewIter.Key1());
+              if (isTreeView)
+              {
+                if (aViewIter.Value() == ViewerTest::CurrentView())
+                  theDi << "  " << aViewName.Split(aContextIter.Key1().Length() + 1) << "(*)" << "\n";
+                else
+                  theDi << "  " << aViewName.Split(aContextIter.Key1().Length() + 1) << "\n";
+              }
+              else
+              {
+                theDi << aViewName << " ";
+              }
+            }
+          }
+        }
+      }
+    }
   return 0;
 }
 
@@ -974,12 +1778,29 @@ static LRESULT WINAPI AdvViewerWindowProc( HWND hwnd,
                                           WPARAM wParam,
                                           LPARAM lParam )
 {
-  if ( !ViewerTest::CurrentView().IsNull() ) {
+  if (!ViewerTest_myViews.IsEmpty()) {
 
     WPARAM fwKeys = wParam;
 
     switch( Msg ) {
-
+    case WM_CLOSE:
+       {
+         // Delete view from map of views
+         ViewerTest::RemoveView(FindViewIdByWindowHandle(hwnd));
+         return 0;
+       }
+       break;
+    case WM_ACTIVATE:
+      if(LOWORD(wParam) == WA_CLICKACTIVE || LOWORD(wParam) == WA_ACTIVE
+        || ViewerTest::CurrentView().IsNull())
+      {
+        // Activate inactive window
+        if(GetWindowHandle(VT_GetWindow()) != hwnd)
+        {
+          ActivateView (FindViewIdByWindowHandle(hwnd));
+        }
+      }
+      break;
     case WM_LBUTTONUP:
       IsDragged = Standard_False;
       if( !DragFirst )
@@ -1054,20 +1875,12 @@ static LRESULT WINAPI ViewerWindowProc( HWND hwnd,
                                        WPARAM wParam,
                                        LPARAM lParam )
 {
-  /*static Standard_Boolean Ppick = 0;
-  static Standard_Integer Pargc = 0;
-  static char**           Pargv = NULL;*/
-
   static int Up = 1;
 
   if ( !ViewerTest::CurrentView().IsNull() ) {
     PAINTSTRUCT    ps;
 
     switch( Msg ) {
-    case WM_CLOSE:
-      // do not destroy the window - just hide it!
-      VT_GetWindow()->Unmap();
-      return 0;
     case WM_PAINT:
       BeginPaint(hwnd, &ps);
       EndPaint(hwnd, &ps);
@@ -1200,13 +2013,6 @@ static LRESULT WINAPI ViewerWindowProc( HWND hwnd,
 
 static int ViewerMainLoop(Standard_Integer argc, const char** argv)
 {
-
-  //cout << "No yet implemented on WNT" << endl;
-  /*static Standard_Boolean Ppick = 0;
-  static Standard_Integer Pargc = 0;
-  static char**           Pargv = NULL;*/
-
-  //Ppick = (argc > 0)? -1 : 0;
   Ppick = (argc > 0)? 1 : 0;
   Pargc = argc;
   Pargv = argv;
@@ -1217,7 +2023,6 @@ static int ViewerMainLoop(Standard_Integer argc, const char** argv)
 
     cout << "Start picking" << endl;
 
-    //while ( Ppick == -1 ) {
     while ( Ppick == 1 ) {
       // Wait for a VT_ProcessButton1Press() to toggle pick to 1 or 0
       if (GetMessage(&msg, NULL, 0, 0) ) {
@@ -1252,17 +2057,33 @@ int max( int a, int b )
 
 int ViewerMainLoop(Standard_Integer argc, const char** argv)
 
-{ Standard_Boolean pick = argc > 0;
+{ 
+  static XEvent aReport;
+  Standard_Boolean pick = argc > 0;
+  Display *aDisplay = GetDisplayConnection()->GetDisplay();
+  XNextEvent (aDisplay, &aReport);
 
-// X11 Event loop
-
-static XEvent report;
-
-XNextEvent( display, &report );
-//    cout << "rep type = " << report.type << endl;
-//    cout << "rep button = " << report.xbutton.button << endl;
-
-switch ( report.type ) {
+  // Handle event for the chosen display connection
+  switch (aReport.type) {
+      case ClientMessage:
+        {
+          if(aReport.xclient.data.l[0] == GetDisplayConnection()->GetAtom(Aspect_XA_DELETE_WINDOW))
+          {
+            // Close the window
+            ViewerTest::RemoveView(FindViewIdByWindowHandle (aReport.xclient.window));
+          }
+        }
+        return 0;
+     case FocusIn:
+      {
+         // Activate inactive view
+         Window aWindow = GetWindowHandle(VT_GetWindow());
+         if(aWindow != aReport.xfocus.window)
+         {
+           ActivateView (FindViewIdByWindowHandle (aReport.xfocus.window));
+         }
+      }
+      break;
       case Expose:
         {
           VT_ProcessExpose();
@@ -1281,7 +2102,7 @@ switch ( report.type ) {
           int ret_len ;
           XComposeStatus status_in_out;
 
-          ret_len = XLookupString( ( XKeyEvent *)&report ,
+          ret_len = XLookupString( ( XKeyEvent *)&aReport ,
             (char *) buf_ret , 10 ,
             &ks_ret , &status_in_out ) ;
 
@@ -1295,16 +2116,15 @@ switch ( report.type ) {
         }
         break;
       case ButtonPress:
-        //  cout << "ButtonPress" << endl;
         {
-          X_ButtonPress = report.xbutton.x;
-          Y_ButtonPress = report.xbutton.y;
+          X_ButtonPress = aReport.xbutton.x;
+          Y_ButtonPress = aReport.xbutton.y;
 
-          if (report.xbutton.button == Button1)
+          if (aReport.xbutton.button == Button1)
           {
-            if (report.xbutton.state & ControlMask)
+            if (aReport.xbutton.state & ControlMask)
             {
-              pick = VT_ProcessButton1Press (argc, argv, pick, (report.xbutton.state & ShiftMask));
+              pick = VT_ProcessButton1Press (argc, argv, pick, (aReport.xbutton.state & ShiftMask));
             }
             else
             {
@@ -1312,7 +2132,7 @@ switch ( report.type ) {
               DragFirst = Standard_True;
             }
           }
-          else if (report.xbutton.button == Button3)
+          else if (aReport.xbutton.button == Button3)
           {
             // Start rotation
             VT_ProcessButton3Press();
@@ -1321,18 +2141,13 @@ switch ( report.type ) {
         break;
       case ButtonRelease:
         {
-          //    cout<<"relachement du bouton "<<(report.xbutton.button==3 ? "3": "on s'en fout") <<endl;
-          //    cout << IsDragged << endl;
-          //    cout << DragFirst << endl;
-
           if( IsDragged )
           {
             if( !DragFirst )
             {
               Aspect_Handle aWindow = VT_GetWindow()->XWindow();
-              GC gc = XCreateGC( display, aWindow, 0, 0 );
-              //  XSetFunction( display, gc, GXinvert );
-              XDrawRectangle( display, aWindow, gc, min( X_ButtonPress, X_Motion ), min( Y_ButtonPress, Y_Motion ), abs( X_Motion-X_ButtonPress ), abs( Y_Motion-Y_ButtonPress ) );
+              GC gc = XCreateGC( aDisplay, aWindow, 0, 0 );
+              XDrawRectangle( aDisplay, aWindow, gc, min( X_ButtonPress, X_Motion ), min( Y_ButtonPress, Y_Motion ), abs( X_Motion-X_ButtonPress ), abs( Y_Motion-Y_ButtonPress ) );
             }
 
             Handle( AIS_InteractiveContext ) aContext = ViewerTest::GetAISContext();
@@ -1342,18 +2157,16 @@ switch ( report.type ) {
               return 0;
             }
 
-            Standard_Boolean ShiftPressed = ( report.xbutton.state & ShiftMask );
-            if( report.xbutton.button==1 )
+            Standard_Boolean ShiftPressed = ( aReport.xbutton.state & ShiftMask );
+            if( aReport.xbutton.button==1 )
               if( DragFirst )
                 if( ShiftPressed )
                 {
                   aContext->ShiftSelect();
-                  //                   cout << "shift select" << endl;
                 }
                 else
                 {
                   aContext->Select();
-                  //                   cout << "select" << endl;
                 }
               else
                 if( ShiftPressed )
@@ -1361,14 +2174,12 @@ switch ( report.type ) {
                   aContext->ShiftSelect( min( X_ButtonPress, X_Motion ), min( Y_ButtonPress, Y_Motion ),
                     max( X_ButtonPress, X_Motion ), max( Y_ButtonPress, Y_Motion ),
                     ViewerTest::CurrentView());
-                  //                   cout << "shift select" << endl;
                 }
                 else
                 {
                   aContext->Select( min( X_ButtonPress, X_Motion ), min( Y_ButtonPress, Y_Motion ),
                     max( X_ButtonPress, X_Motion ), max( Y_ButtonPress, Y_Motion ),
                     ViewerTest::CurrentView() );
-                  //                   cout << "select" << endl;
                 }
             else
               VT_ProcessButton3Release();
@@ -1384,27 +2195,27 @@ switch ( report.type ) {
           if( IsDragged )
           {
             Aspect_Handle aWindow = VT_GetWindow()->XWindow();
-            GC gc = XCreateGC( display, aWindow, 0, 0 );
-            XSetFunction( display, gc, GXinvert );
+            GC gc = XCreateGC( aDisplay, aWindow, 0, 0 );
+            XSetFunction( aDisplay, gc, GXinvert );
 
             if( !DragFirst )
-              XDrawRectangle( display, aWindow, gc, min( X_ButtonPress, X_Motion ), min( Y_ButtonPress, Y_Motion ), abs( X_Motion-X_ButtonPress ), abs( Y_Motion-Y_ButtonPress ) );
+              XDrawRectangle(aDisplay, aWindow, gc, min( X_ButtonPress, X_Motion ), min( Y_ButtonPress, Y_Motion ), abs( X_Motion-X_ButtonPress ), abs( Y_Motion-Y_ButtonPress ) );
 
-            X_Motion = report.xmotion.x;
-            Y_Motion = report.xmotion.y;
+            X_Motion = aReport.xmotion.x;
+            Y_Motion = aReport.xmotion.y;
             DragFirst = Standard_False;
 
-            XDrawRectangle( display, aWindow, gc, min( X_ButtonPress, X_Motion ), min( Y_ButtonPress, Y_Motion ), abs( X_Motion-X_ButtonPress ), abs( Y_Motion-Y_ButtonPress ) );
+            XDrawRectangle( aDisplay, aWindow, gc, min( X_ButtonPress, X_Motion ), min( Y_ButtonPress, Y_Motion ), abs( X_Motion-X_ButtonPress ), abs( Y_Motion-Y_ButtonPress ) );
           }
           else
           {
-            X_Motion = report.xmotion.x;
-            Y_Motion = report.xmotion.y;
+            X_Motion = aReport.xmotion.x;
+            Y_Motion = aReport.xmotion.y;
 
-            // remove all the ButtonMotionMask
-            while( XCheckMaskEvent( display, ButtonMotionMask, &report) ) ;
+            // remove all the ButtonMotionMaskr
+            while( XCheckMaskEvent( aDisplay, ButtonMotionMask, &aReport) ) ;
 
-            if ( ZClipIsOn && report.xmotion.state & ShiftMask ) {
+            if ( ZClipIsOn && aReport.xmotion.state & ShiftMask ) {
               if ( Abs(X_Motion - X_ButtonPress) > 2 ) {
 
                 Quantity_Length VDX, VDY;
@@ -1413,7 +2224,6 @@ switch ( report.type ) {
                 Standard_Real VDZ =0 ;
                 VDZ = ViewerTest::CurrentView()->ZSize();
 
-                //          printf("%lf,%lf,%lf\n", VDX, VDY, VDZ);
                 printf("%f,%f,%f\n", VDX, VDY, VDZ);
 
                 Quantity_Length dx = 0 ;
@@ -1425,22 +2235,18 @@ switch ( report.type ) {
 
                 cout << dx << endl;
 
-                // Front = Depth + width/2.
-                //ViewerTest::CurrentView()->SetZClippingDepth(dx);
-                //ViewerTest::CurrentView()->SetZClippingWidth(0.);
-
                 ViewerTest::CurrentView()->Redraw();
               }
             }
 
-            if ( report.xmotion.state & ControlMask ) {
-              if ( report.xmotion.state & Button1Mask ) {
+            if ( aReport.xmotion.state & ControlMask ) {
+              if ( aReport.xmotion.state & Button1Mask ) {
                 ProcessControlButton1Motion();
               }
-              else if ( report.xmotion.state & Button2Mask ) {
+              else if ( aReport.xmotion.state & Button2Mask ) {
                 VT_ProcessControlButton2Motion();
               }
-              else if ( report.xmotion.state & Button3Mask ) {
+              else if ( aReport.xmotion.state & Button3Mask ) {
                 VT_ProcessControlButton3Motion();
               }
             }
@@ -1452,8 +2258,6 @@ switch ( report.type ) {
         }
         break;
 }
-
-
 return pick;
 }
 
@@ -1465,12 +2269,31 @@ return pick;
 
 static void VProcessEvents(ClientData,int)
 {
-  //cout << "VProcessEvents" << endl;
-
-  // test for X Event
-  while (XPending(display)) {
-    ViewerMainLoop( 0, NULL);
+  NCollection_Vector<int> anEventNumbers;
+  // Get number of messages from every display
+  for (NCollection_DoubleMap <TCollection_AsciiString, Handle(Graphic3d_GraphicDriver)>::Iterator
+       anIter (ViewerTest_myDrivers); anIter.More(); anIter.Next())
+  {
+    anEventNumbers.Append(XPending (anIter.Key2()->GetDisplayConnection()->GetDisplay()));
+  } 
+    // Handle events for every display
+  int anEventIter = 0;
+  for (NCollection_DoubleMap <TCollection_AsciiString, Handle(Graphic3d_GraphicDriver)>::Iterator
+       anIter (ViewerTest_myDrivers); anIter.More(); anIter.Next(), anEventIter++)
+  {
+    for (int i = 0; i < anEventNumbers.Value(anEventIter) && 
+         XPending (anIter.Key2()->GetDisplayConnection()->GetDisplay()) > 0; ++i)
+    {
+      SetDisplayConnection (anIter.Key2()->GetDisplayConnection());
+      int anEventResult = ViewerMainLoop( 0, NULL);
+      // If window is closed or context was not found finish current event processing loop
+      if (!anEventResult)
+	return;
+    }
   }
+  
+  SetDisplayConnection (ViewerTest::GetAISContext()->CurrentViewer()->Driver()->GetDisplayConnection());
+  
 }
 #endif
 
@@ -1486,30 +2309,28 @@ static void OSWindowSetup()
   // X11
 
   Window  window   = VT_GetWindow()->XWindow();
-
-  display = GetGraphicDriver()->GetDisplayConnection()->GetDisplay();
-  //  display = (Display *)GetG3dDevice()->XDisplay();
-
-  XSynchronize(display, 1);
-
-  VT_GetWindow()->Map();
+  SetDisplayConnection (ViewerTest::CurrentView()->Viewer()->Driver()->GetDisplayConnection());
+  Display *aDisplay = GetDisplayConnection()->GetDisplay();
+  XSynchronize(aDisplay, 1);
 
   // X11 : For keyboard on SUN
   XWMHints wmhints;
   wmhints.flags = InputHint;
   wmhints.input = 1;
 
-  XSetWMHints( display, window, &wmhints);
+  XSetWMHints( aDisplay, window, &wmhints);
 
-  XSelectInput( display, window,  ExposureMask | KeyPressMask |
+  XSelectInput( aDisplay, window,  ExposureMask | KeyPressMask |
     ButtonPressMask | ButtonReleaseMask |
     StructureNotifyMask |
     PointerMotionMask |
     Button1MotionMask | Button2MotionMask |
-    Button3MotionMask
+    Button3MotionMask | FocusChangeMask
     );
+  Atom aDeleteWindowAtom = GetDisplayConnection()->GetAtom(Aspect_XA_DELETE_WINDOW);
+  XSetWMProtocols(aDisplay, window, &aDeleteWindowAtom, 1);
 
-  XSynchronize(display, 0);
+  XSynchronize(aDisplay, 0);
 
 #else
   // WNT
@@ -1594,30 +2415,29 @@ return 0;
 //purpose  : initialisation de toutes les variables static de  ViewerTest (dp)
 //==============================================================================
 
-void ViewerTest_InitViewerTest (const Handle(AIS_InteractiveContext)& context)
+void ViewerTest_InitViewerTest (const Handle(AIS_InteractiveContext)& theContext)
 {
-  Handle(V3d_Viewer) viewer = context->CurrentViewer();
-  ViewerTest::SetAISContext(context);
-  viewer->InitActiveViews();
-  Handle(V3d_View) view = viewer->ActiveView();
-  if (viewer->MoreActiveViews()) ViewerTest::CurrentView(view);
+  Handle(V3d_Viewer) aViewer = theContext->CurrentViewer();
+  ViewerTest::SetAISContext(theContext);
+  aViewer->InitActiveViews();
+  Handle(V3d_View) aView = aViewer->ActiveView();
+  if (aViewer->MoreActiveViews()) ViewerTest::CurrentView(aView);
   ViewerTest::ResetEventManager();
-  Handle(Aspect_Window) window = view->Window();
+  Handle(Aspect_Window) aWindow = aView->Window();
 #if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
   // X11
-  VT_GetWindow() = Handle(Xw_Window)::DownCast(window);
-  GetGraphicDriver() = viewer->Driver();
+  VT_GetWindow() = Handle(Xw_Window)::DownCast(aWindow);
   OSWindowSetup();
-  static int first = 1;
-  if ( first ) {
+  static int aFirst = 1;
+  if ( aFirst ) {
 #if TCL_MAJOR_VERSION  < 8
-    Tk_CreateFileHandler((void*)ConnectionNumber(display),
+    Tk_CreateFileHandler((void*)XConnectionNumber(GetDisplayConnection()->GetDisplay()),
       TK_READABLE, VProcessEvents, (ClientData) 0);
 #else
-    Tk_CreateFileHandler(ConnectionNumber(display),
+    Tk_CreateFileHandler(XConnectionNumber(GetDisplayConnection()->GetDisplay()),
       TK_READABLE, VProcessEvents, (ClientData) 0);
 #endif
-    first = 0;
+    aFirst = 0;
   }
 #endif
 }
@@ -3905,9 +4725,43 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
 {
 
   const char *group = "ZeViewer";
-  theCommands.Add("vinit" ,
-    "vinit            : vinit [leftPx topPx widthPx heightPx] : Create the Viewer window",
+  theCommands.Add("vinit",
+#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+    "[name=view_name] [display=display_name] [l=leftPx t=topPx] [w=widthPx h=heightPx]\n"
+#else
+    "[name=view_name] [l=leftPx t=topPx] [w=widthPx h=heightPx]\n"
+#endif
+    " - Creates new View window with specified name view_name.\n"
+    "By default the new view is created in the viewer and in"
+    " graphic driver shared with active view.\n"
+    " - name = {driverName/viewerName/viewName | viewerName/viewName | viewName}.\n"
+    "If driverName isn't specified the driver will be shared with active view.\n"
+    "If viewerName isn't specified the viewer will be shared with active view.\n"
+#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+    " - display = HostName.DisplayNumber[:ScreenNumber] : if specified"
+    "is used in creation of graphic driver\n"
+#endif
+    " - l, t: pixel position of left top corner of the window\n"
+    " - w,h: width and heigth of window respectively.\n"
+    "Additional commands for operations with views: vclose, vactivate, vviewlist.\n",
     __FILE__,VInit,group);
+  theCommands.Add("vclose" ,
+    "view_id [keep_context=0|1]\n"
+    "or vclose ALL - to remove all created views\n"
+    " - removes view(viewer window) defined by its view_id.\n"
+    " - keep_context: by default 0; if 1 and the last view is deleted"
+    " the current context is not removed.",
+    __FILE__,VClose,group);
+  theCommands.Add("vactivate" ,
+    "view_id"
+    " - activates view(viewer window) defined by its view_id",
+    __FILE__,VActivate,group);
+  theCommands.Add("vviewlist",
+    "vviewlist [format={tree, long}]"
+    " - prints current list of views per viewer and graphic_driver ID shared between viewers"
+    " - format: format of result output, if tree the output is a tree view;"
+    "otherwise it's a list of full view names. By default format = tree",
+    __FILE__,VViewList,group);
   theCommands.Add("vhelp" ,
     "vhelp            : display help on the viewer commands",
     __FILE__,VHelp,group);

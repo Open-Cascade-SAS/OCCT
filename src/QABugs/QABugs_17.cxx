@@ -541,36 +541,29 @@ static Standard_Integer OCC280 (Draw_Interpretor& di, Standard_Integer argc, con
     HLR = 1;
   }
 
-  Handle(V3d_View) anOldView = ViewerTest::CurrentView();
+  TCollection_AsciiString anOldName = ViewerTest::GetCurrentViewName();
   Handle(V3d_Viewer) aViewer = ViewerTest::GetViewerFromContext();
   if (Draw::Atoi (argv[2]))
   {
     aViewer->SetDefaultSurfaceDetail (V3d_TEX_ALL);
   }
   aViewer->SetDefaultTypeOfView (V3d_PERSPECTIVE);
-
-  Handle(Aspect_Window) asp = anOldView->Window();
-  aViewer->SetViewOff (anOldView);
-
+  Handle(Aspect_Window) asp = ViewerTest::CurrentView()->Window();
   Handle(V3d_View) aNewView = aViewer->CreateView();
   ViewerTest::CurrentView (aNewView);
-
+  TCollection_AsciiString aNewName=anOldName + "_new";
+  ViewerTest::InitViewName(aNewName,ViewerTest::CurrentView());
   aNewView->SetWindow (asp);
   if (!asp->IsMapped()) asp->Map();
-
-  anOldView->Remove();
-  anOldView.Nullify();
-
-  aNewView->Update();
-
-  // replace view in event manager
+  aNewView->Redraw();
+  ViewerTest::RemoveView(anOldName,false);
   ViewerTest::UnsetEventManager();
   ViewerTest::SetEventManager (new ViewerTest_EventManager (aNewView, ViewerTest::GetAISContext()));
 
   if (HLR == 1)
   {
     di << "HLR\n";
-    aNewView->SetComputedMode (Standard_True);
+    ViewerTest::CurrentView()->SetComputedMode (Standard_True);
   }
 
   return 0;

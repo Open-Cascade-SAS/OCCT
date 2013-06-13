@@ -338,7 +338,22 @@ Quantity_Ratio Xw_Window::Ratio() const
 void Xw_Window::Position (Standard_Integer& X1, Standard_Integer& Y1,
                           Standard_Integer& X2, Standard_Integer& Y2) const
 {
-  //
+  if (myXWindow == 0)
+  {
+    return;
+  }
+
+  XFlush (myDisplay->GetDisplay());
+  XWindowAttributes anAttributes;
+  XGetWindowAttributes (myDisplay->GetDisplay(), myXWindow, &anAttributes);
+  Window aChild;
+  XTranslateCoordinates (myDisplay->GetDisplay(), anAttributes.root, myXWindow,
+                         0, 0, &anAttributes.x, &anAttributes.y, &aChild);
+
+  X1 = -anAttributes.x;
+  X2 = X1 + anAttributes.width;
+  Y1 = -anAttributes.y;
+  Y2 = Y1 + anAttributes.height;
 }
 
 // =======================================================================

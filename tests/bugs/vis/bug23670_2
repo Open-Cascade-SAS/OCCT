@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC23670"
+puts "============"
+puts ""
+############################################################################
+# Support for multiple 3D views
+############################################################################
+
+#test case for vinit, vclose and vviewlist commands
+#create view with default name Driver1/Viewer1/View1
+vinit
+vinit MyDriver/MyViewer/View1
+vinit MyDriver/MyViewer/MyView
+#close MyDriver/MyViewer/View1
+vclose View1
+set ResultBefore [vviewlist]
+vinit Driver1/Viewer1/MyView
+vclose MyView
+vinit Driver1/Viewer1/View2
+
+set ResultAfter [vviewlist]
+set Result [string equal $ResultBefore $ResultAfter]
+#compare outputs of two vviewlist calls
+if {$Result != 0} {
+puts "Error. Different view lists are equal."
+}
+
+set only_screen 1

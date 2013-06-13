@@ -86,6 +86,7 @@ TCollection_AsciiString Aspect_DisplayConnection::GetDisplayName()
 void Aspect_DisplayConnection::Init()
 {
   myDisplay = XOpenDisplay (myDisplayName.ToCString());
+  myAtoms.Bind (Aspect_XA_DELETE_WINDOW, XInternAtom(myDisplay, "WM_DELETE_WINDOW", False));
   
   if (myDisplay == NULL)
   {
@@ -95,4 +96,15 @@ void Aspect_DisplayConnection::Init()
     Aspect_DisplayConnectionDefinitionError::Raise (aMessage.ToCString());
   }
 }
+
+// =======================================================================
+// function : GetAtom
+// purpose  :
+// =======================================================================
+Atom Aspect_DisplayConnection::GetAtom (const Aspect_XAtom theAtom) const
+{
+  Atom anAtom = myAtoms.Find(theAtom);
+  return anAtom;
+}
+
 #endif

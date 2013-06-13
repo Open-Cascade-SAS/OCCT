@@ -20,8 +20,10 @@
 
 #include <Standard_Transient.hxx>
 #include <Aspect_DisplayConnection_Handle.hxx>
+#include <Aspect_XAtom.hxx>
 
 #include <TCollection_AsciiString.hxx>
+#include <NCollection_DataMap.hxx>
 
 #if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
   #include <X11/Xlib.h>
@@ -52,6 +54,9 @@ public:
 
   //! @return pointer to Display structure that serves as the connection to the X server.
   Display* GetDisplay();
+  
+  //! @return identifier(atom) for custom named property associated with windows that use current connection to X server.
+  Atom GetAtom (const Aspect_XAtom theAtom) const;
 
   //! @return display name for this connection.
   TCollection_AsciiString GetDisplayName();
@@ -63,8 +68,9 @@ private:
 
 private:
 
-  Display*                myDisplay;
-  TCollection_AsciiString myDisplayName;
+  Display*                 myDisplay;
+  NCollection_DataMap<Aspect_XAtom, Atom> myAtoms;
+  TCollection_AsciiString  myDisplayName;
 #endif
 
 private:

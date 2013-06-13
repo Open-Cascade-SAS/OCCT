@@ -282,7 +282,12 @@ Quantity_Ratio Cocoa_Window::Ratio() const
 void Cocoa_Window::Position (Standard_Integer& X1, Standard_Integer& Y1,
                              Standard_Integer& X2, Standard_Integer& Y2) const
 {
-  //
+  NSWindow* aWindow = [myHView window];
+  NSRect aWindowRect = [aWindow frame];
+  X1 = (Standard_Integer) aWindowRect.origin.x;
+  Y1 = getScreenBottom() - (Standard_Integer) aWindowRect.origin.y - (Standard_Integer) aWindowRect.size.height;
+  X2 = X1 + (Standard_Integer) aWindowRect.size.width;
+  Y2 = Y1 + (Standard_Integer) aWindowRect.size.height;
 }
 
 // =======================================================================

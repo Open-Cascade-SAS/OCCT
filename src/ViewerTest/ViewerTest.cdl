@@ -69,12 +69,29 @@ is
     ---Category: Create the viewer....
 
     ViewerInit ( thePxLeft,    thePxTop : Integer from Standard = 0;
-                thePxWidth, thePxHeight : Integer from Standard = 0);
-	---Purpose:
-	--          implemented in ViewerTest_ViewerCommands.cxx
+                thePxWidth, thePxHeight : Integer from Standard = 0;
+                theViewName : CString from Standard = "";
+                theDisplayName : CString from Standard = "")
+    returns AsciiString from TCollection;
+    ---Purpose: Creates view with default or custom name
+    --          and add this name in map to manage muliple views
+    --          implemented in ViewerTest_ViewerCommands.cxx
+   
+    ---Category: Manage the name of views
+    RemoveViewName (theName: AsciiString from TCollection);
+    
+    InitViewName (theName: AsciiString from TCollection;
+                  theView: View from V3d);
+    
+    GetCurrentViewName returns AsciiString from TCollection;
+   
+    ---Category: Delete the viewer....
+    RemoveView (theViewName:AsciiString from TCollection;
+               isContextRemoved:Boolean from Standard= Standard_True);
+    ---Purpose: Removes view and clear all maps
+    --          with information about its resources if neccessary
 
     ---Category: Selection in the viewer....
-
 
     WClass returns TShared from MMgt is private;
     ---C++:     return const &

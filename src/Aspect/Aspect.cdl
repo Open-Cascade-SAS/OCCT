@@ -856,7 +856,10 @@ is
         --                          are smaller than the printer's printing
         --                          area dimensions - use multiple printing
         --                          frames to cover the whole printing area
-
+        enumeration XAtom is
+          XA_DELETE_WINDOW
+        end XAtom;
+        ---Purpose: Defines custom identifiers(atoms) for X window custom named properties
         ---------------------------------
         -- Category: Instantiated classes
         ---------------------------------

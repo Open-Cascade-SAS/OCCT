@@ -1,0 +1,37 @@
+puts "============"
+puts "OCC23670"
+puts "============"
+puts ""
+############################################################################
+# Support for multiple 3D views
+############################################################################
+
+#test case for vinit and vactivate commands
+#create view with default name Driver1/Viewer1/View1
+vinit
+vinit MyDriver/MyViewer/View1
+vinit MyDriver/MyViewer/MyView
+vactivate Driver1/Viewer1/View1
+box a 10 10 10
+vdisplay a
+vfit
+vactivate MyDriver/MyViewer/MyView
+#activate MyDriver/MyViewer/View1
+vactivate View1
+box b 5 5 5 10 10 10
+vdisplay a b
+vfit
+#disactivate active view
+vactivate none
+vactivate Driver1/Viewer1/View1
+vsetdispmode 1
+set x_coord 205
+set y_coord 180
+checkcolor $x_coord $y_coord 1 0.87 0.15
+
+vactivate MyDriver/MyViewer/MyView
+vsetdispmode 1
+checkcolor $x_coord $y_coord 0 0 0
+
+set only_screen 1
+
