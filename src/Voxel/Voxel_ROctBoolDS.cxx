@@ -87,8 +87,7 @@ static void SetZeroSplitData(Voxel_SplitData* data)
   {
     SetZeroSplitData((Voxel_SplitData*) data->GetSplitData());
   }
-  delete (data);
-  data = 0;
+  delete data;
 }
 
 void Voxel_ROctBoolDS::SetZero()
@@ -100,7 +99,8 @@ void Voxel_ROctBoolDS::SetZero()
     {
       if (((Voxel_SplitData**)myData)[ix])
       {
-	SetZeroSplitData((Voxel_SplitData*)((Voxel_SplitData**)myData)[ix]);
+        SetZeroSplitData((Voxel_SplitData*)((Voxel_SplitData**)myData)[ix]);
+        ((Voxel_SplitData**)myData)[ix] = 0;
       }
     }
   }
