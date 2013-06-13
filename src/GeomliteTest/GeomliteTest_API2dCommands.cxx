@@ -42,6 +42,9 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Precision.hxx>
+#include <Geom2d_Circle.hxx>
+#include <IntAna2d_AnaIntersection.hxx>
+#include <IntAna2d_IntPoint.hxx>
 
 #include <stdio.h>
 #ifdef WNT
@@ -336,6 +339,48 @@ static Standard_Integer intersect(Draw_Interpretor& di, Standard_Integer n, cons
   return 0;
 }
 
+//=======================================================================
+//function : intersect
+//purpose  : 
+//=======================================================================
+
+static Standard_Integer intersect_ana(Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if( n < 2) 
+  {
+    cout<< "2dintana circle circle "<<endl;
+    return 1;
+  }
+  
+  Handle(Geom2d_Curve) C1 = DrawTrSurf::GetCurve2d(a[1]);
+  if ( C1.IsNull() && !C1->IsKind(STANDARD_TYPE(Geom2d_Circle))) 
+    return 1;
+
+  Handle(Geom2d_Curve) C2 = DrawTrSurf::GetCurve2d(a[2]);
+  if ( C2.IsNull() && !C2->IsKind(STANDARD_TYPE(Geom2d_Circle)))
+    return 1;
+
+  Handle(Geom2d_Circle) aCir1 = Handle(Geom2d_Circle)::DownCast(C1);
+  Handle(Geom2d_Circle) aCir2 = Handle(Geom2d_Circle)::DownCast(C2);
+
+  IntAna2d_AnaIntersection Intersector(aCir1->Circ2d(), aCir2->Circ2d());
+
+  Standard_Integer i;
+
+  for ( i = 1; i <= Intersector.NbPoints(); i++) {
+    gp_Pnt2d P = Intersector.Point(i).Value();
+    di<<"Intersection point "<<i<<" : "<<P.X()<<" "<<P.Y()<<"\n";
+	di<<"parameter on the fist: "<<Intersector.Point(i).ParamOnFirst();
+	di<<" parameter on the second: "<<Intersector.Point(i).ParamOnSecond()<<"\n";
+    Handle(Draw_Marker2D) mark = new Draw_Marker2D( P, Draw_X, Draw_vert); 
+    dout << mark;
+  }
+  dout.Flush();
+
+  return 0;
+}
+
+
 
 void GeomliteTest::API2dCommands(Draw_Interpretor& theCommands)
 {
@@ -365,4 +410,7 @@ void GeomliteTest::API2dCommands(Draw_Interpretor& theCommands)
 
   theCommands.Add("2dintersect", "intersect curve curve [Tol]",__FILE__,
 		  intersect,g);
+
+  theCommands.Add("2dintanalytical", "intersect curve curve using IntAna",__FILE__,
+		  intersect_ana,g);
 }

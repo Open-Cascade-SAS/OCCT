@@ -330,6 +330,7 @@ static
 //=======================================================================
 IntTools_FaceFace::IntTools_FaceFace()
 {
+  myIsDone=Standard_False;
   myTangentFaces=Standard_False;
   //
   myHS1 = new GeomAdaptor_HSurface ();
