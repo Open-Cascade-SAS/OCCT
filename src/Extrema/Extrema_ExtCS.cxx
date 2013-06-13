@@ -41,6 +41,8 @@
 #include <Bnd_Box.hxx>
 #include <BndLib_AddSurface.hxx>
 #include <Extrema_ExtPElS.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <Extrema_ExtPS.hxx>
 
 Extrema_ExtCS::Extrema_ExtCS() 
 {
@@ -105,7 +107,7 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
   myPOnS.Clear();
   myPOnC.Clear();
   mySqDist.Clear();
-  Standard_Integer i;
+  Standard_Integer i, j;
   Standard_Integer NbT, NbU, NbV;
   NbT = NbU = NbV = 10;
   GeomAbs_CurveType myCtype  = C.GetType();
@@ -204,20 +206,7 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
 	      PS = Ext.PointOnSurface(i);
 	      T = PC.Parameter();
 	      PS.Parameter(U, V);
-	      if (myS->IsUPeriodic())
-		U = ElCLib::InPeriod(U, myuinf, myuinf+myS->UPeriod());
-	      if (myS->IsVPeriodic())
-		V = ElCLib::InPeriod(V, myvinf, myvinf+myS->VPeriod());
-
-	      if ((myucinf-T) <= mytolC && (T-myucsup) <= mytolC &&
-		  (myuinf-U) <= mytolS && (U-myusup) <= mytolS &&
-		  (myvinf-V) <= mytolS && (V-myvsup) <= mytolS) {
-		mySqDist.Append(Ext.SquareDistance(i));
-		myPOnC.Append(PC);
-		myPOnS.Append(Extrema_POnSurf(U, V, PS.Value()));
-
-	      
-	      }
+              AddSolution(C, T, U, V, PC.Value(), PS.Value(), Ext.SquareDistance(i));
 	    }
 	  }
 	  return;
@@ -273,22 +262,70 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
 	  PS = Ext.PointOnSurface(i);
 	  T = PC.Parameter();
 	  PS.Parameter(U, V);
-	  if (C.IsPeriodic())
-	    T = ElCLib::InPeriod(T, myucinf, myucinf+C.Period());
-	  if (myS->IsUPeriodic())
-	    U = ElCLib::InPeriod(U, myuinf, myuinf+myS->UPeriod());
-	  if (myS->IsVPeriodic())
-	    V = ElCLib::InPeriod(V, myvinf, myvinf+myS->VPeriod());
-	  
-	  if ((myucinf-T) <= mytolC && (T-myucsup) <= mytolC &&
-	      (myuinf-U) <= mytolS && (U-myusup) <= mytolS &&
-	      (myvinf-V) <= mytolS && (V-myvsup) <= mytolS) {
-	    mySqDist.Append(Ext.SquareDistance(i));
-	    PC.SetValues(T, PC.Value());
-	    myPOnC.Append(PC);
-	    myPOnS.Append(Extrema_POnSurf(U, V, PS.Value()));
-	  }
+          AddSolution(C, T, U, V, PC.Value(), PS.Value(), Ext.SquareDistance(i));
 	}
+
+        //Add sharp points
+        Standard_Integer SolNumber = mySqDist.Length();
+        Standard_Address CopyC = (Standard_Address)&C;
+        Adaptor3d_Curve& aC = *(Adaptor3d_Curve*)CopyC;
+        Standard_Integer NbIntervals = aC.NbIntervals(GeomAbs_C1);
+        TColStd_Array1OfReal SharpPoints(1, NbIntervals+1);
+        aC.Intervals(SharpPoints, GeomAbs_C1);
+        for (i = 1; i <= SharpPoints.Upper(); i++)
+        {
+          T = SharpPoints(i);
+          gp_Pnt aPnt = C.Value(T);
+          Extrema_ExtPS ProjPS(aPnt, *myS, mytolS, mytolS);
+          if (!ProjPS.IsDone())
+            continue;
+          Standard_Integer NbProj = ProjPS.NbExt(), jmin = 0;
+          Standard_Real MinSqDist = RealLast();
+          for (j = 1; j <= NbProj; j++)
+          {
+            Standard_Real aSqDist = ProjPS.SquareDistance(j);
+            if (aSqDist < MinSqDist)
+            {
+              MinSqDist = aSqDist;
+              jmin = j;
+            }
+          }
+          if (jmin != 0)
+          {
+            ProjPS.Point(jmin).Parameter(U,V);
+            AddSolution(C, T, U, V,
+                        aPnt, ProjPS.Point(jmin).Value(), MinSqDist);
+          }
+        }
+        //Cut sharp solutions to keep only minimum and maximum
+        Standard_Integer imin = SolNumber + 1, imax = mySqDist.Length();
+        for (i = SolNumber + 1; i <= mySqDist.Length(); i++)
+        {
+          if (mySqDist(i) < mySqDist(imin))
+            imin = i;
+          if (mySqDist(i) > mySqDist(imax))
+            imax = i;
+        }
+        if (mySqDist.Length() > SolNumber + 2)
+        {
+          Standard_Real MinSqDist = mySqDist(imin);
+          Standard_Real MaxSqDist = mySqDist(imax);
+          Extrema_POnCurv MinPC = myPOnC(imin);
+          Extrema_POnCurv MaxPC = myPOnC(imax);
+          Extrema_POnSurf MinPS = myPOnS(imin);
+          Extrema_POnSurf MaxPS = myPOnS(imax);
+          
+          mySqDist.Remove(SolNumber + 1, mySqDist.Length());
+          myPOnC.Remove(SolNumber + 1, myPOnC.Length());
+          myPOnS.Remove(SolNumber + 1, myPOnS.Length());
+
+          mySqDist.Append(MinSqDist);
+          myPOnC.Append(MinPC);
+          myPOnS.Append(MinPS);
+          mySqDist.Append(MaxSqDist);
+          myPOnC.Append(MaxPC);
+          myPOnS.Append(MaxPS);
+        }
       }
       return;
     }
@@ -310,18 +347,7 @@ void Extrema_ExtCS::Perform(const Adaptor3d_Curve& C,
 	myExtElCS.Points(i, PC, PS);
 	Standard_Real Ucurve = PC.Parameter();
 	PS.Parameter(U, V);
-
-	if((myStype == GeomAbs_Sphere) || (myStype == GeomAbs_Cylinder)) {
-	  U = ElCLib::InPeriod(U, myuinf, myuinf+2.*M_PI);
-	}
-
-	if ((myuinf-U) <= mytolS && (U-myusup) <= mytolS &&
-	    (myvinf-V) <= mytolS && (V-myvsup) <= mytolS &&
-	    (myucinf-Ucurve) <= mytolC && (Ucurve-myucsup) <= mytolC) {
-	  mySqDist.Append(myExtElCS.SquareDistance(i));
-	  myPOnS.Append(Extrema_POnSurf(U, V, PS.Value()));
-	  myPOnC.Append(PC);
-	}
+        AddSolution(C, Ucurve, U, V, PC.Value(), PS.Value(), myExtElCS.SquareDistance(i));
       }
     }
   }
@@ -364,4 +390,57 @@ void Extrema_ExtCS::Points(const Standard_Integer N,
   if(!myDone) StdFail_NotDone::Raise();
   P1 = myPOnC.Value(N);
   P2 = myPOnS.Value(N);
+}
+
+Standard_Boolean Extrema_ExtCS::AddSolution(const Adaptor3d_Curve& theCurve,
+                                            const Standard_Real aT,
+                                            const Standard_Real aU,
+                                            const Standard_Real aV,
+                                            const gp_Pnt& PointOnCurve,
+                                            const gp_Pnt& PointOnSurf,
+                                            const Standard_Real SquareDist)
+{
+  Standard_Boolean Added = Standard_False;
+
+  Standard_Real T = aT, U = aU, V = aV;
+  
+  if (theCurve.IsPeriodic())
+    T = ElCLib::InPeriod(T, myucinf, myucinf + theCurve.Period());
+  if (myS->IsUPeriodic())
+    U = ElCLib::InPeriod(U, myuinf, myuinf + myS->UPeriod());
+  if (myS->IsVPeriodic())
+    V = ElCLib::InPeriod(V, myvinf, myvinf + myS->VPeriod());
+
+  Extrema_POnCurv aPC;
+  Extrema_POnSurf aPS;
+  if ((myucinf-T) <= mytolC && (T-myucsup) <= mytolC &&
+      (myuinf-U) <= mytolS && (U-myusup) <= mytolS &&
+      (myvinf-V) <= mytolS && (V-myvsup) <= mytolS)
+  {
+    Standard_Boolean IsNewSolution = Standard_True;
+    for (Standard_Integer j = 1; j <= mySqDist.Length(); j++)
+    {
+      aPC = myPOnC(j);
+      aPS = myPOnS(j);
+      Standard_Real Tj = aPC.Parameter();
+      Standard_Real Uj, Vj;
+      aPS.Parameter(Uj, Vj);
+      if (Abs(T - Tj) <= mytolC &&
+          Abs(U - Uj) <= mytolS &&
+          Abs(V - Vj) <= mytolS)
+      {
+        IsNewSolution = Standard_False;
+        break;
+      }
+    }
+    if (IsNewSolution)
+    {
+      mySqDist.Append(SquareDist);
+      aPC.SetValues(T, PointOnCurve);
+      myPOnC.Append(aPC);
+      myPOnS.Append(Extrema_POnSurf(U, V, PointOnSurf));
+      Added = Standard_True;
+    }
+  }
+  return Added;
 }

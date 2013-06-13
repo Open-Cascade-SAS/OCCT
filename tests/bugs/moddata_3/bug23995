@@ -1,0 +1,55 @@
+puts "================"
+puts "OCC23995"
+puts "================"
+puts ""
+#######################################################################
+# GeomAPI_ExtremaCurveCurve class calculates wrong values
+#######################################################################
+
+set BugNumber CR23995
+
+pload XDE
+
+ReadStep D [locate_data_file bug23995_AirfoilRhomb_CheckIntersct3d_myRhombicAirfoilIntersect_root.stp]
+
+XCheckProps D
+
+XGetShape intCrv D 0:1:1:1
+explode intCrv
+mkcurve intCrv intCrv_1
+plane pl
+
+extrema intCrv pl
+
+if { [isdraw ext_1] } {
+   mkedge result ext_1
+   set length 161.647
+} else {
+   puts "${BugNumber}: invalid result for ext_1"
+}
+
+if { [isdraw ext_2] } {
+   mkedge result ext_2
+   set length 161.647
+} else {
+   puts "${BugNumber}: invalid result for ext_2"
+}
+
+if { [isdraw ext_3] } {
+   mkedge result ext_3
+   set length 136.705
+} else {
+   puts "${BugNumber}: invalid result for ext_3"
+}
+
+if { [isdraw ext_4] } {
+   mkedge result ext_4
+   set length 164.153
+} else {
+   puts "${BugNumber}: invalid result for ext_4"
+}
+
+smallview
+front
+fit
+set only_screen_axo 1

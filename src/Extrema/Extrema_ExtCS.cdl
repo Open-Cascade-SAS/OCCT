@@ -118,7 +118,14 @@ is
 		-- if N < 1 or N > NbPoints(me).
     	is static;
 
-
+    AddSolution (me: in out;
+    	    	 Curve: Curve from Adaptor3d;
+		 T,U,V: Real;
+		 PointOnCurve, PointOnSurf: Pnt from gp;
+		 SquareDist: Real)
+    returns Boolean
+    is static private;
+    
     Bidon(me) returns SurfacePtr from Adaptor3d
     is static private;
 
