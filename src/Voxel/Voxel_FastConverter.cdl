@@ -37,11 +37,12 @@ is
 
     Create(shape  :     Shape   from TopoDS;
     	   voxels : out BoolDS  from Voxel;
-    	   delfection : Real    from Standard = 0.1;
+    	   deflection : Real    from Standard = 0.1;
 	   nbx    :     Integer from Standard = 10;
     	   nby    :     Integer from Standard = 10;
     	   nbz    :     Integer from Standard = 10;
-    	   nbthreads :  Integer from Standard = 1)
+    	   nbthreads :  Integer from Standard = 1;
+    	   useExistingTriangulation : Boolean from Standard = Standard_False)
     ---Purpose: A constructor for conversion of a shape into a cube of boolean voxels.
     --          It allocates the voxels in memory.
     --          "nbthreads" defines the number of threads used to convert the shape.
@@ -49,11 +50,12 @@ is
 
     Create(shape  :     Shape   from TopoDS;
     	   voxels : out ColorDS from Voxel;
-    	   delfection : Real    from Standard = 0.1;
+    	   deflection : Real    from Standard = 0.1;
 	   nbx    :     Integer from Standard = 10;
     	   nby    :     Integer from Standard = 10;
     	   nbz    :     Integer from Standard = 10;
-    	   nbthreads :  Integer from Standard = 1)
+    	   nbthreads :  Integer from Standard = 1;
+    	   useExistingTriangulation : Boolean from Standard = Standard_False)
     ---Purpose: A constructor for conversion of a shape into a cube of colored voxels.
     --          It allocates the voxels in memory.
     --          "nbthreads" defines the number of threads used to convert the shape.
@@ -61,11 +63,12 @@ is
 
     Create(shape  :     Shape   from TopoDS;
     	   voxels : out ROctBoolDS from Voxel;
-    	   delfection : Real    from Standard = 0.1;
+    	   deflection : Real    from Standard = 0.1;
 	   nbx    :     Integer from Standard = 10;
     	   nby    :     Integer from Standard = 10;
     	   nbz    :     Integer from Standard = 10;
-    	   nbthreads :  Integer from Standard = 1)
+    	   nbthreads :  Integer from Standard = 1;
+    	   useExistingTriangulation : Boolean from Standard = Standard_False)
     ---Purpose: A constructor for conversion of a shape into a cube of boolean voxels
     --          split into 8 sub-voxels recursively.
     --          It allocates the voxels in memory.
@@ -136,5 +139,6 @@ fields
     myNbZ         : Integer from Standard;
     myNbThreads   : Integer from Standard;
     myNbTriangles : Integer from Standard;
+    myUseExistingTriangulation : Boolean from Standard;
 
 end FastConverter;

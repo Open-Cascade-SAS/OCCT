@@ -45,12 +45,14 @@ Voxel_FastConverter::Voxel_FastConverter(const TopoDS_Shape&    shape,
 					 const Standard_Integer nbx,
 					 const Standard_Integer nby,
 					 const Standard_Integer nbz,
-					 const Standard_Integer nbthreads)
+					 const Standard_Integer nbthreads,
+					 const Standard_Boolean useExistingTriangulation)
 :myShape(shape),myVoxels(&voxels),
  myDeflection(deflection),
  myNbX(nbx),myNbY(nby),myNbZ(nbz),
  myNbThreads(nbthreads),myIsBool(2),
- myNbTriangles(0)
+ myNbTriangles(0),
+ myUseExistingTriangulation(useExistingTriangulation)
 {
   Init();
 }
@@ -61,12 +63,14 @@ Voxel_FastConverter::Voxel_FastConverter(const TopoDS_Shape&    shape,
 					 const Standard_Integer nbx,
 					 const Standard_Integer nby,
 					 const Standard_Integer nbz,
-					 const Standard_Integer nbthreads)
+					 const Standard_Integer nbthreads,
+					 const Standard_Boolean useExistingTriangulation)
 :myShape(shape),myVoxels(&voxels),
  myDeflection(deflection),
  myNbX(nbx),myNbY(nby),myNbZ(nbz),
  myNbThreads(nbthreads),myIsBool(1),
- myNbTriangles(0)
+ myNbTriangles(0),
+ myUseExistingTriangulation(useExistingTriangulation)
 {
   Init();
 }
@@ -77,12 +81,14 @@ Voxel_FastConverter::Voxel_FastConverter(const TopoDS_Shape&    shape,
 					 const Standard_Integer nbx,
 					 const Standard_Integer nby,
 					 const Standard_Integer nbz,
-					 const Standard_Integer nbthreads)
+					 const Standard_Integer nbthreads,
+					 const Standard_Boolean useExistingTriangulation)
 :myShape(shape),myVoxels(&voxels),
  myDeflection(deflection),
  myNbX(nbx),myNbY(nby),myNbZ(nbz),
  myNbThreads(nbthreads),myIsBool(0),
- myNbTriangles(0)
+ myNbTriangles(0),
+ myUseExistingTriangulation(useExistingTriangulation)
 {
   Init();
 }
@@ -119,14 +125,17 @@ void Voxel_FastConverter::Init()
   TopLoc_Location L;
   Standard_Boolean triangulate = Standard_False;
   TopExp_Explorer expl(myShape, TopAbs_FACE);
-  for (; expl.More(); expl.Next())
+  if(myUseExistingTriangulation == Standard_False)
   {
-    const TopoDS_Face & F = TopoDS::Face(expl.Current());
-    Handle(Poly_Triangulation) T = BRep_Tool::Triangulation(F, L);
-    if (T.IsNull() || (T->Deflection() > myDeflection))
+    for (; expl.More(); expl.Next())
     {
-      triangulate = Standard_True;
-      break;
+      const TopoDS_Face & F = TopoDS::Face(expl.Current());
+      Handle(Poly_Triangulation) T = BRep_Tool::Triangulation(F, L);
+      if (T.IsNull() || (T->Deflection() > myDeflection))
+      {
+        triangulate = Standard_True;
+        break;
+      }
     }
   }
 
@@ -165,6 +174,9 @@ Standard_Boolean Voxel_FastConverter::Convert(Standard_Integer&      progress,
 #endif
 
   if (myNbX <= 0 || myNbY <= 0 || myNbZ <= 0)
+    return Standard_False;
+
+  if(myNbTriangles == 0)
     return Standard_False;
 
   // Half of diagonal of a voxel
