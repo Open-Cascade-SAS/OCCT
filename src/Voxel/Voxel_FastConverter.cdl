@@ -84,6 +84,16 @@ is
     --          "ithread" is the index of the thread for current call of ::Convert().
     --          Start numeration of "ithread" with 1, please.
     returns Boolean from Standard;
+	
+    ConvertUsingSAT(me : in out;
+		    progress : out Integer from Standard;
+    	    	    ithread : Integer from Standard = 1)
+    ---Purpose: Converts a shape into a voxel representation using separating axis theorem.
+    --          It sets to 0 the outside volume of the shape and
+    --          1 for surfacic part of the shape.
+    --          "ithread" is the index of the thread for current call of ::Convert().
+    --          Start numeration of "ithread" with 1, please.
+    returns Boolean from Standard;
 
     FillInVolume(me : in out;
     	    	 inner : Byte from Standard;
@@ -120,6 +130,22 @@ is
 			      p2    :     Pnt           from gp;
 			      p3    :     Pnt           from gp;
 		       	      hdiag :     Real          from Standard;
+		       	      ixmin :     Integer       from Standard;
+		       	      iymin :     Integer       from Standard;
+		       	      izmin :     Integer       from Standard;
+		       	      ixmax :     Integer       from Standard;
+		       	      iymax :     Integer       from Standard;
+		              izmax :     Integer       from Standard)
+    is private;
+
+	ComputeVoxelsNearTriangle(me;
+
+			      p1    :     Pnt           from gp;
+			      p2    :     Pnt           from gp;
+			      p3    :     Pnt           from gp;
+  			      extents    :     Pnt           from gp;
+  			      extents2    :     Pnt           from gp;
+  			      extents4    :     Pnt           from gp;
 		       	      ixmin :     Integer       from Standard;
 		       	      iymin :     Integer       from Standard;
 		       	      izmin :     Integer       from Standard;
