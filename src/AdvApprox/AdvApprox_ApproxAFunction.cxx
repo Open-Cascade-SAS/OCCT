@@ -786,20 +786,20 @@ void AdvApprox_ApproxAFunction::Perform(const Standard_Integer Num1DSS,
 
   TColStd_Array1OfReal AverageError(1,myMaxSegments * TotalNumSS) ;
   
-  Approximation (TotalDimension,  TotalNumSS, LocalDimension,  
-		 myFirst,         myLast,
-		 *(AdvApprox_EvaluatorFunction*)myEvaluator, 
-                 CutTool,    
-		 ContinuityOrder,
-		 NumMaxCoeffs,    myMaxSegments,
-		 LocalTolerances, code_precis,
-                 NumCurves,                           // Nombre de courbe en sortie
-		 NumCoeffPerCurvePtr->ChangeArray1(), // Nbre de coeff par courbe
-		 LocalCoefficientsPtr->ChangeArray1(),// Les Coeffs solutions
-		 IntervalsPtr->ChangeArray1(),        // La Table des decoupes
-		 ErrorMax,                            // Majoration de l'erreur
-	         AverageError,                        // Erreur moyenne constatee
-		 ErrorCode) ;
+  Approximation ( TotalDimension,
+                  TotalNumSS,   LocalDimension,
+                  myFirst,      myLast,
+                  *(AdvApprox_EvaluatorFunction*)myEvaluator, 
+                  CutTool, ContinuityOrder, NumMaxCoeffs,
+                  myMaxSegments, LocalTolerances, code_precis,
+                  NumCurves,                            // Nombre de courbe en sortie
+                  NumCoeffPerCurvePtr->ChangeArray1(),  // Nbre de coeff par courbe
+                  LocalCoefficientsPtr->ChangeArray1(), // Les Coeffs solutions
+                  IntervalsPtr->ChangeArray1(),         // La Table des decoupes
+                  ErrorMax,                             // Majoration de l'erreur
+                  AverageError,                         // Erreur moyenne constatee
+                  ErrorCode) ;
+  
   if (ErrorCode == 0 || ErrorCode == -1)    {
     //
     // si tout est OK ou bien on a un resultat dont l une des erreurs max est

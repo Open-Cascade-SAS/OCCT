@@ -313,3 +313,15 @@ inline Handle(Geom2d_BSplineCurve)
 inline Standard_Real
 HLRBRep_CurveTool::EpsX(const Standard_Address C)
 { return(1e-10); }
+
+
+//=======================================================================
+//function : Degree
+//purpose  : 
+//=======================================================================
+
+inline Standard_Integer
+     HLRBRep_CurveTool::Degree (const Standard_Address C)
+{
+  return(((HLRBRep_Curve *)C)->Degree());
+}

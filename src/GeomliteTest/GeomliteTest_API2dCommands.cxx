@@ -245,7 +245,8 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
 // modified by APV (compilation error - LINUX)
 //  for ( Standard_Integer i = 1; i <= Ex.NbExtrema(); i++) {
   Standard_Integer i;
-  for ( i = 1; i <= Ex.NbExtrema(); i++) {
+  const Standard_Integer aNExtr = Ex.NbExtrema();
+  for ( i = 1; i <= aNExtr; i++) {
 // modified by APV (compilation error - LINUX)
 
     gp_Pnt2d P1,P2;
@@ -267,7 +268,7 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
     }
   }
   if (i==1)
-    di << "No decisions ";
+    di << "No solutions!\n";
 
   return 0;
 }

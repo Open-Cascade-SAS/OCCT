@@ -1,0 +1,49 @@
+puts "============"
+puts "OCC23706"
+puts "============"
+puts ""
+#########################################################################
+# Cannot project point on curve
+#########################################################################
+
+2dbsplinecurve b9 2 8 1 2 2 1 3 1 4 1 5 1 6 1 7 1 8 2 4 -3 1 6 8 1 10 11 1 10 11 1 10 11 1 14 14 1 5 8 1
+2dbsplinecurve b10 2 8 2 2 2.5 1 3 1 3.5 1 4 1 4.5 1 5 1 5.5 2 5 20 1 8 15 1 12 18 1 12 18 1 12 18 1 16 21 1 7 12 1
+set info [2dextrema b9 b10]
+
+set status 0
+for { set i 1 } { $i <= 9 } { incr i } {
+    regexp "dist $i: +(\[-0-9.+eE\]+)" $info full pp1
+    if { $pp1 != 7.2801098892805181 } {
+       puts "Error : Extrema is wrong on dist $i"
+       set status 1
+    }
+}
+
+for { set j 11 } { $j <= 19 } { incr j 1 } {
+    regexp "dist $j: +(\[-0-9.+eE\]+)" $info full pp2
+    if { $pp2 != 7.2801098892805181 } {
+       puts "Error : Extrema is wrong on dist $j"
+       set status 1
+    }
+}
+
+regexp {dist 10: +([-0-9.+eE]+)} $info full pp3
+regexp {dist 20: +([-0-9.+eE]+)} $info full pp4
+regexp {dist 21: +([-0-9.+eE]+)} $info full pp5
+set pp_c 4.316921907096102
+set pp_ch 4.3169219070961038
+
+if { $pp3 != $pp_c } {
+    puts "Error : Extrema is wrong on dist 10"
+    set status 1
+}
+if { $pp4 != $pp_ch || $pp5 != $pp_ch} {
+    puts "Error : Extrema is wrong on dist 20 or 21"
+    set status 1
+}
+
+if { $status != 0 } {
+    puts "Error : Extrema is wrong"
+} else {
+    puts "OK: Extrema is valid"
+}

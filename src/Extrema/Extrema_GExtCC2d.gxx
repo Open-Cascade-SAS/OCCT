@@ -40,6 +40,20 @@
 #include <Precision.hxx>
 
 
+//=======================================================================
+//function :  IsParallelDot
+//purpose  :  This function returns True if angle between <theV1> and 
+//<theV2> vectors or between <theV1> and <-theV2> vectors is less than 
+//AngTol.
+//=======================================================================
+static Standard_Boolean IsParallelDot(  gp_Vec2d theV1,
+                                        gp_Vec2d theV2,
+                                        Standard_Real AngTol)
+  {
+  return Abs(theV1.Dot(theV2)) >= 
+            theV1.Magnitude()*theV2.Magnitude()*cos(AngTol);
+  }
+
 Extrema_GExtCC2d::Extrema_GExtCC2d() {}
 
 
@@ -535,7 +549,8 @@ void Extrema_GExtCC2d::Results(const Extrema_ECC2d& AlgExt,
 	  gp_Vec2d v1, v2;
 	  Tool1::D1(C1,U,p, v1);
 	  Tool2::D1(*((Curve2*)myC),U2,p, v2);
-	  if (v1.IsParallel(v2, Precision::Angular())) {
+	  if (IsParallelDot(v1, v2, Precision::Angular()))
+	    {
 	    mynbext++;
 	    Val = AlgExt.SquareDistance(i);
 	    P1.SetValues(U, P1.Value());
@@ -543,7 +558,7 @@ void Extrema_GExtCC2d::Results(const Extrema_ECC2d& AlgExt,
 	    mySqDist.Append(Val);
 	    mypoints.Append(P1);
 	    mypoints.Append(P2);
-	  }
+	    }
 //  modified by NIZHNY-EAP Thu Jan 27 16:41:00 2000 ___END___
 	}
       }

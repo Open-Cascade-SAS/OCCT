@@ -60,10 +60,11 @@ typedef gp_XYZ  XYZ;
 
 
 
+//ordre de derivation maximum pour la recherche de la premiere 
+//derivee non nulle
+static const int maxDerivOrder = 3;
+static const Standard_Real MinStep   = 1e-7;
 
-static const int MaxDegree = 9;
-   //ordre de derivation maximum pour la recherche de la premiere 
-   //derivee non nulle
 
 
 
@@ -297,7 +298,7 @@ void Geom_OffsetCurve::D2 (const Standard_Real U, Pnt& P, Vec& V1, Vec& V2) cons
 //purpose  : 
 //=======================================================================
 
-void Geom_OffsetCurve::D3 (const Standard_Real U, Pnt& P, Vec& V1, Vec& V2, Vec& V3) 
+void Geom_OffsetCurve::D3 (const Standard_Real theU, Pnt& P, Vec& theV1, Vec& V2, Vec& V3) 
 const {
 
 
@@ -314,22 +315,71 @@ const {
    //         (D3r/R2) * Ndir + (6.0 * Dr * Dr / R4) * Ndir +
    //         (6.0 * Dr * D2r / R4) * Ndir - (15.0 * Dr* Dr* Dr /R6) * Ndir
 
+  const Standard_Real aTol = gp::Resolution();
+
+  Standard_Boolean IsDirectionChange = Standard_False;
+
+  basisCurve->D3 (theU, P, theV1, V2, V3);
+  Vec V4 = basisCurve->DN (theU, 4);
+  if(theV1.Magnitude() <= aTol)
+    {
+    const Standard_Real anUinfium   = basisCurve->FirstParameter();
+    const Standard_Real anUsupremum = basisCurve->LastParameter();
+
+    const Standard_Real DivisionFactor = 1.e-3;
+    Standard_Real du;
+    if((anUsupremum >= RealLast()) || (anUinfium <= RealFirst())) 
+      du = 0.0;
+    else
+      du = anUsupremum-anUinfium;
+      
+    const Standard_Real aDelta = Max(du*DivisionFactor,MinStep);
+//Derivative is approximated by Taylor-series
+    
+    Standard_Integer anIndex = 1; //Derivative order
+    Vec V;
+    
+    do
+      {
+      V =  basisCurve->DN(theU,++anIndex);
+      }
+    while((V.Magnitude() <= aTol) && anIndex < maxDerivOrder);
+    
+    Standard_Real u;
+    
+    if(theU-anUinfium < aDelta)
+      u = theU+aDelta;
+    else
+      u = theU-aDelta;
+    
+    Pnt P1, P2;
+    basisCurve->D0(Min(theU, u),P1);
+    basisCurve->D0(Max(theU, u),P2);
+    
+    Vec V1(P1,P2);
+    Standard_Real aDirFactor = V.Dot(V1);
+    
+    if(aDirFactor < 0.0)
+      {
+      theV1 = -V;
+      V2 = -basisCurve->DN (theU, anIndex + 1);
+      V3 = -basisCurve->DN (theU, anIndex + 2);
+      V4 = -basisCurve->DN (theU, anIndex + 3);
+
+      IsDirectionChange = Standard_True;
+      }
+    else
+      {
+      theV1 = V;
+      V2 = basisCurve->DN (theU, anIndex + 1);
+      V3 = basisCurve->DN (theU, anIndex + 2);
+      V4 = basisCurve->DN (theU, anIndex + 3);
+      }
+    }//if(V1.Magnitude() <= aTol)
 
 
-  basisCurve->D3 (U, P, V1, V2, V3);
-  Vec V4 = basisCurve->DN (U, 4);
-  Standard_Integer Index = 2;
-  while (V1.Magnitude() <= gp::Resolution() && Index <= MaxDegree) {
-    V1 = basisCurve->DN (U, Index);
-    Index++;
-  }
-  if (Index != 2) {
-    V2 = basisCurve->DN (U, Index);
-    V3 = basisCurve->DN (U, Index + 1);
-    V4 = basisCurve->DN (U, Index + 2);
-  }
   XYZ OffsetDir = direction.XYZ();
-  XYZ Ndir      = (V1.XYZ()).Crossed (OffsetDir);
+  XYZ Ndir      = (theV1.XYZ()).Crossed (OffsetDir);
   XYZ DNdir     = (V2.XYZ()).Crossed (OffsetDir);
   XYZ D2Ndir    = (V3.XYZ()).Crossed (OffsetDir);
   XYZ D3Ndir    = (V4.XYZ()).Crossed (OffsetDir);
@@ -351,7 +401,12 @@ const {
     D3Ndir.Add (Ndir.Multiplied (6.0*Dr*Dr/R4 + 6.0*Dr*D2r/R4 -
                                  15.0*Dr*Dr*Dr/R6 - D3r));
     D3Ndir.Multiply (offsetValue/R);
+
+    if(IsDirectionChange)
+      V3=-V3;
+
     V3.Add (Vec(D3Ndir));
+
     // V2 = P" (U) :
     Standard_Real R4 = R2 * R2;
     D2Ndir.Subtract (DNdir.Multiplied (2.0 * Dr / R2));
@@ -362,7 +417,7 @@ const {
     DNdir.Multiply(R);
     DNdir.Subtract (Ndir.Multiplied (Dr/R));
     DNdir.Multiply (offsetValue/R2);
-    V1.Add (Vec(DNdir));
+    theV1.Add (Vec(DNdir));
   }
   else {
     // V3 = P"' (U) :
@@ -372,7 +427,12 @@ const {
     D3Ndir.Add (Ndir.Multiplied (6.0*Dr*Dr/R5 + 6.0*Dr*D2r/R5 - 
                 15.0*Dr*Dr*Dr/R7 - D3r));
     D3Ndir.Multiply (offsetValue);
+    
+    if(IsDirectionChange)
+      V3=-V3;
+
     V3.Add (Vec(D3Ndir));
+    
     // V2 = P" (U) :
     D2Ndir.Divide (R);
     D2Ndir.Subtract (DNdir.Multiplied (2.0 * Dr / R3));
@@ -382,12 +442,10 @@ const {
     // V1 = P' (U) :
     DNdir.Multiply (offsetValue/R);
     DNdir.Subtract (Ndir.Multiplied (offsetValue*Dr/R3));        
-    V1.Add (Vec(DNdir));
+    theV1.Add (Vec(DNdir));
   }
   //P (U) :
-  Ndir.Multiply (offsetValue/R);
-  Ndir.Add (P.XYZ());
-  P.SetXYZ (Ndir);
+  D0(theU,P);
 }
 
 
@@ -396,134 +454,30 @@ const {
 //purpose  : 
 //=======================================================================
 
-Vec Geom_OffsetCurve::DN (const Standard_Real U, const Standard_Integer N) const {
+Vec Geom_OffsetCurve::DN (const Standard_Real U, const Standard_Integer N) const 
+  {
+  Standard_RangeError_Raise_if (N < 1, "Exception: "
+                              "Geom_OffsetCurve::DN(...). N<1.");
 
-
-  if (N < 1)                  Standard_RangeError::Raise();
-  XYZ OffsetDir = direction.XYZ();
-  Pnt P;
-  Vec V1, V2, dummy;
-  if (N == 1) {
-    basisCurve->D2 (U, P, V1, V2);
-    Standard_Integer Index = 2;
-    while (V1.Magnitude() <= gp::Resolution() && Index <= MaxDegree) {
-      V1 = basisCurve->DN (U, Index);
-      Index++;
-    }
-    if (Index != 2)  V2 = basisCurve->DN (U, Index);
-    XYZ Ndir  = (V1.XYZ()).Crossed (OffsetDir);
-    XYZ DNdir = (V2.XYZ()).Crossed (OffsetDir);
-    Standard_Real R2 = Ndir.SquareModulus();
-    Standard_Real R  = Sqrt (R2);
-    Standard_Real R3 = R * R2;
-    Standard_Real Dr = Ndir.Dot (DNdir);
-    if (R3 <= gp::Resolution()) {
-      if (R2 <= gp::Resolution())  Geom_UndefinedDerivative::Raise();
-      Ndir.Multiply (Dr/R);
-      DNdir.Multiply(R);
-      DNdir.Subtract (Ndir);
-      DNdir.Multiply (offsetValue/R2);
-      V1.Add (Vec(DNdir));
-    }
-    else {
-      Ndir.Multiply (offsetValue * Dr / R3);
-      DNdir.Multiply (offsetValue/R);
-      DNdir.Subtract (Ndir);        
-      V1.Add (Vec(DNdir));
-    }
-    dummy = V1;
+  gp_Vec VN, Vtemp;
+  gp_Pnt Ptemp;
+  switch (N)
+    {
+    case 1:
+      D1( U, Ptemp, VN);
+      break;
+    case 2:
+      D2( U, Ptemp, Vtemp, VN);
+      break;
+    case 3:
+      D3( U, Ptemp, Vtemp, Vtemp, VN);
+      break;
+    default:
+      Standard_NotImplemented::Raise("Exception: "
+        "Derivative order is greater than 3. Cannot compute of derivative.");
   }
-  else if (N == 2) {
-    Vec V3;
-    basisCurve->D3 (U, P, V1, V2, V3);
-    Standard_Integer Index = 2;
-    while (V1.Magnitude() <= gp::Resolution() && Index <= MaxDegree) {
-      V1 = basisCurve->DN (U, Index);
-      Index++;
-    }
-    if (Index != 2) {
-      V2 = basisCurve->DN (U, Index);
-      V3 = basisCurve->DN (U, Index + 1);
-    }
-    XYZ Ndir   = (V1.XYZ()).Crossed (OffsetDir);
-    XYZ DNdir  = (V2.XYZ()).Crossed (OffsetDir);
-    XYZ D2Ndir = (V3.XYZ()).Crossed (OffsetDir);
-    Standard_Real R2  = Ndir.SquareModulus();
-    Standard_Real R   = Sqrt (R2);
-    Standard_Real R3  = R2 * R;   Standard_Real R4 = R2 * R2;  Standard_Real R5 = R3 * R2;
-    Standard_Real Dr  = Ndir.Dot (DNdir);
-    Standard_Real D2r = Ndir.Dot (D2Ndir) + DNdir.Dot (DNdir);
-    if (R5 <= gp::Resolution()) {
-      if (R4 <= gp::Resolution())  Geom_UndefinedDerivative::Raise();
-      Ndir.Multiply ((3.0 * Dr * Dr / R4) - (D2r/R2));
-      DNdir.Multiply (2.0 * Dr / R2);
-      D2Ndir.Subtract (DNdir);
-      D2Ndir.Subtract (Ndir);
-      D2Ndir.Multiply (offsetValue / R);
-      V2.Add (Vec(D2Ndir));
-    }
-    else {
-      Ndir.Multiply ((3.0 * Dr * Dr / R4) - (D2r / R2));
-      DNdir.Multiply (2.0 * Dr / R2);
-      D2Ndir.Divide (R);
-      D2Ndir.Subtract (DNdir);
-      D2Ndir.Subtract (Ndir);
-      D2Ndir.Multiply (offsetValue);
-      V2.Add (Vec(D2Ndir));
-    }
-    dummy = V2;
-  }
-  else if (N == 3) {
-    Vec V3;
-    basisCurve->D3 (U, P, V1, V2, V3);
-    Vec V4 = basisCurve->DN (U, 4);
-    Standard_Integer Index = 2;
-    while (V1.Magnitude() <= gp::Resolution() && Index <= MaxDegree) {
-      V1 = basisCurve->DN (U, Index);
-      Index++;
-    }
-    if (Index != 2) {
-      V2 = basisCurve->DN (U, Index);
-      V3 = basisCurve->DN (U, Index + 1);
-      V4 = basisCurve->DN (U, Index + 2);
-    }
-    XYZ Ndir = (V1.XYZ()).Crossed (OffsetDir);
-    XYZ DNdir = (V2.XYZ()).Crossed (OffsetDir);
-    XYZ D2Ndir = (V3.XYZ()).Crossed (OffsetDir);
-    XYZ D3Ndir = (V4.XYZ()).Crossed (OffsetDir);
-    Standard_Real R2  = Ndir.SquareModulus();
-    Standard_Real R   = Sqrt (R2);  Standard_Real R3 = R2 * R;  Standard_Real R4 = R2 * R2;
-    Standard_Real R5  = R3 * R2;  Standard_Real R6 = R3 * R3;  Standard_Real R7 = R5 * R2;
-    Standard_Real Dr  = Ndir.Dot (DNdir);
-    Standard_Real D2r = Ndir.Dot (D2Ndir) + DNdir.Dot (DNdir);
-    Standard_Real D3r = Ndir.Dot (D3Ndir) + 3.0 * DNdir.Dot (D2Ndir);
-    if (R7 <= gp::Resolution()) {
-      if (R6 <= gp::Resolution()) Geom_UndefinedDerivative::Raise();
-      D2Ndir.Multiply (3.0 * Dr / R2);
-      DNdir.Multiply (3.0 * ((D2r/R2) + (Dr*Dr)/R4));
-      Ndir.Multiply (6.0*Dr*Dr/R4 + 6.0*Dr*D2r/R4 - 15.0*Dr*Dr*Dr/R6 - D3r);
-      D3Ndir.Subtract (D2Ndir);
-      D3Ndir.Subtract (DNdir);
-      D3Ndir.Add (Ndir);
-      D3Ndir.Multiply (offsetValue/R);
-      V3.Add (Vec(D3Ndir));
-    }
-    else {
-      D2Ndir.Multiply (3.0 * Dr / R3);
-      DNdir.Multiplied (3.0 * ((D2r/R3) + (Dr*Dr/R5)));
-      Ndir.Multiply (6.0*Dr*Dr/R5 + 6.0*Dr*D2r/R5 - 15.0*Dr*Dr*Dr/R7 - D3r);
-      D3Ndir.Divide (R);
-      D3Ndir.Subtract (D2Ndir);
-      D3Ndir.Subtract (DNdir);
-      D3Ndir.Add (Ndir);
-      D3Ndir.Multiply (offsetValue);
-      V3.Add (Vec(D3Ndir));
-    }
-    dummy = V3;
-  }
-  else { Standard_NotImplemented::Raise();  }
-
-  return dummy;
+  
+  return VN;
 }
 
 //=======================================================================
@@ -531,24 +485,70 @@ Vec Geom_OffsetCurve::DN (const Standard_Real U, const Standard_Integer N) const
 //purpose  : 
 //=======================================================================
 
-void  Geom_OffsetCurve::D0(const Standard_Real U,
-                           gp_Pnt& P,
-                           gp_Pnt& Pbasis,
-                           gp_Vec& V1basis)const 
-{
+void  Geom_OffsetCurve::D0(const Standard_Real theU, gp_Pnt& theP,
+                           gp_Pnt& thePbasis, gp_Vec& theV1basis)const 
+  {
+  const Standard_Real aTol = gp::Resolution();
 
-  basisCurve->D1 (U, Pbasis, V1basis);
-  Standard_Integer Index = 2;
-  while (V1basis.Magnitude() <= gp::Resolution() && Index <= MaxDegree) {
-    V1basis = basisCurve->DN (U, Index);
-    Index++;
-  }
-  XYZ Ndir = (V1basis.XYZ()).Crossed (direction.XYZ());
+  basisCurve->D1 (theU, thePbasis, theV1basis);
+  Standard_Real Ndu = theV1basis.Magnitude();
+  
+  if(Ndu <= aTol)
+    {
+    const Standard_Real anUinfium   = basisCurve->FirstParameter();
+    const Standard_Real anUsupremum = basisCurve->LastParameter();
+
+    const Standard_Real DivisionFactor = 1.e-3;
+    Standard_Real du;
+    if((anUsupremum >= RealLast()) || (anUinfium <= RealFirst())) 
+      du = 0.0;
+    else
+      du = anUsupremum-anUinfium;
+      
+    const Standard_Real aDelta = Max(du*DivisionFactor,MinStep);
+//Derivative is approximated by Taylor-series
+    
+    Standard_Integer anIndex = 1; //Derivative order
+    gp_Vec V;
+    
+    do
+      {
+      V =  basisCurve->DN(theU,++anIndex);
+      Ndu = V.Magnitude();
+      }
+    while((Ndu <= aTol) && anIndex < maxDerivOrder);
+    
+    Standard_Real u;
+    
+    if(theU-anUinfium < aDelta)
+      u = theU+aDelta;
+    else
+      u = theU-aDelta;
+    
+    gp_Pnt P1, P2;
+    basisCurve->D0(Min(theU, u),P1);
+    basisCurve->D0(Max(theU, u),P2);
+    
+    gp_Vec V1(P1,P2);
+    Standard_Real aDirFactor = V.Dot(V1);
+    
+    if(aDirFactor < 0.0)
+      theV1basis = -V;
+    else
+      theV1basis = V;
+
+    Ndu = theV1basis.Magnitude();
+    }//if(Ndu <= aTol)
+  
+  XYZ Ndir = (theV1basis.XYZ()).Crossed (direction.XYZ());
   Standard_Real R = Ndir.Modulus();
-  if (R <= gp::Resolution())  Geom_UndefinedValue::Raise();
+  if (R <= gp::Resolution())
+    Geom_UndefinedValue::Raise("Exception: Undefined normal vector "
+          "because tangent vector has zero-magnitude!");
+
   Ndir.Multiply (offsetValue/R);
-  Ndir.Add (Pbasis.XYZ());
-  P.SetXYZ(Ndir);
+  Ndir.Add (thePbasis.XYZ());
+  theP.SetXYZ(Ndir);
 }
 
 //=======================================================================
@@ -556,26 +556,76 @@ void  Geom_OffsetCurve::D0(const Standard_Real U,
 //purpose  : 
 //=======================================================================
 
-void Geom_OffsetCurve::D1 ( const Standard_Real U, 
+void Geom_OffsetCurve::D1 ( const Standard_Real theU, 
                             Pnt& P , Pnt& PBasis ,
-                            Vec& V1, Vec& V1basis, Vec& V2basis) const {
+                            Vec& theV1, Vec& V1basis, Vec& V2basis) const {
 
    // P(u) = p(u) + Offset * Ndir / R
    // with R = || p' ^ V|| and Ndir = P' ^ direction (local normal direction)
 
    // P'(u) = p'(u) + (Offset / R**2) * (DNdir/DU * R -  Ndir * (DR/R))
 
-  basisCurve->D2 (U, PBasis, V1basis, V2basis);
-  V1 = V1basis;
+  const Standard_Real aTol = gp::Resolution();
+
+  basisCurve->D2 (theU, PBasis, V1basis, V2basis);
+  theV1 = V1basis;
   Vec V2 = V2basis;
-  Standard_Integer Index = 2;
-  while (V1.Magnitude() <= gp::Resolution() && Index <= MaxDegree) {
-    V1 = basisCurve->DN (U, Index);
-    Index++;
-  }
-  if (Index != 2)  V2 = basisCurve->DN (U, Index);
+
+  if(theV1.Magnitude() <= aTol)
+    {
+    const Standard_Real anUinfium   = basisCurve->FirstParameter();
+    const Standard_Real anUsupremum = basisCurve->LastParameter();
+
+    const Standard_Real DivisionFactor = 1.e-3;
+    Standard_Real du;
+    if((anUsupremum >= RealLast()) || (anUinfium <= RealFirst())) 
+      du = 0.0;
+    else
+      du = anUsupremum-anUinfium;
+      
+    const Standard_Real aDelta = Max(du*DivisionFactor,MinStep);
+//Derivative is approximated by Taylor-series
+    
+    Standard_Integer anIndex = 1; //Derivative order
+    Vec V;
+    
+    do
+      {
+      V =  basisCurve->DN(theU,++anIndex);
+      }
+    while((V.Magnitude() <= aTol) && anIndex < maxDerivOrder);
+    
+    Standard_Real u;
+    
+    if(theU-anUinfium < aDelta)
+      u = theU+aDelta;
+    else
+      u = theU-aDelta;
+    
+    Pnt P1, P2;
+    basisCurve->D0(Min(theU, u),P1);
+    basisCurve->D0(Max(theU, u),P2);
+    
+    Vec V1(P1,P2);
+    Standard_Real aDirFactor = V.Dot(V1);
+    
+    if(aDirFactor < 0.0)
+      {
+      theV1 = -V;
+      V2 = - basisCurve->DN (theU, anIndex+1);
+      }
+    else
+      {
+      theV1 = V;
+      V2 = basisCurve->DN (theU, anIndex+1);
+      }
+    
+    V2basis = V2;
+    V1basis = theV1;
+    }//if(theV1.Magnitude() <= aTol)
+
   XYZ OffsetDir = direction.XYZ();
-  XYZ Ndir  = (V1.XYZ()).Crossed (OffsetDir);
+  XYZ Ndir  = (theV1.XYZ()).Crossed (OffsetDir);
   XYZ DNdir = (V2.XYZ()).Crossed (OffsetDir);
   Standard_Real R2 = Ndir.SquareModulus();
   Standard_Real R  = Sqrt (R2);
@@ -587,18 +637,16 @@ void Geom_OffsetCurve::D1 ( const Standard_Real U,
     DNdir.Multiply(R);
     DNdir.Subtract (Ndir.Multiplied (Dr/R));
     DNdir.Multiply (offsetValue/R2);
-    V1.Add (Vec(DNdir));
+    theV1.Add (Vec(DNdir));
   }
   else {
     // Same computation as IICURV in EUCLID-IS because the stability is
     // better
     DNdir.Multiply (offsetValue/R);
     DNdir.Subtract (Ndir.Multiplied (offsetValue * Dr/R3));        
-    V1.Add (Vec(DNdir));
+    theV1.Add (Vec(DNdir));
   }
-  Ndir.Multiply (offsetValue/R);
-  Ndir.Add (PBasis.XYZ());
-  P.SetXYZ (Ndir);
+  D0(theU,P);
 }
 
 
@@ -607,9 +655,9 @@ void Geom_OffsetCurve::D1 ( const Standard_Real U,
 //purpose  : 
 //=======================================================================
 
-void Geom_OffsetCurve::D2 (const Standard_Real U, 
+void Geom_OffsetCurve::D2 (const Standard_Real theU, 
                            Pnt& P      , Pnt& PBasis ,
-                           Vec& V1     , Vec& V2     , 
+                           Vec& theV1     , Vec& V2     , 
                            Vec& V1basis, Vec& V2basis, Vec& V3basis) const {
 
    // P(u) = p(u) + Offset * Ndir / R
@@ -620,21 +668,75 @@ void Geom_OffsetCurve::D2 (const Standard_Real U,
    // P"(u) = p"(u) + (Offset / R) * (D2Ndir/DU - DNdir * (2.0 * Dr/ R**2) +
    //         Ndir * ( (3.0 * Dr**2 / R**4) - (D2r / R**2)))
 
-  basisCurve->D3 (U, PBasis, V1basis, V2basis, V3basis);
-  Standard_Integer Index = 2;
-  V1     = V1basis;
+  const Standard_Real aTol = gp::Resolution();
+
+  Standard_Boolean IsDirectionChange = Standard_False;
+
+  basisCurve->D3 (theU, PBasis, V1basis, V2basis, V3basis);
+
+  theV1  = V1basis;
   V2     = V2basis;
   Vec V3 = V3basis;
-  while (V1.Magnitude() <= gp::Resolution() && Index <= MaxDegree) {
-    V1 = basisCurve->DN (U, Index);
-    Index++;
-  }
-  if (Index != 2) {
-    V2 = basisCurve->DN (U, Index);
-    V3 = basisCurve->DN (U, Index + 1);
-  }
+  
+  if(theV1.Magnitude() <= aTol)
+    {
+    const Standard_Real anUinfium   = basisCurve->FirstParameter();
+    const Standard_Real anUsupremum = basisCurve->LastParameter();
+
+    const Standard_Real DivisionFactor = 1.e-3;
+    Standard_Real du;
+    if((anUsupremum >= RealLast()) || (anUinfium <= RealFirst())) 
+      du = 0.0;
+    else
+      du = anUsupremum-anUinfium;
+      
+    const Standard_Real aDelta = Max(du*DivisionFactor,MinStep);
+//Derivative is approximated by Taylor-series
+    
+    Standard_Integer anIndex = 1; //Derivative order
+    Vec V;
+    
+    do
+      {
+      V =  basisCurve->DN(theU,++anIndex);
+      }
+    while((V.Magnitude() <= aTol) && anIndex < maxDerivOrder);
+    
+    Standard_Real u;
+    
+    if(theU-anUinfium < aDelta)
+      u = theU+aDelta;
+    else
+      u = theU-aDelta;
+    
+    Pnt P1, P2;
+    basisCurve->D0(Min(theU, u),P1);
+    basisCurve->D0(Max(theU, u),P2);
+    
+    Vec V1(P1,P2);
+    Standard_Real aDirFactor = V.Dot(V1);
+    
+    if(aDirFactor < 0.0)
+      {
+      theV1 = -V;
+      V2 = -basisCurve->DN (theU, anIndex+1);
+      V3 = -basisCurve->DN (theU, anIndex + 2);
+
+      IsDirectionChange = Standard_True;
+      }
+    else
+      {
+      theV1 = V;
+      V2 = basisCurve->DN (theU, anIndex+1);
+      V3 = basisCurve->DN (theU, anIndex + 2);
+      }
+    
+    V2basis = V2;
+    V1basis = theV1;
+    }//if(V1.Magnitude() <= aTol)
+  
   XYZ OffsetDir = direction.XYZ();
-  XYZ Ndir   = (V1.XYZ()).Crossed (OffsetDir);
+  XYZ Ndir   = (theV1.XYZ()).Crossed (OffsetDir);
   XYZ DNdir  = (V2.XYZ()).Crossed (OffsetDir);
   XYZ D2Ndir = (V3.XYZ()).Crossed (OffsetDir);
   Standard_Real R2    = Ndir.SquareModulus();
@@ -644,6 +746,7 @@ void Geom_OffsetCurve::D2 (const Standard_Real U,
   Standard_Real R5    = R3 * R2;
   Standard_Real Dr    = Ndir.Dot (DNdir);
   Standard_Real D2r   = Ndir.Dot (D2Ndir) + DNdir.Dot (DNdir);
+  
   if (R5 <= gp::Resolution()) {
     //We try another computation but the stability is not very good
     //dixit ISG.
@@ -653,12 +756,17 @@ void Geom_OffsetCurve::D2 (const Standard_Real U,
     D2Ndir.Subtract (DNdir.Multiplied (2.0 * Dr / R2));
     D2Ndir.Add (Ndir.Multiplied (((3.0 * Dr * Dr)/R4) - (D2r/R2)));
     D2Ndir.Multiply (offsetValue / R);
+    
+    if(IsDirectionChange)
+      V2=-V2;
+
     V2.Add (Vec(D2Ndir));
+        
     // V1 = P' (U) :
     DNdir.Multiply(R);
     DNdir.Subtract (Ndir.Multiplied (Dr/R));
     DNdir.Multiply (offsetValue/R2);
-    V1.Add (Vec(DNdir));
+    theV1.Add (Vec(DNdir));
   }
   else {
     // Same computation as IICURV in EUCLID-IS because the stability is
@@ -670,16 +778,19 @@ void Geom_OffsetCurve::D2 (const Standard_Real U,
                      offsetValue * (((3.0 * Dr * Dr) / R5) - (D2r / R3))
                                      )
                     );
+    
+    if(IsDirectionChange)
+      V2=-V2;
+
     V2.Add (Vec(D2Ndir));
+    
     // V1 = P' (U) :
     DNdir.Multiply (offsetValue/R);
     DNdir.Subtract (Ndir.Multiplied (offsetValue*Dr/R3));        
-    V1.Add (Vec(DNdir));
+    theV1.Add (Vec(DNdir));
   }
   //P (U) :
-  Ndir.Multiply (offsetValue/R);
-  Ndir.Add (PBasis.XYZ());
-  P.SetXYZ (Ndir);
+  D0(theU,P);
 }
 
 
@@ -717,23 +828,15 @@ Standard_Real Geom_OffsetCurve::Offset () const { return offsetValue; }
 //purpose  : 
 //=======================================================================
 
-void Geom_OffsetCurve::Value (
-const Standard_Real U, Pnt& P, Pnt& PBasis,  Vec& V1basis) const {
+void Geom_OffsetCurve::Value (const Standard_Real theU, Pnt& theP, 
+                              Pnt& thePbasis,  Vec& theV1basis) const 
+  {
+  if (basisCurve->Continuity() == GeomAbs_C0)
+    Geom_UndefinedValue::Raise("Exception: Basis curve is C0 continuity!");
 
-  if (basisCurve->Continuity() == GeomAbs_C0)  Geom_UndefinedValue::Raise();
-  basisCurve->D1 (U, PBasis, V1basis);
-  Standard_Integer Index = 2;
-  while (V1basis.Magnitude() <= gp::Resolution() && Index <= MaxDegree) {
-    V1basis = basisCurve->DN (U, Index);
-    Index++;
+  basisCurve->D1(theU, thePbasis, theV1basis);
+  D0(theU,theP);
   }
-  XYZ Ndir = (V1basis.XYZ()).Crossed (direction.XYZ());
-  Standard_Real R = Ndir.Modulus();
-  if (R <= gp::Resolution())  Geom_UndefinedValue::Raise();
-  Ndir.Multiply (offsetValue/R);
-  Ndir.Add (PBasis.XYZ());
-  P.SetXYZ (Ndir);
-}
 
 
 //=======================================================================

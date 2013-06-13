@@ -127,21 +127,25 @@ static void PlotCurve (Draw_Display& aDisplay,
 //=======================================================================
 
 void DrawTrSurf_Drawable::DrawCurveOn (Adaptor3d_Curve&   C, 
-				       Draw_Display& aDisplay) const
+                                       Draw_Display& aDisplay) const
 {
   gp_Pnt P;
-  if (myDrawMode == 1) {
+  if (myDrawMode == 1)
+  {
     Standard_Real Fleche = myDeflection/aDisplay.Zoom();
     GCPnts_UniformDeflection LineVu(C,Fleche);
-    if (LineVu.IsDone()) {
+    if (LineVu.IsDone())
+    {
       aDisplay.MoveTo(LineVu.Value(1));
-      for (Standard_Integer i = 2; i <= LineVu.NbPoints(); i++) {
-	aDisplay.DrawTo(LineVu.Value(i));
+      for (Standard_Integer i = 2; i <= LineVu.NbPoints(); i++)
+      {
+        aDisplay.DrawTo(LineVu.Value(i));
       }
-    }  
+    }
   }
-  else {
-    Standard_Real j;
+  else
+  {
+    Standard_Integer j;
     Standard_Integer intrv, nbintv = C.NbIntervals(GeomAbs_CN);
     TColStd_Array1OfReal TI(1,nbintv+1);
     C.Intervals(TI,GeomAbs_CN);
@@ -150,36 +154,44 @@ void DrawTrSurf_Drawable::DrawCurveOn (Adaptor3d_Curve&   C,
     GeomAbs_CurveType CurvType = C.GetType();
     gp_Pnt aPPnt=P, aNPnt;
 
-    for (intrv = 1; intrv <= nbintv; intrv++) {
+    for (intrv = 1; intrv <= nbintv; intrv++)
+    {
       Standard_Real t = TI(intrv);
       Standard_Real step = (TI(intrv+1) - t) / myDiscret;
 
-      switch (CurvType) {
-      case GeomAbs_Line :
-	break;
-      case GeomAbs_Circle :
-      case GeomAbs_Ellipse :
-	for (j = 1; j < myDiscret; j++) {
-	  t += step;
-	  C.D0(t,P);
-	  aDisplay.DrawTo(P);
-	}
-	break;
-      case GeomAbs_Parabola :
-      case GeomAbs_Hyperbola :
-      case GeomAbs_BezierCurve :
-      case GeomAbs_BSplineCurve :
-      case GeomAbs_OtherCurve :
-	for (j = 1; j <= myDiscret/2; j++) {
-	  C.D0 (t+step*2., aNPnt);
+      switch (CurvType)
+      {
+      case GeomAbs_Line:
+        break;
+      case GeomAbs_Circle:
+      case GeomAbs_Ellipse:
+        for (j = 1; j < myDiscret; j++)
+        {
+          t += step;
+          C.D0(t,P);
+          aDisplay.DrawTo(P);
+        }
+        break;
+      case GeomAbs_Parabola:
+      case GeomAbs_Hyperbola:
+      case GeomAbs_BezierCurve:
+      case GeomAbs_BSplineCurve:
+      case GeomAbs_OtherCurve:
+        const Standard_Integer nIter = myDiscret/2;
+        for (j = 1; j < nIter; j++)
+        {
+          const Standard_Real t1 = t+step*2.;
+          C.D0 (t1, aNPnt);
           PlotCurve (aDisplay, C, t, step, aPPnt, aNPnt);
-	  aPPnt = aNPnt;
-	  t += step*2.;
-	}
-	break;
+          aPPnt = aNPnt;
+          t = t1;
+        }
+
+        break;
       }
 
       C.D0(TI(intrv+1),P);
+      PlotCurve (aDisplay, C, t, step, aPPnt, P);
       aDisplay.DrawTo(P);
     }
   }

@@ -245,4 +245,8 @@ is
     NbSamples(myclass; C: Address from Standard)
     returns Integer from Standard;
 
+    Degree(myclass; C: Address from Standard)
+      returns Integer from Standard;
+      ---C++: inline
+
 end CurveTool;

@@ -99,6 +99,27 @@ is
         --- Purpose : Raised if the continuity of the current interval
         --  is not C2.
      is redefined static;
+
+    D3 (me; U : Real; P : out Pnt from gp; V1, V2, V3 : out Vec from gp)
+        --- Purpose :
+        --  Returns the point P of parameter U, the first, the second 
+        --  and the third derivative.
+     raises 
+    	DomainError from Standard
+        --- Purpose : Raised if the continuity of the current interval
+        --  is not C1.
+
+    is redefined static;
+        
+    DN (me; U : Real; N : Integer)   returns Vec from gp
+        --- Purpose :
+        --  The returned vector gives the value of the derivative for the 
+        --  order of derivation N.
+    raises  
+        OutOfRange from Standard
+        --- Purpose : Raised if N < 1.            
+    is redefined static;
+
  
     Resolution(me; R3d : Real) returns Real
          ---Purpose :  Returns the parametric  resolution corresponding

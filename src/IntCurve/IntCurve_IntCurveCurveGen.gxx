@@ -39,7 +39,7 @@ void IntCurve_IntCurveCurveGen::Perform(const TheCurve& C,
   IntRes2d_Domain D1;
   Standard_Real TolDomain = Tol;
   if(Tol<TolConf) TolDomain = TolConf;
-  GeomAbs_CurveType typ = TheCurveTool::TheType(C);
+  GeomAbs_CurveType typ = TheCurveTool::GetType(C);
   switch(typ) { 	
   case GeomAbs_Ellipse:	
   case GeomAbs_Circle:
@@ -95,7 +95,7 @@ void IntCurve_IntCurveCurveGen::Perform(const TheCurve& C,
 					const IntRes2d_Domain& D,
 					const Standard_Real TolConf,
 					const Standard_Real Tol) { 
-  GeomAbs_CurveType typ = TheCurveTool::TheType(C);
+  GeomAbs_CurveType typ = TheCurveTool::GetType(C);
   switch(typ) { 	
   case GeomAbs_Ellipse:	
   case GeomAbs_Circle:
@@ -125,7 +125,7 @@ IntRes2d_Domain IntCurve_IntCurveCurveGen::ComputeDomain(const TheCurve& C1,
 							 const Standard_Real TolDomain) const { 
   IntRes2d_Domain D1;
 
-  GeomAbs_CurveType typ = TheCurveTool::TheType(C1);
+  GeomAbs_CurveType typ = TheCurveTool::GetType(C1);
   switch(typ) { 
     
   case GeomAbs_Ellipse: 
@@ -238,8 +238,8 @@ void IntCurve_IntCurveCurveGen::InternalPerform (const TheCurve& C1,
 						 const Standard_Real Tol,
 						 const Standard_Boolean Composite) {
 
-  GeomAbs_CurveType typ1 = TheCurveTool::TheType(C1);
-  GeomAbs_CurveType typ2 = TheCurveTool::TheType(C2);
+  GeomAbs_CurveType typ1 = TheCurveTool::GetType(C1);
+  GeomAbs_CurveType typ2 = TheCurveTool::GetType(C2);
 
 
   switch (typ1) {

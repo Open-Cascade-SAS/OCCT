@@ -55,12 +55,12 @@ Standard_IMPORT Draw_Viewer dout;
 //=======================================================================
 
 static Standard_Integer proj (Draw_Interpretor& di, Standard_Integer n, const char** a)
-{
-  if ( n < 5)
   {
+  if ( n < 5)
+    {
     cout << " Use proj curve/surf x y z [extrema algo: g(grad)/t(tree)]" << endl;
     return 1;
-  }
+    }
 
   gp_Pnt P(Draw::Atof(a[2]),Draw::Atof(a[3]),Draw::Atof(a[4]));
 
@@ -69,70 +69,88 @@ static Standard_Integer proj (Draw_Interpretor& di, Standard_Integer n, const ch
   Handle(Geom_Curve) GC = DrawTrSurf::GetCurve(a[1]);
   Handle(Geom_Surface) GS;
   Extrema_ExtAlgo aProjAlgo = Extrema_ExtAlgo_Grad;
+
   if (n == 6 && a[5][0] == 't')
     aProjAlgo = Extrema_ExtAlgo_Tree;
 
-  if (GC.IsNull())  {
+  if (GC.IsNull())
+    {
     GS = DrawTrSurf::GetSurface(a[1]);
+    
     if (GS.IsNull())
       return 1;
+
     Standard_Real U1, U2, V1, V2;
     GS->Bounds(U1,U2,V1,V2);
 
     GeomAPI_ProjectPointOnSurf proj(P,GS,U1,U2,V1,V2,aProjAlgo);
+
     Standard_Real UU,VV;
-    for ( Standard_Integer i = 1; i <= proj.NbPoints(); i++) {
+    for ( Standard_Integer i = 1; i <= proj.NbPoints(); i++)
+      {
       gp_Pnt P1 = proj.Point(i);
-      if ( P.Distance(P1) > Precision::Confusion()) {
-	Handle(Geom_Line) L = new Geom_Line(P,gp_Vec(P,P1));
-	Handle(Geom_TrimmedCurve) CT = 
-	  new Geom_TrimmedCurve(L, 0., P.Distance(P1));
+      if ( P.Distance(P1) > Precision::Confusion())
+        {
+        Handle(Geom_Line) L = new Geom_Line(P,gp_Vec(P,P1));
+        Handle(Geom_TrimmedCurve) CT = 
+          new Geom_TrimmedCurve(L, 0., P.Distance(P1));
 	Sprintf(name,"%s%d","ext_",i);
-	char* temp = name; // portage WNT
-	DrawTrSurf::Set(temp, CT);
-	di << name << " ";
-      }
-      else {
+        char* temp = name; // portage WNT
+        DrawTrSurf::Set(temp, CT);
+        di << name << " ";
+        }
+      else
+        {
 	Sprintf(name,"%s%d","ext_",i);
-	di << name << " ";
-	char* temp = name; // portage WNT
-	DrawTrSurf::Set(temp, P1);
-	proj.Parameters(i,UU,VV);
-	di << " Le point est sur la surface." << "\n";
-	di << " Ses parametres sont:  UU = " << UU << "\n";
-	di << "                       VV = " << VV << "\n";
+        di << name << " ";
+        char* temp = name; // portage WNT
+        DrawTrSurf::Set(temp, P1);
+        proj.Parameters(i,UU,VV);
+        di << " Le point est sur la surface." << "\n";
+        di << " Ses parametres sont:  UU = " << UU << "\n";
+        di << "                       VV = " << VV << "\n";
+        }
       }
     }
-
-  }
-  else {
+  else
+    {
     GeomAPI_ProjectPointOnCurve proj(P,GC,GC->FirstParameter(),
-				          GC->LastParameter());
-//    Standard_Real UU;
-    for ( Standard_Integer i = 1; i <= proj.NbPoints(); i++) {
+                                                GC->LastParameter());
+
+    if(proj.NbPoints() == 0)
+      {
+      cout << "No project point was found." << endl;
+      return 0;
+      }
+
+    for ( Standard_Integer i = 1; i <= proj.NbPoints(); i++)
+      {
       gp_Pnt P1 = proj.Point(i);
       Standard_Real UU = proj.Parameter(i);
       di << " parameter " << i << " = " << UU << "\n";
-      if ( P.Distance(P1) > Precision::Confusion()) {
-	Handle(Geom_Line) L = new Geom_Line(P,gp_Vec(P,P1));
-	Handle(Geom_TrimmedCurve) CT = 
-	  new Geom_TrimmedCurve(L, 0., P.Distance(P1));
+      if ( P.Distance(P1) > Precision::Confusion())
+        {
+        Handle(Geom_Line) L = new Geom_Line(P,gp_Vec(P,P1));
+        Handle(Geom_TrimmedCurve) CT = 
+                      new Geom_TrimmedCurve(L, 0., P.Distance(P1));
 	Sprintf(name,"%s%d","ext_",i);
-	char* temp = name; // portage WNT
-	DrawTrSurf::Set(temp, CT);
-	di << name << " ";
-      }
-      else {
+        char* temp = name; // portage WNT
+        DrawTrSurf::Set(temp, CT);
+        di << name << " ";
+        }
+      else
+        {
 	Sprintf(name,"%s%d","ext_",i);
-	char* temp = name; // portage WNT
-	DrawTrSurf::Set(temp, P1);
-	di << name << " ";
-	UU = proj.Parameter(i);
-	di << " Le point est sur la courbe." << "\n";
-	di << " Son parametre est U = " << UU << "\n";
+        char* temp = name; // portage WNT
+        DrawTrSurf::Set(temp, P1);
+        di << name << " ";
+        UU = proj.Parameter(i);
+        di << " Le point est sur la courbe." << "\n";
+        di << " Son parametre est U = " << UU << "\n";
+        }
       }
     }
-  }
+
   return 0;
 }
 
@@ -349,78 +367,133 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
   }
 
   char name[100];
-  if ( C1 && C2) {
+  if ( C1 && C2)
+    {
     GeomAPI_ExtremaCurveCurve Ex(GC1,GC2,U1f,U1l,U2f,U2l);
-    if(!Ex.Extrema().IsParallel()) {
-      for ( Standard_Integer i = 1; i <= Ex.NbExtrema(); i++) {
-	gp_Pnt P1,P2;
-	Ex.Points(i,P1,P2);
-	if (P1.Distance(P2) < 1.e-16) {
-	  di << "Extrema " << i << " is point : " << P1.X() << " " << P1.Y() << " " << P1.Z() << "\n";
-	  continue;
-	}
-	Handle(Geom_Line) L = new Geom_Line(P1,gp_Vec(P1,P2));
-	Handle(Geom_TrimmedCurve) CT = 
-	  new Geom_TrimmedCurve(L, 0., P1.Distance(P2));
-	Sprintf(name,"%s%d","ext_",i);
-	char* temp = name; // portage WNT
-	DrawTrSurf::Set(temp, CT);
-	di << name << " ";
+
+    if(!Ex.Extrema().IsParallel())
+      {
+      const Standard_Integer aNExtr = Ex.NbExtrema();
+      if(aNExtr == 0)
+        {
+        di << "No solutions!\n";
+        }
+      else
+        {
+        for ( Standard_Integer i = 1; i <= aNExtr; i++)
+          {
+          gp_Pnt P1,P2;
+          Ex.Points(i,P1,P2);
+          Standard_Real U1,V1;
+          Ex.Parameters(i,U1,V1);
+          if (P1.Distance(P2) < 1.e-16)
+            {
+            di << "Extrema " << i << " is point : " << P1.X() << " " << P1.Y() << " " << P1.Z() << "\n";
+            continue;
+            }
+
+          Handle(Geom_Line) L = new Geom_Line(P1,gp_Vec(P1,P2));
+          Handle(Geom_TrimmedCurve) CT = 
+            new Geom_TrimmedCurve(L, 0., P1.Distance(P2));
+#ifdef DEB          
+          Sprintf(name,"%s%d (U=%f; V=%f)","ext_",i,U1,V1);
+#else
+          Sprintf(name,"%s%d","ext_",i);
+#endif
+          char* temp = name; // portage WNT
+          DrawTrSurf::Set(temp, CT);
+          di << name << " ";
+          }
+        }
+      }
+    else
+      {
+      di << "Infinite number of extremas, distance = " << Ex.LowerDistance() << "\n";
       }
     }
-    else {
-      di << "Infinite number of extremas, distance = " << Ex.LowerDistance() << "\n";
-    }
-  }
-  else if ( C1 & S2) {
+  else if ( C1 & S2)
+    {
     GeomAPI_ExtremaCurveSurface Ex(GC1,GS2,U1f,U1l,U2f,U2l,V2f,V2l);
-    for ( Standard_Integer i = 1; i <= Ex.NbExtrema(); i++) {
-      gp_Pnt P1,P2;
-      Ex.Points(i,P1,P2);
-      if (P1.Distance(P2) < 1.e-16) continue;
-      Handle(Geom_Line) L = new Geom_Line(P1,gp_Vec(P1,P2));
-      Handle(Geom_TrimmedCurve) CT = 
-	new Geom_TrimmedCurve(L, 0., P1.Distance(P2));
-      Sprintf(name,"%s%d","ext_",i);
-      char* temp = name; // portage WNT
-      DrawTrSurf::Set(temp, CT);
-      di << name << " ";
+
+    const Standard_Integer aNExtr = Ex.NbExtrema();
+    if(aNExtr == 0)
+      {
+      di << "No solutions!\n";
+      }
+    else
+      {
+      for ( Standard_Integer i = 1; i <= aNExtr; i++)
+        {
+        gp_Pnt P1,P2;
+        Ex.Points(i,P1,P2);
+        if (P1.Distance(P2) < 1.e-16) continue;
+        Handle(Geom_Line) L = new Geom_Line(P1,gp_Vec(P1,P2));
+        Handle(Geom_TrimmedCurve) CT = 
+          new Geom_TrimmedCurve(L, 0., P1.Distance(P2));
+        Sprintf(name,"%s%d","ext_",i);
+        char* temp = name; // portage WNT
+        DrawTrSurf::Set(temp, CT);
+        di << name << " ";
+        }
+      }
     }
-  }
-  else if ( S1 & C2) {
+  else if ( S1 & C2)
+    {
     GeomAPI_ExtremaCurveSurface Ex(GC2,GS1,U2f,U2l,U1f,U1l,V1f,V1l);
-    for ( Standard_Integer i = 1; i <= Ex.NbExtrema(); i++) {
-      gp_Pnt P1,P2;
-      Ex.Points(i,P1,P2);
-      if (P1.Distance(P2) < 1.e-16) continue;
-      Handle(Geom_Line) L = new Geom_Line(P1,gp_Vec(P1,P2));
-      Handle(Geom_TrimmedCurve) CT = 
-	new Geom_TrimmedCurve(L, 0., P1.Distance(P2));
-      Sprintf(name,"%s%d","ext_",i);
-      char* temp = name; // portage WNT
-      DrawTrSurf::Set(temp, CT);
-      di << name << " ";
+
+    const Standard_Integer aNExtr = Ex.NbExtrema();
+    if(aNExtr == 0)
+      {
+      di << "No solutions!\n";
+      }
+    else
+      {
+      for ( Standard_Integer i = 1; i <= aNExtr; i++)
+        {
+        gp_Pnt P1,P2;
+        Ex.Points(i,P1,P2);
+        if (P1.Distance(P2) < 1.e-16) continue;
+        Handle(Geom_Line) L = new Geom_Line(P1,gp_Vec(P1,P2));
+        Handle(Geom_TrimmedCurve) CT = 
+          new Geom_TrimmedCurve(L, 0., P1.Distance(P2));
+        Sprintf(name,"%s%d","ext_",i);
+        char* temp = name; // portage WNT
+        DrawTrSurf::Set(temp, CT);
+        di << name << " ";
+        }
+      }
     }
-  }
-  else if ( S1 & S2) {
+  else if ( S1 & S2)
+    {
     GeomAPI_ExtremaSurfaceSurface Ex(GS1,GS2,U1f,U1l,V1f,V1l,U2f,U2l,V2f,V2l);
-    for ( Standard_Integer i = 1; i <= Ex.NbExtrema(); i++) {
-      gp_Pnt P1,P2;
-      Ex.Points(i,P1,P2);
-      if (P1.Distance(P2) < 1.e-16) continue;
-      Handle(Geom_Line) L = new Geom_Line(P1,gp_Vec(P1,P2));
-      Handle(Geom_TrimmedCurve) CT = 
-	new Geom_TrimmedCurve(L, 0., P1.Distance(P2));
-      Sprintf(name,"%s%d","ext_",i);
-      char* temp = name; // portage WNT
-      DrawTrSurf::Set(temp, CT);
-      di << name << " ";
+
+    const Standard_Integer aNExtr = Ex.NbExtrema();
+    if(aNExtr == 0)
+      {
+      di << "No solutions!\n";
+      }
+    else
+      {
+      for ( Standard_Integer i = 1; i <= aNExtr; i++)
+        {
+        gp_Pnt P1,P2;
+        Ex.Points(i,P1,P2);
+        if (P1.Distance(P2) < 1.e-16)
+          continue;
+
+        Handle(Geom_Line) L = new Geom_Line(P1,gp_Vec(P1,P2));
+        Handle(Geom_TrimmedCurve) CT = 
+          new Geom_TrimmedCurve(L, 0., P1.Distance(P2));
+        Sprintf(name,"%s%d","ext_",i);
+        char* temp = name; // portage WNT
+        DrawTrSurf::Set(temp, CT);
+        di << name << " ";
+        }
+      }
     }
-  }
 
   return 0;
-
-}
+  }
 
 //=======================================================================
 //function : totalextcc

@@ -151,7 +151,7 @@ is
      raises VectorWithNullMagnitude
       
      is static;
-
+     
   IsParallel (me; Other : Vec; AngularTolerance : Real)   returns Boolean
         --- Purpose :
         --  Returns True if Angle(<me>, Other) <= AngularTolerance or
@@ -164,7 +164,7 @@ is
      raises VectorWithNullMagnitude
      
      is static;
-
+     
   Angle (me; Other : Vec)  returns Real
         --- Purpose :
         --  Computes the angular value between <me> and <Other>

@@ -1,0 +1,22 @@
+puts "========"
+puts "OCC23706"
+puts "========"
+puts ""
+####################################
+## Cannot project point on curve
+####################################
+
+set x 3.9999965207720098
+set y 5.0000000629157348
+set z 5.0002142991819367
+set pp_ch 0.99715423329884789
+
+restore [locate_data_file bug23706_c2.draw] c
+set info [proj c $x $y $z]
+
+regexp {parameter 1 += +([-0-9.+eE]+)} $info full pp
+if { $pp != $pp_ch } {
+   puts "Error : Projection is not correct"
+} else {
+   puts "OK: Projection is correct"
+}

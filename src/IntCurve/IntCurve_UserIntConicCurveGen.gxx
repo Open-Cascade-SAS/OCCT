@@ -324,7 +324,7 @@ void IntCurve_UserIntConicCurveGen::InternalPerform (const gp_Lin2d& Lin1,
 						     const Standard_Real Tol,
 						     const Standard_Boolean Composite) {
 
-  GeomAbs_CurveType typ2 = ThePCurveTool::TheType(C2);
+  GeomAbs_CurveType typ2 = ThePCurveTool::GetType(C2);
   
   switch (typ2) {
     
@@ -419,7 +419,7 @@ void IntCurve_UserIntConicCurveGen::InternalPerform (const gp_Circ2d& Circ1,
 						     const Standard_Real Tol,
 						     const Standard_Boolean Composite) { 
 
-  GeomAbs_CurveType typ2 = ThePCurveTool::TheType(C2);
+  GeomAbs_CurveType typ2 = ThePCurveTool::GetType(C2);
   
   switch (typ2) {
     
@@ -513,7 +513,7 @@ void IntCurve_UserIntConicCurveGen::InternalPerform (const gp_Elips2d& Elips1,
 						     const Standard_Real Tol,
 						     const Standard_Boolean Composite) { 
   
-  GeomAbs_CurveType typ2 = ThePCurveTool::TheType(C2);
+  GeomAbs_CurveType typ2 = ThePCurveTool::GetType(C2);
     
   switch (typ2) {
     
@@ -609,7 +609,7 @@ void IntCurve_UserIntConicCurveGen::InternalPerform (const gp_Parab2d& Parab1,
 						     const Standard_Real Tol,
 						     const Standard_Boolean Composite) { 
 
-  GeomAbs_CurveType typ2 = ThePCurveTool::TheType(C2);
+  GeomAbs_CurveType typ2 = ThePCurveTool::GetType(C2);
   
   switch (typ2) {
     
@@ -704,7 +704,7 @@ void IntCurve_UserIntConicCurveGen::InternalPerform (const gp_Hypr2d& Hyper1,
 						     const Standard_Real Tol,
 						     const Standard_Boolean Composite) { 
 
-  GeomAbs_CurveType typ2 = ThePCurveTool::TheType(C2);
+  GeomAbs_CurveType typ2 = ThePCurveTool::GetType(C2);
   
   switch (typ2) {
     

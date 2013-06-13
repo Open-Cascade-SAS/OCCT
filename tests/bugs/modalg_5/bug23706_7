@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC23706"
+puts "============"
+puts ""
+#########################################################################
+# Cannot project point on curve
+#########################################################################
+
+pload XSDRAW
+bsplinecurve cc 3 2 0 4 1 4 -1 -1 2 1 0 -1 2 1 0 0 2 1 0 0 2 1
+point pp 0 0 1
+offsetcurve o cc .5 pp
+set info [length o]
+regexp {The length o is+ +([-0-9.+eE]+)} $info full ll
+set ll_check 2.3717833300483151
+
+if { [expr 1.*abs($ll_check - $ll)/$ll_check] > 0.01 } {
+   puts "Error : The lenght of result shape is $ll"
+}

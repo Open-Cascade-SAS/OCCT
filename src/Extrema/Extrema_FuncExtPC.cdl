@@ -94,6 +94,14 @@ is
                 TypeMismatch from Standard;
 	    	-- if N < 1 or N > NbExt(me).
 
+    SubIntervalInitialize(me: in out; theUfirst, theUlast: Real from Standard);
+    	---Purpose: Determines boundaries of subinterval for find of root.
+    
+    SearchOfTolerance(me: in out) returns Real from Standard;
+    	---Purpose: Computes a Tol value. If 1st derivative of curve
+    	--          |D1|<Tol, it is considered D1=0.      
+    
+
 fields
     myP    : Pnt;
     myC    : Address from Standard;
@@ -108,5 +116,14 @@ fields
     myPinit: Boolean;
     myCinit: Boolean;
     myD1Init: Boolean;
+    
+    myTol: Real from Standard;  -- toolerance for derivate
+
+--Supremum of search 1st non-zero derivative    
+    myMaxDerivOrder: Integer from Standard;
+    
+--boundaries of subinterval for find of root
+    myUinfium, myUsupremum: Real from Standard;
+    
 
 end FuncExtPC;

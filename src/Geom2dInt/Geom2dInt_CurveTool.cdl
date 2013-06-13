@@ -44,7 +44,7 @@ uses
 is
 
 
-    TheType(myclass; C: IntCurveCurve)
+    GetType(myclass; C: IntCurveCurve)
     	---C++: inline
     	returns CurveType from GeomAbs;
 
@@ -145,6 +145,15 @@ is
     D2 (myclass; C: IntCurveCurve; U: Real ; 
                  P: out Pnt2d; T,N: out Vec2d);
          ---C++: inline
+    
+    D3 (myclass; C: IntCurveCurve; U: Real ; 
+                 P: out Pnt2d; T,N,V: out Vec2d);
+         ---C++: inline
+    
+    DN(myclass; C: IntCurveCurve; U: Real ; 
+                 N: Integer from Standard)
+         returns Vec2d;
+         ---C++: inline
 
    NbIntervals(myclass ; C:  IntCurveCurve) 
         ---Purpose : output the number of interval of continuity C2 of 
@@ -164,6 +173,10 @@ is
         ---Purpose : output the bounds of interval of index <Index>
         --           used if Type == Composite.
         ---C++: inline
+
+   Degree(myclass; C : IntCurveCurve) returns Integer from Standard;
+     	---C++: inline
+
 
 end CurveTool;
 

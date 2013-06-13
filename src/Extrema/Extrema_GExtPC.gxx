@@ -131,8 +131,9 @@ void Extrema_GExtPC::Perform(const ThePoint& P)
         if (myuinf >= anInfToCheck) anInfToCheck = myuinf;
         if (myusup <= aSupToCheck) aSupToCheck = myusup;
         if((aSupToCheck - anInfToCheck) <= mytolu) continue;
-
-        if (i != 1) {
+        
+        if (i != 1)
+          {
           TheCurveTool::D1(*((TheCurve*)myC), myintuinf, PP, V1);
           s1 = (TheVector(P, PP))*V1;
           if (s1*s2 < 0.0) {
@@ -145,6 +146,7 @@ void Extrema_GExtPC::Perform(const ThePoint& P)
           TheCurveTool::D1(*((TheCurve*)myC), myintusup, PP, V1);
           s2 = (TheVector(P, PP))*V1;
         }
+
         IntervalPerform(P);
         IntExtIsDone = IntExtIsDone || mydone;
       }

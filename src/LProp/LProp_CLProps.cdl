@@ -139,21 +139,21 @@ is
 
 fields
 
-    myCurve   : Curve;    -- the Curve on which thw calculus are done
-    u         : Real;     -- the current value of the parameter
-    level     : Integer;  -- the order of derivation
-    cn        : Real;     -- the order of continuity of the Curve
-    linTol    : Real;     -- the tolerance for null Vector
+    myCurve      : Curve;    -- the Curve on which thw calculus are done
+    myU          : Real;     -- the current value of the parameter
+    myDerOrder   : Integer;  -- the order of derivation
+    myCN         : Real;     -- the order of continuity of the Curve
+    myLinTol     : Real;     -- the tolerance for null Vector
     
-    pnt       : Pnt;      -- the current point value
-    d         : Vec[3];   -- the current first, second and third derivative
-                          -- value
-    tangent   : Dir;      -- the tangent value
-    curvature : Real;     -- the curvature value
+    myPnt        : Pnt;      -- the current point value
+    myDerivArr   : Vec[3];   -- the current first, second and third derivative
+                             -- value
+    myTangent    : Dir;      -- the tangent value
+    myCurvature  : Real;     -- the curvature value
 
-    tangentStatus   : Status from LProp; 
+    myTangentStatus   : Status from LProp; 
                           -- the status of the tangent direction
-    significantFirstDerivativeOrder : Integer;
+    mySignificantFirstDerivativeOrder : Integer;
                           -- the order of the first non null derivative
                           -- 
 end CLProps;

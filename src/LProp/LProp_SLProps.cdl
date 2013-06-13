@@ -197,35 +197,35 @@ is
 
 fields
 
-    surf   : Surface;
-    u      : Real;
-    v      : Real;
-    level  : Integer;
-    cn     : Integer;
-    linTol : Real;
+    mySurf   	: Surface;
+    myU      	: Real;
+    myV      	: Real;
+    myDerOrder  : Integer;
+    myCN     	: Integer;
+    myLinTol	: Real;
 
-    pnt  : Pnt from gp;
-    d1U  : Vec from gp;
-    d1V  : Vec from gp;
-    d2U  : Vec from gp;
-    d2V  : Vec from gp;
-    dUV  : Vec from gp;
+    myPnt  : Pnt from gp;
+    myD1u  : Vec from gp;
+    myD1v  : Vec from gp;
+    myD2u  : Vec from gp;
+    myD2v  : Vec from gp;
+    myDuv  : Vec from gp;
 
-    normal     : Dir from gp;
-    minCurv    : Real;
-    maxCurv    : Real;
-    dirMinCurv : Dir from gp;
-    dirMaxCurv : Dir from gp;
-    meanCurv   : Real;
-    gausCurv   : Real;
+    myNormal     : Dir from gp;
+    myMinCurv    : Real;
+    myMaxCurv    : Real;
+    myDirMinCurv : Dir from gp;
+    myDirMaxCurv : Dir from gp;
+    myMeanCurv   : Real;
+    myGausCurv   : Real;
 
-    significantFirstUDerivativeOrder : Integer;
-    significantFirstVDerivativeOrder : Integer;
+    mySignificantFirstDerivativeOrderU : Integer;
+    mySignificantFirstDerivativeOrderV : Integer;
 
-    uTangentStatus  : Status from LProp;
-    vTangentStatus  : Status from LProp;
-    normalStatus    : Status from LProp;
-    curvatureStatus : Status from LProp;
+    myUTangentStatus  : Status from LProp;
+    myVTangentStatus  : Status from LProp;
+    myNormalStatus    : Status from LProp;
+    myCurvatureStatus : Status from LProp;
 
 end SLProps;
 

@@ -83,6 +83,11 @@ is
                    U : Real    from Standard)
     returns Pnt from gp;
     	---C++: inline
+
+    D0 (myclass; C :     Curve from Adaptor3d;
+                 U :     Real    from Standard;
+                 P : out Pnt from gp);
+    	---C++: inline
     
     D1 (myclass; C :     Curve from Adaptor3d;
                  U :     Real    from Standard;
@@ -90,10 +95,22 @@ is
                  V : out Vec from gp);
     	---C++: inline
     
-    D2 (myclass; C      :     Curve from Adaptor3d;
+    D2 (myclass; C          : Curve from Adaptor3d;
+                 U          : Real  from Standard;
+                 P          : out Pnt from gp;
+                 V1, V2     : out Vec from gp);
+     	---C++: inline
+
+    D3 (myclass; C          : Curve from Adaptor3d;
+                 U          : Real  from Standard;
+                 P          : out Pnt from gp;
+                 V1, V2, V3 : out Vec from gp);
+     	---C++: inline
+
+    DN (myclass; C      :     Curve from Adaptor3d;
                  U      :     Real    from Standard;
-                 P      : out Pnt from gp;
-                 V1, V2 : out Vec from gp);
+                 N      :     Integer from Standard)
+     	returns Vec from gp;	      
      	---C++: inline
 
    Line(myclass; C : Curve from Adaptor3d) returns Lin from gp;

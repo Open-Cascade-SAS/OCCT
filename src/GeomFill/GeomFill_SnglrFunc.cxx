@@ -21,6 +21,7 @@
 
 
 #include <GeomFill_SnglrFunc.ixx>
+#include <Standard_NotImplemented.hxx>
 #include <Precision.hxx>
 
 GeomFill_SnglrFunc::GeomFill_SnglrFunc(const Handle(Adaptor3d_HCurve)& HC) : 
@@ -120,6 +121,45 @@ void GeomFill_SnglrFunc::SetRatio(const Standard_Real Ratio)
   V1 *= ratio;
   V2 *= ratio;
 }
+
+void GeomFill_SnglrFunc::D3(const Standard_Real U,gp_Pnt& P,gp_Vec& V1,gp_Vec& V2,gp_Vec& V3) const
+  {
+  gp_Vec DC, D2C, D3C, D4C, D5C;
+  myHCurve->D3(U, P, DC, D2C, D3C);
+  D4C = myHCurve->DN(U, 4);
+  D5C = myHCurve->DN(U, 5);
+  P = gp_Pnt(DC.Crossed(D2C).XYZ()).ChangeCoord()*ratio;
+  V1 = DC.Crossed(D3C)*ratio;
+  V2 = (D2C.Crossed(D3C) + DC.Crossed(D4C))*ratio;
+  V3 = (DC.Crossed(D5C) + D2C.Crossed(D4C)*2)*ratio;
+  }
+
+gp_Vec GeomFill_SnglrFunc::DN(const Standard_Real U,const Standard_Integer N) const
+  {
+  Standard_RangeError_Raise_if (N < 1, "Exception: Geom2d_OffsetCurve::DN(). N<1.");
+
+  gp_Vec D1C, D2C, D3C;
+  gp_Pnt C;
+
+  switch(N)
+    {
+    case 1:
+      D1(U,C,D1C);
+      return D1C;
+    case 2:
+      D2(U,C,D1C,D2C);
+      return D2C;
+    case 3:
+      D3(U,C,D1C,D2C,D3C);
+      return D3C;
+    default:
+      Standard_NotImplemented::Raise("Exception: Derivative order is greater than 3. "
+        "Cannot compute of derivative.");
+    }
+   
+  return gp_Vec();
+
+  }
 
  Standard_Real GeomFill_SnglrFunc::Resolution(const Standard_Real R3D) const
 {

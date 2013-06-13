@@ -1,0 +1,20 @@
+puts "========"
+puts "OCC23706"
+puts "========"
+puts ""
+###############################
+## Cannot project point 3.9999965207720098 5.0000000629157348 5.0002142991819367 on curve from attached file.
+###############################
+
+set BugNumber OCC23706
+
+restore [locate_data_file bug23706_c.draw] c 
+proj c 3.9999965207720098 5.0000000629157348 5.0002142991819367
+
+if {[isdraw ext_1] == 1} {
+  dump ext_1
+  puts "${BugNumber} OK"
+} else {
+  puts "Faulty ${BugNumber}"
+}
+ 

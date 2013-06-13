@@ -136,7 +136,7 @@ is
      raises VectorWithNullMagnitude
       
      is static;
-
+     
   IsParallel (me; Other : Vec2d; AngularTolerance : Real)
      returns Boolean
         ---C++: inline
@@ -211,6 +211,11 @@ is
         ---C++: inline
         --- Purpose : Computes the scalar product
         ---C++: alias operator *
+
+  GetNormal(me)  returns Vec2d is static;
+        ---C++: inline 
+        -- Purpose : Returns a vector {Y(), -X()} which
+        --      is normal to given.
 
   Multiply (me : in out; Scalar : Real)           is static;
         ---C++: inline

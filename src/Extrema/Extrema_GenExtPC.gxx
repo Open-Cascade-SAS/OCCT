@@ -171,6 +171,7 @@ Methode:
 -----------------------------------------------------------------------------*/
 {
   myF.SetPoint(P);
+  myF.SubIntervalInitialize(myumin,myusup);
   myDone = Standard_False;
 
   math_FunctionRoots S (myF, myumin, myusup, mynbsample, mytolu, mytolF, mytolF);

@@ -62,6 +62,17 @@ inline gp_Pnt Extrema_CurveTool::Value(const Adaptor3d_Curve& C,
   return C.Value(U);
 }
 
+//=======================================================================
+//function : D0
+//purpose  : 
+//=======================================================================
+
+inline void Extrema_CurveTool::D0(const Adaptor3d_Curve& C, 
+					const Standard_Real U, 
+					gp_Pnt& P)
+{
+  C.D0(U, P);
+}
 
 //=======================================================================
 //function : D1
@@ -90,6 +101,31 @@ inline void Extrema_CurveTool::D2(const Adaptor3d_Curve& C,
   C.D2(U, P, V1, V2);
 }
 
+//=======================================================================
+//function : D3
+//purpose  : 
+//=======================================================================
+
+ inline void Extrema_CurveTool::D3(const Adaptor3d_Curve& C, 
+					 const Standard_Real U, 
+					 gp_Pnt& P, 
+					 gp_Vec& V1, 
+					 gp_Vec& V2, 
+					 gp_Vec& V3)
+{
+  C.D3(U, P, V1, V2, V3);
+}
+
+//=======================================================================
+//function : DN
+//purpose  : 
+//=======================================================================
+inline gp_Vec Extrema_CurveTool::DN(const Adaptor3d_Curve& C, 
+					     const Standard_Real U, 
+					     const Standard_Integer N)
+{
+  return C.DN(U, N);
+}
 
 
 //=======================================================================

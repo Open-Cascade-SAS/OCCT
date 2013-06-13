@@ -184,6 +184,8 @@ b- Calcul des minima:
   UVinf(2) = aCache2->TrimFirstParameter();
   UVsup(1) = aCache1->TrimLastParameter();
   UVsup(2) = aCache2->TrimLastParameter();
+  
+  myF.SubIntervalInitialize(UVinf,UVsup);
 
 //     - des 'bords' du tableau TbDist2
   for (NoV = 0; NoV <= aNbV+1; NoV++) {

@@ -478,11 +478,11 @@ Standard_Boolean Approx_SweepApproximation::D1(const Standard_Real Param,
       myPoles->ChangeValue(ii).ChangeCoord()
 	-= Translation.XYZ();
       // Homothety on all. 
-      myDPoles->ChangeValue(ii) *= myWeigths->Value(ii);
+      const Standard_Real aWeight = myWeigths->Value(ii);
+      myDPoles->ChangeValue(ii) *= aWeight;
       Vaux.SetXYZ( myPoles->Value(ii).Coord());
       myDPoles->ChangeValue(ii) += myDWeigths->Value(ii)*Vaux;
-      myPoles->ChangeValue(ii).ChangeCoord() 
-	*= myWeigths->Value(ii); // for the cash
+      myPoles->ChangeValue(ii).ChangeCoord() *= aWeight; // for the cash
     }
       
 
