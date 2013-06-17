@@ -178,8 +178,9 @@ NCollection_IncAllocator::NCollection_IncAllocator (const size_t theBlockSize)
   if (IS_DEBUG)
     Debug_Create(this);
 #endif
+  const size_t aDefault = DefaultBlockSize;
   const size_t aSize = IMEM_SIZE(sizeof(IBlock)) +
-      IMEM_SIZE((theBlockSize > 2*sizeof(IBlock)) ? theBlockSize : DefaultBlockSize);
+      IMEM_SIZE((theBlockSize > 2*sizeof(IBlock)) ? theBlockSize : aDefault);
   IBlock * const aBlock = (IBlock *) malloc (aSize * sizeof(aligned_t));
   myFirstBlock = aBlock;
   mySize = aSize - IMEM_SIZE(sizeof(IBlock));
