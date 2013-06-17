@@ -95,10 +95,6 @@ void OpenGl_Workspace::UpdateMaterial( const int flag )
     face = GL_BACK;
   }
 
-  const unsigned int rm = prop->color_mask;
-
-  if ( !rm ) return;
-
   // Handling transparency
   if ( (NamedStatus & OPENGL_NS_2NDPASSDO) == 0 )
   {
@@ -121,6 +117,14 @@ void OpenGl_Workspace::UpdateMaterial( const int flag )
     }
   }
 
+  // Obtaining reflection mode flags to update GL material properties
+  const unsigned int aReflectionMode = prop->color_mask;
+
+  // Do not update material properties in case of zero reflection mode, 
+  // because GL lighting will be disabled by OpenGl_PrimitiveArray::DrawArray()
+  // anyway.
+  if ( !aReflectionMode ) return;
+
   static float  mAmb[4];
   static float  mDiff[4];
   static float  mSpec[4];
@@ -133,7 +137,7 @@ void OpenGl_Workspace::UpdateMaterial( const int flag )
   if ( NamedStatus & OPENGL_NS_RESMAT )
   {
     // Ambient component
-    if( rm & OPENGL_AMBIENT_MASK )
+    if( aReflectionMode & OPENGL_AMBIENT_MASK )
     {
       const float *c = prop->isphysic? prop->ambcol.rgb : prop->matcol.rgb;
 
@@ -150,7 +154,7 @@ void OpenGl_Workspace::UpdateMaterial( const int flag )
     mAmb[3] = 1.F;
 
     // Diffusion component
-    if( rm & OPENGL_DIFFUSE_MASK )
+    if( aReflectionMode & OPENGL_DIFFUSE_MASK )
     {
       const float *c = prop->isphysic? prop->difcol.rgb : prop->matcol.rgb;
 
@@ -178,7 +182,7 @@ void OpenGl_Workspace::UpdateMaterial( const int flag )
     }
 
     // Specular component
-    if( rm & OPENGL_SPECULAR_MASK )
+    if( aReflectionMode & OPENGL_SPECULAR_MASK )
     {
       const float *c = prop->isphysic? prop->speccol.rgb : defspeccol;
 
@@ -194,7 +198,7 @@ void OpenGl_Workspace::UpdateMaterial( const int flag )
     mSpec[3] = 1.F;
 
     // Emissive component
-    if( rm & OPENGL_EMISSIVE_MASK )
+    if( aReflectionMode & OPENGL_EMISSIVE_MASK )
     {
       const float *c = prop->isphysic? prop->emscol.rgb : prop->matcol.rgb;
 
@@ -225,7 +229,7 @@ void OpenGl_Workspace::UpdateMaterial( const int flag )
   else
   {
     // Ambient component
-    if( rm & OPENGL_AMBIENT_MASK )
+    if( aReflectionMode & OPENGL_AMBIENT_MASK )
     {
       const float *c = prop->isphysic? prop->ambcol.rgb : prop->matcol.rgb;
 
@@ -255,7 +259,7 @@ void OpenGl_Workspace::UpdateMaterial( const int flag )
     }
 
     // Diffusion component
-    if( rm & OPENGL_DIFFUSE_MASK )
+    if( aReflectionMode & OPENGL_DIFFUSE_MASK )
     {
       const float *c = prop->isphysic? prop->difcol.rgb : prop->matcol.rgb;
 
@@ -313,7 +317,7 @@ void OpenGl_Workspace::UpdateMaterial( const int flag )
     }
 
     // Specular component
-    if( rm & OPENGL_SPECULAR_MASK )
+    if( aReflectionMode & OPENGL_SPECULAR_MASK )
     {
       const float *c = prop->isphysic? prop->speccol.rgb : defspeccol;
 
@@ -343,7 +347,7 @@ void OpenGl_Workspace::UpdateMaterial( const int flag )
     }
 
     // Emissive component
-    if( rm & OPENGL_EMISSIVE_MASK )
+    if( aReflectionMode & OPENGL_EMISSIVE_MASK )
     {
       const float *c = prop->isphysic? prop->emscol.rgb : prop->matcol.rgb;
 
