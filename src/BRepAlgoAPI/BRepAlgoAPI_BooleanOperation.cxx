@@ -351,42 +351,6 @@ const  TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::SectionEdges()
 }
 
 // ================================================================================================
-// function: Modified2
-// purpose:
-// ================================================================================================
-const TopTools_ListOfShape& BRepAlgoAPI_BooleanOperation::Modified2(const TopoDS_Shape& aS) 
-{
-  if (myBuilder==NULL) {
-    myGenerated.Clear();
-    return myGenerated;
-  }
-  //
-  BOPCol_ListOfShape aLS;
-  BOPCol_ListIteratorOfListOfShape aIt;
-  myGenerated.Clear();
-  //
-  const BOPCol_DataMapOfShapeListOfShape& aImages = myBuilder->Images();
-  if (aImages.IsBound(aS)) {
-    aLS = aImages.Find(aS);
-  } else {
-    myGenerated.Append(aS);
-  }
-  //
-  aIt.Initialize(aLS);
-  for (;aIt.More(); aIt.Next()) {
-    myGenerated.Append(aIt.Value());
-  }
-  //
-  if (myFuseEdges) {
-    TopTools_ListOfShape theLS;
-    theLS.Assign(myGenerated);
-    //
-    RefinedList(theLS);
-  }
-  return myGenerated;
-}
-
-// ================================================================================================
 // function: Generated
 // purpose:
 // ================================================================================================

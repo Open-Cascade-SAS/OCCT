@@ -128,7 +128,7 @@ void QANewBRepNaming_Loader::LoadModifiedShapes (BRepBuilderAPI_MakeShape&    MS
     if (!View.Add(Root)) continue;
 //    const TopTools_ListOfShape& Shapes = MS.Modified (Root);
     if (theBool) 
-      Shapes = pMS->Modified2 (Root);
+      Shapes = pMS->Modified (Root);
     else
       Shapes = MS.Modified (Root);
     TopTools_ListIteratorOfListOfShape ShapesIterator (Shapes);

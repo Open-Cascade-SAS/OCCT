@@ -68,14 +68,6 @@ is
         ---Level: Public
     returns ListOfShape from TopTools
     is redefined;
- 
-    Modified2 (me: in out;  
-    	    	aS : Shape from TopoDS) 
-    	returns ListOfShape from TopTools;
-    ---Purpose: Returns the list  of shapes modified from the shape <S>.
-    ---         For use in BRepNaming.
-    ---C++: return const & 
-    ---Level: Public
 
     Generated (me: in out; S : Shape from TopoDS)
     	returns ListOfShape from TopTools

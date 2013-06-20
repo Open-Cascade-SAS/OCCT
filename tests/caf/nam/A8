@@ -1,6 +1,6 @@
-puts "TODO OCC12345 ALL: An exception was caught"
-puts "TODO OCC12345 ALL: \\*\\* Exception \\*\\*.*"
-puts "TODO OCC12345 ALL: TEST INCOMPLETE"
+puts "TODO OCC24025 ALL: Two opened shells intersection"
+puts "TODO OCC24025 ALL: Two shells intersection \\(one opened\\)"
+puts "TODO OCC24025 ALL: ERROR OCCURS DURING TEST - FAULTY"
 
 set Test "Boolean operations naming test"
 set IsDone 1

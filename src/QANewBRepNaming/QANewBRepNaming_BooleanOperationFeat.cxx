@@ -523,7 +523,7 @@ void QANewBRepNaming_BooleanOperationFeat::LoadModified11 (BRepAlgoAPI_BooleanOp
   for (; ShapeExplorer.More(); ShapeExplorer.Next ()) {
     const TopoDS_Shape& Root = ShapeExplorer.Current ();
     if (!View.Add(Root)) continue;
-    const TopTools_ListOfShape& Shapes = MS.Modified2 (Root);
+    const TopTools_ListOfShape& Shapes = MS.Modified (Root);
     if(Shapes.Extent() == 1) {found = Standard_True; break;}
   }
     
@@ -534,7 +534,7 @@ void QANewBRepNaming_BooleanOperationFeat::LoadModified11 (BRepAlgoAPI_BooleanOp
     for (; ShapeExplorer.More(); ShapeExplorer.Next ()) {
       const TopoDS_Shape& Root = ShapeExplorer.Current ();
       if (!View.Add(Root)) continue;
-      const TopTools_ListOfShape& Shapes = MS.Modified2 (Root);
+      const TopTools_ListOfShape& Shapes = MS.Modified (Root);
       if(Shapes.Extent() > 1) continue;
       TopTools_ListIteratorOfListOfShape ShapesIterator (Shapes);
       for (;ShapesIterator.More (); ShapesIterator.Next ()) {
@@ -690,7 +690,7 @@ void QANewBRepNaming_BooleanOperationFeat::Load1nFaces(BRepAlgoAPI_BooleanOperat
   for (; ShapeExplorer.More(); ShapeExplorer.Next ()) {
     const TopoDS_Shape& Root = ShapeExplorer.Current ();
     if (!View.Add(Root)) continue;
-    const TopTools_ListOfShape& Shapes = MS.Modified2 (Root);
+    const TopTools_ListOfShape& Shapes = MS.Modified (Root);
     if(Shapes.Extent() < 2) continue; 
     aListR.Append(Root);
   }
@@ -700,7 +700,7 @@ void QANewBRepNaming_BooleanOperationFeat::Load1nFaces(BRepAlgoAPI_BooleanOperat
   TopTools_ListIteratorOfListOfShape Itr(aListR);
   for(;Itr.More();Itr.Next()) {
     const TopoDS_Shape& Root = Itr.Value();
-    const TopTools_ListOfShape& Shapes = MS.Modified2 (Root);
+    const TopTools_ListOfShape& Shapes = MS.Modified (Root);
     TopTools_ListOfShape aList;
     gp_Ax1 anAx = ComputeAxis(MS.Shape2());	
     if(Shapes.Extent() == 2)
@@ -733,7 +733,7 @@ void QANewBRepNaming_BooleanOperationFeat::LoadModified1n (BRepAlgoAPI_BooleanOp
   for (; ShapeExplorer.More(); ShapeExplorer.Next ()) {
     const TopoDS_Shape& Root = ShapeExplorer.Current ();
     if (!View.Add(Root)) continue;
-    const TopTools_ListOfShape& Shapes = MS.Modified2 (Root);
+    const TopTools_ListOfShape& Shapes = MS.Modified (Root);
     if(Shapes.Extent() >= 2) aNum += Shapes.Extent();
   }
   
@@ -743,7 +743,7 @@ void QANewBRepNaming_BooleanOperationFeat::LoadModified1n (BRepAlgoAPI_BooleanOp
   for (; ShapeExplorer.More(); ShapeExplorer.Next ()) {
     const TopoDS_Shape& Root = ShapeExplorer.Current ();
     if (!View.Add(Root)) continue;
-    const TopTools_ListOfShape& Shapes = MS.Modified2 (Root);
+    const TopTools_ListOfShape& Shapes = MS.Modified (Root);
     if(Shapes.Extent() >= 2) aNum += Shapes.Extent();
   }
 

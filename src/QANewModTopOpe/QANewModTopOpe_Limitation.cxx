@@ -198,38 +198,6 @@ const TopTools_ListOfShape& QANewModTopOpe_Limitation::Modified(const TopoDS_Sha
 }
 
 // ================================================================================================
-// function: Modified2
-// purpose:
-// ================================================================================================
-const TopTools_ListOfShape& QANewModTopOpe_Limitation::Modified2(const TopoDS_Shape& aS) 
-{
-  Check();
-  myGenerated.Clear();
-  if(myMode == QANewModTopOpe_Forward) {
-    myGenerated = myCut->Modified2(aS);
-  }
-  else if(myMode == QANewModTopOpe_Reversed) {
-    myGenerated = myCommon->Modified2(aS);
-  }
-  else {
-    myGenerated = myCut->Modified2(aS);
-
-    TopTools_MapOfShape aMap; // to check if shape can be added in list more then one time
-    TopTools_ListIteratorOfListOfShape It(myGenerated);
-    for(;It.More();It.Next()) {
-      aMap.Add(It.Value());
-    }
-    
-    It.Initialize(myCommon->Modified2(aS));
-    for(;It.More();It.Next()) {
-      if(aMap.Add(It.Value())) myGenerated.Append(It.Value());
-    }
-  }
-
-  return myGenerated;
-}
-
-// ================================================================================================
 // function: Generated
 // purpose:
 // ================================================================================================
