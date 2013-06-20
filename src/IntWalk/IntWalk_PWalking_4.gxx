@@ -146,38 +146,29 @@ Standard_Boolean IntWalk_PWalking::
     {  
       if (!DejaReparti) { // recherche si ligne fermee
 
-	Standard_Real u,v,up,vp;
+	Standard_Real u,v;
 	const IntSurf_PntOn2S& POn2S1=line->Value(1);
+        //On S1
 	POn2S1.ParametersOnS1(u,v);
-	gp_Pnt2d P1uv(u,v);
+	gp_Pnt2d P1uvS1(u,v);
 	previousPoint.ParametersOnS1(u,v);
-	up=u; vp=v;
-	gp_Pnt2d Prevuv(u,v);
+	gp_Pnt2d PrevuvS1(u,v);
 	myIntersectionOn2S.Point().ParametersOnS1(u,v);
-	gp_Pnt2d myIntersuv(u,v);
-	Standard_Boolean close2d = (P1uv.XY()-Prevuv.XY())*
-	  (P1uv.XY()-myIntersuv.XY()) <0.0;
-	
-	const gp_Pnt &P1 = line->Value(1).Value();
-	close = (P1.XYZ() - previousPoint.Value().XYZ())*
-	  (P1.XYZ() - myIntersectionOn2S.Point().Value().XYZ()) < 0;  
-	if(close != close2d) { 
-#ifdef DEB
-	  cout<<"\n PWalking_4 TestArret - close2d"<<close2d<<endl;
-#endif
-	}
-	Standard_Boolean autoclose = Standard_False;
-	previousPoint.ParametersOnS2(u,v);
-	if(   myIntersectionOn2S.Function().AuxillarSurface1() 
-	   == myIntersectionOn2S.Function().AuxillarSurface2()) { 
-	  if(Abs(u-up)<=1e-7 && Abs(v-vp)<=1e-7) { 
-	    autoclose=Standard_True;
-	  }
-	}
-	
+	gp_Pnt2d myIntersuvS1(u,v);
+	Standard_Boolean close2dS1 = (P1uvS1.XY()-PrevuvS1.XY())*
+	  (P1uvS1.XY()-myIntersuvS1.XY()) < 0.0;
+        //On S2
+        POn2S1.ParametersOnS2(u,v);
+        gp_Pnt2d P1uvS2(u,v);
+        previousPoint.ParametersOnS2(u,v);
+        gp_Pnt2d PrevuvS2(u,v);
+        myIntersectionOn2S.Point().ParametersOnS2(u,v);
+        gp_Pnt2d myIntersuvS2(u,v);
+        Standard_Boolean close2dS2 = (P1uvS2.XY()-PrevuvS2.XY())*
+          (P1uvS2.XY()-myIntersuvS2.XY()) < 0.0;
 
-
-	return (autoclose || (close&&close2d));
+        close = close2dS1 && close2dS2;
+        return close;
       }
       else return Standard_False;
     }
