@@ -77,15 +77,13 @@ AS_FIRSTAR_LASTPT,AS_FIRSTPT_LASTAR;
 
     class OffsetPresentation;
     
-    class DatumTool;
-    
-    class DatumPrs instantiates Datum from Prs3d(Ax2 from gp,
-    	    	    	    	    	    	 DatumTool from DsgPrs);
     class XYZAxisPresentation;
 
     class XYZPlanePresentation;
 
     class ShadedPlanePresentation;
+    
+    imported DatumPrs; 
 
     ComputeSymbol(aPresentation: Presentation from Prs3d;
                   anAspect: AngleAspect from Prs3d;
@@ -183,13 +181,13 @@ AS_FIRSTAR_LASTPT,AS_FIRSTPT_LASTAR;
     	--          special case flag  SpecCase equal Standard_True if 
     	--          radius of  fillet circle  =  0  or if  anngle between
     	--          Vec1(Center, FirstPoint)  and Vec2(Center,SecondPoint) equal 0 or PI 
-
     
     DistanceFromApex( elips  :  Elips  from  gp; 
 	       	      Apex   :  Pnt    from  gp;
 		      par    :	Real   from  Standard) 
     returns  Real  from  Standard;						             
-    	---Purpose:  computes  length  of  ellipse  arc  in  parametric  units          
+    	---Purpose:  computes  length  of  ellipse  arc  in  parametric  units  
+       
     
 end DsgPrs;
 

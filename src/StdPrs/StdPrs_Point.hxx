@@ -1,5 +1,4 @@
-// Copyright (c) 1995-1999 Matra Datavision
-// Copyright (c) 1999-2012 OPEN CASCADE SAS
+// Copyright (c) 2013 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -16,3 +15,14 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+#ifndef _StdPrs_Point_H__
+#define _StdPrs_Point_H__
+
+#include <Geom_Point.hxx>
+#include <Prs3d_Point.hxx>
+#include <Prs3d_Drawer.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <StdPrs_ToolPoint.hxx>
+
+typedef Prs3d_Point<Handle(Geom_Point), StdPrs_ToolPoint> StdPrs_Point;
+#endif

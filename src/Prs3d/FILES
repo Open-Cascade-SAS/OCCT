@@ -1,2 +1,4 @@
 Prs3d_NListIteratorOfListOfSequenceOfPnt.hxx
 Prs3d_NListOfSequenceOfPnt.hxx
+Prs3d_Point.hxx
+Prs3d_WFShape.hxx

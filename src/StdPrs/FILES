@@ -1,0 +1,8 @@
+StdPrs_HLRShape.hxx
+StdPrs_HLRShape.cxx
+StdPrs_Point.hxx
+StdPrs_Vertex.hxx
+StdPrs_WFDeflectionShape.hxx
+StdPrs_WFRestrictedFace.hxx
+StdPrs_WFRestrictedFace.cxx
+StdPrs_WFShape.hxx

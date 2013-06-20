@@ -1,5 +1,4 @@
-// Copyright (c) 1995-1999 Matra Datavision
-// Copyright (c) 1999-2012 OPEN CASCADE SAS
+// Copyright (c) 2013 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -16,3 +15,18 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+#ifndef _StdPrs_WFShape_H__
+#define _StdPrs_WFShape_H__
+
+#include <Prs3d_Root.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Drawer.hxx>
+#include <TopTools_HSequenceOfShape.hxx>
+#include <Quantity_Length.hxx>
+#include <Prs3d_WFShape.hxx>
+#include <StdPrs_WFRestrictedFace.hxx>
+#include <StdPrs_Curve.hxx>
+#include <StdPrs_Vertex.hxx>
+
+typedef Prs3d_WFShape <StdPrs_WFRestrictedFace, StdPrs_Curve, StdPrs_Vertex> StdPrs_WFShape;
+#endif
