@@ -1,0 +1,12 @@
+puts "================"
+puts "OCC24003"
+puts "================"
+puts ""
+#######################################################################
+# Exception reaised during intersection between two faces
+#######################################################################
+
+restore [locate_data_file bug24003_fz33.brep] b1
+restore [locate_data_file bug24003_fz47.brep] b2
+
+bop b1 b2

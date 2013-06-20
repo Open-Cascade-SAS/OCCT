@@ -1,0 +1,25 @@
+puts "TODO OCC23892 ALL: Error : number of surfaces is incorrect. Should be two intersection curves"
+puts "============"
+puts "OCC23892"
+puts "============"
+puts ""
+######################################################
+# Missing intersection curve between two surfaces
+######################################################
+
+restore [locate_data_file bug23892_fz33] b1
+restore [locate_data_file bug23892_fz46] b2
+
+mksurface s1 b1
+mksurface s2 b2
+
+intersect res s1 s2
+decho off
+set info [directory]
+decho on
+set nb [regexp -all {res_} $info]
+if {$nb != 2 } {
+    puts "Error : number of surfaces is incorrect. Should be two intersection curves"
+} else {
+    puts "OK : number of surfaces is correct."
+}
