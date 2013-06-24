@@ -70,6 +70,8 @@
 #include <TopoDS_Compound.hxx>
 #include <TopExp_Explorer.hxx>
 
+#include <Geom_RectangularTrimmedSurface.hxx>
+
 #include <ShapeFix_ShapeTolerance.hxx>
 #include <StepShape_ConnectedEdgeSet.hxx>
 #include <StepShape_EdgeBasedWireframeModel.hxx>
@@ -701,8 +703,24 @@ static TopoDS_Face TranslateBoundedSurf (const Handle(StepGeom_Surface) &surf,
   if (!StepToGeom_MakeSurface::Convert(surf,theSurf) || //:i6: protection
       !theSurf->IsKind(STANDARD_TYPE(Geom_BoundedSurface))) return res;
 
-  //gka 11.01.99 file PRO7755.stp entity #2018 surface #1895: error BRepLib_MakeFace func IsDegenerated
-  BRepBuilderAPI_MakeFace myMkFace(theSurf, TolDegen);
+  
+  BRepBuilderAPI_MakeFace myMkFace;
+  
+  Handle(Geom_RectangularTrimmedSurface) RS = 
+                    Handle(Geom_RectangularTrimmedSurface)::DownCast(theSurf);
+
+  if (!RS.IsNull())
+  {
+    Standard_Real umin, umax, vmin, vmax;
+    theSurf->Bounds(umin, umax, vmin, vmax);
+
+    myMkFace = BRepBuilderAPI_MakeFace(RS->BasisSurface(), umin, umax, vmin, vmax, TolDegen);
+  }
+  else
+  {
+    myMkFace = BRepBuilderAPI_MakeFace(theSurf, TolDegen);
+  }
+  
   return myMkFace.Face();
 }
 

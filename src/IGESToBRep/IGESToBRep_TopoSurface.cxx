@@ -765,33 +765,50 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferSurfaceOfRevolution
   // (BRepPrimAPI_MakeRevol replace surface of revolution by plane then 3D and 2D curves are inconsistent;
   // and 3D is ignored. As result shape is rectangle instead circle shape.
   Handle(Geom_Curve) aBasisCurve;
+  
   {
-  try {
-    OCC_CATCH_SIGNALS
-    if (extractCurve3d(generatrix, aBasisCurve)) {
-      Handle(Geom_Surface) aResultSurf = new Geom_SurfaceOfRevolution(aBasisCurve, revolAxis);
-      if ( !aResultSurf.IsNull() && !IsFullAngle ) {
-        Standard_Real VF = aBasisCurve->FirstParameter();
-        Standard_Real VL = aBasisCurve->LastParameter();
-        // PTV 29.08.2002  begin of OCC663 Trim surface by correct parameters
-        Standard_Real UF = 0;
-        Standard_Real UL = endAngle - startAngle;;
-        //aResultSurf = new Geom_RectangularTrimmedSurface(aResultSurf, startAngle, endAngle, VF, VL);
-        aResultSurf = new Geom_RectangularTrimmedSurface(aResultSurf, UF, UL, VF, VL);
-        // PTV 29.08.2002  end of OCC663
-      }
-      if (!aResultSurf.IsNull()) {
-        BRepBuilderAPI_MakeFace aMakeF(aResultSurf, Precision::Confusion());
-        if (aMakeF.IsDone()) res = aMakeF.Face();
-      }
+    try
+    {
+      OCC_CATCH_SIGNALS
+      if (extractCurve3d(generatrix, aBasisCurve))
+      {
+        BRepBuilderAPI_MakeFace aMakeF;
+        Handle(Geom_Surface) aResultSurf = 
+                new Geom_SurfaceOfRevolution(aBasisCurve, revolAxis);
+
+        if ( !aResultSurf.IsNull())
+        {
+          if (!IsFullAngle)
+          {
+            const Standard_Real VF = aBasisCurve->FirstParameter();
+            const Standard_Real VL = aBasisCurve->LastParameter();
+            
+            // PTV 29.08.2002  begin of OCC663 Trim surface by correct parameters
+            const Standard_Real UF = 0;
+            const Standard_Real UL = endAngle - startAngle;
+            // PTV 29.08.2002  end of OCC663
+
+            aMakeF = BRepBuilderAPI_MakeFace(aResultSurf, UF, 
+                                              UL, VF, VL, Precision::Confusion());
+          }//if (!IsFullAngle)
+          else
+          {
+            aMakeF = BRepBuilderAPI_MakeFace(aResultSurf, Precision::Confusion());
+          }
+
+          if (aMakeF.IsDone())
+            res = aMakeF.Face();
+        }//if ( !aResultSurf.IsNull())
+      }//if (extractCurve3d(generatrix, aBasisCurve))
     }
-  }
-  catch (Standard_Failure) {
+    catch (Standard_Failure)
+    {
 #ifdef DEB
-    cout << "Warning: IgesToBRep_TopoSurface::TransferSurfaceOfRevolution(): exception by Geom: ";
-    Standard_Failure::Caught()->Print ( cout ); cout << endl;
+      cout << "Warning: IgesToBRep_TopoSurface::"
+                    "TransferSurfaceOfRevolution(): exception by Geom: ";
+      Standard_Failure::Caught()->Print ( cout ); cout << endl;
 #endif
-  }
+    }//catch (Standard_Failure)
   }
   
   if ( res.IsNull() ) {
@@ -903,13 +920,17 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTabulatedCylinder
       Handle(Geom_Surface) aResultSurf = 
         new Geom_SurfaceOfLinearExtrusion(aBasisCurve, dir);
       if (!aResultSurf.IsNull()) {
-        aResultSurf = 
-          new Geom_RectangularTrimmedSurface(aResultSurf, 
-                                             aBasisCurve->FirstParameter(),
+        //aResultSurf = 
+        //  new Geom_RectangularTrimmedSurface(aResultSurf, 
+        //                                     aBasisCurve->FirstParameter(),
+        //                                     aBasisCurve->LastParameter(),
+        //                                     0., dir.Magnitude() );
+        BRepBuilderAPI_MakeFace aMakeF(aResultSurf, aBasisCurve->FirstParameter(),
                                              aBasisCurve->LastParameter(),
-                                             0., dir.Magnitude() );
-        BRepBuilderAPI_MakeFace aMakeF(aResultSurf, Precision::Confusion());
-        if (aMakeF.IsDone()) res = aMakeF.Face();
+                                             0., dir.Magnitude(),
+                                             Precision::Confusion());
+        if (aMakeF.IsDone())
+          res = aMakeF.Face();
       }
     }
   }

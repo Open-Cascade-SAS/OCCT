@@ -508,24 +508,23 @@ void  BRepLib_MakeFace::Init(const Handle(Geom_Surface)& SS,
 
   Standard_Real umin,umax,vmin,vmax,T;
 
-  Handle(Geom_Surface) S = SS;
+  Handle(Geom_Surface) S = SS, BS = SS;
   Handle(Geom_RectangularTrimmedSurface) RS = 
     Handle(Geom_RectangularTrimmedSurface)::DownCast(S);
   if (!RS.IsNull())
-    S = RS->BasisSurface();
-  
+    BS = RS->BasisSurface();
 
   Standard_Boolean OffsetSurface = 
-    (S->DynamicType() == STANDARD_TYPE(Geom_OffsetSurface));
-
+    (BS->DynamicType() == STANDARD_TYPE(Geom_OffsetSurface));
+     
   // adjust periodical surface or reordonate
   // check if the values are in the natural range
   Standard_Real epsilon = Precision::PConfusion();
   
-  S->Bounds(umin,umax,vmin,vmax);
+  BS->Bounds(umin,umax,vmin,vmax);
 
   if (OffsetSurface) {
-    Handle(Geom_OffsetSurface) OS = Handle(Geom_OffsetSurface)::DownCast(S);
+    Handle(Geom_OffsetSurface) OS = Handle(Geom_OffsetSurface)::DownCast(BS);
     Handle(Geom_Surface) Base = OS->BasisSurface();
 
     if (Base->DynamicType() == STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion)) {
