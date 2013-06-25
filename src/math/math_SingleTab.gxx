@@ -21,15 +21,18 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Failure.hxx>
 
+// macro to get size of C array
+#define CARRAY_LENGTH(arr) (sizeof(arr)/sizeof(arr[0]))
+
 math_SingleTab::math_SingleTab(const Standard_Integer LowerIndex,
 		               const Standard_Integer UpperIndex) :
-
-			       isAllocated(Standard_True),
+                   Addr(Buf),
+                   isAllocated(UpperIndex - LowerIndex + 1 > CARRAY_LENGTH(Buf)),
 			       First(LowerIndex), Last(UpperIndex)
 {
-  Item* TheAddr = (Item*) Standard::Allocate((Last-First+1) * sizeof(Item));
+  Item* TheAddr = !isAllocated? Buf :
+    (Item*) Standard::Allocate((Last-First+1) * sizeof(Item));
   Addr = (Standard_Address) (TheAddr - First);
-//cout << " Vector allocation = " << Addr << endl;
 }
 
 math_SingleTab::math_SingleTab(const Item& Tab,
@@ -40,7 +43,6 @@ math_SingleTab::math_SingleTab(const Item& Tab,
 			       First(LowerIndex), Last(UpperIndex)
 			       
 {
-//cout << " Vector allocation = " << Addr << endl;
 }
 
 void math_SingleTab::Init(const Item& InitValue)
@@ -53,14 +55,14 @@ void math_SingleTab::Init(const Item& InitValue)
 
 math_SingleTab::math_SingleTab(const math_SingleTab& Other) :
 
-  isAllocated(Standard_True),
+  isAllocated(Other.Last - Other.First + 1 > CARRAY_LENGTH(Buf)),
   First(Other.First),
   Last(Other.Last)
 
 {
-  Item* TheAddr = (Item*) Standard::Allocate((Last-First+1) * sizeof(Item));
+  Item* TheAddr = !isAllocated? Buf :
+    (Item*) Standard::Allocate((Last-First+1) * sizeof(Item));
   Addr = (Standard_Address) (TheAddr - First);
-//cout << " Vector allocation = " << Addr << endl;
   Item* TheOtherAddr = (Item*) Other.Addr;
   memmove((void*) TheAddr, (const void*) (TheOtherAddr + First),
 	  (size_t)(Last - First + 1) * sizeof(Item));
@@ -69,7 +71,6 @@ math_SingleTab::math_SingleTab(const math_SingleTab& Other) :
 
 void math_SingleTab::Free()
 {
-//cout << " Vector deallocation = " << Addr << endl;
   if(isAllocated) {
     Standard_Address it = (Standard_Address)&((Item*)Addr)[First];
     Standard::Free(it);

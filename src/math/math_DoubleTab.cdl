@@ -67,6 +67,9 @@ is
 fields
 
 Addr        : Address;
+AddrBuf     : Address[32];
+Buf         : Item[512];
+isAddrAllocated: Boolean;
 isAllocated : Boolean;
 LowR        : Integer;
 UppR        : Integer;

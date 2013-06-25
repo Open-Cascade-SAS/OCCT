@@ -59,6 +59,7 @@ is
 fields
 
 Addr        : Address;
+Buf         : Item[512];
 isAllocated : Boolean;
 First       : Integer;
 Last        : Integer;

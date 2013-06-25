@@ -24,12 +24,16 @@
 #include <Standard_Failure.hxx>
 #include <Standard_Integer.hxx>
 
+// macro to get size of C array
+#define CARRAY_LENGTH(arr) (sizeof(arr)/sizeof(arr[0]))
+
 void math_DoubleTab::Allocate()
 {
   Standard_Integer RowNumber = UppR - LowR + 1;
   Standard_Integer ColNumber = UppC - LowC + 1;
 
-  Item** TheAddr = (Item**) Standard::Allocate(RowNumber * sizeof(Item*));
+  Item** TheAddr = !isAddrAllocated? (Item**)&AddrBuf : 
+    (Item**) Standard::Allocate(RowNumber * sizeof(Item*));
   Item* Address;
   if(isAllocated) 
     Address = (Item*) Standard::Allocate(RowNumber * ColNumber * sizeof(Item));
@@ -50,7 +54,9 @@ math_DoubleTab::math_DoubleTab(const Standard_Integer LowerRow,
 			       const Standard_Integer UpperRow,
 			       const Standard_Integer LowerCol,
 			       const Standard_Integer UpperCol) :
-  isAllocated(Standard_True),
+  Addr(Buf),
+  isAddrAllocated(UpperRow - LowerRow + 1 > CARRAY_LENGTH(AddrBuf)),
+  isAllocated((UpperRow - LowerRow + 1) * (UpperCol - LowerCol + 1) > CARRAY_LENGTH(Buf)),
   LowR(LowerRow),
   UppR(UpperRow),
   LowC(LowerCol),
@@ -66,6 +72,7 @@ math_DoubleTab::math_DoubleTab(const Item& Tab,
 			       const Standard_Integer LowerCol,
 			       const Standard_Integer UpperCol) :
   Addr((void *) &Tab),
+  isAddrAllocated(UpperRow - LowerRow + 1 > CARRAY_LENGTH(AddrBuf)),
   isAllocated(Standard_False),
   LowR(LowerRow),
   UppR(UpperRow),
@@ -87,7 +94,10 @@ void math_DoubleTab::Init(const Item& InitValue)
 
 
 math_DoubleTab::math_DoubleTab(const math_DoubleTab& Other) :
-  isAllocated(Standard_True),
+  Addr(Buf),
+  isAddrAllocated(Other.UppR - Other.LowR + 1 > CARRAY_LENGTH(AddrBuf)),
+  isAllocated((Other.UppR - Other.LowR + 1) * 
+              (Other.UppC - Other.LowC + 1) > CARRAY_LENGTH(Buf)),
   LowR(Other.LowR),
   UppR(Other.UppR),
   LowC(Other.LowC),
@@ -112,8 +122,10 @@ void math_DoubleTab::Free()
     Standard::Free(it);
   }
   // free the pointers
-  Standard_Address it = (Standard_Address)(((Item**)Addr) + LowR);
-  Standard::Free (it);
+  if(isAddrAllocated) {
+    Standard_Address it = (Standard_Address)(((Item**)Addr) + LowR);
+    Standard::Free (it);
+  }
   Addr = 0;
 }
 
