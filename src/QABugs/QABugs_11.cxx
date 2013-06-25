@@ -1417,6 +1417,9 @@ static Standard_Integer OCC524 (Draw_Interpretor& di, Standard_Integer argc, con
   di << aSStream1;
   di<<"\n";
 
+  if (Matrix.RowNumber() > 1) {
+    Matrix(Matrix.LowerRow() + 1, Matrix.LowerCol()) += 1.;
+  }
   Vector2.TMultiply(Vector, Matrix);
 
   //Vector2.Dump(cout);

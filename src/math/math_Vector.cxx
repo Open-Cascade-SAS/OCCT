@@ -16,12 +16,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-//#ifndef DEB
-#define No_Standard_RangeError
-#define No_Standard_OutOfRange
-#define No_Standard_DimensionError
-//#endif
-
 #include <stdio.h>
 
 #include <math_Vector.ixx>
