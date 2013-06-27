@@ -2,7 +2,7 @@
 puts "TODO CR23096 ALL: TPSTAT : Faulty" 
 puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
 puts "TODO ?CR23096 ALL: TOLERANCE : Faulty" 
-puts "TODO CR23096 Mandriva2010: Error : 3 differences with reference data found :"
+puts "TODO OCC24035 ALL: Error : 2 differences with reference data"
 
 set LinuxDiff 3
 set filename Z8M6SAT.stp

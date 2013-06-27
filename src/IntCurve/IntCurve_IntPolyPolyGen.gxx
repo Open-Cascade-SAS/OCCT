@@ -967,12 +967,12 @@ Standard_Boolean IntCurve_IntPolyPolyGen::findIntersect(
       Standard_Real _PolyUInf,_PolyVInf;
 
       SPnt1.InfoFirst(Type,SegIndex1onP1,ParamOnLine);
-      if(SegIndex1onP1 >= thePoly1.NbSegments()) { SegIndex1onP1--; ParamOnLine = 1.0; }
+      if(SegIndex1onP1 > thePoly1.NbSegments()) { SegIndex1onP1--; ParamOnLine = 1.0; }
       if(SegIndex1onP1 <= 0) { SegIndex1onP1=1; ParamOnLine = 0.0; }
       _PolyUInf = thePoly1.ApproxParamOnCurve(SegIndex1onP1,ParamOnLine);
       
       SPnt1.InfoSecond(Type,SegIndex1onP2,ParamOnLine);
-      if(SegIndex1onP2 >= thePoly2.NbSegments()) { SegIndex1onP2--; ParamOnLine = 1.0; }
+      if(SegIndex1onP2 > thePoly2.NbSegments()) { SegIndex1onP2--; ParamOnLine = 1.0; }
       if(SegIndex1onP2 <= 0) { SegIndex1onP2=1; ParamOnLine = 0.0; }
       _PolyVInf = thePoly2.ApproxParamOnCurve(SegIndex1onP2,ParamOnLine);
       
@@ -1094,16 +1094,16 @@ Standard_Boolean IntCurve_IntPolyPolyGen::findIntersect(
 
 
 	if(Pos1==IntRes2d_Middle && Pos2!=IntRes2d_Middle) { 
-	  PolyUInf=TheProjPCur::FindParameter( C1,P2,D1.FirstParameter(),D1.LastParameter(),TheCurveTool::EpsX(C1));
+	  PolyUSup=TheProjPCur::FindParameter( C1,P2,D1.FirstParameter(),D1.LastParameter(),TheCurveTool::EpsX(C1));
 	}
 	else if(Pos1!=IntRes2d_Middle && Pos2==IntRes2d_Middle) { 
-	  PolyVInf=TheProjPCur::FindParameter( C2,P1,D2.FirstParameter(),D2.LastParameter(),TheCurveTool::EpsX(C2));
+	  PolyVSup=TheProjPCur::FindParameter( C2,P1,D2.FirstParameter(),D2.LastParameter(),TheCurveTool::EpsX(C2));
 	}
 	else if(Abs(ParamInfOnCurve1-ParamSupOnCurve1) > Abs(ParamInfOnCurve2-ParamSupOnCurve2)) { 
-	  PolyVInf=TheProjPCur::FindParameter( C2,P1,D2.FirstParameter(),D2.LastParameter(),TheCurveTool::EpsX(C2));
+	  PolyVSup=TheProjPCur::FindParameter( C2,P1,D2.FirstParameter(),D2.LastParameter(),TheCurveTool::EpsX(C2));
 	}
 	else { 
-	  PolyUInf=TheProjPCur::FindParameter( C1,P2,D1.FirstParameter(),D1.LastParameter(),TheCurveTool::EpsX(C1));
+	  PolyUSup=TheProjPCur::FindParameter( C1,P2,D1.FirstParameter(),D1.LastParameter(),TheCurveTool::EpsX(C1));
 	}
 	
 	if(IntImpParGen::DetermineTransition( Pos1,Tan1,Trans1,Pos2,Tan2,Trans2,TolConf)
