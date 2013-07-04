@@ -189,8 +189,21 @@ Standard_Boolean Voxel_FastConverter::Convert(Standard_Integer&      progress,
 
   // Compute the scope of triangles for current thread
   Standard_Integer start_thread_triangle = 1, end_thread_triangle = myNbTriangles, ithread_triangle = 0;
-  start_thread_triangle = (ithread - 1) * (myNbTriangles / myNbThreads) + 1;
-  end_thread_triangle   = (ithread - 0) * (myNbTriangles / myNbThreads);
+  if(myNbTriangles < myNbThreads)
+  {
+    if(ithread != 1)
+      return Standard_False;
+    //in case we're in thread one process all triangles
+  }
+  else
+  {
+    div_t division = div(myNbTriangles, myNbThreads);
+    start_thread_triangle = (ithread - 1) * division.quot + 1;
+    end_thread_triangle   = (ithread - 0) * division.quot;
+
+    if(ithread == myNbThreads)
+      end_thread_triangle += division.rem;
+  }
 
   // Convert
   TopLoc_Location L;
@@ -314,8 +327,21 @@ Standard_Boolean Voxel_FastConverter::ConvertUsingSAT(Standard_Integer&      pro
 
   // Compute the scope of triangles for current thread
   Standard_Integer start_thread_triangle = 1, end_thread_triangle = myNbTriangles, ithread_triangle = 0;
-  start_thread_triangle = (ithread - 1) * (myNbTriangles / myNbThreads) + 1;
-  end_thread_triangle   = (ithread - 0) * (myNbTriangles / myNbThreads);
+  if(myNbTriangles < myNbThreads)
+  {
+    if(ithread != 1)
+      return Standard_False;
+    //in case we're in thread one process all triangles
+  }
+  else
+  {
+    div_t division = div(myNbTriangles, myNbThreads);
+    start_thread_triangle = (ithread - 1) * division.quot + 1;
+    end_thread_triangle   = (ithread - 0) * division.quot;
+
+    if(ithread == myNbThreads)
+      end_thread_triangle += division.rem;
+  }
 
   // Convert
   TopLoc_Location L;
