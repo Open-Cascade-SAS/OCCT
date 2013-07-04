@@ -342,12 +342,13 @@ void Path (const GeomAdaptor_Surface& aGAS,
   Standard_Integer i, j, aNb, aNbj;
   Standard_Real aTol, anAngleIn, anAngleOut, anAngle, aMinAngle;
   Standard_Real aTol2D, aTol2D2;
-  Standard_Real aTol2, aD2;
+  Standard_Real aTol2, aD2, aTwoPI;
   Standard_Boolean anIsSameV2d, anIsSameV, anIsFound, anIsOut, anIsNotPassed;
   TopoDS_Vertex aVb;
   TopoDS_Edge aEOutb;
   BOPAlgo_ListIteratorOfListOfEdgeInfo anIt;
   //
+  aTwoPI = M_PI + M_PI;
   aTol=1.e-7;
   //
   // append block
@@ -527,26 +528,29 @@ void Path (const GeomAdaptor_Surface& aGAS,
         break;
       }
       //
-      // Look for minimal angle and make the choice.
-      gp_Pnt2d aP2Dx;
-      //
-      aP2Dx=Coord2dVf(aE, myFace);
-      //
-      aD2=aP2Dx.SquareDistance(aPb);
-      if (aD2 > aTol2D2){
-        continue;
-      }
-      //
-      //
-      anAngleOut=anEI.Angle();
-      //
-      if(bRecomputeAngle) {
-        if(aCurIndexE <= aRecomputedAngles.Length()) {
-          anAngleOut = aRecomputedAngles.Value(aCurIndexE);
+      if (aE.IsSame(aEOuta)) {
+        anAngle = aTwoPI;
+      } else {
+        // Look for minimal angle and make the choice.
+        gp_Pnt2d aP2Dx;
+        //
+        aP2Dx=Coord2dVf(aE, myFace);
+        //
+        aD2=aP2Dx.SquareDistance(aPb);
+        if (aD2 > aTol2D2){
+          continue;
         }
+        //
+        //
+        anAngleOut=anEI.Angle();
+        //
+        if(bRecomputeAngle) {
+          if(aCurIndexE <= aRecomputedAngles.Length()) {
+            anAngleOut = aRecomputedAngles.Value(aCurIndexE);
+          }
+        }
+        anAngle=ClockWiseAngle(anAngleIn, anAngleOut);
       }
-
-      anAngle=ClockWiseAngle(anAngleIn, anAngleOut);
       if (anAngle < aMinAngle) {
         aMinAngle=anAngle;
         pEdgeInfo=&anEI;

@@ -1,0 +1,33 @@
+puts "================"
+puts "OCC24037"
+puts "================"
+puts ""
+#######################################################################
+# Wrong result done by General Fuse algorithm
+#######################################################################
+
+restore [locate_data_file bug24037_coude_sain.brep] b1
+restore [locate_data_file bug24037_plans_bloc.brep] b2
+
+bclearobjects
+bcleartools
+baddcompound b1
+baddcompound b2
+bfillds
+bbuild result
+
+nbshapes result -t
+#the number of solids should be 12 instead of 2
+
+set nbsh_t 1
+set nb_v_good 52
+set nb_e_good 105
+set nb_w_good 76
+set nb_f_good 70
+set nb_sh_good 12
+set nb_sol_good 12
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 328
+
+set 3dviewer 1
