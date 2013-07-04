@@ -553,7 +553,11 @@ static
   //
   // 3. Find common parts
   if (myOperation==BOPAlgo_COMMON) {
-    iX=(aNb[0]>aNb[1])? 1 : 0;
+    if (myDims[0]==myDims[1]) {
+      iX=(aNb[0]>aNb[1])? 1 : 0;
+    } else {
+      iX=(myDims[0]<myDims[1]) ? 0 : 1;
+    }
     iY=(iX+1)%2;
   }
   else if (myOperation==BOPAlgo_CUT) {

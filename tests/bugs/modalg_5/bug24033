@@ -1,0 +1,60 @@
+puts "========"
+puts "CR24033"
+puts "========"
+puts ""
+#########################################
+## All the orientation as a result of BRepAlgoAPI_Common is set to INTERNAL
+#########################################
+
+polyline f1 0 0 0 0 1 0 1 1 0 1 0 0 0 0 0
+mkplane f1 f1
+polyline f2 0 1 0 0 2 0 1 2 0 1 1 0 0 1 0
+mkplane f2 f2
+polyline f3 0 2 0 0 3 0 1 3 0 1 2 0 0 2 0
+mkplane f3 f3
+
+polyline f4 1 0 0 1 1 0 2 1 0 2 0 0 1 0 0
+mkplane f4 f4
+polyline f5 1 1 0 1 2 0 2 2 0 2 1 0 1 1 0
+mkplane f5 f5
+polyline f6 1 2 0 1 3 0 2 3 0 2 2 0 1 2 0
+mkplane f6 f6
+
+polyline f7 2 0 0 2 1 0 3 1 0 3 0 0 2 0 0
+mkplane f7 f7
+polyline f8 2 1 0 2 2 0 3 2 0 3 1 0 2 1 0
+mkplane f8 f8
+polyline f9 2 2 0 2 3 0 3 3 0 3 2 0 2 2 0
+mkplane f9 f9
+
+sewing s f1 f2 f3 f4 f5 f6 f6 f7 f8 f9
+
+box b -1 1 -1 2 1 2
+
+bop s b
+bopcommon r
+explode r
+
+explode r_1
+set info_f [whatis r_1_1]
+if { [regexp {INTERNAL} ${info_f}] } {
+    puts "Faulty : Wrong orientation of the face"
+} else {
+    puts "Correct orientation of the face"
+}
+
+explode r_1_1 e
+set info_e [whatis r_1_1_1]
+if { [regexp {INTERNAL} ${info_e}] } {
+    puts "Faulty : Wrong orientation of the edge"
+} else {
+    puts "Correct orientation of the edge"
+}
+
+explode r_1_1 v
+set info_v [whatis r_1_1_1]
+if { [regexp {INTERNAL} ${info_v}] } {
+    puts "Faulty : Wrong orientation of the vertex"
+} else {
+    puts "Correct orientation of the vertex"
+}
