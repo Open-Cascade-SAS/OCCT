@@ -983,9 +983,9 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
     }
   }//if((aType1==GeomAbs_SurfaceOfRevolution ...
   else if ((aType1==GeomAbs_Plane && aType2==GeomAbs_Sphere) ||
-	   (aType2==GeomAbs_Plane && aType1==GeomAbs_Sphere)) {
+           (aType2==GeomAbs_Plane && aType1==GeomAbs_Sphere)) {
     Standard_Integer i, j, aNbP;
-    Standard_Real aT, aT1, aT2, dT, aD2max, aD2, aEps, aT11, aT12;
+    Standard_Real aT1, aT2, dT, aD2max, aD2, aEps, aT11, aT12;
     //
     aNbLin=mySeqOfCurve.Length();
     aD2max=0.;
@@ -998,38 +998,37 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
       const Handle(Geom2d_Curve)& aC2D2=aIC.SecondCurve2d();
       //
       const Handle(Geom2d_BSplineCurve)& aBC2D1=
-	Handle(Geom2d_BSplineCurve)::DownCast(aC2D1);
+        Handle(Geom2d_BSplineCurve)::DownCast(aC2D1);
       const Handle(Geom2d_BSplineCurve)& aBC2D2=
-	Handle(Geom2d_BSplineCurve)::DownCast(aC2D2);
+        Handle(Geom2d_BSplineCurve)::DownCast(aC2D2);
       //
       if (aBC2D1.IsNull() && aBC2D2.IsNull()) {
-	return;
+        return;
       }
       //
       if (!aBC2D1.IsNull()) {
-	aT1=aBC2D1->FirstParameter();
-	aT2=aBC2D1->LastParameter();
+        aT1=aBC2D1->FirstParameter();
+        aT2=aBC2D1->LastParameter();
       }
       else {
-	aT1=aBC2D2->FirstParameter();
-	aT2=aBC2D2->LastParameter();
+        aT1=aBC2D2->FirstParameter();
+        aT2=aBC2D2->LastParameter();
       }
       //
       aEps=0.01*(aT2-aT1);
-      dT=(aT2-aT1)/(aNbP-1);
+      dT=(aT2-aT1)/aNbP;
       for (j=0; j<aNbP; ++j) {
-	aT=aT1+j*dT;
-	aT11=aT1+j*dT;
-	aT12=aT11+dT;
-	if (j==aNbP-1) {
-	  aT12=aT2;
-	}
-	//
-	aD2=FindMaxSquareDistance(aT11, aT12, aEps, aC3D, aC2D1, aC2D2,
-				  myHS1, myHS2, myFace1, myFace2, myContext);
-	if (aD2>aD2max) {
-	  aD2max=aD2;
-	}
+        aT11=aT1+j*dT;
+        aT12=aT11+dT;
+        if (j==aNbP-1) {
+          aT12=aT2;
+        }
+        //
+        aD2=FindMaxSquareDistance(aT11, aT12, aEps, aC3D, aC2D1, aC2D2,
+                                  myHS1, myHS2, myFace1, myFace2, myContext);
+        if (aD2>aD2max) {
+          aD2max=aD2;
+        }
       }//for (j=0; j<aNbP; ++j) {
      
     }//for (i=1; i<=aNbLin; ++i) {
