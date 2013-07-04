@@ -20,6 +20,17 @@
 
 
 //=======================================================================
+//function : TCollection_HArray1
+//purpose  : 
+//=======================================================================
+
+inline TCollection_HArray1::TCollection_HArray1(const Standard_Integer First,
+                                                const Standard_Integer Last) :
+       myArray(First,Last)
+{
+}
+
+//=======================================================================
 //function : Length
 //purpose  : 
 //=======================================================================
@@ -27,6 +38,29 @@
 inline Standard_Integer TCollection_HArray1::Length () const 
 {
    return myArray.Length();
+}
+
+//=======================================================================
+//function : TCollection_HArray1
+//purpose  : 
+//=======================================================================
+inline TCollection_HArray1::TCollection_HArray1(const Standard_Integer First,
+                                                const Standard_Integer Last,
+                                                const ItemHArray1& V) :
+       myArray(First,Last)
+{
+  myArray.Init(V);
+}
+
+
+//=======================================================================
+//function : Init
+//purpose  : 
+//=======================================================================
+
+inline void TCollection_HArray1::Init(const ItemHArray1& V)
+{
+  myArray.Init(V);
 }
 
 //=======================================================================

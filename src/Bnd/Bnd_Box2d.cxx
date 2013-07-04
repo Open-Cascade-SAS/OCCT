@@ -264,9 +264,8 @@ Standard_Boolean Bnd_Box2d::IsOut (const Bnd_Box2d& Other) const
   else if   (Other.IsWhole())  return Standard_False;
   else if   (Other.IsVoid())   return Standard_True;
   else {
-    Bnd_Box2d OtherBox2d = Other; // DownEqual
     Standard_Real OXmin,OXmax,OYmin,OYmax;
-    OtherBox2d.Get(OXmin,OYmin,OXmax,OYmax);
+    Other.Get(OXmin,OYmin,OXmax,OYmax);
     if      (!(Flags & XminMask) && (OXmax < (Xmin-Gap))) return Standard_True;
     else if (!(Flags & XmaxMask) && (OXmin > (Xmax+Gap))) return Standard_True;
     else if (!(Flags & YminMask) && (OYmax < (Ymin-Gap))) return Standard_True;

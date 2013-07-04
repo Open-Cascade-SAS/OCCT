@@ -58,6 +58,7 @@ is
     raises 
     	RangeError  from Standard,
     	OutOfMemory from Standard;
+	---C++: inline
 
 
     Create (R1, R2, C1, C2: Integer from Standard; V : ItemHArray2) 
@@ -68,8 +69,10 @@ is
     raises 
     	RangeError  from Standard,
     	OutOfMemory from Standard;
+	---C++: inline
     Init(me : mutable; V : ItemHArray2) ;
     	---Purpose: Initializes the array with the value <V>
+	---C++: inline
 
     ColLength (me) returns Integer from Standard
     	---Purpose: Returns the number of rows of <me>.
@@ -102,6 +105,7 @@ is
     is static ;
 
     SetValue (me : mutable; Row, Col: Integer from Standard; 
+	---C++: inline
     Value: ItemHArray2) 
     	---Purpose: Assigns the value Value to the (Row,Col) item of this array.
 	---C++: inline
@@ -112,6 +116,7 @@ is
         ---Level: Public
     	---Purpose: Returns the value of the element of index  <Row><Col>
     	---C++: return const &
+        ---C++: inline
     raises OutOfRange from Standard
     is static;
 
@@ -120,6 +125,7 @@ is
         ---Level: Public
     	---Purpose: Returns the value of the element of index <Row><Col>
     	---C++: return &
+        ---C++: inline
     raises OutOfRange from Standard
     is static;
 

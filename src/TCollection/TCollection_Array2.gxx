@@ -42,12 +42,7 @@ void TCollection_Array2::Allocate ()
     Standard_RangeError_Raise_if(( RowSize <= 0  || ColumnSize <= 0 ),
 				 "TCollection_Array2::Create");
 //  Modified by Sergey KHROMOV - Mon Feb 10 11:46:15 2003 End
-#ifdef __OPTIM_ARRAY
-    myData = Standard::Allocate(Size*sizeof (Array2Item));
-    //    myData = (Array2Item *) new char [Size * sizeof (Array2Item)];
-#else 
     myData = new Array2Item [Size];
-#endif
 
     if (!myData) Standard_OutOfMemory::Raise("Array2 : Allocation failed");
   }
@@ -64,84 +59,6 @@ void TCollection_Array2::Allocate ()
   myData = (void*) (q - myLowerRow);
 }
 
-//=======================================================================
-//function : TCollection_Array2
-//purpose  : 
-//=======================================================================
-
-TCollection_Array2::TCollection_Array2 (const Standard_Integer R1, 
-					const Standard_Integer R2,
-					const Standard_Integer C1, 
-					const Standard_Integer C2) :
-       myLowerRow(R1),
-       myLowerColumn(C1),
-       myUpperRow(R2),
-       myUpperColumn(C2),
-       myDeletable(Standard_True)
-{
-  Allocate ();
-}
-
-//=======================================================================
-//function : TCollection_Array2
-//purpose  : User allocated data
-//=======================================================================
-
-TCollection_Array2::TCollection_Array2 (const Array2Item& Item,
-					const Standard_Integer R1, 
-					const Standard_Integer R2,
-					const Standard_Integer C1, 
-					const Standard_Integer C2) :
-       myLowerRow(R1),
-       myLowerColumn(C1),
-       myUpperRow(R2),
-       myUpperColumn(C2),
-       myDeletable(Standard_False),
-       myData((void*)&Item)
-{
-  Allocate ();
-}
-
-
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-
-void TCollection_Array2::Init (const Array2Item& V) 
-{
-  Standard_Integer Size = RowLength() * ColLength();
-  Array2Item* p = &(ChangeValue(myLowerRow,myLowerColumn));
-  for (Standard_Integer I = 0; I < Size ; I++) p[I] = V;
-}
-
-//=======================================================================
-//function : Destroy
-//purpose  : 
-//=======================================================================
-
-void TCollection_Array2::Destroy () 
-{
-  Array2Item** anItemPtr = ((Array2Item**)myData + myLowerRow);
-  
-  // delete the data
-  //
-  if (myDeletable) 
-#ifdef __OPTIM_ARRAY
-    {
-    Standard_Integer RowSize    = myUpperColumn-myLowerColumn+1;
-    Standard_Integer ColumnSize = myUpperRow-myLowerRow+1;
-    Standard_Integer Size = RowSize * ColumnSize;
-    Standard_Address it = (Standard_Address)&((Array2Item **)myData)[myLowerRow][myLowerColumn];
-    Standard::Free(it);  
-  }
-#else
-  delete [] &ChangeValue(myLowerRow,myLowerColumn);
-#endif
-
-  // delete the indirection table
-  Standard::Free((void*&)anItemPtr);
-}
 
 //=======================================================================
 //function : Assign

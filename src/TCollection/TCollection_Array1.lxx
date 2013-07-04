@@ -16,9 +16,73 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+#include <Standard.hxx>
+#include <Standard_OutOfMemory.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <Standard_RangeError.hxx>
 
 #include Array1Item_hxx
+
+
+//=======================================================================
+//function : TCollection_Array1
+//purpose  : 
+//=======================================================================
+
+inline TCollection_Array1::TCollection_Array1 (const Standard_Integer Low,
+                                               const Standard_Integer Up) :
+       myLowerBound(Low),
+       myUpperBound(Up),
+       isAllocated(Standard_True)
+{
+  Standard_RangeError_Raise_if(Up < Low,"TCollection_Array1::Create");
+
+  Array1Item* p = new Array1Item[Up-Low+1];
+
+  if (!p) Standard_OutOfMemory::Raise("Array1 : Allocation failed");
+  myStart = (void*)(p - myLowerBound);
+}
+
+//=======================================================================
+//function : TCollection_Array1
+//purpose  : C Array constructor
+//=======================================================================
+
+inline TCollection_Array1::TCollection_Array1(const Array1Item& AnItem,
+                                              const Standard_Integer Low,
+                                              const Standard_Integer Up) :
+       myLowerBound(Low),
+       myUpperBound(Up),
+       isAllocated(Standard_False)
+{
+  Standard_RangeError_Raise_if(Up < Low,"Array1::CArray");
+  myStart = (void*)( &AnItem - Low ); 
+}
+
+//=======================================================================
+//function : Init
+//purpose  : 
+//=======================================================================
+
+inline void TCollection_Array1::Init (const Array1Item& V) {
+  Array1Item* p = &ChangeValue(myLowerBound);
+  const Standard_Integer n = Length();
+  for(Standard_Integer i = 0; i < n; i++) {
+    p[i] = V;
+  }
+}
+
+//=======================================================================
+//function : Destroy
+//purpose  : 
+//=======================================================================
+
+inline void TCollection_Array1::Destroy() 
+{
+  if (isAllocated) {
+    delete [] &ChangeValue(myLowerBound);
+  }
+}
 
 //=======================================================================
 //function : Length

@@ -16,45 +16,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-#include <Standard_OutOfRange.hxx>
-#include <Standard_DimensionMismatch.hxx>
-#include <Standard_RangeError.hxx>
-#include <Standard_OutOfMemory.hxx>
-
-//=======================================================================
-//function : TCollection_HArray2
-//purpose  : 
-//=======================================================================
-
-TCollection_HArray2::TCollection_HArray2 (const Standard_Integer R1, 
-					  const Standard_Integer R2,
-					  const Standard_Integer C1, 
-					  const Standard_Integer C2) :
-       myArray(R1,R2,C1,C2)
-{}
-
-
-//=======================================================================
-//function : TCollection_HArray2
-//purpose  : 
-//=======================================================================
-
-TCollection_HArray2::TCollection_HArray2 (const Standard_Integer R1, 
-					  const Standard_Integer R2,
-					  const Standard_Integer C1, 
-					  const Standard_Integer C2,
-					  const ItemHArray2& V) :
-       myArray(R1,R2,C1,C2)
-{myArray.Init(V);}
-
-//=======================================================================
-//function : TCollection_HArray2
-//purpose  : 
-//=======================================================================
-
-void TCollection_HArray2::Init(const ItemHArray2& V)
-{ myArray.Init(V);}
-
 
 //=======================================================================
 //function : IsSameState
@@ -77,26 +38,3 @@ void TCollection_HArray2::Init(const ItemHArray2& V)
 //  }
 //  return Standard_True;
 //}
-
-
-//=======================================================================
-//function : Value
-//purpose  : 
-//=======================================================================
-
-const ItemHArray2& TCollection_HArray2::Value(const Standard_Integer Row,
-				       const Standard_Integer Col) const
-{
-  return myArray(Row,Col);
-}
-
-//=======================================================================
-//function : ChangeValue
-//purpose  : 
-//=======================================================================
-
-ItemHArray2& TCollection_HArray2::ChangeValue(const Standard_Integer Row,
-				       const Standard_Integer Col)
-{
-  return myArray(Row,Col);
-}

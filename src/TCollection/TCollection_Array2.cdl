@@ -50,11 +50,13 @@ is
     raises 
     	RangeError  from Standard,
     	OutOfMemory from Standard;
+        ---C++: inline
 
     Create (AnArray : Array2) 
     returns Array2 from TCollection
     	---Purpose: creates an Array2 by copy of an Array2.
     raises OutOfMemory from Standard is private ;
+        ---C++: inline
 
     Create (Item : Array2Item; R1, R2, C1, C2: Integer from Standard) 
     returns  Array2 from TCollection
@@ -73,9 +75,11 @@ is
     raises
     	RangeError  from Standard,
     	OutOfMemory from Standard;
+        ---C++: inline
 	
     Init(me : in out; V : Array2Item);
 	---Purpose: Initializes this array with the value <Value>.
+        ---C++: inline
 
     Destroy (me : in out );
         ---Level: Advanced
@@ -84,6 +88,7 @@ is
     	--          DoubleArray the Destroy doesn't delete the area.
         --          
         ---C++: alias ~
+        ---C++: inline
 
     Assign (me: in out; Other: Array2) 
     returns Array2 from TCollection

@@ -65,6 +65,7 @@ is
     raises 
         RangeError  from Standard,
         OutOfMemory from Standard;
+        ---C++: inline
 
     Create(Item : Array1Item;
            Low, Up: Integer from Standard) 
@@ -80,9 +81,11 @@ is
     	--          the Array1.
     raises 
         RangeError  from Standard;
+        ---C++: inline
     	
     Init (me: in out; V: Array1Item);
     	---Purpose: Initializes the array with a given value.
+        ---C++: inline
 
     Destroy (me: in out);
     	---Purpose: Frees the  allocated   area  corresponding  to the
@@ -91,6 +94,7 @@ is
     	--          the Destroy doesn't delete the area.
     	--          
     	---C++: alias ~
+        ---C++: inline
 
     IsAllocated (me) returns Boolean from Standard;
     	---Purpose: Returns True if the data was allocated by the array constructors.

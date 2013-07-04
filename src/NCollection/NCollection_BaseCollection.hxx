@@ -102,6 +102,9 @@ template<class TheItemType> class NCollection_BaseCollection
   //! Destructor - must be implemented to release the memory
   virtual ~NCollection_BaseCollection (void) {}
 
+  //! Returns attached allocator
+  const Handle(NCollection_BaseAllocator)& Allocator() const { return myAllocator; }
+
  protected:
   // --------- PROTECTED METHOD -----------
   const Handle(NCollection_BaseAllocator)& IterAllocator(void) const

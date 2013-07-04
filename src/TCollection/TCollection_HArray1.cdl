@@ -57,6 +57,7 @@ is
     raises 
     	RangeError  from Standard,
         OutOfMemory from Standard;
+	---C++: inline
 	
     Create (Low, Up: Integer from Standard; V : ItemHArray1) 
     returns mutable  HArray1 from TCollection
@@ -65,9 +66,11 @@ is
     raises 
     	RangeError  from Standard,
         OutOfMemory from Standard;
+	---C++: inline
 
     Init(me : mutable; V : ItemHArray1);
     	---Purpose: Initialize the array with the value <V>
+	---C++: inline
 
     Length (me) returns Integer from Standard
         ---Level: Public
