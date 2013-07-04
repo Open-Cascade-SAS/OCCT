@@ -35,6 +35,7 @@
 #include <ElSLib.hxx>
 #include <Poly_Triangulation.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
+#include <BRepClass3d_SolidClassifier.hxx>
 
 // Printing the progress in stdout.
 //#define CONV_DUMP
@@ -524,6 +525,103 @@ Standard_Boolean Voxel_FastConverter::FillInVolume(const Standard_Byte inner,
 	  }
 	  prev_surface = surface;
 	}
+      }
+    }
+  }
+
+  return Standard_True;
+}
+
+Standard_Boolean Voxel_FastConverter::FillInVolume(const Standard_Byte inner, const TopoDS_Shape & shape, const Standard_Integer ithread)
+{
+  Voxel_DS* ds = (Voxel_DS*) myVoxels;
+  Standard_Integer ix, iy, iz, nbx = ds->GetNbX(), nby = ds->GetNbY(), nbz = ds->GetNbZ();
+  Standard_Boolean prev_surface, surface, volume, isOnVerticalSurface;
+
+  BRepClass3d_SolidClassifier solidClassifier(shape);
+  Standard_Real xc, yc, zc;
+
+  if (inner)
+  {
+    // Fill-in internal voxels by the value "inner"
+    for (ix = 0; ix < nbx; ix++)
+    {
+      for (iy = 0; iy < nby; iy++)
+      {
+        // Check existence of volume.
+        volume = Standard_False;
+        surface = Standard_False;
+        prev_surface = Standard_False;
+        isOnVerticalSurface = Standard_False;
+        for (iz = 0; iz < nbz; iz++)
+        {
+          surface = (myIsBool == 1) ? 
+            ((Voxel_BoolDS*)myVoxels)->Get(ix, iy, iz) == Standard_True : 
+              ((Voxel_ColorDS*)myVoxels)->Get(ix, iy, iz) > 0;
+          if (prev_surface && !surface)
+          {
+            if(isOnVerticalSurface)
+            {
+              isOnVerticalSurface = Standard_False;
+              ((Voxel_BoolDS*)myVoxels)->GetCenter(ix, iy, iz, xc, yc, zc);
+              gp_Pnt P(xc, yc, zc);
+              solidClassifier.Perform(P, Precision::Confusion());
+
+              if(solidClassifier.State() == TopAbs_IN)
+                volume = Standard_True;
+              else
+                volume = Standard_False;
+            }
+            else
+              volume = !volume;
+          }
+          if(prev_surface && surface)
+            isOnVerticalSurface = Standard_True;
+          else
+            isOnVerticalSurface = Standard_False;
+          prev_surface = surface;
+        }
+        if (volume)
+          continue;
+
+        // Fill-in the volume.
+        volume = Standard_False;
+        surface = Standard_False;
+        prev_surface = Standard_False;
+        isOnVerticalSurface = Standard_False;
+        for (iz = 0; iz < nbz; iz++)
+        {
+          surface = (myIsBool == 1) ? 
+            ((Voxel_BoolDS*)myVoxels)->Get(ix, iy, iz) == Standard_True : 
+              ((Voxel_ColorDS*)myVoxels)->Get(ix, iy, iz) > 0;
+          if (prev_surface && !surface)
+          {
+            if(isOnVerticalSurface)
+            {
+              isOnVerticalSurface = Standard_False;
+              ((Voxel_BoolDS*)myVoxels)->GetCenter(ix, iy, iz, xc, yc, zc);
+              gp_Pnt P(xc, yc, zc);
+              solidClassifier.Perform(P, Precision::Confusion());
+
+              if(solidClassifier.State() == TopAbs_IN)
+                volume = Standard_True;
+              else
+                volume = Standard_False;
+            }
+            else
+              volume = !volume;
+          }
+          if (volume && !surface)
+          {
+            (myIsBool == 1) ? ((Voxel_BoolDS*)myVoxels)->Set(ix, iy, iz, inner) : 
+              ((Voxel_ColorDS*)myVoxels)->Set(ix, iy, iz, inner);
+          }
+          if(prev_surface && surface)
+            isOnVerticalSurface = Standard_True;
+          else
+            isOnVerticalSurface = Standard_False;
+          prev_surface = surface;
+        }
       }
     }
   }

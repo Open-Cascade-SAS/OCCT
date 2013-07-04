@@ -100,6 +100,17 @@ is
     	    	 ithread : Integer from Standard = 1)
     ---Purpose: Fills-in volume of the shape by a value.
     returns Boolean from Standard;
+    
+    FillInVolume(me : in out;
+                 inner : Byte from Standard;
+                 shape : Shape   from TopoDS;
+                 ithread : Integer from Standard = 1)
+    ---Purpose: Fills-in volume of the shape by a value.
+    --          Uses the topological information from the provided shape
+    --          to judge whether points are inside the shape or not
+    --          (only when processing vertical faces).
+    --          The inner value has to be positive.
+    returns Boolean from Standard;
 
 
     ---Category: Private area

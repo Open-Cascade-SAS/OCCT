@@ -630,6 +630,53 @@ static Standard_Integer OCC23945 (Draw_Interpretor& di,Standard_Integer n, const
   return 0;
 }
 
+#include <Voxel_BoolDS.hxx>
+#include <Voxel_FastConverter.hxx>
+#include <Voxel_BooleanOperation.hxx>
+static Standard_Integer OCC24019 (Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
+{
+  if ( argc != 2 ) {
+    di << "Error: " << argv[0] << " - invalid number of arguments" << "\n";
+	return 1;
+  }
+
+  TCollection_AsciiString aFileName = argv[1];
+  TopoDS_Shape aShape;
+  BRep_Builder aBuilder;
+
+  if (!BRepTools::Read(aShape, aFileName.ToCString(), aBuilder)) {
+    di << "Error: Could not read a shape!" << "\n";
+	return 1;
+  }
+  
+  TopoDS_Solid aShape1 = BRepPrimAPI_MakeSphere(gp_Pnt(20,25,35), 7);
+
+  Standard_Real deflection = 0.005;
+  Standard_Integer nbThreads = 1;
+  Standard_Integer nbx = 200, nby = 200, nbz = 200;
+  Voxel_BoolDS theVoxels(0,0,0, 50, 50, 50, nbx, nby, nbz);
+  Voxel_BoolDS theVoxels1(0,0,0, 50, 50, 50, nbx, nby, nbz);
+
+  Standard_Integer progress = 0;
+  Voxel_FastConverter fcp(aShape, theVoxels, deflection, nbx, nby, nbz, nbThreads);
+  fcp.ConvertUsingSAT(progress, 1);
+  fcp.FillInVolume(1);
+
+  Voxel_FastConverter fcp1(aShape1, theVoxels1, deflection, nbx, nby, nbz, nbThreads);
+  fcp1.ConvertUsingSAT(progress, 1);
+  fcp1.FillInVolume(1);
+
+  Voxel_BooleanOperation op;
+  Standard_Boolean result = op.Cut(theVoxels1, theVoxels);
+  if ( result != 1 ) {
+    di << "Error: invalid boolean operation" << "\n";
+  } else {
+	di << "OK: boolean operation is ok" << "\n";
+  }
+
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -647,6 +694,8 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC23952intersect", "OCC23952intersect nbsol shape1 shape2", __FILE__, OCC23952intersect, group);
   theCommands.Add ("test_offset", "test_offset", __FILE__, test_offset, group);
   theCommands.Add("OCC23945", "OCC23945 surfname U V X Y Z [DUX DUY DUZ DVX DVY DVZ [D2UX D2UY D2UZ D2VX D2VY D2VZ D2UVX D2UVY D2UVZ]]", __FILE__, OCC23945,group);
+  theCommands.Add ("OCC24019", "OCC24019 aShape", __FILE__, OCC24019, group);
+
   return;
 }
 
