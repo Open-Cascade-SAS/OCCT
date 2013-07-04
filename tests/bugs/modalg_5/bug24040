@@ -1,0 +1,25 @@
+puts "================"
+puts "OCC24040"
+puts "================"
+puts ""
+#######################################################################
+# The result of CUT operation is not correct
+#######################################################################
+
+restore [locate_data_file bug24040_b1.brep] b1
+restore [locate_data_file bug24040_b2.brep] b2
+
+bop b1 b2
+bopcut result
+
+#the result should be empty compound
+# Analysis of "nbshapes res"
+set nb_v_good 0
+set nb_e_good 0
+set nb_w_good 0
+set nb_f_good 0
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 1

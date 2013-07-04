@@ -840,7 +840,7 @@ static
                                                           Handle(BOPInt_Context)& theContext)
 {
   Standard_Boolean bFlag;
-  Standard_Integer iP;
+  Standard_Integer iErr;
   Standard_Real aTolF1, aTolF2, aTol;
   gp_Pnt2d aP2D;
   gp_Pnt aP;
@@ -857,27 +857,22 @@ static
   //
   aTolF1=BRep_Tool::Tolerance(aF1);
   // 1
-  iP=0;
   aExp.Init(aF1, TopAbs_EDGE);
   for (; aExp.More(); aExp.Next()) {
     aE1=(*(TopoDS_Edge*)(&aExp.Current()));
     if (!BRep_Tool::Degenerated(aE1)) {
-      iP=1;
-      //break;
       Standard_Real aTolE = BRep_Tool::Tolerance(aE1);
       aTolF1 = (aTolE > aTolF1) ? aTolE : aTolF1;
     }
   }
-  if (!iP) {
-    return bFlag;
-  }
-  //
   // 2
   aTolF2=BRep_Tool::Tolerance(aF2);
   aTol=aTolF1+aTolF2;
   //
-  BOPTools_AlgoTools3D::PointNearEdge(aE1, aF1, aP2D, aP, theContext);
-  bFlag=theContext->IsValidPointForFace(aP, aF2, aTol);
+  iErr = BOPTools_AlgoTools3D::PointInFace(aF1, aP, aP2D, theContext);
+  if (!iErr) {
+    bFlag=theContext->IsValidPointForFace(aP, aF2, aTol);
+  }
   //
   return bFlag;
 }
