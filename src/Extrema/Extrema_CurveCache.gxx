@@ -38,6 +38,64 @@ Extrema_CurveCache::Extrema_CurveCache(const Curve& theC,
 
 //=======================================================================
 //function : Extrema_CurveCache
+//purpose  : with sampling by knots and between them
+//=======================================================================
+
+Extrema_CurveCache::Extrema_CurveCache(const Curve& theC,
+                                       const Standard_Real theUFirst,
+                                       const Standard_Real theULast,
+                                       const TColStd_Array1OfReal& IntervalsCN,
+                                       const Standard_Integer StartIndex,
+                                       const Standard_Integer EndIndex,
+                                       const Standard_Real Coeff)
+{
+  myC = (Standard_Address)&theC;
+  myIsArrayValid = Standard_False;
+  myParamArray.Nullify();
+  myPntArray.Nullify();
+  
+  myTrimFirst = myFirst = theUFirst;
+  myTrimLast = myLast = theULast;
+
+  Standard_Integer Nbp = (Standard_Integer) (2 * Coeff);
+  myNbSamples = (EndIndex - StartIndex)*Nbp + 1;
+
+  const Standard_Integer aNbSTresh = 10000;
+  if (myNbSamples > aNbSTresh)
+  {
+    Nbp = aNbSTresh / (EndIndex - StartIndex);
+    myNbSamples = (EndIndex - StartIndex)*Nbp + 1;
+  }
+  
+  //Cache points
+  myParamArray = new TColStd_HArray1OfReal(1, myNbSamples);
+  myPntArray = new ArrayOfPnt (1, myNbSamples);
+  
+  const Curve& aCurve = *((Curve*)myC);
+  
+  Standard_Integer i, j, k = 1;
+  Standard_Real aPar;
+  for (i = StartIndex; i < EndIndex; i++)
+  {
+    Standard_Real delta = (IntervalsCN(i+1) - IntervalsCN(i)) / Nbp;
+    for (j = 0; j < Nbp; j++)
+    {
+      aPar = IntervalsCN(i) + j*delta;
+      myParamArray->SetValue(k, aPar);
+      myPntArray->SetValue(k++, aCurve.Value(aPar));
+    }
+  }
+  Standard_Real aDelta = (myTrimLast - myTrimFirst) / myNbSamples / 200.;
+  myParamArray->SetValue(1, myTrimFirst + aDelta);
+  myPntArray->SetValue(1, aCurve.Value(myTrimFirst + aDelta));
+  myParamArray->SetValue(myNbSamples, myTrimLast - aDelta);
+  myPntArray->SetValue(myNbSamples, aCurve.Value(myTrimLast - aDelta));
+
+  myIsArrayValid = Standard_True; //cache is available now
+}
+
+//=======================================================================
+//function : Extrema_CurveCache
 //purpose  : 
 //=======================================================================
 
@@ -58,6 +116,7 @@ void Extrema_CurveCache::SetCurve (const Curve& theC,
   myC = (Standard_Address)&theC;
   myNbSamples = theNbSamples;
   myIsArrayValid = Standard_False;
+  myParamArray.Nullify();
   myPntArray.Nullify();
   if (theToCalculate) {
     CalculatePoints();
@@ -99,6 +158,7 @@ void Extrema_CurveCache::SetRange (const Standard_Real theUFirst,
   }
 
   myIsArrayValid = Standard_False;
+  myParamArray.Nullify();
   myPntArray.Nullify();
   if (theToCalculate) {
     CalculatePoints();
@@ -124,11 +184,13 @@ void Extrema_CurveCache::CalculatePoints()
 
   //Cache points
 
+  myParamArray = new TColStd_HArray1OfReal(1, myNbSamples);
   myPntArray = new ArrayOfPnt (1, myNbSamples);
 
   Standard_Integer i;
   Standard_Real aPar;
   for (i = 1, aPar = aPar0; i <= myNbSamples; i++, aPar += aDelta) {
+    myParamArray->SetValue(i, aPar);
     myPntArray->SetValue (i, aCurve.Value (aPar));
   }
 

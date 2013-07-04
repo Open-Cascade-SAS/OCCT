@@ -20,6 +20,7 @@
 //            roman.lygin@gmail.com
 
 #include <StdFail_NotDone.hxx>
+#include <TColStd_HArray1OfReal.hxx>
 
 //=======================================================================
 //function : IsValid
@@ -29,6 +30,17 @@
 inline Standard_Boolean Extrema_CurveCache::IsValid() const
 {
   return myIsArrayValid;
+}
+
+//=======================================================================
+//function : Parameters
+//purpose  : 
+//=======================================================================
+
+inline const Handle(TColStd_HArray1OfReal)& Extrema_CurveCache::Parameters() const
+{
+  StdFail_NotDone_Raise_if (!myIsArrayValid, "Extrema_CurveCache::Parameters()")
+  return myParamArray;
 }
 
 //=======================================================================

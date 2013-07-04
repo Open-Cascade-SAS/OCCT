@@ -27,6 +27,10 @@ inherits Transient from Standard
 
     ---Purpose:
 
+uses
+    Array1OfReal  from TColStd,
+    HArray1OfReal from TColStd
+
 raises NotDone from StdFail
 
 is
@@ -35,6 +39,12 @@ is
 
     Create (theC: Curve; theUFirst, theULast: Real; theNbSamples: Integer;
         theToCalculate: Boolean)returns mutable CurveCache from Extrema;
+
+    Create (theC: Curve; theUFirst, theULast: Real;
+    	    IntervalsCN: Array1OfReal from TColStd;
+	    StartIndex, EndIndex: Integer;
+	    Coeff: Real)
+    returns mutable CurveCache from Extrema;
 
     SetCurve (me: mutable; theC: Curve; theNbSamples: Integer;
         theToCalculate: Boolean);
@@ -56,6 +66,12 @@ is
     ---C++: inline
     ---Purpose: Returns True if the points array has already been calculated
     --          for specified curve and range
+
+    Parameters (me) returns HArray1OfReal from TColStd
+        raises  NotDone from StdFail;
+    ---C++: inline
+    ---C++: return const &
+    ---Purpose: Raises StdFail_NotDone if points have not yet been calculated.
 
     Points (me) returns ArrayOfPnt
         raises  NotDone from StdFail;
@@ -95,6 +111,7 @@ fields
     myTrimFirst   : Real;
     myTrimLast    : Real;
     myNbSamples   : Integer;
+    myParamArray  : HArray1OfReal from TColStd;
     myPntArray    : ArrayOfPnt;
     myIsArrayValid: Boolean;
 

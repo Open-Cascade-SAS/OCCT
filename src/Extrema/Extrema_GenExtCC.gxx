@@ -146,16 +146,6 @@ a- Constitution du tableau des distances (TbDist2(0,NbU+1,0,NbV+1)):
     aCache2->CalculatePoints();
 
 // Calcul des distances
-  //initialization of variables in the same way as in CalculatePoints()
-  Standard_Real PasU = aCache1->TrimLastParameter() - aCache1->TrimFirstParameter();
-  Standard_Real PasV = aCache2->TrimLastParameter() - aCache2->TrimFirstParameter();
-  Standard_Real U0 = PasU / aNbU / 100.;
-  Standard_Real V0 = PasV / aNbV / 100.;
-  PasU = (PasU - U0) / (aNbU - 1);
-  PasV = (PasV - V0) / (aNbV - 1);
-  U0 = aCache1->TrimFirstParameter() + (U0/2.);
-  V0 = aCache2->TrimFirstParameter() + (V0/2.);
-
   const Curve1& aCurve1 = *((Curve1*)(myF.CurvePtr (1)));
   const Curve2& aCurve2 = *((Curve1*)(myF.CurvePtr (2)));
   const Handle(ArrayOfPnt)& aPntArray1 = aCache1->Points();
@@ -207,6 +197,8 @@ b- Calcul des minima:
 //     - recherche d un minimum sur la grille
   Standard_Integer Nu, Nv;
   Standard_Real Dist2;
+  const Handle(TColStd_HArray1OfReal)& aParamArray1 = aCache1->Parameters();
+  const Handle(TColStd_HArray1OfReal)& aParamArray2 = aCache2->Parameters();
   for (NoU = 1; NoU <= aNbU; NoU++) {
     for (NoV = 1; NoV <= aNbV; NoV++) {
       if (TbSel(NoU,NoV) == 0) {
@@ -221,9 +213,9 @@ b- Calcul des minima:
 	    (TbDist2(NoU+1,NoV+1) >= Dist2)) {
 
 //     - calcul de l extremum sur la surface:
-	  UV(1) = U0 + (NoU - 1) * PasU;
-	  UV(2) = V0 + (NoV - 1) * PasV;
-
+          
+          UV(1) = aParamArray1->Value(NoU);
+          UV(2) = aParamArray2->Value(NoV);
 
 	  math_FunctionSetRoot S (myF,UV,Tol,UVinf,UVsup);
 
@@ -278,8 +270,9 @@ c- Calcul des maxima:
 	    (TbDist2(NoU+1,NoV+1) <= Dist2)) {
 
 //     - calcul de l extremum sur la surface:
-	  UV(1) = U0 + (NoU - 1) * PasU;
-	  UV(2) = V0 + (NoV - 1) * PasV;
+
+          UV(1) = aParamArray1->Value(NoU);
+          UV(2) = aParamArray2->Value(NoV);
 
 	  math_FunctionSetRoot S (myF,UV,Tol,UVinf,UVsup);
       

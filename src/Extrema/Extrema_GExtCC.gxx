@@ -272,8 +272,11 @@ void Extrema_GExtCC::Perform()
     //common case - use _GenExtCC
     //1. check and prepare caches
 
-    Standard_Integer i, aNbS[2] = {32, 32}, aNbInter[2] = {1, 1};
+    Standard_Integer i;
+    Standard_Integer aNbS[2] = {32, 32}, aNbInter[2] = {1, 1};
+    Standard_Real Coeff[2] = {1., 1.};
     Standard_Real rf = 0., rl = 0., LL[2] = {-1., -1.};
+    Standard_Boolean KnotSampling[2] = {Standard_False, Standard_False};
     for (i = 0; i < 2; i++) {
       TColStd_ListOfTransient& aCacheList = myCacheLists[i];
       if (aCacheList.IsEmpty()) {
@@ -288,10 +291,14 @@ void Extrema_GExtCC::Perform()
           aNbS[i] = aC.NbPoles() * 2;
           break;
         case GeomAbs_BSplineCurve:
+          if (aC.Degree() <= 3 &&
+              aC.NbKnots() > 2)
+            KnotSampling[i] = Standard_True;
+          
           aNbS[i] = aC.NbPoles() * 2;
-	  rf = (Tool1::BSpline(*((Curve1*)myC[i])))->FirstParameter();
-	  rl = (Tool1::BSpline(*((Curve1*)myC[i])))->LastParameter();
-	  aNbS[i] = (Standard_Integer) ( aNbS[i] * ((mySup[i] - myInf[i]) / (rl - rf)) + 1 );
+          rf = (Tool1::BSpline(*((Curve1*)myC[i])))->FirstParameter();
+          rl = (Tool1::BSpline(*((Curve1*)myC[i])))->LastParameter();
+          aNbS[i] = (Standard_Integer) ( aNbS[i] * ((mySup[i] - myInf[i]) / (rl - rf)) + 1 );
         case GeomAbs_OtherCurve:
           //adjust number of sample points for B-Splines and Other curves
           aNbInter[i] = aC.NbIntervals (GeomAbs_C2);
@@ -314,10 +321,12 @@ void Extrema_GExtCC::Perform()
 
     if(LL[0] > 0. && LL[1] > 0.) {
       if(LL[0] > 4.*LL[1]) {
-	aNbS[0] = (Standard_Integer) ( aNbS[0] * LL[0]/LL[1]/2. );
+        Coeff[0] = LL[0]/LL[1]/2.;
+	aNbS[0]  = (Standard_Integer) ( aNbS[0] * Coeff[0] );
       }
       else if(LL[1] > 4.*LL[0]) {
-	aNbS[1] = (Standard_Integer) (aNbS[1] * LL[1]/LL[0]/2. );
+        Coeff[1] = LL[1]/LL[0]/2.;
+	aNbS[1]  = (Standard_Integer) (aNbS[1] * Coeff[1] );
       }
     }
     //modified by NIZNHY-PKV Tue Apr 17 10:01:32 2012f
@@ -337,16 +346,48 @@ void Extrema_GExtCC::Perform()
         //no caches, build them
         Curve1& aC = *(Curve1*)myC[i];
 
-        if (aC.GetType() >= GeomAbs_BSplineCurve) {
+        if (aC.GetType() >= GeomAbs_BSplineCurve)
+        {
           //can be multiple intervals, one cache per one C2 interval
           TColStd_Array1OfReal anArr (1, aNbInter[i] + 1);
           aC.Intervals (anArr, GeomAbs_C2);
-          for (Standard_Integer k = 1; k <= aNbInter[i]; k++) {
-            Handle(Extrema_CCache) aCache = new Extrema_CCache (aC,
-              anArr(k), anArr(k+1), aNbS[i], Standard_True);
-            aCacheList.Append (aCache);
+          
+          if (KnotSampling[i])
+          {
+            Standard_Integer NbIntervCN = aC.NbIntervals(GeomAbs_CN);
+            TColStd_Array1OfReal IntervalsCN(1, NbIntervCN + 1);
+            aC.Intervals(IntervalsCN, GeomAbs_CN);
+
+            Standard_Integer j = 1, start_j = 1, k;
+            Standard_Real NextKnot;
+            for (k = 1; k <= aNbInter[i]; k++)
+            {
+              do
+              {
+                NextKnot = IntervalsCN(j+1);
+                j++;
+              }
+              while (NextKnot != anArr(k+1));
+
+              Handle(Extrema_CCache) aCache =
+                new Extrema_CCache (aC, anArr(k), anArr(k+1),
+                                    IntervalsCN, start_j, j, Coeff[i]);
+              aCacheList.Append (aCache);
+
+              start_j = j;
+            }
           }
-        } else {
+          else
+          {
+            for (Standard_Integer k = 1; k <= aNbInter[i]; k++) {
+              Handle(Extrema_CCache) aCache =
+                new Extrema_CCache (aC, anArr(k), anArr(k+1), aNbS[i], Standard_True);
+              aCacheList.Append (aCache);
+            }
+          }
+        }
+        else
+        {
           //single interval from myInf[i] to mySup[i]
           Handle(Extrema_CCache) aCache = new Extrema_CCache (aC,
             myInf[i], mySup[i], aNbS[i], Standard_True);
