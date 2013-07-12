@@ -691,8 +691,8 @@ static Standard_Integer projponf(Draw_Interpretor& di, Standard_Integer n, const
   Standard_Boolean ok;
   gp_Pnt2d uv;
   gp_Pnt p, pproj; 
-  Extrema_ExtAlgo aExtAlgo = Extrema_ExtAlgo_Grad;
-  Extrema_ExtFlag aExtFlag = Extrema_ExtFlag_MINMAX;
+  Extrema_ExtAlgo anExtAlgo = Extrema_ExtAlgo_Grad;
+  Extrema_ExtFlag anExtFlag = Extrema_ExtFlag_MINMAX;
   //
   DrawTrSurf::GetPoint(a[2], p);
   //
@@ -701,18 +701,18 @@ static Standard_Integer projponf(Draw_Interpretor& di, Standard_Integer n, const
     const char* key2 = (n > 4) ? a[4] : NULL;
     if (key1) {
       if (!strcasecmp(key1,"-min")) {
-        aExtFlag = Extrema_ExtFlag_MIN;
+        anExtFlag = Extrema_ExtFlag_MIN;
       } else if (!strcasecmp(key1,"-max")) {
-        aExtFlag = Extrema_ExtFlag_MAX;
+        anExtFlag = Extrema_ExtFlag_MAX;
       } else {
-        aExtAlgo = (!strcasecmp(key1,"-t")) ? Extrema_ExtAlgo_Tree : aExtAlgo;
+        anExtAlgo = (!strcasecmp(key1,"-t")) ? Extrema_ExtAlgo_Tree : anExtAlgo;
       }
     }
     if (key2) {
-      aExtAlgo = (!strcasecmp(key2,"-t")) ? Extrema_ExtAlgo_Tree : aExtAlgo;
+      anExtAlgo = (!strcasecmp(key2,"-t")) ? Extrema_ExtAlgo_Tree : anExtAlgo;
     }
   }
-  ok = FUN_tool_projPonF(p, f, uv, dist, aExtFlag, aExtAlgo);
+  ok = FUN_tool_projPonF(p, f, uv, dist, anExtFlag, anExtAlgo);
   //
   if (!ok) {
     di<<"projection failed"<<"\n"; 
