@@ -1288,7 +1288,8 @@ void Contap_ContourGen::Perform
 //jag 940616  SFunc.Set(1.e-8); // tolerance sur la fonction
   mySFunc.Set(Precision::Confusion()); // tolerance sur la fonction
 
-  solrst.Perform(myAFunc,Domain,TolArc,TolArc);
+  Standard_Boolean RecheckOnRegularity = Standard_True;
+  solrst.Perform(myAFunc,Domain,TolArc,TolArc,RecheckOnRegularity);
 
   if (!solrst.IsDone()) {
     return;

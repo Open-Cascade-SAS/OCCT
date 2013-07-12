@@ -146,6 +146,7 @@ p GeomPlate
 p HLRAlgo
 p HLRBRep
 p HLRTopoBRep
+p HLRAppli
 p Hatch
 p HatchGen
 p IntCurve

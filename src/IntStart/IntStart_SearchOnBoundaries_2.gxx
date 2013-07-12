@@ -33,7 +33,8 @@ IntStart_SearchOnBoundaries::IntStart_SearchOnBoundaries ()
   void IntStart_SearchOnBoundaries::Perform (TheFunction& Func,
 					     const Handle(TheTopolTool)& Domain,
 					     const Standard_Real TolBoundary,
-					     const Standard_Real TolTangency) 
+					     const Standard_Real TolTangency,
+                                             const Standard_Boolean RecheckOnRegularity)
 {
   
   done = Standard_False;
@@ -68,7 +69,7 @@ IntStart_SearchOnBoundaries::IntStart_SearchOnBoundaries ()
       }
       else { 
 	BoundedArc(A,Domain,PDeb,PFin,Func,spnt,sseg,
-		   TolBoundary,TolTangency,Arcsol);
+		   TolBoundary,TolTangency,Arcsol,RecheckOnRegularity);
       }
       all = (all && Arcsol);
     }

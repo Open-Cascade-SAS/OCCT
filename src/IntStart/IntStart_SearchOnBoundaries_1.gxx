@@ -73,6 +73,10 @@ static
 			    const Standard_Real TolBoundary,
 			    IntStart_SequenceOfPathPoint& pnt);
 
+static
+  Standard_Boolean IsRegularity(const TheArc& A,
+                                const Handle(TheTopolTool)& aDomain);
+
 
 //=======================================================================
 //function : FindVertex
@@ -131,14 +135,14 @@ void BoundedArc (const TheArc& A,
 		 IntStart_SequenceOfSegment& seg,
 		 const Standard_Real TolBoundary,
 		 const Standard_Real TolTangency,
-		 Standard_Boolean& Arcsol)
+		 Standard_Boolean& Arcsol,
+                 const Standard_Boolean RecheckOnRegularity)
 {
   
 // Recherche des points solutions et des bouts d arc solution sur un arc donne.
 // On utilise la fonction math_FunctionAllRoots. Ne convient donc que pour
 // des arcs ayant un point debut et un point de fin (intervalle ferme de
 // parametrage).
-
 
   Standard_Integer i,Nbi,Nbp;
 
@@ -254,6 +258,71 @@ void BoundedArc (const TheArc& A,
     if (!Sol.IsDone()) {Standard_Failure::Raise();}
     
     Nbp=Sol.NbPoints();
+
+    //jgv: build solution on the whole boundary
+    if (RecheckOnRegularity && Nbp > 0 && IsRegularity(A, Domain))
+    {
+      //Standard_Real theTol = Domain->MaxTolerance(A);
+      //theTol += theTol;
+      Standard_Real theTol = 5.e-4;
+      math_FunctionAllRoots SolAgain(Func,Echant,EpsX,theTol,theTol); //-- TolBoundary,nTolTangency);
+      
+      if (!SolAgain.IsDone()) {Standard_Failure::Raise();}
+      
+      Standard_Integer Nbp_again = SolAgain.NbPoints();
+      Standard_Integer Nbi_again = SolAgain.NbIntervals();
+      
+      if (Nbi_again > 0)
+      {
+        Standard_Integer NbSamples = 10;
+        Standard_Real delta = (Pfin - Pdeb)/NbSamples;
+        Standard_Real GlobalTol = theTol*10;
+        Standard_Boolean SolOnBoundary = Standard_True;
+        for (i = 0; i <= NbSamples; i++)
+        {
+          Standard_Real aParam = Pdeb + i*delta;
+          Standard_Real aValue;
+          Func.Value(aParam, aValue);
+          if (Abs(aValue) > GlobalTol)
+          {
+            SolOnBoundary = Standard_False;
+            break;
+          }
+        }
+
+        if (SolOnBoundary)
+        {
+          for (i = 1; i <= Nbi_again; i++)
+          {
+            IntStart_TheSegment newseg;
+            newseg.SetValue(A);
+            // Recuperer point debut et fin, et leur parametre.
+            SolAgain.GetInterval(i,pardeb,parfin);
+            
+            if (Abs(pardeb - Pdeb) <= Precision::PConfusion())
+              pardeb = Pdeb;
+            if (Abs(parfin - Pfin) <= Precision::PConfusion())
+              parfin = Pfin;
+            
+            SolAgain.GetIntervalState(i,ideb,ifin);
+            
+            //-- cout<<" Debug : IntStart_SearchOnBoundaries_1.gxx : i= "<<i<<" ParDeb:"<<pardeb<<"  ParFin:"<<parfin<<endl;
+            
+            ptdeb=Func.Valpoint(ideb);
+            ptfin=Func.Valpoint(ifin);
+          
+            PointProcess(ptdeb,pardeb,A,Domain,pnt,theTol,ranged);
+            newseg.SetLimitPoint(pnt.Value(ranged),Standard_True);
+            PointProcess(ptfin,parfin,A,Domain,pnt,theTol,rangef);
+            newseg.SetLimitPoint(pnt.Value(rangef),Standard_False);
+            seg.Append(newseg);
+          }
+          Arcsol=Standard_True;
+          return;
+        }
+      }
+    }
+    ////////////////////////////////////////////
     
     //-- detection du cas ou la fonction est quasi tangente et que les 
     //-- zeros sont quasi confondus. 
@@ -390,7 +459,7 @@ void BoundedArc (const TheArc& A,
     Nbi=Sol.NbIntervals();
 
 
-    if(Nbp) { 
+    if (!RecheckOnRegularity && Nbp) { 
       //--cout<<" Debug : IntStart_SearchOnBoundaries_1.gxx :Nbp>0  0 <- Nbi "<<Nbi<<endl;
       Nbi=0; 
     }
@@ -704,13 +773,32 @@ void PointProcess (const gp_Pnt& Pt,
   }
 
   if (!found) {   // on n est pas tombe sur un vertex
-    Standard_Real TOL=Tol;
-    TOL*=1000.0; 
-    if(TOL>0.001) TOL=0.001;
-    
-    ptsol.SetValue(Pt,TOL,A,Para);
-    pnt.Append(ptsol);
-    Range = pnt.Length();
+    //jgv: do not add segment's extremities if they already exist
+    Standard_Boolean found_internal = Standard_False;
+    for (k = 1; k <= pnt.Length(); k++)
+    {
+      ptsol = pnt.Value(k);
+      if (ptsol.Arc() != A ||
+          !ptsol.IsNew()) //vertex
+        continue;
+      if (Abs(ptsol.Parameter()-Para) <= Precision::PConfusion())
+      {
+        found_internal = Standard_True;
+	Range = k;
+      }
+    }
+    /////////////////////////////////////////////////////////////
+
+    if (!found_internal)
+    {
+      Standard_Real TOL=Tol;
+      TOL*=1000.0; 
+      if(TOL>0.001) TOL=0.001;
+      
+      ptsol.SetValue(Pt,TOL,A,Para);
+      pnt.Append(ptsol);
+      Range = pnt.Length();
+    }
   }
 }
 
@@ -733,6 +821,23 @@ void PointProcess (const gp_Pnt& Pt,
 #include <Precision.hxx>
 #include <Extrema_ExtCC.hxx>
 #include <Extrema_POnCurv.hxx>
+
+//=======================================================================
+//function : IsRegularity
+//purpose  : 
+//=======================================================================
+Standard_Boolean IsRegularity(const TheArc& A,
+                              const Handle(TheTopolTool)& aDomain)
+{
+  Standard_Address anEAddress=aDomain->Edge();
+  if (anEAddress==NULL) {
+    return Standard_False;
+  }
+  
+  TopoDS_Edge* anE=(TopoDS_Edge*)anEAddress;
+  
+  return (BRep_Tool::HasContinuity(*anE));
+}
 
 //=======================================================================
 //function : TreatLC

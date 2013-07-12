@@ -96,6 +96,10 @@ is
     	---C++: inline
     is static;
 
+    OutLineVCompound3d(me : in out) returns Shape from TopoDS
+    	---C++: inline
+    is static;
+
     OutLineVCompound(me : in out;
                      S  : Shape from TopoDS) returns Shape from TopoDS
     	---C++: inline
@@ -157,7 +161,8 @@ is
     
     InternalCompound(me : in out; typ     : Integer from Standard;
                                   visible : Boolean from Standard;
-                                  S       : Shape   from TopoDS)
+                                  S       : Shape   from TopoDS;
+				  In3d    : Boolean from Standard = Standard_False)
     returns Shape from TopoDS
     is static private;
     
@@ -166,7 +171,8 @@ is
                  iface   :     Integer from Standard;
                  DS      : out Data    from HLRBRep;
                  Result  : out Shape   from TopoDS;
-                 added   : out Boolean from Standard)
+                 added   : out Boolean from Standard;
+		 In3d    : Boolean from Standard = Standard_False)
     is static private;
     
     DrawEdge(me; visible :     Boolean  from Standard;
@@ -174,10 +180,12 @@ is
                  typ     :     Integer  from Standard;
                  ed      : out EdgeData from HLRBRep;
                  Result  : out Shape    from TopoDS;
-                 added   : out Boolean  from Standard)
+                 added   : out Boolean  from Standard;
+		 In3d    : Boolean from Standard = Standard_False)
     is static private;
     
 fields
+
     myAlgo : Algo from HLRBRep;
 
 end HLRToShape;

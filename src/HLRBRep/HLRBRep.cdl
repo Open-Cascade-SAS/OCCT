@@ -148,6 +148,10 @@ is
              U1,U2 : Real  from Standard)
     returns Edge from TopoDS;
     
+    MakeEdge3d(ec    : Curve from HLRBRep;
+               U1,U2 : Real  from Standard)
+    returns Edge from TopoDS;
+    
     PolyHLRAngleAndDeflection(InAngl           :     Real from Standard;
                               OutAngl, OutDefl : out Real from Standard);
     

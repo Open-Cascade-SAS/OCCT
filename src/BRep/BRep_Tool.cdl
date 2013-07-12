@@ -528,6 +528,13 @@ is
     raises
     	NullObject from Standard; -- If the edge or the faces are null.
 
+   HasContinuity(myclass; E      : Edge from TopoDS)
+   returns Boolean
+    
+	---Purpose: Returns True if the edge has regularity on some
+	--          two surfaces
+    raises
+    	NullObject from Standard; -- If the edge is null.
     
     -----------------------------------------------------------
     -----------------------------------------------------------

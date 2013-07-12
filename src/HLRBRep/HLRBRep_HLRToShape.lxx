@@ -81,6 +81,14 @@ inline TopoDS_Shape HLRBRep_HLRToShape::OutLineVCompound()
 { return InternalCompound(2,Standard_True,TopoDS_Shape()); }
 
 //=======================================================================
+//function : OutLineVCompound3d
+//purpose  : 
+//=======================================================================
+
+inline TopoDS_Shape HLRBRep_HLRToShape::OutLineVCompound3d()
+{ return InternalCompound(2,Standard_True,TopoDS_Shape(),Standard_True); }
+
+//=======================================================================
 //function : OutLineVCompound
 //purpose  : 
 //=======================================================================

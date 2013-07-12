@@ -71,7 +71,8 @@ is
     Perform(me    : in out;
     	    F     : in out TheFunction;
             Domain: TheTopolTool;
-            TolBoundary,TolTangency : Real from Standard)
+            TolBoundary,TolTangency : Real from Standard;
+	    RecheckOnRegularity : Boolean from Standard = Standard_False)
 
        	---Purpose: Algorithm to find the points and parts of curves of Domain
        	--          (domain of of restriction of a surface) which verify

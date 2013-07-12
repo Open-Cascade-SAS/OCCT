@@ -285,9 +285,8 @@ is
                            LevelFlag :     Boolean  from Standard;
                            Level     : out Integer  from Standard;
                            param     :     Real     from Standard)
-    returns State from TopAbs
+    returns State from TopAbs;
 	---Purpose: Classification of an edge.
-    is static private;
 
     RejectedPoint(me : mutable; PInter      : IntersectionPoint from IntRes2d;
     	    	                BoundOri    : Orientation       from TopAbs;

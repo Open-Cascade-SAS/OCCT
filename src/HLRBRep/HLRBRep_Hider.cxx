@@ -34,6 +34,7 @@
 #include <HLRBRep_EdgeInterferenceTool.hxx>
 #include <Standard_ErrorHandler.hxx>
 
+
 //=======================================================================
 //function : HLRBRep_Hider
 //purpose  : 
@@ -386,7 +387,7 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 	  //IFV
 
 	  TopAbs_State aBuildIN = TopAbs_IN;
-	  Standard_Boolean IsSuspision = Standard_True;
+	  Standard_Boolean IsSuspicion = Standard_True;
 	  
 	  Standard_Real pmax, pmin;
 	  Standard_Boolean allInt = Standard_False;
@@ -450,9 +451,11 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 	    }
 	    
 	    TopAbs_State aTestState = TopAbs_IN;
-	    if(IsSuspision) {
-	      Standard_Integer aNbp = 1;
-	      aTestState = myDS->SimplClassify(E, ed, aNbp, p1, p2);
+	    if(IsSuspicion) {
+	      //Standard_Integer aNbp = 1;
+	      //aTestState = myDS->SimplClassify(E, ed, aNbp, p1, p2);
+              Standard_Integer tmplevel = 0;
+              aTestState = myDS->Classify(E,ed,Standard_True,tmplevel,(p1+p2)/2.);
 	    }
 
 	    if(aTestState != TopAbs_OUT) {
@@ -483,9 +486,20 @@ void HLRBRep_Hider::Hide(const Standard_Integer FI,
 	      }
 	      EB.NextVertex();
 	    }
-	    ES.Hide(p1,tol1,p2,tol2,
-		    Standard_False,   // under the Face
-		    Standard_True);   // on the boundary
+	    
+	    TopAbs_State aTestState = TopAbs_IN;
+	    if(IsSuspicion) {
+	      //Standard_Integer aNbp = 1;
+	      //aTestState = myDS->SimplClassify(E, ed, aNbp, p1, p2);
+              Standard_Integer tmplevel = 0;
+              aTestState = myDS->Classify(E,ed,Standard_True,tmplevel,(p1+p2)/2.);
+	    }
+
+	    if(aTestState != TopAbs_OUT)
+              ES.Hide(p1,tol1,p2,tol2,
+                      Standard_False,   // under the Face
+                      Standard_True);   // on the boundary
+            
 	    EB.NextEdge();
 	  }
 	}      

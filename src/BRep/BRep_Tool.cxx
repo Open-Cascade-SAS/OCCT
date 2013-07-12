@@ -1118,6 +1118,25 @@ GeomAbs_Shape  BRep_Tool::Continuity(const TopoDS_Edge& E,
 }
 
 //=======================================================================
+//function : HasContinuity
+//purpose  : Returns True if the edge is on some two surfaces.
+//=======================================================================
+
+Standard_Boolean BRep_Tool::HasContinuity(const TopoDS_Edge& E)
+{
+  BRep_ListIteratorOfListOfCurveRepresentation itcr
+    ((*((Handle(BRep_TEdge)*)&E.TShape()))->Curves());
+
+  for (; itcr.More(); itcr.Next())
+  {
+    const Handle(BRep_CurveRepresentation)& CR = itcr.Value();
+    if (CR->IsRegularity())
+      return Standard_True;
+  }
+  return Standard_False;
+}
+
+//=======================================================================
 //function : Pnt
 //purpose  : Returns the 3d point.
 //=======================================================================

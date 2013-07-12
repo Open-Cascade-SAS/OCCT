@@ -167,6 +167,59 @@ TopoDS_Edge HLRBRep::MakeEdge (const HLRBRep_Curve& ec,
 }
 
 //=======================================================================
+//function : MakeEdge3d
+//purpose  : 
+//=======================================================================
+
+TopoDS_Edge HLRBRep::MakeEdge3d(const HLRBRep_Curve& ec,
+                                const Standard_Real U1,
+                                const Standard_Real U2)
+{
+  TopoDS_Edge Edg;
+  //const Standard_Real sta = ec.Parameter2d(U1);
+  //const Standard_Real end = ec.Parameter2d(U2);
+
+  TopoDS_Edge anEdge = ec.GetCurve().Edge();
+  Standard_Real fpar, lpar;
+  //BRep_Tool::Range(anEdge, fpar, lpar);
+  //Handle(Geom_Curve) aCurve = BRep_Tool::Curve(anEdge, fpar, lpar);
+  BRepAdaptor_Curve BAcurve(anEdge);
+  fpar = BAcurve.FirstParameter();
+  lpar = BAcurve.LastParameter();
+  
+  Edg = TopoDS::Edge(anEdge.EmptyCopied());
+  Edg.Orientation(TopAbs_FORWARD);
+  BRep_Builder BB;
+  BB.Range(Edg, U1, U2);
+
+  //Share vertices if possible
+  TopoDS_Vertex V1, V2, V1new, V2new;
+  TopExp::Vertices(anEdge, V1, V2);
+
+  Standard_Real Tol = Precision::PConfusion();
+  if (Abs(fpar - U1) <= Tol)
+    V1new = V1;
+  else
+  {
+    gp_Pnt aPnt = BAcurve.Value(U1);
+    V1new = BRepLib_MakeVertex(aPnt);
+  }
+  if (Abs(lpar - U2) <= Tol)
+    V2new = V2;
+  else
+  {
+    gp_Pnt aPnt = BAcurve.Value(U2);
+    V2new = BRepLib_MakeVertex(aPnt);
+  }
+
+  V1new.Orientation(TopAbs_FORWARD);
+  V2new.Orientation(TopAbs_REVERSED);
+  BB.Add(Edg, V1new);
+  BB.Add(Edg, V2new);
+  return Edg;
+}
+
+//=======================================================================
 //function : PolyHLRAngleAndDeflection
 //purpose  : 
 //=======================================================================
