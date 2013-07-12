@@ -8,6 +8,6 @@ puts ""
 
 set BugNumber OCC23943
 
-restore [locate_data_file bug23943_s.brep] s
+restore [locate_data_file bug23943_s.draw] s
 
 proj s 4.99019, 38.0944, -11.244

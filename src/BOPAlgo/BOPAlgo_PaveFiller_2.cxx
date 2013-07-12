@@ -80,6 +80,7 @@
     }
     //
     if (myDS->HasInterfShapeSubShapes(nV, nE)) {
+      myDS->ChangePaveBlocks(nE);
       continue;
     }
     //

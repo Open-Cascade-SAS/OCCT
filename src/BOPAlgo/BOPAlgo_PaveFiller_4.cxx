@@ -75,6 +75,7 @@
       }
       //
       if (myDS->HasInterfShapeSubShapes(nV, nF)) {
+        myDS->ChangeFaceInfo(nF);
         continue;
       }
       //
@@ -102,6 +103,11 @@
         aVF.SetUV(aT1, aT2);
         // 2
         myDS->AddInterf(nVx, nF);
+        //
+        BOPDS_FaceInfo& aFI=myDS->ChangeFaceInfo(nF);
+        BOPCol_MapOfInteger& aMVIn=aFI.ChangeVerticesIn();
+        aMVIn.Add(nVx);
+        //
         if (aTolV < aTolF) {
           aBB.UpdateVertex(aV, aTolF);
           BOPDS_ShapeInfo& aSIV = myDS->ChangeShapeInfo(nVx);
@@ -118,7 +124,7 @@
     aVFs.SetIncrement(iSize);
     aVFs.Init();
   }
-    //
+  //
   TreatVerticesEE();
 } 
 
