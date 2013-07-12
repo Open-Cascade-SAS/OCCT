@@ -53,7 +53,7 @@ void RWStepBasic_RWSiUnitAndPlaneAngleUnit::ReadStep(const Handle(StepData_StepR
 
   // --- field : prefix ---
   RWStepBasic_RWSiUnit reader;
-  StepBasic_SiPrefix aPrefix;
+  StepBasic_SiPrefix aPrefix = StepBasic_spExa; // by default
   Standard_Boolean hasAprefix = Standard_False;
   if (data->IsParamDefined(num,1)) {
     if (data->ParamType(num,1) == Interface_ParamEnum) {

@@ -163,7 +163,7 @@ Standard_Integer BRepBlend_SurfRstLineBuilder::
   Standard_Boolean ok = Standard_False;
   Standard_Boolean byinter = (line->NbPoints() != 0), okinter = 0;
   Standard_Real distmin = RealLast();
-  Standard_Real uprev,vprev, prm, dist;
+  Standard_Real uprev = 0.0, vprev = 0.0, prm = 0.0, dist = 0.0;
 
   if(byinter) previousP.ParametersOnS(uprev,vprev);
   pt2d.SetCoord(sol(1),sol(2));

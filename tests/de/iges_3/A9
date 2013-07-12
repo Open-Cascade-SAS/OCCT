@@ -4,6 +4,7 @@ puts "TODO CR23096 ALL: NBSHAPES : Faulty"
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 puts "TODO ?CR23096 ALL: CHECKSHAPE : Faulty" 
 puts "TODO ?CR23096 ALL: Error : 5 differences with reference data found"
+puts "TODO ?OCC24048 ALL: Error : 3 differences with reference data found"
 
 set filename BUC60291.igs
 

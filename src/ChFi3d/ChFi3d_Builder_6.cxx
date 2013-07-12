@@ -463,7 +463,7 @@ Standard_Boolean ChFi3d_Builder::CompleteData
   gp_Pnt p;
   gp_Vec du,dv;
   Handle(Geom2d_Curve) c2dtrim;
-  Standard_Real tolreached;
+  Standard_Real tolreached = 1.e-5;
   if(!PC1.IsNull()){
     Handle(GeomAdaptor_HCurve) hcS1 = new GeomAdaptor_HCurve(Crv3d1);
     c2dtrim = new Geom2d_TrimmedCurve(PC1,UFirst,ULast);

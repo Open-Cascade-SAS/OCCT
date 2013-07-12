@@ -748,11 +748,7 @@ Standard_Boolean HatchGen_Hatcher::GlobalTransition (HatchGen_PointOnHatching& P
 
   const TheCurveH& CurveH = HatchingCurve (Point.Index()) ;
 
-  myIntersector.LocalGeometry(CurveH.Curve(),
-			      Point.Parameter(),
-			      Tangente2d,
-			      Normale2d,
-			      Courbure);
+  myIntersector.LocalGeometry(CurveH.Curve(), Point.Parameter(), Tangente2d, Normale2d, Courbure);
 
   Tangente.SetCoord (Tangente2d.X(), Tangente2d.Y(), 0.0) ;
   if (Courbure < Precision::Confusion()) {
@@ -767,10 +763,10 @@ Standard_Boolean HatchGen_Hatcher::GlobalTransition (HatchGen_PointOnHatching& P
 #if TRACE_HATCHER
   printf("\n ----- Global Transition Complex Transition Reset \n");
   printf("\n       P:%+10.5g  Tg2d:%+10.5g , %+10.5g  N2d:%+10.5g , %+10.5g  Crv:%+10.5g\n\n",
-	 Point.Parameter(),Tangente.X(),Tangente.Y(),Normale.X(),Normale.Y(),Courbure);
+  Point.Parameter(),Tangente.X(),Tangente.Y(),Normale.X(),Normale.Y(),Courbure);
 #endif
-  for (Standard_Integer IPntE = 1 ; IPntE <= Point.NbPoints() ; IPntE++) {
-
+  for (Standard_Integer IPntE = 1 ; IPntE <= Point.NbPoints() ; IPntE++) 
+  {
     const HatchGen_PointOnElement& PntE = Point.Point (IPntE) ;
     
     SegmentBegin = SegmentBegin || PntE.SegmentBeginning() ;
@@ -782,23 +778,22 @@ Standard_Boolean HatchGen_Hatcher::GlobalTransition (HatchGen_PointOnHatching& P
     TopAbs_Orientation ElementOrientation = Element.Orientation() ;
     Standard_Boolean ToReverse = (ElementOrientation == TopAbs_REVERSED);
     Standard_Real Param ;
-    switch (PntE.Position()) {
-	case TopAbs_FORWARD  : {
-	  Param = ToReverse ? CurveE.LastParameter() : CurveE.FirstParameter() ;
-	  break ;
-	}
-	case TopAbs_INTERNAL : {
-	  Param = PntE.Parameter() ;
-	  break ;
-	}
-	case TopAbs_REVERSED : {
-	  Param = ToReverse ? CurveE.FirstParameter() : CurveE.LastParameter() ;
-	  break ;
-	}
-#ifndef DEB
-	default:
-	  break;
-#endif
+    switch (PntE.Position()) 
+    {
+      case TopAbs_FORWARD  : 
+        Param = ToReverse ? CurveE.LastParameter() : CurveE.FirstParameter() ;
+        break ;
+
+      case TopAbs_INTERNAL : 
+        Param = PntE.Parameter() ;
+        break ;
+
+      case TopAbs_REVERSED : 
+        Param = ToReverse ? CurveE.FirstParameter() : CurveE.LastParameter() ;
+        break ;
+
+      default:
+        break;
     }
     
 //-- 
@@ -807,14 +802,8 @@ Standard_Boolean HatchGen_Hatcher::GlobalTransition (HatchGen_PointOnHatching& P
 #endif
     Param = PntE.Parameter();
 
+    myIntersector.LocalGeometry(CurveE.Curve(), Param, Tangente2d, Normale2d, Courbure);
 
-    myIntersector.LocalGeometry(CurveE.Curve(),
-				Param,
-				Tangente2d,
-				Normale2d,
-				Courbure);
-
-    
 //-----------------------------------------------------------------------
 // Calcul de la transition locale. On suppose les relations suivantes :
 //  - Si l orientation de l element est INTERNAL ==> INTERNAL
@@ -823,64 +812,57 @@ Standard_Boolean HatchGen_Hatcher::GlobalTransition (HatchGen_PointOnHatching& P
 //  - Sinon,       on a IN-OUT ou OUT-IN  ==> REVERSED/FORWARD 
 // Les deux dernieres conditions avec l element vu en FORWARD.    
 //-----------------------------------------------------------------------
-#ifndef DEB
     TopAbs_Orientation LocalTransition = TopAbs_EXTERNAL;
-#else
-    TopAbs_Orientation LocalTransition;
-#endif
-    if        (ElementOrientation == TopAbs_INTERNAL) {
+
+    if (ElementOrientation == TopAbs_INTERNAL) 
       LocalTransition = TopAbs_INTERNAL ;
-    } else if (ElementOrientation == TopAbs_EXTERNAL) {
+
+    else if (ElementOrientation == TopAbs_EXTERNAL) 
       LocalTransition = TopAbs_EXTERNAL ;
-    } else if (PntE.IntersectionType()        == HatchGen_TANGENT) {
-      if (PntE.Position() == TopAbs_INTERNAL) {
-	switch (PntE.StateBefore()) {
-	  case TopAbs_IN  : LocalTransition = ToReverse ? TopAbs_EXTERNAL : TopAbs_INTERNAL ; break ;
-	  case TopAbs_OUT : LocalTransition = ToReverse ? TopAbs_INTERNAL : TopAbs_EXTERNAL ; break ;
-#ifndef DEB
-	  default:
-	    break;
-#endif
+
+    else if (PntE.IntersectionType() == HatchGen_TANGENT) 
+    {
+      if (PntE.Position() == TopAbs_INTERNAL) 
+      {
+        switch (PntE.StateBefore()) 
+        {
+        case TopAbs_IN  : LocalTransition = ToReverse ? TopAbs_EXTERNAL : TopAbs_INTERNAL ; break ;
+        case TopAbs_OUT : LocalTransition = ToReverse ? TopAbs_INTERNAL : TopAbs_EXTERNAL ; break ;
+        default: break;
+        }
+      } 
+      else 
+      {
+        switch (PntE.StateBefore()) 
+        {
+        case TopAbs_IN  : LocalTransition = ToReverse ? TopAbs_FORWARD  : TopAbs_REVERSED ; break ;
+        case TopAbs_OUT : LocalTransition = ToReverse ? TopAbs_REVERSED : TopAbs_FORWARD  ; break ;
+        default: break;
+        }
       }
-    } else {
-	switch (PntE.StateBefore()) {
-	  case TopAbs_IN  : LocalTransition = ToReverse ? TopAbs_FORWARD  : TopAbs_REVERSED ; break ;
-	  case TopAbs_OUT : LocalTransition = ToReverse ? TopAbs_REVERSED : TopAbs_FORWARD  ; break ;
-#ifndef DEB
-	  default:
-	    break;
-#endif
-	  }
-      }
-//  Modified by Sergey KHROMOV - Fri Jan  5 12:03:20 2001 Begin
-    } else {
-      switch (PntE.StateBefore()) {
-	  case TopAbs_IN  : LocalTransition = ToReverse ? TopAbs_FORWARD  : TopAbs_REVERSED ; break ;
-	  case TopAbs_OUT : LocalTransition = ToReverse ? TopAbs_REVERSED : TopAbs_FORWARD  ; break ;
-#ifndef DEB
-	  default:
-	    break;
-#endif
+    } 
+    else 
+    {
+      switch (PntE.StateBefore()) 
+      {
+      case TopAbs_IN  : LocalTransition = ToReverse ? TopAbs_FORWARD  : TopAbs_REVERSED ; break ;
+      case TopAbs_OUT : LocalTransition = ToReverse ? TopAbs_REVERSED : TopAbs_FORWARD  ; break ;
+      default: break;
       }
     }
-//  Modified by Sergey KHROMOV - Fri Jan  5 12:03:24 2001 End
 
 //-----------------------------------------------------------------------
 // Orientation de la tangente au point d interference.
 //-----------------------------------------------------------------------
-#ifndef DEB
     TopAbs_Orientation TangenteOrientation = TopAbs_FORWARD;
-#else
-    TopAbs_Orientation TangenteOrientation ;
-#endif
-    switch (PntE.Position()) {
-	case TopAbs_FORWARD  : TangenteOrientation = ToReverse ? TopAbs_REVERSED : TopAbs_FORWARD  ; break ;
-	case TopAbs_INTERNAL : TangenteOrientation = TopAbs_INTERNAL ; break ;
-	case TopAbs_REVERSED : TangenteOrientation = ToReverse ? TopAbs_FORWARD  : TopAbs_REVERSED ; break ;
-#ifndef DEB
-	default:
-	  break;
-#endif
+    switch (PntE.Position()) 
+    {
+    case TopAbs_FORWARD  : TangenteOrientation = ToReverse ? TopAbs_REVERSED : TopAbs_FORWARD  ; break ;
+    case TopAbs_INTERNAL : TangenteOrientation = TopAbs_INTERNAL ; break ;
+    case TopAbs_REVERSED : TangenteOrientation = ToReverse ? TopAbs_FORWARD  : TopAbs_REVERSED ; break ;
+    
+    default: 
+      break;
     }
 
 //-----------------------------------------------------------------------
@@ -893,47 +875,26 @@ Standard_Boolean HatchGen_Hatcher::GlobalTransition (HatchGen_PointOnHatching& P
       Tangente.SetCoord ( Tangente2d.X(),  Tangente2d.Y(), 0.0) ;
     }
     Normale.SetCoord ( Normale2d.X(),  Normale2d.Y(), 0.0) ;
-//  Modified by Sergey KHROMOV - Fri Jan  5 12:04:38 2001 Begin
-//     if (Courbure < Precision::Confusion()) {
-//       if (ToReverse) {
-//         Normale.SetCoord ( Tangente2d.Y(), -Tangente2d.X(), 0.0) ;
-//       } else {
-// 	Normale.SetCoord (-Tangente2d.Y(),  Tangente2d.X(), 0.0) ;
-//       }
-//     } else {
-//       if (ToReverse) {
-// 	Normale.SetCoord (-Normale2d.X(), -Normale2d.Y(), 0.0) ;
-//       } else {
-// 	Normale.SetCoord ( Normale2d.X(),  Normale2d.Y(), 0.0) ;
-//       }
-//     }
-//  Modified by Sergey KHROMOV - Fri Jan  5 12:04:41 2001 End
+
 #if TRACE_HATCHER
     printf("\n \n----- Global Transition Complex Transition Compare" );
     char *str1 = " ??? ";
     char *str2 = " ??? ";
-    if(LocalTransition==TopAbs_INTERNAL) str1=" INTERNAL ";
-    if(LocalTransition==TopAbs_REVERSED) str1=" REVERSED ";
-    if(LocalTransition==TopAbs_FORWARD)  str1=" FORWARD  ";
+    if(LocalTransition == TopAbs_INTERNAL) str1=" INTERNAL ";
+    if(LocalTransition == TopAbs_REVERSED) str1=" REVERSED ";
+    if(LocalTransition == TopAbs_FORWARD)  str1=" FORWARD  ";
 
-    if(TangenteOrientation==TopAbs_INTERNAL) str2=" INTERNAL ";
-    if(TangenteOrientation==TopAbs_REVERSED) str2=" REVERSED ";
-    if(TangenteOrientation==TopAbs_FORWARD)  str2=" FORWARD  ";
+    if(TangenteOrientation == TopAbs_INTERNAL) str2=" INTERNAL ";
+    if(TangenteOrientation == TopAbs_REVERSED) str2=" REVERSED ";
+    if(TangenteOrientation == TopAbs_FORWARD)  str2=" FORWARD  ";
 
     printf("\n       P:%+10.5g  Tg2d:%+10.5g , %+10.5g  N2d:%+10.5g , %+10.5g  Crv:%+10.5g LocalTr:%s TangOrie:%s\n",
-	   Param,Tangente.X(),Tangente.Y(),Normale.X(),Normale.Y(),Courbure,str1,str2);
+    Param,Tangente.X(),Tangente.Y(),Normale.X(),Normale.Y(),Courbure,str1,str2);
 #endif
 
-#if 1 
     ComplexTransition.Compare (Precision::Angular(),
-			       Tangente, Normale, Courbure,
-			       LocalTransition, TangenteOrientation) ;
-#else 
-    ComplexTransition.Compare (Precision::Angular(),
-			       Tangente, Normale, Courbure,
-			       LocalTransition, TopAbs_INTERNAL) ;
-
-#endif
+                               Tangente, Normale, Courbure,
+                               LocalTransition, TangenteOrientation) ;
   }
 
   switch (ComplexTransition.StateBefore()) {

@@ -384,25 +384,18 @@ Standard_Integer OSD_Process :: ProcessId () {
 
 OSD_Path OSD_Process :: CurrentDirectory () {
 
- Standard_PCharacter pBuff;
- DWORD            dwSize = 0;
- OSD_Path         retVal;
+  OSD_Path anCurrentDirectory;
 
- dwSize = GetCurrentDirectory ( dwSize, pBuff );
- pBuff  = new Standard_Character[ dwSize ];
+  DWORD dwSize = PATHLEN + 1;
+  Standard_PCharacter pBuff = new char[dwSize];
 
- if (   (  dwSize = GetCurrentDirectory ( dwSize, pBuff )  ) == NULL   )
-
-  _osd_wnt_set_error ( myError, OSD_WProcess );
-
- else
+  if ( GetCurrentDirectory(dwSize, pBuff) > 0 )
+    anCurrentDirectory = OSD_Path ( pBuff );
+  else
+    _osd_wnt_set_error ( myError, OSD_WProcess );
  
-  retVal = OSD_Path ( pBuff );
- 
- delete[] pBuff;
-
- return retVal;
- 
+  delete[] pBuff;
+  return anCurrentDirectory;
 }  // end OSD_Process :: CurrentDirectory
 
 void OSD_Process :: SetCurrentDirectory ( const OSD_Path& where ) {

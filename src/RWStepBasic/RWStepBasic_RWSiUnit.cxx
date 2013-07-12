@@ -84,7 +84,7 @@ void RWStepBasic_RWSiUnit::ReadStep(const Handle(StepData_StepReaderData)& data,
   data->CheckDerived(num,1,"dimensions",ach,Standard_False);
 
   // --- own field : prefix ---
-  StepBasic_SiPrefix aPrefix;
+  StepBasic_SiPrefix aPrefix = StepBasic_spExa;
   Standard_Boolean hasAprefix = Standard_False;
   if (data->IsParamDefined(num,2)) {
     if (data->ParamType(num,2) == Interface_ParamEnum) {

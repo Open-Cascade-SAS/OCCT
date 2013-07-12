@@ -290,9 +290,9 @@ void IGESData_GlobalSection::CopyRefs ()
 
 Handle(Interface_ParamSet) IGESData_GlobalSection::Params () const
 {
-  char vide[1];  char uncar[2];  char nombre[20];  char text[200];
+  char vide[1];  char uncar[2];  char nombre[1024];  char text[200];
   Standard_Integer lt;
-  vide[0] = uncar[1] = '\0';  uncar[0] = ',';
+  vide[0] = uncar[1] = nombre[0] = '\0';  uncar[0] = ',';
   Handle(Interface_ParamSet) res  = new Interface_ParamSet(26);  //gka 19.01.99
   if (theSeparator == ',') res->Append (vide,0,Interface_ParamVoid,0);
   else { uncar[0] = theSeparator; res->Append (uncar,1,Interface_ParamMisc,0); }

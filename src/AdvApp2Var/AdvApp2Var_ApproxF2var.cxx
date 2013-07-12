@@ -971,7 +971,7 @@ int mma1fer_(integer *,//ndimen,
   integer crvjac_dim1, crvjac_offset, i__1, i__2;
 
   /* Local variables */
-  integer idim, ncfja, ncfnw, ndses, ii, kk, ibb, ier;
+  integer idim, ncfja, ncfnw, ndses, ii, kk, ibb, ier = 0;
   integer nbr0;
 
 
@@ -6178,7 +6178,7 @@ int AdvApp2Var_ApproxF2var::mma2fnc_(integer *ndimen,
     doublereal uvpav[4]	/* was [2][2] */;
     integer nd, ii;
     integer ibb;
-    integer ier;
+    integer ier = 0;
     doublereal uv11[4]	/* was [2][2] */;
   integer ncb1;
     doublereal eps3;

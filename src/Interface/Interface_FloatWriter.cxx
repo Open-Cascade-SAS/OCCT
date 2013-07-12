@@ -102,47 +102,51 @@ Standard_Integer Interface_FloatWriter::Convert (const Standard_Real val,
 						 const Standard_CString rangeform)
 {
 //    Valeur flottante, expurgee de "0000" qui trainent et de "E+00"
-//  char lval[20];
-  char lxp[6], *pText; 
-  int i0,j0=0;
+  const Standard_Integer anMasSize = 5; // change 6 to 5: index 5 is not used below
+  char lxp[anMasSize], *pText; 
+  int i0, j0 = 0;
 
-  lxp[0] = lxp[4] = '\0';    
+  for (Standard_Integer i = 0; i < anMasSize; ++i)
+    lxp[i] = '\0';
+
   pText=(char *)text;
   //
-  if ( (val >= R1 && val <  R2) ||
-      (val <= -R1 && val > -R2) ) {
+  if ( (val >= R1 && val <  R2) || (val <= -R1 && val > -R2) ) 
     Sprintf(pText,rangeform,val);
-  }
-  else {
+  else 
     Sprintf(pText,mainform,val);
-  }
   
-  if (zsup) {
-    for (int i = 0; i < 16; i ++) {
+  if (zsup) 
+  {
+    for (int i = 0; i < 16; i ++) 
+    {
       i0 = i;
-      if (text[i] == 'e' || text[i] == 'E') {
-	lxp[0] = 'E'; 
-	lxp[1] = text[i+1]; 
-	lxp[2] = text[i+2];
-	lxp[3] = text[i+3];  
-	lxp[4] = text[i+4];
-	if (lxp[1] == '+' && lxp[2] == '0' && lxp[3] == '0' &&  lxp[4] == '\0') {
-	  lxp[0] = '\0';
-	}
-	pText[i] = '\0';
+      if (text[i] == 'e' || text[i] == 'E') 
+      {
+	      lxp[0] = 'E'; 
+	      lxp[1] = text[i+1]; 
+	      lxp[2] = text[i+2];
+	      lxp[3] = text[i+3];  
+	      lxp[4] = text[i+4];
+	      
+        if (lxp[1] == '+' && lxp[2] == '0' && lxp[3] == '0' &&  lxp[4] == '\0') 
+	        lxp[0] = '\0';
+
+	      pText[i] = '\0';
       }
-      if (text[i] == '\0') {
-	break;
-      }
+      if (text[i] == '\0') break;
     }
     //#52 rln 23.12.98 converting 1e-07 throws exception
-    for (int j = i0-1; j >= 0; j --) {
+    for (int j = i0-1; j >= 0; j --) 
+    {
       j0 = j;  
-      if (text[j] != '0') {
-	break;
-      }
+
+      if (text[j] != '0') 
+	      break;
+
       pText[j] = '\0';
     }
+
     pText[j0+1] = lxp[0]; 
     pText[j0+2] = lxp[1]; 
     pText[j0+3] = lxp[2];

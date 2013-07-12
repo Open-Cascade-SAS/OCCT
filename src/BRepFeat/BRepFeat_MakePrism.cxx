@@ -1136,18 +1136,22 @@ static Standard_Real HeightMax(const TopoDS_Shape& theSbase,
     if(!FacRevolInfini)
       BRepBndLib::Add(theSFrom,Box);
   }
-  if(!theSUntil.IsNull()) {
-    Standard_Boolean FacRevolInfini;
+  if(!theSUntil.IsNull()) 
+  {
+    Standard_Boolean FacRevolInfini = Standard_False;
     TopExp_Explorer exp;
     exp.Init(theSUntil, TopAbs_EDGE);
-    for(; exp.More(); exp.Next()) {
+    for(; exp.More(); exp.Next()) 
+    {
       TopExp_Explorer exp1;
       exp1.Init(exp.Current(), TopAbs_VERTEX);
-      if(!exp1.More()) {
-	FacRevolInfini = Standard_True;
-	break;
+      if(!exp1.More()) 
+      {
+	      FacRevolInfini = Standard_True;
+	      break;
       }
     }
+
     if(!FacRevolInfini)
       BRepBndLib::Add(theSUntil,Box);
   }
