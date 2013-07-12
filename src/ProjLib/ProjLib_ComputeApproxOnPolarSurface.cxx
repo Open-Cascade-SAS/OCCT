@@ -868,6 +868,26 @@ Handle(Adaptor2d_HCurve2d)
     
     Curve->D0(Param.Value(1), pntproj) ;
     Extrema_ExtPS  aExtPS(pntproj, Surf->Surface(), TolU, TolV) ;
+    Standard_Real aMinSqDist = RealLast();
+    if (aExtPS.IsDone())
+    {
+      for (i = 1; i <= aExtPS.NbExt(); i++)
+      {
+        Standard_Real aSqDist = aExtPS.SquareDistance(i);
+        if (aSqDist < aMinSqDist)
+          aMinSqDist = aSqDist;
+      }
+    }
+    if (aMinSqDist > DistTol3d * DistTol3d) //try to project with less tolerance
+    {
+      TolU = Min(TolU, Precision::PConfusion());
+      TolV = Min(TolV, Precision::PConfusion());
+      aExtPS.Initialize(Surf->Surface(),
+                        Surf->Surface().FirstUParameter(), Surf->Surface().LastUParameter(), 
+                        Surf->Surface().FirstVParameter(), Surf->Surface().LastVParameter(),
+                        TolU, TolV);
+      aExtPS.Perform(pntproj);
+    }
 
     if( aExtPS.IsDone() && aExtPS.NbExt() >= 1 ) {
 
