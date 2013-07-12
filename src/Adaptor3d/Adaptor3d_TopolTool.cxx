@@ -976,6 +976,23 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real theDefl,
   Standard_Boolean bUuniform = Standard_False;
   Standard_Boolean bVuniform = Standard_False;
 
+  //modified by NIZHNY-EMV Mon Jun 10 14:19:04 2013
+  if (nbsu < theNUmin || nbsv < theNVmin) {
+    Standard_Integer aNb;
+    if (nbsu < nbsv) {
+      aNb = (Standard_Integer)(nbsv * ((Standard_Real)theNUmin)/((Standard_Real)nbsu));
+      aNb = Min(aNb, 30);
+      bVuniform = (aNb > nbsv) ? Standard_True : bVuniform;
+      nbsv = bVuniform ? aNb : nbsv;
+    } else {
+      aNb = (Standard_Integer)(nbsu * ((Standard_Real)theNVmin)/((Standard_Real)nbsv));
+      aNb = Min(aNb, 30);
+      bUuniform = (aNb > nbsu) ? Standard_True : bUuniform;
+      nbsu = bUuniform ? aNb : nbsu;
+    }
+  }
+  //modified by NIZHNY-EMV Mon Jun 10 14:19:05 2013
+
   if(nbsu < theNUmin) {
     nbsu = theNUmin;
     bUuniform = Standard_True;
