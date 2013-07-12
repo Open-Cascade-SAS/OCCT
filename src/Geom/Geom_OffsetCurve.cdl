@@ -32,14 +32,14 @@ class OffsetCurve from Geom inherits Curve from Geom
         --  An offset curve is a curve at constant distance (Offset) from
         --  a basis curve in a reference direction V. The offset curve 
         --  takes its parametrization from the basis curve.
-        --  The Offset curve is in the direction of of the normal N 
-        --  defined with the cross product  V^T where the vector T
+        --  The Offset curve is in the direction of the normal N 
+        --  defined with the cross product  T^V, where the vector T
         --  is given by the first derivative on the basis curve with 
         --  non zero length.
         --  The distance offset may be positive or negative to indicate the
         --  preferred side of the curve :
         --  . distance offset >0 => the curve is in the direction of N
-        --  . distance offset >0 => the curve is in the direction of - N
+        --  . distance offset <0 => the curve is in the direction of - N
         --  
         --  On the Offset curve :
         --  Value (U) = BasisCurve.Value(U) + (Offset * (T ^ V)) / ||T ^ V||
