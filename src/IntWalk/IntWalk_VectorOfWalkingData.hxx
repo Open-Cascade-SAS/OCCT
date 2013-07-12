@@ -1,5 +1,6 @@
-// Copyright (c) 1995-1999 Matra Datavision
-// Copyright (c) 1999-2012 OPEN CASCADE SAS
+// Created on: 2013-0603
+// Created by: Roman LYGIN
+// Copyright (c) 2013-2013 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -17,20 +18,20 @@
 // and conditions governing the rights and limitations under the License.
 
 
-inline Extrema_POnSurf::Extrema_POnSurf () {}
+#ifndef IntWalk_VectorOfWalkingData_HeaderFile
+#define IntWalk_VectorOfWalkingData_HeaderFile
 
-inline Extrema_POnSurf::Extrema_POnSurf (const Standard_Real U,
-                                         const Standard_Real V,
-                                         const gp_Pnt& P) :
-    myU (U), myV (V), myP (P)
+#include <vector>
+#include <NCollection_StdAllocator.hxx>
+
+struct IntWalk_WalkingData
 {
-}
+    Standard_Real    ustart;
+    Standard_Real    vstart;
+    Standard_Integer etat;
+};
 
-inline void Extrema_POnSurf::Parameter ( Standard_Real& U, Standard_Real& V) const
-{
-  U = myU;
-  V = myV;
-}
+typedef std::vector<IntWalk_WalkingData, NCollection_StdAllocator<IntWalk_WalkingData> >
+    IntWalk_VectorOfWalkingData;
 
-
-inline const gp_Pnt& Extrema_POnSurf::Value () const { return myP; }
+#endif

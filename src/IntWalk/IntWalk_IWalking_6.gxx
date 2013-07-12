@@ -31,7 +31,7 @@ void IntWalk_IWalking::AddPointInCurrentLine
 
   IntSurf_PntOn2S Psol;
   Psol.SetValue(ThePointOfPathTool::Value3d(PathPnt),
-		reversed,ustart1(N),vstart1(N));
+		reversed,wd1[N].ustart,wd1[N].vstart);
   CurrentLine->AddPoint(Psol);
 }
 

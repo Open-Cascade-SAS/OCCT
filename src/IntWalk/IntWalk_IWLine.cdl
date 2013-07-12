@@ -41,7 +41,8 @@ inherits TShared from MMgt
     --                 because no marching points where found to stop
     --               beware  : the directions are not oriented.
 
-uses Couple           from IntSurf,
+uses Allocator        from IntSurf,
+     Couple           from IntSurf,
      SequenceOfCouple from IntSurf,
      PntOn2S          from IntSurf,
      LineOn2S         from IntSurf,
@@ -54,7 +55,7 @@ raises OutOfRange  from Standard,
 
 is
 
-    Create
+    Create (theAllocator: Allocator from IntSurf = 0)
     
     	returns mutable IWLine;
 

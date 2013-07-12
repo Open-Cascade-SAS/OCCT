@@ -17,11 +17,7 @@
 // and conditions governing the rights and limitations under the License.
 
 
-
-#ifndef DEB
-#define No_Standard_RangeError
-#define No_Standard_OutOfRange
-#endif
+#include <NCollection_IncAllocator.hxx>
 
 void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 					const TColStd_SequenceOfReal& Vmult,
@@ -88,21 +84,21 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
   Standard_Integer nbLoop = Pnts2.Length();
   
   for (I = 1;I<=nbLoop;I++) {
-    if (etat2(I) > 12) { // start point of closed line
+    if (wd2[I].etat > 12) { // start point of closed line
       
       LoopPnt = Pnts2.Value(I);
       previousPoint.SetValue(ThePointOfLoopTool::Value3d(LoopPnt),reversed,
-			     ustart2(I),vstart2(I));
+			     wd2[I].ustart,wd2[I].vstart);
       previousd3d = ThePointOfLoopTool::Direction3d(LoopPnt);
       previousd2d = ThePointOfLoopTool::Direction2d(LoopPnt);
 
-      CurrentLine = new IntWalk_TheIWLine ();
+      CurrentLine = new IntWalk_TheIWLine (new NCollection_IncAllocator());
       CurrentLine->AddPoint(previousPoint);
       CurrentLine->SetTangentVector(previousd3d,1);
       Tgtbeg = Standard_False;
       Tgtend = Standard_False;
-      Uvap(1) = ustart2(I);
-      Uvap(2) = vstart2(I);
+      Uvap(1) = wd2[I].ustart;
+      Uvap(2) = wd2[I].vstart;
 
       StepSign = 1;
 
@@ -183,7 +179,7 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 		  else {
 		    Tgtend = lines.Value(-N)->IsTangentAtBegining();
 		  }
-		  Arrive = (etat2(I) == 12);
+		  Arrive = (wd2[I].etat == 12);
 		}
 	      }
 
@@ -196,7 +192,7 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 		  Tgtend = Func.IsTangent(); // jag 940616
 		  N = -N;
 		}
-		Arrive = (etat2(I) == 12); // the line is open
+		Arrive = (wd2[I].etat == 12); // the line is open
 	      }
 	    }
 	    Status = TestDeflection(Func, Arrive,Uvap,StatusPrecedent,
@@ -227,7 +223,7 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
                 
 	      }
 	      else { // open
-		etat2(I) = 12; // declare it open
+		wd2[I].etat = 12; // declare it open
 		Tgtbeg = Tgtend;
 		Tgtend = Standard_False;
 		ArretAjout = Standard_False;
@@ -252,8 +248,8 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 		Arrive = Standard_False;
 		break;
 	      }
-	      if (etat2(I) >12) { //the line should become open
-		etat2(I) = 12; //declare it open
+	      if (wd2[I].etat >12) { //the line should become open
+		wd2[I].etat = 12; //declare it open
 		ArretAjout = Standard_False;
 		OpenLine(0,Psol,Pnts1,Func,CurrentLine);
 		StepSign = -1;
@@ -271,7 +267,7 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 	      } 
 	    }
 	    else if (Arrive)  {
-	      if (etat2(I) > 12) {  //line closed good case
+	      if (wd2[I].etat > 12) {  //line closed good case
 		CurrentLine->AddStatusFirstLast(Standard_True,
                                                Standard_False,Standard_False);
 		CurrentLine->AddPoint(CurrentLine->Value(1));              
@@ -283,8 +279,8 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 	      }
 	    }
 	    else if (Status == IntWalk_ArretSurPoint) {
-	      if (etat2(I) >12) { //line should become open
-		etat2(I) = 12; //declare it open
+	      if (wd2[I].etat >12) { //line should become open
+		wd2[I].etat = 12; //declare it open
 		Tgtbeg = Standard_True;
 		Tgtend = Standard_False;
                 N= -lines.Length()-1;
@@ -344,7 +340,7 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 	CurrentLine->SetTangencyAtEnd(Tgtend);
 	
 	lines.Append(CurrentLine);
-	etat2(I)=-etat2(I); //mark point as processed
+	wd2[I].etat=-wd2[I].etat; //mark point as processed
       }
     } //end of processing of start point
   } //end of all start points

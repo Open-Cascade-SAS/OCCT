@@ -22,6 +22,7 @@ OSD_Chronometer Chronrsnld;
 
 #endif
 
+#include <NCollection_IncAllocator.hxx>
 #include <Precision.hxx>
 
 IntWalk_IWalking::IntWalk_IWalking (const Standard_Real Epsilon,
@@ -32,11 +33,39 @@ IntWalk_IWalking::IntWalk_IWalking (const Standard_Real Epsilon,
       pas(Increment),
       tolerance(1,2),
       epsilon(Epsilon*Epsilon),
+      wd1 (IntWalk_VectorOfWalkingData::allocator_type (new NCollection_IncAllocator)),
+      wd2 (wd1.get_allocator()),
+      nbMultiplicities (wd1.get_allocator()),
       NbPointsConfondusConsecutifs(0),
       EpsilonSembleTropGrand(0)
 {
 }
 
+    
+//=======================================================================
+//function : Reset
+//purpose  : Clears NCollection_Vector-based containers and adds
+//           dummy data to maintain start index of 1 and consistent with
+//           previous TCollection_Sequence-based implementation and other
+//           used TCollection-based containers
+//=======================================================================
+
+void IntWalk_IWalking::Clear()
+{
+  wd1.clear();
+  wd2.clear();
+  IntWalk_WalkingData aDummy;
+  aDummy.etat = -10;
+  aDummy.ustart = aDummy.vstart = 0.;
+  wd1.push_back (aDummy);
+  wd2.push_back (aDummy);
+  nbMultiplicities.clear();
+  nbMultiplicities.push_back (-1);
+  
+  done = Standard_False;
+  seqAjout.Clear();
+  lines.Clear();
+}
 
 // ***************************************************************************
      //  etat1=12 pas tangent,pas passant
@@ -64,23 +93,12 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
 {
 
   Standard_Integer I;
-  ThePointOfPath PathPnt;
   Standard_Boolean Rajout = Standard_False;
   Standard_Integer nbPnts1 = Pnts1.Length();
   Standard_Integer nbPnts2 = Pnts2.Length();
   Standard_Real U,V;
 
-  done = Standard_False;
-
-  ustart1.Clear();
-  vstart1.Clear();
-  etat1.Clear();
-  nbMultiplicities.Clear();
-  ustart2.Clear();
-  vstart2.Clear();
-  etat2.Clear();
-  seqAjout.Clear();
-  lines.Clear();
+  Clear();
   reversed = Reversed;
 
 
@@ -90,51 +108,39 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
   TColStd_SequenceOfReal Vmult;
 
   Standard_Integer decal=0;
+  wd1.reserve (nbPnts1+decal);
+  nbMultiplicities.reserve (nbPnts1+decal);
   for (I=1;I <= nbPnts1+decal; I++) {
-    PathPnt = Pnts1.Value(I-decal);
-    etat1.Append(1);
+    const ThePointOfPath& PathPnt = Pnts1.Value(I-decal);
+    IntWalk_WalkingData aWD1;
+    aWD1.etat = 1;
     if (!ThePointOfPathTool::IsPassingPnt(PathPnt)) 
-      etat1(I) = 11; 
+      aWD1.etat = 11;
     if (!ThePointOfPathTool::IsTangent(PathPnt))   
-      etat1(I) = etat1(I) + 1;
+      ++aWD1.etat;
 
-    Standard_Integer etat1I=etat1(I);
-    //-- cout<<" \n Etat1("<<I<<") = "<<etat1I<<endl;
-    if(etat1I==2) {  //-- lbr le 15 fev 99 
-      etat1(I)=11;      
-      
-      ThePointOfPathTool::Value2d(PathPnt, U,V);
-      ustart1.Append(U);
-      vstart1.Append(V);
-      nbMultiplicities.Append(ThePointOfPathTool::Multiplicity(PathPnt));
-      
-      for (Standard_Integer J = 1; J <= nbMultiplicities(I); J++) {
-	ThePointOfPathTool::Parameters(PathPnt, J, U , V);
-	Umult.Append(U);
-	Vmult.Append(V);
-      }
-    }
-     
-    else { 
-      ThePointOfPathTool::Value2d(PathPnt, U,V);
-      ustart1.Append(U);
-      vstart1.Append(V);
-      nbMultiplicities.Append(ThePointOfPathTool::Multiplicity(PathPnt));
-      
-      for (Standard_Integer J = 1; J <= nbMultiplicities(I); J++) {
-	ThePointOfPathTool::Parameters(PathPnt, J, U , V);
-	Umult.Append(U);
-	Vmult.Append(V);
-      }
+    if(aWD1.etat==2) {  //-- lbr le 15 fev 99 
+      aWD1.etat=11;
+    }      
+
+    ThePointOfPathTool::Value2d(PathPnt, aWD1.ustart, aWD1.vstart);
+    wd1.push_back (aWD1);
+    Standard_Integer aNbMult = ThePointOfPathTool::Multiplicity(PathPnt);
+    nbMultiplicities.push_back(aNbMult);
+
+    for (Standard_Integer J = 1; J <= aNbMult; J++) {
+      ThePointOfPathTool::Parameters(PathPnt, J, U, V);
+      Umult.Append(U);
+      Vmult.Append(V);
     }
   }
 
-
+  wd2.reserve (nbPnts2);
   for (I = 1; I <= nbPnts2; I++) {
-    etat2.Append(13);
-    ThePointOfLoopTool::Value2d(Pnts2.Value(I), U,V);
-    ustart2.Append(U);
-    vstart2.Append(V);
+    IntWalk_WalkingData aWD2;
+    aWD2.etat = 13;
+    ThePointOfLoopTool::Value2d(Pnts2.Value(I), aWD2.ustart, aWD2.vstart);
+    wd2.push_back (aWD2);
   }
 
   tolerance(1) = ThePSurfaceTool::UResolution(Caro,Precision::Confusion());
@@ -163,7 +169,7 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
   // calcul de toutes les lignes fermees 
   if (nbPnts2 != 0) ComputeCloseLine(Umult,Vmult,Pnts1,Pnts2,Func,Rajout); 
   for (I = 1; I <= nbPnts1; I++) { 
-    if (etat1(I) >0) seqSingle.Append(Pnts1(I));
+    if (wd1[I].etat >0) seqSingle.Append(Pnts1(I));
   }
   done = Standard_True;
 }
@@ -181,22 +187,10 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
 
 {
   Standard_Integer I;
-  ThePointOfPath PathPnt;
   Standard_Boolean Rajout = Standard_False;
   Standard_Integer nbPnts1 = Pnts1.Length();
   Standard_Real U,V;
 
-  done = Standard_False;
-
-  ustart1.Clear();
-  vstart1.Clear();
-  etat1.Clear();
-  nbMultiplicities.Clear();
-  ustart2.Clear();
-  vstart2.Clear();
-  etat2.Clear();
-  seqAjout.Clear();
-  lines.Clear();
   reversed = Reversed;
 
 
@@ -205,18 +199,20 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
   TColStd_SequenceOfReal Umult;
   TColStd_SequenceOfReal Vmult;
 
+  wd1.reserve (nbPnts1);
   for (I=1;I <= nbPnts1; I++) {
-    PathPnt = Pnts1.Value(I);
-    etat1.Append(1);
-    if (!ThePointOfPathTool::IsPassingPnt(PathPnt)) etat1(I) = 11; 
-    if (!ThePointOfPathTool::IsTangent(PathPnt))   etat1(I) = etat1(I) + 1;
-    ThePointOfPathTool::Value2d(PathPnt, U,V);
-    ustart1.Append(U);
-    vstart1.Append(V);
-    nbMultiplicities.Append(ThePointOfPathTool::Multiplicity(PathPnt));
+    const ThePointOfPath& PathPnt = Pnts1.Value(I);
+    IntWalk_WalkingData aWD1;
+    aWD1.etat = 1;
+    if (!ThePointOfPathTool::IsPassingPnt(PathPnt)) aWD1.etat = 11; 
+    if (!ThePointOfPathTool::IsTangent(PathPnt))   ++aWD1.etat;
+    ThePointOfPathTool::Value2d(PathPnt, aWD1.ustart, aWD1.vstart);
+    wd1.push_back (aWD1);
+    Standard_Integer aNbMult = ThePointOfPathTool::Multiplicity(PathPnt);
+    nbMultiplicities.push_back(aNbMult);
 
-    for (Standard_Integer J = 1; J <= nbMultiplicities(I); J++) {
-      ThePointOfPathTool::Parameters(PathPnt, J, U , V);
+    for (Standard_Integer J = 1; J <= aNbMult; J++) {
+      ThePointOfPathTool::Parameters(PathPnt, J, U, V);
       Umult.Append(U);
       Vmult.Append(V);
     }
@@ -247,7 +243,7 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
   if (nbPnts1 != 0) ComputeOpenLine(Umult,Vmult,Pnts1,Func,Rajout); 
 
   for (I = 1; I <= nbPnts1; I++) { 
-    if (etat1(I) >0) seqSingle.Append(Pnts1(I));
+    if (wd1[I].etat >0) seqSingle.Append(Pnts1(I));
   }
   done = Standard_True;
 }

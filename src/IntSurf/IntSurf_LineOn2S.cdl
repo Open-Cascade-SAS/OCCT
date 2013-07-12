@@ -27,14 +27,15 @@ class LineOn2S from IntSurf
 inherits TShared from MMgt
 
 
-uses PntOn2S           from IntSurf,
+uses Allocator         from IntSurf,
+     PntOn2S           from IntSurf,
      SequenceOfPntOn2S from IntSurf
 
 raises OutOfRange from Standard
 
 is
 
-    Create
+    Create (theAllocator: Allocator from IntSurf = 0)
     
     	returns mutable LineOn2S from IntSurf;
 	

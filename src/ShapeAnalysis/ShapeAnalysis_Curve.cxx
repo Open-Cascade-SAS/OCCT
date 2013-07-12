@@ -70,14 +70,17 @@ static void ProjectOnSegments (const Adaptor3d_Curve& AC, const gp_Pnt& P3D,
   //  On considere <nbseg> points sur [uMin,uMax]
   //  Quel est le plus proche. Et quel est le nouvel intervalle
   //  (il ne peut pas deborder l ancien)
-  Standard_Real u, dist, delta = (nbseg == 0)? 0 : (uMax-uMin)/nbseg; //szv#4:S4163:12Mar99 anti-exception
+  Standard_Real u, dist2, delta = (nbseg == 0)? 0 : (uMax-uMin)/nbseg; //szv#4:S4163:12Mar99 anti-exception
+  Standard_Real  distmin2 = distmin * distmin;
+  Standard_Boolean aHasChanged = Standard_False;
   for (Standard_Integer i = 0; i <= nbseg; i ++) {
     u = uMin + (delta * i);
     gp_Pnt PU = AC.Value (u);
-    dist = PU.Distance (P3D);
-    if (dist < distmin)  {  distmin = dist;  proj = PU;  param = u;  }
+    dist2 = PU.SquareDistance (P3D);
+    if (dist2 < distmin2)  {  distmin2 = dist2;  proj = PU;  param = u; aHasChanged = Standard_True;  }
   }
-
+  if (aHasChanged)
+    distmin = Sqrt (distmin2);
 #ifdef DEBUG
   cout<<"ShapeAnalysis_Geom:Project, param="<<param<<" -> distmin="<<distmin<<endl;
 #endif

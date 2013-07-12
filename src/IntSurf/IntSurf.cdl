@@ -38,9 +38,10 @@ is
 
     class PntOn2S;
     
-    class SequenceOfPntOn2S instantiates Sequence from TCollection
-    	(PntOn2S from IntSurf);
-	
+    imported Allocator;
+    
+    imported SequenceOfPntOn2S;
+
     class Couple;
 
     class SequenceOfCouple instantiates Sequence from TCollection

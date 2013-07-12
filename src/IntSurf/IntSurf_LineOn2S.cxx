@@ -19,7 +19,8 @@
 #include <IntSurf_LineOn2S.ixx>
 
 
-IntSurf_LineOn2S::IntSurf_LineOn2S ()
+IntSurf_LineOn2S::IntSurf_LineOn2S (const IntSurf_Allocator& theAllocator) :
+    mySeq (theAllocator)
 {}
 
 

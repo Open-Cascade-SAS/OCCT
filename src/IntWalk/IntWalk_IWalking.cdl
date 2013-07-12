@@ -44,6 +44,8 @@ uses Vector            from math,
      SequenceOfInteger from TColStd,
      SequenceOfReal    from TColStd,
      StatusDeflection  from IntWalk,
+     VectorOfInteger   from IntWalk,
+     VectorOfWalkingData from IntWalk,
      Vec               from gp,
      Dir2d             from gp,
      PntOn2S           from IntSurf
@@ -269,6 +271,9 @@ is
                                    Psol    : in out PntOn2S from IntSurf)
 
     is static protected;
+    
+    Clear (me: in out) is static protected;
+    ---Purpose: Clears up internal containers
 
 
 fields 
@@ -281,13 +286,9 @@ fields
     epsilon             : Real              from Standard;
     reversed            : Boolean           from Standard;
 
-    ustart1             : SequenceOfReal    from TColStd;
-    vstart1             : SequenceOfReal    from TColStd;
-    nbMultiplicities    : SequenceOfInteger from TColStd;
-    etat1               : SequenceOfInteger from TColStd;
-    ustart2             : SequenceOfReal    from TColStd;
-    vstart2             : SequenceOfReal    from TColStd;
-    etat2               : SequenceOfInteger from TColStd;
+    wd1                 : VectorOfWalkingData from IntWalk;
+    wd2                 : VectorOfWalkingData from IntWalk;
+    nbMultiplicities    : VectorOfInteger   from IntWalk;
     Um                  : Real              from Standard; -- Min U de la surf
     UM                  : Real              from Standard; -- Max U de la surf
     Vm                  : Real              from Standard; -- Min V de la surf

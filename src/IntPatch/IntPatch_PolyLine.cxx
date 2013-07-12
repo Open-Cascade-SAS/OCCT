@@ -82,7 +82,7 @@ void IntPatch_PolyLine::Prepare()
   Standard_Integer i;
   myBox.SetVoid();
   Standard_Integer n=NbPoints();
-  Standard_Real eps = myError;
+  const Standard_Real eps_2 = myError * myError;
 
   gp_Pnt2d P1, P2;
   if (n >= 3) {
@@ -93,12 +93,12 @@ void IntPatch_PolyLine::Prepare()
     if (i >= 3) {
       gp_XY V13 = P3.XY() - P1.XY();
       gp_XY V12 = P2.XY() - P1.XY();
-      Standard_Real d13 = V13.Modulus(), d;
-      if (d13 > eps)
-	d = V13.CrossMagnitude(V12) / d13;
+      Standard_Real d13_2 = V13.SquareModulus(), d_2;
+      if (d13_2 > eps_2)
+	d_2 = V13.CrossSquareMagnitude(V12) / d13_2;
       else
-	d = eps;
-      if (d > myError) {
+	d_2 = eps_2;
+      if (d_2 > myError * myError) {
 	// try to compute deflection more precisely using parabola interpolation
 	gp_XY V23 = P3.XY() - P2.XY();
 	Standard_Real d12 = V12.Modulus(), d23 = V23.Modulus();
@@ -133,9 +133,9 @@ void IntPatch_PolyLine::Prepare()
 	  Standard_Real d2 = Abs (A2*xt2 + B2*yt2 + C2);
 	  if (d2 > d1) d1 = d2;
 	  // select min deflection from linear and parabolic ones
-	  if (d1 < d) d = d1;
+	  if (d1 * d1 < d_2) d_2 = d1 * d1;
 	}
-	if (d > myError) myError=d;
+	if (d_2 > myError * myError) myError=Sqrt(d_2);
       }
       P1 = P2; P2 = P3;
     }

@@ -162,23 +162,25 @@ void Intf_InterferencePolygon2d::Interference
   Bnd_Box2d bSO;
   Bnd_Box2d bST;
 
-  Standard_Integer iObje1, iObje2;
+  Standard_Integer iObje1, iObje2, n1 = nbso, n2 = Obje2.NbSegments();
+  Standard_Real d1 = Obje1.DeflectionOverEstimation(),
+    d2 = Obje2.DeflectionOverEstimation();
 
   gp_Pnt2d p1b, p1e, p2b, p2e;
-  for (iObje1=1; iObje1<=Obje1.NbSegments(); iObje1++)
+  for (iObje1=1; iObje1<=n1; iObje1++)
   {
     bSO.SetVoid();
     Obje1.Segment(iObje1,p1b,p1e);
     bSO.Add(p1b);
     bSO.Add(p1e);
-    bSO.Enlarge(Obje1.DeflectionOverEstimation());
+    bSO.Enlarge(d1);
     if (!Obje2.Bounding().IsOut(bSO)) {
-      for (iObje2=1; iObje2<=Obje2.NbSegments(); iObje2++) {
+      for (iObje2=1; iObje2<=n2; iObje2++) {
         bST.SetVoid();
         Obje2.Segment(iObje2,p2b,p2e);
         bST.Add(p2b);
         bST.Add(p2e);
-        bST.Enlarge(Obje2.DeflectionOverEstimation());
+        bST.Enlarge(d2);
         if (!bSO.IsOut(bST))
           Intersect(iObje1, iObje2, p1b, p1e, p2b, p2e);
       }
@@ -197,22 +199,23 @@ void Intf_InterferencePolygon2d::Interference
   Bnd_Box2d bSO;
   Bnd_Box2d bST;
 
-  Standard_Integer iObje1, iObje2;
+  Standard_Integer iObje1, iObje2, n = Obje.NbSegments();
+  Standard_Real d = Obje.DeflectionOverEstimation();
 
   gp_Pnt2d p1b, p1e, p2b, p2e;
-  for (iObje1=1; iObje1<=Obje.NbSegments(); iObje1++) {
+  for (iObje1=1; iObje1<=n; iObje1++) {
     bSO.SetVoid();
     Obje.Segment(iObje1,p1b,p1e);
     bSO.Add(p1b);
     bSO.Add(p1e);
-    bSO.Enlarge(Obje.DeflectionOverEstimation());
+    bSO.Enlarge(d);
     if (!Obje.Bounding().IsOut(bSO)) {
-      for (iObje2=iObje1+1;iObje2<=Obje.NbSegments();iObje2++){
+      for (iObje2=iObje1+1;iObje2<=n;iObje2++){
         bST.SetVoid();
         Obje.Segment(iObje2,p2b,p2e);
         bST.Add(p2b);
         bST.Add(p2e);
-        bST.Enlarge(Obje.DeflectionOverEstimation());
+        bST.Enlarge(d);
         if (!bSO.IsOut(bST))
           Intersect(iObje1, iObje2, p1b, p1e, p2b, p2e);
       }

@@ -42,6 +42,11 @@
 #include <IntPatch_GLine.hxx>
 #include <IntPatch_ALineToWLine.hxx>
 #include <IntPatch_IType.hxx>
+#include <NCollection_IncAllocator.hxx>
+#include <NCollection_List.hxx>
+#include <NCollection_LocalArray.hxx>
+#include <NCollection_StdAllocator.hxx>
+#include <vector>
 
 #include <AppParCurves_MultiBSpCurve.hxx>
 
@@ -1260,10 +1265,24 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
                                       const GeomInt_LineConstructor&                 theLConstructor,
                                       IntPatch_SequenceOfLine&                       theNewLines)
 {
+  typedef NCollection_List<Standard_Integer> ListOfInteger;
+  //have to use std::vector, not NCollection_Vector in order to use copy constructor of
+  //ListOfInteger which will be created with specific allocator instance
+  typedef std::vector<ListOfInteger, NCollection_StdAllocator<
+      ListOfInteger> > ArrayOfListOfInteger;
+
   Standard_Boolean bIsPrevPointOnBoundary, bIsCurrentPointOnBoundary;
   Standard_Integer nblines, aNbPnts, aNbParts, pit, i, j, aNbListOfPointIndex;
   Standard_Real aTol, umin, umax, vmin, vmax;
-  TColStd_ListOfInteger aListOfPointIndex;
+
+  //an inc allocator, it will contain wasted space (upon list's Clear()) but it should
+  //still be faster than the standard allocator, and wasted memory should not be
+  //significant and will be limited by time span of this function;
+  //this is a separate allocator from the anIncAlloc below what provides better data
+  //locality in the latter (by avoiding wastes which will only be in anIdxAlloc)
+  Handle(NCollection_IncAllocator) anIdxAlloc = new NCollection_IncAllocator();
+  ListOfInteger aListOfPointIndex (anIdxAlloc);
+
   //GeomAPI_ProjectPointOnSurf aPrj1, aPrj2;
   ProjectPointOnSurf aPrj1, aPrj2;
   Handle(Geom_Surface) aSurf1,  aSurf2;
@@ -1275,8 +1294,13 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
     return Standard_False;
   }
   //
-  TColStd_Array1OfListOfInteger anArrayOfLines(1, aNbPnts); 
-  TColStd_Array1OfInteger       anArrayOfLineType(1, aNbPnts);
+  Handle(NCollection_IncAllocator) anIncAlloc = new NCollection_IncAllocator();
+  NCollection_StdAllocator<ListOfInteger> anAlloc (anIncAlloc);
+  const ListOfInteger aDummy (anIncAlloc); //empty list to be copy constructed from
+  ArrayOfListOfInteger anArrayOfLines (aNbPnts + 1, aDummy, anAlloc);
+
+  NCollection_LocalArray<Standard_Integer> anArrayOfLineTypeArr (aNbPnts + 1);
+  Standard_Integer* anArrayOfLineType = anArrayOfLineTypeArr;
   //
   nblines = 0;
   aTol = Precision::Confusion();
@@ -1350,8 +1374,8 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
 
       if(!aListOfPointIndex.IsEmpty()) {
 	nblines++;
-	anArrayOfLines.SetValue(nblines, aListOfPointIndex);
-	anArrayOfLineType.SetValue(nblines, bIsPrevPointOnBoundary);
+	anArrayOfLines[nblines] = aListOfPointIndex;
+	anArrayOfLineType[nblines] = bIsPrevPointOnBoundary;
 	aListOfPointIndex.Clear();
       }
       bIsPrevPointOnBoundary = bIsCurrentPointOnBoundary;
@@ -1362,8 +1386,8 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
   aNbListOfPointIndex=aListOfPointIndex.Extent();
   if(aNbListOfPointIndex) {
     nblines++;
-    anArrayOfLines.SetValue(nblines, aListOfPointIndex);
-    anArrayOfLineType.SetValue(nblines, bIsPrevPointOnBoundary);
+    anArrayOfLines[nblines] = aListOfPointIndex;
+    anArrayOfLineType[nblines] = bIsPrevPointOnBoundary;
     aListOfPointIndex.Clear();
   }
   //
@@ -1374,15 +1398,15 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
   // Correct wlines.begin
   Standard_Integer aLineType;
   TColStd_Array1OfListOfInteger anArrayOfLineEnds(1, nblines);
-  Handle(IntSurf_LineOn2S) aSeqOfPntOn2S = new IntSurf_LineOn2S();
+  Handle(IntSurf_LineOn2S) aSeqOfPntOn2S = new IntSurf_LineOn2S (new NCollection_IncAllocator());
   //
   for(i = 1; i <= nblines; i++) {
-    aLineType=anArrayOfLineType.Value(i);
+    aLineType=anArrayOfLineType[i];
     if(aLineType) {
       continue;
     }
     //
-    const TColStd_ListOfInteger& aListOfIndex = anArrayOfLines.Value(i);
+    const ListOfInteger& aListOfIndex = anArrayOfLines[i];
     if(aListOfIndex.Extent() < 2) {
       continue;
     }
@@ -1396,12 +1420,12 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
 	continue;
       }
       //
-      aLineTypeNeib=anArrayOfLineType.Value(aneighbourindex);
+      aLineTypeNeib=anArrayOfLineType[aneighbourindex];
       if(!aLineTypeNeib){
 	continue;
       }
       //
-      const TColStd_ListOfInteger& aNeighbour = anArrayOfLines.Value(aneighbourindex);
+      const ListOfInteger& aNeighbour = anArrayOfLines[aneighbourindex];
       Standard_Integer anIndex = (!j) ? aNeighbour.Last() : aNeighbour.First();
       const IntSurf_PntOn2S& aPoint = theWLine->Point(anIndex);
       // check if need use derivative.begin .end [absence]
@@ -1637,10 +1661,10 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
     Handle(IntSurf_LineOn2S) aLineOn2S = new IntSurf_LineOn2S();
     //
     for(i = 1; i <= nblines; i++) {
-      if(anArrayOfLineType.Value(i) != 0) {
+      if(anArrayOfLineType[i] != 0) {
 	continue;
       }
-      const TColStd_ListOfInteger& aListOfIndex = anArrayOfLines.Value(i);
+      const ListOfInteger& aListOfIndex = anArrayOfLines[i];
 
       if(aListOfIndex.Extent() < 2) {
 	continue;
@@ -1666,7 +1690,7 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
 	    const IntSurf_PntOn2S& aP = aSeqOfPntOn2S->Value(aListOfFLIndex.First());
 	    aLineOn2S->Add(aP);
 	  }
-	  TColStd_ListIteratorOfListOfInteger anIt(aListOfIndex);
+	  ListOfInteger::Iterator anIt(aListOfIndex);
 
 	  for(; anIt.More(); anIt.Next()) {
 	    const IntSurf_PntOn2S& aP = theWLine->Point(anIt.Value());
@@ -1683,9 +1707,9 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
 	  Standard_Boolean bIsEndOfLine = Standard_True;
 
 	  if(aneighbour <= nblines) {
-	    const TColStd_ListOfInteger& aListOfNeighbourIndex = anArrayOfLines.Value(aneighbour);
+	    const ListOfInteger& aListOfNeighbourIndex = anArrayOfLines[aneighbour];
 
-	    if((anArrayOfLineType.Value(aneighbour) != 0) &&
+	    if((anArrayOfLineType[aneighbour] != 0) &&
 	       (aListOfNeighbourIndex.IsEmpty())) {
 	      bIsEndOfLine = Standard_False;
 	    }
@@ -1706,7 +1730,7 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
 
       if(bIsFirstInside && bIsLastInside) {
 	// append inside points between ifprm and ilprm
-	TColStd_ListIteratorOfListOfInteger anIt(aListOfIndex);
+	ListOfInteger::Iterator anIt(aListOfIndex);
 
 	for(; anIt.More(); anIt.Next()) {
 	  if((anIt.Value() < ifprm) || (anIt.Value() > ilprm))
@@ -1719,7 +1743,7 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
 
 	if(bIsFirstInside) {
 	  // append points from ifprm to last point + boundary point
-	  TColStd_ListIteratorOfListOfInteger anIt(aListOfIndex);
+	  ListOfInteger::Iterator anIt(aListOfIndex);
 
 	  for(; anIt.More(); anIt.Next()) {
 	    if(anIt.Value() < ifprm)
@@ -1737,9 +1761,9 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
 	  Standard_Boolean bIsEndOfLine = Standard_True;
 
 	  if(aneighbour <= nblines) {
-	    const TColStd_ListOfInteger& aListOfNeighbourIndex = anArrayOfLines.Value(aneighbour);
+	    const ListOfInteger& aListOfNeighbourIndex = anArrayOfLines[aneighbour];
 
-	    if((anArrayOfLineType.Value(aneighbour) != 0) &&
+	    if((anArrayOfLineType[aneighbour] != 0) &&
 	       (aListOfNeighbourIndex.IsEmpty())) {
 	      bIsEndOfLine = Standard_False;
 	    }
@@ -1762,7 +1786,7 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
 	    const IntSurf_PntOn2S& aP = aSeqOfPntOn2S->Value(aListOfFLIndex.First());
 	    aLineOn2S->Add(aP);
 	  }
-	  TColStd_ListIteratorOfListOfInteger anIt(aListOfIndex);
+	  ListOfInteger::Iterator anIt(aListOfIndex);
 
 	  for(; anIt.More(); anIt.Next()) {
 	    if(anIt.Value() > ilprm)
@@ -1796,12 +1820,12 @@ Standard_Boolean DecompositionOfWLine(const Handle(IntPatch_WLine)& theWLine,
     //
     if ((ilprm-ifprm)==1) {
       for(i = 1; i <= nblines; i++) {
-	aLineType=anArrayOfLineType.Value(i);
+	aLineType=anArrayOfLineType[i];
 	if(aLineType) {
 	  continue;
 	}
 	//
-	const TColStd_ListOfInteger& aListOfIndex = anArrayOfLines.Value(i);
+	const ListOfInteger& aListOfIndex = anArrayOfLines[i];
 	aNbPoints=aListOfIndex.Extent();
 	if(aNbPoints==1) {
 	  aIndex=aListOfIndex.First();

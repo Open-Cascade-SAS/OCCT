@@ -1,5 +1,4 @@
-// Copyright (c) 1995-1999 Matra Datavision
-// Copyright (c) 1999-2012 OPEN CASCADE SAS
+// Copyright (c) 2013-2013 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -17,20 +16,11 @@
 // and conditions governing the rights and limitations under the License.
 
 
-inline Extrema_POnSurf::Extrema_POnSurf () {}
+#ifndef IntSurf_Allocator_HeaderFile
+#define IntSurf_Allocator_HeaderFile
 
-inline Extrema_POnSurf::Extrema_POnSurf (const Standard_Real U,
-                                         const Standard_Real V,
-                                         const gp_Pnt& P) :
-    myU (U), myV (V), myP (P)
-{
-}
+#include <NCollection_BaseAllocator.hxx>
 
-inline void Extrema_POnSurf::Parameter ( Standard_Real& U, Standard_Real& V) const
-{
-  U = myU;
-  V = myV;
-}
+typedef Handle_NCollection_BaseAllocator IntSurf_Allocator;
 
-
-inline const gp_Pnt& Extrema_POnSurf::Value () const { return myP; }
+#endif

@@ -18,20 +18,17 @@
 
 
 
-#ifndef DEB
-#define No_Standard_RangeError
-#define No_Standard_OutOfRange
-#endif
+#include <NCollection_IncAllocator.hxx>
+#include <NCollection_LocalArray.hxx>
+
 
 // modified by NIZHNY-MKK  Thu Nov  2 15:07:26 2000.BEGIN
-static Standard_Boolean TestPassedSolutionWithNegativeState(const TColStd_SequenceOfInteger& etat,
+static Standard_Boolean TestPassedSolutionWithNegativeState(const IntWalk_VectorOfWalkingData& wd,
 							    const TColStd_SequenceOfReal& Umult,
 							    const TColStd_SequenceOfReal& Vmult,
-							    const TColStd_SequenceOfReal& ustart,
-							    const TColStd_SequenceOfReal& vstart,
 							    const Standard_Real& prevUp, 
 							    const Standard_Real& prevVp,
-							    const TColStd_SequenceOfInteger& nbMultiplicities,
+							    const IntWalk_VectorOfInteger& nbMultiplicities,
 							    const math_Vector& tolerance,
 							    TheIWFunction& sp,
 							    math_Vector& UV,
@@ -101,32 +98,33 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
   Standard_Integer nbPath = Pnts1.Length();
 
   // modified by NIZHNY-MKK  Fri Oct 27 12:32:34 2000.BEGIN
-  TColStd_SequenceOfInteger movementdirectioninfo;
-  for (I = 1; I <= nbPath; I++) {
-    movementdirectioninfo.Append(0);
+  NCollection_LocalArray<Standard_Integer> movementdirectioninfoarr (nbPath + 1);
+  Standard_Integer* movementdirectioninfo = movementdirectioninfoarr;
+  for (I = 0; I <= nbPath; I++) {
+    movementdirectioninfo[I] = 0;
   }
   // modified by NIZHNY-MKK  Fri Oct 27 12:32:38 2000.END
 
   for (I = 1; I <= nbPath; I++) {
     //start point of the progression
-    //     if (etat1(I) > 11) {                
+    //     if (wd1[I].etat > 11) {                
     // modified by NIZHNY-MKK  Fri Oct 27 12:33:37 2000.BEGIN
-    if ((etat1(I) > 11) || ((etat1(I) < -11) && (movementdirectioninfo(I)!=0))) {
+    if ((wd1[I].etat > 11) || ((wd1[I].etat < -11) && (movementdirectioninfo[I]!=0))) {
     // modified by NIZHNY-MKK  Fri Oct 27 12:33:43 2000.END
       PathPnt = Pnts1.Value(I);     
-      CurrentLine = new IntWalk_TheIWLine ();
+      CurrentLine = new IntWalk_TheIWLine (new NCollection_IncAllocator());
       CurrentLine->SetTangencyAtBegining(Standard_False);
       Tgtend = Standard_False;
       CurrentLine->AddStatusFirst(Standard_False, Standard_True, I, PathPnt);
-      UVap(1) = ustart1(I);
-      UVap(2) = vstart1(I);
+      UVap(1) = wd1[I].ustart;
+      UVap(2) = wd1[I].vstart;
       MakeWalkingPoint(11, UVap(1), UVap(2), Func, previousPoint);
       previousd3d = Func.Direction3d();
       previousd2d = Func.Direction2d();
       CurrentLine->AddPoint(previousPoint);
       // modified by NIZHNY-MKK  Fri Oct 27 12:34:32 2000.BEGIN
-      if(movementdirectioninfo(I) !=0) {
-	if(movementdirectioninfo(I) < 0) {
+      if(movementdirectioninfo[I] !=0) {
+	if(movementdirectioninfo[I] < 0) {
 	  StepSign = -1;
 	  CurrentLine->SetTangentVector(previousd3d.Reversed(),1);
 	} else {
@@ -147,8 +145,8 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
       // modified by NIZHNY-MKK  Fri Oct 27 12:34:37 2000.END
 
 //  Modified by Sergey KHROMOV - Tue Nov 20 10:41:45 2001 Begin
-      etat1(I) = - abs(etat1(I));
-      movementdirectioninfo(I) = (movementdirectioninfo(I)==0) ? StepSign : 0;
+      wd1[I].etat = - abs(wd1[I].etat);
+      movementdirectioninfo[I] = (movementdirectioninfo[I]==0) ? StepSign : 0;
 //  Modified by Sergey KHROMOV - Tue Nov 20 10:41:56 2001 End
       // first step of advancement
       Standard_Real d2dx = Abs(previousd2d.X()); 
@@ -227,7 +225,7 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
 		else {
 		  previousPoint.ParametersOnS1(prevUp, prevVp);
 		}
-		Arrive = TestPassedSolutionWithNegativeState(etat1, Umult, Vmult, ustart1, vstart1, prevUp, prevVp,
+		Arrive = TestPassedSolutionWithNegativeState(wd1, Umult, Vmult, prevUp, prevVp,
 							     nbMultiplicities, tolerance, Func, UVap, N);		
 		if(Arrive) {
 		  Cadre = Standard_False;
@@ -294,7 +292,7 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
               // point of stop given at input 
 	      PathPnt = Pnts1.Value(N);
 	      
-	      Standard_Integer etat1N=etat1(N);
+	      Standard_Integer etat1N=wd1[N].etat;
 	      // modified by NIZHNY-MKK  Thu Nov  2 15:09:51 2000.BEGIN
 	      // 	      if (etat1N < 11) { // passing point that is a stop  
 	      if (Abs(etat1N) < 11) { // passing point that is a stop    
@@ -317,10 +315,10 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
 	      AddPointInCurrentLine(N,PathPnt,CurrentLine);
 	      if ((etat1N != 1 && etat1N != 11)) {
 		// modified by NIZHNY-MKK  Fri Oct 27 12:43:05 2000.BEGIN
-		// 		etat1(N)= - etat1N;
-		etat1(N)= - Abs(etat1N);		
-		movementdirectioninfo(N) = (movementdirectioninfo(N)==0) ? StepSign : 0;
-		if(Arrive && movementdirectioninfo(N)!=0) {
+		// 		wd1[N].etat= - wd1[N].etat;
+		wd1[N].etat = - Abs(etat1N);		
+		movementdirectioninfo[N] = (movementdirectioninfo[N]==0) ? StepSign : 0;
+		if(Arrive && movementdirectioninfo[N]!=0) {
 		  IndexOfPathPointDoNotCheck = N;
 		}
 
@@ -367,23 +365,23 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
 	CurrentLine->SetTangencyAtEnd(Tgtend);
 	lines.Append(CurrentLine);
 	// modified by NIZHNY-MKK  Fri Oct 27 12:59:29 2000.BEGIN
-	movementdirectioninfo(I)=0;
-	if(etat1(I) > 0)
+	movementdirectioninfo[I]=0;
+	if(wd1[I].etat > 0)
 	// modified by NIZHNY-MKK  Fri Oct 27 12:59:42 2000.END
-	  etat1(I)=-etat1(I);
+	  wd1[I].etat=-wd1[I].etat;
 
 	//-- lbr le 5 juin 97 (Pb ds Contap)
 	for(Standard_Integer av=1; av<=nbPath; av++) { 
 	  // modified by NIZHNY-MKK  Fri Oct 27 13:00:22 2000.BEGIN
-	  // 	  if (etat1(av) > 11) {
-	  if ((etat1(av) > 11) || 
+	  // 	  if (wd1[av].etat > 11) {
+	  if ((wd1[av].etat > 11) || 
 	      ((av!=I) && 
 	       (av!=IndexOfPathPointDoNotCheck) && 
-	       (etat1(av) < -11)  && 
-	       (movementdirectioninfo(av)!=0))) {
+	       (wd1[av].etat < -11)  && 
+	       (movementdirectioninfo[av]!=0))) {
 	  // modified by NIZHNY-MKK  Fri Oct 27 13:00:26 2000.END
-	    Standard_Real Uav=ustart1(av);
-	    Standard_Real Vav=vstart1(av);
+	    Standard_Real Uav=wd1[av].ustart;
+	    Standard_Real Vav=wd1[av].vstart;
 	    Standard_Real Uavp,Vavp;
 	    const IntSurf_PntOn2S &avP=CurrentLine->Value(CurrentLine->NbPoints());
 	    if (!reversed) {
@@ -397,12 +395,12 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
 	    Uav*=0.001; Vav*=0.001;
 	    if(Abs(Uav)<tolerance(1) && Abs(Vav)<tolerance(2)) { 
 	      // modified by NIZHNY-MKK  Fri Oct 27 13:01:38 2000.BEGIN
-	      // 	      etat1(av)=-etat1(av);
-	      if(etat1(av) < 0) {
-		movementdirectioninfo(av) = 0;
+	      // 	      wd1[av].etat=-wd1[av].etat;
+	      if(wd1[av].etat < 0) {
+		movementdirectioninfo[av] = 0;
 	      } else {
-		etat1(av)=-etat1(av);
-		movementdirectioninfo(av) = StepSign;
+		wd1[av].etat=-wd1[av].etat;
+		movementdirectioninfo[av] = StepSign;
 	      }
 	      // modified by NIZHNY-MKK  Fri Oct 27 13:01:42 2000.END
 	      CurrentLine->AddStatusLast(Standard_True, av, Pnts1.Value(av));
@@ -416,19 +414,19 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
 	    else {
 	      avPP.ParametersOnS1(Uavp,Vavp);
 	    }
-	    Uav=ustart1(av);
-	    Vav=vstart1(av);
+	    Uav=wd1[av].ustart;
+	    Vav=wd1[av].vstart;
 	    Uav-=Uavp;
 	    Vav-=Vavp;
 	    Uav*=0.001; Vav*=0.001;
 	    if(Abs(Uav)<tolerance(1) && Abs(Vav)<tolerance(2)) { 
 	      // modified by NIZHNY-MKK  Fri Oct 27 13:02:49 2000.BEGIN
-	      // 	      etat1(av)=-etat1(av);
-	      if(etat1(av) < 0) {
-		movementdirectioninfo(av) = 0;
+	      // 	      wd1[av].etat=-wd1[av].etat;
+	      if(wd1[av].etat < 0) {
+		movementdirectioninfo[av] = 0;
 	      } else {
-		etat1(av)=-etat1(av);
-		movementdirectioninfo(av) = -StepSign;
+		wd1[av].etat=-wd1[av].etat;
+		movementdirectioninfo[av] = -StepSign;
 	      }
 	      // modified by NIZHNY-MKK  Fri Oct 27 13:02:52 2000.END
 	      //-- cout<<"\n Debug ? lbr ds IntWalk_IWalking_3.gxx"<<endl;
@@ -443,14 +441,12 @@ void IntWalk_IWalking::ComputeOpenLine(const TColStd_SequenceOfReal& Umult,
 }
 
 // modified by NIZHNY-MKK  Thu Nov  2 15:07:53 2000.BEGIN
-static Standard_Boolean TestPassedSolutionWithNegativeState(const TColStd_SequenceOfInteger& etat,
+static Standard_Boolean TestPassedSolutionWithNegativeState(const IntWalk_VectorOfWalkingData& wd,
 							    const TColStd_SequenceOfReal& Umult,
 							    const TColStd_SequenceOfReal& Vmult,
-							    const TColStd_SequenceOfReal& ustart,
-							    const TColStd_SequenceOfReal& vstart,
 							    const Standard_Real& prevUp,
 							    const Standard_Real& prevVp,
-							    const TColStd_SequenceOfInteger& nbMultiplicities,
+							    const IntWalk_VectorOfInteger& nbMultiplicities,
 							    const math_Vector& tolerance,
 							    TheIWFunction& sp,
 							    math_Vector& UV,
@@ -460,13 +456,13 @@ static Standard_Boolean TestPassedSolutionWithNegativeState(const TColStd_Sequen
   Standard_Real tolu = tolerance(1);
   Standard_Real tolv = tolerance(2);
   Standard_Integer i, j, k, N;
-  for (i = 1; i <= etat.Length(); i++) {
-    if (etat(i) < -11) {
+  for (i = 1; i < (int)wd.size(); i++) {
+    if (wd[i].etat < -11) {
 
  // debug jag see with isg
 
-      Utest = ustart(i);
-      Vtest = vstart(i);
+      Utest = wd[i].ustart;
+      Vtest = wd[i].vstart;
       Dup = prevUp - Utest;
       Dvp = prevVp - Vtest;
       if (Abs(Dup) >= tolu || Abs(Dvp) >= tolv) {
@@ -480,12 +476,12 @@ static Standard_Boolean TestPassedSolutionWithNegativeState(const TColStd_Sequen
 	  UV(1) = Utest;
 	  UV(2) = Vtest;
 	}
-	else if (nbMultiplicities(i) > 0) {
+	else if (nbMultiplicities[i] > 0) {
 	  N=0;
 	  for (k = 1; k < i; k++) { 
-	    N+=nbMultiplicities(k);
+	    N+=nbMultiplicities[k];
 	  }
-	  for (j = N + 1; j <= N + nbMultiplicities(i); j++) {
+	  for (j = N + 1; j <= N + nbMultiplicities[i]; j++) {
 	    if (((prevUp-Umult(j))*(UV(1)-Umult(j)) +
 		 (prevVp-Vmult(j))*(UV(2)-Vmult(j)) < 0) ||
 		(Abs(UV(1)-Umult(j)) < tolu &&
