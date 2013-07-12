@@ -55,7 +55,7 @@ void RWHeaderSection_GeneralModule::FillSharedCase(const Standard_Integer CN, co
 void RWHeaderSection_GeneralModule::CheckCase(const Standard_Integer CN,
                                               const Handle(Standard_Transient)& ent,
                                               const Interface_ShareTool& shares,
-                                              Handle(Interface_Check)& ach) const
+                                              Handle(Interface_Check)& /*ach*/) const
 {
 }
 

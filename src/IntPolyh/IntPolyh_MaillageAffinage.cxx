@@ -208,7 +208,6 @@ void IntPolyh_MaillageAffinage::FillArrayOfPnt
   Standard_Real u0, u1, v0, v1, aU, aV, dU, dV;
   //
   const Handle(Adaptor3d_HSurface&) MaSurface=(SurfID==1)? MaSurface1 : MaSurface2;
-  IntPolyh_ArrayOfPoints &TPoints=(SurfID==1)? TPoints1:TPoints2;
   NbSamplesU=(SurfID==1)? NbSamplesU1:NbSamplesU2;
   NbSamplesV=(SurfID==1)? NbSamplesV1:NbSamplesV2;
   //
@@ -260,7 +259,6 @@ void IntPolyh_MaillageAffinage::FillArrayOfPnt
   Standard_Integer NbSamplesU, NbSamplesV, i, aNbSamplesU1, aNbSamplesV1; 
   Standard_Real u0, u1, v0, v1, aU, aV, dU, dV;
   const Handle(Adaptor3d_HSurface)& MaSurface=(SurfID==1)? MaSurface1 : MaSurface2;
-  IntPolyh_ArrayOfPoints &TPoints=(SurfID==1)? TPoints1:TPoints2;
   NbSamplesU=(SurfID==1)? NbSamplesU1:NbSamplesU2;
   NbSamplesV=(SurfID==1)? NbSamplesV1:NbSamplesV2;
 

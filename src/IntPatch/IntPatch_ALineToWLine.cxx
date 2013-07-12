@@ -893,7 +893,7 @@ gp_Pnt DefineDU(const Handle(IntPatch_ALine)& aline,
   gp_Pnt P1 = aline->Value(U), P2, P3;
   gp_Vec V13, V12, V23;
   Standard_Real dU = DU/2.0, curvDef, angDef, m1, m2, m3;
-  do{ //According to class TangentialDeflection from GCPnts
+  for(;;) { //According to class TangentialDeflection from GCPnts
     P2=aline->Value(U+dU);  P3=aline->Value(U+DU);
     V13 = P3.XYZ().Subtracted(P1.XYZ());  m1 = V13.Magnitude();
     V12 = P2.XYZ().Subtracted(P1.XYZ());  m2 = V12.Magnitude();
@@ -903,7 +903,7 @@ gp_Pnt DefineDU(const Handle(IntPatch_ALine)& aline,
     angDef = Abs(V13.Angle(V23));
     if(curvDef < CurvDef && angDef < AngDef) break;
     DU = dU;  dU /= 2.0;  
-  }while(1);
+  }
   return P3;
 }
 //=======================================================================

@@ -326,7 +326,7 @@ void FSD_File::ReadString(TCollection_AsciiString& buffer)
 
 void FSD_File::ReadWord(TCollection_AsciiString& buffer)
 {
-  char c;
+  char c = '\0';
   char b[8193],*tmpb;
   Standard_Boolean IsEnd = Standard_False;
   Standard_Integer i;
@@ -1368,5 +1368,4 @@ Storage_Position FSD_File::Tell()
   }
   default: return -1;
   }
-  return -1;
 }

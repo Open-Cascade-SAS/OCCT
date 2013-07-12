@@ -78,7 +78,7 @@ StepData_Simple::StepData_Simple (const Handle(StepData_ESDescr)& descr)
       {  return thefields;  }
 
 
-void StepData_Simple::Check(Handle(Interface_Check)& ach) const
+void StepData_Simple::Check(Handle(Interface_Check)& /*ach*/) const
 {
 }  // qq chose ? cf la description
 

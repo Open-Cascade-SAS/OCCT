@@ -45,10 +45,7 @@ void RWStepAP214_RWAutoDesignSecurityClassificationAssignment::ReadStep
 	// --- inherited field : assignedSecurityClassification ---
 
 	Handle(StepBasic_SecurityClassification) aAssignedSecurityClassification;
-#ifdef DEB
-	Standard_Boolean stat1 = 
-#endif
-	  data->ReadEntity(num, 1,"assigned_security_classification", ach, STANDARD_TYPE(StepBasic_SecurityClassification), aAssignedSecurityClassification);
+    data->ReadEntity(num, 1,"assigned_security_classification", ach, STANDARD_TYPE(StepBasic_SecurityClassification), aAssignedSecurityClassification);
 
 	// --- own field : items ---
 

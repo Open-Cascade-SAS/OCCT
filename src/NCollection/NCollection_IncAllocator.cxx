@@ -44,6 +44,8 @@ namespace
 
   #define IMEM_FREE(p_bl) (size_t(p_bl->p_end_block - p_bl->p_free_space))
 
+  // auxiliary dummy function used to get a place where break point can be set
+  inline void place_for_breakpoint() {}
 };
 
 #define MaxLookup 16
@@ -82,6 +84,8 @@ Standard_EXPORT void IncAllocator_SetDebugFlag(const Standard_Boolean theDebug)
   IS_DEBUG = theDebug;
 }
 
+#ifdef DEB
+
 //=======================================================================
 /**
  * Static value of the current allocation ID. It provides unique
@@ -102,12 +106,9 @@ static void Debug_Create(Standard_Address theAlloc)
   aMutex.Lock();
   StorageIDMap().Bind(theAlloc, ++CurrentID);
   StorageIDSet().Add(CurrentID);
-  aMutex.Unlock();
   if (CurrentID == CATCH_ID)
-  {
-    // Place for break point for creation of investigated allocator
-    int a = 1;
-  }
+    place_for_breakpoint();
+  aMutex.Unlock();
 }
 
 //=======================================================================
@@ -127,6 +128,8 @@ static void Debug_Destroy(Standard_Address theAlloc)
   }
   aMutex.Unlock();
 }
+
+#endif /* DEB */
 
 //=======================================================================
 //function : IncAllocator_PrintAlive

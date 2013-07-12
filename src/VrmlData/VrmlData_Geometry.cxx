@@ -568,7 +568,7 @@ VrmlData_ErrorStatus VrmlData_TextureCoordinate::Read
           aStatus = VrmlData_VrmlFormatError;
         else {
           theBuffer.LinePtr++;
-          while (~0) {
+          for(;;) {
             gp_XY anXY;
             if (!OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
               break;
@@ -657,7 +657,7 @@ VrmlData_ErrorStatus VrmlData_ArrayVec3d::ReadArray
         aStatus = VrmlData_VrmlFormatError;
       else {
         theBuffer.LinePtr++;
-        while (~0) {
+        for(;;) {
           gp_XYZ anXYZ;
           if (!OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
             break;

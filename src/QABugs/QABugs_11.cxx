@@ -2694,8 +2694,7 @@ static Standard_Integer OCC7141 (Draw_Interpretor& di, Standard_Integer argc, co
   try {
     OCC_CATCH_SIGNALS
     if( writer.Transfer(document, mode)) {
-      IFSelect_ReturnStatus stat =
-	writer.Write(aFilePath.ToCString());
+    	writer.Write(aFilePath.ToCString());
     }
   }
   catch(OSD_Exception_STACK_OVERFLOW) {

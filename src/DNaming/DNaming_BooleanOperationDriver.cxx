@@ -351,7 +351,6 @@ Standard_Boolean DNaming_BooleanOperationDriver::CheckAndLoad
     if(!aCheck.IsValid(theMkOpe.Shape())) 
       aResIsValid = FixSameParameter(theMkOpe.Shape(), aCheck);
     if (aResIsValid) {
-      const TDF_Label& aResultLabel = RESPOSITION(theFunction);
       if(theFunction->GetDriverGUID() == FUSE_GUID) {
 	LoadNamingDS(RESPOSITION(theFunction), theMkOpe);
       }

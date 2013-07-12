@@ -1020,7 +1020,7 @@ BOOL EHDC :: _DrawToEx ( PPOINT p ) {
  myIDDA = min( k, myIDDA );
  HPEN hpo = SelectPen(  myHDC, GetStockObject ( NULL_PEN )  );
 
- while ( TRUE ) {
+ for(;;) {
  
   if ( myPRlen == 0 ) {
  
@@ -1090,7 +1090,7 @@ void EHDC :: _LineTo ( PPOINT p ) {
  ddap.pp = myDDA1;
  LineDDA (  myStart.x, myStart.y, p -> x, p -> y, &___auxDDAF, ( LPARAM )&ddap  );
 
- while ( TRUE ) {
+ for(;;) {
 
   if ( myPRlen == 0 ) {
  

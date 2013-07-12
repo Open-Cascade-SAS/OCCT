@@ -182,7 +182,7 @@ static
   myShapesToAvoid.Clear();
   //
   iCnt=0;
-  while (1) {
+  for(;;) {
     ++iCnt;
     bFound=Standard_False;
     //

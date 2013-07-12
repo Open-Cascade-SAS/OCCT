@@ -179,12 +179,6 @@ static void Sample()
                                         //Presentation of the attribute is erased
                                         //from viewer and removed from AIS_InteractiveContext
 
-  //Checking if attribute is displayed in viewer 
-
-  if( ShapeLabel.FindAttribute(TPrsStd_AISPresentation::GetID(), PRS) ) 
-  Standard_Boolean isDisplayed = PRS->IsDisplayed();
-
-  
   Handle(TPrsStd_AISPresentation) P;
   if( ShapeLabel.FindAttribute(TPrsStd_AISPresentation::GetID(), P) ) {
 

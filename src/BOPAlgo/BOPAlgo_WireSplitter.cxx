@@ -198,7 +198,7 @@
     //
     aMVP.Add(aV);
     //
-    while(1) {
+    for(;;) {
       aNbVP=aMVP.Extent();
       for (k=1; k<=aNbVP; ++k) {
         const TopoDS_Shape& aVP=aMVP(k);

@@ -115,10 +115,6 @@ static void UpdateCurves(BRep_ListOfCurveRepresentation& lcr,
     GC = Handle(BRep_GCurve)::DownCast(itcr.Value());
     if (!GC.IsNull()) {
       if (GC->IsCurve3D()) {
-#ifdef DEB
-        const Handle(Geom_Curve)& Crv =
-#endif
-                                      GC->Curve3D();
 //      if (!C.IsNull()) { //xpu031198, edge degeneree
 
         // xpu151298 : parameters can be setted for null curves
@@ -185,10 +181,6 @@ static void UpdateCurves(BRep_ListOfCurveRepresentation& lcr,
     GC = Handle(BRep_GCurve)::DownCast(itcr.Value());
     if (!GC.IsNull()) {
       if (GC->IsCurve3D()) {
-#ifdef DEB
-        const Handle(Geom_Curve)& Crv =
-#endif
-                                      GC->Curve3D();
 //      if (!C.IsNull()) { //xpu031198, edge degeneree
 
         // xpu151298 : parameters can be setted for null curves

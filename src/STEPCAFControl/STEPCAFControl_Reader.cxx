@@ -2085,7 +2085,6 @@ void STEPCAFControl_Reader::ExpandSubShapes(const Handle(XCAFDoc_ShapeTool)& Sha
                                             const XCAFDoc_DataMapOfShapeLabel& ShapeLabelMap,
                                             const STEPCAFControl_DataMapOfShapePD& ShapePDMap) const
 {
-  const Handle(Interface_InterfaceModel)& Model = Reader().WS()->Model();
   const Handle(Transfer_TransientProcess)& TP = Reader().WS()->TransferReader()->TransientProcess();
   NCollection_DataMap<TopoDS_Shape, Handle(TCollection_HAsciiString)> ShapeNameMap;
   TColStd_MapOfTransient aRepItems;

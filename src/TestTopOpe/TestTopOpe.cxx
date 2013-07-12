@@ -49,7 +49,7 @@ void  TestTopOpe::AllCommands(Draw_Interpretor& theCommands)
   TestTopOpe::HDSCommands(theCommands);
   TestTopOpe::MesureCommands(theCommands);
   TestTopOpe::CORCommands(theCommands);
-  TestTopOpe::DSACommands(theCommands);
+  //TestTopOpe::DSACommands(theCommands);
   TestTopOpe::OtherCommands(theCommands);
   TestTopOpeTools::AllCommands(theCommands);
   TestTopOpeDraw::AllCommands(theCommands);

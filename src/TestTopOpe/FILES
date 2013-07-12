@@ -12,6 +12,5 @@ TestTopOpe_MesureCommands.cxx
 TestTopOpe_HDSDisplayer.hxx
 TestTopOpe_HDSDisplayer.cxx
 TestTopOpe_HDSCommands.cxx
-TestTopOpe_DSACommands.cxx
 TestTopOpe_CORCommands.cxx
 TestTopOpe_OtherCommands.cxx

@@ -149,16 +149,10 @@
 static void DEBVerticesControl (const TopTools_IndexedMapOfShape& NewEdges,
 				      Handle(BRepAlgo_AsDes)      AsDes)
 {
-  Standard_Integer NVP = 0;
-  Standard_Integer NVM = 0;
-  Standard_Integer NVN = 0;
-
   TopTools_ListOfShape               LVP;
-  //TopTools_MapIteratorOfMapOfShape   it;
   TopTools_ListIteratorOfListOfShape it1LE ;    
   TopTools_ListIteratorOfListOfShape it2LE ;
   
-  //for (it.Initialize(NewEdges) ; it.More(); it.Next()) {
   Standard_Integer i;
   for (i = 1; i <= NewEdges.Extent(); i++) {
     const TopoDS_Edge& NE = TopoDS::Edge(NewEdges(i));

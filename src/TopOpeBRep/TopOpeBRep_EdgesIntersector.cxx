@@ -371,15 +371,9 @@ Standard_Boolean EdgesIntersector_checkT1D(const TopoDS_Edge& E1,const TopoDS_Ed
 	TopoDS_Vertex vf,vl; TopExp::Vertices(myEdge1,vf,vl);
 	gp_Pnt ptf = BRep_Tool::Pnt(vf); Standard_Real df = pt2.Distance(ptf); 
 	gp_Pnt ptl = BRep_Tool::Pnt(vl);
-#ifdef DEB
-        Standard_Real dl =
-#endif
-                 pt2.Distance(ptl); 
+
 	Standard_Real tolf = BRep_Tool::Tolerance(vf);
-#ifdef DEB
-        Standard_Real toll =
-#endif
-                   BRep_Tool::Tolerance(vl);
+
 	Standard_Boolean onf = (df < tolf);
 	TopoDS_Vertex v1 = onf ? vf : vl;
 	TopTools_IndexedDataMapOfShapeListOfShape mapVE; TopExp::MapShapesAndAncestors(myFace1,TopAbs_VERTEX,TopAbs_EDGE,mapVE);
@@ -557,9 +551,7 @@ Standard_Boolean EdgesIntersector_checkT1D(const TopoDS_Edge& E1,const TopoDS_Ed
       Standard_Boolean isvertex11 = isvertex1 && !isvertex12;
 
       Standard_Boolean T1INT = (T1.Orientation(TopAbs_IN) == TopAbs_INTERNAL);
-#ifdef DEB
-      Standard_Boolean T1EXT = (T1.Orientation(TopAbs_IN) == TopAbs_EXTERNAL);
-#endif
+
       if (T1INT && isvertex2 && !isvertex1) {
 	const TopoDS_Vertex& V2 = P2D.Vertex(2);	
 	TopOpeBRepDS_Transition newT; Standard_Boolean computed = ::EdgesIntersector_checkT1D(myEdge1,myEdge2,V2,newT);

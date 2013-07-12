@@ -403,7 +403,8 @@ void OSD::SetSignal (const Standard_Boolean theFloatingSignal)
   SetConsoleCtrlHandler (&_osd_ctrl_break_handler, TRUE);
 
 #ifdef _MSC_VER
-  _se_translator_function pOldSeFunc = _set_se_translator (TranslateSE);
+//  _se_translator_function pOldSeFunc = 
+    _set_se_translator (TranslateSE);
 #endif
 
   fFltExceptions = theFloatingSignal;
@@ -533,7 +534,7 @@ LONG _osd_debug ( void ) {
 
  if ( !fDbgLoaded ) {
  
-  HKEY                hKey;
+  HKEY                hKey = NULL;
   HANDLE              hEvent = INVALID_HANDLE_VALUE;
   DWORD               dwKeyType;
   DWORD               dwValueLen;
@@ -620,12 +621,12 @@ LONG _osd_debug ( void ) {
 
 //void OSD::Handler(const OSD_Signals aSig,
 //                  const OSD_Signals aCode){}
-void OSD::Handler(const OSD_Signals theSignal,
-		  const Standard_Address theSigInfo,
-		  const Standard_Address theContext) {}
+void OSD::Handler(const OSD_Signals /*theSignal*/,
+		  const Standard_Address /*theSigInfo*/,
+		  const Standard_Address /*theContext*/) {}
 
-void OSD::SegvHandler(const OSD_Signals aSig,
-                      const Standard_Address code,
-                      const Standard_Address scp){}
+void OSD::SegvHandler(const OSD_Signals /*aSig*/,
+                      const Standard_Address /*code*/,
+                      const Standard_Address /*scp*/){}
 
 #endif // WNT

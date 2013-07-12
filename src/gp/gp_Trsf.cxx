@@ -610,7 +610,7 @@ void gp_Trsf::Power (const Standard_Integer N)
         if (Npower < 0) Npower = - Npower;
         Npower--;
         gp_XYZ Temploc = loc;
-        while (1) {
+        for(;;) {
           if (IsOdd(Npower))  loc.Add (Temploc);
           if (Npower == 1) break;
           Temploc.Add (Temploc);
@@ -623,7 +623,7 @@ void gp_Trsf::Power (const Standard_Integer N)
         Npower--;
         gp_XYZ Temploc = loc;
         Standard_Real Tempscale = scale;
-        while (1) {
+        for(;;) {
           if (IsOdd(Npower)) {
             loc.Add (Temploc.Multiplied(scale));
             scale = scale * Tempscale;
@@ -640,7 +640,7 @@ void gp_Trsf::Power (const Standard_Integer N)
         Npower--;
         gp_Mat Tempmatrix (matrix);
         if (loc.X() == 0.0 && loc.Y() == 0.0 && loc.Z() == 0.0) {
-          while (1) {
+          for(;;) {
             if (IsOdd(Npower)) matrix.Multiply (Tempmatrix);
             if (Npower == 1)   break;
             Tempmatrix.Multiply (Tempmatrix);
@@ -649,7 +649,7 @@ void gp_Trsf::Power (const Standard_Integer N)
         }
         else {
           gp_XYZ Temploc = loc;
-          while (1) {
+          for(;;) {
             if (IsOdd(Npower)) {
               loc.Add (Temploc.Multiplied (matrix));
               matrix.Multiply (Tempmatrix);
@@ -680,7 +680,7 @@ void gp_Trsf::Power (const Standard_Integer N)
         gp_XYZ Temploc = loc;
         Standard_Real Tempscale = scale;
         gp_Mat Tempmatrix (matrix);
-        while (1) {
+        for(;;) {
           if (IsOdd(Npower)) {
             loc.Add ((Temploc.Multiplied (matrix)).Multiplied (scale));
             scale = scale * Tempscale;

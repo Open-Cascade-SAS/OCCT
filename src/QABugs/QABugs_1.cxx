@@ -447,8 +447,6 @@ static Standard_Integer OCC74bug_get (Draw_Interpretor& di, Standard_Integer arg
     di << "ERROR : Usage : " << argv[0] << " shape; get selection mode" << "\n";
     return 1;
   }
-  
-  Standard_Boolean updateviewer = Standard_True, PutInCollector = Standard_True;
 
   ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
   

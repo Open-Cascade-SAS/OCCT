@@ -4835,7 +4835,7 @@ Standard_Real FindMaxSquareDistance (const Standard_Real aT1,
   aF2=MaxSquareDistance(aX2, 
 			aC3D, aC2D1, aC2D2, myHS1, myHS2, myFace1, myFace2, myContext);
   //
-  while(1) {
+  for(;;) {
     //
     if (fabs(aA-aB)<aEps) {
       aX=0.5*(aA+aB);

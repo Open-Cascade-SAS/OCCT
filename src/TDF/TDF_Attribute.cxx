@@ -312,7 +312,7 @@ void TDF_Attribute::RemoveBackup()
 //purpose  : Adds the referenced attributes or labels.
 //=======================================================================
 
-void TDF_Attribute::References(const Handle(TDF_DataSet)& aDataSet) const
+void TDF_Attribute::References(const Handle(TDF_DataSet)& /*aDataSet*/) const
 {}
 
 

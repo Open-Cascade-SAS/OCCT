@@ -477,7 +477,7 @@ static
   TopoDS_Iterator aItC;
   //
   aLC.Append (theC1);
-  while(1) {
+  for(;;) {
     aLC1.Clear();
     aIt.Initialize(aLC);
     for (; aIt.More(); aIt.Next()) {

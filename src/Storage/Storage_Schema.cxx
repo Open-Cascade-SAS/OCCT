@@ -585,7 +585,7 @@ static Standard_Integer             i;
     }
 
     if (result) {
-      Standard_Integer otype,oref;
+      Standard_Integer otype, oref = 0;
 
       errorCode = f.BeginReadRefSection();
 
@@ -1364,7 +1364,7 @@ Standard_Boolean Storage_Schema::CheckTypeMigration(
 	if(aFile.IsOpen() && aFile.IsReadable()) {
 	  TCollection_AsciiString aLine;
 	  Standard_Integer aNbReaded(0);
-	  while (1) {
+	  for (;;) {
 	    aFile.ReadLine(aLine, 80, aNbReaded);
 	    if(aFile.IsAtEnd() || !aNbReaded) {
 	      aFile.Close();

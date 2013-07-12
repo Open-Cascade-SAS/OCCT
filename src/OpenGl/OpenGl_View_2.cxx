@@ -1179,8 +1179,6 @@ void OpenGl_View::RenderStructs (const Handle(OpenGl_Workspace) &AWorkspace)
 
   glPushAttrib ( GL_DEPTH_BUFFER_BIT );
 
-  const OpenGl_AspectLine *aspect_line = AWorkspace->AspectLine( Standard_True );
-
   //TsmPushAttri(); /* save previous graphics context */
 
   if ( (AWorkspace->NamedStatus & OPENGL_NS_2NDPASSNEED) == 0 )

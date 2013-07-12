@@ -42,7 +42,8 @@ Standard_Boolean OSD::RealToCString(const Standard_Real aReal,
 
   // Suppress "e+00" and unsignificant 0's 
 
-  if ((p = strchr(aString,'e'))) {
+  p = strchr(aString,'e');
+  if (p) {
     if (!strcmp(p,"e+00"))
       *p = 0 ;
     for (q = p-1 ; *q == '0' ; q--) ;

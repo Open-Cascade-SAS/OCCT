@@ -1313,7 +1313,6 @@ void BRepOffset_Offset::Init(const TopoDS_Vertex&        Vertex,
 #endif
     Standard_Integer NbEdges = 1;
     for (it.Initialize(LEdge); it.More(); it.Next()) {
-      const TopoDS_Edge& CurE = TopoDS::Edge(it.Value());
       sprintf(name,"EOnSph_%d_%d",NbOFFSET,NbEdges++);
 #ifdef DRAW
       DBRep::Set(name, CurE);

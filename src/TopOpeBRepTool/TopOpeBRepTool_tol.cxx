@@ -111,10 +111,6 @@ Standard_EXPORT void FTOL_FaceTolerances
   Standard_Real tolef= tolef1;
   if (tolef2>tolef) tolef=tolef2;
  //jmb le 30 juillet 99. on ne multiplie pas la tolerance par la dimension de la piece
- // Standard_Real tolbox = tolef*dx;
-  Standard_Real tolbox = tolef;
-
-  Standard_Real tolmin = Precision::Confusion();
 
   Deflection=0.01;
   MaxUV=0.01;

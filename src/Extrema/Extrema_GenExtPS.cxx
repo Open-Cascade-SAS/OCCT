@@ -496,7 +496,6 @@ void Extrema_GenExtPS::GetGridPoints( const Adaptor3d_Surface& theSurf)
   {
     Handle(TColStd_HArray1OfReal) anArrKnots;
     Standard_Integer aDegree = 0;
-    GeomAbs_CurveType aType = theSurf.BasisCurve()->Curve().GetType();
     if(theSurf.BasisCurve()->Curve().GetType() == GeomAbs_BSplineCurve)
     {
       Handle(Geom_BSplineCurve) aBspl = theSurf.BasisCurve()->Curve().BSpline();
@@ -810,14 +809,10 @@ void Extrema_GenExtPS::FindSolution(const gp_Pnt& P,
 
   math_Vector errors(1,2);
   math_Vector root(1, 2);
-  Standard_Real eps = 1.e-9;
-  Standard_Integer nbsubsample = 11;
 
   Standard_Integer aNbMaxIter = 100;
 
   gp_Pnt PStart = theParams.Value();
-  Standard_Real DistStart = theParams.GetSqrDistance();
-  Standard_Real DistSol = DistStart;
   
   math_FunctionSetRoot S (myF,UV,Tol,UVinf,UVsup, aNbMaxIter);
   
@@ -962,7 +957,7 @@ void Extrema_GenExtPS::Perform(const gp_Pnt& P)
       Bnd_SphereUBTreeSelectorMin aSelector(mySphereArray, aSol);
       //aSelector.SetMaxDist( RealLast() );
       aSelector.DefineCheckPoint( P );
-      Standard_Integer aNbSel = mySphereUBTree->Select( aSelector );
+      mySphereUBTree->Select( aSelector );
       //TODO: check if no solution in binary tree
       Bnd_Sphere& aSph = aSelector.Sphere();
       Standard_Real aU = myUParams->Value(aSph.U());
@@ -979,13 +974,12 @@ void Extrema_GenExtPS::Perform(const gp_Pnt& P)
       Bnd_SphereUBTreeSelectorMax aSelector(mySphereArray, aSol);
       //aSelector.SetMaxDist( RealLast() );
       aSelector.DefineCheckPoint( P );
-      Standard_Integer aNbSel = mySphereUBTree->Select( aSelector );
+      mySphereUBTree->Select( aSelector );
       //TODO: check if no solution in binary tree
       Bnd_Sphere& aSph = aSelector.Sphere();
       Standard_Real aU = myUParams->Value(aSph.U());
       Standard_Real aV = myVParams->Value(aSph.V());
       Extrema_POnSurfParams aParams(aU, aV, myS->Value(aU, aV));
-
       aParams.SetSqrDistance(P.SquareDistance(aParams.Value()));
       aParams.SetIndices(aSph.U(), aSph.V());
 

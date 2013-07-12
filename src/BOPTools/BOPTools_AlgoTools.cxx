@@ -140,7 +140,7 @@ static
     aMAdd.Clear();
     aMAdd.Add(aF1);
     //
-    while(1) {
+    for(;;) {
       aMAdd1.Clear();
       //
       aNbAdd = aMAdd.Extent();
@@ -374,7 +374,7 @@ static
   const TopoDS_Shape& aF1=theLFIn.First();
   aMAdd.Add(aF1);
   //
-  while(1) {
+  for(;;) {
     aMAdd1.Clear();
     aNbAdd = aMAdd.Extent();
     for (i=1; i<=aNbAdd; ++i) {

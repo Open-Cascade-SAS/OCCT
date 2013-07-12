@@ -284,7 +284,7 @@ template <class Type>
     BOPCol_PMemBlock pBlock, pNext;
     //
     pBlock=myPBlock1;
-    while(1) {
+    for(;;) {
       pNext=pBlock->myNext;
       if(!pNext) {
         myPBlock=pBlock;
@@ -321,7 +321,7 @@ template <class Type>
     BOPCol_PMemBlock pBlock, pNext;
     //
     pBlock=myPBlock1;
-    while(1) {
+    for(;;) {
       pNext=pBlock->myNext;
       if(!pNext) {
         myPBlock=pBlock;

@@ -39,7 +39,7 @@ Standard_Boolean TDataStd_NoteBook::Find (const TDF_Label& current,
   Handle(TDataStd_NoteBook) NB;
   if (L.IsNull()) return Standard_False; 
 
-  while (1) {
+  for(;;) {
     if(L.FindAttribute(TDataStd_NoteBook::GetID(), NB)) break; 
     L = L.Father();
     if (L.IsNull()) break; 

@@ -333,7 +333,6 @@ Standard_Boolean QANewModTopOpe_Intersection::IsDeleted(const TopoDS_Shape& aS)
 //=======================================================================
 Standard_Boolean QANewModTopOpe_Intersection::HasDeleted() const
 {
-  Standard_Real aresult = Standard_False;
   TopExp_Explorer anExp;
 
   for(Standard_Integer argit = 0; argit < 2; argit++) {

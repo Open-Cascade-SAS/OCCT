@@ -59,7 +59,6 @@ void QANewBRepNaming_Limitation::Load(QANewModTopOpe_Limitation& MS) const {
   TopoDS_Shape ResSh = MS.Shape();
 
   const TopoDS_Shape& ObjSh = MS.Shape1();
-  const TopoDS_Shape& ToolSh = MS.Shape2();
   const TopAbs_ShapeEnum& ObjType = ShapeType(ObjSh);
 
   if (ResSh.IsNull()) {

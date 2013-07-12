@@ -287,45 +287,6 @@ Standard_Boolean WNT_Window :: DoMapping () const {
   return Standard_True;
 }
 
-static Standard_Boolean ConvertBitmap (HBITMAP       theHBitmap,
-                                       Image_PixMap& thePixMap)
-{
-  // Get informations about the bitmap
-  BITMAP aBitmap;
-  if (GetObject (theHBitmap, sizeof(BITMAP), (LPSTR )&aBitmap) == 0)
-  {
-    return Standard_False;
-  }
-
-  const Standard_Size aSizeRowBytes = Standard_Size(aBitmap.bmWidth) * 4;
-  if (!thePixMap.InitTrash (Image_PixMap::ImgBGR32, Standard_Size(aBitmap.bmWidth), Standard_Size(aBitmap.bmHeight), aSizeRowBytes))
-  {
-    return Standard_False;
-  }
-  thePixMap.SetTopDown (false);
-
-  // Setup image data
-  BITMAPINFOHEADER aBitmapInfo;
-  memset (&aBitmapInfo, 0, sizeof(BITMAPINFOHEADER));
-  aBitmapInfo.biSize        = sizeof(BITMAPINFOHEADER);
-  aBitmapInfo.biWidth       = aBitmap.bmWidth;
-  aBitmapInfo.biHeight      = aBitmap.bmHeight; // positive means bottom-up!
-  aBitmapInfo.biPlanes      = 1;
-  aBitmapInfo.biBitCount    = 32; // use 32bit for automatic word-alignment per row
-  aBitmapInfo.biCompression = BI_RGB;
-
-  // Copy the pixels
-  HDC aDC = GetDC (NULL);
-  Standard_Boolean isSuccess = GetDIBits (aDC, theHBitmap,
-                                          0,                           // first scan line to set
-                                          aBitmap.bmHeight,            // number of scan lines to copy
-                                          thePixMap.ChangeData(),      // array for bitmap bits
-                                          (LPBITMAPINFO )&aBitmapInfo, // bitmap data info
-                                          DIB_RGB_COLORS) != 0;
-  ReleaseDC (NULL, aDC);
-  return isSuccess;
-}
-
 //***//
 //******************************* Ratio **********************************//
 //***//

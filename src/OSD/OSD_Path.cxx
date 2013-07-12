@@ -1209,7 +1209,7 @@ void OSD_Path :: SystemName (
 }  // end OSD_Path :: SystemName
 
 Standard_Boolean OSD_Path :: IsValid (
-                              const TCollection_AsciiString& aDependentName,
+                              const TCollection_AsciiString& /*aDependentName*/,
                               const OSD_SysType aSysType
                              ) const {
 
@@ -1263,7 +1263,7 @@ Standard_Integer OSD_Path :: TrekLength () const {
 
   return retVal;
 
- while ( Standard_True ) {
+ for (;;) {
  
   if (  myTrek.Token (  TEXT( "|" ), i++  ).IsEmpty ()  )
 

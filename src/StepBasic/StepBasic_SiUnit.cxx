@@ -78,7 +78,7 @@ StepBasic_SiUnitName StepBasic_SiUnit::Name() const
 }
 
 
-void StepBasic_SiUnit::SetDimensions(const Handle(StepBasic_DimensionalExponents)& aDimensions)
+void StepBasic_SiUnit::SetDimensions(const Handle(StepBasic_DimensionalExponents)& /*aDimensions*/)
 {
   // WARNING : the field is redefined.
   // field set up forbidden.

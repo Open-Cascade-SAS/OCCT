@@ -235,7 +235,7 @@ void VrmlData_ShapeConvert::Convert (const Standard_Boolean theExtractFaces,
                 TopLoc_Location aL;
 
                 Standard_Boolean found = Standard_False;
-                for(i = 1; Standard_True; i++) {
+                for(i = 1; ; i++) {
                   
                   BRep_Tool::PolygonOnTriangulation(aEdge, aPT, aT, aL, i);
 

@@ -323,7 +323,7 @@ void IntTools_ComparatorCurve::GetCurveBase(const Handle(Geom_Curve)& aC3D,
     return;
   }
   //
-  while(1) {
+  for(;;) {
     iTrimmed=0;
     iOffset=0;
     aCT3D=Handle(Geom_TrimmedCurve)::DownCast(aC3DB);
@@ -795,7 +795,7 @@ void IntTools_DistCC::FindMaxLocal(const Standard_Real aT11,
     return;
   }
   //
-  while(1) {
+  for(;;) {
     if (fabs(aA-aB)<aEps) {
       aX=0.5*(aA+aB);
       aF=Distance(aX);

@@ -333,7 +333,6 @@ void BOPAlgo_ArgumentAnalyzer::TestSelfInterferences()
     Standard_Integer aNb[6] = {aVVs.Extent(), aVEs.Extent(), aEEs.Extent(), 
                                aVFs.Extent(), aEFs.Extent(), aFFs.Extent()};
     //
-    Standard_Integer ind = 0;
     for (Standard_Integer aTypeInt = 0; aTypeInt < 6; ++aTypeInt) {
       for (Standard_Integer i = 0; i < aNb[aTypeInt]; ++i) {
         BOPDS_Interf* aInt = (aTypeInt==0) ? (BOPDS_Interf*)(&aVVs(i)) : 

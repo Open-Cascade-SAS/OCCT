@@ -189,7 +189,8 @@ static Standard_Integer WhatKindOfLine(OSD_File& aFile,
   if (Debug)
     cout << "Key = '" << aToken1 << flush ;
 
-  if ((Pos = Line.FirstLocationNotInSet(WhiteSpace, Pos2+1, Line.Length()))) {
+  Pos = Line.FirstLocationNotInSet(WhiteSpace, Pos2+1, Line.Length());
+  if (Pos) {
     if (Line.Value(Pos) == '\\')
       switch(Line.Value(Pos+1)) {
       case '\\' :

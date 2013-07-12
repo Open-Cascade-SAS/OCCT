@@ -327,8 +327,6 @@ static void ToleranceFF(const TopoDS_Face& aF1,
     for (j=0; j<aNbC; ++j) {
       BOPDS_Curve& aNC=aVC.ChangeValue(j);
       const IntTools_Curve& aIC=aNC.Curve();
-      // DEBf
-      const Handle(Geom_Curve)& aC3D=aIC.Curve();
       // DEBt
       aNC.InitPaveBlock1();
       //
@@ -798,9 +796,6 @@ static void ToleranceFF(const TopoDS_Face& aF1,
     if (aSI.ShapeType()!=TopAbs_FACE) {
       continue;
     }
-    //
-    const TopoDS_Face& aF=(*(TopoDS_Face*)(&aSI.Shape()));
-    //
     if(!myDS->HasFaceInfo(i)) {
       continue;
     }

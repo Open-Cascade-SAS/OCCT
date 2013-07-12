@@ -329,7 +329,7 @@ Standard_Integer OSD_Disk :: DiskQuota () {
 
 }  // end OSD_Disk :: DiskQuota
 
-void OSD_Disk :: SetDiskQuota ( const Standard_Integer QuotaSize ) {
+void OSD_Disk :: SetDiskQuota ( const Standard_Integer /*QuotaSize*/ ) {
 
  SetLastError (  ( DWORD )STG_E_UNIMPLEMENTEDFUNCTION  );
 

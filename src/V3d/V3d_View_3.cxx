@@ -72,10 +72,7 @@ void V3d_View::Move(const Standard_Real Dx, const Standard_Real Dy, const Standa
   Zeye = Zrp*Zpn + Dx*XZ + Dy*YZ + Dz*ZZ ;
   Zrp = sqrt( Xeye*Xeye + Yeye*Yeye + Zeye*Zeye ) ;
   V3d_BadValue_Raise_if( Zrp <= 0. ,"V3d_View::Move:: Eye,At are Confused");
-#ifdef DEB
-  Standard_Real focale = 
-#endif
-    Focale();
+
   Prp.SetCoord(Xrp,Yrp,Zrp) ;
   MyViewMapping.SetProjectionReferencePoint(Prp) ;
   Xpn = Xeye / Zrp ; Ypn = Yeye / Zrp ; Zpn = Zeye / Zrp ;
@@ -84,24 +81,8 @@ void V3d_View::Move(const Standard_Real Dx, const Standard_Real Dy, const Standa
   MyView->SetViewOrientation(MyViewOrientation) ; 
   
   // Check ZClipping planes
-#ifdef IMP020300
   MyView->SetViewMapping(MyViewMapping) ; 
   SetZSize(0.);
-#else
-  Standard_Real Zmax,Xat,Yat,Zat ;
-  MyViewReferencePoint.Coord(Xat,Yat,Zat) ;
-  Xeye += Xat ; Yeye += Yat ; Zeye += Zat ;
-  Zmax = sqrt( Xeye*Xeye + Yeye*Yeye + Zeye*Zeye ) ;
-  if( Zmax > MyViewMapping.FrontPlaneDistance() &&
-	MyProjModel == V3d_TPM_SCREEN ) {
-    SetZSize(2.*Zmax+Zmax*Zmargin) ;
-  } else {
-    if( MyType == V3d_PERSPECTIVE ) {
-      SetFocale(focale) ;
-    }
-    MyView->SetViewMapping(MyViewMapping) ; 
-  }
-#endif
   ImmediateUpdate();
 }
 
@@ -124,10 +105,6 @@ void V3d_View::Move(const Standard_Real Length, const Standard_Boolean Start) {
   Zrp = sqrt( Xeye*Xeye + Yeye*Yeye + Zeye*Zeye ) ;
   V3d_BadValue_Raise_if( Zrp <= 0. ,"V3d_View::Move:: Eye,At are Confused");
   
-#ifdef DEB
-  Standard_Real focale = 
-#endif
-    Focale();
   Prp.SetCoord(Xrp,Yrp,Zrp) ;
   MyViewMapping.SetProjectionReferencePoint(Prp) ;
   Xpn = Xeye / Zrp ; Ypn = Yeye / Zrp ; Zpn = Zeye / Zrp ;

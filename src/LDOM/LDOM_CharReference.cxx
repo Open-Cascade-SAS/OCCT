@@ -54,7 +54,7 @@ char * LDOM_CharReference::Decode (char * theSrc, Standard_Integer& theLen)
 
   char * aSrcPtr = theSrc, * aDstPtr = theSrc;
   Standard_Integer anIncrCount = 0;
-  while (1) {
+  for(;;) {
     char * aPtr = strchr (aSrcPtr, '&');
     if (aPtr == NULL) {
       //        End of the loop
@@ -152,7 +152,7 @@ char * LDOM_CharReference::Encode (const char* theSrc, Standard_Integer& theLen,
   char       * aDest = (char *) theSrc;
   Standard_Integer aCount = 0;
   //    Analyse if there is a non-standard character in the string
-  while (1) {
+  for(;;) {
     const unsigned int iSrc =
       (const unsigned int) * (const unsigned char *) ptrSrc;
     if (iSrc == 0) {

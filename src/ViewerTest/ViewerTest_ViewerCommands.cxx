@@ -1806,7 +1806,6 @@ static LRESULT WINAPI AdvViewerWindowProc( HWND hwnd,
       if( !DragFirst )
       {
         HDC hdc = GetDC( hwnd );
-        HGDIOBJ anObj = SelectObject( hdc, GetStockObject( WHITE_PEN ) );
         SelectObject( hdc, GetStockObject( HOLLOW_BRUSH ) );
         SetROP2( hdc, R2_NOT );
         Rectangle( hdc, X_ButtonPress, Y_ButtonPress, X_Motion, Y_Motion );

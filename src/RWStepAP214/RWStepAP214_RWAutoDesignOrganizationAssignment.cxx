@@ -46,18 +46,12 @@ void RWStepAP214_RWAutoDesignOrganizationAssignment::ReadStep
 	// --- inherited field : assignedOrganization ---
 
 	Handle(StepBasic_Organization) aAssignedOrganization;
-#ifdef DEB
-	Standard_Boolean stat1 = 
-#endif
-	  data->ReadEntity(num, 1,"assigned_organization", ach, STANDARD_TYPE(StepBasic_Organization), aAssignedOrganization);
+    data->ReadEntity(num, 1,"assigned_organization", ach, STANDARD_TYPE(StepBasic_Organization), aAssignedOrganization);
 
 	// --- inherited field : role ---
 
 	Handle(StepBasic_OrganizationRole) aRole;
-#ifdef DEB
-	Standard_Boolean stat2 = 
-#endif
-	  data->ReadEntity(num, 2,"role", ach, STANDARD_TYPE(StepBasic_OrganizationRole), aRole);
+    data->ReadEntity(num, 2,"role", ach, STANDARD_TYPE(StepBasic_OrganizationRole), aRole);
 
 	// --- own field : items ---
 

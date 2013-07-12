@@ -485,7 +485,7 @@ static void Touched(const BRepOffset_Analyse&  Analyse,
 		    TopTools_MapOfShape& TouchedByCork)
 {
   // currently nothing is done !!
-  if ( Standard_True) {
+  /*if ( Standard_True) {
     return;
   }
   else {
@@ -497,7 +497,8 @@ static void Touched(const BRepOffset_Analyse&  Analyse,
       else if (StopFaces.Contains(L.Last())) 
 	TouchedByCork.Add(L.First());
     }
-  }
+  }*/
+  return;
 }
 
 //=======================================================================

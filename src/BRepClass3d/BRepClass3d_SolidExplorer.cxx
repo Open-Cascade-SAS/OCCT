@@ -410,7 +410,7 @@ Standard_Integer BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P,
   Standard_Integer NbPointsOK=0;
   Standard_Integer NbFacesInSolid=0;
 
-  do { 
+  for(;;) { 
     myFirstFace++; 
     faceexplorer.Init(myShape,TopAbs_FACE);
     // look for point on face starting from myFirstFace
@@ -583,8 +583,7 @@ Standard_Integer BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P,
     else { myParamOnEdge*=0.5; } 
     
     
-  } //-- do { ...  } 
-  while(1); 
+  } //-- for(;;) { ...  } 
   return 0;
 }
 

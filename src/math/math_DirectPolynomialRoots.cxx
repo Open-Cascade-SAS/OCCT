@@ -62,7 +62,7 @@ const Standard_Real ZERO = 1.0e-30;
 
     static Standard_Real Improve(const Standard_Integer N, Standard_Real *Poly, const Standard_Real IniSol) {
 
-        Standard_Real Val, Der, Delta;
+        Standard_Real Val = 0., Der, Delta;
         Standard_Real Sol = IniSol;
         Standard_Real IniVal = Value(N, Poly, IniSol);
         Standard_Integer Index;

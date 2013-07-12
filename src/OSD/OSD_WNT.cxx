@@ -911,7 +911,7 @@ BOOL MoveDirectory ( LPCTSTR oldDir, LPCTSTR newDir ) {
  LPTSTR              pathSrc,  pathDst;
  HANDLE              hFindFile;
  BOOL                fFind;
- BOOL                retVal;
+ BOOL                retVal = FALSE;
  DIR_RESPONSE        response;
  DWORD               level;
 
@@ -1043,16 +1043,14 @@ retry:
 
      if ( pFD -> dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) {
 
-      if (   !(  retVal = MoveDirectory ( pFullNameSrc, pFullNameDst )  )   ) break;
+       retVal = MoveDirectory ( pFullNameSrc, pFullNameDst );
+       if (!retVal) break;
    
      } else {
 retry_1:   
-      if (   !(  retVal = MoveFileEx (
-                           pFullNameSrc, pFullNameDst,
-                           MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED
-                          )
-              )
-      ) {
+      retVal = MoveFileEx (pFullNameSrc, pFullNameDst,
+                           MOVEFILE_REPLACE_EXISTING | MOVEFILE_COPY_ALLOWED);
+      if (! retVal) {
       
        if ( _response_dir_proc != NULL ) {
       
@@ -1142,7 +1140,7 @@ retry_2:
 /***/
 BOOL CopyDirectory ( LPCTSTR dirSrc, LPCTSTR dirDst ) {
 
- PWIN32_FIND_DATA    pFD;
+ PWIN32_FIND_DATA    pFD = NULL;
  LPTSTR              pName = NULL;
  LPTSTR              pFullNameSrc = NULL;
  LPTSTR              pFullNameDst = NULL;
@@ -1203,11 +1201,13 @@ BOOL CopyDirectory ( LPCTSTR dirSrc, LPCTSTR dirDst ) {
 
      if ( pFD -> dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) {
 
-      if (   !(  retVal = CopyDirectory ( pFullNameSrc, pFullNameDst )  )   ) break;
+       retVal = CopyDirectory ( pFullNameSrc, pFullNameDst );
+       if ( ! retVal ) break;
    
      } else {
 retry:   
-      if (   !(  retVal = CopyFile ( pFullNameSrc, pFullNameDst, FALSE )  )   ) {
+      retVal = CopyFile ( pFullNameSrc, pFullNameDst, FALSE );
+      if ( ! retVal ) {
       
        if ( _response_dir_proc != NULL ) {
       

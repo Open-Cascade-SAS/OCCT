@@ -98,10 +98,6 @@ static void Sample()
     realarray->SetValue(j, M_PI * j); 
   }
 
-  // Getting length of array
-
-  Standard_Integer length = realarray->Length();
-
   // Retrieving value by index
 
   Standard_Real value = realarray->Value(3);
@@ -346,7 +342,6 @@ static void Sample()
 
    Handle(TDataStd_Real) valOfdistance = constraint->GetValue();
 
-   Standard_Real distance = valOfdistance->Get();
   }
 
   // Setting PARALLEL constraint between NS1 and NS2

@@ -585,7 +585,7 @@ IntTools_EdgeEdge::IntTools_EdgeEdge()
   Standard_Integer step = 1, stepcheck = 1000, steplimit = 100000;
   Standard_Real value = (IP==1) ? DistanceFunction(0.5*(a+b)) : DerivativeFunction(0.5*(a+b));
   
-  while (1) {
+  for(;;) {
     x0=.5*(a+b);
 
     if (IP==1)

@@ -761,7 +761,6 @@ void BRepMesh_Delaun::RemovePivotTriangles( const Standard_Integer theEdgeInfo,
     GetTriangle( anElemId ).Edges( e[0], e[1], e[2],
                                    o[0], o[1], o[2] );
 
-    Standard_Boolean isFind = Standard_False;
     for ( Standard_Integer anIndex = 0; anIndex < 3; ++anIndex )
     {
       if ( e[anIndex] == anMainEdgeId && o[anIndex] == anIsForward )
@@ -1128,7 +1127,6 @@ void BRepMesh_Delaun::MeshLeftPolygonOf( const Standard_Integer theEdgeIndex,
         return;
 
       Standard_Integer aDeadEdgeId = Abs( aPolygon.Last() );
-      const BRepMesh_Edge& aDeadEdge = GetEdge( aDeadEdgeId );
 
       aDealLinks.Add( aDeadEdgeId );
 

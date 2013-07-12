@@ -99,7 +99,7 @@ getString (_Char *&                     thePtr,
     //    Skip whitespaces in the beginning of the string
     aPtr = anEndPtr;
     aLeftSpaces = 0;
-    while (1)
+    for (;;)
     {
       _Char aChar = * aPtr;
       if      (aChar == ' ')  aLeftSpaces++;

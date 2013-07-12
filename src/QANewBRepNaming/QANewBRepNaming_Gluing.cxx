@@ -89,8 +89,6 @@ void QANewBRepNaming_Gluing::Init(const TDF_Label& ResultLabel) {
 void QANewBRepNaming_Gluing::Load(QANewModTopOpe_Glue& theMkGluing) {
   TopoDS_Shape aResShape  = theMkGluing.Shape();
   const TopoDS_Shape& anObjShape = theMkGluing.Shape1();
-  const TopoDS_Shape& aToolShape = theMkGluing.Shape2();
-  const TopAbs_ShapeEnum& anObjectType = ShapeType(anObjShape);
 
   if (aResShape.IsNull()) {
 #ifdef MDTV_DEB

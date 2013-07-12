@@ -62,7 +62,6 @@ static Standard_Integer OCC332bug (Draw_Interpretor& di, Standard_Integer argc, 
 {
   // Used to Display Geometry or Topolgy
   char name[255];
-  char *pname = name;
   Standard_Boolean check = Standard_True;
 
   // Set default arguments
@@ -426,8 +425,6 @@ static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, con
 
   // Used to Display Geometry or Topolgy
   char name[255];
-  char *pname = name;
-  //bool check = true;
   Standard_Boolean check = Standard_True;
 
   // Set default arguments

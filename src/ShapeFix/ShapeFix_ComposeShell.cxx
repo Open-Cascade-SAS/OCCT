@@ -2004,7 +2004,7 @@ void ShapeFix_ComposeShell::CollectWires (ShapeFix_SequenceOfWireSegment &wires,
   Standard_Integer iumin, iumax, ivmin, ivmax;
   Standard_Real dsu=0., dsv=0.;
   Standard_Boolean canBeClosed = Standard_False;
-  while ( 1 ) {
+  for(;;) {
     Standard_Integer index = 0;
     Standard_Boolean misoriented = Standard_True, samepatch = Standard_False;
     Standard_Boolean reverse = Standard_False, connected = Standard_False;
@@ -2731,7 +2731,7 @@ void ShapeFix_ComposeShell::DispatchWires (TopTools_SequenceOfShape &faces,
   // Collect wires in packets lying on same surface and dispatch them
   TColStd_Array1OfBoolean used ( 1, nb );
   used.Init ( Standard_False );
-  while ( 1 ) {
+  for(;;) {
     TopTools_SequenceOfShape loops;
 
     Handle(Geom_Surface) Surf;

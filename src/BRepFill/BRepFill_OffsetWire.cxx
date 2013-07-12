@@ -533,9 +533,8 @@ void BRepFill_OffsetWire::Perform (const Standard_Real Offset,
 	Handle(Geom_Curve) G3d = BRep_Tool::Curve(TopoDS::Edge(anE),f,l);
 	GeomAdaptor_Curve  AC(G3d,f,l);
 
-	Standard_Boolean dummy = PerformCurve(Parameters, Points,
-					      AC, aDefl, f, l, Precision::Confusion(),
-					      2);
+    PerformCurve(Parameters, Points, AC, aDefl, f, 
+                     l, Precision::Confusion(), 2);
 
 	Standard_Integer NPnts = Points.Length();
 	if(NPnts > 2) {

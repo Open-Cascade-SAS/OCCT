@@ -153,8 +153,6 @@ static void TreatInfinitePlane(const gp_Pln        &aPlane,
 {
   // Get 3 coordinate axes of the plane.
   const gp_Dir        &aNorm        = aPlane.Axis().Direction();
-  const gp_Dir        &aXDir        = aPlane.XAxis().Direction();
-  const gp_Dir        &aYDir        = aPlane.YAxis().Direction();
   const Standard_Real  anAngularTol = RealEpsilon();
 
   // Get location of the plane as its barycenter

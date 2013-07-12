@@ -1735,10 +1735,6 @@ static void MajMap(const TopoDS_Shape& theB,
 
   for (exp.Init(theB,TopAbs_EDGE); exp.More(); exp.Next()) {
     if (!theMap.IsBound(exp.Current())) {
-#ifdef DEB
-      const TopoDS_Edge& e = 
-#endif
-      TopoDS::Edge(exp.Current());
       TopTools_ListOfShape thelist2;
       theMap.Bind(exp.Current(), thelist2);
       theMap(exp.Current()) = theP.Shapes(exp.Current());

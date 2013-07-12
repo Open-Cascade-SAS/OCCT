@@ -230,7 +230,6 @@
     i=aIt2.Value();
     //
     const BOPDS_ShapeInfo& aSI=myDS->ShapeInfo(i);
-    const TopoDS_Shape& aSi=aSI.Shape();
     const Bnd_Box& aBoxEx=aSI.Box();
     //
     aSelector.Clear();

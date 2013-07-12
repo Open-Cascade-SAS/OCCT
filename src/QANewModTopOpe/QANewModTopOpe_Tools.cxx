@@ -547,7 +547,7 @@ Standard_Boolean QANewModTopOpe_Tools::BoolOpe(const TopoDS_Shape& theFace1,
   const BOPDS_PDS& pDS = aDSFiller.PDS();
 
   Standard_Integer aNb = 0, aNbSps;
-  Standard_Integer i = 0, j = 0;
+  Standard_Integer i = 0;
   TopTools_IndexedMapOfShape aMapV;
 
   {

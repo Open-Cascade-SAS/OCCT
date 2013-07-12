@@ -94,7 +94,6 @@ Standard_Boolean FWOSDriver_Driver::HasReadPermission(const TCollection_Extended
     default:
       return Standard_False;
     }
-  return Standard_False;
 }
 
 //==============================================================================

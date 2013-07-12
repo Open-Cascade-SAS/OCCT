@@ -45,10 +45,7 @@ void RWStepAP214_RWAppliedApprovalAssignment::ReadStep
   // --- inherited field : assignedApproval ---
   
   Handle(StepBasic_Approval) aAssignedApproval;
-#ifdef DEB
-  Standard_Boolean stat1 = 
-#endif
-    data->ReadEntity(num, 1,"assigned_approval", ach, STANDARD_TYPE(StepBasic_Approval), aAssignedApproval);
+  data->ReadEntity(num, 1,"assigned_approval", ach, STANDARD_TYPE(StepBasic_Approval), aAssignedApproval);
 
   // --- own field : items ---
   

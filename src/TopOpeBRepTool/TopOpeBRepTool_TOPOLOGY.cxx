@@ -1047,14 +1047,7 @@ Standard_EXPORT Standard_Boolean FUN_tool_pcurveonF(const TopoDS_Face& fF,TopoDS
       
       Standard_Real tole = BRep_Tool::Tolerance(e);
       TopoDS_Vertex vf,vl; TopExp::Vertices(e,vf,vl);
-#ifdef DEB
-      Standard_Real parf  =
-#endif
-                  BRep_Tool::Parameter(vf,e);
-#ifdef DEB
-      Standard_Real parl  =
-#endif
-                  BRep_Tool::Parameter(vl,e);
+
       TopoDS_Edge newe = faultyE;
 //      TopoDS_Edge newe; FUN_ds_CopyEdge(e,newe); newe.Orientation(TopAbs_FORWARD);
 //      vf.Orientation(TopAbs_FORWARD);  BB.Add(newe,vf); FUN_ds_Parameter(newe,vf,parf); 

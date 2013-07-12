@@ -528,8 +528,6 @@ GeomFill_NSections::GeomFill_NSections(const TColGeom_SequenceOfCurve& NC,
     Handle(Geom_TrimmedCurve) curvTrim;
     Handle(Geom_BSplineCurve) curvBS, curvBS1;
     Handle(Geom_Curve) curv =  mySections(1);
-    Standard_Real first = curv->FirstParameter(),
-                   last = curv->LastParameter();
 
     for (j=jdeb; j<=jfin; j++) {
 

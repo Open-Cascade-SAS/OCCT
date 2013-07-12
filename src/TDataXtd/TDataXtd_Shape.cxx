@@ -42,7 +42,7 @@ Standard_Boolean TDataXtd_Shape::Find (const TDF_Label& current,
   TDF_Label L = current;
   Handle(TDataXtd_Shape) SA;
   if (L.IsNull()) return Standard_False; 
-  while (1) {
+  for(;;) {
     if(L.FindAttribute(TDataXtd_Shape::GetID(), SA))  break;
     L = L.Father();
     if (L.IsNull()) break; 

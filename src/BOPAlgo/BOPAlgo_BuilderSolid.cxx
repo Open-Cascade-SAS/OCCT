@@ -166,7 +166,7 @@ static
   myShapesToAvoid.Clear();
   //
   iCnt=0;
-  while (1) {
+  for(;;) {
     ++iCnt;
     bFound=Standard_False;
     //
@@ -177,9 +177,6 @@ static
       const TopoDS_Shape& aF=aIt.Value();
       if (!myShapesToAvoid.Contains(aF)) {
         BOPTools::MapShapesAndAncestors(aF, TopAbs_EDGE, TopAbs_FACE, aMEF);
-      }
-      else {
-        int a=0;
       }
     }
     aNbE=aMEF.Extent();

@@ -1379,7 +1379,7 @@ static
   }
   //
   const BOPCol_MapOfInteger& aMVIn1=aFI1.VerticesIn();
-  aIt.Initialize(aMVOn1);
+  aIt.Initialize(aMVIn1);
   for (; aIt.More(); aIt.Next()) {
     nV=aIt.Value();
     aMI.Add(nV);
@@ -1393,7 +1393,7 @@ static
   }
   //
   const BOPCol_MapOfInteger& aMVIn2=aFI2.VerticesIn();
-  aIt.Initialize(aMVOn1);
+  aIt.Initialize(aMVIn2);
   for (; aIt.More(); aIt.Next()) {
     nV=aIt.Value();
     aMI.Add(nV);

@@ -532,7 +532,6 @@ void BRepAlgo_Loop::Perform()
     }
   }
 #endif
-  
   //------------------------------------------------
   // Cut edges
   //------------------------------------------------
@@ -573,11 +572,11 @@ void BRepAlgo_Loop::Perform()
     TopTools_MapOfShape Done;
     for (Mapit.Initialize(MVE); Mapit.More();Mapit.Next()) {
       for (itl.Initialize(Mapit.Value()); itl.More(); itl.Next()) {
-	TopoDS_Edge& E = TopoDS::Edge(itl.Value());
-	if (Done.Add(E)) {
-	  sprintf(name,"EEC_%d_%d",NbLoops,NbEdges++);
-	  DBRep::Set(name,E);
-	}
+        TopoDS_Edge& E = TopoDS::Edge(itl.Value());
+        if (Done.Add(E)) {
+          sprintf(name,"EEC_%d_%d",NbLoops,NbEdges++);
+          DBRep::Set(name,E);
+        }
       }
     }
   }
@@ -633,14 +632,14 @@ void BRepAlgo_Loop::Perform()
       UsedEdges.Add(CE);
 
       if (!MVE.IsBound(CV) || MVE(CV).IsEmpty()) {
-	End = Standard_True;
+        End = Standard_True;
       }
       else {
-	End = !SelectEdge(myFace,CE,CV,NE,MVE(CV));
-	if (!End) {
-	  CE = NE;
-	  if (MVE(CV).IsEmpty()) MVE.UnBind(CV);
-	}	
+        End = !SelectEdge(myFace,CE,CV,NE,MVE(CV));
+        if (!End) {
+          CE = NE;
+          if (MVE(CV).IsEmpty()) MVE.UnBind(CV);
+        }
       }
     }
     //--------------------------------------------------
@@ -650,28 +649,28 @@ void BRepAlgo_Loop::Perform()
     TopExp_Explorer explo( NW, TopAbs_VERTEX );
     for (; explo.More(); explo.Next())
       {
-	const TopoDS_Vertex& aV = TopoDS::Vertex( explo.Current() );
-	Handle(BRep_TVertex)& TV = *((Handle(BRep_TVertex)*) &(aV).TShape());
-	TV->Tolerance( Tol );
-	TV->Modified( Standard_True );
+      const TopoDS_Vertex& aV = TopoDS::Vertex( explo.Current() );
+      Handle(BRep_TVertex)& TV = *((Handle(BRep_TVertex)*) &(aV).TShape());
+      TV->Tolerance( Tol );
+      TV->Modified( Standard_True );
       }
     for (explo.Init( NW, TopAbs_EDGE ); explo.More(); explo.Next())
       {
-	const TopoDS_Edge& aE = TopoDS::Edge( explo.Current() );
-	Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*) &(aE).TShape());
-	TE->Tolerance( Tol );
-	TE->Modified( Standard_True );
+      const TopoDS_Edge& aE = TopoDS::Edge( explo.Current() );
+      Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*) &(aE).TShape());
+      TE->Tolerance( Tol );
+      TE->Modified( Standard_True );
       }
 
     if (VF.IsSame(CV) && SamePnt2d(VF,EF,CE,myFace))
       myNewWires.Append (NW);
-    else {
 #ifdef DEB
+    else {
       cout <<"BRepAlgo_Loop: Open Wire"<<endl;
       if (AffichLoop)
-	cout << "OpenWire is : NW_"<<NbLoops<<"_"<<NbWires<<endl;
+        cout << "OpenWire is : NW_"<<NbLoops<<"_"<<NbWires<<endl;
+      }
 #endif
-    }
 #ifdef DRAW
     if (AffichLoop) {
       sprintf(name,"NW_%d_%d",NbLoops,NbWires++);	
@@ -694,7 +693,6 @@ void BRepAlgo_Loop::CutEdge (const TopoDS_Edge&          E,
 {
   TopoDS_Shape aLocalE  = E.Oriented(TopAbs_FORWARD);
   TopoDS_Edge WE = TopoDS::Edge(aLocalE);
-//  TopoDS_Edge WE = TopoDS::Edge(E.Oriented(TopAbs_FORWARD));
 
   Standard_Real                      U1,U2;
   TopoDS_Vertex                      V1,V2;

@@ -1965,7 +1965,7 @@ void TPrsStd_ConstraintTools::ComputePlacement
 //purpose  : 
 //=======================================================================
 void TPrsStd_ConstraintTools::ComputeOthers
-(const Handle(TDataXtd_Constraint)& aConst,
+(const Handle(TDataXtd_Constraint)& /*aConst*/,
  Handle(AIS_InteractiveObject)& anAIS) 
 {
 }

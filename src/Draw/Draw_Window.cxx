@@ -1725,7 +1725,6 @@ void DrawWindow::Clear()
   HDC hDC = GetDC(win);
   HDC aWorkDC = myUseBuffer ? GetMemDC(hDC) : hDC;
 
-  int debug = GetROP2(aWorkDC);
   SaveDC(aWorkDC);
   SelectObject(aWorkDC,GetStockObject(BLACK_PEN));
   Rectangle(aWorkDC, 0, 0, WidthWin(), HeightWin());
@@ -2048,7 +2047,7 @@ static DWORD WINAPI readStdinThreadFunc(VOID)
 {
   if (!Draw_IsConsoleSubsystem) return 1;
 
-  while (1) {
+  for(;;) {
     while (console_semaphore != WAIT_CONSOLE_COMMAND)
       Sleep(100);
     //if (gets(console_command))

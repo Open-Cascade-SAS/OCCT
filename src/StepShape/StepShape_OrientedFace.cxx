@@ -63,7 +63,7 @@ Standard_Boolean StepShape_OrientedFace::Orientation() const
 	return orientation;
 }
 
-void StepShape_OrientedFace::SetBounds(const Handle(StepShape_HArray1OfFaceBound)& aBounds)
+void StepShape_OrientedFace::SetBounds(const Handle(StepShape_HArray1OfFaceBound)& /*aBounds*/)
 {
 	// WARNING : the field is redefined.
 	// field set up forbidden.

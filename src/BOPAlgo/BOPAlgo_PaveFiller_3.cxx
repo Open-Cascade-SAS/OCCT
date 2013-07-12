@@ -523,7 +523,7 @@
     BOPCol_MapIteratorOfMapOfInteger aIt1;
     //
     aMIP.Add(i);
-    while(1) {
+    for(;;) {
       aNbIP=aMIP.Extent();
       aIt1.Initialize(aMIP);
       for(; aIt1.More(); aIt1.Next()) {

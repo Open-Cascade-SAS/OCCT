@@ -81,7 +81,7 @@ void gp_GTrsf::Power (const Standard_Integer N)
       gp_XYZ Temploc = loc;
 //      Standard_Real Tempscale = scale;
       gp_Mat Tempmatrix (matrix);
-      while (1) {
+      for(;;) {
 	if (IsOdd(Npower)) {
 	  loc.Add (Temploc.Multiplied (matrix));
 	  matrix.Multiply (Tempmatrix);

@@ -1305,7 +1305,7 @@ Standard_Integer FindMaxDistPC(const Standard_Real aT1A,
     return iErr;
   }
   //
-  while(1) {
+  for(;;) {
     if (aYP>aYL) {
       aA=aXL;
       aXL=aXP;

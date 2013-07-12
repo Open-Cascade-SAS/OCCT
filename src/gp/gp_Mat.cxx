@@ -259,7 +259,7 @@ void gp_Mat::Power (const Standard_Integer N)
     if (Npower < 0) Npower = - Npower;
     Npower--;
     gp_Mat Temp = *this;
-    while (1) {
+    for(;;) {
       if (IsOdd(Npower)) Multiply (Temp);
       if (Npower == 1)   break; 
       Temp.Multiply (Temp);

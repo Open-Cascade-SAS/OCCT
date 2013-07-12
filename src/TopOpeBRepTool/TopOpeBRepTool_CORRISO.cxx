@@ -156,10 +156,11 @@ Standard_Boolean TopOpeBRepTool_CORRISO::Init(const TopoDS_Shape& S)
     const TopoDS_Edge& E = TopoDS::Edge(ex.Current());
 #ifdef DEB
     Standard_Integer iE = STATIC_PURGE_mapeds.Add(E);
-#ifdef DRAW
-    if (trc) {TCollection_AsciiString aa = TCollection_AsciiString("e"); FUN_tool_draw(aa,E,iE);}
+    #ifdef DRAW
+        if (trc) {TCollection_AsciiString aa = TCollection_AsciiString("e"); FUN_tool_draw(aa,E,iE);}
+    #endif
 #endif
-#endif
+
     // myEds :
     myEds.Append(E);
 
@@ -176,12 +177,12 @@ Standard_Boolean TopOpeBRepTool_CORRISO::Init(const TopoDS_Shape& S)
     // myVEds :
     TopExp_Explorer exv(E, TopAbs_VERTEX);
     for (; exv.More(); exv.Next()){
-      const TopoDS_Vertex& v = TopoDS::Vertex(exv.Current());   
+      const TopoDS_Vertex& v = TopoDS::Vertex(exv.Current());
 #ifdef DEB
-      Standard_Integer iv = STATIC_PURGE_mapv.Add(v);
-#ifdef DRAW
-      if (trc) {TCollection_AsciiString bb = TCollection_AsciiString("v"); FUN_tool_draw(bb,v,iv);}
-#endif      
+      Standard_Integer iE = STATIC_PURGE_mapeds.Add(E);
+      #ifdef DRAW
+        if (trc) {TCollection_AsciiString bb = TCollection_AsciiString("v"); FUN_tool_draw(bb,v,iv);}
+      #endif
 #endif
       Standard_Boolean isb = myVEds.IsBound(v);
       if (isb) myVEds.ChangeFind(v).Append(E);
@@ -344,15 +345,8 @@ static Standard_Boolean FUN_isonOcE(const TopOpeBRepTool_CORRISO CO, const TopoD
     TopOpeBRepTool_C2DF OcE2d; Standard_Boolean isOb = CO.UVRep(OcE,OcE2d);
     if (!isOb) return Standard_False; // NYIRAISE
     
-#ifdef DEB
-    const TopoDS_Vertex& vce1 =
-#endif
-                      TopoDS::Vertex(vcE(1)); 
     Standard_Real parvce1 = TopOpeBRepTool_TOOL::ParE(1,cE);   gp_Pnt2d UVvce1 = TopOpeBRepTool_TOOL::UVF(parvce1,cE2d);
-#ifdef DEB
-    const TopoDS_Vertex& vOce2 =
-#endif
-                       TopoDS::Vertex(vOcE(2)); 
+
     Standard_Real parvOcE2 = TopOpeBRepTool_TOOL::ParE(2,OcE); gp_Pnt2d UVvOcE2 = TopOpeBRepTool_TOOL::UVF(parvOcE2,OcE2d);
     Standard_Real tol = Max(tttuvcE,tttuvOcE);
     isonOcE2d = (UVvce1.Distance(UVvOcE2) < tol);
@@ -419,20 +413,13 @@ Standard_Boolean TopOpeBRepTool_CORRISO::PurgeFyClosingE(const TopTools_ListOfSh
       TopOpeBRepTool_C2DF OcE2d; Standard_Boolean isOb = UVRep(OcE,OcE2d);
       if (!isOb) return Standard_False; // NYIRAISE
       
-#ifdef DEB
-      const TopoDS_Vertex& vce1 =
-#endif
-                         TopoDS::Vertex(vcE(1)); 
       Standard_Real parvce1 = TopOpeBRepTool_TOOL::ParE(1,cE);   gp_Pnt2d UVvce1 = TopOpeBRepTool_TOOL::UVF(parvce1,cE2d);
-#ifdef DEB
-      const TopoDS_Vertex& vOce2 =
-#endif
-                         TopoDS::Vertex(vOcE(2)); 
+
       Standard_Real parvOcE2 = TopOpeBRepTool_TOOL::ParE(2,OcE); gp_Pnt2d UVvOcE2 = TopOpeBRepTool_TOOL::UVF(parvOcE2,OcE2d);
       Standard_Real tol = Max(tttuvcE,tttuvOcE);
       isoncE = (UVvce1.Distance(UVvOcE2) < tol);
       if (isoncE && (nfy != 1)) {// cto009L2
-	return Standard_False; 
+	    return Standard_False; 
       }
     }
 
@@ -531,14 +518,9 @@ Standard_Boolean TopOpeBRepTool_CORRISO::PurgeFyClosingE(const TopTools_ListOfSh
       Standard_Real tttuvOcE = Max(Tol(1,tttolOcE),Tol(2,tttolOcE));
       TopOpeBRepTool_C2DF OcE2d; Standard_Boolean isOb = UVRep(OcE,OcE2d);
       if (!isOb) return Standard_False; // NYIRAISE
-#ifdef DEB 
-      const TopoDS_Vertex& vce1 = TopoDS::Vertex(vcE(1));
-#endif 
+
       Standard_Real parvce1 = TopOpeBRepTool_TOOL::ParE(1,cE);   gp_Pnt2d UVvce1 = TopOpeBRepTool_TOOL::UVF(parvce1,cE2d);
-#ifdef DEB
-      const TopoDS_Vertex& vOce2 =
-#endif
-                         TopoDS::Vertex(vOcE(2)); 
+
       Standard_Real parvOcE2 = TopOpeBRepTool_TOOL::ParE(2,OcE); gp_Pnt2d UVvOcE2 = TopOpeBRepTool_TOOL::UVF(parvOcE2,OcE2d);
       Standard_Real tol = Max(tttuvcE,tttuvOcE);
       isonOcE2d = (UVvce1.Distance(UVvOcE2) < tol);
@@ -840,17 +822,14 @@ Standard_Boolean TopOpeBRepTool_CORRISO::EdgeWithFaultyUV(const TopoDS_Edge& E, 
     for (TopTools_ListIteratorOfListOfShape ite(loe); ite.More(); ite.Next()) {
       const TopoDS_Edge& e = TopoDS::Edge(ite.Value());
       TopAbs_Orientation oe = e.Orientation();
-#ifdef DEB
-      Standard_Integer ie = STATIC_PURGE_mapeds.Add(e);
-      if (trc) {cout<<"    : on e"<<ie<<endl;}
-#endif
-      if (e.IsSame(E)) continue;      
-      if (M_INTERNAL(oe) || M_EXTERNAL(oe)) continue;
 
 #ifdef DEB
-      Standard_Real tttole =
+    Standard_Integer ie = STATIC_PURGE_mapeds.Add(e);
+    if (trc) {cout<<"    : on e"<<ie<<endl;}
 #endif
-                   BRep_Tool::Tolerance(e);
+
+      if (e.IsSame(E)) continue;      
+      if (M_INTERNAL(oe) || M_EXTERNAL(oe)) continue;
       
       Standard_Boolean isb = myERep2d.IsBound(e);
       if (!isb) {FUN_RaiseError(); return Standard_False;}

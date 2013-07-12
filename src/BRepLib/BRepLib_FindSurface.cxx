@@ -210,7 +210,7 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
   Standard_Integer i = 0,j;
 
   // iterate on the surfaces of the first edge
-  while ( Standard_True) {
+  for(;;) {
     i++;
     BRep_Tool::CurveOnSurface(E,PC,mySurface,myLocation,f,l,i);
     if (mySurface.IsNull()) {
@@ -220,7 +220,7 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
     for (ex.Init(S,TopAbs_EDGE); ex.More(); ex.Next()) {
       if (!E.IsSame(ex.Current())) {
 	j = 0;
-	while (Standard_True) {
+	for(;;) {
 	  j++;
 	  BRep_Tool::CurveOnSurface(TopoDS::Edge(ex.Current()),
 				    PPC,SS,L,ff,ll,j);

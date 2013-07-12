@@ -298,7 +298,7 @@ Standard_CString OSD_SharedLibrary :: Name () const {
 
 }  // end OSD_SharedLibrary :: Name
 
-Standard_Boolean OSD_SharedLibrary :: DlOpen ( const OSD_LoadMode Mode ) {
+Standard_Boolean OSD_SharedLibrary :: DlOpen ( const OSD_LoadMode /*Mode*/ ) {
 
  Standard_Boolean retVal = Standard_True;
 

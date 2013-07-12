@@ -114,7 +114,7 @@ static int deja = 0;
 //  read mode : lire les lignes
 //  On charge le fichier dans "thelist"
   Standard_Boolean header = Standard_False;
-  while (1) {
+  for(;;) {
     ligne[0] = '\0';
     fgets(ligne,200,lefic);
     if (feof(lefic)) break;

@@ -391,7 +391,7 @@ void IntTools_EdgeFace::CheckData()
   anIsProj1=ff1;
   anIsProj2=ff2;
   
-  while (1) {
+  for(;;) {
     if (fabs(t1-t2) < aEpsT) {
       tRoot=(anIsProj1) ? t1 : t2;
       return;
@@ -781,7 +781,7 @@ void IntTools_EdgeFace::CheckData()
   
   a=tA; b=tB; r=fA;
   
-  while (1) {
+  for(;;) {
     x0=.5*(a+b);
 
     if (IP==1)
@@ -825,7 +825,7 @@ void IntTools_EdgeFace::CheckData()
   yl=coeff*DistanceFunction(xl);
   
  
-  while (1) {
+  for(;;) {
     
     if (fabs(b-a) < myEpsT) {
       return .5*(b+a);

@@ -148,10 +148,8 @@ static Standard_Integer QANewDBRepNaming_CheckNaming(Draw_Interpretor& di,Standa
 
   TopTools_IndexedMapOfShape allSubShapes;
   TopExp::MapShapes(aSelectedShape, allSubShapes);
-//  cout<<"SELECTION ..."<<endl;
-//  cout << "i = " << allSubShapes.Extent() << endl;
-  Standard_Integer count = 0, i;
-  char aDrawName[80] = "Select";
+
+  Standard_Integer i;
 
   for (i = 1; i <= allSubShapes.Extent(); i++) {
     const TDF_Label& aSubLabel = L.FindChild(i);
@@ -237,7 +235,6 @@ static Standard_Integer QANewDBRepNaming_CheckNaming(Draw_Interpretor& di,Standa
 //      cout<<"Wrong selection ..."<<endl;
       return 1;
     }
-    const TopAbs_ShapeEnum TypeOfNaming = aNS->Get().ShapeType();
 //    cout<<i<<"  ";TopAbs::Print(TypeOfNaming, cout); cout<<"  ";
 //     DBRep::Set("Solved", aNS->Get());
     TNaming_Selector SLSolving(itr.Value());

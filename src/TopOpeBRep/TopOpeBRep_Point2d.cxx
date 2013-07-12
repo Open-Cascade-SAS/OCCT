@@ -99,8 +99,7 @@ void TopOpeBRep_Point2d::Dump(const Standard_Integer E1index,const Standard_Inte
   Standard_Boolean keep = Keep();
   Standard_Integer sts = Status();
   Standard_Boolean pos = IsPointOfSegment();
-  Standard_Real tol = Tolerance();
-  
+
   const TopOpeBRepDS_Transition& T1 = Transition(1);
   const TopOpeBRepDS_Transition& T2 = Transition(2);
   

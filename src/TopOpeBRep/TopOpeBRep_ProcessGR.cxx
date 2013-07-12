@@ -164,14 +164,13 @@ TopAbs_State TopOpeBRep_FacesFiller::StBipVPonF
   BRepAdaptor_Curve BC( arc );     
   Standard_Real x = 0.789; Standard_Real parmil = (1-x)*uf + x*ul; //xpu170898
   gp_Pnt pmil = BC.Value(parmil);
-  
+
 #ifdef DEB
   Standard_Boolean trc = TopOpeBRep_GettraceBIPS();
-#ifdef DRAW
-  if (trc) {TCollection_AsciiString aa("pmil"); FUN_brep_draw(aa,pmil);}
+    #ifdef DRAW
+      if (trc) {TCollection_AsciiString aa("pmil"); FUN_brep_draw(aa,pmil);}
+    #endif
 #endif
-#endif
- 
   TopAbs_State st = FSC_StatePonFace (pmil,F,*myPShapeClassifier);
   return st;
 }
@@ -218,10 +217,6 @@ void TopOpeBRep_FacesFiller::Lminmax(const TopOpeBRep_LineInter& L,
   VPI.Init(L,Standard_False);
   for (; VPI.More(); VPI.Next()) {
     const TopOpeBRep_VPointInter& VP = VPI.CurrentVP();
-#ifdef DEB
-    Standard_Integer iVP =
-#endif
-              VPI.CurrentVPIndex();
     Standard_Real p = VP.ParameterOnLine();
     pmin = Min(pmin,p);
     pmax = Max(pmax,p);

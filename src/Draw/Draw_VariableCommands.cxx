@@ -1110,7 +1110,7 @@ static Standard_Real ParseFactor(char*& name)
 {
   Standard_Real x = ParseValue(name);
 
-  while (1) {
+  for(;;) {
     char c = *name;
     if (c == '\0') return x;
     name++;
@@ -1136,7 +1136,7 @@ static Standard_Real Parse(char*& name)
 {
   Standard_Real x = ParseFactor(name);
 
-  while (1) {
+  for(;;) {
     char c = *name;
     if (c == '\0') return x;
     name++;

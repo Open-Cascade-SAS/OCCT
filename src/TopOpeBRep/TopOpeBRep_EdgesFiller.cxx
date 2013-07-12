@@ -73,7 +73,7 @@ void TopOpeBRep_EdgesFiller::Insert(const TopoDS_Shape& E1,const TopoDS_Shape& E
   myLI1.Clear();
   myLI2.Clear();
   myHDS = HDS;
-
+ 
 #ifdef DEB
   Standard_Boolean trc = TopOpeBRepDS_GettraceDSF();
   trc = trc || TopOpeBRepDS_GettraceEDSF();
@@ -84,20 +84,11 @@ void TopOpeBRep_EdgesFiller::Insert(const TopoDS_Shape& E1,const TopoDS_Shape& E
     myPEI->Dump(str,myPDS->Shape(myE1),myPDS->Shape(myE2));
   }
 #endif
-  
-#ifdef DEB
-  Standard_Boolean hs =
-#endif
-           myPEI->HasSegment();
   Standard_Boolean esd = myPEI->SameDomain();
   if (esd) myPDS->FillShapesSameDomain(E1,E2);
   
   // exit if no point.
   myPEI->InitPoint(); if ( !myPEI->MorePoint() ) return;
-  
-#ifdef DEB
-  Standard_Boolean reducesegment = (hs && !esd);
-#endif
 
   // --- Add <E1,E2> in BDS
   Standard_Integer E1index = myPDS->AddShape(E1,1);
@@ -119,9 +110,8 @@ void TopOpeBRep_EdgesFiller::Insert(const TopoDS_Shape& E1,const TopoDS_Shape& E
     Standard_Integer if2 = 0; if ( ! myF2.IsNull() ) if2 = myPDS->AddShape(myF2,2);
 
 #ifdef DEB
-    Standard_Boolean pointofsegment =
+    Standard_Boolean pointofsegment = P2D.IsPointOfSegment();
 #endif
-                         P2D.IsPointOfSegment();
 
 #ifdef DEB
     if (trc) {
@@ -129,7 +119,7 @@ void TopOpeBRep_EdgesFiller::Insert(const TopoDS_Shape& E1,const TopoDS_Shape& E
       else if (pointofsegment && !esd) debposnesd();
     }
 #endif
-    
+
     TopOpeBRepDS_Transition T1 = P2D.Transition(1);
     TopOpeBRepDS_Transition T2 = P2D.Transition(2);
     
@@ -503,10 +493,6 @@ void TopOpeBRep_EdgesFiller::RecomputeInterferences(const TopoDS_Edge& E,TopOpeB
     Standard_Integer ifb = TU.IndexBefore();
     Standard_Integer ifa = TU.IndexAfter();
     const TopoDS_Face& fb = TopoDS::Face(myPDS->Shape(ifb));
-#ifdef DEB
-    const TopoDS_Face& fa =
-#endif
-                    TopoDS::Face(myPDS->Shape(ifa));
 
 #ifdef DEB
     if (ifb != ifa) {cout<<"TopOpeBRep_EdgesFiller : ifb != ifa on E"<<EIX<<" NYI"<<endl;}
@@ -515,10 +501,11 @@ void TopOpeBRep_EdgesFiller::RecomputeInterferences(const TopoDS_Edge& E,TopOpeB
     Standard_Real pE = FDS_Parameter(iloi); TopOpeBRepDS_Transition TN;
     TN.ShapeBefore(TU.ShapeBefore());TN.IndexBefore(TU.IndexBefore());
     TN.ShapeAfter(TU.ShapeAfter());TN.IndexAfter(TU.IndexAfter());
+
 #ifdef DEB
     Standard_Boolean ok =
 #endif
-             FDS_stateEwithF2d(*myPDS,E,pE,K,G,fb,TN);
+    FDS_stateEwithF2d(*myPDS,E,pE,K,G,fb,TN);
 
 #ifdef DEB
     if (TRC) {

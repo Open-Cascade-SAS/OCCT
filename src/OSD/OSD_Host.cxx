@@ -246,7 +246,7 @@ OSD_Host :: OSD_Host () {
 
  DWORD              nSize;
  Standard_Character szHostName[ MAX_COMPUTERNAME_LENGTH + 1 ];
- char*              hostAddr;
+ char*              hostAddr = 0;
  MEMORYSTATUS       ms;
  WSADATA            wd;
  PHOSTENT           phe;
@@ -258,6 +258,7 @@ OSD_Host :: OSD_Host () {
   nSize                         = MAX_COMPUTERNAME_LENGTH + 1;
   osVerInfo.dwOSVersionInfoSize = sizeof ( OSVERSIONINFO );
 
+  ZeroMemory (&ms, sizeof(ms));
   ZeroMemory (  szHostName, sizeof ( Standard_Character ) *  (MAX_COMPUTERNAME_LENGTH + 1) );
 
   if (  !GetVersionEx ( &osVerInfo )  ) {

@@ -305,7 +305,7 @@ VrmlData_Scene& VrmlData_Scene::operator << (Standard_IStream& theInput)
 //   if (myStatus == StatusOK)
 //     myStatus = ReadLine (aBuffer);
   // Read VRML data by nodes
-  while (~0) {
+  for(;;) {
     if (!VrmlData_Node::OK(myStatus, ReadLine(aBuffer))) {
       if (myStatus == VrmlData_EndOfFile)
         myStatus = VrmlData_StatusOK;

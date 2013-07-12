@@ -48,7 +48,7 @@ LDOMString LDOM_Element::getAttribute (const LDOMString& aName) const
   if (myLastChild == NULL) {
     const LDOM_BasicNode * aNode = anElem.GetFirstChild();
     if (aNode && aNode -> getNodeType () != LDOM_Node::ATTRIBUTE_NODE)
-      while (1) {
+      for(;;) {
         const LDOM_BasicNode * aSibling = aNode -> GetSibling();
         if (aSibling == NULL)
           return LDOMString ();
@@ -77,7 +77,7 @@ LDOM_Attr LDOM_Element::getAttributeNode (const LDOMString& aName) const
   if (myLastChild == NULL) {
     const LDOM_BasicNode * aNode = anElem.GetFirstChild();
     if (aNode && aNode -> getNodeType () != LDOM_Node::ATTRIBUTE_NODE)
-      while (1) {
+      for(;;) {
         const LDOM_BasicNode * aSibling = aNode -> GetSibling();
         if (aSibling == NULL)
           return LDOM_Attr ();

@@ -960,7 +960,6 @@ static Standard_Integer DDataStd_GetExtStringArray (Draw_Interpretor& di,
   }
   
   for(Standard_Integer i = A->Lower(); i<=A->Upper(); i++){
-    const TCollection_ExtendedString& anExtendedString = A->Value(i);
     TCollection_AsciiString anAsciiString(A->Value(i),'?');
     di << anAsciiString.ToCString();
     if(i<A->Upper())  
@@ -1188,7 +1187,6 @@ static Standard_Integer DDataStd_SetBooleanArray (Draw_Interpretor& di,
 
     TDF_Label label;
     DDF::AddLabel(DF, arg[2], label);
-    Standard_Integer isDelta = Draw::Atoi(arg[3]);
     Standard_Integer From = Draw::Atoi(arg[4]), To = Draw::Atoi( arg[5] ), j;
     di << "Array of Standard_Boolean with bounds from = " << From  << " to = " << To  << "\n";
     Handle(TDataStd_BooleanArray) A = TDataStd_BooleanArray::Set(label, From, To);

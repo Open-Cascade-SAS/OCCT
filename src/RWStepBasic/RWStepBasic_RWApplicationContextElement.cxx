@@ -49,10 +49,7 @@ void RWStepBasic_RWApplicationContextElement::ReadStep
 	// --- own field : frameOfReference ---
 
 	Handle(StepBasic_ApplicationContext) aFrameOfReference;
-#ifdef DEB
-	Standard_Boolean stat2 = 
-#endif
-	  data->ReadEntity(num, 2,"frame_of_reference", ach, STANDARD_TYPE(StepBasic_ApplicationContext), aFrameOfReference);
+    data->ReadEntity(num, 2,"frame_of_reference", ach, STANDARD_TYPE(StepBasic_ApplicationContext), aFrameOfReference);
 
 	//--- Initialisation of the read entity ---
 

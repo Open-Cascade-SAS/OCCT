@@ -193,9 +193,9 @@ Standard_Integer TColStd_intMapNode_findNext (const TColStd_intMapNode* theNode,
   unsigned int val = theNode->myData & theMask;
   int nZeros (0);
   if (val == 0)
-    theMask = ~0;   // void, nothing to do
+    theMask = ~0U;   // void, nothing to do
   else{
-    unsigned int aMask = ~0;
+    unsigned int aMask = ~0U;
     if ((val & 0x0000ffff) == 0) {
       aMask = 0xffff0000;
       nZeros = 16;
@@ -237,9 +237,9 @@ Standard_Integer TColStd_intMapNode_findPrev (const TColStd_intMapNode* theNode,
   unsigned int val = theNode->myData & theMask;
   int nZeros (0);
   if (val == 0)
-    theMask = ~0;   // void, nothing to do
+    theMask = ~0U;   // void, nothing to do
   else {
-    unsigned int aMask = ~0;
+    unsigned int aMask = ~0U;
     if ((val & 0xffff0000) == 0) {
       aMask = 0x0000ffff;
       nZeros = 16;
@@ -647,7 +647,7 @@ Standard_Boolean TColStd_PackedMapOfInteger::Unite(const TColStd_PackedMapOfInte
         while (p1) {
           if (p1->IsEqual(aKeyInt)) {
             const size_t anOldPop = p1->NbValues();
-            Standard_Integer newData = p1->Data() | p2->Data();
+            unsigned int newData = p1->Data() | p2->Data();
             if ( newData != p1->Data() ) {
               p1->ChangeData() = newData;
               aNewExtent = aNewExtent - anOldPop +

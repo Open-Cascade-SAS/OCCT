@@ -35,7 +35,7 @@ extern Standard_Integer TColStd_intMapNode_findNext (const TColStd_intMapNode *,
 TColStd_MapIteratorOfPackedMapOfInteger::TColStd_MapIteratorOfPackedMapOfInteger
                                      (const TColStd_PackedMapOfInteger& theMap)
   : TCollection_BasicMapIterator (theMap),
-    myIntMask                    (~0)
+    myIntMask                    (~0U)
 {
   if (myNode) {
     const TColStd_intMapNode * aNode =
@@ -54,7 +54,7 @@ void TColStd_MapIteratorOfPackedMapOfInteger::Initialize
                                      (const TColStd_PackedMapOfInteger& theMap)
 {
   TCollection_BasicMapIterator::Initialize (theMap);
-  myIntMask = ~0;
+  myIntMask = ~0U;
   if (myNode) {
     const TColStd_intMapNode * aNode =
       reinterpret_cast <const TColStd_intMapNode *>(myNode);
@@ -70,7 +70,7 @@ void TColStd_MapIteratorOfPackedMapOfInteger::Initialize
 void TColStd_MapIteratorOfPackedMapOfInteger::Reset ()
 {
   TCollection_BasicMapIterator::Reset();
-  myIntMask = ~0;
+  myIntMask = ~0U;
   if (myNode) {
     const TColStd_intMapNode * aNode =
       reinterpret_cast <const TColStd_intMapNode *>(myNode);

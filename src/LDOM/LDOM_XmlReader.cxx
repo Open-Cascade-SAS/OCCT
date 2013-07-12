@@ -116,7 +116,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord
   LDOMBasicString anAttrName, anAttrValue;
   char anAttDelimiter = '\0';
 
-  while (1) {
+  for(;;) {
     //  Check if the current file buffer is exhausted
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  There should always be some bytes available in the buffer for analysis
@@ -293,7 +293,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord
         // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     case STATE_COMMENT:
       aPtr = aStartData;
-      while (1) {
+      for(;;) {
         aPtr = (const char *) memchr (aPtr, '-', (myEndPtr - 2) - aPtr);
         if (aPtr == NULL) break;
         if (aPtr[1] != '-') ++ aPtr;
@@ -327,7 +327,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord
         // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     case STATE_CDATA:
       aPtr = aStartData;
-      while (1) {
+      for(;;) {
         aPtr = (const char *) memchr (aPtr, ']', (myEndPtr - 1) - aStartData);
         if (aPtr == NULL) break;
         if (aPtr[1] != ']') {           // ERROR
@@ -530,7 +530,7 @@ static Standard_Boolean isName (const char  * aString,
                                 const char  *& aNameEnd)
 {
   Standard_Boolean aResult;
-  int aCh = aString[0];
+  char aCh = aString[0];
   if (IsAlphabetic(aCh) || aCh == '_' || aCh == ':') {
     const char * aPtr = &aString[1];
     while (aPtr < aStringEnd) {

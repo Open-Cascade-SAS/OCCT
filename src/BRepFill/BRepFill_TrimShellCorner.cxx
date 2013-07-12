@@ -851,7 +851,6 @@ Standard_Boolean SplitUEdges(const Handle(TopTools_HArray2OfShape)&     theUEdge
                              const BOPDS_PDS&                           theDS,
                              TopTools_DataMapOfShapeListOfShape&        theHistMap) {
 
-  const BOPDS_VectorOfInterfVE& aVEs = theDS->InterfVE();
   const BOPDS_VectorOfInterfVV& aVVs = theDS->InterfVV();
 
   BRep_Builder aBB;

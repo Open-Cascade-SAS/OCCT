@@ -327,7 +327,7 @@ Standard_Integer OSD_DirectoryIterator :: Error () const {
 OSD_DirectoryIterator::OSD_DirectoryIterator() {}
 
 void OSD_DirectoryIterator::Initialize(
-                             const OSD_Path& where,
-                             const TCollection_AsciiString& Mask){}
+                             const OSD_Path& /*where*/,
+                             const TCollection_AsciiString& /*Mask*/){}
 
 #endif

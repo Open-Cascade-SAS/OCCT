@@ -39,6 +39,11 @@
 
 static OSD_MAllocHook::Callback* MypCurrentCallback = NULL;
 
+namespace {
+  // dummy function to call at place where break point might be needed
+  inline void place_for_breakpoint () {}
+};
+
 //=======================================================================
 //function : GetCallback
 //purpose  :
@@ -414,11 +419,9 @@ void OSD_MAllocHook::LogFileHandler::AllocEvent
     myMutex.Lock();
     myLogFile << "alloc "<< std::setw(10) << theRequestNum
               << std::setw(20) << theSize << std::endl;
-    myMutex.Unlock();
     if (myBreakSize == theSize)
-    {
-      int a = 1;
-    }
+      place_for_breakpoint();
+    myMutex.Unlock();
   }
 }
 
@@ -562,9 +565,7 @@ void OSD_MAllocHook::CollectBySize::AllocEvent
                     long        /*theRequestNum*/)
 {
   if (myBreakSize == theSize)
-  {
-    int a = 1;
-  }
+    place_for_breakpoint();
   if (theSize > 0)
   {
     myMutex.Lock();

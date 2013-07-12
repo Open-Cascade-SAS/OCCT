@@ -424,8 +424,8 @@ void TCollection_AsciiString::AssignCat(const TCollection_AsciiString& other)
 void TCollection_AsciiString::Capitalize()
 {
   for (int i=0; i < mylength; i++) {
-    if  ( i==0 ) mystring[i] = toupper(mystring[i]);
-    else         mystring[i] = tolower(mystring[i]);    
+    if  ( i==0 ) mystring[i] = ::UpperCase(mystring[i]);
+    else         mystring[i] = ::LowerCase(mystring[i]);    
   }
 }
 
@@ -457,9 +457,9 @@ void TCollection_AsciiString::ChangeAll(const Standard_Character aChar,
       if (mystring[i] == aChar) mystring[i] = NewChar;
   }
   else{
-    Standard_Character anUpperChar = toupper(aChar);
+    Standard_Character anUpperChar = ::UpperCase(aChar);
     for (int i=0; i < mylength; i++)
-      if (toupper(mystring[i]) == anUpperChar) mystring[i] = NewChar;
+      if (::UpperCase(mystring[i]) == anUpperChar) mystring[i] = NewChar;
   }
 }
 
@@ -1138,7 +1138,7 @@ Standard_Integer TCollection_AsciiString::Location
 void TCollection_AsciiString::LowerCase()
 {
   for (int i=0; i < mylength; i++)
-    mystring[i] = tolower(mystring[i]);
+    mystring[i] = ::LowerCase(mystring[i]);
 }
 
 //------------------------------------------------------------------------
@@ -1240,9 +1240,9 @@ void TCollection_AsciiString::RemoveAll(const Standard_Character what,
       if (mystring[i] != what) mystring[c++] = mystring[i];
   }
   else {
-    Standard_Character upperwhat = toupper(what);
+    Standard_Character upperwhat = ::UpperCase(what);
     for (int i=0; i < mylength; i++) { 
-      if (toupper(mystring[i]) != upperwhat) mystring[c++] = mystring[i];
+      if (::UpperCase(mystring[i]) != upperwhat) mystring[c++] = mystring[i];
     }
   }
   mylength = c;
@@ -1831,7 +1831,7 @@ void TCollection_AsciiString::Trunc(const Standard_Integer ahowmany)
 void TCollection_AsciiString::UpperCase()
 {
   for (int i=0; i < mylength; i++)
-    mystring[i] = toupper(mystring[i]);
+    mystring[i] = ::UpperCase(mystring[i]);
 }
 
 //------------------------------------------------------------------------

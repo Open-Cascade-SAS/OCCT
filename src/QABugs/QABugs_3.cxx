@@ -1348,7 +1348,7 @@ static Standard_Integer BUC60856(Draw_Interpretor& di, Standard_Integer /*argc*/
   }
 
   gp_Ax2  Cone_Ax;                                                                
-  double R1=8, R2=16, H1=20, H2=40, angle;                                       
+  double R1=8, R2=16, angle;                                       
   gp_Pnt P0(0,0,0),                                                              
   P1(0,0,20), P2(0,0,45);                                                        
   angle = 2*M_PI;                                                                  
@@ -1583,7 +1583,7 @@ static Standard_Integer statface (Draw_Interpretor& di,Standard_Integer /*argc*/
   Handle(Dico_DictionaryOfInteger) aDico = new Dico_DictionaryOfInteger();
   Handle(TColStd_HSequenceOfAsciiString) aSequence = new TColStd_HSequenceOfAsciiString;
   Standard_CString aString;
-  Standard_Integer i=1,j=1,k=1,l=1,aa=1;
+  Standard_Integer i=1,j=1,l=1,aa=1;
   TopExp_Explorer expl;
   Standard_Real f3d,l3d;
   for(expl.Init(aShape,TopAbs_FACE);expl.More();expl.Next())

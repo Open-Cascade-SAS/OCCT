@@ -222,7 +222,6 @@ void OpenGl_LayerList::ChangeLayer (const OpenGl_Structure *theStructure,
     OpenGl_SequenceOfLayers::Iterator anIts;
     for (anIts.Init (myLayers); anIts.More (); anIts.Next (), aSeqId++)
     {
-      OpenGl_PriorityList& aScanList = anIts.ChangeValue ();
       if (aSeqPos == aSeqId)
         continue;
   

@@ -172,10 +172,9 @@ void XmlMDataStd_IntegerArrayDriver::Paste
     str.Allocate(12 * intArray.Length() + 1);
 
   Standard_Integer i = aL;
-  while (1) 
+  for (;;) 
   {
-    const Standard_Integer& intValue = intArray.Value(i);
-    iChar += Sprintf(&(str[iChar]), "%d ", intValue);
+    iChar += Sprintf(&(str[iChar]), "%d ", intArray.Value(i));
     if (i >= anU)
       break;
     ++i;

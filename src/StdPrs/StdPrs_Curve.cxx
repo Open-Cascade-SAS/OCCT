@@ -251,7 +251,7 @@ void StdPrs_Curve::Add (const Handle (Prs3d_Presentation)& aPresentation,
 //==================================================================
 void StdPrs_Curve::Add (const Handle (Prs3d_Presentation)& aPresentation,
                         const Adaptor3d_Curve&                    aCurve,
-                        const Quantity_Length              aDeflection,
+                        const Quantity_Length              /*aDeflection*/,
                         const Handle(Prs3d_Drawer)&        aDrawer,
                         TColgp_SequenceOfPnt&           Points,
                         const Standard_Boolean drawCurve)
@@ -272,7 +272,7 @@ void StdPrs_Curve::Add (const Handle (Prs3d_Presentation)& aPresentation,
                         const Adaptor3d_Curve&                    aCurve,
                         const Standard_Real                U1,
                         const Standard_Real                U2,
-                        const Quantity_Length              aDeflection,
+                        const Quantity_Length              /*aDeflection*/,
                         TColgp_SequenceOfPnt&              Points,
                         const Standard_Integer             NbPoints,
                         const Standard_Boolean drawCurve)

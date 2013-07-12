@@ -224,7 +224,7 @@ StepData_PDescr::StepData_PDescr  ()
 
 
 void StepData_PDescr::Check(const StepData_Field& afild,
-                            Handle(Interface_Check)& ach) const
+                            Handle(Interface_Check)& /*ach*/) const
 {
 //  pour l instant ...
 }

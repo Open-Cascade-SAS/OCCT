@@ -444,24 +444,6 @@ static Standard_Integer continuity (Draw_Interpretor& ,
   aFind.Perform();
   aFind.Dump();
 
-  for (i=1; i<=aFind.NbContigousEdges(); i++) {
-#ifdef DEB
-    const TopoDS_Edge& edge =
-#endif
-                              aFind.ContigousEdge(i);
-    const TopTools_ListOfShape& list = aFind.ContigousEdgeCouple(i);
-    const TopoDS_Edge& sec1 = TopoDS::Edge(list.First());
-    const TopoDS_Edge& sec2 = TopoDS::Edge(list.Last());
-#ifdef DEB
-    const TopoDS_Edge& bound1 =
-#endif
-                                aFind.SectionToBoundary(sec1);
-#ifdef DEB
-    const TopoDS_Edge& bound2 =
-#endif
-                                aFind.SectionToBoundary(sec2);
-  }
-
   return 0;
 }
 

@@ -366,7 +366,7 @@ static void SplitWire(const TopoDS_Wire& wire,
       ces.Append (i); statuses.SetValue (i, 1); //putting into CES
       Standard_Boolean SearchBackward = Standard_True;
 
-      while (Standard_True) {
+      for(;;) {
 	Standard_Integer ei = ces.Last(); //ei-edge index, number of current edge analyzed for connection
 	Standard_Boolean found;
 	TopoDS_Edge edge;

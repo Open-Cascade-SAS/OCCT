@@ -929,11 +929,6 @@ void BRepFill_CompatibleWires::
     
     // extremity of the first wire
     V1 = TopoDS::Vertex(SeqV.Value(1));	
-    // previous wire 
-#ifdef DEB
-    const TopoDS_Wire& wire2 = 
-#endif
-      TopoDS::Wire(myWork(i-1));
     // loop on vertices of wire1
     for (ii=1;ii<=SeqV.Length();ii++) {
       

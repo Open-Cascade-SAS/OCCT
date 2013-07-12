@@ -166,7 +166,7 @@ Standard_Boolean LDOMParser::ParseDocument ()
   Standard_Boolean      isHeader  = Standard_False;
   Standard_Boolean      isDoctype = Standard_False;
 
-  while (1) {
+  for(;;) {
     LDOM_XmlReader::RecordType aType = ReadRecord (*myReader, myCurrentData);
     switch (aType) {
     case LDOM_XmlReader::XML_HEADER:
@@ -246,7 +246,7 @@ Standard_Boolean LDOMParser::ParseElement ()
   Standard_Boolean  isError = Standard_False;
   const LDOM_BasicElement * aParent = &myReader->GetElement();
   const LDOM_BasicNode    * aLastChild = NULL;
-  while (1) {
+  for(;;) {
     LDOM_Node::NodeType aLocType;
     LDOMBasicString     aTextValue;
     char *aTextStr;

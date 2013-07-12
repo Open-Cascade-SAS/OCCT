@@ -578,7 +578,6 @@ Standard_Boolean QANewModTopOpe::IsConnected(const TopoDS_Shape& TheS)
   if(nbs <= 1) return aRes;
 
   math_Matrix aMat(1, nbs, 1, nbs, 0);
-  Standard_Integer aMax=nbs*nbs;
 
   TopTools_MapIteratorOfMapOfShape anMIter(aSMap);
   Standard_Integer n = 1;
@@ -616,7 +615,7 @@ Standard_Boolean QANewModTopOpe::IsConnected(const TopoDS_Shape& TheS)
   }
   //cout << "QANewModTopOpe::IsConnected(3)Lnbs=" <<nbs<< endl;
 
-  Standard_Integer k,i,ncount=0;
+  Standard_Integer k,i;
   Standard_Real p; 
   Standard_Boolean aNotChanged;
 

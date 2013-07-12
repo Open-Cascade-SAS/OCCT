@@ -571,7 +571,7 @@ static Standard_Integer stepfileunits (Draw_Interpretor& di, Standard_Integer ar
   TColStd_SequenceOfAsciiString anUnitSolidAngleNames;
   aStepReader.FileUnits( anUnitLengthNames,anUnitAngleNames,anUnitSolidAngleNames);
                                    
-  Standard_Integer i =1, nb = anUnitLengthNames.Length();
+  Standard_Integer i =1;
   di<<"=====================================================\n";
   di<<"LENTH Unit"<<"\n";
   for( ; i <= anUnitLengthNames.Length() ; i++)

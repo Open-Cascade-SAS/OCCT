@@ -37,7 +37,7 @@ StepData_DescrGeneral::StepData_DescrGeneral
 void StepData_DescrGeneral::CheckCase(const Standard_Integer CN,
                                       const Handle(Standard_Transient)& ent,
                                       const Interface_ShareTool& shares,
-                                      Handle(Interface_Check)& ach) const
+                                      Handle(Interface_Check)& /*ach*/) const
 {
 }    // pour l instant
 

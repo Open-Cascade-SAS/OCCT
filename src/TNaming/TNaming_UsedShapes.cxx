@@ -184,6 +184,6 @@ Standard_OStream& TNaming_UsedShapes::Dump(Standard_OStream& anOS) const
 //purpose  : 
 //=======================================================================
 
-void TNaming_UsedShapes::References(const Handle(TDF_DataSet)& aDataSet) const
+void TNaming_UsedShapes::References(const Handle(TDF_DataSet)& /*aDataSet*/) const
 {
 }

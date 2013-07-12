@@ -37,7 +37,7 @@ Standard_Boolean TDataStd_Directory::Find (const TDF_Label& current,
   Handle(TDataStd_Directory) dir;
   if (L.IsNull()) return Standard_False; 
 
-  while (1) {
+  for(;;) {
     if(L.FindAttribute(TDataStd_Directory::GetID(), dir)) break; 
     L = L.Father();
     if (L.IsNull()) break; 

@@ -41,7 +41,6 @@ Extrema_FuncExtPS::Extrema_FuncExtPS (const gp_Pnt& P,
 {
   myP = P;
   myS = (Adaptor3d_SurfacePtr)&S;
-  GeomAbs_SurfaceType aSType = S.GetType();
   myPinit = Standard_True;
   mySinit = Standard_True;
 }
@@ -50,7 +49,6 @@ Extrema_FuncExtPS::Extrema_FuncExtPS (const gp_Pnt& P,
 void Extrema_FuncExtPS::Initialize(const Adaptor3d_Surface& S)
 {
   myS = (Adaptor3d_SurfacePtr)&S;
-  GeomAbs_SurfaceType aSType = S.GetType();
   mySinit = Standard_True;
   myPoint.Clear();
   mySqDist.Clear();

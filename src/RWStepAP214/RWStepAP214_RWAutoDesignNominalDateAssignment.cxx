@@ -46,18 +46,12 @@ void RWStepAP214_RWAutoDesignNominalDateAssignment::ReadStep
 	// --- inherited field : assignedDate ---
 
 	Handle(StepBasic_Date) aAssignedDate;
-#ifdef DEB
-	Standard_Boolean stat1 = 
-#endif
-	  data->ReadEntity(num, 1,"assigned_date", ach, STANDARD_TYPE(StepBasic_Date), aAssignedDate);
+    data->ReadEntity(num, 1,"assigned_date", ach, STANDARD_TYPE(StepBasic_Date), aAssignedDate);
 
 	// --- inherited field : role ---
 
 	Handle(StepBasic_DateRole) aRole;
-#ifdef DEB
-	Standard_Boolean stat2 = 
-#endif
-	  data->ReadEntity(num, 2,"role", ach, STANDARD_TYPE(StepBasic_DateRole), aRole);
+    data->ReadEntity(num, 2,"role", ach, STANDARD_TYPE(StepBasic_DateRole), aRole);
 
 	// --- own field : items ---
 

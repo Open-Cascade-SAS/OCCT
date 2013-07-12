@@ -248,10 +248,6 @@ static Standard_Boolean FUN_findTF(const TopOpeBRepDS_PDataStructure pDS,
     if (!OOdone) return Standard_False;
 
     const TopoDS_Edge& E   = TopoDS::Edge(pDS->Shape(iE));
-#ifdef DEB
-    const TopoDS_Face& F   =
-#endif
-                     TopoDS::Face(pDS->Shape(iF));
     const TopoDS_Face& OOF = TopoDS::Face(pDS->Shape(iOOF));
 
     Standard_Real f,l; FUN_tool_bounds(E,f,l);
@@ -943,7 +939,6 @@ void TopOpeBRep_FacesFiller::FillLineVPonR()
   Standard_Boolean tDSF = TopOpeBRepDS_GettraceDSF();
   Standard_Boolean trline = Standard_False;
 #endif
-
   // if a VP is on degenerated edge, adds the triplet
   // (vertex, closing edge, degenerated edge) to the
   // map as vertex for key.
@@ -953,10 +948,10 @@ void TopOpeBRep_FacesFiller::FillLineVPonR()
   
   mykeptVPnbr = 0; 
   
-  if (myLine->TypeLineCurve() == TopOpeBRep_RESTRICTION) {
+  if (myLine->TypeLineCurve() == TopOpeBRep_RESTRICTION) { 
 #ifdef DEB
     if (trline) FUN_traceRLine(*myLine);
-#endif    
+#endif
     ProcessRLine();
     return;
   }
@@ -966,11 +961,10 @@ void TopOpeBRep_FacesFiller::FillLineVPonR()
   if ( nINON == 0 ) {
     return; 
   }
-  
+   
 #ifdef DEB
   if (trline) FUN_traceGLine(*myLine);
 #endif
-  
   myLineIsonEdge = LSameDomainERL(*myLine, myERL);
   
   // walking (case mouch1a 1 1) : line (vpfirst on 3,vplast on 0,nvpkept = 2) => kept
@@ -982,9 +976,7 @@ void TopOpeBRep_FacesFiller::FillLineVPonR()
     else cout <<" geometric line not on edge"<<endl;
   }
 #endif
-  
-  //----------------------------------------------------------------------
-  // IMPORTANT : 
+  //----------------------------------------------------------------------  // IMPORTANT : 
   // Some of Curve/Point transitions for vpoints keep on RESTRICTION lines
   // sharing same domain with the current geometric line are computed here
   //----------------------------------------------------------------------
@@ -1004,9 +996,6 @@ void TopOpeBRep_FacesFiller::FillLineVPonR()
   }
   
   if ( myLineIsonEdge && (!myDSCIL.IsEmpty()) ) {
-#ifdef DEB
-    if (tDSF) cout<<"myLineIsonEdge && (!myDSCIL.IsEmpty())"<<endl;
-#endif
     myDSCIL.Clear();
   }
 }

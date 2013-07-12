@@ -570,7 +570,7 @@ void MakeBlocksCnx(const BOPCol_IndexedDataMapOfShapeListOfShape& aMILI,
     aMVAdd.Clear();
     //
     aMVP.Add(nV);
-    while(1) {
+    for(;;) {
       aNbVP=aMVP.Extent();
       for (j=1; j<=aNbVP; ++j) {
         const TopoDS_Shape& nVP=aMVP(j);

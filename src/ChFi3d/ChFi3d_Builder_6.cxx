@@ -851,7 +851,7 @@ Standard_Boolean ChFi3d_Builder::StoreData(Handle(ChFiDS_SurfData)& Data,
   Standard_Real    aDelta = VLast - VFirst;
   Standard_Integer aDenom = 2;
 
-  while (Standard_True) {
+  for(;;) {
     Standard_Real aDeltav = aDelta/aDenom;
     Standard_Real aParam  = VFirst + aDeltav;
     gp_Pnt2d      PUV     = PCurveOnFace->Value(aParam);

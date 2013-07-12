@@ -805,7 +805,6 @@ gp_Elips Adaptor3d_IsoCurve::Ellipse() const
   default:  
     {
       Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:Ellipse");
-      return gp_Elips();
     }
     
   }

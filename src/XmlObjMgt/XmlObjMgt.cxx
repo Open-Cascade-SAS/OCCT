@@ -239,7 +239,7 @@ void XmlObjMgt::SetTagEntryString (XmlObjMgt_DOMString&           theTarget,
   memcpy (aTarget, aRefPrefix, sizeof (aRefPrefix) - 1);
   char * aTargetPtr = aTarget + (sizeof (aRefPrefix) - 1);
 
-  while (1) {
+  for(;;) {
     //  Check for the end-of-string; find the delimeter ':'
     aPtr = strchr (aTagEntry, ':');
     if (aPtr == NULL) break;

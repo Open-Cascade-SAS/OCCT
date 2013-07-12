@@ -1516,7 +1516,6 @@ void V3d_View::SetZSize(const Standard_Real Size)
 
   Standard_Real Front = MyViewContext.ZClippingFrontPlane() ;
   Standard_Real Back  = MyViewContext.ZClippingBackPlane() ;
-  Standard_Real focale= Focale();
 
   MyViewMapping.SetFrontPlaneDistance(Zmax) ;
   MyViewMapping.SetBackPlaneDistance(-Zmax) ;

@@ -847,7 +847,6 @@ static void ComputeDeviation(const Handle(Geom_Curve)& theCurve,
   theUfMax = 0.;
   theUlMax = 0.;
   theImax = 0;
-  Standard_Real ufmax = 0., ulmax = 0.;
 
   //take knots
   Standard_Integer nbp = thePnts->NbKnots();

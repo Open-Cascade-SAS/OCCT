@@ -851,7 +851,7 @@ Quantity_Date OSD_FileNode::CreationMoment () {
 Standard_Integer OSD_FileNode::UserId () {
 
  PSID                    pSIDowner = NULL;
- PSID                    retVal;
+ PSID                    retVal = NULL;
  BOOL                    fDefaulted;
  TCollection_AsciiString fName;
  PSECURITY_DESCRIPTOR    pSD;
@@ -1002,7 +1002,7 @@ static BOOL __fastcall _get_file_time (
  FILETIME   ftCreationTime;
  FILETIME   ftLastWriteTime;
  LPFILETIME lpftPtr;
- HANDLE     hFile;
+ HANDLE     hFile = INVALID_HANDLE_VALUE;
 
  __try {
 

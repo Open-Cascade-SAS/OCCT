@@ -172,7 +172,7 @@ Handle(TDF_Attribute) TFunction_Function::NewEmpty() const
 //purpose  : Collects the references
 //=======================================================================
 
-void TFunction_Function::References(const Handle(TDF_DataSet)& aDataSet) const
+void TFunction_Function::References(const Handle(TDF_DataSet)& /*aDataSet*/) const
 {
 }
 

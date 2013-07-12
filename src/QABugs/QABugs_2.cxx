@@ -135,7 +135,6 @@ static Standard_Integer OCC527(Draw_Interpretor& di, Standard_Integer argc, cons
 	    if (!aResult.IsNull())
 	      {
             double lmaxdist = 0.0;
-            double lmaxtoler = 0.0;
             TopExp_Explorer aExp2;
             for (aExp2.Init(aResult,TopAbs_VERTEX); aExp2.More(); aExp2.Next())
             {

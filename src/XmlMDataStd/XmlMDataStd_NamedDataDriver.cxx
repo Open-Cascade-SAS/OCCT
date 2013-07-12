@@ -733,7 +733,7 @@ void XmlMDataStd_NamedDataDriver::Paste(const Handle(TDF_Attribute)& theSource,
       //Value = Array
       TCollection_AsciiString aValueStr2;
       Standard_Integer j = anArr1.Lower();
-       while (1) {
+       for(;;) {
 	 aValueStr2 += TCollection_AsciiString(anArr1.Value(j));
 	 if (j >= anArr1.Upper()) break;
 	 aValueStr2 += ' ';
@@ -762,7 +762,7 @@ void XmlMDataStd_NamedDataDriver::Paste(const Handle(TDF_Attribute)& theSource,
       //Value = Array
       TCollection_AsciiString aValueStr2;
       Standard_Integer j = anArr1.Lower();
-      while (1) {
+      for(;;) {
 #ifndef OCC6010
 	aValueStr2 += TCollection_AsciiString(anArr1.Value(j));
 #else

@@ -59,7 +59,7 @@
     aMVAdd.Clear();
     //
     aMVP.Add(nV);
-    while(1) {
+    for(;;) {
       aNbVP=aMVP.Extent();
       for (j=1; j<=aNbVP; ++j) {
         nVP=aMVP(j);
@@ -215,7 +215,7 @@
     aMVAdd.Clear();
     //
     aMVP.Add(nV);
-    while(1) {
+    for(;;) {
       aNbVP=aMVP.Extent();
       for (j=1; j<=aNbVP; ++j) {
         const Handle(BOPDS_PaveBlock)& nVP=aMVP(j);

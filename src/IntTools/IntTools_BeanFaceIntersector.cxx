@@ -898,7 +898,6 @@ Standard_Integer IntTools_BeanFaceIntersector::FastComputeExactIntersection()
       aTolang2=1.e-16;
       aLin=myCurve.Line();
       const gp_Dir& aDirL=aLin.Direction();
-      const gp_Pnt& aLocL=aLin.Location();
       //
       aCos=aDirC.Dot(aDirL);
       if(aCos >= 0.) {

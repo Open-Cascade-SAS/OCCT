@@ -174,10 +174,9 @@ void XmlMDataStd_RealArrayDriver::Paste (const Handle(TDF_Attribute)& theSource,
     str.Allocate(25 * realArray.Length() + 1);
 
   Standard_Integer i = aL;
-  while (1) 
+  for (;;) 
   {
-    const Standard_Real& dblValue = realArray.Value(i);
-    iChar += Sprintf(&(str[iChar]), "%.17g ", dblValue);
+    iChar += Sprintf(&(str[iChar]), "%.17g ", realArray.Value(i));
     if (i >= anU)
       break;
     ++i;

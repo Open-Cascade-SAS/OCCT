@@ -1606,7 +1606,7 @@ void StepData_StepReaderData::SetEntityNumbers(const Standard_Boolean withmap)
 	    Standard_Integer fromscope  = nr;
 	    Standard_Integer toscope    = indm(indmap);
 	    if (toscope < 0) toscope = -toscope;
-	    while (1) {
+	    for(;;) {
 	      fromscope --;    // iteration de base
 	      if (fromscope <= toscope) {
 		errorscope = Standard_True;  // BANG, on est dessus

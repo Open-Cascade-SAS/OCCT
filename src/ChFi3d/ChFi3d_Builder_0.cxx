@@ -3301,7 +3301,7 @@ Standard_Boolean ChFi3d_ComputeCurves(Handle(Adaptor3d_HSurface)&   S1,
   // At this stage : 
   // classic intersections have failed, the path is approached in vain.
 //  Standard_Real Step = 0.1;
-  while(1) {
+  for(;;) {
     //Attention the parameters of arrow for the path and
     //the tolerance for the approximation can't be taken as those of the  
     //Builder, so they are reestimated as much as possible.

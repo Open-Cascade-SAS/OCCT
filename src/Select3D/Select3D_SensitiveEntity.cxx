@@ -91,7 +91,7 @@ Standard_Boolean Select3D_SensitiveEntity::Matches(const Standard_Real XMin,
 //=======================================================================
 
 Standard_Boolean Select3D_SensitiveEntity::Matches(const TColgp_Array1OfPnt2d& aPoly,
-                                                   const Bnd_Box2d& aBox,
+                                                   const Bnd_Box2d& /*aBox*/,
                                                    const Standard_Real aTol)
 {
   return Standard_False;

@@ -63,7 +63,7 @@ Standard_Boolean StepShape_OrientedClosedShell::Orientation() const
 	return orientation;
 }
 
-void StepShape_OrientedClosedShell::SetCfsFaces(const Handle(StepShape_HArray1OfFace)& aCfsFaces)
+void StepShape_OrientedClosedShell::SetCfsFaces(const Handle(StepShape_HArray1OfFace)& /*aCfsFaces*/)
 {
 	// WARNING : the field is redefined.
 	// field set up forbidden.

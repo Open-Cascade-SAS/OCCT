@@ -531,8 +531,6 @@ void BRepOffsetAPI_MiddlePath::Build()
         E2 = TopoDS::Edge(myPaths((j<=NbPaths)? j : 1)(i));
       TopoDS_Edge E12 = TopoDS::Edge(SectionsEdges(i)(j-1));
       
-      //TopoDS_Vertex PrevVertex = TopoDS::Vertex(VerSeq(j-1));
-      //TopoDS_Vertex CurVertex  = TopoDS::Vertex(VerSeq(j));
       TopoDS_Vertex PrevVertex = (E1.IsNull())? TopoDS::Vertex(myPaths(j-1)(i))
         : TopExp::LastVertex(E1, Standard_True);
       TopoDS_Vertex CurVertex = (E2.IsNull())? TopoDS::Vertex(myPaths((j<=NbPaths)? j : 1)(i))
@@ -540,9 +538,7 @@ void BRepOffsetAPI_MiddlePath::Build()
       
       TopoDS_Edge ProperEdge;
       const TopTools_ListOfShape& LE = VEmap.FindFromKey(PrevVertex);
-      //Temporary
-      Standard_Integer LenList = LE.Extent();
-      ///////////
+
       for (itl.Initialize(LE); itl.More(); itl.Next())
       {
         anEdge = TopoDS::Edge(itl.Value());
@@ -673,7 +669,6 @@ void BRepOffsetAPI_MiddlePath::Build()
           BRepLib::BuildCurve3d(NewEdge2);
           Standard_Boolean good_ne  = IsValidEdge(NewEdge, theFace);
           Standard_Boolean good_ne1 = IsValidEdge(NewEdge1, theFace);
-          Standard_Boolean good_ne2 = IsValidEdge(NewEdge2, theFace);
 
           GeomAbs_CurveType type_E1 = TypeOfEdge(E1);
           GeomAbs_CurveType type_E2 = TypeOfEdge(E2);

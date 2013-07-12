@@ -492,9 +492,6 @@ GeomAbs_SurfaceType Adaptor3d_SurfaceOfLinearExtrusion::GetType() const
     return GeomAbs_SurfaceOfExtrusion;
 
   }
-  
-  // portage WNT
-  return GeomAbs_SurfaceOfExtrusion;
 }
 
 //=======================================================================

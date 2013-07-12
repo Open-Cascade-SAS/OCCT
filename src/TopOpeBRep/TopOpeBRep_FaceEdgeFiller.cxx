@@ -79,9 +79,6 @@ void TopOpeBRep_FaceEdgeFiller::Insert
 
   // --- Add <FF,EE> in BDS
   Standard_Integer FFindex = BDS.AddShape(FF,1);
-#ifdef DEB
-  Standard_Integer EEindex =
-#endif
                              BDS.AddShape(EE,2);
 
   // --- get list of interferences connected to edges <FF>,<EE>

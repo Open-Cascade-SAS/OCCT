@@ -827,9 +827,7 @@ static Standard_Integer normal(Draw_Interpretor& di, Standard_Integer n, const c
 //  TopoDS_Face f = TopoDS::Face(DBRep::Get(a[1]));
   if (f.IsNull()) {di<<"null shape"<<"\n";return 1;}
   gp_Pnt p; DrawTrSurf::GetPoint(a[2], p);
-#ifdef DEB
-  Standard_Real length = Draw::Atof(a[3]);
-#endif
+
   Standard_Real dist=0.; gp_Pnt2d uv; Standard_Boolean ok = FUN_tool_projPonF(p,f,uv,dist);
   if (!ok) {di<<"projection failed"<<"\n"; return 1;}
 #ifdef DEB

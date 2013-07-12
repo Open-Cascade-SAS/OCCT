@@ -405,7 +405,7 @@ static Standard_Integer Draw_wait(Draw_Interpretor& , Standard_Integer n, const 
 static unsigned int __stdcall CpuFunc (void * param)
 {
   clock_t aCurrent;
-  while (1)
+  for(;;)
   {
     Sleep (5);
     Standard_Real anUserSeconds, aSystemSeconds;

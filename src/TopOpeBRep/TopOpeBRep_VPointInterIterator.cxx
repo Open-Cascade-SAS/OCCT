@@ -68,10 +68,6 @@ void TopOpeBRep_VPointInterIterator::Init()
   if ( mycheckkeep ) {
     while ( More() ) { 
       const TopOpeBRep_VPointInter& VP = CurrentVP();
-#ifdef DEB
-      Standard_Integer iVP = 
-#endif
-	CurrentVPIndex();
       if (VP.Keep()) break;
       else myVPointIndex++;
     }
@@ -99,10 +95,6 @@ void  TopOpeBRep_VPointInterIterator::Next()
   if ( mycheckkeep ) {
     while ( More() ) { 
       const TopOpeBRep_VPointInter& VP = CurrentVP();
-#ifdef DEB
-      Standard_Integer iVP = 
-#endif
-	CurrentVPIndex();
       if (VP.Keep()) break;
       else myVPointIndex++;
     }

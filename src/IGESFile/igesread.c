@@ -71,7 +71,7 @@ char* nomfic; int lesect[6]; int modefnes;
   if (lefic == NULL) return -1;    /*  fichier pas pu etre ouvert  */
   for (i = 1; i < 6; i++) lesect[i] = 0;
   for (j = 0; j < 100; j++) ligne[j] = 0;
-  while (1) {
+  for(;;) {
     numl ++;
     i = iges_lire(lefic,&numsec,ligne,modefnes);
     if (i <= 0) {

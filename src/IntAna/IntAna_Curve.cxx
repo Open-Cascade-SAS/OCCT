@@ -566,7 +566,6 @@
   default:
     return(gp_Pnt(0.0,0.0,0.0));
   }
-  return(gp_Pnt(0.0,0.0,0.0));
 }
 
 //

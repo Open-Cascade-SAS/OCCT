@@ -149,7 +149,6 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
   done = Standard_True;
   SLin.Clear();  
 
-  Standard_Real Deflection2 = Deflection*Deflection;
   Standard_Integer nbLigSec = Interference.NbSectionLines();
   Standard_Integer nbTanZon = Interference.NbTangentZones();
 
@@ -1326,12 +1325,10 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
     if(U2<UminLig2) UminLig2=U2;
     if(V2<VminLig2) VminLig2=V2; 
   }
-
-  Standard_Real Deflection2 = Deflection*Deflection;
   
   Standard_Real SeuildPointLigne = 15.0 * Increment * Increment;
   
-  Standard_Integer NbPntOn2SOnLine = 0, NbLigCalculee = 0, ver;
+  Standard_Integer NbLigCalculee = 0, ver;
   Standard_Real pu1,pu2,pv1,pv2, dminiPointLigne;
   Standard_Boolean HasStartPoint,RejetLigne;
   IntSurf_PntOn2S StartPOn2S;
@@ -1896,12 +1893,11 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
       return;
     }
     
-    Standard_Real Deflection2 = Deflection*Deflection;
     Standard_Integer nbLigSec = Interference.NbSectionLines();
     Standard_Integer nbTanZon = Interference.NbTangentZones();
     Standard_Real SeuildPointLigne = 15.0 * Increment * Increment;
 
-    Standard_Integer NbPntOn2SOnLine = 0, NbLigCalculee = 0, ver;
+    Standard_Integer NbLigCalculee = 0, ver;
     Standard_Real U1,U2,V1,V2, pu1,pu2,pv1,pv2, incidence, dminiPointLigne;
     Standard_Boolean HasStartPoint,RejetLigne;
     IntSurf_PntOn2S StartPOn2S;
@@ -2489,7 +2485,6 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
   empt = Standard_True;
   done = Standard_True;
   SLin.Clear();  
-  Standard_Real Deflection2 = Deflection*Deflection;
   
   Standard_Integer NbLigCalculee = 0;
   Standard_Real U1,U2,V1,V2;

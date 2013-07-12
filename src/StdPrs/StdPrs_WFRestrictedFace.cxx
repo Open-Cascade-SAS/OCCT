@@ -49,7 +49,6 @@ void StdPrs_WFRestrictedFace::Add
                  const Handle(Prs3d_Drawer)&         theDrawer,
                  Prs3d_NListOfSequenceOfPnt&         theCurves)
 {
-  Standard_Real aLimit = theDrawer->MaximalParameterValue();
   Standard_Integer aNbPoints = theDrawer->Discretisation();
   StdPrs_ToolRFace aToolRst (theFace);
 

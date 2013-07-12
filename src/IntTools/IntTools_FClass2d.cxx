@@ -592,7 +592,7 @@ IntTools_FClass2d::IntTools_FClass2d()
     }//if (IsVPer) {
   }
 
-  while (1) {
+  for(;;) {
     dedans = 1;
     gp_Pnt2d Puv(u,v);
       

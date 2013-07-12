@@ -340,7 +340,7 @@ Standard_Boolean OSD_Process :: IsSuperUser () {
  Standard_Boolean retVal = FALSE;
  PSID             pSIDadmin;
  HANDLE           hProcessToken = INVALID_HANDLE_VALUE;
- PTOKEN_GROUPS    pTKgroups;
+ PTOKEN_GROUPS    pTKgroups = NULL;
 
  if (  !OpenProcessToken (
          GetCurrentProcess (),
