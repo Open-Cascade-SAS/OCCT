@@ -89,8 +89,6 @@ static Standard_Integer DPrsStd_AISDisplay (Draw_Interpretor& di,
     TPrsStd_AISViewer::Update(L);
     return 0;
   }
-  di << "DPrsStd_AISDisplay : Error" << "\n";
-  return 1;
 }
 
 //=======================================================================

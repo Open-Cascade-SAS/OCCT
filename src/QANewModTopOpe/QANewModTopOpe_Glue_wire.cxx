@@ -928,8 +928,8 @@ static Standard_Boolean IsOverlapped(const TopoDS_Edge &theEdge1,
 //=======================================================================
 
 static void SplitEdge(const TopoDS_Edge                &theEdge,
-		      const TopTools_IndexedMapOfShape &theVertices,
-		            TopTools_ListOfShape       &theSplits)
+                      const TopTools_IndexedMapOfShape &theVertices,
+                            TopTools_ListOfShape       &theSplits)
 {
   //const TopoDS_Edge   aNewEdge;
   TopoDS_Vertex aV1;
@@ -945,7 +945,8 @@ static void SplitEdge(const TopoDS_Edge                &theEdge,
 
   Standard_Integer i;
 
-  for (i = 1; i <= theVertices.Extent(); i++) {
+  for (i = 1; i <= theVertices.Extent(); i++) 
+  {
     const TopoDS_Shape &theVtx = theVertices.FindKey(i);
 
     if (!aV1.IsSame(theVtx) && !aV2.IsSame(theVtx))
@@ -956,7 +957,7 @@ static void SplitEdge(const TopoDS_Edge                &theEdge,
 
   theSplits.Clear();
 
-// Splitting of the new edge.
+  // Splitting of the new edge.
   if (!TopOpeBRepTool_TOOL::SplitE(aNewEdge, theSplits)) {
     theSplits.Clear();
     theSplits.Append(theEdge);
@@ -964,32 +965,33 @@ static void SplitEdge(const TopoDS_Edge                &theEdge,
     return;
   }
 
-// Addition of the other internal vertices into the corresponding splits.
+  // Addition of the other internal vertices into the corresponding splits.
   TopoDS_Iterator anIter(theEdge, Standard_False);
 
-  for (; anIter.More(); anIter.Next()) {
+  for (; anIter.More(); anIter.Next()) 
+  {
     TopoDS_Vertex aCurVtx = TopoDS::Vertex(anIter.Value());
 
-// for each vertex which is not the same as aV1, aV2, theIntV1 or theIntV2.
-    if (!aCurVtx.IsSame(aV1) && !aCurVtx.IsSame(aV2) &&
-	!theVertices.Contains(aCurVtx)) {
+    // for each vertex which is not the same as aV1, aV2, theIntV1 or theIntV2.
+    if (!aCurVtx.IsSame(aV1) && !aCurVtx.IsSame(aV2) && !theVertices.Contains(aCurVtx)) 
+    {
       TopTools_ListIteratorOfListOfShape anEdgeIter(theSplits);
-      Standard_Real                      aCurPar;
+      Standard_Real aCurPar = BRep_Tool::Parameter(aCurVtx, theEdge);
 
-      aCurPar = BRep_Tool::Parameter(aCurVtx, theEdge);
+      // Search for the split the current vertex belongs to.
+      for (; anEdgeIter.More(); anEdgeIter.Next()) 
+      {
+        TopoDS_Edge   anEdge = TopoDS::Edge(anEdgeIter.Value());
+        Standard_Real aFPar;
+        Standard_Real aLPar;
 
-// Search for the split the current vertex belongs to.
-      for (; anEdgeIter.More(); anEdgeIter.Next()) {
-	TopoDS_Edge   anEdge = TopoDS::Edge(anEdgeIter.Value());
-	Standard_Real aFPar;
-	Standard_Real aLPar;
+        BRep_Tool::Range(anEdge, aFPar, aLPar);
 
-	BRep_Tool::Range(anEdge, aFPar, aLPar);
-
-	if (aCurPar > aFPar && aCurPar < aLPar) {
-	  aBuilder.Add(anEdge, aCurVtx);
-	}
-	break;
+        if (aCurPar > aFPar && aCurPar < aLPar) 
+        {
+          aBuilder.Add(anEdge, aCurVtx);
+        }
+        break;
       }
     }
   }
@@ -998,9 +1000,9 @@ static void SplitEdge(const TopoDS_Edge                &theEdge,
   TopTools_ListIteratorOfListOfShape anEdgeIter(theSplits);
   TopAbs_Orientation                 anOri = theEdge.Orientation();
 
-  for (; anEdgeIter.More(); anEdgeIter.Next()) {
+  for (; anEdgeIter.More(); anEdgeIter.Next()) 
+  {
     TopoDS_Shape &anEdge = anEdgeIter.Value();
-
     anEdge.Orientation(anOri);
   }
 }

@@ -496,7 +496,6 @@ Standard_Boolean Geom2dGcc_Circ2d2TanRad::
     if (TheSame1(Index) == 0) { return Standard_False; }
     else { return Standard_True; }
   }
-  return Standard_True;
 }
 
 Standard_Boolean Geom2dGcc_Circ2d2TanRad::
@@ -512,5 +511,5 @@ Standard_Boolean Geom2dGcc_Circ2d2TanRad::
     if (TheSame1(Index) == 0) { return Standard_False; }
     else { return Standard_True; }
   }
-  return Standard_True;
+//  return Standard_True;
 }

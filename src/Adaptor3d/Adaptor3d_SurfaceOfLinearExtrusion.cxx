@@ -193,9 +193,8 @@ Handle(Adaptor3d_HSurface)  Adaptor3d_SurfaceOfLinearExtrusion::VTrim
  const Standard_Real Tol) const 
 {
   Handle(Adaptor3d_HCurve) newBasisCurve =
-  myBasisCurve->Trim(First,
-		     Last,
-		     Tol) ;
+  myBasisCurve->Trim(First, Last, Tol);
+  
   Adaptor3d_SurfaceOfLinearExtrusion * SurfacePtr =
   new  Adaptor3d_SurfaceOfLinearExtrusion(newBasisCurve, myDirection) ;
 
@@ -288,7 +287,7 @@ Standard_Real Adaptor3d_SurfaceOfLinearExtrusion::VPeriod() const
 //=======================================================================
 
 gp_Pnt Adaptor3d_SurfaceOfLinearExtrusion::Value(const Standard_Real U, 
-					       const Standard_Real V)
+                                                 const Standard_Real V)
      const 
 {
   gp_Pnt P;
@@ -303,8 +302,8 @@ gp_Pnt Adaptor3d_SurfaceOfLinearExtrusion::Value(const Standard_Real U,
 //=======================================================================
 
 void Adaptor3d_SurfaceOfLinearExtrusion::D0(const Standard_Real U,
-					  const Standard_Real V, 
-					  gp_Pnt&             P) const 
+                                            const Standard_Real V, 
+                                            gp_Pnt&             P) const 
 {
   myBasisCurve->D0(U,P);
   P.Translate( V * gp_Vec(myDirection));
@@ -316,10 +315,10 @@ void Adaptor3d_SurfaceOfLinearExtrusion::D0(const Standard_Real U,
 //=======================================================================
 
 void Adaptor3d_SurfaceOfLinearExtrusion::D1(const Standard_Real U, 
-					  const Standard_Real V, 
-					        gp_Pnt& P, 
-					        gp_Vec& D1U, 
-					        gp_Vec& D1V) const 
+                                            const Standard_Real V, 
+                                                  gp_Pnt& P, 
+                                                  gp_Vec& D1U, 
+                                                  gp_Vec& D1V) const 
 {
   myBasisCurve->D1(U,P,D1U);
   D0(U,V,P);
@@ -332,13 +331,13 @@ void Adaptor3d_SurfaceOfLinearExtrusion::D1(const Standard_Real U,
 //=======================================================================
 
 void Adaptor3d_SurfaceOfLinearExtrusion::D2(const Standard_Real U, 
-					  const Standard_Real V,
-                                          gp_Pnt& P, 
-					  gp_Vec& D1U, gp_Vec& D1V,
-                                          gp_Vec& D2U, gp_Vec& D2V, 
-					  gp_Vec& D2UV) const 
+                                            const Standard_Real V,
+                                            gp_Pnt& P, 
+                                            gp_Vec& D1U, gp_Vec& D1V,
+                                            gp_Vec& D2U, gp_Vec& D2V, 
+                                            gp_Vec& D2UV) const 
 {
-  myBasisCurve->D2(U,P,D1U,D2U);	
+  myBasisCurve->D2(U,P,D1U,D2U);
   D1V = gp_Vec(myDirection);
   D2V.SetCoord( 0., 0., 0.);
   D2UV.SetCoord( 0., 0., 0.);
@@ -351,13 +350,13 @@ void Adaptor3d_SurfaceOfLinearExtrusion::D2(const Standard_Real U,
 //=======================================================================
 
 void Adaptor3d_SurfaceOfLinearExtrusion::D3(const Standard_Real U, 
-					  const Standard_Real V,
-                                          gp_Pnt& P,
-					  gp_Vec& D1U, gp_Vec& D1V,
-                                          gp_Vec& D2U, gp_Vec& D2V, 
-					  gp_Vec& D2UV,
-                                          gp_Vec& D3U, gp_Vec& D3V, 
-					  gp_Vec& D3UUV, gp_Vec& D3UVV) const 
+                                            const Standard_Real V,
+                                            gp_Pnt& P,
+                                            gp_Vec& D1U, gp_Vec& D1V,
+                                            gp_Vec& D2U, gp_Vec& D2V, 
+                                            gp_Vec& D2UV,
+                                            gp_Vec& D3U, gp_Vec& D3V, 
+                                            gp_Vec& D3UUV, gp_Vec& D3UVV) const 
 {
   myBasisCurve->D3(U,P,D1U,D2U,D3U);
   D1V = gp_Vec(myDirection);
@@ -427,10 +426,10 @@ GeomAbs_SurfaceType Adaptor3d_SurfaceOfLinearExtrusion::GetType() const
     {
       gp_Dir D = myBasisCurve->Line().Direction();
       if (myDirection.IsParallel( D, Precision::Angular())) {
-	return GeomAbs_SurfaceOfExtrusion;
+        return GeomAbs_SurfaceOfExtrusion;
       }
       else {
-	return GeomAbs_Plane;
+        return GeomAbs_Plane;
       }
       break;
     }
@@ -439,14 +438,14 @@ GeomAbs_SurfaceType Adaptor3d_SurfaceOfLinearExtrusion::GetType() const
     {
       gp_Dir D = (myBasisCurve->Circle()).Axis().Direction();
       if ( myDirection.IsParallel( D, Precision::Angular())) {
-	return GeomAbs_Cylinder;
+        return GeomAbs_Cylinder;
       }
       // JAG 10.11.95
       else if (myDirection.IsNormal(D, Precision::Angular())) {
-	return GeomAbs_Plane;
+        return GeomAbs_Plane;
       }
       else {
-	return GeomAbs_SurfaceOfExtrusion;
+        return GeomAbs_SurfaceOfExtrusion;
       }
       break;
     }
@@ -456,10 +455,10 @@ GeomAbs_SurfaceType Adaptor3d_SurfaceOfLinearExtrusion::GetType() const
     {
       gp_Dir D = (myBasisCurve->Ellipse()).Axis().Direction();
       if (myDirection.IsNormal(D, Precision::Angular())) {
-	return GeomAbs_Plane;
+        return GeomAbs_Plane;
       }
       else {
-	return GeomAbs_SurfaceOfExtrusion;
+        return GeomAbs_SurfaceOfExtrusion;
       }
       break;
     }
@@ -468,10 +467,10 @@ GeomAbs_SurfaceType Adaptor3d_SurfaceOfLinearExtrusion::GetType() const
     {
       gp_Dir D = (myBasisCurve->Parabola()).Axis().Direction();
       if (myDirection.IsNormal(D, Precision::Angular())) {
-	return GeomAbs_Plane;
+        return GeomAbs_Plane;
       }
       else {
-	return GeomAbs_SurfaceOfExtrusion;
+        return GeomAbs_SurfaceOfExtrusion;
       }
       break;
     }
@@ -480,10 +479,10 @@ GeomAbs_SurfaceType Adaptor3d_SurfaceOfLinearExtrusion::GetType() const
     {
       gp_Dir D = (myBasisCurve->Hyperbola()).Axis().Direction();
       if (myDirection.IsNormal(D, Precision::Angular())) {
-	return GeomAbs_Plane;
+        return GeomAbs_Plane;
       }
       else {
-	return GeomAbs_SurfaceOfExtrusion;
+        return GeomAbs_SurfaceOfExtrusion;
       }
       break;
     }
@@ -502,7 +501,7 @@ GeomAbs_SurfaceType Adaptor3d_SurfaceOfLinearExtrusion::GetType() const
 gp_Pln Adaptor3d_SurfaceOfLinearExtrusion::Plane() const 
 { 
   Standard_NoSuchObject_Raise_if (GetType() != GeomAbs_Plane,
-				  "Adaptor3d_SurfaceOfLinearExtrusion::Plane");
+                  "Adaptor3d_SurfaceOfLinearExtrusion::Plane");
 /*
   gp_Pnt P;
   gp_Vec Ox, Oy;

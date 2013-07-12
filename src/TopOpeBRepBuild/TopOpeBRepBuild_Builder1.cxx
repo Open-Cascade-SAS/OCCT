@@ -1732,59 +1732,58 @@ Standard_Integer TopOpeBRepBuild_Builder1::TwoPiecesON (const TopTools_SequenceO
     // case IV   !RevSense && DifOriented         
     if (!IsEdgesRevSense && IsFacesDifOriented) {
       if (Opefus()) {// Fusion
-	if (aStateObj==TopAbs_OUT && aStateTool==TopAbs_OUT) {
-	  Rejected1=Standard_False;
-	  Rejected2=Standard_False;
-	}
-	else if (aStateObj==TopAbs_OUT && aStateTool==TopAbs_IN) {
-	  Rejected2=Standard_False;
-	}
-	else if (aStateObj==TopAbs_IN && aStateTool==TopAbs_OUT) {
-	  Rejected1=Standard_False;
-	}
-	else if (aStateObj==TopAbs_IN && aStateTool==TopAbs_IN) {
-	  if(!myProcessedPartsON2d.Contains(aPieceObj)) {//we proceed IsSame only if we didn't it before
-	    myProcessedPartsON2d.Add(aPieceObj);
-	    IsSame2d (aSeq, aListOfPiecesOut2d); //Perform IsSame 2d and keep periodic parts
-	  }
-	}
+        if (aStateObj==TopAbs_OUT && aStateTool==TopAbs_OUT) {
+          Rejected1=Standard_False;
+          Rejected2=Standard_False;
+        }
+        else if (aStateObj==TopAbs_OUT && aStateTool==TopAbs_IN) {
+          Rejected2=Standard_False;
+        }
+        else if (aStateObj==TopAbs_IN && aStateTool==TopAbs_OUT) {
+          Rejected1=Standard_False;
+        }
+        else if (aStateObj==TopAbs_IN && aStateTool==TopAbs_IN) {
+          if(!myProcessedPartsON2d.Contains(aPieceObj)) {//we proceed IsSame only if we didn't it before
+            myProcessedPartsON2d.Add(aPieceObj);
+            IsSame2d (aSeq, aListOfPiecesOut2d); //Perform IsSame 2d and keep periodic parts
+          }
+        }
       }
       
       if (Opecom()) {// Common
-	if (aStateObj==TopAbs_IN && aStateTool==TopAbs_IN) {
-	  Rejected1=Standard_False;
-	  Rejected2=Standard_False;
-	}
-	else if (aStateObj==TopAbs_OUT && aStateTool==TopAbs_IN) {
-	  Rejected1=Standard_False;
-	}
-	else if (aStateObj==TopAbs_IN && aStateTool==TopAbs_OUT) {
-	  Rejected2=Standard_False;
-	}
+        if (aStateObj==TopAbs_IN && aStateTool==TopAbs_IN) {
+          Rejected1=Standard_False;
+          Rejected2=Standard_False;
+        }
+        else if (aStateObj==TopAbs_OUT && aStateTool==TopAbs_IN) {
+          Rejected1=Standard_False;
+        }
+        else if (aStateObj==TopAbs_IN && aStateTool==TopAbs_OUT) {
+          Rejected2=Standard_False;
+        }
       }
       
       if (Opec12()) { //Cut
-	if (aStateObj==TopAbs_OUT && aStateTool==TopAbs_OUT) {
-	  Rejected1=Standard_False;
-	}
-	else if (aStateObj==TopAbs_IN && aStateTool==TopAbs_IN) {
-	  Rejected2=Standard_False;
-	}
+        if (aStateObj==TopAbs_OUT && aStateTool==TopAbs_OUT) {
+          Rejected1=Standard_False;
+        }
+        else if (aStateObj==TopAbs_IN && aStateTool==TopAbs_IN) {
+          Rejected2=Standard_False;
+        }
       }
       if (!Rejected1) {
-	aListOfPieces.Append(aPieceObj);
-	aListOfFaces.Append (aFaceObj);
+        aListOfPieces.Append(aPieceObj);
+        aListOfFaces.Append (aFaceObj);
       }
       if (!Rejected2) {
-	aListOfPieces.Append(aPieceTool); 
-	aListOfFaces.Append (aFaceTool);
+        aListOfPieces.Append(aPieceTool); 
+        aListOfFaces.Append (aFaceTool);
       }
       return 4;
     }
     // Unknowm case for existing adjacents
     return 0;
   }
-  return -1;
 }
 
 //=======================================================================

@@ -1405,7 +1405,6 @@ LRESULT APIENTRY DrawWindow::DrawProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARA
     else
       return(DefMDIChildProc(hWnd, wMsg, wParam, lParam));
   }
-  return (0l);
 }
 
 

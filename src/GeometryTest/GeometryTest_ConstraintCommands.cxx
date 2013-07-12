@@ -344,45 +344,43 @@ static Standard_Integer cirtang (Draw_Interpretor& di,Standard_Integer n, const 
       }
 
       else {
-	// R-C-R
-	di << "Radius - Curve - Radius ??"<<"\n";
-	return 1;
+        // R-C-R
+        di << "Radius - Curve - Radius ??"<<"\n";
+        return 1;
       }
     }
     else if (ip2) {
       // R-P-..
       if (!C3.IsNull()) {
-	// R-P-C
-	Geom2dGcc_Circ2d2TanRad ct3(Geom2dGcc::Unqualified(C3),
-				    new Geom2d_CartesianPoint(P2),
-				    Draw::Atof(a[2]),
-				    tol);
-	return solutions(di,ct3,a[1]);
+        // R-P-C
+        Geom2dGcc_Circ2d2TanRad ct3(Geom2dGcc::Unqualified(C3),
+                  new Geom2d_CartesianPoint(P2),
+                  Draw::Atof(a[2]),
+                  tol);
+        return solutions(di,ct3,a[1]);
       }
       
-      else if (ip3) {
-	// R-P-P
-	Geom2dGcc_Circ2d2TanRad ct3(new Geom2d_CartesianPoint(P2),
-				    new Geom2d_CartesianPoint(P3),
-				    Draw::Atof(a[2]),
-				    tol);
-	return solutions(di,ct3,a[1]);
-      }
-      
+      else if (ip3) 
+      {
+        // R-P-P
+        Geom2dGcc_Circ2d2TanRad ct3(new Geom2d_CartesianPoint(P2),
+                  new Geom2d_CartesianPoint(P3),
+                  Draw::Atof(a[2]),
+                  tol);
+        return solutions(di,ct3,a[1]);
+      }      
       else {
-	// R-P-R
-	di << "Radius - Point - Radius ??"<<"\n";
-	return 1;
+        // R-P-R
+        di << "Radius - Point - Radius ??"<<"\n";
+        return 1;
       }
     }
-
     else {
       // R-R-..
       di << "radius, radius ???"<<"\n";
       return 1;
     }
   }
-  return 0;
 }
 
 

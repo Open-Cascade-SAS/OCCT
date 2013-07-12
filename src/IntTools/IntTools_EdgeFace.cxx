@@ -941,7 +941,7 @@ void IntTools_EdgeFace::CheckData()
     }
   }
   */
-  return 0;
+//  return 0;
 }
 
 

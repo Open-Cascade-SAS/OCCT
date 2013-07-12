@@ -367,8 +367,8 @@ Standard_Boolean TopOpeBRepBuild_GTopo::IsToReverse1() const
     else IsToRev = (s1 == TopAbs_IN);
     return IsToRev;
   }
-  Standard_ProgramError::Raise("GTopo::IsToReverse1");
-  return Standard_False; // dummy
+//  Standard_ProgramError::Raise("GTopo::IsToReverse1");
+//  return Standard_False; // dummy
 }
 
 
@@ -390,8 +390,6 @@ Standard_Boolean TopOpeBRepBuild_GTopo::IsToReverse2() const
     else IsToRev = (s2 == TopAbs_IN);
     return IsToRev;
   }
-  Standard_ProgramError::Raise("GTopo::IsToReverse2");
-  return Standard_False; // dummy
 }
 
 //=======================================================================

@@ -828,7 +828,6 @@ static Standard_Boolean IsSharpCorner (const Handle(Geom2d_Geometry)& Geom1,
   else {
     return Standard_True;
   }
-  return Standard_False;
 }
 
 

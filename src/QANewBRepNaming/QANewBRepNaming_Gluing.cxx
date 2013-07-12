@@ -497,8 +497,9 @@ TDF_Label QANewBRepNaming_Gluing::Content() const {
   const TDF_Label& ContentLabel = ResultLabel().NewChild();
   TDataStd_Name::Set(ContentLabel, "Content");
   return ContentLabel;
-#endif
+#else
   return ResultLabel().NewChild();
+#endif
 }
 
 //=======================================================================

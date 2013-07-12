@@ -1207,11 +1207,10 @@ Handle(Adaptor2d_HCurve2d)
 //  Modified by Sergey KHROMOV - Thu Apr 18 10:57:51 2002 End
     return Handle(Adaptor2d_HCurve2d)();
   }
-  myProjIsDone = Standard_False;
+//  myProjIsDone = Standard_False;
 //  Modified by Sergey KHROMOV - Thu Apr 18 10:58:01 2002 Begin
 //   Standard_NoSuchObject_Raise_if(1,"ProjLib_ComputeOnPS: build echec");
 //  Modified by Sergey KHROMOV - Thu Apr 18 10:58:02 2002 End
-  return Handle(Adaptor2d_HCurve2d)();
 }
 
 

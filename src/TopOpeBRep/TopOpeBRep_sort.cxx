@@ -39,7 +39,6 @@ int compll(const void* v1, const void* v2) {
   if      (p1 < p2) return (-1);
   else if (p1 > p2) return (1);
   else return (0);
-  return (0);
 }
      
 Standard_EXPORT void BREP_sortonparameter2(TopOpeBRepDS_ListOfInterference& LOI)

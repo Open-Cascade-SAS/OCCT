@@ -62,7 +62,6 @@ Standard_Integer BOOPNINTL::Set(const Standard_Boolean b,Standard_Integer n,char
   else {
     return 1;
   }
-  return 0;
 }
 
 Standard_Boolean BOOPNINTL::Get(Standard_Integer n,char**a){

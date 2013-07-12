@@ -65,8 +65,6 @@ Standard_Integer  BRepGProp_EdgeTool::IntegrationOrder(const BRepAdaptor_Curve& 
     default :
       return 10;
   }
-  //POP WE should return something : -> Default
-  return 10;
 }
 
 gp_Pnt  BRepGProp_EdgeTool::Value(const BRepAdaptor_Curve& C, const Standard_Real U)

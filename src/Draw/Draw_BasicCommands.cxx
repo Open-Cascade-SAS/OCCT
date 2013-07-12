@@ -416,10 +416,9 @@ static unsigned int __stdcall CpuFunc (void * param)
     {
       cout << "Process killed by CPU limit (" << CPU_LIMIT << " sec)" << endl;
       ExitProcess (2);
-      return 0;
+//      return 0;
     }
   }
-  return 0;
 }
 #else
 static void CpuFunc (int)

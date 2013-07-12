@@ -149,10 +149,10 @@ static Standard_Integer OCC426 (Draw_Interpretor& di, Standard_Integer argc, con
       TopLoc_Location loc;
       Handle(Poly_Triangulation) facing = BRep_Tool::Triangulation(TopologicalFace, loc);
       if (facing.IsNull())
-	{
-	  di << "Triangulation FAILED for this face" << "\n";
-	  continue;
-	}
+      {
+        di << "Triangulation FAILED for this face" << "\n";
+        continue;
+      }
       di << "No of Triangles = " << facing->NbTriangles() << "\n";
     }
   di<<"Triangulation of all Faces Completed. "<< "\n" << "\n";
@@ -246,40 +246,36 @@ static Standard_Integer OCC486(Draw_Interpretor& di, Standard_Integer argc, cons
       Standard_Integer nPSurf = ( myExtPS.IsDone() ? myExtPS.NbExt() : 0 );
 
       if ( nPSurf > 0 )
-	{
+      {
+        //Standard_Real distMin = myExtPS.Value ( 1 );
+        Standard_Real distMin = myExtPS.SquareDistance ( 1 );
+        Standard_Integer indMin=1;
+        for (Standard_Integer sol = 2; sol <= nPSurf ; sol++)
+        {
+          //Standard_Real dist = myExtPS.Value(sol);
+          Standard_Real dist = myExtPS.SquareDistance(sol);
+          if ( distMin > dist )
+          {
+            distMin = dist;
+            indMin = sol;
+          }
+        }
+        distMin = sqrt(distMin);
+        Standard_Real S, T;
+        myExtPS.Point(indMin).Parameter ( S, T );
+        gp_Pnt aCheckPnt = aSurf.Value( S, T );
+        Standard_Real aCheckDist = P3D.Distance(aCheckPnt);
+        di << "Solution is : U = "<< S << "\t V = "<< T << "\n";
+        di << "Solution is : X = "<< aCheckPnt.X() << "\t Y = "<< aCheckPnt.Y() << "\t Z = "<< aCheckPnt.Z() << "\n";
+        di << "ExtremaDistance = " << distMin  << "\n";
+        di << "CheckDistance = " << aCheckDist << "\n";
 
-	  //Standard_Real distMin = myExtPS.Value ( 1 );
-	  Standard_Real distMin = myExtPS.SquareDistance ( 1 );
-	  Standard_Integer indMin=1;
-	  for (Standard_Integer sol = 2; sol <= nPSurf ; sol++)
-	    {
-	      //Standard_Real dist = myExtPS.Value(sol);
-	      Standard_Real dist = myExtPS.SquareDistance(sol);
-	      if ( distMin > dist )
-		{
-		  distMin = dist;
-		  indMin = sol;
-		}
-	    }
-//
-	  distMin = sqrt(distMin);
-	  Standard_Real S, T;
-	  myExtPS.Point(indMin).Parameter ( S, T );
-	  gp_Pnt aCheckPnt = aSurf.Value( S, T );
-	  Standard_Real aCheckDist = P3D.Distance(aCheckPnt);
-	  di << "Solution is : U = "<< S << "\t V = "<< T << "\n";
-	  di << "Solution is : X = "<< aCheckPnt.X() << "\t Y = "<< aCheckPnt.Y() << "\t Z = "<< aCheckPnt.Z() << "\n";
-	  di << "ExtremaDistance = " << distMin  << "\n";
-	  di << "CheckDistance = " << aCheckDist << "\n";
-
-	  if(fabs(distMin - aCheckDist) < Precision::Confusion()) return 0;
-	  else return 1;
-	}
+        if(fabs(distMin - aCheckDist) < Precision::Confusion()) return 0;
+        else return 1;
+      }
       else return 1;
     }
   catch (Standard_Failure) {di << "OCC486 Exception \n" ;return 1;}
-  
-  return 0;
 }
 
 #include <GC_MakeArcOfCircle.hxx>

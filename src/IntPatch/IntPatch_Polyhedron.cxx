@@ -518,8 +518,7 @@ Standard_Integer IntPatch_Polyhedron::TriConnex (const Standard_Integer Triang,
     TempOtherP = OtherP;
 
     return(0); //-- BUG NON CORRIGE ( a revoir le role de nbdeltaU et nbdeltaV)
-
-    return(TriConnex(TempTri,Pivot,TempOtherP,TriCon,OtherP));
+//    return(TriConnex(TempTri,Pivot,TempOtherP,TriCon,OtherP));
   }
   return TriCon;
 }

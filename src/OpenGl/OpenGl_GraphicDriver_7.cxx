@@ -345,7 +345,6 @@ Standard_Boolean OpenGl_GraphicDriver::BufferDump (const Graphic3d_CView&      t
 {
   const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
   return (aCView != NULL) && aCView->WS->BufferDump ((OpenGl_FrameBuffer* )theCView.ptrFBO, theImage, theBufferType);
-  return Standard_False;
 }
 
 Standard_Boolean OpenGl_Workspace::BufferDump (OpenGl_FrameBuffer*         theFBOPtr,

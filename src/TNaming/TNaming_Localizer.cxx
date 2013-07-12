@@ -330,26 +330,26 @@ void TNaming_Localizer::GoBack (const TopoDS_Shape&         S,
       FindFeaturesInAncestors (S, Sol, AncInFeature); 
       TopTools_MapIteratorOfMapOfShape itF(AncInFeature);
       for ( ; itF.More(); itF.Next()) {
-	const TopoDS_Shape& AncOfS = itF.Key();
-	LBS  .Append(AncOfS);
-	LBNS.Append(TNaming_Tool::NamedShape(AncOfS,Lab));
+        const TopoDS_Shape& AncOfS = itF.Key();
+        LBS  .Append(AncOfS);
+        LBNS.Append(TNaming_Tool::NamedShape(AncOfS,Lab));
       }
     }
   } 
   else {
     for ( ; it.More(); it.Next()) {
-//      if (it.NamedShape()->Evolution() != TNaming_SELECTED) {
+  //      if (it.NamedShape()->Evolution() != TNaming_SELECTED) {
       if (it.NamedShape()->Evolution() == Evol) {
-	Handle(TNaming_NamedShape) NS = TNaming_Tool::NamedShape(it.Shape(),Lab);
-	if (!NS.IsNull()) {
-	  LBS.Append  (it.Shape());
-	  LBNS.Append (TNaming_Tool::NamedShape(it.Shape(),Lab));
-	}
-	else {
+        Handle(TNaming_NamedShape) NS = TNaming_Tool::NamedShape(it.Shape(),Lab);
+        if (!NS.IsNull()) {
+          LBS.Append  (it.Shape());
+          LBNS.Append (TNaming_Tool::NamedShape(it.Shape(),Lab));
+        }
+        else {
 #ifdef DEB
-	  cout <<"TNaming_Localizer: Shape modifie sans avoir ete cree"<<endl;
+          cout <<"TNaming_Localizer: Shape modifie sans avoir ete cree"<<endl;
 #endif
-	}
+        }
       }
     }
   }

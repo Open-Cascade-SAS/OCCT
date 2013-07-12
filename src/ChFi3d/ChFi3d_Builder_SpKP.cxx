@@ -199,8 +199,6 @@ static Standard_Real ComputeAbscissa(const BRepAdaptor_Curve& C,
   default:
     return 0;
   }    
-  Standard_NotImplemented::Raise("calculate abscisse non-processed");
-  return 0.;
 }
 
 //=======================================================================

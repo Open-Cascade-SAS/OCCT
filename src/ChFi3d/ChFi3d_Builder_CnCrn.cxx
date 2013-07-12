@@ -917,7 +917,6 @@ static Standard_Integer SurfIndex(const ChFiDS_StripeArray1& StripeArray1,
   case FACE2:       return aSurfData->IndexOfS2();
   default:          return -1;
   }
-  return -1;
 }
 
 //=======================================================================

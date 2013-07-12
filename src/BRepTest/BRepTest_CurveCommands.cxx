@@ -73,7 +73,6 @@
 #include <TopOpeBRep_Point2d.hxx>
 #include <TopOpeBRepDS_Transition.hxx>
 
-//#ifdef WNT
 #include <stdio.h>
 #ifdef WNT
 Standard_IMPORT Draw_Viewer dout;
@@ -1142,11 +1141,6 @@ static Standard_Integer bsplineprof(Draw_Interpretor& di,
   DBRep::Set(a[1],S);
   
   return 0;
-
-#ifdef DEB  
-  di << "profile : bad number of arguments";
-  return 1;
-#endif
 }
 
 

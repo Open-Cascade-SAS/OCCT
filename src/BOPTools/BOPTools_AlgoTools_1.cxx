@@ -169,7 +169,6 @@ void CorrectWires(const TopoDS_Face& aFx)
   GeomAbs_SurfaceType aType;
   //
   const Handle(Geom_Surface)& aS=BRep_Tool::Surface(aFx);
-  //BRepAdaptor_Surface aBAS (aFx, Standard_False);
   GeomAdaptor_Surface aGAS (aS);
   aType=aGAS.GetType();
   if (aType!=GeomAbs_Cylinder) {
@@ -205,7 +204,6 @@ void CorrectWires(const TopoDS_Face& aFx)
       aT=BRep_Tool::Parameter(aV, aE);
       const Handle(Geom2d_Curve)& aC2D=BRep_Tool::CurveOnSurface(aE, aF, aT1, aT2);
       aC2D->D0(aT, aP2D);
-      //aP=aBAS.Value(aP2D.X(), aP2D.Y());
       aS->D0(aP2D.X(), aP2D.Y(), aP);
       aD2=aPV.SquareDistance(aP);
       if (aD2>aD2max) {
@@ -325,7 +323,6 @@ void CorrectEdgeTolerance (const TopoDS_Edge& myShape,
     Standard_Boolean SameRange = TE->SameRange();
     Standard_Real First = myHCurve->FirstParameter();
     Standard_Real Last  = myHCurve->LastParameter();
-    //Standard_Real Delta =1.e-14;
     Standard_Real Delta =1.e-12;
 
     Handle(BRep_TFace)& TF = *((Handle(BRep_TFace)*) &S.TShape());
@@ -333,7 +330,6 @@ void CorrectEdgeTolerance (const TopoDS_Edge& myShape,
     const TopLoc_Location& TFloc = TF->Location();
     const Handle(Geom_Surface)& Su = TF->Surface();
     TopLoc_Location L = (Floc * TFloc).Predivided(myShape.Location());
-    //      Standard_Boolean checkclosed = Standard_False;
     Standard_Boolean pcurvefound = Standard_False;
 
     BRep_ListIteratorOfListOfCurveRepresentation itcr(TE->Curves());
@@ -345,10 +341,7 @@ void CorrectEdgeTolerance (const TopoDS_Edge& myShape,
         Standard_Real f,l;
         GC->Range(f,l);
         if (SameRange && (f != First || l != Last)) {
-          return ;//BRepCheck_InvalidSameRangeFlag);
-          if (SameParameter) {
-            return; //BRepCheck_InvalidSameParameterFlag);
-          }
+          return ;//BRepCheck_InvalidSameRangeFlag;
         }
 	
         Handle(Geom_Surface) Sb = cr->Surface();

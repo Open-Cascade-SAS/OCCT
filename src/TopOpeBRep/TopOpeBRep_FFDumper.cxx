@@ -258,6 +258,8 @@ void TopOpeBRep_FFDumper::DumpVP(const TopOpeBRep_VPointInter& VP,const Standard
 #ifndef DEB
 Standard_Integer TopOpeBRep_FFDumper::ExploreIndex(const TopoDS_Shape& , const Standard_Integer ) const
 {
+    return 0;
+}
 #else
 Standard_Integer TopOpeBRep_FFDumper::ExploreIndex(const TopoDS_Shape& S, const Standard_Integer ISI) const
 {
@@ -265,9 +267,8 @@ Standard_Integer TopOpeBRep_FFDumper::ExploreIndex(const TopoDS_Shape& S, const 
   if (ISI == 1) r = myEM1.Find(S);
   if (ISI == 2) r = myEM2.Find(S);
   return r;
-#endif
-  return 0;
 }
+#endif
 
 //=======================================================================
 //function : DumpDSP

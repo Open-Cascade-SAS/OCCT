@@ -209,13 +209,13 @@ Handle(Draw_Drawable3D) DDataStd_DrawDriver::DrawableConstraint (const Handle(TD
   case TDataXtd_RADIUS:
     {
       if (A->IsPlanar()) {
-	D = new DrawDim_PlanarRadius (TNaming_Tool::GetShape(A->GetGeometry(1)));
+        D = new DrawDim_PlanarRadius (TNaming_Tool::GetShape(A->GetGeometry(1)));
       }
       else {
-	TopoDS_Shape aLocalShape = Geometry(A,1,TopAbs_FACE);
-	TopoDS_Face F1 = TopoDS::Face(aLocalShape);
-//	TopoDS_Face F1 = TopoDS::Face(Geometry(A,1,TopAbs_FACE));
-	if (!F1.IsNull()) D = new DrawDim_Radius(F1);
+        TopoDS_Shape aLocalShape = Geometry(A,1,TopAbs_FACE);
+        TopoDS_Face F1 = TopoDS::Face(aLocalShape);
+        // TopoDS_Face F1 = TopoDS::Face(Geometry(A,1,TopAbs_FACE));
+        if (!F1.IsNull()) D = new DrawDim_Radius(F1);
       }
     }
     break;
@@ -250,25 +250,11 @@ Handle(Draw_Drawable3D) DDataStd_DrawDriver::DrawableConstraint (const Handle(TD
   case TDataXtd_DISTANCE:
     {
       if (A->IsPlanar()) {
-	D = new DrawDim_PlanarDistance (TNaming_Tool::GetShape(A->GetGeometry(1)),
-					TNaming_Tool::GetShape(A->GetGeometry(2)));
+        D = new DrawDim_PlanarDistance (TNaming_Tool::GetShape(A->GetGeometry(1)),
+                                        TNaming_Tool::GetShape(A->GetGeometry(2)));
       }
-      else {
-	break;
-	TopoDS_Shape aLocalShape = (Geometry (A, 1, TopAbs_FACE));
-	TopoDS_Face F1 = TopoDS::Face (aLocalShape);
-//	TopoDS_Face F1 = TopoDS::Face (Geometry (A, 1, TopAbs_FACE));
-	if (A->NbGeometries() == 1) D = new DrawDim_Distance (F1);
-	else {
-	  TopoDS_Shape aLocalShape = Geometry(A,2,TopAbs_FACE);
-	  TopoDS_Face F2 = TopoDS::Face(aLocalShape);
-//	  TopoDS_Face F2 = TopoDS::Face(Geometry(A,2,TopAbs_FACE));
-	  D = new DrawDim_Distance(F1,F2);
-	}
-      }
+      break;
     }
-    break;
-    
   case TDataXtd_ANGLE:
     {     
       if (A->IsPlanar()) {

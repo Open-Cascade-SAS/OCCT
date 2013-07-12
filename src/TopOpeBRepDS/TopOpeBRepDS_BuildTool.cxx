@@ -168,7 +168,7 @@ static Standard_Boolean GetOrigin(const Handle(Geom2d_Curve)& PCIN, gp_Pnt2d& o)
   else  {
     return Standard_False;
   }
-  return Standard_False;
+//  return Standard_False;
 }
 #endif
 
@@ -199,7 +199,6 @@ static Standard_Boolean GetOrigin(const Handle(Geom_Curve)& CIN, gp_Pnt& o)
   else  {
     return Standard_False;
   }
-  return Standard_False;
 }
 #endif
 

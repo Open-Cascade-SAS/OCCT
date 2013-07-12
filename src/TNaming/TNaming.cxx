@@ -990,7 +990,8 @@ static Standard_Boolean IsInternal(const TopoDS_Shape& aSx)
   TopoDS_Iterator aIt;
   bInternal = Standard_False;
   aIt.Initialize(aSx);
-  for (; aIt.More(); aIt.Next()) {
+  for (; aIt.More(); aIt.Next()) 
+  {
     const TopoDS_Shape& aSy=aIt.Value();
     aOr=aSy.Orientation();
     bInternal = (aOr == TopAbs_INTERNAL || aOr == TopAbs_EXTERNAL);

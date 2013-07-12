@@ -566,7 +566,6 @@ Handle(Geom2d_Curve) ShapeBuild_Edge::TransformPCurve(const Handle(Geom2d_Curve)
     }
     return aBSpline2d;
   }
-  return result;
 }
 
 //=======================================================================

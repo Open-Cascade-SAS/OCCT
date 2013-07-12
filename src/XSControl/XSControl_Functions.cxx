@@ -140,7 +140,6 @@ static IFSelect_ReturnStatus XSControl_xnorm(const Handle(IFSelect_SessionPilot)
     IFSelect_Activator::SetCurrentAlias (WS->SelectedNorm(Standard_True));
     return IFSelect_RetDone;
   }
-  return IFSelect_RetVoid;
 }
 
 

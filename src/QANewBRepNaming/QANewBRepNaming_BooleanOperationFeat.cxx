@@ -129,8 +129,9 @@ TDF_Label QANewBRepNaming_BooleanOperationFeat::ModifiedFaces() const {
   const TDF_Label& ModifiedFacesLabel = ResultLabel().NewChild();
   TDataStd_Name::Set(ModifiedFacesLabel, "ModifiedFaces");
   return ModifiedFacesLabel;
-#endif
+#else
   return ResultLabel().NewChild();
+#endif
 }
 
 //=======================================================================
@@ -143,8 +144,9 @@ TDF_Label QANewBRepNaming_BooleanOperationFeat::ModifiedEdges() const {
   const TDF_Label& ModifiedEdgesLabel = ResultLabel().NewChild();
   TDataStd_Name::Set(ModifiedEdgesLabel, "ModifiedEdges");
   return ModifiedEdgesLabel;
-#endif
+#else
   return ResultLabel().NewChild();
+#endif
 }
 
 //=======================================================================
@@ -157,8 +159,9 @@ TDF_Label QANewBRepNaming_BooleanOperationFeat::DeletedFaces() const {
   const TDF_Label& DeletedFacesLabel = ResultLabel().NewChild();
   TDataStd_Name::Set(DeletedFacesLabel, "DeletedFaces");
   return DeletedFacesLabel;
-#endif
+#else
   return ResultLabel().NewChild();
+#endif
 }
 
 //=======================================================================
@@ -171,8 +174,9 @@ TDF_Label QANewBRepNaming_BooleanOperationFeat::DeletedEdges() const {
   const TDF_Label& DeletedEdgesLabel = ResultLabel().NewChild();
   TDataStd_Name::Set(DeletedEdgesLabel, "DeletedEdges");
   return DeletedEdgesLabel;
-#endif
+#else
   return ResultLabel().NewChild();
+#endif
 }
 
 //=======================================================================
@@ -185,8 +189,9 @@ TDF_Label QANewBRepNaming_BooleanOperationFeat::DeletedVertices() const {
   const TDF_Label& DeletedVerticesLabel = ResultLabel().NewChild();
   TDataStd_Name::Set(DeletedVerticesLabel, "DeletedVertices");
   return DeletedVerticesLabel;
-#endif
+#else
   return ResultLabel().NewChild();
+#endif
 }
 
 //=======================================================================
@@ -199,8 +204,9 @@ TDF_Label QANewBRepNaming_BooleanOperationFeat::NewShapes() const {
   const TDF_Label& NewShapesLabel = ResultLabel().NewChild();
   TDataStd_Name::Set(NewShapesLabel, "NewShapes");
   return NewShapesLabel;
-#endif
+#else
   return ResultLabel().NewChild();
+#endif
 }
 
 //=======================================================================
@@ -213,8 +219,9 @@ TDF_Label QANewBRepNaming_BooleanOperationFeat::Content() const {
   const TDF_Label& ContentLabel = ResultLabel().NewChild();
   TDataStd_Name::Set(ContentLabel, "Content");
   return ContentLabel;
-#endif
+#else
   return ResultLabel().NewChild();
+#endif
 }
 
 //=======================================================================
@@ -227,8 +234,9 @@ TDF_Label QANewBRepNaming_BooleanOperationFeat::DeletedDegeneratedEdges() const 
   const TDF_Label& DegeneratedLabel = ResultLabel().NewChild();
   TDataStd_Name::Set(DegeneratedLabel, "DeletedDegeneratedEdges");
   return DegeneratedLabel;
-#endif
+#else
   return ResultLabel().NewChild();
+#endif
 }
 
 //=======================================================================

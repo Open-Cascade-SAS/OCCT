@@ -635,7 +635,6 @@ TopoDS_Shape BRepFill_Pipe::MakeShape(const TopoDS_Shape& S,
   else {
     return result;
   }
-  return result;
 }
 
 //============================================================================

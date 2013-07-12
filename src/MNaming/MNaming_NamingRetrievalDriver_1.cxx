@@ -51,10 +51,9 @@ static TopAbs_ShapeEnum IntegerToShapeEnum (const Standard_Integer I)
     case  5 : return TopAbs_WIRE;
     case  6 : return TopAbs_EDGE;
     case  7 : return TopAbs_VERTEX;
-      default :
-	return TopAbs_SHAPE;
+      default : 
+        return TopAbs_SHAPE;
     }
-  return TopAbs_SHAPE;
 }
 
 //=======================================================================
@@ -78,7 +77,7 @@ static  TNaming_NameType IntegerToNameType (const Standard_Integer I)
     case  9 : return TNaming_ORIENTATION;
     case  10 : return TNaming_WIREIN;
       default :
-	Standard_DomainError::Raise("TNaming_NameType; enum term unknown ");
+        Standard_DomainError::Raise("TNaming_NameType; enum term unknown ");
     }
   return TNaming_INTERSECTION;
 }

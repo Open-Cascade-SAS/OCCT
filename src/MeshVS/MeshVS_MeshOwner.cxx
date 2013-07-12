@@ -136,8 +136,8 @@ void MeshVS_MeshOwner::SetDetectedEntities (const Handle(TColStd_HPackedMapOfInt
 // Purpose  :
 //================================================================
 void MeshVS_MeshOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
-					 const Quantity_NameOfColor theColor,
-					 const Standard_Integer /*theMode*/)
+                                         const Quantity_NameOfColor theColor,
+                                         const Standard_Integer /*theMode*/)
 {
   Handle( SelectMgr_SelectableObject ) aSelObj;
   if ( HasSelectable() )
@@ -151,21 +151,17 @@ void MeshVS_MeshOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager
     if( !aNodes.IsNull() && aNodes->Map().Extent() == 1 )
     {
       TColStd_MapIteratorOfPackedMapOfInteger anIt( aNodes->Map() );
-      for( ; anIt.More(); anIt.Next() )
+      if( myLastID != anIt.Key() )
       {
-	if( myLastID != anIt.Key() )
-	  myLastID = anIt.Key();
-	break;
+        myLastID = anIt.Key();
       }
-    }  
+    }
     else if( !aElems.IsNull() && aElems->Map().Extent() == 1 )
     {
       TColStd_MapIteratorOfPackedMapOfInteger anIt( aElems->Map() );
-      for( ; anIt.More(); anIt.Next() )
+      if( myLastID != anIt.Key() )
       {
-	if( myLastID != anIt.Key() )
-	  myLastID = anIt.Key();
-	break;
+        myLastID = anIt.Key();
       }
     }
 
@@ -201,24 +197,20 @@ Standard_Boolean MeshVS_MeshOwner::IsForcedHilight () const
     if( !aNodes.IsNull() && aNodes->Map().Extent() == 1 )
     {
       TColStd_MapIteratorOfPackedMapOfInteger anIt( aNodes->Map() );
-      for( ; anIt.More(); anIt.Next() )
-      {
-	aKey = anIt.Key();
-	if( myLastID == aKey )
-	  aHilight = Standard_False;
-	break;
+      aKey = anIt.Key();
+      if( myLastID == aKey )
+      {  
+         aHilight = Standard_False;
       }
     }  
     Handle(TColStd_HPackedMapOfInteger) aElems = GetDetectedElements();
     if( !aElems.IsNull() && aElems->Map().Extent() == 1 )
     {
       TColStd_MapIteratorOfPackedMapOfInteger anIt( aElems->Map() );
-      for( ; anIt.More(); anIt.Next() )
+      aKey = anIt.Key();
+      if( myLastID == aKey )
       {
-	aKey = anIt.Key();
-	if( myLastID == aKey )
-	  aHilight = Standard_False;
-	break;
+          aHilight = Standard_False;
       }
     }
   } 

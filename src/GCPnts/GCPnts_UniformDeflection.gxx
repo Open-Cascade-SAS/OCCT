@@ -194,7 +194,6 @@ static Standard_Boolean PerformComposite (TColStd_SequenceOfReal& Parameters,
 
     Ua = Ub;
   }
-  return Standard_True;
 }
 
 

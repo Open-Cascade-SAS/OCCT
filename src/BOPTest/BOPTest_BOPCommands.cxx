@@ -416,7 +416,6 @@ Standard_Integer  bsection(Draw_Interpretor& di,
     di << usage;
     return 1;
   }
-  return 0;
 }
 //=======================================================================
 //function : bsmt

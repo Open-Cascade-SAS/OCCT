@@ -137,7 +137,6 @@ Standard_Boolean TopOpeBRepDS::IsTopology(const TopOpeBRepDS_Kind k)
   case TopOpeBRepDS_VERTEX  : return Standard_True; break;
   default : return Standard_False;
   }
-  return Standard_False;
 }
 
 //=======================================================================

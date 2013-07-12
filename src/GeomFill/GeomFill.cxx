@@ -579,7 +579,7 @@ Standard_Boolean GeomFill::GetCircle(const Convert_ParameterisationType  TConv,
     }
     return Standard_True;
   }
-  return Standard_False;
+//  return Standard_False;
 }
 
 Standard_Boolean GeomFill::GetCircle(const Convert_ParameterisationType  TConv, 
@@ -763,5 +763,4 @@ Standard_Boolean GeomFill::GetCircle(const Convert_ParameterisationType  TConv,
     }
     return Standard_True;
   }
-  return Standard_False;
 }

@@ -707,7 +707,6 @@ gp_Pnt ComputePoint(const TopoDS_Vertex& V,const TopoDS_Edge& E,
     thePoint = cc.Value(Param);
     return thePoint;
   } // else ...
-  return thePoint;
 } // ComputePoint
 
 

@@ -262,7 +262,7 @@ static Standard_Real LocalFirstParameter (const Handle(IntPatch_Line)& L)
       return firstp;
     }
   }
-  return firstp;
+//  return firstp;
 }
 
 //=======================================================================
@@ -344,7 +344,6 @@ static Standard_Real LocalLastParameter (const Handle(IntPatch_Line)& L)
       return lastp;
     }
   }
-  return lastp;
 }
 
 

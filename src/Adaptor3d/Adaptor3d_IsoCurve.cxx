@@ -805,11 +805,8 @@ gp_Elips Adaptor3d_IsoCurve::Ellipse() const
   default:  
     {
       Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:Ellipse");
-    }
-    
+    } 
   }
-  // portage WNT
-  return gp_Elips();
 }
 
 //=======================================================================

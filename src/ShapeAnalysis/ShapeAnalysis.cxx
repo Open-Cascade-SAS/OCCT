@@ -249,7 +249,6 @@ Standard_Boolean ShapeAnalysis::IsOuterBound(const TopoDS_Face& face)
     Standard_Boolean rescl = (fcl.PerformInfinitePoint () == TopAbs_OUT);
     return rescl;
   }
-  return Standard_True;
 }
 
 //=======================================================================
