@@ -68,7 +68,7 @@ static
   // Chapter's name
   const char* g = "CCR commands";
   //
-  theCommands.Add("bopcheck" ,  "Use >bopcheck Shape",  __FILE__, bopcheck, g);
+  theCommands.Add("bopcheck" ,  "Use >bopcheck Shape [level of check: 0(V/V) - 5(all)]",  __FILE__, bopcheck, g);
   theCommands.Add("bopargcheck" ,  "Use bopargcheck without parameters to get ",  __FILE__, bopargcheck, g);
 }
 
@@ -80,7 +80,14 @@ Standard_Integer bopcheck (Draw_Interpretor& di, Standard_Integer n,  const char
 {
   
   if (n<2) {
-    di << " Use >bopcheck Shape" << "\n";
+    di << " Use >bopcheck Shape [level of check: 0 - 5" << "\n";
+    di << " The level of check defines which interferferences will be checked:\n"; 
+    di << " 0 - only V/V;\n"; 
+    di << " 1 - V/V and V/E;\n";
+    di << " 2 - V/V, V/E and E/E;\n"; 
+    di << " 3 - V/V, V/E, E/E and V/F;\n"; 
+    di << " 4 - V/V, V/E, E/E, V/F and E/F;\n"; 
+    di << " 5 - all interferences, default value.\n"; 
     return 1;
   }
 
@@ -92,14 +99,29 @@ Standard_Integer bopcheck (Draw_Interpretor& di, Standard_Integer n,  const char
   TopoDS_Shape aS = BRepBuilderAPI_Copy(aS1).Shape();
   //
   Standard_Integer iErr, aTypeInt, i, ind, j;
-  Standard_Integer nI1, nI2;
+  Standard_Integer nI1, nI2, theLevelOfCheck;
   Standard_Boolean bSelfInt, bFFInt;
   char buf[256];
+  char type[6][4] = {"V/V", "V/E", "E/E","V/F", "E/F", "F/F"};
+
+  theLevelOfCheck = (n==3) ? Draw::Atoi(a[2]) : 5;
+  if (theLevelOfCheck >= 0 && theLevelOfCheck < 5) {
+    di << "Info:\nThe level of check is set to " << type[theLevelOfCheck] 
+       << ", i.e. intersection(s)\n";
+    for (i=theLevelOfCheck+1; i<=5; ++i) {
+      di << type[i];
+      if (i<5) {
+        di << ", ";
+      }
+    }
+    di << " will not be checked.\n\n";
+  }
   
   BOPAlgo_CheckerSI aChecker;
   BOPCol_ListOfShape anArgs;
   anArgs.Append(aS);
   aChecker.SetArguments(anArgs);
+  aChecker.SetLevelOfCheck(theLevelOfCheck);
   //
   aChecker.Perform();
   iErr = aChecker.ErrorStatus();
@@ -114,8 +136,6 @@ Standard_Integer bopcheck (Draw_Interpretor& di, Standard_Integer n,  const char
   //
   Standard_Integer aNb[6] = {aVVs.Extent(), aVEs.Extent(), aEEs.Extent(), 
                              aVFs.Extent(), aEFs.Extent(), aFFs.Extent()};
-  char type[6][5] = {"V/V:", "V/E:", "E/E:","V/F:", "E/F:", "F/F:"};
-
   //
   bSelfInt = Standard_False;
   ind = 0;
@@ -166,7 +186,7 @@ Standard_Integer bopcheck (Draw_Interpretor& di, Standard_Integer n,  const char
         }
       }
       //
-      di << type[aTypeInt];
+      di << type[aTypeInt] << ":";
       //
       TCollection_AsciiString aBaseName("x");
       TCollection_AsciiString anumbername(ind);

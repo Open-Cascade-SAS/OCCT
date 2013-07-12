@@ -31,5 +31,19 @@ is
  
     Init  (me:out) 
     is redefined protected;
+
+    SetLevelOfCheck(me:out; 
+      theLevel: Integer from Standard); 
+    ---Purpose:  Sets the level of checking shape on self-interference.
+    --           It defines which interferferences will be checked: 
+    --           0 - only V/V; 
+    --           1 - V/V and V/E; 
+    --           2 - V/V, V/E and E/E; 
+    --           3 - V/V, V/E, E/E and V/F;
+    --           4 - V/V, V/E, E/E, V/F and E/F; 
+    --           5 - all interferences, default value.
+ 
+fields
+    myLevelOfCheck: Integer from Standard is protected;
   
 end CheckerSI;

@@ -107,7 +107,6 @@
       const TopoDS_Shape& aSi=aSI.Shape();
       aTi=aSI.ShapeType();
       if (aTi!=TopAbs_VERTEX) {
-        //--
         const BOPCol_ListOfInteger& aLA=aSI.SubShapes();
         aIt.Initialize(aLA);
         for (; aIt.More(); aIt.Next()) {
@@ -116,13 +115,11 @@
           aPKXB.SetIds(i, iX);
           aMPA.Add(aPKXB);
         }
-        //--t
       }
-      else {
-        aPKXB.Clear();
-        aPKXB.SetIds(i, i);
-        aMPA.Add(aPKXB);
-      }
+      //
+      aPKXB.Clear();
+      aPKXB.SetIds(i, i);
+      aMPA.Add(aPKXB);
       //
       const Bnd_Box& aBoxEx=aSI.Box();
       //
@@ -202,3 +199,15 @@
   //-----------------------------------------------------scope_1 t
 }
 
+//=======================================================================
+// function: UpdateByLevelOfCheck
+// purpose: 
+//=======================================================================
+  void BOPDS_IteratorSI::UpdateByLevelOfCheck(const Standard_Integer theLevel)
+{
+  Standard_Integer i;
+  //
+  for (i=theLevel+1; i<6; ++i) {
+    myLists(i).Clear();
+  }
+}

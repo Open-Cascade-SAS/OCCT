@@ -50,5 +50,17 @@ is
     --- 
     Intersect(me:out) 
     is redefined protected;  
+
+    UpdateByLevelOfCheck(me:out; 
+      theLevel: Integer from Standard); 
+    ---Purpose:  Updates the lists of possible intersections  
+    --           according to the value of <theLevel>.
+    --           It defines which interferferences will be checked: 
+    --           0 - only V/V; 
+    --           1 - V/V and V/E; 
+    --           2 - V/V, V/E and E/E; 
+    --           3 - V/V, V/E, E/E and V/F;
+    --           4 - V/V, V/E, E/E, V/F and E/F; 
+    --           other - all interferences.
  
 end IteratorSI;

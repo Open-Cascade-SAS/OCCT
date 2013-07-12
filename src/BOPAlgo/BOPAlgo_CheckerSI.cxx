@@ -23,6 +23,7 @@
 
 #include <BOPDS_DS.hxx>
 #include <BOPDS_IteratorSI.hxx>
+#include <BOPDS_PIteratorSI.hxx>
 #include <BOPInt_Context.hxx>
 
 //=======================================================================
@@ -31,7 +32,8 @@
 //=======================================================================
   BOPAlgo_CheckerSI::BOPAlgo_CheckerSI()
 :
-  BOPAlgo_PaveFiller()
+  BOPAlgo_PaveFiller(),
+  myLevelOfCheck(5)
 {
 }
 //=======================================================================
@@ -40,6 +42,16 @@
 //=======================================================================
   BOPAlgo_CheckerSI::~BOPAlgo_CheckerSI()
 {
+}
+//=======================================================================
+//function : SetLevelOfCheck
+//purpose  : 
+//=======================================================================
+  void BOPAlgo_CheckerSI::SetLevelOfCheck(const Standard_Integer theLevel)
+{
+  if (theLevel >= 0 && theLevel <= 5) {
+    myLevelOfCheck = theLevel;
+  }
 }
 //=======================================================================
 //function : Init
@@ -62,9 +74,12 @@
   myDS->Init();
   //
   // 2.myIterator 
-  myIterator=new BOPDS_IteratorSI(myAllocator);
-  myIterator->SetDS(myDS);
-  myIterator->Prepare();
+  BOPDS_PIteratorSI theIterSI=new BOPDS_IteratorSI(myAllocator);
+  theIterSI->SetDS(myDS);
+  theIterSI->Prepare();
+  theIterSI->UpdateByLevelOfCheck(myLevelOfCheck);
+  //
+  myIterator=theIterSI;
   //
   // 3 myContext
   myContext=new BOPInt_Context;

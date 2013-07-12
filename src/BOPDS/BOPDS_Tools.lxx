@@ -28,7 +28,7 @@
 //purpose  : 
 //=======================================================================
   inline Standard_Integer BOPDS_Tools::TypeToInteger(const TopAbs_ShapeEnum aType1,
-						     const TopAbs_ShapeEnum aType2)
+                                                     const TopAbs_ShapeEnum aType2)
 {
   Standard_Integer iRet, iT1, iT2, iX;
   //
@@ -39,25 +39,25 @@
   iX=iT2*10+iT1;
   switch (iX) {
     case 77:
-      iRet=5; // VV
+      iRet=0; // VV
       break;
     case 76:
     case 67:
-      iRet=4; // VE
+      iRet=1; // VE
+      break;
+    case 66:
+      iRet=2; // EE
       break;
     case 74:
     case 47:
-      iRet=2; // VF
-      break;
-    case 66:
-      iRet=3; // EE
+      iRet=3; // VF
       break;
     case 64:
     case 46:
-      iRet=1; // EF
+      iRet=4; // EF
       break;
     case 44:
-      iRet=0; // FF
+      iRet=5; // FF
       break;
     default:
       break;

@@ -62,6 +62,7 @@ is
     --
     pointer PDS to DS from BOPDS;
     pointer PIterator to Iterator from BOPDS;
+    pointer PIteratorSI to IteratorSI from BOPDS;
     --
     -- primitives
     --
