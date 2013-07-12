@@ -17,8 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
 #include <stdio.h>
 
 #include <QABugs.hxx>
@@ -885,76 +883,47 @@ static Standard_Integer OCC381_SaveAs (Draw_Interpretor& di, Standard_Integer nb
 
 #include <BRepClass3d_SolidClassifier.hxx>
 
-Standard_Integer OCC299bug (Draw_Interpretor& di,
-			    Standard_Integer n,
-			    const char ** a)
+Standard_Integer OCC299bug (Draw_Interpretor& theDi,
+                            Standard_Integer  theArgNb,
+                            const char**      theArgVec)
 {
-  char sbf[512];
-
-  if (n < 3) {
-    di << "Usage : " << a[0] << " Solid Point [Tolerance=1.e-7]" << "\n";
+  if (theArgNb < 3)
+  {
+    theDi << "Usage : " << theArgVec[0] << " Solid Point [Tolerance=1.e-7]\n";
     return -1;
   }
 
-  TopoDS_Shape aS = DBRep::Get(a[1]);
-  if (aS.IsNull()) {
-    Sprintf(sbf, " Null Shape is not allowed here\n");
-    di<<sbf;
+  TopoDS_Shape aS = DBRep::Get (theArgVec[1]);
+  if (aS.IsNull())
+  {
+    theDi << " Null Shape is not allowed here\n";
+    return 1;
+  }
+  else if (aS.ShapeType() != TopAbs_SOLID)
+  {
+    theDi << " Shape type must be SOLID\n";
     return 1;
   }
 
-  if (aS.ShapeType()!=TopAbs_SOLID) {
-    Sprintf(sbf, " Shape type must be SOLID\n");
-    di<<sbf;
+  gp_Pnt aP (8., 9., 10.);
+  if (!DrawTrSurf::GetPoint (theArgVec[2], aP))
+  {
+    theDi << " Null Point is not allowed here\n";
     return 1;
   }
-  //
-  Standard_Real aTol=1.e-7;
-  TCollection_AsciiString sIN("IN"), sOUT("OUT of"), sON("ON"), sUNKNOWN("UNKNOWN");
-  TopAbs_State aState = TopAbs_UNKNOWN;
-  gp_Pnt aP(8., 9., 10.);
+  const Standard_Real aTol = (theArgNb == 4) ? Draw::Atof (theArgVec[3]) : 1.e-7;
 
-  if (!DrawTrSurf::GetPoint(a[2], aP) ) {
-    Sprintf(sbf, " Null Point is not allowed here\n");
-    di<<sbf;
-    return 1;
-  }
+  BRepClass3d_SolidClassifier aSC (aS);
+  aSC.Perform (aP, aTol);
 
-  aTol=1.e-7;
-  if (n==4) {
-    aTol=Draw::Atof(a[3]);
+  switch (aSC.State())
+  {
+    case TopAbs_IN:      theDi << "The point is IN shape\n";      return 0;
+    case TopAbs_OUT:     theDi << "The point is OUT of shape\n";  return 0;
+    case TopAbs_ON:      theDi << "The point is ON shape\n";      return 0;
+    case TopAbs_UNKNOWN:
+    default:             theDi << "The point is UNKNOWN shape\n"; return 0;
   }
-  //
-  BRepClass3d_SolidClassifier aSC(aS);
-  aSC.Perform(aP,aTol);
-  //
-  aState = aSC.State();
-  //
-  Sprintf(sbf, "The point is "); di<<sbf;
-  //
-  switch (aState) {
-  case TopAbs_IN:
-    Sprintf(sbf, sIN.ToCString());
-    break;
-  case TopAbs_OUT:
-    Sprintf(sbf, sOUT.ToCString());
-    break;
-  case TopAbs_ON:
-    Sprintf(sbf, sON.ToCString());
-    break;
-  case TopAbs_UNKNOWN:
-    Sprintf(sbf, sUNKNOWN.ToCString());
-    break;
-  default:
-    Sprintf(sbf, sUNKNOWN.ToCString());
-    break;
-  }
-  di<<sbf;
-	//
-  Sprintf(sbf, " shape\n");
-  di<<sbf;
-
-  return 0;
 }
 
 #include <OSD_Process.hxx>

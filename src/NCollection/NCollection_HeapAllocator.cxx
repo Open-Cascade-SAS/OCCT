@@ -17,8 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
 #include <NCollection_HeapAllocator.hxx>
 #include <Standard_OutOfMemory.hxx>
 #include <Standard_Mutex.hxx>
@@ -35,13 +33,14 @@ void * NCollection_HeapAllocator::Allocate (const Standard_Size theSize)
 {
   // the size is rounded up to word size.
   const Standard_Size aRoundSize = (theSize + 3) & ~0x3;
-  void * pResult = malloc(aRoundSize);
-  if (!pResult) {
-    char buf[128];
-    sprintf (buf, "Failed to allocate %d bytes in global dynamic heap",theSize);
-    Standard_OutOfMemory::Raise(&buf[0]);
+  void* aResult = malloc (aRoundSize);
+  if (aResult == NULL)
+  {
+    char aBuffer[96];
+    Sprintf (aBuffer, "Failed to allocate %" PRIuPTR " bytes in global dynamic heap", theSize);
+    Standard_OutOfMemory::Raise (aBuffer);
   }
-  return pResult;
+  return aResult;
 }
 
 //=======================================================================

@@ -17,7 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #include <VrmlData_Scene.hxx>
 #include <VrmlData_InBuffer.hxx>
 #include <VrmlData_Appearance.hxx>
@@ -1132,8 +1131,10 @@ void dumpNode (Standard_OStream&                theStream,
     const Standard_Integer ** ppDummy; 
     const Standard_Size nCoord = aNode->Coordinates()->Length();
     const Standard_Size nPoly  = aNode->Polygons (ppDummy);
-    char buf[64];
-    Sprintf (buf, "IndexedFaceSet (%d vertices, %d polygons)", nCoord, nPoly);
+    char buf[80];
+    Sprintf (buf, "IndexedFaceSet (%" PRIuPTR " vertices, %" PRIuPTR " polygons)",
+             nCoord, nPoly);
+
     dumpNodeHeader (theStream, theIndent, buf, theNode->Name());
   } else if (theNode->IsKind(STANDARD_TYPE(VrmlData_IndexedLineSet))) {
     const Handle(VrmlData_IndexedLineSet) aNode =
@@ -1141,8 +1142,11 @@ void dumpNode (Standard_OStream&                theStream,
     const Standard_Integer ** ppDummy; 
     const Standard_Size nCoord = aNode->Coordinates()->Length();
     const Standard_Size nPoly  = aNode->Polygons (ppDummy);
-    char buf[64];
-    Sprintf (buf, "IndexedLineSet (%d vertices, %d polygons)", nCoord, nPoly);
+
+    char buf[80];
+    Sprintf(buf, "IndexedLineSet (%" PRIuPTR " vertices, %" PRIuPTR " polygons)",
+            nCoord, nPoly);
+
     dumpNodeHeader (theStream, theIndent, buf, theNode->Name());
   } else if (theNode->IsKind(STANDARD_TYPE(VrmlData_Material))) {
 //     const Handle(VrmlData_Material) aMaterial = 

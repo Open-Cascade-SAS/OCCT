@@ -17,13 +17,14 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Map.hxx>
 #include <Standard_Mutex.hxx>
 #include <Standard_OutOfMemory.hxx>
 #include <stdio.h>
+#include <fstream>
+#include <iomanip>
 
 IMPLEMENT_STANDARD_HANDLE  (NCollection_IncAllocator,NCollection_BaseAllocator)
 IMPLEMENT_STANDARD_RTTIEXT (NCollection_IncAllocator,NCollection_BaseAllocator)
@@ -134,34 +135,40 @@ static void Debug_Destroy(Standard_Address theAlloc)
 
 Standard_EXPORT void IncAllocator_PrintAlive()
 {
-  if (!StorageIDSet().IsEmpty())
+  if (StorageIDSet().IsEmpty())
   {
-    FILE * ff = fopen("inc_alive.d", "wt");
-    if (ff == NULL)
-    {
-      cout << "failure writing file inc_alive.d" << endl;
-    }
-    else
-    {
-      fprintf(ff, "Alive IncAllocators (number, size in Kb)\n");
-      NCollection_DataMap<Standard_Address, Standard_Size>::Iterator
-        itMap(StorageIDMap());
-      Standard_Size aTotSize = 0;
-      Standard_Integer nbAlloc = 0;
-      for (; itMap.More(); itMap.Next())
-      {
-        NCollection_IncAllocator* anAlloc =
-          static_cast<NCollection_IncAllocator*>(itMap.Key());
-        Standard_Size anID = itMap.Value();
-        Standard_Size aSize = anAlloc->GetMemSize();
-        aTotSize += aSize;
-        nbAlloc++;
-        fprintf(ff, "%-8d %8.1f\n", anID, double(aSize)/1024);
-      }
-      fprintf(ff, "Total:\n%-8d %8.1f\n", nbAlloc, double(aTotSize)/1024);
-      fclose(ff);
-    }
+    return;
   }
+
+  std::ofstream aFileOut ("inc_alive.d", std::ios_base::trunc | std::ios_base::out);
+  if (!aFileOut.is_open())
+  {
+    std::cout << "failure writing file inc_alive.d" << std::endl;
+    return;
+  }
+  aFileOut.imbue (std::locale ("C"));
+  aFileOut << std::fixed << std::setprecision(1);
+
+  aFileOut << "Alive IncAllocators (number, size in Kb)\n";
+  Standard_Size    aTotSize = 0;
+  Standard_Integer nbAlloc  = 0;
+  for (NCollection_DataMap<Standard_Address, Standard_Size>::Iterator itMap (StorageIDMap());
+       itMap.More(); itMap.Next())
+  {
+    const NCollection_IncAllocator* anAlloc = static_cast<NCollection_IncAllocator*>(itMap.Key());
+    Standard_Size anID  = itMap.Value();
+    Standard_Size aSize = anAlloc->GetMemSize();
+    aTotSize += aSize;
+    nbAlloc++;
+    aFileOut << std::setw(20) << anID << ' '
+             << std::setw(20) << (double(aSize) / 1024.0)
+             << '\n';
+  }
+  aFileOut << "Total:\n"
+           << std::setw(20) << nbAlloc << ' '
+           << std::setw(20) << (double(aTotSize) / 1024.0)
+           << '\n';
+  aFileOut.close();
 }
 
 //=======================================================================

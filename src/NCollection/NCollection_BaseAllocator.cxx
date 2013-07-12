@@ -24,6 +24,8 @@
 #include <NCollection_Map.hxx>
 #include <NCollection_List.hxx>
 #include <Standard_Mutex.hxx>
+#include <fstream>
+#include <iomanip>
 
 IMPLEMENT_STANDARD_HANDLE(NCollection_BaseAllocator,MMgt_TShared)
 IMPLEMENT_STANDARD_RTTIEXT(NCollection_BaseAllocator,MMgt_TShared)
@@ -254,35 +256,55 @@ void NCollection_BaseAllocator::PrintMemUsageStatistics()
   }
   Standard_Size aTotAlloc = 0;
   Standard_Size aTotLeft = 0;
+
   // print
-  FILE * ff = fopen("memstat.d", "wt");
-  if (ff == NULL)
+  std::ofstream aFileOut ("memstat.d", std::ios_base::trunc | std::ios_base::out);
+  if (!aFileOut.is_open())
   {
-    cout << "failure writing file memstat.d" << endl;
+    std::cout << "failure writing file memstat.d" << std::endl;
     return;
   }
-  fprintf(ff, "%12s %12s %12s %12s %12s\n",
-          "BlockSize", "NbAllocated", "NbLeft", "Allocated", "Left");
+  aFileOut.imbue (std::locale ("C"));
+
+  // header
+  aFileOut << std::setw(20) << "BlockSize"   << ' '
+           << std::setw(12) << "NbAllocated" << ' '
+           << std::setw(12) << "NbLeft"      << ' '
+           << std::setw(20) << "Allocated"   << ' '
+           << std::setw(20) << "Left"        << '\n';
+
+  // body
   for (itLst.Init(aColl); itLst.More(); itLst.Next())
   {
     const StorageInfo& aInfo = itLst.Value();
     Standard_Integer nbLeft = aInfo.nbAlloc - aInfo.nbFree;
     Standard_Size aSizeAlloc = aInfo.nbAlloc * aInfo.roundSize;
     Standard_Size aSizeLeft = nbLeft * aInfo.roundSize;
-    fprintf(ff, "%12d %12d %12d %12d %12d\n", aInfo.roundSize,
-            aInfo.nbAlloc, nbLeft, aSizeAlloc, aSizeLeft);
+
+    aFileOut << std::setw(20) << aInfo.roundSize << ' '
+             << std::setw(12) << aInfo.nbAlloc   << ' '
+             << std::setw(12) << nbLeft          << ' '
+             << std::setw(20) << aSizeAlloc      << ' '
+             << std::setw(20) << aSizeLeft       << '\n';
+
     aTotAlloc += aSizeAlloc;
-    aTotLeft += aSizeLeft;
+    aTotLeft  += aSizeLeft;
   }
-  fprintf(ff, "%12s %12s %12s %12d %12d\n", "Total:", "", "",
-          aTotAlloc, aTotLeft);
+
+  // footer
+  aFileOut << std::setw(20) << "Total:"  << ' '
+           << std::setw(12) << ""        << ' '
+           << std::setw(12) << ""        << ' '
+           << std::setw(20) << aTotAlloc << ' '
+           << std::setw(20) << aTotLeft  << '\n';
 
   if (!StorageIDSet().IsEmpty())
   {
-    fprintf(ff, "Alive allocation numbers of size=%d\n", StandardCallBack_CatchSize());
-    NCollection_Map<Standard_Size>::Iterator itMap1(StorageIDSet());
-    for (; itMap1.More(); itMap1.Next())
-      fprintf(ff, "%d\n", itMap1.Key());
+    aFileOut << "Alive allocation numbers of size=" << StandardCallBack_CatchSize() << '\n';
+    for (NCollection_Map<Standard_Size>::Iterator itMap1(StorageIDSet()); itMap1.More(); itMap1.Next())
+    {
+      aFileOut << itMap1.Key() << '\n';
+    }
   }
-  fclose(ff);
+  aFileOut.close();
 }

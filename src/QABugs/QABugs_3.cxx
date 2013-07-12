@@ -17,7 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #include <QABugs.hxx>
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -34,6 +33,8 @@
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <tcl.h>
+
+#include <fstream>
 
 static int BUC60623(Draw_Interpretor& di, Standard_Integer argc, const char ** a)
 {
@@ -1365,59 +1366,64 @@ static Standard_Integer BUC60856(Draw_Interpretor& di, Standard_Integer /*argc*/
   return 0;
 }
 
-//#include <fstream.h>
-#ifdef HAVE_FSTREAM
-# include <fstream>
-#elif defined (HAVE_FSTREAM_H)
-# include <fstream.h> 
-#endif
-//#include <Standard_Stream.hxx>
 //==========================================================================
 //function : CoordLoad
 //           chargement d une face dans l explorer.
 //==========================================================================
-static Standard_Integer coordload (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
+static Standard_Integer coordload (Draw_Interpretor& theDi,
+                                   Standard_Integer  theArgsNb,
+                                   const char**      theArgVec)
 { 
-  char line[256];
-  char X[30], Y[30];
-  int fr;
-  TopoDS_Vertex V1,V2;
-  TopoDS_Edge Edge;
-  TopoDS_Wire Wire;
-  TopoDS_Face Face;
-
-  if (argc < 3) return 1;
-
-  ifstream file(argv[2], ios::in);
-  if(!file)
-    {
-      di<<"unable to open "<<argv[2]<<" for input"<<"\n";
-      return 2;
-    }
-  BRepBuilderAPI_MakeWire WB;
-
-  file.getline(line,80);
-  for(int i=0;i<30;i++) X[i]=Y[i]=0;
-  fr = sscanf(line,"%20c%20c",&X,&Y);
-  V1 = BRepBuilderAPI_MakeVertex(gp_Pnt(Draw::Atof(X),Draw::Atof(Y),0.0));
-
-  for(;;)
-    {
-      file.getline(line,80);
-      if (!file) break;
-	  for(int i=0;i<30;i++) X[i]=Y[i]=0;
-	  fr = sscanf(line,"%20c%20c",&X,&Y);
-	  V2 = BRepBuilderAPI_MakeVertex(gp_Pnt(Draw::Atof(X),Draw::Atof(Y),0.0));
-	  Edge = BRepBuilderAPI_MakeEdge(V1,V2);
-	  WB.Add(Edge);
-	  V1=V2;
+  if (theArgsNb < 3)
+  {
+    return 1;
   }
-  
-  file.close();
-  if (WB.IsDone()) Wire = WB.Wire();
-  Face = BRepBuilderAPI_MakeFace(Wire);
 
-  DBRep::Set (argv[1],Face);
+  std::ifstream aFile (theArgVec[2], ios::in);
+  if (!aFile)
+  {
+    theDi << "unable to open " << theArgVec[2] << " for input\n";
+    return 2;
+  }
+
+  char aLine[80];
+  memset (aLine, 0, 40);
+  aFile.getline (aLine, 80);
+
+  gp_Pnt aPnt (0.0, 0.0, 0.0);
+  aLine[40] = '\0';
+  aPnt.SetY (Draw::Atof (&aLine[20]));
+  aLine[20] = '\0';
+  aPnt.SetX (Draw::Atof (aLine));
+  TopoDS_Vertex aVert1 = BRepBuilderAPI_MakeVertex (aPnt);
+  BRepBuilderAPI_MakeWire aMakeWire;
+  for (;;)
+  {
+    memset (aLine, 0, 40);
+    aFile.getline (aLine, 80);
+    if (!aFile)
+    {
+      break;
+    }
+
+    aLine[40] = '\0';
+    aPnt.SetY (Draw::Atof (&aLine[20]));
+    aLine[20] = '\0';
+    aPnt.SetX (Draw::Atof (aLine));
+    TopoDS_Vertex aVert2 = BRepBuilderAPI_MakeVertex (aPnt);
+    aMakeWire.Add (BRepBuilderAPI_MakeEdge (aVert1, aVert2));
+    aVert1 = aVert2;
+  }
+  aFile.close();
+
+  if (!aMakeWire.IsDone())
+  {
+    DBRep::Set (theArgVec[1], TopoDS_Face());
+    return 0;
+  }
+
+  BRepBuilderAPI_MakeFace aMakeFace (aMakeWire.Wire());
+  DBRep::Set (theArgVec[1], aMakeFace.IsDone() ? aMakeFace.Face() : TopoDS_Face());
   return 0;
 }
 

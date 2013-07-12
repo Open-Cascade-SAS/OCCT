@@ -24,6 +24,7 @@
 #include <Standard_TypeDef.hxx>
 #include <Standard_Mutex.hxx>
 #include <stdio.h>
+#include <fstream>
 
 /**
  * This class provides the possibility to set callback for memory
@@ -105,7 +106,7 @@ public:
     Standard_EXPORT virtual void FreeEvent(void*, size_t, long);
 
   private:
-    FILE*          myLogFile;
+    std::ofstream  myLogFile;
     Standard_Mutex myMutex;
     size_t         myBreakSize;
   };

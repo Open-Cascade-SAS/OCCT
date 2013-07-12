@@ -17,8 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
 #ifndef NCollection_IncAllocator_HeaderFile
 #define NCollection_IncAllocator_HeaderFile
 
@@ -122,6 +120,5 @@ class NCollection_IncAllocator : public NCollection_BaseAllocator
 
 // Definition of HANDLE object using Standard_DefineHandle.hxx
 DEFINE_STANDARD_HANDLE (NCollection_IncAllocator, NCollection_BaseAllocator)
-
 
 #endif

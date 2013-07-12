@@ -17,7 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #include <OSD_MAllocHook.hxx>
 
 #ifndef WNT
@@ -30,6 +29,7 @@
 #include <set>
 #include <map>
 #include <cstdlib>
+#include <iomanip>
 
 #ifndef SIZE_MAX
 #define SIZE_MAX UINT_MAX
@@ -175,9 +175,9 @@ void OSD_MAllocHook::SetCallback(Callback* theCB)
 //=======================================================================
 
 OSD_MAllocHook::LogFileHandler::LogFileHandler()
-: myLogFile(NULL),
-  myBreakSize(0)
+: myBreakSize(0)
 {
+  myLogFile.imbue (std::locale ("C"));
 }
 
 //=======================================================================
@@ -198,13 +198,15 @@ OSD_MAllocHook::LogFileHandler::~LogFileHandler()
 Standard_Boolean OSD_MAllocHook::LogFileHandler::Open(const char* theFileName)
 {
   Close();
-  myLogFile = fopen(theFileName, "w");
-  if (myLogFile != NULL)
+  myLogFile.open (theFileName);
+  if (!myLogFile.is_open())
   {
-    fputs("Operation type; Request Number; Block Size\n", myLogFile);
-    fputs("------------------------------------------\n", myLogFile);
+    return Standard_False;
   }
-  return myLogFile != NULL;
+
+  myLogFile << "Operation type; Request Number; Block Size\n"
+               "------------------------------------------\n";
+  return Standard_True;
 }
 
 //=======================================================================
@@ -214,10 +216,9 @@ Standard_Boolean OSD_MAllocHook::LogFileHandler::Open(const char* theFileName)
 
 void OSD_MAllocHook::LogFileHandler::Close()
 {
-  if (myLogFile != NULL)
+  if (myLogFile.is_open())
   {
-    fclose(myLogFile);
-    myLogFile = NULL;
+    myLogFile.close();
   }
 }
 
@@ -342,12 +343,21 @@ Standard_Boolean OSD_MAllocHook::LogFileHandler::MakeReport
   fclose(aLogFile);
 
   // print the report
-  FILE* aRepFile = fopen(theOutFile, "w");
-  if (aRepFile == NULL)
+  std::ofstream aRepFile (theOutFile);
+  if(!aRepFile.is_open())
+  {
     return Standard_False;
-  fprintf(aRepFile, "%10s %10s %10s %10s %10s %10s %10s\n",
-          "BlockSize", "NbAlloc", "NbLeft", "NbLeftPeak",
-          "AllocSize", "LeftSize", "PeakSize");
+  }
+  aRepFile.imbue (std::locale ("C"));
+
+  aRepFile << std::setw(20) << "BlockSize "
+           << std::setw(10) << "NbAlloc "
+           << std::setw(10) << "NbLeft "
+           << std::setw(10) << "NbLeftPeak "
+           << std::setw(20) << "AllocSize "
+           << std::setw(20) << "LeftSize "
+           << std::setw(20) << "PeakSize " << std::endl;
+
   Standard_Size aTotAlloc = 0;
   for (std::set<StorageInfo>::const_iterator it = aStMap.begin();
        it != aStMap.end(); ++it)
@@ -357,9 +367,15 @@ Standard_Boolean OSD_MAllocHook::LogFileHandler::MakeReport
     Standard_Size aSizeAlloc = aInfo.nbAlloc * aInfo.size;
     Standard_Size aSizeLeft = nbLeft * aInfo.size;
     Standard_Size aSizePeak = aInfo.nbLeftPeak * aInfo.size;
-    fprintf(aRepFile, "%10d %10d %10d %10d %10Iu %10Iu %10Iu\n", aInfo.size,
-            aInfo.nbAlloc, nbLeft, aInfo.nbLeftPeak,
-            aSizeAlloc, aSizeLeft, aSizePeak);
+
+    aRepFile << std::setw(20) << aInfo.size << ' '
+             << std::setw(10) << aInfo.nbAlloc << ' '
+             << std::setw(10) << nbLeft << ' '
+             << std::setw(10) << aInfo.nbLeftPeak << ' '
+             << std::setw(20) << aSizeAlloc << ' '
+             << std::setw(20) << aSizeLeft << ' '
+             << std::setw(20) << aSizePeak << std::endl;
+
     if (aTotAlloc + aSizeAlloc < aTotAlloc) // overflow ?
       aTotAlloc = SIZE_MAX;
     else
@@ -368,13 +384,19 @@ Standard_Boolean OSD_MAllocHook::LogFileHandler::MakeReport
     {
       for (std::set<unsigned long>::const_iterator it1 = aInfo.alive->begin();
            it1 != aInfo.alive->end(); ++it1)
-        fprintf(aRepFile, "%10lu\n", *it1);
+      aRepFile << std::setw(10) << *it1;
     }
   }
-  fprintf(aRepFile, "%10s %10s %10s %10s%c%10Iu %10Iu %10Iu\n", "Total:",
-          "", "", "", (aTotAlloc == SIZE_MAX ? '>' : ' '), aTotAlloc,
-          aTotalLeftSize, aTotalPeakSize);
-  fclose(aRepFile);
+  aRepFile << std::setw(20) << "Total:"
+           << std::setw(10) << "" << ' '
+           << std::setw(10) << "" << ' '
+           << std::setw(10) << "" << ' '
+           << (aTotAlloc == SIZE_MAX ? '>' : ' ')
+           << std::setw(20) << aTotAlloc << ' '
+           << std::setw(20) << aTotalLeftSize << ' '
+           << std::setw(20) << aTotalPeakSize << std::endl;
+
+  aRepFile.close();
   return Standard_True;
 }
 
@@ -387,10 +409,11 @@ void OSD_MAllocHook::LogFileHandler::AllocEvent
                    (size_t      theSize,
                     long        theRequestNum)
 {
-  if (myLogFile != NULL)
+  if (myLogFile.is_open())
   {
     myMutex.Lock();
-    fprintf(myLogFile, "alloc %10lu %10u\n", theRequestNum, theSize);
+    myLogFile << "alloc "<< std::setw(10) << theRequestNum
+              << std::setw(20) << theSize << std::endl;
     myMutex.Unlock();
     if (myBreakSize == theSize)
     {
@@ -409,10 +432,11 @@ void OSD_MAllocHook::LogFileHandler::FreeEvent
                     size_t      theSize,
                     long        theRequestNum)
 {
-  if (myLogFile != NULL)
+  if (myLogFile.is_open())
   {
     myMutex.Lock();
-    fprintf(myLogFile, "free  %10lu %10u\n", theRequestNum, theSize);
+    myLogFile << "free " << std::setw(20) << theRequestNum
+              << std::setw(20) << theSize << std::endl;
     myMutex.Unlock();
   }
 }
@@ -477,12 +501,20 @@ void OSD_MAllocHook::CollectBySize::Reset()
 Standard_Boolean OSD_MAllocHook::CollectBySize::MakeReport(const char* theOutFile)
 {
   // print the report
-  FILE* aRepFile = fopen(theOutFile, "w");
-  if (aRepFile == NULL)
+  std::ofstream aRepFile(theOutFile);
+  if (!aRepFile.is_open())
     return Standard_False;
-  fprintf(aRepFile, "%10s %10s %10s %10s %10s %10s %10s\n",
-          "BlockSize", "NbAlloc", "NbLeft", "NbLeftPeak",
-          "AllocSize", "LeftSize", "PeakSize");
+  std::locale aCLoc("C");
+  aRepFile.imbue(aCLoc);
+
+  aRepFile << std::setw(10) << "BlockSize "
+           << std::setw(10) << "NbAlloc "
+           << std::setw(10) << "NbLeft "
+           << std::setw(10) << "NbLeftPeak "
+           << std::setw(20) << "AllocSize "
+           << std::setw(20) << "LeftSize "
+           << std::setw(20) << "PeakSize " << std::endl;
+
   Standard_Size aTotAlloc = 0;
   for (int i = 0; i < MAX_ALLOC_SIZE; i++)
   {
@@ -493,19 +525,30 @@ Standard_Boolean OSD_MAllocHook::CollectBySize::MakeReport(const char* theOutFil
       Standard_Size aSizeAlloc = myArray[i].nbAlloc * aSize;
       ptrdiff_t     aSizeLeft = nbLeft * aSize;
       Standard_Size aSizePeak = myArray[i].nbLeftPeak * aSize;
-      fprintf(aRepFile, "%10d %10d %10d %10d %10Iu %10Id %10Iu\n", aSize,
-              myArray[i].nbAlloc, nbLeft, myArray[i].nbLeftPeak,
-              aSizeAlloc, aSizeLeft, aSizePeak);
+
+      aRepFile << std::setw(10) << aSize << ' '
+               << std::setw(10) << myArray[i].nbAlloc << ' '
+               << std::setw(10) << nbLeft << ' '
+               << std::setw(10) << myArray[i].nbLeftPeak << ' '
+               << std::setw(20) << aSizeAlloc << ' '
+               << std::setw(20) << aSizeLeft << ' '
+               << std::setw(20) << aSizePeak << std::endl;
+
       if (aTotAlloc + aSizeAlloc < aTotAlloc) // overflow ?
         aTotAlloc = SIZE_MAX;
       else
         aTotAlloc += aSizeAlloc;
     }
   }
-  fprintf(aRepFile, "%10s %10s %10s %10s%c%10Iu %10Id %10Iu\n", "Total:",
-          "", "", "", (aTotAlloc == SIZE_MAX ? '>' : ' '), aTotAlloc,
-          myTotalLeftSize, myTotalPeakSize);
-  fclose(aRepFile);
+  aRepFile << std::setw(10) << "Total:" << ' '
+           << std::setw(10) << "" << ' '
+           << std::setw(10) << "" << ' '
+           << std::setw(10) << "" << ' '
+           << (aTotAlloc == SIZE_MAX ? '>' : ' ')
+           << std::setw(20) << aTotAlloc  << ' '
+           << std::setw(20) << myTotalLeftSize  << ' '
+           << std::setw(20) << myTotalPeakSize << std::endl;
+  aRepFile.close();
   return Standard_True;
 }
 
