@@ -375,7 +375,7 @@ void IntPoly_ShapeSection::Explore()
 	const gp_Pnt& A1 = TA1.Value(i);
 	const gp_Pnt& A2 = TA2.Value(i);
 	const gp_Pnt& A3 = TA3.Value(i);
-	gp_Vec OA1(A1.XYZ());
+	gp_Vec OA1(A1.X(), A1.Y(), A1.Z());
 	gp_Vec VA0 = gp_Vec(A1,A2);
 	gp_Vec VA  = gp_Vec(A1,A3);
 	VA0.Cross(VA);

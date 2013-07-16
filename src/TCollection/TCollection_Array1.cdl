@@ -85,7 +85,6 @@ is
     	
     Init (me: in out; V: Array1Item);
     	---Purpose: Initializes the array with a given value.
-        ---C++: inline
 
     Destroy (me: in out);
     	---Purpose: Frees the  allocated   area  corresponding  to the

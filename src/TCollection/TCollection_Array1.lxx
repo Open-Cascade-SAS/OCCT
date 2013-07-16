@@ -17,7 +17,6 @@
 // and conditions governing the rights and limitations under the License.
 
 #include <Standard.hxx>
-#include <Standard_OutOfMemory.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_RangeError.hxx>
 
@@ -39,7 +38,6 @@ inline TCollection_Array1::TCollection_Array1 (const Standard_Integer Low,
 
   Array1Item* p = new Array1Item[Up-Low+1];
 
-  if (!p) Standard_OutOfMemory::Raise("Array1 : Allocation failed");
   myStart = (void*)(p - myLowerBound);
 }
 
@@ -57,19 +55,6 @@ inline TCollection_Array1::TCollection_Array1(const Array1Item& AnItem,
 {
   Standard_RangeError_Raise_if(Up < Low,"Array1::CArray");
   myStart = (void*)( &AnItem - Low ); 
-}
-
-//=======================================================================
-//function : Init
-//purpose  : 
-//=======================================================================
-
-inline void TCollection_Array1::Init (const Array1Item& V) {
-  Array1Item* p = &ChangeValue(myLowerBound);
-  const Standard_Integer n = Length();
-  for(Standard_Integer i = 0; i < n; i++) {
-    p[i] = V;
-  }
 }
 
 //=======================================================================

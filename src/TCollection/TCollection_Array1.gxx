@@ -20,6 +20,19 @@
 
 
 //=======================================================================
+//function : Init
+//purpose  : 
+//=======================================================================
+
+void TCollection_Array1::Init (const Array1Item& V) {
+  Array1Item* p = &ChangeValue(myLowerBound);
+  const Standard_Integer n = Length();
+  for(Standard_Integer i = 0; i < n; i++) {
+    p[i] = V;
+  }
+}
+
+//=======================================================================
 //function : Assign
 //purpose  : 
 //=======================================================================
