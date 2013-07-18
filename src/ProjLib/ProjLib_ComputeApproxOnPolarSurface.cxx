@@ -707,6 +707,14 @@ Handle(Adaptor2d_HCurve2d)
   Standard_Real TolU = Surf->UResolution(Tol3d), TolV = Surf->VResolution(Tol3d);
   Standard_Real DistTol3d = 100.0*Tol3d;
 
+  Standard_Real uperiod = 0., vperiod = 0.;
+  if(Surf->IsUPeriodic() || Surf->IsUClosed())
+    uperiod = Surf->LastUParameter() - Surf->FirstUParameter(); 
+  
+  if(Surf->IsVPeriodic() || Surf->IsVClosed())
+    vperiod = Surf->LastVParameter() - Surf->FirstVParameter(); 
+
+  
   // NO myTol is Tol2d !!!!
   //Standard_Real TolU = myTolerance, TolV = myTolerance;
   //Standard_Real Tol3d = 100*myTolerance; // At random Balthazar.
@@ -726,7 +734,9 @@ Handle(Adaptor2d_HCurve2d)
   Mult.Init(1);
   Mult(1) = Mult(NbOfPnts) = 2;
   
-  Standard_Real Vinf, Vsup;
+  Standard_Real Uinf, Usup, Vinf, Vsup;
+  Uinf = Surf->Surface().FirstUParameter();
+  Usup = Surf->Surface().LastUParameter();
   Vinf = Surf->Surface().FirstVParameter();
   Vsup = Surf->Surface().LastVParameter();
   GeomAbs_SurfaceType Type = Surf->GetType();
@@ -856,9 +866,6 @@ Handle(Adaptor2d_HCurve2d)
     }
   }
   else {
-    Standard_Real Uinf = Surf->Surface().FirstUParameter();
-    Standard_Real Usup = Surf->Surface().LastUParameter();
-    
     myProjIsDone = Standard_False;
     Standard_Real Dist2Min = 1.e+200, u = 0., v = 0.;
     gp_Pnt pntproj;
@@ -1033,20 +1040,11 @@ Handle(Adaptor2d_HCurve2d)
       // (and store the result and each parameter in a sequence)
       Standard_Integer usens = 0, vsens = 0; 
       // to know the position relatively to the period
-      Standard_Real U0 = u, V0 = v, U1 = u, V1 = v, uperiod =0, vperiod = 0;
+      Standard_Real U0 = u, V0 = v, U1 = u, V1 = v;
       // U0 and V0 are the points in the initialized period 
       // (period with u and v),
       // U1 and V1 are the points for construction of poles
 
-
-      if(Surf->IsUPeriodic() || Surf->IsUClosed()) {
-	uperiod = Surf->LastUParameter() - Surf->FirstUParameter(); 
-      }
-
-      if(Surf->IsVPeriodic() || Surf->IsVClosed()) {
-	vperiod = Surf->LastVParameter() - Surf->FirstVParameter(); 
-      } 
-      
       for ( i = 2 ; i <= NbOfPnts ; i++) 
 	if(myProjIsDone) {
 	  myProjIsDone = Standard_False;
@@ -1192,6 +1190,34 @@ Handle(Adaptor2d_HCurve2d)
   // -- Pnts2d is transformed into Geom2d_BSplineCurve, with the help of Param and Mult
   if(myProjIsDone) {
     myBSpline = new Geom2d_BSplineCurve(Pts2d,Param,Mult,1);
+    //jgv: put the curve into parametric range
+    gp_Pnt2d MidPoint = myBSpline->Value(0.5*(myBSpline->FirstParameter() + myBSpline->LastParameter()));
+    Standard_Real TestU = MidPoint.X(), TestV = MidPoint.Y();
+    Standard_Real sense = 0.;
+    if (uperiod)
+    {
+      if (TestU < Uinf - TolU)
+        sense = 1.;
+      else if (TestU > Usup + TolU)
+        sense = -1;
+      while (TestU < Uinf - TolU || TestU > Usup + TolU)
+        TestU += sense * uperiod;
+    }
+    if (vperiod)
+    {
+      sense = 0.;
+      if (TestV < Vinf - TolV)
+        sense = 1.;
+      else if (TestV > Vsup + TolV)
+        sense = -1.;
+      while (TestV < Vinf - TolV || TestV > Vsup + TolV)
+        TestV += sense * vperiod;
+    }
+    gp_Vec2d Offset(TestU - MidPoint.X(), TestV - MidPoint.Y());
+    if (Abs(Offset.X()) > gp::Resolution() ||
+        Abs(Offset.Y()) > gp::Resolution())
+      myBSpline->Translate(Offset);
+    //////////////////////////////////////////
     Geom2dAdaptor_Curve GAC(myBSpline);
     Handle(Adaptor2d_HCurve2d) IC2d = new Geom2dAdaptor_HCurve(GAC);
 #ifdef DEB
