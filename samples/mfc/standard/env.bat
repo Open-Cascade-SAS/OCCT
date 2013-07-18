@@ -1,3 +1,4 @@
+call "%~dp0..\..\..\env.bat" %1 %2 %3
 
 set "BIN_DIR=win%ARCH%\%VCVER%\bind"
 set "LIB_DIR=win%ARCH%\%VCVER%\libd"

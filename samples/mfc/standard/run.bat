@@ -7,8 +7,7 @@ if ["%4"] == [""] (
   exit /B
 )
 
-call "%~dp0..\..\..\env.bat" %1 %2 %3
-call "%~dp0env.bat"
+call "%~dp0env.bat" %1 %2 %3
 
 if not exist "%~dp0%BIN_DIR%\%4.exe" goto err_exe
 
