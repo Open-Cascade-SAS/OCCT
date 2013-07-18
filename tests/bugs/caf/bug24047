@@ -1,0 +1,12 @@
+puts "============"
+puts "OCC24047"
+puts "============"
+puts ""
+#######################################################################
+# Exception in TPrsStd_AISPresentation during destruction of TDocStd_Document
+#######################################################################
+
+pload XDEDRAW
+
+box a 0 0 0 10 10 10
+XTestDoc a

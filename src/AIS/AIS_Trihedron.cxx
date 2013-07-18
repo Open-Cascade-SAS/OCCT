@@ -638,9 +638,20 @@ void AIS_Trihedron::LoadSubObjects()
 void AIS_Trihedron::SetContext(const Handle(AIS_InteractiveContext)& Ctx)
 {
 //  Standard_Boolean same_DA = myDrawer->Link() == Ctx->DefaultDrawer();
-
+   
+   if( Ctx.IsNull())
+   {
+      Standard_Integer anIdx;
+      for (anIdx = 0; anIdx < 7; anIdx++)
+      {
+        myShapes[anIdx]->SetContext(Ctx);
+      }
+     AIS_InteractiveObject::SetContext (Ctx);
+     return;
+   }
   // Remove subobjects from current context
   Handle(AIS_InteractiveContext) anAISContext = GetContext();
+  
   Standard_Boolean hasContext = (anAISContext.IsNull() == Standard_False);
   Standard_Integer anIdx;
   for (anIdx = 0; anIdx < 7; anIdx++)
@@ -655,9 +666,8 @@ void AIS_Trihedron::SetContext(const Handle(AIS_InteractiveContext)& Ctx)
 	}
       myShapes[anIdx].Nullify();
     }
-
+ 
   AIS_InteractiveObject::SetContext (Ctx);
-  
   LoadSubObjects();
   for(Standard_Integer i= 0;i<=6;i++)
     myShapes[i]->SetContext (Ctx);

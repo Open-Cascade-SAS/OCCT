@@ -101,7 +101,9 @@ OpenGl_View::OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext)
   myIntShadingMethod(TEL_SM_GOURAUD),
   myAntiAliasing(Standard_False),
   myTransPers(&myDefaultTransPers),
-  myIsTransPers(Standard_False)
+  myIsTransPers(Standard_False),
+  myTrihedron(NULL),
+  myGraduatedTrihedron(NULL)
 {
   // Initialize matrices
   memcpy(myOrientationMatrix,myDefaultMatrix,sizeof(Tmatrix3));
@@ -131,6 +133,7 @@ void OpenGl_View::ReleaseGlResources (const Handle(OpenGl_Context)& theCtx)
 {
   OpenGl_Element::Destroy (theCtx, myTrihedron);
   OpenGl_Element::Destroy (theCtx, myGraduatedTrihedron);
+   
   if (!myTextureEnv.IsNull())
   {
     theCtx->DelayedRelease (myTextureEnv);
@@ -159,7 +162,8 @@ void OpenGl_View::SetTextureEnv (const Handle(OpenGl_Context)&       theCtx,
 
   myTextureEnv = new OpenGl_Texture (theTexture->GetParams());
   Handle(Image_PixMap) anImage = theTexture->GetImage();
-  myTextureEnv->Init (theCtx, *anImage.operator->(), theTexture->Type());
+  if( !anImage.IsNull())
+    myTextureEnv->Init (theCtx, *anImage.operator->(), theTexture->Type());
 }
 
 /*----------------------------------------------------------------------*/

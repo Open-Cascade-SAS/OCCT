@@ -155,6 +155,8 @@ Handle(AIS_InteractiveContext) AIS_InteractiveObject::GetContext() const
 void AIS_InteractiveObject::SetContext(const Handle(AIS_InteractiveContext)& aCtx)
 {
   myCTXPtr = aCtx.operator->();
+  if( aCtx.IsNull())
+    return;
   if (myDrawer.IsNull()) {
     myDrawer = new AIS_Drawer;
 #ifdef DEB

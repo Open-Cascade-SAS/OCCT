@@ -98,6 +98,9 @@
 #include <AIS_Drawer.hxx>
 #include <Aspect_TypeOfLine.hxx>
 #include <Prs3d_LineAspect.hxx>
+#include <TDocStd_Owner.hxx>
+#include <Geom_Axis2Placement.hxx>
+#include <AIS_Trihedron.hxx>
 
 #define ZVIEW_SIZE 1000000.0
 // avoid warnings on 'extern "C"' functions returning C++ classes
@@ -1009,6 +1012,65 @@ static Standard_Integer XShowFaceBoundary (Draw_Interpretor& di,
 }
 
 //=======================================================================
+//function : testDoc
+//purpose  : Method to test destruction of document
+//=======================================================================
+static Standard_Integer testDoc (Draw_Interpretor& di,
+                                 Standard_Integer argc,
+                                 const char ** argv)
+{
+  if( argc < 2 )
+  {
+    cout<<"Invalid numbers of arguments should be: XTestDoc shape"<<endl;
+    return 1;
+  }
+  TopoDS_Shape shape = DBRep::Get(argv[1]);
+  if( shape.IsNull())
+    return 1;
+ 
+  Handle(XCAFApp_Application) A = XCAFApp_Application::GetApplication();
+ 
+  Handle(TDocStd_Document) aD1 = new TDocStd_Document("MDTV-XCAF");
+  aD1->Open(A);
+  
+  Handle(V3d_Viewer) vw = ViewerTest_Tool::MakeViewer ("Test viwer"); 
+  Handle(AIS_InteractiveContext) aContext = new AIS_InteractiveContext(vw);
+  TPrsStd_AISViewer::New (aD1->Main(),aContext);
+  // get shape tool for shape verification
+  Handle(XCAFDoc_ShapeTool) aShapes =
+    XCAFDoc_DocumentTool::ShapeTool (aD1->Main());
+  TDF_Label aLab = aShapes->AddShape(shape);
+
+  Handle(Geom_Axis2Placement) aPlacement = 
+    new Geom_Axis2Placement (gp::Origin(), gp::DZ(),gp::DX());
+  Handle(AIS_Trihedron) aTriShape = new AIS_Trihedron (aPlacement);
+  
+  Handle(TNaming_NamedShape) NS;
+  Handle(TPrsStd_AISPresentation) prs;
+  if( aLab.FindAttribute( TNaming_NamedShape::GetID(), NS) ) {
+    prs = TPrsStd_AISPresentation::Set( NS );
+  }
+   
+  if( aLab.FindAttribute(TPrsStd_AISPresentation::GetID(), prs) ) 
+    prs->Display();
+  
+
+  TPrsStd_AISViewer::Update(aLab);
+  aContext->Display(aTriShape, Standard_True);
+  Handle(TDocStd_Owner) owner;
+  if (aD1->Main().Root().FindAttribute(TDocStd_Owner::GetID(), owner))
+  {
+    Handle_TDocStd_Document empty;
+    owner->SetDocument(empty);
+  }
+  aContext.Nullify();
+  aD1->Close();
+  aD1.Nullify();
+  return 0;
+}
+
+
+//=======================================================================
 //function : Init
 //purpose  :
 //=======================================================================
@@ -1082,6 +1144,7 @@ void XDEDRAW::Init(Draw_Interpretor& di)
           "Doc Label IsOn [R G B [LineWidth [LineStyle]]]:"
           "- turns on/off drawing of face boundaries and defines boundary line style",
           __FILE__, XShowFaceBoundary, g);
+   di.Add ("XTestDoc", "XTestDoc shape", __FILE__, testDoc, g);
 
   // Specialized commands
   XDEDRAW_Shapes::InitCommands ( di );

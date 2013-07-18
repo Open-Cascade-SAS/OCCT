@@ -1032,10 +1032,11 @@ void TPrsStd_AISPresentation::AISErase (const Standard_Boolean remove)
   Handle(AIS_InteractiveContext) ctx, ownctx;
 
   if ( !myAIS.IsNull() ) {   
-    ownctx = myAIS->GetContext();
+    
     if ( !Label().IsNull()) {  
       Handle(TPrsStd_AISViewer) viewer;
-      if( !TPrsStd_AISViewer::Find(Label(), viewer) ) return;   
+      if( !TPrsStd_AISViewer::Find(Label(), viewer) ) return;  
+      ownctx = myAIS->GetContext();
       ctx = viewer->GetInteractiveContext();
       if( remove ) {
 	if( !ctx.IsNull() ) ctx->Remove (myAIS,Standard_False); 

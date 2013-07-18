@@ -199,6 +199,16 @@ void AIS_InteractiveContext::Delete() const
   // be performed when mgrSelector will be destroyed but anyway...
   mgrSelector->Remove( myMainSel );
 #endif
+  AIS_ListOfInteractive aList;
+  
+  AIS_DataMapIteratorOfDataMapOfIOStatus anIt(myObjects);
+  Handle(AIS_InteractiveContext) aNullContext;
+  for(; anIt.More() ; anIt.Next())
+  {
+    Handle(AIS_InteractiveObject) anObj = anIt.Key();
+    anObj->SetContext(aNullContext);
+    
+  }
   MMgt_TShared::Delete();
 }
 
