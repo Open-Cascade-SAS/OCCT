@@ -196,7 +196,8 @@ static Standard_Boolean StaticPath(const Handle(TCollection_HAsciiString)& val)
 	def.AssignCat(" , alpha: ");
 	Dico_IteratorOfDictionaryOfInteger listadd(theeadds);
 	for (listadd.Start(); listadd.More(); listadd.Next()) {
-	  Standard_CString enva = listadd.Name().ToCString();
+          TCollection_AsciiString aName = listadd.Name();
+	  Standard_CString enva = aName.ToCString();
 	  if (enva[0] == '?') continue;
 	  Sprintf(mess,":%d ",listadd.Value());
 	  def.AssignCat (enva);

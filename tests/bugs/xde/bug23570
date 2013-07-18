@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC23570"
+puts "============"
+puts ""
+###########################################################################
+# Command param in DRAW outputs non-readable symbols
+###########################################################################
+
+set info [param write.surfacecurve.mode]
+
+set result1 [regexp {\-\-\- Type : Enum \[in 0-1\] 0:Off 1:On , alpha: +(.*):0 +(.*):1 +\n\-\-\-} $info full alpha_0 alpha_1]
+
+if { ${result1} == 0 } {
+   puts "Error: bad message or regexp"
+} else {
+   puts "alpha_0=${alpha_0}"
+   puts "alpha_1=${alpha_1}"
+   set result2 [regexp {([^A-Za-z0-9]+)} ${alpha_0} full non_readable_symbols_0]
+   set result3 [regexp {([^A-Za-z0-9]+)} ${alpha_1} full non_readable_symbols_1]
+   if { ${result2} == 1 } {
+      puts "non_readable_symbols_0=${non_readable_symbols_0}"
+      puts "Error: Command param in DRAW outputs non-readable symbols for enumerated parameters, after \"alpha\"; (0)"
+   }
+   if { ${result3} == 1 } {
+      puts "non_readable_symbols_1=${non_readable_symbols_1}"
+      puts "Error: Command param in DRAW outputs non-readable symbols for enumerated parameters, after \"alpha\"; (1)"
+   }
+}
