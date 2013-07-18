@@ -117,7 +117,7 @@ extern Standard_Boolean Draw_IsConsoleSubsystem;
 //purpose  : 
 //=======================================================================
 
-Standard_Integer _main_ (int argc, char* argv[], char* envp[], const FDraw_InitAppli fDraw_InitAppli)
+Standard_Integer _main_ (int /*argc*/, char* argv[], char* /*envp*/[], const FDraw_InitAppli fDraw_InitAppli)
 {
   Draw_IsConsoleSubsystem = Standard_True;
   //return _WinMain_(::GetModuleHandle(NULL), NULL, GetCommandLine(), SW_SHOW, fDraw_InitAppli);
@@ -139,7 +139,7 @@ Standard_Integer _main_ (int argc, char* argv[], char* envp[], const FDraw_InitA
 //purpose  : 
 //=======================================================================
 
-Standard_Integer _WinMain_ (HINSTANCE hInstance, HINSTANCE hPrevinstance, LPSTR lpCmdLine, int nCmdShow, const FDraw_InitAppli fDraw_InitAppli)
+Standard_Integer _WinMain_ (HINSTANCE /*hInstance*/, HINSTANCE /*hPrevinstance*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/, const FDraw_InitAppli /*fDraw_InitAppli*/)
 {
 //  theDraw_InitAppli = fDraw_InitAppli;
 //  ParseCommandLine (lpCmdLine);

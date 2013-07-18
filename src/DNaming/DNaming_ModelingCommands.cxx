@@ -206,7 +206,7 @@ else if(name == "Line3D")
 //function : DNaming_AddDriver
 //purpose  : "AddDriver Doc Name1 Name2 ..."
 //=======================================================================
-static Standard_Integer DNaming_AddDriver (Draw_Interpretor& theDI,
+static Standard_Integer DNaming_AddDriver (Draw_Interpretor& /*theDI*/,
 					Standard_Integer theNb, 
 					const char** theArg)
 {
@@ -487,7 +487,7 @@ static Standard_Integer ComputeFunction(const Handle(TFunction_Function)& theFun
 //         : "SolveFlatFrom Doc FistAuxObjLabel"
 //=======================================================================
 
-static Standard_Integer DNaming_SolveFlatFrom (Draw_Interpretor& theDI,
+static Standard_Integer DNaming_SolveFlatFrom (Draw_Interpretor& /*theDI*/,
 					Standard_Integer theNb, 
 					const char** theArg)
 {
@@ -549,7 +549,7 @@ static Standard_Integer DNaming_SolveFlatFrom (Draw_Interpretor& theDI,
 //function : DNaming_InitLogBook
 //purpose  : "InitLogBook Doc "
 //=======================================================================
-static Standard_Integer DNaming_InitLogBook (Draw_Interpretor& theDI,
+static Standard_Integer DNaming_InitLogBook (Draw_Interpretor& /*theDI*/,
 					     Standard_Integer theNb, 
 					     const char** theArg)
 {
@@ -578,7 +578,7 @@ static Standard_Integer DNaming_InitLogBook (Draw_Interpretor& theDI,
 //function : DNaming_CheckLogBook
 //purpose  : "CheckLogBook Doc"
 //=======================================================================
-static Standard_Integer DNaming_CheckLogBook (Draw_Interpretor& theDI,
+static Standard_Integer DNaming_CheckLogBook (Draw_Interpretor& /*theDI*/,
 					     Standard_Integer theNb, 
 					     const char** theArg)
 {
@@ -609,7 +609,7 @@ static Standard_Integer DNaming_CheckLogBook (Draw_Interpretor& theDI,
 //function : DNaming_ComputeFun
 //purpose  : "ComputeFun Doc FunctionLabel"
 //=======================================================================
-static Standard_Integer DNaming_ComputeFun (Draw_Interpretor& theDI,
+static Standard_Integer DNaming_ComputeFun (Draw_Interpretor& /*theDI*/,
 					Standard_Integer theNb, 
 					const char** theArg)
 {

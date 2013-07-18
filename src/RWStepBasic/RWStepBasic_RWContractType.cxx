@@ -72,9 +72,8 @@ void RWStepBasic_RWContractType::WriteStep (StepData_StepWriter& SW,
 //purpose  : 
 //=======================================================================
 
-void RWStepBasic_RWContractType::Share (const Handle(StepBasic_ContractType) &ent,
-                                        Interface_EntityIterator& iter) const
+void RWStepBasic_RWContractType::Share (const Handle(StepBasic_ContractType) &,
+                                        Interface_EntityIterator&) const
 {
-
   // Own fields of ContractType
 }

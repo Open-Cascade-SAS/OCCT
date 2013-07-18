@@ -33,7 +33,7 @@ XSDRAWSTLVRML_DrawableMesh::XSDRAWSTLVRML_DrawableMesh( const Handle( MeshVS_Mes
 // Function :
 // Purpose  :
 //================================================================
-void XSDRAWSTLVRML_DrawableMesh::DrawOn(Draw_Display& d) const
+void XSDRAWSTLVRML_DrawableMesh::DrawOn(Draw_Display& /*d*/) const
 {
 }
 

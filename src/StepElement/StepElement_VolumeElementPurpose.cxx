@@ -37,7 +37,7 @@ StepElement_VolumeElementPurpose::StepElement_VolumeElementPurpose ()
 //purpose  : 
 //=======================================================================
 
-Standard_Integer StepElement_VolumeElementPurpose::CaseNum (const Handle(Standard_Transient)& ent) const
+Standard_Integer StepElement_VolumeElementPurpose::CaseNum (const Handle(Standard_Transient)& /*ent*/) const
 {
   return 0;
 }

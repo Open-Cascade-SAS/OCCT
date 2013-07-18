@@ -27,7 +27,7 @@ MoniTool_SignShape::MoniTool_SignShape ()    {  }
 
     TCollection_AsciiString  MoniTool_SignShape::Text
   (const Handle(Standard_Transient)& ent,
-   const Handle(Standard_Transient)& context) const
+   const Handle(Standard_Transient)& /*context*/) const
 {
   if (ent.IsNull()) return "";
   Handle(TopoDS_HShape) HS = Handle(TopoDS_HShape)::DownCast(ent);

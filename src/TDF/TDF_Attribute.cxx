@@ -203,8 +203,8 @@ void TDF_Attribute::AfterResume()
 //=======================================================================
 
 Standard_Boolean TDF_Attribute::BeforeUndo
-(const Handle(TDF_AttributeDelta)& anAttDelta,
- const Standard_Boolean forceIt)
+(const Handle(TDF_AttributeDelta)& /*anAttDelta*/,
+ const Standard_Boolean /*forceIt*/)
 { return Standard_True; }
 
 
@@ -214,8 +214,8 @@ Standard_Boolean TDF_Attribute::BeforeUndo
 //=======================================================================
 
 Standard_Boolean TDF_Attribute::AfterUndo
-(const Handle(TDF_AttributeDelta)& anAttDelta,
- const Standard_Boolean forceIt)
+(const Handle(TDF_AttributeDelta)& /*anAttDelta*/,
+ const Standard_Boolean /*forceIt*/)
 { return Standard_True; }
 
 
@@ -225,7 +225,7 @@ Standard_Boolean TDF_Attribute::AfterUndo
 //=======================================================================
 
 Standard_Boolean TDF_Attribute::AfterRetrieval
-(const Standard_Boolean forceIt)
+(const Standard_Boolean /*forceIt*/)
 { return Standard_True; }
 
 #ifdef BUC60879
@@ -403,7 +403,7 @@ Standard_OStream& TDF_Attribute::Dump(Standard_OStream& anOS) const
 
 void TDF_Attribute::ExtendedDump
 (Standard_OStream& anOS,
- const TDF_IDFilter& aFilter,
- TDF_AttributeIndexedMap& aMap) const
+ const TDF_IDFilter& /*aFilter*/,
+ TDF_AttributeIndexedMap& /*aMap*/) const
 { Dump(anOS); }
 

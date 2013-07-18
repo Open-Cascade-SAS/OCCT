@@ -129,7 +129,7 @@ void BlendFunc_CSCircular::Set(const Standard_Real Param)
 //purpose  : 
 //=======================================================================
 
-void BlendFunc_CSCircular::Set(const Standard_Real First, const Standard_Real Last)
+void BlendFunc_CSCircular::Set(const Standard_Real, const Standard_Real)
 {
   Standard_NotImplemented::Raise("BlendFunc_CSCircular::Set");
 }
@@ -596,7 +596,7 @@ Standard_Boolean BlendFunc_CSCircular::Section(const Blend_Point& P,
 Standard_Boolean BlendFunc_CSCircular::GetSection(const Standard_Real Param,
 						  const Standard_Real U,
 						  const Standard_Real V,
-						  const Standard_Real W,
+						  const Standard_Real /*W*/,
 						  TColgp_Array1OfPnt& tabP,
 						  TColgp_Array1OfVec& tabV)
 {

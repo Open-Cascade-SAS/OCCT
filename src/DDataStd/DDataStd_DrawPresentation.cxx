@@ -209,9 +209,8 @@ void DDataStd_DrawPresentation::Restore (const Handle(TDF_Attribute)& With)
 //=======================================================================
 
 void DDataStd_DrawPresentation::Paste (const Handle(TDF_Attribute)& Into,
-				       const Handle(TDF_RelocationTable)& RT) const
+				       const Handle(TDF_RelocationTable)&) const
 {   
-  //cout<< "DDataStd_DrawPresentation::Paste" << endl;  
   Handle(DDataStd_DrawPresentation)::DownCast(Into)->SetDisplayed(isDisplayed);  
   Handle(DDataStd_DrawPresentation)::DownCast(Into)->SetDrawable(myDrawable);
 }
@@ -267,7 +266,7 @@ void DDataStd_DrawPresentation::AfterResume()
 //=======================================================================
 
 Standard_Boolean DDataStd_DrawPresentation::BeforeUndo (const Handle(TDF_AttributeDelta)& AD,
- 							const Standard_Boolean forceIt) 
+ 							const Standard_Boolean /*forceIt*/) 
 {
   Handle(DDataStd_DrawPresentation) Pme = this;
   Handle(DDataStd_DrawPresentation) Pdt = Handle(DDataStd_DrawPresentation)::DownCast(AD->Attribute());   
@@ -305,7 +304,7 @@ Standard_Boolean DDataStd_DrawPresentation::BeforeUndo (const Handle(TDF_Attribu
 //=======================================================================
 
 Standard_Boolean DDataStd_DrawPresentation::AfterUndo (const Handle(TDF_AttributeDelta)& AD,
-						       const Standard_Boolean forceIt) 
+						       const Standard_Boolean /*forceIt*/) 
 {   
   Handle(DDataStd_DrawPresentation) Pme = this;
   Handle(DDataStd_DrawPresentation) Pdt = Handle(DDataStd_DrawPresentation)::DownCast(AD->Attribute());   

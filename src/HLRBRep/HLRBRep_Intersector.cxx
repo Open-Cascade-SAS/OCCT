@@ -128,11 +128,11 @@ void  HLRBRep_Intersector::Perform (const Standard_Address A1,
 //purpose  : 
 //=======================================================================
 
-void  HLRBRep_Intersector::Perform (const Standard_Integer nA,
+void  HLRBRep_Intersector::Perform (const Standard_Integer /*nA*/,
 				    const Standard_Address A1,
 				    const Standard_Real da1,
 				    const Standard_Real db1,
-				    const Standard_Integer nB,
+				    const Standard_Integer /*nB*/,
 				    const Standard_Address A2,
 				    const Standard_Real da2,
 				    const Standard_Real db2,

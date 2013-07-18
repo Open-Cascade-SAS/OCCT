@@ -121,22 +121,23 @@ Handle(TDF_Attribute) TDataXtd_Point::NewEmpty () const
   return new TDataXtd_Point(); 
 }
 
-
 //=======================================================================
 //function : Restore
 //purpose  : 
 //=======================================================================
 
-void TDataXtd_Point::Restore(const Handle(TDF_Attribute)& With) { }
-
+void TDataXtd_Point::Restore(const Handle(TDF_Attribute)&) 
+{
+}
 
 //=======================================================================
 //function : Paste
 //purpose  : 
 //=======================================================================
 
-void TDataXtd_Point::Paste (const Handle(TDF_Attribute)& Into, const Handle(TDF_RelocationTable)& RT) const { }
-
+void TDataXtd_Point::Paste (const Handle(TDF_Attribute)&, const Handle(TDF_RelocationTable)&) const 
+{
+}
 
 //=======================================================================
 //function : Dump

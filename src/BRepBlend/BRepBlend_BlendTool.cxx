@@ -114,17 +114,17 @@ Standard_Boolean BRepBlend_BlendTool::Inters(const gp_Pnt2d& P1,
 }
 
 Standard_Integer BRepBlend_BlendTool::NbSamplesV
-  (const Handle(Adaptor3d_HSurface)& S,
-   const Standard_Real u1,
-   const Standard_Real u2)
+  (const Handle(Adaptor3d_HSurface)&,
+   const Standard_Real,
+   const Standard_Real)
 {
   return 10;
 }
 
 Standard_Integer BRepBlend_BlendTool::NbSamplesU
-  (const Handle(Adaptor3d_HSurface)& S,
-   const Standard_Real u1,
-   const Standard_Real u2)
+  (const Handle(Adaptor3d_HSurface)&,
+   const Standard_Real,
+   const Standard_Real)
 {
   return 10;
 }

@@ -64,11 +64,10 @@ Interface_FileReaderData::Interface_FileReaderData (const Standard_Integer nbr,
     void Interface_FileReaderData::InitParams (const Standard_Integer num)
 {
   thenumpar.SetValue (num,theparams->NbParams());
-  //thenbpar.SetValue  (num,0);
 }
 
     void Interface_FileReaderData::AddParam
-  (const Standard_Integer num,
+  (const Standard_Integer /*num*/,
    const Standard_CString aval, const Interface_ParamType atype,
    const Standard_Integer nument)
 {
@@ -79,7 +78,7 @@ Interface_FileReaderData::Interface_FileReaderData (const Standard_Integer nbr,
 }
 
     void Interface_FileReaderData::AddParam
-  (const Standard_Integer num,
+  (const Standard_Integer /*num*/,
    const TCollection_AsciiString& aval, const Interface_ParamType atype,
    const Standard_Integer nument)
 {
@@ -90,7 +89,7 @@ Interface_FileReaderData::Interface_FileReaderData (const Standard_Integer nbr,
 }
 
     void Interface_FileReaderData::AddParam
-  (const Standard_Integer num,
+  (const Standard_Integer /*num*/,
    const Interface_FileParameter& FP)
 {
   theparams->Append(FP);

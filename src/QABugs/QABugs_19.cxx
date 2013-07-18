@@ -224,7 +224,7 @@ static Standard_Integer OCC22980 (Draw_Interpretor& di, Standard_Integer /*argc*
 #include <TDF_Label.hxx>
 #include <TDataStd_Name.hxx>
 
-static Standard_Integer OCC23595 (Draw_Interpretor& di, Standard_Integer /*argc*/, const char **argv)
+static Standard_Integer OCC23595 (Draw_Interpretor& di, Standard_Integer /*argc*/, const char **/*argv*/)
 {
   const Handle(TDocStd_Application)& anApp = XCAFApp_Application::GetApplication();
   Handle(TDocStd_Document) aDoc;
@@ -278,7 +278,7 @@ Standard_Integer OCC22611 (Draw_Interpretor& di, Standard_Integer argc, const ch
   return 0;
 }
 
-Standard_Integer OCC22595 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
+Standard_Integer OCC22595 (Draw_Interpretor& di, Standard_Integer /*argc*/, const char ** /*argv*/)
 {
   gp_Mat M0;
   di << "M0 = "
@@ -574,7 +574,7 @@ static int test_offset(Draw_Interpretor& di, Standard_Integer argc, const char**
 //purpose  : 
 //=======================================================================
 
-static Standard_Integer OCC23945 (Draw_Interpretor& di,Standard_Integer n, const char** a)
+static Standard_Integer OCC23945 (Draw_Interpretor& /*di*/,Standard_Integer n, const char** a)
 {
   if (n < 5) return 1;
 

@@ -182,7 +182,7 @@ const Standard_GUID& TPrsStd_AISViewer::ID() const { return GetID(); }
 //purpose  : 
 //=======================================================================
 
-void TPrsStd_AISViewer::Restore(const Handle(TDF_Attribute)& with) 
+void TPrsStd_AISViewer::Restore(const Handle(TDF_Attribute)&) 
 {
 }
 
@@ -201,8 +201,8 @@ Handle(TDF_Attribute) TPrsStd_AISViewer::NewEmpty() const
 //purpose  : 
 //=======================================================================
 
-void TPrsStd_AISViewer::Paste (const Handle(TDF_Attribute)& into,
-			     const Handle(TDF_RelocationTable)& RT) const
+void TPrsStd_AISViewer::Paste (const Handle(TDF_Attribute)&,
+			     const Handle(TDF_RelocationTable)&) const
 {
 }
 

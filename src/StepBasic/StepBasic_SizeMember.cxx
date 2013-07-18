@@ -25,5 +25,5 @@ StepBasic_SizeMember::StepBasic_SizeMember  ()    {  }
     Standard_CString  StepBasic_SizeMember::Name () const
       {  return "POSITIVE_LENGTH_MEASURE";  }
 
-    Standard_Boolean  StepBasic_SizeMember::SetName (const Standard_CString name)
+    Standard_Boolean  StepBasic_SizeMember::SetName (const Standard_CString /*name*/)
       {  return Standard_True;  }

@@ -411,7 +411,7 @@ Standard_Integer OSD_FileIterator :: Error () const {
 OSD_FileIterator::OSD_FileIterator() {}
 
 void OSD_FileIterator::Initialize(
-                       const OSD_Path& /*where*/,
-                       const TCollection_AsciiString& /*Mask*/){}
+                       const OSD_Path&,
+                       const TCollection_AsciiString&){}
  
 #endif

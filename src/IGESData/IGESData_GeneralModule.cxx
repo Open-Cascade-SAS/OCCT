@@ -81,7 +81,7 @@ void  IGESData_GeneralModule::FillSharedCase
 
 
     Standard_Boolean  IGESData_GeneralModule::CanCopy
-  (const Standard_Integer CN, const Handle(Standard_Transient)& ent) const
+  (const Standard_Integer /*CN*/, const Handle(Standard_Transient)& /*ent*/) const
       {  return Standard_True;  }
 
     void  IGESData_GeneralModule::CopyCase

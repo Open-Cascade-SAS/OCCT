@@ -63,7 +63,7 @@ Standard_Boolean StepShape_OrientedPath::Orientation() const
 	return orientation;
 }
 
-void StepShape_OrientedPath::SetEdgeList(const Handle(StepShape_HArray1OfOrientedEdge)& aEdgeList)
+void StepShape_OrientedPath::SetEdgeList(const Handle(StepShape_HArray1OfOrientedEdge)& /*aEdgeList*/)
 {
 	// WARNING : the field is redefined.
 	// field set up forbidden.

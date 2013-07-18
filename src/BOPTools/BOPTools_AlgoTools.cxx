@@ -1777,7 +1777,7 @@ Standard_Real fsqrt(Standard_Real val)
   Standard_Boolean FindPointInFace(const TopoDS_Edge& aE,
                                    const TopoDS_Face& aF,
                                    const gp_Pnt& aP,
-                                   const Standard_Real aT,
+                                   const Standard_Real /*aT*/,
                                    gp_Dir& aDB,
                                    gp_Pnt& aPOut,
                                    Handle(BOPInt_Context)& theContext,

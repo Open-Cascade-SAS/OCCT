@@ -33,8 +33,8 @@ IGESSelect_SelectBypassGroup::IGESSelect_SelectBypassGroup
 
 
     Standard_Boolean  IGESSelect_SelectBypassGroup::Explore
-  (const Standard_Integer level, const Handle(Standard_Transient)& ent,
-   const Interface_Graph& G,  Interface_EntityIterator& explored) const
+  (const Standard_Integer /*level*/, const Handle(Standard_Transient)& ent,
+   const Interface_Graph& /*G*/,  Interface_EntityIterator& explored) const
 {
   DeclareAndCast(IGESBasic_Group,gr,ent);    // Group les regroupe tous
   if (gr.IsNull()) return Standard_True;

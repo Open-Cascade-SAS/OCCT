@@ -48,7 +48,9 @@ Handle(Standard_Type) MPrsStd_AISPresentationRetrievalDriver_1::SourceType() con
 Handle(TDF_Attribute) MPrsStd_AISPresentationRetrievalDriver_1::NewEmpty() const
 { return new TPrsStd_AISPresentation; }
 
-void MPrsStd_AISPresentationRetrievalDriver_1::Paste(const Handle(PDF_Attribute)& Source,const Handle(TDF_Attribute)& Target,const Handle(MDF_RRelocationTable)& RelocTable) const
+void MPrsStd_AISPresentationRetrievalDriver_1::Paste(const Handle(PDF_Attribute)& Source,
+                                                     const Handle(TDF_Attribute)& Target,
+                                                     const Handle(MDF_RRelocationTable)& /*RelocTable*/) const
 {
   Handle(PPrsStd_AISPresentation_1) S = Handle(PPrsStd_AISPresentation_1)::DownCast (Source);
   Handle(TPrsStd_AISPresentation) T = Handle(TPrsStd_AISPresentation)::DownCast (Target);

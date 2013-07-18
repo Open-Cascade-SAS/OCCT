@@ -41,7 +41,7 @@ StepElement_MeasureOrUnspecifiedValue::StepElement_MeasureOrUnspecifiedValue ()
 //purpose  : 
 //=======================================================================
 
-Standard_Integer StepElement_MeasureOrUnspecifiedValue::CaseNum (const Handle(Standard_Transient)& ent) const
+Standard_Integer StepElement_MeasureOrUnspecifiedValue::CaseNum (const Handle(Standard_Transient)& /*ent*/) const
 {
   return 0;
 }

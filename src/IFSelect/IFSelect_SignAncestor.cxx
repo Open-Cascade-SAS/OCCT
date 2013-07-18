@@ -28,9 +28,9 @@ IFSelect_SignAncestor::IFSelect_SignAncestor (const Standard_Boolean nopk)
      : IFSelect_SignType (nopk) {  }
      
 Standard_Boolean IFSelect_SignAncestor::Matches(const Handle(Standard_Transient)& ent,
-						const Handle(Interface_InterfaceModel)& model,
+						const Handle(Interface_InterfaceModel)& /*model*/,
 						const TCollection_AsciiString& text,
-						const Standard_Boolean exact) const
+						const Standard_Boolean /*exact*/) const
 {
   if (ent.IsNull()) return Standard_False;
   DeclareAndCast(Standard_Type,atype,ent);

@@ -131,7 +131,7 @@ void TDataStd_Integer::Restore(const Handle(TDF_Attribute)& With)
 //=======================================================================
 
 void TDataStd_Integer::Paste (const Handle(TDF_Attribute)& Into,
-                              const Handle(TDF_RelocationTable)& RT) const
+                              const Handle(TDF_RelocationTable)& /*RT*/) const
 {
   Handle(TDataStd_Integer)::DownCast(Into)->Set(myValue);
 }

@@ -50,7 +50,7 @@ myIgnore(ignoreMode)
 //          the copy constructor.
 //=======================================================================
 
-TDF_IDFilter::TDF_IDFilter(const TDF_IDFilter& aFilter)
+TDF_IDFilter::TDF_IDFilter(const TDF_IDFilter& /*aFilter*/)
 {}
 
 

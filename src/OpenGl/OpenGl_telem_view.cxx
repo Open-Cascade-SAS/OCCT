@@ -35,8 +35,8 @@ EvalViewMappingMatrix( tel_view_mapping mapping /* View Mapping */,
                        Tint     flag,
                        Tfloat   cx,
                        Tfloat   cy,
-                       Tint     clip_flag,
-                       Tlimit3  *clip_limit
+                       Tint     /*clip_flag*/,
+                       Tlimit3  */*clip_limit*/
                       )
 {
   Tfloat    gx, gy, xsf, ysf, zsf;

@@ -5180,7 +5180,7 @@ Standard_Integer OCC22736 (Draw_Interpretor& di, Standard_Integer argc, const ch
   return 0;
 }
 
-Standard_Integer OCC23429(Draw_Interpretor& di,
+Standard_Integer OCC23429(Draw_Interpretor& /*di*/,
                           Standard_Integer narg, const char** a)
 {
   if (narg < 4) return 1;

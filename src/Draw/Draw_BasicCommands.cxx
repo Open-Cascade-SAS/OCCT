@@ -402,7 +402,7 @@ static Standard_Integer Draw_wait(Draw_Interpretor& , Standard_Integer n, const 
 //purpose  : 
 //=======================================================================
 #ifdef _WIN32
-static unsigned int __stdcall CpuFunc (void * param)
+static unsigned int __stdcall CpuFunc (void * /*param*/)
 {
   clock_t aCurrent;
   for(;;)
@@ -428,8 +428,13 @@ static void CpuFunc (int)
 }
 #endif
 
+#ifdef _WIN32
+static Standard_Integer cpulimit(Draw_Interpretor&, Standard_Integer n, const char** a)
+{
+#else
 static Standard_Integer cpulimit(Draw_Interpretor& di, Standard_Integer n, const char** a)
 {
+#endif
 #ifdef _WIN32
   // Windows specific code
 

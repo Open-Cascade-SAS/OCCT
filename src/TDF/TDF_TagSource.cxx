@@ -162,9 +162,8 @@ void TDF_TagSource::Restore(const Handle(TDF_Attribute)& With)
 //purpose  : 
 //=======================================================================
 
-void TDF_TagSource::Paste (
-  const Handle(TDF_Attribute)&       Into,
-  const Handle(TDF_RelocationTable)& RT) const
+void TDF_TagSource::Paste (const Handle(TDF_Attribute)& Into,
+                           const Handle(TDF_RelocationTable)&) const
 {
   Handle(TDF_TagSource)::DownCast(Into)->Set (myTag);
 }

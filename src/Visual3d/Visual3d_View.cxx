@@ -1911,7 +1911,7 @@ Visual3d_TypeOfAnswer Result = Visual3d_TOA_NO;
 
 }
 
-void Visual3d_View::ChangeDisplayPriority (const Handle(Graphic3d_Structure)& AStructure, const Standard_Integer OldPriority, const Standard_Integer NewPriority) {
+void Visual3d_View::ChangeDisplayPriority (const Handle(Graphic3d_Structure)& AStructure, const Standard_Integer /*OldPriority*/, const Standard_Integer NewPriority) {
 
         if (IsDeleted ()) return;
         if (! IsDefined ()) return;

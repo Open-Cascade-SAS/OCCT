@@ -32,7 +32,9 @@ Handle(Standard_Type) MDataXtd_ShapeRetrievalDriver::SourceType() const
 Handle(TDF_Attribute) MDataXtd_ShapeRetrievalDriver::NewEmpty() const
 { return new TDataXtd_Shape; }
 
-void MDataXtd_ShapeRetrievalDriver::Paste(const Handle(PDF_Attribute)& Source,const Handle(TDF_Attribute)& Target,const Handle(MDF_RRelocationTable)& RelocTable) const
+void MDataXtd_ShapeRetrievalDriver::Paste(const Handle(PDF_Attribute)& /*Source*/,
+                                          const Handle(TDF_Attribute)& /*Target*/,
+                                          const Handle(MDF_RRelocationTable)& /*RelocTable*/) const
 {
 }
 

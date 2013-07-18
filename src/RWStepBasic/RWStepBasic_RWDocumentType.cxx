@@ -63,7 +63,7 @@ void RWStepBasic_RWDocumentType::WriteStep
 }
 
 
-void RWStepBasic_RWDocumentType::Share(const Handle(StepBasic_DocumentType)& ent, Interface_EntityIterator& iter) const
+void RWStepBasic_RWDocumentType::Share(const Handle(StepBasic_DocumentType)&, Interface_EntityIterator&) const
 {
 }
 

@@ -93,9 +93,8 @@ void RWStepBasic_RWGeneralProperty::WriteStep (StepData_StepWriter& SW,
 //purpose  : 
 //=======================================================================
 
-void RWStepBasic_RWGeneralProperty::Share (const Handle(StepBasic_GeneralProperty) &ent,
-                                           Interface_EntityIterator& iter) const
+void RWStepBasic_RWGeneralProperty::Share (const Handle(StepBasic_GeneralProperty) &,
+                                           Interface_EntityIterator&) const
 {
-
   // Own fields of GeneralProperty
 }

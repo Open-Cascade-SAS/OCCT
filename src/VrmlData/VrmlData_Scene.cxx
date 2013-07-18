@@ -346,7 +346,7 @@ VrmlData_Scene& VrmlData_Scene::operator << (Standard_IStream& theInput)
 
 Handle(VrmlData_Node) VrmlData_Scene::FindNode
                                 (const char                   * theName,
-                                 const Handle(Standard_Type)& theType) const
+                                 const Handle(Standard_Type)& /*theType*/) const
 {
   Handle(VrmlData_Node) aResult;
 #ifdef USE_LIST_API

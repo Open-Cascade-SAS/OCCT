@@ -35,7 +35,7 @@ StdSelect_Shape::StdSelect_Shape(const TopoDS_Shape& sh):
        mysh(sh)
 {}
      
-void StdSelect_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& PM,
+void StdSelect_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*PM*/,
 			      const Handle(Prs3d_Presentation)& P,
 			      const Standard_Integer aMode)
 {

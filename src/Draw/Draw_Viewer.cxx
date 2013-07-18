@@ -180,7 +180,7 @@ Draw_Window(theWindow, "Win", X, Y, W, H), id(i), viewer(v)
 //purpose  :
 //=======================================================================
 #if defined(_WIN32) || defined (__WIN32__) || (defined(__APPLE__) && !defined(MACOSX_USE_GLX))
-Draw_View::Draw_View(Standard_Integer i, Draw_Viewer* v, const char* w)
+Draw_View::Draw_View(Standard_Integer /*i*/, Draw_Viewer* /*v*/, const char* /*w*/)
 #else
 Draw_View::Draw_View(Standard_Integer i, Draw_Viewer* v, const char* w) :
      Draw_Window(w), id(i), viewer(v)

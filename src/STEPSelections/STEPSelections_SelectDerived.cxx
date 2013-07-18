@@ -46,9 +46,9 @@ static Handle(Standard_Type) GetStepType(const Handle(StepData_ReadWriteModule)&
 				 
 
 Standard_Boolean STEPSelections_SelectDerived::Matches(const Handle(Standard_Transient)& ent,
-						      const Handle(Interface_InterfaceModel)& model,
+						      const Handle(Interface_InterfaceModel)& /*model*/,
 						      const TCollection_AsciiString& text,
-						      const Standard_Boolean exact) const
+						      const Standard_Boolean /*exact*/) const
 {
   Standard_Integer CN;
   Handle(StepData_ReadWriteModule) module;

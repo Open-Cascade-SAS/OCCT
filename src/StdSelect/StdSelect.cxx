@@ -65,8 +65,8 @@ Handle(Select3D_Projector) StdSelect::GetProjector(const Handle(V3d_View)& aViou
 //purpose  : 
 //=======================================================================
 
-void StdSelect::SetDrawerForBRepOwner(const Handle(SelectMgr_Selection)& Sel,
-				     const Handle(Prs3d_Drawer)& Drwr)
+void StdSelect::SetDrawerForBRepOwner(const Handle(SelectMgr_Selection)& /*Sel*/,
+				     const Handle(Prs3d_Drawer)& /*Drwr*/)
 {
 //  Handle(StdSelect_BRepOwner) BROWN;
 

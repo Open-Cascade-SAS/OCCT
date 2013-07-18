@@ -133,11 +133,11 @@ static  Handle(Interface_TypedValue) NewDefList(const Standard_CString name)
       {  return TCollection_AsciiString ("IGES Header");  }
 
     Standard_Boolean  IGESSelect_EditDirPart::Recognize
-  (const Handle(IFSelect_EditForm)& form) const
+  (const Handle(IFSelect_EditForm)& /*form*/) const
 {  return Standard_True;  }  // ??
 
     Handle(TCollection_HAsciiString)  IGESSelect_EditDirPart::StringValue
-  (const Handle(IFSelect_EditForm)& form, const Standard_Integer num) const
+  (const Handle(IFSelect_EditForm)& /*form*/, const Standard_Integer num) const
 {
 //  Default Values
   return TypedValue(num)->HStringValue();
@@ -222,7 +222,7 @@ Handle(TCollection_HAsciiString)  DefListName (const IGESData_DefList& deflist)
   (const Handle(IFSelect_EditForm)& form,
    const Standard_Integer num,
    const Handle(TCollection_HAsciiString)& val,
-   const Standard_Boolean enforce) const
+   const Standard_Boolean /*enforce*/) const
 {
   Handle(TCollection_HAsciiString) nulstr;
   Handle(IGESData_IGESModel) modl =

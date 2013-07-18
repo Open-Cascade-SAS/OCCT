@@ -775,7 +775,7 @@ static Standard_Integer wexplo (Draw_Interpretor&,
   return 0;
 }
 
-static Standard_Integer scalexyz(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static Standard_Integer scalexyz(Draw_Interpretor& /*di*/, Standard_Integer n, const char** a)
 {
   if (n < 6) return 1;
 

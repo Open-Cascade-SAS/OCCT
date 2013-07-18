@@ -66,14 +66,14 @@ TCollection_AsciiString  STEPEdit_EditSDR::Label () const
 {  return TCollection_AsciiString ("STEP : Product Data (SDR)");  }
 
 Standard_Boolean  STEPEdit_EditSDR::Recognize
-(const Handle(IFSelect_EditForm)& form) const
+(const Handle(IFSelect_EditForm)& /*form*/) const
 {
 // il faut 10 parametres
   return Standard_True;
 }
 
 Handle(TCollection_HAsciiString)  STEPEdit_EditSDR::StringValue
-(const Handle(IFSelect_EditForm)& form, const Standard_Integer num) const
+(const Handle(IFSelect_EditForm)& /*form*/, const Standard_Integer num) const
 {
   Handle(TCollection_HAsciiString) str;
   switch (num) {

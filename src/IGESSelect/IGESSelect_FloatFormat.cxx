@@ -74,7 +74,7 @@ IGESSelect_FloatFormat::IGESSelect_FloatFormat ()
 
 
     void  IGESSelect_FloatFormat::Perform
-  (IFSelect_ContextWrite& ctx,
+  (IFSelect_ContextWrite& /*ctx*/,
    IGESData_IGESWriter& writer) const
 {
   writer.FloatWriter().SetFormat (themainform.ToCString());

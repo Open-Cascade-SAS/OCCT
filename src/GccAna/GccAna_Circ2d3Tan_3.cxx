@@ -42,10 +42,7 @@ GccAna_Circ2d3Tan::
    GccAna_Circ2d3Tan (const GccEnt_QualifiedLin& Qualified1,
                       const GccEnt_QualifiedLin& Qualified2,
                       const GccEnt_QualifiedLin& Qualified3,
-		      const Standard_Real
-#ifdef DEB
-                                                 Tolerance
-#endif
+                      const Standard_Real
                      ):
 
 //=========================================================================

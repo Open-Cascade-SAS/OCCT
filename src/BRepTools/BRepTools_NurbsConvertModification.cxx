@@ -69,25 +69,25 @@
 #include <BRep_ListIteratorOfListOfCurveRepresentation.hxx>
 
 static void GeomLib_ChangeUBounds(Handle(Geom_BSplineSurface)& aSurface,
-                                  const Standard_Real newU1,
-                                  const Standard_Real newU2)
+                  const Standard_Real newU1,
+                  const Standard_Real newU2)
 {
   TColStd_Array1OfReal  knots(1,aSurface->NbUKnots()) ;
   aSurface->UKnots(knots) ;
   BSplCLib::Reparametrize(newU1,
-                          newU2,
-                          knots) ;
+              newU2,
+              knots) ;
   aSurface->SetUKnots(knots) ;
 }
 static void GeomLib_ChangeVBounds(Handle(Geom_BSplineSurface)& aSurface,
-          const Standard_Real newV1,
-          const Standard_Real newV2)
+                  const Standard_Real newV1,
+                  const Standard_Real newV2)
 {
   TColStd_Array1OfReal  knots(1,aSurface->NbVKnots()) ;
   aSurface->VKnots(knots) ;
   BSplCLib::Reparametrize(newV1,
-                          newV2,
-                          knots) ;
+              newV2,
+              knots) ;
   aSurface->SetVKnots(knots) ;
 }
 
@@ -174,14 +174,14 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewSurface
     if(Abs(dU - Up) <= TolPar && U2 <= Up) {
       if(Abs(dV - Vp) <= TolPar && V2 <= Vp) { }
       else {
-	SS = new Geom_RectangularTrimmedSurface(S, V1+1e-9, V2-1e-9, Standard_False);
+    SS = new Geom_RectangularTrimmedSurface(S, V1+1e-9, V2-1e-9, Standard_False);
       }
     }
     else {
       if(Abs(dV - Vp) <= TolPar && V2 <= Vp) 
-	SS = new Geom_RectangularTrimmedSurface(S, U1+1e-9, U2-1e-9, Standard_True);
+    SS = new Geom_RectangularTrimmedSurface(S, U1+1e-9, U2-1e-9, Standard_True);
       else
-	SS = new Geom_RectangularTrimmedSurface(S, U1+1e-9, U2-1e-9, V1+1e-9, V2-1e-9);
+    SS = new Geom_RectangularTrimmedSurface(S, U1+1e-9, U2-1e-9, V1+1e-9, V2-1e-9);
     }
   }
 
@@ -193,7 +193,7 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewSurface
     else 
       SS = new Geom_RectangularTrimmedSurface(S, U1+1e-9, U2-1e-9, V1+1e-9, V2-1e-9);
   }
-	
+    
   if(!IsUp && IsVp) {
     Standard_Real dV = Abs(V2 - V1);
     Standard_Real Vp = S->VPeriod();
@@ -336,13 +336,8 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve
 //=======================================================================
 
 Standard_Boolean BRepTools_NurbsConvertModification::NewPoint
-//(const TopoDS_Vertex& V, 
-(const TopoDS_Vertex& , 
-// gp_Pnt& P, 
- gp_Pnt& , 
-// Standard_Real& Tol)
- Standard_Real& )
-{  
+    (const TopoDS_Vertex&, gp_Pnt&, Standard_Real& )
+{
   return Standard_False;
 }
 
@@ -353,12 +348,12 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewPoint
 //=======================================================================
 
 Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
-(const TopoDS_Edge& E, 
- const TopoDS_Face& F, 
- const TopoDS_Edge& newE, 
- const TopoDS_Face& newF, 
- Handle(Geom2d_Curve)& Curve2d,
- Standard_Real& Tol)
+  (const TopoDS_Edge& E, 
+   const TopoDS_Face& F, 
+   const TopoDS_Edge& newE, 
+   const TopoDS_Face& newF, 
+   Handle(Geom2d_Curve)& Curve2d,
+   Standard_Real& Tol)
 {
 
   Tol = BRep_Tool::Tolerance(E);
@@ -425,11 +420,10 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
             return Standard_True;
           }
           return Standard_False;
-              }
-            }
-            else {
+        }
+      }
+      else {
         S = BRep_Tool::Surface(newF);
-        
       }
       S->Bounds(Uinf, Usup, Vinf, Vsup);
       //Uinf -= 1e-9; Usup += 1e-9; Vinf -= 1e-9; Vsup += 1e-9;
@@ -478,7 +472,6 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
 
     if(ProjOnCurve.IsDone()) {
       Curve2d = ProjOnCurve.BSpline();
-      
       return Standard_True;
     }
     else {
@@ -491,9 +484,8 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
     TColStd_ListIteratorOfListOfTransient itlcu;
     
     for (itled.Initialize(myled), itlcu.Initialize(mylcu);
-          itled.More(); // itlcu.More()
-          itled.Next(),itlcu.Next()) 
-    {
+      itled.More(); // itlcu.More()
+      itled.Next(),itlcu.Next()) {
       if (itled.Value().IsSame(E)) {
         // deja traitee
         break;
@@ -507,8 +499,7 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
       Handle(Geom2dAdaptor_HCurve) G2dAHC = new Geom2dAdaptor_HCurve(G2dAC);
       TopoDS_Edge ERevers = E;
       ERevers.Reverse();
-//      TopoDS_Edge ERevers = TopoDS::Edge(E.Reversed());
-      C2dBis = BRep_Tool::CurveOnSurface(ERevers,F,f2dBis,l2dBis);      
+      C2dBis = BRep_Tool::CurveOnSurface(ERevers,F,f2dBis,l2dBis);
       Handle(Standard_Type) TheTypeC2dBis = C2dBis->DynamicType();
       C2dBis = new Geom2d_TrimmedCurve(C2dBis,f2dBis, l2dBis);
       Geom2dAdaptor_Curve   G2dACBis(C2dBis, f2dBis, l2dBis); 
@@ -521,7 +512,6 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
            Curve2d = Handle(Geom2d_Curve)::DownCast(C2d->Copy());
            return Standard_True;
          }
-        
         return Standard_False;
       }
       if(!newE.IsNull()) {
@@ -590,13 +580,15 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
       C2d = Handle(Geom2d_Curve)::DownCast(itlcu.Value());
       Handle(Standard_Type) st = C2d->DynamicType();
       if (!(st == STANDARD_TYPE(Geom2d_BSplineCurve)) &&
-          !(st == STANDARD_TYPE(Geom2d_BezierCurve))) {
+      !(st == STANDARD_TYPE(Geom2d_BezierCurve))) {
         return Standard_False;
       }
       Curve2d = Geom2dConvert::CurveToBSplineCurve(C2d);
       return Standard_True;
     }
   }
+  Curve2d = C2d;
+  return Standard_True;
 }
 
 //=======================================================================
@@ -631,7 +623,6 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewParameter
   if(proj.IsDone()) {
     Standard_Real Dist2Min = proj.SquareDistance();
     if (Dist2Min < Tol*Tol) {
-      // Standard_Real U_final_point,V_final_point;
       P = proj.Point().Parameter();
       return Standard_True;
     }

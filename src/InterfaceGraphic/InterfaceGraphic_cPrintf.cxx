@@ -82,7 +82,7 @@ int cPrintf ( char* fmt, ... ) {
 
 }  /* end cPrintf */
 
-int fcPrintf ( int dummy, char* fmt, ... ) {
+int fcPrintf ( int /*dummy*/, char* fmt, ... ) {
 
   static BOOL   first = TRUE;
   static HANDLE hConsole = NULL;

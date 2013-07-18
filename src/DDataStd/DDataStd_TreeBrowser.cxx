@@ -62,7 +62,7 @@ DDataStd_TreeBrowser::DDataStd_TreeBrowser(const TDF_Label& aLabel)
 //purpose  : 
 //=======================================================================
 
-void DDataStd_TreeBrowser::DrawOn(Draw_Display& dis) const
+void DDataStd_TreeBrowser::DrawOn(Draw_Display& /*dis*/) const
 { cout<<"DDataStd_TreeBrowser"<<endl; }
 
 

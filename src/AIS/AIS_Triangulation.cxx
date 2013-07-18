@@ -47,7 +47,7 @@ AIS_Triangulation::AIS_Triangulation(const Handle(Poly_Triangulation)& Triangula
 //function : Compute
 //purpose  :
 //=======================================================================
-void AIS_Triangulation::Compute(const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
+void AIS_Triangulation::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
                                 const Handle(Prs3d_Presentation)& aPresentation,
                                 const Standard_Integer aMode)
 {
@@ -134,7 +134,7 @@ void AIS_Triangulation::Compute(const Handle(PrsMgr_PresentationManager3d)& aPre
 //function : ComputeSelection
 //purpose  : 
 //=======================================================================
-void AIS_Triangulation::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
+void AIS_Triangulation::ComputeSelection(const Handle(SelectMgr_Selection)& /*aSelection*/,
                                          const Standard_Integer /*aMode*/)
 {
 

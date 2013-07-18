@@ -81,9 +81,12 @@ public:
 
   //! Returns true to indicate the need to copy edge;
   //! copies pcurve if requested
-  Standard_Boolean NewCurve2d (const TopoDS_Edge& E, const TopoDS_Face& F,
-                               const TopoDS_Edge& NewE, const TopoDS_Face& NewF,
-                               Handle(Geom2d_Curve)& C, Standard_Real& Tol)
+  Standard_Boolean NewCurve2d (const TopoDS_Edge& E, 
+                               const TopoDS_Face& F,
+                               const TopoDS_Edge& /*NewE*/,
+                               const TopoDS_Face& /*NewF*/,
+                               Handle(Geom2d_Curve)& C, 
+                               Standard_Real& Tol)
   {
     Tol = BRep_Tool::Tolerance(E);
     Standard_Real f, l;

@@ -69,7 +69,7 @@ Standard_Boolean  StepData_SelectType::Matches
     Handle(StepData_SelectMember)   StepData_SelectType::NewMember () const
       {  Handle(StepData_SelectMember) nulmem;  return nulmem;  }
 
-    Standard_Integer  StepData_SelectType::CaseMem (const Handle(StepData_SelectMember)& ent) const
+    Standard_Integer  StepData_SelectType::CaseMem (const Handle(StepData_SelectMember)& /*ent*/) const
       {  return 0;  }
 
     Standard_Integer  StepData_SelectType::CaseMember () const

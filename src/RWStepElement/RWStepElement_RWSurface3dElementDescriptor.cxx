@@ -147,8 +147,8 @@ void RWStepElement_RWSurface3dElementDescriptor::WriteStep (StepData_StepWriter&
 //purpose  : 
 //=======================================================================
 
-void RWStepElement_RWSurface3dElementDescriptor::Share (const Handle(StepElement_Surface3dElementDescriptor) &ent,
-                                                        Interface_EntityIterator& iter) const
+void RWStepElement_RWSurface3dElementDescriptor::Share (const Handle(StepElement_Surface3dElementDescriptor)&,
+                                                        Interface_EntityIterator&) const
 {
 
   // Inherited fields of ElementDescriptor

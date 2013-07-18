@@ -79,7 +79,7 @@ IGESSolid_ReadWriteModule::IGESSolid_ReadWriteModule ()    {  }
 
 
     Standard_Integer  IGESSolid_ReadWriteModule::CaseIGES
-  (const Standard_Integer typenum, const Standard_Integer formnum) const 
+  (const Standard_Integer typenum, const Standard_Integer /*formnum*/) const 
 {
   switch (typenum) {
     case 150 : return  1;

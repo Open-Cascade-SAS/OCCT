@@ -163,10 +163,10 @@ Interface_EntityIterator STEPSelections_SelectInstances::RootResult(const Interf
 }
 
 
-Standard_Boolean STEPSelections_SelectInstances::Explore(const Standard_Integer level,
-							const Handle(Standard_Transient)& start,
-							const Interface_Graph& G,
-							Interface_EntityIterator& explored) const
+Standard_Boolean STEPSelections_SelectInstances::Explore(const Standard_Integer,
+							const Handle(Standard_Transient)&,
+							const Interface_Graph&,
+							Interface_EntityIterator&) const
 {
   return Standard_False;
 }

@@ -25,7 +25,7 @@ void RWStepVisual_RWColour::ReadStep
 	(const Handle(StepData_StepReaderData)& data,
 	 const Standard_Integer num,
 	 Handle(Interface_Check)& ach,
-	 const Handle(StepVisual_Colour)& ent) const
+	 const Handle(StepVisual_Colour)& /*ent*/) const
 {
   // --- Number of Parameter Control ---
   
@@ -35,7 +35,7 @@ void RWStepVisual_RWColour::ReadStep
 }
 
 void RWStepVisual_RWColour::WriteStep
-	(StepData_StepWriter& SW,
-	 const Handle(StepVisual_Colour)& ent) const
+	(StepData_StepWriter& /*SW*/,
+	 const Handle(StepVisual_Colour)& /*ent*/) const
 {
 }

@@ -23,22 +23,26 @@
 #include TheSurface_hxx
 
 
-Standard_Integer  BRepApprox_SurfaceToolGen::NbSamplesU(const TheSurface& S) { 
+Standard_Integer  BRepApprox_SurfaceToolGen::NbSamplesU (const TheSurface&) 
+{
   return(10);
 }
 
-Standard_Integer  BRepApprox_SurfaceToolGen::NbSamplesV(const TheSurface& S) { 
+Standard_Integer  BRepApprox_SurfaceToolGen::NbSamplesV (const TheSurface&) 
+{
   return(10);
 }
 
-Standard_Integer  BRepApprox_SurfaceToolGen::NbSamplesU(const TheSurface& S,
-						  const Standard_Real u1,
-						  const Standard_Real u2) { 
+Standard_Integer  BRepApprox_SurfaceToolGen::NbSamplesU (const TheSurface&,
+                                                         const Standard_Real,
+                                                         const Standard_Real) 
+{
   return(10);
 }
 
-Standard_Integer  BRepApprox_SurfaceToolGen::NbSamplesV(const TheSurface& S,
-						  const Standard_Real v1,
-						  const Standard_Real v2) { 
+Standard_Integer  BRepApprox_SurfaceToolGen::NbSamplesV (const TheSurface&,
+                                                         const Standard_Real,
+                                                         const Standard_Real) 
+{
   return(10);
 }

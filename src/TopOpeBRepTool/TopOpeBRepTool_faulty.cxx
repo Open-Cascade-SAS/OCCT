@@ -53,7 +53,7 @@ static void FUN_RaiseError()
   if (trc) cout <<"*********failure in TopOpeBRepTool::PurgeClosingEdges***********\n";
 #endif
 }
-Standard_EXPORT Standard_Integer FUN_addepc(const TopoDS_Shape& ed,const TopoDS_Shape& f){
+Standard_EXPORT Standard_Integer FUN_addepc(const TopoDS_Shape& ed,const TopoDS_Shape& /*f*/){
   Standard_Integer ie = STATIC_PURGE_mapeds.Add(ed);
 #ifdef DRAW
 //  TCollection_AsciiString aa = TCollection_AsciiString("pc_"); FUN_tool_draw(aa,TopoDS::Edge(ed),TopoDS::Face(f),ie);

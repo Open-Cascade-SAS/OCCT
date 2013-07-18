@@ -69,7 +69,7 @@ Handle(PDF_Attribute) MDataStd_RealListStorageDriver::NewEmpty() const
 //=======================================================================
 void MDataStd_RealListStorageDriver::Paste(const Handle(TDF_Attribute)&  Source,
 					   const Handle(PDF_Attribute)&        Target,
-					   const Handle(MDF_SRelocationTable)& RelocTable) const
+					   const Handle(MDF_SRelocationTable)& /*RelocTable*/) const
 {
   Handle(TDataStd_RealList) S = Handle(TDataStd_RealList)::DownCast (Source);
   Handle(PDataStd_RealList) T = Handle(PDataStd_RealList)::DownCast (Target);

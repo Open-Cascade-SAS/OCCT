@@ -138,9 +138,9 @@ Matches (const Standard_Real XMin,
 //=======================================================================
 
 Standard_Boolean Select3D_SensitiveBox::
-Matches (const TColgp_Array1OfPnt2d& aPoly,
+Matches (const TColgp_Array1OfPnt2d& /*aPoly*/,
          const Bnd_Box2d& aBox,
-         const Standard_Real aTol)
+         const Standard_Real /*aTol*/)
 {
   return(!aBox.IsOut(mybox2d));
 }

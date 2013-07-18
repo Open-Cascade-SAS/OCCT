@@ -20,7 +20,7 @@
 
 
 Handle(Standard_Type)  TransferBRep_ShapeInfo::Type
-  (const TopoDS_Shape& ent)
+  (const TopoDS_Shape& /*ent*/)
       {  return STANDARD_TYPE(TopoDS_TShape);  }
 
     Standard_CString  TransferBRep_ShapeInfo::TypeName

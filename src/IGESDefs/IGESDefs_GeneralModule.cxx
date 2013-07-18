@@ -294,7 +294,7 @@ IGESDefs_GeneralModule::IGESDefs_GeneralModule ()    {  }
 
 
     Standard_Integer  IGESDefs_GeneralModule::CategoryNumber
-  (const Standard_Integer CN, const Handle(Standard_Transient)& ent,
+  (const Standard_Integer /*CN*/, const Handle(Standard_Transient)& /*ent*/,
    const Interface_ShareTool& ) const
 {
   return Interface_Category::Number("Auxiliary");

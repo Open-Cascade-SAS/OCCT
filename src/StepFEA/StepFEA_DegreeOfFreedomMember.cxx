@@ -64,7 +64,7 @@ Standard_CString StepFEA_DegreeOfFreedomMember::Name() const
 //purpose  : 
 //=======================================================================
 
-static Standard_Integer CompareNames(const Standard_CString name,Standard_Integer &numen) 
+static Standard_Integer CompareNames(const Standard_CString name,Standard_Integer &/*numen*/) 
 {
   Standard_Integer thecase =0;
   if (!name || name[0] == '\0') thecase = 0;

@@ -569,7 +569,7 @@ static Standard_Integer OCC280 (Draw_Interpretor& di, Standard_Integer argc, con
   return 0;
 }
 
-static Standard_Integer  OCC232 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
+static Standard_Integer  OCC232 (Draw_Interpretor& di, Standard_Integer /*argc*/, const char ** argv)
 {
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
   if(aContext.IsNull()) { 

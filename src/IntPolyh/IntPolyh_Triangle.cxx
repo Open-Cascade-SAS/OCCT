@@ -608,14 +608,14 @@ void OldEdge(const Standard_Integer EdgeN,
 //purpose  : 
 //=======================================================================
 void TestOldEdgeB(const Standard_Integer NumTA,
-		  const Standard_Integer numPtT1,
-		  const Standard_Integer numPtT2,
-		  const Standard_Integer T1,
-		  const Standard_Integer T2,
-		  const IntPolyh_ArrayOfTriangles & TTriangles,
-		  const Standard_Integer Edge1,
-		  const Standard_Integer Edge3,
-		  IntPolyh_ArrayOfEdges & TEdges )
+                  const Standard_Integer numPtT1,
+                  const Standard_Integer /*numPtT2*/,
+                  const Standard_Integer T1,
+                  const Standard_Integer T2,
+                  const IntPolyh_ArrayOfTriangles & /*TTriangles*/,
+                  const Standard_Integer Edge1,
+                  const Standard_Integer Edge3,
+                  IntPolyh_ArrayOfEdges & TEdges )
 {
 
   if( (TEdges[Edge1].FirstPoint() == numPtT1)

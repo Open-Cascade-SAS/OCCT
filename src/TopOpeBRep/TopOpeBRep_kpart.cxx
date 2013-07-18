@@ -130,11 +130,20 @@ static Standard_Boolean FUNBREP_SameUV(const TopOpeBRep_VPointInter& VP1,
 #ifdef DEB
 //-------------------------------------------------------------------
 void FUNBREP_topokpartDEB 
-(const Handle(TopOpeBRepDS_Interference)& Ifound,const TopOpeBRepDS_ListOfInterference& DSCIL,const TopOpeBRep_LineInter& L,
- const TopOpeBRep_VPointInter& VP,const TopOpeBRepDS_Transition& lasttransLine,
- const TopOpeBRepDS_DataStructure& BDS,const TopoDS_Shape& E,const TopoDS_Shape& F,const Standard_Real toluv,
- const Standard_Boolean CPIfound,const Standard_Boolean samepar, const Standard_Boolean couture,
- const Standard_Real& parline,const TopOpeBRepDS_Transition& transLine)
+(const Handle(TopOpeBRepDS_Interference)& /*Ifound*/,
+ const TopOpeBRepDS_ListOfInterference& DSCIL,
+ const TopOpeBRep_LineInter& L,
+ const TopOpeBRep_VPointInter& VP,
+ const TopOpeBRepDS_Transition& lasttransLine,
+ const TopOpeBRepDS_DataStructure& /*BDS*/,
+ const TopoDS_Shape& /*E*/,
+ const TopoDS_Shape& /*F*/,
+ const Standard_Real /*toluv*/,
+ const Standard_Boolean CPIfound,
+ const Standard_Boolean samepar, 
+ const Standard_Boolean couture,
+ const Standard_Real& parline,
+ const TopOpeBRepDS_Transition& transLine)
 //-------------------------------------------------------------------
 {
   Standard_Integer iVP = VP.Index();

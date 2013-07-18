@@ -190,11 +190,11 @@ static Standard_Boolean IsTimeStamp
       {  return TCollection_AsciiString ("IGES Header");  }
 
     Standard_Boolean  IGESSelect_EditHeader::Recognize
-  (const Handle(IFSelect_EditForm)& form) const
+  (const Handle(IFSelect_EditForm)& /*form*/) const
 {  return Standard_True;  }  // ??
 
     Handle(TCollection_HAsciiString)  IGESSelect_EditHeader::StringValue
-  (const Handle(IFSelect_EditForm)& form, const Standard_Integer num) const
+  (const Handle(IFSelect_EditForm)& /*form*/, const Standard_Integer num) const
 {
 //  Default Values
   return TypedValue(num)->HStringValue();
@@ -202,7 +202,7 @@ static Standard_Boolean IsTimeStamp
 
     Standard_Boolean  IGESSelect_EditHeader::Load
   (const Handle(IFSelect_EditForm)& form,
-   const Handle(Standard_Transient)& ent,
+   const Handle(Standard_Transient)& /*ent*/,
    const Handle(Interface_InterfaceModel)& model) const
 {
   Handle(IGESData_IGESModel) modl =
@@ -300,7 +300,7 @@ static Standard_Boolean IsTimeStamp
 
     Standard_Boolean  IGESSelect_EditHeader::Apply
   (const Handle(IFSelect_EditForm)& form,
-   const Handle(Standard_Transient)& ent,
+   const Handle(Standard_Transient)& /*ent*/,
    const Handle(Interface_InterfaceModel)& model) const
 {
   Handle(IGESData_IGESModel) modl =

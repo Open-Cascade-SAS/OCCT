@@ -506,7 +506,7 @@ static TopoDS_Edge GlueEdgesWithPCurves(const TopTools_SequenceOfShape& aChain,
 //purpose  : auxilary
 //=======================================================================
 static Standard_Boolean MergeEdges(const TopTools_SequenceOfShape& SeqEdges,
-                                   const TopoDS_Face& aFace,
+                                   const TopoDS_Face& /*aFace*/,
                                    const Standard_Real Tol,
                                    const Standard_Boolean ConcatBSplines,
                                    TopoDS_Edge& anEdge)

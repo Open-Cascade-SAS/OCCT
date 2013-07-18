@@ -21,7 +21,7 @@
 
 StepVisual_MarkerSelect::StepVisual_MarkerSelect () {  }
 
-Standard_Integer StepVisual_MarkerSelect::CaseNum(const Handle(Standard_Transient)& ent) const
+Standard_Integer StepVisual_MarkerSelect::CaseNum(const Handle(Standard_Transient)& /*ent*/) const
 {
 	return 0;
 }

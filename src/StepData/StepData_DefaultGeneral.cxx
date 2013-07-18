@@ -52,10 +52,10 @@ StepData_DefaultGeneral::StepData_DefaultGeneral ()
 }
 
 
-void  StepData_DefaultGeneral::CheckCase(const Standard_Integer casenum,
-                                         const Handle(Standard_Transient)& ent,
-                                         const Interface_ShareTool& shares,
-                                         Handle(Interface_Check)& /*ach*/) const 
+void  StepData_DefaultGeneral::CheckCase(const Standard_Integer,
+                                         const Handle(Standard_Transient)&,
+                                         const Interface_ShareTool&,
+                                         Handle(Interface_Check)&) const 
 {
 }  //  pas de Check sur une UndefinedEntity
 

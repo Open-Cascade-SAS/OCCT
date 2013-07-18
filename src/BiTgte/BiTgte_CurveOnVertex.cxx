@@ -101,7 +101,7 @@ GeomAbs_Shape BiTgte_CurveOnVertex::Continuity() const
 //purpose  : 
 //=======================================================================
 
-Standard_Integer BiTgte_CurveOnVertex::NbIntervals(const GeomAbs_Shape S) const
+Standard_Integer BiTgte_CurveOnVertex::NbIntervals(const GeomAbs_Shape) const
 {
   Standard_NotImplemented::Raise("BiTgte_CurveOnVertex");
   return 0;
@@ -113,8 +113,8 @@ Standard_Integer BiTgte_CurveOnVertex::NbIntervals(const GeomAbs_Shape S) const
 //purpose  : 
 //=======================================================================
 
-void BiTgte_CurveOnVertex::Intervals(TColStd_Array1OfReal& T,
-				     const GeomAbs_Shape S) const
+void BiTgte_CurveOnVertex::Intervals(TColStd_Array1OfReal&,
+                                     const GeomAbs_Shape) const
 {
   Standard_NotImplemented::Raise("BiTgte_CurveOnVertex");
 }
@@ -125,9 +125,9 @@ void BiTgte_CurveOnVertex::Intervals(TColStd_Array1OfReal& T,
 //purpose  : 
 //=======================================================================
 
-Handle(Adaptor3d_HCurve) BiTgte_CurveOnVertex::Trim(const Standard_Real First,
-						  const Standard_Real Last,
-						  const Standard_Real Tol)
+Handle(Adaptor3d_HCurve) BiTgte_CurveOnVertex::Trim(const Standard_Real,
+                                                    const Standard_Real,
+                                                    const Standard_Real) 
 const
 {
   Standard_NotImplemented::Raise("BiTgte_CurveOnVertex");
@@ -177,7 +177,7 @@ Standard_Real BiTgte_CurveOnVertex::Period() const
 //purpose  : 
 //=======================================================================
 
-gp_Pnt BiTgte_CurveOnVertex::Value(const Standard_Real U) const
+gp_Pnt BiTgte_CurveOnVertex::Value(const Standard_Real) const
 {
   return myPnt;
 }
@@ -188,7 +188,7 @@ gp_Pnt BiTgte_CurveOnVertex::Value(const Standard_Real U) const
 //purpose  : 
 //=======================================================================
 
-void BiTgte_CurveOnVertex::D0(const Standard_Real U,gp_Pnt& P) const
+void BiTgte_CurveOnVertex::D0(const Standard_Real /*U*/,gp_Pnt& P) const
 {
   P = myPnt;
 }
@@ -199,7 +199,7 @@ void BiTgte_CurveOnVertex::D0(const Standard_Real U,gp_Pnt& P) const
 //purpose  : 
 //=======================================================================
 
-void BiTgte_CurveOnVertex::D1(const Standard_Real U,gp_Pnt& P,gp_Vec& V) const
+void BiTgte_CurveOnVertex::D1(const Standard_Real ,gp_Pnt& ,gp_Vec&) const
 {
   Standard_NotImplemented::Raise("BiTgte_CurveOnVertex");
 }
@@ -210,8 +210,8 @@ void BiTgte_CurveOnVertex::D1(const Standard_Real U,gp_Pnt& P,gp_Vec& V) const
 //purpose  : 
 //=======================================================================
 
-void BiTgte_CurveOnVertex::D2(const Standard_Real U,gp_Pnt& P,
-			      gp_Vec& V1,gp_Vec& V2) const
+void BiTgte_CurveOnVertex::D2(const Standard_Real,gp_Pnt&,
+                              gp_Vec& ,gp_Vec& ) const
 {
   Standard_NotImplemented::Raise("BiTgte_CurveOnVertex");
 }
@@ -222,8 +222,11 @@ void BiTgte_CurveOnVertex::D2(const Standard_Real U,gp_Pnt& P,
 //purpose  : 
 //=======================================================================
 
-void BiTgte_CurveOnVertex::D3(const Standard_Real U,gp_Pnt& P,
-			      gp_Vec& V1,gp_Vec& V2,gp_Vec& V3) const
+void BiTgte_CurveOnVertex::D3(const Standard_Real,
+                              gp_Pnt& ,
+                              gp_Vec& ,
+                              gp_Vec& ,
+                              gp_Vec& ) const
 {
   Standard_NotImplemented::Raise("BiTgte_CurveOnVertex");
 }
@@ -234,8 +237,8 @@ void BiTgte_CurveOnVertex::D3(const Standard_Real U,gp_Pnt& P,
 //purpose  : 
 //=======================================================================
 
-gp_Vec BiTgte_CurveOnVertex::DN(const Standard_Real U,
-				const Standard_Integer N) const
+gp_Vec BiTgte_CurveOnVertex::DN(const Standard_Real,
+                                const Standard_Integer) const
 {
   Standard_NotImplemented::Raise("BiTgte_CurveOnVertex");
   return gp_Vec();
@@ -247,7 +250,7 @@ gp_Vec BiTgte_CurveOnVertex::DN(const Standard_Real U,
 //purpose  : 
 //=======================================================================
 
-Standard_Real BiTgte_CurveOnVertex::Resolution(const Standard_Real R3d) const
+Standard_Real BiTgte_CurveOnVertex::Resolution(const Standard_Real) const
 {
   Standard_NotImplemented::Raise("BiTgte_CurveOnVertex");
   return 0.;

@@ -72,9 +72,8 @@ void RWStepBasic_RWCertificationType::WriteStep (StepData_StepWriter& SW,
 //purpose  : 
 //=======================================================================
 
-void RWStepBasic_RWCertificationType::Share (const Handle(StepBasic_CertificationType) &ent,
-                                             Interface_EntityIterator& iter) const
+void RWStepBasic_RWCertificationType::Share (const Handle(StepBasic_CertificationType) &,
+                                             Interface_EntityIterator&) const
 {
-
   // Own fields of CertificationType
 }

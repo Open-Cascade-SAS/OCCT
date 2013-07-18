@@ -437,7 +437,8 @@ void QANewBRepNaming_Gluing::LoadSourceShapes(TopTools_DataMapOfShapeInteger& th
 //function : LoadUniqueShapes
 //purpose  : 
 //=======================================================================
-void QANewBRepNaming_Gluing::LoadUniqueShapes(QANewModTopOpe_Glue& theMkGluing, const TopTools_DataMapOfShapeInteger& theSources)
+void QANewBRepNaming_Gluing::LoadUniqueShapes(QANewModTopOpe_Glue& /*theMkGluing*/, 
+                                              const TopTools_DataMapOfShapeInteger& theSources)
 {
   Standard_Integer anIndex=1;
   TColStd_MapOfInteger alreadyUsed;

@@ -28,8 +28,8 @@ IFSelect_ModifEditForm::IFSelect_ModifEditForm
     void  IFSelect_ModifEditForm::Perform
   (IFSelect_ContextModif& ctx,
    const Handle(Interface_InterfaceModel)& target,
-   const Handle(Interface_Protocol)& protocol,
-   Interface_CopyTool& TC) const
+   const Handle(Interface_Protocol)& /*protocol*/,
+   Interface_CopyTool& /*TC*/) const
 {
   for (ctx.Start(); ctx.More(); ctx.Next()) {
     Standard_Boolean done = theedit->ApplyData(ctx.ValueResult(),target);

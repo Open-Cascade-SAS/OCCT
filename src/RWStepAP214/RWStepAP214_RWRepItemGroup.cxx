@@ -98,11 +98,9 @@ void RWStepAP214_RWRepItemGroup::WriteStep (StepData_StepWriter& SW,
 //purpose  : 
 //=======================================================================
 
-void RWStepAP214_RWRepItemGroup::Share (const Handle(StepAP214_RepItemGroup) &ent,
-                                        Interface_EntityIterator& iter) const
+void RWStepAP214_RWRepItemGroup::Share (const Handle(StepAP214_RepItemGroup)&,
+                                        Interface_EntityIterator&) const
 {
-
   // Inherited fields of Group
-
   // Inherited fields of RepresentationItem
 }

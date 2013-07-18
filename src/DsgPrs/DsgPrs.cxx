@@ -575,7 +575,7 @@ void DsgPrs::ComputeFacesAnglePresentation( const Standard_Real ArrowLength,
 
 
 
-void DsgPrs::ComputeFilletRadiusPresentation( const Standard_Real ArrowLength,
+void DsgPrs::ComputeFilletRadiusPresentation( const Standard_Real /*ArrowLength*/,
 					      const Standard_Real Value,
 					      const gp_Pnt &      Position,
 					      const gp_Dir &      NormalDir,

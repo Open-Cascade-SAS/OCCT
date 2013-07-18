@@ -87,10 +87,8 @@ void BlendFunc_Chamfer::Set(const Standard_Real Param)
 //purpose  : 
 //=======================================================================
 
-void BlendFunc_Chamfer::Set(const Standard_Real First, const Standard_Real Last)
+void BlendFunc_Chamfer::Set(const Standard_Real, const Standard_Real)
 {
-//  corde1.SetParam(First, Last);
-//  corde2.SetParam(First, Last);
 }
 
 //=======================================================================
@@ -352,7 +350,7 @@ void BlendFunc_Chamfer::Tangent(const Standard_Real U1,
 //purpose  : 
 //=======================================================================
 
-void BlendFunc_Chamfer::Section(const Standard_Real Param,
+void BlendFunc_Chamfer::Section(const Standard_Real /*Param*/,
 				const Standard_Real U1,
 				const Standard_Real V1,
 				const Standard_Real U2,
@@ -444,10 +442,10 @@ void BlendFunc_Chamfer::GetShape (Standard_Integer& NbPoles,
 //purpose  : Determine les Tolerance a utiliser dans les approximations.
 //=======================================================================
 void BlendFunc_Chamfer::GetTolerance(const Standard_Real BoundTol, 
-				     const Standard_Real SurfTol, 
-				     const Standard_Real AngleTol, 
+				     const Standard_Real, 
+				     const Standard_Real, 
 				     math_Vector& Tol3d, 
-				     math_Vector& Tol1D) const
+				     math_Vector&) const
 {
   Tol3d.Init(BoundTol);
 }
@@ -481,16 +479,16 @@ void BlendFunc_Chamfer::Mults(TColStd_Array1OfInteger& TMults)
 //=======================================================================
 
 Standard_Boolean BlendFunc_Chamfer::Section
-  (const Blend_Point& P,
-   TColgp_Array1OfPnt& Poles,
-   TColgp_Array1OfVec& DPoles,
-   TColgp_Array1OfVec& D2Poles,
-   TColgp_Array1OfPnt2d& Poles2d,
-   TColgp_Array1OfVec2d& DPoles2d,
-   TColgp_Array1OfVec2d& D2Poles2d,
-   TColStd_Array1OfReal& Weights,
-   TColStd_Array1OfReal& DWeights,
-   TColStd_Array1OfReal& D2Weights)
+  (const Blend_Point& /*P*/,
+   TColgp_Array1OfPnt& /*Poles*/,
+   TColgp_Array1OfVec& /*DPoles*/,
+   TColgp_Array1OfVec& /*D2Poles*/,
+   TColgp_Array1OfPnt2d& /*Poles2d*/,
+   TColgp_Array1OfVec2d& /*DPoles2d*/,
+   TColgp_Array1OfVec2d& /*D2Poles2d*/,
+   TColStd_Array1OfReal& /*Weights*/,
+   TColStd_Array1OfReal& /*DWeights*/,
+   TColStd_Array1OfReal& /*D2Weights*/)
 {
    return Standard_False;
 }

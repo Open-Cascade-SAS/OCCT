@@ -72,7 +72,7 @@ MXCAFDoc_CentroidRetrievalDriver::MXCAFDoc_CentroidRetrievalDriver(const Handle(
 
  void MXCAFDoc_CentroidRetrievalDriver::Paste(const Handle(PDF_Attribute)& Source,
 						    const Handle(TDF_Attribute)& Target,
-						    const Handle(MDF_RRelocationTable)& RelocTable) const
+						    const Handle(MDF_RRelocationTable)& /*RelocTable*/) const
 {
   Handle(PXCAFDoc_Centroid) S = Handle(PXCAFDoc_Centroid)::DownCast (Source);
   Handle(XCAFDoc_Centroid) T = Handle(XCAFDoc_Centroid)::DownCast (Target);

@@ -202,9 +202,9 @@ Standard_Boolean NIS_InteractiveObject::Intersect (const Bnd_B3f&,
 //=======================================================================
 
 Standard_Boolean NIS_InteractiveObject::Intersect
-                     (const NCollection_List<gp_XY> &thePolygon,
-                      const gp_Trsf                 &theTrf,
-                      const Standard_Boolean         isFull) const
+                     (const NCollection_List<gp_XY>& ,
+                      const gp_Trsf&                 ,
+                      const Standard_Boolean         ) const
 {
   return Standard_True;
 }

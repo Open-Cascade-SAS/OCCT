@@ -169,7 +169,7 @@ const BRepMesh_ListOfInteger& BRepMesh_VertexTool::GetListOfDelNodes() const
 //=======================================================================
 Standard_Integer BRepMesh_VertexTool::FindIndex(const BRepMesh_Vertex& theVertex)
 {
-  mySelector.SetCurrent(theVertex.Coord(), Standard_False);
+  mySelector.SetCurrent(theVertex.Coord(),Standard_False);
   myCellFilter.Inspect (theVertex.Coord(), mySelector);
   return mySelector.GetCoincidentInd();
 }

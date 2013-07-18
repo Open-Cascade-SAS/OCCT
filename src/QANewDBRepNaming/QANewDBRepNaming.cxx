@@ -327,7 +327,7 @@ static Standard_Integer QANewDBRepNaming_CheckNaming(Draw_Interpretor& di,Standa
 //purpose  : "CheckSelectShape Doc Label SubShapeType" 
 //=======================================================================
 
-static Standard_Integer QANewDBRepNaming_CheckSelectShape(Draw_Interpretor& di, Standard_Integer nb, const char ** a)
+static Standard_Integer QANewDBRepNaming_CheckSelectShape(Draw_Interpretor& di, Standard_Integer /*nb*/, const char ** a)
 {
   Handle(TDF_Data) DF;
   if(!DDF::GetDF(a[1], DF)) return 1;
@@ -381,7 +381,7 @@ static Standard_Integer QANewDBRepNaming_CheckSelectShape(Draw_Interpretor& di, 
 //purpose  : "CheckSelectShape Doc Label SubShapeType" 
 //=======================================================================
 
-static Standard_Integer QANewDBRepNaming_CheckSolve(Draw_Interpretor&,Standard_Integer nb, const char ** a)
+static Standard_Integer QANewDBRepNaming_CheckSolve(Draw_Interpretor&,Standard_Integer /*nb*/, const char ** a)
 {
   Handle(TDF_Data) DF;
   if(!DDF::GetDF(a[1], DF)) return 1;

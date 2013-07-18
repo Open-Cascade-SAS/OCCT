@@ -16,8 +16,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
 #include <TDataXtd_Axis.ixx>
 #include <TDataStd.hxx>
 #include <TDataXtd.hxx>
@@ -139,14 +137,14 @@ Handle(TDF_Attribute) TDataXtd_Axis::NewEmpty () const
 //purpose  : 
 //=======================================================================
 
-void TDataXtd_Axis::Restore (const Handle(TDF_Attribute)& With) { }
+void TDataXtd_Axis::Restore (const Handle(TDF_Attribute)&) { }
 
 //=======================================================================
 //function : Paste
 //purpose  : 
 //=======================================================================
 
-void TDataXtd_Axis::Paste (const Handle(TDF_Attribute)& Into, const Handle(TDF_RelocationTable)& RT) const { }
+void TDataXtd_Axis::Paste (const Handle(TDF_Attribute)&, const Handle(TDF_RelocationTable)&) const { }
 
 
 //=======================================================================

@@ -479,10 +479,10 @@ Handle(Geom_Curve) MakeCurve (const BiTgte_CurveOnEdge& HC)
 //purpose  : Only the faces connected with caps are given
 //=======================================================================
 
-static void Touched(const BRepOffset_Analyse&  Analyse, 
-		    const TopTools_MapOfShape& StopFaces, 
-		    const TopoDS_Shape&        Shape,
-		    TopTools_MapOfShape& TouchedByCork)
+static void Touched(const BRepOffset_Analyse&, 
+                    const TopTools_MapOfShape&, 
+                    const TopoDS_Shape&,
+                    TopTools_MapOfShape&)
 {
   // currently nothing is done !!
   /*if ( Standard_True) {
@@ -493,9 +493,9 @@ static void Touched(const BRepOffset_Analyse&  Analyse,
     for ( ; exp.More(); exp.Next()) {
       const TopTools_ListOfShape& L = Analyse.Ancestors(exp.Current());
       if (StopFaces.Contains(L.First())) 
-	TouchedByCork.Add(L.Last());
+        TouchedByCork.Add(L.Last());
       else if (StopFaces.Contains(L.Last())) 
-	TouchedByCork.Add(L.First());
+        TouchedByCork.Add(L.First());
     }
   }*/
   return;

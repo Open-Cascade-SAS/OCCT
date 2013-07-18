@@ -39,7 +39,7 @@
 //=======================================================================
 
 Standard_Boolean DDocStd::Find (Handle(TDocStd_Application)& A,
-				const Standard_Boolean Complain)
+				const Standard_Boolean /*Complain*/)
 {  
   if (!CDF_Session::Exists()) 
     Standard_DomainError::Raise("DDocStd::Find no applicative session");

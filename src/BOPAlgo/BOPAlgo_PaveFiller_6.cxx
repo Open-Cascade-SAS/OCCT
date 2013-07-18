@@ -1286,8 +1286,8 @@ static void ToleranceFF(const TopoDS_Face& aF1,
 //function : ProcessUnUsedVertices
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_PaveFiller::PutEFPavesOnCurve(const Standard_Integer nF1,
-                                             const Standard_Integer nF2,
+  void BOPAlgo_PaveFiller::PutEFPavesOnCurve(const Standard_Integer /*nF1*/,
+                                             const Standard_Integer /*nF2*/,
                                              BOPDS_Curve& aNC,
                                              const BOPCol_MapOfInteger& aMVEF)
 {

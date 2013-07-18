@@ -396,15 +396,15 @@ static void TrimC3d(Handle(Adaptor3d_HCurve)& myCurve,
 //purpose  : 
 //=======================================================================
 
-static void ExtendC2d(Handle(Geom2d_BSplineCurve)& aRes,
-		      const Standard_Real t,
-		      const Standard_Real dt,
-		      const Standard_Real u1,
-		      const Standard_Real u2,
-		      const Standard_Real v1,
-		      const Standard_Real v2,
-                      const Standard_Integer FirstOrLast,
-                      const Standard_Integer NumberOfSingularCase)
+static void ExtendC2d (Handle(Geom2d_BSplineCurve)& aRes,
+                       const Standard_Real /*t*/,
+                       const Standard_Real /*dt*/,
+                       const Standard_Real u1,
+                       const Standard_Real u2,
+                       const Standard_Real v1,
+                       const Standard_Real v2,
+                       const Standard_Integer FirstOrLast,
+                       const Standard_Integer NumberOfSingularCase)
 {
   Standard_Real theParam = (FirstOrLast == 0)? aRes->FirstParameter()
     : aRes->LastParameter();

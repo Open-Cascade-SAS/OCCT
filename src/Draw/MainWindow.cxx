@@ -94,7 +94,7 @@ BOOL CreateProc(HWND hWndFrame)
 |  		Handler for message WM_COMMAND   
 |
 \*--------------------------------------------------------------------------*/
-BOOL CommandProc(HWND hWndFrame, WPARAM wParam, LPARAM lParam)
+BOOL CommandProc(HWND hWndFrame, WPARAM wParam, LPARAM /*lParam*/)
 {
   HWND hWndClient; // Handle on window MDI
   HWND hWndActive;

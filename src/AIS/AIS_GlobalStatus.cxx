@@ -34,7 +34,7 @@ mySubInt(Standard_False)
 AIS_GlobalStatus::AIS_GlobalStatus(const AIS_DisplayStatus DS,
 				   const Standard_Integer DMode,
 				   const Standard_Integer SMode,
-				   const Standard_Boolean ishilighted,
+				   const Standard_Boolean /*ishilighted*/,
 				   const Quantity_NameOfColor TheHiCol,
 				   const Standard_Integer Layer):
 myStatus(DS),

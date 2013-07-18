@@ -36,7 +36,7 @@ HLRTest_OutLiner::HLRTest_OutLiner (const TopoDS_Shape& S)
 //purpose  : 
 //=======================================================================
 
-void HLRTest_OutLiner::DrawOn (Draw_Display& dis) const 
+void HLRTest_OutLiner::DrawOn (Draw_Display& /*dis*/) const 
 {
 }
 

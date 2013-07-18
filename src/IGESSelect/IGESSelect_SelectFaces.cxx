@@ -31,8 +31,8 @@ IGESSelect_SelectFaces::IGESSelect_SelectFaces ()
 
 
     Standard_Boolean  IGESSelect_SelectFaces::Explore
-  (const Standard_Integer level, const Handle(Standard_Transient)& ent,
-   const Interface_Graph& G, Interface_EntityIterator& explored) const
+  (const Standard_Integer /*level*/, const Handle(Standard_Transient)& ent,
+   const Interface_Graph& /*G*/, Interface_EntityIterator& explored) const
 {
   DeclareAndCast(IGESData_IGESEntity,igesent,ent);
   if (igesent.IsNull()) return Standard_False;

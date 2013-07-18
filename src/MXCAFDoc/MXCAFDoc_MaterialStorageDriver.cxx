@@ -72,7 +72,7 @@ Handle(PDF_Attribute) MXCAFDoc_MaterialStorageDriver::NewEmpty() const
 
 void MXCAFDoc_MaterialStorageDriver::Paste(const Handle(TDF_Attribute)& Source,
                                          const Handle(PDF_Attribute)& Target,
-                                         const Handle(MDF_SRelocationTable)& RelocTable) const
+                                         const Handle(MDF_SRelocationTable)& /*RelocTable*/) const
 {
   Handle(XCAFDoc_Material) S = Handle(XCAFDoc_Material)::DownCast (Source);
   Handle(PXCAFDoc_Material) T = Handle(PXCAFDoc_Material)::DownCast (Target);

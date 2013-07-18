@@ -26,13 +26,13 @@ StepData_FieldList::StepData_FieldList  ()    {  }
 Standard_Integer  StepData_FieldList::NbFields () const
 {  return 0;  }
 
-const StepData_Field&  StepData_FieldList::Field (const Standard_Integer num) const
+const StepData_Field&  StepData_FieldList::Field (const Standard_Integer) const
 {
   Standard_OutOfRange::Raise("StepData_FieldList : Field");
   return nulfild;
 }
 
-StepData_Field&  StepData_FieldList::CField (const Standard_Integer num)
+StepData_Field&  StepData_FieldList::CField (const Standard_Integer)
 {
   Standard_OutOfRange::Raise("StepData_FieldList : CField");
   return nulfild;

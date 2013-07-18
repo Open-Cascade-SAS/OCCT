@@ -102,7 +102,7 @@ void BlendFunc_CSConstRad::Set(const Standard_Real Param)
 //purpose  : 
 //=======================================================================
 
-void BlendFunc_CSConstRad::Set(const Standard_Real First, const Standard_Real Last)
+void BlendFunc_CSConstRad::Set(const Standard_Real, const Standard_Real)
 {
   Standard_NotImplemented::Raise("BlendFunc_CSConstRad::Set");
 }

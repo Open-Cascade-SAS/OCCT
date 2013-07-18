@@ -30,7 +30,7 @@
 
 /*----------------------------------------------------------------------*/
 
-void OpenGl_Marker::Release (const Handle(OpenGl_Context)& theContext)
+void OpenGl_Marker::Release (const Handle(OpenGl_Context)&)
 {
   //
 }

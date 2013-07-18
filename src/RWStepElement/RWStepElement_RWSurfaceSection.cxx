@@ -83,8 +83,8 @@ void RWStepElement_RWSurfaceSection::WriteStep (StepData_StepWriter& SW,
 //purpose  : 
 //=======================================================================
 
-void RWStepElement_RWSurfaceSection::Share (const Handle(StepElement_SurfaceSection) &ent,
-                                            Interface_EntityIterator& iter) const
+void RWStepElement_RWSurfaceSection::Share (const Handle(StepElement_SurfaceSection)&,
+                                            Interface_EntityIterator&) const
 {
 
   // Own fields of SurfaceSection

@@ -774,7 +774,7 @@ IGESDimen_GeneralModule::IGESDimen_GeneralModule ()    {  }
 
 
     Standard_Integer  IGESDimen_GeneralModule::CategoryNumber
-  (const Standard_Integer CN, const Handle(Standard_Transient)& ,
+  (const Standard_Integer /*CN*/, const Handle(Standard_Transient)& ,
    const Interface_ShareTool& ) const
 {
   return Interface_Category::Number("Drawing");

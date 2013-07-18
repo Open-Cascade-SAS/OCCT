@@ -442,7 +442,7 @@ Handle(TopOpeBRepDS_Interference) TopOpeBRep_EdgesFiller::StoreVI(const TopOpeBR
 //function : ToRecompute
 //purpose  : 
 //=======================================================================
-Standard_Boolean TopOpeBRep_EdgesFiller::ToRecompute(const TopOpeBRep_Point2d& P2D,const Handle(TopOpeBRepDS_Interference)& I,const Standard_Integer IEmother)
+Standard_Boolean TopOpeBRep_EdgesFiller::ToRecompute(const TopOpeBRep_Point2d& P2D,const Handle(TopOpeBRepDS_Interference)& /*I*/,const Standard_Integer /*IEmother*/)
 {
   Standard_Boolean b = Standard_True;
   Standard_Boolean pointofsegment = P2D.IsPointOfSegment();

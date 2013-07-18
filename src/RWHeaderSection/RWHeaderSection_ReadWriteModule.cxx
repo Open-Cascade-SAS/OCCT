@@ -80,7 +80,7 @@ Standard_Integer RWHeaderSection_ReadWriteModule::CaseStep
 	// --- External Mapping Recognition ---
 
 Standard_Boolean RWHeaderSection_ReadWriteModule::IsComplex
-	(const Standard_Integer CN) const
+	(const Standard_Integer /*CN*/) const
 {
 	return Standard_False;
 }

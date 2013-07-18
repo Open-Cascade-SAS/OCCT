@@ -117,7 +117,7 @@ struct W32_Note {  // base class to represent graphic object
 #ifdef OCC5415
  void operator delete (void*, W32_Allocator*) {}
 private: // to protect against possible accidental usage
- void operator delete (void* p) {}
+ void operator delete (void*) {}
 #endif
 };
 ///

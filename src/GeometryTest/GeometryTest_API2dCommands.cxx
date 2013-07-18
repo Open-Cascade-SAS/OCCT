@@ -260,7 +260,7 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
 //purpose  : 
 //=======================================================================
 
-static Standard_Integer intersect(Draw_Interpretor& di, Standard_Integer n, const char** a)
+static Standard_Integer intersect(Draw_Interpretor& /*di*/, Standard_Integer n, const char** a)
 {
   if( n < 2) 
     return 1;

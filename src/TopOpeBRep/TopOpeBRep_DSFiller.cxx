@@ -704,7 +704,7 @@ void TopOpeBRep_DSFiller::RemoveUnsharedGeometry(const Handle(TopOpeBRepDS_HData
 //function : Checker
 //purpose  : 
 //=======================================================================
-void TopOpeBRep_DSFiller::Checker(const Handle(TopOpeBRepDS_HDataStructure)& HDS) const
+void TopOpeBRep_DSFiller::Checker(const Handle(TopOpeBRepDS_HDataStructure)& /*HDS*/) const
 {
   // TopOpeBRepDS_Checker C(HDS); // NYI
   //#ifdef DEB

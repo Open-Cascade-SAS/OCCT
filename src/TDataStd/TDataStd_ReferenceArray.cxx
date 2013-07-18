@@ -144,7 +144,7 @@ const Handle(TDataStd_HLabelArray1)& TDataStd_ReferenceArray::InternalArray () c
 //purpose  : 
 //=======================================================================
 void TDataStd_ReferenceArray::SetInternalArray (const Handle(TDataStd_HLabelArray1)& values,
-						const Standard_Boolean isCheckItem)
+						const Standard_Boolean /*isCheckItem*/)
 {
 //  myArray = values;
   Standard_Integer aLower    = values->Lower();

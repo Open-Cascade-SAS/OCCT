@@ -1631,7 +1631,7 @@ void BRepOffset_MakeOffset::BuildOffsetByArc()
 //purpose  : 
 //=======================================================================
 
-void BRepOffset_MakeOffset::SelfInter(TopTools_MapOfShape& Modif)
+void BRepOffset_MakeOffset::SelfInter(TopTools_MapOfShape& /*Modif*/)
 {
 #ifdef DEB
   if ( ChronBuild) {
@@ -2703,7 +2703,7 @@ void BRepOffset_MakeOffset::MakeLoops(TopTools_IndexedMapOfShape& Modif)
 //           share edges that were reconstructed.
 //=======================================================================
 
-void BRepOffset_MakeOffset::MakeFaces(TopTools_IndexedMapOfShape& Modif)
+void BRepOffset_MakeOffset::MakeFaces(TopTools_IndexedMapOfShape& /*Modif*/)
 {
 #ifdef DEb
   if (ChronBuild) {  

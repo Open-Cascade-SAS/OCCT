@@ -900,7 +900,7 @@ static int VPointBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
 //                            [PlaneName] [PointName]
 //==============================================================================
 
-static Standard_Integer VPlaneBuilder (Draw_Interpretor& di,
+static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
                                        Standard_Integer argc,
                                        const char** argv)
 {
@@ -1843,7 +1843,7 @@ TopoDS_Face FilledCircle::ComputeFace()
   return aFace;
 }
 
-void FilledCircle::Compute(const Handle_PrsMgr_PresentationManager3d &thePresentationManager, 
+void FilledCircle::Compute(const Handle_PrsMgr_PresentationManager3d &/*thePresentationManager*/, 
                            const Handle_Prs3d_Presentation &thePresentation, 
                            const Standard_Integer theMode) 
 {
@@ -1858,7 +1858,7 @@ void FilledCircle::Compute(const Handle_PrsMgr_PresentationManager3d &thePresent
 }
 
 void FilledCircle::ComputeSelection(const Handle_SelectMgr_Selection &theSelection, 
-                                    const Standard_Integer theMode)
+                                    const Standard_Integer /*theMode*/)
 {
   Handle(SelectMgr_EntityOwner) anEntityOwner = new SelectMgr_EntityOwner(this);
   Handle(Select3D_SensitiveCircle) aSensitiveCircle = new Select3D_SensitiveCircle(anEntityOwner, 
@@ -1911,7 +1911,7 @@ void DisplayCircle (Handle (Geom_Circle) theGeomCircle,
   
 }
 
-static int VCircleBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int VCircleBuilder(Draw_Interpretor& /*di*/, Standard_Integer argc, const char** argv)
 {
   Standard_Integer myCurrentIndex;
   // Verification of the arguments
@@ -2311,8 +2311,8 @@ private:
                   const Handle(Prs3d_Presentation)& aPresentation,
                   const Standard_Integer aMode);
 
-  void ComputeSelection (  const Handle(SelectMgr_Selection)& aSelection,
-                           const Standard_Integer aMode){} ;
+  void ComputeSelection (  const Handle(SelectMgr_Selection)& /*aSelection*/,
+                           const Standard_Integer /*aMode*/){} ;
 
 protected:
   TCollection_ExtendedString          aText;
@@ -2361,9 +2361,9 @@ MyTextClass::MyTextClass( const TCollection_ExtendedString& text, const gp_Pnt& 
 
 
 //////////////////////////////////////////////////////////////////////////////
-void MyTextClass::Compute(const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
+void MyTextClass::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
                           const Handle(Prs3d_Presentation)& aPresentation,
-                          const Standard_Integer aMode)
+                          const Standard_Integer /*aMode*/)
 {
 
   aPresentation->Clear();
@@ -2750,7 +2750,7 @@ Handle( Poly_Triangulation ) CalculationOfSphere( double X , double Y , double Z
 //author   : psn
 //purpose  : Create an AIS shape.
 //===============================================================================================
-static int VDrawSphere (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int VDrawSphere (Draw_Interpretor& /*di*/, Standard_Integer argc, const char** argv)
 {
   // check for errors
   Handle(AIS_InteractiveContext) aContextAIS = ViewerTest::GetAISContext();
@@ -2856,7 +2856,7 @@ static int VDrawSphere (Draw_Interpretor& di, Standard_Integer argc, const char*
 //function : VClipPlane
 //purpose  :
 //===============================================================================================
-static int VClipPlane (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int VClipPlane (Draw_Interpretor& /*di*/, Standard_Integer argc, const char** argv)
 {
   Handle(V3d_Viewer) aViewer = ViewerTest::GetViewerFromContext();
   Handle(V3d_View) aView = ViewerTest::CurrentView();
@@ -3182,8 +3182,8 @@ private:
                 const Handle(Prs3d_Presentation)& aPresentation,
                 const Standard_Integer aMode);
 
-  void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection,
-                         const Standard_Integer aMode) {};
+  void ComputeSelection (const Handle(SelectMgr_Selection)& /*aSelection*/,
+                         const Standard_Integer /*aMode*/) {};
 
 protected:
 
@@ -3194,9 +3194,9 @@ protected:
 IMPLEMENT_STANDARD_HANDLE(MyPArrayObject, AIS_InteractiveObject)
 IMPLEMENT_STANDARD_RTTIEXT(MyPArrayObject, AIS_InteractiveObject)
 
-void MyPArrayObject::Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
+void MyPArrayObject::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
                               const Handle(Prs3d_Presentation)& aPresentation,
-                              const Standard_Integer aMode)
+                              const Standard_Integer /*aMode*/)
 {
   aPresentation->Clear();
   Prs3d_Root::CurrentGroup (aPresentation)->AddPrimitiveArray (myArray);
@@ -3499,7 +3499,7 @@ static Standard_Integer VSetLocation (Draw_Interpretor& di,
 //Draw arg : vconnect name Xo Yo Zo Xu Xv Xw Zu Zv Zw object1 object2 ... [color=NAME]
 //===============================================================================================
 
-static Standard_Integer VConnect(Draw_Interpretor& di, 
+static Standard_Integer VConnect(Draw_Interpretor& /*di*/, 
                                  Standard_Integer argc, 
                                  const char ** argv) 
 {
@@ -3679,7 +3679,7 @@ static Standard_Integer VConnect(Draw_Interpretor& di,
 //Draw arg : vconnectsh name Xo Yo Zo Xu Xv Xw Zu Zv Zw shape1 shape2 ... [color=NAME]
 //===============================================================================================
 
-static Standard_Integer VConnectShape(Draw_Interpretor& di, 
+static Standard_Integer VConnectShape(Draw_Interpretor& /*di*/, 
                                       Standard_Integer argc, 
                                       const char ** argv) 
 {
@@ -3881,7 +3881,7 @@ Standard_Boolean InList(Handle(AIS_InteractiveContext) theAISContext,
   return Standard_False;
 }
 
-static Standard_Integer VSetSelectionMode(Draw_Interpretor& di, 
+static Standard_Integer VSetSelectionMode(Draw_Interpretor& /*di*/, 
                                           Standard_Integer argc, 
                                           const char ** argv)
 {
@@ -4049,9 +4049,9 @@ Triangle::Triangle (const gp_Pnt& theP1,
   myPoint3 = theP3;
 }
 
-void Triangle::Compute(const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
+void Triangle::Compute(const Handle(PrsMgr_PresentationManager3d)& /*thePresentationManager*/,
                        const Handle(Prs3d_Presentation)& thePresentation,
-                       const Standard_Integer theMode)
+                       const Standard_Integer /*theMode*/)
 {
   thePresentation->Clear();
 
@@ -4077,7 +4077,7 @@ void Triangle::Compute(const Handle(PrsMgr_PresentationManager3d)& thePresentati
 }
 
 void Triangle::ComputeSelection(const Handle(SelectMgr_Selection)& theSelection, 
-                                const Standard_Integer theMode)
+                                const Standard_Integer /*theMode*/)
 {
   Handle(SelectMgr_EntityOwner) anEntityOwner = new SelectMgr_EntityOwner(this);
   Handle(Select3D_SensitiveTriangle) aSensTriangle = 
@@ -4125,7 +4125,7 @@ Standard_Boolean IsMatch (const Handle(Geom_CartesianPoint)& thePoint1,
   return Standard_False;
 }
 
-static Standard_Integer VTriangle (Draw_Interpretor& di,
+static Standard_Integer VTriangle (Draw_Interpretor& /*di*/,
                                    Standard_Integer argc,
                                    const char ** argv)
 {
@@ -4238,9 +4238,9 @@ SegmentObject::SegmentObject (const gp_Pnt& thePnt1, const gp_Pnt& thePnt2)
   myPoint2 = thePnt2;
 }
 
-void SegmentObject::Compute (const Handle_PrsMgr_PresentationManager3d &thePresentationManager,
+void SegmentObject::Compute (const Handle_PrsMgr_PresentationManager3d &/*thePresentationManager*/,
                              const Handle_Prs3d_Presentation &thePresentation,
-                             const Standard_Integer theMode)
+                             const Standard_Integer /*theMode*/)
 {
   thePresentation->Clear();
   BRepBuilderAPI_MakeEdge anEdgeMaker(myPoint1, myPoint2);
@@ -4252,7 +4252,7 @@ void SegmentObject::Compute (const Handle_PrsMgr_PresentationManager3d &thePrese
 }
 
 void SegmentObject::ComputeSelection (const Handle_SelectMgr_Selection &theSelection,
-                                      const Standard_Integer theMode)
+                                      const Standard_Integer /*theMode*/)
 {
   Handle(SelectMgr_EntityOwner) anOwner = new SelectMgr_EntityOwner(this);
   Handle(TColgp_HArray1OfPnt) anArray = new TColgp_HArray1OfPnt(1, 2);
@@ -4268,7 +4268,7 @@ void SegmentObject::ComputeSelection (const Handle_SelectMgr_Selection &theSelec
 //Draw args : vsegment Name PointName PointName
 //purpose   : creates and displays Segment
 //=======================================================================
-static Standard_Integer VSegment (Draw_Interpretor& di,
+static Standard_Integer VSegment (Draw_Interpretor& /*di*/,
                                   Standard_Integer argc,
                                   const char ** argv)
 {
@@ -4395,7 +4395,7 @@ static Standard_Integer VObjZLayer (Draw_Interpretor& di,
 //function : VPolygonOffset
 //purpose  : Set or get polygon offset parameters
 //=======================================================================
-static Standard_Integer VPolygonOffset(Draw_Interpretor& di,
+static Standard_Integer VPolygonOffset(Draw_Interpretor& /*di*/,
                                        Standard_Integer argc,
                                        const char ** argv)
 {
@@ -4477,7 +4477,7 @@ static Standard_Integer VPolygonOffset(Draw_Interpretor& di,
 //function : VShowFaceBoundaries
 //purpose  : Set face boundaries drawing on/off for ais object
 //=======================================================================
-static Standard_Integer VShowFaceBoundary (Draw_Interpretor& di,
+static Standard_Integer VShowFaceBoundary (Draw_Interpretor& /*di*/,
                                            Standard_Integer argc,
                                            const char ** argv)
 {

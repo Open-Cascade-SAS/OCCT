@@ -504,7 +504,7 @@ IGESGraph_GeneralModule::IGESGraph_GeneralModule ()    {  }
 
 
     Standard_Integer  IGESGraph_GeneralModule::CategoryNumber
-  (const Standard_Integer CN, const Handle(Standard_Transient)& ,
+  (const Standard_Integer /*CN*/, const Handle(Standard_Transient)& ,
    const Interface_ShareTool& ) const
 {
   return Interface_Category::Number("Drawing");

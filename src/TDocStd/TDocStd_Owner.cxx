@@ -120,7 +120,7 @@ Handle(TDF_Attribute) TDocStd_Owner::NewEmpty () const
 //purpose  : 
 //=======================================================================
 
-void TDocStd_Owner::Restore(const Handle(TDF_Attribute)& With) 
+void TDocStd_Owner::Restore(const Handle(TDF_Attribute)&) 
 {
 }
 
@@ -129,8 +129,8 @@ void TDocStd_Owner::Restore(const Handle(TDF_Attribute)& With)
 //purpose  : 
 //=======================================================================
 
-void TDocStd_Owner::Paste (const Handle(TDF_Attribute)& Into,
-			      const Handle(TDF_RelocationTable)& RT) const
+void TDocStd_Owner::Paste (const Handle(TDF_Attribute)&,
+			      const Handle(TDF_RelocationTable)&) const
 {
 }
 

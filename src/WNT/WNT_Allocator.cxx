@@ -496,7 +496,7 @@ WNT_PointNote :: WNT_PointNote ( int x, int y ) :
 {
 }  // end constructor
 
-void WNT_PointNote :: Play ( BOOL fDummy )
+void WNT_PointNote :: Play ( BOOL )
 {
   Xform ();
   SetPixel  ( ALLOCATOR -> myHDC, myTX, myTY, ALLOCATOR -> myPointColor );
@@ -517,7 +517,7 @@ WNT_MarkerPointNote :: WNT_MarkerPointNote ( int x, int y ) :
 {
 }  // end constructor
 
-void WNT_MarkerPointNote :: Play ( BOOL fDummy )
+void WNT_MarkerPointNote :: Play ( BOOL )
 {
   Xform ();
   SetPixel  ( ALLOCATOR -> myHDC, myTX, myTY, ALLOCATOR -> myMarkerPointColor );
@@ -532,7 +532,7 @@ WNT_LineNote :: WNT_LineNote ( int x, int y, int x1, int y1 ) :
   myY2 = y1;
 }  // end constructor
 
-void WNT_LineNote :: Play ( BOOL fDummy )
+void WNT_LineNote :: Play ( BOOL )
 {
   Xform ();
   MoveToEx                 ( ALLOCATOR -> myHDC, myTX , myTY, NULL    );
@@ -557,7 +557,7 @@ WNT_PolyEllipseNote :: WNT_PolyEllipseNote ( int xc, int yc, int xr, int yr ) :
   myYr = yr;
 }  // end constructor
 
-void WNT_PolyEllipseNote :: Play ( BOOL fDummy )
+void WNT_PolyEllipseNote :: Play ( BOOL )
 {
   Xform ();
   Ellipse ( ALLOCATOR -> myHDC, myTX - myTXr, myTY - myTYr,
@@ -580,7 +580,7 @@ WNT_EllipseNote :: WNT_EllipseNote ( int xc, int yc, int xr, int yr ) :
 {
 }  // end constructor
 
-void WNT_EllipseNote :: Play ( BOOL fDummy )
+void WNT_EllipseNote :: Play ( BOOL )
 {
   Xform ();
   HBRUSH hob = SelectBrush ( ALLOCATOR -> myHDC, GetStockObject (NULL_BRUSH) );
@@ -608,7 +608,7 @@ WNT_ArcNote :: WNT_ArcNote (
   myEY = int ( eSinA * 2 * Radius + yc );
 }  // end constructor
 
-void WNT_ArcNote :: Play ( BOOL fDummy )
+void WNT_ArcNote :: Play ( BOOL )
 {
   Xform ();
   SetArcDirection ( ALLOCATOR -> myHDC, myDirect );
@@ -636,7 +636,7 @@ WNT_PolyChordNote :: WNT_PolyChordNote (
 {
 }  // end constructor
 
-void WNT_PolyChordNote :: Play ( BOOL fDummy )
+void WNT_PolyChordNote :: Play ( BOOL )
 {
   Xform ();
   Chord ( ALLOCATOR -> myHDC, myTX - myTXr, myTY - myTYr,
@@ -652,7 +652,7 @@ WNT_ChordNote :: WNT_ChordNote (
 {
 }  // end constructor
 
-void WNT_ChordNote :: Play ( BOOL fDummy )
+void WNT_ChordNote :: Play ( BOOL )
 {
   Xform ();
   HBRUSH hob = SelectBrush ( ALLOCATOR -> myHDC, GetStockObject (NULL_BRUSH) );
@@ -670,7 +670,7 @@ WNT_PolySectorNote :: WNT_PolySectorNote (
 {
 }  // end constructor
 
-void WNT_PolySectorNote :: Play ( BOOL fDummy )
+void WNT_PolySectorNote :: Play ( BOOL )
 {
   Xform ();
   Pie ( ALLOCATOR -> myHDC, myTX - myTXr, myTY - myTYr,
@@ -686,7 +686,7 @@ WNT_SectorNote :: WNT_SectorNote (
 {
 }  // end constructor
 
-void WNT_SectorNote :: Play ( BOOL fDummy )
+void WNT_SectorNote :: Play ( BOOL )
 {
   Xform ();
   HBRUSH hob = SelectBrush ( ALLOCATOR -> myHDC, GetStockObject (NULL_BRUSH) );
@@ -732,7 +732,7 @@ WNT_PolyMarker1Note :: WNT_PolyMarker1Note (
 {
 }  // end constructor
 
-void WNT_PolyMarker1Note :: Play ( BOOL fDummy )
+void WNT_PolyMarker1Note :: Play ( BOOL )
 {
   if ( ALLOCATOR -> myFlags & W32F_MFILL )
     DrawPolygon  ( ALLOCATOR -> myHDC, myPoints, mySetPoints, POLYF_NOCLOSEDGE );
@@ -751,7 +751,7 @@ WNT_PolyMarker2Note :: WNT_PolyMarker2Note (
 {
 }  // end constructor
 
-void WNT_PolyMarker2Note :: Play ( BOOL fDummy )
+void WNT_PolyMarker2Note :: Play ( BOOL )
 {
   if ( ALLOCATOR -> myFlags & W32F_MFILL )
     DrawPolygon  ( ALLOCATOR -> myHDC, myPoints, mySetPoints - 1, 0 );
@@ -767,7 +767,7 @@ WNT_PolygonNote :: WNT_PolygonNote ( int aMaxPoints ) :
   myTPoints = ( LPPOINT ) ALLOCATOR -> NewData (myMaxPoints * sizeof ( POINT ));
 }  // end constructor
 
-void WNT_PolygonNote :: Play ( BOOL fDummy )
+void WNT_PolygonNote :: Play ( BOOL )
 {
   Xform ();
   DrawPolygon (
@@ -791,7 +791,7 @@ WNT_PolylineNote :: WNT_PolylineNote ( int aMaxPoints ) :
 {
 }  // end constructor
 
-void WNT_PolylineNote :: Play ( BOOL fDummy )
+void WNT_PolylineNote :: Play ( BOOL )
 {
   Xform ();
   DWORD nPts;
@@ -828,7 +828,7 @@ WNT_ImageNote :: ~WNT_ImageNote ()
   }  // end if
 }  // end WNT_ImageNote :: ~WNT_ImageNote
 
-void WNT_ImageNote :: Play ( BOOL fDummy )
+void WNT_ImageNote :: Play ( BOOL )
 {
   Xform ();
   int     xx, yy, w, h;
@@ -923,7 +923,7 @@ void WNT_TextNote :: FillText ()
   PaintText ();
 }  // end WNT_TextNote :: FillText
 
-void WNT_TextNote :: Play ( BOOL fDummy )
+void WNT_TextNote :: Play ( BOOL )
 {
   Xform ();
   SIZE              size;
@@ -984,7 +984,7 @@ WNT_PolyTextNote :: WNT_PolyTextNote (
 {
 }  // end constructor
 
-void WNT_PolyTextNote :: Play ( BOOL fDummy )
+void WNT_PolyTextNote :: Play ( BOOL )
 {
   Xform ();
   SIZE              size;
@@ -1042,7 +1042,7 @@ WNT_BeginMarkerNote :: WNT_BeginMarkerNote (
   ALLOCATOR -> RecalcMatrix (myMatrix, myAngle - myPrevAngle, myX, myY);
 }  // end constructor
 
-void WNT_BeginMarkerNote :: Play ( BOOL fDummy )
+void WNT_BeginMarkerNote :: Play ( BOOL )
 {
   ALLOCATOR -> myPO = SelectPen (ALLOCATOR -> myHDC, ALLOCATOR -> myMarkerPen);
 #ifdef PRO19042
@@ -1076,7 +1076,7 @@ WNT_EndMarkerNote :: WNT_EndMarkerNote ()
 {
 }
 
-void WNT_EndMarkerNote :: Play ( BOOL fDummy )
+void WNT_EndMarkerNote :: Play ( BOOL )
 {
   ALLOCATOR -> Xform ();
   SelectPen   ( ALLOCATOR -> myHDC, ALLOCATOR -> myPO );
@@ -1139,7 +1139,7 @@ void WNT_LineAttribNote :: Play ( BOOL fRealize )
 // W N T _ P o l y A t t r i b N o t e                                        //
 ////////////////////////////////////////////////////////////////////////////////
 WNT_PolyAttribNote :: WNT_PolyAttribNote (
-                       PLOGBRUSH plb, BOOL fDrawEdge, int aFillMode
+                       PLOGBRUSH plb, BOOL fDrawEdge, int /*aFillMode*/
                       )
 {
   myfEdge    = fDrawEdge;
@@ -1281,7 +1281,7 @@ printf(" *** Destroy:WNT_MarkerAttribNote %x/%x\n",myPen,ALLOCATOR->myMarkerPen)
 #endif
 }  // enf WNT_MarkerAttribNote :: ~WNT_MarkerAttribNote
 
-void WNT_MarkerAttribNote :: Play ( BOOL fRealize )
+void WNT_MarkerAttribNote :: Play ( BOOL )
 {
   if (myFill)  ALLOCATOR -> myFlags |= W32F_MFILL;
   else         ALLOCATOR -> myFlags &= ~W32F_MFILL;

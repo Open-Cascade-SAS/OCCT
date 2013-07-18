@@ -362,7 +362,7 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
 				      ,const Standard_Real TolConf
 				      ,const Standard_Real Tol
 				      ,const Standard_Integer NbIter
-				      ,const Standard_Real DeltaU
+				      ,const Standard_Real /*DeltaU*/
 				      ,const Standard_Real) {
   
   gp_Vec2d Tan1,Tan2,Norm1,Norm2;

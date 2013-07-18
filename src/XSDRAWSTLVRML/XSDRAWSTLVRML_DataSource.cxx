@@ -165,7 +165,7 @@ Standard_Address XSDRAWSTLVRML_DataSource::GetAddr
 Standard_Boolean XSDRAWSTLVRML_DataSource::GetNodesByElement
 ( const Standard_Integer ID,
  TColStd_Array1OfInteger& theNodeIDs,
- Standard_Integer& theNbNodes ) const
+ Standard_Integer& /*theNbNodes*/ ) const
 {
   if( myMesh.IsNull() )
     return Standard_False;

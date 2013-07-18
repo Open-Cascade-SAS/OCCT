@@ -101,8 +101,8 @@ void SelectMgr_EntityOwner::Unhilight(const Handle(PrsMgr_PresentationManager)& 
     PM->Unhighlight(mySelectable,aMode);
 }
 
-void SelectMgr_EntityOwner::Clear(const Handle(PrsMgr_PresentationManager)& PM,
-				  const Standard_Integer aMode)
+void SelectMgr_EntityOwner::Clear(const Handle(PrsMgr_PresentationManager)&,
+				  const Standard_Integer)
 {
 // nothing done on the selectable here...
 }
@@ -155,7 +155,7 @@ Standard_Boolean SelectMgr_EntityOwner::IsForcedHilight () const
 //purpose  :
 //=======================================================================
 void SelectMgr_EntityOwner::SetZLayer 
-  (const Handle(PrsMgr_PresentationManager)& thePrsMgr,
-   const Standard_Integer theLayerId)
+  (const Handle(PrsMgr_PresentationManager)&,
+   const Standard_Integer)
 {
 }

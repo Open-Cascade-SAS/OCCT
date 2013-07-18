@@ -72,7 +72,7 @@ Handle(PDF_Attribute) MXCAFDoc_DimTolStorageDriver::NewEmpty() const
 
 void MXCAFDoc_DimTolStorageDriver::Paste(const Handle(TDF_Attribute)& Source,
                                          const Handle(PDF_Attribute)& Target,
-                                         const Handle(MDF_SRelocationTable)& RelocTable) const
+                                         const Handle(MDF_SRelocationTable)& /*RelocTable*/) const
 {
   Handle(XCAFDoc_DimTol) S = Handle(XCAFDoc_DimTol)::DownCast (Source);
   Handle(PXCAFDoc_DimTol) T = Handle(PXCAFDoc_DimTol)::DownCast (Target);

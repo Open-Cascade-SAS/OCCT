@@ -81,7 +81,7 @@ Handle(TDF_Attribute) TDataXtd_Placement::NewEmpty() const
 //purpose  : 
 //=======================================================================
 
-void TDataXtd_Placement::Restore (const Handle(TDF_Attribute)& other) 
+void TDataXtd_Placement::Restore (const Handle(TDF_Attribute)&) 
 {
 
 }
@@ -91,13 +91,11 @@ void TDataXtd_Placement::Restore (const Handle(TDF_Attribute)& other)
 //purpose  : 
 //=======================================================================
 
-void TDataXtd_Placement::Paste(const Handle(TDF_Attribute)& Into,
-			       const Handle(TDF_RelocationTable)& RT) const
+void TDataXtd_Placement::Paste(const Handle(TDF_Attribute)&,
+			       const Handle(TDF_RelocationTable)&) const
 {
 
 }    
-
-
 
 //=======================================================================
 //function : Dump

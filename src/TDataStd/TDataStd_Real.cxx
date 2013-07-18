@@ -171,7 +171,7 @@ void TDataStd_Real::Restore(const Handle(TDF_Attribute)& With)
 //=======================================================================
 
 void TDataStd_Real::Paste (const Handle(TDF_Attribute)& Into,
-			   const Handle(TDF_RelocationTable)& RT) const
+			   const Handle(TDF_RelocationTable)& /*RT*/) const
 { 
   Handle(TDataStd_Real) R = Handle(TDataStd_Real)::DownCast (Into);
   R->Set(myValue);

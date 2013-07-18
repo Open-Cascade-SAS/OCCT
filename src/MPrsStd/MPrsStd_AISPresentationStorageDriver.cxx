@@ -56,7 +56,7 @@ Handle(PDF_Attribute) MPrsStd_AISPresentationStorageDriver::NewEmpty() const
 
 void MPrsStd_AISPresentationStorageDriver::Paste(const Handle(TDF_Attribute)& Source,
 						 const Handle(PDF_Attribute)& Target,
-						 const Handle(MDF_SRelocationTable)& RelocTable) const
+						 const Handle(MDF_SRelocationTable)& /*RelocTable*/) const
 {
   Handle(TPrsStd_AISPresentation) S = Handle(TPrsStd_AISPresentation)::DownCast (Source);
 

@@ -137,7 +137,7 @@ Handle(TDF_Attribute) TDataStd_Directory::NewEmpty () const
 //purpose  : 
 //=======================================================================
 
-void TDataStd_Directory::Restore(const Handle(TDF_Attribute)& with) 
+void TDataStd_Directory::Restore(const Handle(TDF_Attribute)&) 
 {  
 }
 
@@ -146,8 +146,8 @@ void TDataStd_Directory::Restore(const Handle(TDF_Attribute)& with)
 //purpose  : 
 //=======================================================================
 
-void TDataStd_Directory::Paste (const Handle(TDF_Attribute)& into,
-			   const Handle(TDF_RelocationTable)& RT) const
+void TDataStd_Directory::Paste (const Handle(TDF_Attribute)&,
+			                    const Handle(TDF_RelocationTable)& ) const
 {  
 }
 
@@ -156,7 +156,7 @@ void TDataStd_Directory::Paste (const Handle(TDF_Attribute)& into,
 //purpose  : 
 //=======================================================================
 
-void TDataStd_Directory::References (const Handle(TDF_DataSet)& DS) const
+void TDataStd_Directory::References (const Handle(TDF_DataSet)&) const
 {  
 }
 

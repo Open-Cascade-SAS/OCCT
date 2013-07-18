@@ -251,7 +251,7 @@ static Standard_Integer incrementalmesh(Draw_Interpretor& di, Standard_Integer n
 //purpose  : 
 //=======================================================================
 
-static Standard_Integer MemLeakTest(Draw_Interpretor&, Standard_Integer nbarg, const char** argv)
+static Standard_Integer MemLeakTest(Draw_Interpretor&, Standard_Integer /*nbarg*/, const char** /*argv*/)
 {
   for(int i=0;i<10000;i++)
   {
@@ -1388,7 +1388,7 @@ static Standard_Integer wavefront(Draw_Interpretor&, Standard_Integer nbarg, con
 //purpose  : 
 //=======================================================================
 
-Standard_Integer onetriangulation(Draw_Interpretor&, Standard_Integer nbarg, const char** argv)
+Standard_Integer onetriangulation(Draw_Interpretor&, Standard_Integer /*nbarg*/, const char** /*argv*/)
 {
 
   /*

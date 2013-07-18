@@ -136,14 +136,14 @@ Handle(TDF_Attribute) TDataXtd_Plane::NewEmpty () const
 //purpose  : 
 //=======================================================================
 
-void TDataXtd_Plane::Restore(const Handle(TDF_Attribute)& With)  {}
+void TDataXtd_Plane::Restore(const Handle(TDF_Attribute)&)  {}
 
 //=======================================================================
 //function : Paste
 //purpose  : 
 //=======================================================================
 
-void TDataXtd_Plane::Paste (const Handle(TDF_Attribute)& Into, const Handle(TDF_RelocationTable)& RT) const { }
+void TDataXtd_Plane::Paste (const Handle(TDF_Attribute)&, const Handle(TDF_RelocationTable)&) const { }
 
 
 //=======================================================================

@@ -55,8 +55,8 @@ void Select3D_SensitiveEntity::Project(const Handle(Select3D_Projector)& aPrj)
 
 Standard_Boolean Select3D_SensitiveEntity::Matches(const Standard_Real X,
                                                    const Standard_Real Y,
-                                                   const Standard_Real aTol,
-                                                   Standard_Real&  DMin)
+                                                   const Standard_Real /*aTol*/,
+                                                   Standard_Real&  /*DMin*/)
 {
   if (!mylastprj.IsNull())
   {
@@ -76,11 +76,11 @@ Standard_Boolean Select3D_SensitiveEntity::Matches(const Standard_Real X,
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean Select3D_SensitiveEntity::Matches(const Standard_Real XMin,
-                                                   const Standard_Real YMin,
-                                                   const Standard_Real XMax,
-                                                   const Standard_Real YMax,
-                                                   const Standard_Real aTol)
+Standard_Boolean Select3D_SensitiveEntity::Matches(const Standard_Real,
+                                                   const Standard_Real,
+                                                   const Standard_Real,
+                                                   const Standard_Real,
+                                                   const Standard_Real)
 {
   return Standard_False;
 }
@@ -90,9 +90,9 @@ Standard_Boolean Select3D_SensitiveEntity::Matches(const Standard_Real XMin,
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean Select3D_SensitiveEntity::Matches(const TColgp_Array1OfPnt2d& aPoly,
-                                                   const Bnd_Box2d& /*aBox*/,
-                                                   const Standard_Real aTol)
+Standard_Boolean Select3D_SensitiveEntity::Matches(const TColgp_Array1OfPnt2d&,
+                                                   const Bnd_Box2d&,
+                                                   const Standard_Real)
 {
   return Standard_False;
 }
@@ -102,7 +102,7 @@ Standard_Boolean Select3D_SensitiveEntity::Matches(const TColgp_Array1OfPnt2d& a
 //purpose  : 
 //=======================================================================
 
-void Select3D_SensitiveEntity::Dump(Standard_OStream& S,const Standard_Boolean FullDump) const
+void Select3D_SensitiveEntity::Dump(Standard_OStream& S, const Standard_Boolean) const
 {
   S<<"\tSensitive Entity 3D"<<endl;
 }

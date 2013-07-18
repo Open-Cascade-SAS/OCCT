@@ -283,9 +283,6 @@ Handle(Adaptor3d_HSurface) Adaptor3d_SurfaceOfRevolution::UTrim
                      Last
 #endif
  ,const Standard_Real 
-#ifndef No_Exception
-                     Tol 
-#endif
                          ) const 
 {
 #ifndef No_Exception

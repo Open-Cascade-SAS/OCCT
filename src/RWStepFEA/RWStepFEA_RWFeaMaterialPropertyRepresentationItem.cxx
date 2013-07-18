@@ -71,9 +71,8 @@ void RWStepFEA_RWFeaMaterialPropertyRepresentationItem::WriteStep (StepData_Step
 //purpose  : 
 //=======================================================================
 
-void RWStepFEA_RWFeaMaterialPropertyRepresentationItem::Share (const Handle(StepFEA_FeaMaterialPropertyRepresentationItem) &ent,
-                                                               Interface_EntityIterator& iter) const
+void RWStepFEA_RWFeaMaterialPropertyRepresentationItem::Share (const Handle(StepFEA_FeaMaterialPropertyRepresentationItem) &,
+                                                               Interface_EntityIterator&) const
 {
-
   // Inherited fields of RepresentationItem
 }

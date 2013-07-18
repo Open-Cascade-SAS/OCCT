@@ -47,7 +47,7 @@ static Standard_CString  thename = "";
 
 
     Standard_Integer  StepData_FileProtocol::TypeNumber
-  (const Handle(Standard_Type)& atype) const
+  (const Handle(Standard_Type)& /*atype*/) const
       {  return 0;  }
 
 

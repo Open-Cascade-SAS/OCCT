@@ -265,7 +265,7 @@ Standard_Integer  Interface_IntList::Value (const Standard_Integer num) const
   return val;
 }
 
-Standard_Boolean  Interface_IntList::Remove (const Standard_Integer num)
+Standard_Boolean  Interface_IntList::Remove (const Standard_Integer)
 {
   return Standard_False;    // not yet implemented
 }

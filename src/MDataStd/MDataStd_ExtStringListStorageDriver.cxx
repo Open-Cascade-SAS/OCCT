@@ -70,7 +70,7 @@ Handle(PDF_Attribute) MDataStd_ExtStringListStorageDriver::NewEmpty() const
 //=======================================================================
 void MDataStd_ExtStringListStorageDriver::Paste(const Handle(TDF_Attribute)& Source,
 						const Handle(PDF_Attribute)& Target,
-						const Handle(MDF_SRelocationTable)& RelocTable) const
+						const Handle(MDF_SRelocationTable)& /*RelocTable*/) const
 {
   Handle(TDataStd_ExtStringList) S = Handle(TDataStd_ExtStringList)::DownCast (Source);
   Handle(PDataStd_ExtStringList) T = Handle(PDataStd_ExtStringList)::DownCast (Target);

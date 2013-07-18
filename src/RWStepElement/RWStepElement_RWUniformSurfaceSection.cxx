@@ -105,8 +105,8 @@ void RWStepElement_RWUniformSurfaceSection::WriteStep (StepData_StepWriter& SW,
 //purpose  : 
 //=======================================================================
 
-void RWStepElement_RWUniformSurfaceSection::Share (const Handle(StepElement_UniformSurfaceSection) &ent,
-                                                   Interface_EntityIterator& iter) const
+void RWStepElement_RWUniformSurfaceSection::Share (const Handle(StepElement_UniformSurfaceSection) &,
+                                                   Interface_EntityIterator&) const
 {
 
   // Inherited fields of SurfaceSection

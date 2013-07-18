@@ -61,14 +61,14 @@ DNaming_SphereDriver::DNaming_SphereDriver()
 //function : Validate
 //purpose  : Validates labels of a function in <theLog>
 //=======================================================================
-void DNaming_SphereDriver::Validate(TFunction_Logbook& theLog) const
+void DNaming_SphereDriver::Validate(TFunction_Logbook&) const
 {}
 
 //=======================================================================
 //function : MustExecute
 //purpose  : Analyses in <theLog> if the loaded function must be executed
 //=======================================================================
-Standard_Boolean DNaming_SphereDriver::MustExecute(const TFunction_Logbook& theLog) const {
+Standard_Boolean DNaming_SphereDriver::MustExecute(const TFunction_Logbook&) const {
   return Standard_True;
 }
 

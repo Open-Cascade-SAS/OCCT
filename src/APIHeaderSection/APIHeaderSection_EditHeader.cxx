@@ -96,11 +96,11 @@ static Standard_Boolean IsTimeStamp
       {  return TCollection_AsciiString ("Step Header");  }
 
     Standard_Boolean  APIHeaderSection_EditHeader::Recognize
-  (const Handle(IFSelect_EditForm)& form) const
+  (const Handle(IFSelect_EditForm)& /*form*/) const
 {  return Standard_True;  }  // ??
 
     Handle(TCollection_HAsciiString)  APIHeaderSection_EditHeader::StringValue
-  (const Handle(IFSelect_EditForm)& form, const Standard_Integer num) const
+  (const Handle(IFSelect_EditForm)& /*form*/, const Standard_Integer num) const
 {
 //  Default Values
   return TypedValue(num)->HStringValue();
@@ -108,7 +108,7 @@ static Standard_Boolean IsTimeStamp
 
     Standard_Boolean  APIHeaderSection_EditHeader::Load
   (const Handle(IFSelect_EditForm)& form,
-   const Handle(Standard_Transient)& ent,
+   const Handle(Standard_Transient)& /*ent*/,
    const Handle(Interface_InterfaceModel)& model) const
 {
   Handle(StepData_StepModel) modl =
@@ -135,7 +135,7 @@ static Standard_Boolean IsTimeStamp
 
     Standard_Boolean  APIHeaderSection_EditHeader::Apply
   (const Handle(IFSelect_EditForm)& form,
-   const Handle(Standard_Transient)& ent,
+   const Handle(Standard_Transient)& /*ent*/,
    const Handle(Interface_InterfaceModel)& model) const
 {
   Handle(StepData_StepModel) modl =

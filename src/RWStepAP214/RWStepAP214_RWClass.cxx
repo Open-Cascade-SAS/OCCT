@@ -87,9 +87,8 @@ void RWStepAP214_RWClass::WriteStep (StepData_StepWriter& SW,
 //purpose  : 
 //=======================================================================
 
-void RWStepAP214_RWClass::Share (const Handle(StepAP214_Class) &ent,
-                                 Interface_EntityIterator& iter) const
+void RWStepAP214_RWClass::Share (const Handle(StepAP214_Class) &,
+                                 Interface_EntityIterator&) const
 {
-
   // Inherited fields of Group
 }

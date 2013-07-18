@@ -103,7 +103,7 @@ AIS_LocalContext::AIS_LocalContext(const Handle(AIS_InteractiveContext)& aCtx,
 				   const Standard_Boolean LoadDisplayed,
 				   const Standard_Boolean AcceptStandardModes,
 				   const Standard_Boolean AcceptEraseOfTemp,
-				   const Standard_Boolean BothViewers):
+				   const Standard_Boolean /*BothViewers*/):
 myCTX(aCtx),
 myLoadDisplayed(LoadDisplayed),
 myAcceptStdMode(AcceptStandardModes),

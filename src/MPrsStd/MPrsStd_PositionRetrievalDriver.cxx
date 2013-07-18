@@ -60,7 +60,7 @@ Handle(TDF_Attribute) MPrsStd_PositionRetrievalDriver::NewEmpty() const
 //=======================================================================
 void MPrsStd_PositionRetrievalDriver::Paste(const Handle(PDF_Attribute)& Source,
 							    const Handle(TDF_Attribute)& Target,
-							    const Handle(MDF_RRelocationTable)& RelocTable) const
+							    const Handle(MDF_RRelocationTable)& /*RelocTable*/) const
 {
   Handle(PDataXtd_Position) S = Handle(PDataXtd_Position)::DownCast (Source);
   Handle(TDataXtd_Position) T = Handle(TDataXtd_Position)::DownCast (Target);  

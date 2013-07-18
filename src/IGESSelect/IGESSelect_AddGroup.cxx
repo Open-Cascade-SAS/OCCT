@@ -28,10 +28,9 @@
 IGESSelect_AddGroup::IGESSelect_AddGroup ()
     : IGESSelect_ModelModifier (Standard_True)    {  }
 
-    void  IGESSelect_AddGroup::Performing
-  (IFSelect_ContextModif& ctx,
-   const Handle(IGESData_IGESModel)& target,
-   Interface_CopyTool& TC) const
+void  IGESSelect_AddGroup::Performing (IFSelect_ContextModif& ctx,
+                                       const Handle(IGESData_IGESModel)& target,
+                                       Interface_CopyTool& /*TC*/) const
 {
   if (ctx.IsForAll()) {
     ctx.CCheck(0)->AddFail ("Add Group : Selection required not defined");

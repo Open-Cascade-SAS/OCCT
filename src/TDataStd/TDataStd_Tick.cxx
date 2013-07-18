@@ -75,7 +75,7 @@ Handle(TDF_Attribute) TDataStd_Tick::NewEmpty() const
 //function : Restore
 //purpose  : 
 //=======================================================================
-void TDataStd_Tick::Restore (const Handle(TDF_Attribute)& other) 
+void TDataStd_Tick::Restore (const Handle(TDF_Attribute)& ) 
 {
   // There are no fields in this attribute.
 }
@@ -84,8 +84,8 @@ void TDataStd_Tick::Restore (const Handle(TDF_Attribute)& other)
 //function : Paste
 //purpose  : 
 //=======================================================================
-void TDataStd_Tick::Paste(const Handle(TDF_Attribute)& Into,
-			  const Handle(TDF_RelocationTable)& RT) const
+void TDataStd_Tick::Paste(const Handle(TDF_Attribute)& ,
+			  const Handle(TDF_RelocationTable)& ) const
 {
   // There are no fields in this attribute.
 }    

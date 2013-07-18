@@ -69,7 +69,7 @@ Standard_Boolean OpenGl_GraphicDriver::IsGLLightEnabled( const Graphic3d_CView& 
 
 void OpenGl_GraphicDriver::PrimitiveArray( const Graphic3d_CGroup& ACGroup,
                                           const Graphic3d_PrimitiveArray& parray,
-                                          const Standard_Boolean EvalMinMax )
+                                          const Standard_Boolean /*EvalMinMax*/ )
 {
   if ( ACGroup.ptrGroup && parray )
   {

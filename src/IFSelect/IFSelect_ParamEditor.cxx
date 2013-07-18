@@ -50,18 +50,18 @@ TCollection_AsciiString  IFSelect_ParamEditor::Label () const
       {  return thelabel;  }
 
 Standard_Boolean  IFSelect_ParamEditor::Recognize
-  (const Handle(IFSelect_EditForm)& form) const
+  (const Handle(IFSelect_EditForm)& /*form*/) const
       {  return Standard_True;  }    // pas de contrainte
 
 Handle(TCollection_HAsciiString)  IFSelect_ParamEditor::StringValue
-  (const Handle(IFSelect_EditForm)& form,const Standard_Integer num) const
+  (const Handle(IFSelect_EditForm)& /*form*/,const Standard_Integer num) const
       {  return TypedValue(num)->HStringValue();  }
 
 
 Standard_Boolean  IFSelect_ParamEditor::Load
   (const Handle(IFSelect_EditForm)& form,
-   const Handle(Standard_Transient)& ent,
-   const Handle(Interface_InterfaceModel)& model) const
+   const Handle(Standard_Transient)& /*ent*/,
+   const Handle(Interface_InterfaceModel)& /*model*/) const
 {
   Standard_Integer i, nb = NbValues();
   for (i = 1; i <= nb; i ++) form->LoadValue (i,TypedValue(i)->HStringValue());
@@ -72,8 +72,8 @@ Standard_Boolean  IFSelect_ParamEditor::Load
 
 Standard_Boolean  IFSelect_ParamEditor::Apply
   (const Handle(IFSelect_EditForm)& form,
-   const Handle(Standard_Transient)& ent,
-   const Handle(Interface_InterfaceModel)& model) const
+   const Handle(Standard_Transient)& /*ent*/,
+   const Handle(Interface_InterfaceModel)& /*model*/) const
 {
   Standard_Integer i, nb = NbValues();
   for (i = 1; i <= nb; i ++)

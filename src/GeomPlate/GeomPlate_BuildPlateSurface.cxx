@@ -809,8 +809,8 @@ EcartContraintesMil  ( const Standard_Integer c,
 // fonction : Disc2dContour
 //---------------------------------------------------------
 void GeomPlate_BuildPlateSurface::
-                  Disc2dContour ( const Standard_Integer nbp,
-				 TColgp_SequenceOfXY& Seq2d)
+                  Disc2dContour ( const Standard_Integer /*nbp*/,
+                                  TColgp_SequenceOfXY& Seq2d)
 {
 #ifdef PLATE_DEB
   if (nbp!=4)
@@ -945,9 +945,9 @@ void GeomPlate_BuildPlateSurface::
 // fonction : Disc3dContour
 //---------------------------------------------------------
 void GeomPlate_BuildPlateSurface::
-Disc3dContour ( const Standard_Integer nbp,
-	       const Standard_Integer iordre,
-	       TColgp_SequenceOfXYZ& Seq3d)
+Disc3dContour (const Standard_Integer /*nbp*/,
+               const Standard_Integer iordre,
+               TColgp_SequenceOfXYZ& Seq3d)
 {
 #ifdef PLATE_DEB
   if (nbp!=4)

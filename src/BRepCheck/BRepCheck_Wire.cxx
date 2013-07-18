@@ -375,7 +375,7 @@ BRepCheck_Status BRepCheck_Wire::Closed(const Standard_Boolean Update)
 //purpose  : Return Standard_True if distance between thePnt_f and
 //           thePnt_l is not more, than aTol3d
 //=======================================================================
-Standard_Boolean IsDistanceIn3DTolerance (const BRepAdaptor_Surface& aFaceSurface,
+Standard_Boolean IsDistanceIn3DTolerance (const BRepAdaptor_Surface& /*aFaceSurface*/,
                                           const gp_Pnt& thePnt_f,
                                           const gp_Pnt& thePnt_l,
                                           const Standard_Real aTol3d)

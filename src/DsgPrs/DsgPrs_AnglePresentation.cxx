@@ -78,7 +78,7 @@ static Standard_Integer AboveInBelowCone(const gp_Circ &CMax, const gp_Circ &CMi
 //==========================================================================
 void DsgPrs_AnglePresentation::Add (const Handle(Prs3d_Presentation)& aPresentation,
                                     const Handle(Prs3d_Drawer)& aDrawer,
-                                    const Standard_Real aVal,
+                                    const Standard_Real /*aVal*/,
                                     const TCollection_ExtendedString& aText,
                                     const gp_Circ& aCircle,
                                     const gp_Pnt& aPosition,

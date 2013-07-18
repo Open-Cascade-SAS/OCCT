@@ -49,7 +49,7 @@ BRepBuilderAPI_NurbsConvert::BRepBuilderAPI_NurbsConvert ()
 //=======================================================================
 
 BRepBuilderAPI_NurbsConvert::BRepBuilderAPI_NurbsConvert (const TopoDS_Shape& S,
-					    const Standard_Boolean Copy) 
+                                                          const Standard_Boolean Copy) 
      
 {
   myModification = new BRepTools_NurbsConvertModification();
@@ -62,7 +62,7 @@ BRepBuilderAPI_NurbsConvert::BRepBuilderAPI_NurbsConvert (const TopoDS_Shape& S,
 //=======================================================================
 
 void BRepBuilderAPI_NurbsConvert::Perform(const TopoDS_Shape& S,
-				   const Standard_Boolean Copy)
+                                          const Standard_Boolean /*Copy*/)
 {
   Handle(BRepTools_NurbsConvertModification) theModif = 
     Handle(BRepTools_NurbsConvertModification)::DownCast(myModification);

@@ -81,16 +81,26 @@ static void SSAVFF(const TopoDS_Shape& F1, const TopoDS_Shape& F2)
   cout<<"FacesFiller : "<<name_1<<","<<name_2<<endl;
   BRepTools::Write(F1,name_1); BRepTools::Write(F2,name_2);
 }
-
+#ifdef DRAW
 static void FUN_traceRLine(const TopOpeBRep_LineInter& L)
 {
-#ifdef DRAW
+
   TCollection_AsciiString ee("Edofline"); ee.Cat(L.Index()); char* eee = ee.ToCString();
   DBRep::Set(eee,L.Arc());
-#endif
-}
 
+}
+#else
+static void FUN_traceRLine(const TopOpeBRep_LineInter&)
+{
+    //
+}
+#endif
+
+#ifdef DRAW
 static void FUN_traceGLine(const TopOpeBRep_LineInter& L)
+#else
+static void FUN_traceGLine(const TopOpeBRep_LineInter&)
+#endif
 {
 #ifdef DRAW
   TCollection_AsciiString ll("Glineof"); ll.Cat(L.Index()); char* lll = ll.ToCString();

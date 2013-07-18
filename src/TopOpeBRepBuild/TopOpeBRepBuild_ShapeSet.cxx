@@ -409,7 +409,7 @@ void TopOpeBRepBuild_ShapeSet::FindNeighbours()
 //function : MakeNeighboursList
 //purpose  : // (Earg = Edge, Varg = Vertex) to find connected to Earg by Varg 
 //=======================================================================
-const TopTools_ListOfShape & TopOpeBRepBuild_ShapeSet::MakeNeighboursList(const TopoDS_Shape& Earg, const TopoDS_Shape& Varg)
+const TopTools_ListOfShape & TopOpeBRepBuild_ShapeSet::MakeNeighboursList(const TopoDS_Shape& /*Earg*/, const TopoDS_Shape& Varg)
 {
   const TopTools_ListOfShape& l = mySubShapeMap.FindFromKey(Varg);
   return l;
@@ -706,10 +706,13 @@ Standard_Integer TopOpeBRepBuild_ShapeSet::DEBNumber() const
 //function : SName
 //purpose  : 
 //=======================================================================
-TCollection_AsciiString TopOpeBRepBuild_ShapeSet::SName(const TopoDS_Shape& S,const TCollection_AsciiString& sb,const TCollection_AsciiString& sa) const
+#ifdef DRAW
+TCollection_AsciiString TopOpeBRepBuild_ShapeSet::SName(const TopoDS_Shape& /*S*/,
+                                                        const TCollection_AsciiString& sb,
+                                                        const TCollection_AsciiString& sa) const
 {
   TCollection_AsciiString str;
-#ifdef DRAW
+
   str=sb;
   TCollection_AsciiString WESi=myDEBName.SubString(1,1)+myDEBNumber;
   str=str+WESi;
@@ -725,45 +728,76 @@ TCollection_AsciiString TopOpeBRepBuild_ShapeSet::SName(const TopoDS_Shape& S,co
   else if (iele) str=str+"ele"+iele;
   if      (isha) str=str+"sha"+isha;
   str=str+sa;
-#endif
+
   return str;
 }
+#else
+TCollection_AsciiString TopOpeBRepBuild_ShapeSet::SName(const TopoDS_Shape&,
+                                                        const TCollection_AsciiString&,
+                                                        const TCollection_AsciiString&) const
+{
+  TCollection_AsciiString str;
+  return str;
+}
+#endif
 
 //=======================================================================
 //function : SNameori
 //purpose  : 
 //=======================================================================
-TCollection_AsciiString TopOpeBRepBuild_ShapeSet::SNameori(const TopoDS_Shape& S,const TCollection_AsciiString& sb,const TCollection_AsciiString& sa) const
+#ifdef DRAW
+TCollection_AsciiString TopOpeBRepBuild_ShapeSet::SNameori(const TopoDS_Shape& S,
+                                                           const TCollection_AsciiString& sb,
+                                                           const TCollection_AsciiString& sa) const
 {
   TCollection_AsciiString str;
-#ifdef DRAW
   str=sb+SName(S);
   TopAbs_Orientation o = S.Orientation();
   TCollection_AsciiString sto;TestTopOpeDraw_TTOT::OrientationToString(o,sto);
   str=str+sto.SubString(1,1);
   str=str+sa;
-#endif
   return str;
 }
+#else
+TCollection_AsciiString TopOpeBRepBuild_ShapeSet::SNameori(const TopoDS_Shape&,
+                                                           const TCollection_AsciiString&,
+                                                           const TCollection_AsciiString&) const
+{
+  TCollection_AsciiString str;
+  return str;
+}
+#endif
 
 //=======================================================================
 //function : SName
 //purpose  : 
 //=======================================================================
-TCollection_AsciiString TopOpeBRepBuild_ShapeSet::SName(const TopTools_ListOfShape& L,const TCollection_AsciiString& sb,const TCollection_AsciiString& sa) const
+#ifdef DRAW
+TCollection_AsciiString TopOpeBRepBuild_ShapeSet::SName(const TopTools_ListOfShape& L,
+                                                        const TCollection_AsciiString& sb,
+                                                        const TCollection_AsciiString& /*sa*/) const
 {
   TCollection_AsciiString str;
-#ifdef DRAW
   for (TopTools_ListIteratorOfListOfShape it(L);it.More();it.Next()) str=str+sb+SName(it.Value())+sa+" ";
-#endif
   return str;
 }
+#else
+TCollection_AsciiString TopOpeBRepBuild_ShapeSet::SName(const TopTools_ListOfShape&,
+                                                        const TCollection_AsciiString&,
+                                                        const TCollection_AsciiString&) const
+{
+  TCollection_AsciiString str;
+  return str;
+}
+#endif
 
 //=======================================================================
 //function : SNameori
 //purpose  : 
 //=======================================================================
-TCollection_AsciiString TopOpeBRepBuild_ShapeSet::SNameori(const TopTools_ListOfShape& L,const TCollection_AsciiString& sb,const TCollection_AsciiString& sa) const
+TCollection_AsciiString TopOpeBRepBuild_ShapeSet::SNameori(const TopTools_ListOfShape& /*L*/,
+                                                           const TCollection_AsciiString& /*sb*/,
+                                                           const TCollection_AsciiString& /*sa*/) const
 {
   TCollection_AsciiString str;
 #ifdef DRAW

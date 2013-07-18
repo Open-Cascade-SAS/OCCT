@@ -26,6 +26,6 @@
 //purpose  : 
 //=======================================================================
 
-void TestTopOpeTools::OtherCommands(Draw_Interpretor& theCommands)
+void TestTopOpeTools::OtherCommands(Draw_Interpretor&)
 {
 }

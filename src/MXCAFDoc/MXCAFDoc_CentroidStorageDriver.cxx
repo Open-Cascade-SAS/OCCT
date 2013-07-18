@@ -69,8 +69,8 @@ MXCAFDoc_CentroidStorageDriver::MXCAFDoc_CentroidStorageDriver(const Handle(CDM_
 //=======================================================================
 
  void MXCAFDoc_CentroidStorageDriver::Paste(const Handle(TDF_Attribute)& Source,
-						  const Handle(PDF_Attribute)& Target,
-						  const Handle(MDF_SRelocationTable)& RelocTable) const
+                                            const Handle(PDF_Attribute)& Target,
+                                            const Handle(MDF_SRelocationTable)& /*RelocTable*/) const
 {
   Handle(XCAFDoc_Centroid) S = Handle(XCAFDoc_Centroid)::DownCast (Source);
   Handle(PXCAFDoc_Centroid) T = Handle(PXCAFDoc_Centroid)::DownCast (Target);

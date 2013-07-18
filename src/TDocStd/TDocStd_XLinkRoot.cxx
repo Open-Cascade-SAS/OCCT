@@ -142,7 +142,7 @@ Handle(TDF_Attribute) TDocStd_XLinkRoot::BackupCopy() const
 //purpose  : 
 //=======================================================================
 
-void TDocStd_XLinkRoot::Restore(const Handle(TDF_Attribute)& anAttribute) 
+void TDocStd_XLinkRoot::Restore(const Handle(TDF_Attribute)& /*anAttribute*/) 
 {} // Does nothing.
 
 
@@ -161,8 +161,8 @@ Handle(TDF_Attribute) TDocStd_XLinkRoot::NewEmpty() const
 //=======================================================================
 
 void TDocStd_XLinkRoot::Paste
-(const Handle(TDF_Attribute)& intoAttribute,
- const Handle(TDF_RelocationTable)& aRelocationTable) const
+(const Handle(TDF_Attribute)&,
+ const Handle(TDF_RelocationTable)&) const
 {} // Does nothing.
 
 

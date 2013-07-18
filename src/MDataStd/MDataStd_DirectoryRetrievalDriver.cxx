@@ -32,7 +32,9 @@ Handle(Standard_Type) MDataStd_DirectoryRetrievalDriver::SourceType() const
 Handle(TDF_Attribute) MDataStd_DirectoryRetrievalDriver::NewEmpty() const
 { return new TDataStd_Directory; }
 
-void MDataStd_DirectoryRetrievalDriver::Paste(const Handle(PDF_Attribute)& Source,const Handle(TDF_Attribute)& Target,const Handle(MDF_RRelocationTable)& RelocTable) const
+void MDataStd_DirectoryRetrievalDriver::Paste(const Handle(PDF_Attribute)&,
+                                              const Handle(TDF_Attribute)& ,
+                                              const Handle(MDF_RRelocationTable)&) const
 {
 }
 

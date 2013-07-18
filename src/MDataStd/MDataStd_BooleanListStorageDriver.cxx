@@ -69,7 +69,7 @@ Handle(PDF_Attribute) MDataStd_BooleanListStorageDriver::NewEmpty() const
 //=======================================================================
 void MDataStd_BooleanListStorageDriver::Paste(const Handle(TDF_Attribute)&  Source,
 					      const Handle(PDF_Attribute)&        Target,
-					      const Handle(MDF_SRelocationTable)& RelocTable) const
+					      const Handle(MDF_SRelocationTable)& /*RelocTable*/) const
 {
   Handle(TDataStd_BooleanList) S = Handle(TDataStd_BooleanList)::DownCast (Source);
   Handle(PDataStd_BooleanList) T = Handle(PDataStd_BooleanList)::DownCast (Target);

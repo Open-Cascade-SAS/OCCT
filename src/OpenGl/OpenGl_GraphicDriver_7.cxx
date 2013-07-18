@@ -158,7 +158,7 @@ Standard_Boolean OpenGl_GraphicDriver::ProjectRaster (const Graphic3d_CView& ACV
   return Standard_False;
 }
 
-Standard_Boolean OpenGl_GraphicDriver::UnProjectRaster (const Graphic3d_CView& ACView, const Standard_Integer Axm, const Standard_Integer Aym, const Standard_Integer AXM, const Standard_Integer AYM, const Standard_Integer AU, const Standard_Integer AV, Standard_ShortReal& Ax, Standard_ShortReal& Ay, Standard_ShortReal& Az)
+Standard_Boolean OpenGl_GraphicDriver::UnProjectRaster (const Graphic3d_CView& ACView, const Standard_Integer /*Axm*/, const Standard_Integer Aym, const Standard_Integer /*AXM*/, const Standard_Integer AYM, const Standard_Integer AU, const Standard_Integer AV, Standard_ShortReal& Ax, Standard_ShortReal& Ay, Standard_ShortReal& Az)
 {
   const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
   if (!aCView)
@@ -175,7 +175,7 @@ Standard_Boolean OpenGl_GraphicDriver::UnProjectRaster (const Graphic3d_CView& A
   return aCView->View->ProjectRasterToObject( aWidth, aHeight, AU, (AYM-1)-Aym-AV, Ax, Ay, Az );
 }
 
-Standard_Boolean OpenGl_GraphicDriver::UnProjectRasterWithRay (const Graphic3d_CView& ACView, const Standard_Integer Axm, const Standard_Integer Aym, const Standard_Integer AXM, const Standard_Integer AYM, const Standard_Integer AU, const Standard_Integer AV, Standard_ShortReal& Ax, Standard_ShortReal& Ay, Standard_ShortReal& Az, Standard_ShortReal& Dx, Standard_ShortReal& Dy, Standard_ShortReal& Dz)
+Standard_Boolean OpenGl_GraphicDriver::UnProjectRasterWithRay (const Graphic3d_CView& ACView, const Standard_Integer /*Axm*/, const Standard_Integer Aym, const Standard_Integer /*AXM*/, const Standard_Integer AYM, const Standard_Integer AU, const Standard_Integer AV, Standard_ShortReal& Ax, Standard_ShortReal& Ay, Standard_ShortReal& Az, Standard_ShortReal& Dx, Standard_ShortReal& Dy, Standard_ShortReal& Dz)
 {
   const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
   if (!aCView)
@@ -194,7 +194,13 @@ void OpenGl_GraphicDriver::RatioWindow (const Graphic3d_CView& theCView)
     aCView->WS->Resize (theCView.DefWindow);
 }
 
-void OpenGl_GraphicDriver::Redraw (const Graphic3d_CView& ACView, const Aspect_CLayer2d& ACUnderLayer, const Aspect_CLayer2d& ACOverLayer, const Standard_Integer x, const Standard_Integer y, const Standard_Integer width, const Standard_Integer height)
+void OpenGl_GraphicDriver::Redraw (const Graphic3d_CView& ACView, 
+                                   const Aspect_CLayer2d& ACUnderLayer, 
+                                   const Aspect_CLayer2d& ACOverLayer, 
+                                   const Standard_Integer /*x*/, 
+                                   const Standard_Integer /*y*/, 
+                                   const Standard_Integer /*width*/, 
+                                   const Standard_Integer /*height*/)
 {
   const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
   if (aCView)

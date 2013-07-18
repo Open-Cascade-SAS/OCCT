@@ -88,7 +88,7 @@ MyScaleZ(1.0) {
 
 }
 
-Visual3d_ViewOrientation::Visual3d_ViewOrientation (const Graphic3d_Vertex& VRP, const Graphic3d_Vector& VPN, const Standard_Real Twist) {
+Visual3d_ViewOrientation::Visual3d_ViewOrientation (const Graphic3d_Vertex& VRP, const Graphic3d_Vector& VPN, const Standard_Real /*Twist*/) {
 
 	if (Graphic3d_Vector::NormeOf (VPN) == 0.0)
 		Visual3d_ViewOrientationDefinitionError::Raise
@@ -101,7 +101,7 @@ Visual3d_ViewOrientation::Visual3d_ViewOrientation (const Graphic3d_Vertex& VRP,
 
 }
 
-Visual3d_ViewOrientation::Visual3d_ViewOrientation (const Graphic3d_Vertex& VRP, const Standard_Real Azim, const Standard_Real Inc, const Standard_Real Twist) {
+Visual3d_ViewOrientation::Visual3d_ViewOrientation (const Graphic3d_Vertex& VRP, const Standard_Real /*Azim*/, const Standard_Real /*Inc*/, const Standard_Real /*Twist*/) {
 
 	cout << "\nVisual3d_ViewOrientation : Not Yet Implemented\n\n" << flush;
 

@@ -76,7 +76,7 @@ Handle(PDF_Attribute) MDataStd_IntegerArrayStorageDriver::NewEmpty () const {
 void MDataStd_IntegerArrayStorageDriver::Paste (
   const Handle(TDF_Attribute)&  Source,
   const Handle(PDF_Attribute)&        Target,
-  const Handle(MDF_SRelocationTable)& RelocTable) const
+  const Handle(MDF_SRelocationTable)& /*RelocTable*/) const
 {
   Handle(TDataStd_IntegerArray) S = Handle(TDataStd_IntegerArray)::DownCast (Source);
   Handle(PDataStd_IntegerArray_1) T = Handle(PDataStd_IntegerArray_1)::DownCast (Target);

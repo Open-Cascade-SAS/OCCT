@@ -264,7 +264,7 @@ Standard_Integer GRILLE(Draw_Interpretor& di, Standard_Integer narg, const char*
   return 0 ;
 }
 
-Standard_Integer GETP3D(Draw_Interpretor& di, Standard_Integer narg, const char** a)
+Standard_Integer GETP3D(Draw_Interpretor& di, Standard_Integer /*narg*/, const char** a)
 {
   TopoDS_Shape V = DBRep::Get(a[1]);
   if (V.IsNull()) {

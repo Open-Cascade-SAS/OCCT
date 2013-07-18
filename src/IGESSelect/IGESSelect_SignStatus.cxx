@@ -27,7 +27,7 @@ static char theval[10];
 
     Standard_CString  IGESSelect_SignStatus::Value
   (const Handle(Standard_Transient)& ent,
-   const Handle(Interface_InterfaceModel)& model) const
+   const Handle(Interface_InterfaceModel)& /*model*/) const
 {
   Handle(IGESData_IGESEntity) igesent = Handle(IGESData_IGESEntity)::DownCast(ent);
   if (igesent.IsNull()) return "";
@@ -42,7 +42,7 @@ static char theval[10];
 
     Standard_Boolean  IGESSelect_SignStatus::Matches
   (const Handle(Standard_Transient)& ent,
-   const Handle(Interface_InterfaceModel)& model,
+   const Handle(Interface_InterfaceModel)& /*model*/,
    const TCollection_AsciiString& text, const Standard_Boolean exact) const
 {
   Handle(IGESData_IGESEntity) igesent = Handle(IGESData_IGESEntity)::DownCast(ent);

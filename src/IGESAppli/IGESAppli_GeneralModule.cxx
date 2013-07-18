@@ -652,7 +652,7 @@ IGESAppli_GeneralModule::IGESAppli_GeneralModule ()    {  }
 
 
     Standard_Integer  IGESAppli_GeneralModule::CategoryNumber
-  (const Standard_Integer CN, const Handle(Standard_Transient)& ent,
+  (const Standard_Integer CN, const Handle(Standard_Transient)& /*ent*/,
    const Interface_ShareTool& ) const
 {
   if (CN == 4 || CN == 5 || CN == 17) return Interface_Category::Number("Piping");

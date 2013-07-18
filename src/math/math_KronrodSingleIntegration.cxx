@@ -271,7 +271,7 @@ Standard_Boolean math_KronrodSingleIntegration::GKRule(
                                      math_Function    &theFunction,
 			       const Standard_Real     theLower,
 			       const Standard_Real     theUpper,
-			       const math_Vector&      theGaussP,   
+			       const math_Vector&      /*theGaussP*/,   
 			       const math_Vector&      theGaussW,
 			       const math_Vector&      theKronrodP,
 			       const math_Vector&      theKronrodW,

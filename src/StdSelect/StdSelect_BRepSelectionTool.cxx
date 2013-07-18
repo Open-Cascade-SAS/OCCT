@@ -581,7 +581,7 @@ Standard_Boolean StdSelect_BRepSelectionTool
 ::GetSensitiveForFace (const TopoDS_Face& theFace,
                        const Handle(StdSelect_BRepOwner)& theOwner,
                        Select3D_ListOfSensitive& theSensitiveList,
-                       const Standard_Boolean theAutoTriangulation,
+                       const Standard_Boolean /*theAutoTriangulation*/,
                        const Standard_Integer NbPOnEdge,
                        const Standard_Real    theMaxParam,
                        const Standard_Boolean theInteriorFlag)

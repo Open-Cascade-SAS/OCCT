@@ -57,7 +57,7 @@ void OpenGl_AspectLine::Render (const Handle(OpenGl_Workspace) &theWorkspace) co
   theWorkspace->SetAspectLine (this);
 }
 
-void OpenGl_AspectLine::Release (const Handle(OpenGl_Context)& theContext)
+void OpenGl_AspectLine::Release (const Handle(OpenGl_Context)&)
 {
   //
 }

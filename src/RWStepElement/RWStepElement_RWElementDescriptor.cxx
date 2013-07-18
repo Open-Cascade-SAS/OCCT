@@ -88,9 +88,8 @@ void RWStepElement_RWElementDescriptor::WriteStep (StepData_StepWriter& SW,
 //purpose  : 
 //=======================================================================
 
-void RWStepElement_RWElementDescriptor::Share (const Handle(StepElement_ElementDescriptor) &ent,
-                                               Interface_EntityIterator& iter) const
+void RWStepElement_RWElementDescriptor::Share (const Handle(StepElement_ElementDescriptor)&,
+                                               Interface_EntityIterator&) const
 {
-
   // Own fields of ElementDescriptor
 }

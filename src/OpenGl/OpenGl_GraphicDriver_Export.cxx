@@ -33,6 +33,7 @@
 /* Print Methods                                                        */
 /************************************************************************/
 
+#ifdef HAVE_GL2PS
 Standard_Boolean OpenGl_GraphicDriver::Export (const Standard_CString theFileName,
                                                const Graphic3d_ExportFormat theFormat,
                                                const Graphic3d_SortType theSortType,
@@ -41,11 +42,10 @@ Standard_Boolean OpenGl_GraphicDriver::Export (const Standard_CString theFileNam
                                                const Graphic3d_CView& theView,
                                                const Aspect_CLayer2d& theLayerUnder,
                                                const Aspect_CLayer2d& theLayerOver,
-                                               const Standard_Real    /*thePrecision*/,
-                                               const Standard_Address /*theProgressBarFunc*/,
-                                               const Standard_Address /*theProgressObject*/)
+                                               const Standard_Real    thePrecision,
+                                               const Standard_Address theProgressBarFunc,
+                                               const Standard_Address theProgressObject)
 {
-#ifdef HAVE_GL2PS
   // gl2psBeginPage() will call OpenGL functions
   // so we should activate correct GL context before redraw scene call
   const OpenGl_CView* aCView = (const OpenGl_CView* )theView.ptrView;
@@ -133,9 +133,21 @@ Standard_Boolean OpenGl_GraphicDriver::Export (const Standard_CString theFileNam
     else
       break;
   }
-
   return anErrCode == GL2PS_SUCCESS;
-#else
-  return Standard_False;
-#endif
 }
+#else
+Standard_Boolean OpenGl_GraphicDriver::Export (const Standard_CString /*theFileName*/,
+                                               const Graphic3d_ExportFormat /*theFormat*/,
+                                               const Graphic3d_SortType /*theSortType*/,
+                                               const Standard_Integer /*theWidth*/,
+                                               const Standard_Integer /*theHeight*/,
+                                               const Graphic3d_CView& /*theView*/,
+                                               const Aspect_CLayer2d& /*theLayerUnder*/,
+                                               const Aspect_CLayer2d& /*theLayerOver*/,
+                                               const Standard_Real    /*thePrecision*/,
+                                               const Standard_Address /*theProgressBarFunc*/,
+                                               const Standard_Address /*theProgressObject*/)
+{
+    return Standard_False;
+}
+#endif

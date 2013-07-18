@@ -110,7 +110,7 @@ static Standard_Integer extendsurf (Draw_Interpretor& di, Standard_Integer n, co
 //purpose  : 
 //=======================================================================
 
-static Standard_Integer samerange (Draw_Interpretor& di, Standard_Integer n, const char** a)
+static Standard_Integer samerange (Draw_Interpretor& /*di*/, Standard_Integer n, const char** a)
 {
   if (n < 6) return 1;
   Handle(Geom2d_Curve) C = DrawTrSurf::GetCurve2d(a[2]);

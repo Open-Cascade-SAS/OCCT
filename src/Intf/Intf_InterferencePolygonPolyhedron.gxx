@@ -1044,10 +1044,15 @@ void Intf_InterferencePolygonPolyhedron::Intersect
 
 #endif
 
-void Intf_InterferencePolygonPolyhedron::Intersect 
-  (const gp_Pnt& BegO, const gp_Pnt& EndO, const Standard_Boolean Infinite,
-   const Standard_Integer TTri, const Polyhedron& thePolyh, const gp_XYZ& TriNormal,
-   const Standard_Real TriDp, const Standard_Real dBegTri, const Standard_Real dEndTri)
+void Intf_InterferencePolygonPolyhedron::Intersect (const gp_Pnt& BegO, 
+                                                    const gp_Pnt& EndO, 
+                                                    const Standard_Boolean Infinite,
+                                                    const Standard_Integer TTri, 
+                                                    const Polyhedron& thePolyh, 
+                                                    const gp_XYZ& TriNormal,
+                                                    const Standard_Real /*TriDp*/, 
+                                                    const Standard_Real dBegTri, 
+                                                    const Standard_Real dEndTri)
 {
   Intf_PIType typOnG=Intf_EDGE;
   Standard_Real t;

@@ -790,7 +790,7 @@ void Extrema_GenExtPS::BuildTree()
   aFiller.Fill();
 }
 
-void Extrema_GenExtPS::FindSolution(const gp_Pnt& P, 
+void Extrema_GenExtPS::FindSolution(const gp_Pnt& /*P*/, 
                                     const Extrema_POnSurfParams &theParams)
 {
   math_Vector Tol(1,2);

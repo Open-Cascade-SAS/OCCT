@@ -2524,8 +2524,8 @@ void BRepOffset_Tool::Inter2d (const TopoDS_Face&    F,
 //purpose  : 
 //=======================================================================
 
-static void SelectEdge (const TopoDS_Face& F,
-			const TopoDS_Face& EF,
+static void SelectEdge (const TopoDS_Face& /*F*/,
+			const TopoDS_Face& /*EF*/,
 			const TopoDS_Edge& E,
 			TopTools_ListOfShape& LInt)
 {

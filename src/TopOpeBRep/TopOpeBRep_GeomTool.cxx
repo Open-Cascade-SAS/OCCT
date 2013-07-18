@@ -47,11 +47,14 @@ TopOpeBRep_GeomTool::TopOpeBRep_GeomTool()
 //purpose  : 
 //=======================================================================
 void  TopOpeBRep_GeomTool::MakeCurves
-(const Standard_Real min,const Standard_Real max,
+(const Standard_Real min,
+ const Standard_Real max,
  const TopOpeBRep_LineInter& L,
- const TopoDS_Shape& S1,const TopoDS_Shape& S2,
+ const TopoDS_Shape& /*S1*/,
+ const TopoDS_Shape& /*S2*/,
  TopOpeBRepDS_Curve& C,
- Handle(Geom2d_Curve)& PC1,Handle(Geom2d_Curve)& PC2)
+ Handle(Geom2d_Curve)& PC1,
+ Handle(Geom2d_Curve)& PC2)
 {
   Standard_Boolean IsWalk = Standard_False;
   Handle(Geom_Curve) C3D;

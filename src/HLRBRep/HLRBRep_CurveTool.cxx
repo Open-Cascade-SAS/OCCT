@@ -60,8 +60,8 @@ HLRBRep_CurveTool::NbSamples (const Standard_Address C)
 
 Standard_Integer
 HLRBRep_CurveTool::NbSamples (const Standard_Address C,
-			      const Standard_Real u1,
-			      const Standard_Real u2) 
+                              const Standard_Real /*u1*/,
+                              const Standard_Real /*u2*/) 
 { 
   GeomAbs_CurveType typC = ((HLRBRep_Curve *)C)->GetType();
   static Standard_Real nbsOther = 10.0;

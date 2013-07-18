@@ -304,7 +304,7 @@ static Standard_Integer appsurf(Draw_Interpretor& di,
   return 0;
 }
 
-static Standard_Integer fillcurves(Draw_Interpretor& di,
+static Standard_Integer fillcurves(Draw_Interpretor& /*di*/,
 				   Standard_Integer n, const char** a)
 {
   if ( n < 6) return 1;

@@ -76,7 +76,7 @@ Handle(TDF_Attribute) MDataStd_UAttributeRetrievalDriver::NewEmpty () const {
 
 void MDataStd_UAttributeRetrievalDriver::Paste(const Handle(PDF_Attribute)& Source,
       const Handle(TDF_Attribute)& Target,
-      const Handle(MDF_RRelocationTable)& RelocTable) const
+      const Handle(MDF_RRelocationTable)& /*RelocTable*/) const
 {
   Handle(PDataStd_UAttribute) S = Handle(PDataStd_UAttribute)::DownCast (Source);
   Handle(TDataStd_UAttribute) T = Handle(TDataStd_UAttribute)::DownCast (Target);

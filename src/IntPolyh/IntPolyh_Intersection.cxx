@@ -197,7 +197,7 @@ Standard_Integer IntPolyh_Intersection::NbPointsInLine(const Standard_Integer In
 }
 
 
-Standard_Integer IntPolyh_Intersection::NbPointsInTangentZone(const Standard_Integer IndexLine) const {   
+Standard_Integer IntPolyh_Intersection::NbPointsInTangentZone(const Standard_Integer) const {   
   //-- IndexLine--;     (pas implemente) Attention : Tableaux de 0 a n-1 
   // eap
   // return(TTangentZones.NbTangentZones());
@@ -234,7 +234,7 @@ void IntPolyh_Intersection::GetLinePoint(const Standard_Integer Indexl,
 
 
 void IntPolyh_Intersection::GetTangentZonePoint(const Standard_Integer Indexz,
-					const Standard_Integer Indexp,
+					const Standard_Integer /*Indexp*/,
 					Standard_Real &x,
 					Standard_Real &y,
 					Standard_Real &z,

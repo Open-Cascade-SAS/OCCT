@@ -333,9 +333,7 @@ Standard_Boolean Intf_TangentZone::HasCommonRange
 //purpose  : Dump the TangentZone.
 //=======================================================================
 
-void Intf_TangentZone::Dump (const Standard_Integer
-                                                    Indent
-                            ) const
+void Intf_TangentZone::Dump (const Standard_Integer /*Indent*/) const
 {
 #if DEBUG_TANGENTZONE
   for (Standard_Integer id=0; id<Indent; id++) cout << " ";

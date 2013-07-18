@@ -87,11 +87,9 @@ void RWStepFEA_RWParametricSurface3dElementCoordinateSystem::WriteStep (StepData
 //purpose  : 
 //=======================================================================
 
-void RWStepFEA_RWParametricSurface3dElementCoordinateSystem::Share (const Handle(StepFEA_ParametricSurface3dElementCoordinateSystem) &ent,
-                                                                    Interface_EntityIterator& iter) const
+void RWStepFEA_RWParametricSurface3dElementCoordinateSystem::Share (const Handle(StepFEA_ParametricSurface3dElementCoordinateSystem) &,
+                                                                    Interface_EntityIterator&) const
 {
-
   // Inherited fields of RepresentationItem
-
   // Own fields of ParametricSurface3dElementCoordinateSystem
 }

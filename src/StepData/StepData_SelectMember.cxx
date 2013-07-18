@@ -32,7 +32,7 @@ StepData_SelectMember::StepData_SelectMember ()    {  }
     Standard_Boolean  StepData_SelectMember::HasName () const  {  return Standard_False;  }
     Standard_CString  StepData_SelectMember::Name () const    {  return "";  }
 
-    Standard_Boolean  StepData_SelectMember::SetName (const Standard_CString bid)
+    Standard_Boolean  StepData_SelectMember::SetName (const Standard_CString /*bid*/)
       {  return Standard_False;  }
 
     Standard_Boolean  StepData_SelectMember::Matches (const Standard_CString name) const
@@ -88,14 +88,16 @@ Interface_ParamType  StepData_SelectMember::ParamType () const
     Standard_Integer  StepData_SelectMember::Enum      () const    {  return Int();  }
     Standard_CString  StepData_SelectMember::EnumText  () const    {  return String();  }
 
-    void  StepData_SelectMember::SetEnum
-  (const Standard_Integer val, const Standard_CString text)
+void  StepData_SelectMember::SetEnum (const Standard_Integer val, 
+                                      const Standard_CString text)
 {
   SetKind(KindEnum);
   SetInt(val);
   if (text && text[0] != '\0') SetEnumText(val,text);
 }
 
-    void  StepData_SelectMember::SetEnumText
-  (const Standard_Integer val, const Standard_CString text)
-      {  SetString(text);  }
+void  StepData_SelectMember::SetEnumText (const Standard_Integer /*val*/, 
+                                          const Standard_CString text)
+{
+  SetString(text);  
+}

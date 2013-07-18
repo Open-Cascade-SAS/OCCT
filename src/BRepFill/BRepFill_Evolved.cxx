@@ -686,7 +686,7 @@ void BRepFill_Evolved::ElementaryPerform (const TopoDS_Face&              Sp,
 					  const TopoDS_Wire&              Pr,
 					  const BRepMAT2d_BisectingLocus& Locus,
 					        BRepMAT2d_LinkTopoBilo&   Link,
-					  const GeomAbs_JoinType          Join)
+					  const GeomAbs_JoinType          /*Join*/)
 {
 
 #ifdef DRAW
@@ -2427,7 +2427,7 @@ void BRepFill_Evolved::TransformInitWork(const TopLoc_Location& LS,
 //purpose  : Coding of regularities on edges parallel to CutVevo
 //           common to left and right parts of volevo.
 //=======================================================================
-void  BRepFill_Evolved::ContinuityOnOffsetEdge (const TopTools_ListOfShape& WorkProf) 
+void  BRepFill_Evolved::ContinuityOnOffsetEdge (const TopTools_ListOfShape&) 
 {
   BRepTools_WireExplorer WExp ; 
   BRepFill_DataMapIteratorOfDataMapOfShapeDataMapOfShapeListOfShape iteS;

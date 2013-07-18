@@ -23,5 +23,5 @@
 #include <SelectMgr_Filter.ixx>
 
 
-Standard_Boolean SelectMgr_Filter::ActsOn(const TopAbs_ShapeEnum aStandardMode) const 
+Standard_Boolean SelectMgr_Filter::ActsOn(const TopAbs_ShapeEnum /*aStandardMode*/) const 
 {return Standard_False;}

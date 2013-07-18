@@ -37,7 +37,7 @@ StepElement_ElementAspect::StepElement_ElementAspect ()
 //purpose  : 
 //=======================================================================
 
-Standard_Integer StepElement_ElementAspect::CaseNum (const Handle(Standard_Transient)& ent) const
+Standard_Integer StepElement_ElementAspect::CaseNum (const Handle(Standard_Transient)& /*ent*/) const
 {
   return 0;
 }

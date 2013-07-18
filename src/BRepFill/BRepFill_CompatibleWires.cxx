@@ -1373,7 +1373,7 @@ void BRepFill_CompatibleWires::SameNumberByACR(const  Standard_Boolean  report)
 //purpose  : 
 //=======================================================================
 
-void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean polar )
+void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean /*polar*/ )
 {
   // reorganize the wires respecting orientation and origin
   

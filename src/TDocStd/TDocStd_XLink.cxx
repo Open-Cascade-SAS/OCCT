@@ -185,7 +185,7 @@ void TDocStd_XLink::BeforeRemoval()
 
 Standard_Boolean TDocStd_XLink::BeforeUndo
 (const Handle(TDF_AttributeDelta)& anAttDelta,
- const Standard_Boolean forceIt)
+ const Standard_Boolean /*forceIt*/)
 {
   if (anAttDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnAddition))) {
     anAttDelta->Attribute()->BeforeRemoval();
@@ -201,7 +201,7 @@ Standard_Boolean TDocStd_XLink::BeforeUndo
 
 Standard_Boolean TDocStd_XLink::AfterUndo
 (const Handle(TDF_AttributeDelta)& anAttDelta,
- const Standard_Boolean forceIt)
+ const Standard_Boolean /*forceIt*/)
 {
   if (anAttDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnRemoval))) {
     anAttDelta->Attribute()->AfterAddition();
@@ -256,7 +256,7 @@ Handle(TDF_Attribute) TDocStd_XLink::NewEmpty() const
 
 void TDocStd_XLink::Paste
 (const Handle(TDF_Attribute)& intoAttribute,
- const Handle(TDF_RelocationTable)& aRelocationTable) const
+ const Handle(TDF_RelocationTable)& /*aRelocationTable*/) const
 {
   const Handle(TDocStd_XLink)& xRef =
     Handle(TDocStd_XLink)::DownCast(intoAttribute);

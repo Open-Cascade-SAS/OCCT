@@ -406,7 +406,7 @@ W32_PointNote :: W32_PointNote ( int x, int y ) {
 
 }  // end constructor
 
-void W32_PointNote :: Play ( BOOL fDummy ) {
+void W32_PointNote :: Play ( BOOL ) {
 
  ALLOCATOR -> myHDC.SetPixel (  myX, myY, ALLOCATOR -> myPointColor  );
 
@@ -419,7 +419,7 @@ W32_MarkerPointNote :: W32_MarkerPointNote ( int x, int y ) :
 
 }  // end constructor
 
-void W32_MarkerPointNote :: Play ( BOOL fDummy ) {
+void W32_MarkerPointNote :: Play ( BOOL ) {
 
  ALLOCATOR -> myHDC.SetPixel (  myX, myY, ALLOCATOR -> myMarkerPointColor  );
 
@@ -435,7 +435,7 @@ W32_LineNote :: W32_LineNote ( int x, int y, int x1, int y1 ) :
 
 }  // end constructor
 
-void W32_LineNote :: Play ( BOOL fDummy ) {
+void W32_LineNote :: Play ( BOOL ) {
 
  EHDC* pe = &ALLOCATOR -> myHDC;
 
@@ -454,7 +454,7 @@ W32_PolyEllipseNote :: W32_PolyEllipseNote ( int xc, int yc, int xr, int yr ) :
                         
 }  // end constructor
 
-void W32_PolyEllipseNote :: Play ( BOOL fDummy ) {
+void W32_PolyEllipseNote :: Play ( BOOL ) {
 
  ALLOCATOR -> myHDC.Polyarc ( myX, myY, myXr, myYr );
 
@@ -467,7 +467,7 @@ W32_EllipseNote :: W32_EllipseNote ( int xc, int yc, int xr, int yr ) :
                         
 }  // end constructor
 
-void W32_EllipseNote :: Play ( BOOL fDummy ) {
+void W32_EllipseNote :: Play ( BOOL ) {
 
  ALLOCATOR -> myHDC.Arc ( myX, myY, myXr, myYr );
 
@@ -484,7 +484,7 @@ W32_ArcNote :: W32_ArcNote (
 
 }  // end constructor
 
-void W32_ArcNote :: Play ( BOOL fDummy ) {
+void W32_ArcNote :: Play ( BOOL ) {
 
  ALLOCATOR -> myHDC.Arc ( myX, myY, myXr, myYr, mySa, myOa );
 
@@ -498,7 +498,7 @@ W32_PolyChordNote :: W32_PolyChordNote (
 
 }  // end constructor
 
-void W32_PolyChordNote :: Play ( BOOL fDummy ) {
+void W32_PolyChordNote :: Play ( BOOL ) {
 
  ALLOCATOR -> myHDC.Polyarc ( myX, myY, myXr, myYr, mySa, myOa );
 
@@ -512,7 +512,7 @@ W32_ChordNote :: W32_ChordNote (
 
 }  // end constructor
 
-void W32_ChordNote :: Play ( BOOL fDummy ) {
+void W32_ChordNote :: Play ( BOOL ) {
 
  ALLOCATOR -> myHDC.Arc ( myX, myY, myXr, myYr, mySa, myOa );
 
@@ -526,7 +526,7 @@ W32_PolySectorNote :: W32_PolySectorNote (
 
 }  // end constructor
 
-void W32_PolySectorNote :: Play ( BOOL fDummy ) {
+void W32_PolySectorNote :: Play ( BOOL ) {
 
  ALLOCATOR -> myHDC.Polyarc ( myX, myY, myXr, myYr, mySa, myOa, FALSE );
 
@@ -540,7 +540,7 @@ W32_SectorNote :: W32_SectorNote (
 
 }  // end constructor
 
-void W32_SectorNote :: Play ( BOOL fDummy ) {
+void W32_SectorNote :: Play ( BOOL ) {
 
  ALLOCATOR -> myHDC.Arc ( myX, myY, myXr, myYr, mySa, myOa, ARCF_PIE );
 
@@ -578,7 +578,7 @@ W32_PolyMarker1Note :: W32_PolyMarker1Note (
                        
 }  // end constructor
 
-void W32_PolyMarker1Note :: Play ( BOOL fDummy ) {
+void W32_PolyMarker1Note :: Play ( BOOL ) {
 
  if ( ALLOCATOR -> myFlags & W32F_MFILL )
 
@@ -604,7 +604,7 @@ W32_PolyMarker2Note :: W32_PolyMarker2Note (
 
 }  // end constructor
 
-void W32_PolyMarker2Note :: Play ( BOOL fDummy ) {
+void W32_PolyMarker2Note :: Play ( BOOL ) {
 
  if ( ALLOCATOR -> myFlags & W32F_MFILL )
 
@@ -623,7 +623,7 @@ W32_PolygonNote :: W32_PolygonNote ( int aMaxPoints ) :
                                                             
 }  // end constructor
 
-void W32_PolygonNote :: Play ( BOOL fDummy ) {
+void W32_PolygonNote :: Play ( BOOL ) {
   
  ALLOCATOR -> myHDC.Polygon (
                      myPoints, mySetPoints,
@@ -650,7 +650,7 @@ W32_PolylineNote :: W32_PolylineNote ( int aMaxPoints ) :
                      
 }  // end constructor
 
-void W32_PolylineNote :: Play ( BOOL fDummy ) {
+void W32_PolylineNote :: Play ( BOOL ) {
 
  DWORD nPts;
  BOOL  fClose;
@@ -697,7 +697,7 @@ W32_ImageNote :: ~W32_ImageNote () {
 
 }  // end W32_ImageNote :: ~W32_ImageNote
 
-void W32_ImageNote :: Play ( BOOL fDummy ) {
+void W32_ImageNote :: Play ( BOOL ) {
 
  int     xx, yy, w, h;
  HDC     hdc, hdcMem;
@@ -902,7 +902,7 @@ W32_TextNote :: W32_TextNote (
                 
 }  // end constructor
 
-void W32_TextNote :: Play ( BOOL fDummy ) {
+void W32_TextNote :: Play ( BOOL ) {
 
  if ( myFlags & W32F_TUNICODE )
 
@@ -930,7 +930,7 @@ W32_PolyTextNote :: W32_PolyTextNote (
 
 }  // end constructor
 
-void W32_PolyTextNote :: Play ( BOOL fDummy ) {
+void W32_PolyTextNote :: Play ( BOOL ) {
 
  BOOL fNofill  = ( ALLOCATOR -> myFlags & W32F_NOFIL ? TRUE  : FALSE );
  BOOL fNoframe = ( ALLOCATOR -> myFlags & W32F_POUTL ? FALSE : TRUE  );
@@ -962,7 +962,7 @@ W32_BeginMarkerNote :: W32_BeginMarkerNote (
 
 }  // end constructor
 
-void W32_BeginMarkerNote :: Play ( BOOL fDummy ) {
+void W32_BeginMarkerNote :: Play ( BOOL ) {
 
  XFORM    xfm;
  LOGBRUSH lb = { BS_SOLID, ALLOCATOR -> myMarkerPointColor, 0 };
@@ -987,7 +987,7 @@ void W32_BeginMarkerNote :: Play ( BOOL fDummy ) {
 ////////////////////////////////////////////////////////////////////////////////
 W32_EndMarkerNote :: W32_EndMarkerNote () {}
 
-void W32_EndMarkerNote :: Play ( BOOL fDummy ) {
+void W32_EndMarkerNote :: Play ( BOOL ) {
 
  ALLOCATOR -> Xform ();
  ALLOCATOR -> myHDC.SelectEPen ( 0xFFFFFFFF, NULL );
@@ -1161,7 +1161,7 @@ W32_MarkerAttribNote :: W32_MarkerAttribNote (
 
 }  // end constructor
 
-void W32_MarkerAttribNote :: Play ( BOOL fDummy ) {
+void W32_MarkerAttribNote :: Play ( BOOL ) {
 
  ALLOCATOR -> myMarkerBrush.lbStyle = BS_SOLID;
  ALLOCATOR -> myMarkerBrush.lbColor = ALLOCATOR -> myPolyBrush.lbColor;
@@ -1190,7 +1190,7 @@ W32_FCallNote :: W32_FCallNote (
 
 }  // end constructor
 
-void W32_FCallNote :: Play ( BOOL fDummy ) {
+void W32_FCallNote :: Play ( BOOL ) {
 
  ( *myFunc ) ( myParam );
 

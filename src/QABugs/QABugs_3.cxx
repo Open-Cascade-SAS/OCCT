@@ -970,7 +970,7 @@ static Standard_Integer BUC60726 (Draw_Interpretor& di,Standard_Integer argc, co
 #include <BRepBndLib.hxx>
 #include <Bnd_HArray1OfBox.hxx>
   
-static Standard_Integer BUC60729 (Draw_Interpretor& di,Standard_Integer /*argc*/, const char ** /*argv*/ )
+static Standard_Integer BUC60729 (Draw_Interpretor& /*di*/,Standard_Integer /*argc*/, const char ** /*argv*/ )
 {
   Bnd_Box aMainBox;
   TopoDS_Shape aShape = BRepPrimAPI_MakeBox(1,1,1).Solid();

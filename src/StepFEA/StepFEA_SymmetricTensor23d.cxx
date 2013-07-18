@@ -37,7 +37,7 @@ StepFEA_SymmetricTensor23d::StepFEA_SymmetricTensor23d ()
 //purpose  : 
 //=======================================================================
 
-Standard_Integer StepFEA_SymmetricTensor23d::CaseNum (const Handle(Standard_Transient)& ent) const
+Standard_Integer StepFEA_SymmetricTensor23d::CaseNum (const Handle(Standard_Transient)& /*ent*/) const
 {
   return 0;
 }
@@ -102,7 +102,7 @@ Standard_Real StepFEA_SymmetricTensor23d::IsotropicSymmetricTensor23d () const
 //purpose  : 
 //=======================================================================
 
-void StepFEA_SymmetricTensor23d::SetOrthotropicSymmetricTensor23d (const Handle(TColStd_HArray1OfReal)& val)
+void StepFEA_SymmetricTensor23d::SetOrthotropicSymmetricTensor23d (const Handle(TColStd_HArray1OfReal)& /*val*/)
 {
   Handle(StepFEA_SymmetricTensor23dMember) SelMem = Handle(StepFEA_SymmetricTensor23dMember)::DownCast(Value());
   if(SelMem.IsNull()) return;
@@ -133,7 +133,7 @@ Handle(TColStd_HArray1OfReal) StepFEA_SymmetricTensor23d::OrthotropicSymmetricTe
 //purpose  : 
 //=======================================================================
 
-void StepFEA_SymmetricTensor23d::SetAnisotropicSymmetricTensor23d (const Handle(TColStd_HArray1OfReal)& val)
+void StepFEA_SymmetricTensor23d::SetAnisotropicSymmetricTensor23d (const Handle(TColStd_HArray1OfReal)& /*val*/)
 {
   Handle(StepFEA_SymmetricTensor23dMember) SelMem = Handle(StepFEA_SymmetricTensor23dMember)::DownCast(Value());
   if(SelMem.IsNull()) return;

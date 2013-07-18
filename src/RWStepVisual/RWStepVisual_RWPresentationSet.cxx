@@ -25,7 +25,7 @@ void RWStepVisual_RWPresentationSet::ReadStep
 (const Handle(StepData_StepReaderData)& data,
  const Standard_Integer num,
  Handle(Interface_Check)& ach,
- const Handle(StepVisual_PresentationSet)& ent) const
+ const Handle(StepVisual_PresentationSet)& /*ent*/) const
 {
   
   
@@ -37,8 +37,8 @@ void RWStepVisual_RWPresentationSet::ReadStep
   
 }
 void RWStepVisual_RWPresentationSet::WriteStep
-(StepData_StepWriter& SW,
- const Handle(StepVisual_PresentationSet)& ent) const
+(StepData_StepWriter& /*SW*/,
+ const Handle(StepVisual_PresentationSet)& /*ent*/) const
 {
 }
 

@@ -88,18 +88,20 @@ BRepBlend_AppFuncRoot::BRepBlend_AppFuncRoot(Handle(BRepBlend_Line)& Line,
 //           Standard_False is raised. 
 //================================================================================
 Standard_Boolean BRepBlend_AppFuncRoot::D0(const Standard_Real Param,
-					   const Standard_Real First,
-					   const Standard_Real Last,TColgp_Array1OfPnt& Poles,
-					   TColgp_Array1OfPnt2d& Poles2d,TColStd_Array1OfReal& Weigths) 
+                                           const Standard_Real /*First*/,
+                                           const Standard_Real /*Last*/,
+                                                 TColgp_Array1OfPnt& Poles,
+                                                 TColgp_Array1OfPnt2d& Poles2d,
+                                                 TColStd_Array1OfReal& Weigths) 
 {
   Standard_Boolean Ok=Standard_True;
   Blend_AppFunction* Func = (Blend_AppFunction*)myFunc;
   Ok = SearchPoint( *Func, Param, myPnt);
   
   if (Ok) (*Func).Section(myPnt,
-			  Poles,
-			  Poles2d,
-			  Weigths);
+                          Poles,
+                          Poles2d,
+                          Weigths);
   return Ok;
 }
 
@@ -109,8 +111,8 @@ Standard_Boolean BRepBlend_AppFuncRoot::D0(const Standard_Real Param,
 //           for v = Param, if the calculation fails Standard_False is raised.
 //================================================================================ 
 Standard_Boolean BRepBlend_AppFuncRoot::D1(const Standard_Real Param,
-					   const Standard_Real First,
-					   const Standard_Real Last,
+					   const Standard_Real /*First*/,
+					   const Standard_Real /*Last*/,
 					   TColgp_Array1OfPnt& Poles,
 					   TColgp_Array1OfVec& DPoles,
 					   TColgp_Array1OfPnt2d& Poles2d,
@@ -140,8 +142,8 @@ Standard_Boolean BRepBlend_AppFuncRoot::D1(const Standard_Real Param,
 //           For v = Param, if the calculation fails Standard_False is raised.  
 //=========================================================================== 
 Standard_Boolean BRepBlend_AppFuncRoot::D2(const Standard_Real Param,
-					   const Standard_Real First,
-					   const Standard_Real Last,
+					   const Standard_Real /*First*/,
+					   const Standard_Real /*Last*/,
 					   TColgp_Array1OfPnt& Poles,
 					   TColgp_Array1OfVec& DPoles,
 					   TColgp_Array1OfVec& D2Poles,

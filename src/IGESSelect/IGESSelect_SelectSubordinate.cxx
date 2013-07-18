@@ -29,7 +29,7 @@ IGESSelect_SelectSubordinate::IGESSelect_SelectSubordinate
 
     Standard_Boolean  IGESSelect_SelectSubordinate::Sort
   (const Standard_Integer, const Handle(Standard_Transient)& ent,
-   const Handle(Interface_InterfaceModel)& model) const
+   const Handle(Interface_InterfaceModel)& /*model*/) const
 {
   DeclareAndCast(IGESData_IGESEntity,igesent,ent);
   if (igesent.IsNull()) return Standard_False;

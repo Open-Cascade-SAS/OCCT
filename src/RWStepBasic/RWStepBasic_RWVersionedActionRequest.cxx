@@ -100,8 +100,8 @@ void RWStepBasic_RWVersionedActionRequest::WriteStep (StepData_StepWriter& SW,
 //purpose  : 
 //=======================================================================
 
-void RWStepBasic_RWVersionedActionRequest::Share (const Handle(StepBasic_VersionedActionRequest) &ent,
-                                                  Interface_EntityIterator& iter) const
+void RWStepBasic_RWVersionedActionRequest::Share (const Handle(StepBasic_VersionedActionRequest) &,
+                                                  Interface_EntityIterator&) const
 {
 
   // Own fields of VersionedActionRequest

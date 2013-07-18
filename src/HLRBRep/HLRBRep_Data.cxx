@@ -1846,7 +1846,7 @@ void HLRBRep_Data::OrientOthEdge (const Standard_Integer I,
     VertMax[15] = (Standard_Integer)((myDeca[15]+TotMax[15])*mySurD[15]); 
 
 TopAbs_State 
-HLRBRep_Data::Classify (const Standard_Integer E,
+HLRBRep_Data::Classify (const Standard_Integer /*E*/,
 			const HLRBRep_EdgeData& ED,
 			const Standard_Boolean LevelFlag,
 			Standard_Integer& Level,
@@ -2148,7 +2148,7 @@ HLRBRep_Data::Classify (const Standard_Integer E,
 //purpose  : 
 //=======================================================================
 
-TopAbs_State HLRBRep_Data::SimplClassify (const Standard_Integer E,
+TopAbs_State HLRBRep_Data::SimplClassify (const Standard_Integer /*E*/,
 					  const HLRBRep_EdgeData& ED,
 					  const Standard_Integer Nbp,
 					  const Standard_Real p1,

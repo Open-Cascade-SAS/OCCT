@@ -23,11 +23,11 @@
 #include <NLPlate_HGPPConstraint.ixx>
 
 
-void NLPlate_HGPPConstraint::SetUVFreeSliding(const Standard_Boolean UVFree) 
+void NLPlate_HGPPConstraint::SetUVFreeSliding(const Standard_Boolean) 
 {
 }
 
- void NLPlate_HGPPConstraint::SetIncrementalLoadAllowed(const Standard_Boolean ILA) 
+ void NLPlate_HGPPConstraint::SetIncrementalLoadAllowed(const Standard_Boolean ) 
 {
 }
 
@@ -40,23 +40,23 @@ void NLPlate_HGPPConstraint::SetUVFreeSliding(const Standard_Boolean UVFree)
 {
   myUV = UV;
 }
- void NLPlate_HGPPConstraint::SetOrientation(const Standard_Integer Orient) 
+ void NLPlate_HGPPConstraint::SetOrientation(const Standard_Integer /*Orient*/) 
 {
 }
 
- void NLPlate_HGPPConstraint::SetG0Criterion(const Standard_Real TolDist) 
+ void NLPlate_HGPPConstraint::SetG0Criterion(const Standard_Real /*TolDist*/) 
 {
 }
 
- void NLPlate_HGPPConstraint::SetG1Criterion(const Standard_Real TolAng) 
+ void NLPlate_HGPPConstraint::SetG1Criterion(const Standard_Real /*TolAng*/) 
 {
 }
 
- void NLPlate_HGPPConstraint::SetG2Criterion(const Standard_Real TolCurv) 
+ void NLPlate_HGPPConstraint::SetG2Criterion(const Standard_Real /*TolCurv*/) 
 {
 }
 
- void NLPlate_HGPPConstraint::SetG3Criterion(const Standard_Real TolG3) 
+ void NLPlate_HGPPConstraint::SetG3Criterion(const Standard_Real /*TolG3*/) 
 {
 }
 

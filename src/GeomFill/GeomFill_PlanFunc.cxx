@@ -98,7 +98,7 @@ void  GeomFill_PlanFunc::D2E(const Standard_Real  X,
 			     const gp_Vec& ,
 			     Standard_Real& DFDT,
 //			     Standard_Real& ,
-			     Standard_Real& D2FDT2,
+			     Standard_Real& /*D2FDT2*/,
 //			     Standard_Real& D2FDTDX)
 			     Standard_Real& )
 {

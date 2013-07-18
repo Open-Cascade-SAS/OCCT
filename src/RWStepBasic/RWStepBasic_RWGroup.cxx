@@ -87,9 +87,8 @@ void RWStepBasic_RWGroup::WriteStep (StepData_StepWriter& SW,
 //purpose  : 
 //=======================================================================
 
-void RWStepBasic_RWGroup::Share (const Handle(StepBasic_Group) &ent,
-                                 Interface_EntityIterator& iter) const
+void RWStepBasic_RWGroup::Share (const Handle(StepBasic_Group) &,
+                                 Interface_EntityIterator&) const
 {
-
   // Own fields of Group
 }

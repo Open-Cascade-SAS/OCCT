@@ -214,7 +214,7 @@ GetConnected(const TopLoc_Location& aLoc)
 //purpose  :
 //=======================================================================
 
-void Select3D_SensitiveSegment::Dump(Standard_OStream& S,const Standard_Boolean FullDump) const
+void Select3D_SensitiveSegment::Dump(Standard_OStream& S,const Standard_Boolean /*FullDump*/) const
 {
   S<<"\tSensitivePoint 3D :"<<endl;
   if(HasLocation())

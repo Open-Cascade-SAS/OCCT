@@ -52,7 +52,7 @@ TDF_Transaction::TDF_Transaction
 //purpose  : Private copy constructor.
 //=======================================================================
 
-TDF_Transaction::TDF_Transaction(const TDF_Transaction& aTrans)
+TDF_Transaction::TDF_Transaction(const TDF_Transaction& /*aTrans*/)
 {}
 
 

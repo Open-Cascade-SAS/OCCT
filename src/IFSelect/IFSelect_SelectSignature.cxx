@@ -144,8 +144,8 @@ static Standard_Integer multsign
 }
 
     Standard_Boolean  IFSelect_SelectSignature::Sort
-  (const Standard_Integer , const Handle(Standard_Transient)& ent,
-   const Handle(Interface_InterfaceModel)& model) const
+  (const Standard_Integer , const Handle(Standard_Transient)& /*ent*/,
+   const Handle(Interface_InterfaceModel)& /*model*/) const
 {  return Standard_True;  }
 
     const TCollection_AsciiString&  IFSelect_SelectSignature::SignatureText () const

@@ -68,7 +68,7 @@ myTol(Tol)
 //purpose  : 
 //=======================================================================
 
-static void ExtentEdge(const TopoDS_Face& F,
+static void ExtentEdge(const TopoDS_Face& /*F*/,
 		       const TopoDS_Edge& E,
 		       TopoDS_Edge& NE) 
 {
@@ -103,8 +103,8 @@ static void ExtentEdge(const TopoDS_Face& F,
 //purpose  : 
 //=======================================================================
 
-static void SelectEdge (const TopoDS_Face& F,
-			const TopoDS_Face& EF,
+static void SelectEdge (const TopoDS_Face& /*F*/,
+			const TopoDS_Face& /*EF*/,
 			const TopoDS_Edge& E,
 			TopTools_ListOfShape& LInt)
 {
@@ -330,10 +330,10 @@ void BRepOffset_Inter3d::FaceInter(const TopoDS_Face& F1,
 //purpose  : 
 //=======================================================================
 
-void BRepOffset_Inter3d::ConnexIntByArc(const TopTools_ListOfShape& SetOfFaces, 
-					const TopoDS_Shape&         ShapeInit, 
-					const BRepOffset_Analyse&   Analyse, 
-					const BRepAlgo_Image&     InitOffsetFace)
+void BRepOffset_Inter3d::ConnexIntByArc(const TopTools_ListOfShape& /*SetOfFaces*/, 
+                                        const TopoDS_Shape&         ShapeInit, 
+                                        const BRepOffset_Analyse&   Analyse, 
+                                        const BRepAlgo_Image&       InitOffsetFace)
 {
   BRepOffset_Type    OT   = BRepOffset_Concave;
   if (mySide == TopAbs_OUT) OT   = BRepOffset_Convex;
@@ -877,7 +877,7 @@ void BRepOffset_Inter3d::ContextIntByArc(const TopTools_IndexedMapOfShape& Conte
 //purpose  : 
 //=======================================================================
 
-void BRepOffset_Inter3d::AddCommonEdges(const TopTools_ListOfShape& SetOfFaces)
+void BRepOffset_Inter3d::AddCommonEdges(const TopTools_ListOfShape&)
 {
 }
 

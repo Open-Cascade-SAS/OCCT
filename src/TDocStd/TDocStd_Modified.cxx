@@ -221,8 +221,8 @@ void TDocStd_Modified::Restore(const Handle(TDF_Attribute)& With) {
 //purpose  : 
 //=======================================================================
 
-void TDocStd_Modified::Paste (const Handle(TDF_Attribute)& Into,
-			      const Handle(TDF_RelocationTable)& RT) const
+void TDocStd_Modified::Paste (const Handle(TDF_Attribute)&,
+			      const Handle(TDF_RelocationTable)&) const
 {
 }
 

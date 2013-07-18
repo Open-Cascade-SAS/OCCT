@@ -2378,8 +2378,14 @@ void Graphic3d_Structure::Plot (const Handle(Graphic3d_Plotter)& ) {
 
 }
 
-void Graphic3d_Structure::SetManager (const Handle(Graphic3d_StructureManager)& AManager, const Standard_Boolean WithPropagation) {
+void Graphic3d_Structure::SetManager (const Handle(Graphic3d_StructureManager)& AManager, 
+                                      const Standard_Boolean 
+                                      #ifdef IMPLEMENTED
+                                        WithPropagation
+                                      #endif
+                                      )
 
+{
   // All connected structures should follow ?
 #ifdef IMPLEMENTED
   if (WithPropagation) {

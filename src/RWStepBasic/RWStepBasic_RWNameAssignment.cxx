@@ -71,9 +71,8 @@ void RWStepBasic_RWNameAssignment::WriteStep (StepData_StepWriter& SW,
 //purpose  : 
 //=======================================================================
 
-void RWStepBasic_RWNameAssignment::Share (const Handle(StepBasic_NameAssignment) &ent,
-                                          Interface_EntityIterator& iter) const
+void RWStepBasic_RWNameAssignment::Share (const Handle(StepBasic_NameAssignment) &,
+                                          Interface_EntityIterator&) const
 {
-
   // Own fields of NameAssignment
 }

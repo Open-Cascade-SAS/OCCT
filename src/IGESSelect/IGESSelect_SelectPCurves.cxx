@@ -37,7 +37,7 @@ IGESSelect_SelectPCurves::IGESSelect_SelectPCurves
 
     Standard_Boolean  IGESSelect_SelectPCurves::Explore
   (const Standard_Integer level, const Handle(Standard_Transient)& ent,
-   const Interface_Graph& G, Interface_EntityIterator& explored) const
+   const Interface_Graph& /*G*/, Interface_EntityIterator& explored) const
 {
   DeclareAndCast(IGESData_IGESEntity,igesent,ent);
   if (igesent.IsNull()) return Standard_False;

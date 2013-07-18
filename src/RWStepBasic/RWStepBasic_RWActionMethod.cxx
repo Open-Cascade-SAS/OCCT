@@ -100,9 +100,8 @@ void RWStepBasic_RWActionMethod::WriteStep (StepData_StepWriter& SW,
 //purpose  : 
 //=======================================================================
 
-void RWStepBasic_RWActionMethod::Share (const Handle(StepBasic_ActionMethod) &ent,
-                                        Interface_EntityIterator& iter) const
+void RWStepBasic_RWActionMethod::Share (const Handle(StepBasic_ActionMethod) &,
+                                        Interface_EntityIterator&) const
 {
-
   // Own fields of ActionMethod
 }

@@ -26,7 +26,7 @@ StepData_DescrGeneral::StepData_DescrGeneral
 
 
     void  StepData_DescrGeneral::FillSharedCase
-  (const Standard_Integer CN, const Handle(Standard_Transient)& ent,
+  (const Standard_Integer, const Handle(Standard_Transient)& ent,
    Interface_EntityIterator& iter) const
 {
   Handle(StepData_Described) ds = Handle(StepData_Described)::DownCast(ent);
@@ -34,20 +34,22 @@ StepData_DescrGeneral::StepData_DescrGeneral
 }
 
 
-void StepData_DescrGeneral::CheckCase(const Standard_Integer CN,
-                                      const Handle(Standard_Transient)& ent,
-                                      const Interface_ShareTool& shares,
-                                      Handle(Interface_Check)& /*ach*/) const
+void StepData_DescrGeneral::CheckCase(const Standard_Integer ,
+                                      const Handle(Standard_Transient)&,
+                                      const Interface_ShareTool&,
+                                      Handle(Interface_Check)&) const
 {
 }    // pour l instant
 
 
-    void  StepData_DescrGeneral::CopyCase
-  (const Standard_Integer CN, const Handle(Standard_Transient)& entfrom,
-   const Handle(Standard_Transient)& entto, Interface_CopyTool& TC) const
-{  }    // pour l instant
+void  StepData_DescrGeneral::CopyCase(const Standard_Integer,
+                                      const Handle(Standard_Transient)&,
+                                      const Handle(Standard_Transient)&, 
+                                      Interface_CopyTool&) const 
+{
+}    // pour l instant
 
-    Standard_Boolean  StepData_DescrGeneral::NewVoid
+Standard_Boolean  StepData_DescrGeneral::NewVoid
   (const Standard_Integer CN, Handle(Standard_Transient)& ent) const
 {
   ent = theproto->Descr(CN)->NewEntity();

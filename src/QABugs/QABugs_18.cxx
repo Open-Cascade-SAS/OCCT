@@ -76,7 +76,7 @@ static Quantity_NameOfColor GetColorFromName( const char *name, Standard_Boolean
   return ret;
 }
 
-static Standard_Integer BUC60851 (Draw_Interpretor& di, Standard_Integer /*argc*/, const char ** /*argv*/)
+static Standard_Integer BUC60851 (Draw_Interpretor& /*di*/, Standard_Integer /*argc*/, const char ** /*argv*/)
 {
   Handle(AIS_InteractiveContext)   context= ViewerTest_Tool::MakeContext ("buc60851");
   ViewerTest_Tool::InitViewerTest (context);

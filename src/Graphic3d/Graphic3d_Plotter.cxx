@@ -55,7 +55,7 @@ void Graphic3d_Plotter::Destroy () {
 
 //-Methods, in order
 
-Standard_Boolean Graphic3d_Plotter::BeginPlot (const Handle(Graphic3d_DataStructureManager)& aProjector) {
+Standard_Boolean Graphic3d_Plotter::BeginPlot (const Handle(Graphic3d_DataStructureManager)& /*aProjector*/) {
 
 	if (MyPlottingState)
 		Graphic3d_PlotterDefinitionError::Raise

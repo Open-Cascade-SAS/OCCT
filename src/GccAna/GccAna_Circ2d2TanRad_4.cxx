@@ -50,11 +50,7 @@ GccAna_Circ2d2TanRad::
    GccAna_Circ2d2TanRad (const GccEnt_QualifiedLin&  Qualified1 ,
                          const GccEnt_QualifiedLin&  Qualified2 ,
                          const Standard_Real         Radius     ,
-                         const Standard_Real
-#ifdef DEB
-                                                     Tolerance
-#endif
-                        ):
+                         const Standard_Real                    ):
    qualifier1(1,4) ,
    qualifier2(1,4),
    TheSame1(1,4)   ,

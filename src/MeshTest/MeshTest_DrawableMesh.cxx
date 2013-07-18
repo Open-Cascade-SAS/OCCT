@@ -106,7 +106,7 @@ void MeshTest_DrawableMesh::AddInShape(const Standard_Boolean inshape)
 //purpose  : 
 //=======================================================================
 
-void MeshTest_DrawableMesh::DrawOn(Draw_Display& D) const 
+void MeshTest_DrawableMesh::DrawOn(Draw_Display& /*D*/) const 
 {
   // should be reimplemented!!
   /*  Handle(BRepMesh_DataStructureOfDelaun) struc = myMesh->Result();
@@ -214,7 +214,7 @@ static void printdegree(BRepMesh_DegreeOfFreedom dof)
   }
 }
 
-void MeshTest_DrawableMesh::Dump(Standard_OStream& S) const 
+void MeshTest_DrawableMesh::Dump(Standard_OStream&) const 
 {
   // Should be reimplemented
 

@@ -86,7 +86,7 @@ Handle(PDF_Attribute) MDataStd_NamedDataStorageDriver::NewEmpty() const
 //=======================================================================
 void MDataStd_NamedDataStorageDriver::Paste(const Handle(TDF_Attribute)& Source,
 					    const Handle(PDF_Attribute)& Target,
-					    const Handle(MDF_SRelocationTable)& RelocTable) const
+					    const Handle(MDF_SRelocationTable)& /*RelocTable*/) const
 {
   Handle(TDataStd_NamedData) S = Handle(TDataStd_NamedData)::DownCast (Source);
   Handle(PDataStd_NamedData) T = Handle(PDataStd_NamedData)::DownCast (Target);

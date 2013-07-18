@@ -107,7 +107,7 @@ public:
   }
   
   //! Set current node to be checked
-  void SetCurrent (const gp_XY& theCurVertex, const Standard_Boolean theExactVal = Standard_False) 
+  void SetCurrent (const gp_XY& theCurVertex, const Standard_Boolean) 
   { 
     myResInd.Clear();
     myCurrent = theCurVertex;

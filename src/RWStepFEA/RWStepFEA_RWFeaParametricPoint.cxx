@@ -98,11 +98,9 @@ void RWStepFEA_RWFeaParametricPoint::WriteStep (StepData_StepWriter& SW,
 //purpose  : 
 //=======================================================================
 
-void RWStepFEA_RWFeaParametricPoint::Share (const Handle(StepFEA_FeaParametricPoint) &ent,
-                                            Interface_EntityIterator& iter) const
+void RWStepFEA_RWFeaParametricPoint::Share (const Handle(StepFEA_FeaParametricPoint) &,
+                                            Interface_EntityIterator&) const
 {
-
   // Inherited fields of RepresentationItem
-
   // Own fields of FeaParametricPoint
 }

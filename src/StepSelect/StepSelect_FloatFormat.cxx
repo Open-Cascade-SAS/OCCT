@@ -74,7 +74,7 @@ StepSelect_FloatFormat::StepSelect_FloatFormat ()
 
 
     void  StepSelect_FloatFormat::Perform
-  (IFSelect_ContextWrite& ctx,
+  (IFSelect_ContextWrite& /*ctx*/,
    StepData_StepWriter& writer) const
 {
   writer.FloatWriter().SetFormat (themainform.ToCString());

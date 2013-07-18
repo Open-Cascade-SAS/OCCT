@@ -63,7 +63,7 @@ void RWStepBasic_RWEffectivity::WriteStep
 }
 
 
-void RWStepBasic_RWEffectivity::Share(const Handle(StepBasic_Effectivity)& ent, Interface_EntityIterator& iter) const
+void RWStepBasic_RWEffectivity::Share(const Handle(StepBasic_Effectivity)&, Interface_EntityIterator&) const
 {
 }
 

@@ -106,7 +106,7 @@ void RWStepGeom_RWGeometricRepresentationContextAndParametricRepresentationConte
 }
 
 
-void RWStepGeom_RWGeometricRepresentationContextAndParametricRepresentationContext::Share(const Handle(StepGeom_GeometricRepresentationContextAndParametricRepresentationContext)& ent, Interface_EntityIterator& iter) const
+void RWStepGeom_RWGeometricRepresentationContextAndParametricRepresentationContext::Share(const Handle(StepGeom_GeometricRepresentationContextAndParametricRepresentationContext)& , Interface_EntityIterator& ) const
 {
 }
 

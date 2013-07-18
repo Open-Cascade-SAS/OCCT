@@ -117,8 +117,8 @@ IGESDefs_TabularData::IGESDefs_TabularData ()    {  }
 
 // UNFINISHED
 // Array limits not sure.
-    Standard_Real IGESDefs_TabularData::DependentValue
-  (const Standard_Integer variablenum, const Standard_Integer valuenum) const
+Standard_Real IGESDefs_TabularData::DependentValue (const Standard_Integer /*variablenum*/, 
+                                                    const Standard_Integer /*valuenum*/) const
 {
   Standard_Real val = 0.;
 #if 0

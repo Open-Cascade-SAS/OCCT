@@ -80,14 +80,14 @@ DNaming_RevolutionDriver::DNaming_RevolutionDriver()
 //function : Validate
 //purpose  : Validates labels of a function in <theLog>.
 //=======================================================================
-void DNaming_RevolutionDriver::Validate(TFunction_Logbook& theLog) const
+void DNaming_RevolutionDriver::Validate(TFunction_Logbook&) const
 {}
 
 //=======================================================================
 //function : MustExecute
 //purpose  : Analyses in <theLog> if the loaded function must be executed
 //=======================================================================
-Standard_Boolean DNaming_RevolutionDriver::MustExecute(const TFunction_Logbook& theLog) const
+Standard_Boolean DNaming_RevolutionDriver::MustExecute(const TFunction_Logbook&) const
 {
   return Standard_True;
 }

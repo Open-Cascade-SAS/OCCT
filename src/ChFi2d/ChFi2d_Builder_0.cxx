@@ -261,7 +261,7 @@ void ChFi2d_Builder::ComputeChamfer(const TopoDS_Vertex& V,
 //=======================================================================
 
 TopoDS_Edge ChFi2d_Builder::ModifyChamfer(const TopoDS_Edge& Chamfer, 
-					const TopoDS_Edge& E1, 
+					const TopoDS_Edge& /*E1*/, 
 					const TopoDS_Edge& E2,  
 					const Standard_Real D1,
 					const Standard_Real D2)

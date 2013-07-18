@@ -54,9 +54,9 @@ QABugs_MyText::QABugs_MyText(const TCollection_ExtendedString& aText, const gp_P
 *
 **************************************************************************/
 
-void QABugs_MyText::Compute(const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
+void QABugs_MyText::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
                              const Handle(Prs3d_Presentation)& aPresentation,
-                             const Standard_Integer aMode ) 
+                             const Standard_Integer /*aMode*/ ) 
 {
   aPresentation->Clear();
   Handle_Prs3d_TextAspect asp = myDrawer->TextAspect();
@@ -68,7 +68,7 @@ void QABugs_MyText::Compute(const Handle(PrsMgr_PresentationManager3d)& aPresent
 }
 
 void QABugs_MyText::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
-                                      const Standard_Integer aMode)
+                                      const Standard_Integer /*aMode*/)
 {
   // This code is here to compute the selection, erase this code if you don't what selection.
 

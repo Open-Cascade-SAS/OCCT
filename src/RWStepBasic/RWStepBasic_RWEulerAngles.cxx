@@ -88,9 +88,8 @@ void RWStepBasic_RWEulerAngles::WriteStep (StepData_StepWriter& SW,
 //purpose  : 
 //=======================================================================
 
-void RWStepBasic_RWEulerAngles::Share (const Handle(StepBasic_EulerAngles) &ent,
-                                       Interface_EntityIterator& iter) const
+void RWStepBasic_RWEulerAngles::Share (const Handle(StepBasic_EulerAngles) &,
+                                       Interface_EntityIterator&) const
 {
-
   // Own fields of EulerAngles
 }

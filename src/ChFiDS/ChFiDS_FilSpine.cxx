@@ -224,7 +224,7 @@ void  ChFiDS_FilSpine::UnSetRadius(const TopoDS_Vertex& V)
 //=======================================================================
 
 void  ChFiDS_FilSpine::SetRadius(const Handle(Law_Function)& C,
-				 const Standard_Integer      IinC)
+				 const Standard_Integer      /*IinC*/)
 {
   splitdone = Standard_False;
   Handle(Law_Composite) prout = new Law_Composite();

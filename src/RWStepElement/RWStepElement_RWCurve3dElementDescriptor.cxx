@@ -133,8 +133,8 @@ void RWStepElement_RWCurve3dElementDescriptor::WriteStep (StepData_StepWriter& S
 //purpose  : 
 //=======================================================================
 
-void RWStepElement_RWCurve3dElementDescriptor::Share (const Handle(StepElement_Curve3dElementDescriptor) &ent,
-                                                      Interface_EntityIterator& iter) const
+void RWStepElement_RWCurve3dElementDescriptor::Share (const Handle(StepElement_Curve3dElementDescriptor)&,
+                                                      Interface_EntityIterator&) const
 {
 
   // Inherited fields of ElementDescriptor

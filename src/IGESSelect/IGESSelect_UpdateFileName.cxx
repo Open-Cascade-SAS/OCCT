@@ -24,9 +24,9 @@
 IGESSelect_UpdateFileName::IGESSelect_UpdateFileName  ()
     : IGESSelect_ModelModifier (Standard_False)    {  }
 
-    void  IGESSelect_UpdateFileName::Performing
-  (IFSelect_ContextModif& ctx, const Handle(IGESData_IGESModel)& target,
-   Interface_CopyTool& TC) const
+void  IGESSelect_UpdateFileName::Performing (IFSelect_ContextModif& ctx, 
+                                             const Handle(IGESData_IGESModel)& target,
+                                             Interface_CopyTool& /*TC*/) const
 {
   if (!ctx.HasFileName()) {
     ctx.CCheck(0)->AddWarning("New File Name unknown, former one is kept");

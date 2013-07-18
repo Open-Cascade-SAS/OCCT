@@ -397,7 +397,7 @@ Standard_Boolean IGESCAFControl_Reader::ReadColors (Handle(TDocStd_Document)& Do
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean IGESCAFControl_Reader::ReadNames (Handle(TDocStd_Document)& Doc) const
+Standard_Boolean IGESCAFControl_Reader::ReadNames (Handle(TDocStd_Document)& /*Doc*/) const
 {
   Handle(Interface_InterfaceModel) Model = WS()->Model();
 
@@ -442,7 +442,7 @@ Standard_Boolean IGESCAFControl_Reader::ReadNames (Handle(TDocStd_Document)& Doc
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean IGESCAFControl_Reader::ReadLayers (Handle(TDocStd_Document)& Doc) const
+Standard_Boolean IGESCAFControl_Reader::ReadLayers (Handle(TDocStd_Document)& /*Doc*/) const
 {
   Handle(Interface_InterfaceModel) Model = WS()->Model();
 

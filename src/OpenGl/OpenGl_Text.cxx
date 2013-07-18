@@ -426,7 +426,7 @@ void OpenGl_Text::Render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
 // purpose  :
 // =======================================================================
 void OpenGl_Text::setupMatrix (const Handle(OpenGl_PrinterContext)& thePrintCtx,
-                               const Handle(OpenGl_Context)&        theCtx,
+                               const Handle(OpenGl_Context)&        /*theCtx*/,
                                const OpenGl_AspectText&             theTextAspect,
                                const OpenGl_Vec3                    theDVec) const
 {
@@ -476,9 +476,14 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_PrinterContext)& thePrintCtx,
 // function : drawText
 // purpose  :
 // =======================================================================
-void OpenGl_Text::drawText (const Handle(OpenGl_PrinterContext)& thePrintCtx,
+
+void OpenGl_Text::drawText (const Handle(OpenGl_PrinterContext)& ,
                             const Handle(OpenGl_Context)&        theCtx,
+                          #ifdef HAVE_GL2PS
                             const OpenGl_AspectText&             theTextAspect) const
+                          #else
+                            const OpenGl_AspectText&                          ) const
+                          #endif
 {
 #ifdef HAVE_GL2PS
   if (theCtx->IsFeedback())

@@ -129,11 +129,11 @@ Image_AlienPixMap::~Image_AlienPixMap()
 // function : InitWrapper
 // purpose  :
 // =======================================================================
-bool Image_AlienPixMap::InitWrapper (ImgFormat            thePixelFormat,
-                                     Standard_Byte*       theDataPtr,
-                                     const Standard_Size  theSizeX,
-                                     const Standard_Size  theSizeY,
-                                     const Standard_Size  theSizeRowBytes)
+bool Image_AlienPixMap::InitWrapper (ImgFormat,
+                                     Standard_Byte*,
+                                     const Standard_Size,
+                                     const Standard_Size,
+                                     const Standard_Size)
 {
   Clear();
   return false;
@@ -242,11 +242,10 @@ void Image_AlienPixMap::Clear (ImgFormat thePixelFormat)
 // function : Load
 // purpose  :
 // =======================================================================
+#ifdef HAVE_FREEIMAGE
 bool Image_AlienPixMap::Load (const TCollection_AsciiString& theImagePath)
 {
   Clear();
-#ifdef HAVE_FREEIMAGE
-
   FREE_IMAGE_FORMAT aFIF = FreeImage_GetFileType (theImagePath.ToCString(), 0);
   if (aFIF == FIF_UNKNOWN)
   {
@@ -293,10 +292,14 @@ bool Image_AlienPixMap::Load (const TCollection_AsciiString& theImagePath)
   // assign image after wrapper initialization (virtual Clear() called inside)
   myLibImage = anImage;
   return true;
-#else
-  return false;
-#endif
 }
+#else
+bool Image_AlienPixMap::Load (const TCollection_AsciiString&)
+{
+  Clear();
+  return false;
+}
+#endif
 
 // =======================================================================
 // function : savePPM
@@ -505,11 +508,14 @@ bool Image_AlienPixMap::Save (const TCollection_AsciiString& theFileName)
 // function : AdjustGamma
 // purpose  :
 // =======================================================================
+#ifdef HAVE_FREEIMAGE
 Standard_EXPORT bool Image_AlienPixMap::AdjustGamma (const Standard_Real theGammaCorr)
 {
-#ifdef HAVE_FREEIMAGE
   return FreeImage_AdjustGamma (myLibImage, theGammaCorr) != FALSE;
-#else
-  return false;
-#endif
 }
+#else
+Standard_EXPORT bool Image_AlienPixMap::AdjustGamma (const Standard_Real)
+{
+    return false;
+}
+#endif

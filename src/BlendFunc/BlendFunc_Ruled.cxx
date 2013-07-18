@@ -53,8 +53,8 @@ void BlendFunc_Ruled::Set(const Standard_Real Param)
   istangent = Standard_True;
 }
 
-void BlendFunc_Ruled::Set(const Standard_Real First,
-                          const Standard_Real Last)
+void BlendFunc_Ruled::Set(const Standard_Real,
+                          const Standard_Real)
 {
   Standard_NotImplemented::Raise("BlendFunc_Ruled::Set");
 }
@@ -601,10 +601,10 @@ void BlendFunc_Ruled::GetShape(Standard_Integer& NbPoles,
 //purpose  : Determine les Tolerance a utiliser dans les approximations.
 //=======================================================================
 void BlendFunc_Ruled::GetTolerance(const Standard_Real BoundTol, 
-				   const Standard_Real SurfTol, 
-				   const Standard_Real AngleTol, 
+				   const Standard_Real, 
+				   const Standard_Real, 
 				   math_Vector& Tol3d, 
-				   math_Vector& Tol1D) const
+				   math_Vector&) const
 {
   Tol3d.Init(BoundTol);
 }
@@ -620,16 +620,16 @@ void BlendFunc_Ruled::Mults(TColStd_Array1OfInteger& TMults)
   TMults(TMults.Lower()) = TMults(TMults.Upper()) = 2;
 }
 
-Standard_Boolean BlendFunc_Ruled::Section(const Blend_Point& P,
-					  TColgp_Array1OfPnt& Poles,
-					  TColgp_Array1OfVec& DPoles,
-					  TColgp_Array1OfVec& D2Poles,
-					  TColgp_Array1OfPnt2d& Poles2d,
-					  TColgp_Array1OfVec2d& DPoles2d,
-					  TColgp_Array1OfVec2d& D2Poles2d,
-					  TColStd_Array1OfReal& Weights,
-					  TColStd_Array1OfReal& DWeights,
-					  TColStd_Array1OfReal& D2Weights)
+Standard_Boolean BlendFunc_Ruled::Section(const Blend_Point& /*P*/,
+                                          TColgp_Array1OfPnt& /*Poles*/,
+                                          TColgp_Array1OfVec& /*DPoles*/,
+                                          TColgp_Array1OfVec& /*D2Poles*/,
+                                          TColgp_Array1OfPnt2d& /*Poles2d*/,
+                                          TColgp_Array1OfVec2d& /*DPoles2d*/,
+                                          TColgp_Array1OfVec2d& /*D2Poles2d*/,
+                                          TColStd_Array1OfReal& /*Weights*/,
+                                          TColStd_Array1OfReal& /*DWeights*/,
+                                          TColStd_Array1OfReal& /*D2Weights*/)
 {
   return Standard_False;
 }

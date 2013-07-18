@@ -40,8 +40,8 @@ IGESSelect_SelectBasicGeom::IGESSelect_SelectBasicGeom
     : IFSelect_SelectExplore (-1)    {  thegeom = mode;  }
 
     Standard_Boolean  IGESSelect_SelectBasicGeom::Explore
-  (const Standard_Integer level, const Handle(Standard_Transient)& ent,
-   const Interface_Graph& G, Interface_EntityIterator& explored) const
+  (const Standard_Integer /*level*/, const Handle(Standard_Transient)& ent,
+   const Interface_Graph& /*G*/, Interface_EntityIterator& explored) const
 {
 //  thegeom > 0 : curves3d   < 0 : surfaces   == 0 : curves3d + surfaces libres
 

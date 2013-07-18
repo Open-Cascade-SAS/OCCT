@@ -71,7 +71,7 @@ Handle(TDF_Attribute) MXCAFDoc_DatumRetrievalDriver::NewEmpty() const
 
 void MXCAFDoc_DatumRetrievalDriver::Paste(const Handle(PDF_Attribute)& Source,
                                            const Handle(TDF_Attribute)& Target,
-                                           const Handle(MDF_RRelocationTable)& RelocTable) const
+                                           const Handle(MDF_RRelocationTable)& /*RelocTable*/) const
 {
   Handle(PXCAFDoc_Datum) S = Handle(PXCAFDoc_Datum)::DownCast (Source);
   Handle(XCAFDoc_Datum) T = Handle(XCAFDoc_Datum)::DownCast (Target);

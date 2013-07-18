@@ -67,7 +67,7 @@ Standard_Integer MXCAFDoc_VolumeStorageDriver::VersionNumber() const
 
  void MXCAFDoc_VolumeStorageDriver::Paste(const Handle(TDF_Attribute)& Source,
 						  const Handle(PDF_Attribute)& Target,
-						  const Handle(MDF_SRelocationTable)& RelocTable) const
+						  const Handle(MDF_SRelocationTable)& /*RelocTable*/) const
 {
   Handle(XCAFDoc_Volume) S = Handle(XCAFDoc_Volume)::DownCast (Source);
   Handle(PXCAFDoc_Volume) T = Handle(PXCAFDoc_Volume)::DownCast (Target);

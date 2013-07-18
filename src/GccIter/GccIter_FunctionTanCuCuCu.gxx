@@ -225,9 +225,9 @@ Standard_Boolean GccIter_FunctionTanCuCuCu::
 
 
 
-Standard_Boolean GccIter_FunctionTanCuCuCu::
-  Derivatives (const math_Vector& X     ,
-	             math_Matrix& Deriv ) {
+Standard_Boolean GccIter_FunctionTanCuCuCu::Derivatives (const math_Vector&,
+	                                                     math_Matrix&) 
+{
 #if 0
   gp_Pnt2d Point1;
   gp_Pnt2d Point2;
@@ -351,10 +351,10 @@ Standard_Boolean GccIter_FunctionTanCuCuCu::
 }
 
 
-Standard_Boolean GccIter_FunctionTanCuCuCu::
-  Values (const math_Vector& X     ,
-	        math_Vector& Fval  ,
-	        math_Matrix& Deriv ) {
+Standard_Boolean GccIter_FunctionTanCuCuCu:: Values (const math_Vector&,
+	                                                 math_Vector&,
+	                                                 math_Matrix& ) 
+{
 #if 0
   gp_Pnt2d Point1;
   gp_Pnt2d Point2;

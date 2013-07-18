@@ -223,7 +223,7 @@ StepData_PDescr::StepData_PDescr  ()
       {  return thefnum;  }
 
 
-void StepData_PDescr::Check(const StepData_Field& afild,
+void StepData_PDescr::Check(const StepData_Field& /*afild*/,
                             Handle(Interface_Check)& /*ach*/) const
 {
 //  pour l instant ...

@@ -47,8 +47,11 @@ namespace
 };
 
 /*----------------------------------------------------------------------*/
-
+#if (defined(_WIN32) || defined(__WIN32__)) || (defined(__APPLE__) && !defined(MACOSX_USE_GLX))
+OpenGl_Display::OpenGl_Display (const Handle(Aspect_DisplayConnection)& )
+#else
 OpenGl_Display::OpenGl_Display (const Handle(Aspect_DisplayConnection)& theDisplayConnection)
+#endif
 : myDisplay(NULL),
   myFacilities(myDefaultFacilities),
   myDBuffer(Standard_True),

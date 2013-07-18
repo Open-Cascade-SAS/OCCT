@@ -523,7 +523,7 @@ static Standard_Integer tricheck (Draw_Interpretor& di, int n, const char ** a)
 //function : mpparallel
 //purpose  :
 //=======================================================================
-static int mpparallel (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static int mpparallel (Draw_Interpretor& /*di*/, Standard_Integer argc, const char** argv)
 {
   if (argc == 2)
   {

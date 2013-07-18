@@ -413,21 +413,8 @@ void StepData_StepWriter::NewLine (const Standard_Boolean evenempty)
 //purpose  : 
 //=======================================================================
 
-void StepData_StepWriter::JoinLast (const Standard_Boolean newline)
+void StepData_StepWriter::JoinLast (const Standard_Boolean)
 {
-/*
-  Handle(TCollection_HAsciiString) lst = thefile->Last();
-  Standard_Integer lng = lst->Length();
-  if (thecurr.Length() == 0) return;
-  if (lng + thecurr.Length()  >  StepLong) return;
-  if (lst->Value(1) == '#' || lst->Search(";") > 0) return;
-  lst->AssignCat(thecurr.Moved());
-  if (!newline) {
-    thecurr.Add (lst->ToCString(),lst->Length());
-    thefile->Remove(thefile->Length());
-    thecurr.SetInitial(0);    .. inclus dans lst ...
-  }
-*/
   thecurr.SetKeep();
 }
 
@@ -653,7 +640,7 @@ void StepData_StepWriter::SendField(const StepData_Field& fild,
 //=======================================================================
 
 void StepData_StepWriter::SendSelect(const Handle(StepData_SelectMember)& sm,
-                                     const Handle(StepData_PDescr)& descr)
+                                     const Handle(StepData_PDescr)& /*descr*/)
 {
   //    Cas du SelectMember. Traiter le Select puis la valeur
   //    NB : traitement actuel non recursif (pas de SELNAME(SELNAME(..)) )

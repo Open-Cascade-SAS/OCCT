@@ -327,7 +327,7 @@ Standard_Boolean GeomFill_DiscreteTrihedron::D2(const Standard_Real Param,
 //purpose  : 
 //=======================================================================
 
-Standard_Integer GeomFill_DiscreteTrihedron::NbIntervals(const GeomAbs_Shape S) const
+Standard_Integer GeomFill_DiscreteTrihedron::NbIntervals(const GeomAbs_Shape) const
 {
   return (myTrimmed->NbIntervals(GeomAbs_CN));
 }
@@ -338,7 +338,7 @@ Standard_Integer GeomFill_DiscreteTrihedron::NbIntervals(const GeomAbs_Shape S) 
 //=======================================================================
 
 void GeomFill_DiscreteTrihedron::Intervals(TColStd_Array1OfReal& T,
-                                           const GeomAbs_Shape S) const
+                                           const GeomAbs_Shape) const
 {
   myTrimmed->Intervals(T, GeomAbs_CN);
 }

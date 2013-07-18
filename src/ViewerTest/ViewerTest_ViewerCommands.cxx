@@ -3634,7 +3634,7 @@ static int VOverlayText (Draw_Interpretor& di, Standard_Integer argc, const char
 //purpose  :
 //==============================================================================
 
-static int VGrid (Draw_Interpretor& theDI,
+static int VGrid (Draw_Interpretor& /*theDI*/,
                   Standard_Integer  theArgNb,
                   const char**      theArgVec)
 {
@@ -3790,7 +3790,7 @@ static int VFps (Draw_Interpretor& theDI,
 //purpose  :
 //==============================================================================
 
-static int VVbo (Draw_Interpretor& theDI,
+static int VVbo (Draw_Interpretor& /*theDI*/,
                  Standard_Integer  theArgNb,
                  const char**      theArgVec)
 {
@@ -4622,7 +4622,7 @@ void OCC_TextureEnv::SetTextureParameters(const Standard_Boolean theRepeatFlag,
   myParams->SetRotation   (theAngle);
 }
 
-static int VTextureEnv (Draw_Interpretor& theDI, Standard_Integer theArgNb, const char** theArgVec)
+static int VTextureEnv (Draw_Interpretor& /*theDI*/, Standard_Integer theArgNb, const char** theArgVec)
 {
   // get the active view
   Handle(V3d_View) aView = ViewerTest::CurrentView();

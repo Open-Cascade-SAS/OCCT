@@ -161,7 +161,7 @@ Handle(TDF_Attribute) TDataXtd_Shape::NewEmpty () const
 //purpose  : 
 //=======================================================================
 
-void TDataXtd_Shape::Restore(const Handle(TDF_Attribute)& with) 
+void TDataXtd_Shape::Restore(const Handle(TDF_Attribute)& ) 
 {  
 }
 
@@ -170,8 +170,8 @@ void TDataXtd_Shape::Restore(const Handle(TDF_Attribute)& with)
 //purpose  : 
 //=======================================================================
 
-void TDataXtd_Shape::Paste (const Handle(TDF_Attribute)& into,
-			   const Handle(TDF_RelocationTable)& RT) const
+void TDataXtd_Shape::Paste (const Handle(TDF_Attribute)&,
+			   const Handle(TDF_RelocationTable)&) const
 {  
 }
 
@@ -180,7 +180,7 @@ void TDataXtd_Shape::Paste (const Handle(TDF_Attribute)& into,
 //purpose  : 
 //=======================================================================
 
-void TDataXtd_Shape::References (const Handle(TDF_DataSet)& DS) const
+void TDataXtd_Shape::References (const Handle(TDF_DataSet)&) const
 {  
 }
  

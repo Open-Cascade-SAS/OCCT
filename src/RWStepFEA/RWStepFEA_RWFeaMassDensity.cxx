@@ -81,11 +81,9 @@ void RWStepFEA_RWFeaMassDensity::WriteStep (StepData_StepWriter& SW,
 //purpose  : 
 //=======================================================================
 
-void RWStepFEA_RWFeaMassDensity::Share (const Handle(StepFEA_FeaMassDensity) &ent,
-                                        Interface_EntityIterator& iter) const
+void RWStepFEA_RWFeaMassDensity::Share (const Handle(StepFEA_FeaMassDensity) &,
+                                        Interface_EntityIterator&) const
 {
-
   // Inherited fields of RepresentationItem
-
   // Own fields of FeaMassDensity
 }

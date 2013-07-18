@@ -1453,7 +1453,7 @@ void  BRepMesh_Delaun::AddVertices( BRepMesh_Array1OfVertexOfDelaun& theVertices
 //function : UseEdge
 //purpose  : Modify mesh to use the edge. Return True if done
 //=======================================================================
-Standard_Boolean BRepMesh_Delaun::UseEdge( const Standard_Integer theIndex )
+Standard_Boolean BRepMesh_Delaun::UseEdge( const Standard_Integer /*theIndex*/ )
 {
   /*
   const BRepMesh_PairOfIndex& aPair = myMeshData->ElemConnectedTo( theIndex );

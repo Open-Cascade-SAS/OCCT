@@ -31,7 +31,7 @@
 
 STEPSelections_SelectAssembly::STEPSelections_SelectAssembly():IFSelect_SelectExplore (-1){ }
 
-Standard_Boolean STEPSelections_SelectAssembly::Explore(const Standard_Integer level,
+Standard_Boolean STEPSelections_SelectAssembly::Explore(const Standard_Integer /*level*/,
 						       const Handle(Standard_Transient)& start,
 						       const Interface_Graph& G,
 						       Interface_EntityIterator& explored) const

@@ -25,5 +25,5 @@ StepGeom_TrimmingMember::StepGeom_TrimmingMember  ()    {  }
     Standard_CString  StepGeom_TrimmingMember::Name () const
       {  return "PARAMETER_VALUE";  }
 
-    Standard_Boolean  StepGeom_TrimmingMember::SetName (const Standard_CString name)
+    Standard_Boolean  StepGeom_TrimmingMember::SetName (const Standard_CString /*name*/)
       {  return Standard_True;  }

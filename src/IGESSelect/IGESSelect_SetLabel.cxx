@@ -25,10 +25,9 @@ IGESSelect_SetLabel::IGESSelect_SetLabel
     : IGESSelect_ModelModifier (Standard_False) ,
       themode (mode) , theforce (enforce)    {  }
 
-    void  IGESSelect_SetLabel::Performing
-  (IFSelect_ContextModif& ctx,
-   const Handle(IGESData_IGESModel)& target,
-   Interface_CopyTool& TC) const
+    void  IGESSelect_SetLabel::Performing(IFSelect_ContextModif& ctx,
+                                          const Handle(IGESData_IGESModel)& target,
+                                          Interface_CopyTool& /*TC*/) const
 {
   Handle(TCollection_HAsciiString) lab;
   for (ctx.Start(); ctx.More(); ctx.Next()) {

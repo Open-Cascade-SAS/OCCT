@@ -808,7 +808,7 @@ static Standard_Integer simulsweep(Draw_Interpretor& di,
 //=======================================================================
 //  middlepath
 //=======================================================================
-static Standard_Integer middlepath(Draw_Interpretor& di,
+static Standard_Integer middlepath(Draw_Interpretor& /*di*/,
 				   Standard_Integer n, const char** a)
 {
   if (n < 5) return 1;

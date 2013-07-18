@@ -136,8 +136,8 @@ void RWStepElement_RWVolume3dElementDescriptor::WriteStep (StepData_StepWriter& 
 //purpose  : 
 //=======================================================================
 
-void RWStepElement_RWVolume3dElementDescriptor::Share (const Handle(StepElement_Volume3dElementDescriptor) &ent,
-                                                       Interface_EntityIterator& iter) const
+void RWStepElement_RWVolume3dElementDescriptor::Share (const Handle(StepElement_Volume3dElementDescriptor) &,
+                                                       Interface_EntityIterator&) const
 {
 
   // Inherited fields of ElementDescriptor

@@ -35,8 +35,9 @@ IGESSelect_SelectLevelNumber::IGESSelect_SelectLevelNumber ()    {  }
 
 
     Standard_Boolean  IGESSelect_SelectLevelNumber::Sort
-  (const Standard_Integer rank, const Handle(Standard_Transient)& ent,
-   const Handle(Interface_InterfaceModel)& model) const
+  (const Standard_Integer /*rank*/, 
+   const Handle(Standard_Transient)& ent,
+   const Handle(Interface_InterfaceModel)& /*model*/) const
 {
   DeclareAndCast(IGESData_IGESEntity,igesent,ent);
   if (igesent.IsNull()) return Standard_False;

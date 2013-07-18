@@ -96,10 +96,10 @@ Standard_EXPORT static Standard_Boolean IsSame (const Handle(Graphic3d_AspectLin
 //=========================================================================
 
 Standard_EXPORT static Standard_Boolean AddPolygon (const TopoDS_Edge&       theEdge,
-                                    Handle(Graphic3d_Group)& theGroup,
-                                    const Standard_Real      theDeflection,
-                                    const Handle (Prs3d_Drawer)& ,
-                                    TColgp_SequenceOfPnt&    thePoints)
+                                                    Handle(Graphic3d_Group)& ,
+                                                    const Standard_Real      theDeflection,
+                                                    const Handle (Prs3d_Drawer)& ,
+                                                    TColgp_SequenceOfPnt&    thePoints)
 {
   TopLoc_Location aLocation;
   Standard_Real aFirst, aLast;

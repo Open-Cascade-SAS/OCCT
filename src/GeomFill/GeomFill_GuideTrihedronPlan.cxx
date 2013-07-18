@@ -52,7 +52,7 @@
 #endif
 
 #if DEB
-static void TracePlan(const Handle(Geom_Surface)& Plan)
+static void TracePlan(const Handle(Geom_Surface)& /*Plan*/)
 {
   cout << "Pas d'intersection Guide/Plan" << endl;	
 #if DRAW

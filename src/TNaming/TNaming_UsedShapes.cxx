@@ -98,7 +98,7 @@ void TNaming_UsedShapes::BeforeRemoval()
 
 Standard_Boolean TNaming_UsedShapes::AfterUndo
 (const Handle(TDF_AttributeDelta)& anAttDelta,
- const Standard_Boolean forceIt)
+ const Standard_Boolean /*forceIt*/)
 {
   if (anAttDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnAddition))) {
     anAttDelta->Attribute()->BeforeRemoval();
@@ -132,7 +132,7 @@ Handle(TDF_DeltaOnRemoval) TNaming_UsedShapes::DeltaOnRemoval() const
 //purpose  : 
 //=======================================================================
 
-void TNaming_UsedShapes::Restore(const Handle(TDF_Attribute)& anAttribute) 
+void TNaming_UsedShapes::Restore(const Handle(TDF_Attribute)& /*anAttribute*/) 
 {
 }
 
@@ -151,8 +151,8 @@ Handle(TDF_Attribute) TNaming_UsedShapes::NewEmpty () const
 //purpose  : 
 //=======================================================================
 
-void  TNaming_UsedShapes::Paste(const Handle(TDF_Attribute)&       into,
-				const Handle(TDF_RelocationTable)& Tab) const
+void  TNaming_UsedShapes::Paste(const Handle(TDF_Attribute)&,
+				const Handle(TDF_RelocationTable)&) const
 { 
 }
 
@@ -184,6 +184,6 @@ Standard_OStream& TNaming_UsedShapes::Dump(Standard_OStream& anOS) const
 //purpose  : 
 //=======================================================================
 
-void TNaming_UsedShapes::References(const Handle(TDF_DataSet)& /*aDataSet*/) const
+void TNaming_UsedShapes::References(const Handle(TDF_DataSet)& ) const
 {
 }

@@ -127,22 +127,42 @@ void TopOpeBRepBuild_ShellFaceSet::DumpSS()
 //function : SName
 //purpose  : 
 //=======================================================================
-TCollection_AsciiString TopOpeBRepBuild_ShellFaceSet::SName(const TopoDS_Shape& S,const TCollection_AsciiString& sb,const TCollection_AsciiString& sa) const
+#ifdef DRAW
+TCollection_AsciiString TopOpeBRepBuild_ShellFaceSet::SName(const TopoDS_Shape& S,
+                                                            const TCollection_AsciiString& sb,
+                                                            const TCollection_AsciiString& sa) const
 {
   TCollection_AsciiString str=sb;
-#ifdef DRAW
+
   str=str+TopOpeBRepBuild_ShapeSet::SName(S);
   str=str+sa;
   DBRep::Set(str.ToCString(),S);
-#endif
+
   return str;
 }
+#else
+TCollection_AsciiString TopOpeBRepBuild_ShellFaceSet::SName(const TopoDS_Shape&,
+                                                            const TCollection_AsciiString& sb,
+                                                            const TCollection_AsciiString&) const
+{
+  TCollection_AsciiString str=sb;
+  return str;
+}
+#endif
 
 //=======================================================================
 //function : SNameori
 //purpose  : 
 //=======================================================================
-TCollection_AsciiString TopOpeBRepBuild_ShellFaceSet::SNameori(const TopoDS_Shape& S,const TCollection_AsciiString& sb,const TCollection_AsciiString& sa) const
+#ifdef DRAW
+TCollection_AsciiString TopOpeBRepBuild_ShellFaceSet::SNameori(const TopoDS_Shape& S,
+                                                               const TCollection_AsciiString& sb,
+                                                               const TCollection_AsciiString& sa) const
+#else
+TCollection_AsciiString TopOpeBRepBuild_ShellFaceSet::SNameori(const TopoDS_Shape&,
+                                                               const TCollection_AsciiString& sb,
+                                                               const TCollection_AsciiString&) const
+#endif
 {
   TCollection_AsciiString str=sb;
 #ifdef DRAW
@@ -159,20 +179,34 @@ TCollection_AsciiString TopOpeBRepBuild_ShellFaceSet::SNameori(const TopoDS_Shap
 //function : SName
 //purpose  : 
 //=======================================================================
-TCollection_AsciiString TopOpeBRepBuild_ShellFaceSet::SName(const TopTools_ListOfShape& L,const TCollection_AsciiString& sb,const TCollection_AsciiString& sa) const
+#ifdef DRAW
+TCollection_AsciiString TopOpeBRepBuild_ShellFaceSet::SName(const TopTools_ListOfShape& L,
+                                                            const TCollection_AsciiString& sb,
+                                                            const TCollection_AsciiString& sa) const
 {
   TCollection_AsciiString str;
-#ifdef DRAW
+
   for (TopTools_ListIteratorOfListOfShape it(L);it.More();it.Next()) str=str+sb+SName(it.Value())+sa+" ";
-#endif
+
   return str;
 }
+#else
+TCollection_AsciiString TopOpeBRepBuild_ShellFaceSet::SName(const TopTools_ListOfShape&,
+                                                            const TCollection_AsciiString&,
+                                                            const TCollection_AsciiString&) const
+{
+  TCollection_AsciiString str;
+  return str;
+}
+#endif
 
 //=======================================================================
 //function : SNameori
 //purpose  : 
 //=======================================================================
-TCollection_AsciiString TopOpeBRepBuild_ShellFaceSet::SNameori(const TopTools_ListOfShape& L,const TCollection_AsciiString& sb,const TCollection_AsciiString& sa) const
+TCollection_AsciiString TopOpeBRepBuild_ShellFaceSet::SNameori(const TopTools_ListOfShape& /*L*/,
+                                                               const TCollection_AsciiString& /*sb*/,
+                                                               const TCollection_AsciiString& /*sa*/) const
 {
   TCollection_AsciiString str;
 #ifdef DRAW

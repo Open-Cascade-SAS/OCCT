@@ -87,9 +87,8 @@ void RWStepBasic_RWIdentificationRole::WriteStep (StepData_StepWriter& SW,
 //purpose  : 
 //=======================================================================
 
-void RWStepBasic_RWIdentificationRole::Share (const Handle(StepBasic_IdentificationRole) &ent,
-                                              Interface_EntityIterator& iter) const
+void RWStepBasic_RWIdentificationRole::Share (const Handle(StepBasic_IdentificationRole) &,
+                                              Interface_EntityIterator&) const
 {
-
   // Own fields of IdentificationRole
 }

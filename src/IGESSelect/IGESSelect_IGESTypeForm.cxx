@@ -43,7 +43,7 @@ static char typeval [30];    // une seule reponse a la fois ...
 
     Standard_CString  IGESSelect_IGESTypeForm::Value
   (const Handle(Standard_Transient)& ent,
-   const Handle(Interface_InterfaceModel)& model) const
+   const Handle(Interface_InterfaceModel)& /*model*/) const
 {
   DeclareAndCast(IGESData_IGESEntity,igesent,ent);
   if (igesent.IsNull()) return &falsetype[0];

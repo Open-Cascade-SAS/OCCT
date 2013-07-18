@@ -72,7 +72,7 @@ TestTopOpeDraw_DrawableSUR::TestTopOpeDraw_DrawableSUR
  const Standard_CString Text,const Draw_Color& TextColor,
  const Standard_Integer Nu, const Standard_Integer Nv,
  const Standard_Integer Disc, const Standard_Real Defl, const Standard_Integer DMode,
- const Standard_Boolean DispOrigin) :
+ const Standard_Boolean /*DispOrigin*/) :
  DrawTrSurf_Surface(S,Nu,Nv,IsoColor,BoundColor,Disc,Defl,DMode)
 {
   myText = new Draw_Text3D(Pnt(),Text,TextColor);

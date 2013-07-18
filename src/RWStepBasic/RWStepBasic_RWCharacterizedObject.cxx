@@ -87,9 +87,8 @@ void RWStepBasic_RWCharacterizedObject::WriteStep (StepData_StepWriter& SW,
 //purpose  : 
 //=======================================================================
 
-void RWStepBasic_RWCharacterizedObject::Share (const Handle(StepBasic_CharacterizedObject) &ent,
-                                               Interface_EntityIterator& iter) const
+void RWStepBasic_RWCharacterizedObject::Share (const Handle(StepBasic_CharacterizedObject) &,
+                                               Interface_EntityIterator&) const
 {
-
   // Own fields of CharacterizedObject
 }

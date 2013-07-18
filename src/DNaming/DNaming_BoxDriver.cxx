@@ -46,14 +46,14 @@ DNaming_BoxDriver::DNaming_BoxDriver()
 //function : Validate
 //purpose  : Validates labels of a function in <log>.
 //=======================================================================
-void DNaming_BoxDriver::Validate(TFunction_Logbook& theLog) const
+void DNaming_BoxDriver::Validate(TFunction_Logbook&) const
 {}
 
 //=======================================================================
 //function : MustExecute
 //purpose  : Analyse in <log> if the loaded function must be executed
 //=======================================================================
-Standard_Boolean DNaming_BoxDriver::MustExecute(const TFunction_Logbook& theLog) const
+Standard_Boolean DNaming_BoxDriver::MustExecute(const TFunction_Logbook&) const
 {
   return Standard_True;
 }

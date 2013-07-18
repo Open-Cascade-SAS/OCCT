@@ -77,9 +77,8 @@ void RWStepElement_RWCurveElementSectionDefinition::WriteStep (StepData_StepWrit
 //purpose  : 
 //=======================================================================
 
-void RWStepElement_RWCurveElementSectionDefinition::Share (const Handle(StepElement_CurveElementSectionDefinition) &ent,
-                                                           Interface_EntityIterator& iter) const
+void RWStepElement_RWCurveElementSectionDefinition::Share (const Handle(StepElement_CurveElementSectionDefinition)&,
+                                                           Interface_EntityIterator&) const
 {
-
   // Own fields of CurveElementSectionDefinition
 }

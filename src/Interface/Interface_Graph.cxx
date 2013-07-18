@@ -39,7 +39,7 @@
 
 Interface_Graph::Interface_Graph
 (const Handle(Interface_InterfaceModel)& amodel,
- const Interface_GeneralLib& lib,
+ const Interface_GeneralLib& /*lib*/,
  Standard_Boolean theModeStat)
  : themodel   (amodel), thepresents ("") 
 {
@@ -50,7 +50,7 @@ Interface_Graph::Interface_Graph
 
 Interface_Graph::Interface_Graph
 (const Handle(Interface_InterfaceModel)& amodel,
- const Handle(Interface_Protocol)& protocol,
+ const Handle(Interface_Protocol)& /*protocol*/,
  Standard_Boolean theModeStat)
  : themodel   (amodel) , thepresents ("")    
 
@@ -62,7 +62,7 @@ Interface_Graph::Interface_Graph
 
 Interface_Graph::Interface_Graph
 (const Handle(Interface_InterfaceModel)& amodel,
- const Handle(Interface_GTool)& gtool,
+ const Handle(Interface_GTool)& /*gtool*/,
  Standard_Boolean theModeStat)
  : themodel   (amodel) , thepresents ("") 
 {

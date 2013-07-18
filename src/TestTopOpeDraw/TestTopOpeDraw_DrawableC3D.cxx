@@ -85,7 +85,7 @@ gp_Pnt TestTopOpeDraw_DrawableC3D::Pnt() const
 //function : ChangePnt
 //purpose  : 
 //=======================================================================
-void TestTopOpeDraw_DrawableC3D::ChangePnt(const gp_Pnt& P)
+void TestTopOpeDraw_DrawableC3D::ChangePnt(const gp_Pnt&)
 {
   myText3D = new Draw_Text3D(Pnt(),myText,myTextColor);
 }

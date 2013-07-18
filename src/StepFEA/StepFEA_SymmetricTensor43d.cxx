@@ -37,7 +37,7 @@ StepFEA_SymmetricTensor43d::StepFEA_SymmetricTensor43d ()
 //purpose  : 
 //=======================================================================
 
-Standard_Integer StepFEA_SymmetricTensor43d::CaseNum (const Handle(Standard_Transient)& ent) const
+Standard_Integer StepFEA_SymmetricTensor43d::CaseNum (const Handle(Standard_Transient)& /*ent*/) const
 {
   return 0;
 }

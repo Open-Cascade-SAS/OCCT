@@ -70,7 +70,7 @@ Handle(PDF_Attribute) MDataStd_ReferenceArrayStorageDriver::NewEmpty() const
 //=======================================================================
 void MDataStd_ReferenceArrayStorageDriver::Paste(const Handle(TDF_Attribute)& Source,
 						 const Handle(PDF_Attribute)& Target,
-						 const Handle(MDF_SRelocationTable)& RelocTable) const
+						 const Handle(MDF_SRelocationTable)& /*RelocTable*/) const
 {
   Handle(TDataStd_ReferenceArray) S = Handle(TDataStd_ReferenceArray)::DownCast (Source);
   Handle(PDataStd_ReferenceArray) T = Handle(PDataStd_ReferenceArray)::DownCast (Target);

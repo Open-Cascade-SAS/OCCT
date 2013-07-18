@@ -204,8 +204,8 @@ void OpenGl_GraphicDriver::EndAddMode()
 // purpose  :
 // =======================================================================
 Standard_Boolean OpenGl_GraphicDriver::BeginImmediatMode (const Graphic3d_CView& theCView,
-                                                          const Aspect_CLayer2d& theCUnderLayer,
-                                                          const Aspect_CLayer2d& theCOverLayer,
+                                                          const Aspect_CLayer2d& /*theCUnderLayer*/,
+                                                          const Aspect_CLayer2d& /*theCOverLayer*/,
                                                           const Standard_Boolean theDoubleBuffer,
                                                           const Standard_Boolean theRetainMode)
 {

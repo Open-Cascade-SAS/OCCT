@@ -127,7 +127,7 @@ GeomAbs_Shape BiTgte_CurveOnEdge::Continuity() const
 //purpose  : 
 //=======================================================================
 
-Standard_Integer BiTgte_CurveOnEdge::NbIntervals(const GeomAbs_Shape S) const
+Standard_Integer BiTgte_CurveOnEdge::NbIntervals(const GeomAbs_Shape) const
 {
   Standard_NotImplemented::Raise("BiTgte_CurveOnEdge");
   return 0;
@@ -139,8 +139,8 @@ Standard_Integer BiTgte_CurveOnEdge::NbIntervals(const GeomAbs_Shape S) const
 //purpose  : 
 //=======================================================================
 
-void BiTgte_CurveOnEdge::Intervals(TColStd_Array1OfReal& T,
-				   const GeomAbs_Shape S) const
+void BiTgte_CurveOnEdge::Intervals(TColStd_Array1OfReal&,
+                                   const GeomAbs_Shape) const
 {
   Standard_NotImplemented::Raise("BiTgte_CurveOnEdge");
 }
@@ -151,9 +151,9 @@ void BiTgte_CurveOnEdge::Intervals(TColStd_Array1OfReal& T,
 //purpose  : 
 //=======================================================================
 
-Handle(Adaptor3d_HCurve) BiTgte_CurveOnEdge::Trim(const Standard_Real First,
-						const Standard_Real Last,
-						const Standard_Real Tol) const
+Handle(Adaptor3d_HCurve) BiTgte_CurveOnEdge::Trim(const Standard_Real,
+                                                  const Standard_Real,
+                                                  const Standard_Real) const
 {
   Standard_NotImplemented::Raise("BiTgte_CurveOnEdge");
   Handle(BiTgte_HCurveOnEdge) HC;
@@ -229,7 +229,7 @@ void BiTgte_CurveOnEdge::D0(const Standard_Real U,gp_Pnt& P) const
 //purpose  : 
 //=======================================================================
 
-void BiTgte_CurveOnEdge::D1(const Standard_Real U,gp_Pnt& P,gp_Vec& V) const
+void BiTgte_CurveOnEdge::D1(const Standard_Real,gp_Pnt& ,gp_Vec& ) const
 {
   Standard_NotImplemented::Raise("BiTgte_CurveOnEdge");
 }
@@ -240,8 +240,8 @@ void BiTgte_CurveOnEdge::D1(const Standard_Real U,gp_Pnt& P,gp_Vec& V) const
 //purpose  : 
 //=======================================================================
 
-void BiTgte_CurveOnEdge::D2(const Standard_Real U,gp_Pnt& P,
-			    gp_Vec& V1,gp_Vec& V2) const
+void BiTgte_CurveOnEdge::D2(const Standard_Real ,gp_Pnt&,
+                            gp_Vec& ,gp_Vec&) const
 {
   Standard_NotImplemented::Raise("BiTgte_CurveOnEdge");
 }
@@ -252,8 +252,8 @@ void BiTgte_CurveOnEdge::D2(const Standard_Real U,gp_Pnt& P,
 //purpose  : 
 //=======================================================================
 
-void BiTgte_CurveOnEdge::D3(const Standard_Real U,gp_Pnt& P,
-			    gp_Vec& V1,gp_Vec& V2,gp_Vec& V3) const
+void BiTgte_CurveOnEdge::D3(const Standard_Real ,gp_Pnt&,
+                            gp_Vec& ,gp_Vec& ,gp_Vec& ) const
 {
   Standard_NotImplemented::Raise("BiTgte_CurveOnEdge");
 }
@@ -264,8 +264,8 @@ void BiTgte_CurveOnEdge::D3(const Standard_Real U,gp_Pnt& P,
 //purpose  : 
 //=======================================================================
 
-gp_Vec BiTgte_CurveOnEdge::DN(const Standard_Real U,
-			      const Standard_Integer N) const
+gp_Vec BiTgte_CurveOnEdge::DN(const Standard_Real,
+                              const Standard_Integer) const
 {
   Standard_NotImplemented::Raise("BiTgte_CurveOnEdge");
   return gp_Vec();
@@ -277,7 +277,7 @@ gp_Vec BiTgte_CurveOnEdge::DN(const Standard_Real U,
 //purpose  : 
 //=======================================================================
 
-Standard_Real BiTgte_CurveOnEdge::Resolution(const Standard_Real R3d) const
+Standard_Real BiTgte_CurveOnEdge::Resolution(const Standard_Real) const
 {
   Standard_NotImplemented::Raise("BiTgte_CurveOnEdge");
   return 0.;

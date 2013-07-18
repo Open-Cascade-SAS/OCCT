@@ -100,7 +100,7 @@ public:
         myIObj->Render(theWorkspace);
     }
 
-    virtual void Release (const Handle(OpenGl_Context)& theGlCtx)
+    virtual void Release (const Handle(OpenGl_Context)&)
     {
       //
     }
@@ -129,9 +129,9 @@ private:
 IMPLEMENT_STANDARD_HANDLE(VUserDrawObj, AIS_InteractiveObject)
 IMPLEMENT_STANDARD_RTTIEXT(VUserDrawObj, AIS_InteractiveObject)
 
-void VUserDrawObj::Compute(const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
+void VUserDrawObj::Compute(const Handle(PrsMgr_PresentationManager3d)& /*thePresentationManager*/,
                            const Handle(Prs3d_Presentation)& thePresentation,
-                           const Standard_Integer theMode)
+                           const Standard_Integer /*theMode*/)
 {
   thePresentation->Clear();
 
@@ -140,7 +140,7 @@ void VUserDrawObj::Compute(const Handle(PrsMgr_PresentationManager3d)& thePresen
 }
 
 void VUserDrawObj::ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
-                                     const Standard_Integer theMode)
+                                     const Standard_Integer /*theMode*/)
 {
   Handle(SelectMgr_EntityOwner) anEntityOwner = new SelectMgr_EntityOwner(this);
   Handle(TColgp_HArray1OfPnt) aPnts = new TColgp_HArray1OfPnt(1, 5);
@@ -246,8 +246,8 @@ static Standard_Integer VUserDraw (Draw_Interpretor& di,
 //==============================================================================
 
 static int VFeedback (Draw_Interpretor& theDI,
-                      Standard_Integer  theArgNb,
-                      const char**      theArgVec)
+                      Standard_Integer  /*theArgNb*/,
+                      const char**      /*theArgVec*/)
 {
   // get the active view
   Handle(V3d_View) aView = ViewerTest::CurrentView();
@@ -397,7 +397,7 @@ static int VFeedback (Draw_Interpretor& theDI,
 //purpose  :
 //==============================================================================
 
-static int VImmediateFront (Draw_Interpretor& theDI,
+static int VImmediateFront (Draw_Interpretor& /*theDI*/,
                             Standard_Integer  theArgNb,
                             const char**      theArgVec)
 {

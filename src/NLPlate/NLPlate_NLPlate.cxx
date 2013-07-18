@@ -99,7 +99,7 @@ NLPlate_NLPlate::NLPlate_NLPlate(const Handle(Geom_Surface)& InitialSurface) :
 //function : IncrementalSolve
 //purpose  : 
 //=======================================================================
- void NLPlate_NLPlate::IncrementalSolve(const Standard_Integer ord, const Standard_Integer InitialConsraintOrder,
+ void NLPlate_NLPlate::IncrementalSolve(const Standard_Integer ord, const Standard_Integer /*InitialConsraintOrder*/,
 			     const Standard_Integer NbIncrements, const Standard_Boolean UVSliding) 
 {
   Standard_Integer maxOrder = MaxActiveConstraintOrder();

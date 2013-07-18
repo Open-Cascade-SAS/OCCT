@@ -29,7 +29,7 @@ IGESData_Protocol::IGESData_Protocol ()    {  }
     Standard_Integer IGESData_Protocol::NbResources () const  { return 0; }
 
     Handle(Interface_Protocol) IGESData_Protocol::Resource
-  (const Standard_Integer num) const
+  (const Standard_Integer /*num*/) const
       {  Handle(Interface_Protocol) nulpro;  return nulpro;  }
 
 

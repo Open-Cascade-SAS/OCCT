@@ -29,7 +29,7 @@
 
 STEPSelections_SelectFaces::STEPSelections_SelectFaces():IFSelect_SelectExplore (-1){ }
 
-Standard_Boolean STEPSelections_SelectFaces::Explore(const Standard_Integer level,
+Standard_Boolean STEPSelections_SelectFaces::Explore(const Standard_Integer /*level*/,
 						    const Handle(Standard_Transient)& start,
 						    const Interface_Graph& G,
 						    Interface_EntityIterator& explored) const

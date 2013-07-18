@@ -90,7 +90,7 @@ gp_Pnt2d TestTopOpeDraw_DrawableC2D::Pnt2d() const
 //purpose  : 
 //=======================================================================
 
-void TestTopOpeDraw_DrawableC2D::ChangePnt2d(const gp_Pnt2d& P)
+void TestTopOpeDraw_DrawableC2D::ChangePnt2d(const gp_Pnt2d&)
 {
   myText2D = new Draw_Text2D(Pnt2d(),myText,myTextColor);
 }

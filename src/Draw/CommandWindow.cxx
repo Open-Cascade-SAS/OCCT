@@ -57,7 +57,7 @@
 /*--------------------------------------------------------*\
 |  CREATE COMMAND WINDOW PROCEDURE
 \*--------------------------------------------------------*/
-HWND CreateCommandWindow(HWND hWnd, int nitem)
+HWND CreateCommandWindow(HWND hWnd, int /*nitem*/)
 {
   HINSTANCE       hInstance;
   

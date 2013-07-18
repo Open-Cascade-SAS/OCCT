@@ -114,10 +114,9 @@ static Standard_Boolean  Edit
 }
 
 
-    void  IGESSelect_RemoveCurves::Performing
-  (IFSelect_ContextModif& ctx,
-   const Handle(IGESData_IGESModel)& target,
-   Interface_CopyTool& TC) const
+void  IGESSelect_RemoveCurves::Performing (IFSelect_ContextModif& ctx,
+                                           const Handle(IGESData_IGESModel)& /*target*/,
+                                           Interface_CopyTool& /*TC*/) const
 {
   for (ctx.Start(); ctx.More(); ctx.Next()) {
     if (Edit (ctx.ValueResult(),theUV) ) ctx.Trace ();

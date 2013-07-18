@@ -139,7 +139,7 @@ Standard_EXPORT Standard_Boolean TopOpeBRep_GetcontextNEWKP() {
 
 static Standard_Boolean TopOpeBRep_contextTOL0 = Standard_False;
 Standard_EXPORT void TopOpeBRep_SetcontextTOL0(const Standard_Boolean b) { TopOpeBRep_contextTOL0 = b; }
-Standard_EXPORT Standard_Boolean TopOpeBRep_GetcontextTOL0(char* str) { 
+Standard_EXPORT Standard_Boolean TopOpeBRep_GetcontextTOL0(char* /*str*/) { 
   if (TopOpeBRep_contextTOL0) {
   }
   return TopOpeBRep_contextTOL0; 

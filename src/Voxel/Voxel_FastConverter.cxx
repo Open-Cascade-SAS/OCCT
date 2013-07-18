@@ -437,7 +437,7 @@ Standard_Boolean Voxel_FastConverter::ConvertUsingSAT(Standard_Integer&      pro
 }
 
 Standard_Boolean Voxel_FastConverter::FillInVolume(const Standard_Byte inner,
-						   const Standard_Integer ithread)
+						   const Standard_Integer /*ithread*/)
 {
   Voxel_DS* ds = (Voxel_DS*) myVoxels;
   Standard_Integer ix, iy, iz, nbx = ds->GetNbX(), nby = ds->GetNbY(), nbz = ds->GetNbZ();
@@ -532,7 +532,7 @@ Standard_Boolean Voxel_FastConverter::FillInVolume(const Standard_Byte inner,
   return Standard_True;
 }
 
-Standard_Boolean Voxel_FastConverter::FillInVolume(const Standard_Byte inner, const TopoDS_Shape & shape, const Standard_Integer ithread)
+Standard_Boolean Voxel_FastConverter::FillInVolume(const Standard_Byte inner, const TopoDS_Shape & shape, const Standard_Integer /*ithread*/)
 {
   Voxel_DS* ds = (Voxel_DS*) myVoxels;
   Standard_Integer ix, iy, iz, nbx = ds->GetNbX(), nby = ds->GetNbY(), nbz = ds->GetNbZ();

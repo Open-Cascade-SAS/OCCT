@@ -171,7 +171,7 @@ void  HLRTopoBRep_DSFiller::Insert (const TopoDS_Shape& S,
 //purpose  : private, insert the outlines of a face
 //=======================================================================
 
-void  HLRTopoBRep_DSFiller::InsertFace (const Standard_Integer FI,
+void  HLRTopoBRep_DSFiller::InsertFace (const Standard_Integer /*FI*/,
 					const TopoDS_Face& F,
 					Contap_Contour& FO,
 					HLRTopoBRep_Data& DS,

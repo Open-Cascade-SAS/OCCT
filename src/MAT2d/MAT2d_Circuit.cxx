@@ -843,7 +843,7 @@ static Standard_Boolean IsSharpCorner (const Handle(Geom2d_Geometry)& Geom1,
 //            Indice = 4 vert.
 //==========================================================================
 void MAT2d_DrawCurve(const Handle(Geom2d_Curve)& aCurve,
-		     const Standard_Integer      Indice)
+		     const Standard_Integer      /*Indice*/)
 {  
   Handle(Standard_Type)      type = aCurve->DynamicType();
   Handle(Geom2d_Curve)       curve,CurveDraw;

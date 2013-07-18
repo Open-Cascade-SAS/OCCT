@@ -51,14 +51,14 @@ TCollection_AsciiString  STEPEdit_EditContext::Label () const
 {  return TCollection_AsciiString ("STEP : Product Definition Context");  }
 
 Standard_Boolean  STEPEdit_EditContext::Recognize
-(const Handle(IFSelect_EditForm)& form) const
+(const Handle(IFSelect_EditForm)& /*form*/) const
 {
 // il faut 17 parametres
   return Standard_True;
 }
 
 Handle(TCollection_HAsciiString)  STEPEdit_EditContext::StringValue
-(const Handle(IFSelect_EditForm)& form, const Standard_Integer num) const
+(const Handle(IFSelect_EditForm)& /*form*/, const Standard_Integer num) const
 {
   Handle(TCollection_HAsciiString) str;
   switch (num) {
@@ -75,7 +75,7 @@ Handle(TCollection_HAsciiString)  STEPEdit_EditContext::StringValue
 
 Standard_Boolean  STEPEdit_EditContext::Load
 (const Handle(IFSelect_EditForm)& form,
- const Handle(Standard_Transient)& ent,
+ const Handle(Standard_Transient)& /*ent*/,
  const Handle(Interface_InterfaceModel)& model) const
 {
   Handle(StepData_StepModel) modl = 
@@ -101,7 +101,7 @@ Standard_Boolean  STEPEdit_EditContext::Load
 
 Standard_Boolean  STEPEdit_EditContext::Apply
 (const Handle(IFSelect_EditForm)& form,
- const Handle(Standard_Transient)& ent,
+ const Handle(Standard_Transient)& /*ent*/,
  const Handle(Interface_InterfaceModel)& model) const
 {
   Handle(StepData_StepModel) modl = 

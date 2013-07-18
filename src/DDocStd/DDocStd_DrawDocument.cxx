@@ -29,7 +29,7 @@
 //purpose  : 
 //=======================================================================
 
-Handle(DDocStd_DrawDocument) DDocStd_DrawDocument::Find (const Handle(TDocStd_Document)& Doc) 
+Handle(DDocStd_DrawDocument) DDocStd_DrawDocument::Find (const Handle(TDocStd_Document)& /*Doc*/) 
 {
 Handle(DDocStd_DrawDocument)  adoc;
   return adoc;
@@ -63,7 +63,7 @@ Handle(TDocStd_Document) DDocStd_DrawDocument::GetDocument() const
 //purpose  : 
 //=======================================================================
 
-void DDocStd_DrawDocument::DrawOn(Draw_Display& dis) const
+void DDocStd_DrawDocument::DrawOn(Draw_Display& /*dis*/) const
 {
 }
 

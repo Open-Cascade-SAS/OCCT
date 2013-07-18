@@ -37,22 +37,26 @@ Standard_Integer  StepData_ReadWriteModule::CaseNum
   return CaseStep (stepdat->RecordType(num));
 }
 
-    Standard_Integer  StepData_ReadWriteModule::CaseStep
-  (const TColStd_SequenceOfAsciiString& types) const
-      {  return 0;  }        // par defaut
+Standard_Integer  StepData_ReadWriteModule::CaseStep (const TColStd_SequenceOfAsciiString&) const
+{  
+  return 0;
+}        // par defaut
 
-    Standard_Boolean  StepData_ReadWriteModule::IsComplex
-  (const Standard_Integer CN) const
-      {  return Standard_False;  }  // par defaut
+Standard_Boolean  StepData_ReadWriteModule::IsComplex (const Standard_Integer) const
+{
+    return Standard_False;  
+}  // par defaut
 
-    TCollection_AsciiString  StepData_ReadWriteModule::ShortType
-  (const Standard_Integer ) const
-      {  return TCollection_AsciiString("");  }  // par defaut vide
+TCollection_AsciiString  StepData_ReadWriteModule::ShortType (const Standard_Integer ) const
+{
+  return TCollection_AsciiString("");  
+}  // par defaut vide
 
-    Standard_Boolean  StepData_ReadWriteModule::ComplexType
-  (const Standard_Integer ,
-   TColStd_SequenceOfAsciiString& ) const
-      {  return Standard_False;  }
+Standard_Boolean  StepData_ReadWriteModule::ComplexType (const Standard_Integer ,
+                                                         TColStd_SequenceOfAsciiString& ) const
+{
+  return Standard_False; 
+}
 
 
 //=======================================================================

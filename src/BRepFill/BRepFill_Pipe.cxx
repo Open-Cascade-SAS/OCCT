@@ -115,7 +115,7 @@ BRepFill_Pipe::BRepFill_Pipe(const TopoDS_Wire&  Spine,
 
 void BRepFill_Pipe::Perform(const TopoDS_Wire&  Spine,
 			    const TopoDS_Shape& Profile,
-			    const Standard_Boolean KPart)
+			    const Standard_Boolean /*KPart*/)
 
 {
   mySections.Nullify();

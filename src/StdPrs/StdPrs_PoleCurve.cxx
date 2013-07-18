@@ -88,7 +88,7 @@ Standard_Boolean StdPrs_PoleCurve::Match(const Quantity_Length        X,
 					 const Quantity_Length        Z,
 					 const Quantity_Length        aDistance,
 					 const Adaptor3d_Curve&         aCurve,
-					 const Handle (Prs3d_Drawer)& aDrawer) 
+					 const Handle (Prs3d_Drawer)& /*aDrawer*/) 
 {
   GeomAbs_CurveType CType = aCurve.GetType();
   Standard_Integer i, Nb = 0;
@@ -125,7 +125,7 @@ Standard_Integer StdPrs_PoleCurve::Pick
 	      const Quantity_Length       Z,
 	      const Quantity_Length       aDistance,
 	      const Adaptor3d_Curve&        aCurve,
-	      const Handle(Prs3d_Drawer)& aDrawer) 
+	      const Handle(Prs3d_Drawer)& /*aDrawer*/) 
 {
   Standard_Real x, y, z, DistMin = RealLast();
   Standard_Integer num = 0, i, Nb = 0;

@@ -227,7 +227,7 @@ static void BoopReadInitFile(Draw_Interpretor& di, const char* filename)
   di.EvalFile(filename);
 }
 
-static Standard_Integer ttab(Draw_Interpretor& di, Standard_Integer narg, const char** /*a*/) {
+static Standard_Integer ttab(Draw_Interpretor& di, Standard_Integer /*narg*/, const char** /*a*/) {
   char s[2000]; strcpy(s,"");
   Sprintf(s,"%s%s",s,"proc addt {at args} {upvar $at x;set L \"\";addl L [join $args];");
   Sprintf(s,"%s%s",s,"foreach l $L {set x([array size x]) $l}};");

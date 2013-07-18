@@ -34,11 +34,7 @@ GccAna_Circ2d2TanOn::
    GccAna_Circ2d2TanOn (const GccEnt_QualifiedLin&  Qualified1 ,
                         const GccEnt_QualifiedLin&  Qualified2 ,
                         const gp_Circ2d&            OnCirc     ,
-                        const Standard_Real
-#ifdef DEB
-                                                    Tolerance
-#endif
-                       ):
+                        const Standard_Real                     ):
    cirsol(1,4)     ,
    qualifier1(1,4) ,
    qualifier2(1,4),

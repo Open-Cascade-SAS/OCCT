@@ -591,7 +591,7 @@ void TDataStd_TreeNode::AfterResume() {
 //=======================================================================
 
 Standard_Boolean TDataStd_TreeNode::BeforeUndo(const Handle(TDF_AttributeDelta)& anAttDelta,
-						const Standard_Boolean forceIt)
+						const Standard_Boolean /*forceIt*/)
 {
   if (anAttDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnAddition))) BeforeForget(); // Disconnect.
   return Standard_True;
@@ -603,7 +603,7 @@ Standard_Boolean TDataStd_TreeNode::BeforeUndo(const Handle(TDF_AttributeDelta)&
 //=======================================================================
 
 Standard_Boolean TDataStd_TreeNode::AfterUndo(const Handle(TDF_AttributeDelta)& anAttDelta,
-					      const Standard_Boolean forceIt)
+					      const Standard_Boolean /*forceIt*/)
 {
   if (anAttDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnRemoval))) AfterAddition(); // Reconnect.
   return Standard_True;

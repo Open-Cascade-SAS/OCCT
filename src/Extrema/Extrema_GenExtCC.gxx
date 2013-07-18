@@ -53,8 +53,8 @@ Extrema_GenExtCC::Extrema_GenExtCC (const Curve1& C1,
 			      const Standard_Real Vsup,
 			      const Standard_Integer NbU, 
 			      const Standard_Integer NbV,
-			      const Standard_Real TolU, 
-			      const Standard_Real TolV) : myF (C1,C2), myDone (Standard_False)
+			      const Standard_Real /*TolU*/, 
+			      const Standard_Real /*TolV*/) : myF (C1,C2), myDone (Standard_False)
 {
   SetCurveCache (1, new Cache (C1, Uinf, Usup, NbU, Standard_True));
   SetCurveCache (2, new Cache (C2, Vinf, Vsup, NbV, Standard_True));

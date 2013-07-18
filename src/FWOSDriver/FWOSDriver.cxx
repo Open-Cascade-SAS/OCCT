@@ -32,7 +32,7 @@
 
 PLUGIN(FWOSDriver)
 
-Handle(Standard_Transient) FWOSDriver::Factory(const Standard_GUID& aGUID) {
+Handle(Standard_Transient) FWOSDriver::Factory(const Standard_GUID& /*aGUID*/) {
   static Handle(FWOSDriver_DriverFactory) f;
   if(f.IsNull()) f = new FWOSDriver_DriverFactory;
   return f;

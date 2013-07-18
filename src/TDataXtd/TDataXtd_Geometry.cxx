@@ -501,7 +501,7 @@ void TDataXtd_Geometry::Restore (const Handle(TDF_Attribute)& With)
 //purpose  : 
 //=======================================================================
 
-void TDataXtd_Geometry::Paste (const Handle(TDF_Attribute)& Into, const Handle(TDF_RelocationTable)& RT) const { 
+void TDataXtd_Geometry::Paste (const Handle(TDF_Attribute)& Into, const Handle(TDF_RelocationTable)&) const { 
   Handle(TDataXtd_Geometry)::DownCast(Into)->SetType(myType);
 }
 

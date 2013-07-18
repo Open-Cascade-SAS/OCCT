@@ -55,7 +55,7 @@ DDF_Data::DDF_Data(const Handle(TDF_Data)& aDF) : myDF (aDF) {}
 //purpose  : 
 //=======================================================================
 
-void DDF_Data::DrawOn(Draw_Display& dis) const
+void DDF_Data::DrawOn(Draw_Display& /*dis*/) const
 
 { cout<<"DDF_Data"<<endl; }
 

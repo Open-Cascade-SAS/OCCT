@@ -269,7 +269,7 @@ void OpenGl_TextFormatter::Result (const Handle(OpenGl_Context)&                
 // function : Result
 // purpose  :
 // =======================================================================
-void OpenGl_TextFormatter::Result (const Handle(OpenGl_Context)&                 theCtx,
+void OpenGl_TextFormatter::Result (const Handle(OpenGl_Context)&                 /*theCtx*/,
                                    NCollection_Vector<GLuint>&                   theTextures,
                                    NCollection_Vector<Handle(OpenGl_Vec2Array)>& theVertsPerTexture,
                                    NCollection_Vector<Handle(OpenGl_Vec2Array)>& theTCrdsPerTexture) const

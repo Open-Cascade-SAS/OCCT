@@ -598,7 +598,7 @@ static Standard_Integer set(Draw_Interpretor& di, Standard_Integer n, const char
 //purpose  : 
 //=======================================================================
 
-static Standard_Integer dsetenv(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static Standard_Integer dsetenv(Draw_Interpretor& /*di*/, Standard_Integer argc, const char** argv)
 {
   if (argc < 2) {
     cout << "Use: " << argv[0] << " {varname} [value]" << endl;

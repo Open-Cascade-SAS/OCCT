@@ -49,7 +49,7 @@ void OpenGl_AspectMarker::Render (const Handle(OpenGl_Workspace)& theWorkspace) 
   theWorkspace->SetAspectMarker(this);
 }
 
-void OpenGl_AspectMarker::Release (const Handle(OpenGl_Context)& theContext)
+void OpenGl_AspectMarker::Release (const Handle(OpenGl_Context)&)
 {
   //
 }

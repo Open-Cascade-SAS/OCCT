@@ -54,7 +54,7 @@ FWOSDriver_Driver::FWOSDriver_Driver() {}
 //==============================================================================
 Standard_Boolean FWOSDriver_Driver::Find(const TCollection_ExtendedString& aFolder,
                                          const TCollection_ExtendedString& aName,
-                                         const TCollection_ExtendedString& aVersion)
+                                         const TCollection_ExtendedString& /*aVersion*/)
 {
 
   OSD_Path thePath=UTL::Path(aFolder);
@@ -76,7 +76,7 @@ Standard_Boolean FWOSDriver_Driver::Find(const TCollection_ExtendedString& aFold
 //==============================================================================
 Standard_Boolean FWOSDriver_Driver::HasReadPermission(const TCollection_ExtendedString& aFolder,
                                                       const TCollection_ExtendedString& aName,
-                                                      const TCollection_ExtendedString& aVersion)
+                                                      const TCollection_ExtendedString& /*aVersion*/)
 {
   OSD_SingleProtection theProtection=OSD_File(UTL::Path(Concatenate(aFolder,aName))).Protection().User();
   switch (theProtection) {
@@ -102,7 +102,7 @@ Standard_Boolean FWOSDriver_Driver::HasReadPermission(const TCollection_Extended
 //==============================================================================
 Handle(CDM_MetaData) FWOSDriver_Driver::MetaData(const TCollection_ExtendedString& aFolder,
                                                  const TCollection_ExtendedString& aName,
-                                                 const TCollection_ExtendedString& aVersion)
+                                                 const TCollection_ExtendedString& /*aVersion*/)
 {
   TCollection_ExtendedString p = Concatenate(aFolder,aName);
   return CDM_MetaData::LookUp(aFolder,aName,p,p,UTL::IsReadOnly(p));
