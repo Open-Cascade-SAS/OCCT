@@ -25,7 +25,7 @@
 //purpose  : 
 //=======================================================================
 
-inline void LocOpe_WiresOnShape::SetCheckInterior(const Standard_Boolean)
+inline void LocOpe_WiresOnShape::SetCheckInterior(const Standard_Boolean ToCheckInterior)
 {
   myCheckInterior = ToCheckInterior;
 }
