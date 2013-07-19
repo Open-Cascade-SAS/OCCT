@@ -703,9 +703,7 @@ static TopoDS_Face TranslateBoundedSurf (const Handle(StepGeom_Surface) &surf,
   if (!StepToGeom_MakeSurface::Convert(surf,theSurf) || //:i6: protection
       !theSurf->IsKind(STANDARD_TYPE(Geom_BoundedSurface))) return res;
 
-  
   BRepBuilderAPI_MakeFace myMkFace;
-  
   Handle(Geom_RectangularTrimmedSurface) RS = 
                     Handle(Geom_RectangularTrimmedSurface)::DownCast(theSurf);
 
@@ -714,13 +712,13 @@ static TopoDS_Face TranslateBoundedSurf (const Handle(StepGeom_Surface) &surf,
     Standard_Real umin, umax, vmin, vmax;
     theSurf->Bounds(umin, umax, vmin, vmax);
 
-    myMkFace = BRepBuilderAPI_MakeFace(RS->BasisSurface(), umin, umax, vmin, vmax, TolDegen);
+    myMkFace.Init(RS->BasisSurface(), umin, umax, vmin, vmax, TolDegen);
   }
   else
   {
-    myMkFace = BRepBuilderAPI_MakeFace(theSurf, TolDegen);
+    myMkFace.Init(theSurf, Standard_True, TolDegen);
   }
-  
+
   return myMkFace.Face();
 }
 

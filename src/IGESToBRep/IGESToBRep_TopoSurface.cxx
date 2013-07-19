@@ -788,12 +788,11 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferSurfaceOfRevolution
             const Standard_Real UL = endAngle - startAngle;
             // PTV 29.08.2002  end of OCC663
 
-            aMakeF = BRepBuilderAPI_MakeFace(aResultSurf, UF, 
-                                              UL, VF, VL, Precision::Confusion());
+            aMakeF.Init(aResultSurf, UF, UL, VF, VL, Precision::Confusion());
           }//if (!IsFullAngle)
           else
           {
-            aMakeF = BRepBuilderAPI_MakeFace(aResultSurf, Precision::Confusion());
+            aMakeF.Init(aResultSurf, Standard_True, Precision::Confusion());
           }
 
           if (aMakeF.IsDone())
