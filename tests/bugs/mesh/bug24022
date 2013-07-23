@@ -1,0 +1,30 @@
+puts "=========="
+puts "OCC24022"
+puts "=========="
+puts ""
+#####################################
+# Slow meshing in BRepMesh
+#####################################
+
+restore [locate_data_file bug24022_hung_mesh.brep] result
+tclean result
+dchrono h reset
+dchrono h start
+incmesh result 0.1
+dchrono h stop
+set info [dchrono h show]
+regexp {CPU user time: ([-0-9.+eE]+) seconds} $info full cpu_time
+if { $cpu_time > 3. } {
+    puts "Error : meshing is slow"
+} else {
+    puts "OK: meshing is quite fast"
+}
+vinit
+vdisplay result
+vfit
+vsetdispmode 1
+
+set only_screen 1
+
+
+
