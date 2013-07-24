@@ -1,0 +1,35 @@
+puts "================"
+puts "CR23614"
+puts "================"
+puts ""
+#####################################################################
+# BRepMesh creates incorrect triangulation on the attached models
+#####################################################################
+
+restore [locate_data_file bug23614_face4.brep] f4
+tclean f4
+incmesh f4 0.01
+set info [trinfo f4]
+regexp {([0-9]+) triangles} $info full tri
+regexp {([0-9]+) nodes} $info full nod
+
+# compare number of triangles
+if { $tri == 0 } {
+    puts "Error: face contains $tri triangles"
+} else {
+    puts "OK: face contains $tri triangles"
+}
+
+# compare number of nodes
+if { $nod == 0 } {
+    puts "Error : face contains $nod nodes"
+} else {
+    puts "OK: face contains $nod nodes"
+}
+
+top
+fit
+triangles f4
+set only_screen_axo 1
+
+
