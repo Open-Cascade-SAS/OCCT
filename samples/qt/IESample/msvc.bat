@@ -1,5 +1,4 @@
-call "%~dp0..\..\..\env.bat" %1 %2 %3
-call "%~dp0env.bat"
+call "%~dp0env.bat" %1 %2 %3
 
 if ["%CASDEB%"] == [""] (
   call "%~dp0..\..\..\msvc.bat" %VCVER% win%ARCH% "" "%~dp0IESample-%VCVER%.sln"

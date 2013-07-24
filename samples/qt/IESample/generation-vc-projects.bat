@@ -5,8 +5,7 @@ REM Use first argument to specify version of Visual Studio (vc8, vc9, or vc10),
 REM second argument specifies architecture) (win32 or win64)
 REM third argument specifies Debug or Release mode
 
-call "%~dp0..\..\..\env.bat" %1 %2 %3
-call "%~dp0env.bat"
+call "%~dp0env.bat" %1 %2 %3
 
 if not "%1" == "" (
     if /I "%1" == "vc8" (
