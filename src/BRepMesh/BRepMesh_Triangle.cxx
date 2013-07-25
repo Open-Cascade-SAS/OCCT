@@ -18,78 +18,128 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+#include <BRepMesh_Triangle.hxx>
 
-#include <BRepMesh_Triangle.ixx>
-
+//=======================================================================
+//function : Constructor
+//purpose  : 
+//=======================================================================
 BRepMesh_Triangle::BRepMesh_Triangle()
-: Edge1(0), Edge2(0), Edge3(0), myMovability(BRepMesh_Free)
-{}
-
-BRepMesh_Triangle::BRepMesh_Triangle (const Standard_Integer e1, 
-                                      const Standard_Integer e2,
-                                      const Standard_Integer e3,
-                                      const Standard_Boolean o1, 
-                                      const Standard_Boolean o2,
-                                      const Standard_Boolean o3,
-                                      const BRepMesh_DegreeOfFreedom  canMove)
-                                      : Edge1(e1),  Orientation1(o1),Edge2(e2), Orientation2(o2), 
-                                      Edge3(e3), Orientation3(o3), 
-                                      myMovability(canMove)
-{}
-
-void  BRepMesh_Triangle::Initialize(const Standard_Integer e1,
-                                    const Standard_Integer e2,
-                                    const Standard_Integer e3,
-                                    const Standard_Boolean o1, 
-                                    const Standard_Boolean o2,
-                                    const Standard_Boolean o3,
-                                    const BRepMesh_DegreeOfFreedom  canMove)
+: myEdge1(0),
+  myEdge2(0),
+  myEdge3(0),
+  myMovability(BRepMesh_Free)
 {
-  Edge1        =e1;
-  Edge2        =e2;
-  Edge3        =e3;
-  Orientation1 =o1;
-  Orientation2 =o2;
-  Orientation3 =o3;
-  myMovability =canMove;
 }
 
-void  BRepMesh_Triangle::Edges(Standard_Integer& e1,
-                               Standard_Integer& e2,
-                               Standard_Integer& e3,
-                               Standard_Boolean& o1, 
-                               Standard_Boolean& o2,
-                               Standard_Boolean& o3)const 
+//=======================================================================
+//function : Constructor
+//purpose  : 
+//=======================================================================
+BRepMesh_Triangle::BRepMesh_Triangle (const Standard_Integer          theEdge1,
+                                      const Standard_Integer          theEdge2,
+                                      const Standard_Integer          theEdge3,
+                                      const Standard_Boolean          theOrientation1,
+                                      const Standard_Boolean          theOrientation2,
+                                      const Standard_Boolean          theOrientation3,
+                                      const BRepMesh_DegreeOfFreedom  isCanMove)
+: myEdge1(theEdge1),
+  myEdge2(theEdge2),
+  myEdge3(theEdge3),
+  myOrientation1(theOrientation1),
+  myOrientation2(theOrientation2), 
+  myOrientation3(theOrientation3), 
+  myMovability(isCanMove)
 {
-  e1=Edge1;
-  e2=Edge2;
-  e3=Edge3;
-  o1=Orientation1;
-  o2=Orientation2;
-  o3=Orientation3;
 }
 
-void  BRepMesh_Triangle::SetMovability(const BRepMesh_DegreeOfFreedom  Move)
+//=======================================================================
+//function : Initialize
+//purpose  : 
+//=======================================================================
+void  BRepMesh_Triangle::Initialize(const Standard_Integer          theEdge1,
+                                    const Standard_Integer          theEdge2,
+                                    const Standard_Integer          theEdge3,
+                                    const Standard_Boolean          theOrientation1,
+                                    const Standard_Boolean          theOrientation2,
+                                    const Standard_Boolean          theOrientation3,
+                                    const BRepMesh_DegreeOfFreedom  isCanMove)
 {
-  myMovability =Move;
+  myEdge1        = theEdge1;
+  myEdge2        = theEdge2;
+  myEdge3        = theEdge3;
+  myOrientation1 = theOrientation1;
+  myOrientation2 = theOrientation2;
+  myOrientation3 = theOrientation3;
+  myMovability   = isCanMove;
 }
 
-Standard_Integer BRepMesh_Triangle::HashCode
-(const Standard_Integer Upper)const 
+//=======================================================================
+//function : Edges
+//purpose  : 
+//=======================================================================
+void  BRepMesh_Triangle::Edges(Standard_Integer& theEdge1,
+                               Standard_Integer& theEdge2,
+                               Standard_Integer& theEdge3,
+                               Standard_Boolean& theOrientation1,
+                               Standard_Boolean& theOrientation2,
+                               Standard_Boolean& theOrientation3) const
 {
-  return ::HashCode(Edge1+Edge2+Edge3, Upper);
+  theEdge1        = myEdge1;
+  theEdge2        = myEdge2;
+  theEdge3        = myEdge3;
+  theOrientation1 = myOrientation1;
+  theOrientation2 = myOrientation2;
+  theOrientation3 = myOrientation3;
 }
 
-Standard_Boolean BRepMesh_Triangle::IsEqual
-(const BRepMesh_Triangle& Other)const 
+//=======================================================================
+//function : SetMovability
+//purpose  : 
+//=======================================================================
+void BRepMesh_Triangle::SetMovability(const BRepMesh_DegreeOfFreedom theMovability)
 {
-  if (myMovability==BRepMesh_Deleted || Other.myMovability==BRepMesh_Deleted)
+  myMovability = theMovability;
+}
+
+//=======================================================================
+//function : HashCode
+//purpose  : 
+//=======================================================================
+Standard_Integer BRepMesh_Triangle::HashCode(const Standard_Integer theUpper)const 
+{
+  return ::HashCode(myEdge1 + myEdge2 + myEdge3, theUpper);
+}
+
+//=======================================================================
+//function : IsEqual
+//purpose  : 
+//=======================================================================
+Standard_Boolean BRepMesh_Triangle::IsEqual(const BRepMesh_Triangle& theOther) const 
+{
+  if (myMovability == BRepMesh_Deleted || theOther.myMovability == BRepMesh_Deleted)
     return Standard_False;
-  if (Edge1==Other.Edge1 && Edge2==Other.Edge2 && Edge3==Other.Edge3)
+
+  if (myEdge1 == theOther.myEdge1 && 
+      myEdge2 == theOther.myEdge2 && 
+      myEdge3 == theOther.myEdge3)
+  {
     return Standard_True;
-  if (Edge1==Other.Edge2 && Edge2==Other.Edge3 && Edge3==Other.Edge1)
+  }
+
+  if (myEdge1 == theOther.myEdge2 && 
+      myEdge2 == theOther.myEdge3 && 
+      myEdge3 == theOther.myEdge1)
+  {
     return Standard_True;
-  if (Edge1==Other.Edge3 && Edge2==Other.Edge1 && Edge3==Other.Edge2)
+  }
+
+  if (myEdge1 == theOther.myEdge3 && 
+      myEdge2 == theOther.myEdge1 && 
+      myEdge3 == theOther.myEdge2)
+  {
     return Standard_True;
+  }
+
   return Standard_False;
 }

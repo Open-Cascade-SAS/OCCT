@@ -135,8 +135,8 @@ void BRepMesh_FastDiscretFace::Add(const TopoDS_Face&                    theFace
     Standard_Real vmax   = myAttrib->GetVMax();
     Standard_Real vmin   = myAttrib->GetVMin();
 
-    Standard_Real aTolU = (umax - umin) * UVDEFLECTION;
-    Standard_Real aTolV = (vmax - vmin) * UVDEFLECTION;
+    Standard_Real aTolU = Max( Precision::PConfusion(), (umax - umin) * UVDEFLECTION );
+    Standard_Real aTolV = Max( Precision::PConfusion(), (vmax - vmin) * UVDEFLECTION );
     Standard_Real uCellSize = 14 * aTolU;
     Standard_Real vCellSize = 14 * aTolV;
 
@@ -249,14 +249,15 @@ void BRepMesh_FastDiscretFace::Add(const TopoDS_Face&                    theFace
     BRepMesh_Delaun trigu(myStructure, tabvert_corr, orFace==TopAbs_FORWARD);
     
     //removed all free edges from triangulation
-    Standard_Integer nbLinks = myStructure->NbNodes(); 
-    for(i = 1; i <= nbLinks; i++) 
+    Standard_Integer nbLinks = myStructure->NbLinks();
+    for( i = 1; i <= nbLinks; i++ ) 
     {
-      if(myStructure->ElemConnectedTo(i).Extent() < 1)
+      if( myStructure->ElemConnectedTo(i).Extent() < 1 )
       {
         BRepMesh_Edge& anEdge = (BRepMesh_Edge&)trigu.GetEdge(i);
-        if(anEdge.Movability()==BRepMesh_Deleted)
+        if ( anEdge.Movability() == BRepMesh_Deleted )
           continue;
+
         anEdge.SetMovability(BRepMesh_Free);
         myStructure->RemoveLink(i);
       }

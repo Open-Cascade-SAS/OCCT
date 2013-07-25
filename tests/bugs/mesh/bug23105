@@ -1,0 +1,25 @@
+puts "================"
+puts "CR23105"
+puts "================"
+puts ""
+###############################################
+## Exception during Meshing / Missing triangles
+###############################################
+
+restore [locate_data_file bug23105_f372.brep] result
+checkshape result
+
+incmesh result 0.1
+set trinfo_s [trinfo result]
+regexp {([0-9]+) triangles} $trinfo_s str nbtri_s
+regexp {deflection ([0-9.+e-]+)} $trinfo_s str defl_s
+
+# check deflections
+if { $defl_s > 0.1 } {
+    puts "Error: too big deflection ($defl_s > 0.1)"
+}
+
+# compare number of triangles
+if { $nbtri_s == 0 } {
+    puts "Error: shape contains 0 triangles"
+}

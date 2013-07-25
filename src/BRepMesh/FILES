@@ -1,7 +1,11 @@
 BRepMesh_PluginEntryType.hxx
 BRepMesh_PluginMacro.hxx
+BRepMesh_Triangle.hxx
+BRepMesh_Triangle.cxx
 BRepMesh_ClassifierPtr.hxx
 BRepMesh_CellFilter.hxx
+BRepMesh_Delaun.hxx
+BRepMesh_Delaun.cxx
 BRepMesh_CircleInspector.hxx
 BRepMesh_MapOfIntegerInteger.hxx
 BRepMesh_MapOfInteger.hxx

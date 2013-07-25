@@ -73,8 +73,8 @@ is    enumeration DegreeOfFreedom is
 
       class Edge;
 
-      class Triangle;
-
+	  imported Triangle from BRepMesh;
+	  
       class ShapeTool;
 
       class Circ;
@@ -84,6 +84,7 @@ is    enumeration DegreeOfFreedom is
       --
       pointer PDiscretRoot to DiscretRoot from BRepMesh;
       --
+      imported Delaun from BRepMesh;
       imported MapOfIntegerInteger from BRepMesh;
       imported MapOfInteger from BRepMesh;
       imported ListOfInteger from BRepMesh;
@@ -100,7 +101,6 @@ is    enumeration DegreeOfFreedom is
       class ComparatorOfVertexOfDelaun;
       class ComparatorOfIndexedVertexOfDelaun;
       class SelectorOfDataStructureOfDelaun;
-      class Delaun;
       class DataStructureOfDelaun;
       class CircleTool;
       class VertexTool;
@@ -148,8 +148,8 @@ is    enumeration DegreeOfFreedom is
 
       class ListOfVertex instantiates List from TCollection 
           (Vertex from  BRepMesh);
-
-        class ListOfXY instantiates List from TCollection (XY from gp);
+          
+      class ListOfXY instantiates List from TCollection (XY from gp);
 
       class DataMapOfIntegerListOfXY  instantiates DataMap from TCollection
           (Integer from Standard, ListOfXY from BRepMesh, MapIntegerHasher from TColStd);

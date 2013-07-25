@@ -323,8 +323,8 @@ void BRepMesh_FastDiscret::Add(const TopoDS_Face& theface,
 
   Standard_Real aUmin, aVmin, aUmax, aVmax;
   BRepTools::UVBounds (theface, aUmin, aUmax, aVmin, aVmax);
-  Standard_Real aTolU = (aUmax - aUmin) * UVDEFLECTION;
-  Standard_Real aTolV = (aVmax - aVmin) * UVDEFLECTION;
+  Standard_Real aTolU = Max( Precision::PConfusion(), (aUmax - aUmin) * UVDEFLECTION );
+  Standard_Real aTolV = Max( Precision::PConfusion(), (aVmax - aVmin) * UVDEFLECTION );
   myStructure->Data().SetCellSize ( 14 * aTolU, 14 * aTolV );
   myStructure->Data().SetTolerance( aTolU, aTolV );
 

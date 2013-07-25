@@ -16,9 +16,12 @@ if { [string compare $command "shading"] == 0 } {
        || [string compare $os "Debian40"] == 0
       } {
       set nbl 19
-   } else {
-      set nbl 17
+      set nbfree($os) $nbl
+##    else
+##      set nbl 17
    }
+set nbwithouttri($os) $nbt
+set nbfreenodes($os) $nbn
 } else {
    if {
           [string compare $os "Mandriva2010"] == 0
@@ -26,12 +29,16 @@ if { [string compare $command "shading"] == 0 } {
       set nbt 14
       set nbn 83
       set nbl 19
+      set nbwithouttri($os) $nbt
+      set nbfree($os) $nbl
+      set nbfreenodes($os) $nbn
    } else {
-      set nbt 15
+      set bug_withouttri "OCC23105"
+      set nbt 14
       set nbn 60
-      set nbl 2
+##      set nbl 2
+      set nbwithouttri($os) $nbt
+##      set nbfree($os) $nbl
+      set nbfreenodes($os) $nbn
    }
 }
-set nbwithouttri($os) $nbt
-set nbfree($os) $nbl
-set nbfreenodes($os) $nbn

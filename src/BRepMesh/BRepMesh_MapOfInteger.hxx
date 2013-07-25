@@ -15,6 +15,13 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+#ifndef BRepMesh_MapOfInteger_HeaderFile
+#define BRepMesh_MapOfInteger_HeaderFile
+
 #include <NCollection_Map.hxx>
+#include <NCollection_Handle.hxx>
 
 typedef NCollection_Map<Standard_Integer> BRepMesh_MapOfInteger;
+typedef NCollection_Handle<BRepMesh_MapOfInteger> Handle(BRepMesh_MapOfInteger);
+
+#endif
