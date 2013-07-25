@@ -186,7 +186,10 @@ void IGESGeom_ToolTrimmedSurface::WriteOwnParams
   IW.Send(ent->OuterBoundaryType());
   IW.Send(up);
 
-  IW.Send(ent->OuterContour());
+  if (ent->OuterBoundaryType())
+    IW.Send(ent->OuterContour());
+  else 
+    IW.Send(0);
   Standard_Integer I;
   for (I = 1; I <= up; I ++)
     IW.Send(ent->InnerContour(I));

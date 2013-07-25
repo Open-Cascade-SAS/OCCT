@@ -41,6 +41,7 @@
 
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <GeomAdaptor_HSurface.hxx>
@@ -270,7 +271,7 @@ void ShapeFix_Face::Add (const TopoDS_Wire& wire)
 //purpose  : auxilary - try to split wire (it is needed if some segments
 //           were removed in ShapeFix_Wire::FixSelfIntersection()
 //=======================================================================
-static Standard_Boolean SplitWire(const TopoDS_Wire& wire,
+static Standard_Boolean SplitWire(const TopoDS_Face &face, const TopoDS_Wire& wire,
                                   TopTools_SequenceOfShape& aResWires)
 {
   TColStd_MapOfInteger UsedEdges;
@@ -288,9 +289,10 @@ static Standard_Boolean SplitWire(const TopoDS_Wire& wire,
     sewd1->Add(E1);
     Standard_Boolean IsConnectedEdge = Standard_True;
     for(j=2; j<=sewd->NbEdges() && IsConnectedEdge; j++) {
+      TopoDS_Edge E2;
       for(k=2; k<=sewd->NbEdges(); k++) {
         if(UsedEdges.Contains(k)) continue;
-        TopoDS_Edge E2 = sewd->Edge(k);
+        E2 = sewd->Edge(k);
         TopoDS_Vertex V21 = sae.FirstVertex(E2);
         TopoDS_Vertex V22 = sae.LastVertex(E2);
         if( sae.FirstVertex(E2).IsSame(V1) ) {
@@ -300,14 +302,30 @@ static Standard_Boolean SplitWire(const TopoDS_Wire& wire,
           break;
         }
       }
-      if(V1.IsSame(V0)) {
-        // new wire is closed, put it into sequence
-        aResWires.Append(sewd1->Wire());
-        break;
-      }
       if(k>sewd->NbEdges()) {
         IsConnectedEdge = Standard_False;
         break;
+      }
+      if(V1.IsSame(V0)) {
+        //check that V0 and V1 are same in 2d too
+        Standard_Real a1,b1,a2,b2;
+        Handle (Geom2d_Curve) curve1 = BRep_Tool::CurveOnSurface(E1,face,a1,b1);
+        Handle (Geom2d_Curve) curve2 = BRep_Tool::CurveOnSurface(E2,face,a2,b2);
+        gp_Pnt2d v0,v1;
+        if (E1.Orientation() == TopAbs_REVERSED)
+          a1 = b1;
+        if (E2.Orientation() == TopAbs_REVERSED)
+          b2 = a2;
+        curve1->D0(a1,v0);
+        curve2->D0(b2,v1);
+        GeomAdaptor_Surface anAdaptor(BRep_Tool::Surface(face));
+        Standard_Real tol = Max(BRep_Tool::Tolerance(V0),BRep_Tool::Tolerance(V1));
+        Standard_Real maxResolution = 2 * Max ( anAdaptor.UResolution(tol), anAdaptor.VResolution(tol) );
+        if (v0.SquareDistance(v1) < maxResolution) {
+          // new wire is closed, put it into sequence
+          aResWires.Append(sewd1->Wire());
+          break;
+        }
       }
     }
     if(!IsConnectedEdge) {
@@ -595,7 +613,7 @@ Standard_Boolean ShapeFix_Face::Perform()
         }
         nbw++;
         TopoDS_Wire wire = TopoDS::Wire ( iter.Value() );
-        SplitWire(wire,aWires);
+        SplitWire(tmpFace,wire,aWires);
       }
       if(nbw<aWires.Length()) {
         for(Standard_Integer iw=1; iw<=aWires.Length(); iw++)

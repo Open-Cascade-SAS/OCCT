@@ -1,5 +1,4 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 puts "TODO CR23096 ALL: LAYERS : Faulty" 
 
@@ -8,11 +7,11 @@ set filename PRO11713.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 99  ( 8228 )  Summary  = 99  ( 8228 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 33  ( 8228 )  Summary  = 33  ( 8228 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 127  ( 127 )   Summary  = 238094  ( 238094 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 127  ( 127 )   FreeWire = 8189  ( 8189 )   FreeEdge  = 93645 ( 93645 )   SharedEdge = 94153  ( 94153 )
-TOLERANCE   : MaxTol   =         1e-005  ( 1.000100071e-007 )  AvgTol   =  1.115159157e-007  (  1.000000046e-007 )
+TOLERANCE   : MaxTol   = 1.000100036e-07  ( 1.000100071e-07 )  AvgTol   =  1.000000246e-07  (  1.000000046e-07 )
 LABELS      : N0Labels = 42695  ( 42695 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 42695  ( 42695 )   NameLabels = 42695  ( 42695 )   ColorLabels = 0  ( 0 )   LayerLabels = 33059  ( 42695 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

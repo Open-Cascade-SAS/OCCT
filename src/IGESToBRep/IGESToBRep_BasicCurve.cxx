@@ -1130,7 +1130,8 @@ Handle(Geom_Curve) IGESToBRep_BasicCurve::TransferBSplineCurve
        (Last-Ufin)>-Precision::PConfusion()) && Udeb<=Ufin ) {
     try {
       OCC_CATCH_SIGNALS
-      BSplineRes->Segment(Udeb, Ufin);
+      if (Abs(Ufin-Udeb) > Precision::PConfusion())
+        BSplineRes->Segment(Udeb, Ufin);
       res = BSplineRes;
     }
     catch (Standard_Failure) {

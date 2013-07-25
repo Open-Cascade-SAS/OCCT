@@ -1231,7 +1231,11 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTrimmedSurface
     face.EmptyCopy();
     TopoDS_Shape myshape1 = TC.TransferCurveOnFace (face, st->OuterContour(), trans, uFact, Standard_False);
     // si ca se passe mal , on recupere au moins la face avec NaturalRestriction
-    if (myshape1 .IsNull()) face = faceres;
+    if (myshape1 .IsNull()) {
+      face = faceres;
+      BRep_Builder B;
+      B.NaturalRestriction(face,Standard_False);
+    }
   }
   for (Standard_Integer i = 1; i <= st->NbInnerContours(); i++) {
     TopoDS_Shape myshape2 = TC.TransferCurveOnFace (face, st->InnerContour(i), trans, uFact, Standard_False);

@@ -1,17 +1,18 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 ALL: TPSTAT : Faulty" 
 puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 puts "TODO CR23096 ALL: COLORS : Faulty" 
 puts "TODO CR23096 ALL: LAYERS : Faulty" 
-puts "TODO ?CR23096 ALL: Error : 1 differences with reference data found :"
+
+
+puts "TODO CR23096 Mandriva2010: Error : 1 differences with reference data found :" 
 
 set LinuxDiff 1
 set filename UKI60107-6.igs
 
 set ref_data {
-DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 2  ( 0 )  Warnings = 18  ( 317 )  Summary  = 20  ( 317 )
+DATA        : Faulties = 0  ( 477 )  Warnings = 0  ( 0 )  Summary  = 0  ( 477 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 18  ( 317 )  Summary  = 18  ( 317 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 79  ( 79 )   Summary  = 3800  ( 3951 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 79  ( 79 )   FreeWire = 79  ( 230 )   FreeEdge  = 865 ( 865 )   SharedEdge = 1481  ( 1481 )

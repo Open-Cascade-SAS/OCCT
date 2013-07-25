@@ -496,7 +496,7 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferFace
 	  //#62 rln 10.01.99 PRO17015 (reading back IGES written in 'BRep' mode) face #65
 	  F = TopoDS::Face (myshape);
 	  F.EmptyCopy();
-	  if (!hasouterloop) B.NaturalRestriction (F,Standard_True);
+	  if (nbloops == 0) B.NaturalRestriction (F,Standard_True);
 	  
 	  // Loops
 	  // -----

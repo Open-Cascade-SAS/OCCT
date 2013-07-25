@@ -353,13 +353,13 @@ void ShapeAnalysis_WireOrder::Perform(const Standard_Boolean /*closed*/)
             }
             else 
               minDist = revDist;
-            if(minDist < distmin) {
+            if(minDist < distmin && Abs(distmin - minDist) > tol2) {
               distmin = minDist;
               direct = (dirDist <= revDist);
               lloop = j;
             }
           }
-          if(distmin<minLocDist) {
+          if(distmin < minLocDist && Abs(minLocDist - distmin) > tol2) {
             minLocDist = distmin;
             LocDirect = direct;
             LocNumInLoop = lloop;
@@ -367,7 +367,7 @@ void ShapeAnalysis_WireOrder::Perform(const Standard_Boolean /*closed*/)
           }
 	  
         }
-        if(minLocDist < minLoopDist) {
+        if(minLocDist < minLoopDist && Abs(minLoopDist - minLocDist) > tol2) {
           minLoopDist = minLocDist;
           loopNum = i;
           loopDirect = LocDirect;

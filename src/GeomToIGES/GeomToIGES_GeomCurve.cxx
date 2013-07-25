@@ -324,7 +324,8 @@ Handle(IGESData_IGESEntity) GeomToIGES_GeomCurve::TransferCurve
       OCC_CATCH_SIGNALS
       Handle(Geom_BSplineCurve) bspl = Handle(Geom_BSplineCurve)::DownCast ( mycurve->Copy() ); 
       if ( ! bspl.IsNull() ) {
-	bspl->Segment ( Umin, Umax );
+        if (Abs(Umax-Umin) > Precision::PConfusion())
+          bspl->Segment ( Umin, Umax );
 	mycurve = bspl;
       }
     }

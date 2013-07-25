@@ -8,11 +8,11 @@ set filename PRO5236.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 1  ( 2 )  Warnings = 116  ( 1590 )  Summary  = 117  ( 1592 )
-CHECKSHAPE  : Wires    = 143  ( 48 )  Faces    = 160  ( 142 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 253  ( 253 )   Summary  = 6137  ( 5360 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 253  ( 253 )   FreeWire = 7  ( 10 )   FreeEdge  = 78 ( 78 )   SharedEdge = 2403  ( 2405 )
-TOLERANCE   : MaxTol   =  0.03236463118  (    43.42228938 )  AvgTol   =  0.0002037472482  (   0.04107558874 )
+TPSTAT      : Faulties = 0  ( 2 )  Warnings = 114  ( 1590 )  Summary  = 114  ( 1592 )
+CHECKSHAPE  : Wires    = 138  ( 48 )  Faces    = 155  ( 142 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 253  ( 253 )   Summary  = 6121  ( 5360 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 253  ( 253 )   FreeWire = 7  ( 10 )   FreeEdge  = 78 ( 78 )   SharedEdge = 2405  ( 2405 )
+TOLERANCE   : MaxTol   =  0.03236463118  (    43.42228938 )  AvgTol   =  0.0002035797479  (   0.04107558874 )
 LABELS      : N0Labels = 8  ( 8 )  N1Labels = 269  ( 2762 )  N2Labels = 0  ( 0 )   TotalLabels = 277  ( 2770 )   NameLabels = 277  ( 476 )   ColorLabels = 272  ( 2768 )   LayerLabels = 272  ( 2768 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 3  ( 4 )
