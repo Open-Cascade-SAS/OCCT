@@ -728,9 +728,9 @@ Handle(Graphic3d_Texture2D) MeshVS_NodalColorPrsBuilder::CreateTexture() const
   {
     const Quantity_Color& aSrcColor = myTextureColorMap.Value (Standard_Integer(aCol) + 1);
     Image_ColorRGBA& aColor = aData.ChangeValue (0, aCol);
-    aColor.r() = int(255.0 * aSrcColor.Red());
-    aColor.g() = int(255.0 * aSrcColor.Green());
-    aColor.b() = int(255.0 * aSrcColor.Blue());
+    aColor.r() = Standard_Byte(255.0 * aSrcColor.Red());
+    aColor.g() = Standard_Byte(255.0 * aSrcColor.Green());
+    aColor.b() = Standard_Byte(255.0 * aSrcColor.Blue());
     aColor.a() = 0xFF;
   }
 
@@ -738,9 +738,9 @@ Handle(Graphic3d_Texture2D) MeshVS_NodalColorPrsBuilder::CreateTexture() const
   const Quantity_Color& aLastColorSrc = myTextureColorMap.Last();
   const Image_ColorRGBA aLastColor =
   {{
-    int(255.0 * aLastColorSrc.Red()),
-    int(255.0 * aLastColorSrc.Green()),
-    int(255.0 * aLastColorSrc.Blue()),
+    Standard_Byte(255.0 * aLastColorSrc.Red()),
+    Standard_Byte(255.0 * aLastColorSrc.Green()),
+    Standard_Byte(255.0 * aLastColorSrc.Blue()),
     0xFF
   }};
 
@@ -752,9 +752,9 @@ Handle(Graphic3d_Texture2D) MeshVS_NodalColorPrsBuilder::CreateTexture() const
 
   const Image_ColorRGBA anInvalidColor =
   {{
-    int(255.0 * myInvalidColor.Red()),
-    int(255.0 * myInvalidColor.Green()),
-    int(255.0 * myInvalidColor.Blue()),
+    Standard_Byte(255.0 * myInvalidColor.Red()),
+    Standard_Byte(255.0 * myInvalidColor.Green()),
+    Standard_Byte(255.0 * myInvalidColor.Blue()),
     0xFF
   }};
   for (Standard_Size aCol = 0; aCol < anImage->SizeX(); ++aCol)

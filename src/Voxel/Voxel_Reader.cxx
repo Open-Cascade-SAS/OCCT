@@ -211,7 +211,7 @@ Standard_Boolean Voxel_Reader::ReadBoolAsciiVoxels(const TCollection_ExtendedStr
 	((Standard_Byte**)((Voxel_DS*)myBoolVoxels)->myData)[i1] = 
 	  (Standard_Byte*) calloc(8/*number of bytes in slice*/, sizeof(Standard_Byte));
       }
-      (((Standard_Byte**)((Voxel_DS*)myBoolVoxels)->myData)[i1])[i2] = value;
+      (((Standard_Byte**)((Voxel_DS*)myBoolVoxels)->myData)[i1])[i2] = (Standard_Byte)value;
     }
   }
 
@@ -288,7 +288,7 @@ Standard_Boolean Voxel_Reader::ReadColorAsciiVoxels(const TCollection_ExtendedSt
 	((Standard_Byte**)((Voxel_DS*)myColorVoxels)->myData)[i1] = 
 	  (Standard_Byte*) calloc(32/*number of bytes in slice*/, sizeof(Standard_Byte));
       }
-      (((Standard_Byte**)((Voxel_DS*)myColorVoxels)->myData)[i1])[i2] = value;
+      (((Standard_Byte**)((Voxel_DS*)myColorVoxels)->myData)[i1])[i2] = (Standard_Byte)value;
     }
   }
 
@@ -422,7 +422,7 @@ Standard_Boolean Voxel_Reader::ReadBoolBinaryVoxels(const TCollection_ExtendedSt
 	((Standard_Byte**)((Voxel_DS*)myBoolVoxels)->myData)[i1] = 
 	  (Standard_Byte*) calloc(8/*number of bytes in slice*/, sizeof(Standard_Byte));
       }
-      (((Standard_Byte**)((Voxel_DS*)myBoolVoxels)->myData)[i1])[i2] = value;
+      (((Standard_Byte**)((Voxel_DS*)myBoolVoxels)->myData)[i1])[i2] = (Standard_Byte)value;
     }
   }
 
@@ -477,7 +477,7 @@ Standard_Boolean Voxel_Reader::ReadColorBinaryVoxels(const TCollection_ExtendedS
 	((Standard_Byte**)((Voxel_DS*)myColorVoxels)->myData)[i1] = 
 	  (Standard_Byte*) calloc(32/*number of bytes in slice*/, sizeof(Standard_Byte));
       }
-      (((Standard_Byte**)((Voxel_DS*)myColorVoxels)->myData)[i1])[i2] = value;
+      (((Standard_Byte**)((Voxel_DS*)myColorVoxels)->myData)[i1])[i2] = (Standard_Byte)value;
     }
   }
 

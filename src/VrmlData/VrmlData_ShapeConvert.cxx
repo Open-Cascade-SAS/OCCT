@@ -82,7 +82,7 @@ void VrmlData_ShapeConvert::AddShape (const TopoDS_Shape& theShape,
     char buf[2048], * optr = &buf[0];
     char * eptr = &buf[sizeof(buf)-1];
     for (const char * ptr = theName;; ptr++) {
-      int sym = *ptr;
+      char sym = *ptr;
       if (sym == '\0' || sym == '\n' || sym == '\r') {
         * optr = '\0';
         break;

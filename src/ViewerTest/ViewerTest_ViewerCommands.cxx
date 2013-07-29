@@ -2010,7 +2010,7 @@ static LRESULT WINAPI ViewerWindowProc( HWND hwnd,
 //==============================================================================
 
 
-static int ViewerMainLoop(Standard_Integer argc, const char** argv)
+int ViewerMainLoop(Standard_Integer argc, const char** argv)
 {
   Ppick = (argc > 0)? 1 : 0;
   Pargc = argc;

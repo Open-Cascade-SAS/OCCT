@@ -238,7 +238,7 @@ void  BinTools_LocationSet::Read(Standard_IStream& IS)
     OCC_CATCH_SIGNALS
     for (i = 1; i <= nbLoc; i++) { 
       
-      const Standard_Byte aTypLoc = IS.get();
+      const Standard_Byte aTypLoc = (Standard_Byte)IS.get();
       if (aTypLoc == 1) {
 	IS >> T;
 	L = T;

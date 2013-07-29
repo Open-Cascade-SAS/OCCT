@@ -373,7 +373,7 @@ void rec_deblist()
   default: {
     char bufsub[10];
     if (numsub > 9) sprintf (bufsub,"$%d",numsub) ;
-    else {  bufsub[0] = '$'; bufsub[1] = numsub + 48; bufsub[2] = '\0';  }
+    else {  bufsub[0] = '$'; bufsub[1] = (char)(numsub + 48); bufsub[2] = '\0';  }
     subrec->ident = rec_newtext(bufsub) ;
     }
   }

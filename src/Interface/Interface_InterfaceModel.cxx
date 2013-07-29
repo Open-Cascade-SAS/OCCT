@@ -793,7 +793,7 @@ Standard_Boolean Interface_InterfaceModel::SetCategoryNumber
       c->SetValue(i,thecategory->Value(i));
     thecategory = c;
   }
-  Standard_Character cval = (val + 32);
+  Standard_Character cval = (Standard_Character)(val + 32);
   thecategory->SetValue(num,cval);
   return Standard_True;
 }

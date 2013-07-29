@@ -61,14 +61,14 @@ namespace
     Standard_Size aStencilIter = 0, aColorIter = 0, aDepthIter = 0;
     for (aStencilIter = 0; aStencilIter < sizeof(BUFF_BITS_STENCIL) / sizeof(int); ++aStencilIter)
     {
-      aPixelFrmtTmp.cStencilBits = BUFF_BITS_STENCIL[aStencilIter];
+      aPixelFrmtTmp.cStencilBits = (BYTE)(BUFF_BITS_STENCIL[aStencilIter]);
       for (aDepthIter = 0; aDepthIter < sizeof(BUFF_BITS_DEPTH) / sizeof(int); ++aDepthIter)
       {
-        aPixelFrmtTmp.cDepthBits = BUFF_BITS_DEPTH[aDepthIter];
+        aPixelFrmtTmp.cDepthBits = (BYTE)(BUFF_BITS_DEPTH[aDepthIter]);
         aPixelFrmtIdGood = 0;
         for (aColorIter = 0; aColorIter < sizeof(BUFF_BITS_COLOR) / sizeof(int); ++aColorIter)
         {
-          aPixelFrmtTmp.cColorBits = BUFF_BITS_COLOR[aColorIter];
+          aPixelFrmtTmp.cColorBits = (BYTE)(BUFF_BITS_COLOR[aColorIter]);
           aPixelFrmtIdLast = ChoosePixelFormat (theDevCtx, &aPixelFrmtTmp);
           if (aPixelFrmtIdLast == 0)
           {

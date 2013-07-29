@@ -139,7 +139,7 @@ void Resource_sjis_to_unicode (unsigned int *ph, unsigned int *pl)
     return ;
   }
 
-  sjis = ((*ph) << 8) | (*pl) ;
+  sjis = (char16)(((*ph) << 8) | (*pl)) ;
   uni  = sjisuni [sjis] ;
   *ph = uni >> 8 ;
   *pl = uni & 0xFF ;
@@ -158,7 +158,7 @@ void Resource_unicode_to_sjis (unsigned int *ph, unsigned int *pl)
   if ( *ph == 0 && *pl == 0 )
     return ;
 
-  uni  = ((*ph) << 8) | (*pl) ;
+  uni  = (char16)(((*ph) << 8) | (*pl)) ;
   sjis = unisjis [uni] ;
   *ph = sjis >> 8 ;
   *pl = sjis & 0xFF ;
@@ -213,7 +213,7 @@ void Resource_gb_to_unicode (unsigned int *ph, unsigned int *pl)
   *ph  = (*ph) & 0x7f ;
   *pl  = (*pl) & 0x7f ;
 
-  gb   = ((*ph) << 8) | (*pl) ;
+  gb   = (char16)(((*ph) << 8) | (*pl)) ;
   uni  = gbuni [gb] ;
   *ph  = uni >> 8 ;
   *pl  = uni & 0xFF ;
@@ -232,7 +232,7 @@ void Resource_unicode_to_gb (unsigned int *ph, unsigned int *pl)
   if ( *ph == 0 && *pl == 0 )
     return ;
 
-  uni  = ((*ph) << 8) | (*pl) ;
+  uni  = (char16)(((*ph) << 8) | (*pl));
   gb   = unigb [uni] ;
   if (gb != 0) {
     *ph  = ( gb >> 8   ) | 0x80 ;

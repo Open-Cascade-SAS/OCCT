@@ -163,7 +163,7 @@ Standard_Boolean Voxel_BooleanOperation::Cut(      Voxel_ColorDS& theVoxels1,
 	    Standard_Integer value = value1 - value2;
 	    if (value < 0)
 	      value = 0;
-	    theVoxels1.Set(ix, iy, iz, value);
+	    theVoxels1.Set(ix, iy, iz, (Standard_Byte)value);
 	  }
 	}
       }

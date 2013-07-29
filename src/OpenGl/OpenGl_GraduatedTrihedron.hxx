@@ -69,7 +69,9 @@ protected:
   unsigned int myNbX, myNbY, myNbZ;
   int myXOffset, myYOffset, myZOffset;
   int myXAxisOffset, myYAxisOffset, myZAxisOffset;
-  unsigned char myDrawXTickmarks, myDrawYTickmarks, myDrawZTickmarks;
+  Standard_Boolean myDrawXTickmarks;
+  Standard_Boolean myDrawYTickmarks;
+  Standard_Boolean myDrawZTickmarks;
   unsigned int myXTickmarkLength, myYTickmarkLength, myZTickmarkLength;
   float myGridColor[3];
   TEL_COLOUR myXColor;

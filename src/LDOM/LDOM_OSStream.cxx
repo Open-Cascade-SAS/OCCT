@@ -104,7 +104,7 @@ Standard_CString LDOM_SBuffer::str () const
 //=======================================================================
 int LDOM_SBuffer::overflow(int c)
 {
-  char cc = c;
+  char cc = (char)c;
   return xsputn(&cc,1);
 }
 

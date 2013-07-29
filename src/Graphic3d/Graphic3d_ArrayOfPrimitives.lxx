@@ -153,15 +153,11 @@ inline void Graphic3d_ArrayOfPrimitives::SetVertexColor(const Standard_Integer a
   }
 
   if( myPrimitiveArray->vcolours ) {
-    unsigned char red   = (unsigned int)(R * 255.);
-    unsigned char green = (unsigned int)(G * 255.);
-    unsigned char blue  = (unsigned int)(B * 255.);
-    unsigned char alpha = 0;
-    Standard_Integer outColor ;
-    outColor = red;
-    outColor += green << 8;
-    outColor += blue  << 16;
-    outColor += alpha << 24;
+    unsigned int red   = (unsigned int)(R * 255.);
+    unsigned int green = (unsigned int)(G * 255.);
+    unsigned int blue  = (unsigned int)(B * 255.);
+    unsigned int alpha = 0;
+    Standard_Integer outColor = alpha << 24 | blue << 16 | green << 8 | red;
     SetVertexColor( anIndex, outColor );
   }
   myPrimitiveArray->num_vertexs = Max(anIndex,myPrimitiveArray->num_vertexs);

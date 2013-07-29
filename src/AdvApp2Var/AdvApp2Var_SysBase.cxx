@@ -2999,11 +2999,11 @@ int AdvApp2Var_SysBase::mcrrqst_(integer *iunit,
 /* RANGING OF PARAMETERS IN MCRGENE */
 
     mcrgene_.icore[mcrgene_.ncore].prot = mcrgene_.lprot;
-    mcrgene_.icore[mcrgene_.ncore].unit = *iunit;
+    mcrgene_.icore[mcrgene_.ncore].unit = (unsigned char)(*iunit);
     mcrgene_.icore[mcrgene_.ncore].reqsize = *isize;
     mcrgene_.icore[mcrgene_.ncore].loc = loc;
     mcrgene_.icore[mcrgene_.ncore].offset = *iofset;
-    mcrgene_.icore[mcrgene_.ncore].alloctype = ksys;
+    mcrgene_.icore[mcrgene_.ncore].alloctype = (unsigned char)ksys;
     mcrgene_.icore[mcrgene_.ncore].size = ibyte;
     mcrgene_.icore[mcrgene_.ncore].addr = iaddr;
     mcrgene_.icore[mcrgene_.ncore].userzone = mcrgene_.ncore;

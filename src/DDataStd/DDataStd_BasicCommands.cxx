@@ -1157,13 +1157,13 @@ static Standard_Integer DDataStd_SetByteArray (Draw_Interpretor& di,
     Handle(TDataStd_ByteArray) A = TDataStd_ByteArray::Set(label, From, To, isDelta);
     
     j = 6;
-    for(Standard_Integer i = From; i<=To; i++) {
+    for(Standard_Integer i = From; i<=To; ++i) {
       Standard_Integer ival = Draw::Atoi(arg[j]);
-      if(ival > 255) {
-	cout << "Bad value = " << ival<< endl;
-	return 1;
+      if(ival < 0 && 255 < ival) {
+        cout << "Bad value = " << ival<< endl;
+        return 1;
       }
-      A->SetValue(i,  (unsigned)ival); 
+      A->SetValue(i, (Standard_Byte)ival); 
       j++;
     }
     return 0; 
@@ -1393,7 +1393,7 @@ static Standard_Integer DDataStd_ChangeByteArray (Draw_Interpretor& di,
       }
     Standard_Integer low = A->Lower(), up = A->Upper();
     if(low <= indx && indx <= up)
-      A->SetValue(indx, (unsigned)ival);
+      A->SetValue(indx, (Standard_Byte)ival);
     else {
       Handle(TColStd_HArray1OfByte) Arr = A->InternalArray();
       Handle(TColStd_HArray1OfByte) arr;
@@ -1405,7 +1405,7 @@ static Standard_Integer DDataStd_ChangeByteArray (Draw_Interpretor& di,
 	  arr->SetValue(i, Arr->Value(i));
 	for(i=Arr->Upper()+1; i<= up; i++) {
 	  if(i == up)
-	    arr->SetValue(i, (unsigned)ival);
+	    arr->SetValue(i, (Standard_Byte)ival);
 	  else
 	    arr->SetValue(i, 0);
 	}
@@ -1414,7 +1414,7 @@ static Standard_Integer DDataStd_ChangeByteArray (Draw_Interpretor& di,
 	arr = new TColStd_HArray1OfByte(low, up);
 	for(i=low; i< up; i++)
 	  arr->SetValue(i, Arr->Value(i));
-	arr->SetValue(up, (unsigned)ival);
+	arr->SetValue(up, (Standard_Byte)ival);
       }
       A->ChangeArray(arr);
     }
