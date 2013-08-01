@@ -18,11 +18,7 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
-
 #ifdef WNT
-
 
 #include <windows.h>
 #include <DrawRessource.h>
@@ -80,11 +76,12 @@ LRESULT APIENTRY WndProc(HWND hWndFrame, UINT wMsg, WPARAM wParam, LPARAM lParam
 \*--------------------------------------------------------------------------*/
 BOOL CreateProc(HWND hWndFrame)
 {
-  HWND hWnd;
-
-  // Save hWnd in the main window in extra memory in 0
-  if (hWnd = CreateMDIClientWindow(hWndFrame))
+  HWND hWnd = CreateMDIClientWindow (hWndFrame);
+  if (hWnd != NULL)
+  {
+    // Save hWnd in the main window in extra memory in 0
     SetWindowLong(hWndFrame, CLIENTWND, (LONG)hWnd);
+  }
   return(TRUE);
 }
 
@@ -96,30 +93,30 @@ BOOL CreateProc(HWND hWndFrame)
 \*--------------------------------------------------------------------------*/
 BOOL CommandProc(HWND hWndFrame, WPARAM wParam, LPARAM /*lParam*/)
 {
-  HWND hWndClient; // Handle on window MDI
-  HWND hWndActive;
-
-	hWndClient = (HWND)GetWindowLong(hWndFrame, CLIENTWND);
+  // Handle on window MDI
+  HWND hWndClient = (HWND)GetWindowLong (hWndFrame, CLIENTWND);
   switch (LOWORD(wParam))
 	{
 	  case IDM_WINDOW_NEXT :
-					if(hWndClient = (HWND)GetWindowLong(hWndFrame, CLIENTWND))
-					  hWndActive = (HWND)SendMessage(hWndClient, WM_MDIGETACTIVE, 0, 0l);
-						SendMessage(hWndClient, WM_MDINEXT, (WPARAM)hWndActive, 0l);  
+					if(hWndClient)
+					{
+					  HWND hWndActive = (HWND)SendMessage(hWndClient, WM_MDIGETACTIVE, 0, 0l);
+					  SendMessage(hWndClient, WM_MDINEXT, (WPARAM)hWndActive, 0l);
+					}
 					break;
 
 		case IDM_WINDOW_CASCADE :
-					if(hWndClient = (HWND)GetWindowLong(hWndFrame, CLIENTWND))
+					if(hWndClient)
 						SendMessage(hWndClient, WM_MDICASCADE, 0, 0l);
 					break;
 					 
 		case IDM_WINDOW_TILEHOR :
-					if(hWndClient = (HWND)GetWindowLong(hWndFrame, CLIENTWND))
+					if(hWndClient)
 						SendMessage(hWndClient, WM_MDITILE, MDITILE_HORIZONTAL, 0l);
 					break;
 
 		case IDM_WINDOW_TILEVERT :
-					if(hWndClient = (HWND)GetWindowLong(hWndFrame, CLIENTWND))
+					if(hWndClient)
 						SendMessage(hWndClient, WM_MDITILE, MDITILE_VERTICAL, 0l);
 					break;
 		

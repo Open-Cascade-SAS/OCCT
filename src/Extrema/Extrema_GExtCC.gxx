@@ -206,7 +206,8 @@ void Extrema_GExtCC::Perform()
     //analytical case - one curve is always a line
     Standard_Integer anInd1 = 0, anInd2 = 1;
     GeomAbs_CurveType aType2 = type2;
-    if (inverse = (type1 > type2)) {
+    inverse = (type1 > type2);
+    if (inverse) {
       //algorithm uses inverse order of arguments
       anInd1 = 1;
       anInd2 = 0;

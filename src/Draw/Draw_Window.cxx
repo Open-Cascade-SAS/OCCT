@@ -2024,11 +2024,8 @@ Standard_Boolean Init_Appli(HINSTANCE hInst,
    ** Enter the application message-polling loop.  This is the anchor for
    ** the application.
   */
-  if(Draw_IsConsoleSubsystem)
-
-    hWndFrame = NULL;
-
-  else if (hWndFrame = CreateAppWindow(hInst))
+  hWndFrame = !Draw_IsConsoleSubsystem ? CreateAppWindow (hInst) : NULL;
+  if (hWndFrame != NULL)
   {
     ShowWindow(hWndFrame,nShow);
     UpdateWindow(hWndFrame);

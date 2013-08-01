@@ -528,40 +528,30 @@ IntTools_FClass2d::IntTools_FClass2d()
   TopAbs_State IntTools_FClass2d::Perform(const gp_Pnt2d& _Puv,
 					  const Standard_Boolean RecadreOnPeriodic) const
 { 
-  Standard_Integer dedans, nbtabclass;
-  
-  nbtabclass = TabClass.Length();
-  
-  if(nbtabclass==0) { 
-    return(TopAbs_IN);
+  Standard_Integer nbtabclass = TabClass.Length();
+  if (nbtabclass == 0)
+  {
+    return TopAbs_IN;
   }
-  
-  //-- U1 is the First Param and U2 is in this case U1+Period
-  Standard_Real u, v, uu, vv,  uperiod, vperiod;
-  Standard_Boolean IsUPer, IsVPer, urecadre, vrecadre;
-  TopAbs_State Status= TopAbs_UNKNOWN;
 
-  u=_Puv.X();
-  v=_Puv.Y();
-  uu = u, vv = v;
+  //-- U1 is the First Param and U2 is in this case U1+Period
+  Standard_Real u = _Puv.X();
+  Standard_Real v = _Puv.Y();
+  Standard_Real uu = u;
+  Standard_Real vv = v;
+  TopAbs_State Status = TopAbs_UNKNOWN;
 
   Handle(BRepAdaptor_HSurface) surf = new BRepAdaptor_HSurface();
   surf->ChangeSurface().Initialize( Face, Standard_False );
   
-  uperiod=0., vperiod=0.;
-  IsUPer = surf->IsUPeriodic();
-  IsVPer = surf->IsVPeriodic();
+  const Standard_Boolean IsUPer  = surf->IsUPeriodic();
+  const Standard_Boolean IsVPer  = surf->IsVPeriodic();
+  const Standard_Real    uperiod = IsUPer ? surf->UPeriod() : 0.0;
+  const Standard_Real    vperiod = IsVPer ? surf->VPeriod() : 0.0;
 
-  if (IsUPer){ 
-    uperiod = surf->UPeriod();
-  }
-
-  if (IsVPer){
-    vperiod = surf->VPeriod();
-  }
-  
-  urecadre = Standard_False;
-  vrecadre = Standard_False;
+  Standard_Boolean urecadre = Standard_False;
+  Standard_Boolean vrecadre = Standard_False;
+  Standard_Integer dedans = 1;
 
   if (RecadreOnPeriodic) {
     
@@ -683,31 +673,27 @@ IntTools_FClass2d::IntTools_FClass2d()
 						    const Standard_Real Tol,
 						    const Standard_Boolean RecadreOnPeriodic) const
 { 
-
-  Standard_Integer dedans, nbtabclass;
-  
-  nbtabclass = TabClass.Length();
-  
-  if(nbtabclass==0) { 
-    return(TopAbs_IN);
+  Standard_Integer nbtabclass = TabClass.Length();
+  if (nbtabclass == 0)
+  {
+    return TopAbs_IN;
   }
-  
+
   //-- U1 is the First Param and U2 in this case is U1+Period
   Standard_Real u=_Puv.X();
   Standard_Real v=_Puv.Y();
   Standard_Real uu = u, vv = v;
-  
+
   Handle(BRepAdaptor_HSurface) surf = new BRepAdaptor_HSurface();
   surf->ChangeSurface().Initialize( Face, Standard_False );
-  Standard_Boolean IsUPer, IsVPer;
-  Standard_Real uperiod=0, vperiod=0;
-  if ((IsUPer = surf->IsUPeriodic()))
-    uperiod = surf->UPeriod();
-  if ((IsVPer = surf->IsVPeriodic()))
-    vperiod = surf->VPeriod();
+  const Standard_Boolean IsUPer  = surf->IsUPeriodic();
+  const Standard_Boolean IsVPer  = surf->IsVPeriodic();
+  const Standard_Real    uperiod = IsUPer ? surf->UPeriod() : 0.0;
+  const Standard_Real    vperiod = IsVPer ? surf->VPeriod() : 0.0;
   TopAbs_State Status = TopAbs_UNKNOWN;
   Standard_Boolean urecadre = Standard_False, vrecadre = Standard_False;
-  
+  Standard_Integer dedans = 1;
+
   if (RecadreOnPeriodic)
     {
       if (IsUPer)

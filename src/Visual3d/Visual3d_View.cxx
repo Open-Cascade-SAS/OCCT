@@ -3588,8 +3588,8 @@ void Visual3d_View :: SetComputedMode ( const Standard_Boolean aMode )
  Visual3d_TypeOfAnswer                 Answer;
  Standard_Integer                      StructId;
  Standard_Integer                      i = MyDisplayedStructure.Extent ();
-
- if (  !( ComputedModeIsActive = aMode )  ) {
+ ComputedModeIsActive = aMode;
+ if (!ComputedModeIsActive) {
 
   while (  S1Iterator.More ()  ) {
 

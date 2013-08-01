@@ -1354,9 +1354,8 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit()
       myInitOrder->SetValue( i, i );
   }
 
-  Standard_Boolean CourbeJoint=Standard_False;
-  
-  if (NTLinCont != 0 && (CourbeJoint = CourbeJointive( myTol3d )) && IsOrderG1())
+  Standard_Boolean CourbeJoint = (NTLinCont != 0) && CourbeJointive (myTol3d);
+  if (CourbeJoint && IsOrderG1())
     {
       nopt = 3;
       // Tableau contenant le nuage de point pour le calcul du plan

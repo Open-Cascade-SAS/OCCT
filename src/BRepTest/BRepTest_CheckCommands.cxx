@@ -18,8 +18,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-// modified by mps  (dec 96) ajout des commandes pour l'analyse de continuite
-
 #include <BRepTest.hxx>
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -77,11 +75,7 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 
-//#ifdef WNT
 #include <stdio.h>
-#ifdef WNT
-//#define strcasecmp strcmp Already defined
-#endif
 #ifdef HAVE_STRINGS_H
 # include <strings.h>
 #endif
@@ -1444,10 +1438,9 @@ static Standard_Integer clintedge(Draw_Interpretor& di,
 
   TopTools_DataMapOfShapeListOfShape mymap;
   TopOpeBRepTool_PurgeInternalEdges mypurgealgo(S);
-  Standard_Integer nbedges;
-
-  if ((nbedges = mypurgealgo.NbEdges())) {
-
+  Standard_Integer nbedges = mypurgealgo.NbEdges();
+  if (nbedges > 0)
+  {
     //cout<<nbedges<<" internal (or external) edges to be removed"<<endl;
     di<<nbedges<<" internal (or external) edges to be removed"<<"\n";
 

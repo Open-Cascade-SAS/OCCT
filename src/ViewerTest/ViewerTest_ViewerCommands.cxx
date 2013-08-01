@@ -558,8 +558,8 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
 #endif
 
     TCollection_AsciiString anOverlappedViewId("");
-    Standard_Boolean isOverlapped = Standard_False;
-    while (isOverlapped = IsWindowOverlapped (aPxLeft, aPxTop, aPxLeft + aPxWidth, aPxTop + aPxHeight, anOverlappedViewId))
+
+    while (IsWindowOverlapped (aPxLeft, aPxTop, aPxLeft + aPxWidth, aPxTop + aPxHeight, anOverlappedViewId))
     {
       ViewerTest_myViews.Find1(anOverlappedViewId)->Window()->Position (aLeft, aTop, aRight, aBottom);
 

@@ -30,13 +30,13 @@ File OpenGl_telem_view :
 
 static  void
 EvalViewMappingMatrix( tel_view_mapping mapping /* View Mapping */,
-                       Tint *error_ind          /* Out: Error Indicator */,
+                       Tint* error_ind          /* Out: Error Indicator */,
                        Tmatrix3 mat             /* Out: Mapping Matrix * */,
                        Tint     flag,
                        Tfloat   cx,
                        Tfloat   cy,
                        Tint     /*clip_flag*/,
-                       Tlimit3  */*clip_limit*/
+                       Tlimit3* /*clip_limit*/
                       )
 {
   Tfloat    gx, gy, xsf, ysf, zsf;

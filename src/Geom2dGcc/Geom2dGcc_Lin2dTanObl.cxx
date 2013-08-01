@@ -59,7 +59,8 @@ Geom2dGcc_Lin2dTanObl::
     gp_Circ2d c1(CCC1->Circ2d());
     GccEnt_QualifiedCirc Qc1=GccEnt_QualifiedCirc(c1,Qualified1.Qualifier());
     GccAna_Lin2dTanObl Lin(Qc1,TheLine,Angle);
-    if((WellDone = Lin.IsDone())) { 
+    WellDone = Lin.IsDone();
+    if(WellDone) { 
       NbrSol = Lin.NbSolutions();
       for (Standard_Integer i = 1 ; i <= NbrSol ; i++) {
 	linsol(i)    = Lin.ThisSolution(i);
@@ -123,7 +124,8 @@ Geom2dGcc_Lin2dTanObl::
     gp_Circ2d c1(CCC1->Circ2d());
     GccEnt_QualifiedCirc Qc1=GccEnt_QualifiedCirc(c1,Qualified1.Qualifier());
     GccAna_Lin2dTanObl Lin(Qc1,TheLine,Angle);
-    if((WellDone = Lin.IsDone())) { 
+    WellDone = Lin.IsDone();
+    if(WellDone) { 
       NbrSol = Lin.NbSolutions();
       for (Standard_Integer i = 1 ; i <= NbrSol ; i++) {
 	linsol(i)    = Lin.ThisSolution(i);
@@ -136,7 +138,8 @@ Geom2dGcc_Lin2dTanObl::
   else {
     Geom2dGcc_MyQCurve Qc1(C1,Qualified1.Qualifier());
     Geom2dGcc_MyL2dTanObl Lin(Qc1,TheLine,TolAng,Param1,Angle);
-    if((WellDone = Lin.IsDone())) { 
+    WellDone = Lin.IsDone();
+    if(WellDone) { 
       linsol(1)    = Lin.ThisSolution();
       Lin.Tangency1(par1sol(1),pararg1(1),pnttg1sol(1));
       Lin.Intersection2(par2sol(1),pararg2(1),pntint2sol(1));
