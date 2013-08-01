@@ -594,6 +594,7 @@ Standard_Boolean ShapeAnalysis_Wire::CheckOrder(ShapeAnalysis_WireOrder& sawo,
   case   2: myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE2); break;
   case  -1: myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE3); break;
   case  -2: myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE4); break;
+  case   3: myStatus = ShapeExtend::EncodeStatus (ShapeExtend_DONE5); break;//only shifted
   case -10: myStatus = ShapeExtend::EncodeStatus (ShapeExtend_FAIL1); break;
   }
   return LastCheckStatus (ShapeExtend_DONE);

@@ -441,6 +441,8 @@ Standard_Boolean ShapeFix_Wire::FixReorder()
     myStatusReorder |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE2 );
   if ( sawo.Status() <0 ) 
     myStatusReorder |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE3 );
+  if ( sawo.Status() == 3)
+    myStatusReorder |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE5 );//only shifted
   return Standard_True;
 }
 

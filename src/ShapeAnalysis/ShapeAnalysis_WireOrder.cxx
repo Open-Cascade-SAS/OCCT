@@ -393,8 +393,32 @@ void ShapeAnalysis_WireOrder::Perform(const Standard_Boolean /*closed*/)
       if(stTmp>=0) stTmp = (mainSeq->Value(i) > 0 ? 1 : -1);
     myOrd->SetValue(i,mainSeq->Value(i));
   }
-  myStat = stTmp;
-  return;
+  if (stTmp == 0) {
+    myStat = stTmp;
+    return;
+  }
+  else {//check if edges were only shifted in reverse or forward, not reordered
+    Standard_Boolean isShiftReverse = Standard_True, isShiftForward = Standard_True;
+    Standard_Integer tmpFirst = 0, tmpSecond = 0, length = mainSeq->Length();
+    for(i = 1; i <= length - 1; i++) {
+      tmpFirst = mainSeq->Value(i);
+      tmpSecond = mainSeq->Value(i+1);
+      if (!(tmpSecond - tmpFirst == 1 || (tmpFirst == length && tmpSecond == 1)))
+        isShiftForward = Standard_False;
+      if (!(tmpFirst - tmpSecond == 1 || (tmpSecond == length && tmpFirst == 1)))
+        isShiftReverse = Standard_False;
+    }
+    tmpFirst = mainSeq->Value(length);
+    tmpSecond = mainSeq->Value(1);
+    if (!(tmpSecond - tmpFirst == 1 || (tmpFirst == length && tmpSecond == 1)))
+      isShiftForward = Standard_False;
+    if (!(tmpFirst - tmpSecond == 1 || (tmpSecond == length && tmpFirst == 1)))
+      isShiftReverse = Standard_False;
+    if (isShiftForward || isShiftReverse)
+      stTmp = 3;
+    myStat = stTmp;
+    return;
+  }
 }
 
 //=======================================================================
