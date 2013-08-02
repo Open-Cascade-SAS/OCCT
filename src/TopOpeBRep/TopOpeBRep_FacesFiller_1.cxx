@@ -74,13 +74,6 @@ extern Standard_Boolean GLOBAL_bvpr;
 extern void debvprmess(Standard_Integer f1,Standard_Integer f2,Standard_Integer il,Standard_Integer vp,Standard_Integer si);
 extern Standard_Boolean TopOpeBRep_GetcontextNOPUNK();
 
-static void SSAVFF(const TopoDS_Shape& F1, const TopoDS_Shape& F2)
-{
-  TCollection_AsciiString aname_1("ffbug_1"), aname_2("ffbug_2");
-  Standard_CString name_1=aname_1.ToCString(),name_2=aname_2.ToCString();
-  cout<<"FacesFiller : "<<name_1<<","<<name_2<<endl;
-  BRepTools::Write(F1,name_1); BRepTools::Write(F2,name_2);
-}
 #ifdef DRAW
 static void FUN_traceRLine(const TopOpeBRep_LineInter& L)
 {
@@ -544,18 +537,6 @@ static Standard_Boolean FUN_brep_ONfirstP(const TopOpeBRep_VPointInter& vpf, con
   Standard_Boolean ONfirstP = (Abs(d) < tol);
   return ONfirstP;
 }
-
-#ifdef DEB
-static void FUN_remove(TopOpeBRepDS_ListOfInterference& lI, const Handle(TopOpeBRepDS_Interference)& I)
-{
-  TopOpeBRepDS_ListIteratorOfListOfInterference itI(lI);
-  while (itI.More()) {
-    const Handle(TopOpeBRepDS_Interference)& Icur = itI.Value();
-    if (Icur == I) lI.Remove(itI);
-    else           itI.Next();
-  }
-}
-#endif
 
 //=======================================================================
 //function : ProcessRLine

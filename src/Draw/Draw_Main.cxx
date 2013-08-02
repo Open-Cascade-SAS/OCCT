@@ -91,10 +91,6 @@ Standard_IMPORT Standard_Boolean Draw_Interprete(const char* command); //for C30
 
 // necessary for WNT in C21 only
 static FDraw_InitAppli theDraw_InitAppli; //pointer to the Draw_InitAppli
-static void Draw_InitAppli(Draw_Interpretor& theCommands)
-{
-  theDraw_InitAppli (theCommands);
-}
 #endif
 
 #ifdef WNT

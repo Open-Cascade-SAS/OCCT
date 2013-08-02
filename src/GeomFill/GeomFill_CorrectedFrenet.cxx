@@ -634,9 +634,6 @@ Standard_Real GeomFill_CorrectedFrenet::CalcAngleAT(const gp_Vec& Tangent, const
 // Function : ... (OCC78)
 // Purpose : This family of functions produce conversion of angle utility
 //===============================================================
-static Standard_Real corrPI_2PI(Standard_Real Ang){
-  return Ang = (Ang >= 0.0? Ang: 2*M_PI+Ang);
-};
 static Standard_Real corr2PI_PI(Standard_Real Ang){
   return Ang = (Ang < M_PI? Ang: Ang-2*M_PI);
 };

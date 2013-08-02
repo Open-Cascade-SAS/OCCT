@@ -78,19 +78,6 @@ static void FUN_MakeERL(TopOpeBRep_FacesIntersector& FI,TopTools_ListOfShape& ER
   }
 }
 
-// Unused :
-#ifdef DEB
-static void FUN_MakeERL(const TopTools_MapOfShape& mapES,TopTools_ListOfShape& ERL)
-{
-  ERL.Clear();
-  TopTools_MapIteratorOfMapOfShape itES;
-  for (itES.Initialize(mapES);itES.More();itES.Next()) {
-    const TopoDS_Shape& E = itES.Key();
-    ERL.Append(E);
-  }
-}
-#endif
-
 //=======================================================================
 //function : TopOpeBRep_FacesFiller
 //purpose  : 

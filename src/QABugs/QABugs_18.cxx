@@ -57,25 +57,6 @@
 
 #define DEFAULT_COLOR    Quantity_NOC_GOLDENROD
 
-static Quantity_NameOfColor GetColorFromName( const char *name, Standard_Boolean& Found) 
-{ 
-  Quantity_NameOfColor ret = DEFAULT_COLOR;
-  
-  Found = Standard_False;
-  Standard_CString colstring;
-  for(Standard_Integer i=0;i<=514 && !Found;i++)
-    {
-      colstring = Quantity_Color::StringName(Quantity_NameOfColor(i));
-      if (!strcasecmp(name,colstring)) {
-	ret = (Quantity_NameOfColor)i;
-	Found = Standard_True;
-	break;
-      }
-    }
-  
-  return ret;
-}
-
 static Standard_Integer BUC60851 (Draw_Interpretor& /*di*/, Standard_Integer /*argc*/, const char ** /*argv*/)
 {
   Handle(AIS_InteractiveContext)   context= ViewerTest_Tool::MakeContext ("buc60851");

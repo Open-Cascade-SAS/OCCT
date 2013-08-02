@@ -75,22 +75,23 @@
 #define BUC60925
 #define OCC352
 
+#ifdef DEB_DBGTOOLS_WRITE
 //#define OCC355
-//#define MDTV_DEB
-//#define MDTV_DEB_OR
-//#define MDTV_DEB_UNN
-//#define  MDTV_DEB_INT
-//#define MDTV_DEB_GEN
-//#define  MDTV_DEB_MODUN
-//#define MDTV_DEB_FNB
-//#define  MDTV_DEB_WIN
-//#define MDTV_DEB_ARG
-//#define MDTV_DEB_SHELL
+#define MDTV_DEB
+#define MDTV_DEB_OR
+#define MDTV_DEB_UNN
+#define  MDTV_DEB_INT
+#define MDTV_DEB_GEN
+#define  MDTV_DEB_MODUN
+#define MDTV_DEB_FNB
+#define  MDTV_DEB_WIN
+#define MDTV_DEB_ARG
+#define MDTV_DEB_SHELL
+#endif
 #ifdef MDTV_DEB
 #include <TCollection_AsciiString.hxx>
 #include <TDF_Tool.hxx>
 #include <BRepTools.hxx>
-#include <DbgTools.hxx>
 #endif
 #ifdef DEB
 #include <TCollection_AsciiString.hxx>
@@ -115,7 +116,7 @@ void PrintEntries(const TDF_LabelMap& map)
       cout << "LabelEntry = "<< entry << endl;
     }
 }
-
+#ifdef DEB_DBGTOOLS_WRITE
 //=======================================================================
 static void DbgTools_Write(const TopoDS_Shape& shape,
 		      const Standard_CString filename) 
@@ -172,8 +173,7 @@ static void DbgTools_WriteNSOnLabel (const Handle(TNaming_NamedShape)& NS,
   }
 }
 #endif
-
-//=======================================================================
+#endif
 //
 //====================================================================
 static Standard_Boolean ValidArgs(const TNaming_ListOfNamedShape& Args)
@@ -1079,95 +1079,6 @@ static Standard_Boolean Union (const TDF_Label&                  L,
 }
 
 //=======================================================================
-// function: FindShape
-//
-//=======================================================================
-static TopoDS_Shape FindShape(const TopTools_ListOfShape& theList) 
-{
-  Standard_Integer anUp = theList.Extent();
-  TopoDS_Shape aShape;
-  if(anUp < 1) return aShape;
-  if(anUp == 1) return theList.First();
-  Standard_Integer aLow = 1;
-  TColStd_Array1OfInteger Ar1(aLow, anUp); 
-  TopTools_Array1OfShape  Ars(aLow, anUp);
-  TopTools_ListIteratorOfListOfShape it(theList);
-  Standard_Integer i=0;
-  for(i=aLow;it.More();it.Next(), i++) {
-    Ars.SetValue(i, it.Value());
-    Ar1.SetValue(i, 0);
-  }
-//  for(i = aLow;i<= anUp;i++) {
-//    const TopoDS_Shape& aS = Ars.Value(i);
-//    for(Standard_Integer j=i;j<=anUp;j++)
-//      if(aS.IsSame(Ars.Value(j)))
-//	Ar1.SetValue(i, Ar1.Value(i)+1);
-//  }
-  for(i = aLow;i<= anUp;i++) {
-    const TopoDS_Shape& aS = Ars.Value(i);
-    for(Standard_Integer j=i+1;j<=anUp;j++)
-      if(aS.IsSame(Ars.Value(j)))
-		return aS;
-  }
-//  Standard_Integer aNum = Ar1.Value(1);
-//  Standard_Integer indx = -1;
-// for(i = aLow;i<= anUp;i++) {
-//    if(aNum < Ar1.Value(i)) {
-//       aNum = Ar1.Value(i);
-//       indx = i;
-//       }
-//  }
-//  if(indx == -1) return aShape;
-//  return Ars.Value(indx);
-  return aShape;
-}
-//=======================================================================
-/*
-static TopoDS_Shape FindShape(const TopTools_DataMapOfShapeListOfShape& DM) 
-{
-  TopoDS_Shape aResult;
-  Standard_Integer aNum = DM.Extent();
-  if(aNum < 1) return aResult;  
-  //  cout <<" DM Keys Nb = " << aNum <<endl;
-  TopTools_ListOfShape List;
-  TopTools_DataMapIteratorOfDataMapOfShapeListOfShape it(DM);
-  for (;it.More();it.Next()) {
-    const TopoDS_Shape& aKey1 = it.Key();
-    const TopTools_ListOfShape& aList = it.Value();
-    TopTools_ListIteratorOfListOfShape itl(aList);
-    for (;itl.More();itl.Next()) {
-      const TopoDS_Shape& aS = itl.Value();
-      TopTools_DataMapIteratorOfDataMapOfShapeListOfShape it2(DM);
-      for (;it2.More();it2.Next()) {
-	const TopoDS_Shape& aKey2 = it2.Key();
-	if(aKey2 == aKey1) continue;
-	else {
-	  const TopTools_ListOfShape& aList2 = it2.Value();
-	  TopTools_ListIteratorOfListOfShape itl2(aList2);
-	  for(;itl2.More();itl2.Next()) {
-	    if(aS.IsSame(itl2.Value()))
-	      List.Append(itl2.Value());
-	  }
-	}
-      }
-    }
-    break;
-  }
-
-  if(List.IsEmpty()) return aResult;
-  if(List.Extent() == 1) return List.First();
-  TopTools_ListIteratorOfListOfShape itl (List);
-  TopoDS_Compound Compound;
-  BRep_Builder B;
-  B.MakeCompound(Compound);
-  for (; itl.More(); itl.Next()){ 
-    B.Add(Compound,itl.Value());
-  }
-  return Compound; 
-}
-*/
-
-//=======================================================================
 static TopoDS_Shape FindShape(const TNaming_DataMapOfShapeMapOfShape& DM) 
 {
   TopoDS_Shape aResult;
@@ -1323,7 +1234,6 @@ static Standard_Boolean  Generated (const TDF_Label&                L,
       if(!aList2.Extent()) return Standard_False; // Empty
 
       Standard_Boolean found = Standard_False;
-      //TopoDS_Shape aShape = FindShape(aList2);
       TopoDS_Shape aShape = FindShape(aDM);
 #ifdef MDTV_DEB_GEN
       if(!aShape.IsNull())

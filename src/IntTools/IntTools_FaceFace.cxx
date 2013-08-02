@@ -122,9 +122,10 @@
 
 static
   void RefineVector(gp_Vec2d& aV2D);
-
+#ifdef DEB_DUMPWLINE
 static
   void DumpWLine(const Handle(IntPatch_WLine)& aWLine);
+#endif
 //
 static
   void TolR3d(const TopoDS_Face& ,
@@ -1118,22 +1119,18 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
     //
     const Handle(IntPatch_WLine)& aWLine=
       Handle(IntPatch_WLine)::DownCast(L);
-    //DEBf
-    //DumpWLine(aWLine);
-    //DEBt
+#ifdef DEB_DUMPWLINE
+    DumpWLine(aWLine);
+#endif
     anewL = ComputePurgedWLine(aWLine);
     if(anewL.IsNull()) {
       return;
     }
     L = anewL;
-    //DEBf
-    /*
-    { const Handle(IntPatch_WLine)& aWLineX=
-	Handle(IntPatch_WLine)::DownCast(L);
+#ifdef DEB_DUMPWLINE
+      const Handle(IntPatch_WLine)& aWLineX = Handle(IntPatch_WLine)::DownCast(L);
       DumpWLine(aWLineX);
-    }
-    */
-    //DEBt 
+#endif
     //
     if(!myListOfPnts.IsEmpty()) {
       bAvoidLineConstructor = Standard_True;
@@ -4754,6 +4751,7 @@ Standard_Integer IndexType(const GeomAbs_SurfaceType aType)
   } 
   return aIndex;
 }
+#ifdef DEB_DUMPWLINE
 //=======================================================================
 //function : DumpWLine
 //purpose  : 
@@ -4776,6 +4774,7 @@ void DumpWLine(const Handle(IntPatch_WLine)& aWLine)
 	//   i, aX, aY, aZ, aU1, aV1, aU2, aV2);
   }
 }
+#endif
 //=======================================================================
 //function : RefineVector
 //purpose  : 

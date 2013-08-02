@@ -184,21 +184,6 @@ static Handle(DrawTrSurf_BSplineSurface) GetBSplineSurface(Standard_CString& Nam
   return Dr;
 }
 
-#ifdef DEB
-//=======================================================================
-//function : GetCurve
-//purpose  : 
-//=======================================================================
-static Handle(DrawTrSurf_Curve) GetCurve(Standard_CString& Name)
-{
-  Handle(Draw_Drawable3D) D = Draw::Get(Name);
-  Handle(DrawTrSurf_Curve) Dr;
-  if (!D.IsNull()) 
-    Dr = Handle(DrawTrSurf_Curve)::DownCast(D);
-  return Dr;
-}
-#endif
-
 //=======================================================================
 //function : GetBezierCurve
 //purpose  : 

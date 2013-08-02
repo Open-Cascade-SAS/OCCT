@@ -136,36 +136,6 @@ static Standard_CString makename2(const gp_Pnt& P)
   return temp;
 }
 
-#ifdef DEB
-static Handle(Geom_Curve) DrawAxe1(const TColgp_Array1OfPnt& T)
-{
-  Standard_Integer up = T.Upper();
-  TColgp_Array1OfPnt *AOP = new TColgp_Array1OfPnt(1, up);
-  for(Standard_Integer i= 1; i <= up; i++) {
-    gp_Pnt pnt(T.Value(i).Coord(1), 0, 0);
-    (*AOP).SetValue(i, pnt);
-  }
-  Handle(Geom_Curve) C;
-  C = TopOpeBRepTool_CurveTool::MakeBSpline1fromPnt(*AOP);
-  return C;
-}
-#endif
-
-#ifdef DEB
-static Handle(Geom_Curve) DrawAxe2(const TColgp_Array1OfPnt& T)
-{
-  Standard_Integer up = T.Upper();
-  TColgp_Array1OfPnt *AOP = new TColgp_Array1OfPnt(1, up);
-  for(Standard_Integer i= 1; i <= up; i++) {
-    gp_Pnt pnt(0, T.Value(i).Coord(2), 0);
-    (*AOP).SetValue(i, pnt);
-  }
-  Handle(Geom_Curve) C;
-  C = TopOpeBRepTool_CurveTool::MakeBSpline1fromPnt(*AOP);
-  return C;
-}
-#endif
-
 static Handle(Geom_Curve) DrawAxe1(const TColgp_Array1OfPnt& T,
 				   const Standard_Real ScaleX)
 {

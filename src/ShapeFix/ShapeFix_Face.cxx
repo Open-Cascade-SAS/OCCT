@@ -1965,29 +1965,6 @@ Standard_Boolean ShapeFix_Face::FixLoopWire(TopTools_SequenceOfShape& aResWires)
   return isDone; 
 }
 
-
-//=======================================================================
-//function : GetPointOnEdge
-//purpose  : auxiliary
-//:h0 abv 29 May 98: PRO10105 1949: like in BRepCheck, point is to be taken 
-// from 3d curve (but only if edge is SameParameter)
-//=======================================================================
-static gp_Pnt GetPointOnEdge ( const TopoDS_Edge &edge, 
-			       const Handle(ShapeAnalysis_Surface) &surf,
-			       const Handle(Geom2d_Curve) &Crv2d, 
-			       const Standard_Real param )
-{
-  if ( BRep_Tool::SameParameter ( edge ) ) {
-    Standard_Real f,l;
-    TopLoc_Location L;
-    const Handle(Geom_Curve) ConS = BRep_Tool::Curve ( edge, L, f, l );
-    if ( ! ConS.IsNull() )
-      return ConS->Value ( param ).Transformed ( L.Transformation() );
-  }
-  return surf->Value ( Crv2d->Value ( param ) );
-}
-
-
 //=======================================================================
 //function : SplitEdge
 //purpose  : 

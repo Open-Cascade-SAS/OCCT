@@ -56,19 +56,6 @@ static Standard_Integer SMSearch(const SelectMgr_SequenceOfSelector& seq,
 
 } 
 
-// Unused :
-#ifdef DEB
-static Standard_Boolean SMListContains(const TColStd_ListOfInteger& LL,
-                                       const Standard_Integer aMode) 
-{
-  TColStd_ListIteratorOfListOfInteger LIt;
-  for (LIt.Initialize(LL);LIt.More();LIt.Next())
-  {if(LIt.Value()==aMode) return Standard_True;}
-  return Standard_False;
-} 
-
-#endif
-
 //==================================================
 // Function: Create
 // Purpose :

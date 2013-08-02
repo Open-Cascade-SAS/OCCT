@@ -44,11 +44,6 @@ static Standard_CString name = tname ;
 static Standard_Integer nbb  = 0;
 */
 
-#ifdef DEB
-static Standard_Boolean  PointIsOnCurve(const Handle(Geom2d_Curve)& C,
-					const gp_Pnt2d&             P,
-					      Standard_Real&        U);
-#endif
 static Standard_Boolean IsMaxRC (const Handle(Geom2d_Curve)& C,
 				       Standard_Real         U,
         			       Standard_Real&        R);
@@ -543,26 +538,6 @@ const Handle(Geom2d_TrimmedCurve)&  Bisector_Bisec::ChangeValue()
   return thebisector;
 }
 
-//=============================================================================
-//function : PointIsOnCurve
-// purpose  :
-//=============================================================================
-#ifdef DEB
-static Standard_Boolean  PointIsOnCurve(const Handle(Geom2d_Curve)& C,
-					const gp_Pnt2d&             P,
-					      Standard_Real&        U)
-{
-  if (C->Value(C->FirstParameter()).IsEqual(P,Precision::Confusion())) {
-    U = C->FirstParameter();
-    return Standard_True;
-  }
-  if (C->Value(C->LastParameter()).IsEqual(P,Precision::Confusion()))  {
-    U = C->LastParameter();
-    return Standard_True;
-  }
-  return Standard_False;
-}
-#endif
 //=============================================================================
 //function : ReplaceByLineIfIsToSmall 
 //purpose  : If the size of an algorithmic bissectrice is negligeable it is

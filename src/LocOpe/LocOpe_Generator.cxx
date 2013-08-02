@@ -82,13 +82,6 @@ static Standard_Real NewParameter(const TopoDS_Edge&,
 				  const TopoDS_Edge&,
 				  const TopoDS_Vertex&);
 
-#ifdef DEB
-static Standard_Boolean Contains(const TopTools_ListOfShape&,
-				 const TopoDS_Shape&);
-#endif
-
-
-
 
 //=======================================================================
 //function : Perform
@@ -1277,26 +1270,3 @@ Standard_Real NewParameter(const TopoDS_Edge& Edg,
   }
   return 0;
 }
-
-
-//=======================================================================
-//function : Contains
-//purpose  : 
-//=======================================================================
-
-// Unused :
-#ifdef DEB
-Standard_Boolean Contains(const TopTools_ListOfShape& L,
-			  const TopoDS_Shape& S)
-{
-  TopTools_ListIteratorOfListOfShape itl;
-  for (itl.Initialize(L); itl.More(); itl.Next()) {
-//  for (TopTools_ListIteratorOfListOfShape itl(L); itl.More(); itl.Next()) {
-    if (itl.Value().IsSame(S)) {
-      return Standard_True;
-    }
-  }
-  return Standard_False;
-}
-#endif
-

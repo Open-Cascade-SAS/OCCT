@@ -53,6 +53,7 @@ AddInterference(HLRAlgo_InterferenceList& IL,
 //function : ProcessComplex
 //purpose  : 
 //=======================================================================
+#ifdef DEB_SI
 static Standard_Boolean SimilarInterference(const HLRAlgo_Interference& I1,
 					    const HLRAlgo_Interference& I2)
 {
@@ -73,6 +74,7 @@ static Standard_Boolean SimilarInterference(const HLRAlgo_Interference& I1,
   return IsSimilar;
   
 }
+#endif
 void  HLRBRep_EdgeIList::
 ProcessComplex(HLRAlgo_InterferenceList& IL,
 	       const HLRBRep_EdgeInterferenceTool& T)
@@ -87,9 +89,12 @@ ProcessComplex(HLRAlgo_InterferenceList& IL,
     HLRAlgo_ListIteratorOfInterferenceList It2(It1);
     It2.Next();
     if (It2.More()) {
-      if (T.SameInterferences(It1.Value(),It2.Value())/* || 
-	  SimilarInterference(It1.Value(),It2.Value())*/) {
-
+      if (T.SameInterferences(It1.Value(),It2.Value())
+#ifdef DEB_SI
+          || SimilarInterference(It1.Value(),It2.Value())
+#endif
+          )
+{
 	T.EdgeGeometry(T.ParameterOfInterference(It1.Value()),
 		       TgtE, NormE, CurvE);
 	transTool.Reset(TgtE,NormE,CurvE);
@@ -101,8 +106,11 @@ ProcessComplex(HLRAlgo_InterferenceList& IL,
 				  It1.Value().BoundaryTransition());
 
 	while (It2.More()) {
-	  if (!(T.SameInterferences(It1.Value(),It2.Value())/* ||
-		SimilarInterference(It1.Value(),It2.Value())*/)) break;
+	  if (!(T.SameInterferences(It1.Value(),It2.Value())
+#ifdef DEB_SI
+          || SimilarInterference(It1.Value(),It2.Value())
+#endif
+     )) break;
 
 	  T.InterferenceBoundaryGeometry(It2.Value(),TgtI,NormI,CurvI);
 	  transTool.AddInterference(TolAng,

@@ -306,55 +306,6 @@ static Standard_Real FUN_getx(const TopoDS_Edge& ,
   return x;
 }
 
-/*static void FUN_getinfsupx(const TopoDS_Edge& E, const TopOpeBRepTool_C2DF& c2df,
-			   const Standard_Boolean uiso,
-			   Standard_Real& xf, Standard_Real& xl)
-{ // prequesitory : E is uviso
-  // 2drep(E) describes [xf,xl]*[yf,yl];
-  // if (uiso) x = upar
-  // if (viso) x = vpar
-  Standard_Real f,l; FUN_tool_bounds(E, f,l);
-  Standard_Real parf = FUN_getx(E,c2df,uiso, f);
-  Standard_Real parl = FUN_getx(E,c2df,uiso, l);
-  if (parf < parl) {xf = parf; xl = parl;}
-  else             {xf = parl; xl = parf;}
-}*/
-
-#ifdef DEB
-static Standard_Boolean FUN_isonOcE(const TopOpeBRepTool_CORRISO CO, const TopoDS_Edge& cE)
-{
-  TopTools_Array1OfShape vcE(1,2); TopOpeBRepTool_TOOL::Vertices(cE,vcE); 
-  TopAbs_Orientation ocE = cE.Orientation(); 
-  
-  Standard_Real tttolcE = BRep_Tool::Tolerance(cE);
-  Standard_Real tttuvcE = Max(CO.Tol(1,tttolcE),CO.Tol(2,tttolcE));
-  TopOpeBRepTool_C2DF cE2d; Standard_Boolean isb = CO.UVRep(cE,cE2d);
-  if (!isb) return Standard_False; // NYIRAISE
-  
-  // isonOcE2d :
-  Standard_Boolean isonOcE2d = Standard_False;
-  {
-    // OcE (closing edge with complemented orientation):
-    TopAbs_Orientation oOcE = TopAbs::Complement(ocE);
-    TopoDS_Shape aLocalShape = cE.Oriented(oOcE);
-    TopoDS_Edge OcE = TopoDS::Edge(aLocalShape);
-//    TopoDS_Edge OcE = TopoDS::Edge(cE.Oriented(oOcE));
-    TopTools_Array1OfShape vOcE(1,2); TopOpeBRepTool_TOOL::Vertices(OcE,vOcE); 
-    Standard_Real tttolOcE = BRep_Tool::Tolerance(OcE);
-    Standard_Real tttuvOcE = Max(CO.Tol(1,tttolOcE),CO.Tol(2,tttolOcE));
-    TopOpeBRepTool_C2DF OcE2d; Standard_Boolean isOb = CO.UVRep(OcE,OcE2d);
-    if (!isOb) return Standard_False; // NYIRAISE
-    
-    Standard_Real parvce1 = TopOpeBRepTool_TOOL::ParE(1,cE);   gp_Pnt2d UVvce1 = TopOpeBRepTool_TOOL::UVF(parvce1,cE2d);
-
-    Standard_Real parvOcE2 = TopOpeBRepTool_TOOL::ParE(2,OcE); gp_Pnt2d UVvOcE2 = TopOpeBRepTool_TOOL::UVF(parvOcE2,OcE2d);
-    Standard_Real tol = Max(tttuvcE,tttuvOcE);
-    isonOcE2d = (UVvce1.Distance(UVvOcE2) < tol);
-  }
-  return isonOcE2d;
-}
-#endif
-
 //=======================================================================
 //function : PurgeFyClosingE
 //purpose  : 

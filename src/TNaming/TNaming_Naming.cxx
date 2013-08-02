@@ -137,19 +137,6 @@ void WriteNSOnLabel(const Handle(TNaming_NamedShape) & NS, const TCollection_Asc
   else
     cout << "WriteNSOnLabel >>>  NamedShape IS NULL" << endl;
 }
-//=======================================================================
-static void Write(const TopTools_MapOfShape& MS,  const Standard_CString filename) 
-{
-  if (!MS.IsEmpty ()) {
-    TCollection_AsciiString aNam (filename);
-    Standard_Integer i(0);
-    TopTools_MapIteratorOfMapOfShape it(MS);
-    for(;it.More();it.Next(),i++) {
-      TCollection_AsciiString aName = aNam + "_" + i + ".brep";
-      Write ( it.Key(), aName.ToCString());
-    }
-  }
-}
 #endif
 
 //==========================================================================================

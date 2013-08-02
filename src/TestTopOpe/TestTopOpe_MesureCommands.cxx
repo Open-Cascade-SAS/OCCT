@@ -64,17 +64,6 @@ static Standard_Integer SetName(const Standard_Character *C, Draw_Interpretor& d
   return NbMES;
 }
 
-// Unused :
-#ifdef DEB
-//-----------------------------------------------
-static void SeemMesure(const Handle(TestTopOpeDraw_DrawableMesure) DM,const Standard_Integer CMES)
-//-----------------------------------------------
-{
-  char *pname = (char *)(*PNAME).Value(CMES).ToCString();
-  Draw::Set(pname,DM);
-}
-#endif
-
 static void Mes_help(Draw_Interpretor& di)
 {
   di<<"\n";

@@ -108,13 +108,6 @@ static void Propagate(const TopTools_IndexedDataMapOfShapeListOfShape&,
 		      const TopoDS_Shape&,   // Face
 		      TopTools_MapOfShape&);  // mapofface
 
-
-#ifdef DEB
-static TopAbs_Orientation GetOrientation(const TopoDS_Face&,
-					 const TopoDS_Shape&);
-#endif
-
-
 inline Standard_Boolean IsOriented(const TopoDS_Shape& S)
 {
   return (S.Orientation() == TopAbs_FORWARD ||
@@ -848,27 +841,6 @@ Standard_Integer BRepCheck_Shell::NbConnectedSet(TopTools_ListOfShape& theSets)
   }
   return theSets.Extent();
 }
-
-//=======================================================================
-//function : GetOrientation
-//purpose  : 
-//=======================================================================
-
-#ifdef DEB
-static TopAbs_Orientation GetOrientation(const TopoDS_Face& F,
-					 const TopoDS_Shape& S)
-
-{
-  TopExp_Explorer exp;
-  for (exp.Init(S,TopAbs_FACE); exp.More(); exp.Next()) {
-    if (exp.Current().IsSame(F)) {
-      return exp.Current().Orientation();
-    }
-  }
-  return TopAbs_FORWARD; // for compilation
-}
-#endif
-
 
 //=======================================================================
 //function : Propagate

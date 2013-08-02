@@ -101,22 +101,6 @@ Standard_IMPORT TopoDS_Vertex FUN_tool_getv(const Standard_Integer Index,const T
 #define oneINtwo ( 1)
 #define twoINone ( 2)
 
-#ifdef DEB
-static void FUN_coutsta(const Standard_Integer& sta, const Standard_Integer& i1, const Standard_Integer& i2, Draw_Interpretor& di)
-{
-  switch (sta) {
-  case SAME:
-    di<<i1<<" gives SAME bnd with "<<i2<<"\n"; break;
-  case DIFF:
-    di<<i1<<" gives  OUT bnd with "<<i2<<"\n"; break;
-  case oneINtwo:
-    di<<i1<<" is IN "<<i2<<"\n"; break;
-  case twoINone:
-    di<<i2<<" is IN "<<i1<<"\n"; break;
-  }
-}
-#endif
-
 static void FUN_test_draw(TCollection_AsciiString aa,
 			  const TopoDS_Edge& E, const TopoDS_Face& F,
 			  const Standard_Integer ie,

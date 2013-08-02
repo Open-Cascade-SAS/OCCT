@@ -57,26 +57,6 @@ extern Standard_Boolean TopOpeBRepTool_GettraceCORRISO();
 #endif
 // DEB
 
-// Unused :
-#ifdef DEB
-static void FUN_RaiseError()
-{
-#ifdef DEB
-  Standard_Boolean trc = TopOpeBRepTool_GettracePURGE();
-  //  Standard_Failure::Raise("TopOpeBRepTool::PurgeClosingEdges");
-  FUN_REINIT(); 
-  if (trc) cout <<"*********failure in TopOpeBRepTool::PurgeClosingEdges***********\n";
-#endif
-}
-static void FUN_Raise()
-{
-#ifdef DEB
-  //  cout <<"*********failure in TopOpeBRepTool::CorrectONUVISO***********\n";
-  //  Standard_Failure::Raise("TopOpeBRepTool::CorrectONUVISO");
-#endif
-}
-#endif
-
 #define SPLITEDGE (0)
 #define INCREASE  (1)
 #define DECREASE (-1)
@@ -760,7 +740,6 @@ Standard_Boolean TopOpeBRepTool::CorrectONUVISO(const TopoDS_Face& Fin, TopoDS_F
       
       Standard_Boolean ok = ::FUN_correctClosingE(fyisoe,Fsp);
       if (!ok) {
-	FUN_Raise();
 	continue;
       }
     }
@@ -785,7 +764,6 @@ Standard_Boolean TopOpeBRepTool::CorrectONUVISO(const TopoDS_Face& Fin, TopoDS_F
       
       Standard_Boolean ok = ::FUN_correctDegeneratedE(mve,fydege,Fsp);
       if (!ok) {
-	FUN_Raise();
 	continue;
       }
     } // itdeg

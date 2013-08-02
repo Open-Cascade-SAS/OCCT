@@ -45,6 +45,7 @@
 static Standard_Integer IndexOfSection = 0;
 extern Standard_Boolean Blend_GettraceDRAWSECT(); 
 
+#ifdef DEB_BBPP_N_TRDERIV
 //-----------------------------------------------------
 // For debug : visualisation of the section
 static Standard_Boolean BBPP(const Standard_Real param,
@@ -118,7 +119,7 @@ static void tracederiv(Blend_RstRstFunction& Func,
     cout<<"dy estimated  : "<<scal*(TP2d1(i).Y()-TP2d2(i).Y())<<endl;
   }
 }
-
+#endif
 
 //-----------------------------------------------------
 static void Drawsect(const Standard_Real param,
@@ -580,7 +581,7 @@ void BRepBlend_RstRstLineBuilder::InternalPerform(Blend_RstRstFunction&   Func,
 
   while (!Arrive) {
     Standard_Boolean bonpoint = 1;
-#if 0
+#ifdef DEB_BBPP_N_TRDERIV
     //debdebdebdebdebdeb
     Func.Set(param);
     rsnld.Perform(Func, parinit, infbound, supbound);

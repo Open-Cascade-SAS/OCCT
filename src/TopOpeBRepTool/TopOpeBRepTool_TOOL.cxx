@@ -69,14 +69,6 @@
 #define EXTERNAL (4)
 #define CLOSING  (5)
 
-// Unused :
-#ifdef DEB
-static Standard_Real FUN_nullcurv(const Standard_Real curv)
-{
-  Standard_Real tol = Precision::Confusion()*1.e+2; // NYI
-  return (curv < tol);
-}
-#endif
 static Standard_Boolean FUN_nullprodv(const Standard_Real prodv)
 {
 //  Standard_Real tola = Precision::Angular()*1.e+1; // NYI

@@ -88,36 +88,6 @@ void  ProjLib_Cone::Init(const gp_Cone& Co)
   isDone = Standard_False;
 }
 
-
-//=======================================================================
-//function : EvalPnt2d / EvalDir2d
-//purpose  : returns the Projected Pnt / Dir in the parametrization range
-//           of myPlane.
-//=======================================================================
-
-#ifdef DEB
-static gp_Pnt2d EvalPnt2d( const gp_Pnt& P, const gp_Cone& C)
-{
-  gp_Vec OP( C.Location(),P);
-  Standard_Real X = OP.Dot(gp_Vec(C.Position().XDirection()));
-  Standard_Real Y = OP.Dot(gp_Vec(C.Position().YDirection()));
-  Standard_Real Z = OP.Dot(gp_Vec(C.Position().Direction()));
-  Standard_Real U,V;
-
-  if ( Abs(X) > Precision::PConfusion() ||
-       Abs(Y) > Precision::PConfusion() ) {
-    U = ATan2(Y,X);
-  }
-  else {
-    U = 0.;
-  }
-
-  V = Z / Cos(C.SemiAngle());
-
-  return gp_Pnt2d( U, Z);
-}
-#endif
-
 //=======================================================================
 //function : Project
 //purpose  : 

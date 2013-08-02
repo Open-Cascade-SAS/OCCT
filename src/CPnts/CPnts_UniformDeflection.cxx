@@ -74,19 +74,6 @@ static inline void D13d(const Standard_Address C, const Standard_Real U,
   ((Adaptor3d_Curve*)C)->D1(U,P,V1);
 }
 
-// Unused :
-#ifdef DEB
-static  void D12d(const Standard_Address C, const Standard_Real U,
-		      gp_Pnt& PP, gp_Vec& VV1)
-{
-  gp_Pnt2d P;
-  gp_Vec2d V1;
-  ((Adaptor2d_Curve2d*)C)->D1(U,P,V1);
-  PP.SetCoord(P.X(),P.Y(),0.);
-  VV1.SetCoord(V1.X(),V1.Y(),0.);
-}
-#endif
-
 static inline void D23d(const Standard_Address C, const Standard_Real U,
 		      gp_Pnt& P, gp_Vec& V1, gp_Vec& V2)
 {

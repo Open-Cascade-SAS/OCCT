@@ -757,39 +757,6 @@ static Standard_Integer triangle (Draw_Interpretor&, Standard_Integer n, const c
   return 0;
 }
 
-
-//=======================================================================
-//function : printdegree
-//purpose  : 
-//=======================================================================
-
-static void printdegree(BRepMesh_DegreeOfFreedom dof, Draw_Interpretor& di)
-{
-  switch (dof) {
-case BRepMesh_InVolume :
-  di << "InVolume";
-  break;
-case BRepMesh_OnSurface :
-  di << "OnSurface";
-  break;
-case BRepMesh_OnCurve :
-  di << "OnCurve";
-  break;
-case BRepMesh_Fixed :
-  di << "Fixed";
-  break;
-case BRepMesh_Frontier :
-  di << "Frontier";
-  break;
-case BRepMesh_Deleted :
-  di << "Deleted";
-  break;
-case BRepMesh_Free :
-  di << "Free";
-  break;
-  }
-}
-
 //=======================================================================
 //function : dumpvertex
 //purpose  : 

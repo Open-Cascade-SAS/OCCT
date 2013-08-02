@@ -58,16 +58,6 @@ static
 	       const Standard_Integer NumTri,
 	       const Standard_Integer NewTriNum,
 	       IntPolyh_ArrayOfEdges & TEdges) ;
-static
-  void TestOldEdgeB(const Standard_Integer NumTA,
-		    const Standard_Integer numPtT1,
-		    const Standard_Integer numPtT2,
-		    const Standard_Integer T1,
-		    const Standard_Integer T2,
-		    const IntPolyh_ArrayOfTriangles & TTriangles,
-		    const Standard_Integer Edge1,
-		    const Standard_Integer Edge3,
-		    IntPolyh_ArrayOfEdges & TEdges );
 
 //=======================================================================
 //function : IntPolyh_Triangle
@@ -603,42 +593,6 @@ void OldEdge(const Standard_Integer EdgeN,
   }
 }
 
-//=======================================================================
-//function : TestOldEdgeB
-//purpose  : 
-//=======================================================================
-void TestOldEdgeB(const Standard_Integer NumTA,
-                  const Standard_Integer numPtT1,
-                  const Standard_Integer /*numPtT2*/,
-                  const Standard_Integer T1,
-                  const Standard_Integer T2,
-                  const IntPolyh_ArrayOfTriangles & /*TTriangles*/,
-                  const Standard_Integer Edge1,
-                  const Standard_Integer Edge3,
-                  IntPolyh_ArrayOfEdges & TEdges )
-{
-
-  if( (TEdges[Edge1].FirstPoint() == numPtT1)
-     ||(TEdges[Edge1].SecondPoint()== numPtT1) ) {
-    /// L'edge1 est commun aux triangles NumTA et T1 
-    if(TEdges[Edge1].FirstTriangle()==NumTA) 
-      TEdges[Edge1].SetFirstTriangle(T1);
-    else TEdges[Edge1].SetSecondTriangle(T1);
-    
-    if(TEdges[Edge3].FirstTriangle()==NumTA) 
-      TEdges[Edge3].SetFirstTriangle(T2);
-    else TEdges[Edge3].SetSecondTriangle(T2);
-  }
-  else {
-    /// L'edge3 est commun aux triangles NumTA et T1 
-    if(TEdges[Edge3].FirstTriangle()==NumTA) 
-      TEdges[Edge3].SetFirstTriangle(T1);
-    else TEdges[Edge3].SetSecondTriangle(T1);      
-    if(TEdges[Edge1].FirstTriangle()==NumTA) 
-      TEdges[Edge1].SetFirstTriangle(T2);
-    else TEdges[Edge1].SetSecondTriangle(T2);
-  }
-}
 //=======================================================================
 //function : MiddleRefinement
 //purpose  : 

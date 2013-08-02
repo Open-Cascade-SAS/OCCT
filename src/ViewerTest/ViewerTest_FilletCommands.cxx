@@ -95,25 +95,6 @@ static void printtolblend(Draw_Interpretor& di)
   di<<"tolblend "<<ta<<" "<<t3d<<" "<<t2d<<" "<<fl<<"\n";
 }
 
-// Unused :
-#ifdef DEB
-static Standard_Integer tolblend(Draw_Interpretor& di, Standard_Integer narg, const char** a)
-{
-  if(narg == 1){
-    printtolblend(di);
-    return 0;
-  }
-  else if(narg == 5){
-    ta = Draw::Atof(a[1]);
-    t3d = Draw::Atof(a[2]);
-    t2d = Draw::Atof(a[3]);
-    fl = Draw::Atof(a[4]);
-    return 0;
-  }
-  return 1;
-}
-#endif
-
 static Standard_Integer VBLEND(Draw_Interpretor& di, Standard_Integer narg, const char** a)
 {
   if(Rakk != 0) {delete Rakk; Rakk = 0;}

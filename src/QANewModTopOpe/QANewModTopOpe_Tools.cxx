@@ -52,9 +52,6 @@
 #include <BOPDS_CommonBlock.hxx>
 #include <BOPTools_AlgoTools3D.hxx>
 
-static Standard_Boolean CheckSameDomainFaceInside(const TopoDS_Face& theFace1,
-                                                  const TopoDS_Face& theFace2);
-
 static Standard_Boolean AddShapeToHistoryMap(const TopoDS_Shape& theOldShape,
                                              const TopoDS_Shape& theNewShape,
                                              TopTools_IndexedDataMapOfShapeListOfShape& theHistoryMap);
@@ -738,59 +735,6 @@ Standard_Boolean QANewModTopOpe_Tools::BoolOpe(const TopoDS_Shape& theFace1,
     AddShapeToHistoryMap(aNewVertex, aNewVertex, theHistoryMap);
   }
   // fill vertex history.end
-  return Standard_True;
-}
-
-// -----------------------------------------------------------------
-// static function: CheckSameDomainFaceInside
-// purpose: Check if distance between several points of theFace1 and
-//          theFace2 is not more than sum of maximum of tolerances of
-//          theFace1's edges and tolerance of theFace2
-// -----------------------------------------------------------------
-Standard_Boolean CheckSameDomainFaceInside(const TopoDS_Face& theFace1,
-                                           const TopoDS_Face& theFace2) {
-
-  Standard_Real umin = 0., umax = 0., vmin = 0., vmax = 0.;
-  BRepTools::UVBounds(theFace1, umin, umax, vmin, vmax);
-  Handle(BOPInt_Context) aContext;
-  Handle(Geom_Surface) aSurface = BRep_Tool::Surface(theFace1);
-  Standard_Real aTolerance = BRep_Tool::Tolerance(theFace1);
-
-  aContext = new BOPInt_Context;
-  TopExp_Explorer anExpE(theFace1, TopAbs_EDGE);
-
-  for(; anExpE.More(); anExpE.Next()) {
-    const TopoDS_Edge& anEdge = TopoDS::Edge(anExpE.Current());
-    Standard_Real anEdgeTol = BRep_Tool::Tolerance(anEdge);
-    aTolerance = (aTolerance < anEdgeTol) ? anEdgeTol : aTolerance;
-  }
-  aTolerance += BRep_Tool::Tolerance(theFace2);
-
-  Standard_Integer nbpoints = 5;
-  Standard_Real adeltau = (umax - umin) / (nbpoints + 1);
-  Standard_Real adeltav = (vmax - vmin) / (nbpoints + 1);
-  Standard_Real U = umin + adeltau;
-  GeomAPI_ProjectPointOnSurf& aProjector = aContext->ProjPS(theFace2);
-
-  for(Standard_Integer i = 1; i <= nbpoints; i++, U+=adeltau) {
-    Standard_Real V = vmin + adeltav;
-
-    for(Standard_Integer j = 1; j <= nbpoints; j++, V+=adeltav) {
-      gp_Pnt2d aPoint(U,V);
-
-      if(aContext->IsPointInFace(theFace1, aPoint)) {
-        gp_Pnt aP3d = aSurface->Value(U, V);
-        aProjector.Perform(aP3d);
-
-        if(aProjector.IsDone()) {
-
-          if(aProjector.LowerDistance() > aTolerance)
-            return Standard_False;
-        }
-      }
-    }
-  }
-
   return Standard_True;
 }
 

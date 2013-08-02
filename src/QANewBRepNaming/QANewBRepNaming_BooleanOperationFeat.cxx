@@ -75,23 +75,6 @@ static void ModDbgTools_Write(const TopoDS_Shape& shape,
   save.close();
 }
 
-static void ModDbgTools_WriteCurrentShape(const Handle(TNaming_NamedShape) & NS)
-{
-  TCollection_AsciiString entry;
-  TDF_Tool::Entry(NS->Label(), entry);
-  if (!NS.IsNull())
-    {
-      TopoDS_Shape Sh = TNaming_Tool::CurrentShape (NS);
-      if(!Sh.IsNull()) {
-	TCollection_AsciiString Entry = entry.Cat("_Cur.brep");
-	ModDbgTools_Write(Sh, Entry.ToCString());
-      }
-      else 
-	cout << "ModDbgTools::Write>>> TopoDS_Shape IS NULL on Entry = "<< entry << endl;
-    }
-  else
-    cout << "ModDbgTools::Write>>>  CurrentShape of TNaming_NamedShape IS NULL on Entry = "<< entry << endl;
-}
 #endif
 
 //=======================================================================

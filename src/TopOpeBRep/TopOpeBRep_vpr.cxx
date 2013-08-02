@@ -69,7 +69,6 @@ void debvprmess(Standard_Integer f1,Standard_Integer f2,Standard_Integer il,Stan
 {cout<<"f1,f2,il,vp,si : "<<f1<<","<<f2<<","<<il<<","<<vp<<","<<si<<endl;cout.flush();debvpr();}
 void debpoint(Standard_Integer i) {cout<<"+ debpoint"<<i<<endl;}
 void debvertex(Standard_Integer i){cout<<"+ debvertex"<<i<<endl;}
-static void FUN_Raise() {cout <<"FAILURE IN TopOpeBRep_FacesFiller::ProcessVPonR"<<endl;}
 
 Standard_EXPORT void debarc(const Standard_Integer i)   {cout<<"+ debarc "<<i<<endl;}
 Standard_EXPORT void debooarc(const Standard_Integer i) {cout<<"+ debooarc "<<i<<endl;}

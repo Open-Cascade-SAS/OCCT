@@ -432,7 +432,7 @@ void Bisector_BisecPC::Values(const Standard_Real    U,
 //purpose  :
 //=============================================================================
 // Unused :
-#ifdef DEB
+#ifdef DEB_CUR
 static Standard_Real Curvature (const Handle(Geom2d_Curve)& C,
 				      Standard_Real         U,
 				      Standard_Real         Tol)
@@ -493,15 +493,17 @@ Standard_Real Bisector_BisecPC::Distance (const Standard_Real U) const
   else {    
     Standard_Real A  = 0.5*SquareMagPPC/Prosca;
     Standard_Real Dist = A*A*NorNor;
+#ifdef DEB_CUR
     //----------------------------------------
     // Test Curvature if the curve is concave.
     //----------------------------------------
-//    if (!isConvex){
-//      Standard_Real K  = Curvature(curve,UOnCurve,Precision::Confusion());
-//      if (K  != 0.) {
-//	if (Dist > 1/(K*K)) { Dist = Precision::Infinite();}
-//      }
-//    }
+    if (!isConvex){
+      Standard_Real K  = Curvature(curve,UOnCurve,Precision::Confusion());
+      if (K  != 0.) {
+        if (Dist > 1/(K*K)) { Dist = Precision::Infinite();}
+      }
+    }
+#endif
     return Dist;
   }
 }

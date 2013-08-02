@@ -66,8 +66,6 @@ static Standard_Boolean local_FindVertex(const TopOpeBRep_VPointInter& theVP,
 // modified by NIZHNY-MKK  Tue Nov 21 17:30:27 2000.END
 
 #ifdef DEB
-void static FUN_debdegeneR() {}
-void static FUN_debdegeneF() {}
 extern Standard_Boolean TopOpeBRepDS_GettraceDEGEN();
 extern Standard_Boolean TopOpeBRepDS_GettraceDSF();
 Standard_EXPORT Standard_Boolean FUN_debnull(const TopoDS_Shape& s);
@@ -660,8 +658,6 @@ static Standard_Integer FUN_putInterfonDegenEd
   if (FUN_debnull(Ed)) cout<<"Ed is null"<<endl;
   if (trace) {
     TopAbs_Orientation Edori = Ed.Orientation();
-    if (Edori == TopAbs_FORWARD) FUN_debdegeneF();
-    if (Edori == TopAbs_REVERSED) FUN_debdegeneR();      
   }
   Standard_Boolean trace3d = Standard_False;
 #ifdef DRAW

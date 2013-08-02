@@ -129,16 +129,6 @@
 #include <BRepBuilderAPI_BndBoxTreeSelector.hxx>
 #include <NCollection_UBTreeFiller.hxx>
 
-static void SortBox (const Handle(Bnd_HArray1OfBox) hSetBoxes,
-		     const Bnd_Box& aBox,
-		     TColStd_ListOfInteger& listIndex)
-{
-  Standard_Integer i, nbBoxes = hSetBoxes->Length();
-  for (i = 1; i <= nbBoxes; i++)
-    if (!aBox.IsOut(hSetBoxes->Value(i)))
-      listIndex.Append(i);
-}
-
 //=======================================================================
 //function : SameRange
 //purpose  : 

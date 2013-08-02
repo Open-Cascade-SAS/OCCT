@@ -187,33 +187,6 @@ Handle(Draw_Drawable3D) MeshTest_DrawableMesh::Copy() const
 //purpose  : 
 //=======================================================================
 
-static void printdegree(BRepMesh_DegreeOfFreedom dof)
-{
-  switch (dof) {
-  case BRepMesh_InVolume :
-    cout << "InVolume";
-    break;
-  case BRepMesh_OnSurface :
-    cout << "OnSurface";
-    break;
-  case BRepMesh_OnCurve :
-    cout << "OnCurve";
-    break;
-  case BRepMesh_Fixed :
-    cout << "Fixed";
-    break;
-  case BRepMesh_Frontier :
-    cout << "Frontier";
-    break;
-  case BRepMesh_Deleted :
-    cout << "Deleted";
-    break;
-  case BRepMesh_Free :
-    cout << "Free";
-    break;
-  }
-}
-
 void MeshTest_DrawableMesh::Dump(Standard_OStream&) const 
 {
   // Should be reimplemented

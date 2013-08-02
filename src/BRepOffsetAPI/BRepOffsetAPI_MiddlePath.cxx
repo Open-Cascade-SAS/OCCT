@@ -54,13 +54,6 @@
 #include <GeomLib.hxx>
 #include <GeomAPI_Interpolate.hxx>
 
-static Standard_Boolean IsClosed(const TopoDS_Wire& aWire)
-{
-  TopoDS_Vertex V1, V2;
-  TopExp::Vertices(aWire, V1, V2);
-  return (V1.IsSame(V2));
-}
-
 static Standard_Boolean IsLinear(const TopoDS_Edge& anEdge,
                                  gp_Lin& aLine)
 {

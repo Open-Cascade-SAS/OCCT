@@ -110,8 +110,9 @@ ShapeFix_Solid::ShapeFix_Solid(const TopoDS_Solid& solid)
  //  B.Add(mySolid,TopoDS::Shell(iter.Value()));
   myShape = solid;
 }
+#ifdef DEB_GET_MIDDLE_POINT
 //=======================================================================
-//function : CollectSolids
+//function : GetMiddlePoint
 //purpose  : 
 //=======================================================================
 static void GetMiddlePoint(const TopoDS_Shape& aShape, gp_Pnt& pmid)
@@ -137,6 +138,11 @@ static void GetMiddlePoint(const TopoDS_Shape& aShape, gp_Pnt& pmid)
   center /= numpoints;
   pmid.SetXYZ(center);
 }
+#endif
+//=======================================================================
+//function : CollectSolids
+//purpose  : 
+//=======================================================================
 static void CollectSolids(const TopTools_SequenceOfShape& aSeqShells , 
                           TopTools_DataMapOfShapeListOfShape& aMapShellHoles,
                           TopTools_DataMapOfShapeInteger& theMapStatus)
@@ -205,9 +211,11 @@ static void CollectSolids(const TopTools_SequenceOfShape& aSeqShells ,
         }
         
         if(numon == 3 && pointstatus ==TopAbs_ON) {
-          //gp_Pnt pmid;
-          //GetMiddlePoint(aShell2,pmid);
-          //bsc3d.Perform(pmid,Precision::Confusion());
+#ifdef DEB_GET_MIDDLE_POINT
+          gp_Pnt pmid;
+          GetMiddlePoint(aShell2,pmid);
+          bsc3d.Perform(pmid,Precision::Confusion());
+#endif
           pointstatus = /*(bsc3d.State() == TopAbs_IN ? TopAbs_IN :*/TopAbs_OUT;
         }
         if(pointstatus != infinstatus) {

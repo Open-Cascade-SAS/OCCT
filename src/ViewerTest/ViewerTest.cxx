@@ -237,30 +237,6 @@ void GetTypeAndSignfromString (const char* name,AIS_KindOfInteractive& TheType,S
 #include <BRepOffsetAPI_MakeThickSolid.hxx>
 #include <BRepOffset.hxx>
 
-
-//==============================================================================
-//function : GetTypeNameFromShape
-//purpose  : get the shape type as a string from a shape
-//==============================================================================
-
-static const char* GetTypeNameFromShape( const TopoDS_Shape& aShape )
-{ const char *ret = "????";
-
-  if ( aShape.IsNull() ) ret = "Null Shape";
-
-	    switch ( aShape.ShapeType() ) {
-	      case TopAbs_COMPOUND  : ret = "COMPOUND" ; break;
-	      case TopAbs_COMPSOLID : ret = "COMPSOLID" ; break;
-	      case TopAbs_SOLID     : ret = "SOLID" ; break;
-	      case TopAbs_SHELL     : ret = "SHELL" ; break;
-	      case TopAbs_FACE      : ret = "FACE" ; break;
-	      case TopAbs_WIRE      : ret = "WIRE" ; break;
-	      case TopAbs_EDGE      : ret = "EDGE" ; break;
-	      case TopAbs_VERTEX    : ret = "VERTEX" ; break;
-	      case TopAbs_SHAPE     : ret = "SHAPE" ; break;
-	    }
-  return ret;
-}
 //==============================================================================
 //  VIEWER OBJECT MANAGEMENT GLOBAL VARIABLES
 //==============================================================================
@@ -450,18 +426,7 @@ static TopoDS_Shape GetShapeFromName(const char* name)
 
   return S;
 }
-//==============================================================================
-//function : GetShapeFromName
-//purpose  : Compute an Shape from a draw variable or a file name
-//==============================================================================
-// Unused :
-#ifdef DEB
-static TopoDS_Shape GetShapeFromAIS(const AIS_InteractiveObject & TheAisIO )
-{
-  TopoDS_Shape TheShape=((*(Handle(AIS_Shape)*)&TheAisIO))->Shape();
-  return TheShape;
-}
-#endif
+
 //==============================================================================
 //function : GetAISShapeFromName
 //purpose  : Compute an AIS_Shape from a draw variable or a file name
@@ -2028,112 +1993,6 @@ static int VDisplay2 (Draw_Interpretor& di, Standard_Integer argc, const char** 
 }
 
 //==============================================================================
-//function : VMoveA
-//purpose  : Test the annimation of an object along a
-//           predifined trajectory
-//Draw arg : vmove ShapeName
-//==============================================================================
-
-#ifdef DEB
-static int VMoveA (Draw_Interpretor& di, Standard_Integer argc, const char** argv) {
-
-  OSD_Timer myTimer;
-  myTimer.Start();
-
-  if (TheAISContext()->HasOpenedContext())
-    TheAISContext()->CloseLocalContext();
-
-  Standard_Real Step=2*M_PI/180;
-  Standard_Real Angle=0;
-  // R est le rayon de l'hellicoide
-  Standard_Real R=50;
-  // D est la distance parcourue en translation en 1 tour
-  Standard_Real D=50;
-
-  Handle(AIS_InteractiveObject) aIO;
-
-  if (GetMapOfAIS().IsBound2(argv[1]))
-    aIO = Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2(argv[1]));
-
-  if (aIO.IsNull()) {
-    di<<" Syntaxe error: "<<argv[1]<<" doesn't exist"<<"\n";
-    return 1;
-  }
-  TheAISContext()->Deactivate(aIO);
-
-  // boucle generant le mouvement
-  if(argc==3) {
-    di<<" Transformations"<<"\n";
-    for (Standard_Real myAngle=0;Angle<5*2*M_PI; myAngle++) {
-
-      Angle=Step*myAngle;
-      gp_Ax3 newBase(gp_Pnt(R*cos(Angle), R*sin(Angle), D*Angle/(2*M_PI) ), gp_Vec(0,0,1), gp_Vec(1,0,0)  );
-      gp_Trsf myTransfo;
-      myTransfo.SetTransformation(newBase.Rotated(gp_Ax1(gp_Pnt(R*cos(Angle),R*sin(Angle),0), gp_Dir(0,0,1)  ),Angle ) );
-      TheAISContext()->SetLocation(aIO,myTransfo);
-
-      TheAISContext() ->UpdateCurrentViewer();
-
-    }
-  }
-  else {
-    di<<" Locations"<<"\n";
-    gp_Trsf myAngleTrsf;
-    myAngleTrsf.SetRotation(gp_Ax1(gp_Pnt(0,0,0),gp_Dir(0,0,1) ), Step  );
-    TopLoc_Location myDeltaAngle (myAngleTrsf);
-    gp_Trsf myDistTrsf;
-    myDistTrsf.SetTranslation(gp_Dir(0,0,1) );
-    TopLoc_Location myDeltaDist (myDistTrsf);
-    TopLoc_Location myTrueLoc;
-
-    for (Standard_Real myAngle=0;Angle<5*2*M_PI; myAngle++) {
-
-      Angle=Step*myAngle;
-      myTrueLoc=myTrueLoc*myDeltaAngle*myDeltaDist;
-      TheAISContext()->SetLocation(aIO,myTrueLoc );
-      TheAISContext() ->UpdateCurrentViewer();
-    }
-  }
-
-
-  TopoDS_Shape ShapeBis=((*(Handle(AIS_Shape)*)&aIO)->Shape()).Located( aIO->Location() );
-
-  //TopLoc_Location Tempo=aIO->Location();
-  //TopoDS_Shape ShapeBis=((*(Handle(AIS_Shape)*)&aIO)->Shape());
-  //ShapeBis.Located(Tempo);
-
-
-  // On reset la location (origine) contenue dans l'AISInteractiveObject
-  TheAISContext() ->ResetLocation(aIO);
-
-  // On force aShape a devenir l'AIS IO propre a ShapeBis
-
-  // Pour cela on force aShape(AIS IO) a devenir une AISShape
-  // ->Set() est une methode de AIS_Shape
-  (*(Handle(AIS_Shape)*)& aIO)->Set(ShapeBis);
-
-  // On donne a ShapeBis le nom de l'AIS IO
-  //Rep::Set(argv[1],ShapeBis);
-
-
-  TheAISContext()->Redisplay(aIO,Standard_False);
-
-  // On reactive la selection des primitives sensibles
-  TheAISContext()->Activate(aIO,0);
-
-  TheAISContext() ->UpdateCurrentViewer();
-  a3DView() -> Redraw();
-
-  myTimer.Stop();
-  di<<" Temps ecoule "<<"\n";
-  myTimer.Show();
-
-  return 0;
-}
-#endif
-
-
-//==============================================================================
 //function : VPerf
 //purpose  : Test the annimation of an object along a
 //           predifined trajectory
@@ -3010,90 +2869,7 @@ static int VPickShape( Draw_Interpretor& di, Standard_Integer argc, const char**
     }
   }
   return 0;
-
 }
-
-
-//=======================================================================
-//function : VPickObject
-//purpose  : filters can be set (type of Object to pick....
-//
-//=======================================================================
-// Unused :
-#ifdef DEB
-static int VPickObject( Draw_Interpretor& , Standard_Integer /*argc*/, const char** /*argv*/)
-{
-  // preparation de la nomination automatique
-  static TCollection_AsciiString ObjType[] ={"None","Datum","Shape","Object","Relation"};
-//  static char* DatumSig [8] ={"Point","Axis","Trih","PlTri","Line","Circle","Plane","UnK"};
-
-/*  TCollection_AsciiString name;
-
-  Standard_Integer NbToPick = argc>2 ? argc-2 : 1;
-  if(NbToPick==1){
-    PickSh = ViewerTest::PickObject(theType);
-
-    if(PickSh.IsNull())
-      return 1;
-    if(argc>2){
-      name += argv[2];
-    }
-    else{
-
-      if(!PickSh.IsNull()){
-	nbOfSub[Standard_Integer(theType)]++;
-	name += "Picked_";
-	name += nameType[Standard_Integer(theType)];
-	TCollection_AsciiString indxstring(nbOfSub[Standard_Integer(theType)]);
-	name +="_";
-	name+=indxstring;
-      }
-    }
-    // si on avait une petite methode pour voir si la shape
-    // est deja dans la Double map, ca eviterait de creer....
-    DBRep::Set(name.ToCString(),PickSh);
-
-    Handle(AIS_Shape) newsh = new AIS_Shape(PickSh);
-    GetMapOfAIS().Bind(newsh, name);
-    TheAISContext()->Display(newsh);
-    cout<<"Nom de la shape pickee : "<<name<<endl;
-  }
-
-  // Plusieurs objets a picker, vite vite vite....
-  //
-  else{
-    Standard_Boolean autonaming = !strcasecmp(argv[2],".");
-    Handle(TopTools_HArray1OfShape) arr = new TopTools_HArray1OfShape(1,NbToPick);
-    if(ViewerTest::PickShapes(theType,arr)){
-      for(Standard_Integer i=1;i<=NbToPick;i++){
-	PickSh = arr->Value(i);
-	if(!PickSh.IsNull()){
-	  if(autonaming){
-	    nbOfSub[Standard_Integer(theType)]++;
-	    name.Clear();
-	    name += "Picked_";
-	    name += nameType[Standard_Integer(theType)];
-	    TCollection_AsciiString indxstring(nbOfSub[Standard_Integer(theType)]);
-	    name +="_";
-	    name+=indxstring;
-	  }
-	}
-	else
-	  name = argv[1+i];
-
-	DBRep::Set(name.ToCString(),PickSh);
-	Handle(AIS_Shape) newsh = new AIS_Shape(PickSh);
-	GetMapOfAIS().Bind(newsh, name);
-	cout<<"display of picke shape #"<<i<<" - nom : "<<name<<endl;
-	TheAISContext()->Display(newsh);
-
-      }
-    }
-  }
-  */
-  return 0;
-}
-#endif
 
 //=======================================================================
 //function : list of known objects

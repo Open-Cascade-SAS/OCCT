@@ -92,30 +92,6 @@
 #include <ChFiKPart_ComputeData_Sphere.hxx>
 
 //=======================================================================
-//function : ComputeAbscissa
-//purpose  : 
-//=======================================================================
-
-// Unused :
-#ifdef DEB
-static Standard_Real ComputeAbscissa(const BRepAdaptor_Curve& C,
-				     const Standard_Real UFirst) 
-{
-  Standard_Real fp = fp = C.FirstParameter();
-  switch (C.GetType()) {
-  case GeomAbs_Line:
-    return UFirst - fp;
-  case GeomAbs_Circle:
-    return C.Circle().Radius()*(UFirst-fp);
-  default:
-    break;
-  }    
-  Standard_NotImplemented::Raise("calcul abscisse not processed");
-  return 0.;
-}
-#endif
-
-//=======================================================================
 //function : Compute
 //purpose  : 
 //=======================================================================

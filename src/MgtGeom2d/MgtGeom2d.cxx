@@ -86,31 +86,6 @@ static Handle(PColgp_HArray1OfPnt2d) ArrayCopy
 
 //=======================================================================
 //function : ArrayCopy
-//purpose  : Copy the gp_Pnt2d
-//           from an Array2 from TColgp (TCollection)
-//           to an HArray2 from PColgp (PCollection)
-//=======================================================================
-#ifdef DEB
-static Handle(PColgp_HArray2OfPnt2d) ArrayCopy
-       (const TColgp_Array2OfPnt2d& TArray)
-{
-  Standard_Integer LowerRow = TArray.LowerRow();
-  Standard_Integer UpperRow = TArray.UpperRow();
-  Standard_Integer LowerCol = TArray.LowerCol();
-  Standard_Integer UpperCol = TArray.UpperCol();
-  Standard_Integer IndexRow, IndexCol;
-  Handle(PColgp_HArray2OfPnt2d) PArray =
-    new PColgp_HArray2OfPnt2d(LowerRow, UpperRow, LowerCol, UpperCol);
-  for (IndexRow = LowerRow; IndexRow <= UpperRow; IndexRow++) {
-    for (IndexCol = LowerCol; IndexCol <= UpperCol; IndexCol++) {
-      PArray->SetValue(IndexRow, IndexCol, TArray(IndexRow, IndexCol));
-    }
-  }
-  return PArray;
-}
-#endif
-//=======================================================================
-//function : ArrayCopy
 //purpose  : Copy the Standard_Real
 //           from an Array1 from TColStd (TCollection)
 //           to an SingleArray from PCollection
@@ -130,31 +105,6 @@ static Handle(PColStd_HArray1OfReal) ArrayCopy
   return PArray;
 }
 
-//=======================================================================
-//function : ArrayCopy
-//purpose  : Copy the Standard_Real
-//           from an Array2 from TColStd (TCollection)
-//           to an DoubleArray from PCollection
-//=======================================================================
-#ifdef DEB
-static Handle(PColStd_HArray2OfReal) ArrayCopy
-       (const TColStd_Array2OfReal& TArray)
-{
-  Standard_Integer LowerRow = TArray.LowerRow();
-  Standard_Integer UpperRow = TArray.UpperRow();
-  Standard_Integer LowerCol = TArray.LowerCol();
-  Standard_Integer UpperCol = TArray.UpperCol();
-  Standard_Integer IndexRow, IndexCol;
-  Handle(PColStd_HArray2OfReal) PArray =
-    new PColStd_HArray2OfReal(LowerRow, UpperRow, LowerCol, UpperCol);
-  for (IndexRow = LowerRow; IndexRow <= UpperRow; IndexRow++) {
-    for (IndexCol = LowerCol; IndexCol <= UpperCol; IndexCol++) {
-      PArray->SetValue(IndexRow, IndexCol, TArray(IndexRow, IndexCol));
-    }
-  }
-  return PArray;
-}
-#endif
 //=======================================================================
 //function : ArrayCopy
 //purpose  : Copy the Standard_Integer
@@ -201,32 +151,6 @@ static void ArrayCopy
 
 //=======================================================================
 //function : ArrayCopy
-//purpose  : Copy the gp_Pnt2d
-//           from an HArray2 from PColgp (PCollection)
-//           to an Array2 from TColgp (TCollection)
-//=======================================================================
-
-// Unused :
-#ifdef DEB
-static void ArrayCopy
-  (const Handle(PColgp_HArray2OfPnt2d)& PArray,
-   TColgp_Array2OfPnt2d& TArray)
-{
-  Standard_Integer LowerRow = TArray.LowerRow();
-  Standard_Integer UpperRow = TArray.UpperRow();
-  Standard_Integer LowerCol = TArray.LowerCol();
-  Standard_Integer UpperCol = TArray.UpperCol();
-  Standard_Integer IndexRow, IndexCol;
-  for (IndexRow = LowerRow; IndexRow <= UpperRow; IndexRow++) {
-    for (IndexCol = LowerCol; IndexCol <= UpperCol; IndexCol++) {
-      TArray(IndexRow, IndexCol) = PArray->Value(IndexRow, IndexCol);
-    }
-  }
-}
-#endif
-
-//=======================================================================
-//function : ArrayCopy
 //purpose  : Copy the Standard_Real
 //           from an SingleArray from PCollection
 //           to an Array1 from TColStd (TCollection)
@@ -243,32 +167,6 @@ static void ArrayCopy
     TArray(Index) = PArray->Value(Index);
   }
 }
-
-//=======================================================================
-//function : ArrayCopy
-//purpose  : Copy the Standard_Real
-//           from an DoubleArray from PCollection
-//           to an Array2 from TColStd (TCollection)
-//=======================================================================
-
-// Unused :
-#ifdef DEB
-static void ArrayCopy
-  (const Handle(PColStd_HArray2OfReal)& PArray,
-   TColStd_Array2OfReal& TArray)
-{
-  Standard_Integer LowerRow = TArray.LowerRow();
-  Standard_Integer UpperRow = TArray.UpperRow();
-  Standard_Integer LowerCol = TArray.LowerCol();
-  Standard_Integer UpperCol = TArray.UpperCol();
-  Standard_Integer IndexRow, IndexCol;
-  for (IndexRow = LowerRow; IndexRow <= UpperRow; IndexRow++) {
-    for (IndexCol = LowerCol; IndexCol <= UpperCol; IndexCol++) {
-      TArray(IndexRow, IndexCol) = PArray->Value(IndexRow, IndexCol);
-    }
-  }
-}
-#endif
 
 //=======================================================================
 //function : ArrayCopy

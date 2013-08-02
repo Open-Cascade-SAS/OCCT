@@ -69,7 +69,7 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_SequenceOfReal.hxx>
 
-
+#ifdef DEB_EFV
 static void EdgesFromVertex (const TopoDS_Wire&   W,
 			     const TopoDS_Vertex& V, 
 			     TopoDS_Edge& E1, 
@@ -120,7 +120,7 @@ static void EdgesFromVertex (const TopoDS_Wire&   W,
   }
 }
 				      
-
+#endif
 static void SeqOfVertices (const TopoDS_Wire&   W,
 			   TopTools_SequenceOfShape& S)
 {
@@ -1673,8 +1673,8 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean /*polar*/ )
       newwire.Orientation( TopAbs_FORWARD );
       myWork(i) = newwire;
     }
+#ifdef DEB_EFV
 
-/*  
   for ( i=ideb; i<=myWork.Length(); i++) {
     
     const TopoDS_Wire& wire = TopoDS::Wire(myWork(i));
@@ -1924,7 +1924,7 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean /*polar*/ )
       if (!Vsuiv.IsNull()) Psuiv=BRep_Tool::Pnt(Vsuiv);
     }
   }
-*/
+#endif
   
   // blocking sections ?
   if (vClosed) myWork(myWork.Length()) = myWork(1);

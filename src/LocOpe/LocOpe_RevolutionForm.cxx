@@ -47,13 +47,6 @@
 #include <TopExp.hxx>
 #include <Precision.hxx>
 
-
-#ifdef DEB
-static Standard_Boolean FindCircle(const gp_Ax1&,
-				   const gp_Pnt&,
-				   gp_Circ&);
-#endif
-
 //=======================================================================
 //function : LocOpe_Revol
 //purpose  : 
@@ -235,31 +228,3 @@ const TopTools_ListOfShape& LocOpe_RevolutionForm::Shapes (const TopoDS_Shape& S
 {
   return myMap(S);
 }
-
-//=======================================================================
-//function : FincCircle
-//purpose  : 
-//=======================================================================
-
-#ifdef DEB
-static Standard_Boolean FindCircle(const gp_Ax1& Ax,
-				   const gp_Pnt& Pt,
-				   gp_Circ& Ci)
-{
-
-  const gp_Dir& Dax = Ax.Direction();
-  gp_Vec OP(Ax.Location(),Pt);
-
-  Standard_Real prm = OP.Dot(Dax);
-
-  gp_Pnt prj(Ax.Location().XYZ().Added(prm*Dax.XYZ()));
-  gp_Vec axx(prj,Pt);
-  Standard_Real Radius = axx.Magnitude();
-  if (Radius < Precision::Confusion()) {
-    return Standard_False;
-  }
-  Ci.SetRadius(Radius);
-  Ci.SetPosition(gp_Ax2(prj,Dax,axx));
-  return Standard_True;
-}
-#endif

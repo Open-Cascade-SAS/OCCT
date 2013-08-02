@@ -464,30 +464,9 @@ public:
     }
   }
 };
-
-
-
+ 
 //-- ================================================================================
 
-
-//=======================================================================
-//function : FindInList
-//purpose  : 
-//=======================================================================
-// Unused :
-#ifdef DEB
-static Standard_Boolean FindInList (const TColStd_ListOfInteger& L,
-				    const Standard_Integer V)
-{
-  for (TColStd_ListIteratorOfListOfInteger ILV(L);
-       ILV.More();
-       ILV.Next()) {
-    if (V == ILV.Value())
-      return Standard_True;
-  }
-  return Standard_False;
-}
-#endif
 
 //=======================================================================
 //function : AdjustParameter

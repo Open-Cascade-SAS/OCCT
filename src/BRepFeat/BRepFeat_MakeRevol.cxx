@@ -90,14 +90,6 @@ static void MajMap(const TopoDS_Shape&, // base
 		   TopoDS_Shape&); // myLShape
 
 
-static void SetGluedFaces(const TopoDS_Face& theSkface,
-			  const TopoDS_Shape& theSbase,
-			  const TopoDS_Shape& thePbase,
-			  const TopTools_DataMapOfShapeListOfShape& theSlmap,
-                          LocOpe_Revol&,
-			  TopTools_DataMapOfShapeShape&);
-
-
 static void VerifGluedFaces(const TopoDS_Face& theSkface,
 			    const TopoDS_Shape& thePbase,
 			    Handle(Geom_Curve)& theBCurve,
@@ -307,13 +299,10 @@ void BRepFeat_MakeRevol::Perform(const Standard_Real Angle)
       if(ToFuse(ff, FFace)) {
 	TopTools_DataMapOfShapeListOfShape sl;
 	if(!FFace.IsSame(myPbase) && BRepFeat::IsInside(ff, FFace)) 
-	  //SetGluedFaces(ff, mySbase, FFace, sl, theRevol, myGluedF);
 	break;
       }
     }
   }
-
-  //SetGluedFaces(mySkface, mySbase, theBase, mySlface, theRevol, myGluedF);
   GluedFacesValid();
   if (!mySkface.IsNull()) {
     VerifGluedFaces(mySkface, theBase, myBCurve, myCurves, theRevol, myGluedF);
@@ -417,8 +406,6 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& Until)
       myStatusError = BRepFeat_InvFirstShape;
       return;
     }
-
-    //SetGluedFaces(mySkface, mySbase, theBase, mySlface, theRevol, myGluedF);
     GluedFacesValid();
     //VerifGluedFaces(mySkface, theBase, myBCurve, myCurves, theRevol, myGluedF);
 
@@ -588,8 +575,6 @@ void BRepFeat_MakeRevol::Perform(const TopoDS_Shape& From,
   if(!Trff) {    
     myGShape = VraiRevol;
     GeneratedShapeValid();
-
-    //SetGluedFaces(TopoDS_Face(), mySbase, myPbase, mySlface, theRevol, myGluedF);
     GluedFacesValid();
 //    VerifGluedFaces(mySkface, theBase, myBCurve, myCurves, theRevol, myGluedF);
 
@@ -763,8 +748,6 @@ void BRepFeat_MakeRevol::PerformUntilAngle(const TopoDS_Shape& Until,
       myStatusError = BRepFeat_InvFirstShape;
       return;
     }
-
-    //SetGluedFaces(mySkface, mySbase, theBase, mySlface, theRevol, myGluedF);
     GluedFacesValid();
     //VerifGluedFaces(mySkface, theBase, myBCurve, myCurves, theRevol, myGluedF);
 
@@ -852,62 +835,6 @@ void BRepFeat_MakeRevol::Curves(TColGeom_SequenceOfCurve& scur)
 Handle(Geom_Curve) BRepFeat_MakeRevol::BarycCurve()
 {
   return myBCurve;
-}
-
-
-//=======================================================================
-//function : SetGluedFaces
-//purpose  : management of gluing faces
-//=======================================================================
-
-static void SetGluedFaces(const TopoDS_Face& theSkface,
-			  const TopoDS_Shape& theSbase,
-			  const TopoDS_Shape& thePbase,
-			  const TopTools_DataMapOfShapeListOfShape& theSlmap,
-			  LocOpe_Revol& theRevol,
-			  TopTools_DataMapOfShapeShape& theMap)
-{
-  TopExp_Explorer exp;
-  if (!theSkface.IsNull() && thePbase.ShapeType() == TopAbs_FACE) {
-    for (exp.Init(theSbase,TopAbs_FACE); exp.More(); exp.Next()) {
-      if (exp.Current().IsSame(theSkface)) {
-	theMap.Bind(thePbase,theSkface);
-	break;
-      }
-    }
-  }
-  else {
-    TopExp_Explorer exp2;
-    for (exp.Init(thePbase,TopAbs_FACE);exp.More();exp.Next()) {
-      const TopoDS_Face& fac = TopoDS::Face(exp.Current());
-      for (exp2.Init(theSbase,TopAbs_FACE);exp2.More();exp2.Next()) {
-	if (exp2.Current().IsSame(fac)) {
-	  theMap.Bind(fac,fac);
-	  break;
-	}
-      }
-    }
-  }
-
-  // Sliding
-  TopTools_DataMapIteratorOfDataMapOfShapeListOfShape itm(theSlmap);
-  if(!theSlmap.IsEmpty()) {
-    for (; itm.More(); itm.Next()) {
-      const TopoDS_Face& fac = TopoDS::Face(itm.Key());
-      const TopTools_ListOfShape& ledg = itm.Value();
-      TopTools_ListIteratorOfListOfShape it;
-      for (it.Initialize(ledg); it.More(); it.Next()) {
-	const TopTools_ListOfShape& gfac = theRevol.Shapes(it.Value());
-	if (gfac.Extent() != 1) {
-#ifdef DEB
-	  Standard_Boolean trc = BRepFeat_GettraceFEAT();
-	  if (trc) cout << " BRepFeat_MakeRevol : Pb SetGluedFace" << endl;
-#endif
-	}
-	theMap.Bind(gfac.First(),fac);
-      }
-    }
-  }
 }
 
 //=======================================================================

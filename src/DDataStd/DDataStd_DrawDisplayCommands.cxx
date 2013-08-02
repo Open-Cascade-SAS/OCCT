@@ -85,23 +85,6 @@ static Standard_Integer DDataStd_PNT (Draw_Interpretor& di,
   di << "DDataStd_PNT : Error : not done" << "\n";
   return 1;
 }
-
-
-
-//=======================================================================
-//function : DDataStd_DrawStdDriver
-//purpose  : DrawStdDriver
-//=======================================================================
-// Unused :
-#ifdef DEB
-static Standard_Integer DDataStd_DrawStdDriver (Draw_Interpretor& /*di*/,
-						Standard_Integer /*nb*/, 
-						const char** /*arg*/)
-{
-  DDataStd_DrawDriver::Set(new DDataStd_DrawDriver());
-  return 0;
-}
-#endif
  
 //=======================================================================
 //function : DDataStd_Rmdraw
