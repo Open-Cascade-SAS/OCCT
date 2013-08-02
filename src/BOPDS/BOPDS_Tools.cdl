@@ -38,7 +38,15 @@ is
      	---Purpose:  
      	--- Converts the conmbination of two types  
     	--  of shape <theT1>,<theT2>  
-	--- to the one integer value, that is returned      
+	--- to the one integer value, that is returned       
+  
+    TypeToInteger(myclass; 
+    	    theT: ShapeEnum from TopAbs) 
+    	returns Integer from Standard; 
+    ---C++: inline  
+     	---Purpose:  
+     	--- Converts the type of shape <theT>,  
+	--- to integer value, that is returned      	 
 	
     HasBRep(myclass; 
     	    theT: ShapeEnum from TopAbs) 

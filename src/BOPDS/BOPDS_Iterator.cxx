@@ -205,7 +205,7 @@
   void BOPDS_Iterator::Intersect()
 {
   Standard_Boolean bFlag;
-  Standard_Integer aNb, i, aNbB, aNbR;
+  Standard_Integer aNb, i, aNbB, aNbR, iTi, iTj;
   Standard_Integer i1, i2, aNbSD, iX, j, iDS, jB, iR;
   TopAbs_ShapeEnum aTi, aTj;
   Handle(NCollection_IncAllocator) aAllocator;
@@ -283,6 +283,21 @@
 	  continue;// same range
 	}
 	//
+	const BOPDS_ShapeInfo& aSIj=myDS->ShapeInfo(j);
+	aTj=aSIj.ShapeType();
+	iTi=BOPDS_Tools::TypeToInteger(aTi);
+	iTj=BOPDS_Tools::TypeToInteger(aTj);
+	bFlag=Standard_False;
+	if (iTi<iTj) {
+	  bFlag=aSI.HasSubShape(j);
+	} 
+	else if (iTj<iTi) {
+	   bFlag=aSIj.HasSubShape(i);
+	}
+	if (bFlag) {
+	  continue; 
+	}
+	//
 	aPKXB.SetIds(i, j);
 	if (aMPKXB.Add(aPKXB)) {
 	  bFlag=Standard_False;// Bounding boxes are intersected
@@ -291,7 +306,6 @@
 	    bFlag=!bFlag; //Bounding boxes of Sub-shapes are intersected
 	  }
 	  //
-	  aTj=myDS->ShapeInfo(j).ShapeType();
 	  iX=BOPDS_Tools::TypeToInteger(aTi, aTj);
 	  aPKXB.SetFlag(bFlag);
 	  myLists(iX).Append(aPKXB);

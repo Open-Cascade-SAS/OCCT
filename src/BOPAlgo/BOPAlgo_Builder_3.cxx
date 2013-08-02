@@ -106,13 +106,13 @@ static
   TopoDS_Face aFP;
   BOPCol_ListIteratorOfListOfShape aItS, aItFP, aItEx;	
   //
-  BOPCol_ListOfShape aLIF(theAllocator);
-  BOPCol_MapOfShape aMFDone(100, theAllocator);
+  //BOPCol_ListOfShape aLIF(theAllocator);
+  //BOPCol_MapOfShape aMFDone(100, theAllocator);
+  //BOPCol_IndexedMapOfShape aMFIN(100, theAllocator);
+  //BOPCol_IndexedDataMapOfShapeListOfShape aMEF(100, theAllocator);
+  //BOPCol_IndexedMapOfShape aMS(100, theAllocator);
   BOPCol_IndexedMapOfShape aMSolids(100, theAllocator);
   BOPCol_IndexedMapOfShape aMFaces(100, theAllocator);
-  BOPCol_IndexedMapOfShape aMFIN(100, theAllocator);
-  BOPCol_IndexedMapOfShape aMS(100, theAllocator);
-  BOPCol_IndexedDataMapOfShapeListOfShape aMEF(100, theAllocator);
   //
   theDraftSolids.Clear();
   //
@@ -153,11 +153,20 @@ static
   aNbSolids=aMSolids.Extent();
   //
   for (i=1; i<=aNbSolids; ++i) {
-    const TopoDS_Solid& aSolid=(*(TopoDS_Solid*)(&aMSolids(i)));
+    Handle(NCollection_IncAllocator) aAllocator1;
+    aAllocator1=new NCollection_IncAllocator();
+    //
+    BOPCol_MapOfShape aMFDone(100, aAllocator1);
+    BOPCol_IndexedMapOfShape aMFIN(100, aAllocator1);
+    BOPCol_IndexedDataMapOfShapeListOfShape aMEF(100, aAllocator1);
+    BOPCol_ListOfShape aLIF(aAllocator1);
+    BOPCol_IndexedMapOfShape aMS(100, aAllocator1);
     //
     aMFDone.Clear();
     aMFIN.Clear();
     aMEF.Clear();
+    //
+    const TopoDS_Solid& aSolid=(*(TopoDS_Solid*)(&aMSolids(i)));
     //
     aBB.MakeSolid(aSolidSp);
     // 
@@ -194,12 +203,12 @@ static
     }
     //
     // 2 all faces that are not from aSolid [ aLFP1 ]
-    BOPCol_IndexedDataMapOfShapeListOfShape aMEFP(100, theAllocator);
-    BOPCol_ListOfShape aLFP1(theAllocator);
-    BOPCol_ListOfShape aLFP(theAllocator);
-    BOPCol_ListOfShape aLCBF(theAllocator);
-    BOPCol_ListOfShape aLFIN(theAllocator);
-    BOPCol_ListOfShape aLEx(theAllocator);
+    BOPCol_IndexedDataMapOfShapeListOfShape aMEFP(100, aAllocator1);
+    BOPCol_ListOfShape aLFP1(aAllocator1);
+    BOPCol_ListOfShape aLFP(aAllocator1);
+    BOPCol_ListOfShape aLCBF(aAllocator1);
+    BOPCol_ListOfShape aLFIN(aAllocator1);
+    BOPCol_ListOfShape aLEx(aAllocator1);
     //
     // for all non-solid faces build EF map [ aMEFP ]
     for (j=1; j<=aNbFaces; ++j) {
@@ -278,7 +287,14 @@ static
       // Connexity Block that spreads from aFP the Bound 
       // or till the end of the block itself
       aLCBF.Clear();
-      BOPTools_AlgoTools::MakeConnexityBlock(aLFP, aMS, aLCBF, theAllocator);
+      {
+	Handle(NCollection_IncAllocator) aAllocator;
+	aAllocator=new NCollection_IncAllocator();
+	//
+	BOPTools_AlgoTools::MakeConnexityBlock(aLFP, aMS, aLCBF, aAllocator);
+	//
+      }
+      //
       //
       // fill states for the Connexity Block 
       aItS.Initialize(aLCBF);
@@ -316,7 +332,7 @@ static
     if (aNbFIN || bHasImage) {
       theDraftSolids.Bind(aSolid, aSolidSp);
     }
-  }// for (; aItMS.More(); aItMS.Next()) {
+  }//for (i=1; i<=aNbSolids; ++i) {
 }
 //=======================================================================
 //function : BuildDraftSolid
