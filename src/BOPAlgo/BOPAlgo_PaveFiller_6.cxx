@@ -102,7 +102,7 @@ static void ToleranceFF(const TopoDS_Face& aF1,
 //function : PerformFF
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_PaveFiller::PerformFF()
+void BOPAlgo_PaveFiller::PerformFF()
 {
   Standard_Integer iSize;
   Standard_Boolean bValid;
@@ -116,7 +116,7 @@ static void ToleranceFF(const TopoDS_Face& aF1,
   }
   //
   Standard_Boolean bJustAdd, bApp, bCompC2D1, bCompC2D2, bIsDone;
-  Standard_Boolean bToSplit;
+  Standard_Boolean bToSplit, bTangentFaces;
   Standard_Integer nF1, nF2, aNbCurves, aNbPoints, iX, i, iP, iC, aNbLP;
   Standard_Real aApproxTol, aTolR3D, aTolR2D, aTolFF;
   //
@@ -157,6 +157,7 @@ static void ToleranceFF(const TopoDS_Face& aF1,
     if (bIsDone) {
       aTolR3D=aFaceFace.TolReached3d();
       aTolR2D=aFaceFace.TolReached2d();
+      bTangentFaces=aFaceFace.TangentFaces();
       //
       ToleranceFF(aF1, aF2, aTolFF);
       //
@@ -183,6 +184,7 @@ static void ToleranceFF(const TopoDS_Face& aF1,
       //
       aFF.SetTolR3D(aTolR3D);
       aFF.SetTolR2D(aTolR2D);
+      aFF.SetTangentFaces(bTangentFaces);
       //
       // Curves, Points 
       aFF.Init(aNbCurves, aNbPoints);
@@ -333,7 +335,7 @@ static void ToleranceFF(const TopoDS_Face& aF1,
       PutPaveOnCurve(aMVOnIn, aTolR3D, aNC, nF1, nF2, aMVEF);
       //
       PutStickPavesOnCurve(nF1, nF2, aNC, aMVStick);
-      //pkv/904/F7
+      //904/F7
       if (aNbC == 1) {
         PutEFPavesOnCurve(nF1, nF2, aNC, aMVEF);
       }

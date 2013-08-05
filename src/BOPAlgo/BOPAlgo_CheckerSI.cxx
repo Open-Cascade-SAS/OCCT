@@ -26,11 +26,23 @@
 #include <BOPDS_PIteratorSI.hxx>
 #include <BOPInt_Context.hxx>
 
+#include <BOPDS_Interf.hxx>
+#include <BOPDS_MapOfPassKey.hxx>
+#include <BOPDS_PassKey.hxx>
+#include <BOPDS_VectorOfInterfVV.hxx>
+#include <BOPDS_VectorOfInterfVE.hxx>
+#include <BOPDS_VectorOfInterfVE.hxx>
+#include <BOPDS_VectorOfInterfVF.hxx>
+#include <BOPDS_VectorOfInterfEF.hxx>
+#include <BOPDS_VectorOfInterfFF.hxx>
+#include <BOPDS_VectorOfPoint.hxx>
+#include <BOPTools_AlgoTools.hxx>
+
 //=======================================================================
 //function : 
 //purpose  : 
 //=======================================================================
-  BOPAlgo_CheckerSI::BOPAlgo_CheckerSI()
+BOPAlgo_CheckerSI::BOPAlgo_CheckerSI()
 :
   BOPAlgo_PaveFiller(),
   myLevelOfCheck(5)
@@ -40,14 +52,14 @@
 //function : ~
 //purpose  : 
 //=======================================================================
-  BOPAlgo_CheckerSI::~BOPAlgo_CheckerSI()
+BOPAlgo_CheckerSI::~BOPAlgo_CheckerSI()
 {
 }
 //=======================================================================
 //function : SetLevelOfCheck
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_CheckerSI::SetLevelOfCheck(const Standard_Integer theLevel)
+void BOPAlgo_CheckerSI::SetLevelOfCheck(const Standard_Integer theLevel)
 {
   if (theLevel >= 0 && theLevel <= 5) {
     myLevelOfCheck = theLevel;
@@ -57,7 +69,7 @@
 //function : Init
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_CheckerSI::Init()
+void BOPAlgo_CheckerSI::Init()
 {
   myErrorStatus = 0;
   //
@@ -85,4 +97,128 @@
   myContext=new BOPInt_Context;
   //
   myErrorStatus=0;
+}
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+void BOPAlgo_CheckerSI::Perform()
+{
+  BOPAlgo_PaveFiller::Perform();
+  if (myErrorStatus) {
+   return; 
+  }
+  //  
+  PostTreat();  
+}
+//=======================================================================
+//function : PostTreat
+//purpose  : 
+//=======================================================================
+void BOPAlgo_CheckerSI::PostTreat()
+{
+  Standard_Integer i, aNb, n1, n2; 
+  BOPDS_PassKey aPK;
+  //
+  BOPDS_MapOfPassKey& aMPK=*((BOPDS_MapOfPassKey*)&myDS->Interferences());
+  aMPK.Clear();
+  //
+  // 0
+  BOPDS_VectorOfInterfVV& aVVs=myDS->InterfVV();
+  aNb=aVVs.Extent();
+  for (i=0; i!=aNb; ++i) {
+    const BOPDS_InterfVV& aVV=aVVs(i);
+    aVV.Indices(n1, n2);
+    aPK.SetIds(n1, n2);
+    aMPK.Add(aPK);
+  }
+  //
+  // 1
+  BOPDS_VectorOfInterfVE& aVEs=myDS->InterfVE();
+  aNb=aVEs.Extent();
+  for (i=0; i!=aNb; ++i) {
+    const BOPDS_InterfVE& aVE=aVEs(i);
+    aVE.Indices(n1, n2);
+    aPK.SetIds(n1, n2);
+    aMPK.Add(aPK);
+  }
+  //
+  // 2
+  BOPDS_VectorOfInterfEE& aEEs=myDS->InterfEE();
+  aNb=aEEs.Extent();
+  for (i=0; i!=aNb; ++i) {
+    const BOPDS_InterfEE& aEE=aEEs(i);
+    aEE.Indices(n1, n2);
+    aPK.SetIds(n1, n2);
+    aMPK.Add(aPK);
+  }
+  //
+  // 3
+  BOPDS_VectorOfInterfVF& aVFs=myDS->InterfVF();
+  aNb=aVFs.Extent();
+  for (i=0; i!=aNb; ++i) {
+    const BOPDS_InterfVF& aVF=aVFs(i);
+    aVF.Indices(n1, n2);
+    aPK.SetIds(n1, n2);
+    aMPK.Add(aPK);
+  }
+  //
+  // 4
+  BOPDS_VectorOfInterfEF& aEFs=myDS->InterfEF();
+  aNb=aEFs.Extent();
+  for (i=0; i!=aNb; ++i) {
+    const BOPDS_InterfEF& aEF=aEFs(i);
+    if (aEF.CommonPart().Type()==TopAbs_SHAPE) {
+      continue;
+    }
+    aEF.Indices(n1, n2);
+    aPK.SetIds(n1, n2);
+    aMPK.Add(aPK);
+  }
+  //
+  // 5
+  BOPDS_VectorOfInterfFF& aFFs=myDS->InterfFF();
+  aNb=aFFs.Extent();
+  for (i=0; i!=aNb; ++i) {
+    Standard_Boolean bTangentFaces, bFlag;
+    Standard_Integer aNbC, aNbP, j, iFound;
+    //
+    const BOPDS_InterfFF& aFF=aFFs(i);
+    aFF.Indices(n1, n2);
+    //
+    bTangentFaces=aFF.TangentFaces();
+    aNbP=aFF.Points().Extent();
+    const BOPDS_VectorOfCurve& aVC=aFF.Curves();
+    aNbC=aVC.Extent();
+    if (!aNbP && !aNbC && !bTangentFaces) {
+      continue;
+    }
+    //
+    iFound=0;
+    if (bTangentFaces) {
+      const TopoDS_Face& aF1 = *((TopoDS_Face*)&myDS->Shape(n1));
+      const TopoDS_Face& aF2 = *((TopoDS_Face*)&myDS->Shape(n2));
+      bFlag=BOPTools_AlgoTools::AreFacesSameDomain(aF1, aF2, myContext);
+      if (bFlag) {
+	++iFound;
+      }
+    }
+    else {
+      for (j=0; j!=aNbC; ++j) {
+	const BOPDS_Curve& aNC=aVC(j);
+	const BOPDS_ListOfPaveBlock& aLPBC=aNC.PaveBlocks();
+	if (aLPBC.Extent()) {
+	  ++iFound;
+	  break;
+	}
+      }
+    }
+    //
+    if (!iFound) {
+      continue;
+    }
+    //
+    aPK.SetIds(n1, n2);
+    aMPK.Add(aPK);
+  }
 }

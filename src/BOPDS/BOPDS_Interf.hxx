@@ -511,6 +511,7 @@ class BOPDS_InterfFF  : public BOPDS_Interf {
   BOPDS_InterfFF()
     : 
       BOPDS_Interf(),
+      myTangentFaces(Standard_False),
       myTolR3D(1.e-7),
       myTolR2D(1.e-7),
       myCurves(myAllocator),
@@ -526,6 +527,7 @@ class BOPDS_InterfFF  : public BOPDS_Interf {
   BOPDS_InterfFF(const Handle(NCollection_BaseAllocator)& theAllocator)
     : 
       BOPDS_Interf(theAllocator),
+      myTangentFaces(Standard_False),
       myTolR3D(1.e-7),
       myTolR2D(1.e-7),
       myCurves(myAllocator),
@@ -558,7 +560,24 @@ class BOPDS_InterfFF  : public BOPDS_Interf {
       myPoints.Init();
     }
   }
-  //
+  /**
+   * Modifier
+   * Sets the flag of whether the faces are tangent  
+   * @param theFlag
+   *   the flag 
+   */
+  void SetTangentFaces(const Standard_Boolean theFlag) {
+     myTangentFaces=theFlag;
+  }
+  /**
+   * Selector
+   * Returns the flag whether the faces are tangent  
+   * @return
+   *   the flag 
+   */
+  Standard_Boolean TangentFaces()const {
+    return myTangentFaces;
+  }
   /**
    * Modifier
    * Sets the value of 3D tolerance  
@@ -640,6 +659,7 @@ class BOPDS_InterfFF  : public BOPDS_Interf {
   };
   //
  protected:
+  Standard_Boolean myTangentFaces;
   Standard_Real myTolR3D;
   Standard_Real myTolR2D;
   BOPDS_VectorOfCurve myCurves;

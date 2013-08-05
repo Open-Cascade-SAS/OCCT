@@ -26,11 +26,16 @@ class CheckerSI from BOPAlgo
 
 is
     Create 
-    returns CheckerSI from BOPAlgo;  
-    ---C++: alias "Standard_EXPORT virtual ~BOPAlgo_CheckerSI();" 
- 
+    	returns CheckerSI from BOPAlgo;  
+    ---C++: alias "Standard_EXPORT virtual ~BOPAlgo_CheckerSI();"  
+    
+
+    Perform(me:out) 
+    	is redefined;   
+  
+
     Init  (me:out) 
-    is redefined protected;
+    	is redefined protected;
 
     SetLevelOfCheck(me:out; 
       theLevel: Integer from Standard); 
@@ -41,9 +46,15 @@ is
     --           2 - V/V, V/E and E/E; 
     --           3 - V/V, V/E, E/E and V/F;
     --           4 - V/V, V/E, E/E, V/F and E/F; 
-    --           5 - all interferences, default value.
+    --           5 - all interferences, default value. 
+ 
+
+    PostTreat  (me:out)  
+    	is protected;       
+    ---Purpose: Provides post-tratment actions 	
+	
  
 fields
     myLevelOfCheck: Integer from Standard is protected;
-  
+    
 end CheckerSI;
