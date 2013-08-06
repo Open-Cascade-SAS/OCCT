@@ -24,7 +24,6 @@
 
 #include <Standard_IStream.hxx>
 #include <Standard_Boolean.hxx>
-
 /**
  * Structure passed to the methods dealing with input stream.
  */
@@ -38,7 +37,9 @@ struct VrmlData_InBuffer {
     : Input       (theStream),
       LinePtr     (&Line[0]),
       IsProcessed (Standard_False),
-      LineCount   (0) {}
+      LineCount   (0) {};
+  private:
+    void operator= (const VrmlData_InBuffer&);
 };
 
 #endif

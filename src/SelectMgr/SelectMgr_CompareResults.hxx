@@ -34,6 +34,7 @@ class SelectMgr_CompareResults: public TCollection_CompareOfInteger
                 (const Standard_Integer&, const Standard_Integer&) const;
  private:
   const SelectMgr_IndexedDataMapOfOwnerCriterion&  myMapOfCriterion;
+  void operator= (const SelectMgr_CompareResults& );
 };
 
 //=======================================================================

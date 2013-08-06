@@ -40,6 +40,7 @@ struct entityRef {
   const char * name;
   const int    length;
   entityRef (const char * aName, const int aLen) : name(aName), length(aLen) {}
+  void operator= (const entityRef&);
 };
 
 //=======================================================================

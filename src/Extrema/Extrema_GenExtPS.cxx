@@ -60,7 +60,6 @@ Bnd_Sphere& theSol)
       mySphereArray(theSphereArray),
       mySol(theSol)
   {
-    //myXYZ = gp_Pnt(0, 0, 0);    
   }
 
   void DefineCheckPoint( const gp_Pnt& theXYZ )
@@ -72,11 +71,12 @@ Bnd_Sphere& theSol)
   virtual Standard_Boolean Reject( const Bnd_Sphere &theBnd ) const = 0;
   
   virtual Standard_Boolean Accept(const Standard_Integer& theObj) = 0;
-
  protected:
-  gp_Pnt                      myXYZ;
-  const Handle(Bnd_HArray1OfSphere)& mySphereArray;
-  Bnd_Sphere&						 mySol;
+  gp_Pnt                              myXYZ;
+  const Handle(Bnd_HArray1OfSphere)&  mySphereArray;
+  Bnd_Sphere&                         mySol;
+ private:
+  void operator= (const Bnd_SphereUBTreeSelector&);
 
 };
 

@@ -90,7 +90,6 @@ class VrmlData_ShapeConvert
 				const Standard_Real    theDeflAngle = 20.*M_PI/180.);
                                 //this value of theDeflAngle is used by default 
                                 //for tesselation while shading (Drawer->HLRAngle())
-  
  protected:
   // ---------- PROTECTED METHODS ----------
 
@@ -112,6 +111,8 @@ class VrmlData_ShapeConvert
   VrmlData_Scene&                       myScene;
   Standard_Real                         myScale;
   NCollection_List <ShapeData>          myShapes;
+  // ---------- PRIVATE METHODS ----------
+  void operator= (const VrmlData_ShapeConvert&);
 };
 
 #endif

@@ -108,8 +108,8 @@ class LDOM_MemManager : public MMgt_TShared
       char             * str;
       struct TableItem * next;
     }                           * myTable;
-//    Standard_Integer            myMask;
     LDOM_MemManager&            myManager;
+    void operator= (const HashTable&);
   };
 
   // ---- PROHIBITED (PRIVATE) METHODS ----
