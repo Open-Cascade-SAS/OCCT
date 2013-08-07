@@ -79,6 +79,8 @@ Handle(TDataStd_ByteArray) TDataStd_ByteArray::Set(const TDF_Label&       label,
 void TDataStd_ByteArray::SetValue (const Standard_Integer index,
 				   const Standard_Byte value) 
 {
+  if (myValue.IsNull()) 
+    return;
   if (value == myValue->Value(index))
     return;
   Backup();

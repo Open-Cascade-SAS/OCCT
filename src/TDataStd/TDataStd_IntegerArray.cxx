@@ -95,7 +95,7 @@ void TDataStd_IntegerArray::SetValue(const Standard_Integer index, const Standar
 {
   if(myValue.IsNull()) return;
   if( myValue->Value(index) == value)
-    return; 
+    return;
   Backup();
   myValue->SetValue(index, value);
 }

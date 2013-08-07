@@ -110,13 +110,9 @@ Handle(TDataStd_BooleanArray) TDataStd_BooleanArray::Set(const TDF_Label&       
 void TDataStd_BooleanArray::SetValue (const Standard_Integer index,
 				      const Standard_Boolean value) 
 {
-#ifdef DEB
-  if (myValues.IsNull()) 
-    return;
-  if (index < myLower || index > myUpper)
-    return;
-#endif
 
+  if (myValues.IsNull()) 
+    return; 
   Standard_Integer byte_index = (index - myLower) >> 3;
   Standard_Integer degree = index - (byte_index << 3) - myLower;
   Standard_Integer byte_value = DegreeOf2(degree);

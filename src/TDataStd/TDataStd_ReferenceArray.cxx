@@ -80,9 +80,9 @@ Handle(TDataStd_ReferenceArray) TDataStd_ReferenceArray::Set(const TDF_Label&   
 void TDataStd_ReferenceArray::SetValue (const Standard_Integer index,
 					const TDF_Label&       value) 
 {
+  if(myArray.IsNull()) return;
   if (value == myArray->Value(index))
     return;
-
   Backup();
 
   myArray->SetValue(index, value);
@@ -144,7 +144,7 @@ const Handle(TDataStd_HLabelArray1)& TDataStd_ReferenceArray::InternalArray () c
 //purpose  : 
 //=======================================================================
 void TDataStd_ReferenceArray::SetInternalArray (const Handle(TDataStd_HLabelArray1)& values,
-						const Standard_Boolean /*isCheckItem*/)
+						const Standard_Boolean isCheckItem)
 {
 //  myArray = values;
   Standard_Integer aLower    = values->Lower();

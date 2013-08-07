@@ -94,8 +94,7 @@ void TDataStd_RealArray::SetValue (const Standard_Integer index,
   // OCC2932 correction
   if(myValue.IsNull()) return;
   if(myValue->Value(index) == value)
-    return; 
-
+    return;  
   Backup();
   myValue->SetValue(index, value);
 }

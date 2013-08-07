@@ -59,6 +59,7 @@ is
     	      index :Integer from Standard; 
     	      value : Label from TDF);
     ---Purpose: Sets the <Index>th element of the array to <Value>
+    -- OutOfRange exception is raised if <Index> doesn't respect Lower and Upper bounds of the internal  array.
 
     Value (me; 
     	   Index : Integer from Standard)
