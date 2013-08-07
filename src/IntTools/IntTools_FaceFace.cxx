@@ -745,7 +745,8 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
 //=======================================================================
   void IntTools_FaceFace::ComputeTolReached3d()
 {
-  Standard_Integer aNbLin;
+  Standard_Boolean bCase1;
+  Standard_Integer aNbLin, i;
   GeomAbs_SurfaceType aType1, aType2;
   //
   aNbLin=myIntersector.NbLines();
@@ -755,6 +756,9 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
   //
   aType1=myHS1->Surface().GetType();
   aType2=myHS2->Surface().GetType();
+  //
+  bCase1=((aType1==GeomAbs_Plane && aType2==GeomAbs_SurfaceOfExtrusion) ||
+	  (aType2==GeomAbs_Plane && aType1==GeomAbs_SurfaceOfExtrusion));
   //
   if (aType1==GeomAbs_Cylinder && aType2==GeomAbs_Cylinder) {
     if (aNbLin==2){ 
@@ -784,7 +788,7 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
     }
     //ZZ
     if (aNbLin) {// Check the distances
-      Standard_Integer i, aNbP, j ;
+      Standard_Integer  aNbP, j ;
       Standard_Real aT1, aT2, dT, aD2, aD2Max, aEps, aT11, aT12;
       //
       aD2Max=0.;
@@ -882,7 +886,7 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
       return;
     }
     //
-    Standard_Integer i, aNbP;
+    Standard_Integer aNbP;
     Standard_Real aT, aT1, aT2, dT, aUT, aVT, aUP, aVP;
     Standard_Real aDP, aDT, aDmax;
     gp_Pln aPln;
@@ -937,7 +941,7 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
   //
   else if ((aType1==GeomAbs_SurfaceOfRevolution && aType2==GeomAbs_Cylinder) ||
 	   (aType2==GeomAbs_SurfaceOfRevolution && aType1==GeomAbs_Cylinder)) {
-    Standard_Integer i, j, aNbP;
+    Standard_Integer j, aNbP;
     Standard_Real aT, aT1, aT2, dT, aD2max, aD2;
     //
     aNbLin=mySeqOfCurve.Length();
@@ -985,7 +989,7 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
   }//if((aType1==GeomAbs_SurfaceOfRevolution ...
   else if ((aType1==GeomAbs_Plane && aType2==GeomAbs_Sphere) ||
            (aType2==GeomAbs_Plane && aType1==GeomAbs_Sphere)) {
-    Standard_Integer i, j, aNbP;
+    Standard_Integer  j, aNbP;
     Standard_Real aT1, aT2, dT, aD2max, aD2, aEps, aT11, aT12;
     //
     aNbLin=mySeqOfCurve.Length();
@@ -1039,8 +1043,9 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
       myTolReached3d=sqrt(aD2max);
     }
   }//else if ((aType1==GeomAbs_Plane && aType2==GeomAbs_Sphere) ...
-  else if (!myApprox) {
-    Standard_Integer i, aNbP, j ;
+  else if (!myApprox || bCase1) {
+  //else if (!myApprox) {
+    Standard_Integer aNbP, j;
     Standard_Real aT1, aT2, dT, aD2, aD2Max, aEps, aT11, aT12;
     //
     aD2Max=0.;
@@ -1079,7 +1084,6 @@ void IntTools_FaceFace::SetList(IntSurf_ListOfPntOn2S& aListOfPnts)
     }//for (i=1; i<=aNbLin; ++i) {
     myTolReached3d=sqrt(aD2Max);
   }
-  //modified by NIZNHY-PKV Thu Aug 30 13:31:12 2012t
 }
 //=======================================================================
 //function : MakeCurve
