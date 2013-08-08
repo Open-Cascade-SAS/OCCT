@@ -1,4 +1,4 @@
-puts "TODO OCC12345 windows: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC12345 ALL: Faulty shapes in variables faulty_1 to faulty_"
 
 puts "=========="
 puts "BUC60462"

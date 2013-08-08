@@ -1315,7 +1315,6 @@ void BOPDS_DS::AloneVertices(const Standard_Integer theI,
     }
   }
 }
-
 //=======================================================================
 //function : VerticesOnIn
 //purpose  : 
@@ -1325,79 +1324,44 @@ void BOPDS_DS::VerticesOnIn(const Standard_Integer nF1,
 			    BOPCol_MapOfInteger& aMI,
 			    BOPDS_MapOfPaveBlock& aMPB)const
 {
-  Standard_Integer nV, nV1, nV2;
+  Standard_Integer i, nV, nV1, nV2;
   BOPCol_MapIteratorOfMapOfInteger aIt;
+  BOPDS_IndexedMapOfPaveBlock* pMPB[4];
   BOPDS_MapIteratorOfMapOfPaveBlock aItMPB;
   //
   const BOPDS_FaceInfo& aFI1=FaceInfo(nF1);
   const BOPDS_FaceInfo& aFI2=FaceInfo(nF2);
   //
-  const BOPDS_IndexedMapOfPaveBlock& aMPBOn1=aFI1.PaveBlocksOn();
-  aItMPB.Initialize(aMPBOn1);
-  for (; aItMPB.More(); aItMPB.Next()) {
-    const Handle(BOPDS_PaveBlock)& aPB=aItMPB.Value();
-    aMPB.Add(aPB);
-    aPB->Indices(nV1, nV2);
-    aMI.Add(nV1);
-    aMI.Add(nV2);
-  }
+  pMPB[0]=(BOPDS_IndexedMapOfPaveBlock*)&aFI1.PaveBlocksOn();
+  pMPB[1]=(BOPDS_IndexedMapOfPaveBlock*)&aFI1.PaveBlocksIn();
+  pMPB[2]=(BOPDS_IndexedMapOfPaveBlock*)&aFI2.PaveBlocksOn();
+  pMPB[3]=(BOPDS_IndexedMapOfPaveBlock*)&aFI2.PaveBlocksIn();
   //
-  const BOPDS_IndexedMapOfPaveBlock& aMPBIn1=aFI1.PaveBlocksIn();
-  aItMPB.Initialize(aMPBIn1);
-  for (; aItMPB.More(); aItMPB.Next()) {
-    const Handle(BOPDS_PaveBlock)& aPB=aItMPB.Value();
-    aMPB.Add(aPB);
-    aPB->Indices(nV1, nV2);
-    aMI.Add(nV1);
-    aMI.Add(nV2);
-  }
-  //
-  const BOPDS_IndexedMapOfPaveBlock& aMPBOn2=aFI2.PaveBlocksOn();
-  aItMPB.Initialize(aMPBOn2);
-  for (; aItMPB.More(); aItMPB.Next()) {
-    const Handle(BOPDS_PaveBlock)& aPB=aItMPB.Value();
-    aMPB.Add(aPB);
-    aPB->Indices(nV1, nV2);
-    aMI.Add(nV1);
-    aMI.Add(nV2);
-  }
-  //
-  const BOPDS_IndexedMapOfPaveBlock& aMPBIn2=aFI2.PaveBlocksIn();
-  aItMPB.Initialize(aMPBIn2);
-  for (; aItMPB.More(); aItMPB.Next()) {
-    const Handle(BOPDS_PaveBlock)& aPB=aItMPB.Value();
-    aMPB.Add(aPB);
-    aPB->Indices(nV1, nV2);
-    aMI.Add(nV1);
-    aMI.Add(nV2);
+  for (i=0; i<4; ++i) {
+    aItMPB.Initialize(*pMPB[i]);
+    for (; aItMPB.More(); aItMPB.Next()) {
+      const Handle(BOPDS_PaveBlock)& aPB=aItMPB.Value();
+      aMPB.Add(aPB);
+      aPB->Indices(nV1, nV2);
+      aMI.Add(nV1);
+      aMI.Add(nV2);
+    }
   }
   //
   const BOPCol_MapOfInteger& aMVOn1=aFI1.VerticesOn();
-  aIt.Initialize(aMVOn1);
-  for (; aIt.More(); aIt.Next()) {
-    nV=aIt.Value();
-    aMI.Add(nV);
-  }
-  //
   const BOPCol_MapOfInteger& aMVIn1=aFI1.VerticesIn();
-  aIt.Initialize(aMVIn1);
-  for (; aIt.More(); aIt.Next()) {
-    nV=aIt.Value();
-    aMI.Add(nV);
-  }
-  //
   const BOPCol_MapOfInteger& aMVOn2=aFI2.VerticesOn();
-  aIt.Initialize(aMVOn2);
-  for (; aIt.More(); aIt.Next()) {
-    nV=aIt.Value();
-    aMI.Add(nV);
-  }
-  //
   const BOPCol_MapOfInteger& aMVIn2=aFI2.VerticesIn();
-  aIt.Initialize(aMVIn2);
-  for (; aIt.More(); aIt.Next()) {
-    nV=aIt.Value();
-    aMI.Add(nV);
+  //
+  for (i=0; i<2; ++i) {
+    const BOPCol_MapOfInteger& aMV1=(!i) ? aMVOn1 : aMVIn1;
+    aIt.Initialize(aMV1);
+    for (; aIt.More(); aIt.Next()) {
+      nV=aIt.Value();
+      if (aMVOn2.Contains(nV) || aMVIn2.Contains(nV)) {
+	aMI.Add(nV);
+      }
+    }
   }
 } 
 //=======================================================================

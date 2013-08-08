@@ -1,0 +1,21 @@
+puts "============"
+puts "OCC24089"
+puts "============"
+puts ""
+####################################################
+# Missing section edge
+####################################################
+
+restore [locate_data_file bug24089_fz2] b1
+restore [locate_data_file bug24089_qf1] b2
+
+bop b1 b2
+bopsection result
+
+set nb_v_good 5
+set nb_e_good 4
+set nb_shape_good 10
+
+set 2dviewer 0
+
+
