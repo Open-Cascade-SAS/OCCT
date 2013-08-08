@@ -418,7 +418,7 @@ static
   //
   aETol = BRep_Tool::Tolerance(aE);
   aFTol = BRep_Tool::Tolerance(aF);
-  // pkv NPAL19220
+  // NPAL19220
   GeomAdaptor_Surface aGAS(aS);
   aTS=aGAS.GetType();
   if (aTS==GeomAbs_BSplineSurface) {
@@ -462,37 +462,52 @@ static
 //function : PointNearEdge
 //purpose  : 
 //=======================================================================
-  void BOPTools_AlgoTools3D::PointNearEdge (const TopoDS_Edge& aE,
-                                            const TopoDS_Face& aF,
-                                            const Standard_Real aT, 
-                                            gp_Pnt2d& aPx2DNear,
-                                            gp_Pnt& aPxNear,
-                                            Handle(BOPInt_Context)& theContext)
+void BOPTools_AlgoTools3D::PointNearEdge (const TopoDS_Edge& aE,
+					  const TopoDS_Face& aF,
+					  const Standard_Real aT, 
+					  gp_Pnt2d& aPx2DNear,
+					  gp_Pnt& aPxNear,
+					  Handle(BOPInt_Context)& theContext)
 {
-  Standard_Real dt2D=BOPTools_AlgoTools3D::MinStepIn2d();//~1.e-5;
-  Standard_Real aTolE, aTolF, dtx;
+  Standard_Real aTolE, aTolF, dTx, dT2D;
+  Handle(Geom_Surface) aS;
+  GeomAdaptor_Surface aGAS;
   //
-  Handle(Geom_Surface) aS = BRep_Tool::Surface(aF);
-  GeomAdaptor_Surface aGAS(aS);
+  dT2D=10.*BOPTools_AlgoTools3D::MinStepIn2d();//~1.e-5;
+  //
+  aS = BRep_Tool::Surface(aF);
+  aGAS.Load(aS);
   if (aGAS.GetType()==GeomAbs_Cylinder ||
       aGAS.GetType()==GeomAbs_Sphere) {
-    dt2D *= 100;
-  } else {
-    dt2D *= 10;
-  }
+    dT2D=10.*dT2D;
+  } 
+  //
   aTolE = BRep_Tool::Tolerance(aE);
   aTolF = BRep_Tool::Tolerance(aF);
-  dtx = 2*(aTolE + aTolF);
-  dt2D = (dtx > dt2D) ? dtx : dt2D;
-  BOPTools_AlgoTools3D::PointNearEdge (aE, aF, aT, dt2D, aPx2DNear, aPxNear);
+  dTx = 2.*(aTolE + aTolF);
+  if (dTx > dT2D) {
+    dT2D=dTx;
+  }
+  //
+  BOPTools_AlgoTools3D::PointNearEdge (aE, aF, aT, dT2D, aPx2DNear, aPxNear);
   if (!theContext->IsPointInOnFace(aF, aPx2DNear)) {
+    Standard_Integer iErr;
+    Standard_Real aU1, aU2, aV1, aV2, dV, dU, dTresh;
     gp_Pnt aP;
     gp_Pnt2d aP2d;
-    Standard_Real u1, u2, v1, v2;
     //
-    BRepTools::UVBounds(aF, u1, u2, v1, v2);
-    if ((u2-u1) < 1.e-4 || (v2-v1) < 1.e-4) {
-      Standard_Integer iErr = BOPTools_AlgoTools3D::PointInFace(aF, aP, aP2d, theContext);
+    BRepTools::UVBounds(aF, aU1, aU2, aV1, aV2);
+    // 
+    dU=aU2-aU1;
+    dV=aV2-aV1;
+    //
+    dTresh=1.e-4;
+    if (dT2D > dTresh) {
+      dTresh=dT2D;
+    }
+    //
+    if (dU < dTresh || dV < dTresh) {
+      iErr = BOPTools_AlgoTools3D::PointInFace(aF, aP, aP2d, theContext);
       if (!iErr) {
         aPxNear = aP;
         aPx2DNear = aP2d;
