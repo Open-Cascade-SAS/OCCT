@@ -752,7 +752,6 @@ void Extrema_GenExtPS::FindSolution(const gp_Pnt& /*P*/,
   Tol(2) = mytolv;
 
   math_Vector UV(1, 2);
-
   theParams.Parameter(UV(1), UV(2));
 
   math_Vector UVinf(1,2), UVsup(1,2);
@@ -761,15 +760,9 @@ void Extrema_GenExtPS::FindSolution(const gp_Pnt& /*P*/,
   UVsup(1) = myusup;
   UVsup(2) = myvsup;
 
-  math_Vector errors(1,2);
-  math_Vector root(1, 2);
+  const Standard_Integer aNbMaxIter = 100;
+  math_FunctionSetRoot S (myF, UV, Tol, UVinf, UVsup, aNbMaxIter);
 
-  Standard_Integer aNbMaxIter = 100;
-
-  gp_Pnt PStart = theParams.Value();
-  
-  math_FunctionSetRoot S (myF,UV,Tol,UVinf,UVsup, aNbMaxIter);
-  
   myDone = Standard_True;
 }
 

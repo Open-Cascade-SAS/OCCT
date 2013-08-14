@@ -146,8 +146,6 @@ a- Constitution du tableau des distances (TbDist2(0,NbU+1,0,NbV+1)):
     aCache2->CalculatePoints();
 
 // Calcul des distances
-  const Curve1& aCurve1 = *((Curve1*)(myF.CurvePtr (1)));
-  const Curve2& aCurve2 = *((Curve1*)(myF.CurvePtr (2)));
   const Handle(ArrayOfPnt)& aPntArray1 = aCache1->Points();
   const Handle(ArrayOfPnt)& aPntArray2 = aCache2->Points();
   Standard_Integer NoU, NoV;

@@ -316,7 +316,9 @@ Standard_Boolean Extrema_FuncExtPC::Values (const Standard_Real U, Standard_Real
     if(myU-myUinfium < 2*aDelta)
       {
       F1=F;
-      const Standard_Real U1 = myU, U2 = myU+aDelta, U3 = myU+2*aDelta;
+      //const Standard_Real U1 = myU;
+      const Standard_Real U2 = myU + aDelta;
+      const Standard_Real U3 = myU + aDelta * 2.0;
       
       if(!((Value(U2,F2)) && (Value(U3,F3))))
         {
@@ -337,8 +339,10 @@ Standard_Boolean Extrema_FuncExtPC::Values (const Standard_Real U, Standard_Real
     else
       {
       F3 = F;
-      const Standard_Real U1 = myU-2*aDelta, U2 = myU-aDelta, U3 = myU;
-      
+      const Standard_Real U1 = myU - aDelta * 2.0;
+      const Standard_Real U2 = myU - aDelta;
+      //const Standard_Real U3 = myU;
+
       if(!((Value(U2,F2)) && (Value(U1,F1))))
         {
 #ifdef DEB

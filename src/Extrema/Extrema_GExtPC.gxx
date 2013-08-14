@@ -105,7 +105,6 @@ void Extrema_GExtPC::Perform(const ThePoint& P)
       n = TheCurveTool::NbIntervals(*((TheCurve*)myC), GeomAbs_C2);
       TColStd_Array1OfReal theInter(1, n+1);
       Standard_Boolean isPeriodic = TheCurveTool::IsPeriodic(*((TheCurve*)myC));
-      Standard_Real aPeriodicShift = 0.;
       TheCurveTool::Intervals(*((TheCurve*)myC), theInter, GeomAbs_C2);
       mysample = Max(mysample/n, 17);
       TheVector V1;
