@@ -105,7 +105,7 @@ fields
 
     myDone : Boolean;
     myNbExt: Integer;
-    mySqDist: Real [6];
-    myPoint: POnSurf from Extrema [6];
+    mySqDist: Real [8];
+    myPoint: POnSurf from Extrema [8];
 
 end ExtPRevS;

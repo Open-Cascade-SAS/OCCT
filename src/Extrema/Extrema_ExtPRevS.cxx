@@ -174,7 +174,7 @@ static Standard_Boolean IsOriginalPnt (const gp_Pnt& P,
 				       const Standard_Integer NbPoints)
 {
   for (Standard_Integer i=1; i<=NbPoints; i++) {
-    if (Points[i].Value().IsEqual(P, Precision::Confusion())) {
+    if (Points[i-1].Value().IsEqual(P, Precision::Confusion())) {
       return Standard_False;
     }
   }
@@ -407,8 +407,9 @@ void Extrema_ExtPRevS::Perform(const gp_Pnt& P)
 	Dist2 = P.SquareDistance(E);
       }
       if (IsOriginalPnt(E, myPoint, myNbExt)) {
-	myPoint[++myNbExt] = Extrema_POnSurf(U,V,E);
+	myPoint[myNbExt] = Extrema_POnSurf(U,V,E);
 	mySqDist[myNbExt] = Dist2;
+	myNbExt++;
       }
     }
   }
@@ -476,9 +477,9 @@ void Extrema_ExtPRevS::Perform(const gp_Pnt& P)
 	Dist2 = P.SquareDistance(E);
       }
       if (IsOriginalPnt(E, myPoint, myNbExt)) {
-	myPoint[++myNbExt] = Extrema_POnSurf(U,V,E);
+	myPoint[myNbExt] = Extrema_POnSurf(U,V,E);
 	mySqDist[myNbExt] = Dist2;
-      
+	myNbExt++;
       }
     }
   }
@@ -518,7 +519,7 @@ Standard_Real Extrema_ExtPRevS::SquareDistance(const Standard_Integer N) const
   if (!IsDone()) { StdFail_NotDone::Raise(); }
   if ((N < 1) || (N > myNbExt)) { Standard_OutOfRange::Raise(); }
   if (myIsAnalyticallyComputable)
-    return mySqDist[N];
+    return mySqDist[N-1];
   else
     return myExtPS.SquareDistance(N);
 }
@@ -532,7 +533,7 @@ Extrema_POnSurf Extrema_ExtPRevS::Point(const Standard_Integer N) const
   if (!IsDone()) { StdFail_NotDone::Raise(); }
   if ((N < 1) || (N > myNbExt)) { Standard_OutOfRange::Raise(); }
   if (myIsAnalyticallyComputable)
-    return myPoint[N];
+    return myPoint[N-1];
   else
     return myExtPS.Point(N);
 }
