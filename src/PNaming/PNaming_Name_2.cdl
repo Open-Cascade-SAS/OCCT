@@ -1,0 +1,84 @@
+-- Created on: 2008-08-15
+-- Created by: Sergey ZARITCHNY <szy@opencascade.com>
+-- Copyright (c) 2008-2012 OPEN CASCADE SAS
+--
+-- The content of this file is subject to the Open CASCADE Technology Public
+-- License Version 6.5 (the "License"). You may not use the content of this file
+-- except in compliance with the License. Please obtain a copy of the License
+-- at http://www.opencascade.org and read it completely before using this file.
+--
+-- The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+-- main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+--
+-- The Original Code and all software distributed under the License is
+-- distributed on an "AS IS" basis, without warranty of any kind, and the
+-- Initial Developer hereby disclaims all such warranties, including without
+-- limitation, any warranties of merchantability, fitness for a particular
+-- purpose or non-infringement. Please see the License for the specific terms
+-- and conditions governing the rights and limitations under the License.
+
+
+class Name_2 from PNaming inherits Persistent from Standard
+
+	---Purpose: 
+uses
+   NamedShape          from PNaming,
+   HArray1OfNamedShape from PNaming, 
+   HAsciiString        from PCollection
+
+is
+    Create returns mutable Name_2 from PNaming;
+    
+    Type      (me : mutable; T : Integer from Standard);
+    ---C++: inline
+    
+    ShapeType (me : mutable; T : Integer from Standard);
+    ---C++: inline
+    
+    Arguments (me :mutable ; Args : HArray1OfNamedShape from PNaming);
+    ---C++: inline
+
+    StopNamedShape (me : mutable; arg : NamedShape  from PNaming);
+    ---C++: inline
+
+    Orientation (me : mutable; Or : Integer from Standard);
+    ---C++: inline
+ 
+    Type      (me) returns Integer from Standard;
+    ---C++: inline
+    
+    ShapeType (me) returns Integer from Standard;
+    ---C++: inline
+
+    Arguments (me) returns HArray1OfNamedShape from PNaming;
+    ---C++: inline
+
+    StopNamedShape (me) returns NamedShape  from PNaming;
+     ---C++: inline
+
+    Index(me : mutable; I : Integer from Standard);
+    ---C++: inline
+
+    Index(me) returns Integer from Standard;
+    ---C++: inline
+
+    ContextLabel   (me) returns HAsciiString from PCollection;
+    ---C++: return const&
+    ---C++: inline 
+    
+    ContextLabel   (me : mutable; theLab : HAsciiString from PCollection);
+    ---C++: inline
+	
+    Orientation(me) returns Integer from Standard; 
+    ---C++: inline
+
+fields 
+
+    myType         : Integer             from Standard;
+    myShapeType    : Integer             from Standard;
+    myArgs         : HArray1OfNamedShape from PNaming;
+    myStop         : NamedShape          from PNaming;
+    myIndex        : Integer             from Standard;
+    myContextLabel : HAsciiString        from PCollection;
+    myOrientation  : Integer             from Standard;
+end Name_2;

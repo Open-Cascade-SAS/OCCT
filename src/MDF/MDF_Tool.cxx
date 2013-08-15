@@ -60,6 +60,14 @@
 #define DeclareConstAndSpeedCast(V,T,Vdown) const Handle(T)& Vdown = (Handle(T)&) V
 #define SpeedCast(V,T,Vdown) Vdown = *((Handle(T)*)& V)
 
+#include <NCollection_List.hxx>
+typedef struct {
+	Handle(PDF_Attribute) pAtt;
+	Handle(TDF_Attribute) tAtt;
+} ATTR;
+typedef NCollection_List<ATTR> MDF_AttributeList;
+typedef MDF_AttributeList::Iterator MDF_ListIteratorOfAttributeList;
+
 #undef DEB_MDF_TOOL
 
 // Persistent structure:
@@ -364,7 +372,7 @@ void MDF_Tool::ReadLabels
 //purpose  : PERSISTENT -> TRANSIENT
 //           Reads the persistent attributes content.
 //=======================================================================
-
+//#define DEB_ORIENT
 void MDF_Tool::ReadAttributes
 (const MDF_TypeARDriverMap& aDriverMap,
  const Handle(MDF_RRelocationTable)& aReloc) 
@@ -374,18 +382,50 @@ void MDF_Tool::ReadAttributes
   const PTColStd_PersistentTransientMap& attMap = aReloc->AttributeTable();
   PTColStd_DataMapIteratorOfPersistentTransientMap itr(attMap);
   Handle(TDF_Attribute) tAtt;
+  MDF_AttributeList attNList;
+  Standard_Boolean isName1(Standard_False);
+  ATTR pairAtt;
   for ( ; itr.More(); itr.Next()) {
     DeclareConstAndSpeedCast(itr.Key(),PDF_Attribute,pAtt);
     if (!pAtt.IsNull()) { // See above...
       const Handle(Standard_Type)& type = pAtt->DynamicType();
+	  
+	  if(!strcmp (type->Name(), "PNaming_Naming_1") ) {
+#ifdef DEB_ORIENT
+		  cout << "TYPE = " << type->Name() << endl;
+#endif
+		  isName1 = Standard_True;
+	  } else isName1 = Standard_False;
+
       if (aDriverMap.IsBound(type)) {
-	SpeedCast(itr.Value(),TDF_Attribute,tAtt);
-	const Handle(MDF_ARDriver)& driver = aDriverMap.Find(type);
-	driver->Paste(pAtt, tAtt, aReloc);
+	    SpeedCast(itr.Value(),TDF_Attribute,tAtt);
+	    const Handle(MDF_ARDriver)& driver = aDriverMap.Find(type);
+		if(isName1) {
+		  pairAtt.pAtt = pAtt;
+		  pairAtt.tAtt = tAtt;
+		  attNList.Append(pairAtt);
+		}
+		else 
+	      driver->Paste(pAtt, tAtt, aReloc);
       }
     }
   }
 
+// post processing for compartibiliy with previous versions (24.07.2013)
+  if(attNList.Extent()) {
+    MDF_ListIteratorOfAttributeList listIt(attNList);
+	for(;listIt.More();listIt.Next()) {
+		const  Handle(PDF_Attribute)& pAtt = listIt.Value().pAtt;
+		if (!pAtt.IsNull()) { 
+          const Handle(Standard_Type)& type = pAtt->DynamicType();
+		  if (aDriverMap.IsBound(type)) {	        
+	        const Handle(MDF_ARDriver)& driver = aDriverMap.Find(type);		
+	        driver->Paste(pAtt, listIt.Value().tAtt, aReloc);
+		  }
+		}
+	}
+  }
+//
   TDF_AttributeList attList;
   for (itr.Initialize(attMap); itr.More(); itr.Next()) {
     SpeedCast(itr.Value(),TDF_Attribute,tAtt);

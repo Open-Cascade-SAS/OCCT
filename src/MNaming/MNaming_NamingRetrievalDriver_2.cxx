@@ -19,11 +19,11 @@
 
 
 
-#include <MNaming_NamingRetrievalDriver_1.ixx>
-#include <PNaming_Naming_1.hxx>
+#include <MNaming_NamingRetrievalDriver_2.ixx>
+#include <PNaming_Naming_2.hxx>
 #include <PNaming_NamedShape.hxx>
 #include <PNaming_HArray1OfNamedShape.hxx>
-#include <PNaming_Name_1.hxx>
+#include <PNaming_Name_2.hxx>
 #include <PCollection_HAsciiString.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TDF_Tool.hxx>
@@ -31,7 +31,6 @@
 #include <Standard_NoSuchObject.hxx>
 #include <TNaming_Naming.hxx>
 #include <TNaming_NameType.hxx>
-#include <TNaming_Iterator.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <CDM_MessageDriver.hxx>
 
@@ -81,15 +80,31 @@ static  TNaming_NameType IntegerToNameType (const Standard_Integer I)
       default :
 	Standard_DomainError::Raise("TNaming_NameType; enum term unknown ");
     }
-  return TNaming_INTERSECTION;
+  return TNaming_UNKNOWN;
 }
-
 //=======================================================================
-//function : MNaming_Naming_1
+//function : IntegerToOrientation
+//purpose  : 
+//=======================================================================
+static TopAbs_Orientation IntegerToOrientation (const Standard_Integer Or) 
+{
+  switch(Or)
+    {
+    case  0 : return TopAbs_FORWARD;  
+    case  1 : return TopAbs_REVERSED;
+    case  2 : return TopAbs_INTERNAL;
+    case  3 : return TopAbs_EXTERNAL;   
+      default :
+	Standard_DomainError::Raise("PNaming_Name::myOrientation; enum term unknown ");
+    }
+  return TopAbs_FORWARD;
+}
+//=======================================================================
+//function : MNaming_Naming_2
 //purpose  : 
 //=======================================================================
 
-MNaming_NamingRetrievalDriver_1::MNaming_NamingRetrievalDriver_1(
+MNaming_NamingRetrievalDriver_2::MNaming_NamingRetrievalDriver_2(
  const Handle(CDM_MessageDriver)& theMsgDriver):MDF_ARDriver(theMsgDriver)
 {
 }
@@ -99,7 +114,7 @@ MNaming_NamingRetrievalDriver_1::MNaming_NamingRetrievalDriver_1(
 //purpose  : 
 //=======================================================================
 
-Standard_Integer MNaming_NamingRetrievalDriver_1::VersionNumber() const
+Standard_Integer MNaming_NamingRetrievalDriver_2::VersionNumber() const
 { return 0; }
 
 //=======================================================================
@@ -107,8 +122,8 @@ Standard_Integer MNaming_NamingRetrievalDriver_1::VersionNumber() const
 //purpose  : 
 //=======================================================================
 
-Handle(Standard_Type) MNaming_NamingRetrievalDriver_1::SourceType() const
-{ return STANDARD_TYPE(PNaming_Naming_1);  }
+Handle(Standard_Type) MNaming_NamingRetrievalDriver_2::SourceType() const
+{ return STANDARD_TYPE(PNaming_Naming_2);  }
 
 
 //=======================================================================
@@ -116,7 +131,7 @@ Handle(Standard_Type) MNaming_NamingRetrievalDriver_1::SourceType() const
 //purpose  : 
 //=======================================================================
 
-Handle(TDF_Attribute) MNaming_NamingRetrievalDriver_1::NewEmpty() const
+Handle(TDF_Attribute) MNaming_NamingRetrievalDriver_2::NewEmpty() const
 { return new TNaming_Naming (); }
 
 //=======================================================================
@@ -124,7 +139,7 @@ Handle(TDF_Attribute) MNaming_NamingRetrievalDriver_1::NewEmpty() const
 //purpose  : 
 //=======================================================================
 
-static void PNamingToTNaming (const Handle(PNaming_Name_1)& PN,
+static void PNamingToTNaming (const Handle(PNaming_Name_2)& PN,
 			      TNaming_Name&                 TN,
 			      const Handle(MDF_RRelocationTable)& RelocTable)
 
@@ -157,48 +172,21 @@ static void PNamingToTNaming (const Handle(PNaming_Name_1)& PN,
       TDF_Tool::Label(aData,entry,tLab);
   }
   TN.ContextLabel(tLab);
+  TN.Orientation(IntegerToOrientation (PN->Orientation ()));
 }
 
 //=======================================================================
 //function : Paste
 //purpose  : 
 //=======================================================================
-//#define DEB_ORIENT
-void MNaming_NamingRetrievalDriver_1::Paste (
+
+void MNaming_NamingRetrievalDriver_2::Paste (
   const Handle(PDF_Attribute)&        Source,
   const Handle(TDF_Attribute)&        Target,
   const Handle(MDF_RRelocationTable)& RelocTable) const
 {
-  Handle(PNaming_Naming_1) PF = Handle(PNaming_Naming_1)::DownCast(Source);
-  Handle(TNaming_Naming) F  = Handle(TNaming_Naming)::DownCast(Target); 
+  Handle(PNaming_Naming_2) PF = Handle(PNaming_Naming_2)::DownCast(Source);
+  Handle(TNaming_Naming) F  = Handle(TNaming_Naming)::DownCast(Target);  
   PNamingToTNaming (PF->GetName(),F->ChangeName(),RelocTable);
-  // Orientation processing
-  Handle(TNaming_NamedShape) aNS;
-  if(F->Label().FindAttribute(TNaming_NamedShape::GetID(), aNS)) {
-#ifdef DEB_ORIENT
-    const TDF_Label& aLab = aNS->Label();
-	TCollection_AsciiString entry;
-	TDF_Tool::Entry(aLab, entry);
-	cout << "Label = " << entry << " Evolution = " <<aNS->Evolution() << " IsEmpty = " << aNS->IsEmpty() <<endl;
-#endif
-	if(!aNS->IsEmpty()) {
-      TNaming_Iterator itL (aNS);
-      for (; itL.More(); itL.Next()) {
-        const TopoDS_Shape& S = itL.NewShape();
-        if (S.IsNull()) continue;
-        if(aNS->Evolution() == TNaming_SELECTED) {
-          if (itL.More() && itL.NewShape().ShapeType() != TopAbs_VERTEX &&
-	        !itL.OldShape().IsNull() && itL.OldShape().ShapeType() == TopAbs_VERTEX ) {//OR-N
-            TopAbs_Orientation OrientationToApply = itL.OldShape().Orientation();
-#ifdef DEB_ORIENT
-			cout <<"Retrieved Orientation = " << OrientationToApply <<endl;
-#endif 
-            F->ChangeName().Orientation(OrientationToApply);
-          }
-        }
-      }
-	}
-  }
-  // 
 }
 

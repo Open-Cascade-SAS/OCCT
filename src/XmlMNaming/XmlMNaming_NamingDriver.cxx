@@ -26,6 +26,7 @@
 #include <TNaming_Naming.hxx>
 #include <TNaming_NamedShape.hxx>
 #include <TNaming_ListIteratorOfListOfNamedShape.hxx>
+#include <TNaming_Iterator.hxx>
 #include <TDF_Tool.hxx>
 
 //=======================================================================
@@ -41,6 +42,7 @@ IMPLEMENT_DOMSTRING (TypeString,                "nametype")
 IMPLEMENT_DOMSTRING (ShapeTypeString,           "shapetype")
 IMPLEMENT_DOMSTRING (ArgumentsString,           "arguments")
 IMPLEMENT_DOMSTRING (ContextLabelString,        "contextlabel")
+IMPLEMENT_DOMSTRING (OrientString,              "orientation")
 
 IMPLEMENT_DOMSTRING (NTUnknownString,           "unknown")
 IMPLEMENT_DOMSTRING (NTIdentityString,          "identity")
@@ -203,6 +205,39 @@ Standard_Boolean XmlMNaming_NamingDriver::Paste
     else
       cout << "Retrieving Context Label is NULL" <<endl;
 #endif
+
+    if(XmlMNaming::DocumentVersion() > 4 && XmlMNaming::DocumentVersion() < 7) {
+          // Orientation processing - converting from old format
+          Handle(TNaming_NamedShape) aNS;
+          if (aNg->Label().FindAttribute(TNaming_NamedShape::GetID(), aNS)) {
+            //const TDF_Label& aLab = aNS->Label();
+            TNaming_Iterator itL (aNS);
+            for (; itL.More(); itL.Next()) {
+              const TopoDS_Shape& S = itL.NewShape();
+              if (S.IsNull()) continue;
+              if(aNS->Evolution() == TNaming_SELECTED) {
+                if (itL.More() && itL.NewShape().ShapeType() != TopAbs_VERTEX &&
+                    !itL.OldShape().IsNull() && itL.OldShape().ShapeType() == TopAbs_VERTEX ) {//OR-N
+                  TopAbs_Orientation OrientationToApply = itL.OldShape().Orientation();
+                  aNgName.Orientation(OrientationToApply);
+                }
+              }
+            }
+          }         
+        }
+    if(XmlMNaming::DocumentVersion() > 6) {
+       aDOMStr = anElem.getAttribute(::OrientString());
+       if (!aDOMStr.GetInteger(aNb))
+       {
+         aMsgString = TCollection_ExtendedString
+           ("XmlMNaming_NamingDriver: Cannot retrieve "
+            "integer value of orientation from \"") + aDOMStr + "\"";
+         WriteMessage (aMsgString);
+         return Standard_False;
+       }
+       aNgName.Orientation((TopAbs_Orientation)aNb);
+    }
+    // or. end
   }
 #ifdef DEB
   else if(XmlMNaming::DocumentVersion() == -1)
@@ -286,6 +321,9 @@ void XmlMNaming_NamingDriver::Paste
   } else
     cout << "XmlMNaming_NamingDriver::Store: aDOMString is NULL" <<endl;
 #endif
+
+  // orientation
+  anElem.setAttribute(::OrientString(), (Standard_Integer)aNgName.Orientation());
 
 }
 

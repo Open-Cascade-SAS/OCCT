@@ -26,6 +26,7 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <CDM_MessageDriver.hxx>
 #include <TDF_Attribute.hxx>
+#include  <TNaming_Iterator.hxx>
 #include <TNaming_NameType.hxx>
 #include <TNaming_Naming.hxx>
 #include <TNaming_NamedShape.hxx>
@@ -237,12 +238,12 @@ Standard_Boolean BinMNaming_NamingDriver::Paste
                                           "Cannot retrieve reference on "
                                           "Arguments of Name");
 	WriteMessage (aMsg);
-      }
+	  }
 
 #ifdef DEB
       //cout << "CurDocVersion = " << BinMNaming::DocumentVersion() <<endl;
 #endif
-      if(BinMNaming::DocumentVersion() > 3) {
+    if(BinMNaming::DocumentVersion() > 3) {
 	TCollection_AsciiString entry;
 	ok = theSource >> entry;
 	if(ok) {
@@ -259,14 +260,48 @@ Standard_Boolean BinMNaming_NamingDriver::Paste
 		aName.ContextLabel(tLab);
 	    }
 	}
-      }
+    if(BinMNaming::DocumentVersion() > 4 && BinMNaming::DocumentVersion() < 7) {
+          // Orientation processing - converting from old format
+      Handle(TNaming_NamedShape) aNS;
+      if(anAtt->Label().FindAttribute(TNaming_NamedShape::GetID(), aNS)) {
+            //const TDF_Label& aLab = aNS->Label();
+        TNaming_Iterator itL (aNS);
+        for (; itL.More(); itL.Next()) {
+          const TopoDS_Shape& S = itL.NewShape();
+          if (S.IsNull()) continue;
+          if(aNS->Evolution() == TNaming_SELECTED) {
+            if (itL.More() && itL.NewShape().ShapeType() != TopAbs_VERTEX &&
+                  !itL.OldShape().IsNull() && itL.OldShape().ShapeType() == TopAbs_VERTEX ) {//OR-N
+              TopAbs_Orientation OrientationToApply = itL.OldShape().Orientation();
+              aName.Orientation(OrientationToApply);
+			}
+		  }
+		}
+	  }
+	}
+    if(BinMNaming::DocumentVersion() > 6) {
+      ok = theSource >> anIndx;
+      TopAbs_Orientation OrientationToApply(TopAbs_FORWARD);
+      if(ok) {
+        OrientationToApply = (TopAbs_Orientation)anIndx;
+		aName.Orientation(OrientationToApply);
+#ifdef DEB
+	    cout << "NamingDriver:: Retrieved Orientation = " << OrientationToApply << " Ok = " << theSource.IsOK()  <<endl;
+#endif
+	  } else {
+          aMsg = TCollection_ExtendedString("BinMNaming_NamingDriver: "
+                                            "Cannot retrieve Name Orientation ");
+	  WriteMessage (aMsg);
+	  }
+	}
+	}
 #ifdef DEB
       else if(BinMNaming::DocumentVersion() == -1)
 	cout << "Current DocVersion field is not initialized. "  <<endl;
       else 
 	cout << "Current DocVersion = " << BinMNaming::DocumentVersion() <<endl;
 #endif
-    }
+	}
   }
   return ok;
 }
@@ -332,4 +367,8 @@ void BinMNaming_NamingDriver::Paste (const Handle(TDF_Attribute)&  theSource,
   if(!aName.ContextLabel().IsNull())
     TDF_Tool::Entry(aName.ContextLabel(), entry);
   theTarget << entry;
+
+//7. keep Orientation
+  theTarget << (Standard_Integer)aName.Orientation();
+
 }

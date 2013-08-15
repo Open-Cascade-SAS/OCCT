@@ -1096,13 +1096,13 @@ static TopoDS_Shape FindShape(const TNaming_DataMapOfShapeMapOfShape& DM)
       Standard_Boolean isCand(Standard_True); // aS is a Candidate
       TNaming_DataMapIteratorOfDataMapOfShapeMapOfShape it2(DM);
       for (;it2.More();it2.Next()) {
-        const TopoDS_Shape& aKey2 = it2.Key();
-        if(aKey2 == aKey1) continue;
-        const TNaming_MapOfShape& aMap2 = it2.Value();
-        if(!aMap2.Contains(aS)) isCand = Standard_False;
+	const TopoDS_Shape& aKey2 = it2.Key();
+	if(aKey2 == aKey1) continue;
+	const TNaming_MapOfShape& aMap2 = it2.Value();
+	if(!aMap2.Contains(aS)) isCand = Standard_False;
       } 
-      if(isCand) 
-        List.Append(aS);
+      if(isCand)
+	List.Append(aS);
     }
     break; 
   }
@@ -2176,24 +2176,13 @@ const TDF_Label&  TNaming_Name::ContextLabel() const
 { 
   return myContextLabel;
 }
-/*
+
 //=======================================================================
 //function : Orientation
 //purpose  : Set
 //=======================================================================
-
-void TNaming_Name::Orientation(const Standard_Boolean theOrientation)
+void TNaming_Name::Orientation(const TopAbs_Orientation theOrientation) 
 {
   myOrientation = theOrientation;
 }
 
-//=======================================================================
-//function : ContextLabel
-//purpose  : Get
-//=======================================================================
-
-const Standard_Boolean TNaming_Name::Orientation() const
-{ 
-  return myOrientation;
-}
-*/

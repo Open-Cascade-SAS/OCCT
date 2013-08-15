@@ -1,7 +1,6 @@
--- Created on: 1997-04-11
--- Created by: VAUTHIER Jean-Claude
--- Copyright (c) 1997-1999 Matra Datavision
--- Copyright (c) 1999-2012 OPEN CASCADE SAS
+-- Created on: 2008-08-15
+-- Created by: Sergey ZARITCHNY <szy@opencascade.com>
+-- Copyright (c) 2008-2012 OPEN CASCADE SAS
 --
 -- The content of this file is subject to the Open CASCADE Technology Public
 -- License Version 6.5 (the "License"). You may not use the content of this file
@@ -20,33 +19,22 @@
 
 
 
-
-package PNaming 
+class Naming_2 from PNaming inherits Attribute from PDF
 
 	---Purpose: 
-
-uses Standard,
-     PCollection,
-     PTopoDS,
-     PColStd,
-     PDF
-    
+uses 
+    Name_2 from PNaming
+			    
 is
+    Create
+    returns mutable Naming_2 from PNaming;
+    
+    SetName(me : mutable ; aName : Name_2 from PNaming);
 
-    class Name; 
-    
-    class Name_1; 
+    GetName(me) returns Name_2 from PNaming;
 
-	class Name_2; 
-    
-    class NamedShape;
-    
-    class Naming; 
-    
-    class Naming_1; 
-    
-	class Naming_2; 
+fields
 
-    class HArray1OfNamedShape instantiates HArray1 from PCollection (NamedShape);
-    
-end PNaming;
+    myName :  Name_2 from PNaming;
+
+end Naming_2;

@@ -38,7 +38,10 @@ is
 
     class NamingRetrievalDriver_1;   
     --  New fields added
-    
+
+    class NamingRetrievalDriver_2;   
+    --  New fields added
+
     class NamedShapeStorageDriver;   
 
     class NamingStorageDriver;

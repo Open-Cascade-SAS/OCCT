@@ -32,6 +32,7 @@
 #include <MNaming_NamingStorageDriver.hxx>
 #include <MNaming_NamingRetrievalDriver.hxx>
 #include <MNaming_NamingRetrievalDriver_1.hxx>
+#include <MNaming_NamingRetrievalDriver_2.hxx>
 #include <CDM_MessageDriver.hxx>
 
 //=======================================================================
@@ -58,4 +59,5 @@ void MNaming::AddRetrievalDrivers
   aDriverSeq->Append(new MNaming_NamedShapeRetrievalDriver(theMsgDriver)); 
   aDriverSeq->Append(new MNaming_NamingRetrievalDriver(theMsgDriver));
   aDriverSeq->Append(new MNaming_NamingRetrievalDriver_1(theMsgDriver));
+  aDriverSeq->Append(new MNaming_NamingRetrievalDriver_2(theMsgDriver));
 }

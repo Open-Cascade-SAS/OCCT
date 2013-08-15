@@ -403,7 +403,7 @@ Standard_Boolean TNaming_Selector::Select (const TopoDS_Shape& Selection,
   Handle(TNaming_Naming) N = new TNaming_Naming (); 
   N->ChangeName().Type(TNaming_IDENTITY);  
   N->ChangeName().Append(NS);
-
+  N->ChangeName().Orientation(Selection.Orientation());
 #ifdef BUC60862
 // inserted by vro 06.09.00:
   N->ChangeName().ShapeType(Selection.ShapeType());

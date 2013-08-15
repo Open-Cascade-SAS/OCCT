@@ -833,30 +833,6 @@ void TNaming_Builder::Modify(const TopoDS_Shape& oldShape,
 }
 
 //=======================================================================
-//function : DummyShapeToStoreOrientation
-//=======================================================================
-static const TopoDS_Shape& DummyShapeToStoreOrientation (const TopAbs_Orientation Or)
-{
-  gp_Pnt aPnt(0,0,0);
-  static TopoDS_Vertex aVForward, aVRev;
-  switch(Or) {
-  case TopAbs_FORWARD:
-    if(aVForward.IsNull()) {
-      aVForward = BRepBuilderAPI_MakeVertex (aPnt).Vertex();
-      aVForward.Orientation(TopAbs_FORWARD);
-    }
-    return aVForward;
-  case TopAbs_REVERSED:
-    if(aVRev.IsNull()) {
-      aVRev = BRepBuilderAPI_MakeVertex (aPnt).Vertex();
-      aVRev.Orientation(TopAbs_REVERSED);
-    }
-    return aVRev;
-  }
-  return aVForward;
-}
-
-//=======================================================================
 //function : Select
 //purpose  : 
 //=======================================================================
@@ -869,24 +845,13 @@ void TNaming_Builder::Select (const TopoDS_Shape& S,
       Standard_ConstructionError::Raise("TNaming_Builder : not same evolution");
   }
 
-  TNaming_RefShape* pos;
-
-  if(S.ShapeType() != TopAbs_VERTEX && 
-	  (S.Orientation() == TopAbs_FORWARD || S.Orientation() == TopAbs_REVERSED)) {
-	const TopoDS_Shape& aV = DummyShapeToStoreOrientation (S.Orientation());
-    if (!myShapes->myMap.IsBound(aV)) {
-      pos = new TNaming_RefShape(aV);
-      myShapes->myMap.Bind(aV,pos);
-	} else 
-	  pos = myShapes->myMap.ChangeFind(aV);
-  } else {
-    if (!myShapes->myMap.IsBound(InS)) {
-      pos = new TNaming_RefShape(InS);
-      myShapes->myMap.Bind(InS,pos);
-    }
-    else
-      pos = myShapes->myMap.ChangeFind(InS);
+  TNaming_RefShape* pos;  
+  if (!myShapes->myMap.IsBound(InS)) {
+    pos = new TNaming_RefShape(InS);
+    myShapes->myMap.Bind(InS,pos);
   }
+  else
+    pos = myShapes->myMap.ChangeFind(InS);
 
   TNaming_RefShape* pns;
   if (!myShapes->myMap.IsBound(S)) {

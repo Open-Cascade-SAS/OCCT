@@ -26,6 +26,8 @@
 #include <TopTools_MapIteratorOfMapOfShape.hxx>
 #include <TNaming_OldShapeIterator.hxx>
 #include <TNaming_Tool.hxx>
+#include <TNaming_Naming.hxx>
+#include <TDF_ChildIterator.hxx>
 #ifdef DEB
 //#define MDTV_DEB_DESC
 //#define MDTV_DEB_APPLY
@@ -173,11 +175,30 @@ void TNaming_NamingTool::CurrentShape(const TDF_LabelMap&               Valid,
     Standard_Boolean YaOrientationToApply(Standard_False);
     TopAbs_Orientation OrientationToApply(TopAbs_FORWARD);
     if(Att->Evolution() == TNaming_SELECTED) {
-      if (itL.More() && itL.NewShape().ShapeType() != TopAbs_VERTEX &&
-	  !itL.OldShape().IsNull() && itL.OldShape().ShapeType() == TopAbs_VERTEX) {
-	YaOrientationToApply = Standard_True;
-	OrientationToApply = itL.OldShape().Orientation();
-      }
+      if (itL.More() && itL.NewShape().ShapeType() != TopAbs_VERTEX) {//OR-N
+		Handle (TNaming_Naming)  aNaming;
+		Lab.FindAttribute(TNaming_Naming::GetID(), aNaming);
+		if(!aNaming.IsNull()) {
+		  if(aNaming->GetName().Type() == TNaming_ORIENTATION) {
+			 OrientationToApply = aNaming->GetName().Orientation();
+		  } else {
+	        Handle (TNaming_Naming)  aNaming2;
+			TDF_ChildIterator it(aNaming->Label());
+			for(;it.More();it.Next()) {
+			  const TDF_Label& aLabel = it.Value();
+			  aLabel.FindAttribute(TNaming_Naming::GetID(), aNaming2);
+	          if(!aNaming2.IsNull()) {
+			    if(aNaming2->GetName().Type() == TNaming_ORIENTATION) {
+				  OrientationToApply = aNaming2->GetName().Orientation();
+				  break;
+				}
+			  }
+			}
+		  }
+		  if(OrientationToApply == TopAbs_FORWARD || OrientationToApply == TopAbs_REVERSED)
+			YaOrientationToApply = Standard_True;	    		
+		}
+	  } //
     }
     TNaming_NewShapeIterator it(itL);
     if (!it.More()) {
