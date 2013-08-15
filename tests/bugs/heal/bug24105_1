@@ -1,0 +1,30 @@
+puts "================"
+puts "OCC24105"
+puts "================"
+puts ""
+######################################################################################
+# ShapeFix algorithm produces not correct result
+# 1. geom/imps7/H6
+######################################################################################
+
+catch {pload XDE}
+
+restore [locate_data_file bug24105_shape.brep] s
+
+settolerance s 1.e-7
+
+fixshape result s
+
+set square 313292
+
+set nb_v_good 12
+set nb_e_good 20
+set nb_w_good 9
+set nb_f_good 9
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 52
+
+set 2dviewer 1

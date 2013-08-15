@@ -443,7 +443,7 @@ Standard_Boolean ShapeFix_Face::Perform()
       }
       if ( theAdvFixWire->Perform() ) {
 	//fixed = Standard_True; 
-        isfixReorder =  ((theAdvFixWire->StatusReorder(ShapeExtend_DONE) && !theAdvFixWire->StatusReorder(ShapeExtend_DONE5)) || isfixReorder);
+        isfixReorder =  (theAdvFixWire->StatusReorder(ShapeExtend_DONE) || isfixReorder);
         fixed = (theAdvFixWire->StatusSmall(ShapeExtend_DONE) || 
                theAdvFixWire->StatusConnected(ShapeExtend_DONE) ||
                theAdvFixWire->StatusEdgeCurves(ShapeExtend_DONE) ||
@@ -480,7 +480,9 @@ Standard_Boolean ShapeFix_Face::Perform()
     }
     if(fixed || isfixReorder) {
       myFace = tmpFace;
-      myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE1 );
+      if (!theAdvFixWire->StatusReorder(ShapeExtend_DONE5)) {
+        myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_DONE1 );
+      }
     }
   }
   

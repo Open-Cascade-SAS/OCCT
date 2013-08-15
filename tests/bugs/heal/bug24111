@@ -1,0 +1,27 @@
+puts "================"
+puts "OCC24111"
+puts "================"
+puts ""
+######################################################################################
+# Shape Healing produces invalid face
+######################################################################################
+
+catch {pload XDE}
+
+restore [locate_data_file bug24111_shape.brep] a
+
+fixshape result a
+
+set square 15902.8
+
+set nb_v_good 14
+set nb_e_good 15
+set nb_w_good 1
+set nb_f_good 1
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 31
+
+set 2dviewer 1
