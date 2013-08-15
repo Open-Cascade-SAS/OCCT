@@ -90,7 +90,7 @@ char * LDOM_CharReference::Decode (char * theSrc, Standard_Integer& theLen)
     }
     else if (IS_EQUAL(aSrcPtr+1, "amp;")) {
       aDstPtr = aSrcPtr - anIncrCount + 1;
-//    aDstPtr[-1] = '&';
+      aDstPtr[-1] = '&';
       anIncrCount += 4;
       aSrcPtr += 5;
     }

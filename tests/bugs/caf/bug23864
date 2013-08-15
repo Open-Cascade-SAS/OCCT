@@ -1,0 +1,22 @@
+puts "============"
+puts "OCC23864"
+puts "============"
+puts ""
+###################################################################################################################
+# An & symbol is read incorrectly from a XML Ocaf file
+###################################################################################################################
+
+#Open an Ocaf XML document
+Open [locate_data_file bug23864_testAmp.xml] D
+
+#Get name attribute (containing an & symbol)
+GetName D 0:1
+
+#Get an array of strings (containing an & symbol)
+set info [GetExtStringArray D 0:1]
+
+if { [regexp "\&" $info] != 1 } {
+    puts "Error : An \& symbol is read incorrectly from a XML Ocaf file"
+} else {
+    puts "OK : An \& symbol is read correctly from a XML Ocaf file"
+}
