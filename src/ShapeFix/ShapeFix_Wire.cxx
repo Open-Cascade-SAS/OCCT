@@ -1448,9 +1448,9 @@ Standard_Boolean ShapeFix_Wire::FixShifted()
 #ifdef DEB
 	  cout << "Info: ShapeFix_Wire::FixShifted(): bi - meridian case fixed" << endl;
 #endif
+          continue;
 	}
 //	degn2 = n2; pdeg = p; // ie_exhaust-A.stp #37520
-	continue;
       }
 /*	
       // pdn to fix half sphere
