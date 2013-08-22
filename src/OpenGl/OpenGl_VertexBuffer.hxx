@@ -113,12 +113,34 @@ public:
   //! Function replaces portion of data within this VBO using glBufferSubData().
   //! The VBO should be initialized before call.
   //! @param theElemFrom - element id from which replace buffer data (>=0);
-  //! @param theElemsNb  - elements count (theElemFrom + theElemsNb < GetElemsNb());
+  //! @param theElemsNb  - elements count (theElemFrom + theElemsNb <= GetElemsNb());
   //! @param theData     - pointer to GLfloat data.
   Standard_EXPORT bool SubData (const Handle(OpenGl_Context)& theGlCtx,
                                 const GLsizei  theElemFrom,
                                 const GLsizei  theElemsNb,
                                 const GLfloat* theData);
+
+  //! Notice that VBO will be unbound after this call.
+  //! Function replaces portion of data within this VBO using glBufferSubData().
+  //! The VBO should be initialized before call.
+  //! @param theElemFrom element id from which replace buffer data (>=0);
+  //! @param theElemsNb  elements count (theElemFrom + theElemsNb <= GetElemsNb());
+  //! @param theData     pointer to GLuint data.
+  Standard_EXPORT bool SubData (const Handle(OpenGl_Context)& theGlCtx,
+                                const GLsizei theElemFrom,
+                                const GLsizei theElemsNb,
+                                const GLuint* theData);
+
+  //! Notice that VBO will be unbound after this call.
+  //! Function replaces portion of data within this VBO using glBufferSubData().
+  //! The VBO should be initialized before call.
+  //! @param theElemFrom element id from which replace buffer data (>=0);
+  //! @param theElemsNb  elements count (theElemFrom + theElemsNb <= GetElemsNb());
+  //! @param theData     pointer to GLubyte data.
+  Standard_EXPORT bool SubData (const Handle(OpenGl_Context)& theGlCtx,
+                                const GLsizei  theElemFrom,
+                                const GLsizei  theElemsNb,
+                                const GLubyte* theData);
 
   //! Bind this VBO to active GLSL program.
   Standard_EXPORT void BindVertexAttrib (const Handle(OpenGl_Context)& theGlCtx,

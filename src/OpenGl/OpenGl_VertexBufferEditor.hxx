@@ -111,6 +111,12 @@ public:
     return Standard_True;
   }
 
+  //! @return assigned VBO
+  inline const Handle(OpenGl_VertexBuffer)& GetVBO() const
+  {
+    return myVbo;
+  }
+
 private:
 
   Handle(OpenGl_Context)       myGlCtx;     //!< handle to current OpenGL context

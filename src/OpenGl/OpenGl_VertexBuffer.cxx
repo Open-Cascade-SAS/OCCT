@@ -180,6 +180,31 @@ bool OpenGl_VertexBuffer::Init (const Handle(OpenGl_Context)& theGlCtx,
 }
 
 // =======================================================================
+// function : SubData
+// purpose  :
+// =======================================================================
+bool OpenGl_VertexBuffer::SubData (const Handle(OpenGl_Context)& theGlCtx,
+                                   const GLsizei theElemFrom,
+                                   const GLsizei theElemsNb,
+                                   const GLuint* theData)
+{
+  if (!IsValid() || myDataType != GL_UNSIGNED_INT
+   || theElemFrom < 0 || ((theElemFrom + theElemsNb) > myElemsNb))
+  {
+    return false;
+  }
+
+  Bind (theGlCtx);
+  theGlCtx->core15->glBufferSubData (GetTarget(),
+                                     GLintptr(theElemFrom)  * GLintptr(myComponentsNb)   * sizeof(GLuint), // offset in bytes
+                                     GLsizeiptr(theElemsNb) * GLsizeiptr(myComponentsNb) * sizeof(GLuint), // size   in bytes
+                                     theData);
+  bool isDone = (glGetError() == GL_NO_ERROR); // GL_OUT_OF_MEMORY
+  Unbind (theGlCtx);
+  return isDone;
+}
+
+// =======================================================================
 // function : Init
 // purpose  :
 // =======================================================================
@@ -198,6 +223,31 @@ bool OpenGl_VertexBuffer::Init (const Handle(OpenGl_Context)& theGlCtx,
   myComponentsNb = theComponentsNb;
   myElemsNb      = theElemsNb;
   theGlCtx->core15->glBufferData (GetTarget(), GLsizeiptr(myElemsNb) * GLsizeiptr(myComponentsNb) * sizeof(GLubyte), theData, GL_STATIC_DRAW);
+  bool isDone = (glGetError() == GL_NO_ERROR); // GL_OUT_OF_MEMORY
+  Unbind (theGlCtx);
+  return isDone;
+}
+
+// =======================================================================
+// function : SubData
+// purpose  :
+// =======================================================================
+bool OpenGl_VertexBuffer::SubData (const Handle(OpenGl_Context)& theGlCtx,
+                                   const GLsizei  theElemFrom,
+                                   const GLsizei  theElemsNb,
+                                   const GLubyte* theData)
+{
+  if (!IsValid() || myDataType != GL_UNSIGNED_BYTE
+   || theElemFrom < 0 || ((theElemFrom + theElemsNb) > myElemsNb))
+  {
+    return false;
+  }
+
+  Bind (theGlCtx);
+  theGlCtx->core15->glBufferSubData (GetTarget(),
+                                     GLintptr(theElemFrom)  * GLintptr(myComponentsNb)   * sizeof(GLubyte), // offset in bytes
+                                     GLsizeiptr(theElemsNb) * GLsizeiptr(myComponentsNb) * sizeof(GLubyte), // size   in bytes
+                                     theData);
   bool isDone = (glGetError() == GL_NO_ERROR); // GL_OUT_OF_MEMORY
   Unbind (theGlCtx);
   return isDone;
