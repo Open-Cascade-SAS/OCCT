@@ -1,0 +1,13 @@
+puts "================"
+puts "CR24083"
+puts "================"
+puts ""
+#######################################################################
+# BRepCheck_Wire crashes processing a wire consisting of many edges
+#######################################################################
+
+restore [locate_data_file bug24083_polyline.brep] result
+
+set length 141421
+
+set 2dviewer 1

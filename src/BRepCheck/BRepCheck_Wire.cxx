@@ -1529,40 +1529,51 @@ Standard_Boolean BRepCheck_Wire::GeometricControls() const
   return myGctrl;
 }
 
-
 //=======================================================================
 //function : Propagate
 //purpose  : fill <mapE> with edges connected to <edg> through vertices
 //           contained in <mapVE>
 //=======================================================================
 static void Propagate(const TopTools_IndexedDataMapOfShapeListOfShape& mapVE,
-		      const TopoDS_Shape& edg,
-		      TopTools_MapOfShape& mapE)
+                      const TopoDS_Shape& edg,
+                      TopTools_MapOfShape& mapE)
 {
-  if (mapE.Contains(edg)) {
-    return;
-  }
-  mapE.Add(edg); // attention, if oriented == Standard_True, edge should
-                 // be FORWARD or REVERSED. It is not checked.
-                 // =============
-                 // attention, if oriented == Standard_True, <edg> must
-                 // be FORWARD or REVERSED. That is not checked.
-  
-  TopExp_Explorer ex;
-  for (ex.Init(edg,TopAbs_VERTEX); ex.More(); ex.Next()) {
-    const TopoDS_Vertex& vtx = TopoDS::Vertex(ex.Current());
-    // debug on vertex
-    Standard_Integer indv = mapVE.FindIndex(vtx);
-    if (indv != 0) {
-      for (TopTools_ListIteratorOfListOfShape itl(mapVE(indv)); itl.More(); itl.Next()) {
-	if (!itl.Value().IsSame(edg) &&
-	    !mapE.Contains(itl.Value())) {
-	  Propagate(mapVE,itl.Value(),mapE);
-	}
+  TopTools_ListOfShape currentEdges;
+  currentEdges.Append(edg);
+
+  do
+  {
+    TopTools_ListOfShape nextEdges;
+    TopTools_ListIteratorOfListOfShape itrc(currentEdges);
+    for (; itrc.More(); itrc.Next())
+    {
+      const TopoDS_Shape& Edge = itrc.Value();
+      mapE.Add(Edge);
+
+      TopExp_Explorer ex(Edge, TopAbs_VERTEX);
+      for (; ex.More(); ex.Next())
+      {
+        const TopoDS_Vertex& vtx = TopoDS::Vertex(ex.Current());
+        Standard_Integer indv = mapVE.FindIndex(vtx);
+        if (indv != 0)
+        {
+          const TopTools_ListOfShape& edges = mapVE(indv);
+
+          TopTools_ListIteratorOfListOfShape itl(edges);
+          for (; itl.More(); itl.Next())
+          {
+            const TopoDS_Shape& E = itl.Value();
+            if (!Edge.IsSame(E) && !mapE.Contains(E))
+              nextEdges.Append(E);
+          }
+        }
       }
     }
+    currentEdges = nextEdges;
   }
+  while (!currentEdges.IsEmpty());
 }
+
 //=======================================================================
 //function : GetOrientation
 //purpose  : 
