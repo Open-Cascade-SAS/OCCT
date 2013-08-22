@@ -43,6 +43,7 @@
 #include <TColGeom_SequenceOfCurve.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 #include <TColStd_SequenceOfReal.hxx>
+#include <TColStd_SequenceOfBoolean.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <ElCLib.hxx>
@@ -250,248 +251,226 @@ TopoDS_Edge  BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
   theWire = TopoDS::Wire(Fixer->Shape());
 
   TColGeom_SequenceOfCurve CurveSeq;
-  TopTools_SequenceOfShape LocSeq;
   TColStd_SequenceOfReal FparSeq;
   TColStd_SequenceOfReal LparSeq;
   TColStd_SequenceOfReal TolSeq;
+  TColStd_SequenceOfBoolean IsFwdSeq;
   GeomAbs_CurveType CurType = GeomAbs_OtherCurve;
   TopoDS_Vertex FirstVertex, LastVertex;
-  Standard_Boolean FinalReverse = Standard_False;
 
-  BRepTools_WireExplorer wexp(theWire) ;
-  for (; wexp.More(); wexp.Next())
-    {
-      TopoDS_Edge anEdge = wexp.Current();
-      Standard_Real fpar, lpar;
-      TopLoc_Location aLoc;
-      Handle(Geom_Curve) aCurve = BRep_Tool::Curve(anEdge, aLoc, fpar, lpar);
-      if (aCurve.IsNull())
-	continue;
+  BRepTools_WireExplorer wexp(theWire);
 
-      BRepAdaptor_Curve BAcurve(anEdge);
-      GeomAbs_CurveType aType = BAcurve.GetType();
+  for (; wexp.More(); wexp.Next()) {
+    TopoDS_Edge anEdge = wexp.Current();
+    Standard_Real fpar, lpar;
+    Handle(Geom_Curve) aCurve = BRep_Tool::Curve(anEdge, fpar, lpar);
 
-      Handle(Geom_Curve) aBasisCurve = BAcurve.Curve().Curve();
+    if (aCurve.IsNull())
+      continue;
 
-      if (aBasisCurve->IsPeriodic())
-	ElCLib::AdjustPeriodic(aBasisCurve->FirstParameter(), aBasisCurve->LastParameter(),
-			       Precision::PConfusion(), fpar, lpar);
+    GeomAdaptor_Curve  aGACurve(aCurve);
+    GeomAbs_CurveType  aType       = aGACurve.GetType();
+    Handle(Geom_Curve) aBasisCurve = aGACurve.Curve();
+    Standard_Boolean   isFwd       = (wexp.Orientation() != TopAbs_REVERSED);
 
-      if (CurveSeq.IsEmpty())
-	{
-	  CurveSeq.Append(aCurve);
-	  TopoDS_Shape aLocShape;
-	  aLocShape.Location(aLoc);
-	  aLocShape.Orientation(wexp.Orientation());
-	  LocSeq.Append(aLocShape);
-	  FparSeq.Append(fpar);
-	  LparSeq.Append(lpar);
-	  CurType = aType;
-	  FirstVertex = wexp.CurrentVertex();
-          if (anEdge.Orientation() == TopAbs_REVERSED)
-            FinalReverse = Standard_True;
-	}
-      else
-	{
-	  Standard_Boolean Done = Standard_False;
-	  Standard_Real NewFpar = 0., NewLpar = 0.;
-	  GeomAdaptor_Curve GAprevcurve(CurveSeq.Last());
-	  TopoDS_Vertex CurVertex = wexp.CurrentVertex();
-	  TopoDS_Vertex CurFirstVer = TopExp::FirstVertex(anEdge);
-	  TopAbs_Orientation ConnectByOrigin = (CurVertex.IsSame(CurFirstVer))? TopAbs_FORWARD : TopAbs_REVERSED;
-	  if (aCurve == CurveSeq.Last())
-	    {
-	      NewFpar = fpar;
-	      NewLpar = lpar;
-	      if (aBasisCurve->IsPeriodic())
-		{
-		  if (NewLpar < NewFpar)
-		    NewLpar += aBasisCurve->Period();
-		  if (ConnectByOrigin == TopAbs_FORWARD)
-		    ElCLib::AdjustPeriodic(FparSeq.Last(),
-					   FparSeq.Last() + aBasisCurve->Period(),
-					   Precision::PConfusion(), NewFpar, NewLpar);
-		  else
-		    ElCLib::AdjustPeriodic(FparSeq.Last() - aBasisCurve->Period(),
-					   FparSeq.Last(),
-					   Precision::PConfusion(), NewFpar, NewLpar);
-		}
-	      Done = Standard_True;
-	    }
-	  else if (aType == CurType &&
-		   aType != GeomAbs_BezierCurve &&
-		   aType != GeomAbs_BSplineCurve &&
-		   aType != GeomAbs_OtherCurve)
-	    switch (aType)
-	      {
-	      case GeomAbs_Line:
-		{
-		  gp_Lin aLine    = BAcurve.Line();
-		  gp_Lin PrevLine = GAprevcurve.Line(); 
-		  if (aLine.Contains(PrevLine.Location(), LinTol) &&
-		      aLine.Direction().IsParallel(PrevLine.Direction(), AngTol))
-		    {
-		      gp_Pnt P1 = ElCLib::Value(fpar, aLine);
-		      gp_Pnt P2 = ElCLib::Value(lpar, aLine);
-		      NewFpar = ElCLib::Parameter(PrevLine, P1);
-		      NewLpar = ElCLib::Parameter(PrevLine, P2);
-		      if (NewLpar < NewFpar)
-			{
-			  Standard_Real MemNewFpar = NewFpar;
-			  NewFpar = NewLpar;
-			  NewLpar = MemNewFpar;
-			  ConnectByOrigin = TopAbs::Reverse(ConnectByOrigin);
-			}
-		      Done = Standard_True;
-		    }
-		  break;
-		}
-	      case GeomAbs_Circle:
-		{
-		  gp_Circ aCircle    = BAcurve.Circle();
-		  gp_Circ PrevCircle = GAprevcurve.Circle();
-		  if (aCircle.Location().Distance(PrevCircle.Location()) <= LinTol &&
-		      Abs(aCircle.Radius() - PrevCircle.Radius()) <= LinTol &&
-		      aCircle.Axis().IsParallel(PrevCircle.Axis(), AngTol))
-		    {
-		      if (aCircle.Axis().Direction() * PrevCircle.Axis().Direction() < 0.)
-			{
-			  Standard_Real memfpar = fpar;
-			  fpar = lpar;
-			  lpar = memfpar;
-			  ConnectByOrigin = TopAbs::Reverse(ConnectByOrigin);
-			}
-		      gp_Pnt P1 = ElCLib::Value(fpar, aCircle);
-		      gp_Pnt P2 = ElCLib::Value(lpar, aCircle);
-		      NewFpar = ElCLib::Parameter(PrevCircle, P1);
-		      NewLpar = ElCLib::Parameter(PrevCircle, P2);
-		      if (NewLpar < NewFpar)
-			NewLpar += 2.*M_PI;
-		      //Standard_Real MemNewFpar = NewFpar, MemNewLpar =  NewLpar;
-		      if (ConnectByOrigin == TopAbs_FORWARD)
-			ElCLib::AdjustPeriodic(FparSeq.Last(),
-					       FparSeq.Last() + 2.*M_PI,
-					       Precision::PConfusion(), NewFpar, NewLpar);
-		      else
-			ElCLib::AdjustPeriodic(FparSeq.Last() - 2.*M_PI,
-					       FparSeq.Last(),
-					       Precision::PConfusion(), NewFpar, NewLpar);
-		      Done = Standard_True;
-		    }
-		  break;
-		}
-	      case GeomAbs_Ellipse:
-		{
-		  gp_Elips anEllipse   = BAcurve.Ellipse();
-		  gp_Elips PrevEllipse = GAprevcurve.Ellipse();
-		  if (anEllipse.Focus1().Distance(PrevEllipse.Focus1()) <= LinTol &&
-		      anEllipse.Focus2().Distance(PrevEllipse.Focus2()) <= LinTol &&
-		      Abs(anEllipse.MajorRadius() - PrevEllipse.MajorRadius()) <= LinTol &&
-		      Abs(anEllipse.MinorRadius() - PrevEllipse.MinorRadius()) <= LinTol &&
-		      anEllipse.Axis().IsParallel(PrevEllipse.Axis(), AngTol))
-		    {
-		      if (anEllipse.Axis().Direction() * PrevEllipse.Axis().Direction() < 0.)
-			{
-			  Standard_Real memfpar = fpar;
-			  fpar = lpar;
-			  lpar = memfpar;
-			  ConnectByOrigin = TopAbs::Reverse(ConnectByOrigin);
-			}
-		      gp_Pnt P1 = ElCLib::Value(fpar, anEllipse);
-		      gp_Pnt P2 = ElCLib::Value(lpar, anEllipse);
-		      NewFpar = ElCLib::Parameter(PrevEllipse, P1);
-		      NewLpar = ElCLib::Parameter(PrevEllipse, P2);
-		      if (NewLpar < NewFpar)
-			NewLpar += 2.*M_PI;
-		      if (ConnectByOrigin == TopAbs_FORWARD)
-			ElCLib::AdjustPeriodic(FparSeq.Last(),
-					       FparSeq.Last() + 2.*M_PI,
-					       Precision::PConfusion(), NewFpar, NewLpar);
-		      else
-			ElCLib::AdjustPeriodic(FparSeq.Last() - 2.*M_PI,
-					       FparSeq.Last(),
-					       Precision::PConfusion(), NewFpar, NewLpar);
-		      Done = Standard_True;
-		    }
-		  break;
-		}
-	      case GeomAbs_Hyperbola:
-		{
-		  gp_Hypr aHypr    = BAcurve.Hyperbola();
-		  gp_Hypr PrevHypr = GAprevcurve.Hyperbola();
-		  if (aHypr.Focus1().Distance(PrevHypr.Focus1()) <= LinTol &&
-		      aHypr.Focus2().Distance(PrevHypr.Focus2()) <= LinTol &&
-		      Abs(aHypr.MajorRadius() - PrevHypr.MajorRadius()) <= LinTol &&
-		      Abs(aHypr.MinorRadius() - PrevHypr.MinorRadius()) <= LinTol &&
-		      aHypr.Axis().IsParallel(PrevHypr.Axis(), AngTol))
-		    {
-		      gp_Pnt P1 = ElCLib::Value(fpar, aHypr);
-		      gp_Pnt P2 = ElCLib::Value(lpar, aHypr);
-		      NewFpar = ElCLib::Parameter(PrevHypr, P1);
-		      NewLpar = ElCLib::Parameter(PrevHypr, P2);
-		      if (NewLpar < NewFpar)
-			{
-			  Standard_Real MemNewFpar = NewFpar;
-			  NewFpar = NewLpar;
-			  NewLpar = MemNewFpar;
-			  ConnectByOrigin = TopAbs::Reverse(ConnectByOrigin);
-			}
-		      Done = Standard_True;
-		    }
-		  break;
-		}
-	      case GeomAbs_Parabola:
-		{
-		  gp_Parab aParab    = BAcurve.Parabola();
-		  gp_Parab PrevParab = GAprevcurve.Parabola();
-		  if (aParab.Location().Distance(PrevParab.Location()) <= LinTol &&
-		      aParab.Focus().Distance(PrevParab.Focus()) <= LinTol &&
-		      Abs(aParab.Focal() - PrevParab.Focal()) <= LinTol &&
-		      aParab.Axis().IsParallel(PrevParab.Axis(), AngTol))
-		    {
-		      gp_Pnt P1 = ElCLib::Value(fpar, aParab);
-		      gp_Pnt P2 = ElCLib::Value(lpar, aParab);
-		      NewFpar = ElCLib::Parameter(PrevParab, P1);
-		      NewLpar = ElCLib::Parameter(PrevParab, P2);
-		      if (NewLpar < NewFpar)
-			{
-			  Standard_Real MemNewFpar = NewFpar;
-			  NewFpar = NewLpar;
-			  NewLpar = MemNewFpar;
-			  ConnectByOrigin = TopAbs::Reverse(ConnectByOrigin);
-			}
-		      Done = Standard_True;
-		    }
-		  break;
-		}
-	      } //end of switch and else
-	  if (Done)
-	    {
-	      if (NewFpar < FparSeq.Last())
-		FparSeq(FparSeq.Length()) = NewFpar;
-	      else
-		LparSeq(LparSeq.Length()) = NewLpar;
-	    }
-	  else
-	    {
-	      CurveSeq.Append(aCurve);
-	      TopoDS_Shape aLocShape;
-	      aLocShape.Location(aLoc);
-	      aLocShape.Orientation(wexp.Orientation());
-	      LocSeq.Append(aLocShape);
-	      FparSeq.Append(fpar);
-	      LparSeq.Append(lpar);
-	      TolSeq.Append(BRep_Tool::Tolerance(CurVertex));
-	      CurType = aType;
-	    }
-	} //end of else (not first time)
+    if (aBasisCurve->IsPeriodic()) {
+      ElCLib::AdjustPeriodic
+        (aBasisCurve->FirstParameter(), aBasisCurve->LastParameter(),
+        Precision::PConfusion(), fpar, lpar);
+
+
+
     }
+
+    if (CurveSeq.IsEmpty()) {
+      CurveSeq.Append(aCurve);
+      FparSeq.Append(fpar);
+      LparSeq.Append(lpar);
+      IsFwdSeq.Append(isFwd);
+      CurType     = aType;
+      FirstVertex = wexp.CurrentVertex();
+    } else {
+      Standard_Boolean isSameCurve = Standard_False;
+      Standard_Real NewFpar, NewLpar;
+      GeomAdaptor_Curve GAprevcurve(CurveSeq.Last());
+
+      if (aCurve == CurveSeq.Last()) {
+        NewFpar = fpar;
+        NewLpar = lpar;
+        isSameCurve = Standard_True;
+      } else if (aType == CurType &&
+                 aType != GeomAbs_BezierCurve &&
+                 aType != GeomAbs_BSplineCurve &&
+                 aType != GeomAbs_OtherCurve) {
+        switch (aType) {
+        case GeomAbs_Line:
+        {
+          gp_Lin aLine    = aGACurve.Line();
+          gp_Lin PrevLine = GAprevcurve.Line(); 
+
+          if (aLine.Contains(PrevLine.Location(), LinTol) &&
+              aLine.Direction().IsParallel(PrevLine.Direction(), AngTol)) {
+            gp_Pnt P1 = ElCLib::Value(fpar, aLine);
+            gp_Pnt P2 = ElCLib::Value(lpar, aLine);
+
+            NewFpar = ElCLib::Parameter(PrevLine, P1);
+            NewLpar = ElCLib::Parameter(PrevLine, P2);
+            isSameCurve = Standard_True;
+          }
+          break;
+        }
+        case GeomAbs_Circle:
+        {
+          gp_Circ aCircle    = aGACurve.Circle();
+          gp_Circ PrevCircle = GAprevcurve.Circle();
+
+          if (aCircle.Location().Distance(PrevCircle.Location()) <= LinTol &&
+              Abs(aCircle.Radius() - PrevCircle.Radius()) <= LinTol &&
+              aCircle.Axis().IsParallel(PrevCircle.Axis(), AngTol)) {
+            gp_Pnt P1 = ElCLib::Value(fpar, aCircle);
+            gp_Pnt P2 = ElCLib::Value(lpar, aCircle);
+
+            NewFpar = ElCLib::Parameter(PrevCircle, P1);
+            NewLpar = ElCLib::Parameter(PrevCircle, P2);
+            isSameCurve = Standard_True;
+          }
+          break;
+        }
+        case GeomAbs_Ellipse:
+        {
+          gp_Elips anEllipse   = aGACurve.Ellipse();
+          gp_Elips PrevEllipse = GAprevcurve.Ellipse();
+
+          if (anEllipse.Focus1().Distance(PrevEllipse.Focus1()) <= LinTol &&
+              anEllipse.Focus2().Distance(PrevEllipse.Focus2()) <= LinTol &&
+              Abs(anEllipse.MajorRadius() - PrevEllipse.MajorRadius()) <= LinTol &&
+              Abs(anEllipse.MinorRadius() - PrevEllipse.MinorRadius()) <= LinTol &&
+              anEllipse.Axis().IsParallel(PrevEllipse.Axis(), AngTol)) {
+            gp_Pnt P1 = ElCLib::Value(fpar, anEllipse);
+            gp_Pnt P2 = ElCLib::Value(lpar, anEllipse);
+
+            NewFpar = ElCLib::Parameter(PrevEllipse, P1);
+            NewLpar = ElCLib::Parameter(PrevEllipse, P2);
+            isSameCurve = Standard_True;
+          }
+          break;
+        }
+        case GeomAbs_Hyperbola:
+        {
+          gp_Hypr aHypr    = aGACurve.Hyperbola();
+          gp_Hypr PrevHypr = GAprevcurve.Hyperbola();
+
+          if (aHypr.Focus1().Distance(PrevHypr.Focus1()) <= LinTol &&
+              aHypr.Focus2().Distance(PrevHypr.Focus2()) <= LinTol &&
+              Abs(aHypr.MajorRadius() - PrevHypr.MajorRadius()) <= LinTol &&
+              Abs(aHypr.MinorRadius() - PrevHypr.MinorRadius()) <= LinTol &&
+              aHypr.Axis().IsParallel(PrevHypr.Axis(), AngTol)) {
+            gp_Pnt P1 = ElCLib::Value(fpar, aHypr);
+            gp_Pnt P2 = ElCLib::Value(lpar, aHypr);
+
+            NewFpar = ElCLib::Parameter(PrevHypr, P1);
+            NewLpar = ElCLib::Parameter(PrevHypr, P2);
+            isSameCurve = Standard_True;
+          }
+          break;
+        }
+        case GeomAbs_Parabola:
+        {
+          gp_Parab aParab    = aGACurve.Parabola();
+          gp_Parab PrevParab = GAprevcurve.Parabola();
+
+          if (aParab.Location().Distance(PrevParab.Location()) <= LinTol &&
+              aParab.Focus().Distance(PrevParab.Focus()) <= LinTol &&
+              Abs(aParab.Focal() - PrevParab.Focal()) <= LinTol &&
+              aParab.Axis().IsParallel(PrevParab.Axis(), AngTol)) {
+            gp_Pnt P1 = ElCLib::Value(fpar, aParab);
+            gp_Pnt P2 = ElCLib::Value(lpar, aParab);
+
+            NewFpar = ElCLib::Parameter(PrevParab, P1);
+            NewLpar = ElCLib::Parameter(PrevParab, P2);
+            isSameCurve = Standard_True;
+          }
+          break;
+        }
+        default:
+          break;
+        } //end of switch
+      } //end of else
+
+      if (isSameCurve) {
+        const Standard_Boolean isSameDir = (isFwd == IsFwdSeq.Last());
+
+        if (aBasisCurve->IsPeriodic()) {
+          // Treat periodic curves.
+          const Standard_Real aPeriod = aBasisCurve->Period();
+
+          if (isSameDir) {
+            // Check if first parameter is greater then the last one.
+            while (NewFpar > NewLpar) {
+              NewFpar -= aPeriod;
+            }
+          } else { // !isSameDir
+            // Check if last parameter is greater then the first one.
+            while (NewLpar > NewFpar) {
+              NewLpar -= aPeriod;
+            }
+
+            // Change parameters
+            const Standard_Real aTmpPar = NewLpar;
+
+            NewLpar = NewFpar;
+            NewFpar = aTmpPar;
+          }
+
+          // Udjust parameters on periodic curves.
+          if (IsFwdSeq.Last()) {
+            // The current curve should be after the previous one.
+            ElCLib::AdjustPeriodic(LparSeq.Last(), LparSeq.Last() + aPeriod,
+              Precision::PConfusion(), NewFpar, NewLpar);
+          } else {
+            // The current curve should be before the previous one.
+            ElCLib::AdjustPeriodic(FparSeq.Last() - aPeriod, FparSeq.Last(),
+              Precision::PConfusion(), NewFpar, NewLpar);
+          }
+        } else if (!isSameDir) {
+          // Not periodic curves. Opposite dirs.
+          const Standard_Real aTmpPar = NewLpar;
+
+          NewLpar = NewFpar;
+          NewFpar = aTmpPar;
+        }
+
+        if (IsFwdSeq.Last()) {
+          // Update last parameter 
+          LparSeq(LparSeq.Length()) = NewLpar;
+        } else {
+          // Update first parameter 
+          FparSeq(FparSeq.Length()) = NewFpar;
+        }
+      } else {
+        // Add new curve.
+        CurveSeq.Append(aCurve);
+        FparSeq.Append(fpar);
+        LparSeq.Append(lpar);
+        IsFwdSeq.Append(isFwd);
+        TolSeq.Append(BRep_Tool::Tolerance(wexp.CurrentVertex()));
+        CurType = aType;
+      }
+    }
+  }
+
   LastVertex = wexp.CurrentVertex();
   TolSeq.Append(BRep_Tool::Tolerance(LastVertex));
 
-  TopoDS_Vertex FirstVtx_final = (FinalReverse)? LastVertex : FirstVertex;
+  Standard_Boolean isReverse = Standard_False;
+
+  if (!IsFwdSeq.IsEmpty()) {
+    isReverse = !IsFwdSeq(1);
+  }
+
+  TopoDS_Vertex FirstVtx_final = (isReverse)? LastVertex : FirstVertex;
   FirstVtx_final.Orientation(TopAbs_FORWARD);
-  TopoDS_Vertex LastVtx_final = (FinalReverse)? FirstVertex : LastVertex;
+  TopoDS_Vertex LastVtx_final = (isReverse)? FirstVertex : LastVertex;
   LastVtx_final.Orientation(TopAbs_REVERSED);
   
   if (CurveSeq.IsEmpty())
@@ -512,10 +491,11 @@ TopoDS_Edge  BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
 	  
 	  Handle(Geom_TrimmedCurve) aTrCurve = new Geom_TrimmedCurve(CurveSeq(i), FparSeq(i), LparSeq(i));
 	  tab(i-1) = GeomConvert::CurveToBSplineCurve(aTrCurve);
-	  tab(i-1)->Transform(LocSeq(i).Location().Transformation());
 	  GeomConvert::C0BSplineToC1BSplineCurve(tab(i-1), Precision::Confusion());
-	  if (LocSeq(i).Orientation() == TopAbs_REVERSED)
+
+          if (!IsFwdSeq(i)) {
 	    tab(i-1)->Reverse();
+          }
 	  
 	  //Temporary
 	  //char* name = new char[100];
@@ -573,14 +553,16 @@ TopoDS_Edge  BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
     {
       if (CurveSeq(1)->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
 	CurveSeq(1) = (*((Handle(Geom_TrimmedCurve)*)&(CurveSeq(1))))->BasisCurve();
-	  
-      CurveSeq(1)->Transform(LocSeq(1).Location().Transformation());
-      ResEdge = BRepLib_MakeEdge(CurveSeq(1),
+
+      Handle(Geom_Curve) aCopyCurve =
+          Handle(Geom_Curve)::DownCast(CurveSeq(1)->Copy());
+
+      ResEdge = BRepLib_MakeEdge(aCopyCurve,
 				 FirstVtx_final, LastVtx_final,
 				 FparSeq(1), LparSeq(1));
     }
 
-  if (FinalReverse)
+  if (isReverse)
     ResEdge.Reverse();
   
   return ResEdge;

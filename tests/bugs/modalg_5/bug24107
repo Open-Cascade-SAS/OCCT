@@ -1,0 +1,23 @@
+puts "================"
+puts "OCC24107"
+puts "================"
+puts ""
+#######################################################################
+# BRepAlgo::ConcatenateWireC0 method doesn't work on a translated wire
+#######################################################################
+
+restore [locate_data_file bug24107_wire.brep] w
+
+concatC0wire result w
+
+checkshape result
+
+set tolmax_w [tolmax w]
+regexp {max tol = ([-0-9.+eE]+)} ${tolmax_w} full CMP_TOL
+
+set tolmax_result [tolmax result]
+regexp {max tol = ([-0-9.+eE]+)} ${tolmax_result} full MaxTolerance
+
+if { ${MaxTolerance} > [expr 2 * ${CMP_TOL}] } {
+   puts "Error: invalid tolerance of result wire"
+}
