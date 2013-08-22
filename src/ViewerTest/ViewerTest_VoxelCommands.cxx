@@ -32,16 +32,60 @@
 #include <Voxel_BooleanOperation.hxx>
 #include <Voxel_FastConverter.hxx>
 
-#include <BRepPrimAPI_MakeSphere.hxx>
-
-static Standard_Integer VOXELBOOLDS(Draw_Interpretor& di, Standard_Integer, const char**)
+// A method parses the input parameters.
+static Standard_Boolean GetInputParameters(Standard_Integer  nbargs, const char** args, 
+                                           Standard_Real&    x,  Standard_Real&     y,  Standard_Real&     z, 
+                                           Standard_Real&    dx, Standard_Real&     dy, Standard_Real&     dz, 
+                                           Standard_Integer& nbx, Standard_Integer& nby, Standard_Integer& nbz)
 {
-  Standard_Integer ix, iy, iz;
-  Standard_Integer nbx = 100, nby = 100, nbz = 100;
+  // Default values.
+  nbx = 10; nby = 10; nbz = 10;
+  x = 0.0; y = 0.0; z = 0.0;
+  dx = 1.0; dy = 1.0; dz = 1.0;
+
+  // "voxelboolds 0 0 0 1 1 1 100 100 100"
+  if (nbargs == 10)
+  {
+    nbx = Draw::Atoi(args[7]);
+    nby = Draw::Atoi(args[8]);
+    nbz = Draw::Atoi(args[9]);
+  }
+  // "voxelboolds 0 0 0 1 1 1"
+  if (nbargs == 7 || nbargs == 10)
+  {
+    dx = Draw::Atof(args[4]);
+    dy = Draw::Atof(args[5]);
+    dz = Draw::Atof(args[6]);
+  }
+  // "voxelboolds 0 0 0"
+  if (nbargs == 4 || nbargs == 7 || nbargs == 10)
+  {
+    x = Draw::Atof(args[1]);
+    y = Draw::Atof(args[2]);
+    z = Draw::Atof(args[3]);
+  }
+  // "voxelboolds"
+  if (nbargs == 1)
+  {
+    // use default parameters
+  }
+
+  return nbargs == 1 || nbargs == 4 || nbargs == 7 || nbargs == 10;
+}
+
+static Standard_Integer VOXELBOOLDS(Draw_Interpretor& di, Standard_Integer nbargs, const char** args)
+{
+  // Parse input parameters.
+  Standard_Real      x, y, z, dx, dy, dz;
+  Standard_Integer   ix, iy, iz, nbx, nby, nbz;
+  if (!GetInputParameters(nbargs, args, x, y, z, dx, dy, dz, nbx, nby, nbz))
+  {
+    di << "Usage: voxelboolds [x, y, z, dx, dy, dz nbx, nby, nbz]";
+    return 1;
+  }
 
   // 1. BoolDS:
-
-  Voxel_BoolDS ds(0, 0, 0, 1, 1, 1, nbx, nby, nbz);
+  Voxel_BoolDS ds(x, y, z, dx, dy, dz, nbx, nby, nbz);
 
   for (ix = 0; ix < nbx; ix++)
   {
@@ -84,17 +128,22 @@ static Standard_Integer VOXELBOOLDS(Draw_Interpretor& di, Standard_Integer, cons
     }
   }
 
-  return 0; // Sehr gut
+  return 0;
 }
 
-static Standard_Integer VOXELCOLORDS(Draw_Interpretor& di, Standard_Integer, const char**)
+static Standard_Integer VOXELCOLORDS(Draw_Interpretor& di, Standard_Integer nbargs, const char** args)
 {
-  Standard_Integer ix, iy, iz;
-  Standard_Integer nbx = 100, nby = 100, nbz = 100;
-  
+  // Parse input parameters.
+  Standard_Real      x, y, z, dx, dy, dz;
+  Standard_Integer   ix, iy, iz, nbx, nby, nbz;
+  if (!GetInputParameters(nbargs, args, x, y, z, dx, dy, dz, nbx, nby, nbz))
+  {
+    di << "Usage: voxelcolords [x, y, z, dx, dy, dz nbx, nby, nbz]";
+    return 1;
+  }
+
   // 1. ColorDS:
-  
-  Voxel_ColorDS ds(0, 0, 0, 1, 1, 1, nbx, nby, nbz);
+  Voxel_ColorDS ds(x, y, z, dx, dy, dz, nbx, nby, nbz);
   
   for (ix = 0; ix < nbx; ix++)
   {
@@ -140,15 +189,20 @@ static Standard_Integer VOXELCOLORDS(Draw_Interpretor& di, Standard_Integer, con
   return 0;
 }
 
-static Standard_Integer VOXELFLOATDS(Draw_Interpretor& di, Standard_Integer, const char**)
+static Standard_Integer VOXELFLOATDS(Draw_Interpretor& di, Standard_Integer nbargs, const char** args)
 {
-  Standard_Integer ix, iy, iz;
-  Standard_Integer nbx = 100, nby = 100, nbz = 100;
-
+  // Parse input parameters.
+  Standard_Real      x, y, z, dx, dy, dz;
+  Standard_Integer   ix, iy, iz, nbx, nby, nbz;
+  if (!GetInputParameters(nbargs, args, x, y, z, dx, dy, dz, nbx, nby, nbz))
+  {
+    di << "Usage: voxelfloatds [x, y, z, dx, dy, dz nbx, nby, nbz]";
+    return 1;
+  }
+  
   // 1. FloatDS:
-
-  Voxel_FloatDS ds(0, 0, 0, 1, 1, 1, nbx, nby, nbz);
-
+  Voxel_FloatDS ds(x, y, z, dx, dy, dz, nbx, nby, nbz);
+  
   for (ix = 0; ix < nbx; ix++)
   {
     for (iy = 0; iy < nby; iy++)
@@ -213,14 +267,19 @@ static Standard_Integer VOXELFLOATDS(Draw_Interpretor& di, Standard_Integer, con
   return 0;
 }
 
-static Standard_Integer VOXELOCTBOOLDS(Draw_Interpretor& di, Standard_Integer, const char**)
+static Standard_Integer VOXELOCTBOOLDS(Draw_Interpretor& di, Standard_Integer nbargs, const char** args)
 {
-  Standard_Integer ix, iy, iz;
-  Standard_Integer nbx = 30, nby = 30, nbz = 30;
+  // Parse input parameters.
+  Standard_Real      x, y, z, dx, dy, dz;
+  Standard_Integer   ix, iy, iz, nbx, nby, nbz;
+  if (!GetInputParameters(nbargs, args, x, y, z, dx, dy, dz, nbx, nby, nbz))
+  {
+    di << "Usage: voxeloctboolds [x, y, z, dx, dy, dz nbx, nby, nbz]";
+    return 1;
+  }
 
   // 1. OctBoolDS:
-
-  Voxel_OctBoolDS ds(0, 0, 0, 1, 1, 1, nbx, nby, nbz);
+  Voxel_OctBoolDS ds(x, y, z, dx, dy, dz, nbx, nby, nbz);
 
   for (ix = 0; ix < nbx; ix++)
   {
@@ -315,14 +374,19 @@ static Standard_Integer VOXELOCTBOOLDS(Draw_Interpretor& di, Standard_Integer, c
   return 0;
 }
 
-static Standard_Integer VOXELROCTBOOLDS(Draw_Interpretor& di, Standard_Integer, const char**)
+static Standard_Integer VOXELROCTBOOLDS(Draw_Interpretor& di, Standard_Integer nbargs, const char** args)
 {
-  Standard_Integer ix, iy, iz, i, j;
-  Standard_Integer nbx = 30, nby = 30, nbz = 30;
+  // Parse input parameters.
+  Standard_Real      x, y, z, dx, dy, dz;
+  Standard_Integer   ix, iy, iz, nbx, nby, nbz, i, j;
+  if (!GetInputParameters(nbargs, args, x, y, z, dx, dy, dz, nbx, nby, nbz))
+  {
+    di << "Usage: voxelroctboolds [x, y, z, dx, dy, dz nbx, nby, nbz]";
+    return 1;
+  }
 
   // 1. ROctBoolDS:
-  
-  Voxel_ROctBoolDS ds(0, 0, 0, 1, 1, 1, nbx, nby, nbz);
+  Voxel_ROctBoolDS ds(x, y, z, dx, dy, dz, nbx, nby, nbz);
 
   for (ix = 0; ix < nbx; ix++)
   {
@@ -400,27 +464,23 @@ static Standard_Integer VOXELROCTBOOLDS(Draw_Interpretor& di, Standard_Integer, 
     }
   }
 
-  // Test converter
-  Standard_Integer progress = 0;
-  TopoDS_Shape S = BRepPrimAPI_MakeSphere(100.0).Shape();
-  Voxel_ROctBoolDS* ds2 = new Voxel_ROctBoolDS;
-  Voxel_FastConverter converter(S, *ds2, 0.1, nbx, nby, nbz, 1);
-  converter.Convert(progress);
-  ds2->OptimizeMemory();
-  delete ds2;
-
   return 0;
 }
 
-static Standard_Integer VOXELFUSEBOOLDS(Draw_Interpretor& di, Standard_Integer, const char**)
+static Standard_Integer VOXELFUSEBOOLDS(Draw_Interpretor& di, Standard_Integer nbargs, const char** args)
 {
-  Standard_Integer ix, iy, iz;
-  Standard_Integer nbx = 100, nby = 100, nbz = 100;
+  // Parse input parameters.
+  Standard_Real      x, y, z, dx, dy, dz;
+  Standard_Integer   ix, iy, iz, nbx, nby, nbz;
+  if (!GetInputParameters(nbargs, args, x, y, z, dx, dy, dz, nbx, nby, nbz))
+  {
+    di << "Usage: voxelfuseboolds [x, y, z, dx, dy, dz nbx, nby, nbz]";
+    return 1;
+  }
 
   // 1. Set two BoolDS:
-
-  Voxel_BoolDS ds1(0, 0, 0, 1, 1, 1, nbx, nby, nbz);
-  Voxel_BoolDS ds2(0, 0, 0, 1, 1, 1, nbx, nby, nbz);
+  Voxel_BoolDS ds1(x, y, z, dx, dy, dz, nbx, nby, nbz);
+  Voxel_BoolDS ds2(x, y, z, dx, dy, dz, nbx, nby, nbz);
 
   for (ix = 0; ix < nbx; ix++)
   {
@@ -477,15 +537,20 @@ static Standard_Integer VOXELFUSEBOOLDS(Draw_Interpretor& di, Standard_Integer, 
   return 0;
 }
 
-static Standard_Integer VOXELFUSECOLORDS(Draw_Interpretor& di, Standard_Integer, const char**)
+static Standard_Integer VOXELFUSECOLORDS(Draw_Interpretor& di, Standard_Integer nbargs, const char** args)
 {
-  Standard_Integer ix, iy, iz;
-  Standard_Integer nbx = 100, nby = 100, nbz = 100;
+  // Parse input parameters.
+  Standard_Real      x, y, z, dx, dy, dz;
+  Standard_Integer   ix, iy, iz, nbx, nby, nbz;
+  if (!GetInputParameters(nbargs, args, x, y, z, dx, dy, dz, nbx, nby, nbz))
+  {
+    di << "Usage: voxelfusecolords [x, y, z, dx, dy, dz nbx, nby, nbz]";
+    return 1;
+  }
 
   // 1. Set two ColorDS:
-
-  Voxel_ColorDS ds1(0, 0, 0, 1, 1, 1, nbx, nby, nbz);
-  Voxel_ColorDS ds2(0, 0, 0, 1, 1, 1, nbx, nby, nbz);
+  Voxel_ColorDS ds1(x, y, z, dx, dy, dz, nbx, nby, nbz);
+  Voxel_ColorDS ds2(x, y, z, dx, dy, dz, nbx, nby, nbz);
   
   for (ix = 0; ix < nbx; ix++)
   {
@@ -552,15 +617,20 @@ static Standard_Integer VOXELFUSECOLORDS(Draw_Interpretor& di, Standard_Integer,
   return 0;
 }
 
-static Standard_Integer VOXELFUSEFLOATDS(Draw_Interpretor& di, Standard_Integer, const char**)
+static Standard_Integer VOXELFUSEFLOATDS(Draw_Interpretor& di, Standard_Integer nbargs, const char** args)
 {
-  Standard_Integer ix, iy, iz;
-  Standard_Integer nbx = 100, nby = 100, nbz = 100;
-  
-  // 1. Set two FloatDS:
+  // Parse input parameters.
+  Standard_Real      x, y, z, dx, dy, dz;
+  Standard_Integer   ix, iy, iz, nbx, nby, nbz;
+  if (!GetInputParameters(nbargs, args, x, y, z, dx, dy, dz, nbx, nby, nbz))
+  {
+    di << "Usage: voxelfusefloatds [x, y, z, dx, dy, dz nbx, nby, nbz]";
+    return 1;
+  }
 
-  Voxel_FloatDS ds1(0, 0, 0, 1, 1, 1, nbx, nby, nbz);
-  Voxel_FloatDS ds2(0, 0, 0, 1, 1, 1, nbx, nby, nbz);
+  // 1. Set two FloatDS:
+  Voxel_FloatDS ds1(x, y, z, dx, dy, dz, nbx, nby, nbz);
+  Voxel_FloatDS ds2(x, y, z, dx, dy, dz, nbx, nby, nbz);
 
   for (ix = 0; ix < nbx; ix++)
   {
@@ -627,15 +697,20 @@ static Standard_Integer VOXELFUSEFLOATDS(Draw_Interpretor& di, Standard_Integer,
   return 0;
 }
 
-static Standard_Integer VOXELCUTBOOLDS(Draw_Interpretor& di, Standard_Integer, const char**)
+static Standard_Integer VOXELCUTBOOLDS(Draw_Interpretor& di, Standard_Integer nbargs, const char** args)
 {
-  Standard_Integer ix, iy, iz;
-  Standard_Integer nbx = 100, nby = 100, nbz = 100;
+  // Parse input parameters.
+  Standard_Real      x, y, z, dx, dy, dz;
+  Standard_Integer   ix, iy, iz, nbx, nby, nbz;
+  if (!GetInputParameters(nbargs, args, x, y, z, dx, dy, dz, nbx, nby, nbz))
+  {
+    di << "Usage: voxelcutboolds [x, y, z, dx, dy, dz nbx, nby, nbz]";
+    return 1;
+  }
 
   // 1. Set two BoolDS:
-
-  Voxel_BoolDS ds1(0, 0, 0, 1, 1, 1, nbx, nby, nbz);
-  Voxel_BoolDS ds2(0, 0, 0, 1, 1, 1, nbx, nby, nbz);
+  Voxel_BoolDS ds1(x, y, z, dx, dy, dz, nbx, nby, nbz);
+  Voxel_BoolDS ds2(x, y, z, dx, dy, dz, nbx, nby, nbz);
 
   for (ix = 0; ix < nbx; ix++)
   {
@@ -702,15 +777,20 @@ static Standard_Integer VOXELCUTBOOLDS(Draw_Interpretor& di, Standard_Integer, c
   return 0;
 }
 
-static Standard_Integer VOXELCUTCOLORDS(Draw_Interpretor& di, Standard_Integer, const char**)
+static Standard_Integer VOXELCUTCOLORDS(Draw_Interpretor& di, Standard_Integer nbargs, const char** args)
 {
-  Standard_Integer ix, iy, iz;
-  Standard_Integer nbx = 100, nby = 100, nbz = 100;
+  // Parse input parameters.
+  Standard_Real      x, y, z, dx, dy, dz;
+  Standard_Integer   ix, iy, iz, nbx, nby, nbz;
+  if (!GetInputParameters(nbargs, args, x, y, z, dx, dy, dz, nbx, nby, nbz))
+  {
+    di << "Usage: voxelcutcolords [x, y, z, dx, dy, dz nbx, nby, nbz]";
+    return 1;
+  }
 
   // 1. Set two ColorDS:
-
-  Voxel_ColorDS ds1(0, 0, 0, 1, 1, 1, nbx, nby, nbz);
-  Voxel_ColorDS ds2(0, 0, 0, 1, 1, 1, nbx, nby, nbz);
+  Voxel_ColorDS ds1(x, y, z, dx, dy, dz, nbx, nby, nbz);
+  Voxel_ColorDS ds2(x, y, z, dx, dy, dz, nbx, nby, nbz);
 
   for (ix = 0; ix < nbx; ix++)
   {
@@ -777,15 +857,20 @@ static Standard_Integer VOXELCUTCOLORDS(Draw_Interpretor& di, Standard_Integer, 
   return 0;
 }
 
-static Standard_Integer VOXELCUTFLOATDS(Draw_Interpretor& di, Standard_Integer, const char**)
+static Standard_Integer VOXELCUTFLOATDS(Draw_Interpretor& di, Standard_Integer nbargs, const char** args)
 {
-  Standard_Integer ix, iy, iz;
-  Standard_Integer nbx = 100, nby = 100, nbz = 100;
+  // Parse input parameters.
+  Standard_Real      x, y, z, dx, dy, dz;
+  Standard_Integer   ix, iy, iz, nbx, nby, nbz;
+  if (!GetInputParameters(nbargs, args, x, y, z, dx, dy, dz, nbx, nby, nbz))
+  {
+    di << "Usage: voxelcutfloatds [x, y, z, dx, dy, dz nbx, nby, nbz]";
+    return 1;
+  }
 
   // 1. Set two FloatDS:
-
-  Voxel_FloatDS ds1(0, 0, 0, 1, 1, 1, nbx, nby, nbz);
-  Voxel_FloatDS ds2(0, 0, 0, 1, 1, 1, nbx, nby, nbz);
+  Voxel_FloatDS ds1(x, y, z, dx, dy, dz, nbx, nby, nbz);
+  Voxel_FloatDS ds2(x, y, z, dx, dy, dz, nbx, nby, nbz);
 
   for (ix = 0; ix < nbx; ix++)
   {
@@ -852,18 +937,122 @@ static Standard_Integer VOXELCUTFLOATDS(Draw_Interpretor& di, Standard_Integer, 
   return 0;
 }
 
+static Standard_Integer VOXELBOOLDSCONVERT(Draw_Interpretor& di, Standard_Integer nbargs, const char** args)
+{
+  TopoDS_Shape S;
+  Standard_Integer nbx = 100, nby = 100, nbz = 100;
+  Standard_Real deflection = 0.1;
+  Standard_Boolean fast = Standard_True;
+  Standard_Integer nbthreads = 1;
+  Standard_Boolean usetriangulation = Standard_False;
+  Standard_Integer fillInVolume = 0;
+
+  if (nbargs < 2)
+  {
+    di << "Usage: voxelbooldsconvert shape [nbx nby nbz deflection 0|1(fast or accurate) nbthreads usetriangulation \
+          0|1|2(fill-in volume: no|yes|yes using shape)]";
+    return 1;
+  }
+
+  // Get shape for conversion.
+  S = DBRep::Get(args[1]);
+
+  if (nbargs > 2)
+  {
+    if (nbargs >= 5)
+    {
+      nbx = Draw::Atoi(args[2]);
+      nby = Draw::Atoi(args[3]);
+      nbz = Draw::Atoi(args[4]);
+    }
+    if (nbargs >= 6)
+    {
+      deflection = Draw::Atof(args[5]);
+    }
+    if (nbargs >= 7)
+    {
+      // 0 means fast,
+      // 1 means accurate.
+      fast = Draw::Atoi(args[6]) == 0 ? Standard_True : Standard_False;
+    }
+    if (nbargs >= 8)
+    {
+      nbthreads = Draw::Atoi(args[7]);
+      if (nbthreads < 1)
+      {
+        di << "Wrong number of threads: 1 .. nb cores";
+        return 1;
+      }
+      else if (nbthreads > 100) // seems too much...
+      {
+        di << "Too many threads...";
+      }
+    }
+    if (nbargs >= 9)
+    {
+      usetriangulation = Draw::Atoi(args[8]) == 0 ? Standard_False : Standard_True;
+    }
+    if (nbargs >= 10)
+    {
+      fillInVolume = Draw::Atoi(args[9]);
+      if (fillInVolume < 0  || fillInVolume > 2)
+      {
+        di << "Fill-in volume parameter accepts the values: 0 - no, 1 - yes, 2 - yes wusing shape";
+        return 1;
+      }
+    }
+  }
+
+  // Call converter.
+  Voxel_BoolDS ds;
+  Standard_Boolean ret;
+  Standard_Integer progress = 0;
+  Voxel_FastConverter converter(S, ds, deflection, nbx, nby, nbz, nbthreads, usetriangulation);
+
+  // Convert.
+  if (fast)
+    ret = converter.Convert(progress);
+  else
+    ret = converter.ConvertUsingSAT(progress);
+
+  // Fill-in volume.
+  if (ret)
+  {
+    switch (fillInVolume)
+    {
+    case 0:
+      break;
+    case 1:
+      converter.FillInVolume(1, nbthreads);
+      break;
+    case 2:
+      converter.FillInVolume(1, S, nbthreads);
+      break;
+    }
+  }
+
+  return ret == Standard_True ? 0 : 1;
+}
+
 void  ViewerTest::VoxelCommands(Draw_Interpretor& theCommands)
 {
-  const char* g = "Viewer Voxel non-regression test-commands";
-  theCommands.Add("voxelboolds","voxelboolds; returns 0 if success",__FILE__,VOXELBOOLDS,g);
-  theCommands.Add("voxelcolords","voxelcolords; returns 0 if success",__FILE__,VOXELCOLORDS,g);
-  theCommands.Add("voxelfloatds","voxelfloatds; returns 0 if success",__FILE__,VOXELFLOATDS,g);
-  theCommands.Add("voxeloctboolds","voxeloctboolds; returns 0 if success",__FILE__,VOXELOCTBOOLDS,g);
-  theCommands.Add("voxelroctboolds","voxelroctboolds; returns 0 if success",__FILE__,VOXELROCTBOOLDS,g);
-  theCommands.Add("voxelfuseboolds","voxelfuseboolds; returns 0 if success",__FILE__,VOXELFUSEBOOLDS,g);
-  theCommands.Add("voxelfusecolords","voxelfusecolords; returns 0 if success",__FILE__,VOXELFUSECOLORDS,g);
-  theCommands.Add("voxelfusefloatds","voxelfusefloatds; returns 0 if success",__FILE__,VOXELFUSEFLOATDS,g);
-  theCommands.Add("voxelcutboolds","voxelcutboolds; returns 0 if success",__FILE__,VOXELCUTBOOLDS,g);
-  theCommands.Add("voxelcutcolords","voxelcutcolords; returns 0 if success",__FILE__,VOXELCUTCOLORDS,g);
-  theCommands.Add("voxelcutfloatds","voxelcutfloatds; returns 0 if success",__FILE__,VOXELCUTFLOATDS,g);
+  const char* g = "Voxel draw-commands";
+  // Basic commands.
+  theCommands.Add("voxelboolds"     ,"voxelboolds [x y z dx dy dz nbx nby nbz]"     ,__FILE__,VOXELBOOLDS,g);
+  theCommands.Add("voxelcolords"    ,"voxelcolords [x y z dx dy dz nbx nby nbz]"    ,__FILE__,VOXELCOLORDS,g);
+  theCommands.Add("voxelfloatds"    ,"voxelfloatds [x y z dx dy dz nbx nby nbz]"    ,__FILE__,VOXELFLOATDS,g);
+  theCommands.Add("voxeloctboolds"  ,"voxeloctboolds [x y z dx dy dz nbx nby nbz]"  ,__FILE__,VOXELOCTBOOLDS,g);
+  theCommands.Add("voxelroctboolds" ,"voxelroctboolds [x y z dx dy dz nbx nby nbz]" ,__FILE__,VOXELROCTBOOLDS,g);
+  // Boolean operations.
+  theCommands.Add("voxelfuseboolds" ,"voxelfuseboolds [x y z dx dy dz nbx nby nbz]" ,__FILE__,VOXELFUSEBOOLDS,g);
+  theCommands.Add("voxelfusecolords","voxelfusecolords [x y z dx dy dz nbx nby nbz]",__FILE__,VOXELFUSECOLORDS,g);
+  theCommands.Add("voxelfusefloatds","voxelfusefloatds [x y z dx dy dz nbx nby nbz]",__FILE__,VOXELFUSEFLOATDS,g);
+  theCommands.Add("voxelcutboolds"  ,"voxelcutboolds [x y z dx dy dz nbx nby nbz]"  ,__FILE__,VOXELCUTBOOLDS,g);
+  theCommands.Add("voxelcutcolords" ,"voxelcutcolords [x y z dx dy dz nbx nby nbz]" ,__FILE__,VOXELCUTCOLORDS,g);
+  theCommands.Add("voxelcutfloatds" ,"voxelcutfloatds [x y z dx dy dz nbx nby nbz]" ,__FILE__,VOXELCUTFLOATDS,g);
+  // Conversion of a shape into voxels.
+  theCommands.Add("voxelbooldsconvert",
+                  "voxelbooldsconvert shape [nbx nby nbz deflection 0|1(fast or accurate) nbthreads usetriangulation \
+                  0|1|2(fill-in volume: no|yes|yes using shape)]",
+                  __FILE__,VOXELBOOLDSCONVERT,g);
 }
