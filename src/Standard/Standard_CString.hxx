@@ -63,22 +63,6 @@ inline Standard_Integer HashCode (const Standard_CString,
                                   Standard_Integer& );
 Standard_Integer HashCodes (const Standard_CString ,
                             const Standard_Integer  );
-inline Standard_Boolean ISEQUAL(const Standard_CString One ,
-                                const Standard_Integer LenOne ,
-			        const Standard_CString Two,
-                                const Standard_Integer LenTwo );
-__Standard_API Standard_Boolean ISSIMILAR(const Standard_CString One ,
-                                          const Standard_Integer Len ,
-			                  const Standard_CString Two );
-inline Standard_Integer HASHCODE (const Standard_CString,
-                                  const Standard_Integer,
-                                  const Standard_Integer);
-inline Standard_Integer HASHCODE (const Standard_CString,
-                                  const Standard_Integer,
-                                  const Standard_Integer ,
-                                  Standard_Integer& );
-__Standard_API Standard_Integer HASHCODES (const Standard_CString,
-                                           const Standard_Integer);
 
 //! Equivalents of functions from standard C library that use always C locale
 __Standard_API double Atof    (const char* theStr);
@@ -128,54 +112,6 @@ inline Standard_Integer HashCode (const Standard_CString Value,
 {
 //  return (Abs( HashCodes( Value , Len ) ) % Upper ) + 1 ;
   return HashCode( (Standard_Integer) HashCodes( Value , Len ) , Upper ) ;
-}
-
-//============================================================================
-//==== HashCode of CString converted to uppercase. Returns the HashCode itself
-//====                               and the HashCode % Upper
-//============================================================================
-inline Standard_Integer HASHCODE (const Standard_CString Value,
-                                  const Standard_Integer Len ,
-			          const Standard_Integer Upper ,
-                                  Standard_Integer& aHashCode )
-{
-  aHashCode = HASHCODES( Value , Len );
-//  return (Abs( aHashCode ) % Upper ) + 1 ;
-  return HashCode( (Standard_Integer) aHashCode , Upper ) ;
-}
-
-//============================================================================
-//==== HashCode of a CString converted to uppercase
-//============================================================================
-inline Standard_Integer HASHCODE (const Standard_CString Value,
-                                  const Standard_Integer Len ,
-                                  const Standard_Integer Upper)
-{
-//  return (Abs( HASHCODES( Value , Len ) ) % Upper ) + 1 ;
-  return HashCode( (Standard_Integer) HASHCODES( Value , Len ) , Upper ) ;
-}
-
-//============================================================================
-// IsEqual : Returns Standard_True if two CString have the same value
-// Comparison is done with discard of bit 5 (UpperCase<-->LowerCase)
-// Efficient for Types and MethodNames (without copy of characters)
-// Valid if we have only alphanumeric characters and "_" (unicity)
-// Valid if the Strings address are aligned for Integers
-
-//============================================================================
-inline Standard_Boolean ISEQUAL(const Standard_CString One ,
-                                const Standard_Integer LenOne ,
-                                const Standard_CString Two,
-                                const Standard_Integer LenTwo )
-{
-
- if ( One == Two )
-   return Standard_True ;
- if ( LenOne != LenTwo )
-   return Standard_False ;
-
- return ISSIMILAR( One , LenOne , Two ) ;
-
 }
 
 #endif

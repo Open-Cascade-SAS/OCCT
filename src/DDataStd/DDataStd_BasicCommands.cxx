@@ -99,13 +99,6 @@
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_ListIteratorOfListOfReal.hxx>
 
-#include <Standard_Macro.hxx>
-#ifdef OptJr
-#define ROUNDMEM(len) (((len)+3)&~0x3)
-#else
-#define ROUNDMEM(len) (len)
-#endif
-
 //=======================================================================
 //function : DDataStd_SetInteger
 //purpose  : SetInteger (DF, entry, value)
@@ -1128,7 +1121,7 @@ static Standard_Integer DDataStd_GetUTFtoFile (Draw_Interpretor& di,
     unsigned char prefix[4] = {0xEF,0xBB,0xBF, 0x00};
     anOS.write( (char*)&prefix[0], 3); 
     Standard_Integer  n = aES.LengthOfCString();
-    Standard_PCharacter aCstr = (Standard_PCharacter) Standard::Allocate(ROUNDMEM(n+1));
+    Standard_PCharacter aCstr = (Standard_PCharacter) Standard::Allocate(n+1);
     n = aES.ToUTF8CString(aCstr);
     anOS.write( (char*)&aCstr[0], n); 
     anOS.close();

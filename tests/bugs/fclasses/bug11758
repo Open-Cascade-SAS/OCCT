@@ -1,0 +1,10 @@
+puts "======="
+puts "OCC11758"
+puts "======="
+puts ""
+########################################################################### TCollection strings are not memory safe as reported by Purify
+###########################################################################
+
+pload QAcommands
+
+OCC11758

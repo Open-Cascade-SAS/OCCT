@@ -840,21 +840,6 @@ is
    --          (Just for HashCode for AsciiString)
    ---C++: inline
 
-   HASHCODE(myclass ; astring : AsciiString from TCollection; Upper : Integer)
-   returns Integer;
-   ---Level: Internal
-   ---Purpose: Hash function for AsciiString no case sensitive
-   ---C++: inline
-
-   ISSIMILAR(myclass ; string1 : AsciiString from TCollection; 
-             string2 : AsciiString from TCollection)
-   returns Boolean;
-   ---Level: Internal
-   ---Purpose: Returns True  when the two  strings are the same
-   --          (no case sensitive). 
-   --          (Just for HashCode for AsciiString)
-    
-         
 fields
   mystring      : PCharacter; 
   mylength      : Integer;

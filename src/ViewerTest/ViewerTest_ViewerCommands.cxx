@@ -1079,7 +1079,7 @@ static int VClose (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const ch
   
   // Create list to iterate and remove views from the map of views
   NCollection_List<TCollection_AsciiString> aViewList;
-  if (TCollection_AsciiString::ISSIMILAR (anInputString, TCollection_AsciiString("ALL")))
+  if ( strcasecmp( anInputString.ToCString(), "ALL" ) == 0 )
   {
     for (NCollection_DoubleMap<TCollection_AsciiString, Handle(V3d_View)>::Iterator anIter(ViewerTest_myViews);
          anIter.More(); anIter.Next())
@@ -1123,7 +1123,7 @@ static int VActivate (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const
   }
 
   TCollection_AsciiString aNameString(theArgVec[1]);
-  if (TCollection_AsciiString::ISSIMILAR (aNameString, TCollection_AsciiString("NONE")))
+  if ( strcasecmp( aNameString.ToCString(), "NONE" ) == 0 )
   {
     TCollection_AsciiString aTitle("3D View - ");
     aTitle = aTitle + ViewerTest_myViews.Find2(ViewerTest::CurrentView());
@@ -1174,16 +1174,14 @@ static int VViewList (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const
   if (theArgsNb > 2)
   {
     theDi << theArgVec[0] << ": Wrong number of command arguments\n"
-      << "Usage: " << theArgVec[0];
+          << "Usage: " << theArgVec[0] << " name";
     return 1;
   }
   if (ViewerTest_myContexts.Size() < 1)
     return 0;
 
-  TCollection_AsciiString aNameString(theArgsNb==2?theArgVec[1]:"");
   Standard_Boolean isTreeView =
-    TCollection_AsciiString::ISSIMILAR (aNameString, TCollection_AsciiString("long"))?
-    Standard_False:Standard_True;
+    (( theArgsNb==1 ) || ( strcasecmp( theArgVec[1], "long" ) != 0 ));
 
   if (isTreeView)
     theDi << theArgVec[0] <<":\n";
@@ -3905,39 +3903,39 @@ static int VReadPixel (Draw_Interpretor& theDI,
   Standard_Boolean toShowHls  = Standard_False;
   for (Standard_Integer anIter = 3; anIter < theArgNb; ++anIter)
   {
-    TCollection_AsciiString aParam (theArgVec[anIter]);
-    if (TCollection_AsciiString::ISSIMILAR      (aParam, TCollection_AsciiString ("rgb")))
+    const char* aParam = theArgVec[anIter];
+    if ( strcasecmp( aParam, "rgb" ) == 0 )
     {
       aFormat     = Image_PixMap::IsBigEndianHost() ? Image_PixMap::ImgRGB : Image_PixMap::ImgBGR;
       aBufferType = Graphic3d_BT_RGB;
     }
-    else if (TCollection_AsciiString::ISSIMILAR (aParam, TCollection_AsciiString ("hls")))
+    else if ( strcasecmp( aParam, "hls" ) == 0 )
     {
       aFormat     = Image_PixMap::IsBigEndianHost() ? Image_PixMap::ImgRGB : Image_PixMap::ImgBGR;
       aBufferType = Graphic3d_BT_RGB;
       toShowHls   = Standard_True;
     }
-    else if (TCollection_AsciiString::ISSIMILAR (aParam, TCollection_AsciiString ("rgbf")))
+    else if ( strcasecmp( aParam, "rgbf" ) == 0 )
     {
       aFormat     = Image_PixMap::ImgRGBF;
       aBufferType = Graphic3d_BT_RGB;
     }
-    else if (TCollection_AsciiString::ISSIMILAR (aParam, TCollection_AsciiString ("rgba")))
+    else if ( strcasecmp( aParam, "rgba" ) == 0 )
     {
       aFormat     = Image_PixMap::IsBigEndianHost() ? Image_PixMap::ImgRGBA : Image_PixMap::ImgBGRA;
       aBufferType = Graphic3d_BT_RGBA;
     }
-    else if (TCollection_AsciiString::ISSIMILAR (aParam, TCollection_AsciiString ("rgbaf")))
+    else if ( strcasecmp( aParam, "rgbaf" ) == 0 )
     {
       aFormat     = Image_PixMap::ImgRGBAF;
       aBufferType = Graphic3d_BT_RGBA;
     }
-    else if (TCollection_AsciiString::ISSIMILAR (aParam, TCollection_AsciiString ("depth")))
+    else if ( strcasecmp( aParam, "depth" ) == 0 )
     {
       aFormat     = Image_PixMap::ImgGrayF;
       aBufferType = Graphic3d_BT_Depth;
     }
-    else if (TCollection_AsciiString::ISSIMILAR (aParam, TCollection_AsciiString ("name")))
+    else if ( strcasecmp( aParam, "name" ) == 0 )
     {
       toShowName = Standard_True;
     }

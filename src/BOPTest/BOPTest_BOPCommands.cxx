@@ -325,19 +325,11 @@ Standard_Integer  bsection(Draw_Interpretor& di,
     const char* key2 = (n > 5) ? a[5] : NULL;
     const char* pcurveconf = NULL;
 
-#ifdef WNT
     if (key1 && (!strcasecmp(key1,"-n2d") || !strcasecmp(key1,"-n2d1") || !strcasecmp(key1,"-n2d2"))) {
-#else 
-    if (key1 && (!strncasecmp(key1,"-n2d", 4) || !strncasecmp(key1,"-n2d1", 5) || !strncasecmp(key1,"-n2d2", 5))) {
-#endif
       pcurveconf = key1;
     }
     else {
-#ifdef WNT
       if (!strcasecmp(key1,"-na")) {
-#else 
-      if(!strncasecmp(key1,"-na", 3)) {
-#endif
         bApp = Standard_False;
       }
       else {
@@ -345,11 +337,7 @@ Standard_Integer  bsection(Draw_Interpretor& di,
       }
     }
     if (key2) {
-#ifdef WNT
       if(!strcasecmp(key2,"-na")) {
-#else 
-      if (!strncasecmp(key2,"-na", 3)) {
-#endif
         bApp = Standard_False;
       }
       else {
@@ -358,27 +346,15 @@ Standard_Integer  bsection(Draw_Interpretor& di,
     }
 
     if(!isbadparameter && pcurveconf) {      
-#ifdef WNT
       if (!strcasecmp(pcurveconf, "-n2d1")) {
-#else 
-      if (!strncasecmp(pcurveconf, "-n2d1", 5)) {
-#endif
         bPC1 = Standard_False;
       }
       else {
-#ifdef WNT
         if (!strcasecmp(pcurveconf, "-n2d2")) {
-#else 
-        if (!strncasecmp(pcurveconf, "-n2d2", 5)) {
-#endif
           bPC2 = Standard_False;
         }
         else {
-#ifdef WNT
           if (!strcasecmp(pcurveconf, "-n2d")) {
-#else 
-          if (!strncasecmp(pcurveconf, "-n2d", 4)) {
-#endif
             bPC1 = Standard_False;
             bPC2 = Standard_False;
           }

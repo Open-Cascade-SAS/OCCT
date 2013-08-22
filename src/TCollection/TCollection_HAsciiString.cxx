@@ -18,11 +18,8 @@
 
 
 
-#define OptJr 1
-
 #include <TCollection_HAsciiString.ixx>
 #include <TCollection_HExtendedString.hxx>
-#include <Standard_String.hxx>
 
 // ----------------------------------------------------------------------------
 // Create
@@ -294,20 +291,9 @@ Standard_Boolean TCollection_HAsciiString::IsAscii() const
 Standard_Boolean TCollection_HAsciiString::IsDifferent
        (const Handle(TCollection_HAsciiString)& S) const 
 {
-
   if(S.IsNull()) Standard_NullObject::Raise("TCollection_HAsciiString::IsDifferent");
-#if OptJr
-  if ( myString.Length() == S->Length() ) {
-    Standard_Boolean KEqual ;
-    ASCIISTRINGEQUAL( myString.ToCString() , S->ToCString() ,
-                      myString.mylength , KEqual ) ;
-    return !KEqual ;
-  }
-  else
-    return Standard_True ;
-#else
-  return ( strcmp(myString.ToCString(), S->ToCString()) );
-#endif
+  if(S->Length() != myString.Length() ) return Standard_True;
+  return ( strncmp( myString.ToCString(), S->ToCString(), myString.Length() ) != 0 );
 }
 
 // ----------------------------------------------------------------------------
@@ -316,20 +302,11 @@ Standard_Boolean TCollection_HAsciiString::IsDifferent
 Standard_Boolean TCollection_HAsciiString::IsSameString
        (const Handle(TCollection_HAsciiString)& S) const 
 {
-
   if(S.IsNull()) Standard_NullObject::Raise("TCollection_HAsciiString::IsSameString");
-#if OptJr
-  if ( myString.Length() == S->Length() ) {
-    Standard_Boolean KEqual ;
-    ASCIISTRINGEQUAL( myString.ToCString() , S->ToCString() ,
-                      myString.mylength , KEqual ) ;
-    return KEqual ;
-  }
+  if ( myString.Length() == S->Length() )
+    return ( strncmp( myString.ToCString(), S->ToCString(), myString.Length() ) == 0 );
   else
     return Standard_False ;
-#else
-  return ( !strcmp(myString.ToCString(), S->ToCString()) );
-#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -339,21 +316,12 @@ Standard_Boolean TCollection_HAsciiString::IsSameString
                     (const Handle(TCollection_HAsciiString)& S ,
                      const Standard_Boolean CaseSensitive) const 
 {
-//   Handle(TCollection_HAsciiString) H1,H2;
-//   H1 = UpperCase(This);
-//   H2 = UpperCase(S);
-//  return ( H1 == H2));
-
   if(S.IsNull()) Standard_NullObject::Raise("TCollection_HAsciiString::IsSameString");
 
-  Standard_Integer size1 = Length();
+  const Standard_Integer size1 = Length();
   if ( size1 != S->Length() ) return Standard_False;
-#if OptJr
   if ( CaseSensitive ) {
-    Standard_Boolean KEqual ;
-    ASCIISTRINGEQUAL( myString.ToCString() , S->String().ToCString() ,
-                      size1 , KEqual ) ;
-    return KEqual ;
+    return ( strncmp( myString.ToCString(), S->ToCString(), size1 ) == 0 );
   }
   else {
     for ( Standard_Integer i = 1 ; i <= size1; i++) {
@@ -362,22 +330,6 @@ Standard_Boolean TCollection_HAsciiString::IsSameString
      }
     return Standard_True ;
   }
-
-#else
-// Example of bad sequence of test : CaseSensitive does not change in the loop
-  Standard_Character C1,C2;
-  for( Standard_Integer i = 1 ; i <= size1; i++) {
-    if(CaseSensitive){
-      if (Value(i) != S->Value(i)) return Standard_False;
-    }
-    else {
-      C1 = Value(i);
-      C2 = S->Value(i);
-      if(toupper(C1) != toupper(C2)) return Standard_False;
-    }
-  }
-  return Standard_True;
-#endif
 }
 
 //------------------------------------------------------------------------
@@ -648,19 +600,10 @@ void TCollection_HAsciiString::ShallowDump(Standard_OStream& S) const
 // ----------------------------------------------------------------------------
 Standard_Boolean TCollection_HAsciiString::IsSameState
    (const Handle(TCollection_HAsciiString)& other) const
- {
-
-#if OptJr
-  if ( myString.Length() == other->Length() ) {
-    Standard_Boolean KEqual ;
-    ASCIISTRINGEQUAL( myString.ToCString() , other->ToCString() ,
-                      myString.mylength , KEqual ) ;
-    return KEqual ;
-  }
+{
+  if ( myString.Length() == other->Length() )
+    return ( strncmp( myString.mystring, other->ToCString(), myString.Length() ) == 0 );
   else
     return Standard_False ;
-#else
-   return ( !strcmp(myString.mystring , other->ToCString() ));
-#endif
- }
+}
 

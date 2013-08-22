@@ -111,15 +111,6 @@ inline Standard_Boolean TCollection_AsciiString::IsEqual(const TCollection_Ascii
   return string1.IsEqual( string2 );
 }
 
-//------------------------------------------------------------------------
-//  HASHCODE
-//------------------------------------------------------------------------
-inline Standard_Integer TCollection_AsciiString::HASHCODE(const TCollection_AsciiString& astring,
-						   const Standard_Integer Upper)
-{
-  return ::HASHCODE( astring.ToCString() , astring.Length() , Upper );
-}
-
 // ----------------------------------------------------------------------------
 // SubString
 // ----------------------------------------------------------------------------

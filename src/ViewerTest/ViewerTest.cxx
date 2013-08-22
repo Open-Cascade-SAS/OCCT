@@ -796,16 +796,16 @@ static Standard_Integer VDump (Draw_Interpretor& di, Standard_Integer argc, cons
   Graphic3d_BufferType aBufferType = Graphic3d_BT_RGB;
   if (argc > 2)
   {
-    TCollection_AsciiString aBuffTypeStr (argv[2]);
-    if (TCollection_AsciiString::ISSIMILAR (aBuffTypeStr, TCollection_AsciiString ("rgb")))
+    const char* aBuffTypeStr = argv[2];
+    if ( strcasecmp( aBuffTypeStr, "rgb" ) == 0 ) // 4 is to compare '\0' as well
     {
       aBufferType = Graphic3d_BT_RGB;
     }
-    else if (TCollection_AsciiString::ISSIMILAR (aBuffTypeStr, TCollection_AsciiString ("rgba")))
+    else if ( strcasecmp( aBuffTypeStr, "rgba" ) == 0 )
     {
       aBufferType = Graphic3d_BT_RGBA;
     }
-    else if (TCollection_AsciiString::ISSIMILAR (aBuffTypeStr, TCollection_AsciiString ("depth")))
+    else if ( strcasecmp( aBuffTypeStr, "depth" ) == 0 )
     {
       aBufferType = Graphic3d_BT_Depth;
     }

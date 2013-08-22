@@ -50,7 +50,6 @@ Standard_ShallowDump.cxx
 Standard_ShortReal.cxx
 Standard_ShortReal.hxx
 Standard_Stream.hxx
-Standard_String.hxx
 Standard_Time.cxx
 Standard_Time.hxx
 Standard_Transient.hxx

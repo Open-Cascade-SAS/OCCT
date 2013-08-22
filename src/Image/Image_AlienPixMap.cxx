@@ -495,7 +495,7 @@ bool Image_AlienPixMap::Save (const TCollection_AsciiString& theFileName)
 #else
   const Standard_Integer aLen = theFileName.Length();
   if ((aLen >= 4) && (theFileName.Value (aLen - 3) == '.')
-   && TCollection_AsciiString::ISSIMILAR (theFileName.SubString (aLen - 2, aLen), "ppm"))
+      && strcasecmp( theFileName.ToCString() + aLen - 3, "ppm") == 0 )
   {
     return savePPM (theFileName);
   }
