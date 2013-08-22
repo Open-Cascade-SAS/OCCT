@@ -1,1 +1,9 @@
 ChFi2d_Builder_0.cxx
+ChFi2d_FilletAlgo.hxx
+ChFi2d_FilletAlgo.cxx
+ChFi2d_AnaFilletAlgo.hxx
+ChFi2d_AnaFilletAlgo.cxx
+ChFi2d_ChamferAPI.hxx
+ChFi2d_ChamferAPI.cxx
+ChFi2d_FilletAPI.hxx
+ChFi2d_FilletAPI.cxx
