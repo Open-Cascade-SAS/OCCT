@@ -701,7 +701,7 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadXYZ
                                  Standard_Boolean       isOnlyPos) const
 {
   Standard_Real aVal[3] = {0., 0., 0.};
-  VrmlData_ErrorStatus aStatus;
+  VrmlData_ErrorStatus aStatus = VrmlData_StatusOK;
   for (Standard_Integer i = 0; i < 3; i++) {
     if (!VrmlData_Node::OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
       break;
@@ -740,7 +740,7 @@ VrmlData_ErrorStatus VrmlData_Scene::ReadXY
                                  Standard_Boolean       isOnlyPos) const
 {
   Standard_Real aVal[2] = {0., 0.};
-  VrmlData_ErrorStatus aStatus;
+  VrmlData_ErrorStatus aStatus = VrmlData_StatusOK;
   for (Standard_Integer i = 0; i < 2; i++) {
     if (!VrmlData_Node::OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
       break;

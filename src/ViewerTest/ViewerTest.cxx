@@ -590,8 +590,8 @@ static int visos (Draw_Interpretor& di, Standard_Integer argc, const char** argv
 
   Standard_Integer aLastInd = argc - 1;
   Standard_Boolean isChanged = Standard_False;
-  Standard_Integer aNbUIsos;
-  Standard_Integer aNbVIsos;
+  Standard_Integer aNbUIsos = 0;
+  Standard_Integer aNbVIsos = 0;
 
   if (aLastInd >= 3) {
     Standard_Boolean isIsoOnPlane = Standard_False;

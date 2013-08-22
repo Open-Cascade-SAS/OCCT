@@ -337,11 +337,9 @@ static Standard_Integer smoothing (Draw_Interpretor& di,Standard_Integer n, cons
 //
 {
   Standard_Real Tolerance=0;
-#ifdef DEB
-  AppParCurves_Constraint  Constraint;
-#else
+
   AppParCurves_Constraint  Constraint=AppParCurves_NoConstraint;
-#endif
+
   Handle(AppParCurves_HArray1OfConstraintCouple)TABofCC;
   TABofCC.Nullify();
   Handle(AppDef_HArray1OfMultiPointConstraint) Points;
@@ -506,11 +504,7 @@ static Standard_Integer smoothingbybezier (Draw_Interpretor& di,
 //============================================================================
 {
   Standard_Real Tolerance=0;
-#ifdef DEB
-  AppParCurves_Constraint  Constraint;
-#else
-  AppParCurves_Constraint  Constraint=AppParCurves_NoConstraint;
-#endif
+  AppParCurves_Constraint Constraint = AppParCurves_NoConstraint;
   Handle(AppParCurves_HArray1OfConstraintCouple)TABofCC;
   Handle(AppDef_HArray1OfMultiPointConstraint) Points;
 

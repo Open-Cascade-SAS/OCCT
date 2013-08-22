@@ -412,7 +412,7 @@ Standard_Integer Image_Diff::ignoreBorderEffect()
 
   // Find a different area (a set of close to each other pixels which colors differ in both images).
   // It filters alone pixels with different color.
-  Standard_Size aRow1, aCol1, aRow2, aCol2;
+  Standard_Size aRow1 = 0, aCol1 = 0, aRow2, aCol2;
   Standard_Integer aLen1 = (myDiffPixels.Length() > 0) ? (myDiffPixels.Length() - 1) : 0;
   for (Standard_Integer aPixelId1 = 0; aPixelId1 < aLen1; ++aPixelId1)
   {

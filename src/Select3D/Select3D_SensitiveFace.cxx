@@ -88,7 +88,7 @@ Matches(const Standard_Real X,
         Standard_Real& DMin)
 {
   Standard_Real DMin2 = 0.;
-  Standard_Real Xmin,Ymin,Xmax,Ymax;
+  Standard_Real Xmin = 0.,Ymin = 0.,Xmax = 0.,Ymax = 0.;
   if(!Bnd_Box2d(mybox2d).IsVoid())
   {
     Bnd_Box2d(mybox2d).Get(Xmin,Ymin,Xmax,Ymax);

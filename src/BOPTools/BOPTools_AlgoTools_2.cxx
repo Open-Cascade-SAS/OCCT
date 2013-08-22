@@ -415,7 +415,7 @@ static
 //=======================================================================
   Standard_Integer BOPTools_AlgoTools::Dimension(const TopoDS_Shape& theS)
 {
-  Standard_Integer i, iRet, iRx0, iRx;
+  Standard_Integer i, iRet, iRx0 = 0, iRx = 0;
   TopAbs_ShapeEnum aTS;
   BOPCol_ListOfShape aLS;
   BOPCol_ListIteratorOfListOfShape aIt;

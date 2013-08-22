@@ -164,7 +164,7 @@ Standard_Integer BRepBlend_SurfRstLineBuilder::
   Standard_Boolean ok = Standard_False;
   Standard_Boolean byinter = (line->NbPoints() != 0), okinter = 0;
   Standard_Real distmin = RealLast();
-  Standard_Real uprev = 0.0, vprev = 0.0, prm = 0.0, dist = 0.0;
+  Standard_Real uprev = 0.,vprev = 0., prm =  0., dist = 0.;
 
   if(byinter) previousP.ParametersOnS(uprev,vprev);
   pt2d.SetCoord(sol(1),sol(2));
@@ -345,7 +345,7 @@ Standard_Boolean BRepBlend_SurfRstLineBuilder::PerformFirstSection
   Standard_Real trst = 0.;
   Standard_Boolean recadp,recadrst,recads;
   Standard_Real wp,wrst,ws;
-  Standard_Real U,V;
+  Standard_Real U = 0.,V = 0.;
   math_Vector infbound(1,3),supbound(1,3),tolerance(1,3);
   math_Vector solinvp(1,3),solinvrst(1,4),solinvs(1,3);
   Handle(Adaptor3d_HVertex) Vtxp,Vtxrst,Vtxs,Vtxc;
@@ -512,12 +512,12 @@ void BRepBlend_SurfRstLineBuilder::InternalPerform(Blend_SurfRstFunction&  Func,
     return;
   }
   Blend_Status State = Blend_OnRst12;
-  TopAbs_State situonc,situons;
-  Standard_Boolean decroch;
+  TopAbs_State situonc = TopAbs_UNKNOWN, situons = TopAbs_UNKNOWN;
+  Standard_Boolean decroch = Standard_False;
   Standard_Boolean Arrive,recadp,recadrst,recads,echecrecad;
   Standard_Real wp,wrst,ws;
-  Standard_Real U,V;
-  Standard_Real  trst = 0.;
+  Standard_Real U = 0.,V = 0.;
+  Standard_Real trst = 0.;
   math_Vector infbound(1,3),supbound(1,3);
   math_Vector parinit(1,3),tolerance(1,3);
   math_Vector solinvp(1,3),solinvrst(1,4),solinvs(1,3);

@@ -198,11 +198,9 @@ void TopOpeBRep_EdgesFiller::Insert(const TopoDS_Shape& E1,const TopoDS_Shape& E
 	    Handle(TopOpeBRepDS_CurvePointInterference) epi = Handle(TopOpeBRepDS_CurvePointInterference)::DownCast(I);
 	    const TopOpeBRepDS_Transition& tevi = epi->Transition();
 	    Standard_Integer sevi = epi->Support();
-#ifdef DEB
-	    Standard_Integer gevi;
-#else
+
 	    Standard_Integer gevi=0;
-#endif
+
 	    if      (isvertex1) gevi = myPDS->AddShape(V1,1);
 	    else if (isvertex2) gevi = myPDS->AddShape(V2,2);
 	    Standard_Boolean bevi = Standard_False;

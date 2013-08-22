@@ -951,11 +951,9 @@ void LocOpe_SplitShape::AddOpenWire(const TopoDS_Wire& W,
     newF2.Orientation(TopAbs_FORWARD);
     
     // modifs JAG 97.05.28
-#ifdef DEB
-    TopAbs_Orientation orfila;
-#else
+
     TopAbs_Orientation orfila=TopAbs_FORWARD;
-#endif
+
     for (exp.Init(FaceRef.Oriented(TopAbs_FORWARD),TopAbs_WIRE); 
          exp.More(); exp.Next()) {
       const TopoDS_Wire& wir = TopoDS::Wire(exp.Current());
@@ -1493,7 +1491,7 @@ static TopoDS_Shape ChooseDirection(const TopoDS_Shape& RefDir,
   TopExp_Explorer Explo(RefDir, TopAbs_EDGE);
   TopoDS_Edge RefEdge;
   TopoDS_Vertex V1, V2;
-  TopAbs_Orientation anOr;
+  TopAbs_Orientation anOr = TopAbs_FORWARD;
   for (; Explo.More(); Explo.Next())
   {
     RefEdge = TopoDS::Edge(Explo.Current());

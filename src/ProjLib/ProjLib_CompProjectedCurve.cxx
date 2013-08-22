@@ -612,7 +612,7 @@ static Standard_Boolean InitialPoint(const gp_Pnt& Point,
       prevDeb=t;
       if (t == LastU) FromLastU=Standard_True;
       Standard_Boolean initpoint=Standard_False;
-      Standard_Real U, V;
+      Standard_Real U = 0., V = 0.;
       gp_Pnt CPoint;
       Standard_Real ParT,ParU,ParV; 
 

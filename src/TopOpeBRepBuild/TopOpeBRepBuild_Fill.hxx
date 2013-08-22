@@ -34,13 +34,9 @@ void TopOpeBRepBuild_Builder::FillShape(const TopoDS_Shape& S1,
 					const Standard_Boolean In_RevOri)
 {
   Standard_Boolean RevOri = In_RevOri;
-
   TopAbs_ShapeEnum t = S1.ShapeType();
-#ifdef DEB
-  TopAbs_ShapeEnum t1,t11;
-#else
   TopAbs_ShapeEnum t1=TopAbs_COMPOUND,t11=TopAbs_COMPOUND;
-#endif
+
   if      (t == TopAbs_FACE )  { 
     t1 = TopAbs_WIRE;
     t11 = TopAbs_EDGE;

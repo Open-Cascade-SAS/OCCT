@@ -202,7 +202,7 @@ Standard_Real ShapeAnalysis_ShapeTolerance::Tolerance(const TopoDS_Shape& shape,
  void ShapeAnalysis_ShapeTolerance::AddTolerance(const TopoDS_Shape& shape,const TopAbs_ShapeEnum type) 
 {
   Standard_Integer nbt   = 0;
-  Standard_Real tol, cmin,cmoy,cmax;
+  Standard_Real tol, cmin = 0.,cmoy = 0.,cmax = 0.;
 
   TopExp_Explorer myExp;
 

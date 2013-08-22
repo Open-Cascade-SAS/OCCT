@@ -88,11 +88,8 @@ void BREP_mergePDS(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
       //**!
       const TopOpeBRepDS_Point& PDS = BDS.Point(GI);
 
-#ifdef DEB      
-      Standard_Integer ivp1; TopoDS_Shape v1; Standard_Boolean newv1 = Standard_False; TopOpeBRepDS_Kind k1; Standard_Integer iv1 = 0;
-#else
       Standard_Integer ivp1; TopoDS_Shape v1; Standard_Boolean newv1 = Standard_False; TopOpeBRepDS_Kind k1=TopOpeBRepDS_UNKNOWN; Standard_Integer iv1 = 0;
-#endif
+
       ivp1 = BREP_findPDSamongIDMOVP(PDS,Mvp1);
       if (ivp1) {
 	v1 = Mvp1.FindKey(ivp1);
@@ -101,11 +98,9 @@ void BREP_mergePDS(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
 	k1 = TopOpeBRepDS_VERTEX;
       }
       
-#ifdef DEB      
-      Standard_Integer ivp2; TopoDS_Shape v2; Standard_Boolean newv2 = Standard_False; TopOpeBRepDS_Kind k2; Standard_Integer iv2 = 0;
-#else
+
       Standard_Integer ivp2; TopoDS_Shape v2; Standard_Boolean newv2 = Standard_False; TopOpeBRepDS_Kind k2=TopOpeBRepDS_UNKNOWN; Standard_Integer iv2 = 0;
-#endif
+
       ivp2 = BREP_findPDSamongIDMOVP(PDS,Mvp2);
       if (ivp2) {
 	v2 = Mvp2.FindKey(ivp2);

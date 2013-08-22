@@ -223,11 +223,9 @@ Standard_Boolean TopOpeBRepDS_Check::CheckDS(const Standard_Integer I,
     return Standard_False;
   }
   const TopoDS_Shape& S =myHDS->Shape(I);
-#ifdef DEB
-  TopAbs_ShapeEnum se;
-#else
+
   TopAbs_ShapeEnum se=TopAbs_COMPOUND;
-#endif
+
   switch (K) {
   case TopOpeBRepDS_SOLID  : se = TopAbs_SOLID; break;
   case TopOpeBRepDS_SHELL  : se = TopAbs_SHELL; break;

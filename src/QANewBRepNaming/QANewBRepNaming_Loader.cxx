@@ -120,7 +120,7 @@ void QANewBRepNaming_Loader::LoadModifiedShapes (BRepBuilderAPI_MakeShape&    MS
   TopTools_MapOfShape View;
   TopExp_Explorer ShapeExplorer (ShapeIn, KindOfShape);
   TopTools_ListOfShape Shapes;
-  BRepAlgoAPI_BooleanOperation* pMS;
+  BRepAlgoAPI_BooleanOperation* pMS = NULL;
   if (theBool) 
     pMS = (reinterpret_cast<BRepAlgoAPI_BooleanOperation *>(&MS));
   for (; ShapeExplorer.More(); ShapeExplorer.Next ()) {

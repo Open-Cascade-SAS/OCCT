@@ -539,7 +539,7 @@ BRepMesh_Classifier::BRepMesh_Classifier(const TopoDS_Face& theFace,
   Standard_Integer k = 1;
   for (Standard_Integer i = 1; i <= aNbWires; i++)
   {
-    Standard_Real x1, y1, x2, y2, aXstart, aYstart;
+    Standard_Real x1 = 0., y1 = 0., x2, y2, aXstart = 0., aYstart = 0.;
     const Standard_Integer aLen = aWireLength(i) + 1;
     for (Standard_Integer j = 1; j <= aLen; j++)
     {

@@ -195,7 +195,7 @@ void TopOpeBRepBuild_BuilderON::GFillONParts2dWES2(const Handle(TopOpeBRepDS_Int
 #ifdef DEB
     if (tFOR) cout<<"* yap6 = 1"<<endl;
 #endif
-    TopAbs_Orientation neworiE;
+    TopAbs_Orientation neworiE = TopAbs_FORWARD;
     // FF est samedomain avec FCX
     // on evalue la transition de FOR par rapport a la matiere 2d de la face FCX
     // au lieu de la transition par rapport a la matiere 3d de la face FS
@@ -211,7 +211,7 @@ void TopOpeBRepBuild_BuilderON::GFillONParts2dWES2(const Handle(TopOpeBRepDS_Int
     if (!rk1) return;
 
     TopAbs_Orientation oegFOR;
-    Standard_Boolean shareG;
+    Standard_Boolean shareG = Standard_False;
     Standard_Boolean ok = Standard_False;
     if      (EGBoundFCX) 
       ok = FUN_ds_shareG(myPB->DataStructure(),iFOR,iFCX,GI,TopoDS::Edge(EspON),shareG);

@@ -666,7 +666,7 @@ Standard_Real MAT2d_Tool2d::IntersectBisector (
   Standard_Real    Tolerance     = MAT2d_TOLCONF;
   Standard_Real    Param1,Param2;
   Standard_Real    Parama,Paramb;
-  Standard_Real    Distance,DistanceMini;
+  Standard_Real    Distance = 0.,DistanceMini;
   Standard_Boolean SolutionValide;
   gp_Pnt2d         PointSolution;
 

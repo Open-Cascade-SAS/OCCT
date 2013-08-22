@@ -156,7 +156,7 @@ IntSurf_TypeTrans ComputeTransitionOngpLine
   gp_Pnt P;
   gp_Vec T;
   ElCLib::D1(0.0,L,P,T);
-  Standard_Real u,v;
+  Standard_Real u = 0.,v = 0.;
   switch (typS) {
   case GeomAbs_Cylinder: {
     ElSLib::Parameters(TheSurfaceTool::Cylinder(Surf),P,u,v);
@@ -186,7 +186,7 @@ IntSurf_TypeTrans ComputeTransitionOngpCircle
   gp_Pnt P;
   gp_Vec T;
   ElCLib::D1(0.0,C,P,T);
-  Standard_Real u,v;
+  Standard_Real u = 0.,v = 0.;
   switch (typS) {
   case GeomAbs_Cylinder: {
     ElSLib::Parameters(TheSurfaceTool::Cylinder(Surf),P,u,v);

@@ -270,7 +270,7 @@ void AIS_Axis::ComputeFields()
     gp_Dir oX = myAx2->Ax2().XDirection();
     gp_Dir oY = myAx2->Ax2().YDirection();
     gp_Dir oZ = myAx2->Ax2().Direction();
-    Quantity_Length xo,yo,zo,x,y,z;
+    Quantity_Length xo,yo,zo,x = 0.,y = 0.,z = 0.;
     Orig.Coord(xo,yo,zo);
     myPfirst.SetCoord(xo,yo,zo);
     

@@ -209,11 +209,9 @@ void TopOpeBRepBuild_Builder::MergeShapes(const TopoDS_Shape& S1,const TopAbs_St
   // NYI : SplitCompound appele par SplitShape
   
   TopOpeBRepTool_ShapeExplorer ex1;
-#ifdef DEB
-  TopAbs_ShapeEnum t1,tex1;
-#else
+
   TopAbs_ShapeEnum t1=TopAbs_COMPOUND,tex1=TopAbs_COMPOUND;
-#endif
+
   if ( ! S1null ) {
     t1 = tex1 = TopType(S1);
     if ( t1 == TopAbs_COMPOUND ) {
@@ -236,11 +234,9 @@ void TopOpeBRepBuild_Builder::MergeShapes(const TopoDS_Shape& S1,const TopAbs_St
   }
   
   TopOpeBRepTool_ShapeExplorer ex2;
-#ifdef DEB
-  TopAbs_ShapeEnum t2,tex2;
-#else
+
   TopAbs_ShapeEnum t2=TopAbs_COMPOUND,tex2=TopAbs_COMPOUND;
-#endif
+
   if ( ! S2null ) {
     t2 = tex2 = TopType(S2);
     if ( t2 == TopAbs_COMPOUND ) {

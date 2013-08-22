@@ -48,7 +48,7 @@ void RWStepElement_RWSurface3dElementDescriptor::ReadStep (const Handle(StepData
 
   // Inherited fields of ElementDescriptor
 
-  StepElement_ElementOrder aElementDescriptor_TopologyOrder;
+  StepElement_ElementOrder aElementDescriptor_TopologyOrder = StepElement_Linear;
   if (data->ParamType (num, 1) == Interface_ParamEnum) {
     Standard_CString text = data->ParamCValue(num, 1);
     if      (!strcmp(text, ".LINEAR.")) aElementDescriptor_TopologyOrder = StepElement_Linear;
@@ -86,7 +86,7 @@ void RWStepElement_RWSurface3dElementDescriptor::ReadStep (const Handle(StepData
     }
   }
 
-  StepElement_Element2dShape aShape;
+  StepElement_Element2dShape aShape = StepElement_Quadrilateral;
   if (data->ParamType (num, 4) == Interface_ParamEnum) {
     Standard_CString text = data->ParamCValue(num, 4);
     if      (!strcmp(text, ".QUADRILATERAL.")) aShape = StepElement_Quadrilateral;

@@ -232,7 +232,7 @@ static Standard_Boolean MinMaxSmall
     else     { nbu = bs->NbUPoles(), nbv = bs->NbVPoles(); }
     // Standard_Real dx = 0, dy = 0, dz = 0;
     // Standard_Real    x,y,z;
-    Standard_Real minx,miny,minz,maxx,maxy,maxz;
+    Standard_Real minx = 0.,miny = 0.,minz = 0.,maxx = 0.,maxy = 0.,maxz = 0.;
     Standard_Boolean issmall = Standard_True;
 
     for (iu = 1; iu <= nbu; iu ++) {
@@ -426,7 +426,7 @@ static Standard_Boolean MinMaxSmall
 
 //    Edge on same vertex : small one ?
     if (VA.IsSame(VB)) {
-      Standard_Real cf,cl;
+      Standard_Real cf = 0.,cl = 0.;
       Handle(Geom_Curve) C3D;
       if (!BRep_Tool::Degenerated(E)) C3D = BRep_Tool::Curve (E,cf,cl);
       if (C3D.IsNull()) continue;  // DGNR
@@ -584,7 +584,7 @@ static Standard_Integer IsoStat
   Standard_Integer i, np = 0;
   Standard_Integer i0 = (uorv == 1 ? poles.LowerCol() : poles.LowerRow());
   Standard_Integer i1 = (uorv == 1 ? poles.UpperCol() : poles.UpperRow());
-  Standard_Real xmin,ymin,zmin, xmax,ymax,zmax;
+  Standard_Real xmin = 0.,ymin = 0.,zmin = 0., xmax = 0.,ymax = 0.,zmax = 0.;
   for (i = i0; i <= i1; i ++) {
     if (uorv == 1) MinMaxPnt (poles(rank,i),np,xmin,ymin,zmin, xmax,ymax,zmax);
     else      MinMaxPnt (poles(i,rank), np, xmin,ymin,zmin, xmax,ymax,zmax);

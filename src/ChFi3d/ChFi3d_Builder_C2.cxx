@@ -327,7 +327,7 @@ Standard_Integer ChFi3d_Builder::PerformTwoCornerbyInter(const Standard_Integer 
       Reduce(UIntPC1,UIntPC2,HS1,HS2);
     }
     
-    Standard_Real tolreached;
+    Standard_Real tolreached = tolesp;
     if (IFaCo1 == 1 && 
 	!ChFi3d_ComputeCurves(HS1,HS2,Pardeb,Parfin,Gc,
 			      PGc1,PGc2,tolesp,tol2d,tolreached)) {

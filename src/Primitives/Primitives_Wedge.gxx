@@ -362,11 +362,7 @@ gp_Pln Primitives_Wedge::Plane(const Primitives_Direction d1)
     break;
     
   };
-#ifndef DEB
-  Standard_Real X =0., Y =0., Z =0.;
-#else
-  Standard_Real X, Y, Z;
-#endif
+  Standard_Real X = 0., Y = 0., Z = 0.;
   
   switch (i) {
     
@@ -444,12 +440,10 @@ const TheFace& Primitives_Wedge::Face
     if ( i%2 == 0 ) myBuilder.ReverseFace(myFaces[i]);
 
     // pcurves
-#ifndef DEB
+
     Primitives_Direction dd1 = Primitives_ZMin, dd2 = Primitives_YMax, 
     dd3 = Primitives_ZMax,dd4 = Primitives_YMin;
-#else
-    Primitives_Direction dd1,dd2,dd3,dd4;
-#endif
+
     switch (i/2) {
       
     case 0 :
@@ -540,11 +534,8 @@ Standard_Boolean Primitives_Wedge::HasWire (const Primitives_Direction d1) const
   Standard_Integer i = Primitives_Wedge_NumDir1(d1);
 
   if (myInfinite[i]) return Standard_False;
-#ifndef DEB
   Primitives_Direction dd1 = Primitives_XMin,dd2 = Primitives_YMax,dd3 = Primitives_XMax ,dd4 = Primitives_ZMin;
-#else
-  Primitives_Direction dd1,dd2,dd3,dd4;
-#endif
+
   switch (i/2) {
     
   case 0 :
@@ -590,11 +581,8 @@ const TheWire& Primitives_Wedge::Wire
 {
   Standard_Integer i = Primitives_Wedge_NumDir1(d1);
 
-#ifndef DEB
   Primitives_Direction dd1 = Primitives_XMin,dd2 = Primitives_YMax,dd3 = Primitives_XMax ,dd4 = Primitives_ZMin;
-#else
-  Primitives_Direction dd1,dd2,dd3,dd4;
-#endif
+
   if (!WiresBuilt[i]) {
 
     switch (i/2) {
@@ -675,11 +663,9 @@ gp_Lin Primitives_Wedge::Line
   if (!HasEdge(d1,d2)) Standard_DomainError::Raise();
 
   Standard_Integer i = Primitives_Wedge_NumDir2(d1,d2);
-#ifndef DEB
+
   Standard_Real X =0., Y =0., Z =0.;
-#else
-  Standard_Real X, Y, Z;
-#endif
+
   gp_Dir D;
   gp_Vec VX = myAxes.XDirection();
   gp_Vec VY = myAxes.YDirection();
@@ -827,11 +813,9 @@ const TheEdge& Primitives_Wedge::Edge
   Standard_Integer i = Primitives_Wedge_NumDir2(d1,d2);
 
   if (!EdgesBuilt[i]) {
-#ifndef DEB
+
     Primitives_Direction dd1 = Primitives_XMin ,dd2 = Primitives_XMax;
-#else
-    Primitives_Direction dd1,dd2;
-#endif
+
     switch (i/4) {
     
     case 0 :
@@ -923,11 +907,9 @@ gp_Pnt  Primitives_Wedge::Point
   if (!HasVertex(d1,d2,d3)) Standard_DomainError::Raise();
 
   Standard_Integer i = Primitives_Wedge_NumDir3(d1,d2,d3);
-#ifndef DEB
+
   Standard_Real X =0., Y =0., Z =0.;
-#else
-  Standard_Real X, Y, Z;
-#endif
+
   switch (i) {
     
   case 0 :

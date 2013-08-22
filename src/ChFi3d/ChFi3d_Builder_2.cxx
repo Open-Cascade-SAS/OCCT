@@ -1890,11 +1890,11 @@ void ChFi3d_Builder::PerformSetOfSurfOnElSpine
   Handle(BRepAdaptor_HCurve2d) HC1,HC2;
   Handle(BRepAdaptor_HCurve2d) HCref1 = new BRepAdaptor_HCurve2d();
   Handle(BRepAdaptor_HCurve2d) HCref2 = new BRepAdaptor_HCurve2d();
-  Standard_Boolean decroch1 = 0, decroch2 = 0;
-  Standard_Boolean RecP1 = 0, RecS1 = 0, RecRst1 = 0, obstacleon1 = 0;
-  Standard_Boolean RecP2 = 0, RecS2 = 0, RecRst2 = 0, obstacleon2 = 0;
+  Standard_Boolean decroch1 = Standard_False, decroch2 = Standard_False;
+  Standard_Boolean RecP1 = Standard_False, RecS1 = Standard_False, RecRst1 = Standard_False, obstacleon1 = Standard_False;
+  Standard_Boolean RecP2 = Standard_False, RecS2 = Standard_False, RecRst2 = Standard_False, obstacleon2 = Standard_False;
   gp_Pnt2d pp1,pp2,pp3,pp4;
-  Standard_Real w1,w2;
+  Standard_Real w1 = 0.,w2 = 0.;
   math_Vector Soldep(1,4);
   math_Vector SoldepCS(1,3);
   math_Vector SoldepCC(1,2);

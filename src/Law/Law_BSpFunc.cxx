@@ -202,7 +202,7 @@ void Law_BSpFunc::Intervals(TColStd_Array1OfReal& T,
 Standard_Real Law_BSpFunc::Value(const Standard_Real X)
 {
   if ((X==first) || (X==last)) {
-    Standard_Integer Ideb, Ifin;
+    Standard_Integer Ideb = 0, Ifin = 0;
     if (X==first) {
       curv->LocateU(first, PosTol, Ideb, Ifin);
       if (Ideb<1) Ideb=1;
@@ -231,7 +231,7 @@ void Law_BSpFunc::D1(const Standard_Real X,
 		     Standard_Real& D)
 {
   if ((X==first) || (X==last)) {
-    Standard_Integer Ideb, Ifin;
+    Standard_Integer Ideb = 0, Ifin = 0;
     if (X==first) {
       curv->LocateU(first, PosTol, Ideb, Ifin);
       if (Ideb<1) Ideb=1;
@@ -260,7 +260,7 @@ void Law_BSpFunc::D2(const Standard_Real X,
 		     Standard_Real& D2)
 {
   if ((X==first) || (X==last)) {
-    Standard_Integer Ideb, Ifin;
+    Standard_Integer Ideb = 0, Ifin = 0;
     if (X==first) {
       curv->LocateU(first, PosTol, Ideb, Ifin);
       if (Ideb<1) Ideb=1;

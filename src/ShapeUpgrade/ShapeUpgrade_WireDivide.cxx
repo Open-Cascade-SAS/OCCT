@@ -408,7 +408,7 @@ void ShapeUpgrade_WireDivide::Perform ()
 
       //collect NM vertices
      
-      Standard_Real af,al;
+      Standard_Real af = 0.,al = 0.;
       Handle(Geom_Curve) c3d;
       Adaptor3d_CurveOnSurface AdCS;
       if(myEdgeDivide->HasCurve3d()) 

@@ -725,7 +725,7 @@ BOPDS_ListOfPaveBlock& BOPDS_DS::ChangePaveBlocks(const Standard_Integer theI)
 //=======================================================================
 void BOPDS_DS::InitPaveBlocks(const Standard_Integer theI)
 {
-  Standard_Integer nV, iRef, aNbV, nVSD, i;
+  Standard_Integer nV = 0, iRef, aNbV, nVSD, i;
   Standard_Real aT;
   TopoDS_Vertex aV;
   BOPCol_ListIteratorOfListOfInteger aIt;

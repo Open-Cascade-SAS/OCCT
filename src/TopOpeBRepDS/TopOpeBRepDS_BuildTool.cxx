@@ -884,7 +884,7 @@ void TopOpeBRepDS_BuildTool::ComputePCurves
   Handle(Geom2d_Curve) PC2new;
   
   if(C3D.IsNull()) {
-    Standard_Real tolreached2d1, tolreached2d2, r1, r2, tol=0;
+    Standard_Real tolreached2d1 = Precision::Confusion(), tolreached2d2 = Precision::Confusion(), r1, r2, tol=Precision::Confusion();
     if (comppc1) PC1new = myCurveTool.MakePCurveOnFace(F1,C3D,tolreached2d1);
     if (comppc2) PC2new = myCurveTool.MakePCurveOnFace(F2,C3D,tolreached2d2);
     
@@ -1152,11 +1152,9 @@ void  TopOpeBRepDS_BuildTool::Parameter(const TopoDS_Shape& E,
   Handle(Geom_Curve) C = BRep_Tool::Curve(e,loc,f,l);
   if ( !C.IsNull() && C->IsPeriodic()) {
     Standard_Real per = C->Period();
-#ifdef DEB
-    TopAbs_Orientation oV;
-#else
+
     TopAbs_Orientation oV=TopAbs_FORWARD;
-#endif
+
     TopExp_Explorer exV(e,TopAbs_VERTEX);
     for (; exV.More(); exV.Next()) {
       const TopoDS_Vertex& vofe = TopoDS::Vertex(exV.Current());

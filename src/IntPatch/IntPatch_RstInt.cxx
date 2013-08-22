@@ -460,7 +460,7 @@ void IntPatch_RstInt::PutVertexOnLine (Handle(IntPatch_Line)& L,
   IntPatch_SearchPnt Commun;
 
   Standard_Real U,V,W;
-  Standard_Real U1,V1,U2,V2;
+  Standard_Real U1,V1,U2 = 0.,V2 = 0.;
   Standard_Real paramarc=0.,paramline=0.;
   Standard_Integer i,j,k;
   TColgp_SequenceOfPnt locpt;

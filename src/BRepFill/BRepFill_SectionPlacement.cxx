@@ -107,7 +107,7 @@ BRepFill_SectionPlacement(const Handle(BRepFill_LocationLaw)& Law,
   Standard_Integer ii; 
   Standard_Integer Ind1 = 0, Ind2 = 0;
   Standard_Boolean Bof, isVertex = Standard_False;
-  Standard_Real First, Last;
+  Standard_Real First = 0., Last = 0.;
   TopExp_Explorer Ex;
   TopoDS_Edge E;
   TopoDS_Vertex V;

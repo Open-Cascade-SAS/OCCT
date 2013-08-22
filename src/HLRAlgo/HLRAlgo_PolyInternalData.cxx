@@ -161,8 +161,8 @@ void HLRAlgo_PolyInternalData::UpdateLinks
  Standard_Address& PINod)
 {
   Standard_Integer i,n1,n2;
-  Standard_Integer find,iiii,icsv;
-  Standard_Address A1,A2,A3,Nod1Indices,Nod2Indices,Seg2Indices,Tri2Indices;
+  Standard_Integer find,iiii,icsv = 0;
+  Standard_Address A1,A2,A3,Nod1Indices,Nod2Indices,Seg2Indices = NULL,Tri2Indices;
   Standard_Boolean newSeg = Standard_False;
   HLRAlgo_TriangleData* TD =
     &(((HLRAlgo_Array1OfTData*)TData)->ChangeValue(1));
@@ -455,7 +455,7 @@ HLRAlgo_PolyInternalData::UpdateLinks (const Standard_Integer ip1,
 				       Standard_Address& )
 {
   Standard_Integer find,iiii,iisv,icsv,iip2 =0,cnx1 =0,cnx2 =0;
-  Standard_Address Seg1Indices,Seg2Indices;
+  Standard_Address Seg1Indices,Seg2Indices = NULL;
   Seg1Indices = 0;
   find = 0;
   iisv = 0;

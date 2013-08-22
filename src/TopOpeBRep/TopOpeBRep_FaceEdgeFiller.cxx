@@ -309,11 +309,7 @@ Standard_Integer TopOpeBRep_FaceEdgeFiller::MakeGeometry
     (TopOpeBRep_FaceEdgeIntersector& FEINT,
      TopOpeBRepDS_DataStructure& BDS) const
 {
-#ifdef DEB
-  Standard_Integer G;
-#else
   Standard_Integer G=0;
-#endif
 
   TopoDS_Vertex V1;
   Standard_Boolean isvertexF = FEINT.IsVertex(1,V1);

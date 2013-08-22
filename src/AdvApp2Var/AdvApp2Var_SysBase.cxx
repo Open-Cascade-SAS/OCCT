@@ -747,7 +747,7 @@ int macrgfl_(intptr_t *iadfld,
   char cbid[1];
   integer ibid, ienr;
   doublereal* t = 0;
-  integer novfl;
+  integer novfl = 0;
   intptr_t ioff,iadrfl, iadt;
   
   

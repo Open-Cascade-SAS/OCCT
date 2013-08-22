@@ -129,7 +129,7 @@ Standard_Boolean NIS_View::FitAll3d (const Quantity_Coefficient theCoef)
   // Check that the box is not empty
   if (aBox.IsVoid() == Standard_False && MyView->IsDefined() == Standard_True) {
     // Convert the 3D box to 2D representation in view coordinates
-    Standard_Real Umin,Umax,Vmin,Vmax,U,V,W;
+    Standard_Real Umin = 0.,Umax = 0.,Vmin = 0.,Vmax = 0.,U,V,W;
     gp_XYZ aCoord;
 
     const gp_XYZ aCorner[2] = { aBox.CornerMin(), aBox.CornerMax() };

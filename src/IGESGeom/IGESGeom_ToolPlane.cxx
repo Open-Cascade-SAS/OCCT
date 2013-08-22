@@ -55,7 +55,7 @@ void IGESGeom_ToolPlane::ReadOwnParams(const Handle(IGESGeom_Plane)& ent,
 {
   // MGE 30/07/98
 
-  Standard_Real A, B, C, D, aSize = 0.;
+  Standard_Real A, B = 0., C = 0., D = 0., aSize = 0.;
   Handle(IGESData_IGESEntity) aCurve;
   gp_XYZ attach (0.,0.,0.);
   IGESData_Status aStatus;

@@ -1502,7 +1502,7 @@ Handle(Geom_Surface) Geom_OffsetSurface::Surface() const
   Result.Nullify();
   Handle(Standard_Type) TheType = basisSurf->DynamicType();
   Standard_Boolean IsTrimmed;
-  Standard_Real U1, V1, U2, V2;
+  Standard_Real U1 = 0., V1 = 0., U2 = 0., V2 = 0.;
 
   // Preambule pour les surface trimmes
   if (TheType == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {

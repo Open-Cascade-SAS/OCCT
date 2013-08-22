@@ -354,11 +354,9 @@ static void Propagate(const TopoDS_Shape& F,
   for (exp.Init(F,TopAbs_EDGE); exp.More(); exp.Next()) {
 //  for (TopExp_Explorer exp(F,TopAbs_EDGE); exp.More(); exp.Next()) {
     const TopoDS_Shape& edg = exp.Current();
-#ifdef DEB
-    TopAbs_Orientation ored1 = edg.Orientation(),ored2;
-#else
+
     TopAbs_Orientation ored1 = edg.Orientation(),ored2 = TopAbs_FORWARD;
-#endif
+
     if (ored1 == TopAbs_INTERNAL || ored1 == TopAbs_EXTERNAL) {
       continue;
     }

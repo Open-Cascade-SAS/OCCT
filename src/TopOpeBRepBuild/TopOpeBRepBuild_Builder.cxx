@@ -493,11 +493,7 @@ Standard_Boolean TopOpeBRepBuild_Builder::Reverse(const TopAbs_State ToBuild1,co
 //=======================================================================
 TopAbs_Orientation TopOpeBRepBuild_Builder::Orient(const TopAbs_Orientation Ori,const Standard_Boolean Reverse)
 {
-#ifdef DEB
-  TopAbs_Orientation result;
-#else
   TopAbs_Orientation result=TopAbs_FORWARD;
-#endif
   switch (Reverse) {
     case Standard_True  : result = TopAbs::Complement(Ori); break;
     case Standard_False : result = Ori; break;

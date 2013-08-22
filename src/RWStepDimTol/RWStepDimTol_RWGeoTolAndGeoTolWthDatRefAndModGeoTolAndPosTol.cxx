@@ -78,7 +78,7 @@ void RWStepDimTol_RWGeoTolAndGeoTolWthDatRefAndModGeoTolAndPosTol::ReadStep
 
   data->NamedForComplex("MODIFIED_GEOMETRIC_TOLERANCE",num0,num,ach);
   // Own fields of ModifiedGeometricTolerance
-  StepDimTol_LimitCondition aModifier;
+  StepDimTol_LimitCondition aModifier = StepDimTol_MaximumMaterialCondition;
   if (data->ParamType (num, 1) == Interface_ParamEnum) {
     Standard_CString text = data->ParamCValue(num, 1);
     if      (strcmp(text, ".MAXIMUM_MATERIAL_CONDITION.")==0) aModifier = StepDimTol_MaximumMaterialCondition;

@@ -189,11 +189,7 @@ Blend_Status Blend_Walking::CheckDeflection
   const Standard_Real CosRef2D = 0.88; // correspond a 25 d
 
   Standard_Real Norme, Cosi, Cosi2;
-#ifndef DEB
   Standard_Real prevNorme = 0.;
-#else
-  Standard_Real prevNorme;
-#endif
   Standard_Real FlecheCourante;
   Standard_Real Du,Dv,Duv;
   Standard_Real tolu,tolv;

@@ -861,7 +861,7 @@ void ComputeInternalPointsOnRstr
   gp_Pnt2d p2d;
   gp_Vec2d d2d;
   Standard_Boolean found,ok = Standard_False,toutvu,solution;
-  Standard_Real paramp,paraminf,paramsup,toler;
+  Standard_Real paramp = 0.,paraminf,paramsup,toler;
 
   if (Line.TypeContour() != Contap_Restriction) {
     return;

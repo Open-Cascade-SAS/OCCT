@@ -938,7 +938,7 @@ Standard_EXPORT void FUN_ds_completeforSE2(const Handle(TopOpeBRepDS_HDataStruct
 			BDS.ShapeInterferences(SE),par1,par2,isonper);
 
 	TopOpeBRepTool_makeTransition MKT; 
-	TopAbs_State stb,sta; 
+	TopAbs_State stb = TopAbs_UNKNOWN,sta = TopAbs_UNKNOWN; 
 	ok = MKT.Initialize(SE,par1,par2,par, FCX,OOuv, factor);
 	if (ok) ok = MKT.SetRest(ES,OOpar);
 	if (ok) ok = MKT.MkTonE(stb,sta);
@@ -1015,7 +1015,7 @@ static Standard_Boolean FUN_ds_completeforSE3(const TopOpeBRepDS_DataStructure& 
   Standard_Real factor = 1.e-4;
 
 
-  TopOpeBRepTool_makeTransition MKT; TopAbs_State stb,sta; 
+  TopOpeBRepTool_makeTransition MKT; TopAbs_State stb = TopAbs_UNKNOWN,sta = TopAbs_UNKNOWN; 
   ok = MKT.Initialize(SE,par1,par2,parE, F,uv, factor);
   if (ok) ok = MKT.SetRest(Eline,parline);
   if (ok) ok = MKT.MkTonE(stb,sta);
@@ -1836,7 +1836,7 @@ Standard_EXPORT void FUN_ds_completeforE7(const Handle(TopOpeBRepDS_HDataStructu
 	  gp_Pnt2d uvFS; Standard_Boolean ok = FUN_tool_parF(E,par,FS,uvFS);
 	  if (!ok) {FUN_Raise(); continue;}
 	  
-	  TopOpeBRepTool_makeTransition MKT; TopAbs_State stb,sta; 
+	  TopOpeBRepTool_makeTransition MKT; TopAbs_State stb = TopAbs_UNKNOWN,sta = TopAbs_UNKNOWN; 
 	  ok = MKT.Initialize(E,par1,par2,par, FS,uvFS, factor);
 	  if (ok) ok = MKT.MkTonE(stb,sta);
 	  if (!ok) {FUN_Raise(); continue;}  
@@ -1850,7 +1850,7 @@ Standard_EXPORT void FUN_ds_completeforE7(const Handle(TopOpeBRepDS_HDataStructu
 	  gp_Pnt2d uvFS; ok = FUN_tool_paronEF(ES,parES,FS,uvFS);
 	  if (!ok) {FUN_Raise(); continue;}
 
-	  TopOpeBRepTool_makeTransition MKT; TopAbs_State stb,sta; 
+	  TopOpeBRepTool_makeTransition MKT; TopAbs_State stb = TopAbs_UNKNOWN,sta = TopAbs_UNKNOWN; 
 	  ok = MKT.Initialize(E,par1,par2,par, FS,uvFS, factor);
 	  if (ok) ok = MKT.SetRest(ES,parES);
 	  if (ok) ok = MKT.MkTonE(stb,sta);
@@ -2187,7 +2187,7 @@ static Standard_Boolean FUN_redusamshaonE(const TopOpeBRepDS_DataStructure& BDS,
   gp_Pnt2d uv; ok = FUN_tool_paronEF(ES,parES,FTRA,uv);
   if (!ok) return Standard_False;
 
-  Standard_Real factor = 1.e-2; TopAbs_State stb,sta; 
+  Standard_Real factor = 1.e-2; TopAbs_State stb = TopAbs_UNKNOWN,sta = TopAbs_UNKNOWN; 
   TopOpeBRepTool_makeTransition MKT; 
   ok = MKT.Initialize(E,f,l,parE, FTRA,uv, factor);
   if (ok) ok = MKT.SetRest(ES,parES);

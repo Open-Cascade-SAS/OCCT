@@ -518,7 +518,7 @@ Standard_Boolean
   IntTools_ComparatorCurve::IsSameXYZ(const gp_XYZ& aXYZ1, 
 				      const gp_XYZ& aXYZ2)
 {
-  Standard_Boolean bRet;
+  Standard_Boolean bRet = Standard_False;
   Standard_Integer i;
   Standard_Real aX1[3], aX2[3];
   

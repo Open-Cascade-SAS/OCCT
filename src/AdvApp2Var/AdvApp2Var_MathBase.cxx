@@ -2252,7 +2252,7 @@ int AdvApp2Var_MathBase::mmcglc1_(integer *ndimax,
   integer ndec;
   doublereal tdeb, tfin;
   integer iter;
-  doublereal oldso;
+  doublereal oldso = 0.;
   integer itmax;
   doublereal sottc;
   integer kk, ibb;
@@ -4757,8 +4757,8 @@ int AdvApp2Var_MathBase::mmfmtb1_(integer *maxsz1,
 
     /* Local variables */
     doublereal* work = 0;
-    integer ilong, isize, ii, jj, ier;
-    intptr_t iofst,iipt, jjpt;
+    integer ilong, isize, ii, jj, ier = 0;
+    intptr_t iofst = 0,iipt, jjpt;
 
 
 /************************************************************************
@@ -6355,8 +6355,9 @@ int mmloncv_(integer *ndimax,
   
   /* Local variables */
   doublereal tran;
-  integer ngaus;
-  doublereal c1, c2, d1, d2, wgaus[20], uroot[20], x1, x2, dd;
+  integer ngaus = 0;
+  doublereal c1, c2, d1, d2,
+    wgaus[20] = {0.}, uroot[20] = {0.}, x1, x2, dd;
   integer ii, jj, kk;
   doublereal som;
   doublereal der1, der2;
@@ -9638,7 +9639,7 @@ L9999:
     doublereal d__1;
 
     /* Local variables */
-    integer nchif, iunit, izero;
+    integer nchif, iunit = 1, izero;
     doublereal vnorm;
     integer ii;
     doublereal bid;

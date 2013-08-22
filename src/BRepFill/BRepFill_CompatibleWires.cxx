@@ -1476,8 +1476,8 @@ void BRepFill_CompatibleWires::ComputeOrigin(const  Standard_Boolean /*polar*/ )
 	}
       
       Standard_Real MinSumDist = Precision::Infinite();
-      Standard_Integer jmin, j, k, n;
-      Standard_Boolean forward;
+      Standard_Integer jmin = 1, j, k, n;
+      Standard_Boolean forward = Standard_False;
       if (i == myWork.Length() && myDegen2)
 	{
 	  // last point section

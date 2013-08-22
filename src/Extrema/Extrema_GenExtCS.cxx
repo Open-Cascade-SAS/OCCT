@@ -243,7 +243,7 @@ void Extrema_GenExtCS::Perform(const Adaptor3d_Curve& C,
     Standard_Real aCUSq = 0, aSUSq = 0, aSVSq = 0;
     while (aRestIterCount--)
     {
-      Standard_Real aMinCU, aMinSU, aMinSV, aMaxCU, aMaxSU, aMaxSV;
+      Standard_Real aMinCU = 0., aMinSU = 0., aMinSV = 0., aMaxCU = 0., aMaxSU = 0., aMaxSV = 0.;
       Standard_Real aMinSqDist = DBL_MAX, aMaxSqDist = -DBL_MAX;
       for (Standard_Integer aSUNom = 1; aSUNom < aSUDen; aSUNom += 2)
       {

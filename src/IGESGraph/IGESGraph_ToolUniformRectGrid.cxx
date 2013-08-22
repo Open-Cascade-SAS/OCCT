@@ -41,8 +41,8 @@ void IGESGraph_ToolUniformRectGrid::ReadOwnParams
   Standard_Integer weighted;
   gp_XY            gridPoint;
   gp_XY            gridSpacing;
-  Standard_Integer nbPointsX;
-  Standard_Integer nbPointsY;
+  Standard_Integer nbPointsX = 0;
+  Standard_Integer nbPointsY = 0;
 
   // Reading nbPropertyValues(Integer)
   PR.ReadInteger(PR.Current(), "No. of property values", nbPropertyValues);

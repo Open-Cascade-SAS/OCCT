@@ -254,7 +254,7 @@ static int BUC60610(Draw_Interpretor& di, Standard_Integer argc, const char ** a
     printf("Usage: %s  iges_input [name]\n",argv[0]);
     return(1);
   }
-  Standard_Character *Ch;
+  Standard_Character *Ch = NULL;
 
   if(argc > 2) {
     Ch = new Standard_Character[strlen(argv[2])+3];

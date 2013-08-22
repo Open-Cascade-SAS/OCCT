@@ -467,7 +467,7 @@ static
   void BOPAlgo_BOP::BuildRC()
 {
   Standard_Boolean bFlag;
-  Standard_Integer i, aDmin, aNb[2], iX, iY;
+  Standard_Integer i, aDmin, aNb[2], iX = 0, iY = 0;
   TopAbs_ShapeEnum aTmin;
   TopoDS_Compound aC, aCS[2];
   BRep_Builder aBB;

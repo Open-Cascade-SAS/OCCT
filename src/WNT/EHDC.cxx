@@ -1127,7 +1127,7 @@ void EHDC :: _ETextOut ( int x, int y, void* str, double angle, BOOL fOutline, B
  int     i;
  DWORD   dwLen;
  HPEN    hpo;
- HBRUSH  hbo;
+ HBRUSH  hbo = NULL;
  HFONT   hfo;
  XFORM   lXfm, rXfm, xfm;
  PXFORM  pXfm;
@@ -1566,7 +1566,7 @@ static void WINAPI _XFORMApplyf ( PFPOINT pp, int n, PXFORM xf ) {
 
 static void WINAPI _RenderPath ( HDC hdc, LPPOINT lpPts, PBYTE lpType, int nPts ) {
 
- LPPOINT pp;
+ LPPOINT pp = NULL;
 
  for ( int i = 0; i < nPts; ++i ) {
 

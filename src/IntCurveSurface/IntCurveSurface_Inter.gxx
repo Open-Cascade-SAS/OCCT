@@ -1483,7 +1483,7 @@ void SectionPointToParameters(const Intf_SectionPoint&              Sp,
   gp_Pnt P(Sp.Pnt());
   
   Standard_Integer Pt1,Pt2,Pt3;
-  Standard_Real u1,v1,param;
+  Standard_Real u1 = 0.,v1 = 0.,param;
   //----------------------------------------------------------------------
   //--          Calcul des parametres approches sur la surface          --
   //----------------------------------------------------------------------

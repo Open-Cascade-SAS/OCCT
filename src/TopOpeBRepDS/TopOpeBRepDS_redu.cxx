@@ -79,7 +79,7 @@ Standard_EXPORT Standard_Boolean FUN_ds_redu2d1d(const TopOpeBRepDS_DataStructur
       if (!ok) return Standard_False;
       
       TopOpeBRepTool_makeTransition MKT;
-      TopAbs_State stb1,sta1; 
+      TopAbs_State stb1 = TopAbs_UNKNOWN,sta1 = TopAbs_UNKNOWN; 
       ok = MKT.Initialize(SE,pbef,paft,parSE, F,uv, factor);
       if (ok) ok = MKT.SetRest(E,parE);
       if (ok) ok = MKT.MkTonE(stb1,sta1); 

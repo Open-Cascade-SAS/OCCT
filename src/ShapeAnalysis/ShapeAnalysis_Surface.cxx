@@ -911,7 +911,7 @@ gp_Pnt2d ShapeAnalysis_Surface::NextValueOfUV(const gp_Pnt2d &p2dPrev,
 gp_Pnt2d ShapeAnalysis_Surface::ValueOfUV(const gp_Pnt& P3D,const Standard_Real preci)
 {
   GeomAdaptor_Surface& SurfAdapt = Adaptor3d()->ChangeSurface();
-  Standard_Real S, T;
+  Standard_Real S = 0., T = 0.;
   myGap = -1.;    // devra etre calcule
   Standard_Boolean computed = Standard_True;  // a priori
   

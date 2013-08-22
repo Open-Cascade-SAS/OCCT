@@ -120,7 +120,7 @@ static void TRIM_INFINIT_EDGE(const TopoDS_Edge& S1, const TopoDS_Edge& S2, Topo
       Precision::IsInfinite(aLast2))
     return;
   
-  Standard_Real Umin, Umax;
+  Standard_Real Umin = 0., Umax = 0.;
   Standard_Boolean bUmin, bUmax;
   bUmin = bUmax = Standard_False;
 
@@ -259,7 +259,7 @@ static void TRIM_INFINIT_FACE(const TopoDS_Shape& S1, const TopoDS_Shape& S2,
   const Standard_Boolean bRestrict = BRep_Tool::NaturalRestriction(aF);
 
   Standard_Real U1, V1, U2, V2;
-  Standard_Real Umin, Umax, Vmin, Vmax;
+  Standard_Real Umin = RealLast(), Umax = RealFirst(), Vmin = RealLast(), Vmax = RealFirst();
   Standard_Boolean bUmin, bUmax, bVmin, bVmax;
   bUmin = bUmax = bVmin = bVmax = Standard_False;
   Standard_Boolean bIsTrim = Standard_False;

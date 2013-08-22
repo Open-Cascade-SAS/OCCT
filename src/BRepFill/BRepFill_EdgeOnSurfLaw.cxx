@@ -60,7 +60,7 @@ BRepFill_EdgeOnSurfLaw::BRepFill_EdgeOnSurfLaw(const TopoDS_Wire& Path,
   Handle(Geom2dAdaptor_HCurve) AC2d;
   Handle(Adaptor3d_HCurveOnSurface) AC;
   Handle(BRepAdaptor_HSurface) AS;
-  Standard_Real First, Last;
+  Standard_Real First = 0., Last = 0.;
   Handle(GeomFill_Darboux) TLaw = new (GeomFill_Darboux)() ;
   Handle(GeomFill_CurveAndTrihedron) Law = 
     new (GeomFill_CurveAndTrihedron) (TLaw);

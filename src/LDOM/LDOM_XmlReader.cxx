@@ -112,7 +112,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord
   theData.Clear();
   myError.Clear();
   ParserState aState = STATE_WAITING;
-  const char * aStartData = NULL, * aNameEnd, * aPtr;
+  const char * aStartData = NULL, * aNameEnd = NULL, * aPtr;
   LDOMBasicString anAttrName, anAttrValue;
   char anAttDelimiter = '\0';
 

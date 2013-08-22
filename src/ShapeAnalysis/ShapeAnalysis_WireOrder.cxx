@@ -239,7 +239,7 @@ void ShapeAnalysis_WireOrder::Perform(const Standard_Boolean /*closed*/)
   while(!done) {
     Standard_Integer resultType = 3;
     Standard_Real distmin = RealLast();
-    Standard_Integer ledge;
+    Standard_Integer ledge = 0;
     Standard_Boolean found = Standard_False;
     Standard_Real closeDist = wireFirst.SquareDistance(wireLast);
     

@@ -114,7 +114,7 @@ static Standard_Boolean FUNBREP_SameUV(const TopOpeBRep_VPointInter& VP1,
 			  const Standard_Integer sind,const Standard_Real toluv)
 //-----------------------------------------------------------------------
 {
-  Standard_Real u1,v1,u2,v2;
+  Standard_Real u1 = 0.,v1 = 0.,u2 = 0.,v2 = 0.;
   if (sind == 1) {
     VP1.ParametersOnS1(u1,v1); VP2.ParametersOnS1(u2,v2);
   }

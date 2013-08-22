@@ -283,11 +283,7 @@ TopAbs_Orientation TopOpeBRepDS_Transition::Orientation(const TopAbs_State S,con
 //=======================================================================
 TopAbs_Orientation TopOpeBRepDS_Transition::OrientationON(const TopAbs_State S,const TopAbs_ShapeEnum ) const // T) const
 {
-#ifdef DEB
-  TopAbs_Orientation result;
-#else
   TopAbs_Orientation result=TopAbs_FORWARD;
-#endif
 
   if      (myStateBefore == TopAbs_ON && myStateAfter == TopAbs_ON) {
 #if 0

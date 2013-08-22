@@ -693,7 +693,7 @@ void HLRBRep_PolyAlgo::StoreShell (const TopoDS_Shape& Shape,
 {
   TopLoc_Location L;
   TopExp_Explorer exface,exedge;
-  Standard_Integer f,i,j;
+  Standard_Integer f = 0,i,j;
   Standard_Integer nbFaceShell = 0;
   Standard_Boolean reversed;
   Standard_Boolean closed    = Standard_False;
@@ -1228,7 +1228,7 @@ InitBiPointsWithConnexity (const Standard_Integer e,
   Standard_Integer iPol,nbPol,i1,i1p1,i1p2,i2,i2p1,i2p2;
   Standard_Real X1  ,Y1  ,Z1  ,X2  ,Y2  ,Z2  ;
   Standard_Real XTI1,YTI1,ZTI1,XTI2,YTI2,ZTI2;
-  Standard_Real U1,U2;
+  Standard_Real U1,U2 = 0.;
   Handle(Poly_PolygonOnTriangulation) HPol[2];
   TopLoc_Location L;
   myBCurv.Initialize(E);
@@ -2494,7 +2494,7 @@ HLRBRep_PolyAlgo::InsertOnOutLine (TColStd_Array1OfTransient& PID)
   TopLoc_Location L;
   Standard_Boolean insP3,mP3P1,IntOutL;
   Standard_Integer f,ip1,ip2,ip3;//, i;
-  Standard_Real U3,V3,coef3,X3,Y3,Z3;
+  Standard_Real U3,V3,coef3,X3 = 0.,Y3 = 0.,Z3 = 0.;
 
   const gp_Trsf& T  = myProj.Transformation();
   

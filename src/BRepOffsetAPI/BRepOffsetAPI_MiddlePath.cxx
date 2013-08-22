@@ -814,7 +814,7 @@ void BRepOffsetAPI_MiddlePath::Build()
     {
       gp_Ax1 theAxis;
       gp_Dir theDir1, theDir2;
-      Standard_Real theAngle;
+      Standard_Real theAngle = 0.;
       gp_Vec theTangent;
       Standard_Boolean SimilarArcs = Standard_True;
       for (j = 1; j <= myPaths.Length(); j++)
@@ -890,7 +890,12 @@ void BRepOffsetAPI_MiddlePath::Build()
           theAx2 = gp_Ax2(theCenterOfCirc, theAxis.Direction(), Vec1);
           theCircle = GC_MakeCircle(theAx2, Vec1.Magnitude());
         }
-        MidEdges(i) = BRepLib_MakeEdge(theCircle, 0., theAngle);
+        BRepLib_MakeEdge aME (theCircle, 0., theAngle);
+        aME.Build();
+
+        MidEdges(i) = aME.IsDone() ? 
+          aME.Shape() : 
+          TopoDS_Edge();
       }
     }
   }

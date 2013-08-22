@@ -427,7 +427,7 @@ void IntTools_EdgeFace::CheckData()
   myC.D0(t, P);
   GeomAPI_ProjectPointOnSurf aProjector;
   //
-  Standard_Real ULD, VLD;
+  Standard_Real ULD = 0., VLD = 0.;
 
   GeomAPI_ProjectPointOnSurf& aLocProj = myContext->ProjPS(myFace);
   aLocProj.Perform(P);

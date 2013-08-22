@@ -244,11 +244,8 @@ void TopOpeBRep_VPointInter::UpdateKeep()
 
   Standard_Integer SI = ShapeIndex();
 
-#ifdef DEB
-  Standard_Boolean condition; 
-#else
   Standard_Boolean condition=Standard_False; 
-#endif
+
   if      (SI == 1) condition = M_SINON(pos2);
   else if (SI == 2) condition = M_SINON(pos1);
   else if (SI == 0) condition = M_SINON(pos1) && M_SINON(pos2);

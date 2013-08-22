@@ -68,7 +68,7 @@ static void bind_light(const OpenGl_Light *lptr, int *gl_lid)
   if (*gl_lid > GL_LIGHT7) return;
 
   // the light is a headlight ?
-  GLint cur_matrix;
+  GLint cur_matrix = 0;
   if (lptr->HeadLight)
   {
     glGetIntegerv(GL_MATRIX_MODE, &cur_matrix);

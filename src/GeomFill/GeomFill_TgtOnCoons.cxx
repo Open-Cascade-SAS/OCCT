@@ -42,7 +42,7 @@ GeomFill_TgtOnCoons::GeomFill_TgtOnCoons
 
 gp_Vec GeomFill_TgtOnCoons::Value(const Standard_Real W) const 
 {
-  Standard_Real U,V,bid;
+  Standard_Real U = 0.,V = 0.,bid = 0.;
   switch (ibound){
   case 0 :
     myK->Bound(1)->Bounds(V,bid);
@@ -88,7 +88,7 @@ gp_Vec GeomFill_TgtOnCoons::Value(const Standard_Real W) const
 
 gp_Vec GeomFill_TgtOnCoons::D1(const Standard_Real W) const 
 {
-  Standard_Real U,V,bid;
+  Standard_Real U = 0.,V = 0.,bid = 0.;
   switch (ibound){
   case 0 :
     myK->Bound(1)->Bounds(V,bid);
@@ -150,7 +150,7 @@ gp_Vec GeomFill_TgtOnCoons::D1(const Standard_Real W) const
 
 void GeomFill_TgtOnCoons::D1(const Standard_Real W, gp_Vec& T, gp_Vec& DT) const 
 {
-  Standard_Real U,V,bid;
+  Standard_Real U = 0.,V = 0.,bid = 0.;
   switch (ibound){
   case 0 :
     myK->Bound(1)->Bounds(V,bid);

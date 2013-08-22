@@ -763,7 +763,7 @@ QANewModTopOpe_Glue::PerformShell()
   TopoDS_Shape aNewS[2];
   Standard_Integer nbModified = 0;
   Standard_Integer nbDeleted = 0;
-  Standard_Integer iShape;
+  Standard_Integer iShape = 0;
 
   for (i = 0; i < 2; i++) {
     const TopoDS_Shape& aOldS = (i==0 ? myS1 : myS2);
@@ -1208,7 +1208,7 @@ IsVertexOnFaceBound (const TopoDS_Vertex& theVer,
 		     Standard_Real& thePar,
 		     Standard_Real& theDist)
 {
-  Standard_Real aDist, aPar, aTol2;
+  Standard_Real aDist, aPar, aTol2 = 0.;
   theDist = RealLast();
   gp_Pnt aPnt(BRep_Tool::Pnt(theVer));
   Standard_Boolean isContactByVer = Standard_False;

@@ -842,11 +842,8 @@ void AddShapeKI
   // to sort, it is considered that : 
   // POINT == VERTEX,CURVE == EDGE,SURFACE == FACE
   
-#ifdef DEB
-  TopAbs_ShapeEnum SKtri;
-#else
   TopAbs_ShapeEnum SKtri=TopAbs_COMPOUND;
-#endif
+
   if (isshape) SKtri = TopOpeBRepDS::KindToShape(K);
   else if (isgeome) {
     if      (K == TopOpeBRepDS_POINT) SKtri = TopAbs_VERTEX; 

@@ -1548,7 +1548,7 @@ void IntCurve_IntConicConic::Perform(const gp_Lin2d& L1
       //--
       Standard_Integer ResHasFirstPoint=0;    
       Standard_Integer ResHasLastPoint=0;
-      Standard_Real ParamStart,ParamStart2,ParamEnd,ParamEnd2;
+      Standard_Real ParamStart = 0.,ParamStart2,ParamEnd = 0.,ParamEnd2;
       Standard_Real Org2SurL1=ElCLib::Parameter(L1,L2.Location());
       //== 3 : L1 et L2 bornent
       //== 2 :       L2 borne

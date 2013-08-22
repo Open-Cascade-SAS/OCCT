@@ -431,7 +431,7 @@ static Standard_Integer brepiges (Draw_Interpretor& di, Standard_Integer n, cons
 
 //  Mode d emploi (K4B ->) : brepiges shape [+shape][ +shape] nomfic
 //   c a d tant qu il y a des + on ajoute ce qui suit
-  const char* nomfic;
+  const char* nomfic = NULL;
   Standard_Integer npris = 0;
 
   Handle(Draw_ProgressIndicator) progress = new Draw_ProgressIndicator ( di, 1 );

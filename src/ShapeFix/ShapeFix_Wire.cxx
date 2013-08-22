@@ -1343,7 +1343,7 @@ Standard_Boolean ShapeFix_Wire::FixShifted()
     TopoDS_Vertex V = sae.FirstVertex ( E2 );
     gp_Pnt p = BRep_Tool::Pnt ( V );
   
-    Standard_Real a1, b1, a2, b2;
+    Standard_Real a1 = 0., b1 = 0., a2 = 0., b2 = 0.;
     Handle(Geom2d_Curve) c2d1, c2d2;
 
     //:abv 29.08.01: torCuts.sat: distinguish degeneration by U and by V;
@@ -1385,7 +1385,7 @@ Standard_Boolean ShapeFix_Wire::FixShifted()
 //	if ( stop < n2 ) { stop = n2; degstop = Standard_True; }
       }
       else {
-	Standard_Real ax1, bx1, ax2, bx2;
+	Standard_Real ax1 = 0., bx1 = 0., ax2 = 0., bx2 = 0.;
 	Handle(Geom2d_Curve) cx1, cx2;
 	if ( ( c2d1.IsNull() && ! sae.PCurve ( E1, Face(), c2d1, a1, b1, Standard_True ) ) ||
 	     ( c2d2.IsNull() && ! sae.PCurve ( E2, Face(), c2d2, a2, b2, Standard_True ) ) ||
@@ -2108,7 +2108,7 @@ Standard_Boolean ShapeFix_Wire::FixSelfIntersectingEdge (const Standard_Integer 
 
   // cycle is to verify fix in case of RemoveLoop
   Standard_Real tolfact = 0.1; // factor for shifting by parameter in RemoveLoop
-  Standard_Real f2d, l2d;
+  Standard_Real f2d = 0., l2d = 0.;
   Handle(Geom2d_Curve) c2d;
   Standard_Real newtol=0.; // = Precision();
 
@@ -2744,9 +2744,9 @@ Standard_Boolean ShapeFix_Wire::FixLacking (const Standard_Integer num,
 
   //=============
   //:s2 abv 21 Apr 99: Speculation: try bending pcurves
-  Standard_Real bendtol1, bendtol2;
+  Standard_Real bendtol1 = 0., bendtol2 = 0.;
   Handle(Geom2d_Curve) bendc1, bendc2;
-  Standard_Real bendf1, bendl1, bendf2, bendl2;
+  Standard_Real bendf1 = 0., bendl1 = 0., bendf2 = 0., bendl2 = 0.;
   if ( myGeomMode && ! BRep_Tool::IsClosed(E1,face) && ! BRep_Tool::IsClosed(E2,face) ) {
     gp_Pnt2d p2d = 0.5 * ( p2d1.XY() + p2d2.XY() );
     Standard_Boolean ok1 = TryBendingPCurve (E1, face, p2d, E1.Orientation() == TopAbs_FORWARD, 

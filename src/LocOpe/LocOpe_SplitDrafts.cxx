@@ -156,11 +156,8 @@ void LocOpe_SplitDrafts::Perform(const TopoDS_Face& F,
     Standard_ConstructionError::Raise();
   }
 
-#ifdef DEB
-  TopAbs_Orientation OriF;
-#else
   TopAbs_Orientation OriF = TopAbs_FORWARD;
-#endif
+
   Standard_Boolean FinS = Standard_False;
   TopExp_Explorer exp,exp2;
   for (exp.Init(myShape,TopAbs_FACE); exp.More(); exp.Next()) {
@@ -1493,11 +1490,9 @@ static void MakeFace(TopoDS_Face& F,
     Standard_Boolean wdone = (ledg.IsEmpty() || VFirst.IsSame(VLast));
     while (!wdone) {
       TopoDS_Vertex VF,VL;
-#ifdef DEB
-      TopAbs_Orientation oredg;
-#else
+
       TopAbs_Orientation oredg = TopAbs_FORWARD;
-#endif
+
       for (itl.Initialize(ledg); itl.More(); itl.Next()) {
 	const TopoDS_Edge& edg2 = TopoDS::Edge(itl.Value());
 	TopoDS_Shape aLocalShape  = edg2.Oriented(TopAbs_FORWARD);

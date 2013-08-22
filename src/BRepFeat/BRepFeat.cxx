@@ -579,11 +579,9 @@ TopoDS_Solid BRepFeat::Tool(const TopoDS_Shape& SRef,
 
 
   Sh.Orientation(TopAbs_FORWARD);
-#ifdef DEB
-  TopAbs_Orientation orient;
-#else
+
   TopAbs_Orientation orient = TopAbs_FORWARD;
-#endif
+
   for (exp.Init(Sh,TopAbs_FACE); exp.More(); exp.Next()) {
     if (exp.Current().IsSame(Fac)) {
       orient = exp.Current().Orientation();

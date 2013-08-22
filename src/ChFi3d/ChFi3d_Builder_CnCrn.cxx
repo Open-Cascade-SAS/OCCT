@@ -1042,13 +1042,13 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
   ChFiDS_ListIteratorOfListOfStripe It;
   Handle(ChFiDS_Stripe) cd2,cdbid,cnext;
   TopoDS_Face face;
-  Standard_Integer jfp,ii;
+  Standard_Integer jfp = 0,ii;
   Standard_Integer ic,icplus,icmoins,icplus2,
                    sense,index,indice,isurf1,isurf2;
-  Standard_Integer cbplus=0, n3d=0,IVtx,nb;
+  Standard_Integer cbplus=0, n3d=0,IVtx = 0,nb;
   Standard_Boolean sameside,trouve,isfirst;
   Standard_Real pardeb ,parfin,xdir,ydir;
-  Standard_Real tolapp=1.e-4,maxapp,maxapp1,avedev;
+  Standard_Real tolapp=1.e-4,maxapp = 0.,maxapp1 = 0.,avedev;
   Handle (TopOpeBRepDS_CurvePointInterference) Interfp1, Interfp2;
   Handle (TopOpeBRepDS_SurfaceCurveInterference) Interfc;
   Handle(Geom_Curve) Curv3d;
@@ -1452,9 +1452,9 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
       oksea.SetValue(ic, Standard_False);
     }
     else {
-      Standard_Integer jf1;
-      Standard_Integer i1,i2;
-      Standard_Real pa1,pa2;
+      Standard_Integer jf1 = 0;
+      Standard_Integer i1 = 0,i2 = 0;
+      Standard_Real pa1 = 0.,pa2;
       Standard_Boolean ok;
       Handle(ChFiDS_Stripe) strip;
       Standard_Real angedg;
@@ -1824,7 +1824,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
 // Then this courbe3d is projected on all faces (nbface) that
 // separate icmoins and indfin
   Standard_Integer nbface = 0;
-  Standard_Real  error;
+  Standard_Real  error = 0.;
   TColGeom2d_Array1OfCurve proj2d1(0,size);
   TColGeom2d_Array1OfCurve proj2d2(0,size);
   TColGeom_Array1OfCurve cproj1(0,size);

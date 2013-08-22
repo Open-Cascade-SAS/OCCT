@@ -218,11 +218,8 @@ TopOpeBRepDS_Transition TopOpeBRep_FFTransitionTool::ProcessFaceTransition
   }
   else {
     Standard_Boolean Odefined = Standard_True;
-#ifdef DEB
-    TopAbs_Orientation O;
-#else
+
     TopAbs_Orientation O = TopAbs_FORWARD;
-#endif
 
     IntSurf_TypeTrans trans;
     trans = (Index == 1) ? L.TransitionOnS1() : L.TransitionOnS2();
@@ -385,7 +382,7 @@ TopOpeBRepDS_Transition TopOpeBRep_FFTransitionTool::ProcessEdgeONTransition
  TopAbs_Orientation oriE = E.Orientation();
  
  const Handle(Geom_Surface)& S = BRep_Tool::Surface(F);
- Standard_Real U,V;
+ Standard_Real U = 0.,V = 0.;
  if      (ShapeIndex == 1) VP.ParametersOnS1(U,V);
  else if (ShapeIndex == 2) VP.ParametersOnS2(U,V);
  

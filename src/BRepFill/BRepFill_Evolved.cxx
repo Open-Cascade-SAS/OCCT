@@ -2826,7 +2826,7 @@ void ComputeIntervals (const TopTools_SequenceOfShape& VOnF,
 		             TopTools_SequenceOfShape& LastV )
 {
   Standard_Integer IOnF    = 1,IOnL = 1;
-  Standard_Real    U1,U2;
+  Standard_Real    U1 = 0.,U2;
   TopoDS_Shape     V1,V2;
   
   if (!VS.IsNull()) {

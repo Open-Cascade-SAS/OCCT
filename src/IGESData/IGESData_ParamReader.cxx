@@ -559,7 +559,7 @@ Standard_Boolean IGESData_ParamReader::ReadXY
   (const IGESData_ParamCursor& PC,Message_Msg& /*amsg*/, gp_XY& val)
 {
   if (!PrepareRead(PC,Standard_False,2)) return Standard_False;
-  Standard_Real X,Y;
+  Standard_Real X,Y = 0.;
   Standard_Boolean stat =
     (ReadingReal (theindex  ,X)  &&
      ReadingReal (theindex+1,Y)  );
@@ -577,7 +577,7 @@ Standard_Boolean IGESData_ParamReader::ReadXY
   (const IGESData_ParamCursor& PC, const Standard_CString mess, gp_XY& val)
 {
   if (!PrepareRead(PC,mess,Standard_False,2)) return Standard_False;
-  Standard_Real X,Y;
+  Standard_Real X,Y = 0.;
   Standard_Boolean stat =
     (ReadingReal (theindex  ,mess,X)  &&
      ReadingReal (theindex+1,mess,Y)  );
@@ -597,7 +597,7 @@ Standard_Boolean IGESData_ParamReader::ReadXYZ
   (const IGESData_ParamCursor& PC,Message_Msg& /*amsg*/, gp_XYZ& val)
 {
   if (!PrepareRead(PC,Standard_False,3)) return Standard_False;
-  Standard_Real X,Y,Z;
+  Standard_Real X,Y = 0.,Z = 0.;
   Standard_Boolean stat =
     (ReadingReal (theindex  ,X)  &&
      ReadingReal (theindex+1,Y)  &&
@@ -616,7 +616,7 @@ Standard_Boolean IGESData_ParamReader::ReadXYZ
   (const IGESData_ParamCursor& PC, const Standard_CString mess, gp_XYZ& val)
 {
   if (!PrepareRead(PC,mess,Standard_False,3)) return Standard_False;
-  Standard_Real X,Y,Z;
+  Standard_Real X,Y = 0.,Z = 0.;
   Standard_Boolean stat =
     (ReadingReal (theindex  ,mess,X)  &&
      ReadingReal (theindex+1,mess,Y)  &&

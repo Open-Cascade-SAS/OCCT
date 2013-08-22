@@ -1029,7 +1029,7 @@ static Standard_Integer FUN_putInterfonDegenEd
   }
 
   Standard_Boolean setrest = Standard_False;
-  Standard_Integer mkt = 0; Standard_Real par1,par2;
+  Standard_Integer mkt = 0; Standard_Real par1 = 0.,par2 = 0.;
   if (on3) {
     TopoDS_Edge ei = (rki == 1) ? TopoDS::Edge(VP.ArcOnS1()) : TopoDS::Edge(VP.ArcOnS2());
     Standard_Real pari = (rki == 1) ? VP.ParameterOnArc1() : VP.ParameterOnArc2();

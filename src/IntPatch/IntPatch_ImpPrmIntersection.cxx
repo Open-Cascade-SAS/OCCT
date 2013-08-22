@@ -405,7 +405,7 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
 					   const Standard_Real Pas)
 {
   Standard_Boolean reversed, procf, procl, dofirst, dolast;
-  Standard_Integer indfirst, indlast, ind2, i,j,k, NbSegm;
+  Standard_Integer indfirst = 0, indlast = 0, ind2, i,j,k, NbSegm;
   Standard_Integer NbPointIns, NbPointRst, Nblines, Nbpts, NbPointDep;
   Standard_Real U1,V1,U2,V2,paramf,paraml,currentparam;
   

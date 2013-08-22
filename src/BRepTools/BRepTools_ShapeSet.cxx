@@ -21,7 +21,7 @@
 // Modifed:     Portage NT 7-5-97 DPF (strcasecmp)
 
 #include <Standard_Stream.hxx>
-
+#include <Precision.hxx>
 #include <BRepTools_ShapeSet.ixx>
 
 #include <BRepTools.hxx>
@@ -823,7 +823,7 @@ void  BRepTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
 {
   // Read the geometry
 
-  Standard_Integer val,c,pc,pc2,s,s2,l,l2,t, pt, pt2;
+  Standard_Integer val,c,pc,pc2 = 0,s,s2,l,l2,t, pt, pt2 = 0;
   Standard_Real tol,X,Y,Z,first,last,p1,p2;
   Standard_Real PfX,PfY,PlX,PlY;
   gp_Pnt2d aPf, aPl;

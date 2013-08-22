@@ -97,7 +97,7 @@ void RWStepBasic_RWSiUnit::ReadStep(const Handle(StepData_StepReaderData)& data,
   }
   
   // --- own field : name ---
-  StepBasic_SiUnitName aName;
+  StepBasic_SiUnitName aName = StepBasic_sunMetre;
   if (data->ParamType(num,3) == Interface_ParamEnum) {
     Standard_CString text = data->ParamCValue(num,3);
     if(!DecodeName(aName,text))

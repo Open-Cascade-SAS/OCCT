@@ -75,7 +75,7 @@ void RWStepFEA_RWFeaAxis2Placement3d::ReadStep (const Handle(StepData_StepReader
 
   // Own fields of FeaAxis2Placement3d
 
-  StepFEA_CoordinateSystemType aSystemType;
+  StepFEA_CoordinateSystemType aSystemType = StepFEA_Cartesian;
   if (data->ParamType (num, 5) == Interface_ParamEnum) {
     Standard_CString text = data->ParamCValue(num, 5);
     if      (strcmp(text, ".CARTESIAN.") == 0) aSystemType = StepFEA_Cartesian;

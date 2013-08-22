@@ -819,7 +819,7 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
 
   TopoDS_Edge edgecouture;
   Standard_Boolean couture,intcouture=Standard_False;;
-  Standard_Real tolreached;
+  Standard_Real tolreached = tolesp;
   Standard_Real  par1 =0.,par2 =0.;
   Standard_Integer indpt = 0,Icurv1 = 0,Icurv2 = 0;
   Handle(Geom_TrimmedCurve) curv1,curv2;
@@ -3795,7 +3795,7 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
   TopoDS_Edge Arcpiv,Arcprol,Arcspine,Arcprolbis;
   if(isfirst) Arcspine = spine->Edges(1);
   else Arcspine = spine->Edges(spine->NbEdges());
-  TopAbs_Orientation OArcprolbis;
+  TopAbs_Orientation OArcprolbis = TopAbs_FORWARD;
   TopAbs_Orientation OArcprolv = TopAbs_FORWARD, OArcprolop = TopAbs_FORWARD;
   Standard_Integer ICurve;
   Handle(BRepAdaptor_HSurface) HBs  = new BRepAdaptor_HSurface();
@@ -3983,7 +3983,7 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
 
   TopoDS_Edge edgecouture;
   Standard_Boolean couture,intcouture=Standard_False;;
-  Standard_Real tolreached;
+  Standard_Real tolreached = tolesp;
   Standard_Real par1 = 0.,par2 = 0.;
   Standard_Integer indpt =0,Icurv1 =0,Icurv2 =0;
   Handle(Geom_TrimmedCurve) curv1,curv2;
@@ -4203,7 +4203,7 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
     // Above all the points cut the points with the edge of the spine.
     Standard_Integer IArcspine = DStr.AddShape(Arcspine);
     Standard_Integer IVtx = DStr.AddShape(Vtx);
-    TopAbs_Orientation OVtx2;
+    TopAbs_Orientation OVtx2 = TopAbs_FORWARD;
     TopAbs_Orientation OVtx = TopAbs_FORWARD;
     for(ex.Init(Arcspine.Oriented(TopAbs_FORWARD),TopAbs_VERTEX);
 	ex.More(); ex.Next()){

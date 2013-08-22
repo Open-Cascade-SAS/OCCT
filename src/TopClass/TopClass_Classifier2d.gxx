@@ -82,11 +82,9 @@ void TopClass_Classifier2d::Compare(const TheEdge& E,
 
   // find the closest point
   Standard_Integer iPoint, iSegment, nbPoints, nbSegments;
-#ifndef DEB
+
   const IntRes2d_IntersectionPoint *PClosest = NULL;
-#else 
-  const IntRes2d_IntersectionPoint *PClosest;
-#endif
+
   Standard_Real dMin = RealLast();
   nbPoints = myIntersector.NbPoints();
   for (iPoint = 1; iPoint <= nbPoints;  iPoint++)  {
@@ -165,11 +163,9 @@ void TopClass_Classifier2d::Compare(const TheEdge& E,
 //  Modified by skv - Wed Jul 12 15:20:58 2006 OCC12627 End
   
   // transition on the segment
-#ifndef DEB
+
   TopAbs_Orientation SegTrans = TopAbs_FORWARD;
-#else
-  TopAbs_Orientation SegTrans;
-#endif
+
   const IntRes2d_Transition& T1 = PClosest->TransitionOfFirst();
   switch (T1.TransitionType()) {
   case IntRes2d_In :
@@ -234,14 +230,3 @@ void TopClass_Classifier2d::Compare(const TheEdge& E,
     myState = myTrans.StateBefore();
   }
 }
-
-
-
-
-
-
-
-
-
-
-

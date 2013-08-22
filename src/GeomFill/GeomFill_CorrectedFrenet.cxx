@@ -486,7 +486,7 @@ Handle(GeomFill_TrihedronLaw) GeomFill_CorrectedFrenet::Copy() const
   aT = gp_Vec(0, 0, 0);
   aN = gp_Vec(0, 0, 0);   
 
-  Standard_Real angleAT, currParam, currStep = Step;
+  Standard_Real angleAT = 0., currParam, currStep = Step;
 
   Handle( Geom_Plane ) aPlane;
   Standard_Boolean isPlanar = Standard_False;

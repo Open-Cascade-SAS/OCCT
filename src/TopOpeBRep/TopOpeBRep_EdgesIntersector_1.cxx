@@ -159,12 +159,8 @@ TopOpeBRepDS_Transition TopOpeBRep_EdgesIntersector::Transition1(const Standard_
   Standard_Boolean pointofsegment = IsPointOfSegment1();
   Standard_Boolean pur1d = (pointofsegment && mySameDomain);
 
-#ifdef DEB
-  TopAbs_State staB,staA; TopAbs_ShapeEnum shaB,shaA; Standard_Boolean pextremity; 
-#else
   TopAbs_State staB=TopAbs_UNKNOWN,staA=TopAbs_UNKNOWN;
   TopAbs_ShapeEnum shaB=TopAbs_COMPOUND,shaA=TopAbs_COMPOUND; Standard_Boolean pextremity; 
-#endif
   
   TopAbs_State staINON = TopAbs_IN;
   Standard_Integer dim = myDimension;

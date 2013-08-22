@@ -47,7 +47,7 @@ void RWStepElement_RWVolume3dElementDescriptor::ReadStep (const Handle(StepData_
 
   // Inherited fields of ElementDescriptor
 
-  StepElement_ElementOrder aElementDescriptor_TopologyOrder;
+  StepElement_ElementOrder aElementDescriptor_TopologyOrder = StepElement_Linear;
   if (data->ParamType (num, 1) == Interface_ParamEnum) {
     Standard_CString text = data->ParamCValue(num, 1);
     if      (!strcmp(text, ".LINEAR.")) aElementDescriptor_TopologyOrder = StepElement_Linear;
@@ -77,7 +77,7 @@ void RWStepElement_RWVolume3dElementDescriptor::ReadStep (const Handle(StepData_
     }
   }
 
-  StepElement_Volume3dElementShape aShape;
+  StepElement_Volume3dElementShape aShape = StepElement_Hexahedron;
   if (data->ParamType (num, 4) == Interface_ParamEnum) {
     Standard_CString text = data->ParamCValue(num, 4);
     if      (!strcmp(text, ".HEXAHEDRON.")) aShape = StepElement_Hexahedron;

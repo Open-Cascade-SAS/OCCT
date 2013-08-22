@@ -72,7 +72,7 @@ void TopOpeBRepTool_STATE::Set(const Standard_Boolean b,
 
 Standard_Boolean TopOpeBRepTool_STATE::Get(const TopAbs_State S)
 {
-  Standard_Boolean b;
+  Standard_Boolean b = Standard_False;
   switch(S) {
   case TopAbs_IN : b = myin; break;
   case TopAbs_OUT : b = myout; break;

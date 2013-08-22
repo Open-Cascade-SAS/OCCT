@@ -1777,7 +1777,7 @@ static Handle(Draw_Drawable3D) pntrestore (istream& is)
 {
   Standard_Integer is3d;
   is >> is3d;
-  Standard_Real x,y,z;
+  Standard_Real x,y,z = 0.;
   if (is3d)
     is >> x >> y >> z;
   else

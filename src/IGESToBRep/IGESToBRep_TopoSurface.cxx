@@ -201,7 +201,7 @@ static Standard_Boolean extractCurve3d (const TopoDS_Shape& theEdges,
 {
   TopExp_Explorer anExp(theEdges, TopAbs_EDGE);
   Standard_Integer howMuch = 0;
-  Standard_Real f, l;
+  Standard_Real f = 0., l = 0.;
   for (; anExp.More(); anExp.Next()) {
     TopoDS_Edge anEdge = TopoDS::Edge(anExp.Current());
     if (anEdge.IsNull())

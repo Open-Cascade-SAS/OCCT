@@ -138,7 +138,7 @@ static Standard_Integer zoom(Draw_Interpretor& , Standard_Integer n, const char*
 
 static Standard_Integer wzoom(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  Standard_Integer id,X,Y,W,H,X1,Y1,X2,Y2,b;
+  Standard_Integer id,X,Y,W,H,X1,Y1,X2 = 0,Y2 = 0,b;
   Standard_Real dX1,dY1,dX2,dY2,zx,zy;
   if(argc != 1 && argc != 6)
   {

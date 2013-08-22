@@ -497,7 +497,7 @@ void BRepFill_Filling::FindExtremitiesOfHoles(const TopTools_ListOfShape& WireLi
   while (! WireSeq.IsEmpty())
     {
       TopoDS_Vertex MinVtx;
-      Standard_Integer i, MinInd;
+      Standard_Integer i, MinInd = 1;
       Standard_Boolean IsLast = Standard_False;
       Standard_Real MinAngle = M_PI;
       

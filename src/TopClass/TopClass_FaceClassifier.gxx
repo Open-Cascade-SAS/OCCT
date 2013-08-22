@@ -68,7 +68,7 @@ void TopClass_FaceClassifier::Perform(TheFaceExplorer& Fexp,
   TopAbs_Orientation         anEdgeOri;
   Standard_Integer           aClosestInd;
   IntRes2d_IntersectionPoint aPInter;
-  TopAbs_State               aState;
+  TopAbs_State               aState = TopAbs_UNKNOWN;
   Standard_Boolean           IsWReject;
   Standard_Boolean           IsEReject;
 

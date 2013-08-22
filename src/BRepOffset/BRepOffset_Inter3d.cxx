@@ -45,6 +45,7 @@
 #include <TopTools_IndexedMapOfShape.hxx>
 #include <Extrema_ExtPC.hxx>
 #include <TopTools_MapOfShape.hxx>
+#include <Precision.hxx>
 
 
 
@@ -141,8 +142,8 @@ static void SelectEdge (const TopoDS_Face& /*F*/,
     Standard_Integer i;
     Standard_Real    aTol       = BRep_Tool::Tolerance(EI);
     Standard_Boolean isMinFound = Standard_False;
-    Standard_Real    aSqrDist1;
-    Standard_Real    aSqrDist2;
+    Standard_Real    aSqrDist1  = Precision::Infinite();
+    Standard_Real    aSqrDist2  = Precision::Infinite();
 
     anExt.Initialize(Ad2, Fst, Lst, aTol);
 

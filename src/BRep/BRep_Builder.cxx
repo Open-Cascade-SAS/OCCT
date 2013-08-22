@@ -63,7 +63,7 @@ static void UpdateCurves(BRep_ListOfCurveRepresentation& lcr,
 {
   BRep_ListIteratorOfListOfCurveRepresentation itcr(lcr);
   Handle(BRep_GCurve) GC;
-  Standard_Real f,l;
+  Standard_Real f = 0.,l = 0.;
 
   while (itcr.More()) {
     GC = Handle(BRep_GCurve)::DownCast(itcr.Value());
@@ -105,7 +105,7 @@ static void UpdateCurves(BRep_ListOfCurveRepresentation& lcr,
   BRep_ListIteratorOfListOfCurveRepresentation itcr(lcr);
   Handle(BRep_CurveRepresentation) cr;
   Handle(BRep_GCurve) GC;
-  Standard_Real f,l;
+  Standard_Real f = 0.,l = 0.;
   Standard_Boolean rangeFound = Standard_False;
 
   // search the range of the 3d curve
@@ -171,7 +171,7 @@ static void UpdateCurves(BRep_ListOfCurveRepresentation& lcr,
   BRep_ListIteratorOfListOfCurveRepresentation itcr(lcr);
   Handle(BRep_CurveRepresentation) cr;
   Handle(BRep_GCurve) GC;
-  Standard_Real f,l;
+  Standard_Real f = 0.,l = 0.;
   Standard_Boolean rangeFound = Standard_False;
 
   // search the range of the 3d curve
@@ -238,7 +238,7 @@ static void UpdateCurves(BRep_ListOfCurveRepresentation& lcr,
   BRep_ListIteratorOfListOfCurveRepresentation itcr(lcr);
   Handle(BRep_CurveRepresentation) cr;
   Handle(BRep_GCurve) GC;
-  Standard_Real f,l;
+  Standard_Real f = 0.,l = 0.;
 
   while (itcr.More()) {
     GC = Handle(BRep_GCurve)::DownCast(itcr.Value());
@@ -285,7 +285,7 @@ static void UpdateCurves(BRep_ListOfCurveRepresentation& lcr,
   BRep_ListIteratorOfListOfCurveRepresentation itcr(lcr);
   Handle(BRep_CurveRepresentation) cr;
   Handle(BRep_GCurve) GC;
-  Standard_Real f,l;
+  Standard_Real f = 0.,l = 0.;
 
   while (itcr.More()) {
     GC = Handle(BRep_GCurve)::DownCast(itcr.Value());

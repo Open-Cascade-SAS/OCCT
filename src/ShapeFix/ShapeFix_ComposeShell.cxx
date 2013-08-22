@@ -2001,7 +2001,7 @@ void ShapeFix_ComposeShell::CollectWires (ShapeFix_SequenceOfWireSegment &wires,
   TopoDS_Vertex firstV, endV;
   TopoDS_Edge firstEdge, lastEdge;
   Standard_Real tol = 0;
-  Standard_Integer iumin, iumax, ivmin, ivmax;
+  Standard_Integer iumin = 0, iumax = 0, ivmin = 0, ivmax = 0;
   Standard_Real dsu=0., dsv=0.;
   Standard_Boolean canBeClosed = Standard_False;
   for(;;) {

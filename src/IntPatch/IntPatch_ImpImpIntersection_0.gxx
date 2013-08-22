@@ -109,11 +109,9 @@ Standard_Boolean IntersectionWithAnArc(gp_Pnt& PSurf,
   dtheta = (u1alin-u0alin)*0.01;
   Standard_Real du=0.000000001;
   Standard_Real distmin = RealLast();
-#ifndef DEB
+
   Standard_Real thetamin = 0.;
-#else
-  Standard_Real thetamin;
-#endif
+
   Standard_Real theparameteronarc = _theparameteronarc;
   for(Standard_Real _theta=u0alin+dtheta; _theta<=u1alin-dtheta; _theta+=dtheta) { 
     gp_Pnt P=alin->Value(_theta);
@@ -123,11 +121,9 @@ Standard_Boolean IntersectionWithAnArc(gp_Pnt& PSurf,
       distmin=d;
     }
   }
-#ifndef DEB
+
   Standard_Real bestpara =0., besttheta =0., bestdist =0., distinit =0. ;
-#else
-    Standard_Real bestpara,besttheta,bestdist,distinit;
-#endif
+
   //-- Distance initiale
   {
     gp_Pnt pp0 = alin->Value(thetamin);
@@ -1232,7 +1228,7 @@ Standard_Boolean  SingleLine (const gp_Pnt& Psurf,
 
   IntPatch_IType typarc = lin->ArcType();
 
-  Standard_Real parproj;
+  Standard_Real parproj = 0.;
   gp_Vec tgint;
   gp_Pnt ptproj;
   Standard_Boolean retvalue;
@@ -1343,11 +1339,9 @@ void ProcessSegments (const IntPatch_SequenceOfSegmentOfTheSOnBounds& listedg,
   IntPatch_TheSegmentOfTheSOnBounds thesegsol;
   IntPatch_ThePathPointOfTheSOnBounds PStartf,PStartl;
   Standard_Boolean dofirst,dolast,procf,procl;
-#ifndef DEB
+
   Standard_Real paramf =0.,paraml =0.,U1 =0.,V1 =0.,U2 =0.,V2 =0.;
-#else
-  Standard_Real paramf,paraml,U1,V1,U2,V2;
-#endif
+
   IntPatch_IType typ;
   IntSurf_TypeTrans trans1,trans2;
   IntSurf_Transition TRest,TArc;
@@ -1684,11 +1678,9 @@ void ProcessRLine (IntPatch_SequenceOfLine& slin,
   
   Standard_Integer i,j,k;
   Standard_Integer Nblin,Nbvtx, Nbpt;
-#ifndef DEB
+
   Standard_Boolean OnFirst = Standard_False,project = Standard_False,keeppoint = Standard_False;
-#else
-  Standard_Boolean OnFirst,project,keeppoint;
-#endif
+
   Handle(Adaptor2d_HCurve2d) arcref;
   Standard_Real paramproj,paramf,paraml;
 

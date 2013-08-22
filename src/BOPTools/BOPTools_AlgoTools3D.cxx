@@ -90,7 +90,7 @@ static
   void BOPTools_AlgoTools3D::DoSplitSEAMOnFace (const TopoDS_Edge& aSplit,
                                                 const TopoDS_Face& aF)
 {
-  Standard_Boolean bIsUPeriodic, bIsVPeriodic, bIsLeft;
+  Standard_Boolean bIsUPeriodic, bIsVPeriodic, bIsLeft = Standard_False;
   Standard_Real aTol, a, b, anUPeriod, anVPeriod, aT, anU, dU=1.e-7, anU1,
                 anV, dV=1.e-7, anV1;
   Standard_Real aScPr;
@@ -116,7 +116,7 @@ static
   //
   if (!bIsUPeriodic && !bIsVPeriodic) {
     Standard_Boolean bIsUClosed, bIsVClosed;
-    Standard_Real aUmin, aUmax, aVmin, aVmax;
+    Standard_Real aUmin = 0., aUmax = 0., aVmin = 0., aVmax = 0.;
     Handle(Geom_BSplineSurface) aBS;
     Handle(Geom_BezierSurface) aBZ;
     //
@@ -741,7 +741,7 @@ void Add(const TopoDS_Shape& aS,
   Standard_Boolean bIsDone, bHasFirstPoint, bHasSecondPoint;
   Standard_Integer iErr, aIx, aNbDomains, i;
   Standard_Real aUMin, aUMax, aVMin, aVMax;
-  Standard_Real aVx, aUx, aV1, aV2, aEpsT;
+  Standard_Real aVx = 0., aUx, aV1, aV2, aEpsT;
   gp_Dir2d aD2D (0., 1.);
   gp_Pnt2d aP2D;
   gp_Pnt aPx;

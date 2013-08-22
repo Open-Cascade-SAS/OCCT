@@ -293,7 +293,7 @@ Standard_Boolean ShapeConstruct::JoinPCurves(const Handle(TopTools_HSequenceOfSh
     Standard_Boolean IsEdgeSeam = Standard_False;
     Handle(Geom2d_Curve) aCrvRes1, aCrvRes2;
     TopAbs_Orientation resOrient;
-    Standard_Real newf,newl;
+    Standard_Real newf = 0.,newl = 0.;
     // iterates on edges
     Standard_Integer i = 1;
     for(; i <= edges->Length(); i++) {

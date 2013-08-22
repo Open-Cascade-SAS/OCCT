@@ -327,7 +327,7 @@ Handle(Geom_Surface) ShapeCustom_Surface::ConvertToAnalytical (const Standard_Re
   GeomAdaptor_Surface& SurfAdapt = NHS->ChangeSurface();
 
   const Standard_Integer NP = 21;
-  Standard_Real S, T;  // U,V deja fait
+  Standard_Real S = 0., T = 0.;  // U,V deja fait
   gp_Pnt P3d, P3d2;
   Standard_Boolean onSurface = Standard_True;
 

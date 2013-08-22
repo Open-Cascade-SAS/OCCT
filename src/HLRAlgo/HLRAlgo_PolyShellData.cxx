@@ -97,7 +97,7 @@ UpdateGlobalMinMax(const Standard_Address TotMinMax)
     }
   }
   Standard_Integer nbFace      = myPolyg.Upper();
-  Handle(HLRAlgo_PolyData)* pd;
+  Handle(HLRAlgo_PolyData)* pd = NULL;
   if(nbFace > 0) pd =  (Handle(HLRAlgo_PolyData)*)&(myPolyg.ChangeValue(1));
   
   for (Standard_Integer i = 1; i <= nbFace; i++) {

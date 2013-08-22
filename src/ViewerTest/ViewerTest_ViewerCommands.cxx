@@ -2502,26 +2502,20 @@ static int VSetBgMode(Draw_Interpretor& di, Standard_Integer argc, const char** 
     di << "use 'vinit' command before " << argv[0] << "\n";
     return 1;
   }
-
-  Aspect_FillMethod aFillType;
-  if (argc == 2)
+  Aspect_FillMethod aFillType = Aspect_FM_NONE;
+  const char* szType = argv[1];
+  if      (strcmp(szType, "NONE"    ) == 0) aFillType = Aspect_FM_NONE;
+  else if (strcmp(szType, "CENTERED") == 0) aFillType = Aspect_FM_CENTERED;
+  else if (strcmp(szType, "TILED"   ) == 0) aFillType = Aspect_FM_TILED;
+  else if (strcmp(szType, "STRETCH" ) == 0) aFillType = Aspect_FM_STRETCH;
+  else
   {
-    const char* szType = argv[1];
-    if      (strcmp(szType, "NONE"    ) == 0) aFillType = Aspect_FM_NONE;
-    else if (strcmp(szType, "CENTERED") == 0) aFillType = Aspect_FM_CENTERED;
-    else if (strcmp(szType, "TILED"   ) == 0) aFillType = Aspect_FM_TILED;
-    else if (strcmp(szType, "STRETCH" ) == 0) aFillType = Aspect_FM_STRETCH;
-    else
-    {
-      di << "Wrong fill type : " << szType << "\n";
-      di << "Must be one of CENTERED, TILED, STRETCH, NONE" << "\n";
-      return 1;
-    }
+    di << "Wrong fill type : " << szType << "\n";
+    di << "Must be one of CENTERED, TILED, STRETCH, NONE" << "\n";
+    return 1;
   }
-
   Handle(V3d_View) V3dView = ViewerTest::CurrentView();
   V3dView->SetBgImageStyle(aFillType, Standard_True);
-
   return 0;
 }
 
@@ -4267,7 +4261,7 @@ static Standard_Integer VZClipping (Draw_Interpretor& di,
     return 1;
   }
   Handle(V3d_View) aView = ViewerTest::CurrentView();
-  V3d_TypeOfZclipping aZClippingMode;
+  V3d_TypeOfZclipping aZClippingMode = V3d_OFF;
   if(argc==1)
   {
     TCollection_AsciiString aZClippingModeString;

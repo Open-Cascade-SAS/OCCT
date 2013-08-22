@@ -260,8 +260,8 @@ Standard_Boolean Blend_Walking::PerformFirstSection
   math_Vector tolerance(1,4),infbound(1,4),supbound(1,4);
   math_Vector solrst1(1,4),solrst2(1,4);
   TheExtremity Ext1,Ext2;
-  Standard_Integer Index1,Index2,nbarc;
-  Standard_Boolean Isvtx1,Isvtx2;
+  Standard_Integer Index1 = 0, Index2 = 0, nbarc;
+  Standard_Boolean Isvtx1 = Standard_False, Isvtx2 = Standard_False;
   TheVertex Vtx1,Vtx2;
   gp_Pnt2d p2d;
 

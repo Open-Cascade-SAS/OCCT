@@ -716,7 +716,7 @@ void CheckEdge (const TopoDS_Edge& Ed, const Standard_Real aMaxTol)
   TopoDS_Iterator aItF, aItW, aItE;
   BRep_Builder aBB;
   //
-  aTolF = BRep_Tool::Tolerance(aF);
+  aTolE = aTolF = BRep_Tool::Tolerance(aF);
   aItF.Initialize(aF);
   for (; aItF.More(); aItF.Next()) {
     const TopoDS_Shape& aS = aItF.Value();

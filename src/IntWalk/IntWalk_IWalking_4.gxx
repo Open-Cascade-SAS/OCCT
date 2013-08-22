@@ -47,7 +47,7 @@ void IntWalk_IWalking::ComputeCloseLine(const TColStd_SequenceOfReal& Umult,
 // ******************************************************************** 
 {
 
-  Standard_Integer I,N;
+  Standard_Integer I,N = 0;
   Standard_Real aBornInf[2], aBornSup[2], aUVap[2];
   math_Vector BornInf(aBornInf,1,2), BornSup(aBornSup,1,2);
   math_Vector Uvap(aUVap,1,2);// parameters of current approach

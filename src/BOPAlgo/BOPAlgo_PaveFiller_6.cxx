@@ -478,7 +478,7 @@ void BOPAlgo_PaveFiller::PerformFF()
   }
   //
   Standard_Boolean bHasPaveBlocks, bOld;
-  Standard_Integer iErr, nSx, nVSD, iX, iP, iC, j, nV, iV, iE, k;
+  Standard_Integer iErr, nSx, nVSD, iX, iP, iC, j, nV, iV = 0, iE, k;
   Standard_Integer jx;
   Standard_Real aT;
   Standard_Integer aNbLPBx;

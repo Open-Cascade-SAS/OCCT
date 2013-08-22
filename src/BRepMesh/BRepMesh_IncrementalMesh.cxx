@@ -343,7 +343,7 @@ void BRepMesh_IncrementalMesh::Update(const TopoDS_Edge& E)
   Handle(Poly_Triangulation) T, TNull;
   Handle(Poly_PolygonOnTriangulation) Poly, NullPoly;
   Standard_Boolean found = Standard_False;
-  Standard_Real defedge;
+  Standard_Real defedge = Precision::Confusion();
   Standard_Real cdef = 1.;
   BRep_Builder B;
   Standard_Boolean defined = Standard_False;

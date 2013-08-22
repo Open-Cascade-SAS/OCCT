@@ -139,7 +139,7 @@ Standard_EXPORT void FDS_repvg2
 	  gp_Pnt2d uv; ok = FUN_tool_paronEF(E,pE,F1,uv); if (!ok) {it2.Next();continue;}
 	  Standard_Real factor = 0.789;
 	  TopOpeBRepTool_makeTransition MKT; 
-	  TopAbs_State stb,sta; 
+	  TopAbs_State stb = TopAbs_UNKNOWN,sta = TopAbs_UNKNOWN; 
 	  ok = MKT.Initialize(E,pbef,paft,pE, F1,uv, factor);
 	  if (ok) ok = MKT.SetRest(E1,pE1);
 	  if (ok) ok = MKT.MkTonE(stb,sta);

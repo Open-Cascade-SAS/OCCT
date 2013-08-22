@@ -446,7 +446,7 @@ Standard_Boolean VrmlData_ShapeNode::IsDefault () const
 
 VrmlData_ErrorStatus VrmlData_UnknownNode::Read (VrmlData_InBuffer& theBuffer)
 {
-  VrmlData_ErrorStatus aStatus;
+  VrmlData_ErrorStatus aStatus = VrmlData_StatusOK;
   Standard_Integer aLevelCounter (0);
   // This loop searches for any opening brace.
   // Such brace increments the level counter. A closing brace decrements

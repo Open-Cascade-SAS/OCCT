@@ -43,11 +43,7 @@
 
 Dynamic_ModeEnum Dynamic::Mode(const Standard_CString amode)
 {
-#ifdef DEB
-Dynamic_ModeEnum aMode;
-#else
 Dynamic_ModeEnum aMode=Dynamic_IN;
-#endif
   if     (!strcasecmp(amode,"in"      )) aMode = Dynamic_IN;
   else if(!strcasecmp(amode,"out"     )) aMode = Dynamic_OUT;
   else if(!strcasecmp(amode,"inout"   )) aMode = Dynamic_INOUT;

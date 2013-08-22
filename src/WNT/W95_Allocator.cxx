@@ -791,7 +791,7 @@ void W32_ImageNote :: Play ( BOOL ) {
     int     Ymin    = MIN4( Y1, Y2, Y3, Y4 );
     PINT    line1, line2, line3, line4;
     PPOINT  lines;
-    HBITMAP hbo2, hBmp;
+    HBITMAP hbo2 = NULL, hBmp = NULL;
 
     if ( fScale ) {
 

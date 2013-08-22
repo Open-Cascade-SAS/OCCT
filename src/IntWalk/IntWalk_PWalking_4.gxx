@@ -47,11 +47,7 @@ Standard_Boolean IntWalk_PWalking::
 {
   Standard_Real Uvd[4],Uvf[4],Epsuv[4],Duv[4],Uvp[4],dv,dv2,ParC[4];
   Standard_Real DPc,DPb;
-#ifndef DEB
   Standard_Integer i = 0, k = 0;
-#else 
-  Standard_Integer i,k;
-#endif
   Epsuv[0] = ResoU1;
   Epsuv[1] = ResoV1;
   Epsuv[2] = ResoU2;

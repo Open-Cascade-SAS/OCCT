@@ -1172,7 +1172,7 @@ BRepCheck_Status BRepCheck_Wire::SelfIntersect(const TopoDS_Face& F,
 		f2-IP_ParamOnSecond > ::Precision::PConfusion() || 
 		IP_ParamOnSecond-l2 > ::Precision::PConfusion() ) 
 	      continue;
-	    Standard_Real tolvtt;
+	    Standard_Real tolvtt = 0.;
 	    //  Modified by Sergey KHROMOV - Mon Apr 15 12:34:22 2002 Begin
 	    if (!ConS.IsNull()) { 
 	      P3d = ConS->Value(IP_ParamOnFirst); 

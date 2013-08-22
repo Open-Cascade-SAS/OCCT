@@ -111,7 +111,7 @@ GeomFill_GuideTrihedronPlan::GeomFill_GuideTrihedronPlan (const Handle(Adaptor3d
 //  Box.Update(-0.1, -0.1, 0.1, 0.1); // Taille minimal
   gp_Vec Tangent,Normal,BiNormal;
   Standard_Integer ii;
-  Standard_Real t, DeltaG, w;
+  Standard_Real t, DeltaG, w = 0.;
   Standard_Real f = myCurve->FirstParameter();
   Standard_Real l = myCurve->LastParameter();
   

@@ -208,7 +208,7 @@ void AdvApprox_SimpleApprox::Perform(const TColStd_Array1OfInteger& LocalDimensi
   }
   
   // the computation of Qq(t)
-  Standard_Real Sum;
+  Standard_Real Sum = 0.;
   for (k=0; k<=DegreeQ; k+=2) {
     for (idim=1; idim<=myTotalDimension; idim++) {
       Sum=0.;

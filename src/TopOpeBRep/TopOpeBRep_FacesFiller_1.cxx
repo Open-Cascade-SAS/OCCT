@@ -343,7 +343,7 @@ static Standard_Boolean FUN_findTOOF(const TopOpeBRepDS_PDataStructure pDS,
     if (!ok1) return Standard_False;
     Standard_Real f,l; FUN_tool_bounds(OOE,f,l);
     
-    TopAbs_State stb,sta;
+    TopAbs_State stb = TopAbs_UNKNOWN,sta = TopAbs_UNKNOWN;
     TopOpeBRepTool_makeTransition MKT; 
     OOdone = MKT.Initialize(OOE,f,l,oopar,F,uv,factor);
     if (OOdone) OOdone = MKT.SetRest(E,paronE);

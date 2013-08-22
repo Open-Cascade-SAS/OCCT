@@ -147,7 +147,7 @@ void BoundedArc (const TheArc& A,
   Standard_Integer i,Nbi,Nbp;
 
   gp_Pnt ptdeb,ptfin;
-  Standard_Real pardeb,parfin;
+  Standard_Real pardeb = 0,parfin = 0;
   Standard_Integer ideb,ifin,range,ranged,rangef;
   
 
@@ -593,7 +593,7 @@ void InfiniteArc (const TheArc& A,
   Standard_Integer i,Nbi,Nbp;
 
   gp_Pnt ptdeb,ptfin;
-  Standard_Real pardeb,parfin;
+  Standard_Real pardeb = 0.,parfin = 0.;
   Standard_Integer ideb,ifin,range,ranged,rangef;
   
 

@@ -45,7 +45,7 @@ void RWStepElement_RWElementDescriptor::ReadStep (const Handle(StepData_StepRead
 
   // Own fields of ElementDescriptor
 
-  StepElement_ElementOrder aTopologyOrder;
+  StepElement_ElementOrder aTopologyOrder = StepElement_Linear;
   if (data->ParamType (num, 1) == Interface_ParamEnum) {
     Standard_CString text = data->ParamCValue(num, 1);
     if      (strcmp(text, ".LINEAR.") == 0) aTopologyOrder = StepElement_Linear;

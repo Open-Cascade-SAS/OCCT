@@ -955,7 +955,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
   Standard_Real MS = MaxStep;
   Standard_Integer again = 0;
   Standard_Integer nbptmin = 3; //jlr
-  Standard_Integer Nbpnt = 0;
+  Standard_Integer Nbpnt = 1;
   // the initial solution is reframed if necessary.
   math_Vector ParSol(1,3);
   Standard_Real NewFirst = PFirst;
@@ -2073,7 +2073,7 @@ Standard_Boolean ChFi3d_Builder::SimulData
   
   Standard_Real MS = MaxStep;
   Standard_Real TolGuide=tolguide, TolEsp = tolesp;
-  Standard_Integer Nbpnt;
+  Standard_Integer Nbpnt = 0;
   Standard_Real SpFirst = HGuide->FirstParameter();
   Standard_Real SpLast =  HGuide->LastParameter();
   Standard_Boolean reverse = (!Forward || Inside);

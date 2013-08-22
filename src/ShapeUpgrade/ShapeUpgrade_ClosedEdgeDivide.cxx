@@ -61,7 +61,7 @@ Standard_Boolean ShapeUpgrade_ClosedEdgeDivide::Compute(const TopoDS_Edge& anEdg
     Standard_Real f, l;
     Handle(Geom_Curve) curve3d = BRep_Tool::Curve (anEdge, f, l);
     myHasCurve3d = !curve3d.IsNull();
-    Standard_Real f2d, l2d;
+    Standard_Real f2d = 0., l2d = 0.;
     Handle(Geom2d_Curve) pcurve1;
     if ( ! myFace.IsNull() ) { // process free edges
       sae.PCurve (anEdge, myFace, pcurve1, f2d, l2d, Standard_False);

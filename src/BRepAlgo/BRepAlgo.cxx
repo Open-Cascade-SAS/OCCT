@@ -254,7 +254,7 @@ TopoDS_Edge  BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
   TColStd_SequenceOfReal FparSeq;
   TColStd_SequenceOfReal LparSeq;
   TColStd_SequenceOfReal TolSeq;
-  GeomAbs_CurveType CurType;
+  GeomAbs_CurveType CurType = GeomAbs_OtherCurve;
   TopoDS_Vertex FirstVertex, LastVertex;
   Standard_Boolean FinalReverse = Standard_False;
 
@@ -294,7 +294,7 @@ TopoDS_Edge  BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
       else
 	{
 	  Standard_Boolean Done = Standard_False;
-	  Standard_Real NewFpar, NewLpar;
+	  Standard_Real NewFpar = 0., NewLpar = 0.;
 	  GeomAdaptor_Curve GAprevcurve(CurveSeq.Last());
 	  TopoDS_Vertex CurVertex = wexp.CurrentVertex();
 	  TopoDS_Vertex CurFirstVer = TopExp::FirstVertex(anEdge);

@@ -41,11 +41,8 @@ Blend_Status Blend_CSWalking::TestArret(Blend_CSFunction& Function,
   gp_Pnt2d pt2d;
   Standard_Real pOnC;
   Blend_Status State1,State2;
-#ifndef DEB
   IntSurf_TypeTrans tras = IntSurf_Undecided;
-#else
-  IntSurf_TypeTrans tras;
-#endif
+
   if (Function.IsSolution(Sol,tolesp)) {
 
     pt1  = Function.PointOnS();

@@ -48,7 +48,7 @@ void RWStepElement_RWCurve3dElementDescriptor::ReadStep (const Handle(StepData_S
 
   // Inherited fields of ElementDescriptor
 
-  StepElement_ElementOrder aElementDescriptor_TopologyOrder;
+  StepElement_ElementOrder aElementDescriptor_TopologyOrder = StepElement_Linear;
   if (data->ParamType (num, 1) == Interface_ParamEnum) {
     Standard_CString text = data->ParamCValue(num, 1);
     if      (strcmp(text, ".LINEAR.")==0) aElementDescriptor_TopologyOrder = StepElement_Linear;

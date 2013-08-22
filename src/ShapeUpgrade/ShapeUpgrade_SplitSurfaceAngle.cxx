@@ -70,7 +70,7 @@ double ShapeUpgrade_SplitSurfaceAngle::MaxAngle () const
 void ShapeUpgrade_SplitSurfaceAngle::Compute(const Standard_Boolean /*Segment*/)
 {
   Handle(Geom_Surface) S;
-  Standard_Real U1,U2;
+  Standard_Real U1 = 0.,U2 = 0.;
   Standard_Boolean isRect = Standard_False;
   if(mySurface->IsKind(STANDARD_TYPE(Geom_RectangularTrimmedSurface))){
     Handle(Geom_RectangularTrimmedSurface) rts = 

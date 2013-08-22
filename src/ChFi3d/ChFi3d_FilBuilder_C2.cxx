@@ -477,7 +477,7 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const Standard_Integer Index)
 	TopAbs_Orientation oriSFF1 = st1->Orientation(IFaArc1);
 	bid = 1;
 	bid = ChFi3d::NextSide(ori,OFF1,oriS,oriSFF1,bid);
-	TopAbs_Orientation op1,op2;
+	TopAbs_Orientation op1 = TopAbs_FORWARD,op2 = TopAbs_FORWARD;
 	if(yapiv) bid = ChFi3d::ConcaveSide(BRS1,BRS2,pivot,op1,op2);
 	op1 = TopAbs::Reverse(op1);
 	op2 = TopAbs::Reverse(op2);

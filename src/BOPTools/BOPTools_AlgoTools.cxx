@@ -1470,7 +1470,7 @@ Standard_Boolean FindFacePairs (const TopoDS_Edge& theE,
 {
   Standard_Boolean bFound;
   Standard_Integer i, aNbCEF;
-  TopAbs_Orientation aOr, aOrC;
+  TopAbs_Orientation aOr, aOrC = TopAbs_FORWARD;
   BOPCol_MapOfShape aMFP;
   TopoDS_Face aF1, aF2;
   TopoDS_Edge aEL, aE1;

@@ -543,11 +543,9 @@ static void AddPoints(IntCurvesFace_Intersector& theInt,
     param = theInt.WParameter(j);
     paramu = theInt.UParameter(j);
     paramv = theInt.VParameter(j);
-#ifdef DEB
-    TopAbs_Orientation theor;
-#else
+
     TopAbs_Orientation theor=TopAbs_FORWARD;
-#endif
+
     switch (theInt.Transition(j)) {
     case IntCurveSurface_In:
 /* JAG 13.09.96

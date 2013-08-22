@@ -711,8 +711,10 @@ static void Descendants(const TopoDS_Shape&,
     TopTools_ListOfShape lshape;
     theBuilder.PartsOfTool(lshape);
     //
-    Standard_Real pbmin, pbmax, prmin, prmax;
-    Standard_Boolean flag1;
+    Standard_Real pbmin = RealLast(), pbmax = RealFirst();
+    Standard_Real prmin = RealLast()  - 2*Precision::Confusion();
+    Standard_Real prmax = RealFirst() + 2*Precision::Confusion();
+    Standard_Boolean flag1 = Standard_False;
     Handle(Geom_Curve) C;
 
 //--- Selection of pieces of tool to be preserved

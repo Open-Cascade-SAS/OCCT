@@ -276,7 +276,7 @@ void Draw_Appli(Standard_Integer argc, char** argv,const FDraw_InitAppli Draw_In
   // init X window and create display
   // *****************************************************************
 #ifdef WNT
-  HWND hWnd;
+  HWND hWnd = NULL;
 #endif
 
   if (!Draw_Batch)

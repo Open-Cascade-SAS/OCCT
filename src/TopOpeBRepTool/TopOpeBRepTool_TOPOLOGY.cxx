@@ -1177,11 +1177,9 @@ Standard_EXPORT void FUN_ds_Parameter(const TopoDS_Shape& E,const TopoDS_Shape& 
   Handle(Geom_Curve) C = BRep_Tool::Curve(e,loc,f,l);
   if ( !C.IsNull() && C->IsPeriodic()) {
     Standard_Real per = C->Period();
-#ifdef DEB
-    TopAbs_Orientation oV;
-#else
+
     TopAbs_Orientation oV=TopAbs_FORWARD;
-#endif
+
     TopExp_Explorer exV(e,TopAbs_VERTEX);
     for (; exV.More(); exV.Next()) {
       const TopoDS_Vertex& vofe = TopoDS::Vertex(exV.Current());

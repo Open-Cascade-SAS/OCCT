@@ -345,11 +345,8 @@ static void Perform(BRepIntCurveSurface_Inter & theInt,
 {
   Standard_Real param,paramu,paramv;
   Standard_Integer i, nbpoints=0;
-#ifdef DEB
-  TopAbs_Orientation theor, orface;
-#else
+
   TopAbs_Orientation theor=TopAbs_FORWARD, orface;
-#endif
 
   while (theInt.More()) {
     const gp_Pnt& thept = theInt.Pnt();

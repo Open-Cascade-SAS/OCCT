@@ -254,7 +254,7 @@ static Standard_Boolean CorrectOrientation(const TopoDS_Shell& TheS)
 
   Standard_Integer i, nbEdgs = aMapEdgeFace.Extent();
   TopExp_Explorer anExp;
-  TopAbs_Orientation anOrnt;
+  TopAbs_Orientation anOrnt = TopAbs_FORWARD;
 
   for(i = 1; i <= nbEdgs; i++) {
 

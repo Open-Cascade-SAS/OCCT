@@ -312,11 +312,8 @@ static int VSize (Draw_Interpretor& di, Standard_Integer argc, const char** argv
   Standard_Boolean             ThereIsCurrent;
   Standard_Real                value;
   Standard_Boolean             hascol;
-#ifdef DEB
-  Quantity_NameOfColor         col;
-#else
+
   Quantity_NameOfColor         col = Quantity_NOC_BLACK ;
-#endif
 
   // Verification des arguments
   if ( argc>3 ) {di<<argv[0]<<" Syntaxe error"<<"\n"; return 1;}
@@ -3522,7 +3519,7 @@ static Standard_Integer VConnect(Draw_Interpretor& /*di*/,
   TCollection_AsciiString aName (argv[anArgIter++]);
   Handle(AIS_InteractiveObject) anOriginObject;
   TCollection_AsciiString aColorString (argv[argc-1]);
-  Standard_CString aColorName;
+  Standard_CString aColorName = "";
   Standard_Boolean hasColor = Standard_False;
   if (aColorString.Search ("color=") != -1)
   {
@@ -3702,7 +3699,7 @@ static Standard_Integer VConnectShape(Draw_Interpretor& /*di*/,
   TCollection_AsciiString aName (argv[anArgIter++]);
   Handle(AIS_InteractiveObject) anOriginShape;
   TCollection_AsciiString aColorString(argv[argc-1]);
-  Standard_CString aColorName;
+  Standard_CString aColorName = "";
   Standard_Boolean hasColor = Standard_False;
   if (aColorString.Search ("color=") != -1)
   {

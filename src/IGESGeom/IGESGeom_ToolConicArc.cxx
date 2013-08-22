@@ -60,7 +60,7 @@ void IGESGeom_ToolConicArc::ReadOwnParams(const Handle(IGESGeom_ConicArc)& ent,
   //======================================
 
   //Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
-  Standard_Real A, B, C, D, E, F, ZT;
+  Standard_Real A, B = 0., C = 0., D = 0., E = 0., F = 0., ZT;
   gp_XY tempStart, tempEnd;
 
  /* PR.ReadReal(PR.Current(), Msg81, A); //szv#4:S4163:12Mar99 `st=` not needed

@@ -328,7 +328,7 @@ Standard_EXPORT void FUN_unkeepEsymetrictransitions
 	Standard_Boolean idshape = ::FUN_transitionSHAPEEQUAL(T1,T2);
 	Standard_Boolean idstate = ::FUN_transitionSTATEEQUAL(T1,T2);
 	Standard_Boolean newV = Standard_True;
-	Standard_Boolean oppostate;
+	Standard_Boolean oppostate = Standard_False;
 	
 	if (newV) {
 	  // sym is not precise enough (croix3_3-> OUT/IN; ON/OUT)

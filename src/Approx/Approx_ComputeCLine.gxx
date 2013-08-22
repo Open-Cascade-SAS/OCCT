@@ -28,6 +28,7 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <AppParCurves_Constraint.hxx>
 #include <Approx_Status.hxx>
+#include <Precision.hxx>
 
 //=======================================================================
 //function : Approx_ComputeCLine
@@ -89,12 +90,10 @@ Approx_ComputeCLine::Approx_ComputeCLine
 
 void Approx_ComputeCLine::Perform(const MultiLine& Line)
 {
-    
-
   Standard_Real UFirst, ULast;
   Standard_Boolean Finish = Standard_False, 
           begin = Standard_True, Ok = Standard_False;
-  Standard_Real thetol3d, thetol2d;
+  Standard_Real thetol3d = Precision::Confusion(), thetol2d = Precision::Confusion();
   UFirst = LineTool::FirstParameter(Line);
   ULast  = LineTool::LastParameter(Line);
   Standard_Real TolU = (ULast-UFirst)*1.e-05;
@@ -116,11 +115,9 @@ void Approx_ComputeCLine::Perform(const MultiLine& Line)
 
     // previous decision to be taken if we get worse with next cut (eap)
     AppParCurves_MultiCurve KeptMultiCurve;
-    Standard_Real KeptUfirst, KeptUlast, KeptT3d, KeptT2d;
+    Standard_Real KeptUfirst = 0., KeptUlast = 0., KeptT3d = RealLast(), KeptT2d = 0.;
     Standard_Integer NbWorseDecis = 0, NbAllowedBadDecis = 10;
-    
-    KeptT3d = RealLast(); KeptT2d = 0;
-    
+
     while (!Finish) {
       
       // Gestion du decoupage de la multiline pour approximer:

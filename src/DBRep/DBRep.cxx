@@ -720,11 +720,7 @@ static Standard_Integer orientation(Draw_Interpretor& ,
 {
   if (n <= 1) return 1;
   Standard_Integer cas = 0;
-#ifdef DEB
-  TopAbs_Orientation ori;
-#else
   TopAbs_Orientation ori=TopAbs_FORWARD;
-#endif
   Standard_Integer last = n;
   if (!strcasecmp(a[0],"orientation")) {
     if (n <= 2) return 1;

@@ -620,7 +620,7 @@ static void Sort3Faces(const TopTools_ListOfShape& theListIn, TopTools_ListOfSha
   }
 
   Standard_Boolean found = Standard_False;
-  Standard_Integer j, i1, i2, i3; 
+  Standard_Integer j, i1 = 0, i2 = 0, i3 = 0; 
   TopoDS_Edge anEdge;
   for(i=1;i<=3;i++) {
     TopExp_Explorer anExp1(ArS.Value(i), TopAbs_EDGE);
@@ -840,7 +840,7 @@ static void SortEdges2(const TColgp_Array1OfPnt& theArP, const gp_Ax1& theAx,
 static void SortEdges3(const TopTools_Array1OfShape& theArS, const TColgp_Array1OfPnt& theArP, 
 		       const gp_Ax1& theAx, TColStd_Array1OfInteger& theArI)
 {
-  Standard_Integer i, j, i1,i2, i3;
+  Standard_Integer i, j, i1 = 0,i2 = 0, i3 = 0;
   TopoDS_Shape aV;
   Standard_Boolean adjacent = Standard_False;
   for(i=1;i<=3;i++) {    
@@ -910,13 +910,13 @@ static void SortEdges4(const TopTools_Array1OfShape& theArS, const TColgp_Array1
 // 2. find nearest pair, reorganize ArI
 // 3. sort inside pairs
 // =======================================
-  Standard_Integer i, j, i1,i2, i3, i4;
+  Standard_Integer i, j, i1 = 0,i2 = 0, i3 = 0, i4 = 0;
 // 1.
   TopoDS_Shape aV1;
   for(i=1;i<=4;i++) { 
     const TopoDS_Shape& aV11 = TopExp::FirstVertex(TopoDS::Edge(theArS.Value(i)));
     const TopoDS_Shape& aV12 = TopExp::LastVertex(TopoDS::Edge(theArS.Value(i)));
-    Standard_Boolean aDjacent;
+    Standard_Boolean aDjacent = Standard_False;
     for(j=1;j<=4;j++) {
       if(i==j) continue;
       const TopoDS_Shape& aV21 = TopExp::FirstVertex(TopoDS::Edge(theArS.Value(j)));
@@ -1166,7 +1166,7 @@ static void FindAdjacent3(const TopTools_ListOfShape& theList,
     ArD.SetValue(i, anAx.Direction());
   }
   Standard_Boolean aDjacent = Standard_False;
-  Standard_Integer j, i2, i3; //i2, i3 - indexes of two adjacent faces having the same surface
+  Standard_Integer j, i2 = 0, i3 = 0; //i2, i3 - indexes of two adjacent faces having the same surface
   Standard_Integer i1 = 0; //single face
   for(i=1;i<=3;i++) {    
     for(j=1;j<=3;j++) {

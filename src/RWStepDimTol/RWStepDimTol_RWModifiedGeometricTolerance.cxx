@@ -59,7 +59,7 @@ void RWStepDimTol_RWModifiedGeometricTolerance::ReadStep (const Handle(StepData_
 
   // Own fields of ModifiedGeometricTolerance
 
-  StepDimTol_LimitCondition aModifier;
+  StepDimTol_LimitCondition aModifier = StepDimTol_MaximumMaterialCondition;
   if (data->ParamType (num, 5) == Interface_ParamEnum) {
     Standard_CString text = data->ParamCValue(num, 5);
     if      (strcmp(text, ".MAXIMUM_MATERIAL_CONDITION.")==0) aModifier = StepDimTol_MaximumMaterialCondition;

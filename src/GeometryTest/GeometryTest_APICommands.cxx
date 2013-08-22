@@ -336,7 +336,7 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
   Standard_Boolean S1 = Standard_False;
   Standard_Boolean S2 = Standard_False;
 
-  Standard_Real U1f,U1l,U2f,U2l,V1f,V1l,V2f,V2l;
+  Standard_Real U1f,U1l,U2f,U2l,V1f = 0.,V1l = 0.,V2f = 0.,V2l = 0.;
 
   GC1 = DrawTrSurf::GetCurve(a[1]);
   if ( GC1.IsNull()) {

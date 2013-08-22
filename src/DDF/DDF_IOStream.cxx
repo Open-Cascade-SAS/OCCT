@@ -303,7 +303,7 @@ void DDF_IOStream::ReadChar(TCollection_AsciiString& buffer, const Standard_Inte
 
 void DDF_IOStream::ReadString(TCollection_AsciiString& buffer)
 {
-  char c;
+  char c = '\0';
   Standard_Boolean IsEnd = Standard_False;
 
   buffer.Clear();
@@ -329,7 +329,7 @@ void DDF_IOStream::ReadString(TCollection_AsciiString& buffer)
 
 void DDF_IOStream::ReadWord(TCollection_AsciiString& buffer)
 {
-  char c;
+  char c = '\0';
   Standard_Boolean IsEnd = Standard_False;
 
   buffer.Clear();

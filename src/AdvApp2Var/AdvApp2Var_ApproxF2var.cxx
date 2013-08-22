@@ -288,7 +288,7 @@ int mma1cdi_(integer *ndimen,
   /* Local variables */
   integer nroo2, ncfhe, nd, ii, kk;
   integer ibb, kkm, kkp;
-  doublereal bid1, bid2, bid3;
+  doublereal bid1, bid2, bid3 = 0.;
 
 /* ********************************************************************** 
 */
@@ -971,7 +971,7 @@ int mma1fer_(integer *,//ndimen,
   integer crvjac_dim1, crvjac_offset, i__1, i__2;
 
   /* Local variables */
-  integer idim, ncfja, ncfnw, ndses, ii, kk, ibb, ier = 0;
+  integer idim, ncfja, ncfnw, ndses, ii, kk, ibb, ier;
   integer nbr0;
 
 
@@ -3323,7 +3323,7 @@ int AdvApp2Var_ApproxF2var::mma2cdi_( integer *ndimen,
     intptr_t iofwr;
     doublereal* wrkar = 0;
     integer iszwr;
-    integer ibb, ier;
+    integer ibb, ier = 0;
     integer isz1, isz2, isz3, isz4;
     intptr_t ipt1, ipt2, ipt3, ipt4;
 

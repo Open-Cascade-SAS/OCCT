@@ -91,7 +91,7 @@ static gp_Pnt2d Function_Value(const Standard_Real U,
 			       const Standard_Boolean UCouture,
 			       const Standard_Boolean VCouture ) 
 {
-  Standard_Real S, T;
+  Standard_Real S = 0., T = 0.;
 
   gp_Pnt P3d = myCurve->Value(U);
   GeomAbs_SurfaceType SType = mySurface->GetType();
@@ -1072,7 +1072,7 @@ ProjLib_ComputeApprox::ProjLib_ComputeApprox
     //Return curve home
     Standard_Real UFirst = F.FirstParameter();
     gp_Pnt P3d = C->Value( UFirst );
-    Standard_Real u, v;
+    Standard_Real u = 0., v = 0.;
     switch (SType)
       {
       case GeomAbs_Plane:

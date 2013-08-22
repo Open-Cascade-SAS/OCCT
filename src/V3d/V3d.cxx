@@ -140,8 +140,8 @@ Graphic3d_Vector Vec ;
 
 void V3d::ArrowOfRadius(const Handle(Graphic3d_Group)& garrow,const Standard_Real X0,const Standard_Real Y0,const Standard_Real Z0,const Standard_Real Dx,const Standard_Real Dy,const Standard_Real Dz,const Standard_Real Alpha,const Standard_Real Lng)
 {
-  Standard_Real Xc,Yc,Zc,Xi,Yi,Zi,Xj,Yj,Zj;
-  Standard_Real Xn,Yn,Zn,X,Y,Z,X1,Y1,Z1,Norme;
+  Standard_Real Xc, Yc, Zc, Xi, Yi, Zi, Xj, Yj, Zj;
+  Standard_Real Xn, Yn, Zn, X, Y, Z, X1 = 0., Y1 = 0., Z1 = 0., Norme;
   const Standard_Integer NbPoints = 10;
 
 //      Centre du cercle base de la fleche :
@@ -262,7 +262,7 @@ void V3d::DrawSphere(const Handle(V3d_Viewer)& aViewer,const Quantity_Length ray
 
   const Standard_Real Dbeta = 2. * M_PI / NFACES;
   const Standard_Real Dalpha = 2. * M_PI / NFACES;
-  Standard_ShortReal X,Y,Z,X0,Y0,Z0;
+  Standard_ShortReal X,Y,Z,X0 = 0.,Y0 = 0.,Z0 = 0.;
   Standard_Real R, Alpha, Beta = 0.;
   Standard_Integer i,j ;
   for( j=0; j<NFACES/2 ; j++, Beta += Dbeta ) {

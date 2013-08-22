@@ -127,7 +127,7 @@ myKPart(0)
   TopLoc_Location L;
 
   TopExp_Explorer Exp;
-  Standard_Real Umin,Vmin,Umax,Vmax,U,V;
+  Standard_Real Umin = 0.,Vmin = 0.,Umax = 0.,Vmax = 0.,U,V;
   gp_Pnt2d P1,P2;
   gp_Vec DZ;
   gp_Pnt P;

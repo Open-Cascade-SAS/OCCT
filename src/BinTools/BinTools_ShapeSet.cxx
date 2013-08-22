@@ -759,8 +759,8 @@ void  BinTools_ShapeSet::ReadGeometry(const TopAbs_ShapeEnum T,
 {
   // Read the geometry
 
-  Standard_Integer val, c,pc,pc2,s,s2,l,l2,t, pt, pt2;
-  Standard_Real tol,X,Y,Z,first,last,p1,p2;
+  Standard_Integer val, c,pc,pc2 = 0,s,s2,l,l2,t, pt, pt2 = 0;
+  Standard_Real tol,X,Y,Z,first,last,p1 = 0.,p2;
   Standard_Real PfX,PfY,PlX,PlY;
   gp_Pnt2d aPf, aPl;
   Standard_Boolean closed, bval;

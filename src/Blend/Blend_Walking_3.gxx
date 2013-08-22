@@ -29,7 +29,7 @@ Standard_Integer Blend_Walking::ArcToRecadre(const Standard_Boolean OnFirst,
   Standard_Boolean ok = Standard_False;
   Standard_Boolean byinter = (line->NbPoints() != 0), okinter = 0;
   Standard_Real distmin = RealLast();
-  Standard_Real uprev = 0.0, vprev = 0.0, prm = 0.0, dist = 0.0;
+  Standard_Real uprev = 0.,vprev = 0., prm = 0., dist = 0.;
   Handle(TheTopolTool) Iter;
 
   if (OnFirst) {
@@ -86,11 +86,8 @@ Standard_Boolean Blend_Walking::Recadre(Blend_FuncInv& FuncInv,
   Standard_Boolean jalons_Trouve = Standard_False;
   Standard_Boolean recadre = Standard_True, ok;
   Standard_Boolean byinter = (line->NbPoints() != 0);
-#ifndef DEB
   Standard_Integer LeJalon = 0;
-#else
-  Standard_Integer LeJalon;
-#endif
+
   Standard_Integer nbarc;
   Standard_Real dist,prm,pmin, vtol;
   gp_Pnt2d pt2d, lastpt2d;

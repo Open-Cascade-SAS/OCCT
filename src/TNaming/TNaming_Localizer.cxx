@@ -252,11 +252,9 @@ const TopTools_IndexedDataMapOfShapeListOfShape& TNaming_Localizer::Ancestors
   TopTools_IndexedDataMapOfShapeListOfShape emptyAnc;
   myShapeWithAncestors.Prepend(In);
   myAncestors         .Prepend(emptyAnc);
-#ifdef DEB
-  TopAbs_ShapeEnum TA;
-#else
+
   TopAbs_ShapeEnum TA=TopAbs_COMPOUND;
-#endif
+
   if (TS == TopAbs_VERTEX)      TA = TopAbs_EDGE;
   else if (TS == TopAbs_EDGE)   TA = TopAbs_FACE;
   else if (TS == TopAbs_FACE)   TA = TopAbs_SOLID;
@@ -557,11 +555,8 @@ void TNaming_Localizer::FindNeighbourg (const TopoDS_Shape&      Sol,
 					TopTools_MapOfShape&     Neighbourg)
 {  
   TopAbs_ShapeEnum       TA = S.ShapeType();
-#ifdef DEB
-  TopAbs_ShapeEnum       TS;
-#else
   TopAbs_ShapeEnum       TS=TopAbs_COMPOUND;
-#endif
+
   if (TA == TopAbs_FACE) TS = TopAbs_EDGE;
   if (TA == TopAbs_EDGE) TS = TopAbs_VERTEX;
   if (TA == TopAbs_VERTEX) TS = TopAbs_VERTEX; // szy 30.03.10

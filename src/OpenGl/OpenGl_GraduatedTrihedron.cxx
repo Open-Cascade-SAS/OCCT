@@ -330,9 +330,9 @@ void OpenGl_GraduatedTrihedron::Render (const Handle(OpenGl_Workspace)& theWorks
   float LX1[6], LX2[6], LX3[6]; /* Lines along X direction */
   float LY1[6], LY2[6], LY3[6]; /* Lines along Y direction */
   float LZ1[6], LZ2[6], LZ3[6]; /* Lines along Z direction */
-  unsigned char LX1draw, LX2draw, LX3draw; /* Allows drawing of X-line (000 - 100 is forbidden) */
-  unsigned char LY1draw, LY2draw, LY3draw; /* Allows drawing of Y-line (000 - 010 is forbidden) */
-  unsigned char LZ1draw, LZ2draw, LZ3draw; /* Allows drawing of Z-line (000 - 001 is forbidden) */
+  unsigned char LX1draw = 0, LX2draw = 0, LX3draw = 0; /* Allows drawing of X-line (000 - 100 is forbidden) */
+  unsigned char LY1draw = 0, LY2draw = 0, LY3draw = 0; /* Allows drawing of Y-line (000 - 010 is forbidden) */
+  unsigned char LZ1draw = 0, LZ2draw = 0, LZ3draw = 0; /* Allows drawing of Z-line (000 - 001 is forbidden) */
 
   /* The first axis will be used for drawing the text and the values. */
   switch (farestCorner)

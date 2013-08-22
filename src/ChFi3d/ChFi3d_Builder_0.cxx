@@ -2122,7 +2122,7 @@ void  ChFi3d_FilDS(const Standard_Integer       SolidIndex,
   Standard_Integer Iarc1 = 0,Iarc2 = 0;
   TopAbs_Orientation trafil1 = TopAbs_FORWARD, trafil2 = TopAbs_FORWARD;
   Standard_Integer IcFil1,IcFil2,Isurf,Ishape1,Ishape2;
-  Standard_Real Pardeb,Parfin;
+  Standard_Real Pardeb = 0.,Parfin = 0.;
   TopAbs_Orientation ET1;
   Handle(TopOpeBRepDS_CurvePointInterference) Interfp1,Interfp2;
   Handle(TopOpeBRepDS_SurfaceCurveInterference) Interfc1,Interfc2;
@@ -3052,7 +3052,7 @@ Standard_Boolean ChFi3d_ComputeCurves(Handle(Adaptor3d_HSurface)&   S1,
   //in the direction of the start/end line.
   gp_Vec Vint, Vref(pdeb,pfin);
   gp_Pnt Pbid;
-  Standard_Real Udeb,Ufin;
+  Standard_Real Udeb = 0.,Ufin = 0.;
   Standard_Real tolr1,tolr2;
   tolr1 = tolr2 = tolreached = tol3d;
   if((S1->GetType() == GeomAbs_Cylinder && S2->GetType() == GeomAbs_Plane)||
@@ -3893,7 +3893,7 @@ Standard_EXPORT
   
   Standard_Boolean periodic, Bof, checkdeb, cepadur,bIsSmooth;
   Standard_Integer IEdge,IF,IL,nbed, iToApproxByC2;
-  Standard_Real WF, WL, Wrefdeb, Wreffin,nwf,nwl,period,pared,tolpared;
+  Standard_Real WF, WL, Wrefdeb, Wreffin,nwf,nwl,period,pared = 0.,tolpared;
   Standard_Real First, Last, epsV, urefdeb, tolrac;
   GeomAbs_Shape aContinuity;
   gp_Pnt PDeb, PFin, Bout;

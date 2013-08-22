@@ -96,11 +96,9 @@ TopOpeBRepDS_Transition TopOpeBRep_FacesFiller::GetEdgeTrans(const TopOpeBRep_VP
   Standard_Real paredge = VP.EdgeParameter(ShapeIndex);
 
   TopoDS_Edge OOedge;
-#ifdef DEB
-  Standard_Real OOparedge;
-#else
-  Standard_Real OOparedge=0;
-#endif
+
+  Standard_Real OOparedge = 0.;
+
   Standard_Boolean hasONedge = (VP.State(OOShapeIndex) == TopAbs_ON);
   Standard_Boolean hasOOedge = (on2edges) ? Standard_True : hasONedge;
   if ( hasOOedge ) {

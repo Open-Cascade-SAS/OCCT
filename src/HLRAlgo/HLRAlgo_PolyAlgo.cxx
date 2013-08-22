@@ -220,7 +220,7 @@ void HLRAlgo_PolyAlgo::Update ()
     TColStd_Array1OfTransient& Polyg = (*psd2)->PolyData();
     Standard_Integer nbFace = Polyg.Upper();
     Standard_Integer nbFaHi = 0;
-    Handle(HLRAlgo_PolyData)* pd;
+    Handle(HLRAlgo_PolyData)* pd = NULL;
     if(nbFace > 0) pd = (Handle(HLRAlgo_PolyData)*)&(Polyg.ChangeValue(1));
     
     for (j = 1; j <= nbFace; j++) {

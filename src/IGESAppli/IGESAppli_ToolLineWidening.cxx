@@ -37,7 +37,7 @@ void  IGESAppli_ToolLineWidening::ReadOwnParams
   Standard_Integer tempCorneringCode;
   Standard_Integer tempExtensionFlag;
   Standard_Integer tempJustificationFlag;
-  Standard_Real tempExtensionValue;
+  Standard_Real tempExtensionValue = 0.;
   //Standard_Boolean st; //szv#4:S4163:12Mar99 not needed
 
   //szv#4:S4163:12Mar99 `st=` not needed

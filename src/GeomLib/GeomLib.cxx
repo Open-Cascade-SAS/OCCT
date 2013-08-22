@@ -1482,10 +1482,10 @@ void GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)& Surface,
 
 
         
-  Standard_Integer Cdeg, Cdim, NbP, Ksize, Psize ;
+  Standard_Integer Cdeg = 0, Cdim = 0, NbP = 0, Ksize = 0, Psize = 1;
   Standard_Integer ii, jj, ipole, Kount;  
   Standard_Real Tbord, lambmin=Length;
-  Standard_Real * Padr;
+  Standard_Real * Padr = NULL;
   Standard_Boolean Ok;
   Handle(TColStd_HArray1OfReal)  FKnots, Point, lambda, Tgte, Poles;
 
@@ -1668,7 +1668,7 @@ void GeomLib::ExtendSurfByLength(Handle(Geom_BoundedSurface)& Surface,
   }
   
 //  tableaux necessaires pour l'extension
-  Standard_Integer Ksize2 = Ksize+Cdeg, NbPoles, NbKnots;
+  Standard_Integer Ksize2 = Ksize+Cdeg, NbPoles, NbKnots = 0;
   TColStd_Array1OfReal  FK(1, Ksize2) ; 
   Standard_Real * FKRadr = &FK(1);
 

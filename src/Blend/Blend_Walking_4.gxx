@@ -91,9 +91,9 @@ void Blend_Walking::InternalPerform(Blend_Function& Func,
   Blend_Status State = Blend_OnRst12;
   TopAbs_State situ1 =TopAbs_IN,situ2=TopAbs_IN;
   Standard_Real w1,w2;
-  Standard_Integer Index1,Index2,nbarc;
+  Standard_Integer Index1 = 0, Index2 = 0, nbarc;
   Standard_Boolean Arrive,recad1,recad2, control;
-  Standard_Boolean Isvtx1,Isvtx2,echecrecad;
+  Standard_Boolean Isvtx1 = Standard_False, Isvtx2 = Standard_False, echecrecad;
   gp_Pnt2d p2d;
   math_Vector tolerance(1,4),infbound(1,4),supbound(1,4),parinit(1,4);
   math_Vector solrst1(1,4),solrst2(1,4);
@@ -559,12 +559,3 @@ void Blend_Walking::InternalPerform(Blend_Function& Func,
   }
 
 }
-
-
-
-
-
-
-
-
-

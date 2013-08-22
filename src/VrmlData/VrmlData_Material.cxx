@@ -190,7 +190,7 @@ VrmlData_ErrorStatus VrmlData_Material::Read (VrmlData_InBuffer& theBuffer)
 
 VrmlData_ErrorStatus VrmlData_Material::Write (const char * thePrefix) const
 {
-  VrmlData_ErrorStatus aStatus;
+  VrmlData_ErrorStatus aStatus = VrmlData_StatusOK;
   const VrmlData_Scene& aScene = Scene();
   static char header[] = "Material {";
   if (aScene.IsDummyWrite() == Standard_False &&

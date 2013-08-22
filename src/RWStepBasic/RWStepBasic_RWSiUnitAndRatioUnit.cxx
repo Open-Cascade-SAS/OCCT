@@ -52,7 +52,7 @@ void RWStepBasic_RWSiUnitAndRatioUnit::ReadStep	(const Handle(StepData_StepReade
 
   // --- field : prefix ---
   RWStepBasic_RWSiUnit reader;
-  StepBasic_SiPrefix aPrefix;
+  StepBasic_SiPrefix aPrefix = StepBasic_spExa;
   Standard_Boolean hasAprefix = Standard_False;
   if (data->IsParamDefined(num,1)) {
     if (data->ParamType(num,1) == Interface_ParamEnum) {
