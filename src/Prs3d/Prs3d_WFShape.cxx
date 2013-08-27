@@ -348,17 +348,10 @@ void Prs3d_WFShape::Add (const Handle (Prs3d_Presentation)& thePresentation,
   TopLoc_Location aLocation;
   Standard_Integer anI, aJ, aN[3];
 
-  Standard_Boolean isDispTriangles = Standard_False;
-  const char* anEnvVar = getenv ("DEBUG_TRIANGLES");
-  if (anEnvVar != NULL)
-  {
-    isDispTriangles = (atol (anEnvVar) != 0);
-  }
-
   TColgp_SequenceOfPnt aSurfPoints;
   for (aTool.InitFace(); aTool.MoreFace(); aTool.NextFace())
   {
-    if (!aTool.HasSurface() || isDispTriangles)
+    if (!aTool.HasSurface())
     {
       Handle(Poly_Triangulation) T = aTool.CurrentTriangulation (aLocation);
       if (!T.IsNull())
@@ -426,16 +419,6 @@ void Prs3d_WFShape::Add (const Handle (Prs3d_Presentation)& thePresentation,
             aSurfPoints.Append (aPoint2);
           }
         }
-        if (isDispTriangles)
-        {
-          for (anI = 1; anI <= aNbInternal; ++anI)
-          {
-            gp_Pnt aPoint1 = aNodes (anInternal (2 * anI - 1)).Transformed (aLocation);
-            gp_Pnt aPoint2 = aNodes (anInternal (2 * anI    )).Transformed (aLocation);
-            aSurfPoints.Append (aPoint1);
-            aSurfPoints.Append (aPoint2);
-          }
-        }
       }
     }
   }
@@ -451,9 +434,7 @@ void Prs3d_WFShape::Add (const Handle (Prs3d_Presentation)& thePresentation,
       aSurfArray->AddVertex (aSurfPoints.Value (anI + 1));
     }
     Handle(Graphic3d_Group) aGroup = Prs3d_Root::NewGroup (thePresentation);
-    aGroup->SetPrimitivesAspect ((isDispTriangles && aTool.HasSurface())
-                                ? theDrawer->UIsoAspect()->Aspect()
-                                : theDrawer->FreeBoundaryAspect()->Aspect());
+    aGroup->SetPrimitivesAspect (theDrawer->FreeBoundaryAspect()->Aspect());
     aGroup->AddPrimitiveArray (aSurfArray);
   }
 
