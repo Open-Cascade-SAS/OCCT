@@ -38,7 +38,30 @@ namespace
 {
   static const TEL_COLOUR THE_DEFAULT_BG_COLOR = { { 0.F, 0.F, 0.F, 1.F } };
 
-#if (defined(_WIN32) || defined(__WIN32__))
+#if defined(_WIN32)
+
+  // WGL_ARB_create_context_profile
+#ifndef WGL_CONTEXT_MAJOR_VERSION_ARB
+  #define WGL_CONTEXT_MAJOR_VERSION_ARB           0x2091
+  #define WGL_CONTEXT_MINOR_VERSION_ARB           0x2092
+  #define WGL_CONTEXT_LAYER_PLANE_ARB             0x2093
+  #define WGL_CONTEXT_FLAGS_ARB                   0x2094
+  #define WGL_CONTEXT_PROFILE_MASK_ARB            0x9126
+
+  // WGL_CONTEXT_FLAGS bits
+  #define WGL_CONTEXT_DEBUG_BIT_ARB               0x0001
+  #define WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB  0x0002
+
+  // WGL_CONTEXT_PROFILE_MASK_ARB bits
+  #define WGL_CONTEXT_CORE_PROFILE_BIT_ARB          0x00000001
+  #define WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB 0x00000002
+#endif // WGL_CONTEXT_MAJOR_VERSION_ARB
+
+  static LRESULT CALLBACK wndProcDummy (HWND theWin, UINT theMsg, WPARAM theParamW, LPARAM theParamL)
+  {
+    return DefWindowProcW (theWin, theMsg, theParamW, theParamL);
+  }
+
   static int find_pixel_format (HDC                    theDevCtx,
                                 PIXELFORMATDESCRIPTOR& thePixelFrmt,
                                 const Standard_Boolean theIsDoubleBuff)
@@ -139,11 +162,12 @@ namespace
 OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
                               const CALL_DEF_WINDOW&        theCWindow,
                               Aspect_RenderingContext       theGContext,
+                              const Handle(OpenGl_Caps)&    theCaps,
                               const Handle(OpenGl_Context)& theShareCtx)
 : myDisplay (theDisplay),
-  myGlContext (new OpenGl_Context()),
+  myGlContext (new OpenGl_Context (theCaps)),
   myOwnGContext (theGContext == 0),
-#if (defined(_WIN32) || defined(__WIN32__))
+#if defined(_WIN32)
   mySysPalInUse (FALSE),
 #endif
   myWidth ((Standard_Integer )theCWindow.dx),
@@ -156,7 +180,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
   myBgColor.rgb[1] = theCWindow.Background.g;
   myBgColor.rgb[2] = theCWindow.Background.b;
 
-#if (defined(_WIN32) || defined(__WIN32__))
+#if defined(_WIN32)
   HWND  aWindow   = (HWND )theCWindow.XWindow;
   HDC   aWindowDC = GetDC (aWindow);
   HGLRC aGContext = (HGLRC )theGContext;
@@ -201,9 +225,92 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
     return;
   }
 
+  HGLRC aSlaveCtx = !theShareCtx.IsNull() ? (HGLRC )theShareCtx->myGContext : NULL;
   if (aGContext == NULL)
   {
-    aGContext = wglCreateContext (aWindowDC);
+    // create temporary context to retrieve advanced context creation procedures
+    HMODULE aModule = GetModuleHandleW(NULL);
+    WNDCLASSW aClass; memset (&aClass, 0, sizeof(aClass));
+    aClass.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
+    aClass.lpfnWndProc   = wndProcDummy;
+    aClass.hInstance     = aModule;
+    aClass.lpszClassName = L"OpenGl_WindowTmp";
+    HWND  aWinTmp     = NULL;
+    HDC   aDevCtxTmp  = NULL;
+    HGLRC aRendCtxTmp = NULL;
+    if (!theCaps->contextDebug
+     || RegisterClassW (&aClass) == 0)
+    {
+      aClass.lpszClassName = NULL;
+    }
+    if (aClass.lpszClassName != NULL)
+    {
+      aWinTmp = CreateWindowExW(WS_EX_TOOLWINDOW | WS_EX_WINDOWEDGE | WS_EX_NOACTIVATE,
+                                aClass.lpszClassName, L"OpenGl_WindowTmp",
+                                WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_DISABLED,
+                                2, 2, 4, 4,
+                                NULL, NULL, aModule, NULL);
+    }
+    if (aWinTmp != NULL)
+    {
+      aDevCtxTmp = GetDC (aWinTmp);
+      SetPixelFormat (aDevCtxTmp, aPixelFrmtId, &aPixelFrmt);
+      aRendCtxTmp = wglCreateContext (aDevCtxTmp);
+    }
+    if (aRendCtxTmp != NULL)
+    {
+      wglMakeCurrent (aDevCtxTmp, aRendCtxTmp);
+
+      typedef const char* (WINAPI *wglGetExtensionsStringARB_t)(HDC theDeviceContext);
+      typedef HGLRC (WINAPI *wglCreateContextAttribsARB_t)(HDC        theDevCtx,
+                                                           HGLRC      theShareContext,
+                                                           const int* theAttribs);
+      wglGetExtensionsStringARB_t  aGetExtensions = (wglGetExtensionsStringARB_t  )wglGetProcAddress ("wglGetExtensionsStringARB");
+      wglCreateContextAttribsARB_t aCreateCtxProc = (wglCreateContextAttribsARB_t )wglGetProcAddress ("wglCreateContextAttribsARB");
+      const char* aWglExts = aGetExtensions (wglGetCurrentDC());
+      if (aCreateCtxProc != NULL
+       && OpenGl_Context::CheckExtension (aWglExts, "WGL_ARB_create_context_profile"))
+      {
+        // Beware! NVIDIA drivers reject context creation when WGL_CONTEXT_PROFILE_MASK_ARB are specified
+        // but not WGL_CONTEXT_MAJOR_VERSION_ARB/WGL_CONTEXT_MINOR_VERSION_ARB.
+        int aCtxAttribs[] =
+        {
+          //WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
+          //WGL_CONTEXT_MINOR_VERSION_ARB, 2,
+          //WGL_CONTEXT_PROFILE_MASK_ARB,  WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB, //WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
+          WGL_CONTEXT_FLAGS_ARB,         theCaps->contextDebug ? WGL_CONTEXT_DEBUG_BIT_ARB : 0,
+          0, 0
+        };
+
+        aGContext = aCreateCtxProc (aWindowDC, aSlaveCtx, aCtxAttribs);
+        if (aGContext != NULL)
+        {
+          aSlaveCtx = NULL;
+        }
+      }
+    }
+
+    if (aRendCtxTmp != NULL)
+    {
+      wglDeleteContext (aRendCtxTmp);
+    }
+    if (aDevCtxTmp != NULL)
+    {
+      ReleaseDC (aWinTmp, aDevCtxTmp);
+    }
+    if (aWinTmp != NULL)
+    {
+      DestroyWindow (aWinTmp);
+    }
+    if (aClass.lpszClassName != NULL)
+    {
+      UnregisterClassW (aClass.lpszClassName, aModule);
+    }
+
+    if (aGContext == NULL)
+    {
+      aGContext = wglCreateContext (aWindowDC);
+    }
     if (aGContext == NULL)
     {
       ReleaseDC (aWindow, aWindowDC);
@@ -216,7 +323,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
   }
 
   // all GL context within one OpenGl_GraphicDriver should be shared!
-  if (!theShareCtx.IsNull() && wglShareLists ((HGLRC )theShareCtx->myGContext, aGContext) != TRUE)
+  if (aSlaveCtx != NULL && wglShareLists (aSlaveCtx, aGContext) != TRUE)
   {
     TCollection_AsciiString aMsg ("OpenGl_Window::CreateWindow: wglShareLists failed. Error code: ");
     aMsg += (int )GetLastError();
@@ -409,7 +516,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
 // =======================================================================
 OpenGl_Window::~OpenGl_Window()
 {
-#if (defined(_WIN32) || defined(__WIN32__))
+#if defined(_WIN32)
   HWND  aWindow   = (HWND  )myGlContext->myWindow;
   HDC   aWindowDC = (HDC   )myGlContext->myWindowDC;
   HGLRC aGContext = (HGLRC )myGlContext->myGContext;
@@ -468,7 +575,7 @@ void OpenGl_Window::Resize (const CALL_DEF_WINDOW& theCWindow)
   myWidth  = (Standard_Integer )theCWindow.dx;
   myHeight = (Standard_Integer )theCWindow.dy;
 
-#if (!defined(_WIN32) && !defined(__WIN32__))
+#if !defined(_WIN32)
   XResizeWindow (aDisp, myGlContext->myWindow, (unsigned int )myWidth, (unsigned int )myHeight);
   XSync (aDisp, False);
 #endif
@@ -525,7 +632,7 @@ void OpenGl_Window::Init()
   if (!Activate())
     return;
 
-#if (defined(_WIN32) || defined(__WIN32__))
+#if defined(_WIN32)
   RECT cr;
   GetClientRect ((HWND )myGlContext->myWindow, &cr);
   myWidth  = cr.right - cr.left;

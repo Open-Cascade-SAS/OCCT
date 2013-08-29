@@ -28,6 +28,7 @@
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Handle.hxx>
 #include <NCollection_Queue.hxx>
+#include <OpenGl_Caps.hxx>
 #include <OpenGl_Resource.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -42,6 +43,7 @@ struct OpenGl_GlCore20;
 struct OpenGl_ArbVBO;
 struct OpenGl_ArbTBO;
 struct OpenGl_ArbIns;
+struct OpenGl_ArbDbg;
 struct OpenGl_ExtFBO;
 struct OpenGl_ExtGS;
 
@@ -102,7 +104,7 @@ public:
 public:
 
   //! Empty constructor. You should call Init() to perform initialization with bound GL context.
-  Standard_EXPORT OpenGl_Context();
+  Standard_EXPORT OpenGl_Context (const Handle(OpenGl_Caps)& theCaps = NULL);
 
   //! Destructor.
   Standard_EXPORT virtual ~OpenGl_Context();
@@ -115,7 +117,7 @@ public:
   //! GL context should be active!
   Standard_EXPORT Standard_Boolean Init();
 
-#if (defined(_WIN32) || defined(__WIN32__))
+#if defined(_WIN32)
   Standard_EXPORT Standard_Boolean Init (const Aspect_Handle           theWindow,
                                          const Aspect_Handle           theWindowDC,
                                          const Aspect_RenderingContext theGContext);
@@ -129,6 +131,10 @@ public:
 
   //! Check if theExtName extension is supported by active GL context.
   Standard_EXPORT Standard_Boolean CheckExtension (const char* theExtName) const;
+
+  //! Check if theExtName extension is in extensions string.
+  Standard_EXPORT static Standard_Boolean CheckExtension (const char* theExtString,
+                                                          const char* theExtName);
 
   //! Auxiliary template to retrieve GL function pointer.
   //! Pointer to function retrieved from library is statically casted
@@ -257,12 +263,15 @@ public: // core profiles
   OpenGl_GlCore15* core15;
   OpenGl_GlCore20* core20;
 
+  Handle(OpenGl_Caps) caps; //!< context options
+
 public: // extensions
 
   Standard_Boolean arbNPTW; //!< GL_ARB_texture_non_power_of_two
   OpenGl_ArbVBO*   arbVBO;  //!< GL_ARB_vertex_buffer_object
   OpenGl_ArbTBO*   arbTBO;  //!< GL_ARB_texture_buffer_object
   OpenGl_ArbIns*   arbIns;  //!< GL_ARB_draw_instanced
+  OpenGl_ArbDbg*   arbDbg;  //!< GL_ARB_debug_output
   OpenGl_ExtFBO*   extFBO;  //!< GL_EXT_framebuffer_object
   OpenGl_ExtGS*    extGS;   //!< GL_EXT_geometry_shader4
   Standard_Boolean extBgra; //!< GL_EXT_bgra
@@ -272,7 +281,7 @@ public: // extensions
 
 private: // system-dependent fields
 
-#if (defined(_WIN32) || defined(__WIN32__))
+#if defined(_WIN32)
   Aspect_Handle           myWindow;   //!< window handle (owner of GL context) : HWND
   Aspect_Handle           myWindowDC; //!< Device Descriptor handle : HDC
   Aspect_RenderingContext myGContext; //!< Rendering Context handle : HGLRC

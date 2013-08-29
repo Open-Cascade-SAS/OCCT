@@ -419,8 +419,6 @@ static int VImmediateFront (Draw_Interpretor& /*theDI*/,
 
   if (theArgNb < 2)
   {
-    //theDI << "VBO: " << aDriver->ToUseVBO() << "\n";
-    //return 0;
     std::cerr << "Wrong number of arguments.\n";
     return 1;
   }
@@ -449,11 +447,15 @@ static int VGlInfo (Draw_Interpretor& theDI,
 
   if (theArgNb <= 1)
   {
+    Standard_CString aDebugInfo = OpenGl_Context::CheckExtension ((const char* )glGetString (GL_EXTENSIONS),
+                                                                  "GL_ARB_debug_output")
+                                ? "  GLdebug     =  ON\n" : "";
     theDI << "OpenGL info:\n"
           << "  GLvendor    = '" << (const char* )glGetString(GL_VENDOR)   << "'\n"
           << "  GLdevice    = '" << (const char* )glGetString(GL_RENDERER) << "'\n"
           << "  GLversion   = '" << (const char* )glGetString(GL_VERSION)  << "'\n"
-          << "  GLSLversion = '" << (const char* )glGetString(GL_SHADING_LANGUAGE_VERSION) << "'\n";
+          << "  GLSLversion = '" << (const char* )glGetString(GL_SHADING_LANGUAGE_VERSION) << "'\n"
+          << aDebugInfo;
     return 0;
   }
 

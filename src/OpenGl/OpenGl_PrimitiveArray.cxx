@@ -597,7 +597,8 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
   }
 
   // create VBOs on first render call
-  if (!myIsVboInit && OpenGl_GraphicDriver::ToUseVBO() && theWorkspace->GetGlContext()->core15 != NULL)
+  const Handle(OpenGl_Context)& aCtx = theWorkspace->GetGlContext();
+  if (!myIsVboInit && !aCtx->caps->vboDisable && aCtx->core15 != NULL)
   {
     BuildVBO (theWorkspace);
     myIsVboInit = Standard_True;

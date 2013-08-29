@@ -22,6 +22,7 @@
 
 #include <OpenGl_GlCore11.hxx>
 #include <InterfaceGraphic_Aspect.hxx>
+#include <OpenGl_Caps.hxx>
 
 #include <Handle_OpenGl_Context.hxx>
 #include <Handle_OpenGl_Display.hxx>
@@ -39,6 +40,7 @@ public:
   OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
                  const CALL_DEF_WINDOW&        theCWindow,
                  Aspect_RenderingContext       theGContext,
+                 const Handle(OpenGl_Caps)&    theCaps,
                  const Handle(OpenGl_Context)& theShareCtx);
 
   //! Destructor

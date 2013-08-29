@@ -25,10 +25,7 @@
 # include <config.h>
 #endif
 
-#ifdef WNT
-#include <windows.h>
-#endif
-
+#include <OpenGl_GlCore20.hxx>
 #include <AIS_Shape.hxx>
 #include <AIS_Drawer.hxx>
 #include <AIS_InteractiveObject.hxx>
@@ -36,7 +33,6 @@
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <DBRep.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
-#include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_ExportFormat.hxx>
 #include <Graphic3d_NameOfTextureEnv.hxx>
 #include <Graphic3d_TextureEnv.hxx>
@@ -60,6 +56,7 @@
 #include <Draw_Appli.hxx>
 #include <Aspect_PrintAlgo.hxx>
 #include <Image_AlienPixMap.hxx>
+#include <OpenGl_GraphicDriver.hxx>
 #include <OSD_Timer.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
@@ -79,7 +76,7 @@
 #include <Visual3d_Layer.hxx>
 #include <cstdlib>
 
-#if defined(_WIN32) || defined(__WIN32__)
+#if defined(_WIN32)
   #include <WNT_WClass.hxx>
   #include <WNT_Window.hxx>
 
@@ -109,7 +106,7 @@ Standard_EXPORT int ViewerMainLoop(Standard_Integer , const char** argv);
 extern const Handle(NIS_InteractiveContext)& TheNISContext();
 extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
 
-#if defined(_WIN32) || defined(__WIN32__)
+#if defined(_WIN32)
 static Handle(WNT_Window)& VT_GetWindow() {
   static Handle(WNT_Window) WNTWin;
   return WNTWin;
@@ -144,11 +141,11 @@ static void SetDisplayConnection (const Handle(Aspect_DisplayConnection)& theDis
   GetDisplayConnection() = theDisplayConnection;
 }
 
-#if defined(_WIN32) || defined(__WIN32__) || (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+#if defined(_WIN32) || (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
 Aspect_Handle GetWindowHandle(const Handle(Aspect_Window)& theWindow)
 {
   Aspect_Handle aWindowHandle = NULL;
-#if defined(_WIN32) || defined(__WIN32__)
+#if defined(_WIN32)
   const Handle (WNT_Window) aWindow = Handle(WNT_Window)::DownCast (theWindow);
   if (!aWindow.IsNull())
     return aWindow->HWindow();
@@ -164,9 +161,9 @@ Aspect_Handle GetWindowHandle(const Handle(Aspect_Window)& theWindow)
 static Standard_Boolean MyHLRIsOn = Standard_False;
 
 NCollection_DoubleMap <TCollection_AsciiString, Handle(V3d_View)> ViewerTest_myViews;
-static NCollection_DoubleMap <TCollection_AsciiString, Handle(AIS_InteractiveContext)> ViewerTest_myContexts;
+static NCollection_DoubleMap <TCollection_AsciiString, Handle(AIS_InteractiveContext)>  ViewerTest_myContexts;
 static NCollection_DoubleMap <TCollection_AsciiString, Handle(Graphic3d_GraphicDriver)> ViewerTest_myDrivers;
-
+static OpenGl_Caps ViewerTest_myDefaultCaps;
 
 #define ZCLIPWIDTH 1.
 
@@ -209,7 +206,7 @@ static LRESULT WINAPI AdvViewerWindowProc(
 const Handle(MMgt_TShared)& ViewerTest::WClass()
 {
   static Handle(MMgt_TShared) theWClass;
-#if defined(_WIN32) || defined(__WIN32__)
+#if defined(_WIN32)
   if (theWClass.IsNull())
   {
     theWClass = new WNT_WClass ("GW3D_Class", AdvViewerWindowProc,
@@ -409,7 +406,7 @@ Handle(AIS_InteractiveContext) FindContextByView (const Handle(V3d_View)& theVie
 void SetWindowTitle (const Handle(Aspect_Window)& theWindow,
                      Standard_CString theTitle)
 {
-#if defined(_WIN32) || defined(__WIN32__)
+#if defined(_WIN32)
   SetWindowText ((HWND)Handle(WNT_Window)::DownCast(theWindow)->HWindow(),
     theTitle);
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
@@ -488,15 +485,13 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
   // window fit in the small screens (actual for remote desktops, see #23003).
   // The position corresponds to the window's client area, thus some
   // gap is added for window frame to be visible.
-
   Standard_Integer aPxLeft   = 20;
   Standard_Integer aPxTop    = 40;
   Standard_Integer aPxWidth  = 409;
   Standard_Integer aPxHeight = 409;
   Standard_Boolean toCreateViewer = Standard_False;
 
-
-  Handle(Graphic3d_GraphicDriver) aGraphicDriver;
+  Handle(OpenGl_GraphicDriver) aGraphicDriver;
   ViewerTest_Names aViewNames(theViewName);
   if (ViewerTest_myViews.IsBound1 (aViewNames.GetViewName ()))
     aViewNames.SetViewName (aViewNames.GetViewerName() + "/" + CreateName<Handle(V3d_View)>(ViewerTest_myViews, "View"));
@@ -514,7 +509,7 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
   if (!ViewerTest_myDrivers.IsBound1 (aViewNames.GetDriverName()))
   {
     // Get connection string
-  #if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+  #if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
     TCollection_AsciiString aDisplayName(theDisplayName);
     if (aDisplayName.IsEmpty())
       SetDisplayConnection (new Aspect_DisplayConnection ());
@@ -524,13 +519,15 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
   #else
     SetDisplayConnection (new Aspect_DisplayConnection ());
   #endif
-    aGraphicDriver = Graphic3d::InitGraphicDriver (GetDisplayConnection());
+    aGraphicDriver = new OpenGl_GraphicDriver();
+    aGraphicDriver->ChangeOptions() = ViewerTest_myDefaultCaps;
+    aGraphicDriver->Begin (GetDisplayConnection());
     ViewerTest_myDrivers.Bind (aViewNames.GetDriverName(), aGraphicDriver);
     toCreateViewer = Standard_True;
   }
   else
   {
-    aGraphicDriver = ViewerTest_myDrivers.Find1(aViewNames.GetDriverName());
+    aGraphicDriver = Handle(OpenGl_GraphicDriver)::DownCast (ViewerTest_myDrivers.Find1 (aViewNames.GetDriverName()));
   }
 
   //Dispose the window if input parameters are default
@@ -3776,41 +3773,74 @@ static int VFps (Draw_Interpretor& theDI,
   return 0;
 }
 
+//==============================================================================
+//function : VGlDebug
+//purpose  :
+//==============================================================================
+
+static int VGlDebug (Draw_Interpretor& theDI,
+                     Standard_Integer  theArgNb,
+                     const char**      theArgVec)
+{
+  if (theArgNb < 2)
+  {
+    Handle(V3d_View) aView = ViewerTest::CurrentView();
+    if (aView.IsNull())
+    {
+      std::cerr << "No active view. Please call vinit.\n";
+      return 0;
+    }
+
+    Standard_Boolean isActive = OpenGl_Context::CheckExtension ((const char* )glGetString (GL_EXTENSIONS),
+                                                                "GL_ARB_debug_output");
+    std::cout << "Active graphic driver: debug " << (isActive ? "ON" : "OFF") << "\n";
+    theDI << (isActive ? "1" : "0");
+    return 0;
+  }
+
+  ViewerTest_myDefaultCaps.contextDebug = Draw::Atoi (theArgVec[1]) != 0;
+  return 0;
+}
 
 //==============================================================================
 //function : VVbo
 //purpose  :
 //==============================================================================
 
-static int VVbo (Draw_Interpretor& /*theDI*/,
+static int VVbo (Draw_Interpretor& theDI,
                  Standard_Integer  theArgNb,
                  const char**      theArgVec)
 {
+  const Standard_Boolean toSet    = (theArgNb > 1);
+  const Standard_Boolean toUseVbo = toSet ? (Draw::Atoi (theArgVec[1]) == 0) : 1;
+  if (toSet)
+  {
+    ViewerTest_myDefaultCaps.vboDisable = toUseVbo;
+  }
+
   // get the context
   Handle(AIS_InteractiveContext) aContextAIS = ViewerTest::GetAISContext();
   if (aContextAIS.IsNull())
   {
-    std::cerr << "No active view. Please call vinit.\n";
+    if (!toSet)
+    {
+      std::cerr << "No active view!\n";
+    }
     return 1;
   }
-
-  Handle(Graphic3d_GraphicDriver) aDriver = aContextAIS->CurrentViewer()->Driver();
-
-  if (aDriver.IsNull())
+  Handle(OpenGl_GraphicDriver) aDriver = Handle(OpenGl_GraphicDriver)::DownCast (aContextAIS->CurrentViewer()->Driver());
+  if (!aDriver.IsNull())
   {
-    std::cerr << "Graphic driver not available.\n";
-    return 1;
+    if (!toSet)
+    {
+      theDI << (aDriver->Options().vboDisable ? "0" : "1") << "\n";
+    }
+    else
+    {
+      aDriver->ChangeOptions().vboDisable = toUseVbo;
+    }
   }
 
-  if (theArgNb < 2)
-  {
-    //theDI << "VBO: " << aDriver->ToUseVBO() << "\n";
-    //return 0;
-    std::cerr << "Wrong number of arguments.\n";
-    return 1;
-  }
-
-  aDriver->EnableVBO (Draw::Atoi(theArgVec[1]) != 0);
   return 0;
 }
 
@@ -3832,7 +3862,6 @@ static int VMemGpu (Draw_Interpretor& theDI,
   }
 
   Handle(Graphic3d_GraphicDriver) aDriver = aContextAIS->CurrentViewer()->Driver();
-
   if (aDriver.IsNull())
   {
     std::cerr << "Graphic driver not available.\n";
@@ -4860,8 +4889,13 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add ("vfps",
     "vfps [framesNb=100] : estimate average frame rate for active view",
     __FILE__, VFps, group);
+  theCommands.Add ("vgldebug",
+    "vgldebug [{0|1}] : request debug GL context, should be called before vinit\n"
+    "                : this function is implemented only for Windows\n"
+    "                : GL_ARB_debug_output extension should be exported by OpenGL driver!",
+    __FILE__, VGlDebug, group);
   theCommands.Add ("vvbo",
-    "vvbo {0|1} : turn VBO usage On/Off; affects only newly displayed objects",
+    "vvbo [{0|1}] : turn VBO usage On/Off; affects only newly displayed objects",
     __FILE__, VVbo, group);
   theCommands.Add ("vmemgpu",
     "vmemgpu [f]: print system-dependent GPU memory information if available;"

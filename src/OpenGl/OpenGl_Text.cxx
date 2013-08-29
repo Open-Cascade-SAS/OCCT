@@ -635,7 +635,7 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
     aFormatter.Append (theCtx, myString, *myFont.operator->());
     aFormatter.Format();
 
-    if (OpenGl_GraphicDriver::ToUseVBO() && theCtx->core15 != NULL)
+    if (!theCtx->caps->vboDisable && theCtx->core15 != NULL)
     {
       aFormatter.Result (theCtx, myTextures, myVertsVbo, myTCrdsVbo);
     }

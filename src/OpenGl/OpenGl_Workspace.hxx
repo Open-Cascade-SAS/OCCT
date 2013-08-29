@@ -70,6 +70,7 @@ public:
   OpenGl_Workspace (const Handle(OpenGl_Display)& theDisplay,
                     const CALL_DEF_WINDOW&        theCWindow,
                     Aspect_RenderingContext       theGContext,
+                    const Handle(OpenGl_Caps)&    theCaps,
                     const Handle(OpenGl_Context)& theShareCtx);
 
   //! Destructor

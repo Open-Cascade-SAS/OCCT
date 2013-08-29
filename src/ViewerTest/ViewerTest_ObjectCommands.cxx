@@ -2759,7 +2759,7 @@ static int VDrawSphere (Draw_Interpretor& /*di*/, Standard_Integer argc, const c
   else if (argc < 3)
   {
     std::cout << "Use: " << argv[0]
-              << " shapeName Fineness [X=0.0 Y=0.0 Z=0.0] [Radius=100.0] [ToEnableVBO=1] [NumberOfViewerUpdate=1] [ToShowEdges=0]\n";
+              << " shapeName Fineness [X=0.0 Y=0.0 Z=0.0] [Radius=100.0] [ToShowEdges=0]\n";
     return 1;
   }
 

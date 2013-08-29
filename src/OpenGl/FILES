@@ -87,6 +87,8 @@ OpenGl_transform_persistence.hxx
 OpenGl_Font.hxx
 OpenGl_Font.cxx
 OpenGl_tgl_funcs.hxx
+OpenGl_Caps.hxx
+OpenGl_Caps.cxx
 Handle_OpenGl_Context.hxx
 OpenGl_Context.hxx
 OpenGl_Context.cxx
@@ -94,6 +96,7 @@ OpenGl_Context_1.mm
 OpenGl_ArbIns.hxx
 OpenGl_ArbTBO.hxx
 OpenGl_ArbVBO.hxx
+OpenGl_ArbDbg.hxx
 OpenGl_ExtFBO.hxx
 OpenGl_ExtGS.hxx
 glext.h

@@ -501,7 +501,7 @@ Standard_Boolean OpenGl_GraphicDriver::View (Graphic3d_CView& theCView)
   if (aWS.IsNull())
   {
     Handle(OpenGl_Context) aShareCtx = GetSharedContext();
-    aWS = new OpenGl_Workspace (openglDisplay, theCView.DefWindow, theCView.GContext, aShareCtx);
+    aWS = new OpenGl_Workspace (openglDisplay, theCView.DefWindow, theCView.GContext, myCaps, aShareCtx);
     openglDisplay->SetWindow (theCView.DefWindow.XWindow, aWS);
   }
 

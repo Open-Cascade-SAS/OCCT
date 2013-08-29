@@ -86,7 +86,7 @@ class OpenGl_GraphicDriver : public Graphic3d_GraphicDriver
 public:
 
   //! Constructor
-  Standard_EXPORT OpenGl_GraphicDriver (const Standard_CString theShrName);
+  Standard_EXPORT OpenGl_GraphicDriver (const Standard_CString theShrName = "TKOpenGl");
 
   Standard_EXPORT Standard_Boolean Begin (const Handle(Aspect_DisplayConnection)& theDisplayConnection);
   Standard_EXPORT void End ();
@@ -296,8 +296,17 @@ public:
 
 public:
 
-  //! Returns true if VBO usage does not forbidden.
-  Standard_EXPORT static Standard_Boolean ToUseVBO();
+  //! @return the visualization options
+  inline const OpenGl_Caps& Options() const
+  {
+    return *myCaps.operator->();
+  }
+
+  //! @return the visualization options
+  inline OpenGl_Caps& ChangeOptions()
+  {
+    return *myCaps.operator->();
+  }
 
   //! VBO usage can be forbidden by this method even if it is supported by GL driver.
   //! Notice that disabling of VBO will cause rendering performance degradation.
@@ -327,6 +336,7 @@ public:
 
 private:
 
+  Handle(OpenGl_Caps)                                             myCaps;
   NCollection_DataMap<Standard_Integer, Handle(OpenGl_View)>      myMapOfView;
   NCollection_DataMap<Standard_Integer, Handle(OpenGl_Workspace)> myMapOfWS;
   NCollection_DataMap<Standard_Integer, OpenGl_Structure*>        myMapOfStructure;

@@ -32,7 +32,7 @@
 
 #include <Graphic3d_TextureParams.hxx>
 
-#if (defined(_WIN32) || defined(__WIN32__)) && defined(HAVE_VIDEOCAPTURE)
+#if defined(_WIN32) && defined(HAVE_VIDEOCAPTURE)
   #include <OpenGl_AVIWriter.hxx>
 #endif
 
@@ -70,8 +70,9 @@ namespace
 OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_Display)& theDisplay,
                                     const CALL_DEF_WINDOW&        theCWindow,
                                     Aspect_RenderingContext       theGContext,
+                                    const Handle(OpenGl_Caps)&    theCaps,
                                     const Handle(OpenGl_Context)& theShareCtx)
-: OpenGl_Window (theDisplay, theCWindow, theGContext, theShareCtx),
+: OpenGl_Window (theDisplay, theCWindow, theGContext, theCaps, theShareCtx),
   NamedStatus (0),
   HighlightColor (&myDefaultHighlightColor),
   //

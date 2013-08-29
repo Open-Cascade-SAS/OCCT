@@ -52,9 +52,10 @@ namespace
 OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
                               const CALL_DEF_WINDOW&        theCWindow,
                               Aspect_RenderingContext       theGContext,
+                              const Handle(OpenGl_Caps)&    theCaps,
                               const Handle(OpenGl_Context)& theShareCtx)
 : myDisplay (theDisplay),
-  myGlContext (new OpenGl_Context()),
+  myGlContext (new OpenGl_Context (theCaps)),
   myOwnGContext (theGContext == 0),
   myWidth ((Standard_Integer )theCWindow.dx),
   myHeight ((Standard_Integer )theCWindow.dy),

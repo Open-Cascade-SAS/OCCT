@@ -17,7 +17,7 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-#if (defined(_WIN32) || defined(__WIN32__))
+#if defined(_WIN32)
   #include <windows.h>
 #endif
 
@@ -26,6 +26,7 @@
 #include <OpenGl_ArbVBO.hxx>
 #include <OpenGl_ArbTBO.hxx>
 #include <OpenGl_ArbIns.hxx>
+#include <OpenGl_ArbDbg.hxx>
 #include <OpenGl_ExtFBO.hxx>
 #include <OpenGl_ExtGS.hxx>
 #include <OpenGl_GlCore20.hxx>
@@ -34,7 +35,7 @@
 
 #include <Standard_ProgramError.hxx>
 
-#if (defined(_WIN32) || defined(__WIN32__))
+#if defined(_WIN32)
   //
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
   #include <dlfcn.h>
@@ -69,16 +70,18 @@ namespace
 // function : OpenGl_Context
 // purpose  :
 // =======================================================================
-OpenGl_Context::OpenGl_Context()
+OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
 : core12 (NULL),
   core13 (NULL),
   core14 (NULL),
   core15 (NULL),
   core20 (NULL),
+  caps   (!theCaps.IsNull() ? theCaps : new OpenGl_Caps()),
   arbNPTW(Standard_False),
   arbVBO (NULL),
   arbTBO (NULL),
   arbIns (NULL),
+  arbDbg (NULL),
   extFBO (NULL),
   extGS  (NULL),
   extBgra(Standard_False),
@@ -134,6 +137,9 @@ OpenGl_Context::~OpenGl_Context()
 
   delete myGlCore20;
   delete arbVBO;
+  delete arbTBO;
+  delete arbIns;
+  delete arbDbg;
   delete extFBO;
   delete extGS;
 }
@@ -178,7 +184,7 @@ void OpenGl_Context::Share (const Handle(OpenGl_Context)& theShareCtx)
 // =======================================================================
 Standard_Boolean OpenGl_Context::IsCurrent() const
 {
-#if (defined(_WIN32) || defined(__WIN32__))
+#if defined(_WIN32)
   if (myWindowDC == NULL || myGContext == NULL)
   {
     return Standard_False;
@@ -203,7 +209,7 @@ Standard_Boolean OpenGl_Context::IsCurrent() const
 // =======================================================================
 Standard_Boolean OpenGl_Context::MakeCurrent()
 {
-#if (defined(_WIN32) || defined(__WIN32__))
+#if defined(_WIN32)
   if (myWindowDC == NULL || myGContext == NULL)
   {
     Standard_ProgramError_Raise_if (myIsInitialized, "OpenGl_Context::Init() should be called before!");
@@ -257,7 +263,7 @@ Standard_Boolean OpenGl_Context::MakeCurrent()
 // =======================================================================
 void OpenGl_Context::SwapBuffers()
 {
-#if (defined(_WIN32) || defined(__WIN32__))
+#if defined(_WIN32)
   if ((HDC )myWindowDC != NULL)
   {
     ::SwapBuffers ((HDC )myWindowDC);
@@ -279,7 +285,7 @@ void OpenGl_Context::SwapBuffers()
 // =======================================================================
 void* OpenGl_Context::findProc (const char* theFuncName)
 {
-#if (defined(_WIN32) || defined(__WIN32__))
+#if defined(_WIN32)
   return wglGetProcAddress (theFuncName);
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
   return (myGlLibHandle != NULL) ? dlsym (myGlLibHandle, theFuncName) : NULL;
@@ -299,7 +305,6 @@ Standard_Boolean OpenGl_Context::CheckExtension (const char* theExtName) const
     std::cerr << "CheckExtension called with NULL string!\n";
     return Standard_False;
   }
-  const size_t anExtNameLen = strlen (theExtName);
 
   // available since OpenGL 3.0
   // and the ONLY way to check extensions with OpenGL 3.1+ core profile
@@ -326,11 +331,26 @@ Standard_Boolean OpenGl_Context::CheckExtension (const char* theExtName) const
     std::cerr << "glGetString (GL_EXTENSIONS) returns NULL! No GL context?\n";
     return Standard_False;
   }
+  return CheckExtension (anExtString, theExtName);
+}
+
+// =======================================================================
+// function : CheckExtension
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_Context::CheckExtension (const char* theExtString,
+                                                 const char* theExtName)
+{
+  if (theExtString == NULL)
+  {
+    return Standard_False;
+  }
 
   // Search for theExtName in the extensions string.
   // Use of strstr() is not sufficient because extension names can be prefixes of other extension names.
-  char* aPtrIter = (char* )anExtString;
-  const char* aPtrEnd = aPtrIter + strlen (anExtString);
+  char* aPtrIter = (char* )theExtString;
+  const char*  aPtrEnd      = aPtrIter + strlen (theExtString);
+  const size_t anExtNameLen = strlen (theExtName);
   while (aPtrIter < aPtrEnd)
   {
     const size_t n = strcspn (aPtrIter, " ");
@@ -356,7 +376,7 @@ Standard_Boolean OpenGl_Context::Init()
     return Standard_True;
   }
 
-#if (defined(_WIN32) || defined(__WIN32__))
+#if defined(_WIN32)
   myWindowDC = (Aspect_Handle )wglGetCurrentDC();
   myGContext = (Aspect_RenderingContext )wglGetCurrentContext();
 #else
@@ -380,7 +400,7 @@ Standard_Boolean OpenGl_Context::Init()
 // function : Init
 // purpose  :
 // =======================================================================
-#if (defined(_WIN32) || defined(__WIN32__))
+#if defined(_WIN32)
 Standard_Boolean OpenGl_Context::Init (const Aspect_Handle           theWindow,
                                        const Aspect_Handle           theWindowDC,
                                        const Aspect_RenderingContext theGContext)
@@ -393,7 +413,7 @@ Standard_Boolean OpenGl_Context::Init (const Aspect_Drawable         theWindow,
 #endif
 {
   Standard_ProgramError_Raise_if (myIsInitialized, "OpenGl_Context::Init() should be called only once!");
-#if (defined(_WIN32) || defined(__WIN32__))
+#if defined(_WIN32)
   myWindow   = theWindow;
   myGContext = theGContext;
   myWindowDC = theWindowDC;
@@ -505,6 +525,60 @@ void OpenGl_Context::readGlVersion()
   }
 }
 
+static Standard_CString THE_DBGMSG_UNKNOWN = "UNKNOWN";
+static Standard_CString THE_DBGMSG_SOURCES[] =
+{
+  "OpenGL",          // GL_DEBUG_SOURCE_API_ARB
+  "Window System",   // GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB
+  "Shader Compiler", // GL_DEBUG_SOURCE_SHADER_COMPILER_ARB
+  "Third Party",     // GL_DEBUG_SOURCE_THIRD_PARTY_ARB
+  "Application",     // GL_DEBUG_SOURCE_APPLICATION_ARB
+  "Other"            // GL_DEBUG_SOURCE_OTHER_ARB
+};
+
+static Standard_CString THE_DBGMSG_TYPES[] =
+{
+  "Error",              // GL_DEBUG_TYPE_ERROR_ARB
+  "Deprecated",         // GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_ARB
+  "Undefined behavior", // GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB
+  "Portability",        // GL_DEBUG_TYPE_PORTABILITY_ARB
+  "Performance",        // GL_DEBUG_TYPE_PERFORMANCE_ARB
+  "Other"               // GL_DEBUG_TYPE_OTHER_ARB
+};
+
+static Standard_CString THE_DBGMSG_SEV_HIGH   = "High";   // GL_DEBUG_SEVERITY_HIGH_ARB
+static Standard_CString THE_DBGMSG_SEV_MEDIUM = "Medium"; // GL_DEBUG_SEVERITY_MEDIUM_ARB
+static Standard_CString THE_DBGMSG_SEV_LOW    = "Low";    // GL_DEBUG_SEVERITY_LOW_ARB
+
+static void APIENTRY debugCallbackWrap(unsigned int theSource,
+                                       unsigned int theType,
+                                       unsigned int theId,
+                                       unsigned int theSeverity,
+                                       int          /*theLength*/,
+                                       const char*  theMessage,
+                                       void*        /*theUserParam*/)
+{
+  //OpenGl_Context* aCtx = (OpenGl_Context* )theUserParam;
+  Standard_CString& aSrc = (theSource >= GL_DEBUG_SOURCE_API_ARB
+                         && theSource <= GL_DEBUG_SOURCE_OTHER_ARB)
+                         ? THE_DBGMSG_SOURCES[theSource - GL_DEBUG_SOURCE_API_ARB]
+                         : THE_DBGMSG_UNKNOWN;
+  Standard_CString& aType = (theType >= GL_DEBUG_TYPE_ERROR_ARB
+                          && theType <= GL_DEBUG_TYPE_OTHER_ARB)
+                          ? THE_DBGMSG_TYPES[theType - GL_DEBUG_TYPE_ERROR_ARB]
+                          : THE_DBGMSG_UNKNOWN;
+  Standard_CString& aSev = theSeverity == GL_DEBUG_SEVERITY_HIGH_ARB
+                         ? THE_DBGMSG_SEV_HIGH
+                         : (theSeverity == GL_DEBUG_SEVERITY_MEDIUM_ARB
+                          ? THE_DBGMSG_SEV_MEDIUM
+                          : THE_DBGMSG_SEV_LOW);
+  std::cerr << "Source:"  << aSrc
+            << " | Type:" << aType
+            << " | ID:"   << theId
+            << " | Severity:" << aSev
+            << " | Message:\n  " << theMessage << "\n";
+}
+
 // =======================================================================
 // function : init
 // purpose  :
@@ -524,6 +598,28 @@ void OpenGl_Context::init()
   if (extAnis)
   {
     glGetIntegerv (GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &myAnisoMax);
+  }
+
+  // initialize debug context extension
+  if (CheckExtension ("GL_ARB_debug_output"))
+  {
+    arbDbg = new OpenGl_ArbDbg();
+    memset (arbDbg, 0, sizeof(OpenGl_ArbDbg)); // nullify whole structure
+    if (!FindProcShort (arbDbg, glDebugMessageControlARB)
+     || !FindProcShort (arbDbg, glDebugMessageInsertARB)
+     || !FindProcShort (arbDbg, glDebugMessageCallbackARB)
+     || !FindProcShort (arbDbg, glGetDebugMessageLogARB))
+    {
+      delete arbDbg;
+      arbDbg = NULL;
+    }
+    if (arbDbg != NULL
+     && caps->contextDebug)
+    {
+      // setup default callback
+      arbDbg->glDebugMessageCallbackARB (debugCallbackWrap, this);
+      glEnable (GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
+    }
   }
 
   // initialize VBO extension (ARB)

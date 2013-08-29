@@ -35,9 +35,6 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_GraphicDriver,Graphic3d_GraphicDriver)
 
 namespace
 {
-  // Global switch - shared by whole TKOpenGl module. To be removed.
-  static Standard_Boolean TheToUseVbo = Standard_True;
-
   static const Handle(OpenGl_Context) TheNullGlCtx;
 };
 
@@ -67,6 +64,7 @@ extern "C" {
 // =======================================================================
 OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Standard_CString theShrName)
 : Graphic3d_GraphicDriver (theShrName),
+  myCaps           (new OpenGl_Caps()),
   myMapOfView      (1, NCollection_BaseAllocator::CommonBaseAllocator()),
   myMapOfWS        (1, NCollection_BaseAllocator::CommonBaseAllocator()),
   myMapOfStructure (1, NCollection_BaseAllocator::CommonBaseAllocator()),
@@ -95,21 +93,12 @@ Standard_ShortReal OpenGl_GraphicDriver::DefaultTextHeight() const
 }
 
 // =======================================================================
-// function : ToUseVBO
-// purpose  :
-// =======================================================================
-Standard_Boolean OpenGl_GraphicDriver::ToUseVBO()
-{
-  return TheToUseVbo;
-}
-
-// =======================================================================
 // function : EnableVBO
 // purpose  :
 // =======================================================================
 void OpenGl_GraphicDriver::EnableVBO (const Standard_Boolean theToTurnOn)
 {
-  TheToUseVbo = theToTurnOn;
+  myCaps->vboDisable = !theToTurnOn;
 }
 
 // =======================================================================
