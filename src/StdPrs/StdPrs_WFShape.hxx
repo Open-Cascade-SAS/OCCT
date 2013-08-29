@@ -28,5 +28,104 @@
 #include <StdPrs_Curve.hxx>
 #include <StdPrs_Vertex.hxx>
 
-typedef Prs3d_WFShape <StdPrs_WFRestrictedFace, StdPrs_Curve, StdPrs_Vertex> StdPrs_WFShape;
-#endif
+class StdPrs_WFShape : public Prs3d_Root
+{
+
+public:
+
+  //! Add shape to presentation
+  static inline void Add (const Handle (Prs3d_Presentation)& thePrs,
+                          const TopoDS_Shape&                theShape,
+                          const Handle (Prs3d_Drawer)&       theDrawer)
+  {
+    Face  aFaceAlgo;
+    Curve aCurveAlgo;
+    Prs3d_WFShape anAlgo (aFaceAlgo, aCurveAlgo);
+    anAlgo.Add (thePrs, theShape, theDrawer);
+  }
+
+  static inline Handle(TopTools_HSequenceOfShape) PickCurve
+      (const Quantity_Length        theX,
+       const Quantity_Length        theY,
+       const Quantity_Length        theZ,
+       const Quantity_Length        theDistance,
+       const TopoDS_Shape&          theShape,
+       const Handle (Prs3d_Drawer)& theDrawer)
+  {
+    Face  aFaceAlgo;
+    Curve aCurveAlgo;
+    Prs3d_WFShape anAlgo (aFaceAlgo, aCurveAlgo);
+    return anAlgo.PickCurve (theX, theY, theZ, theDistance, theShape, theDrawer);
+  }
+
+  static inline Handle(TopTools_HSequenceOfShape) PickPatch
+      (const Quantity_Length       theX,
+       const Quantity_Length       theY,
+       const Quantity_Length       theZ,
+       const Quantity_Length       theDistance,
+       const TopoDS_Shape&         theShape,
+       const Handle(Prs3d_Drawer)& theDrawer)
+  {
+    Face  aFaceAlgo;
+    Curve aCurveAlgo;
+    Prs3d_WFShape anAlgo (aFaceAlgo, aCurveAlgo);
+    return anAlgo.PickPatch (theX, theY, theZ, theDistance, theShape, theDrawer);
+  }
+
+private:
+
+  class Face : public Prs3d_WFShape::Face
+  {
+  public:
+    virtual void Add (const Handle(Prs3d_Presentation)&   thePrs,
+                      const Handle(BRepAdaptor_HSurface)& theFace,
+                      const Standard_Boolean              theToDrawUIso,
+                      const Standard_Boolean              theToDrawVIso,
+                      const Quantity_Length               theDeflection,
+                      const Standard_Integer              theNBUiso,
+                      const Standard_Integer              theNBViso,
+                      const Handle(Prs3d_Drawer)&         theDrawer,
+                      Prs3d_NListOfSequenceOfPnt&         theCurves) const
+    {
+      StdPrs_WFRestrictedFace::Add (thePrs, theFace, theToDrawUIso, theToDrawVIso, theDeflection,
+                                    theNBUiso, theNBViso, theDrawer, theCurves);
+    }
+
+    virtual Standard_Boolean Match (const Quantity_Length               theX,
+                                    const Quantity_Length               theY,
+                                    const Quantity_Length               theZ,
+                                    const Quantity_Length               theDistance,
+                                    const Handle(BRepAdaptor_HSurface)& theFace,
+                                    const Handle(Prs3d_Drawer)&         theDrawer) const
+    {
+      return StdPrs_WFRestrictedFace::Match (theX, theY, theZ, theDistance, theFace, theDrawer);
+    }
+  };
+
+  class Curve : public Prs3d_WFShape::Curve
+  {
+  public:
+    virtual void Add (const Handle(Prs3d_Presentation)& thePrs,
+                      Adaptor3d_Curve&                  theCurve,
+                      const Quantity_Length             theDeflection,
+                      const Handle(Prs3d_Drawer)&       theDrawer,
+                      TColgp_SequenceOfPnt&             thePoints,
+                      const Standard_Boolean            theToDrawCurve) const
+    {
+      StdPrs_Curve::Add (thePrs, theCurve, theDeflection, theDrawer, thePoints, theToDrawCurve);
+    }
+
+    virtual Standard_Boolean Match (const Quantity_Length       theX,
+                                    const Quantity_Length       theY,
+                                    const Quantity_Length       theZ,
+                                    const Quantity_Length       theDistance,
+                                    const Adaptor3d_Curve&      theCurve,
+                                    const Handle(Prs3d_Drawer)& theDrawer) const
+    {
+      return StdPrs_Curve::Match (theX, theY, theZ, theDistance, theCurve, theDrawer);
+    }
+  };
+
+};
+
+#endif // _StdPrs_WFShape_H__
