@@ -1974,7 +1974,8 @@ static LRESULT WINAPI ViewerWindowProc( HWND hwnd,
               }
           }
 #endif
-          else
+          else if (GetWindowHandle (VT_GetWindow()) == hwnd)
+          {
             if ((fwKeys & MK_MBUTTON
             || ((fwKeys & MK_LBUTTON) && (fwKeys & MK_RBUTTON))))
             {
@@ -1984,6 +1985,7 @@ static LRESULT WINAPI ViewerWindowProc( HWND hwnd,
             {
               VT_ProcessMotion();
             }
+          }
       }
       break;
 
@@ -2186,6 +2188,10 @@ int ViewerMainLoop(Standard_Integer argc, const char** argv)
         break;
       case MotionNotify:
         {
+          if (GetWindowHandle (VT_GetWindow()) != aReport.xmotion.window)
+          {
+            break;
+          }
           if( IsDragged )
           {
             Aspect_Handle aWindow = VT_GetWindow()->XWindow();
