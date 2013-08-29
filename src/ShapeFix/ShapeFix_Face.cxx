@@ -2211,18 +2211,24 @@ Standard_Boolean ShapeFix_Face::FixSplitFace(const TopTools_DataMapOfShapeListOf
   TopoDS_Shape S = myFace;
   if ( ! Context().IsNull() ) 
     S = Context()->Apply ( myFace );
-  Standard_Integer NbWires=0, NbWiresNew=0;
+  Standard_Integer NbWires=0, NbWiresNew=0, NbEdges;
   for(TopoDS_Iterator iter(S,Standard_False); iter.More(); iter.Next()) {
-    if(iter.Value().ShapeType() != TopAbs_WIRE || 
-       (iter.Value().Orientation() != TopAbs_FORWARD && iter.Value().Orientation() != TopAbs_REVERSED))
+    const TopoDS_Shape& aShape = iter.Value();
+    if(aShape.ShapeType() != TopAbs_WIRE || 
+       (aShape.Orientation() != TopAbs_FORWARD && aShape.Orientation() != TopAbs_REVERSED))
         continue;
-    TopoDS_Wire wire = TopoDS::Wire ( iter.Value() );
+    TopoDS_Wire wire = TopoDS::Wire ( aShape );
     NbWires++;
     if(MapWires.IsBound(wire)) {
       // if wire not closed --> stop split and return false
       Handle(ShapeExtend_WireData) sewd = new ShapeExtend_WireData(wire);
+      NbEdges = sewd->NbEdges();
+      if (NbEdges == 0) {
+        continue;
+      }
+      //
       TopoDS_Edge E1 = sewd->Edge(1);
-      TopoDS_Edge E2 = sewd->Edge(sewd->NbEdges());
+      TopoDS_Edge E2 = sewd->Edge(NbEdges);
       TopoDS_Vertex V1,V2;
       ShapeAnalysis_Edge sae;
       V1=sae.FirstVertex(E1);

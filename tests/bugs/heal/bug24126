@@ -1,0 +1,13 @@
+puts "================"
+puts "OCC24126"
+puts "================"
+puts ""
+######################################################################################
+# Crash on fixing the attached shape
+######################################################################################
+
+catch {pload XDE}
+
+restore [locate_data_file bug24126_Partition_1.brep] b
+
+fixshape result b
