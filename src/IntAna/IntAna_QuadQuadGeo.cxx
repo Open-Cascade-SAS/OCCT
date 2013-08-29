@@ -326,7 +326,8 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 
     Standard_Real denom2 = denom*denom;
     Standard_Real ddenom = 1. - denom2;
-    denom = ( Abs(ddenom) <= 1.e-9 ) ? 1.e-9 : ddenom;
+    //denom = ( Abs(ddenom) <= 1.e-9 ) ? 1.e-9 : ddenom;
+    denom = ( Abs(ddenom) <= 1.e-16 ) ? 1.e-16 : ddenom;
       
     Standard_Real par1 = dist1/denom;
     Standard_Real par2 = -dist2/denom;

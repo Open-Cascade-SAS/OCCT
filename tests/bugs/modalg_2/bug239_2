@@ -14,6 +14,6 @@ puts [boptuc result]
 
 set nb_v_good 18
 set nb_e_good 11
-set length 2481.26
+set length 2434.21
 set 2dviewer 0
  
