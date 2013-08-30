@@ -795,7 +795,7 @@ Handle(Graphic3d_AspectMarker3d) Graphic3d_Structure::Marker3dAspect () const {
   G       = Standard_Real (MyCStructure.ContextMarker.Color.g);
   B       = Standard_Real (MyCStructure.ContextMarker.Color.b);
   AColor.SetValues (R, G, B, Quantity_TOC_RGB);
-  AMType  = Aspect_TypeOfMarker (MyCStructure.ContextMarker.MarkerType);
+  AMType  = MyCStructure.ContextMarker.MarkerType;
   AScale  = Standard_Real (MyCStructure.ContextMarker.Scale);
 
   Handle(Graphic3d_AspectMarker3d) CTXM =
@@ -1303,7 +1303,7 @@ void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectMark
   MyCStructure.ContextMarker.Color.r      = float (R);
   MyCStructure.ContextMarker.Color.g      = float (G);
   MyCStructure.ContextMarker.Color.b      = float (B);
-  MyCStructure.ContextMarker.MarkerType   = int (AMType);
+  MyCStructure.ContextMarker.MarkerType   = AMType;
   MyCStructure.ContextMarker.Scale        = float (AScale);
   MyCStructure.ContextMarker.IsDef        = 1;
 
@@ -2076,7 +2076,7 @@ void Graphic3d_Structure::UpdateStructure (const Handle(Graphic3d_AspectLine3d)&
   MyCStructure.ContextMarker.Color.r      = float (R);
   MyCStructure.ContextMarker.Color.g      = float (G);
   MyCStructure.ContextMarker.Color.b      = float (B);
-  MyCStructure.ContextMarker.MarkerType   = int (AMType);
+  MyCStructure.ContextMarker.MarkerType   = AMType;
   MyCStructure.ContextMarker.Scale        = float (AScale);
 
   CTXT->Values (AColor, AFont, AnExpansion, ASpace,AStyleT,ADisplayType,AColorSubTitle,ATextZoomable,ATextAngle,ATextFontAspect);

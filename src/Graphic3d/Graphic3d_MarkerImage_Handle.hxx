@@ -1,6 +1,6 @@
-// Created on: 2011-07-13
-// Created by: Sergey ZERCHANINOV
-// Copyright (c) 2011-2012 OPEN CASCADE SAS
+// Created on: 2013-06-25
+// Created by: Dmitry BOBYLEV
+// Copyright (c) 2013 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -17,29 +17,14 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+#ifndef _Graphic3d_TextureBitMap_Handle_H__
+#define _Graphic3d_TextureBitMap_Handle_H__
 
-#ifndef OpenGl_Marker_Header
-#define OpenGl_Marker_Header
+#include <Standard_DefineHandle.hxx>
+#include <Handle_Standard_Transient.hxx>
 
-#include <InterfaceGraphic_telem.hxx>
+class Graphic3d_TextureBitMap;
+DEFINE_STANDARD_HANDLE(Graphic3d_MarkerImage, Standard_Transient)
+typedef Handle(Graphic3d_MarkerImage) Graphic3d_MarkerImage_Handle;
 
-#include <OpenGl_Element.hxx>
-
-class OpenGl_Marker : public OpenGl_Element
-{
- public:
-
-  OpenGl_Marker (const TEL_POINT &APoint) : myPoint(APoint) {}
-
-  virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
-  virtual void Release (const Handle(OpenGl_Context)&   theContext);
-
- protected:
-
-  TEL_POINT myPoint;
-
- public:
-  DEFINE_STANDARD_ALLOC
-};
-
-#endif //OpenGl_Marker_Header
+#endif // _Graphic3d_TextureBitMap_Handle_H__

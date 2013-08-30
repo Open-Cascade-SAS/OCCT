@@ -52,8 +52,7 @@
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_AspectText3d.hxx>
-#include <Graphic3d_Vertex.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfPoints.hxx>
 #include <Visual3d_ViewManager.hxx>
 #include <V3d_Viewer.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
@@ -326,14 +325,14 @@ void V3d_RectangularGrid::DefinePoints ()
     Standard_Integer i;
     Standard_Real X,Y,Z;
     const Standard_Integer nbv = aSeqPnts.Length();
-    Graphic3d_Array1OfVertex Vertical (1,nbv);
+    Handle(Graphic3d_ArrayOfPoints) Vertical = new Graphic3d_ArrayOfPoints (nbv);
     for (i=1; i<=nbv; i++)
     {
       aSeqPnts(i).Coord(X,Y,Z);
-      Vertical(i).SetCoord(X,Y,Z);
+      Vertical->AddVertex (X,Y,Z);
     }
     myGroup->SetGroupPrimitivesAspect (MarkerAttrib);
-    myGroup->MarkerSet (Vertical, Standard_False);
+    myGroup->AddPrimitiveArray (Vertical, Standard_False);
   }
 
   myGroup->SetMinMaxValues(-myXSize, -myYSize, 0.0, myXSize, myYSize, 0.0);

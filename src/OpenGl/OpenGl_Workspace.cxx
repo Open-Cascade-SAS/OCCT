@@ -17,7 +17,7 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-#include <OpenGl_GlCore12.hxx>
+#include <OpenGl_GlCore15.hxx>
 
 #include <InterfaceGraphic.hxx>
 
@@ -224,6 +224,10 @@ Handle(OpenGl_Texture) OpenGl_Workspace::DisableTexture()
       {
         glDisable (GL_TEXTURE_GEN_S);
         glDisable (GL_TEXTURE_GEN_T);
+        if (myTextureBound->GetParams()->GenMode() == Graphic3d_TOTM_SPRITE)
+        {
+          glDisable (GL_POINT_SPRITE);
+        }
       }
       glDisable (GL_TEXTURE_2D);
       break;
@@ -301,12 +305,26 @@ void OpenGl_Workspace::setTextureParams (Handle(OpenGl_Texture)&                
       glPopMatrix();
       break;
     }
+    case Graphic3d_TOTM_SPRITE:
+    {
+      if (GetGlContext()->core20 != NULL)
+      {
+        glEnable  (GL_POINT_SPRITE);
+        glTexEnvi (GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
+        glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+        GetGlContext()->core15->glPointParameteri (GL_POINT_SPRITE_COORD_ORIGIN, GL_LOWER_LEFT);
+      }
+      break;
+    }
     case Graphic3d_TOTM_MANUAL:
     default: break;
   }
 
   // setup lighting
-  glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, aParams->IsModulate() ? GL_MODULATE : GL_DECAL);
+  if (aParams->GenMode() != Graphic3d_TOTM_SPRITE)
+  {
+    glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, aParams->IsModulate() ? GL_MODULATE : GL_DECAL);
+  }
 
   // setup texture filtering and wrapping
   //if (theTexture->GetParams() != theParams)

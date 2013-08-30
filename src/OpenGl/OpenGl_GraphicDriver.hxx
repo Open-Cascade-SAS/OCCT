@@ -161,8 +161,6 @@ public:
   Standard_EXPORT void ViewMapping (const Graphic3d_CView& ACView, const Standard_Boolean AWait);
   Standard_EXPORT void ViewOrientation (const Graphic3d_CView& ACView,const Standard_Boolean AWait);
   Standard_EXPORT void Environment (const Graphic3d_CView& ACView);
-  Standard_EXPORT void Marker (const Graphic3d_CGroup& ACGroup, const Graphic3d_Vertex& APoint);
-  Standard_EXPORT void MarkerSet (const Graphic3d_CGroup& ACGroup, const Graphic3d_Array1OfVertex& ListVertex);
   Standard_EXPORT void Text (const Graphic3d_CGroup& ACGroup, const Standard_CString AText, const Graphic3d_Vertex& APoint, const Standard_Real AHeight, const Quantity_PlaneAngle AAngle, const Graphic3d_TextPath ATp, const Graphic3d_HorizontalTextAlignment AHta, const Graphic3d_VerticalTextAlignment AVta, const Standard_Boolean EvalMinMax = Standard_True);
   Standard_EXPORT void Text (const Graphic3d_CGroup& ACGroup, const Standard_CString AText, const Graphic3d_Vertex& APoint, const Standard_Real AHeight, const Standard_Boolean EvalMinMax = Standard_True);
   Standard_EXPORT void Text (const Graphic3d_CGroup& ACGroup, const TCollection_ExtendedString& AText, const Graphic3d_Vertex& APoint, const Standard_Real AHeight, const Quantity_PlaneAngle AAngle, const Graphic3d_TextPath ATp, const Graphic3d_HorizontalTextAlignment AHta, const Graphic3d_VerticalTextAlignment AVta, const Standard_Boolean EvalMinMax = Standard_True);

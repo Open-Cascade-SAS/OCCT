@@ -286,39 +286,32 @@ void Graphic3d_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectFil
 
 }
 
-void Graphic3d_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectMarker3d)& CTX) {
+void Graphic3d_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectMarker3d)& theCtx)
+{
+  if (IsDeleted()) return;
 
-  if (IsDeleted ()) return;
+  Standard_Real  aRed, aGreen, aBlue;
+  Standard_Real  aScale;
+  Quantity_Color aColor;
+  Aspect_TypeOfMarker aMarkerType;
 
-  Standard_Real R, G, B;
-  Standard_Real AScale;
-  Quantity_Color AColor;
-  Aspect_TypeOfMarker AMType;
+  theCtx->Values (aColor, aMarkerType, aScale);
+  aColor.Values (aRed, aGreen, aBlue, Quantity_TOC_RGB);
 
-  CTX->Values (AColor, AMType, AScale);
-  AColor.Values (R, G, B, Quantity_TOC_RGB);
+  MyCGroup.ContextMarker.IsDef       = 1;
+  MyCGroup.ContextMarker.Color.r     = Standard_ShortReal (aRed);
+  MyCGroup.ContextMarker.Color.g     = Standard_ShortReal (aGreen);
+  MyCGroup.ContextMarker.Color.b     = Standard_ShortReal (aBlue);
+  MyCGroup.ContextMarker.MarkerType  = aMarkerType;
+  MyCGroup.ContextMarker.Scale       = Standard_ShortReal (aScale);
+  MyCGroup.ContextMarker.MarkerImage = theCtx->GetMarkerImage();
 
-  MyCGroup.ContextMarker.Color.r  = float (R);
-  MyCGroup.ContextMarker.Color.g  = float (G);
-  MyCGroup.ContextMarker.Color.b  = float (B);
-  MyCGroup.ContextMarker.MarkerType       = int (AMType);
-  MyCGroup.ContextMarker.Scale    = float (AScale);
-  MyCGroup.ContextMarker.IsDef    = 1;
+  int noinsert = 1;
+  MyGraphicDriver->MarkerContextGroup (MyCGroup, noinsert);
 
-  int noinsert    = 1;
-  if ( AMType == Aspect_TOM_USERDEFINED )
-  {
-    CTX->GetTextureSize( MyMarkWidth, MyMarkHeight );
-    MyMarkArray = CTX->GetTexture();
-    MyGraphicDriver->MarkerContextGroup (MyCGroup, noinsert, MyMarkWidth, MyMarkHeight, MyMarkArray);
-  }
-  else
-    MyGraphicDriver->MarkerContextGroup (MyCGroup, noinsert);
+  MyCGroup.ContextMarker.IsSet = 1;
 
-  MyCGroup.ContextMarker.IsSet    = 1;
-
-  Update ();
-
+  Update();
 }
 
 void Graphic3d_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectText3d)& CTX) {
@@ -600,39 +593,32 @@ void Graphic3d_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectFillArea
 
 }
 
-void Graphic3d_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectMarker3d)& CTX) {
+void Graphic3d_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectMarker3d)& thCtx)
+{
+  if (IsDeleted()) return;
 
-  if (IsDeleted ()) return;
+  Standard_Real  aRed, aGreen, aBlue;
+  Standard_Real  aScale;
+  Quantity_Color aColor;
+  Aspect_TypeOfMarker aMarkerType;
 
-  Standard_Real R, G, B;
-  Standard_Real AScale;
-  Quantity_Color AColor;
-  Aspect_TypeOfMarker AMType;
+  thCtx->Values (aColor, aMarkerType, aScale);
+  aColor.Values (aRed, aGreen, aBlue, Quantity_TOC_RGB);
 
-  CTX->Values (AColor, AMType, AScale);
-  AColor.Values (R, G, B, Quantity_TOC_RGB);
+  MyCGroup.ContextMarker.IsDef       = 1;
+  MyCGroup.ContextMarker.Color.r     = Standard_ShortReal (aRed);
+  MyCGroup.ContextMarker.Color.g     = Standard_ShortReal (aGreen);
+  MyCGroup.ContextMarker.Color.b     = Standard_ShortReal (aBlue);
+  MyCGroup.ContextMarker.MarkerType  = aMarkerType;
+  MyCGroup.ContextMarker.Scale       = Standard_ShortReal (aScale);
+  MyCGroup.ContextMarker.MarkerImage = thCtx->GetMarkerImage();
 
-  MyCGroup.ContextMarker.Color.r  = float (R);
-  MyCGroup.ContextMarker.Color.g  = float (G);
-  MyCGroup.ContextMarker.Color.b  = float (B);
-  MyCGroup.ContextMarker.MarkerType       = int (AMType);
-  MyCGroup.ContextMarker.Scale    = float (AScale);
-  MyCGroup.ContextMarker.IsDef    = 1;
+  int noinsert = 0;
+  MyGraphicDriver->MarkerContextGroup (MyCGroup, noinsert);
 
-  int noinsert    = 0;
-  if ( AMType == Aspect_TOM_USERDEFINED )
-  {
-    CTX->GetTextureSize( MyMarkWidth, MyMarkHeight );
-    MyMarkArray = CTX->GetTexture();
-    MyGraphicDriver->MarkerContextGroup (MyCGroup, noinsert, MyMarkWidth, MyMarkHeight, MyMarkArray);
-  }
-  else
-    MyGraphicDriver->MarkerContextGroup (MyCGroup, noinsert);
+  MyCGroup.ContextMarker.IsSet = 1;
 
-  MyCGroup.ContextMarker.IsSet    = 1;
-
-  Update ();
-
+  Update();
 }
 
 void Graphic3d_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectText3d)& CTX) {
@@ -777,19 +763,19 @@ void Graphic3d_Group::GroupPrimitivesAspect (const Handle(Graphic3d_AspectLine3d
     R   = Standard_Real (MyCGroup.ContextMarker.Color.r);
     G   = Standard_Real (MyCGroup.ContextMarker.Color.g);
     B   = Standard_Real (MyCGroup.ContextMarker.Color.b);
-    AMType      = Aspect_TypeOfMarker (MyCGroup.ContextMarker.MarkerType);
+    AMType      = MyCGroup.ContextMarker.MarkerType;
     AScale      = Standard_Real (MyCGroup.ContextMarker.Scale);
     if( AMType == Aspect_TOM_USERDEFINED )
     {
 
-      CTXM->SetTexture( MyMarkWidth, MyMarkHeight, MyMarkArray );
+      CTXM->SetBitMap( MyMarkWidth, MyMarkHeight, MyMarkArray );
     }
   }
   else {
     R   = Standard_Real (MyCGroup.Struct->ContextMarker.Color.r);
     G   = Standard_Real (MyCGroup.Struct->ContextMarker.Color.g);
     B   = Standard_Real (MyCGroup.Struct->ContextMarker.Color.b);
-    AMType      = Aspect_TypeOfMarker (MyCGroup.Struct->ContextMarker.MarkerType);
+    AMType      = MyCGroup.Struct->ContextMarker.MarkerType;
     AScale      = Standard_Real (MyCGroup.Struct->ContextMarker.Scale);
   }
   AColor.SetValues (R, G, B, Quantity_TOC_RGB);

@@ -29,6 +29,7 @@
 #include <Graphic3d_Vertex.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_ArrayOfPoints.hxx>
 #include <Aspect_TypeOfLine.hxx>
 #include <Aspect_TypeOfMarker.hxx>
 #include <Aspect_AspectMarker.hxx>
@@ -56,20 +57,13 @@ void DsgPrs::ComputeSymbol (const Handle(Prs3d_Presentation)& aPresentation,
 			    const DsgPrs_ArrowSide ArrowSide) 
 {
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  
-  Handle(Graphic3d_AspectMarker3d) MarkerAsp = new Graphic3d_AspectMarker3d();
-  MarkerAsp->SetType(Aspect_TOM_BALL);
-  MarkerAsp->SetScale(0.8);
-  Quantity_Color acolor;
-  Aspect_TypeOfLine atype;
-  Standard_Real awidth;
-  LA->LineAspect()->Aspect()->Values(acolor, atype, awidth);
-  MarkerAsp->SetColor(acolor);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(MarkerAsp);
 
-  // symbols aux extremites de la cote
-//  Graphic3d_Vertex V3d,V3d1,V3d2;
-  Graphic3d_Vertex V3d,V3d1;
+  Quantity_Color aColor;
+  Aspect_TypeOfLine aType;
+  Standard_Real aWidth;
+  LA->LineAspect()->Aspect()->Values (aColor, aType, aWidth);
+  Handle(Graphic3d_AspectMarker3d) aMarkerAsp = new Graphic3d_AspectMarker3d (Aspect_TOM_O, aColor, 1.0);
+  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect (aMarkerAsp);
 
   switch(ArrowSide) {
   case DsgPrs_AS_NONE:
@@ -115,28 +109,29 @@ void DsgPrs::ComputeSymbol (const Handle(Prs3d_Presentation)& aPresentation,
 
   case DsgPrs_AS_FIRSTPT:
     {
-      V3d = Graphic3d_Vertex (pt1.X(), pt1.Y(), pt1.Z());
-      Prs3d_Root::CurrentGroup(aPresentation)->Marker(V3d);
-
+      Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
+      anArrayOfPoints->AddVertex (pt1.X(), pt1.Y(), pt1.Z());
+      Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints);
       break;
     }
 
   case DsgPrs_AS_LASTPT:
     {
       // On dessine un rond 
-      V3d = Graphic3d_Vertex (pt2.X(), pt2.Y(), pt2.Z());
-      Prs3d_Root::CurrentGroup(aPresentation)->Marker(V3d);
-
+      Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
+      anArrayOfPoints->AddVertex (pt2.X(), pt2.Y(), pt2.Z());
+      Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints);
       break;
     }
 
   case DsgPrs_AS_BOTHPT:
     {
-      V3d1 = Graphic3d_Vertex (pt1.X(), pt1.Y(), pt1.Z());
-      Prs3d_Root::CurrentGroup(aPresentation)->Marker(V3d1);
-      Graphic3d_Vertex V3d2(pt2.X(), pt2.Y(), pt2.Z());
-      Prs3d_Root::CurrentGroup(aPresentation)->Marker(V3d2);
-
+      Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints1 = new Graphic3d_ArrayOfPoints (1);
+      anArrayOfPoints1->AddVertex (pt1.X(), pt1.Y(), pt1.Z());
+      Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints1);
+      Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints2 = new Graphic3d_ArrayOfPoints (1);
+      anArrayOfPoints2->AddVertex (pt2.X(), pt2.Y(), pt2.Z());
+      Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints2);
       break;
     }
 
@@ -144,30 +139,30 @@ void DsgPrs::ComputeSymbol (const Handle(Prs3d_Presentation)& aPresentation,
     {
       // an Arrow
       Prs3d_Arrow::Draw(aPresentation,
-			pt1,
-			dir1,
-			LA->ArrowAspect()->Angle(),
-			LA->ArrowAspect()->Length());
+                        pt1,
+                        dir1,
+                        LA->ArrowAspect()->Angle(),
+                        LA->ArrowAspect()->Length());
       // a Round
-      V3d = Graphic3d_Vertex (pt2.X(), pt2.Y(), pt2.Z());
-      Prs3d_Root::CurrentGroup(aPresentation)->Marker(V3d);
-      
+      Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
+      anArrayOfPoints->AddVertex (pt2.X(), pt2.Y(), pt2.Z());
+      Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints);
       break;
     }
 
   case DsgPrs_AS_FIRSTPT_LASTAR:
     {
       // a Round
-      V3d = Graphic3d_Vertex (pt1.X(), pt1.Y(), pt1.Z());
-      Prs3d_Root::CurrentGroup(aPresentation)->Marker(V3d);
+      Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
+      anArrayOfPoints->AddVertex (pt1.X(), pt1.Y(), pt1.Z());
+      Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints);
 
       // an Arrow
       Prs3d_Arrow::Draw(aPresentation,
-			pt2,
-			dir2,
-			LA->ArrowAspect()->Angle(),
-			LA->ArrowAspect()->Length());  
-   
+                        pt2,
+                        dir2,
+                        LA->ArrowAspect()->Angle(),
+                        LA->ArrowAspect()->Length());
       break;
     }
   }
@@ -182,19 +177,13 @@ void DsgPrs::ComputeSymbol (const Handle(Prs3d_Presentation)& aPresentation,
 			    const DsgPrs_ArrowSide ArrowSide,
 			    const Standard_Boolean drawFromCenter) 
 {
-  Quantity_Color acolor;
-  Aspect_TypeOfLine atype;
-  Standard_Real awidth;
+  Quantity_Color aColor;
+  Aspect_TypeOfLine aType;
+  Standard_Real aWidth;
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  LA->LineAspect()->Aspect()->Values(acolor, atype, awidth);
-  Handle(Graphic3d_AspectMarker3d) MarkerAsp = new Graphic3d_AspectMarker3d();
-  MarkerAsp->SetType(Aspect_TOM_BALL);
-  MarkerAsp->SetScale(0.8);
-  MarkerAsp->SetColor(acolor);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(MarkerAsp);
-  // symbols aux extremites de la cote
-//  Graphic3d_Vertex V3d,V3d1,V3d2;
-  Graphic3d_Vertex V3d,V3d1;
+  LA->LineAspect()->Aspect()->Values(aColor, aType, aWidth);
+  Handle(Graphic3d_AspectMarker3d) aMarkerAsp = new Graphic3d_AspectMarker3d (Aspect_TOM_O, aColor, 1.0);
+  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect (aMarkerAsp);
 
   switch(ArrowSide) {
   case DsgPrs_AS_NONE:
@@ -240,30 +229,35 @@ void DsgPrs::ComputeSymbol (const Handle(Prs3d_Presentation)& aPresentation,
 
   case DsgPrs_AS_FIRSTPT:
     {
-      V3d = Graphic3d_Vertex (pt1.X(), pt1.Y(), pt1.Z());
-      if(drawFromCenter)
-	Prs3d_Root::CurrentGroup(aPresentation)->Marker(V3d);
-
+      if (drawFromCenter)
+      {
+        Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
+        anArrayOfPoints->AddVertex (pt1.X(), pt1.Y(), pt1.Z());
+        Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints);
+      }
       break;
     }
 
   case DsgPrs_AS_LASTPT:
     {
       // On dessine un rond 
-      V3d = Graphic3d_Vertex (pt2.X(), pt2.Y(), pt2.Z());
-      Prs3d_Root::CurrentGroup(aPresentation)->Marker(V3d);
-
+      Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
+      anArrayOfPoints->AddVertex (pt2.X(), pt2.Y(), pt2.Z());
+      Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints);
       break;
     }
 
   case DsgPrs_AS_BOTHPT:
     {
-      V3d1 = Graphic3d_Vertex (pt1.X(), pt1.Y(), pt1.Z());
-      if(drawFromCenter)
-	Prs3d_Root::CurrentGroup(aPresentation)->Marker(V3d1);
-      Graphic3d_Vertex V3d2(pt2.X(), pt2.Y(), pt2.Z());
-      Prs3d_Root::CurrentGroup(aPresentation)->Marker(V3d2);
-      
+      if (drawFromCenter)
+      {
+        Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints1 = new Graphic3d_ArrayOfPoints (1);
+        anArrayOfPoints1->AddVertex (pt1.X(), pt1.Y(), pt1.Z());
+        Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints1);
+      }
+      Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints2 = new Graphic3d_ArrayOfPoints (1);
+      anArrayOfPoints2->AddVertex (pt2.X(), pt2.Y(), pt2.Z());
+      Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints2);
       break;
     }
 
@@ -271,29 +265,32 @@ void DsgPrs::ComputeSymbol (const Handle(Prs3d_Presentation)& aPresentation,
     {
       // an Arrow
       Prs3d_Arrow::Draw (aPresentation,
-			 pt1,
-			 dir1,
-			 LA->Arrow1Aspect()->Angle(),
-			 LA->Arrow1Aspect()->Length());
+                         pt1,
+                         dir1,
+                         LA->Arrow1Aspect()->Angle(),
+                         LA->Arrow1Aspect()->Length());
       // a Round
-      V3d = Graphic3d_Vertex (pt2.X(), pt2.Y(), pt2.Z());
-      Prs3d_Root::CurrentGroup(aPresentation)->Marker(V3d);
-      
+      Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
+      anArrayOfPoints->AddVertex (pt2.X(), pt2.Y(), pt2.Z());
+      Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints);
       break;
     }
 
   case DsgPrs_AS_FIRSTPT_LASTAR:
     {
       // a Round
-      V3d = Graphic3d_Vertex (pt1.X(), pt1.Y(), pt1.Z());
-      if(drawFromCenter)
-	Prs3d_Root::CurrentGroup(aPresentation)->Marker(V3d);
+      if (drawFromCenter)
+      {
+        Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
+        anArrayOfPoints->AddVertex (pt1.X(), pt1.Y(), pt1.Z());
+        Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints);
+      }
       // an Arrow
       Prs3d_Arrow::Draw (aPresentation,
-			 pt2,
-			 dir2,
-			 LA->Arrow1Aspect()->Angle(),
-			 LA->Arrow1Aspect()->Length());  
+                         pt2,
+                         dir2,
+                         LA->Arrow1Aspect()->Angle(),
+                         LA->Arrow1Aspect()->Length());
       break;
     }
   }

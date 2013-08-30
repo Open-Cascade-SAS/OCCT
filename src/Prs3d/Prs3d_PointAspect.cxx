@@ -37,14 +37,13 @@ Prs3d_PointAspect::Prs3d_PointAspect (const Aspect_TypeOfMarker aType,
 }
 
 Prs3d_PointAspect::Prs3d_PointAspect (const Quantity_Color &aColor,
-				      const Standard_Real anId,
                                       const Standard_Integer aWidth,
                                       const Standard_Integer aHeight,
 				      const Handle(TColStd_HArray1OfByte)& aTexture
                                       ) 
 {
   myAspect = new Graphic3d_AspectMarker3d
-    (Aspect_TOM_USERDEFINED,aColor,anId,aWidth,aHeight,aTexture);
+    (aColor,aWidth,aHeight,aTexture);
 }
 
 #ifdef GER61351
@@ -74,7 +73,7 @@ void Prs3d_PointAspect::GetTextureSize(Standard_Integer& AWidth, Standard_Intege
   myAspect->GetTextureSize( AWidth, AHeight);
 }
 
-const Handle(TColStd_HArray1OfByte)& Prs3d_PointAspect::GetTexture()
+const Handle(Graphic3d_MarkerImage)& Prs3d_PointAspect::GetTexture()
 {
-  return myAspect->GetTexture();
+  return myAspect->GetMarkerImage();
 }

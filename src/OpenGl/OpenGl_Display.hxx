@@ -49,17 +49,6 @@ struct OpenGl_Facilities
   int MaxViews;
 };
 
-struct OPENGL_MARKER_DATA
-{
-  unsigned int ListId;
-  unsigned int Width;
-  unsigned int Height;
-  unsigned char* Array;
-  DEFINE_STANDARD_ALLOC
-};
-
-typedef NCollection_DataMap<int,OPENGL_MARKER_DATA> OpenGl_MapOfUserMarker;
-
 class OpenGl_AspectText;
 struct OpenGl_TextParam;
 
@@ -93,24 +82,9 @@ class OpenGl_Display : public MMgt_TShared
 
   void InitAttributes ();
 
-  const char * GetStringForMarker (const Aspect_TypeOfMarker AType, const Tfloat AVal) const;
-
-  void SetBaseForMarker () const;
-
   void SetTypeOfLine (const Aspect_TypeOfLine AType) const;
 
   void SetTypeOfHatch (const int AType) const;
-
-  // User markers
-
-  void AddUserMarker (const Standard_Integer AIndex,
-                      const Standard_Integer AMarkWidth,
-                      const Standard_Integer AMarkHeight,
-                      const Handle(TColStd_HArray1OfByte)& ATexture);
-
-  void UpdateUserMarkers ();
-
-  Standard_Integer GetUserMarkerListIndex (const Standard_Integer AIndex) const;
 
   friend class OpenGl_Window;
 
@@ -148,9 +122,6 @@ class OpenGl_Display : public MMgt_TShared
 
   unsigned int myLinestyleBase;
   unsigned int myPatternBase;
-  unsigned int myMarkerBase;
-
-  OpenGl_MapOfUserMarker myMapOfUM;
 
  public:
   DEFINE_STANDARD_ALLOC

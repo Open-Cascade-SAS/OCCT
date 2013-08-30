@@ -1,6 +1,6 @@
-// Created on: 2011-07-13
-// Created by: Sergey ZERCHANINOV
-// Copyright (c) 2011-2012 OPEN CASCADE SAS
+// Created on: 2013-08-26
+// Created by: Kirill GAVRILOV
+// Copyright (c) 2013 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -17,39 +17,12 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+#ifndef _Handle_OpenGl_PointSprite_Header
+#define _Handle_OpenGl_PointSprite_Header
 
-#ifndef OpenGl_MarkerSet_Header
-#define OpenGl_MarkerSet_Header
+#include <Handle_OpenGl_Texture.hxx>
 
-#include <InterfaceGraphic_telem.hxx>
+class OpenGl_PointSprite;
+DEFINE_STANDARD_HANDLE(OpenGl_PointSprite, OpenGl_Texture)
 
-#include <OpenGl_Element.hxx>
-
-#include <Graphic3d_Vertex.hxx>
-
-class OpenGl_MarkerSet : public OpenGl_Element
-{
-
-public:
-
-  OpenGl_MarkerSet (const Standard_Integer ANbPoints, const Graphic3d_Vertex *APoints);
-
-  virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
-  virtual void Release (const Handle(OpenGl_Context)&   theContext);
-
-protected:
-
-  virtual ~OpenGl_MarkerSet();
-
-protected:
-
-  Tint       myNbPoints;
-  TEL_POINT* myPoints;
-
-public:
-
-  DEFINE_STANDARD_ALLOC
-
-};
-
-#endif //OpenGl_MarkerSet_Header
+#endif // _Handle_OpenGl_PointSprite_Header

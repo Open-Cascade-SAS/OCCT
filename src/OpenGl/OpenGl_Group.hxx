@@ -50,7 +50,9 @@ public:
   void SetAspectFace (const Handle(OpenGl_Context)&   theCtx,
                       const CALL_DEF_CONTEXTFILLAREA& theAspect,
                       const Standard_Boolean          IsGlobal = Standard_True);
-  void SetAspectMarker (const CALL_DEF_CONTEXTMARKER &AContext, const Standard_Boolean IsGlobal = Standard_True);
+  void SetAspectMarker (const Handle(OpenGl_Context)& theCtx,
+                        const CALL_DEF_CONTEXTMARKER& theAspect,
+                        const Standard_Boolean IsGlobal = Standard_True);
   void SetAspectText (const CALL_DEF_CONTEXTTEXT &AContext, const Standard_Boolean IsGlobal = Standard_True);
 
   void AddElement (const TelType, OpenGl_Element * );

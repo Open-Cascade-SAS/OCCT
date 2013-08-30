@@ -26,6 +26,7 @@
 #include <Prs3d_Root.hxx>
 #include <Prs3d_TextAspect.hxx>
 #include <Graphic3d_AspectText3d.hxx>
+#include <Graphic3d_ArrayOfPoints.hxx>
 #include <TColStd_ListIteratorOfListOfReal.hxx>
 #include <Graphic3d_Vertex.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
@@ -260,10 +261,11 @@ void MeshVS_TextPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
           continue;
         }
 
-        Graphic3d_Vertex aPoint( X, Y, Z );
-
-        aTextGroup->Marker ( aPoint );
-        aTextGroup->Text ( aStr.ToCString(), aPoint, aHeight );
+        Graphic3d_Vertex aPoint (X, Y, Z);
+        Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
+        anArrayOfPoints->AddVertex (X, Y, Z);
+        aTextGroup->AddPrimitiveArray (anArrayOfPoints);
+        aTextGroup->Text (aStr.ToCString(), aPoint, aHeight);
       }
     }
   }

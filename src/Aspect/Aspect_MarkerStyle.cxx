@@ -456,33 +456,6 @@ void Aspect_MarkerStyle::SetPredefinedStyle() {
 		  MySpoint->SetValue(i+4,TRUE); 
 		}
 		break ;
-	    case Aspect_TOM_BALL :
-		MyXpoint = new TShort_HArray1OfShortReal(1,
-						MAX_BALL_LINE*(MAX_O_POINT+1)) ;
-		MyYpoint = new TShort_HArray1OfShortReal(1,
-						MAX_BALL_LINE*(MAX_O_POINT+1)) ;
-		MySpoint = new TColStd_HArray1OfBoolean(1,
-						MAX_BALL_LINE*(MAX_O_POINT+1)) ;
-
-		{ Standard_Integer i,j,n = 0;
-		  Standard_Real da = 2. * M_PI / MAX_O_POINT;
-		  Standard_Real dr = 1./MAX_BALL_LINE;
-		  Standard_Real a,r = 1.;
-		  
-		  for( i=1 ; i<= MAX_BALL_LINE ; i++ ) {
-		    a = 0.;
-		    for( j=1 ; j<= MAX_O_POINT+1 ; j++,a += da ) {
-		      n++;
-		      MyXpoint->SetValue(n,(float )( r*Cos(a)));
-		      MyYpoint->SetValue(n,(float )( r*Sin(a)));
-		      MySpoint->SetValue(n,(j > 1) ? TRUE : FALSE);
-		    }
-		    MyXpoint->SetValue(n,(float ) r);
-		    MyYpoint->SetValue(n,0.);
-		    r -= dr;
-		  }
-		}
-		break ;
 	    case Aspect_TOM_RING1 :
 		MyXpoint = new TShort_HArray1OfShortReal(1,
 						(MAX_BALL_LINE/4)*(MAX_O_POINT+1)) ;

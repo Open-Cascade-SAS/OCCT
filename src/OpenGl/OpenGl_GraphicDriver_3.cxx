@@ -64,7 +64,7 @@ void OpenGl_GraphicDriver::MarkerContextGroup (const Graphic3d_CGroup& theCGroup
 {
   if (!theCGroup.ContextMarker.IsDef || theCGroup.ptrGroup == NULL) return;
 
-  ((OpenGl_Group* )theCGroup.ptrGroup)->SetAspectMarker (theCGroup.ContextMarker, theNoInsert);
+  ((OpenGl_Group* )theCGroup.ptrGroup)->SetAspectMarker (GetSharedContext(), theCGroup.ContextMarker, theNoInsert);
 }
 
 void OpenGl_GraphicDriver::MarkerContextGroup (const Graphic3d_CGroup& theCGroup,
@@ -73,15 +73,14 @@ void OpenGl_GraphicDriver::MarkerContextGroup (const Graphic3d_CGroup& theCGroup
                                                const Standard_Integer  theMarkHeight,
                                                const Handle(TColStd_HArray1OfByte)& theTexture)
 {
-  if(!theCGroup.ContextMarker.IsDef)
+  if (!theCGroup.ContextMarker.IsDef)
+  {
     return;
-
-  if (!openglDisplay.IsNull())
-    openglDisplay->AddUserMarker ((int )theCGroup.ContextMarker.Scale, theMarkWidth, theMarkHeight, theTexture);
+  }
 
   if (theCGroup.ptrGroup != NULL)
   {
-    ((OpenGl_Group* )theCGroup.ptrGroup)->SetAspectMarker (theCGroup.ContextMarker, theNoInsert);
+    ((OpenGl_Group* )theCGroup.ptrGroup)->SetAspectMarker (GetSharedContext(), theCGroup.ContextMarker, theNoInsert);
   }
 }
 

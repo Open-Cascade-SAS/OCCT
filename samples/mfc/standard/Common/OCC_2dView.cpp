@@ -176,7 +176,7 @@ OCC_2dDoc* OCC_2dView::GetDocument() // non-debug version is inline
 void OCC_2dView::OnBUTTONGridRectLines() 
 {
   Handle(V3d_Viewer) aViewer = myV2dView->Viewer();
-  Handle(Graphic3d_AspectMarker3d) aGridAspect = new Graphic3d_AspectMarker3d(Aspect_TOM_BALL,Quantity_NOC_WHITE,2);
+  Handle(Graphic3d_AspectMarker3d) aGridAspect = new Graphic3d_AspectMarker3d(Aspect_TOM_RING1,Quantity_NOC_WHITE,2);
   aViewer->SetGridEcho(aGridAspect);
   Standard_Integer aWidth=0, aHeight=0, anOffset=0;
   myV2dView->Window()->Size(aWidth,aHeight);
@@ -195,7 +195,7 @@ void OCC_2dView::OnBUTTONGridRectLines()
 void OCC_2dView::OnBUTTONGridRectPoints() 
 {
   Handle(V3d_Viewer) aViewer = myV2dView->Viewer();
-  Handle(Graphic3d_AspectMarker3d) aGridAspect = new Graphic3d_AspectMarker3d(Aspect_TOM_BALL,Quantity_NOC_WHITE,2);
+  Handle(Graphic3d_AspectMarker3d) aGridAspect = new Graphic3d_AspectMarker3d(Aspect_TOM_RING1,Quantity_NOC_WHITE,2);
   aViewer->SetGridEcho(aGridAspect);
   Standard_Integer aWidth=0, aHeight=0, anOffset=0;
   myV2dView->Window()->Size(aWidth,aHeight);
@@ -214,7 +214,7 @@ void OCC_2dView::OnBUTTONGridRectPoints()
 void OCC_2dView::OnBUTTONGridCircLines() 
 {
   Handle(V3d_Viewer) aViewer = myV2dView->Viewer();
-  Handle(Graphic3d_AspectMarker3d) aGridAspect = new Graphic3d_AspectMarker3d(Aspect_TOM_BALL,Quantity_NOC_WHITE,2);
+  Handle(Graphic3d_AspectMarker3d) aGridAspect = new Graphic3d_AspectMarker3d(Aspect_TOM_RING1,Quantity_NOC_WHITE,2);
   aViewer->SetGridEcho(aGridAspect);
   Standard_Integer aWidth=0, aHeight=0, anOffset=0;
   myV2dView->Window()->Size(aWidth,aHeight);
@@ -234,7 +234,7 @@ void OCC_2dView::OnBUTTONGridCircLines()
 void OCC_2dView::OnBUTTONGridCircPoints() 
 {
   Handle(V3d_Viewer) aViewer = myV2dView->Viewer();
-  Handle(Graphic3d_AspectMarker3d) aGridAspect = new Graphic3d_AspectMarker3d(Aspect_TOM_BALL,Quantity_NOC_WHITE,2);
+  Handle(Graphic3d_AspectMarker3d) aGridAspect = new Graphic3d_AspectMarker3d(Aspect_TOM_RING1,Quantity_NOC_WHITE,2);
   aViewer->SetGridEcho(aGridAspect);
   Standard_Integer aWidth=0, aHeight=0, anOffset=0;
   myV2dView->Window()->Size(aWidth,aHeight);

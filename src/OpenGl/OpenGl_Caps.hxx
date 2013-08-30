@@ -31,7 +31,8 @@ class OpenGl_Caps : public Standard_Transient
 
 public: //! @name flags to disable particular functionality
 
-  Standard_Boolean vboDisable;   //!< flag permits VBO usage, will significantly affect performance (OFF by default)
+  Standard_Boolean vboDisable;        //!< flag permits VBO usage, will significantly affect performance (OFF by default)
+  Standard_Boolean pntSpritesDisable; //!< flag permits Point Sprites usage, will significantly affect performance (OFF by default)
 
 public: //! @name context creation parameters
 

@@ -29,7 +29,7 @@
 #include <Graphic3d_Structure.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Quantity_Color.hxx>
-#include <Graphic3d_Vertex.hxx>
+#include <Graphic3d_ArrayOfPoints.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectBasics_EntityOwner.hxx>
@@ -95,8 +95,9 @@ void AIS_Point::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentat
       PtA->SetScale(3.);
       Handle(Graphic3d_Group) TheGroup = Prs3d_Root::CurrentGroup(aPresentation);
       TheGroup->SetPrimitivesAspect(PtA);
-      Graphic3d_Vertex Vtx(myComponent->X(),myComponent->Y(),myComponent->Z());
-      TheGroup->Marker(Vtx);
+      Handle(Graphic3d_ArrayOfPoints) aPoint = new Graphic3d_ArrayOfPoints (1);
+      aPoint->AddVertex (myComponent->X(),myComponent->Y(),myComponent->Z());
+      TheGroup->AddPrimitiveArray (aPoint);
     }
     
 }

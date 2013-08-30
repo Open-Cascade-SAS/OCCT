@@ -803,8 +803,6 @@ void OpenGl_Workspace::Redraw1 (const Graphic3d_CView& ACView,
   if (myDisplay.IsNull() || myView.IsNull())
     return;
 
-  myDisplay->UpdateUserMarkers();
-
   // Request reset of material
   NamedStatus |= OPENGL_NS_RESMAT;
 

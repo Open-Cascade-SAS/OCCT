@@ -19,6 +19,7 @@
 #define _Prs3d_Point_H__
 
 
+#include <Graphic3d_ArrayOfPoints.hxx>
 #include <Graphic3d_Vertex.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Prs3d_Drawer.hxx>
@@ -39,8 +40,9 @@ private:
   {
     Quantity_Length aX,aY,aZ;
     PointTool::Coord(thePoint,aX,aY,aZ);
-    Graphic3d_Vertex aVertex(aX,aY,aZ);
-    theGroup->Marker(aVertex);
+    Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
+    anArrayOfPoints->AddVertex (aX, aY, aZ);
+    theGroup->AddPrimitiveArray (anArrayOfPoints);
   }
 
 public:

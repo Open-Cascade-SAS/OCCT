@@ -25,7 +25,7 @@
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfPoints.hxx>
 #include <gp_Pnt.hxx>
 #include <Poly_Connect.hxx>
 #include <Poly_Triangulation.hxx>
@@ -625,17 +625,15 @@ void Prs3d_WFShape::Add (const Handle (Prs3d_Presentation)& thePresentation,
   aNbVertices = aShapePoints.Length();
   if (aNbVertices > 0)
   {
-    Graphic3d_Array1OfVertex aPointArray (1, aNbVertices);
+    Handle(Graphic3d_ArrayOfPoints) aPointArray = new Graphic3d_ArrayOfPoints (aNbVertices);
     for (anI = 1; anI <= aNbVertices; ++anI)
     {
-      aPointArray.SetValue (anI, Graphic3d_Vertex (aShapePoints.Value (anI).X(),
-                                                   aShapePoints.Value (anI).Y(),
-                                                   aShapePoints.Value (anI).Z()));
+      aPointArray->AddVertex (aShapePoints.Value (anI));
     }
 
     Handle(Graphic3d_Group) aGroup = Prs3d_Root::NewGroup (thePresentation);
     aGroup->SetPrimitivesAspect (theDrawer->PointAspect()->Aspect());
-    aGroup->MarkerSet (aPointArray);
+    aGroup->AddPrimitiveArray (aPointArray);
   }
 }
 

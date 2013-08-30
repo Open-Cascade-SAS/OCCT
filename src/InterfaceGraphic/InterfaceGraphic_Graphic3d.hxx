@@ -371,23 +371,6 @@ typedef struct {
 } CALL_DEF_MATERIAL;
 
 
-/* CONTEXTE MARKER */
-
-typedef struct {
-
-        int IsDef;
-
-        int IsSet;
-
-        CALL_DEF_COLOR Color;
-
-        int MarkerType;
-
-        float Scale;
-
-} CALL_DEF_CONTEXTMARKER;
-
-
 /* CONTEXTE TEXT */
 
 typedef struct {

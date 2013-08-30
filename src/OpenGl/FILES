@@ -8,7 +8,6 @@ OpenGl_GraphicDriver_2.cxx
 OpenGl_GraphicDriver_3.cxx
 OpenGl_GraphicDriver_4.cxx
 OpenGl_GraphicDriver_7.cxx
-OpenGl_GraphicDriver_703.cxx
 OpenGl_GraphicDriver_713.cxx
 OpenGl_GraphicDriver_Layer.cxx
 OpenGl_GraphicDriver_Export.cxx
@@ -30,10 +29,9 @@ OpenGl_Text.hxx
 OpenGl_Text.cxx
 OpenGl_TextFormatter.hxx
 OpenGl_TextFormatter.cxx
-OpenGl_Marker.hxx
-OpenGl_Marker.cxx
-OpenGl_MarkerSet.hxx
-OpenGl_MarkerSet.cxx
+OpenGl_PointSprite.hxx
+OpenGl_PointSprite.cxx
+Handle_OpenGl_PointSprite.hxx
 OpenGl_PrimitiveArray.hxx
 OpenGl_PrimitiveArray.cxx
 Handle_OpenGl_Workspace.hxx

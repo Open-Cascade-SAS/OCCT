@@ -19,8 +19,10 @@
 #ifndef _Graphic3d_CGroup_HeaderFile
 #define _Graphic3d_CGroup_HeaderFile
 
+#include <Aspect_TypeOfMarker.hxx>
 #include <InterfaceGraphic_Visual3d.hxx>
 #include <Graphic3d_CTexture.hxx>
+#include <Graphic3d_MarkerImage_Handle.hxx>
 
 class Graphic3d_CStructure;
 
@@ -77,6 +79,31 @@ public:
   int   PolygonOffsetMode;
   float PolygonOffsetFactor;
   float PolygonOffsetUnits;
+
+};
+
+class CALL_DEF_CONTEXTMARKER
+{
+public:
+
+  CALL_DEF_CONTEXTMARKER()
+  : IsDef (0),
+    IsSet (0),
+    MarkerType (Aspect_TOM_POINT),
+    Scale (0),
+    MarkerImage (NULL)
+  {
+    //
+  }
+
+public:
+
+  Standard_Integer IsDef;
+  Standard_Integer IsSet;
+  CALL_DEF_COLOR Color;
+  Aspect_TypeOfMarker MarkerType;
+  Standard_ShortReal Scale;
+  Handle(Graphic3d_MarkerImage) MarkerImage;
 
 };
 

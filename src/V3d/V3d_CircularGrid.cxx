@@ -53,6 +53,7 @@
 #include <Graphic3d_Vertex.hxx>
 #include <Graphic3d_Array1OfVertex.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_ArrayOfPoints.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Visual3d_ViewManager.hxx>
 #include <V3d_Viewer.hxx>
@@ -326,13 +327,13 @@ void V3d_CircularGrid::DefinePoints ()
   {
     Standard_Real X,Y,Z;
     const Standard_Integer nbv = aSeqPnts.Length();
-    Graphic3d_Array1OfVertex Cercle (1,nbv);
+    Handle(Graphic3d_ArrayOfPoints) Cercle = new Graphic3d_ArrayOfPoints (nbv);
     for (Standard_Integer i=1; i<=nbv; i++)
     {
       aSeqPnts(i).Coord(X,Y,Z);
-      Cercle(i).SetCoord(X,Y,Z);
+      Cercle->AddVertex (X,Y,Z);
     }
-    myGroup->MarkerSet (Cercle, Standard_False);
+    myGroup->AddPrimitiveArray (Cercle, Standard_False);
   }
   myGroup->SetMinMaxValues(-myRadius, -myRadius, 0.0, myRadius, myRadius, 0.0);
 

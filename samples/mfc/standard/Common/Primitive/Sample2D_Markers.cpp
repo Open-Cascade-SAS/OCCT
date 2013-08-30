@@ -11,7 +11,7 @@ Sample2D_Markers::Sample2D_Markers (const Quantity_Length theXPosition ,
                    const Aspect_TypeOfMarker theMarkerType,
                    const Quantity_Color theColor,
                    const Standard_Real theScaleOrId)
-                   :AIS_InteractiveObject(),myListVertex(1,1)
+                   :AIS_InteractiveObject(),myArrayOfPoints (new Graphic3d_ArrayOfPoints (1))
 {
   myXPosition = theXPosition;
   myYPosition = theYPosition;
@@ -22,18 +22,18 @@ Sample2D_Markers::Sample2D_Markers (const Quantity_Length theXPosition ,
 
 Sample2D_Markers::Sample2D_Markers (const Quantity_Length theXPosition , 
                    const Quantity_Length theYPosition ,
-                   const Graphic3d_Array1OfVertex& theListVertex,
+                   const Handle(Graphic3d_ArrayOfPoints)& theArrayOfPoints,
                    const Aspect_TypeOfMarker theMarkerType,
                    const Quantity_Color theColor,
                    const Standard_Real theScaleOrId)
-                   :AIS_InteractiveObject(),myListVertex(1,6)
+                   :AIS_InteractiveObject(),myArrayOfPoints (new Graphic3d_ArrayOfPoints (6))
 {
   myXPosition = theXPosition;
   myYPosition = theYPosition;
   myMarkerType = theMarkerType;
   myColor = theColor;
   myIndex = theScaleOrId;
-  myListVertex = theListVertex;
+  myArrayOfPoints = theArrayOfPoints;
 }
 
 
@@ -45,13 +45,14 @@ void Sample2D_Markers::Compute (  const Handle(PrsMgr_PresentationManager3d)& aP
   {
     Handle(Graphic3d_AspectMarker3d) aMarker = new Graphic3d_AspectMarker3d(Aspect_TOM_POINT,myColor,myIndex);
     Prs3d_Root::CurrentGroup(aPresentation)->SetGroupPrimitivesAspect(aMarker);
-    Prs3d_Root::CurrentGroup(aPresentation)->MarkerSet(myListVertex);
+    Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (myArrayOfPoints);
   }
   else
   {
     Handle(Graphic3d_AspectMarker3d) aMarker = new Graphic3d_AspectMarker3d(myMarkerType,myColor,myIndex);
     aPresentation->SetPrimitivesAspect(aMarker);
-    Graphic3d_Vertex aV3d(myXPosition, myYPosition, 0.); 
-    Prs3d_Root::CurrentGroup(aPresentation)->Marker(aV3d);
+    Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
+    anArrayOfPoints->AddVertex (myXPosition, myYPosition, 0);
+    Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints);
   }
 }

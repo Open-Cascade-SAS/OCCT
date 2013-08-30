@@ -76,6 +76,12 @@ public:
     return myTextureId;
   }
 
+  //! @return texture format
+  inline GLint GetFormat() const
+  {
+    return myTextFormat;
+  }
+
   //! Creates Texture id if not yet generated.
   //! Data should be initialized by another method.
   Standard_EXPORT bool Create (const Handle(OpenGl_Context)& theCtx);

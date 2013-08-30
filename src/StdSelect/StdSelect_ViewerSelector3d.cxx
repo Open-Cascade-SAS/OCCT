@@ -55,6 +55,7 @@
 #include <SelectMgr_DataMapIteratorOfDataMapOfSelectionActivation.hxx>
 #include <Aspect_TypeOfMarker.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
+#include <Graphic3d_ArrayOfPoints.hxx>
 #include <SelectBasics_ListIteratorOfListOfBox2d.hxx>
 #include <Poly_Connect.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
@@ -905,8 +906,9 @@ void StdSelect_ViewerSelector3d::ComputeSensitivePrs(const Handle(SelectMgr_Sele
       gp_Pnt P = hasloc ?
         Handle(Select3D_SensitivePoint)::DownCast(Ent)->Point() :
         Handle(Select3D_SensitivePoint)::DownCast(Ent)->Point().Transformed (theloc.Transformation());
-      Graphic3d_Vertex V (P.X(), P.Y(), P.Z());
-      mysensgroup->Marker (V);
+      Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
+      anArrayOfPoints->AddVertex (P.X(), P.Y(), P.Z());
+      mysensgroup->AddPrimitiveArray (anArrayOfPoints);
     }
     //============================================================
     // Triangulation : On met un petit offset ves l'interieur...

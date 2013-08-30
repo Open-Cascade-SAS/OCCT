@@ -3851,6 +3851,54 @@ static int VVbo (Draw_Interpretor& theDI,
 }
 
 //==============================================================================
+//function : VCaps
+//purpose  :
+//==============================================================================
+
+static int VCaps (Draw_Interpretor& theDI,
+                  Standard_Integer  theArgNb,
+                  const char**      theArgVec)
+{
+  OpenGl_Caps* aCaps = &ViewerTest_myDefaultCaps;
+  Handle(OpenGl_GraphicDriver)   aDriver;
+  Handle(AIS_InteractiveContext) aContextAIS = ViewerTest::GetAISContext();
+  if (!aContextAIS.IsNull())
+  {
+    aDriver = Handle(OpenGl_GraphicDriver)::DownCast (aContextAIS->CurrentViewer()->Driver());
+    aCaps   = &aDriver->ChangeOptions();
+  }
+
+  if (theArgNb < 2)
+  {
+    theDI << "VBO:     " << (aCaps->vboDisable        ? "0" : "1") << "\n";
+    theDI << "Sprites: " << (aCaps->pntSpritesDisable ? "0" : "1") << "\n";
+    return 0;
+  }
+
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
+  {
+    const TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    if (anArg.Search ("vbo=") > -1)
+    {
+      aCaps->vboDisable        = anArg.Token ("=", 2).IntegerValue() == 0;
+    }
+    else if (anArg.Search ("sprites=") > -1)
+    {
+      aCaps->pntSpritesDisable = anArg.Token ("=", 2).IntegerValue() == 0;
+    }
+    else
+    {
+      std::cerr << "Unknown argument: " << anArg << "\n";
+    }
+  }
+  if (aCaps != &ViewerTest_myDefaultCaps)
+  {
+    ViewerTest_myDefaultCaps = *aCaps;
+  }
+  return 0;
+}
+
+//==============================================================================
 //function : VMemGpu
 //purpose  :
 //==============================================================================
@@ -4903,6 +4951,9 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add ("vvbo",
     "vvbo [{0|1}] : turn VBO usage On/Off; affects only newly displayed objects",
     __FILE__, VVbo, group);
+  theCommands.Add ("vcaps",
+    "vcaps [vbo={0|1}] [sprites={0|1}] : modify particular graphic driver options",
+    __FILE__, VCaps, group);
   theCommands.Add ("vmemgpu",
     "vmemgpu [f]: print system-dependent GPU memory information if available;"
     " with f option returns free memory in bytes",

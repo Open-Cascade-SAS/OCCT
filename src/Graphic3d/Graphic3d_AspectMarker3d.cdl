@@ -20,88 +20,89 @@
 
 class AspectMarker3d from Graphic3d inherits AspectMarker from Aspect
 
-	---Version:
+  ---Version:
 
-	---Purpose: Creates and updates an attribute group for
-	--	    marker type primitives. This group contains the type
-	--	    of marker, its colour, and its scale factor.
-	---Keywords: Marker, Color, Scale, Type
+  ---Purpose: Creates and updates an attribute group for
+  --          marker type primitives. This group contains the type
+  --          of marker, its colour, and its scale factor.
+  ---Keywords: Marker, Color, Scale, Type
 
-	---Warning:
-	---References:
+  ---Warning:
+  ---References:
 
 uses
 
-	Color		from Quantity,
-
-	TypeOfMarker	from Aspect, 
-	 
-	HArray1OfByte   from TColStd
+  Color                from Quantity,
+  TypeOfMarker         from Aspect,
+  HArray1OfByte        from TColStd,
+  PixMap_Handle        from Image,
+  MarkerImage_Handle   from Graphic3d
 
 is
 
-	Create
-		returns mutable AspectMarker3d from Graphic3d;
-	---Level: Public
-	---Purpose: Creates a context table for marker primitives
-	--	    defined with the following default values:
-	--
-	--	    Marker type		: TOM_X
-	--	    Colour		: YELLOW
-	--	    Scale factor	: 1.0
-	
-	Create ( AType	    : TypeOfMarker from Aspect;
-		 AColor	    : Color from Quantity;
-		 AScaleOrId : Real from Standard
-	       )
-	       returns mutable AspectMarker3d from Graphic3d;
+  Create
+  returns mutable AspectMarker3d from Graphic3d;
+  ---Level: Public
+  ---Purpose: Creates a context table for marker primitives
+  --          defined with the following default values:
+  --
+  --          Marker type : TOM_X
+  --          Colour      : YELLOW
+  --          Scale factor: 1.0
 
-	Create ( AType	    : TypeOfMarker from Aspect;
-		 AColor	    : Color from Quantity;
-		 AScaleOrId : Real from Standard;
-		 AWidth     : Integer from Standard;
-		 AHeight    : Integer from Standard;
-		 ATexture   : HArray1OfByte from TColStd
-    	    	)		 
-		returns mutable AspectMarker3d from Graphic3d;
-	---Level: Public
-	---Purpose: Creates a context table for marker primitives
-	--	    defined with the specified values.
+  Create (theType             : TypeOfMarker from Aspect;
+          theColor            : Color from Quantity;
+          theScale            : Real from Standard)
+  returns mutable AspectMarker3d from Graphic3d;
 
-        GetTextureSize (me:mutable; AWidth     : out Integer from Standard;
-		    	    	    AHeight    : out Integer from Standard);
-	---Level: Public
-	---Purpose: Returns marker's texture size.		    
+  Create (theColor            : Color from Quantity;
+          theWidth            : Integer from Standard;
+          theHeight           : Integer from Standard;
+          theTextureBitmap    : HArray1OfByte from TColStd)
+  returns mutable AspectMarker3d from Graphic3d;
+  ---Level: Public
+  ---Purpose: Creates a context table for marker primitives
+  --          defined with the specified values.
 
-     	GetTexture (me:mutable)
-	returns HArray1OfByte from TColStd;
-	---Level: Public
-	---Purpose: Returns marker's texture. 
-	---C++: return const &
+  Create (theTextureImage     : PixMap_Handle from Image)
+  returns mutable AspectMarker3d from Graphic3d;
+  ---Level: Public
+  ---Purpose: Creates a context table for marker primitives
+  --          defined with the specified values.
 
-	SetTexture ( me: mutable;
-                     AWidth     : Integer from Standard;
-		     AHeight    : Integer from Standard;
-                     ATexture   : HArray1OfByte from TColStd ) is static;
-	
--- 
+  GetTextureSize (me;
+                  theWidth : out Integer from Standard;
+                  theHeight: out Integer from Standard);
+  ---Level: Public
+  ---Purpose: Returns marker's texture size.
+
+  GetMarkerImage (me)
+  returns MarkerImage_Handle from Graphic3d;
+  ---Level: Public
+  ---Purpose: Returns marker's image texture.
+  --- Could be null handle if marker aspect has been initialized as
+  --- default type of marker.
+  ---C++: return const &
+
+  SetBitMap (me: mutable;
+             theWidth  : Integer from Standard;
+             theHeight : Integer from Standard;
+             theTexture: HArray1OfByte from TColStd ) is static;
 
 fields
 
 --
--- Class	:	Graphic3d_AspectMarker3d
+-- Class: Graphic3d_AspectMarker3d
 --
--- Purpose	:	Declaration of context-specific variables
---			for drawing 3d markers.
+-- Purpose: Declaration of context-specific variables
+--          for drawing 3d markers.
 --
--- Reminder	:	A context for drawing 3d markers inherits:
---			- the colour
---			- the type of marker
---			- the scale factor
---			defined by AspectMarker.
+-- Reminder: A context for drawing 3d markers inherits:
+--            - the colour
+--            - the type of marker
+--            - the scale factor
+--           defined by AspectMarker.
 
-        MyTexture       : HArray1OfByte from TColStd is protected;
-    	MyTextureWidth  : Integer from Standard is protected;
-	MyTextureHeight : Integer from Standard is protected;
-    
+myMarkerImage : MarkerImage_Handle from Graphic3d is protected;
+
 end AspectMarker3d;

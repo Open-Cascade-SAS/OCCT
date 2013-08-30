@@ -34,7 +34,8 @@ uses
     NameOfColor 	from Quantity,
     Color 		from Quantity,
     TypeOfMarker 	from Aspect,
-    HArray1OfByte   	from TColStd
+    HArray1OfByte   	from TColStd,
+    MarkerImage_Handle from Graphic3d
 
 
 is
@@ -51,7 +52,6 @@ is
 	     returns mutable PointAspect from Prs3d;
 
     Create ( AColor	    : Color from Quantity;
-	     AnId           : Real from Standard;
 	     AWidth         : Integer from Standard;
 	     AHeight        : Integer from Standard;
 	     ATexture       : HArray1OfByte from TColStd)
@@ -85,7 +85,7 @@ is
     	---Purpose: Returns marker's texture size.		    
 
     GetTexture (me:mutable)
-         returns HArray1OfByte from TColStd;
+         returns MarkerImage_Handle from Graphic3d;
     	---Level: Public
     	---Purpose: Returns marker's texture. 
     	---C++: return const &

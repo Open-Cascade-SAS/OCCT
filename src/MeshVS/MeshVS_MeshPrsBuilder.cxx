@@ -30,8 +30,8 @@
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_ArrayOfPolygons.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_ArrayOfPoints.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
-#include <Graphic3d_Array1OfVertex.hxx>
 #include <Graphic3d_Group.hxx>
 
 #include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
@@ -136,7 +136,7 @@ void MeshVS_MeshPrsBuilder::BuildNodes ( const Handle(Prs3d_Presentation)& Prs,
   if ( upper<=0 )
     return;
 
-  Graphic3d_Array1OfVertex aNodePoints ( 1, upper );
+  Handle(Graphic3d_ArrayOfPoints) aNodePoints = new Graphic3d_ArrayOfPoints (upper);
   Standard_Integer k=0;
   TColStd_MapIteratorOfPackedMapOfInteger it (anIDs);
   for( ; it.More(); it.Next() )
@@ -146,8 +146,8 @@ void MeshVS_MeshPrsBuilder::BuildNodes ( const Handle(Prs3d_Presentation)& Prs,
     {
       if ( IsExcludingOn() )
         IDsToExclude.Add (aKey);
-       k++;
-      aNodePoints.SetValue ( k, Graphic3d_Vertex ( aCoords(1), aCoords(2), aCoords(3) ) );
+      k++;
+      aNodePoints->AddVertex (aCoords(1), aCoords(2), aCoords(3));
     }
   }
 
@@ -156,7 +156,7 @@ void MeshVS_MeshPrsBuilder::BuildNodes ( const Handle(Prs3d_Presentation)& Prs,
     Prs3d_Root::NewGroup ( Prs );
     Handle (Graphic3d_Group) aNodeGroup = Prs3d_Root::CurrentGroup ( Prs );
     aNodeGroup->SetPrimitivesAspect ( aNodeMark );
-    aNodeGroup->MarkerSet ( aNodePoints );
+    aNodeGroup->AddPrimitiveArray (aNodePoints);
   }
 }
 
@@ -474,8 +474,10 @@ void MeshVS_MeshPrsBuilder::BuildHilightPrs ( const Handle(Prs3d_Presentation)& 
   {
     case MeshVS_ET_Node :
     {
-      aHilightGroup->SetPrimitivesAspect ( aNodeMark );
-      aHilightGroup->Marker ( Graphic3d_Vertex ( aCoords(1), aCoords(2), aCoords(3) ) );
+      aHilightGroup->SetPrimitivesAspect (aNodeMark);
+      Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
+      anArrayOfPoints->AddVertex (aCoords(1), aCoords(2), aCoords(3));
+      aHilightGroup->AddPrimitiveArray (anArrayOfPoints);
     }
     break;
 

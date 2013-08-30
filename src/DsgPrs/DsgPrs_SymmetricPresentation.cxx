@@ -44,6 +44,7 @@
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
+#include <Graphic3d_ArrayOfPoints.hxx>
 #include <Graphic3d_Vertex.hxx>
 
 #include <Prs3d_Arrow.hxx>
@@ -702,17 +703,16 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     //  SYMMETRY WHEN THE REFERENCE POINT IS ON THE AXIS OF SYM.:
     //==============================================================
     //Marker of localisation of the face
-    Handle(Graphic3d_AspectMarker3d) MarkerAsp = new Graphic3d_AspectMarker3d();
-    MarkerAsp->SetType(Aspect_TOM_BALL);
-    MarkerAsp->SetScale(0.8);
-    Quantity_Color acolor;
-    Aspect_TypeOfLine atype;
-    Standard_Real awidth;
-    LA->LineAspect()->Aspect()->Values(acolor, atype, awidth);
-    MarkerAsp->SetColor(acolor);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(MarkerAsp);
-    Graphic3d_Vertex V3d(AttachmentPoint1.X(),AttachmentPoint1.Y(),AttachmentPoint1.Z());
-    Prs3d_Root::CurrentGroup(aPresentation)->Marker(V3d);
+    Quantity_Color aColor;
+    Aspect_TypeOfLine aType;
+    Standard_Real aWidth;
+    LA->LineAspect()->Aspect()->Values(aColor, aType, aWidth);
+    Handle(Graphic3d_AspectMarker3d) aMarkerAsp = new Graphic3d_AspectMarker3d (Aspect_TOM_O, aColor, 1.0);
+    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect (aMarkerAsp);
+    Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
+    anArrayOfPoints->AddVertex (AttachmentPoint1.X(), AttachmentPoint1.Y(), AttachmentPoint1.Z());
+    Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints);
+
 
     //Trace of the linking segment 
     Prs3d_Root::NewGroup(aPresentation);
@@ -824,23 +824,22 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
-    Handle(Graphic3d_AspectMarker3d) MarkerAspAtt = new Graphic3d_AspectMarker3d();
-    MarkerAspAtt->SetType(Aspect_TOM_BALL);
-    MarkerAspAtt->SetScale(0.8);
-    Quantity_Color color;
-    Aspect_TypeOfLine type;
-    Standard_Real width;
-    LA->LineAspect()->Aspect()->Values(color, type, width);
-    MarkerAspAtt->SetColor(color);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(MarkerAspAtt);
-    Graphic3d_Vertex Vatt1(AttachmentPoint1.X(),AttachmentPoint1.Y(),AttachmentPoint1.Z());
-    Prs3d_Root::CurrentGroup(aPresentation)->Marker(Vatt1);
+    Quantity_Color aColor;
+    Aspect_TypeOfLine aType;
+    Standard_Real aWidth;
+    LA->LineAspect()->Aspect()->Values (aColor, aType, aWidth);
+    Handle(Graphic3d_AspectMarker3d) aMarkerAspAtt = new Graphic3d_AspectMarker3d (Aspect_TOM_O, aColor, 1.0);
+    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect (aMarkerAspAtt);
+    Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints1 = new Graphic3d_ArrayOfPoints (1);
+    anArrayOfPoints1->AddVertex (AttachmentPoint1.X(), AttachmentPoint1.Y(), AttachmentPoint1.Z());
+    Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints1);
 
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(MarkerAspAtt);
-    Graphic3d_Vertex Vatt2(AttachmentPoint2.X(),AttachmentPoint2.Y(),AttachmentPoint2.Z());
-    Prs3d_Root::CurrentGroup(aPresentation)->Marker(Vatt2);
+    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect (aMarkerAspAtt);
+    Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints2 = new Graphic3d_ArrayOfPoints (1);
+    anArrayOfPoints2->AddVertex (AttachmentPoint2.X(), AttachmentPoint2.Y(), AttachmentPoint2.Z());
+    Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints2);
       
     //-------------------------------------------------------------------------------------
     //|                                SYMBOL OF SYMMETRY                                 |

@@ -63,8 +63,7 @@ OpenGl_Display::OpenGl_Display (const Handle(Aspect_DisplayConnection)& theDispl
   myOffsetUnits(0.F),
   myAntiAliasingMode(3),
   myLinestyleBase(0),
-  myPatternBase(0),
-  myMarkerBase(0)
+  myPatternBase(0)
 {
 #if (defined(_WIN32) || defined(__WIN32__)) || (defined(__APPLE__) && !defined(MACOSX_USE_GLX))
   myDisplay = TheDummyDisplay;
@@ -91,26 +90,7 @@ OpenGl_Display::~OpenGl_Display ()
     glDeleteLists((GLuint)myPatternBase,TEL_HS_USER_DEF_START);
     myPatternBase = 0;
   }
-  // Delete markers
-  if (myMarkerBase)
-  {
-    glDeleteLists((GLuint)myMarkerBase,60);
-    myMarkerBase = 0;
-  }
-  // Delete user markers
-  OpenGl_MapOfUserMarker::Iterator itm(myMapOfUM);
-  for (; itm.More(); itm.Next())
-  {
-    const OPENGL_MARKER_DATA &aData = itm.Value();
-    if (aData.Array)
-    {
-      delete[] aData.Array;
-    }
-    else if (aData.ListId != 0)
-    {
-      glDeleteLists ( aData.ListId, 1 );
-    }
-  }
+
   myDisplay = NULL;
 }
 
@@ -134,84 +114,6 @@ void OpenGl_Display::SetWindow (const Aspect_Drawable AParent, const Handle(Open
   {
     myMapOfWindows.Bind( AParent, AWindow );
   }
-}
-
-/*----------------------------------------------------------------------*/
-
-//GenerateMarkerBitmap
-void OpenGl_Display::AddUserMarker (const Standard_Integer AIndex,
-                                   const Standard_Integer AMarkWidth,
-                                   const Standard_Integer AMarkHeight,
-                                   const Handle(TColStd_HArray1OfByte)& ATexture)
-{
-  if (!myMapOfUM.IsBound(AIndex))
-  {
-    const OPENGL_MARKER_DATA anEmptyData = { 0, 0, 0, NULL };
-    myMapOfUM.Bind(AIndex,anEmptyData);
-  }
-
-  OPENGL_MARKER_DATA &aData = myMapOfUM.ChangeFind(AIndex);
-
-  if (aData.Array)
-  {
-    delete[] aData.Array;
-    aData.Array = NULL;
-  }
-
-  unsigned char *anArray = new unsigned char[ATexture->Length()];
-
-  const int aByteWidth = AMarkWidth / 8;
-  int i, anIndex = ATexture->Upper() - ATexture->Lower() - aByteWidth + 1;
-  for ( ; anIndex >= 0; anIndex -= aByteWidth )
-    for ( i = 0; i < aByteWidth; i++ )
-      anArray[ATexture->Upper() - ATexture->Lower() - aByteWidth + 1 - anIndex + i ] = ATexture->Value( anIndex + i + 1 );
-
-  aData.Width = AMarkWidth;
-  aData.Height = AMarkHeight;
-  aData.Array = anArray;
-}
-
-/*----------------------------------------------------------------------*/
-
-void OpenGl_Display::UpdateUserMarkers ()
-{
-  OpenGl_MapOfUserMarker::Iterator itm(myMapOfUM);
-  for (; itm.More(); itm.Next())
-  {
-    OPENGL_MARKER_DATA &aData = itm.ChangeValue();
-    if (aData.Array)
-    {
-      if (aData.ListId == 0)
-        aData.ListId = glGenLists(1);
-
-      glNewList( (GLuint)aData.ListId, GL_COMPILE );
-
-      GLint w = ( GLsizei ) aData.Width;
-      GLint h = ( GLsizei ) aData.Height;
-      glBitmap( w, h,
-                0.5F * ( float )aData.Width, 0.5F * ( float )aData.Height,
-                ( float )30.0, ( float )30.0,
-                ( GLubyte* )aData.Array );
-
-      glEndList();
-
-      delete[] aData.Array;
-      aData.Array = NULL;
-    }
-  }
-}
-
-/*----------------------------------------------------------------------*/
-
-Standard_Integer OpenGl_Display::GetUserMarkerListIndex (const Standard_Integer AIndex) const
-{
-  if (myMapOfUM.IsBound(AIndex))
-  {
-    const OPENGL_MARKER_DATA &aData = myMapOfUM.Find(AIndex);
-    if (!aData.Array)
-      return aData.ListId;
-  }
-  return -1;
 }
 
 /*----------------------------------------------------------------------*/

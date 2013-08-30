@@ -21,13 +21,13 @@ class ArrayOfPoints from Graphic3d inherits ArrayOfPrimitives from Graphic3d
 
 is
 
-	-- constructor
-	Create (
-                maxVertexs: Integer from Standard)
-	returns mutable ArrayOfPoints from Graphic3d;
-	---Purpose: Creates an array of points,
-	-- a single pixel point is drawn at each vertex.
-	-- The array must be filled using only
-	--     the AddVertex(Point) method. 
+  -- constructor
+  Create (maxVertexs: Integer from Standard;
+          hasVColors: Boolean from Standard = Standard_False)
+  returns mutable ArrayOfPoints from Graphic3d;
+  ---Purpose: Creates an array of points,
+  -- a single pixel point is drawn at each vertex.
+  -- The array must be filled using the AddVertex(Point) method. 
+  -- When <hasVColors> is TRUE , you must use only AddVertex(Point,Color) method.
 
 end;

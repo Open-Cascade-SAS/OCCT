@@ -22,32 +22,48 @@
 
 #include <InterfaceGraphic_Graphic3d.hxx>
 #include <Aspect_TypeOfMarker.hxx>
+#include <Graphic3d_CGroup.hxx>
+#include <TCollection_AsciiString.hxx>
 
 #include <OpenGl_Element.hxx>
+#include <Handle_OpenGl_PointSprite.hxx>
+
+#include <Image_PixMap_Handle.hxx>
 
 class OpenGl_AspectMarker : public OpenGl_Element
 {
- public:
+public:
 
-  OpenGl_AspectMarker ();
+  OpenGl_AspectMarker();
 
-  void SetContext (const CALL_DEF_CONTEXTMARKER &AContext);
+  void Init (const Handle(OpenGl_Context)& theContext,
+             const CALL_DEF_CONTEXTMARKER& theAspect);
 
-  const TEL_COLOUR &  Color() const { return myColor; }
-  Aspect_TypeOfMarker Type() const { return myType; }
-  float               Scale() const { return myScale; }
+  const TEL_COLOUR&   Color()      const { return myColor; }
+  Aspect_TypeOfMarker Type()       const { return myType;  }
+  Standard_ShortReal  Scale()      const { return myScale; }
+  Standard_ShortReal  MarkerSize() const { return myMarkerSize; }
+  const Handle(OpenGl_PointSprite)& Sprite()          const { return mySprite;  }
+  const Handle(OpenGl_PointSprite)& SpriteHighlight() const { return mySpriteA; }
 
   virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
   virtual void Release (const Handle(OpenGl_Context)&   theContext);
 
- protected:
+protected:
 
-  TEL_COLOUR          myColor;
-  Aspect_TypeOfMarker myType;
-  float               myScale;
+  TEL_COLOUR                 myColor;
+  Aspect_TypeOfMarker        myType;
+  Standard_ShortReal         myScale;
+  Standard_ShortReal         myMarkerSize;
+  TCollection_AsciiString    mySpriteKey;    //!< shared resource ID
+  TCollection_AsciiString    mySpriteAKey;   //!< shared resource ID
+  Handle(OpenGl_PointSprite) mySprite;       //!< normal sprite
+  Handle(OpenGl_PointSprite) mySpriteA;      //!< extra alphs-only sprite for RGB sprites
 
- public:
+public:
+
   DEFINE_STANDARD_ALLOC
+
 };
 
-#endif //OpenGl_AspectMarker_Header
+#endif // OpenGl_AspectMarker_Header

@@ -24,6 +24,7 @@
 
 #include <InterfaceGraphic_Graphic3d.hxx>
 #include <Aspect_InteriorStyle.hxx>
+#include <Aspect_TypeOfMarker.hxx>
 
 #include <OpenGl_Element.hxx>
 
@@ -75,6 +76,8 @@ private:
   //! Auxiliary procedures
   void DrawEdges (const TEL_COLOUR*               theEdgeColour,
                   const Handle(OpenGl_Workspace)& theWorkspace) const;
+
+  void DrawMarkers (const Handle(OpenGl_Workspace)& theWorkspace) const;
 
 protected:
 

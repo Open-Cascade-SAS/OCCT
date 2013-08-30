@@ -191,11 +191,14 @@ void OpenGl_Structure::SetAspectFace (const Handle(OpenGl_Context)&   theCtx,
 
 /*----------------------------------------------------------------------*/
 
-void OpenGl_Structure::SetAspectMarker (const CALL_DEF_CONTEXTMARKER &AContext)
+void OpenGl_Structure::SetAspectMarker (const Handle(OpenGl_Context)& theCtx,
+                                        const CALL_DEF_CONTEXTMARKER& theAspect)
 {
   if (!myAspectMarker)
+  {
     myAspectMarker = new OpenGl_AspectMarker();
-  myAspectMarker->SetContext( AContext );
+  }
+  myAspectMarker->Init (theCtx, theAspect);
 }
 
 /*----------------------------------------------------------------------*/

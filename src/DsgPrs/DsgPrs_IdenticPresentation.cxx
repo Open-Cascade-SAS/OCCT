@@ -27,6 +27,7 @@
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_ArrayOfPoints.hxx>
 
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_LengthAspect.hxx>
@@ -59,17 +60,15 @@ void DsgPrs_IdenticPresentation::Add( const Handle(Prs3d_Presentation)& aPresent
   // On ajoute un rond au point d'attache
   Prs3d_Root::NewGroup(aPresentation);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Handle(Graphic3d_AspectMarker3d) MarkerAsp = new Graphic3d_AspectMarker3d();
-  MarkerAsp->SetType(Aspect_TOM_BALL);
-  MarkerAsp->SetScale(0.8);
-  Quantity_Color acolor;
-  Aspect_TypeOfLine atype;
-  Standard_Real awidth;
-  LA->LineAspect()->Aspect()->Values(acolor, atype, awidth);
-  MarkerAsp->SetColor(acolor);
-  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(MarkerAsp);
-  Graphic3d_Vertex V3d(aPntAttach.X(), aPntAttach.Y(), aPntAttach.Z());
-  Prs3d_Root::CurrentGroup(aPresentation)->Marker(V3d);
+  Quantity_Color aColor;
+  Aspect_TypeOfLine aType;
+  Standard_Real aWidth;
+  LA->LineAspect()->Aspect()->Values (aColor, aType, aWidth);
+  Handle(Graphic3d_AspectMarker3d) aMarkerAsp = new Graphic3d_AspectMarker3d (Aspect_TOM_O, aColor, 1.0);
+  Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect (aMarkerAsp);
+  Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
+  anArrayOfPoints->AddVertex (aPntAttach.X(), aPntAttach.Y(), aPntAttach.Z());
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints);
 
   // texte 
   Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,aPntOffset);

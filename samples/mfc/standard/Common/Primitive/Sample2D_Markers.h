@@ -4,6 +4,7 @@
 #include <Standard_Macro.hxx>
 #include <Standard_DefineHandle.hxx>
 #include <Graphic3d_Array1OfVertex.hxx>
+#include <Graphic3d_ArrayOfPoints.hxx>
 DEFINE_STANDARD_HANDLE(Sample2D_Markers,AIS_InteractiveObject)
 class Sample2D_Markers : public AIS_InteractiveObject {
 
@@ -26,7 +27,7 @@ public:
  // Polyline marker
   Standard_EXPORT Sample2D_Markers (const Quantity_Length theXPosition , 
                    const Quantity_Length theYPosition ,
-                   const Graphic3d_Array1OfVertex& theListVertex,
+                   const Handle(Graphic3d_ArrayOfPoints)& theArrayOfPoints,
                    const Aspect_TypeOfMarker theMarkerType,
                    const Quantity_Color theColor,
                    const Standard_Real theScaleOrId=2.0);
@@ -57,7 +58,7 @@ Quantity_Length          myWidth       ;
 Quantity_Length          myHeight      ;
 Standard_Real         myIndex       ;//myScaleOrId
 // specific polyline marker
-Graphic3d_Array1OfVertex myListVertex  ;
+Handle(Graphic3d_ArrayOfPoints) myArrayOfPoints;
 };
 
 

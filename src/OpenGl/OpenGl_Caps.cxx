@@ -27,8 +27,9 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Caps, Standard_Transient)
 // purpose  :
 // =======================================================================
 OpenGl_Caps::OpenGl_Caps()
-: vboDisable   (Standard_False),
-  contextDebug (Standard_False)
+: vboDisable        (Standard_False),
+  pntSpritesDisable (Standard_False),
+  contextDebug      (Standard_False)
 {
   //
 }
@@ -39,8 +40,9 @@ OpenGl_Caps::OpenGl_Caps()
 // =======================================================================
 OpenGl_Caps& OpenGl_Caps::operator= (const OpenGl_Caps& theCopy)
 {
-  vboDisable   = theCopy.vboDisable;
-  contextDebug = theCopy.contextDebug;
+  vboDisable        = theCopy.vboDisable;
+  pntSpritesDisable = theCopy.pntSpritesDisable;
+  contextDebug      = theCopy.contextDebug;
   return *this;
 }
 

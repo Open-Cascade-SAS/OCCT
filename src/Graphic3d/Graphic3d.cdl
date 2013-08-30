@@ -215,7 +215,8 @@ is
     enumeration  TypeOfTextureMode  is  TOTM_OBJECT,
                                         TOTM_SPHERE,
                                         TOTM_EYE,
-                                        TOTM_MANUAL;
+                                        TOTM_MANUAL,
+                                        TOTM_SPRITE;
     ---Purpose: Type of the texture projection.
     ---Category: Enumerations
 
@@ -402,6 +403,9 @@ is
 
     imported CTransPersStruct;
     imported TransModeFlags;
+    
+    imported MarkerImage;
+    imported MarkerImage_Handle;
 
     primitive PtrFrameBuffer;
     primitive Vec2;

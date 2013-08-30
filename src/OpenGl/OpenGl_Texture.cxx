@@ -158,23 +158,23 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
     return false;
   }
 
-  GLenum aTextureFormat = GL_RGBA8;
-  GLenum aPixelFormat   = 0;
-  GLenum aDataType      = 0;
+  myTextFormat = GL_RGBA8;
+  GLenum aPixelFormat = 0;
+  GLenum aDataType    = 0;
   switch (theImage.Format())
   {
     case Image_PixMap::ImgGrayF:
     {
-      aTextureFormat = GL_ALPHA8; // GL_R8, GL_R32F
-      aPixelFormat   = GL_ALPHA;  // GL_RED
-      aDataType      = GL_FLOAT;
+      myTextFormat = GL_ALPHA8; // GL_R8, GL_R32F
+      aPixelFormat = GL_ALPHA;  // GL_RED
+      aDataType    = GL_FLOAT;
       break;
     }
     case Image_PixMap::ImgRGBAF:
     {
-      aTextureFormat = GL_RGBA8; // GL_RGBA32F
-      aPixelFormat   = GL_RGBA;
-      aDataType      = GL_FLOAT;
+      myTextFormat = GL_RGBA8; // GL_RGBA32F
+      aPixelFormat = GL_RGBA;
+      aDataType    = GL_FLOAT;
       break;
     }
     case Image_PixMap::ImgBGRAF:
@@ -183,30 +183,30 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       {
         return false;
       }
-      aTextureFormat = GL_RGBA8; // GL_RGBA32F
-      aPixelFormat   = GL_BGRA;  // equals to GL_BGRA_EXT
-      aDataType      = GL_FLOAT;
+      myTextFormat = GL_RGBA8; // GL_RGBA32F
+      aPixelFormat = GL_BGRA;  // equals to GL_BGRA_EXT
+      aDataType    = GL_FLOAT;
       break;
     }
     case Image_PixMap::ImgRGBF:
     {
-      aTextureFormat = GL_RGB8; // GL_RGB32F
-      aPixelFormat   = GL_RGB;
-      aDataType      = GL_FLOAT;
+      myTextFormat = GL_RGB8; // GL_RGB32F
+      aPixelFormat = GL_RGB;
+      aDataType    = GL_FLOAT;
       break;
     }
     case Image_PixMap::ImgBGRF:
     {
-      aTextureFormat = GL_RGB8; // GL_RGB32F
-      aPixelFormat   = GL_BGR;  // equals to GL_BGR_EXT
-      aDataType      = GL_FLOAT;
+      myTextFormat = GL_RGB8; // GL_RGB32F
+      aPixelFormat = GL_BGR;  // equals to GL_BGR_EXT
+      aDataType    = GL_FLOAT;
       break;
     }
     case Image_PixMap::ImgRGBA:
     {
-      aTextureFormat = GL_RGBA8;
-      aPixelFormat   = GL_RGBA;
-      aDataType      = GL_UNSIGNED_BYTE;
+      myTextFormat = GL_RGBA8;
+      aPixelFormat = GL_RGBA;
+      aDataType    = GL_UNSIGNED_BYTE;
       break;
     }
     case Image_PixMap::ImgBGRA:
@@ -215,16 +215,16 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       {
         return false;
       }
-      aTextureFormat = GL_RGBA8;
-      aPixelFormat   = GL_BGRA;  // equals to GL_BGRA_EXT
-      aDataType      = GL_UNSIGNED_BYTE;
+      myTextFormat = GL_RGBA8;
+      aPixelFormat = GL_BGRA;  // equals to GL_BGRA_EXT
+      aDataType    = GL_UNSIGNED_BYTE;
       break;
     }
     case Image_PixMap::ImgRGB32:
     {
-      aTextureFormat = GL_RGB8;
-      aPixelFormat   = GL_RGBA;
-      aDataType      = GL_UNSIGNED_BYTE;
+      myTextFormat = GL_RGB8;
+      aPixelFormat = GL_RGBA;
+      aDataType    = GL_UNSIGNED_BYTE;
       break;
     }
     case Image_PixMap::ImgBGR32:
@@ -233,16 +233,16 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       {
         return false;
       }
-      aTextureFormat = GL_RGB8;
-      aPixelFormat   = GL_BGRA;  // equals to GL_BGRA_EXT
-      aDataType      = GL_UNSIGNED_BYTE;
+      myTextFormat = GL_RGB8;
+      aPixelFormat = GL_BGRA;  // equals to GL_BGRA_EXT
+      aDataType    = GL_UNSIGNED_BYTE;
       break;
     }
     case Image_PixMap::ImgRGB:
     {
-      aTextureFormat = GL_RGB8;
-      aPixelFormat   = GL_RGB;
-      aDataType      = GL_UNSIGNED_BYTE;
+      myTextFormat = GL_RGB8;
+      aPixelFormat = GL_RGB;
+      aDataType    = GL_UNSIGNED_BYTE;
       break;
     }
     case Image_PixMap::ImgBGR:
@@ -251,16 +251,16 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       {
         return false;
       }
-      aTextureFormat = GL_RGB8;
-      aPixelFormat   = GL_BGR;  // equals to GL_BGR_EXT
-      aDataType      = GL_UNSIGNED_BYTE;
+      myTextFormat = GL_RGB8;
+      aPixelFormat = GL_BGR;  // equals to GL_BGR_EXT
+      aDataType    = GL_UNSIGNED_BYTE;
       break;
     }
     case Image_PixMap::ImgGray:
     {
-      aTextureFormat = GL_ALPHA8; // GL_R8
-      aPixelFormat   = GL_ALPHA;  // GL_RED
-      aDataType      = GL_UNSIGNED_BYTE;
+      myTextFormat = GL_ALPHA8; // GL_R8
+      aPixelFormat = GL_ALPHA;  // GL_RED
+      aDataType    = GL_UNSIGNED_BYTE;
       break;
     }
     default:
@@ -311,7 +311,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       }
 
       // use proxy to check texture could be created or not
-      glTexImage1D (GL_PROXY_TEXTURE_1D, 0, aTextureFormat,
+      glTexImage1D (GL_PROXY_TEXTURE_1D, 0, myTextFormat,
                     aWidthOut, 0,
                     aPixelFormat, aDataType, NULL);
       glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &aTestWidth);
@@ -322,7 +322,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
         return false;
       }
 
-      glTexImage1D (GL_TEXTURE_1D, 0, aTextureFormat,
+      glTexImage1D (GL_TEXTURE_1D, 0, myTextFormat,
                     aWidthOut, 0,
                     aPixelFormat, aDataType, aDataPtr);
       if (glGetError() != GL_NO_ERROR)
@@ -362,7 +362,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       }
 
       // use proxy to check texture could be created or not
-      glTexImage2D (GL_PROXY_TEXTURE_2D, 0, aTextureFormat,
+      glTexImage2D (GL_PROXY_TEXTURE_2D, 0, myTextFormat,
                     aWidthOut, aHeightOut, 0,
                     aPixelFormat, aDataType, NULL);
       glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH,  &aTestWidth);
@@ -374,7 +374,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
         return false;
       }
 
-      glTexImage2D (GL_TEXTURE_2D, 0, aTextureFormat,
+      glTexImage2D (GL_TEXTURE_2D, 0, myTextFormat,
                     aWidthOut, aHeightOut, 0,
                     aPixelFormat, aDataType, aDataPtr);
       if (glGetError() != GL_NO_ERROR)
@@ -401,7 +401,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
        && aWidth == aWidthOut && aHeight == aHeightOut)
       {
         // use proxy to check texture could be created or not
-        glTexImage2D (GL_PROXY_TEXTURE_2D, 0, aTextureFormat,
+        glTexImage2D (GL_PROXY_TEXTURE_2D, 0, myTextFormat,
                       aWidthOut, aHeightOut, 0,
                       aPixelFormat, aDataType, NULL);
         glGetTexLevelParameteriv (GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH,  &aTestWidth);
@@ -414,7 +414,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
         }
 
         // upload main picture
-        glTexImage2D (GL_TEXTURE_2D, 0, aTextureFormat,
+        glTexImage2D (GL_TEXTURE_2D, 0, myTextFormat,
                       aWidthOut, aHeightOut, 0,
                       aPixelFormat, aDataType, theImage.Data());
         if (glGetError() != GL_NO_ERROR)
@@ -435,7 +435,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       }
       else
       {
-        bool isCreated = gluBuild2DMipmaps (GL_TEXTURE_2D, aTextureFormat,
+        bool isCreated = gluBuild2DMipmaps (GL_TEXTURE_2D, myTextFormat,
                                             aWidth, aHeight,
                                             aPixelFormat, aDataType, theImage.Data()) == 0;
         if (isCreated)

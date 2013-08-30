@@ -107,6 +107,7 @@
 #include <Graphic3d_ArrayOfQuadrangles.hxx>
 #include <Graphic3d_ArrayOfQuadrangleStrips.hxx>
 #include <Graphic3d_ArrayOfPolygons.hxx>
+#include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_Group.hxx>
 #include <Standard_Real.hxx>
 
@@ -134,6 +135,7 @@
 
 #include <Select3D_SensitiveTriangle.hxx>
 #include <Select3D_SensitiveCurve.hxx>
+#include <Select3D_SensitivePoint.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <StdPrs_Curve.hxx>
 
@@ -141,6 +143,9 @@
 #include <BRepExtrema_ExtPF.hxx>
 
 #include <Prs3d_LineAspect.hxx>
+#include <Prs3d_PointAspect.hxx>
+
+#include <Image_AlienPixMap.hxx>
 
 #ifdef HAVE_STRINGS_H
 #include <strings.h>
@@ -3166,9 +3171,11 @@ class MyPArrayObject : public AIS_InteractiveObject
 
 public:
 
-  MyPArrayObject (const Handle(Graphic3d_ArrayOfPrimitives) theArray)
+  MyPArrayObject (const Handle(Graphic3d_ArrayOfPrimitives) theArray,
+                  Handle(Graphic3d_AspectMarker3d) theMarkerAspect = NULL)
   {
     myArray = theArray;
+    myMarkerAspect = theMarkerAspect;
   }
 
   DEFINE_STANDARD_RTTI(MyPArrayObject);
@@ -3179,12 +3186,13 @@ private:
                 const Handle(Prs3d_Presentation)& aPresentation,
                 const Standard_Integer aMode);
 
-  void ComputeSelection (const Handle(SelectMgr_Selection)& /*aSelection*/,
-                         const Standard_Integer /*aMode*/) {};
+  void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
+                         const Standard_Integer /*theMode*/);
 
 protected:
 
   Handle(Graphic3d_ArrayOfPrimitives) myArray;
+  Handle(Graphic3d_AspectMarker3d) myMarkerAspect;
 
 };
 
@@ -3196,7 +3204,24 @@ void MyPArrayObject::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPre
                               const Standard_Integer /*aMode*/)
 {
   aPresentation->Clear();
+  if (!myMarkerAspect.IsNull())
+  {
+    Prs3d_Root::CurrentGroup (aPresentation)->SetGroupPrimitivesAspect (myMarkerAspect);
+  }
   Prs3d_Root::CurrentGroup (aPresentation)->AddPrimitiveArray (myArray);
+}
+
+void MyPArrayObject::ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
+                                       const Standard_Integer /*theMode*/)
+{
+  Handle(SelectMgr_EntityOwner) anEntityOwner = new SelectMgr_EntityOwner (this);
+
+  for (Standard_Integer anIter = 1; anIter <= myArray->VertexNumber(); anIter++)
+  {
+
+    Handle(Select3D_SensitivePoint) aSensetivePoint = new Select3D_SensitivePoint (anEntityOwner, myArray->Vertice (anIter));
+    theSelection->Add (aSensetivePoint);
+  }
 }
 
 static bool CheckInputCommand (const TCollection_AsciiString theCommand,
@@ -3325,8 +3350,12 @@ static int VDrawPArray (Draw_Interpretor& di, Standard_Integer argc, const char*
 
   // create an array of primitives by types
   Handle(Graphic3d_ArrayOfPrimitives) anArray;
+  Handle(Graphic3d_AspectMarker3d)    anAspPoints;
   if (anArrayType == "points")
+  {
     anArray = new Graphic3d_ArrayOfPoints (aVertexNum);
+    anAspPoints = new Graphic3d_AspectMarker3d (Aspect_TOM_POINT, Quantity_NOC_YELLOW, 1.0f);
+  }
   else if (anArrayType == "segments")
     anArray = new Graphic3d_ArrayOfSegments (aVertexNum, aEdgeNum, hasVColors);
   else if (anArrayType == "polylines")
@@ -3426,7 +3455,7 @@ static int VDrawPArray (Draw_Interpretor& di, Standard_Integer argc, const char*
   }
 
   // create primitives array object
-  Handle (MyPArrayObject) aPObject = new MyPArrayObject (anArray);
+  Handle(MyPArrayObject) aPObject = new MyPArrayObject (anArray, anAspPoints);
 
   // register the object in map
   VDisplayAISObject (aName, aPObject);
@@ -4588,6 +4617,114 @@ static Standard_Integer VShowFaceBoundary (Draw_Interpretor& /*di*/,
 }
 
 //=======================================================================
+//function : VMarkersTest
+//purpose  : Draws an array of markers for testing purposes.
+//=======================================================================
+static Standard_Integer VMarkersTest (Draw_Interpretor& theDI,
+                                      Standard_Integer  theArgNb,
+                                      const char**      theArgVec)
+{
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+  if (aContext.IsNull())
+  {
+    std::cerr << "Call 'vinit' before!\n";
+    return 1;
+  }
+
+  if (theArgNb < 5)
+  {
+    std::cerr << "Usage :\n " << theArgVec[0]
+              << "name X Y Z [PointsOnSide=10] [MarkerType=0] [Scale=1.0] [FileName=ImageFile]\n";
+    return 1;
+  }
+
+  Standard_Integer anArgIter = 1;
+
+  TCollection_AsciiString aName (theArgVec[anArgIter++]);
+  TCollection_AsciiString aFileName;
+  gp_XYZ aPnt (Atof (theArgVec[anArgIter]),
+               Atof (theArgVec[anArgIter + 1]),
+               Atof (theArgVec[anArgIter + 2]));
+  anArgIter += 3;
+
+  Standard_Integer aPointsOnSide = 10;
+  Standard_Integer aMarkerType   = -1;
+  Standard_Real    aScale        = 1.0;
+  for (; anArgIter < theArgNb; ++anArgIter)
+  {
+    const TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    if (anArg.Search ("PointsOnSide=") > -1)
+    {
+      aPointsOnSide = anArg.Token ("=", 2).IntegerValue();
+    }
+    else if (anArg.Search ("MarkerType=") > -1)
+    {
+      aMarkerType = anArg.Token ("=", 2).IntegerValue();
+    }
+    else if (anArg.Search ("Scale=") > -1)
+    {
+      aScale = anArg.Token ("=", 2).RealValue();
+    }
+    else if (anArg.Search ("FileName=") > -1)
+    {
+      aFileName = anArg.Token ("=", 2);
+    }
+    else
+    {
+      std::cerr << "Wrong argument: " << anArg << "\n";
+      return 1;
+    }
+  }
+
+  Handle(Graphic3d_AspectMarker3d) anAspect;
+  Handle(Image_AlienPixMap) anImage;
+  Quantity_Color aColor (Quantity_NOC_GREEN1);
+  if ((aMarkerType == Aspect_TOM_USERDEFINED || aMarkerType < 0)
+   && !aFileName.IsEmpty())
+  {
+    anImage = new Image_AlienPixMap();
+    if (!anImage->Load (aFileName))
+    {
+      std::cerr << "Could not load image from file '" << aFileName << "'!\n";
+      return 1;
+    }
+    anAspect = new Graphic3d_AspectMarker3d (anImage);
+  }
+  else
+  {
+    anAspect = new Graphic3d_AspectMarker3d (aMarkerType >= 0 ? (Aspect_TypeOfMarker )aMarkerType : Aspect_TOM_POINT, aColor, aScale);
+  }
+
+  Handle(Graphic3d_ArrayOfPrimitives) anArray = new Graphic3d_ArrayOfPoints ((Standard_Integer )Pow (aPointsOnSide, 3), aPointsOnSide != 1);
+  if (aPointsOnSide == 1)
+  {
+    anArray->AddVertex (aPnt);
+  }
+  else
+  {
+    for (Standard_Real i = 1; i <= aPointsOnSide; i++)
+    {
+      for (Standard_Real j = 1; j <= aPointsOnSide; j++)
+      {
+        for (Standard_Real k = 1; k <= aPointsOnSide; k++)
+        {
+          anArray->AddVertex (aPnt.X() + i, aPnt.Y() + j, aPnt.Z() + k);
+          anArray->SetVertexColor (anArray->VertexNumber(),
+                                   i / aPointsOnSide,
+                                   j / aPointsOnSide,
+                                   k / aPointsOnSide);
+        }
+      }
+    }
+  }
+
+  Handle(MyPArrayObject) aPObject = new MyPArrayObject (anArray, anAspect);
+  VDisplayAISObject (aName, aPObject);
+
+  return 0;
+}
+
+//=======================================================================
 //function : ObjectsCommands
 //purpose  :
 //=======================================================================
@@ -4722,4 +4859,8 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     "- turns on/off drawing of face boundaries for ais object "
     "and defines boundary line style.",
     __FILE__, VShowFaceBoundary, group);
+
+  theCommands.Add ("vmarkerstest",
+                   "vmarkerstest: name X Y Z [PointsOnSide=10] [MarkerType=0] [Scale=1.0] [FileName=ImageFile]\n",
+                   __FILE__, VMarkersTest, group);
 }

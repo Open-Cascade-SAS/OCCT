@@ -29,6 +29,7 @@
 
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_ArrayOfPoints.hxx>
 
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_ArrowAspect.hxx>
@@ -131,20 +132,18 @@ void DsgPrs_OffsetPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
     
     // ball 1 : 3eme groupe
-    Handle(Graphic3d_AspectMarker3d) MarkerAsp = new Graphic3d_AspectMarker3d();
-    MarkerAsp->SetType(Aspect_TOM_BALL);
-    MarkerAsp->SetScale(0.8);
-    Quantity_Color acolor;
-    Aspect_TypeOfLine atype;
-    Standard_Real awidth;
-    LA->LineAspect()->Aspect()->Values(acolor, atype, awidth);
-    MarkerAsp->SetColor(acolor);
-    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(MarkerAsp);
-    Graphic3d_Vertex V3d(Proj2.X() ,Proj2.Y(), Proj2.Z());
-    Prs3d_Root::CurrentGroup(aPresentation)->Marker(V3d);
-    
+    Quantity_Color aColor;
+    Aspect_TypeOfLine aType;
+    Standard_Real aWidth;
+    LA->LineAspect()->Aspect()->Values (aColor, aType, aWidth);
+    Handle(Graphic3d_AspectMarker3d) aMarkerAsp = new Graphic3d_AspectMarker3d (Aspect_TOM_O, aColor, 1.0);
+    Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect (aMarkerAsp);
+    Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
+    anArrayOfPoints->AddVertex (Proj2.X(), Proj2.Y(), Proj2.Z());
+    Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints);
+
     Prs3d_Root::NewGroup(aPresentation);
-    
+
     // texte : 4eme groupe
     Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,offp);
   }
@@ -209,7 +208,8 @@ void DsgPrs_OffsetPresentation::AddAxes (const Handle(Prs3d_Presentation)& aPres
   Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
   // anneau : 3eme et 4eme groupes
-  Graphic3d_Vertex V3d(Proj2.X() ,Proj2.Y(), Proj2.Z());
+  Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
+  anArrayOfPoints->AddVertex (Proj2.X(), Proj2.Y(), Proj2.Z());
 
   Prs3d_Root::NewGroup(aPresentation);
   Handle(Graphic3d_AspectMarker3d) MarkerAsp = new Graphic3d_AspectMarker3d();
@@ -218,7 +218,7 @@ void DsgPrs_OffsetPresentation::AddAxes (const Handle(Prs3d_Presentation)& aPres
   //MarkerAsp->SetColor(Quantity_Color(Quantity_NOC_RED));
   MarkerAsp->SetColor(acolor);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(MarkerAsp);
-  Prs3d_Root::CurrentGroup(aPresentation)->Marker(V3d);
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints);
 
   Prs3d_Root::NewGroup(aPresentation);
   Handle(Graphic3d_AspectMarker3d) Marker2Asp = new Graphic3d_AspectMarker3d();
@@ -227,5 +227,5 @@ void DsgPrs_OffsetPresentation::AddAxes (const Handle(Prs3d_Presentation)& aPres
   //Marker2Asp->SetColor(Quantity_Color(Quantity_NOC_GREEN));
   Marker2Asp->SetColor(acolor);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(Marker2Asp);
-  Prs3d_Root::CurrentGroup(aPresentation)->Marker(V3d);
+  Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints);
 }

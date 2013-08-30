@@ -190,6 +190,7 @@ Standard_Boolean V3d_Viewer::GridEcho() const {
   return myGridEcho;
 }
 
+#include <Graphic3d_ArrayOfPoints.hxx>
 #include <Visual3d_TransientManager.hxx>
 void V3d_Viewer::ShowGridEcho( const Handle(V3d_View)& aView, 
 					const Graphic3d_Vertex& aVertex ) {
@@ -217,7 +218,10 @@ void V3d_Viewer::ShowGridEcho( const Handle(V3d_View)& aView,
 #ifdef OCC281
       myGridEchoGroup->SetPrimitivesAspect( myGridEchoAspect );
 #endif
-      myGridEchoGroup->Marker(aVertex);
+      Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
+      anArrayOfPoints->AddVertex (aVertex.X(), aVertex.Y(), aVertex.Z());
+      myGridEchoGroup->AddPrimitiveArray (anArrayOfPoints);
+
       Visual3d_TransientManager::BeginDraw(
 		aView->View(), Standard_False, Standard_False);
       Visual3d_TransientManager::DrawStructure (myGridEchoStructure);

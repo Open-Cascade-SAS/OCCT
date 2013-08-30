@@ -50,7 +50,8 @@ public:
   void SetAspectLine (const CALL_DEF_CONTEXTLINE &AContext);
   void SetAspectFace (const Handle(OpenGl_Context)&   theCtx,
                       const CALL_DEF_CONTEXTFILLAREA& theAspect);
-  void SetAspectMarker (const CALL_DEF_CONTEXTMARKER &AContext);
+  void SetAspectMarker (const Handle(OpenGl_Context)& theCtx,
+                        const CALL_DEF_CONTEXTMARKER& theAspect);
   void SetAspectText (const CALL_DEF_CONTEXTTEXT &AContext);
 
   void SetHighlightBox (const Handle(OpenGl_Context)& theGlCtx,

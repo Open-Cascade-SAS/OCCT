@@ -48,7 +48,7 @@ void OpenGl_GraphicDriver::ContextStructure (const Graphic3d_CStructure& theCStr
     aStructure->SetAspectFace (GetSharedContext(), theCStructure.ContextFillArea);
 
   if (theCStructure.ContextMarker.IsDef)
-    aStructure->SetAspectMarker (theCStructure.ContextMarker);
+    aStructure->SetAspectMarker (GetSharedContext(), theCStructure.ContextMarker);
 
   if (theCStructure.ContextText.IsDef)
     aStructure->SetAspectText (theCStructure.ContextText);

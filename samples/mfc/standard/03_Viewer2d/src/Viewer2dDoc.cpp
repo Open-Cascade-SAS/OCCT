@@ -168,7 +168,7 @@ void CViewer2dDoc::OnBUTTONTestMarkers()
   for (int i=1;i<=2;i++)
   {
     Handle (Sample2D_Markers) aMarker  = 
-      new Sample2D_Markers(10+20,5*i,Aspect_TOM_BALL,(Quantity_NameOfColor)(aColor++));
+      new Sample2D_Markers(10+20,5*i,Aspect_TOM_RING1,(Quantity_NameOfColor)(aColor++));
     myAISContext->Display(aMarker, Standard_False);
   }
   for (int i=1;i<=2;i++)

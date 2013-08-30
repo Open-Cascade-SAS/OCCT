@@ -81,19 +81,22 @@ void OpenGl_Group::SetAspectFace (const Handle(OpenGl_Context)&   theCtx,
 
 /*----------------------------------------------------------------------*/
 
-void OpenGl_Group::SetAspectMarker (const CALL_DEF_CONTEXTMARKER& theContext,
+void OpenGl_Group::SetAspectMarker (const Handle(OpenGl_Context)& theCtx,
+                                    const CALL_DEF_CONTEXTMARKER& theAspect,
                                     const Standard_Boolean theIsGlobal)
 {
   if (theIsGlobal || myFirst == NULL)
   {
     if (myAspectMarker == NULL)
+    {
       myAspectMarker = new OpenGl_AspectMarker();
-    myAspectMarker->SetContext (theContext);
+    }
+    myAspectMarker->Init (theCtx, theAspect);
   }
   else
   {
     OpenGl_AspectMarker* anAspectMarker = new OpenGl_AspectMarker();
-    anAspectMarker->SetContext (theContext);
+    anAspectMarker->Init (theCtx, theAspect);
     AddElement (TelNil/*TelAspectMarker*/, anAspectMarker);
   }
 }
