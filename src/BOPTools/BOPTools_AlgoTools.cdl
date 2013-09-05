@@ -148,7 +148,9 @@ is
         theFace    :Face  from TopoDS; 
         theLCEF    :out ListOfCoupleOfShape from BOPTools; 
         theFaceOff :out Face  from TopoDS; 
-        theContext :out Context from BOPInt); 
+        theContext :out Context from BOPInt)  
+    returns Boolean from Standard;  
+    
      ---Purpose:  For the face theFace and its edge theEdge 
      --           finds the face suitable to produce shell. 
      --           theLCEF - set of faces to search. All faces 
@@ -164,7 +166,7 @@ is
     --          couple of faces theFace1, theFace2. 
     --          The faces theFace, theFace1, theFace2  must 
     --          share the edge theEdge  	 
-    returns Boolean from Standard; 
+    returns Integer from Standard; 
  
     IsInternalFace(myclass; 
         theFace :Face  from TopoDS; 
@@ -175,7 +177,7 @@ is
     --          appropriate couple of faces (from the set theLF)    . 
     --          The faces of the set theLF and theFace  must 
     --          share the edge theEdge  	
-    returns Boolean from Standard;  
+    returns Integer from Standard;  
  
     IsInternalFace(myclass; 
         theFace  :Face  from TopoDS; 
@@ -188,7 +190,7 @@ is
     --          theMEF - Map Edge/Faces for theSolid              
     --          theTol - value of precision of computation   
     --          theContext- cahed geometrical tools   
-   returns Boolean from Standard;  
+   returns Integer from Standard;  
  
  
     GetEdgeOnFace (myclass;  

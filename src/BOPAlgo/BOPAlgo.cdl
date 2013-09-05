@@ -21,7 +21,8 @@ package BOPAlgo
 ---Purpose: 
 
 uses
-    gp, 
+    gp,  
+    Bnd,
     TopAbs, 
     Geom,  
     GeomAPI, 

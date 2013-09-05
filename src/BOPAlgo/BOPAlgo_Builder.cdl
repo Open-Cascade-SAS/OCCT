@@ -24,7 +24,8 @@ class Builder from BOPAlgo
 	
 ---Purpose:   
 
-uses   
+uses    
+    Box from Bnd,
     ShapeEnum from TopAbs,
     Shape from TopoDS, 
     ListOfShape from TopTools,  
@@ -189,16 +190,21 @@ is
  
     FillIn3DParts(me:out; 
         theInParts:out DataMapOfShapeListOfShape from BOPCol; 
-        theDraftSolids:out DataMapOfShapeShape from BOPCol; 
-        theAllocator:BaseAllocator from BOPCol)  
+        theDraftSolids:out DataMapOfShapeShape from BOPCol;  
+        theAllocator:BaseAllocator from BOPCol)   
     is virtual protected;   
-     
+ 
     BuildSplitSolids(me:out; 
         theInParts:out DataMapOfShapeListOfShape from BOPCol; 
         theDraftSolids:out DataMapOfShapeShape from BOPCol; 
-        theAllocator:BaseAllocator from BOPCol)  
+        theAllocator:BaseAllocator from BOPCol)   
     is protected;  
-	 
+ 
+    BuildBndBox(me:out;  
+    	theIndex:Integer from Standard; 
+	theBox:  out Box from Bnd) 
+    is protected;
+ 
     FillInternalShapes(me:out)  
     is protected; 
     --	 
