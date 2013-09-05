@@ -1,3 +1,6 @@
+puts "TODO DEBUG_OCC24121 Debian60-64: Process killed by CPU limit"
+puts "TODO DEBUG_OCC24121 Debian60-64: TEST INCOMPLETE"
+
 restore [locate_data_file a67] a
 restore [locate_data_file b67] b
 bsection result a b

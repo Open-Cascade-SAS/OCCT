@@ -8,7 +8,7 @@ if {[string compare $command "SplitAngle"] == 0 } {
        } {
   puts "TODO OCC23127 $os: Faulty shapes in variables faulty_1 to faulty_63"
     } else {
-  puts "TODO OCC23127 $os: Faulty shapes in variables faulty_1 to faulty_61"
+  puts "TODO ?OCC23127 ALL: Faulty shapes in variables faulty_1 to faulty_61"
     }
 }
 

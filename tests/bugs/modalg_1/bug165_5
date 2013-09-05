@@ -1,3 +1,7 @@
+puts "TODO DEBUG_OCC24121 Windows: Faulty OCC165"
+puts "TODO DEBUG_OCC24121 Windows: An exception was caught"
+puts "TODO DEBUG_OCC24121 Windows: Error: Offset is not done"
+
 cpulimit 600
 
 puts "========"

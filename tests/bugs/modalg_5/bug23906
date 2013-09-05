@@ -1,3 +1,5 @@
+puts "TODO DEBUG_OCC24121 Debian60-64: Elapsed time is more than 0.1 seconds"
+
 puts "============"
 puts "OCC23906"
 puts "============"
@@ -28,7 +30,7 @@ if { [string compare $tcl_platform(platform) "windows"] == 0 }  {
    set max_time 0.1
 }
 if { $z > ${max_time} } {                                         
-    puts "Elapsed time is more then ${max_time} seconds - Faulty"
+    puts "Elapsed time is more than ${max_time} seconds - Faulty"
 } else {
-    puts "Elapsed time is less then ${max_time} seconds - OK"
+    puts "Elapsed time is less than ${max_time} seconds - OK"
 }

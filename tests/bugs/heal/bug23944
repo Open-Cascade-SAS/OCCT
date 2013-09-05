@@ -1,3 +1,6 @@
+puts "TODO DEBUG_OCC24121 Debian60-64 Windows:  iteration"
+puts "TODO DEBUG_OCC24121 Debian60-64 Windows: Faulty OCC23944"
+
 puts "============"
 puts "OCC23944"
 puts "============"
@@ -10,9 +13,13 @@ set BugNumber OCC23944
 
 restore [locate_data_file bug23944_s.draw] s
 
+decho off
 mkface f s
+decho on
 
+decho off
 set info [bsplres result f 1e-4 1e-9 15 100 C1 C2 0 1]
+decho on
 
 # Resume
 puts ""

@@ -1,11 +1,5 @@
 #E6----------------------------------------------
-set os "ALL"
-if {[array get env os_type] != ""} {
-  set os $env(os_type)
-}
-if {[string compare $os "Mandriva2008"] != 0 && [string compare $os "SUSE10-64"] != 0 && [string compare $os "Windows-64-VC8"] != 0} {
-   puts "TODO OCC22803 $os:Faulty shapes in variables faulty_1 to faulty_2"
-}
+puts "TODO ?OCC22803 ALL: Faulty shapes in variables faulty_1 to faulty_"
 
 ptorus pt 25 24 90
 profile pr o 20 18 5  p 0 -1 0 1 0 0 l 10 t 0 30 \

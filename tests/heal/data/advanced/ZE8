@@ -6,10 +6,19 @@ if {[string compare $command "SplitAngle"] == 0 } {
     if {
 	    [string compare $os "Mandriva2008"] == 0
        } {
-  puts "TODO OCC23127 $os: Faulty shapes in variables faulty_1 to faulty_32"
+  puts "TODO ?OCC23127 ALL: Faulty shapes in variables faulty_1 to faulty_"
     } else {
-  puts "TODO OCC23127 $os: Faulty shapes in variables faulty_1 to faulty_30"
+  puts "TODO ?OCC23127 ALL: Faulty shapes in variables faulty_1 to faulty_"
     }
+}
+if {[string compare $command "ShapeDivide"] == 0 } {
+    puts "TODO ?DEBUG_OCC24121 Debian60-64: Process killed by CPU limit"
+    puts "TODO ?DEBUG_OCC24121 Debian60-64: TEST INCOMPLETE"
+}
+
+if {[string compare $command "ShapeConvertRev"] == 0 } {
+   puts "TODO ?DEBUG_OCC24121 Debian60-64: Process killed by CPU limit"
+   puts "TODO ?DEBUG_OCC24121 Debian60-64: TEST INCOMPLETE"
 }
 
 restore [locate_data_file BPLSEITLI.brep] a

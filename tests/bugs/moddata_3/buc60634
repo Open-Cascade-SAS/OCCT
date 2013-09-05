@@ -1,6 +1,6 @@
 puts "Output with mistake is correct!"
-puts "TODO BUC60634 ALL: Standard_ConstructionError: BRepFill_Draft"
-puts "TODO ?BUC60634 ALL: Error in MakeWire"
+puts "TODO ?#60634 ALL: Standard_ConstructionError: BRepFill_Draft"
+puts "TODO ?#60634 ALL: Error in MakeWire"
 puts "=================="
 puts "BUC60634"
 puts "=================="

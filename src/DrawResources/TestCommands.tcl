@@ -1004,23 +1004,47 @@ if [catch {
     set status ""
     foreach line [split $log "\n"] {
 	# check if line defines specific treatment of some messages
-	if [regexp -nocase {^[ \t]*TODO ([^:]*):(.*)$} $line res platforms pattern] {
-	    if { ! [regexp -nocase {\mAll\M} $platforms] && 
-                 ! [regexp -nocase "\\m$env(os_type)\\M" $platforms] } {
-		lappend html_log $line
-		continue ;# TODO statement is for another platform
+	set deb_info [dversion]
+	if [regexp -nocase {^[ \s]*TODO ([^:]*):(.*)$} $line res platforms pattern] {
+	    if { [regexp {DEBUG_} $platforms] != 1 } {
+		if { ! [regexp -nocase {\mAll\M} $platforms] && 
+                    ! [regexp -nocase "\\m$env(os_type)\\M" $platforms] } {
+		    lappend html_log $line
+		    continue ;# TODO statement is for another platform
+		}
+
+		# record TODOs that mark unstable cases
+		if { [regexp {[\?]} $platforms] } {
+		    set todos_unstable([llength $todos]) 1
+        	}
+
+		lappend todos [regsub -all {\\b} [string trim $pattern] {\\y}] ;# convert regexp from Perl to Tcl style
+		lappend html_log [_html_highlight BAD $line]
+		continue
+	    }
+	    
+	    if { [regexp "Debug mode" $deb_info] != 1 && [regexp {DEBUG_} $platforms] == 1 } {
+		continue
 	    }
 
-	    # record TODOs that mark unstable cases
-	    if { [regexp {[\?]} $platforms] } {
-		set todos_unstable([llength $todos]) 1
-            }
+	    if { [regexp "Debug mode" $deb_info] == 1 && [regexp {DEBUG_} $platforms] == 1 } {
+		if { ! [regexp -nocase {\mAll\M} $platforms] && 
+            	    ! [regexp -nocase "\\m$env(os_type)\\M" $platforms] } {
+	    	    lappend html_log $line
+	    	    continue ;# TODO statement is for another platform
+		}
 
-	    lappend todos [regsub -all {\\b} [string trim $pattern] {\\y}] ;# convert regexp from Perl to Tcl style
-	    lappend html_log [_html_highlight BAD $line]
-	    continue
+		# record TODOs that mark unstable cases
+		if { [regexp {[\?]} $platforms] } {
+	    	    set todos_unstable([llength $todos]) 1
+    		}
+            
+        	lappend todos [regsub -all {\\b} [string trim $pattern] {\\y}] ;# convert regexp from Perl to Tcl style
+		lappend html_log [_html_highlight BAD $line]
+		continue
+	    }
 	}
-
+		
 	# check for presence of messages indicating test result
 	set ismarked 0
 	foreach bw $badwords {

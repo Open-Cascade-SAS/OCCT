@@ -1,5 +1,5 @@
 puts "TODO ?OCC23753 ALL: Process killed by CPU limit"
-puts "TODO ?OCC23753 Mandriva2010: TEST INCOMPLETE"
+puts "TODO ?OCC23753 ALL: TEST INCOMPLETE"
 
 puts "============"
 puts "OCC19793"
