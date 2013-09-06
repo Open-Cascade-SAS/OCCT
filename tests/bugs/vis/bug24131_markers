@@ -1,3 +1,6 @@
+puts "TODO DEBUG_24148 Windows: Tcl Exception: Dumping failed!"
+puts "TODO DEBUG_24148 Windows: TEST INCOMPLETE"
+
 puts "========"
 puts "OCC24131 Markers using Point Sprites"
 puts "========"
