@@ -1,3 +1,5 @@
+puts "TODO ?OCC24136 ALL: Faulty shapes in variables faulty_1 to faulty_"
+
 # Original bug : pro12913
 # Date : 24mar98
 
