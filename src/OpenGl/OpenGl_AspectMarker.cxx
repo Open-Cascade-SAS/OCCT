@@ -1542,8 +1542,8 @@ void OpenGl_AspectMarker::Init (const Handle(OpenGl_Context)& theCtx,
   }
 
   if (!aNewKey.IsEmpty()
-   && theCtx->GetResource<Handle(OpenGl_PointSprite)> (aNewKey,  mySprite)
-   && theCtx->GetResource<Handle(OpenGl_PointSprite)> (aNewKeyA, mySpriteA))
+   && theCtx->GetResource<Handle(OpenGl_PointSprite)> (aNewKeyA, mySpriteA) // alpha sprite could be shared
+   && theCtx->GetResource<Handle(OpenGl_PointSprite)> (aNewKey,  mySprite))
   {
     // reuse shared resource
     if (!mySprite->IsDisplayList())
@@ -1553,12 +1553,19 @@ void OpenGl_AspectMarker::Init (const Handle(OpenGl_Context)& theCtx,
     return;
   }
 
+  const bool hadAlreadyAlpha = !mySpriteA.IsNull();
+  if (!hadAlreadyAlpha)
+  {
+    mySpriteA = new OpenGl_PointSprite();
+  }
   mySprite  = new OpenGl_PointSprite();
-  mySpriteA = new OpenGl_PointSprite();
   if (!aNewKey.IsEmpty())
   {
     theCtx->ShareResource (aNewKey,  mySprite);
-    theCtx->ShareResource (aNewKeyA, mySpriteA);
+    if (!hadAlreadyAlpha)
+    {
+      theCtx->ShareResource (aNewKeyA, mySpriteA);
+    }
   }
 
   if (!theCtx.IsNull()
@@ -1691,15 +1698,18 @@ void OpenGl_AspectMarker::Init (const Handle(OpenGl_Context)& theCtx,
     myMarkerSize = Max ((Standard_ShortReal )anImage->Width(),(Standard_ShortReal )anImage->Height());
 
     mySprite->Init (theCtx, *anImage.operator->(), Graphic3d_TOT_2D);
-    if (anImageA.IsNull()
-     && mySprite->GetFormat() != GL_ALPHA8
-     && !aNewMarkerImage.IsNull())
+    if (!hadAlreadyAlpha)
     {
-      anImageA = aNewMarkerImage->GetImageAlpha();
-    }
-    if (!anImageA.IsNull())
-    {
-      mySpriteA->Init (theCtx, *anImageA.operator->(), Graphic3d_TOT_2D);
+      if (anImageA.IsNull()
+       && mySprite->GetFormat() != GL_ALPHA8
+       && !aNewMarkerImage.IsNull())
+      {
+        anImageA = aNewMarkerImage->GetImageAlpha();
+      }
+      if (!anImageA.IsNull())
+      {
+        mySpriteA->Init (theCtx, *anImageA.operator->(), Graphic3d_TOT_2D);
+      }
     }
   }
   else
@@ -1843,8 +1853,8 @@ void OpenGl_AspectMarker::Release (const Handle(OpenGl_Context)& theCtx)
       {
         mySprite.Nullify(); // we need nullify all handles before ReleaseResource() call
         mySpriteA.Nullify();
-        theCtx->ReleaseResource (mySpriteKey);
-        theCtx->ReleaseResource (mySpriteAKey);
+        theCtx->ReleaseResource (mySpriteKey,  Standard_True);
+        theCtx->ReleaseResource (mySpriteAKey, Standard_True);
       }
     }
     mySprite.Nullify();
