@@ -855,7 +855,7 @@ void IntTools_EdgeFace::CheckData()
   Standard_Integer IntTools_EdgeFace::MakeType(IntTools_CommonPrt&  aCommonPrt)
 {
   Standard_Real  af1, al1;
-  Standard_Real dt, df1, df2, tm;
+  Standard_Real  df1, tm;
   Standard_Boolean bAllNullFlag;
   //
   bAllNullFlag=aCommonPrt.AllNullFlag();
@@ -900,7 +900,7 @@ void IntTools_EdgeFace::CheckData()
     }
 	 return 0;
   }
-  //
+  
   /*
   dt=al1-af1;
   if (dt<1.e-5) {
@@ -940,8 +940,8 @@ void IntTools_EdgeFace::CheckData()
       aCommonPrt.SetType(TopAbs_EDGE);
     }
   }
-  */
-//  return 0;
+
+  return 0;*/
 }
 
 

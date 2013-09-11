@@ -83,36 +83,45 @@ OSD_MAllocHook::CollectBySize* OSD_MAllocHook::GetCollectBySize()
 #ifdef WNT
 #include <crtdbg.h>
 
+#if _MSC_VER == 1500  /* VS 2008 */
+
 static long getRequestNum(void* pvData, long lRequest, size_t& theSize)
 {
-#if _MSC_VER == 1500  /* VS 2008 */
-#ifdef _DEBUG /* in Release, _CrtIsValidHeapPointer is always 1 */
-  if (_CrtIsValidHeapPointer(pvData))
+#ifdef _DEBUG /* protect against invalid pointer; in Release, _CrtIsValidHeapPointer is always 1 */
+  if (!_CrtIsValidHeapPointer(pvData))
+    return lRequest;
+#else
+  (void)lRequest; // avoid compiler warning on unused arg
 #endif
-  {
+
 #define nNoMansLandSize 4
-    // the header struct is taken from crt/src/dbgint.h
-    struct _CrtMemBlockHeader
-    {
+  // the header struct is taken from crt/src/dbgint.h
+  struct _CrtMemBlockHeader
+  {
 #ifdef _WIN64
-        int                         nBlockUse;
-        size_t                      nDataSize;
+      int                         nBlockUse;
+      size_t                      nDataSize;
 #else
-        size_t                      nDataSize;
-        int                         nBlockUse;
+      size_t                      nDataSize;
+      int                         nBlockUse;
 #endif
-      long                        lRequest;
-      unsigned char               gap[nNoMansLandSize];
-    };
-    _CrtMemBlockHeader* aHeader = ((_CrtMemBlockHeader*)pvData)-1;
-    theSize = aHeader->nDataSize;
-    return aHeader->lRequest;
-  }
-#else
-  (void)pvData; (void)theSize; // avoid compiler warning on unused arg
-#endif
+    long                        lRequest;
+    unsigned char               gap[nNoMansLandSize];
+  };
+
+  _CrtMemBlockHeader* aHeader = ((_CrtMemBlockHeader*)pvData)-1;
+  theSize = aHeader->nDataSize;
+  return aHeader->lRequest;
+}
+
+#else /* _MSC_VER == 1500 */
+
+static long getRequestNum(void* /*pvData*/, long lRequest, size_t& /*theSize*/)
+{
   return lRequest;
 }
+
+#endif /* _MSC_VER == 1500 */
 
 int __cdecl MyAllocHook(int      nAllocType,
                         void   * pvData,

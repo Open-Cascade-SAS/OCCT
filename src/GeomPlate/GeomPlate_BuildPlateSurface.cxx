@@ -178,7 +178,7 @@ GeomPlate_BuildPlateSurface::GeomPlate_BuildPlateSurface (
 		             const Standard_Real Tol2d,
 		             const Standard_Real Tol3d,
 			     const Standard_Real TolAng,
-			     const Standard_Real TolCurv,
+			     const Standard_Real /*TolCurv*/,
 			     const Standard_Boolean Anisotropie ) :
 mySurfInit(Surf),
 myAnisotropie(Anisotropie),
@@ -209,12 +209,12 @@ myNbBounds(0)
 GeomPlate_BuildPlateSurface::GeomPlate_BuildPlateSurface (
                              const Standard_Integer Degree,
 			     const Standard_Integer NbPtsOnCur,
-		    const Standard_Integer NbIter,
-		    const Standard_Real Tol2d,
-		    const Standard_Real Tol3d,
-		    const Standard_Real TolAng,
-		    const Standard_Real TolCurv,
-		    const Standard_Boolean Anisotropie ) :
+                             const Standard_Integer NbIter,
+                             const Standard_Real Tol2d,
+                             const Standard_Real Tol3d,
+                             const Standard_Real TolAng,
+                             const Standard_Real /*TolCurv*/,
+                             const Standard_Boolean Anisotropie ) :
 myAnisotropie(Anisotropie),
 myDegree(Degree),
 myNbPtsOnCur(NbPtsOnCur),

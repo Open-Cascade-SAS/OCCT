@@ -315,9 +315,6 @@ void IntCurveSurface_Inter::Perform(const TheCurve&   curve,
   done = Standard_True;
   Standard_Integer NbUOnS = TheSurfaceTool::NbUIntervals(surface,GeomAbs_C2);
   Standard_Integer NbVOnS = TheSurfaceTool::NbVIntervals(surface,GeomAbs_C2);
-#ifdef ICS_DEB
-  Standard_Integer NbOnC  = TheCurveTool::NbIntervals(curve,GeomAbs_C2);
-#endif
   Standard_Real U0,U1,V0,V1; 
   
   if(NbUOnS > 1) { 

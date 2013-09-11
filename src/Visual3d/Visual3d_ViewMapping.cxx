@@ -45,7 +45,6 @@
 
 // Perspective
 #include <OSD_Environment.hxx>
-static Standard_Boolean env_init = Standard_False;
 static OSD_Environment env_walkthrow; 
 
 static Standard_Boolean Visual3dWalkthrow()

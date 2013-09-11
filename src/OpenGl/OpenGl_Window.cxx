@@ -531,7 +531,6 @@ OpenGl_Window::~OpenGl_Window()
     ReleaseDC (aWindow, aWindowDC);
   }
 #else
-  GLXDrawable aWindow   = (GLXDrawable )myGlContext->myWindow;
   Display*    aDisplay  = (Display*    )myGlContext->myDisplay;
   GLXContext  aGContext = (GLXContext  )myGlContext->myGContext;
   myGlContext.Nullify();

@@ -843,7 +843,6 @@ static Standard_Real fl  = 1.e-3;
 static Standard_Real tapp_angle = 1.e-2;
 static GeomAbs_Shape blend_cont = GeomAbs_C1;
 
-static BRepFilletAPI_MakeFillet* Rakk = 0;
 static BRepFilletAPI_MakeFillet* Rake = 0;
 static char name[100];
 

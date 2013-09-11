@@ -556,7 +556,6 @@ void  NIS_View::Select (const NCollection_List<gp_XY> &thePolygon,
   const gp_Ax3 anAx3 (anEye, aProj, anXdir);
   gp_Trsf aTrf;
   aTrf.SetTransformation (anAx3);
-  const gp_Trsf aTrfInv = aTrf.Inverted();
 
   // Prepare list of 2d points of selection polygon.
   NCollection_List<gp_XY>           aPoints;

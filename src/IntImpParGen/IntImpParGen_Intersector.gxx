@@ -44,7 +44,6 @@
 #define EPSX    ParTool::EpsX(TheParCurve)
 #define NB_ECHANTILLONS 
 
-static Standard_Real PIpPI = M_PI + M_PI;
 
 
 

@@ -112,23 +112,33 @@ inline Standard_ShortReal InverseShortReal (const Standard_ShortReal theValue)
 //purpose  : Inverses bytes in size_t type instance
 //=======================================================================
 
+template<int size>
+inline Standard_Size InverseSizeSpecialized (const Standard_Size theValue, int);
+
+template<>
+inline Standard_Size InverseSizeSpecialized <4> (const Standard_Size theValue, int)
+{
+  return (0 | (( theValue & 0x000000ff ) << 24 )
+            | (( theValue & 0x0000ff00 ) << 8  )
+            | (( theValue & 0x00ff0000 ) >> 8  )
+            | (( theValue >> 24 ) & 0x000000ff ) );
+}
+
+template<>
+inline Standard_Size InverseSizeSpecialized <8> (const Standard_Size theValue, int)
+{
+  Standard_Size aResult;
+  Standard_Integer *i = (Standard_Integer*) &theValue;
+  Standard_Integer *j = (Standard_Integer*) &aResult;
+  j[1] = InverseInt (i[0]);
+  j[0] = InverseInt (i[1]);
+  return aResult;
+}
+
 inline Standard_Size InverseSize (const Standard_Size theValue)
 {
-  if (sizeof(Standard_Size) == 4)
-    return (0 | (( theValue & 0x000000ff ) << 24 )
-            |   (( theValue & 0x0000ff00 ) << 8  )
-            |   (( theValue & 0x00ff0000 ) >> 8  )
-            |   (( theValue >> 24 ) & 0x000000ff ) );
-  else if (sizeof(Standard_Size) == 8) {
-    Standard_Size aResult;
-    Standard_Integer *i = (Standard_Integer*) &theValue;
-    Standard_Integer *j = (Standard_Integer*) &aResult;
-    j[1] = InverseInt (i[0]);
-    j[0] = InverseInt (i[1]);
-    return aResult;
-  }
-  else
-    return 0;
+  return InverseSizeSpecialized <sizeof(Standard_Size)> (theValue, 0);
 }
+
 
 #endif

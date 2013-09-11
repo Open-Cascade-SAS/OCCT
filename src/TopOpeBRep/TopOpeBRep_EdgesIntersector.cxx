@@ -370,7 +370,6 @@ Standard_Boolean EdgesIntersector_checkT1D(const TopoDS_Edge& E1,const TopoDS_Ed
       if (apex) {
 	TopoDS_Vertex vf,vl; TopExp::Vertices(myEdge1,vf,vl);
 	gp_Pnt ptf = BRep_Tool::Pnt(vf); Standard_Real df = pt2.Distance(ptf); 
-	gp_Pnt ptl = BRep_Tool::Pnt(vl);
 
 	Standard_Real tolf = BRep_Tool::Tolerance(vf);
 

@@ -2044,8 +2044,6 @@ void  PLib::EvalPoly2Var(const Standard_Real    UParameter,
 }
 
 
-static Standard_Integer  storage_divided = 0 ;
-static Standard_Real     *divided_differences_array = NULL;
 
 //=======================================================================
 //function : This evaluates the lagrange polynomial and its derivatives 

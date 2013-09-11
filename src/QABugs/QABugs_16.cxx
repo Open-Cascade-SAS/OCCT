@@ -494,16 +494,12 @@ static Standard_Integer OCC405 (Draw_Interpretor& di, Standard_Integer argc, con
      bsplc1->LastParameter() > l1 + Precision::PConfusion()) {
     Handle(Geom_BSplineCurve) aBstmp  = Handle(Geom_BSplineCurve)::DownCast(bsplc1->Copy());
     aBstmp->Segment(f1,l1);
-    gp_Pnt p1 = aBstmp->Pole(1);
-    gp_Pnt p2 = aBstmp->Pole(aBstmp->NbPoles());
     bsplc1 =aBstmp; 
   }
   if(bsplc2->FirstParameter() < f2 - Precision::PConfusion() || 
      bsplc2->LastParameter() > l2 + Precision::PConfusion()) {
     Handle(Geom_BSplineCurve) aBstmp  = Handle(Geom_BSplineCurve)::DownCast(bsplc2->Copy());
     aBstmp->Segment(f2,l2);
-    gp_Pnt p1 = aBstmp->Pole(1);
-    gp_Pnt p2 = aBstmp->Pole(aBstmp->NbPoles());
     bsplc2 =aBstmp; 
   }
   gp_Pnt pmid = 0.5 * ( bsplc1->Pole(bsplc1->NbPoles()).XYZ() + bsplc2->Pole(1).XYZ() );

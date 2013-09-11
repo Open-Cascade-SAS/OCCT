@@ -1071,7 +1071,6 @@ static void SortEdges5 (const TopTools_Array1OfShape& theArS, const TColgp_Array
   
 // 2. find nearest group (aV1, aV3), reorganize ArI - nerest => top
   gp_Pnt aDP1 = BRep_Tool::Pnt(TopoDS::Vertex(aV1)); 
-  gp_Pnt aDP2 = BRep_Tool::Pnt(TopoDS::Vertex(aV2));  
   gp_Pnt aDP3 = BRep_Tool::Pnt(TopoDS::Vertex(aV3)); 
   gp_Pnt aPnt = theAx.Location();
   Standard_Real aD1 = aPnt.Distance(aDP1);//i1-i2-i3
