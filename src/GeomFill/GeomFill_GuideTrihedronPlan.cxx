@@ -552,7 +552,7 @@ void GeomFill_GuideTrihedronPlan::SetInterval(const Standard_Real First,
   ABiNormal.SetCoord(0.,0.,0.);
   gp_Vec T, N, B;
   
-  for (ii=1, T; ii<=20; ii++) {
+  for (ii=1; ii<=20; ii++) {
     t = myCurve->FirstParameter() +(ii-1)*Delta;
     D0(t, T, N, B);
     ATangent +=T;

@@ -245,8 +245,7 @@ void AdvApp2Var_Iso::MakeApprox(const AdvApp2Var_Context& Conditions,
   //#ifdef DEB
   //Standard_Real *ERRMOY =
   //#endif
-    (Standard_Real *) &HERRMOY->ChangeArray2()
-                                (HERRMOY ->LowerRow(),HERRMOY ->LowerCol());
+  //  (Standard_Real *) &HERRMOY->ChangeArray2()(HERRMOY ->LowerRow(),HERRMOY ->LowerCol());
   Standard_Real *EMYAPP = new Standard_Real[NBSESP];
 //
 // the approximations
