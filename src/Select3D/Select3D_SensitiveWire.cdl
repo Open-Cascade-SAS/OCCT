@@ -122,7 +122,6 @@ is
     ---Purpose:returns <mymaxrect>
 
 fields
-    mymaxrect       : Integer;
     mysensitive     : SensitiveEntitySequence from Select3D;
     myDetectedIndex : Integer from Standard;
 end SensitiveWire;

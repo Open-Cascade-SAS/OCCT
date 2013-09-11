@@ -572,7 +572,6 @@ fields
     myEMap       : IndexedMapOfShape from TopTools;
     myFMap       : IndexedMapOfShape from TopTools;
     myAlgo       : PolyAlgo          from HLRAlgo;
-    myHide       : Integer           from Standard;
     myDebug      : Boolean           from Standard;
     myAngle      : Real              from Standard;
     myTolSta     : Real              from Standard;

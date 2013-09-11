@@ -84,25 +84,11 @@ fields
     thename   : AsciiString;
     thedef    : AsciiString;
     thelabel  : AsciiString;
-    thetype   : ParamType from Interface;
     theotyp   : Type from Standard;  -- for object
-
-    thelims   : Integer;  -- status for integer/enum/real limits
-    themaxlen : Integer;
-    theintlow : Integer;
-    theintup  : Integer;
-    therealow : Real;
-    therealup : Real;
     theunidef : AsciiString;
-
     theenums  : HArray1OfAsciiString    from TColStd;
     theeadds  : DictionaryOfInteger;
-
-    theinterp : ValueInterpret;
-    thesatisf : ValueSatisfies;
     thesatisn : AsciiString;
-
-    theival   : Integer;
     thehval   : HAsciiString from TCollection;
     theoval   : Transient;
 

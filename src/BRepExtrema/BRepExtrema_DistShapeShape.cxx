@@ -128,7 +128,6 @@ void BRepExtrema_DistShapeShape::DistanceMapMap(const TopTools_IndexedMapOfShape
 
 BRepExtrema_DistShapeShape::BRepExtrema_DistShapeShape()
 : myDistRef(0.),
-  myDistValue(0.),
   myIsDone(Standard_False),
   myInnerSol(Standard_False),
   myEps(Precision::Confusion()),
@@ -146,7 +145,6 @@ BRepExtrema_DistShapeShape::BRepExtrema_DistShapeShape(const TopoDS_Shape& Shape
                                                        const Extrema_ExtFlag F,
                                                        const Extrema_ExtAlgo A)
 : myDistRef(0.),
-  myDistValue(0.),
   myIsDone(Standard_False),
   myInnerSol(Standard_False),
   myEps(Precision::Confusion()),
@@ -169,7 +167,6 @@ BRepExtrema_DistShapeShape::BRepExtrema_DistShapeShape(const TopoDS_Shape& Shape
                                                        const Extrema_ExtFlag F,
                                                        const Extrema_ExtAlgo A)
 : myDistRef(0.),
-  myDistValue(0.),
   myIsDone(Standard_False),
   myInnerSol(Standard_False),
   myEps(theDeflection),

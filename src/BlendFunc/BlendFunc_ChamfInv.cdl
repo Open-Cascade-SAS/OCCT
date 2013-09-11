@@ -106,8 +106,6 @@ fields
 
     surf1 : HSurface from Adaptor3d;
     surf2 : HSurface from Adaptor3d;
-    dis1  : Real from Standard;
-    dis2  : Real from Standard;    
     curv  : HCurve from Adaptor3d;
     csurf : HCurve2d from Adaptor2d;
     choix : Integer from Standard;

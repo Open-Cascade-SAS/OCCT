@@ -732,9 +732,6 @@ fields
   -- the cache  
     ucachespanlenght : Real ;
     vcachespanlenght : Real ;
-  -- Always 1. for the moment.
-    ucachespanindex : Integer ;
-    vcachespanindex : Integer ;
   -- the span for which the cache is valid if 
   -- validcache is 1 
     validcache : Integer ;

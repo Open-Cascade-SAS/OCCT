@@ -53,7 +53,5 @@ fields
     myCol : Color from Draw;
     myTyp : MarkerShape from Draw;
     mySiz : Integer;
-    myRSiz : Real; 
-    myIsRSiz : Boolean;
 
 end Marker2D;

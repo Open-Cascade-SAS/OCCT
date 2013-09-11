@@ -129,7 +129,6 @@ is
 fields
 
     myGTrsf    : GTrsf    from gp;
-    myUseModif : Boolean from Standard;
     myHist     : Collect from BRepBuilderAPI;
     
 end Transform;

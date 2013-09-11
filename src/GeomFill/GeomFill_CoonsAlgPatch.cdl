@@ -103,7 +103,6 @@ fields
     
     -- the corners.
     c   : Pnt from gp [4];
-    gap : Real from Standard [4];
     
     -- the   blending functions.
     a : Function from Law [2];

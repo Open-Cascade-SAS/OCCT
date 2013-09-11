@@ -81,7 +81,6 @@ is
 fields
 
     myDeflection: Real;
-    myNbNodes:    Integer;
     myNodes:      Array1OfPnt2d from TColgp;
 
 end Polygon2D;

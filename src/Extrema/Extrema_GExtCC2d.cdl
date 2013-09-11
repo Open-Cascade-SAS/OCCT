@@ -161,8 +161,6 @@ fields
     mynbext:  Integer;
     inverse:  Boolean;
     myC:      Address from Standard;
-    myu1:     Real;
-    myu2:     Real;
     myv1:     Real;
     myv2:     Real;
     mytolc1:  Real;

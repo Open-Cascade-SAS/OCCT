@@ -87,7 +87,6 @@ is
 fields 
   myNbElements  :  Integer; 
   myDimension   :  Integer;  
-  myTolerance   :  Real;  
   myBase        :  Base  from  PLib;
   myKnots       :  HArray1OfReal;  
   myDegree      :  Array1OfInteger;

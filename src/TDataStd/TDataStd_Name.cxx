@@ -123,26 +123,7 @@ Handle(TDataStd_Name) TDataStd_Name::Set
 //purpose  : Empty Constructor
 //=======================================================================
 
-TDataStd_Name::TDataStd_Name ()
-     : myEmpty(Standard_True) { }
-
-//=======================================================================
-//function : Father
-//purpose  : 
-//=======================================================================
-// Standard_Boolean TDataStd_Name::Father (Handle(TDataStd_Name)& name) const
-// {
-//   Handle(TDataStd_Name) father;
-//   TDF_Label L = Label();
-//   while (!L.IsRoot()) {  
-//     L = L.Father();
-//     if (L.FindAttribute (TDataStd_Name::GetID(), father)) {
-//       name = father;
-//       return Standard_True;
-//     }      
-//   }
-//   return Standard_False;
-// }
+TDataStd_Name::TDataStd_Name () { }
 
 //=======================================================================
 //function : Set
@@ -150,15 +131,10 @@ TDataStd_Name::TDataStd_Name ()
 //=======================================================================
 void TDataStd_Name::Set (const TCollection_ExtendedString& S) 
 {
-  // OCC2932 correction
   if(myString == S) return;
  
   Backup();
   myString = S;
-  //TCollection_ExtendedString tmpS(S);
-  //tmpS.RemoveAll(':');
-  //myString = tmpS;
-  //myEmpty = Standard_False;
 }
 
 
@@ -172,24 +148,6 @@ const TCollection_ExtendedString& TDataStd_Name::Get () const
   return myString;
 }
 
-//=======================================================================
-//function : SetEmpty
-//purpose  : 
-//=======================================================================
-// void TDataStd_Name::SetEmpty() 
-// {
-//   Backup();
-//   myEmpty = Standard_True;
-//   myString.Clear();
-// }
-
-//=======================================================================
-//function : IsEmpty
-//purpose  : 
-//=======================================================================
-//Standard_Boolean TDataStd_Name::IsEmpty() const {return myEmpty;}
-
-
 // TDF_Attribute methods
 
 //=======================================================================
@@ -198,8 +156,6 @@ const TCollection_ExtendedString& TDataStd_Name::Get () const
 //=======================================================================
 
 const Standard_GUID& TDataStd_Name::ID () const { return GetID(); }
-
-
 
 
 //=======================================================================

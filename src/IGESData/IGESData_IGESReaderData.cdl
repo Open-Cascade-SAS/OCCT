@@ -107,7 +107,6 @@ is
 
 fields
 
-    thecnum : Integer;           -- current entity number for recognize
     thectyp : IGESType;          -- its IGESType (for purpose of optimization)
     thestar : HSequenceOfHAsciiString;  -- start section
     theparh : ParamSet;          -- ParamSet reading global parameters

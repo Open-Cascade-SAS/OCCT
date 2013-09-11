@@ -117,7 +117,6 @@ void TopOpeBRep_Hctxee2d::SetEdges(const TopoDS_Edge& E1,const TopoDS_Edge& E2,
       if (apex) {
         TopoDS_Vertex vf,vl; TopExp::Vertices(myEdge1,vf,vl);
         gp_Pnt ptf = BRep_Tool::Pnt(vf); Standard_Real df = pt2.Distance(ptf); 
-        gp_Pnt ptl = BRep_Tool::Pnt(vl);
         Standard_Real tolf = BRep_Tool::Tolerance(vf);
         Standard_Boolean onf = (df < tolf);
         TopoDS_Vertex v1 = onf ? vf : vl;

@@ -409,15 +409,15 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   aPrims->AddVertex(pOff.Translated(vec1.Added(vec2.Reversed())));
   aPrims->AddVertex(pOff.Translated(vec1.Reversed().Added(vec2.Reversed())));
 
-  //--------------------------------------------------------------------------------------
-  //|                          MARKING OF THE SYMMETRY AXIS                             |
-  //--------------------------------------------------------------------------------------     
-  //        ____
-  //        \  / :Cursor
-  //         \/
-  //         /\
-  //        /__\
-
+  /*--------------------------------------------------------------------------------------
+  |                          MARKING OF THE SYMMETRY AXIS                             |
+  --------------------------------------------------------------------------------------     
+          ____
+          \  / :Cursor
+           \/
+           /\
+          /__\
+*/
   Standard_Real Dist = (aAxis.Distance(AttachmentPoint1)+aAxis.Distance(AttachmentPoint2))/75;
   gp_Vec vs(aDirectionAxis);
   gp_Vec vsym(vs.Divided(vs.Magnitude()).Multiplied(Dist).XYZ());
@@ -647,15 +647,15 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   aPrims->AddVertex(pOff.Translated(vec1.Added(vec2.Reversed())));
   aPrims->AddVertex(pOff.Translated(vec1.Reversed().Added(vec2.Reversed())));
   
-  //--------------------------------------------------------------------------------------
-  //|                          MARKING OF THE AXIS OF SYMMETRY                           |
-  //--------------------------------------------------------------------------------------     
-  //        ____
-  //        \  / :Cursor
-  //         \/
-  //         /\
-  //        /__\
-
+/*--------------------------------------------------------------------------------------
+  |                          MARKING OF THE AXIS OF SYMMETRY                           |
+  --------------------------------------------------------------------------------------     
+          ____
+          \  / :Cursor
+           \/
+           /\
+          /__\
+*/
   Standard_Real Dist = aAxis.Distance(Center1)/37;
   gp_Dir aDirectionAxis = aAxis.Direction();
   gp_Vec vs(aDirectionAxis);
@@ -886,15 +886,15 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     aPrims->AddVertex(pOff.Translated(vec1.Added(vec2.Reversed())));
     aPrims->AddVertex(pOff.Translated(vec1.Reversed().Added(vec2.Reversed())));
 
-    //--------------------------------------------------------------------------------------
-    //|                          MARKING OF THE AXIS OF SYMMETRY                           |
-    //--------------------------------------------------------------------------------------     
-    //        ____
-    //        \  / :Cursor
-    //         \/
-    //         /\
-    //        /__\
-    
+    /*--------------------------------------------------------------------------------------
+    |                          MARKING OF THE AXIS OF SYMMETRY                           |
+    --------------------------------------------------------------------------------------     
+            ____
+            \  / :Cursor
+             \/
+             /\
+            /__\
+    */
     Standard_Real Dist = P1.Distance(P2)/75;
     gp_Dir aDirectionAxis = aAxis.Direction();
     gp_Vec vs(aDirectionAxis);

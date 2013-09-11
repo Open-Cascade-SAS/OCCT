@@ -41,19 +41,18 @@ FairCurve_EnergyOfMVC::FairCurve_EnergyOfMVC(const Standard_Integer BSplOrder,
 					     const Standard_Real Curvature2 )
 //=====================================================================================
                          : FairCurve_Energy( Poles, ContrOrder1,  ContrOrder2,
-				             FreeSliding,  Angle1, Angle2, 
-					     BSplOrder-1, Curvature1, Curvature2),
+                                             FreeSliding,  Angle1, Angle2, 
+                                             BSplOrder-1, Curvature1, Curvature2),
                            MyLengthSliding(LengthSliding),
-			   OriginalSliding(LengthSliding),
-			   MyFreeSliding(FreeSliding),
+                           OriginalSliding(LengthSliding),
                            MyBattenLaw(Law), 
                            MyPhysicalRatio(PhysicalRatio),
                            MyTension(BSplOrder, FlatKnots, Poles, 1, LengthSliding,  Law, FreeSliding, Standard_True),
                            MySagging(BSplOrder, FlatKnots, Poles, 1, Law, FreeSliding),
-			   MyJerk(   BSplOrder, FlatKnots, Poles, 1, Law, FreeSliding)
+                           MyJerk(   BSplOrder, FlatKnots, Poles, 1, Law, FreeSliding)
 {
   Standard_DomainError_Raise_if(PhysicalRatio < 0 || PhysicalRatio > 1, 
-				"FairCurve_EnergyOfMVC: PhysicalRatio error" );
+                                "FairCurve_EnergyOfMVC: PhysicalRatio error" );
 }
 
 

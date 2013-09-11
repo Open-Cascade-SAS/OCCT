@@ -176,7 +176,6 @@ fields
     myColor: Color from Quantity is protected;
     myTenthColor: Color from Quantity is protected;
     myIsActive :Boolean from Standard;
-    myIsDisplayed: Boolean from Standard;    
     myDrawMode: GridDrawMode from Aspect;
 
 end Grid from Aspect;

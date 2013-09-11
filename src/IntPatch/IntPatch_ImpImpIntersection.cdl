@@ -180,7 +180,6 @@ fields
     empt   : Boolean         from Standard;
     tgte   : Boolean         from Standard;
     oppo   : Boolean         from Standard;
-    reverse: Boolean         from Standard;
     spnt   : SequenceOfPoint from IntPatch;
     slin   : SequenceOfLine  from IntPatch;
     solrst : TheSOnBounds    from IntPatch;

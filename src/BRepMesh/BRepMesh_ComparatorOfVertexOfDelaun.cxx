@@ -26,9 +26,8 @@
 //purpose  : 
 //=======================================================================
 
-BRepMesh_ComparatorOfVertexOfDelaun::BRepMesh_ComparatorOfVertexOfDelaun(const gp_XY& theDir,
-                                                                         const Standard_Real theTol)
-                                                                         : DirectionOfSort(theDir), Tolerance(theTol)
+BRepMesh_ComparatorOfVertexOfDelaun::BRepMesh_ComparatorOfVertexOfDelaun(const gp_XY& theDir)
+                                                                         : DirectionOfSort(theDir)
 {}
 
 //=======================================================================

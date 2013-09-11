@@ -39,9 +39,8 @@
 
 Select3D_SensitiveWire::
 Select3D_SensitiveWire(const Handle(SelectBasics_EntityOwner)& OwnerId,
-                       const Standard_Integer MaxRect):
+                       const Standard_Integer /*MaxRect*/):
 Select3D_SensitiveEntity(OwnerId),
-mymaxrect(MaxRect),
 myDetectedIndex(-1)
 {}
 

@@ -279,7 +279,6 @@ fields
     myContC0      : Real     from Standard;
     myContC1      : Real     from Standard;            
     myContC2      : Real     from Standard;          
-    myContG0      : Real     from Standard;
     myContG1      : Real     from Standard;    
     myContG2      : Real     from Standard; 
     myCourbC1     : Real     from Standard;

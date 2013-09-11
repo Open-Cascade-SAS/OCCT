@@ -99,6 +99,5 @@ is
 fields
 
     myFace:Face from TopoDS;
-    myDEBVertexIndex:Integer;
-    
+
 end WireEdgeSet from TopOpeBRepBuild;

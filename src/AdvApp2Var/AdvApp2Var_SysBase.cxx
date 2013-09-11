@@ -1548,7 +1548,7 @@ int mamdlng_(char *,//cmdlng,
 /*        CHL10N*4 : LIST OF POSSIBLE VALUES OF THE LOCALIZATION : */
 /*                   'FRA ','DEU ','ENG ', 'JIS ' */
 
-/*     B) CHCOUR*4, CHPREC*4, CHSUIV*4 : CURRENT, PREVIOUS AND NEXT APPLICATION
+/*     B) CHCOUR*4, CHPREC*4, CHSUIV*4 : CURRENT, PREVIOUS AND NEXT APPLICATION */
 
 /*     C) CHMODE*4 : CURRENT MODE (NOT USED) */
 
@@ -1737,7 +1737,7 @@ int maoverf_(integer *nbentr,
 /*                  The idea is to minimize the number of calls */
 /*                to the routine of transfer of numeric zones, */
 /*   ----------   for the reason of performance. */
-/*  !  buffer  !    For this a table of NLONGR 
+/*  !  buffer  !    For this a table of NLONGR */
 /*  !__________!  DOUBLE PRECISIONs is reserved. This buffer is initialized by */
 /*  <---------->  the instruction DATA. The overflow is accessed in a  */
 /*    NLONGR*8    specific COMMON not by a routine as */

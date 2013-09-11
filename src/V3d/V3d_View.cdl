@@ -1504,7 +1504,7 @@ is
         --          extension must be one of ".png",".bmp",".jpg",".gif".
         --          Returns FALSE when the dump has failed
 
-      Print (me; hPrnDC: Handle from Aspect = NULL;
+      Print (me; hPrnDC: Handle from Aspect = 0;
              showDialog: Boolean = Standard_True;
              showBackground : Boolean = Standard_True;
              filename: CString = NULL;

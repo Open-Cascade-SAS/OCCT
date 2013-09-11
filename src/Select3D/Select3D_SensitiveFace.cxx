@@ -54,8 +54,7 @@ Select3D_SensitiveFace(const Handle(SelectBasics_EntityOwner)& OwnerId,
                        const TColgp_Array1OfPnt& ThePoints,
                        const Select3D_TypeOfSensitivity aType):
 Select3D_SensitivePoly(OwnerId, ThePoints),
-mytype (aType),
-myDetectedIndex(-1)
+mytype (aType)
 {
   AutoInitFlags(myautointer);
 }
@@ -70,8 +69,7 @@ Select3D_SensitiveFace(const Handle(SelectBasics_EntityOwner)& OwnerId,
                        const Handle(TColgp_HArray1OfPnt)& ThePoints,
                        const Select3D_TypeOfSensitivity aType):
 Select3D_SensitivePoly(OwnerId, ThePoints),
-mytype (aType),
-myDetectedIndex(-1)
+mytype (aType)
 {
   AutoInitFlags(myautointer);
 }

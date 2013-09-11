@@ -34,8 +34,8 @@
 //=======================================================================
   inline BOPDS_ShapeInfo::BOPDS_ShapeInfo(const Handle(NCollection_BaseAllocator)& theAllocator)
 :
-  mySubShapes(theAllocator),
   myType(TopAbs_SHAPE),
+  mySubShapes(theAllocator),
   myReference(-1),
   myFlag(-1)
 {

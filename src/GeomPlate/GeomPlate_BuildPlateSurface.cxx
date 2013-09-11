@@ -121,7 +121,7 @@ GeomPlate_BuildPlateSurface::GeomPlate_BuildPlateSurface (
 		    const Standard_Real Tol2d,
 		    const Standard_Real Tol3d,
 		    const Standard_Real TolAng,
-		    const Standard_Real TolCurv,
+		    const Standard_Real ,
 		    const Standard_Boolean Anisotropie
 ) :
 myAnisotropie(Anisotropie),
@@ -131,7 +131,6 @@ myProj(),
 myTol2d(Tol2d),
 myTol3d(Tol3d),
 myTolAng(TolAng),
-myTolCurv(TolCurv),
 myNbBounds(0)
 { Standard_Integer NTCurve=TabCurve->Length();// Nombre de contraintes lineaires
   myNbPtsOnCur = 0; // Debrayage du calcul du nombre de points
@@ -190,7 +189,6 @@ myProj(),
 myTol2d(Tol2d),
 myTol3d(Tol3d),
 myTolAng(TolAng),
-myTolCurv(TolCurv),
 myNbBounds(0)
 {   if (myNbIter<1)
     Standard_ConstructionError::Raise("GeomPlate :  Number of iteration must be >= 1");
@@ -225,7 +223,6 @@ myProj(),
 myTol2d(Tol2d),
 myTol3d(Tol3d),
 myTolAng(TolAng),
-myTolCurv(TolCurv),
 myNbBounds(0)
 {  if (myNbIter<1)
     Standard_ConstructionError::Raise("GeomPlate :  Number of iteration must be >= 1");

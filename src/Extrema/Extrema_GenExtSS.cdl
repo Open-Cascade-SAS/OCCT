@@ -146,8 +146,7 @@ fields
     mypoints2  : HArray2OfPnt from TColgp;
     mytol1     : Real;
     mytol2     : Real;
-    myF	       : FuncExtSS from Extrema;
-    myS1       : SurfacePtr from Adaptor3d;
+    myF        : FuncExtSS from Extrema;
     myS2       : SurfacePtr from Adaptor3d;
 
 end GenExtSS;

@@ -91,8 +91,7 @@ AIS_FixRelation::AIS_FixRelation(const TopoDS_Shape& aShape,
 				 const Handle(Geom_Plane)& aPlane, 
 				 const TopoDS_Wire& aWire)
 :AIS_Relation(),
- myWire(aWire),
- haspos(Standard_False)
+ myWire(aWire)
 {
   myFShape = aShape;
   myPlane = aPlane;
@@ -111,8 +110,7 @@ AIS_FixRelation::AIS_FixRelation(const TopoDS_Shape& aShape,
 				 const gp_Pnt& aPosition, 
 				 const Standard_Real anArrowSize)
 :AIS_Relation(),
- myWire(aWire),
- haspos(Standard_False)
+ myWire(aWire)
 {
   myFShape = aShape;
   myPlane = aPlane;
@@ -132,8 +130,7 @@ AIS_FixRelation::AIS_FixRelation(const TopoDS_Shape& aShape,
 //=======================================================================
 
 AIS_FixRelation::AIS_FixRelation(const TopoDS_Shape& aShape, 
-				 const Handle(Geom_Plane)& aPlane):
-haspos(Standard_False)
+                                 const Handle(Geom_Plane)& aPlane)
 {
   myFShape = aShape;
   myPlane = aPlane;
@@ -150,8 +147,7 @@ AIS_FixRelation::AIS_FixRelation(
 	const TopoDS_Shape& aShape, 
 	const Handle(Geom_Plane)& aPlane, 
 	const gp_Pnt& aPosition, 
-	const Standard_Real anArrowSize):
-haspos(Standard_False)
+	const Standard_Real anArrowSize)
 {
   myFShape = aShape;
   myPlane = aPlane;

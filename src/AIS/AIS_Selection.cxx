@@ -71,7 +71,6 @@ static TColStd_SequenceOfTransient&  AIS_Sel_GetSelections()
 //=======================================================================
 AIS_Selection::AIS_Selection(const Standard_CString aName) :
 myName(TCollection_AsciiString(aName)),
-mycuri(0), 
 #if !defined USE_MAP && !defined OCC189
 myresult(new TColStd_HArray1OfTransient(1,MaxSizeOfResult)),
 #endif

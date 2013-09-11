@@ -33,11 +33,10 @@
 //purpose  :
 //=======================================================================
 FEmTool_Curve::FEmTool_Curve(const Standard_Integer Dimension,
-			     const Standard_Integer NbElements,
-			     const Handle(PLib_Base)& TheBase, 
-			     const Standard_Real Tolerance) : 
+                             const Standard_Integer NbElements,
+                             const Handle(PLib_Base)& TheBase, 
+                             const Standard_Real) : 
        myNbElements(NbElements), myDimension(Dimension), 
-       myTolerance(Tolerance), 
        myBase(TheBase), myDegree(1, myNbElements), 
        myCoeff(1, myDimension*myNbElements*(myBase->WorkDegree() + 1)), 
        myPoly(1, myDimension*myNbElements*(myBase->WorkDegree() + 1)), 

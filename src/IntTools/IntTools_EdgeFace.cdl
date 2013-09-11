@@ -274,7 +274,6 @@ fields
 
     myPar1            :  Real from  Standard; 
     myParallel        :  Boolean  from  Standard;   
-    myAllNullFlag     :  Boolean  from  Standard;   
     
     myRange           :  Range from IntTools; 
     

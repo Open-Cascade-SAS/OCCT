@@ -50,11 +50,6 @@
 //=======================================================================
 
 TopOpeBRepDS_Check::TopOpeBRepDS_Check(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
-: mySurfaceDone(Standard_False),
-  myCurveDone(Standard_False),
-  myPointDone(Standard_False),
-  myShapeDone (Standard_False),
-  myDone(Standard_False)
 {
   myHDS = HDS;
   myMapSurfaceStatus.Clear();
@@ -69,11 +64,6 @@ TopOpeBRepDS_Check::TopOpeBRepDS_Check(const Handle(TopOpeBRepDS_HDataStructure)
 //=======================================================================
 
 TopOpeBRepDS_Check::TopOpeBRepDS_Check()
-: mySurfaceDone(Standard_False),
-  myCurveDone(Standard_False),
-  myPointDone(Standard_False),
-  myShapeDone (Standard_False),
-  myDone(Standard_False)
 {
     myMapSurfaceStatus.Clear();
     myMapCurveStatus.Clear();

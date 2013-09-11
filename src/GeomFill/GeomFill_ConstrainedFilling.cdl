@@ -226,8 +226,6 @@ fields
 
     -- result curves of aproximation.
     appdone   : Boolean from Standard;
-    tolapp3d  : Real from Standard[4];
-    tolappang : Real from Standard[4];
     degree    : Integer from Standard [2];
     curvpol   : HArray1OfPnt from TColgp [4];
     tgtepol   : HArray1OfPnt from TColgp [4];

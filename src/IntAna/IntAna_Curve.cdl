@@ -234,10 +234,6 @@ fields
 	RestrictedInf  : Boolean from Standard;
 	RestrictedSup  : Boolean from Standard;
 
-
-        LastZ  : Real from Standard;
-	LastDZ : Real from Standard;
-
     	firstbounded : Boolean from Standard;
 	lastbounded  : Boolean from Standard;
 

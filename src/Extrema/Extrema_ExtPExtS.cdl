@@ -109,8 +109,6 @@ fields
     myvinf   : Real from Standard;
     myvsup   : Real from Standard;
     mytolv   : Real from Standard;
-    		    
-    myVRange  : Real from Standard;
     
     myF	        : FuncExtPS  from Extrema;
     myC         : HCurve     from Adaptor3d; 

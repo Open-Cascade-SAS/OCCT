@@ -58,7 +58,6 @@ is
 
     Set (myclass; label: Label from TDF; string  : ExtendedString from TCollection)
     ---Purpose: Creates (if does not exist) and sets the name in the name attribute.
-    --          myEmpty becomes False
     returns Name from TDataStd;
     
     
@@ -158,11 +157,6 @@ is
     --    Returns the name contained in this name attribute.
     ---C++: return const & 
     
-    --SetEmpty(me: mutable);
-    ---Purpose: Set myEmpty field
-    
-    --IsEmpty(me) returns Boolean from Standard;
-
     ---Category: TDF_Attribute methods
     --           =====================
     
@@ -186,6 +180,5 @@ is
 fields
 
     myString : ExtendedString from TCollection;     --To store name 
-    myEmpty  : Boolean        from Standard;        --Is set to True if name isn't set 
 
 end Name;

@@ -84,7 +84,6 @@ fields
     quad1         : Quadric from IntSurf;
     quad2         : Quadric from IntSurf;
     deflectionmax : Real    from Standard;
-    pasuvmax      : Real    from Standard;
     nbpointsmax   : Integer from Standard;
     type          : Integer from Standard; -- 0: Constant Parameter
                                            -- 1: Uniform Abscissa

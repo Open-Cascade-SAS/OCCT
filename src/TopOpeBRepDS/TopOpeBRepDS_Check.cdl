@@ -137,15 +137,10 @@ is
 
 fields
 
-    myHDS               : HDataStructure        from TopOpeBRepDS;
+    myHDS              : HDataStructure       from TopOpeBRepDS;
     myMapSurfaceStatus : DataMapOfCheckStatus from TopOpeBRepDS;
-    mySurfaceDone      : Boolean               from Standard;
     myMapCurveStatus   : DataMapOfCheckStatus from TopOpeBRepDS;
-    myCurveDone        : Boolean               from Standard;
     myMapPointStatus   : DataMapOfCheckStatus from TopOpeBRepDS;
-    myPointDone        : Boolean               from Standard;
     myMapShapeStatus   : DataMapOfCheckStatus from TopOpeBRepDS;
-    myShapeDone        : Boolean               from Standard;
-    myDone             : Boolean               from Standard;
-    
+
 end Check from TopOpeBRepDS;

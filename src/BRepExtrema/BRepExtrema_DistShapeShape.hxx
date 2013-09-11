@@ -182,7 +182,6 @@ private:
   Standard_EXPORT void DistanceMapMap(const TopTools_IndexedMapOfShape& Map1,const TopTools_IndexedMapOfShape& Map2,const Bnd_SeqOfBox& LBox1,const Bnd_SeqOfBox& LBox2);
 
   Standard_Real myDistRef;
-  Standard_Real myDistValue;
   Standard_Boolean myIsDone;
   BRepExtrema_SeqOfSolution mySolutionsShape1;
   BRepExtrema_SeqOfSolution mySolutionsShape2;

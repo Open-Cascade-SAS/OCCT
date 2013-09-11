@@ -329,7 +329,6 @@ fields
     myG1Error  :  Real  from  Standard; 
     myG2Error  :  Real  from  Standard; 
     myNbPtsOnCur  :  Integer  from  Standard;  
-    mySurfInitIsPlane  :  Boolean  from  Standard;  
     mySurfInitIsGive  :  Boolean  from  Standard;
     myNbIter  :  Integer  from  Standard; 
     myProj  :  ExtPS  from Extrema;
@@ -338,7 +337,6 @@ fields
     myTol2d  :   Real  from  Standard; 
     myTol3d  :   Real  from  Standard; 
     myTolAng  :   Real  from  Standard;  
-    myTolCurv :   Real  from  Standard;  
     myTolU  :  Real  from  Standard;  
     myTolV  :  Real  from  Standard;
     

@@ -147,6 +147,5 @@ fields
     mySpine  : Wire                      from TopoDS;
     myCurves : SequenceOfCurve           from TColGeom;
     myBCurve : Curve                     from Geom;
-    myStatusError : StatusError          from BRepFeat;
 
 end MakePipe;

@@ -256,7 +256,6 @@ fields
 
  myLine : Line from BRepBlend;
  myFunc : Address;
- mydimension : Integer;
  myTolerance : Vector;
  myPnt      :  Point from  Blend; 
  myBary     :  Pnt   from  gp;

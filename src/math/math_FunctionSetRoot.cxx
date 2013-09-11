@@ -65,11 +65,11 @@
 
 #define FSR_DEBUG(arg)
 // Uncomment the following code to have debug output to cout 
-/* * /
+/* 
 static Standard_Boolean mydebug = Standard_False;
 #undef FSR_DEBUG
 #define FSR_DEBUG(arg) {if (mydebug) { cout << arg << endl; }}
-/* */
+*/
 
 class MyDirFunction : public math_Function
 {

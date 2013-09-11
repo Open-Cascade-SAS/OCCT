@@ -178,7 +178,6 @@ fields
     -- stores the number of points computed with the 
     -- requested Abscissa else stores the requested
     -- number of points 
-    myAbscissa   : Real;
     myParams     : HArray1OfReal from TColStd ;
     -- the size of this array will be be bigger than myNbPoints
     --  by one or two 

@@ -205,7 +205,6 @@ is
 fields
 
     thenum0   : Integer;        -- current data for access to parameters
-    thenump0  : Integer;
     therrload : Integer;
     theparams : ParamSet;               -- the general set of parameters
     thenumpar : Array1OfInteger   from TColStd;   -- beginning of each one

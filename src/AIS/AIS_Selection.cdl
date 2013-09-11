@@ -152,7 +152,6 @@ is
 
 fields
     myName     : AsciiString                                from TCollection;
-    mycuri     : Integer                                    from Standard;
 -- SAV : OCC189    myresult   : HArray1OfTransient from TColStd;
     myresult   : NListTransient                             from AIS;
     myIterator : NListIteratorOfListTransient               from AIS;

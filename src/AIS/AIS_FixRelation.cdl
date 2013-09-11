@@ -195,7 +195,6 @@ fields
 
     myWire      : Wire    from TopoDS;
     myPntAttach : Pnt     from gp;
-    haspos      : Boolean from Standard;
 
 end FixRelation;
 

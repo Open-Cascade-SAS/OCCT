@@ -257,11 +257,5 @@ fields
     myDeflection       : Real             from Standard;
     myAspect           : AspectFillArea3d from Graphic3d;
     mytexture          : Texture2Dmanual  from Graphic3d;
-    Umin               : Real             from Standard;
-    Umax               : Real             from Standard;
-    Vmin               : Real             from Standard;
-    Vmax               : Real             from Standard;
-    dUmax              : Real             from Standard;
-    dVmax              : Real             from Standard;
     myModulate         : Boolean          from Standard;
 end TexturedShape;

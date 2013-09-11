@@ -403,7 +403,7 @@ Extrema_ExtElC::Extrema_ExtElC (const gp_Lin& C1,
   //
   aTol=1.e-12;
   //
-  /*
+
   if(fabs(A5) <= aTol) {
     A5 = 0.;
   }

@@ -360,9 +360,6 @@ fields
 
     done   : Boolean                                 from Standard;
     empt   : Boolean                                 from Standard;
-    Preci  : Real                                    from Standard;
-    Fleche : Real                                    from Standard;
-    Pas    : Real                                    from Standard;
     SLin   : SequenceOfLine                          from IntPatch;
 
 end PrmPrmIntersection;

@@ -15,11 +15,11 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-/***********************************************************************
+/***********************************************************************/
 
-     FONCTION :
+/*     FUNCTION :
      ----------
-        File V3d_View_1.cxx :
+        File V3d_View_1.cxx :     */
 
 
 /*----------------------------------------------------------------------*/

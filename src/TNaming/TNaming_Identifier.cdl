@@ -102,7 +102,6 @@ fields
     
     myTDFAcces       : Label   from TDF;	
     myShape          : Shape   from TopoDS;
-    myOneOnly        : Boolean from Standard;
     
     myDone           : Boolean from Standard;
 

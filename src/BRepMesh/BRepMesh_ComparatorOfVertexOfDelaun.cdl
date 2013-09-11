@@ -30,7 +30,7 @@ class ComparatorOfVertexOfDelaun from BRepMesh
         XY from gp
 
 
-  is      Create (theDir : XY from gp; TheTol: Real from Standard) 
+  is      Create (theDir : XY from gp) 
             returns ComparatorOfVertexOfDelaun;
 
 

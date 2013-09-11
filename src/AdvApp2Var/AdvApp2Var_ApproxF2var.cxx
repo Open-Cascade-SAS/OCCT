@@ -997,7 +997,7 @@ int mma1fer_(integer *,//ndimen,
 /*               0 = constraints of passage to limits (i.e. C0), */
 /*               1 = C0 + constraintes of 1st derivatives (i.e. C1), */
 /*               2 = C1 + constraintes of 2nd derivatives (i.e. C2). */
-/*     NDGJAC: Degree of development in series to use for the calculation  
+/*     NDGJAC: Degree of development in series to use for the calculation  */
 /*             in the base of Jacobi. */
 /*     CRVJAC: Table of coeff. of the curve of approximation in the */
 /*             base of Jacobi. */
@@ -1022,7 +1022,7 @@ int mma1fer_(integer *,//ndimen,
 /*             =-1, warning, required tolerance can't be */
 /*                  met with coefficients NFCLIM. */
 /*             = 1, order of constraints (IORDRE) is not within authorised values */
-/*                  
+
 
 /*     COMMONS USED : */
 /*     ------------------ */
@@ -1204,7 +1204,7 @@ int AdvApp2Var_ApproxF2var::mma1her_(const integer *iordre,
 
 /*     DESCRIPTION/NOTES/LIMITATIONS : */
 /*     ----------------------------------- */
-/*     The part of HERMIT(*,2*i+j) table where  j=1 or 2 and i=0 to IORDRE, 
+/*     The part of HERMIT(*,2*i+j) table where  j=1 or 2 and i=0 to IORDRE, */
 /*     contains the coefficients of the polynom of degree 2*IORDRE+1 */
 /*     such as ALL values in -1 and in +1 of this polynom and its */
 /*     derivatives till order of derivation IORDRE are NULL, */
@@ -1351,14 +1351,14 @@ int mma1jak_(integer *ndimen,
 /*     ------------------ */
 /*     NDIMEN: Total dimension of the space (sum of dimensions */
 /*             of sub-spaces) */
-/*     NBROOT: Nb of points of discretization of the iso, extremities not 
+/*     NBROOT: Nb of points of discretization of the iso, extremities not */
 /*             included. */
 /*     IORDRE: Order of constraint at the extremities of the boundary */
 /*              -1 = no constraints, */
 /*               0 = constraints of passage of limits (i.e. C0), */
 /*               1 = C0 + constraints of 1st derivatives (i.e. C1), */
 /*               2 = C1 + constraints of 2nd derivatives (i.e. C2). */
-/*     NDGJAC: Degree of development in series to be used for calculation in the  
+/*     NDGJAC: Degree of development in series to be used for calculation in the  */
 /*             base of Jacobi. */
 
 /*     OUTPUT ARGUMENTS : */
@@ -1908,7 +1908,7 @@ int AdvApp2Var_ApproxF2var::mma2ac2_(const integer *ndimen,
 /*     ------------------- */
 /*   PATJAC: Table of coefficients of the polynom P(u,v) by approximation */
 /*           of F(u,v) WITH taking into account of constraints. */
-/* > *//*
+/* > */
 
 
 /* > */
@@ -2350,7 +2350,7 @@ int mma2cd1_(integer *ndimen,
 */
 /*     NBPNTV: Nb of INTERNAL  parameters of discretisation by V. */
 /*             This is also the nb of root of Legendre polynom where discretization is done. */
-/*     VROOTL: Table of discretization parameters on (-1,1) by V. 
+/*     VROOTL: Table of discretization parameters on (-1,1) by V. */
 /*     IORDRU: Order of constraint imposed at the extremities of iso-V */
 /*             = 0, calculate the extremities of iso-V */
 /*             = 1, calculate, additionally, the 1st derivative in the direction of iso-V */
@@ -2707,7 +2707,7 @@ int mma2cd2_(integer *ndimen,
 */
 /*     NBPNTV: Nb of INTERNAL  parameters of discretisation by V. */
 /*             This is also the nb of root of Legendre polynom where discretization is done. */
-/*     VROOTL: Table of discretization parameters on (-1,1) by V. 
+/*     VROOTL: Table of discretization parameters on (-1,1) by V. */
 /*     IORDRV: Order of constraint imposed at the extremities of iso-V */
 /*             = 0, calculate the extremities of iso-V */
 /*             = 1, calculate, additionally, the 1st derivative in the direction of iso-V */
@@ -3351,7 +3351,7 @@ int AdvApp2Var_ApproxF2var::mma2cdi_( integer *ndimen,
 */
 /*     NBPNTV: Nb of INTERNAL  parameters of discretisation by V. */
 /*             This is also the nb of root of Legendre polynom where discretization is done. */
-/*     VROOTL: Table of parameters of discretisation ON (-1,1) by V. 
+/*     VROOTL: Table of parameters of discretisation ON (-1,1) by V.*/ 
 
 /*     IORDRV: Order of constraint imposed at the extremities of iso-U */
 /*             = 0, calculate the extremities of iso-U */
@@ -4323,7 +4323,7 @@ L300:
 /* L320: */
 	}
 
-/* ----- Contribution of calculated terms to the approximation error
+/* ----- Contribution of calculated terms to the approximation error */
 /* for terms (I,J) with MINU <= I <= MAXU, MINV <= J <= MAXV. */
 
 	idim = 1;
@@ -4507,7 +4507,7 @@ L600:
 /* L700: */
 	}
 
-/* ----- Contribution of calculated terms to the approximation error
+/* ----- Contribution of calculated terms to the approximation error */
 /* for  terms (I,J) with MINU <= I <= MAXU, MINV <= J <= MAXV */
 
 	idim = 1;
@@ -4690,7 +4690,7 @@ int mma2cfu_(integer *ndujac,
 /*     FUNCTION : */
 /*     ---------- */
 /*     Calculate the terms connected to degree NDUJAC by U of the polynomial approximation */
-/*     of function F(u,v), starting from its discretisation 
+/*     of function F(u,v), starting from its discretisation */
 /*     on the roots of Legendre polynom of degree */
 /*     NBPNTU by U and NBPNTV by V. */
 
@@ -4820,7 +4820,7 @@ int mma2cfu_(integer *ndujac,
 	}
     }
 
-/* ------- Add terms connected to the supplementary root (0.D0) ------ 
+/* ------- Add terms connected to the supplementary root (0.D0) ------ */
 /* ----------- of Legendre polynom of uneven degree NBPNTU ----------- 
 */
 /* --> Only even NDUJAC terms are modified as GSSUTB(0) = 0 */
@@ -4905,7 +4905,7 @@ int mma2cfv_(integer *ndvjac,
 
 /*     FUNCTION : */
 /*     ---------- */
-/*     Calculate the coefficients of polynomial approximation of F(u,v) 
+/*     Calculate the coefficients of polynomial approximation of F(u,v) */
 /*     of degree NDVJAC by V and of degree by U varying from MINDGU to MAXDGU. 
 */
 
@@ -4917,7 +4917,7 @@ int mma2cfv_(integer *ndvjac,
 /*     ------------------ */
 
 /*   NDVJAC: Degree of the polynom of approximation by V. */
-/*           The representation in the orthogonal base starts from degre 0. 
+/*           The representation in the orthogonal base starts from degre 0. */
 	     /* The polynomial base is the base of Jacobi of order -1 */
 /*           (Legendre), 0, 1 or 2 */
 /*   MINDGU: Degree minimum by U of coeff. to calculate. */
@@ -4927,9 +4927,9 @@ int mma2cfv_(integer *ndvjac,
 /*           by Gauss method. It is reqired that NBPNTV = 30, 40, 50 or 61 and NDVJAC < NBPNTV. */
 /*   GSSVTB: Table of coefficients of integration by Gauss method */
 /*           by V for NDVJAC fixed: j varies from 0 to NBPNTV/2. */
-/*   CHPAIR: Table of terms connected to degrees from MINDGU to MAXDGU by U to 
+/*   CHPAIR: Table of terms connected to degrees from MINDGU to MAXDGU by U to */
 /*           calculate the coeff. of approximation of EVEN degree NDVJAC by V. */
-/*   CHIMPR: Table of terms connected to degrees from MINDGU to MAXDGU by U to
+/*   CHIMPR: Table of terms connected to degrees from MINDGU to MAXDGU by U to */
 /*           calculate the coeff. of approximation of UNEVEN degree NDVJAC by V. */
 
 /*     OUTPUT ARGUMENTS : */
@@ -6260,7 +6260,7 @@ int AdvApp2Var_ApproxF2var::mma2fnc_(integer *ndimen,
 /*     ERRMAX: Table of MAX errors (sub-space by sub-space) */
 /*             committed in the approximation of FONCNP by NBCRBE curves. */
 /*     ERRMOY: Table of AVERAGE errors (sub-space by sub-space) */
-/*             committed in the approximation of FONCNP by NBCRBE curves.
+/*             committed in the approximation of FONCNP by NBCRBE curves. */
 /*     IERCOD: Error code: */
 /*             -1 = ERRMAX > EPSAPR for at least one sub-space. */
 /*                  (the resulting curves of at least mathematic degree NCFLIM-1 */
@@ -7784,7 +7784,7 @@ int AdvApp2Var_ApproxF2var::mmapptt_(const integer *ndgjac,
 /*     FUNCTION : */
 /*     ---------- */
 /*        Load the elements required for integration by */
-/*        Gauss method to obtain the coefficients in the base of
+/*        Gauss method to obtain the coefficients in the base of */
 /*        Legendre of the approximation by the least squares of a */
 /*        function. The elements are stored in commons MMAPGSS */
 /*        (case without constraint), MMAPGS0 (constraints C0), MMAPGS1 */
@@ -7797,7 +7797,7 @@ int AdvApp2Var_ApproxF2var::mmapptt_(const integer *ndgjac,
 /*     INPUT ARGUMENTS  : */
 /*     ------------------ */
 /*        NDGJAC : Max degree of the polynom of approximation. */
-/*                 The representation in orthogonal base goes from degree
+/*                 The representation in orthogonal base goes from degree */
 /*                 0 to degree NDGJAC-2*(JORDRE+1). The polynomial base */
 /*                 is the base of Jacobi of order -1 (Legendre), 0, 1 and 2 */
 /*        NBPNTS : Degree of the polynom of Legendre on the roots which of */

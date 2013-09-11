@@ -43,10 +43,9 @@ FairCurve_EnergyOfBatten::FairCurve_EnergyOfBatten(const Standard_Integer BSplOr
 						   const Standard_Real Angle2)
 //=======================================================================
                          : FairCurve_Energy( Poles, ContrOrder1,  ContrOrder2,
-				   FreeSliding,  Angle1, Angle2),
+                                             FreeSliding,  Angle1, Angle2),
                            MyLengthSliding(LengthSliding),
-			   OriginalSliding(LengthSliding),
-			   MyFreeSliding(FreeSliding),
+                           OriginalSliding(LengthSliding),
                            MyBattenLaw(Law), 
                            MyTension(BSplOrder, FlatKnots, Poles, 1, LengthSliding,  Law, FreeSliding),
                            MySagging(BSplOrder, FlatKnots, Poles, 1, Law, FreeSliding)

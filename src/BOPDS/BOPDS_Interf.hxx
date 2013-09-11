@@ -523,7 +523,7 @@ class BOPDS_InterfFF  : public BOPDS_Interf {
    * @param theAllocator
    *   allocator to manage the memory
    */
-  /**
+  /*
   BOPDS_InterfFF(const Handle(NCollection_BaseAllocator)& theAllocator)
     : 
       BOPDS_Interf(theAllocator),
@@ -533,6 +533,7 @@ class BOPDS_InterfFF  : public BOPDS_Interf {
       myCurves(myAllocator),
       myPoints(myAllocator) {
   };
+  */
   //
   /**
    *  Destructor

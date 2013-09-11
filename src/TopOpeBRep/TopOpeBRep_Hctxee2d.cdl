@@ -43,12 +43,10 @@ fields
 
     myEdge1 : Edge from TopoDS;
     myCurve1 : Curve from Geom2dAdaptor;
-    myCurveType1 : CurveType from GeomAbs;
     myDomain1 : Domain from IntRes2d;
 
     myEdge2 : Edge from TopoDS;
     myCurve2 : Curve from Geom2dAdaptor;
-    myCurveType2 : CurveType from GeomAbs;
     myDomain2 : Domain from IntRes2d;
 
 end Hctxee2d from TopOpeBRep;

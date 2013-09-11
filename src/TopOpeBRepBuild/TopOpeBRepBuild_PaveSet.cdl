@@ -69,8 +69,6 @@ fields
     myEdge       : Edge from TopoDS;
     myVertices   : ListOfPave from TopOpeBRepBuild;
     myVerticesIt : ListIteratorOfListOfPave from TopOpeBRepBuild;
-    myEdgeVertexIndex  : Integer from Standard;
-    myEdgeVertexCount  : Integer from Standard;
 
     myHasEqualParameters : Boolean from Standard;
     myEqualParameters    : Real from Standard;

@@ -221,7 +221,6 @@ fields
  myBary     :  Pnt   from  gp;   
   
  myRadius   :  Real;
- myMinW     :  Real; 
  maxang     :  Real; 
  minang     :  Real; 
  distmin    :  Real;   

@@ -113,7 +113,16 @@ static Standard_Integer FillIntervalBounds(Standard_Real               A,
   for(; i <= iEnd; i++){
     Standard_Real kn = Knots(i);
     if(A < kn)
-      if(kn < B) VA(j++) = VB(k++) = kn; else break;
+    {
+      if(kn < B) 
+      {
+        VA(j++) = VB(k++) = kn;
+      }
+      else 
+      {
+        break;
+      }
+    }
   }
   VB(k) = B;
   return k;

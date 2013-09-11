@@ -106,7 +106,6 @@ static
   quad1(Quad1),
   quad2(Quad2),
   deflectionmax(0.01),
-  pasuvmax(0.05),
   nbpointsmax(200),
   type(0),
   myTolParam(1.e-12),
@@ -122,13 +121,12 @@ static
   IntPatch_ALineToWLine::IntPatch_ALineToWLine(const IntSurf_Quadric& Quad1,
 					       const IntSurf_Quadric& Quad2,
 					       const Standard_Real    Deflection,
-					       const Standard_Real    PasUVMax,
+					       const Standard_Real    ,
 					       const Standard_Integer NbMaxPoints) 
 :
   quad1(Quad1),
   quad2(Quad2),
   deflectionmax(Deflection),
-  pasuvmax(PasUVMax),
   nbpointsmax(NbMaxPoints),
   myTolParam(1.e-12),
   myTolOpenDomain(1.e-9),

@@ -86,7 +86,6 @@ is
 fields
     MyLengthSliding : Real;
     OriginalSliding : Real;
-    MyFreeSliding   : Boolean;
     MyBattenLaw     : BattenLaw;
     MyPhysicalRatio : Real;
     MyTension       : DistributionOfTension;

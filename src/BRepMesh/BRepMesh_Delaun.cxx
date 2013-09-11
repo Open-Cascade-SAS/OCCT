@@ -2030,7 +2030,7 @@ void  BRepMesh_Delaun::RemoveVertex( const BRepMesh_Vertex& theVertex )
 void  BRepMesh_Delaun::AddVertices( BRepMesh_Array1OfVertexOfDelaun& theVertices )
 {
   BRepMesh_HeapSortVertexOfDelaun::Sort( theVertices, 
-    BRepMesh_ComparatorOfVertexOfDelaun( SortingDirection, Precision ) );
+    BRepMesh_ComparatorOfVertexOfDelaun( SortingDirection ) );
 
   Standard_Integer aLower  = theVertices.Lower();
   Standard_Integer anUpper = theVertices.Upper();

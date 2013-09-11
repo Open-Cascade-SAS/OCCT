@@ -102,7 +102,6 @@ fields
     mynew        : MapOfInteger      from TColStd;
     myhimap      : IndexedDataMapOfOwnerPrs;
     
-    mynbpick     : Integer;
     mylastindex  : Integer;
     myManager    : TransientManager from Visual3d;
 end BRepHilighter;

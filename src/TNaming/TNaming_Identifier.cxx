@@ -76,10 +76,9 @@ static void ModDbgTools_WriteCurrentShape(const Handle(TNaming_NamedShape) & NS)
 TNaming_Identifier::TNaming_Identifier(const TDF_Label&        LabAcces,
 				       const TopoDS_Shape&     S,
 				       const TopoDS_Shape&     Context,
-				       const Standard_Boolean  OneOnly)
-:myTDFAcces(LabAcces), myShape(S), myOneOnly(OneOnly),
+				       const Standard_Boolean  /*OneOnly*/)
+:myTDFAcces(LabAcces), myShape(S),
 myDone(Standard_False),myIsFeature(Standard_False)
-
 {
   Init(Context); 
 }
@@ -92,10 +91,9 @@ myDone(Standard_False),myIsFeature(Standard_False)
 TNaming_Identifier::TNaming_Identifier(const TDF_Label&        LabAcces,
 				       const TopoDS_Shape&                     S,
 				       const Handle(TNaming_NamedShape)&       ContextNS,
-				       const Standard_Boolean                  OneOnly)
-:myTDFAcces(LabAcces), myShape(S), myOneOnly(OneOnly),
+				       const Standard_Boolean                  /*OneOnly*/)
+:myTDFAcces(LabAcces), myShape(S),
 myDone(Standard_False),myIsFeature(Standard_False)
-
 {
   const TopoDS_Shape& aContext = TNaming_Tool::GetShape (ContextNS);
   Init(aContext); 

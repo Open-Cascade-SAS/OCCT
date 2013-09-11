@@ -147,8 +147,6 @@ fields
     firstArcRight   : Address  from Standard;
     secondArcRight  : Address  from Standard;
     secondArcLeft   : Address  from Standard;
-    firstParameter  : Real;
-    secondParameter : Real;
     
 end Arc;
 
