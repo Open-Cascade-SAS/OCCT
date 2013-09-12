@@ -1900,7 +1900,7 @@ Standard_Boolean IntTools_BeanFaceIntersector::ComputeLocalized() {
     Handle(Geom_BSplineSurface) aSurfBspl = Handle(Geom_BSplineSurface)::DownCast(myTrsfSurface);
 
     ComputeGridPoints(aSurfBspl, myUMinParameter, myUMaxParameter,
-		      myVMinParameter, myVMaxParameter, myCriteria,
+		      myVMinParameter, myVMaxParameter, myFaceTolerance,
 		      aSurfaceData);
 
     if(!bFBoxFound) {

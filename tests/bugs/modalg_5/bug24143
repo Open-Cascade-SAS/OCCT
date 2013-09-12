@@ -1,0 +1,19 @@
+cpulimit 2000
+
+puts "================"
+puts "OCC24143"
+puts "================"
+puts ""
+#######################################################################
+# bopcheck command throws an exception
+#######################################################################
+
+restore [locate_data_file tool_1.brep] b
+
+# 1. bopcheck
+bopcheck b
+
+# 2. modeling case
+explode b e; copy b_23 b1
+explode b f; copy b_14 b2
+bop b1 b2
