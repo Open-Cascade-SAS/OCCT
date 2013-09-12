@@ -1,3 +1,5 @@
+puts "TODO OCC24156 MacOS: Error : 2 differences with reference data found"
+
 # !!!! This file is generated automatically, do not edit manually! See end script
 set filename trj3_s1-tc-214.stp
 

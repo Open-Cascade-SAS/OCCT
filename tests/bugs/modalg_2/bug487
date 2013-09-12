@@ -1,3 +1,6 @@
+puts "TODO OCC24156 MacOS: Faulty OCC485: function BLEND works wrongly"
+puts "TODO OCC24156 MacOS: Tcl Exception: result is not a topological shape!!!"
+puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
 
 puts "========================"
 puts " OCC487 "
