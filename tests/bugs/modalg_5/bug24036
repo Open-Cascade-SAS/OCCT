@@ -1,22 +1,20 @@
 puts "========================"
-puts "OCC23375"
+puts "OCC24036"
 puts "========================" 
 puts ""
 #######################################################################
-# (OCC 6.5.3 regression) BRepBuilderAPI_Sewing returns wrong result
+# Regression: sewing is not correct
+# (OCC 6.6.0 regression) BRepBuilderAPI_Sewing returns wrong result
 #######################################################################
 
 pload XSDRAW
 
-restore [locate_data_file bug23375_Volute1.brep] v
-
+restore [locate_data_file bug24036_data.brep] v
 explode v
-sewing result 0.01 v_1 v_2
+sewing result 0.00001 v_1 v_2
 
-# 1
 checkshape result
 
-# 2
 set tolmaxres [tolmax result]
 regexp {max tol = ([-0-9.+eE]+)} $tolmaxres full MaxTolerance
 set CMP_TOL 1.e-4
@@ -24,12 +22,12 @@ if { ${MaxTolerance} > ${CMP_TOL} } {
    puts "Error: invalid tolerance"
 }
 
-# 3
-freebounds $result -0.01
+freebounds $result 0
 set s [explode result_c e]
-puts $s
+
 set index [ llength $s ]
-if { $index != 8 } {
+puts "Number of free edges is $index"
+if { $index != 2 } {
    puts "Error : Number of free edges is $index"
 }
 

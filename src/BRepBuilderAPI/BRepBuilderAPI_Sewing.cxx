@@ -1445,48 +1445,32 @@ Standard_Boolean BRepBuilderAPI_Sewing::FindCandidates(TopTools_SequenceOfShape&
     }
     else {
       const TopoDS_Edge& Edge2 = TopoDS::Edge(seqSections(i));
-      //gka
       seqSectionsNew.Append(Edge2);
       seqCandidatesNew.Append(i);
-      /*TopoDS_Shape bnd = Edge2;
-      if (mySectionBound.IsBound(bnd)) bnd = mySectionBound(bnd);
-      //gka
-      if (myBoundFaces.Contains(bnd)) {
-      Standard_Boolean isOK = Standard_True;
-      TopTools_ListIteratorOfListOfShape itf2(myBoundFaces.FindFromKey(bnd));
-      for (; itf2.More() && isOK; itf2.Next()) {
-      const TopoDS_Face& Face2 = TopoDS::Face(itf2.Value());
-      // Check whether condition is satisfied
-      isOK = !Faces1.Contains(Face2);
-      if (!isOK) isOK = IsMergedClosed(Edge1,Edge2,Face2);
-      }
-      if (isOK) {
-      seqSectionsNew.Append(Edge2);
-      seqCandidatesNew.Append(i);
-      }
-      }*/
     }
   }
 
   Standard_Integer nbSectionsNew = seqSectionsNew.Length();
   if (nbSectionsNew > 1) {
-
+    
     // Evaluate distances between reference and other sections
     TColStd_Array1OfBoolean arrForward(1,nbSectionsNew);
     TColStd_Array1OfReal arrDistance(1,nbSectionsNew);
     TColStd_Array1OfReal arrLen(1,nbSectionsNew);
     TColStd_Array1OfReal arrMinDist(1,nbSectionsNew);
     EvaluateDistances(seqSectionsNew,arrForward,arrDistance,arrLen,arrMinDist,1);
-
+    
     // Fill sequence of candidate indices sorted by distance
     for (i = 2; i <= nbSectionsNew; i++) {
-      if (arrDistance(i) >= 0.0 && arrLen(i) > myMinTolerance) {
+      Standard_Real aMaxDist = arrDistance(i);
+      if (aMaxDist >= 0.0 && aMaxDist <= myTolerance &&  arrLen(i) > myMinTolerance) {
+        
         // Reference section is connected to section #i
         Standard_Boolean isInserted = Standard_False;
         Standard_Integer j, ori = (arrForward(i)? 1 : 0);
         for (j = 1; (j <= seqCandidates.Length()) && !isInserted; j++) {
           Standard_Real aDelta = arrDistance(i) - arrDistance(seqCandidates.Value(j));
-          //if (arrDistance(i) <= arrDistance(seqCandidates.Value(j))) {
+          
           if( aDelta < Precision::Confusion()) {
 
             if(fabs(aDelta) > RealSmall() || 
@@ -1504,14 +1488,18 @@ Standard_Boolean BRepBuilderAPI_Sewing::FindCandidates(TopTools_SequenceOfShape&
         }
       }
     }
-
-    // Replace candidate indices
+   
     nbCandidates = seqCandidates.Length();
+    if (!nbCandidates) 
+      return Standard_False; // Section has no candidates to merge
+    
+    // Replace candidate indices
+   
     for (i = 1; i <= nbCandidates; i++)
       seqCandidates(i) = seqCandidatesNew(seqCandidates(i));
+    
   }
-  //}
-
+  
   if (!nbCandidates) return Standard_False; // Section has no candidates to merge
 
   if (myNonmanifold && nbCandidates >1) {

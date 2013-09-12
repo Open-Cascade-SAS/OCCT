@@ -1,3 +1,9 @@
+puts "TODO OCC24036 ALL: Faulty shapes in variables faulty_1 to faulty_2"
+puts "TODO OCC24036 ALL: Error : Result shape is WRONG because it must contains 642 vertices instead of 966"
+puts "TODO OCC24036 ALL: Error : Result shape is WRONG because it must contains 955 edges instead of 1224"
+puts "TODO OCC24036 ALL: Error : Result shape is WRONG because it must contains 3 shells instead of 18"
+puts "TODO OCC24036 ALL: Error : Result shape is WRONG because it must contains 2133 shapes instead of 2741"
+
 puts "================"
 puts "OCC22770"
 puts "================"
