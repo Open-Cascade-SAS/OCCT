@@ -160,9 +160,24 @@ static Standard_Integer loadvrml
 
     if (fic.open(argv[2], ios::in)) {
 
+      // Get path of the VRML file.
+      OSD_Path path(argv[2]);
+      TCollection_AsciiString vrmlDir(".");
+      TCollection_AsciiString disk = path.Disk();
+      TCollection_AsciiString trek = path.Trek();
+      if (!trek.IsEmpty())
+      {
+        if (!disk.IsEmpty())
+          vrmlDir = disk;
+        else
+          vrmlDir.Clear();
+        trek.ChangeAll('|', '/');
+        vrmlDir += trek;
+      }
+
       VrmlData_Scene aScene;
 
-      aScene.SetVrmlDir (".");
+      aScene.SetVrmlDir (vrmlDir);
       aScene << aStream;
       const char * aStr = 0L;
       switch (aScene.Status()) {
