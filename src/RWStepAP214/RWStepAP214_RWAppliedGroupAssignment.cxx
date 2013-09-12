@@ -52,22 +52,23 @@ void RWStepAP214_RWAppliedGroupAssignment::ReadStep (const Handle(StepData_StepR
 
   // Own fields of AppliedGroupAssignment
 
-  Handle(StepAP214_HArray1OfGroupItem) aItems;
+  Handle(StepAP214_HArray1OfGroupItem) anItems;
   Standard_Integer sub2 = 0;
   if ( data->ReadSubList (num, 2, "items", ach, sub2) ) {
     Standard_Integer num2 = sub2;
     Standard_Integer nb0 = data->NbParams(num2);
-    aItems = new StepAP214_HArray1OfGroupItem (1, nb0);
-    for ( Standard_Integer i0=1; i0 <= nb0; i0++ ) {
-      StepAP214_GroupItem anIt0;
-      data->ReadEntity (num2, i0, "items", ach, anIt0);
-      aItems->SetValue(i0, anIt0);
+    if (nb0)
+    {
+      anItems = new StepAP214_HArray1OfGroupItem (1, nb0);
+      for ( Standard_Integer i0=1; i0 <= nb0; i0++ ) {
+        StepAP214_GroupItem anIt0;
+        data->ReadEntity (num2, i0, "items", ach, anIt0);
+        anItems->SetValue(i0, anIt0);
+      }
     }
   }
-
   // Initialize entity
-  ent->Init(aGroupAssignment_AssignedGroup,
-            aItems);
+  ent->Init(aGroupAssignment_AssignedGroup, anItems);
 }
 
 //=======================================================================
@@ -107,9 +108,11 @@ void RWStepAP214_RWAppliedGroupAssignment::Share (const Handle(StepAP214_Applied
   iter.AddItem (ent->StepBasic_GroupAssignment::AssignedGroup());
 
   // Own fields of AppliedGroupAssignment
-
-  for (Standard_Integer i2=1; i2 <= ent->Items()->Length(); i2++ ) {
-    StepAP214_GroupItem Var0 = ent->Items()->Value(i2);
-    iter.AddItem (Var0.Value());
+  if (!ent->Items().IsNull())
+  {
+    for (Standard_Integer i2=1; i2 <= ent->Items()->Length(); i2++ ) {
+      StepAP214_GroupItem Var0 = ent->Items()->Value(i2);
+      iter.AddItem (Var0.Value());
+    }
   }
 }

@@ -36,27 +36,41 @@
 
   const Standard_Integer Deg = BSCW->Degree();
   const Standard_Integer NbPoles = BSCW->NbControlPointsList();
-  //aControlPointsList = new StepGeom_HArray1OfCartesianPoint(1,NbPoles);
-  const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList = BSCW->ControlPointsList();
-  Array1OfPnt_gen Poles(1,NbPoles);
-
-  Standard_Integer i;
-  CartesianPoint_gen P;
-  for (i=1; i<=NbPoles; i++)
-  {
-    if (StepToGeom_MakeCartesianPoint_gen::Convert(aControlPointsList->Value(i),P))
-      Poles.SetValue(i,P->Pnt_fonc());
-    else
-      return Standard_False;
-  }
-  
   const Standard_Integer NbKnots = BSCW->NbKnotMultiplicities();
 
   //aKnotMultiplicities = new TColStd_HArray1OfInteger(1,NbKnots);
   const Handle(TColStd_HArray1OfInteger)& aKnotMultiplicities = BSCW->KnotMultiplicities();
+  
+  Standard_Integer i;
+  Standard_Integer aFMulDiff = 0,aLMulDiff = 0;
   TColStd_Array1OfInteger Mult(1,NbKnots);
-  for (i=1; i<=NbKnots; i++) {
-    Mult.SetValue(i,aKnotMultiplicities->Value(i));
+  for (i=1; i<=NbKnots; ++i) {
+    Standard_Integer aCurrentVal = aKnotMultiplicities->Value(i);
+    if (aCurrentVal > Deg + 1)
+    {
+      if (i == 1)       aFMulDiff = aCurrentVal - Deg - 1;
+      if (i == NbKnots) aLMulDiff = aCurrentVal - Deg - 1;
+#ifdef DEB
+      cout << "\nWrong multiplicity " << aCurrentVal <<  " on " << i 
+           << " knot!" << "\nChanged to " << Deg + 1 << endl;
+#endif
+      aCurrentVal = Deg + 1;
+    }
+    Mult.SetValue(i,aCurrentVal);
+  }
+  
+  //aControlPointsList = new StepGeom_HArray1OfCartesianPoint(1,NbPoles);
+  const Handle(StepGeom_HArray1OfCartesianPoint)& aControlPointsList = BSCW->ControlPointsList();
+  Standard_Integer aSumMulDiff = aFMulDiff + aLMulDiff;
+  Array1OfPnt_gen Poles(1,NbPoles - aSumMulDiff);
+  CartesianPoint_gen P;
+  
+  for (i = 1 + aFMulDiff; i<= NbPoles - aLMulDiff; ++i)
+  {
+    if (StepToGeom_MakeCartesianPoint_gen::Convert(aControlPointsList->Value(i),P))
+      Poles.SetValue(i - aFMulDiff,P->Pnt_fonc());
+    else
+      return Standard_False;
   }
   
   //aKnots = new TColStd_HArray1OfReal(1,NbKnots);
@@ -86,7 +100,7 @@
     shouldBePeriodic = Standard_False;
     //cout << "Strange BSpline Curve Descriptor" << endl;
   }
-
+  
   if (SC->IsKind(STANDARD_TYPE(StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve))) {
     const Handle(TColStd_HArray1OfReal)& aWeight = BSCWR->WeightsData();
     TColStd_Array1OfReal W(1,NbPoles);

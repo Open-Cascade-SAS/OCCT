@@ -121,7 +121,7 @@ static Standard_Integer stepread (Draw_Interpretor& di/*theCommands*/, Standard_
   progress->Show();
 
   Standard_Boolean fromtcl = Standard_False;
-  Standard_Boolean aFullMode = 0;
+  Standard_Boolean aFullMode = Standard_False;
   Standard_Integer k = 3;
   if(argc > k )
   {

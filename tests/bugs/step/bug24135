@@ -1,0 +1,27 @@
+puts "========"
+puts "OCC24135"
+puts "========"
+puts ""
+#######################################################################
+# Result of reading step file is invalid.
+#######################################################################
+
+set BugNumber OCC24135
+
+stepread [locate_data_file bug24135_Drum.stp] a *
+
+set exception_status 0
+set msg [ tpstat c ]
+set index [ lsearch $msg Exeption ]
+
+if {$index > -1} {
+  set exception_status 1
+}
+
+if { ${exception_status} != 0 } {
+   puts "Faulty ${BugNumber}"
+} else {
+   puts "OK ${BugNumber}"
+}
+
+set 2dviewer 0
