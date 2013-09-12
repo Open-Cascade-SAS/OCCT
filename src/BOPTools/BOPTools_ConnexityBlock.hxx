@@ -75,8 +75,8 @@ class BOPTools_ConnexityBlock {
   };
   //
  protected:
-  Standard_Boolean myRegular;
   Handle(NCollection_BaseAllocator) myAllocator;
+  Standard_Boolean myRegular;
   BOPCol_ListOfShape myShapes;
   BOPCol_ListOfShape myLoops;
 };

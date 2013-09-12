@@ -248,11 +248,12 @@ AIS_SelectStatus AIS_Selection::Select(const Handle(Standard_Transient)& anObjec
   if ( S->myResultMap.IsBound( anObject ) ){
     AIS_NListTransient::Iterator aListIter = S->myResultMap.Find( anObject );
 //skt-----------------------------------------------------------------
-    if( S->myIterator == aListIter )
-	if( S->myIterator.More() )
-	    S->myIterator.Next();
-	else
-	    S->myIterator = AIS_NListTransient::Iterator();
+    if( S->myIterator == aListIter ) {
+      if( S->myIterator.More() )
+          S->myIterator.Next();
+      else
+          S->myIterator = AIS_NListTransient::Iterator();
+    }
 //--------------------------------------------------------------------
 #ifdef BUC60953
     // In the mode of advanced mesh selection only one owner is created

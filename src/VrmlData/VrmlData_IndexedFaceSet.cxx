@@ -66,11 +66,12 @@ VrmlData_ErrorStatus VrmlData_Faceted::readData (VrmlData_InBuffer& theBuffer)
   } else if (VRMLDATA_LCOMPARE (theBuffer.LinePtr, "creaseAngle")) {
     Standard_Real anAngle;
     if (OK(aStatus, Scene().ReadReal (theBuffer, anAngle,
-                                      Standard_False, Standard_False)))
+                                      Standard_False, Standard_False))) {
       if (anAngle < -Precision::Confusion()*0.001)
         aStatus = VrmlData_IrrelevantNumber;
       else
         myCreaseAngle = anAngle;
+    }
   }
   return aStatus;
 }

@@ -100,7 +100,6 @@ class ShapeAnalysis_BoxBndTreeSelector
   Bnd_Box                              myLBox;
   Handle (TopTools_HArray1OfShape)     mySeq;
   Standard_Boolean                     myShared;
-  Standard_Integer                     myStatus;
   Standard_Integer                     myNb;
   TopoDS_Vertex                        myFVertex;
   TopoDS_Vertex                        myLVertex;
@@ -110,6 +109,8 @@ class ShapeAnalysis_BoxBndTreeSelector
   Standard_Real                        myTol;
   Standard_Real                        myMin3d;
   TColStd_Array1OfInteger              myArrIndices;
+  Standard_Integer                     myStatus;
+
 };
 
 #endif

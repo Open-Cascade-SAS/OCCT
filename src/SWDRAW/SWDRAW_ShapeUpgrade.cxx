@@ -1150,21 +1150,25 @@ static Standard_Integer splitface
   Standard_Real Umin, Umax, Vmin, Vmax;
   S->Bounds ( Umin, Umax, Vmin, Vmax );
   if ( Uf < Umin && ! S->IsUPeriodic() ) Uf = Umin;
-  else if ( Uf > Umin )
+  else if ( Uf > Umin ) {
     if ( Precision::IsInfinite(Umin) ) Uf -= 100;
     else Uf = Umin;
+  }
   if ( Vf < Vmin && ! S->IsVPeriodic() ) Vf = Vmin;
-  else if ( Vf > Vmin )
+  else if ( Vf > Vmin ) {
     if ( Precision::IsInfinite(Vmin) ) Vf -= 100;
     else Vf = Vmin;
+  }
   if ( Ul > Umax && ! S->IsUPeriodic() ) Ul = Umax;
-  else if ( Ul < Umax )
+  else if ( Ul < Umax ) {
     if ( Precision::IsInfinite(Umax) ) Ul += 100;
     else Ul = Umax;
+  }
   if ( Vl > Vmax && ! S->IsVPeriodic() ) Vl = Vmax;
-  else if ( Vl < Vmax )
+  else if ( Vl < Vmax ) {
     if ( Precision::IsInfinite(Vmax) ) Vl += 100;
     else Vl = Vmax;
+  }
   
   TColStd_SequenceOfReal uval;
   TColStd_SequenceOfReal vval;

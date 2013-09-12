@@ -1642,6 +1642,8 @@ fields
         --MyColorScale            :       ColorScale from V3d;
         MyLayerMgr              :       LayerMgr from V3d;
 
+        MyProjModel         :   TypeOfProjectionModel from V3d is protected;
+            
         -- the transformation between XoY and the grid plane
         MyTrsf                  :       Array2OfReal from TColStd;
 
@@ -1649,10 +1651,8 @@ fields
         MyGridEchoStructure             :       Structure from Graphic3d;
         MyGridEchoGroup                 :       Group from Graphic3d;
 
-    MyProjModel         :   TypeOfProjectionModel from V3d is protected;
-
-    MyTransparencyFlag      : Boolean from Standard;
-    myImmediateUpdate: Boolean from Standard is protected;
+        MyTransparencyFlag      : Boolean from Standard;
+        myImmediateUpdate: Boolean from Standard is protected;
 friends
 
         SetViewOn from class Viewer from V3d ( me : mutable ),

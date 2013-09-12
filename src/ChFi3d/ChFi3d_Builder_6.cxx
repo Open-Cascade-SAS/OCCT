@@ -1778,7 +1778,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
       narc1 = Lin->StartPointOnFirst().NbPointOnRst();
       narc2 = Lin->StartPointOnSecond().NbPointOnRst();
 //  modified by eap Fri Feb  8 11:43:48 2002 ___BEGIN___
-      if(!debarc1)
+      if(!debarc1) {
 	if (narc1 == 0)
 	  backwContinueFailed = Lin->StartPointOnFirst().ParameterOnGuide() > Target;
 	else {
@@ -1799,7 +1799,8 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 // 	    }
 	  }
 	}
-      if(!debarc2)
+      }
+      if(!debarc2) {
 	if (narc2 == 0)
 	  backwContinueFailed = Lin->StartPointOnSecond().ParameterOnGuide() > Target;
 	else {
@@ -1820,6 +1821,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 //             }
           }
         }
+      }
       if (backwContinueFailed) {
 	// if we leave backwContinueFailed as is, we will stop in this direction
 	// but we are to continue if there are no more faces on the side with arc
@@ -1879,7 +1881,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
       narc1 = Lin->EndPointOnFirst().NbPointOnRst();
       narc2 = Lin->EndPointOnSecond().NbPointOnRst();
 //  modified by eap Fri Feb  8 11:44:57 2002 ___BEGIN___
-      if(!finarc1)
+      if(!finarc1) {
 	if (narc1 == 0) 
 	  forwContinueFailed = Lin->EndPointOnFirst().ParameterOnGuide() < Target;
 	else {
@@ -1895,7 +1897,8 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 // 	    }
 	  }
 	}
-      if(!finarc2)
+      }
+      if(!finarc2) {
 	if (narc2 == 0)
 	  forwContinueFailed = Lin->EndPointOnSecond().ParameterOnGuide() < Target;
 	else {
@@ -1911,6 +1914,7 @@ Standard_Boolean ChFi3d_Builder::ComputeData
 // 	    }
 	  }
 	}
+      }
       if (forwContinueFailed) {
 	// if we leave forwContinueFailed as is, we will stop in this direction
 	// but we are to continue if there are no more faces on the side with arc

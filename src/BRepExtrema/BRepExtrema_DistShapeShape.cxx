@@ -96,7 +96,7 @@ void BRepExtrema_DistShapeShape::DistanceMapMap(const TopTools_IndexedMapOfShape
       const TopoDS_Shape &S2 = Map2(j);
 
       BRepExtrema_DistanceSS  dist(S1,S2,box1,box2,myDistRef,myEps);
-      if (dist.IsDone())
+      if (dist.IsDone()) {
         if(dist.DistValue() < (myDistRef-myEps))
         {
           mySolutionsShape1.Clear();
@@ -116,6 +116,7 @@ void BRepExtrema_DistShapeShape::DistanceMapMap(const TopTools_IndexedMapOfShape
           if (myDistRef > dist.DistValue())
             myDistRef=dist.DistValue();
         }
+      }
     }
   }
 }

@@ -101,8 +101,8 @@ OpenGl_View::OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext)
   myIntShadingMethod(TEL_SM_GOURAUD),
   myAntiAliasing(Standard_False),
   myTransPers(&myDefaultTransPers),
-  myIsTransPers(Standard_False),
   myTrihedron(NULL),
+  myIsTransPers(Standard_False),
   myGraduatedTrihedron(NULL)
 {
   // Initialize matrices

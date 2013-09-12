@@ -87,11 +87,12 @@ void SelectMgr_EntityOwner::HilightWithColor(const Handle(PrsMgr_PresentationMan
 					     const Quantity_NameOfColor aColor,
 					     const Standard_Integer aMode)
 {
-  if( HasSelectable() )
+  if( HasSelectable() ) {
     if( IsAutoHilight() )
       PM->Color(mySelectable,aColor,aMode);
     else
       mySelectable->HilightOwnerWithColor( PM, aColor, this );
+  }
 }
 
 void SelectMgr_EntityOwner::Unhilight(const Handle(PrsMgr_PresentationManager)& PM,

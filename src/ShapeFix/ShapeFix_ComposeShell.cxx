@@ -666,9 +666,10 @@ Standard_Integer ShapeFix_ComposeShell::ComputeCode (const Handle(ShapeExtend_Wi
       }
     }
     if ( j < np ) { i = 0; break; } // not tangency
-    if ( i == endInd ) 
+    if ( i == endInd ) {
       if ( special <=0 ) break;
       else special = -1;
+    }
   }
   if ( myClosedMode ) {
     if ( code != IOR_UNDEF && ! begin ) {

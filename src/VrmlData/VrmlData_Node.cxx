@@ -181,11 +181,12 @@ VrmlData_ErrorStatus VrmlData_Node::WriteClosing () const
 VrmlData_ErrorStatus VrmlData_Node::readBrace (VrmlData_InBuffer& theBuffer)
 {
   VrmlData_ErrorStatus aStatus;
-  if (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer)))
+  if (OK(aStatus, VrmlData_Scene::ReadLine(theBuffer))) {
     if (theBuffer.LinePtr[0] == '}')
       theBuffer.LinePtr++;
     else
       aStatus = VrmlData_VrmlFormatError;
+  }
   return aStatus;
 }
 

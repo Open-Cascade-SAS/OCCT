@@ -60,7 +60,7 @@ Standard_Boolean ShapeCustom_ConvertToBSpline::IsToConvert(const Handle(Geom_Sur
       Handle(Geom_RectangularTrimmedSurface)::DownCast ( S );
     SS = RTS->BasisSurface();
   }
-  if(SS->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
+  if(SS->IsKind(STANDARD_TYPE(Geom_OffsetSurface))) {
     if(myOffsetMode)
       return Standard_True;
     else {
@@ -69,6 +69,7 @@ Standard_Boolean ShapeCustom_ConvertToBSpline::IsToConvert(const Handle(Geom_Sur
       Handle(Geom_Surface) tmp;
       return IsToConvert(basis,tmp);
     }
+  }
   if ( SS->IsKind(STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion)) )
     return myExtrMode;
   if ( SS->IsKind(STANDARD_TYPE(Geom_SurfaceOfRevolution)) )

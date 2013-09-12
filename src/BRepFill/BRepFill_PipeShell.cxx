@@ -210,10 +210,10 @@ static Standard_Boolean IsSameOriented(const TopoDS_Shape& aFace,
 //=======================================================================
 BRepFill_PipeShell::BRepFill_PipeShell(const TopoDS_Wire& Spine)
                       :  mySpine(Spine), 
-			 myTrihedron(GeomFill_IsCorrectedFrenet),
-			 myTransition(BRepFill_Modified),
+                         myTrihedron(GeomFill_IsCorrectedFrenet),
                          myForceApproxC1(Standard_False),
-			 myStatus(GeomFill_PipeOk)
+                         myTransition(BRepFill_Modified),
+                         myStatus(GeomFill_PipeOk)
 {
   myLocation.Nullify();
   mySection.Nullify();

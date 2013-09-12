@@ -2936,16 +2936,17 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleEdgeContact2
 	else SP1.SetEdge1(-1);
       }
       else {
-	PI=PE1+Edge*lambda;
-	if(TriSurfID==1) 
-	  if(Tri2.GetEdgeOrientation(EdgeIndex)>0)
-	    SP1.SetLambda2(lambda);
-	  else SP1.SetLambda2(1.0-lambda);
-	if(TriSurfID==2) 
-	  if(Tri1.GetEdgeOrientation(EdgeIndex)>0)
-	    SP1.SetLambda1(lambda);
-	  else SP1.SetLambda1(1.0-lambda);
-
+        PI=PE1+Edge*lambda;
+        if(TriSurfID==1) {
+          if(Tri2.GetEdgeOrientation(EdgeIndex)>0)
+            SP1.SetLambda2(lambda);
+          else SP1.SetLambda2(1.0-lambda);
+        }
+        if(TriSurfID==2) {
+          if(Tri1.GetEdgeOrientation(EdgeIndex)>0)
+            SP1.SetLambda1(lambda);
+          else SP1.SetLambda1(1.0-lambda);
+        }
       }
         
       Standard_Real Cote23X=Cote23.X();

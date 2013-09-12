@@ -2259,26 +2259,27 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
 	 }
        }
 
-      if (ipath == 1)
-	if (uclose && (isec == NbLaw)) {
-	  Vertex(isec+1, 1) =  Vertex(1, 1);
-	}  
-	else if (Vertex(isec+1, 1).IsNull()) {
-	  if (constSection)
-	    myLoc->PerformVertex(IPath-1, 
-				 TopoDS::Vertex(SecVertex(isec+1)),
-				 TabErr(isec,1)+VError(isec+1),
-				 TopoDS::Vertex(Vertex(isec+1, 1)) );
-	  else
-	    myLoc->PerformVertex(IPath-1, 
-				 mySec->Vertex(isec+1,Vi(1)), 
-				 TabErr(isec,1) +
-				 mySec->VertexTol(isec,Vi(1)),
-				 TopoDS::Vertex(Vertex(isec+1, 1)) );
-	  if (MergeVertex(Vertex(isec,1), Vertex(isec+1,1))) {
-	    VEdge(isec, 1) = NullEdge(Vertex(isec, 1)); 
-	  }
-	}
+      if (ipath == 1) {
+        if (uclose && (isec == NbLaw)) {
+          Vertex(isec+1, 1) =  Vertex(1, 1);
+        }  
+        else if (Vertex(isec+1, 1).IsNull()) {
+          if (constSection)
+            myLoc->PerformVertex(IPath-1, 
+               TopoDS::Vertex(SecVertex(isec+1)),
+               TabErr(isec,1)+VError(isec+1),
+               TopoDS::Vertex(Vertex(isec+1, 1)) );
+          else
+            myLoc->PerformVertex(IPath-1, 
+               mySec->Vertex(isec+1,Vi(1)), 
+               TabErr(isec,1) +
+               mySec->VertexTol(isec,Vi(1)),
+               TopoDS::Vertex(Vertex(isec+1, 1)) );
+          if (MergeVertex(Vertex(isec,1), Vertex(isec+1,1))) {
+            VEdge(isec, 1) = NullEdge(Vertex(isec, 1)); 
+          }
+        }
+      }
 
       if (uclose && (isec == NbLaw)) {
 	Vertex(isec+1, ipath+1) = Vertex(1, ipath+1);

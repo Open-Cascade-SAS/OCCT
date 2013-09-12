@@ -222,9 +222,10 @@ static Standard_Integer GetLine(OSD_File& aFile,TCollection_AsciiString& aLine)
   do {
     aFile.ReadLine(Buffer,BufSize,Len);
     aLine += Buffer;
-    if (aFile.IsAtEnd())
+    if (aFile.IsAtEnd()) {
       if (!aLine.Length()) return 0;
       else aLine += "\n";
+    }
   } while (aLine.Value(aLine.Length()) != '\n');
 
   return 1;

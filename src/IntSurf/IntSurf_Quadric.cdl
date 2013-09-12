@@ -186,11 +186,11 @@ fields
 
     ax3      : Ax3         from gp;
     lin      : Lin         from gp;
+    typ      : SurfaceType from GeomAbs;
     prm1     : Real        from Standard;
     prm2     : Real        from Standard;
     prm3     : Real        from Standard;
     prm4     : Real        from Standard;
     ax3direc : Boolean     from Standard;
-    typ      : SurfaceType from GeomAbs;
 
 end Quadric;

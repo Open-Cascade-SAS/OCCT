@@ -854,7 +854,7 @@ void MeshVS_MeshPrsBuilder::HowManyPrimitives (const Handle(MeshVS_HArray1OfSequ
                                                Standard_Integer& Vertices,
                                                Standard_Integer& Bounds)
 {
-  if( !Topo.IsNull() )
+  if( !Topo.IsNull() ) {
     if( AsPolygons || IsSelect )
     {
       Standard_Integer B = Topo->Upper()-Topo->Lower()+1;
@@ -874,6 +874,7 @@ void MeshVS_MeshPrsBuilder::HowManyPrimitives (const Handle(MeshVS_HArray1OfSequ
       Bounds += E;
       Vertices += 2*E;
     }
+  }
 }
 
 //================================================================

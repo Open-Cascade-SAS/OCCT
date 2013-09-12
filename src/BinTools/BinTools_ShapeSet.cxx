@@ -75,7 +75,7 @@ static Standard_OStream& operator <<(Standard_OStream& OS, const gp_Pnt P)
 //=======================================================================
 
 BinTools_ShapeSet::BinTools_ShapeSet(const Standard_Boolean isWithTriangles)
-     :myWithTriangles(isWithTriangles), myFormatNb(3)
+     :myFormatNb(3), myWithTriangles(isWithTriangles)
 {}
 
 //=======================================================================

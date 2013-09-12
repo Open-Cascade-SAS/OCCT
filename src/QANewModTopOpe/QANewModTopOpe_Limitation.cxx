@@ -57,8 +57,8 @@ QANewModTopOpe_Limitation::QANewModTopOpe_Limitation(const TopoDS_Shape& theObje
        myObjectToCut(theObjectToCut),
        myFwdIsDone(Standard_False),
        myRevIsDone(Standard_False),
-       myMode(theMode),
        myCut(NULL),
+       myMode(theMode),
        myCommon(NULL)
 {
 

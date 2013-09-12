@@ -319,7 +319,7 @@ void MeshVS_Mesh::ComputeSelection ( const Handle(SelectMgr_Selection)& theSelec
           TColStd_MapIteratorOfPackedMapOfInteger anIterN( anAllNodesMap );
 
           for( ; anIterN.More(); anIterN.Next() )
-            if( myDataSource->GetGeom( anIterN.Key(), Standard_False, aCoords, NbNodes, aType ) )
+            if( myDataSource->GetGeom( anIterN.Key(), Standard_False, aCoords, NbNodes, aType ) ) {
               if( first )
               {
                 for( Standard_Integer i=1; i<=3; i++ )
@@ -334,6 +334,7 @@ void MeshVS_Mesh::ComputeSelection ( const Handle(SelectMgr_Selection)& theSelec
                   if( aCoords( i )>max[i-1] )
                     max[i-1] = aCoords( i );
                 }
+            }
           Bnd_Box box;
           box.Add( gp_Pnt( min[0], min[1], min[2] ) );
           box.Add( gp_Pnt( max[0], max[1], max[2] ) );

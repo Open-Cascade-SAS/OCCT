@@ -47,7 +47,7 @@ const Handle_NIS_Drawer& NIS_InteractiveObject::SetDrawer
                                          const Standard_Boolean    setUpdated)
 {
   NIS_InteractiveContext * aCtx = theDrawer->GetContext();
-  if (myDrawer.IsNull() == Standard_False)
+  if (myDrawer.IsNull() == Standard_False) {
     if (aCtx == 0L)
     {
       aCtx = myDrawer->GetContext();
@@ -59,6 +59,7 @@ const Handle_NIS_Drawer& NIS_InteractiveObject::SetDrawer
         (myDrawer->GetContext() != 0L && aCtx != myDrawer->GetContext(),
          "NIS_InteractiveObject::SetDrawer: different drawer context");
     }
+  }
 
   Standard_NullValue_Raise_if
     (aCtx == 0L, "NIS_InteractiveObject::SetDrawer: NULL drawer context");

@@ -1302,9 +1302,10 @@ Standard_Boolean ShapeFix_Wire::FixShifted()
   SVMid = 0.5*(SVF+SVL);
   if (uclosed) URange = Abs ( SUL - SUF );
   else         URange = RealLast();
-  if (!IsVCrvClosed)
+  if (!IsVCrvClosed) {
     if (vclosed) VRange = Abs ( SVL - SVF );
     else         VRange = RealLast();
+  }
   Standard_Real UTol = 0.2 * URange, VTol = 0.2 * VRange;
 
   Handle(ShapeExtend_WireData) sbwdOring = WireData();

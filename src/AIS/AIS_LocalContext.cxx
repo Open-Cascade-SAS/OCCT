@@ -538,7 +538,7 @@ Standard_Boolean AIS_LocalContext::Remove(const Handle(AIS_InteractiveObject)& a
   const Handle(V3d_Viewer)& aViewer = myCTX->CurrentViewer();
   for(i = 1; i <= myMapOfOwner.Extent(); i++){
     const Handle(SelectMgr_EntityOwner)& anOwner = myMapOfOwner(i) ;
-    if(!anOwner.IsNull())
+    if(!anOwner.IsNull()) {
       if(anOwner->Selectable() != aSelectable)
         ownersToKeep.Add(anOwner);
       else
@@ -549,6 +549,7 @@ Standard_Boolean AIS_LocalContext::Remove(const Handle(AIS_InteractiveObject)& a
             Unhilight(anOwner, aViewer->ActiveView());
         }
       }
+    }
   }
   myMapOfOwner.Clear();
   myMapOfOwner.Assign(ownersToKeep);

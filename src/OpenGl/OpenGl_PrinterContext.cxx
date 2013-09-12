@@ -30,8 +30,8 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_PrinterContext, Standard_Transient)
 OpenGl_PrinterContext::OpenGl_PrinterContext()
 : myProjTransform  (0, 3, 0, 3),
   myLayerViewportX (0),
-  myLayerViewportY (0),
   myScaleX (1.0f),
+  myLayerViewportY (0),
   myScaleY (1.0f)
 {
   // identity projection matrix

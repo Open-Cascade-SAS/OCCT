@@ -281,10 +281,11 @@ void  IGESDefs_ToolAttributeTable::OwnCheck
   (const Handle(IGESDefs_AttributeTable)& ent,
    const Interface_ShareTool& , Handle(Interface_Check)& ach) const 
 {
-  if (ent->Definition().IsNull())
+  if (ent->Definition().IsNull()) {
     if (ent->HasStructure()) ach->AddFail
       ("Structure in Directory Entry is not an Attribute Definition Table");
     else ach->AddFail("No Attribute Definition defined");
+  }
   if (ent->FormNumber() == 0 && ent->NbRows() != 1)
     ach->AddFail("Form 0 with several Rows");
   if (ent->NbAttributes() != ent->Definition()->NbAttributes())

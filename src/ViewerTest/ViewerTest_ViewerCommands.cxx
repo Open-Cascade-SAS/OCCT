@@ -3319,14 +3319,13 @@ private:
 
   Standard_Real            myX1;
   Standard_Real            myY1;
-  Standard_Real            myHeight;
   TCollection_AsciiString  myText;
-  TCollection_AsciiString  myFontName;
+  Standard_Real            myHeight;
+  Handle(Visual3d_Layer)   myLayer;
   Quantity_Color           myColor;
   Quantity_Color           mySubtitleColor;
   Aspect_TypeOfDisplayText myType;
-  Handle(Visual3d_Layer)   myLayer;
-
+  TCollection_AsciiString  myFontName;
 };
 
 IMPLEMENT_STANDARD_HANDLE(V3d_TextItem, Visual3d_LayerItem)
@@ -3391,10 +3390,10 @@ public:
 private:
 
   Standard_Real       myX1, myY1, myX2, myY2;
+  V3d_LayerMgrPointer myLayerMgr;
+  Aspect_TypeOfLine   myType;
   Standard_Real       myWidth;
   Standard_Real       myTransparency;
-  Aspect_TypeOfLine   myType;
-  V3d_LayerMgrPointer myLayerMgr;
 };
 
 IMPLEMENT_STANDARD_HANDLE(V3d_LineItem, Visual3d_LayerItem)

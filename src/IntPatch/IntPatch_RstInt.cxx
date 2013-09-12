@@ -807,16 +807,16 @@ void IntPatch_RstInt::PutVertexOnLine (Handle(IntPatch_Line)& L,
 	      }
 
 	      if (!duplicate) {
-		Standard_Integer ParamApproxOnLine = Standard_Integer(W1[ip])+1;
+                Standard_Integer ParamApproxOnLine = Standard_Integer(W1[ip])+1;
 
-		arc->D1(paramarc,p2d,d2d);
-		U1 = p2d.X(); V1 = p2d.Y();
-		if (typL == IntPatch_Walking && SurfaceIsPeriodic)
-		  if (OnFirst)
-		    Recadre(TypeS1,TypeS2,wlin,ParamApproxOnLine,U1,V1,U2,V2);
-		  else
-		    Recadre(TypeS1,TypeS2,wlin,ParamApproxOnLine,U2,V2,U1,V1);
-
+                arc->D1(paramarc,p2d,d2d);
+                U1 = p2d.X(); V1 = p2d.Y();
+                if (typL == IntPatch_Walking && SurfaceIsPeriodic) {
+                  if (OnFirst)
+                    Recadre(TypeS1,TypeS2,wlin,ParamApproxOnLine,U1,V1,U2,V2);
+                  else
+                    Recadre(TypeS1,TypeS2,wlin,ParamApproxOnLine,U2,V2,U1,V1);
+                }
 		locpt.Append(ptsommet);
 		locpt2.Append(gp_Pnt2d(U2,V2));
 

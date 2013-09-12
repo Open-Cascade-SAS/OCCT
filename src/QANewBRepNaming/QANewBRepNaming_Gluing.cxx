@@ -309,33 +309,33 @@ void QANewBRepNaming_Gluing::RecomputeUnique(QANewModTopOpe_Glue& theMkGluing) {
       if (aNext == 0) anEdgesIterator.Initialize(theMkGluing.Generated(aFullEdge));
       else anEdgesIterator.Initialize(theMkGluing.Modified(aFullEdge));
       for (;anEdgesIterator.More();anEdgesIterator.Next())
-	if (anEdgesIterator.Value().ShapeType() == TopAbs_EDGE) {
-	  TopoDS_Edge aDivEdge = TopoDS::Edge(anEdgesIterator.Value());
-	  if (!TopExp::FirstVertex(aDivEdge).IsNull()) { // divided edge must have at least one vertex
-	    if (TopExp::FirstVertex(aFullEdge).IsNull()) AddToTheUnique(aDivEdge,aFullEdge);
-	    else if (!TopExp::LastVertex(aDivEdge).IsNull())//if full edge have at least one vertex, subedges must have two
-	      if (TopExp::LastVertex(aFullEdge).IsNull()) {
-		if (BRep_Tool::Pnt(TopExp::FirstVertex(aFullEdge)).
-		    IsEqual(BRep_Tool::Pnt(TopExp::FirstVertex(aDivEdge)),Precision::Confusion()))
-		  AddToTheUnique(aDivEdge,aFullEdge);
-		else if (BRep_Tool::Pnt(TopExp::FirstVertex(aFullEdge)).
-			 IsEqual(BRep_Tool::Pnt(TopExp::LastVertex(aDivEdge)),Precision::Confusion()))
-		  AddToTheUnique(aDivEdge,aFullEdge);
-	      } else {
-		Standard_Integer aCounter = 0;
-		if (BRep_Tool::Pnt(TopExp::FirstVertex(aFullEdge)).
-		    IsEqual(BRep_Tool::Pnt(TopExp::FirstVertex(aDivEdge)),Precision::Confusion()) ||
-		    BRep_Tool::Pnt(TopExp::FirstVertex(aFullEdge)).
-		    IsEqual(BRep_Tool::Pnt(TopExp::LastVertex(aDivEdge)),Precision::Confusion())) aCounter++;
-		if (BRep_Tool::Pnt(TopExp::LastVertex(aFullEdge)).
-		    IsEqual(BRep_Tool::Pnt(TopExp::FirstVertex(aDivEdge)),Precision::Confusion()) ||
-		    BRep_Tool::Pnt(TopExp::LastVertex(aFullEdge)).
-		    IsEqual(BRep_Tool::Pnt(TopExp::LastVertex(aDivEdge)),Precision::Confusion())) aCounter++;
-		if (aCounter!=2) AddToTheUnique(aDivEdge,aFullEdge);
-	      }
-	  }
-	}
-
+        if (anEdgesIterator.Value().ShapeType() == TopAbs_EDGE) {
+          TopoDS_Edge aDivEdge = TopoDS::Edge(anEdgesIterator.Value());
+          if (!TopExp::FirstVertex(aDivEdge).IsNull()) { // divided edge must have at least one vertex
+            if (TopExp::FirstVertex(aFullEdge).IsNull()) AddToTheUnique(aDivEdge,aFullEdge);
+            else if (!TopExp::LastVertex(aDivEdge).IsNull()) {//if full edge have at least one vertex, subedges must have two
+              if (TopExp::LastVertex(aFullEdge).IsNull()) {
+                if (BRep_Tool::Pnt(TopExp::FirstVertex(aFullEdge)).
+                    IsEqual(BRep_Tool::Pnt(TopExp::FirstVertex(aDivEdge)),Precision::Confusion()))
+                  AddToTheUnique(aDivEdge,aFullEdge);
+                else if (BRep_Tool::Pnt(TopExp::FirstVertex(aFullEdge)).
+                   IsEqual(BRep_Tool::Pnt(TopExp::LastVertex(aDivEdge)),Precision::Confusion()))
+                  AddToTheUnique(aDivEdge,aFullEdge);
+              } else {
+                Standard_Integer aCounter = 0;
+                if (BRep_Tool::Pnt(TopExp::FirstVertex(aFullEdge)).
+                    IsEqual(BRep_Tool::Pnt(TopExp::FirstVertex(aDivEdge)),Precision::Confusion()) ||
+                    BRep_Tool::Pnt(TopExp::FirstVertex(aFullEdge)).
+                    IsEqual(BRep_Tool::Pnt(TopExp::LastVertex(aDivEdge)),Precision::Confusion())) aCounter++;
+                if (BRep_Tool::Pnt(TopExp::LastVertex(aFullEdge)).
+                    IsEqual(BRep_Tool::Pnt(TopExp::FirstVertex(aDivEdge)),Precision::Confusion()) ||
+                    BRep_Tool::Pnt(TopExp::LastVertex(aFullEdge)).
+                    IsEqual(BRep_Tool::Pnt(TopExp::LastVertex(aDivEdge)),Precision::Confusion())) aCounter++;
+                if (aCounter!=2) AddToTheUnique(aDivEdge,aFullEdge);
+              }
+            }
+          }
+        }
     }
   }
   aNext = 2;

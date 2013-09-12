@@ -110,13 +110,15 @@ void ShapeProcessAPI_ApplySequence::PrintPreparationResult () const
   Standard_Integer SS = 0, SN = 0, FF = 0, FS = 0, FN = 0;
   for (TopTools_DataMapIteratorOfDataMapOfShapeShape It (myContext->Map()); It.More(); It.Next()) {
     TopoDS_Shape keyshape = It.Key(), valueshape = It.Value();
-    if (keyshape.ShapeType() == TopAbs_SHELL)
+    if (keyshape.ShapeType() == TopAbs_SHELL) {
       if (valueshape.IsNull()) SN++;
       else SS++;
-    else if (keyshape.ShapeType() == TopAbs_FACE)
+    }
+    else if (keyshape.ShapeType() == TopAbs_FACE) {
       if (valueshape.IsNull()) FN++;
       else if (valueshape.ShapeType() == TopAbs_SHELL) FS++;
       else FF++;
+    }
   }
   
   Handle(Message_Messenger) aMessenger = myContext->Messenger();

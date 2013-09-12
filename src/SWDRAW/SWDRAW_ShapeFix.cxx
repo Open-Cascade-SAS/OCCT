@@ -264,10 +264,11 @@ static Standard_Integer stwire (Draw_Interpretor& di, Standard_Integer argc, con
       if (BRep_Tool::Degenerated(E)) di<<" DGNR";
       if (sbwd->IsSeam(i))        di<<" SEAM_WIRE";
       if (Shape.ShapeType() == TopAbs_FACE &&
-	  sae.IsSeam(E,TopoDS::Face(Shape)))  di<<" SEAM_FACE";
-      if (Shape.ShapeType() == TopAbs_FACE )
-	if (sae.HasPCurve(E,TopoDS::Face(Shape)))     di<<" PCU";
-	else di<<" NO_PCU";
+          sae.IsSeam(E,TopoDS::Face(Shape)))  di<<" SEAM_FACE";
+      if (Shape.ShapeType() == TopAbs_FACE ) {
+        if (sae.HasPCurve(E,TopoDS::Face(Shape)))     di<<" PCU";
+        else di<<" NO_PCU";
+      }
       if (sae.HasCurve3d(E))    di<<" C3D";
       else di<<" NO_C3D";
       if (sae.IsClosed3d(E))  di<<" CLOSED";

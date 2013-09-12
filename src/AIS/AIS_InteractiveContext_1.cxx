@@ -207,13 +207,14 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo(const Standard_Integer XPix
   selector->Init();
   if ( selector->More() )
   {
-    if ( HasOpenedContext() )
+    if ( HasOpenedContext() ) 
+    {
       if ( !myFilters->IsOk( selector->OnePicked() ) ) 
-	return AIS_SOD_AllBad;
+        return AIS_SOD_AllBad;
       else
         if ( !myLocalContexts( myCurLocalIndex )->Filter()->IsOk( selector->OnePicked() ) )
           return AIS_SOD_AllBad;
-    
+    }
  
     // Does nothing if previously detected object is equal to the current one
     if ( selector->OnePicked()->Selectable() == myLastPicked )

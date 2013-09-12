@@ -374,12 +374,13 @@ static Standard_Boolean MinMaxSmall
     else return Standard_False;
   }
   //   Now, check these two edge to define a strip !
-  if (!E1.IsNull()&&!E2.IsNull()) 
+  if (!E1.IsNull()&&!E2.IsNull()) {
     if(!CheckStripEdges (E1,E2,tol,dmax)) return Standard_False; 
-      else {   
-	myStatusStrip = ShapeExtend::EncodeStatus (ShapeExtend_DONE3);
-	return Standard_True ;
-      }
+    else {   
+      myStatusStrip = ShapeExtend::EncodeStatus (ShapeExtend_DONE3);
+      return Standard_True ;
+    }
+  }
   return Standard_False;
 }
 

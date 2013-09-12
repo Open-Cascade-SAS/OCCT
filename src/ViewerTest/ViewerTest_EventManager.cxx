@@ -32,8 +32,8 @@
 ViewerTest_EventManager::ViewerTest_EventManager
         (const Handle(V3d_View)& aView,
          const Handle(AIS_InteractiveContext)& Ctx)
-  : myView (aView),
-    myCtx  (Ctx),
+  : myCtx  (Ctx),
+    myView (aView),
     myX    (-1),
     myY    (-1)
 {}

@@ -1399,16 +1399,18 @@ Standard_Boolean ShapeFix_Face::FixMissingSeam()
   if ( ::Precision::IsInfinite ( SUF ) || ::Precision::IsInfinite ( SUL ) ) {
     if ( ::Precision::IsInfinite ( SUF ) ) SUF = fU1;
     if ( ::Precision::IsInfinite ( SUL ) ) SUL = fU2;
-    if(Abs(SUL-SUF) < ::Precision::PConfusion())
+    if(Abs(SUL-SUF) < ::Precision::PConfusion()) {
       if ( ::Precision::IsInfinite ( SUF ) ) SUF-=1000.;
       else SUL+=1000.;
+    }
   }
   if ( ::Precision::IsInfinite ( SVF ) || ::Precision::IsInfinite ( SVL ) ) {
     if ( ::Precision::IsInfinite ( SVF ) ) SVF = fV1;
     if ( ::Precision::IsInfinite ( SVL ) ) SVL = fV2;
-    if(Abs(SVL-SVF) < ::Precision::PConfusion())
+    if(Abs(SVL-SVF) < ::Precision::PConfusion()) {
       if ( ::Precision::IsInfinite ( SVF ) ) SVF-=1000.;
       else SVL+=1000.;
+    }
   }
     
   URange = Abs ( SUL - SUF );
@@ -1629,9 +1631,10 @@ Standard_Boolean ShapeFix_Face::FixMissingSeam()
 	vf = pos1.Y();
       }
     }
-    if ( skipU && skipV ) 
+    if ( skipU && skipV ) {
       if ( i1 <= nb1 ) continue;
       else break;
+    }
     // or yet better - if it is end of some edges on both wires
     for ( Standard_Integer i2 = 1; i1 <= nb1 && i2 <= nb2; i2++ ) {
       TopoDS_Edge edge2 = wd2->Edge ( i2 );

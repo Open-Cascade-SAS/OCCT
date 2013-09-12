@@ -1017,16 +1017,18 @@ static void SelectSameShape (TNaming_Node*&          myNode,
     else Valid = pdn->IsValidInTrans(Trans);
 
     if (Valid)
+    {
       if (Old) {
-	if( pdn->myOld == RS && pdn->myNew != 0L && pdn->myNew != RS) {
-	  break;
-	}  
+        if( pdn->myOld == RS && pdn->myNew != 0L && pdn->myNew != RS) {
+          break;
+        }  
       }
       else {
-	if( pdn->myNew == RS && pdn->myOld != 0L && pdn->myOld != RS) {
-	  break;
-	}
+        if( pdn->myNew == RS && pdn->myOld != 0L && pdn->myOld != RS) {
+          break;
+        }
       }
+    }
     pdn = pdn->NextSameShape(RS);
   }
   myNode = pdn;

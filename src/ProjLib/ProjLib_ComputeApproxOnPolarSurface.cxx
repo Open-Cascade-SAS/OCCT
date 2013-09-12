@@ -199,34 +199,38 @@ static gp_Pnt2d Function_Value(const Standard_Real U,
   if(Surf->IsVPeriodic() || Surf->IsVClosed()) {
     vperiod = Surf->LastVParameter() - Surf->FirstVParameter();
   } 
-  if(U0 < Uinf)
+  if(U0 < Uinf) {
     if(!uperiod)
       U0 = Uinf;
     else {
       decalU = int((Uinf - U0)/uperiod)+1;
       U0 += decalU*uperiod;
     }
-  if(U0 > Usup)
+  }
+  if(U0 > Usup) {
     if(!uperiod)
       U0 = Usup;
     else {
       decalU = -(int((U0 - Usup)/uperiod)+1);
       U0 += decalU*uperiod;
     }
-  if(V0 < Vinf)
+  }
+  if(V0 < Vinf) {
     if(!vperiod)
       V0 = Vinf;
     else {
       decalV = int((Vinf - V0)/vperiod)+1;
       V0 += decalV*vperiod;
     }
-  if(V0 > Vsup)
+  }
+  if(V0 > Vsup) {
     if(!vperiod)
       V0 = Vsup;
     else {
       decalV = -int((V0 - Vsup)/vperiod)-1;
       V0 += decalV*vperiod;
     }
+  }
   
   // The surface around U0 is reduced
   Standard_Real uLittle = (Usup - Uinf)/10, vLittle = (Vsup - Vinf)/10;
@@ -759,44 +763,46 @@ Handle(Adaptor2d_HCurve2d)
     case GeomAbs_Cylinder:
       {
 //	Standard_Real Sloc, Tloc;
-	Standard_Real Sloc;
-	Standard_Integer usens = 0;
-	gp_Cylinder Cylinder = Surf->Cylinder();
-	ElSLib::Parameters( Cylinder, Pts(1), S, T);
-	Pts2d(1).SetCoord(S,T);
-	for ( i = 2 ; i <= NbOfPnts ; i++) { 
-	  Sloc = S;
-	  ElSLib::Parameters( Cylinder, Pts(i), S, T);
-	  if(Abs(Sloc - S) > M_PI)
-	    if(Sloc > S)
-	      usens++;
-	    else
-	      usens--;
-	  Pts2d(i).SetCoord(S+usens*2*M_PI,T);
-	}
-	myProjIsDone = Standard_True;
-	break;
+        Standard_Real Sloc;
+        Standard_Integer usens = 0;
+        gp_Cylinder Cylinder = Surf->Cylinder();
+        ElSLib::Parameters( Cylinder, Pts(1), S, T);
+        Pts2d(1).SetCoord(S,T);
+        for ( i = 2 ; i <= NbOfPnts ; i++) { 
+          Sloc = S;
+          ElSLib::Parameters( Cylinder, Pts(i), S, T);
+          if(Abs(Sloc - S) > M_PI) {
+            if(Sloc > S)
+              usens++;
+            else
+              usens--;
+          }
+          Pts2d(i).SetCoord(S+usens*2*M_PI,T);
+        }
+        myProjIsDone = Standard_True;
+        break;
       }
     case GeomAbs_Cone:
       {
 //	Standard_Real Sloc, Tloc;
-	Standard_Real Sloc;
-	Standard_Integer usens = 0;
-	gp_Cone Cone = Surf->Cone();
-	ElSLib::Parameters( Cone, Pts(1), S, T);
-	Pts2d(1).SetCoord(S,T);
-	for ( i = 2 ; i <= NbOfPnts ; i++) { 
-	  Sloc = S;
-	  ElSLib::Parameters( Cone, Pts(i), S, T);
-	  if(Abs(Sloc - S) > M_PI)
-	    if(Sloc > S)
-	      usens++;
-	    else
-	      usens--;
-	  Pts2d(i).SetCoord(S+usens*2*M_PI,T);
-	}
-	myProjIsDone = Standard_True;
-	break;
+        Standard_Real Sloc;
+        Standard_Integer usens = 0;
+        gp_Cone Cone = Surf->Cone();
+        ElSLib::Parameters( Cone, Pts(1), S, T);
+        Pts2d(1).SetCoord(S,T);
+        for ( i = 2 ; i <= NbOfPnts ; i++) { 
+          Sloc = S;
+          ElSLib::Parameters( Cone, Pts(i), S, T);
+          if(Abs(Sloc - S) > M_PI) {
+            if(Sloc > S)
+              usens++;
+            else
+              usens--;
+          }
+          Pts2d(i).SetCoord(S+usens*2*M_PI,T);
+        }
+        myProjIsDone = Standard_True;
+        break;
       }
     case GeomAbs_Sphere:
       {
@@ -809,11 +815,12 @@ Handle(Adaptor2d_HCurve2d)
 	for ( i = 2 ; i <= NbOfPnts ; i++) { 
 	  Sloc = S;Tloc = T;
 	  ElSLib::Parameters( Sphere, Pts(i), S, T);
-	  if(1.6*M_PI < Abs(Sloc - S))
+	  if(1.6*M_PI < Abs(Sloc - S)) {
 	    if(Sloc > S)
 	      usens += 2;
 	    else
 	      usens -= 2;
+    }
 	  if(1.6*M_PI > Abs(Sloc - S) && Abs(Sloc - S) > 0.4*M_PI) {
 	    vparit = !vparit;
 	    if(Sloc > S)
@@ -846,16 +853,18 @@ Handle(Adaptor2d_HCurve2d)
 	for ( i = 2 ; i <= NbOfPnts ; i++) { 
 	  Sloc = S; Tloc = T;
 	  ElSLib::Parameters( Torus, Pts(i), S, T);
-	  if(Abs(Sloc - S) > M_PI)
+	  if(Abs(Sloc - S) > M_PI) {
 	    if(Sloc > S)
 	      usens++;
 	    else
 	      usens--;
-	  if(Abs(Tloc - T) > M_PI)
+    }
+	  if(Abs(Tloc - T) > M_PI) {
 	    if(Tloc > T)
 	      vsens++;
 	    else
 	      vsens--;
+    }
 	  Pts2d(i).SetCoord(S+usens*2*M_PI,T+vsens*2*M_PI);
 	}
 	myProjIsDone = Standard_True;
@@ -1159,7 +1168,7 @@ Handle(Adaptor2d_HCurve2d)
 	      if (Dist2Min < DistTol3d * DistTol3d) {
 	      //if (Dist2Min < Tol3d * Tol3d) {
 		(ext.Point(GoodValue)).Parameter(u,v);
-		if(uperiod)
+		if(uperiod) {
 		  if((U0 - u) > (2*uperiod/3)) {
 		    usens++;
 		  }
@@ -1167,7 +1176,8 @@ Handle(Adaptor2d_HCurve2d)
 		    if((u - U0) > (2*uperiod/3)) {
 		      usens--;
 		    }
-		if(vperiod)
+    }
+		if(vperiod) {
 		  if((V0 - v) > (vperiod/2)) {
 		    vsens++;
 		  }
@@ -1175,6 +1185,7 @@ Handle(Adaptor2d_HCurve2d)
 		    if((v - V0) > (vperiod/2)) {
 		      vsens--;
 		    }
+      }
 		U0 = u; V0 = v;
 		U1 = U0 + usens*uperiod;
 		V1 = V0 + vsens*vperiod;

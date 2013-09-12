@@ -414,9 +414,11 @@ void ShapeProcess_ShapeContext::PrintStatistics () const
       if (valueshape.IsNull()) SN++;
       else SS++;
     else if (keyshape.ShapeType() == TopAbs_FACE)
+    {
       if (valueshape.IsNull()) FN++;
       else if (valueshape.ShapeType() == TopAbs_SHELL) FS++;
       else FF++;
+    }
   }
   
   // mapping

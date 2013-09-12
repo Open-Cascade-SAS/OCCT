@@ -544,19 +544,21 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
       v = (Vsup - Vinf)*0.1;
       if(S->IsUPeriodic()) {
         Standard_Real uperiod = S->UPeriod();
-        if(uperiod < (Usup+2*u-Uinf))
+        if(uperiod < (Usup+2*u-Uinf)) {
           if(uperiod <= (Usup-Uinf))
             u = 0;
           else
             u = (uperiod-(Usup-Uinf))*0.5;
+        }
       }
       if(S->IsVPeriodic()) {
         Standard_Real vperiod = S->VPeriod();
-        if(vperiod < (Vsup+2*v-Vinf))
+        if(vperiod < (Vsup+2*v-Vinf)) {
           if(vperiod <= (Vsup-Vinf))
             v = 0;
           else
             v = (vperiod-(Vsup-Vinf))*0.5;
+        }
       }
       GeomAdaptor_Surface GAS(S, Uinf-u,Usup+u,Vinf-v,Vsup+v);
       Handle(GeomAdaptor_HSurface) GAHS = new GeomAdaptor_HSurface(GAS);

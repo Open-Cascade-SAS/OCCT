@@ -451,9 +451,10 @@ TopAbs_State TopTrans_SurfaceTransition::StateBefore() const
     // we take the state before of after orientations
     before = ::FUN_getstate(myAng,myOri,AFTER,BEFORE);
     // eap Mar 25 2002 
-    if (myTouchFlag)
+    if (myTouchFlag) {
       if (before == TopAbs_OUT) before = TopAbs_IN;
       else if (before == TopAbs_IN) before = TopAbs_OUT;
+    }
   }
   return before;
 }
@@ -467,9 +468,10 @@ TopAbs_State TopTrans_SurfaceTransition::StateAfter() const
     // looking back in before for defined states
     after = ::FUN_getstate(myAng,myOri,BEFORE,AFTER);
     // eap Mar 25 2002 
-    if (myTouchFlag)
+    if (myTouchFlag) {
       if (after == TopAbs_OUT) after = TopAbs_IN;
       else if (after == TopAbs_IN) after = TopAbs_OUT;
+    }
   }
   return after;
 }

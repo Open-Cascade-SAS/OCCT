@@ -235,62 +235,77 @@ static void PolyTest(const TColStd_Array1OfReal&         Herm,
     Standard_Real  Polemax=Polesinit(max).Y();
     if (((Polemax)>=((1/TolPoles)*Polemin))||((Polemin==0.0)&&(Polemax>=(1/TolPoles)))){
       if (Polesinit(0).Y()>=(1/TolPoles)*Polesinit(3).Y()||Polesinit(0).Y()<=TolPoles*Polesinit(3).Y())
-	Standard_DimensionError::Raise("Hermit Impossible Tolerance");       
-      if ((max==0)||(max==3))                                                
-	for (i=0;i<=3;i++)
-	  Polesinit(i).SetCoord(0.0,(Polesinit(i).Y()-TolPoles*Polemax));
-      if ((max==1)||(max==2))
-	if ((min==0)||(min==3))                                             
-	  for (i=0;i<=3;i++)
-	    Polesinit(i).SetCoord(0.0,(Polesinit(i).Y()-(1/TolPoles)*Polemin));
-	else{                                                                  
-	  if ((TolPoles*Polemax<Polesinit(0).Y())&&(TolPoles*Polemax<Polesinit(3).Y())){
-	    for (i=0;i<=3;i++)                                             
-	      Polesinit(i).SetCoord(0.0,(Polesinit(i).Y()-TolPoles*Polemax));
-	    mark=1;
-	  }
-	  if ((1/TolPoles*Polemin>Polesinit(0).Y())&&(1/TolPoles*Polemin>Polesinit(3).Y())&&(mark==0)){
-	    for (i=0;i<=3;i++)                                             
-	      Polesinit(i).SetCoord(0.0,(Polesinit(i).Y()-1/TolPoles*Polemin));
-	    mark=1;
-	  }
-	  if (mark==0){
-	    Standard_Real Pole0,Pole3;
-	    Pole0=Polesinit(0).Y();
-	    Pole3=Polesinit(3).Y();
-	    if (Pole0<3){                         
-	      a=Log10(Pole3/Pole0);                      
-	      if (boucle==2)                      
-		for (i=0;i<=3;i++)                                                    
-		  Polesinit(i).SetCoord(0.0, Polesinit(i).Y()-(Pole3*(Pow(10.0,(-0.5*Log10(TolPoles)-a/2.0))))); 
-	      if (boucle==1){
-		for (i=0;i<=3;i++)                                                    
-		  Polesinit(i).SetCoord(0.0, Polesinit(i).Y()-(Pole0*(Pow(10.0,(a/2.0+0.5*Log10(TolPoles)))))); 
-		dercas=1;
-	      }
-	    }
-	    if (Pole0>Pole3){                         
-	      a=Log10(Pole0/Pole3);                           
-	      if (boucle==2)                      
-		for (i=0;i<=3;i++)                                                    
-		  Polesinit(i).SetCoord(0.0, Polesinit(i).Y()-(Pole0*(Pow(10.0,(-0.5*Log10(TolPoles)-a/2.0))))); 
-	      if (boucle==1){
-		for (i=0;i<=3;i++)                                                    
-		  Polesinit(i).SetCoord(0.0, Polesinit(i).Y()-(Pole3*(Pow(10.0,(a/2.0+0.5*Log10(TolPoles)))))); 
-		dercas=1;
-	      }
-	    }
-	  }
-	}
+        Standard_DimensionError::Raise("Hermit Impossible Tolerance");       
+      if ((max==0)||(max==3))
+      {
+        for (i=0;i<=3;i++)
+          Polesinit(i).SetCoord(0.0,(Polesinit(i).Y()-TolPoles*Polemax));
+      }
+      else if ((max==1)||(max==2)) {
+        if ((min==0)||(min==3))
+        {
+          for (i=0;i<=3;i++)
+            Polesinit(i).SetCoord(0.0,(Polesinit(i).Y()-(1/TolPoles)*Polemin));
+        }
+        else{                                                                  
+          if ((TolPoles*Polemax<Polesinit(0).Y())&&(TolPoles*Polemax<Polesinit(3).Y())){
+            for (i=0;i<=3;i++)                                             
+              Polesinit(i).SetCoord(0.0,(Polesinit(i).Y()-TolPoles*Polemax));
+            mark=1;
+          }
+          if ((1/TolPoles*Polemin>Polesinit(0).Y())&&(1/TolPoles*Polemin>Polesinit(3).Y())&&(mark==0)){
+            for (i=0;i<=3;i++)                                             
+              Polesinit(i).SetCoord(0.0,(Polesinit(i).Y()-1/TolPoles*Polemin));
+            mark=1;
+          }
+          if (mark==0){
+            Standard_Real Pole0,Pole3;
+            Pole0=Polesinit(0).Y();
+            Pole3=Polesinit(3).Y();
+            if (Pole0<3){                         
+              a=Log10(Pole3/Pole0);
+              if (boucle==2)
+              {
+                for (i=0;i<=3;i++)                                                    
+                  Polesinit(i).SetCoord(0.0, Polesinit(i).Y()-(Pole3*(Pow(10.0,(-0.5*Log10(TolPoles)-a/2.0))))); 
+              }
+              if (boucle==1)
+              {
+                for (i=0;i<=3;i++)                                                    
+                  Polesinit(i).SetCoord(0.0, Polesinit(i).Y()-(Pole0*(Pow(10.0,(a/2.0+0.5*Log10(TolPoles)))))); 
+                dercas=1;
+              }
+            }
+            if (Pole0>Pole3)
+            {
+              a=Log10(Pole0/Pole3);                           
+              if (boucle==2)
+              {
+                for (i=0;i<=3;i++)                                                    
+                  Polesinit(i).SetCoord(0.0, Polesinit(i).Y()-(Pole0*(Pow(10.0,(-0.5*Log10(TolPoles)-a/2.0)))));
+              }
+              if (boucle==1)
+              {
+                for (i=0;i<=3;i++)                                                    
+                  Polesinit(i).SetCoord(0.0, Polesinit(i).Y()-(Pole3*(Pow(10.0,(a/2.0+0.5*Log10(TolPoles)))))); 
+                dercas=1;
+              }
+            }
+          }
+        }
+      }
     }
-  }                          //end of the loop
+  } // end of the loop
   
-  if (!SignDenom(Polesinit))                       //invertion of the polynome sign
+  if (!SignDenom(Polesinit)) //invertion of the polynome sign
+  {
     for (index=0;index<=3;index++)
       Polesinit(index).SetCoord(0.0,-Polesinit(index).Y());
-  
-                                //loop of positivity
-  if ((Polesinit(1).Y()<0.0)&&(Polesinit(2).Y()>=0.0)){              
+  }
+
+  // loop of positivity
+  if ((Polesinit(1).Y()<0.0)&&(Polesinit(2).Y()>=0.0))
+  {
     Us1=Polesinit(0).Y()/(Polesinit(0).Y()-Polesinit(1).Y());
     if (boucle==2)
       Us1=Us1*knots(2);
@@ -304,7 +319,8 @@ static void PolyTest(const TColStd_Array1OfReal&         Herm,
       U4=knots(I1);
   }
   
-  if ((Polesinit(1).Y()>=0.0)&&(Polesinit(2).Y()<0.0)){
+  if ((Polesinit(1).Y()>=0.0)&&(Polesinit(2).Y()<0.0))
+  {
     Us2=Polesinit(2).Y()/(Polesinit(2).Y()-Polesinit(3).Y());
     if (boucle==2)
       Us2=knots(knots.Length()-1)+Us2*(1-knots(knots.Length()-1));
@@ -397,6 +413,7 @@ static void PolyTest(const TColStd_Array1OfReal&        Herm,
   }
 
   if (I1==I2)                                            //definition and filling of the 
+  {
     if((I3==I4)||(I3==0)){                               //array of knots
       Knots=new TColStd_HArray1OfReal(1,BS->NbKnots());
       for (i=1;i<=BS->NbKnots();i++)
@@ -408,7 +425,9 @@ static void PolyTest(const TColStd_Array1OfReal&        Herm,
 	Knots->SetValue(i,BS->Knot(i));
       Knots->SetValue(BS->NbKnots()+1,Uy);
     }
-  else{
+  }
+  else
+  {
     if((I3==I4)||(I3==0)){
       Knots=new TColStd_HArray1OfReal(1,BS->NbKnots()+1);
       for (i=1;i<=BS->NbKnots();i++)
@@ -433,69 +452,93 @@ static void PolyTest(const TColStd_Array1OfReal&        Herm,
   Polesinit(2).SetCoord(0.0,Herm(3)-Herm(2)/3.0);
   Polesinit(3).SetCoord(0.0,Herm(3));
 
-                              //loop to check the tolerances on poles
-  if (TolPoles!=0.0){
+  // loop to check the tolerances on poles
+  if (TolPoles!=0.0)
+  {
     Polemax(Polesinit,min,max);
     Standard_Real  Polemin=Polesinit(min).Y();
     Standard_Real  Polemax=Polesinit(max).Y();
-    if (((Polemax)>=((1/TolPoles)*Polemin))||((Polemin==0.0)&&(Polemax>=(1/TolPoles)))){
+    if (((Polemax)>=((1/TolPoles)*Polemin))||((Polemin==0.0)&&(Polemax>=(1/TolPoles))))
+    {
       if (Polesinit(0).Y()>=(1/TolPoles)*Polesinit(3).Y()||Polesinit(0).Y()<=TolPoles*Polesinit(3).Y())
-	Standard_DimensionError::Raise("Hermit Impossible Tolerance");       
-      if ((max==0)||(max==3))                                                
-	for (i=0;i<=3;i++)
-	  Polesinit(i).SetCoord(0.0,(Polesinit(i).Y()-TolPoles*Polemax));
-      if ((max==1)||(max==2))
-	if ((min==0)||(min==3))                                             
-	  for (i=0;i<=3;i++)
-	    Polesinit(i).SetCoord(0.0,(Polesinit(i).Y()-(1/TolPoles)*Polemin));
-	else{                                                                  
-	  if ((TolPoles*Polemax<Polesinit(0).Y())&&(TolPoles*Polemax<Polesinit(3).Y())){
-	    for (i=0;i<=3;i++)                                             
-	      Polesinit(i).SetCoord(0.0,(Polesinit(i).Y()-TolPoles*Polemax));
-	    mark=1;
-	  }
-	  if ((1/TolPoles*Polemin>Polesinit(0).Y())&&(1/TolPoles*Polemin>Polesinit(3).Y())&&(mark==0)){
-	    for (i=0;i<=3;i++)                                             
-	      Polesinit(i).SetCoord(0.0,(Polesinit(i).Y()-1/TolPoles*Polemin));
-	    mark=1;
-	  }
-	  if (mark==0){
-	    Standard_Real Pole0,Pole3;
-	    Pole0=Polesinit(0).Y();
-	    Pole3=Polesinit(3).Y();
-	    if (Pole0<3){                         
-	      a=Log10(Pole3/Pole0);                      
-	      if (boucle==2)                      
-		for (i=0;i<=3;i++)                                                    
-		  Polesinit(i).SetCoord(0.0, Polesinit(i).Y()-(Pole3*(Pow(10.0,(-0.5*Log10(TolPoles)-a/2.0))))); 
-	      if (boucle==1){
-		for (i=0;i<=3;i++)                                                    
-		  Polesinit(i).SetCoord(0.0, Polesinit(i).Y()-(Pole0*(Pow(10.0,(a/2.0+0.5*Log10(TolPoles)))))); 
-		dercas=1;
-	      }
-	    }
-	    if (Pole0>Pole3){                         
-	      a=Log10(Pole0/Pole3);                           
-	      if (boucle==2)                      
-		for (i=0;i<=3;i++)                                                    
-		  Polesinit(i).SetCoord(0.0, Polesinit(i).Y()-(Pole0*(Pow(10.0,(-0.5*Log10(TolPoles)-a/2.0))))); 
-	      if (boucle==1){
-		for (i=0;i<=3;i++)                                                    
-		  Polesinit(i).SetCoord(0.0, Polesinit(i).Y()-(Pole3*(Pow(10.0,(a/2.0+0.5*Log10(TolPoles)))))); 
-		dercas=1;
-	      }
-	    }
-	  }
-	}
+        Standard_DimensionError::Raise("Hermit Impossible Tolerance");       
+      if ((max==0)||(max==3))
+      {
+        for (i=0;i<=3;i++)
+          Polesinit(i).SetCoord(0.0,(Polesinit(i).Y()-TolPoles*Polemax));
+      }
+      else if ((max==1)||(max==2))
+      {
+        if ((min==0)||(min==3))
+        {
+          for (i=0;i<=3;i++)
+            Polesinit(i).SetCoord(0.0,(Polesinit(i).Y()-(1/TolPoles)*Polemin));
+        }
+        else
+        {
+          if ((TolPoles*Polemax<Polesinit(0).Y())&&(TolPoles*Polemax<Polesinit(3).Y()))
+          {
+            for (i=0;i<=3;i++)                                             
+              Polesinit(i).SetCoord(0.0,(Polesinit(i).Y()-TolPoles*Polemax));
+            mark=1;
+          }
+
+          if ((1/TolPoles*Polemin>Polesinit(0).Y())&&(1/TolPoles*Polemin>Polesinit(3).Y())&&(mark==0))
+          {
+            for (i=0;i<=3;i++)                                             
+              Polesinit(i).SetCoord(0.0,(Polesinit(i).Y()-1/TolPoles*Polemin));
+            mark=1;
+          }
+          if (mark==0)
+          {
+            Standard_Real Pole0,Pole3;
+            Pole0=Polesinit(0).Y();
+            Pole3=Polesinit(3).Y();
+            if (Pole0<3)
+            {
+              a=Log10(Pole3/Pole0);
+              if (boucle==2)
+              {
+                for (i=0;i<=3;i++)
+                  Polesinit(i).SetCoord(0.0, Polesinit(i).Y()-(Pole3*(Pow(10.0,(-0.5*Log10(TolPoles)-a/2.0)))));
+              }
+              if (boucle==1)
+              {
+                for (i=0;i<=3;i++)
+                  Polesinit(i).SetCoord(0.0, Polesinit(i).Y()-(Pole0*(Pow(10.0,(a/2.0+0.5*Log10(TolPoles)))))); 
+                dercas=1;
+              }
+            }
+            if (Pole0>Pole3)
+            {
+              a=Log10(Pole0/Pole3);                           
+              if (boucle==2)
+              {
+                for (i=0;i<=3;i++)                                                    
+                  Polesinit(i).SetCoord(0.0, Polesinit(i).Y()-(Pole0*(Pow(10.0,(-0.5*Log10(TolPoles)-a/2.0))))); 
+              }
+              else if (boucle==1)
+              {
+                for (i=0;i<=3;i++)                                                    
+                  Polesinit(i).SetCoord(0.0, Polesinit(i).Y()-(Pole3*(Pow(10.0,(a/2.0+0.5*Log10(TolPoles)))))); 
+                dercas=1;
+              }
+            }
+          }
+        }
+      }
     }
-  }                          //end of the loop
+  } // end of the loop
   
-  if (!SignDenom(Polesinit))                       //invertion of the polynome sign
+  if (!SignDenom(Polesinit)) // invertion of the polynome sign
+  {
     for (index=0;index<=3;index++)
       Polesinit(index).SetCoord(0.0,-Polesinit(index).Y());
-  
-                                //boucle de positivite
-  if ((Polesinit(1).Y()<0.0)&&(Polesinit(2).Y()>=0.0)){
+  }
+
+  // boucle de positivite
+  if ((Polesinit(1).Y()<0.0)&&(Polesinit(2).Y()>=0.0))
+  {
     Us1=Polesinit(0).Y()/(Polesinit(0).Y()-Polesinit(1).Y());
     if (boucle==2)
       Us1=Us1*knots(2);
@@ -509,7 +552,8 @@ static void PolyTest(const TColStd_Array1OfReal&        Herm,
       U4=knots(I1);
   }
   
-  if ((Polesinit(1).Y()>=0.0)&&(Polesinit(2).Y()<0.0)){
+  if ((Polesinit(1).Y()>=0.0)&&(Polesinit(2).Y()<0.0))
+  {
     Us2=Polesinit(2).Y()/(Polesinit(2).Y()-Polesinit(3).Y());
     if (boucle==2)
       Us2=knots(knots.Length()-1)+Us2*(1-knots(knots.Length()-1));

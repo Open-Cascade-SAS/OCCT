@@ -1339,12 +1339,13 @@ Handle(Transfer_Binder) STEPControl_ActorWrite::TransferCompound (const Handle(T
     while ( !bnd.IsNull() ) {
       Handle(Transfer_SimpleBinderOfTransient) bx = 
         Handle(Transfer_SimpleBinderOfTransient)::DownCast(bnd);
-      if ( !bx.IsNull() )
+      if ( !bx.IsNull() ) {
         // Single SDR is created for a non-manifold group (ssv: 12.11.2010)
         if (!isManifold && i > 1)
           break;
         else
           binder->AddResult( TransientResult( bx->Result() ) );
+      }
       bnd = bnd->NextResult();
     }
   }

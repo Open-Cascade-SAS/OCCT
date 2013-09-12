@@ -182,7 +182,7 @@ void SelectMgr_SelectableObject::ResetLocation()
     for(Sel->Init();Sel->More();Sel->Next()){
       SE =  *((Handle(Select3D_SensitiveEntity)*) &(Sel->Sensitive()));
       if(!SE.IsNull()){
-        if(SE->HasLocation())
+        if(SE->HasLocation()) {
           if( SE->Location()==myLocation){
             SE->ResetLocation();
             const Handle(SelectBasics_EntityOwner)& EO = SE->OwnerId();
@@ -192,7 +192,7 @@ void SelectMgr_SelectableObject::ResetLocation()
             SE->SetLocation(iniloc*myLocation.Inverted());
             const Handle(SelectBasics_EntityOwner)& EO = SE->OwnerId();
             (*((Handle(SelectMgr_EntityOwner)*)&EO))->SetLocation(SE->Location());}
-        
+        }
       }
     }
     Sel->UpdateStatus(SelectMgr_TOU_None);

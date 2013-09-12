@@ -209,7 +209,7 @@ void NCollection_BaseSequence::PInsertAfter (const Standard_Integer theIndex,
 {
   if (theIndex < 0 || theIndex > mySize)
     Standard_OutOfRange::Raise();
-  if (Other.mySize != 0)
+  if (Other.mySize != 0) {
     if (theIndex == 0) 
       PPrepend (Other);
     else {
@@ -226,6 +226,7 @@ void NCollection_BaseSequence::PInsertAfter (const Standard_Integer theIndex,
         myCurrentIndex += Other.mySize;
       Other.Nullify();
     }
+  }
 }
 
 //=======================================================================

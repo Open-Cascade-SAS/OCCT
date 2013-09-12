@@ -147,12 +147,13 @@ Handle(TColStd_HSequenceOfReal) ShapeAnalysis_TransferParametersProj::Perform
   }
   
   //pdn correcting on periodic
-  if(myCurve->IsClosed())
+  if(myCurve->IsClosed()) {
     for(j = len; j >=1; j--) 
-      if(resKnots->Value(j) < maxPar)
-	resKnots->SetValue(j,(To2d ? myAC3d.LastParameter() : myCurve->LastParameter())-(len-j)*preci);
+      if(resKnots->Value(j) < maxPar) 
+        resKnots->SetValue(j,(To2d ? myAC3d.LastParameter() : myCurve->LastParameter())-(len-j)*preci);
       else
-	break;
+        break;
+  }
   //pdn correction on range
   for ( j=1; j <= len; j++ ) {
     if ( resKnots->Value (j) < first ) resKnots->SetValue ( j, first );

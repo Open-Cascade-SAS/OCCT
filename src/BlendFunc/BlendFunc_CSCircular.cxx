@@ -46,7 +46,7 @@ BlendFunc_CSCircular::BlendFunc_CSCircular(const Handle(Adaptor3d_HSurface)& S,
                                            const Handle(Adaptor3d_HCurve)& C,
                                            const Handle(Adaptor3d_HCurve)& CGuide,
                                            const Handle(Law_Function)& L) :
-       surf(S),curv(C),guide(CGuide),istangent(Standard_True),law(L),
+       surf(S),curv(C),guide(CGuide),law(L),istangent(Standard_True),
        //prmc, dprmc, istangent, ray, choix, normtg,
        maxang(RealFirst()),minang(RealLast()),mySShape(BlendFunc_Rational)
        //myTConv

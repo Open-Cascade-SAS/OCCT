@@ -2033,107 +2033,126 @@ Discretise(const Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
     if (Affich > 1) {
       cout << "Courbe : " << i << endl;
       cout << "  NbPnt, NbPtInter, NbPtG1G1 :" << NbPnt_i << ", " 
-	<< NbPtInter << ", " << NbPtG1G1 << endl;
+           << NbPtInter << ", " << NbPtG1G1 << endl;
     }
 #endif
     for (Standard_Integer j=1; j<=NbPnt_i; j++)  
-      { // repartition des points en cosinus selon l'ACR 2d
-        // Afin d'eviter les points d'acumulation dans le 2d
-	//Inter=Uinit+(Uif)*((-cos(M_PI*((j-1)/(NbPnt_i-1)))+1)/2);
-	if (j==NbPnt_i)
-	  Inter=Ufinal;//pour parer au bug sur sun
-	else if (ACR) {
-          CurLength = Length2d*(1-Cos((j-1)*M_PI/(NbPnt_i-1)))/2;
-	  Inter =  acrlaw->Value(CurLength);
-	}
-	else {
-	  Inter=Uinit+(Ufinal-Uinit)*((1-Cos((j-1)*M_PI/(NbPnt_i-1)))/2);
-	}
-	myParCont->ChangeValue(i).Append(Inter);// on ajoute le point
-	if (NbPtInter!=0) 
-	  { for(Standard_Integer l=1;l<=NbPtInter;l+=2) 
-	      //on cherche si le point Inter est dans l'intervalle 
-	      //PntInter[i] PntInter[i+1]
-	      //auquelle cas il ne faudrait pas le stocker (pb de doublons) 
-	      { if ((Inter>PntInter->Value(i).Value(l))
-		    &&(Inter<PntInter->Value(i).Value(l+1)))
-		  { l=NbPtInter+2; 
-		    // pour sortir de la boucle sans stocker le point	 
-		  }
-	      else
-		{ if (l+1>=NbPtInter) 
-		    // on a parcouru tout le tableau : Le point 
-		    // n'appartient pas a un interval point commun 
-		    if (NbPtG1G1!=0) 
-		      // est qu'il existe un intervalle incompatible
-		      for(Standard_Integer k=1;k<=NbPtG1G1;k+=2)
-			{ if ((Inter>PntG1G1->Value(i).Value(k))
-			      &&(Inter<PntG1G1->Value(i).Value(k+1)))
-			    { k=NbPtG1G1+2; // pour sortir de la boucle
-			      // Ajouter les points de contrainte G0
-			      gp_Pnt P3d,PP,Pdif;
-			      gp_Pnt2d P2d;
-			      
-			      AC2d.D0(Inter, P2d);
-			      LinCont->D0(Inter,P3d);
-			      mySurfInit->D0(P2d.Coord(1),P2d.Coord(2),PP);
-			      Pdif.SetCoord(-PP.Coord(1)+P3d.Coord(1),
-					    -PP.Coord(2)+P3d.Coord(2),
-					    -PP.Coord(3)+P3d.Coord(3));
-			      Plate_PinpointConstraint PC(P2d.XY(),
-							  Pdif.XYZ(),0,0);
-			      myPlate.Load(PC);
-
-			    }
-			else // le point n'appartient pas a un interval G1
-			  { if (k+1>=NbPtG1G1) 
-			      { myPlateCont->ChangeValue(i).Append(Inter);
-				// on ajoute le point
-			      }
-			  }
-			}
-		    else
-		      { myPlateCont->ChangeValue(i).Append(Inter);
-			// on ajoute le point
-		      }
-		}
-	      }
-	  }
-	else
-	  { if (NbPtG1G1!=0) // est qu'il existe un intervalle incompatible
-	      for(Standard_Integer k=1;k<=NbPtG1G1;k+=2)
-		{ if ((Inter>PntG1G1->Value(i).Value(k))
-		      &&(Inter<PntG1G1->Value(i).Value(k+1)))
-		    { k=NbPtG1G1+2; // pour sortir de la boucle
-		      // Ajouter les points de contrainte G0
-		      gp_Pnt P3d,PP,Pdif;
-		      gp_Pnt2d P2d;
-		      
-		      AC2d.D0(Inter, P2d);
-		      LinCont->D0(Inter,P3d);
-		      mySurfInit->D0(P2d.Coord(1),P2d.Coord(2),PP);
-		      Pdif.SetCoord(-PP.Coord(1)+P3d.Coord(1),
-				    -PP.Coord(2)+P3d.Coord(2),
-				    -PP.Coord(3)+P3d.Coord(3));
-		      Plate_PinpointConstraint PC(P2d.XY(),Pdif.XYZ(),0,0);
-		      myPlate.Load(PC);
-
-		    }
-		else // le point n'appartient pas a un intervalle G1
-		  { if (k+1>=NbPtG1G1) 
-		      { myPlateCont->ChangeValue(i).Append(Inter);
-			// on ajoute le point
-		      }
-		  }
-		}
-	  else
-	    { if (  ( (!mySurfInitIsGive)
-                     &&(Geom2dAdaptor_Curve(LinCont->Curve2dOnSurf()).GetType()!=GeomAbs_Circle))
-		  || ( (j>1) &&(j<NbPnt_i))) //on enleve les extremites
-		myPlateCont->ChangeValue(i).Append(Inter);// on ajoute le point
-	    }
-	  }
+    { 
+      // repartition des points en cosinus selon l'ACR 2d
+      // Afin d'eviter les points d'acumulation dans le 2d
+      //Inter=Uinit+(Uif)*((-cos(M_PI*((j-1)/(NbPnt_i-1)))+1)/2);
+      if (j==NbPnt_i)
+        Inter=Ufinal;//pour parer au bug sur sun
+      else if (ACR) {
+        CurLength = Length2d*(1-Cos((j-1)*M_PI/(NbPnt_i-1)))/2;
+        Inter =  acrlaw->Value(CurLength);
       }
+      else {
+        Inter=Uinit+(Ufinal-Uinit)*((1-Cos((j-1)*M_PI/(NbPnt_i-1)))/2);
+      }
+      myParCont->ChangeValue(i).Append(Inter);// on ajoute le point
+      if (NbPtInter!=0) 
+      { 
+        for(Standard_Integer l=1;l<=NbPtInter;l+=2) 
+        {
+          //on cherche si le point Inter est dans l'intervalle 
+          //PntInter[i] PntInter[i+1]
+          //auquelle cas il ne faudrait pas le stocker (pb de doublons) 
+          if ((Inter>PntInter->Value(i).Value(l))
+            &&(Inter<PntInter->Value(i).Value(l+1)))
+          { 
+            l=NbPtInter+2; 
+            // pour sortir de la boucle sans stocker le point	 
+          }
+          else
+          {
+            if (l+1>=NbPtInter) {
+              // on a parcouru tout le tableau : Le point 
+              // n'appartient pas a un interval point commun 
+              if (NbPtG1G1!=0) 
+              {
+                // est qu'il existe un intervalle incompatible
+                for(Standard_Integer k=1;k<=NbPtG1G1;k+=2)
+                { 
+                  if ((Inter>PntG1G1->Value(i).Value(k))
+                    &&(Inter<PntG1G1->Value(i).Value(k+1)))
+                  { 
+                    k=NbPtG1G1+2; // pour sortir de la boucle
+                    // Ajouter les points de contrainte G0
+                    gp_Pnt P3d,PP,Pdif;
+                    gp_Pnt2d P2d;
+                        
+                    AC2d.D0(Inter, P2d);
+                    LinCont->D0(Inter,P3d);
+                    mySurfInit->D0(P2d.Coord(1),P2d.Coord(2),PP);
+                    Pdif.SetCoord(-PP.Coord(1)+P3d.Coord(1),
+                                  -PP.Coord(2)+P3d.Coord(2),
+                                  -PP.Coord(3)+P3d.Coord(3));
+                    Plate_PinpointConstraint PC(P2d.XY(),Pdif.XYZ(),0,0);
+                    myPlate.Load(PC);
+                  }
+                  else // le point n'appartient pas a un interval G1
+                  {
+                    if (k+1>=NbPtG1G1) 
+                    {
+                      myPlateCont->ChangeValue(i).Append(Inter);
+                      // on ajoute le point
+                    }
+                  }
+                }
+              }
+              else
+              {
+                myPlateCont->ChangeValue(i).Append(Inter);
+                // on ajoute le point
+              }
+            }
+          }
+        }
+      }
+      else
+      {
+        if (NbPtG1G1!=0) // est qu'il existe un intervalle incompatible
+        {
+          for(Standard_Integer k=1;k<=NbPtG1G1;k+=2)
+          {
+            if ((Inter>PntG1G1->Value(i).Value(k))
+              &&(Inter<PntG1G1->Value(i).Value(k+1)))
+            {
+              k=NbPtG1G1+2; // pour sortir de la boucle
+              // Ajouter les points de contrainte G0
+              gp_Pnt P3d,PP,Pdif;
+              gp_Pnt2d P2d;
+              
+              AC2d.D0(Inter, P2d);
+              LinCont->D0(Inter,P3d);
+              mySurfInit->D0(P2d.Coord(1),P2d.Coord(2),PP);
+              Pdif.SetCoord(-PP.Coord(1)+P3d.Coord(1),
+                -PP.Coord(2)+P3d.Coord(2),
+                -PP.Coord(3)+P3d.Coord(3));
+              Plate_PinpointConstraint PC(P2d.XY(),Pdif.XYZ(),0,0);
+              myPlate.Load(PC);
+
+            }
+            else // le point n'appartient pas a un intervalle G1
+            {
+              if (k+1>=NbPtG1G1) 
+              {
+                myPlateCont->ChangeValue(i).Append(Inter);
+                // on ajoute le point
+              }
+            }
+          }
+        }
+        else
+        {
+          if (  ( (!mySurfInitIsGive)
+                  &&(Geom2dAdaptor_Curve(LinCont->Curve2dOnSurf()).GetType()!=GeomAbs_Circle))
+             || ( (j>1) &&(j<NbPnt_i))) //on enleve les extremites
+            myPlateCont->ChangeValue(i).Append(Inter);// on ajoute le point
+        }
+      }
+    }
   } 
 }
 //---------------------------------------------------------

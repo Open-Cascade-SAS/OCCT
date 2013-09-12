@@ -77,10 +77,10 @@ public:
 private:
 
   Standard_Integer          myEdge1;
-  Standard_Boolean          myOrientation1;
   Standard_Integer          myEdge2;
-  Standard_Boolean          myOrientation2;
   Standard_Integer          myEdge3;
+  Standard_Boolean          myOrientation1;
+  Standard_Boolean          myOrientation2;
   Standard_Boolean          myOrientation3;
   BRepMesh_DegreeOfFreedom  myMovability;
 };

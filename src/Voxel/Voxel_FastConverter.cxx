@@ -51,7 +51,7 @@ Voxel_FastConverter::Voxel_FastConverter(const TopoDS_Shape&    shape,
 :myShape(shape),myVoxels(&voxels),
  myDeflection(deflection),
  myNbX(nbx),myNbY(nby),myNbZ(nbz),
- myNbThreads(nbthreads),myIsBool(2),
+ myIsBool(2),myNbThreads(nbthreads),
  myNbTriangles(0),
  myUseExistingTriangulation(useExistingTriangulation)
 {
@@ -69,7 +69,7 @@ Voxel_FastConverter::Voxel_FastConverter(const TopoDS_Shape&    shape,
 :myShape(shape),myVoxels(&voxels),
  myDeflection(deflection),
  myNbX(nbx),myNbY(nby),myNbZ(nbz),
- myNbThreads(nbthreads),myIsBool(1),
+ myIsBool(1),myNbThreads(nbthreads),
  myNbTriangles(0),
  myUseExistingTriangulation(useExistingTriangulation)
 {
@@ -87,7 +87,7 @@ Voxel_FastConverter::Voxel_FastConverter(const TopoDS_Shape&    shape,
 :myShape(shape),myVoxels(&voxels),
  myDeflection(deflection),
  myNbX(nbx),myNbY(nby),myNbZ(nbz),
- myNbThreads(nbthreads),myIsBool(0),
+ myIsBool(0),myNbThreads(nbthreads),
  myNbTriangles(0),
  myUseExistingTriangulation(useExistingTriangulation)
 {
