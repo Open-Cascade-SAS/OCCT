@@ -400,8 +400,8 @@ static
 //function : BuildPCurveForEdgeOnPlane
 //purpose  : 
 //=======================================================================
-  void BOPTools_AlgoTools2D::BuildPCurveForEdgeOnPlane (const TopoDS_Edge& aE,
-                                                    const TopoDS_Face& aF)
+void BOPTools_AlgoTools2D::BuildPCurveForEdgeOnPlane (const TopoDS_Edge& aE,
+						      const TopoDS_Face& aF)
 { 
   Standard_Real aTolE;
   TopLoc_Location aLoc;
@@ -428,14 +428,57 @@ static
   //
   return;
 }
+//=======================================================================
+// function: BuildPCurveForEdgesOnPlane
+// purpose: 
+//=======================================================================
+void BOPTools_AlgoTools2D::BuildPCurveForEdgesOnPlane 
+  (const BOPCol_ListOfShape& aEdges,
+   const TopoDS_Face& aFace)
+{
+  
+  TopLoc_Location aLoc;
+  Handle(Geom2d_Curve) aC2D;
+  Handle(Geom_Plane) aGP;
+  Handle(Geom_RectangularTrimmedSurface) aGRTS;
+  //
+  const Handle(Geom_Surface)& aS = BRep_Tool::Surface(aFace, aLoc);
+  aGRTS=Handle(Geom_RectangularTrimmedSurface)::DownCast(aS);
+  if(!aGRTS.IsNull()){
+    aGP=Handle(Geom_Plane)::DownCast(aGRTS->BasisSurface());
+    }    
+  else {
+    aGP=Handle(Geom_Plane)::DownCast(aS);
+  }
+  //
+  if (aGP.IsNull()) {
+    return;
+  }
+  //
+  Standard_Boolean bHasOld;
+  Standard_Real aTolE, aT1, aT2;
+  BOPCol_ListIteratorOfListOfShape aIt;
+  BRep_Builder aBB;
+  //
+  aIt.Initialize(aEdges);
+  for(; aIt.More(); aIt.Next()) {
+    const TopoDS_Edge& aE=(*(TopoDS_Edge *)&aIt.Value());
+    bHasOld=BOPTools_AlgoTools2D::HasCurveOnSurface
+      (aE, aFace, aC2D, aT1, aT2, aTolE);
+    if (!bHasOld) {
+      BOPTools_AlgoTools2D::CurveOnSurface(aE, aFace, aC2D, aTolE);
+      aBB.UpdateEdge(aE, aC2D, aFace, aTolE);
+    }
+  }
+}
 
 //=======================================================================
 //function : Make2D
 //purpose  : 
 //=======================================================================
-  void BOPTools_AlgoTools2D::Make2D (const TopoDS_Edge& aE,
-                                 const TopoDS_Face& aF,
-                                 Handle(Geom2d_Curve)& aC2D,
+void BOPTools_AlgoTools2D::Make2D (const TopoDS_Edge& aE,
+				   const TopoDS_Face& aF,
+				   Handle(Geom2d_Curve)& aC2D,
                                  Standard_Real& aFirst,
                                  Standard_Real& aLast,
                                  Standard_Real& aToler)

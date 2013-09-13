@@ -32,8 +32,9 @@ uses
      
     Curve from Geom2d,
     Curve from Geom, 
-    ProjectedCurve from ProjLib
-
+    ProjectedCurve from ProjLib,
+    ListOfShape from BOPCol 
+    
 is   
 
     BuildPCurveForEdgeOnFace  (myclass; 
@@ -144,6 +145,10 @@ is
           ---
     BuildPCurveForEdgeOnPlane(myclass; 
               theE : Edge from TopoDS; 
+              theF : Face from TopoDS); 
+	      
+    BuildPCurveForEdgesOnPlane(myclass; 
+              theLE : ListOfShape from BOPCol; 
               theF : Face from TopoDS);
  
     Make2D  (myclass;  

@@ -54,12 +54,14 @@
 
 #include <BOPTools.hxx>
 #include <BOPTools_AlgoTools.hxx>
+#include <BOPTools_AlgoTools2D.hxx>
 #include <BOPTools_AlgoTools3D.hxx>
 #include <BOPAlgo_BuilderFace.hxx>
 #include <BOPTools_CoupleOfShape.hxx>
 #include <BOPTools_ListOfCoupleOfShape.hxx>
 #include <BOPTools_MapOfSet.hxx>
 #include <BOPTools_DataMapOfShapeSet.hxx>
+#include <BOPAlgo_Builder_2Cnt.hxx>
 
 static
   Standard_Boolean HasPaveBlocksOnIn(const BOPDS_FaceInfo& aFI1,
@@ -74,11 +76,12 @@ static
                      BOPCol_DataMapOfIntegerListOfShape& aMBlocks,
                      Handle(NCollection_IncAllocator)& aAllocator);
 
+
 //=======================================================================
 //function : FillImagesFaces
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_Builder::FillImagesFaces()
+void BOPAlgo_Builder::FillImagesFaces()
 {
   myErrorStatus=0;
   //
@@ -90,10 +93,12 @@ static
 //function : BuildSplitFaces
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_Builder::BuildSplitFaces()
+void BOPAlgo_Builder::BuildSplitFaces()
 {
   Standard_Boolean bHasFaceInfo, bIsClosed, bIsDegenerated, bToReverse;
   Standard_Integer i, j, aNbS, aNbPBIn, aNbPBOn, aNbPBSc, aNbAV, nSp;
+  Standard_Boolean bRunParallel;
+  Standard_Size aNbBF, k;
   TopoDS_Face aFF, aFSD;
   TopoDS_Edge aSp, aEE;
   TopAbs_Orientation anOriF, anOriE;
@@ -101,9 +106,10 @@ static
   BOPCol_ListIteratorOfListOfShape aIt;
   BOPCol_ListOfInteger aLIAV;
   BOPCol_MapOfShape aMFence;
-  Handle(NCollection_IncAllocator) aAllocator;
+  Handle(NCollection_BaseAllocator) aAllocator;
   BOPCol_ListOfShape aLFIm(myAllocator);
   BOPCol_MapIteratorOfMapOfShape aItMS;
+  BOPAlgo_VectorOfBuilderFace aVBF;
   //
   myErrorStatus=0;
   //
@@ -114,6 +120,7 @@ static
   BOPCol_MapOfShape aMDE(100, aAllocator);
   //
   aNbS=myDS->NbSourceShapes();
+  //
   for (i=0; i<aNbS; ++i) {
     const BOPDS_ShapeInfo& aSI=myDS->ShapeInfo(i);
     if (aSI.ShapeType()!=TopAbs_FACE) {
@@ -126,9 +133,6 @@ static
     if(!bHasFaceInfo) {
       continue;
     }
-    //
-    // aLFIm will contain images of aF
-    aLFIm.Clear();
     //
     const BOPDS_FaceInfo& aFI=myDS->FaceInfo(i);
     //
@@ -247,17 +251,29 @@ static
       aLE.Append(aSp);
     }
     //
+    BOPTools_AlgoTools2D::BuildPCurveForEdgesOnPlane (aLE, aFF);
+    //
     // 3 Build split faces
-    BOPAlgo_BuilderFace aBF(aAllocator);
-    //
-    aBF.SetFace(aFF);
-    //aBF.SetContext(myContext);
-    //
-    // <-DEB ft
-    //
+    BOPAlgo_BuilderFace& aBF=aVBF.Append1();
+    aBF.SetFace(aF);
     aBF.SetShapes(aLE);
     //
-    aBF.Perform();
+  }// for (i=0; i<aNbS; ++i) {
+  //
+  aNbBF=aVBF.Extent();
+  //
+  //===================================================
+  bRunParallel=Standard_True;
+  BOPAlgo_BuilderFaceCnt::Perform(bRunParallel, aVBF);
+  //===================================================
+  //
+  for (k=0; k<aNbBF; ++k) {
+    aLFIm.Clear();
+    //
+    BOPAlgo_BuilderFace& aBF=aVBF(k);
+    TopoDS_Face aF=aBF.Face();
+    anOriF=aBF.Orientation();
+    aF.Orientation(anOriF);
     //
     const BOPCol_ListOfShape& aLFR=aBF.Areas();
     aIt.Initialize(aLFR);
@@ -271,7 +287,7 @@ static
     }
     //
     mySplits.Bind(aF, aLFIm); 
-  }// for (i=0; i<aNbS; ++i) {
+  }// for (k=0; k<aNbBF; ++k) {
   //
   aAllocator.Nullify();
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~scope t
@@ -280,7 +296,7 @@ static
 //function : FillSameDomainFaces
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_Builder::FillSameDomainFaces()
+void BOPAlgo_Builder::FillSameDomainFaces()
 {
   Standard_Boolean bFlag;
   Standard_Integer i, aNbFFs, aNbCurves, aNbPoints, nF1, nF2, aNbS;
@@ -450,7 +466,7 @@ static
 // function: FillImagesFaces1
 // purpose: 
 //=======================================================================
-  void BOPAlgo_Builder::FillImagesFaces1()
+void BOPAlgo_Builder::FillImagesFaces1()
 {
   Standard_Integer i, aNbS, iSense;
   TopoDS_Face aFSD;
@@ -508,8 +524,8 @@ static
 // function: FillInternalVertices
 // purpose: 
 //=======================================================================
-  void BOPAlgo_Builder::FillInternalVertices(BOPCol_ListOfShape& aLFIm,
-                                             BOPCol_ListOfInteger& aLIAV)
+void BOPAlgo_Builder::FillInternalVertices(BOPCol_ListOfShape& aLFIm,
+					   BOPCol_ListOfInteger& aLIAV)
 {
   Standard_Integer nV, iFlag;
   Standard_Real aU1, aU2;
@@ -681,7 +697,6 @@ Standard_Boolean HasPaveBlocksOnIn(const BOPDS_FaceInfo& aFI1,
   }
   return bRet;
 }
-
 /*
 //DEBf
     {

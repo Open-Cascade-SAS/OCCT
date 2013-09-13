@@ -26,7 +26,8 @@ class BuilderFace from BOPAlgo
 	 
 	---Purpose: The algorithm to build faces from set of edges  
 
-uses   
+uses    
+    Orientation from TopAbs,
     Face from TopoDS,
     BaseAllocator from BOPCol 
 --raises
@@ -76,9 +77,13 @@ is
      
     CheckData(me:out) 
 	is redefined protected;   
-
+     
+    Orientation(me) 
+    	returns Orientation from TopAbs; 
+ 
 fields  
     myFace : Face from TopoDS is protected;     
-     
+    myOrientation: Orientation from TopAbs is protected;   	      
+ 
 end BuilderFace; 
 

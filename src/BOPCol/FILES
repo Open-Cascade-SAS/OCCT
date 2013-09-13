@@ -29,3 +29,6 @@ BOPCol_SequenceOfReal.hxx
 BOPCol_DataMapOfIntegerShape.hxx
 BOPCol_IndexedDataMapOfIntegerListOfInteger.hxx
 BOPCol_IndexedDataMapOfShapeInteger.hxx
+
+BOPCol_TBB.hxx
+BOPCol_NCVector.hxx

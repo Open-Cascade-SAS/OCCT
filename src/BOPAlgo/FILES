@@ -13,3 +13,5 @@ BOPAlgo_Builder_4.cxx
 BOPAlgo_BOP_1.cxx
 BOPAlgo_WireSplitter_1.cxx
 BOPAlgo_ListOfCheckResult.hxx
+
+BOPAlgo_Builder_2Cnt.hxx

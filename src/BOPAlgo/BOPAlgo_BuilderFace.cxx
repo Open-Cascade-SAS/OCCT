@@ -83,6 +83,7 @@ static
 :
   BOPAlgo_BuilderArea()
 {
+  myOrientation=TopAbs_EXTERNAL;
 }
 //=======================================================================
 //function : 
@@ -91,7 +92,8 @@ static
   BOPAlgo_BuilderFace::BOPAlgo_BuilderFace(const Handle(NCollection_BaseAllocator)& theAllocator)
 :
   BOPAlgo_BuilderArea(theAllocator)
-{
+{ 
+  myOrientation=TopAbs_EXTERNAL;
 }
 //=======================================================================
 //function : ~
@@ -106,7 +108,17 @@ static
 //=======================================================================
   void BOPAlgo_BuilderFace::SetFace(const TopoDS_Face& theFace)
 {
+  myOrientation=theFace.Orientation();
   myFace=theFace;
+  myFace.Orientation(TopAbs_FORWARD);
+}
+//=======================================================================
+//function : Orientation
+//purpose  : 
+//=======================================================================
+TopAbs_Orientation BOPAlgo_BuilderFace::Orientation()const
+{
+  return myOrientation;
 }
 //=======================================================================
 //function : Face

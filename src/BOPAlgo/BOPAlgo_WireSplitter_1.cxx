@@ -48,6 +48,7 @@
 #include <BOPCol_SequenceOfReal.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
+#include <BOPTools_AlgoTools2D.hxx>
 //
 
 static
@@ -111,9 +112,7 @@ static
   Standard_Real Tolerance2D (const TopoDS_Vertex& aV,
                              const GeomAdaptor_Surface& aGAS);
 
-static
-  void BuildPCurveForPlane (const BOPCol_ListOfShape myEdges,
-                            const TopoDS_Face& myFace);
+
 
 static
   Standard_Real UTolerance2D (const TopoDS_Vertex& aV,
@@ -154,7 +153,8 @@ static
   const BOPCol_ListOfShape& myEdges=aCB.Shapes();
   //
   // 1.Filling mySmartMap
-  BuildPCurveForPlane(myEdges, myFace);
+  BOPTools_AlgoTools2D::BuildPCurveForEdgesOnPlane(myEdges, myFace);
+  //
   aIt.Initialize(myEdges);
   for(; aIt.More(); aIt.Next()) {
     const TopoDS_Edge& aE=(*(TopoDS_Edge *)&aIt.Value());
@@ -817,42 +817,7 @@ Standard_Real Angle (const gp_Dir2d& aDir2D)
   //
   return aTol2D;
 }
-//=======================================================================
-// function: BuildPCurvesForPlane
-// purpose: 
-//=======================================================================
-  void BuildPCurveForPlane (const BOPCol_ListOfShape myEdges,
-                            const TopoDS_Face& myFace)
-{
-  TopLoc_Location aLoc;
-  Handle(Geom2d_Curve) aC2D;
-  Handle(Geom_Plane) aGP;
-  Handle(Geom_RectangularTrimmedSurface) aGRTS;
-  //
-  const Handle(Geom_Surface)& aS = BRep_Tool::Surface(myFace, aLoc);
-  aGRTS=Handle(Geom_RectangularTrimmedSurface)::DownCast(aS);
-  if(!aGRTS.IsNull()){
-    aGP=Handle(Geom_Plane)::DownCast(aGRTS->BasisSurface());
-    }    
-  else {
-    aGP=Handle(Geom_Plane)::DownCast(aS);
-  }
-  //
-  if (aGP.IsNull()) {
-    return;
-  }
-  //
-  Standard_Real aTolE;
-  BOPCol_ListIteratorOfListOfShape aIt;
-  BRep_Builder aBB;
-  //
-  aIt.Initialize(myEdges);
-  for(; aIt.More(); aIt.Next()) {
-    const TopoDS_Edge& aE=(*(TopoDS_Edge *)&aIt.Value());
-    BOPTools_AlgoTools2D::CurveOnSurface(aE, myFace, aC2D, aTolE);
-    aBB.UpdateEdge(aE, aC2D, myFace, aTolE);
-  }
-}
+
 //=======================================================================
 //function : UTolerance2D
 //purpose  : 
