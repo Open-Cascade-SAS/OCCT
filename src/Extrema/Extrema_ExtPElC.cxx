@@ -25,12 +25,16 @@
 #include <Standard_NotImplemented.hxx>
 #include <Precision.hxx>
 
-
-//=============================================================================
-
+//=======================================================================
+//function : Extrema_ExtPElC
+//purpose  : 
+//=======================================================================
 Extrema_ExtPElC::Extrema_ExtPElC () { myDone = Standard_False; }
-//=============================================================================
 
+//=======================================================================
+//function : Extrema_ExtPElC
+//purpose  : 
+//=======================================================================
 Extrema_ExtPElC::Extrema_ExtPElC (const gp_Pnt&       P, 
 				  const gp_Lin&       L,
 				  const Standard_Real Tol,
@@ -39,7 +43,10 @@ Extrema_ExtPElC::Extrema_ExtPElC (const gp_Pnt&       P,
 {
   Perform(P, L, Tol, Uinf, Usup);
 }
-
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
 void Extrema_ExtPElC::Perform(const gp_Pnt&       P, 
 			      const gp_Lin&       L,
 			      const Standard_Real Tol,
@@ -48,7 +55,7 @@ void Extrema_ExtPElC::Perform(const gp_Pnt&       P,
 {
   myDone = Standard_False;
   myNbExt = 0;
-  gp_Vec V1 = gp_Vec(L.Direction());
+  gp_Vec V1 (L.Direction());
   gp_Pnt OR = L.Location();
   gp_Vec V(OR, P);
   Standard_Real Mydist = V1.Dot(V);
@@ -124,7 +131,6 @@ Method:
   Usol[1] = Usol[0] + M_PI;
 
   Standard_Real myuinf = Uinf;
-  //modified by NIZNHY-PKV Fri Apr 20 15:03:28 2001 f
   //Standard_Real TolU = Tol*C.Radius();
   Standard_Real TolU, aR;
   aR=C.Radius();
@@ -132,7 +138,7 @@ Method:
   if (aR > gp::Resolution()) {
     TolU= Tol/aR;
   }
-  //modified by NIZNHY-PKV Fri Apr 20 15:03:32 2001 t
+  //
   ElCLib::AdjustPeriodic(Uinf, Uinf+2*M_PI, TolU, myuinf, Usol[0]);
   ElCLib::AdjustPeriodic(Uinf, Uinf+2*M_PI, TolU, myuinf, Usol[1]);
   if (((Usol[0]-2*M_PI-Uinf) < TolU) && ((Usol[0]-2*M_PI-Uinf) > -TolU)) Usol[0] = Uinf;
