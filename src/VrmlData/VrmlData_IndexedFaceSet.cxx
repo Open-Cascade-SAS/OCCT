@@ -173,24 +173,25 @@ const Handle(TopoDS_TShape)& VrmlData_IndexedFaceSet::TShape ()
             Normals->SetValue (anIdx + 1, Standard_ShortReal (aNormal.Y ()));
             Normals->SetValue (anIdx + 2, Standard_ShortReal (aNormal.Z ()));
           }
-        } else {
-          nTri = 0;
-          for (i = 0; i < (int)myNbPolygons; i++) {
-            const Standard_Integer * arrIndice;
-            if (Polygon(i, arrIndice) == 3)
-              if (arrIndice[0] >= 0)  // check to avoid previously skipped faces
-                if (IndiceNormals(i, arrIndice) == 3) {
-                  Standard_Integer anInd = (++nTri - 1) * 3 + 1;
-                  for (Standard_Integer j = 0; j < 3; j++) {
-                    const gp_XYZ& aNormal = myNormals->Normal (arrIndice[j]);
-                    Normals->SetValue (anInd + 0 + j*3,
-                                       Standard_ShortReal (aNormal.X ()));
-                    Normals->SetValue (anInd + 1 + j*3,
-                                       Standard_ShortReal (aNormal.Y ()));
-                    Normals->SetValue (anInd + 2 + j*3,
-                                       Standard_ShortReal (aNormal.Z ()));
-                  }
+        }
+        else
+        {
+          for (i = 0; i < (int)myNbPolygons; i++) 
+          {
+            const Standard_Integer * arrNodes;
+            if (Polygon(i, arrNodes) == 3 && arrNodes[0] >= 0)  // check to avoid previously skipped faces
+            {
+              const Standard_Integer * arrIndice;
+              if (IndiceNormals(i, arrIndice) == 3) {
+                for (Standard_Integer j = 0; j < 3; j++) {
+                  const gp_XYZ& aNormal = myNormals->Normal (arrIndice[j]);
+                  Standard_Integer anInd = arrNodes[j] * 3 + 1;
+                  Normals->SetValue (anInd + 0, Standard_ShortReal (aNormal.X()));
+                  Normals->SetValue (anInd + 1, Standard_ShortReal (aNormal.Y()));
+                  Normals->SetValue (anInd + 2, Standard_ShortReal (aNormal.Z()));
                 }
+              }
+            }
           }
         }
       } else {
