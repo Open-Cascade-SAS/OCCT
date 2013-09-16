@@ -424,8 +424,8 @@ void Poly_MakeLoops::markHangChain(Standard_Integer theNode, Standard_Integer th
       Standard_Integer aInd = myMapLink.FindIndex(aL);
       if (aInd == 0 || aInd == aIndex)
         continue;
-      if (isOut && aNode1 == aL.node1 ||
-          !isOut && aNode1 == aL.node2)
+      if ((isOut && aNode1 == aL.node1) ||
+          (!isOut && aNode1 == aL.node2))
         aInd = -aInd;
       if (canLinkBeTaken(aInd))
         nEdges++;
@@ -451,8 +451,8 @@ void Poly_MakeLoops::markHangChain(Standard_Integer theNode, Standard_Integer th
       Standard_Integer aInd = myMapLink.FindIndex(aL);
       if (aInd == 0 || aInd == aIndex)
         continue;
-      if (isOut && aNode1 == aL.node2 ||
-          !isOut && aNode1 == aL.node1)
+      if ((isOut && aNode1 == aL.node2) ||
+          (!isOut && aNode1 == aL.node1))
         aInd = -aInd;
       if (canLinkBeTaken(aInd))
       {

@@ -536,8 +536,8 @@ void BRepOffsetAPI_MiddlePath::Build()
       {
         anEdge = TopoDS::Edge(itl.Value());
         TopExp::Vertices(anEdge, V1, V2);
-        if ((V1.IsSame(PrevVertex) && V2.IsSame(CurVertex) ||
-             V1.IsSame(CurVertex) && V2.IsSame(PrevVertex)) &&
+        if (((V1.IsSame(PrevVertex) && V2.IsSame(CurVertex)) ||
+             (V1.IsSame(CurVertex) && V2.IsSame(PrevVertex))) &&
             !anEdge.IsSame(E1))
         {
           ProperEdge = anEdge;
@@ -852,8 +852,8 @@ void BRepOffsetAPI_MiddlePath::Build()
           }
           gp_Dir aDir1 = gp_Vec(aCirc.Location(), Pnt1);
           gp_Dir aDir2 = gp_Vec(aCirc.Location(), Pnt2);
-          if (!(aDir1.IsEqual(theDir1, AngTol) && aDir2.IsEqual(theDir2, AngTol) ||
-                aDir1.IsEqual(theDir2, AngTol) && aDir2.IsEqual(theDir1, AngTol)))
+          if (!((aDir1.IsEqual(theDir1, AngTol) && aDir2.IsEqual(theDir2, AngTol)) ||
+                (aDir1.IsEqual(theDir2, AngTol) && aDir2.IsEqual(theDir1, AngTol))))
           {
             SimilarArcs = Standard_False;
             break;

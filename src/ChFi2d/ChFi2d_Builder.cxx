@@ -1093,8 +1093,8 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
     if (U1 > Vv1 && U1 > 2.*M_PI) {
       ElCLib::AdjustPeriodic(0.,2.*M_PI,Precision::Confusion(),U1,Vv1);
     } // if (U1 ... 
-    if (O1 == TopAbs_FORWARD && OE1 == TopAbs_FORWARD ||
-	O1 == TopAbs_REVERSED && OE1 == TopAbs_REVERSED ) {
+    if ( (O1 == TopAbs_FORWARD && OE1 == TopAbs_FORWARD) ||
+         (O1 == TopAbs_REVERSED && OE1 == TopAbs_REVERSED) ) {
       filletEdge = BRepLib_MakeEdge(circle, refSurf,
 				    NewExtr1, NewExtr2, U1, Vv1);
     } // if (O1 == ...
@@ -1104,8 +1104,8 @@ TopoDS_Edge ChFi2d_Builder::BuildFilletEdge(const TopoDS_Vertex& V,
     } // else ...
     if (!Sense) {
       TopAbs_Orientation S1 = filletEdge.Orientation();
-      if (O1 == TopAbs_FORWARD && OE1 == TopAbs_FORWARD ||
-	  O1 == TopAbs_REVERSED && OE1 == TopAbs_REVERSED ) {
+      if ((O1 == TopAbs_FORWARD && OE1 == TopAbs_FORWARD) ||
+          (O1 == TopAbs_REVERSED && OE1 == TopAbs_REVERSED) ) {
 	filletEdge = BRepLib_MakeEdge(circle, refSurf, 
 				      NewExtr2, NewExtr1, Vv1, U1);
       }

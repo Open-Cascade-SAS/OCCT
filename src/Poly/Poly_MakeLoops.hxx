@@ -271,10 +271,8 @@ inline Standard_Integer HashCode(const Poly_MakeLoops::Link& theKey,
 inline Standard_Boolean IsEqual(const Poly_MakeLoops::Link& theKey1,
                                 const Poly_MakeLoops::Link& theKey2)
 {
-  return (theKey1.node1 == theKey2.node1 &&
-          theKey1.node2 == theKey2.node2 ||
-          theKey1.node1 == theKey2.node2 &&
-          theKey1.node2 == theKey2.node1);
+  return ((theKey1.node1 == theKey2.node1 && theKey1.node2 == theKey2.node2) ||
+          (theKey1.node1 == theKey2.node2 && theKey1.node2 == theKey2.node1));
 }
 
 /**

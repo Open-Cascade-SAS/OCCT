@@ -159,8 +159,8 @@ LocOpe_Pipe::LocOpe_Pipe(const TopoDS_Wire& Spine,
 	  }
 	  Plref = Handle(Geom_Plane)::DownCast(P)->Pln();
 	  gp_Dir Dirref(Plref.Axis().Direction());
-	  if (Plref.Direct() && orref == TopAbs_REVERSED ||
-	      !Plref.Direct() && orref == TopAbs_FORWARD) {
+	  if ((Plref.Direct() && orref == TopAbs_REVERSED) ||
+	      (!Plref.Direct() && orref == TopAbs_FORWARD)) {
 	    Dirref.Reverse();
 	  }
 	  
@@ -201,8 +201,8 @@ LocOpe_Pipe::LocOpe_Pipe(const TopoDS_Wire& Spine,
 	      }
 	      gp_Pln Pl = Handle(Geom_Plane)::DownCast(OtherP)->Pln();
 	      gp_Dir Dirpl(Pl.Axis().Direction());
-	      if (Pl.Direct() && orrelat == TopAbs_REVERSED ||
-		  !Plref.Direct() && orrelat == TopAbs_FORWARD) {
+	      if ((Pl.Direct() && orrelat == TopAbs_REVERSED) ||
+            (!Plref.Direct() && orrelat == TopAbs_FORWARD)) {
 		Dirpl.Reverse();
 	      }
 	      if (Dirpl.Dot(Dirref) > 0) {

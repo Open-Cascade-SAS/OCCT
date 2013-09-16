@@ -2610,7 +2610,7 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleEdgeContact
 	  &&(Abs(SP1.V1()-SP2.V1())<MyConfusionPrecision) ) NbPoints=1;
       if (NbPoints>=2) return(NbPoints);
                      //= remove
-      else if ( ( (pp3>ppe1)&&(pp1<=ppe1)&&(pp2<=ppe1) ) || ( (pp3<ppe1)&&(pp1>=ppe1)&&(pp2>=ppe1) )
+      else if ( (( (pp3>ppe1)&&(pp1<=ppe1)&&(pp2<=ppe1) ) || ( (pp3<ppe1)&&(pp1>=ppe1)&&(pp2>=ppe1) ))
 	       && (NbPoints<2) ) {
 	//there are two sides (common top PT3) that can cut the edge
 	
@@ -2895,8 +2895,8 @@ Standard_Integer IntPolyh_MaillageAffinage::TriangleEdgeContact2
 	    &&(Abs(SP1.V1()-SP2.V1())<MyConfusionPrecision) ) NbPoints=1;
 	if (NbPoints>=2) return(NbPoints);
 	
-	else if ( ( (pp3>=ppe1)&&(pp1<=ppe1)&&(pp2<=ppe1) ) || ( (pp3<=ppe1)&&(pp1>=ppe1)&&(pp2>=ppe1) )
-		 && (NbPoints<2) ) {
+	else if ( (( (pp3>=ppe1)&&(pp1<=ppe1)&&(pp2<=ppe1) ) || ( (pp3<=ppe1)&&(pp1>=ppe1)&&(pp2>=ppe1) ))
+                && (NbPoints<2) ) {
 	  //there are two sides (common top PT3) that can cut the edge
 	  
 	  //first side

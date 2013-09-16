@@ -305,23 +305,23 @@ void TopOpeBRepBuild_Builder::SplitSectionEdges()
       Standard_Integer nLESDspon = LESDspon.Extent();
 
       if ( nLEspon != 0 && nLESDspon != 0 ) {
-        Standard_Boolean takeE = (rE == 1 && iESD != iRef || iE == iRef);
-	pE1 =  takeE ? &E : &ESD;
-	pE2 = !takeE ? &E : &ESD;
-	plos1 =  takeE ? &LEspon : &LESDspon;
-	plos2 = !takeE ? &LEspon : &LESDspon;
+        Standard_Boolean takeE = ((rE == 1 && iESD != iRef) || iE == iRef);
+        pE1 =  takeE ? &E : &ESD;
+        pE2 = !takeE ? &E : &ESD;
+        plos1 =  takeE ? &LEspon : &LESDspon;
+        plos2 = !takeE ? &LEspon : &LESDspon;
       }
       else if ( nLEspon != 0 ) {
-	pE1 = &E;
-	pE2 = &ESD;
-	plos1 = &LEspon;
-	plos2 = &LESDspon;
+        pE1 = &E;
+        pE2 = &ESD;
+        plos1 = &LEspon;
+        plos2 = &LESDspon;
       }
       else if ( nLESDspon != 0 ) {
-	pE1 = &ESD;
-	pE2 = &E;
-	plos1 = &LESDspon;
-	plos2 = &LEspon;
+        pE1 = &ESD;
+        pE2 = &E;
+        plos1 = &LESDspon;
+        plos2 = &LEspon;
       }
       
       if (pE1 == NULL || pE2 == NULL) continue;

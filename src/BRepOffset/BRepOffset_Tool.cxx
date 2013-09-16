@@ -950,8 +950,8 @@ static Standard_Boolean AreClosed(const TopoDS_Edge& E1,
   TopExp::Vertices( E1, V11, V12 );
   TopExp::Vertices( E2, V21, V22 );
 
-  if (V11.IsSame(V21) && V12.IsSame(V22) ||
-      V11.IsSame(V22) && V12.IsSame(V21))
+  if ((V11.IsSame(V21) && V12.IsSame(V22)) ||
+      (V11.IsSame(V22) && V12.IsSame(V21)))
     return Standard_True;
 
   return Standard_False;
@@ -1417,14 +1417,14 @@ static Standard_Boolean CheckIntersFF(const BOPDS_PDS& pDS,
 
   if (V1onBound && V2onBound)
     {
-      if (TangFirst.IsParallel(RefTangFirst,AngTol) && TangLast.IsParallel(RefTangLast,AngTol) ||
-	  TangFirst.IsParallel(RefTangLast,AngTol)  && TangLast.IsParallel(RefTangFirst,AngTol))
-	{
-	  TrueEdges.Add( Edges(i) );
-	  return Standard_True;
-	}
+      if ((TangFirst.IsParallel(RefTangFirst,AngTol) && TangLast.IsParallel(RefTangLast,AngTol)) ||
+          (TangFirst.IsParallel(RefTangLast,AngTol)  && TangLast.IsParallel(RefTangFirst,AngTol)))
+      {
+        TrueEdges.Add( Edges(i) );
+        return Standard_True;
+      }
       else
-	return Standard_False;
+        return Standard_False;
     }
 
   //StartEonF1 = (V1onBound)? VEmapF1( V1 ) : VEmapF1( V2 );

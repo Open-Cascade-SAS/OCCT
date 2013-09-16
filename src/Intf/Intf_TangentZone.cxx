@@ -321,8 +321,8 @@ Standard_Boolean Intf_TangentZone::HasCommonRange
   Other.ParamOnFirst(c1, d1);
   Other.ParamOnSecond(c2, d2);
 
-  if ((c1<=a1 && a1<=d1 || c1<=b1 && b1<=d1 || a1<=c1 && c1<=b1) &&
-      (c2<=a2 && a2<=d2 || c2<=b2 && b2<=d2 || a2<=c2 && c2<=b2))
+  if (((c1<=a1 && a1<=d1) || (c1<=b1 && b1<=d1) || (a1<=c1 && c1<=b1)) &&
+      ((c2<=a2 && a2<=d2) || (c2<=b2 && b2<=d2) || (a2<=c2 && c2<=b2)))
     return Standard_True;
   return Standard_False;
 }

@@ -170,8 +170,8 @@ void MeshVS_NodalColorPrsBuilder::Build ( const Handle(Prs3d_Presentation)& Prs,
   if ( !( DisplayMode & GetFlags() ) || !IsElement )
     return;
 
-  if ( myUseTexture && ( !myTextureCoords.Extent() || !myTextureColorMap.Length() ) ||
-       !myUseTexture && !myNodeColorMap.Extent() )
+  if ( (myUseTexture && ( !myTextureCoords.Extent() || !myTextureColorMap.Length() )) ||
+       (!myUseTexture && !myNodeColorMap.Extent()) )
     return;
 
   // subtract the hidden elements and ids to exclude (to minimise allocated memory)

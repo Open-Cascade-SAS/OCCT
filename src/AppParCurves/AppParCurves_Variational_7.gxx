@@ -150,12 +150,7 @@ void AppParCurves_Variational::Adjusting(
     j1cibl = Sqrt(myCriterium[0] / (NbrPnt - NbrConstraint));
     vseuil = Sqrt(vocri[1]) + (erold - myMaxError) * 4;
     
-//    if(CNew->NbElements() == TheCurve->NbElements())
-      lrejet = myMaxError > WQuality && myMaxError > erold * 1.01 
-	|| Sqrt(myCriterium[1]) > vseuil * 1.05;
-//    else
-//      lrejet = myMaxError > WQuality && myMaxError > erold * 1.05 
-//	|| Sqrt(myCriterium[1]) > vseuil * 1.01;
+    lrejet = ((myMaxError > WQuality) && (myMaxError > erold * 1.01)) || (Sqrt(myCriterium[1]) > vseuil * 1.05);
 
     if (lrejet) {
       myCriterium[0] = vocri[0];
@@ -175,7 +170,7 @@ void AppParCurves_Variational::Adjusting(
 
 /*     (7) Test de convergence */
 
-    if (iter >= mxiter && myMaxSegment == CNew->NbElements() || myMaxError < WQuality) {
+    if (((iter >= mxiter) && (myMaxSegment == CNew->NbElements())) || myMaxError < WQuality) {
       loptim = Standard_False;
     }
     

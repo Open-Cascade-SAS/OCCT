@@ -629,7 +629,7 @@ IntTools_FClass2d::IntTools_FClass2d()
       Status = aClassifier.State();
     }
     
-    if (!RecadreOnPeriodic || !IsUPer && !IsVPer)
+    if (!RecadreOnPeriodic || (!IsUPer && !IsVPer))
       return Status;
     
     if (Status == TopAbs_IN || Status == TopAbs_ON)
@@ -762,7 +762,7 @@ IntTools_FClass2d::IntTools_FClass2d()
       Status = aClassifier.State();
     }
     
-    if (!RecadreOnPeriodic || !IsUPer && !IsVPer)
+    if (!RecadreOnPeriodic || (!IsUPer && !IsVPer))
       return Status;
     if (Status == TopAbs_IN || Status == TopAbs_ON)
       return Status;

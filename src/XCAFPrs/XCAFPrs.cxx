@@ -122,7 +122,7 @@ void XCAFPrs::CollectStyleSettings (const TDF_Label &L,
     for ( Standard_Integer iL = 1; iL <= LayNames->Length(); iL++) {
       if ( !LTool->IsVisible( LTool->FindLayer(LayNames->Value(iL)) ) ) InVisCount++;
     }
-    if ( InVisCount >0 && InVisCount == LayNames->Length() ||
+    if ( (InVisCount >0 && InVisCount == LayNames->Length()) ||
          !CTool->IsVisible(lab) ) {
       style.SetVisibility(Standard_False);
     }

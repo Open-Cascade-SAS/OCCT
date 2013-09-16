@@ -513,8 +513,8 @@ void IGESData_VerifyDate(const Handle(TCollection_HAsciiString)& str,
 	    (stdvar->Value(5) == '3' && stdvar->Value(6) > '1'))&&(stdvar->Length() == 13)) ach->SendFail(Msg57);  
   else if ((stdvar->Value(7) != '.' || stdvar->Value(10) > '5' || stdvar->Value(12) > '5')&&(stdvar->Length() == 13))
     ach->SendFail(Msg57);
-  else if ((stdvar->Value(8) > '2' ||
-	    stdvar->Value(8) == '2' && stdvar->Value(9) > '3')&&(stdvar->Length() == 13)) ach->SendFail(Msg57);  
+  else if ((stdvar->Value(8) > '2' || (stdvar->Value(8) == '2' && stdvar->Value(9) > '3')) && 
+           (stdvar->Length() == 13)) ach->SendFail(Msg57);  
   //smh#13 For long year date 
   else if ( (stdvar->Value(5) > '1' ||
 	     (stdvar->Value(5) == '1' && stdvar->Value(6) > '2'))&&(stdvar->Length() == 15)) ach->SendFail(Msg57);  
@@ -523,7 +523,7 @@ void IGESData_VerifyDate(const Handle(TCollection_HAsciiString)& str,
   else if ((stdvar->Value(9) != '.' || stdvar->Value(12) > '5' || stdvar->Value(14) > '5')&&(stdvar->Length() == 15))
     ach->SendFail(Msg57);
   else if ((stdvar->Value(10) > '2' ||
-	    stdvar->Value(10) == '2' && stdvar->Value(11) > '3')&&(stdvar->Length() == 15)) ach->SendFail(Msg57);  
+	    (stdvar->Value(10) == '2' && stdvar->Value(11) > '3'))&&(stdvar->Length() == 15)) ach->SendFail(Msg57);  
   
 }
 

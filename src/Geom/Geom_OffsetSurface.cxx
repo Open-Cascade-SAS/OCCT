@@ -1663,7 +1663,7 @@ void Geom_OffsetSurface::SetD0(const Standard_Real U, const Standard_Real V,
   CSLib_NormalStatus NStatus;
   CSLib::Normal (D1U, D1V, MagTol, NStatus, Normal);
 
-  if ((NStatus == CSLib_Defined)) // akm - only in singularities && !AlongU && !AlongV) 
+  if (NStatus == CSLib_Defined) // akm - only in singularities && !AlongU && !AlongV) 
     {
       P.SetXYZ(P.XYZ() + offsetValue * Normal.XYZ());
     }

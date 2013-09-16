@@ -684,7 +684,7 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
     // xpu110398 cto 009 L2 : e6ou en v11
     // xpu140898 USA60111 : e9ou (!=0) + e7ou(=0)
     Standard_Boolean INTEXT =       (oriI == TopAbs_INTERNAL) && (TB == TopAbs_IN);
-    INTEXT = INTEXT || (oriI == TopAbs_EXTERNAL) && (TB == TopAbs_OUT);
+    INTEXT = INTEXT || ((oriI == TopAbs_EXTERNAL) && (TB == TopAbs_OUT));
     kpbound = lesmemes && Eclosed && INTEXT; 
     if ( kpbound ) {
       kpbound = vclo.IsSame(VIG);

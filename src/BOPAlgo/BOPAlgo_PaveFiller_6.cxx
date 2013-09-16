@@ -1231,8 +1231,8 @@ void BOPAlgo_PaveFiller::PerformFF()
     const BOPDS_InterfEF& aEF = aEFs(i);
     nE = aEF.Index1();
     nFOpposite = aEF.Index2();
-    if(aMIF1.Contains(nE) && aMIF2.Contains(nFOpposite) ||
-       aMIF1.Contains(nFOpposite) && aMIF2.Contains(nE)) {
+    if((aMIF1.Contains(nE) && aMIF2.Contains(nFOpposite)) ||
+       (aMIF1.Contains(nFOpposite) && aMIF2.Contains(nE))) {
       //
       IntTools_CommonPrt aCP = aEF.CommonPart();
       if(aCP.Type() == TopAbs_VERTEX) {
@@ -1462,8 +1462,8 @@ void BOPAlgo_PaveFiller::PerformFF()
     const BOPDS_InterfVV& aVV = aVVs(i);
     nV1 = aVV.Index1();
     nV2 = aVV.Index2();
-    if(aMIF1.Contains(nV1) && aMIF2.Contains(nV2) ||
-       aMIF1.Contains(nV2) && aMIF2.Contains(nV1)) {
+    if((aMIF1.Contains(nV1) && aMIF2.Contains(nV2)) ||
+       (aMIF1.Contains(nV2) && aMIF2.Contains(nV1))) {
       if (aVV.HasIndexNew()) {
         nVNew = aVV.IndexNew();
         aMVStick.Add(nVNew);
@@ -1475,8 +1475,8 @@ void BOPAlgo_PaveFiller::PerformFF()
     const BOPDS_InterfVE& aVE = aVEs(i);
     nV = aVE.Index1();
     nE = aVE.Index2();
-    if(aMIF1.Contains(nV) && aMIF2.Contains(nE) ||
-       aMIF1.Contains(nE) && aMIF2.Contains(nV)) {
+    if((aMIF1.Contains(nV) && aMIF2.Contains(nE)) ||
+       (aMIF1.Contains(nE) && aMIF2.Contains(nV))) {
       aMVStick.Add(nV);
     }
   }
@@ -1485,8 +1485,8 @@ void BOPAlgo_PaveFiller::PerformFF()
     const BOPDS_InterfEE& aEE = aEEs(i);
     nE1 = aEE.Index1();
     nE2 = aEE.Index2();
-    if(aMIF1.Contains(nE1) && aMIF2.Contains(nE2) ||
-       aMIF1.Contains(nE2) && aMIF2.Contains(nE1)) {
+    if((aMIF1.Contains(nE1) && aMIF2.Contains(nE2)) ||
+       (aMIF1.Contains(nE2) && aMIF2.Contains(nE1))) {
       IntTools_CommonPrt aCP = aEE.CommonPart();
       if(aCP.Type() == TopAbs_VERTEX) {
         nVNew = aEE.IndexNew();
@@ -1499,8 +1499,8 @@ void BOPAlgo_PaveFiller::PerformFF()
     const BOPDS_InterfVF& aVF = aVFs(i);
     nV = aVF.Index1();
     nF = aVF.Index2();
-    if(aMIF1.Contains(nV) && aMIF2.Contains(nF) ||
-       aMIF1.Contains(nF) && aMIF2.Contains(nV)) {
+    if((aMIF1.Contains(nV) && aMIF2.Contains(nF)) ||
+       (aMIF1.Contains(nF) && aMIF2.Contains(nV))) {
       aMVStick.Add(nV);
     }
   }
@@ -1509,8 +1509,8 @@ void BOPAlgo_PaveFiller::PerformFF()
     const BOPDS_InterfEF& aEF = aEFs(i);
     nE = aEF.Index1();
     nF = aEF.Index2();
-    if(aMIF1.Contains(nE) && aMIF2.Contains(nF) ||
-       aMIF1.Contains(nF) && aMIF2.Contains(nE)) {
+    if((aMIF1.Contains(nE) && aMIF2.Contains(nF)) ||
+       (aMIF1.Contains(nF) && aMIF2.Contains(nE))) {
       IntTools_CommonPrt aCP = aEF.CommonPart();
       if(aCP.Type() == TopAbs_VERTEX) {
         nVNew = aEF.IndexNew();

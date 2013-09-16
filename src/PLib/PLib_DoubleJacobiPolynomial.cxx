@@ -238,7 +238,7 @@ void PLib_DoubleJacobiPolynomial::ReduceDegree(const Standard_Integer Dimension,
       }
     }
   }
-  while (ErrU > ErrV && ErrV <= EpmsCut || ErrV >= ErrU && ErrU <= EpmsCut);
+  while ((ErrU > ErrV && ErrV <= EpmsCut) || (ErrV >= ErrU && ErrU <= EpmsCut));
 
 //-------------------------- Recuperation des degres -------------------
         

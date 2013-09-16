@@ -178,8 +178,8 @@ static Standard_Boolean ComputeDir(const TopoDS_Shape& shape, gp_Pnt& pt, gp_Dir
     pt = lProps.Value();
     dir = lProps.Normal();
   }
-  if ((shape.Orientation() == TopAbs_FORWARD) && (mode == 1) ||
-      (shape.Orientation() == TopAbs_REVERSED) && (mode == 0)) {
+  if (((shape.Orientation() == TopAbs_FORWARD) && (mode == 1)) ||
+      ((shape.Orientation() == TopAbs_REVERSED) && (mode == 0))) {
     dir.Reverse();
   }
   return Standard_True;

@@ -1094,7 +1094,7 @@ void AIS_LengthDimension::ComputeFaceSelection( const Handle( SelectMgr_Selectio
       gp_Lin LengthLine( myPosition, DirOfArrow1 );
       Standard_Real Par1 = ElCLib::Parameter( LengthLine, EndOfArrow1 );
       Standard_Real Par2 = ElCLib::Parameter( LengthLine, EndOfArrow2 );
-      if (Par1 > 0.0 && Par2 > 0.0 || Par1 < 0.0 && Par2 < 0.0)
+      if ((Par1 > 0.0 && Par2 > 0.0) || (Par1 < 0.0 && Par2 < 0.0))
         {
           FirstPoint = myPosition;
           LastPoint  = (Abs( Par1 ) > Abs( Par2 ))? EndOfArrow1 : EndOfArrow2;

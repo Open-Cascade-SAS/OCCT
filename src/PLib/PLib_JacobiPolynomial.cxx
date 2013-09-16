@@ -62,11 +62,11 @@ const Standard_Integer UNDEFINED=-999;
 void PLib_JacobiPolynomial::Points(const Standard_Integer NbGaussPoints, 
                                    TColStd_Array1OfReal& TabPoints) const 
 {
-  if (NbGaussPoints != NDEG8  && NbGaussPoints != NDEG10 &&  
+  if ((NbGaussPoints != NDEG8  && NbGaussPoints != NDEG10 &&  
       NbGaussPoints != NDEG15 && NbGaussPoints != NDEG20 && 
       NbGaussPoints != NDEG25 && NbGaussPoints != NDEG30 && 
       NbGaussPoints != NDEG40 && NbGaussPoints != NDEG50 && 
-      NbGaussPoints != NDEG61 || 
+      NbGaussPoints != NDEG61) || 
       NbGaussPoints <= myDegree)
     Standard_ConstructionError::Raise("Invalid NbGaussPoints");
 

@@ -472,8 +472,8 @@ Standard_Boolean Blend_Walking::Continu(Blend_Function& Func,
   if (sens < 0.) {
     Ext1 = line->StartPointOnFirst();
     Ext2 = line->StartPointOnSecond();
-    if (OnS1 && Ext1.NbPointOnRst() == 0 ||
-	!OnS1 && Ext2.NbPointOnRst() == 0) {
+    if ((OnS1 && Ext1.NbPointOnRst() == 0) ||
+	(!OnS1 && Ext2.NbPointOnRst() == 0)) {
       return Standard_False;
     }
     previousP = line->Point(1);
@@ -483,8 +483,8 @@ Standard_Boolean Blend_Walking::Continu(Blend_Function& Func,
   else {
     Ext1 = line->EndPointOnFirst();
     Ext2 = line->EndPointOnSecond();
-    if (OnS1 && Ext1.NbPointOnRst() == 0 ||
-	!OnS1 && Ext2.NbPointOnRst() == 0) {
+    if ((OnS1 && Ext1.NbPointOnRst() == 0) ||
+	(!OnS1 && Ext2.NbPointOnRst() == 0)) {
       return Standard_False;
     }
     previousP = line->Point(line->NbPoints());
@@ -505,16 +505,16 @@ Standard_Boolean Blend_Walking::Continu(Blend_Function& Func,
 
   Standard_Integer newlength = line->NbPoints();
   if (sens <0.) {
-    if (OnS1 && line->StartPointOnSecond().NbPointOnRst() == 0 ||
-	!OnS1 && line->StartPointOnFirst().NbPointOnRst() == 0) {
+    if ((OnS1 && line->StartPointOnSecond().NbPointOnRst() == 0) ||
+	(!OnS1 && line->StartPointOnFirst().NbPointOnRst() == 0)) {
       line->Remove(1,newlength-length);
       line->SetStartPoints(Ext1,Ext2);
       return Standard_False;
     }
   }
   else {
-    if (OnS1 && line->EndPointOnSecond().NbPointOnRst() == 0 ||
-	!OnS1 && line->EndPointOnFirst().NbPointOnRst() == 0) {
+    if ((OnS1 && line->EndPointOnSecond().NbPointOnRst() == 0) ||
+	(!OnS1 && line->EndPointOnFirst().NbPointOnRst() == 0)) {
       line->Remove(length,newlength);
       line->SetEndPoints(Ext1,Ext2);
       return Standard_False;

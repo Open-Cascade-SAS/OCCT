@@ -1386,8 +1386,8 @@ gp_Vec2d ProjLib_CompProjectedCurve::DN(const Standard_Real t,
            TUdisc.Append(mySequence->Value(i)->Value(j).X());
 	else if(Abs(Ur - CutPntsU(k)) <= myTolU) 
            TUdisc.Append(mySequence->Value(i)->Value(j + 1).X());
-	else if(Ul < CutPntsU(k) && CutPntsU(k) < Ur ||
-		Ur < CutPntsU(k) && CutPntsU(k) < Ul) 
+	else if((Ul < CutPntsU(k) && CutPntsU(k) < Ur) ||
+          (Ur < CutPntsU(k) && CutPntsU(k) < Ul)) 
         {
 	  Standard_Real V;
 	  V = (mySequence->Value(i)->Value(j).Z() 
@@ -1440,8 +1440,8 @@ gp_Vec2d ProjLib_CompProjectedCurve::DN(const Standard_Real t,
            TVdisc.Append(mySequence->Value(i)->Value(j).X());
 	else if (Abs(Vr - CutPntsV(k)) <= myTolV) 
            TVdisc.Append(mySequence->Value(i)->Value(j + 1).X());
-	else if(Vl < CutPntsV(k) && CutPntsV(k) < Vr ||
-		Vr < CutPntsV(k) && CutPntsV(k) < Vl) 
+	else if((Vl < CutPntsV(k) && CutPntsV(k) < Vr) ||
+          (Vr < CutPntsV(k) && CutPntsV(k) < Vl)) 
         {
 	  Standard_Real U;
 	  U = (mySequence->Value(i)->Value(j).Y() 

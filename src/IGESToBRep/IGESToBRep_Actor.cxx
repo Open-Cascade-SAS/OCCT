@@ -94,9 +94,9 @@ Standard_Boolean  IGESToBRep_Actor::Recognize
   Standard_Integer typnum = ent->TypeNumber();
   Standard_Integer fornum = ent->FormNumber();
   if (IGESToBRep::IsCurveAndSurface(ent) ||
-      (typnum == 402 && (fornum == 1 || fornum == 7 || 
-                         fornum == 14 || fornum == 15)  ||
-      (typnum == 408 ) || (typnum == 308)))
+      ((typnum == 402 && (fornum == 1 || fornum == 7 || 
+                         fornum == 14 || fornum == 15))  ||
+       (typnum == 408 ) || (typnum == 308)))
     return Standard_True;
 
 //  Cas restants : non reconnus

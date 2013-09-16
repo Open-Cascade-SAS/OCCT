@@ -389,9 +389,9 @@ void ChFi3d_Builder::Trunc(const Handle(ChFiDS_SurfData)&    SD,
       TopoDS_Face F2 = BS2->ChangeSurface().Face();
       const ChFiDS_CommonPoint& cp1 = SD->Vertex(isfirst,1);
       const ChFiDS_CommonPoint& cp2 = SD->Vertex(isfirst,2);
-      if(!(cp1.IsOnArc() && SearchFace(Spine,cp1,F1,FBID) ||
-	   cp2.IsOnArc() && SearchFace(Spine,cp2,F2,FBID))) { 
-	tron = ChFi3d_KParticular(Spine,ivois,BS1->ChangeSurface(),BS2->ChangeSurface());
+      if(!((cp1.IsOnArc() && SearchFace(Spine,cp1,F1,FBID)) ||
+           (cp2.IsOnArc() && SearchFace(Spine,cp2,F2,FBID)))) { 
+        tron = ChFi3d_KParticular(Spine,ivois,BS1->ChangeSurface(),BS2->ChangeSurface());
       }
     }
   }

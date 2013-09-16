@@ -1123,7 +1123,7 @@ ProjLib_ComputeApprox::ProjLib_ComputeApprox
 	number = (Standard_Integer) (Floor((newV-v)/(F.myV2-F.myV1)));
 	dv -= number*(F.myV2-F.myV1);
       }
-    if (F.UCouture || F.VCouture && SType == GeomAbs_Sphere)
+    if (F.UCouture || (F.VCouture && SType == GeomAbs_Sphere))
       {
 	gp_Pnt2d P2d = F.Value( UFirst );
 	number = (Standard_Integer) (Floor((P2d.X()-u)/M_PI + Epsilon(M_PI)));

@@ -614,15 +614,14 @@ Standard_Boolean IntPoly_ShapeSection::Intersect(const gp_Pnt& S1,
 //=======================================================================
 #define epsilon 0.000000000001
 
-Standard_Boolean IntPoly_ShapeSection::IsEqual(const gp_Pnt& Pt1,
-					       const gp_Pnt& Pt2)
+Standard_Boolean IntPoly_ShapeSection::IsEqual(const gp_Pnt& Pt1, const gp_Pnt& Pt2)
 { 
-  return ((Pt1.X() <= Pt2.X() && Pt2.X() < Pt1.X()+epsilon ||
-	   Pt2.X() <= Pt1.X() && Pt1.X() < Pt2.X()+epsilon) && 
-	  (Pt1.Y() <= Pt2.Y() && Pt2.Y() < Pt1.Y()+epsilon ||
-	   Pt2.Y() <= Pt1.Y() && Pt1.Y() < Pt2.Y()+epsilon) && 
-	  (Pt1.Z() <= Pt2.Z() && Pt2.Z() < Pt1.Z()+epsilon ||
-	   Pt2.Z() <= Pt1.Z() && Pt1.Z() < Pt2.Z()+epsilon));
+  return (((Pt1.X() <= Pt2.X() && Pt2.X() < Pt1.X()+epsilon) ||
+           (Pt2.X() <= Pt1.X() && Pt1.X() < Pt2.X()+epsilon)) && 
+          ((Pt1.Y() <= Pt2.Y() && Pt2.Y() < Pt1.Y()+epsilon) ||
+           (Pt2.Y() <= Pt1.Y() && Pt1.Y() < Pt2.Y()+epsilon)) && 
+          ((Pt1.Z() <= Pt2.Z() && Pt2.Z() < Pt1.Z()+epsilon) ||
+           (Pt2.Z() <= Pt1.Z() && Pt1.Z() < Pt2.Z()+epsilon)));
 }
 
 

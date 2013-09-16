@@ -159,7 +159,7 @@ void DsgPrs_LengthPresentation::Add( const Handle(Prs3d_Presentation)& aPresenta
   Standard_Real Par1 = ElCLib::Parameter( LengthLine, EndOfArrow1 );
   Standard_Real Par2 = ElCLib::Parameter( LengthLine, EndOfArrow2 );
   gp_Pnt FirstPoint, LastPoint;
-  if (Par1 > 0.0 && Par2 > 0.0 || Par1 < 0.0 && Par2 < 0.0)
+  if ((Par1 > 0.0 && Par2 > 0.0) || (Par1 < 0.0 && Par2 < 0.0))
   {
     FirstPoint = OffsetPoint;
     LastPoint  = (Abs( Par1 ) > Abs( Par2 ))? EndOfArrow1 : EndOfArrow2;
@@ -310,7 +310,7 @@ void DsgPrs_LengthPresentation::Add( const Handle(Prs3d_Presentation)& aPresenta
   Standard_Real Par1 = ElCLib::Parameter( LengthLine, AttachmentPoint1 );
   Standard_Real Par2 = ElCLib::Parameter( LengthLine, EndOfArrow2 );
   gp_Pnt FirstPoint, LastPoint;
-  if (Par1 > 0.0 && Par2 > 0.0 || Par1 < 0.0 && Par2 < 0.0)
+  if ((Par1 > 0.0 && Par2 > 0.0) || (Par1 < 0.0 && Par2 < 0.0))
   {
     FirstPoint = OffsetPoint;
     LastPoint  = (Abs( Par1 ) > Abs( Par2 ))? AttachmentPoint1 : EndOfArrow2;

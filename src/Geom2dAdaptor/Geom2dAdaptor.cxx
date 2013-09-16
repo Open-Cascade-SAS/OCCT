@@ -103,8 +103,8 @@ Handle(Geom2d_Curve) Geom2dAdaptor::MakeCurve
 
   // trim the curve if necassary.
   if (! C2D.IsNull() &&
-      (HC.FirstParameter() != C2D->FirstParameter()) ||
-      (HC.LastParameter()  != C2D->LastParameter())) {
+      ((HC.FirstParameter() != C2D->FirstParameter()) ||
+      (HC.LastParameter()  != C2D->LastParameter()))) {
 
     C2D = new Geom2d_TrimmedCurve
       (C2D,HC.FirstParameter(),HC.LastParameter());

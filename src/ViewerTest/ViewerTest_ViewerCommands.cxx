@@ -154,7 +154,7 @@ static void SetDisplayConnection (const Handle(Aspect_DisplayConnection)& theDis
 #if defined(_WIN32) || (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
 Aspect_Handle GetWindowHandle(const Handle(Aspect_Window)& theWindow)
 {
-  Aspect_Handle aWindowHandle = NULL;
+  Aspect_Handle aWindowHandle = (Aspect_Handle)NULL;
 #if defined(_WIN32)
   const Handle (WNT_Window) aWindow = Handle(WNT_Window)::DownCast (theWindow);
   if (!aWindow.IsNull())

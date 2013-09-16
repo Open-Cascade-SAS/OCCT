@@ -483,7 +483,7 @@ void BRepLib_FindSurface::Init(const TopoDS_Shape&    S,
   //static Standard_Real weakness = 5.0;
   Standard_Real weakness = 5.0;
   //XXf
-  if(dfDist <= myTolerance || dfDist < myTolerance*weakness && Tol<0) { 
+  if(dfDist <= myTolerance || (dfDist < myTolerance*weakness && Tol<0)) { 
     //XXf 
     //myTolReached = dfDist;
     //XXt

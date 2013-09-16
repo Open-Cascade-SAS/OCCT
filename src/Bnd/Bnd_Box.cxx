@@ -832,7 +832,7 @@ Standard_Boolean Bnd_Box::IsOut (const gp_Trsf& T1,
 
 
 //=======================================================================
-//function : IsOut
+//function : IsSegmentOut
 //purpose  : 
 //=======================================================================
 
@@ -848,12 +848,14 @@ static Standard_Boolean IsSegmentOut(Standard_Real x1,Standard_Real y1,
   Standard_Real ysmax = Max (ys1, ys2);
 
   if (ysmax-ysmin < eps && (y1-ys1 < eps && ys1-y2 < eps) &&
-      (xsmin-x1 < eps && x1-xsmax < eps || xsmin-x2 < eps && x2-xsmax < eps ||
-       x1-xs1 < eps && xs1-x2 < eps))
+      ((xsmin-x1 < eps && x1-xsmax < eps) || 
+       (xsmin-x2 < eps && x2-xsmax < eps) || 
+       (x1-xs1 < eps && xs1-x2 < eps)))
     return Standard_False;
   if (xsmax-xsmin < eps && (x1-xs1 < eps && xs1-x2 < eps) &&
-      (ysmin-y1 < eps && y1-ysmax < eps || ysmin-y2 < eps && y2-ysmax < eps ||
-       y1-ys1 < eps && ys1-y2 < eps))
+      ((ysmin-y1 < eps && y1-ysmax < eps) ||
+       (ysmin-y2 < eps && y2-ysmax < eps) ||
+       (y1-ys1 < eps && ys1-y2 < eps)))
     return Standard_False;
 
   if ((xs1 < x1 && xs2 < x1) || (xs1 > x2 && xs2 > x2) ||

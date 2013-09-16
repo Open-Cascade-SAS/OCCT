@@ -695,8 +695,8 @@ void IntPatch_RstInt::PutVertexOnLine (Handle(IntPatch_Line)& L,
 	      tolU = Max(tolULast,tolU); tolV = Max(tolVLast,tolV);
 	    }
 	    Standard_Real nptCh = UMaxCh-UMinCh;
-	    Standard_Boolean isNptLow = nptCh < 10. && nptCh < Nbptlin/100. ||
-	      !Domain->Has3d() && Standard_Integer(nptCh)+1 < Nbptlin;
+	    Standard_Boolean isNptLow = (nptCh < 10. && nptCh < Nbptlin/100.) ||
+	      (!Domain->Has3d() && Standard_Integer(nptCh)+1 < Nbptlin);
 	    if (!isNptLow && !IsSegment2dSmall(Brise,UMinAr,UMaxAr,tolU,tolV)) {
 	      // treat both ends
 	      Standard_Real UMinChP,UMaxChP,UMinArP,UMaxArP;
@@ -797,8 +797,8 @@ void IntPatch_RstInt::PutVertexOnLine (Handle(IntPatch_Line)& L,
 		if (ptsommet.Distance(locpt(j)) <= edgeTol) {
 		  if (possiblyClosed) {
 		    locpt2(j).Coord(U,V);
-		    if (OSurfaceIsUClosed && Abs(U-U2) > tolOUClosed ||
-			OSurfaceIsVClosed && Abs(V-V2) > tolOVClosed)
+		    if ((OSurfaceIsUClosed && Abs(U-U2) > tolOUClosed) ||
+			(OSurfaceIsVClosed && Abs(V-V2) > tolOVClosed))
 		      continue;
 		  }
 		  duplicate = Standard_True;
@@ -827,14 +827,14 @@ void IntPatch_RstInt::PutVertexOnLine (Handle(IntPatch_Line)& L,
 		  // check in 2d
 		  if (SurfaceIsUClosed || SurfaceIsVClosed) {
 		    GetLinePoint2d (L, paramline, OnFirst, U,V);
-		    if (SurfaceIsUClosed && Abs(U-U1) > tolUClosed ||
-			SurfaceIsVClosed && Abs(V-V1) > tolVClosed)
+		    if ((SurfaceIsUClosed && Abs(U-U1) > tolUClosed) ||
+			(SurfaceIsVClosed && Abs(V-V1) > tolVClosed))
 		      found = Standard_False;
 		  }
 		  if (found && (OSurfaceIsUClosed || OSurfaceIsVClosed)) {
 		    GetLinePoint2d (L, paramline, !OnFirst, U,V);
-		    if (OSurfaceIsUClosed && Abs(U-U2) > tolOUClosed ||
-			OSurfaceIsVClosed && Abs(V-V2) > tolOVClosed)
+		    if ((OSurfaceIsUClosed && Abs(U-U2) > tolOUClosed) ||
+			(OSurfaceIsVClosed && Abs(V-V2) > tolOVClosed))
 		      found = Standard_False;
 		  }
 		}
@@ -861,22 +861,22 @@ void IntPatch_RstInt::PutVertexOnLine (Handle(IntPatch_Line)& L,
 					     ? wlin->Vertex(j)
 					     : rlin->Vertex(j));
 		  Standard_Boolean APointOnRstStillExist =
-		    (OnFirst  && Rptline.IsOnDomS1() && Rptline.ArcOnS1() == arc ||
-		     !OnFirst && Rptline.IsOnDomS2() && Rptline.ArcOnS2() == arc);
+		    ((OnFirst  && Rptline.IsOnDomS1() && Rptline.ArcOnS1() == arc) ||
+		     (!OnFirst && Rptline.IsOnDomS2() && Rptline.ArcOnS2() == arc));
 		  if(!APointOnRstStillExist) {
 		    if (possiblyClosed) {
 		      if (SurfaceIsUClosed || SurfaceIsVClosed) {
 			if (OnFirst) Rptline.ParametersOnS1(U,V);
 			else         Rptline.ParametersOnS2(U,V);
-			if (SurfaceIsUClosed && Abs(U-U1) > tolUClosed ||
-			    SurfaceIsVClosed && Abs(V-V1) > tolVClosed)
+			if ((SurfaceIsUClosed && Abs(U-U1) > tolUClosed) ||
+			    (SurfaceIsVClosed && Abs(V-V1) > tolVClosed))
 			  continue;
 		      }
 		      if (OSurfaceIsUClosed || OSurfaceIsVClosed) {
 			if (OnFirst) Rptline.ParametersOnS2(U,V);
 			else         Rptline.ParametersOnS1(U,V);
-			if (OSurfaceIsUClosed && Abs(U-U2) > tolOUClosed ||
-			    OSurfaceIsVClosed && Abs(V-V2) > tolOVClosed)
+			if ((OSurfaceIsUClosed && Abs(U-U2) > tolOUClosed) ||
+			    (OSurfaceIsVClosed && Abs(V-V2) > tolOVClosed))
 			  continue;
 		      }
 		    }
@@ -983,8 +983,8 @@ void IntPatch_RstInt::PutVertexOnLine (Handle(IntPatch_Line)& L,
 		  //   on doit avoir VtxOnArc = True. On duplique le point sur S1
 		  //   en changeant ArcOnS2.
 		  Standard_Boolean OnDifferentRst =
-		    (OnFirst  && ptline.IsOnDomS1() && ptline.ArcOnS1() != arc ||
-		     !OnFirst && ptline.IsOnDomS2() && ptline.ArcOnS2() != arc);
+		    ((OnFirst  && ptline.IsOnDomS1() && ptline.ArcOnS1() != arc) ||
+		     (!OnFirst && ptline.IsOnDomS2() && ptline.ArcOnS2() != arc));
 		  ptline.SetTolerance(vtxTol);
 		  if (   (!ptline.IsVertexOnS1() &&  OnFirst) 
 		      || (!ptline.IsVertexOnS2() && !OnFirst) 

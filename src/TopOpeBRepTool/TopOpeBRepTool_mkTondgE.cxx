@@ -356,10 +356,10 @@ Standard_Boolean TopOpeBRepTool_mkTondgE::MkTonE(const TopoDS_Edge& ei, Standard
     Standard_Real dot = tgi.Dot(xxri);
     if (Abs(dot) < FUN_tola())
       {
-	if (!onfi && !onli || closedi)
-	  { mkT = MKI12; return Standard_True; }
-	else
-	  dot = tgi.Dot(tgin1di);
+      if ((!onfi && !onli) || closedi)
+        { mkT = MKI12; return Standard_True; }
+      else
+        dot = tgi.Dot(tgin1di);
       }
     Standard_Boolean keepang = (dot > 0);  
     if (keepang) mkT = outin ? MKI1 : MKI2;

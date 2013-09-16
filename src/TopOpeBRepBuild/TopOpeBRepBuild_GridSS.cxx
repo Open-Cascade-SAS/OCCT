@@ -1331,8 +1331,9 @@ static Standard_Boolean AreFacesCoincideInArea (const TopoDS_Shape& theBaseFace,
     Standard_Real tolE = BRep_Tool::Tolerance(aE);
     if (tolE > maxDist) maxDist = tolE;
     if (aE.IsEqual(anEdge) ||
-        aE.Orientation() != TopAbs_FORWARD && aE.Orientation() != TopAbs_REVERSED &&
-        aE.IsSame(anEdge))
+        (aE.Orientation() != TopAbs_FORWARD && 
+         aE.Orientation() != TopAbs_REVERSED &&
+         aE.IsSame(anEdge)))
       continue;         // the same pcurve
     Handle(Geom2d_Curve) PC = BRep_Tool::CurveOnSurface(aE,aBaseFace,pf,pl);
     if (PC.IsNull()) {

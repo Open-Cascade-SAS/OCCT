@@ -1244,8 +1244,8 @@ Standard_Boolean ShapeCustom_BSplineRestriction::ConvertCurve2d(Handle(Geom2d_Cu
     }
   }
   if (aCurve->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve)) || 
-    aCurve->IsKind(STANDARD_TYPE(Geom2d_BezierCurve)) ||
-    (aCurve->IsKind(STANDARD_TYPE(Geom2d_OffsetCurve))) && !IsOf )  {
+      aCurve->IsKind(STANDARD_TYPE(Geom2d_BezierCurve))  ||
+      ((aCurve->IsKind(STANDARD_TYPE(Geom2d_OffsetCurve))) && !IsOf ))  {
       Standard_Integer Deg=1;
 
       if (aCurve->IsKind(STANDARD_TYPE(Geom2d_BSplineCurve))) {
