@@ -1433,7 +1433,6 @@ Standard_Boolean BRepMesh_FastDiscret::Update(const TopoDS_Edge&          theEdg
             {
               ipl = ipf;
               ivl = iv1;
-              isv1 = isv1;
             }
             else
             {

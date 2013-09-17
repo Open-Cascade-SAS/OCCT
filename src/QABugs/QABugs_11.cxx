@@ -2382,6 +2382,8 @@ static Standard_Integer OCC5698 (Draw_Interpretor& di, Standard_Integer argc, co
 
 static char sarr[2000];
 static int si=1;
+
+#ifdef WNT
 static int StackOverflow(int i = -1)
 {
   char arr[2000];
@@ -2401,7 +2403,6 @@ static int StackOverflow(int i = -1)
   return i;
 }
 
-#ifdef WNT
 // this code does not work with optimize mode on Windows
 #pragma optimize( "", off )
 #endif

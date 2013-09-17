@@ -689,46 +689,47 @@ static Standard_Integer hardcopy(Draw_Interpretor& ,
       iview = ViewId(a[2]);
       if (iview < 0) return 1;
       if (n >= 4) {
-	if      (!strcmp(a[3],"a7")) {
-	  cad = cad / (2 * Sqrt(2));
-	  dx  = dx  / (2 * Sqrt(2));
-	  dy  = dy  / (2 * Sqrt(2));
-	}
-	else if (!strcmp(a[3],"a6")) {
-	  cad = cad / 2;
-	  dx  = dx  / 2;
-	  dy  = dy  / 2;
-	}
-	else if (!strcmp(a[3],"a5")) {
-	  cad = cad / Sqrt(2);
-	  dx  = dx  / Sqrt(2);
-	  dy  = dy  / Sqrt(2);
-	}
-	else if (!strcmp(a[3],"a4")) {
-	  cad = cad;
-	  dx  = dx;
-	  dy  = dy;
-	}
-	else if (!strcmp(a[3],"a3")) {
-	  cad = cad * Sqrt(2);
-	  dx  = dx  * Sqrt(2);
-	  dy  = dy  * Sqrt(2);
-	}
-	else if (!strcmp(a[3],"a2")) {
-	  cad = cad * 2;
-	  dx  = dx  * 2;
-	  dy  = dy  * 2;
-	}
-	else if (!strcmp(a[3],"a1")) {
-	  cad = cad * 2 * Sqrt(2);
-	  dx  = dx  * 2 * Sqrt(2);
-	  dy  = dy  * 2 * Sqrt(2);
-	}
-	else if (!strcmp(a[3],"a0")) {
-	  cad = cad * 4;
-	  dx  = dx  * 4;
-	  dy  = dy  * 4;
-	}
+        if      (!strcmp(a[3],"a7")) {
+          cad = cad / (2 * Sqrt(2));
+          dx  = dx  / (2 * Sqrt(2));
+          dy  = dy  / (2 * Sqrt(2));
+        }
+        else if (!strcmp(a[3],"a6")) {
+          cad = cad / 2;
+          dx  = dx  / 2;
+          dy  = dy  / 2;
+        }
+        else if (!strcmp(a[3],"a5")) {
+          cad = cad / Sqrt(2);
+          dx  = dx  / Sqrt(2);
+          dy  = dy  / Sqrt(2);
+        }
+        else if (!strcmp(a[3],"a4")) {
+          // Do nothing
+          //cad == cad;
+          //dx  == dx;
+          //dy  == dy;
+        }
+        else if (!strcmp(a[3],"a3")) {
+          cad = cad * Sqrt(2);
+          dx  = dx  * Sqrt(2);
+          dy  = dy  * Sqrt(2);
+        }
+        else if (!strcmp(a[3],"a2")) {
+          cad = cad * 2;
+          dx  = dx  * 2;
+          dy  = dy  * 2;
+        }
+        else if (!strcmp(a[3],"a1")) {
+          cad = cad * 2 * Sqrt(2);
+          dx  = dx  * 2 * Sqrt(2);
+          dy  = dy  * 2 * Sqrt(2);
+        }
+        else if (!strcmp(a[3],"a0")) {
+          cad = cad * 4;
+          dx  = dx  * 4;
+          dy  = dy  * 4;
+        }
       }
     }
   }

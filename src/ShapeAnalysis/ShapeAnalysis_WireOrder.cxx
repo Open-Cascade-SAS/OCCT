@@ -160,27 +160,6 @@ static Standard_Real DISTABS (const gp_XYZ& v1, const gp_XYZ& v2)
 //  2/ reprendre les boucles pour les fusionner : pas encore fait
 //   (pour l instant, on imprime un petit message, c est tout)
 
-static Standard_Integer NextFree
-  (const Standard_Integer i, const Standard_Integer nb,
-   Standard_Integer& nbloops, TColStd_Array1OfInteger& loops,
-   TColStd_Array1OfInteger& loopord,
-   const Handle(TColStd_HArray1OfInteger)& ord)
-{
-  if (i < 0) return -NextFree (-i, nb,nbloops,loops,loopord,ord);
-
-  //szv#4:S4163:12Mar99 optimized
-  Standard_Integer j; // svv Jan11 2000 : porting on DEC
-  for (j = 1; j <= nbloops; j ++) if (i == loops(j)) break;
-  if ( j > nbloops ) return i; // OK
-
-  //  sinon, une boucle de plus, et chercher le prochain libre
-  nbloops ++;
-  for (j = 1; j <= nb; j ++)
-    if (loopord.Value(j) == 0) { loops(nbloops) = j; return j; }
-  nbloops --;  // finalement il n ya plus rien
-  return 0;
-}
-
 //=======================================================================
 //function : KeepLoopsMode
 //purpose  : 

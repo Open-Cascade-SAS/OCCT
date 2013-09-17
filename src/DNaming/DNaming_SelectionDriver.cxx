@@ -85,19 +85,7 @@ static void Write(const TopoDS_Shape& shape,
 #include <TDF_MapIteratorOfAttributeMap.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TDF_ChildIterator.hxx>
-static void CollectLabels(const TDF_Label& theLabel, TDF_LabelMap& theMap) {
-  TDF_AttributeMap outRefs;
-  TDF_Tool::OutReferences(theLabel, outRefs);
-  for (TDF_MapIteratorOfAttributeMap itr(outRefs); itr.More(); itr.Next()) {
-    if (itr.Key()->DynamicType() == STANDARD_TYPE(TNaming_NamedShape)) {
-      theMap.Add(itr.Key()->Label());
-      CollectLabels(itr.Key()->Label(), theMap);
-      TCollection_AsciiString anEntry;
-      TDF_Tool::Entry(itr.Key()->Label(), anEntry);
-      cout << "NS refered Label = " << anEntry << endl;	
-    }
-  }
-}
+
 Standard_Integer DNaming_SelectionDriver::Execute(TFunction_Logbook& theLog) const
 {
   Handle(TFunction_Function) aFunction;
@@ -138,7 +126,6 @@ Standard_Integer DNaming_SelectionDriver::Execute(TFunction_Logbook& theLog) con
 //  TDF_IDFilter aFilterForReferences;
 //  aFilterForReferences.Keep(TNaming_NamedShape::GetID());
 //   TDF_LabelMap aMap1;
-//   CollectLabels(aLabel, aMap1);  
 //  TDF_Tool::OutReferences(aLabel, /*aFilterForReferers, aFilterForReferences, */outRefs);
 //***
 

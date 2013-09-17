@@ -467,28 +467,6 @@ Handle(TDF_Attribute) TNaming_NamedShape::NewEmpty () const
 }
 
 //=======================================================================
-//function : static GetLocation 23.06.99 (szy)
-//purpose  : service: returns copy of Location if exist Relocation 
-//=======================================================================
-
-static TopLoc_Location GetLocation(const TopLoc_Location& L,
-				   const Handle(TDF_RelocationTable)& RT)
-{
-  TopLoc_Location result;
-  
-  if (!L.IsIdentity()) {
-    Handle(TopLoc_Datum3D) TD;
-    if(!RT->HasTransientRelocation(L.FirstDatum(), TD))
-#ifdef DEB
-      cout <<"TNaming_Named_Shape::Paste : Relocation for TopLocation don't exist" << endl;
-#endif
-    result = GetLocation(L.NextLocation(), RT) * 
-      TopLoc_Location(TD).Powered(L.FirstPower());
-  }
-  return result;
-}
-
-//=======================================================================
 //function : Paste
 //purpose  : 
 //=======================================================================

@@ -65,35 +65,6 @@ static const Standard_Real RESOLUTION = 1.0E-16;
 static const Standard_Real MIN_DIST = 2.E-5;
 
 //=======================================================================
-//function : IsLine
-//purpose  : 
-//=======================================================================
-static Standard_Boolean IsLine(const Handle(Geom2d_Curve)& theCurve2d)
-{
-  Standard_Boolean IsALine = Standard_False;
-  if ( theCurve2d->IsKind( STANDARD_TYPE(Geom2d_Line) ) )
-  {
-    IsALine = Standard_True;
-  }
-  else if ( theCurve2d->IsKind( STANDARD_TYPE(Geom2d_BSplineCurve) ) )
-  {
-    Handle(Geom2d_BSplineCurve) aBSpline = *((Handle(Geom2d_BSplineCurve)*)&theCurve2d);
-    IsALine = (aBSpline->NbPoles() == 2);
-  }
-  else if ( theCurve2d->IsKind( STANDARD_TYPE(Geom2d_BezierCurve) ) )
-  {
-    Handle(Geom2d_BezierCurve) aBezier = *((Handle(Geom2d_BezierCurve)*)&theCurve2d);
-    IsALine = (aBezier->NbPoles() == 2);
-  }
-  else if ( theCurve2d->IsKind( STANDARD_TYPE(Geom2d_TrimmedCurve) ) )
-  {
-    Handle(Geom2d_TrimmedCurve) aTrimmedCurve = *((Handle(Geom2d_TrimmedCurve)*)&theCurve2d);
-    IsALine = IsLine(aTrimmedCurve->BasisCurve());
-  }
-  return IsALine;
-}
-
-//=======================================================================
 //function : AnalizeWire
 //purpose  : 
 //=======================================================================
