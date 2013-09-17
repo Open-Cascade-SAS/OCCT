@@ -25,7 +25,10 @@ proc FoundationClasses:toolkits { } {
 ;# Autres UDs a prendre.
 ;#
 proc FoundationClasses:ressources { } {
-        return [list [list both r OS {} ]] \
+        return [list \
+	       [list both r OS {} ] \
+	       [list both r UnitsAPI {} ] \
+	       ]
 }
 ;
 ;#
