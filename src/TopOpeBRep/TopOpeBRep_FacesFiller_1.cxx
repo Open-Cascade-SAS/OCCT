@@ -212,7 +212,7 @@ static Standard_Boolean FUN_IoflSsuppS(const TopOpeBRepDS_PDataStructure pDS,
 //           attached to the edge (stored in the DS).
 //=======================================================================
 static Standard_Boolean FUN_findTF(const TopOpeBRepDS_PDataStructure pDS,
-		      const Standard_Integer iE, const Standard_Integer iF, const Standard_Integer iOOF,
+		      const Standard_Integer iE, const Standard_Integer, const Standard_Integer iOOF,
 		      TopOpeBRepDS_Transition& TF)
 {  
   Standard_Real factor = 0.5;
@@ -973,8 +973,8 @@ void TopOpeBRep_FacesFiller::FillLineVPonR()
   //----------------------------------------------------------------------
   
 #ifdef DEB
-  Standard_Boolean trcd = Standard_False;
 #ifdef DRAW
+  Standard_Boolean trcd = Standard_False;
   if (trcd) FUN_DrawMap(myDataforDegenEd);
 #endif
 #endif

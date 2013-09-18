@@ -49,6 +49,7 @@ is
 	    RS_AlreadyRetrieved,
 	    RS_UnknownDocument,
 	    RS_WrongResource,
+	    RS_ReaderException,
 	    RS_NoModel
     end ReaderStatus;
     

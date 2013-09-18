@@ -181,10 +181,10 @@ const Handle(Image_PixMap)& Graphic3d_MarkerImage::GetImageAlpha()
       myImageAlpha->InitZero (Image_PixMap::ImgGray, myImage->Width(), myImage->Height());
       myImageAlpha->SetTopDown (Standard_False);
       Quantity_Parameter anAlpha;
-      for (Standard_Integer aRowIter = 0; aRowIter < myImage->Height(); aRowIter++)
+      for (Standard_Size aRowIter = 0; aRowIter < myImage->Height(); aRowIter++)
       {
         Standard_Byte* anImageRow = myImageAlpha->ChangeRow (aRowIter);
-        for (Standard_Integer aColumnIter = 0; aColumnIter < myImage->Width(); aColumnIter++)
+        for (Standard_Size aColumnIter = 0; aColumnIter < myImage->Width(); aColumnIter++)
         {
           myImage->PixelColor (aColumnIter, aRowIter, anAlpha);
           anImageRow[aColumnIter] = Standard_Byte (255.0 * anAlpha);

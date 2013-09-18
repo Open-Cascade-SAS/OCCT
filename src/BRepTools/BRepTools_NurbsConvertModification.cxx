@@ -587,8 +587,6 @@ Standard_Boolean BRepTools_NurbsConvertModification::NewCurve2d
       return Standard_True;
     }
   }
-  Curve2d = C2d;
-  return Standard_True;
 }
 
 //=======================================================================

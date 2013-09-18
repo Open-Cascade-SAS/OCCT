@@ -89,9 +89,9 @@ TopOpeBRepDS_Transition& TopOpeBRep_Point2d::ChangeTransition(const Standard_Int
 //function : Dump
 //purpose  : 
 //=======================================================================
+#ifdef DEB
 void TopOpeBRep_Point2d::Dump(const Standard_Integer E1index,const Standard_Integer E2index) const
 {
-#ifdef DEB
   Standard_Real par1 = Parameter(1);
   Standard_Real par2 = Parameter(2);
   
@@ -142,5 +142,7 @@ void TopOpeBRep_Point2d::Dump(const Standard_Integer E1index,const Standard_Inte
     cout<<" PV(2) : "<<P3D.X()<<" "<<P3D.Y()<<" "<<P3D.Z();
   }
   cout<<endl;
-#endif
 }
+#else
+void TopOpeBRep_Point2d::Dump(const Standard_Integer,const Standard_Integer) const {}
+#endif

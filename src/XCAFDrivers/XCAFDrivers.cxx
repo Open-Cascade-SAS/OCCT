@@ -34,11 +34,6 @@
 
 #include <Plugin_Macro.hxx>
 
-// avoid warnings on 'extern "C"' functions returning C++ classes
-#ifdef WNT
-#pragma warning(4:4190)
-#endif
-
 static Standard_GUID XSStorageDriver  ("ed8793f8-3142-11d4-b9b5-0060b0ee281b");
 static Standard_GUID XSRetrievalDriver("ed8793f9-3142-11d4-b9b5-0060b0ee281b");
 static Standard_GUID XCAFSchemaID     ("ed8793fa-3142-11d4-b9b5-0060b0ee281b");
@@ -81,5 +76,9 @@ Handle(Standard_Transient) XCAFDrivers::Factory(const Standard_GUID& aGUID) {
   
   return StdDrivers::Factory (aGUID);
 }
+
+#ifdef _MSC_VER
+#pragma warning(disable:4190) /* disable warning on C++ type returned by C function; should be OK for C++ usage */
+#endif
 
 PLUGIN(XCAFDrivers)

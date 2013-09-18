@@ -283,17 +283,22 @@ Standard_OStream& TopOpeBRepDS_Interference::Dump
 //function : Dump
 //purpose  : 
 //=======================================================================
-
+#ifdef DEB
 Standard_OStream& TopOpeBRepDS_Interference::Dump
 (Standard_OStream& OS,
  const TCollection_AsciiString& s1,
  const TCollection_AsciiString& s2) const
 {
-#ifdef DEB
   OS<<s1;
   Dump(OS);
   OS<<s2;
   OS.flush();
-#endif
   return OS;
 }
+#else
+Standard_OStream& TopOpeBRepDS_Interference::Dump
+(Standard_OStream& OS,
+ const TCollection_AsciiString&,
+ const TCollection_AsciiString&) const
+{ return OS; }
+#endif

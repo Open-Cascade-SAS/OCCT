@@ -57,8 +57,7 @@
 
 static char txt_cart_p[]   = "CARTESIAN_POINT";
 
-void rec_restext(newtext,lentext)         /* destine a etre appele de l'exterieur */
-char* newtext; int lentext;
+void rec_restext(char* newtext, int lentext)         /* destine a etre appele de l'exterieur */
 {
   char *res, *text;
   if(strcmp(newtext,txt_cart_p)==0) {
@@ -83,18 +82,16 @@ char* newtext; int lentext;
   *res = '\0' ;
 }
 
-void rec_gettext(r)
-char* *r ;
-{ *r = restext; }
+void rec_gettext(char* *r)
 /*  Le resultat retourne (pointeur) est destine a etre inclus dans un struct */
+{ *r = restext; }
 
-void rec_settext(s)
-char* s ;    /* substituer le texte courant par un autre deja alloue */
+void rec_settext(char* s)
+/* substituer le texte courant par un autre deja alloue */
 {  restext = s ;  }
 
-char* rec_newtext(r)
+char* rec_newtext(char* r)
 /*  routine utilitaire creant une chaine dynamique a partir d'un char[]  */
-char* r ;
 {
   char* savrestext; char* s0;
   savrestext = restext;
@@ -173,8 +170,7 @@ static char idzero[]   = "#0";
 
 
 /*              Trace pour controle            */
-void recfile_modeprint(mode)
-int mode ;
+void recfile_modeprint(int mode)
 {  modeprint = mode;  }
 
 static int   lastno;
@@ -221,8 +217,8 @@ void rec_finfile()  {  }
 /*   GESTION DES RECORDS   */
 
 /*   ENREGISTRER UN RECORD (deja pret)    */
-void static rec_new(newrec)
-struct rec* newrec ;    /*  nouveau record a enregistrer  */
+void static rec_new(struct rec* newrec)
+/*  nouveau record a enregistrer  */
 {
  nbrec ++ ;
  if ( firstrec == NULL ) firstrec = newrec ;
@@ -231,8 +227,7 @@ struct rec* newrec ;    /*  nouveau record a enregistrer  */
 }
 
 /*  type du dernier argument lu  */
-void rec_typarg(argtype)
-int argtype ;
+void rec_typarg(int argtype)
 {  typarg = argtype;  }
 
 /*   ENREGISTRER UNE ENTITE (record courant)   */
@@ -392,8 +387,7 @@ void rec_deblist()
 
 
 /*   Affichage du contenu d'un record   */
-void rec_print(unrec)
-struct rec* unrec ;
+void rec_print(struct rec* unrec)
 {
  int numa = 0;  int numl = 0;  int argl = 0;
  if (unrec == NULL) {  printf ("Non defini\n") ; return;  }
@@ -490,8 +484,7 @@ void scope_fin()
      La liberation de la memoire est faite par lir_file_fin, en une fois
 */
 
-void lir_file_nbr(nbh,nbr,nbp)
-int* nbh; int* nbr; int* nbp;
+void lir_file_nbr(int* nbh, int* nbr, int* nbp)
 /*  initialise le traitement et retourne la taille du directory et du header */
 {
  currec = firstrec ;
@@ -499,8 +492,7 @@ int* nbh; int* nbr; int* nbp;
  *nbh = nbhead;  *nbr = nbrec;  *nbp = nbpar;
 }
 
-void lir_file_fin(mode)
-int mode;
+void lir_file_fin(int mode)
 /*  fin du traitement : regroupe les liberations de memoire en une phase  */
 /*  mode = 1 : rec+arg. 2 : carpage; 3 : 1+2  */
 {
@@ -538,10 +530,9 @@ int mode;
   }
 }
 
-int lir_file_rec(ident,type,nbarg)
+int lir_file_rec(char* *ident, char* *type, int *nbarg)
 /*   retourne les parametres du record courant
      retour de fonction ; 1 si ok, 0 si liste epuisee   */
-char* *ident ; char* *type ; int *nbarg ;
 {
  if (currec == NULL) return (0) ;
 /*                                   rec_check(2) ;    */
@@ -560,8 +551,7 @@ void lir_file_finrec()
 /*                                   rec_check(2) ;   */
 }
 
-int lir_file_arg(type,val)
-int* type ; char* *val ;
+int lir_file_arg(int* type, char* *val)
 /*  lit l'argument courant (au debut le 1er), fait le menage, prepare suivant
     retourne 1 si ok, 0 si c'est fini
     attention, suppose que nbarg > 0 ... (bref, pas de protection)   */
@@ -579,8 +569,8 @@ int* type ; char* *val ;
 /*   Affiche ce qui ne va pas, mais aussi accede a tout : ainsi, les adresses
      verolees aparaissent au grand jour du dbx   */
 
-void rec_check(mode)
-int mode ;       /* =1 pas de controle nbrec (en cours d'enregistrement) */
+void rec_check(int mode)
+/* mode=1 pas de controle nbrec (en cours d'enregistrement) */
 {
   struct rec* lerec ; struct unarg* larg ; int nr,na ;
   lerec = firstrec ;

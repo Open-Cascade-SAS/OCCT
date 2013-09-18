@@ -489,10 +489,10 @@ void TopOpeBRep_EdgesFiller::RecomputeInterferences(const TopoDS_Edge& E,TopOpeB
     Handle(TopOpeBRepDS_Interference)& iloi = loi.First(); 
     TopOpeBRepDS_Transition& TU = iloi->ChangeTransition();
     Standard_Integer ifb = TU.IndexBefore();
-    Standard_Integer ifa = TU.IndexAfter();
     const TopoDS_Face& fb = TopoDS::Face(myPDS->Shape(ifb));
 
 #ifdef DEB
+    Standard_Integer ifa = TU.IndexAfter();
     if (ifb != ifa) {cout<<"TopOpeBRep_EdgesFiller : ifb != ifa on E"<<EIX<<" NYI"<<endl;}
 #endif
 

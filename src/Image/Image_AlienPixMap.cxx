@@ -143,13 +143,13 @@ bool Image_AlienPixMap::InitWrapper (ImgFormat,
 // function : InitTrash
 // purpose  :
 // =======================================================================
+#ifdef HAVE_FREEIMAGE
 bool Image_AlienPixMap::InitTrash (ImgFormat           thePixelFormat,
                                    const Standard_Size theSizeX,
                                    const Standard_Size theSizeY,
-                                   const Standard_Size theSizeRowBytes)
+                                   const Standard_Size /*theSizeRowBytes*/)
 {
   Clear();
-#ifdef HAVE_FREEIMAGE
   FREE_IMAGE_TYPE aFormatFI = convertToFreeFormat (thePixelFormat);
   int aBitsPerPixel = (int )Image_PixMap::SizePixelBytes (thePixelFormat) * 8;
   if (aFormatFI == FIT_UNKNOWN)
@@ -176,10 +176,16 @@ bool Image_AlienPixMap::InitTrash (ImgFormat           thePixelFormat,
   // assign image after wrapper initialization (virtual Clear() called inside)
   myLibImage = anImage;
   return true;
-#else
-  return Image_PixMap::InitTrash (thePixelFormat, theSizeX, theSizeY, theSizeRowBytes);
-#endif
 }
+#else
+bool Image_AlienPixMap::InitTrash (ImgFormat           thePixelFormat,
+                                   const Standard_Size theSizeX,
+                                   const Standard_Size theSizeY,
+                                   const Standard_Size theSizeRowBytes)
+{
+  return Image_PixMap::InitTrash (thePixelFormat, theSizeX, theSizeY, theSizeRowBytes);
+}
+#endif
 
 // =======================================================================
 // function : InitCopy

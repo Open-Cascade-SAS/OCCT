@@ -518,12 +518,8 @@ void IntPatch_ALine::ComputeVertexParameters(const Standard_Real Tol) {
     if(   (VTX0.IsOnDomS1() == Standard_False)
        && (VTX0.IsOnDomS2() == Standard_False)) { 
       svtx.Remove(nbvtx);
-#ifndef DEB
-      if((signed)lapt == nbvtx) { 
-#else
-      if(lapt == nbvtx) { 
-#endif
-	indl--;
+      if(lapt) { 
+        indl--;
       }
     }
   }

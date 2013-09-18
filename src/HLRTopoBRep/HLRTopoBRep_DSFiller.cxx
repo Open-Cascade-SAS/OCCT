@@ -68,7 +68,7 @@
 
 static Standard_Boolean IntLineRisesFromRegularity(const TopoDS_Edge& anIntLine,
                                                    const TopoDS_Edge& anEdge,
-                                                   const TopoDS_Face& aFace,
+                                                   const TopoDS_Face&,
                                                    const TopTools_ListOfShape& aList)
 {
   TopoDS_Vertex Ver [2];

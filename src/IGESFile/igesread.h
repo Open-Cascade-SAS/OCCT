@@ -56,7 +56,7 @@ extern "C" {
   void iges_newparam(int typarg,int longval, char *parval);
   void iges_param(int *Pstat,char *ligne,char c_separ,char c_fin,int lonlin);
   void iges_Dsect (int *Dstat,int numsec,char* ligne);
-  void iges_Psect(int *Pstat,int numsec,char ligne[80]);
+  void iges_Psect(int numsec,char ligne[80]);
 
   /* MGE 20/07/98 */
   void IGESFile_Check2 (int mode,char * code, int num, char * str);

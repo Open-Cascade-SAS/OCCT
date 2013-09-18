@@ -2042,18 +2042,14 @@ Standard_Boolean Draw_Interprete (const char*);
 static DWORD WINAPI readStdinThreadFunc(VOID)
 {
   if (!Draw_IsConsoleSubsystem) return 1;
-
   for(;;) {
     while (console_semaphore != WAIT_CONSOLE_COMMAND)
       Sleep(100);
-    //if (gets(console_command))
-	if (fgets(console_command,COMMAND_SIZE,stdin))
+      if (fgets(console_command,COMMAND_SIZE,stdin))
       {
         console_semaphore = HAS_CONSOLE_COMMAND;
       }
-
   }
-  return 0;
 }
 
 /*--------------------------------------------------------*\

@@ -4620,7 +4620,7 @@ static Standard_Integer VShowFaceBoundary (Draw_Interpretor& /*di*/,
 //function : VMarkersTest
 //purpose  : Draws an array of markers for testing purposes.
 //=======================================================================
-static Standard_Integer VMarkersTest (Draw_Interpretor& theDI,
+static Standard_Integer VMarkersTest (Draw_Interpretor&,
                                       Standard_Integer  theArgNb,
                                       const char**      theArgVec)
 {

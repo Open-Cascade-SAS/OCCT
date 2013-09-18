@@ -34,7 +34,7 @@ int  iges_lire (FILE* lefic, int *numsec, char ligne[100], int modefnes);
 void iges_newparam(int typarg,int longval, char *parval);
 void iges_param(int *Pstat,char *ligne,char c_separ,char c_fin,int lonlin);
 void iges_Dsect (int *Dstat,int numsec,char* ligne);
-void iges_Psect(int *Pstat,int numsec,char ligne[80]);
+void iges_Psect(int numsec,char ligne[80]);
 
 
 
@@ -56,8 +56,7 @@ void iges_Psect(int *Pstat,int numsec,char ligne[80]);
 static  char sects [] = " SGDPT ";
 
 
-int igesread(nomfic,lesect,modefnes)
-char* nomfic; int lesect[6]; int modefnes;
+int igesread (char* nomfic, int lesect[6], int modefnes)
 {
   /* MGE 16/06/98 */
 
@@ -113,7 +112,7 @@ char* nomfic; int lesect[6]; int modefnes;
     }
     if (i == 3) iges_Dsect(&Dstat,numsec,ligne);    /* Directory  (Dsect) */
     if (i == 4) {                                   /* Parametres (Psect) */
-      iges_Psect(&Pstat,numsec,ligne);
+      iges_Psect(numsec,ligne);
       for (;;) {
 	iges_param(&Pstat,ligne,c_separ,c_fin,64);
 	if (Pstat != 2) break;

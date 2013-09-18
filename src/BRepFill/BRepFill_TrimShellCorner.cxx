@@ -876,8 +876,8 @@ Standard_Boolean SplitUEdges(const Handle(TopTools_HArray2OfShape)&     theUEdge
         //const BOPTools_VVInterference& aVV = aVVs(vvit);
         const BOPDS_InterfVV& aVV = aVVs(vvit);
 
-        if(((vindex1 == aVV.Index1()) && (vindex2 = aVV.Index2())) ||
-           ((vindex1 == aVV.Index2()) && (vindex2 = aVV.Index1()))) {
+        if(((vindex1 == aVV.Index1()) && (vindex2 == aVV.Index2())) ||
+           ((vindex1 == aVV.Index2()) && (vindex2 == aVV.Index1()))) {
 
           if(!aVV.HasIndexNew()) {
             continue;

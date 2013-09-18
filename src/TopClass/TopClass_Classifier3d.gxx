@@ -28,7 +28,7 @@ TopClass_Classifier3d::TopClass_Classifier3d() : isSet(Standard_False)
 
 //======================================================================
 void TopClass_Classifier3d::Reset(const gp_Lin&       L,
-				 const Standard_Real Param,
+				 const Standard_Real,
 				 const Standard_Real Tol) { 
   myLin       = L;
   myParam     = RealLast();
@@ -41,7 +41,7 @@ void TopClass_Classifier3d::Reset(const gp_Lin&       L,
 #include <IntCurveSurface_TransitionOnCurve.hxx>
 
 void TopClass_Classifier3d::Compare(const TopoDS_Face&        Face,
-				    const TopAbs_Orientation  Orientation) {  
+				    const TopAbs_Orientation) {  
   if(!isSet) { 
     cout<<" Call to TopClass_Classifier3d::Compare  without a Reset ! ";
     return;

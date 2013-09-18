@@ -98,8 +98,9 @@ typedef struct {
   float ViewScaleY;
   float ViewScaleZ;
 
-  int   IsCustomMatrix;
   float ModelViewMatrix[4][4];
+
+  unsigned IsCustomMatrix;
 
 } CALL_DEF_VIEWORIENTATION;
 
@@ -120,8 +121,9 @@ typedef struct {
     float um, vm, uM, vM;
   } WindowLimit;
 
-  int   IsCustomMatrix;
   float ProjectionMatrix[4][4];
+
+  unsigned IsCustomMatrix;
 
 } CALL_DEF_VIEWMAPPING;
 

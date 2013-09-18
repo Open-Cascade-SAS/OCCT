@@ -69,9 +69,9 @@ void OpenGl_GraphicDriver::MarkerContextGroup (const Graphic3d_CGroup& theCGroup
 
 void OpenGl_GraphicDriver::MarkerContextGroup (const Graphic3d_CGroup& theCGroup,
                                                const Standard_Integer  theNoInsert,
-                                               const Standard_Integer  theMarkWidth,
-                                               const Standard_Integer  theMarkHeight,
-                                               const Handle(TColStd_HArray1OfByte)& theTexture)
+                                               const Standard_Integer  /*theMarkWidth*/,
+                                               const Standard_Integer  /*theMarkHeight*/,
+                                               const Handle(TColStd_HArray1OfByte)& /*theTexture*/)
 {
   if (!theCGroup.ContextMarker.IsDef)
   {

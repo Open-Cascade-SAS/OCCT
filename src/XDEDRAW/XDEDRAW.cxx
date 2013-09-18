@@ -1015,7 +1015,7 @@ static Standard_Integer XShowFaceBoundary (Draw_Interpretor& di,
 //function : testDoc
 //purpose  : Method to test destruction of document
 //=======================================================================
-static Standard_Integer testDoc (Draw_Interpretor& di,
+static Standard_Integer testDoc (Draw_Interpretor&,
                                  Standard_Integer argc,
                                  const char ** argv)
 {

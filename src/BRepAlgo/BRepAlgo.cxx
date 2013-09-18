@@ -291,7 +291,7 @@ TopoDS_Edge  BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
       FirstVertex = wexp.CurrentVertex();
     } else {
       Standard_Boolean isSameCurve = Standard_False;
-      Standard_Real NewFpar, NewLpar;
+      Standard_Real NewFpar = RealFirst(), NewLpar = RealLast();
       GeomAdaptor_Curve GAprevcurve(CurveSeq.Last());
 
       if (aCurve == CurveSeq.Last()) {

@@ -166,10 +166,10 @@ TopAbs_State TopOpeBRep_FacesFiller::StBipVPonF
   gp_Pnt pmil = BC.Value(parmil);
 
 #ifdef DEB
+#ifdef DRAW
   Standard_Boolean trc = TopOpeBRep_GettraceBIPS();
-    #ifdef DRAW
-      if (trc) {TCollection_AsciiString aa("pmil"); FUN_brep_draw(aa,pmil);}
-    #endif
+  if (trc) {TCollection_AsciiString aa("pmil"); FUN_brep_draw(aa,pmil);}
+#endif
 #endif
   TopAbs_State st = FSC_StatePonFace (pmil,F,*myPShapeClassifier);
   return st;

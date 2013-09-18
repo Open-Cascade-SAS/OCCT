@@ -53,7 +53,11 @@ TopOpeBRepBuild_ShapeSet(TopAbs_EDGE)
 //=======================================================================
 
 TopOpeBRepBuild_ShellFaceSet::TopOpeBRepBuild_ShellFaceSet
+#ifdef DEB
 (const TopoDS_Shape& S,const Standard_Address A) : // DEB
+#else
+(const TopoDS_Shape& S,const Standard_Address) : // DEB
+#endif
 TopOpeBRepBuild_ShapeSet(TopAbs_EDGE)
 {
   mySolid = TopoDS::Solid(S);

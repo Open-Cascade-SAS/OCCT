@@ -117,7 +117,7 @@ void TDataStd_BooleanArray::SetValue (const Standard_Integer index,
   Standard_Integer degree = index - (byte_index << 3) - myLower;
   Standard_Integer byte_value = DegreeOf2(degree);
 
-  if (value == ((myValues->Value(byte_index) & byte_value) > 0))
+  if ((value != 0) == ((myValues->Value(byte_index) & byte_value) > 0))
     return;
 
   Backup();

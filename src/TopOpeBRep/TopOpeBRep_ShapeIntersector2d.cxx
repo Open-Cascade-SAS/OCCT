@@ -152,9 +152,9 @@ Standard_Boolean TopOpeBRep_ShapeIntersector2d::MoreIntersection() const
 //purpose  : 
 //=======================================================================
 
+#ifdef DEB
 void TopOpeBRep_ShapeIntersector2d::DumpCurrent(const Standard_Integer K) const
 {
-#ifdef DEB
   if      ( myFFDone ) {
     if      ( K == 1 ) myFaceScanner.DumpCurrent(cout);
     else if ( K == 2 ) myFaceExplorer.DumpCurrent(cout);
@@ -163,6 +163,9 @@ void TopOpeBRep_ShapeIntersector2d::DumpCurrent(const Standard_Integer K) const
     if      ( K == 1 ) myEdgeScanner.DumpCurrent(cout);
     else if ( K == 2 ) myEdgeExplorer.DumpCurrent(cout);
   }
+#else
+void TopOpeBRep_ShapeIntersector2d::DumpCurrent(const Standard_Integer) const
+{
 #endif
 }
 
@@ -171,11 +174,12 @@ void TopOpeBRep_ShapeIntersector2d::DumpCurrent(const Standard_Integer K) const
 //purpose  : 
 //=======================================================================
 
+#ifdef DEB
 Standard_Integer TopOpeBRep_ShapeIntersector2d::Index
 (const Standard_Integer K)const
 {
   Standard_Integer i = 0;
-#ifdef DEB
+
   if      ( myFFDone ) {
     if      ( K == 1 ) i = myFaceScanner.Index();
     else if ( K == 2 ) i = myFaceExplorer.Index();
@@ -184,9 +188,12 @@ Standard_Integer TopOpeBRep_ShapeIntersector2d::Index
     if      ( K == 1 ) i = myEdgeScanner.Index();
     else if ( K == 2 ) i = myEdgeExplorer.Index();
   }
-#endif
+
   return i;
 }
+#else
+Standard_Integer TopOpeBRep_ShapeIntersector2d::Index (const Standard_Integer)const { return 0;}
+#endif
 
 
 //=======================================================================

@@ -32,11 +32,6 @@
 #include <BinDrivers_DocumentRetrievalDriver.hxx>
 #include <Plugin_Macro.hxx>
 
-// avoid warnings on 'extern "C"' functions returning C++ classes
-#ifdef WNT
-#pragma warning(4:4190)
-#endif
-
 static Standard_GUID BinStorageDriver  ("03a56835-8269-11d5-aab2-0050044b1af1");
 static Standard_GUID BinRetrievalDriver("03a56836-8269-11d5-aab2-0050044b1af1");
 
@@ -95,4 +90,8 @@ TCollection_AsciiString BinDrivers::StorageVersion()
 {
   return BinLDrivers::StorageVersion();
 }
+
+#ifdef _MSC_VER
+#pragma warning(disable:4190) /* disable warning on C++ type returned by C function; should be OK for C++ usage */
+#endif
 PLUGIN(BinDrivers)

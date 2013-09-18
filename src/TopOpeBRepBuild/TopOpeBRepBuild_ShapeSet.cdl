@@ -116,14 +116,6 @@ is
     ChangeStartShapes(me:in out) returns ListOfShape from TopTools;
     ---C++: return &
 
-    IsStartElement(me;S:Shape) returns Boolean;
-    IsElement(me;S:Shape) returns Boolean;
-    IsShape(me;S:Shape) returns Boolean;
-
-    NStartElement(me;S:Shape) returns Integer;
-    NElement(me;S:Shape) returns Integer;
-    NShape(me;S:Shape) returns Integer;
-
     FindNeighbours(me:in out) is virtual;
     ---Purpose: Build the list of neighbour shapes of myCurrentShape
     -- (neighbour shapes and myCurrentShapes are of type t)

@@ -124,6 +124,7 @@
 // Purpose: Use it in DEB mode to dump your shapes
 // ============================================================================
 
+#ifdef DEB
 static void DumpWhatIs(const TopoDS_Shape& S) {
 
   TopTools_MapOfShape aMapOfShape;
@@ -163,7 +164,7 @@ static void DumpWhatIs(const TopoDS_Shape& S) {
         nbVertexes++;
     }
   }
-  #ifdef DEB
+
   cout << "//What is?// NB SOLIDS: " << nbSolids << endl;
   cout << "//What is?// NB SHELLS: " << nbShells << endl;
   cout << "//What is?//    OPEN SHELLS: " << nbOpenShells << endl;
@@ -172,8 +173,8 @@ static void DumpWhatIs(const TopoDS_Shape& S) {
   cout << "//What is?// NB WIRES: " << nbWires << endl;
   cout << "//What is?// NB EDGES: " << nbEdges << endl;
   cout << "//What is?// NB VERTEXES: " << nbVertexes << endl;
-  #endif
 }
+#endif
 
 //=======================================================================
 // Function : IsManifoldShape

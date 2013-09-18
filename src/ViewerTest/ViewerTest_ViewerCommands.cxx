@@ -511,12 +511,12 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
     // Get connection string
   #if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
     TCollection_AsciiString aDisplayName(theDisplayName);
-    if (aDisplayName.IsEmpty())
+    if (!aDisplayName.IsEmpty())
       SetDisplayConnection (new Aspect_DisplayConnection ());
     else
       SetDisplayConnection (new Aspect_DisplayConnection (aDisplayName));
-
   #else
+    (void)theDisplayName; // avoid warning on unused argument
     SetDisplayConnection (new Aspect_DisplayConnection ());
   #endif
     aGraphicDriver = new OpenGl_GraphicDriver();

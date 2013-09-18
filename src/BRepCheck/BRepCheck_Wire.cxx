@@ -402,12 +402,17 @@ Standard_Boolean IsDistanceIn3DTolerance (const BRepAdaptor_Surface& /*aFaceSurf
 //function : IsDistanceIn3DTolerance
 //purpose  : 
 //=======================================================================
+static 
 Standard_Boolean IsDistanceIn2DTolerance (const BRepAdaptor_Surface& aFaceSurface,
                                           const gp_Pnt2d& thePnt,
                                           const gp_Pnt2d& thePntRef,
                                           const Standard_Real aTol3d,
+#ifdef DEB
                                           const Standard_Boolean PrintWarnings = Standard_True)
-  {
+#else
+                                          const Standard_Boolean = Standard_True)
+#endif
+{
   Standard_Real dumax = 0.01 * (aFaceSurface.LastUParameter() - aFaceSurface.FirstUParameter());
   Standard_Real dvmax = 0.01 * (aFaceSurface.LastVParameter() -	aFaceSurface.FirstVParameter());
   Standard_Real dumin = Abs(thePnt.X() - thePntRef.X());

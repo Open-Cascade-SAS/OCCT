@@ -568,13 +568,6 @@ Standard_Boolean IntCoSp(const IntSurf_Quadric& Quad1,
     {
       gp_Vec Tgt;
       gp_Pnt ptref;
-#ifndef DEB
-      Co.Apex();
-#else
-      gp_Pnt apex(Co.Apex());
-      //Standard_Real param;
-      Standard_Real paramapex   =  ElCLib::LineParameter(Co.Axis(),apex);
-#endif
 
       for (i=1; i<=NbSol; i++) {
 	gp_Circ cirsol = inter.Circle(i);
@@ -669,11 +662,6 @@ Standard_Boolean IntCoSp(const IntSurf_Quadric& Quad1,
 
 	gp_Pnt ptvalid, ptf, ptl;
 	gp_Vec tgvalid;
-#ifdef DEB
-	Standard_Real paramapex   = 
-#endif
-	  ElCLib::LineParameter(Co.Axis(),
-				Co.Apex());
 	Standard_Real first,last,para;
 	Standard_Boolean tgfound,firstp,lastp,kept;
 	Standard_Integer kount;

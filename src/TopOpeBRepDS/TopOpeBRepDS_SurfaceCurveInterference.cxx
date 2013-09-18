@@ -94,7 +94,12 @@ void  TopOpeBRepDS_SurfaceCurveInterference::PCurve
 
 Standard_OStream& TopOpeBRepDS_SurfaceCurveInterference::DumpPCurve
   (Standard_OStream& OS,
-   const Standard_Boolean compact)const
+#ifdef DEB
+   const Standard_Boolean compact
+#else
+   const Standard_Boolean
+#endif
+   )const
 {
 #ifdef DEB
   Dump(OS); OS<<endl;

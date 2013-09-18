@@ -322,18 +322,20 @@ Standard_Integer TOPOC(Draw_Interpretor& interpretor,Standard_Integer na,const c
 } // TOPO
 
 // ----------------------------------------------------------------------
+#ifdef DEB
 Standard_Integer BOOPCHK(Draw_Interpretor& ,Standard_Integer na,const char** a)
 {
   if (!strcmp(a[0],"tchk")) { 
-#ifdef DEB
 //    Standard_IMPORT extern Standard_Integer TopOpeBRepTool_BOOOPE_CHECK_DEB;
     Standard_IMPORT Standard_Integer TopOpeBRepTool_BOOOPE_CHECK_DEB;
     if ( na >= 2 ) TopOpeBRepTool_BOOOPE_CHECK_DEB = (Draw::Atoi(a[1])) ? 1 : 0;
-#endif
     return 0;
   }
   return 0;
 }
+#else
+Standard_Integer BOOPCHK(Draw_Interpretor& ,Standard_Integer,const char**) {return 0;}
+#endif
 
 // ----------------------------------------------------
 Standard_Integer TOPOSETCOMMANDS(TestTopOpe_BOOP& PT,Standard_Integer na,const char** a, Draw_Interpretor& di)

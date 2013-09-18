@@ -267,7 +267,7 @@ void MAT_Mat::CreateMat(Tool& atool)
     //---------------------------------------------------
     // boucle 2 Tant qu il y a des bisectrices a effacer.
     //---------------------------------------------------
-    while(Standard_True) {
+    for(;;) {
       NbIterBis++;
 
       noofbisectorstoremove = 0;
@@ -339,7 +339,7 @@ void MAT_Mat::CreateMat(Tool& atool)
 	// <bisectortwotoremove(i).
 	//---------------------------------------------------------------
 
-	while(Standard_True){
+	for(;;){
 
 #ifdef DEBUG_Mat
 	  atool.Dump(bisectortoremove->BisectorNumber(),0);

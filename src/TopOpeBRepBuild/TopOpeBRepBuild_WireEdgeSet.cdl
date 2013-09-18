@@ -61,9 +61,7 @@ is
     -- Initialize iterator of neighbour edges to edge myCurrentShape
     MakeNeighboursList(me: in out;E,V:Shape) returns ListOfShape from TopTools is redefined;
     ---C++: return const &
-    HasConnexStartElement(me) returns Boolean; -- desactivated
 
-    -- private
     VertexConnectsEdges(me;V,E1,E2:Shape;O1,O2:out Orientation from TopAbs)
     returns Boolean is private;
     ---Purpose: 

@@ -353,9 +353,13 @@ void TopOpeBRepDS_Curve::ChangeIsWalk(const Standard_Boolean B)
 //purpose  : 
 //=======================================================================
 
-Standard_OStream& TopOpeBRepDS_Curve::Dump(Standard_OStream& OS,
-					   const Standard_Integer index,
-					   const Standard_Boolean compact)const
+Standard_OStream& TopOpeBRepDS_Curve::Dump (Standard_OStream& OS,
+                                            const Standard_Integer index,
+#ifdef DEB
+                                            const Standard_Boolean compact)const
+#else
+                                            const Standard_Boolean)const
+#endif
 {
 #ifdef DEB
   OS<<"Curve : "; if (index != 0) OS<<index<<" ";

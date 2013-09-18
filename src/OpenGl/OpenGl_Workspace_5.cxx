@@ -516,7 +516,7 @@ const OpenGl_AspectFace* OpenGl_Workspace::AspectFace (const Standard_Boolean th
         glDisable (GL_POLYGON_STIPPLE);
         break;
       }
-      case 5: //szvgl - no corresponding enumeration item Aspect_IS_POINT // = 5
+      case Aspect_IS_POINT: //szvgl - no corresponding enumeration item Aspect_IS_POINT // = 5
       {
         glPolygonMode(GL_FRONT_AND_BACK,GL_POINT);
         break;

@@ -25,9 +25,8 @@
 
 #include <Plugin_Macro.hxx>
 
-// avoid warnings on 'extern "C"' functions returning C++ classes
-#ifdef WNT
-#pragma warning(4:4190)
+#ifdef _MSC_VER
+#pragma warning(disable:4190) /* disable warning on C++ type returned by C function; should be OK for C++ usage */
 #endif
 
 PLUGIN(FWOSDriver)

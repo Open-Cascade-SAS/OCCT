@@ -3150,7 +3150,11 @@ UpdateAroundNode (const Standard_Integer iNode,
 //=======================================================================
 
 void 
+#ifdef DEB
 HLRBRep_PolyAlgo::OrientTriangle(const Standard_Integer iTri,
+#else
+HLRBRep_PolyAlgo::OrientTriangle(const Standard_Integer,
+#endif
 				 const Standard_Address Tri1Indices,
 				 const Standard_Address Nod1Indices,
 				 const Standard_Address Nod1RValues,

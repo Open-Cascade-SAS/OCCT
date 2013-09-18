@@ -48,7 +48,7 @@
 static Standard_Boolean Affich     = Standard_False;
 static Standard_Integer NbSECTIONS = 0;
 #endif
-
+//#define GF_DEB
 //=======================================================================
 //function : GeomFill_SweepSectionGenerator
 //purpose  : 
@@ -628,7 +628,7 @@ void GeomFill_SweepSectionGenerator::Section
 		    gp_Vec(PPath,P1));
       Angle = ElCLib::CircleParameter(Axis,P2);
     }
-#ifdef DEB
+#ifdef GF_DEB
     if (Standard_False) {
       gp_Vec dummyD1 = myAdpPath->DN(U,1);
       gp_Vec dummyTg = Axis.Direction();

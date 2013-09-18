@@ -101,7 +101,12 @@ Standard_Boolean TopOpeBRepBuild_Builder::GKeepShape1
 // S is used for trace only
 //=======================================================================
 void TopOpeBRepBuild_Builder::GKeepShapes
-(const TopoDS_Shape& S,const TopTools_ListOfShape& LSclass,const TopAbs_State TB,const TopTools_ListOfShape& Lin,TopTools_ListOfShape& Lou)
+#ifdef DEB
+(const TopoDS_Shape& S,
+#else
+(const TopoDS_Shape&,
+#endif
+ const TopTools_ListOfShape& LSclass,const TopAbs_State TB,const TopTools_ListOfShape& Lin,TopTools_ListOfShape& Lou)
 {
 #ifdef DEB
   Standard_Integer iS; Standard_Boolean tSPS = GtraceSPS(S,iS);

@@ -298,7 +298,6 @@ static void EdgeInter(const TopoDS_Face&              F,
     return;
 
   Standard_Real f[3],l[3];
-  Standard_Real MilTol2 = 1000*Tol*Tol;
   Standard_Real TolDub = 1.e-7;
   Standard_Integer i;
 
@@ -401,6 +400,7 @@ static void EdgeInter(const TopoDS_Face&              F,
 	      cout << "out of limit"<<endl;
 	      cout<<"aT2 = "<<aT2<<", f[2] = "<<f[2]<<", l[2] = "<<l[2]<<endl;
 	    }
+          Standard_Real MilTol2 = 1000*Tol*Tol;
 	  if (P1.SquareDistance(P) >  MilTol2 || P2.SquareDistance(P) > MilTol2 || P1.Distance(P2) > 2.*Tol)
 	    {
 	      cout << "Inter2d : Solution rejected "<<endl;
@@ -570,7 +570,6 @@ static void RefEdgeInter(const TopoDS_Face&              F,
     return;
 
   Standard_Real f[3],l[3];
-  Standard_Real MilTol2 = 1000*Tol*Tol;
   Standard_Real TolDub = 1.e-7;
   Standard_Integer i;
 
@@ -670,6 +669,7 @@ static void RefEdgeInter(const TopoDS_Face&              F,
 	  cout << "out of limit"<<endl;
 	  cout<<"aT2 = "<<aT2<<", f[2] = "<<f[2]<<", l[2] = "<<l[2]<<endl;
 	}
+      Standard_Real MilTol2 = 1000*Tol*Tol;
       if (P1.SquareDistance(P) >  MilTol2 || P2.SquareDistance(P) > MilTol2 || P1.Distance(P2) > 2.*Tol)
 	{
 	  cout << "Inter2d : Solution rejected"<<endl;

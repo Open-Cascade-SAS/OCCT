@@ -1625,9 +1625,12 @@ TopAbs_State HLRBRep_Data::Compare (const Standard_Integer E,
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean
-HLRBRep_Data::OrientOutLine (const Standard_Integer I,
-			     HLRBRep_FaceData& FD)
+
+#ifdef DEB
+Standard_Boolean HLRBRep_Data::OrientOutLine (const Standard_Integer I, HLRBRep_FaceData& FD)
+#else
+Standard_Boolean HLRBRep_Data::OrientOutLine (const Standard_Integer, HLRBRep_FaceData& FD)
+#endif
 {
   const Handle(HLRAlgo_WiresBlock)& wb = FD.Wires();
   Standard_Integer nw = wb->NbWires();

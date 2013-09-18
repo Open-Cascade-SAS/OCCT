@@ -589,7 +589,7 @@ Standard_Boolean BRepMesh_Delaun::isBoundToFrontier(
 //=======================================================================
 void BRepMesh_Delaun::cleanupMesh()
 {
-  while ( Standard_True )
+  for(;;)
   {
     BRepMesh_MapOfIntegerInteger aLoopEdges( 10, myMeshData->Allocator() );
     NCollection_Map<Standard_Integer> aDelTriangles;
@@ -2046,7 +2046,7 @@ void  BRepMesh_Delaun::AddVertices( BRepMesh_Array1OfVertexOfDelaun& theVertices
 //function : UseEdge
 //purpose  : Modify mesh to use the edge. Return True if done
 //=======================================================================
-Standard_Boolean BRepMesh_Delaun::UseEdge( const Standard_Integer theIndex )
+Standard_Boolean BRepMesh_Delaun::UseEdge( const Standard_Integer /*theIndex*/ )
 {
   /*
   const BRepMesh_PairOfIndex& aPair = myMeshData->ElemConnectedTo( theIndex );
@@ -2459,10 +2459,6 @@ Standard_Real BRepMesh_Delaun::polyArea( const TColStd_SequenceOfInteger& thePol
   {
     return aArea;
   }
-
-  Standard_Integer aEndIndex = (theEndIndex > aPolyLen) ? 
-    aPolyLen : theEndIndex;
-
   Standard_Integer aCurEdgeInfo = thePolygon( theStartIndex );
   Standard_Integer aCurEdgeId   = Abs( aCurEdgeInfo );
   const BRepMesh_Edge* aCurEdge = &GetEdge( aCurEdgeId );

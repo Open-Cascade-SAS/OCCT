@@ -293,95 +293,6 @@ TopTools_ListOfShape& TopOpeBRepBuild_ShapeSet::ChangeStartShapes()
 }
 
 //=======================================================================
-//function : IsStartElement
-//purpose  : 
-//=======================================================================
-Standard_Boolean TopOpeBRepBuild_ShapeSet::IsStartElement(const TopoDS_Shape& S) const
-{
-  Standard_Boolean b = Standard_False;
-#ifdef DEB
-  b = myOMSS.Contains(S);
-#endif
-  return b;
-}
-
-//=======================================================================
-//function : IsElement
-//purpose  : 
-//=======================================================================
-Standard_Boolean TopOpeBRepBuild_ShapeSet::IsElement(const TopoDS_Shape& S) const
-{
-  Standard_Boolean b = Standard_False;
-#ifdef DEB
-  b = myOMES.Contains(S);
-#endif
-  return b;
-}
-
-//=======================================================================
-//function : IsShape
-//purpose  : 
-//=======================================================================
-Standard_Boolean TopOpeBRepBuild_ShapeSet::IsShape(const TopoDS_Shape& S) const
-{
-  Standard_Boolean b = Standard_False;
-#ifdef DEB
-  b = myOMSH.Contains(S);
-#endif
-  return b;
-}
-
-//=======================================================================
-//function : NStartElement
-//purpose  : 
-//=======================================================================
-Standard_Integer TopOpeBRepBuild_ShapeSet::NStartElement(const TopoDS_Shape& S) const
-{
-  Standard_Integer n = 0;
-#ifdef DEB
-  Standard_Boolean b = Standard_False;
-  b = IsStartElement(S);
-  if (b) n++;
-  b = IsStartElement(S.Oriented(TopAbs::Complement(S.Orientation())));
-  if (b) n++;
-#endif
-  return n;
-}
-
-//=======================================================================
-//function : NElement
-//purpose  : 
-//=======================================================================
-Standard_Integer TopOpeBRepBuild_ShapeSet::NElement(const TopoDS_Shape& S) const
-{
-  Standard_Integer n = 0;
-#ifdef DEB
-  Standard_Boolean b = Standard_False;
-  b = IsElement(S);  if (b) n++;
-  b = IsElement(S.Oriented(TopAbs::Complement(S.Orientation())));
-  if (b) n++;
-#endif
-  return n;
-}
-
-//=======================================================================
-//function : IsShape
-//purpose  : 
-//=======================================================================
-Standard_Integer TopOpeBRepBuild_ShapeSet::NShape(const TopoDS_Shape& S) const
-{
-  Standard_Integer n = 0;
-#ifdef DEB
-  Standard_Boolean b = Standard_False;
-  b = IsShape(S);
-  if (b) n++;
-  b = IsShape(S.Oriented(TopAbs::Complement(S.Orientation())));
-  if (b) n++;
-#endif
-  return n;
-}
-
-//=======================================================================
 //function : FindNeighbours
 //purpose  : 
 //=======================================================================
@@ -494,7 +405,19 @@ void TopOpeBRepBuild_ShapeSet::DumpName(Standard_OStream& OS,const TCollection_A
 //function : DumpCheck
 //purpose  : 
 //=======================================================================
-void TopOpeBRepBuild_ShapeSet::DumpCheck(Standard_OStream& OS,const TCollection_AsciiString& str,const TopoDS_Shape& S,const Standard_Boolean chk) const
+
+#ifdef DEB
+void TopOpeBRepBuild_ShapeSet::DumpCheck(Standard_OStream& OS,
+                                         const TCollection_AsciiString& str,
+                                         const TopoDS_Shape& S, 
+                                         const Standard_Boolean chk
+#else
+void TopOpeBRepBuild_ShapeSet::DumpCheck(Standard_OStream&,
+                                         const TCollection_AsciiString&,
+                                         const TopoDS_Shape&,
+                                         const Standard_Boolean
+#endif
+                                                                    ) const
 { 
   if (!myCheckShape) return;
 

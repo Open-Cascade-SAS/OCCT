@@ -63,13 +63,25 @@ extern void PrintKRO_PREPA();
 
 Standard_Integer TestTopOpe_BOOP::Prepare(const char* ns1,const char* ns2)
 {
-  Standard_Integer err = 0;
-  if ((err = LoadShapes(ns1,ns2))) return err; // 0
-  if ((err = LoadnewDS())) return err; // 100
-  if ((err = DSF_Insert())) return err; // 100<,<200
-  if ((err = LoadnewHB())) return err; // 200
-  if ((err = Builder_Perform())) return err; // 200<,<300
-  return 0;
+  Standard_Integer anErrorCode = 0;
+  anErrorCode = LoadShapes(ns1,ns2);  // mylastPREP is 0
+  if (anErrorCode)
+    return anErrorCode;
+
+  anErrorCode = LoadnewDS();          // mylastPREP is 100
+  if (anErrorCode)
+    return anErrorCode;
+
+  anErrorCode = DSF_Insert();         // mylastPREP is (100,200)
+  if (anErrorCode)
+    return anErrorCode;
+
+  anErrorCode = LoadnewHB();          // mylastPREP is 200
+  if (anErrorCode)
+    return anErrorCode;
+
+  anErrorCode = Builder_Perform();    // mylastPREP is (200,300)
+  return anErrorCode;
 }
 
 Standard_Integer TestTopOpe_BOOP::LoadShapes(const char* ns1, const char* ns2)
@@ -95,7 +107,6 @@ Standard_Integer TestTopOpe_BOOP::LoadnewDS()
 
 Standard_Integer TestTopOpe_BOOP::DSF_Insert()
 {
-//  Standard_Integer err = 0;
   TopOpeBRep_DSFiller DSF;
   DSF_Insert(DSF);
   mylastPREP = 190;
@@ -104,7 +115,6 @@ Standard_Integer TestTopOpe_BOOP::DSF_Insert()
 
 Standard_Integer TestTopOpe_BOOP::LoadnewHB()
 {
-//  Standard_Integer err = 0;
   TopOpeBRepTool_GeomTool GT;
   Standard_Boolean c2d = myVarsTopo.GetC2D();
   GT.Define(myVarsTopo.GetOCT(),Standard_True,c2d, c2d);
@@ -118,7 +128,6 @@ Standard_Integer TestTopOpe_BOOP::LoadnewHB()
 
 Standard_Integer TestTopOpe_BOOP::Builder_Perform()
 {
-//  Standard_Integer err = 0;  
   myHB->Perform(myHDS,myS1,myS2);
 #ifdef DEB
   if ( TopOpeBRepTool_GettraceKRO() ) PrintKRO_PREPA();

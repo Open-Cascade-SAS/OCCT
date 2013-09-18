@@ -682,7 +682,7 @@ static Standard_Integer OCC24019 (Draw_Interpretor& di, Standard_Integer argc, c
 //function : OCC11758
 //purpose  : 
 //=======================================================================
-static Standard_Integer OCC11758 (Draw_Interpretor& di, Standard_Integer n, const char** argv)
+static Standard_Integer OCC11758 (Draw_Interpretor& di, Standard_Integer n, const char**)
 {
   if (n != 1) return 1;
 

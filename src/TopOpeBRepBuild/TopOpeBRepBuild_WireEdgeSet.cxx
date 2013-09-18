@@ -355,29 +355,6 @@ const TopTools_ListOfShape & TopOpeBRepBuild_WireEdgeSet::MakeNeighboursList(con
 } // MakeNeighoursList
 
 //=======================================================================
-//function : HasConnexStartElement
-//purpose  : 
-//=======================================================================
-Standard_Boolean TopOpeBRepBuild_WireEdgeSet::HasConnexStartElement() const
-{
-#ifdef DEB
-  Standard_ProgramError::Raise("WireEdgeSet::HasConnexStartElement management disactivated");
-#endif
-
-  Standard_Boolean b = Standard_False;
-
-//  Standard_Integer n = myOMSS.Extent();
-//  for(Standard_Integer i=1;i<=n;i++) {
-//    const TopoDS_Shape& S = myOMSS.FindKey(i);
-//    Standard_Integer ns = NStartElement(S);
-//    b = (ns == 2);
-//    if (b) break;
-//  }
-
-  return b;
-}
-
-//=======================================================================
 //function : VertexConnectsEdges
 //purpose  : 
 //=======================================================================

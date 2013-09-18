@@ -793,10 +793,10 @@ retry:
                                     PAGE_READWRITE,
                                     DWORD(AlignedSize / 0x80000000),
                                     DWORD(AlignedSize % 0x80000000), NULL); 
-    HANDLE * aMBlock = NULL;
+    HANDLE * aMBlock = (hMap && GetLastError() != ERROR_ALREADY_EXISTS ? 
+                        (HANDLE*)MapViewOfFile(hMap,FILE_MAP_WRITE,0,0,0) : NULL);
     // check for error and try allocating address space
-    if ( ! hMap || GetLastError() == ERROR_ALREADY_EXISTS ||
-         ! ((aMBlock = (HANDLE*)MapViewOfFile(hMap,FILE_MAP_WRITE,0,0,0))) ) 
+    if ( ! aMBlock ) 
     {
       // close handle if allocated
       if ( hMap ) 

@@ -221,10 +221,8 @@ void Geom2dAPI_InterCurveCurve::Segment
 //purpose  : 
 //=======================================================================
 
-void Geom2dAPI_InterCurveCurve::Segment
-  (const Standard_Integer      Index,
-         Handle(Geom2d_Curve)& //Curve1
-   ) const 
+void Geom2dAPI_InterCurveCurve::Segment (const Standard_Integer Index,
+                                         Handle(Geom2d_Curve)&) const 
 {
   Standard_NotImplemented::Raise(" ");
 

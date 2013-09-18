@@ -138,7 +138,7 @@ Standard_Boolean TObj_Application::LoadDocument
   myIsError = Standard_False;
   TCollection_ExtendedString aPath ((const Standard_CString)theSourceFile);
 
-  PCDM_ReaderStatus aStatus = (PCDM_ReaderStatus) -1;
+  PCDM_ReaderStatus aStatus = PCDM_RS_ReaderException;
   {
     try
     {
@@ -202,7 +202,7 @@ Standard_Boolean TObj_Application::LoadDocument
     case PCDM_RS_DriverFailure:
       ErrorMessage (Message_Msg("TObj_Appl_RDriverFailure") << aPath);
       break;
-    case -1:
+    case PCDM_RS_ReaderException:
       ErrorMessage (Message_Msg("TObj_Appl_RException") << aPath);
       break;
     default:

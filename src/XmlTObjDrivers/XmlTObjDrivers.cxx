@@ -32,11 +32,6 @@
 
 #include <Plugin_Macro.hxx>
 
-// avoid warnings on 'extern "C"' functions returning C++ classes
-#ifdef WNT
-#pragma warning(4:4190)
-#endif
-
 static Standard_GUID XmlStorageDriver  ("f78ff4a0-a779-11d5-aab4-0050044b1af1");
 static Standard_GUID XmlRetrievalDriver("f78ff4a1-a779-11d5-aab4-0050044b1af1");
 
@@ -75,5 +70,9 @@ void XmlTObjDrivers::AddDrivers (const Handle(XmlMDF_ADriverTable)& aDriverTable
   aDriverTable -> AddDriver (new XmlTObjDrivers_XYZDriver           (anMsgDrv));
   aDriverTable -> AddDriver (new XmlTObjDrivers_IntSparseArrayDriver(anMsgDrv));
 }
+
+#ifdef _MSC_VER
+#pragma warning(disable:4190) /* disable warning on C++ type returned by C function; should be OK for C++ usage */
+#endif
 
 PLUGIN(XmlTObjDrivers)

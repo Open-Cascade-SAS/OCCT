@@ -584,7 +584,6 @@ Standard_Integer BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P,
     
     
   } //-- for(;;) { ...  } 
-  return 0;
 }
 
 //  Modified by skv - Thu Sep  4 12:30:14 2003 OCC578 Begin

@@ -1137,7 +1137,7 @@ void Visual3d_View::SetViewOrientation (const Visual3d_ViewOrientation& VO) {
         MyCView.Orientation.ViewScaleZ                  = float (Z);
 
         CustomIsModified =
-        MyCView.Orientation.IsCustomMatrix != MyViewOrientation.IsCustomMatrix();
+          (MyCView.Orientation.IsCustomMatrix != MyViewOrientation.IsCustomMatrix());
         MyCView.Orientation.IsCustomMatrix = MyViewOrientation.IsCustomMatrix();
         if ( MyViewOrientation.IsCustomMatrix() ) {
           Standard_Integer i, j;

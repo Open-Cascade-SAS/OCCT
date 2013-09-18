@@ -228,9 +228,10 @@ const TopOpeBRepTool_IndexedDataMapOfShapeBox& TopOpeBRepTool_HBoxTool::IMS() co
 //function : DumpB
 //purpose  : 
 //=======================================================================
-void TopOpeBRepTool_HBoxTool::DumpB (const Bnd_Box& B)
-{
+void TopOpeBRepTool_HBoxTool::DumpB 
 #ifdef DEB
+(const Bnd_Box& B)
+{
   if      (B.IsVoid()) cout<<"# IsVoid";
   else if (B.IsWhole()) cout<<"# IsWhole";
   else {
@@ -239,5 +240,10 @@ void TopOpeBRepTool_HBoxTool::DumpB (const Bnd_Box& B)
     cout<<"bounding "<<x<<" "<<y<<" "<<z<<" "<<X<<" "<<Y<<" "<<Z;
     cout.flush();
   }
-#endif
 }
+#else
+(const Bnd_Box& )
+{
+}
+#endif
+

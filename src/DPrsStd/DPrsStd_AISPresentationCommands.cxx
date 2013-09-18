@@ -68,7 +68,7 @@
 //purpose  : DDisplay (DOC,entry, not_update)
 //=======================================================================
 
-static Standard_Integer DPrsStd_AISDisplay (Draw_Interpretor& di,
+static Standard_Integer DPrsStd_AISDisplay (Draw_Interpretor&,
 					  Standard_Integer nb, 
 					  const char** arg) 
 {   

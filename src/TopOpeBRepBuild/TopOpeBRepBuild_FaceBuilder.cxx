@@ -104,31 +104,6 @@ void TopOpeBRepBuild_FaceBuilder::InitFaceBuilder(TopOpeBRepBuild_WireEdgeSet& W
   TopOpeBRepBuild_WireEdgeClassifier WEC(F,BB);
   TopOpeBRepBuild_LoopSet& LS = myLoopSet;
   myFaceAreaBuilder.InitFaceAreaBuilder(LS,WEC,ForceClass);
-
-  //  Standard_Boolean hascnxsta = WES.HasConnexStartElement();
-  //  if ( hascnxsta ) {
-  //    myMOSI.Clear();
-  //    InitFace();
-  //    for (;MoreFace();NextFace()) {
-  //      InitWire();
-  //      for (;MoreWire();NextWire()) {
-  //	Standard_Boolean isold = IsOldWire();if (isold) continue;
-  //	InitEdge();
-  //	for(;MoreEdge();NextEdge()) {
-  //	  const TopoDS_Shape& E = Edge();
-  //	  Standard_Boolean issta = WES.IsStartElement(E);
-  //	  Standard_Boolean nsta  = WES.NStartElement(E);Standard_Boolean iscnx = (nsta == 2);
-  //	  if (!issta || !iscnx ) continue;
-  //	  Standard_Boolean isb = myMOSI.IsBound(E);
-  //	  if (!isb) myMOSI.Bind(E,0);
-  //	  Standard_Integer nmosi = myMOSI(E);
-  //	  nmosi++;
-  //	  myMOSI(E) = nmosi;
-  //	}
-  //      }
-  //    }
-  //  } // hascnxsta
-  
 }
 
 //---------------------------------------------------------------

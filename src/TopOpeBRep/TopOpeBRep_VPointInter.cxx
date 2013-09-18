@@ -335,9 +335,9 @@ Standard_OStream& TopOpeBRep_VPointInter::Dump(const Standard_Integer I,const To
 //function : Dump
 //purpose  : 
 //=======================================================================
+#ifdef DEB
 Standard_OStream& TopOpeBRep_VPointInter::Dump(const TopoDS_Face& FF1,const TopoDS_Face& FF2,Standard_OStream& OS) const
 {
-#ifdef DEB
   const TopoDS_Face& F1 = TopoDS::Face(FF1);
   const TopoDS_Face& F2 = TopoDS::Face(FF2);
   OS<<"VP "<<myIndex<<" on "<<myShapeIndex<<" :";
@@ -368,7 +368,9 @@ Standard_OStream& TopOpeBRep_VPointInter::Dump(const TopoDS_Face& FF1,const Topo
     Dump(1,F1,OS);
     Dump(2,F2,OS); 
   }
-
+#else
+Standard_OStream& TopOpeBRep_VPointInter::Dump(const TopoDS_Face&,const TopoDS_Face&,Standard_OStream& OS) const
+{
 #endif
 
   return OS;

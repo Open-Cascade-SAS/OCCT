@@ -162,11 +162,11 @@ inline Standard_Integer HLRBRep_LineTool::NbSamples(const gp_Lin&,
 { return 3; }
 
 // modified by NIZHNY-MKK  Tue Nov  1 18:49:28 2005
-inline void HLRBRep_LineTool::SamplePars (const gp_Lin& C,
+inline void HLRBRep_LineTool::SamplePars (const gp_Lin&,
 					  const Standard_Real U0,
 					  const Standard_Real U1,
-					  const Standard_Real Defl,
-					  const Standard_Integer NbMin,
+					  const Standard_Real,
+					  const Standard_Integer,
 					  Handle(TColStd_HArray1OfReal)& Pars) {
 
   Pars = new TColStd_HArray1OfReal(1, 3);

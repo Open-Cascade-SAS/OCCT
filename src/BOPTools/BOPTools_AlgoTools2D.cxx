@@ -294,22 +294,18 @@ static
       aUP1=aUPeriod+aDelta;
       //
       if (u2 > aUP2) {
-        for(k=1; 1; ++k) {
+        k=1;
+        do {
           aUx=u2-k*aUPeriod;
-          if (aUx < aUP1) {
-            iCnt=k;
-            break;
-          }
-        }
+          iCnt = k++;
+        } while (aUx >= aUP1);
       }
       else if (u2 < -aUP2) {
-        for(k=1; 1; ++k) {
+        k=1;
+        do {
           aUx=u2+k*aUPeriod;
-          if (aUx > -aUP1) {
-            iCnt=k+1;
-            break;
-          }
-        }
+          iCnt = (k++) + 1;
+        } while (aUx <= -aUP1);
       }
       du = ( mincond ) ? aUPeriod : -aUPeriod;
       du=iCnt*du;

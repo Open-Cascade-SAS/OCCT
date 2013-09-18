@@ -38,9 +38,9 @@ extern Standard_Boolean TopOpeBRepDS_GettraceSTRANGE();
 //purpose  : 
 //=======================================================================
 
+#ifdef DEB
 void TopOpeBRepBuild_Area1dBuilder::DumpList(const TopOpeBRepBuild_ListOfLoop& LOL)
 {
-#ifdef DEB
   Standard_Integer iLOL;
   TopOpeBRepBuild_ListIteratorOfListOfLoop  itLOL;
   for (iLOL = 0, itLOL.Initialize(LOL); itLOL.More(); iLOL++, itLOL.Next()) {
@@ -49,6 +49,9 @@ void TopOpeBRepBuild_Area1dBuilder::DumpList(const TopOpeBRepBuild_ListOfLoop& L
     const Handle(TopOpeBRepBuild_Loop)& L = itLOL.Value();
     L->Dump();cout<<endl;
   }
+#else
+void TopOpeBRepBuild_Area1dBuilder::DumpList(const TopOpeBRepBuild_ListOfLoop&)
+{
 #endif
 }
 
@@ -261,19 +264,19 @@ void TopOpeBRepBuild_Area1dBuilder::InitAreaBuilder
 void TopOpeBRepBuild_Area1dBuilder::ADD_Loop_TO_LISTOFLoop
 (const Handle(TopOpeBRepBuild_Loop)& L,
  TopOpeBRepBuild_ListOfLoop& LOL,
- const Standard_Address ss) const
-{
+ const Standard_Address
 #ifdef DEB
-  char* s = (char*)ss;
+  ss
 #endif
-
+  ) const
+{
   LOL.Append(L);
   
 #ifdef DEB
   if (TopOpeBRepBuild_GettraceAREA()) {
     cout<<"--------------------- add area loop to area : ";
     L->Dump(); cout<<endl;
-    if (s != NULL) cout<<s<<endl;
+    if (ss != NULL) cout<<(char*)ss<<endl;
     DumpList(LOL);
     cout<<"---------------------"<<endl;
   }
@@ -288,10 +291,13 @@ void TopOpeBRepBuild_Area1dBuilder::ADD_Loop_TO_LISTOFLoop
 void TopOpeBRepBuild_Area1dBuilder::REM_Loop_FROM_LISTOFLoop
 (TopOpeBRepBuild_ListIteratorOfListOfLoop& ITA,
  TopOpeBRepBuild_ListOfLoop& A,
+#ifdef DEB
  const Standard_Address ss) const
 {
-#ifdef DEB
   char* s = (char*)ss;
+#else
+const Standard_Address) const
+{
 #endif
 
 #ifdef DEB
@@ -322,9 +328,15 @@ void TopOpeBRepBuild_Area1dBuilder::REM_Loop_FROM_LISTOFLoop
 void TopOpeBRepBuild_Area1dBuilder::ADD_LISTOFLoop_TO_LISTOFLoop
 (TopOpeBRepBuild_ListOfLoop& A1,
  TopOpeBRepBuild_ListOfLoop& A2,
+ #ifdef DEB
  const Standard_Address ss,
  const Standard_Address ss1,
  const Standard_Address ss2) const
+#else
+ const Standard_Address,
+ const Standard_Address,
+ const Standard_Address) const
+#endif
 {
 #ifdef DEB
   char* s  = (char*)ss;

@@ -269,7 +269,6 @@ void BoundedArc (const TheArc& A,
       
       if (!SolAgain.IsDone()) {Standard_Failure::Raise();}
       
-      Standard_Integer Nbp_again = SolAgain.NbPoints();
       Standard_Integer Nbi_again = SolAgain.NbIntervals();
       
       if (Nbi_again > 0)
@@ -826,7 +825,7 @@ void PointProcess (const gp_Pnt& Pt,
 //function : IsRegularity
 //purpose  : 
 //=======================================================================
-Standard_Boolean IsRegularity(const TheArc& A,
+Standard_Boolean IsRegularity(const TheArc&,
                               const Handle(TheTopolTool)& aDomain)
 {
   Standard_Address anEAddress=aDomain->Edge();

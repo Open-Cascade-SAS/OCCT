@@ -29,11 +29,6 @@
 #include <Standard_GUID.hxx>
 #include <Plugin_Macro.hxx>
 
-// avoid warnings on 'extern "C"' functions returning C++ classes
-#ifdef WNT
-#pragma warning(4:4190)
-#endif
-
 static Standard_GUID StdLStorageDriver     ("bd696000-5b34-11d1-b5ba-00a0c9064368");
 static Standard_GUID StdLRetrievalDriver   ("bd696001-5b34-11d1-b5ba-00a0c9064368");
 static Standard_GUID StdLSchemaID          ("bd696002-5b34-11d1-b5ba-00a0c9064368");
@@ -72,6 +67,10 @@ Handle(Standard_Transient) StdLDrivers::Factory(const Standard_GUID& aGUID) {
   Handle(Standard_Transient) t;
   return t;
 }
+
+#ifdef _MSC_VER
+#pragma warning(disable:4190) /* disable warning on C++ type returned by C function; should be OK for C++ usage */
+#endif
 
 // Declare entry point PLUGINFACTORY
 PLUGIN(StdLDrivers)

@@ -31,11 +31,6 @@
 #include <BinTObjDrivers_XYZDriver.hxx>
 #include <Plugin_Macro.hxx>
 
-// avoid warnings on 'extern "C"' functions returning C++ classes
-#ifdef WNT
-#pragma warning(4:4190)
-#endif
-
 static Standard_GUID BinStorageDriver  ("f78ff4a2-a779-11d5-aab4-0050044b1af1");
 static Standard_GUID BinRetrievalDriver("f78ff4a3-a779-11d5-aab4-0050044b1af1");
 
@@ -74,4 +69,7 @@ void BinTObjDrivers::AddDrivers (const Handle(BinMDF_ADriverTable)& aDriverTable
   aDriverTable -> AddDriver (new BinTObjDrivers_IntSparseArrayDriver (aMsgDrv));
 }
 
+#ifdef _MSC_VER
+#pragma warning(disable:4190) /* disable warning on C++ type returned by C function; should be OK for C++ usage */
+#endif
 PLUGIN(BinTObjDrivers)

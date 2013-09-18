@@ -50,7 +50,7 @@
 #ifdef DRAW
 #include <DBRep.hxx>
 #endif
-#ifdef DEB
+#ifdef DEBUG_ALGO
 Standard_Boolean AffichLoop  = Standard_False;
 Standard_Integer NbLoops     = 0;
 Standard_Integer NbWires     = 1;
@@ -189,7 +189,7 @@ static TopoDS_Vertex  UpdateClosedEdge(const TopoDS_Edge&         E,
   }
   if (OnStart && OnEnd) {
     if (!VB[0].IsSame(VB[1])) {
-#ifdef DEB
+#ifdef DEBUG_ALGO
       if (AffichLoop)
 	cout <<"Two different vertices on the closing vertex"<<endl;
 #endif
@@ -306,7 +306,7 @@ static Standard_Boolean  SelectEdge(const TopoDS_Face&    F,
 {
   TopTools_ListIteratorOfListOfShape itl;
   NE.Nullify();
-#ifdef DEB  
+#ifdef DEBUG_ALGO  
   if (AffichLoop) {
     if ( LE.Extent() > 2) {
       cout <<"vertex on more than 2 edges in a face."<<endl;
@@ -507,14 +507,14 @@ void BRepAlgo_Loop::Perform()
   TopoDS_Vertex                                       V1,V2;
   Standard_Boolean                                    YaCouture = Standard_False;
 
-#ifdef DEB
+#ifdef DEBUG_ALGO
   if (AffichLoop) {
     cout <<"NewLoop"<<endl;
-    Standard_Integer NbEdges = 1;
     NbLoops++;
 #ifdef DRAW
     sprintf(name,"FLoop_%d",NbLoops);
     DBRep::Set(name,myFace);
+    Standard_Integer NbEdges = 1;
 #endif
     for (Mapit.Initialize(myVerOnEdges); Mapit.More(); Mapit.Next()) { 
       const TopoDS_Edge& E = TopoDS::Edge(Mapit.Key());
@@ -664,7 +664,7 @@ void BRepAlgo_Loop::Perform()
 
     if (VF.IsSame(CV) && SamePnt2d(VF,EF,CE,myFace))
       myNewWires.Append (NW);
-#ifdef DEB
+#ifdef DEBUG_ALGO
     else {
       cout <<"BRepAlgo_Loop: Open Wire"<<endl;
       if (AffichLoop)

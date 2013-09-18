@@ -93,10 +93,6 @@
 #include <IGESToBRep_ToolContainer.hxx>
 #include <Message_ProgressSentry.hxx>
 
-// mjm le 10/10/96 on force la continuity a 0 en attendant de pouvoir
-// travailler sur wire en non plus edge.
-
-
 //=======================================================================
 //function : IGESToBRep_BRepEntity
 //purpose  : 
@@ -466,7 +462,6 @@ TopoDS_Shape IGESToBRep_BRepEntity::TransferFace
     TopoDS_Face F;
     Handle(IGESData_IGESEntity) surf         = start->Surface();
     Standard_Integer            nbloops      = start->NbLoops();
-    Standard_Boolean            hasouterloop = start->HasOuterLoop();
     IGESToBRep_TopoSurface TS(*this);
 
     // surface

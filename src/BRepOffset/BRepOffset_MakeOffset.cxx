@@ -129,7 +129,7 @@
 #endif
 #ifdef DEB
 #include <OSD_Chronometer.hxx>
-
+//#define DEB_VERB
   Standard_Boolean AffichInt2d = Standard_False;       
   Standard_Boolean AffichOffC  = Standard_False;       
   Standard_Boolean ChronBuild  = Standard_False;
@@ -3333,9 +3333,8 @@ void BRepOffset_MakeOffset::EncodeRegularity ()
     const TopTools_ListOfShape& LofOF    = myAsDes->Ascendant(ROE);
     
     if (LofOF.Extent() != 2) {
-#ifdef DEB
-      if ( Standard_False)
-	cout << " Edge shared by " << LofOF.Extent() << " Faces" << endl;
+#ifdef DEB_VERB
+    cout << " Edge shared by " << LofOF.Extent() << " Faces" << endl;
 #endif
       continue;
     }
