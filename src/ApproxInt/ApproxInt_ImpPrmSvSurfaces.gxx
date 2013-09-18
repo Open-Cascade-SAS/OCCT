@@ -62,11 +62,7 @@ void ApproxInt_ImpPrmSvSurfaces::Pnt(const Standard_Real u1,
   Standard_Real tu2=u2;
   Standard_Real tv1=v1;
   Standard_Real tv2=v2;
-#ifdef DEB
-  Standard_Boolean t=this->Compute(tu1,tv1,tu2,tv2,aP,aT,aTS1,aTS2);
-#else
   this->Compute(tu1,tv1,tu2,tv2,aP,aT,aTS1,aTS2);
-#endif
   P=MyPnt;
 }
 //--------------------------------------------------------------------------------

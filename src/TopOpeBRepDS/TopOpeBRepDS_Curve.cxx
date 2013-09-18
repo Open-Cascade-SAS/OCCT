@@ -353,15 +353,11 @@ void TopOpeBRepDS_Curve::ChangeIsWalk(const Standard_Boolean B)
 //purpose  : 
 //=======================================================================
 
+#ifdef DEB
 Standard_OStream& TopOpeBRepDS_Curve::Dump (Standard_OStream& OS,
                                             const Standard_Integer index,
-#ifdef DEB
                                             const Standard_Boolean compact)const
-#else
-                                            const Standard_Boolean)const
-#endif
 {
-#ifdef DEB
   OS<<"Curve : "; if (index != 0) OS<<index<<" ";
   if (!Curve().IsNull()) {
     TopOpeBRepDS_Dumper::Print(Curve(),OS,compact);
@@ -386,10 +382,17 @@ Standard_OStream& TopOpeBRepDS_Curve::Dump (Standard_OStream& OS,
   if (!I2.IsNull()) DSCI(I2)->DumpPCurve(OS,compact);
   else OS<<" is null";
   OS<<endl;
-#endif
 
   return OS;
 }
+#else
+Standard_OStream& TopOpeBRepDS_Curve::Dump (Standard_OStream& OS,
+                                            const Standard_Integer,
+                                            const Standard_Boolean)const
+{
+  return OS;
+}
+#endif
 
 
 //=======================================================================

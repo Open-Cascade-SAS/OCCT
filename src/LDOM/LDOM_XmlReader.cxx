@@ -145,7 +145,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord
         else {
           myIStream.read (&myBuffer[aBytesRest],
                           XML_BUFFER_SIZE - aBytesRest);
-          aNBytes = myIStream.gcount();
+          aNBytes = (Standard_Size)myIStream.gcount();
         }
         if (aNBytes == 0)
           myEOF = Standard_True;                  // END-OF-FILE

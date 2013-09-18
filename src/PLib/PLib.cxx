@@ -29,31 +29,185 @@
 #include <Standard_ConstructionError.hxx>
 #include <GeomAbs_Shape.hxx>
 
+#include <math_Gauss.hxx>
+#include <math.hxx>
+
 // To convert points array into Real ..
 // *********************************
 
-#define Dimension_gen 2
-#define Array1OfPoints  TColgp_Array1OfPnt2d
-#define Point           gp_Pnt2d
+//=======================================================================
+//function : SetPoles
+//purpose  : 
+//=======================================================================
 
-#include <PLib_ChangeDim.gxx>
+void PLib::SetPoles(const TColgp_Array1OfPnt2d& Poles,
+		    TColStd_Array1OfReal& FP)
+{
+  Standard_Integer j      = FP   .Lower();
+  Standard_Integer PLower = Poles.Lower();
+  Standard_Integer PUpper = Poles.Upper();
+    
+  for (Standard_Integer i = PLower; i <= PUpper; i++) {
+    const gp_Pnt2d& P = Poles(i);
+    FP(j) = P.Coord(1); j++;
+    FP(j) = P.Coord(2); j++;
+  }
+}
 
-#undef Dimension_gen
-#undef Array1OfPoints
-#undef Point
+//=======================================================================
+//function : SetPoles
+//purpose  : 
+//=======================================================================
 
-#define Dimension_gen 3
-#define Array1OfPoints  TColgp_Array1OfPnt
-#define Point           gp_Pnt
+void PLib::SetPoles(const TColgp_Array1OfPnt2d&       Poles,
+		    const TColStd_Array1OfReal& Weights,
+		    TColStd_Array1OfReal&       FP)
+{
+  Standard_Integer j      = FP   .Lower();
+  Standard_Integer PLower = Poles.Lower();
+  Standard_Integer PUpper = Poles.Upper();
+    
+  for (Standard_Integer i = PLower; i <= PUpper; i++) {
+    Standard_Real w = Weights(i);
+    const gp_Pnt2d& P = Poles(i);
+    FP(j) = P.Coord(1) * w; j++;
+    FP(j) = P.Coord(2) * w; j++;
+    FP(j) =              w; j++;
+  }
+}
 
-#include <PLib_ChangeDim.gxx>
+//=======================================================================
+//function : GetPoles
+//purpose  : 
+//=======================================================================
 
-#undef Dimension_gen
-#undef Array1OfPoints
-#undef Point
+void PLib::GetPoles(const TColStd_Array1OfReal& FP,
+		    TColgp_Array1OfPnt2d& Poles)
+{
+  Standard_Integer j      = FP   .Lower();
+  Standard_Integer PLower = Poles.Lower();
+  Standard_Integer PUpper = Poles.Upper();
+    
+  for (Standard_Integer i = PLower; i <= PUpper; i++) {
+    gp_Pnt2d& P = Poles(i);
+    P.SetCoord(1,FP(j)); j++;
+    P.SetCoord(2,FP(j)); j++;
+  }
+}
 
-#include <math_Gauss.hxx>
-#include <math.hxx>
+//=======================================================================
+//function : GetPoles
+//purpose  : 
+//=======================================================================
+
+void PLib::GetPoles(const TColStd_Array1OfReal& FP,
+		    TColgp_Array1OfPnt2d&       Poles,
+		    TColStd_Array1OfReal&       Weights)
+{
+  Standard_Integer j      = FP   .Lower();
+  Standard_Integer PLower = Poles.Lower();
+  Standard_Integer PUpper = Poles.Upper();
+    
+  for (Standard_Integer i = PLower; i <= PUpper; i++) {
+    Standard_Real w = FP(j + 2);
+    Weights(i) = w;
+    gp_Pnt2d& P = Poles(i);
+    P.SetCoord(1,FP(j) / w); j++;
+    P.SetCoord(2,FP(j) / w); j++;
+    j++;
+  }
+}
+
+//=======================================================================
+//function : SetPoles
+//purpose  : 
+//=======================================================================
+
+void PLib::SetPoles(const TColgp_Array1OfPnt& Poles,
+		    TColStd_Array1OfReal& FP)
+{
+  Standard_Integer j      = FP   .Lower();
+  Standard_Integer PLower = Poles.Lower();
+  Standard_Integer PUpper = Poles.Upper();
+
+  for (Standard_Integer i = PLower; i <= PUpper; i++) {
+    const gp_Pnt& P = Poles(i);
+    FP(j) = P.Coord(1); j++;
+    FP(j) = P.Coord(2); j++;
+    FP(j) = P.Coord(3); j++;
+  }
+}
+
+//=======================================================================
+//function : SetPoles
+//purpose  : 
+//=======================================================================
+
+void PLib::SetPoles(const TColgp_Array1OfPnt&   Poles,
+		    const TColStd_Array1OfReal& Weights,
+		    TColStd_Array1OfReal&       FP)
+{
+  Standard_Integer j      = FP   .Lower();
+  Standard_Integer PLower = Poles.Lower();
+  Standard_Integer PUpper = Poles.Upper();
+    
+  for (Standard_Integer i = PLower; i <= PUpper; i++) {
+    Standard_Real w = Weights(i);
+    const gp_Pnt& P = Poles(i);
+    FP(j) = P.Coord(1) * w; j++;
+    FP(j) = P.Coord(2) * w; j++;
+    FP(j) = P.Coord(3) * w; j++;
+    FP(j) =              w; j++;
+  }
+}
+
+//=======================================================================
+//function : GetPoles
+//purpose  : 
+//=======================================================================
+
+void PLib::GetPoles(const TColStd_Array1OfReal& FP,
+		    TColgp_Array1OfPnt&         Poles)
+{
+  Standard_Integer j      = FP   .Lower();
+  Standard_Integer PLower = Poles.Lower();
+  Standard_Integer PUpper = Poles.Upper();
+    
+  for (Standard_Integer i = PLower; i <= PUpper; i++) {
+    gp_Pnt& P = Poles(i);
+    P.SetCoord(1,FP(j)); j++;
+    P.SetCoord(2,FP(j)); j++;
+    P.SetCoord(3,FP(j)); j++;
+  }
+}
+
+//=======================================================================
+//function : GetPoles
+//purpose  : 
+//=======================================================================
+
+void PLib::GetPoles(const TColStd_Array1OfReal& FP,
+		    TColgp_Array1OfPnt&         Poles,
+		    TColStd_Array1OfReal&       Weights)
+{
+  Standard_Integer j      = FP   .Lower();
+  Standard_Integer PLower = Poles.Lower();
+  Standard_Integer PUpper = Poles.Upper();
+    
+  for (Standard_Integer i = PLower; i <= PUpper; i++) {
+    Standard_Real w = FP(j + 3);
+    Weights(i) = w;
+    gp_Pnt& P = Poles(i);
+    P.SetCoord(1,FP(j) / w); j++;
+    P.SetCoord(2,FP(j) / w); j++;
+    P.SetCoord(3,FP(j) / w); j++;
+    j++;
+  }
+}
+
+// specialized allocator
+namespace
+{
 
 class BinomAllocator
 {
@@ -120,8 +274,6 @@ private:
 
 };
 
-namespace
-{
   // we do not call BSplCLib here to avoid Cyclic dependency detection by WOK
   //static BinomAllocator THE_BINOM (BSplCLib::MaxDegree() + 1);
   static BinomAllocator THE_BINOM (25 + 1);

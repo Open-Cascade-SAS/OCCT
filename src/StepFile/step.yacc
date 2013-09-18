@@ -54,6 +54,12 @@
 #define alloca malloc
 #endif
 
+
+// disable MSVC warnings in flex code
+#ifdef _MSC_VER
+#pragma warning(disable:4244 4131)
+#endif
+
 %}
 %%
 /*  N.B. : les commentaires sont filtres par LEX  */

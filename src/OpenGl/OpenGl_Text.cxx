@@ -133,7 +133,7 @@ namespace
     // Standard GL2PS's alignment isn't used, because it doesn't work correctly
     // for all formats, therefore alignment is calculated manually relative
     // to the bottom-left corner, which corresponds to the GL2PS_TEXT_BL value
-    gl2psTextOpt (theText.ToCString(), aPsFont, theHeight, GL2PS_TEXT_BL, theAspect.Angle());
+    gl2psTextOpt (theText.ToCString(), aPsFont, (GLshort)theHeight, GL2PS_TEXT_BL, theAspect.Angle());
   }
 #endif
 

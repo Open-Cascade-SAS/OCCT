@@ -39,7 +39,7 @@ extern "C" void ExprIntrp_SetResult()
 
 extern "C" void ExprIntrp_SetDegree()
 {
-  ExprIntrp_degree = strlen(ExprIntrptext);
+  ExprIntrp_degree = (int)strlen(ExprIntrptext);
 }
 
 int ExprIntrp_GetDegree()
@@ -50,5 +50,5 @@ int ExprIntrp_GetDegree()
 int ExprIntrp_GetResult(char *s) 
 {
   strcpy(s,ExprIntrp_curres);
-  return strlen(ExprIntrp_curres);
+  return (int)strlen(ExprIntrp_curres);
 }

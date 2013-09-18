@@ -113,11 +113,6 @@ void Extrema_GLocateExtPC::Perform(const ThePoint&     P,
 				   const Standard_Real U0)
 {
   Standard_Integer i, i1, i2, inter;
-#ifdef DEB
-  Standard_Real Tol = TheCurveTool::Resolution(*((TheCurve*)myC), Precision::Confusion());
-#else
-  TheCurveTool::Resolution(*((TheCurve*)myC), Precision::Confusion());
-#endif
   Standard_Real Par, valU, valU2 = RealLast(),
   local_u0 ;
   Standard_Real myintuinf=0, myintusup=0;

@@ -119,4 +119,9 @@ int remove_sharedmemory(int *shmid, char *section_name)
         if (status < 0) return 0;
                    else return 1;
 }
+#else
+
+// to avoid compiler warning on empty file
+#include "string.h"
+
 #endif

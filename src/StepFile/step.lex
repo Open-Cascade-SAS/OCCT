@@ -45,6 +45,11 @@ void rec_typarg(int argtype);
   void resultat ()           /* Resultat alloue dynamiquement, "jete" une fois lu */
       { if (modcom == 0) rec_restext(yytext,yyleng); }
 
+// disable MSVC warnings in flex code
+#ifdef _MSC_VER
+#pragma warning(disable:4131 4244 4273 4267 4127)
+#endif
+
 %}
 %%
 "	"	{;}

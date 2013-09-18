@@ -298,7 +298,7 @@ void BinMNaming_NamedShapeDriver::ReadShapeSection (Standard_IStream& theIS)
 {
   // check section title string; note that some versions of OCCT (up to 6.3.1) 
   // might avoid writing shape section if it is empty
-  Standard_Size aPos = theIS.tellg();
+  std::streamoff aPos = theIS.tellg();
   TCollection_AsciiString aSectionTitle;
   theIS >> aSectionTitle;
   if(aSectionTitle.Length() > 0 && aSectionTitle == SHAPESET) {

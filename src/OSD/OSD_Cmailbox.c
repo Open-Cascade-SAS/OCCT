@@ -549,4 +549,9 @@ write_mailbox(int *boxid, char *box_name, char *message, int length)
    return (0);
   }
 }
+#else
+
+// to avoid compiler warning on empty file
+#include "string.h"
+
 #endif

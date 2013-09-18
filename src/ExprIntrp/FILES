@@ -1,10 +1,7 @@
 ExprIntrp_CMPLRS.edl
-ExprIntrp_WOKSteps.edl
 ExprIntrp.lex
 ExprIntrp.yacc
 ExprIntrp_yaccanal.hxx
 ExprIntrp_yaccintrf.cxx
 ExprIntrp_yaccintrf.hxx
 ExprIntrp_yacclex.cxx
-ExprIntrp_Replace.tcl
-ExprIntrp.tab.c

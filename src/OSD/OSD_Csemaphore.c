@@ -317,4 +317,9 @@ osd_alarm_(int sec,RETSIGTYPE (*_alarm)())
 
 #endif /* __hpux  */
 
+#else
+
+// to avoid compiler warning on empty file
+#include "string.h"
+
 #endif /* WNT  */

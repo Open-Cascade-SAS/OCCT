@@ -93,9 +93,11 @@ void rec_settext(char* s)
 char* rec_newtext(char* r)
 /*  routine utilitaire creant une chaine dynamique a partir d'un char[]  */
 {
-  char* savrestext; char* s0;
+  char* savrestext;
+  char* s0;
   savrestext = restext;
-  rec_restext(r,strlen(r)); s0 = restext;
+  rec_restext(r,(int)strlen(r));
+  s0 = restext;
   restext = savrestext;
   return (s0);
 }
@@ -396,7 +398,9 @@ void rec_print(struct rec* unrec)
  if (modeprint < 2) return ;
  curarg = unrec->first ;
  while (curarg != NULL) {
-   numa ++;  argl = strlen(curarg->val) + 18;  numl += argl;
+   numa ++;
+   argl = (int)strlen(curarg->val) + 18;
+   numl += argl;
    if (numl > 132) {  printf("\n");  numl = argl;  }
    printf ("  - Arg.%d[%c%c] : %s",
 	   numa,argtype1[curarg->type],argtype2[curarg->type],curarg->val);

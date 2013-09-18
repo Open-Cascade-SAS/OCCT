@@ -139,7 +139,7 @@ TCollection_ExtendedString::TCollection_ExtendedString
 {
   if (astring) {
     if(!isMultiByte) {
-      mylength = strlen( astring );
+      mylength = (int)strlen( astring );
       mystring = Allocate((mylength+1)*2);
       for (int i = 0 ; i < mylength ; i++)
         mystring[i] = ToExtCharacter(astring[i]); 
@@ -235,7 +235,7 @@ TCollection_ExtendedString::TCollection_ExtendedString
   union {int bid ;
          char t [13];} CHN ;
   Sprintf(&CHN.t[0],"%d",aValue);
-  mylength = strlen(CHN.t);
+  mylength = (int)strlen(CHN.t);
   mystring = Allocate((mylength+1)*2);
   for (int i = 0 ; i < mylength ; i++) mystring[i] = ToExtCharacter(CHN.t[i]);
   mystring[mylength] =  '\0';
@@ -250,7 +250,7 @@ TCollection_ExtendedString::TCollection_ExtendedString
   union {int bid ;
          char t [50];} CHN ;
   Sprintf(&CHN.t[0],"%g",aValue);
-  mylength = strlen( CHN.t );
+  mylength = (int)strlen( CHN.t );
   mystring = Allocate((mylength+1)*2);
   for (int i = 0 ; i < mylength ; i++) mystring[i] = ToExtCharacter(CHN.t[i]);
   mystring[mylength] =  '\0';

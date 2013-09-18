@@ -38,6 +38,7 @@ struct BSplCLib_DataContainer
 {
   BSplCLib_DataContainer(Standard_Integer Degree) 
   {
+    (void)Degree; // avoid compiler warning
     Standard_OutOfRange_Raise_if (Degree > BSplCLib::MaxDegree() ||
         BSplCLib::MaxDegree() > 25,
         "BSplCLib: bspline degree is greater than maximum supported");

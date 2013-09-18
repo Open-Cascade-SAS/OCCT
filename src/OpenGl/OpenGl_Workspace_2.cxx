@@ -284,7 +284,7 @@ static bool imageStretchDC(HDC theDstDC,   FipHandle theImage, int theOffsetX,
                            theHeight, 0, 0, widthPx, heightPx, aDataPtr,
                            aBitmapData, DIB_RGB_COLORS, SRCCOPY);
 
-  if (aPassed != heightPx)
+  if ((unsigned)aPassed != heightPx)
     return false;
 
   return true;

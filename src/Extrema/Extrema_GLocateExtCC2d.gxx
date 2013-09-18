@@ -37,13 +37,6 @@ Extrema_GLocateExtCC2d::Extrema_GLocateExtCC2d (const Curve1&       C1,
 						const Standard_Real U0,
 						const Standard_Real V0)
 {
-#ifdef DEB
-  GeomAbs_CurveType type1 = Tool1::GetType(C1);
-  GeomAbs_CurveType type2 = Tool2::GetType(C2);
-#else
-  Tool1::GetType(C1);
-  Tool2::GetType(C2);
-#endif
   Standard_Real TolU = Tool1::Resolution(C1, Precision::Confusion());
   Standard_Real TolV = Tool2::Resolution(C2, Precision::Confusion());
   Extrema_POnCurv2d P1, P2;

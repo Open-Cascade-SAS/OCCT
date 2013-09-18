@@ -59,7 +59,9 @@ static Standard_Integer QANColStdAllocator1(Draw_Interpretor& di, Standard_Integ
 
   elem_type aDummy;
   allocator_type::reference aRef = aDummy;
+  (void)aRef; // avoid compiler warning on unused
   allocator_type::const_reference aConstRef = aDummy;
+  (void)aConstRef; // avoid compiler warning on unused
   if ( sizeof (allocator_type::size_type) == sizeof (size_t) ) {
     di << "size_type : OK\n";
   } else {

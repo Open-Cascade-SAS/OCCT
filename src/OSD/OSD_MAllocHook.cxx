@@ -85,9 +85,11 @@ OSD_MAllocHook::CollectBySize* OSD_MAllocHook::GetCollectBySize()
 
 static long getRequestNum(void* pvData, long lRequest, size_t& theSize)
 {
+#if _MSC_VER == 1500  /* VS 2008 */
+#ifdef _DEBUG /* in Release, _CrtIsValidHeapPointer is always 1 */
   if (_CrtIsValidHeapPointer(pvData))
+#endif
   {
-#if _MSC_VER == 1500   // VS 2008
 #define nNoMansLandSize 4
     // the header struct is taken from crt/src/dbgint.h
     struct _CrtMemBlockHeader
@@ -105,8 +107,10 @@ static long getRequestNum(void* pvData, long lRequest, size_t& theSize)
     _CrtMemBlockHeader* aHeader = ((_CrtMemBlockHeader*)pvData)-1;
     theSize = aHeader->nDataSize;
     return aHeader->lRequest;
-#endif
   }
+#else
+  (void)pvData; (void)theSize; // avoid compiler warning on unused arg
+#endif
   return lRequest;
 }
 

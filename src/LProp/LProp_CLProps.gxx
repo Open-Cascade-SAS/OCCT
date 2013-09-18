@@ -215,6 +215,7 @@ void  LProp_CLProps::Tangent (Dir& D)
 Standard_Real LProp_CLProps::Curvature ()
 {
   Standard_Boolean isDefined = IsTangentDefined();
+  (void)isDefined; // trick to avoid compiler warning on variable unised in Release mode; note that IsTangentDefined() must be called always
   LProp_NotDefined_Raise_if(!isDefined,
           "LProp_CLProps::CurvatureNotDefined()");
 

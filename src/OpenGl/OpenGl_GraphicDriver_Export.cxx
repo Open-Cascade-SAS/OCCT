@@ -42,9 +42,9 @@ Standard_Boolean OpenGl_GraphicDriver::Export (const Standard_CString theFileNam
                                                const Graphic3d_CView& theView,
                                                const Aspect_CLayer2d& theLayerUnder,
                                                const Aspect_CLayer2d& theLayerOver,
-                                               const Standard_Real    thePrecision,
-                                               const Standard_Address theProgressBarFunc,
-                                               const Standard_Address theProgressObject)
+                                               const Standard_Real    /*thePrecision*/,
+                                               const Standard_Address /*theProgressBarFunc*/,
+                                               const Standard_Address /*theProgressObject*/)
 {
   // gl2psBeginPage() will call OpenGL functions
   // so we should activate correct GL context before redraw scene call

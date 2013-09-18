@@ -22,12 +22,15 @@
 %option yywrap
 %{
 #include <ExprIntrp.tab.h>
+
 #define YY_SKIP_YYWRAP
 
 static YY_BUFFER_STATE ExprIntrp_bufstring;
 
 void ExprIntrp_SetResult();
 void ExprIntrp_SetDegree();
+
+int ExprIntrlex (void);
 
 void ExprIntrp_start_string(char* str)
 {
@@ -44,6 +47,11 @@ int yywrap()
 {
   return 1;
 }
+
+// disable MSVC warnings in flex code
+#ifdef _MSC_VER
+#pragma warning(disable:4131 4244 4273 4127)
+#endif
 
 %}
 %%

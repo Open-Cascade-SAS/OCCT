@@ -63,6 +63,15 @@ extern void ExprIntrp_Sumator();
 extern void ExprIntrp_VariableIdentifier();
 extern void ExprIntrp_Productor();
 extern void ExprIntrp_EndOfEqual();
+
+extern void ExprIntrperror(char* msg);
+extern int  ExprIntrplex(void);
+
+// disable MSVC warnings in bison code
+#ifdef _MSC_VER
+#pragma warning(disable:4131 4244)
+#endif
+
 %}
 
 %token SUMOP MINUSOP DIVIDEOP EXPOP MULTOP PARENTHESIS BRACKET ENDPARENTHESIS ENDBRACKET VALUE IDENTIFIER COMMA DIFFERENTIAL DERIVATE DERIVKEY ASSIGNOP DEASSIGNKEY EQUALOP RELSEPARATOR CONSTKEY SUMKEY PRODKEY

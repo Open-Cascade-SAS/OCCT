@@ -50,7 +50,7 @@ Standard_EXPORT TopTools_IndexedMapOfOrientedShape STATIC_PURGE_mapeds;
 static void FUN_RaiseError()
 {
 #ifdef DEB
-  Standard_Boolean trc = TopOpeBRepTool_GettraceCORRISO();
+//  Standard_Boolean trc = TopOpeBRepTool_GettraceCORRISO();
   FUN_REINIT(); 
 //  if (trc) cout <<"*********failure in CORRISO***********\n";
 #endif
@@ -156,6 +156,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::Init(const TopoDS_Shape& S)
     const TopoDS_Edge& E = TopoDS::Edge(ex.Current());
 #ifdef DEB
     Standard_Integer iE = STATIC_PURGE_mapeds.Add(E);
+    (void)iE; // avoid warning
     #ifdef DRAW
         if (trc) {TCollection_AsciiString aa = TCollection_AsciiString("e"); FUN_tool_draw(aa,E,iE);}
     #endif
@@ -180,6 +181,7 @@ Standard_Boolean TopOpeBRepTool_CORRISO::Init(const TopoDS_Shape& S)
       const TopoDS_Vertex& v = TopoDS::Vertex(exv.Current());
 #ifdef DEB
       Standard_Integer iE = STATIC_PURGE_mapeds.Add(E);
+      (void)iE; // avoid warning
       #ifdef DRAW
         if (trc) {TCollection_AsciiString bb = TCollection_AsciiString("v"); FUN_tool_draw(bb,v,iv);}
       #endif
