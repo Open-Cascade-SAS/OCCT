@@ -104,14 +104,17 @@ void V3d_Viewer::DelLight( const Handle(V3d_Light)& TheLight ) {
   MyDefinedLights.Remove(TheLight);
 }
 
-void V3d_Viewer::SetDefaultLights () {
-//  SetLightOn ( new V3d_DirectionalLight(this,V3d_XposYpos));
-//  SetLightOn ( new V3d_DirectionalLight(this,V3d_Zpos));
-//  SetLightOn ( new V3d_DirectionalLight(this,V3d_XnegYneg));
-//  SetLightOn ( new V3d_DirectionalLight(this,V3d_Zneg));
-  SetLightOn( new V3d_DirectionalLight(this, V3d_Zneg, Quantity_NOC_WHITE, Standard_True) );
-  SetLightOn ( new V3d_AmbientLight(this));
+void V3d_Viewer::SetDefaultLights()
+{
+  while (MyDefinedLights.Extent() > 0)
+  {
+    DelLight ((Handle(V3d_Light)&)MyDefinedLights.First());
+  }
+
+  SetLightOn (new V3d_DirectionalLight (this, V3d_Zneg, Quantity_NOC_WHITE, Standard_True));
+  SetLightOn (new V3d_AmbientLight (this));
 }
+
 void V3d_Viewer::Init() {
   MyDefaultPerspectiveView = new V3d_PerspectiveView(this);
   MyDefaultOrthographicView = new V3d_OrthographicView(this);
