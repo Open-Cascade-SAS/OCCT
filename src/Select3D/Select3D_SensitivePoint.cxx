@@ -50,7 +50,6 @@ Select3D_SensitiveEntity(anOwner)
 void Select3D_SensitivePoint
 ::Project (const Handle(Select3D_Projector)& aProj)
 {
-  Select3D_SensitiveEntity::Project(aProj); // to set the field last proj...
   gp_Pnt2d aPoint2d;
   if(!HasLocation())
     aProj->Project(mypoint, aPoint2d);
@@ -80,19 +79,26 @@ void Select3D_SensitivePoint
 // Purpose :
 //==================================================
 
-Standard_Boolean Select3D_SensitivePoint
-::Matches(const Standard_Real X,
-          const Standard_Real Y,
-          const Standard_Real aTol,
-          Standard_Real& DMin)
+Standard_Boolean Select3D_SensitivePoint::Matches (const SelectBasics_PickArgs& thePickArgs,
+                                                   Standard_Real& theMatchDMin,
+                                                   Standard_Real& theMatchDepth)
 {
-  DMin = gp_Pnt2d(X,Y).Distance(myprojpt);
-  if(DMin<=aTol*SensitivityFactor())
+  // check coordinate matching
+  Standard_Real aDist = gp_Pnt2d (thePickArgs.X(), thePickArgs.Y()).Distance (myprojpt);
+  if (aDist > thePickArgs.Tolerance() * SensitivityFactor())
   {
-    // compute and validate the depth (::Depth()) along the eyeline
-    return Select3D_SensitiveEntity::Matches(X,Y,aTol,DMin);
+    return Standard_False;
   }
-  return Standard_False;
+
+  Standard_Real aDepth = ComputeDepth (thePickArgs.PickLine());
+  if (thePickArgs.IsClipped (aDepth))
+  {
+    return Standard_False;
+  }
+
+  theMatchDMin = aDist;
+  theMatchDepth = aDepth;
+  return Standard_True;
 }
 
 //==================================================

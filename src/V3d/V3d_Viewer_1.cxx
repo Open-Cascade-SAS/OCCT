@@ -70,16 +70,3 @@ void V3d_Viewer::NextDefinedLights () {
 }
 Handle(V3d_Light) V3d_Viewer::DefinedLight() const {
   return (Handle(V3d_Light)&)(myDefinedLightsIterator.Value());}
-
-void V3d_Viewer::InitDefinedPlanes() {
-myDefinedPlanesIterator.Initialize(MyDefinedPlanes);
-}
-Standard_Boolean V3d_Viewer::MoreDefinedPlanes () const {
-  return myDefinedPlanesIterator.More();
-}
-void V3d_Viewer::NextDefinedPlanes () {
-  myDefinedPlanesIterator.Next();
-}
-Handle(V3d_Plane) V3d_Viewer::DefinedPlane() const {
-  return (Handle(V3d_Plane)&)(myDefinedPlanesIterator.Value());}
-

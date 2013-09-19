@@ -20,6 +20,7 @@
 #define _Graphic3d_CStructure_HeaderFile
 
 #include <Graphic3d_CGroup.hxx>
+#include <Graphic3d_SetOfHClipPlane.hxx>
 
 class Graphic3d_CStructure
 {
@@ -55,6 +56,7 @@ public:
 
   CALL_DEF_TRANSFORM_PERSISTENCE TransformPersistence;
 
+  Graphic3d_SetOfHClipPlane ClipPlanes;
 };
 
 ///typedef Graphic3d_CStructure CALL_DEF_STRUCTURE;

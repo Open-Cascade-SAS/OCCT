@@ -126,13 +126,3 @@ inline void Select3D_Projector::Transform (gp_Pnt& Pnt, const gp_GTrsf& T) const
   T.Transforms(xyz);
   Pnt = gp_Pnt(xyz);
 }
-
-inline Standard_Real Select3D_Projector::DepthMin() const
-{
-  return myDepthMin;
-}
-
-inline Standard_Real Select3D_Projector::DepthMax() const
-{
-  return myDepthMax;
-}

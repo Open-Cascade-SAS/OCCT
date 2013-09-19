@@ -49,6 +49,7 @@
 #include <OpenGl_NamedStatus.hxx>
 #include <OpenGl_PrinterContext.hxx>
 #include <OpenGl_TextParam.hxx>
+#include <OpenGl_RenderFilter.hxx>
 
 #include <Handle_OpenGl_View.hxx>
 #include <Handle_OpenGl_Texture.hxx>
@@ -58,6 +59,7 @@ class OpenGl_AspectMarker;
 class OpenGl_AspectText;
 class OpenGl_FrameBuffer;
 class OpenGl_Structure;
+class OpenGl_Element;
 class Image_PixMap;
 
 //! Reprepsents window with GL context.
@@ -167,6 +169,28 @@ public:
   Standard_EXPORT Handle(OpenGl_Texture) EnableTexture (const Handle(OpenGl_Texture)&          theTexture,
                                                         const Handle(Graphic3d_TextureParams)& theParams = NULL);
 
+  //! Set filter for restricting rendering of particular elements.
+  //! Filter can be applied for rendering passes used by recursive
+  //! rendering algorithms for rendering elements of groups.
+  //! @param theFilter [in] the filter instance.
+  inline void SetRenderFilter (const Handle(OpenGl_RenderFilter)& theFilter)
+  {
+    myRenderFilter = theFilter; 
+  }
+
+  //! Get rendering filter.
+  //! @return filter instance.
+  inline const Handle(OpenGl_RenderFilter)& GetRenderFilter() const 
+  { 
+    return myRenderFilter; 
+  }
+
+  //! @return applied view matrix.
+  inline const OpenGl_Matrix* ViewMatrix() const { return ViewMatrix_applied; }
+
+  //! @return applied model structure matrix.
+  inline const OpenGl_Matrix* ModelMatrix() const { return StructureMatrix_applied; }
+
 protected:
 
   void CopyBuffers (const Standard_Boolean theFrontToBack);
@@ -202,6 +226,7 @@ protected: //! @name protected fields
 
 protected: //! @name fields related to status
 
+  Handle(OpenGl_RenderFilter) myRenderFilter;
   Handle(OpenGl_Texture) myTextureBound;    //!< currently bound texture (managed by OpenGl_AspectFace and OpenGl_View environment texture)
   const OpenGl_AspectLine *AspectLine_set, *AspectLine_applied;
   const OpenGl_AspectFace *AspectFace_set, *AspectFace_applied;

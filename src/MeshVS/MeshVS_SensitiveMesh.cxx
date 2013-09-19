@@ -60,13 +60,13 @@ Standard_Integer MeshVS_SensitiveMesh::GetMode () const
 // name    : Matches
 // Purpose :
 //=======================================================================
-Standard_Boolean MeshVS_SensitiveMesh::Matches(const Standard_Real X,
-					       const Standard_Real Y,
-					       const Standard_Real aTol,
-					       Standard_Real&  DMin)
+Standard_Boolean MeshVS_SensitiveMesh::Matches (const SelectBasics_PickArgs& thePickArgs,
+                                                Standard_Real& theMatchDMin,
+                                                Standard_Real& theMatchDepth)
 {
-  DMin = 0.;
-  
+  theMatchDMin = 0.0;
+  theMatchDepth = Precision::Infinite();
+
   Handle(MeshVS_MeshOwner) anOwner = Handle(MeshVS_MeshOwner)::DownCast( OwnerId() );
   if( anOwner.IsNull() ) return Standard_False;
   Handle(MeshVS_Mesh) aMeshPrs = Handle(MeshVS_Mesh)::DownCast( anOwner->Selectable() );
@@ -75,12 +75,17 @@ Standard_Boolean MeshVS_SensitiveMesh::Matches(const Standard_Real X,
   if( aDS.IsNull() ) return Standard_False;
   Handle(TColStd_HPackedMapOfInteger) NodesMap;
   Handle(TColStd_HPackedMapOfInteger) ElemsMap;
+
   // Mesh data source should provide the algorithm for computation
   // of detected entities from 2D point
-  Standard_Boolean isDetected = aDS->GetDetectedEntities( aMeshPrs, X, Y, aTol, NodesMap, ElemsMap, DMin );
+  Standard_Boolean isDetected =
+    aDS->GetDetectedEntities (aMeshPrs, thePickArgs.X(), thePickArgs.Y(),
+                              thePickArgs.Tolerance(), NodesMap,
+                              ElemsMap, theMatchDMin);
+
   // The detected entites will be available from mesh owner
   anOwner->SetDetectedEntities( NodesMap, ElemsMap );
-  
+
   return isDetected;
 }
 
@@ -148,15 +153,6 @@ Handle(Select3D_SensitiveEntity) MeshVS_SensitiveMesh::GetConnected( const TopLo
   return aMeshEnt;
 }
 
-//=======================================================================
-//function : ComputeDepth
-//purpose  : 
-//=======================================================================
-Standard_Real MeshVS_SensitiveMesh::ComputeDepth( const gp_Lin& /*EyeLine*/ ) const
-{
-  return Precision::Infinite();
-}
-
 //==================================================
 // Function: ProjectOneCorner
 // Purpose :
@@ -181,8 +177,6 @@ void MeshVS_SensitiveMesh::ProjectOneCorner(const Handle(Select3D_Projector)& th
 //==================================================
 void MeshVS_SensitiveMesh::Project(const Handle(Select3D_Projector)& aProj)
 {
-  Select3D_SensitiveEntity::Project(aProj); // to set the field last proj...
-
   mybox2d.SetVoid();
   if (mybox.IsVoid())
     return;

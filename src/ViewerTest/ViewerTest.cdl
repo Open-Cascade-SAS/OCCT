@@ -194,6 +194,7 @@ is
     GetColorFromName(name: CString from Standard)
     returns NameOfColor from Quantity;
 
-
+    RedrawAllViews;
+    ---Purpose: redraws all defined views.
 
 end;

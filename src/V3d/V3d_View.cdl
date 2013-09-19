@@ -101,7 +101,6 @@ uses
         TypeOfBackfacingModel             from V3d,
         Viewer                            from V3d,
         Light                             from V3d,
-        Plane                             from V3d,
         View                              from Visual3d,
         ViewMapping                       from Visual3d,
         ViewOrientation                   from Visual3d,
@@ -136,8 +135,9 @@ uses
         FontAspect                        from Font,
         AsciiString                       from TCollection,
         ExtendedString                    from TCollection,
-        PrintAlgo                         from Aspect
-
+        PrintAlgo                         from Aspect,
+        ClipPlane_Handle                  from Graphic3d,
+        SetOfHClipPlane                   from Graphic3d
 raises
 
         BadValue from V3d, TypeMismatch from Standard,
@@ -392,7 +392,7 @@ is
         ---Level: Public
         ---Purpose: Deactivate all the Lights defined in this view.
 
-    IsActiveLight( me ; aLight: Light  from V3d )
+        IsActiveLight( me ; aLight: Light  from V3d )
         returns Boolean from Standard;
         ---Level: Public
         ---Purpose: Returns TRUE when the light is active in this view.
@@ -401,34 +401,6 @@ is
         ---Level: Public
         ---Purpose: Activate/Deactivate the transparency in this view.
 
-        SetPlaneOn( me : mutable ; MyPlane : Plane from V3d )
-        ---Level: Public
-        ---Purpose: Activates the clipping plane in this view.
-                raises BadValue from V3d ;
-        ---Purpose:      If No More Plane can be activated in MyView .
-
-        SetPlaneOn( me : mutable )
-        ---Level: Public
-        ---Purpose: Activate all the clipping planes defined in
-        --          this view.
-                raises BadValue from V3d;
-        ---Purpose:      If No More Plane can be activated in MyView .
-
-        SetPlaneOff( me : mutable ; MyPlane : Plane  from V3d );
-        ---Level: Public
-        ---Purpose: Desactivates the clipping plane defined
-        --          in this view.
-
-        SetPlaneOff( me : mutable );
-        ---Level: Public
-        ---Purpose: Deactivate all clipping planes defined
-        --          in this view.
-
-    IsActivePlane( me ; aPlane: Plane  from V3d )
-        returns Boolean from Standard;
-        ---Level: Public
-        ---Purpose: Returns TRUE when the plane is active in this view.
-        
         SetImmediateUpdate(me: mutable; theImmediateUpdate: Boolean from Standard)
         returns Boolean from Standard;
     	  ---Purpose: sets the immediate update mode and returns the previous one.
@@ -438,7 +410,7 @@ is
         --           Triedron methods
         ---------------------------------------------------
 
-    ZBufferTriedronSetup ( me      : mutable;
+        ZBufferTriedronSetup ( me      : mutable;
                            XColor  : NameOfColor from Quantity = Quantity_NOC_RED;
                            YColor  : NameOfColor from Quantity = Quantity_NOC_GREEN;
                            ZColor  : NameOfColor from Quantity = Quantity_NOC_BLUE1;
@@ -1223,27 +1195,6 @@ is
         ActiveLight(me) returns mutable Light from V3d;
         ---Level: Advanced
 
-        IfMorePlanes( me ) returns Boolean;
-        ---Level: Advanced
-        ---Purpose: Returns True if One clipping plane more can be
-        --          activated in this View.
-
-        InitActivePlanes(me: mutable);
-        ---Level: Advanced
-        ---Purpose: initializes an iteration on the active Planes.
-
-        MoreActivePlanes (me) returns Boolean from Standard;
-        ---Level: Advanced
-        ---Purpose: returns true if there are more active Plane(s) to return.
-
-        NextActivePlanes (me: mutable);
-        ---Level: Advanced
-        ---Purpose : Go to the next active Plane
-        --           (if there is not, ActivePlane will raise an exception)
-
-        ActivePlane(me) returns mutable Plane from V3d;
-        ---Level: Advanced
-
         Viewer ( me ) returns mutable Viewer from V3d;
         ---Level: Advanced
         ---Purpose: Returns the viewer in which the view has been created.
@@ -1604,13 +1555,36 @@ is
      ---Purpose: returns the current state of the gl lighting
      --          currently used in triedron displaying
 
+     AddClipPlane (me : mutable; thePlane : ClipPlane_Handle from Graphic3d) is virtual;
+     ---Purpose: Adds clip plane to the view. The composition of clip planes truncates the
+     -- rendering space to convex volume. Number of supported clip planes can be consulted
+     -- by PlaneLimit method of associated Visual3d_View. Please be aware that the planes
+     -- which exceed the limit are igonred during rendering. 
+     -- @param thePlane [in] the clip plane to be added to view.
+
+     RemoveClipPlane (me : mutable; thePlane : ClipPlane_Handle from Graphic3d) is virtual;
+     ---Purpose: Removes clip plane from the view.
+     -- @param thePlane [in] the clip plane to be removed from view.
+
+     SetClipPlanes (me : mutable; thePlanes : SetOfHClipPlane from Graphic3d);
+     ---Purpose: Set clip planes to the view. The planes that have been set
+     -- before are removed from the view. The composition of clip planes
+     -- truncates the rendering space to convex volume. Number of supported
+     -- clip planes can be consulted by PlaneLimit method of associated
+     -- Visual3d_View. Please be aware that the planes which exceed the limit
+     -- are igonred during rendering. 
+     -- @param thePlanes [in] the clip planes to set.
+
+     GetClipPlanes (me) returns SetOfHClipPlane from Graphic3d;
+     ---C++: return const&
+     ---Purpose: Get clip planes.
+     -- @return sequence clip planes that have been set for the view
 
 fields
 
         MyType :                TypeOfView from V3d is protected ;
         MyViewer :              ViewerPointer from V3d ;
         MyActiveLights:         ListOfTransient from V3d;
-        MyActivePlanes:         ListOfTransient from V3d;
 
         MyView :                View from Visual3d is protected ;
         MyViewMapping :         ViewMapping from Visual3d is protected ;
@@ -1626,7 +1600,6 @@ fields
         MyPlotter:              Plotter from Graphic3d;
 
         myActiveLightsIterator: ListIteratorOfListOfTransient from TColStd;
-        myActivePlanesIterator: ListIteratorOfListOfTransient from TColStd;
 
         sx,sy: Integer from Standard;
         rx,ry: Real from Standard;

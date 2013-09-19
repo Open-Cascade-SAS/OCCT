@@ -72,7 +72,6 @@ Select3D_SensitiveCircle(const Handle(SelectBasics_EntityOwner)& OwnerId,
                          const Standard_Integer NbPoints):
 Select3D_SensitivePoly(OwnerId, S3D_GetCircleNBPoints(TheCircle,NbPoints)),
 myFillStatus(FilledCircle),
-myDetectedIndex(-1),
 myCircle(TheCircle),
 mystart(0),
 myend(0)
@@ -129,7 +128,6 @@ Select3D_SensitiveCircle(const Handle(SelectBasics_EntityOwner)& OwnerId,
                          const Standard_Integer NbPoints):
 Select3D_SensitivePoly(OwnerId, S3D_GetArcNBPoints(TheCircle,NbPoints)),
 myFillStatus(FilledCircle),
-myDetectedIndex(-1),
 myCircle(TheCircle),
 mystart(u1),
 myend(u2)
@@ -186,7 +184,6 @@ Select3D_SensitiveCircle::Select3D_SensitiveCircle(const Handle(SelectBasics_Ent
                                                    const Standard_Boolean FilledCircle):
 Select3D_SensitivePoly(OwnerId, Thepolyg3d),
 myFillStatus(FilledCircle),
-myDetectedIndex(-1),
 mystart(0),
 myend(0)
 {
@@ -206,7 +203,6 @@ Select3D_SensitiveCircle::Select3D_SensitiveCircle(const Handle(SelectBasics_Ent
                                                    const Standard_Boolean FilledCircle):
 Select3D_SensitivePoly(OwnerId, Thepolyg3d),
 myFillStatus(FilledCircle),
-myDetectedIndex(-1),
 mystart(0),
 myend(0)
 {
@@ -221,13 +217,13 @@ myend(0)
 //purpose  :
 //=======================================================================
 
-Standard_Boolean Select3D_SensitiveCircle::
-Matches(const Standard_Real X,
-        const Standard_Real Y,
-        const Standard_Real aTol,
-        Standard_Real& DMin)
+Standard_Boolean Select3D_SensitiveCircle::Matches (const SelectBasics_PickArgs& thePickArgs,
+                                                    Standard_Real& theMatchDMin,
+                                                    Standard_Real& theMatchDepth)
 {
   Standard_Integer aSize = mypolyg.Size();
+  Standard_Integer aDetectedIndex = -1;
+  gp_XY aPickXY (thePickArgs.X(), thePickArgs.Y());
   if (aSize != 1)
   {
     Standard_Boolean Found = Standard_False;
@@ -241,15 +237,19 @@ Matches(const Standard_Real X,
           Select3D_SensitiveTriangle::Status(mypolyg.Pnt2d(anIndex),
                                              mypolyg.Pnt2d(anIndex+1),
                                              mypolyg.Pnt2d(anIndex+2),
-                                             gp_XY(X,Y),aTol,DMin);
+                                             aPickXY, thePickArgs.Tolerance(),
+                                             theMatchDMin);
         Found = (TheStat != 2);
-        if(Found) myDetectedIndex = anIndex;
+        if (Found)
+        {
+          aDetectedIndex = anIndex;
+        }
+
         anIndex += 2;
       }
     }
     else
     {
-      myDetectedIndex =-1;
       Standard_Real Xmin,Ymin,Xmax,Ymax;
 
       // Get coordinates of the bounding box
@@ -259,32 +259,47 @@ Matches(const Standard_Real X,
       // Fill anArrayOf2dPnt with points from mypolig2d
       Points2D(anArrayOf2dPnt);
 
-      CSLib_Class2d anInOutTool(anArrayOf2dPnt,aTol,aTol,Xmin,Ymin,Xmax,Ymax);
+      CSLib_Class2d anInOutTool (anArrayOf2dPnt,
+                                 thePickArgs.Tolerance(),
+                                 thePickArgs.Tolerance(),
+                                 Xmin, Ymin, Xmax, Ymax);
 
       // Method SiDans returns the status :
       //  1 - the point is inside the circle
       //  0 - the point is on the circle
       // -1 - the point is outside the circle
-      Standard_Integer aStat = anInOutTool.SiDans(gp_Pnt2d(X,Y));
+      Standard_Integer aStat = anInOutTool.SiDans (gp_Pnt2d (aPickXY));
       if(aStat != -1)
       {
         // Compute DMin (a distance between the center and the point)
-        DMin = gp_XY(myCenter2D.x - X, myCenter2D.y - Y).Modulus();
-        Select3D_SensitiveEntity::Matches(X,Y,aTol,DMin);
-        return Standard_True;
+        theMatchDMin = gp_XY (myCenter2D.x - aPickXY.X(), myCenter2D.y - aPickXY.Y()).Modulus();
+
+        theMatchDepth = ComputeDepth (thePickArgs.PickLine(), aDetectedIndex);
+
+        return !thePickArgs.IsClipped (theMatchDepth);
       }
+
       return Standard_False;
     }
-    if(!Found)
-      myDetectedIndex=-1;
-    else
-      Select3D_SensitiveEntity::Matches(X,Y,aTol,DMin);
-    return Found;
+
+    if (Found)
+    {
+      theMatchDepth = ComputeDepth (thePickArgs.PickLine(), aDetectedIndex);
+
+      return !thePickArgs.IsClipped (theMatchDepth);
+    }
+
+    return Standard_False;
   }
+
   // Circle degenerates into point
-  DMin = gp_Pnt2d(X, Y).Distance(mypolyg.Pnt2d(0));
-  if (DMin <= aTol*SensitivityFactor())
-    return Select3D_SensitiveEntity::Matches(X,Y,aTol,DMin);
+  theMatchDMin = gp_Pnt2d(aPickXY).Distance(mypolyg.Pnt2d(0));
+  if (theMatchDMin <= thePickArgs.Tolerance() * SensitivityFactor())
+  {
+    theMatchDepth = ComputeDepth (thePickArgs.PickLine(), aDetectedIndex);
+
+    return !thePickArgs.IsClipped (theMatchDepth);
+  }
 
   return Standard_False;
 }
@@ -301,7 +316,6 @@ Matches(const Standard_Real XMin,
         const Standard_Real YMax,
         const Standard_Real aTol)
 {
-  myDetectedIndex =-1;
   Bnd_Box2d abox;
   abox.Update(Min(XMin,XMax),Min(YMin,YMax),Max(XMin,XMax),Max(YMin,YMax));
   abox.Enlarge(aTol);
@@ -324,7 +338,6 @@ Matches (const TColgp_Array1OfPnt2d& aPoly,
          const Bnd_Box2d& aBox,
          const Standard_Real aTol)
 {
-  myDetectedIndex = -1;
   Standard_Real Umin,Vmin,Umax,Vmax;
   aBox.Get(Umin,Vmin,Umax,Vmax);
   CSLib_Class2d aClassifier2d(aPoly,aTol,aTol,Umin,Vmin,Umax,Vmax);
@@ -401,21 +414,23 @@ void Select3D_SensitiveCircle::Dump(Standard_OStream& S,const Standard_Boolean F
 //purpose  :
 //=======================================================================
 
-Standard_Real Select3D_SensitiveCircle::ComputeDepth(const gp_Lin& EyeLine) const
+Standard_Real Select3D_SensitiveCircle::ComputeDepth (const gp_Lin& thePickLine,
+                                                      const Standard_Integer theDetectedIndex) const
 {
   gp_XYZ aCDG;
-  if(myDetectedIndex==-1)
+  if (theDetectedIndex == -1)
   {
     aCDG = myCenter3D;
   }
   else
   {
-    aCDG += mypolyg.Pnt(myDetectedIndex);
-    aCDG += mypolyg.Pnt(myDetectedIndex+1);
-    aCDG += mypolyg.Pnt(myDetectedIndex+2);
+    aCDG += mypolyg.Pnt (theDetectedIndex);
+    aCDG += mypolyg.Pnt (theDetectedIndex + 1);
+    aCDG += mypolyg.Pnt (theDetectedIndex + 2);
     aCDG /= 3.;
   }
-  return ElCLib::Parameter(EyeLine,gp_Pnt(aCDG));
+
+  return ElCLib::Parameter (thePickLine, gp_Pnt (aCDG));
 }
 
 //=======================================================================

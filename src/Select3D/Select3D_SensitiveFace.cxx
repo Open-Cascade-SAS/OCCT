@@ -32,18 +32,6 @@
 
 #include <CSLib_Class2d.hxx>
 
-
-#define AutoInterMask  0x01
-#define AutoComputeMask  0x02
-// Standard_True if the flag is one
-#define AutoInterFlag(aflag)  ( aflag & AutoInterMask )
-#define AutoComputeFlag(aflag)  ( aflag & AutoComputeMask )
-// set the flag to one
-#define SetAutoInterFlag(aflag)  ( aflag = aflag & AutoInterMask)
-#define SetAutoComputeFlag(aflag)  ( aflag = aflag & AutoComputeMask)
-// Initialize flags
-#define AutoInitFlags(aflag) (aflag = 0)
-
 //==================================================
 // Function: Hide this constructor to the next version...
 // Purpose : simply avoid interfering with the version update
@@ -56,7 +44,6 @@ Select3D_SensitiveFace(const Handle(SelectBasics_EntityOwner)& OwnerId,
 Select3D_SensitivePoly(OwnerId, ThePoints),
 mytype (aType)
 {
-  AutoInitFlags(myautointer);
 }
 
 //==================================================
@@ -71,7 +58,6 @@ Select3D_SensitiveFace(const Handle(SelectBasics_EntityOwner)& OwnerId,
 Select3D_SensitivePoly(OwnerId, ThePoints),
 mytype (aType)
 {
-  AutoInitFlags(myautointer);
 }
 
 //==================================================
@@ -79,11 +65,9 @@ mytype (aType)
 // Purpose :
 //==================================================
 
-Standard_Boolean Select3D_SensitiveFace::
-Matches(const Standard_Real X,
-        const Standard_Real Y,
-        const Standard_Real aTol,
-        Standard_Real& DMin)
+Standard_Boolean Select3D_SensitiveFace::Matches (const SelectBasics_PickArgs& thePickArgs,
+                                                  Standard_Real& theMatchDMin,
+                                                  Standard_Real& theMatchDepth)
 {
   Standard_Real DMin2 = 0.;
   Standard_Real Xmin = 0.,Ymin = 0.,Xmax = 0.,Ymax = 0.;
@@ -96,7 +80,7 @@ Matches(const Standard_Real X,
   // from start Dmin = size of the bounding box 2D,
   // then min. distance of the polyhedron or cdg...
 
-  Standard_Real aTol2 = aTol*aTol;
+  Standard_Real aTol2 = thePickArgs.Tolerance() * thePickArgs.Tolerance();
   Standard_Integer aSize = mypolyg.Size(), anIndex;
   gp_XY CDG;
   for(anIndex=0;anIndex<aSize;++anIndex)
@@ -108,14 +92,14 @@ Matches(const Standard_Real X,
   {
     CDG/=(aSize-1);
   }
-  DMin2=Min(DMin2,gp_XY(CDG.X()-X,CDG.Y()-Y).SquareModulus());
-  DMin = Sqrt(DMin2);
+  DMin2 = Min (DMin2, gp_XY (CDG.X() - thePickArgs.X(), CDG.Y() - thePickArgs.Y()).SquareModulus());
+  theMatchDMin = Sqrt(DMin2);
 
   Standard_Boolean isplane2d(Standard_True);
 
   for(anIndex=1;anIndex<aSize;++anIndex)
   {
-    gp_XY V1(mypolyg.Pnt2d(anIndex)),V(X,Y);
+    gp_XY V1(mypolyg.Pnt2d(anIndex)),V(thePickArgs.X(), thePickArgs.Y());
     V1-=mypolyg.Pnt2d(anIndex-1);
     V-=mypolyg.Pnt2d(anIndex-1);
     Standard_Real Vector = V1^V;
@@ -128,18 +112,25 @@ Matches(const Standard_Real X,
     gp_XY PlaneTest(CDG);
     PlaneTest-=mypolyg.Pnt2d(anIndex-1);
     Standard_Real valtst = PlaneTest^V1;
-    if(isplane2d && Abs(valtst)>aTol) isplane2d=Standard_False;
+    if(isplane2d && Abs(valtst) > thePickArgs.Tolerance()) isplane2d=Standard_False;
   }
   if (isplane2d)
   {
-    return Select3D_SensitiveEntity::Matches(X,Y,aTol,DMin);
+    theMatchDepth = ComputeDepth (thePickArgs.PickLine(),
+                                  thePickArgs.DepthMin(),
+                                  thePickArgs.DepthMax());
+
+    return !thePickArgs.IsClipped (theMatchDepth);
   }
 
   //otherwise it is checked if the point is in the face...
   TColgp_Array1OfPnt2d aArrayOf2dPnt(1, aSize);
   Points2D(aArrayOf2dPnt);
-  CSLib_Class2d TheInOutTool(aArrayOf2dPnt,aTol,aTol,Xmin,Ymin,Xmax,Ymax);
-  Standard_Integer TheStat = TheInOutTool.SiDans(gp_Pnt2d(X,Y));
+  CSLib_Class2d TheInOutTool (aArrayOf2dPnt,
+                              thePickArgs.Tolerance(),
+                              thePickArgs.Tolerance(),
+                              Xmin, Ymin, Xmax, Ymax);
+  Standard_Integer TheStat = TheInOutTool.SiDans (gp_Pnt2d (thePickArgs.X(), thePickArgs.Y()));
 
   Standard_Boolean res(Standard_False);
   switch(TheStat)
@@ -154,7 +145,11 @@ Matches(const Standard_Real X,
   }
   if (res)
   {
-    return Select3D_SensitiveEntity::Matches(X,Y,aTol,DMin);
+    theMatchDepth = ComputeDepth (thePickArgs.PickLine(),
+                                  thePickArgs.DepthMin(),
+                                  thePickArgs.DepthMax());
+
+    return !thePickArgs.IsClipped (theMatchDepth);
   }
   return Standard_False;
 }
@@ -232,23 +227,32 @@ void Select3D_SensitiveFace::Dump(Standard_OStream& S,const Standard_Boolean Ful
 //purpose  :
 //=======================================================================
 
-Standard_Real Select3D_SensitiveFace::ComputeDepth(const gp_Lin& EyeLine) const
+Standard_Real Select3D_SensitiveFace::ComputeDepth (const gp_Lin& thePickLine,
+                                                    const Standard_Real theDepthMin,
+                                                    const Standard_Real theDepthMax) const
 {
   Standard_Real aDepth = Precision::Infinite();
-
-  Standard_Real aDepthMin = !mylastprj.IsNull() ? mylastprj->DepthMin() : -Precision::Infinite();
-  Standard_Real aDepthMax = !mylastprj.IsNull() ? mylastprj->DepthMax() :  Precision::Infinite();
-  Standard_Real aDepthTest;
+  Standard_Real aPointDepth;
 
   for (Standard_Integer anIndex = 0; anIndex < mypolyg.Size()-1; ++anIndex)
   {
-    aDepthTest = ElCLib::Parameter (EyeLine, mypolyg.Pnt(anIndex));
-    if (aDepthTest < aDepth && (aDepthTest > aDepthMin) && (aDepthTest < aDepthMax))
+    aPointDepth = ElCLib::Parameter (thePickLine, mypolyg.Pnt(anIndex));
+    if (aPointDepth < aDepth && (aPointDepth > theDepthMin) && (aPointDepth < theDepthMax))
     {
-      aDepth = aDepthTest;
+      aDepth = aPointDepth;
     }
   }
   return aDepth;
+}
+
+//=======================================================================
+//function : ComputeDepth
+//purpose  :
+//=======================================================================
+
+void Select3D_SensitiveFace::ComputeDepth(const gp_Lin& /*theEyeLine*/) const
+{
+  // this method is obsolete.
 }
 
 //=======================================================================

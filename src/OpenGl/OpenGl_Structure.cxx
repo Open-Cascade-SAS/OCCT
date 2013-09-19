@@ -24,7 +24,8 @@
 #include <OpenGl_Workspace.hxx>
 #include <OpenGl_Vec.hxx>
 #include <OpenGl_View.hxx>
-
+#include <OpenGl_CappingAlgo.hxx>
+#include <OpenGl_Context.hxx>
 #include <OpenGl_telem_util.hxx>
 
 //! Auxiliary class for bounding box presentation
@@ -111,6 +112,10 @@ public:
 
 /*----------------------------------------------------------------------*/
 
+// =======================================================================
+// function : call_util_transpose_mat
+// purpose  :
+// =======================================================================
 static void call_util_transpose_mat (float tmat[16], float mat[4][4])
 {
   int i, j;
@@ -120,8 +125,10 @@ static void call_util_transpose_mat (float tmat[16], float mat[4][4])
       tmat[j*4+i] = mat[i][j];
 }
 
-/*----------------------------------------------------------------------*/
-
+// =======================================================================
+// function : OpenGl_Structure
+// purpose  :
+// =======================================================================
 OpenGl_Structure::OpenGl_Structure ()
 : myTransformation(NULL),
   myTransPers(NULL),
@@ -136,8 +143,10 @@ OpenGl_Structure::OpenGl_Structure ()
 {
 }
 
-/*----------------------------------------------------------------------*/
-
+// =======================================================================
+// function : ~OpenGl_Structure
+// purpose  :
+// =======================================================================
 OpenGl_Structure::~OpenGl_Structure()
 {
   Release (Handle(OpenGl_Context)());
@@ -145,8 +154,10 @@ OpenGl_Structure::~OpenGl_Structure()
   delete myTransPers;       myTransPers       = NULL;
 }
 
-/*----------------------------------------------------------------------*/
-
+// =======================================================================
+// function : SetTransformation
+// purpose  :
+// =======================================================================
 void OpenGl_Structure::SetTransformation(const float *AMatrix)
 {
   if (!myTransformation)
@@ -155,8 +166,10 @@ void OpenGl_Structure::SetTransformation(const float *AMatrix)
   matcpy( myTransformation->mat, AMatrix );
 }
 
-/*----------------------------------------------------------------------*/
-
+// =======================================================================
+// function : SetTransformPersistence
+// purpose  :
+// =======================================================================
 void OpenGl_Structure::SetTransformPersistence(const CALL_DEF_TRANSFORM_PERSISTENCE &ATransPers)
 {
   if (!myTransPers)
@@ -168,8 +181,10 @@ void OpenGl_Structure::SetTransformPersistence(const CALL_DEF_TRANSFORM_PERSISTE
   myTransPers->pointZ = ATransPers.Point.z;
 }
 
-/*----------------------------------------------------------------------*/
-
+// =======================================================================
+// function : SetAspectLine
+// purpose  :
+// =======================================================================
 void OpenGl_Structure::SetAspectLine (const CALL_DEF_CONTEXTLINE &AContext)
 {
   if (!myAspectLine)
@@ -177,8 +192,10 @@ void OpenGl_Structure::SetAspectLine (const CALL_DEF_CONTEXTLINE &AContext)
   myAspectLine->SetContext( AContext );
 }
 
-/*----------------------------------------------------------------------*/
-
+// =======================================================================
+// function : SetAspectFace
+// purpose  :
+// =======================================================================
 void OpenGl_Structure::SetAspectFace (const Handle(OpenGl_Context)&   theCtx,
                                       const CALL_DEF_CONTEXTFILLAREA& theAspect)
 {
@@ -189,8 +206,10 @@ void OpenGl_Structure::SetAspectFace (const Handle(OpenGl_Context)&   theCtx,
   myAspectFace->Init (theCtx, theAspect);
 }
 
-/*----------------------------------------------------------------------*/
-
+// =======================================================================
+// function : SetAspectMarker
+// purpose  :
+// =======================================================================
 void OpenGl_Structure::SetAspectMarker (const Handle(OpenGl_Context)& theCtx,
                                         const CALL_DEF_CONTEXTMARKER& theAspect)
 {
@@ -201,8 +220,10 @@ void OpenGl_Structure::SetAspectMarker (const Handle(OpenGl_Context)& theCtx,
   myAspectMarker->Init (theCtx, theAspect);
 }
 
-/*----------------------------------------------------------------------*/
-
+// =======================================================================
+// function : SetAspectText
+// purpose  :
+// =======================================================================
 void OpenGl_Structure::SetAspectText (const CALL_DEF_CONTEXTTEXT &AContext)
 {
   if (!myAspectText)
@@ -210,8 +231,10 @@ void OpenGl_Structure::SetAspectText (const CALL_DEF_CONTEXTTEXT &AContext)
   myAspectText->SetContext( AContext );
 }
 
-/*----------------------------------------------------------------------*/
-
+// =======================================================================
+// function : SetHighlightBox
+// purpose  :
+// =======================================================================
 void OpenGl_Structure::SetHighlightBox (const Handle(OpenGl_Context)& theGlCtx,
                                         const CALL_DEF_BOUNDBOX&      theBoundBox)
 {
@@ -234,8 +257,10 @@ void OpenGl_Structure::SetHighlightBox (const Handle(OpenGl_Context)& theGlCtx,
   myHighlightBox->AddElement (TelParray, aBndBoxPrs);
 }
 
-/*----------------------------------------------------------------------*/
-
+// =======================================================================
+// function : ClearHighlightBox
+// purpose  :
+// =======================================================================
 void OpenGl_Structure::ClearHighlightBox (const Handle(OpenGl_Context)& theGlCtx)
 {
   if (myHighlightBox != NULL)
@@ -244,8 +269,10 @@ void OpenGl_Structure::ClearHighlightBox (const Handle(OpenGl_Context)& theGlCtx
   }
 }
 
-/*----------------------------------------------------------------------*/
-
+// =======================================================================
+// function : SetHighlightColor
+// purpose  :
+// =======================================================================
 void OpenGl_Structure::SetHighlightColor (const Handle(OpenGl_Context)& theGlCtx,
                                           const Standard_ShortReal R,
                                           const Standard_ShortReal G,
@@ -263,8 +290,10 @@ void OpenGl_Structure::SetHighlightColor (const Handle(OpenGl_Context)& theGlCtx
   myHighlightColor->rgb[3] = 1.F;
 }
 
-/*----------------------------------------------------------------------*/
-
+// =======================================================================
+// function : ClearHighlightColor
+// purpose  :
+// =======================================================================
 void OpenGl_Structure::ClearHighlightColor (const Handle(OpenGl_Context)& theGlCtx)
 {
   ClearHighlightBox(theGlCtx);
@@ -272,16 +301,20 @@ void OpenGl_Structure::ClearHighlightColor (const Handle(OpenGl_Context)& theGlC
   myHighlightColor = NULL;
 }
 
-/*----------------------------------------------------------------------*/
-
+// =======================================================================
+// function : Connect
+// purpose  :
+// =======================================================================
 void OpenGl_Structure::Connect (const OpenGl_Structure *AStructure)
 {
   Disconnect (AStructure);
   myConnected.Append(AStructure);
 }
 
-/*----------------------------------------------------------------------*/
-
+// =======================================================================
+// function : Disconnect
+// purpose  :
+// =======================================================================
 void OpenGl_Structure::Disconnect (const OpenGl_Structure *AStructure)
 {
   OpenGl_ListOfStructure::Iterator its(myConnected);
@@ -297,8 +330,10 @@ void OpenGl_Structure::Disconnect (const OpenGl_Structure *AStructure)
   }
 }
 
-/*----------------------------------------------------------------------*/
-
+// =======================================================================
+// function : AddGroup
+// purpose  :
+// =======================================================================
 OpenGl_Group * OpenGl_Structure::AddGroup ()
 {
   // Create new group
@@ -307,8 +342,10 @@ OpenGl_Group * OpenGl_Structure::AddGroup ()
   return g;
 }
 
-/*----------------------------------------------------------------------*/
-
+// =======================================================================
+// function : RemoveGroup
+// purpose  :
+// =======================================================================
 void OpenGl_Structure::RemoveGroup (const Handle(OpenGl_Context)& theGlCtx,
                                     const OpenGl_Group*           theGroup)
 {
@@ -325,8 +362,10 @@ void OpenGl_Structure::RemoveGroup (const Handle(OpenGl_Context)& theGlCtx,
   }
 }
 
-/*----------------------------------------------------------------------*/
-
+// =======================================================================
+// function : Clear
+// purpose  :
+// =======================================================================
 void OpenGl_Structure::Clear (const Handle(OpenGl_Context)& theGlCtx)
 {
   // Release groups
@@ -338,8 +377,10 @@ void OpenGl_Structure::Clear (const Handle(OpenGl_Context)& theGlCtx)
   myGroups.Clear();
 }
 
-/*----------------------------------------------------------------------*/
-
+// =======================================================================
+// function : Render
+// purpose  :
+// =======================================================================
 void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
 {
   // Process the structure only if visible
@@ -415,12 +456,40 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
     its.Next();
   }
 
+  // Set up plane equations for non-structure transformed global model-view matrix
+  const Handle(OpenGl_Context)& aContext = AWorkspace->GetGlContext();
+
+  // Collect planes which should be turned on for structure
+  Graphic3d_SetOfHClipPlane aPlanesOn;
+  Graphic3d_SetOfHClipPlane::Iterator aPlaneIt (myClipPlanes);
+  for (; aPlaneIt.More(); aPlaneIt.Next())
+  {
+    const Handle(Graphic3d_ClipPlane)& aUserPln = aPlaneIt.Value();
+    if (aUserPln->IsOn())
+      aPlanesOn.Add (aUserPln);
+  }
+
+  // set structure clipping planes
+  if (aPlanesOn.Size() > 0)
+  {
+    aContext->ChangeClipping().Set (aPlanesOn, AWorkspace->ViewMatrix());
+  }
+
   // Render groups
   OpenGl_ListOfGroup::Iterator itg(myGroups);
   while (itg.More())
   {
     itg.Value()->Render(AWorkspace);
     itg.Next();
+  }
+
+  // Render cappings for structure groups
+  OpenGl_CappingAlgo::RenderCapping (AWorkspace, myGroups);
+
+  // unset structure clipping planes
+  if (aPlanesOn.Size() > 0)
+  {
+    aContext->ChangeClipping().Unset (aPlanesOn);
   }
 
   // Restore highlight color
@@ -514,7 +583,6 @@ void OpenGl_Structure::ReleaseGlResources (const Handle(OpenGl_Context)& theGlCt
 //function : SetZLayer
 //purpose  :
 //=======================================================================
-
 void OpenGl_Structure::SetZLayer (const Standard_Integer theLayerIndex)
 {
   myZLayer = theLayerIndex;
@@ -524,7 +592,6 @@ void OpenGl_Structure::SetZLayer (const Standard_Integer theLayerIndex)
 //function : GetZLayer
 //purpose  :
 //=======================================================================
-
 Standard_Integer OpenGl_Structure::GetZLayer () const
 {
   return myZLayer;

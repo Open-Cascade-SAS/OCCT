@@ -207,8 +207,6 @@ myDetectedTr(-1)
 
 void Select3D_SensitiveTriangulation::Project(const Handle(Select3D_Projector)& aPrj)
 {
-  Select3D_SensitiveEntity::Project(aPrj); // to set the field last proj...
-
   mybox2d.SetVoid();
   const TColgp_Array1OfPnt& Nodes = myTriangul->Nodes();
 
@@ -241,27 +239,25 @@ void Select3D_SensitiveTriangulation::Areas(SelectBasics_ListOfBox2d& boxes)
 //function : Matches
 //purpose  :
 //=======================================================================
-Standard_Boolean Select3D_SensitiveTriangulation::
-Matches(const Standard_Real X,
-        const Standard_Real Y,
-        const Standard_Real aTol,
-        Standard_Real& DMin)
-{
-  // get view direction (necessary for calculation of depth) from field mylastprj of the base class
-  if (mylastprj.IsNull())
-    return Standard_False;
 
-  DMin = Precision::Infinite();
-  gp_XY BidPoint(X,Y);
+Standard_Boolean Select3D_SensitiveTriangulation::Matches (const SelectBasics_PickArgs& thePickArgs,
+                                                           Standard_Real& theMatchDMin,
+                                                           Standard_Real& theMatchDepth)
+{
+  theMatchDMin = Precision::Infinite();
+  gp_XY BidPoint (thePickArgs.X(), thePickArgs.Y());
   myDetectedTr = -1;
   const Poly_Array1OfTriangle& triangles = myTriangul->Triangles();
 
   // it is checked if we are inside the triangle 2d.
   if(myIntFlag)
   {
-    gp_Lin EyeLine = mylastprj->Shoot(X,Y);
-    if ( myTrsf.Form()!=gp_Identity )
-      EyeLine.Transform (myTrsf.Inverted());
+    gp_Lin aPickingLine = thePickArgs.PickLine();
+
+    if (myTrsf.Form() != gp_Identity)
+    {
+      aPickingLine.Transform (myTrsf.Inverted());
+    }
 
     Standard_Real aMinDepth = Precision::Infinite();
     const TColgp_Array1OfPnt& Nodes = myTriangul->Nodes();
@@ -274,24 +270,22 @@ Matches(const Standard_Real X,
       const gp_XY& aPnt2d3 = myNodes2d(n3).XY();
       gp_XY aUV;
       Standard_Real aDistSquare = Poly::PointOnTriangle (aPnt2d1, aPnt2d2, aPnt2d3, BidPoint, aUV);
-      if ( aDistSquare > aTol * aTol )
+      if (aDistSquare > thePickArgs.Tolerance() * thePickArgs.Tolerance())
         continue;
 
-      // compute depth on this triangle
-      Standard_Real aDepth1 = ElCLib::Parameter (EyeLine, Nodes(n1));
-      Standard_Real aDepth2 = ElCLib::Parameter (EyeLine, Nodes(n2));
-      Standard_Real aDepth3 = ElCLib::Parameter (EyeLine, Nodes(n3));
+      // get interpolated depth of the triangle nodes
+      Standard_Real aDepth1 = ElCLib::Parameter (aPickingLine, Nodes(n1));
+      Standard_Real aDepth2 = ElCLib::Parameter (aPickingLine, Nodes(n2));
+      Standard_Real aDepth3 = ElCLib::Parameter (aPickingLine, Nodes(n3));
       Standard_Real aDepth = aDepth1 + aUV.X() * (aDepth2 - aDepth1) +
                                        aUV.Y() * (aDepth3 - aDepth1);
 
-      // take triangle with lowest depth and within defined depth interval
-      if (aDepth < aMinDepth &&
-          aDepth > mylastprj->DepthMin() &&
-          aDepth < mylastprj->DepthMax())
+      // accept triangle with lowest depth and within defined depth interval
+      if (aDepth < aMinDepth && !thePickArgs.IsClipped(aDepth))
       {
         aMinDepth = aDepth;
         myDetectedTr = itr;
-        DMin = Sqrt (aDistSquare);
+        theMatchDMin = Sqrt (aDistSquare);
       }
     }
   }
@@ -312,7 +306,7 @@ Matches(const Standard_Real X,
       Node2 = FreeE(ifri+1);
       if (S3D_STriangul_NearSegment (myNodes2d(Node1).XY(),
                                      myNodes2d(Node2).XY(),
-                                     BidPoint, aTol, DMin) )
+                                     BidPoint, thePickArgs.Tolerance(), theMatchDMin))
       {
         for(Standard_Integer itr=1; itr <= myTriangul->NbTriangles(); itr++)
         {
@@ -330,10 +324,13 @@ Matches(const Standard_Real X,
   if ( myDetectedTr <= 0 )
     return Standard_False;
 
-  // compute and validate the depth (::Depth()) along the eyeline
-  return Select3D_SensitiveEntity::Matches(X,Y,aTol,DMin);
-}
+  // get precise depth for the detected triangle
+  theMatchDepth = ComputeDepth (thePickArgs.PickLine(), myDetectedTr);
 
+  // this test should not fail if the topmost triangle is taken from the
+  // first if-case block (for other cases this test make sense?)
+  return !thePickArgs.IsClipped (theMatchDepth);
+}
 
 //=======================================================================
 //function : Matches
@@ -509,86 +506,117 @@ void Select3D_SensitiveTriangulation::Dump(Standard_OStream& S,const Standard_Bo
 //purpose  :
 //=======================================================================
 
-Standard_Real Select3D_SensitiveTriangulation::ComputeDepth(const gp_Lin& EyeLine) const
+Standard_Real Select3D_SensitiveTriangulation::ComputeDepth(const gp_Lin& thePickLine,
+                                                            const Standard_Integer theTriangle) const
 {
-  if(myDetectedTr==-1) return Precision::Infinite(); // currently not implemented...
+  if (theTriangle == -1)
+  {
+    return Precision::Infinite(); // currently not implemented...
+  }
+
   const Poly_Array1OfTriangle& triangles = myTriangul->Triangles();
   const TColgp_Array1OfPnt& Nodes = myTriangul->Nodes();
 
   Standard_Integer n1,n2,n3;
-  triangles(myDetectedTr).Get(n1,n2,n3);
+  triangles (theTriangle).Get (n1,n2,n3);
   gp_Pnt P[3]={Nodes(n1),Nodes(n2),Nodes(n3)};
 
-  if(myTrsf.Form()!=gp_Identity)
+  if (myTrsf.Form() != gp_Identity)
   {
-    for(Standard_Integer i =0;i<=2;i++)
+    for (Standard_Integer i =0; i<=2; i++)
     {
-      P[i].Transform(myTrsf);
+      P[i].Transform (myTrsf);
     }
   }
 
   // formula calculate the parameter of the point on the intersection
   // t = (P1P2 ^P1P3)* OP1  / ((P1P2^P1P3)*Dir)
-  Standard_Real prof(Precision::Infinite());
-  gp_Pnt Oye  = EyeLine.Location(); // origin of the target line eye/point...
-  gp_Dir Dir  = EyeLine.Direction();
+  Standard_Real prof (Precision::Infinite());
+  gp_Pnt Oye  = thePickLine.Location(); // origin of the target line eye/point...
+  gp_Dir Dir  = thePickLine.Direction();
 
   gp_Vec Vtr[3];
-  for(Standard_Integer i=0;i<=2;i++)
-    Vtr[i] = gp_Vec(P[i%3],P[(i+1)%3]);
+  for (Standard_Integer i=0; i<=2; i++)
+  {
+    Vtr[i] = gp_Vec (P[i%3], P[(i+1)%3]);
+  }
+
   Vtr[2] = -Vtr[2];
 
   // remove singular cases immediately...
-  Standard_Integer SingularCase(-1);
-  if(Vtr[0].SquareMagnitude()<= Precision::Confusion())
+  Standard_Integer SingularCase (-1);
+  if (Vtr[0].SquareMagnitude() <= Precision::Confusion())
+  {
     SingularCase = 0;
-  if(Vtr[1].SquareMagnitude()<= Precision::Confusion())
+  }
+
+  if (Vtr[1].SquareMagnitude() <= Precision::Confusion())
+  {
     SingularCase = (SingularCase == -1) ? 1 : 2;
+  }
+
 #ifdef BUC60858
-  if(Vtr[2].SquareMagnitude()<= Precision::Confusion())
+  if (Vtr[2].SquareMagnitude() <= Precision::Confusion())
+  {
     if( SingularCase < 0 ) SingularCase = 1;
+  }
 #endif
 
   // 3 pts mixed...
-  if(SingularCase ==2)
+  if (SingularCase ==2)
   {
-    prof= ElCLib::Parameter(EyeLine,P[0]);
+    prof = ElCLib::Parameter (thePickLine, P[0]);
     return prof;
   }
 
-  if(SingularCase!=0)
+  if (SingularCase!=0)
+  {
     Vtr[0].Normalize();
-  if(SingularCase!=1 &&
-     SingularCase!=2)
+  }
+
+  if (SingularCase!=1 && SingularCase!=2)
+  {
     Vtr[2].Normalize();
-  gp_Vec OPo(Oye,P[0]);
+  }
+
+  gp_Vec OPo (Oye, P[0]);
+
   // 2 points mixed... the intersection between the segment and the target line eye/point.
-  //
-  if(SingularCase!=-1)
+  if (SingularCase!=-1)
   {
     gp_Vec V = SingularCase==0 ? Vtr[2] : Vtr[0];
     gp_Vec Det = Dir^V;
     gp_Vec VSM = OPo^V;
-    if(Det.X()> Precision::Confusion())
-      prof = VSM.X()/Det.X();
-    else if (Det.Y()> Precision::Confusion())
-      prof = VSM.Y()/Det.Y();
-    else if(Det.Z()> Precision::Confusion())
-      prof = VSM.Z()/Det.Z();
+
+    if (Det.X() > Precision::Confusion())
+    {
+      prof = VSM.X() / Det.X();
+    }
+    else if (Det.Y() > Precision::Confusion())
+    {
+      prof = VSM.Y() / Det.Y();
+    }
+    else if (Det.Z() > Precision::Confusion())
+    {
+      prof = VSM.Z() / Det.Z();
+    }
   }
   else
   {
-    Standard_Real val1 = OPo.DotCross(Vtr[0],Vtr[2]);
-    Standard_Real val2 = Dir.DotCross(Vtr[0],Vtr[2]);
+    Standard_Real val1 = OPo.DotCross (Vtr[0], Vtr[2]);
+    Standard_Real val2 = Dir.DotCross (Vtr[0], Vtr[2]);
 
-    if(Abs(val2)>Precision::Confusion())
-      prof =val1/val2;
+    if (Abs (val2) > Precision::Confusion())
+    {
+      prof = val1 / val2;
+    }
   }
-  if (prof==Precision::Infinite())
+
+  if (prof == Precision::Infinite())
   {
-    prof= ElCLib::Parameter(EyeLine,P[0]);
-    prof = Min (prof, ElCLib::Parameter(EyeLine,P[1]));
-    prof = Min (prof, ElCLib::Parameter(EyeLine,P[2]));
+    prof= ElCLib::Parameter (thePickLine, P[0]);
+    prof = Min (prof, ElCLib::Parameter (thePickLine, P[1]));
+    prof = Min (prof, ElCLib::Parameter (thePickLine, P[2]));
   }
 
   return prof;

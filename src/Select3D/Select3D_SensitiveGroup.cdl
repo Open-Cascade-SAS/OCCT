@@ -38,6 +38,7 @@ uses
     SensitiveEntity          from Select3D,
     ListOfSensitive          from Select3D,
     ListOfBox2d              from SelectBasics,
+    PickArgs                 from SelectBasics,
     Array1OfPnt2d            from TColgp,
     Box2d                    from Bnd,
     Location                 from TopLoc
@@ -115,15 +116,14 @@ is
     ResetLocation(me:mutable) is redefined static;
     	---Purpose:  propagation of location on all the sensitive inside...    
 
-    Matches(me  :mutable; 
-            X,Y : Real from Standard;
-            aTol: Real from Standard;
-            DMin: out Real from Standard) 
-    returns Boolean
-    is  redefined static;
-    	---Level: Public 
-    	---Purpose: projection of the sensitive primitive in order to
-    	--          get 2D boxes for the Sort Algorithm
+    Matches (me : mutable;
+             thePickArgs : PickArgs from SelectBasics;
+             theMatchDMin, theMatchDepth : out Real from Standard)
+    returns Boolean is redefined static;
+    ---Level: Public
+    ---Purpose: Checks whether the sensitive entity matches the picking
+    -- detection area (close to the picking line).
+    -- For details please refer to base class declaration.
 
     Matches (me  :mutable; 
              XMin,YMin,XMax,YMax : Real from Standard;
@@ -138,14 +138,6 @@ is
     returns Boolean
     is redefined virtual;
     	---Level: Public 
-    
-
-    ComputeDepth(me;EyeLine: Lin from gp) 
-    returns Real from Standard is redefined static;
-    	---Purpose: returns the depth of the touched entity
-
-    
-    SetLastPrj(me:mutable;aPrj:Projector from Select3D) is redefined virtual;
 
     Set(me:mutable;TheOwnerId: EntityOwner from SelectBasics) is redefined static; 
     ---Purpose: Sets the owner for all entities in group 
@@ -160,8 +152,5 @@ is
 fields
     myList         : ListOfSensitive from Select3D;
     myMustMatchAll : Boolean from Standard;
-    myLastRank     : Integer from Standard;
-    myLastTol      : ShortReal from Standard;
-    myX,myY	   : ShortReal from Standard;
 end SensitiveGroup;
 

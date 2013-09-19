@@ -10,3 +10,5 @@ V3d_Viewer_3.cxx
 V3d_Viewer_4.cxx
 V3d_View_Print.cxx
 V3d_View_5.cxx
+V3d_Plane.hxx
+V3d_Plane.cxx

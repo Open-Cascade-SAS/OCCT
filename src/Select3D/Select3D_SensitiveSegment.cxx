@@ -62,7 +62,6 @@ mymaxrect(MaxRect)
 void Select3D_SensitiveSegment
 ::Project(const Handle(Select3D_Projector)& aProj)
 {
-  Select3D_SensitiveEntity::Project(aProj); // to set the field last proj...
   gp_Pnt2d aPoint2dStart;
   gp_Pnt2d aPoint2dEnd;
 
@@ -137,17 +136,24 @@ void Select3D_SensitiveSegment
 // Purpose  :
 //=====================================================
 
-Standard_Boolean Select3D_SensitiveSegment
-::Matches(const Standard_Real X,
-          const Standard_Real Y,
-          const Standard_Real aTol,
-          Standard_Real&  DMin)
+Standard_Boolean Select3D_SensitiveSegment::Matches (const SelectBasics_PickArgs& thePickArgs,
+                                                     Standard_Real& theMatchDMin,
+                                                     Standard_Real& theMatchDepth)
 {
-  gp_Pnt2d aPStart(myprojstart.x,myprojstart.y);
-  gp_Pnt2d aPEnd(myprojend.x,myprojend.y);
-  if ( ! SelectBasics_BasicTool::MatchSegment (aPStart, aPEnd, X, Y, aTol, DMin) )
+  gp_Pnt2d aPStart (myprojstart.x,myprojstart.y);
+  gp_Pnt2d aPEnd (myprojend.x,myprojend.y);
+  if (!SelectBasics_BasicTool::MatchSegment (aPStart, aPEnd,
+                                             thePickArgs.X(),
+                                             thePickArgs.Y(),
+                                             thePickArgs.Tolerance(),
+                                             theMatchDMin))
+  {
     return Standard_False;
-  return Select3D_SensitiveEntity::Matches (X, Y, aTol, DMin); // compute and validate depth
+  }
+
+  theMatchDepth = ComputeDepth (thePickArgs.PickLine());
+
+  return !thePickArgs.IsClipped (theMatchDepth);
 }
 
 //=====================================================

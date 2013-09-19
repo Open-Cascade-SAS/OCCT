@@ -39,14 +39,14 @@ class ContextView from Visual3d
 uses
 
 	SequenceOfAddress	from TColStd,
-	ClipPlane		from Visual3d,
 	Light			from Visual3d,
 	HSetOfLight		from Visual3d,
-	HSetOfClipPlane		from Visual3d,
+	
 	TypeOfModel		from Visual3d,
 	TypeOfVisualization	from Visual3d, 
 	TypeOfSurfaceDetail     from Visual3d,
-	TextureEnv              from Graphic3d
+	TextureEnv              from Graphic3d,
+    SetOfHClipPlane         from Graphic3d
 
 raises
 
@@ -147,19 +147,14 @@ is
 	--	     Clip Plane
 	---------------------------------------------------
 
-	SetClipPlaneOn ( me		: in out;
-			 AClipPlane	: ClipPlane from Visual3d )
-		is static;
-	---Level: Internal
-	---Purpose: Activates the clipping plane <AClipPlane>
-	---Category: Methods to modify the class definition
+   SetClipPlanes (me : in out; thePlanes : SetOfHClipPlane from Graphic3d);
+   ---Purpose: Set list of clip planes to the view context.
+   -- @param thePlanes [in] the clip planes to set.
 
-	SetClipPlaneOff ( me		: in out;
-			  AClipPlane	: ClipPlane from Visual3d )
-		is static;
-	---Level: Internal
-	---Purpose: Deactivates the clipping plane <AClipPlane>
-	---Category: Methods to modify the class definition
+   GetClipPlanes (me) returns SetOfHClipPlane from Graphic3d;
+   ---C++: return const&
+   ---Purpose: Get clip planes.
+   -- @return sequence of clip planes.
 
 	---------------------------------------------------
 	-- Category: Methods to modify the class definition
@@ -284,29 +279,6 @@ is
 	----------------------------
 	-- Category: Inquire methods
 	----------------------------
-
-	ActivatedClipPlanes ( me )
-		returns HSetOfClipPlane from Visual3d
-		is static;
-	---Level: Internal
-	---Purpose: Returns the group of active clipping planes
-	--	    in the view of context <me>.
-	---Category: Inquire methods
-
-	NumberOfActivatedClipPlanes ( me )
-		returns Integer from Standard
-		is static;
-	---Level: Internal
-	---Purpose: Returns the number of active clipping planes
-	--	    in the view of context <me>.
-	---Category: Inquire methods
-
-	ActivatedClipPlane ( me;
-			     AnIndex	: Integer from Standard )
-		returns ClipPlane from Visual3d
-		is static;
-	---Level: Internal
-	---Category: Inquire methods
 
 	ActivatedLights ( me )
 		returns HSetOfLight from Visual3d
@@ -465,11 +437,9 @@ fields
 	-- the light sources activated
 	MyLights		:	SequenceOfAddress from TColStd;
 
-	-- the clipping planes activated
-	MyClipPlanes		:	SequenceOfAddress from TColStd;
-
-
     	MyTextureEnv            :       TextureEnv  from  Graphic3d; 
 	MySurfaceDetail         :       TypeOfSurfaceDetail  from  Visual3d;
+
+    myClipPlanes : SetOfHClipPlane from Graphic3d;
 
 end ContextView;

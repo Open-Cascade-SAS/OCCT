@@ -32,14 +32,15 @@
 #include <Precision.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <NCollection_DataMap.hxx>
+#include <SelectBasics_EntityOwner.hxx>
 #include <SelectBasics_ListIteratorOfListOfBox2d.hxx>
 #include <SelectBasics_SensitiveEntity.hxx>
-#include <SelectBasics_EntityOwner.hxx>
 #include <SelectBasics_ListOfBox2d.hxx>
+#include <SelectBasics_PickArgs.hxx>
 #include <SelectMgr_DataMapIteratorOfDataMapOfIntegerSensitive.hxx>
 #include <SelectMgr_DataMapIteratorOfDataMapOfSelectionActivation.hxx>
 #include <SelectMgr_SortCriterion.hxx>
-#include <Select3D_SensitiveEntity.hxx>
 #include <SortTools_QuickSortOfInteger.hxx>
 #include <OSD_Environment.hxx>
 
@@ -51,9 +52,33 @@ static Standard_Boolean SelectDebugModeOnVS()
     OSD_Environment selectdb("SELDEBUGMODE");
     if ( selectdb.Value().IsEmpty() )
       isDebugMode = 0;
-  }                       
+  }
   return ( isDebugMode != 0 );
 }
+
+namespace
+{
+  // container to store depth limits in collection map
+  struct SelectMgr_DepthRange
+  {
+    Standard_Real DepthMin;
+    Standard_Real DepthMax;
+    Standard_Boolean IsEmpty() const { return (DepthMin == DepthMax); }
+
+    void Common (const SelectMgr_DepthRange& theOther)
+    {
+      if (theOther.DepthMin > DepthMax || theOther.DepthMax < DepthMin)
+      {
+        DepthMin = RealFirst();
+        DepthMax = RealLast();
+        return;
+      }
+
+      DepthMin = Max (DepthMin, theOther.DepthMin);
+      DepthMax = Min (DepthMax, theOther.DepthMax);
+    }
+  };
+};
 
 //==================================================
 // Function: Initialize
@@ -85,7 +110,7 @@ Activate (const Handle(SelectMgr_Selection)& aSelection,
   if (!myselections.IsBound(aSelection))
   {
     myselections.Bind(aSelection,0);
-  } 
+  }
   else if (myselections(aSelection)!=0)
   {
     myselections(aSelection)= 0;
@@ -124,11 +149,11 @@ UpdateSort();
 }
 //=======================================================================
 //function : Sleep
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void SelectMgr_ViewerSelector::Sleep(const Handle(SelectMgr_SelectableObject)& SO)
-{ 
+{
 
   for(SO->Init();SO->More();SO->Next()){
     if(myselections.IsBound(SO->CurrentSelection())){
@@ -243,7 +268,7 @@ void SelectMgr_ViewerSelector::UpdateSort()
       if(It.Value()== 0)
       { curEntity = It.Key();
       for(curEntity->Init();curEntity->More();curEntity->Next())
-      {     
+      {
         static SelectBasics_ListOfBox2d BoxList;
         BoxList.Clear();
         curEntity->Sensitive()->Areas(BoxList);
@@ -395,7 +420,7 @@ void SelectMgr_ViewerSelector::InitSelect(const TColgp_Array1OfPnt2d& aPoly)
   if (toupdate) UpdateConversion();
   if (tosort)   UpdateSort();
   if (myactivenb!=0){
-    // the Bnd boxes are used for the first time  
+    // the Bnd boxes are used for the first time
     Bnd_Box2d aBox;
     Standard_Integer NbPnt = aPoly.Length();
     Standard_Integer i;
@@ -411,66 +436,113 @@ void SelectMgr_ViewerSelector::InitSelect(const TColgp_Array1OfPnt2d& aPoly)
 
 //==================================================
 // Function: LoadResult
-// Purpose : for the moment the size of the primitive 
+// Purpose : for the moment the size of the primitive
 //           is not taken into account in the search criteriai...
 //           The priority, the depth and the min. distance to CDG or Borders is taken...
 //==================================================
-void SelectMgr_ViewerSelector::
-LoadResult()
+void SelectMgr_ViewerSelector::LoadResult()
 {
-  //  Handle(SelectMgr_EntityOwner)  OWNR;  
-  if(myselector.More())
+  if (myselector.More())
   {
-    //      Standard_Boolean Found(Standard_False);
-    Standard_Real DMin;
-    Standard_Integer nument;
-    for(;myselector.More();myselector.Next()){
-      nument = myselector.Value();
-      const Handle(SelectBasics_SensitiveEntity)& SE = myentities(nument);
-      if (SE->Matches(lastx,lasty,mytolerance,DMin)) { 
-        const Handle(SelectBasics_EntityOwner)& OWNR = SE->OwnerId();
+    NCollection_DataMap<Handle(SelectMgr_EntityOwner), SelectMgr_DepthRange> aMapOfOwnerRanges;
 
-        if(!OWNR.IsNull()){
-          Standard_Real TheDepth = SE->Depth();
-          Standard_Integer Prior = OWNR->Priority();
+    // collect information on depth clipping from implementations
+    gp_Lin aPickLine = PickingLine (lastx, lasty);
+    SelectMgr_DepthRange aViewDRange;
+    DepthClipping (lastx, lasty, aViewDRange.DepthMin, aViewDRange.DepthMax);
 
-          SelectMgr_SortCriterion SC(Prior,TheDepth,DMin,mytolerance,preferclosest);
-          if ( mystored.Contains(OWNR) )
+    Standard_Real aDMin;
+    Standard_Real aDepthMin;
+    Standard_Integer aNument;
+
+    if (!aViewDRange.IsEmpty())
+    {
+      for (; myselector.More(); myselector.Next())
+      {
+        aNument = myselector.Value();
+
+        const Handle(SelectBasics_SensitiveEntity)& SE = myentities (aNument);
+        const Handle(SelectMgr_EntityOwner)& anOwner =
+          Handle(SelectMgr_EntityOwner)::DownCast (SE->OwnerId());
+
+        // compute depth range for sensitives of entity owner
+        SelectMgr_DepthRange anEntityDRange (aViewDRange);
+        if (!anOwner.IsNull() && HasDepthClipping (anOwner) && !aMapOfOwnerRanges.Find (anOwner, anEntityDRange))
+        {
+          // get depth range from implementation
+          SelectMgr_DepthRange aGetRange;
+          DepthClipping (lastx, lasty, anOwner, aGetRange.DepthMin, aGetRange.DepthMax);
+
+          // concatenate and remember depth range for pefromance increase
+          anEntityDRange.Common (aGetRange);
+          aMapOfOwnerRanges.Bind (anOwner, anEntityDRange);
+        }
+
+        if (anEntityDRange.IsEmpty())
+        {
+          continue;
+        }
+
+        SelectBasics_PickArgs aPickArgs (lastx, lasty, mytolerance,
+                                         anEntityDRange.DepthMin,
+                                         anEntityDRange.DepthMax,
+                                         aPickLine);
+
+        if (SE->Matches (aPickArgs, aDMin, aDepthMin))
+        {
+          if (!anOwner.IsNull())
           {
-            SelectMgr_SortCriterion& Crit = mystored.ChangeFromKey(OWNR);
-            if ( SC > Crit )
+            Standard_Integer aPrior = anOwner->Priority();
+
+            SelectMgr_SortCriterion SC (aPrior, aDepthMin, aDMin, mytolerance, preferclosest);
+            if (mystored.Contains (anOwner))
             {
-              Crit = SC;
+              SelectMgr_SortCriterion& Crit = mystored.ChangeFromKey (anOwner);
+              if (SC > Crit)
+              {
+                Crit = SC;
 
-              // update previously recorded entity for this owner
-              for (int i=1; i <= myprim.Length(); i++)
-                if (myentities(myprim(i))->OwnerId() == OWNR) {
-                  myprim.SetValue (i, nument);
-                  break;
+                // update previously recorded entity for this owner
+                for (int i = 1; i <= myprim.Length(); i++)
+                {
+                  if (myentities (myprim(i))->OwnerId() == anOwner)
+                  {
+                    myprim.SetValue (i, aNument);
+                    break;
+                  }
                 }
+              }
             }
-          }
-          else
-          {
-            mystored.Add(OWNR,SC);
+            else
+            {
+              mystored.Add (anOwner, SC);
 
-            // record entity
-            myprim.Append(nument);
+              // record entity
+              myprim.Append (aNument);
+            }
           }
         }
       }
     }
+
     SortResult();
   }
-  if( SelectDebugModeOnVS() ){
+
+  if (SelectDebugModeOnVS())
+  {
     cout<<"\tSelectMgr_VS:: Resultat du move"<<endl;
     cout<<"\tNb Detectes :"<<mystored.Extent()<<endl;
-    for(Standard_Integer i=1;i<=mystored.Extent();i++){
-      const SelectMgr_SortCriterion& Crit = mystored(myIndexes->Value(i));
-      cout<<"\t"<<i<<" - Prior"<<Crit.Priority()<<" - prof :"<<Crit.Depth()<<"  - Dist. :"<<Crit.MinDist()<<endl;
+
+    for(Standard_Integer i=1; i<=mystored.Extent(); i++)
+    {
+      const SelectMgr_SortCriterion& Crit = mystored (myIndexes->Value(i));
+      cout << "\t" << i << " - Prior" << Crit.Priority()
+           << " - prof :" << Crit.Depth()
+           << "  - Dist. :" << Crit.MinDist() << endl;
     }
   }
 }
+
 //==================================================
 // Function: LoadResult
 // Purpose :
@@ -479,7 +551,7 @@ void SelectMgr_ViewerSelector::LoadResult(const Bnd_Box2d& abox)
 {
   mystored.Clear();
 
-  //  Handle(SelectMgr_EntityOwner)  OWNR;  
+  //  Handle(SelectMgr_EntityOwner)  OWNR;
   if(myselector.More())
   { Standard_Real xmin,ymin,xmax,ymax;
   abox.Get(xmin,ymin,xmax,ymax);
@@ -503,17 +575,17 @@ void SelectMgr_ViewerSelector::LoadResult(const Bnd_Box2d& abox)
   }
 
   // do not parse in case of selection by elastic rectangle (BUG ANALYST)
-  if(mystored.IsEmpty()) return; 
-  if(myIndexes.IsNull()) 
-    myIndexes = new TColStd_HArray1OfInteger(1,mystored.Extent()); 
-  else if(mystored.Extent() !=myIndexes->Length()) 
-    myIndexes = new TColStd_HArray1OfInteger (1,mystored.Extent()); 
+  if(mystored.IsEmpty()) return;
+  if(myIndexes.IsNull())
+    myIndexes = new TColStd_HArray1OfInteger(1,mystored.Extent());
+  else if(mystored.Extent() !=myIndexes->Length())
+    myIndexes = new TColStd_HArray1OfInteger (1,mystored.Extent());
 
-  // to work faster... 
-  TColStd_Array1OfInteger& thearr = myIndexes->ChangeArray1(); 
-  for(Standard_Integer I=1;I<=mystored.Extent();I++) 
-    thearr(I)=I; 
-  } 
+  // to work faster...
+  TColStd_Array1OfInteger& thearr = myIndexes->ChangeArray1();
+  for(Standard_Integer I=1;I<=mystored.Extent();I++)
+    thearr(I)=I;
+  }
 }
 //==================================================
 // Function: LoadResult
@@ -529,9 +601,9 @@ void SelectMgr_ViewerSelector::LoadResult(const TColgp_Array1OfPnt2d& aPoly)
     aBox.Update(aPoly(i).X(),aPoly(i).Y());
   }
   Standard_Integer NB=0;
-  //  Handle(SelectMgr_EntityOwner)  OWNR;  
+  //  Handle(SelectMgr_EntityOwner)  OWNR;
   if(myselector.More())
-  { 
+  {
     Standard_Integer nument;
 
     for(;myselector.More();myselector.Next()){
@@ -551,16 +623,16 @@ void SelectMgr_ViewerSelector::LoadResult(const TColgp_Array1OfPnt2d& aPoly)
       }
     }
 
-    if(mystored.IsEmpty()) return; 
-    if(myIndexes.IsNull()) 
-      myIndexes = new TColStd_HArray1OfInteger(1,mystored.Extent()); 
-    else if(mystored.Extent() !=myIndexes->Length()) 
-      myIndexes = new TColStd_HArray1OfInteger (1,mystored.Extent()); 
+    if(mystored.IsEmpty()) return;
+    if(myIndexes.IsNull())
+      myIndexes = new TColStd_HArray1OfInteger(1,mystored.Extent());
+    else if(mystored.Extent() !=myIndexes->Length())
+      myIndexes = new TColStd_HArray1OfInteger (1,mystored.Extent());
 
-    // to work faster... 
-    TColStd_Array1OfInteger& thearr = myIndexes->ChangeArray1(); 
-    for(Standard_Integer I=1;I<=mystored.Extent();I++) 
-      thearr(I)=I; 
+    // to work faster...
+    TColStd_Array1OfInteger& thearr = myIndexes->ChangeArray1();
+    for(Standard_Integer I=1;I<=mystored.Extent();I++)
+      thearr(I)=I;
   }
 }
 
@@ -599,9 +671,9 @@ Handle(SelectMgr_EntityOwner) SelectMgr_ViewerSelector
 
 //=======================================================================
 //function : More
-//purpose  : 
+//purpose  :
 //=======================================================================
-Standard_Boolean SelectMgr_ViewerSelector::More() 
+Standard_Boolean SelectMgr_ViewerSelector::More()
 {
   if(mystored.Extent()==0) return Standard_False;
   if(myCurRank==0) return Standard_False;
@@ -633,7 +705,7 @@ Handle(SelectMgr_EntityOwner) SelectMgr_ViewerSelector
 
 //=======================================================================
 //function : NbPicked
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 Standard_Integer SelectMgr_ViewerSelector::NbPicked() const
@@ -642,12 +714,12 @@ Standard_Integer SelectMgr_ViewerSelector::NbPicked() const
 }
 //=======================================================================
 //function : Picked
-//purpose  : 
+//purpose  :
 //=======================================================================
 Handle(SelectMgr_EntityOwner) SelectMgr_ViewerSelector::Picked(const Standard_Integer aRank) const
 {
 
-  Handle(SelectMgr_EntityOwner) Own; 
+  Handle(SelectMgr_EntityOwner) Own;
   if (aRank<1 || aRank>NbPicked())
     return Own;
   Standard_Integer Indx = myIndexes->Value(aRank);
@@ -659,7 +731,7 @@ Handle(SelectMgr_EntityOwner) SelectMgr_ViewerSelector::Picked(const Standard_In
 }
 //=======================================================================
 //function : Primitive
-//purpose  : 
+//purpose  :
 //=======================================================================
 Handle(SelectBasics_SensitiveEntity) SelectMgr_ViewerSelector::Primitive
 (const Standard_Integer /*Index*/) const
@@ -674,7 +746,7 @@ Handle(SelectBasics_SensitiveEntity) SelectMgr_ViewerSelector::Primitive
 //==================================================
 void SelectMgr_ViewerSelector::LastPosition(Standard_Real& Xlast,
                                             Standard_Real& YLast) const
-{   Xlast = lastx;YLast = lasty;} 
+{   Xlast = lastx;YLast = lasty;}
 
 
 
@@ -711,7 +783,7 @@ Standard_Integer SelectMgr_ViewerSelector::NbBoxes()
 
 //==================================================
 // Function: Contains
-// Purpose : 
+// Purpose :
 //==================================================
 Standard_Boolean SelectMgr_ViewerSelector::
 Contains(const Handle(SelectMgr_SelectableObject)& anObject) const
@@ -734,14 +806,14 @@ Contains(const Handle(SelectMgr_SelectableObject)& anObject) const
 Standard_Boolean SelectMgr_ViewerSelector::
 Modes(const Handle(SelectMgr_SelectableObject)& SO,
       TColStd_ListOfInteger& TheActiveList,
-      const SelectMgr_StateOfSelection WantedState) const 
+      const SelectMgr_StateOfSelection WantedState) const
 {
   Standard_Boolean Found= Standard_False;
   for(SO->Init();SO->More();SO->Next()){
     if(myselections.IsBound(SO->CurrentSelection())){
       if(WantedState==SelectMgr_SOS_Any)
         TheActiveList.Append(SO->CurrentSelection()->Mode());
-      else if( myselections(SO->CurrentSelection())==WantedState) 
+      else if( myselections(SO->CurrentSelection())==WantedState)
         TheActiveList.Append(SO->CurrentSelection()->Mode());
 
       if(!Found) Found=Standard_True;
@@ -757,8 +829,8 @@ IsActive(const Handle(SelectMgr_SelectableObject)& SO,
 {
   for(SO->Init();SO->More();SO->Next()){
     if(aMode==SO->CurrentSelection()->Mode()){
-      if(myselections.IsBound(SO->CurrentSelection()) && 
-        myselections(SO->CurrentSelection())==SelectMgr_SOS_Activated) 
+      if(myselections.IsBound(SO->CurrentSelection()) &&
+        myselections(SO->CurrentSelection())==SelectMgr_SOS_Activated)
         return Standard_True;
       else return Standard_False;
     }
@@ -784,10 +856,10 @@ IsInside(const Handle(SelectMgr_SelectableObject)& SO,
 
 //=======================================================================
 //function : Status
-//purpose  : 
+//purpose  :
 //=======================================================================
 
-SelectMgr_StateOfSelection SelectMgr_ViewerSelector::Status(const Handle(SelectMgr_Selection)& aSel) const 
+SelectMgr_StateOfSelection SelectMgr_ViewerSelector::Status(const Handle(SelectMgr_Selection)& aSel) const
 {
   if(!myselections.IsBound(aSel)) return SelectMgr_SOS_Unknown;
   //JR/Hp
@@ -801,7 +873,7 @@ SelectMgr_StateOfSelection SelectMgr_ViewerSelector::Status(const Handle(SelectM
 
 //=======================================================================
 //function : Dump
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void SelectMgr_ViewerSelector::Dump(Standard_OStream& S) const
@@ -828,10 +900,10 @@ Status(const Handle(SelectMgr_SelectableObject)& SO) const
     if(myselections.IsBound(SO->CurrentSelection()))
     {
       Found = Standard_True;
-      Status = Status + "Mode " + 
+      Status = Status + "Mode " +
         TCollection_AsciiString(SO->CurrentSelection()->Mode()) +
         " present - " ;
-      if(myselections(SO->CurrentSelection())) 
+      if(myselections(SO->CurrentSelection()))
         Status = Status + " Active \n\t";
       else
         Status = Status + " Inactive \n\t";
@@ -844,15 +916,15 @@ Status(const Handle(SelectMgr_SelectableObject)& SO) const
 
 
 TCollection_AsciiString SelectMgr_ViewerSelector::
-Status () const 
+Status () const
 {
-  // sevsitive primitives present 
+  // sevsitive primitives present
   //-----------------------------
   TCollection_AsciiString Status("\t\tSelector Status :\n\t");
   // selections
   //-----------
   Standard_Integer NbActive =0,NbPrim=0;
-  Status = Status + "Number of already computed selections : " + 
+  Status = Status + "Number of already computed selections : " +
     TCollection_AsciiString(myselections.Extent());
 
   SelectMgr_DataMapIteratorOfDataMapOfSelectionActivation It(myselections);
@@ -863,7 +935,7 @@ Status () const
     }
   }
   Status = Status + " - " + TCollection_AsciiString(NbActive) + " activated ones\n\t";
-  Status = Status + "Number of active sensitive primitives : " + 
+  Status = Status + "Number of active sensitive primitives : " +
     TCollection_AsciiString(NbPrim)+"\n\t";
   Status = Status + "Real stored Pick Tolerance : " + TCollection_AsciiString(mytolerance) +"\n\t";
   if(toupdate) {
@@ -875,13 +947,13 @@ Status () const
 
 //=======================================================================
 //function : SortResult
-//purpose  :  there is a certain number of entities ranged by criteria 
+//purpose  :  there is a certain number of entities ranged by criteria
 //            (depth, size, priority, mouse distance from borders or
 //            CDG of the detected primitive. Parsing :
 //             maximum priorities .
 //             then a reasonable compromise between depth and distance...
 // finally the ranges are stored in myindexes depending on the parsing.
-// so, it is possible to only read 
+// so, it is possible to only read
 //=======================================================================
 void SelectMgr_ViewerSelector::SortResult()
 {
@@ -946,7 +1018,7 @@ void SelectMgr_ViewerSelector::SortResult()
 
 //=======================================================================
 //function :
-//purpose  : 
+//purpose  :
 //=======================================================================
 Standard_Boolean SelectMgr_ViewerSelector::IsUpdateSortPossible() const
 {
@@ -955,9 +1027,55 @@ Standard_Boolean SelectMgr_ViewerSelector::IsUpdateSortPossible() const
 
 //=======================================================================
 //function :
-//purpose  : 
+//purpose  :
 //=======================================================================
 void SelectMgr_ViewerSelector::SetUpdateSortPossible( const Standard_Boolean possible )
 {
   myUpdateSortPossible = possible;
+}
+
+//=======================================================================
+//function : PickingLine
+//purpose  : Stub
+//=======================================================================
+gp_Lin SelectMgr_ViewerSelector::PickingLine (const Standard_Real /*theX*/,
+                                              const Standard_Real /*theY*/) const
+{
+  return gp_Lin();
+}
+
+//=======================================================================
+//function : DepthClipping
+//purpose  : Stub
+//=======================================================================
+void SelectMgr_ViewerSelector::DepthClipping (const Standard_Real /*theX*/,
+                                              const Standard_Real /*theY*/,
+                                              Standard_Real& theMin,
+                                              Standard_Real& theMax) const
+{
+  theMin = RealFirst();
+  theMax = RealLast();
+}
+
+//=======================================================================
+//function : DepthClipping
+//purpose  : Stub
+//=======================================================================
+void SelectMgr_ViewerSelector::DepthClipping (const Standard_Real /*theX*/,
+                                              const Standard_Real /*theY*/,
+                                              const Handle(SelectMgr_EntityOwner)& /*theOwner*/,
+                                              Standard_Real& theMin,
+                                              Standard_Real& theMax) const
+{
+  theMin = RealFirst();
+  theMax = RealLast();
+}
+
+//=======================================================================
+//function : HasDepthClipping
+//purpose  : Stub
+//=======================================================================
+Standard_Boolean SelectMgr_ViewerSelector::HasDepthClipping (const Handle(SelectMgr_EntityOwner)& /*theOwner*/) const
+{
+  return Standard_False;
 }

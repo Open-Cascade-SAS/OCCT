@@ -245,30 +245,6 @@ void OpenGl_View::SetLights (const CALL_DEF_VIEWCONTEXT &AContext)
 
 /*----------------------------------------------------------------------*/
 
-//call_togl_setplane
-void OpenGl_View::SetClippingPlanes (const CALL_DEF_VIEWCONTEXT &AContext)
-{
-  // clear clipping planes information
-  myClippingPlanes.Clear();
-  // update information
-  int i = 0;
-  for (; i < AContext.NbActivePlane; i++)
-  {
-    const CALL_DEF_PLANE &aCPlane = AContext.ActivePlane[i];
-    if ( aCPlane.Active && aCPlane.PlaneId > 0 )
-    {
-      OPENGL_CLIP_REP aPlane;
-      aPlane.equation[0] = aCPlane.CoefA;
-      aPlane.equation[1] = aCPlane.CoefB;
-      aPlane.equation[2] = aCPlane.CoefC;
-      aPlane.equation[3] = aCPlane.CoefD;
-      myClippingPlanes.Append( aPlane );
-    }
-  }
-}
-
-/*----------------------------------------------------------------------*/
-
 //call_togl_setvisualisation
 void OpenGl_View::SetVisualisation (const CALL_DEF_VIEWCONTEXT &AContext)
 {

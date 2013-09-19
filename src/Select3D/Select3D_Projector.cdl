@@ -193,23 +193,6 @@ is
     --          2d point <X,Y>.
     is virtual;
 
-    DepthMin(me) returns Real from Standard;
-    ---Purpose: Returns the minimum depth value (if clipping plane defined).
-    ---         Should be used when call ::Shoot() to compute eyeline.
-    ---C++: inline
-
-    DepthMax(me) returns Real from Standard;
-    ---Purpose: Returns the maximum depth value (if clipping plane defined).
-    ---         Should be used when call ::Shoot() to compute eyeline.
-    ---C++: inline
-
-    DepthMinMax(me : mutable;
-                theDepthMin : in Real from Standard;
-                theDepthMax : in Real from Standard);
-    ---Purpose: Setup the min/max depth values (doesn't affect
-    ---         projection functionality itself).
-    ---         Should be used when call ::Shoot() to compute eyeline.
-
     Transform(me; P : in out Pnt from gp;
                   T : GTrsf from gp)
     ---C++: inline
@@ -230,7 +213,5 @@ fields
     myInvTrsf    : GTrsf   from gp is protected;
 
     myView       : View    from V3d;
-    myDepthMin   : Real    from Standard;
-    myDepthMax   : Real    from Standard;
 
 end Projector;

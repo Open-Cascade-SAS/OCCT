@@ -36,6 +36,7 @@ uses
     Lin             from gp,
     EntityOwner     from SelectBasics,
     ListOfBox2d     from SelectBasics,
+    PickArgs        from SelectBasics,
     Curve           from Geom,
     Array1OfPnt     from TColgp,
     Array1OfPnt2d   from TColgp,
@@ -72,13 +73,15 @@ is
         ---Level: Public 
         ---Purpose: Creation of Sensitive Curve from Points.
         --          Warning : This Method should disappear in the next version...
-  
-    Matches(me  :mutable; 
-            X,Y : Real from Standard;
-            aTol: Real from Standard;
-            DMin: out Real from Standard) 
-    returns Boolean
-    is  redefined static;
+
+    Matches (me : mutable;
+             thePickArgs : PickArgs from SelectBasics;
+             theMatchDMin, theMatchDepth : out Real from Standard)
+    returns Boolean is redefined static;
+    ---Level: Public
+    ---Purpose: Checks whether the sensitive entity matches the picking
+    -- detection area (close to the picking line).
+    -- For details please refer to base class declaration.
 
     Matches (me  :mutable; 
              XMin,YMin,XMax,YMax : Real from Standard;
@@ -95,9 +98,15 @@ is
         ---Level: Public 
     
 
-    ComputeDepth(me;EyeLine: Lin from gp) 
-    returns Real from Standard is redefined static; 
-     
+    ComputeDepth (me;
+                  thePickLine : Lin from gp;
+                  theDetectedIndex : Integer from Standard)
+    returns Real from Standard;
+    ---Level: Public
+    ---Purpose: Compute depth of sensitive circle for the detected sub-part.
+    -- @param thePickLine [in] the picking line.
+    -- @param theDetectedIndex [in] index of the detected sub-part.
+    -- @return depth on the picking line.
  
     GetLastDetected(me) returns Integer from Standard;
     ---Purpose: Gets index of last detected segment 

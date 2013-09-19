@@ -104,12 +104,12 @@ void Select3D_SensitiveWire::ResetLocation()
 // Function : Project
 // Purpose  :
 //=====================================================
-void Select3D_SensitiveWire
-::Project(const Handle(Select3D_Projector)& aProj)
+void Select3D_SensitiveWire::Project(const Handle(Select3D_Projector)& aProj)
 {
-  for(Standard_Integer i=1; i<=mysensitive.Length(); i++)
-    mysensitive(i)->Project(aProj);
-  Select3D_SensitiveEntity::Project(aProj);
+  for (Standard_Integer aSensIt = 1; aSensIt <= mysensitive.Length(); aSensIt++)
+  {
+    mysensitive (aSensIt)->Project (aProj);
+  }
 }
 
 //=====================================================
@@ -136,33 +136,37 @@ void Select3D_SensitiveWire
 // Function : Matches
 // Purpose  :
 //=====================================================
-Standard_Boolean Select3D_SensitiveWire
-::Matches(const Standard_Real X,
-          const Standard_Real Y,
-          const Standard_Real aTol,
-          Standard_Real& DMin)
-{
-  Standard_Integer i;
-  Standard_Real Dcur;
-  DMin = Precision::Infinite();
-  Standard_Boolean IsTouched = Standard_False;
-  for (i=1; i<=mysensitive.Length(); i++) 
-  {
-    if (mysensitive.Value(i)->Matches(X,Y,aTol,Dcur)) 
-    {
-      IsTouched = Standard_True;
-      if(Dcur<=DMin)
-      { 
-        myDetectedIndex = i; 
-        DMin = Dcur;
-      }
-    }
-  }
-  if ( ! IsTouched )
-    return Standard_False;
 
-  // compute and validate the depth (::Depth()) along the eyeline
-  return Select3D_SensitiveEntity::Matches(X,Y,aTol,DMin);
+Standard_Boolean Select3D_SensitiveWire::Matches (const SelectBasics_PickArgs& thePickArgs,
+                                                  Standard_Real& theMatchDMin,
+                                                  Standard_Real& theMatchDepth)
+{
+  theMatchDMin = RealLast();
+  theMatchDepth = RealLast();
+  Standard_Real aSegDMin, aSegDepth;
+  Standard_Boolean isMatched = Standard_False;
+  myDetectedIndex = -1;
+
+  for (Standard_Integer aSegIt = 1; aSegIt <= mysensitive.Length(); aSegIt++)
+  {
+    const Handle(SelectBasics_SensitiveEntity)& aSeg = mysensitive.Value (aSegIt);
+    if (!aSeg->Matches (thePickArgs, aSegDMin, aSegDepth))
+    {
+      continue;
+    }
+
+    isMatched = Standard_True;
+    if (aSegDMin > theMatchDMin)
+    {
+      continue;
+    }
+
+    myDetectedIndex = aSegIt;
+    theMatchDMin    = aSegDMin;
+    theMatchDepth   = aSegDepth;
+  }
+
+  return isMatched;
 }
 
 //=====================================================
@@ -253,34 +257,6 @@ void Select3D_SensitiveWire::Dump(Standard_OStream& S,const Standard_Boolean Ful
     mysensitive(i)->Dump(S,FullDump);}
 
   S<<"\tEnd Of Sensitive Wire"<<endl;
-
-}
-
-//=======================================================================
-//function : ComputeDepth
-//purpose  :
-//=======================================================================
-
-Standard_Real Select3D_SensitiveWire::ComputeDepth(const gp_Lin& EyeLine) const
-{
-
-  if(myDetectedIndex==-1)
-    // should be never called...
-    return Precision::Infinite();
-  return mysensitive(myDetectedIndex)->ComputeDepth(EyeLine);
-
-}
-
-//=======================================================================
-//function : SetLastPrj
-//purpose  :
-//=======================================================================
-
-void Select3D_SensitiveWire::SetLastPrj(const Handle(Select3D_Projector)& Prj)
-{
-  Select3D_SensitiveEntity::SetLastPrj(Prj);
-  for(Standard_Integer i=1;i<=mysensitive.Length();i++)
-    mysensitive(i)->SetLastPrj(Prj);
 
 }
 

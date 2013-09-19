@@ -90,7 +90,8 @@ uses
     CUserDraw           from Graphic3d,
     NListOfHAsciiString from Graphic3d,
     FontAspect          from Font,
-    CGraduatedTrihedron from Graphic3d
+    CGraduatedTrihedron from Graphic3d,
+    ClipPlane           from Graphic3d
 
 raises
 
@@ -407,10 +408,11 @@ is
         is deferred;
     ---Purpose: call_togl_setlight
 
-    SetPlane ( me       : mutable;
-               ACView   : CView from Graphic3d )
-        is deferred;
-    ---Purpose: call_togl_setplane
+    SetClipPlanes (me : mutable; theCView : CView from Graphic3d) is deferred;
+    ---Purpose: Pass clip planes to the associated graphic driver view.
+
+    SetClipPlanes (me : mutable; theCStructure : CStructure from Graphic3d) is deferred;
+    ---Purpose: Pass clip planes to the associated graphic driver structure.
 
     SetVisualisation ( me       : mutable;
                        ACView   : CView from Graphic3d )
@@ -952,12 +954,6 @@ is
         returns Integer from Standard;
     ---Purpose: call_togl_light
 
-    Plane ( myclass;
-        ACPlane : CPlane from Graphic3d;
-        Update  : Boolean from Standard )
-        returns Integer from Standard;
-    ---Purpose: call_togl_plane
-
     -----------------------------
     -- Category: Internal methods
     -----------------------------
@@ -977,10 +973,6 @@ is
     PrintCPick ( me;
                  ACPick    : CPick from Graphic3d;
                  AField    : Integer from Standard );
-
-    PrintCPlane ( me;
-                  ACPlane   : CPlane from Graphic3d;
-                  AField    : Integer from Standard );
 
     PrintCStructure ( me;
                       ACStructure   : CStructure from Graphic3d;

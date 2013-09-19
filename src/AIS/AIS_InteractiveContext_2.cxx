@@ -140,7 +140,6 @@ void AIS_InteractiveContext::CloseLocalContext(const Standard_Integer Index,
    if(updateproj)
      myMainSel->UpdateConversion();
    else{
-     myMainSel->ReactivateProjector();
      myMainSel->UpdateSort();
    }
    if(debugmode)
@@ -156,11 +155,10 @@ void AIS_InteractiveContext::CloseLocalContext(const Standard_Integer Index,
    if(GoodIndex==myCurLocalIndex){
      myCurLocalIndex = HighestIndex();
      const Handle(AIS_LocalContext)& LocCtx = myLocalContexts(myCurLocalIndex);
-     if(LocCtx->HasSameProjector(VS->Projector())){
-       LocCtx->MainSelector()->ReactivateProjector();
-     }
-     else
+     if (!LocCtx->HasSameProjector (VS->Projector()))
+     {
        LocCtx->MainSelector()->UpdateConversion();
+     }
    }
    else if(debugmode)
      cout<<"a No Current Local Context WasClosed"<<endl;

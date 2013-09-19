@@ -63,6 +63,8 @@ uses
     Transformation        from Geom,
     ListOfInteger         from TColStd,
     Location              from TopLoc, 
+    ClipPlane_Handle      from Graphic3d,
+    SetOfHClipPlane       from Graphic3d,
     --   ABD 29/10/04  Transform Persistence of Presentation( pan, zoom, rotate )
     TransModeFlags        from Graphic3d, 
     Pnt                   from gp, 
@@ -249,11 +251,46 @@ is
      returns Integer from Standard is static;
    ---Purpose: Get ID of Z layer. If no presentations of object is displayed,
    -- and layer ID is unavailable, the -1 value is returned.
- 
+
+   AddClipPlane (me : mutable; thePlane : ClipPlane_Handle from Graphic3d) is virtual;
+   ---Purpose: Adds clip plane for graphical clipping for all display mode
+   -- presentations. The composition of clip planes truncates the rendering
+   -- space to convex volume. Please be aware that number of supported
+   -- clip plane is limited. The planes which exceed the limit are ignored.
+   -- Besides of this, some planes can be already set in view where the object
+   -- is shown: the number of these planes should be substracted from limit
+   -- to predict the maximum possible number of object clipping planes.
+   -- @param thePlane [in] the clip plane to be appended to map of clip planes.
+
+   RemoveClipPlane (me : mutable; thePlane : ClipPlane_Handle from Graphic3d) is virtual;
+   ---Purpose: Removes previously added clip plane.
+   -- @param thePlane [in] the clip plane to be removed from map of clip planes.
+
+   SetClipPlanes (me : mutable; thePlanes : SetOfHClipPlane from Graphic3d) is virtual;
+   ---Purpose: Set clip planes for graphical clipping for all display mode presentations.
+   -- The composition of clip planes truncates the rendering space to convex
+   -- volume. Please be aware that number of supported clip plane is limited.
+   -- The planes which exceed the limit are ignored. Besides of this, some
+   -- planes can be already set in view where the object is shown: the number 
+   -- of these planes should be substracted from limit to predict the maximum
+   -- possible number of object clipping planes.
+
+   GetClipPlanes (me) returns SetOfHClipPlane from Graphic3d;
+   ---C++: inline
+   ---C++: return const&
+   ---Purpose: Get clip planes.
+   -- @return set of previously added clip planes for all display mode presentations.
+
+   UpdateClipping (me : mutable) is virtual protected;
+   ---Purpose: General virtual method for internal update of presentation state
+   -- when some modifications on list of clip planes occurs. Base 
+   -- implementation propagate clip planes to every presentation.
+
 fields
     myPresentations: Presentations from PrsMgr is protected;
     myTypeOfPresentation3d: TypeOfPresentation3d from PrsMgr is protected;
     myLocation  : Location from TopLoc is protected; 
+    myClipPlanes : SetOfHClipPlane from Graphic3d is protected;
     --myTransformPersistence  :  TransModeFlags  from  Graphic3d; 
     myTransformPersistence  :  CTransPersStruct  from  Graphic3d;
 

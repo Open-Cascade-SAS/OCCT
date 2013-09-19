@@ -638,10 +638,10 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
                           const Aspect_CLayer2d& ACOverLayer)
 {
   // Store and disable current clipping planes
-  GLint maxplanes;
-  glGetIntegerv(GL_MAX_CLIP_PLANES, &maxplanes);
-  const GLenum lastid = GL_CLIP_PLANE0 + maxplanes;
-  OPENGL_CLIP_PLANE *oldPlanes = new OPENGL_CLIP_PLANE[maxplanes];
+  const Handle(OpenGl_Context)& aContext = AWorkspace->GetGlContext();
+  const Standard_Integer aMaxClipPlanes = aContext->MaxClipPlanes();
+  const GLenum lastid = GL_CLIP_PLANE0 + aMaxClipPlanes;
+  OPENGL_CLIP_PLANE *oldPlanes = new OPENGL_CLIP_PLANE[aMaxClipPlanes];
   OPENGL_CLIP_PLANE *ptrPlane = oldPlanes;
   GLenum planeid = GL_CLIP_PLANE0;
   for ( ; planeid < lastid; planeid++, ptrPlane++ )
@@ -652,8 +652,10 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
       glDisable( planeid );
       ptrPlane->isEnabled = GL_TRUE;
     }
-	else
+    else
+    {
       ptrPlane->isEnabled = GL_FALSE;
+    }
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -987,55 +989,42 @@ D = -[Px,Py,Pz] dot |Nx|
 
   // Apply clipping planes
   {
-    // Define starting plane id
-    planeid = GL_CLIP_PLANE0;
-
-    GLdouble equation[4];
-
     if ( myZClip.Back.IsOn || myZClip.Front.IsOn )
     {
-      // Apply front and back clipping planes
-      GLfloat mat[4][4];
-      glMatrixMode( GL_MODELVIEW );
-      glGetFloatv( GL_MODELVIEW_MATRIX,(GLfloat *) mat );
-      glLoadIdentity();
+      Graphic3d_SetOfHClipPlane aZClipping;
 
       const GLdouble ramp = myExtra.map.fpd - myExtra.map.bpd;
 
       if ( myZClip.Back.IsOn )
       {
         const GLdouble back = ramp * myZClip.Back.Limit + myExtra.map.bpd;
-        equation[0] = 0.0;  /* Nx */
-        equation[1] = 0.0;  /* Ny */
-        equation[2] = 1.0;  /* Nz */
-        equation[3] = -back; /* P dot N */
-        glClipPlane( planeid, equation );
-        glEnable( planeid );
-        planeid++;
+        const Graphic3d_ClipPlane::Equation aBack(0.0, 0.0, 1.0, -back);
+        aZClipping.Add (new Graphic3d_ClipPlane (aBack));
       }
 
       if ( myZClip.Front.IsOn )
       {
         const GLdouble front = ramp * myZClip.Front.Limit + myExtra.map.bpd;
-        equation[0] = 0.0;  /* Nx */
-        equation[1] = 0.0;  /* Ny */
-        equation[2] = -1.0; /* Nz */
-        equation[3] = front; /* P dot N */
-        glClipPlane( planeid, equation );
-        glEnable( planeid );
-        planeid++;
+        const Graphic3d_ClipPlane::Equation aFront (0.0, 0.0, -1.0, front);
+        aZClipping.Add (new Graphic3d_ClipPlane (aFront));
       }
 
-      glLoadMatrixf( (GLfloat *) mat );
+      aContext->ChangeClipping().Set (aZClipping, &OpenGl_IdentityMatrix);
     }
 
     // Apply user clipping planes
-    NCollection_List<OPENGL_CLIP_REP>::Iterator planeIter(myClippingPlanes);
-    for ( ; planeIter.More(); planeIter.Next() )
+    Graphic3d_SetOfHClipPlane aPlanesOn;
+    Graphic3d_SetOfHClipPlane::Iterator aPlaneIt (myClipPlanes);
+    for (; aPlaneIt.More(); aPlaneIt.Next())
     {
-      glClipPlane( planeid, planeIter.Value().equation );
-      glEnable( planeid );
-      planeid++;
+      const Handle(Graphic3d_ClipPlane)& aUserPln = aPlaneIt.Value();
+      if (aUserPln->IsOn ())
+        aPlanesOn.Add (aUserPln);
+    }
+
+    if (aPlanesOn.Size() > 0)
+    {
+      aContext->ChangeClipping().Set (aPlanesOn);
     }
   }
 
@@ -1122,9 +1111,8 @@ D = -[Px,Py,Pz] dot |Nx|
   // and invoking optional callbacks
   AWorkspace->ResetAppliedAspect();
 
-  // Disable current clipping planes
-  for ( planeid = GL_CLIP_PLANE0; planeid < lastid; planeid++ )
-    glDisable( planeid );
+  // Unset clip planes managed by driver
+  aContext->ChangeClipping().Unset (aContext->Clipping().Planes());
 
   // display global trihedron
   if (myTrihedron != NULL)

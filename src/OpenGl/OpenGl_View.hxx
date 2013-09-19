@@ -37,6 +37,7 @@
 
 #include <Graphic3d_CView.hxx>
 #include <Graphic3d_CGraduatedTrihedron.hxx>
+#include <Graphic3d_SetOfHClipPlane.hxx>
 #include <Visual3d_TypeOfSurfaceDetail.hxx>
 
 #include <OpenGl_telem_view.hxx>
@@ -70,12 +71,6 @@ struct OPENGL_EXTRA_REP
   Tfloat  vup[3];
   TEL_VIEW_MAPPING map;
   Tfloat  scaleFactors[3];
-};
-
-struct OPENGL_CLIP_REP
-{
-  Standard_Real equation[4];
-  DEFINE_STANDARD_ALLOC
 };
 
 struct OPENGL_ZCLIP
@@ -117,7 +112,7 @@ class OpenGl_View : public MMgt_TShared
   void SetBackfacing (const Standard_Integer AMode);
   void SetLights (const CALL_DEF_VIEWCONTEXT &AContext);
   void SetAntiAliasing (const Standard_Boolean AMode) { myAntiAliasing = AMode; }
-  void SetClippingPlanes (const CALL_DEF_VIEWCONTEXT &AContext);
+  void SetClipPlanes (const Graphic3d_SetOfHClipPlane &thePlanes) { myClipPlanes = thePlanes; }
   void SetVisualisation (const CALL_DEF_VIEWCONTEXT &AContext);
 
   void SetClipLimit (const Graphic3d_CView& theCView);
@@ -222,11 +217,11 @@ public:
   //Tint        active_status;
 
   OPENGL_ZCLIP   myZClip;
-  NCollection_List<OPENGL_CLIP_REP> myClippingPlanes;
-
   OPENGL_EXTRA_REP myExtra;
   //}
 
+  Graphic3d_SetOfHClipPlane myClipPlanes;
+  
   OPENGL_FOG myFog;
   OpenGl_Trihedron*          myTrihedron;
   OpenGl_GraduatedTrihedron* myGraduatedTrihedron;

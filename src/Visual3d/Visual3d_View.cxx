@@ -147,11 +147,6 @@
 #include <Visual3d_HSetOfLight.hxx>
 #include <Visual3d_SetIteratorOfSetOfLight.hxx>
 
-#include <Visual3d_ClipPlane.hxx>
-#include <Visual3d_SetOfClipPlane.hxx>
-#include <Visual3d_HSetOfClipPlane.hxx>
-#include <Visual3d_SetIteratorOfSetOfClipPlane.hxx>
-
 #include <Visual3d_SetIteratorOfSetOfView.hxx>
 
 #include <Graphic3d_TextureEnv.hxx>
@@ -198,10 +193,6 @@ Standard_Integer i, j;
         MyCView.DefWindow.IsDefined   = 0;
 
         MyCView.Context.NbActiveLight = 0;
-        MyCView.Context.NbActivePlane = 0;
-#ifdef GER61454
-        MyCView.Context.ActivePlane   = NULL;
-#endif
 
         for (i=0; i<=3; i++)
                 for (j=0; j<=3; j++)
@@ -311,10 +302,6 @@ Standard_Integer i, j;
         MyCView.DefWindow.IsDefined   = 0;
 
         MyCView.Context.NbActiveLight = 0;
-        MyCView.Context.NbActivePlane = 0;
-#ifdef GER61454
-        MyCView.Context.ActivePlane = NULL;
-#endif
 
         for (i=0; i<=3; i++)
                 for (j=0; j<=3; j++)
@@ -863,64 +850,14 @@ Visual3d_TypeOfLightSource LightType=Visual3d_TOLS_AMBIENT;
 
 }
 
-void Visual3d_View::UpdatePlanes () {
+void Visual3d_View::UpdatePlanes() 
+{
+  MyCView.Context.ClipPlanes = MyContext.GetClipPlanes();
+  
+  if (IsDeleted() || !IsDefined())
+    return;
 
-Standard_Integer i, j;
-CALL_DEF_PLANE *planes=NULL;
-
-        i       = MyContext.NumberOfActivatedClipPlanes ();
-        j       = MyGraphicDriver->InquirePlaneLimit ();
-        MyCView.Context.NbActivePlane   = (i > j ? j : i);
-
-        if (MyCView.Context.NbActivePlane > 0) {
-
-                // Dynamic Allocation
-#ifdef GER61454 //Keep the plane address for the next Update !
-                if( !MyCView.Context.ActivePlane )
-                   MyCView.Context.ActivePlane = new CALL_DEF_PLANE [j];
-                planes = MyCView.Context.ActivePlane;
-#else
-                planes  = new CALL_DEF_PLANE [MyCView.Context.NbActivePlane];
-
-                MyCView.Context.ActivePlane     = planes;
-#endif
-Standard_Real A, B, C, D;
-
-                // Parcing of clipping planes
-                for (j=0; j<MyCView.Context.NbActivePlane; j++) {
-
-                        planes[j].WsId          = MyCView.ViewId;
-                        planes[j].ViewId        = MyCView.ViewId;
-
-                        planes[j].Active        = 1;
-                        planes[j].PlaneId       =
-                                int ((MyContext.ActivatedClipPlane (j+1))->Identification ());
-
-                        (MyContext.ActivatedClipPlane (j+1))->Plane (A, B, C, D);
-                        planes[j].CoefA         = float (A);
-                        planes[j].CoefB         = float (B);
-                        planes[j].CoefC         = float (C);
-                        planes[j].CoefD         = float (D);
-                }
-
-        }
-
-        // Management of planes of clipping model
-        if (! IsDeleted ())
-                if (IsDefined ())
-                        MyGraphicDriver->SetPlane (MyCView);
-
-        // Dynamic allocation
-#ifdef GER61454
-        if ( MyCView.Context.ActivePlane && (MyCView.Context.NbActivePlane == 0)
- ) {
-          delete [] MyCView.Context.ActivePlane;
-          MyCView.Context.ActivePlane = NULL;
-        }
-#else
-        if (MyCView.Context.NbActivePlane > 0) delete [] planes;
-#endif
-
+  MyGraphicDriver->SetClipPlanes (MyCView);
 }
 
 void Visual3d_View::SetBackground (const Aspect_Background& ABack) {

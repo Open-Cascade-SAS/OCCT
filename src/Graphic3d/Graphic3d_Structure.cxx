@@ -2460,7 +2460,6 @@ Standard_Boolean Graphic3d_Structure::HLRValidation () const {
 //function : CStructure
 //purpose  :
 //=======================================================================
-
 Graphic3d_CStructure* Graphic3d_Structure::CStructure()
 {
   return &MyCStructure;
@@ -2470,7 +2469,6 @@ Graphic3d_CStructure* Graphic3d_Structure::CStructure()
 //function : SetZLayer
 //purpose  :
 //=======================================================================
-
 void Graphic3d_Structure::SetZLayer (const Standard_Integer theLayerId)
 {
   // if the structure is not displayed, unable to change its display layer
@@ -2484,8 +2482,26 @@ void Graphic3d_Structure::SetZLayer (const Standard_Integer theLayerId)
 //function : GetZLayer
 //purpose  :
 //=======================================================================
-
 Standard_Integer Graphic3d_Structure::GetZLayer () const
 {
   return MyStructureManager->GetZLayer (this);
+}
+
+//=======================================================================
+//function : SetClipPlanes
+//purpose  :
+//=======================================================================
+void Graphic3d_Structure::SetClipPlanes (const Graphic3d_SetOfHClipPlane& thePlanes)
+{
+  MyCStructure.ClipPlanes = thePlanes;
+  MyGraphicDriver->SetClipPlanes (MyCStructure);
+}
+
+//=======================================================================
+//function : GetClipPlanes
+//purpose  :
+//=======================================================================
+const Graphic3d_SetOfHClipPlane& Graphic3d_Structure::GetClipPlanes() const
+{
+  return MyCStructure.ClipPlanes;
 }

@@ -31,6 +31,7 @@ uses
     Lin              from gp,
     Trsf             from gp,
     ListOfBox2d      from SelectBasics,
+    PickArgs         from SelectBasics,
     Array1OfPnt      from TColgp,
     Array1OfPnt2d    from TColgp,
     HArray1OfInteger from TColStd,
@@ -83,12 +84,15 @@ is
     GetConnected(me:mutable;aLocation: Location from TopLoc)
     returns SensitiveEntity from Select3D is redefined static;
 
-    Matches(me  :mutable; 
-            X,Y : Real from Standard;
-            aTol: Real from Standard;
-            DMin: out Real from Standard) 
+    Matches (me : mutable;
+             thePickArgs : PickArgs from SelectBasics;
+             theMatchDMin, theMatchDepth : out Real from Standard)
     returns Boolean
     is redefined virtual;
+    ---Level: Public
+    ---Purpose: Checks whether the sensitive entity matches the picking
+    -- detection area (close to the picking line).
+    -- For details please refer to base class declaration.
 
     Matches (me  :mutable; 
              XMin,YMin,XMax,YMax : Real from Standard;
@@ -104,12 +108,16 @@ is
     returns Boolean
     is redefined virtual;
     	---Level: Public 
-    
-    
-    ComputeDepth(me;EyeLine: Lin from gp) 
-    returns Real from Standard is redefined static;
-    	---Purpose: give the depht of the last detected triangle
-    	--          (center of gravity)
+
+    ComputeDepth (me;
+                  thePickLine : Lin from gp;
+                  theTriangle : Integer from Standard)
+    returns Real from Standard;
+    ---Level: Public
+    ---Purpose: Compute precise depth of detected triangle.
+    -- @param thePickLine [in] the picking line.
+    -- @param theTriangle [in] the index of detected triangle.
+    -- @return depth on the picking line.
 
     DetectedTriangle(me) returns Integer from Standard;
     	---Purpose: Returns the detected three nodes P1, P2, P3 constituting a triangle.

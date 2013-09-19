@@ -76,25 +76,27 @@ mylastseg(0)
 // Purpose :
 //==================================================
 
-Standard_Boolean Select3D_SensitiveCurve
-::Matches(const Standard_Real X,
-          const Standard_Real Y,
-          const Standard_Real aTol,
-          Standard_Real& DMin)
+Standard_Boolean Select3D_SensitiveCurve::Matches (const SelectBasics_PickArgs& thePickArgs,
+                                                   Standard_Real& theMatchDMin,
+                                                   Standard_Real& theMatchDepth)
 {
   Standard_Integer Rank;
   TColgp_Array1OfPnt2d aArrayOf2dPnt(1, mypolyg.Size());
   Points2D(aArrayOf2dPnt);
   if (SelectBasics_BasicTool::MatchPolyg2d (aArrayOf2dPnt,
-                                            X, Y,
-                                            aTol,
-                                            DMin,
+                                            thePickArgs.X(), thePickArgs.Y(),
+                                            thePickArgs.Tolerance(),
+                                            theMatchDMin,
                                             Rank))
   {
+    // remember detected segment (for GetLastDetected)
     mylastseg = Rank;
-    // compute and validate the depth (::Depth()) along the eyeline
-    return Select3D_SensitiveEntity::Matches (X, Y, aTol, DMin);
+
+    theMatchDepth = ComputeDepth (thePickArgs.PickLine(), Rank);
+
+    return !thePickArgs.IsClipped (theMatchDepth);
   }
+
   return Standard_False;
 }
 
@@ -189,29 +191,30 @@ void Select3D_SensitiveCurve::Dump(Standard_OStream& S,const Standard_Boolean Fu
 //purpose  :
 //=======================================================================
 
-Standard_Real Select3D_SensitiveCurve::ComputeDepth(const gp_Lin& EyeLine) const
+Standard_Real Select3D_SensitiveCurve::ComputeDepth (const gp_Lin& thePickLine,
+                                                     const Standard_Integer theSegment) const
 {
-  Standard_Real aDepth = Precision::Infinite();
-
-  // Not implemented
-  if(mylastseg==0)
-    return aDepth;
-
-  gp_XYZ aCDG;
-  // In case if mylastseg and mylastseg+1 are not valid
-  // the depth will be infinite
-  if (mylastseg < mypolyg.Size())
+  if (theSegment == 0)
   {
-    aCDG = mypolyg.Pnt(mylastseg);
-    if (mylastseg+1 < mypolyg.Size())
-    {
-      aCDG += mypolyg.Pnt(mylastseg+1);
-      aCDG /= 2.;
-    }
-    aDepth = ElCLib::Parameter(EyeLine,gp_Pnt(aCDG));
+    return Precision::Infinite();
   }
 
-  return aDepth;
+  // In case if theSegment and theSegment + 1 are not valid
+  // the depth will be infinite
+  if (theSegment >= mypolyg.Size())
+  {
+    return Precision::Infinite();
+  }
+
+  gp_XYZ aCDG = mypolyg.Pnt (theSegment);
+
+  if (theSegment + 1 < mypolyg.Size())
+  {
+    aCDG += mypolyg.Pnt(theSegment + 1);
+    aCDG /= 2.;
+  }
+
+  return ElCLib::Parameter (thePickLine, gp_Pnt (aCDG));
 }
 
 //=======================================================================

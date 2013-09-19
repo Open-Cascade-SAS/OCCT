@@ -34,6 +34,7 @@ uses
     Lin             from gp,
     EntityOwner     from SelectBasics,
     ListOfBox2d     from SelectBasics,
+    PickArgs        from SelectBasics,
     Circle          from Geom,
     Array1OfPnt     from TColgp,
     HArray1OfPnt    from TColgp,
@@ -95,12 +96,14 @@ is
         -- If the length of apolyg3d is more then 1, the first point of apolyg3d 
         -- must be equal to the last point of apolyg3d. 
 
-    Matches(me  :mutable; 
-            X,Y : Real from Standard;
-            aTol: Real from Standard;
-            DMin: out Real from Standard) 
-    returns Boolean
-    is static;
+    Matches (me : mutable;
+             thePickArgs : PickArgs from SelectBasics;
+             theMatchDMin, theMatchDepth : out Real from Standard)
+    returns Boolean is redefined static;
+    ---Level: Public
+    ---Purpose: Checks whether the sensitive entity matches the picking
+    -- detection area (close to the picking line).
+    -- For details please refer to base class declaration.
 
     Matches (me  :mutable; 
              XMin,YMin,XMax,YMax : Real from Standard;
@@ -117,9 +120,16 @@ is
         ---Level: Public 
     
 
-    ComputeDepth(me;EyeLine: Lin from gp) 
-    returns Real from Standard is redefined static;
-    
+    ComputeDepth (me;
+                  thePickLine : Lin from gp;
+                  theDetectedIndex : Integer from Standard)
+    returns Real from Standard;
+    ---Level: Public
+    ---Purpose: Compute depth of sensitive circle for the detected sub-part.
+    -- @param thePickLine [in] the picking line.
+    -- @param theDetectedIndex [in] index of the detected sub-part.
+    -- @return depth on the picking line.
+
     ArrayBounds(me;Low,Up:in out Integer);
     
     GetPoint3d(me;rank:Integer) returns Pnt from gp;
@@ -142,7 +152,6 @@ is
 fields
 
     myFillStatus    : Boolean;
-    myDetectedIndex : Integer from Standard; -- used for depth...
     myCenter2D      : Pnt2d from Select3D; -- used for Matches()
     myCenter3D      : Pnt from Select3D; -- used for Matches()
     myCircle        : Circle from Geom;

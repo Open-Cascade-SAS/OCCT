@@ -66,16 +66,6 @@ Standard_Integer Graphic3d_GraphicDriver::Light (const Graphic3d_CLight& ACLight
 
 }
 
-Standard_Integer Graphic3d_GraphicDriver::Plane (const Graphic3d_CPlane& ACPlane, const Standard_Boolean Update) {
-
-  static Standard_Integer NbPlanes = 1;
-  Standard_Boolean Result;
-
-  Result = Update ? ACPlane.PlaneId : NbPlanes++;
-  return Result;
-
-}
-
 //-Internal methods, in order
 
 void Graphic3d_GraphicDriver::PrintBoolean (const Standard_CString AComment, const Standard_Boolean AValue) const {
@@ -130,16 +120,6 @@ void Graphic3d_GraphicDriver::PrintCPick (const Graphic3d_CPick& ACPick, const S
       << " view id " << ACPick.ViewId << "\n";
     cout << "\twindow id " << ACPick.DefWindow.XWindow << "\n";
     cout << "\tposition " << ACPick.x << " , " << ACPick.y << "\n";
-    cout << flush;
-  }
-
-}
-
-void Graphic3d_GraphicDriver::PrintCPlane (const Graphic3d_CPlane& ACPlane, const Standard_Integer AField) const {
-
-  if (AField) {
-    cout << "\tws id " << ACPlane.WsId << ", "
-      << "view id " << ACPlane.ViewId << "\n";
     cout << flush;
   }
 

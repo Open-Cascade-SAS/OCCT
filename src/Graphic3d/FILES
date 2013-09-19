@@ -16,8 +16,6 @@ Graphic3d_CLight.cxx
 Graphic3d_CLight.hxx
 Graphic3d_CPick.cxx
 Graphic3d_CPick.hxx
-Graphic3d_CPlane.cxx
-Graphic3d_CPlane.hxx
 Graphic3d_CBounds.cxx
 Graphic3d_CBounds.hxx
 Graphic3d_CUserDraw.cxx
@@ -55,3 +53,7 @@ Graphic3d_Vertex.cxx
 Graphic3d_MarkerImage.hxx
 Graphic3d_MarkerImage.cxx
 Graphic3d_MarkerImage_Handle.hxx
+Graphic3d_ClipPlane.hxx
+Graphic3d_ClipPlane.cxx
+Graphic3d_ClipPlane_Handle.hxx
+Graphic3d_SetOfHClipPlane.hxx

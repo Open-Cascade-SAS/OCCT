@@ -38,9 +38,11 @@
 #include <Graphic3d_TextureEnv.hxx>
 #include <Graphic3d_TextureParams.hxx>
 #include <Graphic3d_TypeOfTextureFilter.hxx>
+#include <Graphic3d_AspectFillArea3d.hxx>
 #include <ViewerTest.hxx>
 #include <ViewerTest_EventManager.hxx>
 #include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
+#include <ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName.hxx>
 #include <Visual3d_View.hxx>
 #include <Visual3d_ViewManager.hxx>
 #include <V3d_LayerMgr.hxx>
@@ -68,6 +70,14 @@
 #include <Image_Diff.hxx>
 #include <Aspect_DisplayConnection.hxx>
 #include <Graphic3d.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pln.hxx>
+#include <PrsMgr_PresentableObject.hxx>
+#include <Graphic3d_ClipPlane.hxx>
+#include <NCollection_DataMap.hxx>
+#include <Graphic3d_Texture2Dmanual.hxx>
+#include <Prs3d_ShadingAspect.hxx>
 
 #ifdef WNT
 #undef DrawText
@@ -504,7 +514,7 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
     aPxWidth = thePxWidth;
   if (thePxHeight != 0)
     aPxHeight = thePxHeight;
- 
+
   // Get graphic driver (create it or get from another view)
   if (!ViewerTest_myDrivers.IsBound1 (aViewNames.GetDriverName()))
   {
@@ -656,7 +666,7 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
 
   // NIS setup
   Handle(NIS_View) aView = new NIS_View (a3DViewer, VT_GetWindow());
-  
+
   ViewerTest::CurrentView(aView);
   ViewerTest_myViews.Bind (aViewNames.GetViewName(), aView);
   TheNISContext()->AttachView (aView);
@@ -689,7 +699,7 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
   #endif
 
   VT_GetWindow()->Map();
-  
+
   // Set the handle of created view in the event manager
   ViewerTest::ResetEventManager();
 
@@ -700,6 +710,20 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
   a3DCollector.Nullify();
 
   return aViewNames.GetViewName();
+}
+
+//==============================================================================
+//function : RedrawAllViews
+//purpose  : Redraw all created views
+//==============================================================================
+void ViewerTest::RedrawAllViews()
+{
+  NCollection_DoubleMap<TCollection_AsciiString, Handle(V3d_View)>::Iterator aViewIt(ViewerTest_myViews);
+  for (; aViewIt.More(); aViewIt.Next())
+  {
+    const Handle(V3d_View)& aView = aViewIt.Key2();
+    aView->Redraw();
+  }
 }
 
 //==============================================================================
@@ -1073,7 +1097,7 @@ static int VClose (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const ch
   }
 
   TCollection_AsciiString anInputString(theArgVec[1]);
-  
+
   // Create list to iterate and remove views from the map of views
   NCollection_List<TCollection_AsciiString> aViewList;
   if ( strcasecmp( anInputString.ToCString(), "ALL" ) == 0 )
@@ -1297,7 +1321,7 @@ void VT_ProcessKeyPress (const char* buf_ret)
     }
 
     aContext->UpdateCurrentViewer();
-    
+
   }
   else if ( !strcasecmp(buf_ret, "S") ) {
     // SHADING
@@ -2053,7 +2077,7 @@ int max( int a, int b )
 
 int ViewerMainLoop(Standard_Integer argc, const char** argv)
 
-{ 
+{
   static XEvent aReport;
   Standard_Boolean pick = argc > 0;
   Display *aDisplay = GetDisplayConnection()->GetDisplay();
@@ -2275,13 +2299,13 @@ static void VProcessEvents(ClientData,int)
        anIter (ViewerTest_myDrivers); anIter.More(); anIter.Next())
   {
     anEventNumbers.Append(XPending (anIter.Key2()->GetDisplayConnection()->GetDisplay()));
-  } 
+  }
     // Handle events for every display
   int anEventIter = 0;
   for (NCollection_DoubleMap <TCollection_AsciiString, Handle(Graphic3d_GraphicDriver)>::Iterator
        anIter (ViewerTest_myDrivers); anIter.More(); anIter.Next(), anEventIter++)
   {
-    for (int i = 0; i < anEventNumbers.Value(anEventIter) && 
+    for (int i = 0; i < anEventNumbers.Value(anEventIter) &&
          XPending (anIter.Key2()->GetDisplayConnection()->GetDisplay()) > 0; ++i)
     {
       SetDisplayConnection (anIter.Key2()->GetDisplayConnection());
@@ -2291,9 +2315,9 @@ static void VProcessEvents(ClientData,int)
 	return;
     }
   }
-  
+
   SetDisplayConnection (ViewerTest::GetAISContext()->CurrentViewer()->Driver()->GetDisplayConnection());
-  
+
 }
 #endif
 
@@ -4789,6 +4813,433 @@ static int VTextureEnv (Draw_Interpretor& /*theDI*/, Standard_Integer theArgNb, 
   return 0;
 }
 
+//===============================================================================================
+//function : VClipPlane
+//purpose  :
+//===============================================================================================
+static int VClipPlane (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const char** theArgVec)
+{
+  // use short-cut for created clip planes map of created (or "registered by name") clip planes
+  typedef NCollection_DataMap<TCollection_AsciiString, Handle(Graphic3d_ClipPlane)> MapOfPlanes;
+  static MapOfPlanes aRegPlanes;
+
+  if (theArgsNb < 2)
+  {
+    theDi << theArgVec[0] << ": command argument is required. Type help for more information.\n";
+    return 1;
+  }
+
+  TCollection_AsciiString aCommand (theArgVec[1]);
+
+  // print maximum number of planes for current viewer
+  if (aCommand == "maxplanes")
+  {
+    if (theArgsNb < 3)
+    {
+      theDi << theArgVec[0] << ": view name is required. Type help for more information.\n";
+      return 1;
+    }
+
+    TCollection_AsciiString aViewName (theArgVec[2]);
+
+    if (!ViewerTest_myViews.IsBound1 (aViewName))
+    {
+      theDi << theArgVec[0] << ": view is not found.\n";
+      return 1;
+    }
+
+    const Handle(V3d_View)& aView = ViewerTest_myViews.Find1 (aViewName);
+
+    theDi << theArgVec[0] << ": "
+                          << aView->Viewer()->Driver()->InquirePlaneLimit()
+                          << " plane slots provided by driver."
+                          << " Note that 2 more planes might be used (reserved for z-clipping).\n";
+
+    return 0;
+  }
+
+  // create / delete plane instance
+  if (aCommand == "create" || aCommand == "delete" || aCommand == "clone")
+  {
+    if (theArgsNb < 3)
+    {
+      theDi << theArgVec[0] << ": plane name is required. Type help for more information.\n";
+      return 1;
+    }
+
+    Standard_Boolean toCreate = (aCommand == "create");
+    Standard_Boolean toClone  = (aCommand == "clone");
+    TCollection_AsciiString aPlane (theArgVec[2]);
+
+    if (toCreate)
+    {
+      if (aRegPlanes.IsBound (aPlane))
+      {
+        theDi << theArgVec[0] << ": plane name is in use.\n";
+        return 1;
+      }
+
+      aRegPlanes.Bind (aPlane, new Graphic3d_ClipPlane());
+    }
+    else if (toClone) // toClone
+    {
+      if (!aRegPlanes.IsBound (aPlane))
+      {
+        theDi << theArgVec[0] << ": no such plane.\n";
+        return 1;
+      }
+
+      if (theArgsNb < 4)
+      {
+        theDi << theArgVec[0] << ": enter name for new plane. Type help for more information.\n";
+        return 1;
+      }
+
+      TCollection_AsciiString aClone (theArgVec[3]);
+      if (aRegPlanes.IsBound (aClone))
+      {
+        theDi << theArgVec[0] << ": plane name is in use.\n";
+        return 1;
+      }
+
+      const Handle(Graphic3d_ClipPlane)& aClipPlane = aRegPlanes.Find (aPlane);
+
+      aRegPlanes.Bind (aClone, aClipPlane->Clone());
+    }
+    else// toDelete
+    {
+      if (!aRegPlanes.IsBound (aPlane))
+      {
+        theDi << theArgVec[0] << ": no such plane.\n";
+        return 1;
+      }
+
+      Handle(Graphic3d_ClipPlane) aClipPlane = aRegPlanes.Find (aPlane);
+      aRegPlanes.UnBind (aPlane);
+
+      ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIObjIt (GetMapOfAIS());
+      for (; anIObjIt.More(); anIObjIt.Next())
+      {
+        Handle(PrsMgr_PresentableObject) aPrs = Handle(PrsMgr_PresentableObject)::DownCast (anIObjIt.Key1());
+        aPrs->RemoveClipPlane(aClipPlane);
+      }
+
+      NCollection_DoubleMap<TCollection_AsciiString, Handle(V3d_View)>::Iterator aViewIt(ViewerTest_myViews);
+      for (; aViewIt.More(); aViewIt.Next())
+      {
+        const Handle(V3d_View)& aView = aViewIt.Key2();
+        aView->RemoveClipPlane(aClipPlane);
+      }
+
+      ViewerTest::RedrawAllViews();
+    }
+
+    return 0;
+  }
+
+  // set / unset plane command
+  if (aCommand == "set" || aCommand == "unset")
+  {
+    if (theArgsNb < 4)
+    {
+      theDi << theArgVec[0] << ": need more arguments. Type help for more information.\n";
+      return 1;
+    }
+
+    Standard_Boolean toSet = (aCommand == "set");
+    TCollection_AsciiString aPlane (theArgVec [2]);
+    if (!aRegPlanes.IsBound (aPlane))
+    {
+      theDi << theArgVec[0] << ": no such plane.\n";
+      return 1;
+    }
+
+    const Handle(Graphic3d_ClipPlane)& aClipPlane = aRegPlanes.Find (aPlane);
+
+    TCollection_AsciiString aTarget (theArgVec [3]);
+    if (aTarget != "object" && aTarget != "view")
+    {
+      theDi << theArgVec[0] << ": invalid target.\n";
+      return 1;
+    }
+
+    if (aTarget == "object" || aTarget == "view")
+    {
+      if (theArgsNb < 5)
+      {
+        theDi << theArgVec[0] << ": need more arguments. Type help for more information.\n";
+        return 1;
+      }
+
+      Standard_Boolean isObject = (aTarget == "object");
+
+      for (Standard_Integer anIt = 4; anIt < theArgsNb; ++anIt)
+      {
+        TCollection_AsciiString anEntityName (theArgVec[anIt]);
+        if (isObject) // to object
+        {
+          if (!GetMapOfAIS().IsBound2 (anEntityName))
+          {
+            theDi << theArgVec[0] << ": can not find IO with name " << anEntityName << ".\n";
+            continue;
+          }
+
+          Handle(AIS_InteractiveObject) aIObj =
+            Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (anEntityName));
+
+          if (toSet)
+            aIObj->AddClipPlane (aClipPlane);
+          else
+            aIObj->RemoveClipPlane (aClipPlane);
+        }
+        else // to view
+        {
+          if (!ViewerTest_myViews.IsBound1 (anEntityName))
+          {
+            theDi << theArgVec[0] << ": can not find View with name " << anEntityName << ".\n";
+            continue;
+          }
+
+          Handle(V3d_View) aView = ViewerTest_myViews.Find1(anEntityName);
+          if (toSet)
+            aView->AddClipPlane (aClipPlane);
+          else
+            aView->RemoveClipPlane (aClipPlane);
+        }
+      }
+
+      ViewerTest::RedrawAllViews();
+    }
+
+    return 0;
+  }
+
+  // change plane command
+  if (aCommand == "change")
+  {
+    if (theArgsNb < 4)
+    {
+      theDi << theArgVec[0] << ": need more arguments. Type help for more information.\n";
+      return 1;
+    }
+
+    TCollection_AsciiString aPlane (theArgVec [2]);
+    if (!aRegPlanes.IsBound (aPlane))
+    {
+      theDi << theArgVec[0] << ": no such plane.\n";
+      return 1;
+    }
+
+    const Handle(Graphic3d_ClipPlane)& aClipPlane = aRegPlanes.Find (aPlane);
+
+    TCollection_AsciiString aChangeArg (theArgVec [3]);
+    if (aChangeArg != "on" && aChangeArg != "off" && aChangeArg != "capping" && aChangeArg != "equation")
+    {
+      theDi << theArgVec[0] << ": invalid arguments. Type help for more information.\n";
+      return 1;
+    }
+
+    if (aChangeArg == "on" || aChangeArg == "off") // on / off
+    {
+      aClipPlane->SetOn (aChangeArg == "on");
+    }
+    else if (aChangeArg == "equation") // change equation
+    {
+      if (theArgsNb < 8)
+      {
+        theDi << theArgVec[0] << ": need more arguments. Type help for more information.\n";
+        return 1;
+      }
+
+      Standard_Real aCoeffA = atof (theArgVec [4]);
+      Standard_Real aCoeffB = atof (theArgVec [5]);
+      Standard_Real aCoeffC = atof (theArgVec [6]);
+      Standard_Real aCoeffD = atof (theArgVec [7]);
+      aClipPlane->SetEquation (gp_Pln (aCoeffA, aCoeffB, aCoeffC, aCoeffD));
+    }
+    else if (aChangeArg == "capping") // change capping aspects
+    {
+      if (theArgsNb < 5)
+      {
+        theDi << theArgVec[0] << ": need more arguments. Type help for more information.\n";
+        return 1;
+      }
+
+      TCollection_AsciiString aCappingArg (theArgVec [4]);
+      if (aCappingArg != "on" && aCappingArg != "off" &&
+          aCappingArg != "color" && aCappingArg != "texname" &&
+          aCappingArg != "texscale" && aCappingArg != "texorigin" &&
+          aCappingArg != "texrotate" && aCappingArg != "hatch")
+      {
+        theDi << theArgVec[0] << ": invalid arguments. Type help for more information.\n";
+        return 1;
+      }
+
+      if (aCappingArg == "on" || aCappingArg == "off") // on / off capping
+      {
+        aClipPlane->SetCapping (aCappingArg == "on");
+      }
+      else if (aCappingArg == "color") // color aspect for capping
+      {
+        if (theArgsNb < 8)
+        {
+          theDi << theArgVec[0] << ": need more arguments. Type help for more information.\n";
+          return 1;
+        }
+
+        Standard_Real aRed = atof (theArgVec [5]);
+        Standard_Real aGrn = atof (theArgVec [6]);
+        Standard_Real aBlu = atof (theArgVec [7]);
+
+        Graphic3d_MaterialAspect aMat = aClipPlane->CappingMaterial();
+        aMat.SetColor (Quantity_Color (aRed, aGrn, aBlu, Quantity_TOC_RGB));
+        aClipPlane->SetCappingMaterial (aMat);
+      }
+      else if (aCappingArg == "texname") // texture name
+      {
+        if (theArgsNb < 6)
+        {
+          theDi << theArgVec[0] << ": need more arguments. Type help for more information.\n";
+          return 1;
+        }
+
+        TCollection_AsciiString aTextureName (theArgVec [5]);
+
+        Handle(Graphic3d_Texture2Dmanual) aTexture = new Graphic3d_Texture2Dmanual(aTextureName);
+        if (!aTexture->IsDone ())
+        {
+          aClipPlane->SetCappingTexture (NULL);
+        }
+        else
+        {
+          aTexture->EnableModulate();
+          aTexture->EnableRepeat();
+          aClipPlane->SetCappingTexture (aTexture);
+        }
+      }
+      else if (aCappingArg == "texscale") // texture scale
+      {
+        if (aClipPlane->CappingTexture().IsNull())
+        {
+          theDi << theArgVec[0] << ": no texture is set.\n";
+          return 1;
+        }
+
+        if (theArgsNb < 7)
+        {
+          theDi << theArgVec[0] << ": need more arguments. Type help for more information.\n";
+          return 1;
+        }
+
+        Standard_ShortReal aSx = (Standard_ShortReal)atof (theArgVec [5]);
+        Standard_ShortReal aSy = (Standard_ShortReal)atof (theArgVec [6]);
+
+        aClipPlane->CappingTexture()->GetParams()->SetScale (Graphic3d_Vec2 (aSx, aSy));
+      }
+      else if (aCappingArg == "texorigin") // texture origin
+      {
+        if (aClipPlane->CappingTexture().IsNull())
+        {
+          theDi << theArgVec[0] << ": no texture is set.\n";
+          return 1;
+        }
+
+        if (theArgsNb < 7)
+        {
+          theDi << theArgVec[0] << ": need more arguments. Type help for more information.\n";
+          return 1;
+        }
+
+        Standard_ShortReal aTx = (Standard_ShortReal)atof (theArgVec [5]);
+        Standard_ShortReal aTy = (Standard_ShortReal)atof (theArgVec [6]);
+
+        aClipPlane->CappingTexture()->GetParams()->SetTranslation (Graphic3d_Vec2 (aTx, aTy));
+      }
+      else if (aCappingArg == "texrotate") // texture rotation
+      {
+        if (aClipPlane->CappingTexture().IsNull())
+        {
+          theDi << theArgVec[0] << ": no texture is set.\n";
+          return 1;
+        }
+
+        if (theArgsNb < 6)
+        {
+          theDi << theArgVec[0] << ": need more arguments. Type help for more information.\n";
+          return 1;
+        }
+
+        Standard_ShortReal aRot = (Standard_ShortReal)atof (theArgVec[5]);
+
+        aClipPlane->CappingTexture()->GetParams()->SetRotation (aRot);
+      }
+      else if (aCappingArg == "hatch") // hatch style
+      {
+        if (theArgsNb < 6)
+        {
+          theDi << theArgVec[0] << ": need more arguments. Type help for more information.\n";
+          return 1;
+        }
+
+        TCollection_AsciiString aHatchStr (theArgVec [5]);
+        if (aHatchStr == "on")
+        {
+          aClipPlane->SetCappingHatchOn();
+        }
+        else if (aHatchStr == "off")
+        {
+          aClipPlane->SetCappingHatchOff();
+        }
+        else
+        {
+          aClipPlane->SetCappingHatch ((Aspect_HatchStyle)atoi (theArgVec[5]));
+        }
+      }
+    }
+
+    ViewerTest::RedrawAllViews();
+
+    return 0;
+  }
+
+  theDi << theArgVec[0] << ": invalid command. Type help for more information.\n";
+  return 1;
+}
+
+//===============================================================================================
+//function : VSetTextureMode
+//purpose  :
+//===============================================================================================
+static int VSetTextureMode (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const char** theArgVec)
+{
+  if (theArgsNb < 3)
+  {
+    theDi << theArgVec[0] << ": insufficient command arguments. Type help for more information.\n";
+    return 1;
+  }
+
+  TCollection_AsciiString aViewName (theArgVec[1]);
+  if (!ViewerTest_myViews.IsBound1 (aViewName))
+  {
+    theDi << theArgVec[0] << ": view is not found.\n";
+    return 1;
+  }
+
+  const Handle(V3d_View)& aView = ViewerTest_myViews.Find1 (aViewName);
+  switch (atoi (theArgVec[2]))
+  {
+    case 0: aView->SetSurfaceDetail (V3d_TEX_NONE); break;
+    case 1: aView->SetSurfaceDetail (V3d_TEX_ENVIRONMENT); break;
+    case 2: aView->SetSurfaceDetail (V3d_TEX_ALL); break;
+    default:
+      theDi << theArgVec[0] << ": invalid mode.\n";
+      return 1;
+  }
+
+  aView->Redraw();
+  return 0;
+}
+
 //=======================================================================
 //function : ViewerCommands
 //purpose  :
@@ -5037,4 +5488,29 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "If shapes are not given HLR algoithm of given type is applied"
     " to all shapes in the view\n",
     __FILE__,VHLRType,group);
+  theCommands.Add("vclipplane", "vclipplane usage: \n"
+    "  maxplanes <view_name> - get plane limit for view.\n"
+    "  create <plane_name> - create new plane.\n"
+    "  delete <plane_name> - delete plane.\n"
+    "  clone <source_plane> <plane_name> - clone the plane definition.\n"
+    "  set/unset <plane_name> object <object list> - set/unset plane for IO.\n"
+    "  set/unset <plane_name> view <view list> - set/unset plane for view.\n"
+    "  change <plane_name> on/off - turn clipping on/off.\n"
+    "  change <plane_name> equation <a> <b> <c> <d> - change plane equation.\n"
+    "  change <plane_name> capping on/off - turn capping on/off.\n"
+    "  change <plane_name> capping color <r> <g> <b> - set color.\n"
+    "  change <plane name> capping texname <texture> - set texture.\n"
+    "  change <plane_name> capping texscale <sx> <sy> - set tex scale.\n"
+    "  change <plane_name> capping texorigin <tx> <ty> - set tex origin.\n"
+    "  change <plane_name> capping texrotate <angle> - set tex rotation.\n"
+    "  change <plane_name> capping hatch on/off/<id> - set hatching mask.\n"
+    "  please use VSetTextureMode command to enable texture rendering in view.\n"
+    , __FILE__, VClipPlane, group);
+  theCommands.Add("vsettexturemode", "vsettexturemode view_name mode \n"
+    "  mode can be:\n"
+    "  0 - no textures enabled in view.\n"
+    "  1 - only environment textures enabled.\n"
+    "  2 - all textures enabled.\n"
+    "  this command sets texture details mode for the specified view.\n"
+    , __FILE__, VSetTextureMode, group);
 }

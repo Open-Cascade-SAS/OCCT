@@ -74,7 +74,8 @@ uses
 	Vector			from Graphic3d,
 	Vertex			from Graphic3d,
 	TransModeFlags          from Graphic3d,
-	Pnt                     from gp
+	Pnt                     from gp,
+    SetOfHClipPlane from Graphic3d
 
 raises
 
@@ -269,6 +270,15 @@ is
           returns Integer from Standard is static;
         ---Purpose: Get Z layer ID of displayed structure. The method
         -- returns -1 if the structure has no ID (deleted from graphic driver).
+
+    SetClipPlanes (me : mutable; thePlanes : SetOfHClipPlane from Graphic3d) is static;
+    ---Purpose: Changes a set of clip planes slicing the structure on rendering.
+    -- @param thePlanes [in] the set of clip planes.
+
+    GetClipPlanes (me) returns SetOfHClipPlane from Graphic3d;
+    ---C++: return const&
+    ---Purpose: Get clip planes slicing the structure on rendering.
+    -- @return set of clip planes.
 
 	SetPick ( me		: mutable;
 		  AValue	: Boolean from Standard )

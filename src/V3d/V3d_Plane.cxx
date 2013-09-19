@@ -1,6 +1,6 @@
 // Created by: GG
 // Copyright (c) 1991-1999 Matra Datavision
-// Copyright (c) 1999-2012 OPEN CASCADE SAS
+// Copyright (c) 1999-2013 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -17,120 +17,149 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
-//-Version
-
-//-Design
-
-//-Warning
-
-//-References
-
-//-Language     C++ 2.1
-
-#include <V3d.hxx>
-#include <V3d_Plane.ixx>
-#include <V3d_BadValue.hxx>
-
+#include <V3d_Plane.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Graphic3d_ArrayOfQuadrangles.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
+#include <Graphic3d_ArrayOfQuadrangles.hxx>
 #include <gp_Pln.hxx>
 
-//-Constructors
+IMPLEMENT_STANDARD_HANDLE(V3d_Plane, MMgt_TShared)
+IMPLEMENT_STANDARD_RTTIEXT(V3d_Plane, MMgt_TShared)
 
-V3d_Plane::V3d_Plane(const Standard_Real A, const Standard_Real B, const Standard_Real C, const Standard_Real D)
+// =======================================================================
+// function : V3d_Plane
+// purpose  :
+// =======================================================================
+V3d_Plane::V3d_Plane (const Standard_Real theA,
+                      const Standard_Real theB,
+                      const Standard_Real theC,
+                      const Standard_Real theD)
+: myGraphicStructure(),
+  myPlane (new Graphic3d_ClipPlane (gp_Pln (theA, theB, theC, theD)))
 {
-  V3d_BadValue_Raise_if( sqrt(A*A + B*B + C*C) <= 0., "V3d_Plane::V3d_Plane, bad plane coefficients");
-
-  MyPlane = new Visual3d_ClipPlane(A,B,C,D) ;
 }
 
-//-Methods, in order
-
-void V3d_Plane::SetPlane(const Standard_Real A, const Standard_Real B, const Standard_Real C, const Standard_Real D)
+// =======================================================================
+// function : V3d_Plane
+// purpose  :
+// =======================================================================
+void V3d_Plane::SetPlane (const Standard_Real theA,
+                          const Standard_Real theB,
+                          const Standard_Real theC,
+                          const Standard_Real theD)
 {
-  V3d_BadValue_Raise_if( sqrt(A*A + B*B + C*C) <= 0., "V3d_Plane::SetPlane, bad plane coefficients");
-
-  MyPlane->SetPlane(A,B,C,D) ;
-  if( IsDisplayed() )
+  myPlane->SetEquation (gp_Pln (theA, theB, theC, theD));
+  if (IsDisplayed())
+  {
     Update();
+  }
 }
 
-void V3d_Plane::Display(const Handle(V3d_View)& aView,
-                        const Quantity_Color& aColor)
+// =======================================================================
+// function : Display
+// purpose  :
+// =======================================================================
+void V3d_Plane::Display (const Handle(V3d_View)& theView,
+                         const Quantity_Color& theColor)
 {
-  Handle(V3d_Viewer) theViewer = aView->Viewer();
-  if (!MyGraphicStructure.IsNull())
-    MyGraphicStructure->Clear();
+  Handle(V3d_Viewer) aViewer = theView->Viewer();
+  if (!myGraphicStructure.IsNull())
+  {
+    myGraphicStructure->Clear();
+  }
 
-  MyGraphicStructure = new Graphic3d_Structure(theViewer->Viewer());
-  Handle(Graphic3d_Group) group = new Graphic3d_Group(MyGraphicStructure);
-  Handle(Graphic3d_AspectFillArea3d) aspect = new Graphic3d_AspectFillArea3d();
-  Graphic3d_MaterialAspect plastic(Graphic3d_NOM_PLASTIC);
-  plastic.SetColor(aColor);
-  plastic.SetTransparency(0.5);
-  aView->SetTransparency(Standard_True);
-  aspect->SetFrontMaterial(plastic);
-  aspect->SetInteriorStyle (Aspect_IS_HATCH);
-  aspect->SetHatchStyle (Aspect_HS_GRID_DIAGONAL_WIDE);
-  MyGraphicStructure->SetPrimitivesAspect(aspect);
+  myGraphicStructure = new Graphic3d_Structure (aViewer->Viewer());
+  Handle(Graphic3d_Group) aGroup = new Graphic3d_Group (myGraphicStructure);
+  Handle(Graphic3d_AspectFillArea3d) anAsp = new Graphic3d_AspectFillArea3d();
+  Graphic3d_MaterialAspect aPlastic (Graphic3d_NOM_PLASTIC);
+  aPlastic.SetColor (theColor);
+  aPlastic.SetTransparency (0.5);
+  theView->SetTransparency (Standard_True);
+  anAsp->SetFrontMaterial (aPlastic);
+  anAsp->SetInteriorStyle (Aspect_IS_HATCH);
+  anAsp->SetHatchStyle (Aspect_HS_GRID_DIAGONAL_WIDE);
+  myGraphicStructure->SetPrimitivesAspect (anAsp);
 
-  const Standard_ShortReal size = (Standard_ShortReal)(0.5*theViewer->DefaultViewSize());
-  const Standard_ShortReal offset = size/5000.F;
+  const Standard_ShortReal aSize = (Standard_ShortReal)(0.5*aViewer->DefaultViewSize());
+  const Standard_ShortReal anOffset = aSize/5000.0f;
 
   Handle(Graphic3d_ArrayOfQuadrangles) aPrims = new Graphic3d_ArrayOfQuadrangles(4);
-  aPrims->AddVertex(-size,-size,offset);
-  aPrims->AddVertex(-size, size,offset);
-  aPrims->AddVertex( size, size,offset);
-  aPrims->AddVertex( size,-size,offset);
-  group->AddPrimitiveArray(aPrims);
+  aPrims->AddVertex (-aSize,-aSize, anOffset);
+  aPrims->AddVertex (-aSize, aSize, anOffset);
+  aPrims->AddVertex ( aSize, aSize, anOffset);
+  aPrims->AddVertex ( aSize,-aSize, anOffset);
+  aGroup->AddPrimitiveArray(aPrims);
 
-  MyGraphicStructure->Display(0);
+  myGraphicStructure->Display(0);
   Update();
 }
 
+// =======================================================================
+// function : Erase
+// purpose  :
+// =======================================================================
 void V3d_Plane::Erase()
 {
-  if (!MyGraphicStructure.IsNull()) MyGraphicStructure->Erase();
+  if (!myGraphicStructure.IsNull())
+  {
+    myGraphicStructure->Erase();
+  }
 }
 
-void V3d_Plane::Plane(Standard_Real& A, Standard_Real& B, Standard_Real& C, Standard_Real& D) const
+// =======================================================================
+// function : Plane
+// purpose  :
+// =======================================================================
+void V3d_Plane::Plane (Standard_Real& theA, Standard_Real& theB, Standard_Real& theC, Standard_Real& theD) const
 {
-  MyPlane->Plane(A,B,C,D) ;
+  const Graphic3d_ClipPlane::Equation& anEquation = myPlane->GetEquation();
+  theA = anEquation[0];
+  theB = anEquation[1];
+  theC = anEquation[2];
+  theD = anEquation[3];
 }
 
-Handle(Visual3d_ClipPlane) V3d_Plane::Plane()const
-{
-  return MyPlane;
-}
-
+// =======================================================================
+// function : IsDisplayed
+// purpose  :
+// =======================================================================
 Standard_Boolean V3d_Plane::IsDisplayed() const
 {
-  if( MyGraphicStructure.IsNull() ) return Standard_False;
-  return MyGraphicStructure->IsDisplayed();
+  if (myGraphicStructure.IsNull())
+  {
+    return Standard_False;
+  }
+
+  return myGraphicStructure->IsDisplayed();
 }
 
+// =======================================================================
+// function : Update
+// purpose  :
+// =======================================================================
 void V3d_Plane::Update()
 {
-  if( !MyGraphicStructure.IsNull() ) {
-    TColStd_Array2OfReal matrix(1,4,1,4);
-    Standard_Real A,B,C,D;
-    MyPlane->Plane(A,B,C,D) ;
-    gp_Pln plan(A,B,C,D);
-    gp_Trsf trsf;
-    trsf.SetTransformation(plan.Position());
-    trsf.Invert();
-    for (Standard_Integer i=1; i<=3; i++){
-      for (Standard_Integer j=1; j<=4; j++){
-        matrix.SetValue(i,j,trsf.Value(i,j));
+  if(!myGraphicStructure.IsNull())
+  {
+    TColStd_Array2OfReal aMatrix (1, 4, 1, 4);
+    Standard_Real theA, theB, theC, theD;
+    this->Plane(theA, theB, theC, theD);
+    gp_Pln aGeomPln (theA, theB, theC, theD);
+    gp_Trsf aTransform;
+    aTransform.SetTransformation (aGeomPln.Position());
+    aTransform.Invert();
+    for (Standard_Integer i = 1; i <= 3; i++)
+    {
+      for (Standard_Integer j = 1; j <= 4; j++)
+      {
+        aMatrix.SetValue (i, j, aTransform.Value (i,j));
       }
     }
-    matrix.SetValue(4,1,0.);
-    matrix.SetValue(4,2,0.);
-    matrix.SetValue(4,3,0.);
-    matrix.SetValue(4,4,1.);
-    MyGraphicStructure->SetTransform(matrix,Graphic3d_TOC_REPLACE);
+
+    aMatrix.SetValue (4,1,0.);
+    aMatrix.SetValue (4,2,0.);
+    aMatrix.SetValue (4,3,0.);
+    aMatrix.SetValue (4,4,1.);
+    myGraphicStructure->SetTransform (aMatrix, Graphic3d_TOC_REPLACE);
   }
 }

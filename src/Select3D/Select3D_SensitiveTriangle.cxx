@@ -79,28 +79,37 @@ mytype (aType)
 // Purpose :
 //==================================================
 
-Standard_Boolean Select3D_SensitiveTriangle::
-Matches(const Standard_Real X,
-        const Standard_Real Y,
-        const Standard_Real aTol,
-        Standard_Real& DMin)
+Standard_Boolean Select3D_SensitiveTriangle::Matches (const SelectBasics_PickArgs& thePickArgs,
+                                                      Standard_Real& theMatchDMin,
+                                                      Standard_Real& theMatchDepth)
 {
-  Select3D_SensitiveEntity::Matches(X,Y,aTol,DMin);
-  if(Bnd_Box2d(mybox2d).IsOut(gp_Pnt2d(X,Y))) return Standard_False;
+  Standard_Real aDepth = ComputeDepth (thePickArgs.PickLine());
+  if (thePickArgs.IsClipped (aDepth))
+  {
+    return Standard_False;
+  }
+
+  theMatchDepth = aDepth;
+
+  if (Bnd_Box2d (mybox2d).IsOut (gp_Pnt2d (thePickArgs.X(), thePickArgs.Y())))
+  {
+    return Standard_False;
+  }
 
   Standard_Integer Res;
   switch (mytype)
   {
   case Select3D_TOS_BOUNDARY:
-    Res = Status(X,Y,aTol,DMin);
+    Res = Status (thePickArgs.X(), thePickArgs.Y(), thePickArgs.Tolerance(), theMatchDMin);
     return Res== 1;
     break;
   case Select3D_TOS_INTERIOR:
-    Res = Status(X,Y,aTol,DMin);
+    Res = Status (thePickArgs.X(), thePickArgs.Y(), thePickArgs.Tolerance(), theMatchDMin);
     return (Res==0 || Res == 1);
   default:
     break;
   }
+
   return Standard_True;
 }
 

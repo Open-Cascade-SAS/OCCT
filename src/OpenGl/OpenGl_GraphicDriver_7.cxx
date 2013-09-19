@@ -448,11 +448,22 @@ void OpenGl_GraphicDriver::SetLight (const Graphic3d_CView& ACView)
     aCView->View->SetLights(ACView.Context);
 }
 
-void OpenGl_GraphicDriver::SetPlane (const Graphic3d_CView& ACView)
+void OpenGl_GraphicDriver::SetClipPlanes (const Graphic3d_CView& theCView)
 {
-  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
+  const OpenGl_CView *aCView = (const OpenGl_CView *)theCView.ptrView;
   if (aCView)
-    aCView->View->SetClippingPlanes(ACView.Context);
+  {
+    aCView->View->SetClipPlanes (theCView.Context.ClipPlanes);
+  }
+}
+
+void OpenGl_GraphicDriver::SetClipPlanes (const Graphic3d_CStructure& theCStructure)
+{
+  OpenGl_Structure* aStructure = (OpenGl_Structure *)theCStructure.ptrStructure;
+  if (aStructure)
+  {
+    aStructure->SetClipPlanes (theCStructure.ClipPlanes);
+  }
 }
 
 void OpenGl_GraphicDriver::SetVisualisation (const Graphic3d_CView& ACView)

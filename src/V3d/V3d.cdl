@@ -213,9 +213,6 @@ is
         class SpotLight;
         ---Purpose: Services of spot light sources.
 
-        class Plane;
-        ---Pupose: Services of any kind of clipping plane.
-
         ---------------------------------
         ---Category: Instantiated classes
         ---------------------------------

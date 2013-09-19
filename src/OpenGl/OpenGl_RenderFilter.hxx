@@ -1,4 +1,6 @@
-// Copyright (c) 1999-2012 OPEN CASCADE SAS
+// Created on: 2013-07-25
+// Created by: Anton POLETAEV
+// Copyright (c) 2013 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -15,12 +17,31 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+#ifndef _OpenGl_RenderFilter_H__
+#define _OpenGl_RenderFilter_H__
 
-#include <Graphic3d_CPlane.hxx>
+#include <Standard_DefineHandle.hxx>
+#include <Standard_Transient.hxx>
 
-const Handle(Standard_Type)& TYPE(Graphic3d_CPlane)
+DEFINE_STANDARD_HANDLE (OpenGl_RenderFilter, Standard_Transient)
+
+class OpenGl_Element;
+
+//! Base class for defining element rendering filters.
+//! This class can be used in pair with advance rendering passes, and for 
+//! disabling rendering (setting up) graphical aspects.
+class OpenGl_RenderFilter : public Standard_Transient
 {
-  static Handle(Standard_Type) _atype =
-    new Standard_Type ("Graphic3d_CPlane", sizeof (Graphic3d_CPlane));
-  return _atype;
-}
+public:
+
+  //! Checks whether the element can be rendered or not.
+  //! @param theElement [in] the element to check.
+  //! @return True if element can be rendered.
+  virtual Standard_Boolean CanRender (const OpenGl_Element* theElement) = 0;
+
+public:
+
+  DEFINE_STANDARD_RTTI(OpenGl_RenderFilter)
+};
+
+#endif

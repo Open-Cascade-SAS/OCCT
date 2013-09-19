@@ -22,6 +22,7 @@
 #include <InterfaceGraphic_Visual3d.hxx>
 #include <Handle_Graphic3d_TextureEnv.hxx>
 #include <Standard_Type.hxx>
+#include <Graphic3d_SetOfHClipPlane.hxx>
 
 class CALL_DEF_VIEWCONTEXT
 {
@@ -42,9 +43,8 @@ public:
     Visualization (0),
     NbActiveLight (0),
     ActiveLight (NULL),
-    NbActivePlane (0),
-    ActivePlane (NULL),
-    SurfaceDetail (0)
+    SurfaceDetail (0),
+    ClipPlanes()
   {
     //
   }
@@ -71,12 +71,10 @@ public:
   int   NbActiveLight;
   CALL_DEF_LIGHT* ActiveLight;
 
-  int   NbActivePlane;
-  CALL_DEF_PLANE* ActivePlane;
-
   Handle(Graphic3d_TextureEnv) TextureEnv;
   int   SurfaceDetail;
 
+  Graphic3d_SetOfHClipPlane ClipPlanes;
 };
 
 class Graphic3d_CView

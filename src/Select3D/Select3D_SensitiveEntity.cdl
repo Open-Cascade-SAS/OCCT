@@ -59,14 +59,12 @@ is
     Is3D(me) returns Boolean from Standard is redefined static;
     ---Purpose: Returns true if this framework provides 3D information.
 
-    Project (me:mutable;aProjector : Projector from Select3D) is virtual;
+    Project (me:mutable;aProjector : Projector from Select3D) is deferred;
     ---Level: Public
-    	---Purpose:Returns the projector aProjector.
-    	--	 In classes inheriting this framework, you must
-    	-- redefine this function in order to get a sensitive 2D
-    	-- rectangle from a 3D entity. This rectangle is the
-    	-- sensitive zone which makes the 3D entity selectable.
-
+    ---Purpose: In classes inheriting this framework, you must
+    -- redefine this function in order to get a sensitive 2D
+    -- rectangle from a 3D entity. This rectangle is the
+    -- sensitive zone which makes the 3D entity selectable.
 
     MaxBoxes(me) returns Integer is redefined virtual;
     ---Level: Public
@@ -87,16 +85,6 @@ is
     -- sensitive entity which can accept another connected
     -- sensitive entity.//can be connected to another sensitive entity.
 
-    Matches(me  :mutable;
-            X,Y : Real from Standard;
-            aTol: Real from Standard;
-            DMin: out Real from Standard)
-    returns Boolean is redefined virtual;
-    ---Purpose: Matches the coordinates X, Y with the entity found at
-    -- that point within the tolerance aTol and the minimum depth DMin.
-    -- You must redefine this function for every inheriting entity.
-    -- You will have to call this framework inside the redefined function.
-
     Matches (me  :mutable;
              XMin,YMin,XMax,YMax : Real from Standard;
              aTol: Real from Standard)
@@ -116,23 +104,6 @@ is
              aTol: Real from Standard)
     returns Boolean from Standard is redefined virtual;
     ---Purpose: prevents from hiding virtual methods...
-
-
-    GetEyeLine(me; X,Y : Real from Standard) returns Lin from gp;
-    ---Purpose: Returns the eye line for the point defined by the coordinates X,Y.
-
-    ComputeDepth(me;EyeLine : Lin from gp) returns Real from Standard
-    is deferred;
-    ---Purpose: Returns the depth of this object on the line EyeLine.
-    -- EyeLine goes through the eye towards a point
-    -- defined by the coordinates X,Y in the function GetEyeLine.
-    ---Purpose: gives an abcissa on <aLin> .
-    --          <aLin> represents the line going through
-    --          the eye towards an X,Y point on the screen. This Method
-    --          must return a mean Depth on this line.
-
-
-    Depth(me) returns Real from Standard is redefined;
 
     ---Category: Location of sensitive entities...
     --           Default implementations of HasLocation() and Location() rely on
@@ -159,15 +130,6 @@ is
 
     UpdateLocation(me:mutable;aLoc:Location from TopLoc);
 
-
-    SetLastPrj(me:mutable;aPrj:Projector from Select3D) is virtual;
-
-    SetLastDepth(me:mutable; aDepth: Real from Standard) is protected;
-
-fields
-
-    mylastprj     : Projector from Select3D  is protected;
-    mylastdepth   : ShortReal from Standard;
 end SensitiveEntity;
 
 

@@ -34,6 +34,7 @@ uses
     SensitiveEntity          from Select3D,
     SensitiveEntitySequence  from Select3D,
     ListOfBox2d              from SelectBasics,
+    PickArgs                 from SelectBasics,
     Array1OfPnt2d            from TColgp,
     Box2d                    from Bnd,
     Location                 from TopLoc
@@ -76,15 +77,15 @@ is
     ResetLocation(me:mutable) is redefined static;
     	---Purpose:  propagation of location on all the sensitive inside...    
 
-    Matches(me  :mutable; 
-            X,Y : Real from Standard;
-            aTol: Real from Standard;
-            DMin: out Real from Standard) 
+    Matches (me : mutable;
+             thePickArgs : PickArgs from SelectBasics;
+             theMatchDMin, theMatchDepth : out Real from Standard)
     returns Boolean
-    is  redefined static;
-    	---Level: Public 
-    	---Purpose: projection of the sensitive primitive in order to
-    	--          get 2D boxes for the Sort Algorithm
+    is redefined static;
+    ---Level: Public
+    ---Purpose: Checks whether the sensitive entity matches the picking
+    -- detection area (close to the picking line).
+    -- For details please refer to base class declaration.
 
     Matches (me  :mutable; 
              XMin,YMin,XMax,YMax : Real from Standard;
@@ -101,10 +102,6 @@ is
     	---Level: Public 
     
 
-    ComputeDepth(me;EyeLine: Lin from gp) 
-    returns Real from Standard is redefined static;
-    	---Purpose: returns the depth of the touched entity
-
     MaxBoxes(me) returns Integer is redefined static;    
     	---Level: Public 
     	---Purpose:returns <mymaxrect>
@@ -114,9 +111,7 @@ is
 
     Set(me:mutable;TheOwnerId: EntityOwner from SelectBasics) is redefined static; 
     ---Purpose: Sets the owner for all entities in wire 
-        
-    SetLastPrj(me:mutable;aPrj: Projector from Select3D) is redefined virtual; 
-     
+
     GetLastDetected(me)
     returns SensitiveEntity from Select3D is static; 
     ---Purpose:returns <mymaxrect>

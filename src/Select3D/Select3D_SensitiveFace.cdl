@@ -32,6 +32,7 @@ uses
     Projector         from Select3D,
     Lin               from gp,
     ListOfBox2d       from SelectBasics,
+    PickArgs          from SelectBasics,
     Array1OfPnt       from TColgp,
     HArray1OfPnt      from TColgp,
     Array1OfPnt2d     from TColgp,
@@ -66,12 +67,14 @@ is
         -- the sensitivity type Sensitivity.
         -- The array of points is the outer polygon of the geometric face.
    
-    Matches(me  :mutable; 
-            X,Y : Real from Standard;
-            aTol: Real from Standard;
-            DMin: out Real from Standard) 
-    returns Boolean
-    is redefined virtual;
+    Matches (me : mutable;
+             thePickArgs : PickArgs from SelectBasics;
+             theMatchDMin, theMatchDepth : out Real from Standard)
+    returns Boolean is redefined virtual;
+    ---Level: Public
+    ---Purpose: Checks whether the sensitive entity matches the picking
+    -- detection area (close to the picking line).
+    -- For details please refer to base class declaration.
 
     Matches (me  :mutable; 
              XMin,YMin,XMax,YMax : Real from Standard;
@@ -89,14 +92,22 @@ is
     ---Level: Public 
     
 
-    ComputeDepth(me;EyeLine: Lin from gp) 
-    returns Real from Standard is redefined virtual;
+    ComputeDepth (me;
+                  thePickLine : Lin from gp;
+                  theDepthMin, theDepthMax : Real from Standard)
+    returns Real from Standard
+    is virtual;
     ---Level: Public
     ---Purpose: Computes the depth values for all 3D points defining this face and returns
-    -- the minimal value among them. 
+    -- the minimal value among them.
     -- If the "minimal depth" approach is not suitable and gives wrong detection results
-    -- in some particular case, a custom sensitive face class can be implemented at application level
-    -- that overrides default ComputeDepth() behavior.
+    -- in some particular case, a custom sensitive face class can redefine this method.
+
+    ComputeDepth(me;EyeLine: Lin from gp)
+    is private;
+    ---Level: Public
+    ---Purpose: Warning: Obsolete.
+    -- Use newer version of the method with min, max limits passed as arguments.
 
     Dump(me; S: in out OStream;FullDump : Boolean from Standard = Standard_True) is redefined virtual; 
 
@@ -110,6 +121,4 @@ is
 fields
 
     mytype          : TypeOfSensitivity;
-    myautointer     : Boolean;
-
 end SensitiveFace;

@@ -29,7 +29,9 @@ set Color1 [QAGetPixelColor ${x1} ${y1}]
 set Color2 [QAGetPixelColor ${x2} ${y2}]
 set Color3 [QAGetPixelColor ${x3} ${y3}]
 set Color4 [QAGetPixelColor ${x4} ${y4}]
-vclipplane 0.1 0 0 1 0 0
+vclipplane create pln1
+vclipplane change pln1 equation 1 0 0 -0.1
+vclipplane set pln1 view Driver1/Viewer1/View1
 box b 100 100 100
 vdisplay b
 vsetdispmode 1

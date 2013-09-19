@@ -39,7 +39,3 @@ void SelectBasics_SensitiveEntity
 
 const Handle(SelectBasics_EntityOwner)&  SelectBasics_SensitiveEntity
 ::OwnerId() const {return myOwnerId;}
-
-Standard_Real SelectBasics_SensitiveEntity::Depth() const
-{return 0.0;}
-

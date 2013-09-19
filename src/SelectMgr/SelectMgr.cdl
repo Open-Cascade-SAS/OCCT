@@ -179,7 +179,8 @@ uses
     SelectBasics,
     PrsMgr,
     Prs3d,
-    Graphic3d
+    Graphic3d,
+    gp
 
 
 is

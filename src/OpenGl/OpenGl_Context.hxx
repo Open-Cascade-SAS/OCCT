@@ -26,6 +26,7 @@
 #include <Aspect_RenderingContext.hxx>
 #include <Handle_OpenGl_Context.hxx>
 #include <NCollection_DataMap.hxx>
+#include <NCollection_Map.hxx>
 #include <NCollection_Handle.hxx>
 #include <NCollection_Queue.hxx>
 #include <OpenGl_Caps.hxx>
@@ -33,6 +34,7 @@
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Handle_OpenGl_Context.hxx>
+#include <OpenGl_ClippingState.hxx>
 
 //! Forward declarations
 struct OpenGl_GlCore12;
@@ -238,11 +240,25 @@ public:
   //! Clean up the delayed release queue.
   Standard_EXPORT void ReleaseDelayed();
 
+  //! @return tool for management of clippings within this context.
+  inline OpenGl_ClippingState& ChangeClipping() { return myClippingState; }
+
+  //! @return tool for management of clippings within this context.
+  inline const OpenGl_ClippingState& Clipping() const { return myClippingState; }
+
+public:
+
   //! @return maximum degree of anisotropy texture filter
   Standard_EXPORT Standard_Integer MaxDegreeOfAnisotropy() const;
 
   //! @return value for GL_MAX_TEXTURE_SIZE
   Standard_EXPORT Standard_Integer MaxTextureSize() const;
+
+  //! Get maximum number of clip planes supported by OpenGl.
+  //! This value is implementation dependant. At least 6
+  //! planes should be supported by OpenGl (see specs).
+  //! @return value for GL_MAX_CLIP_PLANES
+  Standard_EXPORT Standard_Integer MaxClipPlanes() const;
 
 private:
 
@@ -306,14 +322,18 @@ private: // context info
   Handle(OpenGl_DelayReleaseMap) myDelayed;         //!< shared resources for delayed release
   Handle(OpenGl_ResourcesQueue)  myReleaseQueue;    //!< queue of resources for delayed clean up
 
+  OpenGl_ClippingState myClippingState; //!< state of clip planes
+
   void*            myGlLibHandle;   //!< optional handle to GL library
   OpenGl_GlCore20* myGlCore20;      //!< common structure for GL core functions upto 2.0
   Standard_Integer myAnisoMax;      //!< maximum level of anisotropy texture filter
   Standard_Integer myMaxTexDim;     //!< value for GL_MAX_TEXTURE_SIZE
+  Standard_Integer myMaxClipPlanes; //!< value for GL_MAX_CLIP_PLANES
   Standard_Integer myGlVerMajor;    //!< cached GL version major number
   Standard_Integer myGlVerMinor;    //!< cached GL version minor number
   Standard_Boolean myIsFeedback;    //!< flag indicates GL_FEEDBACK mode
   Standard_Boolean myIsInitialized; //!< flag indicates initialization state
+
 
 private:
 

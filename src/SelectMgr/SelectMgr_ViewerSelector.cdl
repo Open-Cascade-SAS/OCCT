@@ -76,9 +76,10 @@ uses
     SensitiveEntity              from SelectBasics,
     SortAlgo                     from SelectBasics,
     EntityOwner                  from SelectMgr,
-    StateOfSelection             from SelectMgr, 
-    Array1OfPnt2d                from TColgp
-    
+    StateOfSelection             from SelectMgr,
+    Array1OfPnt2d                from TColgp,
+    Lin                          from gp
+
 is
 
     Initialize ;
@@ -229,12 +230,12 @@ is
    	 ---C++: inline
 
 
-    Picked(me) returns any EntityOwner is static;
+    Picked(me) returns EntityOwner from SelectMgr is static;
     	---Level: Public 
     	---Purpose: Returns the current selected entity detected by the selector;
 
 
-    OnePicked(me:mutable) returns any EntityOwner is static;
+    OnePicked(me:mutable) returns EntityOwner from SelectMgr is static;
     	---Purpose: Returns the picked element with the highest priority,
     	-- and which is the closest to the last successful mouse position.
 
@@ -350,6 +351,54 @@ is
     SetUpdateSortPossible( me: mutable; possible : Boolean from Standard );
     IsUpdateSortPossible( me )  returns Boolean from Standard;
 
+    PickingLine (me; theX, theY : Real from Standard)
+      returns Lin from gp
+      is virtual protected;
+    ---Level: Internal
+    ---Purpose: Returns picking line along which the depth value should be
+    -- computed. Override this method to compute picking line by the same
+    -- which is used for projecting sensitive entities to selection space.
+    -- @param theX [in] the x picking coordinate.
+    -- @param theY [in] the y picking coordinate.
+    -- @return picking line.
+
+    DepthClipping (me; theX, theY : Real from Standard;
+                   theMin, theMax : out Real from Standard)
+      is virtual protected;
+    ---Level: Internal
+    ---Purpose: Returns global depth clipping limits applied to every sensitive.
+    -- Override this method to convert clippings defined by application into
+    -- selection space for mouse picking detection.
+    -- Default implementation returns infinite clip limits (no clipping).
+    -- @param theX [in] the x picking coordinate.
+    -- @param theY [in] the y picking coordinate.
+    -- @param theMin [out] the minimum depth. Default is RealFirst()
+    -- @param theMax [out] the maximum depth. Default is RealLast()
+
+    DepthClipping (me; theX, theY : Real from Standard;
+                   theOwner : EntityOwner from SelectMgr;
+                   theMin, theMax : out Real from Standard)
+      is virtual protected;
+    ---Level: Internal
+    ---Purpose: Returns depth clipping limits applied to sensitives of
+    -- entity owner. Override this method to convert clippings defined by
+    -- application owners into selection space for mouse picking detection.
+    -- Default implementation returns infinite clip limits (no clipping).
+    -- @param theX [in] the x picking coordinate.
+    -- @param theY [in] the y picking coordinate.
+    -- @param theOwner [in] the sensitive owner.
+    -- @param theMin [out] the minimum depth. Default is RealFirst()
+    -- @param theMax [out] the maximum depth. Default is RealLast()
+
+    HasDepthClipping (me; theOwner : EntityOwner from SelectMgr)
+      returns Boolean is virtual protected;
+    ---Level: Internal
+    ---Purpose: Returns True if the owner provides clipping by depth
+    -- for its sensitives. Override this method to tell the selector
+    -- to use the DepthClipping method for the owner.
+    -- Default implementation returns False for every owner.
+    -- @param theOwner [in] the onwer to check.
+    -- @return True if owner provides depth limits for sensitive clipping.
 
 fields
 

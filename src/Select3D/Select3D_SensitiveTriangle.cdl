@@ -33,6 +33,7 @@ uses
     Projector        from Select3D,
     Lin              from gp,
     ListOfBox2d      from SelectBasics,
+    PickArgs         from SelectBasics,
     Array1OfPnt2d    from TColgp,
     Box2d            from Bnd,
     XY               from gp,
@@ -54,12 +55,14 @@ is
         ---Purpose: Constructs a sensitive triangle object defined by the
         -- owner OwnerId, the points P1, P2, P3, and the type of sensitivity Sensitivity. 
 
-    Matches(me  :mutable; 
-            X,Y : Real from Standard;
-            aTol: Real from Standard;
-            DMin: out Real from Standard) 
-    returns Boolean
-    is redefined virtual;
+    Matches (me : mutable;
+             thePickArgs : PickArgs from SelectBasics;
+             theMatchDMin, theMatchDepth : out Real from Standard)
+    returns Boolean is redefined static;
+    ---Level: Public
+    ---Purpose: Checks whether the sensitive entity matches the picking
+    -- detection area (close to the picking line).
+    -- For details please refer to base class declaration.
 
     Matches (me  :mutable; 
              XMin,YMin,XMax,YMax : Real from Standard;
@@ -78,7 +81,7 @@ is
     
     
     ComputeDepth(me;EyeLine: Lin from gp) 
-    returns Real from Standard is redefined static;
+    returns Real from Standard;
 
 
     Points3D(me; P1,P2,P3 : out Pnt from gp) ;

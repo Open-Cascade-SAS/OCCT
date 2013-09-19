@@ -51,7 +51,6 @@ uses
         TypeOfOrientation from V3d,
         View from V3d,
         Light from V3d,
-        Plane from V3d,
         ListOfTransient from V3d,
         ListIteratorOfListOfTransient from TColStd,
         SequenceOfInteger from TColStd,
@@ -431,28 +430,6 @@ is
         DefinedLight(me) returns Light from V3d;
         ---Level:   Advanced
 
-        AddPlane( me: mutable; MyPlane : Plane from V3d);
-        ---Purpose: Adds Plane in Sequence Of Planes.
-
-        DelPlane( me: mutable; MyPlane : Plane from V3d);
-        ---Purpose: Delete Plane in Sequence Of Planes.
-
-        InitDefinedPlanes(me: mutable);
-        ---Level:   Advanced
-        ---Purpose: initializes an iteration on the Defined Planes.
-
-        MoreDefinedPlanes (me) returns Boolean from Standard;
-        ---Level:   Advanced
-        ---Purpose: returns true if there are more Defined Plane(s) to return.
-
-        NextDefinedPlanes (me: mutable);
-        ---Level:   Advanced
-        ---Purpose : Go to the next Defined Plane
-        --           (if there is not, DefinedPlane will raise an exception)
-
-        DefinedPlane(me) returns Plane from V3d;
-        ---Level:   Advanced
-
         Viewer (me) returns mutable ViewManager ;
         ---Level:   Advanced
         ---Purpose: Returns the viewer associated to Visual3d .
@@ -714,7 +691,6 @@ fields
         MyActiveViews:                ListOfTransient from V3d;
         MyDefinedLights:        ListOfTransient from V3d;
         MyActiveLights:          ListOfTransient from V3d;
-        MyDefinedPlanes:        ListOfTransient from V3d;
         MyBackground:                Background from Aspect ;
         MyGradientBackground:        GradientBackground from Aspect ;
         MyViewSize:                Real ;
@@ -731,7 +707,6 @@ fields
         myDefinedViewsIterator: ListIteratorOfListOfTransient from TColStd;
         myActiveLightsIterator: ListIteratorOfListOfTransient from TColStd;
         myDefinedLightsIterator: ListIteratorOfListOfTransient from TColStd;
-        myDefinedPlanesIterator: ListIteratorOfListOfTransient from TColStd;
         myComputedMode: Boolean from Standard;
         myDefaultComputedMode: Boolean from Standard;
         myPrivilegedPlane: Ax3 from gp;
@@ -751,6 +726,5 @@ friends
 
         class View from V3d,
         class Light from V3d,
-        class Plane from V3d,
         SetPlane  from package V3d (aViewer: Viewer from V3d; x1,y1,z1,x2,y2,z2: Length from Quantity)
 end Viewer;

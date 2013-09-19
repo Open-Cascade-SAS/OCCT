@@ -32,6 +32,7 @@
 #include <GeomInt_IntSS.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <Standard_ErrorHandler.hxx>
+#include <Graphic3d_ClipPlane.hxx>
 #include <tcl.h>
 
 #include <fstream>
@@ -683,96 +684,8 @@ static Standard_Integer BUC60574(Draw_Interpretor& di, Standard_Integer /*n*/, c
 #include <BRepAlgoAPI_Fuse.hxx>
 #include <BRepAlgo_Fuse.hxx>
 
-#include <V3d_Plane.hxx>
 #include <V3d_View.hxx>
 #include <gce_MakePln.hxx>
-
-static Standard_Integer BUC60698(Draw_Interpretor& di, Standard_Integer argc, const char ** a)
-{
-  if(argc > 2) {
-    di << "Usage : " << a[0] << " [BRepAlgoAPI/BRepAlgo = 1/0]" << "\n";
-    return 1;
-  }
-  Standard_Boolean IsBRepAlgoAPI = Standard_True;
-  if (argc == 2) {
-    Standard_Integer IsB = Draw::Atoi(a[1]);
-    if (IsB != 1) {
-      IsBRepAlgoAPI = Standard_False;
-#if ! defined(BRepAlgo_def01)
-//      di << "Error: There is not BRepAlgo_Fuse class" << "\n";
-//      return 1;
-#endif
-    }
-  }
-  
-  Handle(AIS_InteractiveContext) myAISContext = ViewerTest::GetAISContext();
-  if(myAISContext.IsNull()) {
-    di << "use 'vinit' command before " << a[0] << "\n";
-    return -1;
-  }
-  TopoDS_Solid box = BRepPrimAPI_MakeBox(1,1,1).Solid();
-  TopoDS_Shape sphere = BRepPrimAPI_MakeSphere(gp_Pnt(0.5,0.5,0.5),0.6).Shape();
-
-//#if ! defined(BRepAlgoAPI_def01)
-//  TopoDS_Shape fuse = BRepAlgoAPI_Fuse(box,sphere).Shape();
-//#else
-//  TopoDS_Shape fuse = BRepAlgo_Fuse(box,sphere).Shape();
-//#endif
-
-  TopoDS_Shape fuse;
-  if (IsBRepAlgoAPI) {
-    di << "fuse = BRepAlgoAPI_Fuse(box,sphere).Shape()" <<"\n";
-    fuse = BRepAlgoAPI_Fuse(box,sphere).Shape();
-  } else {
-    di << "fuse = BRepAlgo_Fuse(box,sphere).Shape()" <<"\n";
-    fuse = BRepAlgo_Fuse(box,sphere).Shape();
-  }
-
-  Handle_AIS_Shape theAISShape = new AIS_Shape(fuse);
-  myAISContext->Display(theAISShape);
-  di.Eval("vfit");
-  gp_Pln thegpPln = gce_MakePln(gp_Pnt(0.5,0.5,0.5),gp_Dir(0,0,1));
-  Standard_Real A,B,C,D;
-  thegpPln.Coefficients(A,B,C,D);
-  Handle_V3d_Plane thePlane = new V3d_Plane(A,B,C,D);
-  myAISContext->CurrentViewer()->AddPlane (thePlane); // add to defined planes list
-  for (myAISContext->CurrentViewer()->InitActiveViews();
-       myAISContext->CurrentViewer()->MoreActiveViews ();
-       myAISContext->CurrentViewer()->NextActiveViews ()) {
-    try {
-      OCC_CATCH_SIGNALS
-      myAISContext->CurrentViewer()->ActiveView()->SetPlaneOn(thePlane);
-    }
-    catch(Standard_Failure) {
-      di << "SetPlaneOn catched 1" << "\n";
-    }
-#ifdef WNT
-    catch(...) {
-      di << "SetPlaneOn catched 1" << "\n";
-    }
-#endif
-  }//ActiveView loop
-  for (myAISContext->CurrentViewer()->InitDefinedViews();
-       myAISContext->CurrentViewer()->MoreDefinedViews ();
-       myAISContext->CurrentViewer()->NextDefinedViews ()) {
-    try {
-      OCC_CATCH_SIGNALS
-      myAISContext->CurrentViewer()->DefinedView()->SetPlaneOn(thePlane);
-    }
-    catch(Standard_Failure) {
-      di << "SetPlaneOn catched 1" << "\n";
-    }
-#ifdef WNT
-    catch(...) {
-      di << "SetPlaneOn catched 2" << "\n";
-    }
-#endif
-  }//DefinedView loop
-  myAISContext->UpdateCurrentViewer();
-  myAISContext->OpenLocalContext();
-  myAISContext->ActivateStandardMode(TopAbs_FACE);
-  return 0;
-}
 
 static Standard_Integer BUC60699(Draw_Interpretor& di, Standard_Integer /*n*/, const char ** a)
 {
@@ -2238,8 +2151,6 @@ void QABugs::Commands_3(Draw_Interpretor& theCommands) {
   theCommands.Add("BUC60669","ksection resultat shell1 shell2 NbPntMax Toler3d Toler2d RelativeTol",__FILE__,ksection,group);  
   theCommands.Add("PRO19626","ksection resultat shell1 shell2 NbPntMax Toler3d Toler2d RelativeTol",__FILE__,ksection,group);  
   theCommands.Add("BUC60574","BUC60574 ",__FILE__,BUC60574,group);
-
-  theCommands.Add("BUC60698","BUC60698 [BRepAlgoAPI/BRepAlgo = 1/0]",__FILE__,BUC60698,group);
 
   theCommands.Add("BUC60699","BUC60699 ",__FILE__,BUC60699,group);
   theCommands.Add("GER61394","GER61394 [1/0]",__FILE__,GER61394,group);

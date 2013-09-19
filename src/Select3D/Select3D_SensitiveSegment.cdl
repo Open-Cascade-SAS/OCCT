@@ -38,6 +38,7 @@ uses
     Lin              from gp,
     EntityOwner      from SelectBasics,
     ListOfBox2d      from SelectBasics,
+    PickArgs         from SelectBasics,
     Array1OfPnt2d    from TColgp,
     Box2d            from Bnd,
     Location         from TopLoc,
@@ -112,16 +113,15 @@ is
 
     GetConnected(me:mutable;aLocation: Location from TopLoc)
     returns SensitiveEntity from Select3D is redefined static;
-    
-    Matches(me  :mutable; 
-            X,Y : Real from Standard;
-            aTol: Real from Standard;
-            DMin: out Real from Standard) 
-    returns Boolean
-    is  redefined static;
-    	---Level: Public 
-    	---Purpose: projection of the sensitive primitive in order to
-    	--          get 2D boxes for the Sort Algorithm
+
+    Matches (me : mutable;
+             thePickArgs : PickArgs from SelectBasics;
+             theMatchDMin, theMatchDepth : out Real from Standard)
+    returns Boolean is redefined static;
+    ---Level: Public
+    ---Purpose: Checks whether the sensitive entity matches the picking
+    -- detection area (close to the picking line).
+    -- For details please refer to base class declaration.
 
     Matches (me  :mutable; 
              XMin,YMin,XMax,YMax : Real from Standard;
@@ -139,7 +139,7 @@ is
     
         
     ComputeDepth(me;EyeLine: Lin from gp) 
-    returns Real from Standard is redefined static;
+    returns Real from Standard;
 
     MaxBoxes(me) returns Integer is redefined static;    
     	---Level: Public 

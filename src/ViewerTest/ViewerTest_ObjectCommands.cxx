@@ -43,7 +43,6 @@
 #include <Visual3d_View.hxx>
 #include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
-#include <V3d_Plane.hxx>
 #include <V3d.hxx>
 
 #include <AIS_Shape.hxx>
@@ -2854,181 +2853,6 @@ static int VDrawSphere (Draw_Interpretor& /*di*/, Standard_Integer argc, const c
   return 0;
 }
 
-//===============================================================================================
-//function : VClipPlane
-//purpose  :
-//===============================================================================================
-static int VClipPlane (Draw_Interpretor& /*di*/, Standard_Integer argc, const char** argv)
-{
-  Handle(V3d_Viewer) aViewer = ViewerTest::GetViewerFromContext();
-  Handle(V3d_View) aView = ViewerTest::CurrentView();
-  Standard_Real coeffA, coeffB, coeffC, coeffD;
-  if (aViewer.IsNull() || aView.IsNull())
-  {
-    std::cout << "Viewer not initialized!\n";
-    return 1;
-  }
-
-  // count an active planes count
-  Standard_Integer aNewPlaneId = 1;
-  Standard_Integer anActivePlanes = 0;
-  for (aViewer->InitDefinedPlanes(); aViewer->MoreDefinedPlanes(); aViewer->NextDefinedPlanes(), ++aNewPlaneId)
-  {
-    Handle(V3d_Plane) aPlaneV3d = aViewer->DefinedPlane();
-    if (aView->IsActivePlane (aPlaneV3d))
-    {
-      ++anActivePlanes;
-    }
-  }
-
-  if (argc == 1)
-  {
-    // just show info about existing planes
-    Standard_Integer aPlaneId = 1;
-    std::cout << "Active planes: " << anActivePlanes << " from maximal " << aView->View()->PlaneLimit() << "\n";
-    for (aViewer->InitDefinedPlanes(); aViewer->MoreDefinedPlanes(); aViewer->NextDefinedPlanes(), ++aPlaneId)
-    {
-      Handle(V3d_Plane) aPlaneV3d = aViewer->DefinedPlane();
-      aPlaneV3d->Plane (coeffA, coeffB, coeffC, coeffD);
-      gp_Pln aPlane (coeffA, coeffB, coeffC, coeffD);
-      const gp_Pnt& aLoc = aPlane.Location();
-      const gp_Dir& aNor = aPlane.Axis().Direction();
-      Standard_Boolean isActive = aView->IsActivePlane (aPlaneV3d);
-      std::cout << "Plane #" << aPlaneId
-        << " " << aLoc.X() << " " << aLoc.Y() << " " << aLoc.Z()
-        << " " << aNor.X() << " " << aNor.Y() << " " << aNor.Z()
-        << (isActive ? " on" : " off")
-        << (aPlaneV3d->IsDisplayed() ? ", displayed" : ", hidden")
-        << "\n";
-    }
-    if (aPlaneId == 1)
-    {
-      std::cout << "No defined clipping planes\n";
-    }
-    return 0;
-  }
-  else if (argc == 2 || argc == 3)
-  {
-    Standard_Integer aPlaneIdToOff = (argc == 3) ? Draw::Atoi (argv[1]) : 1;
-    Standard_Boolean toIterateAll = (argc == 2);
-    TCollection_AsciiString isOnOffStr ((argc == 3) ? argv[2] : argv[1]);
-    isOnOffStr.LowerCase();
-    Standard_Integer aPlaneId = 1;
-    for (aViewer->InitDefinedPlanes(); aViewer->MoreDefinedPlanes(); aViewer->NextDefinedPlanes(), ++aPlaneId)
-    {
-      if (aPlaneIdToOff == aPlaneId || toIterateAll)
-      {
-        Handle(V3d_Plane) aPlaneV3d = aViewer->DefinedPlane();
-        if (isOnOffStr.Search ("off") >= 0)
-        {
-          aView->SetPlaneOff (aPlaneV3d);
-          std::cout << "Clipping plane #" << aPlaneId << " was disabled\n";
-        }
-        else if (isOnOffStr.Search ("on") >= 0)
-        {
-          // avoid z-fighting glitches
-          aPlaneV3d->Erase();
-          if (!aView->IsActivePlane (aPlaneV3d))
-          {
-            if (anActivePlanes < aView->View()->PlaneLimit())
-            {
-              aView->SetPlaneOn (aPlaneV3d);
-              std::cout << "Clipping plane #" << aPlaneId << " was enabled\n";
-            }
-            else
-            {
-              std::cout << "Maximal active planes limit exceeded (" << anActivePlanes << ")\n"
-                        << "You should disable or remove some existing plane to activate this one\n";
-            }
-          }
-          else
-          {
-            std::cout << "Clipping plane #" << aPlaneId << " was already enabled\n";
-          }
-        }
-        else if (isOnOffStr.Search ("del") >= 0 || isOnOffStr.Search ("rem") >= 0)
-        {
-          aPlaneV3d->Erase(); // not performed on destructor!!!
-          aView->SetPlaneOff (aPlaneV3d);
-          aViewer->DelPlane (aPlaneV3d);
-          std::cout << "Clipping plane #" << aPlaneId << " was removed\n";
-          if (toIterateAll)
-          {
-            for (aViewer->InitDefinedPlanes(); aViewer->MoreDefinedPlanes(); aViewer->InitDefinedPlanes(), ++aPlaneId)
-            {
-              aPlaneV3d = aViewer->DefinedPlane();
-              aPlaneV3d->Erase(); // not performed on destructor!!!
-              aView->SetPlaneOff (aPlaneV3d);
-              aViewer->DelPlane (aPlaneV3d);
-              std::cout << "Clipping plane #" << aPlaneId << " was removed\n";
-            }
-            break;
-          }
-          else
-          {
-            break;
-          }
-        }
-        else if (isOnOffStr.Search ("disp") >= 0 || isOnOffStr.Search ("show") >= 0)
-        {
-          // avoid z-fighting glitches
-          aView->SetPlaneOff (aPlaneV3d);
-          aPlaneV3d->Display (aView);
-          std::cout << "Clipping plane #" << aPlaneId << " was shown and disabled\n";
-        }
-        else if (isOnOffStr.Search ("hide") >= 0)
-        {
-          aPlaneV3d->Erase();
-          std::cout << "Clipping plane #" << aPlaneId << " was hidden\n";
-        }
-        else
-        {
-          std::cout << "Usage: " << argv[0] << " [x y z dx dy dz] [planeId {on/off/del/display/hide}]\n";
-          return 1;
-        }
-      }
-    }
-    if (aPlaneIdToOff >= aPlaneId && !toIterateAll)
-    {
-      std::cout << "Clipping plane with id " << aPlaneIdToOff << " not found!\n";
-      return 1;
-    }
-    aView->Update();
-    return 0;
-  }
-  else if (argc != 7)
-  {
-    std::cout << "Usage: " << argv[0] << " [x y z dx dy dz] [planeId {on/off/del/display/hide}]\n";
-    return 1;
-  }
-
-  Standard_Real aLocX = Draw::Atof (argv[1]);
-  Standard_Real aLocY = Draw::Atof (argv[2]);
-  Standard_Real aLocZ = Draw::Atof (argv[3]);
-  Standard_Real aNormDX = Draw::Atof (argv[4]);
-  Standard_Real aNormDY = Draw::Atof (argv[5]);
-  Standard_Real aNormDZ = Draw::Atof (argv[6]);
-
-  Handle(V3d_Plane) aPlaneV3d = new V3d_Plane();
-  gp_Pln aPlane (gp_Pnt (aLocX, aLocY, aLocZ), gp_Dir (aNormDX, aNormDY, aNormDZ));
-  aPlane.Coefficients (coeffA, coeffB, coeffC, coeffD);
-  aPlaneV3d->SetPlane(coeffA, coeffB, coeffC, coeffD);
-
-  aViewer->AddPlane (aPlaneV3d); // add to defined planes list
-  std::cout << "Added clipping plane #" << aNewPlaneId << "\n";
-  if (anActivePlanes < aView->View()->PlaneLimit())
-  {
-    aView->SetPlaneOn (aPlaneV3d); // add to enabled planes list
-    aView->Update();
-  }
-  else
-  {
-    std::cout << "Maximal active planes limit exceeded (" << anActivePlanes << ")\n"
-              << "You should disable or remove some existing plane to activate the new one\n";
-  }
-  return 0;
-}
-
 //=============================================================================
 //function : VComputeHLR
 //purpose  :
@@ -4791,10 +4615,6 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vdrawsphere",
     "vdrawsphere: vdrawsphere shapeName Fineness [X=0.0 Y=0.0 Z=0.0] [Radius=100.0] [ToShowEdges=0]\n",
     __FILE__,VDrawSphere,group);
-
-  theCommands.Add("vclipplane",
-    "vclipplane : vclipplane [x y z dx dy dz] [planeId {on/off/del/display/hide}]",
-    __FILE__,VClipPlane,group);
 
   theCommands.Add ("vsetlocation",
         "vsetlocation : name x y z; set new location for an interactive object",

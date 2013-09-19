@@ -64,6 +64,7 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Context, Standard_Transient)
 namespace
 {
   static const Handle(OpenGl_Resource) NULL_GL_RESOURCE;
+  static const GLdouble OpenGl_DefaultPlaneEq[] = {0.0, 0.0, 0.0, 0.0};
 };
 
 // =======================================================================
@@ -91,10 +92,12 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   mySharedResources (new OpenGl_ResourcesMap()),
   myDelayed         (new OpenGl_DelayReleaseMap()),
   myReleaseQueue    (new OpenGl_ResourcesQueue()),
+  myClippingState (),
   myGlLibHandle (NULL),
   myGlCore20 (NULL),
-  myAnisoMax   (1),
   myMaxTexDim  (1024),
+  myMaxClipPlanes (6),
+  myAnisoMax   (1),
   myGlVerMajor (0),
   myGlVerMinor (0),
   myIsFeedback (Standard_False),
@@ -160,6 +163,15 @@ Standard_Integer OpenGl_Context::MaxDegreeOfAnisotropy() const
 Standard_Integer OpenGl_Context::MaxTextureSize() const
 {
   return myMaxTexDim;
+}
+
+// =======================================================================
+// function : MaxClipPlanes
+// purpose  :
+// =======================================================================
+Standard_Integer OpenGl_Context::MaxClipPlanes() const
+{
+  return myMaxClipPlanes;
 }
 
 // =======================================================================
@@ -594,11 +606,15 @@ void OpenGl_Context::init()
   atiMem  = CheckExtension ("GL_ATI_meminfo");
   nvxMem  = CheckExtension ("GL_NVX_gpu_memory_info");
 
+  // get number of maximum clipping planes
+  glGetIntegerv (GL_MAX_CLIP_PLANES, &myMaxClipPlanes);
   glGetIntegerv (GL_MAX_TEXTURE_SIZE, &myMaxTexDim);
   if (extAnis)
   {
     glGetIntegerv (GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &myAnisoMax);
   }
+
+  myClippingState.Init (myMaxClipPlanes);
 
   // initialize debug context extension
   if (CheckExtension ("GL_ARB_debug_output"))

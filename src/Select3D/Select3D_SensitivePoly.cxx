@@ -74,7 +74,6 @@ mypolyg(NbPoints)
 
 void Select3D_SensitivePoly::Project(const Handle(Select3D_Projector)& aProj)
 {
-  Select3D_SensitiveEntity:: Project (aProj); // to set the field last proj...
   mybox2d.SetVoid();
 
   Standard_Boolean hasloc = HasLocation();

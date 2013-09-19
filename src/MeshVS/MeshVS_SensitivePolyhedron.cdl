@@ -31,6 +31,7 @@ uses
     Box2d                      from Bnd,
     Lin                        from gp,
     ListOfBox2d                from SelectBasics,
+    PickArgs                   from SelectBasics,
     Array1OfPnt                from TColgp,
     HArray1OfPnt               from TColgp,
     HArray1OfPnt2d             from TColgp,
@@ -47,10 +48,10 @@ is
     GetConnected( me:mutable; aLocation: Location from TopLoc ) returns SensitiveEntity from Select3D 
        is redefined;
    
-    Matches( me   : mutable; 
-             X,Y  : Real from Standard;
-             aTol : Real from Standard;
-             DMin : out Real from Standard ) returns Boolean is redefined;
+    Matches (me : mutable;
+             thePickArgs : PickArgs from SelectBasics;
+             theMatchDMin, theMatchDepth : out Real from Standard)
+      returns Boolean is redefined;
 
     Matches( me                  : mutable; 
              XMin,YMin,XMax,YMax : Real from Standard;
@@ -66,7 +67,7 @@ is
     FindIntersection( me; NodesIndices : SequenceOfInteger from TColStd;
                           EyeLine      : Lin from gp ) returns Real is protected;
 
-    ComputeDepth( me; EyeLine: Lin from gp ) returns Real from Standard is redefined;
+    ComputeDepth( me; EyeLine: Lin from gp ) returns Real from Standard is virtual;
 
 --  ComputeSize( me ) returns Real from Standard is redefined;
 

@@ -25,6 +25,10 @@
 #include <Aspect_PolygonOffsetMode.hxx>
 #include <Graphic3d_CGroup.hxx>
 #include <Graphic3d_TextureMap.hxx>
+#include <Graphic3d_TypeOfReflection.hxx>
+#include <Graphic3d_MaterialAspect.hxx>
+
+#include <NCollection_Vec3.hxx>
 
 namespace
 {
@@ -254,6 +258,145 @@ void OpenGl_AspectFace::Init (const Handle(OpenGl_Context)&   theContext,
   anEdgeContext.LineType = (Aspect_TypeOfLine )theAspect.LineType;
   anEdgeContext.Width    = (float )theAspect.Width;
   myAspectEdge.SetContext (anEdgeContext);
+}
+
+// =======================================================================
+// function : Init
+// purpose  :
+// =======================================================================
+void OpenGl_AspectFace::Init (const Handle(OpenGl_Context)&   theContext,
+                              const Handle(Graphic3d_AspectFillArea3d)& theAspect)
+{
+  CALL_DEF_CONTEXTFILLAREA aCAspect;
+  Standard_Real           aWidth;
+  Quantity_Color          aBackIntColor;
+  Quantity_Color          aEdgeColor;
+  Aspect_TypeOfLine       aLType;
+  Quantity_Color          aIntColor;
+  Aspect_InteriorStyle    aIntStyle;
+  NCollection_Vec3<Standard_Real> aColor;
+
+  theAspect->Values (aIntStyle, aIntColor, aBackIntColor, aEdgeColor, aLType, aWidth);
+  aIntColor.Values (aColor.r(), aColor.g(), aColor.b(), Quantity_TOC_RGB);
+
+  aCAspect.Style      = int (aIntStyle);
+  aCAspect.IntColor.r = float (aColor.r());
+  aCAspect.IntColor.g = float (aColor.g());
+  aCAspect.IntColor.b = float (aColor.b());
+
+  if (theAspect->Distinguish())
+  {
+    aBackIntColor.Values (aColor.r(), aColor.g(), aColor.b(), Quantity_TOC_RGB);
+  }
+
+  aCAspect.BackIntColor.r = float (aColor.r());
+  aCAspect.BackIntColor.g = float (aColor.g());
+  aCAspect.BackIntColor.b = float (aColor.b());
+
+  aCAspect.Edge = theAspect->Edge () ? 1:0;
+  aEdgeColor.Values (aColor.r(), aColor.g(), aColor.b(), Quantity_TOC_RGB);
+
+  aCAspect.EdgeColor.r = float (aColor.r());
+  aCAspect.EdgeColor.g = float (aColor.g());
+  aCAspect.EdgeColor.b = float (aColor.b());
+  aCAspect.LineType    = int (aLType);
+  aCAspect.Width       = float (aWidth);
+  aCAspect.Hatch       = int (theAspect->HatchStyle ());
+
+  aCAspect.Distinguish = theAspect->Distinguish () ? 1:0;
+  aCAspect.BackFace    = theAspect->BackFace ()    ? 1:0;
+
+  aCAspect.Back.Shininess = float ((theAspect->BackMaterial ()).Shininess ());
+  aCAspect.Back.Ambient   = float ((theAspect->BackMaterial ()).Ambient ());
+  aCAspect.Back.Diffuse   = float ((theAspect->BackMaterial ()).Diffuse ());
+  aCAspect.Back.Specular  = float ((theAspect->BackMaterial ()).Specular ());
+  aCAspect.Back.Transparency  = float ((theAspect->BackMaterial ()).Transparency ());
+  aCAspect.Back.Emission      = float ((theAspect->BackMaterial ()).Emissive ());
+
+  // Reflection mode
+  aCAspect.Back.IsAmbient = ((theAspect->BackMaterial ()).ReflectionMode (Graphic3d_TOR_AMBIENT) ? 1 : 0 );
+  aCAspect.Back.IsDiffuse = ((theAspect->BackMaterial ()).ReflectionMode (Graphic3d_TOR_DIFFUSE) ? 1 : 0 );
+  aCAspect.Back.IsSpecular = ((theAspect->BackMaterial ()).ReflectionMode (Graphic3d_TOR_SPECULAR) ? 1 : 0 );
+  aCAspect.Back.IsEmission = ((theAspect->BackMaterial ()).ReflectionMode (Graphic3d_TOR_EMISSION) ? 1 : 0 );
+
+  // Material type
+  const Graphic3d_MaterialAspect aBackMat = theAspect->BackMaterial ();
+  Standard_Boolean isBackPhys = aBackMat.MaterialType (Graphic3d_MATERIAL_PHYSIC);
+  aCAspect.Back.IsPhysic = (isBackPhys ? 1 : 0 );
+
+  // Specular Color
+  aCAspect.Back.ColorSpec.r = float (((theAspect->BackMaterial ()).SpecularColor ()).Red ());
+  aCAspect.Back.ColorSpec.g = float (((theAspect->BackMaterial ()).SpecularColor ()).Green ());
+  aCAspect.Back.ColorSpec.b = float (((theAspect->BackMaterial ()).SpecularColor ()).Blue ());
+
+  // Ambient color
+  aCAspect.Back.ColorAmb.r = float (((theAspect->BackMaterial ()).AmbientColor ()).Red ());
+  aCAspect.Back.ColorAmb.g = float (((theAspect->BackMaterial ()).AmbientColor ()).Green ());
+  aCAspect.Back.ColorAmb.b = float (((theAspect->BackMaterial ()).AmbientColor ()).Blue ());
+
+  // Diffuse color
+  aCAspect.Back.ColorDif.r = float (((theAspect->BackMaterial ()).DiffuseColor ()).Red ());
+  aCAspect.Back.ColorDif.g = float (((theAspect->BackMaterial ()).DiffuseColor ()).Green ());
+  aCAspect.Back.ColorDif.b = float (((theAspect->BackMaterial ()).DiffuseColor ()).Blue ());
+
+  // Emissive color
+  aCAspect.Back.ColorEms.r = float (((theAspect->BackMaterial ()).EmissiveColor ()).Red ());
+  aCAspect.Back.ColorEms.g = float (((theAspect->BackMaterial ()).EmissiveColor ()).Green ());
+  aCAspect.Back.ColorEms.b = float (((theAspect->BackMaterial ()).EmissiveColor ()).Blue ());
+
+  aCAspect.Back.EnvReflexion = float ((theAspect->BackMaterial ()).EnvReflexion());
+
+  aCAspect.Front.Shininess    = float ((theAspect->FrontMaterial ()).Shininess ());
+  aCAspect.Front.Ambient      = float ((theAspect->FrontMaterial ()).Ambient ());
+  aCAspect.Front.Diffuse      = float ((theAspect->FrontMaterial ()).Diffuse ());
+  aCAspect.Front.Specular     = float ((theAspect->FrontMaterial ()).Specular ());
+  aCAspect.Front.Transparency = float ((theAspect->FrontMaterial ()).Transparency ());
+  aCAspect.Front.Emission     = float ((theAspect->FrontMaterial ()).Emissive ());
+
+  // Reflection mode
+  aCAspect.Front.IsAmbient    = ((theAspect->FrontMaterial ()).ReflectionMode (Graphic3d_TOR_AMBIENT) ? 1 : 0);
+  aCAspect.Front.IsDiffuse    = ((theAspect->FrontMaterial ()).ReflectionMode (Graphic3d_TOR_DIFFUSE) ? 1 : 0);
+  aCAspect.Front.IsSpecular   = ((theAspect->FrontMaterial ()).ReflectionMode (Graphic3d_TOR_SPECULAR) ? 1 : 0);
+  aCAspect.Front.IsEmission   = ((theAspect->FrontMaterial ()).ReflectionMode (Graphic3d_TOR_EMISSION) ? 1 : 0);
+
+  // Materail type
+  const Graphic3d_MaterialAspect aFrontMat = theAspect->FrontMaterial ();
+  Standard_Boolean isFrontPhys = aFrontMat.MaterialType (Graphic3d_MATERIAL_PHYSIC);
+  aCAspect.Front.IsPhysic = (isFrontPhys ? 1 : 0 );
+
+  // Specular Color
+  aCAspect.Front.ColorSpec.r = float (((theAspect->FrontMaterial ()).SpecularColor ()).Red ());
+  aCAspect.Front.ColorSpec.g = float (((theAspect->FrontMaterial ()).SpecularColor ()).Green ());
+  aCAspect.Front.ColorSpec.b = float (((theAspect->FrontMaterial ()).SpecularColor ()).Blue ());
+
+  // Ambient color
+  aCAspect.Front.ColorAmb.r = float (((theAspect->FrontMaterial ()).AmbientColor ()).Red ());
+  aCAspect.Front.ColorAmb.g = float (((theAspect->FrontMaterial ()).AmbientColor ()).Green ());
+  aCAspect.Front.ColorAmb.b = float (((theAspect->FrontMaterial ()).AmbientColor ()).Blue ());
+
+  // Diffuse color
+  aCAspect.Front.ColorDif.r = float (((theAspect->FrontMaterial ()).DiffuseColor ()).Red ());
+  aCAspect.Front.ColorDif.g = float (((theAspect->FrontMaterial ()).DiffuseColor ()).Green ());
+  aCAspect.Front.ColorDif.b = float (((theAspect->FrontMaterial ()).DiffuseColor ()).Blue ());
+
+  // Emissive color
+  aCAspect.Front.ColorEms.r = float (((theAspect->FrontMaterial ()).EmissiveColor ()).Red ());
+  aCAspect.Front.ColorEms.g = float (((theAspect->FrontMaterial ()).EmissiveColor ()).Green ());
+  aCAspect.Front.ColorEms.b = float (((theAspect->FrontMaterial ()).EmissiveColor ()).Blue ());
+
+  aCAspect.Front.EnvReflexion = float ((theAspect->FrontMaterial ()).EnvReflexion());
+  aCAspect.IsDef = 1;
+  aCAspect.Texture.TextureMap   = theAspect->TextureMap();
+  aCAspect.Texture.doTextureMap = theAspect->TextureMapState() ? 1 : 0;
+
+  Standard_Integer aPolyMode;
+  Standard_ShortReal aPolyFactor, aPolyUnits;
+  theAspect->PolygonOffsets (aPolyMode, aPolyFactor, aPolyUnits);
+  aCAspect.PolygonOffsetMode   = aPolyMode;
+  aCAspect.PolygonOffsetFactor = (Standard_ShortReal)aPolyFactor;
+  aCAspect.PolygonOffsetUnits  = (Standard_ShortReal)aPolyUnits;
+
+  Init (theContext, aCAspect);
 }
 
 // =======================================================================

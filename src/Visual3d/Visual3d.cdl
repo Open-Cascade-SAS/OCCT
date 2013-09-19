@@ -42,7 +42,7 @@ package Visual3d
     --      The visualiser manages the structures, the views, the
     --      light sources, and object picking.
 
-    ---Keywords: View, Light, Plane, Pick
+    ---Keywords: View, Light, Pick
     ---Warning:
     ---References:
 
@@ -205,11 +205,6 @@ is
     -- Category: The classes
     ------------------------
 
-    class ClipPlane;
-    ---Purpose: This class allows the creation and update of a
-    --      clipping plane in the space model.
-    ---Category: The classes
-
     class ContextPick;
     ---Purpose: This class allows the creation and update of a
     --      pick context for one view of the viewer.
@@ -315,15 +310,6 @@ is
     class HSequenceOfPickPath instantiates
             HSequence from TCollection
             (PickPath from Visual3d, SequenceOfPickPath);
-    ---Category: Instantiated classes
-
-    class SetOfClipPlane instantiates
-            Set from TCollection (ClipPlane from Visual3d);
-    ---Category: Instantiated classes
-
-    class HSetOfClipPlane instantiates
-            HSet from TCollection
-            (ClipPlane from Visual3d, SetOfClipPlane);
     ---Category: Instantiated classes
 
     class SetOfLight instantiates

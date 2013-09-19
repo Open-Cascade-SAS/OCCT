@@ -399,6 +399,15 @@ is
     ---Purpose: Defines the C structure of a graduated trihedron.
     ---Category: Imported types
 
+    imported ClipPlane;
+    ---Purpose: Describes geometrical and auxiliary properties of clipping
+    -- planes applied on rendering by graphical driver.
+    ---Category: Imported types
+
+    imported ClipPlane_Handle;
+    ---Purpose: CDL-compatibility handle type definition for
+    -- clip plane objects.
+
     imported CTexture;
 
     imported CTransPersStruct;
@@ -574,6 +583,10 @@ is
     --ABD Integration support of system fonts (using FTGL and FreeType)
     imported NListOfHAsciiString;
     ---Category: Instantiated classes
+
+    imported SetOfHClipPlane;
+    ---Category: Instantiated classes
+    -- Set of handles on clip planes
 
     deferred  class  TextureRoot  from  Graphic3d;
     deferred  class  TextureMap   from  Graphic3d;

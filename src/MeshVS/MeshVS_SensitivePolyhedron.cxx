@@ -33,7 +33,7 @@ MeshVS_SensitivePolyhedron::
 MeshVS_SensitivePolyhedron( const Handle( SelectBasics_EntityOwner )& Owner,
                             const TColgp_Array1OfPnt& Nodes,
                             const Handle( MeshVS_HArray1OfSequenceOfInteger )& Topo )
-: Select3D_SensitiveEntity( Owner ),  
+: Select3D_SensitiveEntity( Owner ),
   myTopo( Topo )
 {
   Standard_Integer low = Nodes.Lower(), up = Nodes.Upper(), i;
@@ -51,8 +51,6 @@ MeshVS_SensitivePolyhedron( const Handle( SelectBasics_EntityOwner )& Owner,
 //================================================================
 void MeshVS_SensitivePolyhedron::Project( const Handle(Select3D_Projector)& aProjector )
 {
-  Select3D_SensitiveEntity::Project( aProjector );
-
   if( myNodes.IsNull() || myNodes2d.IsNull() )
     return;
 
@@ -115,10 +113,9 @@ void sort( Standard_Real& a, Standard_Real& b )
 // Function : Matches
 // Purpose  :
 //================================================================
-Standard_Boolean MeshVS_SensitivePolyhedron::Matches( const Standard_Real X,
-                                                      const Standard_Real Y,
-                                                      const Standard_Real aTol,
-                                                      Standard_Real& DMin )
+Standard_Boolean MeshVS_SensitivePolyhedron::Matches( const SelectBasics_PickArgs& thePickArgs,
+                                                      Standard_Real& /*theMatchDMin*/,
+                                                      Standard_Real& theMatchDepth )
 {
   if( myNodes2d.IsNull() || myTopo.IsNull() )
     return Standard_False;
@@ -127,7 +124,7 @@ Standard_Boolean MeshVS_SensitivePolyhedron::Matches( const Standard_Real X,
                    R2  = myTopo->Upper(),
                    low = myNodes2d->Lower();
 
-  Standard_Real rTol = aTol*SensitivityFactor();
+  Standard_Real rTol = thePickArgs.Tolerance() * SensitivityFactor();
 
   Standard_Boolean inside = Standard_False;
 
@@ -149,15 +146,15 @@ Standard_Boolean MeshVS_SensitivePolyhedron::Matches( const Standard_Real X,
       y2 = myNodes2d->Value( low+next ).Y();
 
       if( Abs( x2-x1 )<Precision::Confusion() )
-      {  
+      {
         //vertical edge!!!
 
         sort( y1, y2 );
-        if( Y>=y1-rTol && Y<=y2+rTol && x1>X-rTol )
+        if ( thePickArgs.Y() >= y1 - rTol && thePickArgs.Y() <= y2 + rTol && x1 > thePickArgs.X() - rTol )
           intersect++;
       }
       else
-      {  
+      {
         //inclined edge!!!
 
         k = ( y2-y1 ) / ( x2-x1 );
@@ -165,9 +162,9 @@ Standard_Boolean MeshVS_SensitivePolyhedron::Matches( const Standard_Real X,
 
         if( Abs( k )>Precision::Confusion() )
         {
-          xp = ( Y-b ) / k; // absciss of point of intersection
+          xp = ( thePickArgs.Y() - b ) / k; // absciss of point of intersection
           sort( x1, x2 );
-          if( xp>=x1 && xp<=x2 && xp>X-rTol )
+          if( xp >= x1 && xp <= x2 && xp > thePickArgs.X() - rTol )
             intersect++;
         }
       }
@@ -177,8 +174,11 @@ Standard_Boolean MeshVS_SensitivePolyhedron::Matches( const Standard_Real X,
 
   if( inside )
   {
-    return Select3D_SensitiveEntity::Matches( X, Y, aTol, DMin );
+    theMatchDepth = ComputeDepth (thePickArgs.PickLine());
+
+    return !thePickArgs.IsClipped(theMatchDepth);
   }
+
   return Standard_False;
 }
 
@@ -226,7 +226,7 @@ Standard_Real MeshVS_SensitivePolyhedron::FindIntersection
 {
   Standard_Real val( Precision::Infinite() );
   for( Standard_Integer i=1, n=NodesIndices.Length(); i<=n; i++ )
-    val = Min( val, ElCLib::Parameter( 
+    val = Min( val, ElCLib::Parameter(
       EyeLine, myNodes->Value( myNodes->Lower()+NodesIndices.Value( i ) ) ) );
 
   return val;
@@ -265,7 +265,7 @@ Standard_Real MeshVS_SensitivePolyhedron::ComputeDepth( const gp_Lin& EyeLine ) 
 // Function : Areas
 // Purpose  :
 //================================================================
-void MeshVS_SensitivePolyhedron::Areas( SelectBasics_ListOfBox2d& aResult ) 
+void MeshVS_SensitivePolyhedron::Areas( SelectBasics_ListOfBox2d& aResult )
 {
   Bnd_Box2d aBox;
   GetBox2d( aBox );

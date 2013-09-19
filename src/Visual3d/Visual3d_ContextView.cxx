@@ -60,9 +60,9 @@ MyDepthCueingBackPlane (Standard_ShortReal (0.0)),
 MyModel (Visual3d_TOM_NONE),
 MyVisual (Visual3d_TOV_WIREFRAME),
 MyLights (),
-MyClipPlanes (),
 MyTextureEnv(),
-MySurfaceDetail(Visual3d_TOD_NONE)
+MySurfaceDetail(Visual3d_TOD_NONE),
+myClipPlanes()
 {
 }
 
@@ -311,65 +311,6 @@ Handle(Visual3d_Light) Visual3d_ContextView::ActivatedLight (const Standard_Inte
 
 }
 
-void Visual3d_ContextView::SetClipPlaneOn (const Handle(Visual3d_ClipPlane)& AClipPlane) {
-
-Standard_Integer LengthC	= MyClipPlanes.Length ();
-Standard_Integer indexC		= 0;
-
-	// Find plane <AClipPlane> in the
-	// sequence of already active planes 
-	for (Standard_Integer i=1; i<=LengthC && indexC==0; i++)
-		if ((void *) (MyClipPlanes.Value (i)) ==
-		    (void *) (AClipPlane.operator->())) indexC = i;
-
-	// This is the activation of a new plane
-	if (indexC == 0)
-		MyClipPlanes.Append ((void *) AClipPlane.operator->());
-
-}
-
-void Visual3d_ContextView::SetClipPlaneOff (const Handle(Visual3d_ClipPlane)& AClipPlane) {
-
-Standard_Integer LengthC	= MyClipPlanes.Length ();
-Standard_Integer indexC		= 0;
-
-	// Find plane <AClipPlane> in the
-	// sequence of already active planes 
-	for (Standard_Integer i=1; i<=LengthC && indexC==0; i++)
-		if ((void *) (MyClipPlanes.Value (i)) ==
-		    (void *) (AClipPlane.operator->())) indexC = i;
-
-	// This is an active plane
-	if (indexC != 0) MyClipPlanes.Remove (indexC);
-
-}
-
-Handle(Visual3d_HSetOfClipPlane) Visual3d_ContextView::ActivatedClipPlanes () const {
-
-Handle(Visual3d_HSetOfClipPlane) SG = new Visual3d_HSetOfClipPlane ();
-Standard_Integer Length	= MyClipPlanes.Length ();
-
-	for (Standard_Integer i=1; i<=Length; i++)
-		SG->Add ((Visual3d_ClipPlane *) (MyClipPlanes.Value (i)));
-
-	return (SG);
-
-}
-
-Standard_Integer Visual3d_ContextView::NumberOfActivatedClipPlanes () const {
-
-Standard_Integer Length	= MyClipPlanes.Length ();
-
-	return (Length);
-
-}
-
-Handle(Visual3d_ClipPlane) Visual3d_ContextView::ActivatedClipPlane (const Standard_Integer AnIndex) const {
-
-	return (Visual3d_ClipPlane *) (MyClipPlanes.Value (AnIndex));
-}
-
-
 void Visual3d_ContextView::SetSurfaceDetail(const Visual3d_TypeOfSurfaceDetail TOSD)
 {
   MySurfaceDetail = TOSD;
@@ -391,4 +332,14 @@ Handle_Graphic3d_TextureEnv Visual3d_ContextView::TextureEnv() const
 Visual3d_TypeOfSurfaceDetail Visual3d_ContextView::SurfaceDetail() const
 {
   return MySurfaceDetail;
+}
+
+void Visual3d_ContextView::SetClipPlanes (const Graphic3d_SetOfHClipPlane& thePlanes)
+{
+  myClipPlanes = thePlanes;
+}
+
+const Graphic3d_SetOfHClipPlane& Visual3d_ContextView::GetClipPlanes() const
+{
+  return myClipPlanes;
 }

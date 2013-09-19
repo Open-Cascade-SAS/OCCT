@@ -22,8 +22,10 @@
 #include <OpenGl_PrimitiveArray.hxx>
 #include <OpenGl_Workspace.hxx>
 
-/*----------------------------------------------------------------------*/
-
+// =======================================================================
+// function : OpenGl_Group
+// purpose  :
+// =======================================================================
 OpenGl_Group::OpenGl_Group ()
 : myAspectLine(NULL),
   myAspectFace(NULL),
@@ -33,13 +35,19 @@ OpenGl_Group::OpenGl_Group ()
 {
 }
 
+// =======================================================================
+// function : ~OpenGl_Group
+// purpose  :
+// =======================================================================
 OpenGl_Group::~OpenGl_Group()
 {
   Release (Handle(OpenGl_Context)());
 }
 
-/*----------------------------------------------------------------------*/
-
+// =======================================================================
+// function : SetAspectLine
+// purpose  :
+// =======================================================================
 void OpenGl_Group::SetAspectLine (const CALL_DEF_CONTEXTLINE& theContext,
                                   const Standard_Boolean theIsGlobal)
 {
@@ -57,8 +65,10 @@ void OpenGl_Group::SetAspectLine (const CALL_DEF_CONTEXTLINE& theContext,
   }
 }
 
-/*----------------------------------------------------------------------*/
-
+// =======================================================================
+// function : SetAspectFace
+// purpose  :
+// =======================================================================
 void OpenGl_Group::SetAspectFace (const Handle(OpenGl_Context)&   theCtx,
                                   const CALL_DEF_CONTEXTFILLAREA& theAspect,
                                   const Standard_Boolean          theIsGlobal)
@@ -79,8 +89,10 @@ void OpenGl_Group::SetAspectFace (const Handle(OpenGl_Context)&   theCtx,
   }
 }
 
-/*----------------------------------------------------------------------*/
-
+// =======================================================================
+// function : SetAspectMarker
+// purpose  :
+// =======================================================================
 void OpenGl_Group::SetAspectMarker (const Handle(OpenGl_Context)& theCtx,
                                     const CALL_DEF_CONTEXTMARKER& theAspect,
                                     const Standard_Boolean theIsGlobal)
@@ -101,8 +113,10 @@ void OpenGl_Group::SetAspectMarker (const Handle(OpenGl_Context)& theCtx,
   }
 }
 
-/*----------------------------------------------------------------------*/
-
+// =======================================================================
+// function : SetAspectText
+// purpose  :
+// =======================================================================
 void OpenGl_Group::SetAspectText (const CALL_DEF_CONTEXTTEXT& theContext,
                                   const Standard_Boolean theIsGlobal)
 {
@@ -120,8 +134,10 @@ void OpenGl_Group::SetAspectText (const CALL_DEF_CONTEXTTEXT& theContext,
   }
 }
 
-/*----------------------------------------------------------------------*/
-
+// =======================================================================
+// function : AddElement
+// purpose  :
+// =======================================================================
 void OpenGl_Group::AddElement (const TelType AType, OpenGl_Element *AElem )
 {
   OpenGl_ElementNode *node = new OpenGl_ElementNode();
@@ -133,34 +149,25 @@ void OpenGl_Group::AddElement (const TelType AType, OpenGl_Element *AElem )
   myLast = node;
 }
 
-/*----------------------------------------------------------------------*/
-
+// =======================================================================
+// function : Render
+// purpose  :
+// =======================================================================
 void OpenGl_Group::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   // Is rendering in ADD or IMMEDIATE mode?
   const Standard_Boolean isImmediate = (theWorkspace->NamedStatus & (OPENGL_NS_ADD | OPENGL_NS_IMMEDIATE)) != 0;
+  const Handle(OpenGl_RenderFilter)& aFilter = theWorkspace->GetRenderFilter();
 
   // Setup aspects
   const OpenGl_AspectLine*   aBackAspectLine   = theWorkspace->AspectLine   (Standard_False);
   const OpenGl_AspectFace*   aBackAspectFace   = theWorkspace->AspectFace   (Standard_False);
   const OpenGl_AspectMarker* aBackAspectMarker = theWorkspace->AspectMarker (Standard_False);
   const OpenGl_AspectText*   aBackAspectText   = theWorkspace->AspectText   (Standard_False);
-  if (myAspectLine)
-  {
-    theWorkspace->SetAspectLine (myAspectLine);
-  }
-  if (myAspectFace)
-  {
-    theWorkspace->SetAspectFace (myAspectFace);
-  }
-  if (myAspectMarker)
-  {
-    theWorkspace->SetAspectMarker (myAspectMarker);
-  }
-  if (myAspectText)
-  {
-    theWorkspace->SetAspectText (myAspectText);
-  }
+  Standard_Boolean isLineSet   = myAspectLine   && myAspectLine->RenderFiltered (theWorkspace, aFilter);
+  Standard_Boolean isFaceSet   = myAspectFace   && myAspectFace->RenderFiltered (theWorkspace, aFilter);
+  Standard_Boolean isMarkerSet = myAspectMarker && myAspectMarker->RenderFiltered (theWorkspace, aFilter);
+  Standard_Boolean isTextSet   = myAspectText   && myAspectText->RenderFiltered (theWorkspace, aFilter);
 
   // Render group elements
   for (OpenGl_ElementNode* aNodeIter = myFirst; aNodeIter != NULL; aNodeIter = aNodeIter->next)
@@ -177,24 +184,32 @@ void OpenGl_Group::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
           glDepthMask (GL_FALSE);
         }
 
-        aNodeIter->elem->Render (theWorkspace);
+        aNodeIter->elem->RenderFiltered (theWorkspace, aFilter);
         break;
       }
       default:
       {
-        aNodeIter->elem->Render (theWorkspace);
+        aNodeIter->elem->RenderFiltered (theWorkspace, aFilter);
         break;
       }
     }
   }
 
   // Restore aspects
-  theWorkspace->SetAspectLine   (aBackAspectLine);
-  theWorkspace->SetAspectFace   (aBackAspectFace);
-  theWorkspace->SetAspectMarker (aBackAspectMarker);
-  theWorkspace->SetAspectText   (aBackAspectText);
+  if (isLineSet)
+    theWorkspace->SetAspectLine (aBackAspectLine);
+  if (isFaceSet)
+    theWorkspace->SetAspectFace (aBackAspectFace);
+  if (isMarkerSet)
+    theWorkspace->SetAspectMarker (aBackAspectMarker);
+  if (isTextSet)
+    theWorkspace->SetAspectText (aBackAspectText);
 }
 
+// =======================================================================
+// function : Release
+// purpose  :
+// =======================================================================
 void OpenGl_Group::Release (const Handle(OpenGl_Context)& theGlCtx)
 {
   // Delete elements

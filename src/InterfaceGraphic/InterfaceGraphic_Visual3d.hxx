@@ -35,27 +35,6 @@ typedef struct {
 
 } CALL_DEF_VERTEX;
 
-
-/* MODELE CLIPPING */
-
-typedef struct {
-
-	int WsId;
-
-	int ViewId;
-
-	int PlaneId;
-
-	int Active;
-
-	float CoefA;
-	float CoefB;
-	float CoefC;
-	float CoefD;
-
-} CALL_DEF_PLANE;
-
-
 /* SOURCE LUMINEUSE */
 
 typedef struct {

@@ -114,3 +114,11 @@ OpenGl_Vec.hxx
 OpenGl_VertexBuffer.hxx
 OpenGl_VertexBuffer.cxx
 OpenGl_VertexBufferEditor.hxx
+OpenGl_RenderFilter.hxx
+OpenGl_RenderFilter.cxx
+OpenGl_CappingAlgo.hxx
+OpenGl_CappingAlgo.cxx
+OpenGl_CappingPlaneResource.hxx
+OpenGl_CappingPlaneResource.cxx
+OpenGl_ClippingState.hxx
+OpenGl_ClippingState.cxx

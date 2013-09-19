@@ -42,9 +42,8 @@ void MeshVS_DummySensitiveEntity::Areas( SelectBasics_ListOfBox2d& )
 // Function : Matches
 // Purpose  :
 //================================================================
-Standard_Boolean MeshVS_DummySensitiveEntity::Matches( const Standard_Real,
-                                                       const Standard_Real,
-                                                       const Standard_Real,
+Standard_Boolean MeshVS_DummySensitiveEntity::Matches( const SelectBasics_PickArgs&,
+                                                       Standard_Real&,
                                                        Standard_Real& )
 {
   return Standard_False;

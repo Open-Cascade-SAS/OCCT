@@ -73,12 +73,10 @@ MyDefinedViews(),
 MyActiveViews(),
 MyDefinedLights(),
 MyActiveLights(),
-MyDefinedPlanes(),
 myActiveViewsIterator(),
 myDefinedViewsIterator(),
 myActiveLightsIterator(),
 myDefinedLightsIterator(),
-myDefinedPlanesIterator(),
 myComputedMode (theComputedMode),
 myDefaultComputedMode (theDefaultComputedMode),
 myPrivilegedPlane (gp_Ax3 (gp_Pnt (0.,0.,0), gp_Dir (0.,0.,1.), gp_Dir (1.,0.,0.))),
@@ -367,16 +365,6 @@ void V3d_Viewer::DelView( const Handle(V3d_View)& TheView ) {
 
   MyActiveViews.Remove(TheView);
   MyDefinedViews.Remove(TheView);
-}
-
-void V3d_Viewer::AddPlane( const Handle(V3d_Plane)& ThePlane ) {
-
-  MyDefinedPlanes.Append(ThePlane) ;
-}
-
-void V3d_Viewer::DelPlane( const Handle(V3d_Plane)& ThePlane ) {
-  
-  MyDefinedPlanes.Remove(ThePlane);
 }
 
 //=======================================================================

@@ -20,6 +20,7 @@
 #ifndef _OpenGl_Group_Header
 #define _OpenGl_Group_Header
 
+#include <NCollection_List.hxx>
 #include <InterfaceGraphic_Graphic3d.hxx>
 
 #include <OpenGl_Element.hxx>
@@ -30,6 +31,10 @@
 #include <OpenGl_AspectText.hxx>
 
 #include <OpenGl_tsm.hxx>
+
+class OpenGl_Group;
+
+typedef NCollection_List<const OpenGl_Group*     > OpenGl_ListOfGroup;
 
 struct OpenGl_ElementNode
 {

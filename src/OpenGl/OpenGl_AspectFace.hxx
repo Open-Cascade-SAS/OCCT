@@ -24,10 +24,10 @@
 #include <Aspect_InteriorStyle.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Handle_Graphic3d_TextureParams.hxx>
-
 #include <OpenGl_AspectLine.hxx>
 #include <OpenGl_Element.hxx>
 #include <Handle_OpenGl_Texture.hxx>
+#include <Graphic3d_AspectFillArea3d.hxx>
 
 #define OPENGL_AMBIENT_MASK  (1<<0)
 #define OPENGL_DIFFUSE_MASK  (1<<1)
@@ -56,6 +56,9 @@ public:
 
   void Init (const Handle(OpenGl_Context)&   theContext,
              const CALL_DEF_CONTEXTFILLAREA& theAspect);
+
+  void Init (const Handle(OpenGl_Context)&             theContext,
+             const Handle(Graphic3d_AspectFillArea3d)& theAspect);
 
   void SetAspectEdge (const OpenGl_AspectLine* theAspectEdge) { myAspectEdge = *theAspectEdge; }
 

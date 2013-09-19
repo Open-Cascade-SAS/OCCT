@@ -44,9 +44,7 @@
 Select3D_Projector::Select3D_Projector(const Handle(V3d_View)& aViou)
 : myPersp(aViou->Type()==V3d_PERSPECTIVE),
   myFocus(aViou->Focale()),
-  myView(aViou),
-  myDepthMin(-Precision::Infinite()),
-  myDepthMax( Precision::Infinite())
+  myView(aViou)
 {
   Standard_Real Xat,Yat,Zat,XUp,YUp,ZUp,DX,DY,DZ;
   //Standard_Boolean Pers=Standard_False;
@@ -72,9 +70,7 @@ Select3D_Projector::Select3D_Projector(const Handle(V3d_View)& aViou)
 
 Select3D_Projector::Select3D_Projector()
 : myPersp(Standard_False),
-  myFocus(0),
-  myDepthMin(-Precision::Infinite()),
-  myDepthMax( Precision::Infinite())
+  myFocus(0)
 {
   Scaled();
 }
@@ -86,9 +82,7 @@ Select3D_Projector::Select3D_Projector()
 
 Select3D_Projector::Select3D_Projector (const gp_Ax2& CS)
 : myPersp(Standard_False),
-  myFocus(0),
-  myDepthMin(-Precision::Infinite()),
-  myDepthMax( Precision::Infinite())
+  myFocus(0)
 {
   myScaledTrsf.SetTransformation(CS);
   myGTrsf.SetTrsf(myScaledTrsf);
@@ -103,9 +97,7 @@ Select3D_Projector::Select3D_Projector (const gp_Ax2& CS)
 Select3D_Projector::Select3D_Projector (const gp_Ax2& CS,
                                         const Standard_Real Focus)
 : myPersp(Standard_True),
-  myFocus(Focus),
-  myDepthMin(-Precision::Infinite()),
-  myDepthMax( Precision::Infinite())
+  myFocus(Focus)
 {
   myScaledTrsf.SetTransformation(CS);
   myGTrsf.SetTrsf(myScaledTrsf);
@@ -122,9 +114,7 @@ Select3D_Projector::Select3D_Projector (const gp_Trsf& T,
                                         const Standard_Real Focus)
 : myPersp(Persp),
   myFocus(Focus),
-  myScaledTrsf(T),
-  myDepthMin(-Precision::Infinite()),
-  myDepthMax( Precision::Infinite())
+  myScaledTrsf(T)
 {
   myGTrsf.SetTrsf(myScaledTrsf);
   Scaled();
@@ -140,9 +130,7 @@ Select3D_Projector::Select3D_Projector (const gp_GTrsf& GT,
                                         const Standard_Real Focus)
 : myPersp(Persp),
   myFocus(Focus),
-  myGTrsf(GT),
-  myDepthMin(-Precision::Infinite()),
-  myDepthMax( Precision::Infinite())
+  myGTrsf(GT)
 {
   Scaled();
 }
@@ -462,11 +450,4 @@ void Select3D_Projector::SetView(const Handle(V3d_View)& aViou)
   myScaledTrsf.SetTransformation(Axe);
   Scaled();
 
-}
-
-void Select3D_Projector::DepthMinMax (const Standard_Real theDepthMin,
-                                      const Standard_Real theDepthMax)
-{
-  myDepthMin = theDepthMin;
-  myDepthMax = theDepthMax;
 }

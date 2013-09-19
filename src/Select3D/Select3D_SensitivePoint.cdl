@@ -32,6 +32,7 @@ uses
     Lin             from gp,
     EntityOwner     from SelectBasics,
     ListOfBox2d     from SelectBasics,
+    PickArgs        from SelectBasics,
     Location        from TopLoc,
     Box2d             from Bnd,
     Array1OfPnt2d     from TColgp, 
@@ -62,16 +63,15 @@ is
 
     GetConnected(me:mutable;aLocation: Location from TopLoc)
     returns SensitiveEntity from Select3D is redefined static;
-    
-    Matches(me  :mutable; 
-            X,Y : Real from Standard;
-            aTol: Real from Standard;
-            DMin: out Real from Standard) 
-    returns Boolean
-    is redefined static;    
-    ---Level: Public 
-    ---Purpose: returns true if the X,Y position matches the point
-    --          else gives the distance between them.
+
+    Matches (me : mutable;
+             thePickArgs : PickArgs from SelectBasics;
+             theMatchDMin, theMatchDepth : out Real from Standard)
+    returns Boolean is redefined static;
+    ---Level: Public
+    ---Purpose: Checks whether the sensitive entity matches the picking
+    -- detection area (close to the picking line).
+    -- For details please refer to base class declaration.
 
     Matches (me  :mutable; 
              XMin,YMin,XMax,YMax : Real from Standard;
@@ -90,7 +90,7 @@ is
     
 
     ComputeDepth(me;EyeLine: Lin from gp) 
-    returns Real from Standard is redefined static;
+    returns Real from Standard;
 
       
     Point(me) returns Pnt from gp;

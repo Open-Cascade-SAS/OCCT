@@ -65,8 +65,6 @@ Select3D_SensitiveEntity(OwnerId)
 void Select3D_SensitiveBox::
 Project(const Handle(Select3D_Projector)& aProj)
 {
-  Select3D_SensitiveEntity::Project(aProj); // to set the field last proj...
-
   if(HasLocation())
   {
     Bnd_Box B = mybox3d.Transformed(Location().Transformation());
@@ -103,15 +101,20 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveBox::GetConnected(const TopLo
 // Function: Matches
 // Purpose :
 //==================================================
-Standard_Boolean Select3D_SensitiveBox::
-Matches(const Standard_Real X, 
-        const Standard_Real Y, 
-        const Standard_Real aTol, 
-        Standard_Real& DMin)
+
+Standard_Boolean Select3D_SensitiveBox::Matches (const SelectBasics_PickArgs& thePickArgs,
+                                                 Standard_Real& theMatchDMin,
+                                                 Standard_Real& theMatchDepth)
 {
-  Select3D_SensitiveEntity::Matches(X,Y,aTol,DMin);
-  DMin=0.;
-  
+  // check that sensitive box passes by depth
+  Standard_Real aDepth = ComputeDepth (thePickArgs.PickLine());
+  if (thePickArgs.IsClipped (aDepth))
+  {
+    return Standard_False;
+  }
+
+  theMatchDMin = 0.0;
+  theMatchDepth = aDepth;
   return Standard_True;
 }
 

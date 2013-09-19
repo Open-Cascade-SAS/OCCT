@@ -31,10 +31,11 @@
 #include <OpenGl_Group.hxx>
 #include <OpenGl_Matrix.hxx>
 
+#include <Graphic3d_SetOfHClipPlane.hxx>
+
 class OpenGl_Structure;
 
 typedef NCollection_List<const OpenGl_Structure* > OpenGl_ListOfStructure;
-typedef NCollection_List<const OpenGl_Group*     > OpenGl_ListOfGroup;
 
 class OpenGl_Structure : public OpenGl_Element
 {
@@ -68,6 +69,8 @@ public:
 
   void SetNamedStatus (const Standard_Integer aStatus) { myNamedStatus = aStatus; }
 
+  void SetClipPlanes (const Graphic3d_SetOfHClipPlane& thePlanes) { myClipPlanes = thePlanes; }
+
   void Connect (const OpenGl_Structure *astructure);
   void Disconnect (const OpenGl_Structure *astructure);
 
@@ -97,6 +100,11 @@ protected:
 
   virtual ~OpenGl_Structure();
 
+  //! Draw capping surfaces by h/w for the clipping planes
+  //! enabled for the structure.
+  //! @param theWorkspace [in] the GL workspace, context state.
+  void DrawCapping (const Handle(OpenGl_Workspace)& theWorkspace) const;
+
 protected:
 
   //Structure_LABBegin
@@ -116,6 +124,7 @@ protected:
 
   OpenGl_ListOfStructure     myConnected;
   OpenGl_ListOfGroup         myGroups;
+  Graphic3d_SetOfHClipPlane  myClipPlanes;
 
 public:
 

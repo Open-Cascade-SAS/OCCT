@@ -152,7 +152,8 @@ public:
   Standard_EXPORT void Redraw (const Graphic3d_CView& ACView, const Aspect_CLayer2d& ACUnderLayer, const Aspect_CLayer2d& ACOverLayer, const Standard_Integer x = 0, const Standard_Integer y = 0, const Standard_Integer width = 0, const Standard_Integer height = 0);
   Standard_EXPORT void RemoveView (const Graphic3d_CView& ACView);
   Standard_EXPORT void SetLight (const Graphic3d_CView& ACView);
-  Standard_EXPORT void SetPlane (const Graphic3d_CView& ACView);
+  Standard_EXPORT void SetClipPlanes (const Graphic3d_CView& theCView);
+  Standard_EXPORT void SetClipPlanes (const Graphic3d_CStructure& theCStructure);
   Standard_EXPORT void SetVisualisation (const Graphic3d_CView& ACView);
   Standard_EXPORT void TransformStructure (const Graphic3d_CStructure& ACStructure);
   Standard_EXPORT void Transparency (const Graphic3d_CView& ACView, const Standard_Boolean AFlag);

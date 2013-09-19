@@ -33,43 +33,8 @@
 //=======================================================================
 
 Select3D_SensitiveEntity::Select3D_SensitiveEntity(const Handle(SelectBasics_EntityOwner)& OwnerId):
-SelectBasics_SensitiveEntity(OwnerId),
-mylastprj(),
-mylastdepth(ShortRealLast())
+SelectBasics_SensitiveEntity(OwnerId)
 {}
-
-//=======================================================================
-//function : Project
-//purpose  : 
-//=======================================================================
-
-void Select3D_SensitiveEntity::Project(const Handle(Select3D_Projector)& aPrj)
-{
-  mylastprj = aPrj;
-}
-
-//=======================================================================
-//function : Matches
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean Select3D_SensitiveEntity::Matches(const Standard_Real X,
-                                                   const Standard_Real Y,
-                                                   const Standard_Real /*aTol*/,
-                                                   Standard_Real&  /*DMin*/)
-{
-  if (!mylastprj.IsNull())
-  {
-    gp_Lin L = mylastprj->Shoot (X, Y);
-    SetLastDepth (ComputeDepth (L));
-    return (mylastdepth > mylastprj->DepthMin()) && (mylastdepth < mylastprj->DepthMax());
-  }
-  else
-  {
-    SetLastDepth (ComputeDepth (gp_Lin())); // how we determine depth without eyeline here?
-    return (mylastdepth > ShortRealFirst()) && (mylastdepth < ShortRealLast());
-  }
-}
 
 //=======================================================================
 //function : Matches
@@ -190,45 +155,12 @@ Standard_Boolean Select3D_SensitiveEntity::Is3D() const
 {return Standard_True;}
 
 //=======================================================================
-//function : Depth
-//purpose  : 
-//=======================================================================
-
-Standard_Real Select3D_SensitiveEntity::Depth() const
-{return mylastdepth;}
-
-//=======================================================================
-//function : GetEyeLine
-//purpose  : 
-//=======================================================================
-
-gp_Lin Select3D_SensitiveEntity::GetEyeLine(const Standard_Real X,
-                                            const Standard_Real Y) const
-{
-  gp_Lin L;
-  if (!mylastprj.IsNull())
-  {
-    L = mylastprj->Shoot (X, Y);
-  }
-  return L;
-}
-
-//=======================================================================
 //function : MaxBoxes
 //purpose  : 
 //=======================================================================
 
 Standard_Integer Select3D_SensitiveEntity::MaxBoxes() const 
 {return 1;}
-
-//=======================================================================
-//function : SetLastPrj
-//purpose  : 
-//=======================================================================
-
-void Select3D_SensitiveEntity::SetLastPrj(const Handle(Select3D_Projector)& aprj)
-{ mylastprj = aprj; }
-
 
 //=======================================================================
 //function : GetConnected
@@ -239,13 +171,4 @@ Handle(Select3D_SensitiveEntity) Select3D_SensitiveEntity::GetConnected(const To
 {
   Handle(Select3D_SensitiveEntity) NiouEnt;
   return NiouEnt;
-}
-
-//=======================================================================
-//function : SetLastDepth
-//purpose  : 
-//=======================================================================
-void Select3D_SensitiveEntity::SetLastDepth(const Standard_Real aDepth)
-{
-  mylastdepth = DToF(aDepth);
 }

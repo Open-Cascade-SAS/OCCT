@@ -69,6 +69,9 @@ is
     class ListOfSensitive instantiates List from TCollection 
     (SensitiveEntity);
 
+    imported PickArgs;
+    ---Purpose: Structure to provide all-in-one information on picking arguments
+    -- for "Matches" method of SelectBasics_SensitiveEntity.
 
     MaxOwnerPriority returns Integer;
     

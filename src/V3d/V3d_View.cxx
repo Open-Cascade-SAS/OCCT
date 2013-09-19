@@ -144,7 +144,6 @@ To solve the problem (for lack of a better solution) I make 2 passes.
 #include <Standard_TypeMismatch.hxx>
 #include <Visual3d_ViewManager.hxx>
 #include <Visual3d_Light.hxx>
-#include <Visual3d_ClipPlane.hxx>
 #include <Graphic3d_Structure.hxx>
 #include <Graphic3d_MapIteratorOfMapOfStructure.hxx>
 #include <Graphic3d_MapOfStructure.hxx>
@@ -269,10 +268,8 @@ V3d_View::V3d_View(const Handle(V3d_Viewer)& VM, const V3d_TypeOfView Type ) :
 MyType ( Type ),
 MyViewer(VM.operator->()),
 MyActiveLights(),
-MyActivePlanes(),
 MyViewContext (),
 myActiveLightsIterator(),
-myActivePlanesIterator(),
 SwitchSetFront(Standard_False),
 MyTrsf (1, 4, 1, 4),                                    // S3892
 MyProjModel(V3d_TPM_SCREEN)
@@ -372,10 +369,8 @@ V3d_View::V3d_View(const Handle(V3d_Viewer)& VM,const Handle(V3d_View)& V, const
 MyType ( Type ),
 MyViewer(VM.operator->()),
 MyActiveLights(),
-MyActivePlanes(),
 MyViewContext (),
 myActiveLightsIterator(),
-myActivePlanesIterator(),
 SwitchSetFront(Standard_False),
 MyTrsf (1, 4, 1, 4),                                    // S3892
 MyProjModel(V3d_TPM_SCREEN)
@@ -387,8 +382,6 @@ MyProjModel(V3d_TPM_SCREEN)
 
   for (V->InitActiveLights();V->MoreActiveLights();V->NextActiveLights()){
     MyActiveLights.Append(V->ActiveLight());}
-  for (V->InitActivePlanes();V->MoreActivePlanes();V->NextActivePlanes()){
-    MyActivePlanes.Append(V->ActivePlane());}
 
   MyViewContext = FromView->Context() ;
 

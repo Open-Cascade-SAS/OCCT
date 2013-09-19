@@ -29,6 +29,7 @@
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_Texture.hxx>
 #include <OpenGl_Workspace.hxx>
+#include <OpenGl_Element.hxx>
 
 #include <Graphic3d_TextureParams.hxx>
 
