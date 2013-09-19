@@ -534,13 +534,7 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
       param1bis = radius;
     }
   }
-  if(typeres == IntAna_Ellipse) { 
-    if(   param1>100000.0*param1bis 
-       || param1bis>100000.0*param1) { 
-      done = Standard_False;
-      return;
-    }
-  }
+
   done = Standard_True;
 }
 //=======================================================================

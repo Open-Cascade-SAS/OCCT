@@ -25,13 +25,13 @@ class FaceFace from IntTools
 
 uses 
 
-    TopolTool from Adaptor3d, 
-    HSurface  from GeomAdaptor, 
-    ListOfPntOn2S from IntSurf ,
-    Intersection from IntPatch,
-    Face from TopoDS,
-    SequenceOfCurves from IntTools,
-    LineConstructor from IntTools,
+    TopolTool             from Adaptor3d, 
+    HSurface              from GeomAdaptor, 
+    ListOfPntOn2S         from IntSurf ,
+    Intersection          from IntPatch,
+    Face                  from TopoDS,
+    SequenceOfCurves      from IntTools,
+    LineConstructor       from IntTools,
     SequenceOfPntOn2Faces from IntTools, 
     Context from BOPInt
     

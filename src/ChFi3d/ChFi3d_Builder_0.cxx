@@ -3068,7 +3068,17 @@ Standard_Boolean ChFi3d_ComputeCurves(Handle(Adaptor3d_HSurface)&   S1,
       cyl = S1->Cylinder();
     }
     IntAna_QuadQuadGeo ImpKK(pl,cyl,Precision::Angular(),tol3d);
-    if (ImpKK.IsDone()) {
+    Standard_Boolean isIntDone = ImpKK.IsDone();
+
+    if(ImpKK.TypeInter() == IntAna_Ellipse)
+    {
+      const gp_Elips anEl = ImpKK.Ellipse(1);
+      const Standard_Real aMajorR = anEl.MajorRadius();
+      const Standard_Real aMinorR = anEl.MinorRadius();
+      isIntDone = (aMajorR < 100000.0 * aMinorR);
+    }
+
+    if (isIntDone) {
       Standard_Boolean c1line = 0;
       switch  (ImpKK.TypeInter()) {
       case IntAna_Line:

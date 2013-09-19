@@ -76,7 +76,7 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
   IntSurf_Quadric quad1;
   IntSurf_Quadric quad2;
   IntPatch_ArcFunction AFunc;
-  Standard_Real Tolang = 1.e-8;
+  const Standard_Real Tolang = 1.e-8;
   GeomAbs_SurfaceType typs1 = S1->GetType();
   GeomAbs_SurfaceType typs2 = S2->GetType();
   //

@@ -1627,10 +1627,21 @@ Handle(Geom_Surface) Draft_Modification::NewSurface
 #endif
       return NewS;
     }
-    if (Abs(Angle) > Precision::Angular()) {
+    if (Abs(Angle) > Precision::Angular())
+    {
       IntAna_QuadQuadGeo i2s;
       i2s.Perform(NeutralPlane,Cy,Precision::Angular(),Precision::Confusion());
-      if (!i2s.IsDone() || i2s.TypeInter() != IntAna_Circle) {
+      Standard_Boolean isIntDone = i2s.IsDone();
+
+      if(i2s.TypeInter() == IntAna_Ellipse)
+      {
+        const gp_Elips anEl = i2s.Ellipse(1);
+        const Standard_Real aMajorR = anEl.MajorRadius();
+        const Standard_Real aMinorR = anEl.MinorRadius();
+        isIntDone = (aMajorR < 100000.0 * aMinorR);
+      }
+
+      if (!isIntDone || i2s.TypeInter() != IntAna_Circle) {
 #ifdef DEB
     cout << "NewSurfaceCyl:Draft_Intersection_Neutral_Cylinder_NotDone" << endl;
 #endif

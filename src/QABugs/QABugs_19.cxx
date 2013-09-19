@@ -1144,6 +1144,96 @@ static Standard_Integer OCC11758 (Draw_Interpretor& di, Standard_Integer n, cons
   return 0;
 }
 
+#include <Geom_CylindricalSurface.hxx>
+#include <IntTools_FaceFace.hxx>
+#include <IntTools_Curve.hxx>
+#include <IntTools_PntOn2Faces.hxx>
+
+static Standard_Integer OCC24005 (Draw_Interpretor& theDI, Standard_Integer theNArg, const char** theArgv) 
+{
+  if(theNArg < 2)
+  {
+    theDI << "Wrong a number of arguments!\n";
+    return 1;
+  }
+
+  Handle_Geom_Plane plane(new Geom_Plane(
+                                  gp_Ax3( gp_Pnt(-72.948737453424499, 754.30437716359393, 259.52151854671678),
+                                  gp_Dir(6.2471473085930200e-007, -0.99999999999980493, 0.00000000000000000),
+                                  gp_Dir(0.99999999999980493, 6.2471473085930200e-007, 0.00000000000000000))));
+  Handle(Geom_CylindricalSurface) cylinder(
+                  new Geom_CylindricalSurface(
+                                  gp_Ax3(gp_Pnt(-6.4812490053250649, 753.39408794522092, 279.16400974257465),
+                                  gp_Dir(1.0000000000000000, 0.0, 0.00000000000000000),
+                                  gp_Dir(0.0, 1.0000000000000000, 0.00000000000000000)),
+                                                                                          19.712534607908712));
+
+  DrawTrSurf::Set("pln", plane);
+  theDI << "pln\n";
+  DrawTrSurf::Set("cyl", cylinder);
+  theDI << "cyl\n";
+
+  BRep_Builder builder;
+  TopoDS_Face face1, face2;
+  builder.MakeFace(face1, plane, Precision::Confusion());
+  builder.MakeFace(face2, cylinder, Precision::Confusion());
+  IntTools_FaceFace anInters;
+  anInters.SetParameters(false, true, true, Precision::Confusion());
+  anInters.Perform(face1, face2);
+
+  if (!anInters.IsDone())
+  {
+    theDI<<"No intersections found!"<<"\n";
+
+    return 1;
+  }
+
+  //Handle(Geom_Curve) aResult;
+  //gp_Pnt             aPoint;
+
+  const IntTools_SequenceOfCurves& aCvsX=anInters.Lines();
+  const IntTools_SequenceOfPntOn2Faces& aPntsX=anInters.Points();
+
+  char buf[1024];  
+  Standard_Integer aNbCurves, aNbPoints;
+
+  aNbCurves=aCvsX.Length();
+  aNbPoints=aPntsX.Length();
+
+  if (aNbCurves >= 2)
+  {
+    for (Standard_Integer i=1; i<=aNbCurves; ++i)
+    {
+      Sprintf(buf, "%s_%d",theArgv[1],i);
+      theDI << buf << " ";
+      
+      const IntTools_Curve& aIC = aCvsX(i);
+      const Handle(Geom_Curve)& aC3D= aIC.Curve();
+      DrawTrSurf::Set(buf,aC3D);
+    }
+  }
+  else if (aNbCurves == 1)
+  {
+    const IntTools_Curve& aIC = aCvsX(1);
+    const Handle(Geom_Curve)& aC3D= aIC.Curve();
+    Sprintf(buf, "%s",theArgv[1]);
+    theDI << buf << " ";
+    DrawTrSurf::Set(buf,aC3D);
+  }
+
+  for (Standard_Integer i = 1; i<=aNbPoints; ++i)
+  {
+    const IntTools_PntOn2Faces& aPi=aPntsX(i);
+    const gp_Pnt& aP=aPi.P1().Pnt();
+    
+    Sprintf(buf,"%s_p_%d",theArgv[1],i);
+    theDI << buf << " ";
+    DrawTrSurf::Set(buf, aP);
+  }
+
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -1163,6 +1253,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add("OCC23945", "OCC23945 surfname U V X Y Z [DUX DUY DUZ DVX DVY DVZ [D2UX D2UY D2UZ D2VX D2VY D2VZ D2UVX D2UVY D2UVZ]]", __FILE__, OCC23945,group);
   theCommands.Add ("OCC24019", "OCC24019 aShape", __FILE__, OCC24019, group);
   theCommands.Add ("OCC11758", "OCC11758", __FILE__, OCC11758, group);
-
+  theCommands.Add ("OCC24005", "OCC24005 result", __FILE__, OCC24005, group);
   return;
 }

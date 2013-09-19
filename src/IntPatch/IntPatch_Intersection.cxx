@@ -32,7 +32,7 @@
 #include <stdio.h>
 
 #define DEBUG 0 
-static Standard_Integer NBPOINTSSURALINE = 200;
+static const Standard_Integer aNbPointsInALine = 200;
 
 //======================================================================
 // function: SequenceOfLine
@@ -708,18 +708,21 @@ static void FUN_TrimBothSurf(const Handle(Adaptor3d_HSurface)& S1,
 //function : Perform
 //purpose  : 
 //=======================================================================
-void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
-                                    const Handle(Adaptor3d_TopolTool)& D1,
-                                    const Handle(Adaptor3d_HSurface)&  S2,
-                                    const Handle(Adaptor3d_TopolTool)& D2,
+void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
+                                    const Handle(Adaptor3d_TopolTool)& theD1,
+                                    const Handle(Adaptor3d_HSurface)&  theS2,
+                                    const Handle(Adaptor3d_TopolTool)& theD2,
                                     const Standard_Real TolArc,
-                                    const Standard_Real TolTang)
-{  
+                                    const Standard_Real TolTang,
+                                    const Standard_Boolean isGeomInt)
+{
   myTolArc = TolArc;
   myTolTang = TolTang;
-  if(myFleche == 0.0) myFleche = 0.01;
-  if(myUVMaxStep == 0.0) myUVMaxStep = 0.01;
-    
+  if(myFleche <= Precision::PConfusion())
+    myFleche = 0.01;
+  if(myUVMaxStep <= Precision::PConfusion())
+    myUVMaxStep = 0.01;
+
   done = Standard_False;
   spnt.Clear();
   slin.Clear();
@@ -727,92 +730,108 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
   tgte = Standard_False;
   oppo = Standard_False;
 
-  Standard_Integer i;
-
-  GeomAbs_SurfaceType typs1 = S1->GetType();
-  GeomAbs_SurfaceType typs2 = S2->GetType();
+  GeomAbs_SurfaceType typs1 = theS1->GetType();
+  GeomAbs_SurfaceType typs2 = theS2->GetType();
   
   Standard_Boolean TreatAsBiParametric = Standard_False;
-  if(typs1 == GeomAbs_Cone)    {
-    Standard_Real a1 = S1->Cone().SemiAngle();
-    if(a1<0.0) a1=-a1;
-    if(a1<2.e-2 || a1>1.55)	{ 
-      if(typs2==GeomAbs_Plane)	    {
-	if(a1<2e-2)		{ 
-	  const gp_Dir axec = S1->Cone().Axis().Direction();
-	  const gp_Dir axep = S2->Plane().Axis().Direction();
-	  Standard_Real ps=axec.Dot(axep);
-	  if(ps<0.0) {
-	    ps=-ps;
-	  }
-	  if(ps<0.015) {
-	    TreatAsBiParametric = Standard_True;
-	  }
-	}
+  if(typs1 == GeomAbs_Cone)
+  {
+    const gp_Cone Con1 = theS1->Cone();
+    const Standard_Real a1 = Abs(Con1.SemiAngle());
+    if((a1 < 0.02) || (a1 > 1.55))
+    {
+      if(typs2==GeomAbs_Plane)
+      {
+        if(a1 < 0.02)
+        {
+          const gp_Pln Plan2 = theS2->Plane();
+          const gp_Dir axec = Con1.Axis().Direction();
+          const gp_Dir axep = Plan2.Axis().Direction();
+          const Standard_Real ps = Abs(axec.Dot(axep));
+          if(ps < 0.015)
+          {
+            TreatAsBiParametric = Standard_True;
+          }
+        }
       }
-      else TreatAsBiParametric = Standard_True;
+      else
+        TreatAsBiParametric = Standard_True;
     }
   }
-  if(typs2 == GeomAbs_Cone)  {
-    gp_Cone Con2 = S2->Cone();
-    Standard_Real a2 = Con2.SemiAngle();
-    if(a2<0.0) a2=-a2;
-    if(a2<2.e-2 || a2>1.55)	{
-      if(typs1==GeomAbs_Plane)	  {
-	if(a2<2e-2)		{
-	  const gp_Dir axec = S2->Cone().Axis().Direction();
-	  const gp_Dir axep = S1->Plane().Axis().Direction();
-	  Standard_Real ps=axec.Dot(axep);
-	  if(ps<0.0) {
-	    ps=-ps;
-	  }
-	  if(ps<0.015){
-	    TreatAsBiParametric = Standard_True;
-	  }
-	}
+
+  if(typs2 == GeomAbs_Cone)
+  {
+    const gp_Cone Con2 = theS2->Cone();
+    const Standard_Real a2 = Abs(Con2.SemiAngle());
+    if((a2 < 0.02) || (a2 > 1.55))
+    {
+      if(typs1 == GeomAbs_Plane)
+      {
+        if(a2 < 0.02)
+        {
+          const gp_Pln Plan1 = theS1->Plane();
+          const gp_Dir axec = Con2.Axis().Direction();
+          const gp_Dir axep = Plan1.Axis().Direction();
+          const Standard_Real ps = Abs(axec.Dot(axep));
+          if(ps<0.015)
+          {
+            TreatAsBiParametric = Standard_True;
+          }
+        }
       }
-      else TreatAsBiParametric = Standard_True;
+      else
+        TreatAsBiParametric = Standard_True;
     }
+
     //// modified by jgv, 15.12.02 for OCC565 ////
-    if (typs1 == GeomAbs_Cone)    {
-      gp_Cone Con1 = S1->Cone();
-      Standard_Real a1 = Con1.SemiAngle();
-      if (a1 < 0.0) a1 = -a1;
-      if (a1 < 2.e-2 && a2 < 2.e-2) {//quasi-cylinders: if same domain, treat as canonic
-	gp_Ax1 A1 = Con1.Axis(), A2 = Con2.Axis();
-	if (A1.IsParallel(A2,Precision::Angular()))    {
-	  gp_Lin L1(A1);
-	  if (L1.Distance( A2.Location() ) <= Precision::Confusion()){
-	    TreatAsBiParametric = Standard_False;
-	  }
-	}
+    if (typs1 == GeomAbs_Cone)
+    {
+      const gp_Cone Con1 = theS1->Cone();
+      const Standard_Real a1 = Abs(Con1.SemiAngle());
+      if (a1 < 0.02 && a2 < 0.02) //quasi-cylinders: if same domain, treat as canonic
+      {
+        const gp_Ax1 A1 = Con1.Axis(), A2 = Con2.Axis();
+        if (A1.IsParallel(A2,Precision::Angular()))
+        {
+          const gp_Lin L1(A1);
+          if (L1.Distance(A2.Location()) <= Precision::Confusion())
+          {
+            TreatAsBiParametric = Standard_False;
+          }
+        }
       }
-      else if (a1 > 1.55 && a2 > 1.55) { //quasi-planes: if same domain, treat as canonic
-	gp_Ax1 A1 = Con1.Axis(), A2 = Con2.Axis();
-	if (A1.IsParallel(A2,Precision::Angular()))	    {
-	  gp_Pnt Apex1 = Con1.Apex(), Apex2 = Con2.Apex();
-	  gp_Pln Plan1( Apex1, A1.Direction() );
-	  if (Plan1.Distance( Apex2 ) <= Precision::Confusion()){
-	    TreatAsBiParametric = Standard_False;
-	  }
-	}
+      else if (a1 > 1.55 && a2 > 1.55) //quasi-planes: if same domain, treat as canonic
+      {
+        const gp_Ax1 A1 = Con1.Axis(), A2 = Con2.Axis();
+        if (A1.IsParallel(A2,Precision::Angular()))
+        {
+          const gp_Pnt Apex1 = Con1.Apex(), Apex2 = Con2.Apex();
+          const gp_Pln Plan1( Apex1, A1.Direction() );
+          if (Plan1.Distance( Apex2 ) <= Precision::Confusion())
+          {
+            TreatAsBiParametric = Standard_False;
+          }
+        }
       }
-      else if ((a1 > 1.55 && a2 < 1.55) || (a2 > 1.55 && a1 < 1.55) ) {
-	gp_Ax1 A1 = Con1.Axis(), A2 = Con2.Axis();
-	if (A1.IsCoaxial(A2,Precision::Angular(),Precision::Confusion()))  {
-	  TreatAsBiParametric = Standard_False;
-	}
+      else if ((a1 > 1.55) || (a2 > 1.55))
+      {
+        const gp_Ax1 A1 = Con1.Axis(), A2 = Con2.Axis();
+        if (A1.IsCoaxial(A2,Precision::Angular(),Precision::Confusion()))
+        {
+          TreatAsBiParametric = Standard_False;
+        }
       }
     }// if (typs1 == GeomAbs_Cone)    {
   }// if(typs2 == GeomAbs_Cone)  {
-  //
-  if(D1->DomainIsInfinite() || D2->DomainIsInfinite()) {
+
+  if(theD1->DomainIsInfinite() || theD2->DomainIsInfinite()) {
     TreatAsBiParametric= Standard_False;
   }
 
 //  Modified by skv - Mon Sep 26 14:58:30 2005 Begin
 //   if(TreatAsBiParametric) { typs1 = typs2 = GeomAbs_BezierSurface; }
-  if(TreatAsBiParametric) {
+  if(TreatAsBiParametric)
+  {
     if (typs1 == GeomAbs_Cone && typs2 == GeomAbs_Plane)
       typs1 = GeomAbs_BezierSurface; // Using Imp-Prm Intersector
     else if (typs1 == GeomAbs_Plane && typs2 == GeomAbs_Cone)
@@ -835,6 +854,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
     case GeomAbs_Cone: ts1 = 1; break;
     default: break;
   }
+
   Standard_Integer ts2 = 0;
   switch (typs2)
   {
@@ -844,6 +864,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
     case GeomAbs_Cone: ts2 = 1; break;
     default: break;
   }
+
   // Possible intersection types: 1. ts1 == ts2 == 1 <Geom-Geom>
   //                              2. ts1 != ts2      <Geom-Param>
   //                              3. ts1 == ts2 == 0 <Param-Param>
@@ -851,189 +872,33 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
   // Geom - Geom
   if(ts1 == ts2 && ts1 == 1)
   {
-    IntPatch_ImpImpIntersection interii(S1,D1,S2,D2,myTolArc,myTolTang);
-    if (interii.IsDone())
-	{
-	  done = Standard_True;
-	  empt = interii.IsEmpty();
-	  if (!empt)
-	  {
-	    tgte = interii.TangentFaces();
-	    if (tgte) oppo = interii.OppositeFaces();
-	    for (i = 1; i <= interii.NbLines(); i++)
-		{
-		  const Handle_IntPatch_Line& line = interii.Line(i);
-		  if (line->ArcType() == IntPatch_Analytic)
-		  { 
-		    const GeomAbs_SurfaceType typs1 = S1->GetType();
-		    const GeomAbs_SurfaceType typs2 = S2->GetType();
-		    IntSurf_Quadric Quad1,Quad2;
-		    switch(typs1)
-			{
-			  case GeomAbs_Plane:    Quad1.SetValue(S1->Plane());    break;
-			  case GeomAbs_Cylinder: Quad1.SetValue(S1->Cylinder()); break;
-			  case GeomAbs_Sphere:   Quad1.SetValue(S1->Sphere());   break;
-			  case GeomAbs_Cone:     Quad1.SetValue(S1->Cone());     break;
-			  default: break;
-			}
-		    switch(typs2)
-			{ 
-			  case GeomAbs_Plane:    Quad2.SetValue(S2->Plane());    break;
-			  case GeomAbs_Cylinder: Quad2.SetValue(S2->Cylinder()); break;
-			  case GeomAbs_Sphere:   Quad2.SetValue(S2->Sphere());   break;
-			  case GeomAbs_Cone:     Quad2.SetValue(S2->Cone());     break;
-			  default: break;
-			}
-		    IntPatch_ALineToWLine AToW(Quad1,Quad2,0.01,0.05,NBPOINTSSURALINE);
-		    Handle(IntPatch_Line) wlin=AToW.MakeWLine((*((Handle_IntPatch_ALine *)(&line))));
-		    slin.Append(wlin);
-		  }
-		  else slin.Append(interii.Line(i));
-		}
-	    for (i = 1; i <= interii.NbPnts(); i++) spnt.Append(interii.Point(i));
-	  }
-	}
-    else goto prm;
+    const Standard_Boolean RestrictLine = Standard_True;
+    IntSurf_ListOfPntOn2S ListOfPnts;
+    ListOfPnts.Clear();
+    if(isGeomInt)
+    {
+      GeomGeomPerfom(theS1, theD1, theS2, theD2, TolArc, TolTang, ListOfPnts, RestrictLine, typs1, typs2);
+    }
+    else
+    {
+      ParamParamPerfom(theS1, theD1, theS2, theD2, TolArc, TolTang, ListOfPnts, RestrictLine, typs1, typs2);
+    }
   }
+
   // Geom - Param
   if(ts1 != ts2)
   {
-    //cout << "IP" << endl;
-    IntPatch_ImpPrmIntersection interip;
-    if (myIsStartPnt) {
-	  if (ts1 == 0) interip.SetStartPoint(myU1Start,myV1Start);
-	  else          interip.SetStartPoint(myU2Start,myV2Start);
-    }
-    if(D1->DomainIsInfinite() && D2->DomainIsInfinite())
-	{
-	  Standard_Boolean IsPLInt = Standard_False;
-	  TColgp_SequenceOfPnt sop;
-	  gp_Vec v;
-	  FUN_PL_Intersection(S1,typs1,S2,typs2,IsPLInt,sop,v);
-	  if(IsPLInt)
-	  {
-	    if(sop.Length() > 0)
-		{
-		  for(Standard_Integer ip = 1; ip <= sop.Length(); ip++)
-		  {
-		    gp_Lin lin(sop.Value(ip),gp_Dir(v));
-		    Handle(IntPatch_GLine) gl = new IntPatch_GLine(lin,Standard_False);
-		    slin.Append(*(Handle_IntPatch_Line *)&gl);
-		  }
-		  done = Standard_True;
-		}
-	    else done = Standard_False;
-	    return;
-	  }
-	  else
-	  {
-	    Handle(Adaptor3d_HSurface) nS1 = S1;
-	    Handle(Adaptor3d_HSurface) nS2 = S2;
-	    FUN_TrimBothSurf(S1,typs1,S2,typs2,1.e+5,nS1,nS2);
-	    interip.Perform(nS1,D1,nS2,D2,myTolArc,myTolTang,myFleche,myUVMaxStep);
-	  }
-	}
-    else interip.Perform(S1,D1,S2,D2,myTolArc,myTolTang,myFleche,myUVMaxStep);
-//      IntPatch_ImpPrmIntersection interip(S1,D1,S2,D2,myTolArc,myTolTang,myFleche,myUVMaxStep);
-    if (interip.IsDone()) 
-	{
-	  done = Standard_True;
-	  empt = interip.IsEmpty();
-	  if (!empt) 
-	  {
-	    for(i = 1; i <= interip.NbLines(); i++)
-		{
-		  if(interip.Line(i)->ArcType() != IntPatch_Walking) slin.Append(interip.Line(i));
-		}
-	    for(i = 1; i <= interip.NbLines(); i++) 
-		{
-		  if(interip.Line(i)->ArcType() == IntPatch_Walking) slin.Append(interip.Line(i));
-		}
-	    for (i = 1; i <= interip.NbPnts(); i++) spnt.Append(interip.Point(i));
-	  }
-	}
+    GeomParamPerfom(theS1, theD1, theS2, theD2, ts1 == 0, typs1, typs2);
   }
+
   // Param - Param 
   if(ts1 == ts2 && ts1 == 0)
   {
-      //cout << "PP" << endl;
-prm:; // this algorithm was modified last by OFV [29-Oct-2001] -> [2-Nov-2001]
-    IntPatch_PrmPrmIntersection interpp;
-    if(!D1->DomainIsInfinite() && !D2->DomainIsInfinite())
-	{
-      interpp.Perform(S1,D1,S2,D2,TolArc,TolTang,myFleche,myUVMaxStep);
-	  goto met;
-	}
-    else if( (!D1->DomainIsInfinite() && D2->DomainIsInfinite()) || (D1->DomainIsInfinite() && !D2->DomainIsInfinite()) )
-	{
-      gp_Pnt pMaxXYZ, pMinXYZ;
-	  if(D1->DomainIsInfinite())
-	  {
-	    FUN_GetMinMaxXYZPnt( S2, pMinXYZ, pMaxXYZ );
-	    const Standard_Real MU = Max(Abs(S2->FirstUParameter()),Abs(S2->LastUParameter()));
-	    const Standard_Real MV = Max(Abs(S2->FirstVParameter()),Abs(S2->LastVParameter()));
-	    const Standard_Real AP = Max(MU, MV);
-	    Handle(Adaptor3d_HSurface) SS;
-	    FUN_TrimInfSurf(pMinXYZ, pMaxXYZ, S1, AP, SS);
-	    interpp.Perform(SS,D1,S2,D2,TolArc,TolTang,myFleche,myUVMaxStep);
-	  }
-	  else
-	  {
-	    FUN_GetMinMaxXYZPnt( S1, pMinXYZ, pMaxXYZ );
-	    const Standard_Real MU = Max(Abs(S1->FirstUParameter()),Abs(S1->LastUParameter()));
-	    const Standard_Real MV = Max(Abs(S1->FirstVParameter()),Abs(S1->LastVParameter()));
-	    const Standard_Real AP = Max(MU, MV);
-	    Handle(Adaptor3d_HSurface) SS;
-	    FUN_TrimInfSurf(pMinXYZ, pMaxXYZ, S2, AP, SS);
-	    interpp.Perform(S1,D1,SS,D2,TolArc,TolTang,myFleche,myUVMaxStep);
-	  }
-      goto met;
-	}//(!D1->DomainIsInfinite() && D2->DomainIsInfinite()) || (D1->DomainIsInfinite() && !D2->DomainIsInfinite())
-    else 
-	{
-	  if(typs1 == GeomAbs_OtherSurface || typs2 == GeomAbs_OtherSurface){ done = Standard_False;  return; }
-	  Standard_Boolean IsPLInt = Standard_False;
-	  TColgp_SequenceOfPnt sop;
-	  gp_Vec v;
-	  FUN_PL_Intersection(S1,typs1,S2,typs2,IsPLInt,sop,v);
-	  if(IsPLInt)
-	  {
-	    if(sop.Length() > 0)
-		{
-		  for(Standard_Integer ip = 1; ip <= sop.Length(); ip++)
-		  {
-		    gp_Lin lin(sop.Value(ip),gp_Dir(v));
-		    Handle(IntPatch_GLine) gl = new IntPatch_GLine(lin,Standard_False);
-		    slin.Append(*(Handle_IntPatch_Line *)&gl);
-		  }
-		  done = Standard_True;
-		}
-	    else done = Standard_False;
-	    return;
-	  } // 'COLLINEAR LINES'
-	  else
-	  {
-	    Handle(Adaptor3d_HSurface) nS1 = S1;
-	    Handle(Adaptor3d_HSurface) nS2 = S2;
-	    FUN_TrimBothSurf(S1,typs1,S2,typs2,1.e+8,nS1,nS2);
- 	    interpp.Perform(nS1,D1,nS2,D2,TolArc,TolTang,myFleche,myUVMaxStep);
- 	    goto met;
-	  }// 'NON - COLLINEAR LINES'
-	}// both domains are infinite
-met:if (interpp.IsDone())
-	{
-	  done = Standard_True;
-	  tgte = Standard_False;
-	  empt = interpp.IsEmpty();
-	  for(i=1; i <= interpp.NbLines(); i++)
-	  {
-	    if(interpp.Line(i)->ArcType() != IntPatch_Walking) slin.Append(interpp.Line(i));
-	  }
-	  for(i=1; i <= interpp.NbLines(); i++)
-	  {
-	    if(interpp.Line(i)->ArcType() == IntPatch_Walking) slin.Append(interpp.Line(i));
-	  }
-	}
+    const Standard_Boolean RestrictLine = Standard_True;
+    IntSurf_ListOfPntOn2S ListOfPnts;
+    ListOfPnts.Clear();
+
+    ParamParamPerfom(theS1, theD1, theS2, theD2, TolArc, TolTang, ListOfPnts, RestrictLine, typs1, typs2);
   }
 }
 		      
@@ -1041,19 +906,22 @@ met:if (interpp.IsDone())
 //function : Perform
 //purpose  : 
 //=======================================================================
-void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
-                                    const Handle(Adaptor3d_TopolTool)& D1,
-                                    const Handle(Adaptor3d_HSurface)&  S2,
-                                    const Handle(Adaptor3d_TopolTool)& D2,
+void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
+                                    const Handle(Adaptor3d_TopolTool)& theD1,
+                                    const Handle(Adaptor3d_HSurface)&  theS2,
+                                    const Handle(Adaptor3d_TopolTool)& theD2,
                                     const Standard_Real TolArc,
                                     const Standard_Real TolTang,
                                     IntSurf_ListOfPntOn2S& ListOfPnts,
-                                    const Standard_Boolean RestrictLine)
+                                    const Standard_Boolean RestrictLine,
+                                    const Standard_Boolean isGeomInt)
 {
   myTolArc = TolArc;
   myTolTang = TolTang;
-  if(myFleche == 0.0) myFleche = 0.01;
-  if(myUVMaxStep == 0.0) myUVMaxStep = 0.01;
+  if(myFleche <= Precision::PConfusion())
+    myFleche = 0.01;
+  if(myUVMaxStep <= Precision::PConfusion())
+    myUVMaxStep = 0.01;
     
   done = Standard_False;
   spnt.Clear();
@@ -1062,101 +930,109 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
   tgte = Standard_False;
   oppo = Standard_False;
 
-  Standard_Integer i;
-
-  GeomAbs_SurfaceType typs1 = S1->GetType();
-  GeomAbs_SurfaceType typs2 = S2->GetType();
+  GeomAbs_SurfaceType typs1 = theS1->GetType();
+  GeomAbs_SurfaceType typs2 = theS2->GetType();
   
   Standard_Boolean TreatAsBiParametric = Standard_False;
-  if(typs1 == GeomAbs_Cone)  {
-    Standard_Real a1 = S1->Cone().SemiAngle();
-    if(a1<0.0) a1=-a1;
-    if(a1<2e-2 || a1>1.55)	{ 
-      if(typs2==GeomAbs_Plane)	  {
-	if(a1<2e-2)		{ 
-	  gp_Dir axec = S1->Cone().Axis().Direction();
-	  gp_Dir axep = S2->Plane().Axis().Direction();
-	  Standard_Real ps=axec.Dot(axep);
-	  if(ps<0.0) {
-	    ps=-ps;
-	  }
-	  if(ps<0.015) {
-	    TreatAsBiParametric = Standard_True;
-	  }
-	}
-      }
-      else {
-	TreatAsBiParametric = Standard_True;
-      }
-    }
-  } 
-  if(typs2 == GeomAbs_Cone)  {
-    Standard_Real a2 = S2->Cone().SemiAngle();
-    if(a2<0.0) a2=-a2;
-    if(a2<2.e-2 || a2>1.55)	{
-      if(typs1==GeomAbs_Plane)	{
-	if(a2<2e-2)	  {
-	  const gp_Dir axec = S2->Cone().Axis().Direction();
-	  const gp_Dir axep = S1->Plane().Axis().Direction();
-	  Standard_Real ps=axec.Dot(axep);
-	  if(ps<0.0){
-	    ps=-ps;
-	  }
-	  if(ps<0.015){
-	    TreatAsBiParametric = Standard_True;
-	  }
-	}
-      }
-      else {
-	TreatAsBiParametric = Standard_True;
-      }
-    }
-  }
-  //// modified by jgv, 15.12.02 for OCC565 ////
-  if (typs1 == GeomAbs_Cone && typs2 == GeomAbs_Cone)
+  if(typs1 == GeomAbs_Cone)
   {
-    gp_Cone Con1 = S1->Cone();
-    gp_Cone Con2 = S2->Cone();
-    Standard_Real a1 = Con1.SemiAngle();
-    if (a1 < 0.0) a1 = -a1;
-    Standard_Real a2 = Con2.SemiAngle();
-    if (a2 < 0.0) a2 = -a2;
-    if (a1 < 2e-2 && a2 < 2e-2) //quasi-cylinders: if same domain, treat as canonic
-	{
-	  gp_Ax1 A1 = Con1.Axis(), A2 = Con2.Axis();
-	  if (A1.IsParallel(A2,Precision::Angular()))
-	  {
-	    gp_Lin L1(A1);
-	    if (L1.Distance( A2.Location() ) <= Precision::Confusion())
-          TreatAsBiParametric = Standard_False;
-	  }
-	}
-    else if (a1 > 1.55 && a2 > 1.55) //quasi-planes: if same domain, treat as canonic
-	{
-	  gp_Ax1 A1 = Con1.Axis(), A2 = Con2.Axis();
-	  if (A1.IsParallel(A2,Precision::Angular()))
-	  {
-	    gp_Pnt Apex1 = Con1.Apex(), Apex2 = Con2.Apex();
-	    gp_Pln Plan1( Apex1, A1.Direction() );
-	    if (Plan1.Distance( Apex2 ) <= Precision::Confusion())
-		  TreatAsBiParametric = Standard_False;
-	  }
-	}
-    else if ((a1 > 1.55 && a2 < 1.55) || (a2 > 1.55 && a1 < 1.55) ) {
-      gp_Ax1 A1 = Con1.Axis(), A2 = Con2.Axis();
-      if (A1.IsCoaxial(A2,Precision::Angular(),Precision::Confusion()))  {
-	TreatAsBiParametric = Standard_False;
+    const gp_Cone Con1 = theS1->Cone();
+    const Standard_Real a1 = Abs(Con1.SemiAngle());
+    if((a1 < 0.02) || (a1 > 1.55))
+    {
+      if(typs2==GeomAbs_Plane)
+      {
+        if(a1 < 0.02)
+        {
+          const gp_Pln Plan2 = theS2->Plane();
+          const gp_Dir axec = Con1.Axis().Direction();
+          const gp_Dir axep = Plan2.Axis().Direction();
+          const Standard_Real ps = Abs(axec.Dot(axep));
+          if(ps < 0.015)
+          {
+            TreatAsBiParametric = Standard_True;
+          }
+        }
       }
+      else
+        TreatAsBiParametric = Standard_True;
     }
   }
-  //////////////////////////////////////////////
 
-  if(D1->DomainIsInfinite() || D2->DomainIsInfinite()) {
+  if(typs2 == GeomAbs_Cone)
+  {
+    const gp_Cone Con2 = theS2->Cone();
+    const Standard_Real a2 = Abs(Con2.SemiAngle());
+    if((a2 < 0.02) || (a2 > 1.55))
+    {
+      if(typs1 == GeomAbs_Plane)
+      {
+        if(a2 < 0.02)
+        {
+          const gp_Pln Plan1 = theS1->Plane();
+          const gp_Dir axec = Con2.Axis().Direction();
+          const gp_Dir axep = Plan1.Axis().Direction();
+          const Standard_Real ps = Abs(axec.Dot(axep));
+          if(ps<0.015)
+          {
+            TreatAsBiParametric = Standard_True;
+          }
+        }
+      }
+      else
+        TreatAsBiParametric = Standard_True;
+    }
+
+    //// modified by jgv, 15.12.02 for OCC565 ////
+    if (typs1 == GeomAbs_Cone)
+    {
+      const gp_Cone Con1 = theS1->Cone();
+      const Standard_Real a1 = Abs(Con1.SemiAngle());
+      if (a1 < 0.02 && a2 < 0.02) //quasi-cylinders: if same domain, treat as canonic
+      {
+        const gp_Ax1 A1 = Con1.Axis(), A2 = Con2.Axis();
+        if (A1.IsParallel(A2,Precision::Angular()))
+        {
+          const gp_Lin L1(A1);
+          if (L1.Distance(A2.Location()) <= Precision::Confusion())
+          {
+            TreatAsBiParametric = Standard_False;
+          }
+        }
+      }
+      else if (a1 > 1.55 && a2 > 1.55) //quasi-planes: if same domain, treat as canonic
+      {
+        const gp_Ax1 A1 = Con1.Axis(), A2 = Con2.Axis();
+        if (A1.IsParallel(A2,Precision::Angular()))
+        {
+          const gp_Pnt Apex1 = Con1.Apex(), Apex2 = Con2.Apex();
+          const gp_Pln Plan1( Apex1, A1.Direction() );
+          if (Plan1.Distance( Apex2 ) <= Precision::Confusion())
+          {
+            TreatAsBiParametric = Standard_False;
+          }
+        }
+      }
+      else if ((a1 > 1.55) || (a2 > 1.55))
+      {
+        const gp_Ax1 A1 = Con1.Axis(), A2 = Con2.Axis();
+        if (A1.IsCoaxial(A2,Precision::Angular(),Precision::Confusion()))
+        {
+          TreatAsBiParametric = Standard_False;
+        }
+      }
+    }// if (typs1 == GeomAbs_Cone)    {
+  }// if(typs2 == GeomAbs_Cone)  {
+
+  if(theD1->DomainIsInfinite() || theD2->DomainIsInfinite()) {
     TreatAsBiParametric= Standard_False;
   }
-  if(TreatAsBiParametric) { 
-    typs1 = GeomAbs_BezierSurface; 
-    typs2 = GeomAbs_BezierSurface; 
+
+  if(TreatAsBiParametric)
+  {
+    // Using Prm-Prm Intersector
+    typs1 = GeomAbs_BezierSurface;
+    typs2 = GeomAbs_BezierSurface;
   }
 
   // Surface type definition
@@ -1169,6 +1045,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
     case GeomAbs_Cone: ts1 = 1; break;
     default: break;
   }
+
   Standard_Integer ts2 = 0;
   switch (typs2)
   {
@@ -1178,205 +1055,318 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
     case GeomAbs_Cone: ts2 = 1; break;
     default: break;
   }
+
   // Possible intersection types: 1. ts1 == ts2 == 1 <Geom-Geom>
   //                              2. ts1 != ts2      <Geom-Param>
   //                              3. ts1 == ts2 == 0 <Param-Param>
 
-  // Geom - Geom
-  if(ts1 == ts2 && ts1 == 1)
+  if(!isGeomInt)
   {
-    IntPatch_ImpImpIntersection interii(S1,D1,S2,D2,myTolArc,myTolTang);
-    if (interii.IsDone())
-	{
-	  done = Standard_True;
-	  empt = interii.IsEmpty();
-	  if (!empt)
-	  {
-	    tgte = interii.TangentFaces();
-	    if (tgte) oppo = interii.OppositeFaces();
-	    for (i = 1; i <= interii.NbLines(); i++)
-		{
-		  const Handle_IntPatch_Line& line = interii.Line(i);
-		  if (line->ArcType() == IntPatch_Analytic)
-		  { 
-		    const GeomAbs_SurfaceType typs1 = S1->GetType();
-		    const GeomAbs_SurfaceType typs2 = S2->GetType();
-		    IntSurf_Quadric Quad1,Quad2;
-		    switch(typs1)
-			{
-			  case GeomAbs_Plane:    Quad1.SetValue(S1->Plane());    break;
-			  case GeomAbs_Cylinder: Quad1.SetValue(S1->Cylinder()); break;
-			  case GeomAbs_Sphere:   Quad1.SetValue(S1->Sphere());   break;
-			  case GeomAbs_Cone:     Quad1.SetValue(S1->Cone());     break;
-			  default: break;
-			}
-		    switch(typs2)
-			{ 
-			  case GeomAbs_Plane:    Quad2.SetValue(S2->Plane());    break;
-			  case GeomAbs_Cylinder: Quad2.SetValue(S2->Cylinder()); break;
-			  case GeomAbs_Sphere:   Quad2.SetValue(S2->Sphere());   break;
-			  case GeomAbs_Cone:     Quad2.SetValue(S2->Cone());     break;
-			  default: break;
-			}
-		    IntPatch_ALineToWLine AToW(Quad1,Quad2,0.01,0.05,NBPOINTSSURALINE);
-		    Handle(IntPatch_Line) wlin=AToW.MakeWLine((*((Handle_IntPatch_ALine *)(&line))));
-		    slin.Append(wlin);
-		  }
-		  else slin.Append(interii.Line(i));
-		}
-        for (i = 1; i <= interii.NbPnts(); i++) spnt.Append(interii.Point(i));
-	  }
-	}
-    else goto prm; 
+    ParamParamPerfom(theS1, theD1, theS2, theD2, TolArc, TolTang, ListOfPnts, RestrictLine, typs1, typs2);
   }
-  // Geom - Param
-  if(ts1 != ts2)
+  else if(ts1 != ts2)
   {
-    //cout << "IP" << endl;
-    IntPatch_ImpPrmIntersection interip;
-    if (myIsStartPnt) {
-	  if (ts1 == 0) interip.SetStartPoint(myU1Start,myV1Start);
-	  else          interip.SetStartPoint(myU2Start,myV2Start);
-    }
-    if(D1->DomainIsInfinite() && D2->DomainIsInfinite())
-	{
-	  Standard_Boolean IsPLInt = Standard_False;
-	  TColgp_SequenceOfPnt sop;
-	  gp_Vec v;
-	  FUN_PL_Intersection(S1,typs1,S2,typs2,IsPLInt,sop,v);
-	  if(IsPLInt)
-	  {
-	    if(sop.Length() > 0)
-		{
-		  for(Standard_Integer ip = 1; ip <= sop.Length(); ip++)
-		  {
-		    gp_Lin lin(sop.Value(ip),gp_Dir(v));
-		    Handle(IntPatch_GLine) gl = new IntPatch_GLine(lin,Standard_False);
-		    slin.Append(*(Handle_IntPatch_Line *)&gl);
-		  }
-		  done = Standard_True;
-		}
-	    else done = Standard_False;
-	    return;
-	  }
-	  else
-	  {
-	    Handle(Adaptor3d_HSurface) nS1 = S1;
-	    Handle(Adaptor3d_HSurface) nS2 = S2;
-	    FUN_TrimBothSurf(S1,typs1,S2,typs2,1.e+5,nS1,nS2);
-	    interip.Perform(nS1,D1,nS2,D2,myTolArc,myTolTang,myFleche,myUVMaxStep);
-	  }
-	}
-    else interip.Perform(S1,D1,S2,D2,myTolArc,myTolTang,myFleche,myUVMaxStep);
-//      IntPatch_ImpPrmIntersection interip(S1,D1,S2,D2,myTolArc,myTolTang,myFleche,myUVMaxStep);
-    if (interip.IsDone()) 
-	{
-	  done = Standard_True;
-	  empt = interip.IsEmpty();
-	  if (!empt) 
-	  {
-	    for(i = 1; i <= interip.NbLines(); i++)
-		{
-		  if(interip.Line(i)->ArcType() != IntPatch_Walking) slin.Append(interip.Line(i));
-		}
-	    for(i = 1; i <= interip.NbLines(); i++) 
-		{
-		  if(interip.Line(i)->ArcType() == IntPatch_Walking) slin.Append(interip.Line(i));
-		}
-	    for (i = 1; i <= interip.NbPnts(); i++) spnt.Append(interip.Point(i));
-	  }
-	}
+    GeomParamPerfom(theS1, theD1, theS2, theD2, ts1 == 0, typs1, typs2);
   }
-  // Param - Param 
-  if(ts1 == ts2 && ts1 == 0)
+  else if (ts1 == 0)
   {
-      //cout << "PP" << endl;
-prm:; // this algorithm was modified last by OFV [29-Oct-2001] -> [2-Nov-2001]
-    IntPatch_PrmPrmIntersection interpp;
-    if(!D1->DomainIsInfinite() && !D2->DomainIsInfinite())
-	{
-      // modified by NIZHNY-AMV  Tue Oct 18 12:37:02 2005.BEGIN
-      Standard_Boolean ClearFlag = Standard_True;
-      if(!ListOfPnts.IsEmpty()){
-        interpp.Perform(S1,D1,S2,D2,TolArc,TolTang,myFleche,myUVMaxStep, ListOfPnts, RestrictLine);
-        ClearFlag = Standard_False;
-      }
-      // modified by NIZHNY-AMV  Tue Oct 18 12:37:02 2005.END
-      interpp.Perform(S1,D1,S2,D2,TolArc,TolTang,myFleche,myUVMaxStep,ClearFlag);
-	  goto met;
-	}
-    else if( (!D1->DomainIsInfinite() && D2->DomainIsInfinite()) || (D1->DomainIsInfinite() && !D2->DomainIsInfinite()) )
-   {
-      gp_Pnt pMaxXYZ, pMinXYZ;
-	  if(D1->DomainIsInfinite())
-	  {
-	    FUN_GetMinMaxXYZPnt( S2, pMinXYZ, pMaxXYZ );
-	    const Standard_Real MU = Max(Abs(S2->FirstUParameter()),Abs(S2->LastUParameter()));
-	    const Standard_Real MV = Max(Abs(S2->FirstVParameter()),Abs(S2->LastVParameter()));
-	    const Standard_Real AP = Max(MU, MV);
-	    Handle(Adaptor3d_HSurface) SS;
-	    FUN_TrimInfSurf(pMinXYZ, pMaxXYZ, S1, AP, SS);
-	    interpp.Perform(SS,D1,S2,D2,TolArc,TolTang,myFleche,myUVMaxStep);
-	  }
-	  else
-	  {
-	    FUN_GetMinMaxXYZPnt( S1, pMinXYZ, pMaxXYZ );
-	    const Standard_Real MU = Max(Abs(S1->FirstUParameter()),Abs(S1->LastUParameter()));
-	    const Standard_Real MV = Max(Abs(S1->FirstVParameter()),Abs(S1->LastVParameter()));
-	    const Standard_Real AP = Max(MU, MV);
-	    Handle(Adaptor3d_HSurface) SS;
-	    FUN_TrimInfSurf(pMinXYZ, pMaxXYZ, S2, AP, SS);
-	    interpp.Perform(S1,D1,SS,D2,TolArc,TolTang,myFleche,myUVMaxStep);
-	  }
-      goto met;
-	}//(!D1->DomainIsInfinite() && D2->DomainIsInfinite()) || (D1->DomainIsInfinite() && !D2->DomainIsInfinite())
-    else 
-	{
-	  if(typs1 == GeomAbs_OtherSurface || typs2 == GeomAbs_OtherSurface){ done = Standard_False;  return; }
-	  Standard_Boolean IsPLInt = Standard_False;
-	  TColgp_SequenceOfPnt sop;
-	  gp_Vec v;
-	  FUN_PL_Intersection(S1,typs1,S2,typs2,IsPLInt,sop,v);
-	  if(IsPLInt)
-	  {
-	    if(sop.Length() > 0)
-		{
-		  for(Standard_Integer ip = 1; ip <= sop.Length(); ip++)
-		  {
-		    gp_Lin lin(sop.Value(ip),gp_Dir(v));
-		    Handle(IntPatch_GLine) gl = new IntPatch_GLine(lin,Standard_False);
-		    slin.Append(*(Handle_IntPatch_Line *)&gl);
-		  }
-		  done = Standard_True;
-		}
-	    else done = Standard_False;
-	    return;
-	  } // 'COLLINEAR LINES'
-	  else
-	  {
-	    Handle(Adaptor3d_HSurface) nS1 = S1;
-	    Handle(Adaptor3d_HSurface) nS2 = S2;
-	    FUN_TrimBothSurf(S1,typs1,S2,typs2,1.e+8,nS1,nS2);
- 	    interpp.Perform(nS1,D1,nS2,D2,TolArc,TolTang,myFleche,myUVMaxStep);
- 	    goto met;
-	  }// 'NON - COLLINEAR LINES'
-	}// both domains are infinite
-met:  if (interpp.IsDone())
-	{
-	  done = Standard_True;
-	  tgte = Standard_False;
-	  empt = interpp.IsEmpty();
-	  for(i=1; i <= interpp.NbLines(); i++)
-	  {
-	    if(interpp.Line(i)->ArcType() != IntPatch_Walking) slin.Append(interpp.Line(i));
-	  }
-	  for (i=1; i <= interpp.NbLines(); i++)
-	  {
-	    if(interpp.Line(i)->ArcType() == IntPatch_Walking) slin.Append(interpp.Line(i));
-	  }
-	}
+    ParamParamPerfom(theS1, theD1, theS2, theD2, TolArc, TolTang, ListOfPnts, RestrictLine, typs1, typs2);
+  }
+  else if(ts1 == 1)
+  {
+    GeomGeomPerfom(theS1, theD1, theS2, theD2, TolArc, TolTang, ListOfPnts, RestrictLine, typs1, typs2);
   }
 }
+
+//=======================================================================
+//function : ParamParamPerfom
+//purpose  : 
+//=======================================================================
+void IntPatch_Intersection::ParamParamPerfom(const Handle(Adaptor3d_HSurface)&  theS1,
+                                             const Handle(Adaptor3d_TopolTool)& theD1,
+                                             const Handle(Adaptor3d_HSurface)&  theS2,
+                                             const Handle(Adaptor3d_TopolTool)& theD2,
+                                             const Standard_Real TolArc,
+                                             const Standard_Real TolTang,
+                                             IntSurf_ListOfPntOn2S& ListOfPnts,
+                                             const Standard_Boolean RestrictLine,
+                                             const GeomAbs_SurfaceType typs1,
+                                             const GeomAbs_SurfaceType typs2)
+{
+  IntPatch_PrmPrmIntersection interpp;
+  if(!theD1->DomainIsInfinite() && !theD2->DomainIsInfinite())
+  {
+    Standard_Boolean ClearFlag = Standard_True;
+    if(!ListOfPnts.IsEmpty())
+    {
+      interpp.Perform(theS1,theD1,theS2,theD2,TolArc,TolTang,myFleche,myUVMaxStep, ListOfPnts, RestrictLine);
+      ClearFlag = Standard_False;
+    }
+    interpp.Perform(theS1,theD1,theS2,theD2,TolArc,TolTang,myFleche,myUVMaxStep,ClearFlag);   //double call!!!!!!!
+  }
+  else if((theD1->DomainIsInfinite()) ^ (theD2->DomainIsInfinite()))
+  {
+    gp_Pnt pMaxXYZ, pMinXYZ;
+    if(theD1->DomainIsInfinite())
+    {
+      FUN_GetMinMaxXYZPnt( theS2, pMinXYZ, pMaxXYZ );
+      const Standard_Real MU = Max(Abs(theS2->FirstUParameter()),Abs(theS2->LastUParameter()));
+      const Standard_Real MV = Max(Abs(theS2->FirstVParameter()),Abs(theS2->LastVParameter()));
+      const Standard_Real AP = Max(MU, MV);
+      Handle(Adaptor3d_HSurface) SS;
+      FUN_TrimInfSurf(pMinXYZ, pMaxXYZ, theS1, AP, SS);
+      interpp.Perform(SS,theD1,theS2,theD2,TolArc,TolTang,myFleche,myUVMaxStep);
+    }
+    else
+    {
+      FUN_GetMinMaxXYZPnt( theS1, pMinXYZ, pMaxXYZ );
+      const Standard_Real MU = Max(Abs(theS1->FirstUParameter()),Abs(theS1->LastUParameter()));
+      const Standard_Real MV = Max(Abs(theS1->FirstVParameter()),Abs(theS1->LastVParameter()));
+      const Standard_Real AP = Max(MU, MV);
+      Handle(Adaptor3d_HSurface) SS;
+      FUN_TrimInfSurf(pMinXYZ, pMaxXYZ, theS2, AP, SS);
+      interpp.Perform(theS1, theD1, SS, theD2,TolArc,TolTang,myFleche,myUVMaxStep);
+    }
+  }//(theD1->DomainIsInfinite()) ^ (theD2->DomainIsInfinite())
+  else
+  {
+    if(typs1 == GeomAbs_OtherSurface || typs2 == GeomAbs_OtherSurface)
+    {
+      done = Standard_False;
+      return;
+    }
+
+    Standard_Boolean IsPLInt = Standard_False;
+    TColgp_SequenceOfPnt sop;
+    gp_Vec v;
+    FUN_PL_Intersection(theS1,typs1,theS2,typs2,IsPLInt,sop,v);
+
+    if(IsPLInt)
+    {
+      if(sop.Length() > 0)
+      {
+        for(Standard_Integer ip = 1; ip <= sop.Length(); ip++)
+        {
+          gp_Lin lin(sop.Value(ip),gp_Dir(v));
+          Handle(IntPatch_GLine) gl = new IntPatch_GLine(lin,Standard_False);
+          slin.Append(*(Handle_IntPatch_Line *)&gl);
+        }
+
+        done = Standard_True;
+      }
+      else
+        done = Standard_False;
+
+      return;
+    }// 'COLLINEAR LINES'
+    else
+    {
+      Handle(Adaptor3d_HSurface) nS1 = theS1;
+      Handle(Adaptor3d_HSurface) nS2 = theS2;
+      FUN_TrimBothSurf(theS1,typs1,theS2,typs2,1.e+8,nS1,nS2);
+      interpp.Perform(nS1,theD1,nS2,theD2,TolArc,TolTang,myFleche,myUVMaxStep);
+    }// 'NON - COLLINEAR LINES'
+  }// both domains are infinite
+
+  if (interpp.IsDone())
+  {
+    done = Standard_True;
+    tgte = Standard_False;
+    empt = interpp.IsEmpty();
+
+    for(Standard_Integer i = 1; i <= interpp.NbLines(); i++)
+    {
+      if(interpp.Line(i)->ArcType() != IntPatch_Walking)
+        slin.Append(interpp.Line(i));
+    }
+
+    for (Standard_Integer i = 1; i <= interpp.NbLines(); i++)
+    {
+      if(interpp.Line(i)->ArcType() == IntPatch_Walking)
+        slin.Append(interpp.Line(i));
+    }
+  }
+}
+
+//=======================================================================
+////function : GeomGeomPerfom
+//purpose  : 
+//=======================================================================
+void IntPatch_Intersection::GeomGeomPerfom(const Handle(Adaptor3d_HSurface)& theS1,
+                                           const Handle(Adaptor3d_TopolTool)& theD1,
+                                           const Handle(Adaptor3d_HSurface)& theS2,
+                                           const Handle(Adaptor3d_TopolTool)& theD2,
+                                           const Standard_Real TolArc,
+                                           const Standard_Real TolTang,
+                                           IntSurf_ListOfPntOn2S& ListOfPnts,
+                                           const Standard_Boolean RestrictLine,
+                                           const GeomAbs_SurfaceType typs1,
+                                           const GeomAbs_SurfaceType typs2)
+{
+  IntPatch_ImpImpIntersection interii(theS1,theD1,theS2,theD2,myTolArc,myTolTang);
+  const Standard_Boolean anIS = interii.IsDone();
+  if (anIS)
+  {
+    done = anIS;
+    empt = interii.IsEmpty();
+    if (!empt)
+    {
+      tgte = interii.TangentFaces();
+      if (tgte)
+        oppo = interii.OppositeFaces();
+
+      for (Standard_Integer i = 1; i <= interii.NbLines(); i++)
+      {
+        const Handle_IntPatch_Line& line = interii.Line(i);
+        if (line->ArcType() == IntPatch_Analytic)
+        {
+          const GeomAbs_SurfaceType typs1 = theS1->GetType();
+          const GeomAbs_SurfaceType typs2 = theS2->GetType();
+          IntSurf_Quadric Quad1,Quad2;
+          
+          switch(typs1)
+          {
+          case GeomAbs_Plane:
+            Quad1.SetValue(theS1->Plane());
+            break;
+
+          case GeomAbs_Cylinder:
+            Quad1.SetValue(theS1->Cylinder());
+            break;
+
+          case GeomAbs_Sphere:
+            Quad1.SetValue(theS1->Sphere());
+            break;
+
+          case GeomAbs_Cone:
+            Quad1.SetValue(theS1->Cone());
+            break;
+
+          default:
+            break;
+          }
+
+          switch(typs2)
+          {
+          case GeomAbs_Plane:
+            Quad2.SetValue(theS2->Plane());
+            break;
+          case GeomAbs_Cylinder:
+            Quad2.SetValue(theS2->Cylinder());
+            break;
+
+          case GeomAbs_Sphere:
+            Quad2.SetValue(theS2->Sphere());
+            break;
+
+          case GeomAbs_Cone:
+            Quad2.SetValue(theS2->Cone());
+            break;
+
+          default:
+            break;
+          }
+
+          IntPatch_ALineToWLine AToW(Quad1,Quad2,0.01,0.05,aNbPointsInALine);
+          Handle(IntPatch_Line) wlin=AToW.MakeWLine((*((Handle_IntPatch_ALine *)(&line))));
+          slin.Append(wlin);
+        }
+        else
+          slin.Append(interii.Line(i));
+      }
+
+      for (Standard_Integer i = 1; i <= interii.NbPnts(); i++)
+      {
+        spnt.Append(interii.Point(i));
+      }
+    }
+  }
+  else
+    ParamParamPerfom(theS1, theD1, theS2, theD2, TolArc, TolTang, ListOfPnts, RestrictLine, typs1, typs2);
+}
+
+//=======================================================================
+////function : GeomParamPerfom
+//purpose  : 
+//=======================================================================
+void IntPatch_Intersection::GeomParamPerfom(const Handle(Adaptor3d_HSurface)&  theS1,
+                                            const Handle(Adaptor3d_TopolTool)& theD1,
+                                            const Handle(Adaptor3d_HSurface)&  theS2,
+                                            const Handle(Adaptor3d_TopolTool)& theD2,
+                                            const Standard_Boolean isNotAnalitical,
+                                            const GeomAbs_SurfaceType typs1,
+                                            const GeomAbs_SurfaceType typs2)
+{
+  IntPatch_ImpPrmIntersection interip;
+  if (myIsStartPnt)
+  {
+    if (isNotAnalitical/*ts1 == 0*/)
+      interip.SetStartPoint(myU1Start,myV1Start);
+    else
+      interip.SetStartPoint(myU2Start,myV2Start);
+  }
+
+  if(theD1->DomainIsInfinite() && theD2->DomainIsInfinite())
+  {
+    Standard_Boolean IsPLInt = Standard_False;
+    TColgp_SequenceOfPnt sop;
+    gp_Vec v;
+    FUN_PL_Intersection(theS1,typs1,theS2,typs2,IsPLInt,sop,v);
+    
+    if(IsPLInt)
+    {
+      if(sop.Length() > 0)
+      {
+        for(Standard_Integer ip = 1; ip <= sop.Length(); ip++)
+        {
+          gp_Lin lin(sop.Value(ip),gp_Dir(v));
+          Handle(IntPatch_GLine) gl = new IntPatch_GLine(lin,Standard_False);
+          slin.Append(*(Handle_IntPatch_Line *)&gl);
+        }
+
+        done = Standard_True;
+      }
+      else
+        done = Standard_False;
+
+      return;
+    }
+    else
+    {
+      Handle(Adaptor3d_HSurface) nS1 = theS1;
+      Handle(Adaptor3d_HSurface) nS2 = theS2;
+      FUN_TrimBothSurf(theS1,typs1,theS2,typs2,1.e+5,nS1,nS2);
+      interip.Perform(nS1,theD1,nS2,theD2,myTolArc,myTolTang,myFleche,myUVMaxStep);
+    }
+  }
+  else
+    interip.Perform(theS1,theD1,theS2,theD2,myTolArc,myTolTang,myFleche,myUVMaxStep);
+
+  if (interip.IsDone()) 
+  {
+    done = Standard_True;
+    empt = interip.IsEmpty();
+
+    if (!empt)
+    {
+      for(Standard_Integer i = 1; i <= interip.NbLines(); i++)
+      {
+        if(interip.Line(i)->ArcType() != IntPatch_Walking)
+          slin.Append(interip.Line(i));
+      }
+
+      for(Standard_Integer i = 1; i <= interip.NbLines(); i++)
+      {
+        if(interip.Line(i)->ArcType() == IntPatch_Walking)
+          slin.Append(interip.Line(i));
+      }
+
+      for (Standard_Integer i = 1; i <= interip.NbPnts(); i++)
+        spnt.Append(interip.Point(i));
+    }
+  }
+}
+
 
 void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
                                     const Handle(Adaptor3d_TopolTool)& D1,
