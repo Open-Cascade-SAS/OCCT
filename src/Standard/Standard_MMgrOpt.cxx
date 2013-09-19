@@ -20,7 +20,7 @@
 
 #include <Standard_MMgrOpt.hxx>
 #include <Standard_OutOfMemory.hxx>
-
+#include <Standard_Assert.hxx>
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
@@ -192,11 +192,7 @@ Standard_MMgrOpt::Standard_MMgrOpt(const Standard_Boolean aClear,
                                    const Standard_Size aThreshold)
 {
   // check basic assumption
-  if ( sizeof(Standard_Size) != sizeof(Standard_Address) )
-  {
-    cerr << "Fatal error: Open CASCADE Optimized Memory manager: this platform is not supported!" << endl;
-    exit(1);
-  }
+  Standard_STATIC_ASSERT(sizeof(Standard_Size) == sizeof(Standard_Address));
 
   // clear buffer fields
   myFreeListMax = 0;

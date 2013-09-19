@@ -62,6 +62,13 @@
 //!
 //! The second argument (message) should be string constant ("...").
 //!
+//! The Standard_STATIC_ASSERT macro is to be used for compile time checks.
+//! To use this macro, write:
+//!
+//!   Standard_STATIC_ASSERT(const_expression);
+//!
+//! If const_expression is false, a compiler error occurs.
+//!
 //! The macros are formed as functions and require semicolon at the end.
 
 // Stub function used to make macros complete C++ operator 
@@ -154,6 +161,23 @@ inline void Standard_ASSERT_DO_NOTHING() {}
 
 //! Raise debug message
 #define Standard_ASSERT_INVOKE(theDesc) Standard_ASSERT_INVOKE_(always, theDesc)
+
+//! Static assert --
+//! empty default template
+template <bool condition> 
+struct Standard_Static_Assert { };
+
+//! Static assert -- specialization for condition being true
+template <>
+struct Standard_Static_Assert<true>
+{
+  static void assert_ok() {}
+};
+
+//! Cause compiler error if argument is not constant expression or
+//! evaluates to false
+#define Standard_STATIC_ASSERT(theExpr)     \
+        Standard_Static_Assert<theExpr>::assert_ok();
 
 #endif // Standard_Assert_HeaderFile
 

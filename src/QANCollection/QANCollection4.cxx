@@ -24,6 +24,8 @@
 
 #include <NCollection_StdAllocator.hxx>
 #include <NCollection_IncAllocator.hxx>
+#include <Standard_Assert.hxx>
+
 #include <list>
 #include <vector>
 
@@ -41,44 +43,20 @@ static Standard_Integer QANColStdAllocator1(Draw_Interpretor& di, Standard_Integ
   //type definitions
   typedef Handle_Standard_Transient elem_type;
   typedef NCollection_StdAllocator<elem_type> allocator_type;
-  if ( sizeof (allocator_type::value_type) == sizeof (elem_type) ) {
-    di << "value_type : OK\n";
-  } else {
-    di << "value_type : Error\n";
-  }
-  if ( sizeof (allocator_type::pointer) == sizeof (void*) ) {
-    di << "pointer : OK\n";
-  } else {
-    di << "pointer : Error\n";
-  }
-  if (sizeof (allocator_type::const_pointer)  == sizeof (void*) ) {
-    di << "const_pointer : OK\n";
-  } else {
-    di << "const_pointer : Error\n";
-  }
+  Standard_STATIC_ASSERT (sizeof (allocator_type::value_type) == sizeof (elem_type));
+  Standard_STATIC_ASSERT (sizeof (allocator_type::pointer) == sizeof (void*));
+  Standard_STATIC_ASSERT (sizeof (allocator_type::const_pointer) == sizeof (void*));
 
   elem_type aDummy;
   allocator_type::reference aRef = aDummy;
   (void)aRef; // avoid compiler warning on unused
   allocator_type::const_reference aConstRef = aDummy;
   (void)aConstRef; // avoid compiler warning on unused
-  if ( sizeof (allocator_type::size_type) == sizeof (size_t) ) {
-    di << "size_type : OK\n";
-  } else {
-    di << "size_type : Error\n";
-  }
-  if ( sizeof (allocator_type::difference_type) == sizeof (ptrdiff_t) ) {
-    di << "allocator_type : OK\n";
-  } else {
-    di << "allocator_type : Error\n";
-  }
+  Standard_STATIC_ASSERT (sizeof (allocator_type::size_type) == sizeof (size_t));
+  Standard_STATIC_ASSERT (sizeof (allocator_type::difference_type) == sizeof (ptrdiff_t));
 
   typedef int other_elem_type;
-  if ( sizeof (allocator_type::rebind<other_elem_type>::other::value_type) == sizeof (other_elem_type) ) {
-    di << "other_elem_type : OK\n";
-  } else {
-    di << "other_elem_type : Error\n";
-  }
+  Standard_STATIC_ASSERT (sizeof (allocator_type::rebind<other_elem_type>::other::value_type) == sizeof (other_elem_type));
 
   return 0;
 }
