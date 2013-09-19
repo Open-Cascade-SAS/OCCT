@@ -160,7 +160,7 @@ Standard_Real Extrema_FuncExtPS::SquareDistance (const Standard_Integer N) const
 }
 //=============================================================================
 
-Extrema_POnSurf Extrema_FuncExtPS::Point (const Standard_Integer N) const
+const Extrema_POnSurf& Extrema_FuncExtPS::Point (const Standard_Integer N) const
 {
   if (!myPinit || !mySinit) Standard_TypeMismatch::Raise();
   return myPoint.Value(N);

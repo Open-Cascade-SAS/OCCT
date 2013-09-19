@@ -89,6 +89,7 @@ is
 	    	-- if N < 1 or N > NbExt(me).
 
     Point (me; N: Integer) returns POnC
+        ---C++: return const &
     	---Purpose: Returns the Nth extremum.
     	raises  OutOfRange from Standard,
                 TypeMismatch from Standard;

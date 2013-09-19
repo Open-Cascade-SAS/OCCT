@@ -321,7 +321,7 @@ Standard_Real Extrema_GenExtSS::SquareDistance(const Standard_Integer N) const
 //purpose  : 
 //=======================================================================
 
-Extrema_POnSurf Extrema_GenExtSS::PointOnS1(const Standard_Integer N) const 
+const Extrema_POnSurf& Extrema_GenExtSS::PointOnS1(const Standard_Integer N) const 
 {
   if (!IsDone()) { StdFail_NotDone::Raise(); }
   return myF.PointOnS1(N);
@@ -332,7 +332,7 @@ Extrema_POnSurf Extrema_GenExtSS::PointOnS1(const Standard_Integer N) const
 //purpose  : 
 //=======================================================================
 
-Extrema_POnSurf Extrema_GenExtSS::PointOnS2(const Standard_Integer N) const 
+const Extrema_POnSurf& Extrema_GenExtSS::PointOnS2(const Standard_Integer N) const 
 {
   if (!IsDone()) { StdFail_NotDone::Raise(); }
   return myF.PointOnS2(N);

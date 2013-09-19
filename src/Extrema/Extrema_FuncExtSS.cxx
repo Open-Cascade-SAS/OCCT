@@ -257,7 +257,7 @@ Standard_Real Extrema_FuncExtSS::SquareDistance (const Standard_Integer N) const
 //purpose  : 
 //=======================================================================
 
-Extrema_POnSurf Extrema_FuncExtSS::PointOnS1 (const Standard_Integer N) const
+const Extrema_POnSurf& Extrema_FuncExtSS::PointOnS1 (const Standard_Integer N) const
 {
   if (!myS1init || !myS2init) Standard_TypeMismatch::Raise();
   return myPoint1.Value(N);
@@ -267,7 +267,7 @@ Extrema_POnSurf Extrema_FuncExtSS::PointOnS1 (const Standard_Integer N) const
 //purpose  : 
 //=======================================================================
 
-Extrema_POnSurf Extrema_FuncExtSS::PointOnS2 (const Standard_Integer N) const
+const Extrema_POnSurf& Extrema_FuncExtSS::PointOnS2 (const Standard_Integer N) const
 {
   if (!myS1init || !myS2init) Standard_TypeMismatch::Raise();
   return myPoint2.Value(N);

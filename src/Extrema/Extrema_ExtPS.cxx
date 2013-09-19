@@ -332,7 +332,7 @@ Standard_Integer Extrema_ExtPS::NbExt() const
 
 
 
-Extrema_POnSurf Extrema_ExtPS::Point(const Standard_Integer N) const
+const Extrema_POnSurf& Extrema_ExtPS::Point(const Standard_Integer N) const
 {
   if(!myDone) StdFail_NotDone::Raise();
   return myPoints.Value(N);

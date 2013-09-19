@@ -167,7 +167,7 @@ Standard_Boolean Extrema_GenLocateExtPC::IsMin () const
 //purpose  : 
 //=======================================================================
 
-POnC Extrema_GenLocateExtPC::Point () const 
+const POnC & Extrema_GenLocateExtPC::Point () const 
 {
   if (!myDone) { StdFail_NotDone::Raise(); }
   return myF.Point(1);

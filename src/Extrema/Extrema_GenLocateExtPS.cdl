@@ -60,6 +60,7 @@ is
     	is static;
 
     Point (me) returns POnSurf
+        ---C++: return const &
     	---Purpose: Returns the point of the extremum distance.
     	raises  NotDone from StdFail
 	    	-- if IsDone(me)=False.

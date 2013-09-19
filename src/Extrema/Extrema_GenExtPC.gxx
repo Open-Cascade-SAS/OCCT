@@ -235,7 +235,7 @@ Standard_Boolean Extrema_GenExtPC::IsMin (const Standard_Integer N) const {
 //purpose  : 
 //=======================================================================
 
-POnC Extrema_GenExtPC::Point (const Standard_Integer N) const 
+const POnC & Extrema_GenExtPC::Point (const Standard_Integer N) const 
 {
   if (!IsDone()) { StdFail_NotDone::Raise(); }
   return myF.Point(N);

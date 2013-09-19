@@ -337,7 +337,7 @@ Standard_Boolean Extrema_GExtPC::IsMin(const Standard_Integer N) const
 //purpose  : 
 //=======================================================================
 
-ThePOnC Extrema_GExtPC::Point(const Standard_Integer N) const
+const ThePOnC & Extrema_GExtPC::Point(const Standard_Integer N) const
 {
   if(!mydone) StdFail_NotDone::Raise();
   if ((N < 1) || (N > mySqDist.Length())) Standard_OutOfRange::Raise();

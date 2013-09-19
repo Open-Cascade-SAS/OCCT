@@ -102,7 +102,7 @@ Standard_Real Extrema_ExtPSOfRev::SquareDistance (const Standard_Integer N) cons
 }
 //=============================================================================
 
-Extrema_POnSurf Extrema_ExtPSOfRev::Point (const Standard_Integer N) const
+const Extrema_POnSurf& Extrema_ExtPSOfRev::Point (const Standard_Integer N) const
 {
   if (!IsDone()) { StdFail_NotDone::Raise(); }
   return myPoint.Value(N);

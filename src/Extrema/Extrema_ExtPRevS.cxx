@@ -528,7 +528,7 @@ Standard_Real Extrema_ExtPRevS::SquareDistance(const Standard_Integer N) const
 //purpose  : 
 //=======================================================================
 
-Extrema_POnSurf Extrema_ExtPRevS::Point(const Standard_Integer N) const
+const Extrema_POnSurf& Extrema_ExtPRevS::Point(const Standard_Integer N) const
 {
   if (!IsDone()) { StdFail_NotDone::Raise(); }
   if ((N < 1) || (N > myNbExt)) { Standard_OutOfRange::Raise(); }

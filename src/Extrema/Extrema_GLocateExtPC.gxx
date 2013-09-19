@@ -330,20 +330,14 @@ Standard_Boolean Extrema_GLocateExtPC::IsMin () const
 //purpose  : 
 //=======================================================================
 
-ThePOnC Extrema_GLocateExtPC::Point () const 
+const ThePOnC & Extrema_GLocateExtPC::Point () const 
 {
   if (!myDone) { StdFail_NotDone::Raise(); }
-  ThePOnC P;
   if (type == GeomAbs_BezierCurve) {
-    P = myLocExtPC.Point();
+    return myLocExtPC.Point();
   }
   else if(type == GeomAbs_BSplineCurve || type == GeomAbs_OtherCurve) {
-    P =  mypp;
+    return mypp;
   }
-  else {
-    if (numberext != 0) {
-      P = myExtremPC.Point(numberext);
-    }
-  }
-  return P;
+  return myExtremPC.Point(numberext);
 }

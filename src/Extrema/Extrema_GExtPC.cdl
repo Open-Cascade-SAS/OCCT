@@ -118,6 +118,7 @@ is
     is static;
     
     Point(me; N: Integer from Standard) returns ThePOnC
+        ---C++: return const &
     	---Purpose: Returns the point of the <N>th extremum distance.
     raises NotDone    from StdFail, 
     	   OutOfRange from Standard

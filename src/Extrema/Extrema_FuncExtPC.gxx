@@ -411,7 +411,7 @@ Standard_Boolean Extrema_FuncExtPC::IsMin (const Standard_Integer N) const
   return (myIsMin.Value(N) == 1);
 }
 //=============================================================================
-POnC Extrema_FuncExtPC::Point (const Standard_Integer N) const
+const POnC & Extrema_FuncExtPC::Point (const Standard_Integer N) const
 {
   if (!myPinit || !myCinit) Standard_TypeMismatch::Raise();
   return myPoint.Value(N);

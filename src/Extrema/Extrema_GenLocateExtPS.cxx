@@ -101,7 +101,7 @@ Standard_Real Extrema_GenLocateExtPS::SquareDistance () const
 }
 //=============================================================================
 
-Extrema_POnSurf Extrema_GenLocateExtPS::Point () const
+const Extrema_POnSurf& Extrema_GenLocateExtPS::Point () const
 {
   if (!IsDone()) { StdFail_NotDone::Raise(); }
   return myPoint;

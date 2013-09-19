@@ -133,6 +133,7 @@ is
 
 
     Point (me; N: Integer) returns POnC
+        ---C++: return const &
     	---Purpose: Returns the point of the Nth extremum distance.
     raises TypeMismatch from Standard,
     	   NotDone from StdFail,

@@ -953,7 +953,7 @@ Standard_Real Extrema_GenExtPS::SquareDistance (const Standard_Integer N) const
 }
 //=============================================================================
 
-Extrema_POnSurf Extrema_GenExtPS::Point (const Standard_Integer N) const
+const Extrema_POnSurf& Extrema_GenExtPS::Point (const Standard_Integer N) const
 {
   if (!IsDone()) { StdFail_NotDone::Raise(); }
   return myF.Point(N);

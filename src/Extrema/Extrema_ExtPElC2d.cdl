@@ -142,6 +142,7 @@ is
     	is static;
 
     Point (me; N: Integer) returns POnCurv2d
+        ---C++: return const &
     	---Purpose: Returns the point of the Nth extremum distance.
     	raises  NotDone from StdFail,
 	    	-- if IsDone(me)=False.

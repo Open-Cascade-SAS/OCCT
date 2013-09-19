@@ -328,7 +328,7 @@ Standard_Boolean Extrema_ExtPElC2d::IsMin (const Standard_Integer N) const
 }
 //=============================================================================
 
-Extrema_POnCurv2d Extrema_ExtPElC2d::Point (const Standard_Integer N) const
+const Extrema_POnCurv2d& Extrema_ExtPElC2d::Point (const Standard_Integer N) const
 {
   if ((N < 1) || (N > NbExt())) { Standard_OutOfRange::Raise(); }
   return myPoint[N-1];

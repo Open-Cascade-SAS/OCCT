@@ -408,7 +408,7 @@ Standard_Real Extrema_ExtPElS::SquareDistance (const Standard_Integer N) const
 }
 //=============================================================================
 
-Extrema_POnSurf Extrema_ExtPElS::Point (const Standard_Integer N) const
+const Extrema_POnSurf& Extrema_ExtPElS::Point (const Standard_Integer N) const
 {
   if (!IsDone()) { StdFail_NotDone::Raise(); }
   if ((N < 1) || (N > myNbExt)) { Standard_OutOfRange::Raise(); }

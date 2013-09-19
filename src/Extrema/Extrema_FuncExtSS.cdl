@@ -78,11 +78,13 @@ is
 	    	-- if N < 1 or N > NbExt(me).
 
     PointOnS1 (me; N: Integer) returns POnSurf
+        ---C++: return const &
     	---Purpose: Return the Nth extremum on S1.
     	raises  OutOfRange;
 	    	-- if N < 1 or N > NbExt(me).
 
     PointOnS2 (me; N: Integer) returns POnSurf
+        ---C++: return const &
     	---Purpose: Renvoie le Nieme extremum sur S2.
     	raises  OutOfRange;
 	    	-- si N < 1 ou N > NbExt(me).

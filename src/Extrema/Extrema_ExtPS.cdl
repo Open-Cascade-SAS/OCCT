@@ -116,6 +116,7 @@ is
     	is static;
 
     Point (me; N: Integer) returns POnSurf
+        ---C++: return const &
     	---Purpose: Returns the point of the Nth resulting distance.
     	raises  NotDone from StdFail,
     	    	-- if IsDone(me)=False.
