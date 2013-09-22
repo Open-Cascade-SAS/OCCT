@@ -31,7 +31,6 @@ class Window from WNT inherits Window from Aspect
     Ratio              from Quantity,
     WClass             from WNT,
     Uint               from WNT,
-    Long               from WNT,
     Dword              from WNT,
     WindowData         from WNT
 
