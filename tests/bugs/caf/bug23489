@@ -1,6 +1,3 @@
-puts "TODO ?OCC24156 MacOS: Tcl Exception: File Bottom.brep could not be found"
-puts "TODO ?OCC24156 MacOS: TEST INCOMPLETE"
-
 # Test for #23489: memory leak in TNaming_NamedShape destructor
 
 pload OCAF

@@ -1,6 +1,4 @@
 puts "TODO ?OCC11111 ALL: Faulty : Export to pdf file was done but size of file is incorrect"
-puts "TODO ?OCC24156 MacOS: Tcl Exception: File shape.stl could not be found"
-puts "TODO ?OCC24156 MacOS: TEST INCOMPLETE"
 
 puts "============"
 puts "OCC21091"

@@ -1,6 +1,4 @@
-puts "TODO ?OCC24156 MacOS: Tcl Exception: File hammer.brep could not be found"
 puts "TODO OCC24156 MacOS: Error: unsupported locale specification"
-puts "TODO ?OCC24156 MacOS: TEST INCOMPLETE"
 
 # Test for issue #22898 and other functionality that can be affected by locale.
 # Just run multiple conversions of the shape to and from diferent formats and 

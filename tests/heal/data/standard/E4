@@ -1,9 +1,2 @@
-if { [string compare $command SplitAngle] == 0 
-  || [string compare $command ShapeDivide] == 0
-  || [string compare $command ShapeConvertRev] == 0 } {
-    puts "TODO ?OCC24156 MacOS: Tcl Exception: File mal_tige.brep could not be found"
-    puts "TODO ?OCC24156 MacOS: TEST INCOMPLETE"
-}
-
 restore [locate_data_file mal_tige.brep] a
 

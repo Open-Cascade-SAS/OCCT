@@ -1,6 +1,3 @@
-puts "TODO ?OCC24156 MacOS: Tcl Exception: File shape.stl could not be found"
-puts "TODO ?OCC24156 MacOS: TEST INCOMPLETE"
-
 puts "============"
 puts "OCC21091"
 puts "OCC21450"

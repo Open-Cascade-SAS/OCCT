@@ -1,14 +1,1 @@
-if { [string compare $group advanced] == 0 } {
-  if { [string compare $command shading] == 0 
-    || [string compare $command incmesh] == 0
-    || [string compare $command mesh] == 0 } {
-      puts "TODO ?OCC24156 MacOS: Tcl Exception: File linkrods.step could not be found"
-      puts "TODO ?OCC24156 MacOS: TEST INCOMPLETE"
-  }
-###  if { [string compare $command incmesh] == 0 && ${parallel} == 1 } {
-###    puts "TODO OCC24156 MacOS: Tcl Exception: File linkrods.step could not be found"
-###    puts "TODO OCC24156 MacOS: TEST INCOMPLETE"
-###  }
-}
-
 set TheFileName linkrods.step

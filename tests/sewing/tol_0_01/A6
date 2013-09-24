@@ -1,4 +1,1 @@
-puts "TODO ?OCC24156 MacOS: Tcl Exception: File mal_vis.brep could not be found"
-puts "TODO ?OCC24156 MacOS: TEST INCOMPLETE"
-
 restore [locate_data_file mal_vis.brep] a
