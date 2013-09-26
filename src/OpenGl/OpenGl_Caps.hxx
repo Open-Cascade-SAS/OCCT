@@ -29,14 +29,43 @@
 class OpenGl_Caps : public Standard_Transient
 {
 
-public: //! @name flags to disable particular functionality
+public: //! @name flags to disable particular functionality, should be used only for testing purposes!
 
   Standard_Boolean vboDisable;        //!< flag permits VBO usage, will significantly affect performance (OFF by default)
   Standard_Boolean pntSpritesDisable; //!< flag permits Point Sprites usage, will significantly affect performance (OFF by default)
 
 public: //! @name context creation parameters
 
-  Standard_Boolean contextDebug; //!< request debug GL context (requires support in OpenGL driver), useful for debugging of visualization code (OFF by default, currently implemented only fow Windows)
+  /**
+   * Request stereoscopic context (with Quad Buffer). This flag requires support in OpenGL driver.
+   *
+   * OFF by default.
+   */
+  Standard_Boolean contextStereo;
+
+  /**
+   * Request debug GL context. This flag requires support in OpenGL driver.
+   *
+   * When turned on OpenGL driver emits error and warning messages to provided callback
+   * (see OpenGl_Context - messages will be printed to standard output).
+   * Affects performance - thus should not be turned on by products in released state.
+   *
+   * OFF by default. Currently implemented only for Windows (WGL).
+   */
+  Standard_Boolean contextDebug;
+
+  /**
+   * Disable hardware acceleration.
+   *
+   * This flag overrides default behavior, when accelerated context always preferred over software ones:
+   * - on Windows will force Microsoft software implementation;
+   * - on Mac OS X, forces Apple software implementation.
+   *
+   * Software implementations are dramatically slower - should never be used.
+   *
+   * OFF by default. Currently implemented only for Windows (WGL) and Mac OS X (Cocoa).
+   */
+  Standard_Boolean contextNoAccel;
 
 public: //! @name class methods
 

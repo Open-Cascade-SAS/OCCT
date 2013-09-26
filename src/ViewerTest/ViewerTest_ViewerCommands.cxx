@@ -647,7 +647,7 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
 #if defined(_WIN32) || defined(__WIN32__)
       VT_GetWindow() = new WNT_Window (aTitle.ToCString(),
                                        Handle(WNT_WClass)::DownCast (WClass()),
-                                       WS_OVERLAPPEDWINDOW,
+                                       Draw_VirtualWindows ? WS_POPUPWINDOW : WS_OVERLAPPEDWINDOW,
                                        aPxLeft, aPxTop,
                                        aPxWidth, aPxHeight,
                                        Quantity_NOC_BLACK);
@@ -3895,6 +3895,7 @@ static int VCaps (Draw_Interpretor& theDI,
   {
     theDI << "VBO:     " << (aCaps->vboDisable        ? "0" : "1") << "\n";
     theDI << "Sprites: " << (aCaps->pntSpritesDisable ? "0" : "1") << "\n";
+    theDI << "SoftMode:" << (aCaps->contextNoAccel    ? "1" : "0") << "\n";
     return 0;
   }
 
@@ -3908,6 +3909,10 @@ static int VCaps (Draw_Interpretor& theDI,
     else if (anArg.Search ("sprites=") > -1)
     {
       aCaps->pntSpritesDisable = anArg.Token ("=", 2).IntegerValue() == 0;
+    }
+    else if (anArg.Search ("soft=") > -1)
+    {
+      aCaps->contextNoAccel = anArg.Token ("=", 2).IntegerValue() != 0;
     }
     else
     {
@@ -5402,7 +5407,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "vvbo [{0|1}] : turn VBO usage On/Off; affects only newly displayed objects",
     __FILE__, VVbo, group);
   theCommands.Add ("vcaps",
-    "vcaps [vbo={0|1}] [sprites={0|1}] : modify particular graphic driver options",
+    "vcaps [vbo={0|1}] [sprites={0|1}] [soft={0|1}] : modify particular graphic driver options",
     __FILE__, VCaps, group);
   theCommands.Add ("vmemgpu",
     "vmemgpu [f]: print system-dependent GPU memory information if available;"

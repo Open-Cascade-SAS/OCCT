@@ -40,6 +40,62 @@ namespace
 
 #if defined(_WIN32)
 
+  // WGL_ARB_pixel_format
+#ifndef WGL_NUMBER_PIXEL_FORMATS_ARB
+  #define WGL_NUMBER_PIXEL_FORMATS_ARB            0x2000
+  #define WGL_DRAW_TO_WINDOW_ARB                  0x2001
+  #define WGL_DRAW_TO_BITMAP_ARB                  0x2002
+  #define WGL_ACCELERATION_ARB                    0x2003
+  #define WGL_NEED_PALETTE_ARB                    0x2004
+  #define WGL_NEED_SYSTEM_PALETTE_ARB             0x2005
+  #define WGL_SWAP_LAYER_BUFFERS_ARB              0x2006
+  #define WGL_SWAP_METHOD_ARB                     0x2007
+  #define WGL_NUMBER_OVERLAYS_ARB                 0x2008
+  #define WGL_NUMBER_UNDERLAYS_ARB                0x2009
+  #define WGL_TRANSPARENT_ARB                     0x200A
+  #define WGL_TRANSPARENT_RED_VALUE_ARB           0x2037
+  #define WGL_TRANSPARENT_GREEN_VALUE_ARB         0x2038
+  #define WGL_TRANSPARENT_BLUE_VALUE_ARB          0x2039
+  #define WGL_TRANSPARENT_ALPHA_VALUE_ARB         0x203A
+  #define WGL_TRANSPARENT_INDEX_VALUE_ARB         0x203B
+  #define WGL_SHARE_DEPTH_ARB                     0x200C
+  #define WGL_SHARE_STENCIL_ARB                   0x200D
+  #define WGL_SHARE_ACCUM_ARB                     0x200E
+  #define WGL_SUPPORT_GDI_ARB                     0x200F
+  #define WGL_SUPPORT_OPENGL_ARB                  0x2010
+  #define WGL_DOUBLE_BUFFER_ARB                   0x2011
+  #define WGL_STEREO_ARB                          0x2012
+  #define WGL_PIXEL_TYPE_ARB                      0x2013
+  #define WGL_COLOR_BITS_ARB                      0x2014
+  #define WGL_RED_BITS_ARB                        0x2015
+  #define WGL_RED_SHIFT_ARB                       0x2016
+  #define WGL_GREEN_BITS_ARB                      0x2017
+  #define WGL_GREEN_SHIFT_ARB                     0x2018
+  #define WGL_BLUE_BITS_ARB                       0x2019
+  #define WGL_BLUE_SHIFT_ARB                      0x201A
+  #define WGL_ALPHA_BITS_ARB                      0x201B
+  #define WGL_ALPHA_SHIFT_ARB                     0x201C
+  #define WGL_ACCUM_BITS_ARB                      0x201D
+  #define WGL_ACCUM_RED_BITS_ARB                  0x201E
+  #define WGL_ACCUM_GREEN_BITS_ARB                0x201F
+  #define WGL_ACCUM_BLUE_BITS_ARB                 0x2020
+  #define WGL_ACCUM_ALPHA_BITS_ARB                0x2021
+  #define WGL_DEPTH_BITS_ARB                      0x2022
+  #define WGL_STENCIL_BITS_ARB                    0x2023
+  #define WGL_AUX_BUFFERS_ARB                     0x2024
+
+  #define WGL_NO_ACCELERATION_ARB                 0x2025
+  #define WGL_GENERIC_ACCELERATION_ARB            0x2026
+  #define WGL_FULL_ACCELERATION_ARB               0x2027
+
+  #define WGL_SWAP_EXCHANGE_ARB                   0x2028
+  #define WGL_SWAP_COPY_ARB                       0x2029
+  #define WGL_SWAP_UNDEFINED_ARB                  0x202A
+
+  #define WGL_TYPE_RGBA_ARB                       0x202B
+  #define WGL_TYPE_COLORINDEX_ARB                 0x202C
+#endif // WGL_NUMBER_PIXEL_FORMATS_ARB
+
   // WGL_ARB_create_context_profile
 #ifndef WGL_CONTEXT_MAJOR_VERSION_ARB
   #define WGL_CONTEXT_MAJOR_VERSION_ARB           0x2091
@@ -60,91 +116,6 @@ namespace
   static LRESULT CALLBACK wndProcDummy (HWND theWin, UINT theMsg, WPARAM theParamW, LPARAM theParamL)
   {
     return DefWindowProcW (theWin, theMsg, theParamW, theParamL);
-  }
-
-  static int find_pixel_format (HDC                    theDevCtx,
-                                PIXELFORMATDESCRIPTOR& thePixelFrmt,
-                                const Standard_Boolean theIsDoubleBuff)
-  {
-    PIXELFORMATDESCRIPTOR aPixelFrmtTmp;
-    memset (&aPixelFrmtTmp, 0, sizeof (PIXELFORMATDESCRIPTOR));
-    aPixelFrmtTmp.nSize      = sizeof (PIXELFORMATDESCRIPTOR);
-    aPixelFrmtTmp.nVersion   = 1;
-    aPixelFrmtTmp.dwFlags    = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | (theIsDoubleBuff ? PFD_DOUBLEBUFFER : PFD_SUPPORT_GDI);
-    aPixelFrmtTmp.iPixelType = PFD_TYPE_RGBA;
-    aPixelFrmtTmp.iLayerType = PFD_MAIN_PLANE;
-
-    const int BUFF_BITS_STENCIL[] = {  8,  1     };
-    const int BUFF_BITS_COLOR[]   = { 32, 24     };
-    const int BUFF_BITS_DEPTH[]   = { 32, 24, 16 };
-
-    int aGoodBits[] = { 0, 0, 0 };
-    int aPixelFrmtIdLast = 0;
-    int aPixelFrmtIdGood = 0;
-    Standard_Size aStencilIter = 0, aColorIter = 0, aDepthIter = 0;
-    for (aStencilIter = 0; aStencilIter < sizeof(BUFF_BITS_STENCIL) / sizeof(int); ++aStencilIter)
-    {
-      aPixelFrmtTmp.cStencilBits = (BYTE)(BUFF_BITS_STENCIL[aStencilIter]);
-      for (aDepthIter = 0; aDepthIter < sizeof(BUFF_BITS_DEPTH) / sizeof(int); ++aDepthIter)
-      {
-        aPixelFrmtTmp.cDepthBits = (BYTE)(BUFF_BITS_DEPTH[aDepthIter]);
-        aPixelFrmtIdGood = 0;
-        for (aColorIter = 0; aColorIter < sizeof(BUFF_BITS_COLOR) / sizeof(int); ++aColorIter)
-        {
-          aPixelFrmtTmp.cColorBits = (BYTE)(BUFF_BITS_COLOR[aColorIter]);
-          aPixelFrmtIdLast = ChoosePixelFormat (theDevCtx, &aPixelFrmtTmp);
-          if (aPixelFrmtIdLast == 0)
-          {
-            continue;
-          }
-
-          thePixelFrmt.cDepthBits   = 0;
-          thePixelFrmt.cColorBits   = 0;
-          thePixelFrmt.cStencilBits = 0;
-          DescribePixelFormat (theDevCtx, aPixelFrmtIdLast, sizeof(PIXELFORMATDESCRIPTOR), &thePixelFrmt);
-          if (thePixelFrmt.cColorBits   >= BUFF_BITS_COLOR[aColorIter]
-           && thePixelFrmt.cDepthBits   >= BUFF_BITS_DEPTH[aDepthIter]
-           && thePixelFrmt.cStencilBits >= BUFF_BITS_STENCIL[aStencilIter])
-          {
-            break;
-          }
-          if (thePixelFrmt.cColorBits > aGoodBits[0])
-          {
-            aGoodBits[0] = thePixelFrmt.cColorBits;
-            aGoodBits[1] = thePixelFrmt.cDepthBits;
-            aGoodBits[2] = thePixelFrmt.cStencilBits;
-            aPixelFrmtIdGood = aPixelFrmtIdLast;
-          }
-          else if (thePixelFrmt.cColorBits == aGoodBits[0])
-          {
-            if (thePixelFrmt.cDepthBits > aGoodBits[1])
-            {
-              aGoodBits[1] = thePixelFrmt.cDepthBits;
-              aGoodBits[2] = thePixelFrmt.cStencilBits;
-              aPixelFrmtIdGood = aPixelFrmtIdLast;
-            }
-            else if (thePixelFrmt.cDepthBits == aGoodBits[1])
-            {
-              if(thePixelFrmt.cStencilBits > aGoodBits[2])
-              {
-                aGoodBits[2] = thePixelFrmt.cStencilBits;
-                aPixelFrmtIdGood = aPixelFrmtIdLast;
-              }
-            }
-          }
-        }
-        if (aColorIter < sizeof(BUFF_BITS_COLOR) / sizeof(int))
-        {
-          break;
-        }
-      }
-      if (aDepthIter < sizeof(BUFF_BITS_DEPTH) / sizeof(int))
-      {
-        break;
-      }
-    }
-
-    return (aPixelFrmtIdLast == 0) ? aPixelFrmtIdGood : aPixelFrmtIdLast;
   }
 #else
   static Bool WaitForNotify (Display* theDisp, XEvent* theEv, char* theArg)
@@ -186,7 +157,21 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
   HGLRC aGContext = (HGLRC )theGContext;
 
   PIXELFORMATDESCRIPTOR aPixelFrmt;
-  const int aPixelFrmtId = find_pixel_format (aWindowDC, aPixelFrmt, myDisplay->DBuffer());
+  memset (&aPixelFrmt, 0, sizeof(aPixelFrmt));
+  aPixelFrmt.nSize        = sizeof(PIXELFORMATDESCRIPTOR);
+  aPixelFrmt.nVersion     = 1;
+  aPixelFrmt.dwFlags      = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+  aPixelFrmt.iPixelType   = PFD_TYPE_RGBA;
+  aPixelFrmt.cColorBits   = 24;
+  aPixelFrmt.cDepthBits   = 24;
+  aPixelFrmt.cStencilBits = 8;
+  aPixelFrmt.iLayerType   = PFD_MAIN_PLANE;
+  if (theCaps->contextStereo)
+  {
+    aPixelFrmt.dwFlags |= PFD_STEREO;
+  }
+
+  int aPixelFrmtId = ChoosePixelFormat (aWindowDC, &aPixelFrmt);
   if (aPixelFrmtId == 0)
   {
     ReleaseDC (aWindow, aWindowDC);
@@ -197,6 +182,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
     return;
   }
 
+  DescribePixelFormat (aWindowDC, aPixelFrmtId, sizeof(aPixelFrmt), &aPixelFrmt);
   if (aPixelFrmt.dwFlags & PFD_NEED_PALETTE)
   {
     WINDOW_DATA* aWndData = (WINDOW_DATA* )GetWindowLongPtr (aWindow, GWLP_USERDATA);
@@ -215,16 +201,6 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
     myBackDither = (aPixelFrmt.cColorBits <= 8);
   }
 
-  if (!SetPixelFormat (aWindowDC, aPixelFrmtId, &aPixelFrmt))
-  {
-    ReleaseDC (aWindow, aWindowDC);
-
-    TCollection_AsciiString aMsg("OpenGl_Window::CreateWindow: SetPixelFormat failed. Error code: ");
-    aMsg += (int )GetLastError();
-    Aspect_GraphicDeviceDefinitionError::Raise (aMsg.ToCString());
-    return;
-  }
-
   HGLRC aSlaveCtx = !theShareCtx.IsNull() ? (HGLRC )theShareCtx->myGContext : NULL;
   if (aGContext == NULL)
   {
@@ -238,7 +214,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
     HWND  aWinTmp     = NULL;
     HDC   aDevCtxTmp  = NULL;
     HGLRC aRendCtxTmp = NULL;
-    if (!theCaps->contextDebug
+    if ((!theCaps->contextDebug && !theCaps->contextNoAccel)
      || RegisterClassW (&aClass) == 0)
     {
       aClass.lpszClassName = NULL;
@@ -257,36 +233,86 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
       SetPixelFormat (aDevCtxTmp, aPixelFrmtId, &aPixelFrmt);
       aRendCtxTmp = wglCreateContext (aDevCtxTmp);
     }
+
+    typedef BOOL (WINAPI *wglChoosePixelFormatARB_t)(HDC           theDevCtx,
+                                                     const int*    theIntAttribs,
+                                                     const float*  theFloatAttribs,
+                                                     unsigned int  theMaxFormats,
+                                                     int*          theFormatsOut,
+                                                     unsigned int* theNumFormatsOut);
+    typedef HGLRC (WINAPI *wglCreateContextAttribsARB_t)(HDC        theDevCtx,
+                                                         HGLRC      theShareContext,
+                                                         const int* theAttribs);
+    wglChoosePixelFormatARB_t    aChoosePixProc = NULL;
+    wglCreateContextAttribsARB_t aCreateCtxProc = NULL;
     if (aRendCtxTmp != NULL)
     {
       wglMakeCurrent (aDevCtxTmp, aRendCtxTmp);
 
       typedef const char* (WINAPI *wglGetExtensionsStringARB_t)(HDC theDeviceContext);
-      typedef HGLRC (WINAPI *wglCreateContextAttribsARB_t)(HDC        theDevCtx,
-                                                           HGLRC      theShareContext,
-                                                           const int* theAttribs);
-      wglGetExtensionsStringARB_t  aGetExtensions = (wglGetExtensionsStringARB_t  )wglGetProcAddress ("wglGetExtensionsStringARB");
-      wglCreateContextAttribsARB_t aCreateCtxProc = (wglCreateContextAttribsARB_t )wglGetProcAddress ("wglCreateContextAttribsARB");
-      const char* aWglExts = aGetExtensions (wglGetCurrentDC());
-      if (aCreateCtxProc != NULL
-       && OpenGl_Context::CheckExtension (aWglExts, "WGL_ARB_create_context_profile"))
+      wglGetExtensionsStringARB_t aGetExtensions = (wglGetExtensionsStringARB_t  )wglGetProcAddress ("wglGetExtensionsStringARB");
+      const char* aWglExts = (aGetExtensions != NULL) ? aGetExtensions (wglGetCurrentDC()) : NULL;
+      if (OpenGl_Context::CheckExtension (aWglExts, "WGL_ARB_pixel_format"))
       {
-        // Beware! NVIDIA drivers reject context creation when WGL_CONTEXT_PROFILE_MASK_ARB are specified
-        // but not WGL_CONTEXT_MAJOR_VERSION_ARB/WGL_CONTEXT_MINOR_VERSION_ARB.
-        int aCtxAttribs[] =
-        {
-          //WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
-          //WGL_CONTEXT_MINOR_VERSION_ARB, 2,
-          //WGL_CONTEXT_PROFILE_MASK_ARB,  WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB, //WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
-          WGL_CONTEXT_FLAGS_ARB,         theCaps->contextDebug ? WGL_CONTEXT_DEBUG_BIT_ARB : 0,
-          0, 0
-        };
+        aChoosePixProc = (wglChoosePixelFormatARB_t    )wglGetProcAddress ("wglChoosePixelFormatARB");
+      }
+      if (OpenGl_Context::CheckExtension (aWglExts, "WGL_ARB_create_context_profile"))
+      {
+        aCreateCtxProc = (wglCreateContextAttribsARB_t )wglGetProcAddress ("wglCreateContextAttribsARB");
+      }
+    }
 
-        aGContext = aCreateCtxProc (aWindowDC, aSlaveCtx, aCtxAttribs);
-        if (aGContext != NULL)
-        {
-          aSlaveCtx = NULL;
-        }
+    // choose extended pixel format
+    if (aChoosePixProc != NULL)
+    {
+      const int aPixAttribs[] =
+      {
+        WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
+        WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
+        WGL_DOUBLE_BUFFER_ARB,  GL_TRUE,
+        WGL_STEREO_ARB,         theCaps->contextStereo ? GL_TRUE : GL_FALSE,
+        WGL_PIXEL_TYPE_ARB,     WGL_TYPE_RGBA_ARB,
+        //WGL_SAMPLE_BUFFERS_ARB, 1,
+        //WGL_SAMPLES_ARB,        8,
+        WGL_COLOR_BITS_ARB,     24,
+        WGL_DEPTH_BITS_ARB,     24,
+        WGL_STENCIL_BITS_ARB,   8,
+        WGL_ACCELERATION_ARB,   theCaps->contextNoAccel ? WGL_NO_ACCELERATION_ARB : WGL_FULL_ACCELERATION_ARB,
+        0, 0,
+      };
+      unsigned int aFrmtsNb = 0;
+      aChoosePixProc (aWindowDC, aPixAttribs, NULL, 1, &aPixelFrmtId, &aFrmtsNb);
+    }
+
+    // setup pixel format - may be set only once per window
+    if (!SetPixelFormat (aWindowDC, aPixelFrmtId, &aPixelFrmt))
+    {
+      ReleaseDC (aWindow, aWindowDC);
+
+      TCollection_AsciiString aMsg("OpenGl_Window::CreateWindow: SetPixelFormat failed. Error code: ");
+      aMsg += (int )GetLastError();
+      Aspect_GraphicDeviceDefinitionError::Raise (aMsg.ToCString());
+      return;
+    }
+
+    // create GL context with extra options
+    if (aCreateCtxProc != NULL)
+    {
+      // Beware! NVIDIA drivers reject context creation when WGL_CONTEXT_PROFILE_MASK_ARB are specified
+      // but not WGL_CONTEXT_MAJOR_VERSION_ARB/WGL_CONTEXT_MINOR_VERSION_ARB.
+      int aCtxAttribs[] =
+      {
+        //WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
+        //WGL_CONTEXT_MINOR_VERSION_ARB, 2,
+        //WGL_CONTEXT_PROFILE_MASK_ARB,  WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB, //WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
+        WGL_CONTEXT_FLAGS_ARB,         theCaps->contextDebug ? WGL_CONTEXT_DEBUG_BIT_ARB : 0,
+        0, 0
+      };
+
+      aGContext = aCreateCtxProc (aWindowDC, aSlaveCtx, aCtxAttribs);
+      if (aGContext != NULL)
+      {
+        aSlaveCtx = NULL;
       }
     }
 
@@ -309,6 +335,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
 
     if (aGContext == NULL)
     {
+      // create context using obsolete functionality
       aGContext = wglCreateContext (aWindowDC);
     }
     if (aGContext == NULL)

@@ -575,21 +575,21 @@ void OpenGl_PrimitiveArray::DrawMarkers (const Handle(OpenGl_Workspace)& theWork
   }
 
   // Textured markers will be drawn with the glBitmap
-  const GLfloat aPntSize = anAspectMarker->Type() == Aspect_TOM_POINT
-                         ? anAspectMarker->MarkerSize()
-                         : 0.0f;
-  if (aPntSize > 0.0f)
-  {
-    glPointSize (aPntSize);
-  }
   if (anAspectMarker->Type() == Aspect_TOM_POINT
    || anAspectMarker->Type() == Aspect_TOM_O_POINT)
   {
+    const GLfloat aPntSize = anAspectMarker->Type() == Aspect_TOM_POINT
+                           ? anAspectMarker->MarkerSize()
+                           : 0.0f;
+    if (aPntSize > 0.0f)
+    {
+      glPointSize (aPntSize);
+    }
     glDrawArrays (myDrawMode, 0, toDrawVbo() ? myVbos[VBOVertices]->GetElemsNb() : myPArray->num_vertexs);
-  }
-  if (aPntSize > 0.0f)
-  {
-    glPointSize (1.0f);
+    if (aPntSize > 0.0f)
+    {
+      glPointSize (1.0f);
+    }
   }
 
   if (anAspectMarker->Type() != Aspect_TOM_POINT

@@ -29,7 +29,9 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Caps, Standard_Transient)
 OpenGl_Caps::OpenGl_Caps()
 : vboDisable        (Standard_False),
   pntSpritesDisable (Standard_False),
-  contextDebug      (Standard_False)
+  contextStereo     (Standard_False),
+  contextDebug      (Standard_False),
+  contextNoAccel    (Standard_False)
 {
   //
 }
@@ -42,7 +44,9 @@ OpenGl_Caps& OpenGl_Caps::operator= (const OpenGl_Caps& theCopy)
 {
   vboDisable        = theCopy.vboDisable;
   pntSpritesDisable = theCopy.pntSpritesDisable;
+  contextStereo     = theCopy.contextStereo;
   contextDebug      = theCopy.contextDebug;
+  contextNoAccel    = theCopy.contextNoAccel;
   return *this;
 }
 

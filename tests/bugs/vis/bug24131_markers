@@ -1,6 +1,3 @@
-puts "TODO DEBUG_24148 Windows: Tcl Exception: Dumping failed!"
-puts "TODO DEBUG_24148 Windows: TEST INCOMPLETE"
-
 puts "========"
 puts "OCC24131 Markers using Point Sprites"
 puts "========"
@@ -23,20 +20,11 @@ set aMarkerTypeNames {
   Aspect_TOM_USERDEFINED
 }
 
-# generate custom marker
-set aCustom1 $imagedir/${casename}_m1.png
-set aCustom2 $imagedir/${casename}_m2.png
-box b 1 1 1
-vinit name=Driver0/Viewer1/View1 l=32 t=32 w=512 h=512
-vclear
-vdisplay b
-vaxo
-vfit
-vdump $aCustom1 rgba 32 32
-vsetdispmode b 1
-vsetcolor b RED
-vrotate 1 0 0
-vdump $aCustom2 rgba 32 32
+
+# custom marker
+set aCustom1 [locate_data_file images/marker_box1.png]
+set aCustom2 [locate_data_file images/marker_box2.png]
+set aCustom3 [locate_data_file images/marker_dot.png]
 
 # draw box in advance which should fit all our markers
 box b -8 -8 0 16 16 2
@@ -64,6 +52,8 @@ for { set aMode 0 } { $aMode <= 1 } { incr aMode } {
       vmarkerstest m${aMarkerType}_${aCol} $aCol $aRow 0 PointsOnSide=1 FileName=$aCustom1
       set aCol [expr $aCol - 1]
       vmarkerstest m${aMarkerType}_${aCol} $aCol $aRow 0 PointsOnSide=1 FileName=$aCustom2
+      set aCol [expr $aCol - 1]
+      vmarkerstest m${aMarkerType}_${aCol} $aCol $aRow 0 PointsOnSide=1 FileName=$aCustom3
     } else {
       for { set aMarkerScale 1.0 } { $aMarkerScale <= 7 } { set aMarkerScale [expr $aMarkerScale + 0.5] } {
         vmarkerstest m${aMarkerType}_${aCol} $aCol $aRow 0 MarkerType=$aMarkerType Scale=$aMarkerScale PointsOnSide=1

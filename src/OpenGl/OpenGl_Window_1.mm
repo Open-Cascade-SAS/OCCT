@@ -31,18 +31,11 @@
 #include <Cocoa_LocalPool.hxx>
 #include <TCollection_AsciiString.hxx>
 
+#include <OpenGL/CGLRenderers.h>
+
 namespace
 {
   static const TEL_COLOUR THE_DEFAULT_BG_COLOR = { { 0.F, 0.F, 0.F, 1.F } };
-  static const NSOpenGLPixelFormatAttribute THE_DOUBLE_BUFF[] = {
-    //NSOpenGLPFAColorSize, (NSOpenGLPixelFormatAttribute )32,
-    NSOpenGLPFADepthSize,   (NSOpenGLPixelFormatAttribute )24,
-    NSOpenGLPFAStencilSize, (NSOpenGLPixelFormatAttribute )8,
-    NSOpenGLPFADoubleBuffer,
-    NSOpenGLPFAAccelerated,
-    0
-  };
-
 };
 
 // =======================================================================
@@ -70,11 +63,31 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
   Cocoa_LocalPool aLocalPool;
   //NSOpenGLContext* aGContext = (NSOpenGLContext* )theGContext;
 
+  const NSOpenGLPixelFormatAttribute aDummyAttrib = NSOpenGLPFACompliant;
+  NSOpenGLPixelFormatAttribute anAttribs[] = {
+    theCaps->contextStereo ? NSOpenGLPFAStereo : aDummyAttrib,
+    //NSOpenGLPFAColorSize,  32,
+    NSOpenGLPFADepthSize,    24,
+    NSOpenGLPFAStencilSize,  8,
+    NSOpenGLPFADoubleBuffer,
+    theCaps->contextNoAccel ? NSOpenGLPFARendererID : NSOpenGLPFAAccelerated,
+    theCaps->contextNoAccel ? (NSOpenGLPixelFormatAttribute )kCGLRendererGenericFloatID : 0,
+    0
+  };
+
   // all GL context within one OpenGl_GraphicDriver should be shared!
   NSOpenGLContext*     aGLCtxShare = theShareCtx.IsNull() ? NULL : (NSOpenGLContext* )theShareCtx->myGContext;
-  NSOpenGLPixelFormat* aGLFormat   = [[[NSOpenGLPixelFormat alloc] initWithAttributes: THE_DOUBLE_BUFF] autorelease];
+  NSOpenGLPixelFormat* aGLFormat   = [[[NSOpenGLPixelFormat alloc] initWithAttributes: anAttribs] autorelease];
   NSOpenGLContext*     aGLContext  = [[NSOpenGLContext alloc] initWithFormat: aGLFormat
                                                                 shareContext: aGLCtxShare];
+  if (aGLContext == NULL
+   && theCaps->contextStereo)
+  {
+    anAttribs[0] = aDummyAttrib;
+    aGLForma     = [[[NSOpenGLPixelFormat alloc] initWithAttributes: anAttribs] autorelease];
+    aGLContext   = [[NSOpenGLContext alloc] initWithFormat: aGLFormat
+                                              shareContext: aGLCtxShare];
+  }
   if (aGLContext == NULL)
   {
     TCollection_AsciiString aMsg ("OpenGl_Window::CreateWindow: NSOpenGLContext creation failed");
