@@ -332,7 +332,7 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutCString
   (const Standard_CString theValue)
 {
   alignOffset (1);
-  Standard_Integer aSize = strlen (theValue) + 1;
+  Standard_Integer aSize = (Standard_Integer)(strlen (theValue) + 1);
   prepareForPut (aSize);
   putArray ((void* const)theValue, aSize);
   return *this;

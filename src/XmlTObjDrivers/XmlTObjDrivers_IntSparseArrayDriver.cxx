@@ -120,7 +120,7 @@ void XmlTObjDrivers_IntSparseArrayDriver::Paste
       TCollection_AsciiString( i );
     TCollection_AsciiString aStrIndex = TCollection_AsciiString( ITEM_VALUE ) +
       TCollection_AsciiString( i );
-    theTarget.Element().setAttribute( anIdStr.ToCString(), anIt.Index() );
+    theTarget.Element().setAttribute( anIdStr.ToCString(), (Standard_Integer)anIt.Index() );
     theTarget.Element().setAttribute( aStrIndex.ToCString(), anIt.Value() );
     i++;
   }

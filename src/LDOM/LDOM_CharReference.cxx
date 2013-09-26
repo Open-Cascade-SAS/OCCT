@@ -61,15 +61,15 @@ char * LDOM_CharReference::Decode (char * theSrc, Standard_Integer& theLen)
       //        End of the loop
       aPtr = strchr (aSrcPtr, '\0');
       if (anIncrCount == 0)
-        theLen = aPtr - theSrc;
+        theLen = (Standard_Integer)(aPtr - theSrc);
       else {
-        Standard_Integer aByteCount = aPtr - aSrcPtr;
+        Standard_Integer aByteCount = (Standard_Integer)(aPtr - aSrcPtr);
         memmove (aDstPtr, aSrcPtr, aByteCount + 1);
-        theLen = (aDstPtr - theSrc) + aByteCount;
+        theLen = (Standard_Integer)(aDstPtr - theSrc) + aByteCount;
       }
       break;
     }
-    Standard_Integer aByteCount = aPtr - aSrcPtr;
+    Standard_Integer aByteCount = (Standard_Integer)(aPtr - aSrcPtr);
     if (aByteCount > 0 && aDstPtr != aSrcPtr)
       memmove (aDstPtr, aSrcPtr, aByteCount);
     aSrcPtr = aPtr;
@@ -85,7 +85,7 @@ char * LDOM_CharReference::Decode (char * theSrc, Standard_Integer& theLen)
         //      Error reading an XML string
         return NULL;
       aDstPtr[-1] = (char) aChar;
-      anIncrCount += aNewPtr - aSrcPtr;
+      anIncrCount += (Standard_Integer)(aNewPtr - aSrcPtr);
       aSrcPtr = &aNewPtr[1];
     }
     else if (IS_EQUAL(aSrcPtr+1, "amp;")) {
@@ -167,7 +167,7 @@ char * LDOM_CharReference::Encode (const char* theSrc, Standard_Integer& theLen,
   }
   //    If there are such, copy the string with replacements
   if (!aCount)
-    theLen = endSrc - theSrc;
+    theLen = (Standard_Integer)(endSrc - theSrc);
   else {
     char * ptrDest = new char [(endSrc - theSrc) + aCount * 5 + 1];
     aDest = ptrDest;
@@ -188,7 +188,7 @@ char * LDOM_CharReference::Encode (const char* theSrc, Standard_Integer& theLen,
           ptrDest += entity_ref[aCode].length;
         }
     }
-    theLen = ptrDest - aDest;
+    theLen = (Standard_Integer)(ptrDest - aDest);
     * ptrDest = '\0';
   }
   return aDest;

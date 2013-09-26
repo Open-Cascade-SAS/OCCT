@@ -95,10 +95,10 @@ void IGESData_IGESWriter::SendStartLine (const Standard_CString startline)
   //
   pstartline=(Standard_PCharacter)startline;
   //
-  Standard_Integer lst = strlen (startline);
+  Standard_Size lst = strlen (startline);
   if (lst == 0) return;
   if (thestar.IsNull()) thestar = new TColStd_HSequenceOfHAsciiString();
-  if (lst <= MaxcarsG) {
+  if (lst <= (Standard_Size)MaxcarsG) {
     thestar->Append (new TCollection_HAsciiString(startline));
     return;
   }
@@ -349,7 +349,7 @@ void IGESData_IGESWriter::SendStartLine (const Standard_CString startline)
    const Standard_Integer more)
 {
   Standard_Integer lnstr = lnval;
-  if (lnstr <= 0)  lnstr = strlen(val);
+  if (lnstr <= 0)  lnstr = (Standard_Integer)strlen(val);
   if (!thecurr.CanGet (lnstr + more + 1)) {
 // + 1 (18-SEP-1996) pour etre sur que le separateur n est pas en tete de ligne
     if (thesect < 3) thehead->Append(thecurr.Moved());

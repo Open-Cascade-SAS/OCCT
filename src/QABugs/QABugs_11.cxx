@@ -2391,7 +2391,7 @@ static int StackOverflow(int i = -1)
     si = 0;
     memcpy(arr,sarr,2000);
     arr[1999]=0;
-    int n = strlen(arr), s=0;
+    int n = (int)strlen(arr), s=0;
     while (n--)
       s += StackOverflow(i-1);
     return i + s + StackOverflow(i-1);

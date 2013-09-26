@@ -51,7 +51,8 @@ void CompSparseArray (const Standard_Integer theRep, const Standard_Integer theS
       PERF_STOP_METER("NCollection_SparseArray filling")
       
       PERF_START_METER("NCollection_SparseArray size")
-          Standard_Integer sizeSparseArray=a1.Size();
+      Standard_Size sizeSparseArray=a1.Size();
+      (void)sizeSparseArray; // avoid compiler warning on unused variable
       PERF_STOP_METER("NCollection_SparseArray size")
       
       PERF_START_METER("NCollection_Array1 Assign")

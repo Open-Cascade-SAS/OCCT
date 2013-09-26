@@ -51,7 +51,7 @@ IGESData_IGESReaderData::IGESData_IGESReaderData
     void IGESData_IGESReaderData::AddGlobal
   (const Interface_ParamType atype, const Standard_CString aval)
 {
-  theparh->Append(aval,strlen(aval),atype,0);
+  theparh->Append(aval,(int)strlen(aval),atype,0);
 }
 
     void IGESData_IGESReaderData::SetGlobalSection ()

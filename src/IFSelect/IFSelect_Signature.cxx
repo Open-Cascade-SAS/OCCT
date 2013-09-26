@@ -87,7 +87,7 @@ static char intval[20];
   char cardeb = text.Value(1);
   Standard_Integer ln,lnt,i,j;
   ln  = text.Length();
-  lnt = strlen(val) - ln;
+  lnt = (Standard_Integer)(strlen(val) - ln);
   for (i = 0; i <= lnt; i ++) {
     if (val[i] == cardeb) {
 //    un candidat

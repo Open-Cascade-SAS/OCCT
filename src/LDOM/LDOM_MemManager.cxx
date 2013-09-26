@@ -84,7 +84,7 @@ void * LDOM_MemManager::MemBlock::AllocateAndCheck
                          const LDOM_MemManager::MemBlock *& aFirstWithoutRoom)
 {
   void * aResult = NULL;
-  Standard_Integer aRoom = myEndBlock - myFreeSpace;
+  Standard_Integer aRoom = (Standard_Integer)(myEndBlock - myFreeSpace);
   if (aSize <= aRoom) {
     aResult = myFreeSpace;
     myFreeSpace += aSize;

@@ -71,10 +71,7 @@ Interface_FileReaderData::Interface_FileReaderData (const Standard_Integer nbr,
    const Standard_CString aval, const Interface_ParamType atype,
    const Standard_Integer nument)
 {
-//  Interface_FileParameter FP;
-//  FP.Init(aval,atype);
   theparams->Append(aval,-1,atype,nument);
-  //thenbpar(num) ++;  // SetValue(num,thenbpar(num)+1);
 }
 
     void Interface_FileReaderData::AddParam
@@ -82,10 +79,7 @@ Interface_FileReaderData::Interface_FileReaderData (const Standard_Integer nbr,
    const TCollection_AsciiString& aval, const Interface_ParamType atype,
    const Standard_Integer nument)
 {
-//  Interface_FileParameter FP;
-//  FP.Init(aval,atype);
   theparams->Append(aval.ToCString(),aval.Length(),atype,nument);
-  //thenbpar(num) ++;  // .SetValue(num,thenbpar(num)+1);
 }
 
     void Interface_FileReaderData::AddParam
@@ -93,7 +87,6 @@ Interface_FileReaderData::Interface_FileReaderData (const Standard_Integer nbr,
    const Interface_FileParameter& FP)
 {
   theparams->Append(FP);
-  //thenbpar(num) ++;  // .SetValue(num,thenbpar(num)+1);
 }
 
 
@@ -101,7 +94,6 @@ Interface_FileReaderData::Interface_FileReaderData (const Standard_Integer nbr,
   (const Standard_Integer num, const Standard_Integer nump,
    const Interface_FileParameter& FP)
 {
-  //if (nump <= thenbpar.Value(num))
     theparams->SetParam(thenumpar(num-1)+nump,FP);
 }
 
@@ -109,7 +101,7 @@ Interface_FileReaderData::Interface_FileReaderData (const Standard_Integer nbr,
   (const Standard_Integer num) const
 {
   if (num > 1) return (thenumpar(num) - thenumpar(num-1));
-  else if(num ==1) return thenumpar(num);                  //thenbpar(num);
+  else if(num ==1) return thenumpar(num);
   else return theparams->NbParams();
 }
 

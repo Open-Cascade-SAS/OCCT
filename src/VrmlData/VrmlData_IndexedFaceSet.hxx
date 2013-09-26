@@ -132,7 +132,7 @@ class VrmlData_IndexedFaceSet : public VrmlData_Faceted
   /**
    * Set the polygons
    */
-  inline void   SetPolygons     (const Standard_Integer nPolygons,
+  inline void   SetPolygons     (const Standard_Size       nPolygons,
                                  const Standard_Integer ** thePolygons)
   { myNbPolygons = nPolygons; myArrPolygons = thePolygons; }
 
@@ -183,7 +183,7 @@ class VrmlData_IndexedFaceSet : public VrmlData_Faceted
   /**
    * Set the normals array of indice
    */
-  inline void   SetNormalInd    (const Standard_Integer nIndice,
+  inline void   SetNormalInd    (const Standard_Size       nIndice,
                                  const Standard_Integer ** theIndice)
   { myNbNormals = nIndice; myArrNormalInd = theIndice; }
 
@@ -231,7 +231,7 @@ class VrmlData_IndexedFaceSet : public VrmlData_Faceted
   /**
    * Set the colors array of indice
    */
-  inline void   SetColorInd     (const Standard_Integer nIndice,
+  inline void   SetColorInd     (const Standard_Size       nIndice,
                                  const Standard_Integer ** theIndice)
   { myNbColors = nIndice; myArrColorInd = theIndice; }
 
@@ -264,7 +264,7 @@ class VrmlData_IndexedFaceSet : public VrmlData_Faceted
   /**
    * Set the TexCoordiante array of indice
    */
-  inline void   SetTextureCoordInd (const Standard_Integer nIndice,
+  inline void   SetTextureCoordInd (const Standard_Size       nIndice,
                                     const Standard_Integer ** theIndice)
   { myNbTextures = nIndice; myArrTextureInd = theIndice; }
 

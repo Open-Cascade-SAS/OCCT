@@ -56,7 +56,7 @@ LDOMString::LDOMString (const LDOMBasicString&          anOther,
   case LDOM_AsciiDoc:
     {
       const char * aString = anOther.GetString ();
-      Standard_Integer aLen = strlen (aString) + 1;
+      Standard_Integer aLen = (Standard_Integer)(strlen (aString) + 1);
       myVal.ptr = ((LDOM_MemManager *) myPtrDoc) -> Allocate (aLen);
       memcpy (myVal.ptr, aString, aLen);
     }

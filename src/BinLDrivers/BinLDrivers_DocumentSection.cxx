@@ -138,7 +138,7 @@ void BinLDrivers_DocumentSection::WriteTOC (Standard_OStream& theStream)
 #if DO_INVERSE
     aBufSz[0] = InverseSize ((Standard_Integer)aBufSize);
 #else
-    aBufSz[0] = aBufSize;
+    aBufSz[0] = (Standard_Integer)aBufSize;
 #endif
     theStream.write (&aBuf[0], aBufSize + sizeof(Standard_Integer));
 

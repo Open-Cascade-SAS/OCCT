@@ -431,8 +431,8 @@ Standard_Integer Image_Diff::ignoreBorderEffect()
         if (myGroupsOfDiffPixels.IsEmpty())
         {
           TColStd_MapOfInteger* aGroup = new TColStd_MapOfInteger();
-          aGroup->Add (aValue1);
-          aGroup->Add (aValue2);
+          aGroup->Add ((Standard_Integer)aValue1);
+          aGroup->Add ((Standard_Integer)aValue2);
           myGroupsOfDiffPixels.Append (aGroup);
         }
         else
@@ -442,9 +442,9 @@ Standard_Integer Image_Diff::ignoreBorderEffect()
           for (ListOfMapOfInteger::Iterator aGrIter (myGroupsOfDiffPixels); aGrIter.More(); aGrIter.Next())
           {
             TColStd_MapOfInteger*& aGroup = aGrIter.ChangeValue();
-            if (aGroup->Contains (aValue1))
+            if (aGroup->Contains ((Standard_Integer)aValue1))
             {
-              aGroup->Add (aValue2);
+              aGroup->Add ((Standard_Integer)aValue2);
               isFound = Standard_True;
               break;
             }
@@ -454,8 +454,8 @@ Standard_Integer Image_Diff::ignoreBorderEffect()
           {
             // Create a new group
             TColStd_MapOfInteger* aGroup = new TColStd_MapOfInteger();
-            aGroup->Add (aValue1);
-            aGroup->Add (aValue2);
+            aGroup->Add ((Standard_Integer)aValue1);
+            aGroup->Add ((Standard_Integer)aValue2);
             myGroupsOfDiffPixels.Append (aGroup);
           }
         }
@@ -480,7 +480,7 @@ Standard_Integer Image_Diff::ignoreBorderEffect()
       for (Standard_Size aNgbrIter = 0; aNgbrIter < NEIGHBOR_PIXELS_NB; ++aNgbrIter)
       {
         if (NEIGHBOR_PIXELS[aNgbrIter].isValid (aDataRef, aRow1, aCol1)
-         && aGroup->Contains (NEIGHBOR_PIXELS[aNgbrIter].pixel2Int (aRow1, aCol1)))
+         && aGroup->Contains ((Standard_Integer)NEIGHBOR_PIXELS[aNgbrIter].pixel2Int (aRow1, aCol1)))
         {
           ++aNeighboursNb;
         }

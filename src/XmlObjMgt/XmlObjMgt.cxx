@@ -196,7 +196,7 @@ Standard_Boolean XmlObjMgt::GetTagEntryString
     if (aTagValue <= 0 || aPtr[0] != aQuote ||
         errno == ERANGE || errno == EINVAL)
       return Standard_False;
-    Standard_Integer aLen = aPtr - &aSource[1];
+    Standard_Integer aLen = (Standard_Integer)(aPtr - &aSource[1]);
     aTagEntryPtr[0] = ':';
     memcpy (&aTagEntryPtr[1], &aSource[1], aLen);
     aTagEntryPtr += (aLen + 1);
@@ -251,7 +251,7 @@ void XmlObjMgt::SetTagEntryString (XmlObjMgt_DOMString&           theTarget,
     long aTagValue = strtol (aTagEntry, &ptr, 10);
     if (aTagValue <= 0 || errno == ERANGE || errno == EINVAL)
       return;           // error
-    Standard_Integer aTagSize = ptr - aTagEntry;
+    Standard_Integer aTagSize = (Standard_Integer)(ptr - aTagEntry);
 
     //  Add one XPath level to the expression in aTarget
     memcpy (&aTargetPtr[0],                     aRefElem1, anElem1Size);

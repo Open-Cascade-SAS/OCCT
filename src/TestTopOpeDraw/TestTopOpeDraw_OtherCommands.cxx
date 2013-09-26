@@ -91,7 +91,7 @@ void OthersCommands_flags(Standard_Integer& na,const char** a,TestTopOpeDraw_Dis
     iloc = i - decal;
     if(!a[iloc]) break;
     if (a[iloc][0] == '-') {
-      l = strlen(a[iloc]);
+      l = (Standard_Integer)strlen(a[iloc]);
       for (j=1; j<l; j++) {
 	if     (a[iloc][j] == 'g') tgeo=Standard_True;
 	else if(!strcmp(a[iloc],"-tol")) tolflag = Standard_True;

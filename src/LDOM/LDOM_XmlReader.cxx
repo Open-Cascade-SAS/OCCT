@@ -120,7 +120,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord
     //  Check if the current file buffer is exhausted
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  There should always be some bytes available in the buffer for analysis
-    Standard_Integer aBytesRest = myEndPtr - myPtr;
+    Standard_Integer aBytesRest = (Standard_Integer)(myEndPtr - myPtr);
     if (aBytesRest < XML_MIN_BUFFER) {
       if (myEOF == Standard_True) {
         if (aBytesRest <= 0)
@@ -202,7 +202,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord
             myPtr = aNameEnd;
             if (myPtr < myEndPtr) {
               myElement = & LDOM_BasicElement::Create (aStartData,
-                                                       myPtr - aStartData,
+                                                       (Standard_Integer)(myPtr - aStartData),
                                                        myDocument);
               myLastChild = NULL;
               aState = STATE_ATTRIBUTE_NAME;
@@ -408,7 +408,7 @@ LDOM_XmlReader::RecordType LDOM_XmlReader::ReadRecord
           aStartData = myPtr;
         else {
           if (theData.Length() == 0)
-            anAttrName = LDOMBasicString(myPtr, aNameEnd - myPtr, myDocument);
+            anAttrName = LDOMBasicString(myPtr, (Standard_Integer)(aNameEnd - myPtr), myDocument);
           else {
             theData.rdbuf()->sputn(myPtr, aNameEnd - myPtr);
 attr_name:

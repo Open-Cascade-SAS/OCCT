@@ -78,7 +78,7 @@ void StepData_UndefinedEntity::ReadRecord(const Handle(StepData_StepReaderData)&
     }
     else if (partyp == Interface_ParamText) {
       //    Return integre a supprimer silya
-      Standard_Integer lval = strlen(val);  Standard_Integer mval = -1;
+      Standard_Integer lval = (Standard_Integer)strlen(val);  Standard_Integer mval = -1;
       for (Standard_Integer j = 0; j < lval; j ++) {
 	if (val[j] == '\n') { mval = i; break; }
       }

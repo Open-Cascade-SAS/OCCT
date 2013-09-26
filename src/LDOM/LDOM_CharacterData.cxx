@@ -78,6 +78,6 @@ void LDOM_CharacterData::setData (const LDOMString& theValue)
 Standard_Integer LDOM_CharacterData::getLength () const
 {
   if (myLength < 0)
-    (Standard_Integer&)myLength = strlen (getNodeValue().GetString());
+    (Standard_Integer&)myLength = (Standard_Integer)strlen (getNodeValue().GetString());
   return myLength;
 }

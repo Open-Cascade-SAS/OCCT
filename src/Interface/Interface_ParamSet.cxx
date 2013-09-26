@@ -55,7 +55,7 @@ Standard_Integer  Interface_ParamSet::Append (const Standard_CString val, const 
     Standard_Integer i;
     if (thelnval + lnval + 1 > thelnres) {
       //      Reservation de caracteres insuffisante : d abord augmenter
-      Standard_Integer newres = thelnres*2 + lnval ;
+      Standard_Integer newres = (Standard_Integer)(thelnres*2 + lnval);
       char* newval = new char[newres];
       for (i = 0; i < thelnval; i++) 
         newval[i] = theval[i]; //szv#4:S4163:12Mar99 `<= thelnres` was wrong
@@ -88,7 +88,7 @@ Standard_Integer  Interface_ParamSet::Append (const Standard_CString val, const 
     Interface_FileParameter& FP = thelist->ChangeValue(thenbpar);
     FP.Init(&theval[thelnval],typ);
     if (nument != 0) FP.SetEntityNumber(nument);
-    thelnval += (lnval+1);
+    thelnval += (Standard_Integer)(lnval+1);
   }
   return thenbpar;
 }

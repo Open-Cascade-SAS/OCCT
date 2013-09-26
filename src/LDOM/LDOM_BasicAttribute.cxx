@@ -46,7 +46,7 @@ LDOM_BasicAttribute& LDOM_BasicAttribute::Create
 
   const char * aString = theName.GetString();
   aNewAtt -> myName =
-    theDoc -> HashedAllocate (aString, strlen(aString), theHash);
+    theDoc -> HashedAllocate (aString, (Standard_Integer)strlen(aString), theHash);
 
   aNewAtt -> myNodeType = LDOM_Node::ATTRIBUTE_NODE;
   return * aNewAtt;

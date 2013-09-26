@@ -53,7 +53,7 @@ static Standard_Real cnvreal;
 static int intstr(Standard_Integer V,Standard_CString F)
 {
   sprintf(cnvbuf,F,V);
-  return strlen(cnvbuf);
+  return (int)strlen(cnvbuf);
 }
 
 //-----------------------------------------------------------------------
@@ -62,7 +62,7 @@ static int intstr(Standard_Integer V,Standard_CString F)
 static int realstr(Standard_Real V, Standard_CString F)
 {
   sprintf(cnvbuf,F,V);
-  return strlen(cnvbuf);
+  return (int)strlen(cnvbuf);
 }
   
 //-----------------------------------------------------------------------

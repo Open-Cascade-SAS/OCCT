@@ -77,7 +77,7 @@ int cPrintf ( char* fmt, ... ) {
   va_start( argptr, fmt );
   cnt = vsprintf ( buffer, fmt, argptr ); 
   va_end ( argptr );
-  WriteConsole ( hConsole, buffer, strlen ( buffer ), &lpcchWritten, NULL );
+  WriteConsole ( hConsole, buffer, (DWORD) strlen ( buffer ), &lpcchWritten, NULL );
   return cnt;
 
 }  /* end cPrintf */
@@ -105,7 +105,7 @@ int fcPrintf ( int /*dummy*/, char* fmt, ... ) {
   va_start( argptr, fmt );
   cnt = vsprintf ( buffer, fmt, argptr ); 
   va_end ( argptr );
-  WriteConsole ( hConsole, buffer, strlen ( buffer ), &lpcchWritten, NULL );
+  WriteConsole ( hConsole, buffer, (DWORD )strlen ( buffer ), &lpcchWritten, NULL );
 
   return cnt;
 

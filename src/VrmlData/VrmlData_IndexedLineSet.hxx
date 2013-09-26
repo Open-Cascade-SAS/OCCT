@@ -112,7 +112,7 @@ class VrmlData_IndexedLineSet : public VrmlData_Geometry
   /**
    * Set the polygons
    */
-  inline void   SetPolygons     (const Standard_Integer nPolygons,
+  inline void   SetPolygons     (const Standard_Size       nPolygons,
                                  const Standard_Integer ** thePolygons)
   { myNbPolygons = nPolygons; myArrPolygons = thePolygons; }
 
@@ -147,7 +147,7 @@ class VrmlData_IndexedLineSet : public VrmlData_Geometry
   /**
    * Set the colors array of indice
    */
-  inline void   SetColorInd     (const Standard_Integer nIndice,
+  inline void   SetColorInd     (const Standard_Size       nIndice,
                                  const Standard_Integer ** theIndice)
   { myNbColors = nIndice; myArrColorInd = theIndice; }
 

@@ -132,7 +132,10 @@ __declspec( dllexport ) long InterfaceGraphic_RealizePalette ( HDC hdc, HPALETTE
   
   }  // end else
  
+#pragma warning(push)
+#pragma warning(disable:4306) /* level 4 warning on cast of int to HWND in HWND_BROADCAST macro */
   PostMessage ( HWND_BROADCAST, WM_SYSCOLORCHANGE, 0, 0 );
+#pragma warning(pop)
 
  } else {
  

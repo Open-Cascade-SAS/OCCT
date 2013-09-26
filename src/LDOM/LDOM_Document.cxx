@@ -108,7 +108,7 @@ LDOM_Document LDOM_Document::createDocument (const LDOMString& theQualifiedName)
   if (strlen(aString) == 0)
     aString = "document";
   aDoc.myMemManager -> myRootElement =
-    & LDOM_BasicElement::Create (aString, strlen(aString), aDoc.myMemManager);
+    & LDOM_BasicElement::Create (aString, (Standard_Integer)strlen(aString), aDoc.myMemManager);
   return aDoc;
 }
 
@@ -121,7 +121,7 @@ LDOM_Element LDOM_Document::createElement (const LDOMString& theTagName)
 {
   const char * aTagString = theTagName.GetString();
   LDOM_BasicElement& aBasicElem = LDOM_BasicElement::Create (aTagString,
-                                                             strlen(aTagString),
+                                                             (Standard_Integer)strlen(aTagString),
                                                              myMemManager);
   return LDOM_Element (aBasicElem, myMemManager);
 }

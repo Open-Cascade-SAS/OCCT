@@ -154,5 +154,5 @@ Standard_Integer Interface_FloatWriter::Convert (const Standard_Real val,
     pText[j0+5] = lxp[4]; 
     pText[j0+6] = '\0';
   }
-  return strlen(text);
+  return (Standard_Integer)strlen(text);
 }

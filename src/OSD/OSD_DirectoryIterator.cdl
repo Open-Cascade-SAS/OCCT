@@ -97,7 +97,7 @@ is
       myEntry      : Address ;      -- unused by Windows NT code
       myInit       : Integer ;      -- unused by Windows NT code
       myError      : Error;
-      myHandle     : Integer;   -- Windows NT specific
+      myHandle     : Address;   -- Windows NT specific
       myData       : Address;   -- Windows NT specific
       myFirstCall  : Boolean;   -- Windows NT specific
 end DirectoryIterator from OSD;

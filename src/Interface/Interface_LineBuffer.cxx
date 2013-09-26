@@ -142,7 +142,7 @@ Interface_LineBuffer::Interface_LineBuffer (const Standard_Integer size)
 // ....                        AJOUTS                        ....
 
     void  Interface_LineBuffer::Add (const Standard_CString text)
-      {  Add (text,strlen(text));  }
+      {  Add (text,(Standard_Integer)strlen(text));  }
 
     void  Interface_LineBuffer::Add
   (const Standard_CString text, const Standard_Integer lntext)

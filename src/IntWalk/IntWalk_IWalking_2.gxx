@@ -300,7 +300,7 @@ Standard_Boolean IntWalk_IWalking::TestArretPassage
 	  if(( (Dup*UV1mUtest + Dvp*UV2mVtest) < 0) ||
 	     (   Abs(UV1mUtest) < tolu 
 	      && Abs(UV2mVtest) < tolv)) {
-	    i_candidates.Append(i);
+	    i_candidates.Append((Standard_Integer)i);
 	    SqDist_candidates.Append(Dup*Dup + Dvp*Dvp);
 	    /*
 	    Irang=i;
@@ -319,7 +319,7 @@ Standard_Boolean IntWalk_IWalking::TestArretPassage
 		   (Vp-Vmult(j))*(UV(2)-Vmult(j)) < 0) ||
 		  (Abs(UV(1)-Umult(j)) < tolu &&
 		   Abs(UV(2)-Vmult(j)) < tolv)) {
-		Irang=i;
+		Irang=(Standard_Integer)i;
 		Arrive = Standard_True;
 		UV(1) = Utest;
 		UV(2) = Vtest;
