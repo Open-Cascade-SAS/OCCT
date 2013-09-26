@@ -314,48 +314,72 @@ void Extrema_ExtElCS::Perform(const gp_Circ& C,
       Standard_Real    aTolConf = Precision::Confusion();
       Standard_Real    aCylRad  = S.Radius();
 
+      // Check whether two objects have intersection points
+      IntAna_Quadric aCylQuad(S);
+      IntAna_IntConicQuad aCircCylInter(C, aCylQuad);
+      Standard_Integer aNbInter = aCircCylInter.NbPoints();
+      if (!aCircCylInter.IsDone())
+        aNbInter = 0;
+
       // Compute the extremas.
-      myNbExt  =     2*aNbExt;
+      myNbExt  =     2*aNbExt + aNbInter;
       mySqDist  = new TColStd_HArray1OfReal(1, myNbExt);
       myPoint1 = new Extrema_HArray1OfPOnCurv(1, myNbExt);
       myPoint2 = new Extrema_HArray1OfPOnSurf(1, myNbExt);
 
       for (i = 1; i <= aNbExt; i++) {
-	Extrema_POnCurv aPOnAxis;
-	Extrema_POnCurv aPOnCirc;
-	Standard_Real   aSqDist = anExtC.SquareDistance(i);
-	Standard_Real   aDist = sqrt (aSqDist);
+        Extrema_POnCurv aPOnAxis;
+        Extrema_POnCurv aPOnCirc;
+        Standard_Real   aSqDist = anExtC.SquareDistance(i);
+        Standard_Real   aDist = sqrt (aSqDist);
 
-	anExtC.Points(i, aPOnAxis, aPOnCirc);
+        anExtC.Points(i, aPOnAxis, aPOnCirc);
 
-	if (aSqDist <= (aTolConf * aTolConf) || aCenter.IsEqual(aPOnAxis.Value(), aTolConf)) {
-	  myNbExt -= 2;
-	  continue;
-	}
+        if (aSqDist <= (aTolConf * aTolConf)) {
+          myNbExt -= 2;
+          continue;
+        }
 
-	gp_Dir           aDir(aPOnAxis.Value().XYZ().
-			      Subtracted(aPOnCirc.Value().XYZ()));
-	Standard_Real    aShift[2] = { aDist + aCylRad, aDist - aCylRad };
-	Standard_Integer j;
+        gp_Dir aDir(aPOnAxis.Value().XYZ().Subtracted(aPOnCirc.Value().XYZ()));
+        Standard_Real aShift[2] = { aDist + aCylRad, aDist - aCylRad };
+        Standard_Integer j;
 
-	for (j = 0; j < 2; j++) {
-	  gp_Vec aVec(aDir);
-	  gp_Pnt aPntOnCyl;
+        for (j = 0; j < 2; j++) {
+          gp_Vec aVec(aDir);
+          gp_Pnt aPntOnCyl;
 
-	  aVec.Multiply(aShift[j]);
-	  aPntOnCyl = aPOnCirc.Value().Translated(aVec);
+          aVec.Multiply(aShift[j]);
+          aPntOnCyl = aPOnCirc.Value().Translated(aVec);
 
-	  Standard_Real aU;
-	  Standard_Real aV;
+          Standard_Real aU;
+          Standard_Real aV;
 
-	  ElSLib::Parameters(S, aPntOnCyl, aU, aV);
+          ElSLib::Parameters(S, aPntOnCyl, aU, aV);
 
-	  Extrema_POnSurf aPOnSurf(aU, aV, aPntOnCyl);
+          Extrema_POnSurf aPOnSurf(aU, aV, aPntOnCyl);
 
-	  myPoint1->SetValue(aCurI, aPOnCirc);
-	  myPoint2->SetValue(aCurI, aPOnSurf);
-	  mySqDist->SetValue(aCurI++, aShift[j] * aShift[j]);
-	}
+          myPoint1->SetValue(aCurI, aPOnCirc);
+          myPoint2->SetValue(aCurI, aPOnSurf);
+          mySqDist->SetValue(aCurI++, aShift[j] * aShift[j]);
+        }
+      }
+
+      // Adding intersection points to the list of extremas
+      for (i=1; i<=aNbInter; i++)
+      {
+        Standard_Real aU;
+        Standard_Real aV;
+
+        gp_Pnt aInterPnt = aCircCylInter.Point(i);
+
+        aU = ElCLib::Parameter(C, aInterPnt);
+        Extrema_POnCurv aPOnCirc(aU, aInterPnt);
+
+        ElSLib::Parameters(S, aInterPnt, aU, aV);
+        Extrema_POnSurf aPOnCyl(aU, aV, aInterPnt);
+        myPoint1->SetValue(aCurI, aPOnCirc);
+        myPoint2->SetValue(aCurI, aPOnCyl);
+        mySqDist->SetValue(aCurI++, 0.0);
       }
     }
 

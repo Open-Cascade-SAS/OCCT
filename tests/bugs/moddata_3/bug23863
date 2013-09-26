@@ -1,0 +1,38 @@
+puts "================"
+puts "OCC23863"
+puts "================"
+puts ""
+#######################################################################
+# Wrong distance value between circle and cylinder
+#######################################################################
+
+pcylinder b1 10 10
+explode b1 f
+copy b1_1 b1
+circle b2 0 10 10 1 0 0 5
+mkedge b2 b2
+
+distmini d b1 b2
+
+regexp {([-0-9.+eE]+)$} [dump d_val] full dist
+regexp { +Vertex +: +Min +[-0-9.+eE]+ +Max +([-0-9.+eE]+)} [ maxtolerance d ] full toler
+set good_dist 0
+if { [expr abs( ${dist} - ${good_dist} )] > ${toler} } {
+    puts "Faulty : the distanse is ${dist}. It is bad value"
+}
+
+regexp { +Point 3D : +([-0-9.+eE]+), +([-0-9.+eE]+), +([-0-9.+eE]+)} [ dump d ] full x y z
+set good_x 0
+set good_y 10
+set good_z 5
+if { [expr abs( ${x} - ${good_x} )] > ${toler} } {
+    puts "Faulty : the x coordinate of the point is ${x}. It is bad value"
+}
+if { [expr abs( ${y} - ${good_y} )] > ${toler} } {
+    puts "Faulty : the y coordinate of the point is ${y}. It is bad value"
+}
+if { [expr abs( ${z} - ${good_z} )] > ${toler} } {
+    puts "Faulty : the z coordinate of the point is ${z}. It is bad value"
+}
+
+set 2dviewer 1
