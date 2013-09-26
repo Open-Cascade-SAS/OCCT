@@ -16,11 +16,11 @@ decho on
 
 set status 0
 if { [regexp "Faulty shapes in variables faulty_1 to faulty_2" $info1] != 1 } {
-    puts "Error : There is no 2 mistakes by checkshape on face1
+    puts "Error : There is no 2 mistakes by checkshape on face1"
     set status 1
 }
 if { [regexp "Faulty shapes in variables faulty_1 to faulty_2" $info2] != 1 } {
-    puts "Error : There is no 2 mistakes by checkshape on face2
+    puts "Error : There is no 2 mistakes by checkshape on face2"
     set stauts 1
 }
 

@@ -1,0 +1,29 @@
+puts "================"
+puts "OCC24142"
+puts "================"
+puts ""
+#################################################################
+## Wrong section curve
+#################################################################
+
+restore [locate_data_file OCC152.brep] sh
+explode sh f
+
+mksurface s1 sh_3
+mksurface s2 sh_5
+
+trim st1 s1 0 6.28318530717959 0 74.9999999999999
+trim st2 s2 0 6.28318530717959 -74.0551172696384 125.944882730362
+
+intersect i st1 st2
+
+dlog reset
+dlog on
+xdistcs i st2 0 1 10
+set log_on [dlog get]
+
+if { [regexp "i is null curve" ${log_on}] != 1 } {
+   puts "Error : Wrong section curve"
+}
+
+set 2dviewer 1

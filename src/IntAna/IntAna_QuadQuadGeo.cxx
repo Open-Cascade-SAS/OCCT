@@ -1234,13 +1234,14 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
     Standard_Real DistA1A2=A1A2.Distance();
     gp_Dir DA1=Con1.Position().Direction();
     gp_Vec O1O2(Con1.Apex(),Con2.Apex());
-    Standard_Real O1O2_DA1=gp_Vec(DA1).Dot(O1O2);
-    
-    gp_Vec O1_Proj_A2(O1O2.X()-O1O2_DA1*DA1.X(),
-		      O1O2.Y()-O1O2_DA1*DA1.Y(),
-		      O1O2.Z()-O1O2_DA1*DA1.Z());
+    gp_Dir O1O2n(O1O2); // normalization of the vector before projection
+    Standard_Real O1O2_DA1=gp_Vec(DA1).Dot(gp_Vec(O1O2n));
+
+    gp_Vec O1_Proj_A2(O1O2n.X()-O1O2_DA1*DA1.X(),
+		      O1O2n.Y()-O1O2_DA1*DA1.Y(),
+		      O1O2n.Z()-O1O2_DA1*DA1.Z());
     gp_Dir DB1=gp_Dir(O1_Proj_A2);
-    
+
     Standard_Real yO1O2=O1O2.Dot(gp_Vec(DA1));
     Standard_Real ABSTG1 = Abs(tg1);
     Standard_Real X2 = (DistA1A2/ABSTG1 - yO1O2)*0.5;
