@@ -1,0 +1,33 @@
+puts "============"
+puts "OCC24187"
+puts "============"
+puts ""
+###############################################################################################
+# Wrong result of COMMON operation
+###############################################################################################
+
+box b1 10 10 10
+
+circle c1 -3 5 2 5
+circle c2 -3 5 8 5
+mkedge e1 c1
+mkedge e2 c2
+compound e1 e2 b2
+
+bop b1 b2
+bopcommon result
+
+set length 18.5459
+
+# Analysis of "nbshapes result"
+set nb_v_good 6
+set nb_e_good 4
+set nb_w_good 2
+set nb_f_good 0
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 13
+
+set 2dviewer 1

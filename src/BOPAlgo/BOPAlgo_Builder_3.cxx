@@ -76,6 +76,11 @@ static
   void OwnInternalShapes(const TopoDS_Shape& ,
                          BOPCol_IndexedMapOfShape& );
 
+static
+  void TreatCompound(const TopoDS_Shape& theS,
+                     BOPCol_MapOfShape& aMFence,
+                     BOPCol_ListOfShape& theLS);
+
 //=======================================================================
 //class     : BOPAlgo_ShapeBox
 //purpose   : Auxiliary class
@@ -618,6 +623,7 @@ void BOPAlgo_Builder::FillInternalShapes()
   BOPCol_MapOfShape aMSOr(100, aAllocator);
   BOPCol_ListOfShape aLSd(aAllocator);
   BOPCol_ListOfShape aLArgs(aAllocator);
+  BOPCol_ListOfShape aLSC(aAllocator);
   //
   // 1. Shapes to process
   //
@@ -627,10 +633,11 @@ void BOPAlgo_Builder::FillInternalShapes()
   aIt.Initialize(myArguments);
   for (; aIt.More(); aIt.Next()) {
     const TopoDS_Shape& aS=aIt.Value();
-    if (!aMFence.Add(aS)) {
-      continue;
-    }
-    //
+    TreatCompound(aS, aMFence, aLSC);
+  }
+  aIt.Initialize(aLSC);
+  for (; aIt.More(); aIt.Next()) {
+    const TopoDS_Shape& aS=aIt.Value();
     aType=aS.ShapeType();
     if (aType==TopAbs_WIRE) {
       aItS.Initialize(aS);
@@ -947,7 +954,32 @@ Standard_Boolean IsClosedShell(const TopoDS_Shell& aSh)
   //
   return bRet;
 }
-
+//=======================================================================
+//function : TreatCompound
+//purpose  : 
+//=======================================================================
+void TreatCompound(const TopoDS_Shape& theS,
+                   BOPCol_MapOfShape& aMFence,
+                   BOPCol_ListOfShape& theLS)
+{
+  TopAbs_ShapeEnum aType;
+  //
+  aType = theS.ShapeType();
+  if (aType != TopAbs_COMPOUND) {
+    if (aMFence.Add(theS)) {
+      theLS.Append(theS);
+    }
+    return;
+  }
+  //
+  TopoDS_Iterator aIt;
+  //
+  aIt.Initialize(theS);
+  for (; aIt.More(); aIt.Next()) {
+    const TopoDS_Shape& aS = aIt.Value();
+    TreatCompound(aS, aMFence, theLS);
+  }
+}
 
 //
 // ErrorStatus
