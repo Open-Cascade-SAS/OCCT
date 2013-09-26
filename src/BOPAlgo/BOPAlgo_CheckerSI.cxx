@@ -21,6 +21,9 @@
 //
 #include <BOPAlgo_CheckerSI.ixx>
 
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+
 #include <BOPDS_DS.hxx>
 #include <BOPDS_IteratorSI.hxx>
 #include <BOPDS_PIteratorSI.hxx>
@@ -104,12 +107,28 @@ void BOPAlgo_CheckerSI::Init()
 //=======================================================================
 void BOPAlgo_CheckerSI::Perform()
 {
+  //modified by NIZNHY-PKV Thu Sep 19 08:14:52 2013f
+  try {
+    OCC_CATCH_SIGNALS
+    //
+    BOPAlgo_PaveFiller::Perform();
+    if (myErrorStatus) {
+      return; 
+    }
+    //
+    PostTreat();
+  }
+  catch (Standard_Failure) {
+  }  
+  /*  
   BOPAlgo_PaveFiller::Perform();
   if (myErrorStatus) {
    return; 
   }
   //  
-  PostTreat();  
+  PostTreat(); 
+  */
+  //modified by NIZNHY-PKV Thu Sep 19 08:14:56 2013t
 }
 //=======================================================================
 //function : PostTreat
