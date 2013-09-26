@@ -19,6 +19,6 @@ if { [catch {bop a f1 } ] } {
     bopsection result
 }
 
-set length 5364.73
+set length 5840.24
 set 2dviewer 0
 

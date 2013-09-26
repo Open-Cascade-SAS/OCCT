@@ -19,7 +19,7 @@
 
 class Tools from BOPInt 
 
-	---Purpose: 
+---Purpose: 
 
 uses 
     Box from Bnd,
@@ -36,48 +36,54 @@ uses
 
 is 
     
-	 
+ 
     CheckCurve(myclass; 
-    	    theC:Curve from Geom;  
-    	    theTol:Real from Standard; 
-    	    theBox:out Box from Bnd) 
-    	returns Boolean from Standard;   
+        theC:Curve from Geom;  
+        theTol:Real from Standard; 
+        theBox:out Box from Bnd) 
+    returns Boolean from Standard;   
      
     IsOnPave(myclass; 
-    	    theT:Real from Standard;  
-	    theRange:Range from IntTools; 
-    	    theTol: Real from Standard) 
-    	returns Boolean from Standard;  
-
+        theT:Real from Standard;  
+        theRange:Range from IntTools; 
+        theTol: Real from Standard) 
+    returns Boolean from Standard;  
 
     VertexParameters(myclass; 
-	    theCP:CommonPrt from IntTools; 
-    	    theT1:out Real from Standard;  
-    	    theT2:out Real from Standard);  
+        theCP:CommonPrt from IntTools; 
+        theT1:out Real from Standard;  
+        theT2:out Real from Standard);  
 
     VertexParameter(myclass; 
-	    theCP:CommonPrt from IntTools; 
-    	    theT:out Real from Standard); 
-	 
+        theCP:CommonPrt from IntTools; 
+        theT:out Real from Standard); 
+ 
     IsOnPave1(myclass; 
-    	    theT:Real from Standard;  
-	    theRange:Range from IntTools; 
-    	    theTol: Real from Standard) 
-    	returns Boolean from Standard;     
-     
+        theT:Real from Standard;  
+        theRange:Range from IntTools; 
+        theTol: Real from Standard) 
+    returns Boolean from Standard;     
+      
+    IsInRange(myclass;
+        theRRef : Range from IntTools; 
+        theR    : Range from IntTools; 
+        theTol  : Real  from Standard) 
+    returns Boolean from Standard;      
+    ---Purpose:  Checks if the range <theR> interfere with the range <theRRef>
+    
     SegPln(myclass; 
-    	    theLin   :  Lin from gp; 
-	    theTLin1 :  Real from Standard; 
-	    theTLin2 :  Real from Standard; 
-    	    theTolLin:  Real from Standard;   
-	    thePln   :  Pln  from gp; 
-	    theTolPln:  Real from Standard; 
-    	    theP     :out Pnt from gp;   
-	    theT     :out Real from Standard;  
-    	    theTolP  :out Real from Standard; 
-	    theTmin  :out Real from Standard; 
-    	    theTmax  :out Real from Standard) 
-    	returns Integer from Standard;     
+        theLin   :  Lin from gp; 
+        theTLin1 :  Real from Standard; 
+        theTLin2 :  Real from Standard; 
+        theTolLin:  Real from Standard;   
+        thePln   :  Pln  from gp; 
+        theTolPln:  Real from Standard; 
+        theP     :out Pnt from gp;   
+        theT     :out Real from Standard;  
+        theTolP  :out Real from Standard; 
+        theTmin  :out Real from Standard; 
+        theTmax  :out Real from Standard) 
+    returns Integer from Standard;     
 --fields
 
 end Tools;

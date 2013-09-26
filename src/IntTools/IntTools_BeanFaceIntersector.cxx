@@ -62,7 +62,6 @@
 #include <BndLib_Add3dCurve.hxx>
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>
-#include <BOPTools_AlgoTools.hxx>
 
 static Standard_Boolean AdjustPeriodic(const Standard_Real U, 
 				       const Standard_Real UFirst,
@@ -448,17 +447,17 @@ void IntTools_BeanFaceIntersector::Perform()
       IntTools_Range aRange = myRangeManager.Range(i);
 
       if(myResults.Length() > 0) {
-	const IntTools_Range& aLastRange = myResults.Last();
-
-	if(Abs(aRange.First() - aLastRange.Last()) > Precision::PConfusion()) {
-	  myResults.Append(aRange);
-	}
-	else {
-	  myResults.ChangeValue(myResults.Length()).SetLast(aRange.Last());
-	}
+        const IntTools_Range& aLastRange = myResults.Last();
+        
+        if(Abs(aRange.First() - aLastRange.Last()) > Precision::PConfusion()) {
+          myResults.Append(aRange);
+        }
+        else {
+          myResults.ChangeValue(myResults.Length()).SetLast(aRange.Last());
+        }
       }
       else {
-	myResults.Append(aRange);
+        myResults.Append(aRange);
       }
     }
   }
@@ -934,19 +933,23 @@ Standard_Integer IntTools_BeanFaceIntersector::FastComputeExactIntersection()
   }
   //modified by NIZNHY-PKV Thu Mar 01 11:54:06 2012t
   //
-  //modified by NIZHNY-EMV Fri May 17 09:48:49 2013
   if (aresult==1) {
-    IntTools_Range aRange(myFirstParameter, myLastParameter);
-    const TopoDS_Face& aF = mySurface.Face();
-    const TopoDS_Edge& aE = myCurve.Edge();
+    //check intermediate point
+    Standard_Real aTm;
+    Standard_Boolean bValid;
     //
-    if (BOPTools_AlgoTools::IsBlockInOnFace(aRange, aF, aE, myContext)) {
+    const TopoDS_Face& aF = mySurface.Face();
+    aTm = IntTools_Tools::IntermediatePoint(myFirstParameter, myLastParameter);
+    const gp_Pnt& aPm = myCurve.Value(aTm);
+    //
+    bValid = myContext->IsValidPointForFace(aPm, aF, myCriteria);
+    if (bValid) {
+      IntTools_Range aRange(myFirstParameter, myLastParameter);
       myRangeManager.InsertRange(aRange, 2);
     } else {
       aresult=2;
     }
   }
-  //modified by NIZHNY-EMV Fri May 17 09:48:53 2013
   //
   return aresult;
 }

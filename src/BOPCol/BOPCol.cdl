@@ -33,6 +33,7 @@ is
     imported ListOfInteger from BOPCol; 
     imported PInteger from BOPCol; 
     imported DataMapOfIntegerInteger from BOPCol; 
+    imported DataMapOfIntegerReal from BOPCol; 
     imported DataMapOfIntegerListOfInteger from BOPCol; 
     imported IndexedDataMapOfShapeBox from BOPCol; 
     imported IndexedMapOfInteger from BOPCol; 

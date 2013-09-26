@@ -79,6 +79,10 @@
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <Geom2d_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+#include <IntRes2d_Domain.hxx>
+#include <Geom2dInt_GInter.hxx>
+#include <IntRes2d_IntersectionPoint.hxx>
 
 static 
   void CheckEdge (const TopoDS_Edge& E,
@@ -99,6 +103,12 @@ static
 
 static
   void CorrectWires(const TopoDS_Face& aF);
+
+static 
+  Standard_Real IntersectCurves2d(const gp_Pnt& aPV,
+                                  const TopoDS_Face& aF,
+                                  const TopoDS_Edge& aE1,
+                                  const TopoDS_Edge& aE2);
 
 static
   void UpdateEdges(const TopoDS_Face& aF);
@@ -166,27 +176,19 @@ static
 //=======================================================================
 void CorrectWires(const TopoDS_Face& aFx)
 {
-  GeomAbs_SurfaceType aType;
-  //
-  const Handle(Geom_Surface)& aS=BRep_Tool::Surface(aFx);
-  GeomAdaptor_Surface aGAS (aS);
-  aType=aGAS.GetType();
-  if (aType!=GeomAbs_Cylinder) {
-    return;
-  }
-  //
   Standard_Integer i, aNbV;
-  Standard_Real aTol, aTol2, aD2, aD2max, aT1, aT2, aT; 
-  TopoDS_Edge aE1, aE2, aEi, aEj;
+  Standard_Real aTol, aTol2, aD2, aD2max, aT1, aT2, aT, aTol2d; 
   gp_Pnt aP, aPV;
   gp_Pnt2d aP2D;
   TopoDS_Face aF;
   BRep_Builder aBB;
   TopTools_IndexedDataMapOfShapeListOfShape aMVE;
-  TopTools_ListIteratorOfListOfShape aIt;
+  TopTools_ListIteratorOfListOfShape aIt, aIt1;
   //
   aF=aFx;
   aF.Orientation(TopAbs_FORWARD);
+  aTol2d = Precision::Confusion();
+  const Handle(Geom_Surface)& aS=BRep_Tool::Surface(aFx);
   //
   TopExp::MapShapesAndAncestors(aF, TopAbs_VERTEX, TopAbs_EDGE, aMVE);
   aNbV=aMVE.Extent();
@@ -200,7 +202,7 @@ void CorrectWires(const TopoDS_Face& aFx)
     const TopTools_ListOfShape& aLE=aMVE.FindFromIndex(i);
     aIt.Initialize(aLE);
     for (; aIt.More(); aIt.Next()) {
-      const TopoDS_Edge& aE=TopoDS::Edge(aIt.Value());
+      const TopoDS_Edge& aE=*(TopoDS_Edge*)(&aIt.Value());
       aT=BRep_Tool::Parameter(aV, aE);
       const Handle(Geom2d_Curve)& aC2D=BRep_Tool::CurveOnSurface(aE, aF, aT1, aT2);
       aC2D->D0(aT, aP2D);
@@ -209,6 +211,29 @@ void CorrectWires(const TopoDS_Face& aFx)
       if (aD2>aD2max) {
         aD2max=aD2;
       }
+      //check self interference
+      if (aNbV == 2) {
+        continue;
+      }
+      aIt1 = aIt;
+      aIt1.Next();
+      for (; aIt1.More(); aIt1.Next()) {
+        const TopoDS_Edge& aE1=*(TopoDS_Edge*)(&aIt1.Value());
+        //do not perform check for edges that have two common vertices
+        {
+          TopoDS_Vertex aV11, aV12, aV21, aV22;
+          TopExp::Vertices(aE, aV11, aV12);
+          TopExp::Vertices(aE1, aV21, aV22);
+          if (aV11.IsSame(aV21) && aV12.IsSame(aV22) ||
+              aV12.IsSame(aV21) && aV11.IsSame(aV22)) {
+            continue;
+          }
+        }
+        aD2 = IntersectCurves2d(aPV, aF, aE, aE1);
+        if (aD2>aD2max) {
+          aD2max=aD2;
+        }
+      }
     }
     if (aD2max>aTol2) {
       aTol=sqrt(aD2max);
@@ -216,6 +241,58 @@ void CorrectWires(const TopoDS_Face& aFx)
     }
   }
 }
+//=======================================================================
+// Function : IntersectCurves2d
+// purpose  : Intersect 2d curves of edges
+//=======================================================================
+Standard_Real IntersectCurves2d(const gp_Pnt& aPV,
+                                const TopoDS_Face& aF,
+                                const TopoDS_Edge& aE1,
+                                const TopoDS_Edge& aE2)
+{
+  const Handle(Geom_Surface)& aS=BRep_Tool::Surface(aF);
+  GeomAdaptor_Surface aGAS (aS);
+  if (aGAS.IsUPeriodic() || aGAS.IsVPeriodic()) {
+    return 0;
+  }
+  //
+  Standard_Real aDist, aD, aT11, aT12, aT21, aT22, aTol2d;
+  Standard_Integer j, aNbPnt;
+  Geom2dInt_GInter aInter;
+  gp_Pnt aP;
+  gp_Pnt2d aP2D;
+  //
+  aDist = 0.;
+  aTol2d = Precision::Confusion();
+  //
+  const Handle(Geom2d_Curve)& aC2D1=BRep_Tool::CurveOnSurface(aE1, aF, aT11, aT12);
+  const Handle(Geom2d_Curve)& aC2D2=BRep_Tool::CurveOnSurface(aE2, aF, aT21, aT22);
+  //
+  Geom2dAdaptor_Curve aGAC1(aC2D1), aGAC2(aC2D2);
+  IntRes2d_Domain aDom1(aC2D1->Value(aT11), aT11, aTol2d, aC2D1->Value(aT12), aT12, aTol2d),
+                  aDom2(aC2D2->Value(aT21), aT21, aTol2d, aC2D2->Value(aT22), aT22, aTol2d);
+  //
+  aInter.Perform(aGAC1, aDom1, aGAC2, aDom2, aTol2d, aTol2d);
+  if (aInter.IsDone()) {
+    if (aInter.NbSegments()) {
+      return aDist;
+    }
+    aNbPnt = aInter.NbPoints();
+    if (aNbPnt) {
+      aDist = Precision::Infinite();
+      for (j = 1; j <= aNbPnt; ++j) {
+        aP2D = aInter.Point(j).Value();
+        aS->D0(aP2D.X(), aP2D.Y(), aP);
+        aD=aPV.SquareDistance(aP);
+        if (aD < aDist) {
+          aDist = aD;
+        }
+      }
+    }
+  }
+  return aDist;
+}
+
 //=======================================================================
 // Function : CorrectEdgeTolerance
 // purpose :  Correct tolerances for Edge 

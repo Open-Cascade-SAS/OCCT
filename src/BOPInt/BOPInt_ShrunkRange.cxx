@@ -170,7 +170,7 @@
     return;
   }
   //
-  aCoeff=2.;
+  aCoeff=(aTolE>0.05) ? 1. : 2.;
   // xf
   if (aCurveType==GeomAbs_Line) {
     Standard_Real aTV1, aTV2, aEps;

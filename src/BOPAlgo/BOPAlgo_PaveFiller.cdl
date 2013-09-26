@@ -38,7 +38,8 @@ uses
     IndexedDataMapOfShapeInteger from BOPCol,   
     DataMapOfIntegerListOfInteger from BOPCol, 
     DataMapOfShapeListOfShape from BOPCol,
-    IndexedDataMapOfShapeListOfShape from BOPCol,
+    IndexedDataMapOfShapeListOfShape from BOPCol, 
+    DataMapOfIntegerReal from BOPCol,
     --  
     Context from BOPInt,
     -- 
@@ -180,7 +181,8 @@ is
         theNC:out Curve from BOPDS; 
         nF1:Integer from Standard; 
         nF2:Integer from Standard;
-        theMVEF:MapOfInteger from BOPCol) 
+        theMVEF:MapOfInteger from BOPCol; 
+        theMVTol:out DataMapOfIntegerReal from BOPCol) 
       is protected;  
 
     ExtendedTolerance(me:out; 
@@ -255,14 +257,16 @@ is
         nF1        : Integer from Standard; 
         nF2        : Integer from Standard; 
         theNC      : out Curve from BOPDS; 
-        theMVEF    : MapOfInteger from BOPCol)  
+        theMVEF    : MapOfInteger from BOPCol; 
+        theMVTol   : out DataMapOfIntegerReal from BOPCol)
       is protected;
  
     PutStickPavesOnCurve(me:out; 
         nF1        : Integer from Standard; 
         nF2        : Integer from Standard; 
         theNC      : out Curve from BOPDS; 
-        theMVStick : MapOfInteger from BOPCol)
+        theMVStick : MapOfInteger from BOPCol; 
+        theMVTol   : out DataMapOfIntegerReal from BOPCol)
       is protected; 
  
     GetStickVertices(me:out; 
@@ -287,7 +291,8 @@ is
         nV        : Integer from Standard; 
         theTolR3D : Real from Standard;
         theNC     : Curve from BOPDS;
-        thePB     : out PaveBlock from BOPDS) 
+        thePB     : out PaveBlock from BOPDS; 
+        theMVTol  : out DataMapOfIntegerReal from BOPCol) 
       is protected;
  
     ProcessExistingPaveBlocks(me:out; 
@@ -326,21 +331,47 @@ is
         aVC    : out VectorOfCurve from BOPDS)
       is protected; 
     ---Purpose: 
-    ---Keeps data for post treatment 
+    -- Keeps data for post treatment 
      
     RefineFaceInfoOn(me:out) 
       is protected; 
     ---Purpose: 
-    --- Refines the state On for the all faces having 
-    --- state information 
+    -- Refines the state On for the all faces having 
+    -- state information 
 
     UpdateFaceInfo(me:out;
         theDME:out DataMapOfPaveBlockListOfPaveBlock from BOPDS) 
       is protected; 
     ---Purpose: 
-    ---Updates the information about faces
+    -- Updates the information about faces
+     
+    ForceInterfVE(me:out; 
+        nV   : Integer from Standard; 
+        aPB  : out PaveBlock from BOPDS; 
+        aMPB : out MapOfPaveBlock from BOPDS) 
+      is protected;
+    ---Purpose: 
+    -- Updates tolerance of vertex with index <nV>  
+    -- to make it interfere with edge
+    
+    ForceInterfVF(me:out; 
+        nV:Integer from Standard; 
+        nF:Integer from Standard) 
+      returns Boolean from Standard
+      is protected;
+    ---Purpose: 
+    -- Updates tolerance of vertex with index <nV>  
+    -- to make it interfere with face with index <nF>
+ 
+    CheckPlanes(me:out; 
+        nF1 : Integer from Standard; 
+        nF2 : Integer from Standard)
+      returns Boolean from Standard 
+      is protected; 
+    ---Purpose: 
+    -- Checks if there are any common or intersecting sub shapes
+    -- between two planar faces. 
 
-      
 fields  
     myArguments   : ListOfShape from BOPCol is protected;  
     myDS          : PDS from BOPDS is protected; 

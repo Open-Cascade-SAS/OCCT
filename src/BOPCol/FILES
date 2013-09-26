@@ -6,6 +6,7 @@ BOPCol_PInteger.hxx
 BOPCol_DataMapOfIntegerListOfInteger.hxx
 BOPCol_IndexedDataMapOfShapeBox.hxx
 BOPCol_DataMapOfIntegerInteger.hxx
+BOPCol_DataMapOfIntegerReal.hxx
 BOPCol_DataMapOfIntegerMapOfInteger.hxx
 BOPCol_IndexedMapOfInteger.hxx
 BOPCol_ListOfShape.hxx

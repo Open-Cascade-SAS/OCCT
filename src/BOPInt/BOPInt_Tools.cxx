@@ -131,16 +131,28 @@
   return bIsOnPave;
 }
 
-
-
-
-
-
-
-
-
-
-
+//=======================================================================
+// function: IsInRange
+// purpose: 
+//=======================================================================
+  Standard_Boolean BOPInt_Tools::IsInRange(const IntTools_Range& aRRef,
+                                           const IntTools_Range& aR,
+                                           const Standard_Real aTolerance)
+{
+  Standard_Boolean bIsIn;
+  Standard_Real aT1, aT2, aTRef1, aTRef2;
+  //
+  aR.Range(aT1, aT2);
+  aRRef.Range(aTRef1, aTRef2);
+  //
+  aTRef1-=aTolerance;
+  aTRef2+=aTolerance;
+  //
+  bIsIn = (aT1>=aTRef1 && aT1<=aTRef2) ||
+          (aT2>=aTRef1 && aT2<=aTRef2);
+  //
+  return bIsIn;
+}
 
 //=======================================================================
 //function : SegPln
