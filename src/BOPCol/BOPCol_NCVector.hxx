@@ -45,7 +45,7 @@ template <class Type> class BOPCol_NCVector
   Type& Append1 ()
   {
     Type& anAppended = 
-      *(Type* )expandV (NCollection_BaseCollection<Type>::myAllocator, 
+      *(Type* )NCollection_BaseVector::expandV (NCollection_BaseCollection<Type>::myAllocator, 
 			NCollection_Vector<Type>::myLength);
     return anAppended;
   }
