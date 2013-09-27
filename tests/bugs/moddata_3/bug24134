@@ -1,0 +1,34 @@
+puts "========"
+puts "CR24134"
+puts "========"
+puts ""
+#######################################################################
+# Wrong result of projection point on the face
+#######################################################################
+
+restore [locate_data_file bug22109_tore.brep] b
+explode b f
+
+copy b_1 f
+point p 934.419505115097 1387.10553740067 8.42056376938594e-014
+
+set GOOD_DIST 1.0481408664017105e-12
+set CMP_TOL 5.0e-12
+
+# 1
+set log_t [projponf f p -t]
+regexp {proj dist = ([-0-9.+eE]+)} ${log_t} full distmax_t
+if { [expr abs(${distmax_t} - ${GOOD_DIST})] > ${CMP_TOL} } {
+   puts "Error: Wrong intersection point (t-option)"
+} else {
+   puts "OK: Good intersection point (t-option)"
+}
+
+# 2
+set log_g [projponf f p -g]
+regexp {proj dist = ([-0-9.+eE]+)} ${log_g} full distmax_g
+if { [expr abs(${distmax_g} - ${GOOD_DIST})] > ${CMP_TOL} } {
+   puts "Error: Wrong intersection point (g-option)"
+} else {
+   puts "OK: Good intersection point (g-option)"
+}

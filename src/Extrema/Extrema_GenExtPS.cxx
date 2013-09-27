@@ -114,7 +114,8 @@ Standard_Boolean Bnd_SphereUBTreeSelectorMin::Accept(const Standard_Integer& the
   const Bnd_Sphere& aSph = mySphereArray->Value(theInd);
   Standard_Real aCurDist;
 
-    if ( (aCurDist = aSph.SquareDistance(myXYZ.XYZ())) < mySol.SquareDistance(myXYZ.XYZ()) )
+//    if ( (aCurDist = aSph.SquareDistance(myXYZ.XYZ())) < mySol.SquareDistance(myXYZ.XYZ()) )
+    if ( (aCurDist = aSph.Distance(myXYZ.XYZ())) < mySol.Distance(myXYZ.XYZ()) )
     {
       mySol = aSph;
       if ( aCurDist < myMinDist ) 
@@ -160,7 +161,8 @@ Standard_Boolean Bnd_SphereUBTreeSelectorMax::Accept(const Standard_Integer& the
   const Bnd_Sphere& aSph = mySphereArray->Value(theInd);
   Standard_Real aCurDist;
 
-    if ( (aCurDist = aSph.SquareDistance(myXYZ.XYZ())) > mySol.SquareDistance(myXYZ.XYZ()) )
+//    if ( (aCurDist = aSph.SquareDistance(myXYZ.XYZ())) > mySol.SquareDistance(myXYZ.XYZ()) )
+    if ( (aCurDist = aSph.Distance(myXYZ.XYZ())) > mySol.Distance(myXYZ.XYZ()) )
     {
       mySol = aSph;
       if ( aCurDist > myMaxDist ) 
