@@ -84,7 +84,7 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
    && theCaps->contextStereo)
   {
     anAttribs[0] = aDummyAttrib;
-    aGLForma     = [[[NSOpenGLPixelFormat alloc] initWithAttributes: anAttribs] autorelease];
+    aGLFormat    = [[[NSOpenGLPixelFormat alloc] initWithAttributes: anAttribs] autorelease];
     aGLContext   = [[NSOpenGLContext alloc] initWithFormat: aGLFormat
                                               shareContext: aGLCtxShare];
   }
