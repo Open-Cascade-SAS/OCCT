@@ -3,5 +3,4 @@ QADNaming_BuilderCommands.cxx
 QADNaming_IteratorsCommands.cxx
 QADNaming_ToolsCommands.cxx
 QADNaming_SelectionCommands.cxx
-QADNaming_Sample.cxx
 QADNaming_Selection.tcl

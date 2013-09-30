@@ -8,4 +8,4 @@ DDataStd_ConstraintCommands.cxx
 DDataStd_DrawDisplayCommands.cxx
 DDataStd_ObjectCommands.cxx
 DDataStd_NameCommands.cxx
-DDataStd_Sample.cxx
+

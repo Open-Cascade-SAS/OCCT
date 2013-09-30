@@ -984,18 +984,14 @@ Standard_Boolean TNaming::OuterWire(const TopoDS_Face& theFace, TopoDS_Wire& the
 //purpose  :
 //=======================================================================
 static Standard_Boolean IsInternal(const TopoDS_Shape& aSx)
-{
-  Standard_Boolean bInternal;
-  TopAbs_Orientation aOr;
-  TopoDS_Iterator aIt;
-  bInternal = Standard_False;
-  aIt.Initialize(aSx);
-  for (; aIt.More(); aIt.Next()) 
-  {
-    const TopoDS_Shape& aSy=aIt.Value();
-    aOr=aSy.Orientation();
-    bInternal = (aOr == TopAbs_INTERNAL || aOr == TopAbs_EXTERNAL);
-    break;
+{   
+  TopAbs_Orientation aOr; 
+  Standard_Boolean bInternal(Standard_False);
+  TopoDS_Iterator aIt(aSx);
+  if(aIt.More()) {
+    const TopoDS_Shape& aSy = aIt.Value();
+    aOr = aSy.Orientation();
+    bInternal = (aOr == TopAbs_INTERNAL || aOr == TopAbs_EXTERNAL);    
   }
   return bInternal;
 }

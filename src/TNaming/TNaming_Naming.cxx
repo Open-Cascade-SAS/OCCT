@@ -553,12 +553,10 @@ static Standard_Boolean TestSolution(const TNaming_Scope&      MDF,
 static void FindNewShapeInFather (const Handle(TNaming_NamedShape)& NS,
 				  TopoDS_Shape&                     SC)
 {  
-  TDF_Label         Father  = NS->Label().Father(); 
+  const TDF_Label& Father = NS->Label().Father(); 
   TNaming_Iterator  itLab(Father);
-  for (; itLab.More(); itLab.Next()) {
-    SC= itLab.NewShape();
-    break;
-  }
+  if(itLab.More()) 
+    SC = itLab.NewShape();    
 }
 
 //=======================================================================
