@@ -51,6 +51,7 @@
 #include <IntPatch_CSFunction.hxx>
 #include <IntPatch_CurvIntSurf.hxx>
 
+#define myInfinite 1.e15 // the same as was in Adaptor3d_TopolTool
 
 static void Recadre(GeomAbs_SurfaceType typeS1,
                     GeomAbs_SurfaceType typeS2,
@@ -558,11 +559,15 @@ void IntPatch_RstInt::PutVertexOnLine (Handle(IntPatch_Line)& L,
     Standard_Real VRes = Surf->VResolution(edgeTol);
 
     IntPatch_HInterTool::Bounds(arc,PFirst,PLast);
-    if (Precision::IsNegativeInfinite(PFirst) || 
-	Precision::IsPositiveInfinite(PLast)) { 
-      //-- cout<<" IntPatch_RstInt::PutVertexOnLine  ---> Restrictions Infinies :"<<endl;
-      return; 
-    }
+    if(Precision::IsNegativeInfinite(PFirst))
+      PFirst = -myInfinite;
+    if(Precision::IsPositiveInfinite(PLast))
+      PLast = myInfinite;
+    //if (Precision::IsNegativeInfinite(PFirst) || 
+	   // Precision::IsPositiveInfinite(PLast)) { 
+    //  //-- cout<<" IntPatch_RstInt::PutVertexOnLine  ---> Restrictions Infinies :"<<endl;
+    //  return;
+    //}
 
     Standard_Boolean isVFirst = Standard_False, isVLast = Standard_False;
     gp_Pnt2d p2dFirst,p2dLast;

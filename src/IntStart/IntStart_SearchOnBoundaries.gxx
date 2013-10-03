@@ -64,17 +64,6 @@ static void BoundedArc (const TheArc& A,
                         Standard_Boolean& Arcsol,
                         const Standard_Boolean RecheckOnRegularity);
                  
-static void InfiniteArc (const TheArc&,
-                         const Handle(TheTopolTool)&,
-                         const Standard_Real,
-                         const Standard_Real,
-                         TheFunction&,
-                         IntStart_SequenceOfPathPoint&,
-                         IntStart_SequenceOfSegment&,
-                         const Standard_Real,
-                         const Standard_Real,
-                         Standard_Boolean&);
-
 static void PointProcess (const gp_Pnt&,
                           const Standard_Real,
                           const TheArc&,
@@ -521,7 +510,7 @@ void ComputeBoundsfromInfinite(TheFunction& Func,
   // - Inifinies walk. It will take this code
   // - With curve surface intersections.
 
-  NbEchant = 10;
+  NbEchant = 100;
 
   Standard_Real U0    = 0.0;
   Standard_Real dU    = 0.001;
@@ -556,8 +545,8 @@ void ComputeBoundsfromInfinite(TheFunction& Func,
     if(Umin>U0) { Umin=U0-10.0; } 
     if(Umax<U0) { Umax=U0+10.0; } 
     
-    PFin = Umax;
-    PDeb = Umin;
+    PFin = Umax + 10. * (Umax - Umin);
+    PDeb = Umin - 10. * (Umax - Umin);
   }
   else { 
     //-- Possibilite de Arc totalement inclu ds Quad
@@ -566,115 +555,6 @@ void ComputeBoundsfromInfinite(TheFunction& Func,
   }
 } 
 
-//=======================================================================
-//function : InfiniteArc
-//purpose  : 
-//=======================================================================
-void InfiniteArc (const TheArc& A,
-                  const Handle(TheTopolTool)& Domain,
-                  const Standard_Real Pdeb,
-                  const Standard_Real Pfin,
-                  TheFunction& Func,
-                  IntStart_SequenceOfPathPoint& pnt,
-                  IntStart_SequenceOfSegment& seg,
-                  const Standard_Real TolBoundary,
-                   const Standard_Real TolTangency,
-                  Standard_Boolean& Arcsol)
-{
-  
-  // Find points of solutions and tips bow bow gives a solution.
-  // The math_FunctionAllRoots function is used. Therefore suitable for
-  // Beginning of arcs having a point and a closed end point (range
-  // Parametrage).
-
-  Standard_Integer i,Nbi,Nbp;
-
-  gp_Pnt ptdeb,ptfin;
-  Standard_Real pardeb = 0.,parfin = 0.;
-  Standard_Integer ideb,ifin,range,ranged,rangef;
-  
-  // Create the Sample Rate (math_FunctionSample or inheriting class)
-  // Call a math_FunctionAllRoots
-
-  Standard_Real EpsX = TheArcTool::Resolution(A,Precision::Confusion());
-  //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-  //@@@ Tolerance is the asociee al arc (Inconsistency with tracking)
-  //@@@ (EPSX ~ 1e-5 and ResolutionU and V ~ 1e-9)
-  //@@@ Vertex is here is not found as a point to stop
-  //@@@ Wayline
-  //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-  EpsX = 0.0000000001;
-  //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-  //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-  //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
-  Standard_Integer NbEchant = Func.NbSamples(); 
-  
-  //-- Modif 24  Aout 93 -----------------------------
-  Standard_Real nTolTangency = TolTangency;
-  if((Pfin - Pdeb) < (TolTangency*10.0)) { 
-    nTolTangency=(Pfin-Pdeb)*0.1;
-  }   
-  if(EpsX>(nTolTangency+nTolTangency)) { 
-    EpsX = nTolTangency * 0.1; 
-  }
-  //--------------------------------------------------
-  // - Plant with a edge with 2 Samples
-  // - Whose ends are solutions (f = 0)
-  // - And the derivative is zero or
-  // - Example: a diameter of a sphere segment
-  if(NbEchant<3) NbEchant = 3; //-- lbr 19.04.95
-  //--------------------------------------------------
-  
-  Standard_Real PDeb = Pdeb;
-  Standard_Real PFin = Pfin;
-  
-  ComputeBoundsfromInfinite(Func,PDeb,PFin,NbEchant);
-
-  math_FunctionSample Echant(PDeb,PFin,NbEchant);
-  math_FunctionAllRoots Sol(Func,Echant,EpsX,TolBoundary,nTolTangency);
-
-  if (!Sol.IsDone()) {Standard_Failure::Raise();}
-
-  Nbp=Sol.NbPoints();
-  for (i=1; i<=Nbp; i++) {
-    Standard_Real para = Sol.GetPoint(i);
-    Standard_Real dist;
-    if(Func.Value(para,dist)) { 
-      PointProcess(Func.Valpoint(Sol.GetPointState(i)),Sol.GetPoint(i),
-                   A,Domain,pnt,TolBoundary,range);
-    }
-  }
-  
-  // For each interval:
-  // Process the ends as points
-  // Add range in the list of segments
-
-  Nbi=Sol.NbIntervals();
-
-  for (i=1; i<=Nbi; i++) {
-    IntStart_TheSegment newseg;
-    newseg.SetValue(A);
-    // Recover start and end points, and parameter.
-    Sol.GetInterval(i,pardeb,parfin);
-    Sol.GetIntervalState(i,ideb,ifin);
-    ptdeb=Func.Valpoint(ideb);
-    ptfin=Func.Valpoint(ifin);
-
-    PointProcess(ptdeb,pardeb,A,Domain,pnt,TolBoundary,ranged);
-    newseg.SetLimitPoint(pnt.Value(ranged),Standard_True);
-    PointProcess(ptfin,parfin,A,Domain,pnt,TolBoundary,rangef);
-    newseg.SetLimitPoint(pnt.Value(rangef),Standard_False);
-    seg.Append(newseg);
-  }
-
-  Arcsol=Standard_False;
-  if (Nbi==1) {
-    if (pardeb == Pdeb && parfin == Pfin) {
-      Arcsol=Standard_True;
-    }
-  }
-}
 //=======================================================================
 //function : PointProcess
 //purpose  : 
@@ -955,11 +835,10 @@ IntStart_SearchOnBoundaries::IntStart_SearchOnBoundaries ()
       TheSOBTool::Bounds(A,PDeb,PFin);
       if(Precision::IsNegativeInfinite(PDeb) || 
          Precision::IsPositiveInfinite(PFin)) { 
-        InfiniteArc(A,Domain,PDeb,PFin,Func,spnt,sseg,TolBoundary,TolTangency,Arcsol);
+        Standard_Integer NbEchant;
+        ComputeBoundsfromInfinite(Func,PDeb,PFin,NbEchant);
       }
-      else { 
-        BoundedArc(A,Domain,PDeb,PFin,Func,spnt,sseg,TolBoundary,TolTangency,Arcsol,RecheckOnRegularity);
-      }
+      BoundedArc(A,Domain,PDeb,PFin,Func,spnt,sseg,TolBoundary,TolTangency,Arcsol,RecheckOnRegularity);
       all = (all && Arcsol);
     }
     

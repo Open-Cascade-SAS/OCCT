@@ -41,7 +41,7 @@ prism crg w 0 -$y*2 0 inf
 
 bsection result crg cyl
 
-set length 15.1392
+set length 110.093
 set 2dviewer 0
 
 # checksection res

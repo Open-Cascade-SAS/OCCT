@@ -1,0 +1,69 @@
+puts "========="
+puts "CR23981"
+puts "========="
+puts ""
+###############################
+## Wrong section curves
+###############################
+
+restore [locate_data_file bug23981_s1.draw] s1
+restore [locate_data_file bug23981_s2.draw] s2
+
+intersect i s1 s2
+
+puts "First test"
+dlog reset
+dlog on
+xdistcs i_1 s1 0 1 100
+set Log1 [dlog get]
+
+set List1 [split ${Log1} {TD= \t\n}]
+
+set L1 [llength ${List1}]
+set L2 10
+set L3 5
+set N [expr (${L1} - ${L2})/${L3} + 1]
+set Tolerance 1.0e-5
+set D_good 0.
+
+for {set i 1} {${i} <= ${N}} {incr i} {
+   set j1 [expr ${L2} + (${i}-1)*${L3}]
+   set j2 [expr ${j1} + 2]
+   set T [lindex ${List1} ${j1}]
+   set D [lindex ${List1} ${j2}]
+   #puts "i=${i} j1=${j1} j2=${j2} T=${T} D=${D}"
+   if { [expr abs(${D} - ${D_good})] > ${Tolerance} } {
+      puts "Error: i=${i} T=${T} D=${D}"
+   }
+}
+
+
+puts "Second test"
+dlog reset
+dlog on
+xdistcs i_2 s1 0 1 100
+set Log2 [dlog get]
+
+set List2 [split ${Log2} {TD= \t\n}]
+
+set L1 [llength ${List2}]
+set L2 10
+set L3 5
+set N [expr (${L1} - ${L2})/${L3} + 1]
+set Tolerance 1.0e-5
+set D_good 0.
+
+for {set i 1} {${i} <= ${N}} {incr i} {
+   set j1 [expr ${L2} + (${i}-1)*${L3}]
+   set j2 [expr ${j1} + 2]
+   set T [lindex ${List2} ${j1}]
+   set D [lindex ${List2} ${j2}]
+   #puts "i=${i} j1=${j1} j2=${j2} T=${T} D=${D}"
+   if { [expr abs(${D} - ${D_good})] > ${Tolerance} } {
+      puts "Error: i=${i} T=${T} D=${D}"
+   }
+}
+
+smallview
+fit
+set only_screen_axo 1

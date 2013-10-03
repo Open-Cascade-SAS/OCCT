@@ -336,66 +336,66 @@ Standard_Real ProjectPointOnSurf::LowerDistance() const
 	}
 	//
 	if(myApprox2) { 
-	  Handle (Geom2d_Curve) C2d;
-	  BuildPCurves(fprm,lprm,Tolpc,myHS2->ChangeSurface().Surface(),newc,C2d);
-	  if(Tolpc>myTolReached2d || myTolReached2d==0.) { 
-	    myTolReached2d=Tolpc;
-	  }
-	  //
-	  slineS2.Append(new Geom2d_TrimmedCurve(C2d,fprm,lprm));
-	}
-	else { 
-	  slineS2.Append(H1);
-	}
+    Handle (Geom2d_Curve) C2d;
+    BuildPCurves(fprm,lprm,Tolpc,myHS2->ChangeSurface().Surface(),newc,C2d);
+    if(Tolpc>myTolReached2d || myTolReached2d==0.) { 
+      myTolReached2d=Tolpc;
+    }
+    //
+    slineS2.Append(new Geom2d_TrimmedCurve(C2d,fprm,lprm));
+  }
+  else { 
+    slineS2.Append(H1);
+  }
       } // if (!Precision::IsNegativeInfinite(fprm) &&  !Precision::IsPositiveInfinite(lprm))
 
       else {
-	GeomAbs_SurfaceType typS1 = myHS1->Surface().GetType();
-	GeomAbs_SurfaceType typS2 = myHS2->Surface().GetType();
-	if( typS1 == GeomAbs_SurfaceOfExtrusion ||
-	    typS1 == GeomAbs_OffsetSurface ||
-	    typS1 == GeomAbs_SurfaceOfRevolution ||
-	    typS2 == GeomAbs_SurfaceOfExtrusion ||
-	    typS2 == GeomAbs_OffsetSurface ||
-	    typS2 == GeomAbs_SurfaceOfRevolution) {
-	  sline.Append(newc);
-	  slineS1.Append(H1);
-	  slineS2.Append(H1);
-	  continue;
-	}
-	Standard_Boolean bFNIt, bLPIt;
-	Standard_Real aTestPrm, dT=100.;
-	Standard_Real u1, v1, u2, v2, TolX;
-	//
-	bFNIt=Precision::IsNegativeInfinite(fprm);
-	bLPIt=Precision::IsPositiveInfinite(lprm);
-	
-	aTestPrm=0.;
-	
-	if (bFNIt && !bLPIt) {
-	  aTestPrm=lprm-dT;
-	}
-	else if (!bFNIt && bLPIt) {
-	  aTestPrm=fprm+dT;
-	}
-	//
-	gp_Pnt ptref(newc->Value(aTestPrm));
-	//
-	TolX = Precision::Confusion();
-	Parameters(myHS1, myHS2, ptref,  u1, v1, u2, v2);
-	ok = (dom1->Classify(gp_Pnt2d(u1, v1), TolX) != TopAbs_OUT);
-	if(ok) { 
-	  ok = (dom2->Classify(gp_Pnt2d(u2,v2),TolX) != TopAbs_OUT); 
-	}
-	if (ok) {
-	  sline.Append(newc);
-	  slineS1.Append(H1);
-	  slineS2.Append(H1);
-	}
+        GeomAbs_SurfaceType typS1 = myHS1->Surface().GetType();
+        GeomAbs_SurfaceType typS2 = myHS2->Surface().GetType();
+        if( typS1 == GeomAbs_SurfaceOfExtrusion ||
+          typS1 == GeomAbs_OffsetSurface ||
+          typS1 == GeomAbs_SurfaceOfRevolution ||
+          typS2 == GeomAbs_SurfaceOfExtrusion ||
+          typS2 == GeomAbs_OffsetSurface ||
+          typS2 == GeomAbs_SurfaceOfRevolution) {
+            sline.Append(newc);
+            slineS1.Append(H1);
+            slineS2.Append(H1);
+            continue;
+        }
+        Standard_Boolean bFNIt, bLPIt;
+        Standard_Real aTestPrm, dT=100.;
+        Standard_Real u1, v1, u2, v2, TolX;
+        //
+        bFNIt=Precision::IsNegativeInfinite(fprm);
+        bLPIt=Precision::IsPositiveInfinite(lprm);
+
+        aTestPrm=0.;
+
+        if (bFNIt && !bLPIt) {
+          aTestPrm=lprm-dT;
+        }
+        else if (!bFNIt && bLPIt) {
+          aTestPrm=fprm+dT;
+        }
+        //
+        gp_Pnt ptref(newc->Value(aTestPrm));
+        //
+        TolX = Precision::Confusion();
+        Parameters(myHS1, myHS2, ptref,  u1, v1, u2, v2);
+        ok = (dom1->Classify(gp_Pnt2d(u1, v1), TolX) != TopAbs_OUT);
+        if(ok) { 
+          ok = (dom2->Classify(gp_Pnt2d(u2,v2),TolX) != TopAbs_OUT); 
+        }
+        if (ok) {
+          sline.Append(newc);
+          slineS1.Append(H1);
+          slineS2.Append(H1);
+        }
       }
     }// end of for (i=1; i<=myLConstruct.NbParts(); i++)
-  }// case IntPatch_Lin:  case IntPatch_Parabola:  case IntPatch_Hyperbola:
-    break;
+   }// case IntPatch_Lin:  case IntPatch_Parabola:  case IntPatch_Hyperbola:
+   break;
 
   //########################################  
   // Circle and Ellipse
@@ -952,7 +952,19 @@ Standard_Real ProjectPointOnSurf::LowerDistance() const
 								 mbspc.Degree());
 	      GeomLib_CheckBSplineCurve Check(BS,myTolCheck,myTolAngCheck);
 	      Check.FixTangent(Standard_True,Standard_True);
-	      // 		
+	      // 	
+        //Check IsClosed()
+        Standard_Real aDist = Max(BS->StartPoint().XYZ().SquareModulus(),
+                                  BS->EndPoint().XYZ().SquareModulus());
+        Standard_Real eps = Epsilon(aDist);
+        if(BS->StartPoint().SquareDistance(BS->EndPoint()) < 2.*eps &&
+          !BS->IsClosed() && !BS->IsPeriodic())
+        {
+          //force Closed()
+          gp_Pnt aPm((BS->Pole(1).XYZ() + BS->Pole(BS->NbPoles()).XYZ()) / 2.);
+          BS->SetPole(1, aPm);
+          BS->SetPole(BS->NbPoles(), aPm);
+        }
 	      sline.Append(BS);
 	      
 	      if(myApprox1) { 

@@ -22,6 +22,7 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <ElSLib.hxx>
+static const Standard_Real ExtPElS_MyEps = Epsilon(2. * M_PI);
 //=============================================================================
 
 Extrema_ExtPElS::Extrema_ExtPElS () { myDone = Standard_False; }
@@ -70,6 +71,7 @@ void Extrema_ExtPElS::Perform(const gp_Pnt&       P,
   if (OPp.Magnitude() < Tol) { return; }
   gp_Vec myZ = Pos.XDirection()^Pos.YDirection();
   Standard_Real U1 = gp_Vec(Pos.XDirection()).AngleWithRef(OPp,myZ); //-M_PI<U1<M_PI
+  if (U1 > -ExtPElS_MyEps && U1 < ExtPElS_MyEps) { U1 = 0.; }
   Standard_Real U2 = U1 + M_PI;
   if (U1 < 0.) { U1 += 2. * M_PI; }
 
@@ -164,6 +166,7 @@ void Extrema_ExtPElS::Perform(const gp_Pnt&       P,
   Standard_Real B, U1, V1, U2, V2;
   Standard_Boolean Same = DirZ.Dot(MP) >= 0.0;
   U1 = gp_Vec(Pos.XDirection()).AngleWithRef(OPp,myZ); //-M_PI<U1<M_PI
+  if (U1 > -ExtPElS_MyEps && U1 < ExtPElS_MyEps) { U1 = 0.; }
   B = MP.Angle(DirZ);
   if (!Same) { U1 += M_PI; }
   U2 = U1 + M_PI;
@@ -257,6 +260,7 @@ void Extrema_ExtPElS::Perform(const gp_Pnt&       P,
   else {
     gp_Vec myZ = Pos.XDirection()^Pos.YDirection();
     U1 = gp_Vec(Pos.XDirection()).AngleWithRef(OPp,myZ);
+    if (U1 > -ExtPElS_MyEps && U1 < ExtPElS_MyEps) { U1 = 0.; }
     U2 = U1 + M_PI;
     if (U1 < 0.) { U1 += 2. * M_PI; }
     V = OP.Angle(OPp);
@@ -321,6 +325,7 @@ void Extrema_ExtPElS::Perform(const gp_Pnt&       P,
  
   gp_Vec myZ = Pos.XDirection()^Pos.YDirection();
   Standard_Real U1 = gp_Vec(Pos.XDirection()).AngleWithRef(OPp,myZ);
+  if (U1 > -ExtPElS_MyEps && U1 < ExtPElS_MyEps) { U1 = 0.; }
   Standard_Real U2 = U1 + M_PI;
   if (U1 < 0.) { U1 += 2. * M_PI; }
   Standard_Real R = sqrt(R2);
@@ -333,7 +338,10 @@ void Extrema_ExtPElS::Perform(const gp_Pnt&       P,
   if(O2.SquareDistance(P) < Tol) { return; }
 
   Standard_Real V1 = OO1.AngleWithRef(gp_Vec(O1,P),OO1.Crossed(OZ));
+  if (V1 > -ExtPElS_MyEps && V1 < ExtPElS_MyEps) { V1 = 0.; }
   Standard_Real V2 = OO2.AngleWithRef(gp_Vec(P,O2),OO2.Crossed(OZ));
+  if (V2 > -ExtPElS_MyEps && V2 < ExtPElS_MyEps) { V2 = 0.; }
+
   if (V1 < 0.) { V1 += 2. * M_PI; }
   if (V2 < 0.) { V2 += 2. * M_PI; }
 

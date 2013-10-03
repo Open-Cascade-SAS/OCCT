@@ -24,7 +24,7 @@
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
 
-#define myInfinite 1.e15
+#define myInfinite Precision::Infinite()
 
 static void GetConeApexParam(const gp_Cone& C, Standard_Real& U, Standard_Real& V)
 {
@@ -282,12 +282,12 @@ TopAbs_State Adaptor3d_TopolTool::Classify(const gp_Pnt2d& P,
 
   if (nbRestr == 4) {
     if ((U < Uinf - Tol) || (U > Usup + Tol) ||
-	(V < Vinf - Tol) || (V > Vsup + Tol)) {
-      return TopAbs_OUT;
+      (V < Vinf - Tol) || (V > Vsup + Tol)) {
+        return TopAbs_OUT;
     }
     if ((Abs(U - Uinf) <= Tol) || (Abs(U - Usup) <= Tol) ||
-	(Abs(V - Vinf) <= Tol) || (Abs(V - Vsup) <= Tol)) {
-      return TopAbs_ON;
+      (Abs(V - Vinf) <= Tol) || (Abs(V - Vsup) <= Tol)) {
+        return TopAbs_ON;
     }
     return TopAbs_IN;
   }
@@ -297,100 +297,100 @@ TopAbs_State Adaptor3d_TopolTool::Classify(const gp_Pnt2d& P,
   else {
     Standard_Boolean dansu,dansv,surumin,surumax,survmin,survmax;
     if (Precision::IsNegativeInfinite(Uinf) && 
-	Precision::IsPositiveInfinite(Usup)) {
+	    Precision::IsPositiveInfinite(Usup)) {
       dansu = Standard_True;
       surumin = surumax = Standard_False;
     }
     else if (Precision::IsNegativeInfinite(Uinf)) {
       surumin = Standard_False;
       if (U >= Usup+Tol) {
-	dansu = Standard_False;
-	surumax = Standard_False;
+	      dansu = Standard_False;
+	      surumax = Standard_False;
       }
       else {
-	dansu = Standard_True;
-	surumax = Standard_False;
-	if (Abs(U-Usup)<=Tol) {
-	  surumax = Standard_True;
-	}
+	      dansu = Standard_True;
+	      surumax = Standard_False;
+	      if (Abs(U-Usup)<=Tol) {
+	        surumax = Standard_True;
+	      }
       }
     }
     else if (Precision::IsPositiveInfinite(Usup)) {
       surumax = Standard_False;
       if (U < Uinf-Tol) {
-	dansu = Standard_False;
-	surumin = Standard_False;
+        dansu = Standard_False;
+        surumin = Standard_False;
       }
       else {
-	dansu = Standard_True;
-	surumin = Standard_False;
-	if (Abs(U-Uinf)<=Tol) {
-	  surumin = Standard_True;
-	}
+        dansu = Standard_True;
+        surumin = Standard_False;
+        if (Abs(U-Uinf)<=Tol) {
+          surumin = Standard_True;
+        }
       }
     }
     else {
       if ((U < Uinf - Tol) || (U > Usup + Tol)) {
-	surumin = surumax = dansu = Standard_False;
+        surumin = surumax = dansu = Standard_False;
       }
       else {
-	dansu = Standard_True;
-	surumin = surumax = Standard_False;
-	if (Abs(U-Uinf)<=Tol) {
-	  surumin = Standard_True;
-	}
-	else if (Abs(U-Usup)<=Tol) {
-	  surumax = Standard_True;
-	}
+        dansu = Standard_True;
+        surumin = surumax = Standard_False;
+        if (Abs(U-Uinf)<=Tol) {
+          surumin = Standard_True;
+        }
+        else if (Abs(U-Usup)<=Tol) {
+          surumax = Standard_True;
+        }
       }
     }
 
     if (Precision::IsNegativeInfinite(Vinf) &&
-	Precision::IsPositiveInfinite(Vsup)) {
+	    Precision::IsPositiveInfinite(Vsup)) {
       dansv = Standard_True;
       survmin = survmax = Standard_False;
     }
     else if (Precision::IsNegativeInfinite(Vinf)) {
       survmin = Standard_False;
       if (V > Vsup+Tol) {
-	dansv = Standard_False;
-	survmax = Standard_False;
+        dansv = Standard_False;
+        survmax = Standard_False;
       }
       else {
-	dansv = Standard_True;
-	survmax = Standard_False;
-	if (Abs(V-Vsup)<=Tol) {
-	  survmax = Standard_True;
-	}
+        dansv = Standard_True;
+        survmax = Standard_False;
+        if (Abs(V-Vsup)<=Tol) {
+          survmax = Standard_True;
+        }
       }
     }
     else if (Precision::IsPositiveInfinite(Vsup)) {
       survmax = Standard_False;
       if (V < Vinf-Tol) {
-	dansv = Standard_False;
-	survmin = Standard_False;
+        dansv = Standard_False;
+        survmin = Standard_False;
       }
       else {
-	dansv = Standard_True;
-	survmin = Standard_False;
-	if (Abs(V-Vinf)<=Tol) {
-	  survmin = Standard_True;
-	}
+        dansv = Standard_True;
+        survmin = Standard_False;
+        if (Abs(V-Vinf)<=Tol) {
+          survmin = Standard_True;
+        }
       }
     }
     else {
       if ((V < Vinf - Tol) || (V > Vsup + Tol)) {
-	survmin = survmax = dansv = Standard_False;
+        survmin = survmax = dansv = Standard_False;
       }
       else {
-	dansv = Standard_True;
-	survmin = survmax = Standard_False;
-	if (Abs(V-Vinf)<=Tol) {
-	  survmin = Standard_True;
-	}
-	else if (Abs(V-Vsup)<=Tol) {
-	  survmax = Standard_True;
-	}
+        dansv = Standard_True;
+        survmin = survmax = Standard_False;
+        if (Abs(V-Vinf)<=Tol) {
+          survmin = Standard_True;
+        }
+        else if (Abs(V-Vsup)<=Tol) {
+          survmax = Standard_True;
+        }
       }
     }
 
@@ -1269,12 +1269,12 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real theDefl,
   //
   for(j = 0, i = 1; i <= nbsu; ++i) {
     if (bFlag) {
-       myUPars->SetValue(i,anUPars(i));
+      myUPars->SetValue(i,anUPars(i));
     }
     else {
       if(anUFlg(i)) {
-	++j;
-	myUPars->SetValue(j,anUPars(i));
+        ++j;
+        myUPars->SetValue(j,anUPars(i));
       }
     }
   }
@@ -1293,8 +1293,8 @@ void Adaptor3d_TopolTool::BSplSamplePnts(const Standard_Real theDefl,
     }
     else {
       if(aVFlg(i)) {
-	++j;
-	myVPars->SetValue(j,aVPars(i));
+        ++j;
+        myVPars->SetValue(j,aVPars(i));
       }
     }
   }
