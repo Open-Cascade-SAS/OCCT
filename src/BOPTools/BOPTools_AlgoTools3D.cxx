@@ -739,7 +739,7 @@ void Add(const TopoDS_Shape& aS,
                                                      Handle(BOPInt_Context)& theContext)
 {
   Standard_Boolean bIsDone, bHasFirstPoint, bHasSecondPoint;
-  Standard_Integer iErr, aIx, aNbDomains, i;
+  Standard_Integer iErr, aIx, aNbDomains;
   Standard_Real aUMin, aUMax, aVMin, aVMax;
   Standard_Real aVx = 0., aUx, aV1, aV2, aEpsT;
   gp_Dir2d aD2D (0., 1.);
@@ -783,8 +783,8 @@ void Add(const TopoDS_Shape& aS,
   }
   //
   aNbDomains=aHatcher.NbDomains(aIx);
-  for (i=1; i<=aNbDomains; ++i) {
-    const HatchGen_Domain& aDomain=aHatcher.Domain (aIx, i) ;
+  if (aNbDomains > 0) {
+    const HatchGen_Domain& aDomain=aHatcher.Domain (aIx, 1) ;
     bHasFirstPoint=aDomain.HasFirstPoint();
     if (!bHasFirstPoint) {
       iErr=3;
@@ -803,7 +803,10 @@ void Add(const TopoDS_Shape& aS,
     //
     aVx=IntTools_Tools::IntermediatePoint(aV1, aV2);
     //
-    break;
+  }
+  else {
+    iErr=2;
+    return iErr;
   }
   //
   aS->D0(aUx, aVx, aPx);

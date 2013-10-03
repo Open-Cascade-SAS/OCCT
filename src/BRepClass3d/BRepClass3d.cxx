@@ -118,11 +118,10 @@ Standard_Boolean IsInternal(const TopoDS_Shell& aSx)
   bInternal=Standard_False;
   //
   aIt.Initialize(aSx);
-  for (; aIt.More(); aIt.Next()) {
+  if (aIt.More()) {
     const TopoDS_Shape& aSy=aIt.Value();
     aOr=aSy.Orientation();
     bInternal=(aOr==TopAbs_INTERNAL);
-    break;
   }	
   //
   return bInternal;

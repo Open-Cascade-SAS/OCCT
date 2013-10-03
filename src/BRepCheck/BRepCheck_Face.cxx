@@ -657,9 +657,8 @@ static Standard_Boolean IsInside(const TopoDS_Wire& wir,
 {
   // Standard_Real U,V;
   TopExp_Explorer exp;
-  for (exp.Init(wir,TopAbs_EDGE);
-       exp.More();
-       exp.Next()) {
+  exp.Init(wir,TopAbs_EDGE);
+  if (exp.More()) {
 
     const TopoDS_Edge& edg = TopoDS::Edge(exp.Current());
     Standard_Real f,l;

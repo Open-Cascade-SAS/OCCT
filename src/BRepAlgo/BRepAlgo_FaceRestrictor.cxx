@@ -259,9 +259,8 @@ static Standard_Boolean IsInside(const TopoDS_Wire&       wir,
                                  BRepTopAdaptor_FClass2d& /*FClass2d*/)
 {
   TopExp_Explorer exp;
-  for (exp.Init(wir,TopAbs_EDGE);
-       exp.More();
-       exp.Next()) {
+  exp.Init(wir,TopAbs_EDGE);
+  if (exp.More()) {
     const TopoDS_Edge& edg = TopoDS::Edge(exp.Current());
     Standard_Real f,l;
     Handle(Geom2d_Curve) C2d = BRep_Tool::CurveOnSurface(edg,F,f,l);

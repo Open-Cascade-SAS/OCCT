@@ -1221,7 +1221,7 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
 
     //   VARIANT 2 : extend Arcprol, not create new small edge
     //   To do: modify for intcouture
-    const Standard_Boolean variant1 = Standard_True;
+    #define VARIANT1
 
     // First of all the ponts are cut with the edge of the spine.
     Standard_Integer IArcspine = DStr.AddShape(Arcspine);
@@ -1251,10 +1251,11 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
     }
 
     Handle(Geom2d_Curve) Hc;
-    if (variant1)
+    #ifdef VARIANT1
       parVtx = BRep_Tool::Parameter(Vtx,Arcprol);
-    else
+    #else
       parVtx = BRep_Tool::Parameter(V2,Arcprol);
+    #endif
     const ChFiDS_FaceInterference& Fiop = Fd->Interference(IFopArc);
     gp_Pnt2d pop1, pop2, pv1, pv2;
     Hc = BRep_Tool::CurveOnSurface(Arcprol,Fop,Ubid,Ubid);
@@ -1376,26 +1377,31 @@ void ChFi3d_Builder::PerformOneCorner(const Standard_Integer Index,
 	Interfop = ChFi3d_FilCurveInDS(IZob,Iop,zob2dop,Et);
       DStr.ChangeShapeInterferences(Iop).Append(Interfop);
       Handle(TopOpeBRepDS_CurvePointInterference) interfprol;
-      if (variant1)
+      #ifdef VARIANT1
 	interfprol = ChFi3d_FilVertexInDS(TopAbs_FORWARD,IZob,IVtx,Udeb);
-      else {
+      #else 
+      {
 	Standard_Integer IV2 = DStr.AddShape(V2); // VARIANT 2
 	interfprol = ChFi3d_FilVertexInDS(TopAbs_FORWARD,IZob,IV2,Udeb);
       }
+      #endif
       DStr.ChangeCurveInterferences(IZob).Append(interfprol);
       Standard_Integer icc = stripe->IndexPoint(isfirst,IFopArc);
       interfprol = ChFi3d_FilPointInDS(TopAbs_REVERSED,IZob,icc,Ufin);
       DStr.ChangeCurveInterferences(IZob).Append(interfprol);
-      if (variant1) {
+      #ifdef VARIANT1 
+      {
 	if (IFopArc == 1) box1.Add( zob3d->Value(Ufin) );
 	else              box2.Add( zob3d->Value(Ufin) );
       }
-      else {
+      #else 
+      {
         // cut off existing Arcprol
         Standard_Integer iArcprol = DStr.AddShape(Arcprol);
         interfprol = ChFi3d_FilPointInDS(OVtx,iArcprol,icc,Udeb);
         DStr.ChangeShapeInterferences(Arcprol).Append(interfprol);
       }
+      #endif
     }
   }
   ChFi3d_EnlargeBox(DStr,stripe,Fd,box1,box2,isfirst);

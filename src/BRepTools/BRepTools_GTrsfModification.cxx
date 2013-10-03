@@ -122,8 +122,9 @@ Standard_Boolean BRepTools_GTrsfModification::NewSurface
 	  S2->SetPole(i, j, P);
 	}
     }
-    else
-      Standard_NoSuchObject_Raise_if(1,"BRepTools_GTrsfModification : Pb no BSpline/Bezier Type Surface");
+    else{
+      Standard_NoSuchObject::Raise("BRepTools_GTrsfModification : Pb no BSpline/Bezier Type Surface");
+    }
 
   L.Identity();
   return Standard_True;
@@ -170,8 +171,9 @@ Standard_Boolean BRepTools_GTrsfModification::NewCurve
 	  C2->SetPole(i, P);
 	}
       }
-      else
-      Standard_NoSuchObject_Raise_if(1,"BRepTools_GTrsfModification : Pb no BSpline/Bezier Type Curve");
+      else {
+        Standard_NoSuchObject::Raise("BRepTools_GTrsfModification : Pb no BSpline/Bezier Type Curve");
+      }
     C = new Geom_TrimmedCurve(C, f, l);
   }
   L.Identity() ;  

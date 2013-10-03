@@ -201,7 +201,9 @@ static void  Solve(math_FunctionWithDerivative& F,
 
 #define NEWSEQ 1 
 
-static const Standard_Integer methode = 1;  //-- 1:(Nv Traitement)  3:(Nv + Ancien +check)  2:(Ancien) 
+#define MATH_FUNCTIONROOTS_NEWCODE // Nv Traitement
+//#define MATH_FUNCTIONROOTS_OLDCODE // Ancien
+//#define MATH_FUNCTIONROOTS_CHECK // Check
 
 math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
 				       const Standard_Real A,
@@ -224,7 +226,8 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
 #endif
   Sol.Clear();
   NbStateSol.Clear();
-  if(methode & 1) { 
+  #ifdef MATH_FUNCTIONROOTS_NEWCODE
+    { 
     Done = Standard_True;
     Standard_Real X0=A;
     Standard_Real XN=B;
@@ -492,7 +495,8 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
     }      
     
 #if NEWSEQ
-    if(methode==3) { 
+    #ifdef MATH_FUNCTIONROOTS_CHECK 
+    { 
       StaticSol.Clear();
       Standard_Integer n=Sol.Length();
       for(Standard_Integer ii=1;ii<=n;ii++) { 
@@ -502,8 +506,11 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
       NbStateSol.Clear();
     }
 #endif
+#endif
+#endif
   }
-  if(methode & 2) { 
+#ifdef MATH_FUNCTIONROOTS_OLDCODE
+{ 
     //-- ********************************************************************************
     //--                              ANCIEN TRAITEMENT 
     //-- ********************************************************************************
@@ -977,7 +984,8 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
     }
   }
 #if NEWSEQ
-  if(methode == 3) { 
+  #ifdef MATH_FUNCTIONROOTS_CHECK
+  { 
     Standard_Integer n1=StaticSol.Length();
     Standard_Integer n2=Sol.Length();
     if(n1!=n2) { 
@@ -1003,7 +1011,9 @@ math_FunctionRoots::math_FunctionRoots(math_FunctionWithDerivative& F,
     }
   }
 #endif
+#endif
 }
+#endif
 }
 
 
