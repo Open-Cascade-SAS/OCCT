@@ -40,5 +40,13 @@ checkshape res5
 
 renamevar res5 result
 
-set square 1.21497e+7
+set OCC62_square 1.23063e+7
+puts "The expected square is ${OCC62_square}"
+
+set sq_persent 0.03
+regexp {Mass +: +([-0-9.+eE]+)} [sprops result] full m
+if { (${OCC62_square} != 0 && [expr abs(${OCC62_square} - $m)/${OCC62_square}] > ${sq_persent}) || (${OCC62_square} == 0 && $m != 0) } {
+   puts "Error : The square of result shape is $m"
+}
+
 set 2dviewer 0

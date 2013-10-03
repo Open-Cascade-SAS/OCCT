@@ -50,8 +50,9 @@
 #include <Standard_NotImplemented.hxx>
 
 
-static Standard_Real    ProjOnCurve (const gp_Pnt2d&             P,
-				     const Handle(Geom2d_Curve)& C);
+static Standard_Boolean ProjOnCurve (const gp_Pnt2d& P,
+                                     const Handle(Geom2d_Curve)& C,
+                                     Standard_Real& theParam);
 
 static Standard_Real    Curvature (const Handle(Geom2d_Curve)& C,
 				         Standard_Real         U,
@@ -125,8 +126,14 @@ void  Bisector_BisecCC::Perform(const Handle(Geom2d_Curve)& Cu1,
   //---------------------------------------------
   // Calculate first point of the polygon.
   //---------------------------------------------
-  U    = ProjOnCurve (Origin,curve1);
-  P    = ValueByInt  (U,UC1,UC2,Dist);
+  Standard_Boolean isProjDone = ProjOnCurve (Origin,curve1, U);
+  P                           = ValueByInt  (U,UC1,UC2,Dist);
+
+  if(!isProjDone)
+  {
+    isEmpty = Standard_True;
+    return;
+  }
 
   if (Dist < Precision::Infinite()) {
     //----------------------------------------------------
@@ -152,11 +159,11 @@ void  Bisector_BisecCC::Perform(const Handle(Geom2d_Curve)& Cu1,
     for (Standard_Integer i = 1; i <= NbPnts - 1; i++) {
       P    = ValueByInt(U,UC1,UC2,Dist);
       if (Dist < Precision::Infinite()) {
-	USol = SearchBound(U - dU,U);    
-	P    = ValueByInt(USol,UC1,UC2,Dist);	
-	startIntervals.Append(USol);
-	myPolygon.Append(Bisector_PointOnBis(UC1,UC2,USol,Dist,P));
-	break;
+        USol = SearchBound(U - dU,U);    
+        P    = ValueByInt(USol,UC1,UC2,Dist);	
+        startIntervals.Append(USol);
+        myPolygon.Append(Bisector_PointOnBis(UC1,UC2,USol,Dist,P));
+        break;
       }
       U += dU;
     }
@@ -174,26 +181,26 @@ void  Bisector_BisecCC::Perform(const Handle(Geom2d_Curve)& Cu1,
     dU = DU/(NbPnts - 1);
 
     U += dU;
-//  modified by NIZHNY-EAP Fri Jan 21 09:33:20 2000 ___BEGIN___
-//  prevent addition of the same point
+    //  modified by NIZHNY-EAP Fri Jan 21 09:33:20 2000 ___BEGIN___
+    //  prevent addition of the same point
     gp_Pnt2d prevPnt = P;
     for (Standard_Integer i = 1; i <= NbPnts - 1; i++) {
       P    = ValueByInt(U,UC1,UC2,Dist);
       if (Dist < Precision::Infinite()) {
-	if (P.Distance (prevPnt) > Precision::Confusion())
-	  myPolygon.Append(Bisector_PointOnBis(UC1,UC2,U,Dist,P));
+        if (P.Distance (prevPnt) > Precision::Confusion())
+          myPolygon.Append(Bisector_PointOnBis(UC1,UC2,U,Dist,P));
       }
       else {
-	USol = SearchBound(U - dU,U);
-	P    = ValueByInt(USol,UC1,UC2,Dist);      
-	endIntervals.SetValue(1,USol);
-	if (P.Distance (prevPnt) > Precision::Confusion())
-	  myPolygon.Append(Bisector_PointOnBis(UC1,UC2,USol,Dist,P));
-	break;
+        USol = SearchBound(U - dU,U);
+        P    = ValueByInt(USol,UC1,UC2,Dist);      
+        endIntervals.SetValue(1,USol);
+        if (P.Distance (prevPnt) > Precision::Confusion())
+          myPolygon.Append(Bisector_PointOnBis(UC1,UC2,USol,Dist,P));
+        break;
       }
       U += dU;
       prevPnt=P;
-//  modified by NIZHNY-EAP Fri Jan 21 09:33:24 2000 ___END___
+      //  modified by NIZHNY-EAP Fri Jan 21 09:33:24 2000 ___END___
     }  
   }
   else {
@@ -202,7 +209,7 @@ void  Bisector_BisecCC::Perform(const Handle(Geom2d_Curve)& Cu1,
     //----------------
     YaPoly = Standard_False;
   }
-  
+
   extensionStart = Standard_False;
   extensionEnd   = Standard_False;
   pointStart     = Origin;
@@ -220,7 +227,7 @@ void  Bisector_BisecCC::Perform(const Handle(Geom2d_Curve)& Cu1,
     // the extension at the beginning  is taken into account if the origin is found above.
     // ie : the origin is not the in the polygon.
     //-----------------------------------------------------------------------------
-    
+
     //---------------------------------
     // Do the extensions exist ?
     //---------------------------------
@@ -249,19 +256,19 @@ void  Bisector_BisecCC::Perform(const Handle(Geom2d_Curve)& Cu1,
     //------------------------------------------------------
     if (YaPoly) {
       if (extensionStart) {
-	gp_Pnt2d       P1     = myPolygon.First().Point();
-	Standard_Real  UFirst = startIntervals.First() - pointStart.Distance(P1);
-	startIntervals.InsertBefore(1,UFirst);
-	endIntervals  .InsertBefore(1,startIntervals.Value(2));
+        gp_Pnt2d       P1     = myPolygon.First().Point();
+        Standard_Real  UFirst = startIntervals.First() - pointStart.Distance(P1);
+        startIntervals.InsertBefore(1,UFirst);
+        endIntervals  .InsertBefore(1,startIntervals.Value(2));
       }
       if (extensionEnd) {
-	gp_Pnt2d       P1;
-	Standard_Real  UFirst,ULast;
-	P1     = myPolygon.Last().Point();
-	UFirst = endIntervals.Last();      
-	ULast  = UFirst + pointEnd.Distance(P1);
-	startIntervals.Append(UFirst);
-	endIntervals  .Append(ULast );
+        gp_Pnt2d       P1;
+        Standard_Real  UFirst,ULast;
+        P1     = myPolygon.Last().Point();
+        UFirst = endIntervals.Last();      
+        ULast  = UFirst + pointEnd.Distance(P1);
+        startIntervals.Append(UFirst);
+        endIntervals  .Append(ULast );
       }
     }
     else {
@@ -274,10 +281,10 @@ void  Bisector_BisecCC::Perform(const Handle(Geom2d_Curve)& Cu1,
   }
   if (!YaPoly && !extensionStart && !extensionEnd) 
     isEmpty = Standard_True;
-//  modified by NIZHNY-EAP Mon Jan 17 17:32:40 2000 ___BEGIN___
+  //  modified by NIZHNY-EAP Mon Jan 17 17:32:40 2000 ___BEGIN___
   if (myPolygon.Length() <= 2)
     isEmpty = Standard_True;
-//  modified by NIZHNY-EAP Mon Jan 17 17:32:42 2000 ___END___
+  //  modified by NIZHNY-EAP Mon Jan 17 17:32:42 2000 ___END___
 }
 
 //=============================================================================
@@ -1409,9 +1416,11 @@ Standard_Real Bisector_BisecCC::Parameter(const gp_Pnt2d& P) const
   else if (P.IsEqual(Value(LastParameter()),Precision::Confusion())) {
     UOnCurve = LastParameter();
   }
-  else {
-    UOnCurve = ProjOnCurve(P,curve1);
+  else
+  {
+    ProjOnCurve(P, curve1, UOnCurve);
   }
+
   return UOnCurve;
 }
 
@@ -1623,42 +1632,56 @@ Standard_Real Bisector_BisecCC::SearchBound (const Standard_Real U1,
 //function : ProjOnCurve
 // purpose :
 //=============================================================================
-static Standard_Real ProjOnCurve (const gp_Pnt2d&             P,
-				  const Handle(Geom2d_Curve)& C)
+static Standard_Boolean ProjOnCurve (const gp_Pnt2d& P,
+                                     const Handle(Geom2d_Curve)& C,
+                                     Standard_Real& theParam)
 {
-  Standard_Real UOnCurve =0.;
+  //Standard_Real UOnCurve =0.;
+  theParam = 0.0;
   gp_Pnt2d      PF,PL;
   gp_Vec2d      TF,TL;
 
   C->D1(C->FirstParameter(),PF,TF);
   C->D1(C->LastParameter() ,PL,TL);
 
-  if (P.IsEqual(PF ,Precision::Confusion())) {
-    return C->FirstParameter();
+  if (P.IsEqual(PF ,Precision::Confusion()))
+  {
+    theParam =  C->FirstParameter();
+    return Standard_True;
   }
-  if (P.IsEqual(PL ,Precision::Confusion())) {
-    return C->LastParameter();
+  
+  if (P.IsEqual(PL ,Precision::Confusion()))
+  {
+    theParam = C->LastParameter();
+    return Standard_True;
   }
+  
   gp_Vec2d PPF(PF.X() - P.X(), PF.Y() - P.Y());
   TF.Normalize();
-  if ( Abs (PPF.Dot(TF)) < Precision::Confusion()) {
-    return C->FirstParameter();
+  
+  if ( Abs (PPF.Dot(TF)) < Precision::Confusion())
+  {
+    theParam = C->FirstParameter();
+    return Standard_True;
   }
   gp_Vec2d PPL (PL.X() - P.X(), PL.Y() - P.Y());
   TL.Normalize();
-  if ( Abs (PPL.Dot(TL)) < Precision::Confusion()) {
-    return C->LastParameter();
+  if ( Abs (PPL.Dot(TL)) < Precision::Confusion())
+  {
+    theParam = C->LastParameter();
+    return Standard_True;
   }
   Geom2dAPI_ProjectPointOnCurve Proj(P,C,
 				     C->FirstParameter(),
 				     C->LastParameter());
   if (Proj.NbPoints() > 0) {
-    UOnCurve = Proj.LowerDistanceParameter();
+    theParam = Proj.LowerDistanceParameter();
   }
   else {
-    Standard_OutOfRange::Raise();
+    return Standard_False;
   }
-  return UOnCurve;
+
+  return Standard_True;
 }
 
 //=============================================================================
