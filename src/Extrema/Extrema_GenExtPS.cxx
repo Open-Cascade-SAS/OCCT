@@ -707,6 +707,16 @@ void Extrema_GenExtPS::BuildTree()
   if ( ! mySphereUBTree.IsNull() )
     return;
 
+   if (myS->GetType() == GeomAbs_BSplineSurface) {
+     Handle(Geom_BSplineSurface) aBspl = myS->BSpline();
+     Standard_Integer aUValue = aBspl->UDegree() * aBspl->NbUKnots();
+     Standard_Integer aVValue = aBspl->VDegree() * aBspl->NbVKnots();
+     if (aUValue > myusample)
+       myusample = aUValue;
+     if (aVValue > myvsample)
+       myvsample = aVValue;
+   }
+
   Standard_Real PasU = myusup - myumin;
   Standard_Real PasV = myvsup - myvmin;
   Standard_Real U0 = PasU / myusample / 100.;

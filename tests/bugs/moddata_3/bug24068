@@ -1,0 +1,77 @@
+puts "========"
+puts "CR24068"
+puts "========"
+puts ""
+#######################################################################
+# Wrong result done by projection algorithm
+#######################################################################
+
+restore [locate_data_file bug23100_qf.brep] f
+
+explode f
+copy f_2 f
+
+set CMP_TOL 5.0e-14
+
+# 1
+point p_1  100 86.6025403784439 2.25000977226544
+vertex v_1 100 86.6025403784439 2.25000977226544
+set GOOD_DIST_1 2.0175535360778957e-14
+
+set log_1 [projponf f p_1 -min -t]
+regexp {proj dist = ([-0-9.+eE]+)} ${log_1} full distmax_1
+if { [expr abs(${distmax_1} - ${GOOD_DIST_1})] > ${CMP_TOL} } {
+   puts "Error: Wrong distanse (# 1)"
+} else {
+   puts "OK: Good distanse (# 1)"
+}
+
+distmini d_1 v_1 f
+set distmin_1 [dval d_1_val]
+if { [expr abs(${distmin_1} - ${GOOD_DIST_1})] > ${CMP_TOL} } {
+   puts "Error: Wrong minidistanse (# 1)"
+} else {
+   puts "OK: Good minidistanse (# 1)"
+}
+
+# 2
+point p_2  100 86.6025403784439 8.2500100656622
+vertex v_2 100 86.6025403784439 8.2500100656622
+set GOOD_DIST_2 9.9491842071163076e-14
+
+set log_2 [projponf f p_2 -min -t]
+regexp {proj dist = ([-0-9.+eE]+)} ${log_2} full distmax_2
+if { [expr abs(${distmax_2} - ${GOOD_DIST_2})] > ${CMP_TOL} } {
+   puts "Error: Wrong distanse (# 2)"
+} else {
+   puts "OK: Good distanse (# 2)"
+}
+
+distmini d_2 v_2 f
+set distmin_2 [dval d_2_val]
+if { [expr abs(${distmin_2} - ${GOOD_DIST_2})] > ${CMP_TOL} } {
+   puts "Error: Wrong minidistanse (# 2)"
+} else {
+   puts "OK: Good minidistanse (# 2)"
+}
+
+# 3
+point p_3  100 86.602540378443891 11.249990478996615
+vertex v_3 100 86.602540378443891 11.249990478996615
+set GOOD_DIST_3 2.8421709430404007e-14
+
+set log_3 [projponf f p_3 -min -t]
+regexp {proj dist = ([-0-9.+eE]+)} ${log_3} full distmax_3
+if { [expr abs(${distmax_3} - ${GOOD_DIST_3})] > ${CMP_TOL} } {
+   puts "Error: Wrong distanse (# 3)"
+} else {
+   puts "OK: Good distanse (# 3)"
+}
+
+distmini d_3 v_3 f
+set distmin_3 [dval d_3_val]
+if { [expr abs(${distmin_3} - ${GOOD_DIST_3})] > ${CMP_TOL} } {
+   puts "Error: Wrong minidistanse (# 3)"
+} else {
+   puts "OK: Good minidistanse (# 3)"
+}
