@@ -1,0 +1,17 @@
+puts "============"
+puts "OCC24213"
+puts "============"
+puts ""
+######################################################
+# bopargcheck complains on sphere
+######################################################
+
+psphere s 10
+
+set info [bopargcheck s #F]
+
+if { [regexp "to be valid for BOP" ${info}] != 1 } {
+   puts "Error : complain of bopargcheck command is not correct"
+} else {
+   puts "OK : bopargcheck command work properly"
+}
