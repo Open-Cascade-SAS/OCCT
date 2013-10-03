@@ -18,6 +18,7 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+
 // dcl          CCI60011 : Correction of degeneratedSection
 //              Improvement of SameParameter Edge to treat case of failure in BRepLib::SameParameter
 // dcl          Thu Aug 20 09:24:49 1998
@@ -729,6 +730,7 @@ TopoDS_Edge BRepBuilderAPI_Sewing::SameParameterEdge(const TopoDS_Edge& edgeFirs
   // Retrieve second PCurves
   TopLoc_Location loc2;
   Handle(Geom_Surface) surf2;
+  
   //Handle(Geom2d_Curve) c2d2, c2d21;
   //  Standard_Real firstOld, lastOld;
 
@@ -796,6 +798,7 @@ TopoDS_Edge BRepBuilderAPI_Sewing::SameParameterEdge(const TopoDS_Edge& edgeFirs
 
       TopLoc_Location loc1;
       Handle(Geom_Surface) surf1 = BRep_Tool::Surface(fac1, loc1);
+      
       Standard_Real first2d, last2d;
       Standard_Boolean isSeam1 = ((IsUClosedSurface(surf1,edge1,loc1) || IsVClosedSurface(surf1,edge1,loc1)) &&
         BRep_Tool::IsClosed(TopoDS::Edge(edge1),fac1));
@@ -869,28 +872,37 @@ TopoDS_Edge BRepBuilderAPI_Sewing::SameParameterEdge(const TopoDS_Edge& edgeFirs
 
     }
   }
-  if(isResEdge)
-    // Try to make the edge sameparameter
+  Standard_Real tolReached = Precision::Infinite();
+  Standard_Boolean isSamePar = Standard_False; 
+  if( isResEdge)
+  {
     SameParameter(edge);
-
-  //  Standard_Real tolReached = BRep_Tool::Tolerance(edge);
-  //if (!BRep_Tool::SameParameter(edge)) return edge; //gka ????????
-
-  if (firstCall && (!BRep_Tool::SameParameter(edge) || !isResEdge)) {
+    if( BRep_Tool::SameParameter(edge))
+    {
+      isSamePar = Standard_True;
+      tolReached = BRep_Tool::Tolerance(edge);
+    }
+  }
+ 
+ 
+  if (firstCall && ( !isResEdge || !isSamePar || tolReached > myTolerance)) {
     Standard_Integer whichSecn = whichSec;
     // Try to merge on the second section
-    Standard_Boolean second_ok = Standard_True;
+    Standard_Boolean second_ok = Standard_False;
     TopoDS_Edge s_edge = SameParameterEdge(edgeFirst,edgeLast,listFacesFirst,listFacesLast,
       secForward,whichSecn,Standard_False);
-    //if (s_edge.IsNull()) return s_edge; // gka version for free edges
-    if (s_edge.IsNull()) second_ok = Standard_False;
-    else if (!BRep_Tool::SameParameter(s_edge)) second_ok = Standard_False;
-    else {
-      edge = s_edge;
-      whichSec = whichSecn;
+    if( !s_edge.IsNull())
+    {
+      Standard_Real tolReached_2  = BRep_Tool::Tolerance(s_edge);
+      second_ok = ( BRep_Tool::SameParameter(s_edge) && tolReached_2 < tolReached );
+      if( second_ok)
+      {
+        edge = s_edge;
+        whichSec = whichSecn;
+      }
     }
 
-    if (!second_ok) {
+    if (!second_ok && !edge.IsNull()) {
 
       GeomAdaptor_Curve c3dAdapt(c3d);
 
@@ -4241,8 +4253,10 @@ void BRepBuilderAPI_Sewing::ProjectPointsOnCurve(const TColgp_Array1OfPnt& arrPn
   Extrema_ExtPC locProj;
   locProj.Initialize(GAC, first, last);
   gp_Pnt pfirst = GAC.Value(first), plast = GAC.Value(last);
-
-  for (Standard_Integer i1 = 1; i1 <= arrPnt.Length(); i1++) {
+  Standard_Integer find = 1;//(isConsiderEnds ? 1 : 2);
+  Standard_Integer lind = arrPnt.Length();//(isConsiderEnds ? arrPnt.Length() : arrPnt.Length() -1);
+  
+  for (Standard_Integer i1 = find; i1 <= lind ; i1++) {
     gp_Pnt pt = arrPnt(i1);
     Standard_Real worktol = myTolerance;
     Standard_Real distF2 = pfirst.SquareDistance(pt);
@@ -4253,7 +4267,7 @@ void BRepBuilderAPI_Sewing::ProjectPointsOnCurve(const TColgp_Array1OfPnt& arrPn
       // Project current point on curve
       locProj.Perform(pt);
       if (locProj.IsDone() && locProj.NbExt() > 0) {
-        Standard_Real dist2Min = Min(distF2,distL2);
+        Standard_Real dist2Min = (isConsiderEnds || i1 == find || i1 == lind ? Min(distF2,distL2) : Precision::Infinite());
         Standard_Integer ind, indMin = 0;
         for (ind = 1; ind <= locProj.NbExt(); ind++) {
           Standard_Real dProj2 = locProj.SquareDistance(ind);

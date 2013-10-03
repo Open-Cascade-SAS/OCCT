@@ -1,0 +1,47 @@
+puts "========================"
+puts "OCC24174"
+puts "========================" 
+puts ""
+#######################################################################
+# [regression] BRepBuilderAPI_Sewing returns result with very high tolerance
+#######################################################################
+
+pload XSDRAW
+
+restore [locate_data_file  bug24174_Comp1.brep] a
+
+explode a
+sewing result 0.1 a_1 a_2
+
+# 0
+set log_1 [tolmax a_1]
+regexp {max tol = ([-0-9.+eE]+)} ${log_1} full MaxTolerance_a_1
+set log_2 [tolmax a_2]
+regexp {max tol = ([-0-9.+eE]+)} ${log_2} full MaxTolerance_a_2
+set CMP_TOL ${MaxTolerance_a_1}
+if { ${MaxTolerance_a_2} > ${CMP_TOL} } {
+   set CMP_TOL ${MaxTolerance_a_2}
+}
+
+# 1
+checkshape result
+
+# 2
+set log_3 [tolmax result]
+regexp {max tol = ([-0-9.+eE]+)} ${log_3} full MaxTolerance_result
+if { ${MaxTolerance_result} > ${CMP_TOL} } {
+   puts "Error: invalid tolerance"
+}
+
+# 3
+freebounds ${result} 0
+set s [explode result_c e]
+
+set Number [ llength ${s} ]
+puts "Number of free edges is ${Number}"
+set Number_Free_Edges 12
+if { ${Number} != ${Number_Free_Edges} } {
+   puts "Error : Number of free edges is ${Number}"
+}
+
+set 2dviewer 1
