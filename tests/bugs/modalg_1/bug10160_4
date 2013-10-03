@@ -39,7 +39,8 @@ puts "CPU_user_time=${CPU_user_time}"
 set CPU_user_time [expr ${CPU_user_time} / ${NbTests}]
 puts "CPU_user_time=${CPU_user_time}"
 
-set square 3.56087e+07
+#CR24137 set square 3.56087e+07
+set square 3.52471e+07
 
 # Analysis of "nbshapes res"
 set nb_v_good 24
@@ -53,4 +54,3 @@ set nb_compound_good 1
 set nb_shape_good 102
 
 set 2dviewer 0
-

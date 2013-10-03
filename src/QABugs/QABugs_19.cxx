@@ -1234,6 +1234,69 @@ static Standard_Integer OCC24005 (Draw_Interpretor& theDI, Standard_Integer theN
   return 0;
 }
 
+#include <Extrema_FuncExtPS.hxx>
+#include <math_FunctionSetRoot.hxx>
+#include <math_Vector.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
+static Standard_Integer OCC24137 (Draw_Interpretor& theDI, Standard_Integer theNArg, const char** theArgv) 
+{
+  Standard_Integer anArgIter = 1;
+  if (theNArg < 5)
+    {
+      theDI <<"Usage: " << theArgv[0] << " face vertex U V [N]"<<"\n";
+      return 1;
+    }
+
+  // get target shape
+  Standard_CString aFaceName = theArgv[anArgIter++];
+  Standard_CString aVertName = theArgv[anArgIter++];
+  const TopoDS_Shape aShapeF = DBRep::Get (aFaceName);
+  const TopoDS_Shape aShapeV = DBRep::Get (aVertName);
+  const Standard_Real aUFrom = Atof (theArgv[anArgIter++]);
+  const Standard_Real aVFrom = Atof (theArgv[anArgIter++]);
+  const Standard_Integer aNbIts = (anArgIter < theNArg) ? atol (theArgv[anArgIter++]) : 100;
+  if (aShapeF.IsNull() || aShapeF.ShapeType() != TopAbs_FACE)
+    {
+      std::cout << "Error: " << aFaceName << " shape is null / not a face" << std::endl;
+      return 1;
+    }
+  if (aShapeV.IsNull() || aShapeV.ShapeType() != TopAbs_VERTEX)
+    {
+      std::cout << "Error: " << aVertName << " shape is null / not a vertex" << std::endl;
+      return 1;
+    }
+  const TopoDS_Face   aFace = TopoDS::Face   (aShapeF);
+  const TopoDS_Vertex aVert = TopoDS::Vertex (aShapeV);
+  GeomAdaptor_Surface aSurf (BRep_Tool::Surface (aFace));
+
+  gp_Pnt aPnt = BRep_Tool::Pnt (aVert), aRes;
+
+  Extrema_FuncExtPS    anExtFunc;
+  math_FunctionSetRoot aRoot (anExtFunc, aNbIts);
+
+  math_Vector aTolUV (1, 2), aUVinf  (1, 2), aUVsup  (1, 2), aFromUV (1, 2);
+  aTolUV (1) =  Precision::Confusion(); aTolUV (2) =  Precision::Confusion();
+  aUVinf (1) = -Precision::Infinite();  aUVinf (2) = -Precision::Infinite();
+  aUVsup (1) =  Precision::Infinite();  aUVsup (2) =  Precision::Infinite();
+  aFromUV(1) =  aUFrom; aFromUV(2) = aVFrom;
+
+  anExtFunc.Initialize (aSurf);
+  anExtFunc.SetPoint (aPnt);
+  aRoot.SetTolerance (aTolUV);
+  aRoot.Perform (anExtFunc, aFromUV, aUVinf, aUVsup);
+  if (!aRoot.IsDone())
+    {
+      std::cerr << "No results!\n";
+      return 1;
+    }
+
+  theDI << aRoot.Root()(1) << " " << aRoot.Root()(2) << "\n";
+  
+  aSurf.D0 (aRoot.Root()(1), aRoot.Root()(2), aRes);
+  DBRep::Set ("result", BRepBuilderAPI_MakeVertex (aRes));
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -1254,5 +1317,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC24019", "OCC24019 aShape", __FILE__, OCC24019, group);
   theCommands.Add ("OCC11758", "OCC11758", __FILE__, OCC11758, group);
   theCommands.Add ("OCC24005", "OCC24005 result", __FILE__, OCC24005, group);
+  theCommands.Add ("OCC24137", "OCC24137 face vertex U V [N]", __FILE__, OCC24137, group);
   return;
 }

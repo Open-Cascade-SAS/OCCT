@@ -1,0 +1,22 @@
+puts "================"
+puts "OCC24137"
+puts "================"
+puts ""
+#######################################################################
+# math_FunctionSetRoot returns too rough solution
+#######################################################################
+
+pload QAcommands
+
+vertex v 6.65634 -0.201746 2.51477
+restore [locate_data_file bug24137_face.brep] f 
+
+OCC24137 f v 508.326 77.6999
+distmini d v result
+
+regexp {([-0-9.+eE]+)$} [dump d_val] full dist
+set good_dist 0
+set toler 2.0e-06
+if { [expr abs( ${dist} - ${good_dist} )] > ${toler} } {
+    puts "Faulty : the distanse is ${dist}. It is bad value"
+}
