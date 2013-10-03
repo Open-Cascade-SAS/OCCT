@@ -601,7 +601,7 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
   }
 
   // Create viewer
-  Handle(V3d_Viewer) a3DViewer, a3DCollector;
+  Handle(V3d_Viewer) a3DViewer;
   // If it's the single view, we first look for empty context
   if (ViewerTest_myViews.IsEmpty() && !ViewerTest_myContexts.IsEmpty())
   {
@@ -610,25 +610,21 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
     if (anIter.More())
       ViewerTest::SetAISContext (anIter.Value());
     a3DViewer = ViewerTest::GetAISContext()->CurrentViewer();
-    a3DCollector= ViewerTest::GetAISContext()->Collector();
   }
   else if (ViewerTest_myContexts.IsBound1(aViewNames.GetViewerName()))
   {
     ViewerTest::SetAISContext(ViewerTest_myContexts.Find1(aViewNames.GetViewerName()));
     a3DViewer = ViewerTest::GetAISContext()->CurrentViewer();
-    a3DCollector= ViewerTest::GetAISContext()->Collector();
   }
-  else if (a3DViewer.IsNull() || a3DCollector.IsNull())
+  else if (a3DViewer.IsNull())
   {
     toCreateViewer = Standard_True;
     TCollection_ExtendedString NameOfWindow("Viewer3D");
     a3DViewer = new V3d_Viewer(aGraphicDriver, NameOfWindow.ToExtString());
 
     NameOfWindow = TCollection_ExtendedString("Collector");
-    a3DCollector = new V3d_Viewer(aGraphicDriver, NameOfWindow.ToExtString());
 
     a3DViewer->SetDefaultBackgroundColor(Quantity_NOC_BLACK);
-    a3DCollector->SetDefaultBackgroundColor(Quantity_NOC_STEELBLUE);
   }
 
   // AIS context setup
@@ -636,7 +632,7 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
       !(ViewerTest_myContexts.IsBound1(aViewNames.GetViewerName())))
   {
     Handle(AIS_InteractiveContext) aContext =
-      new AIS_InteractiveContext(a3DViewer, a3DCollector);
+      new AIS_InteractiveContext(a3DViewer);
     ViewerTest::SetAISContext (aContext);
     ViewerTest_myContexts.Bind (aViewNames.GetViewerName(), ViewerTest::GetAISContext());
   }
@@ -707,7 +703,6 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
 
   aView.Nullify();
   a3DViewer.Nullify();
-  a3DCollector.Nullify();
 
   return aViewNames.GetViewName();
 }
@@ -4526,15 +4521,10 @@ static Standard_Integer VPurgeDisplay (Draw_Interpretor& di,
                                 Standard_Integer argc,
                                 const char ** argv)
 {
-  if (argc > 2)
+  if (argc > 1)
   {
-    di << "Usage : " << argv[0] << " [CollectorToo = 0|1]" << "\n";
+    di << "Usage : " << argv[0] << "\n";
     return 1;
-  }
-  Standard_Boolean isCollectorToo = Standard_False;
-  if (argc == 2)
-  {
-      isCollectorToo = (atoi(argv [1]) != 0);
   }
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
   if (aContext.IsNull())
@@ -4543,7 +4533,7 @@ static Standard_Integer VPurgeDisplay (Draw_Interpretor& di,
     return 1;
   }
   aContext->CloseAllContexts(Standard_False);
-  di << aContext->PurgeDisplay(isCollectorToo) << "\n";
+  di << aContext->PurgeDisplay() << "\n";
   return 0;
 }
 
@@ -5451,7 +5441,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "vantialiasing 1|0",
     __FILE__,VAntialiasing,group);
   theCommands.Add ("vpurgedisplay",
-    "vpurgedisplay [CollectorToo = 0|1]"
+    "vpurgedisplay"
     "- removes structures which don't belong to objects displayed in neutral point",
     __FILE__, VPurgeDisplay, group);
   theCommands.Add("vsetviewsize",

@@ -189,7 +189,6 @@ is
     enumeration DisplayStatus is 
     DS_Displayed,  
     DS_Erased,     
-    DS_FullErased,
     DS_Temporary, 
     DS_None;     
     	 ---Purpose:

@@ -12,9 +12,8 @@ vinit
 vdisplay b b2
 vfit
 verase b
-set CollectorToo 1
 
-if [catch {vpurgedisplay $CollectorToo} result] {
+if [catch {vpurgedisplay} result] {
     puts "Faulty OCC2066"
 } else {
     puts "OK OCC2066"

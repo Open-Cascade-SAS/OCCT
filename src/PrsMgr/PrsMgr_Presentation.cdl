@@ -40,7 +40,9 @@ is
     Display(me: mutable) is deferred private;
     
     Erase(me) is deferred private;
-    
+
+    SetVisible (me: mutable; theValue: Boolean from Standard) is deferred private;
+
     Highlight(me: mutable) is deferred private;
     
     Unhighlight (me) is deferred private;

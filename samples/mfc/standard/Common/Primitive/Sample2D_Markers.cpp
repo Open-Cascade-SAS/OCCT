@@ -50,7 +50,7 @@ void Sample2D_Markers::Compute (  const Handle(PrsMgr_PresentationManager3d)& aP
   else
   {
     Handle(Graphic3d_AspectMarker3d) aMarker = new Graphic3d_AspectMarker3d(myMarkerType,myColor,myIndex);
-    aPresentation->SetPrimitivesAspect(aMarker);
+    Prs3d_Root::CurrentGroup (aPresentation)->SetPrimitivesAspect(aMarker);
     Handle(Graphic3d_ArrayOfPoints) anArrayOfPoints = new Graphic3d_ArrayOfPoints (1);
     anArrayOfPoints->AddVertex (myXPosition, myYPosition, 0);
     Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray (anArrayOfPoints);

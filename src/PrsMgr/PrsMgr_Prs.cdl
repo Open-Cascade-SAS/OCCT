@@ -36,7 +36,10 @@ is
     	   aPresentation         : Presentation3dPointer from PrsMgr; 
            aTypeOfPresentation3d : TypeOfPresentation3d from PrsMgr)
     returns mutable Prs from PrsMgr;
-    
+
+    Compute (me: mutable)
+    is redefined static;
+
     Compute(me : mutable; aProjector: DataStructureManager from Graphic3d)
     returns Structure from Graphic3d
     is redefined static;

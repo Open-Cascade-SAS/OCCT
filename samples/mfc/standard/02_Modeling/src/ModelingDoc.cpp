@@ -1106,8 +1106,8 @@ Sleep(1000);
 
 TopoDS_Shape ShapeCut = BRepAlgoAPI_Cut(theSphere,theBox);
 
-myAISContext->Erase(ais1,Standard_False,Standard_False);
-myAISContext->Erase(ais2,Standard_False,Standard_False);
+myAISContext->Erase(ais1,Standard_False);
+myAISContext->Erase(ais2,Standard_False);
 
 Handle (AIS_Shape)	aSection = new AIS_Shape(ShapeCut);
 myAISContext->SetDisplayMode(aSection,1,Standard_False);
@@ -1169,8 +1169,8 @@ Sleep(1000);
 
 TopoDS_Shape FusedShape = BRepAlgoAPI_Fuse(theBox1,theBox2);
 
-myAISContext->Erase(ais1,Standard_True,Standard_False);
-myAISContext->Erase(ais2,Standard_True,Standard_False);
+myAISContext->Erase(ais1,Standard_True);
+myAISContext->Erase(ais2,Standard_True);
 
 Handle (AIS_Shape)	aFusion = new AIS_Shape(FusedShape);
 myAISContext->SetDisplayMode(aFusion,1,Standard_False);
@@ -1226,8 +1226,8 @@ Sleep(500);
 
 TopoDS_Shape theCommonSurface = BRepAlgoAPI_Common(theBox,theWedge);
 
-myAISContext->Erase(aboxshape,Standard_True,Standard_False);
-myAISContext->Erase(awedge,Standard_True,Standard_False);
+myAISContext->Erase(aboxshape,Standard_True);
+myAISContext->Erase(awedge,Standard_True);
 
 Handle(AIS_Shape) acommon = new AIS_Shape(theCommonSurface);
 myAISContext->SetColor(acommon,Quantity_NOC_GREEN,Standard_False); 
@@ -1717,7 +1717,7 @@ myAISContext->SetCurrentObject(aBlendedBox,Standard_False);
 Fit();
 Sleep(500);
 
-myAISContext->Erase(ais1,Standard_True,Standard_False);
+myAISContext->Erase(ais1,Standard_True);
 
    TCollection_AsciiString Message ("\
 		\n\
@@ -2137,7 +2137,7 @@ void CModelingDoc::OnGlueLocal()
 	BRepFeat_Gluer glue(S2,S1);
 	glue.Bind(F2,F1);
 	TopoDS_Shape res1 = glue.Shape();
-	myAISContext->Erase(ais2,Standard_False,Standard_False);
+	myAISContext->Erase(ais2,Standard_False);
 	
 	ais1->Set(res1);
 
@@ -2187,7 +2187,7 @@ void CModelingDoc::OnGlueLocal()
 	for (CommonEdges.InitIterator(); CommonEdges.More(); CommonEdges.Next()) 
 		glue2.Bind(CommonEdges.EdgeFrom(),CommonEdges.EdgeTo());
 	TopoDS_Shape res2 = glue2.Shape();
-	myAISContext->Erase(ais3,Standard_False,Standard_False);
+	myAISContext->Erase(ais3,Standard_False);
 	
 	ais4->Set(res2);
 
@@ -2484,7 +2484,7 @@ void CModelingDoc::OnSplitLocal()
 	asplit.Build();
 
 	//Sleep(1000);
-	myAISContext->Erase(ais1,Standard_False,Standard_False);
+	myAISContext->Erase(ais1,Standard_False);
 	//Fit();
 
 	TopoDS_Shape Result = asplit.Shape();
@@ -2565,7 +2565,7 @@ void CModelingDoc::OnThickLocal()
 	Fit();
 	Sleep(1000);
 	
-	myAISContext->Erase(abox1,Standard_True,Standard_False);
+	myAISContext->Erase(abox1,Standard_True);
 	Fit();
 
 

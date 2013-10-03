@@ -298,6 +298,7 @@ void Graphic3d_Structure::Display () {
     MyStructureManager->Display (this);
   }
 
+  MyCStructure.visible = 1;
 }
 
 void Graphic3d_Structure::Display (const Standard_Integer Priority) {
@@ -311,6 +312,7 @@ void Graphic3d_Structure::Display (const Standard_Integer Priority) {
     MyStructureManager->Display (this);
   }
 
+  MyCStructure.visible = 1;
 }
 
 void Graphic3d_Structure::SetDisplayPriority (const Standard_Integer Priority) {
@@ -437,11 +439,6 @@ void Graphic3d_Structure::SetVisible (const Standard_Boolean AValue) {
   MyCStructure.visible = AValue ? 1:0;
 
   MyGraphicDriver->NameSetStructure (MyCStructure);
-
-  if (AValue)
-    MyStructureManager->Visible (this);
-  else
-    MyStructureManager->Invisible (this);
 
   Update ();
 
@@ -649,6 +646,11 @@ void Graphic3d_Structure::GroupsWithFacet (const Standard_Integer ADelta) {
   cout << endl << flush;
 #endif
 
+}
+
+void Graphic3d_Structure::Compute()
+{
+  // Implemented by Presentation
 }
 
 Handle(Graphic3d_Structure) Graphic3d_Structure::Compute (const Handle(Graphic3d_DataStructureManager)& ) {
@@ -2418,11 +2420,6 @@ void Graphic3d_Structure::SetManager (const Handle(Graphic3d_StructureManager)& 
   }
 
   if (MyCStructure.highlight) {
-  }
-
-  if (MyCStructure.visible) {
-    MyStructureManager->Invisible (this);
-    AManager->Visible (this);
   }
 
   if (MyCStructure.pick) {

@@ -145,6 +145,7 @@
 #include <Prs3d_PointAspect.hxx>
 
 #include <Image_AlienPixMap.hxx>
+#include <TColStd_HArray1OfAsciiString.hxx>
 
 #ifdef HAVE_STRINGS_H
 #include <strings.h>
@@ -2325,7 +2326,7 @@ protected:
   Standard_Real                       aHeight;
   Standard_Boolean                    aZoomable;
   Quantity_Color                      aColor;
-  Standard_CString                    aFont;
+  TCollection_AsciiString             aFont;
   Font_FontAspect                     aFontAspect;
   Graphic3d_HorizontalTextAlignment   aHJustification;
   Graphic3d_VerticalTextAlignment     aVJustification;
@@ -2371,7 +2372,7 @@ void MyTextClass::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresent
 
   Handle_Prs3d_TextAspect asp = myDrawer->TextAspect();
 
-  asp->SetFont(aFont);
+  asp->SetFont(aFont.ToCString());
   asp->SetColor(aColor);
   asp->SetHeight(aHeight); // I am changing the myHeight value
 
@@ -2995,10 +2996,10 @@ class MyPArrayObject : public AIS_InteractiveObject
 
 public:
 
-  MyPArrayObject (const Handle(Graphic3d_ArrayOfPrimitives) theArray,
+  MyPArrayObject (Handle(TColStd_HArray1OfAsciiString) theArrayDescription,
                   Handle(Graphic3d_AspectMarker3d) theMarkerAspect = NULL)
   {
-    myArray = theArray;
+    myArrayDescription = theArrayDescription;
     myMarkerAspect = theMarkerAspect;
   }
 
@@ -3013,9 +3014,15 @@ private:
   void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
                          const Standard_Integer /*theMode*/);
 
+  bool CheckInputCommand (const TCollection_AsciiString theCommand,
+                          const Handle(TColStd_HArray1OfAsciiString) theArgsArray,
+                          Standard_Integer &theArgIndex,
+                          Standard_Integer theArgCount,
+                          Standard_Integer theMaxArgs);
+
 protected:
 
-  Handle(Graphic3d_ArrayOfPrimitives) myArray;
+  Handle(TColStd_HArray1OfAsciiString) myArrayDescription;
   Handle(Graphic3d_AspectMarker3d) myMarkerAspect;
 
 };
@@ -3027,12 +3034,165 @@ void MyPArrayObject::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPre
                               const Handle(Prs3d_Presentation)& aPresentation,
                               const Standard_Integer /*aMode*/)
 {
+
+  // Parsing array description
+  Standard_Integer aVertexNum = 0, aBoundNum = 0, aEdgeNum = 0;
+  Standard_Boolean hasVColors, hasBColors, hasNormals, hasInfos, hasTexels;
+  hasVColors = hasNormals = hasBColors = hasInfos = hasTexels = Standard_False;
+
+  Standard_Integer anArgIndex = 0;
+  Standard_Integer anArgsCount = myArrayDescription->Length();
+  TCollection_AsciiString anArrayType = myArrayDescription->Value (anArgIndex++);
+
+  TCollection_AsciiString aCommand;
+  while (anArgIndex < anArgsCount)
+  {
+    aCommand = myArrayDescription->Value (anArgIndex);
+    aCommand.LowerCase();
+
+    // vertex command
+    if (CheckInputCommand ("v", myArrayDescription, anArgIndex, 3, anArgsCount))
+    {
+      // vertex has a normal or normal with color or texel
+      if (CheckInputCommand ("n", myArrayDescription, anArgIndex, 3, anArgsCount))
+        hasNormals = Standard_True;
+
+      // vertex has a color
+      if (CheckInputCommand ("c", myArrayDescription, anArgIndex, 3, anArgsCount))
+        hasVColors = Standard_True;
+
+      // vertex has a texel
+      if (CheckInputCommand ("t", myArrayDescription, anArgIndex, 2, anArgsCount))
+        hasTexels = Standard_True;
+
+      aVertexNum++;
+    }
+    // bound command
+    else if (CheckInputCommand ("b", myArrayDescription, anArgIndex, 1, anArgsCount))
+    {
+      // bound has color
+      if (CheckInputCommand ("c", myArrayDescription, anArgIndex, 3, anArgsCount))
+        hasBColors = Standard_True;
+
+      aBoundNum++;
+    }
+    // edge command
+    else if (CheckInputCommand ("e", myArrayDescription, anArgIndex, 1, anArgsCount))
+    {
+      // edge has a hide flag
+      if (CheckInputCommand ("h", myArrayDescription, anArgIndex, 0, anArgsCount))
+        hasInfos = Standard_True;
+
+      aEdgeNum++;
+    }
+    // unknown command
+    else
+      anArgIndex++;
+  }
+
+  Handle(Graphic3d_ArrayOfPrimitives) anArray;
+  if (anArrayType == "points")
+  {
+    anArray = new Graphic3d_ArrayOfPoints (aVertexNum);
+  }
+  else if (anArrayType == "segments")
+    anArray = new Graphic3d_ArrayOfSegments (aVertexNum, aEdgeNum, hasVColors);
+  else if (anArrayType == "polylines")
+    anArray = new Graphic3d_ArrayOfPolylines (aVertexNum, aBoundNum, aEdgeNum,
+                                              hasVColors, hasBColors, hasInfos);
+  else if (anArrayType == "triangles")
+    anArray = new Graphic3d_ArrayOfTriangles (aVertexNum, aEdgeNum, hasNormals,
+                                              hasVColors, hasTexels, hasInfos);
+  else if (anArrayType == "trianglefans")
+    anArray = new Graphic3d_ArrayOfTriangleFans (aVertexNum, aBoundNum,
+                                                 hasNormals, hasVColors,
+                                                 hasBColors, hasTexels);
+  else if (anArrayType == "trianglestrips")
+    anArray = new Graphic3d_ArrayOfTriangleStrips (aVertexNum, aBoundNum,
+                                                   hasNormals, hasVColors,
+                                                   hasBColors, hasTexels);
+  else if (anArrayType == "quads")
+    anArray = new Graphic3d_ArrayOfQuadrangles (aVertexNum, aEdgeNum,
+                                                hasNormals, hasVColors,
+                                                hasTexels, hasInfos);
+  else if (anArrayType == "quadstrips")
+    anArray = new Graphic3d_ArrayOfQuadrangleStrips (aVertexNum, aBoundNum,
+                                                     hasNormals, hasVColors,
+                                                     hasBColors, hasTexels);
+  else if (anArrayType == "polygons")
+    anArray = new Graphic3d_ArrayOfPolygons (aVertexNum, aBoundNum, aEdgeNum,
+                                             hasNormals, hasVColors, hasBColors,
+                                             hasTexels, hasInfos);
+
+  anArgIndex = 1;
+  while (anArgIndex < anArgsCount)
+  {
+    aCommand = myArrayDescription->Value (anArgIndex);
+    aCommand.LowerCase();
+    if (!aCommand.IsAscii())
+      break;
+
+    // vertex command
+    if (CheckInputCommand ("v", myArrayDescription, anArgIndex, 3, anArgsCount))
+    {
+      anArray->AddVertex (myArrayDescription->Value (anArgIndex - 3).RealValue(),
+                          myArrayDescription->Value (anArgIndex - 2).RealValue(),
+                          myArrayDescription->Value (anArgIndex - 1).RealValue());
+
+      // vertex has a normal or normal with color or texel
+      if (CheckInputCommand ("n", myArrayDescription, anArgIndex, 3, anArgsCount))
+        anArray->SetVertexNormal (anArray->VertexNumber (),
+                                  myArrayDescription->Value (anArgIndex - 3).RealValue(),
+                                  myArrayDescription->Value (anArgIndex - 2).RealValue(),
+                                  myArrayDescription->Value (anArgIndex - 1).RealValue());
+      
+      if (CheckInputCommand ("c", myArrayDescription, anArgIndex, 3, anArgsCount))
+        anArray->SetVertexColor (anArray->VertexNumber (),
+                                 myArrayDescription->Value (anArgIndex - 3).RealValue(),
+                                 myArrayDescription->Value (anArgIndex - 2).RealValue(),
+                                 myArrayDescription->Value (anArgIndex - 1).RealValue());
+      
+      if (CheckInputCommand ("t", myArrayDescription, anArgIndex, 2, anArgsCount))
+        anArray->SetVertexTexel (anArray->VertexNumber (),
+                                 myArrayDescription->Value (anArgIndex - 2).RealValue(),
+                                 myArrayDescription->Value (anArgIndex - 1).RealValue());
+    }
+    // bounds command
+    else if (CheckInputCommand ("b", myArrayDescription, anArgIndex, 1, anArgsCount))
+    {
+      Standard_Integer aVertCount = myArrayDescription->Value (anArgIndex - 1).IntegerValue();
+
+      if (CheckInputCommand ("c", myArrayDescription, anArgIndex, 3, anArgsCount))
+        anArray->AddBound (aVertCount,
+                           myArrayDescription->Value (anArgIndex - 3).RealValue(),
+                           myArrayDescription->Value (anArgIndex - 2).RealValue(),
+                           myArrayDescription->Value (anArgIndex - 1).RealValue());
+
+      else
+        anArray->AddBound (aVertCount);
+    }
+    // edge command
+    else if (CheckInputCommand ("e", myArrayDescription, anArgIndex, 1, anArgsCount))
+    {
+      Standard_Integer aVertIndex = myArrayDescription->Value (anArgIndex - 1).IntegerValue();
+
+      // edge has/hasn't hide flag
+      if (CheckInputCommand ("h", myArrayDescription, anArgIndex, 0, anArgsCount))
+        anArray->AddEdge (aVertIndex, Standard_False);
+      else
+        anArray->AddEdge (aVertIndex, Standard_True);
+    }
+    // unknown command
+    else
+      anArgIndex++;
+  }
+
   aPresentation->Clear();
   if (!myMarkerAspect.IsNull())
   {
     Prs3d_Root::CurrentGroup (aPresentation)->SetGroupPrimitivesAspect (myMarkerAspect);
   }
-  Prs3d_Root::CurrentGroup (aPresentation)->AddPrimitiveArray (myArray);
+  Prs3d_Root::CurrentGroup (aPresentation)->AddPrimitiveArray (anArray);
 }
 
 void MyPArrayObject::ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
@@ -3040,23 +3200,35 @@ void MyPArrayObject::ComputeSelection (const Handle(SelectMgr_Selection)& theSel
 {
   Handle(SelectMgr_EntityOwner) anEntityOwner = new SelectMgr_EntityOwner (this);
 
-  for (Standard_Integer anIter = 1; anIter <= myArray->VertexNumber(); anIter++)
+  Standard_Integer anArgIndex = 1;
+  while (anArgIndex < myArrayDescription->Length())
   {
-
-    Handle(Select3D_SensitivePoint) aSensetivePoint = new Select3D_SensitivePoint (anEntityOwner, myArray->Vertice (anIter));
-    theSelection->Add (aSensetivePoint);
+    if (CheckInputCommand ("v", myArrayDescription, anArgIndex, 3, myArrayDescription->Length()))
+    {
+      gp_Pnt aPoint (myArrayDescription->Value (anArgIndex - 3).RealValue(),
+                     myArrayDescription->Value (anArgIndex - 2).RealValue(),
+                     myArrayDescription->Value (anArgIndex - 1).RealValue());
+      Handle(Select3D_SensitivePoint) aSensetivePoint = new Select3D_SensitivePoint (anEntityOwner, aPoint);
+      theSelection->Add (aSensetivePoint);
+    }
+    else
+    {
+      anArgIndex++;
+    }
   }
 }
 
-static bool CheckInputCommand (const TCollection_AsciiString theCommand,
-                               const char **theArgStr, int &theArgIndex,
-                               int theArgCount, int theMaxArgs)
+bool MyPArrayObject::CheckInputCommand (const TCollection_AsciiString theCommand,
+                                       const Handle(TColStd_HArray1OfAsciiString) theArgsArray,
+                                       Standard_Integer &theArgIndex,
+                                       Standard_Integer theArgCount,
+                                       Standard_Integer theMaxArgs)
 {
   // check if there is more elements than expected
   if (theArgIndex >= theMaxArgs)
     return false;
 
-  TCollection_AsciiString aStrCommand(theArgStr[theArgIndex]);
+  TCollection_AsciiString aStrCommand = theArgsArray->Value (theArgIndex);
   aStrCommand.LowerCase();
   if (aStrCommand.Search(theCommand) != 1 ||
       theArgIndex + (theArgCount - 1) >= theMaxArgs)
@@ -3068,7 +3240,7 @@ static bool CheckInputCommand (const TCollection_AsciiString theCommand,
   // check data if it can be converted to numeric
   for (int aElement = 0; aElement < theArgCount; aElement++, theArgIndex++)
   {
-    aStrCommand = theArgStr[theArgIndex];
+    aStrCommand = theArgsArray->Value (theArgIndex);
     if (!aStrCommand.IsRealValue())
       return false;
   }
@@ -3107,17 +3279,30 @@ static int VDrawPArray (Draw_Interpretor& di, Standard_Integer argc, const char*
   Standard_Integer aArgIndex = 1;
   TCollection_AsciiString aName (argv[aArgIndex++]);
   TCollection_AsciiString anArrayType (argv[aArgIndex++]);
-  const Standard_Integer anArgsFrom = aArgIndex;
 
-  // parse number of verticies, bounds, edges
-  Standard_Integer aVertexNum = 0, aBoundNum = 0, aEdgeNum = 0;
-  Standard_Boolean hasVColors, hasBColors, hasNormals, hasInfos, hasTexels;
-  hasVColors = hasNormals = hasBColors = hasInfos = hasTexels = Standard_False;
+  Standard_Boolean hasVertex = Standard_False;
+
+  Handle(TColStd_HArray1OfAsciiString) anArgsArray = new TColStd_HArray1OfAsciiString (0, argc - 2);
+  anArgsArray->SetValue (0, anArrayType);
+
+  if (anArrayType != "points"         &&
+      anArrayType != "segments"       &&
+      anArrayType != "polylines"      &&
+      anArrayType != "triangles"      &&
+      anArrayType != "trianglefans"   &&
+      anArrayType != "trianglestrips" &&
+      anArrayType != "quads"          &&
+      anArrayType != "quadstrips"     &&
+      anArrayType != "polygons")
+  {
+    di << "Unexpected type of primitives array\n";
+    return 1;
+  }
 
   TCollection_AsciiString aCommand;
-  while (aArgIndex < argc)
+  for (Standard_Integer anArgIndex = 3; anArgIndex < argc; anArgIndex++)
   {
-    aCommand = argv[aArgIndex];
+    aCommand = argv[anArgIndex];
     aCommand.LowerCase();
     if (!aCommand.IsAscii())
     {
@@ -3126,160 +3311,28 @@ static int VDrawPArray (Draw_Interpretor& di, Standard_Integer argc, const char*
       break;
     }
 
-    // vertex command
-    if (CheckInputCommand ("v", argv, aArgIndex, 3, argc))
+    if (aCommand == "v")
     {
-      // vertex has a normal or normal with color or texel
-      if (CheckInputCommand ("n", argv, aArgIndex, 3, argc))
-        hasNormals = Standard_True;
-
-      // vertex has a color
-      if (CheckInputCommand ("c", argv, aArgIndex, 3, argc))
-        hasVColors = Standard_True;
-
-      // vertex has a texel
-      if (CheckInputCommand ("t", argv, aArgIndex, 2, argc))
-        hasTexels = Standard_True;
-
-      aVertexNum++;
+      hasVertex = Standard_True;
     }
-    // bound command
-    else if (CheckInputCommand ("b", argv, aArgIndex, 1, argc))
-    {
-      // bound has color
-      if (CheckInputCommand ("c", argv, aArgIndex, 3, argc))
-        hasBColors = Standard_True;
 
-      aBoundNum++;
-    }
-    // edge command
-    else if (CheckInputCommand ("e", argv, aArgIndex, 1, argc))
-    {
-      // edge has a hide flag
-      if (CheckInputCommand ("h", argv, aArgIndex, 0, argc))
-        hasInfos = Standard_True;
-
-      aEdgeNum++;
-    }
-    // unknown command
-    else
-      aArgIndex++;
+    anArgsArray->SetValue (anArgIndex - 2, aCommand);
   }
 
-  if (aVertexNum == 0)
+  if (!hasVertex)
   {
     di << "You should pass any verticies in the list of array elements\n";
     return 1;
   }
 
-  // create an array of primitives by types
-  Handle(Graphic3d_ArrayOfPrimitives) anArray;
   Handle(Graphic3d_AspectMarker3d)    anAspPoints;
   if (anArrayType == "points")
   {
-    anArray = new Graphic3d_ArrayOfPoints (aVertexNum);
     anAspPoints = new Graphic3d_AspectMarker3d (Aspect_TOM_POINT, Quantity_NOC_YELLOW, 1.0f);
-  }
-  else if (anArrayType == "segments")
-    anArray = new Graphic3d_ArrayOfSegments (aVertexNum, aEdgeNum, hasVColors);
-  else if (anArrayType == "polylines")
-    anArray = new Graphic3d_ArrayOfPolylines (aVertexNum, aBoundNum, aEdgeNum,
-                                              hasVColors, hasBColors, hasInfos);
-  else if (anArrayType == "triangles")
-    anArray = new Graphic3d_ArrayOfTriangles (aVertexNum, aEdgeNum, hasNormals,
-                                              hasVColors, hasTexels, hasInfos);
-  else if (anArrayType == "trianglefans")
-    anArray = new Graphic3d_ArrayOfTriangleFans (aVertexNum, aBoundNum,
-                                                 hasNormals, hasVColors,
-                                                 hasBColors, hasTexels);
-  else if (anArrayType == "trianglestrips")
-    anArray = new Graphic3d_ArrayOfTriangleStrips (aVertexNum, aBoundNum,
-                                                   hasNormals, hasVColors,
-                                                   hasBColors, hasTexels);
-  else if (anArrayType == "quads")
-    anArray = new Graphic3d_ArrayOfQuadrangles (aVertexNum, aEdgeNum,
-                                                hasNormals, hasVColors,
-                                                hasTexels, hasInfos);
-  else if (anArrayType == "quadstrips")
-    anArray = new Graphic3d_ArrayOfQuadrangleStrips (aVertexNum, aBoundNum,
-                                                     hasNormals, hasVColors,
-                                                     hasBColors, hasTexels);
-  else if (anArrayType == "polygons")
-    anArray = new Graphic3d_ArrayOfPolygons (aVertexNum, aBoundNum, aEdgeNum,
-                                             hasNormals, hasVColors, hasBColors,
-                                             hasTexels, hasInfos);
-  else
-  {
-    di << "Unexpected type of primitiives array\n";
-    return 1;
-  }
-
-  // parse an array of primitives
-  aArgIndex = anArgsFrom;
-  while (aArgIndex < argc)
-  {
-    aCommand = argv[aArgIndex];
-    aCommand.LowerCase();
-    if (!aCommand.IsAscii())
-      break;
-
-    // vertex command
-    if (CheckInputCommand ("v", argv, aArgIndex, 3, argc))
-    {
-      anArray->AddVertex (Draw::Atof (argv[aArgIndex - 3]),
-                          Draw::Atof (argv[aArgIndex - 2]),
-                          Draw::Atof (argv[aArgIndex - 1]));
-
-      // vertex has a normal or normal with color or texel
-      if (CheckInputCommand ("n", argv, aArgIndex, 3, argc))
-        anArray->SetVertexNormal (anArray->VertexNumber (),
-                                  Draw::Atof (argv[aArgIndex - 3]),
-                                  Draw::Atof (argv[aArgIndex - 2]),
-                                  Draw::Atof (argv[aArgIndex - 1]));
-      
-      if (CheckInputCommand ("c", argv, aArgIndex, 3, argc))
-        anArray->SetVertexColor (anArray->VertexNumber (),
-                                 Draw::Atof (argv[aArgIndex - 3]),
-                                 Draw::Atof (argv[aArgIndex - 2]),
-                                 Draw::Atof (argv[aArgIndex - 1]));
-      
-      if (CheckInputCommand ("t", argv, aArgIndex, 2, argc))
-        anArray->SetVertexTexel (anArray->VertexNumber (),
-                                 Draw::Atof (argv[aArgIndex - 2]),
-                                 Draw::Atof (argv[aArgIndex - 1]));
-    }
-    // bounds command
-    else if (CheckInputCommand ("b", argv, aArgIndex, 1, argc))
-    {
-      Standard_Integer aVertCount = Draw::Atoi (argv[aArgIndex - 1]);
-
-      if (CheckInputCommand ("c", argv, aArgIndex, 3, argc))
-        anArray->AddBound (aVertCount,
-                           Draw::Atof (argv[aArgIndex - 3]),
-                           Draw::Atof (argv[aArgIndex - 2]),
-                           Draw::Atof (argv[aArgIndex - 1]));
-
-      else
-        anArray->AddBound (aVertCount);
-    }
-    // edge command
-    else if (CheckInputCommand ("e", argv, aArgIndex, 1, argc))
-    {
-      Standard_Integer aVertIndex = Draw::Atoi (argv[aArgIndex - 1]);
-
-      // edge has/hasn't hide flag
-      if (CheckInputCommand ("h", argv, aArgIndex, 0, argc))
-        anArray->AddEdge (aVertIndex, Standard_False);
-      else
-        anArray->AddEdge (aVertIndex, Standard_True);
-    }
-    // unknown command
-    else
-      aArgIndex++;
   }
 
   // create primitives array object
-  Handle(MyPArrayObject) aPObject = new MyPArrayObject (anArray, anAspPoints);
+  Handle(MyPArrayObject) aPObject = new MyPArrayObject (anArgsArray, anAspPoints);
 
   // register the object in map
   VDisplayAISObject (aName, aPObject);
@@ -4440,6 +4493,105 @@ static Standard_Integer VShowFaceBoundary (Draw_Interpretor& /*di*/,
   return 0;
 }
 
+// This class is used for testing markers.
+DEFINE_STANDARD_HANDLE(ViewerTest_MarkersArrayObject, AIS_InteractiveObject)
+class ViewerTest_MarkersArrayObject : public AIS_InteractiveObject
+{
+
+public:
+
+  ViewerTest_MarkersArrayObject (const gp_XYZ& theStartPoint,
+                                 const Standard_Integer& thePointsOnSide,
+                                 Handle(Graphic3d_AspectMarker3d) theMarkerAspect = NULL)
+  {
+    myStartPoint = theStartPoint;
+    myPointsOnSide = thePointsOnSide;
+    myMarkerAspect = theMarkerAspect;
+  }
+
+  DEFINE_STANDARD_RTTI(MyPArrayObject);
+
+private:
+
+  void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
+                const Handle(Prs3d_Presentation)& aPresentation,
+                const Standard_Integer aMode);
+
+  void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
+                         const Standard_Integer /*theMode*/);
+
+protected:
+
+  gp_XYZ myStartPoint;
+  Standard_Integer myPointsOnSide;
+  Handle(Graphic3d_AspectMarker3d) myMarkerAspect;
+};
+
+IMPLEMENT_STANDARD_HANDLE(ViewerTest_MarkersArrayObject, AIS_InteractiveObject)
+IMPLEMENT_STANDARD_RTTIEXT(ViewerTest_MarkersArrayObject, AIS_InteractiveObject)
+
+void ViewerTest_MarkersArrayObject::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
+                              const Handle(Prs3d_Presentation)& aPresentation,
+                              const Standard_Integer /*aMode*/)
+{
+  Handle(Graphic3d_ArrayOfPrimitives) anArray = new Graphic3d_ArrayOfPoints ((Standard_Integer )Pow (myPointsOnSide, 3), myPointsOnSide != 1);
+  if (myPointsOnSide == 1)
+  {
+    anArray->AddVertex (myStartPoint);
+  }
+  else
+  {
+    for (Standard_Real i = 1; i <= myPointsOnSide; i++)
+    {
+      for (Standard_Real j = 1; j <= myPointsOnSide; j++)
+      {
+        for (Standard_Real k = 1; k <= myPointsOnSide; k++)
+        {
+          anArray->AddVertex (myStartPoint.X() + i, myStartPoint.Y() + j, myStartPoint.Z() + k);
+          anArray->SetVertexColor (anArray->VertexNumber(),
+                                   i / myPointsOnSide,
+                                   j / myPointsOnSide,
+                                   k / myPointsOnSide);
+        }
+      }
+    }
+  }
+
+  aPresentation->Clear();
+  if (!myMarkerAspect.IsNull())
+  {
+    Prs3d_Root::CurrentGroup (aPresentation)->SetGroupPrimitivesAspect (myMarkerAspect);
+  }
+  Prs3d_Root::CurrentGroup (aPresentation)->AddPrimitiveArray (anArray);
+}
+
+void ViewerTest_MarkersArrayObject::ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
+                                       const Standard_Integer /*theMode*/)
+{
+  Handle(SelectMgr_EntityOwner) anEntityOwner = new SelectMgr_EntityOwner (this);
+
+  if (myPointsOnSide == 1)
+  {
+    gp_Pnt aPoint (myStartPoint);
+    Handle(Select3D_SensitivePoint) aSensetivePoint = new Select3D_SensitivePoint (anEntityOwner, aPoint);
+    theSelection->Add (aSensetivePoint);
+  }
+  else
+  {
+    for (Standard_Real i = 1; i <= myPointsOnSide; i++)
+    {
+      for (Standard_Real j = 1; j <= myPointsOnSide; j++)
+      {
+        for (Standard_Real k = 1; k <= myPointsOnSide; k++)
+        {
+          gp_Pnt aPoint (myStartPoint.X() + i, myStartPoint.Y() + j, myStartPoint.Z() + k);
+          Handle(Select3D_SensitivePoint) aSensetivePoint = new Select3D_SensitivePoint (anEntityOwner, aPoint);
+          theSelection->Add (aSensetivePoint);
+        }
+      }
+    }
+  }
+}
 //=======================================================================
 //function : VMarkersTest
 //purpose  : Draws an array of markers for testing purposes.
@@ -4519,31 +4671,8 @@ static Standard_Integer VMarkersTest (Draw_Interpretor&,
     anAspect = new Graphic3d_AspectMarker3d (aMarkerType >= 0 ? (Aspect_TypeOfMarker )aMarkerType : Aspect_TOM_POINT, aColor, aScale);
   }
 
-  Handle(Graphic3d_ArrayOfPrimitives) anArray = new Graphic3d_ArrayOfPoints ((Standard_Integer )Pow (aPointsOnSide, 3), aPointsOnSide != 1);
-  if (aPointsOnSide == 1)
-  {
-    anArray->AddVertex (aPnt);
-  }
-  else
-  {
-    for (Standard_Real i = 1; i <= aPointsOnSide; i++)
-    {
-      for (Standard_Real j = 1; j <= aPointsOnSide; j++)
-      {
-        for (Standard_Real k = 1; k <= aPointsOnSide; k++)
-        {
-          anArray->AddVertex (aPnt.X() + i, aPnt.Y() + j, aPnt.Z() + k);
-          anArray->SetVertexColor (anArray->VertexNumber(),
-                                   i / aPointsOnSide,
-                                   j / aPointsOnSide,
-                                   k / aPointsOnSide);
-        }
-      }
-    }
-  }
-
-  Handle(MyPArrayObject) aPObject = new MyPArrayObject (anArray, anAspect);
-  VDisplayAISObject (aName, aPObject);
+  Handle(ViewerTest_MarkersArrayObject) aMarkersArray = new ViewerTest_MarkersArrayObject (aPnt, aPointsOnSide, anAspect);
+  VDisplayAISObject (aName, aMarkersArray);
 
   return 0;
 }

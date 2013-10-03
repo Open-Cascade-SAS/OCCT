@@ -73,7 +73,7 @@ BOOL COCCDemoDoc::OnNewDocument()
 	// (SDI documents will reuse this document)
   SetTitle(myPresentation->GetName());
 
-  myAISContext->EraseAll(Standard_False);
+  myAISContext->EraseAll();
   myAISContext->SetDisplayMode(AIS_Shaded);
 
   POSITION pos = GetFirstViewPosition();
@@ -164,14 +164,14 @@ void COCCDemoDoc::DoSample()
 
 void COCCDemoDoc::OnBUTTONStart() 
 {
-  myAISContext->EraseAll(Standard_False);
+  myAISContext->EraseAll();
   myPresentation->FirstSample();
   DoSample();
 }
 
 void COCCDemoDoc::OnBUTTONEnd()
 {
-  myAISContext->EraseAll(Standard_False);
+  myAISContext->EraseAll();
   myPresentation->LastSample();
   DoSample();
 }

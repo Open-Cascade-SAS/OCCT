@@ -66,9 +66,6 @@ static Standard_Integer StructureManager_CurrentId = 0;
 //      -- les structures mises en evidence
 //      MyHighlightedStructure  :       SequenceOfStructure;
 
-//      -- les structures visibles
-//      MyVisibleStructure      :       SequenceOfStructure;
-
 //      -- les structures detectables
 //      MyPickStructure         :       SequenceOfStructure;
 
@@ -80,7 +77,6 @@ static Standard_Integer StructureManager_CurrentId = 0;
 Graphic3d_StructureManager::Graphic3d_StructureManager (const Handle(Graphic3d_GraphicDriver)& theDriver):
 MyDisplayedStructure (),
 MyHighlightedStructure (),
-MyVisibleStructure (),
 MyPickStructure () {
 
 Standard_Real Coef;
@@ -145,7 +141,6 @@ void Graphic3d_StructureManager::Destroy () {
 
         MyDisplayedStructure.Clear ();
         MyHighlightedStructure.Clear ();
-        MyVisibleStructure.Clear ();
         MyPickStructure.Clear ();
         StructureManager_ArrayId[MyId]  = 0;
 
@@ -232,18 +227,6 @@ void Graphic3d_StructureManager::Remove (const Standard_Integer AnId) {
 
 }
 
-void Graphic3d_StructureManager::Visible (const Handle(Graphic3d_Structure)& AStructure) {
-
-  MyVisibleStructure.Add(AStructure);
-
-}
-
-void Graphic3d_StructureManager::Invisible (const Handle(Graphic3d_Structure)& AStructure) {
-
-  MyVisibleStructure.Remove(AStructure);
- 
-}
-
 void Graphic3d_StructureManager::Detectable (const Handle(Graphic3d_Structure)& AStructure) {
 
   MyPickStructure.Add(AStructure);
@@ -290,13 +273,6 @@ void Graphic3d_StructureManager::HighlightedStructures (Graphic3d_MapOfStructure
 void Graphic3d_StructureManager::PickStructures (Graphic3d_MapOfStructure& SG) const {
 
   SG.Assign(MyPickStructure);
-
-}
-
-void Graphic3d_StructureManager::VisibleStructures (Graphic3d_MapOfStructure& SG) const {
-
-  SG.Assign(MyVisibleStructure);
-
 
 }
 
@@ -396,4 +372,15 @@ const Handle(Graphic3d_GraphicDriver)& Graphic3d_StructureManager::GraphicDriver
 
         return (MyGraphicDriver);
 
+}
+
+void Graphic3d_StructureManager::ReComputeStructures()
+{
+  for (Graphic3d_MapIteratorOfMapOfStructure anIter(MyDisplayedStructure); anIter.More(); anIter.Next())
+  {
+    Handle(Graphic3d_Structure) aStructure = anIter.Key();
+
+    aStructure->Clear();
+    aStructure->Compute();
+  }
 }

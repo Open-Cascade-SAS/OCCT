@@ -1,0 +1,83 @@
+puts "========"
+puts "OCC23654 Markers recompute"
+puts "========"
+
+# reflects Aspect_TypeOfMarker enumeration
+set aMarkerTypeNames {
+  Aspect_TOM_POINT
+  Aspect_TOM_PLUS
+  Aspect_TOM_STAR
+  Aspect_TOM_X
+  Aspect_TOM_O
+  Aspect_TOM_O_POINT
+  Aspect_TOM_O_PLUS
+  Aspect_TOM_O_STAR
+  Aspect_TOM_O_X
+  Aspect_TOM_RING1
+  Aspect_TOM_RING2
+  Aspect_TOM_RING3
+  Aspect_TOM_BALL
+  Aspect_TOM_USERDEFINED
+}
+
+# generate custom marker
+set aCustom1 $imagedir/${casename}_m1.png
+set aCustom2 $imagedir/${casename}_m2.png
+box b 1 1 1
+vinit name=Driver1/Viewer1/View1 l=32 t=32 w=512 h=512
+vclear
+vdisplay b
+vaxo
+vfit
+vdump $aCustom1 rgba 32 32
+vsetdispmode b 1
+vsetcolor b RED
+vrotate 1 0 0
+vdump $aCustom2 rgba 32 32
+
+# draw box in advance which should fit all our markers
+box b -8 -8 0 16 16 2
+
+vcaps sprites=1
+set aV "Driver1/Viewer1/View1"
+vinit name=$aV l=32 t=32 w=512 h=512
+vactivate $aV
+vclear
+
+vbottom
+vdisplay b
+vfit
+verase b
+
+for { set aMarkerType 0 } { $aMarkerType <= 13 } { incr aMarkerType } {
+  set aRow [expr $aMarkerType - 7]
+  set aCol 5
+  set aName [lindex $aMarkerTypeNames $aMarkerType]
+  vdrawtext "$aName" 0 [expr $aRow + 0.5] 0 128 255 255 1 1 000 0 12 2 Arial
+  if { $aMarkerType == 13 } {
+    vmarkerstest m${aMarkerType}_${aCol} $aCol $aRow 0 PointsOnSide=1 FileName=$aCustom1
+    set aCol [expr $aCol - 1]
+    vmarkerstest m${aMarkerType}_${aCol} $aCol $aRow 0 PointsOnSide=1 FileName=$aCustom2
+  } else {
+    for { set aMarkerScale 1.0 } { $aMarkerScale <= 7 } { set aMarkerScale [expr $aMarkerScale + 0.5] } {
+      vmarkerstest m${aMarkerType}_${aCol} $aCol $aRow 0 MarkerType=$aMarkerType Scale=$aMarkerScale PointsOnSide=1
+      set aCol [expr $aCol - 1]
+    }
+  }
+}
+
+set anImage1 $imagedir/${casename}_1.png
+set anImage2 $imagedir/${casename}_2.png
+
+vdump $anImage1
+
+vclose $aV 1
+
+vinit name=$aV l=32 t=32 w=512 h=512
+vactivate $aV
+vbottom
+vdisplay b
+vfit
+verase b
+
+vdump $anImage2

@@ -205,15 +205,6 @@ is
         is deferred;
     ---Purpose: call_togl_markercontextgroup
 
-    MarkerContextGroup ( me         : mutable;
-                         ACGroup    : CGroup from Graphic3d;
-                         NoInsert   : Integer from Standard;
-                         AMarkWidth : Integer from Standard;
-                         AMarkHeight: Integer from Standard;
-                         ATexture   : HArray1OfByte from TColStd )
-                is deferred;
-    ---Purpose: call_togl_markercontextgroup
-
     RemoveGroup ( me        : mutable;
                   ACGroup   : CGroup from Graphic3d )
         is deferred;
@@ -1028,10 +1019,18 @@ is
 
     ---Purpose: returns Handle to display connection
 
+    IsDeviceLost (me)
+      returns Boolean from Standard;
+    -- Purpose: @return Standard_True in cases when the last view has been removed but some objects still present.
+
+    ResetDeviceLostFlag (me: mutable);
+    -- Purpose: Resets DeviceLostFlag to default (Standard_False) state.
+
 fields
 
     MyTraceLevel       : Integer from Standard is protected;
     MySharedLibrary    : SharedLibrary from OSD is protected;
     myDisplayConnection: DisplayConnection_Handle from Aspect is protected;
+    myDeviceLostFlag   : Boolean from Standard is protected;
 
 end GraphicDriver from Graphic3d;

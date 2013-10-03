@@ -108,11 +108,6 @@ public: // Methods for graphical groups
                                          const Standard_Integer  theNoInsert);
   Standard_EXPORT void MarkerContextGroup (const Graphic3d_CGroup& theCGroup,
                                            const Standard_Integer  theNoInsert);
-  Standard_EXPORT void MarkerContextGroup (const Graphic3d_CGroup& theCGroup,
-                                           const Standard_Integer  theNoInsert,
-                                           const Standard_Integer  theMarkWidth,
-                                           const Standard_Integer  theMarkHeight,
-                                           const Handle(TColStd_HArray1OfByte)& theTexture);
   Standard_EXPORT void RemoveGroup (const Graphic3d_CGroup& theCGroup);
   Standard_EXPORT void TextContextGroup (const Graphic3d_CGroup& theCGroup,
                                          const Standard_Integer  theNoInsert);

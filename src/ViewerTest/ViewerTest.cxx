@@ -873,7 +873,7 @@ static int VwrTst_DispErase(const Handle(AIS_InteractiveObject)& IO,
     Ctx->Display(IO,Mode,Upd);
     break;
   case 2:{
-    Ctx->Erase(IO,Mode,Upd);
+    Ctx->Erase(IO,Upd);
     break;
   }
   case 3:{

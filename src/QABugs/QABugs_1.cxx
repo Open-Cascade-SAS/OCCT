@@ -112,7 +112,7 @@ static Standard_Integer OCC328bug (Draw_Interpretor& di, Standard_Integer argc, 
     return 1;
   }
 
-  Standard_Boolean updateviewer = Standard_True, PutInCollector = Standard_True;
+  Standard_Boolean updateviewer = Standard_True;
 
   ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
   
@@ -137,7 +137,7 @@ static Standard_Integer OCC328bug (Draw_Interpretor& di, Standard_Integer argc, 
       aContext->ActivateStandardMode(AIS_Shape::SelectionType(ChoosingMode));
       theactivatedmodes.Add(ChoosingMode);
     }
-    aContext->Erase(AISObj, updateviewer, PutInCollector);
+    aContext->Erase(AISObj, updateviewer);
     aContext->UpdateCurrentViewer();
 
     aContext->Display(AISObj, updateviewer);
@@ -405,7 +405,7 @@ static Standard_Integer OCC74bug_set (Draw_Interpretor& di, Standard_Integer arg
     return 1;
   }
   
-  Standard_Boolean updateviewer = Standard_True, PutInCollector = Standard_True;
+  Standard_Boolean updateviewer = Standard_True;
 
   ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
   
@@ -427,7 +427,7 @@ static Standard_Integer OCC74bug_set (Draw_Interpretor& di, Standard_Integer arg
     if (!aContext->HasOpenedContext()) {
       aContext->OpenLocalContext();
     }
-    aContext->Erase(AISObj, updateviewer, PutInCollector);
+    aContext->Erase(AISObj, updateviewer);
     aContext->UpdateCurrentViewer();
     aContext->Display(AISObj, updateviewer);
     aContext->UpdateCurrentViewer();

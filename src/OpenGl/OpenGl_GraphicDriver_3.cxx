@@ -67,23 +67,6 @@ void OpenGl_GraphicDriver::MarkerContextGroup (const Graphic3d_CGroup& theCGroup
   ((OpenGl_Group* )theCGroup.ptrGroup)->SetAspectMarker (GetSharedContext(), theCGroup.ContextMarker, theNoInsert);
 }
 
-void OpenGl_GraphicDriver::MarkerContextGroup (const Graphic3d_CGroup& theCGroup,
-                                               const Standard_Integer  theNoInsert,
-                                               const Standard_Integer  /*theMarkWidth*/,
-                                               const Standard_Integer  /*theMarkHeight*/,
-                                               const Handle(TColStd_HArray1OfByte)& /*theTexture*/)
-{
-  if (!theCGroup.ContextMarker.IsDef)
-  {
-    return;
-  }
-
-  if (theCGroup.ptrGroup != NULL)
-  {
-    ((OpenGl_Group* )theCGroup.ptrGroup)->SetAspectMarker (GetSharedContext(), theCGroup.ContextMarker, theNoInsert);
-  }
-}
-
 void OpenGl_GraphicDriver::RemoveGroup (const Graphic3d_CGroup& theCGroup)
 {
   OpenGl_Structure* aStructure = (OpenGl_Structure* )theCGroup.Struct->ptrStructure;

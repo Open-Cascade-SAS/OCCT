@@ -202,13 +202,6 @@ is
 	--	    in a visualiser <me>.
 	---Category: Inquire methods, MapOfStructure
 
-	VisibleStructures ( me; SG: in out MapOfStructure from Graphic3d )
-		is static;
-	---Level: Internal
-	---Purpose: Returns the set of visible structures
-	--	    in a visualiser <me>.
-	---Category: Inquire methods, MapOfStructure
-
 	----------------------------
 	-- Category: Inquire methods
 	----------------------------
@@ -418,13 +411,6 @@ is
 	---Category: Private methods
   ---C++: return const &
 
-	Invisible ( me		: mutable;
-		    AStructure	: Structure from Graphic3d )
-		is static private;
-	---Level: Internal
-	---Purpose: Sets invisible the structure <AStructure>.
-	---Category: Private methods
-
 	Identification ( me )
 		returns Integer from Standard
 		is virtual;
@@ -477,13 +463,10 @@ is
 	---Purpose: Suppress the highlighting on the structure <AStructure>.
 	---Category: Private methods
 
-	Visible ( me		: mutable;
-		  AStructure	: Structure from Graphic3d )
-		is static private;
-	---Level: Internal
-	---Purpose: Sets visible the structure <AStructure>.
-	--	    in the manager.
-	---Category: Private methods
+  ReComputeStructures (me: mutable);
+  -- Purpose: Recomputes all displayed structures. Used to recompute GL
+  -- resources after the last view has been closed without removing objects.
+
 --
 
 fields
@@ -517,10 +500,6 @@ fields
 
 	-- the highlighted structures
 	MyHighlightedStructure	:	MapOfStructure from Graphic3d
-								is protected;
-
-	-- the visible structures
-	MyVisibleStructure	:	MapOfStructure from Graphic3d
 								is protected;
 
 	-- the pickable structures

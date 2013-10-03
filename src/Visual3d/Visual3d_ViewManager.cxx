@@ -141,7 +141,6 @@ void Visual3d_ViewManager::Remove () {
   // clear all structures whilst views are alive for correct GPU memory management
   MyDisplayedStructure.Clear();
   MyHighlightedStructure.Clear();
-  MyVisibleStructure.Clear();
   MyPickStructure.Clear();
 
   // clear list of managed views
@@ -317,7 +316,6 @@ void Visual3d_ViewManager::Erase (const Handle(Graphic3d_Structure)& AStructure)
 	}
 
 	MyHighlightedStructure.Remove (AStructure);
-	MyVisibleStructure.Remove (AStructure);
 	MyPickStructure.Remove (AStructure);
 
 }

@@ -404,7 +404,7 @@ void Application::open()
     }
     
     // Display the voxels
-    myViewer->getIC()->EraseAll(false, false);
+    myViewer->getIC()->EraseAll(false);
     Voxel_DS* ds = myBoolVoxels;
     if (!ds)
         ds = myColorVoxels;
@@ -848,7 +848,7 @@ void Application::testROctBoolDS()
 
 
     // Display 
-    myViewer->getIC()->EraseAll(false, false);
+    myViewer->getIC()->EraseAll(false);
     initPrs();
     myVoxels->SetBoolVoxels(0);
 	myVoxels->SetColorVoxels(0);
@@ -1506,7 +1506,7 @@ void Application::convert(const int ivoxel)
         }
     }
 
-    myViewer->getIC()->EraseAll(false, false);
+    myViewer->getIC()->EraseAll(false);
 
     Voxel_DS* ds = myBoolVoxels;
     if (!ds)
@@ -1757,7 +1757,7 @@ void Application::displayColorScale()
 
 void Application::displayWaves()
 {
-    myViewer->getIC()->EraseAll(false, false);
+    myViewer->getIC()->EraseAll(false);
 
     // Make voxels
     if (myBoolVoxels)
@@ -1902,7 +1902,7 @@ void Application::sphere()
 
 void Application::load(const TopoDS_Shape& S)
 {
-	myViewer->getIC()->EraseAll(false, false);
+	myViewer->getIC()->EraseAll(false);
 
     // Delete voxels of previous shape.
     if (myBoolVoxels)
@@ -1948,7 +1948,7 @@ void Application::load(const TopoDS_Shape& S)
 
 void Application::displayCut()
 {
-    myViewer->getIC()->EraseAll(false, false);
+    myViewer->getIC()->EraseAll(false);
 
     // Make a sphere with a lot of toruses, 
     // cut the toruses from the sphere.
@@ -2043,7 +2043,7 @@ void Application::displayCut()
 
 void Application::displayCollisions()
 {
-    myViewer->getIC()->EraseAll(false, false);
+    myViewer->getIC()->EraseAll(false);
 
     // Make a big box with a lot of small spheres inside.
     double x = 0.0, y = 0.0, z = 0.0, xlen = 100.0, ylen = 100.0, zlen = 100.0, r = 10.0;

@@ -260,7 +260,7 @@ void OCC_3dBaseDoc::OnUpdateObjectColor(CCmdUI* pCmdUI)
 void OCC_3dBaseDoc::OnObjectErase() 
 {
   for(myAISContext->InitCurrent();myAISContext->MoreCurrent();myAISContext->NextCurrent())
-        myAISContext->Erase(myAISContext->Current(),Standard_True,Standard_False);
+        myAISContext->Erase(myAISContext->Current(),Standard_True);
 	myAISContext->ClearCurrents();
 }
 void OCC_3dBaseDoc::OnUpdateObjectErase(CCmdUI* pCmdUI) 
@@ -363,7 +363,7 @@ void OCC_3dBaseDoc::OnUpdateObjectTransparency(CCmdUI* pCmdUI)
 
 void OCC_3dBaseDoc::OnObjectDisplayall() 
 {
-	myAISContext->DisplayAll(Standard_False);
+	myAISContext->DisplayAll();
 }
 
 void OCC_3dBaseDoc::OnUpdateObjectDisplayall(CCmdUI* pCmdUI) 

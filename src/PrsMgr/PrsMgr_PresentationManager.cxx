@@ -66,6 +66,12 @@ void PrsMgr_PresentationManager::Clear(const Handle(PrsMgr_PresentableObject)& a
       Presentation(aPresentableObject,aMode)->Clear();}
 }
 
+void PrsMgr_PresentationManager::SetVisibility (const Handle(PrsMgr_PresentableObject)& thePresentableObject,
+                                                const Standard_Integer theMode,
+                                                const Standard_Boolean theValue)
+{
+  Presentation(thePresentableObject, theMode)->SetVisible (theValue);
+}
 
 void PrsMgr_PresentationManager::Highlight(
     const Handle(PrsMgr_PresentableObject)& aPresentableObject,

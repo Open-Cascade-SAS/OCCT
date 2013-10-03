@@ -146,7 +146,7 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo(const Standard_Integer XPix
 				   const Standard_Integer YPix, 
 				   const Handle(V3d_View)& aView)
 {
-  if(HasOpenedContext()&& aView->Viewer()!=myCollectorVwr){
+  if(HasOpenedContext()){
     myWasLastMain = Standard_True;
     return myLocalContexts(myCurLocalIndex)->MoveTo(XPix,YPix,aView);
   }
@@ -168,13 +168,6 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo(const Standard_Integer XPix
     selector=myMainSel;
     myLastPicked = myLastinMain;
     myWasLastMain = Standard_True;
-  }
-  else if (aView->Viewer()== myCollectorVwr){
-    pmgr = myCollectorPM;
-    selector=myCollectorSel;
-    myLastPicked = myLastinColl;
-    ismain = Standard_False;
-    myWasLastMain = Standard_False;
   }
   else 
     return AIS_SOD_Error;
@@ -247,8 +240,6 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo(const Standard_Integer XPix
     
     if ( ismain )
       myLastinMain = myLastPicked;
-    else 
-      myLastinColl = myLastPicked;
 #ifdef IMP191001
     // Highlight detected object if it is not selected or myToHilightSelected flag is true
     if ( !myLastPicked.IsNull() && 
@@ -289,8 +280,6 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo(const Standard_Integer XPix
     
     if ( ismain )
       myLastinMain.Nullify();
-    else
-      myLastinColl.Nullify();
   }
   
   if(UpdVwr) aView->Viewer()->Update();
@@ -325,12 +314,7 @@ AIS_StatusOfPick AIS_InteractiveContext::Select(const Standard_Integer XPMin,
   if(aView->Viewer()== myMainVwr) {
     selector= myMainSel;
     myWasLastMain = Standard_True;}
-  
-  else if (aView->Viewer()==myCollectorVwr){
-    selector= myCollectorSel;
-    myWasLastMain = Standard_False;}
-  
-  
+
   selector->Pick(XPMin,YPMin,XPMax,YPMax,aView);
   AIS_Selection::SetCurrentSelection(myCurrentName.ToCString());
 
@@ -395,12 +379,7 @@ AIS_StatusOfPick AIS_InteractiveContext::Select(const TColgp_Array1OfPnt2d& aPol
   if(aView->Viewer()== myMainVwr) {
     selector= myMainSel;
     myWasLastMain = Standard_True;}
-  
-  else if (aView->Viewer()==myCollectorVwr){
-    selector= myCollectorSel;
-    myWasLastMain = Standard_False;}
-  
-  
+
   selector->Pick(aPolyline,aView);
   AIS_Selection::SetCurrentSelection(myCurrentName.ToCString());
 
@@ -467,12 +446,6 @@ AIS_StatusOfPick AIS_InteractiveContext::Select(const Standard_Boolean updatevie
       if(updateviewer)
 	UpdateCurrentViewer();}
   }
-  else if (!myWasLastMain && !myLastinColl.IsNull()){
-    if(myLastinColl->State()!=1){
-      SetCurrentObject(myLastinColl,Standard_False);
-      if(updateviewer)
-	UpdateCollector();}
-  }
   else{
     AIS_Selection::SetCurrentSelection(myCurrentName.ToCString());
     Handle(AIS_Selection) S = AIS_Selection::CurrentSelection();
@@ -493,9 +466,7 @@ AIS_StatusOfPick AIS_InteractiveContext::Select(const Standard_Boolean updatevie
     AIS_Selection::Select();
     if(updateviewer){
       if(myWasLastMain)
-	UpdateCurrentViewer();
-      else
-	UpdateCollector();
+        UpdateCurrentViewer();
     }
   }
   Standard_Integer NS = NbCurrents();
@@ -524,10 +495,7 @@ AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect(const Standard_Boolean upda
   }
   if(myWasLastMain && !myLastinMain.IsNull())
     AddOrRemoveCurrentObject(myLastinMain,updateviewer);
-  else if (!myWasLastMain && !myLastinColl.IsNull())
-    AddOrRemoveCurrentObject(myLastinColl,updateviewer);
-  
-  
+
   Standard_Integer NS = NbCurrents();
   if(NS==0) return AIS_SOP_NothingSelected;
   if(NS==1) return AIS_SOP_OneSelected;
@@ -558,10 +526,6 @@ AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect(const Standard_Integer XPMi
   if(aView->Viewer()== myMainVwr) {
     selector= myMainSel;
     myWasLastMain = Standard_True;}
-  
-  else if (aView->Viewer()==myCollectorVwr){
-    selector= myCollectorSel;
-    myWasLastMain = Standard_False;}
   else
     return AIS_SOP_NothingSelected;
   
@@ -604,10 +568,6 @@ AIS_StatusOfPick AIS_InteractiveContext::ShiftSelect( const TColgp_Array1OfPnt2d
     if( aView->Viewer() == myMainVwr ) {
         selector= myMainSel;
         myWasLastMain = Standard_True;
-    }
-    else if ( aView->Viewer() == myCollectorVwr ) {
-        selector= myCollectorSel;
-        myWasLastMain = Standard_False;
     }
     else
         return AIS_SOP_NothingSelected;

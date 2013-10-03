@@ -1682,7 +1682,7 @@ static Standard_Integer OCC708 (Draw_Interpretor& di, Standard_Integer argc, con
     return 1;
   }
   
-  Standard_Boolean updateviewer = Standard_True, PutInCollector = Standard_True;
+  Standard_Boolean updateviewer = Standard_True;
 
   ViewerTest_DoubleMapOfInteractiveAndName& aMap = GetMapOfAIS();
   
@@ -1702,7 +1702,7 @@ static Standard_Integer OCC708 (Draw_Interpretor& di, Standard_Integer argc, con
     if (!aContext->HasOpenedContext()) {
       aContext->OpenLocalContext();
     }
-    aContext->Erase(AISObj, updateviewer, PutInCollector);
+    aContext->Erase(AISObj, updateviewer);
     aContext->UpdateCurrentViewer();
     aContext->Display(AISObj, updateviewer);
     aContext->UpdateCurrentViewer();
@@ -3153,18 +3153,6 @@ static Standard_Integer OCC7068 (Draw_Interpretor& di, Standard_Integer argc, co
   if (!ListOfIO_1.IsEmpty() ) {
     AIS_ListIteratorOfListOfInteractive iter;
     for (iter.Initialize(ListOfIO_1); iter.More() ; iter.Next() ) {
-      Handle(AIS_InteractiveObject) aIO=iter.Value();
-      di<< GetMapOfAIS().Find1(aIO).ToCString() <<"\n";
-    }
-  }
-
-  // ObjectsInCollector
-  AIS_ListOfInteractive ListOfIO_2;
-  AISContext->ObjectsInCollector(ListOfIO_2);
-  di<< "ObjectsInCollector = " << ListOfIO_2.Extent() <<"\n";
-  if (!ListOfIO_2.IsEmpty() ) {
-    AIS_ListIteratorOfListOfInteractive iter;
-    for (iter.Initialize(ListOfIO_2); iter.More() ; iter.Next() ) {
       Handle(AIS_InteractiveObject) aIO=iter.Value();
       di<< GetMapOfAIS().Find1(aIO).ToCString() <<"\n";
     }
@@ -5282,9 +5270,9 @@ Standard_Integer CR23234 (Draw_Interpretor& di, Standard_Integer argc, const cha
   {
     aisContext->CloseAllContexts();
     aisContext->RemoveAll(false);
-    aisContext->EraseSelected(false, false);
+    aisContext->EraseSelected(false);
   }
-  aisContext->EraseAll(false,false);
+  aisContext->EraseAll(false);
   Handle(Geom_Axis2Placement) trihedronAxis = new Geom_Axis2Placement(gp::XOY());
   Handle(AIS_Trihedron) trihedron = new AIS_Trihedron(trihedronAxis);
   if (aMode)

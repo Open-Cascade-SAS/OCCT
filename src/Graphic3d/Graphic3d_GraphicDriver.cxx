@@ -48,6 +48,7 @@ Graphic3d_GraphicDriver::Graphic3d_GraphicDriver (const Standard_CString AShrNam
 
   SetTrace (0);
   MySharedLibrary.SetName (AShrName);
+  myDeviceLostFlag = Standard_False;
 
   //if (! MySharedLibrary.DlOpen (OSD_RTLD_LAZY))
   //Aspect_DriverDefinitionError::Raise (MySharedLibrary.DlError ());
@@ -221,4 +222,14 @@ Standard_Integer Graphic3d_GraphicDriver::Trace () const {
 const Handle(Aspect_DisplayConnection)& Graphic3d_GraphicDriver::GetDisplayConnection() const
 {
   return myDisplayConnection;
+}
+
+Standard_Boolean Graphic3d_GraphicDriver::IsDeviceLost() const
+{
+  return myDeviceLostFlag;
+}
+
+void Graphic3d_GraphicDriver::ResetDeviceLostFlag()
+{
+  myDeviceLostFlag = Standard_False;
 }

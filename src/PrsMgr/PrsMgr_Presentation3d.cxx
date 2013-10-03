@@ -27,6 +27,7 @@
 #include <PrsMgr_Presentation3d.ixx>
 #include <PrsMgr_PresentationManager.hxx>
 #include <PrsMgr_Prs.hxx>
+#include <PrsMgr_ModedPresentation.hxx>
 #include <Visual3d_View.hxx>
 #include <Visual3d_ViewOrientation.hxx>
 #include <Graphic3d_Structure.hxx>
@@ -47,24 +48,41 @@ PrsMgr_KindOfPrs PrsMgr_Presentation3d::KindOfPresentation() const
 {return PrsMgr_KOP_3D;}
 
 
-void PrsMgr_Presentation3d::Display () {
-  myStructure->Display();
+void PrsMgr_Presentation3d::Display()
+{
+  Display (Standard_False);
   myDisplayReason = Standard_False;
+}
+
+void PrsMgr_Presentation3d::Display(const Standard_Boolean theIsHighlight)
+{
+  if (!myStructure->IsDisplayed())
+  {
+    myStructure->Display();
+    myDisplayReason = theIsHighlight;
+  }
+  else if (!myStructure->IsVisible())
+  {
+    myStructure->SetVisible (Standard_True);
+    myDisplayReason = theIsHighlight;
+  }
 }
 
 void PrsMgr_Presentation3d::Erase () const {
   myStructure->Erase();}
 
+void PrsMgr_Presentation3d::SetVisible (const Standard_Boolean theValue)
+{
+  myStructure->SetVisible (theValue);
+}
+
 void PrsMgr_Presentation3d::Highlight () {
-  if(!myStructure->IsDisplayed()) {
-    myStructure->Display();
-    myDisplayReason = Standard_True;
-  }
+  Display (Standard_True);
   myStructure->Highlight();}
 
 void PrsMgr_Presentation3d::Unhighlight () const {
   myStructure->UnHighlight();
-  if(myDisplayReason) myStructure->Erase();
+  if (myDisplayReason) myStructure->SetVisible (Standard_False);
 }
 
 void PrsMgr_Presentation3d::Clear() {
@@ -81,13 +99,7 @@ void PrsMgr_Presentation3d::Clear() {
 }
 
 void PrsMgr_Presentation3d::Color(const Quantity_NameOfColor aColor){
-  Standard_Boolean ImmMode = myPresentationManager->IsImmediateModeOn();
-  if(!ImmMode){
-    if(!myStructure->IsDisplayed()) {
-      myStructure->Display();
-      myDisplayReason = Standard_True;
-    }
-  }
+  Display (Standard_True);
   myStructure->Color(aColor);
 }
 
@@ -96,7 +108,7 @@ void PrsMgr_Presentation3d::BoundBox() const {
 }
 
 Standard_Boolean PrsMgr_Presentation3d::IsDisplayed () const {
-  return myStructure->IsDisplayed() && !myDisplayReason;
+  return myStructure->IsDisplayed() && myStructure->IsVisible() && !myDisplayReason;
 }        
 
 Standard_Boolean PrsMgr_Presentation3d::IsHighlighted () const {
@@ -160,6 +172,36 @@ Compute(const Handle(Graphic3d_DataStructureManager)& aProjector)
   Handle(Prs3d_Presentation) g = new Prs3d_Presentation(Handle(PrsMgr_PresentationManager3d)::DownCast(PresentationManager())->StructureManager());
   myPresentableObject->Compute(Projector(aProjector),g);
   return g;
+}
+
+//=======================================================================
+//function : Compute
+//purpose  : 
+//=======================================================================
+
+void PrsMgr_Presentation3d::Compute (const Handle(Graphic3d_Structure)& theStructure)
+{
+  Standard_Integer aDispMode = 0;
+
+  Standard_Integer aPresentationsNumber = myPresentableObject->myPresentations.Length();
+  for (Standard_Integer anIter = 1; anIter <= aPresentationsNumber; anIter++)
+  {
+    const PrsMgr_ModedPresentation& aModedPresentation = myPresentableObject->myPresentations.Value (anIter);
+    Handle(PrsMgr_Presentation) aPresentation = aModedPresentation.Presentation();
+    PrsMgr_Presentation3d* aPresentation3d = (PrsMgr_Presentation3d* )aPresentation.operator->();
+    if (aPresentation3d == this)
+    {
+      aDispMode = aModedPresentation.Mode();
+      break;
+    }
+  }
+
+  Handle(Prs3d_Presentation) aPrs3d = Handle(Prs3d_Presentation)::DownCast (theStructure);
+
+  myPresentableObject->Compute(
+    Handle(PrsMgr_PresentationManager3d)::DownCast (PresentationManager()),
+    aPrs3d,
+    aDispMode);
 }
 
 //=======================================================================

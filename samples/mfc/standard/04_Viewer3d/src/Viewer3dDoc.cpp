@@ -985,7 +985,7 @@ BOOL CViewer3dDoc::OnNewDocument()
   // (SDI documents will reuse this document)
   SetTitle(myPresentation->GetName());
 
-  myAISContext->EraseAll(Standard_False);
+  myAISContext->EraseAll();
   myAISContext->SetDisplayMode(AIS_Shaded);
 
   POSITION pos = GetFirstViewPosition();
@@ -1046,14 +1046,14 @@ void CViewer3dDoc::DoSample()
 
 void CViewer3dDoc::OnBUTTONStart() 
 {
-  myAISContext->EraseAll(Standard_False);
+  myAISContext->EraseAll();
   myPresentation->FirstSample();
   DoSample();
 }
 
 void CViewer3dDoc::OnBUTTONEnd()
 {
-  myAISContext->EraseAll(Standard_False);
+  myAISContext->EraseAll();
   myPresentation->LastSample();
   DoSample();
 }

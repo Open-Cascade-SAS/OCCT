@@ -63,7 +63,6 @@ OpenLocalContext(const Standard_Boolean UseDisplayedObjects,
   // entities connected to dynamic selection at neutral point are set to 0.
   
   myLastinMain.Nullify();
-  myLastinColl.Nullify();
   myLastPicked.Nullify();
   myWasLastMain = Standard_True;
 
@@ -186,8 +185,6 @@ void AIS_InteractiveContext::CloseAllContexts(const Standard_Boolean updateviewe
   ResetOriginalState(Standard_False);
 
   myMainSel->UpdateSort();
-  if(!myIsCollClosed && !myCollectorSel.IsNull())
-    myCollectorSel->UpdateSort();
   if(updateviewer) myMainVwr->Update();
 }
 
@@ -376,22 +373,18 @@ SubIntensityOn(const Handle(AIS_InteractiveObject)& anIObj,
     if(GB->IsSubIntensityOn())
       return;
     GB->SubIntensityOn();
-    Standard_Boolean UpdMain(Standard_False),UpdColl(Standard_False);
+    Standard_Boolean UpdMain(Standard_False);
     
     for(TColStd_ListIteratorOfListOfInteger It(GB->DisplayedModes());It.More();It.Next()){
-      if(GB->GraphicStatus()==AIS_DS_Displayed){
+      if (GB->GraphicStatus()==AIS_DS_Displayed)
+      {
         myMainPM->Color(anIObj,mySubIntensity,It.Value());
-        UpdMain = Standard_True;}
-      else if(GB->GraphicStatus()==AIS_DS_Erased){
-        myCollectorPM->Color(anIObj,mySubIntensity,It.Value());
-        UpdColl=Standard_True;
+        UpdMain = Standard_True;
       }
     }
     if(updateviewer){
       if(UpdMain)
         myMainVwr->Update();
-      if(UpdColl)
-        myCollectorVwr->Update();
     }
   }
   else {
@@ -424,15 +417,13 @@ SubIntensityOff(const Handle(AIS_InteractiveObject)& anIObj,
     if(!GB->IsSubIntensityOn())
       return;
     GB->SubIntensityOff();
-    Standard_Boolean UpdMain(Standard_False),UpdColl(Standard_False);
+    Standard_Boolean UpdMain(Standard_False);
     
     for(TColStd_ListIteratorOfListOfInteger It(GB->DisplayedModes());It.More();It.Next()){
-      if(GB->GraphicStatus()!=AIS_DS_Erased){
+      if(GB->GraphicStatus()==AIS_DS_Displayed)
+      {
         myMainPM->Unhighlight(anIObj,It.Value());
-        UpdMain = Standard_True;}
-      else {
-        myCollectorPM->Unhighlight(anIObj,It.Value());
-        UpdColl=Standard_True;
+        UpdMain = Standard_True;
       }
     }
     
@@ -444,8 +435,6 @@ SubIntensityOff(const Handle(AIS_InteractiveObject)& anIObj,
     if(updateviewer){
       if(UpdMain)
         myMainVwr->Update();
-      if(UpdColl)
-        myCollectorVwr->Update();
     }
   }
   else {
@@ -749,17 +738,11 @@ void AIS_InteractiveContext::NotUseDisplayedObjects()
 //purpose  : 
 //=======================================================================
 
-Standard_Integer AIS_InteractiveContext::PurgeDisplay(const Standard_Boolean CollectorToo)
+Standard_Integer AIS_InteractiveContext::PurgeDisplay()
 {
   if(HasOpenedContext()) return 0;
   
   Standard_Integer NbStr = PurgeViewer(myMainVwr);
-  if(!myCollectorVwr.IsNull())
-    if(CollectorToo){
-      NbStr+=PurgeViewer(myCollectorVwr);
-      if(!IsCollectorClosed())
-        myCollectorVwr->Update();
-    }
   myMainVwr->Update();
   return NbStr;
 
@@ -881,7 +864,7 @@ Standard_Boolean AIS_InteractiveContext::EndImmediateDraw(const Standard_Boolean
 
 void AIS_InteractiveContext::ResetOriginalState(const Standard_Boolean updateviewer)
 {
-  Standard_Boolean upd_main(Standard_False),upd_col(Standard_False);
+  Standard_Boolean upd_main(Standard_False);
   TColStd_ListIteratorOfListOfInteger itl;
 
   for (AIS_DataMapIteratorOfDataMapOfIOStatus it(myObjects);it.More();it.Next()){
@@ -908,12 +891,7 @@ void AIS_InteractiveContext::ResetOriginalState(const Standard_Boolean updatevie
       break; 
     }
     case AIS_DS_Erased:{
-      upd_col = Standard_True;
-      EraseGlobal(iobj,Standard_False,Standard_True);
-      break;
-    }
-    case AIS_DS_FullErased:{
-      EraseGlobal(iobj,Standard_False,Standard_False);
+      EraseGlobal(iobj,Standard_False);
       break;
     }
     default:
@@ -923,8 +901,6 @@ void AIS_InteractiveContext::ResetOriginalState(const Standard_Boolean updatevie
   if(updateviewer){
     if(upd_main) 
       myMainVwr->Update();
-    if(upd_col)
-      myCollectorVwr->Update();
   }
 }
 

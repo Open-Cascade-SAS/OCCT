@@ -151,24 +151,8 @@ is
     	---Purpose:
     	-- Constructs the interactive context object defined by
     	-- the principal viewer MainViewer.    
-    
-    Create(MainViewer,Collector: Viewer from V3d)
-    returns mutable InteractiveContext from  AIS;
-    	---Purpose:
-    	-- Constructs the interactive context object defined by
-    	-- the principal viewer MainViewer and the collector
-    	-- (or trash) viewer.
-	   
 
     Delete(me) is redefined;
-
-    IsCollectorClosed(me) returns Boolean from Standard;
-    ---C++: inline
-    CloseCollector(me:mutable);
-    ---C++: inline
-    OpenCollector(me:mutable);
-
-
 
 		    ---Category: General DISPLAY SERVICES
     SetAutoActivateSelection( me: mutable; Auto : Boolean from Standard ); 
@@ -242,70 +226,27 @@ is
 
     Erase(me             : mutable; 
     	  aniobj         : InteractiveObject from AIS;
-	  updateviewer   : Boolean from Standard = Standard_True;
-    	  PutInCollector : Boolean from Standard = Standard_False);
----Purpose: To erase presentations in current local context, or
--- failing that, in other local contexts which allow erasing.
---
--- If putinCollector is True, the object is erased with graphical status Erased,
--- and put into the Collector. These objects can be retrieved
--- from Interactive Context by ObjectsInCollector method.
--- If putinCollector is False, the objects erased with graphical status FullErased,
--- and not put into the Collector. These objects can be retrieved
--- from Interactive Context by ErasedObjects method.
---
--- Note: objects that are put into the Collector recomute their presentation
--- for Collector Presentation Manager.
---
--- If a local context is open and if updateviewer is
--- False, the presentation of the Interactive
--- Object activates the selection mode; the object is
--- displayed but no viewer will be updated.
+	  updateviewer   : Boolean from Standard = Standard_True);
+---Purpose: Hides the object. The object's presentations are simply
+-- flagged as invisible and therefore excluded from redrawing.
+-- To show hidden objects, use Display().
 
-    EraseMode(me             : mutable;
-	      aniobj         : InteractiveObject from AIS;
-	      aMode          : Integer from Standard;
-	      updateviewer   : Boolean from Standard = Standard_True); 
-    ---Purpose: Updates viewer contents and returns the display
--- mode of each aniobj object. Use only if more than
--- one display mode is active in the main viewer.
--- This method works only on presentation modes other
--- than the default mode. Nothing is done if aMode is
--- the default presentation mode.
--- If a local context is open and if updateviewer equals
--- Standard_False, the presentation of the Interactive
--- Object activates the selection mode; the object is
--- displayed but no viewer will be updated.
+    EraseAll (me          : mutable;
+              updateviewer: Boolean from Standard = Standard_True);
+    ---Purpose: Hides all objects. The object's presentations are simply
+-- flagged as invisible and therefore excluded from redrawing.
+-- To show all hidden objects, use DisplayAll().
 
+    DisplayAll(me          : mutable;
+               updateviewer: Boolean from Standard = Standard_True);
+    ---Purpose: Displays all hidden objects.
 
-
-    EraseAll(me:mutable;
-    	     PutInCollector : Boolean from Standard = Standard_False;
-    	     updateviewer   : Boolean from Standard = Standard_True);
-    ---Purpose: Every erased object goes into the Collector viewer,
-    --          depending on PutInCollector value.
-
-    DisplayAll(me                : mutable;
-    	       OnlyFromCollector : Boolean from Standard = Standard_False;
-    	       updateviewer      : Boolean from Standard = Standard_True);
-    ---Purpose: Displays all erased objects or display all objects from collector
-
-    DisplayFromCollector(me	 : mutable;
-			  anIObj          :  InteractiveObject from AIS;
-			  updateviewer    : Boolean from Standard = Standard_True);
-    ---Purpose: display anIObj from the collector.
-
-    EraseSelected(me:mutable;
-    	    	  PutInCollector:Boolean from Standard=Standard_False; 
-    	    	  updateviewer:Boolean from Standard = Standard_True);
+    EraseSelected(me: mutable;
+                  updateviewer: Boolean from Standard = Standard_True);
 	---Purpose:
--- Erases selected objects if there is no open active local context.
--- If there is no local context activated and if
--- updateviewer equals Standard_False, the
--- presentation of the Interactive Object activates the
--- selection mode; the object is displayed but no viewer
--- will be updated.
--- If a local context is open, this method is neutral.
+-- Hides selected objects. The object's presentations are simply
+-- flagged as invisible and therefore excluded from redrawing.
+-- To show hidden objects, use Display().
     
     DisplaySelected(me:mutable;updateviewer:Boolean from Standard = Standard_True);
     ---Purpose: Displays selected objects if a local context is open.
@@ -800,8 +741,7 @@ is
     ---Purpose: Returns the display status of the entity anIobj.
 -- This will be one of the following:
 -- -   DS_Displayed   displayed in main viewer
--- -   DS_Erased   erased in the Collector
--- -   DS_FullErased   erased everywhere but in the Collector
+-- -   DS_Erased   hidden in main viewer
 -- -   DS_Temporary   temporarily displayed
 -- -   DS_None   nowhere displayed.
 
@@ -831,17 +771,12 @@ is
     --          <WithColor> will be returned TRUE
     --          <theHiCol> gives the name of the hilightcolor
 
-    IsInCollector(me;anIObj:InteractiveObject from AIS)
-    returns Boolean from Standard;
----Purpose:
--- Returns true if the entity anIobj is in the Collector viewer.
-    
     DisplayPriority(me;anIobj: InteractiveObject from AIS)
     returns Integer from Standard;
 ---Purpose:
 -- Returns the display priority of the entity anIobj. This
 -- will be display   mode of anIobj if it is in the main
--- viewer, and the highlight mode if it is in the Collector viewer.
+-- viewer.
 
     HasColor(me; aniobj: InteractiveObject from AIS)
     returns Boolean from Standard;
@@ -874,11 +809,6 @@ is
 -- Objects selected when there is no open local context
 -- are called current objects; those selected in open
 -- local context, selected objects.   
-
-    UpdateCollector(me:mutable);
----Purpose: Updates the Collector viewer.
-
-
 
     	    	    ---Category: General Attributes for the session
 
@@ -1161,7 +1091,7 @@ is
     --          is changed.
     --          When <globalChange> is FALSE , only the current group
     --          of the object presentation is changed.
-    --	  	Updates the viewer or collector when <updateViewer> is TRUE
+    --	  	Updates the viewer when <updateViewer> is TRUE
     ---Category: Graphic attributes management
 
 	    ---Category: GRAPHIC DETECTION  / SELECTION
@@ -1963,30 +1893,9 @@ is
     --          by Default, <WhichSignature> = -1 means 
     --          control only on <WhichKind>.
 
-    Collector(me) returns any Viewer from V3d;
-    ---C++: return const &
-    ---C++: inline
-    
-    ObjectsInCollector (me;aListOfIO : in out ListOfInteractive from AIS);
-    ---Purpose:
-    -- Returns the list aListOfIO of erased objects of a
-    -- particular Type WhichKind and Signature WhichSignature.
-    -- By Default, WhichSignature equals 1. This means
-    -- that there is a check on type only.
-
-    ObjectsInCollector (me;
-    	    	        WhichKind :KindOfInteractive from AIS; 
-		        WhichSignature :Integer from Standard;
-                        aListOfIO : in out ListOfInteractive from AIS);
-    ---Purpose: gives the list of erased objects of a particular
-    --          Type and signature
-    --          by Default, <WhichSignature> = -1 means 
-    --          control only on <WhichKind>.
-
-    
     ErasedObjects (me;theListOfIO : in out ListOfInteractive from AIS);
     ---Purpose:
-    -- Returns the list theListOfIO of erased objects (but not placed into collecter)
+    -- Returns the list theListOfIO of erased objects (hidden objects)
     -- particular Type WhichKind and Signature WhichSignature.
     -- By Default, WhichSignature equals 1. This means
     -- that there is a check on type only.
@@ -1995,7 +1904,7 @@ is
     	    	        WhichKind :KindOfInteractive from AIS; 
 		        WhichSignature :Integer from Standard;
                         theListOfIO : in out ListOfInteractive from AIS);
-    ---Purpose: gives the list of erased objects (but not placed into collecter)
+    ---Purpose: gives the list of erased objects (hidden objects)
     --          Type and signature
     --          by Default, <WhichSignature> = -1 means 
     --          control only on <WhichKind>.
@@ -2054,9 +1963,7 @@ is
 
     DomainOfMainViewer(me) returns CString from Standard;
     ---Purpose: Returns the domain name of the main viewer.
-    DomainOfCollector(me) returns CString from Standard;
-    ---Purpose: Returns the domain name of the Collector viewer.
-    
+
 	    ---Category: Internal
 
         ---Category: Internal
@@ -2078,24 +1985,13 @@ is
     MainPrsMgr     (me) returns any PresentationManager3d from PrsMgr;
     ---C++: inline
     ---C++: return const &
-    CollectorPrsMgr(me) returns any PresentationManager3d from PrsMgr;
-    ---C++: inline
-    ---C++: return const &
-
 
     MainSelector(me) returns any ViewerSelector3d from StdSelect;
     ---C++: inline
     ---C++: return const &
     LocalSelector(me) returns any ViewerSelector3d from StdSelect;
 
-
-    CollectorSelector(me)  returns any ViewerSelector3d from StdSelect;
-    ---C++: inline
-    ---C++: return const &   
-
-
-
-    PurgeDisplay(me:mutable;CollectorToo:Boolean from Standard = Standard_False) 
+    PurgeDisplay(me:mutable) 
     returns Integer from Standard;
     ---Level: Internal 
     ---Purpose: Clears all the structures which don't
@@ -2131,9 +2027,8 @@ is
 
 
     EraseGlobal(me             : mutable;
-    	        anObj          : InteractiveObject from AIS;
-		updateviewer   : Boolean from Standard = Standard_True;
-    	        PutInCollector : Boolean from Standard = Standard_False) is static private;
+                anObj          : InteractiveObject from AIS;
+                updateviewer   : Boolean from Standard = Standard_True) is static private;
 		
     ClearGlobal(me             : mutable;
     	        anObj          : InteractiveObject from AIS;
@@ -2172,12 +2067,6 @@ fields
     myMainVwr    : Viewer from V3d;
     myMainSel    : ViewerSelector3d from StdSelect;
 
-    myCollectorPM  : PresentationManager3d from PrsMgr;  
-    myCollectorVwr : Viewer from V3d;
-    myCollectorSel : ViewerSelector3d from StdSelect;
-
-    myIsCollClosed : Boolean from Standard;
-
     -- the selection and current objects.
 
     mySelectionName : AsciiString from TCollection;
@@ -2185,7 +2074,6 @@ fields
 
     myLastPicked    : InteractiveObject from AIS;    
     myLastinMain    : InteractiveObject from AIS;
-    myLastinColl    : InteractiveObject from AIS;
     
     
     myWasLastMain       : Boolean from Standard;

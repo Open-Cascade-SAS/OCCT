@@ -360,14 +360,14 @@ void CTriangulationDoc::DoSample()
 
 void CTriangulationDoc::OnBUTTONStart() 
 {
-  myAISContext->EraseAll(Standard_False);
+  myAISContext->EraseAll();
   myPresentation->FirstSample();
   DoSample();
 }
 
 void CTriangulationDoc::OnBUTTONEnd()
 {
-  myAISContext->EraseAll(Standard_False);
+  myAISContext->EraseAll();
   myPresentation->LastSample();
   DoSample();
 }

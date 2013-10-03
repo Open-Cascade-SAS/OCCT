@@ -37,6 +37,16 @@ PrsMgr_Prs::PrsMgr_Prs (const Handle(Graphic3d_StructureManager)& aStructureMana
 //purpose  : 
 //=======================================================================
 
+void PrsMgr_Prs::Compute()
+{
+  myPresentation3d->Compute (this);
+}
+
+//=======================================================================
+//function : Compute
+//purpose  : 
+//=======================================================================
+
 Handle(Graphic3d_Structure) PrsMgr_Prs::Compute(const Handle(Graphic3d_DataStructureManager)& aProjector) {
   return myPresentation3d->Compute(aProjector);
 }

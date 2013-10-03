@@ -18,7 +18,7 @@ void GeomSources::PreProcess(CGeometryDoc* aDoc,DisplayType aDisplayType)
 {
   if (aDisplayType == No2D3D )
   {   
-    aDoc->GetAISContext()->EraseAll(Standard_False);
+    aDoc->GetAISContext()->EraseAll();
     aDoc->Put3DOnTop(); 
   }
 
@@ -40,7 +40,7 @@ void GeomSources::PreProcess(CGeometryDoc* aDoc,DisplayType aDisplayType)
 
   if (aDisplayType == a2D3D)
   {
-    aDoc->GetAISContext()->EraseAll(Standard_False);
+    aDoc->GetAISContext()->EraseAll();
     aDoc->GetISessionContext()->EraseAll();
     aDoc->Put3DOnTop(false); 
     aDoc->Put2DOnTop(false);

@@ -21,11 +21,6 @@ inline const Handle(V3d_Viewer)& AIS_InteractiveContext::CurrentViewer() const
   return myMainVwr;
 }
 
-inline const Handle(V3d_Viewer)& AIS_InteractiveContext::Collector() const 
-{
- return  myCollectorVwr;
-}
-
 inline Quantity_NameOfColor AIS_InteractiveContext::HilightColor() const 
 { 
   return myHilightColor;
@@ -44,12 +39,6 @@ inline Quantity_NameOfColor AIS_InteractiveContext::PreSelectionColor() const
 inline Quantity_NameOfColor AIS_InteractiveContext::DefaultColor() const 
 {  return myDefaultColor;
 }
-inline Standard_Boolean AIS_InteractiveContext::IsCollectorClosed() const 
-{return myIsCollClosed;}
-
-inline void AIS_InteractiveContext::CloseCollector()
-{myIsCollClosed = Standard_True;}
-
 
 inline Quantity_NameOfColor AIS_InteractiveContext::SubIntensityColor() const 
 {
@@ -88,10 +77,6 @@ inline const Handle(SelectMgr_SelectionManager)& AIS_InteractiveContext::Selecti
 inline const Handle(PrsMgr_PresentationManager3d)& AIS_InteractiveContext::MainPrsMgr() const 
 {return myMainPM  ;}
 
-inline const Handle(PrsMgr_PresentationManager3d)& AIS_InteractiveContext::CollectorPrsMgr() const 
-{return myCollectorPM ;}
-
-
 inline Standard_Boolean AIS_InteractiveContext::HasOpenedContext() const 
 {return myCurLocalIndex != 0;}
 
@@ -110,9 +95,6 @@ inline void  AIS_InteractiveContext::SetOkCurrent()
 
 inline const Handle(StdSelect_ViewerSelector3d)& AIS_InteractiveContext::MainSelector() const 
 {return myMainSel;}
-
-inline const Handle(StdSelect_ViewerSelector3d)& AIS_InteractiveContext::CollectorSelector() const
-{return myCollectorSel;}
 
 inline void AIS_InteractiveContext::SetToHilightSelected(const Standard_Boolean toHilight)
 {

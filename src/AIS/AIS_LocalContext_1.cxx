@@ -594,7 +594,7 @@ void AIS_LocalContext::Unhilight(const Handle(SelectMgr_EntityOwner)& Ownr,
 //=======================================================================
 void AIS_LocalContext::HilightPicked(const Standard_Boolean updateviewer)
 {
-  Standard_Boolean updMain(Standard_False),updColl(Standard_False);
+  Standard_Boolean updMain(Standard_False);
 
   Handle(AIS_Selection) Sel = AIS_Selection::Selection(mySelName.ToCString());
 #ifdef BUC60765
@@ -626,11 +626,7 @@ void AIS_LocalContext::HilightPicked(const Standard_Boolean updateviewer)
 	if(BROwnr.IsNull() || !BROwnr->ComesFromDecomposition()){
 	  Handle(SelectMgr_SelectableObject) SO  = Ownr->Selectable();
 	  IO = *((Handle(AIS_InteractiveObject)*)&SO);
-	  if(myCTX->IsInCollector(IO)){
-	    PM = myCTX->CollectorPrsMgr();
-	    updColl = Standard_True;}
-	  else
-	    updMain = Standard_True;
+	  updMain = Standard_True;
 	}
 	else
 	  updMain = Standard_True;
@@ -661,7 +657,6 @@ void AIS_LocalContext::HilightPicked(const Standard_Boolean updateviewer)
 #else
     if(updMain) myCTX->CurrentViewer()->Update();
 #endif
-    if(updColl) myCTX->Collector()->Update();
   }
 }
 
@@ -672,7 +667,7 @@ void AIS_LocalContext::HilightPicked(const Standard_Boolean updateviewer)
 void AIS_LocalContext::
 UnhilightPicked(const Standard_Boolean updateviewer)
 {
-  Standard_Boolean updMain(Standard_False),updColl(Standard_False);
+  Standard_Boolean updMain(Standard_False);
 
   Handle(AIS_Selection) Sel = AIS_Selection::Selection(mySelName.ToCString());
 #ifdef BUC60765
@@ -711,11 +706,7 @@ UnhilightPicked(const Standard_Boolean updateviewer)
 	  Handle(AIS_InteractiveObject) IO = *((Handle(AIS_InteractiveObject)*)&SO);
 	  HM = GetHiMod(IO);
 #endif
-	  if(myCTX->IsInCollector(IO)){
-	    PM = myCTX->CollectorPrsMgr();
-	    updColl = Standard_True;}
-	  else
-	    updMain = Standard_True;
+	  updMain = Standard_True;
 	}
 	else
 	  updMain = Standard_True;
@@ -735,7 +726,6 @@ UnhilightPicked(const Standard_Boolean updateviewer)
 #else
     if(updMain) myCTX->CurrentViewer()->Update();
 #endif
-    if(updColl) myCTX->Collector()->Update();
   }
   
 }

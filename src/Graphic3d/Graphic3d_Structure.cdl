@@ -382,6 +382,11 @@ is
 	-- Category: Compute methods
 	----------------------------
 
+  Compute (me: mutable)
+  is virtual;
+  ---Level: Advanced
+  ---Category: Methods to modify the class definition
+
 	Compute ( me	: mutable;
 		  aProjector	: DataStructureManager from Graphic3d )
 		returns Structure from Graphic3d is virtual;

@@ -25,6 +25,7 @@
 #include <OpenGl_Structure.hxx>
 #include <OpenGl_CView.hxx>
 #include <OpenGl_Display.hxx>
+#include <OpenGl_Text.hxx>
 
 /*----------------------------------------------------------------------*/
 
@@ -433,6 +434,8 @@ void OpenGl_GraphicDriver::RemoveView (const Graphic3d_CView& theCView)
       OpenGl_Structure* aStruct = aStructIt.ChangeValue();
       aStruct->ReleaseGlResources (aShareCtx);
     }
+    myTempText->Release (aShareCtx);
+    myDeviceLostFlag = Standard_True;
   }
 
   OpenGl_CView* aCView = (OpenGl_CView* )theCView.ptrView;

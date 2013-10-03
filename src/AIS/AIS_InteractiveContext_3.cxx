@@ -25,28 +25,6 @@
 #include <AIS_GlobalStatus.hxx>
 // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
 
-//=======================================================================
-//function : Erase
-//purpose  : display an interactive object from the collector.
-//=======================================================================
-void AIS_InteractiveContext::DisplayFromCollector(const Handle(AIS_InteractiveObject)& anIObj,
-												  const Standard_Boolean updateviewer)
-{
-	if ( !IsInCollector( anIObj ) ) return;
-
-	if ( !HasOpenedContext() ){
-		
-		if ( DisplayStatus( anIObj ) == AIS_DS_Erased )
-			Display( anIObj,Standard_False);
-
-		if( updateviewer ){
-			myMainVwr->Update();
-			if( !myCollectorVwr.IsNull() )
-				myCollectorVwr->Update();
-		}
-	}
-}
-
 // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
 
 //=======================================================================

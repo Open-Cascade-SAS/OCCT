@@ -1777,6 +1777,12 @@ void Visual3d_View::Update (const Handle(Visual3d_Layer)& AnUnderLayer, const Ha
 
         if (! MyWindow->IsMapped ()) return;
 
+        if (MyGraphicDriver->IsDeviceLost())
+        {
+          MyViewManager->ReComputeStructures();
+          MyGraphicDriver->ResetDeviceLostFlag();
+        }
+
         // If activation/desactivation of ZBuffer should be automatic
         // depending on the presence or absence of facets.
         if (MyViewManager->ZBufferAuto ()) {
@@ -1999,41 +2005,14 @@ void Visual3d_View::Display (const Handle(Graphic3d_Structure)& AStructure, cons
 Standard_Integer Index = IsComputed (AStructure);
 
         if ((Index != 0) && (AStructure->Visual () != Graphic3d_TOS_COMPUTED)) {
-
-#ifdef TRACE_LENGTH
-        if (MyTOCOMPUTESequence.Length () != MyCOMPUTEDSequence.Length ()) {
-                cout << "In Visual3d_View::Display, ";
-                cout << "TOCOMPUTE " << MyTOCOMPUTESequence.Length ()
-                     << " != COMPUTED " << MyCOMPUTEDSequence.Length ()
-                     << "\n" << flush;
-        }
-#endif
                 MyTOCOMPUTESequence.Remove (Index);
                 MyCOMPUTEDSequence.Remove (Index);
-
-#ifdef TRACE_LENGTH
-        if (MyTOCOMPUTESequence.Length () != MyCOMPUTEDSequence.Length ())
-                cout << "\tTOCOMPUTE " << MyTOCOMPUTESequence.Length ()
-                     << " != COMPUTED " << MyCOMPUTEDSequence.Length ()
-                     << "\n" << flush;
-#endif
                 Index = 0;
         }
 
 	Visual3d_TypeOfAnswer Answer = AcceptDisplay (AStructure);
 
-#ifdef TRACE_DISPLAY
-	Standard_Integer StructId = AStructure->Identification ();
-        cout << "Visual3d_View" << MyCView.ViewId << "::Display ("
-             << StructId << ");\n";
-        cout << flush;
-#endif
-
         if (Answer == Visual3d_TOA_NO) {
-#ifdef TRACE_DISPLAY
-                cout << "Answer : Visual3d_TOA_NO\n";
-                cout << flush;
-#endif
                 return;
         }
 
@@ -2043,10 +2022,6 @@ Standard_Integer Index = IsComputed (AStructure);
         }
 
         if (Answer == Visual3d_TOA_YES ) {
-#ifdef TRACE_DISPLAY
-                cout << "Answer : Visual3d_TOA_YES\n";
-                cout << flush;
-#endif
                 if (IsDisplayed (AStructure)) return;
                 MyGraphicDriver->DisplayStructure (
                         MyCView,
@@ -2058,32 +2033,8 @@ Standard_Integer Index = IsComputed (AStructure);
         }
 
         if (Answer == Visual3d_TOA_COMPUTE) {
-#ifdef TRACE_DISPLAY
-            cout << "Answer : Visual3d_TOA_COMPUTE\n";
-            cout << "Index : " << Index << "\n" << flush;
-#endif
             if (Index != 0) {
                 // Already computed, is COMPUTED still valid?
-#ifdef TRACE_DISPLAY
-                if (MyCOMPUTEDSequence.Value (Index)->HLRValidation ()) {
-                  cout << "Structure "
-                     << MyTOCOMPUTESequence.Value (Index)->Identification ()
-                     << "already calculated, in the view "
-                     << Identification () << ", par la structure "
-                     << MyCOMPUTEDSequence.Value (Index)->Identification ()
-                     << "\n was not recalculated as HLR is valid\n";
-                  cout << flush;
-                }
-                else {
-                  cout << "Structure "
-                     << MyTOCOMPUTESequence.Value (Index)->Identification ()
-                     << " already calculated, in the view "
-                     << Identification () << ", by the structure "
-                     << MyCOMPUTEDSequence.Value (Index)->Identification ()
-                     << "\n should be recalculated as HLR is invalid\n";
-                  cout << flush;
-                }
-#endif
 Standard_Integer OldStructId =
         MyCOMPUTEDSequence.Value (Index)->Identification ();
 
@@ -2175,36 +2126,15 @@ Standard_Integer ii, jj;
 #endif
             TheStructure->SetHLRValidation (Standard_True);
 
-#ifdef TRACE_LENGTH
-        if (MyTOCOMPUTESequence.Length () != MyCOMPUTEDSequence.Length ())
-                cout << "\tTOCOMPUTE " << MyTOCOMPUTESequence.Length ()
-                     << " != COMPUTED " << MyCOMPUTEDSequence.Length ()
-                     << "\n" << flush;
-#endif
-
             // TOCOMPUTE and COMPUTED associated to sequences are added
             MyTOCOMPUTESequence.Append (AStructure);
             MyCOMPUTEDSequence.Append (TheStructure);
-
-#ifdef TRACE_LENGTH
-        if (MyTOCOMPUTESequence.Length () != MyCOMPUTEDSequence.Length ())
-                cout << "\tTOCOMPUTE " << MyTOCOMPUTESequence.Length ()
-                     << " != COMPUTED " << MyCOMPUTEDSequence.Length ()
-                     << "\n" << flush;
-#endif
 
             // The previous are removed if necessary
             if (Index != 0) {
                 MyTOCOMPUTESequence.Remove (Index);
                 MyCOMPUTEDSequence.Remove (Index);
             }
-
-#ifdef TRACE_LENGTH
-        if (MyTOCOMPUTESequence.Length () != MyCOMPUTEDSequence.Length ())
-                cout << "\tTOCOMPUTE " << MyTOCOMPUTESequence.Length ()
-                     << " != COMPUTED " << MyCOMPUTEDSequence.Length ()
-                     << "\n" << flush;
-#endif
 
 // Return type of visualisation of the view
 Visual3d_TypeOfVisualization ViewType = MyContext.Visualization ();
@@ -2230,18 +2160,6 @@ Standard_Boolean ComputeShading = ((ViewType == Visual3d_TOV_SHADING) &&
                 TheStructure->SetHighlightColor (AStructure->HighlightColor ());
                 TheStructure->GraphicHighlight (Aspect_TOHM_COLOR);
             }
-
-#ifdef TRACE_DISPLAY
-            cout << "Structure " << StructId
-                 << " in the view " << Identification ()
-                 << " is calculated by the structure "
-                 << TheStructure->Identification ();
-            if (Answer == Visual3d_TOA_YES)
-                cout << " and displayed\n";
-            else
-                cout << " but not displayed\n";
-            cout << flush;
-#endif
 
             // It is displayed only if the calculated structure
             // has a proper type corresponding to the one of the view.
@@ -2532,6 +2450,11 @@ void Visual3d_View::MinMaxValues (const Graphic3d_MapOfStructure& ASet, Standard
   for ( Iterator.Initialize (ASet);
         Iterator.More ();
         Iterator.Next ()) {
+
+          if (!Iterator.Key()->IsVisible())
+          {
+            continue;
+          }
 
       if ( (Iterator.Key ())->IsInfinite ()){
         //XMin, YMin .... ZMax are initialized by means of infinite line data

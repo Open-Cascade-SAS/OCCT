@@ -166,7 +166,7 @@ void CSelectionDialog::OnGetShape()
   UpdateProjector();
   myDisplayableShape->SetNbIsos(m_NbIsos);
 
-  myInteractiveContext->EraseAll(Standard_False);
+  myInteractiveContext->EraseAll();
   myInteractiveContext->Display(myTrihedron);
 
   Standard_Boolean OneOrMoreFound = Standard_False;

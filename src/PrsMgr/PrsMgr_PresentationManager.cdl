@@ -65,6 +65,11 @@ is
 	-- aPresentableObject in this framework with the
 	-- display mode aMode.
 
+    SetVisibility (me: mutable; thePresentableObject: PresentableObject from PrsMgr;
+                   theMode: Integer from Standard;
+                   theValue: Boolean from Standard);
+    ---Purpose: Sets the visibility of presentable object.
+
     Highlight(me: mutable; aPresentableObject: mutable PresentableObject from PrsMgr;
                   aMode: Integer from Standard = 0)
 	---Purpose: Highlights the presentation of the presentable object

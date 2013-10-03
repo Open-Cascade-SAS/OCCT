@@ -317,13 +317,13 @@ Erase(const Handle(AIS_InteractiveObject)& anInteractive)
       AddOrRemoveSelected(anInteractive);
     if(myMainPM->IsHighlighted(anInteractive,STAT->HilightMode()))
       myMainPM->Unhighlight(anInteractive,STAT->HilightMode());
-    myMainPM->Erase(anInteractive,STAT->DisplayMode());
+    myMainPM->SetVisibility (anInteractive, STAT->DisplayMode(), Standard_False);
     STAT->SetDisplayMode(-1);
     status = Standard_True;
   }
   if(STAT->IsTemporary()){
     if(myMainPM->IsDisplayed(anInteractive,STAT->HilightMode()))
-      myMainPM->Erase(anInteractive,STAT->HilightMode());
+      myMainPM->SetVisibility (anInteractive, STAT->HilightMode(), Standard_False);
   }
   //selection step
   
@@ -590,13 +590,7 @@ void AIS_LocalContext::ActivateStandardMode(const TopAbs_ShapeEnum aType)
   AIS_DataMapIteratorOfDataMapOfSelStat ItM(myActiveObjects);
 
   for(;ItM.More();ItM.Next()){
-#ifdef BUC60722
-    AIS_DisplayStatus DS = 
-	myCTX->DisplayStatus(Handle(AIS_InteractiveObject)::DownCast(ItM.Key()));
-    if( ItM.Value()->Decomposed() && (DS != AIS_DS_FullErased)  )
-#else
     if(ItM.Value()->Decomposed())
-#endif
       myCTX->SelectionManager()->Activate(ItM.Key(),
 					  IMode,
 					  myMainVS);
@@ -844,8 +838,8 @@ void AIS_LocalContext::Unhilight(const Handle(AIS_InteractiveObject)& anObject)
   myMainPM->Unhighlight(anObject,Att->HilightMode());
   if(Att->IsTemporary() && Att->DisplayMode()==-1)
     if(!IsSomeWhereElse)
-      myMainPM->Erase(anObject,Att->HilightMode());
-  
+      myMainPM->SetVisibility (anObject, Att->HilightMode(), Standard_False);
+
   Att->SubIntensityOff();
   Att->SetHilightColor(Quantity_NOC_WHITE);
 }
@@ -1148,31 +1142,30 @@ HasFilters(const TopAbs_ShapeEnum aType) const
 
 void AIS_LocalContext::ClearDetected()
 {
-  for(Standard_Integer I=1;I<=myMapOfOwner.Extent();I++){
-    
-    if(!myMapOfOwner(I).IsNull()){
+  for(Standard_Integer I=1;I<=myMapOfOwner.Extent();I++)
+  {
+    if(!myMapOfOwner(I).IsNull())
+    {
       if(myMapOfOwner(I)->IsHilighted(myMainPM))
-	myMapOfOwner(I)->Unhilight(myMainPM);
-      else if (myMapOfOwner(I)->IsHilighted(myCTX->CollectorPrsMgr()))
-	myMapOfOwner(I)->Unhilight(myCTX->CollectorPrsMgr());
-      
-      else{
-	const Handle(SelectMgr_SelectableObject)& SO = 
-	  myMapOfOwner.FindKey(I)->Selectable();
-	if(myActiveObjects.IsBound(SO)){
-	  const Handle(AIS_LocalStatus)& Att = myActiveObjects(SO);
-	  
-	  if(Att->IsTemporary() &&
-	     Att->DisplayMode()==-1 && 
-	     Att->SelectionModes().IsEmpty()){
-	    myMapOfOwner(I)->Clear(myMainPM);
-	    //myMapOfOwner(I)->Clear();//rob-jmi...
-	  }
-	}
+        myMapOfOwner(I)->Unhilight(myMainPM);
+      else
+      {
+        const Handle(SelectMgr_SelectableObject)& SO = 
+          myMapOfOwner.FindKey(I)->Selectable();
+        if(myActiveObjects.IsBound(SO))
+        {
+          const Handle(AIS_LocalStatus)& Att = myActiveObjects(SO);
+
+          if(Att->IsTemporary() &&
+             Att->DisplayMode()==-1 && 
+             Att->SelectionModes().IsEmpty())
+          {
+            myMapOfOwner(I)->Clear(myMainPM);
+          }
+        }
       }
     }
   }
-
 }
 
 void AIS_LocalContext::UpdateConversion()

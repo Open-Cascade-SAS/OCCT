@@ -54,8 +54,17 @@ is
     Display(me: mutable) 
     is redefined static private;
     
-    Erase(me) is redefined static private;
+    Display (me: mutable;
+             theIsHighlight: Boolean from Standard)
+    is static private;
+    ---Level: Private;
+    ---Purpose: displays myStructure and sets myDisplayReason to theIsHighlight value if
+    -- myStructure was not displayed or was invisible
     
+    Erase(me) is redefined static private;
+
+    SetVisible (me: mutable; theValue: Boolean from Standard) is redefined static private;
+
     Highlight(me: mutable) is redefined static private;
     
     Unhighlight (me) is redefined static private;
@@ -125,6 +134,9 @@ is
 
 
 	    ---Category:  Computed Structures
+
+    Compute(me : mutable; theStructure: Structure from Graphic3d)
+    is static private;
 
     Compute(me : mutable; aProjector: DataStructureManager from Graphic3d)
     returns Structure from Graphic3d
