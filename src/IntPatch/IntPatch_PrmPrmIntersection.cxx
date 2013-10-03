@@ -61,6 +61,11 @@ static
 			const Handle(Adaptor3d_HSurface)& Surf2,
 			IntPatch_SequenceOfLine& aSLin);
 
+static
+  IntSurf_PntOn2S MakeNewPoint(const IntSurf_PntOn2S& replacePnt,
+                               const IntSurf_PntOn2S& oldPnt,
+                               const Standard_Real* Periods);
+
 static Standard_Boolean IsPointOnLine(const IntSurf_PntOn2S        &thePOn2S,
                                       const Handle(IntPatch_WLine) &theWLine,
                                       const Standard_Real           Deflection);
@@ -1309,6 +1314,12 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
   VminLig2 = Surf2->FirstVParameter();
   UmaxLig2 = Surf2->LastUParameter();
   VmaxLig2 = Surf2->LastVParameter();
+
+  Standard_Real Periods [4];
+  Periods[0] = (Surf1->IsUPeriodic())? Surf1->UPeriod() : 0.;
+  Periods[1] = (Surf1->IsVPeriodic())? Surf1->VPeriod() : 0.;
+  Periods[2] = (Surf2->IsUPeriodic())? Surf2->UPeriod() : 0.;
+  Periods[3] = (Surf2->IsVPeriodic())? Surf2->VPeriod() : 0.;
   
   IntSurf_ListIteratorOfListOfPntOn2S IterLOP1(LOfPnts);
 
@@ -1537,7 +1548,10 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
                     Standard_Integer iP;
                     for( iP = 1; iP <= cNbP; iP++) {
                       if( pI == iP )
-                        newL2s->Add(replacePnt);
+                      {
+                        IntSurf_PntOn2S newPnt = MakeNewPoint(replacePnt, wline->Point(iP), Periods);
+                        newL2s->Add(newPnt);
+                      }
                       else if(removeNext && iP == (pI + 1))
                         continue;
                       else if(removePrev && iP == (pI - 1))
@@ -1830,6 +1844,39 @@ void AdjustOnPeriodic(const Handle(Adaptor3d_HSurface)& Surf1,
     }//for (j=0; j<1; ++j) {
   }//for (i=1; i<=aNbLines; ++i)
 }
+
+//==================================================================================
+// function : MakeNewPoint
+// purpose  : 
+//==================================================================================
+IntSurf_PntOn2S MakeNewPoint(const IntSurf_PntOn2S& replacePnt,
+                             const IntSurf_PntOn2S& oldPnt,
+                             const Standard_Real* Periods)
+{
+  IntSurf_PntOn2S NewPoint;
+  NewPoint.SetValue(replacePnt.Value());
+  
+  Standard_Real OldParams[4], NewParams[4];
+  oldPnt.Parameters(OldParams[0], OldParams[1], OldParams[2], OldParams[3]);
+  replacePnt.Parameters(NewParams[0], NewParams[1], NewParams[2], NewParams[3]);
+
+  Standard_Integer i;
+  for (i = 0; i < 4; i++)
+    if (Periods[i] != 0.)
+    {
+      if (Abs(NewParams[i] - OldParams[i]) >= 0.5*Periods[i])
+      {
+        if (NewParams[i] < OldParams[i])
+          NewParams[i] += Periods[i];
+        else
+          NewParams[i] -= Periods[i];
+      }
+    }
+
+  NewPoint.SetValue(NewParams[0], NewParams[1], NewParams[2], NewParams[3]);
+  return NewPoint;
+}
+
 //==================================================================================
 // function : Perform
 // purpose  : base SS Int. function
@@ -1860,6 +1907,13 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
   D1->VParameters(aVpars1);
   D2->UParameters(anUpars2); 
   D2->VParameters(aVpars2);
+
+  Standard_Real Periods [4];
+  Periods[0] = (Surf1->IsUPeriodic())? Surf1->UPeriod() : 0.;
+  Periods[1] = (Surf1->IsVPeriodic())? Surf1->VPeriod() : 0.;
+  Periods[2] = (Surf2->IsUPeriodic())? Surf2->UPeriod() : 0.;
+  Periods[3] = (Surf2->IsVPeriodic())? Surf2->VPeriod() : 0.;
+  
   //---------------------------------------------
   Limit = 2500;
   if((NbU1*NbV1<=Limit && NbV2*NbU2<=Limit)) {  
@@ -2243,7 +2297,10 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
 			    Standard_Integer iP;
 			    for( iP = 1; iP <= cNbP; iP++) {
 			      if( pI == iP )
-				newL2s->Add(replacePnt);
+                              {
+                                IntSurf_PntOn2S newPnt = MakeNewPoint(replacePnt, wline->Point(iP), Periods);
+                                newL2s->Add(newPnt);
+                              }
 			      else if(removeNext && iP == (pI + 1))
 				continue;
 			      else if(removePrev && iP == (pI - 1))

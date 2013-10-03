@@ -26,8 +26,8 @@
 
 // _______________________________________________
 //
-// Cadrage d un point (u, v) dans le domaine naturel d une surface ET mise 
-// a jour du couple (u, v) pour le calcul du point suivant.
+// Location of point (u, v) in the natural domain of a surface AND update  
+// of couple (u, v) for the calculation of the next point.
 //
 Standard_Boolean IntWalk_IWalking::Cadrage 
   (math_Vector& BornInf,
@@ -37,15 +37,14 @@ Standard_Boolean IntWalk_IWalking::Cadrage
 //   Standard_Real& StepV,
    const Standard_Integer StepSign) const 
 
-// on a toujours :
+// there are always :
 // BorInf(1) <= UVap(1) <= BornSup(1) et BorInf(2) <= UVap(2) <= BornSup(2)
-// 1) on verifier si le point approche ne depasse pas le domaine naturel de 
-//  la surface
-// 2) si c est le cas on cadre le point approche sur frontiere en prenant la
-//  meilleure direction. On MODIFIE alors le pas d avancement et une des 
-//  bornes bloquer un des parametres lors du prochain appel a FunctionSetRoot;
-// 3) on recalcule couple (u, v) approche pour le le calcul du point suivant.
-// 4) return Standard_True si cadrage, Standard_False si pas de cadrage.
+// 1) check if the process point is out of the natural domain of the surface.
+// 2) if yes the approximated point is located on border taking the best direction
+// the step and a limit blocating one of the parameters during the recent call of 
+// FunctionSetRoot are modified;
+// 3) couple (u, v) is recomputed by approximation for the calculation of the next point.
+// 4) return Standard_True if location, Standard_False if no location.
 {
   Standard_Real Duvx = previousd2d.X();
   Standard_Real Duvy = previousd2d.Y();
@@ -141,7 +140,7 @@ Standard_Boolean IntWalk_IWalking::Cadrage
       Standard_Real aStep = Abs((BornInf(1) - UVap(1)) / Duvx);  // iso U =BornInf(1)
       if(aStep<Step) Step=aStep;
     }
-    BornSup(1) = BornInf(1);                     // on bloque le parametre
+    BornSup(1) = BornInf(1);                     // limit the parameter
     UVap(1) = BornInf(1);
     UVap(2) += Step*Duvy*StepSign;;
     return Standard_True;
@@ -151,7 +150,7 @@ Standard_Boolean IntWalk_IWalking::Cadrage
       Standard_Real aStep = Abs((BornSup(1) - UVap(1)) / Duvx);  // iso U =BornSup(1)
       if(aStep<Step) Step=aStep;
     }
-    BornInf(1) = BornSup(1);                    // on bloque le parametre
+    BornInf(1) = BornSup(1);                    // limit the parameter
     UVap(1) = BornSup(1);
     UVap(2) += Step*Duvy*StepSign;
     return Standard_True;
@@ -187,20 +186,18 @@ Standard_Boolean IntWalk_IWalking::TestArretPassage
    math_Vector& UV,
    Standard_Integer& Irang)
 
-// Umult et Vmult : tableau des points d arret (ou passant) sur frontiere, ici
-//          on ne s interesse qu aux points passant.
-// UV     : le point courant.
-// Irang  : en sortie : donne l index du point d arret dans uvstart1 ou 0.
-//          on considere qu on ne risque de passer que sur un seul point
-//          passant.
+// Umult et Vmult : table of stop (or crossing) points on border, 
+//         here only the crossing points are taken into account.
+// UV     : the current point.
+// Irang  : at exit : give index of the stop point in uvstart1 or 0.
+//          consider that there is no risk of crossing only if there is one crossing point.
 
 
-// test d arret pour une ligne d intersection OUVERTE
-// 1) test de passage sur l ensemble des points interieur
-// 2) test d arret sur l ensemble des points depart
-// si on detecte un arret on renvoie l index du point d arret (Irang) dans 
-// l iterateur des points de depart et les parametres associes dans 
-// l espace UV.
+// test of stop for an OPEN intersection line
+// 1) crossing test on all interior points
+// 2) stop test on all start points
+// if a stop is detected, the index of the stop point (Irang) is returned  
+// in the iterator of start points and the associated parameters in UV space.
 {
   Standard_Real Up, Vp, Du, Dv, Dup, Dvp, Utest,Vtest; 
   Standard_Integer j, N, ind;
@@ -211,8 +208,8 @@ Standard_Boolean IntWalk_IWalking::TestArretPassage
   
   Standard_Boolean Arrive = Standard_False;
   
-  // test de passage sur point pouvant demarrer une boucle;les marquer traites
-  // si passe sur la ligne ouverte
+  // crossing test  on point that can start a loop; mark 
+  // as processed if passes through an open line 
   
   if (!reversed) {
     previousPoint.ParametersOnS2(Up,Vp);
@@ -259,7 +256,7 @@ Standard_Boolean IntWalk_IWalking::TestArretPassage
     }
   }
 
-  // test d arret sur point donne en entree et non encore traite
+  // stop test on point given at input and not yet processed
 
 //  Modified by Sergey KHROMOV - Tue Nov 20 10:55:01 2001 Begin
 // Check of all path points in the following order:
@@ -361,18 +358,17 @@ Standard_Boolean IntWalk_IWalking::TestArretPassage
    const Standard_Integer Index, 
    Standard_Integer& Irang)
 {
-// Umult, Vmult : tableau des points d arret (ou passant) sur frontiere, ici
-//          on ne s interesse qu aux points passant.
-// UV     : le point courant.
-// Index  : l index du point de demarrage dans uvstart2 de la ligne en cours
-//          (c est un point interieur).
-// Irang  : en sortie : donne l index du point passant dans uvstart1 ou 0.
-//          on considere qu on ne risque de passer que sur un seul point
-//          passant.
+// Umult, Vmult : table of stop (or crossing) points on border, here
+//          only crossing points are taken into account.
+// UV     : the current point.
+// Index  : index of the start point in uvstart2 of the current line
+//          (this is an interior point).
+// Irang  : at output : gives the index of the point passing in uvstart1 or 0.
+//          consider that there is risk to cross only one crossing point.
 
-// test d arret pour une ligne d intersection FERMEE.
-// 1) test de passage sur l ensemble des points interieur
-// 2) test de passage sur les points passant.
+// test of stop for a CLOSED intersection line.
+// 1) test of crossing on all interior points.
+// 2) test of crossing on all crossing points.
 
   Standard_Real Up, Vp, Scal;
   Standard_Boolean Arrive = Standard_False;
@@ -382,7 +378,7 @@ Standard_Boolean IntWalk_IWalking::TestArretPassage
   Standard_Real tolv = tolerance(2);
 
   
-  // tests d arret et de passage sur points interieurs.
+  // tests of stop and of crossing on all interior points.
 
   if (!reversed) {
     previousPoint.ParametersOnS2(Up,Vp);
@@ -395,8 +391,8 @@ Standard_Boolean IntWalk_IWalking::TestArretPassage
   Standard_Real UV2=UV(2);
 
 
-  //-- On met tout le monde ds une boite 0 1  x 0 1 
-  //-- en tourte rigueur il faudrait faire les test en 3d
+  //-- Put everything in one box 0 1  x 0 1 
+  //-- actually it is necessary to carry out tests in 3D
 
   Standard_Real deltau=UM-Um;
   Standard_Real deltav=VM-Vm;
@@ -426,7 +422,7 @@ Standard_Boolean IntWalk_IWalking::TestArretPassage
 	 && (UV2mVtest<tolv2 && UV2mVtest>-tolv2)) { 
 	if(Index!=k) { 
 	  //-- cout<<"* etat2 : ("<<k<<")"<<endl;
-	  wd2[k].etat=-wd2[k].etat; //-- marque le point comme point de passage 
+	  wd2[k].etat=-wd2[k].etat; //-- mark the point as a crossing point 
 	}
 	else {  //-- Index == k
 	  //-- cout<<"* Arrive"<<endl;
@@ -453,18 +449,18 @@ Standard_Boolean IntWalk_IWalking::TestArretPassage
 	  }
 	  else {
 	    //-- cout<<"*** etat2 : ("<<k<<")"<<endl;
-	    wd2[k].etat = -wd2[k].etat; // marque le point point de passage 
+	    wd2[k].etat = -wd2[k].etat; // mark the point as a crossing point 
 	  }
 	}
 	else if(k!=Index) {
 	  if(dPreviousStart < dPreviousCurrent*0.25) { 
-	    wd2[k].etat = -wd2[k].etat; // marque le point point de passage 
+	    wd2[k].etat = -wd2[k].etat; // mark the point as a crossing point 
 	    //-- cout<<"**** etat2 : ("<<k<<")"<<endl;
 	  }
 	  else { 
 	    if(dCurrentStart < dPreviousCurrent*0.25) {
 	      //-- cout<<"***** etat2 : ("<<k<<")"<<endl;
-	      wd2[k].etat = -wd2[k].etat; // marque le point point de passage 
+	      wd2[k].etat = -wd2[k].etat; // mark the point as a crossing point 
 	    }
 	    else { 
 	      Standard_Real UMidUtest = 0.5*(UV1+Up)-Utest;
@@ -473,7 +469,7 @@ Standard_Boolean IntWalk_IWalking::TestArretPassage
 
 	      if(dMiddleStart < dPreviousCurrent*0.5) { 
 		//-- cout<<"*********** etat2 : ("<<k<<")"<<endl;
-		wd2[k].etat = -wd2[k].etat; // marque le point point de passage 
+		wd2[k].etat = -wd2[k].etat; // mark the point as a crossing point 
 	      }
 	    }
 	  }
@@ -482,11 +478,11 @@ Standard_Boolean IntWalk_IWalking::TestArretPassage
     }
   }
 
-  // test de passage sur points passant.
+  // crossing test on crossing points.
   
   Irang =0;
   for (i = 1; i < (int)wd1.size(); i++) {
-    if (wd1[i].etat > 0 && wd1[i].etat < 11) { //test des points passant
+    if (wd1[i].etat > 0 && wd1[i].etat < 11) { //test of crossing points 
       Utest = wd1[i].ustart;
       Vtest = wd1[i].vstart;
       Utest/=deltau;
@@ -522,12 +518,11 @@ Standard_Boolean IntWalk_IWalking::TestArretAjout
    Standard_Integer& Irang,
    IntSurf_PntOn2S& Psol) 
 
-// test d arret sur les points rajoutes 
-// ces points sont des points sur frontiere naturelle qui n ont pas ete 
-// donnes en entree
-// on renvoit : Psol,  le point rajoute.
-//              Irang, l index dans l iterateur des points rajoutes.
-//              UV,     parametre du point rajoute.
+// test of stop on added points 
+// these are the points on the natural biorder that were not given at input
+// return : Psol,  the added point.
+//          Irang, index in the iterator of added points.
+//          UV,    parameter of the added point.
 //
 {
   Standard_Boolean Arrive = Standard_False;
@@ -545,10 +540,10 @@ Standard_Boolean IntWalk_IWalking::TestArretAjout
   for (Standard_Integer i = 1; i <= nbAjout; i++) {
     Irang = seqAjout.Value(i);
 
-// on rajoute le test Abs(Irang) <= lines.Length() pour le cas ou
-// on ouvre une ligne fermee suite a l ajout 1 point sur cette meme
-// ligne. De toute facon on a un gros pb , car on va avoir 2 points
-// rajoutes sur cette ligne...
+// add test Abs(Irang) <= lines.Length() for the case when 
+// a closed line is opened by adding a  1 point on this same
+// line. Anyway there is a huge problem as 2 points will be 
+// added on this line...
 
     if (Abs(Irang) <= lines.Length()) {
 
@@ -590,14 +585,13 @@ void IntWalk_IWalking::TestArretCadre
    math_Vector& UV,
    Standard_Integer& Irang)
 
-// test d arret alors qu on est sur frontiere.
-// on a essaye tous les tests d  arret et on est arrive.
-// test d  arret sur les points donne au depart deja marques et sur 
-// l  ensemble de la ligne courante. Cette ligne peut etre racourcie si
-// on trouve in point d arret.
-// Abs(Irang) = index dans l  iterateur des points de depart ou 0
-//  si Irang <0 , il faut ajouter ce point a la ligne ( pas de Line->Cut)
-// UV = parametre du point de depart
+// test of stop when located on border.
+// tried all tests of stop and arrived.
+// test of stop on all given departure points already marked and on the entire current line.
+// This line can be shortened if the stop point is found.
+// Abs(Irang) = index in the iterator of departure points or 0
+//  if Irang <0 , it is necessary to add this point on the line (no Line->Cut)
+// UV = parameter of the departure point
 {
   Standard_Real Scal, Up, Vp, Uc, Vc;
   Standard_Integer N;
@@ -607,7 +601,7 @@ void IntWalk_IWalking::TestArretCadre
   Irang =0;
   for (Standard_Integer i = 1; i < (int)wd1.size(); i++) {
     if (wd1[i].etat < 0) {
-      N=0; // rang dans UVMult.
+      N=0; // range in UVMult.
       if (nbMultiplicities[i] > 0) {
 	for (Standard_Integer k = 1; k < i; k++) 
 	  N+=nbMultiplicities[k];
@@ -629,7 +623,7 @@ void IntWalk_IWalking::TestArretCadre
 
 	Scal = (Up-wd1[i].ustart) * (Uc-wd1[i].ustart) +
 	       (Vp-wd1[i].vstart) * (Vc-wd1[i].vstart);
-        // si on a trouve un point d arret : on arrete la ligne sur ce point.
+        // if a stop point is found: stop the line on this point.
 	if (Scal < 0) { 
           Line->Cut(j);  nbp= Line->NbPoints();
           Irang = i;
@@ -681,7 +675,7 @@ void IntWalk_IWalking::TestArretCadre
 	      gp_Vec Dir3d = sp.Direction3d();
 	      gp_Vec Dir3d1 = gp_Vec(Line->Value(j-2).Value(),Line->Value(j-1).Value());
 	      Standard_Real dot = Dir3d.Dot(Dir3d1);
-	      if(dot<0.0) { // Normalement on ne doit pas passer souvent ds cette Fonction !!! 
+	      if(dot<0.0) { // Normally this Function should not be used often !!! 
 		Dir3d.Reverse();
 		//-- cout<<" IntWalk_IWalking_2.gxx REVERSE "<<endl;
 	      }
@@ -700,9 +694,8 @@ void IntWalk_IWalking::TestArretCadre
 	Vp = Vc;
       }
 
-      // et maintenant on compare le dernier point de la ligne et le dernier
-      // point calcule.
-      // il n y aura pas besoin de "Cuter"
+      // now the last point of the line and the last calculated point are compated.
+      // there will be no need to "Cut"
 
       Scal = (Up-wd1[i].ustart) * (UV(1)-wd1[i].ustart) +
 	// 	(Vp-wd1[i].vstart) * (UV(2)-wd1[i].vstart);

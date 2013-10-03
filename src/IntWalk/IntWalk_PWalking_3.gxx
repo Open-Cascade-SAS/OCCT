@@ -30,18 +30,18 @@ static const Standard_Real d = 7.0;
 
 IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection()
 
-// tester si fleche respectee en calculant un majorant de fleche 
-//     soit le point precedent et sa tangente ,le point nouveau calcule et sa 
-//     tangente ;on peut trouver une cubique passant par ces 2 points et ayant 
-//     pour derivee les tangentes de l intersection
-//     calculer le point au parametre 0.5 sur la cubique=p1 
-//     calculer le point milieu des 2 points d intersection=p2
-//   si fleche/2<=||p1p2||<= fleche on considere que l on respecte la fleche
-//   sinon ajuster le pas en fonction du rapport ||p1p2||/fleche et du pas
-//   precedent 
-// tester si dans les 2 plans tangents des surfaces on a pas un angle2d trop
-// grand : si oui diviser le pas
-// tester s il n y a pas changement de rive
+// test if vector is observed by calculating an increase of vector 
+//     or the previous point and its tangent, the new calculated point and its  
+//     tangent; it is possible to find a cube passing by the 2 points and having as a 
+//     derivative the tangents of the intersection
+//     calculate the point with parameter 0.5 on cube=p1 
+//     calculate the medium point of 2 points of intersection=p2
+//   if arrow/2<=||p1p2||<= arrow consider that the vector is observed
+//   otherwise adjust the step depending on the ratio ||p1p2||/vector
+//   and the previous step 
+// test if in  2 tangent planes of surfaces there is no too great angle2d 
+// grand : if yes divide the step
+// test if there is no change of side
 //  
 {
   if(line->NbPoints() ==1 ) { 
@@ -54,7 +54,7 @@ IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection()
 
   const IntSurf_PntOn2S& CurrentPoint = myIntersectionOn2S.Point(); 
   //==================================================================================
-  //=========               A r r e t   s u r   p o i n t                 ============
+  //=========               S t o p   o n   p o i n t                 ============
   //================================================================================== 
   if (myIntersectionOn2S.IsTangent())  { 
     return IntWalk_ArretSurPoint;  
@@ -63,14 +63,14 @@ IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection()
   const gp_Dir& TgCourante = myIntersectionOn2S.Direction();
 
   //==================================================================================
-  //=========   R i s q u e   d e   p o i n t   d   i n f l e x i o n     ============
+  //=========   R i s k   o f    i n f l e x i o n   p o i n t  ============
   //==================================================================================  
   if (TgCourante.Dot(previousd)<0) {
     //------------------------------------------------------------
-    //-- Risque de point d inflexion : On divise le pas par 2
-    //-- On initialise STATIC_PRECEDENT_INFLEXION pour qu a 
-    //-- l appel suivant, on retourne Pas_OK si il n y a 
-    //-- plus de risque de point d inflexion
+    //-- Risk of inflexion point : Divide the step by 2
+    //-- Initialize STATIC_PRECEDENT_INFLEXION so that 
+    //-- at the next call to return Pas_OK if there is no 
+    //-- more risk of the point of inflexion
     //------------------------------------------------------------
 
     pasuv[0]*=0.5;
@@ -92,7 +92,7 @@ IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection()
   }
   
   //==================================================================================
-  //=========  D e t e c t i o n   d e   P o in t s   c o n f o n d u s    ===========
+  //=========  D e t e c t    c o n f u s e d    P o in t s       ===========
   //==================================================================================
 
   Standard_Real Dist = previousPoint.Value().
@@ -122,7 +122,7 @@ IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection()
   AbsDv1 = Abs(Dv1);
   AbsDv2 = Abs(Dv2);
   //=================================================================================
-  //====   P a s   d e   p  r o g r e s s i o n (entre previous et Current)   =======
+  //====   S t e p   o f   p  r o g r e s s i o n (between previous and Current)   =======
   //=================================================================================
   if (   AbsDu1 < ResoU1 && AbsDv1 < ResoV1 
       && AbsDu2 < ResoU2 && AbsDv2 < ResoV2) {
@@ -176,10 +176,10 @@ IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection()
   CosRef2 = CosRef2D/tolCoeff2;
   //
   //==================================================================================
-  //== Les points ne sont pas confondus :                                           ==
-  //== D e t e c t i o n   d e   A  r r e t   s u r   P o i n t   p r e c e d e n t ==
-  //==                           P a s   T r o p   G r a n d (angle dans Esp UV)    ==
-  //==                           C h a n g e m e n t   d e   r i v e                ==
+  //== The points are not confused :                                           ==
+  //== D e t e c t    t h e   S t o p   a  t   p r e v i o u s  p o i n t ==
+  //==                           N o t    T o o    G r e a t (angle in space UV)    ==
+  //==                           C h a n g e    o f    s i d e                ==
   //==================================================================================
   if (Status != IntWalk_PointConfondu) { 
     if(Cosi1*Cosi1 < CosRef1*Duv1 || Cosi2*Cosi2 < CosRef2*Duv2) {
@@ -201,8 +201,8 @@ IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection()
     AngRef1 = AngRef2D*tolCoeff1;
     AngRef2 = AngRef2D*tolCoeff2;
     //-------------------------------------------------------
-    //-- Test : Angle trop grand dans l espace UV       -----
-    //--        Changement de rive                      -----
+    //-- Test : Angle too great in space UV       -----
+    //--        Change of  side                      -----
     //-------------------------------------------------------
     if(Cosi1*Cosi1 < CosRef1*Duv1 || Cosi2*Cosi2 < CosRef2*Duv2 || Ang1 > AngRef1 || Ang2 > AngRef2) {
       pasuv[0]*=0.5;  pasuv[1]*=0.5;  pasuv[2]*=0.5;  pasuv[3]*=0.5;
@@ -214,17 +214,17 @@ IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection()
   }
   //<-OCC431(apo)
   //==================================================================================
-  //== D e t e c t i o n   d e   :  Pas Trop Petit 
-  //==                              Pas Trop Grand 
+  //== D e t e c t i o n   o f    :  Step Too Small 
+  //==                               STEP TOO Great 
   //==================================================================================
 
   //---------------------------------------
-  //-- Estimation de la fleche           --
+  //-- Estimate of the vector           --
   //---------------------------------------
   FlecheCourante =
     Sqrt(Abs((previousd.XYZ()-TgCourante.XYZ()).SquareModulus()*Dist))/8.;
 
-  if ( FlecheCourante<= fleche*0.5) {     //-- Pas Courant trop petit 
+  if ( FlecheCourante<= fleche*0.5) {     //-- Current step too small
     if(FlecheCourante>1e-16) { 
       Ratio = 0.5*(fleche/FlecheCourante);
     }
@@ -236,9 +236,9 @@ IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection()
     Standard_Real pasSu2 = pasuv[2];
     Standard_Real pasSv2 = pasuv[3];
     
-    //-- Dans les cas ou lorsqu on demande
-    //-- un point a U+DeltaU , ....
-    //-- on recupere un point a U + Epsilon
+    //-- In  case if 
+    //-- a point at U+DeltaU is required, ....
+    //-- return a point at U + Epsilon
     //-- Epsilon << DeltaU.
     
     if(pasuv[0]< AbsDu1) pasuv[0] = AbsDu1;
@@ -269,12 +269,12 @@ IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection()
     }
     if(Status == IntWalk_OK) { 
       STATIC_BLOCAGE_SUR_PAS_TROP_GRAND=0;
-      //-- On tente d augmenter le pas
+      //-- Try to increase the step
     }
     return Status;
   }
-  else {                                //-- FlecheCourante > fleche*0.5 
-    if (FlecheCourante > fleche) {      //-- Pas Courant Trop Grand
+  else {                                //-- CurrentVector > vector*0.5 
+    if (FlecheCourante > fleche) {      //-- Current step too Great
       Ratio = fleche/FlecheCourante; 
       pasuv[0] = Ratio*pasuv[0];
       pasuv[1] = Ratio*pasuv[1];
@@ -285,7 +285,7 @@ IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection()
 	return IntWalk_PasTropGrand; 
       //}
     }
-    else {                             //-- fleche/2  <  FlecheCourante <= fleche    
+    else {                             //-- vector/2  <  CurrentVector <= vector   
       Ratio = 0.75 * (fleche / FlecheCourante);
     }
   }

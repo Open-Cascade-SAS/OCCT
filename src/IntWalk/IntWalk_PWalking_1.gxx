@@ -28,8 +28,8 @@
 //==================================================================================
 // function : IntWalk_PWalking::IntWalk_PWalking
 // purpose  :
-// estimation des max pas : Pour eviter des changenets 
-// trop brusques lors des changements d isos 
+// estimate of max step : To avoid abrupt changes 
+// during change of isos 
 //==================================================================================
 void ComputePasInit(Standard_Real *pasuv,
 		    Standard_Real Um1,Standard_Real UM1,
@@ -54,9 +54,9 @@ void ComputePasInit(Standard_Real *pasuv,
   Standard_Real _du2=Abs(_UM2-_Um2);
   Standard_Real _dv2=Abs(_VM2-_Vm2);
  
-  //-- On limite la reduction de l estimation de la boite uv a 0.01 la boite naturelle
-  //--  du1 : Sur boite des Inter
-  //-- _du1 : Sur espace parametrique
+  //-- limit the reduction of uv box estimate to 0.01 natural box
+  //--  du1 : On box of Inter
+  //-- _du1 : On parametric space
   if(_du1<1e50 && du1<0.01*_du1) du1=0.01*_du1;
   if(_dv1<1e50 && dv1<0.01*_dv1) dv1=0.01*_dv1;
   if(_du2<1e50 && du2<0.01*_du2) du2=0.01*_du2;
@@ -90,7 +90,7 @@ IntWalk_PWalking::IntWalk_PWalking(const ThePSurface& Caro1,
 {
   Standard_Real KELARG=20.;
   //
-  pasMax=Increment*0.2; //-- le 25 juin 99 suite a des pbs de precision 
+  pasMax=Increment*0.2; //-- June 25 99 after problems with precision 
   Um1 = ThePSurfaceTool::FirstUParameter(Caro1);
   Vm1 = ThePSurfaceTool::FirstVParameter(Caro1);
   UM1 = ThePSurfaceTool::LastUParameter(Caro1);
@@ -230,7 +230,7 @@ IntWalk_PWalking::IntWalk_PWalking(const ThePSurface& Caro1,
 {
   Standard_Real KELARG=20.;
   //
-  pasMax=Increment*0.2; //-- le 25 juin 99 suite a des pbs de precision 
+  pasMax=Increment*0.2; //-- June 25 99 after problems with precision 
   //
   Um1 = ThePSurfaceTool::FirstUParameter(Caro1);
   Vm1 = ThePSurfaceTool::FirstVParameter(Caro1);
@@ -386,7 +386,7 @@ Standard_Boolean IntWalk_PWalking::PerformFirstPoint  (const TColStd_Array1OfRea
     aTmp = ParDep(i);
     Param(i) = ParDep(i);
   }
-  //-- calcul du premier point solution
+  //-- calculate the first solution point
   math_FunctionSetRoot  Rsnld(myIntersectionOn2S.Function());
   //
   myIntersectionOn2S.Perform(Param,Rsnld);
@@ -475,13 +475,13 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
     aTmp=ParDep(i);
     Param(i)=ParDep(i);
   }
-  //-- reprise des pas uv lies aux surfaces Caro1 et Caro2
-  //-- pasuv[] et pasSav[] sont modifies lors du cheminement
+  //-- reproduce steps uv connected to surfaces Caro1 and Caro2
+  //-- pasuv[] and pasSav[] are modified during the marching
   for(i = 0; i < 4; ++i) { 
     pasMaxSV[i] = pasSav[i] = pasuv[i] = pasInit[i]; 
   }
 
-  //-- calcul du premier point solution
+  //-- calculate the first solution point
   math_FunctionSetRoot  Rsnld(myIntersectionOn2S.Function());
   //
   ChoixIso = myIntersectionOn2S.Perform(Param,Rsnld);
@@ -517,9 +517,9 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
   tgfirst = tglast = Standard_False;
   choixIsoSav  =  ChoixIso;
   //------------------------------------------------------------
-  //-- On Teste si le premier point de cheminement correspond 
-  //-- a un point sur frontiere. 
-  //-- Dans ce cas, DejaReparti est initialise a True
+  //-- Test if the first point of marching corresponds 
+  //-- to a point on borders. 
+  //-- In this case, DejaReparti is initialized as True
   //-- 
   pf = previousPoint.Value();
   Standard_Boolean bTestFirstPoint = Standard_True;
@@ -599,7 +599,7 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
     ChoixIso= myIntersectionOn2S.Perform(Param, Rsnld, ChoixIso);                  
     //
     if (!myIntersectionOn2S.IsDone())   {
-      //arret de la ligne,division
+      //end of line, division
       Arrive = Standard_False;
       Param(1)=SvParam[0]; 
       Param(2)=SvParam[1]; 
@@ -608,7 +608,7 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
       RepartirOuDiviser(DejaReparti, ChoixIso, Arrive);
     }
     else  {//009 
-      //== Le calcul du point exact a partir de Param(.) est possible
+      //== Calculation of exact point from Param(.) is possible
       if (myIntersectionOn2S.IsEmpty())	{
 	Standard_Real u1,v1,u2,v2;
 	previousPoint.Parameters(u1,v1,u2,v2);
@@ -638,7 +638,7 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
       }
       else {//008
 	//============================================================
-	//== Un point a ete trouve :  T E S T   D E F L E C T I O N 
+	//== A point has been found :  T E S T   D E F L E C T I O N 
 	//============================================================
 	if(NoTestDeflection) {
 	  NoTestDeflection = Standard_False;
@@ -797,7 +797,7 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
 	  case IntWalk_OK:
 	  case IntWalk_ArretSurPoint:  {//006
 	    //=======================================================
-	    //== T e s t   A r r e t   :  Cadrage sur Param(.)     ==
+	    //== Stop Test t   :  Frame on Param(.)     ==
 	    //=======================================================
 	    //xft arrive here
 	    Arrive = TestArret(DejaReparti,Param,ChoixIso); 
@@ -807,7 +807,7 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
 	    if(Arrive==Standard_False && Status==IntWalk_ArretSurPoint) { 
 	      Arrive=Standard_True;
 #ifdef DEB
-	      cout << "Compile avec option DEB :Si Pb d intersection : ";
+	      cout << "Compile with option DEB : if problems with intersection : ";
 	      cout << "IntWalk_PWalking_1.gxx (lbr le 1erdec98)"<<endl;
 #endif
 	    }
@@ -816,10 +816,10 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
 	    }
 	    if(!Arrive)  {//005
 	      //=====================================================
-	      //== Param(.)  est dans les bornes                   ==
-	      //==  et ne finit pas une ligne fermee               ==
+	      //== Param(.) is in the limits                       ==
+	      //==  and does not end a closed  line                ==
 	      //=====================================================
-	      //== Verification sur Le Point Courant de myInters
+	      //== Check on the current point of myInters
 	      Standard_Boolean pointisvalid = Standard_False;
 	      {
 		Standard_Real u1,v1,u2,v2; 
@@ -841,7 +841,7 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
 		  previousd2 = myIntersectionOn2S.DirectionOnS2();
 		}
 		//=====================================================
-		//== Verification sur Previous Point
+		//== Check on the previous Point
 		{
 		  Standard_Real u1,v1,u2,v2; 
 		  previousPoint.Parameters(u1,v1,u2,v2); 
@@ -894,7 +894,7 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
 	      }
 	      else {//$$$
 		//====================================================
-		//== Param n etait pas dans les bornes (a ete recadre)
+		//== Param was not in the limits (was reframed)
 		//====================================================
 		Standard_Boolean bPrevNotTangent = !previoustg || !myIntersectionOn2S.IsTangent();
 		
@@ -902,7 +902,7 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
 		ChoixIso = myIntersectionOn2S.Perform(Param,Rsnld,ChoixIso);    
 		//
 		if(!myIntersectionOn2S.IsEmpty()) { //002
-		  // debordement sur le carreau reciproque ou intersection en coin
+		  // mutially outpasses in the square or intersection in corner
 		  if(TestArret(Standard_True,Param,ChoixIso))  {
 		    NbPasOKConseq = -10;
 		    ChoixIso = myIntersectionOn2S.Perform(Param,Rsnld,ChoixIso); 
@@ -938,7 +938,7 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
 		      RepartirOuDiviser(DejaReparti,ChoixIso,Arrive);
 		    }
 		    else  {
-		      //echec cadrage diviser le pas
+		      //fail framing divides the step
 		      Arrive = Standard_False;
 		      RepartirOuDiviser(DejaReparti,ChoixIso,Arrive);
 		      NoTestDeflection = Standard_True;
@@ -963,10 +963,14 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
 		      previousd2 = myIntersectionOn2S.DirectionOnS2();
 		    }
 		    //========================================
-		    //== Verification sur PreviousPoint @@
+		    //== Check on PreviousPoint @@
 		    {
 		      Standard_Real u1,v1,u2,v2; 
-		      previousPoint.Parameters(u1,v1,u2,v2); 
+		      previousPoint.Parameters(u1,v1,u2,v2);
+                      //To save initial 2d points
+                      gp_Pnt2d ParamPntOnS1(Param(1), Param(2));
+                      gp_Pnt2d ParamPntOnS2(Param(3), Param(4));
+                      ///////////////////////////
 		      Param(1) = u1; 
 		      Param(2) = v1;	
 		      Param(3) = u2; 
@@ -998,6 +1002,27 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
 			    bTestFirstPoint = Standard_False;
 			  }
 			}
+                        //To avoid walking around the same point
+                        //in the tangent zone near a border
+                        if (previoustg)
+                        {
+                          Standard_Real prevU1, prevV1, prevU2, prevV2;
+                          previousPointSave.Parameters(prevU1, prevV1, prevU2, prevV2);
+                          gp_Pnt2d prevPntOnS1(prevU1, prevV1), prevPntOnS2(prevU2, prevV2);
+                          gp_Pnt2d curPntOnS1(u1, v1), curPntOnS2(u2, v2);
+                          gp_Vec2d PrevToParamOnS1(prevPntOnS1, ParamPntOnS1);
+                          gp_Vec2d PrevToCurOnS1(prevPntOnS1, curPntOnS1);
+                          gp_Vec2d PrevToParamOnS2(prevPntOnS2, ParamPntOnS2);
+                          gp_Vec2d PrevToCurOnS2(prevPntOnS2, curPntOnS2);
+                          Standard_Real MaxAngle = 3*M_PI/4;
+                          if (Abs(PrevToParamOnS1.Angle(PrevToCurOnS1)) > MaxAngle &&
+                              Abs(PrevToParamOnS2.Angle(PrevToCurOnS2)) > MaxAngle)
+                          {
+                            Arrive = Standard_True;
+                            break;
+                          }
+                        }
+                        ////////////////////////////////////////
 			AddAPoint(line,previousPoint);
 			RejectIndex++;
 			if(RejectIndex >= 250000) {
@@ -1040,20 +1065,20 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
 		      }
 		    }
 		  }//else !TestArret() $
-		} //$$ fin succes cadrage sur frontiere (!myIntersectionOn2S.IsEmpty())
+		} //$$ end successful framing on border (!myIntersectionOn2S.IsEmpty())
 		else  {
-		  //echec cadrage  sur frontiere;division du pas 
+		  //echec framing on border; division of step 
 		  Arrive = Standard_False;
 		  NoTestDeflection = Standard_True;
 		  RepartirOuDiviser(DejaReparti,ChoixIso,Arrive);
 		} 
-	      }//$$$ fin cadrage sur frontiere (!close)
-	    } //004 fin TestArret retourne Arrive = True
-	  } // 006case IntWalk_ArretSurPoint:  fin Traitement Status = OK  ou ArretSurPoint 
+	      }//$$$ end framing on border (!close)
+	    } //004 fin TestArret return Arrive = True
+	  } // 006case IntWalk_ArretSurPoint:  end Processing Status = OK  or ArretSurPoint 
 	} //007  switch(Status) 
-      } //008 fin traitement point en court (TEST DEFLECTION)
-    } //009 fin traitement ligne (else if myIntersectionOn2S.IsDone())
-  }  //010 fin si premier point de depart a permis un cheminement while(!Arrive)
+      } //008 end processing point  (TEST DEFLECTION)
+    } //009 end processing line (else if myIntersectionOn2S.IsDone())
+  }  //010 end if first departure point allows marching  while (!Arrive)
   done = Standard_True;
 }
 // ===========================================================================================================

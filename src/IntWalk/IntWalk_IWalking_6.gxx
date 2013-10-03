@@ -81,7 +81,7 @@ void IntWalk_IWalking::OpenLine(const Standard_Integer N,
 				const ThePOPIterator& Pnts1,
 				TheIWFunction& sp,
                                 const Handle(IntWalk_TheIWLine)& Line )
-// **************** ouverture de la ligne et repartir dans l autre sens********
+// **************** open the line and restart in the other direction********
 
 {
   ThePointOfPath PathPnt;
@@ -102,9 +102,9 @@ void IntWalk_IWalking::OpenLine(const Standard_Integer N,
   previousd3d = sp.Direction3d();
   previousd2d = sp.Direction2d();
 
-  if (N>0) { //point de depart donne en entree
+  if (N>0) { //departure point given at input
     PathPnt = Pnts1.Value(N);
-    //marque la ligne comme ouverte avec point d arret donne
+    //mark the line as open with a given stop point
     Line->AddStatusFirst(Standard_False,Standard_True,N,PathPnt); 
 
 
@@ -114,7 +114,7 @@ void IntWalk_IWalking::OpenLine(const Standard_Integer N,
   else  {
     if (N <0) Line->AddPoint(Psol);                      
     Line->AddStatusFirst(Standard_False,Standard_False);
-       //marque la ligne comme ouverte sans point d arret donne
+       //mark the line as open without given stop point 
   }
   Line->Reverse();  //inverser la ligne        
   Line->SetTangentVector(previousd3d.Reversed(),Line->NbPoints());

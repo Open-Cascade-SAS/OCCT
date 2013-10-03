@@ -68,21 +68,21 @@ void IntWalk_IWalking::Clear()
 }
 
 // ***************************************************************************
-     //  etat1=12 pas tangent,pas passant
-     //  etat1=11 tangent,pas passant
-     //  etat1=2  pas tangent,passant
-     //  etat1=1  tangent,passant
-     //  lorsque un point a ete traite son etat devient negatif.
+     //  etat1=12 not tangent, not passes
+     //  etat1=11 tangent, not passes
+     //  etat1=2  not tangent, passes
+     //  etat1=1  tangent, passes
+     //  after a point is processed its state becomes negative.
 // ***************************************************************************
-     //  etat2=13  point de demarage interieur sur ligne ferme
-     //  etat2=12  point de demarage interieur sur ligne ouverte
-     //            (ligne initialement fermee -> la ligne s est ouverte)       
-     //  lorsque un point a ete traite (ou si on passe dessus lors du 
-     //  cheminement) son etat devient negatif.
+     //  etat2=13  interior start point on closed line
+     //  etat2=12  interior start point on open line 
+     //            (line initially closed -> la line s is open)       
+     //  after a point is processed (or if it is passed over during
+     //  routing) its state becomes negative.
 // ****************************************************************************
 
 //
-// Perform avec points interieurs
+// Perform with interior points
 //
 void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
 			       const ThePOLIterator& Pnts2,
@@ -102,7 +102,7 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
   reversed = Reversed;
 
 
-  // Chargement de etat1 et etat2  et des ustart et vstart.
+  // Loading of etat1 and etat2  as well as  ustart and vstart.
 
   TColStd_SequenceOfReal Umult;
   TColStd_SequenceOfReal Vmult;
@@ -119,7 +119,7 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
     if (!ThePointOfPathTool::IsTangent(PathPnt))   
       ++aWD1.etat;
 
-    if(aWD1.etat==2) {  //-- lbr le 15 fev 99 
+    if(aWD1.etat==2) {   
       aWD1.etat=11;
     }      
 
@@ -164,9 +164,9 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
 
   Func.Set(Caro);
 
-  // calcul de toutes les lignes ouvertes   
+  // calculation of all open lines   
   if (nbPnts1 != 0) ComputeOpenLine(Umult,Vmult,Pnts1,Func,Rajout); 
-  // calcul de toutes les lignes fermees 
+  // calculation of all closed lines 
   if (nbPnts2 != 0) ComputeCloseLine(Umult,Vmult,Pnts1,Pnts2,Func,Rajout); 
   for (I = 1; I <= nbPnts1; I++) { 
     if (wd1[I].etat >0) seqSingle.Append(Pnts1(I));
@@ -177,7 +177,7 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
 
 
 //
-// Perform sans point interieur
+// Perform without interior point
 //
 
 void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
@@ -194,7 +194,7 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
   reversed = Reversed;
 
 
-  // Chargement de etat1 et de ustart1 et vstart1.
+  // Loading of etat1 as well as ustart1 and vstart1.
 
   TColStd_SequenceOfReal Umult;
   TColStd_SequenceOfReal Vmult;

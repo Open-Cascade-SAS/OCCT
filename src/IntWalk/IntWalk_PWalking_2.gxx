@@ -27,14 +27,14 @@ void IntWalk_PWalking::
                           IntImp_ConstIsoparametric& ChoixIso,
                           Standard_Boolean& Arrive) 
 
-// au voisinage d '1 point ,il y a echec du cheminement 
-// il faut diviser le pas pour essayer de continuer
-//si  le pas est trop petit ou si on est arrive sur une frontiere
-// repartir dans l autre sens si cela n a pas ete deja fait sinon arret
+// at the neighborhood of a point, there is a fail of marching 
+// it is required to divide the steps to try to continue
+// if the step is too small if we are on border
+// restart in another direction if it was not done, otherwise stop
 
 {
   //  Standard_Integer i;
-  if (Arrive) {    //repartir dans l autre sens
+  if (Arrive) {    //restart in the other direction
     if (!DejaReparti ) {
       Arrive        = Standard_False; 
       DejaReparti   = Standard_True;
@@ -80,10 +80,10 @@ void IntWalk_PWalking::
 	&&  pasuv[3]*0.5 < ResoV2
 	) {
       if (!previoustg) {
-	tglast = Standard_True;      // EST-CE SUFFISANT ????
+	tglast = Standard_True;      // IS IT ENOUGH ????
       }
       
-      if (!DejaReparti) {  //repartir dans l autre sens
+      if (!DejaReparti) {  //restart in the other direction
 	DejaReparti       = Standard_True;
 	previousPoint     = line->Value(1);
 	previoustg        = Standard_False;

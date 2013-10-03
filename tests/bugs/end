@@ -2,6 +2,7 @@ if { [info exists square] } {
     set prop "square"
     set mass $square
     if { [info exists tol_square] } {
+      # tol_square - The epsilon defines relative precision of computation
       regexp {Mass +: +([-0-9.+eE]+)} [sprops result $tol_square] full m
     } else {
       regexp {Mass +: +([-0-9.+eE]+)} [sprops result] full m

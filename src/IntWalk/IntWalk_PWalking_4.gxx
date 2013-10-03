@@ -17,16 +17,15 @@
 // and conditions governing the rights and limitations under the License.
 
 //-- 
-//-- Modif du 5 Octobre 94 (LBR) 
+//-- Modif of 5 October 94 (LBR) 
 //--   if(Trouve) ...
-//-- On deborde sur une frontiere, Duv[.] = -1 -1 -1 -1 
-//-- donc on garde la meme iso bloquee (voir if(k!=1) )
+//-- outpasses a border, Duv[.] = -1 -1 -1 -1 
+//-- keep the same iso limited (see if(k!=1) )
 //-- 
 
-//-- Modif du 8 juillet 96 (LBR)
-//-- simplifaication du traitement des auto-intersections.
-//-- Idee : 
-//--          Tester la boucle fermee en 3d et en 2d. 
+//-- Modif of 8 July 96 (LBR)
+//-- simplify processing of auto-intersections.
+//-- Idea :  Test closed loop in 3d and in 2d. 
 //-- 
 
 #include <gp_Pnt2d.hxx>
@@ -38,11 +37,11 @@ Standard_Boolean IntWalk_PWalking::
                   IntImp_ConstIsoparametric&  ChoixIso)
 
 //
-// tester si le point d intersection donne par ces parametres reste dans le
-// domaine naturelle de chaque carreau.
-// si le point deborde cadrer de facon a trouver la meilleure iso (frontiere)
-// qui intersecte le plus franchement l autre carreau
-// sinon tester si presence de ligne fermee  
+// test if the point of intersection set by these parameters remains in the 
+// natural domain of each square.
+// if the point outpasses reframe to find the best iso (border)
+// that intersects easiest the other square
+// otherwise test if closed line is present  
 // 
 {
   Standard_Real Uvd[4],Uvf[4],Epsuv[4],Duv[4],Uvp[4],dv,dv2,ParC[4];
@@ -53,6 +52,10 @@ Standard_Boolean IntWalk_PWalking::
   Epsuv[2] = ResoU2;
   Epsuv[3] = ResoV2;
   previousPoint.Parameters(Uvp[0],Uvp[1],Uvp[2],Uvp[3]);
+
+  Standard_Real SolParam[4];
+  myIntersectionOn2S.Point().Parameters(SolParam[0],SolParam[1],SolParam[2],SolParam[3]);
+
   Standard_Boolean Trouve = Standard_False;
 
   Uvd[0]=Um1;   Uvf[0]=UM1;   Uvd[1]=Vm1;   Uvf[1]=VM1;
@@ -66,35 +69,39 @@ Standard_Boolean IntWalk_PWalking::
     case 3: k=4; break;
     case 4: k=3; break;
     }
-    if (Param(i) < (Uvd[im1]-Epsuv[im1])) {        //--     Current -----  Bound Inf -----  Previous
+    if (Param(i) < (Uvd[im1]-Epsuv[im1]) ||
+        SolParam[im1] < (Uvd[im1]-Epsuv[im1]))     //--     Current -----  Bound Inf -----  Previous
+    {
       Trouve    = Standard_True;                   //-- 
       DPc       = Uvp[im1]-Param(i);               //--     Previous  - Current
       DPb       = Uvp[im1]-Uvd[im1];               //--     Previous  - Bound Inf
       ParC[im1] = Uvd[im1];                        //--     ParamCorrige
-      dv        = Param(k)-Uvp[k-1];               //--     Current   - Previous (Sur Autre Direction)
+      dv        = Param(k)-Uvp[k-1];               //--     Current   - Previous (other Direction)
       dv2       = dv*dv;         
-      if(dv2>RealEpsilon()) {                       //--     Progression sur l autre Direction ?
+      if(dv2>RealEpsilon()) {                       //--    Progress at the other Direction ?
 	Duv[im1]  = DPc*DPb + dv2;
 	Duv[im1]  = Duv[im1]*Duv[im1]/(DPc*DPc+dv2)/(DPb*DPb+dv2);
       }
       else {
-	Duv[im1]=-1.0;                              //--    Si Pas de prgogression, on ne change pas 
-      }                                             //--    le choix de l iso 
+	Duv[im1]=-1.0;                              //--    If no progress, do not change  
+      }                                             //--    the choice of iso 
     }   
-    else if (Param(i) > (Uvf[im1] + Epsuv[im1])) {  //--     Previous -----  Bound Sup -----  Current
+    else if (Param(i) > (Uvf[im1] + Epsuv[im1]) ||
+             SolParam[im1] > (Uvf[im1] + Epsuv[im1]))//--    Previous -----  Bound Sup -----  Current
+    {
       Trouve    = Standard_True;                    //-- 
       DPc       = Param(i)-Uvp[im1];                //--     Current   - Previous
       DPb       = Uvf[im1]-Uvp[im1];                //--     Bound Sup - Previous 
       ParC[im1] = Uvf[im1];                         //--     Param Corrige
-      dv        = Param(k)-Uvp[k-1];                //--     Current   - Previous (Sur autre Direction)
+      dv        = Param(k)-Uvp[k-1];                //--     Current   - Previous (other Direction)
       dv2       = dv*dv;
-      if(dv2>RealEpsilon()) {                       //--     Progression sur l autre Direction ?
+      if(dv2>RealEpsilon()) {                       //--     Progress in other Direction ?
 	Duv[im1]  =  DPc*DPb + dv2;
 	Duv[im1]  = Duv[im1]*Duv[im1]/(DPc*DPc+dv2)/(DPb*DPb+dv2);
       }
       else {
-	Duv[im1]=-1.0;                              //--    Si Pas de prgogression, on ne change pas 
-      }                                             //--    le choix de l iso 
+	Duv[im1]=-1.0;                              //--    If no progress, do not change 
+      }                                             //--    the choice of iso 
     }
     else { 
       Duv[im1]= -1.;
@@ -104,10 +111,10 @@ Standard_Boolean IntWalk_PWalking::
 
   if (Trouve) {
     //--------------------------------------------------
-    //-- Un des Parametres u1,v1,u2,v2 est en dehors  --
-    //-- des bornes naturelles.                       -- 
-    //-- On cherche la meilleure direction de         -- 
-    //-- progression et on recadre les params.        --
+    //-- One of Parameters u1,v1,u2,v2 is outside of  --
+    //-- the natural limits.                          -- 
+    //-- Find the best direction of                   -- 
+    //-- progress and reframe the parameters.        --
     //--------------------------------------------------
     Standard_Real ddv = -1.0;
     k=-1;
@@ -140,7 +147,7 @@ Standard_Boolean IntWalk_PWalking::
   }
   else 
     {  
-      if (!DejaReparti) { // recherche si ligne fermee
+      if (!DejaReparti) { // find if line closed
 
 	Standard_Real u,v;
 	const IntSurf_PntOn2S& POn2S1=line->Value(1);

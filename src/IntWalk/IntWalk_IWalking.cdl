@@ -70,8 +70,8 @@ is
     	--          consecutive points on a resulting polyline.
     	--          Step is the maximum increment admitted between two 
     	--          consecutive points (in 2d space).
-    	--          Epsilon est la tolerance au dela de laquelle 2 points
-    	--          sont confondus
+    	--          Epsilon is the tolerance beyond which 2 points
+    	--          are confused.
     
     	returns IWalking from IntWalk;
 
@@ -82,8 +82,8 @@ is
     	--          consecutive points on a resulting polyline.
     	--          Step is the maximum increment admitted between two 
     	--          consecutive points (in 2d space).
-    	--          Epsilon est la tolerance au dela de laquelle 2 points
-    	--          sont confondus
+    	--          Epsilon is the tolerance beyond which 2 points
+    	--          are confused
     
 	---C++: inline
 

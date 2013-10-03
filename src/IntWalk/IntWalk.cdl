@@ -22,7 +22,7 @@
 
 package IntWalk
 
-	---Purpose: This package defines the "walking" (marching?)algorithmes
+	---Purpose: This package defines the "walking" (marching) algorithmes
 	--          for the intersection between two surfaces.
 	--          One of the surfaces is a parametric one.
 	--          If the other is an implicit one, the "IWalking" class will
@@ -42,14 +42,16 @@ is
     enumeration StatusDeflection is 
                 PasTropGrand, PointConfondu, ArretSurPointPrecedent,
                 ArretSurPoint, OK;
+
+-- StepTooGreat, ConfusedPoint, StopOnPreviousPoint, StopOnPoint, OK
 		
--- classe definition ressource sur surface biparametree
+-- class for definition of ressources on a biparametric surface
 
     deferred generic class PSurfaceTool;    
 
 
--- classes de definition pour algorithme cheminement sur une 
--- surface biparametree
+-- classes for definition of marching algorithm on a
+-- biparametric surface
 
     deferred generic class PathPointTool;  
 
@@ -60,12 +62,12 @@ is
     generic class Iterator;
     
     
---classes des objets resultat pour cheminement sur surface bi-parametree
+--class of result objects marching on a biparametric surface
 
     generic class IWLine;
     
     
---algorithme cheminement/resolution
+--algorithm marching/solution
 
     generic class IWalking, TheIWLine, SequenceOfIWLine;
     
@@ -76,8 +78,8 @@ is
     ---Purpose: Defines a dynamic vector of integer.
 
     
---algorithme/resolution pour un cheminement sur intersection entre
--- 2 surfaces biparametrees
+--algorithm/solution for a marching on intersection between
+-- 2 biparametric surfaces
 
     generic class PWalking, TheInt2S;
 
