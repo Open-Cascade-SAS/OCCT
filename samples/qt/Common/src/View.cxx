@@ -383,13 +383,13 @@ void View::initViewActions()
   a = new QAction( QPixmap( dir+QObject::tr("ICON_VIEW_FITALL") ), QObject::tr("MNU_FITALL"), this );
   a->setToolTip( QObject::tr("TBR_FITALL") );
   a->setStatusTip( QObject::tr("TBR_FITALL") );
-  connect( a, SIGNAL( activated() ) , this, SLOT( fitAll() ) );
+  connect( a, SIGNAL( triggered() ) , this, SLOT( fitAll() ) );
   myViewActions->insert(ViewFitAllId, a);
 
   a = new QAction( QPixmap( dir+QObject::tr("ICON_VIEW_FITAREA") ), QObject::tr("MNU_FITAREA"), this );
   a->setToolTip( QObject::tr("TBR_FITAREA") );
   a->setStatusTip( QObject::tr("TBR_FITAREA") );
-  connect( a, SIGNAL( activated() ) , this, SLOT( fitArea() ) );
+  connect( a, SIGNAL( triggered() ) , this, SLOT( fitArea() ) );
 
   a->setCheckable( true );
   connect( a, SIGNAL( toggled( bool ) ) , this, SLOT( updateToggled( bool ) ) );
@@ -398,7 +398,7 @@ void View::initViewActions()
   a = new QAction( QPixmap( dir+QObject::tr("ICON_VIEW_ZOOM") ), QObject::tr("MNU_ZOOM"), this );
   a->setToolTip( QObject::tr("TBR_ZOOM") );
   a->setStatusTip( QObject::tr("TBR_ZOOM") );
-  connect( a, SIGNAL( activated() ) , this, SLOT( zoom() ) );
+  connect( a, SIGNAL( triggered() ) , this, SLOT( zoom() ) );
 
   a->setCheckable( true );
   connect( a, SIGNAL( toggled(bool) ) , this, SLOT( updateToggled(bool) ) );
@@ -407,7 +407,7 @@ void View::initViewActions()
   a = new QAction( QPixmap( dir+QObject::tr("ICON_VIEW_PAN") ), QObject::tr("MNU_PAN"), this );
   a->setToolTip( QObject::tr("TBR_PAN") );
   a->setStatusTip( QObject::tr("TBR_PAN") );
-  connect( a, SIGNAL( activated() ) , this, SLOT( pan() ) );
+  connect( a, SIGNAL( triggered() ) , this, SLOT( pan() ) );
 
   a->setCheckable( true );
   connect( a, SIGNAL( toggled(bool) ) , this, SLOT( updateToggled(bool) ) );
@@ -416,7 +416,7 @@ void View::initViewActions()
   a = new QAction( QPixmap( dir+QObject::tr("ICON_VIEW_GLOBALPAN") ), QObject::tr("MNU_GLOBALPAN"), this );
   a->setToolTip( QObject::tr("TBR_GLOBALPAN") );
   a->setStatusTip( QObject::tr("TBR_GLOBALPAN") );
-  connect( a, SIGNAL( activated() ) , this, SLOT( globalPan() ) );
+  connect( a, SIGNAL( triggered() ) , this, SLOT( globalPan() ) );
 
   a->setCheckable( true );
   connect( a, SIGNAL( toggled(bool) ) , this, SLOT( updateToggled(bool) ) );
@@ -425,49 +425,49 @@ void View::initViewActions()
   a = new QAction( QPixmap( dir+QObject::tr("ICON_VIEW_FRONT") ), QObject::tr("MNU_FRONT"), this );
   a->setToolTip( QObject::tr("TBR_FRONT") );
   a->setStatusTip( QObject::tr("TBR_FRONT") );
-  connect( a, SIGNAL( activated() ) , this, SLOT( front() ) );
+  connect( a, SIGNAL( triggered() ) , this, SLOT( front() ) );
   myViewActions->insert( ViewFrontId, a );
 
   a = new QAction( QPixmap( dir+QObject::tr("ICON_VIEW_BACK") ), QObject::tr("MNU_BACK"), this );
   a->setToolTip( QObject::tr("TBR_BACK") );
   a->setStatusTip( QObject::tr("TBR_BACK") );
-  connect( a, SIGNAL( activated() ) , this, SLOT( back() ) );
+  connect( a, SIGNAL( triggered() ) , this, SLOT( back() ) );
   myViewActions->insert(ViewBackId, a);
 
   a = new QAction( QPixmap( dir+QObject::tr("ICON_VIEW_TOP") ), QObject::tr("MNU_TOP"), this );
   a->setToolTip( QObject::tr("TBR_TOP") );
   a->setStatusTip( QObject::tr("TBR_TOP") );
-  connect( a, SIGNAL( activated() ) , this, SLOT( top() ) );
+  connect( a, SIGNAL( triggered() ) , this, SLOT( top() ) );
   myViewActions->insert( ViewTopId, a );
 
   a = new QAction( QPixmap( dir+QObject::tr("ICON_VIEW_BOTTOM") ), QObject::tr("MNU_BOTTOM"), this );
   a->setToolTip( QObject::tr("TBR_BOTTOM") );
   a->setStatusTip( QObject::tr("TBR_BOTTOM") );
-  connect( a, SIGNAL( activated() ) , this, SLOT( bottom() ) );
+  connect( a, SIGNAL( triggered() ) , this, SLOT( bottom() ) );
   myViewActions->insert( ViewBottomId, a );
 
   a = new QAction( QPixmap( dir+QObject::tr("ICON_VIEW_LEFT") ), QObject::tr("MNU_LEFT"), this );
   a->setToolTip( QObject::tr("TBR_LEFT") );
   a->setStatusTip( QObject::tr("TBR_LEFT") );
-  connect( a, SIGNAL( activated() ) , this, SLOT( left() ) );
+  connect( a, SIGNAL( triggered() ) , this, SLOT( left() ) );
   myViewActions->insert( ViewLeftId, a );
 
   a = new QAction( QPixmap( dir+QObject::tr("ICON_VIEW_RIGHT") ), QObject::tr("MNU_RIGHT"), this );
   a->setToolTip( QObject::tr("TBR_RIGHT") );
   a->setStatusTip( QObject::tr("TBR_RIGHT") );
-  connect( a, SIGNAL( activated() ) , this, SLOT( right() ) );
+  connect( a, SIGNAL( triggered() ) , this, SLOT( right() ) );
   myViewActions->insert( ViewRightId, a );
 
   a = new QAction( QPixmap( dir+QObject::tr("ICON_VIEW_AXO") ), QObject::tr("MNU_AXO"), this );
   a->setToolTip( QObject::tr("TBR_AXO") );
   a->setStatusTip( QObject::tr("TBR_AXO") );
-  connect( a, SIGNAL( activated() ) , this, SLOT( axo() ) );
+  connect( a, SIGNAL( triggered() ) , this, SLOT( axo() ) );
   myViewActions->insert( ViewAxoId, a );
 
   a = new QAction( QPixmap( dir+QObject::tr("ICON_VIEW_ROTATION") ), QObject::tr("MNU_ROTATION"), this );
   a->setToolTip( QObject::tr("TBR_ROTATION") );
   a->setStatusTip( QObject::tr("TBR_ROTATION") );
-  connect( a, SIGNAL( activated() ) , this, SLOT( rotation() ) );
+  connect( a, SIGNAL( triggered() ) , this, SLOT( rotation() ) );
   a->setCheckable( true );
   connect( a, SIGNAL( toggled(bool) ) , this, SLOT( updateToggled(bool) ) );
   myViewActions->insert( ViewRotationId, a );
@@ -475,7 +475,7 @@ void View::initViewActions()
   a = new QAction( QPixmap( dir+QObject::tr("ICON_VIEW_RESET") ), QObject::tr("MNU_RESET"), this );
   a->setToolTip( QObject::tr("TBR_RESET") );
   a->setStatusTip( QObject::tr("TBR_RESET") );
-  connect( a, SIGNAL( activated() ) , this, SLOT( reset() ) );
+  connect( a, SIGNAL( triggered() ) , this, SLOT( reset() ) );
   myViewActions->insert( ViewResetId, a );
 
   QActionGroup* ag = new QActionGroup( this );
@@ -483,7 +483,7 @@ void View::initViewActions()
   a = new QAction( QPixmap( dir+QObject::tr("ICON_VIEW_HLROFF") ), QObject::tr("MNU_HLROFF"), this );
   a->setToolTip( QObject::tr("TBR_HLROFF") );
   a->setStatusTip( QObject::tr("TBR_HLROFF") );
-  connect( a, SIGNAL( activated() ) , this, SLOT( hlrOff() ) );
+  connect( a, SIGNAL( triggered() ) , this, SLOT( hlrOff() ) );
   a->setCheckable( true );
   ag->addAction(a);
   myViewActions->insert(ViewHlrOffId, a);
@@ -491,7 +491,7 @@ void View::initViewActions()
   a = new QAction( QPixmap( dir+QObject::tr("ICON_VIEW_HLRON") ), QObject::tr("MNU_HLRON"), this );
   a->setToolTip( QObject::tr("TBR_HLRON") );
   a->setStatusTip( QObject::tr("TBR_HLRON") );
-  connect( a, SIGNAL( activated() ) ,this, SLOT( hlrOn() ) );
+  connect( a, SIGNAL( triggered() ) ,this, SLOT( hlrOn() ) );
   
   a->setCheckable( true );
   ag->addAction(a);
@@ -850,7 +850,7 @@ void View::Popup( const int /*x*/, const int /*y*/ )
     QMenu* myBackMenu = new QMenu( 0 );
 		QAction* a = new QAction( QObject::tr("MNU_CH_BACK"), this );
 		a->setToolTip( QObject::tr("TBR_CH_BACK") );
-    connect( a,SIGNAL( activated() ), this, SLOT( onBackground() ) );
+    connect( a,SIGNAL( triggered() ), this, SLOT( onBackground() ) );
 		myBackMenu->addAction( a );  
     addItemInPopup(myBackMenu);
     myBackMenu->exec( QCursor::pos() );

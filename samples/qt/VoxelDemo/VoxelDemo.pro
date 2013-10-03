@@ -1,30 +1,17 @@
 TEMPLATE = app
-CONFIG += debug_and_release qt
+CONFIG += debug_and_release qt opengl
 
-TARGET = Tutorial
+TARGET = VoxelDemo
 
 SAMPLESROOT = $$(CASROOT)/samples/qt
 
-HEADERS   = src/*.h \
-            $${SAMPLESROOT}/Common/src/*.h \
-            $${SAMPLESROOT}/Interface/src/*.h
+HEADERS   = $${SAMPLESROOT}/voxeldemo/src/*.h
 
-SOURCES   = src/*.cxx \
-            $${SAMPLESROOT}/Common/src/*.cxx \
-            $${SAMPLESROOT}/Interface/src/*.cxx
+SOURCES   = $${SAMPLESROOT}/voxeldemo/src/*.cxx \
+            $${SAMPLESROOT}/voxeldemo/src/*.cpp
 
-TS_FILES  = $${SAMPLESROOT}/Common/src/Common-icon.ts \
-            $${SAMPLESROOT}/Common/src/Common-string.ts \
-            ./src/Tutorial-icon.ts \
-            ./src/Tutorial-string.ts
 
-RES_FILES = $${SAMPLESROOT}/Common/res/* \
-            ./res/*
-
-RES_DIR   = $$quote($$(RES_DIR))
-
-INCLUDEPATH += $$quote($${SAMPLESROOT}/Common/src)
-INCLUDEPATH += $$quote($${SAMPLESROOT}/Interface/src)
+INCLUDEPATH += $$quote($${SAMPLESROOT}/voxeldemo/src)
 
 DEFINES = CSFDB
 
@@ -172,33 +159,7 @@ win32 {
 }
 
 LIBS += -lTKernel -lPTKernel -lTKMath -lTKService -lTKV3d \
-        -lTKBRep -lTKIGES -lTKSTL -lTKVRML -lTKSTEP -lTKSTEPAttr -lTKSTEP209 \
-        -lTKSTEPBase -lTKShapeSchema -lTKGeomBase -lTKGeomAlgo -lTKG3d -lTKG2d \
-        -lTKXSBase -lTKPShape -lTKShHealing -lTKHLR -lTKTopAlgo -lTKMesh -lTKPrim \
-        -lTKCDF -lTKBool -lTKBO -lTKFillet -lTKOffset \
+        -lTKBRep -lTKGeomBase -lTKPShape -lTKTopAlgo -lTKPrim \
+        -lTKBool -lTKVoxel -lTKOpenGl \
 
-!exists($${RES_DIR}) {
-    win32 {
-        system(mkdir $${RES_DIR})
-    } else {
-        system(mkdir -p $${RES_DIR})
-    }
-}
-
-lrelease.name = LRELEASE ${QMAKE_FILE_IN}
-lrelease.commands = lrelease ${QMAKE_FILE_IN} -qm $${RES_DIR}/${QMAKE_FILE_BASE}.qm
-lrelease.output = ${QMAKE_FILE_BASE}.qm
-lrelease.input = TS_FILES
-lrelease.clean = $${RES_DIR}/${QMAKE_FILE_BASE}.qm
-lrelease.CONFIG += no_link target_predeps
-QMAKE_EXTRA_COMPILERS += lrelease
-
-copy_res.name = Copy resource ${QMAKE_FILE_IN}
-copy_res.output = ${QMAKE_FILE_BASE}${QMAKE_FILE_EXT}
-copy_res.clean = $${RES_DIR}/${QMAKE_FILE_BASE}${QMAKE_FILE_EXT}
-copy_res.input = RES_FILES
-copy_res.CONFIG += no_link target_predeps
-win32: copy_res.commands = type ${QMAKE_FILE_IN} > $${RES_DIR}/${QMAKE_FILE_BASE}${QMAKE_FILE_EXT}
-unix:  copy_res.commands = cp -f ${QMAKE_FILE_IN} $${RES_DIR}
-QMAKE_EXTRA_COMPILERS += copy_res
 

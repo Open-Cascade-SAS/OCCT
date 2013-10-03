@@ -86,7 +86,7 @@ void DocumentCommon::onCreateNewView()
   connect( w,    SIGNAL( selectionChanged() ),
            this, SIGNAL( selectionChanged() ) );
   connect( w, SIGNAL( message( const QString&, int ) ),
-	         myApp->statusBar(), SLOT( message( const QString&, int ) ) );
+	         myApp->statusBar(), SLOT( showMessage( const QString&, int ) ) );
   connect( w, SIGNAL( sendCloseView( MDIWindow* ) ),
 	         this, SLOT( onCloseView( MDIWindow* ) ) );
 

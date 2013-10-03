@@ -23,7 +23,7 @@ void ApplicationTut::createMakeBottleOperation(){
   MakeBottleAction->setToolTip( QObject::tr( "TBR_MAKEBOT" ) );
   MakeBottleAction->setStatusTip( QObject::tr("TBR_MAKEBOT") );
   MakeBottleAction->setShortcut( QObject::tr( "CTRL+M" ) );
-	connect( MakeBottleAction, SIGNAL( activated() ) , this, SLOT( onMakeBottleAction() ) );
+	connect( MakeBottleAction, SIGNAL( triggered() ) , this, SLOT( onMakeBottleAction() ) );
 	
 	myMakeBottleBar = addToolBar( tr( "Make Bottle" ) );
   insertToolBar( getCasCadeBar(), myMakeBottleBar );

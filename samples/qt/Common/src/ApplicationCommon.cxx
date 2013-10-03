@@ -68,27 +68,27 @@ void ApplicationCommonWindow::createStandardOperations()
   fileNewAction->setToolTip( QObject::tr("TBR_NEW") );
   fileNewAction->setStatusTip( QObject::tr("TBR_NEW") );
   fileNewAction->setShortcut( QObject::tr("CTRL+N") );
-  connect( fileNewAction, SIGNAL( activated() ) , this, SLOT( onNewDoc() ) );
+  connect( fileNewAction, SIGNAL( triggered() ) , this, SLOT( onNewDoc() ) );
   myStdActions.insert( FileNewId, fileNewAction );
 
   fileCloseAction = new QAction( closeIcon, QObject::tr("MNU_CLOSE"), this );
   fileCloseAction->setToolTip( QObject::tr("TBR_CLOSE") );
   fileCloseAction->setStatusTip( QObject::tr("TBR_CLOSE") );
   fileCloseAction->setShortcut( QObject::tr("CTRL+W") );
-  connect( fileCloseAction, SIGNAL( activated() ) , this, SLOT( onCloseWindow() ) );
+  connect( fileCloseAction, SIGNAL( triggered() ) , this, SLOT( onCloseWindow() ) );
   myStdActions.insert( FileCloseId, fileCloseAction );
 
   fileQuitAction = new QAction( QObject::tr("MNU_QUIT"), this );
   fileQuitAction->setToolTip( QObject::tr("TBR_QUIT") );
   fileQuitAction->setStatusTip( QObject::tr("TBR_QUIT") );
   fileQuitAction->setShortcut( QObject::tr("CTRL+Q") );
-  connect( fileQuitAction, SIGNAL( activated() ) , qApp, SLOT( closeAllWindows() ) );
+  connect( fileQuitAction, SIGNAL( triggered() ) , qApp, SLOT( closeAllWindows() ) );
   myStdActions.insert( FileQuitId, fileQuitAction );
 
   viewToolAction = new QAction( QObject::tr("MNU_TOOL_BAR"), this );
   viewToolAction->setToolTip( QObject::tr("TBR_TOOL_BAR") );
   viewToolAction->setStatusTip( QObject::tr("TBR_TOOL_BAR") );
-  connect( viewToolAction, SIGNAL( activated() ) , this, SLOT( onViewToolBar() ));
+  connect( viewToolAction, SIGNAL( triggered() ) , this, SLOT( onViewToolBar() ));
   viewToolAction->setCheckable( true );
   viewToolAction->setChecked( true );
   myStdActions.insert( ViewToolId, viewToolAction );
@@ -96,7 +96,7 @@ void ApplicationCommonWindow::createStandardOperations()
   viewStatusAction = new QAction( QObject::tr("MNU_STATUS_BAR"), this );
   viewStatusAction->setToolTip( QObject::tr("TBR_STATUS_BAR") );
   viewStatusAction->setStatusTip( QObject::tr("TBR_STATUS_BAR") );
-  connect( viewStatusAction, SIGNAL( activated() ), this, SLOT( onViewStatusBar() ));
+  connect( viewStatusAction, SIGNAL( triggered() ), this, SLOT( onViewStatusBar() ));
   viewStatusAction->setCheckable( true );
   viewStatusAction->setChecked( true );
   myStdActions.insert( ViewStatusId, viewStatusAction );
@@ -105,7 +105,7 @@ void ApplicationCommonWindow::createStandardOperations()
   helpAboutAction->setToolTip( QObject::tr( "TBR_ABOUT" ) );
   helpAboutAction->setStatusTip( QObject::tr( "TBR_ABOUT" ) );
   helpAboutAction->setShortcut( QObject::tr( "F1" ) );
-  connect( helpAboutAction, SIGNAL( activated() ) , this, SLOT( onAbout() ) );
+  connect( helpAboutAction, SIGNAL( triggered() ) , this, SLOT( onAbout() ) );
   myStdActions.insert( HelpAboutId, helpAboutAction );
 
     // popuplate a menu with all actions
@@ -151,37 +151,37 @@ void ApplicationCommonWindow::createCasCadeOperations()
   a = new QAction( QPixmap( dir+QObject::tr("ICON_TOOL_WIRE") ), QObject::tr("MNU_TOOL_WIRE"), this );
   a->setToolTip( QObject::tr("TBR_TOOL_WIRE") );
   a->setStatusTip( QObject::tr("TBR_TOOL_WIRE") );
-  connect( a, SIGNAL( activated() ) , this, SLOT( onToolAction() ) );
+  connect( a, SIGNAL( triggered() ) , this, SLOT( onToolAction() ) );
   myToolActions.insert( ToolWireframeId, a );
 
   a = new QAction( QPixmap( dir+QObject::tr("ICON_TOOL_SHAD") ), QObject::tr("MNU_TOOL_SHAD"), this );
   a->setToolTip( QObject::tr("TBR_TOOL_SHAD") );
   a->setStatusTip( QObject::tr("TBR_TOOL_SHAD") );
-  connect( a, SIGNAL( activated() ) , this, SLOT( onToolAction() ) );
+  connect( a, SIGNAL( triggered() ) , this, SLOT( onToolAction() ) );
   myToolActions.insert( ToolShadingId, a );
 
   a = new QAction( QPixmap( dir+QObject::tr("ICON_TOOL_COLOR") ), QObject::tr("MNU_TOOL_COLOR"), this );
   a->setToolTip( QObject::tr("TBR_TOOL_COLOR") );
   a->setStatusTip( QObject::tr("TBR_TOOL_COLOR") );
-  connect( a, SIGNAL( activated() ) , this, SLOT( onToolAction() ) );
+  connect( a, SIGNAL( triggered() ) , this, SLOT( onToolAction() ) );
   myToolActions.insert( ToolColorId, a );
 
   a = new QAction( QPixmap( dir+QObject::tr("ICON_TOOL_MATER") ), QObject::tr("MNU_TOOL_MATER"), this );
   a->setToolTip( QObject::tr("TBR_TOOL_MATER") );
   a->setStatusTip( QObject::tr("TBR_TOOL_MATER") );
-  connect( a, SIGNAL( activated() ) , this, SLOT( onToolAction() ) );
+  connect( a, SIGNAL( triggered() ) , this, SLOT( onToolAction() ) );
   myToolActions.insert( ToolMaterialId, a );
 
   a = new QAction( QPixmap( dir+QObject::tr("ICON_TOOL_TRANS") ), QObject::tr("MNU_TOOL_TRANS"), this );
   a->setToolTip( QObject::tr("TBR_TOOL_TRANS") );
   a->setStatusTip( QObject::tr("TBR_TOOL_TRANS") );
-  connect( a, SIGNAL( activated() ) , this, SLOT( onToolAction() ) );
+  connect( a, SIGNAL( triggered() ) , this, SLOT( onToolAction() ) );
   myToolActions.insert( ToolTransparencyId, a );
 
   a = new QAction( QPixmap( dir+QObject::tr("ICON_TOOL_DEL") ), QObject::tr("MNU_TOOL_DEL"), this );
   a->setToolTip( QObject::tr("TBR_TOOL_DEL") );
   a->setStatusTip( QObject::tr("TBR_TOOL_DEL") );
-  connect( a, SIGNAL( activated() ) , this, SLOT( onToolAction() ) );
+  connect( a, SIGNAL( triggered() ) , this, SLOT( onToolAction() ) );
   myToolActions.insert( ToolDeleteId, a );
 
   QSignalMapper* sm = new QSignalMapper( this );
@@ -191,56 +191,56 @@ void ApplicationCommonWindow::createCasCadeOperations()
   a->setToolTip( QObject::tr("TBR_BRASS") );
   a->setStatusTip( QObject::tr("TBR_BRASS") );
   sm->setMapping( a,(int)Graphic3d_NOM_BRASS );
-  connect( a, SIGNAL( activated() ), sm, SLOT( map() ) );
+  connect( a, SIGNAL( triggered() ), sm, SLOT( map() ) );
   myMaterialActions.insert( Graphic3d_NOM_BRASS, a );
 
   a = new QAction( QObject::tr("MNU_BRONZE"), this );
   a->setToolTip( QObject::tr("TBR_BRONZE") );
   a->setStatusTip( QObject::tr("TBR_BRONZE") );
   sm->setMapping( a, ( int )Graphic3d_NOM_BRONZE );
-  connect( a, SIGNAL( activated() ), sm, SLOT( map() ) );
+  connect( a, SIGNAL( triggered() ), sm, SLOT( map() ) );
   myMaterialActions.insert( Graphic3d_NOM_BRONZE, a );
 
   a = new QAction( QObject::tr("MNU_COPPER"), this );
   a->setToolTip( QObject::tr("TBR_COPPER") );
   a->setStatusTip( QObject::tr("TBR_COPER") );
   sm->setMapping( a, ( int )Graphic3d_NOM_COPPER );
-  connect( a, SIGNAL( activated() ), sm, SLOT( map() ) );
+  connect( a, SIGNAL( triggered() ), sm, SLOT( map() ) );
   myMaterialActions.insert( Graphic3d_NOM_COPPER, a );
 
   a = new QAction( QObject::tr("MNU_GOLD"), this );
   a->setToolTip( QObject::tr("TBR_GOLD") );
   a->setStatusTip( QObject::tr("TBR_GOLD") );
   sm->setMapping( a, ( int )Graphic3d_NOM_GOLD );
-  connect( a, SIGNAL( activated() ), sm, SLOT( map() ) );
+  connect( a, SIGNAL( triggered() ), sm, SLOT( map() ) );
   myMaterialActions.insert( Graphic3d_NOM_GOLD, a );
 
   a = new QAction( QObject::tr("MNU_PEWTER"), this );
   a->setToolTip( QObject::tr("TBR_PEWTER") );
   a->setStatusTip( QObject::tr("TBR_PEWTER") );
   sm->setMapping( a, ( int )Graphic3d_NOM_PEWTER );
-  connect( a, SIGNAL( activated() ), sm, SLOT( map() ) );
+  connect( a, SIGNAL( triggered() ), sm, SLOT( map() ) );
   myMaterialActions.insert( Graphic3d_NOM_PEWTER, a );
 
   a = new QAction( QObject::tr("MNU_PLASTER"), this );
   a->setToolTip( QObject::tr("TBR_PLASTER") );
   a->setStatusTip( QObject::tr("TBR_PLASTER") );
   sm->setMapping( a, ( int )Graphic3d_NOM_PLASTER );
-  connect( a, SIGNAL( activated() ), sm, SLOT( map() ) );
+  connect( a, SIGNAL( triggered() ), sm, SLOT( map() ) );
   myMaterialActions.insert( Graphic3d_NOM_PLASTER, a );
 
   a = new QAction( QObject::tr("MNU_PLASTIC"), this );
   a->setToolTip( QObject::tr("TBR_PLASTIC") );
   a->setStatusTip( QObject::tr("TBR_PLASTIC") );
   sm->setMapping( a, ( int )Graphic3d_NOM_PLASTIC );
-  connect( a, SIGNAL( activated() ), sm, SLOT( map() ) );
+  connect( a, SIGNAL( triggered() ), sm, SLOT( map() ) );
   myMaterialActions.insert( Graphic3d_NOM_PLASTIC, a );
 
   a = new QAction( QObject::tr("MNU_SILVER"), this );
   a->setToolTip( QObject::tr("TBR_SILVER") );
   a->setStatusTip( QObject::tr("TBR_SILVER") );
   sm->setMapping( a, ( int )Graphic3d_NOM_SILVER );
-  connect( a, SIGNAL( activated() ), sm, SLOT( map() ) );
+  connect( a, SIGNAL( triggered() ), sm, SLOT( map() ) );
   myMaterialActions.insert( Graphic3d_NOM_SILVER, a );
 
   for ( int i = 0; i < myToolActions.size(); i++ )
@@ -278,19 +278,19 @@ void ApplicationCommonWindow::windowsMenuAboutToShow()
   a = new QAction( QPixmap( dir + QObject::tr( "ICON_WINDOW_NEW3D" ) ), QObject::tr( "MNU_WINDOW_NEW3D" ), this );
   a->setToolTip( QObject::tr( "TBR_WINDOW_NEW3D" ) );
   a->setStatusTip( QObject::tr( "TBR_WINDOW_NEW3D" ) );
-  connect( a, SIGNAL( activated() ), this, SLOT( onCreateNewView() ) );
+  connect( a, SIGNAL( triggered() ), this, SLOT( onCreateNewView() ) );
   myWindowPopup->addAction( a );
 
   a = new QAction( QPixmap( dir + QObject::tr( "ICON_WINDOW_CASCADE" ) ), QObject::tr( "MNU_WINDOW_CASCADE" ), this );
   a->setToolTip( QObject::tr( "TBR_WINDOW_CASCADE" ) );
   a->setStatusTip( QObject::tr( "TBR_WINDOW_CASCADE" ) );
-  connect( a, SIGNAL( activated() ), stWs, SLOT( cascade() ) );
+  connect( a, SIGNAL( triggered() ), stWs, SLOT( cascade() ) );
   myWindowPopup->addAction( a );
 
   a = new QAction( QPixmap( dir + QObject::tr( "ICON_WINDOW_TILE" ) ), QObject::tr( "MNU_WINDOW_TILE" ), this );
   a->setToolTip( QObject::tr( "TBR_WINDOW_TILE" ) );
   a->setStatusTip( QObject::tr( "TBR_WINDOW_TILE" ) );
-  connect( a, SIGNAL( activated() ), stWs, SLOT( tile() ) );
+  connect( a, SIGNAL( triggered() ), stWs, SLOT( tile() ) );
   myWindowPopup->addAction( a );
 
   myWindowPopup->addSeparator();

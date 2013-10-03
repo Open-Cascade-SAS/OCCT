@@ -28,61 +28,61 @@ void ApplicationWindow::createTranslatePopups()
 	QAction* a;
 	a = new QAction( QObject::tr("MNU_IMPORT_BREP"), this );
 	a->setStatusTip( QObject::tr("TBR_IMPORT_BREP") );
-	connect( a, SIGNAL( activated() ), this, SLOT( onImport() ) );
+	connect( a, SIGNAL( triggered() ), this, SLOT( onImport() ) );
 	myCasCadeTranslateActions.insert( FileImportBREPId, a );
 	myImportPopup->addAction( a );
 
 	a = new QAction( QObject::tr("MNU_EXPORT_BREP"), this );
 	a->setStatusTip( QObject::tr("TBR_EXPORT_BREP") );
-	connect( a, SIGNAL( activated() ), this, SLOT( onExport() ) );
+	connect( a, SIGNAL( triggered() ), this, SLOT( onExport() ) );
 	myCasCadeTranslateActions.insert( FileExportBREPId, a );
 	myExportPopup->addAction( a );
 
 	a = new QAction( QObject::tr("MNU_IMPORT_CSFDB"), this );
 	a->setStatusTip( QObject::tr("TBR_IMPORT_CSFDB") );
-	connect( a, SIGNAL( activated() ), this, SLOT( onImport() ) );
+	connect( a, SIGNAL( triggered() ), this, SLOT( onImport() ) );
 	myCasCadeTranslateActions.insert( FileImportCSFDBId, a );
 	myImportPopup->addAction( a );
 
 	a = new QAction( QObject::tr("MNU_EXPORT_CSFDB"), this );
 	a->setStatusTip( QObject::tr("TBR_EXPORT_CSFDB") );
-	connect( a, SIGNAL( activated() ), this, SLOT( onExport() ) );
+	connect( a, SIGNAL( triggered() ), this, SLOT( onExport() ) );
 	myCasCadeTranslateActions.insert( FileExportCSFDBId, a );
 	myExportPopup->addAction( a );
 
 	a = new QAction( QObject::tr("MNU_IMPORT_IGES"), this );
 	a->setStatusTip( QObject::tr("TBR_IMPORT_IGES") );
-	connect( a, SIGNAL( activated() ), this, SLOT( onImport() ) );
+	connect( a, SIGNAL( triggered() ), this, SLOT( onImport() ) );
 	myCasCadeTranslateActions.insert( FileImportIGESId, a );
 	myImportPopup->addAction( a );
 
 	a = new QAction( QObject::tr("MNU_EXPORT_IGES"), this );
 	a->setStatusTip( QObject::tr("TBR_EXPORT_IGES") );
-	connect( a, SIGNAL( activated() ), this, SLOT( onExport() ) );
+	connect( a, SIGNAL( triggered() ), this, SLOT( onExport() ) );
 	myCasCadeTranslateActions.insert( FileExportIGESId, a );
 	myExportPopup->addAction( a );
 
 	a = new QAction( QObject::tr("MNU_IMPORT_STEP"), this );
 	a->setStatusTip( QObject::tr("TBR_IMPORT_STEP") );
-	connect( a, SIGNAL( activated() ), this, SLOT( onImport() ) );
+	connect( a, SIGNAL( triggered() ), this, SLOT( onImport() ) );
 	myCasCadeTranslateActions.insert( FileImportSTEPId, a );
 	myImportPopup->addAction( a );
 
 	a = new QAction( QObject::tr("MNU_EXPORT_STEP"), this );
 	a->setStatusTip( QObject::tr("TBR_EXPORT_STEP") );
-	connect( a, SIGNAL( activated() ), this, SLOT( onExport() ) );
+	connect( a, SIGNAL( triggered() ), this, SLOT( onExport() ) );
 	myCasCadeTranslateActions.insert( FileExportSTEPId, a );
 	myExportPopup->addAction( a );
 
 	a = new QAction( QObject::tr("MNU_EXPORT_STL"), this );
 	a->setStatusTip( QObject::tr("TBR_EXPORT_STL") );
-	connect( a, SIGNAL( activated() ), this, SLOT( onExport() ) );
+	connect( a, SIGNAL( triggered() ), this, SLOT( onExport() ) );
 	myCasCadeTranslateActions.insert( FileExportSTLId, a );
 	myExportPopup->addAction( a );
 
 	a = new QAction( QObject::tr("MNU_EXPORT_VRML"), this );
 	a->setStatusTip( QObject::tr("TBR_EXPORT_VRML") );
-	connect( a, SIGNAL( activated() ), this, SLOT( onExport() ) );
+	connect( a, SIGNAL( triggered() ), this, SLOT( onExport() ) );
 	myCasCadeTranslateActions.insert( FileExportVRMLId, a );
 	myExportPopup->addAction( a );
 
@@ -90,7 +90,7 @@ void ApplicationWindow::createTranslatePopups()
 
 	a = new QAction( QObject::tr("MNU_EXPORT_IMAGE"), this );
 	a->setStatusTip( QObject::tr("TBR_EXPORT_IMAGE") );
-	connect( a, SIGNAL( activated() ), this, SLOT( onExportImage() ) );
+	connect( a, SIGNAL( triggered() ), this, SLOT( onExportImage() ) );
 	myExportPopup->addAction( a );
 }
 

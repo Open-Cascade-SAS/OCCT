@@ -1,6 +1,5 @@
 TEMPLATE = app
 CONFIG += debug_and_release qt
-QT += qt3support
 
 TARGET = IESample
 

@@ -481,7 +481,7 @@ Handle(TopTools_HSequenceOfShape) Translate::importCSFDB( const QString& file )
     if ( FSD_File::IsGoodFileType( (Standard_CString)file.toLatin1().constData() ) != Storage_VSOk )
 	    return aSequence;
 
-    static FSD_File fileDriver;
+    FSD_File fileDriver;
     TCollection_AsciiString aName( (Standard_CString)file.toLatin1().constData() );
     if ( fileDriver.Open( aName, Storage_VSRead ) != Storage_VSOk )
         return aSequence;
@@ -591,7 +591,7 @@ bool Translate::exportCSFDB( const QString& file, const Handle(TopTools_HSequenc
     if ( type < 0 )
         return false;
 
-    static FSD_File fileDriver;
+    FSD_File fileDriver;
 
     Handle(ShapeSchema) schema = new ShapeSchema();
     Handle(Storage_Data) data  = new Storage_Data();
