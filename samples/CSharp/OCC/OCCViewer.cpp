@@ -302,7 +302,7 @@ void OCCViewer::EraseObjects(void)
 	if (myAISContext.IsNull())
 		return;
 	for(myAISContext->InitCurrent();myAISContext->MoreCurrent();myAISContext->NextCurrent())
-        myAISContext->Erase(myAISContext->Current(),Standard_True,Standard_False);
+        myAISContext->Erase(myAISContext->Current(),Standard_True);
 	myAISContext->ClearCurrents();
 }
 
