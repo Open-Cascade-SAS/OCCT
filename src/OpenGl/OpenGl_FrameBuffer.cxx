@@ -106,7 +106,7 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
   glEnable (GL_TEXTURE_2D);
   glBindTexture (GL_TEXTURE_2D, myGlTextureId);
   theGlContext->extFBO->glFramebufferTexture2DEXT (GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, myGlTextureId, 0);
-  theGlContext->extFBO->glFramebufferRenderbufferEXT (GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, myGlFBufferId);
+  theGlContext->extFBO->glFramebufferRenderbufferEXT (GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, myGlDepthRBId);
   if (theGlContext->extFBO->glCheckFramebufferStatusEXT (GL_FRAMEBUFFER_EXT) != GL_FRAMEBUFFER_COMPLETE_EXT)
   {
     if (!isPowerOfTwo (mySizeX) || !isPowerOfTwo (mySizeY))
