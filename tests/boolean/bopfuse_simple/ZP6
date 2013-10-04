@@ -1,5 +1,5 @@
-puts "TODO DEBUG_OCC24121 Debian60-64: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO DEBUG_OCC24121 Debian60-64: Error : The area of the resulting shape is"
+puts "TODO ?DEBUG_OCC24121 Debian60-64: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO ?DEBUG_OCC24121 Debian60-64: Error : The area of the resulting shape is"
 
 #
 # *10603
@@ -17,10 +17,6 @@ if {[string compare $os "Debian50-64"] != 0 && [string compare $os "Debian60-64"
   if { [string compare $os "Mandriva2010" ] == 0 } {
     set inst "?"
   }
-  if { [string compare $os "MacOS"] == 0 } {
-    set inst "?"
-  }
-
   # CR23404
   puts "TODO ${inst}#22911 ${os}: Faulty shapes in variables faulty_1 to faulty_"
 }
@@ -33,7 +29,7 @@ if {  [string compare $os "CentOS55-64"] == 0
   ||  [string compare $os "SL51-64"] == 0 
   ||  [string compare $os "windows"] == 0 
 } {
-  puts "TODO OCC22911 $os: Error : The area of the resulting shape is"
+  puts "TODO ?OCC22911 $os: Error : The area of the resulting shape is"
 }
 
 ptorus a0 100 20
