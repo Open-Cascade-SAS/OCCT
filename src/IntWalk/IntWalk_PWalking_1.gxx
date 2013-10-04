@@ -379,11 +379,9 @@ Standard_Boolean IntWalk_PWalking::PerformFirstPoint  (const TColStd_Array1OfRea
   close = Standard_False;
   //
   Standard_Integer i;
-  Standard_Real aTmp;
   TColStd_Array1OfReal Param(1,4);
   //
   for (i=1; i<=4; ++i) {
-    aTmp = ParDep(i);
     Param(i) = ParDep(i);
   }
   //-- calculate the first solution point
@@ -393,9 +391,11 @@ Standard_Boolean IntWalk_PWalking::PerformFirstPoint  (const TColStd_Array1OfRea
   if (!myIntersectionOn2S.IsDone())  { 
     return Standard_False;
   }
+
   if (myIntersectionOn2S.IsEmpty()) {
     return Standard_False;
   }
+
   FirstPoint = myIntersectionOn2S.Point();
   return Standard_True;
 }
