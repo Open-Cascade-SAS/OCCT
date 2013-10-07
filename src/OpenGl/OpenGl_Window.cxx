@@ -221,7 +221,11 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
     }
     if (aClass.lpszClassName != NULL)
     {
-      aWinTmp = CreateWindowExW(WS_EX_TOOLWINDOW | WS_EX_WINDOWEDGE | WS_EX_NOACTIVATE,
+      DWORD anExStyle = WS_EX_TOOLWINDOW | WS_EX_WINDOWEDGE;
+    #if (_WIN32_WINNT >= 0x0500)
+      anExStyle |= WS_EX_NOACTIVATE;
+    #endif
+      aWinTmp = CreateWindowExW(anExStyle,
                                 aClass.lpszClassName, L"OpenGl_WindowTmp",
                                 WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_DISABLED,
                                 2, 2, 4, 4,
