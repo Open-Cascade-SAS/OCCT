@@ -1697,13 +1697,13 @@ void BRepBuilderAPI_Sewing::Init(const Standard_Real tolerance,
 			   const Standard_Boolean optionNonmanifold)
 {
   // Set tolerance and Perform options
-  myTolerance      = tolerance;
+  myTolerance      = Max (tolerance, Precision::Confusion());
   mySewing         = optionSewing;
   myAnalysis       = optionAnalysis;
   myCutting        = optionCutting;
   myNonmanifold    = optionNonmanifold;
   // Set min and max tolerances
-  myMinTolerance   = tolerance*1e-4; //szv: proposal
+  myMinTolerance   = myTolerance * 1e-4; //szv: proposal
   if (myMinTolerance < Precision::Confusion()) myMinTolerance = Precision::Confusion();
   myMaxTolerance   = Precision::Infinite();
   // Set other modes
