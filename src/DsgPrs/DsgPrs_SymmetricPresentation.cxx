@@ -137,17 +137,17 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
   Standard_Real D1(aAxis.Distance(AttachmentPoint1)),coeff(.5);
   gp_Pnt pint,Pj_P1,P1Previous = P1;
   
-  //=======================================================
-  // TO AVOID CROSSING
-  //        P1  -=- P2                P2  -=- P1         
-  //          \<-->/                    |<-->|
-  //           \  /                     |    |
-  //            \/                      |    | 
-  //            /\                      |    |
-  //           /  \                     |    |
-  // Pattach2 /____\ Pattach1 Pattach2 /______\ Pattach1
-  //         /  NO \                  /   YES  \
-  //=======================================================
+  /*=======================================================
+   TO AVOID CROSSING
+          P1  -=- P2                P2  -=- P1         
+            \<-->/                    |<-->|
+             \  /                     |    |
+              \/                      |    | 
+              /\                      |    |
+             /  \                     |    |
+   Pattach2 /____\ Pattach1 Pattach2 /______\ Pattach1
+           /  NO \                  /   YES  \	
+  =======================================================*/
 
   Standard_Boolean Cross = Standard_False;
   gp_Vec Attch1_PjAttch1(AttachmentPoint1,PjAttachPnt1);
@@ -159,13 +159,13 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
     P1       = P2;
     P2       = PntTempo;
   }  
-  //===================================
-  // FRACTURES OF TRAITS OF CALL    
-  //        /             \         
-  //       /               \
-  //       |      -=-      |
-  //       |<------------->| 
-  //===================================
+  /*===================================
+   FRACTURES OF TRAITS OF CALL    
+          /             \		
+         /               \	
+         |      -=-      |
+         |<------------->| 
+  ===================================*/
 
   gp_Vec        Vfix;
   Standard_Real alpha,b;
@@ -240,14 +240,14 @@ void DsgPrs_SymmetricPresentation::Add (const Handle(Prs3d_Presentation)& aPrese
 	Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
   }
 
-  //===================================
-  // FRACTURES OF PROCESSING OF CALL    
-  //              -=-    
-  //         |<--------->| 
-  //         |           |   
-  //        /             \         
-  //       /               \
-  //===================================
+  /*===================================
+   FRACTURES OF PROCESSING OF CALL    
+                -=-    
+           |<--------->| 
+           |           |   
+          /             \	
+         /               \	 
+  ===================================*/
   else if (aAxis.Distance(P1) < D1*(1 - coeff) || Cross) {
 
     //------ PROCESSING OF FACE ------------

@@ -288,7 +288,7 @@ int LDOM_CharReference::myTab [256] = {
   NORMAL_C,     // 059: Y
   NORMAL_C,     // 05a: Z
   NORMAL_C,     // 05b: [
-  NORMAL_C,     // 05c: \ 
+  NORMAL_C,     /* 05c: \	*/
   NORMAL_C,     // 05d: ]
   NORMAL_C,     // 05e: ^
   NORMAL_C,     // 05f: _
