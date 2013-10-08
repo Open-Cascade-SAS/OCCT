@@ -30,7 +30,11 @@ OpenGl_Caps::OpenGl_Caps()
 : vboDisable        (Standard_False),
   pntSpritesDisable (Standard_False),
   contextStereo     (Standard_False),
+#ifdef DEB
+  contextDebug      (Standard_True),
+#else
   contextDebug      (Standard_False),
+#endif
   contextNoAccel    (Standard_False)
 {
   //

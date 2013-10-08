@@ -634,7 +634,9 @@ void OpenGl_Context::init()
     {
       // setup default callback
       arbDbg->glDebugMessageCallbackARB (debugCallbackWrap, this);
+    #ifdef DEB
       glEnable (GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
+    #endif
     }
   }
 
