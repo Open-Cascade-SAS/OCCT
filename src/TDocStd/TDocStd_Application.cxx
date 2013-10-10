@@ -163,6 +163,7 @@ void TDocStd_Application::Close(const Handle(TDocStd_Document)& aDoc)
     Handle(TDocStd_Document) emptyDoc;
     Owner->SetDocument(emptyDoc);
   }
+  aDoc->BeforeClose();
   CDF_Application::Close(aDoc);
 }
 #endif

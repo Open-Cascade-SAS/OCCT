@@ -71,23 +71,6 @@ Handle(TDocStd_Document) TDocStd_Document::Get (const TDF_Label& acces)
 }
 
 //=======================================================================
-//function : Destroy
-//purpose  : 
-//=======================================================================
-void TDocStd_Document::Destroy()
-{
-  SetModificationMode(Standard_False);
-  myData->Root().ForgetAllAttributes(Standard_True);
-  myUndoTransaction.Abort();
-  if(!myUndoFILO.IsEmpty())
-    myUndoFILO.Clear();
-  ClearUndos();
-  myData.Nullify();
-  
-}
-
-
-//=======================================================================
 //function : TDocStd_Document
 //purpose  : 
 //=======================================================================
@@ -911,3 +894,15 @@ void TDocStd_Document::RemoveFirstUndo() {
   myUndos.RemoveFirst();
 }
 
+//=======================================================================
+//function : BeforeClose
+//purpose  : 
+//=======================================================================
+void TDocStd_Document::BeforeClose() 
+{
+  SetModificationMode(Standard_False);
+  AbortTransaction();
+  if(myIsNestedTransactionMode)
+	 myUndoFILO.Clear();
+  ClearUndos();
+}

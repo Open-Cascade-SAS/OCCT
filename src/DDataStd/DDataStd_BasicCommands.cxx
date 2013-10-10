@@ -98,6 +98,7 @@
 #include <TDataStd_ListIteratorOfListOfByte.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
 #include <TColStd_ListIteratorOfListOfReal.hxx>
+#include <TDataStd_ReferenceArray.hxx>
 
 //=======================================================================
 //function : DDataStd_SetInteger
@@ -2596,6 +2597,67 @@ static Standard_Integer DDataStd_GetNDRealArray (Draw_Interpretor& di,
 }
 
 //=======================================================================
+//function : SetRefArray (DF, entry , From, To,  elmt1, elmt2, ...
+//=======================================================================
+static Standard_Integer DDataStd_SetRefArray (Draw_Interpretor& di,
+                                               Standard_Integer, 
+                                               const char** arg) 
+{   
+
+  Handle(TDF_Data) DF;
+  if (!DDF::GetDF(arg[1],DF))  return 1;  
+  TDF_Label label; 
+  DDF::AddLabel(DF, arg[2], label);
+ 
+  Standard_Integer From = Draw::Atoi(arg[3]), To = Draw::Atoi( arg[4] ), j;
+  di << "RefArray with bounds from = " << From  << " to = " << To  << "\n";
+
+  Handle(TDataStd_ReferenceArray) A = TDataStd_ReferenceArray::Set(label, From, To);
+  
+  j = 5;
+  for(Standard_Integer i = From; i<=To; i++) { 
+    TDF_Label aRefLabel; 
+    DDF::AddLabel(DF, arg[j], aRefLabel);
+    A->SetValue(i, aRefLabel); 
+    j++;
+  }
+  return 0;  
+} 
+//=======================================================================
+//function : GetRefArray (DF, entry )
+//=======================================================================
+static Standard_Integer DDataStd_GetRefArray (Draw_Interpretor& di,
+                                              Standard_Integer, 
+                                              const char** arg) 
+{   
+
+  Handle(TDF_Data) DF;
+  if (!DDF::GetDF(arg[1],DF))  return 1;  
+  TDF_Label label;
+  if( !DDF::FindLabel(DF, arg[2], label) ) {
+    di << "No label for entry"  << "\n";
+    return 1;
+  }
+ 
+  Handle(TDataStd_ReferenceArray) A;
+  if ( !label.FindAttribute(TDataStd_ReferenceArray::GetID(), A) ) { 
+    di << "There is no TDataStd_ReferenceArray under label"  << "\n";
+    return 1;
+  }
+  
+  for(Standard_Integer i = A->Lower(); i<=A->Upper(); i++){ 
+    const TDF_Label& aLabel = A->Value(i);
+    TCollection_AsciiString entry;
+    TDF_Tool::Entry(aLabel, entry);
+    di  <<  entry.ToCString();
+    if(i<A->Upper())  
+      di<<" ";
+  }
+  di<<"\n";
+  return 0; 
+} 
+
+//=======================================================================
 //function : BasicCommands
 //purpose  : 
 //=======================================================================
@@ -2635,6 +2697,10 @@ void DDataStd::BasicCommands (Draw_Interpretor& theCommands)
   theCommands.Add ("SetExtStringArray", 
                    "SetExtStringArray (DF, entry, isDelta, From, To, elmt1, elmt2, ...  )",
                    __FILE__, DDataStd_SetExtStringArray, g);
+
+  theCommands.Add ("SetRefArray", 
+                   "SetRefArray (DF, entry,  From, To, lab1, lab2,..  )",
+                   __FILE__, DDataStd_SetRefArray, g);
 
   theCommands.Add ("SetIntPackedMap", 
                    "SetIntPackedMap (DF, entry, isDelta, key1, key2, ...  )",
@@ -2702,6 +2768,10 @@ void DDataStd::BasicCommands (Draw_Interpretor& theCommands)
   theCommands.Add ("GetExtStringArray", 
                    "GetExtStringArray (DF, entry )",
                    __FILE__, DDataStd_GetExtStringArray, g);
+
+  theCommands.Add ("GetRefArray", 
+                   "GetRefArray (DF, entry )",
+                   __FILE__, DDataStd_GetRefArray, g);
 
   theCommands.Add ("GetIntPackedMap", 
                    "GetIntPackedMap (DF, entry  )",

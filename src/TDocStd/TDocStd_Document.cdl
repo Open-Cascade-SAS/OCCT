@@ -49,7 +49,7 @@ uses Data           from TDF,
 
 is
    
-    Destroy (me : mutable) is redefined protected;
+    -- Destroy (me : mutable) is redefined protected;
     ---Purpose: Will Abort any execution, clear fields
     ---C++: alias ~
 
@@ -319,7 +319,10 @@ is
     ModificationMode (me) returns Boolean from Standard;
     ---Purpose: returns True if changes allowed only inside transactions
     ---C++: inline
-    
+
+    BeforeClose(me : mutable) is virtual;
+    ---Purpose: Prepares document for closing
+
 fields
 
     ---Purpose: storage format 
