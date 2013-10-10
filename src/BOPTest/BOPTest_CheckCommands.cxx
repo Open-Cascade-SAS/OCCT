@@ -264,6 +264,7 @@ Standard_Integer bopargcheck (Draw_Interpretor& di, Standard_Integer n,  const c
     di << " E (disable test possibility to merge edges)" << "\n";
     di << " I (disable self-interference test)" << "\n";
     di << " P (disable shape type test)" << "\n";
+    di << " C (disable test for shape continuity)" << "\n";
     di << " For example: \"bopargcheck s1 s2 /RI\" disables small edge detection and self-intersection detection" << "\n";
     di << " default - all options are enabled" << "\n" << "\n";
     di << " #<Additional Test Options>" << "\n";
@@ -345,6 +346,9 @@ Standard_Integer bopargcheck (Draw_Interpretor& di, Standard_Integer n,  const c
   // set default options (always tested!) for single and couple shapes
   aChecker.ArgumentTypeMode() = Standard_True;
   aChecker.SelfInterMode()    = Standard_True;
+  aChecker.SmallEdgeMode()    = Standard_True;
+  aChecker.RebuildFaceMode()  = Standard_True;
+  aChecker.ContinuityMode()   = Standard_True;
 
   // test & set options and operation for two shapes
   if(!aS22.IsNull()) {
@@ -379,91 +383,45 @@ Standard_Integer bopargcheck (Draw_Interpretor& di, Standard_Integer n,  const c
     else
       aChecker.OperationType() = BOPAlgo_SECTION;
 
-    aChecker.SmallEdgeMode()   = Standard_True;
-    aChecker.RebuildFaceMode() = Standard_True;
     aChecker.TangentMode()     = Standard_True;
     aChecker.MergeVertexMode() = Standard_True;
     aChecker.MergeEdgeMode()   = Standard_True;
-
-    // set options (default - all ON)
-    if(isOP) {
-      Standard_Integer ind = 1;
-      while(a[indxOP][ind] != 0) {
-        if(a[indxOP][ind] == 'R' || a[indxOP][ind] == 'r') {
-          //aChecker.SmallEdgeMode() = Standard_True;
-          aChecker.SmallEdgeMode() = Standard_False;
-        }
-        else if(a[indxOP][ind] == 'F' || a[indxOP][ind] == 'f') {
-          //aChecker.RebuildFaceMode() = Standard_True;
-          aChecker.RebuildFaceMode() = Standard_False;
-        }
-        else if(a[indxOP][ind] == 'T' || a[indxOP][ind] == 't') {
-          //aChecker.TangentMode() = Standard_True;
-          aChecker.TangentMode() = Standard_False;
-        }
-        else if(a[indxOP][ind] == 'V' || a[indxOP][ind] == 'v') {
-          //aChecker.MergeVertexMode() = Standard_True;
-          aChecker.MergeVertexMode() = Standard_False;
-        }
-        else if(a[indxOP][ind] == 'E' || a[indxOP][ind] == 'e') {
-          //aChecker.MergeEdgeMode() = Standard_True;
-          aChecker.MergeEdgeMode() = Standard_False;
-        }
-        else if(a[indxOP][ind] == 'I' || a[indxOP][ind] == 'i') {
-          aChecker.SelfInterMode() = Standard_False;
-        }
-        else if(a[indxOP][ind] == 'P' || a[indxOP][ind] == 'p') {
-          aChecker.ArgumentTypeMode() = Standard_False;
-        }
-        else {
-          di << "Error: invalid test option(s)!" << "\n";
-          di << "Type bopargcheck without arguments for more information" << "\n";
-          return 1;
-        }
-        ind++;
-      }
-    }
-    else {
-      // default test mode (all - ON)
-      aChecker.SmallEdgeMode()   = Standard_True;
-      aChecker.RebuildFaceMode() = Standard_True;
-      aChecker.TangentMode()     = Standard_True;
-      aChecker.MergeVertexMode() = Standard_True;
-      aChecker.MergeEdgeMode()   = Standard_True;
-    }
   }
-  else {
-    // check type and self-interference mode for single shape test
-    // also check small edges and check faces
-      aChecker.SmallEdgeMode()   = Standard_True;
-      aChecker.RebuildFaceMode() = Standard_True;
-
-     if(isOP) {
-      Standard_Integer ind = 1;
-      while(a[indxOP][ind] != 0) {
-        if(a[indxOP][ind] == 'R' || a[indxOP][ind] == 'r') {
-        }
-        else if(a[indxOP][ind] == 'F' || a[indxOP][ind] == 'f') {
-        }
-        else if(a[indxOP][ind] == 'T' || a[indxOP][ind] == 't') {
-        }
-        else if(a[indxOP][ind] == 'V' || a[indxOP][ind] == 'v') {
-        }
-        else if(a[indxOP][ind] == 'E' || a[indxOP][ind] == 'e') {
-        }
-        else if(a[indxOP][ind] == 'I' || a[indxOP][ind] == 'i') {
-          aChecker.SelfInterMode() = Standard_False;
-        }
-        else if(a[indxOP][ind] == 'P' || a[indxOP][ind] == 'p') {
-          aChecker.ArgumentTypeMode() = Standard_False;
-        }
-        else {
-          di << "Error: invalid test option(s)!" << "\n";
-          di << "Type bopargcheck without arguments for more information" << "\n";
-          return 1;
-        }
-        ind++;
+  
+  // set options (default - all ON)
+  if(isOP) {
+    Standard_Integer ind = 1;
+    while(a[indxOP][ind] != 0) {
+      if(a[indxOP][ind] == 'R' || a[indxOP][ind] == 'r') {
+        aChecker.SmallEdgeMode() = Standard_False;
       }
+      else if(a[indxOP][ind] == 'F' || a[indxOP][ind] == 'f') {
+        aChecker.RebuildFaceMode() = Standard_False;
+      }
+      else if(a[indxOP][ind] == 'T' || a[indxOP][ind] == 't') {
+        aChecker.TangentMode() = Standard_False;
+      }
+      else if(a[indxOP][ind] == 'V' || a[indxOP][ind] == 'v') {
+        aChecker.MergeVertexMode() = Standard_False;
+      }
+      else if(a[indxOP][ind] == 'E' || a[indxOP][ind] == 'e') {
+        aChecker.MergeEdgeMode() = Standard_False;
+      }
+      else if(a[indxOP][ind] == 'I' || a[indxOP][ind] == 'i') {
+        aChecker.SelfInterMode() = Standard_False;
+      }
+      else if(a[indxOP][ind] == 'P' || a[indxOP][ind] == 'p') {
+        aChecker.ArgumentTypeMode() = Standard_False;
+      }
+      else if(a[indxOP][ind] == 'C' || a[indxOP][ind] == 'c') {
+        aChecker.ContinuityMode() = Standard_False;
+      }
+      else {
+        di << "Error: invalid test option(s)!" << "\n";
+        di << "Type bopargcheck without arguments for more information" << "\n";
+        return 1;
+      }
+      ind++;
     }
   }
 
@@ -507,6 +465,7 @@ Standard_Integer bopargcheck (Draw_Interpretor& di, Standard_Integer n,  const c
       Standard_Integer S2_BadType = 0, S2_SelfInt = 0, S2_SmalE = 0, S2_BadF = 0, S2_BadV = 0, S2_BadE = 0;
       Standard_Integer S2_SelfIntAll = 0, S2_SmalEAll = 0, S2_BadFAll = 0, S2_BadVAll = 0, S2_BadEAll = 0;
       Standard_Integer S1_OpAb = 0, S2_OpAb = 0;
+      Standard_Integer S1_C0 = 0, S2_C0 = 0, S1_C0All = 0, S2_C0All = 0;
       Standard_Boolean hasUnknown = Standard_False;
 
       TCollection_AsciiString aS1SIBaseName("s1si_");
@@ -514,11 +473,13 @@ Standard_Integer bopargcheck (Draw_Interpretor& di, Standard_Integer n,  const c
       TCollection_AsciiString aS1BFBaseName("s1bf_");
       TCollection_AsciiString aS1BVBaseName("s1bv_");
       TCollection_AsciiString aS1BEBaseName("s1be_");
+      TCollection_AsciiString aS1C0BaseName("s1C0_");
       TCollection_AsciiString aS2SIBaseName("s2si_");
       TCollection_AsciiString aS2SEBaseName("s2se_");
       TCollection_AsciiString aS2BFBaseName("s2bf_");
       TCollection_AsciiString aS2BVBaseName("s2bv_");
       TCollection_AsciiString aS2BEBaseName("s2be_");
+      TCollection_AsciiString aS2C0BaseName("s2C0_");
 
       for(; anIt.More(); anIt.Next()) {
         const BOPAlgo_CheckResult& aResult = anIt.Value();
@@ -608,6 +569,21 @@ Standard_Integer bopargcheck (Draw_Interpretor& di, Standard_Integer n,  const c
           // not yet implemented
         }
           break;
+        case BOPAlgo_GeomAbs_C0: {
+          if(!aSS1.IsNull()) {
+            S1_C0++;
+            if(isL1) {
+              MakeShapeForFullOutput(aS1C0BaseName, S1_C0, aLS1, S1_C0All, di);
+            }
+          }
+          if(!aSS2.IsNull()) {
+            S2_C0++;
+            if(isL2) {
+              MakeShapeForFullOutput(aS2C0BaseName, S2_C0, aLS2, S2_C0All, di);
+            }
+          }
+        }
+          break;
         case BOPAlgo_OperationAborted: {
           if(!aSS1.IsNull()) S1_OpAb++;
           if(!aSS2.IsNull()) S2_OpAb++;
@@ -621,9 +597,9 @@ Standard_Integer bopargcheck (Draw_Interpretor& di, Standard_Integer n,  const c
         } // switch
       }// faulties
 
-      Standard_Integer FS1 = S1_SelfInt + S1_SmalE + S1_BadF + S1_BadV + S1_BadE + S1_OpAb;
+      Standard_Integer FS1 = S1_SelfInt + S1_SmalE + S1_BadF + S1_BadV + S1_BadE + S1_OpAb + S1_C0;
       FS1 += (S1_BadType != 0) ? 1 : 0;
-      Standard_Integer FS2 = S2_SelfInt + S2_SmalE + S2_BadF + S2_BadV + S2_BadE + S2_OpAb;
+      Standard_Integer FS2 = S2_SelfInt + S2_SmalE + S2_BadF + S2_BadV + S2_BadE + S2_OpAb + S2_C0;
       FS2 += (S2_BadType != 0) ? 1 : 0;
       
       // output for first shape
@@ -690,6 +666,16 @@ Standard_Integer bopargcheck (Draw_Interpretor& di, Standard_Integer n,  const c
         di << "Too close edges                 : " << CString6;
         if(S1_BadE != 0)
           di << "  Cases(" << S1_BadE << ")  Total shapes(" << S1_BadEAll << ")" << "\n";
+        else
+          di << "\n";
+        Standard_CString CString15;
+        if (S1_C0 != 0)
+          CString15="YES";
+        else
+          CString15="NO";
+        di << "Shapes with Continuity C0       : " << CString15;
+        if(S1_C0 != 0)
+          di << "  Cases(" << S1_C0 << ")  Total shapes(" << S1_C0All << ")" << "\n";
         else
           di << "\n";
       }
@@ -760,6 +746,16 @@ Standard_Integer bopargcheck (Draw_Interpretor& di, Standard_Integer n,  const c
         di << "Too close edges                 : " << CString12;
         if(S2_BadE != 0)
           di << "  Cases(" << S2_BadE << ")  Total shapes(" << S2_BadEAll << ")" << "\n";
+        else
+          di << "\n";
+        Standard_CString CString16;
+        if (S2_C0 != 0)
+          CString16="YES";
+        else
+          CString16="NO";
+        di << "Shapes with Continuity C0       : " << CString16;
+        if(S2_C0 != 0)
+          di << "  Cases(" << S2_C0 << ")  Total shapes(" << S2_C0All << ")" << "\n";
         else
           di << "\n";
 

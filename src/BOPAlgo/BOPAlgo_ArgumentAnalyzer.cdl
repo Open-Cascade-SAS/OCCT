@@ -113,6 +113,13 @@ is
     ---Purpose: Returns (modifiable) mode that means
     --          checking of problem of merging edges.
 
+    ContinuityMode(me: in out)
+    returns Boolean from Standard;
+    ---C++: return &
+    ---C++: inline
+    ---Purpose: Returns (modifiable) mode that means
+    --          checking of problem of continuity of the shape.
+
     ---
     Perform(me: out);
     ---Purpose: performs analysis
@@ -151,8 +158,11 @@ is
     TestMergeEdge(me: out)
     is protected;
 
---    TestMergeFace(me: out)
---    is protected;
+    TestContinuity(me: out)
+    is protected;
+
+--  TestMergeFace(me: out)
+--  is protected;
 
 
 fields
@@ -167,7 +177,8 @@ fields
     myRebuildFaceMode  : Boolean   from Standard;
     myTangentMode      : Boolean   from Standard;
     myMergeVertexMode  : Boolean   from Standard;
-    myMergeEdgeMode    : Boolean   from Standard; 
+    myMergeEdgeMode    : Boolean   from Standard;
+    myContinuityMode   : Boolean   from Standard;
     myEmpty1,myEmpty2  : Boolean   from Standard; 
     myResult      : ListOfCheckResult from BOPAlgo; 
     

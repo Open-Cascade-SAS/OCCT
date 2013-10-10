@@ -60,6 +60,7 @@
 #include <BOPTools_AlgoTools3D.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <BOPCol_ListOfShape.hxx>
+#include <Geom_Surface.hxx>
 
 // ================================================================================
 // function: Constructor
@@ -75,6 +76,7 @@ myRebuildFaceMode(Standard_False),
 myTangentMode(Standard_False),
 myMergeVertexMode(Standard_False),
 myMergeEdgeMode(Standard_False),
+myContinuityMode(Standard_False),
 myEmpty1(Standard_False),
 myEmpty2(Standard_False)
 // myMergeFaceMode(Standard_False)
@@ -192,6 +194,11 @@ void BOPAlgo_ArgumentAnalyzer::Perform()
     if(myMergeEdgeMode) {
       if(!(!myResult.IsEmpty() && myStopOnFirst))
         TestMergeEdge();
+    }
+
+    if(myContinuityMode) {
+      if(!(!myResult.IsEmpty() && myStopOnFirst))
+        TestContinuity();
     }
   }
   catch(Standard_Failure) {
@@ -381,16 +388,13 @@ void BOPAlgo_ArgumentAnalyzer::TestSelfInterferences()
         }
         //
         BOPAlgo_CheckResult aResult;
-        if(ii == 0)
-          aResult.SetShape1(myShape1);
-        else
-          aResult.SetShape2(myShape2);
-
         if(ii == 0) {
+          aResult.SetShape1(myShape1);
           aResult.AddFaultyShape1(aS1);
           aResult.AddFaultyShape1(aS2);
         }
         else {
+          aResult.SetShape2(myShape2);
           aResult.AddFaultyShape2(aS1);
           aResult.AddFaultyShape2(aS2);
         }
@@ -400,15 +404,12 @@ void BOPAlgo_ArgumentAnalyzer::TestSelfInterferences()
     }
     if (iErr) {
       BOPAlgo_CheckResult aResult;
-      if(ii == 0)
-        aResult.SetShape1(myShape1);
-      else
-        aResult.SetShape2(myShape2);
-      
       if(ii == 0) {
+        aResult.SetShape1(myShape1);
         aResult.AddFaultyShape1(myShape1);
       }
       else {
+        aResult.SetShape2(myShape2);
         aResult.AddFaultyShape2(myShape2);
       }
       aResult.SetCheckStatus(BOPAlgo_OperationAborted);
@@ -821,6 +822,64 @@ void BOPAlgo_ArgumentAnalyzer::TestMergeVertex()
 void BOPAlgo_ArgumentAnalyzer::TestMergeEdge() 
 {
   TestMergeSubShapes(TopAbs_EDGE); 
+}
+
+// ================================================================================
+// function: TestContinuity
+// purpose:
+// ================================================================================
+void BOPAlgo_ArgumentAnalyzer::TestContinuity() 
+{
+  Standard_Integer i;
+  Standard_Real f, l;
+  TopExp_Explorer aExp;
+  BOPCol_MapIteratorOfMapOfShape aIt;
+  //
+  for (i = 0; i < 2; ++i) {
+    const TopoDS_Shape& aS = !i ? myShape1 : myShape2;
+    if(aS.IsNull()) {
+      continue;
+    }
+    //
+    BOPCol_MapOfShape aMS;
+    //Edges
+    aExp.Init(aS, TopAbs_EDGE);
+    for (; aExp.More(); aExp.Next()) {
+      const TopoDS_Edge& aE = *(TopoDS_Edge*)&aExp.Current();
+      if (BRep_Tool::Degenerated(aE)) {
+        continue;
+      }
+      const Handle(Geom_Curve)& aC = BRep_Tool::Curve(aE, f, l);
+      if (aC->Continuity() == GeomAbs_C0) {
+        aMS.Add(aE);
+      }
+    }
+    //Faces
+    aExp.Init(aS, TopAbs_FACE);
+    for (; aExp.More(); aExp.Next()) {
+      const TopoDS_Face& aF = *(TopoDS_Face*)&aExp.Current();
+      const Handle(Geom_Surface)& aS = BRep_Tool::Surface(aF);
+      if (aS->Continuity() == GeomAbs_C0) {
+        aMS.Add(aF);
+      }
+    }
+    //
+    //add shapes with continuity C0 to result
+    aIt.Initialize(aMS);
+    for (; aIt.More(); aIt.Next()) {
+      const TopoDS_Shape& aFS = aIt.Value();
+      BOPAlgo_CheckResult aResult;
+      if(i == 0) {
+        aResult.SetShape1(myShape1);
+        aResult.AddFaultyShape1(aFS);
+      } else {
+        aResult.SetShape2(myShape2);
+        aResult.AddFaultyShape2(aFS);
+      }
+      aResult.SetCheckStatus(BOPAlgo_GeomAbs_C0);
+      myResult.Append(aResult);
+    }
+  }
 }
 
 // ================================================================================

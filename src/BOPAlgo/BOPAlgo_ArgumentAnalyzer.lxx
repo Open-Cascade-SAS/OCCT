@@ -56,6 +56,11 @@ inline Standard_Boolean& BOPAlgo_ArgumentAnalyzer::MergeEdgeMode()
   return myMergeEdgeMode;
 }
 
+inline Standard_Boolean& BOPAlgo_ArgumentAnalyzer::ContinuityMode() 
+{
+  return myContinuityMode;
+}
+
 // inline Standard_Boolean& BOPAlgo_ArgumentAnalyzer::MergeFaceMode() 
 // {
 //   return myMergeFaceMode;
