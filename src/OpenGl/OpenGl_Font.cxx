@@ -21,6 +21,7 @@
 
 #include <OpenGl_Context.hxx>
 #include <Standard_Assert.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 IMPLEMENT_STANDARD_HANDLE (OpenGl_Font, OpenGl_Resource)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Font, OpenGl_Resource)
@@ -123,6 +124,13 @@ bool OpenGl_Font::createTexture (const Handle(OpenGl_Context)& theCtx)
   if (!aBlackImg.InitZero (Image_PixMap::ImgGray, Standard_Size(aTextureSizeX), Standard_Size(aTextureSizeY))
    || !aTexture->Init (theCtx, aBlackImg, Graphic3d_TOT_2D)) // myTextureFormat
   {
+    TCollection_ExtendedString aMsg;
+    aMsg += "New texture intialization of size ";
+    aMsg += aTextureSizeX;
+    aMsg += "x";
+    aMsg += aTextureSizeY;
+    aMsg += " for textured font has failed.";
+    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB, aMsg);
     return false;
   }
 

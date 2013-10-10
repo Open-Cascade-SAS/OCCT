@@ -29,6 +29,7 @@
 #include <NCollection_Map.hxx>
 #include <NCollection_Handle.hxx>
 #include <NCollection_Queue.hxx>
+#include <Message.hxx>
 #include <OpenGl_Caps.hxx>
 #include <OpenGl_Resource.hxx>
 #include <Standard_Transient.hxx>
@@ -260,6 +261,26 @@ public:
   //! @return value for GL_MAX_CLIP_PLANES
   Standard_EXPORT Standard_Integer MaxClipPlanes() const;
 
+public:
+
+  //! @return messanger instance
+  inline const Handle_Message_Messenger& Messanger() const
+  {
+    return Message::DefaultMessenger();
+  }
+
+  //! Callback for GL_ARB_debug_output extension
+  //! @param theSource   message source   within GL_DEBUG_SOURCE_   enumeration
+  //! @param theType     message type     within GL_DEBUG_TYPE_     enumeration
+  //! @param theId       message ID       within source
+  //! @param theSeverity message severity within GL_DEBUG_SEVERITY_ enumeration
+  //! @param theMessage  the message itself
+  Standard_EXPORT void PushMessage (const unsigned int theSource,
+                                    const unsigned int theType,
+                                    const unsigned int theId,
+                                    const unsigned int theSeverity,
+                                    const TCollection_ExtendedString& theMessage);
+
 private:
 
   //! Wrapper to system function to retrieve GL function pointer by name.
@@ -333,7 +354,6 @@ private: // context info
   Standard_Integer myGlVerMinor;    //!< cached GL version minor number
   Standard_Boolean myIsFeedback;    //!< flag indicates GL_FEEDBACK mode
   Standard_Boolean myIsInitialized; //!< flag indicates initialization state
-
 
 private:
 

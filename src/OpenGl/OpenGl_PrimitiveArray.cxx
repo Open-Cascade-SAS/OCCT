@@ -706,7 +706,14 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
    && aCtx->core15 != NULL
    && (myDrawMode != GL_POINTS || anAspectMarker->Sprite().IsNull() || !anAspectMarker->Sprite()->IsDisplayList()))
   {
-    BuildVBO (theWorkspace);
+    if (!BuildVBO (theWorkspace))
+    {
+      TCollection_ExtendedString aMsg;
+      aMsg += "VBO creation for Primitive Array has failed for ";
+      aMsg += myPArray->num_vertexs;
+      aMsg += " vertices. Out of memory?";
+      aCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_PERFORMANCE_ARB, 0, GL_DEBUG_SEVERITY_LOW_ARB, aMsg);
+    }
     myIsVboInit = Standard_True;
   }
 
