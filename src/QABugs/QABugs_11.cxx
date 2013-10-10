@@ -2464,13 +2464,13 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       di << " 4.0 / 0.0 = " << res << "  Does not Caught... KO"<< "\n";
       Succes = Standard_False;
     }
-#if defined(SOLARIS) || defined(WNT)
-    catch(Standard_DivideByZero)
-#else
-    catch(Standard_NumericError)
-#endif
+    catch(Standard_DivideByZero) // Solaris, Windows w/o SSE2
     {
-      di << " Ok"<< "\n";
+      di << " Ok" << "\n";
+    }
+    catch(Standard_NumericError) // Linux, Windows with SSE2
+    {
+      di << " Ok" << "\n";
     }
     catch(Standard_Failure) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
@@ -2519,13 +2519,13 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       di << "-- "<<res<<"="<<r<<"*"<<r<<"   Does not Caught... KO"<< "\n";
       Succes = Standard_False;
     }
-#if defined(SOLARIS) || defined(WNT)
-    catch(Standard_Overflow)
-#else
-    catch(Standard_NumericError)
-#endif
+    catch(Standard_Overflow) // Solaris, Windows w/o SSE2
     {
-      di << " Ok"<< "\n";
+      di << " Ok" << "\n";
+    }
+    catch(Standard_NumericError) // Linux, Windows with SSE2
+    {
+      di << " Ok" << "\n";
     }
     catch(Standard_Failure) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
@@ -2549,13 +2549,13 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
       //++++ Succes = Standard_False;
       di<<" -- "<<res<<"="<<r<<"*"<<r<<"   Does not Caught... (But) Ok"<<"\n";
     }
-#if defined(SOLARIS) || defined(WNT)
-    catch(Standard_Underflow)
-#else
-    catch(Standard_NumericError)
-#endif
+    catch(Standard_Underflow) // could be on Solaris, Windows w/o SSE2
     {
-      di << " Ok"<< "\n";
+      di << " Ok" << "\n";
+    }
+    catch(Standard_NumericError) // could be on Linux, Windows with SSE2
+    {
+      di << " Ok" << "\n";
     }
     catch(Standard_Failure) {
       //cout << " Caught (" << Standard_Failure::Caught() << ")... KO" << endl;
