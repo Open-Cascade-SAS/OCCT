@@ -1,0 +1,32 @@
+puts "============"
+puts "OCC24181 Render text as BRep (check alphabet)"
+puts "============"
+puts ""
+pload MODELING
+pload VISUALIZATION
+
+set THE_FONT_NAME Times-Roman
+set THE_FONT_SIZE 24
+set THE_TEXT {
+`1234567890-=
+~!@#$%^&*()_+
+qwertyuiop[]\\
+QWERTYUIOP{}|
+asdfghjkl;'
+ASDFGHJKL:"
+zxcvbnm,./
+ZXCVBNM<>?§
+}
+
+text2brep aBTextN $THE_TEXT $THE_FONT_NAME $THE_FONT_SIZE regular composite=0
+text2brep aBTextC $THE_TEXT $THE_FONT_NAME $THE_FONT_SIZE regular composite=1
+checkshape aBTextN
+checkshape aBTextC
+
+ttranslate aBTextC 220 0 0
+vsetdispmode 1
+vtop
+vdisplay aBTextN
+vdisplay aBTextC
+
+vfit

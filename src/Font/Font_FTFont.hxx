@@ -24,6 +24,7 @@
 #include <NCollection_String.hxx>
 #include <Font_FTLibrary.hxx>
 #include <Image_PixMap.hxx>
+#include <Font_FontAspect.hxx>
 
 //! Wrapper over FreeType font.
 //! Notice that this class uses internal buffers for loaded glyphs
@@ -100,8 +101,19 @@ public:
                              const unsigned int        thePointSize,
                              const unsigned int        theResolution = 72);
 
+  //! Initialize the font.
+  //! @param theFontName   the font name
+  //! @param theFontAspect the font style
+  //! @param thePointSize  the face size in points (1/72 inch)
+  //! @param theResolution the resolution of the target device in dpi
+  //! @return true on success
+  Standard_EXPORT bool Init (const NCollection_String& theFontName,
+                             const Font_FontAspect     theFontAspect,
+                             const unsigned int        thePointSize,
+                             const unsigned int        theResolution);
+
   //! Release currently loaded font.
-  Standard_EXPORT void Release();
+  Standard_EXPORT virtual void Release();
 
   //! Render specified glyph into internal buffer (bitmap).
   Standard_EXPORT bool RenderGlyph (const Standard_Utf32Char theChar);

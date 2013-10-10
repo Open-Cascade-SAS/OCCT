@@ -1,0 +1,522 @@
+// Created on: 2013-09-16
+// Copyright (c) 2013 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
+#include <Font_BRepFont.hxx>
+
+#include <BRep_Tool.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepLib_MakeEdge.hxx>
+#include <GCE2d_MakeSegment.hxx>
+#include <GC_MakeSegment.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom2d_BezierCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom2d_Line.hxx>
+#include <GeomAPI.hxx>
+#include <GeomAdaptor_HSurface.hxx>
+#include <GeomLib.hxx>
+#include <gp_Pln.hxx>
+#include <ShapeBuild_ReShape.hxx>
+#include <ShapeFix_Edge.hxx>
+#include <ShapeFix_Wire.hxx>
+#include <TColGeom2d_HSequenceOfBoundedCurve.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Vertex.hxx>
+
+#include FT_OUTLINE_H
+
+IMPLEMENT_STANDARD_HANDLE (Font_BRepFont, Font_FTFont)
+IMPLEMENT_STANDARD_RTTIEXT(Font_BRepFont, Font_FTFont)
+
+namespace
+{
+  // pre-defined font rendering options
+  static const unsigned int THE_FONT_SIZE      = 72;
+  static const unsigned int THE_RESOLUTION_DPI = 4800;
+
+  // compute scaling factor for specified font size
+  inline Standard_Real getScale (const Standard_Real theSize)
+  {
+    return theSize / Standard_Real(THE_FONT_SIZE) * 72.0 / Standard_Real(THE_RESOLUTION_DPI);
+  }
+
+};
+
+// =======================================================================
+// function : Constructor
+// purpose  :
+// =======================================================================
+Font_BRepFont::Font_BRepFont ()
+: myPrecision  (Precision::Confusion()),
+  myScaleUnits (1.0),
+  myIsCompositeCurve (Standard_False),
+  my3Poles     (1, 3),
+  my4Poles     (1, 4)
+{
+  init();
+}
+
+// =======================================================================
+// function : init
+// purpose  :
+// =======================================================================
+void Font_BRepFont::init()
+{
+  mySurface        = new Geom_Plane (gp_Pln (gp::XOY()));
+  myCurve2dAdaptor = new Geom2dAdaptor_HCurve();
+  Handle(GeomAdaptor_HSurface) aSurfAdaptor = new GeomAdaptor_HSurface (mySurface);
+  myCurvOnSurf.Load (aSurfAdaptor);
+
+  myFixer.FixWireMode()          = 1;
+  myFixer.FixOrientationMode()   = 1;
+  myFixer.FixSplitFaceMode()     = 1; // some glyphs might be composed from several faces
+  Handle(ShapeFix_Wire) aWireFixer = myFixer.FixWireTool();
+  aWireFixer->FixConnectedMode() = 1;
+  aWireFixer->ClosedWireMode()   = Standard_True;
+  Handle(ShapeBuild_ReShape) aContext = new ShapeBuild_ReShape();
+  myFixer.SetContext (aContext);
+}
+
+// =======================================================================
+// function : Constructor
+// purpose  :
+// =======================================================================
+Font_BRepFont::Font_BRepFont (const NCollection_String& theFontPath,
+                              const Standard_Real       theSize)
+: myPrecision  (Precision::Confusion()),
+  myScaleUnits (1.0),
+  myIsCompositeCurve (Standard_False),
+  my3Poles     (1, 3),
+  my4Poles     (1, 4)
+{
+  init();
+  if (theSize <= myPrecision * 100.0)
+  {
+    return;
+  }
+
+  myScaleUnits = getScale (theSize);
+  Font_FTFont::Init (theFontPath, THE_FONT_SIZE, THE_RESOLUTION_DPI);
+}
+
+// =======================================================================
+// function : Constructor
+// purpose  :
+// =======================================================================
+Font_BRepFont::Font_BRepFont (const NCollection_String& theFontName,
+                              const Font_FontAspect     theFontAspect,
+                              const Standard_Real       theSize)
+: myPrecision  (Precision::Confusion()),
+  myScaleUnits (1.0),
+  myIsCompositeCurve (Standard_False),
+  my3Poles     (1, 3),
+  my4Poles     (1, 4)
+{
+  init();
+  if (theSize <= myPrecision * 100.0)
+  {
+    return;
+  }
+
+  myScaleUnits = getScale (theSize);
+  Font_FTFont::Init (theFontName, theFontAspect, THE_FONT_SIZE, THE_RESOLUTION_DPI);
+}
+
+// =======================================================================
+// function : Release
+// purpose  :
+// =======================================================================
+void Font_BRepFont::Release()
+{
+  myCache.Clear();
+  Font_FTFont::Release();
+}
+
+// =======================================================================
+// function : SetCompositeCurveMode
+// purpose  :
+// =======================================================================
+void Font_BRepFont::SetCompositeCurveMode (const Standard_Boolean theToConcatenate)
+{
+  if (myIsCompositeCurve != theToConcatenate)
+  {
+    myIsCompositeCurve = theToConcatenate;
+    myCache.Clear();
+  }
+}
+
+// =======================================================================
+// function : Init
+// purpose  :
+// =======================================================================
+bool Font_BRepFont::Init (const NCollection_String& theFontPath,
+                          const Standard_Real       theSize)
+{
+  if (theSize <= myPrecision * 100.0)
+  {
+    return false;
+  }
+
+  myScaleUnits = getScale (theSize);
+  return Font_FTFont::Init (theFontPath, THE_FONT_SIZE, THE_RESOLUTION_DPI);
+}
+
+// =======================================================================
+// function : Init
+// purpose  :
+// =======================================================================
+bool Font_BRepFont::Init (const NCollection_String& theFontName,
+                          const Font_FontAspect     theFontAspect,
+                          const Standard_Real       theSize)
+{
+  if (theSize <= myPrecision * 100.0)
+  {
+    return false;
+  }
+
+  myScaleUnits = getScale (theSize);
+  return Font_FTFont::Init (theFontName, theFontAspect, THE_FONT_SIZE, THE_RESOLUTION_DPI);
+}
+
+// =======================================================================
+// function : RenderGlyph
+// purpose  :
+// =======================================================================
+TopoDS_Shape Font_BRepFont::RenderGlyph (const Standard_Utf32Char& theChar)
+{
+  TopoDS_Shape aShape;
+  Standard_Mutex::Sentry aSentry (myMutex);
+  renderGlyph (theChar, aShape);
+  return aShape;
+}
+
+// =======================================================================
+// function : to3d
+// purpose  :
+// =======================================================================
+bool Font_BRepFont::to3d (const Handle(Geom2d_Curve) theCurve2d,
+                          const GeomAbs_Shape        theContinuity,
+                          Handle(Geom_Curve)&        theCurve3d)
+{
+  Standard_Real aMaxDeviation   = 0.0;
+  Standard_Real anAverDeviation = 0.0;
+  myCurve2dAdaptor->ChangeCurve2d().Load (theCurve2d);
+  myCurvOnSurf.Load (myCurve2dAdaptor);
+  GeomLib::BuildCurve3d (myPrecision, myCurvOnSurf,
+                         myCurve2dAdaptor->FirstParameter(), myCurve2dAdaptor->LastParameter(),
+                         theCurve3d, aMaxDeviation, anAverDeviation, theContinuity);
+  return !theCurve3d.IsNull();
+}
+
+// =======================================================================
+// function : renderGlyph
+// purpose  :
+// =======================================================================
+Standard_Boolean Font_BRepFont::renderGlyph (const Standard_Utf32Char theChar,
+                                             TopoDS_Shape&            theShape)
+{
+  theShape.Nullify();
+  if (!loadGlyph (theChar)
+   || myFTFace->glyph->format != FT_GLYPH_FORMAT_OUTLINE)
+  {
+    return Standard_False;
+  }
+  else if (myCache.Find (theChar, theShape))
+  {
+    return !theShape.IsNull();
+  }
+
+  TopLoc_Location aLoc;
+  TopoDS_Face aFaceDraft;
+  myBuilder.MakeFace (aFaceDraft, mySurface, myPrecision);
+  FT_Outline& anOutline = myFTFace->glyph->outline;
+  // Get orientation is useless since it doesn't retrieve any in-font information and just computes orientation.
+  // Because it fails in some cases - leave this to ShapeFix.
+  //const FT_Orientation anOrient = FT_Outline_Get_Orientation (&anOutline);
+  for (short aContour = 0, aStartIndex = 0; aContour < anOutline.n_contours; ++aContour)
+  {
+    const FT_Vector* aPntList = &anOutline.points[aStartIndex];
+    const char* aTags      = &anOutline.tags[aStartIndex];
+    const short anEndIndex = anOutline.contours[aContour];
+    const short aPntsNb    = (anEndIndex - aStartIndex) + 1;
+    aStartIndex = anEndIndex + 1;
+    if (aPntsNb < 3)
+    {
+      // closed contour can not be constructed from < 3 points
+      continue;
+    }
+
+    BRepBuilderAPI_MakeWire aWireMaker;
+
+    gp_XY aPntPrev;
+    gp_XY aPntCurr = readFTVec (aPntList[aPntsNb - 1]);
+    gp_XY aPntNext = readFTVec (aPntList[0]);
+
+    Standard_Integer aLinePnts = (FT_CURVE_TAG(aTags[aPntsNb - 1]) == FT_Curve_Tag_On) ? 1 : 0;
+    gp_XY aPntLine1 = aPntCurr;
+
+    // see http://freetype.sourceforge.net/freetype2/docs/glyphs/glyphs-6.html
+    // for a full description of FreeType tags.
+    for (short aPntId = 0; aPntId < aPntsNb; ++aPntId)
+    {
+      aPntPrev = aPntCurr;
+      aPntCurr = aPntNext;
+      aPntNext = readFTVec (aPntList[(aPntId + 1) % aPntsNb]);
+
+      // process tags
+      if (FT_CURVE_TAG(aTags[aPntId]) == FT_Curve_Tag_On)
+      {
+        if (aLinePnts < 1)
+        {
+          aPntLine1 = aPntCurr;
+          aLinePnts = 1;
+          continue;
+        }
+
+        const gp_XY         aDirVec  = aPntCurr - aPntLine1;
+        const Standard_Real aLen     = aDirVec.Modulus();
+        if (aLen <= myPrecision)
+        {
+          aPntLine1 = aPntCurr;
+          aLinePnts = 1;
+          continue;
+        }
+
+        if (myIsCompositeCurve)
+        {
+          Handle(Geom2d_TrimmedCurve) aLine = GCE2d_MakeSegment (gp_Pnt2d (aPntLine1), gp_Pnt2d (aPntCurr));
+          myConcatMaker.Add (aLine, myPrecision);
+        }
+        else
+        {
+          Handle(Geom_Curve)  aCurve3d;
+          Handle(Geom2d_Line) aCurve2d = new Geom2d_Line (gp_Pnt2d (aPntLine1), gp_Dir2d (aDirVec));
+          if (to3d (aCurve2d, GeomAbs_C1, aCurve3d))
+          {
+            TopoDS_Edge anEdge = BRepLib_MakeEdge (aCurve3d, 0.0, aLen);
+            myBuilder.UpdateEdge (anEdge, aCurve2d, mySurface, aLoc, myPrecision);
+            aWireMaker.Add (anEdge);
+          }
+        }
+        aPntLine1 = aPntCurr;
+      }
+      else if (FT_CURVE_TAG(aTags[aPntId]) == FT_Curve_Tag_Conic)
+      {
+        aLinePnts = 0;
+        gp_XY aPntPrev2 = aPntPrev;
+        gp_XY aPntNext2 = aPntNext;
+
+        // previous point is either the real previous point (an "on" point),
+        // or the midpoint between the current one and the previous "conic off" point
+        if (FT_CURVE_TAG(aTags[(aPntId - 1 + aPntsNb) % aPntsNb]) == FT_Curve_Tag_Conic)
+        {
+          aPntPrev2 = (aPntCurr + aPntPrev) * 0.5;
+        }
+
+        // next point is either the real next point or the midpoint
+        if (FT_CURVE_TAG(aTags[(aPntId + 1) % aPntsNb]) == FT_Curve_Tag_Conic)
+        {
+          aPntNext2 = (aPntCurr + aPntNext) * 0.5;
+        }
+
+        my3Poles.SetValue (1, aPntPrev2);
+        my3Poles.SetValue (2, aPntCurr);
+        my3Poles.SetValue (3, aPntNext2);
+        Handle(Geom2d_BezierCurve) aBezierArc = new Geom2d_BezierCurve (my3Poles);
+        if (myIsCompositeCurve)
+        {
+          myConcatMaker.Add (aBezierArc, myPrecision);
+        }
+        else
+        {
+          Handle(Geom_Curve) aCurve3d;
+          if (to3d (aBezierArc, GeomAbs_C1, aCurve3d))
+          {
+            TopoDS_Edge anEdge = BRepLib_MakeEdge (aCurve3d);
+            myBuilder.UpdateEdge (anEdge, aBezierArc, mySurface, aLoc, myPrecision);
+            aWireMaker.Add (anEdge);
+          }
+        }
+      }
+      else if (FT_CURVE_TAG(aTags[aPntId])                 == FT_Curve_Tag_Cubic
+            && FT_CURVE_TAG(aTags[(aPntId + 1) % aPntsNb]) == FT_Curve_Tag_Cubic)
+      {
+        aLinePnts = 0;
+        my4Poles.SetValue (1, aPntPrev);
+        my4Poles.SetValue (2, aPntCurr);
+        my4Poles.SetValue (3, aPntNext);
+        my4Poles.SetValue (4, gp_Pnt2d(readFTVec (aPntList[(aPntId + 2) % aPntsNb])));
+        Handle(Geom2d_BezierCurve) aBezier = new Geom2d_BezierCurve (my4Poles);
+        if (myIsCompositeCurve)
+        {
+          myConcatMaker.Add (aBezier, myPrecision);
+        }
+        else
+        {
+          Handle(Geom_Curve) aCurve3d;
+          if (to3d (aBezier, GeomAbs_C1, aCurve3d))
+          {
+            TopoDS_Edge anEdge = BRepLib_MakeEdge (aCurve3d);
+            myBuilder.UpdateEdge (anEdge, aBezier, mySurface, aLoc, myPrecision);
+            aWireMaker.Add (anEdge);
+          }
+        }
+      }
+    }
+
+    if (myIsCompositeCurve)
+    {
+      Handle(Geom2d_BSplineCurve) aDraft2d = myConcatMaker.BSplineCurve();
+      if (aDraft2d.IsNull())
+      {
+        continue;
+      }
+
+      const gp_Pnt2d aFirstPnt = aDraft2d->StartPoint();
+      const gp_Pnt2d aLastPnt  = aDraft2d->EndPoint();
+      if (!aFirstPnt.IsEqual (aLastPnt, myPrecision))
+      {
+        Handle(Geom2d_TrimmedCurve) aLine = GCE2d_MakeSegment (aLastPnt, aFirstPnt);
+        myConcatMaker.Add (aLine, myPrecision);
+      }
+
+      Handle(Geom2d_BSplineCurve) aCurve2d = myConcatMaker.BSplineCurve();
+      Handle(Geom_Curve)          aCurve3d;
+      if (to3d (aCurve2d, GeomAbs_C0, aCurve3d))
+      {
+        TopoDS_Edge anEdge = BRepLib_MakeEdge (aCurve3d);
+        myBuilder.UpdateEdge (anEdge, aCurve2d, mySurface, aLoc, myPrecision);
+        aWireMaker.Add (anEdge);
+      }
+      myConcatMaker.Clear();
+    }
+    else
+    {
+      if (!aWireMaker.IsDone())
+      {
+        continue;
+      }
+
+      TopoDS_Vertex aFirstV, aLastV;
+      TopExp::Vertices (aWireMaker.Wire(), aFirstV, aLastV);
+      gp_Pnt aFirstPoint = BRep_Tool::Pnt (aFirstV);
+      gp_Pnt aLastPoint  = BRep_Tool::Pnt (aLastV);
+      if (!aFirstPoint.IsEqual (aLastPoint, myPrecision))
+      {
+        aWireMaker.Add (BRepLib_MakeEdge (aFirstV, aLastV));
+      }
+    }
+
+    if (!aWireMaker.IsDone())
+    {
+      continue;
+    }
+
+    TopoDS_Wire aWireDraft = aWireMaker.Wire();
+    //if (anOrient == FT_ORIENTATION_FILL_LEFT)
+    //{
+    // According to the TrueType specification, clockwise contours must be filled
+    aWireDraft.Reverse();
+    //}
+    myBuilder.Add (aFaceDraft, aWireDraft);
+  }
+
+  myFixer.Init (aFaceDraft);
+  myFixer.Perform();
+  theShape = myFixer.Result();
+  if (!theShape.IsNull()
+  &&  theShape.ShapeType() != TopAbs_FACE)
+  {
+    // shape fix can not fix orientation within the single call
+    TopoDS_Compound aComp;
+    myBuilder.MakeCompound (aComp);
+    for (TopExp_Explorer aFaceIter (theShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
+    {
+      TopoDS_Face aFace = TopoDS::Face (aFaceIter.Current());
+      myFixer.Init (aFace);
+      myFixer.Perform();
+      myBuilder.Add (aComp, myFixer.Result());
+    }
+    theShape = aComp;
+  }
+
+  myCache.Bind (theChar, theShape);
+  return !theShape.IsNull();
+}
+
+// =======================================================================
+// function : RenderText
+// purpose  :
+// =======================================================================
+TopoDS_Shape Font_BRepFont::RenderText (const NCollection_String& theString)
+{
+  if (theString.IsEmpty())
+  {
+    return TopoDS_Shape();
+  }
+
+  gp_Trsf          aTrsf;
+  gp_XYZ           aPen;
+  Standard_Integer aLine = 0;
+  TopoDS_Shape     aGlyphShape;
+  TopoDS_Compound  aResult;
+  myBuilder.MakeCompound (aResult);
+  Standard_Mutex::Sentry aSentry (myMutex);
+  for (NCollection_Utf8Iter anIter = theString.Iterator(); *anIter != 0;)
+  {
+    const Standard_Utf32Char aCharCurr =   *anIter;
+    const Standard_Utf32Char aCharNext = *++anIter;
+    if (aCharCurr == '\x0D' // CR  (carriage return)
+     || aCharCurr == '\a'   // BEL (alarm)
+     || aCharCurr == '\f'   // FF  (form feed) NP (new page)
+     || aCharCurr == '\b'   // BS  (backspace)
+     || aCharCurr == '\v')  // VT  (vertical tab)
+    {
+      continue; // skip unsupported carriage control codes
+    }
+    else if (aCharCurr == ' ' || aCharCurr == '\t')
+    {
+      aPen.SetX (aPen.X() + AdvanceX (aCharCurr, aCharNext));
+      continue;
+    }
+    else if (aCharCurr == '\n')
+    {
+      ++aLine;
+      aPen.SetX (0.0);
+      aPen.SetY (-Standard_Real(aLine) * LineSpacing());
+      continue;
+    }
+
+    if (renderGlyph (aCharCurr, aGlyphShape))
+    {
+      aTrsf.SetTranslation (gp_Vec (aPen));
+      aGlyphShape.Move (aTrsf);
+      myBuilder.Add (aResult, aGlyphShape);
+    }
+    aPen.SetX (aPen.X() + AdvanceX (aCharCurr, aCharNext));
+  }
+  return aResult;
+}

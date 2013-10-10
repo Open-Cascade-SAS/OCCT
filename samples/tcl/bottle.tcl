@@ -92,7 +92,16 @@ mkedgecurve tw2 1.e-5
 thrusections -N thread 1 0 tw1 tw2
 
 # add threading to the body
-compound body thread bottle
+compound body thread bottle1
+
+# define text
+text2brep text2d OpenCASCADE Times-Roman 8 bold composite=0
+prism text text2d 0 0 2
+trotate    text 0 0 0 0 1 0 90
+ttranslate text 24.75 -2 65
+
+# cut operation
+bcut bottle bottle1 text
 
 # display result
 vdisplay bottle

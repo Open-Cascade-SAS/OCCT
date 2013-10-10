@@ -35,6 +35,11 @@ uses
 
 is
 
+    Create(Parameterisation : ParameterisationType from Convert =  Convert_TgtThetaOver2);
+    ---Purpose: Initialize the algorithme
+    --        - Parameterisation is used to convert
+
+
     Create (BasisCurve : BoundedCurve from Geom; 
      	    Parameterisation : ParameterisationType from Convert 
     	    	       =  Convert_TgtThetaOver2)
@@ -42,6 +47,7 @@ is
 	 --        - Parameterisation is used to convert 
     returns CompCurveToBSplineCurve;
     
+
     Add (me : in out; 
          NewCurve   :  BoundedCurve from Geom;
          Tolerance  :  Real from Standard;
@@ -66,6 +72,9 @@ is
     	is private;    
     
     BSplineCurve(me) returns BSplineCurve from Geom;
+
+    Clear(me : in out);
+    ---Purpose: Clear a result curve
 
 fields
  myCurve :  BSplineCurve from Geom;

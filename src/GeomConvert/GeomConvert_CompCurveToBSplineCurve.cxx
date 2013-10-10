@@ -35,8 +35,21 @@
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
 
+//=======================================================================
+//function : constructor
+//purpose  :
+//=======================================================================
+GeomConvert_CompCurveToBSplineCurve::GeomConvert_CompCurveToBSplineCurve (const Convert_ParameterisationType theParameterisation)
+: myTol (Precision::Confusion()),
+  myType (theParameterisation)
+{
+  //
+}
 
-
+//=======================================================================
+//function : constructor
+//purpose  :
+//=======================================================================
 GeomConvert_CompCurveToBSplineCurve::
 GeomConvert_CompCurveToBSplineCurve(const Handle(Geom_BoundedCurve)& BasisCurve, 
 				    const Convert_ParameterisationType Parameterisation) :
@@ -55,7 +68,7 @@ GeomConvert_CompCurveToBSplineCurve(const Handle(Geom_BoundedCurve)& BasisCurve,
 
 //=======================================================================
 //function : Add
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 Standard_Boolean GeomConvert_CompCurveToBSplineCurve::
@@ -65,17 +78,24 @@ Add(const Handle(Geom_BoundedCurve)& NewCurve,
     const Standard_Boolean WithRatio,
     const Standard_Integer MinM)
 {
-  Standard_Boolean avant, apres;
-  myTol = Tolerance;
-  // Convertion
-  Handle(Geom_BSplineCurve) Bs = 
-      Handle(Geom_BSplineCurve)::DownCast(NewCurve);
-  if (!Bs.IsNull() ) { 
-    Bs =  Handle(Geom_BSplineCurve)::DownCast(NewCurve->Copy()); 
+  // conversion
+  Handle(Geom_BSplineCurve) Bs = Handle(Geom_BSplineCurve)::DownCast (NewCurve);
+  if (!Bs.IsNull())
+  {
+    Bs = Handle(Geom_BSplineCurve)::DownCast (NewCurve->Copy());
   }
-  else {
+  else
+  {
     Bs = GeomConvert::CurveToBSplineCurve (NewCurve, myType);
   }
+  if (myCurve.IsNull())
+  {
+    myCurve = Bs;
+    return Standard_True;
+  }
+
+  Standard_Boolean avant, apres;
+  myTol = Tolerance;
 
   Standard_Integer LBs = Bs->NbPoles(), LCb = myCurve->NbPoles();
 
@@ -216,12 +236,12 @@ void GeomConvert_CompCurveToBSplineCurve::Add(
   
 }
 
+//=======================================================================
+//function : BSplineCurve
+//purpose  :
+//=======================================================================
 
 Handle(Geom_BSplineCurve) GeomConvert_CompCurveToBSplineCurve::BSplineCurve() const 
 {
  return myCurve;
 }
-
-
-
-

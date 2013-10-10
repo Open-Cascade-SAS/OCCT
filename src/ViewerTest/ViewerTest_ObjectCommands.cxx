@@ -18,12 +18,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
-//===============================================
-//    AIS Objects Creation : Datums (axis,trihedrons,lines,planes)
-//===============================================
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -38,6 +32,7 @@
 #include <Draw_Appli.hxx>
 #include <DBRep.hxx>
 
+#include <Font_BRepFont.hxx>
 #include <OSD_Chronometer.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Visual3d_View.hxx>
@@ -4678,6 +4673,86 @@ static Standard_Integer VMarkersTest (Draw_Interpretor&,
 }
 
 //=======================================================================
+//function : TextToBrep
+//purpose  : Tool for conversion text to occt-shapes
+//=======================================================================
+
+static int TextToBRep (Draw_Interpretor& /*theDI*/,
+                       Standard_Integer  theArgNb,
+                       const char**      theArgVec)
+{
+  // Check arguments
+  if (theArgNb < 5)
+  {
+    std::cerr << "Error: " << theArgVec[0] << " - invalid syntax\n";
+    return 1;
+  }
+
+  Standard_Integer    anArgIter = 1;
+  Standard_CString    aResName  = theArgVec[anArgIter++];
+  Standard_CString    aText     = theArgVec[anArgIter++];
+  Standard_CString    aFontName = theArgVec[anArgIter++];
+  const Standard_Real aSize     = Atof (theArgVec[anArgIter++]);
+
+  Font_BRepFont    aFont;
+  Font_FontAspect  aFontAspect      = Font_FA_Regular;
+  Standard_Boolean isCompositeCurve = Standard_False;
+  gp_Ax3           aPenAx3 (gp::XOY());
+  gp_Pnt           aPenLoc;
+  while (anArgIter < theArgNb)
+  {
+    const TCollection_AsciiString anArg (theArgVec[anArgIter++]);
+    if (anArg.Search ("x=") > -1)
+    {
+      aPenLoc.SetX (anArg.Token ("=", 2).RealValue());
+    }
+    else if (anArg.Search ("y=") > -1)
+    {
+      aPenLoc.SetY (anArg.Token ("=", 2).RealValue());
+    }
+    else if (anArg.Search ("z=") > -1)
+    {
+      aPenLoc.SetZ (anArg.Token ("=", 2).RealValue());
+    }
+    else if (anArg.Search ("composite=") > -1)
+    {
+      isCompositeCurve = (anArg.Token ("=", 2).IntegerValue() == 1);
+    }
+    else if (anArg.Search ("regular") > -1)
+    {
+      aFontAspect = Font_FA_Regular;
+    }
+    else if (anArg.Search ("bolditalic") > -1)
+    {
+      aFontAspect = Font_FA_BoldItalic;
+    }
+    else if (anArg.Search ("bold") > -1)
+    {
+      aFontAspect = Font_FA_Bold;
+    }
+    else if (anArg.Search ("italic") > -1)
+    {
+      aFontAspect = Font_FA_Italic;
+    }
+    else
+    {
+      std::cerr << "Warning! Unknown argument '" << anArg.ToCString() << "'\n";
+    }
+  }
+
+  aFont.SetCompositeCurveMode (isCompositeCurve);
+  if (!aFont.Init (aFontName, aFontAspect, aSize))
+  {
+    std::cerr << "Font initialization error\n";
+    return 1;
+  }
+
+  aPenAx3.SetLocation (aPenLoc);
+  DBRep::Set (aResName, aFont.RenderText (aText, aPenAx3));
+  return 0;
+}
+
+//=======================================================================
 //function : ObjectsCommands
 //purpose  :
 //=======================================================================
@@ -4812,4 +4887,8 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
   theCommands.Add ("vmarkerstest",
                    "vmarkerstest: name X Y Z [PointsOnSide=10] [MarkerType=0] [Scale=1.0] [FileName=ImageFile]\n",
                    __FILE__, VMarkersTest, group);
+
+  theCommands.Add ("text2brep",
+                   "text2brep: res text fontName fontSize [x=0.0 y=0.0 z=0.0 composite=1 {regular,bold,italic,bolditalic=regular}]\n",
+                   __FILE__, TextToBRep, group);
 }

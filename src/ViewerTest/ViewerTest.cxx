@@ -1591,125 +1591,99 @@ static int VDonly2(Draw_Interpretor& , Standard_Integer argc, const char** argv)
 }
 
 //==============================================================================
-//function : VErase2
-//author   : ege
-//purpose  : Erase some  selected or named  objects
+//function : VErase
+//purpose  : Erase some selected or named objects
 //           if there is no selected or named objects, the whole viewer is erased
-//Draw arg : verase2 [name1] ... [name n]
 //==============================================================================
-static int VErase2(Draw_Interpretor& , 	Standard_Integer argc, 	const char** argv)
-
+int VErase (Draw_Interpretor& theDI,
+            Standard_Integer  theArgNb,
+            const char**      theArgVec)
 {
-  if ( a3DView().IsNull() )
+  if (a3DView().IsNull())
+  {
     return 1;
-
-  Standard_Boolean ThereIsCurrent = TheAISContext() -> NbCurrents() > 0;
-  Standard_Boolean ThereIsArgument= argc>1;
-  if(TheAISContext()->HasOpenedContext())
-    TheAISContext()->CloseLocalContext();
-
-  //===============================================================
-  // Il n'y a pas d'arguments mais des objets selectionnes(current)
-  // dans le viewer
-  //===============================================================
-  if (!ThereIsArgument && ThereIsCurrent) {
-    ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName
-      it (GetMapOfAIS());
-    while ( it.More() ) {
-      if (it.Key1()->IsKind(STANDARD_TYPE(AIS_InteractiveObject))) {
-        const Handle(AIS_InteractiveObject) aShape =
-          Handle(AIS_InteractiveObject)::DownCast(it.Key1());
-        if (TheAISContext()->IsCurrent(aShape))
-          TheAISContext()->Erase(aShape,Standard_False);
-      }
-      it.Next();
-    }
-
-    TheAISContext() ->UpdateCurrentViewer();
   }
 
-  //===============================================================
-  // Il n'y a pas d'arguments et aucuns objets selectionnes
-  // dans le viewer:
-  // On erase tout le viewer
-  //===============================================================
-
-  if (!ThereIsArgument && !ThereIsCurrent) {
-    ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName it (GetMapOfAIS());
-    while ( it.More() ) {
-      if (it.Key1()->IsKind(STANDARD_TYPE(AIS_InteractiveObject))) {
-        const Handle(AIS_InteractiveObject) aShape =
-          Handle(AIS_InteractiveObject)::DownCast(it.Key1());
-        TheAISContext()->Erase(aShape,Standard_False);
-      } else if (it.Key1()->IsKind(STANDARD_TYPE(NIS_InteractiveObject))) {
-        const Handle(NIS_InteractiveObject) aShape =
-          Handle(NIS_InteractiveObject)::DownCast(it.Key1());
-        TheNISContext()->Erase(aShape);
-      }
-      it.Next();
+  TheAISContext()->CloseAllContexts (Standard_False);
+  const Standard_Boolean isEraseAll = TCollection_AsciiString (theArgNb > 0 ? theArgVec[0] : "").IsEqual ("veraseall");
+  if (theArgNb > 1)
+  {
+    if (isEraseAll)
+    {
+      std::cerr << " Syntax error: " << theArgVec[0] << " too much arguments.\n";
+      return 1;
     }
-    TheAISContext() ->UpdateCurrentViewer();
-//    TheNISContext()->UpdateViews();
-  }
 
-  //===============================================================
-  // Il y a des arguments
-  //===============================================================
-  if (ThereIsArgument) {
-    for (int i=1; i<argc ; i++) {
-      TCollection_AsciiString name=argv[i];
-      Standard_Boolean IsBound= GetMapOfAIS().IsBound2(name);
-      if (IsBound) {
-        const Handle(Standard_Transient) anObj = GetMapOfAIS().Find2(name);
-        if (anObj->IsKind(STANDARD_TYPE(AIS_InteractiveObject))) {
-          const Handle(AIS_InteractiveObject) aShape =
-            Handle(AIS_InteractiveObject)::DownCast (anObj);
-          TheAISContext()->Erase(aShape,Standard_False);
-        } else if (anObj->IsKind(STANDARD_TYPE(NIS_InteractiveObject))) {
-          const Handle(NIS_InteractiveObject) aShape =
-            Handle(NIS_InteractiveObject)::DownCast (anObj);
-          TheNISContext()->Erase(aShape);
+    // has a list of names
+    for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
+    {
+      TCollection_AsciiString aName = theArgVec[anArgIter];
+      if (!GetMapOfAIS().IsBound2 (aName))
+      {
+        continue;
+      }
+
+      const Handle(Standard_Transient)    anObj = GetMapOfAIS().Find2 (aName);
+      const Handle(AIS_InteractiveObject) anIO  = Handle(AIS_InteractiveObject)::DownCast (anObj);
+      theDI << aName.ToCString() << " ";
+      if (!anIO.IsNull())
+      {
+        TheAISContext()->Erase (anIO, Standard_False);
+      }
+      else
+      {
+        const Handle(NIS_InteractiveObject) aNisIO = Handle(NIS_InteractiveObject)::DownCast (anObj);
+        if (!aNisIO.IsNull())
+        {
+          TheNISContext()->Erase (aNisIO);
         }
       }
     }
-    TheAISContext() ->UpdateCurrentViewer();
-//    TheNISContext() ->UpdateViews();
+    TheAISContext()->UpdateCurrentViewer();
+    return 0;
   }
-  return 0;
-}
 
-//==============================================================================
-//function : VEraseAll
-//author   : ege
-//purpose  : Erase all the objects displayed in the viewer
-//Draw arg : veraseall
-//==============================================================================
-static int VEraseAll(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
-
-{
-  // Verification des arguments
-  if (argc>1){ di<<" Syntaxe error: "<<argv[0]<<" too much arguments."<<"\n";return 1;}
-  if (a3DView().IsNull() ) {di<<" Error: vinit hasn't been called."<<"\n";return 1;}
-  TheAISContext()->CloseAllContexts(Standard_False);
-  ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName
-    it(GetMapOfAIS());
-  while ( it.More() ) {
-    if (it.Key1()->IsKind(STANDARD_TYPE(AIS_InteractiveObject))) {
-      const Handle(AIS_InteractiveObject) aShape =
-        Handle(AIS_InteractiveObject)::DownCast(it.Key1());
-      TheAISContext()->Erase(aShape,Standard_False);
-    } else if (it.Key1()->IsKind(STANDARD_TYPE(NIS_InteractiveObject))) {
-      const Handle(NIS_InteractiveObject) aShape =
-        Handle(NIS_InteractiveObject)::DownCast(it.Key1());
-      TheNISContext()->Erase(aShape);
+  if (!isEraseAll
+   && TheAISContext()->NbCurrents() > 0)
+  {
+    // remove all currently selected objects
+    for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
+         anIter.More(); anIter.Next())
+    {
+      const Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
+      if (!anIO.IsNull()
+       && TheAISContext()->IsCurrent (anIO))
+      {
+        theDI << anIter.Key2().ToCString() << " ";
+        TheAISContext()->Erase (anIO, Standard_False);
+      }
     }
-    it.Next();
+
+    TheAISContext()->UpdateCurrentViewer();
+    return 0;
   }
-  TheAISContext() ->UpdateCurrentViewer();
-//  TheNISContext() ->UpdateViews();
+
+  // erase entire viewer
+  for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
+       anIter.More(); anIter.Next())
+  {
+    const Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
+    if (!anIO.IsNull())
+    {
+      TheAISContext()->Erase (anIO, Standard_False);
+    }
+    else
+    {
+      const Handle(NIS_InteractiveObject) aNisIO = Handle(NIS_InteractiveObject)::DownCast (anIter.Key1());
+      if (!aNisIO.IsNull())
+      {
+        TheNISContext()->Erase (aNisIO);
+      }
+    }
+  }
+  TheAISContext()->UpdateCurrentViewer();
   return 0;
 }
-
 
 //==============================================================================
 //function : VDisplayAll
@@ -3165,7 +3139,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "verase [name1] ...  [name n]"
       "\n\t\t: Erases selected or named objects."
       "\n\t\t: If there are no selected or named objects the whole viewer is erased.",
-		  __FILE__,VErase2,group);
+		  __FILE__, VErase, group);
 
   theCommands.Add("vdonly",
 		  "vdonly [name1] ...  [name n]"
@@ -3178,7 +3152,7 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 
   theCommands.Add("veraseall",
 		  "Erases all objects displayed in the viewer",
-		  __FILE__,VEraseAll,group);
+		  __FILE__, VErase, group);
 
   theCommands.Add("verasetype",
 		  "verasetype <Type>"

@@ -18,9 +18,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-// Robert Boehne 30 May 2000 : Dec Osf
-
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
@@ -104,17 +101,23 @@
   #include <tk.h>
 #endif
 
-//==============================================================================
+// Auxiliary definitions
+static const char THE_KEY_DELETE = 127;
 
 //==============================================================================
 //  VIEWER GLOBAL VARIABLES
 //==============================================================================
 
 Standard_IMPORT Standard_Boolean Draw_VirtualWindows;
+Standard_IMPORT Standard_Boolean Draw_Interprete (const char* theCommand);
 
 Standard_EXPORT int ViewerMainLoop(Standard_Integer , const char** argv);
 extern const Handle(NIS_InteractiveContext)& TheNISContext();
 extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
+
+extern int VErase (Draw_Interpretor& theDI,
+                   Standard_Integer  theArgNb,
+                   const char**      theArgVec);
 
 #if defined(_WIN32)
 static Handle(WNT_Window)& VT_GetWindow() {
@@ -1255,28 +1258,33 @@ void VT_ProcessKeyPress (const char* buf_ret)
   const Handle(NIS_View) aNisView = Handle(NIS_View)::DownCast (aView);
   // Letter in alphabetic order
 
-  if ( !strcasecmp(buf_ret, "A") ) {
+  if (!strcasecmp (buf_ret, "A"))
+  {
     // AXO
     aView->SetProj(V3d_XposYnegZpos);
   }
-  else if ( !strcasecmp(buf_ret, "D") ) {
+  else if (!strcasecmp (buf_ret, "D"))
+  {
     // Reset
     aView->Reset();
   }
-  else if ( !strcasecmp(buf_ret, "F") ) {
+  else if (!strcasecmp (buf_ret, "F"))
+  {
     // FitAll
     if (aNisView.IsNull())
       aView->FitAll();
     else
       aNisView->FitAll3d();
   }
-  else if ( !strcasecmp(buf_ret, "H") ) {
+  else if (!strcasecmp (buf_ret, "H"))
+  {
     // HLR
     cout << "HLR" << endl;
     aView->SetComputedMode (!aView->ComputedMode());
     MyHLRIsOn = aView->ComputedMode();
   }
-  else if ( !strcasecmp(buf_ret, "P") ) {
+  else if (!strcasecmp (buf_ret, "P"))
+  {
     // Type of HLR
     Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
     if (aContext->DefaultDrawer()->TypeOfHLR() == Prs3d_TOH_Algo)
@@ -1318,9 +1326,9 @@ void VT_ProcessKeyPress (const char* buf_ret)
     aContext->UpdateCurrentViewer();
 
   }
-  else if ( !strcasecmp(buf_ret, "S") ) {
-    // SHADING
-    cout << "passage en mode 1 (shading pour les shapes)" << endl;
+  else if (!strcasecmp (buf_ret, "S"))
+  {
+    std::cout << "setup Shaded display mode" << std::endl;
 
     Handle(AIS_InteractiveContext) Ctx = ViewerTest::GetAISContext();
     if(Ctx->NbCurrents()==0 ||
@@ -1338,9 +1346,10 @@ void VT_ProcessKeyPress (const char* buf_ret)
       Ctx->UpdateCurrentViewer();
     }
   }
-  else if ( !strcasecmp(buf_ret, "U") ) {
+  else if (!strcasecmp (buf_ret, "U"))
+  {
     // Unset display mode
-    cout<<"passage au mode par defaut"<<endl;
+    std::cout << "reset display mode to defaults" << std::endl;
 
     Handle(AIS_InteractiveContext) Ctx = ViewerTest::GetAISContext();
     if(Ctx->NbCurrents()==0 ||
@@ -1359,26 +1368,29 @@ void VT_ProcessKeyPress (const char* buf_ret)
     }
 
   }
-  else if ( !strcasecmp(buf_ret, "T") ) {
+  else if (!strcasecmp (buf_ret, "T"))
+  {
     // Top
     aView->SetProj(V3d_Zpos);
   }
-  else if ( !strcasecmp(buf_ret, "B") ) {
+  else if (!strcasecmp (buf_ret, "B"))
+  {
     // Bottom
     aView->SetProj(V3d_Zneg);
   }
-  else if ( !strcasecmp(buf_ret, "L") ) {
+  else if (!strcasecmp (buf_ret, "L"))
+  {
     // Left
     aView->SetProj(V3d_Xneg);
   }
-  else if ( !strcasecmp(buf_ret, "R") ) {
+  else if (!strcasecmp (buf_ret, "R"))
+  {
     // Right
     aView->SetProj(V3d_Xpos);
   }
-
-  else if ( !strcasecmp(buf_ret, "W") ) {
-    // WIREFRAME
-    cout << "passage en mode 0 (filaire pour les shapes)" << endl;
+  else if (!strcasecmp (buf_ret, "W"))
+  {
+    std::cout << "setup WireFrame display mode" << std::endl;
     Handle(AIS_InteractiveContext) Ctx = ViewerTest::GetAISContext();
     if(Ctx->NbCurrents()==0 ||
       Ctx->NbSelected()==0)
@@ -1395,9 +1407,9 @@ void VT_ProcessKeyPress (const char* buf_ret)
       Ctx->UpdateCurrentViewer();
     }
   }
-  else if ( !strcasecmp(buf_ret, "Z") ) {
+  else if (!strcasecmp (buf_ret, "Z"))
+  {
     // ZCLIP
-
     if ( ZClipIsOn ) {
       cout << "ZClipping OFF" << endl;
       ZClipIsOn = 0;
@@ -1413,16 +1425,27 @@ void VT_ProcessKeyPress (const char* buf_ret)
       aView->Redraw();
     }
   }
-  else if ( !strcasecmp(buf_ret, ",") ) {
+  else if (!strcasecmp (buf_ret, ","))
+  {
     ViewerTest::GetAISContext()->HilightNextDetected(ViewerTest::CurrentView());
-
-
   }
-  else if ( !strcasecmp(buf_ret, ".") ) {
+  else if (!strcasecmp (buf_ret, "."))
+  {
     ViewerTest::GetAISContext()->HilightPreviousDetected(ViewerTest::CurrentView());
   }
-  // Number
-  else{
+  else if (*buf_ret == THE_KEY_DELETE)
+  {
+    Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
+    if (!aCtx.IsNull()
+     && aCtx->NbCurrents() > 0
+     && aCtx->NbSelected() > 0)
+    {
+      Draw_Interprete ("verase");
+    }
+  }
+  else
+  {
+    // Number
     Standard_Integer Num = Draw::Atoi(buf_ret);
     if(Num>=0 && Num<=7)
       ViewerTest::StandardModeActivation(Num);
@@ -1760,6 +1783,7 @@ static int VHelp(Draw_Interpretor& di, Standard_Integer , const char** )
   di << "W : Wireframe" << "\n";
   di << "H : HidelLineRemoval" << "\n";
   di << "U : Unset display mode" << "\n";
+  di << "Delete : Remove selection from viewer" << "\n";
 
   di << "========================="<<"\n";
   di << "Selection mode "<<"\n";
@@ -1910,6 +1934,10 @@ static LRESULT WINAPI ViewerWindowProc( HWND hwnd,
         char c[2];
         c[0] = (char) wParam;
         c[1] = '\0';
+        if (wParam == VK_DELETE)
+        {
+          c[0] = THE_KEY_DELETE;
+        }
         VT_ProcessKeyPress (c);
       }
       break;

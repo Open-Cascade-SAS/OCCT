@@ -33,6 +33,7 @@ is
   imported NListOfSystemFont;
   imported FTFont;
   imported FTLibrary;
+  imported BRepFont;
 
   class FontMgr;
 

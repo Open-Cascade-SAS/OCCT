@@ -480,6 +480,10 @@ const Font_NListOfSystemFont& Font_FontMgr::GetAvailableFonts() const
   return myListOfFonts;
 }
 
+// =======================================================================
+// function : GetAvailableFontsNames
+// purpose  :
+// =======================================================================
 void Font_FontMgr::GetAvailableFontsNames (TColStd_SequenceOfHAsciiString& theFontsNames) const
 {
   theFontsNames.Clear();
@@ -489,8 +493,12 @@ void Font_FontMgr::GetAvailableFontsNames (TColStd_SequenceOfHAsciiString& theFo
   }
 }
 
+// =======================================================================
+// function : GetFont
+// purpose  :
+// =======================================================================
 Handle(Font_SystemFont) Font_FontMgr::GetFont (const Handle(TCollection_HAsciiString)& theFontName,
-                                               const Font_FontAspect theFontAspect,
+                                               const Font_FontAspect  theFontAspect,
                                                const Standard_Integer theFontSize) const
 {
   if ( (theFontSize < 2 && theFontSize != -1) || theFontName.IsNull())
@@ -522,16 +530,19 @@ Handle(Font_SystemFont) Font_FontMgr::GetFont (const Handle(TCollection_HAsciiSt
   return NULL;
 }
 
+// =======================================================================
+// function : FindFont
+// purpose  :
+// =======================================================================
 Handle(Font_SystemFont) Font_FontMgr::FindFont (const Handle(TCollection_HAsciiString)& theFontName,
-                                                const Font_FontAspect theFontAspect,
+                                                const Font_FontAspect  theFontAspect,
                                                 const Standard_Integer theFontSize) const
 {
   Handle(TCollection_HAsciiString) aFontName   = theFontName;
   Font_FontAspect                  aFontAspect = theFontAspect;
-  Standard_Integer                 aFontSize = theFontSize;
+  Standard_Integer                 aFontSize   = theFontSize;
 
   Handle(Font_SystemFont) aFont = GetFont (aFontName, aFontAspect, aFontSize);
-
   if (!aFont.IsNull())
   {
     return aFont;
@@ -551,8 +562,20 @@ Handle(Font_SystemFont) Font_FontMgr::FindFont (const Handle(TCollection_HAsciiS
     }
   }
 
-  aFont = GetFont (aFontName, aFontAspect, aFontSize);
+  // check font family alias with specified font aspect
+  if (theFontAspect != Font_FA_Undefined
+   && theFontAspect != Font_FA_Regular
+   && theFontAspect != aFontAspect)
+  {
+    aFont = GetFont (aFontName, theFontAspect, aFontSize);
+    if (!aFont.IsNull())
+    {
+      return aFont;
+    }
+  }
 
+  // check font alias with aspect in the name
+  aFont = GetFont (aFontName, aFontAspect, aFontSize);
   if (!aFont.IsNull())
   {
     return aFont;
@@ -561,7 +584,6 @@ Handle(Font_SystemFont) Font_FontMgr::FindFont (const Handle(TCollection_HAsciiS
   // Requested family name not found -> search for any font family with given aspect and height
   aFontName = new TCollection_HAsciiString ("");
   aFont = GetFont (aFontName, aFontAspect, aFontSize);
-
   if (!aFont.IsNull())
   {
     return aFont;
@@ -571,7 +593,6 @@ Handle(Font_SystemFont) Font_FontMgr::FindFont (const Handle(TCollection_HAsciiS
   aFontAspect = Font_FA_Undefined;
   aFontSize = -1;
   aFont = GetFont (aFontName, aFontAspect, aFontSize);
-  
   if (!aFont.IsNull())
   {
     return aFont;

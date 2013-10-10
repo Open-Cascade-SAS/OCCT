@@ -18,8 +18,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
-
 #include <Geom2dConvert_CompCurveToBSplineCurve.ixx>
 
 #include <Geom2d_BSplineCurve.hxx>
@@ -33,7 +31,21 @@
 #include <gp_Pnt2d.hxx>
 #include <Precision.hxx>
 
+//=======================================================================
+//function : constructor
+//purpose  :
+//=======================================================================
+Geom2dConvert_CompCurveToBSplineCurve::Geom2dConvert_CompCurveToBSplineCurve (const Convert_ParameterisationType theParameterisation)
+: myTol  (Precision::Confusion()),
+  myType (theParameterisation)
+{
+  //
+}
 
+//=======================================================================
+//function : constructor
+//purpose  :
+//=======================================================================
 Geom2dConvert_CompCurveToBSplineCurve::
 Geom2dConvert_CompCurveToBSplineCurve(const Handle(Geom2d_BoundedCurve)& BasisCurve, 
 				      const Convert_ParameterisationType Parameterisation) :
@@ -52,7 +64,7 @@ Geom2dConvert_CompCurveToBSplineCurve(const Handle(Geom2d_BoundedCurve)& BasisCu
 
 //=======================================================================
 //function : Add
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 Standard_Boolean Geom2dConvert_CompCurveToBSplineCurve::
@@ -60,16 +72,23 @@ Add(const Handle(Geom2d_BoundedCurve)& NewCurve,
     const Standard_Real Tolerance,
     const Standard_Boolean After)
 {
-  myTol = Tolerance;
-// Convertion
-  Handle(Geom2d_BSplineCurve) Bs = 
-      Handle(Geom2d_BSplineCurve)::DownCast(NewCurve);
-  if (!Bs.IsNull() ) { 
-    Bs =  Handle(Geom2d_BSplineCurve)::DownCast(NewCurve->Copy()); 
+  // conversion
+  Handle(Geom2d_BSplineCurve) Bs = Handle(Geom2d_BSplineCurve)::DownCast (NewCurve);
+  if (!Bs.IsNull())
+  {
+    Bs = Handle(Geom2d_BSplineCurve)::DownCast (NewCurve->Copy());
   }
-  else {
+  else
+  {
     Bs = Geom2dConvert::CurveToBSplineCurve (NewCurve, myType);
   }
+  if (myCurve.IsNull())
+  {
+    myCurve = Bs;
+    return Standard_True;
+  }
+
+  myTol = Tolerance;
 
   Standard_Integer LBs = Bs->NbPoles(), LCb = myCurve->NbPoles();
   
@@ -115,6 +134,11 @@ Add(const Handle(Geom2d_BoundedCurve)& NewCurve,
   }  
   return Standard_False;
 }
+
+//=======================================================================
+//function : Add
+//purpose  :
+//=======================================================================
 
 void Geom2dConvert_CompCurveToBSplineCurve::Add( 
       Handle(Geom2d_BSplineCurve)& FirstCurve, 
@@ -203,8 +227,22 @@ void Geom2dConvert_CompCurveToBSplineCurve::Add(
   }
 }
 
+//=======================================================================
+//function : BSplineCurve
+//purpose  :
+//=======================================================================
 
 Handle(Geom2d_BSplineCurve) Geom2dConvert_CompCurveToBSplineCurve::BSplineCurve() const 
 {
- return myCurve;
+  return myCurve;
+}
+
+//=======================================================================
+//function : Clear
+//purpose  :
+//=======================================================================
+
+void Geom2dConvert_CompCurveToBSplineCurve::Clear()
+{
+  myCurve.Nullify();
 }

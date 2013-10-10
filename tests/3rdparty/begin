@@ -15,4 +15,4 @@ if { [info exists test_image ] == 0 } {
    set test_image photo
 }
 
-vinit
+vinit View1

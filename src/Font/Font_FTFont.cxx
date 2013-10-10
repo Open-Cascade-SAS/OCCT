@@ -18,6 +18,9 @@
 // and conditions governing the rights and limitations under the License.
 
 #include <Font_FTFont.hxx>
+#include <Font_FontMgr.hxx>
+#include <TCollection_AsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
 
 IMPLEMENT_STANDARD_HANDLE (Font_FTFont, Standard_Transient)
 IMPLEMENT_STANDARD_RTTIEXT(Font_FTFont, Standard_Transient)
@@ -64,7 +67,7 @@ void Font_FTFont::Release()
 }
 
 // =======================================================================
-// function : Font_FTFont
+// function : Init
 // purpose  :
 // =======================================================================
 bool Font_FTFont::Init (const NCollection_String& theFontPath,
@@ -100,6 +103,22 @@ bool Font_FTFont::Init (const NCollection_String& theFontPath,
     return false;
   }
   return true;
+}
+
+// =======================================================================
+// function : Init
+// purpose  :
+// =======================================================================
+bool Font_FTFont::Init (const NCollection_String& theFontName,
+                        const Font_FontAspect     theFontAspect,
+                        const unsigned int        thePointSize,
+                        const unsigned int        theResolution)
+{
+  Handle(Font_FontMgr) aFontMgr = Font_FontMgr::GetInstance();
+  const Handle(TCollection_HAsciiString) aFontName = new TCollection_HAsciiString (theFontName.ToCString());
+  Handle(Font_SystemFont) aRequestedFont = aFontMgr->FindFont (aFontName, theFontAspect, thePointSize);
+  return !aRequestedFont.IsNull()
+      && Font_FTFont::Init (aRequestedFont->FontPath()->ToCString(), thePointSize, theResolution);
 }
 
 // =======================================================================
