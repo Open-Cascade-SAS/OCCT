@@ -47,7 +47,8 @@ OpenGl_FrameBuffer::OpenGl_FrameBuffer (GLint theTextureFormat)
   myTextFormat (theTextureFormat),
   myGlTextureId (NO_TEXTURE),
   myGlFBufferId (NO_FRAMEBUFFER),
-  myGlDepthRBId (NO_RENDERBUFFER)
+  myGlDepthRBId (NO_RENDERBUFFER),
+  myGlStencilRBId (NO_RENDERBUFFER)
 {
   //
 }
@@ -95,10 +96,26 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
     return Standard_False;
   }
 
-  // Create RenderBuffer (will be used as depth buffer)
-  theGlContext->extFBO->glGenRenderbuffersEXT (1, &myGlDepthRBId);
-  theGlContext->extFBO->glBindRenderbufferEXT (GL_RENDERBUFFER_EXT, myGlDepthRBId);
-  theGlContext->extFBO->glRenderbufferStorageEXT (GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, mySizeX, mySizeY);
+  if (!theGlContext->extPDS)
+  {
+    // Create RenderBuffer to be used as depth buffer
+    theGlContext->extFBO->glGenRenderbuffersEXT (1, &myGlDepthRBId);
+    theGlContext->extFBO->glBindRenderbufferEXT (GL_RENDERBUFFER_EXT, myGlDepthRBId);
+    theGlContext->extFBO->glRenderbufferStorageEXT (GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, mySizeX, mySizeY);
+
+    // Create RenderBuffer to be used as stencil buffer
+    theGlContext->extFBO->glGenRenderbuffersEXT (1, &myGlStencilRBId);
+    theGlContext->extFBO->glBindRenderbufferEXT (GL_RENDERBUFFER_EXT, myGlStencilRBId);
+    theGlContext->extFBO->glRenderbufferStorageEXT (GL_RENDERBUFFER_EXT, GL_STENCIL_INDEX, mySizeX, mySizeY);
+  }
+  else
+  {
+    // Create combined depth stencil buffer
+    theGlContext->extFBO->glGenRenderbuffersEXT (1, &myGlDepthRBId);
+    theGlContext->extFBO->glBindRenderbufferEXT (GL_RENDERBUFFER_EXT, myGlDepthRBId);
+    theGlContext->extFBO->glRenderbufferStorageEXT (GL_RENDERBUFFER_EXT, GL_DEPTH24_STENCIL8_EXT, mySizeX, mySizeY);
+    myGlStencilRBId = myGlDepthRBId;
+  }
 
   // Build FBO and setup it as texture
   theGlContext->extFBO->glGenFramebuffersEXT (1, &myGlFBufferId);
@@ -107,6 +124,7 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
   glBindTexture (GL_TEXTURE_2D, myGlTextureId);
   theGlContext->extFBO->glFramebufferTexture2DEXT (GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, myGlTextureId, 0);
   theGlContext->extFBO->glFramebufferRenderbufferEXT (GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, myGlDepthRBId);
+  theGlContext->extFBO->glFramebufferRenderbufferEXT (GL_FRAMEBUFFER_EXT, GL_STENCIL_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, myGlStencilRBId);
   if (theGlContext->extFBO->glCheckFramebufferStatusEXT (GL_FRAMEBUFFER_EXT) != GL_FRAMEBUFFER_COMPLETE_EXT)
   {
     if (!isPowerOfTwo (mySizeX) || !isPowerOfTwo (mySizeY))
@@ -136,6 +154,18 @@ void OpenGl_FrameBuffer::Release (const Handle(OpenGl_Context)& theGlContext)
     {
       theGlContext->extFBO->glDeleteRenderbuffersEXT (1, &myGlDepthRBId);
       myGlDepthRBId = NO_RENDERBUFFER;
+    }
+    else
+    {
+      std::cerr << "OpenGl_FrameBuffer::Release() called with invalid OpenGl_Context!\n";
+    }
+  }
+  if (IsValidStencilBuffer())
+  {
+    if (!theGlContext.IsNull() && theGlContext->extFBO != NULL)
+    {
+      theGlContext->extFBO->glDeleteRenderbuffersEXT (1, &myGlStencilRBId);
+      myGlStencilRBId = NO_RENDERBUFFER;
     }
     else
     {

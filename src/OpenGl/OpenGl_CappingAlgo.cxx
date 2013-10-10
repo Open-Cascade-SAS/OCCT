@@ -70,15 +70,11 @@ namespace
 void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)& theWorkspace,
                                         const OpenGl_ListOfGroup& theGroups)
 {
-  // do not draw capping surface for second transparency pass
-  if (theWorkspace->NamedStatus & OPENGL_NS_2NDPASSDO)
-    return;
-
   const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
 
-  // check whether algorithm need to be runned
+  // check whether algorithm need to be performed
   Standard_Boolean isCapping = Standard_False;
-  Graphic3d_SetOfHClipPlane aContextPlanes = aContext->Clipping().Planes();
+  const Graphic3d_SetOfHClipPlane& aContextPlanes = aContext->Clipping().Planes();
   Graphic3d_SetOfHClipPlane::Iterator aCappingIt (aContextPlanes);
   for (; aCappingIt.More(); aCappingIt.Next())
   {
@@ -92,7 +88,9 @@ void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)& theWorks
 
   // do not perform algorithm is there is nothing to render
   if (!isCapping)
+  {
     return;
+  }
 
   // init internal data
   Init();
@@ -146,7 +144,7 @@ void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)& theWorks
       aGroupIt.Value()->Render (theWorkspace);
     }
 
-    // override material, cull backfaces
+    // override material, cull back faces
     theWorkspace->SetAspectFace (FrontCulling());
     theWorkspace->AspectFace (Standard_True);
 

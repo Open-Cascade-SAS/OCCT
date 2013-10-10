@@ -989,42 +989,67 @@ D = -[Px,Py,Pz] dot |Nx|
 
   // Apply clipping planes
   {
-    if ( myZClip.Back.IsOn || myZClip.Front.IsOn )
-    {
-      Graphic3d_SetOfHClipPlane aZClipping;
+    const Handle(OpenGl_Context)& aContext = AWorkspace->GetGlContext();
 
+    if (myZClip.Back.IsOn || myZClip.Front.IsOn)
+    {
       const GLdouble ramp = myExtra.map.fpd - myExtra.map.bpd;
 
-      if ( myZClip.Back.IsOn )
+      Handle(Graphic3d_ClipPlane) aPlaneBack;
+      Handle(Graphic3d_ClipPlane) aPlaneFront;
+
+      if (myZClip.Back.IsOn)
       {
         const GLdouble back = ramp * myZClip.Back.Limit + myExtra.map.bpd;
-        const Graphic3d_ClipPlane::Equation aBack(0.0, 0.0, 1.0, -back);
-        aZClipping.Add (new Graphic3d_ClipPlane (aBack));
+        const Graphic3d_ClipPlane::Equation aBackEquation (0.0, 0.0, 1.0, -back);
+        aPlaneBack = new Graphic3d_ClipPlane (aBackEquation);
       }
 
-      if ( myZClip.Front.IsOn )
+      if (myZClip.Front.IsOn)
       {
         const GLdouble front = ramp * myZClip.Front.Limit + myExtra.map.bpd;
-        const Graphic3d_ClipPlane::Equation aFront (0.0, 0.0, -1.0, front);
-        aZClipping.Add (new Graphic3d_ClipPlane (aFront));
+        const Graphic3d_ClipPlane::Equation aFrontEquation (0.0, 0.0, -1.0, front);
+        aPlaneFront = new Graphic3d_ClipPlane (aFrontEquation);
       }
 
-      aContext->ChangeClipping().Set (aZClipping, &OpenGl_IdentityMatrix);
+      // do some "memory allocation"-wise optimization
+      if (!aPlaneBack.IsNull() || !aPlaneFront.IsNull())
+      {
+        Graphic3d_SetOfHClipPlane aSlicingPlanes;
+        if (!aPlaneBack.IsNull())
+        {
+          aSlicingPlanes.Add (aPlaneBack);
+        }
+
+        if (!aPlaneFront.IsNull())
+        {
+          aSlicingPlanes.Add (aPlaneFront);
+        }
+
+        // add planes at loaded view matrix state
+        aContext->ChangeClipping().AddView (aSlicingPlanes, AWorkspace);
+      }
     }
 
     // Apply user clipping planes
-    Graphic3d_SetOfHClipPlane aPlanesOn;
-    Graphic3d_SetOfHClipPlane::Iterator aPlaneIt (myClipPlanes);
-    for (; aPlaneIt.More(); aPlaneIt.Next())
+    if (!myClipPlanes.IsEmpty())
     {
-      const Handle(Graphic3d_ClipPlane)& aUserPln = aPlaneIt.Value();
-      if (aUserPln->IsOn ())
-        aPlanesOn.Add (aUserPln);
-    }
+      Graphic3d_SetOfHClipPlane aUserPlanes;
+      Graphic3d_SetOfHClipPlane::Iterator aClippingIt (myClipPlanes);
+      for (; aClippingIt.More(); aClippingIt.Next())
+      {
+        const Handle(Graphic3d_ClipPlane)& aClipPlane = aClippingIt.Value();
+        if (aClipPlane->IsOn())
+        {
+          aUserPlanes.Add (aClipPlane);
+        }
+      }
 
-    if (aPlanesOn.Size() > 0)
-    {
-      aContext->ChangeClipping().Set (aPlanesOn);
+      if (!aUserPlanes.IsEmpty())
+      {
+        // add planes at actual matrix state.
+        aContext->ChangeClipping().AddWorld (aUserPlanes);
+      }
     }
   }
 
@@ -1111,8 +1136,7 @@ D = -[Px,Py,Pz] dot |Nx|
   // and invoking optional callbacks
   AWorkspace->ResetAppliedAspect();
 
-  // Unset clip planes managed by driver
-  aContext->ChangeClipping().Unset (aContext->Clipping().Planes());
+  aContext->ChangeClipping().RemoveAll();
 
   // display global trihedron
   if (myTrihedron != NULL)

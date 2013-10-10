@@ -72,7 +72,7 @@ public:
   //! Returns true if current object was initialized
   Standard_Boolean IsValid() const
   {
-    return IsValidFrameBuffer() && IsValidTexture() && IsValidDepthBuffer();
+    return IsValidFrameBuffer() && IsValidTexture() && IsValidDepthBuffer() && IsValidStencilBuffer();
   }
 
   //! Notice! Obsolete hardware (GeForce FX etc)
@@ -154,16 +154,22 @@ private:
     return myGlDepthRBId != NO_RENDERBUFFER;
   }
 
+  Standard_Boolean IsValidStencilBuffer() const
+  {
+    return myGlStencilRBId != NO_RENDERBUFFER;
+  }
+
 private:
 
-  GLsizei      mySizeX; // texture width
-  GLsizei      mySizeY; // texture height
-  GLsizei    myVPSizeX; // viewport width (should be <= texture width)
-  GLsizei    myVPSizeY; // viewport height (should be <= texture height)
-  GLint   myTextFormat; // GL_RGB, GL_RGBA,...
-  GLuint myGlTextureId; // GL texture ID
-  GLuint myGlFBufferId; // FBO object ID
-  GLuint myGlDepthRBId; // RenderBuffer object for depth ID
+  GLsizei      mySizeX;   // texture width
+  GLsizei      mySizeY;   // texture height
+  GLsizei    myVPSizeX;   // viewport width (should be <= texture width)
+  GLsizei    myVPSizeY;   // viewport height (should be <= texture height)
+  GLint   myTextFormat;   // GL_RGB, GL_RGBA,...
+  GLuint myGlTextureId;   // GL texture ID
+  GLuint myGlFBufferId;   // FBO object ID
+  GLuint myGlDepthRBId;   // RenderBuffer object for depth ID
+  GLuint myGlStencilRBId; // RenderBuffer object for stencil ID
 
 };
 

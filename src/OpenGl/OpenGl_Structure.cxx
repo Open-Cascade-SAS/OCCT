@@ -28,6 +28,8 @@
 #include <OpenGl_Context.hxx>
 #include <OpenGl_telem_util.hxx>
 
+#include <Graphic3d_SetOfHClipPlane_Handle.hxx>
+
 //! Auxiliary class for bounding box presentation
 class OpenGl_BndBoxPrs : public OpenGl_Element
 {
@@ -459,20 +461,34 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
   // Set up plane equations for non-structure transformed global model-view matrix
   const Handle(OpenGl_Context)& aContext = AWorkspace->GetGlContext();
 
-  // Collect planes which should be turned on for structure
-  Graphic3d_SetOfHClipPlane aPlanesOn;
-  Graphic3d_SetOfHClipPlane::Iterator aPlaneIt (myClipPlanes);
-  for (; aPlaneIt.More(); aPlaneIt.Next())
+  // List of planes to be applied to context state
+  Handle(Graphic3d_SetOfHClipPlane) aUserPlanes;
+
+  // Collect clipping planes of structure scope
+  if (!myClipPlanes.IsEmpty())
   {
-    const Handle(Graphic3d_ClipPlane)& aUserPln = aPlaneIt.Value();
-    if (aUserPln->IsOn())
-      aPlanesOn.Add (aUserPln);
+    Graphic3d_SetOfHClipPlane::Iterator aClippingIt (myClipPlanes);
+    for (; aClippingIt.More(); aClippingIt.Next())
+    {
+      const Handle(Graphic3d_ClipPlane)& aClipPlane = aClippingIt.Value();
+      if (!aClipPlane->IsOn())
+      {
+        continue;
+      }
+
+      if (aUserPlanes.IsNull())
+      {
+        aUserPlanes = new Graphic3d_SetOfHClipPlane();
+      }
+
+      aUserPlanes->Add (aClipPlane);
+    }
   }
 
-  // set structure clipping planes
-  if (aPlanesOn.Size() > 0)
+  if (!aUserPlanes.IsNull() && !aUserPlanes->IsEmpty())
   {
-    aContext->ChangeClipping().Set (aPlanesOn, AWorkspace->ViewMatrix());
+    // add planes at loaded view matrix state
+    aContext->ChangeClipping().AddWorld (*aUserPlanes, AWorkspace);
   }
 
   // Render groups
@@ -483,13 +499,16 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
     itg.Next();
   }
 
-  // Render cappings for structure groups
-  OpenGl_CappingAlgo::RenderCapping (AWorkspace, myGroups);
-
-  // unset structure clipping planes
-  if (aPlanesOn.Size() > 0)
+  // Render capping for structure groups
+  if (!aContext->Clipping().Planes().IsEmpty())
   {
-    aContext->ChangeClipping().Unset (aPlanesOn);
+    OpenGl_CappingAlgo::RenderCapping (AWorkspace, myGroups);
+  }
+
+  // Revert structure clippings
+  if (!aUserPlanes.IsNull() && !aUserPlanes->IsEmpty())
+  {
+    aContext->ChangeClipping().Remove (*aUserPlanes);
   }
 
   // Restore highlight color

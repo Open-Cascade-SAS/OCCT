@@ -19,6 +19,7 @@
 
 #include <OpenGl_ClippingState.hxx>
 #include <OpenGl_GlCore11.hxx>
+#include <OpenGl_Workspace.hxx>
 
 namespace
 {
@@ -49,90 +50,34 @@ void OpenGl_ClippingState::Init (const Standard_Integer theMaxPlanes)
 }
 
 // =======================================================================
-// function : Planes
+// function : Add
 // purpose  :
 // =======================================================================
-Graphic3d_SetOfHClipPlane OpenGl_ClippingState::Planes() const
-{
-  Graphic3d_SetOfHClipPlane aRes;
-  OpenGl_MapOfContextPlanes::Iterator anIt (myPlanes);
-  for (; anIt.More(); anIt.Next())
-  {
-    aRes.Add (anIt.Key());
-  }
-
-  return aRes;
-}
-
-// =======================================================================
-// function : IsSet
-// purpose  :
-// =======================================================================
-Standard_Boolean OpenGl_ClippingState::IsSet (const Handle(Graphic3d_ClipPlane)& thePlane) const
-{
-  return myPlanes.IsBound (thePlane);
-}
-
-// =======================================================================
-// function : Set
-// purpose  :
-// =======================================================================
-void OpenGl_ClippingState::Set (const Graphic3d_SetOfHClipPlane& thePlanes,
-                                const Standard_Boolean theToEnable)
-{
-  Graphic3d_SetOfHClipPlane::Iterator aPlaneIt (thePlanes);
-  for (; aPlaneIt.More() && myEmptyPlaneIds->Available() > 0; aPlaneIt.Next())
-  {
-    const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIt.Value();
-    if (IsSet (aPlane))
-      return;
-
-    Standard_Integer anId = myEmptyPlaneIds->Next();
-    myPlanes.Bind (aPlane, anId);
-    myPlaneStates.Bind (aPlane, theToEnable);
-
-    const GLenum anOpenGlId = (GLenum)anId;
-    if (theToEnable)
-    {
-      glEnable (anOpenGlId);
-    }
-    else
-    {
-      glDisable (anOpenGlId);
-    }
-
-    glClipPlane (anOpenGlId, aPlane->GetEquation());
-  }
-}
-
-// =======================================================================
-// function : Set
-// purpose  :
-// =======================================================================
-void OpenGl_ClippingState::Set (const Graphic3d_SetOfHClipPlane& thePlanes,
-                                const OpenGl_Matrix* theViewMatrix,
-                                const Standard_Boolean theToEnable)
+void OpenGl_ClippingState::Add (Graphic3d_SetOfHClipPlane& thePlanes,
+                                const EquationCoords& theCoordSpace,
+                                const Handle(OpenGl_Workspace)& theWS)
 {
   GLint aMatrixMode;
   glGetIntegerv (GL_MATRIX_MODE, &aMatrixMode);
 
-  OpenGl_Matrix aCurrentMat;
-  glGetFloatv (GL_MODELVIEW_MATRIX, (GLfloat*)aCurrentMat.mat);
+  OpenGl_Matrix aCurrentMx;
+  glGetFloatv (GL_MODELVIEW_MATRIX, (GLfloat*) &aCurrentMx);
 
   if (aMatrixMode != GL_MODELVIEW)
   {
     glMatrixMode (GL_MODELVIEW);
   }
 
-  // load equation transform matrices
-  glLoadMatrixf ((theViewMatrix != NULL)
-    ? (const GLfloat*)theViewMatrix->mat
-    : (const GLfloat*)OpenGl_IdentityMatrix.mat);
+  switch (theCoordSpace)
+  {
+    case EquationCoords_View:  glLoadMatrixf ((const GLfloat*) &OpenGl_IdentityMatrix); break;
+    case EquationCoords_World: glLoadMatrixf ((const GLfloat*) theWS->ViewMatrix());    break;
+  }
 
-  Set (thePlanes, theToEnable);
+  Add (thePlanes, theCoordSpace);
 
   // restore model-view matrix
-  glLoadMatrixf ((GLfloat*)aCurrentMat.mat);
+  glLoadMatrixf ((GLfloat*) &aCurrentMx);
 
   // restore context matrix state
   if (aMatrixMode != GL_MODELVIEW)
@@ -142,86 +87,72 @@ void OpenGl_ClippingState::Set (const Graphic3d_SetOfHClipPlane& thePlanes,
 }
 
 // =======================================================================
-// function : Unset
+// function : Add
 // purpose  :
 // =======================================================================
-void OpenGl_ClippingState::Unset (const Graphic3d_SetOfHClipPlane& thePlanes)
+void OpenGl_ClippingState::Add (Graphic3d_SetOfHClipPlane& thePlanes, const EquationCoords& theCoordSpace)
+{
+  Graphic3d_SetOfHClipPlane::Iterator aPlaneIt (thePlanes);
+  while (aPlaneIt.More() && myEmptyPlaneIds->Available() > 0)
+  {
+    const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIt.Value();
+    if (Contains (aPlane))
+    {
+      thePlanes.Remove (aPlaneIt);
+      continue;
+    }
+
+    Standard_Integer anID = myEmptyPlaneIds->Next();
+    myPlanes.Add (aPlane);
+    myPlaneStates.Bind (aPlane, PlaneProps (theCoordSpace, anID, Standard_True));
+
+    glEnable ((GLenum)anID);
+    glClipPlane ((GLenum)anID, aPlane->GetEquation());
+    aPlaneIt.Next();
+  }
+
+  while (aPlaneIt.More() && myEmptyPlaneIds->Available() == 0)
+  {
+    thePlanes.Remove (aPlaneIt);
+  }
+}
+
+// =======================================================================
+// function : Remove
+// purpose  :
+// =======================================================================
+void OpenGl_ClippingState::Remove (const Graphic3d_SetOfHClipPlane& thePlanes)
 {
   Graphic3d_SetOfHClipPlane::Iterator aPlaneIt (thePlanes);
   for (; aPlaneIt.More(); aPlaneIt.Next())
   {
     const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIt.Value();
-    if (!IsSet (aPlane))
+    if (!Contains (aPlane))
+    {
       continue;
+    }
 
-    Standard_Integer anId = myPlanes.Find (aPlane);
-    myEmptyPlaneIds->Free (anId);
-    myPlanes.UnBind (aPlane);
+    Standard_Integer anID = myPlaneStates.Find (aPlane).ContextID;
+    myEmptyPlaneIds->Free (anID);
     myPlaneStates.UnBind (aPlane);
 
-    const GLenum anOpenGlId = (GLenum)anId;
-
-    glDisable (anOpenGlId);
-    glClipPlane (anOpenGlId, OpenGl_DefaultPlaneEq);
+    glDisable ((GLenum)anID);
   }
-}
 
-//
-//// =======================================================================
-//// function : SetPlane
-//// purpose  :
-//// =======================================================================
-//Standard_Boolean OpenGl_ClippingState::SetPlane (const Handle(Graphic3d_ClipPlane)& thePlane,
-//                                                 const Standard_Boolean theToEnable)
-//{
-//  if (myEmptyPlaneIds->Available() == 0)
-//    return Standard_False;
-//
-//  if (IsPlaneSet (thePlane))
-//    return Standard_True;
-//
-//  Standard_Integer aPlaneId = myEmptyPlaneIds->Next();
-//  myPlanes.Bind (thePlane, aPlaneId);
-//  myPlaneStates.Bind (thePlane, theToEnable);
-//  if (theToEnable)
-//    glEnable (aPlaneId);
-//  else
-//    glDisable (aPlaneId);
-//
-//  glClipPlane (aPlaneId, thePlane->GetEquation());
-//
-//  return Standard_True;
-//}
-
-//// =======================================================================
-//// function : UnsetPlane
-//// purpose  :
-//// =======================================================================
-//void OpenGl_ClippingState::UnsetPlane (const Handle(Graphic3d_ClipPlane)& thePlane)
-//{
-//  if (!IsPlaneSet (thePlane))
-//    return;
-//
-//  Standard_Integer aPlaneId = myPlanes.Find (thePlane);
-//
-//  myEmptyPlaneIds->Free (aPlaneId);
-//  myPlanes.UnBind (thePlane);
-//  myPlaneStates.UnBind (thePlane);
-//
-//  glDisable (aPlaneId);
-//  glClipPlane (aPlaneId, OpenGl_DefaultPlaneEq);
-//}
-
-// =======================================================================
-// function : IsEnabled
-// purpose  :
-// =======================================================================
-Standard_Boolean OpenGl_ClippingState::IsEnabled (const Handle(Graphic3d_ClipPlane)& thePlane) const
-{
-  Standard_Boolean isSet;
-  return IsSet (thePlane)
-      && myPlaneStates.Find (thePlane, isSet)
-      && isSet;
+  // renew collection of planes
+  aPlaneIt.Init (myPlanes);
+  while (aPlaneIt.More())
+  {
+    const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIt.Value();
+    if (!myPlaneStates.IsBound (aPlane))
+    {
+      myPlanes.Remove (aPlaneIt);
+    }
+    else
+    {
+      aPlaneIt.Next();
+    }
+  }
 }
 
 // =======================================================================
@@ -231,18 +162,26 @@ Standard_Boolean OpenGl_ClippingState::IsEnabled (const Handle(Graphic3d_ClipPla
 void OpenGl_ClippingState::SetEnabled (const Handle(Graphic3d_ClipPlane)& thePlane,
                                        const Standard_Boolean theIsEnabled)
 {
-  if (!IsSet (thePlane))
+  if (!Contains (thePlane))
+  {
     return;
+  }
 
-  Standard_Boolean& aState = myPlaneStates.ChangeFind (thePlane);
-  if (theIsEnabled == aState)
+  PlaneProps& aProps = myPlaneStates.ChangeFind (thePlane);
+  if (theIsEnabled == aProps.IsEnabled)
+  {
     return;
+  }
 
-  Standard_Integer aPlaneId = myPlanes.Find (thePlane);
+  GLenum anID = (GLenum)aProps.ContextID;
   if (theIsEnabled)
-    glEnable (aPlaneId);
+  {
+    glEnable (anID);
+  }
   else
-    glDisable (aPlaneId);
+  {
+    glDisable (anID);
+  }
 
-  aState = theIsEnabled;
+  aProps.IsEnabled = theIsEnabled;
 }

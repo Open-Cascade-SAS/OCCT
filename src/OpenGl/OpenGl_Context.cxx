@@ -88,6 +88,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   extGS  (NULL),
   extBgra(Standard_False),
   extAnis(Standard_False),
+  extPDS(Standard_False),
   atiMem (Standard_False),
   nvxMem (Standard_False),
   mySharedResources (new OpenGl_ResourcesMap()),
@@ -640,6 +641,7 @@ void OpenGl_Context::init()
   arbNPTW = CheckExtension ("GL_ARB_texture_non_power_of_two");
   extBgra = CheckExtension ("GL_EXT_bgra");
   extAnis = CheckExtension ("GL_EXT_texture_filter_anisotropic");
+  extPDS  = CheckExtension ("GL_EXT_packed_depth_stencil");
   atiMem  = CheckExtension ("GL_ATI_meminfo");
   nvxMem  = CheckExtension ("GL_NVX_gpu_memory_info");
 

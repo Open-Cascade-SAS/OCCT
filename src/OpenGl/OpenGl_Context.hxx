@@ -313,6 +313,7 @@ public: // extensions
   OpenGl_ExtGS*    extGS;   //!< GL_EXT_geometry_shader4
   Standard_Boolean extBgra; //!< GL_EXT_bgra
   Standard_Boolean extAnis; //!< GL_EXT_texture_filter_anisotropic
+  Standard_Boolean extPDS;  //!< GL_EXT_packed_depth_stencil
   Standard_Boolean atiMem;  //!< GL_ATI_meminfo
   Standard_Boolean nvxMem;  //!< GL_NVX_gpu_memory_info
 

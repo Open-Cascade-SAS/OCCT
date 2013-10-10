@@ -100,11 +100,6 @@ protected:
 
   virtual ~OpenGl_Structure();
 
-  //! Draw capping surfaces by h/w for the clipping planes
-  //! enabled for the structure.
-  //! @param theWorkspace [in] the GL workspace, context state.
-  void DrawCapping (const Handle(OpenGl_Workspace)& theWorkspace) const;
-
 protected:
 
   //Structure_LABBegin

@@ -41,9 +41,10 @@ class Handle(Graphic3d_AspectFillArea3d);
 //! Depending on usage context the class can be used to specify:
 //! - Global clipping applied over the whole scene.
 //! - Object-level clipping applied for each particular object.
+//! The plane equation is specified in "world" coordinate system.
 //! Please note that the set of planes can define convex clipping volume.
 //! Be aware that number of clip planes supported by OpenGl is implementation
-//! dependant: at least 6 planes are available. Thus, take into account
+//! dependent: at least 6 planes are available. Thus, take into account
 //! number of clipping planes passed for rendering: the object planes plus
 //! the view defined ones.
 class Graphic3d_ClipPlane : public Standard_Transient
@@ -72,16 +73,18 @@ public:
   //! @param theEquation [in] the plane equation.
   Standard_EXPORT Graphic3d_ClipPlane (const Equation& theEquation);
 
-  //! Construct clip plane from the passed geomertical definition.
+  //! Construct clip plane from the passed geometrical definition.
   //! By default the plane is on, capping is turned off.
   //! @param thePlane [in] the plane.
   Standard_EXPORT Graphic3d_ClipPlane (const gp_Pln& thePlane);
 
   //! Set plane equation by its geometrical definition.
+  //! The equation is specified in "world" coordinate system.
   //! @param thePlane [in] the plane.
   Standard_EXPORT void SetEquation (const gp_Pln& thePlane);
 
   //! Set 4-component equation vector for clipping plane.
+  //! The equation is specified in "world" coordinate system.
   //! @param theEquation [in] the XYZW (or "ABCD") equation vector.
   Standard_EXPORT void SetEquation (const Equation& theEquation);
 
@@ -108,7 +111,7 @@ public:
   //! @param theIsOn [in] the flag specifying whether the graphic driver should
   //! perform rendering of capping surface produced by this plane. The graphic
   //! driver produces this surface for convex graphics by means of stencil-test
-  //! and multipass rendering.
+  //! and multi-pass rendering.
   Standard_EXPORT void SetCapping(const Standard_Boolean theIsOn);
 
   //! Check state of capping surface rendering.
@@ -118,7 +121,7 @@ public:
     return myIsCapping;
   }
 
-  //! Get geomertical definition. The plane is built up
+  //! Get geometrical definition. The plane is built up
   //! from the equation clipping plane equation vector.
   //! @return geometrical definition of clipping plane.
   Standard_EXPORT gp_Pln ToPlane() const;
@@ -185,11 +188,11 @@ public: // @name user-defined graphical attributes
     return myId;
   }
 
-  //! Compute and return capping apsect from the graphical attributes.
+  //! Compute and return capping aspect from the graphical attributes.
   //! @return capping surface rendering aspect.
   Standard_EXPORT Handle(Graphic3d_AspectFillArea3d) CappingAspect() const;
 
-public: // @name modificaton counters
+public: // @name modification counters
 
   //! @return modification counter for equation.
   unsigned int MCountEquation() const

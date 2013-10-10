@@ -57,3 +57,4 @@ Graphic3d_ClipPlane.hxx
 Graphic3d_ClipPlane.cxx
 Graphic3d_ClipPlane_Handle.hxx
 Graphic3d_SetOfHClipPlane.hxx
+Graphic3d_SetOfHClipPlane_Handle.hxx
