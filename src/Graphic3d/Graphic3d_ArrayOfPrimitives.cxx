@@ -591,7 +591,7 @@ gp_Pnt2d Graphic3d_ArrayOfPrimitives::VertexTexel(const Standard_Integer aRank) 
 
 Quantity_Color Graphic3d_ArrayOfPrimitives::BoundColor(const Standard_Integer aRank) const
 {
-  Standard_Real r,g,b;
+  Standard_Real r = 0.0, g = 0.0, b = 0.0;
   BoundColor(aRank,r,g,b);
   return Quantity_Color(r,g,b,Quantity_TOC_RGB);
 }

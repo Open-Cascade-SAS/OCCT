@@ -3124,7 +3124,7 @@ void IntPatch_PrmPrmIntersection::PointDepart(Handle(IntSurf_LineOn2S)& LineOn2S
 	//-- aucun point du triangle n a ete trouve assez proche
 	//-- on recherche les 3 points les plus proches de P 
 	//-- dans chacun des tableaux 
-	Standard_Real Dist3[3],u3[3],v3[3];
+		  Standard_Real Dist3[3],u3[3] = { 0.0, 0.0, 0.0 },v3[3] = { 0.0, 0.0, 0.0 };
 	Dist3[0]=Dist3[1]=Dist3[2]=RealLast();
 	for(U=resu0,i=0; i<SU1; i++,U+=du1) { 
 	  for(V=resv0,j=0; j<SV1; V+=dv1,j++) {       

@@ -91,7 +91,7 @@ Standard_EXPORT Standard_Boolean FUN_HDS_FACESINTERFER
   TopOpeBRepDS_ListIteratorOfListOfInterference itL1(L1);
   for (;itL1.More(); itL1.Next()) {
     const Handle(TopOpeBRepDS_Interference)& I = itL1.Value();
-    TopOpeBRepDS_Kind GT,ST;Standard_Integer G,S;
+    TopOpeBRepDS_Kind GT = TopOpeBRepDS_UNKNOWN, ST = TopOpeBRepDS_UNKNOWN; Standard_Integer G,S = 0;
     FUN_HDS_data(I,GT,G,ST,S);
     // interference face1/edge/face2
     Standard_Boolean fef = Standard_True;

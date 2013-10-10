@@ -333,7 +333,7 @@ static Standard_Boolean FUN_GeomTrans(const Handle(Geom_Surface)& S1,
   gp_Pnt P1; gp_Vec D1_C1; C1->D1(T1,P1,D1_C1);
   
   // D1_C2 : D1(C2(P1))
-  Standard_Real T2; 
+  Standard_Real T2 = 0.0; 
   Standard_Boolean projok = ::FUN_ProjectPoint(P1,C2,FC2,LC2,T2);
   if ( !projok ) {
     return Standard_False;

@@ -377,7 +377,7 @@ void Approx_SameParameter::Build(const Standard_Real Tolerance)
   //Control tangents at the extremities to know if the
   //reparametring is possible and calculate the tangents 
   //at the extremities of the function of change of variable.
-  Standard_Real tangent[2];
+  Standard_Real tangent[2] = { 0.0, 0.0 };
   gp_Pnt Pcons,Pc3d;
   gp_Vec Vcons,Vc3d;
 

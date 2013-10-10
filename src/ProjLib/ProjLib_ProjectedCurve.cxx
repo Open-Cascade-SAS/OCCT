@@ -467,7 +467,7 @@ void ProjLib_ProjectedCurve::Load(const Handle(Adaptor3d_HCurve)& C)
     default:
       {
 	Standard_Boolean IsTrimmed[2] = {Standard_False, Standard_False};
-        Standard_Real Vsingular[2]; //for surfaces of revolution
+	Standard_Real Vsingular[2] = { 0.0 , 0.0 }; //for surfaces of revolution
 	Standard_Real f = 0., l = 0., dt = 0.;
 	const Standard_Real eps = 0.01;
 	

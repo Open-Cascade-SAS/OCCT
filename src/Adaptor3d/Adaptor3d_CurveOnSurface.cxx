@@ -237,7 +237,7 @@ static void Locate1Coord(const Standard_Integer Index,
 			 const Handle(Geom_BSplineCurve)& BSplC,
 			 gp_Pnt2d& LeftBot, gp_Pnt2d& RightTop)
 {
-  Standard_Real Comp1=0, DComp1=0, cur, f, l;
+  Standard_Real Comp1=0, DComp1=0, cur, f = 0.0, l = 0.0;
   Standard_Real Tol = Precision::PConfusion()/10;
   Standard_Integer i = 1, Bnd1, Bnd2;
   Standard_Boolean DIsNull= Standard_False; 
@@ -616,7 +616,7 @@ static void Locate2Coord(const Standard_Integer Index,
 			 const TColStd_Array1OfReal& Arr,
 			 gp_Pnt2d& LeftBot, gp_Pnt2d& RightTop)
 {
-  Standard_Real Comp=0,DComp=0,Tmp1,Tmp2;
+  Standard_Real Comp=0,DComp=0,Tmp1=0.0,Tmp2=0.0;
   Standard_Real Tol=Precision::PConfusion()/10;
   Standard_Integer N, NUp=0, NLo=0;
   if(Index==1)

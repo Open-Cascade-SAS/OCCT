@@ -1044,7 +1044,7 @@ void  ChFi3d_Builder::PerformMoreThreeCorner(const Standard_Integer Jndex,
   TopoDS_Face face;
   Standard_Integer jfp = 0,ii;
   Standard_Integer ic,icplus,icmoins,icplus2,
-                   sense,index,indice,isurf1,isurf2;
+                   sense,index = 0,indice,isurf1,isurf2;
   Standard_Integer cbplus=0, n3d=0,IVtx = 0,nb;
   Standard_Boolean sameside,trouve,isfirst;
   Standard_Real pardeb ,parfin,xdir,ydir;

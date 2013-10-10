@@ -187,6 +187,7 @@ void OpenGl_View::SetLights (const CALL_DEF_VIEWCONTEXT &AContext)
   for ( ; i < nb_lights; i++, alight++ )
   {
     OpenGl_Light rep;
+    memset(&rep,0,sizeof(rep));
 
 	switch( alight->LightType )
     {

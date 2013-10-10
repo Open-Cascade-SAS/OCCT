@@ -176,7 +176,7 @@ void TopOpeBRepDS_Edge3dInterferenceTool::Init
 
   myTole = Precision::Angular(); // NYI
 
-  Standard_Real pref; Standard_Boolean ok = ::FUN_hasparam(I, pref);
+  Standard_Real pref=0.0; Standard_Boolean ok = ::FUN_hasparam(I, pref);
   if (!ok) {FUN_Raise(); return;}  
   // <myP3d> :
   {

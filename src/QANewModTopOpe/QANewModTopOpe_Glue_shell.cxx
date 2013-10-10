@@ -1366,7 +1366,7 @@ QANewModTopOpe_Glue::SectionInsideFace(const TopoDS_Face& theFace,
 
       TopoDS_Edge aEdge;
       TopoDS_Vertex aVer;
-      Standard_Real aPar, aDist;
+      Standard_Real aPar=0.0, aDist;
       if (IsVertexOnFaceBound (aSVer, aFace1, aEdge, aVer, aPar, aDist)) {
 	// aSVer contacts aFace's boundary
 

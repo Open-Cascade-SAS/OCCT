@@ -1927,7 +1927,7 @@ void ChFi3d_ChBuilder::ExtentTwoCorner(const TopoDS_Vertex&        V,
 
 
   Handle(ChFiDS_ChamfSpine) chsp[2];
-  Standard_Real d[4], dis[2];
+  Standard_Real d[4], dis[2] = { 0.0, 0.0 };
   Standard_Integer j;
   TopoDS_Face F[4];
   Standard_Real tmpang, tmd;

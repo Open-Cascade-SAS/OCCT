@@ -86,7 +86,7 @@ static void PutPointsOnLine (const Contap_TheSearch& solrst,
 
   gp_Pnt ptonsurf;
   gp_Vec vectg,normale,tgtrst;
-  Standard_Real paramlin;
+  Standard_Real paramlin = 0.0;
 
   
   Standard_Integer nbLin = slin.Length();
