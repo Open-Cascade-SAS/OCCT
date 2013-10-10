@@ -990,8 +990,8 @@ static void SplitEdge(const TopoDS_Edge                &theEdge,
         if (aCurPar > aFPar && aCurPar < aLPar) 
         {
           aBuilder.Add(anEdge, aCurVtx);
+          break;
         }
-        break;
       }
     }
   }
