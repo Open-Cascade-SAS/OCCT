@@ -39,12 +39,16 @@ endif()
 
 if (DEFINED MSVC70)
   SET(COMPILER vc7)
+  add_definitions(/arch:SSE2)
 elseif (DEFINED MSVC80)
   SET(COMPILER vc8)
+  add_definitions(/arch:SSE2)
 elseif (DEFINED MSVC90)
   SET(COMPILER vc9)
+  add_definitions(/arch:SSE2)
 elseif (DEFINED MSVC10)
   SET(COMPILER vc10)
+  add_definitions(/arch:SSE2)
 elseif (DEFINED MSVC11)
   SET(COMPILER vc11)
 else()
@@ -76,9 +80,6 @@ IF(WIN32)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -MP")
   ENDIF()
 ENDIF()
-
-# sse2
-add_definitions(/arch:SSE2)
 
 # warning level 4
 IF(MSVC)
