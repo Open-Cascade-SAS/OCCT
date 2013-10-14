@@ -63,7 +63,7 @@ class BOPAlgo_BuilderFaceFunctor {
     iBeg=aBR.begin();
     iEnd=aBR.end();
     for(i=iBeg; i!=iEnd; ++i) {
-      BOPAlgo_BuilderFace& aBF=aVBF(i);
+      BOPAlgo_BuilderFace& aBF=aVBF((Standard_Integer)i);
       //
       aBF.Perform();
     }

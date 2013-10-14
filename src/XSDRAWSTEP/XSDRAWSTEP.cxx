@@ -311,47 +311,6 @@ static Standard_Integer testread (Draw_Interpretor& di, Standard_Integer argc, c
   return 0;
 }
  
-//=======================================================================
-//function : readstep
-//purpose  : 
-//=======================================================================
-
-static Standard_Integer readstep (Draw_Interpretor& di, Standard_Integer /*argc*/, const char** argv) 
-{
-//  On admet le controller AP214 ou une variante
-  
-  
-  STEPControl_Reader sr;
-  
-  IFSelect_ReturnStatus readstat = IFSelect_RetVoid;
-
-   readstat = sr.ReadFile (argv[1]);
- 
-  if (readstat != IFSelect_RetDone) {
-    
-    di<<"No model loaded"<<"\n";
-    return 1;
-  }
-
-  
-  Standard_Integer  num = sr.NbRootsForTransfer();
-  Standard_Integer  modepri;
-  di<<"NbRootsForTransfer="<<num<<" :\n";
-
-  cout<<"Mode (0 End, 1 root n0 1, 2 one root/n0, 3 one entity/n0, 4 Selection) : "<<flush;
-  cin>>modepri;
-  if (modepri == 0) { di<<"End Reading STEP"<<"\n"; return 0; }
-    
-
-  if (!sr.TransferRoot (num)) di<<"Transfer root n0 "<<num<<" : no result"<<"\n";
-  else {
-    TopoDS_Shape sh = sr.OneShape();
-    DBRep::Set (argv[2],sh);
-  }
-  cin>>modepri;
-  return 0;
-}
-
 //  ########  COMMANDE steptrans  : teste les transformations  #########
 //=======================================================================
 //function : steptrans
@@ -607,6 +566,5 @@ void XSDRAWSTEP::InitCommands (Draw_Interpretor& theCommands)
   theCommands.Add("steptrans",     "steptrans shape stepax1 stepax2",  __FILE__, steptrans,     g);
   theCommands.Add("countexpected","TEST",                              __FILE__, countexpected, g);
   theCommands.Add("dumpassembly", "TEST",                              __FILE__, dumpassembly,  g);
-  theCommands.Add("readstep",      "readstep  [file]",                 __FILE__, readstep,      g);
   theCommands.Add("stepfileunits" , "stepfileunits name_file", __FILE__, stepfileunits,      g);
 }

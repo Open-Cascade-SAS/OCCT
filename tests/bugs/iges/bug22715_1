@@ -6,7 +6,7 @@ puts ""
 # Incorrect faces of the filleted cube after import from iges file
 #######################################################################
 
-readstep [locate_data_file bug22715_cube.stp] s1 *
+testreadstep [locate_data_file bug22715_cube.stp] s1
 puts [whatis s1]
 explode s1 F
 

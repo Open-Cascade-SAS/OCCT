@@ -96,9 +96,9 @@ void BOPAlgo_Builder::FillImagesFaces()
 void BOPAlgo_Builder::BuildSplitFaces()
 {
   Standard_Boolean bHasFaceInfo, bIsClosed, bIsDegenerated, bToReverse;
-  Standard_Integer i, j, aNbS, aNbPBIn, aNbPBOn, aNbPBSc, aNbAV, nSp;
+  Standard_Integer i, j, k, aNbS, aNbPBIn, aNbPBOn, aNbPBSc, aNbAV, nSp;
   Standard_Boolean bRunParallel;
-  Standard_Size aNbBF, k;
+  Standard_Size aNbBF;
   TopoDS_Face aFF, aFSD;
   TopoDS_Edge aSp, aEE;
   TopAbs_Orientation anOriF, anOriE;
@@ -267,7 +267,7 @@ void BOPAlgo_Builder::BuildSplitFaces()
   BOPAlgo_BuilderFaceCnt::Perform(bRunParallel, aVBF);
   //===================================================
   //
-  for (k=0; k<aNbBF; ++k) {
+  for (k=0; k<(Standard_Integer)aNbBF; ++k) {
     aLFIm.Clear();
     //
     BOPAlgo_BuilderFace& aBF=aVBF(k);

@@ -222,13 +222,13 @@ void iges_newparam (int typarg, int longval, char *parval)
 /*     Complement du parametre courant (cf Hollerith sur +ieurs lignes)    */
 void iges_addparam (int longval, char* parval)
 {
-  char *newval, *oldval; int i;
-  size_t long0;
+  char *newval, *oldval;
+  int i, long0;
   if (longval <= 0) return;
   oldval = curparam->parval;
-  long0 = strlen(oldval);
+  long0 = (int)strlen(oldval);
 /*  newval = (char*) malloc(long0+longval+1);  */
-  newval = iges_newchar("",(int)long0+longval+1);
+  newval = iges_newchar("",long0+longval+1);
   for (i = 0; i < long0;   i ++) newval[i] = oldval[i];
   for (i = 0; i < longval; i ++) newval[i+long0] = parval[i];
   newval[long0+longval] = '\0';

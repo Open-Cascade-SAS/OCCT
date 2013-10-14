@@ -2380,26 +2380,13 @@ static Standard_Integer OCC5698 (Draw_Interpretor& di, Standard_Integer argc, co
   return 0;
 }
 
-static char sarr[2000];
-static int si=1;
-
 #ifdef WNT
-static int StackOverflow(int i = -1)
+static int StackOverflow (int i = -1)
 {
   char arr[2000];
-  if (si == 1) {
-    si = 0;
-    memcpy(arr,sarr,2000);
-    arr[1999]=0;
-    int n = (int)strlen(arr), s=0;
-    while (n--)
-      s += StackOverflow(i-1);
-    return i + s + StackOverflow(i-1);
-  }
-  else if (i != 0) {
-    return i + StackOverflow(i-1);
-  }
-  si = 1;
+  memset (arr, 0, sizeof(arr));
+  if (i < 0)
+    StackOverflow(i-1);
   return i;
 }
 
@@ -2410,7 +2397,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
 {
   if (argc != 1)
     {
-      di << "Usage : " << argv[0] << "\n";
+      cout << "Usage : " << argv[0] << "\n";
       return 1;
     }
   Standard_Boolean Succes;
@@ -2421,6 +2408,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
   {//==== Test Divide ByZero (Integer) ========================================
     try{
       OCC_CATCH_SIGNALS
+      cout << "(Integer) Divide By Zero..." << endl;
       di << "(Integer) Divide By Zero...";
       //cout.flush();
       di << "\n";
@@ -2456,6 +2444,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
   {//==== Test Divide ByZero (Real) ===========================================
     try{
       OCC_CATCH_SIGNALS
+      cout << "(Real) Divide By Zero..." << endl;
       di << "(Real) Divide By Zero...";
       //cout.flush();
       di << "\n";
@@ -2484,6 +2473,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
   {//==== Test Overflow (Integer) =============================================
     try{
       OCC_CATCH_SIGNALS
+      cout << "(Integer) Overflow..." << endl;
       di << "(Integer) Overflow...";
       //cout.flush();
       di << "\n";
@@ -2508,6 +2498,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
   {//==== Test Overflow (Real) ================================================ 
     try{
       OCC_CATCH_SIGNALS
+      cout << "(Real) Overflow..." << endl;
       di << "(Real) Overflow...";
       //cout.flush();
       di << "\n";
@@ -2539,6 +2530,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
   {//==== Test Underflow (Real) ===============================================
     try{
       OCC_CATCH_SIGNALS
+      cout << "(Real) Underflow" << endl; // to have message in log even if process crashed
       di << "(Real) Underflow";
       //cout.flush();
       di << "\n";
@@ -2569,6 +2561,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
   {//==== Test Invalid Operation (Real) ===============================================
     try{
       OCC_CATCH_SIGNALS
+      cout << "(Real) Invalid Operation..." << endl;
       di << "(Real) Invalid Operation...";
       //cout.flush();
       di << "\n";
@@ -2592,6 +2585,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
   {//==== Test Access Violation ===============================================
     try {
       OCC_CATCH_SIGNALS
+      cout << "Segmentation Fault..." << endl;
       di << "Segmentation Fault...";
       //cout.flush();
       di << "\n";
@@ -2620,6 +2614,7 @@ static Standard_Integer OCC6143 (Draw_Interpretor& di, Standard_Integer argc, co
   {//==== Test Stack Overflow ===============================================
     try {
       OCC_CATCH_SIGNALS
+      cout << "Stack Overflow..." << endl;
       di << "Stack Overflow...";
       //cout.flush();
       di << "\n";
