@@ -266,7 +266,7 @@ public:
   //! @return messanger instance
   inline const Handle_Message_Messenger& Messanger() const
   {
-    return Message::DefaultMessenger();
+    return ::Message::DefaultMessenger();
   }
 
   //! Callback for GL_ARB_debug_output extension
