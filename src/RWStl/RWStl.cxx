@@ -345,7 +345,7 @@ Handle_StlMesh_Mesh RWStl::ReadBinary (const OSD_Path& thePath,
   // must be a multiple of SIZEOF_STL_FACET
 
   // compute file size
-  Standard_Integer filesize = theFile.Size();
+  Standard_Size filesize = theFile.Size();
 
   if ( (filesize - HEADER_SIZE) % SIZEOF_STL_FACET !=0
 	|| (filesize < STL_MIN_FILE_SIZE)) {
@@ -354,7 +354,7 @@ Handle_StlMesh_Mesh RWStl::ReadBinary (const OSD_Path& thePath,
 
   // don't trust the number of triangles which is coded in the file
   // sometimes it is wrong, and with this technique we don't need to swap endians for integer
-  NBFACET = ((filesize - HEADER_SIZE) / SIZEOF_STL_FACET);
+  NBFACET = (Standard_Integer)((filesize - HEADER_SIZE) / SIZEOF_STL_FACET);
 
   // skip the header
   theFile.Seek(HEADER_SIZE,OSD_FromBeginning);

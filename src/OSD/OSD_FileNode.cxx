@@ -20,7 +20,11 @@
 # include <config.h>
 #endif
 
-#ifndef WNT
+#ifndef _WIN32
+
+//----------------------------------------------------------------------------
+//------------------- Linux Sources of OSD_FileNode --------------------------
+//----------------------------------------------------------------------------
 
 #include <unistd.h>
 #include <errno.h>
@@ -66,15 +70,14 @@ const OSD_WhoAmI Iam = OSD_WFileNode;
 
 // Create a file/directory object
 
-OSD_FileNode::OSD_FileNode (){
- myFileChannel = -1;
+OSD_FileNode::OSD_FileNode ()
+{
 }
-
-
 
 // Create and initialize a file/directory object
 
-OSD_FileNode::OSD_FileNode (const OSD_Path& Name){
+OSD_FileNode::OSD_FileNode (const OSD_Path& Name)
+{
  SetPath (Name);
 }
 
@@ -191,15 +194,7 @@ TCollection_AsciiString thisPath;
  if (status == -1) myError.SetValue (errno, Iam, "Move");
 }
 
-
-
-
-
 // Copy a file to another path and name
-
-
-#ifndef WNT
-
 int static copy_file( const char* src, const char* trg )
 {
   int err=0;
@@ -235,11 +230,6 @@ int static copy_file( const char* src, const char* trg )
   if (!err) err=errno;
   return err;
 }
-
-#endif
-
-
-
 
 void  OSD_FileNode::Copy(const OSD_Path& ToPath)
 {
@@ -441,7 +431,7 @@ Standard_Integer OSD_FileNode::Error()const{
  return( myError.Error());
 }
 
-#else
+#else /* _WIN32 */
 
 //----------------------------------------------------------------------------
 //-------------------  WNT Sources of OSD_FileNode ---------------------------
@@ -466,7 +456,7 @@ PSECURITY_DESCRIPTOR __fastcall _osd_wnt_protection_to_sd ( const OSD_Protection
 BOOL                 __fastcall _osd_wnt_sd_to_protection (
                                  PSECURITY_DESCRIPTOR pSD, OSD_Protection& prot, BOOL
                                 );
-Standard_Integer     __fastcall _get_file_type ( Standard_CString, Standard_Integer );
+Standard_Integer     __fastcall _get_file_type ( Standard_CString, HANDLE );
 
 void _osd_wnt_set_error ( OSD_Error&, OSD_WhoAmI, ... );
 
@@ -478,22 +468,18 @@ static void __fastcall _test_raise ( TCollection_AsciiString, Standard_CString )
 //purpose  : Empty Constructor
 //=======================================================================
 
-OSD_FileNode::OSD_FileNode () {
-
- myFileChannel = ( Standard_Integer )INVALID_HANDLE_VALUE;
-
-}  // end constructor ( 1 )
+OSD_FileNode::OSD_FileNode () 
+{
+}
 
 //=======================================================================
 //function : OSD_FileNode
 //purpose  : Constructor
 //=======================================================================
 
-OSD_FileNode::OSD_FileNode ( const OSD_Path& Name ) {
-
- myFileChannel = ( Standard_Integer )INVALID_HANDLE_VALUE;
+OSD_FileNode::OSD_FileNode ( const OSD_Path& Name )
+{
  myPath        = Name;
-
 }  // end constructor ( 2 )
 
 //=======================================================================
@@ -560,8 +546,7 @@ void OSD_FileNode::Remove () {
 
  TEST_RAISE(  TEXT( "Remove" )  );
 
- switch (  _get_file_type (  fName.ToCString (),
-                             ( Standard_Integer )INVALID_HANDLE_VALUE )  ) {
+ switch (_get_file_type (fName.ToCString(), INVALID_HANDLE_VALUE)) {
 
   case FLAG_FILE:
 
@@ -608,8 +593,7 @@ void OSD_FileNode::Move ( const OSD_Path& NewPath ) {
 
  NewPath.SystemName ( fNameDst );
 
- switch (  _get_file_type ( fName.ToCString (),
-                            ( Standard_Integer )INVALID_HANDLE_VALUE )  ) {
+ switch (_get_file_type (fName.ToCString (), INVALID_HANDLE_VALUE)) {
 
   case FLAG_FILE:
 
@@ -659,8 +643,7 @@ void OSD_FileNode::Copy ( const OSD_Path& ToPath ) {
 
  ToPath.SystemName ( fNameDst );
 
- switch (  _get_file_type ( fName.ToCString (),
-                            ( Standard_Integer )INVALID_HANDLE_VALUE )  ) {
+ switch (_get_file_type (fName.ToCString(), INVALID_HANDLE_VALUE)) {
 
   case FLAG_FILE:
 
@@ -713,9 +696,7 @@ OSD_Protection OSD_FileNode::Protection () {
         ) == NULL ||
         !_osd_wnt_sd_to_protection (
           pSD, retVal,
-          _get_file_type (  fName.ToCString (), ( Standard_Integer )INVALID_HANDLE_VALUE  ) ==
-          FLAG_DIRECTORY
-         )
+          _get_file_type (fName.ToCString(), INVALID_HANDLE_VALUE) == FLAG_DIRECTORY)
  )
    
    _osd_wnt_set_error ( myError, OSD_WFileNode );
@@ -744,8 +725,7 @@ void OSD_FileNode::SetProtection ( const OSD_Protection& Prot ) {
 
  pSD = _osd_wnt_protection_to_sd (
         Prot,
-        _get_file_type ( fName.ToCString (),
-                         ( Standard_Integer )INVALID_HANDLE_VALUE  ) ==
+        _get_file_type (fName.ToCString(), INVALID_HANDLE_VALUE) ==
         FLAG_DIRECTORY,
         (char *)fName.ToCString ()
        );
@@ -1060,4 +1040,4 @@ static void __fastcall _test_raise ( TCollection_AsciiString fName, Standard_CSt
 
 }  // end _test_raise
 
-#endif
+#endif /* _WIN32 */

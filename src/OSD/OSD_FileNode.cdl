@@ -130,7 +130,6 @@ is
 
  fields
     myPath              : Path is protected;   -- system independent path name
-    myFileChannel       : Integer is protected; -- file descriptor
     myError             : Error is protected;
 end FileNode from OSD;
 

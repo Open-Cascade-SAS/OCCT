@@ -186,7 +186,7 @@ class File from OSD inherits FileNode
      ---Level: Public
      raises ProgramError is static;
 
-  Size (me: out) returns Integer
+  Size (me: out) returns Size
      ---Purpose: Returns actual number of bytes of <me>.
      ---Level: Public
      raises ProgramError is static;
@@ -232,9 +232,8 @@ class File from OSD inherits FileNode
     myMode         : OpenMode;
     myIO           : Integer is protected; -- Stores peculiar I/O informations
     myFILE         : Address is protected;
-    myBuffer       : CString ;
-    myCurrPtr      : CString ;
-    myEndPtr       : CString ;
+    myFileChannel  : Integer is protected; -- file descriptor, Unix/Linux only
+    myFileHandle   : Address is protected; -- file handle, Windows only
 end File from OSD;
 
 
