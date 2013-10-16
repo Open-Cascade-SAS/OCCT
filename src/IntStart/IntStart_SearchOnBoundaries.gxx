@@ -208,16 +208,19 @@ void BoundedArc (const TheArc& A,
       if(lmaxr>maxr) maxr=lmaxr;
       if(minr<0.0 && maxr>0.0)  {
         Rejection=Standard_False;
-        continue;
+        break;
       }
     }
     ur+=dur;
   }
-  dur=0.001+maxdr+(maxr-minr)*0.1;
-  minr-=dur;
-  maxr+=dur;
-  if(minr<0.0 && maxr>0.0)  { 	
-    Rejection=Standard_False;
+  if(Rejection)
+  {
+    dur=0.001+maxdr+(maxr-minr)*0.1;
+    minr-=dur;
+    maxr+=dur;
+    if(minr<0.0 && maxr>0.0)  { 	
+      Rejection=Standard_False;
+    }
   }
 
   Arcsol=Standard_False;
