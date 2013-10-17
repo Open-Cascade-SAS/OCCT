@@ -19,59 +19,22 @@
 #ifndef BOPAlgo_Builder_2Cnt_HeaderFile
 #define BOPAlgo_Builder_2Cnt_HeaderFile
 
-/*
-#ifdef HAVE_TBB
-#undef HAVE_TBB
-#endif
-*/
+#include <NCollection_IndexedDataMap.hxx>
+
+#include <TopoDS_Shape.hxx>
+#include <TopoDS_Face.hxx>
+
+#include <BOPCol_TBB.hxx>
 #include <BOPCol_NCVector.hxx>
+
+#include <BOPTools_Set.hxx>
+#include <BOPTools_SetMapHasher.hxx>
+#include <BOPTools_AlgoTools.hxx>
+
+#include <BOPInt_Context.hxx>
+
 #include <BOPAlgo_BuilderFace.hxx>
 
-#ifdef HAVE_TBB
-#include <BOPCol_TBB.hxx>
-
-#define flexible_range blocked_range
-#define flexible_for   parallel_for
-#else 
-#define flexible_range serial_range
-#define flexible_for   serial_for
-#endif
-
-//=======================================================================
-//class : serial_range
-//purpose  : 
-//=======================================================================
-template <class Type> class serial_range {
- public:
-  serial_range(const Type& aBegin,
-	       const Type& aEnd)
-    : myBegin(aBegin), myEnd(aEnd) {
-  }
-  //
-  ~serial_range() {
-  }
-  //
-  const Type& begin() const{
-    return myBegin;
-  }
-  //
-  const Type& end() const{
-    return myEnd;
-  };
-  //
- protected:
-  Type myBegin;
-  Type myEnd;
-};
-//=======================================================================
-//function : serial_for
-//purpose  : 
-//=======================================================================
-template<typename Range, typename Body>
-static void serial_for( const Range& range, const Body& body ) {
-  body.operator()(range);
-};
-//
 //=======================================================================
 //class    : BOPAlgo_VectorOfBuilderFace
 //purpose  : 
@@ -129,5 +92,108 @@ class BOPAlgo_BuilderFaceCnt {
   }
   //
 };
+//
+//-------------------------------------------------------------------------
+typedef BOPCol_NCVector<TopoDS_Shape> BOPAlgo_VectorOfShape;
+typedef BOPCol_NCVector<BOPAlgo_VectorOfShape> BOPAlgo_VectorOfVectorOfShape;
+
+typedef NCollection_IndexedDataMap\
+  <BOPTools_Set, Standard_Integer, BOPTools_SetMapHasher> \
+    BOPAlgo_IndexedDataMapOfSetInteger;
+//
+//=======================================================================
+//class    : BOPAlgo_PairOfShapeBoolean
+//purpose  : 
+//=======================================================================
+class BOPAlgo_PairOfShapeBoolean {
+ public:
+  BOPAlgo_PairOfShapeBoolean()
+    : myFlag(Standard_False) {
+  }
+  //
+  TopoDS_Shape& Shape1() {
+    return myShape1;
+  }
+  //
+  TopoDS_Shape& Shape2() {
+    return myShape2;
+  }
+  //
+  Standard_Boolean& Flag() {
+    return myFlag;
+  }
+  //
+ protected: 
+  Standard_Boolean myFlag;
+  TopoDS_Shape myShape1;
+  TopoDS_Shape myShape2;
+};
+
+typedef BOPCol_NCVector<BOPAlgo_PairOfShapeBoolean> BOPAlgo_VectorOfPairOfShapeBoolean;
+//
+
+//=======================================================================
+//function : BOPAlgo_BuilderSDFaceFunctor
+//purpose  : 
+//=======================================================================
+class BOPAlgo_BuilderSDFaceFunctor {
+ protected:
+  BOPAlgo_VectorOfPairOfShapeBoolean* myPVPSB;
+  
+ public:
+  //
+  BOPAlgo_BuilderSDFaceFunctor(BOPAlgo_VectorOfPairOfShapeBoolean& aVPSB)
+    : myPVPSB(&aVPSB){
+  }
+  //
+  void operator()( const flexible_range<Standard_Integer>& aBR ) const {
+    Standard_Boolean bFlag;
+    Standard_Integer i, iBeg, iEnd;
+    Handle(BOPInt_Context) aContext;
+    //
+    aContext=new BOPInt_Context;
+    //
+    BOPAlgo_VectorOfPairOfShapeBoolean& aVPSB=*myPVPSB;
+    //
+    iBeg=aBR.begin();
+    iEnd=aBR.end();
+    for(i=iBeg; i!=iEnd; ++i) {
+      BOPAlgo_PairOfShapeBoolean& aPSB=aVPSB(i);
+      const TopoDS_Face& aFj=(*(TopoDS_Face*)(&aPSB.Shape1()));
+      const TopoDS_Face& aFk=(*(TopoDS_Face*)(&aPSB.Shape2()));
+      bFlag=BOPTools_AlgoTools::AreFacesSameDomain(aFj, aFk, aContext);
+      if (bFlag) {
+	aPSB.Flag()=bFlag;
+      }
+    }
+  }
+};
+//
+//=======================================================================
+//function : BOPAlgo_BuilderSDFaceCnt
+//purpose  : 
+//=======================================================================
+class BOPAlgo_BuilderSDFaceCnt {
+ public:
+  //-------------------------------
+  // Perform
+  Standard_EXPORT static 
+    void Perform(const Standard_Boolean bRunParallel,
+		 BOPAlgo_VectorOfPairOfShapeBoolean& aVPSB) {
+    Standard_Integer aNbVPSB;
+    //
+    aNbVPSB=aVPSB.Extent();
+    BOPAlgo_BuilderSDFaceFunctor aBFF(aVPSB);
+    //
+    if (bRunParallel) {
+      flexible_for(flexible_range<Standard_Integer>(0,aNbVPSB), aBFF);
+    }
+    else {
+      aBFF.operator()(flexible_range<Standard_Integer>(0,aNbVPSB));
+    }
+  }
+  //
+};
+
 
 #endif

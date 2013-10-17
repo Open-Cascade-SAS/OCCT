@@ -25,7 +25,50 @@
 #include <tbb/tbb.h>
 using namespace tbb;
 
+#define flexible_range blocked_range
+#define flexible_for   parallel_for
 
-#endif
+
+#else // not HAVE_TBB
+
+#define flexible_range serial_range
+#define flexible_for   serial_for
+
+//=======================================================================
+//class : serial_range
+//purpose  : 
+//=======================================================================
+template <class Type> class serial_range {
+ public:
+  serial_range(const Type& aBegin,
+	       const Type& aEnd)
+    : myBegin(aBegin), myEnd(aEnd) {
+  }
+  //
+  ~serial_range() {
+  }
+  //
+  const Type& begin() const{
+    return myBegin;
+  }
+  //
+  const Type& end() const{
+    return myEnd;
+  };
+  //
+ protected:
+  Type myBegin;
+  Type myEnd;
+};
+
+//=======================================================================
+//function : serial_for
+//purpose  : 
+//=======================================================================
+template<typename Range, typename Body>
+static void serial_for( const Range& range, const Body& body ) {
+  body.operator()(range);
+};
+#endif // not HAVE_TBB
 
 #endif
