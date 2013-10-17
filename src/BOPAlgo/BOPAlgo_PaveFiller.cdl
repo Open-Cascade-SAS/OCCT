@@ -361,9 +361,9 @@ is
       is protected;
     ---Purpose: 
     -- Updates tolerance of vertex with index <nV>  
-    -- to make it interfere with face with index <nF>
- 
-    CheckPlanes(me:out; 
+    -- to make it interfere with face with index <nF> 
+    
+    CheckPlanes(me; 
         nF1 : Integer from Standard; 
         nF2 : Integer from Standard)
       returns Boolean from Standard 

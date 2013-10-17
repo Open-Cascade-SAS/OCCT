@@ -121,6 +121,7 @@ void BOPAlgo_PaveFiller::PerformFF()
   Standard_Integer nF1, nF2, aNbCurves, aNbPoints, iX, i, iP, iC, aNbLP;
   Standard_Real aApproxTol, aTolR3D, aTolR2D, aTolFF;
   BRepAdaptor_Surface aBAS1, aBAS2;
+  BOPCol_MapOfInteger aMI;
   //
   BOPDS_VectorOfInterfFF& aFFs=myDS->InterfFF();
   aFFs.SetStartSize(iSize);
@@ -148,6 +149,15 @@ void BOPAlgo_PaveFiller::PerformFF()
     if (aBAS1.GetType() == GeomAbs_Plane && 
         aBAS2.GetType() == GeomAbs_Plane) {
       Standard_Boolean bToIntersect;
+      //
+      if (aMI.Add(nF1)) {
+	 myDS->UpdateFaceInfoOn(nF1);
+	 myDS->UpdateFaceInfoIn(nF1);
+      }
+      if (aMI.Add(nF2)) {
+	 myDS->UpdateFaceInfoOn(nF2);
+	 myDS->UpdateFaceInfoIn(nF2);
+      }
       //
       bToIntersect = CheckPlanes(nF1, nF2);
       if (!bToIntersect) {
@@ -516,9 +526,8 @@ void BOPAlgo_PaveFiller::PerformFF()
   //
   Standard_Boolean bHasPaveBlocks, bOld;
   Standard_Integer iErr, nSx, nVSD, iX, iP, iC, j, nV, iV = 0, iE, k;
-  Standard_Integer jx;
+  Standard_Integer jx, aNbLPBx;
   Standard_Real aT;
-  Standard_Integer aNbLPBx;
   TopAbs_ShapeEnum aType;
   TopoDS_Shape aV, aE;
   BOPCol_ListIteratorOfListOfShape aItLS;
@@ -1964,91 +1973,42 @@ void BOPAlgo_PaveFiller::RemoveUsedVertices(BOPDS_Curve& aNC,
 //function : CheckPlanes
 //purpose  : 
 //=======================================================================
-Standard_Boolean BOPAlgo_PaveFiller::CheckPlanes(const Standard_Integer nF1,
-                                                 const Standard_Integer nF2)
+Standard_Boolean 
+  BOPAlgo_PaveFiller::CheckPlanes(const Standard_Integer nF1,
+				  const Standard_Integer nF2)const
 {
   Standard_Boolean bToIntersect;
-  //
-  bToIntersect = 1;
-  //
-  //1. Find shared vertices
-  Standard_Integer nS1, nS2, iCountV, iCountE;
-  BOPCol_MapOfInteger aMI1, aMI2;
+  Standard_Integer i, nV2, iCnt;
   BOPCol_MapIteratorOfMapOfInteger aIt;
   //
-  iCountV = 0;
-  iCountE = 0;
-  GetFullFaceMap(nF1, aMI1);
-  GetFullFaceMap(nF2, aMI2);
+  bToIntersect=Standard_False;
   //
-  //1. Find shared sub shapes
-  aIt.Initialize(aMI1);
-  aIt.Next();
-  for (; aIt.More(); aIt.Next()) {
-    nS1 = aIt.Value();
-    if (aMI2.Contains(nS1)) {
-      const TopoDS_Shape& aS = myDS->Shape(nS1);
-      if (aS.ShapeType() == TopAbs_EDGE) {
-        ++iCountE;
-        iCountV-=2;
-      } else {
-        ++iCountV;
-      }
-    }
-  }
+  const BOPDS_FaceInfo& aFI1=myDS->ChangeFaceInfo(nF1);
+  const BOPDS_FaceInfo& aFI2=myDS->ChangeFaceInfo(nF2);
   //
-  if ((iCountV + iCountE) > 1) {
-    return bToIntersect;
-  }
+  const BOPCol_MapOfInteger& aMVIn1=aFI1.VerticesIn();
+  const BOPCol_MapOfInteger& aMVOn1=aFI1.VerticesOn();
   //
-  //2. Find intersecting sub shapes
-  Standard_Integer aNb, i, k;
-  BOPDS_VectorOfInterfEE& aEEs=myDS->InterfEE();
-  BOPDS_VectorOfInterfEF& aEFs=myDS->InterfEF();
-  for (k=0; k<2; ++k) {
-    aNb = !k ? aEEs.Extent() : aEFs.Extent();
-    for (i = 0; i < aNb; ++i) {
-      BOPDS_Interf *aInt = !k ? (BOPDS_Interf*) (&aEEs(i)) :
-                                (BOPDS_Interf*) (&aEFs(i));
-      aInt->Indices(nS1, nS2);
-      if (aMI1.Contains(nS1) && aMI2.Contains(nS2) ||
-          aMI1.Contains(nS2) && aMI2.Contains(nS1)) {
-        const IntTools_CommonPrt& aCPart = !k ? aEEs(i).CommonPart() :
-                                                aEFs(i).CommonPart();
-        if (aCPart.Type() == TopAbs_EDGE) {
-          ++iCountE;
-        } else {
-          ++iCountV;
-        }
-        if ((iCountV + iCountE) > 1) {
-          return bToIntersect;
-        }
-      }
-    }
-  }
-  //
-  BOPCol_MapOfInteger aMI;
-  //
-  for (k=0; k<2; ++k) {
-    aMI = !k ? aMI1 : aMI2;
-    nS2 = !k ? nF2 : nF1;
-    aIt.Initialize(aMI);
+  iCnt=0;
+  for (i=0; (i<2 && !bToIntersect); ++i) {
+    const BOPCol_MapOfInteger& aMV2=(!i) ? aFI2.VerticesIn() 
+      : aFI2.VerticesOn();
+    //
+    aIt.Initialize(aMV2);
     for (; aIt.More(); aIt.Next()) {
-      nS1 = aIt.Value();
-      const TopoDS_Shape& aV = myDS->Shape(nS1);
-      if (aV.ShapeType() == TopAbs_VERTEX) {
-        if (myDS->HasInterf(nS1, nS2) ||
-            myDS->HasInterfShapeSubShapes(nS1, nS2)) {
-          ++iCountV;
-        }
+      nV2=aIt.Value();
+      if (aMVIn1.Contains(nV2) || aMVOn1.Contains(nV2)) {
+	++iCnt;
+	if (iCnt>1) {
+	  bToIntersect=!bToIntersect;
+	  break;
+	}
       }
     }
   }
-  bToIntersect = ((iCountV + iCountE) > 1);
   //
   return bToIntersect;
 }
-
 //=======================================================================
 //function : ToleranceFF
 //purpose  : Computes the TolFF according to the tolerance value and 
@@ -2081,24 +2041,3 @@ Standard_Boolean BOPAlgo_PaveFiller::CheckPlanes(const Standard_Integer nF1,
     aTolFF =  Max(aTolFF, 5.e-6);
   }
 }
-
-
-// DEB f
-  /*
-  {
-    BOPDS_DataMapIteratorOfDataMapOfShapeCoupleOfPaveBlocks aItx;
-    TopoDS_Compound aCx;
-    //
-    BRep_Builder aBBx;
-    aBBx.MakeCompound(aCx);
-    //
-    aItx.Initialize(theMSCPB);
-    for (; aItx.More(); aItx.Next()) {
-      const TopoDS_Shape& aSx=aItx.Key();
-      aBBx.Add(aCx, aSx);
-    }
-    int a=0;
-    BRepTools::Write(aCx, "cx");
-  }
-  */
-  // DEB t
