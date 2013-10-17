@@ -125,6 +125,10 @@ void BOPTest_Objects::Init()
 void BOPTest_Objects::Clear() 
 {
   GetSession().Clear();
+  //
+  //clear objects and tools
+  Shapes().Clear();
+  Tools().Clear();
 }
 //=======================================================================
 //function : PaveFiller
