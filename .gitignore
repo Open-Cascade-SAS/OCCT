@@ -46,6 +46,8 @@ Release
 /*.am
 /*.m4
 /*.ac
+/*.sh
+/*.bat
 /autom4te.cache
 /build_configure
 /configure
