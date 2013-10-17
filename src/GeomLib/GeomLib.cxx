@@ -137,6 +137,9 @@
 #include <GeomConvert_CompCurveToBSplineCurve.hxx>
 #include <GeomConvert_ApproxSurface.hxx>
 
+#include <CSLib.hxx>
+#include <CSLib_NormalStatus.hxx>
+
 
 #include <Standard_ConstructionError.hxx>
 
@@ -2341,12 +2344,6 @@ Standard_Integer GeomLib::NormEstim(const Handle(Geom_Surface)& S,
 
   Standard_Real MDU = DU.SquareMagnitude(), MDV = DV.SquareMagnitude();
 
-  Standard_Real h, sign;
-  Standard_Boolean AlongV;
-  Handle(Geom_Curve) Iso;
-  Standard_Real t, first, last, bid1, bid2;
-  gp_Vec Tang;
-
   if(MDU >= aTol2 && MDV >= aTol2) {
     gp_Vec Norm = DU^DV;
     Standard_Real Magn = Norm.SquareMagnitude();
@@ -2357,125 +2354,62 @@ Standard_Integer GeomLib::NormEstim(const Handle(Geom_Surface)& S,
 
     return 0;
   }
-  else if(MDU < aTol2 && MDV >= aTol2) {
-    AlongV = Standard_True;
-    Iso = S->UIso(UV.X());
-    t = UV.Y();
-    S->Bounds(bid1, bid2, first, last);
-  }
-  else if(MDU >= aTol2 && MDV < aTol2) {
-    AlongV = Standard_False;
-    Iso = S->VIso(UV.Y());
-    t = UV.X();
-    S->Bounds(first, last, bid1, bid2);
-  }
   else {
-    return 3;
-  }
+    gp_Vec D2U, D2V, D2UV;
+    Standard_Boolean isDone;
+    CSLib_NormalStatus aStatus;
+    gp_Dir aNormal;
 
-  Standard_Real L = .001;
+    S->D2(UV.X(), UV.Y(), DummyPnt, DU, DV, D2U, D2V, D2UV);
+    CSLib::Normal(DU, DV, D2U, D2V, D2UV, Tol, isDone, aStatus, aNormal);
 
-  if(Precision::IsInfinite(Abs(first))) first = t - 1.;
-  if(Precision::IsInfinite(Abs(last)))  last  = t + 1.;
-  
-  if(last - t >= t - first) {
-    sign = 1.;
-  }
-  else {
-    sign = -1.;
-  }
+    if (isDone) {
+     Standard_Real Umin, Umax, Vmin, Vmax;
+     Standard_Real step = 1.0e-5;
+     Standard_Real eps = 1.0e-16;
+     Standard_Real sign = 1;
+     
+     S->Bounds(Umin, Umax, Vmin, Vmax);
+     // Along V
+     if(MDU < aTol2 && MDV >= aTol2) {
+       if (UV.Y() + step >= Vmax)
+         sign = -1.0;
+       S->D1(UV.X(), UV.Y() + sign * step, DummyPnt, DU, DV);
+       gp_Vec Norm = DU^DV;
+       if ((Norm.SquareMagnitude() >= eps) && (Norm.Dot(aNormal) < 0.0))
+        aNormal.Reverse();
 
-  Standard_Real hmax = .01*(last - first);
-  if(AlongV) {
-    h = Min(L/sqrt(MDV), hmax);
-    S->D1(UV.X(), UV.Y() + sign*h, DummyPnt, DU, DV);
-  }
-  else {
-    h = Min(L/sqrt(MDU), hmax);
-    S->D1(UV.X() + sign*h, UV.Y(), DummyPnt, DU, DV);
-  }
+     }
+     // Along U
+     if(MDV < aTol2 && MDU >= aTol2) {
+       if (UV.X() + step >= Umax)
+         sign = -1.0;
+       S->D1(UV.X() + sign * step, UV.Y(), DummyPnt, DU, DV);
+       gp_Vec Norm = DU^DV;
+       if ((Norm.SquareMagnitude() >= eps) && (Norm.Dot(aNormal) < 0.0))
+         aNormal.Reverse();
+     }
 
-  gp_Vec DD;
-
-  gp_Vec NAux = DU^DV;
-  Standard_Real h1 = h;
-  while(NAux.SquareMagnitude() < aTol2) {
-    h1 += h;
-    if(AlongV) {
-      Standard_Real v = UV.Y() + sign*h1;
-
-      if(v < first || v > last) return 3;
-
-      S->D1(UV.X(), v, DummyPnt, DU, DV);
+      // quasysingular
+      if ((aStatus == CSLib_D1NuIsNull) || (aStatus == CSLib_D1NvIsNull) || 
+          (aStatus == CSLib_D1NuIsParallelD1Nv)) {
+            N.SetXYZ(aNormal.XYZ());
+            return 1;
+      }
+      // conical
+      if (aStatus == CSLib_InfinityOfSolutions)
+          return 2;
     }
+    // computation is impossible
     else {
-      Standard_Real v = UV.X() + sign*h1;
-
-      if(v < first || v > last) return 3;
-
-      S->D1(v, UV.Y(), DummyPnt, DU, DV);
-
+      // conical
+      if (aStatus == CSLib_D1NIsNull) {
+        return 2;
+      }
+      return 3;
     }
-    NAux = DU^DV;
   }
-
-
-  Iso->D2(t, DummyPnt, Tang, DD);
-
-  if(DD.SquareMagnitude() >= aTol2) {
-    gp_Vec NV = DD * (Tang * Tang) - Tang * (Tang * DD);
-    Standard_Real MagnNV = NV.SquareMagnitude();
-    if(MagnNV < aTol2) return 3;
-
-    MagnNV = sqrt(MagnNV);
-    N.SetXYZ(NV.XYZ()/MagnNV);
-
-    Standard_Real par = .5*(bid2+bid1);
-
-    if(AlongV) {
-      Iso = S->UIso(par);
-    }
-    else {
-      Iso = S->VIso(par);
-    }
-
-    Iso->D2(t, DummyPnt, Tang, DD);
-
-    gp_Vec N1V = DD * (Tang * Tang) - Tang * (Tang * DD);
-    Standard_Real MagnN1V = N1V.SquareMagnitude();
-    if(MagnN1V < aTol2) return 3;
-
-    MagnN1V = sqrt(MagnN1V);
-    gp_Dir N1(N1V.XYZ()/MagnN1V);
-
-    Standard_Integer res = 1;
-
-    if(N*N1 < 1. - Tol) res = 2;
-
-    if(N*NAux <= 0.) N.Reverse();
-
-    return res;
-  }
-  else {
-    //Seems to be conical singular point
-    
-    if(AlongV) {
-      NAux = DU^Tang;
-    }
-    else {
-      NAux = Tang^DV;
-    }
-
-    sign = NAux.Magnitude();
-
-    if(sign < Tol) return 3;
-
-    N = NAux;
-
-    return 2;
-   
-  }
-
+  return 3;
 }
  
 

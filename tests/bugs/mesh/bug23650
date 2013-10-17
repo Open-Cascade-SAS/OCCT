@@ -1,0 +1,31 @@
+puts "=========="
+puts "OCC23650"
+puts "=========="
+puts ""
+##################################################################
+# Slow mesher: one bspline surface, 80 seconds for 132 triangles
+##################################################################
+
+restore [locate_data_file bug23650_slowmesh.brep] result
+tclean result
+dchrono h reset
+dchrono h start
+incmesh result 0.2
+dchrono h stop
+set info [dchrono h show]
+regexp {CPU user time: ([-0-9.+eE]+) seconds} $info full cpu_time
+if { $cpu_time > 5. } {
+    puts "Error : meshing is slow"
+} else {
+    puts "OK: meshing is quite fast"
+}
+vinit
+vdisplay result
+vfit
+vsetdispmode 1
+
+set only_screen 1
+
+
+
+
