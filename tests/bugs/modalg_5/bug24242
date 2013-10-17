@@ -1,0 +1,11 @@
+puts "============"
+puts "OCC24242"
+puts "============"
+puts ""
+############################################################################
+# Hang-up during classification a 3D point relative to a solid
+############################################################################
+
+restore [locate_data_file bug24242_sx] b1
+point p 14.3213918 20. 20.
+bclassify b1 p

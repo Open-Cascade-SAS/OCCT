@@ -580,9 +580,18 @@ Standard_Integer BRepClass3d_SolidExplorer::OtherSegment(const gp_Pnt& P,
     else if(myParamOnEdge==0.2)  myParamOnEdge = 0.8; 
     else if(myParamOnEdge==0.8)  myParamOnEdge = 0.1; 
     else if(myParamOnEdge==0.1)  myParamOnEdge = 0.9;
-    else { myParamOnEdge*=0.5; } 
-    
-    
+    //
+    else {
+      myParamOnEdge*=0.5;  
+      if(myParamOnEdge < 0.0001) { 
+	gp_Pnt PBidon(P.X()+1.0,P.Y(),P.Z());
+	gp_Vec V(P,PBidon);
+	Par= 1.0;
+	_Par=Par;
+	L  = gp_Lin(P,V);
+	return 0;
+      }
+    }
   } //-- for(;;) { ...  } 
 }
 
