@@ -758,7 +758,7 @@ gp_Lin Primitives_Wedge::Line
     Y = YMin;
     Z = ZMin;
     if ( (XMin != X2Min) || (ZMin != Z2Min) ) 
-      D = gp_Vec(gp_Pnt(XMin,YMin,ZMin),gp_Pnt(X2Min,YMax,Z2Min));
+      D = gp_Vec( (X2Min-XMin)*VX + (YMax-YMin)*VY + (Z2Min-ZMin)*VZ);
     break;
     
   case 9 :
