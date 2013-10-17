@@ -7,6 +7,7 @@
 /ao1
 /sil
 /wnt
+/doc
 /drv
 /inc
 /work
@@ -45,8 +46,6 @@ Release
 /*.am
 /*.m4
 /*.ac
-/*.sh
-/*.bat
 /autom4te.cache
 /build_configure
 /configure

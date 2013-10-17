@@ -1,0 +1,31 @@
+Building with MS Visual C++ {#dev_guides__building__msvc}
+===========================
+
+This file describes steps to build OCCT libraries from complete source
+archive on Windows with MS Visual C++. 
+
+If you are building OCCT from bare sources (as in Git repository), or do some 
+changes affecting CDL files, you need to use WOK to re-generate header files
+and build scripts / projects. See file \ref wok "WOK" for instructions.
+
+Before building OCCT, you need to install required third-party libraries; see
+OCCT_Build3rdParty_Windows.pdf for instructions.
+
+1. Edit file custom.bat to define environment: 
+
+   - VCVER - version of Visual Studio (vc8, vc9, vc10 or vc11), 
+             and relevant VCVARS path
+   - ARCH - architecture (32 or 64), affects only PATH variable for execution
+   - HAVE_* - flags to enable or disable use of optional third-party products
+   - CSF_OPT_* - paths to search for includes and binaries of all used 
+                 third-party products
+
+2. Launch msvc.bat to start Visual Studio with all necessary environment 
+   variables defined.
+
+   Note: the MSVC project files are located in folders adm\\msvc\\vc[9-11].
+   Binaries are produced in win32 or win64 folders.
+
+3. Build with Visual Studio
+
+To start DRAW, launch draw.bat.
