@@ -98,6 +98,10 @@ void XSDRAWSTEP::Init ()
 
 static Standard_Integer stepread (Draw_Interpretor& di/*theCommands*/, Standard_Integer argc, const char** argv) 
 {
+  if (argc < 3) {
+    di << "Use: stepread  [file] [f or r (type of model full or reduced)]\n";
+    return 1;
+  }
   //  On admet le controller AP214 ou une variante
   DeclareAndCast(STEPControl_Controller,ctl,XSDRAW::Controller());
   if (ctl.IsNull()) XSDRAW::SetNorm("STEP");
