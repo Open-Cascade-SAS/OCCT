@@ -125,16 +125,6 @@ void V3d_Viewer::SetViewOn( ) {
     SetViewOn(ActiveView());};
 }
 
-Handle(V3d_OrthographicView) V3d_Viewer::DefaultOrthographicView() {
-
-  return MyDefaultOrthographicView;
-}
-
-Handle(V3d_PerspectiveView) V3d_Viewer::DefaultPerspectiveView () {
-
-  return MyDefaultPerspectiveView;
-}
-
 void V3d_Viewer::SetViewOff( ) {
 
   for (InitDefinedViews();MoreDefinedViews();NextDefinedViews()){

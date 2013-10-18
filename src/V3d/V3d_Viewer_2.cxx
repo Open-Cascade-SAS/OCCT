@@ -114,9 +114,3 @@ void V3d_Viewer::SetDefaultLights()
   SetLightOn (new V3d_DirectionalLight (this, V3d_Zneg, Quantity_NOC_WHITE, Standard_True));
   SetLightOn (new V3d_AmbientLight (this));
 }
-
-void V3d_Viewer::Init() {
-  MyDefaultPerspectiveView = new V3d_PerspectiveView(this);
-  MyDefaultOrthographicView = new V3d_OrthographicView(this);
-  SetDefaultLights();
-}

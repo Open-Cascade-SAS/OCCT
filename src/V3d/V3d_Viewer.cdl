@@ -112,10 +112,6 @@ is
         ---Purpose: creates a view in the viewer according to its
         --          default parameters.
 
-        DefaultOrthographicView(me: mutable) returns mutable OrthographicView from V3d;
-
-        DefaultPerspectiveView(me: mutable) returns mutable PerspectiveView from V3d;
-
         -------------------------------------------------------
         ---Category: Methods to modify the status of the viewer
         -------------------------------------------------------
@@ -631,8 +627,6 @@ is
         --          directional-light V3d_XnegYneg
         --          ambient-light
 
-        Init(me: mutable);
-
         IsActive(me; aView: View from V3d)
         returns Boolean from Standard is private;
 
@@ -700,8 +694,6 @@ fields
         MySurfaceDetail:        TypeOfSurfaceDetail from V3d ;
         MyDefaultAngle:         PlaneAngle from Quantity;
         MyDefaultTypeOfView:    TypeOfView from V3d;
-        MyDefaultOrthographicView: OrthographicView from V3d;
-        MyDefaultPerspectiveView: PerspectiveView from V3d;
         MyCurrentSelectedLight:   Light from V3d;
         myActiveViewsIterator: ListIteratorOfListOfTransient from TColStd;
         myDefinedViewsIterator: ListIteratorOfListOfTransient from TColStd;
