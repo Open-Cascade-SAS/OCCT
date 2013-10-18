@@ -8,7 +8,6 @@ puts "TODO CR23096 Mandriva2010: Error : 4 differences with reference data found
 puts "TODO ?CR23096 ALL: Error : 5 differences with reference data found :"
 puts "TODO CR23096 Mandriva2010: STATSHAPE : Faulty"
 puts "TODO DEBUG_OCC24121 Debian60-64 Windows: Warning: ShapeAnalysis_Surface"
-puts "TODO DEBUG_OCC24121 Windows: Error : 4 differences with reference data found"
 
 set LinuxDiff 4
 set LinuxFaulties {STATSHAPE}

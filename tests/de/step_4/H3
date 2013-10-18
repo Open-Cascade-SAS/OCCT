@@ -1,8 +1,5 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 
-puts "TODO DEBUG_OCC24121 Windows: CHECKSHAPE : Faulty"
-puts "TODO DEBUG_OCC24121 Windows: Error : 1 differences with reference data found"
-
 set filename trj10_pm8-ct-214.stp
 
 set ref_data {

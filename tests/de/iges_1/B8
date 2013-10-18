@@ -1,8 +1,5 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 
-puts "TODO DEBUG_OCC24121 Windows: CHECKSHAPE : Faulty"
-puts "TODO DEBUG_OCC24121 Windows: Error : 2 differences with reference data found"
-
 set filename CTS18542-2.igs
 puts "TODO ?CR23096 ALL: TPSTAT : Faulty" 
 

@@ -2,8 +2,6 @@
 puts "TODO CR23096 ALL: TPSTAT : Faulty" 
 puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
-puts "TODO DEBUG_OCC24121 Windows: CHECKSHAPE : Faulty"
-puts "TODO DEBUG_OCC24121 Windows: Error : 2 differences with reference data found"
 
 set filename PRO7978.igs
 

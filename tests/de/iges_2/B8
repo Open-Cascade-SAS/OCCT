@@ -2,7 +2,6 @@
 puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 puts "TODO CR23096 Mandriva2010: Error : 1 differences with reference data found :" 
-puts "TODO DEBUG_OCC24121 Windows: Error : 2 differences with reference data found"
 puts "TODO OCC24156 MacOS: Error : 1 differences with reference data found" 
 
 set LinuxDiff 1

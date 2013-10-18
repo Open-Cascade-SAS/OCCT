@@ -4,8 +4,6 @@ puts "TODO ?CR23096 ALL: NBSHAPES : Faulty"
 puts "TODO ?CR23096 ALL: STATSHAPE : Faulty" 
 puts "TODO ?CR23096 ALL: TOLERANCE : Faulty" 
 puts "TODO ?CR23096 ALL: Error : 2 differences with reference data found :"
-puts "TODO DEBUG_OCC24121 Windows: CHECKSHAPE : Faulty"
-puts "TODO DEBUG_OCC24121 Windows: Error : 3 differences with reference data found"
 
 set LinuxDiff 2
 set filename trj12_b3-sy-214.stp

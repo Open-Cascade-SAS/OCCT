@@ -1,9 +1,5 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 
-puts "TODO DEBUG_OCC24121 Windows: Error: First - file was not written - exception"
-puts "TODO DEBUG_OCC24121 Windows: Error : Here is writing problem"
-puts "TODO DEBUG_OCC24121 Windows: Error : 4 differences with reference data found"
-
 set filename boutchauf.stp
 
 set ref_data {
