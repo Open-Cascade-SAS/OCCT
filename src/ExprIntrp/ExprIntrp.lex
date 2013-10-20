@@ -1,5 +1,6 @@
-/* 
-/* Copyright (c) 1997-1999 Matra Datavision
+/*
+
+ Copyright (c) 1997-1999 Matra Datavision
  Copyright (c) 1999-2012 OPEN CASCADE SAS
 
  The content of this file is subject to the Open CASCADE Technology Public
@@ -48,9 +49,21 @@ int yywrap()
   return 1;
 }
 
-// disable MSVC warnings in flex code
 #ifdef _MSC_VER
+// add includes for flex 2.91 (Linux version)
+#include <stdlib.h>
+#include <io.h>
+
+// disable MSVC warnings in flex 2.89 code
 #pragma warning(disable:4131 4244 4273 4127)
+#endif
+
+#ifdef __GNUC__
+// add includes for flex 2.91 (Linux version)
+#include <unistd.h>
+
+// disable GCC warnings in flex 2.91 code
+#pragma GCC diagnostic ignored "-Wunused-function"
 #endif
 
 %}
