@@ -12,6 +12,8 @@
 #include <V3d_AmbientLight.hxx>
 #include <V3d_SpotLight.hxx>
 
+#include <Graphic3d_ClipPlane.hxx>
+
 #if _MSC_VER >= 1000
 #pragma once
 #endif // _MSC_VER >= 1000
@@ -140,12 +142,12 @@ private:
   Standard_Integer               NbActiveLights;
   Standard_Boolean               myHlrModeIsOn;
   Quantity_Factor                myCurZoom;
-  Handle_V3d_AmbientLight        myCurrent_AmbientLight;
-  Handle_V3d_SpotLight           myCurrent_SpotLight;
-  Handle_V3d_PositionalLight     myCurrent_PositionalLight;
-  Handle_V3d_DirectionalLight    myCurrent_DirectionalLight;
-  Handle_V3d_Plane               myPlane;
-  Handle_AIS_Shape               myShape;
+  Handle(V3d_AmbientLight)       myCurrent_AmbientLight;
+  Handle(V3d_SpotLight)          myCurrent_SpotLight;
+  Handle(V3d_PositionalLight)    myCurrent_PositionalLight;
+  Handle(V3d_DirectionalLight)   myCurrent_DirectionalLight;
+  Handle(Graphic3d_ClipPlane)    myClippingPlane;
+  Handle(AIS_Shape)              myShape;
 
 private:
 	enum LineStyle { Solid, Dot, ShortDash, LongDash, Default };

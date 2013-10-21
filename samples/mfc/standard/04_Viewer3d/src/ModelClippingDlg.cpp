@@ -13,26 +13,31 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+#define EOL "\n"
 
-/////////////////////////////////////////////////////////////////////////////
-// CModelClippingDlg dialog
+// =======================================================================
+// function : CModelClippingDlg
+// purpose  :
+// =======================================================================
+CModelClippingDlg::CModelClippingDlg (Handle(V3d_View)            theView,
+                                      Handle(AIS_Shape)           theShape,
+                                      Handle(Graphic3d_ClipPlane) theClippingPlane,
+                                      CViewer3dDoc*               theDoc,
+                                      CWnd*                       theParent)
+: CDialog(CModelClippingDlg::IDD, theParent),
+  m_ModelClipping_Z (0.0),
+  myModelClipping_Z (0.0),
+  m_ModelClippingONOFF (FALSE),
+  myView (theView),
+  myShape (theShape),
+  myClippingPlane (theClippingPlane),
+  myDoc (theDoc)
+{}
 
-
-CModelClippingDlg::CModelClippingDlg(Handle(V3d_View) aView, Handle(V3d_Plane) aPlane, 
-					       Handle(AIS_Shape) aShape, CViewer3dDoc* pDoc, CWnd* pParent /*=NULL*/)
-	: CDialog(CModelClippingDlg::IDD, pParent)
-{
-	//{{AFX_DATA_INIT(CModelClippingDlg)
-	m_ModelClipping_Z = 0.0;
-	myView=aView;
-    myPlane=aPlane;
-	myShape=aShape;
-	myDoc=pDoc;
-	m_ModelClippingONOFF = FALSE;
-	//}}AFX_DATA_INIT
-}
-
-
+// =======================================================================
+// function : DoDataExchange
+// purpose  :
+// =======================================================================
 void CModelClippingDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -52,159 +57,214 @@ BEGIN_MESSAGE_MAP(CModelClippingDlg, CDialog)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
-/////////////////////////////////////////////////////////////////////////////
-// CModelClippingDlg message handlers
-
+// =======================================================================
+// function : OnHScroll
+// purpose  :
+// =======================================================================
 void CModelClippingDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar) 
 {
-	UpdateData(TRUE);
+  UpdateData(TRUE);
 
-	m_ModelClipping_Z = m_ModelClippingZSlidCtrl.GetPos();
+  m_ModelClipping_Z = m_ModelClippingZSlidCtrl.GetPos();
 
-	UpdateData(FALSE);
+  UpdateData(FALSE);
 
-// Setting the ZClipping depth at m_ZClippingDepth value
-	gp_Pln  clipPln(gp_Pnt(-m_ModelClipping_Z,0,0),gp_Dir(1,0,0));
-	Standard_Real A,B,C,D;
-	clipPln.Coefficients(A,B,C,D);
-	myPlane->SetPlane(A,B,C,D);
-	if(m_ModelClippingONOFF)
-	    myView->SetPlaneOn(myPlane);
-	gp_Trsf myTrsf;
-	myTrsf.SetTranslation(gp_Pnt(m_ModelClipping_Z,0,0), gp_Pnt(myModelClipping_Z,0,0));
-	myDoc->GetAISContext()->SetLocation(myShape,TopLoc_Location(myTrsf)) ;
-	myDoc->GetAISContext()->Redisplay(myShape);
-	myView->Update();
+  // Setting the ZClipping depth at m_ZClippingDepth value
+  gp_Pln aPlane (gp_Pnt (-m_ModelClipping_Z, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
 
-  TCollection_AsciiString Message("\
-gp_Pln  clipPln(gp_Pnt(-m_ModelClippingZSlidCtrl.GetPos(),0,0),gp_Dir(1,0,0));\n\
-Standard_Real A,B,C,D;\n\
-clipPln.Coefficients(A,B,C,D);\n\
-myPlane->SetPlane(A,B,C,D);\n\
-myView->SetPlaneOn(myPlane); \n\
-  ");
+  myClippingPlane->SetEquation (aPlane);
+
+  gp_Trsf myTrsf;
+  myTrsf.SetTranslation (gp_Pnt (m_ModelClipping_Z, 0.0, 0.0), gp_Pnt(myModelClipping_Z, 0.0, 0.0));
+
+  // transform presentation shape
+  if (m_ModelClippingONOFF)
+  {
+    myDoc->GetAISContext()->SetLocation (myShape, TopLoc_Location (myTrsf));
+    myDoc->GetAISContext()->Redisplay (myShape);
+    myView->Update();
+  }
+  else
+  {
+    myShape->SetLocation (TopLoc_Location (myTrsf));
+  }
+
+  TCollection_AsciiString aMessage (
+    EOL "gp_Pln aPlane (gp_Pnt (-m_ModelClipping_Z, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));"
+    EOL
+    EOL "myClippingPlane->SetEquation (aPlane);\n" );
 
   // Update The Result Message Dialog
-	myDoc->UpdateResultMessageDlg("SetPlaneOn",Message);
+  myDoc->UpdateResultMessageDlg ("Change clipping plane", aMessage);
 
-	CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
+  CDialog::OnHScroll (nSBCode, nPos, pScrollBar);
 }
 
+// =======================================================================
+// function : OnInitDialog
+// purpose  :
+// =======================================================================
 BOOL CModelClippingDlg::OnInitDialog() 
 {
-	CDialog::OnInitDialog();
-	
-	Standard_Real A,B,C,D;
-	myPlane->Plane(A,B,C,D);
-    m_ModelClipping_Z = D;
-	m_ModelClippingZSlidCtrl.SetRange(-750, 750, TRUE);
-	m_ModelClippingZSlidCtrl.SetPos( (int) floor(m_ModelClipping_Z));
+  CDialog::OnInitDialog();
 
-	Handle(V3d_Plane) thePlane;
-	for( myView->InitActivePlanes() ; 
-		myView->MoreActivePlanes() ; myView->NextActivePlanes() ) {
-	  thePlane = myView->ActivePlane() ;
-	  if( thePlane == myPlane ) m_ModelClippingONOFF = TRUE;
-	}
-    if(m_ModelClippingONOFF)
-		if(!myShape.IsNull())
-			myDoc->GetAISContext()->Display(myShape);
+  const Graphic3d_ClipPlane::Equation aPlaneEquation = myClippingPlane->GetEquation();
 
-	UpdateData(FALSE);
+  // m_ModelClipping_Z = D (plane coefficient)
+  m_ModelClipping_Z = aPlaneEquation[3];
+  m_ModelClippingZSlidCtrl.SetRange (-750, 750, TRUE);
+  m_ModelClippingZSlidCtrl.SetPos ((int)floor (m_ModelClipping_Z));
 
-	return TRUE;  // return TRUE unless you set the focus to a control
-	              // EXCEPTION: OCX Property Pages should return FALSE
-} //V3d_Plane.hxx
+  m_ModelClippingONOFF = myClippingPlane->IsOn();
 
-void CModelClippingDlg::OnChangeEditModelclippingZ() 
-{
-	UpdateData(TRUE);
+  if (m_ModelClippingONOFF)
+  {
+    // register and activate clipping plane
+    if (!myView->GetClipPlanes().Contains (myClippingPlane))
+    {
+      myView->AddClipPlane (myClippingPlane);
+    }
 
-// Setting the m_ZClippingDepthSlidCtrl position at floor(m_ZClippingDepth) value (because slider position is an integer)
-	m_ModelClippingZSlidCtrl.SetPos( (int) floor(m_ModelClipping_Z));
-// Setting the ZClipping depth at m_ZClippingDepth value
-	gp_Pln  clipPln(gp_Pnt(-m_ModelClipping_Z,0,0),gp_Dir(1,0,0));
-	Standard_Real A,B,C,D;
-	clipPln.Coefficients(A,B,C,D);
-	myPlane->SetPlane(A,B,C,D);
-	if(m_ModelClippingONOFF)
-		myView->SetPlaneOn(myPlane); 
-	gp_Trsf myTrsf;
-	myTrsf.SetTranslation(gp_Pnt(m_ModelClipping_Z,0,0), gp_Pnt(myModelClipping_Z,0,0));
-	myDoc->GetAISContext()->SetLocation(myShape,TopLoc_Location(myTrsf)) ;
-	myDoc->GetAISContext()->Redisplay(myShape);
-	myView->Update();
+    myClippingPlane->SetOn (Standard_True);
 
-	myModelClipping_Z = m_ModelClipping_Z;
+    myDoc->GetAISContext()->Display (myShape);
+  }
 
-  TCollection_AsciiString Message("\
-gp_Pln  clipPln(gp_Pnt(-m_ModelClipping_Z,0,0),gp_Dir(1,0,0));\n\
-Standard_Real A,B,C,D;\n\
-clipPln.Coefficients(A,B,C,D);\n\
-myPlane->SetPlane(A,B,C,D);\n\
-myView->SetPlaneOn(myPlane); \n\
-  ");
+  UpdateData (FALSE);
 
-  // Update The Result Message Dialog
-	myDoc->UpdateResultMessageDlg("SetPlaneOn",Message);
+  return TRUE;
 }
 
-void CModelClippingDlg::OnCheckModelclippingonoff() 
+// =======================================================================
+// function : OnChangeEditModelclippingZ
+// purpose  :
+// =======================================================================
+void CModelClippingDlg::OnChangeEditModelclippingZ()
 {
-	UpdateData(TRUE);
+  UpdateData (TRUE);
 
-//activate the plane
-	if(m_ModelClippingONOFF)
-	{
-//activate the plane
-		myView->SetPlaneOn(myPlane);
-		myDoc->GetAISContext()->Display(myShape);
-	}
-	else
-//deactivate the plane
-	{
-		myView->SetPlaneOff(myPlane);
-		myDoc->GetAISContext()->Erase(myShape);
-	}
+  m_ModelClippingZSlidCtrl.SetPos ((int)floor (m_ModelClipping_Z));
 
-	myView->Update();
+  // Change clipping plane
+  gp_Pln aPlane (gp_Pnt (-m_ModelClipping_Z, 0.0, 0.0), gp_Dir (1.0, 0.0, 0.0));
 
-  TCollection_AsciiString Message("\
-gp_Pln  clipPln(gp_Pnt(-m_ModelClippingZSlidCtrl.GetPos(),0,0),gp_Dir(1,0,0));\n\
-Standard_Real A,B,C,D;\n\
-clipPln.Coefficients(A,B,C,D);\n\
-myPlane->SetPlane(A,B,C,D);\n\
-if(m_ModelClippingONOFF) \n\
-	myView->SetPlaneOn(myPlane); \n\
-else \n\
-	myView->SetPlaneOff(myPlane); \n\
-  ");
+  myClippingPlane->SetEquation (aPlane);
+
+  // transform presentation shape
+  gp_Trsf myTrsf;
+  myTrsf.SetTranslation ( gp_Pnt (m_ModelClipping_Z, 0.0, 0.0), gp_Pnt (myModelClipping_Z, 0.0, 0.0));
+
+  // transform presentation shape
+  if (m_ModelClippingONOFF)
+  {
+    myDoc->GetAISContext()->SetLocation (myShape, TopLoc_Location (myTrsf));
+    myDoc->GetAISContext()->Redisplay (myShape);
+    myView->Update();
+  }
+  else
+  {
+    myShape->SetLocation (TopLoc_Location (myTrsf));
+  }
+
+  myModelClipping_Z = m_ModelClipping_Z;
+
+  TCollection_AsciiString aMessage (
+    EOL "gp_Pln aPlane (gp_Pnt (-m_ModelClipping_Z, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));"
+    EOL
+    EOL "myClippingPlane->SetEquation (aPlane);\n" );
 
   // Update The Result Message Dialog
-	myDoc->UpdateResultMessageDlg("SetPlaneOn",Message);
+  myDoc->UpdateResultMessageDlg ("Change clipping plane", aMessage);
 }
 
+// =======================================================================
+// function : OnCheckModelclippingonoff
+// purpose  :
+// =======================================================================
+void CModelClippingDlg::OnCheckModelclippingonoff()
+{
+  UpdateData(TRUE);
+
+  if (m_ModelClippingONOFF)
+  {
+    // register and activate clipping plane
+    if (!myView->GetClipPlanes().Contains (myClippingPlane))
+    {
+      myView->AddClipPlane (myClippingPlane);
+    }
+
+    myClippingPlane->SetOn (Standard_True);
+
+    myDoc->GetAISContext()->Display (myShape);
+  }
+  else
+  {
+    // deactivate clipping plane
+    myClippingPlane->SetOn (Standard_False);
+
+    myDoc->GetAISContext()->Remove (myShape);
+  }
+
+  myView->Update();
+
+  TCollection_AsciiString aMessage (
+    EOL "if (...)"
+    EOL "{"
+    EOL "  // register and activate clipping plane"
+    EOL "  if (!myView->GetClipPlanes().Contains (myClippingPlane))"
+    EOL "  {"
+    EOL "    myView->AddClipPlane (myClippingPlane);"
+    EOL "  }"
+    EOL
+    EOL "  myClippingPlane->SetOn (Standard_True);"
+    EOL "}"
+    EOL "else"
+    EOL "{"
+    EOL "  // deactivate clipping plane"
+    EOL "  myClippingPlane->SetOn (Standard_False);"
+    EOL "}" );
+
+  myDoc->UpdateResultMessageDlg ("Switch clipping on/off", aMessage);
+}
+
+// =======================================================================
+// function : OnCancel
+// purpose  :
+// =======================================================================
 void CModelClippingDlg::OnCancel() 
 {
-	UpdateData(TRUE);
-	if(m_ModelClippingONOFF)
-//deactivate the plane
-		myView->SetPlaneOff(myPlane);
+  UpdateData(TRUE);
 
-	m_ModelClippingONOFF=FALSE;
+  if (m_ModelClippingONOFF)
+  {
+    // remove and deactivate clipping plane
+    myView->RemoveClipPlane (myClippingPlane);
 
-	if(!myShape.IsNull())
-		myDoc->GetAISContext()->Erase(myShape);
+    myClippingPlane->SetOn (Standard_False);
+  }
 
-	myView->Update();
-	
-	CDialog::OnCancel();
+  m_ModelClippingONOFF=FALSE;
+
+  if (!myShape.IsNull())
+  {
+    myDoc->GetAISContext()->Remove (myShape);
+  }
+
+  myView->Update();
+
+  CDialog::OnCancel();
 }
 
+// =======================================================================
+// function : OnOK
+// purpose  :
+// =======================================================================
 void CModelClippingDlg::OnOK() 
 {
-	if(!myShape.IsNull())
-		myDoc->GetAISContext()->Erase(myShape);
-	
-	CDialog::OnOK();
+  if (!myShape.IsNull())
+  {
+    myDoc->GetAISContext()->Remove (myShape);
+  }
+
+  CDialog::OnOK();
 }

@@ -11,12 +11,18 @@
 // CModelClippingDlg dialog
 #include "Viewer3dDoc.h"
 
+#include <Graphic3d_ClipPlane.hxx>
+
 class CModelClippingDlg : public CDialog
 {
-// Construction
 public:
-	CModelClippingDlg(Handle(V3d_View) aView, Handle(V3d_Plane) aPlane, 
-			  Handle(AIS_Shape) aShape, CViewer3dDoc* pDoc, CWnd* pParent = NULL);   // standard constructor
+
+  //! Standard constructor.
+  CModelClippingDlg (Handle(V3d_View)            theView,
+                     Handle(AIS_Shape)           theShape,
+                     Handle(Graphic3d_ClipPlane) theClippingPlane,
+                     CViewer3dDoc*               theDoc,
+                     CWnd*                       theParent = NULL);
 
 // Dialog Data
 	//{{AFX_DATA(CModelClippingDlg)
@@ -49,11 +55,11 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	Handle_V3d_View myView;
-	Handle_AIS_Shape myShape;
-	Handle_V3d_Plane myPlane;
-	CViewer3dDoc* myDoc;
-	double	myModelClipping_Z;
+  Handle(V3d_View)            myView;
+  Handle(AIS_Shape)           myShape;
+  Handle(Graphic3d_ClipPlane) myClippingPlane;
+  CViewer3dDoc*               myDoc;
+  double                      myModelClipping_Z;
 };
 
 //{{AFX_INSERT_LOCATION}}

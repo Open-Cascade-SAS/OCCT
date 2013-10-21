@@ -1136,27 +1136,24 @@ GetDocument()->UpdateResultMessageDlg("SetLightOff",Message);
 
 void CViewer3dView::OnModelclipping() 
 {
-	if( myPlane.IsNull() ) 
-	{
-//creates a plane defined : center of the box ( 50,50,50) and 1 direction
-		gp_Pln tmpPln(gp_Pnt(0,0,0),gp_Dir(1,0,0));
-//getting the coefficients of the gp_Pln ( ax+by+cz+d = 0 )
-		Standard_Real A,B,C,D;
-		tmpPln.Coefficients(A,B,C,D);
-//with these coefficients, creating a V3d_Plane
-		myPlane = new V3d_Plane(A,B,C,D);
-//		GetDocument()->GetViewer(),A,B,C,D);
-//creates the Face
-//NOTE : the face must be behind the clipping plane !!	  
-		tmpPln = gp_Pln(gp_Pnt(0.1,0,0),gp_Dir(1,0,0));
-		BRepBuilderAPI_MakeFace MakeFace(tmpPln, 200, -200, 410, -410);
-		TopoDS_Face S = MakeFace.Face();
-//display the face
-		myShape = new AIS_Shape(S);
-	}
-  
-	CModelClippingDlg Dlg(myView, myPlane, myShape, GetDocument());
-	Dlg.DoModal();
+  if (myClippingPlane.IsNull())
+  {
+    gp_Pln aClipPlane (gp_Pnt (0.0, 0.0, 0.0), gp_Dir (1.0, 0.0, 0.0));
+    gp_Pln aFacePlane (gp_Pnt (0.1, 0.0, 0.0), gp_Dir (1.0, 0.0, 0.0));
+
+    // create clipping plane and add to view
+    myClippingPlane = new Graphic3d_ClipPlane (aClipPlane);
+
+    // shape to represent clipping plane
+    BRepBuilderAPI_MakeFace aMakeFaceCommand (aFacePlane, 200.0, -200.0, 410.0, -410.0);
+    TopoDS_Face aShape = aMakeFaceCommand.Face();
+    myShape = new AIS_Shape (aShape);
+    myShape->SetTransparency (0.5);
+  }
+
+  CModelClippingDlg aClippingDlg (myView, myShape, myClippingPlane, GetDocument());
+
+  aClippingDlg.DoModal();
 }
 
 void CViewer3dView::OnOptionsTrihedronStaticTrihedron() 
