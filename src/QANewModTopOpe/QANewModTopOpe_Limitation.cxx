@@ -55,11 +55,11 @@ QANewModTopOpe_Limitation::QANewModTopOpe_Limitation(const TopoDS_Shape& theObje
 					   const TopoDS_Shape& theCutTool,
 					   const QANewModTopOpe_ModeOfLimitation theMode) : 
        myObjectToCut(theObjectToCut),
+	   myCut(NULL),
+	   myCommon(NULL),
        myFwdIsDone(Standard_False),
        myRevIsDone(Standard_False),
-       myCut(NULL),
-       myMode(theMode),
-       myCommon(NULL)
+       myMode(theMode)       
 {
 
   TopExp_Explorer anExp;

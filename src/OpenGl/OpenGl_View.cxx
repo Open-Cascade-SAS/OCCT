@@ -97,13 +97,13 @@ OpenGl_View::OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext)
   myZClip(myDefaultZClip),
   myExtra(myDefaultExtra),
   myFog(myDefaultFog),
+  myTrihedron(NULL),
+  myGraduatedTrihedron(NULL),
   myVisualization(AContext.Visualization),
   myIntShadingMethod(TEL_SM_GOURAUD),
   myAntiAliasing(Standard_False),
   myTransPers(&myDefaultTransPers),
-  myTrihedron(NULL),
-  myIsTransPers(Standard_False),
-  myGraduatedTrihedron(NULL)
+  myIsTransPers(Standard_False)  
 {
   // Initialize matrices
   memcpy(myOrientationMatrix,myDefaultMatrix,sizeof(Tmatrix3));

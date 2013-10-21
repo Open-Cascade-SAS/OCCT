@@ -271,8 +271,8 @@ MyActiveLights(),
 MyViewContext (),
 myActiveLightsIterator(),
 SwitchSetFront(Standard_False),
-MyTrsf (1, 4, 1, 4),                                    // S3892
-MyProjModel(V3d_TPM_SCREEN)
+MyProjModel(V3d_TPM_SCREEN),
+MyTrsf (1, 4, 1, 4)         // S3892
 {
   myImmediateUpdate = Standard_False;
   MyView = new Visual3d_View(MyViewer->Viewer());

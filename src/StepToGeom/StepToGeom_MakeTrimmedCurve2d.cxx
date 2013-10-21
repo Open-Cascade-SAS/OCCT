@@ -65,7 +65,7 @@ Standard_Boolean StepToGeom_MakeTrimmedCurve2d::Convert (const Handle(StepGeom_T
   const Handle(StepGeom_HArray1OfTrimmingSelect)& theTrimSel2 = SC->Trim2();
   const Standard_Integer nbSel1 = SC->NbTrim1();
   const Standard_Integer nbSel2 = SC->NbTrim2();
-  if ((nbSel1 == nbSel2 == 1) &&
+  if ((nbSel1 == 1) && (nbSel2 == 1) &&
       (theTrimSel1->Value(1).CaseMember() > 0) &&
       (theTrimSel2->Value(1).CaseMember() > 0))
   {

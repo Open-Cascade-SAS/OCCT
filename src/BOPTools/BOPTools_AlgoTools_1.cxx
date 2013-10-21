@@ -224,8 +224,8 @@ void CorrectWires(const TopoDS_Face& aFx)
           TopoDS_Vertex aV11, aV12, aV21, aV22;
           TopExp::Vertices(aE, aV11, aV12);
           TopExp::Vertices(aE1, aV21, aV22);
-          if (aV11.IsSame(aV21) && aV12.IsSame(aV22) ||
-              aV12.IsSame(aV21) && aV11.IsSame(aV22)) {
+          if ((aV11.IsSame(aV21) && aV12.IsSame(aV22)) ||
+              (aV12.IsSame(aV21) && aV11.IsSame(aV22))) {
             continue;
           }
         }

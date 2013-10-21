@@ -44,8 +44,8 @@ class BOPTools_ConnexityBlock {
   };
   //
   BOPTools_ConnexityBlock(const Handle(NCollection_BaseAllocator)& theAllocator):
-    myRegular(Standard_True),
-    myAllocator(theAllocator),
+	myAllocator(theAllocator),  
+	myRegular(Standard_True),
     myShapes(myAllocator),
     myLoops(myAllocator)  {
   };
