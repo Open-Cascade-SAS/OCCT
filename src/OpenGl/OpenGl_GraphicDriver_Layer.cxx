@@ -38,7 +38,6 @@ struct OpenGl_LAYER_PROP
   int        NbPoints;
   int        LineType;
   float      LineWidth;
-
   OpenGl_AspectText AspectText;
   OpenGl_TextParam TextParam;
 };
@@ -67,11 +66,11 @@ static OpenGl_LAYER_PROP TheLayerProp;
 
 /*----------------------------------------------------------------------*/
 
-void InitLayerProp (const int AListId)
+void InitLayerProp (const int theListId)
 {
-  TheLayerProp.ListId = AListId;
+  TheLayerProp.ListId = theListId;
 
-  if (AListId)
+  if (theListId)
   {
     TheLayerProp.Color = myDefaultColor;
     TheLayerProp.NbPoints = 0;
@@ -115,7 +114,7 @@ void OpenGl_GraphicDriver::BeginLayer (const Aspect_CLayer2d& ACLayer)
   call_def_ptrLayer ptrLayer = (call_def_ptrLayer) ACLayer.ptrLayer;
   if (!ptrLayer) return;
 
-  InitLayerProp(ptrLayer->listIndex);
+  InitLayerProp (ptrLayer->listIndex);
   if (!TheLayerProp.ListId) return;
 
   glNewList (TheLayerProp.ListId, GL_COMPILE);
@@ -140,7 +139,7 @@ void OpenGl_GraphicDriver::ClearLayer (const Aspect_CLayer2d& ACLayer)
 {
   if (!ACLayer.ptrLayer) return;
 
-  InitLayerProp(ACLayer.ptrLayer->listIndex);
+  InitLayerProp (ACLayer.ptrLayer->listIndex);
   if (!TheLayerProp.ListId) return;
 
   glNewList (TheLayerProp.ListId, GL_COMPILE);

@@ -617,6 +617,8 @@ void OpenGl_Trihedron::Release (const Handle(OpenGl_Context)& theCtx)
   myLabelX.Release (theCtx);
   myLabelY.Release (theCtx);
   myLabelZ.Release (theCtx);
+  myAspectLine.Release (theCtx);
+  myAspectText.Release (theCtx);
 }
 
 /*----------------------------------------------------------------------*/
@@ -648,7 +650,7 @@ void OpenGl_Trihedron::Render (const Handle(OpenGl_Workspace)& theWorkspace) con
   const Handle(OpenGl_Texture) aPrevTexture = theWorkspace->DisableTexture();
 
   /* affichage du Triedre Non Zoomable */
-  theWorkspace->ActiveView()->EndTransformPersistence();
+  theWorkspace->ActiveView()->EndTransformPersistence (theWorkspace->GetGlContext());
 
   if (myIsWireframe)
   {

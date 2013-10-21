@@ -99,3 +99,21 @@ void Graphic3d_AspectMarker3d::SetBitMap (const Standard_Integer theWidth,
   myMarkerImage.Nullify();
   myMarkerImage = new Graphic3d_MarkerImage (theTextureBitMap, theWidth, theHeight);
 }
+
+// =======================================================================
+// function : SetShaderProgram
+// purpose  :
+// =======================================================================
+void Graphic3d_AspectMarker3d::SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theProgram)
+{
+  MyShaderProgram = theProgram;
+}
+
+// =======================================================================
+// function : ShaderProgram
+// purpose  :
+// =======================================================================
+const Handle(Graphic3d_ShaderProgram)& Graphic3d_AspectMarker3d::ShaderProgram() const
+{
+  return MyShaderProgram;
+}

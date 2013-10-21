@@ -29,9 +29,9 @@ class AspectLine3d from Graphic3d inherits AspectLine from Aspect
 
 uses
 
-	Color		from Quantity,
-
-	TypeOfLine	from Aspect
+	Color                 from Quantity,
+	TypeOfLine            from Aspect,
+	ShaderProgram_Handle  from Graphic3d
 
 is
 
@@ -58,9 +58,16 @@ is
 	--	    factor to this nominal line width.
 	--	    The supported linewidths vary by 1-pixel units.
 
---
+  SetShaderProgram ( me  :  mutable; 
+                     theProgram  :  ShaderProgram_Handle from Graphic3d );
+  ---Level: Public
+  ---Purpose: Sets up OpenGL/GLSL shader program.
 
--- fields
+  ShaderProgram ( me )
+  returns ShaderProgram_Handle from Graphic3d;
+  ---C++: return const &
+
+fields
 
 --
 -- Class	:	Graphic3d_AspectLine3d
@@ -74,5 +81,7 @@ is
 --			- the thickness
 --			defined by AspectLine.
 --
+
+  MyShaderProgram  :  ShaderProgram_Handle  from  Graphic3d; 
 
 end AspectLine3d;

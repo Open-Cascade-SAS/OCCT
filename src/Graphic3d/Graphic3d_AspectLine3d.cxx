@@ -58,3 +58,13 @@ Graphic3d_AspectLine3d::Graphic3d_AspectLine3d () {
 // initialisation of AspectLine with AColor, AType, AWidth.
 
 Graphic3d_AspectLine3d::Graphic3d_AspectLine3d (const Quantity_Color& AColor, const Aspect_TypeOfLine AType, const Standard_Real AWidth):Aspect_AspectLine (AColor, AType, AWidth) {}
+
+void Graphic3d_AspectLine3d::SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theProgram)
+{
+  MyShaderProgram = theProgram;
+}
+
+const Handle(Graphic3d_ShaderProgram)& Graphic3d_AspectLine3d::ShaderProgram() const
+{
+  return MyShaderProgram;
+}

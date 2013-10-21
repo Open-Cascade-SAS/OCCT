@@ -180,3 +180,13 @@ void Graphic3d_AspectFillArea3d::PolygonOffsets(Standard_Integer&    aMode,
   aFactor = MyPolygonOffsetFactor;
   aUnits  = MyPolygonOffsetUnits;
 }
+
+void Graphic3d_AspectFillArea3d::SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theProgram)
+{
+  MyShaderProgram = theProgram;
+}
+
+const Handle(Graphic3d_ShaderProgram)& Graphic3d_AspectFillArea3d::ShaderProgram() const
+{
+  return MyShaderProgram;
+}

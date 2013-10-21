@@ -17,7 +17,7 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-#include <OpenGl_ClippingState.hxx>
+#include <OpenGl_Clipping.hxx>
 #include <OpenGl_GlCore11.hxx>
 #include <OpenGl_Workspace.hxx>
 
@@ -30,7 +30,7 @@ namespace
 // function : OpenGl_ClippingState
 // purpose  :
 // =======================================================================
-OpenGl_ClippingState::OpenGl_ClippingState ()
+OpenGl_Clipping::OpenGl_Clipping ()
 : myPlanes(),
   myPlaneStates(),
   myEmptyPlaneIds (new Aspect_GenId (GL_CLIP_PLANE0, GL_CLIP_PLANE5))
@@ -40,7 +40,7 @@ OpenGl_ClippingState::OpenGl_ClippingState ()
 // function : Init
 // purpose  :
 // =======================================================================
-void OpenGl_ClippingState::Init (const Standard_Integer theMaxPlanes)
+void OpenGl_Clipping::Init (const Standard_Integer theMaxPlanes)
 {
   myPlanes.Clear();
   myPlaneStates.Clear();
@@ -53,9 +53,9 @@ void OpenGl_ClippingState::Init (const Standard_Integer theMaxPlanes)
 // function : Add
 // purpose  :
 // =======================================================================
-void OpenGl_ClippingState::Add (Graphic3d_SetOfHClipPlane& thePlanes,
-                                const EquationCoords& theCoordSpace,
-                                const Handle(OpenGl_Workspace)& theWS)
+void OpenGl_Clipping::Add (Graphic3d_SetOfHClipPlane& thePlanes,
+                           const EquationCoords& theCoordSpace,
+                           const Handle(OpenGl_Workspace)& theWS)
 {
   GLint aMatrixMode;
   glGetIntegerv (GL_MATRIX_MODE, &aMatrixMode);
@@ -90,7 +90,7 @@ void OpenGl_ClippingState::Add (Graphic3d_SetOfHClipPlane& thePlanes,
 // function : Add
 // purpose  :
 // =======================================================================
-void OpenGl_ClippingState::Add (Graphic3d_SetOfHClipPlane& thePlanes, const EquationCoords& theCoordSpace)
+void OpenGl_Clipping::Add (Graphic3d_SetOfHClipPlane& thePlanes, const EquationCoords& theCoordSpace)
 {
   Graphic3d_SetOfHClipPlane::Iterator aPlaneIt (thePlanes);
   while (aPlaneIt.More() && myEmptyPlaneIds->Available() > 0)
@@ -121,7 +121,7 @@ void OpenGl_ClippingState::Add (Graphic3d_SetOfHClipPlane& thePlanes, const Equa
 // function : Remove
 // purpose  :
 // =======================================================================
-void OpenGl_ClippingState::Remove (const Graphic3d_SetOfHClipPlane& thePlanes)
+void OpenGl_Clipping::Remove (const Graphic3d_SetOfHClipPlane& thePlanes)
 {
   Graphic3d_SetOfHClipPlane::Iterator aPlaneIt (thePlanes);
   for (; aPlaneIt.More(); aPlaneIt.Next())
@@ -159,7 +159,7 @@ void OpenGl_ClippingState::Remove (const Graphic3d_SetOfHClipPlane& thePlanes)
 // function : SetEnabled
 // purpose  :
 // =======================================================================
-void OpenGl_ClippingState::SetEnabled (const Handle(Graphic3d_ClipPlane)& thePlane,
+void OpenGl_Clipping::SetEnabled (const Handle(Graphic3d_ClipPlane)& thePlane,
                                        const Standard_Boolean theIsEnabled)
 {
   if (!Contains (thePlane))

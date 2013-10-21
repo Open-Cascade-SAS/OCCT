@@ -31,6 +31,17 @@ Graphic3d_Group_2.cxx
 Graphic3d_Group_8.cxx
 Graphic3d_Group_10.cxx
 Graphic3d_Structure.pxx
+Graphic3d_ShaderObject.hxx
+Graphic3d_ShaderObject.cxx
+Graphic3d_ShaderProgram.hxx
+Graphic3d_ShaderProgram.cxx
+Graphic3d_ShaderVariable.hxx
+Graphic3d_ShaderVariable.cxx
+Graphic3d_ShaderVariable.lxx
+Graphic3d_ShaderObject_Handle.hxx
+Graphic3d_ShaderProgram_Handle.hxx
+Graphic3d_ShaderVariable_Handle.hxx
+Graphic3d_TypeOfShaderObject.hxx
 Graphic3d_DataStructure.pxx
 Graphic3d_StructureManager.pxx
 Graphic3d.edl

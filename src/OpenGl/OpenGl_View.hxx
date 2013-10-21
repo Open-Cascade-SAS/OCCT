@@ -152,8 +152,9 @@ class OpenGl_View : public MMgt_TShared
 
   Standard_Integer Backfacing () const { return myBackfacing; }
 
-  const TEL_TRANSFORM_PERSISTENCE * BeginTransformPersistence ( const TEL_TRANSFORM_PERSISTENCE *ATransPers );
-  void EndTransformPersistence ();
+  const TEL_TRANSFORM_PERSISTENCE * BeginTransformPersistence (const Handle(OpenGl_Context)& theCtx,
+                                                               const TEL_TRANSFORM_PERSISTENCE *theTransPers);
+  void EndTransformPersistence (const Handle(OpenGl_Context)& theCtx);
 
   //! Add structure to display list with specified priority.
   //! The structure will be added to associated with it z layer.
@@ -196,7 +197,6 @@ public:
 
   void RenderStructs (const Handle(OpenGl_Workspace) &AWorkspace);
   void RedrawLayer2d (const Handle(OpenGl_PrinterContext)& thePrintContext,
-                      const Handle(OpenGl_Workspace)&      theWorkspace,
                       const Graphic3d_CView&               theCView,
                       const Aspect_CLayer2d&               theCLayer);
 
@@ -244,6 +244,11 @@ public:
 
   const TEL_TRANSFORM_PERSISTENCE *myTransPers;
   Standard_Boolean myIsTransPers;
+
+  //! Modification flags.
+  Standard_Boolean myOrientationChanged;
+  Standard_Boolean myViewMappingChanged;
+  Standard_Boolean myLightSourcesChanged;
 
  public:
   DEFINE_STANDARD_ALLOC

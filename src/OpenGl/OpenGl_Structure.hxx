@@ -54,7 +54,7 @@ public:
   void SetAspectText   (const CALL_DEF_CONTEXTTEXT &theAspect);
 
   void SetHighlightBox (const Handle(OpenGl_Context)& theGlCtx,
-                        const CALL_DEF_BOUNDBOX&      theBoundBox);
+                        const CALL_DEF_BOUNDBOX& theBoundBox);
 
   void ClearHighlightBox (const Handle(OpenGl_Context)& theGlCtx);
 

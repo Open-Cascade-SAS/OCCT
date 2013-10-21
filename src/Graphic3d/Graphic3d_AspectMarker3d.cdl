@@ -32,11 +32,12 @@ class AspectMarker3d from Graphic3d inherits AspectMarker from Aspect
 
 uses
 
-  Color                from Quantity,
-  TypeOfMarker         from Aspect,
-  HArray1OfByte        from TColStd,
-  PixMap_Handle        from Image,
-  MarkerImage_Handle   from Graphic3d
+  Color                 from Quantity,
+  TypeOfMarker          from Aspect,
+  HArray1OfByte         from TColStd,
+  PixMap_Handle         from Image,
+  MarkerImage_Handle    from Graphic3d,
+  ShaderProgram_Handle  from Graphic3d
 
 is
 
@@ -89,6 +90,15 @@ is
              theHeight : Integer from Standard;
              theTexture: HArray1OfByte from TColStd ) is static;
 
+  SetShaderProgram ( me  :  mutable; 
+                     theProgram  :  ShaderProgram_Handle from Graphic3d );
+  ---Level: Public
+  ---Purpose: Sets up OpenGL/GLSL shader program.
+
+  ShaderProgram ( me )
+  returns ShaderProgram_Handle from Graphic3d;
+  ---C++: return const &
+
 fields
 
 --
@@ -104,5 +114,7 @@ fields
 --           defined by AspectMarker.
 
 myMarkerImage : MarkerImage_Handle from Graphic3d is protected;
+
+MyShaderProgram  :  ShaderProgram_Handle  from  Graphic3d; 
 
 end AspectMarker3d;

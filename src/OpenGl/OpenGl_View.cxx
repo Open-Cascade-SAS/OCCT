@@ -17,18 +17,18 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-#include <OpenGl_GlCore11.hxx>
+#include <NCollection_Mat4.hxx>
 
-#include <OpenGl_View.hxx>
 #include <OpenGl_Context.hxx>
-#include <OpenGl_Workspace.hxx>
 #include <OpenGl_Display.hxx>
-
+#include <OpenGl_GlCore11.hxx>
+#include <OpenGl_GraduatedTrihedron.hxx>
+#include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_Texture.hxx>
 #include <OpenGl_Trihedron.hxx>
-#include <OpenGl_GraduatedTrihedron.hxx>
-
 #include <OpenGl_transform_persistence.hxx>
+#include <OpenGl_View.hxx>
+#include <OpenGl_Workspace.hxx>
 
 #include <Graphic3d_TextureEnv.hxx>
 
@@ -103,7 +103,10 @@ OpenGl_View::OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext)
   myIntShadingMethod(TEL_SM_GOURAUD),
   myAntiAliasing(Standard_False),
   myTransPers(&myDefaultTransPers),
-  myIsTransPers(Standard_False)  
+  myIsTransPers(Standard_False),
+  myOrientationChanged (Standard_True),
+  myViewMappingChanged (Standard_True),
+  myLightSourcesChanged (Standard_True)
 {
   // Initialize matrices
   memcpy(myOrientationMatrix,myDefaultMatrix,sizeof(Tmatrix3));
@@ -133,7 +136,7 @@ void OpenGl_View::ReleaseGlResources (const Handle(OpenGl_Context)& theCtx)
 {
   OpenGl_Element::Destroy (theCtx, myTrihedron);
   OpenGl_Element::Destroy (theCtx, myGraduatedTrihedron);
-   
+
   if (!myTextureEnv.IsNull())
   {
     theCtx->DelayedRelease (myTextureEnv);
@@ -242,6 +245,8 @@ void OpenGl_View::SetLights (const CALL_DEF_VIEWCONTEXT &AContext)
 
     myLights.Append(rep);
   }
+
+  myLightSourcesChanged = Standard_True;
 }
 
 /*----------------------------------------------------------------------*/
@@ -353,6 +358,8 @@ void OpenGl_View::SetMapping (const Handle(OpenGl_Display)& theGlDisplay,
 
   if (!err_ind)
     myExtra.map = Map;
+
+  myViewMappingChanged = Standard_True;
 }
 
 /*----------------------------------------------------------------------*/
@@ -414,6 +421,8 @@ void OpenGl_View::SetOrientation (const Graphic3d_CView& theCView)
     myExtra.scaleFactors[1] = ScaleFactors[1],
     myExtra.scaleFactors[2] = ScaleFactors[2];
   }
+
+  myOrientationChanged = Standard_True;
 }
 
 /*----------------------------------------------------------------------*/
@@ -498,7 +507,7 @@ void OpenGl_View::GraduatedTrihedronErase (const Handle(OpenGl_Context)& theCtx)
 /*----------------------------------------------------------------------*/
 
 //transform_persistence_end
-void OpenGl_View::EndTransformPersistence()
+void OpenGl_View::EndTransformPersistence(const Handle(OpenGl_Context)& theCtx)
 {
   if (myIsTransPers)
   {
@@ -508,19 +517,33 @@ void OpenGl_View::EndTransformPersistence()
     glMatrixMode (GL_MODELVIEW);
     glPopMatrix();
     myIsTransPers = Standard_False;
+
+    // Note: the approach of accessing OpenGl matrices is used now since the matrix
+    // manipulation are made with help of OpenGl methods. This might be replaced by
+    // direct computation of matrices by OCC subroutines.
+    Tmatrix3 aResultWorldView;
+    glGetFloatv (GL_MODELVIEW_MATRIX, *aResultWorldView);
+
+    Tmatrix3 aResultProjection;
+    glGetFloatv (GL_PROJECTION_MATRIX, *aResultProjection);
+
+    // Set OCCT state uniform variables
+    theCtx->ShaderManager()->RevertWorldViewStateTo (aResultWorldView);
+    theCtx->ShaderManager()->RevertProjectionStateTo (aResultProjection);
   }
 }
 
 /*----------------------------------------------------------------------*/
 
 //transform_persistence_begin
-const TEL_TRANSFORM_PERSISTENCE* OpenGl_View::BeginTransformPersistence (const TEL_TRANSFORM_PERSISTENCE* theTransPers)
+const TEL_TRANSFORM_PERSISTENCE* OpenGl_View::BeginTransformPersistence (const Handle(OpenGl_Context)& theCtx,
+                                                                         const TEL_TRANSFORM_PERSISTENCE* theTransPers)
 {
   const TEL_TRANSFORM_PERSISTENCE* aTransPersPrev = myTransPers;
   myTransPers = theTransPers;
   if (theTransPers->mode == 0)
   {
-    EndTransformPersistence();
+    EndTransformPersistence (theCtx);
     return aTransPersPrev;
   }
 
@@ -658,6 +681,19 @@ const TEL_TRANSFORM_PERSISTENCE* OpenGl_View::BeginTransformPersistence (const T
     glMatrixMode (GL_MODELVIEW);
     glTranslated (aMoveX, aMoveY, aMoveZ);
   }
+
+  // Note: the approach of accessing OpenGl matrices is used now since the matrix
+  // manipulation are made with help of OpenGl methods. This might be replaced by
+  // direct computation of matrices by OCC subroutines.
+  Tmatrix3 aResultWorldView;
+  glGetFloatv (GL_MODELVIEW_MATRIX, *aResultWorldView);
+
+  Tmatrix3 aResultProjection;
+  glGetFloatv (GL_PROJECTION_MATRIX, *aResultProjection);
+
+  // Set OCCT state uniform variables
+  theCtx->ShaderManager()->UpdateWorldViewStateTo (aResultWorldView);
+  theCtx->ShaderManager()->UpdateProjectionStateTo (aResultProjection);
 
   return aTransPersPrev;
 }

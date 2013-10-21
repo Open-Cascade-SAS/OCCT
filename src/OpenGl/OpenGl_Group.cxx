@@ -27,11 +27,12 @@
 // purpose  :
 // =======================================================================
 OpenGl_Group::OpenGl_Group ()
-: myAspectLine(NULL),
-  myAspectFace(NULL),
-  myAspectMarker(NULL),
-  myAspectText(NULL),
-  myFirst(NULL), myLast(NULL)
+: myAspectLine (NULL),
+  myAspectFace (NULL),
+  myAspectMarker (NULL),
+  myAspectText (NULL),
+  myFirst (NULL),
+  myLast (NULL)
 {
 }
 

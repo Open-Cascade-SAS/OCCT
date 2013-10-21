@@ -1,0 +1,63 @@
+// Created on: 2013-09-25
+// Created by: Denis BOGOLEPOV
+// Copyright (c) 2013 OPEN CASCADE SAS
+//
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
+//
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+//
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
+
+// =======================================================================
+// function : As
+// purpose  : Returns variable value casted to specified type
+// =======================================================================
+template <class T> inline
+T& Graphic3d_ValueInterface::As()
+{
+  Graphic3d_UniformValue<T>* aPtr = dynamic_cast<Graphic3d_UniformValue<T>*> (this);
+  return aPtr->Value;
+}
+
+// =======================================================================
+// function : As
+// purpose  : Returns variable value casted to specified type
+// =======================================================================
+template <class T> inline
+const T& Graphic3d_ValueInterface::As() const
+{
+  const Graphic3d_UniformValue<T>* aPtr = dynamic_cast<const Graphic3d_UniformValue<T>*> (this);
+  return aPtr->Value;
+}
+
+// =======================================================================
+// function : TypeID
+// purpose  : Returns unique identifier of value type
+// =======================================================================
+template <class T> inline
+Standard_Size Graphic3d_UniformValue<T>::TypeID() const
+{
+  return Graphic3d_UniformValueTypeID<T>::ID;
+}
+
+// =======================================================================
+// function : Create
+// purpose  : Creates initialized shader variable
+// =======================================================================
+template<class T> inline
+Graphic3d_ShaderVariable* Graphic3d_ShaderVariable::Create (const TCollection_AsciiString& theName,
+                                                            const T&                       theValue)
+{
+  Graphic3d_ShaderVariable* theVariable = new Graphic3d_ShaderVariable (theName);
+  theVariable->myValue = new Graphic3d_UniformValue<T> (theValue);
+  return theVariable;
+}

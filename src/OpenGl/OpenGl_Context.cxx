@@ -30,8 +30,10 @@
 #include <OpenGl_ExtFBO.hxx>
 #include <OpenGl_ExtGS.hxx>
 #include <OpenGl_GlCore20.hxx>
+#include <OpenGl_ShaderManager.hxx>
 
 #include <Message_Messenger.hxx>
+
 #include <NCollection_Vector.hxx>
 
 #include <Standard_ProgramError.hxx>
@@ -88,7 +90,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   extGS  (NULL),
   extBgra(Standard_False),
   extAnis(Standard_False),
-  extPDS(Standard_False),
+  extPDS (Standard_False),
   atiMem (Standard_False),
   nvxMem (Standard_False),
   mySharedResources (new OpenGl_ResourcesMap()),
@@ -117,6 +119,8 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   // (depends on renderer).
   myGlLibHandle = dlopen ("/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL", RTLD_LAZY);
 #endif
+
+  myShaderManager = new OpenGl_ShaderManager (this);
 }
 
 // =======================================================================
@@ -487,7 +491,7 @@ void OpenGl_Context::readGlVersion()
   GLint aMajor = 0, aMinor = 0;
   glGetIntegerv (GL_MAJOR_VERSION, &aMajor);
   glGetIntegerv (GL_MINOR_VERSION, &aMinor);
-  // glGetError() sometimes does not report an error here even if 
+  // glGetError() sometimes does not report an error here even if
   // GL does not know GL_MAJOR_VERSION and GL_MINOR_VERSION constants.
   // This happens on some rendereres like e.g. Cygwin MESA.
   // Thus checking additionally if GL has put anything to
@@ -816,7 +820,7 @@ void OpenGl_Context::init()
     && FindProcShort (myGlCore20, glLoadTransposeMatrixd)
     && FindProcShort (myGlCore20, glMultTransposeMatrixf)
     && FindProcShort (myGlCore20, glMultTransposeMatrixd);
-  
+
   // Check if OpenGL 1.4 core functionality is actually present
   Standard_Boolean hasGlCore14 = IsGlGreaterEqual (1, 4)
     && FindProcShort (myGlCore20, glBlendFuncSeparate)

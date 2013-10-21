@@ -26,6 +26,8 @@
 #include <OpenGl_AspectFace.hxx>
 #include <OpenGl_AspectMarker.hxx>
 #include <OpenGl_AspectText.hxx>
+#include <OpenGl_Context.hxx>
+#include <OpenGl_ShaderManager.hxx>
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -441,7 +443,7 @@ const OpenGl_Matrix * OpenGl_Workspace::SetViewMatrix(const OpenGl_Matrix *AMatr
 
 /*----------------------------------------------------------------------*/
 
-const OpenGl_Matrix * OpenGl_Workspace::SetStructureMatrix(const OpenGl_Matrix *AMatrix)
+const OpenGl_Matrix * OpenGl_Workspace::SetStructureMatrix (const OpenGl_Matrix *AMatrix, bool aRevert)
 {
   const OpenGl_Matrix *StructureMatrix_old = StructureMatrix_applied;
   StructureMatrix_applied = AMatrix;
@@ -453,6 +455,14 @@ const OpenGl_Matrix * OpenGl_Workspace::SetStructureMatrix(const OpenGl_Matrix *
   OpenGl_Matrix rmat;
   OpenGl_Multiplymat3 (&rmat, &lmat, ViewMatrix_applied);
   glLoadMatrixf ((const GLfloat* )rmat.mat);
+
+  if (!myGlContext->ShaderManager()->IsEmpty())
+  {
+    if (aRevert)
+      myGlContext->ShaderManager()->UpdateModelWorldStateTo (lmat.mat);
+    else
+      myGlContext->ShaderManager()->RevertModelWorldStateTo (lmat.mat);
+  }
 
   return StructureMatrix_old;
 }

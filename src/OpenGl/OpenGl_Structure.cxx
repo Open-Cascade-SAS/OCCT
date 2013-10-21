@@ -17,16 +17,17 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-#include <OpenGl_GlCore11.hxx>
 
-#include <OpenGl_Structure.hxx>
-
-#include <OpenGl_Workspace.hxx>
-#include <OpenGl_Vec.hxx>
-#include <OpenGl_View.hxx>
 #include <OpenGl_CappingAlgo.hxx>
 #include <OpenGl_Context.hxx>
+#include <OpenGl_GlCore11.hxx>
+#include <OpenGl_ShaderManager.hxx>
+#include <OpenGl_ShaderProgram.hxx>
+#include <OpenGl_Structure.hxx>
 #include <OpenGl_telem_util.hxx>
+#include <OpenGl_Vec.hxx>
+#include <OpenGl_View.hxx>
+#include <OpenGl_Workspace.hxx>
 
 #include <Graphic3d_SetOfHClipPlane_Handle.hxx>
 
@@ -398,6 +399,8 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
   // Is rendering in ADD or IMMEDIATE mode?
   const Standard_Boolean isImmediate = (AWorkspace->NamedStatus & (OPENGL_NS_ADD | OPENGL_NS_IMMEDIATE)) != 0;
 
+  const Handle(OpenGl_Context)& aCtx = AWorkspace->GetGlContext();
+
   // Apply local transformation
   GLint matrix_mode = 0;
   const OpenGl_Matrix *local_trsf = NULL;
@@ -405,20 +408,34 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
   {
     if (isImmediate)
     {
-      float mat16[16];
-      call_util_transpose_mat (mat16, myTransformation->mat);
+      Tmatrix3 aModelWorld;
+      call_util_transpose_mat (*aModelWorld, myTransformation->mat);
       glGetIntegerv (GL_MATRIX_MODE, &matrix_mode);
+
+      if (!aCtx->ShaderManager()->IsEmpty())
+      {
+        Tmatrix3 aWorldView;
+        glGetFloatv (GL_MODELVIEW_MATRIX, *aWorldView);
+
+        Tmatrix3 aProjection;
+        glGetFloatv (GL_PROJECTION_MATRIX, *aProjection);
+
+        aCtx->ShaderManager()->UpdateModelWorldStateTo (aModelWorld);
+        aCtx->ShaderManager()->UpdateWorldViewStateTo (aWorldView);
+        aCtx->ShaderManager()->UpdateProjectionStateTo (aProjection);
+      }
+
       glMatrixMode (GL_MODELVIEW);
       glPushMatrix ();
       glScalef (1.F, 1.F, 1.F);
-      glMultMatrixf (mat16);
+      glMultMatrixf (*aModelWorld);
     }
     else
     {
       glMatrixMode (GL_MODELVIEW);
       glPushMatrix();
 
-      local_trsf = AWorkspace->SetStructureMatrix(myTransformation);
+      local_trsf = AWorkspace->SetStructureMatrix (myTransformation);
     }
   }
 
@@ -426,7 +443,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
   const TEL_TRANSFORM_PERSISTENCE *trans_pers = NULL;
   if ( myTransPers && myTransPers->mode != 0 )
   {
-    trans_pers = AWorkspace->ActiveView()->BeginTransformPersistence( myTransPers );
+    trans_pers = AWorkspace->ActiveView()->BeginTransformPersistence (aCtx, myTransPers);
   }
 
   // Apply aspects
@@ -491,6 +508,12 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
   {
     // add planes at loaded view matrix state
     aContext->ChangeClipping().AddWorld (*aUserPlanes, AWorkspace);
+
+    // Set OCCT state uniform variables
+    if (!aContext->ShaderManager()->IsEmpty())
+    {
+      aContext->ShaderManager()->UpdateClippingState();
+    }
   }
 
   // Render groups
@@ -511,6 +534,12 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
   if (!aUserPlanes.IsNull() && !aUserPlanes->IsEmpty())
   {
     aContext->ChangeClipping().Remove (*aUserPlanes);
+
+    // Set OCCT state uniform variables
+    if (!aContext->ShaderManager()->IsEmpty())
+    {
+      aContext->ShaderManager()->RevertClippingState();
+    }
   }
 
   // Restore highlight color
@@ -525,7 +554,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
   // Restore transform persistence
   if ( myTransPers && myTransPers->mode != 0 )
   {
-    AWorkspace->ActiveView()->BeginTransformPersistence( trans_pers );
+    AWorkspace->ActiveView()->BeginTransformPersistence (aContext, trans_pers);
   }
 
   // Restore local transformation
@@ -535,10 +564,17 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
     {
       glPopMatrix ();
       glMatrixMode (matrix_mode);
+
+      Tmatrix3 aModelWorldState = { { 1.f, 0.f, 0.f, 0.f },
+                                    { 0.f, 1.f, 0.f, 0.f },
+                                    { 0.f, 0.f, 1.f, 0.f },
+                                    { 0.f, 0.f, 0.f, 1.f } };
+
+      aContext->ShaderManager()->RevertModelWorldStateTo (aModelWorldState);
     }
     else
     {
-      AWorkspace->SetStructureMatrix(local_trsf);
+      AWorkspace->SetStructureMatrix (local_trsf, true);
 
       glMatrixMode (GL_MODELVIEW);
       glPopMatrix();

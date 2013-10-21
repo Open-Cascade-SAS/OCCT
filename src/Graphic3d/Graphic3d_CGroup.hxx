@@ -23,6 +23,7 @@
 #include <InterfaceGraphic_Visual3d.hxx>
 #include <Graphic3d_CTexture.hxx>
 #include <Graphic3d_MarkerImage_Handle.hxx>
+#include <Graphic3d_ShaderProgram_Handle.hxx>
 
 class Graphic3d_CStructure;
 
@@ -80,6 +81,8 @@ public:
   float PolygonOffsetFactor;
   float PolygonOffsetUnits;
 
+  Handle(Graphic3d_ShaderProgram) ShaderProgram;
+
 };
 
 class CALL_DEF_CONTEXTMARKER
@@ -104,6 +107,7 @@ public:
   Aspect_TypeOfMarker MarkerType;
   Standard_ShortReal Scale;
   Handle(Graphic3d_MarkerImage) MarkerImage;
+  Handle(Graphic3d_ShaderProgram) ShaderProgram;
 
 };
 

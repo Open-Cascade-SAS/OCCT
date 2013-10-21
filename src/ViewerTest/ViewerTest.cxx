@@ -56,6 +56,8 @@
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_TextureRoot.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
+#include <Graphic3d_ShaderObject.hxx>
+#include <Graphic3d_ShaderProgram.hxx>
 #include <Image_AlienPixMap.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_IsoAspect.hxx>
@@ -1898,6 +1900,64 @@ Standard_Integer VTexture (Draw_Interpretor& di,Standard_Integer argc, const cha
 }
 
 //==============================================================================
+//function : VShaderProg
+//purpose  : Sets the pair of vertex and fragment shaders for the object
+//==============================================================================
+static Standard_Integer VShaderProg (Draw_Interpretor& /*theDI*/,
+                                     Standard_Integer  theArgNb,
+                                     const char**      theArgVec)
+{
+  Handle(AIS_InteractiveContext) anAISContext = ViewerTest::GetAISContext();
+  if (anAISContext.IsNull())
+  {
+    std::cerr << "Use 'vinit' command before " << theArgVec[0] << "\n";
+    return 1;
+  }
+
+  if (theArgNb < 3)
+  {
+    std::cerr << theArgVec[0] <<" syntax error: lack of arguments - Type 'help vshaderprog\n";
+    return 1;
+  }
+
+  const TCollection_AsciiString aShapeName = theArgVec[1];
+  if (!GetMapOfAIS().IsBound2 (aShapeName))
+  {
+    std::cerr << theArgVec[0] << ": Use 'vdisplay' before\n";
+    return 1;
+  }
+
+  Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aShapeName));
+  if (anIO.IsNull())
+  {
+    std::cerr << "Shape " << aShapeName.ToCString() << " does not exist\n";
+    return 1;
+  }
+
+  Handle(Graphic3d_ShaderProgram) aProgram = new Graphic3d_ShaderProgram();
+  const TCollection_AsciiString aVertexSource (theArgVec[2]);
+  if (!aVertexSource.IsEmpty() && !OSD_File(aVertexSource).Exists())
+  {
+    std::cerr << "Non-existing vertex shader source\n";
+    return 1;
+  }
+
+  TCollection_AsciiString aFragmentSource (theArgVec[3]);
+  if (!aFragmentSource.IsEmpty() && !OSD_File(aFragmentSource).Exists())
+  {
+    std::cerr << "Non-existing fragment shader source\n";
+    return 1;
+  }
+
+  aProgram->AttachShader (Graphic3d_ShaderObject::CreateFromFile (Graphic3d_TOS_VERTEX,   aVertexSource));
+  aProgram->AttachShader (Graphic3d_ShaderObject::CreateFromFile (Graphic3d_TOS_FRAGMENT, aFragmentSource));
+  anIO->Attributes()->ShadingAspect()->Aspect()->SetShaderProgram (aProgram);
+
+  anAISContext->Redisplay (anIO);
+  return 0;
+}
+
+//==============================================================================
 //function : VDisplay2
 //author   : ege
 //purpose  : Display an object from its name
@@ -3280,6 +3340,10 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
                   or 'vtexture NameOfShape ?' to list available textures\n \
                   or 'vtexture NameOfShape IdOfTexture' (0<=IdOfTexture<=20)' to use predefined  textures\n ",
 		  __FILE__,VTexture,group);
+
+  theCommands.Add("vshaderprog",
+		  "'vshaderprog NameOfShape VertexShaderFile FragmentShaderFile'",
+      __FILE__,VShaderProg,group);
 
   theCommands.Add("vtexscale",
 		  "'vtexscale  NameOfShape ScaleU ScaleV' \n \

@@ -143,7 +143,7 @@ public:
   const TEL_COLOUR* HighlightColor;
 
   const OpenGl_Matrix* SetViewMatrix (const OpenGl_Matrix* );
-  const OpenGl_Matrix* SetStructureMatrix (const OpenGl_Matrix* );
+  const OpenGl_Matrix* SetStructureMatrix (const OpenGl_Matrix*, bool aRevert = false);
 
   const OpenGl_AspectLine*   SetAspectLine   (const OpenGl_AspectLine*   theAspect);
   const OpenGl_AspectFace*   SetAspectFace   (const OpenGl_AspectFace*   theAspect);

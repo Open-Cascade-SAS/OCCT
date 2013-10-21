@@ -46,6 +46,7 @@
 #include <Graphic3d_Group.jxx>
 #include <Graphic3d_Group.pxx>
 #include <Graphic3d_TextureMap.hxx>
+#include <Graphic3d_ShaderProgram.hxx>
 
 //-Methods, in order
 
@@ -68,13 +69,14 @@ void Graphic3d_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectLin
   MyCGroup.ContextLine.Width      = float (AWidth);
   MyCGroup.ContextLine.IsDef      = 1;
 
+  MyCGroup.ContextLine.ShaderProgram = CTX->ShaderProgram();
+
   int noinsert    = 1;
   MyGraphicDriver->LineContextGroup (MyCGroup, noinsert);
 
   MyCGroup.ContextLine.IsSet      = 1;
 
   Update ();
-
 }
 
 void Graphic3d_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectFillArea3d)& CTX) {
@@ -277,13 +279,14 @@ void Graphic3d_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectFil
   MyCGroup.ContextFillArea.PolygonOffsetUnits  = aPolyUnits;
   // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
 
+  MyCGroup.ContextFillArea.ShaderProgram = CTX->ShaderProgram();
+
   int noinsert = 1;
   MyGraphicDriver->FaceContextGroup (MyCGroup, noinsert);
 
   MyCGroup.ContextFillArea.IsSet  = 1;
 
-  Update ();
-
+  Update();
 }
 
 void Graphic3d_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectMarker3d)& theCtx)
@@ -305,6 +308,8 @@ void Graphic3d_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectMar
   MyCGroup.ContextMarker.MarkerType  = aMarkerType;
   MyCGroup.ContextMarker.Scale       = Standard_ShortReal (aScale);
   MyCGroup.ContextMarker.MarkerImage = theCtx->GetMarkerImage();
+
+  MyCGroup.ContextMarker.ShaderProgram = theCtx->ShaderProgram();
 
   int noinsert = 1;
   MyGraphicDriver->MarkerContextGroup (MyCGroup, noinsert);
@@ -350,6 +355,8 @@ void Graphic3d_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectTex
   MyCGroup.ContextText.TextAngle    = float (ATextAngle);
   MyCGroup.ContextText.TextFontAspect   = (int)ATextFontAspect;
 
+  MyCGroup.ContextText.ShaderProgram = CTX->ShaderProgram();
+
   MyCGroup.ContextText.IsDef      = 1;
 
   int noinsert    = 1;
@@ -358,7 +365,6 @@ void Graphic3d_Group::SetGroupPrimitivesAspect (const Handle(Graphic3d_AspectTex
   MyCGroup.ContextText.IsSet              = 1;
 
   Update ();
-
 }
 
 void Graphic3d_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectLine3d)& CTX) {
@@ -380,13 +386,14 @@ void Graphic3d_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectLine3d)&
   MyCGroup.ContextLine.Width              = float (AWidth);
   MyCGroup.ContextLine.IsDef              = 1;
 
+  MyCGroup.ContextLine.ShaderProgram = CTX->ShaderProgram();
+
   int noinsert    = 0;
   MyGraphicDriver->LineContextGroup (MyCGroup, noinsert);
 
   MyCGroup.ContextLine.IsSet              = 1;
 
   Update ();
-
 }
 
 void Graphic3d_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectFillArea3d)& CTX) {
@@ -584,13 +591,14 @@ void Graphic3d_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectFillArea
   MyCGroup.ContextFillArea.PolygonOffsetUnits  = (Standard_ShortReal)aPolyUnits;
   // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
 
+  MyCGroup.ContextFillArea.ShaderProgram = CTX->ShaderProgram();
+
   int noinsert    = 0;
   MyGraphicDriver->FaceContextGroup (MyCGroup, noinsert);
 
   MyCGroup.ContextFillArea.IsSet  = 1;
 
   Update ();
-
 }
 
 void Graphic3d_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectMarker3d)& thCtx)
@@ -612,6 +620,8 @@ void Graphic3d_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectMarker3d
   MyCGroup.ContextMarker.MarkerType  = aMarkerType;
   MyCGroup.ContextMarker.Scale       = Standard_ShortReal (aScale);
   MyCGroup.ContextMarker.MarkerImage = thCtx->GetMarkerImage();
+
+  MyCGroup.ContextMarker.ShaderProgram = thCtx->ShaderProgram();
 
   int noinsert = 0;
   MyGraphicDriver->MarkerContextGroup (MyCGroup, noinsert);
@@ -658,13 +668,14 @@ void Graphic3d_Group::SetPrimitivesAspect (const Handle(Graphic3d_AspectText3d)&
   MyCGroup.ContextText.TextFontAspect   = (int)ATextFontAspect;
   MyCGroup.ContextText.IsDef              = 1;
 
+  MyCGroup.ContextText.ShaderProgram = CTX->ShaderProgram();
+
   int noinsert    = 0;
   MyGraphicDriver->TextContextGroup (MyCGroup, noinsert);
 
   MyCGroup.ContextText.IsSet              = 1;
 
-  Update ();
-
+  Update();
 }
 
 Standard_Boolean Graphic3d_Group::IsGroupPrimitivesAspectSet (const Graphic3d_GroupAspect theAspect) const {

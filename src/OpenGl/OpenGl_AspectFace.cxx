@@ -17,22 +17,24 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+#include <Aspect_PolygonOffsetMode.hxx>
+#include <NCollection_Vec3.hxx>
+
 #include <OpenGl_AspectFace.hxx>
+#include <OpenGl_Context.hxx>
+#include <OpenGl_ShaderManager.hxx>
+#include <OpenGl_ShaderProgram.hxx>
 #include <OpenGl_Texture.hxx>
 #include <OpenGl_Workspace.hxx>
-#include <OpenGl_Context.hxx>
 
-#include <Aspect_PolygonOffsetMode.hxx>
 #include <Graphic3d_CGroup.hxx>
+#include <Graphic3d_ShaderProgram.hxx>
 #include <Graphic3d_TextureMap.hxx>
 #include <Graphic3d_TypeOfReflection.hxx>
 #include <Graphic3d_MaterialAspect.hxx>
 
-#include <NCollection_Vec3.hxx>
-
 namespace
 {
-
   static OPENGL_SURF_PROP THE_DEFAULT_MATERIAL =
   {
     0.2F,  0.8F, 0.1F, 0.0F, // amb, diff, spec, emsv
@@ -48,7 +50,6 @@ namespace
 
   static TEL_POFFSET_PARAM THE_DEFAULT_POFFSET = { Aspect_POM_Fill, 1.0F, 0.0F };
   static const TCollection_AsciiString THE_EMPTY_KEY;
-
 };
 
 // =======================================================================
@@ -130,11 +131,7 @@ OpenGl_AspectFace::OpenGl_AspectFace()
   myIntFront (THE_DEFAULT_MATERIAL),
   myIntBack (THE_DEFAULT_MATERIAL),
   myPolygonOffset (THE_DEFAULT_POFFSET),
-  myDoTextureMap (false),
-  myTextureMap(),
-  myIsTextureInit (Standard_False),
-  myTextureRes(),
-  myTextureId()
+  myDoTextureMap (false)
 {}
 
 // =======================================================================
@@ -208,12 +205,6 @@ void OpenGl_AspectFace::SetAspect (const CALL_DEF_CONTEXTFILLAREA& theAspect)
   myIntBack.matcol.rgb[2] = (float )theAspect.BackIntColor.b;
   myIntBack.matcol.rgb[3] = 1.0f;
 
-  myDoTextureMap  = (theAspect.Texture.doTextureMap != 0);
-  myTextureMap    = theAspect.Texture.TextureMap;
-
-  const TCollection_AsciiString& aNewKey = myTextureMap.IsNull() ? THE_EMPTY_KEY : myTextureMap->GetId();
-  myIsTextureInit = (!aNewKey.IsEmpty() && myTextureId == aNewKey);
-
   //TelPolygonOffset
   myPolygonOffset.mode   = (Aspect_PolygonOffsetMode )theAspect.PolygonOffsetMode;
   myPolygonOffset.factor = theAspect.PolygonOffsetFactor;
@@ -226,6 +217,28 @@ void OpenGl_AspectFace::SetAspect (const CALL_DEF_CONTEXTFILLAREA& theAspect)
   anEdgeAspect.LineType = (Aspect_TypeOfLine )theAspect.LineType;
   anEdgeAspect.Width    = (float )theAspect.Width;
   myAspectEdge.SetAspect (anEdgeAspect);
+
+  myDoTextureMap = (theAspect.Texture.doTextureMap != 0);
+
+  // update texture binding
+  myTexture = theAspect.Texture.TextureMap;
+
+  const TCollection_AsciiString& aTextureKey = myTexture.IsNull() ? THE_EMPTY_KEY : myTexture->GetId();
+
+  if (aTextureKey.IsEmpty() || myResources.TextureId != aTextureKey)
+  {
+    myResources.ResetTexture();
+  }
+
+  // update shader program binding
+  myShaderProgram = theAspect.ShaderProgram;
+
+  const TCollection_AsciiString& aShaderKey = myShaderProgram.IsNull() ? THE_EMPTY_KEY : myShaderProgram->GetId();
+
+  if (aShaderKey.IsEmpty() || myResources.ShaderProgramId != aShaderKey)
+  {
+    myResources.ResetShader();
+  }
 }
 
 // =======================================================================
@@ -363,6 +376,8 @@ void OpenGl_AspectFace::SetAspect (const Handle(Graphic3d_AspectFillArea3d)& the
   aFaceContext.PolygonOffsetFactor = (Standard_ShortReal)aPolyFactor;
   aFaceContext.PolygonOffsetUnits  = (Standard_ShortReal)aPolyUnits;
 
+  aFaceContext.ShaderProgram = theAspect->ShaderProgram();
+
   SetAspect (aFaceContext);
 }
 
@@ -381,66 +396,110 @@ void OpenGl_AspectFace::Render (const Handle(OpenGl_Workspace)& theWorkspace) co
 // =======================================================================
 void OpenGl_AspectFace::Release (const Handle(OpenGl_Context)& theContext)
 {
-  if (!myTextureRes.IsNull())
+  if (!myResources.Texture.IsNull())
   {
     if (!theContext.IsNull())
     {
-      if (myTextureId.IsEmpty())
+      if (myResources.TextureId.IsEmpty())
       {
-        theContext->DelayedRelease (myTextureRes);
+        theContext->DelayedRelease (myResources.Texture);
       }
       else
       {
-        myTextureRes.Nullify(); // we need nullify all handles before ReleaseResource() call
-        theContext->ReleaseResource (myTextureId);
+        myResources.Texture.Nullify(); // we need nullify all handles before ReleaseResource() call
+        theContext->ReleaseResource (myResources.TextureId);
       }
     }
-    myTextureRes.Nullify();
+    myResources.Texture.Nullify();
   }
-  myTextureId.Clear();
+  myResources.TextureId.Clear();
+  myResources.ResetTexture();
+
+  if (!myResources.ShaderProgram.IsNull() && !theContext.IsNull())
+  {
+    theContext->ShaderManager()->Unregister (myResources.ShaderProgram);
+  }
+  myResources.ShaderProgramId.Clear();
+  myResources.ResetShader();
 }
 
 // =======================================================================
-// function : buildTexure
+// function : BuildTexture
 // purpose  :
 // =======================================================================
-void OpenGl_AspectFace::buildTexture (const Handle(OpenGl_Workspace)& theWorkspace) const
+void OpenGl_AspectFace::Resources::BuildTexture (const Handle(OpenGl_Workspace)& theWS,
+                                                 const Handle(Graphic3d_TextureMap)& theTexture)
 {
-  const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
+  const Handle(OpenGl_Context)& aContext = theWS->GetGlContext();
 
-  const TCollection_AsciiString& aNewKey = myTextureMap.IsNull() ? THE_EMPTY_KEY : myTextureMap->GetId();
-  if (aNewKey.IsEmpty() || myTextureId != aNewKey)
+  // release old texture resource
+  if (!Texture.IsNull())
   {
-    if (!myTextureRes.IsNull())
+    if (TextureId.IsEmpty())
     {
-      if (myTextureId.IsEmpty())
-      {
-        aContext->DelayedRelease (myTextureRes);
-        myTextureRes.Nullify();
-      }
-      else
-      {
-        myTextureRes.Nullify(); // we need nullify all handles before ReleaseResource() call
-        aContext->ReleaseResource (myTextureId);
-      }
+      aContext->DelayedRelease (Texture);
+      Texture.Nullify();
     }
-    myTextureId = aNewKey;
+    else
+    {
+      Texture.Nullify(); // we need nullify all handles before ReleaseResource() call
+      aContext->ReleaseResource (TextureId);
+    }
+  }
 
-    if (!myTextureMap.IsNull())
+  TextureId = theTexture.IsNull() ? THE_EMPTY_KEY : theTexture->GetId();
+
+  if (!theTexture.IsNull())
+  {
+    if (TextureId.IsEmpty() || !aContext->GetResource<Handle(OpenGl_Texture)> (TextureId, Texture))
     {
-      if (aNewKey.IsEmpty() || !aContext->GetResource<Handle(OpenGl_Texture)> (aNewKey, myTextureRes))
+      Texture = new OpenGl_Texture (theTexture->GetParams());
+      Handle(Image_PixMap) anImage = theTexture->GetImage();
+      if (!anImage.IsNull())
       {
-        myTextureRes = new OpenGl_Texture (myTextureMap->GetParams());
-        Handle(Image_PixMap) anImage = myTextureMap->GetImage();
-        if (!anImage.IsNull())
-        {
-          myTextureRes->Init (aContext, *anImage.operator->(), myTextureMap->Type());
-        }
-        if (!aNewKey.IsEmpty())
-        {
-          aContext->ShareResource (aNewKey, myTextureRes);
-        }
+        Texture->Init (aContext, *anImage.operator->(), theTexture->Type());
+      }
+      if (!TextureId.IsEmpty())
+      {
+        aContext->ShareResource (TextureId, Texture);
       }
     }
+  }
+}
+
+// =======================================================================
+// function : BuildShader
+// purpose  :
+// =======================================================================
+void OpenGl_AspectFace::Resources::BuildShader (const Handle(OpenGl_Workspace)& theWS,
+                                                const Handle(Graphic3d_ShaderProgram)& theShader)
+{
+  const Handle(OpenGl_Context)& aContext = theWS->GetGlContext();
+
+  if (!aContext->IsGlGreaterEqual (2, 0))
+    return;
+
+  // release old shader program resources
+  if (!ShaderProgram.IsNull())
+  {
+    aContext->ShaderManager()->Unregister (ShaderProgram);
+  }
+
+  ShaderProgramId = theShader.IsNull() ? THE_EMPTY_KEY : theShader->GetId();
+
+  if (!theShader.IsNull())
+  {
+    if (!aContext->GetResource<Handle(OpenGl_ShaderProgram)> (ShaderProgramId, ShaderProgram))
+    {
+      ShaderProgram = aContext->ShaderManager()->Create (theShader);
+      if (!ShaderProgramId.IsEmpty())
+      {
+        aContext->ShareResource (ShaderProgramId, ShaderProgram);
+      }
+    }
+  }
+  else
+  {
+    ShaderProgram.Nullify();
   }
 }

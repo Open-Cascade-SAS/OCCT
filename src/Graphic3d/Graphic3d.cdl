@@ -584,6 +584,9 @@ is
     imported NListOfHAsciiString;
     ---Category: Instantiated classes
 
+    imported ShaderProgram_Handle;
+    ---Category: Instantiated classes
+
     imported SetOfHClipPlane;
     ---Category: Instantiated classes
     -- Set of handles on clip planes

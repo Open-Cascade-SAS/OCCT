@@ -28,6 +28,7 @@
 #include <TCollection_AsciiString.hxx>
 
 #include <OpenGl_Element.hxx>
+#include <Handle_OpenGl_ShaderProgram.hxx>
 
 //! Text representation parameters
 class OpenGl_AspectText : public OpenGl_Element
@@ -118,19 +119,56 @@ public:
     return mySubtitleColor;
   }
 
+  //! Init and return OpenGl shader program resource.
+  //! @return shader program resource.
+  const Handle(OpenGl_ShaderProgram)& ShaderProgramRes (const Handle(OpenGl_Workspace)& theWorkspace) const
+  {
+    if (!myResources.IsShaderReady())
+    {
+      myResources.BuildShader (theWorkspace, myShaderProgram);
+      myResources.SetShaderReady();
+    }
+
+    return myResources.ShaderProgram;
+  }
+
   virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
   virtual void Release (const Handle(OpenGl_Context)&   theContext);
 
 protected:
 
-  TCollection_AsciiString  myFont;
-  TEL_COLOUR               myColor;
-  TEL_COLOUR               mySubtitleColor;
-  float                    myAngle;
-  Aspect_TypeOfStyleText   myStyleType;
-  Aspect_TypeOfDisplayText myDisplayType;
-  Font_FontAspect          myFontAspect;
-  bool                     myZoomable;
+  TCollection_AsciiString         myFont;
+  TEL_COLOUR                      myColor;
+  TEL_COLOUR                      mySubtitleColor;
+  float                           myAngle;
+  Aspect_TypeOfStyleText          myStyleType;
+  Aspect_TypeOfDisplayText        myDisplayType;
+  Font_FontAspect                 myFontAspect;
+  bool                            myZoomable;
+  Handle(Graphic3d_ShaderProgram) myShaderProgram;
+
+protected:
+
+  //! OpenGl resources
+  mutable struct Resources
+  {
+  public:
+    Resources() : myIsShaderReady (Standard_False) {}
+
+    Standard_Boolean IsShaderReady() const { return myIsShaderReady; }
+    void SetShaderReady() { myIsShaderReady = Standard_True; }
+    void ResetShader   () { myIsShaderReady = Standard_False; }
+
+    void BuildShader (const Handle(OpenGl_Workspace)& theWS, const Handle(Graphic3d_ShaderProgram)& theShader);
+
+    Handle(OpenGl_ShaderProgram) ShaderProgram;
+    TCollection_AsciiString      ShaderProgramId;
+
+  private:
+
+    Standard_Boolean myIsShaderReady;
+
+  } myResources;
 
 public:
 

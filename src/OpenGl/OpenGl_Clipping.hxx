@@ -17,8 +17,8 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-#ifndef _OpenGl_ClippingState_H__
-#define _OpenGl_ClippingState_H__
+#ifndef _OpenGl_Clipping_H__
+#define _OpenGl_Clipping_H__
 
 #include <Aspect_GenId.hxx>
 #include <Graphic3d_ClipPlane.hxx>
@@ -34,7 +34,7 @@
 //! clipping planes and provides method to change clippings in context. The methods
 //! should be executed within OpenGl context associated with instance of this
 //! class.
-class OpenGl_ClippingState
+class OpenGl_Clipping
 {
 public:
 
@@ -48,7 +48,7 @@ public:
 public: //! @name general methods
 
   //! Default constructor.
-  Standard_EXPORT OpenGl_ClippingState();
+  Standard_EXPORT OpenGl_Clipping();
 
   //! Initialize.
   //! @param theMaxPlanes [in] number of clipping planes supported by OpenGl context.
@@ -209,8 +209,8 @@ private:
 private:
 
   //! Copying allowed only within Handles
-  OpenGl_ClippingState            (const OpenGl_ClippingState& );
-  OpenGl_ClippingState& operator= (const OpenGl_ClippingState& );
+  OpenGl_Clipping            (const OpenGl_Clipping& );
+  OpenGl_Clipping& operator= (const OpenGl_Clipping& );
 };
 
 #endif

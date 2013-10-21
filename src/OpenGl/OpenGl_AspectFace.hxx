@@ -24,13 +24,15 @@
 #include <Aspect_InteriorStyle.hxx>
 #include <TCollection_AsciiString.hxx>
 
+#include <Handle_Graphic3d_TextureParams.hxx>
+#include <Handle_OpenGl_ShaderProgram.hxx>
+#include <Handle_OpenGl_Texture.hxx>
 #include <OpenGl_AspectLine.hxx>
 #include <OpenGl_Element.hxx>
-#include <Handle_OpenGl_Texture.hxx>
 
-#include <Graphic3d_TextureMap.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
-#include <Handle_Graphic3d_TextureParams.hxx>
+#include <Graphic3d_ShaderProgram_Handle.hxx>
+#include <Graphic3d_TextureMap.hxx>
 
 #define OPENGL_AMBIENT_MASK  (1<<0)
 #define OPENGL_DIFFUSE_MASK  (1<<1)
@@ -180,22 +182,35 @@ public:
     return myDoTextureMap;
   }
 
-  //! @return texture map.
-  const Handle(OpenGl_Texture)& TextureRes (const Handle(OpenGl_Workspace)& theWorkspace) const
-  {
-    if (!myIsTextureInit)
-    {
-      buildTexture (theWorkspace);
-      myIsTextureInit = Standard_True;
-    }
-
-    return myTextureRes;
-  }
-
   //! @return texture mapping parameters.
   const Handle(Graphic3d_TextureParams)& TextureParams() const
   {
-    return myTextureMap->GetParams();
+    return myTexture->GetParams();
+  }
+
+  //! @return texture map.
+  const Handle(OpenGl_Texture)& TextureRes (const Handle(OpenGl_Workspace)& theWorkspace) const
+  {
+    if (!myResources.IsTextureReady())
+    {
+      myResources.BuildTexture (theWorkspace, myTexture);
+      myResources.SetTextureReady();
+    }
+
+    return myResources.Texture;
+  }
+
+  //! Init and return OpenGl shader program resource.
+  //! @return shader program resource.
+  const Handle(OpenGl_ShaderProgram)& ShaderProgramRes (const Handle(OpenGl_Workspace)& theWorkspace) const 
+  {
+    if (!myResources.IsShaderReady())
+    {
+      myResources.BuildShader (theWorkspace, myShaderProgram);
+      myResources.SetShaderReady();
+    }
+
+    return myResources.ShaderProgram;
   }
 
   virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
@@ -203,7 +218,6 @@ public:
 
 protected:
 
-  void buildTexture (const Handle(OpenGl_Workspace)& theWorkspace) const;
   void convertMaterial (const CALL_DEF_MATERIAL& theMat,
                         OPENGL_SURF_PROP&        theSurf);
 
@@ -218,13 +232,40 @@ protected: //! @name ordinary aspect properties
   OPENGL_SURF_PROP                myIntBack;
   TEL_POFFSET_PARAM               myPolygonOffset;
   bool                            myDoTextureMap;
-  Handle(Graphic3d_TextureMap)    myTextureMap;
+  Handle(Graphic3d_TextureMap)    myTexture;
+  Handle(Graphic3d_ShaderProgram) myShaderProgram;
 
-protected: //! @name OpenGl resources
+protected:
 
-  mutable Standard_Boolean        myIsTextureInit;
-  mutable Handle(OpenGl_Texture)  myTextureRes;
-  mutable TCollection_AsciiString myTextureId;
+  //! OpenGl resources
+  mutable struct Resources
+  {
+  public:
+    Resources()
+      : myIsTextureReady (Standard_False),
+        myIsShaderReady  (Standard_False) {}
+
+    Standard_Boolean IsTextureReady() const { return myIsTextureReady; }
+    Standard_Boolean IsShaderReady () const { return myIsShaderReady;  }
+    void SetTextureReady() { myIsTextureReady = Standard_True; }
+    void SetShaderReady () { myIsShaderReady  = Standard_True; }
+    void ResetTexture() { myIsTextureReady = Standard_False; }
+    void ResetShader () { myIsShaderReady  = Standard_False; }
+
+    void BuildTexture (const Handle(OpenGl_Workspace)& theWS, const Handle(Graphic3d_TextureMap)& theTexture);
+    void BuildShader  (const Handle(OpenGl_Workspace)& theWS, const Handle(Graphic3d_ShaderProgram)& theShader);
+
+    Handle(OpenGl_Texture)  Texture;
+    TCollection_AsciiString TextureId;
+    Handle(OpenGl_ShaderProgram) ShaderProgram;
+    TCollection_AsciiString      ShaderProgramId;
+
+  private:
+
+    Standard_Boolean myIsTextureReady;
+    Standard_Boolean myIsShaderReady;
+
+  } myResources;
 
 protected:
 

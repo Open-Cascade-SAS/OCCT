@@ -25,6 +25,7 @@
 #include <Aspect_Display.hxx>
 #include <Aspect_RenderingContext.hxx>
 #include <Handle_OpenGl_Context.hxx>
+#include <Handle_OpenGl_ShaderManager.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Map.hxx>
 #include <NCollection_Handle.hxx>
@@ -35,7 +36,7 @@
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Handle_OpenGl_Context.hxx>
-#include <OpenGl_ClippingState.hxx>
+#include <OpenGl_Clipping.hxx>
 
 //! Forward declarations
 struct OpenGl_GlCore12;
@@ -248,10 +249,13 @@ public:
   Standard_EXPORT void ReleaseDelayed();
 
   //! @return tool for management of clippings within this context.
-  inline OpenGl_ClippingState& ChangeClipping() { return myClippingState; }
+  inline OpenGl_Clipping& ChangeClipping() { return myClippingState; }
 
   //! @return tool for management of clippings within this context.
-  inline const OpenGl_ClippingState& Clipping() const { return myClippingState; }
+  inline const OpenGl_Clipping& Clipping() const { return myClippingState; }
+
+  //! @return tool for management of shader programs within this context.
+  inline const Handle(OpenGl_ShaderManager)& ShaderManager() const { return myShaderManager; }
 
 public:
 
@@ -350,7 +354,7 @@ private: // context info
   Handle(OpenGl_DelayReleaseMap) myDelayed;         //!< shared resources for delayed release
   Handle(OpenGl_ResourcesQueue)  myReleaseQueue;    //!< queue of resources for delayed clean up
 
-  OpenGl_ClippingState myClippingState; //!< state of clip planes
+  OpenGl_Clipping myClippingState; //!< state of clip planes
 
   void*            myGlLibHandle;   //!< optional handle to GL library
   OpenGl_GlCore20* myGlCore20;      //!< common structure for GL core functions upto 2.0
@@ -361,6 +365,8 @@ private: // context info
   Standard_Integer myGlVerMinor;    //!< cached GL version minor number
   Standard_Boolean myIsFeedback;    //!< flag indicates GL_FEEDBACK mode
   Standard_Boolean myIsInitialized; //!< flag indicates initialization state
+
+  Handle(OpenGl_ShaderManager) myShaderManager; //! support object for managing shader programs
 
 private:
 

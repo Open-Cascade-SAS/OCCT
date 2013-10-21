@@ -20,8 +20,12 @@
 #ifndef _OpenGl_AspectLine_Header
 #define _OpenGl_AspectLine_Header
 
+#include <TCollection_AsciiString.hxx>
+
 #include <InterfaceGraphic_Graphic3d.hxx>
 #include <Aspect_TypeOfLine.hxx>
+
+#include <Handle_OpenGl_ShaderProgram.hxx>
 
 #include <OpenGl_Element.hxx>
 
@@ -38,14 +42,51 @@ class OpenGl_AspectLine : public OpenGl_Element
   Aspect_TypeOfLine  Type() const { return myType; }
   float              Width() const { return myWidth; }
 
+  //! Init and return OpenGl shader program resource.
+  //! @return shader program resource.
+  const Handle(OpenGl_ShaderProgram)& ShaderProgramRes (const Handle(OpenGl_Workspace)& theWorkspace) const
+  {
+    if (!myResources.IsShaderReady())
+    {
+      myResources.BuildShader (theWorkspace, myShaderProgram);
+      myResources.SetShaderReady();
+    }
+
+    return myResources.ShaderProgram;
+  }
+
   virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
   virtual void Release (const Handle(OpenGl_Context)&   theContext);
 
- protected:
+protected:
 
-  TEL_COLOUR        myColor;
-  Aspect_TypeOfLine myType;
-  float             myWidth;
+  TEL_COLOUR                      myColor;
+  Aspect_TypeOfLine               myType;
+  float                           myWidth;
+  Handle(Graphic3d_ShaderProgram) myShaderProgram;
+
+protected:
+
+  //! OpenGl resources
+  mutable struct Resources
+  {
+  public:
+    Resources() : myIsShaderReady (Standard_False) {}
+
+    Standard_Boolean IsShaderReady() const { return myIsShaderReady; }
+    void SetShaderReady() { myIsShaderReady = Standard_True; }
+    void ResetShader   () { myIsShaderReady = Standard_False; }
+
+    void BuildShader (const Handle(OpenGl_Workspace)& theWS, const Handle(Graphic3d_ShaderProgram)& theShader);
+
+    Handle(OpenGl_ShaderProgram) ShaderProgram;
+    TCollection_AsciiString      ShaderProgramId;
+
+  private:
+
+    Standard_Boolean myIsShaderReady;
+
+  } myResources;
 
  public:
   DEFINE_STANDARD_ALLOC

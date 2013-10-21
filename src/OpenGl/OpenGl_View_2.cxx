@@ -26,13 +26,19 @@
 #include <Image_AlienPixMap.hxx>
 #include <Visual3d_Layer.hxx>
 
+#include <NCollection_Mat4.hxx>
+
 #include <OpenGl_AspectLine.hxx>
+#include <OpenGl_Context.hxx>
 #include <OpenGl_Display.hxx>
+#include <OpenGl_Matrix.hxx>
 #include <OpenGl_Workspace.hxx>
 #include <OpenGl_View.hxx>
 #include <OpenGl_Trihedron.hxx>
 #include <OpenGl_GraduatedTrihedron.hxx>
 #include <OpenGl_PrinterContext.hxx>
+#include <OpenGl_ShaderManager.hxx>
+#include <OpenGl_ShaderProgram.hxx>
 #include <OpenGl_Structure.hxx>
 
 #define EPSI 0.0001
@@ -42,7 +48,7 @@ static const GLfloat default_sptdir[3] = { 0.F, 0.F, -1.F };
 static const GLfloat default_sptexpo = 0.F;
 static const GLfloat default_sptcutoff = 180.F;
 
-extern void InitLayerProp (const int AListId); //szvgl: defined in OpenGl_GraphicDriver_Layer.cxx
+extern void InitLayerProp (const int theListId); //szvgl: defined in OpenGl_GraphicDriver_Layer.cxx
 
 /*----------------------------------------------------------------------*/
 
@@ -658,6 +664,39 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
     }
   }
 
+  // Set OCCT state uniform variables
+
+  if (!aContext->ShaderManager()->IsEmpty())
+  {
+    if (myLightSourcesChanged)
+    {
+      aContext->ShaderManager()->UpdateLightSourceStateTo (&myLights);
+      myLightSourcesChanged = Standard_False;
+    }
+
+    if (myViewMappingChanged)
+    {
+      aContext->ShaderManager()->UpdateProjectionStateTo (myMappingMatrix);
+      myViewMappingChanged = Standard_False;
+    }
+
+    if (myOrientationChanged)
+    {
+      aContext->ShaderManager()->UpdateWorldViewStateTo (myOrientationMatrix);
+      myOrientationChanged = Standard_False;
+    }
+
+    if (aContext->ShaderManager()->ModelWorldState().Index() == 0)
+    {
+      Tmatrix3 aModelWorldState = { { 1.f, 0.f, 0.f, 0.f },
+                                    { 0.f, 1.f, 0.f, 0.f },
+                                    { 0.f, 0.f, 1.f, 0.f },
+                                    { 0.f, 0.f, 0.f, 1.f } };
+
+      aContext->ShaderManager()->UpdateModelWorldStateTo (aModelWorldState);
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // Step 1: Prepare for redraw
 
@@ -858,7 +897,7 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
 
   /////////////////////////////////////////////////////////////////////////////
   // Step 2: Draw underlayer
-  RedrawLayer2d (thePrintContext, AWorkspace, ACView, ACUnderLayer);
+  RedrawLayer2d (thePrintContext, ACView, ACUnderLayer);
 
   /////////////////////////////////////////////////////////////////////////////
   // Step 3: Redraw main plane
@@ -1051,6 +1090,11 @@ D = -[Px,Py,Pz] dot |Nx|
         aContext->ChangeClipping().AddWorld (aUserPlanes);
       }
     }
+    
+    if (!aContext->ShaderManager()->IsEmpty())
+    {
+      aContext->ShaderManager()->UpdateClippingState();
+    }
   }
 
   // Apply AntiAliasing
@@ -1138,6 +1182,12 @@ D = -[Px,Py,Pz] dot |Nx|
 
   aContext->ChangeClipping().RemoveAll();
 
+  if (!aContext->ShaderManager()->IsEmpty())
+  {
+    aContext->ShaderManager()->ResetMaterialStates();
+    aContext->ShaderManager()->RevertClippingState();
+  }
+
   // display global trihedron
   if (myTrihedron != NULL)
   {
@@ -1165,7 +1215,7 @@ D = -[Px,Py,Pz] dot |Nx|
   const int aMode = 0;
   AWorkspace->DisplayCallback (ACView, (aMode | OCC_PRE_OVERLAY));
 
-  RedrawLayer2d (thePrintContext, AWorkspace, ACView, ACOverLayer);
+  RedrawLayer2d (thePrintContext, ACView, ACOverLayer);
 
   AWorkspace->DisplayCallback (ACView, aMode);
 
@@ -1225,7 +1275,6 @@ void OpenGl_View::RenderStructs (const Handle(OpenGl_Workspace) &AWorkspace)
 
 //call_togl_redraw_layer2d
 void OpenGl_View::RedrawLayer2d (const Handle(OpenGl_PrinterContext)& thePrintContext,
-                                 const Handle(OpenGl_Workspace)&      /*AWorkspace*/,
                                  const Graphic3d_CView&               ACView,
                                  const Aspect_CLayer2d&               ACLayer)
 {
@@ -1336,9 +1385,9 @@ void OpenGl_View::RedrawLayer2d (const Handle(OpenGl_PrinterContext)& thePrintCo
   //calling dynamic render of LayerItems
   if ( ACLayer.ptrLayer->layerData )
   {
-    InitLayerProp(ACLayer.ptrLayer->listIndex);
+    InitLayerProp (ACLayer.ptrLayer->listIndex);
     ((Visual3d_Layer*)ACLayer.ptrLayer->layerData)->RenderLayerItems();
-    InitLayerProp(0);
+    InitLayerProp (0);
   }
 
   glPopAttrib ();

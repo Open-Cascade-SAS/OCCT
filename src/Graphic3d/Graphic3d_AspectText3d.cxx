@@ -253,5 +253,12 @@ void Graphic3d_AspectText3d::Values ( Quantity_Color& AColor,
 
 }
 
+void Graphic3d_AspectText3d::SetShaderProgram (const Handle(Graphic3d_ShaderProgram)& theProgram)
+{
+  MyShaderProgram = theProgram;
+}
 
-
+const Handle(Graphic3d_ShaderProgram)& Graphic3d_AspectText3d::ShaderProgram() const
+{
+  return MyShaderProgram;
+}

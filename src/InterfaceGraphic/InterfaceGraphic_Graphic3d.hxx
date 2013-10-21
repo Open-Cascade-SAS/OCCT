@@ -19,6 +19,7 @@
 #ifndef InterfaceGraphic_Graphic3dHeader
 #define InterfaceGraphic_Graphic3dHeader
 
+#include <Graphic3d_ShaderProgram_Handle.hxx>
 #include <InterfaceGraphic_PrimitiveArray.hxx>
 #include <Standard_Transient.hxx>
 
@@ -326,17 +327,19 @@ typedef struct {
 
 /* CONTEXTE LIGNE */
 
-typedef struct {
-
-        int IsDef;
-
-        int IsSet;
-
-        CALL_DEF_COLOR Color;
-
-        int LineType;
-
-        float Width;
+typedef struct
+{
+  int IsDef;
+  
+  int IsSet;
+  
+  CALL_DEF_COLOR Color;
+  
+  int LineType;
+  
+  float Width;
+  
+  Handle(Graphic3d_ShaderProgram) ShaderProgram;
 
 } CALL_DEF_CONTEXTLINE;
 
@@ -373,25 +376,25 @@ typedef struct {
 
 /* CONTEXTE TEXT */
 
-typedef struct {
-
-        int IsDef;
-
-        int IsSet;
-
-        const char* Font;
-
-        float Space;
-
-        float Expan;
-
-        CALL_DEF_COLOR Color;
-
-        int Style;
-
-        int DisplayType;
-
-        CALL_DEF_COLOR ColorSubTitle;
+typedef struct
+{
+  int IsDef;
+  
+  int IsSet;
+  
+  const char* Font;
+  
+  float Space;
+  
+  float Expan;
+  
+  CALL_DEF_COLOR Color;
+  
+  int Style;
+  
+  int DisplayType;
+  
+  CALL_DEF_COLOR ColorSubTitle;
 
 	int TextZoomable;
 
@@ -399,6 +402,7 @@ typedef struct {
 
 	int TextFontAspect;
 
+  Handle(Graphic3d_ShaderProgram) ShaderProgram;
 
 } CALL_DEF_CONTEXTTEXT;
 
