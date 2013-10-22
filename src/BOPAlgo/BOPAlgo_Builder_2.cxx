@@ -263,8 +263,7 @@ void BOPAlgo_Builder::BuildSplitFaces()
   aNbBF=aVBF.Extent();
   //
   //===================================================
-  bRunParallel=Standard_True;
-  BOPAlgo_BuilderFaceCnt::Perform(bRunParallel, aVBF);
+  BOPAlgo_BuilderFaceCnt::Perform(myRunParallel, aVBF);
   //===================================================
   //
   for (k=0; k<(Standard_Integer)aNbBF; ++k) {
@@ -422,7 +421,7 @@ void BOPAlgo_Builder::FillSameDomainFaces()
   //
   aIDMSS.Clear();
   //
-  Standard_Boolean bRunParallel, bFlagSD;
+  Standard_Boolean bFlagSD;
   Standard_Integer aNbVPSB, aNbVVS, aNbF, aNbF1;
   BOPAlgo_VectorOfPairOfShapeBoolean aVPSB;
   //
@@ -446,8 +445,7 @@ void BOPAlgo_Builder::FillSameDomainFaces()
     }
   }
   //====================================================
-  bRunParallel=Standard_True;
-  BOPAlgo_BuilderSDFaceCnt::Perform(bRunParallel, aVPSB);
+  BOPAlgo_BuilderSDFaceCnt::Perform(myRunParallel, aVPSB);
   //====================================================
   aAllocator=new NCollection_IncAllocator();
   BOPCol_IndexedDataMapOfShapeListOfShape aDMSLS(100, aAllocator);
