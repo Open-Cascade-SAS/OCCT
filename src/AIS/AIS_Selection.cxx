@@ -50,9 +50,10 @@
 #define MaxSizeOfResult 100000
 #endif
 
+//current selection (handle)
+static Handle(AIS_Selection) theCurrentSelection;
 static void AIS_Sel_CurrentSelection (Handle(AIS_Selection)& InputSel)     
 {
-  static Handle(AIS_Selection) theCurrentSelection;
   if(!InputSel.IsNull())
     theCurrentSelection = InputSel;
   else
@@ -418,6 +419,11 @@ void AIS_Selection::Remove(const Standard_CString aName)
 #endif
     AIS_Sel_GetSelections().Remove(I);
   }
-  
+}
+
+// clean the static current selection handle
+void AIS_Selection::ClearCurrentSelection()
+{
+    theCurrentSelection.Nullify();
 }
 

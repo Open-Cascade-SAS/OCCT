@@ -1061,6 +1061,19 @@ Standard_Integer Visual3d_ViewManager::Identification (const Handle(Visual3d_Vie
 
 void Visual3d_ViewManager::UnIdentification (const Standard_Integer aViewId)
 {
+  Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
+  while (MyIterator.More()) 
+  {
+    if ((MyIterator.Value())->Identification () == aViewId)
+    {
+      const Handle(Visual3d_View)& theView = MyIterator.Value();
+      //remove the view from the list
+      MyDefinedView.Remove(theView);
+      break;
+    }
+    // go to next
+    MyIterator.Next ();
+  }
   MyViewGenId.Free(aViewId);
 }
 

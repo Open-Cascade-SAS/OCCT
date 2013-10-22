@@ -149,6 +149,9 @@ myIsAutoActivateSelMode( Standard_True )
 
 void AIS_InteractiveContext::Delete() const
 {
+  //Clear the static current selection. Else the memory
+  //is not release
+  AIS_Selection::ClearCurrentSelection();
 #ifdef OCC172
   // to avoid an exception
   if ( AIS_Selection::Find( mySelectionName.ToCString() ) )

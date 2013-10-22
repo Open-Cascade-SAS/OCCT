@@ -87,6 +87,8 @@ is
     ---Purpose: 
     returns mutable Selection from AIS;
     
+    ClearCurrentSelection(myclass);
+    ---Purpose: Clears selection.
 
     Select(myclass);
     ---Purpose: removes all the object of the currentselection.
