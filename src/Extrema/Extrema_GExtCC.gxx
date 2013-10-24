@@ -301,7 +301,8 @@ void Extrema_GExtCC::Perform()
           rl = (Tool1::BSpline(*((Curve1*)myC[i])))->LastParameter();
           aNbS[i] = (Standard_Integer) ( aNbS[i] * ((mySup[i] - myInf[i]) / (rl - rf)) + 1 );
         case GeomAbs_OtherCurve:
-          //adjust number of sample points for B-Splines and Other curves
+        case GeomAbs_Line:
+          //adjust number of sample points for Lines, B-Splines and Other curves
           aNbInter[i] = aC.NbIntervals (GeomAbs_C2);
           aNbS[i] = Max(aNbS[i] / aNbInter[i], 3);
 	  LL[i] = 0.;
@@ -323,11 +324,13 @@ void Extrema_GExtCC::Perform()
     if(LL[0] > 0. && LL[1] > 0.) {
       if(LL[0] > 4.*LL[1]) {
         Coeff[0] = LL[0]/LL[1]/2.;
-	aNbS[0]  = (Standard_Integer) ( aNbS[0] * Coeff[0] );
+        if (aNbS[0] * Coeff[0] <= 10000.0)
+          aNbS[0]  = (Standard_Integer) ( aNbS[0] * Coeff[0] );
       }
       else if(LL[1] > 4.*LL[0]) {
         Coeff[1] = LL[1]/LL[0]/2.;
-	aNbS[1]  = (Standard_Integer) (aNbS[1] * Coeff[1] );
+        if (aNbS[1] * Coeff[1] <= 10000.0)
+          aNbS[1]  = (Standard_Integer) (aNbS[1] * Coeff[1] );
       }
     }
     //modified by NIZNHY-PKV Tue Apr 17 10:01:32 2012f
