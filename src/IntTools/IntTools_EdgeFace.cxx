@@ -413,53 +413,21 @@ void IntTools_EdgeFace::CheckData()
 //function : IsProjectable
 //purpose  : 
 //=======================================================================
-  Standard_Boolean IntTools_EdgeFace::IsProjectable(const Standard_Real t) const
+Standard_Boolean IntTools_EdgeFace::IsProjectable(const Standard_Real aT) const
 {
-  Standard_Boolean bFlag;
-  Standard_Real Umin, Usup, Vmin, Vsup;
-
-  Umin=myS.FirstUParameter();
-  Usup=myS.LastUParameter();
-  Vmin=myS.FirstVParameter();
-  Vsup=myS.LastVParameter ();
-  
-  gp_Pnt P;
-  myC.D0(t, P);
-  GeomAPI_ProjectPointOnSurf aProjector;
+  Standard_Boolean bFlag; 
+  gp_Pnt aPC;
   //
-  Standard_Real ULD = 0., VLD = 0.;
-
-  GeomAPI_ProjectPointOnSurf& aLocProj = myContext->ProjPS(myFace);
-  aLocProj.Perform(P);
-  bFlag = aLocProj.IsDone();
-  
-  if(bFlag) {
-    aLocProj.LowerDistanceParameters(ULD, VLD);
-  }
+  myC.D0(aT, aPC);
+  bFlag=myContext->IsValidPointForFace(aPC, myFace, myCriteria);
   //
-
-  if (bFlag) {
-    bFlag=Standard_False;
-
-    // 
-    TopAbs_State aState;
-    gp_Pnt2d aP2d(ULD, VLD);
-
-    aState = myContext->FClass2d(myFace).Perform(aP2d);
-    //
-    
-    if (aState==TopAbs_IN || aState==TopAbs_ON) {
-      bFlag=Standard_True;
-    }
-  }
   return bFlag;
 }
-
 //=======================================================================
 //function : DistanceFunction
 //purpose  : 
 //=======================================================================
-  Standard_Real IntTools_EdgeFace::DistanceFunction(const Standard_Real t)
+Standard_Real IntTools_EdgeFace::DistanceFunction(const Standard_Real t)
 {
   Standard_Real Umin, Usup, Vmin, Vsup, aD;
   //
