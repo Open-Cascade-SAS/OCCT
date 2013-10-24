@@ -219,7 +219,7 @@ void rec_finfile()  {  }
 /*   GESTION DES RECORDS   */
 
 /*   ENREGISTRER UN RECORD (deja pret)    */
-void static rec_new(struct rec* newrec)
+static void rec_new(struct rec* newrec)
 /*  nouveau record a enregistrer  */
 {
  nbrec ++ ;

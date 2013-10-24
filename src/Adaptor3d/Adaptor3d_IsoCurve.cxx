@@ -553,7 +553,6 @@ GeomAbs_CurveType Adaptor3d_IsoCurve::GetType() const {
 	  Standard_NoSuchObject::Raise("Adaptor3d_IsoCurve:NoneIso");
 	  // portage WNT
 	  return GeomAbs_OtherCurve;
-	  break;
 	}
       }
       break;

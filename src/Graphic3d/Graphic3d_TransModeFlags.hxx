@@ -21,7 +21,7 @@
 #ifndef Graphic3d_TRANS_MODE_FLAGS_HXX
 #define Graphic3d_TRANS_MODE_FLAGS_HXX
 
-Standard_EXPORT typedef Standard_Integer Graphic3d_TransModeFlags;
+typedef Standard_Integer Graphic3d_TransModeFlags;
 
 enum {
   Graphic3d_TMF_None               = 0x0000,

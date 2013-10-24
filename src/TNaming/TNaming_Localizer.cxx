@@ -281,11 +281,9 @@ Standard_Boolean TNaming_Localizer::IsNew (const TopoDS_Shape&    S,
   for (; itLab.More(); itLab.Next()) {
     if (itLab.OldShape().IsSame(S)) {
       return Standard_False;
-      break;
     }
     if (itLab.NewShape().IsSame(S)) {
       return Standard_True;
-      break;
     }
   }
 #ifdef DEB

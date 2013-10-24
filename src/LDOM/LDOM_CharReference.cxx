@@ -34,7 +34,7 @@ const int ENTI_AMP  = 1;
 const int ENTI_LT   = 2;
 const int ENTI_GT   = 3;
 const int ENTI_QUOT = 4;
-const int ENTI_APOS = 5;
+//const int ENTI_APOS = 5;
 
 struct entityRef {
   const char * name;

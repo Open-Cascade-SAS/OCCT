@@ -68,12 +68,6 @@ static  void D02d(const Standard_Address C, const Standard_Real U,
   PP.SetCoord(P.X(),P.Y(),0.);
 }
 
-static inline void D13d(const Standard_Address C, const Standard_Real U,
-		      gp_Pnt& P, gp_Vec& V1)
-{
-  ((Adaptor3d_Curve*)C)->D1(U,P,V1);
-}
-
 static inline void D23d(const Standard_Address C, const Standard_Real U,
 		      gp_Pnt& P, gp_Vec& V1, gp_Vec& V2)
 {

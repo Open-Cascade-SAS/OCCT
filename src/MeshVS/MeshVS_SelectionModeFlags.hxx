@@ -21,7 +21,7 @@
 #ifndef MeshVS_SELECTION_MODE_FLAGS_HXX
 #define MeshVS_SELECTION_MODE_FLAGS_HXX
 
-Standard_EXPORT typedef enum
+typedef enum
 {
   MeshVS_SMF_Mesh    = 0x0000,
   MeshVS_SMF_Node    = 0x0001,
@@ -35,8 +35,7 @@ Standard_EXPORT typedef enum
 
   MeshVS_SMF_Group   = 0x0100
 
-
-}   MeshVS_SelectionModeFlags;
+} MeshVS_SelectionModeFlags;
 
 #endif
 

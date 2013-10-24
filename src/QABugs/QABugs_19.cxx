@@ -295,7 +295,7 @@ Standard_Integer OCC22595 (Draw_Interpretor& di, Standard_Integer /*argc*/, cons
 #include <BRepExtrema_DistShapeShape.hxx>
 #include <BRepTools.hxx>
 
-Standard_Boolean static OCC23774Test(const TopoDS_Face& grossPlateFace, const TopoDS_Shape& originalWire, Draw_Interpretor& di)
+static Standard_Boolean OCC23774Test(const TopoDS_Face& grossPlateFace, const TopoDS_Shape& originalWire, Draw_Interpretor& di)
 {
   BRepExtrema_DistShapeShape distShapeShape(grossPlateFace,originalWire,Extrema_ExtFlag_MIN);
   if(!distShapeShape.IsDone()) {

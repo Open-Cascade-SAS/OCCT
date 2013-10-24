@@ -261,7 +261,6 @@ Quantity_Color Image_PixMap::PixelColor (const Standard_Integer theX,
                              Quantity_Parameter (Standard_Real (aPixel)),
                              Quantity_Parameter (Standard_Real (aPixel)),
                              Quantity_TOC_RGB);
-      break;
     }
     case ImgRGBAF:
     {

@@ -30,14 +30,14 @@
 
 #include <Quantity_Color.hxx>
 
-Standard_EXPORT typedef struct {
+typedef struct {
   unsigned int r1 : 8;
   unsigned int g1 : 8;
   unsigned int b1 : 8;
   unsigned int r2 : 8;
   unsigned int g2 : 8;
   unsigned int b2 : 8;
-}   MeshVS_TwoColors;
+} MeshVS_TwoColors;
 
 
 Standard_EXPORT Standard_Integer HashCode ( const MeshVS_TwoColors& theKey,

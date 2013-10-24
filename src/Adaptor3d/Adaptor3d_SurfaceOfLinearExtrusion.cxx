@@ -431,7 +431,6 @@ GeomAbs_SurfaceType Adaptor3d_SurfaceOfLinearExtrusion::GetType() const
       else {
         return GeomAbs_Plane;
       }
-      break;
     }
     
   case GeomAbs_Circle:
@@ -447,7 +446,6 @@ GeomAbs_SurfaceType Adaptor3d_SurfaceOfLinearExtrusion::GetType() const
       else {
         return GeomAbs_SurfaceOfExtrusion;
       }
-      break;
     }
     // JAG 10.11.95
     
@@ -460,7 +458,6 @@ GeomAbs_SurfaceType Adaptor3d_SurfaceOfLinearExtrusion::GetType() const
       else {
         return GeomAbs_SurfaceOfExtrusion;
       }
-      break;
     }
     
   case GeomAbs_Parabola:
@@ -472,7 +469,6 @@ GeomAbs_SurfaceType Adaptor3d_SurfaceOfLinearExtrusion::GetType() const
       else {
         return GeomAbs_SurfaceOfExtrusion;
       }
-      break;
     }
     
   case GeomAbs_Hyperbola:
@@ -484,7 +480,6 @@ GeomAbs_SurfaceType Adaptor3d_SurfaceOfLinearExtrusion::GetType() const
       else {
         return GeomAbs_SurfaceOfExtrusion;
       }
-      break;
     }
 
   default:

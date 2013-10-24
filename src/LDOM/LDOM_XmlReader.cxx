@@ -38,7 +38,6 @@
 //#include <ctype.h>
 
 const int XML_MIN_BUFFER = 10;
-const int MAX_ATTRIBUTES = 512;
 const int FILE_NONVALUE  = -1;
 
 typedef enum {

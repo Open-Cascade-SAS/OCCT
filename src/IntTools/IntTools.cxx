@@ -373,7 +373,6 @@
       else {
 	return 2;
       }
-      break;
     }
   default: 
     break;

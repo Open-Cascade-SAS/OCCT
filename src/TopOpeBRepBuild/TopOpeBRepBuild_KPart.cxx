@@ -2136,18 +2136,15 @@ static Standard_Boolean disjPerformCommon(const TopTools_IndexedMapOfShape& theM
       switch (ires) {
       case RESNULL: {
 	continue;
-	break;
       }
       case RESSHAPE12 : {
 	aMapOfCommonOfCouple.Add(sol1);
 	aMapOfCommonOfCouple.Add(sol2);
 	continue;
-	break;
       }
       case RESSHAPE1 : {
 	aMapOfCommonOfCouple.Add(sol1);
 	continue;
-	break;
       }
       case RESSHAPE2 : {
 	aMapOfCommonOfCouple.Add(sol2);

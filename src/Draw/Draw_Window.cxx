@@ -1396,7 +1396,6 @@ LRESULT APIENTRY DrawWindow::DrawProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARA
       localObjet->WExpose();
       localObjet->Redraw();
       return 0l;
-      break;
     }
 
   default:

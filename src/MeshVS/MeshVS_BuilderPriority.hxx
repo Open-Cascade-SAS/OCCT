@@ -21,7 +21,7 @@
 #ifndef MeshVS_BUILDERPRIORITY_HXX
 #define MeshVS_BUILDERPRIORITY_HXX
 
-Standard_EXPORT typedef Standard_Integer MeshVS_BuilderPriority;
+typedef Standard_Integer MeshVS_BuilderPriority;
 
 enum
 {

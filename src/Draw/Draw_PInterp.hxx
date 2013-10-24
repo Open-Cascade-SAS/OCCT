@@ -27,8 +27,4 @@ struct Tcl_Interp;
 
 typedef Tcl_Interp *Draw_PInterp;
 
-
-#include <Standard_Type.hxx>
-inline const Handle(Standard_Type)& STANDARD_TYPE(Draw_PInterp) {return *((Handle(Standard_Type)*)0);}
-
 #endif

@@ -308,7 +308,6 @@ void Extrema_ExtElCS::Perform(const gp_Circ& C,
       mySqDist->SetValue(1, aDist * aDist);
     } else {
       Standard_Integer aNbExt   = anExtC.NbExt();
-      gp_Pnt           aCenter  = C.Location();
       Standard_Integer i;
       Standard_Integer aCurI    = 1;
       Standard_Real    aTolConf = Precision::Confusion();

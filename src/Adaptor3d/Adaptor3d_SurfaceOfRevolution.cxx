@@ -596,7 +596,6 @@ GeomAbs_SurfaceType Adaptor3d_SurfaceOfRevolution::GetType() const
 	return bRet;
       }
     }
-    break;
   }//case GeomAbs_Line: 
   //  
   case GeomAbs_Circle:   {
@@ -639,7 +638,6 @@ GeomAbs_SurfaceType Adaptor3d_SurfaceOfRevolution::GetType() const
       }
       return bRet;
     }
-    break;
   }
   //  
   default:

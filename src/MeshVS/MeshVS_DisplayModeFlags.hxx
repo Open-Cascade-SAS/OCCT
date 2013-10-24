@@ -21,7 +21,7 @@
 #ifndef MeshVS_DISPLAY_MODE_FLAGS_HXX
 #define MeshVS_DISPLAY_MODE_FLAGS_HXX
 
-Standard_EXPORT typedef Standard_Integer MeshVS_DisplayModeFlags;
+typedef Standard_Integer MeshVS_DisplayModeFlags;
 
 enum
 {

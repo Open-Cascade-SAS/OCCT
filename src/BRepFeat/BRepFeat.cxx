@@ -336,7 +336,6 @@ static Standard_Boolean IsIn (BRepTopAdaptor_FClass2d& FC,
    gp_Pnt2d P = AC.Value(QU.Parameter(i));
    if (FC.Perform(P, Standard_False) == TopAbs_OUT) {
      return Standard_False;
-     break;
    } 
  }
  return Standard_True;
@@ -481,7 +480,6 @@ Standard_Boolean BRepFeat::IsInside(const TopoDS_Face& F1,
     Geom2dAdaptor_Curve  AC(C,f1,l1);
     if (!IsIn(FC,AC)) {
       return Standard_False;
-      break;
     }
   }
   return Standard_True;

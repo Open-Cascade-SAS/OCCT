@@ -1401,7 +1401,6 @@ void  PLib::EvalPolynomial(const Standard_Real    Par,
       }
     }
     break;
-    break;
   }
   case 15 : {
     *tmpRA = *tmpPA; tmpRA++; tmpPA++;

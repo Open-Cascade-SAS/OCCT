@@ -20,8 +20,6 @@
 #include <OSD.hxx>
 
 const Standard_CString MAGICNUMBER = "BINFILE";
-const Standard_CString ENDOFNORMALEXTENDEDSECTION = "BEGIN_REF_SECTION";
-const Standard_Integer SIZEOFNORMALEXTENDEDSECTION = 16;
 
 //=======================================================================
 //function : FSD_BinaryFile

@@ -3934,7 +3934,6 @@ static Standard_Boolean IsInOut (BRepTopAdaptor_FClass2d& FC,
    gp_Pnt2d P = AC.Value(QU.Parameter(i));
    if (FC.Perform(P) != S) {
      return Standard_False;
-     break;
    } 
  }
  return Standard_True;

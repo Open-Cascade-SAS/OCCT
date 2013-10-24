@@ -29,7 +29,7 @@
 #include <gp_Trsf.hxx>
 #include <TopLoc_TrsfPtr.hxx>
 
-const static gp_Trsf TheIdentity;
+static const gp_Trsf TheIdentity;
 
 
 static Standard_Boolean IsInternalIdentity(const TopLoc_Location& loc)

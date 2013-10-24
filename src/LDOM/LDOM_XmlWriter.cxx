@@ -101,8 +101,8 @@
 
 static const LXMLCh  gEndElement[] = { chOpenAngle, chForwardSlash, chNull };
 static const LXMLCh  gEndElement1[]= { chForwardSlash, chNull };
-static const LXMLCh  gEndPI[] = { chQuestion, chCloseAngle, chNull };
-static const LXMLCh  gStartPI[] = { chOpenAngle, chQuestion, chNull };
+//static const LXMLCh  gEndPI[] = { chQuestion, chCloseAngle, chNull };
+//static const LXMLCh  gStartPI[] = { chOpenAngle, chQuestion, chNull };
 static const LXMLCh  gXMLDecl1[] =
 {       chOpenAngle, chQuestion, chLatin_x, chLatin_m, chLatin_l
     ,   chSpace, chLatin_v, chLatin_e, chLatin_r, chLatin_s, chLatin_i
@@ -113,11 +113,13 @@ static const LXMLCh  gXMLDecl2[] =
     ,   chLatin_o, chLatin_d, chLatin_i, chLatin_n, chLatin_g, chEqual
     ,   chDoubleQuote, chNull
 };
+/*
 static const LXMLCh  gXMLDecl3[] =
 {       chDoubleQuote, chSpace, chLatin_s, chLatin_t, chLatin_a
     ,   chLatin_n, chLatin_d, chLatin_a, chLatin_l, chLatin_o
     ,   chLatin_n, chLatin_e, chEqual, chDoubleQuote, chNull
 };
+*/
 static const LXMLCh  gXMLDecl4[] =
 {       chDoubleQuote, chQuestion, chCloseAngle
     ,   chLF, chNull
@@ -132,6 +134,7 @@ static const LXMLCh  gStartComment[] =
 {    chOpenAngle, chBang, chDash, chDash, chNull };
 static const LXMLCh  gEndComment[] =
 {    chDash, chDash, chCloseAngle, chNull };
+/*
 static const LXMLCh  gStartDoctype[] =
 {   chOpenAngle, chBang, chLatin_D, chLatin_O, chLatin_C, chLatin_T,
     chLatin_Y, chLatin_P, chLatin_E, chSpace, chNull
@@ -152,6 +155,7 @@ static const LXMLCh  gNotation[] =
 {   chLatin_N, chLatin_D, chLatin_A, chLatin_T, chLatin_A,
     chSpace, chDoubleQuote, chNull
 };
+*/
 
 static LXMLCh * getEncodingName (const LXMLCh * theEncodingName)
 {

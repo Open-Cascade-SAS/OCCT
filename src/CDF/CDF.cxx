@@ -23,7 +23,7 @@
 #include <CDF.ixx>
 #include <Standard_Failure.hxx>
 
-void static CDF_InitApplication () {
+static void CDF_InitApplication () {
 
   static Standard_Boolean FirstApplication = Standard_True;
 

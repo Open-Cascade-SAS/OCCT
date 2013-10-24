@@ -144,7 +144,7 @@ static void MapShapes(const TDF_Label& LCible, const TDF_Label& LSource, TopTool
 //purpose  : TNaming
 //=======================================================================
 
-void static SubstituteShape(const TopoDS_Shape& oldShape,
+static void SubstituteShape(const TopoDS_Shape& oldShape,
 			    const TopoDS_Shape& newShape,
 			    TNaming_DataMapOfShapePtrRefShape& amap) 
 {

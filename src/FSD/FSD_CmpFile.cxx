@@ -38,8 +38,6 @@
 //#endif
 
 const Standard_CString MAGICNUMBER = "CMPFILE";
-const Standard_CString ENDOFNORMALEXTENDEDSECTION = "BEGIN_REF_SECTION";
-const Standard_Integer SIZEOFNORMALEXTENDEDSECTION = 16;
 
 //=======================================================================
 //function : FSD_CmpFile
@@ -281,49 +279,6 @@ void FSD_CmpFile::ReadExtendedLine(TCollection_ExtendedString& buffer)
   }
 
   FlushEndOfLine();
-#if 0
-  char c = '\0';
-  Standard_ExtCharacter i = 0,j,count = 0;
-  Standard_Boolean fin = Standard_False;
-  Standard_CString tg = ENDOFNORMALEXTENDEDSECTION;
- 
-  buffer.Clear();
-
-  while (!fin && !IsEnd()) {
-    myStream.get(c);
-
-    if (c == tg[count]) count++;
-    else count = 0;
-    if (count < SIZEOFNORMALEXTENDEDSECTION) {
-      i = 0; j = 0;
-      i += (Standard_ExtCharacter)c;
-      if (c == '\0') fin = Standard_True;
-      i = (i << 8);
-      
-      myStream.get(c);
-      if (c == tg[count]) count++;
-      else count = 0;
-      if (count < SIZEOFNORMALEXTENDEDSECTION) {
-	if ( c != '\r') {
-	  j += (Standard_ExtCharacter)c;
-	  if (c != '\n' && c != '\r') {
-	    fin = Standard_False;
-	    i |= (0x00FF & j);
-	    buffer += (Standard_ExtCharacter)i;
-	  }
-
-	}
-      }
-      else {
-	Storage_StreamExtCharParityError::Raise();	
-      }
-    }
-    else {
-      Storage_StreamExtCharParityError::Raise();
-    }
-  }
-#endif
-
 }
 
 //=======================================================================

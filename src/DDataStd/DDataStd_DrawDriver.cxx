@@ -160,7 +160,6 @@ Handle(Draw_Drawable3D) DDataStd_DrawDriver::Drawable (const TDF_Label& L) const
     case TDataXtd_POINT :
       {  
 	return DrawableShape(L,Draw_jaune,Standard_False);
-	break;
       }
     case TDataXtd_LINE :
     case TDataXtd_CIRCLE :
@@ -168,7 +167,6 @@ Handle(Draw_Drawable3D) DDataStd_DrawDriver::Drawable (const TDF_Label& L) const
     case TDataXtd_SPLINE :
       {  
 	return DrawableShape(L,Draw_cyan,Standard_False);
-	break;
       }  
     case TDataXtd_ANY_GEOM :
       { 

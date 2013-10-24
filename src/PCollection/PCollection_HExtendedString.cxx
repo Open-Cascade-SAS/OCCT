@@ -357,10 +357,10 @@ Standard_Integer PCollection_HExtendedString::Location
 {
    if (ToIndex > Length() || FromIndex <= 0 || FromIndex > ToIndex ) 
                       Standard_OutOfRange::Raise();
-   for(Standard_Integer i = FromIndex-1, count = 0; i <= ToIndex-1; i++) 
+   for(Standard_Integer i = FromIndex-1, icount = 0; i <= ToIndex-1; i++) 
               if(Data(i) == C) {
-	        count++;
-	        if ( count == N ) return (i+1);
+	        icount++;
+	        if ( icount == N ) return (i+1);
 	      }
    return 0 ;
 }

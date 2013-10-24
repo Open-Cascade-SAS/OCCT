@@ -70,7 +70,7 @@ namespace
   }
 
   static const Standard_Size NEIGHBOR_PIXELS_NB = 8;
-  struct
+  static struct
   {
     Standard_Integer row_inc;
     Standard_Integer col_inc;
@@ -100,7 +100,7 @@ namespace
           && aCol < theData.SizeY();
     }
   }
-  static const NEIGHBOR_PIXELS[NEIGHBOR_PIXELS_NB] =
+  const NEIGHBOR_PIXELS[NEIGHBOR_PIXELS_NB] =
   {
     {-1, -1}, {-1,  0}, {-1,  1},
     { 0, -1},           { 0,  1},
