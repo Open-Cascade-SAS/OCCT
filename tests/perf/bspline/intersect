@@ -204,7 +204,4 @@ foreach s1 $surfaces {
     }
 }
 
-# call vinit just to prepare for snapshot
-#eval vdisplay $shapes
-vinit
-fit
+#eval vdisplay $shapes; vfit
