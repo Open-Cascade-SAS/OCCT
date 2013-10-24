@@ -40,14 +40,14 @@ OpenGl_AspectLine::OpenGl_AspectLine (const OpenGl_AspectLine &AnOther)
 
 /*----------------------------------------------------------------------*/
 
-void OpenGl_AspectLine::SetContext (const CALL_DEF_CONTEXTLINE &AContext)
+void OpenGl_AspectLine::SetAspect (const CALL_DEF_CONTEXTLINE &theAspect)
 {
-  myColor.rgb[0] = (float) AContext.Color.r;
-  myColor.rgb[1] = (float) AContext.Color.g;
-  myColor.rgb[2] = (float) AContext.Color.b;
+  myColor.rgb[0] = (float) theAspect.Color.r;
+  myColor.rgb[1] = (float) theAspect.Color.g;
+  myColor.rgb[2] = (float) theAspect.Color.b;
   myColor.rgb[3] = 1.0f;
-  myType = (Aspect_TypeOfLine) AContext.LineType;
-  myWidth = (float) AContext.Width;
+  myType = (Aspect_TypeOfLine) theAspect.LineType;
+  myWidth = (float) theAspect.Width;
 }
 
 /*----------------------------------------------------------------------*/

@@ -66,7 +66,10 @@ void OpenGl_TextureBufferArb::Release (const OpenGl_Context* theGlCtx)
     Standard_ASSERT_RETURN (theGlCtx != NULL,
       "OpenGl_TextureBufferExt destroyed without GL context! Possible GPU memory leakage...",);
 
-    glDeleteTextures (1, &myTextureId);
+    if (theGlCtx->IsValid())
+    {
+      glDeleteTextures (1, &myTextureId);
+    }
     myTextureId = NO_TEXTURE;
   }
   OpenGl_VertexBuffer::Release (theGlCtx);

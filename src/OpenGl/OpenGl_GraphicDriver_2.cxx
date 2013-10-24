@@ -27,7 +27,7 @@
 
 Standard_Integer OpenGl_GraphicDriver::InquireLightLimit ()
 {
-  return (openglDisplay.IsNull()? 0 : openglDisplay->Facilities().MaxLights);
+  return (myGlDisplay.IsNull() ? 0 : myGlDisplay->Facilities().MaxLights);
 }
 
 void OpenGl_GraphicDriver::InquireMat (const Graphic3d_CView& ACView, TColStd_Array2OfReal& AMatO, TColStd_Array2OfReal& AMatM)
@@ -39,7 +39,7 @@ void OpenGl_GraphicDriver::InquireMat (const Graphic3d_CView& ACView, TColStd_Ar
 
 Standard_Integer OpenGl_GraphicDriver::InquireViewLimit ()
 {
-  return (openglDisplay.IsNull()? 0 : openglDisplay->Facilities().MaxViews);
+  return (myGlDisplay.IsNull() ? 0 : myGlDisplay->Facilities().MaxViews);
 }
 
 Standard_Integer OpenGl_GraphicDriver::InquirePlaneLimit ()

@@ -187,50 +187,52 @@ void OpenGl_Structure::SetTransformPersistence(const CALL_DEF_TRANSFORM_PERSISTE
 // function : SetAspectLine
 // purpose  :
 // =======================================================================
-void OpenGl_Structure::SetAspectLine (const CALL_DEF_CONTEXTLINE &AContext)
+void OpenGl_Structure::SetAspectLine (const CALL_DEF_CONTEXTLINE &theAspect)
 {
   if (!myAspectLine)
+  {
     myAspectLine = new OpenGl_AspectLine();
-  myAspectLine->SetContext( AContext );
+  }
+  myAspectLine->SetAspect (theAspect);
 }
 
 // =======================================================================
 // function : SetAspectFace
 // purpose  :
 // =======================================================================
-void OpenGl_Structure::SetAspectFace (const Handle(OpenGl_Context)&   theCtx,
-                                      const CALL_DEF_CONTEXTFILLAREA& theAspect)
+void OpenGl_Structure::SetAspectFace (const CALL_DEF_CONTEXTFILLAREA& theAspect)
 {
   if (!myAspectFace)
   {
     myAspectFace = new OpenGl_AspectFace();
   }
-  myAspectFace->Init (theCtx, theAspect);
+  myAspectFace->SetAspect (theAspect);
 }
 
 // =======================================================================
 // function : SetAspectMarker
 // purpose  :
 // =======================================================================
-void OpenGl_Structure::SetAspectMarker (const Handle(OpenGl_Context)& theCtx,
-                                        const CALL_DEF_CONTEXTMARKER& theAspect)
+void OpenGl_Structure::SetAspectMarker (const CALL_DEF_CONTEXTMARKER& theAspect)
 {
   if (!myAspectMarker)
   {
     myAspectMarker = new OpenGl_AspectMarker();
   }
-  myAspectMarker->Init (theCtx, theAspect);
+  myAspectMarker->SetAspect (theAspect);
 }
 
 // =======================================================================
 // function : SetAspectText
 // purpose  :
 // =======================================================================
-void OpenGl_Structure::SetAspectText (const CALL_DEF_CONTEXTTEXT &AContext)
+void OpenGl_Structure::SetAspectText (const CALL_DEF_CONTEXTTEXT &theAspect)
 {
   if (!myAspectText)
+  {
     myAspectText = new OpenGl_AspectText();
-  myAspectText->SetContext( AContext );
+  }
+  myAspectText->SetAspect (theAspect);
 }
 
 // =======================================================================

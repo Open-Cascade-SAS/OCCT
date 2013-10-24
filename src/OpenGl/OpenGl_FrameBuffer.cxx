@@ -16,12 +16,12 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #include <OpenGl_FrameBuffer.hxx>
 
-#ifdef DEB
-  #include <iostream>
-#endif
+#include <Standard_Assert.hxx>
+
+IMPLEMENT_STANDARD_HANDLE (OpenGl_FrameBuffer, OpenGl_Resource)
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_FrameBuffer, OpenGl_Resource)
 
 static inline bool isOddNumber (const GLsizei theNumber)
 {
@@ -39,6 +39,10 @@ static inline bool isPowerOfTwo (const GLsizei theNumber)
 	return !(theNumber & (theNumber - 1));
 }
 
+// =======================================================================
+// function : OpenGl_FrameBuffer
+// purpose  :
+// =======================================================================
 OpenGl_FrameBuffer::OpenGl_FrameBuffer (GLint theTextureFormat)
 : mySizeX (0),
   mySizeY (0),
@@ -53,21 +57,31 @@ OpenGl_FrameBuffer::OpenGl_FrameBuffer (GLint theTextureFormat)
   //
 }
 
+// =======================================================================
+// function : ~OpenGl_FrameBuffer
+// purpose  :
+// =======================================================================
+OpenGl_FrameBuffer::~OpenGl_FrameBuffer()
+{
+  Release (NULL);
+}
+
+// =======================================================================
+// function : Init
+// purpose  :
+// =======================================================================
 Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlContext,
-                                           GLsizei theViewportSizeX,
-                                           GLsizei theViewportSizeY,
-                                           GLboolean toForcePowerOfTwo)
+                                           const GLsizei   theViewportSizeX,
+                                           const GLsizei   theViewportSizeY,
+                                           const GLboolean toForcePowerOfTwo)
 {
   if (theGlContext->extFBO == NULL)
   {
-  #ifdef DEB
-    std::cerr << "OpenGl_FrameBuffer, FBO extension not supported!\n";
-  #endif
     return Standard_False;
   }
 
   // clean up previous state
-  Release (theGlContext);
+  Release (theGlContext.operator->());
 
   // upscale width/height if numbers are odd
   if (toForcePowerOfTwo)
@@ -86,13 +100,13 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
   myVPSizeY = theViewportSizeY;
 
   // Create the texture (will be used as color buffer)
-  if (!InitTrashTexture (theGlContext))
+  if (!initTrashTexture (theGlContext))
   {
     if (!isPowerOfTwo (mySizeX) || !isPowerOfTwo (mySizeY))
     {
       return Init (theGlContext, theViewportSizeX, theViewportSizeY, GL_TRUE);
     }
-    Release (theGlContext);
+    Release (theGlContext.operator->());
     return Standard_False;
   }
 
@@ -131,68 +145,72 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
     {
       return Init (theGlContext, theViewportSizeX, theViewportSizeY, GL_TRUE);
     }
-    Release (theGlContext);
+    Release (theGlContext.operator->());
     return Standard_False;
   }
 
-  UnbindBuffer (theGlContext);
-  UnbindTexture();
+  UnbindBuffer  (theGlContext);
+  UnbindTexture (theGlContext);
   theGlContext->extFBO->glBindRenderbufferEXT (GL_RENDERBUFFER_EXT, NO_RENDERBUFFER);
-
-  #ifdef DEB
-    std::cerr << "OpenGl_FrameBuffer, created FBO " << mySizeX << "x" << mySizeY
-              << " for viewport " << theViewportSizeX << "x" << theViewportSizeY << "\n";
-  #endif
   return Standard_True;
 }
 
-void OpenGl_FrameBuffer::Release (const Handle(OpenGl_Context)& theGlContext)
+// =======================================================================
+// function : Release
+// purpose  :
+// =======================================================================
+void OpenGl_FrameBuffer::Release (const OpenGl_Context* theGlCtx)
 {
-  if (IsValidDepthBuffer())
+  if (isValidDepthBuffer()
+   || isValidStencilBuffer()
+   || isValidTexture()
+   || isValidFrameBuffer())
   {
-    if (!theGlContext.IsNull() && theGlContext->extFBO != NULL)
-    {
-      theGlContext->extFBO->glDeleteRenderbuffersEXT (1, &myGlDepthRBId);
-      myGlDepthRBId = NO_RENDERBUFFER;
-    }
-    else
-    {
-      std::cerr << "OpenGl_FrameBuffer::Release() called with invalid OpenGl_Context!\n";
-    }
+    // application can not handle this case by exception - this is bug in code
+    Standard_ASSERT_RETURN (theGlCtx != NULL,
+      "OpenGl_FrameBuffer destroyed without GL context! Possible GPU memory leakage...",);
   }
-  if (IsValidStencilBuffer())
+  if (isValidStencilBuffer())
   {
-    if (!theGlContext.IsNull() && theGlContext->extFBO != NULL)
+    if (theGlCtx->IsValid()
+     && myGlStencilRBId != myGlDepthRBId)
     {
-      theGlContext->extFBO->glDeleteRenderbuffersEXT (1, &myGlStencilRBId);
-      myGlStencilRBId = NO_RENDERBUFFER;
+      theGlCtx->extFBO->glDeleteRenderbuffersEXT (1, &myGlStencilRBId);
     }
-    else
-    {
-      std::cerr << "OpenGl_FrameBuffer::Release() called with invalid OpenGl_Context!\n";
-    }
+    myGlStencilRBId = NO_RENDERBUFFER;
   }
-  if (IsValidTexture())
+  if (isValidDepthBuffer())
   {
-    glDeleteTextures (1, &myGlTextureId);
+    if (theGlCtx->IsValid())
+    {
+      theGlCtx->extFBO->glDeleteRenderbuffersEXT (1, &myGlDepthRBId);
+    }
+    myGlDepthRBId = NO_RENDERBUFFER;
+  }
+  if (isValidTexture())
+  {
+    if (theGlCtx->IsValid())
+    {
+      glDeleteTextures (1, &myGlTextureId);
+    }
     myGlTextureId = NO_TEXTURE;
   }
   mySizeX = mySizeY = myVPSizeX = myVPSizeY = 0;
-  if (IsValidFrameBuffer())
+  if (isValidFrameBuffer())
   {
-    if (!theGlContext.IsNull() && theGlContext->extFBO != NULL)
+    if (theGlCtx->IsValid())
     {
-      theGlContext->extFBO->glDeleteFramebuffersEXT (1, &myGlFBufferId);
-      myGlFBufferId = NO_FRAMEBUFFER;
+      theGlCtx->extFBO->glDeleteFramebuffersEXT (1, &myGlFBufferId);
     }
-    else
-    {
-      std::cerr << "OpenGl_FrameBuffer::Release() called with invalid OpenGl_Context!\n";
-    }
+    myGlFBufferId = NO_FRAMEBUFFER;
   }
 }
 
-Standard_Boolean OpenGl_FrameBuffer::IsProxySuccess() const
+// =======================================================================
+// function : isProxySuccess
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_FrameBuffer::isProxySuccess() const
 {
   // use proxy to check texture could be created or not
   glTexImage2D (GL_PROXY_TEXTURE_2D,
@@ -206,7 +224,11 @@ Standard_Boolean OpenGl_FrameBuffer::IsProxySuccess() const
   return aTestParamX != 0 && aTestParamY != 0;
 }
 
-Standard_Boolean OpenGl_FrameBuffer::InitTrashTexture (const Handle(OpenGl_Context)& theGlContext)
+// =======================================================================
+// function : initTrashTexture
+// purpose  :
+// =======================================================================
+Standard_Boolean OpenGl_FrameBuffer::initTrashTexture (const Handle(OpenGl_Context)& theGlContext)
 {
   // Check texture size is fit dimension maximum
   GLint aMaxTexDim = 2048;
@@ -218,7 +240,7 @@ Standard_Boolean OpenGl_FrameBuffer::InitTrashTexture (const Handle(OpenGl_Conte
 
   // generate new id
   glEnable (GL_TEXTURE_2D);
-  if (!IsValidTexture())
+  if (!isValidTexture())
   {
     glGenTextures (1, &myGlTextureId); // Create The Texture
   }
@@ -228,9 +250,9 @@ Standard_Boolean OpenGl_FrameBuffer::InitTrashTexture (const Handle(OpenGl_Conte
   glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-  if (!IsProxySuccess())
+  if (!isProxySuccess())
   {
-    Release (theGlContext);
+    Release (theGlContext.operator->());
     return Standard_False;
   }
 
@@ -240,4 +262,62 @@ Standard_Boolean OpenGl_FrameBuffer::InitTrashTexture (const Handle(OpenGl_Conte
                 mySizeX, mySizeY, 0,
                 GL_RGBA, GL_UNSIGNED_BYTE, NULL); // NULL pointer supported from OpenGL 1.1
   return Standard_True;
+}
+
+// =======================================================================
+// function : SetupViewport
+// purpose  :
+// =======================================================================
+void OpenGl_FrameBuffer::SetupViewport (const Handle(OpenGl_Context)& /*theGlCtx*/)
+{
+  glViewport (0, 0, myVPSizeX, myVPSizeY);
+}
+
+// =======================================================================
+// function : ChangeViewport
+// purpose  :
+// =======================================================================
+void OpenGl_FrameBuffer::ChangeViewport (const GLsizei theVPSizeX,
+                                         const GLsizei theVPSizeY)
+{
+  myVPSizeX = theVPSizeX;
+  myVPSizeY = theVPSizeY;
+}
+
+// =======================================================================
+// function : BindBuffer
+// purpose  :
+// =======================================================================
+void OpenGl_FrameBuffer::BindBuffer (const Handle(OpenGl_Context)& theGlCtx)
+{
+  theGlCtx->extFBO->glBindFramebufferEXT (GL_FRAMEBUFFER_EXT, myGlFBufferId);
+}
+
+// =======================================================================
+// function : UnbindBuffer
+// purpose  :
+// =======================================================================
+void OpenGl_FrameBuffer::UnbindBuffer (const Handle(OpenGl_Context)& theGlCtx)
+{
+  theGlCtx->extFBO->glBindFramebufferEXT (GL_FRAMEBUFFER_EXT, NO_FRAMEBUFFER);
+}
+
+// =======================================================================
+// function : BindTexture
+// purpose  :
+// =======================================================================
+void OpenGl_FrameBuffer::BindTexture (const Handle(OpenGl_Context)& /*theGlCtx*/)
+{
+  glEnable (GL_TEXTURE_2D); // needed only for fixed pipeline rendering
+  glBindTexture (GL_TEXTURE_2D, myGlTextureId);
+}
+
+// =======================================================================
+// function : UnbindTexture
+// purpose  :
+// =======================================================================
+void OpenGl_FrameBuffer::UnbindTexture (const Handle(OpenGl_Context)& /*theGlCtx*/)
+{
+  glBindTexture (GL_TEXTURE_2D, NO_TEXTURE);
+  glDisable (GL_TEXTURE_2D); // needed only for fixed pipeline rendering
 }

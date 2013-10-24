@@ -108,7 +108,7 @@ void Graphic3d_TextureRoot::Destroy() const
 // function : GetId
 // purpose  :
 // =======================================================================
-TCollection_AsciiString Graphic3d_TextureRoot::GetId() const
+const TCollection_AsciiString& Graphic3d_TextureRoot::GetId() const
 {
   return myTexId;
 }

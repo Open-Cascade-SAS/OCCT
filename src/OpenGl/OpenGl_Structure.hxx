@@ -48,12 +48,10 @@ public:
 
   void SetTransformPersistence (const CALL_DEF_TRANSFORM_PERSISTENCE &ATransPers);
 
-  void SetAspectLine (const CALL_DEF_CONTEXTLINE &AContext);
-  void SetAspectFace (const Handle(OpenGl_Context)&   theCtx,
-                      const CALL_DEF_CONTEXTFILLAREA& theAspect);
-  void SetAspectMarker (const Handle(OpenGl_Context)& theCtx,
-                        const CALL_DEF_CONTEXTMARKER& theAspect);
-  void SetAspectText (const CALL_DEF_CONTEXTTEXT &AContext);
+  void SetAspectLine   (const CALL_DEF_CONTEXTLINE &theAspect);
+  void SetAspectFace   (const CALL_DEF_CONTEXTFILLAREA& theAspect);
+  void SetAspectMarker (const CALL_DEF_CONTEXTMARKER& theAspect);
+  void SetAspectText   (const CALL_DEF_CONTEXTTEXT &theAspect);
 
   void SetHighlightBox (const Handle(OpenGl_Context)& theGlCtx,
                         const CALL_DEF_BOUNDBOX&      theBoundBox);

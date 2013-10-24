@@ -120,6 +120,12 @@ public:
   //! GL context should be active!
   Standard_EXPORT Standard_Boolean Init();
 
+  //! @return true if this context is valid (has been initialized)
+  inline Standard_Boolean IsValid() const
+  {
+    return myIsInitialized;
+  }
+
 #if defined(_WIN32)
   Standard_EXPORT Standard_Boolean Init (const Aspect_Handle           theWindow,
                                          const Aspect_Handle           theWindowDC,

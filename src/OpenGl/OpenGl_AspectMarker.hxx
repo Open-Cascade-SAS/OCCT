@@ -36,29 +36,87 @@ public:
 
   OpenGl_AspectMarker();
 
-  void Init (const Handle(OpenGl_Context)& theContext,
-             const CALL_DEF_CONTEXTMARKER& theAspect);
+  //! Copy parameters
+  void SetAspect (const CALL_DEF_CONTEXTMARKER& theAspect);
 
-  const TEL_COLOUR&   Color()      const { return myColor; }
-  Aspect_TypeOfMarker Type()       const { return myType;  }
-  Standard_ShortReal  Scale()      const { return myScale; }
-  Standard_ShortReal  MarkerSize() const { return myMarkerSize; }
-  const Handle(OpenGl_PointSprite)& Sprite()          const { return mySprite;  }
-  const Handle(OpenGl_PointSprite)& SpriteHighlight() const { return mySpriteA; }
+  //! @return marker color
+  const TEL_COLOUR& Color() const
+  {
+    return myColor;
+  }
+
+  //! @return maker type
+  Aspect_TypeOfMarker Type() const
+  {
+    return myType;
+  }
+
+  //! @return marker scale
+  Standard_ShortReal Scale() const
+  {
+    return myScale;
+  }
+
+  //! @return marker size
+  Standard_ShortReal MarkerSize() const
+  {
+    return myMarkerSize;
+  }
+
+  //! Init and return OpenGl point sprite resource.
+  //! @return point sprite texture.
+  const Handle(OpenGl_PointSprite)& Sprite (const Handle(OpenGl_Workspace)& theWorkspace) const
+  {
+    if (!myIsSpriteInit)
+    {
+      buildSprites (theWorkspace);
+      myIsSpriteInit = Standard_True;
+    }
+
+    return mySprite;
+  }
+
+  //! Init and return OpenGl highlight point sprite resource.
+  //! @return point sprite texture for highlight.
+  const Handle(OpenGl_PointSprite)& SpriteHighlight (const Handle(OpenGl_Workspace)& theWorkspace) const
+  {
+    if (!myIsSpriteInit)
+    {
+      buildSprites (theWorkspace);
+      myIsSpriteInit = Standard_True;
+    }
+
+    return mySpriteA;
+  }
 
   virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
   virtual void Release (const Handle(OpenGl_Context)&   theContext);
 
 protected:
 
-  TEL_COLOUR                 myColor;
-  Aspect_TypeOfMarker        myType;
-  Standard_ShortReal         myScale;
-  Standard_ShortReal         myMarkerSize;
-  TCollection_AsciiString    mySpriteKey;    //!< shared resource ID
-  TCollection_AsciiString    mySpriteAKey;   //!< shared resource ID
-  Handle(OpenGl_PointSprite) mySprite;       //!< normal sprite
-  Handle(OpenGl_PointSprite) mySpriteA;      //!< extra alphs-only sprite for RGB sprites
+  void buildSprites (const Handle(OpenGl_Workspace)& theWorkspace) const;
+  void resourceKeys (const Handle(Graphic3d_MarkerImage)& theMarkerImage,
+                     const Aspect_TypeOfMarker theType,
+                     const Standard_ShortReal theScale,
+                     const TEL_COLOUR& theColor,
+                     TCollection_AsciiString& theKey,
+                     TCollection_AsciiString& theKeyA) const;
+
+protected: //! @name ordinary aspect properties
+
+  TEL_COLOUR                    myColor;
+  Aspect_TypeOfMarker           myType;
+  Standard_ShortReal            myScale;
+  Handle(Graphic3d_MarkerImage) myMarkerImage;
+
+protected: //! @name OpenGl resources
+
+  mutable Standard_ShortReal         myMarkerSize;
+  mutable TCollection_AsciiString    mySpriteKey;
+  mutable TCollection_AsciiString    mySpriteAKey;
+  mutable Standard_Boolean           myIsSpriteInit;
+  mutable Handle(OpenGl_PointSprite) mySprite;       //!< normal sprite
+  mutable Handle(OpenGl_PointSprite) mySpriteA;      //!< extra alpha-only sprite for RGB sprites
 
 public:
 

@@ -539,7 +539,7 @@ void OpenGl_PrimitiveArray::DrawMarkers (const Handle(OpenGl_Workspace)& theWork
 {
   const OpenGl_AspectMarker* anAspectMarker     = theWorkspace->AspectMarker (Standard_True);
   const Handle(OpenGl_Context)&     aCtx        = theWorkspace->GetGlContext();
-  const Handle(OpenGl_PointSprite)& aSpriteNorm = anAspectMarker->Sprite();
+  const Handle(OpenGl_PointSprite)& aSpriteNorm = anAspectMarker->Sprite(theWorkspace);
   const Standard_Boolean            isHilight   = (theWorkspace->NamedStatus & OPENGL_NS_HIGHLIGHT);
   if (aCtx->IsGlGreaterEqual (2, 0)
    && !aSpriteNorm.IsNull() && !aSpriteNorm->IsDisplayList())
@@ -550,8 +550,8 @@ void OpenGl_PrimitiveArray::DrawMarkers (const Handle(OpenGl_Workspace)& theWork
     Handle(OpenGl_Texture) aTextureBack;
     if (anAspectMarker->Type() != Aspect_TOM_POINT)
     {
-      const Handle(OpenGl_PointSprite)& aSprite = (isHilight && anAspectMarker->SpriteHighlight()->IsValid())
-                                                ? anAspectMarker->SpriteHighlight()
+      const Handle(OpenGl_PointSprite)& aSprite = (isHilight && anAspectMarker->SpriteHighlight(theWorkspace)->IsValid())
+                                                ? anAspectMarker->SpriteHighlight(theWorkspace)
                                                 : aSpriteNorm;
       aTextureBack = theWorkspace->EnableTexture (aSprite);
 
@@ -704,7 +704,7 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
   if (!myIsVboInit
    && !aCtx->caps->vboDisable
    && aCtx->core15 != NULL
-   && (myDrawMode != GL_POINTS || anAspectMarker->Sprite().IsNull() || !anAspectMarker->Sprite()->IsDisplayList()))
+   && (myDrawMode != GL_POINTS || anAspectMarker->Sprite(theWorkspace).IsNull() || !anAspectMarker->Sprite(theWorkspace)->IsDisplayList()))
   {
     if (!BuildVBO (theWorkspace))
     {
@@ -730,8 +730,8 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
       break;
   }
 
-  Tint aFrontLightingModel = anAspectFace->IntFront.color_mask;
-  const TEL_COLOUR* anInteriorColor = &anAspectFace->IntFront.matcol;
+  Tint aFrontLightingModel = anAspectFace->IntFront().color_mask;
+  const TEL_COLOUR* anInteriorColor = &anAspectFace->IntFront().matcol;
   const TEL_COLOUR* anEdgeColor = &anAspectFace->AspectEdge()->Color();
   const TEL_COLOUR* aLineColor = (myPArray->type == TelPointsArrayType) ? &anAspectMarker->Color() : &anAspectLine->Color();
 
@@ -743,11 +743,11 @@ void OpenGl_PrimitiveArray::Render (const Handle(OpenGl_Workspace)& theWorkspace
   }
 
   DrawArray (aFrontLightingModel,
-             anAspectFace->InteriorStyle,
-             anAspectFace->Edge,
+             anAspectFace->InteriorStyle(),
+             anAspectFace->Edge(),
              anInteriorColor,
              aLineColor,
              anEdgeColor,
-             &anAspectFace->IntFront,
+             &anAspectFace->IntFront(),
              theWorkspace);
 }

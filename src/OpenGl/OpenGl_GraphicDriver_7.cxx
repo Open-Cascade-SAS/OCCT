@@ -223,16 +223,19 @@ Graphic3d_PtrFrameBuffer OpenGl_GraphicDriver::FBOCreate (const Graphic3d_CView&
   return (Graphic3d_PtrFrameBuffer)NULL;
 }
 
-Graphic3d_PtrFrameBuffer OpenGl_Workspace::FBOCreate (const Standard_Integer theWidth, const Standard_Integer theHeight)
+Graphic3d_PtrFrameBuffer OpenGl_Workspace::FBOCreate (const Standard_Integer theWidth,
+                                                      const Standard_Integer theHeight)
 {
   // activate OpenGL context
   if (!Activate())
     return NULL;
 
   // create the FBO
+  const Handle(OpenGl_Context)& aCtx = GetGlContext();
   OpenGl_FrameBuffer* aFrameBuffer = new OpenGl_FrameBuffer();
-  if (!aFrameBuffer->Init (GetGlContext(), theWidth, theHeight))
+  if (!aFrameBuffer->Init (aCtx, theWidth, theHeight))
   {
+    aFrameBuffer->Release (aCtx.operator->());
     delete aFrameBuffer;
     return NULL;
   }
@@ -254,12 +257,18 @@ void OpenGl_GraphicDriver::FBORelease (const Graphic3d_CView& ACView, Graphic3d_
 void OpenGl_Workspace::FBORelease (Graphic3d_PtrFrameBuffer theFBOPtr)
 {
   // activate OpenGL context
-  if (!Activate())
+  if (!Activate()
+   || theFBOPtr == NULL)
+  {
     return;
+  }
 
   // release the object
   OpenGl_FrameBuffer* aFrameBuffer = (OpenGl_FrameBuffer*)theFBOPtr;
-  aFrameBuffer->Release (GetGlContext());
+  if (aFrameBuffer != NULL)
+  {
+    aFrameBuffer->Release (GetGlContext().operator->());
+  }
   delete aFrameBuffer;
 }
 
@@ -417,14 +426,38 @@ Standard_Boolean OpenGl_Workspace::BufferDump (OpenGl_FrameBuffer*         theFB
 
 void OpenGl_GraphicDriver::RemoveView (const Graphic3d_CView& theCView)
 {
-  Handle(OpenGl_Context) aShareCtx = GetSharedContext();
-  if (myMapOfView.IsBound (theCView.ViewId))
-    myMapOfView.UnBind (theCView.ViewId);
-
-  if (myMapOfWS.IsBound (theCView.WsId))
+  Handle(OpenGl_Context)   aCtx = GetSharedContext();
+  Handle(OpenGl_View)      aView;
+  Handle(OpenGl_Workspace) aWindow;
+  if (myMapOfWS.Find (theCView.WsId, aWindow))
+  {
     myMapOfWS.UnBind (theCView.WsId);
+  }
+  if (!aWindow.IsNull())
+  {
+    if (aWindow->GetGlContext()->MakeCurrent())
+    {
+      aCtx = aWindow->GetGlContext();
+    }
+    else
+    {
+      // try to hijack another context if any
+      const Handle(OpenGl_Context)& anOtherCtx = GetSharedContext();
+      if (!anOtherCtx.IsNull()
+       && anOtherCtx != aWindow->GetGlContext())
+      {
+        aCtx = anOtherCtx;
+        aCtx->MakeCurrent();
+      }
+    }
+  }
+  if (myMapOfView.Find (theCView.ViewId, aView))
+  {
+    aView->ReleaseGlResources (aCtx);
+    myMapOfView.UnBind (theCView.ViewId);
+  }
 
-  if (myMapOfWS.IsEmpty() && !myMapOfStructure.IsEmpty())
+  if (myMapOfWS.IsEmpty())
   {
     // The last view removed but some objects still present.
     // Release GL resources now without object destruction.
@@ -432,16 +465,20 @@ void OpenGl_GraphicDriver::RemoveView (const Graphic3d_CView& theCView)
          aStructIt.More (); aStructIt.Next())
     {
       OpenGl_Structure* aStruct = aStructIt.ChangeValue();
-      aStruct->ReleaseGlResources (aShareCtx);
+      aStruct->ReleaseGlResources (aCtx);
     }
-    myTempText->Release (aShareCtx);
-    myDeviceLostFlag = Standard_True;
+    myTempText->Release (aCtx);
+    myGlDisplay->ReleaseAttributes (aCtx.operator->());
+    myDeviceLostFlag = !myMapOfStructure.IsEmpty();
   }
 
   OpenGl_CView* aCView = (OpenGl_CView* )theCView.ptrView;
-  aCView->View->ReleaseGlResources (aShareCtx);
   delete aCView;
   ((Graphic3d_CView *)&theCView)->ptrView = NULL;
+
+  aCtx.Nullify();
+  aView.Nullify();
+  aWindow.Nullify();
 }
 
 void OpenGl_GraphicDriver::SetLight (const Graphic3d_CView& ACView)
@@ -502,31 +539,22 @@ void OpenGl_GraphicDriver::Update (const Graphic3d_CView& ACView, const Aspect_C
 
 Standard_Boolean OpenGl_GraphicDriver::View (Graphic3d_CView& theCView)
 {
-  if (openglDisplay.IsNull())
-    return Standard_False;
-
-  if (myMapOfView.IsBound (theCView.ViewId))
-    myMapOfView.UnBind (theCView.ViewId);
-
-  if (myMapOfWS.IsBound (theCView.WsId))
-    myMapOfWS.UnBind (theCView.WsId);
-
-  Handle(OpenGl_Workspace) aWS = Handle(OpenGl_Workspace)::DownCast(openglDisplay->GetWindow (theCView.DefWindow.XWindow));
-  if (aWS.IsNull())
+  if (myGlDisplay.IsNull()
+   || myMapOfView.IsBound (theCView.ViewId)
+   || myMapOfWS  .IsBound (theCView.WsId))
   {
-    Handle(OpenGl_Context) aShareCtx = GetSharedContext();
-    aWS = new OpenGl_Workspace (openglDisplay, theCView.DefWindow, theCView.GContext, myCaps, aShareCtx);
-    openglDisplay->SetWindow (theCView.DefWindow.XWindow, aWS);
+    return Standard_False;
   }
 
-  myMapOfWS.Bind (theCView.WsId, aWS);
-
-  Handle(OpenGl_View) aView = new OpenGl_View (theCView.Context);
+  Handle(OpenGl_Context)   aShareCtx = GetSharedContext();
+  Handle(OpenGl_Workspace) aWS       = new OpenGl_Workspace (myGlDisplay, theCView.DefWindow, theCView.GContext, myCaps, aShareCtx);
+  Handle(OpenGl_View)      aView     = new OpenGl_View (theCView.Context);
+  myMapOfWS  .Bind (theCView.WsId,   aWS);
   myMapOfView.Bind (theCView.ViewId, aView);
 
   OpenGl_CView* aCView = new OpenGl_CView();
   aCView->View = aView;
-  aCView->WS = aWS;
+  aCView->WS   = aWS;
   theCView.ptrView = aCView;
 
   return Standard_True;
@@ -537,7 +565,7 @@ void OpenGl_GraphicDriver::ViewMapping (const Graphic3d_CView& ACView, const Sta
   const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
   if (aCView)
   {
-    aCView->View->SetMapping(ACView);
+    aCView->View->SetMapping (myGlDisplay, ACView);
     if (!AWait)
     {
       aCView->WS->Resize(ACView.DefWindow);

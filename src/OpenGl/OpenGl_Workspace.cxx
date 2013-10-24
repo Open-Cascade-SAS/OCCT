@@ -478,8 +478,8 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
   if (aFrameBuffer != NULL)
   {
     glGetIntegerv (GL_VIEWPORT, aViewPortBack);
-    aFrameBuffer->SetupViewport();
-    aFrameBuffer->BindBuffer (aGlCtx);
+    aFrameBuffer->SetupViewport (aGlCtx);
+    aFrameBuffer->BindBuffer    (aGlCtx);
     toSwap = 0; // no need to swap buffers
   }
 

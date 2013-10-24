@@ -36,7 +36,7 @@ Standard_Boolean OpenGl_GraphicDriver::Begin (const Handle(Aspect_DisplayConnect
   myDisplayConnection = theDisplayConnection;
   try
   {
-    openglDisplay = new OpenGl_Display (myDisplayConnection);
+    myGlDisplay = new OpenGl_Display (myDisplayConnection);
     return Standard_True;
   }
   catch (Standard_Failure)

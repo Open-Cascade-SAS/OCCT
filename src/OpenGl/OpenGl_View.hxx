@@ -45,6 +45,7 @@
 #include <OpenGl_Light.hxx>
 
 #include <Handle_OpenGl_Context.hxx>
+#include <Handle_OpenGl_Display.hxx>
 #include <Handle_OpenGl_Workspace.hxx>
 #include <Handle_OpenGl_View.hxx>
 #include <Handle_OpenGl_Texture.hxx>
@@ -116,7 +117,7 @@ class OpenGl_View : public MMgt_TShared
   void SetVisualisation (const CALL_DEF_VIEWCONTEXT &AContext);
 
   void SetClipLimit (const Graphic3d_CView& theCView);
-  void SetMapping (const Graphic3d_CView& theCView);
+  void SetMapping (const Handle(OpenGl_Display)& theGlDisplay, const Graphic3d_CView& theCView);
   void SetOrientation (const Graphic3d_CView& theCView);
 
   void SetFog (const Graphic3d_CView& theCView, const Standard_Boolean theFlag);

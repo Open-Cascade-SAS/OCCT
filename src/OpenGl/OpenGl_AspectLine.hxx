@@ -32,7 +32,7 @@ class OpenGl_AspectLine : public OpenGl_Element
   OpenGl_AspectLine ();
   OpenGl_AspectLine (const OpenGl_AspectLine &AnOther);
 
-  void SetContext (const CALL_DEF_CONTEXTLINE &AContext);
+  void SetAspect (const CALL_DEF_CONTEXTLINE &theAspect);
 
   const TEL_COLOUR & Color() const { return myColor; }
   Aspect_TypeOfLine  Type() const { return myType; }

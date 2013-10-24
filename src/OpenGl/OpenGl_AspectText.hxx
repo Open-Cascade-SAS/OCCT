@@ -39,7 +39,7 @@ public:
   virtual ~OpenGl_AspectText();
 
   //! Copy parameters
-  void SetContext (const CALL_DEF_CONTEXTTEXT& theContext);
+  void SetAspect (const CALL_DEF_CONTEXTTEXT& theAspect);
 
   //! @return font family name
   const TCollection_AsciiString& FontName() const

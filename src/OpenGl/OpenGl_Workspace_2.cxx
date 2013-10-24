@@ -489,7 +489,7 @@ Standard_Boolean OpenGl_Workspace::Print
 
         if (!aViewBuffer)
         {
-          aFrameBuffer->Release (GetGlContext());
+          aFrameBuffer->Release (GetGlContext().operator->());
           aViewBuffer = NULL;
           aViewImage  = NULL;
         }
@@ -503,7 +503,7 @@ Standard_Boolean OpenGl_Workspace::Print
         {
           if (hViewBitmap)
             DeleteObject (hViewBitmap);
-          aFrameBuffer->Release (GetGlContext());
+          aFrameBuffer->Release (GetGlContext().operator->());
           hViewBitmap = NULL;
         }
         else
@@ -593,7 +593,7 @@ Standard_Boolean OpenGl_Workspace::Print
   {
     myPrintContext->SetScale ((GLfloat )aFrameWidth /viewWidth,
                               (GLfloat )aFrameHeight/viewHeight);
-    aFrameBuffer->SetupViewport ();
+    aFrameBuffer->SetupViewport (GetGlContext());
     Redraw1(ACView, ACUnderLayer, ACOverLayer, 0);
     if (!myTransientDrawToFront)
     {
@@ -704,7 +704,7 @@ Standard_Boolean OpenGl_Workspace::Print
                                      aFrameHeight;
 
         // draw to the offscreen buffer and capture the result
-        aFrameBuffer->SetupViewport ();
+        aFrameBuffer->SetupViewport (GetGlContext());
         Redraw1(ACView, ACUnderLayer, ACOverLayer, 0);
         if (!myTransientDrawToFront)
         {
@@ -766,7 +766,7 @@ Standard_Boolean OpenGl_Workspace::Print
   }
   else
   {
-    aFrameBuffer->Release (GetGlContext ());
+    aFrameBuffer->Release (GetGlContext().operator->());
     delete aFrameBuffer;
   }
 

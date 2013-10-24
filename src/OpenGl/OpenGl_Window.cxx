@@ -547,26 +547,39 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
 // =======================================================================
 OpenGl_Window::~OpenGl_Window()
 {
+  if (!myOwnGContext)
+  {
+    myGlContext.Nullify();
+    return;
+  }
+
+  // release "GL" context if it is owned by window
 #if defined(_WIN32)
-  HWND  aWindow   = (HWND  )myGlContext->myWindow;
-  HDC   aWindowDC = (HDC   )myGlContext->myWindowDC;
-  HGLRC aGContext = (HGLRC )myGlContext->myGContext;
+  HWND  aWindow          = (HWND  )myGlContext->myWindow;
+  HDC   aWindowDC        = (HDC   )myGlContext->myWindowDC;
+  HGLRC aWindowGContext  = (HGLRC )myGlContext->myGContext;
+  HGLRC aThreadGlContext = wglGetCurrentContext();
   myGlContext.Nullify();
 
-  if (myOwnGContext)
+  if (aThreadGlContext != NULL)
   {
-    if (wglGetCurrentContext() != NULL)
+    // Mesa implementation can fail to reset this thread's context if wglDeleteContext()
+    // called without this step. This might lead to crash when using newly created
+    // context if wglMakeCurrent() is not forced right after the wglCreateContext().
+    if (aThreadGlContext == aWindowGContext)
     {
-      wglDeleteContext (aGContext);
+      wglMakeCurrent (NULL, NULL);
     }
-    ReleaseDC (aWindow, aWindowDC);
+
+    wglDeleteContext (aWindowGContext);
   }
+  ReleaseDC (aWindow, aWindowDC);
 #else
   Display*    aDisplay  = (Display*    )myGlContext->myDisplay;
   GLXContext  aGContext = (GLXContext  )myGlContext->myGContext;
   myGlContext.Nullify();
 
-  if (aDisplay != NULL && myOwnGContext)
+  if (aDisplay != NULL)
   {
     // FSXXX sync necessary if non-direct rendering
     glXWaitGL();

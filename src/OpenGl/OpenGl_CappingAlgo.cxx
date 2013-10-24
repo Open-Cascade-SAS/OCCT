@@ -246,11 +246,11 @@ void OpenGl_CappingAlgo::Init()
     return;
 
   myRenderFilter = new OpenGl_CappingAlgoFilter();
-  myNoneCulling.CullingMode = TelCullNone;
-  myNoneCulling.Edge = 0;
+  myNoneCulling.ChangeCullingMode() = TelCullNone;
+  myNoneCulling.ChangeEdge() = 0;
 
-  myFrontCulling.CullingMode = TelCullBack;
-  myFrontCulling.Edge = 0;
+  myFrontCulling.ChangeCullingMode() = TelCullBack;
+  myFrontCulling.ChangeEdge() = 0;
 
   myIsInit = Standard_True;
 }

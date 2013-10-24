@@ -70,15 +70,15 @@ static void TelUpdatePolygonOffsets( const TEL_POFFSET_PARAM *pdata )
 
 void OpenGl_Workspace::UpdateMaterial( const int flag )
 {
-  // Case of Hiddenline
-  if (AspectFace_set->InteriorStyle == Aspect_IS_HIDDENLINE)
+  // Case of hidden line
+  if (AspectFace_set->InteriorStyle() == Aspect_IS_HIDDENLINE)
   {
-	myAspectFaceHl = *AspectFace_set; // copy all values including line edge aspect
-    myAspectFaceHl.IntFront.matcol     = BackgroundColor();
-    myAspectFaceHl.IntFront.color_mask = 0;
-    myAspectFaceHl.IntBack.color_mask  = 0;
+    myAspectFaceHl = *AspectFace_set; // copy all values including line edge aspect
+    myAspectFaceHl.ChangeIntFront().matcol     = BackgroundColor();
+    myAspectFaceHl.ChangeIntFront().color_mask = 0;
+    myAspectFaceHl.ChangeIntFront().color_mask = 0;
 
-	AspectFace_set = &myAspectFaceHl;
+    AspectFace_set = &myAspectFaceHl;
     return;
   }
 
@@ -86,12 +86,12 @@ void OpenGl_Workspace::UpdateMaterial( const int flag )
   GLenum face = 0;
   if ( flag == TEL_FRONT_MATERIAL )
   {
-    prop = &AspectFace_set->IntFront;
+    prop = &AspectFace_set->IntFront();
     face = GL_FRONT_AND_BACK;
   }
   else
   {
-    prop = &AspectFace_set->IntBack;
+    prop = &AspectFace_set->IntBack();
     face = GL_BACK;
   }
 
@@ -492,8 +492,8 @@ const OpenGl_AspectFace* OpenGl_Workspace::AspectFace (const Standard_Boolean th
     return AspectFace_set;
   }
 
-  const Aspect_InteriorStyle anIntstyle = AspectFace_set->InteriorStyle;
-  if (AspectFace_applied == NULL || AspectFace_applied->InteriorStyle != anIntstyle)
+  const Aspect_InteriorStyle anIntstyle = AspectFace_set->InteriorStyle();
+  if (AspectFace_applied == NULL || AspectFace_applied->InteriorStyle() != anIntstyle)
   {
     switch (anIntstyle)
     {
@@ -506,7 +506,7 @@ const OpenGl_AspectFace* OpenGl_Workspace::AspectFace (const Standard_Boolean th
       case Aspect_IS_HATCH:
       {
         glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
-		myDisplay->SetTypeOfHatch (AspectFace_applied != NULL ? AspectFace_applied->Hatch : TEL_HS_SOLID);
+        myDisplay->SetTypeOfHatch (AspectFace_applied != NULL ? AspectFace_applied->Hatch() : TEL_HS_SOLID);
         break;
       }
       case Aspect_IS_SOLID:
@@ -526,8 +526,8 @@ const OpenGl_AspectFace* OpenGl_Workspace::AspectFace (const Standard_Boolean th
 
   if (anIntstyle == Aspect_IS_HATCH)
   {
-    const Tint hatchstyle = AspectFace_set->Hatch;
-    if (AspectFace_applied == NULL || AspectFace_applied->Hatch != hatchstyle)
+    const Tint hatchstyle = AspectFace_set->Hatch();
+    if (AspectFace_applied == NULL || AspectFace_applied->Hatch() != hatchstyle)
     {
       myDisplay->SetTypeOfHatch(hatchstyle);
     }
@@ -535,8 +535,8 @@ const OpenGl_AspectFace* OpenGl_Workspace::AspectFace (const Standard_Boolean th
 
   if (!ActiveView()->Backfacing())
   {
-    const Tint aCullingMode = AspectFace_set->CullingMode;
-    if (AspectFace_applied == NULL || AspectFace_applied->CullingMode != aCullingMode)
+    const Tint aCullingMode = AspectFace_set->CullingMode();
+    if (AspectFace_applied == NULL || AspectFace_applied->CullingMode() != aCullingMode)
     {
       switch ((TelCullMode )aCullingMode)
       {
@@ -562,30 +562,30 @@ const OpenGl_AspectFace* OpenGl_Workspace::AspectFace (const Standard_Boolean th
   }
 
   // Aspect_POM_None means: do not change current settings
-  if ((AspectFace_set->PolygonOffset.mode & Aspect_POM_None) != Aspect_POM_None)
+  if ((AspectFace_set->PolygonOffset().mode & Aspect_POM_None) != Aspect_POM_None)
   {
     if (PolygonOffset_applied         == NULL
-     || PolygonOffset_applied->mode   != AspectFace_set->PolygonOffset.mode
-     || PolygonOffset_applied->factor != AspectFace_set->PolygonOffset.factor
-     || PolygonOffset_applied->units  != AspectFace_set->PolygonOffset.units)
+     || PolygonOffset_applied->mode   != AspectFace_set->PolygonOffset().mode
+     || PolygonOffset_applied->factor != AspectFace_set->PolygonOffset().factor
+     || PolygonOffset_applied->units  != AspectFace_set->PolygonOffset().units)
     {
-      PolygonOffset_applied = &AspectFace_set->PolygonOffset;
+      PolygonOffset_applied = &AspectFace_set->PolygonOffset();
       TelUpdatePolygonOffsets (PolygonOffset_applied);
     }
   }
 
   UpdateMaterial (TEL_FRONT_MATERIAL);
-  if (AspectFace_set->DistinguishingMode == TOn)
+  if (AspectFace_set->DistinguishingMode() == TOn)
   {
     UpdateMaterial (TEL_BACK_MATERIAL);
   }
 
   if ((NamedStatus & OPENGL_NS_FORBIDSETTEX) == 0)
   {
-    if (AspectFace_set->doTextureMap)
+    if (AspectFace_set->DoTextureMap())
     {
-      EnableTexture (AspectFace_set->TextureRes,
-                     AspectFace_set->TextureParams);
+      EnableTexture (AspectFace_set->TextureRes (this),
+                     AspectFace_set->TextureParams());
     }
     else
     {

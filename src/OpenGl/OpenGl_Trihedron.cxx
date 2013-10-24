@@ -576,17 +576,17 @@ OpenGl_Trihedron::OpenGl_Trihedron (const Aspect_TypeOfTriedronPosition thePosit
   Quantity_Color aColor (theColor);
   aColor.Values (R, G, B, Quantity_TOC_RGB);
 
-  CALL_DEF_CONTEXTLINE aContextLine = myDefaultContextLine;
-  aContextLine.Color.r = (float)R;
-  aContextLine.Color.g = (float)G;
-  aContextLine.Color.b = (float)B;
-  myAspectLine.SetContext(aContextLine);
+  CALL_DEF_CONTEXTLINE aLineAspect = myDefaultContextLine;
+  aLineAspect.Color.r = (float)R;
+  aLineAspect.Color.g = (float)G;
+  aLineAspect.Color.b = (float)B;
+  myAspectLine.SetAspect (aLineAspect);
 
-  CALL_DEF_CONTEXTTEXT aContextText = myDefaultContextText;
-  aContextText.Color.r = (float)R;
-  aContextText.Color.g = (float)G;
-  aContextText.Color.b = (float)B;
-  myAspectText.SetContext(aContextText);
+  CALL_DEF_CONTEXTTEXT aTextAspect = myDefaultContextText;
+  aTextAspect.Color.r = (float)R;
+  aTextAspect.Color.g = (float)G;
+  aTextAspect.Color.b = (float)B;
+  myAspectText.SetAspect (aTextAspect);
 
   myXColor = theXColor;
   myYColor = theYColor;

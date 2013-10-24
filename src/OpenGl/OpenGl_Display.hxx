@@ -23,13 +23,8 @@
 #include <Handle_OpenGl_Display.hxx>
 #include <MMgt_TShared.hxx>
 
-#include <Standard_CString.hxx>
-#include <TColStd_HArray1OfByte.hxx>
-#include <NCollection_DataMap.hxx>
-
 #include <Aspect_Display.hxx>
 #include <Aspect_DisplayConnection.hxx>
-#include <Aspect_Drawable.hxx>
 #include <Aspect_TypeOfLine.hxx>
 #include <Aspect_TypeOfMarker.hxx>
 
@@ -49,19 +44,16 @@ struct OpenGl_Facilities
   int MaxViews;
 };
 
-class OpenGl_AspectText;
-struct OpenGl_TextParam;
+class OpenGl_Context;
 
 class OpenGl_Display : public MMgt_TShared
 {
- public:
+public:
+
   OpenGl_Display (const Handle(Aspect_DisplayConnection)& theDisplayConnection);
   virtual ~OpenGl_Display ();
 
   Aspect_Display GetDisplay () const { return myDisplay; }
-
-  Handle(OpenGl_Window) GetWindow (const Aspect_Drawable AParent) const;
-  void SetWindow (const Aspect_Drawable AParent, const Handle(OpenGl_Window) &AWindow);
 
   const OpenGl_Facilities & Facilities () const { return myFacilities; }
 
@@ -80,7 +72,8 @@ class OpenGl_Display : public MMgt_TShared
 
   // System attributes
 
-  void InitAttributes ();
+  void InitAttributes();
+  void ReleaseAttributes (const OpenGl_Context* theGlCtx);
 
   void SetTypeOfLine (const Aspect_TypeOfLine AType) const;
 
@@ -96,12 +89,6 @@ class OpenGl_Display : public MMgt_TShared
 
   void Init ();
 
-  void ExportText (const wchar_t *text, const int is2d, const float x, const float y, const float z, const OpenGl_AspectText *aspect, const OpenGl_TextParam *param, const short height);
-
-#ifdef HAVE_GL2PS
-  static void getGL2PSFontName(const char *src_font, char *ps_font);
-#endif
-
   Aspect_Display   myDisplay;
   OpenGl_Facilities myFacilities;
 
@@ -114,12 +101,6 @@ class OpenGl_Display : public MMgt_TShared
   Standard_ShortReal myOffsetUnits;
   Standard_Integer myAntiAliasingMode;
 
-#if (defined(_WIN32) || defined(__WIN32__))
-  NCollection_DataMap<Aspect_Drawable,  Handle(OpenGl_Window)> myMapOfWindows;
-#else
-  NCollection_DataMap<Standard_Integer, Handle(OpenGl_Window)> myMapOfWindows;
-#endif
-
   unsigned int myLinestyleBase;
   unsigned int myPatternBase;
 
@@ -127,6 +108,4 @@ class OpenGl_Display : public MMgt_TShared
   DEFINE_STANDARD_ALLOC
 };
 
-extern Handle(OpenGl_Display) openglDisplay;
-
-#endif //OpenGl_Workspace_Header
+#endif // _OpenGl_Display_Header

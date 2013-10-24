@@ -48,19 +48,21 @@ OpenGl_Group::~OpenGl_Group()
 // function : SetAspectLine
 // purpose  :
 // =======================================================================
-void OpenGl_Group::SetAspectLine (const CALL_DEF_CONTEXTLINE& theContext,
+void OpenGl_Group::SetAspectLine (const CALL_DEF_CONTEXTLINE& theAspect,
                                   const Standard_Boolean theIsGlobal)
 {
   if (theIsGlobal || myFirst == NULL)
   {
     if (myAspectLine == NULL)
+    {
       myAspectLine = new OpenGl_AspectLine();
-    myAspectLine->SetContext (theContext);
+    }
+    myAspectLine->SetAspect (theAspect);
   }
   else
   {
     OpenGl_AspectLine* anAspectLine = new OpenGl_AspectLine();
-    anAspectLine->SetContext (theContext);
+    anAspectLine->SetAspect (theAspect);
     AddElement (TelNil/*TelAspectLine*/, anAspectLine);
   }
 }
@@ -69,8 +71,7 @@ void OpenGl_Group::SetAspectLine (const CALL_DEF_CONTEXTLINE& theContext,
 // function : SetAspectFace
 // purpose  :
 // =======================================================================
-void OpenGl_Group::SetAspectFace (const Handle(OpenGl_Context)&   theCtx,
-                                  const CALL_DEF_CONTEXTFILLAREA& theAspect,
+void OpenGl_Group::SetAspectFace (const CALL_DEF_CONTEXTFILLAREA& theAspect,
                                   const Standard_Boolean          theIsGlobal)
 {
   if (theIsGlobal || myFirst == NULL)
@@ -79,12 +80,12 @@ void OpenGl_Group::SetAspectFace (const Handle(OpenGl_Context)&   theCtx,
     {
       myAspectFace = new OpenGl_AspectFace();
     }
-    myAspectFace->Init (theCtx, theAspect);
+    myAspectFace->SetAspect (theAspect);
   }
   else
   {
     OpenGl_AspectFace* anAspectFace = new OpenGl_AspectFace();
-    anAspectFace->Init (theCtx, theAspect);
+    anAspectFace->SetAspect (theAspect);
     AddElement (TelNil/*TelAspectFace*/, anAspectFace);
   }
 }
@@ -93,8 +94,7 @@ void OpenGl_Group::SetAspectFace (const Handle(OpenGl_Context)&   theCtx,
 // function : SetAspectMarker
 // purpose  :
 // =======================================================================
-void OpenGl_Group::SetAspectMarker (const Handle(OpenGl_Context)& theCtx,
-                                    const CALL_DEF_CONTEXTMARKER& theAspect,
+void OpenGl_Group::SetAspectMarker (const CALL_DEF_CONTEXTMARKER& theAspect,
                                     const Standard_Boolean theIsGlobal)
 {
   if (theIsGlobal || myFirst == NULL)
@@ -103,12 +103,12 @@ void OpenGl_Group::SetAspectMarker (const Handle(OpenGl_Context)& theCtx,
     {
       myAspectMarker = new OpenGl_AspectMarker();
     }
-    myAspectMarker->Init (theCtx, theAspect);
+    myAspectMarker->SetAspect (theAspect);
   }
   else
   {
     OpenGl_AspectMarker* anAspectMarker = new OpenGl_AspectMarker();
-    anAspectMarker->Init (theCtx, theAspect);
+    anAspectMarker->SetAspect (theAspect);
     AddElement (TelNil/*TelAspectMarker*/, anAspectMarker);
   }
 }
@@ -117,19 +117,21 @@ void OpenGl_Group::SetAspectMarker (const Handle(OpenGl_Context)& theCtx,
 // function : SetAspectText
 // purpose  :
 // =======================================================================
-void OpenGl_Group::SetAspectText (const CALL_DEF_CONTEXTTEXT& theContext,
+void OpenGl_Group::SetAspectText (const CALL_DEF_CONTEXTTEXT& theAspect,
                                   const Standard_Boolean theIsGlobal)
 {
   if (theIsGlobal || myFirst == NULL)
   {
     if (myAspectText == NULL)
+    {
       myAspectText = new OpenGl_AspectText();
-    myAspectText->SetContext (theContext);
+    }
+    myAspectText->SetAspect (theAspect);
   }
   else
   {
     OpenGl_AspectText* anAspectText = new OpenGl_AspectText();
-    anAspectText->SetContext (theContext);
+    anAspectText->SetAspect (theAspect);
     AddElement ( TelNil/*TelAspectText*/, anAspectText);
   }
 }

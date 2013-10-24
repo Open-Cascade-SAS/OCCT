@@ -291,7 +291,8 @@ void OpenGl_View::SetClipLimit (const Graphic3d_CView& theCView)
 /*----------------------------------------------------------------------*/
 
 //call_togl_viewmapping
-void OpenGl_View::SetMapping (const Graphic3d_CView& theCView)
+void OpenGl_View::SetMapping (const Handle(OpenGl_Display)& theGlDisplay,
+                              const Graphic3d_CView&        theCView)
 {
   const float ratio   = theCView.DefWindow.dy / theCView.DefWindow.dx;
   const float r_ratio = theCView.DefWindow.dx / theCView.DefWindow.dy;
@@ -325,7 +326,7 @@ void OpenGl_View::SetMapping (const Graphic3d_CView& theCView)
   Map.prp[0] = theCView.Mapping.ProjectionReferencePoint.x;
   Map.prp[1] = theCView.Mapping.ProjectionReferencePoint.y;
   Map.prp[2] = theCView.Mapping.ProjectionReferencePoint.z;
-  if (!openglDisplay.IsNull() && !openglDisplay->Walkthrough())
+  if (!theGlDisplay.IsNull() && !theGlDisplay->Walkthrough())
     Map.prp[2] += theCView.Mapping.FrontPlaneDistance;
 
   // view plane distance
@@ -348,7 +349,7 @@ void OpenGl_View::SetMapping (const Graphic3d_CView& theCView)
         myMappingMatrix[i][j] = theCView.Mapping.ProjectionMatrix[i][j];
   }
   else
-    TelEvalViewMappingMatrix( &Map, &err_ind, myMappingMatrix );
+    TelEvalViewMappingMatrix (theGlDisplay, &Map, &err_ind, myMappingMatrix);
 
   if (!err_ind)
     myExtra.map = Map;

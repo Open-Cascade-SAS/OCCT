@@ -78,7 +78,7 @@ void InitLayerProp (const int AListId)
     TheLayerProp.LineType = -1;
     TheLayerProp.LineWidth = -1.F;
 
-    TheLayerProp.AspectText.SetContext(myDefaultContextText);
+    TheLayerProp.AspectText.SetAspect (myDefaultContextText);
 
     TheLayerProp.TextParam.HAlign = Graphic3d_HTA_LEFT;
     TheLayerProp.TextParam.VAlign = Graphic3d_VTA_BOTTOM;
@@ -230,12 +230,12 @@ void OpenGl_GraphicDriver::UnsetTransparency ()
 
 void OpenGl_GraphicDriver::SetLineAttributes (const Standard_Integer Type, const Standard_ShortReal Width)
 {
-  if (!TheLayerProp.ListId || openglDisplay.IsNull()) return;
+  if (!TheLayerProp.ListId || myGlDisplay.IsNull()) return;
 
   if (TheLayerProp.LineType != Type)
   {
     TheLayerProp.LineType = Type;
-    openglDisplay->SetTypeOfLine((Aspect_TypeOfLine) Type);
+    myGlDisplay->SetTypeOfLine((Aspect_TypeOfLine) Type);
   }
   if (TheLayerProp.LineWidth != Width)
   {

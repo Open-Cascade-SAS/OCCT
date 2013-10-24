@@ -79,7 +79,7 @@ void OpenGl_CappingPlaneResource::UpdateAspect (const Handle(OpenGl_Context)& th
     if (myAspectMod == myPlaneRoot->MCountAspect())
       return; // noting to update
     
-    myAspect->Init (theContext, aCappingAsp);
+    myAspect->SetAspect (aCappingAsp);
     myAspectMod = myPlaneRoot->MCountAspect();
     return;
   }
@@ -96,7 +96,7 @@ void OpenGl_CappingPlaneResource::UpdateAspect (const Handle(OpenGl_Context)& th
   if (myAspect == NULL && !aCappingAsp.IsNull())
   {
     myAspect = new OpenGl_AspectFace();
-    myAspect->Init (theContext, aCappingAsp);
+    myAspect->SetAspect (aCappingAsp);
     myAspectMod = myPlaneRoot->MCountAspect();
   }
 }

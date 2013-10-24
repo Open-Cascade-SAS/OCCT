@@ -84,7 +84,10 @@ void OpenGl_VertexBuffer::Release (const OpenGl_Context* theGlCtx)
   Standard_ASSERT_RETURN (theGlCtx != NULL,
     "OpenGl_VertexBuffer destroyed without GL context! Possible GPU memory leakage...",);
 
-  theGlCtx->core15->glDeleteBuffers (1, &myBufferId);
+  if (theGlCtx->IsValid())
+  {
+    theGlCtx->core15->glDeleteBuffers (1, &myBufferId);
+  }
   myBufferId = NO_BUFFER;
 }
 

@@ -57,7 +57,10 @@ void OpenGl_PointSprite::Release (const OpenGl_Context* theGlCtx)
 {
   if (myBitmapList != 0)
   {
-    glDeleteLists (myBitmapList, 1);
+    if (theGlCtx->IsValid())
+    {
+      glDeleteLists (myBitmapList, 1);
+    }
     myBitmapList = 0;
   }
 

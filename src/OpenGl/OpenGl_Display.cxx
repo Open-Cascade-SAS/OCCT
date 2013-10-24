@@ -17,16 +17,15 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #include <OpenGl_GlCore11.hxx>
 
 #include <OpenGl_Display.hxx>
+#include <OpenGl_Context.hxx>
+#include <OpenGl_Light.hxx>
 
 #include <OSD_Environment.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Aspect_GraphicDeviceDefinitionError.hxx>
-
-#include <OpenGl_Light.hxx>
 
 #if (!defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX)))
   #include <X11/Xlib.h> // XOpenDisplay()
@@ -34,8 +33,6 @@
 
 IMPLEMENT_STANDARD_HANDLE(OpenGl_Display,MMgt_TShared)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Display,MMgt_TShared)
-
-Handle(OpenGl_Display) openglDisplay;
 
 namespace
 {
@@ -78,41 +75,29 @@ OpenGl_Display::OpenGl_Display (const Handle(Aspect_DisplayConnection)& theDispl
 
 OpenGl_Display::~OpenGl_Display ()
 {
-  // Delete line styles
-  if (myLinestyleBase)
-  {
-    glDeleteLists((GLuint)myLinestyleBase,5);
-    myLinestyleBase = 0;
-  }
-  // Delete surface patterns
-  if (myPatternBase)
-  {
-    glDeleteLists((GLuint)myPatternBase,TEL_HS_USER_DEF_START);
-    myPatternBase = 0;
-  }
-
+  ReleaseAttributes (NULL);
   myDisplay = NULL;
 }
 
-/*----------------------------------------------------------------------*/
-
-Handle(OpenGl_Window) OpenGl_Display::GetWindow (const Aspect_Drawable AParent) const
+void OpenGl_Display::ReleaseAttributes (const OpenGl_Context* theGlCtx)
 {
-  Handle(OpenGl_Window) aWindow;
-  if ( myMapOfWindows.IsBound( AParent ) )
+  // Delete line styles
+  if (myLinestyleBase != 0)
   {
-    aWindow = myMapOfWindows.Find( AParent );
+    if (theGlCtx->IsValid())
+    {
+      glDeleteLists ((GLuint )myLinestyleBase, 5);
+    }
+    myLinestyleBase = 0;
   }
-  return aWindow;
-}
-
-/*----------------------------------------------------------------------*/
-
-void OpenGl_Display::SetWindow (const Aspect_Drawable AParent, const Handle(OpenGl_Window) &AWindow)
-{
-  if ( !myMapOfWindows.IsBound( AParent ) )
+  // Delete surface patterns
+  if (myPatternBase != 0)
   {
-    myMapOfWindows.Bind( AParent, AWindow );
+    if (theGlCtx->IsValid())
+    {
+      glDeleteLists ((GLuint )myPatternBase, TEL_HS_USER_DEF_START);
+    }
+    myPatternBase = 0;
   }
 }
 

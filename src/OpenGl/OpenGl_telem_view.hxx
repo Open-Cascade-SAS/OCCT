@@ -43,6 +43,7 @@ Suppression de TelPrintAllViews()
 #define  OPENGL_TELEM_VIEW_H
 
 #include <InterfaceGraphic_tgl_all.hxx>
+#include <Handle_OpenGl_Display.hxx>
 
 typedef  struct
 {
@@ -82,6 +83,6 @@ extern  void              /* vrp,     vpn,     vup,     error_ind, mat */
 TelEvalViewOrientationMatrix(Tfloat*, Tfloat*, Tfloat*, Tfloat*, Tint*, Tmatrix3);
 
 extern  void            /*         mapping, error_ind,  mat */
-TelEvalViewMappingMatrix( tel_view_mapping, Tint*, Tmatrix3 );
+TelEvalViewMappingMatrix (const Handle(OpenGl_Display)& theGlDisplay, tel_view_mapping theMapping, Tint* theError, Tmatrix3 theMat);
 
 #endif

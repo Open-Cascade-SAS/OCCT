@@ -52,25 +52,25 @@ OpenGl_AspectText::~OpenGl_AspectText()
 }
 
 // =======================================================================
-// function : SetContext
+// function : SetAspect
 // purpose  :
 // =======================================================================
-void OpenGl_AspectText::SetContext (const CALL_DEF_CONTEXTTEXT& theContext)
+void OpenGl_AspectText::SetAspect (const CALL_DEF_CONTEXTTEXT& theAspect)
 {
-  myFont = theContext.Font;
-  myColor.rgb[0] = (float )theContext.Color.r;
-  myColor.rgb[1] = (float )theContext.Color.g;
-  myColor.rgb[2] = (float )theContext.Color.b;
+  myFont = theAspect.Font;
+  myColor.rgb[0] = (float )theAspect.Color.r;
+  myColor.rgb[1] = (float )theAspect.Color.g;
+  myColor.rgb[2] = (float )theAspect.Color.b;
   myColor.rgb[3] = 1.0f;
-  mySubtitleColor.rgb[0] = (float )theContext.ColorSubTitle.r;
-  mySubtitleColor.rgb[1] = (float )theContext.ColorSubTitle.g;
-  mySubtitleColor.rgb[2] = (float )theContext.ColorSubTitle.b;
+  mySubtitleColor.rgb[0] = (float )theAspect.ColorSubTitle.r;
+  mySubtitleColor.rgb[1] = (float )theAspect.ColorSubTitle.g;
+  mySubtitleColor.rgb[2] = (float )theAspect.ColorSubTitle.b;
   mySubtitleColor.rgb[3] = 1.0f;
-  myAngle = (float )theContext.TextAngle;
-  myStyleType   = (Aspect_TypeOfStyleText   )theContext.Style;
-  myDisplayType = (Aspect_TypeOfDisplayText )theContext.DisplayType;
-  myFontAspect  = (Font_FontAspect )theContext.TextFontAspect;
-  myZoomable    = (theContext.TextZoomable != 0);
+  myAngle       = (float )theAspect.TextAngle;
+  myStyleType   = (Aspect_TypeOfStyleText   )theAspect.Style;
+  myDisplayType = (Aspect_TypeOfDisplayText )theAspect.DisplayType;
+  myFontAspect  = (Font_FontAspect )theAspect.TextFontAspect;
+  myZoomable    = (theAspect.TextZoomable != 0);
 }
 
 // =======================================================================

@@ -262,6 +262,7 @@ Standard_Boolean OpenGl_Context::MakeCurrent()
       LocalFree (aMsgBuff);
     }
     PushMessage (GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB, GL_DEBUG_TYPE_ERROR_ARB, (unsigned int )anErrorCode, GL_DEBUG_SEVERITY_HIGH_ARB, aMsg);
+    myIsInitialized = Standard_False;
     return Standard_False;
   }
 #else
@@ -276,6 +277,7 @@ Standard_Boolean OpenGl_Context::MakeCurrent()
     // if there is no current context it might be impossible to use glGetError() correctly
     PushMessage (GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB, GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB,
                  "glXMakeCurrent() has failed!");
+    myIsInitialized = Standard_False;
     return Standard_False;
   }
 #endif

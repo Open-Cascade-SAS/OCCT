@@ -26,6 +26,7 @@
 #include <Image_PixMap.hxx>
 #include <Graphic3d_MarkerImage.hxx>
 #include <NCollection_Vec4.hxx>
+#include <TColStd_HArray1OfByte.hxx>
 
 static const TEL_COLOUR myDefaultColor = {{ 1.0F, 1.0F, 1.0F, 1.0F }};
 
@@ -1447,54 +1448,44 @@ OpenGl_AspectMarker::OpenGl_AspectMarker()
  : myColor (myDefaultColor),
    myType  (Aspect_TOM_PLUS),
    myScale (1.0f),
+   myMarkerImage(),
    myMarkerSize (1.0f),
    mySpriteKey  (""),
-   mySpriteAKey ("")
+   mySpriteAKey (""),
+   myIsSpriteInit (Standard_False)
 {}
 
 // =======================================================================
-// function : Init
+// function : SetAspect
 // purpose  :
 // =======================================================================
-void OpenGl_AspectMarker::Init (const Handle(OpenGl_Context)& theCtx,
-                                const CALL_DEF_CONTEXTMARKER& theAspect)
+void OpenGl_AspectMarker::SetAspect (const CALL_DEF_CONTEXTMARKER& theAspect)
 {
   myColor.rgb[0] = (float )theAspect.Color.r;
   myColor.rgb[1] = (float )theAspect.Color.g;
   myColor.rgb[2] = (float )theAspect.Color.b;
   myColor.rgb[3] = 1.0f;
-  myType  = theAspect.MarkerType;
+  myMarkerImage  = theAspect.MarkerImage;
+  myType         = theAspect.MarkerType;
   myScale = myMarkerSize = theAspect.Scale;
 
-  // generate key for shared resource
+  // check that the resources need to be renewed
   TCollection_AsciiString aNewKey, aNewKeyA;
-  if (myType == Aspect_TOM_USERDEFINED)
-  {
-    if (!theAspect.MarkerImage.IsNull())
-    {
-      aNewKey  = theAspect.MarkerImage->GetImageId();
-      aNewKeyA = theAspect.MarkerImage->GetImageAlphaId();
-    }
-  }
-  else if (myType != Aspect_TOM_POINT)
-  {
-    // pre-defined markers
-    const Standard_Integer aScale = Standard_Integer(myScale + 0.5f);
-    aNewKey  = TCollection_AsciiString ("OpenGl_AspectMarker") + myType + "_" + aScale;
-    aNewKeyA = aNewKey + "A";
-    if (myType == Aspect_TOM_BALL)
-    {
-      unsigned int aColor[3] =
-      {
-        (unsigned int )(255.0f * myColor.rgb[0]),
-        (unsigned int )(255.0f * myColor.rgb[1]),
-        (unsigned int )(255.0f * myColor.rgb[2])
-      };
-      char aBytes[8];
-      sprintf (aBytes, "%02X%02X%02X", aColor[0], aColor[1], aColor[2]);
-      aNewKey += aBytes;
-    }
-  }
+  resourceKeys (myMarkerImage, myType, myScale, myColor, aNewKey, aNewKeyA);
+  myIsSpriteInit  = !aNewKey.IsEmpty()  && mySpriteKey  == aNewKey;
+  myIsSpriteInit &= !aNewKeyA.IsEmpty() && mySpriteAKey == aNewKeyA;
+}
+
+// =======================================================================
+// function : buildSprites
+// purpose  :
+// =======================================================================
+void OpenGl_AspectMarker::buildSprites (const Handle(OpenGl_Workspace)& theWorkspace) const
+{
+  const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
+
+  TCollection_AsciiString aNewKey, aNewKeyA;
+  resourceKeys (myMarkerImage, myType, myMarkerSize, myColor, aNewKey, aNewKeyA);
 
   // release old shared resources
   const Standard_Boolean aNewResource = aNewKey.IsEmpty() || mySpriteKey != aNewKey;
@@ -1504,13 +1495,13 @@ void OpenGl_AspectMarker::Init (const Handle(OpenGl_Context)& theCtx,
     {
       if (mySpriteKey.IsEmpty())
       {
-        theCtx->DelayedRelease (mySprite);
+        aContext->DelayedRelease (mySprite);
         mySprite.Nullify();
       }
       else
       {
         mySprite.Nullify(); // we need nullify all handles before ReleaseResource() call
-        theCtx->ReleaseResource (mySpriteKey);
+        aContext->ReleaseResource (mySpriteKey);
       }
     }
     mySpriteKey = aNewKey;
@@ -1522,28 +1513,28 @@ void OpenGl_AspectMarker::Init (const Handle(OpenGl_Context)& theCtx,
     {
       if (mySpriteAKey.IsEmpty())
       {
-        theCtx->DelayedRelease (mySpriteA);
+        aContext->DelayedRelease (mySpriteA);
         mySpriteA.Nullify();
       }
       else
       {
         mySpriteA.Nullify(); // we need nullify all handles before ReleaseResource() call
-        theCtx->ReleaseResource (mySpriteKey);
+        aContext->ReleaseResource (mySpriteKey);
       }
     }
     mySpriteAKey = aNewKeyA;
   }
   if (myType == Aspect_TOM_POINT
    || !aNewResource
-   || (myType == Aspect_TOM_USERDEFINED && theAspect.MarkerImage.IsNull()))
+   || (myType == Aspect_TOM_USERDEFINED && myMarkerImage.IsNull()))
   {
     // nothing to do - just simple point
     return;
   }
 
   if (!aNewKey.IsEmpty()
-   && theCtx->GetResource<Handle(OpenGl_PointSprite)> (aNewKeyA, mySpriteA) // alpha sprite could be shared
-   && theCtx->GetResource<Handle(OpenGl_PointSprite)> (aNewKey,  mySprite))
+   && aContext->GetResource<Handle(OpenGl_PointSprite)> (aNewKeyA, mySpriteA) // alpha sprite could be shared
+   && aContext->GetResource<Handle(OpenGl_PointSprite)> (aNewKey,  mySprite))
   {
     // reuse shared resource
     if (!mySprite->IsDisplayList())
@@ -1561,24 +1552,24 @@ void OpenGl_AspectMarker::Init (const Handle(OpenGl_Context)& theCtx,
   mySprite  = new OpenGl_PointSprite();
   if (!aNewKey.IsEmpty())
   {
-    theCtx->ShareResource (aNewKey,  mySprite);
+    aContext->ShareResource (aNewKey,  mySprite);
     if (!hadAlreadyAlpha)
     {
-      theCtx->ShareResource (aNewKeyA, mySpriteA);
+      aContext->ShareResource (aNewKeyA, mySpriteA);
     }
   }
 
-  if (!theCtx.IsNull()
-   && theCtx->IsGlGreaterEqual (2, 0)
-   && !theCtx->caps->pntSpritesDisable)
+  if (!aContext.IsNull()
+   &&  aContext->IsGlGreaterEqual (2, 0)
+   && !aContext->caps->pntSpritesDisable)
   {
     // Creating texture resource for using it with point sprites
     Handle(Graphic3d_MarkerImage) aNewMarkerImage;
     Handle(Image_PixMap) anImage, anImageA;
 
-    if (myType == Aspect_TOM_USERDEFINED && !theAspect.MarkerImage.IsNull())
+    if (myType == Aspect_TOM_USERDEFINED && !myMarkerImage.IsNull())
     {
-      aNewMarkerImage = theAspect.MarkerImage;
+      aNewMarkerImage = myMarkerImage;
       anImage = aNewMarkerImage->GetImage();
     }
     else
@@ -1697,7 +1688,7 @@ void OpenGl_AspectMarker::Init (const Handle(OpenGl_Context)& theCtx,
 
     myMarkerSize = Max ((Standard_ShortReal )anImage->Width(),(Standard_ShortReal )anImage->Height());
 
-    mySprite->Init (theCtx, *anImage.operator->(), Graphic3d_TOT_2D);
+    mySprite->Init (aContext, *anImage.operator->(), Graphic3d_TOT_2D);
     if (!hadAlreadyAlpha)
     {
       if (anImageA.IsNull()
@@ -1708,7 +1699,7 @@ void OpenGl_AspectMarker::Init (const Handle(OpenGl_Context)& theCtx,
       }
       if (!anImageA.IsNull())
       {
-        mySpriteA->Init (theCtx, *anImageA.operator->(), Graphic3d_TOT_2D);
+        mySpriteA->Init (aContext, *anImageA.operator->(), Graphic3d_TOT_2D);
       }
     }
   }
@@ -1716,15 +1707,15 @@ void OpenGl_AspectMarker::Init (const Handle(OpenGl_Context)& theCtx,
   {
     // Creating list with bitmap for using it in compatibility mode
     GLuint aBitmapList = glGenLists (1);
-    mySprite->SetDisplayList (theCtx, aBitmapList);
+    mySprite->SetDisplayList (aContext, aBitmapList);
 
     Standard_Integer aWidth, aHeight, anOffset, aNumOfBytes;
-    if (myType == Aspect_TOM_USERDEFINED && !theAspect.MarkerImage.IsNull())
+    if (myType == Aspect_TOM_USERDEFINED && !myMarkerImage.IsNull())
     {
-      // Reading userdefined marker
-      Handle(TColStd_HArray1OfByte) aBitMap = theAspect.MarkerImage->GetBitMapArray();
+      // Reading user defined marker
+      Handle(TColStd_HArray1OfByte) aBitMap = myMarkerImage->GetBitMapArray();
       Standard_Byte* aBitMapArray = new Standard_Byte[aBitMap->Length()];
-      theAspect.MarkerImage->GetTextureSize (aWidth, aHeight);
+      myMarkerImage->GetTextureSize (aWidth, aHeight);
 
       // We should pass bitmap to glBitmap with reversed line order as it draws it from
       // bottom to top
@@ -1821,6 +1812,47 @@ void OpenGl_AspectMarker::Init (const Handle(OpenGl_Context)& theCtx,
         }
       }
       glEndList();
+    }
+  }
+}
+
+// =======================================================================
+// function : resourceKeys
+// purpose  :
+// =======================================================================
+void OpenGl_AspectMarker::resourceKeys (const Handle(Graphic3d_MarkerImage)& theMarkerImage,
+                                        const Aspect_TypeOfMarker theType,
+                                        const Standard_ShortReal theScale,
+                                        const TEL_COLOUR& theColor,
+                                        TCollection_AsciiString& theKey,
+                                        TCollection_AsciiString& theKeyA) const
+{
+  // generate key for shared resource
+  if (theType == Aspect_TOM_USERDEFINED)
+  {
+    if (!theMarkerImage.IsNull())
+    {
+      theKey  = theMarkerImage->GetImageId();
+      theKeyA = theMarkerImage->GetImageAlphaId();
+    }
+  }
+  else if (theType != Aspect_TOM_POINT)
+  {
+    // predefined markers
+    const Standard_Integer aScale = Standard_Integer(theScale + 0.5f);
+    theKey  = TCollection_AsciiString ("OpenGl_AspectMarker") + theType + "_" + aScale;
+    theKeyA = theKey + "A";
+    if (theType == Aspect_TOM_BALL)
+    {
+      unsigned int aColor[3] =
+      {
+        (unsigned int )(255.0f * theColor.rgb[0]),
+        (unsigned int )(255.0f * theColor.rgb[1]),
+        (unsigned int )(255.0f * theColor.rgb[2])
+      };
+      char aBytes[8];
+      sprintf (aBytes, "%02X%02X%02X", aColor[0], aColor[1], aColor[2]);
+      theKey += aBytes;
     }
   }
 }

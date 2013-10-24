@@ -82,6 +82,7 @@ is
   -- for each instance of Graphic3d_AspectFillArea3d where texture will be used.
   -- .
   -- @return texture identifier.
+  ---C++: return const &
 
   GetImage (me) returns PixMap_Handle from Image
   is virtual;
