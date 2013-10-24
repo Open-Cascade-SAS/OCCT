@@ -93,11 +93,18 @@ const Handle(TopoDS_TShape)& VrmlData_IndexedFaceSet::TShape ()
     NCollection_DataMap <int, int> mapNodeId;
 
     // Count non-degenerated triangles
+    const int nNodes = myCoords->Length();
     for (i = 0; i < (int)myNbPolygons; i++) {
       const Standard_Integer * arrIndice;
       if (Polygon(i, arrIndice) == 3) {
-        if (arrIndice[0] < 0)
-          continue;
+        //Check indices for out of bound
+        if (arrIndice[0] < 0 ||
+            arrIndice[0] >= nNodes ||
+            arrIndice[1] >= nNodes ||
+            arrIndice[2] >= nNodes)
+        {
+            continue;
+        }
         const gp_XYZ aVec[2] = {
           arrNodes[arrIndice[1]] - arrNodes[arrIndice[0]],
           arrNodes[arrIndice[2]] - arrNodes[arrIndice[0]]
@@ -148,7 +155,10 @@ const Handle(TopoDS_TShape)& VrmlData_IndexedFaceSet::TShape ()
     for (i = 0; i < (int)myNbPolygons; i++) {
       const Standard_Integer * arrIndice;
       if (Polygon (i, arrIndice) == 3)
-        if (arrIndice[0] >= 0)  // check to avoid previously skipped faces
+        if (arrIndice[0] >= 0 &&
+            arrIndice[0] < nNodes &&
+            arrIndice[1] < nNodes &&
+            arrIndice[2] < nNodes)  // check to avoid previously skipped faces
           aTriangles(++nTri).Set (mapNodeId(arrIndice[0]),
                                   mapNodeId(arrIndice[1]),
                                   mapNodeId(arrIndice[2]));
@@ -179,7 +189,11 @@ const Handle(TopoDS_TShape)& VrmlData_IndexedFaceSet::TShape ()
           for (i = 0; i < (int)myNbPolygons; i++) 
           {
             const Standard_Integer * arrNodes;
-            if (Polygon(i, arrNodes) == 3 && arrNodes[0] >= 0)  // check to avoid previously skipped faces
+            if (Polygon(i, arrNodes) == 3 && 
+                arrNodes[0] >= 0 &&
+                arrNodes[0] < nNodes &&
+                arrNodes[1] < nNodes &&
+                arrNodes[2] < nNodes)  // check to avoid previously skipped faces
             {
               const Standard_Integer * arrIndice;
               if (IndiceNormals(i, arrIndice) == 3) {
