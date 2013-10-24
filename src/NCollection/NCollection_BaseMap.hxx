@@ -199,6 +199,17 @@ class NCollection_BaseMap
   Standard_EXPORT Standard_Integer NextPrimeForMap
     (const Standard_Integer N) const;
 
+  //! Exchange content of two maps without data copying
+  void exchangeMapsData (NCollection_BaseMap& theOther)
+  {
+    std::swap (myData1,     theOther.myData1);
+    std::swap (myData2,     theOther.myData2);
+    //std::swap (isDouble,    theOther.isDouble);
+    std::swap (mySaturated, theOther.mySaturated);
+    std::swap (myNbBuckets, theOther.myNbBuckets);
+    std::swap (mySize,      theOther.mySize);
+  }
+
  protected:
   // --------- PROTECTED FIELDS -----------
   NCollection_ListNode ** myData1;

@@ -165,6 +165,14 @@ template < class TheKeyType,
     Standard_TypeMismatch::Raise("NCollection_IndexedDataMap::Assign");
   }
 
+  //! Exchange the content of two maps without re-allocations.
+  //! Notice that allocators will be swapped as well!
+  void Exchange (NCollection_IndexedDataMap& theOther)
+  {
+    this->exchangeAllocators (theOther);
+    this->exchangeMapsData   (theOther);
+  }
+
   //! = another map
   NCollection_IndexedDataMap& operator= 
     (const NCollection_IndexedDataMap& theOther)

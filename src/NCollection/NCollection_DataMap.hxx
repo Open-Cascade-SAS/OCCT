@@ -152,6 +152,14 @@ template < class TheKeyType,
     Standard_TypeMismatch::Raise ("NCollection_DataMap::Assign impossible");
   }
 
+  //! Exchange the content of two maps without re-allocations.
+  //! Notice that allocators will be swapped as well!
+  void Exchange (NCollection_DataMap& theOther)
+  {
+    this->exchangeAllocators (theOther);
+    this->exchangeMapsData   (theOther);
+  }
+
   //! = another map
   NCollection_DataMap& operator= (const NCollection_DataMap& theOther)
   { 

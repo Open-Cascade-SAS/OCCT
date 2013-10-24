@@ -17,7 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #ifndef NCollection_IndexedMap_HeaderFile
 #define NCollection_IndexedMap_HeaderFile
 
@@ -155,6 +154,14 @@ template < class TheKeyType,
       theOther.CreateIterator();
     for (; anIter.More(); anIter.Next())
       Add(anIter.Value());
+  }
+
+  //! Exchange the content of two maps without re-allocations.
+  //! Notice that allocators will be swapped as well!
+  void Exchange (NCollection_IndexedMap& theOther)
+  {
+    this->exchangeAllocators (theOther);
+    this->exchangeMapsData   (theOther);
   }
 
   //! = another map

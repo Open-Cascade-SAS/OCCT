@@ -17,7 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #ifndef NCollection_BaseCollection_HeaderFile
 #define NCollection_BaseCollection_HeaderFile
 
@@ -113,6 +112,13 @@ template<class TheItemType> class NCollection_BaseCollection
       (Handle_NCollection_BaseAllocator&) myIterAllocator =
         new NCollection_IncAllocator(64);
     return myIterAllocator;
+  }
+
+  //! Exchange allocators of two collections
+  void exchangeAllocators (NCollection_BaseCollection& theOther)
+  {
+    std::swap (myAllocator,     theOther.myAllocator);
+    std::swap (myIterAllocator, theOther.myIterAllocator);
   }
 
  protected:

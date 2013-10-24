@@ -17,7 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #ifndef NCollection_DoubleMap_HeaderFile
 #define NCollection_DoubleMap_HeaderFile
 
@@ -160,6 +159,14 @@ template < class TheKey1Type,
     if (this == &theOther)
       return;
     Standard_TypeMismatch::Raise ("NCollection_DoubleMap::Assign impossible");
+  }
+
+  //! Exchange the content of two maps without re-allocations.
+  //! Notice that allocators will be swapped as well!
+  void Exchange (NCollection_DoubleMap& theOther)
+  {
+    this->exchangeAllocators (theOther);
+    this->exchangeMapsData   (theOther);
   }
 
   //! = another map
