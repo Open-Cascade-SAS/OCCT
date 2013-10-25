@@ -89,7 +89,6 @@ public:
                                 V3d_ZBUFFER,V3d_GOURAUD,V3d_WAIT, 
                                 Standard_True, Standard_False);
 
-    myViewer()->Init();
     myViewer()->SetDefaultLights();
     myViewer()->SetLightOn();
     myView() = myViewer()->CreateView();
