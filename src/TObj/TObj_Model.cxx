@@ -224,13 +224,17 @@ Standard_Boolean TObj_Model::Load (const char* theFile)
 
 Handle(TCollection_HAsciiString) TObj_Model::GetFile() const
 {
-  Handle(TDocStd_Document) aDoc = TDocStd_Document::Get(GetLabel());
-  if ( !aDoc.IsNull() ) {
-    TCollection_AsciiString anOldPath( aDoc->GetPath() );
-    if ( !anOldPath.IsEmpty() )
-      return new TCollection_HAsciiString( anOldPath );
+  Handle(TDocStd_Document) aDoc = GetDocument();
+  if ( aDoc.IsNull()
+   || !aDoc->IsStored())
+  {
+    return Handle(TCollection_HAsciiString)();
   }
-  return 0;
+
+  TCollection_AsciiString aPath (aDoc->GetPath());
+  return !aPath.IsEmpty()
+       ? new TCollection_HAsciiString (aPath)
+       : Handle(TCollection_HAsciiString)();
 }
 
 //=======================================================================
