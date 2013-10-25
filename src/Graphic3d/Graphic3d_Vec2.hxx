@@ -22,5 +22,10 @@
 #include <Standard_TypeDef.hxx>
 
 typedef NCollection_Vec2<Standard_ShortReal> Graphic3d_Vec2;
+typedef NCollection_Vec2<Standard_Real>      Graphic3d_Vec2d;
+typedef NCollection_Vec2<Standard_Integer>   Graphic3d_Vec2i;
+typedef NCollection_Vec2<unsigned int>       Graphic3d_Vec2u;
+typedef NCollection_Vec2<Standard_Byte>      Graphic3d_Vec2ub;
+typedef NCollection_Vec2<Standard_Character> Graphic3d_Vec2b;
 
 #endif // _Graphic3d_Vec2_HeaderFile

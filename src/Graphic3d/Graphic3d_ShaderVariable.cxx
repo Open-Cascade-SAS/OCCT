@@ -24,17 +24,15 @@
 IMPLEMENT_STANDARD_HANDLE (Graphic3d_ShaderVariable, Standard_Transient)
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ShaderVariable, Standard_Transient)
 
-//
 // Specific instantiations of struct templates to avoid compilation warnings
-//
-template struct Graphic3d_UniformValue<int>;
-template struct Graphic3d_UniformValue<float>;
-template struct Graphic3d_UniformValue<OpenGl_Vec2>;
-template struct Graphic3d_UniformValue<OpenGl_Vec3>;
-template struct Graphic3d_UniformValue<OpenGl_Vec4>;
-template struct Graphic3d_UniformValue<OpenGl_Vec2i>;
-template struct Graphic3d_UniformValue<OpenGl_Vec3i>;
-template struct Graphic3d_UniformValue<OpenGl_Vec4i>;
+template struct Graphic3d_UniformValue<Standard_Integer>;
+template struct Graphic3d_UniformValue<Standard_ShortReal>;
+template struct Graphic3d_UniformValue<Graphic3d_Vec2>;
+template struct Graphic3d_UniformValue<Graphic3d_Vec3>;
+template struct Graphic3d_UniformValue<Graphic3d_Vec4>;
+template struct Graphic3d_UniformValue<Graphic3d_Vec2i>;
+template struct Graphic3d_UniformValue<Graphic3d_Vec3i>;
+template struct Graphic3d_UniformValue<Graphic3d_Vec4i>;
 
 // =======================================================================
 // function : ~Graphic3d_ValueInterface

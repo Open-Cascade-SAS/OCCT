@@ -1,4 +1,4 @@
-// Created on: 2013-01-29
+// Created on: 2013-10-25
 // Created by: Kirill GAVRILOV
 // Copyright (c) 2013 OPEN CASCADE SAS
 //
@@ -17,33 +17,11 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-#ifndef _OpenGl_Vec_H__
-#define _OpenGl_Vec_H__
+#ifndef _Graphic3d_Vec_H__
+#define _Graphic3d_Vec_H__
 
-#include <Graphic3d_Vec.hxx>
+#include <Graphic3d_Vec2.hxx>
+#include <Graphic3d_Vec3.hxx>
+#include <Graphic3d_Vec4.hxx>
 
-typedef Graphic3d_Vec2i  OpenGl_Vec2i;
-typedef Graphic3d_Vec3i  OpenGl_Vec3i;
-typedef Graphic3d_Vec4i  OpenGl_Vec4i;
-
-typedef Graphic3d_Vec2b  OpenGl_Vec2b;
-typedef Graphic3d_Vec3b  OpenGl_Vec3b;
-typedef Graphic3d_Vec4b  OpenGl_Vec4b;
-
-typedef Graphic3d_Vec2u  OpenGl_Vec2u;
-typedef Graphic3d_Vec3u  OpenGl_Vec3u;
-typedef Graphic3d_Vec4u  OpenGl_Vec4u;
-
-typedef Graphic3d_Vec2ub OpenGl_Vec2ub;
-typedef Graphic3d_Vec3ub OpenGl_Vec3ub;
-typedef Graphic3d_Vec4ub OpenGl_Vec4ub;
-
-typedef Graphic3d_Vec2   OpenGl_Vec2;
-typedef Graphic3d_Vec3   OpenGl_Vec3;
-typedef Graphic3d_Vec4   OpenGl_Vec4;
-
-typedef Graphic3d_Vec2d  OpenGl_Vec2d;
-typedef Graphic3d_Vec3d  OpenGl_Vec3d;
-typedef Graphic3d_Vec4d  OpenGl_Vec4d;
-
-#endif // _OpenGl_Vec_H__
+#endif // _Graphic3d_Vec_H__
