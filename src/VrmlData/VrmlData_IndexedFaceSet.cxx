@@ -93,7 +93,7 @@ const Handle(TopoDS_TShape)& VrmlData_IndexedFaceSet::TShape ()
     NCollection_DataMap <int, int> mapNodeId;
 
     // Count non-degenerated triangles
-    const int nNodes = myCoords->Length();
+    const int nNodes = (int)myCoords->Length();
     for (i = 0; i < (int)myNbPolygons; i++) {
       const Standard_Integer * arrIndice;
       if (Polygon(i, arrIndice) == 3) {

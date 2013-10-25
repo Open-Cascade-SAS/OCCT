@@ -97,7 +97,6 @@ void BOPAlgo_Builder::BuildSplitFaces()
 {
   Standard_Boolean bHasFaceInfo, bIsClosed, bIsDegenerated, bToReverse;
   Standard_Integer i, j, k, aNbS, aNbPBIn, aNbPBOn, aNbPBSc, aNbAV, nSp;
-  Standard_Boolean bRunParallel;
   Standard_Size aNbBF;
   TopoDS_Face aFF, aFSD;
   TopoDS_Edge aSp, aEE;

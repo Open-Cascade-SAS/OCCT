@@ -415,7 +415,7 @@ static void __fastcall _osd_wnt_set_disk_name ( TCollection_AsciiString& result,
     }  /* end if */
 
     if ( k == 0 )
-
+    {
      if (  path.Name ().UsefullLength () == 0 && path.Extension ().UsefullLength () == 0  )
      
       goto badPath;
@@ -427,6 +427,7 @@ static void __fastcall _osd_wnt_set_disk_name ( TCollection_AsciiString& result,
       dir += path.Extension ();
       
      }  // end else    
+    }
 
     if (   dir.Value (  dir.UsefullLength ()  ) != TEXT( '\\' )   ) dir += TEXT( "\\" );
 

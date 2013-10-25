@@ -290,7 +290,7 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
   TCollection_AsciiString aDeclarations;
 
   aDeclFile.Open (OSD_ReadOnly, OSD_Protection());
-  aDeclFile.Read (aDeclarations, aDeclFile.Size());
+  aDeclFile.Read (aDeclarations, (int)aDeclFile.Size());
   aDeclFile.Close();
 
   for (Graphic3d_ShaderObjectList::Iterator anIter (theShaders);

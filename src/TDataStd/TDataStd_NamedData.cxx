@@ -793,11 +793,11 @@ void TDataStd_NamedData::Paste (const Handle(TDF_Attribute)& Into,
 Standard_OStream& TDataStd_NamedData::Dump (Standard_OStream& anOS) const
 {  
   anOS << "NamedData: ";
-  anOS << "\tIntegers = " << HasIntegers() ? myIntegers->Map().Extent() : 0;
-  anOS << "\tReals = " << HasReals() ? myReals->Map().Extent() : 0;
-  anOS << "\tStrings = " << HasStrings() ? myStrings->Map().Extent() : 0;
-  anOS << "\tBytes = " << HasBytes() ? myBytes->Map().Extent() : 0;
-  anOS << "\tArraysOfIntegers = " << HasArraysOfIntegers() ? myArraysOfIntegers->Map().Extent() : 0;
-  anOS << "\tArraysOfReals = " << HasArraysOfReals() ? myArraysOfReals->Map().Extent() : 0;
+  anOS << "\tIntegers = " << (HasIntegers() ? myIntegers->Map().Extent() : 0);
+  anOS << "\tReals = " << (HasReals() ? myReals->Map().Extent() : 0);
+  anOS << "\tStrings = " << (HasStrings() ? myStrings->Map().Extent() : 0);
+  anOS << "\tBytes = " << (HasBytes() ? myBytes->Map().Extent() : 0);
+  anOS << "\tArraysOfIntegers = " << (HasArraysOfIntegers() ? myArraysOfIntegers->Map().Extent() : 0);
+  anOS << "\tArraysOfReals = " << (HasArraysOfReals() ? myArraysOfReals->Map().Extent() : 0);
   return anOS;
 }
