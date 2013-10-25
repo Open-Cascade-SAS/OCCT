@@ -1,5 +1,11 @@
 # Test performance of intersection of several NURBS surfaces
 
+if { [regexp {Debug mode} [dversion]] } {
+   cpulimit 1000
+} else {
+   cpulimit 500
+}
+
 bsplinesurf surf1 \
 3 4 0 4 1 1 2 1 3 4 \
 3 4 0 4 1 1 2 1 3 4 \

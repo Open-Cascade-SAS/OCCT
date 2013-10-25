@@ -10,6 +10,14 @@ puts ""
 # http://www.opencascade.org/org/forum/thread_12369/?forum=3
 # in OCCT 6.6.0 32-bit mode on Windows this fails with N >= 40 (out of memory)
 
+if { [regexp {Debug mode} [dversion]] } {
+   cpulimit 2000
+   set max_time 1500
+} else {
+   cpulimit 500
+   set max_time 250
+}
+
 # box plate to cut the holes from
 box b 100 100 1
 
@@ -53,13 +61,6 @@ if { [expr ${mem2} - ${mem1}] > ${mem_delta}} {
 }
 
 regexp {CPU user time: ([-0-9.+eE]+) seconds} ${q2} full z
-if { [string compare $tcl_platform(platform) "windows"] == 0 }  {
-   puts "OS = Windows NT"
-   set max_time 200
-} else {
-   puts "OS = Linux"
-   set max_time 250
-}
 if { ${z} > ${max_time} } {                                         
     puts "Elapsed time is more than ${max_time} seconds - Faulty"
 } else {
