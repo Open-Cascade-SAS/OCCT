@@ -32,10 +32,6 @@
 //                       DetectedCurrentShape(),DetectedCurrentObject()
 //                       methods
 
-#define IMP191001	//GG Avoid to raise when switching with the 
-//			SetAutomaticHilight() method.
-//			Thanks to IFO of SAMTECH company for this improvment.
-
 #define OCC138          //VTN Avoding infinit loop in AddOrRemoveCurrentObject method.
 
 #define OCC9657
@@ -218,66 +214,62 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo(const Standard_Integer XPix
     // is needed only if myToHilightSelected flag is true. In this case previously detected
     // object has been already highlighted with myHilightColor during previous MoveTo() 
     // method call. As result it is necessary to rehighligt it with mySelectionColor.
-    if ( !myLastPicked.IsNull() )
+    if (!myLastPicked.IsNull())
     {
-      Standard_Integer HiMod =  
-        myLastPicked->HasHilightMode() ? myLastPicked->HilightMode() : 0;
-      if ( myLastPicked->State() != 1 )
+      Standard_Integer aHiMod = myLastPicked->HasHilightMode() ? myLastPicked->HilightMode() : 0;
+      if (myLastPicked->State() != 1)
       {
-	pmgr->Unhighlight( myLastPicked, HiMod );
+        pmgr->Unhighlight (myLastPicked, aHiMod);
         UpdVwr = Standard_True;
       }
-      else if ( myToHilightSelected )
+      else if (myToHilightSelected)
       {
-        pmgr->Color( myLastPicked, mySelectionColor, HiMod );
+        pmgr->Color (myLastPicked, mySelectionColor, aHiMod);
         UpdVwr = Standard_True;
       }
     }
-    
+
     // Initialize myLastPicked field with currently detected object
-    Handle(SelectMgr_SelectableObject) SO = selector->OnePicked()->Selectable();
-    myLastPicked = *((Handle(AIS_InteractiveObject)*)&SO);
-    
+    myLastPicked = Handle(AIS_InteractiveObject)::DownCast (selector->OnePicked()->Selectable());
+
     if ( ismain )
       myLastinMain = myLastPicked;
-#ifdef IMP191001
+
     // Highlight detected object if it is not selected or myToHilightSelected flag is true
-    if ( !myLastPicked.IsNull() && 
-         ( myLastPicked->State()!= 1 || myToHilightSelected ) )
-#else
-     if ( myLastPicked->State()!= 1 )
-#endif
+    if (!myLastPicked.IsNull()
+     && (myLastPicked->State()!= 1 || myToHilightSelected))
     {
-      Standard_Integer HiMod =  
-        myLastPicked->HasHilightMode() ? myLastPicked->HilightMode() : 0;
-      pmgr->Color( myLastPicked, myHilightColor, HiMod );
+      Standard_Integer aHiMod = myLastPicked->HasHilightMode() ? myLastPicked->HilightMode() : 0;
+      pmgr->Color (myLastPicked, myHilightColor, aHiMod);
       UpdVwr = Standard_True;
     }
-    
-    if ( myLastPicked->State()==1 )
+
+    if (!myLastPicked.IsNull()
+      && myLastPicked->State() == 1)
+    {
       TheStat = AIS_SOD_Selected;
+    }
   }
   else 
   {
-    // Previously detected object is unhilighted if it is not selected or hilighted 
-    // with selection color if it is selected. 
+    // Previously detected object is unhilighted if it is not selected or hilighted
+    // with selection color if it is selected.
     TheStat = AIS_SOD_Nothing;
-    if ( !myLastPicked.IsNull() )
+    if (!myLastPicked.IsNull())
     {
-      Standard_Integer HiMod =  
-        myLastPicked->HasHilightMode() ? myLastPicked->HilightMode() : 0;
-      if ( myLastPicked->State() != 1 )
+      Standard_Integer aHiMod = myLastPicked->HasHilightMode() ? myLastPicked->HilightMode() : 0;
+      if (myLastPicked->State() != 1)
       {
-	pmgr->Unhighlight( myLastPicked, HiMod );
+        pmgr->Unhighlight (myLastPicked, aHiMod);
         UpdVwr = Standard_True;
       }
-      else if ( myToHilightSelected )
+      else if (myToHilightSelected)
       {
-        pmgr->Color( myLastPicked, mySelectionColor, HiMod );
+        pmgr->Color (myLastPicked, mySelectionColor, aHiMod);
         UpdVwr = Standard_True;
       }
     }
-    
+
     if ( ismain )
       myLastinMain.Nullify();
   }
