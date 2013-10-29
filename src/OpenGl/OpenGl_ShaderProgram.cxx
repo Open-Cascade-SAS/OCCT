@@ -1120,7 +1120,8 @@ void OpenGl_ShaderProgram::Release (const OpenGl_Context* theCtx)
     anIter.ChangeValue().Nullify();
   }
 
-  if (theCtx->core20 != NULL)
+  if (theCtx->core20 != NULL
+   && theCtx->IsValid())
   {
     theCtx->core20->glDeleteProgram (myProgramID);
   }

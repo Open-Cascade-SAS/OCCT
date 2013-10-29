@@ -139,7 +139,8 @@ void OpenGl_ShaderObject::Release (const OpenGl_Context* theCtx)
   Standard_ASSERT_RETURN (theCtx != NULL,
     "OpenGl_ShaderObject destroyed without GL context! Possible GPU memory leakage...",);
 
-  if (theCtx->core20 != NULL)
+  if (theCtx->core20 != NULL
+   && theCtx->IsValid())
   {
     theCtx->core20->glDeleteShader (myShaderID);
   }

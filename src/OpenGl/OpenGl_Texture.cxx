@@ -111,7 +111,10 @@ void OpenGl_Texture::Release (const OpenGl_Context* theGlCtx)
   Standard_ASSERT_RETURN (theGlCtx != NULL,
     "OpenGl_Texture destroyed without GL context! Possible GPU memory leakage...",);
 
-  glDeleteTextures (1, &myTextureId);
+  if (theGlCtx->IsValid())
+  {
+    glDeleteTextures (1, &myTextureId);
+  }
   myTextureId = NO_TEXTURE;
   mySizeX = mySizeY = 0;
 }
