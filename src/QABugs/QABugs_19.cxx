@@ -1540,6 +1540,74 @@ static Standard_Integer OCC24271 (Draw_Interpretor& di,
   return 0;
 }
 
+#define QVERIFY(val1) \
+  di << "Checking " #val1 " == Standard_True" << \
+        ((val1) == Standard_True ? ": OK\n" : ": Error\n")
+
+#include <GeomInt_IntSS.hxx>
+#include <Geom_ConicalSurface.hxx>
+#include <Standard_ErrorHandler.hxx>
+//=======================================================================
+//function : OCC23972
+//purpose  : 
+//=======================================================================
+static void DoGeomIntSSTest (const Handle(Geom_Surface)& theSurf1,
+			     const Handle(Geom_Surface)& theSurf2,
+			     const Standard_Integer theNbSol,
+			     Draw_Interpretor& di)
+{
+  try {
+    OCC_CATCH_SIGNALS
+	 GeomInt_IntSS anInter;
+	 anInter.Perform (theSurf1, theSurf2, Precision::Confusion(), Standard_True);
+	 QVERIFY (anInter.IsDone());
+	 QCOMPARE (anInter.NbLines(), theNbSol);
+  } catch (...) {
+    QVERIFY (Standard_False);
+  }
+}
+
+namespace {
+  static Handle(Geom_ConicalSurface) CreateCone (const gp_Pnt& theLoc,
+						 const gp_Dir& theDir,
+						 const gp_Dir& theXDir,
+						 const Standard_Real theRad,
+						 const Standard_Real theSin,
+						 const Standard_Real theCos)
+  {
+    const Standard_Real anA = atan (theSin / theCos);
+    gp_Ax3 anAxis (theLoc, theDir, theXDir);
+    Handle(Geom_ConicalSurface) aSurf = new Geom_ConicalSurface (anAxis, anA, theRad);
+    return aSurf;
+  }
+}
+
+static Standard_Integer OCC23972 (Draw_Interpretor& di,Standard_Integer n, const char**)
+{
+  if (n != 1) return 1;
+
+  //process specific cones, cannot read them from files because due to rounding the original error
+  //in math_FunctionRoots gets hidden
+  Handle(Geom_Surface) aS1 = CreateCone (
+					 gp_Pnt (123.694345356663, 789.9, 68.15),
+					 gp_Dir (-1, 3.48029791472957e-016, -8.41302743359754e-017),
+					 gp_Dir (-3.48029791472957e-016, -1, -3.17572289932207e-016),
+					 3.28206830417112,
+					 0.780868809443031,
+					 0.624695047554424);
+  Handle(Geom_Surface) aS2 = CreateCone (
+					 gp_Pnt (123.694345356663, 784.9, 68.15),
+					 gp_Dir (-1, -2.5209507537117e-016, -1.49772808948866e-016),
+					 gp_Dir (1.49772808948866e-016, 3.17572289932207e-016, -1),
+					 3.28206830417112,
+					 0.780868809443031,
+					 0.624695047554424);
+  
+  DoGeomIntSSTest (aS1, aS2, 2, di);
+
+  return 0;
+}
+
 #include <ShapeFix_EdgeProjAux.hxx>
 static Standard_Integer OCC24370 (Draw_Interpretor& di, Standard_Integer argc,const char ** argv)
 {
@@ -2041,6 +2109,7 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC24005", "OCC24005 result", __FILE__, OCC24005, group);
   theCommands.Add ("OCC24137", "OCC24137 face vertex U V [N]", __FILE__, OCC24137, group);
   theCommands.Add ("OCC24271", "Boolean operations on NCollection_Map", __FILE__, OCC24271, group);
+  theCommands.Add ("OCC23972", "OCC23972", __FILE__, OCC23972, group);
   theCommands.Add ("OCC24370", "OCC24370 edge pcurve surface prec", __FILE__, OCC24370, group);
   theCommands.Add ("OCC24533", "OCC24533", __FILE__, OCC24533, group);
   theCommands.Add ("OCC24012", "OCC24012 face edge", __FILE__, OCC24012, group);
