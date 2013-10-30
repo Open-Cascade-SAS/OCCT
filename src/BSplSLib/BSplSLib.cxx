@@ -39,9 +39,6 @@
 
 // for null derivatives
 static Standard_Real BSplSLib_zero[3] = {0.0, 0.0, 0.0};
-#ifdef WNT
-#define M_SQRT2 1.4142135623730950488016887 
-#endif
 
 //=======================================================================
 //struct : BSplCLib_DataContainer 

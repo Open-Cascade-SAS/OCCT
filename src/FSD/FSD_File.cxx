@@ -237,8 +237,8 @@ void FSD_File::ReadExtendedLine(TCollection_ExtendedString& buffer)
     if (c == tg[count]) count++;
     else count = 0;
     if (count < SIZEOFNORMALEXTENDEDSECTION) {
-      i = 0; j = 0;
-      i += (Standard_ExtCharacter)c;
+      j = 0;
+      i = (Standard_ExtCharacter)c;
       if (c == '\0') fin = Standard_True;
       i = (i << 8);
       
@@ -246,7 +246,7 @@ void FSD_File::ReadExtendedLine(TCollection_ExtendedString& buffer)
       if (c == tg[count]) count++;
       else count = 0;
       if (count < SIZEOFNORMALEXTENDEDSECTION) {
-	j += (Standard_ExtCharacter)c;
+	j = (Standard_ExtCharacter)c;
 	if (c != '\n') {
 	  fin = Standard_False;
 	  i |= (0x00FF & j);

@@ -699,7 +699,7 @@ Standard_Integer ShapeFix_ComposeShell::ComputeCode (const Handle(ShapeExtend_Wi
     code = IOR_LEFT;
     myStatus |= ShapeExtend::EncodeStatus ( ShapeExtend_FAIL2 );
 #ifdef DEB
-    cout << "Warning: ShapeFix_ComposeShell::ComputeCode: lost intersection point" << cout;
+    cout << "Warning: ShapeFix_ComposeShell::ComputeCode: lost intersection point" << endl;
 #endif
   }
   return code;

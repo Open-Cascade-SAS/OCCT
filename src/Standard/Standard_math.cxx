@@ -16,17 +16,10 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-// -------------------------------------------------------------------------
-// Definition des fonctions mathematiques hyperboliques: acosh, asinh, atanh
-// pour Windows/NT uniquement.
-// -------------------------------------------------------------------------
-#ifdef WNT
-#include <math.h>
 #include <Standard_math.hxx>
 
-#ifndef _Standard_MacroHeaderFile
-# include <Standard_Macro.hxx>
-#endif  // _Standard_MacroHeaderFile
+// MSVC versions prior to 12 did not provided acosh, asinh, atanh functions in standard library
+#if defined(_MSC_VER) && (_MSC_VER < 1800)
 
 Standard_EXPORT double  __cdecl acosh( double X)
 {
@@ -53,4 +46,5 @@ Standard_EXPORT double __cdecl  atanh( double X)
 	res = log((1 + X) / (1 - X)) / 2;
 	return res;
 };
+
 #endif

@@ -357,8 +357,8 @@ Standard_UUID Standard_GUID::ToUUID() const
   result.Data1 = my32b ;
   result.Data2 = my16b1 ;
   result.Data3 = my16b2 ;
-  result.Data4[0] = my16b3 >> 8 ;
-  result.Data4[1] = (char ) my16b3 ;
+  result.Data4[0] = (unsigned char)(my16b3 >> 8);
+  result.Data4[1] = (char) my16b3;
   result.Data4[2] = my8b1 ;
   result.Data4[3] = my8b2 ;
   result.Data4[4] = my8b3 ;

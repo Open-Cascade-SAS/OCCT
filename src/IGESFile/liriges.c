@@ -70,7 +70,8 @@ int  iges_lire (FILE* lefic, int *numsec, char ligne[100], int modefnes)
       }
     }
     if ((ligne[0] & 128)&&modefnes) {
-      for (i = 0; i < 80; i ++)  ligne[i] = ligne[i] ^ (150 + (i & 3));
+      for (i = 0; i < 80; i ++)
+        ligne[i] = (char)(ligne[i] ^ (150 + (i & 3)));
     }
   }
   if (feof(lefic)) return 0;

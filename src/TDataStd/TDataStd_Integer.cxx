@@ -147,7 +147,7 @@ Standard_OStream& TDataStd_Integer::Dump (Standard_OStream& anOS) const
   anOS << myValue; 
 //
   anOS <<"\nAttribute fields: ";
-  anOS << TDF_Attribute::Dump(anOS);
+  TDF_Attribute::Dump(anOS);
   return anOS;
 }
 

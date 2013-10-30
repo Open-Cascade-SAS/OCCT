@@ -92,7 +92,7 @@ void SprintfExtStr(char * out, const TCollection_ExtendedString& theString) {
   while (len) {
     for(int j = 0,k=3; j<4; j++,k--) {
       unsigned short v = *(p+i) & mask[j];//x000
-      v = v >> (4*k);
+      v = (unsigned short)(v >> (4*k));
       if(v < 10)
 	v |= 0x30;
       else

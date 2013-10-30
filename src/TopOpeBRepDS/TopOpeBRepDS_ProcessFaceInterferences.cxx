@@ -452,7 +452,11 @@ Standard_Boolean TestTransition(const TopOpeBRepDS_Transition& T,const TopoDS_Fa
   
   if(!transok) {
     cout<<"States found by classifier :"<<endl;
-    cout<<"Before  :"<<TopAbs::Print(stb, cout)<<"After  :"<<TopAbs::Print(sta, cout)<<endl;
+	cout << "Before  :";
+	TopAbs::Print(stb, cout);
+	cout << "After  :";
+	TopAbs::Print(sta, cout);
+	cout << endl;
   }
   
   return transok;

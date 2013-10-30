@@ -111,7 +111,9 @@ Handle(TColStd_HArray1OfByte) Graphic3d_MarkerImage::GetBitMapArray (const Stand
         aBitOn = anAlphaValue > theAlphaValue;
       }
 
-      aBitMap->ChangeValue (aNumOfBytesInRow * aRow + aColumn / 8) += aBitOn ? (0x80 >> (aColumn % 8)) : 0;
+      Standard_Integer anIndex = aNumOfBytesInRow * aRow + aColumn / 8;
+      aBitMap->SetValue (anIndex, (Standard_Byte)(aBitMap->Value (anIndex) + 
+                                                  (aBitOn ? (0x80 >> (aColumn % 8)) : 0)));
     }
   }
 

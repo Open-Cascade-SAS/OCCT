@@ -20,31 +20,17 @@
 #include <Standard_Macro.hxx>
 #endif
 
-#ifdef WNT
+#ifdef _MSC_VER
 
-# ifndef __MATH_WNT_H
-#  define __MATH_WNT_H
+#define _USE_MATH_DEFINES
+#include <math.h>
 
+// MSVC versions prior to 12 did not provided acosh, asinh, atanh functions in standard library
+#if _MSC_VER < 1800
 __Standard_API double __cdecl acosh ( double );
 __Standard_API double __cdecl asinh ( double );
 __Standard_API double __cdecl atanh ( double );
+#endif
 
-# ifdef M_SQRT1_2
-#  undef M_SQRT1_2
-# endif
-# define M_SQRT1_2  0.707106781186547524401
-
-# ifdef M_PI_2
-#  undef M_PI_2
-# endif 
-# define M_PI_2     1.57079632679489661923
-
-# ifdef M_PI
-#  undef M_PI
-# endif
-# define M_PI       3.14159265358979323846
-
-# endif  /* __MATH_WNT_H */
-
-#endif  /* WNT */
+#endif  /* _MSC_VER */
 

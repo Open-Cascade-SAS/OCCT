@@ -461,7 +461,7 @@ static void writefnes (Standard_OStream& S, const Standard_CString ligne)
   char val;
   for (Standard_Integer i = 0; i < 80; i ++) {
     if (ligne[i] == '\0') return;
-    val = ligne[i] ^ (150 + (i & 3));
+    val = (char)(ligne[i] ^ (150 + (i & 3)));
     S << val;
   }
 }
@@ -487,7 +487,11 @@ Standard_Boolean IGESData_IGESWriter::Print (Standard_OStream& S) const
   Standard_Integer i; // svv Jan11 2000 : porting on DEC
   for (i = 0; i < MaxcarsG; i ++) blancs[i] = ' ';
   blancs[MaxcarsG] = '\0';
-  if (fnes) for (i = 0; i < MaxcarsG; i ++) blancs[i] = blancs[i] ^ (150 + (i & 3));
+  if (fnes)
+  {
+    for (i = 0; i < MaxcarsG; i ++)
+      blancs[i] = (char)(blancs[i] ^ (150 + (i & 3)));
+  }
 
   if (thesect != 4) Interface_InterfaceError::Raise
     ("IGESWriter not ready for Print");
