@@ -22,21 +22,14 @@
 package MMgt 
 
 ---Purpose:
---   The package <MMgt> provides storage management facilities, and classes
---   which can manage their own storage. 
---
+--   The package MMgt provides single class TShared which is second in hierarchy
+--   of inheritance from Standard_Transient, kept for historic reasons
 
 uses Standard
 
 is
-    class StackManager;
-    ---Purpose:
-    --   Facility for stack-based storage management.
-    --   
     deferred class TShared;
     ---Purpose:
-    --   Abstract base class providing reference counting for storage 
-    --   allocation and deallocation.
-    --   
+    --   Intermediate class between Standard_Transient and descendants.
 
 end MMgt;
