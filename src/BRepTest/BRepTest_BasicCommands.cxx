@@ -371,6 +371,34 @@ static Standard_Integer boundingstr(Draw_Interpretor& di,Standard_Integer n,cons
 }
 
 //=======================================================================
+//function : getcoords
+//purpose  : 
+//=======================================================================
+static Standard_Integer getcoords(Draw_Interpretor& di,Standard_Integer n,const char** a)
+{
+  if(n < 2) 
+    return 1;
+
+  for (Standard_Integer i = 1; i < n; i++) 
+  {
+    const TopoDS_Shape aShape = DBRep::Get (a[i]);
+
+    if (aShape.IsNull())
+      continue;
+
+    if (aShape.ShapeType() == TopAbs_VERTEX)
+    {
+      const TopoDS_Vertex& aVertex = TopoDS::Vertex(aShape);
+      gp_Pnt aPnt = BRep_Tool::Pnt(aVertex);
+
+      di << a[i] << " (x,y,z) : " << aPnt.X() << " " << aPnt.Y() << " " << aPnt.Z() << "\n";
+    }
+  }
+
+  return 0;
+}
+
+//=======================================================================
 //function : bounding
 //purpose  : 
 //=======================================================================
@@ -879,6 +907,11 @@ void  BRepTest::BasicCommands(Draw_Interpretor& theCommands)
 		  __FILE__,
 		  orientsolid,g);
 
+  theCommands.Add("getcoords",
+    "getcoords vertex1 vertex 2... ; shows coords of input vertices",
+    __FILE__,
+    getcoords,g);
+  
   theCommands.Add("bounding",
 		  "bounding shape [ xmin ymin zmin xmax ymax zmax] ; draw bounds",
 		  __FILE__,
