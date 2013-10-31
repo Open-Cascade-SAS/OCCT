@@ -57,10 +57,8 @@ uses
     PointAspect from Prs3d,
     ShadingAspect from Prs3d,
     IsoAspect from Prs3d,
-    LengthAspect from Prs3d,
-    AngleAspect from Prs3d,
+    DimensionAspect from Prs3d,
     PlaneAspect from Prs3d,
-    RadiusAspect from Prs3d,
     ArrowAspect from Prs3d,
     TypeOfDeflection from Aspect,
     NameOfColor from Quantity,
@@ -541,43 +539,19 @@ is
     is redefined static;
 
 --
---  Attributes for the presentation of a Length.
+--  Attributes for the presentation of a dimensions.
 --  
 
-    LengthAspect(me:mutable) returns mutable LengthAspect from Prs3d
-    ---Purpose: Returns a link with Prs3d_Drawer_LengthAspect,
--- which provides settings for the appearance of lengths.
+    DimensionAspect(me:mutable) returns mutable DimensionAspect from Prs3d
+    ---Purpose: Returns a link with Prs3d_Drawer_DimensionAspect,
+-- which provides settings for the appearance of dimensions.
     is redefined static;
 
-    HasLengthAspect (me) returns Boolean from Standard 
+    HasDimensionAspect (me) returns Boolean from Standard
         ---C++: inline 
-    	---Purpose: Returns true if the Drawer has a length aspect setting active.
+    	---Purpose: Returns true if the Drawer has a dimension aspect setting active.
     is static;      
      
---
---  Attributes for the presentation of a Angle.
---  
-
-    AngleAspect(me:mutable) returns mutable AngleAspect from Prs3d
-    	---Purpose: Returns a link with Prs3d_Drawer_AngleAspect,
-    	-- which provides settings for lines used to display angles.
-    is redefined static;
-
-    HasAngleAspect (me) returns Boolean from Standard 
-        ---C++: inline 
-    	---Purpose: Returns true if the Drawer has an angle aspect
-    	-- setting active.
-    is static;      
-
---
---  Attributes for the presentation of a Radius.
---  
-
-    RadiusAspect(me) returns mutable RadiusAspect from Prs3d
-    	---Purpose: Returns a link with Prs3d_Drawer_RadiusAspect,
-    	-- which provides settings for lines which serve to display radii.
-    is redefined static;
-    
 -- Attributes for the sections
 
     SectionAspect (me:mutable) returns mutable LineAspect from Prs3d

@@ -30,7 +30,7 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Aspect_AspectLine.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
-#include <Prs3d_AngleAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_PlaneAspect.hxx>
 #include <Prs3d_DatumAspect.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
@@ -46,8 +46,8 @@ static Handle(Prs3d_LineAspect) GetLineAspect(const Handle(Prs3d_Drawer)& Dr,
   case AIS_TOA_Line:
     return Dr->LineAspect();
     break;
-  case AIS_TOA_Angle:
-    return Dr->AngleAspect()->LineAspect();
+  case AIS_TOA_Dimension:
+    return Dr->DimensionAspect()->LineAspect();
     break;
   case AIS_TOA_Wire:
     return Dr->WireAspect();

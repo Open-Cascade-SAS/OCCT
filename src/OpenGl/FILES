@@ -122,6 +122,8 @@ OpenGl_CappingPlaneResource.hxx
 OpenGl_CappingPlaneResource.cxx
 OpenGl_Clipping.hxx
 OpenGl_Clipping.cxx
+OpenGl_StencilTest.hxx
+OpenGl_StencilTest.cxx
 OpenGl_ShaderObject.hxx
 OpenGl_ShaderObject.cxx
 OpenGl_ShaderProgram.hxx

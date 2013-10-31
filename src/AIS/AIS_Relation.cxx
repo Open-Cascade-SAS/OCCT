@@ -38,9 +38,8 @@
 #include <Geom_CartesianPoint.hxx>
 
 #include <Prs3d_LineAspect.hxx>
-#include <Prs3d_AngleAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_PointAspect.hxx>
-#include <Prs3d_LengthAspect.hxx>
 #include <Prs3d_TextAspect.hxx>
 
 #include <StdPrs_WFDeflectionShape.hxx>
@@ -237,22 +236,17 @@ void AIS_Relation::SetColor(const Quantity_Color &aCol)
   if (!myDrawer->HasLineAspect()) {
     myDrawer->SetLineAspect(new Prs3d_LineAspect(aCol,Aspect_TOL_SOLID,WW));
   }
-  if (!myDrawer->HasLengthAspect()) {
-     myDrawer->SetLengthAspect(new Prs3d_LengthAspect);
+  if (!myDrawer->HasDimensionAspect()) {
+     myDrawer->SetDimensionAspect(new Prs3d_DimensionAspect);
   }
-  if (!myDrawer->HasAngleAspect()) {
-    myDrawer->SetAngleAspect(new Prs3d_AngleAspect);
-  }
+
   myDrawer->LineAspect()->SetColor(aCol);  
-  const Handle(Prs3d_LengthAspect)& LENGTH = myDrawer->LengthAspect();
-  const Handle(Prs3d_AngleAspect)&  ANGLE  = myDrawer->AngleAspect();
+  const Handle(Prs3d_DimensionAspect)& DIMENSION = myDrawer->DimensionAspect();
   const Handle(Prs3d_LineAspect)&   LINE   = myDrawer->LineAspect();
   const Handle(Prs3d_TextAspect)&   TEXT   = myDrawer->TextAspect();
 
-  LENGTH->SetLineAspect(LINE);
-  LENGTH->SetTextAspect(TEXT);
-  ANGLE->SetLineAspect(LINE);
-  ANGLE->SetTextAspect(TEXT);  
+  DIMENSION->SetLineAspect(LINE);
+  DIMENSION->SetTextAspect(TEXT); 
 }
 
 //=======================================================================
@@ -267,8 +261,7 @@ void AIS_Relation::UnsetColor()
   Quantity_Color CC;
   AIS_GraphicTool::GetLineColor(myDrawer->Link(),AIS_TOA_Line,CC);
   LA->SetColor(CC);
-  myDrawer->AngleAspect()->SetLineAspect(LA);
-  myDrawer->LengthAspect()->SetLineAspect(LA);
+  myDrawer->DimensionAspect()->SetLineAspect(LA);
   myDrawer->SetTextAspect(myDrawer->Link()->TextAspect());
 }
 

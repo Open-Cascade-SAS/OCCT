@@ -138,6 +138,7 @@ is
     --      TODT_SUBTITLE   There is a subtitle under the text.
     --      TODT_DEKALE     The text is displayed with a 3D style.
     --      TODT_BLEND      The text is displayed in XOR.
+    --      TODT_DIMENSION  Dimension line under text will be invisible. 
     ---Category: Methods to modify the class definition
 
     SetColorSubTitle ( me       : mutable;

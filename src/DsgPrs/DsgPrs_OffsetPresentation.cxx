@@ -34,7 +34,7 @@
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
-#include <Prs3d_LengthAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
 
 #include <TCollection_AsciiString.hxx>
 
@@ -61,7 +61,7 @@ void DsgPrs_OffsetPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
 				     const gp_Dir& aDirection2,
 				     const gp_Pnt& OffsetPoint)
 {
-  Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
+  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   gp_Lin L1 (AttachmentPoint1,aDirection);
@@ -114,19 +114,19 @@ void DsgPrs_OffsetPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
 
   if (DimNulle)
   {
-    Prs3d_Arrow::Draw(aPresentation,offp,L4.Direction(),LA->Arrow1Aspect()->Angle(),LA->Arrow1Aspect()->Length());
-    Prs3d_Arrow::Draw(aPresentation,offp,L4.Direction().Reversed(),LA->Arrow1Aspect()->Angle(),LA->Arrow1Aspect()->Length());
+    Prs3d_Arrow::Draw(aPresentation,offp,L4.Direction(),LA->ArrowAspect()->Angle(),LA->ArrowAspect()->Length());
+    Prs3d_Arrow::Draw(aPresentation,offp,L4.Direction().Reversed(),LA->ArrowAspect()->Angle(),LA->ArrowAspect()->Length());
   }
   else
   {
-    if (dist < (LA->Arrow1Aspect()->Length()+LA->Arrow2Aspect()->Length()))
+    if (dist < (LA->ArrowAspect()->Length()+LA->ArrowAspect()->Length()))
       outside = Standard_True;
     gp_Dir arrdir = L3.Direction().Reversed();
     if (outside)
       arrdir.Reverse();
 
     // fleche 1 : 2eme groupe
-    Prs3d_Arrow::Draw(aPresentation,Proj1,arrdir,LA->Arrow1Aspect()->Angle(),LA->Arrow1Aspect()->Length());
+    Prs3d_Arrow::Draw(aPresentation,Proj1,arrdir,LA->ArrowAspect()->Angle(),LA->ArrowAspect()->Length());
 
     Prs3d_Root::NewGroup(aPresentation);
     Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
@@ -177,7 +177,7 @@ void DsgPrs_OffsetPresentation::AddAxes (const Handle(Prs3d_Presentation)& aPres
   gp_Lin L2 (AttachmentPoint2,aDirection);
   gp_Pnt Proj2 = ElCLib::Value(ElCLib::Parameter(L2,OffsetPoint),L2);
 
-  Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
+  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   Quantity_Color acolor;
   Aspect_TypeOfLine atype;
   Standard_Real awidth;

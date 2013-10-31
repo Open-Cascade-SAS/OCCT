@@ -275,7 +275,7 @@ is
     	 -- for example, are only created for the selection
     	 -- process. By means of these enumerations, they can
     	 -- be cleared from local context.
-        
+
     enumeration KindOfUnit is 
     TOU_LENGTH,
     TOU_SURFACE,
@@ -285,19 +285,19 @@ is
     TOU_MASS,
     TOU_FORCE,
     TOU_TIME;
-    	 ---Purpose: Declares the type of Interactive Object unit.
-        
+    ---Purpose: Declares the type of Interactive Object unit.
+
     enumeration TypeOfAxis is TOAX_Unknown,TOAX_XAxis,TOAX_YAxis,TOAX_ZAxis;
-    	 ---Purpose: Declares the type of axis.
-        
+    ---Purpose: Declares the type of axis.
+
     enumeration TypeOfPlane is TOPL_Unknown,TOPL_XYPlane,TOPL_XZPlane,TOPL_YZPlane;
-    	 ---Purpose: Declares the type of plane.
+     ---Purpose: Declares the type of plane.
     enumeration TypeOfDist is TOD_Unknown,TOD_Horizontal,TOD_Vertical;
----Purpose: To declare the type of distance.
-    
+    ---Purpose: To declare the type of distance.
+
     enumeration TypeOfAttribute is 
     TOA_Line,
-    TOA_Angle,
+    TOA_Dimension,
     TOA_Wire,
     TOA_Plane,
     TOA_Vector,
@@ -311,16 +311,21 @@ is
     TOA_FirstAxis,
     TOA_SecondAxis,
     TOA_ThirdAxis;
-    
-    enumeration StandardDatum is SD_None,SD_Point,SD_Axis,SD_Trihedron,SD_PlaneTrihedron,SD_Line,SD_Circle,SD_Plane;
-    	--- Purpose: Declares the type of standard datum of an Interactive Object. 
 
--- New ------------------------------------------------
+    enumeration StandardDatum is SD_None,SD_Point,SD_Axis,SD_Trihedron,SD_PlaneTrihedron,SD_Line,SD_Circle,SD_Plane;
+    --- Purpose: Declares the type of standard datum of an Interactive Object. 
 
     enumeration KindOfSurface is KOS_Plane, KOS_Cylinder, KOS_Cone, KOS_Sphere, KOS_Torus,
-    	        KOS_Revolution, KOS_Extrusion, KOS_OtherSurface;
--------------------------------------------------------    
-   
+                                 KOS_Revolution, KOS_Extrusion, KOS_OtherSurface;
+
+-- Enumerations for dimensions management --
+
+    enumeration DisplaySpecialSymbol is DSS_No, DSS_Before, DSS_After;
+    ---Purpose: Specifies dimension special symbol display options
+
+    enumeration DimensionDisplayMode is DDM_All, DDM_Line, DDM_Text;
+    ---Purpose: Specifies dimension display modes for advanced highlighting and selection.
+
     class Triangulation;
 
     class TexturedShape;
@@ -374,10 +379,10 @@ is
     deferred class EllipseRadiusDimension; 
     class MaxRadiusDimension; 
     class MinRadiusDimension; 
-    class LengthDimension;
-    class AngleDimension;
-    class RadiusDimension;
-    class DiameterDimension;
+    imported LengthDimension;
+    imported AngleDimension;
+    imported RadiusDimension;
+    imported DiameterDimension;
     class Chamf2dDimension;
     class Chamf3dDimension;
     class OffsetDimension;

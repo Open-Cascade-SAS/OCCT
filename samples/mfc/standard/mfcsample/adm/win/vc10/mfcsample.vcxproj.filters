@@ -120,6 +120,24 @@
     <ClCompile Include="..\..\..\..\Common\ISession2D\ISession2D_Shape.cpp">
       <Filter>Source Files\ISession2D-src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Common\DimensionDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Common\AngleParamsVerticesPage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Common\LengthParamsEdgePage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Common\LengthParamsEdgesPage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Common\LengthParamsVerticesPage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Common\RadiusParamsPage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\..\..\Common\res\OCC_Resource.rc">
@@ -210,6 +228,24 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\Common\ISession2D\ISession2D_Shape.h">
       <Filter>Header Files\ISession2D-headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Common\DimensionDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Common\AngleParamsVerticesPage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Common\LengthParamsEdgePage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Common\LengthParamsEdgesPage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Common\LengthParamsVerticesPage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Common\RadiusParamsPage.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

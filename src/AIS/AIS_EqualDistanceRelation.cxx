@@ -41,7 +41,7 @@
 #include <BRep_Tool.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
-#include <Prs3d_LengthAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_Circle.hxx>
@@ -84,8 +84,8 @@ void AIS_EqualDistanceRelation::Compute( const Handle( PrsMgr_PresentationManage
 
   gp_Pnt Position12 =  myPosition, Position34 = myPosition;
 
-  Handle(Prs3d_LengthAspect) la = myDrawer->LengthAspect();
-  Handle(Prs3d_ArrowAspect) arr = la->Arrow1Aspect();
+  Handle(Prs3d_DimensionAspect) la = myDrawer->DimensionAspect();
+  Handle(Prs3d_ArrowAspect) arr = la->ArrowAspect();
   arr->SetLength(myArrowSize);
 // -- ota -- begin
   if (!myAutomaticPosition ){
@@ -477,10 +477,10 @@ void AIS_EqualDistanceRelation::ComputeTwoEdgesLength( const Handle( Prs3d_Prese
   if (arrsize < confusion) arrsize = Val*0.1;
   if (Abs(Val) <= confusion) {arrsize = 0.;}
 
-  Handle(Prs3d_LengthAspect) la = aDrawer->LengthAspect();
-  Handle(Prs3d_ArrowAspect) arr = la->Arrow1Aspect();  
+  Handle(Prs3d_DimensionAspect) la = aDrawer->DimensionAspect();
+  Handle(Prs3d_ArrowAspect) arr = la->ArrowAspect();  
   arr->SetLength(arrsize);
-  arr = la->Arrow2Aspect();
+  arr = la->ArrowAspect();
   arr->SetLength(arrsize);
 
   if (AutomaticPos && IsSetBndBox)
@@ -659,10 +659,10 @@ void AIS_EqualDistanceRelation::ComputeTwoVerticesLength( const Handle( Prs3d_Pr
   }
 
  
-  Handle(Prs3d_LengthAspect) la = aDrawer->LengthAspect();
-  Handle(Prs3d_ArrowAspect) arr = la->Arrow1Aspect();  
+  Handle(Prs3d_DimensionAspect) la = aDrawer->DimensionAspect();
+  Handle(Prs3d_ArrowAspect) arr = la->ArrowAspect();  
   arr->SetLength(ArrowSize);
-  arr = la->Arrow2Aspect();
+  arr = la->ArrowAspect();
   arr->SetLength(ArrowSize);
 
   if (AutomaticPos && IsSetBndBox)
@@ -768,10 +768,10 @@ void AIS_EqualDistanceRelation::ComputeOneEdgeOneVertexLength( const Handle( Prs
     SecondAttach = ElCLib::Value(ElCLib::Parameter(l,Position),l);
   }
   
-  Handle(Prs3d_LengthAspect) la = aDrawer->LengthAspect();
-  Handle(Prs3d_ArrowAspect) arr = la->Arrow1Aspect();  
+  Handle(Prs3d_DimensionAspect) la = aDrawer->DimensionAspect();
+  Handle(Prs3d_ArrowAspect) arr = la->ArrowAspect();  
   arr->SetLength(arrsize);
-  arr = la->Arrow2Aspect();
+  arr = la->ArrowAspect();
   arr->SetLength(arrsize);
 
   if (AutomaticPos && IsSetBndBox)

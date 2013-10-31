@@ -328,49 +328,38 @@ static Standard_Integer BUC60915_1(Draw_Interpretor& di, Standard_Integer argc, 
   /***************************************/
   //dimension "L 502.51"
   /***************************************/
-  Handle(AIS_LengthDimension) len = new AIS_LengthDimension(V2, V3, pln, 502.51, "502.51");
-  len->SetPosition(gp_Pnt(350, 250, 0));
-  len->SetTypeOfDist(AIS_TOD_Horizontal);
-  len->SetArrowSize(30.0);
+  Handle(AIS_LengthDimension) len = new AIS_LengthDimension(V2, V3, pln->Pln());
   context->Display(len);
   /***************************************/
   //dimension "L 90"
   /***************************************/
-  Handle(AIS_LengthDimension) len1 = new AIS_LengthDimension(V4, V7, pln, 90, "90");
-  len1->SetPosition(gp_Pnt(70, 120, 0));
-  len1->SetTypeOfDist(AIS_TOD_Vertical);
-  len1->SetArrowSize(100.0);
+  Handle(AIS_LengthDimension) len1 = new AIS_LengthDimension(V4, V7, pln->Pln());
   context->Display(len1);
   /***************************************/
   //dimension "L 150"
   /***************************************/
-  Handle(AIS_LengthDimension) len2 = new AIS_LengthDimension(V1, V2, pln, 150, "150",gp_Pnt(650, 120, 0),DsgPrs_AS_BOTHAR,
-    AIS_TOD_Vertical, 100.0 );
-  //len2->SetPosition(gp_Pnt(650, 120, 0));
-  //len2->SetTypeOfDist(AIS_TOD_Vertical);
-  //len1->SetArrowSize(100.0);
+  Handle(AIS_LengthDimension) len2 = new AIS_LengthDimension(V1, V2, pln->Pln());
   context->Display(len2);
   /***************************************/
   //dimension "R 88.58"
   /***************************************/
   gp_Circ cir = gp_Circ(gp_Ax2(gp_Pnt(191.09, -88.58, 0), gp_Dir(0, 0, 1)), 88.58);
   TopoDS_Edge E1 = BRepBuilderAPI_MakeEdge(cir,gp_Pnt(191.09,0,0.),gp_Pnt(191.09,-177.16,0.) );
-  Handle(AIS_RadiusDimension) dim1 = new AIS_RadiusDimension(E1,88.58, "R 88.58",gp_Pnt(-30.0, -80.0, 0.0),DsgPrs_AS_BOTHAR,
-    100.0 );
+  Handle(AIS_RadiusDimension) dim1 = new AIS_RadiusDimension(E1);
   context->Display(dim1);
   /***************************************/
   //dimension "R 43.80"
   /***************************************/
   gp_Circ cir1 = gp_Circ(gp_Ax2(gp_Pnt(191.09, -88.58, 0), gp_Dir(0, 0, 1)), 43.80);
   TopoDS_Edge E_cir1 = BRepBuilderAPI_MakeEdge(cir1);
-  dim1 = new AIS_RadiusDimension(E_cir1,43.80, "R 43.80",gp_Pnt(0.0, -50.0, 0.0),DsgPrs_AS_LASTAR, 60.0 );
+  dim1 = new AIS_RadiusDimension(E_cir1);
   context->Display(dim1);
   /***************************************/
   //dimension "R 17.86"
   /***************************************/
   gp_Circ cir2 = gp_Circ(gp_Ax2(gp_Pnt(566.11, -88.58, 0), gp_Dir(0, 0, -1)), 17.86);
   TopoDS_Edge E_cir2 = BRepBuilderAPI_MakeEdge(cir2);
-  dim1 = new AIS_RadiusDimension(E_cir2,17.86, "R 17.86",gp_Pnt(600.0, -50.0, 0.0),DsgPrs_AS_LASTAR, 40.0 );
+  dim1 = new AIS_RadiusDimension(E_cir2);
   context->Display(dim1);
 
   return 0;

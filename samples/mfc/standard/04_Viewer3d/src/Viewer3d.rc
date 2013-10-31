@@ -303,6 +303,7 @@ BEGIN
     BUTTON      ID_OBJECT_DISPLAYALL
     SEPARATOR
     BUTTON      ID_OBJECT_REMOVE
+    BUTTON      ID_OBJECT_DIM
 END
 
 
@@ -371,10 +372,6 @@ BEGIN
     BEGIN
         MENUITEM "Background Color...",         ID_Modify_ChangeBackground
     END
-    POPUP "User cylinder"
-    BEGIN
-        MENUITEM "Change face color",           ID_USERCYLINDER_CHANGEFACECOLOR
-    END
     POPUP "Object(s)"
     BEGIN
         MENUITEM "Erase",                       ID_OBJECT_ERASE
@@ -407,6 +404,10 @@ BEGIN
             MENUITEM "Default",                     ID_OBJECT_MATERIAL_DEFAULT
         END
         MENUITEM "Transparency...",             ID_OBJECT_TRANSPARENCY
+    END
+    POPUP "User cylinder"
+    BEGIN
+        MENUITEM "Change face color",           ID_USERCYLINDER_CHANGEFACECOLOR
     END
 END
 
@@ -512,6 +513,12 @@ STRINGTABLE
 BEGIN
     ID_DUMP_VIEW            "Save current frame into a GIF file\nExport view to GIF (F12)"
     ID_TEXTURE_ON           "Run texture example\nRun texture example"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_OBJECT_DIMENSIONS    "Add dimensions"
+    ID_LOCALCONTEXT_ADDDIMENSION "Add new dimension for selected objetcs"
 END
 
 #endif    // English (U.S.) resources

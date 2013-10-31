@@ -3,7 +3,13 @@
 // Used by OCC_Resource.rc
 //
 #define IDR_POPUP                       116
+#define IDD_Dimension                   119
+#define IDD_LengthParamsEdgePage        122
+#define IDD_LengthParamsVerticesPage    123
+#define IDD_LengthParamsEdgesPage       125
+#define IDD_AngleParamsVerticesPage     126
 #define IDR_MAINFRAME                   128
+#define IDD_RadiusParamsPage            128
 #define IDR_2DTYPE                      129
 #define IDR_3DTYPE                      131
 #define ID_FILE_EXPORT_IMAGE            132
@@ -20,8 +26,41 @@
 #define IDD_COLORMESH                   552
 #define IDB_coloredmesh                 554
 #define IDC_RICHEDIT_ResultDialog       1001
-#define IDC_EDIT1                       1004
-#define IDC_README                      1005
+#define IDC_ResultNameEdit              1003
+#define IDC_README                      1004
+#define IDC_DimensionGroupbox           1005
+#define IDD_DIMENSIONDLG                1006
+#define IDC_TextParamGroupbox           1007
+#define IDC_DimensionParametersGroupbox 1010
+#define IDC_TAB1                        1011
+#define IDC_LengthTab                   1014
+#define IDC_AngleTab                    1015
+#define IDC_BUTTON1                     1016
+#define IDC_XPOS                        1017
+#define IDC_BUTTON2                     1018
+#define IDC_BUTTON3                     1019
+#define IDC_YPOS                        1020
+#define IDC_BUTTON4                     1021
+#define IDC_RadiusTab                   1022
+#define IDC_ZPOS                        1023
+#define IDC_ChooseEdgeBtn               1025
+#define IDC_ChooseEdgeEdit              1026
+#define IDC_Flyout                      1028
+#define IDC_DiameterTab                 1031
+#define IDC_DimLength                   1032
+#define IDC_DimAngle                    1033
+#define IDC_DimRadius                   1034
+#define IDC_DimDiameter                 1035
+#define IDC_2DText                      1036
+#define IDC_3DText                      1037
+#define IDC_FontSize                    1038
+#define IDC_FontSizeStatic              1039
+#define IDC_FlyoutStatic                1044
+#define IDC_DisplayUnits                1045
+#define IDC_DisplayUnitsStatic          1046
+#define IDC_TextDisplayMode             1047
+#define IDC_TextDisplayModeStatic       1048
+#define IDC_DimensionColor              1049
 #define ID_WINDOW_NEW3D                 1151
 #define ID_OBJECT_DISPLAYALL            1201
 #define ID_OBJECT_MATERIAL              1205
@@ -93,6 +132,9 @@
 #define ID_BUTTONTop                    40016
 #define ID_BUTTON40017                  40017
 #define ID_BUTTON40033                  40033
+#define ID_OBJECT_DIMENSIONS            40035
+#define ID_OBJECT_DIM                   40036
+#define ID_LOCALCONTEXT_ADDDIMENSION    40037
 #define ID_FILE_IMPORT_CSFDB            40100
 #define ID_FILE_IMPORT_BREP             40101
 #define ID_FILE_IMPORT_STEP             40102
@@ -132,9 +174,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        119
-#define _APS_NEXT_COMMAND_VALUE         40034
-#define _APS_NEXT_CONTROL_VALUE         1006
+#define _APS_NEXT_RESOURCE_VALUE        131
+#define _APS_NEXT_COMMAND_VALUE         40038
+#define _APS_NEXT_CONTROL_VALUE         1052
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

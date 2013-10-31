@@ -783,6 +783,35 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
       drawText    (thePrintCtx, theCtx, theTextAspect);
       break;
     }
+    case Aspect_TODT_DIMENSION:
+    {
+      setupMatrix (thePrintCtx, theCtx, theTextAspect, OpenGl_Vec3 (0.0f, 0.0f, 0.00001f));
+
+      glDisable (GL_DEPTH_TEST);
+      glColorMask (GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+
+      glClear (GL_STENCIL_BUFFER_BIT);
+      glEnable (GL_STENCIL_TEST);
+      glStencilFunc (GL_ALWAYS, 1, 0x00);
+      glStencilOp (GL_KEEP, GL_KEEP, GL_REPLACE);
+
+      glBegin (GL_QUADS);
+      glVertex2f (myBndBox.Left,  myBndBox.Top);
+      glVertex2f (myBndBox.Right, myBndBox.Top);
+      glVertex2f (myBndBox.Right, myBndBox.Bottom);
+      glVertex2f (myBndBox.Left,  myBndBox.Bottom);
+      glEnd();
+
+      glStencilFunc (GL_ALWAYS, 0, 0xFF);
+      glDisable (GL_STENCIL_TEST);
+
+      if (!myIs2d)
+      {
+        glEnable (GL_DEPTH_TEST);
+      }
+      glColorMask (GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+      break;
+    }
     case Aspect_TODT_NORMAL:
     {
       break;

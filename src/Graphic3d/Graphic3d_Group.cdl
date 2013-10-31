@@ -369,6 +369,10 @@ class Group from Graphic3d inherits TShared
     --  Warning: Raises GroupDefinitionError if ...
     raises GroupDefinitionError from Graphic3d is static;
 
+    SetStencilTestOptions (me          : mutable;
+                           theIsEnabled: Boolean from Standard);
+    ---Purpose: sets the stencil test to theIsEnabled state;
+
         ----------------------------
         -- Category: Inquire methods
         ----------------------------

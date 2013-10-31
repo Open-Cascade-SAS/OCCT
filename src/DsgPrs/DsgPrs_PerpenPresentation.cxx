@@ -35,7 +35,7 @@
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_TextAspect.hxx>
 #include <Prs3d_PointAspect.hxx>
-#include <Prs3d_LengthAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
@@ -53,7 +53,7 @@ void DsgPrs_PerpenPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
 				     const Standard_Boolean intOut1,
 				     const Standard_Boolean intOut2)
 {
-  Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
+  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   LA->LineAspect()->SetTypeOfLine(Aspect_TOL_SOLID); // ou DOT ou DOTDASH
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   

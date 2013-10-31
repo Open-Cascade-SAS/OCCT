@@ -538,7 +538,8 @@ is
         enumeration TypeOfDisplayText is        TODT_NORMAL,
                                                 TODT_SUBTITLE,
                                                 TODT_DEKALE,
-                                                TODT_BLEND
+                                                TODT_BLEND,
+                                                TODT_DIMENSION
         end TypeOfDisplayText;
         ---Purpose: Define the display type of the text.        
         --
@@ -546,6 +547,7 @@ is
         --          TODT_SUBTITLE       There is a subtitle under the text.
         --          TODT_DEKALE         The text is displayed with a 3D style.
         --          TODT_BLEND          The text is displayed in XOR.
+        --          TODT_DIMENSION      Dimension line under text will be invisible. 
         ---Category: Enumerations
 
         enumeration TypeOfMarker is     TOM_POINT,

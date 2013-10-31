@@ -451,6 +451,12 @@ is
         is deferred;
     ---Purpose:
 
+    SetStencilTestOptions ( me          : mutable;
+                            theCGroup   : CGroup from Graphic3d;
+                            theIsEnabled: Boolean from Standard)
+    is deferred;
+    ---Purpose: sets the stencil test to theIsEnabled state;
+
     ----------------------------------------
     -- Category: Methods to create Text
     -- for Purpose : see Graphic3d_Group.cdl

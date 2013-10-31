@@ -29,6 +29,7 @@
 #include <OpenGl_Group.hxx>
 #include <OpenGl_CView.hxx>
 #include <OpenGl_View.hxx>
+#include <OpenGl_StencilTest.hxx>
 #include <OpenGl_Text.hxx>
 #include <OpenGl_Trihedron.hxx>
 #include <OpenGl_Workspace.hxx>
@@ -328,6 +329,14 @@ Standard_Boolean OpenGl_GraphicDriver::Print (const Graphic3d_CView& theCView,
 #endif
   myPrintContext.Nullify();
   return isPrinted;
+}
+
+void OpenGl_GraphicDriver::SetStencilTestOptions (const Graphic3d_CGroup& theCGroup,
+                                                  const Standard_Boolean theIsEnabled)
+{
+  OpenGl_StencilTest* aStencilTest = new OpenGl_StencilTest();
+  aStencilTest->SetOptions (theIsEnabled);
+  ((OpenGl_Group* )theCGroup.ptrGroup)->AddElement (TelNil, aStencilTest);
 }
 
 // =======================================================================

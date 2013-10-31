@@ -29,11 +29,13 @@
 namespace
 {
 
-  //! Search for RGBA double-buffered visual
+  //! Search for RGBA double-buffered visual with stencil buffer.
+  //! Each size property should be a nonnegative minimum specification.
   static int TheDoubleBuff[] =
   {
     GLX_RGBA,
     GLX_DEPTH_SIZE, 16,
+    GLX_STENCIL_SIZE, 1,
     GLX_DOUBLEBUFFER,
     None
   };

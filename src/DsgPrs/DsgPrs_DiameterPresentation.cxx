@@ -25,7 +25,7 @@
 
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_TextAspect.hxx>
-#include <Prs3d_LengthAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_Text.hxx>
 #include <Prs3d_ArrowAspect.hxx>
@@ -60,7 +60,7 @@ void DsgPrs_DiameterPresentation::Add (const Handle(Prs3d_Presentation)& aPresen
    				       const DsgPrs_ArrowSide ArrowPrs,
 				       const Standard_Boolean IsDiamSymbol )
 {
-  Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
+  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   Standard_Real parat    = ElCLib::Parameter(aCircle, AttachmentPoint);
@@ -156,7 +156,7 @@ void DsgPrs_DiameterPresentation::Add (const Handle(Prs3d_Presentation)& aPresen
     lpara -= 2.*M_PI;
   }
 
-  Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
+  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   Standard_Real parEndOfArrow = ElCLib::Parameter(aCircle,AttachmentPoint);
   gp_Pnt EndOfArrow;

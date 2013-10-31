@@ -27,7 +27,7 @@
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
-#include <Prs3d_LengthAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
@@ -66,7 +66,7 @@ void DsgPrs_EllipseRadiusPresentation::Add (const Handle(Prs3d_Presentation)& aP
 					    const Standard_Boolean IsMaxRadius,
 					    const DsgPrs_ArrowSide ArrowPrs)
 {
-  Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
+  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
  
   const Standard_Real dist = aCenter.Distance( aPosition );
@@ -108,7 +108,7 @@ void DsgPrs_EllipseRadiusPresentation::Add (const Handle(Prs3d_Presentation)& aP
 					    const Standard_Boolean IsMaxRadius,
 					    const DsgPrs_ArrowSide ArrowPrs)
 {
-  Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
+  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   if(!IsInDomain)
@@ -150,7 +150,7 @@ void DsgPrs_EllipseRadiusPresentation::Add (const Handle(Prs3d_Presentation)& aP
 					    const Standard_Boolean IsMaxRadius,
 					    const DsgPrs_ArrowSide ArrowPrs)
 {
-  Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
+  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   if(!IsInDomain)

@@ -37,7 +37,7 @@
 #include <Precision.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_Drawer.hxx>
-#include <Prs3d_LengthAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Select3D_SensitiveBox.hxx>
 #include <Select3D_SensitiveSegment.hxx>
@@ -327,11 +327,11 @@ void AIS_OffsetDimension::ComputeTwoAxesOffset(const Handle(Prs3d_Presentation)&
     mySAttach = P2LastProj;
 
 
-  Handle(Prs3d_LengthAspect) la = myDrawer->LengthAspect();
-  Handle(Prs3d_ArrowAspect) arr = la->Arrow1Aspect();
+  Handle(Prs3d_DimensionAspect) la = myDrawer->DimensionAspect();
+  Handle(Prs3d_ArrowAspect) arr = la->ArrowAspect();
   //cout<<"AIS_OffsetDimension::AIS_OffsetDimension " <<  myArrowSize << " myArrowSize"<<endl;
   arr->SetLength(myArrowSize);
-  arr = la->Arrow2Aspect();
+  arr = la->ArrowAspect();
   arr->SetLength(myArrowSize);
 
   gp_Pnt myTFAttach = myFAttach.Transformed (aTrsf);
@@ -433,11 +433,11 @@ void AIS_OffsetDimension::ComputeTwoFacesOffset(const Handle(Prs3d_Presentation)
     myDirAttach2.SetCoord (avec.X(),avec.Y(),avec.Z());
   }
   
-  Handle(Prs3d_LengthAspect) la = myDrawer->LengthAspect();
-  Handle(Prs3d_ArrowAspect) arr = la->Arrow1Aspect();
+  Handle(Prs3d_DimensionAspect) la = myDrawer->DimensionAspect();
+  Handle(Prs3d_ArrowAspect) arr = la->ArrowAspect();
   //cout<<"AIS_OffsetDimension::AIS_OffsetDimension " <<  myArrowSize << " myArrowSize"<<endl;
   arr->SetLength(myArrowSize);
-  arr = la->Arrow2Aspect();
+  arr = la->ArrowAspect();
   arr->SetLength(myArrowSize);
 
   gp_Pnt myTFAttach = myFAttach.Transformed (aTrsf);

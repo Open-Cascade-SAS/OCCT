@@ -11,8 +11,12 @@
 #include <res\OCC_Resource.h>
 #include "ImportExport/ImportExport.h"
 #include "AISDialogs.h"
+#include <AIS_LocalContext.hxx>
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
+#include <TColStd_ListIteratorOfListOfInteger.hxx>
+#include <TColStd_ListOfInteger.hxx>
+#include <TopoDS_Shape.hxx>
 
 BEGIN_MESSAGE_MAP(OCC_3dBaseDoc, OCC_BaseDoc)
   //{{AFX_MSG_MAP(OCC_3dBaseDoc)
@@ -34,6 +38,9 @@ BEGIN_MESSAGE_MAP(OCC_3dBaseDoc, OCC_BaseDoc)
   ON_UPDATE_COMMAND_UI(ID_OBJECT_DISPLAYALL, OnUpdateObjectDisplayall)
   ON_COMMAND(ID_OBJECT_REMOVE, OnObjectRemove)
   ON_UPDATE_COMMAND_UI(ID_OBJECT_REMOVE, OnUpdateObjectRemove)
+  ON_COMMAND(ID_OBJECT_DIM, OnObjectAddDimensions)
+  ON_UPDATE_COMMAND_UI(ID_OBJECT_DIM, OnUpdateObjectAddDimensions)
+
   //}}AFX_MSG_MAP
   ON_COMMAND_EX_RANGE(ID_OBJECT_MATERIAL_BRASS,ID_OBJECT_MATERIAL_DEFAULT, OnObjectMaterialRange)
   ON_UPDATE_COMMAND_UI_RANGE(ID_OBJECT_MATERIAL_BRASS,ID_OBJECT_MATERIAL_DEFAULT, OnUpdateObjectMaterialRange)
@@ -45,6 +52,8 @@ END_MESSAGE_MAP()
 //////////////////////////////////////////////////////////////////////
 
 OCC_3dBaseDoc::OCC_3dBaseDoc()
+:myPopupMenuNumber(0),
+ myDimensionDlg()
 {
   AfxInitRichEdit();
 
@@ -55,6 +64,8 @@ OCC_3dBaseDoc::OCC_3dBaseDoc()
   myViewer->SetDefaultLights();
   myViewer->SetLightOn();
   myAISContext = new AIS_InteractiveContext (myViewer);
+  myDimensionDlg.SetContext (myAISContext);
+  myDimensionDlg.Create(CDimensionDlg::IDD, NULL);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -167,17 +178,20 @@ void  OCC_3dBaseDoc::Popup (const Standard_Integer theMouseX,
                             const Standard_Integer theMouseY,
                             const Handle(V3d_View)& theView)
 {
-  Standard_Integer PopupMenuNumber=0;
-  myAISContext->InitCurrent();
-  if (myAISContext->MoreCurrent())
-    PopupMenuNumber=1;
+  // Base check which context menu to call
+  if (!myPopupMenuNumber)
+  {
+    myAISContext->InitCurrent();
+    if (myAISContext->MoreCurrent())
+      myPopupMenuNumber=1;
+  }
 
   CMenu menu;
   VERIFY(menu.LoadMenu(IDR_Popup3D));
-  CMenu* pPopup = menu.GetSubMenu(PopupMenuNumber);
+  CMenu* pPopup = menu.GetSubMenu(myPopupMenuNumber);
 
   ASSERT(pPopup != NULL);
-   if (PopupMenuNumber == 1) // more than 1 object.
+   if (myPopupMenuNumber == 1) // more than 1 object.
   {
     bool OneOrMoreInShading = false;
 	for (myAISContext->InitCurrent();myAISContext->MoreCurrent ();myAISContext->NextCurrent ())
@@ -190,8 +204,10 @@ void  OCC_3dBaseDoc::Popup (const Standard_Integer theMouseX,
   Handle(WNT_Window) aWNTWindow=
   Handle(WNT_Window)::DownCast(theView->Window());
   ClientToScreen ( (HWND)(aWNTWindow->HWindow()),&winCoord);
-  pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON , winCoord.x, winCoord.y , 
-                         AfxGetMainWnd());
+  pPopup->TrackPopupMenu (TPM_LEFTALIGN | TPM_RIGHTBUTTON,
+                          winCoord.x,
+                          winCoord.y,
+                          AfxGetMainWnd());
 }
 
 void OCC_3dBaseDoc::Fit()
@@ -392,7 +408,7 @@ void OCC_3dBaseDoc::OnUpdateObjectRemove(CCmdUI* pCmdUI)
   bool OneOrMoreIsDisplayed = false;
   for (myAISContext->InitCurrent();myAISContext->MoreCurrent ();myAISContext->NextCurrent ())
     if (myAISContext->IsDisplayed(myAISContext->Current())) OneOrMoreIsDisplayed=true;
-  pCmdUI->Enable (OneOrMoreIsDisplayed);	
+  pCmdUI->Enable (OneOrMoreIsDisplayed);
 }
 
 void OCC_3dBaseDoc::SetMaterial(Graphic3d_NameOfMaterial Material) 
@@ -401,3 +417,18 @@ void OCC_3dBaseDoc::SetMaterial(Graphic3d_NameOfMaterial Material)
     myAISContext->SetMaterial (myAISContext->Current(),
     (Graphic3d_NameOfMaterial)(Material));
 }
+
+void OCC_3dBaseDoc::OnObjectAddDimensions() 
+{
+  //Add dimentions dialog is opened here
+  myDimensionDlg.ShowWindow(SW_SHOW);
+  myDimensionDlg.UpdateStandardMode ();
+}
+
+void OCC_3dBaseDoc::OnUpdateObjectAddDimensions(CCmdUI* pCmdUI) 
+{
+  // Check if local context is opened
+  //pCmdUI->Enable (myAISContext->HasOpenedContext());
+}
+
+

@@ -26,7 +26,7 @@
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
-#include <Prs3d_LengthAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
@@ -84,10 +84,10 @@ void DsgPrs_FilletRadiusPresentation::Add (const Handle(Prs3d_Presentation)& aPr
   gp_Dir DirOfArrow;
   gp_Circ FilletCirc;
   //  gp_Pnt NewPosition, EndOfArrow;
-  Handle( Prs3d_LengthAspect ) LA = aDrawer->LengthAspect();
+  Handle( Prs3d_DimensionAspect ) LA = aDrawer->DimensionAspect();
   Prs3d_Root::CurrentGroup( aPresentation )->SetPrimitivesAspect( LA->LineAspect()->Aspect() );
 
-  Standard_Real ArrowLength = LA->Arrow1Aspect()->Length();
+  Standard_Real ArrowLength = LA->ArrowAspect()->Length();
   DsgPrs::ComputeFilletRadiusPresentation( ArrowLength,
 					   theval,
 					   aPosition,

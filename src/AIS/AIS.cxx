@@ -384,10 +384,10 @@ Standard_Boolean AIS::ComputeGeometry(const TopoDS_Edge& anEdge1,
 //=======================================================================
 //function : ComputeGeometry
 //purpose  : Computes the geometry of the 2 edges in the current wp
-//           and the 'rigth' geometry of the edges if one doesn't
-//           belong to the currentworkingplane.
+//           and the 'right' geometry of the edges if one doesn't
+//           belong to the current working plane.
 //           There may be only one curve that can't belong to the
-//           current workingplane ( attachement constraint)
+//           current working plane ( attachement constraint)
 //           if the 2 edges belong to the current WP, <WhatProj> = 0
 //
 //           indexExt = 0 2 edges are in the current wp
@@ -397,19 +397,19 @@ Standard_Boolean AIS::ComputeGeometry(const TopoDS_Edge& anEdge1,
 //           it returns Standard_False
 //=======================================================================
 
-Standard_Boolean AIS::ComputeGeometry(const TopoDS_Edge& anEdge1, 
-				      const TopoDS_Edge& anEdge2, 
-				      Standard_Integer& indexExt, 
-				      Handle(Geom_Curve)& aCurve1, 
-				      Handle(Geom_Curve)& aCurve2, 
-				      gp_Pnt& FirstPnt1, 
-				      gp_Pnt& LastPnt1, 
-				      gp_Pnt& FirstPnt2, 
-				      gp_Pnt& LastPnt2, 
-				      Handle(Geom_Curve)& extCurve,
-				      Standard_Boolean& isInfinite1,
-				      Standard_Boolean& isInfinite2,				      
-				      const Handle(Geom_Plane)& aPlane)
+Standard_Boolean AIS::ComputeGeometry (const TopoDS_Edge& anEdge1,
+                                       const TopoDS_Edge& anEdge2,
+                                       Standard_Integer& indexExt,
+                                       Handle(Geom_Curve)& aCurve1,
+                                       Handle(Geom_Curve)& aCurve2,
+                                       gp_Pnt& FirstPnt1,
+                                       gp_Pnt& LastPnt1,
+                                       gp_Pnt& FirstPnt2,
+                                       gp_Pnt& LastPnt2,
+                                       Handle(Geom_Curve)& extCurve,
+                                       Standard_Boolean& isInfinite1,
+                                       Standard_Boolean& isInfinite2,
+                                       const Handle(Geom_Plane)& aPlane)
 {
   if (aPlane.IsNull()) return Standard_False;
   extCurve.Nullify();

@@ -370,16 +370,17 @@ void TPrsStd_ConstraintTools::ComputeDistance (const Handle(TDataXtd_Constraint)
       gp_Pnt P2 = BRep_Tool::Pnt( TopoDS::Vertex(shape2) );
       gp_Pnt P3(P1.Y()-1., P2.X()+1., 0.); 
       GC_MakePlane mkPlane(P1, P2, P3); 
-      ais = new AIS_LengthDimension (shape1, shape2, mkPlane.Value(), val1,txt);
+      ais = new AIS_LengthDimension (P1, P2, mkPlane.Value()->Pln());
     }
-    else if (isface)  {
-      ais = new AIS_LengthDimension (GetFace(shape1),GetFace(shape2),val1,txt);
+    else if (isface)
+    {
+      ais = new AIS_LengthDimension (GetFace(shape1),GetFace(shape2),aplane->Pln());
     }
     else if (isedgeface) {
-      ais = new AIS_LengthDimension (GetFace(shape1),GetEdge(shape2),val1,txt);
+      ais = new AIS_LengthDimension (GetFace(shape1),GetEdge(shape2),aplane->Pln());
     }
     else  {
-      ais = new AIS_LengthDimension (shape1,shape2,aplane,val1,txt);
+      ais = new AIS_LengthDimension (shape1,shape2,aplane->Pln());
     }
     if( SaveDrw ) ais->SetAttributes(aDrawer);   
   }
@@ -397,21 +398,15 @@ void TPrsStd_ConstraintTools::ComputeDistance (const Handle(TDataXtd_Constraint)
       gp_Pnt P2 = BRep_Tool::Pnt( TopoDS::Vertex(shape2) );
       gp_Pnt P3(P1.Y()-1., P2.X()+1., 0.); 
       GC_MakePlane mkPlane(P1, P2, P3); 
-      ais->SetPlane( mkPlane.Value() );
+      ais->SetWorkingPlane( mkPlane.Value()->Pln() );
     }
 
-    ais->SetValue       (val1);
-    ais->SetText        (txt);
+    ais->SetCustomValue       (val1);
   }
   
-  if (is_planar) {
-    Standard_Integer extShape (0);
-#ifndef BUC60846
-    FindExternalShape (aConst,extShape);
-#endif
-    ais->SetPlane      (aplane);
-    ais->SetTypeOfDist (typedist);
-    ais->SetExtShape   (extShape);
+  if (is_planar)
+  {
+    ais->SetWorkingPlane (aplane->Pln());
   }
   anAIS = ais;
 }
@@ -774,23 +769,25 @@ void TPrsStd_ConstraintTools::ComputeAngleForOneFace (const Handle(TDataXtd_Cons
     ais = Handle(AIS_AngleDimension)::DownCast(anAIS);
     if(ais.IsNull()) {
       face = TopoDS::Face( shape );
-      ais =  new AIS_AngleDimension ( face, val1, txt);
+      ais =  new AIS_AngleDimension (face);
     }
     else {
-      ais->SetConeFace(TopoDS::Face( shape ));
-      ais->SetValue(val1);
-      ais->SetText(txt);
+      ais->SetFirstShape(TopoDS::Face( shape ), Standard_True);
     }
   }
   else {
-    face = TopoDS::Face( shape );
-    ais =  new AIS_AngleDimension ( face, val1, txt);
+    face = TopoDS::Face (shape);
+    ais =  new AIS_AngleDimension (face);
   } 
 
   anAIS = ais;
 }
 
-//====================================================================
+//=======================================================================
+//function : CheckIsShapeCompound
+//purpose  : 
+//=======================================================================
+
 static Standard_Boolean CheckIsShapeCompound(TopoDS_Shape& shape, TopoDS_Face& aFace)
 {
   if (shape.ShapeType() == TopAbs_COMPOUND) {
@@ -810,10 +807,12 @@ static Standard_Boolean CheckIsShapeCompound(TopoDS_Shape& shape, TopoDS_Face& a
 #endif
   return (Standard_False);
 }
+
 //=======================================================================
 //function : ComputeAngle
 //purpose  : 
 //=======================================================================
+
 void TPrsStd_ConstraintTools::ComputeAngle (const Handle(TDataXtd_Constraint)& aConst,
 					   Handle(AIS_InteractiveObject)& anAIS) 
 {
@@ -1003,19 +1002,19 @@ void TPrsStd_ConstraintTools::ComputeAngle (const Handle(TDataXtd_Constraint)& a
 	GetGoodShape(shape2);
 	ais = new AIS_AngleDimension (TopoDS::Edge(shape1),
 				      TopoDS::Edge(shape2),
-				      (Handle(Geom_Plane)&) ageom3,val1,txt);
-	ais->SetExtShape(ExtShape);
+				      ((Handle(Geom_Plane)&) ageom3)->Pln());
       }
     }
     else { 
       if (isCurvilinear) {
-	ais = new AIS_AngleDimension (TopoDS::Face(shape1),
-				      TopoDS::Face(shape2),val1,txt);
+  ais = new AIS_AngleDimension (TopoDS::Face(shape1),
+                                TopoDS::Face(shape2),
+                                ((Handle(Geom_Line)&) ageom3)->Position());
       }
       else if (isface) {
-	ais =  new AIS_AngleDimension (TopoDS::Face(shape1),
-				       TopoDS::Face(shape2),
-				       ((Handle(Geom_Line)&) ageom3)->Position(),val1,txt);
+  ais =  new AIS_AngleDimension (TopoDS::Face(shape1),
+                                 TopoDS::Face(shape2),
+                                 ((Handle(Geom_Line)&) ageom3)->Position());
       }
     }
   }
@@ -1027,12 +1026,14 @@ void TPrsStd_ConstraintTools::ComputeAngle (const Handle(TDataXtd_Constraint)& a
     }
     ais->SetFirstShape(shape1);
     ais->SetSecondShape(shape2);
-    ais->SetValue(val1);
-    ais->SetText(txt);
     if (isplan)
-      ais->SetPlane ((Handle(Geom_Plane)&) ageom3);
+      ais->SetWorkingPlane (((Handle(Geom_Plane)&) ageom3)->Pln());
     else if (!isCurvilinear)
-      ais->SetAxis (((Handle(Geom_Line)&) ageom3)->Position());
+    {
+      gp_Pln aPlane;
+      aPlane.SetAxis (((Handle(Geom_Line)&) ageom3)->Position());
+      ais->SetWorkingPlane (aPlane);
+    }
   }
   anAIS = ais;
 }
@@ -1161,15 +1162,13 @@ void TPrsStd_ConstraintTools::ComputeRadius (const Handle(TDataXtd_Constraint)& 
   if (!anAIS.IsNull()) {
     ais = Handle(AIS_RadiusDimension)::DownCast(anAIS);
     if (ais.IsNull()) {
-      ais = new AIS_RadiusDimension (shape1,val1,txt);
+      ais = new AIS_RadiusDimension (shape1);
     }
     else {
-      ais->SetValue(val1);
       ais->SetFirstShape(shape1);
-      ais->SetText(txt);    
     }
   }
-  else ais = new AIS_RadiusDimension (shape1,val1,txt);
+  else ais = new AIS_RadiusDimension (shape1);
 
   if (isplanar) {
     Handle(Geom_Geometry) ageom2;
@@ -1182,8 +1181,7 @@ void TPrsStd_ConstraintTools::ComputeRadius (const Handle(TDataXtd_Constraint)& 
       NullifyAIS(anAIS);
       return;
     }
-    ais->SetPlane(aplane);
-    ais->SetDrawFromCenter(Standard_False);
+    ais->SetWorkingPlane(aplane->Pln());
   }
   anAIS = ais;
 }
@@ -1625,15 +1623,13 @@ void TPrsStd_ConstraintTools::ComputeDiameter(const Handle(TDataXtd_Constraint)&
   if (!anAIS.IsNull()) {
     ais = Handle(AIS_DiameterDimension)::DownCast(anAIS);
     if (ais.IsNull()) {
-      ais = new AIS_DiameterDimension (shape1,val1,txt);
+      ais = new AIS_DiameterDimension (shape1);
     }
     else {
       ais->SetFirstShape(shape1);
-      ais->SetValue(val1);
-      ais->SetText(txt);
     }
   }
-  else ais = new AIS_DiameterDimension (shape1,val1,txt);
+  else ais = new AIS_DiameterDimension (shape1);
 
   if (IsPlanar) {
     Handle(Geom_Geometry) ageom2;
@@ -1646,7 +1642,7 @@ void TPrsStd_ConstraintTools::ComputeDiameter(const Handle(TDataXtd_Constraint)&
       NullifyAIS(anAIS);
       return;
     }
-    ais->SetPlane(aplane);
+    //ais->SetWorkingPlane(aplane);
   }
   anAIS = ais;
 }
@@ -1767,29 +1763,31 @@ void TPrsStd_ConstraintTools::ComputeOffset (const Handle(TDataXtd_Constraint)& 
   //Handle(AIS_Drawer) aDrawer;
   Standard_Boolean NotNull = Standard_False;
 
-  if (nbgeom == 1) {
-      
+  if (nbgeom == 1)
+  {
     ComputeTextAndValue (aConst,val1,txt,Standard_False);
-  
-    if (!anAIS.IsNull()) {
+    if (!anAIS.IsNull())
+    {
       ais = Handle(AIS_LengthDimension)::DownCast(anAIS);
       NotNull = Standard_True; 
     }
-   
-    if (S1.ShapeType() == TopAbs_FACE && S2.ShapeType() == TopAbs_FACE) {
-      if (ais.IsNull()) {
-	ais = new AIS_LengthDimension (TopoDS::Face(S1),TopoDS::Face(S2),
-				       val1,txt);
+
+    if (S1.ShapeType() == TopAbs_FACE && S2.ShapeType() == TopAbs_FACE)
+    {
+      if (ais.IsNull())
+      {
+        ais = new AIS_LengthDimension (TopoDS::Face(S1),TopoDS::Face(S2));
       }
-      else {
-	ais->SetFirstShape(S1);
-	ais->SetSecondShape(S2);
-	ais->SetValue(val1);
-	ais->SetText(txt);
+      else
+      {
+        ais->SetFirstShape(S1);
+        ais->SetSecondShape(S2);
+        ais->SetCustomValue(val1);
       }
 
-      if (is_planar) ais->SetPlane (aplane);
-      anAIS = ais;
+      if (is_planar)
+        ais->SetWorkingPlane (aplane->Pln());
+        anAIS = ais;
       return;
     }
     else
@@ -1817,14 +1815,14 @@ void TPrsStd_ConstraintTools::ComputeOffset (const Handle(TDataXtd_Constraint)& 
 	aplane = new Geom_Plane (NLin.Location(),NLin.Direction()^TDir);
 
 	if (ais.IsNull()) {
-	  ais = new AIS_LengthDimension (S1,S2,aplane,val1,txt);
+	  ais = new AIS_LengthDimension (S1,S2,aplane->Pln());
 	}
 	else {
 	  ais->SetFirstShape(S1);
 	  ais->SetSecondShape(S2);
-	  ais->SetValue(val1);
-	  ais->SetText(txt);
-	  ais->SetPlane(aplane);
+	  ais->SetCustomValue(val1);
+
+	  ais->SetWorkingPlane (aplane->Pln());
 	}
 	anAIS = ais;
 	return;
@@ -1890,14 +1888,13 @@ void TPrsStd_ConstraintTools::ComputeOffset (const Handle(TDataXtd_Constraint)& 
     if( !anAIS.IsNull() ) NotNull = Standard_True; 
     ais = Handle(AIS_LengthDimension)::DownCast(anAIS);
     if (ais.IsNull()) {
-      ais = new AIS_LengthDimension (S1,S2,aplane,val1,txt);
+      ais = new AIS_LengthDimension (S1,S2,aplane->Pln());
     }
     else {
       ais->SetFirstShape (S1);
       ais->SetSecondShape (S2);
-      ais->SetValue(val1);
-      ais->SetText(txt);
-      ais->SetPlane(aplane);
+      ais->SetCustomValue (val1);
+      ais->SetWorkingPlane (aplane->Pln ());
     }
     anAIS = ais;
     return;
@@ -2146,16 +2143,14 @@ void TPrsStd_ConstraintTools::ComputeRound(const Handle(TDataXtd_Constraint)& aC
    try {
      OCC_CATCH_SIGNALS
      if (anAIS.IsNull()) ais = 
-       new AIS_RadiusDimension(shape1,val1,txt);
+       new AIS_RadiusDimension(shape1);
      else {
        ais = Handle(AIS_RadiusDimension)::DownCast(anAIS);
        if (ais.IsNull()) {
-	 ais = new AIS_RadiusDimension(shape1,val1,txt);
+         ais = new AIS_RadiusDimension(shape1);
        }
        else {
-	 ais->SetValue(val1);
-	 ais->SetText(txt);
-	 ais->SetFirstShape(shape1);
+         ais->SetFirstShape(shape1);
        }
      }
    }

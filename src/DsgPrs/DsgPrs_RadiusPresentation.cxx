@@ -31,7 +31,7 @@
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
-#include <Prs3d_LengthAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_Text.hxx>
 
 #include <Graphic3d_Vertex.hxx>
@@ -79,7 +79,7 @@ void DsgPrs_RadiusPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
     fpara -= 2.*M_PI;
     lpara -= 2.*M_PI;
   }
-  Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
+  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   Standard_Real parat = ElCLib::Parameter(aCircle,AttachmentPoint);
@@ -131,7 +131,7 @@ void DsgPrs_RadiusPresentation::Add (const Handle(Prs3d_Presentation)& aPresenta
     arrdir.Reverse();
 
   // fleche
-  Prs3d_Arrow::Draw(aPresentation,ptoncirc,arrdir,LA->Arrow1Aspect()->Angle(),LA->Arrow1Aspect()->Length());
+  Prs3d_Arrow::Draw(aPresentation,ptoncirc,arrdir,LA->ArrowAspect()->Angle(),LA->ArrowAspect()->Length());
 
   // texte
   Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,attpoint);
@@ -153,7 +153,7 @@ void DsgPrs_RadiusPresentation::Add( const Handle(Prs3d_Presentation)& aPresenta
 				     const Standard_Boolean drawFromCenter,
 				     const Standard_Boolean reverseArrow)
 {
-  Handle( Prs3d_LengthAspect ) LA = aDrawer->LengthAspect();
+  Handle( Prs3d_DimensionAspect ) LA = aDrawer->DimensionAspect();
   Prs3d_Root::CurrentGroup( aPresentation )->SetPrimitivesAspect( LA->LineAspect()->Aspect() );
 
   gp_Pnt LineOrigin, LineEnd;

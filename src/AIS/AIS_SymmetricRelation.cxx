@@ -54,7 +54,7 @@
 #include <Precision.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_ArrowAspect.hxx>
-#include <Prs3d_LengthAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
 
 #include <DsgPrs_SymmetricPresentation.hxx>
 
@@ -541,10 +541,10 @@ void AIS_SymmetricRelation::ComputeTwoEdgesSymmetric(const Handle(Prs3d_Presenta
   gp_Pnt Pj1 = ElCLib::Value(ElCLib::Parameter(laxis,myFAttach),laxis);
   gp_Pnt Pj2 = ElCLib::Value(ElCLib::Parameter(laxis,mySAttach),laxis);
   if ((myFAttach.SquareDistance(Pj1)+mySAttach.SquareDistance(Pj2)) <= Precision::Confusion())  myArrowSize = 0.;
-  Handle(Prs3d_LengthAspect) la = myDrawer->LengthAspect();
-  Handle(Prs3d_ArrowAspect) arr = la->Arrow1Aspect();
+  Handle(Prs3d_DimensionAspect) la = myDrawer->DimensionAspect();
+  Handle(Prs3d_ArrowAspect) arr = la->ArrowAspect();
   arr->SetLength(myArrowSize);
-  arr = la->Arrow2Aspect();
+  arr = la->ArrowAspect();
   arr->SetLength(myArrowSize);
   if(cu1.GetType() == GeomAbs_Line)
     DsgPrs_SymmetricPresentation::Add(aprs,
@@ -632,10 +632,10 @@ void AIS_SymmetricRelation::ComputeTwoVerticesSymmetric(const Handle(Prs3d_Prese
     myPosition = curpos;
   }
   if (2*(myFAttach.Distance(mySAttach)) <= Precision::Confusion()) myArrowSize = 0.;
-  Handle(Prs3d_LengthAspect) la = myDrawer->LengthAspect();
-  Handle(Prs3d_ArrowAspect) arr = la->Arrow1Aspect();
+  Handle(Prs3d_DimensionAspect) la = myDrawer->DimensionAspect();
+  Handle(Prs3d_ArrowAspect) arr = la->ArrowAspect();
   arr->SetLength(myArrowSize);
-  arr = la->Arrow2Aspect();
+  arr = la->ArrowAspect();
   arr->SetLength(myArrowSize);
   DsgPrs_SymmetricPresentation::Add(aprs,
 				    myDrawer,

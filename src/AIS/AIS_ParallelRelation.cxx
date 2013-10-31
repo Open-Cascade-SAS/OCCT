@@ -36,7 +36,7 @@
 
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_ArrowAspect.hxx>
-#include <Prs3d_LengthAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
 
 #include <AIS.hxx>
 #include <AIS_Drawer.hxx>
@@ -379,10 +379,10 @@ void AIS_ParallelRelation::ComputeTwoEdgesParallel(const Handle(Prs3d_Presentati
     {
       myArrowSize = 0.;
     }
-  Handle(Prs3d_LengthAspect) la = myDrawer->LengthAspect();
-  Handle(Prs3d_ArrowAspect) arr = la->Arrow1Aspect();
+  Handle(Prs3d_DimensionAspect) la = myDrawer->DimensionAspect();
+  Handle(Prs3d_ArrowAspect) arr = la->ArrowAspect();
   arr->SetLength(myArrowSize);
-  arr = la->Arrow2Aspect();
+  arr = la->ArrowAspect();
   arr->SetLength(myArrowSize);
   if ( myExtShape == 1)
     mySymbolPrs = DsgPrs_AS_FIRSTPT_LASTAR;

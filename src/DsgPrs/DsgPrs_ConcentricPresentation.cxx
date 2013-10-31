@@ -24,7 +24,7 @@
 
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
-#include <Prs3d_LengthAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_Root.hxx>
 #include <Prs3d_LineAspect.hxx>
 
@@ -43,7 +43,7 @@ void DsgPrs_ConcentricPresentation::Add(
 			   const gp_Dir& aNorm,
 			   const gp_Pnt& aPoint)
 {
-  Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
+  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
 
   //Creation et discretisation du plus gros cercle
   gp_Circ Circ(gp_Ax2(aCenter,aNorm), aRadius);

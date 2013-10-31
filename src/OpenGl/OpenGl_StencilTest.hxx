@@ -1,7 +1,6 @@
-// Created on: 1997-02-28
-// Created by: Jean-Pierre COMBE
-// Copyright (c) 1997-1999 Matra Datavision
-// Copyright (c) 1999-2012 OPEN CASCADE SAS
+// Created on: 2013-09-26
+// Created by: Dmitry BOBYLEV
+// Copyright (c) 2013 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -18,26 +17,36 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+#ifndef OpenGl_StencilTest_Header
+#define OpenGl_StencilTest_Header
 
-#include <AIS.hxx>
-#include <TopoDS.hxx>
+#include <OpenGl_Element.hxx>
 
-
-//=======================================================================
-//function : TypeOfDist
-//purpose  : 
-//=======================================================================
-inline AIS_TypeOfDist AIS_LengthDimension::TypeOfDist() const 
+class OpenGl_StencilTest : public OpenGl_Element
 {
-  return myTypeDist;
-}
+public:
 
-//=======================================================================
-//function : SetTypeOfDist
-//purpose  : 
-//=======================================================================
+  //! Default constructor
+  OpenGl_StencilTest ();
 
-inline void AIS_LengthDimension::SetTypeOfDist(const AIS_TypeOfDist aTypeDist)
-{
-  myTypeDist = aTypeDist;
-}
+  //! Render primitives to the window
+  virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
+
+  virtual void Release (const Handle(OpenGl_Context)& theContext);
+
+  void SetOptions (const Standard_Boolean theIsEnabled);
+
+protected:
+
+  //! Destructor
+  virtual ~OpenGl_StencilTest();
+
+private:
+  Standard_Boolean myIsEnabled;
+
+public:
+
+  DEFINE_STANDARD_ALLOC
+};
+
+#endif //OpenGl_StencilOptions_Header

@@ -1,0 +1,118 @@
+-- Copyright (c) 1993-1999 Matra Datavision
+-- Copyright (c) 1999-2012 OPEN CASCADE SAS
+--
+-- The content of this file is subject to the Open CASCADE Technology Public
+-- License Version 6.5 (the "License"). You may not use the content of this file
+-- except in compliance with the License. Please obtain a copy of the License
+-- at http://www.opencascade.org and read it completely before using this file.
+--
+-- The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+-- main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
+--
+-- The Original Code and all software distributed under the License is
+-- distributed on an "AS IS" basis, without warranty of any kind, and the
+-- Initial Developer hereby disclaims all such warranties, including without
+-- limitation, any warranties of merchantability, fitness for a particular
+-- purpose or non-infringement. Please see the License for the specific terms
+-- and conditions governing the rights and limitations under the License.
+
+class DimensionAspect from Prs3d inherits BasicAspect from Prs3d
+
+    	---Purpose: defines the attributes when drawing a Length Presentation.
+uses 
+    HorizontalTextAlignment from Prs3d,
+    VerticalTextAlignment from Prs3d,
+    DimensionArrowOrientation from Prs3d,
+    AspectLine3d from Graphic3d,
+    ArrowAspect from Prs3d,
+    LineAspect from Prs3d,
+    TextAspect from Prs3d,
+    NameOfColor from Quantity,
+    Color from Quantity,
+    TypeOfLine from Aspect,
+    PlaneAngle from Quantity,
+    TypeOfLine from Aspect
+is
+
+    Create returns mutable DimensionAspect from Prs3d;
+      --- Purpose: Constructs an empty framework to define the display of dimensions.  
+
+    LineAspect(me) returns mutable LineAspect from Prs3d;
+      ---Purpose: Returns the settings for the display of lines used in presentation of dimensions.    
+
+    SetLineAspect(me: mutable; theAspect: LineAspect from Prs3d);
+      ---Purpose: Sets the display attributes of lines used in presentation of dimensions.
+
+    TextAspect(me) returns mutable TextAspect from Prs3d is static;
+      --- Purpose: Returns the settings for the display of text used in presentation of dimensions.   
+
+    SetTextAspect(me:mutable; theAspect: TextAspect from Prs3d) is static; 
+      ---Purpose: Sets the display attributes of text used in presentation of dimensions.
+
+    IsText3d(me) returns Boolean from Standard;
+      --- Purpose: Check if text for dimension label is 3d.   
+
+    MakeText3d (me:mutable; isText3d: Boolean from Standard); 
+      ---Purpose: Sets type of text.
+
+    IsTextShaded (me) returns Boolean from Standard;
+    --- Purpose: Check if 3d text for dimension label is shaded.
+
+    MakeTextShaded (me: mutable; isTextShaded: Boolean from Standard);
+    --- Purpose: Turns on/off text shading for 3d text.
+
+    IsArrows3d(me) returns Boolean from Standard;
+      --- Purpose: Gets type of arrows.   
+
+    MakeArrows3d (me:mutable; isArrows3d: Boolean from Standard); 
+      ---Purpose: Sets type of arrows. 
+
+    SetArrowOrientation(me: mutable; theArrowOrient: DimensionArrowOrientation from Prs3d);
+      --- Purpose: Sets orientation of arrows (external or internal).
+      -- By default orientation is chosen automatically according to situation and text label size.   
+
+    GetArrowOrientation (me) returns DimensionArrowOrientation from Prs3d;
+      --- Purpose: Gets orientation of arrows (external or internal).
+
+    SetVerticalTextAlignment(me: mutable; theVertTextAlignment: VerticalTextAlignment from Prs3d);
+      --- Purpose: Sets vertical text alignment for text label.
+
+    VerticalTextAlignment (me) returns VerticalTextAlignment from Prs3d;
+      --- Purpose: Gets vertical text alignment for text label.
+
+    SetHorizontalTextAlignment (me: mutable; theHorTextAlignment: HorizontalTextAlignment from Prs3d);
+      --- Purpose: Sets horizontal text alignment for text label.
+
+    HorizontalTextAlignment (me) returns HorizontalTextAlignment from Prs3d;
+      --- Purpose: Gets horizontal text alignment for text label.
+
+    ArrowAspect(me) returns mutable ArrowAspect from Prs3d is static;
+     --- Purpose: Returns the settings for displaying arrows.   
+
+    SetArrowAspect(me: mutable; theAspect: ArrowAspect from Prs3d) is static;
+     ---Purpose:   Sets the display attributes of arrows used in presentation of dimensions.
+
+    SetCommonColor(me:mutable; theColor: Color from Quantity) is static; 
+      ---Purpose: Sets the same color for all parts of dimension: lines, arrows and text.
+
+fields
+
+    myLineAspect: LineAspect from Prs3d;
+    ---Purpose: Text style. The size for 3d (or 2d) text is also inside here.
+    myTextAspect: TextAspect from Prs3d;
+    myArrowAspect : ArrowAspect from Prs3d;
+    myIsText3d : Boolean from Standard;
+    myIsTextShaded : Boolean from Standard;
+    myIsArrows3d: Boolean from Standard;
+    myArrowOrientation : DimensionArrowOrientation from Prs3d;
+    ---Purpose: Dimension arrow orientation
+    -- By default, it is computed automatically. Its value depends on the text
+    -- bouning rectangle size and distance between two flyouts.
+    -- By default, it is internal one.
+    myHorTextAlignment: HorizontalTextAlignment from Prs3d;
+    ---Purpose:Horizontal text alignment (Prs3d_HTA_Left/Prs3d_HTA_Right/Prs3d_HTA_Center).
+    -- Defines horizontal position of text value label, by default it is center.
+    myVerTextAlignment: VerticalTextAlignment from Prs3d;
+    ---Purpose: Vertical text alignment (Prs3d_VTA_Top, Prs3d_VTA_Bottom/Prs3d_VTA_Center)
+    -- Defines vertical position of text value lable, by default it is center.
+end DimensionAspect from Prs3d;

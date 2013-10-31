@@ -30,7 +30,7 @@
 #include <Graphic3d_ArrayOfPoints.hxx>
 
 #include <Prs3d_LineAspect.hxx>
-#include <Prs3d_LengthAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_Text.hxx>
 
 #include <TCollection_AsciiString.hxx>
@@ -49,7 +49,7 @@ void DsgPrs_IdenticPresentation::Add( const Handle(Prs3d_Presentation)& aPresent
 				      const gp_Pnt& aPntAttach,
 				      const gp_Pnt& aPntOffset)
 {
-  Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
+  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(2);
@@ -82,7 +82,7 @@ void DsgPrs_IdenticPresentation::Add( const Handle(Prs3d_Presentation)& aPresent
 				      const gp_Pnt& aSAttach,
 				      const gp_Pnt& aPntOffset)
 {
-  Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
+  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   
   Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(4);
@@ -120,7 +120,7 @@ void DsgPrs_IdenticPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
 				     const gp_Pnt& aSAttach,
 				     const gp_Pnt& aPntOffset)
 {
-  Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
+  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   gp_Ax2 ax = theAxe;
@@ -169,7 +169,7 @@ void DsgPrs_IdenticPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
 				     const gp_Pnt& aPntOffset,
 				     const gp_Pnt& aPntOnCirc)
 {
-  Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
+  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   gp_Ax2 ax = theAxe;
@@ -218,7 +218,7 @@ void DsgPrs_IdenticPresentation::Add(const Handle(Prs3d_Presentation)& aPresenta
 				     const gp_Pnt& aPntOffset,
 				     const gp_Pnt& aPntOnElli)
 {
-  Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
+  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   Standard_Real pFAttach =  ElCLib::Parameter(anEllipse, aFAttach);

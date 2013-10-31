@@ -48,7 +48,7 @@ uses
      Presentation          from Prs3d,
      Curve                 from Geom,
      NameOfColor           from Quantity,
-     Color			   from Quantity,
+     Color                 from Quantity,
      TypeOfLine            from Aspect,
      TypeOfMarker          from Aspect,
      KindOfInteractive     from AIS,

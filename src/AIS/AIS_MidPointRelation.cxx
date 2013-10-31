@@ -55,7 +55,7 @@
 
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_ArrowAspect.hxx>
-#include <Prs3d_LengthAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
 
 #include <DsgPrs_MidPointPresentation.hxx>
 #include <TopoDS_Vertex.hxx>

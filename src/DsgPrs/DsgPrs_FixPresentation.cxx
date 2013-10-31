@@ -27,7 +27,7 @@
 #include <Graphic3d_ArrayOfPoints.hxx>
 #include <Graphic3d_Vertex.hxx>
 
-#include <Prs3d_LengthAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Root.hxx>
 
@@ -56,7 +56,7 @@ void DsgPrs_FixPresentation::Add(
 		       const gp_Dir& aNormPln,
 		       const Standard_Real symbsize)
 {
-  Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
+  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments(10);

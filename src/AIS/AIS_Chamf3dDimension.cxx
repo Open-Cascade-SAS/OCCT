@@ -29,7 +29,7 @@
 #include <DsgPrs_Chamf2dPresentation.hxx>
 
 #include <Prs3d_ArrowAspect.hxx>
-#include <Prs3d_LengthAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_Drawer.hxx>
 
 #include <SelectMgr_EntityOwner.hxx>
@@ -170,8 +170,8 @@ void AIS_Chamf3dDimension::Compute(const Handle(PrsMgr_PresentationManager3d)& ,
     myPosition = curpos;
   }
     
-  Handle(Prs3d_LengthAspect) la = myDrawer->LengthAspect();
-  Handle(Prs3d_ArrowAspect) arr = la->Arrow1Aspect();
+  Handle(Prs3d_DimensionAspect) la = myDrawer->DimensionAspect();
+  Handle(Prs3d_ArrowAspect) arr = la->ArrowAspect();
     
   //-------------------------------------------------
   //Calcul de la boite englobante du component pour

@@ -254,7 +254,7 @@ static Standard_Integer BUC60972 (Draw_Interpretor& di, Standard_Integer argc, c
   //di << ExtString_aText << " " << Draw::Atof(argv[4]) << "\n";
   di << argv[5] << " " << Draw::Atof(argv[4]) << "\n";
   
-  Handle(AIS_AngleDimension) aDim = new AIS_AngleDimension(aFirst, aSecond, aPlane, Draw::Atof(argv[4]), aText);
+  Handle(AIS_AngleDimension) aDim = new AIS_AngleDimension(aFirst, aSecond, aPlane->Pln());
   aContext->Display(aDim);                                                         
   
   return 0;
@@ -683,15 +683,13 @@ static Standard_Integer OCC301 (Draw_Interpretor& di, Standard_Integer argc, con
     di << "use 'vinit' command before " << argv[0] << "\n";
     return 1;
   }
-  if ( argc != 5 ) {
-    di << "Usage : " << argv[0] << " X Y Z ArrowSize" << "\n";
+  if ( argc != 3 ) {
+    di << "Usage : " << argv[0] << " ArcRadius ArrowSize" << "\n";
     return 1;
   }
 
-  Standard_Real X = Draw::Atof(argv[1]);
-  Standard_Real Y = Draw::Atof(argv[2]);
-  Standard_Real Z = Draw::Atof(argv[3]);
-  Standard_Real ArrowSize = Draw::Atof(argv[4]);
+  Standard_Real aRadius = Draw::Atof(argv[1]);
+  Standard_Real anArrowSize = Draw::Atof(argv[2]);
 
   gp_Pnt p1 = gp_Pnt(10.,10.,0.);
   gp_Pnt p2 = gp_Pnt(50.,10.,0.);
@@ -707,12 +705,17 @@ static Standard_Integer OCC301 (Draw_Interpretor& di, Standard_Integer argc, con
   gp_Dir plndir(0, 0, 1);
   Handle(Geom_Plane) pln = new Geom_Plane(plnpt,plndir);
 
-  Handle(AIS_AngleDimension) AngleDimension = new AIS_AngleDimension(E2, E1, pln, -3.14/2., "Angle");
+  Handle(AIS_AngleDimension) anAngleDimension = new AIS_AngleDimension (p1.Mirrored (p2), p2, p3);
 
-  AngleDimension->SetPosition(gp_Pnt(X, Y, Z));
-  AngleDimension->SetArrowSize(ArrowSize);
-
-  context->Display(AngleDimension);
+  Handle(Prs3d_DimensionAspect) anAspect = new Prs3d_DimensionAspect;
+  anAspect->MakeArrows3d (Standard_True);
+  anAspect->ArrowAspect()->SetLength (anArrowSize);
+  anAspect->SetHorizontalTextAlignment (Prs3d_HTA_Right);
+  anAspect->TextAspect ()->SetColor (Quantity_NOC_YELLOW);
+  anAngleDimension->SetDimensionAspect (anAspect);
+  // Another position of dimension
+  anAngleDimension->SetFlyout (aRadius);
+  context->Display (anAngleDimension, 0);
   return 0;
 }
 
@@ -864,7 +867,7 @@ void QABugs::Commands_16(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC307", "OCC307 result part tool [AllowCutting=0/1]", __FILE__, OCC307, group);
   theCommands.Add ("OCC395", "OCC395 edge_result edge1 edge2", __FILE__, OCC395, group);
   theCommands.Add ("OCC394", "OCC394 edge_result edge [tol [mode [tolang]]]", __FILE__, OCC394, group);
-  theCommands.Add ("OCC301", "OCC301 X Y Z ArrowSize", __FILE__, OCC301, group);
+  theCommands.Add ("OCC301", "OCC301 ArcRadius ArrowSize", __FILE__, OCC301, group);
   theCommands.Add ("OCC294", "OCC294 shape_result shape edge", __FILE__, OCC294, group);
   theCommands.Add ("OCC60", "OCC60 xmin ymin xmax ymax; selection window", __FILE__, OCC60, group);
   theCommands.Add ("OCC70", "OCC70 x1 y1 x2 y2 x3 y3 [x y ...]; polygon of selection", __FILE__, OCC70, group);

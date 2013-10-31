@@ -1,0 +1,26 @@
+puts "============"
+puts "CR24133"
+puts "============"
+puts ""
+#######################################################################
+#  Development of improvement of dimensions implementation
+#  Length dimension
+#######################################################################
+pload VISUALIZATION
+
+vinit
+vpoint lengthP1 0 0 0
+vpoint lengthP2 50 50 50
+vdim -length -name=dim1 -plane=xoy lengthP1 lengthP2
+vdisplay dim1
+vfit
+vmoveto 82 268
+
+set x_coord 337
+set y_coord 130
+checkcolor $x_coord $y_coord 0 1 1
+if { $stat != 1 } {
+   puts "Error : Highlighting of length dimension is wrong."
+}
+
+set only_screen 1

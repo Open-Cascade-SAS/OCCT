@@ -22,7 +22,7 @@
 
 #include <DsgPrs.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Prs3d_LengthAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
@@ -48,7 +48,7 @@ void DsgPrs_EqualDistancePresentation::Add( const Handle( Prs3d_Presentation )& 
 					    const gp_Pnt& Point4,
 					    const Handle( Geom_Plane )& Plane )
 {
-  Handle( Prs3d_LengthAspect ) LA = aDrawer->LengthAspect();
+  Handle( Prs3d_DimensionAspect ) LA = aDrawer->DimensionAspect();
   Prs3d_Root::CurrentGroup( aPresentation )->SetPrimitivesAspect( LA->LineAspect()->Aspect() );
 
   // Line between two middles
@@ -132,7 +132,7 @@ void DsgPrs_EqualDistancePresentation::Add( const Handle( Prs3d_Presentation )& 
 						    gp_Pnt& aProj1,
 						    gp_Pnt& aProj2) 
 {
-  const Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
+  const Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   
   gp_Lin L1 (aPoint1,aDirection);
@@ -170,7 +170,7 @@ void DsgPrs_EqualDistancePresentation::Add( const Handle( Prs3d_Presentation )& 
 							      const gp_Pnt& aPoint4,
 							      const DsgPrs_ArrowSide anArrowSide) 
 {
-  const Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
+  const Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   Standard_Real aPar11, aPar12, aPar21, aPar22;

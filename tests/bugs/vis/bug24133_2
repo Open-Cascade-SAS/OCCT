@@ -1,0 +1,43 @@
+puts "============"
+puts "CR24133"
+puts "============"
+puts ""
+#######################################################################
+#  Development of improvement of dimensions implementation
+#  Angle dimension
+#######################################################################
+pload VISUALIZATION
+
+vinit
+vpoint angleP1 0 0 0
+vpoint angleP2 50 50 50
+vpoint angleP3 50 50 100
+vdim -angle -name=dim1 angleP1 angleP2 angleP3
+vdisplay dim1
+vfit
+vmoveto 249 206
+
+set x_coord 249
+set y_coord 200
+
+checkcolor $x_coord $y_coord 0 1 1
+
+if { $stat != 1 } {
+   puts "Error : Highlighting of angle dimension with 2d text is wrong."
+}
+verase dim1
+vdim -angle -name=dim2 -text=3d angleP1 angleP2 angleP3
+vdisplay dim2
+vfit
+vmoveto 263 251
+
+set x_coord 332
+set y_coord 326
+
+checkcolor $x_coord $y_coord 0 1 1
+
+if { $stat != 1 } {
+   puts "Error : Highlighting of angle dimension with 3d text is wrong."
+}
+
+set only_screen 1

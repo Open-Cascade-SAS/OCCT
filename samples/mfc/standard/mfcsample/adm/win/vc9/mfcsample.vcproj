@@ -462,6 +462,14 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\..\..\Common\AngleParamsVerticesPage.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Common\DimensionDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\Common\ImportExport\ImportExport.cpp"
 				>
 				<FileConfiguration
@@ -506,6 +514,18 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Common\LengthParamsEdgePage.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Common\LengthParamsEdgesPage.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Common\LengthParamsVerticesPage.cpp"
+				>
 			</File>
 			<File
 				RelativePath="..\..\..\src\mfcsample.cpp"
@@ -1146,6 +1166,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\..\..\Common\RadiusParamsPage.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\Common\ResultDialog.cpp"
 				>
 				<FileConfiguration
@@ -1733,7 +1757,27 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\Common\AngleParamsVerticesPage.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Common\DimensionDlg.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\Common\ImportExport\ImportExport.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Common\LengthParamsEdgePage.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Common\LengthParamsEdgesPage.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Common\LengthParamsVerticesPage.h"
 				>
 			</File>
 			<File
@@ -1786,6 +1830,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\Common\res\OCC_Resource.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Common\RadiusParamsPage.h"
 				>
 			</File>
 			<File

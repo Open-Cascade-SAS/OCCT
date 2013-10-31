@@ -216,17 +216,8 @@ Handle (Prs3d_DatumAspect) AIS_Drawer::DatumAspect ()
 Handle (Prs3d_PlaneAspect) AIS_Drawer::PlaneAspect () 
 {return myPlaneAspect.IsNull() ? myLink->PlaneAspect (): myPlaneAspect;}
 
-Handle (Prs3d_LengthAspect) AIS_Drawer::LengthAspect ()  
-{return myLengthAspect.IsNull()? myLink->LengthAspect () : myLengthAspect ;}
-
-
-Handle (Prs3d_AngleAspect) AIS_Drawer::AngleAspect () 
-{return myAngleAspect.IsNull()? myLink->AngleAspect () :myAngleAspect ;}
-
-
-Handle (Prs3d_RadiusAspect) AIS_Drawer::RadiusAspect ()  const 
-{return myRadiusAspect.IsNull()? myLink->RadiusAspect():myRadiusAspect; }
-
+Handle (Prs3d_DimensionAspect) AIS_Drawer::DimensionAspect ()  
+{return myDimensionAspect.IsNull()? myLink->DimensionAspect () : myDimensionAspect ;}
 
 Handle (Prs3d_LineAspect) AIS_Drawer::SectionAspect ()
 {return mySectionAspect.IsNull()? myLink->SectionAspect (): mySectionAspect;}
@@ -258,9 +249,7 @@ void AIS_Drawer::ClearLocalAttributes()
   if(!mySeenLineAspect.IsNull())  mySeenLineAspect.Nullify();  
   if(!myVectorAspect.IsNull())  myVectorAspect .Nullify();   
   if(!myDatumAspect.IsNull())  myDatumAspect.Nullify();     
-  if(!myLengthAspect.IsNull())  myLengthAspect.Nullify();    
-  if(!myAngleAspect.IsNull())  myAngleAspect.Nullify();     
-  if(!myRadiusAspect.IsNull())  myRadiusAspect.Nullify();    
+  if(!myDimensionAspect.IsNull())  myDimensionAspect.Nullify();    
   if(!mySectionAspect.IsNull())  mySectionAspect.Nullify();   
   if( myhasOwnHLRDeviationCoefficient )  myhasOwnHLRDeviationCoefficient = Standard_False;   
   if(myhasOwnHLRDeviationAngle ) myhasOwnHLRDeviationAngle  = Standard_False;

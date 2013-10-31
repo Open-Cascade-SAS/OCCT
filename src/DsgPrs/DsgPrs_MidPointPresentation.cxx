@@ -40,7 +40,7 @@
 
 #include <Prs3d_Root.hxx>
 #include <Prs3d_LineAspect.hxx>
-#include <Prs3d_LengthAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_Text.hxx>
 
 //===================================================================
@@ -57,7 +57,7 @@ void DsgPrs_MidPointPresentation::Add (const Handle(Prs3d_Presentation)& aPresen
 { 
   Standard_Real rad = AttachPoint.Distance(MidPoint)/20.0;
 
-  Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
+  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
 
   gp_Ax2 ax = theAxe;
   ax.SetLocation(MidPoint);
@@ -123,7 +123,7 @@ void DsgPrs_MidPointPresentation::Add (const Handle(Prs3d_Presentation)& aPresen
   Standard_Real rad = AttachPoint.Distance(MidPoint)/20.0;
   if ( rad <= Precision::Confusion() ) rad = Point1.Distance(Point2)/20.0;
 
-  Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
+  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
 
   gp_Ax2 ax = theAxe;
   ax.SetLocation(MidPoint);
@@ -189,7 +189,7 @@ void DsgPrs_MidPointPresentation::Add (const Handle(Prs3d_Presentation)& aPresen
   Standard_Real rad = AttachPoint.Distance(MidPoint)/20.0;
   if ( rad <= Precision::Confusion() ) rad = Point1.Distance(Point2)/20.0;
 
-  Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
+  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
 
   gp_Ax2 ax = aCircle.Position();
   ax.SetLocation(MidPoint);
@@ -263,7 +263,7 @@ void DsgPrs_MidPointPresentation::Add (const Handle(Prs3d_Presentation)& aPresen
   Standard_Real rad = AttachPoint.Distance(MidPoint)/20.0;
   if ( rad <= Precision::Confusion() ) rad = Point1.Distance(Point2)/20.0;
 
-  Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
+  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
 
   gp_Pnt Ptmp,ptcur;
 

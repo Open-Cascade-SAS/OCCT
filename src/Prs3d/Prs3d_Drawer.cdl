@@ -39,10 +39,8 @@ uses
     PointAspect from Prs3d,
     ShadingAspect from Prs3d,
     IsoAspect from Prs3d,
-    LengthAspect from Prs3d,
-    AngleAspect from Prs3d,
+    DimensionAspect from Prs3d,
     PlaneAspect from Prs3d,
-    RadiusAspect from Prs3d,
     ArrowAspect from Prs3d,
     TypeOfDeflection from Aspect,
     NameOfColor from Quantity,
@@ -474,30 +472,13 @@ is
     is virtual;
     	---Purpose: Sets the modality anAspect for the display of datums.
 
-    LengthAspect(me:mutable) returns mutable LengthAspect from Prs3d
-    	---Purpose: Returns settings for the appearance of lengths.
+    DimensionAspect(me:mutable) returns mutable DimensionAspect from Prs3d
+    	---Purpose: Returns settings for the appearance of dimensions.
     is virtual;
 
-    SetLengthAspect(me:mutable; anAspect: LengthAspect from Prs3d) 
+    SetDimensionAspect(me:mutable; theAspect: DimensionAspect from Prs3d) 
     is virtual;
-    
-    	---Purpose: Sets the modality anAspect for display of lengths.
-
-    AngleAspect(me:mutable) returns mutable AngleAspect from Prs3d
-    	---Purpose: Returns settings for lines used to display angles.
-    is virtual;
-
-    SetAngleAspect(me:mutable; anAspect: AngleAspect from Prs3d) 
-    is virtual;
-    	---Purpose: Sets the modality anAspect for the display of angles.
-
-    RadiusAspect(me) returns mutable RadiusAspect from Prs3d
-    	---Purpose: Returns settings for lines which serve to display radii.
-    is virtual;
-
-    SetRadiusAspect(me:mutable; anAspect: RadiusAspect from Prs3d)     
-    is virtual;
-    	--- Purpose: Sets the parameter anAspect for display attributes of radii.
+    	---Purpose: Sets the modality anAspect for display of dimensions.
 
     SectionAspect (me:mutable) returns mutable LineAspect from Prs3d
     	---Purpose: The LineAspect for the wire can be edited.
@@ -568,9 +549,7 @@ fields
             myVectorAspect: LineAspect from Prs3d is protected;
             myDatumAspect: DatumAspect from Prs3d is protected;
 	    myDatumScale: Real from Standard is protected;
-	    myLengthAspect: LengthAspect from Prs3d is protected;
-	    myAngleAspect: AngleAspect from Prs3d is protected;
-	    myRadiusAspect: RadiusAspect from Prs3d is protected;
+	    myDimensionAspect: DimensionAspect from Prs3d is protected;
       mySectionAspect: LineAspect from Prs3d is protected;
       myFaceBoundaryDraw    : Boolean from Standard is protected;
       myFaceBoundaryAspect  : LineAspect from Prs3d is protected;

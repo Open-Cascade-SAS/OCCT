@@ -274,6 +274,8 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Common\AngleParamsVerticesPage.cpp" />
+    <ClCompile Include="..\..\..\..\Common\DimensionDlg.cpp" />
     <ClCompile Include="..\..\..\..\Common\ImportExport\ImportExport.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -290,6 +292,10 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Common\LengthParamsEdgePage.cpp" />
+    <ClCompile Include="..\..\..\..\Common\LengthParamsEdgesPage.cpp" />
+    <ClCompile Include="..\..\..\..\Common\LengthParamsVerticesPage.cpp" />
+    <ClCompile Include="..\..\..\..\Common\RadiusParamsPage.cpp" />
     <ClCompile Include="..\..\..\src\mfcsample.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -714,7 +720,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\Common\AISDialogs.h" />
+    <ClInclude Include="..\..\..\..\Common\AngleParamsVerticesPage.h" />
+    <ClInclude Include="..\..\..\..\Common\DimensionDlg.h" />
     <ClInclude Include="..\..\..\..\Common\ImportExport\ImportExport.h" />
+    <ClInclude Include="..\..\..\..\Common\LengthParamsEdgePage.h" />
+    <ClInclude Include="..\..\..\..\Common\LengthParamsEdgesPage.h" />
+    <ClInclude Include="..\..\..\..\Common\LengthParamsVerticesPage.h" />
     <ClInclude Include="..\..\..\..\Common\OCC_2dChildFrame.h" />
     <ClInclude Include="..\..\..\..\Common\OCC_2dDoc.h" />
     <ClInclude Include="..\..\..\..\Common\OCC_2dView.h" />
@@ -727,6 +738,7 @@
     <ClInclude Include="..\..\..\..\Common\OCC_BaseDoc.h" />
     <ClInclude Include="..\..\..\..\Common\OCC_BaseView.h" />
     <ClInclude Include="..\..\..\..\Common\OCC_MainFrame.h" />
+    <ClInclude Include="..\..\..\..\Common\RadiusParamsPage.h" />
     <ClInclude Include="..\..\..\..\Common\res\OCC_Resource.h" />
     <ClInclude Include="..\..\..\..\Common\ResultDialog.h" />
     <ClInclude Include="..\..\..\..\Common\ImportExport\SaveCSFDBDlg.h" />

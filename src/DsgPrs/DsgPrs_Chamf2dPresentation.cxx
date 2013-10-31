@@ -27,7 +27,7 @@
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
-#include <Prs3d_LengthAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_Text.hxx>
 
 #include <gp_Dir.hxx>
@@ -42,7 +42,7 @@ void DsgPrs_Chamf2dPresentation::Add(
 			   const gp_Pnt& aPntEnd,
 			   const TCollection_ExtendedString& aText)
 {
-  Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
+  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   
@@ -52,7 +52,7 @@ void DsgPrs_Chamf2dPresentation::Add(
   Prs3d_Root::CurrentGroup(aPresentation)->AddPrimitiveArray(aPrims);
 
   gp_Dir ArrowDir(aPntAttach.XYZ()-aPntEnd.XYZ());
-  Prs3d_Arrow::Draw(aPresentation,aPntAttach,ArrowDir,LA->Arrow1Aspect()->Angle(),LA->Arrow1Aspect()->Length());
+  Prs3d_Arrow::Draw(aPresentation,aPntAttach,ArrowDir,LA->ArrowAspect()->Angle(),LA->ArrowAspect()->Length());
 		     
   Prs3d_Text::Draw(aPresentation,LA->TextAspect(),aText,aPntEnd);
 }
@@ -71,7 +71,7 @@ void DsgPrs_Chamf2dPresentation::Add(
 			   const TCollection_ExtendedString& aText,
 			   const DsgPrs_ArrowSide ArrowPrs) 
 {
-  Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
+  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   

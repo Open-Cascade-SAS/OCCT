@@ -580,13 +580,22 @@ static Standard_Integer BUC60632(Draw_Interpretor& di, Standard_Integer /*n*/, c
   Handle(AIS_Shape) Ve1 = new AIS_Shape(V1);
   Handle(AIS_Shape) Ve2 = new AIS_Shape(V2);
   
-  myAIScontext->Display(Ve1); 
-  myAIScontext->Display(Ve2); 
+  myAIScontext->Display(Ve1);
+  myAIScontext->Display(Ve2);
   
   Handle(Geom_Plane) Plane1 = new Geom_Plane(gp_Pnt(0,0,0),gp_Dir(0,0,1)); 
   TCollection_ExtendedString Ext1("Dim1"); 
-  Handle(AIS_LengthDimension) Dim1 = new AIS_LengthDimension(V1,V2,Plane1,Draw::Atof(a[2]),Ext1); 
-  
+  Handle(AIS_LengthDimension) Dim1 = new AIS_LengthDimension(V1,V2,Plane1->Pln()); 
+  Dim1->SetCustomValue (Draw::Atof(a[2]));
+
+  Handle(Prs3d_DimensionAspect) anAspect = new Prs3d_DimensionAspect();
+  anAspect->MakeArrows3d (Standard_False);
+  anAspect->MakeText3d (Standard_True);
+  anAspect->MakeTextShaded (Standard_True);
+  anAspect->TextAspect()->SetHeight (2.5);
+  anAspect->ArrowAspect()->SetLength (1.0);
+  Dim1->SetDimensionAspect (anAspect);
+
   myAIScontext->SetDisplayMode(Dim1, Draw::Atoi(a[1]));
   myAIScontext->Display(Dim1);
   return 0;

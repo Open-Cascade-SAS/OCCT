@@ -28,7 +28,7 @@
 #include <AIS_EllipseRadiusDimension.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-#include <Prs3d_LengthAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_TextAspect.hxx>
@@ -168,8 +168,8 @@ void AIS_MaxRadiusDimension::Compute(const Handle_Prs3d_Projector& aProjector,
 void AIS_MaxRadiusDimension::ComputeEllipse(const Handle(Prs3d_Presentation)& aPresentation)
 {
 
-  Handle(Prs3d_LengthAspect) la = myDrawer->LengthAspect();
-  Handle(Prs3d_ArrowAspect) arr = la->Arrow1Aspect();
+  Handle(Prs3d_DimensionAspect) la = myDrawer->DimensionAspect();
+  Handle(Prs3d_ArrowAspect) arr = la->ArrowAspect();
   
   // size
 #ifdef BUC60915
@@ -226,8 +226,8 @@ void AIS_MaxRadiusDimension::ComputeEllipse(const Handle(Prs3d_Presentation)& aP
 void AIS_MaxRadiusDimension::ComputeArcOfEllipse(const Handle(Prs3d_Presentation)& aPresentation)
 {
 
-  Handle(Prs3d_LengthAspect) la = myDrawer->LengthAspect();
-  Handle(Prs3d_ArrowAspect) arr = la->Arrow1Aspect();
+  Handle(Prs3d_DimensionAspect) la = myDrawer->DimensionAspect();
+  Handle(Prs3d_ArrowAspect) arr = la->ArrowAspect();
   
   // size
 #ifdef BUC60915

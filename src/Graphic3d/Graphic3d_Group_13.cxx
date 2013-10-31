@@ -82,3 +82,8 @@ void Graphic3d_Group :: UserDraw ( const Standard_Address AnObject,
 
 	Update ();
 }
+
+void Graphic3d_Group::SetStencilTestOptions (const Standard_Boolean theIsEnabled)
+{
+  MyGraphicDriver->SetStencilTestOptions (MyCGroup, theIsEnabled);
+}

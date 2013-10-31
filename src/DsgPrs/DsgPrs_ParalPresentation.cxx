@@ -28,7 +28,7 @@
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
-#include <Prs3d_LengthAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Prs3d_Text.hxx>
@@ -42,7 +42,7 @@ void DsgPrs_ParalPresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
 				    const gp_Dir& aDirection,
 				    const gp_Pnt& OffsetPoint)
 {
-  Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
+  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   gp_Lin L1 (AttachmentPoint1,aDirection);
   gp_Lin L2 (AttachmentPoint2,aDirection);
@@ -80,20 +80,20 @@ void DsgPrs_ParalPresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   Prs3d_Root::NewGroup(aPresentation);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   
-  if (dist < (LA->Arrow1Aspect()->Length()+LA->Arrow2Aspect()->Length()))
+  if (dist < (LA->ArrowAspect()->Length()+LA->ArrowAspect()->Length()))
     outside = Standard_True;
   gp_Dir arrdir = L3.Direction().Reversed();
   if (outside)
     arrdir.Reverse();
 
   // arrow 1 : 2nd group
-  Prs3d_Arrow::Draw(aPresentation,Proj1,arrdir,LA->Arrow1Aspect()->Angle(),LA->Arrow1Aspect()->Length());
+  Prs3d_Arrow::Draw(aPresentation,Proj1,arrdir,LA->ArrowAspect()->Angle(),LA->ArrowAspect()->Length());
 
   Prs3d_Root::NewGroup(aPresentation);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
   
   // arrow 2 : 3rd group
-  Prs3d_Arrow::Draw(aPresentation,Proj2,arrdir.Reversed(),LA->Arrow2Aspect()->Angle(),LA->Arrow2Aspect()->Length());
+  Prs3d_Arrow::Draw(aPresentation,Proj2,arrdir.Reversed(),LA->ArrowAspect()->Angle(),LA->ArrowAspect()->Length());
 
   Prs3d_Root::NewGroup(aPresentation);
   
@@ -127,7 +127,7 @@ void DsgPrs_ParalPresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
 				    const gp_Pnt& OffsetPoint,
 				    const DsgPrs_ArrowSide ArrowPrs)
 {
-  Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
+  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
 
   gp_Lin L1 (AttachmentPoint1,aDirection);
@@ -163,7 +163,7 @@ void DsgPrs_ParalPresentation::Add (const Handle(Prs3d_Presentation)& aPresentat
   aPrims->AddVertex(PointMin);
   aPrims->AddVertex(PointMax);
   
-  if (dist < (LA->Arrow1Aspect()->Length()+LA->Arrow2Aspect()->Length()))
+  if (dist < (LA->ArrowAspect()->Length()+LA->ArrowAspect()->Length()))
     outside = Standard_True;
   gp_Dir arrdir = L3.Direction().Reversed();
   if (outside)

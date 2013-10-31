@@ -21,15 +21,105 @@
 
 
 #include <AIS_DimensionOwner.ixx>
+#include <AIS_DimensionDisplayMode.hxx>
+#include <StdSelect_Shape.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Vertex.hxx>
 
 
-//-----------------------------------------------------------------------
-// function : create
-// purpose  :
-//-----------------------------------------------------------------------
+//=======================================================================
+//function : Constructor
+//purpose  : 
+//=======================================================================
 
-AIS_DimensionOwner::AIS_DimensionOwner(const Handle(SelectMgr_SelectableObject)& aSO,
-				       const Standard_Integer aPriority)
-:SelectMgr_EntityOwner(aSO,aPriority)
+AIS_DimensionOwner::AIS_DimensionOwner (const Handle(SelectMgr_SelectableObject)& theSelObject,
+                                        const AIS_DimensionDisplayMode theMode,
+                                        const Standard_Integer thePriority)
+: SelectMgr_EntityOwner(theSelObject, thePriority),
+  myDisplayMode (theMode)
 {
+}
+
+//=======================================================================
+//function : SetDisplayMode
+//purpose  : 
+//=======================================================================
+
+void AIS_DimensionOwner::SetDisplayMode (const AIS_DimensionDisplayMode theMode)
+{
+  myDisplayMode = theMode;
+}
+
+//=======================================================================
+//function : DisplayMode
+//purpose  : 
+//=======================================================================
+
+AIS_DimensionDisplayMode AIS_DimensionOwner::DisplayMode () const
+{
+  return myDisplayMode;
+}
+
+//=======================================================================
+//function : IsHilighted
+//purpose  : 
+//=======================================================================
+
+Standard_Boolean AIS_DimensionOwner::IsHilighted (const Handle(PrsMgr_PresentationManager)& thePM,
+                                                  const Standard_Integer theMode) const
+{
+  if (HasSelectable())
+  {
+    Standard_Integer aMode = myDisplayMode != 0 ? myDisplayMode : theMode;
+    return thePM->IsHighlighted(Selectable (), aMode);
+  }
+  return Standard_False;
+}
+
+//=======================================================================
+//function : Hilight
+//purpose  : 
+//=======================================================================
+
+void AIS_DimensionOwner::Hilight (const Handle(PrsMgr_PresentationManager)& thePM,
+                                  const Standard_Integer theMode)
+{
+  if (HasSelectable())
+  {
+    Standard_Integer aMode = myDisplayMode != 0 ? myDisplayMode : theMode;
+    thePM->Highlight (Selectable(),aMode);
+  }
+}
+
+//=======================================================================
+//function : Unhilight
+//purpose  : 
+//=======================================================================
+
+void AIS_DimensionOwner::Unhilight (const Handle(PrsMgr_PresentationManager)& thePM,
+                                    const Standard_Integer theMode)
+{
+  if (HasSelectable())
+  {
+    Standard_Integer aMode = myDisplayMode != 0 ? myDisplayMode : theMode;
+    thePM->Unhighlight(Selectable(),aMode);
+  }
+}
+
+//=======================================================================
+//function : HilightWithColor
+//purpose  : 
+//=======================================================================
+
+void AIS_DimensionOwner::HilightWithColor (const Handle(PrsMgr_PresentationManager3d)& thePM,
+                                           const Quantity_NameOfColor theColor,
+                                           const Standard_Integer theMode)
+{
+  // Highlight selectable part of dimension with color
+  if (myDisplayMode != 0)
+  {
+    thePM->Color (Selectable(), theColor, myDisplayMode);
+  }
+  else
+    thePM->Color (Selectable(), theColor, theMode);
 }

@@ -3606,7 +3606,7 @@ static int VOverlayText (Draw_Interpretor& di, Standard_Integer argc, const char
     di << "  height - pixel height of the text (default=10.0)\n";
     di << "  font_name - name of font (default=courier)\n";
     di << "  text_color - R G B values of text color (default=255.0 255.0 255.0)\n";
-    di << "  display_type = {normal/subtitle/decal/blend}, (default=normal)\n";
+    di << "  display_type = {normal/subtitle/decal/blend/dimension}, (default=normal)\n";
     di << "  background_color- R G B values used for subtitle and decal text\n";
     di << "(default=255.0 255.0 255.0)\n";
     return 1;
@@ -3645,6 +3645,8 @@ static int VOverlayText (Draw_Interpretor& di, Standard_Integer argc, const char
     aTextType = Aspect_TODT_DEKALE;
   else if (aDispStr.IsEqual ("blend"))
     aTextType = Aspect_TODT_BLEND;
+  else if (aDispStr.IsEqual ("dimension"))
+    aTextType = Aspect_TODT_DIMENSION;
 
   // subtitle color
   Quantity_Parameter aSubRed   = 1.0;

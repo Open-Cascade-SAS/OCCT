@@ -82,17 +82,11 @@ inline Standard_Boolean AIS_Drawer::HasShadingAspect ()  const
 inline Standard_Boolean AIS_Drawer::HasPointAspect ()  const 
 { return !myPointAspect.IsNull();}
 
-inline Standard_Boolean AIS_Drawer::HasAngleAspect ()  const 
-{ return !myAngleAspect.IsNull();}
-
 inline Standard_Boolean AIS_Drawer::HasDatumAspect ()  const 
 { return !myDatumAspect.IsNull();}
 
 inline Standard_Boolean AIS_Drawer::HasPlaneAspect ()  const 
 { return !myPlaneAspect.IsNull();}
-
-inline Standard_Boolean AIS_Drawer::HasLengthAspect ()  const 
-{ return !myLengthAspect.IsNull();}
 
 inline Standard_Boolean AIS_Drawer::IsOwnFaceBoundaryDraw () const
 { return myHasOwnFaceBoundaryDraw; }
@@ -109,3 +103,6 @@ inline Prs3d_TypeOfHLR AIS_Drawer::TypeOfHLR ( ) const
 {
   return (myTypeOfHLR == Prs3d_TOH_NotSet) ? myLink->TypeOfHLR() : myTypeOfHLR;
 }
+
+inline Standard_Boolean AIS_Drawer::HasDimensionAspect ()  const 
+{ return !myDimensionAspect.IsNull();}

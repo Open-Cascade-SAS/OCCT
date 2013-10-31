@@ -25,7 +25,7 @@
 #include <Prs3d_Arrow.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
-#include <Prs3d_LengthAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Prs3d_PointAspect.hxx>
 #include <Geom_CartesianPoint.hxx>
@@ -46,10 +46,10 @@ void DsgPrs_TangentPresentation::Add (const Handle(Prs3d_Presentation)& aPresent
   gp_Pnt p2 = OffsetPoint.Translated(vec2);
   
   // Aspect
-  Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
+  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   LA->LineAspect()->SetTypeOfLine(Aspect_TOL_SOLID);
-  Handle(Prs3d_ArrowAspect) ARR1 = LA->Arrow1Aspect();
-  Handle(Prs3d_ArrowAspect) ARR2 = LA->Arrow2Aspect();
+  Handle(Prs3d_ArrowAspect) ARR1 = LA->ArrowAspect();
+  Handle(Prs3d_ArrowAspect) ARR2 = LA->ArrowAspect();
   ARR1->SetLength(length/5);
   ARR2->SetLength(length/5);
 
@@ -64,10 +64,10 @@ void DsgPrs_TangentPresentation::Add (const Handle(Prs3d_Presentation)& aPresent
   // fleche 1 : 
   Prs3d_Root::NewGroup(aPresentation);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Prs3d_Arrow::Draw(aPresentation,p1,aDirection,LA->Arrow1Aspect()->Angle(),LA->Arrow1Aspect()->Length());
+  Prs3d_Arrow::Draw(aPresentation,p1,aDirection,LA->ArrowAspect()->Angle(),LA->ArrowAspect()->Length());
 
   // fleche 2
   Prs3d_Root::NewGroup(aPresentation);
   Prs3d_Root::CurrentGroup(aPresentation)->SetPrimitivesAspect(LA->LineAspect()->Aspect());
-  Prs3d_Arrow::Draw(aPresentation,p2,aDirection.Reversed(),LA->Arrow2Aspect()->Angle(),LA->Arrow2Aspect()->Length());
+  Prs3d_Arrow::Draw(aPresentation,p2,aDirection.Reversed(),LA->ArrowAspect()->Angle(),LA->ArrowAspect()->Length());
 }

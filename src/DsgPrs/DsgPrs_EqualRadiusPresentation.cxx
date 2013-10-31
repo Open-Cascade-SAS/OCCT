@@ -22,7 +22,7 @@
 
 #include <DsgPrs.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Prs3d_LengthAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Prs3d_Root.hxx>
@@ -42,7 +42,7 @@ void DsgPrs_EqualRadiusPresentation::Add( const Handle( Prs3d_Presentation )& aP
 					  const gp_Pnt& SecondPoint,
 					  const Handle( Geom_Plane )& Plane )
 {
-  Handle( Prs3d_LengthAspect ) LA = aDrawer->LengthAspect();
+  Handle( Prs3d_DimensionAspect ) LA = aDrawer->DimensionAspect();
   Prs3d_Root::CurrentGroup( aPresentation )->SetPrimitivesAspect( LA->LineAspect()->Aspect() );
 
   Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(4);

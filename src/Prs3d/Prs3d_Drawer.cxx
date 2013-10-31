@@ -397,37 +397,19 @@ void Prs3d_Drawer::SetPlaneAspect ( const Handle(Prs3d_PlaneAspect)& anAspect) {
   myPlaneAspect = anAspect;
 }
 
-Handle (Prs3d_LengthAspect) Prs3d_Drawer::LengthAspect ()  {
-  if (myLengthAspect.IsNull())
-    myLengthAspect = new Prs3d_LengthAspect;
+Handle (Prs3d_DimensionAspect) Prs3d_Drawer::DimensionAspect ()
+{
+  if (myDimensionAspect.IsNull())
+    myDimensionAspect = new Prs3d_DimensionAspect;
 
-  return myLengthAspect;
+  return myDimensionAspect;
 }
 
-void Prs3d_Drawer::SetLengthAspect ( const Handle(Prs3d_LengthAspect)& anAspect) {
- myLengthAspect = anAspect;
+void Prs3d_Drawer::SetDimensionAspect ( const Handle(Prs3d_DimensionAspect)& theAspect)
+{
+ myDimensionAspect = theAspect;
 }
 
-
-
-Handle (Prs3d_AngleAspect) Prs3d_Drawer::AngleAspect ()  {
-  if (myAngleAspect.IsNull())
-    myAngleAspect = new Prs3d_AngleAspect;
-
-  return myAngleAspect;
-}
-
-void Prs3d_Drawer::SetAngleAspect ( const Handle(Prs3d_AngleAspect)& anAspect) {
- myAngleAspect = anAspect;
-}
-
-Handle (Prs3d_RadiusAspect) Prs3d_Drawer::RadiusAspect () const {
-  return myRadiusAspect;
-}
-
-void Prs3d_Drawer::SetRadiusAspect ( const Handle(Prs3d_RadiusAspect)& anAspect) {
- myRadiusAspect = anAspect;
-}
 
 Handle (Prs3d_LineAspect) Prs3d_Drawer::SectionAspect ()  {
   if (mySectionAspect.IsNull())

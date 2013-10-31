@@ -22,7 +22,7 @@
 #include <TCollection_ExtendedString.hxx>
 #include <gp_Pnt.hxx>
 #include <Prs3d_Text.hxx>
-#include <Prs3d_LengthAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 
 #include <Standard_ErrorHandler.hxx>
@@ -464,7 +464,7 @@ void XCAFPrs_AISObject::Compute (const Handle(PrsMgr_PresentationManager3d)& aPr
     //cout << "Now display name of shapes" << endl;
 #endif
     aPrs->SetDisplayPriority(10);
-    DisplayText (myLabel, aPrs, Attributes()->LengthAspect()->TextAspect(), TopLoc_Location());//no location
+    DisplayText (myLabel, aPrs, Attributes()->DimensionAspect()->TextAspect(), TopLoc_Location());//no location
   }
 #ifdef DEB
   //cout << "Compute finished" << endl;

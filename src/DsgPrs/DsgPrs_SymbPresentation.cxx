@@ -23,7 +23,7 @@
 #include <DsgPrs_SymbPresentation.ixx>
 
 #include <Prs3d_LineAspect.hxx>
-#include <Prs3d_LengthAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_TextAspect.hxx>
 #include <Prs3d_PointAspect.hxx>
 #include <Geom_CartesianPoint.hxx>
@@ -37,7 +37,7 @@ void DsgPrs_SymbPresentation::Add (const Handle(Prs3d_Presentation)& aPresentati
 				   const TCollection_ExtendedString& aText,
 				   const gp_Pnt& OffsetPoint) 
 {
-  Handle(Prs3d_LengthAspect) LA = aDrawer->LengthAspect();
+  Handle(Prs3d_DimensionAspect) LA = aDrawer->DimensionAspect();
   Handle(Prs3d_TextAspect) TA = LA->TextAspect();
   TA->SetColor(Quantity_NOC_GREEN);
   Prs3d_Text::Draw(aPresentation,TA,aText, OffsetPoint);

@@ -86,15 +86,7 @@ AS_FIRSTAR_LASTPT,AS_FIRSTPT_LASTAR;
     imported DatumPrs; 
 
     ComputeSymbol(aPresentation: Presentation from Prs3d;
-                  anAspect: AngleAspect from Prs3d;
-    	          pt1,pt2:Pnt from gp;
-    	          dir1,dir2: Dir from gp;
-	          ArrowSide: ArrowSide from DsgPrs);
-    	---Purpose: draws symbols ((one or two) arrows,(one or two)points 
-    	--          at thebeginning and at the end of the dimension
-
-    ComputeSymbol(aPresentation: Presentation from Prs3d;
-                  anAspect: LengthAspect from Prs3d;
+                  anAspect: DimensionAspect from Prs3d;
     	          pt1,pt2:Pnt from gp;
     	          dir1,dir2: Dir from gp;
 	          ArrowSide: ArrowSide from DsgPrs;

@@ -38,7 +38,7 @@
 #include <Select3D_SensitiveBox.hxx>
 #include <Precision.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
-#include <Prs3d_LengthAspect.hxx>
+#include <Prs3d_DimensionAspect.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 #include <AIS_Drawer.hxx>
 
@@ -142,8 +142,8 @@ void AIS_EqualRadiusRelation::Compute( const Handle( PrsMgr_PresentationManager3
     myArrowSize = (Min(myFirstCenter.Distance(myFirstPoint),
 		     mySecondCenter.Distance(mySecondPoint)))*0.05;
   
-  Handle(Prs3d_LengthAspect) la = myDrawer->LengthAspect();
-  Handle(Prs3d_ArrowAspect) arr = la->Arrow1Aspect();
+  Handle(Prs3d_DimensionAspect) la = myDrawer->DimensionAspect();
+  Handle(Prs3d_ArrowAspect) arr = la->ArrowAspect();
   arr->SetLength(myArrowSize);
   
   //ota -- end --

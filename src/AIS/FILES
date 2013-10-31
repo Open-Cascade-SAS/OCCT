@@ -7,3 +7,13 @@ AIS_NListIteratorOfListTransient.hxx
 AIS_NDataMapOfTransientIteratorOfListTransient.hxx
 AIS_Triangulation.cdl
 AIS_Triangulation.cxx
+AIS_Dimension.hxx
+AIS_Dimension.cxx
+AIS_LengthDimension.hxx
+AIS_LengthDimension.cxx
+AIS_AngleDimension.hxx
+AIS_AngleDimension.cxx
+AIS_DiameterDimension.hxx
+AIS_DiameterDimension.cxx
+AIS_RadiusDimension.hxx
+AIS_RadiusDimension.cxx

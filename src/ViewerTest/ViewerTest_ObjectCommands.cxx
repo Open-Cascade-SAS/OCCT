@@ -75,7 +75,6 @@
 #include <AIS_InteractiveContext.hxx>
 #include <Geom_Plane.hxx>
 #include <gp_Pln.hxx>
-#include <AIS_AngleDimension.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <GC_MakePlane.hxx>
 #include <gp_Circ.hxx>

@@ -77,6 +77,7 @@ END_MESSAGE_MAP()
 // CViewer3dDoc construction/destruction
 
 CViewer3dDoc::CViewer3dDoc()
+:OCC_3dDoc()
 {
 	myCylinder.Nullify();
 	mySphere.Nullify();
@@ -86,21 +87,9 @@ CViewer3dDoc::CViewer3dDoc()
 	myOverlappedBox.Nullify();
 	myOffsetDlg = NULL;
 	myStaticTrihedronAxisIsDisplayed = FALSE;
-
 	myState = -1;
 
 	isTextureSampleStarted = FALSE;
-/*
-	// TODO: add one-time construction code here
-	Handle(Graphic3d_WNTGraphicDevice) theGraphicDevice = 
-		((CViewer3dApp*)AfxGetApp())->GetGraphicDevice();
-
-	myViewer = new V3d_Viewer(theGraphicDevice,(short *) "Visu3D");
-	myViewer->SetDefaultLights();
-	myViewer->SetLightOn();
-*/
-
-//	myViewer->SetDefaultBackgroundColor(Quantity_TOC_RGB, 0.,0.,0.);
 
 	myPresentation = OCCDemo_Presentation::Current;
 	myPresentation->SetDocument(this);
@@ -702,39 +691,22 @@ void CViewer3dDoc::OnUpdateOptionsTrihedronStaticTrihedron(CCmdUI* pCmdUI)
 	
 }
 
-void  CViewer3dDoc::Popup( const Standard_Integer  x,
-						   const Standard_Integer  y ,
-                           const Handle(V3d_View)& aView   ) 
+void  CViewer3dDoc::Popup (const Standard_Integer  x,
+                           const Standard_Integer  y ,
+                           const Handle(V3d_View)& aView)
 {
-  Standard_Integer PopupMenuNumber=0;
- myAISContext->InitCurrent();
-  if (myAISContext->MoreCurrent()) {
-		if (myAISContext->Current()->IsKind(STANDARD_TYPE(User_Cylinder)))
-			return;
-		else 
-			PopupMenuNumber = 1;
-	}
-
-  CMenu menu;
-  VERIFY(menu.LoadMenu(IDR_Popup3D));
-  CMenu* pPopup = menu.GetSubMenu(PopupMenuNumber);
-
-  ASSERT(pPopup != NULL);
-   if (PopupMenuNumber == 1) // more than 1 object.
+  myPopupMenuNumber=0;
+  // Specified check for context menu number to call
+  myAISContext->InitCurrent();
+  if (myAISContext->MoreCurrent())
   {
-    bool OneOrMoreInShading = false;
-	for (myAISContext->InitCurrent();myAISContext->MoreCurrent ();myAISContext->NextCurrent ())
-    if (myAISContext->IsDisplayed(myAISContext->Current(),1)) OneOrMoreInShading=true;
-	if(!OneOrMoreInShading)
-   	pPopup->EnableMenuItem(5, MF_BYPOSITION | MF_DISABLED | MF_GRAYED);
-   }
-
-  POINT winCoord = { x , y };
-  Handle(WNT_Window) aWNTWindow=
-  Handle(WNT_Window)::DownCast(aView->Window());
-  ClientToScreen ( (HWND)(aWNTWindow->HWindow()),&winCoord);
-  pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON , winCoord.x, winCoord.y , 
-                         AfxGetMainWnd());
+    if (myAISContext->Current()->IsKind(STANDARD_TYPE(User_Cylinder)))
+    {
+      myPopupMenuNumber = 2;
+      //return;
+    }
+  }
+  OCC_3dBaseDoc::Popup(x,y, aView);
 }
 
 //Set faces selection mode

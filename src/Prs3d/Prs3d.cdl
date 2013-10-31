@@ -74,6 +74,19 @@ is
   --          TOH_NotSet is used by AIS_Drawer class, it means that the drawer should return the global value.
   --          For more details see AIS_Drawer class, AIS_Shape::Compute() method and
   --          HLRAlgo package from TKHLR toolkit.
+  
+  enumeration  HorizontalTextAlignment is HTA_Left, HTA_Right, HTA_Center;
+  ---Purpose: To declare horisontal alignment for dimension text.
+  
+  enumeration VerticalTextAlignment is VTA_Top, VTA_Bottom, VTA_Center;
+  ---Purpose: To declare vertical alignment for dimension text label. 
+  
+  enumeration DimensionArrowOrientation is DAO_Internal, DAO_External;
+  ---Purpose: To declare arrow orientation for dimenation.
+  -- External orientation means that dimension has extension parts outside the measured area.
+  --Internal orientation means the dimension arrows are in the measured area, and no extension parts are needed.    
+
+
 
   class Presentation;
   ---Purpose: defines the presentation object. This object can be
@@ -92,13 +105,10 @@ is
   class LineAspect;
 	class ShadingAspect;
 	class TextAspect;
-  deferred class CompositeAspect;	
   class IsoAspect;
+  class ArrowAspect;
 	class PlaneAspect;
-  class ArrowAspect;	
-	class LengthAspect;
-	class AngleAspect;
-	class RadiusAspect;
+  class DimensionAspect;
 	class DatumAspect;
 
   class Drawer;
@@ -122,10 +132,6 @@ is
 	---Purpose: defines the root of the presentation algorithms.
 
   ---Category: Basis construction elements.
-
-  class LengthPresentation;
-
-	class AnglePresentation;
 
 	class Text;
 

@@ -19,7 +19,7 @@
 -- and conditions governing the rights and limitations under the License.
 
 
-class PlaneAspect from Prs3d inherits CompositeAspect from Prs3d
+class PlaneAspect from Prs3d inherits BasicAspect from Prs3d
     	---Purpose: A framework to define the display of planes.
 uses
 

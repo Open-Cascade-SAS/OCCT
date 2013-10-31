@@ -21,7 +21,7 @@
 -- Modified	GG : GER61351 01/02/00 Add SetColor() & Aspect() methods
 
 
-class ArrowAspect from Prs3d inherits CompositeAspect from Prs3d
+class ArrowAspect from Prs3d inherits BasicAspect from Prs3d
     	---Purpose: A framework for displaying arrows in representations
     	-- of dimensions and relations.
 uses

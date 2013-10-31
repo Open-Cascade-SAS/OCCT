@@ -1,0 +1,46 @@
+puts "============"
+puts "CR24133"
+puts "============"
+puts ""
+#######################################################################
+#  Development of improvement of dimensions implementation
+#  Radius dimension
+#######################################################################
+pload VISUALIZATION
+
+vinit
+vpoint radP1 0 0 0
+vpoint radP2 50 50 0
+vpoint radP3 100 0 0
+vcircle circle radP1 radP2 radP3 0
+verase radP1 radP2 radP3
+vdim -radius -name=dim3 circle
+vdisplay dim3
+vfit
+vmoveto 102 144
+
+set x_coord 172
+set y_coord 186
+
+checkcolor $x_coord $y_coord 0 1 1
+
+if { $stat != 1 } {
+   puts "Error : Highlighting of radius dimension with 2d text is wrong."
+}
+
+verase dim3
+vdim -radius -name=dim3 -text=3d circle
+vdisplay dim3
+vfit
+vmoveto 102 144
+
+set x_coord 172
+set y_coord 186
+
+checkcolor $x_coord $y_coord 0 1 1
+
+if { $stat != 1 } {
+   puts "Error : Highlighting of radius dimension with 3d text is wrong."
+}
+
+set only_screen 1
