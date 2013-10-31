@@ -636,6 +636,206 @@ call_util_mat_mul( matrix3 mat_a, matrix3 mat_b, matrix3 mat_c)
 
 /*----------------------------------------------------------------------*/
 
+void OpenGl_View::DrawBackground (const Handle(OpenGl_Workspace) &AWorkspace)
+{
+  /////////////////////////////////////////////////////////////////////////////
+  // Step 1: Prepare for redraw
+
+  // Render background
+  if ( (AWorkspace->NamedStatus & OPENGL_NS_WHITEBACK) == 0 &&
+    ( myBgTexture.TexId != 0 || myBgGradient.type != Aspect_GFM_NONE ) )
+  {
+    const Standard_Integer aViewWidth = AWorkspace->Width();
+    const Standard_Integer aViewHeight = AWorkspace->Height();
+
+    glPushAttrib( GL_ENABLE_BIT | GL_TEXTURE_BIT );
+
+    glMatrixMode( GL_PROJECTION );
+    glPushMatrix();
+    glLoadIdentity();
+    glMatrixMode( GL_MODELVIEW );
+    glPushMatrix();
+    glLoadIdentity();
+
+    if ( glIsEnabled( GL_DEPTH_TEST ) )
+      glDisable( GL_DEPTH_TEST ); //push GL_ENABLE_BIT
+
+    // drawing bg gradient if:
+    // - gradient fill type is not Aspect_GFM_NONE and
+    // - either background texture is no specified or it is drawn in Aspect_FM_CENTERED mode
+    if ( ( myBgGradient.type != Aspect_GFM_NONE ) &&
+      ( myBgTexture.TexId == 0 || myBgTexture.Style == Aspect_FM_CENTERED ||
+      myBgTexture.Style == Aspect_FM_NONE ) )
+    {
+      Tfloat* corner1 = 0;/* -1,-1*/
+      Tfloat* corner2 = 0;/*  1,-1*/
+      Tfloat* corner3 = 0;/*  1, 1*/
+      Tfloat* corner4 = 0;/* -1, 1*/
+      Tfloat dcorner1[3];
+      Tfloat dcorner2[3];
+
+      switch( myBgGradient.type )
+      {
+      case Aspect_GFM_HOR:
+        corner1 = myBgGradient.color1.rgb;
+        corner2 = myBgGradient.color2.rgb;
+        corner3 = myBgGradient.color2.rgb;
+        corner4 = myBgGradient.color1.rgb;
+        break;
+      case Aspect_GFM_VER:
+        corner1 = myBgGradient.color2.rgb;
+        corner2 = myBgGradient.color2.rgb;
+        corner3 = myBgGradient.color1.rgb;
+        corner4 = myBgGradient.color1.rgb;
+        break;
+      case Aspect_GFM_DIAG1:
+        corner2 = myBgGradient.color2.rgb;
+        corner4 = myBgGradient.color1.rgb;
+        dcorner1 [0] = dcorner2[0] = 0.5F * (corner2[0] + corner4[0]);
+        dcorner1 [1] = dcorner2[1] = 0.5F * (corner2[1] + corner4[1]);
+        dcorner1 [2] = dcorner2[2] = 0.5F * (corner2[2] + corner4[2]);
+        corner1 = dcorner1;
+        corner3 = dcorner2;
+        break;
+      case Aspect_GFM_DIAG2:
+        corner1 = myBgGradient.color2.rgb;
+        corner3 = myBgGradient.color1.rgb;
+        dcorner1 [0] = dcorner2[0] = 0.5F * (corner1[0] + corner3[0]);
+        dcorner1 [1] = dcorner2[1] = 0.5F * (corner1[1] + corner3[1]);
+        dcorner1 [2] = dcorner2[2] = 0.5F * (corner1[2] + corner3[2]);
+        corner2 = dcorner1;
+        corner4 = dcorner2;
+        break;
+      case Aspect_GFM_CORNER1:
+        corner1 = myBgGradient.color2.rgb;
+        corner2 = myBgGradient.color2.rgb;
+        corner3 = myBgGradient.color2.rgb;
+        corner4 = myBgGradient.color1.rgb;
+        break;
+      case Aspect_GFM_CORNER2:
+        corner1 = myBgGradient.color2.rgb;
+        corner2 = myBgGradient.color2.rgb;
+        corner3 = myBgGradient.color1.rgb;
+        corner4 = myBgGradient.color2.rgb;
+        break;
+      case Aspect_GFM_CORNER3:
+        corner1 = myBgGradient.color2.rgb;
+        corner2 = myBgGradient.color1.rgb;
+        corner3 = myBgGradient.color2.rgb;
+        corner4 = myBgGradient.color2.rgb;
+        break;
+      case Aspect_GFM_CORNER4:
+        corner1 = myBgGradient.color1.rgb;
+        corner2 = myBgGradient.color2.rgb;
+        corner3 = myBgGradient.color2.rgb;
+        corner4 = myBgGradient.color2.rgb;
+        break;
+      default:
+        //printf("gradient background type not right\n");
+        break;
+      }
+
+      // Save GL parameters
+      glDisable( GL_LIGHTING ); //push GL_ENABLE_BIT
+
+      GLint curSM;
+      glGetIntegerv( GL_SHADE_MODEL, &curSM );
+      if ( curSM != GL_SMOOTH )
+        glShadeModel( GL_SMOOTH ); //push GL_LIGHTING_BIT
+
+      glBegin(GL_TRIANGLE_FAN);
+      if( myBgGradient.type != Aspect_GFM_CORNER1 && myBgGradient.type != Aspect_GFM_CORNER3 )
+      {
+        glColor3f(corner1[0],corner1[1],corner1[2]); glVertex2f(-1.,-1.);
+        glColor3f(corner2[0],corner2[1],corner2[2]); glVertex2f( 1.,-1.);
+        glColor3f(corner3[0],corner3[1],corner3[2]); glVertex2f( 1., 1.);
+        glColor3f(corner4[0],corner4[1],corner4[2]); glVertex2f(-1., 1.);
+      }
+      else //if ( myBgGradient.type == Aspect_GFM_CORNER1 || myBgGradient.type == Aspect_GFM_CORNER3 )
+      {
+        glColor3f(corner2[0],corner2[1],corner2[2]); glVertex2f( 1.,-1.);
+        glColor3f(corner3[0],corner3[1],corner3[2]); glVertex2f( 1., 1.);
+        glColor3f(corner4[0],corner4[1],corner4[2]); glVertex2f(-1., 1.);
+        glColor3f(corner1[0],corner1[1],corner1[2]); glVertex2f(-1.,-1.);
+      }
+      glEnd();
+
+      // Restore GL parameters
+      if ( curSM != GL_SMOOTH )
+        glShadeModel( curSM );
+    }
+    // drawing bg image if:
+    // - it is defined and
+    // - fill type is not Aspect_FM_NONE
+    if ( myBgTexture.TexId != 0 && myBgTexture.Style != Aspect_FM_NONE )
+    {
+      GLfloat texX_range = 1.F; // texture <s> coordinate
+      GLfloat texY_range = 1.F; // texture <t> coordinate
+
+      // Set up for stretching or tiling
+      GLfloat x_offset, y_offset;
+      if ( myBgTexture.Style == Aspect_FM_CENTERED )
+      {
+        x_offset = (GLfloat)myBgTexture.Width / (GLfloat)aViewWidth;
+        y_offset = (GLfloat)myBgTexture.Height / (GLfloat)aViewHeight;
+      }
+      else
+      {
+        x_offset = 1.F;
+        y_offset = 1.F;
+        if ( myBgTexture.Style == Aspect_FM_TILED )
+        {
+          texX_range = (GLfloat)aViewWidth / (GLfloat)myBgTexture.Width;
+          texY_range = (GLfloat)aViewHeight / (GLfloat)myBgTexture.Height;
+        }
+      }
+
+      // OCCT issue 0023000: Improve the way the gradient and textured
+      // background is managed in 3d viewer (note 0020339)
+      // Setting this coefficient to -1.F allows to tile textures relatively
+      // to the top-left corner of the view (value 1.F corresponds to the
+      // initial behaviour - tiling from the bottom-left corner)
+      GLfloat aCoef = -1.F;
+
+      glEnable( GL_TEXTURE_2D ); //push GL_ENABLE_BIT
+      glBindTexture( GL_TEXTURE_2D, myBgTexture.TexId ); //push GL_TEXTURE_BIT
+
+      glDisable( GL_BLEND ); //push GL_ENABLE_BIT
+
+      glColor3fv( AWorkspace->BackgroundColor().rgb );
+      glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL); //push GL_TEXTURE_BIT
+
+      // Note that texture is mapped using GL_REPEAT wrapping mode so integer part
+      // is simply ignored, and negative multiplier is here for convenience only
+      // and does not result e.g. in texture mirroring
+      glBegin( GL_QUADS );
+      glTexCoord2f(0.F, 0.F); glVertex2f( -x_offset, -aCoef * y_offset );
+      glTexCoord2f(texX_range, 0.F); glVertex2f( x_offset, -aCoef * y_offset );
+      glTexCoord2f(texX_range, aCoef * texY_range); glVertex2f( x_offset, aCoef * y_offset );
+      glTexCoord2f(0.F, aCoef * texY_range); glVertex2f( -x_offset, aCoef * y_offset );
+      glEnd();
+    }
+
+    glPopMatrix();
+    glMatrixMode( GL_PROJECTION );
+    glPopMatrix();
+    glMatrixMode( GL_MODELVIEW );
+
+    glPopAttrib(); //GL_ENABLE_BIT | GL_TEXTURE_BIT
+
+    if ( AWorkspace->UseZBuffer() )
+      glEnable( GL_DEPTH_TEST );
+
+    /* GL_DITHER on/off pour le trace */
+    if (AWorkspace->Dither())
+      glEnable (GL_DITHER);
+    else
+      glDisable (GL_DITHER);
+  }
+}
+
+/*----------------------------------------------------------------------*/
+
 //call_func_redraw_all_structs_proc
 void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
                           const Handle(OpenGl_Workspace) &AWorkspace,
@@ -701,196 +901,7 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
   // Step 1: Prepare for redraw
 
   // Render background
-  if ( (AWorkspace->NamedStatus & OPENGL_NS_WHITEBACK) == 0 &&
-	   ( myBgTexture.TexId != 0 || myBgGradient.type != Aspect_GFM_NONE ) )
-  {
-    const Standard_Integer aViewWidth = AWorkspace->Width();
-    const Standard_Integer aViewHeight = AWorkspace->Height();
-
-    glPushAttrib( GL_ENABLE_BIT | GL_TEXTURE_BIT );
-
-    glMatrixMode( GL_PROJECTION );
-    glPushMatrix();
-    glLoadIdentity();
-    glMatrixMode( GL_MODELVIEW );
-    glPushMatrix();
-    glLoadIdentity();
-
-    if ( glIsEnabled( GL_DEPTH_TEST ) )
-      glDisable( GL_DEPTH_TEST ); //push GL_ENABLE_BIT
-
-    // drawing bg gradient if:
-    // - gradient fill type is not Aspect_GFM_NONE and
-    // - either background texture is no specified or it is drawn in Aspect_FM_CENTERED mode
-    if ( ( myBgGradient.type != Aspect_GFM_NONE ) &&
-         ( myBgTexture.TexId == 0 || myBgTexture.Style == Aspect_FM_CENTERED ||
-           myBgTexture.Style == Aspect_FM_NONE ) )
-    {
-      Tfloat* corner1 = 0;/* -1,-1*/
-      Tfloat* corner2 = 0;/*  1,-1*/
-      Tfloat* corner3 = 0;/*  1, 1*/
-      Tfloat* corner4 = 0;/* -1, 1*/
-      Tfloat dcorner1[3];
-      Tfloat dcorner2[3];
-
-      switch( myBgGradient.type )
-      {
-        case Aspect_GFM_HOR:
-          corner1 = myBgGradient.color1.rgb;
-          corner2 = myBgGradient.color2.rgb;
-          corner3 = myBgGradient.color2.rgb;
-          corner4 = myBgGradient.color1.rgb;
-          break;
-        case Aspect_GFM_VER:
-          corner1 = myBgGradient.color2.rgb;
-          corner2 = myBgGradient.color2.rgb;
-          corner3 = myBgGradient.color1.rgb;
-          corner4 = myBgGradient.color1.rgb;
-          break;
-        case Aspect_GFM_DIAG1:
-          corner2 = myBgGradient.color2.rgb;
-          corner4 = myBgGradient.color1.rgb;
-          dcorner1 [0] = dcorner2[0] = 0.5F * (corner2[0] + corner4[0]);
-          dcorner1 [1] = dcorner2[1] = 0.5F * (corner2[1] + corner4[1]);
-          dcorner1 [2] = dcorner2[2] = 0.5F * (corner2[2] + corner4[2]);
-          corner1 = dcorner1;
-          corner3 = dcorner2;
-          break;
-        case Aspect_GFM_DIAG2:
-          corner1 = myBgGradient.color2.rgb;
-          corner3 = myBgGradient.color1.rgb;
-          dcorner1 [0] = dcorner2[0] = 0.5F * (corner1[0] + corner3[0]);
-          dcorner1 [1] = dcorner2[1] = 0.5F * (corner1[1] + corner3[1]);
-          dcorner1 [2] = dcorner2[2] = 0.5F * (corner1[2] + corner3[2]);
-          corner2 = dcorner1;
-          corner4 = dcorner2;
-          break;
-        case Aspect_GFM_CORNER1:
-          corner1 = myBgGradient.color2.rgb;
-          corner2 = myBgGradient.color2.rgb;
-          corner3 = myBgGradient.color2.rgb;
-          corner4 = myBgGradient.color1.rgb;
-          break;
-        case Aspect_GFM_CORNER2:
-          corner1 = myBgGradient.color2.rgb;
-          corner2 = myBgGradient.color2.rgb;
-          corner3 = myBgGradient.color1.rgb;
-          corner4 = myBgGradient.color2.rgb;
-          break;
-        case Aspect_GFM_CORNER3:
-          corner1 = myBgGradient.color2.rgb;
-          corner2 = myBgGradient.color1.rgb;
-          corner3 = myBgGradient.color2.rgb;
-          corner4 = myBgGradient.color2.rgb;
-          break;
-        case Aspect_GFM_CORNER4:
-          corner1 = myBgGradient.color1.rgb;
-          corner2 = myBgGradient.color2.rgb;
-          corner3 = myBgGradient.color2.rgb;
-          corner4 = myBgGradient.color2.rgb;
-          break;
-        default:
-          //printf("gradient background type not right\n");
-         break;
-      }
-
-      // Save GL parameters
-      glDisable( GL_LIGHTING ); //push GL_ENABLE_BIT
-
-      GLint curSM;
-      glGetIntegerv( GL_SHADE_MODEL, &curSM );
-      if ( curSM != GL_SMOOTH )
-        glShadeModel( GL_SMOOTH ); //push GL_LIGHTING_BIT
-
-      glBegin(GL_TRIANGLE_FAN);
-      if( myBgGradient.type != Aspect_GFM_CORNER1 && myBgGradient.type != Aspect_GFM_CORNER3 )
-      {
-        glColor3f(corner1[0],corner1[1],corner1[2]); glVertex2f(-1.,-1.);
-        glColor3f(corner2[0],corner2[1],corner2[2]); glVertex2f( 1.,-1.);
-        glColor3f(corner3[0],corner3[1],corner3[2]); glVertex2f( 1., 1.);
-        glColor3f(corner4[0],corner4[1],corner4[2]); glVertex2f(-1., 1.);
-      }
-      else //if ( myBgGradient.type == Aspect_GFM_CORNER1 || myBgGradient.type == Aspect_GFM_CORNER3 )
-      {
-        glColor3f(corner2[0],corner2[1],corner2[2]); glVertex2f( 1.,-1.);
-        glColor3f(corner3[0],corner3[1],corner3[2]); glVertex2f( 1., 1.);
-        glColor3f(corner4[0],corner4[1],corner4[2]); glVertex2f(-1., 1.);
-        glColor3f(corner1[0],corner1[1],corner1[2]); glVertex2f(-1.,-1.);
-      }
-      glEnd();
-
-      // Restore GL parameters
-      if ( curSM != GL_SMOOTH )
-        glShadeModel( curSM );
-    }
-    // drawing bg image if:
-    // - it is defined and
-    // - fill type is not Aspect_FM_NONE
-    if ( myBgTexture.TexId != 0 && myBgTexture.Style != Aspect_FM_NONE )
-    {
-      GLfloat texX_range = 1.F; // texture <s> coordinate
-      GLfloat texY_range = 1.F; // texture <t> coordinate
-
-	  // Set up for stretching or tiling
-      GLfloat x_offset, y_offset;
-      if ( myBgTexture.Style == Aspect_FM_CENTERED )
-      {
-        x_offset = (GLfloat)myBgTexture.Width / (GLfloat)aViewWidth;
-        y_offset = (GLfloat)myBgTexture.Height / (GLfloat)aViewHeight;
-      }
-      else
-      {
-        x_offset = 1.F;
-        y_offset = 1.F;
-        if ( myBgTexture.Style == Aspect_FM_TILED )
-        {
-          texX_range = (GLfloat)aViewWidth / (GLfloat)myBgTexture.Width;
-          texY_range = (GLfloat)aViewHeight / (GLfloat)myBgTexture.Height;
-        }
-      }
-
-      // OCCT issue 0023000: Improve the way the gradient and textured
-      // background is managed in 3d viewer (note 0020339)
-      // Setting this coefficient to -1.F allows to tile textures relatively
-      // to the top-left corner of the view (value 1.F corresponds to the
-      // initial behaviour - tiling from the bottom-left corner)
-      GLfloat aCoef = -1.F;
-
-      glEnable( GL_TEXTURE_2D ); //push GL_ENABLE_BIT
-      glBindTexture( GL_TEXTURE_2D, myBgTexture.TexId ); //push GL_TEXTURE_BIT
-
-      glDisable( GL_BLEND ); //push GL_ENABLE_BIT
-
-      glColor3fv( AWorkspace->BackgroundColor().rgb );
-      glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL); //push GL_TEXTURE_BIT
-
-      // Note that texture is mapped using GL_REPEAT wrapping mode so integer part
-      // is simply ignored, and negative multiplier is here for convenience only
-      // and does not result e.g. in texture mirroring
-      glBegin( GL_QUADS );
-      glTexCoord2f(0.F, 0.F); glVertex2f( -x_offset, -aCoef * y_offset );
-      glTexCoord2f(texX_range, 0.F); glVertex2f( x_offset, -aCoef * y_offset );
-      glTexCoord2f(texX_range, aCoef * texY_range); glVertex2f( x_offset, aCoef * y_offset );
-      glTexCoord2f(0.F, aCoef * texY_range); glVertex2f( -x_offset, aCoef * y_offset );
-      glEnd();
-    }
-
-    glPopMatrix();
-    glMatrixMode( GL_PROJECTION );
-    glPopMatrix();
-    glMatrixMode( GL_MODELVIEW );
-
-    glPopAttrib(); //GL_ENABLE_BIT | GL_TEXTURE_BIT
-
-    if ( AWorkspace->UseZBuffer() )
-      glEnable( GL_DEPTH_TEST );
-
-    /* GL_DITHER on/off pour le trace */
-    if (AWorkspace->Dither())
-      glEnable (GL_DITHER);
-    else
-      glDisable (GL_DITHER);
-  }
+  DrawBackground (AWorkspace);
 
   // Switch off lighting by default
   glDisable(GL_LIGHTING);
@@ -1028,8 +1039,6 @@ D = -[Px,Py,Pz] dot |Nx|
 
   // Apply clipping planes
   {
-    const Handle(OpenGl_Context)& aContext = AWorkspace->GetGlContext();
-
     if (myZClip.Back.IsOn || myZClip.Front.IsOn)
     {
       const GLdouble ramp = myExtra.map.fpd - myExtra.map.bpd;

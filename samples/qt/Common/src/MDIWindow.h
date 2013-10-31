@@ -12,13 +12,25 @@ class COMMONSAMPLE_EXPORT MDIWindow: public QMainWindow
     Q_OBJECT
 
 public:
-  MDIWindow( DocumentCommon* aDocument, QWidget* parent, Qt::WindowFlags wflags );
+  MDIWindow( DocumentCommon* aDocument, QWidget* parent, Qt::WindowFlags wflags, bool theRT = false );
   MDIWindow( View* aView, DocumentCommon* aDocument, QWidget* parent, Qt::WindowFlags wflags );
   ~MDIWindow();
 
 	DocumentCommon*            getDocument();
 	void                       fitAll();
   virtual QSize              sizeHint() const;
+
+#ifdef HAVE_OPENCL
+
+  void                       setRaytracedShadows( int state );
+  void                       setRaytracedReflections( int state );
+  void                       setRaytracedAntialiasing( int state );
+
+  bool                       ShadowsEnabled() { return myShadowsEnabled; }
+  bool                       ReflectionsEnabled() { return myReflectionsEnabled; }
+  bool                       AntialiasingEnabled() { return myAntialiasingEnabled; }
+
+#endif
 
 signals:
   void                       selectionChanged();
@@ -36,6 +48,14 @@ protected:
 protected:
   DocumentCommon*            myDocument;
   View*                      myView;
+
+#ifdef HAVE_OPENCL
+
+  bool                       myShadowsEnabled;
+  bool                       myReflectionsEnabled;
+  bool                       myAntialiasingEnabled;
+
+#endif
 };
 
 #endif

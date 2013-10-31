@@ -203,6 +203,16 @@ void OpenGl_GraphicDriver::Redraw (const Graphic3d_CView& ACView,
                                    const Standard_Integer /*width*/, 
                                    const Standard_Integer /*height*/)
 {
+  if (!myCaps->vboDisable && ACView.IsRaytracing)
+  {
+    if (ACView.WasRedrawnGL)
+    {
+      myDeviceLostFlag = Standard_True;
+    }
+
+    myCaps->keepArrayData = Standard_True;
+  }
+
   const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
   if (aCView)
   {

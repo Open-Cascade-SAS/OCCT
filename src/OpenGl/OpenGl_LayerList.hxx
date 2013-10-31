@@ -80,7 +80,17 @@ class OpenGl_LayerList
   
   //! Render this element
   void Render (const Handle(OpenGl_Workspace) &theWorkspace) const;
+
+  //! Returns the set of OpenGL Z-layers.
+  const OpenGl_SequenceOfLayers& Layers() const { return myLayers; }
   
+#ifdef HAVE_OPENCL
+
+  //! Returns structure modification state (for ray-tracing).
+  Standard_Size ModificationState() const { return myModificationState; }
+
+#endif
+
  private:
   
   //! Get default layer
@@ -93,6 +103,10 @@ class OpenGl_LayerList
   OpenGl_LayerSeqIds      myLayerIds;
   Standard_Integer        myNbPriorities;
   Standard_Integer        myNbStructures;
+
+#ifdef HAVE_OPENCL
+  mutable Standard_Size   myModificationState;
+#endif
 
  public:
   DEFINE_STANDARD_ALLOC

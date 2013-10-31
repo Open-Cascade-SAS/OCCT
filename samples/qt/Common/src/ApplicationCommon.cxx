@@ -12,6 +12,9 @@
 #include <QApplication>
 #include <QSignalMapper>
 
+#include <Graphic3d_GraphicDriver.hxx>
+#include <OpenGl_GraphicDriver.hxx>
+
 #include <stdlib.h>
 
 static ApplicationCommonWindow* stApp;
@@ -56,13 +59,12 @@ void ApplicationCommonWindow::createStandardOperations()
 
   QString dir = getResourceDir() + QString( "/" );
 
-  newIcon = QPixmap( dir+QObject::tr("ICON_NEW") );
-  helpIcon = QPixmap( dir+QObject::tr("ICON_HELP") );
-  closeIcon = QPixmap( dir+QObject::tr("ICON_CLOSE") );
+  newIcon = QPixmap( dir + QObject::tr("ICON_NEW") );
+  helpIcon = QPixmap( dir + QObject::tr("ICON_HELP") );
+  closeIcon = QPixmap( dir + QObject::tr("ICON_CLOSE") );
 
-  QAction * fileNewAction, * fileCloseAction, * fileQuitAction,
-          * viewToolAction, * viewStatusAction,
-		  * helpAboutAction;
+  QAction * fileNewAction, * fileCloseAction, * filePrefUseVBOAction,
+          * fileQuitAction, * viewToolAction, * viewStatusAction, * helpAboutAction;
 
   fileNewAction = new QAction( newIcon, QObject::tr("MNU_NEW"), this );
   fileNewAction->setToolTip( QObject::tr("TBR_NEW") );
@@ -77,6 +79,14 @@ void ApplicationCommonWindow::createStandardOperations()
   fileCloseAction->setShortcut( QObject::tr("CTRL+W") );
   connect( fileCloseAction, SIGNAL( triggered() ) , this, SLOT( onCloseWindow() ) );
   myStdActions.insert( FileCloseId, fileCloseAction );
+
+  filePrefUseVBOAction = new QAction( QObject::tr("MNU_USE_VBO"), this );
+  filePrefUseVBOAction->setToolTip( QObject::tr("TBR_USE_VBO") );
+  filePrefUseVBOAction->setStatusTip( QObject::tr("TBR_USE_VBO") );
+  filePrefUseVBOAction->setCheckable( true );
+  filePrefUseVBOAction->setChecked( true );
+  connect( filePrefUseVBOAction, SIGNAL( activated() ) , this, SLOT( onUseVBO() ) );
+  myStdActions.insert( FilePrefUseVBOId, filePrefUseVBOAction );
 
   fileQuitAction = new QAction( QObject::tr("MNU_QUIT"), this );
   fileQuitAction->setToolTip( QObject::tr("TBR_QUIT") );
@@ -108,11 +118,17 @@ void ApplicationCommonWindow::createStandardOperations()
   connect( helpAboutAction, SIGNAL( triggered() ) , this, SLOT( onAbout() ) );
   myStdActions.insert( HelpAboutId, helpAboutAction );
 
-    // popuplate a menu with all actions
+  // create preferences menu
+  QMenu* aPrefMenu = new QMenu( QObject::tr("MNU_PREFERENCES") );
+  aPrefMenu->addAction( filePrefUseVBOAction );
+  
+  // popuplate a menu with all actions
   myFilePopup = new QMenu( this );
   myFilePopup = menuBar()->addMenu( QObject::tr("MNU_FILE") );
   myFilePopup->addAction( fileNewAction );
   myFilePopup->addAction( fileCloseAction );
+  myFileSeparator = myFilePopup->addSeparator();
+  myFilePopup->addMenu( aPrefMenu );
   myFileSeparator = myFilePopup->addSeparator();
   myFilePopup->addAction( fileQuitAction );
     
@@ -124,7 +140,6 @@ void ApplicationCommonWindow::createStandardOperations()
   view->addAction( viewStatusAction );
 	
 	// add a help menu
-
   QMenu * help = new QMenu( this );
   menuBar()->addSeparator();
   help = menuBar()->addMenu( QObject::tr("MNU_HELP") );
@@ -136,6 +151,8 @@ void ApplicationCommonWindow::createStandardOperations()
   myStdToolBar->addAction( helpAboutAction );
 	
   myStdActions.at(FileCloseId)->setEnabled(myDocuments.count() > 0);
+
+  myStdActions.at(FilePrefUseVBOId)->setEnabled( true );
 }
 
 void ApplicationCommonWindow::createCasCadeOperations()
@@ -181,8 +198,42 @@ void ApplicationCommonWindow::createCasCadeOperations()
   a = new QAction( QPixmap( dir+QObject::tr("ICON_TOOL_DEL") ), QObject::tr("MNU_TOOL_DEL"), this );
   a->setToolTip( QObject::tr("TBR_TOOL_DEL") );
   a->setStatusTip( QObject::tr("TBR_TOOL_DEL") );
-  connect( a, SIGNAL( triggered() ) , this, SLOT( onToolAction() ) );
+  connect( a, SIGNAL( activated() ) , this, SLOT( onToolAction() ) );
   myToolActions.insert( ToolDeleteId, a );
+
+#ifdef HAVE_OPENCL
+
+  // populate a tool bar with some actions
+  myRaytraceBar = addToolBar( tr( "Ray-trace options" ) );
+
+  a = new QAction( QPixmap( dir+QObject::tr("ICON_TOOL_SHADOWS") ), QObject::tr("MNU_TOOL_SHADOWS"), this );
+  a->setToolTip( QObject::tr("TBR_TOOL_SHADOWS") );
+  a->setStatusTip( QObject::tr("TBR_TOOL_SHADOWS") );
+  a->setCheckable( true );
+  a->setChecked( true );
+  connect( a, SIGNAL( activated() ) , this, SLOT( onRaytraceAction() ) );
+  myRaytraceActions.insert( ToolShadowsId, a );
+  myRaytraceBar->addAction( a );
+
+  a = new QAction( QPixmap( dir+QObject::tr("ICON_TOOL_REFLECTIONS") ), QObject::tr("MNU_TOOL_REFLECTIONS"), this );
+  a->setToolTip( QObject::tr("TBR_TOOL_REFLECTIONS") );
+  a->setStatusTip( QObject::tr("TBR_TOOL_REFLECTIONS") );
+  a->setCheckable( true );
+  a->setChecked( true );
+  connect( a, SIGNAL( activated() ) , this, SLOT( onRaytraceAction() ) );
+  myRaytraceActions.insert( ToolReflectionsId, a );
+  myRaytraceBar->addAction( a );
+
+  a = new QAction( QPixmap( dir+QObject::tr("ICON_TOOL_ANTIALIASING") ), QObject::tr("MNU_TOOL_ANTIALIASING"), this );
+  a->setToolTip( QObject::tr("TBR_TOOL_ANTIALIASING") );
+  a->setStatusTip( QObject::tr("TBR_TOOL_ANTIALIASING") );
+  a->setCheckable( true );
+  a->setChecked( false );
+  connect( a, SIGNAL( activated() ) , this, SLOT( onRaytraceAction() ) );
+  myRaytraceActions.insert( ToolAntialiasingId, a );
+  myRaytraceBar->addAction( a );
+
+#endif
 
   QSignalMapper* sm = new QSignalMapper( this );
   connect( sm, SIGNAL( mapped( int ) ), this, SLOT( onSetMaterial( int ) ) );
@@ -275,11 +326,21 @@ void ApplicationCommonWindow::windowsMenuAboutToShow()
 
   QString dir = getResourceDir() + QString( "/" );
 
-  a = new QAction( QPixmap( dir + QObject::tr( "ICON_WINDOW_NEW3D" ) ), QObject::tr( "MNU_WINDOW_NEW3D" ), this );
-  a->setToolTip( QObject::tr( "TBR_WINDOW_NEW3D" ) );
-  a->setStatusTip( QObject::tr( "TBR_WINDOW_NEW3D" ) );
+  a = new QAction( QPixmap( dir + QObject::tr( "ICON_WINDOW_NEW3D" ) ), QObject::tr( "MNU_WINDOW_NEW3D_GL" ), this );
+  a->setToolTip( QObject::tr( "TBR_WINDOW_NEW3D_GL" ) );
+  a->setStatusTip( QObject::tr( "TBR_WINDOW_NEW3D_GL" ) );
   connect( a, SIGNAL( triggered() ), this, SLOT( onCreateNewView() ) );
   myWindowPopup->addAction( a );
+
+#ifdef HAVE_OPENCL
+
+  a = new QAction( QPixmap( dir + QObject::tr( "ICON_WINDOW_NEW3D" ) ), QObject::tr( "MNU_WINDOW_NEW3D_RT" ), this );
+  a->setToolTip( QObject::tr( "TBR_WINDOW_NEW3D_RT" ) );
+  a->setStatusTip( QObject::tr( "TBR_WINDOW_NEW3D_RT" ) );
+  connect( a, SIGNAL( activated() ), this, SLOT( onCreateNewViewRT() ) );
+  myWindowPopup->addAction( a );
+
+#endif
 
   a = new QAction( QPixmap( dir + QObject::tr( "ICON_WINDOW_CASCADE" ) ), QObject::tr( "MNU_WINDOW_CASCADE" ), this );
   a->setToolTip( QObject::tr( "TBR_WINDOW_CASCADE" ) );
@@ -401,12 +462,51 @@ DocumentCommon* ApplicationCommonWindow::onNewDoc()
     return aDoc;
 }
 
-void ApplicationCommonWindow::onCloseWindow(){
+DocumentCommon* ApplicationCommonWindow::onNewDocRT()
+{
+    updateFileActions();
+    DocumentCommon* aDoc = createNewDocument();
+    aDoc->onCreateNewView(true);
+    onSelectionChanged();
+    connect( aDoc, SIGNAL( sendCloseDocument( DocumentCommon* ) ),
+             this, SLOT( onCloseDocument( DocumentCommon* ) ) );
+    connect( stWs, SIGNAL( windowActivated( QWidget* ) ),
+             this, SLOT( onWindowActivated( QWidget* ) ) );
+    connect( aDoc, SIGNAL( selectionChanged() ),
+             this, SLOT( onSelectionChanged() ) );
+    myDocuments.append( aDoc );
+    myStdActions.at( FileCloseId )->setEnabled( myDocuments.count() > 0 );
+    return aDoc;
+}
+
+void ApplicationCommonWindow::onCloseWindow()
+{
     MDIWindow* m = (MDIWindow*)stWs->activeWindow();
     if ( m )
     {
         DocumentCommon* doc = m->getDocument();
         onCloseDocument( doc );
+    }
+}
+
+void ApplicationCommonWindow::onUseVBO()
+{
+    MDIWindow* w = ( MDIWindow* ) stWs->activeWindow();
+    
+    if ( NULL == w )
+      return;
+
+    Handle(AIS_InteractiveContext) aContextAIS = w->getDocument()->getContext();
+
+    if (aContextAIS.IsNull())
+      return;
+
+    Handle(OpenGl_GraphicDriver) aDriver =
+      Handle(OpenGl_GraphicDriver)::DownCast (aContextAIS->CurrentViewer()->Driver());
+
+    if (!aDriver.IsNull())
+    {
+      aDriver->ChangeOptions().vboDisable = Standard_True;
     }
 }
 
@@ -449,14 +549,38 @@ void ApplicationCommonWindow::onAbout()
 
 void ApplicationCommonWindow::onCreateNewView()
 {
-    DocumentCommon* doc = ((MDIWindow*) stWs->activeWindow())->getDocument();
-    doc->onCreateNewView();
+  MDIWindow* window = qobject_cast< MDIWindow* >( stWs->activeWindow() );
+  window->getDocument()->onCreateNewView( false );
 }
+
+#ifdef HAVE_OPENCL
+
+void ApplicationCommonWindow::onCreateNewViewRT()
+{
+  MDIWindow* window = qobject_cast< MDIWindow* >( stWs->activeWindow() );
+  window->getDocument()->onCreateNewView( true );
+}
+
+#endif
 
 void ApplicationCommonWindow::onWindowActivated ( QWidget * w )
 {
-    if ( w )
-        ((MDIWindow*) w)->onWindowActivated();
+  if (w == NULL)
+  {
+    return;
+  }
+  
+  MDIWindow* window = qobject_cast< MDIWindow* >(w);
+
+  window->onWindowActivated();
+
+#ifdef HAVE_OPENCL
+
+  myRaytraceActions.at( ToolShadowsId )->setChecked (window->ShadowsEnabled());
+  myRaytraceActions.at( ToolReflectionsId )->setChecked (window->ReflectionsEnabled());
+  myRaytraceActions.at( ToolAntialiasingId )->setChecked (window->AntialiasingEnabled());
+
+#endif
 }
 
 void ApplicationCommonWindow::onToolAction()
@@ -483,6 +607,36 @@ void ApplicationCommonWindow::onToolAction()
     if( sentBy == myToolActions.at( ToolDeleteId ) )
         doc->onDelete();
 }
+
+#ifdef HAVE_OPENCL
+
+void ApplicationCommonWindow::onRaytraceAction()
+{
+  QAction* sentBy = (QAction*) sender();
+  
+  DocumentCommon* doc = qobject_cast< MDIWindow* >(
+    ApplicationCommonWindow::getWorkspace()->activeWindow())->getDocument();
+
+  if( sentBy == myRaytraceActions.at( ToolShadowsId ) )
+  {
+    bool flag = myRaytraceActions.at( ToolShadowsId )->isChecked(); 
+    doc->onShadows( flag );
+  }
+
+  if( sentBy == myRaytraceActions.at( ToolReflectionsId ) )
+  {
+    bool flag = myRaytraceActions.at( ToolReflectionsId )->isChecked();
+    doc->onReflections( flag );
+  }
+
+  if( sentBy == myRaytraceActions.at( ToolAntialiasingId ) )
+  {
+    bool flag = myRaytraceActions.at( ToolAntialiasingId )->isChecked();
+    doc->onAntialiasing( flag );
+  }
+}
+
+#endif
 
 void ApplicationCommonWindow::onSelectionChanged()
 {

@@ -87,6 +87,14 @@
         <translation>new.png</translation>
     </message>
     <message>
+        <source>ICON_NEW_GL</source>
+        <translation>newGL.png</translation>
+    </message>
+    <message>
+        <source>ICON_NEW_RT</source>
+        <translation>newRT.png</translation>
+    </message>
+    <message>
         <source>ICON_VIEW_RIGHT</source>
         <translation>view_right.png</translation>
     </message>
@@ -125,6 +133,18 @@
     <message>
         <source>ICON_SAMPLE</source>
         <translation>lamp.png</translation>
+    </message>
+    <message>
+        <source>ICON_TOOL_SHADOWS</source>
+        <translation>shadows.png</translation>
+    </message>
+    <message>
+        <source>ICON_TOOL_REFLECTIONS</source>
+        <translation>reflections.png</translation>
+    </message>
+    <message>
+        <source>ICON_TOOL_ANTIALIASING</source>
+        <translation>antialiasing.png</translation>
     </message>
 </context>
 </TS>

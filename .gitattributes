@@ -12,6 +12,7 @@
 *.jxx       eol=lf
 *.lxx       eol=lf
 *.pxx       eol=lf
+*.cl        eol=lf
 *.cdl       eol=lf
 *.edl       eol=lf
 *.yacc      eol=lf

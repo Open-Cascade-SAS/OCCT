@@ -17,6 +17,11 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+
+#ifdef HAVE_CONFIG_H
+  #include <config.h>
+#endif
+
 #include <OpenGl_GlCore15.hxx>
 
 #include <InterfaceGraphic.hxx>
@@ -28,6 +33,7 @@
 #include <OpenGl_Context.hxx>
 #include <OpenGl_FrameBuffer.hxx>
 #include <OpenGl_Texture.hxx>
+#include <OpenGl_View.hxx>
 #include <OpenGl_Workspace.hxx>
 #include <OpenGl_Element.hxx>
 
@@ -116,6 +122,21 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_Display)& theDisplay,
 
   // Polygon Offset
   EnablePolygonOffset();
+
+#ifdef HAVE_OPENCL
+
+  myComputeInitStatus = OpenGl_CLIS_NONE;
+
+  myViewModificationStatus = 0;
+  myLayersModificationStatus = 0;
+
+  myRaytraceOutputTexture[0] = 0;
+  myRaytraceOutputTexture[1] = 0;
+
+  myIsRaytraceDataValid = Standard_False;
+  myToUpdateRaytraceData = Standard_False;
+
+#endif
 }
 
 // =======================================================================
@@ -135,6 +156,9 @@ Standard_Boolean OpenGl_Workspace::SetImmediateModeDrawToFront (const Standard_B
 // =======================================================================
 OpenGl_Workspace::~OpenGl_Workspace()
 {
+#ifdef HAVE_OPENCL
+  ReleaseOpenCL();
+#endif
 }
 
 // =======================================================================
@@ -483,11 +507,29 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
     toSwap = 0; // no need to swap buffers
   }
 
-  Redraw1 (theCView, theCUnderLayer, theCOverLayer, toSwap);
-  if (aFrameBuffer == NULL || !myTransientDrawToFront)
+#ifdef HAVE_OPENCL
+  if (!theCView.IsRaytracing || myComputeInitStatus == OpenGl_CLIS_FAIL)
   {
-    RedrawImmediatMode();
+#endif
+    Redraw1 (theCView, theCUnderLayer, theCOverLayer, toSwap);
+    if (aFrameBuffer == NULL || !myTransientDrawToFront)
+    {
+      RedrawImmediatMode();
+    }
+
+    theCView.WasRedrawnGL = Standard_True;
+#ifdef HAVE_OPENCL
   }
+  else
+  {
+    int aSizeX = aFrameBuffer != NULL ? aFrameBuffer->GetVPSizeX() : myWidth;
+    int aSizeY = aFrameBuffer != NULL ? aFrameBuffer->GetVPSizeY() : myHeight;
+
+    Raytrace (theCView, aSizeX, aSizeY, toSwap);
+
+    theCView.WasRedrawnGL = Standard_False;
+  }
+#endif
 
   if (aFrameBuffer != NULL)
   {

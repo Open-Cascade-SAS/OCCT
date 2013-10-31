@@ -33,6 +33,7 @@
 #include <OpenGl_tsm.hxx>
 
 class OpenGl_Group;
+class OpenGl_Structure;
 
 typedef NCollection_List<const OpenGl_Group*     > OpenGl_ListOfGroup;
 
@@ -46,10 +47,13 @@ struct OpenGl_ElementNode
 
 class OpenGl_Group : public OpenGl_Element
 {
-
 public:
 
+#ifndef HAVE_OPENCL
   OpenGl_Group();
+#else
+  OpenGl_Group (const OpenGl_Structure* theAncestorStructure);
+#endif
 
   void SetAspectLine   (const CALL_DEF_CONTEXTLINE&     theAspect, const Standard_Boolean IsGlobal = Standard_True);
   void SetAspectFace   (const CALL_DEF_CONTEXTFILLAREA& theAspect, const Standard_Boolean IsGlobal = Standard_True);
@@ -61,19 +65,41 @@ public:
   virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
   virtual void Release (const Handle(OpenGl_Context)&   theGlCtx);
 
+  //! Returns first OpenGL element node of the group.
+  const OpenGl_ElementNode* FirstNode() const { return myFirst; }
+
+  //! Returns OpenGL face aspect.
+  const OpenGl_AspectFace* AspectFace() const { return myAspectFace; }
+
+#ifdef HAVE_OPENCL
+
+  //! Returns modification state for ray-tracing.
+  Standard_Size ModificationState() const { return myModificationState; }
+
+  //! Is the group ray-tracable (contains ray-tracable elements)?
+  Standard_Boolean IsRaytracable() const { return myIsRaytracable; }
+
+#endif
+
 protected:
 
   virtual ~OpenGl_Group();
 
 protected:
 
-  OpenGl_AspectLine*   myAspectLine;
-  OpenGl_AspectFace*   myAspectFace;
-  OpenGl_AspectMarker* myAspectMarker;
-  OpenGl_AspectText*   myAspectText;
+  OpenGl_AspectLine*     myAspectLine;
+  OpenGl_AspectFace*     myAspectFace;
+  OpenGl_AspectMarker*   myAspectMarker;
+  OpenGl_AspectText*     myAspectText;
 
-  OpenGl_ElementNode*  myFirst;
-  OpenGl_ElementNode*  myLast;
+  OpenGl_ElementNode*    myFirst;
+  OpenGl_ElementNode*    myLast;
+  
+#ifdef HAVE_OPENCL
+  const OpenGl_Structure*  myAncestorStructure;
+  Standard_Boolean         myIsRaytracable;
+  Standard_Size            myModificationState;
+#endif
 
 public:
 

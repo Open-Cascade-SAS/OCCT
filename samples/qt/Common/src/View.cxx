@@ -11,12 +11,14 @@
 #include <QColorDialog>
 #include <QCursor>
 #include <QFileInfo>
+#include <QFileDialog>
 #include <QMouseEvent>
 #include <QRubberBand>
 
 #include <Visual3d_View.hxx>
 #include <Graphic3d_ExportFormat.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
+#include <Graphic3d_TextureEnv.hxx>
 #include <QWindowsStyle>
   
 #if defined(_WIN32) || defined(__WIN32__)
@@ -52,9 +54,11 @@ static QCursor* globPanCursor = NULL;
 static QCursor* zoomCursor    = NULL;
 static QCursor* rotCursor     = NULL;
 
-View::View( Handle(AIS_InteractiveContext) theContext, QWidget* parent )
+View::View( Handle(AIS_InteractiveContext) theContext, QWidget* parent, bool theRT )
 : QWidget( parent ),
-myViewActions( 0 )
+myIsRT( theRT ),
+myViewActions( 0 ),
+myBackMenu( NULL )
 {
 #if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
   //XSynchronize( x11Display(),true ); // it is possible to use QApplication::syncX();
@@ -62,6 +66,9 @@ myViewActions( 0 )
 #endif
     myFirst = true;
     myContext = theContext;
+
+    //if (theRT)
+    //  myContext->SetDisplayMode( AIS_DisplayMode::AIS_Shaded, 1 );
 
     myXmin = 0;
     myYmin = 0;
@@ -160,6 +167,7 @@ myViewActions( 0 )
 
 View::~View()
 {
+  delete myBackMenu;
 }
 
 void View::init()
@@ -184,6 +192,9 @@ void View::init()
   }
   myView->SetBackgroundColor (Quantity_NOC_BLACK);
   myView->MustBeResized();
+
+  if (myIsRT)
+    myView->SetRaytracingMode();
 }
 
 void View::paintEvent( QPaintEvent *  )
@@ -297,6 +308,30 @@ void View::hlrOn()
     myHlrModeIsOn = Standard_True;
     myView->SetComputedMode (myHlrModeIsOn);
     QApplication::restoreOverrideCursor();
+}
+
+void View::setRaytracedShadows( int state )
+{
+  if ( state )
+    myView->EnableRaytracedShadows();
+  else
+    myView->DisableRaytracedShadows();
+}
+
+void View::setRaytracedReflections( int state )
+{
+  if ( state )
+    myView->EnableRaytracedReflections();
+  else
+    myView->DisableRaytracedReflections();
+}
+
+void View::setRaytracedAntialiasing( int state )
+{
+  if ( state )
+    myView->EnableRaytracedAntialiasing();
+  else
+    myView->DisableRaytracedAntialiasing();
 }
 
 void View::updateToggled( bool isOn )
@@ -847,14 +882,26 @@ void View::Popup( const int /*x*/, const int /*y*/ )
   }
   else
   {
-    QMenu* myBackMenu = new QMenu( 0 );
-		QAction* a = new QAction( QObject::tr("MNU_CH_BACK"), this );
-		a->setToolTip( QObject::tr("TBR_CH_BACK") );
-    connect( a,SIGNAL( triggered() ), this, SLOT( onBackground() ) );
-		myBackMenu->addAction( a );  
-    addItemInPopup(myBackMenu);
+    if (!myBackMenu)
+    {
+      myBackMenu = new QMenu( 0 );
+
+		  QAction* a = new QAction( QObject::tr("MNU_CH_BACK"), this );
+		  a->setToolTip( QObject::tr("TBR_CH_BACK") );
+      connect( a, SIGNAL( activated() ), this, SLOT( onBackground() ) );
+		  myBackMenu->addAction( a );  
+      addItemInPopup(myBackMenu);
+
+      a = new QAction( QObject::tr("MNU_CH_ENV_MAP"), this );
+		  a->setToolTip( QObject::tr("TBR_CH_ENV_MAP") );
+      connect( a, SIGNAL( activated() ), this, SLOT( onEnvironmentMap() ) );
+      a->setCheckable( true );
+      a->setChecked( false );
+		  myBackMenu->addAction( a );  
+      addItemInPopup(myBackMenu);
+    }
+
     myBackMenu->exec( QCursor::pos() );
-    delete myBackMenu;
   }
   if ( w )
     w->setFocus();
@@ -944,6 +991,26 @@ void View::onBackground()
         myView->SetBackgroundColor(Quantity_TOC_RGB,R1,G1,B1);
     }
     myView->Redraw();
+}
+
+void View::onEnvironmentMap()
+{
+  if (myBackMenu->actions().at(1)->isChecked())
+  {
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "",
+                           tr("All Image Files (*.bmp *.gif *.jpg *.jpeg *.png *.tga)"));
+
+    Handle(Graphic3d_TextureEnv) aTexture = new Graphic3d_TextureEnv( fileName.toAscii().data() );
+
+    myView->SetTextureEnv (aTexture);
+    myView->SetSurfaceDetail (V3d_TEX_ENVIRONMENT);
+  }
+  else
+  {
+    myView->SetSurfaceDetail (V3d_TEX_NONE);
+  }
+  
+  myView->Redraw();
 }
 
 bool View::dump(Standard_CString theFile)

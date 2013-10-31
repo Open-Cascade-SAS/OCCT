@@ -17,23 +17,37 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-#include <OpenGl_Group.hxx>
 
+#ifdef HAVE_CONFIG_H
+  #include <config.h>
+#endif
+
+#include <OpenGl_Group.hxx>
 #include <OpenGl_PrimitiveArray.hxx>
+#include <OpenGl_Structure.hxx>
 #include <OpenGl_Workspace.hxx>
 
 // =======================================================================
 // function : OpenGl_Group
 // purpose  :
 // =======================================================================
-OpenGl_Group::OpenGl_Group ()
-: myAspectLine (NULL),
-  myAspectFace (NULL),
-  myAspectMarker (NULL),
-  myAspectText (NULL),
-  myFirst (NULL),
-  myLast (NULL)
+#ifndef HAVE_OPENCL
+OpenGl_Group::OpenGl_Group()
+#else
+OpenGl_Group::OpenGl_Group (const OpenGl_Structure* theAncestorStructure)
+#endif
+: myAspectLine(NULL),
+  myAspectFace(NULL),
+  myAspectMarker(NULL),
+  myAspectText(NULL),
+  myFirst(NULL),
+  myLast(NULL)
 {
+#ifdef HAVE_OPENCL
+  myAncestorStructure = theAncestorStructure;
+  myIsRaytracable = Standard_False;
+  myModificationState = 0; // initial state
+#endif
 }
 
 // =======================================================================
@@ -89,6 +103,18 @@ void OpenGl_Group::SetAspectFace (const CALL_DEF_CONTEXTFILLAREA& theAspect,
     anAspectFace->SetAspect (theAspect);
     AddElement (TelNil/*TelAspectFace*/, anAspectFace);
   }
+
+#ifdef HAVE_OPENCL
+  if (myIsRaytracable)
+  {
+    myModificationState++;
+
+    if (myAncestorStructure != NULL)
+    {
+      myAncestorStructure->UpdateStateWithAncestorStructures();
+    }
+  }
+#endif
 }
 
 // =======================================================================
@@ -141,15 +167,29 @@ void OpenGl_Group::SetAspectText (const CALL_DEF_CONTEXTTEXT& theAspect,
 // function : AddElement
 // purpose  :
 // =======================================================================
-void OpenGl_Group::AddElement (const TelType AType, OpenGl_Element *AElem )
+void OpenGl_Group::AddElement (const TelType theType, OpenGl_Element *theElem)
 {
-  OpenGl_ElementNode *node = new OpenGl_ElementNode();
+  OpenGl_ElementNode *aNode = new OpenGl_ElementNode();
 
-  node->type = AType;
-  node->elem = AElem;
-  node->next = NULL;
-  (myLast? myLast->next : myFirst) = node;
-  myLast = node;
+  aNode->type = theType;
+  aNode->elem = theElem;
+  aNode->next = NULL;
+  (myLast? myLast->next : myFirst) = aNode;
+  myLast = aNode;
+
+#ifdef HAVE_OPENCL
+  if (OpenGl_Raytrace::IsRaytracedElement (aNode))
+  {
+    myModificationState++;
+    myIsRaytracable = Standard_True;
+
+    if (myAncestorStructure != NULL)
+    {
+      myAncestorStructure->UpdateStateWithAncestorStructures();
+      myAncestorStructure->SetRaytracableWithAncestorStructures();
+    }
+  }
+#endif
 }
 
 // =======================================================================

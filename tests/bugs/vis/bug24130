@@ -1,0 +1,48 @@
+puts "TODO OCC24130 Debian60-64: OCCT was compiled without OpenCL support!"
+puts "TODO OCC24130 Windows: TKOpenGl | Type\: Error | ID\: 0 | Severity\: High | Message\:"
+
+puts "========"
+puts "OCC24130 Implementing ray tracing visualization core"
+puts "========"
+
+# custom shapes
+set aShape1 [locate_data_file occ/Top.brep]
+set aShape2 [locate_data_file occ/Bottom.brep]
+
+# setup 3D viewer content
+vinit name=View1 w=512 h=512
+vglinfo
+
+vvbo 0
+vsetdispmode 1
+vsetgradientbg 180 200 255 180 180 180 2
+restore $aShape1 s1
+restore $aShape2 s2
+vdisplay s1 s2
+vsetmaterial s1 Silver
+vsetmaterial s2 Pewter
+vfit
+
+# activate ray-tracing
+vraytrace 1
+vclinfo
+
+set aModeNum 0
+for { set aAAMode 0 } { $aAAMode <= 1 } { incr aAAMode } {
+  for { set aReflMode 0 } { $aReflMode <= 1 } { incr aReflMode } {
+    for { set aShadMode 0 } { $aShadMode <= 1 } { incr aShadMode } {
+      vsetraytracemode shad=$aShadMode refl=$aReflMode aa=$aAAMode
+      vdump $imagedir/${casename}_${aModeNum}.png
+      incr aModeNum
+    }
+  }
+}
+
+vtextureenv on 5
+for { set aAAMode 0 } { $aAAMode <= 1 } { incr aAAMode } {
+  for { set aShadMode 0 } { $aShadMode <= 1 } { incr aShadMode } {
+    vsetraytracemode shad=$aShadMode refl=1 aa=$aAAMode
+    vdump $imagedir/${casename}_${aModeNum}.png
+    incr aModeNum
+  }
+}

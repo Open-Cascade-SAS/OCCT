@@ -149,7 +149,11 @@ Standard_Boolean OpenGl_PrimitiveArray::BuildVBO (const Handle(OpenGl_Workspace)
     }
   }
 
-  clearMemoryOwn();
+  if (!aGlCtx->caps->keepArrayData)
+  {
+    clearMemoryOwn();
+  }
+  
   return Standard_True;
 }
 

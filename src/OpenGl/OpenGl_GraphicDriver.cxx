@@ -17,6 +17,11 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+
+#ifdef HAVE_CONFIG_H
+  #include <config.h>
+#endif
+
 #include <OpenGl_GraphicDriver.hxx>
 
 #include <OpenGl_Context.hxx>
@@ -153,6 +158,34 @@ Standard_Boolean OpenGl_GraphicDriver::SetImmediateModeDrawToFront (const Graphi
   }
   return Standard_False;
 }
+
+// =======================================================================
+// function : GetOpenClDeviceInfo
+// purpose  : Returns information about device used for computations
+// =======================================================================
+#ifndef HAVE_OPENCL
+
+Standard_Boolean OpenGl_GraphicDriver::GetOpenClDeviceInfo (const Graphic3d_CView&,
+  NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>&)
+{
+  return Standard_True;
+}
+
+#else
+
+Standard_Boolean OpenGl_GraphicDriver::GetOpenClDeviceInfo (const Graphic3d_CView& theCView,
+  NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>& theInfo)
+{
+
+  if (theCView.ViewId == -1 || theCView.ptrView == NULL)
+  {
+    return Standard_False;
+  }
+  
+  return reinterpret_cast<const OpenGl_CView*> (theCView.ptrView)->WS->GetOpenClDeviceInfo (theInfo);
+}
+
+#endif
 
 // =======================================================================
 // function : BeginAddMode

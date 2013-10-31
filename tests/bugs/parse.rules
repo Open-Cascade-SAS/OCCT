@@ -1,4 +1,5 @@
 FAILED /\bFaulty\b/ bad shape
 IGNORE /^Error [23]d = [\d.-]+/ debug output of blend command
 SKIPPED /Error: unsupported locale specification/ locale is unavailable on tested system
+SKIPPED /OCCT was compiled without OpenCL support!/
 OK /Relative error of mass computation/ message from vprops

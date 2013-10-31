@@ -24,9 +24,17 @@ MDIWindow::MDIWindow(View* aView,
 
   myView = aView;
 	myDocument = aDocument;
+
+#ifdef HAVE_OPENCL
+
+  myShadowsEnabled = true;
+  myReflectionsEnabled = true;
+  myAntialiasingEnabled = false;
+
+#endif
 }  
   
-MDIWindow::MDIWindow( DocumentCommon* aDocument, QWidget* parent, Qt::WindowFlags wflags )
+MDIWindow::MDIWindow( DocumentCommon* aDocument, QWidget* parent, Qt::WindowFlags wflags, bool theRT )
 : QMainWindow( parent, wflags )
 {
 	QFrame *vb = new QFrame( this );
@@ -39,7 +47,7 @@ MDIWindow::MDIWindow( DocumentCommon* aDocument, QWidget* parent, Qt::WindowFlag
 	setCentralWidget( vb );
 
 	myDocument = aDocument;
-	myView = new View( myDocument->getContext(), vb );
+	myView = new View( myDocument->getContext(), vb, theRT );
 	layout->addWidget( myView );
 
   connect( myView, SIGNAL( selectionChanged() ),
@@ -49,6 +57,14 @@ MDIWindow::MDIWindow( DocumentCommon* aDocument, QWidget* parent, Qt::WindowFlag
   resize( sizeHint() );
 
   setFocusPolicy( Qt::StrongFocus );
+
+#ifdef HAVE_OPENCL
+
+  myShadowsEnabled = true;
+  myReflectionsEnabled = true;
+  myAntialiasingEnabled = false;
+
+#endif
 }
 
 MDIWindow::~MDIWindow()
@@ -136,5 +152,27 @@ QSize MDIWindow::sizeHint() const
 {
     return QSize( 450, 300 );
 }
+
+#ifdef HAVE_OPENCL
+
+void MDIWindow::setRaytracedShadows( int state )
+{
+  myView->setRaytracedShadows( state );
+  myShadowsEnabled = state;
+}
+
+void MDIWindow::setRaytracedReflections( int state )
+{
+  myView->setRaytracedReflections( state );
+  myReflectionsEnabled = state;
+}
+
+void MDIWindow::setRaytracedAntialiasing( int state )
+{
+  myView->setRaytracedAntialiasing( state );
+  myAntialiasingEnabled = state;
+}
+
+#endif
 
 

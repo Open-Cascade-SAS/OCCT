@@ -35,7 +35,8 @@ OpenGl_Caps::OpenGl_Caps()
 #else
   contextDebug      (Standard_False),
 #endif
-  contextNoAccel    (Standard_False)
+  contextNoAccel    (Standard_False),
+  keepArrayData     (Standard_False)
 {
   //
 }

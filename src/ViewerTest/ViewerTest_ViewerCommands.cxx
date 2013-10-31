@@ -19,7 +19,7 @@
 // and conditions governing the rights and limitations under the License.
 
 #ifdef HAVE_CONFIG_H
-# include <config.h>
+  #include <config.h>
 #endif
 
 #include <OpenGl_GlCore20.hxx>
@@ -5275,6 +5275,183 @@ static int VSetTextureMode (Draw_Interpretor& theDi, Standard_Integer theArgsNb,
   return 0;
 }
 
+//==============================================================================
+//function : VClInfo
+//purpose  : Prints info about active OpenCL device
+//==============================================================================
+
+static Standard_Integer VClInfo (Draw_Interpretor& theInterpretor,
+                                 Standard_Integer,
+                                 const char**)
+{
+#ifndef HAVE_OPENCL
+
+  theInterpretor << "OCCT was compiled without OpenCL support!\n";
+
+#else
+
+  Handle(AIS_InteractiveContext) aContextAIS = ViewerTest::GetAISContext();
+
+  if (aContextAIS.IsNull())
+  {
+    theInterpretor << "Call vinit before!\n";
+    return 1;
+  }
+
+  Handle(OpenGl_GraphicDriver) aDrv = Handle(OpenGl_GraphicDriver)::DownCast (aContextAIS->CurrentViewer()->Driver());
+  
+  Graphic3d_CView* aCView = (Graphic3d_CView*) ViewerTest::CurrentView()->View()->CView();
+
+  NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString> anInfo;
+
+  if (aDrv.IsNull() || aCView == NULL || !aDrv->GetOpenClDeviceInfo (*aCView, anInfo))
+  {
+    theInterpretor << "Cannot get OpenCL device info!\n";
+    return 0;
+  }
+  
+  theInterpretor << "OpenCL device info:\n";
+  
+  NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator anIter (anInfo);
+
+  for (; anIter.More(); anIter.Next())
+  {
+    theInterpretor << anIter.Key() << ": \t" << anIter.Value() << "\n";
+  }
+
+#endif
+
+  return 0;
+}
+
+//=======================================================================
+//function : VRaytrace
+//purpose  : Enables/disables OpenCL-based ray-tracing
+//=======================================================================
+
+#ifndef HAVE_OPENCL
+
+static Standard_Integer VRaytrace (Draw_Interpretor& theInterpretor,
+                                   Standard_Integer,
+                                   const char**)
+{
+  theInterpretor << "OCCT was compiled without OpenCL support!\n";
+
+  return 0;
+}
+
+#else
+
+static Standard_Integer VRaytrace (Draw_Interpretor&,
+                                   Standard_Integer theArgNb,
+                                   const char** theArgVec)
+{
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+
+  if (aContext.IsNull())
+  {
+    std::cerr << "Use 'vinit' command before " << theArgVec[0] << "\n";
+    return 1;
+  }
+
+  if (theArgNb < 2)
+  {
+    std::cerr << "Usage : " << theArgVec[0] << " 0|1\n";
+    return 1;
+  }
+  
+  Standard_Integer isOn = atoi(theArgVec[1]);
+
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+
+  if (isOn)
+    aView->SetRaytracingMode();
+  else
+    aView->SetRasterizationMode();
+
+  aView->Redraw();
+
+  return 0;
+}
+
+#endif
+
+//=======================================================================
+//function : VSetRaytraceMode
+//purpose  : Enables/disables features of OpenCL-based ray-tracing
+//=======================================================================
+
+#ifndef HAVE_OPENCL
+
+static Standard_Integer VSetRaytraceMode (Draw_Interpretor& theInterpretor,
+                                          Standard_Integer,
+                                          const char**)
+{
+  theInterpretor << "OCCT was compiled without OpenCL support!\n";
+
+  return 0;
+}
+
+#else
+
+static Standard_Integer VSetRaytraceMode (Draw_Interpretor&,
+                                          Standard_Integer theArgNb,
+                                          const char ** theArgVec)
+{
+  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
+
+  if (aContext.IsNull())
+  {
+    std::cerr << "Use 'vinit' command before " << theArgVec[0] << "\n";
+    return 1;
+  }
+
+  if (theArgNb < 2)
+  {
+    std::cerr << "Usage : " << theArgVec[0] << " [shad=0|1] [refl=0|1] [aa=0|1]\n";
+    return 1;
+  }
+
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
+  {
+    const TCollection_AsciiString anArg (theArgVec[anArgIter]);
+
+    if (anArg.Search ("shad=") > -1)
+    {
+      if (anArg.Token ("=", 2).IntegerValue() != 0)
+        aView->EnableRaytracedShadows();
+      else
+        aView->DisableRaytracedShadows();
+    }
+    else if (anArg.Search ("refl=") > -1)
+    {
+      if (anArg.Token ("=", 2).IntegerValue() != 0)
+        aView->EnableRaytracedReflections();
+      else
+        aView->DisableRaytracedReflections();
+    }
+    else if (anArg.Search ("aa=") > -1)
+    {
+      if (anArg.Token ("=", 2).IntegerValue() != 0)
+        aView->EnableRaytracedAntialiasing();
+      else
+        aView->DisableRaytracedAntialiasing();
+    }
+    else
+    {
+      std::cerr << "Unknown argument: " << anArg << "\n";
+    }
+  }
+
+  aView->Redraw();
+
+  return 0;
+}
+
+#endif
+
 //=======================================================================
 //function : ViewerCommands
 //purpose  :
@@ -5548,4 +5725,13 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "  2 - all textures enabled.\n"
     "  this command sets texture details mode for the specified view.\n"
     , __FILE__, VSetTextureMode, group);
+  theCommands.Add("vraytrace",
+    "vraytrace 0|1",
+    __FILE__,VRaytrace,group);
+  theCommands.Add("vclinfo",
+    "vclinfo",
+    __FILE__,VClInfo,group);
+  theCommands.Add("vsetraytracemode",
+    "vsetraytracemode [shad=0|1] [refl=0|1] [aa=0|1]",
+    __FILE__,VSetRaytraceMode,group);
 }

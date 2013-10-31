@@ -67,6 +67,13 @@ public: //! @name context creation parameters
    */
   Standard_Boolean contextNoAccel;
 
+  /**
+   * Disables freeing CPU memory after building VBOs.
+   *
+   * OFF by default.
+   */
+  Standard_Boolean keepArrayData;
+
 public: //! @name class methods
 
   //! Default constructor - initialize with most optimal values.

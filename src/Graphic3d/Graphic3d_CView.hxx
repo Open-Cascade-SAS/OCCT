@@ -94,7 +94,12 @@ public:
     Backfacing  (0),
     GDisplayCB  (NULL),
     GClientData (NULL),
-    ptrFBO (NULL)
+    ptrFBO (NULL),
+    WasRedrawnGL (0),
+    IsRaytracing (0),
+    IsShadowsEnabled (1),
+    IsReflectionsEnabled (1),
+    IsAntialiasingEnabled (0)
   {
     //
   }
@@ -130,6 +135,21 @@ public:
   void* GClientData;
 
   void* ptrFBO;
+
+  //! Was the window redrawn by standard OpenGL?
+  mutable int WasRedrawnGL;
+
+  //! Enables/disables OpenCL-based ray-tracing.
+  int IsRaytracing;
+
+  //! Enables/disables ray-traced sharp shadows.
+  int IsShadowsEnabled;
+  
+  //! Enables/disables ray-traced reflections.
+  int IsReflectionsEnabled;
+  
+  //! Enables/disables ray-traced adaptive anti-aliasing.
+  int IsAntialiasingEnabled;
 
 };
 

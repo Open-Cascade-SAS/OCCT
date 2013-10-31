@@ -95,6 +95,14 @@
         <translation>&amp;File</translation>
     </message>
     <message>
+        <source>MNU_PREFERENCES</source>
+        <translation>&amp;Preferences</translation>
+    </message>
+    <message>
+        <source>MNU_USE_VBO</source>
+        <translation>&amp;Use VBO</translation>
+    </message>
+    <message>
         <source>MNU_GOLD</source>
         <translation>&amp;Gold</translation>
     </message>
@@ -129,6 +137,18 @@
     <message>
         <source>MNU_TOOL_TRANS</source>
         <translation>&amp;Transpatency</translation>
+    </message>
+    <message>
+        <source>MNU_TOOL_SHADOWS</source>
+        <translation>&amp;Shadows</translation>
+    </message>
+    <message>
+        <source>MNU_TOOL_REFLECTIONS</source>
+        <translation>&amp;Reflections</translation>
+    </message>
+    <message>
+        <source>MNU_TOOL_ANTIALIASING</source>
+        <translation>&amp;Antialiasing</translation>
     </message>
     <message>
         <source>BTN_BRASS</source>
@@ -235,6 +255,10 @@
         <translation>&amp;Change Background</translation>
     </message>
     <message>
+        <source>MNU_CH_ENV_MAP</source>
+        <translation>&amp;Environment Map</translation>
+    </message>
+    <message>
         <source>TBR_CH_BACK</source>
         <translation>Change Background</translation>
     </message>
@@ -316,11 +340,23 @@
     </message>
     <message>
         <source>TBR_WINDOW_NEW3D</source>
-        <translation>New 3d View</translation>
+        <translation>New 3D View</translation>
     </message>
     <message>
-        <source>MNU_WINDOW_NEW3D</source>
-        <translation>&amp;New 3d View</translation>
+        <source>TBR_WINDOW_NEW3D_GL</source>
+        <translation>New GL 3D View</translation>
+    </message>
+    <message>
+        <source>MNU_WINDOW_NEW3D_GL</source>
+        <translation>New GL 3D View</translation>
+    </message>
+    <message>
+        <source>TBR_WINDOW_NEW3D_RT</source>
+        <translation>&amp;New RT 3D View</translation>
+    </message>
+    <message>
+        <source>MNU_WINDOW_NEW3D_RT</source>
+        <translation>&amp;New RT 3D View</translation>
     </message>
     <message>
         <source>MNU_STATUS_BAR</source>

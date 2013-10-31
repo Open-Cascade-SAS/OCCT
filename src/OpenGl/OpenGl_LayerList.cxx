@@ -19,6 +19,10 @@
 // and conditions governing the rights and limitations under the License.
 
 
+#ifdef HAVE_CONFIG_H
+  #include <config.h>
+#endif
+
 #include <OpenGl_GlCore11.hxx>
 
 #include <OpenGl_LayerList.hxx>
@@ -152,6 +156,10 @@ void OpenGl_LayerList::AddStructure (const OpenGl_Structure *theStructure,
 
   aList.Add (theStructure, thePriority);
   myNbStructures++;
+
+  // Note: In ray-tracing mode we don't modify modification
+  // state here. It is redundant, because the possible changes
+  // will be handled in the loop for structures
 }
 
 //=======================================================================
@@ -173,6 +181,14 @@ void OpenGl_LayerList::RemoveStructure (const OpenGl_Structure *theStructure,
   if (aList.Remove (theStructure) >= 0)
   {
     myNbStructures--;
+
+#ifdef HAVE_OPENCL
+    if (theStructure->IsRaytracable())
+    {
+      myModificationState++;
+    }
+#endif
+
     return;
   }
   
@@ -188,6 +204,14 @@ void OpenGl_LayerList::RemoveStructure (const OpenGl_Structure *theStructure,
     if (aScanList.Remove (theStructure) >= 0)
     {
       myNbStructures--;
+
+#ifdef HAVE_OPENCL
+      if (theStructure->IsRaytracable())
+      {
+        myModificationState++;
+      }
+#endif
+
       return;
     }
   }

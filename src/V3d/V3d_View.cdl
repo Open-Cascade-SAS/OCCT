@@ -1580,6 +1580,38 @@ is
      ---Purpose: Get clip planes.
      -- @return sequence clip planes that have been set for the view
 
+        SetRaytracingMode (me : mutable) is static;
+     ---Level: Public
+     ---Purpose: enables OpenCL-based ray-tracing mode
+
+        SetRasterizationMode (me : mutable) is static;
+     ---Level: Public
+     ---Purpose: enables OpenGL-based rasterization mode
+
+        EnableRaytracedShadows (me : mutable) is static;
+     ---Level: Public
+     ---Purpose: enables sharp shadows in OpenCL-based ray-tracing mode
+
+        EnableRaytracedReflections (me : mutable) is static;
+     ---Level: Public
+     ---Purpose: enables specular reflections in OpenCL-based ray-tracing mode
+
+        EnableRaytracedAntialiasing (me : mutable) is static;
+     ---Level: Public
+     ---Purpose: enables antialiasing in OpenCL-based ray-tracing mode
+
+        DisableRaytracedShadows (me : mutable) is static;
+     ---Level: Public
+     ---Purpose: disables sharp shadows in OpenCL-based ray-tracing mode
+
+        DisableRaytracedReflections (me : mutable) is static;
+     ---Level: Public
+     ---Purpose: disables specular reflections in OpenCL-based ray-tracing mode
+
+        DisableRaytracedAntialiasing (me : mutable) is static;
+     ---Level: Public
+     ---Purpose: disables antialiasing in OpenCL-based ray-tracing mode
+
 fields
 
         MyType :                TypeOfView from V3d is protected ;

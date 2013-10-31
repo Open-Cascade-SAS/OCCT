@@ -50,12 +50,10 @@ myNbViews( 0 )
   myViewer = Viewer( getenv("DISPLAY"), a3DName.ToExtString(), "", 1000.0,
 		               V3d_XposYnegZpos, Standard_True, Standard_True );
 
-  myViewer->Init();
 	myViewer->SetDefaultLights();
 	myViewer->SetLightOn();
 
-	myContext =new AIS_InteractiveContext(myViewer);	
-	//onCreateNewView();
+	myContext =new AIS_InteractiveContext(myViewer);
 }
 
 DocumentCommon::~DocumentCommon()
@@ -67,15 +65,16 @@ ApplicationCommonWindow* DocumentCommon::getApplication()
 	return myApp;
 }
 
-MDIWindow* DocumentCommon::createNewMDIWindow()
+MDIWindow* DocumentCommon::createNewMDIWindow( bool theRT )
 {
   QWorkspace* ws = myApp->getWorkspace();
-  return new MDIWindow( this, ws, 0 );
+  return new MDIWindow( this, ws, 0, theRT );
 }
-void DocumentCommon::onCreateNewView() 
+
+void DocumentCommon::onCreateNewView( bool theRT ) 
 {
 	QWorkspace* ws = myApp->getWorkspace();
-  MDIWindow* w = createNewMDIWindow();
+  MDIWindow* w = createNewMDIWindow( theRT );
 	
 	if( !w )
 	  return;
@@ -228,4 +227,48 @@ void DocumentCommon::onDelete()
     getApplication()->onSelectionChanged();
 }
 
+#ifdef HAVE_OPENCL
 
+void DocumentCommon::onShadows( int state )
+{
+  QWorkspace* ws = ApplicationCommonWindow::getWorkspace();
+
+  MDIWindow* window = qobject_cast< MDIWindow* >( ws->activeWindow() );
+
+  if( window == NULL )
+    return;
+
+  window->setRaytracedShadows( state );
+
+  myContext->UpdateCurrentViewer();
+}
+
+void DocumentCommon::onReflections( int state )
+{
+  QWorkspace* ws = ApplicationCommonWindow::getWorkspace();
+
+  MDIWindow* window = qobject_cast< MDIWindow* >( ws->activeWindow() );
+
+  if( window == NULL )
+    return;
+
+  window->setRaytracedReflections( state );
+
+  myContext->UpdateCurrentViewer();
+}
+
+void DocumentCommon::onAntialiasing( int state )
+{
+  QWorkspace* ws = ApplicationCommonWindow::getWorkspace();
+
+  MDIWindow* window = qobject_cast< MDIWindow* >( ws->activeWindow() );
+
+  if( window == NULL )
+    return;
+
+  window->setRaytracedAntialiasing( state );
+
+  myContext->UpdateCurrentViewer();
+}
+
+#endif

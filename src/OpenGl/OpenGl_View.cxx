@@ -17,6 +17,11 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
+
+#ifdef HAVE_CONFIG_H
+  #include <config.h>
+#endif
+
 #include <NCollection_Mat4.hxx>
 
 #include <OpenGl_Context.hxx>
@@ -123,6 +128,10 @@ OpenGl_View::OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext)
       myIntShadingMethod = TEL_SM_FLAT;
       break;
   }
+
+#ifdef HAVE_OPENCL
+  myModificationState = 1; // initial state
+#endif
 }
 
 /*----------------------------------------------------------------------*/
@@ -165,8 +174,21 @@ void OpenGl_View::SetTextureEnv (const Handle(OpenGl_Context)&       theCtx,
 
   myTextureEnv = new OpenGl_Texture (theTexture->GetParams());
   Handle(Image_PixMap) anImage = theTexture->GetImage();
-  if( !anImage.IsNull())
+  if (!anImage.IsNull())
     myTextureEnv->Init (theCtx, *anImage.operator->(), theTexture->Type());
+
+#ifdef HAVE_OPENCL
+  myModificationState++;
+#endif
+}
+
+void OpenGl_View::SetSurfaceDetail (const Visual3d_TypeOfSurfaceDetail theMode)
+{
+  mySurfaceDetail = theMode;
+
+#ifdef HAVE_OPENCL
+  myModificationState++;
+#endif
 }
 
 /*----------------------------------------------------------------------*/

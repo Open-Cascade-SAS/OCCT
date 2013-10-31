@@ -58,6 +58,9 @@ class OpenGl_PriorityList
   //! or less). Returns Standard_False if the list can not be accepted.
   Standard_Boolean Append (const OpenGl_PriorityList& theOther);
 
+  //! Returns array of OpenGL structures.
+  const OpenGl_ArrayOfStructure& ArrayOfStructures() const { return myArray; }
+
  protected:
 
   OpenGl_ArrayOfStructure myArray;

@@ -26,7 +26,9 @@ public:
                       ViewAxoId, ViewRotationId, ViewResetId, ViewHlrOffId, ViewHlrOnId };
 
     View( Handle(AIS_InteractiveContext) theContext,
-          QWidget* parent);
+          QWidget* parent,
+          bool theRT = false );
+
     ~View();
 
     virtual void                  init();
@@ -34,6 +36,10 @@ public:
     QList<QAction*>*              getViewActions();
     void                          noActiveActions();
     bool                          isShadingMode();
+
+    void                          setRaytracedShadows( int state );
+    void                          setRaytracedReflections( int state );
+    void                          setRaytracedAntialiasing( int state );
 
     static QString                GetMessages( int type,TopAbs_ShapeEnum aSubShapeType,
                                                TopAbs_ShapeEnum aShapeType );
@@ -70,6 +76,7 @@ public slots:
     void                          hlrOff();
     void                          updateToggled( bool );
     void                          onBackground();
+    void                          onEnvironmentMap();
 
 protected:
     virtual void                  paintEvent( QPaintEvent* );
@@ -107,6 +114,7 @@ private:
                                                  const int MaxX, const int MaxY, const bool Draw );
 
 private:
+    bool                            myIsRT;
     bool                            myFirst;
     bool		                        myDrawRect;           // set when a rect is used for selection or magnify 
     Handle(V3d_View)                myView;
@@ -119,6 +127,7 @@ private:
     Quantity_Factor                 myCurZoom;
     Standard_Boolean                myHlrModeIsOn;
     QList<QAction*>*                myViewActions;
+    QMenu*                          myBackMenu;
     QRubberBand*                    myRectBand; //!< selection rectangle rubber band
 };
 

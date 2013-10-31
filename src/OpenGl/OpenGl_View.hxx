@@ -109,7 +109,7 @@ class OpenGl_View : public MMgt_TShared
 
   void SetTextureEnv (const Handle(OpenGl_Context)&       theCtx,
                       const Handle(Graphic3d_TextureEnv)& theTexture);
-  void SetSurfaceDetail (const Visual3d_TypeOfSurfaceDetail AMode) { mySurfaceDetail = AMode; }
+  void SetSurfaceDetail (const Visual3d_TypeOfSurfaceDetail AMode);
   void SetBackfacing (const Standard_Integer AMode);
   void SetLights (const CALL_DEF_VIEWCONTEXT &AContext);
   void SetAntiAliasing (const Standard_Boolean AMode) { myAntiAliasing = AMode; }
@@ -189,6 +189,26 @@ class OpenGl_View : public MMgt_TShared
                const Aspect_CLayer2d&               theCUnderLayer,
                const Aspect_CLayer2d&               theCOverLayer);
 
+
+  void DrawBackground (const Handle(OpenGl_Workspace)& theWorkspace);
+
+  //! Returns list of OpenGL Z-layers.
+  const OpenGl_LayerList& LayerList() const { return myZLayers; }
+
+  //! Returns list of openGL light sources.
+  const OpenGl_ListOfLight& LightList() const { return myLights; }
+
+  //! Returns OpenGL environment map.
+  const Handle(OpenGl_Texture)& TextureEnv() const { return myTextureEnv; }
+
+  //! Returns visualization mode for objects in the view.
+  Visual3d_TypeOfSurfaceDetail SurfaceDetail() const { return mySurfaceDetail; }
+
+#ifdef HAVE_OPENCL
+  //! Returns modification state for ray-tracing.
+  Standard_Size ModificationState() const { return myModificationState; }
+#endif
+
 public:
 
   DEFINE_STANDARD_RTTI(OpenGl_View) // Type definition
@@ -249,6 +269,10 @@ public:
   Standard_Boolean myOrientationChanged;
   Standard_Boolean myViewMappingChanged;
   Standard_Boolean myLightSourcesChanged;
+
+#ifdef HAVE_OPENCL
+  Standard_Size myModificationState;
+#endif
 
  public:
   DEFINE_STANDARD_ALLOC
