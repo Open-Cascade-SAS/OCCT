@@ -1079,44 +1079,56 @@ void ViewerTest::RemoveView (const TCollection_AsciiString& theViewName, const S
 //purpose  : Remove the view defined by its name
 //==============================================================================
 
-static int VClose (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const char** theArgVec)
+static int VClose (Draw_Interpretor& /*theDi*/,
+                   Standard_Integer  theArgsNb,
+                   const char**      theArgVec)
 {
-  if (theArgsNb < 2)
-  {
-    theDi << theArgVec[0] << ": incorrect number of command arguments.\n"
-      << "Type help " << theArgVec[0] << " for more information.\n";
-    return 1;
-  }
-
-  if (ViewerTest_myViews.IsEmpty())
-  {
-    theDi << theArgVec[0] <<": there is no views to close.\n";
-    return 0;
-  }
-
-  TCollection_AsciiString anInputString(theArgVec[1]);
-
-  // Create list to iterate and remove views from the map of views
   NCollection_List<TCollection_AsciiString> aViewList;
-  if ( strcasecmp( anInputString.ToCString(), "ALL" ) == 0 )
+  if (theArgsNb > 1)
   {
-    for (NCollection_DoubleMap<TCollection_AsciiString, Handle(V3d_View)>::Iterator anIter(ViewerTest_myViews);
-         anIter.More(); anIter.Next())
+    TCollection_AsciiString anArg (theArgVec[1]);
+    anArg.UpperCase();
+    if (anArg.IsEqual ("ALL")
+     || anArg.IsEqual ("*"))
     {
-      aViewList.Append(anIter.Key1());
+      for (NCollection_DoubleMap<TCollection_AsciiString, Handle(V3d_View)>::Iterator anIter (ViewerTest_myViews);
+           anIter.More(); anIter.Next())
+      {
+        aViewList.Append (anIter.Key1());
+      }
+      if (aViewList.IsEmpty())
+      {
+        std::cout << "No view to close\n";
+        return 0;
+      }
+    }
+    else
+    {
+      ViewerTest_Names aViewName (theArgVec[1]);
+      if (!ViewerTest_myViews.IsBound1 (aViewName.GetViewName()))
+      {
+        std::cerr << "The view with name '" << theArgVec[1] << "' does not exist\n";
+        return 1;
+      }
+      aViewList.Append (aViewName.GetViewName());
     }
   }
   else
   {
-    ViewerTest_Names aViewNames(anInputString);
-    aViewList.Append(aViewNames.GetViewName());
+    // close active view
+    if (ViewerTest::CurrentView().IsNull())
+    {
+      std::cerr << "No active view!\n";
+      return 1;
+    }
+    aViewList.Append (ViewerTest_myViews.Find2 (ViewerTest::CurrentView()));
   }
 
-  Standard_Boolean isContextRemoved = (theArgsNb == 3 && atoi(theArgVec[2])==1) ? Standard_False : Standard_True;
+  Standard_Boolean toRemoveContext = (theArgsNb != 3 || Draw::Atoi (theArgVec[2]) != 1);
   for (NCollection_List<TCollection_AsciiString>::Iterator anIter(aViewList);
        anIter.More(); anIter.Next())
   {
-    ViewerTest::RemoveView(anIter.Value(), isContextRemoved);
+    ViewerTest::RemoveView (anIter.Value(), toRemoveContext);
   }
 
   return 0;
@@ -5293,7 +5305,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "Additional commands for operations with views: vclose, vactivate, vviewlist.\n",
     __FILE__,VInit,group);
   theCommands.Add("vclose" ,
-    "view_id [keep_context=0|1]\n"
+    "[view_id [keep_context=0|1]]\n"
     "or vclose ALL - to remove all created views\n"
     " - removes view(viewer window) defined by its view_id.\n"
     " - keep_context: by default 0; if 1 and the last view is deleted"
