@@ -39,7 +39,8 @@ uses
     DataMapOfIntegerListOfInteger from BOPCol, 
     DataMapOfShapeListOfShape from BOPCol,
     IndexedDataMapOfShapeListOfShape from BOPCol, 
-    DataMapOfIntegerReal from BOPCol,
+    DataMapOfIntegerReal from BOPCol, 
+    DataMapOfIntegerInteger from BOPCol,
     --  
     Context from BOPInt,
     -- 
@@ -174,23 +175,36 @@ is
         theMVOn:MapOfInteger from BOPCol) 
       returns Boolean from Standard 
       is protected; 
-	 
-    PutPaveOnCurve(me:out; 
-        theMVOn:MapOfInteger from BOPCol; 
-        theTolR3D:Real from Standard; 
-        theNC:out Curve from BOPDS; 
-        nF1:Integer from Standard; 
-        nF2:Integer from Standard;
-        theMVEF:MapOfInteger from BOPCol; 
-        theMVTol:out DataMapOfIntegerReal from BOPCol) 
-      is protected;  
+
+    PutPavesOnCurve(me:out; 
+        theMVOn   : MapOfInteger from BOPCol; 
+        theTolR3D : Real from Standard; 
+        theNC     : out Curve from BOPDS;  
+        nF1       : Integer from Standard; 
+        nF2       : Integer from Standard; 
+        theMI     : MapOfInteger from BOPCol; 
+        theMVEF   : MapOfInteger from BOPCol; 
+        theMVTol  : out DataMapOfIntegerReal from BOPCol) 
+      is protected;   
+    ---Purpose: 
+    -- Checks and puts paves from <theMVOn> on the curve <theNC>.
 
     ExtendedTolerance(me:out; 
-        nV:Integer from Standard; 
-        aMI:MapOfInteger from BOPCol; 
-        aTolVExt:out Real from  Standard) 
+        nV       : Integer from Standard; 
+        aMI      : MapOfInteger from BOPCol; 
+        aTolVExt : out Real from  Standard;
+        aType    : Integer from Standard = 0) 
       returns Boolean from  Standard 
-      is protected;
+      is protected; 
+    ---Purpose: 
+    -- Depending on the parameter aType it checks whether  
+    -- the vertex nV was created in EE or EF intersections. 
+    -- If so, it increases aTolVExt from tolerance value of vertex to  
+    -- the max distance from vertex nV to the ends of the range of common part. 
+    -- Possible values of aType: 
+    -- 1 - checks only EE; 
+    -- 2 - checks only EF;
+    -- other - checks both types of intersections.
 	 
     PutBoundPaveOnCurve(me:out;  
         theF1: Face from TopoDS;  
@@ -221,10 +235,14 @@ is
     PostTreatFF(me:out; 
         theMSCPB:out IndexedDataMapOfShapeCoupleOfPaveBlocks from BOPDS; 
         theMVI:out DataMapOfShapeInteger from BOPCol;  
-        theDMExEd:out DataMapOfPaveBlockListOfPaveBlock from BOPDS;
+        theDMExEdges:out DataMapOfPaveBlockListOfPaveBlock from BOPDS; 
+        theDMI:out DataMapOfIntegerInteger from BOPCol;
         theAllocator:out BaseAllocator from BOPCol) 
       returns Integer from Standard 
-      is protected; 
+      is protected;  
+    ---Purpose: 
+    -- Treatment of section edges.
+    
     --
     --  Treatment of degenerated edges  
     -- 
@@ -254,46 +272,69 @@ is
       is protected; 
        
     PutEFPavesOnCurve(me:out; 
-        nF1        : Integer from Standard; 
-        nF2        : Integer from Standard; 
         theNC      : out Curve from BOPDS; 
-        theMVEF    : MapOfInteger from BOPCol; 
+        theMI      : MapOfInteger from BOPCol;
+        theMVEF    : MapOfInteger from BOPCol;
         theMVTol   : out DataMapOfIntegerReal from BOPCol)
-      is protected;
+      is protected; 
+    ---Purpose: 
+    -- Checks and puts paves created in EF intersections on the curve <theNC>.
  
     PutStickPavesOnCurve(me:out; 
-        nF1        : Integer from Standard; 
-        nF2        : Integer from Standard; 
+        aF1        : Face from TopoDS; 
+        aF2        : Face from TopoDS;  
+        theMI      : MapOfInteger from BOPCol;
         theNC      : out Curve from BOPDS; 
         theMVStick : MapOfInteger from BOPCol; 
         theMVTol   : out DataMapOfIntegerReal from BOPCol)
-      is protected; 
+      is protected;  
+    ---Purpose: 
+    -- Puts stick paves on the curve <theNC>
  
     GetStickVertices(me:out; 
         nF1        : Integer from Standard; 
         nF2        : Integer from Standard; 
         theMVStick : out MapOfInteger from BOPCol;
-        theMVEFk   : out MapOfInteger from BOPCol)
-      is protected; 
+        theMVEF    : out MapOfInteger from BOPCol; 
+        theMI      : out MapOfInteger from BOPCol)
+      is protected;  
+    ---Purpose: 
+    -- Collects indices of vertices created in all intersections between 
+    -- two faces (<nF1> and <nF2>) to the map <theMVStick>. 
+    -- Also, it collects indices of EF vertices to the <theMVEF> map  
+    -- and indices of all subshapes of these two faces to the <theMI> map.
  
-    GetFullFaceMap(me:out; 
+    GetFullShapeMap(me:out; 
         nF    : Integer from Standard; 
         theMI : out MapOfInteger from BOPCol) 
       is protected; 
-       
-       
+    ---Purpose: 
+    -- Collects index nF and indices of all subshapes of the shape with index <nF>
+    -- to the map <theMI>. 
+    
     RemoveUsedVertices(me:out; 
         theNC : out Curve from BOPDS; 
         theMV : out MapOfInteger from BOPCol)  
-      is protected;
+      is protected; 
+    ---Purpose: 
+    -- Removes indices of vertices that are already on the
+    -- curve <theNC> from the map <theMV>.  
+    -- It is used in PutEFPavesOnCurve and PutStickPavesOnCurve methods.
  
     PutPaveOnCurve(me:out; 
         nV        : Integer from Standard; 
         theTolR3D : Real from Standard;
-        theNC     : Curve from BOPDS;
-        thePB     : out PaveBlock from BOPDS; 
-        theMVTol  : out DataMapOfIntegerReal from BOPCol) 
-      is protected;
+        theNC     : out Curve from BOPDS; 
+        theMI     : MapOfInteger from BOPCol;
+        theMVTol  : out DataMapOfIntegerReal from BOPCol;
+        aType     : Integer from Standard = 0)
+      is protected; 
+    ---Purpose: 
+    -- Puts the pave nV on the curve theNC.  
+    -- Parameter aType defines whether to check the pave with 
+    -- extended tolerance: 
+    -- 0 - do not perform the check; 
+    -- other - perform the check (aType goes to ExtendedTolerance).
  
     ProcessExistingPaveBlocks(me:out; 
         theInt     : Integer from Standard; 
@@ -302,26 +343,35 @@ is
         theMVI     : out DataMapOfShapeInteger from BOPCol; 
         theMVB     : MapOfInteger from BOPCol; 
         theMPB     : out MapOfPaveBlock from BOPDS)
-      is  protected;        
+      is  protected; 
+    ---Purpose: 	     
+    -- Adds the existing edges from the map <theMPBOnIn> which interfere  
+    -- with the vertices from <theMVB> map to the post treatment of section edges.
  
     UpdateExistingPaveBlocks(me:out; 
         thePB   : PaveBlock from BOPDS;
         theLPB  : out ListOfPaveBlock from BOPDS; 
         nF1     : Integer from Standard; 
         nF2     : Integer from Standard)
-      is protected;
+      is protected; 
+    ---Purpose: 
+    -- Replaces existing pave block <thePB> with new pave blocks <theLPB>. 
+    -- The list <theLPB> contains images of <thePB> which were created in 
+    -- the post treatment of section edges.
  
     TreatNewVertices(me:out; 
         theMVI    : IndexedDataMapOfShapeInteger from BOPCol; 
         theImages : out IndexedDataMapOfShapeListOfShape from BOPCol) 
-      is protected;
+      is protected; 
+    ---Purpose: 
+    -- Treatment of vertices that were created in EE intersections. 
  
     PutClosingPaveOnCurve (me:out; 
         aNC :out Curve from BOPDS)  
       is protected; 
-    ---Purpose: 	     
-    --- Put paves on the curve <aBC> in case when <aBC>   
-    --- is closed 3D-curve  
+    ---Purpose: 
+    -- Put paves on the curve <aBC> in case when <aBC>   
+    -- is closed 3D-curve  
      
     PreparePostTreatFF(me:out; 
         aInt   : Integer from Standard; 
@@ -355,8 +405,8 @@ is
     -- to make it interfere with edge
     
     ForceInterfVF(me:out; 
-        nV:Integer from Standard; 
-        nF:Integer from Standard) 
+        nV : Integer from Standard; 
+        nF : Integer from Standard) 
       returns Boolean from Standard
       is protected;
     ---Purpose: 
@@ -370,8 +420,27 @@ is
       is protected; 
     ---Purpose: 
     -- Checks if there are any common or intersecting sub shapes
-    -- between two planar faces. 
-
+    -- between two planar faces.  
+     
+    SplitEdge(me:out; 
+        nE  : Integer from Standard; 
+        nV1 : Integer from Standard; 
+        aT1 : Real from Standard;
+        nV2 : Integer from Standard; 
+        aT2 : Real from Standard) 
+    returns Integer from Standard 
+    is protected;
+    ---Purpose: 
+    -- Creates new edge from the edge nE with vertices nV1 and nV2 
+    -- and returns the index of that new edge in the DS.
+ 
+    UpdatePaveBlocks(me:out;  
+        theDMI : DataMapOfIntegerInteger from BOPCol) 
+    is protected; 
+    ---Purpose: 
+    -- Updates pave blocks which have the paves with indices contained  
+    -- in the map <theDMI>.
+        
 fields  
     myArguments   : ListOfShape from BOPCol is protected;  
     myDS          : PDS from BOPDS is protected; 

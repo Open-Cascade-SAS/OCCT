@@ -76,18 +76,12 @@ static void UpdateVertices(const TopoDS_Edge& aE,
     return;
   }
   //
-  Standard_Boolean bCB,bV1, bV2;
+  Standard_Boolean bCB, bV1, bV2;
   Standard_Integer i, nE, nV1, nV2, nSp, aNbPB, nOrE;
   Standard_Real aT1, aT2;
-  TopoDS_Vertex aV1, aV2;
-  TopoDS_Edge aE, aSp;
   Handle(NCollection_IncAllocator) aAllocator;
   BOPDS_ListIteratorOfListOfPaveBlock aItPB, aItPBCB;
   Handle(BOPDS_PaveBlock) aPB, aPBx;
-  
-  BOPDS_ShapeInfo aSI;
-  //
-  aSI.SetShapeType(TopAbs_EDGE);
   //-----------------------------------------------------scope f
   //
   aAllocator=new NCollection_IncAllocator();
@@ -129,30 +123,10 @@ static void UpdateVertices(const TopoDS_Edge& aE,
       //
       if (aMPB.Add(aPB)) {
         nE=aPB->OriginalEdge();
+        aPB->Indices(nV1, nV2);
+        aPB->Range(aT1, aT2);
         //
-        const BOPDS_Pave& aPave1=aPB->Pave1();
-        aPave1.Contents(nV1, aT1);
-        //
-        const BOPDS_Pave& aPave2=aPB->Pave2();
-        aPave2.Contents(nV2, aT2);
-        //
-        aE=(*(TopoDS_Edge *)(&myDS->Shape(nE))); 
-        aE.Orientation(TopAbs_FORWARD);
-        //
-        aV1=(*(TopoDS_Vertex *)(&myDS->Shape(nV1)));
-        aV1.Orientation(TopAbs_FORWARD); 
-        //
-        aV2=(*(TopoDS_Vertex *)(&myDS->Shape(nV2)));
-        aV2.Orientation(TopAbs_REVERSED); 
-        //
-        BOPTools_AlgoTools::MakeSplitEdge(aE, aV1, aT1, aV2, aT2, aSp);  
-        //
-        aSI.SetShape(aSp);
-        //
-        Bnd_Box& aBox=aSI.ChangeBox();
-        BRepBndLib::Add(aSp, aBox);
-        //
-        nSp=myDS->Append(aSI);
+        nSp = SplitEdge(nE, nV1, aT1, nV2, aT2);
         //
         if (bCB) {
           aCB->SetEdge(nSp);
@@ -167,6 +141,43 @@ static void UpdateVertices(const TopoDS_Edge& aE,
   //-----------------------------------------------------scope t
   aMPB.Clear();
   aAllocator.Nullify();
+}
+
+//=======================================================================
+// function: SplitEdge
+// purpose: 
+//=======================================================================
+Standard_Integer BOPAlgo_PaveFiller::SplitEdge(const Standard_Integer nE, 
+                                               const Standard_Integer nV1,
+                                               const Standard_Real aT1, 
+                                               const Standard_Integer nV2, 
+                                               const Standard_Real aT2)
+{
+  Standard_Integer nSp;
+  TopoDS_Vertex aV1, aV2;
+  TopoDS_Edge aE, aSp;
+  BOPDS_ShapeInfo aSI;
+  //
+  aSI.SetShapeType(TopAbs_EDGE);
+  //
+  aE=(*(TopoDS_Edge *)(&myDS->Shape(nE))); 
+  aE.Orientation(TopAbs_FORWARD);
+  //
+  aV1=(*(TopoDS_Vertex *)(&myDS->Shape(nV1)));
+  aV1.Orientation(TopAbs_FORWARD); 
+  //
+  aV2=(*(TopoDS_Vertex *)(&myDS->Shape(nV2)));
+  aV2.Orientation(TopAbs_REVERSED); 
+  //
+  BOPTools_AlgoTools::MakeSplitEdge(aE, aV1, aT1, aV2, aT2, aSp);  
+  //
+  aSI.SetShape(aSp);
+  //
+  Bnd_Box& aBox=aSI.ChangeBox();
+  BRepBndLib::Add(aSp, aBox);
+  //
+  nSp=myDS->Append(aSI);
+  return nSp;
 }
 
 //=======================================================================

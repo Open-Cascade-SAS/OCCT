@@ -1,0 +1,31 @@
+puts "========="
+puts "OCC24286"
+puts "========="
+puts ""
+###########################################################
+# Wrong result done by General Fuse algorithm
+###########################################################
+
+restore [locate_data_file bug24286_pipeFiss.brep] b1
+restore [locate_data_file bug24286_shellFiss.brep] b2
+
+bclearobjects
+bcleartools
+baddobjects b1 b2
+
+bfillds
+bbuild result
+
+set square 281195
+
+set nb_v_good 12
+set nb_e_good 22
+set nb_w_good 10
+set nb_f_good 10
+set nb_sh_good 1
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 2
+set nb_shape_good 57
+
+set 2dviewer 1

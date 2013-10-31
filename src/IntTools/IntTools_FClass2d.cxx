@@ -526,7 +526,7 @@ IntTools_FClass2d::IntTools_FClass2d()
 //purpose  : 
 //=======================================================================
   TopAbs_State IntTools_FClass2d::Perform(const gp_Pnt2d& _Puv,
-					  const Standard_Boolean RecadreOnPeriodic) const
+                                          const Standard_Boolean RecadreOnPeriodic) const
 { 
   Standard_Integer nbtabclass = TabClass.Length();
   if (nbtabclass == 0)
@@ -549,83 +549,93 @@ IntTools_FClass2d::IntTools_FClass2d()
   const Standard_Real    uperiod = IsUPer ? surf->UPeriod() : 0.0;
   const Standard_Real    vperiod = IsVPer ? surf->VPeriod() : 0.0;
 
-  Standard_Boolean urecadre = Standard_False;
-  Standard_Boolean vrecadre = Standard_False;
+  Standard_Boolean urecadre, vrecadre, bUseClassifier;
   Standard_Integer dedans = 1;
-
+  //
+  urecadre = Standard_False;
+  vrecadre = Standard_False;
+  //
   if (RecadreOnPeriodic) {
     
     if (IsUPer) {
       if (uu < Umin)
-	while (uu < Umin) {
-	  uu += uperiod;
-	}
+        while (uu < Umin) {
+          uu += uperiod;
+        }
       else {
-	while (uu >= Umin){
-	  uu -= uperiod;
-	}
-	uu += uperiod;
+        while (uu >= Umin){
+          uu -= uperiod;
+        }
+        uu += uperiod;
       }
     }// if (IsUPer) {
     
     if (IsVPer) {
       if (vv < Vmin)
-	while (vv < Vmin){
-	  vv += vperiod;
-	}
+        while (vv < Vmin){
+          vv += vperiod;
+        }
       else {
-	while (vv >= Vmin) {
-	  vv -= vperiod;
-	}
-	vv += vperiod;
+        while (vv >= Vmin) {
+          vv -= vperiod;
+        }
+        vv += vperiod;
       }
     }//if (IsVPer) {
   }
-
+  //
   for(;;) {
     dedans = 1;
     gp_Pnt2d Puv(u,v);
-      
-    if(TabOrien(1)!=-1) {
+    bUseClassifier = (TabOrien(1) == -1);
+    if(!bUseClassifier) {
       Standard_Integer n, cur, TabOrien_n ;
       for(n=1; n<=nbtabclass; n++) { 
-	cur = ((CSLib_Class2d *)TabClass(n))->SiDans(Puv);
-	TabOrien_n=TabOrien(n);
-
-	if(cur==1) { 
-	  if(TabOrien_n==0) { 
-	    dedans = -1; 
-	    break;
-	  }
-	}
-	else if(cur==-1) { 
-	  if(TabOrien_n==1) {  
-	    dedans = -1; 
-	    break;
-	  }
-	}
-	else { 
-	  dedans = 0;
-	  break;
-	}
+        cur = ((CSLib_Class2d *)TabClass(n))->SiDans(Puv);
+        TabOrien_n=TabOrien(n);
+        
+        if(cur==1) { 
+          if(TabOrien_n==0) { 
+            dedans = -1; 
+            break;
+          }
+        }
+        else if(cur==-1) { 
+          if(TabOrien_n==1) {  
+            dedans = -1; 
+            break;
+          }
+        }
+        else { 
+          dedans = 0;
+          break;
+        }
       } // for(n=1; n<=nbtabclass; n++)
-
+      
       if(dedans==0) { 
-	BRepClass_FaceClassifier aClassifier;
-	aClassifier.Perform(Face,Puv,Toluv);
-	Status = aClassifier.State();
-      }
-      if(dedans == 1) { 
-	Status = TopAbs_IN;
-      }
-      if(dedans == -1) {
-	Status = TopAbs_OUT;
+        bUseClassifier = Standard_True;
+      } 
+      else {
+        Status = (dedans == 1) ? TopAbs_IN : TopAbs_OUT;
       }
     } // if(TabOrien(1)!=-1) {
-    
-    else {  //-- TabOrien(1)=-1   Wrong Wire
+    //compute state of the point using face classifier
+    if (bUseClassifier) {
+      //compute tolerance to use in face classifier
+      Standard_Real aURes, aVRes, aFCTol;
+      Standard_Boolean bUIn, bVIn;
+      //
+      aURes = surf->UResolution(Toluv);
+      aVRes = surf->VResolution(Toluv);
+      //
+      bUIn = (u >= Umin) && (u <= Umax);
+      bVIn = (v >= Vmin) && (v <= Vmax);
+      //
+      aFCTol = (bUIn==bVIn) ? Max(aURes, aVRes) : 
+        (!bUIn ? aURes : aVRes);
+      //
       BRepClass_FaceClassifier aClassifier;
-      aClassifier.Perform(Face,Puv,Toluv);
+      aClassifier.Perform(Face,Puv,aFCTol);
       Status = aClassifier.State();
     }
     
@@ -641,25 +651,25 @@ IntTools_FClass2d::IntTools_FClass2d()
     }
     else {
       if (IsUPer){
-	u += uperiod;
+        u += uperiod;
       }
     }
 
     if (u > Umax || !IsUPer) {
       if (!vrecadre){
-	v = vv;
-	vrecadre = Standard_True;
+        v = vv;
+        vrecadre = Standard_True;
       }
       else {
-	if (IsVPer){
-	  v += vperiod;
-	}
+        if (IsVPer){
+          v += vperiod;
+        }
       }
 
       u = uu;
       
       if (v > Vmax || !IsVPer) {
-	return Status;
+        return Status;
       }
     }
   } //while (1)
