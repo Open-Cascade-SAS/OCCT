@@ -23,6 +23,8 @@
 
 #ifdef HAVE_OPENCL
 
+#include <OpenGl_Cl.hxx>
+
 #if defined(_WIN32)
 
   #include <windows.h>
@@ -617,29 +619,16 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceVertexIndices (const CALL_DEF_PARR
                                                              int                    theMatID)
 {
   myRaytraceSceneData.Triangles.reserve (myRaytraceSceneData.Triangles.size() + theVertNum);
-
   switch (theArray->type)
   {
-    case TelTrianglesArrayType:
-      return AddRaytraceTriangleArray (theArray, theFirstVert, theVertOffset, theVertNum, theMatID);
-
-    case TelQuadranglesArrayType:
-      return AddRaytraceQuadrangleArray (theArray, theFirstVert, theVertOffset, theVertNum, theMatID);
-
-    case TelTriangleFansArrayType:
-      return AddRaytraceTriangleFanArray (theArray, theFirstVert, theVertOffset, theVertNum, theMatID);
-
-    case TelTriangleStripsArrayType:
-      return AddRaytraceTriangleStripArray (theArray, theFirstVert, theVertOffset, theVertNum, theMatID);
-
-    case TelQuadrangleStripsArrayType:
-      return AddRaytraceQuadrangleStripArray (theArray, theFirstVert, theVertOffset, theVertNum, theMatID);
-
-    case TelPolygonsArrayType:
-      return AddRaytracePolygonArray (theArray, theFirstVert, theVertOffset, theVertNum, theMatID);
+    case TelTrianglesArrayType:        return AddRaytraceTriangleArray        (theArray, theFirstVert, theVertOffset, theVertNum, theMatID);
+    case TelQuadranglesArrayType:      return AddRaytraceQuadrangleArray      (theArray, theFirstVert, theVertOffset, theVertNum, theMatID);
+    case TelTriangleFansArrayType:     return AddRaytraceTriangleFanArray     (theArray, theFirstVert, theVertOffset, theVertNum, theMatID);
+    case TelTriangleStripsArrayType:   return AddRaytraceTriangleStripArray   (theArray, theFirstVert, theVertOffset, theVertNum, theMatID);
+    case TelQuadrangleStripsArrayType: return AddRaytraceQuadrangleStripArray (theArray, theFirstVert, theVertOffset, theVertNum, theMatID);
+    case TelPolygonsArrayType:         return AddRaytracePolygonArray         (theArray, theFirstVert, theVertOffset, theVertNum, theMatID);
+    default:                           return Standard_False;
   }
-
-  return Standard_False;
 }
 
 // =======================================================================
