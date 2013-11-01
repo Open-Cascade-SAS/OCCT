@@ -58,27 +58,6 @@ static GLsizei getNearestPowOfTwo (const GLsizei theNumber)
 }
 
 // ---------------------------------------------------------------
-// Function: getMaxFrameSize
-// Purpose:  get the maximum possible frame size
-// ---------------------------------------------------------------
-static void getMaxFrameSize(Standard_Integer& theWidth,
-                            Standard_Integer& theHeight)
-{
-  GLsizei aMaxX, aMaxY;
-  GLint aVpDim[2];
-  GLint aTexDim = 2048;
-  glGetIntegerv (GL_MAX_VIEWPORT_DIMS, (GLint*) &aVpDim);
-  glGetIntegerv (GL_MAX_TEXTURE_SIZE, &aTexDim);
-  (aVpDim[0] >= aTexDim) ? aMaxX = (GLsizei) aTexDim :
-                           aMaxX = getNearestPowOfTwo((GLsizei)aVpDim[0]);
-  (aVpDim[1] >= aTexDim) ? aMaxY = (GLsizei) aTexDim :
-                           aMaxY = getNearestPowOfTwo((GLsizei)aVpDim[1]);
-
-  theWidth  = (Standard_Integer)aMaxX;
-  theHeight = (Standard_Integer)aMaxY;
-}
-
-// ---------------------------------------------------------------
 // Function: fitDimensionsRatio
 // Purpose:  calculate correct width/height ratio for theWidth and
 //           theHeight parameters
@@ -96,80 +75,10 @@ static void fitDimensionsRatio (Standard_Integer& theWidth,
 }
 
 // ---------------------------------------------------------------
-// Function: getDimensionsTiling
-// Purpose:  calculate maximum possible dimensions for framebuffer
-//           in tiling mode according to the view size
-// ---------------------------------------------------------------
-static void getDimensionsTiling (Standard_Integer& theFrameWidth,
-                                 Standard_Integer& theFrameHeight,
-                                 const int theViewWidth,
-                                 const int theViewHeight)
-{
-  // fit the maximum dimensions into the printing area
-  if (theFrameWidth > theViewWidth)
-      theFrameWidth = theViewWidth;
-
-  if (theFrameHeight > theViewHeight)
-      theFrameHeight = theViewHeight;
-}
-
-// ---------------------------------------------------------------
-// Function: initBufferStretch
-// Purpose:  calculate initialization sizes for frame buffer
-//           when the stretch algorithm is selected
-// ---------------------------------------------------------------
-static void initBufferStretch (Standard_Integer& theFrameWidth,
-                               Standard_Integer& theFrameHeight,
-                               const int theViewWidth,
-                               const int theViewHeight)
-{
-
-  // Calculate correct width/height for framebuffer
-  Standard_Real aViewRatio = (Standard_Real)theViewWidth/theViewHeight;
-  fitDimensionsRatio (theFrameWidth, theFrameHeight, aViewRatio);
-
-  // downscale the framebuffer if it is too large
-  Standard_Real aWidthRate  = (Standard_Real)theFrameWidth /theViewWidth;
-  Standard_Real aHeightRate = (Standard_Real)theFrameHeight/theViewHeight;
-
-  if ((aWidthRate > 1 && aHeightRate > 1 && aWidthRate >= aHeightRate) ||
-      (aWidthRate > 1 && aHeightRate <= 1))
-  {
-    theFrameWidth  = (Standard_Integer)(theFrameWidth /aWidthRate);
-    theFrameHeight = (Standard_Integer)(theFrameHeight/aWidthRate);
-  }
-  else if ((aWidthRate  > 1 && aHeightRate > 1 && aWidthRate < aHeightRate) ||
-           (aWidthRate <= 1 && aHeightRate > 1))
-  {
-    theFrameWidth  = (Standard_Integer)(theFrameWidth /aHeightRate);
-    theFrameHeight = (Standard_Integer)(theFrameHeight/aHeightRate);
-  }
-
-}
-
-// ---------------------------------------------------------------
-// Function: initBufferTiling
-// Purpose:  calculate initialization sizes for frame buffer
-//           when the tile algorithm is selected
-// ---------------------------------------------------------------
-static void initBufferTiling (Standard_Integer& theFrameWidth,
-                              Standard_Integer &theFrameHeight,
-                              const int theViewWidth,
-                              const int theViewHeight)
-{
-  // fit framebuffer into the printing area
-  if (theFrameWidth > theViewWidth)
-      theFrameWidth = theViewWidth;
-
-  if (theFrameHeight > theViewHeight)
-      theFrameHeight = theViewHeight;
-}
-
-// ---------------------------------------------------------------
 // Function: initBitmapBuffer
 // Purpose:  init device independent bitmap to hold printing data
 // ---------------------------------------------------------------
-#ifdef WNT
+#ifdef _WIN32
 #ifndef HAVE_FREEIMAGE
 static void initBitmapBuffer (const HDC theMemoryDC,
                               HBITMAP &theMemoryBmp,
@@ -290,12 +199,100 @@ static bool imageStretchDC(HDC theDstDC,   FipHandle theImage, int theOffsetX,
   return true;
 }
 #endif
+
+// ---------------------------------------------------------------
+// Function: getMaxFrameSize
+// Purpose:  get the maximum possible frame size
+// ---------------------------------------------------------------
+static void getMaxFrameSize(Standard_Integer& theWidth,
+                            Standard_Integer& theHeight)
+{
+  GLsizei aMaxX, aMaxY;
+  GLint aVpDim[2];
+  GLint aTexDim = 2048;
+  glGetIntegerv (GL_MAX_VIEWPORT_DIMS, (GLint*) &aVpDim);
+  glGetIntegerv (GL_MAX_TEXTURE_SIZE, &aTexDim);
+  (aVpDim[0] >= aTexDim) ? aMaxX = (GLsizei) aTexDim :
+                           aMaxX = getNearestPowOfTwo((GLsizei)aVpDim[0]);
+  (aVpDim[1] >= aTexDim) ? aMaxY = (GLsizei) aTexDim :
+                           aMaxY = getNearestPowOfTwo((GLsizei)aVpDim[1]);
+
+  theWidth  = (Standard_Integer)aMaxX;
+  theHeight = (Standard_Integer)aMaxY;
+}
+// ---------------------------------------------------------------
+// Function: getDimensionsTiling
+// Purpose:  calculate maximum possible dimensions for framebuffer
+//           in tiling mode according to the view size
+// ---------------------------------------------------------------
+static void getDimensionsTiling (Standard_Integer& theFrameWidth,
+                                 Standard_Integer& theFrameHeight,
+                                 const int theViewWidth,
+                                 const int theViewHeight)
+{
+  // fit the maximum dimensions into the printing area
+  if (theFrameWidth > theViewWidth)
+      theFrameWidth = theViewWidth;
+
+  if (theFrameHeight > theViewHeight)
+      theFrameHeight = theViewHeight;
+}
+// ---------------------------------------------------------------
+// Function: initBufferStretch
+// Purpose:  calculate initialization sizes for frame buffer
+//           when the stretch algorithm is selected
+// ---------------------------------------------------------------
+static void initBufferStretch (Standard_Integer& theFrameWidth,
+                               Standard_Integer& theFrameHeight,
+                               const int theViewWidth,
+                               const int theViewHeight)
+{
+
+  // Calculate correct width/height for framebuffer
+  Standard_Real aViewRatio = (Standard_Real)theViewWidth/theViewHeight;
+  fitDimensionsRatio (theFrameWidth, theFrameHeight, aViewRatio);
+
+  // downscale the framebuffer if it is too large
+  Standard_Real aWidthRate  = (Standard_Real)theFrameWidth /theViewWidth;
+  Standard_Real aHeightRate = (Standard_Real)theFrameHeight/theViewHeight;
+
+  if ((aWidthRate > 1 && aHeightRate > 1 && aWidthRate >= aHeightRate) ||
+      (aWidthRate > 1 && aHeightRate <= 1))
+  {
+    theFrameWidth  = (Standard_Integer)(theFrameWidth /aWidthRate);
+    theFrameHeight = (Standard_Integer)(theFrameHeight/aWidthRate);
+  }
+  else if ((aWidthRate  > 1 && aHeightRate > 1 && aWidthRate < aHeightRate) ||
+           (aWidthRate <= 1 && aHeightRate > 1))
+  {
+    theFrameWidth  = (Standard_Integer)(theFrameWidth /aHeightRate);
+    theFrameHeight = (Standard_Integer)(theFrameHeight/aHeightRate);
+  }
+}
+// ---------------------------------------------------------------
+// Function: initBufferTiling
+// Purpose:  calculate initialization sizes for frame buffer
+//           when the tile algorithm is selected
+// ---------------------------------------------------------------
+static void initBufferTiling (Standard_Integer& theFrameWidth,
+                              Standard_Integer &theFrameHeight,
+                              const int theViewWidth,
+                              const int theViewHeight)
+{
+  // fit framebuffer into the printing area
+  if (theFrameWidth > theViewWidth)
+      theFrameWidth = theViewWidth;
+
+  if (theFrameHeight > theViewHeight)
+      theFrameHeight = theViewHeight;
+}
 #endif
 
 // ---------------------------------------------------------------
 // ---------------------------------------------------------------
 
 //call_togl_print
+
 Standard_Boolean OpenGl_Workspace::Print
   (const Handle(OpenGl_PrinterContext)& thePrintContext,
    const Graphic3d_CView& ACView,
@@ -312,7 +309,7 @@ Standard_Boolean OpenGl_Workspace::Print
     return Standard_False;
   }
 
-#ifdef WNT
+#ifdef _WIN32
 
   if (!Activate())
   {
@@ -786,7 +783,7 @@ Standard_Boolean OpenGl_Workspace::Print
   myPrintContext.Nullify();
   return (Standard_Boolean) isDone;
 
-#else // not WNT
+#else // not _WIN32
   myPrintContext.Nullify();
   return Standard_False;
 #endif
