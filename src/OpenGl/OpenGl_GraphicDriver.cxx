@@ -184,7 +184,7 @@ Standard_Boolean OpenGl_GraphicDriver::SetImmediateModeDrawToFront (const Graphi
 Standard_Boolean OpenGl_GraphicDriver::GetOpenClDeviceInfo (const Graphic3d_CView&,
   NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>&)
 {
-  return Standard_True;
+  return Standard_False;
 }
 
 #else

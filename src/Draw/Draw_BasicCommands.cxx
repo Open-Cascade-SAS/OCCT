@@ -310,6 +310,11 @@ static Standard_Integer dversion(Draw_Interpretor& di, Standard_Integer, const c
 #else
   di << "FreeImage disabled\n";
 #endif
+#ifdef HAVE_OPENCL
+  di << "OpenCL enabled (HAVE_OPENCL)\n";
+#else
+  di << "OpenCL disabled\n";
+#endif
 #ifdef No_Exception
   di << "Exceptions disabled (No_Exception)\n";
 #else

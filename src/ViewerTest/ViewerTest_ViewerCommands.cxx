@@ -5358,47 +5358,34 @@ static int VDefaults (Draw_Interpretor& theDi,
 //purpose  : Prints info about active OpenCL device
 //==============================================================================
 
-static Standard_Integer VClInfo (Draw_Interpretor& theInterpretor,
+static Standard_Integer VClInfo (Draw_Interpretor& theDi,
                                  Standard_Integer,
                                  const char**)
 {
-#ifndef HAVE_OPENCL
-
-  theInterpretor << "OCCT was compiled without OpenCL support!\n";
-
-#else
-
   Handle(AIS_InteractiveContext) aContextAIS = ViewerTest::GetAISContext();
-
   if (aContextAIS.IsNull())
   {
-    theInterpretor << "Call vinit before!\n";
+    std::cerr << "Call vinit before!\n";
     return 1;
   }
 
   Handle(OpenGl_GraphicDriver) aDrv = Handle(OpenGl_GraphicDriver)::DownCast (aContextAIS->CurrentViewer()->Driver());
-  
-  Graphic3d_CView* aCView = (Graphic3d_CView*) ViewerTest::CurrentView()->View()->CView();
-
+  Graphic3d_CView* aCView = static_cast<Graphic3d_CView*> (ViewerTest::CurrentView()->View()->CView());
   NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString> anInfo;
-
-  if (aDrv.IsNull() || aCView == NULL || !aDrv->GetOpenClDeviceInfo (*aCView, anInfo))
+  if (aDrv.IsNull()
+   || aCView == NULL
+   || !aDrv->GetOpenClDeviceInfo (*aCView, anInfo))
   {
-    theInterpretor << "Cannot get OpenCL device info!\n";
+    theDi << "OpenCL device info is unavailable!\n";
     return 0;
   }
-  
-  theInterpretor << "OpenCL device info:\n";
-  
-  NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator anIter (anInfo);
 
-  for (; anIter.More(); anIter.Next())
+  theDi << "OpenCL device info:\n";
+  for (NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator anIter (anInfo);
+       anIter.More(); anIter.Next())
   {
-    theInterpretor << anIter.Key() << ": \t" << anIter.Value() << "\n";
+    theDi << anIter.Key() << ": \t" << anIter.Value() << "\n";
   }
-
-#endif
-
   return 0;
 }
 
@@ -5407,90 +5394,50 @@ static Standard_Integer VClInfo (Draw_Interpretor& theInterpretor,
 //purpose  : Enables/disables OpenCL-based ray-tracing
 //=======================================================================
 
-#ifndef HAVE_OPENCL
-
-static Standard_Integer VRaytrace (Draw_Interpretor& theInterpretor,
-                                   Standard_Integer,
-                                   const char**)
+static Standard_Integer VRaytrace (Draw_Interpretor& ,
+                                   Standard_Integer  theArgNb,
+                                   const char**      theArgVec)
 {
-  theInterpretor << "OCCT was compiled without OpenCL support!\n";
-
-  return 0;
-}
-
-#else
-
-static Standard_Integer VRaytrace (Draw_Interpretor&,
-                                   Standard_Integer theArgNb,
-                                   const char** theArgVec)
-{
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-
-  if (aContext.IsNull())
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  if (aView.IsNull())
   {
     std::cerr << "Use 'vinit' command before " << theArgVec[0] << "\n";
     return 1;
   }
 
-  if (theArgNb < 2)
+  if (theArgNb < 2
+   || Draw::Atoi (theArgVec[1]))
   {
-    std::cerr << "Usage : " << theArgVec[0] << " 0|1\n";
-    return 1;
-  }
-  
-  Standard_Integer isOn = atoi(theArgVec[1]);
-
-  Handle(V3d_View) aView = ViewerTest::CurrentView();
-
-  if (isOn)
     aView->SetRaytracingMode();
+  }
   else
+  {
     aView->SetRasterizationMode();
-
+  }
   aView->Redraw();
-
   return 0;
 }
-
-#endif
 
 //=======================================================================
 //function : VSetRaytraceMode
 //purpose  : Enables/disables features of OpenCL-based ray-tracing
 //=======================================================================
 
-#ifndef HAVE_OPENCL
-
-static Standard_Integer VSetRaytraceMode (Draw_Interpretor& theInterpretor,
-                                          Standard_Integer,
-                                          const char**)
-{
-  theInterpretor << "OCCT was compiled without OpenCL support!\n";
-
-  return 0;
-}
-
-#else
-
 static Standard_Integer VSetRaytraceMode (Draw_Interpretor&,
                                           Standard_Integer theArgNb,
                                           const char ** theArgVec)
 {
-  Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
-
-  if (aContext.IsNull())
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  if (aView.IsNull())
   {
     std::cerr << "Use 'vinit' command before " << theArgVec[0] << "\n";
     return 1;
   }
-
-  if (theArgNb < 2)
+  else if (theArgNb < 2)
   {
     std::cerr << "Usage : " << theArgVec[0] << " [shad=0|1] [refl=0|1] [aa=0|1]\n";
     return 1;
   }
-
-  Handle(V3d_View) aView = ViewerTest::CurrentView();
 
   for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
   {
@@ -5524,11 +5471,8 @@ static Standard_Integer VSetRaytraceMode (Draw_Interpretor&,
   }
 
   aView->Redraw();
-
   return 0;
 }
-
-#endif
 
 //=======================================================================
 //function : ViewerCommands
