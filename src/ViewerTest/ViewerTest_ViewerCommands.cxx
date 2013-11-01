@@ -724,12 +724,12 @@ void ViewerTest::RedrawAllViews()
 }
 
 //==============================================================================
-//function : SplitParameter
-//purpose  : Split parameter string to parameter name an patameter value
+//function : splitParameter
+//purpose  : Split parameter string to parameter name an parameter value
 //==============================================================================
-Standard_Boolean SplitParameter (const TCollection_AsciiString& theString,
-                                      TCollection_AsciiString& theName,
-                                      TCollection_AsciiString& theValue)
+Standard_Boolean splitParameter (const TCollection_AsciiString& theString,
+                                 TCollection_AsciiString&       theName,
+                                 TCollection_AsciiString&       theValue)
 {
   Standard_Integer aParamNameEnd = theString.FirstLocationInSet("=",1, theString.Length());
   if (aParamNameEnd == 0)
@@ -768,7 +768,7 @@ if (theArgsNb > 9)
   for (Standard_Integer i = 1; i < theArgsNb; ++i)
   {
     TCollection_AsciiString aName = "", aValue = "";
-    if(!SplitParameter (TCollection_AsciiString(theArgVec[i]),aName,aValue) && theArgsNb == 2)
+    if(!splitParameter (TCollection_AsciiString(theArgVec[i]),aName,aValue) && theArgsNb == 2)
     {
       // In case of syntax: vinit ViewName
       aViewName = theArgVec[1];
@@ -5276,6 +5276,83 @@ static int VSetTextureMode (Draw_Interpretor& theDi, Standard_Integer theArgsNb,
   return 0;
 }
 
+//===============================================================================================
+//function : VDefaults
+//purpose  :
+//===============================================================================================
+static int VDefaults (Draw_Interpretor& theDi,
+                      Standard_Integer  theArgsNb,
+                      const char**      theArgVec)
+{
+  const Handle(AIS_InteractiveContext)& aCtx = ViewerTest::GetAISContext();
+  if (aCtx.IsNull())
+  {
+    std::cerr << "No active viewer!\n";
+    return 1;
+  }
+
+  Handle(Prs3d_Drawer) aDefParams = aCtx->DefaultDrawer();
+  if (theArgsNb < 2)
+  {
+    if (aDefParams->TypeOfDeflection() == Aspect_TOD_RELATIVE)
+    {
+      theDi << "DeflType:           relative\n"
+            << "DeviationCoeff:     " << aDefParams->DeviationCoefficient() << "\n";
+    }
+    else
+    {
+      theDi << "DeflType:           absolute\n"
+            << "AbsoluteDeflection: " << aDefParams->MaximalChordialDeviation() << "\n";
+    }
+    theDi << "AngularDeflection:  " << (180.0 * aDefParams->HLRAngle() / M_PI) << "\n";
+    return 0;
+  }
+
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgsNb; ++anArgIter)
+  {
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    TCollection_AsciiString aKey, aValue;
+    if (!splitParameter (anArg, aKey, aValue)
+     || aValue.IsEmpty())
+    {
+      std::cerr << "Error, wrong syntax at: '" << anArg.ToCString() << "'!\n";
+      return 1;
+    }
+
+    aKey.UpperCase();
+    if (aKey == "ABSDEFL"
+     || aKey == "ABSOLUTEDEFLECTION"
+     || aKey == "DEFL"
+     || aKey == "DEFLECTION")
+    {
+      aDefParams->SetTypeOfDeflection         (Aspect_TOD_ABSOLUTE);
+      aDefParams->SetMaximalChordialDeviation (aValue.RealValue());
+    }
+    else if (aKey == "RELDEFL"
+          || aKey == "RELATIVEDEFLECTION"
+          || aKey == "DEVCOEFF"
+          || aKey == "DEVIATIONCOEFF"
+          || aKey == "DEVIATIONCOEFFICIENT")
+    {
+      aDefParams->SetTypeOfDeflection     (Aspect_TOD_RELATIVE);
+      aDefParams->SetDeviationCoefficient (aValue.RealValue());
+    }
+    else if (aKey == "ANGDEFL"
+          || aKey == "ANGULARDEFL"
+          || aKey == "ANGULARDEFLECTION")
+    {
+      // currently HLRDeviationAngle is used instead of DeviationAngle in most places
+      aDefParams->SetHLRAngle (M_PI * aValue.RealValue() / 180.0);
+    }
+    else
+    {
+      std::cerr << "Warning, unknown argument '" << anArg.ToCString() << "'\n";
+    }
+  }
+
+  return 0;
+}
+
 //==============================================================================
 //function : VClInfo
 //purpose  : Prints info about active OpenCL device
@@ -5726,6 +5803,9 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "  2 - all textures enabled.\n"
     "  this command sets texture details mode for the specified view.\n"
     , __FILE__, VSetTextureMode, group);
+  theCommands.Add("vdefaults",
+    "vdefaults [absDefl=value] [devCoeff=value] [angDefl=value]",
+    __FILE__, VDefaults, group);
   theCommands.Add("vraytrace",
     "vraytrace 0|1",
     __FILE__,VRaytrace,group);

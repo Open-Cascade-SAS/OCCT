@@ -1,8 +1,7 @@
 catch { vfit }
 if { [ catch { vdump $imagedir/${test_image}.png } catch_result ] } {
-    puts $catch_result
+  puts $catch_result
 }
+catch { vglinfo }
 
 puts "TEST COMPLETED"
-
-

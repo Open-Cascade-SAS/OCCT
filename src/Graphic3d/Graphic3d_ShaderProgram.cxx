@@ -23,6 +23,10 @@
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_ShaderObject.hxx>
 #include <Graphic3d_ShaderProgram.hxx>
+#include <OSD_Directory.hxx>
+#include <OSD_Environment.hxx>
+#include <OSD_File.hxx>
+#include <OSD_Path.hxx>
 
 namespace
 {
@@ -33,6 +37,52 @@ IMPLEMENT_STANDARD_HANDLE (Graphic3d_ShaderProgram, Standard_Transient)
 IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_ShaderProgram, Standard_Transient)
 
 // =======================================================================
+// function : ShadersFolder
+// purpose  :
+// =======================================================================
+const TCollection_AsciiString& Graphic3d_ShaderProgram::ShadersFolder()
+{
+  static Standard_Boolean        THE_IS_DEFINED = Standard_False;
+  static TCollection_AsciiString THE_SHADERS_FOLDER;
+  if (!THE_IS_DEFINED)
+  {
+    THE_IS_DEFINED = Standard_True;
+    OSD_Environment aDirEnv ("CSF_ShadersDirectory");
+    THE_SHADERS_FOLDER = aDirEnv.Value();
+    if (THE_SHADERS_FOLDER.IsEmpty())
+    {
+      OSD_Environment aCasRootEnv ("CASROOT");
+      THE_SHADERS_FOLDER = aCasRootEnv.Value();
+      if (!THE_SHADERS_FOLDER.IsEmpty())
+      {
+        THE_SHADERS_FOLDER += "/src/Shaders";
+      }
+    }
+
+    if (THE_SHADERS_FOLDER.IsEmpty())
+    {
+      std::cerr << "Both environment variables CSF_ShadersDirectory and CASROOT are undefined!\n"
+                << "At least one should be defined to use standard GLSL programs.\n";
+      Standard_Failure::Raise ("CSF_ShadersDirectory and CASROOT are undefined");
+      return THE_SHADERS_FOLDER;
+    }
+
+    const OSD_Path aDirPath (THE_SHADERS_FOLDER);
+    OSD_Directory aDir (aDirPath);
+    const TCollection_AsciiString aProgram = THE_SHADERS_FOLDER + "/Declarations.glsl";
+    OSD_File aProgramFile (aProgram);
+    if (!aDir.Exists()
+     || !aProgramFile.Exists())
+    {
+      std::cerr << "Standard GLSL programs are not found in: " << THE_SHADERS_FOLDER.ToCString() << std::endl;
+      Standard_Failure::Raise ("CSF_ShadersDirectory or CASROOT is set incorrectly");
+      return THE_SHADERS_FOLDER;
+    }
+  }
+  return THE_SHADERS_FOLDER;
+}
+
+// =======================================================================
 // function : Graphic3d_ShaderProgram
 // purpose  : Creates new empty program object
 // =======================================================================
@@ -40,6 +90,47 @@ Graphic3d_ShaderProgram::Graphic3d_ShaderProgram()
 {
   myID = TCollection_AsciiString ("Graphic3d_ShaderProgram_")
        + TCollection_AsciiString (Standard_Atomic_Increment (&THE_PROGRAM_OBJECT_COUNTER));
+}
+
+// =======================================================================
+// function : Graphic3d_ShaderProgram
+// purpose  :
+// =======================================================================
+Graphic3d_ShaderProgram::Graphic3d_ShaderProgram (const Graphic3d_ShaderProgram::ShaderName theName)
+{
+  const TCollection_AsciiString& aShadersRoot = Graphic3d_ShaderProgram::ShadersFolder();
+  switch (theName)
+  {
+    case ShaderName_Phong:
+    {
+      myID = TCollection_AsciiString ("Graphic3d_ShaderProgram_Phong");
+      const TCollection_AsciiString aSrcVert = aShadersRoot + "/PhongShading.vs";
+      const TCollection_AsciiString aSrcFrag = aShadersRoot + "/PhongShading.fs";
+
+      if (!aSrcVert.IsEmpty()
+       && !OSD_File (aSrcVert).Exists())
+      {
+        Standard_Failure::Raise ("Graphic3d_ShaderProgram, PhongShading.vs is not found");
+        return;
+      }
+      if (!aSrcFrag.IsEmpty()
+       && !OSD_File (aSrcFrag).Exists())
+      {
+        Standard_Failure::Raise ("Graphic3d_ShaderProgram, PhongShading.fs is not found");
+        return;
+      }
+
+      AttachShader (Graphic3d_ShaderObject::CreateFromFile (Graphic3d_TOS_VERTEX,   aSrcVert));
+      AttachShader (Graphic3d_ShaderObject::CreateFromFile (Graphic3d_TOS_FRAGMENT, aSrcFrag));
+      break;
+    }
+    case ShaderName_UNKNOWN:
+    default:
+    {
+      Standard_Failure::Raise ("Graphic3d_ShaderProgram, unknown program name");
+      break;
+    }
+  }
 }
 
 // =======================================================================

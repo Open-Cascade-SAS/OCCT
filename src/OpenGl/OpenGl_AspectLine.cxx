@@ -68,7 +68,6 @@ void OpenGl_AspectLine::SetAspect (const CALL_DEF_CONTEXTLINE &theAspect)
   myShaderProgram = theAspect.ShaderProgram;
 
   const TCollection_AsciiString& aShaderKey = myShaderProgram.IsNull() ? THE_EMPTY_KEY : myShaderProgram->GetId();
-
   if (aShaderKey.IsEmpty() || myResources.ShaderProgramId != aShaderKey)
   {
     myResources.ResetShader();
@@ -90,9 +89,11 @@ void OpenGl_AspectLine::Render (const Handle(OpenGl_Workspace) &theWorkspace) co
 // =======================================================================
 void OpenGl_AspectLine::Release (const Handle(OpenGl_Context)& theContext)
 {
-  if (!myResources.ShaderProgram.IsNull() && !theContext.IsNull())
+  if (!myResources.ShaderProgram.IsNull()
+   && !theContext.IsNull())
   {
-    theContext->ShaderManager()->Unregister (myResources.ShaderProgram);
+    theContext->ShaderManager()->Unregister (myResources.ShaderProgramId,
+                                             myResources.ShaderProgram);
   }
   myResources.ShaderProgramId.Clear();
   myResources.ResetShader();
@@ -102,35 +103,24 @@ void OpenGl_AspectLine::Release (const Handle(OpenGl_Context)& theContext)
 // function : BuildShader
 // purpose  :
 // =======================================================================
-void OpenGl_AspectLine::Resources::BuildShader (const Handle(OpenGl_Workspace)& theWS,
+void OpenGl_AspectLine::Resources::BuildShader (const Handle(OpenGl_Workspace)&        theWS,
                                                 const Handle(Graphic3d_ShaderProgram)& theShader)
 {
   const Handle(OpenGl_Context)& aContext = theWS->GetGlContext();
-
   if (!aContext->IsGlGreaterEqual (2, 0))
+  {
     return;
+  }
 
   // release old shader program resources
   if (!ShaderProgram.IsNull())
   {
-    aContext->ShaderManager()->Unregister (ShaderProgram);
+    aContext->ShaderManager()->Unregister (ShaderProgramId, ShaderProgram);
+  }
+  if (theShader.IsNull())
+  {
+    return;
   }
 
-  ShaderProgramId = theShader.IsNull() ? THE_EMPTY_KEY : theShader->GetId();
-
-  if (!theShader.IsNull())
-  {
-    if (!aContext->GetResource<Handle(OpenGl_ShaderProgram)> (ShaderProgramId, ShaderProgram))
-    {
-      ShaderProgram = aContext->ShaderManager()->Create (theShader);
-      if (!ShaderProgramId.IsEmpty())
-      {
-        aContext->ShareResource (ShaderProgramId, ShaderProgram);
-      }
-    }
-  }
-  else
-  {
-    ShaderProgram.Nullify();
-  }
+  aContext->ShaderManager()->Create (theShader, ShaderProgramId, ShaderProgram);
 }

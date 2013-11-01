@@ -238,7 +238,8 @@ void OpenGl_VariableSetterSelector::Set (const Handle(OpenGl_Context)&          
 // =======================================================================
 OpenGl_ShaderProgram::OpenGl_ShaderProgram (const Handle(Graphic3d_ShaderProgram)& theProxy)
 : myProgramID (NO_PROGRAM),
-  myProxy     (theProxy)
+  myProxy     (theProxy),
+  myShareCount(1)
 {
   memset (myCurrentState, 0, sizeof (myCurrentState));
   for (GLint aVar = 0; aVar < OpenGl_OCCT_NUMBER_OF_STATE_VARIABLES; ++aVar)
@@ -259,31 +260,15 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
     return Standard_False;
   }
 
-  GLchar *aShaderDir = getenv ("CSF_ShadersDirectory");
-  if (aShaderDir == NULL)
-  {
-    TCollection_ExtendedString aMsg = "Error! Failed to get OCCT shaders directory";
-
-    theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                         GL_DEBUG_TYPE_ERROR_ARB,
-                         0,
-                         GL_DEBUG_SEVERITY_HIGH_ARB,
-                         aMsg);
-
-    return Standard_False;
-  }
-
-  OSD_File aDeclFile (TCollection_AsciiString (aShaderDir) + "/Declarations.glsl");
+  OSD_File aDeclFile (Graphic3d_ShaderProgram::ShadersFolder() + "/Declarations.glsl");
   if (!aDeclFile.Exists())
   {
-    TCollection_ExtendedString aMsg = "Error! Failed to load OCCT shader declarations file";
-
+    const TCollection_ExtendedString aMsg = "Error! Failed to load OCCT shader declarations file";
     theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
                          GL_DEBUG_TYPE_ERROR_ARB,
                          0,
                          GL_DEBUG_SEVERITY_HIGH_ARB,
                          aMsg);
-
     return Standard_False;
   }
 
@@ -298,14 +283,12 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
   {
     if (!anIter.Value()->IsDone())
     {
-      TCollection_ExtendedString aMsg = "Error! Failed to get shader source";
-
+      const TCollection_ExtendedString aMsg = "Error! Failed to get shader source";
       theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
                            GL_DEBUG_TYPE_ERROR_ARB,
                            0,
                            GL_DEBUG_SEVERITY_HIGH_ARB,
                            aMsg);
-
       return Standard_False;
     }
 
@@ -326,23 +309,21 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
     if (aShader.IsNull())
     {
       TCollection_ExtendedString aMsg = "Error! Unsupported shader type";
-
       theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
                            GL_DEBUG_TYPE_ERROR_ARB,
                            0,
                            GL_DEBUG_SEVERITY_HIGH_ARB,
                            aMsg);
-
       return Standard_False;
     }
 
     if (!aShader->Create (theCtx))
     {
+      aShader->Release (theCtx.operator->());
       return Standard_False;
     }
 
     TCollection_AsciiString aSource = aDeclarations + anIter.Value()->Source();
-    
     if (anIter.Value()->Type() == Graphic3d_TOS_VERTEX)
     {
       aSource = TCollection_AsciiString ("#define VERTEX_SHADER\n") + aSource;
@@ -350,75 +331,82 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
 
     if (!aShader->LoadSource (theCtx, aSource))
     {
-      TCollection_ExtendedString aMsg = "Error! Failed to set shader source";
-
+      const TCollection_ExtendedString aMsg = "Error! Failed to set shader source";
       theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
                            GL_DEBUG_TYPE_ERROR_ARB,
                            0,
                            GL_DEBUG_SEVERITY_HIGH_ARB,
                            aMsg);
-
+      aShader->Release (theCtx.operator->());
       return Standard_False;
     }
 
     if (!aShader->Compile (theCtx))
     {
-      TCollection_ExtendedString aMsg = "Error! Failed to compile shader object";
-
+      TCollection_AsciiString aLog;
+      aShader->FetchInfoLog (theCtx, aLog);
+      if (aLog.IsEmpty())
+      {
+        aLog = "Compilation log is empty.";
+      }
       theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
                            GL_DEBUG_TYPE_ERROR_ARB,
                            0,
                            GL_DEBUG_SEVERITY_HIGH_ARB,
-                           aMsg);
-
-      if (theCtx->caps->contextDebug)
-      {
-        TCollection_AsciiString aLog;
-        aShader->FetchInfoLog (theCtx, aLog);
-        if (!aLog.IsEmpty())
-        {
-          std::cout << aLog.ToCString() << std::endl << std::flush;
-        }
-        else
-        {
-          std::cout << "Information log is empty" << std::endl;
-        }
-      }
-
+                           TCollection_ExtendedString ("Failed to compile shader object. Compilation log:\n") + aLog);
+      aShader->Release (theCtx.operator->());
       return Standard_False;
+    }
+    else if (theCtx->caps->glslWarnings)
+    {
+      TCollection_AsciiString aLog;
+      aShader->FetchInfoLog (theCtx, aLog);
+      if (!aLog.IsEmpty()
+       && !aLog.IsEqual ("No errors.\n"))
+      {
+        theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
+                             GL_DEBUG_TYPE_PORTABILITY_ARB,
+                             0,
+                             GL_DEBUG_SEVERITY_LOW_ARB,
+                             TCollection_ExtendedString ("Shader compilation log:\n") + aLog);
+      }
     }
 
     if (!AttachShader (theCtx, aShader))
     {
+      aShader->Release (theCtx.operator->());
       return Standard_False;
     }
   }
 
   if (!Link (theCtx))
   {
-    TCollection_ExtendedString aMsg = "Error! Failed to link program object";
-
+    TCollection_AsciiString aLog;
+    FetchInfoLog (theCtx, aLog);
+    if (aLog.IsEmpty())
+    {
+      aLog = "Linker log is empty.";
+    }
     theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
                          GL_DEBUG_TYPE_ERROR_ARB,
                          0,
                          GL_DEBUG_SEVERITY_HIGH_ARB,
-                         aMsg);
-
-    if (theCtx->caps->contextDebug)
-    {
-      TCollection_AsciiString aLog;
-      FetchInfoLog (theCtx, aLog);
-      if (!aLog.IsEmpty())
-      {
-        std::cout << aLog.ToCString() << std::endl;
-      }
-      else
-      {
-        std::cout << "Information log is empty" << std::endl;
-      }
-    }
-
+                         TCollection_ExtendedString ("Failed to link program object! Linker log:\n"));
     return Standard_False;
+  }
+  else if (theCtx->caps->glslWarnings)
+  {
+    TCollection_AsciiString aLog;
+    FetchInfoLog (theCtx, aLog);
+    if (!aLog.IsEmpty()
+     && !aLog.IsEqual ("No errors.\n"))
+    {
+      theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
+                           GL_DEBUG_TYPE_PORTABILITY_ARB,
+                           0,
+                           GL_DEBUG_SEVERITY_LOW_ARB,
+                           TCollection_ExtendedString ("GLSL linker log:\n") + aLog);
+    }
   }
 
   return Standard_True;

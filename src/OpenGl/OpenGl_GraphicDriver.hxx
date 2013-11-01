@@ -81,6 +81,21 @@ class OpenGl_Element;
 class OpenGl_Structure;
 class OpenGl_Text;
 
+//! Tool class to implement consistent state counter
+//! for objects inside the same driver instance.
+class OpenGl_StateCounter
+{
+public:
+
+  OpenGl_StateCounter() : myCounter (0) { }
+
+  Standard_Size Increment() { return ++myCounter; }
+
+private:
+  
+  Standard_Size myCounter;
+};
+
 //! This class defines an OpenGl graphic driver <br>
 class OpenGl_GraphicDriver : public Graphic3d_GraphicDriver
 {
@@ -350,6 +365,14 @@ private:
   mutable Handle(OpenGl_PrinterContext)                           myPrintContext;
   OpenGl_UserDrawCallback_t                                       myUserDrawCallback;
   OpenGl_Text*                                                    myTempText;         //!< variable for compatibility (drawing text in layers)
+
+public:
+
+  OpenGl_StateCounter* GetStateCounter() const { return &myStateCounter; }
+
+private:
+
+  mutable OpenGl_StateCounter myStateCounter;
 
 };
 

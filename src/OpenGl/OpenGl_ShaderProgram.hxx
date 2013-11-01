@@ -491,9 +491,27 @@ public:
 
 protected:
 
-  GLuint                          myProgramID;     //! Handle of OpenGL shader program
-  OpenGl_ShaderList               myShaderObjects; //! List of attached shader objects
-  Handle(Graphic3d_ShaderProgram) myProxy;         //! Proxy shader program (from application layer)
+  //! Increments counter of users.
+  //! Used by OpenGl_ShaderManager.
+  void Share()
+  {
+    ++myShareCount;
+  }
+
+  //! Decrements counter of users.
+  //! Used by OpenGl_ShaderManager.
+  //! @return true when there are no more users of this program has been left
+  bool UnShare()
+  {
+    return --myShareCount == 0;
+  }
+
+protected:
+
+  GLuint                          myProgramID;     //!< Handle of OpenGL shader program
+  OpenGl_ShaderList               myShaderObjects; //!< List of attached shader objects
+  Handle(Graphic3d_ShaderProgram) myProxy;         //!< Proxy shader program (from application layer)
+  Standard_Integer                myShareCount;    //!< program users count, initialized with 1 (already shared by one user)
 
 protected:
 

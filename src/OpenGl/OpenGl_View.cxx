@@ -17,7 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #ifdef HAVE_CONFIG_H
   #include <config.h>
 #endif
@@ -28,6 +27,7 @@
 #include <OpenGl_Display.hxx>
 #include <OpenGl_GlCore11.hxx>
 #include <OpenGl_GraduatedTrihedron.hxx>
+#include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_Texture.hxx>
 #include <OpenGl_Trihedron.hxx>
@@ -87,7 +87,8 @@ static const GLdouble THE_IDENTITY_MATRIX[4][4] =
 
 /*----------------------------------------------------------------------*/
 
-OpenGl_View::OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext)
+OpenGl_View::OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext,
+                          OpenGl_StateCounter*       theCounter)
 : mySurfaceDetail(Visual3d_TOD_NONE),
   myBackfacing(0),
   myBgTexture(myDefaultBgTexture),
@@ -109,9 +110,10 @@ OpenGl_View::OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext)
   myAntiAliasing(Standard_False),
   myTransPers(&myDefaultTransPers),
   myIsTransPers(Standard_False),
-  myOrientationChanged (Standard_True),
-  myViewMappingChanged (Standard_True),
-  myLightSourcesChanged (Standard_True)
+  myStateCounter (theCounter),
+  myLastOrientationState (0, 0),
+  myLastViewMappingState (0, 0),
+  myLastLightSourceState (0, 0)
 {
   // Initialize matrices
   memcpy(myOrientationMatrix,myDefaultMatrix,sizeof(Tmatrix3));
@@ -128,6 +130,10 @@ OpenGl_View::OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext)
       myIntShadingMethod = TEL_SM_FLAT;
       break;
   }
+
+  myCurrOrientationState = myStateCounter->Increment(); // <-- delete after merge with camera
+  myCurrViewMappingState = myStateCounter->Increment(); // <-- delete after merge with camera
+  myCurrLightSourceState = myStateCounter->Increment();
 
 #ifdef HAVE_OPENCL
   myModificationState = 1; // initial state
@@ -268,7 +274,7 @@ void OpenGl_View::SetLights (const CALL_DEF_VIEWCONTEXT &AContext)
     myLights.Append(rep);
   }
 
-  myLightSourcesChanged = Standard_True;
+  myCurrLightSourceState = myStateCounter->Increment();
 }
 
 /*----------------------------------------------------------------------*/
@@ -381,7 +387,7 @@ void OpenGl_View::SetMapping (const Handle(OpenGl_Display)& theGlDisplay,
   if (!err_ind)
     myExtra.map = Map;
 
-  myViewMappingChanged = Standard_True;
+  myCurrViewMappingState = myStateCounter->Increment();
 }
 
 /*----------------------------------------------------------------------*/
@@ -444,7 +450,7 @@ void OpenGl_View::SetOrientation (const Graphic3d_CView& theCView)
     myExtra.scaleFactors[2] = ScaleFactors[2];
   }
 
-  myOrientationChanged = Standard_True;
+  myCurrOrientationState = myStateCounter->Increment();
 }
 
 /*----------------------------------------------------------------------*/

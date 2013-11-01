@@ -1,5 +1,5 @@
-// Created on: 2013-08-25
-// Created by: Kirill GAVRILOV
+// Created on: 2013-10-10
+// Created by: Denis BOGOLEPOV
 // Copyright (c) 2013 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
@@ -17,52 +17,44 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-#include <OpenGl_Caps.hxx>
+//! Direction to the viewer.
+varying vec3 View;
 
-IMPLEMENT_STANDARD_HANDLE (OpenGl_Caps, Standard_Transient)
-IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Caps, Standard_Transient)
+//! Vertex normal in view space.
+varying vec3 Normal;
+
+//! Vertex position in view space.
+varying vec4 Position;
 
 // =======================================================================
-// function : OpenGl_Caps
-// purpose  :
+// function : TransformNormal
+// purpose  : Computes the normal in view space
 // =======================================================================
-OpenGl_Caps::OpenGl_Caps()
-: vboDisable        (Standard_False),
-  pntSpritesDisable (Standard_False),
-  keepArrayData     (Standard_False),
-  contextStereo     (Standard_False),
-#ifdef DEB
-  contextDebug      (Standard_True),
-#else
-  contextDebug      (Standard_False),
-#endif
-  contextNoAccel    (Standard_False),
-  glslWarnings      (Standard_False)
+vec3 TransformNormal (in vec3 theNormal)
 {
-  //
+  vec4 aResult = occWorldViewMatrixInverseTranspose *
+    occModelWorldMatrixInverseTranspose * vec4 (theNormal, 0.0);
+  
+  return normalize (aResult.xyz);
 }
 
 // =======================================================================
-// function : operator=
-// purpose  :
+// function : main
+// purpose  : Entry point to the vertex shader
 // =======================================================================
-OpenGl_Caps& OpenGl_Caps::operator= (const OpenGl_Caps& theCopy)
+void main()
 {
-  vboDisable        = theCopy.vboDisable;
-  pntSpritesDisable = theCopy.pntSpritesDisable;
-  keepArrayData     = theCopy.keepArrayData;
-  contextStereo     = theCopy.contextStereo;
-  contextDebug      = theCopy.contextDebug;
-  contextNoAccel    = theCopy.contextNoAccel;
-  glslWarnings      = theCopy.glslWarnings;
-  return *this;
-}
+  // Compute vertex position in the view space
+  Position = occWorldViewMatrix * occModelWorldMatrix * occVertex;
+  
+  // Compute vertex normal in the view space
+  Normal = TransformNormal (occNormal);
+  
+  // Note: The specified view vector is absolutely correct only for the orthogonal
+  // projection. For perspective projection it will be approximate, but it is in
+  // good agreement with the OpenGL calculations
+  View = vec3 (0.0, 0.0, 1.0);
 
-// =======================================================================
-// function : ~OpenGl_Caps
-// purpose  :
-// =======================================================================
-OpenGl_Caps::~OpenGl_Caps()
-{
-  //
+  // Do fixed functionality vertex transform
+  gl_Position = occProjectionMatrix * occWorldViewMatrix * occModelWorldMatrix * occVertex;
 }

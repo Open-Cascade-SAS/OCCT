@@ -459,9 +459,13 @@ const OpenGl_Matrix * OpenGl_Workspace::SetStructureMatrix (const OpenGl_Matrix 
   if (!myGlContext->ShaderManager()->IsEmpty())
   {
     if (aRevert)
-      myGlContext->ShaderManager()->UpdateModelWorldStateTo (lmat.mat);
-    else
+    {
       myGlContext->ShaderManager()->RevertModelWorldStateTo (lmat.mat);
+    }
+    else
+    {
+      myGlContext->ShaderManager()->UpdateModelWorldStateTo (lmat.mat);
+    }
   }
 
   return StructureMatrix_old;

@@ -34,10 +34,24 @@ typedef NCollection_Sequence<Handle(Graphic3d_ShaderVariable)> Graphic3d_ShaderV
 //! This class is responsible for managing shader programs.
 class Graphic3d_ShaderProgram : public Standard_Transient
 {
+
+public:
+
+  //! The list of built-in GLSL programs
+  enum ShaderName
+  {
+    ShaderName_UNKNOWN, //!< undefined program
+    ShaderName_Phong    //!< per-pixel lighting (Phong shading)
+  };
+
 public:
 
   //! Creates new empty program object.
   Standard_EXPORT Graphic3d_ShaderProgram();
+
+  //! Creates program object from pre-defined shaders.
+  //! Raises Standard_Failure exception if shader resources are unavailable.
+  Standard_EXPORT Graphic3d_ShaderProgram (const Graphic3d_ShaderProgram::ShaderName theName);
 
   //! Releases resources of program object.
   Standard_EXPORT virtual ~Graphic3d_ShaderProgram();
@@ -70,6 +84,12 @@ public:
 
   //! Removes all custom uniform variables from the program.
   Standard_EXPORT void ClearVariables();
+
+public:
+
+  //! The path to GLSL programs determined from CSF_ShadersDirectory or CASROOT environment variables.
+  //! @return the root folder with default GLSL programs.
+  Standard_EXPORT static const TCollection_AsciiString& ShadersFolder();
 
 public:
 

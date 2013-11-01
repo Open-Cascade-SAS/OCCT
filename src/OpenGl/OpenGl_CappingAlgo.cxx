@@ -228,7 +228,7 @@ void OpenGl_CappingAlgo::RenderPlane (const Handle(OpenGl_Workspace)& theWorkspa
   glDisableClientState (GL_VERTEX_ARRAY);
   glDisableClientState (GL_TEXTURE_COORD_ARRAY);
 
-  theWorkspace->SetStructureMatrix (aModelMatrix);
+  theWorkspace->SetStructureMatrix (aModelMatrix, true);
   theWorkspace->SetAspectFace (aFaceAspect);
 
   // set delayed resource release

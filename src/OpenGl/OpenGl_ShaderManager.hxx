@@ -48,11 +48,17 @@ public:
   //! Releases resources of shader manager.
   Standard_EXPORT virtual ~OpenGl_ShaderManager();
 
-  //! Creates new shader program.
-  Standard_EXPORT Handle(OpenGl_ShaderProgram) Create (const Handle(Graphic3d_ShaderProgram)& theProxyProgram = NULL);
+  //! Creates new shader program or re-use shared instance.
+  //! @param theProxy    [IN]  program definition
+  //! @param theShareKey [OUT] sharing key
+  //! @param theProgram  [OUT] OpenGL program
+  Standard_EXPORT void Create (const Handle(Graphic3d_ShaderProgram)& theProxy,
+                               TCollection_AsciiString&               theShareKey,
+                               Handle(OpenGl_ShaderProgram)&          theProgram);
 
   //! Unregisters specified shader program.
-  Standard_EXPORT void Unregister (Handle(OpenGl_ShaderProgram)& theProgram);
+  Standard_EXPORT void Unregister (TCollection_AsciiString&      theShareKey,
+                                   Handle(OpenGl_ShaderProgram)& theProgram);
 
   //! Returns list of registered shader programs.
   Standard_EXPORT const OpenGl_ShaderProgramList& ShaderPrograms() const;
@@ -154,6 +160,14 @@ public:
   
   //! Pushes current state of OCCT graphics parameters to specified program.
   Standard_EXPORT void PushState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
+
+public:
+
+  //! Overwrites context
+  void SetContext (OpenGl_Context* theCtx)
+  {
+    myContext = theCtx;
+  }
 
 protected:
 

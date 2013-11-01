@@ -23,11 +23,14 @@
 
 #include <ViewerTest.hxx>
 
+#include <AIS_Drawer.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <Draw.hxx>
 #include <Draw_Interpretor.hxx>
 #include <Graphic3d_Group.hxx>
+#include <Graphic3d_ShaderObject.hxx>
+#include <Graphic3d_ShaderProgram.hxx>
 #include <OpenGl_ArbVBO.hxx>
 #include <OpenGl_AspectFace.hxx>
 #include <OpenGl_AspectLine.hxx>
@@ -39,19 +42,25 @@
 #include <OpenGl_GlCore20.hxx>
 #include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_Workspace.hxx>
+#include <OSD_Environment.hxx>
+#include <OSD_File.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_Root.hxx>
+#include <Prs3d_ShadingAspect.hxx>
 #include <Select3D_SensitiveCurve.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
-#include <V3d_Viewer.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <V3d_View.hxx>
+#include <V3d_Viewer.hxx>
 #include <Visual3d_View.hxx>
+#include <ViewerTest_DoubleMapOfInteractiveAndName.hxx>
+#include <ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName.hxx>
 
 extern Standard_Boolean VDisplayAISObject (const TCollection_AsciiString& theName,
                                            const Handle(AIS_InteractiveObject)& theAISObj,
                                            Standard_Boolean theReplaceIfExists = Standard_True);
+extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
 
 //=======================================================================
 //function : VUserDraw
@@ -505,6 +514,107 @@ static int VGlInfo (Draw_Interpretor& theDI,
   return 0;
 }
 
+
+//==============================================================================
+//function : VShaderProg
+//purpose  : Sets the pair of vertex and fragment shaders for the object
+//==============================================================================
+static Standard_Integer VShaderProg (Draw_Interpretor& /*theDI*/,
+                                     Standard_Integer  theArgNb,
+                                     const char**      theArgVec)
+{
+  Handle(AIS_InteractiveContext) aCtx = ViewerTest::GetAISContext();
+  if (aCtx.IsNull())
+  {
+    std::cerr << "Use 'vinit' command before " << theArgVec[0] << "\n";
+    return 1;
+  }
+  else if (theArgNb < 2)
+  {
+    std::cerr << theArgVec[0] << " syntax error: lack of arguments\n";
+    return 1;
+  }
+
+  TCollection_AsciiString aLastArg (theArgVec[theArgNb - 1]);
+  aLastArg.UpperCase();
+  const Standard_Boolean toTurnOff = aLastArg == "OFF";
+  Standard_Integer       anArgsNb  = theArgNb - 1;
+  Handle(Graphic3d_ShaderProgram) aProgram;
+  if (!toTurnOff
+   && aLastArg == "PHONG")
+  {
+    aProgram = new Graphic3d_ShaderProgram (Graphic3d_ShaderProgram::ShaderName_Phong);
+  }
+  if (!toTurnOff
+   && aProgram.IsNull())
+  {
+    if (theArgNb < 3)
+    {
+      std::cerr << theArgVec[0] << " syntax error: lack of arguments\n";
+      return 1;
+    }
+
+    const TCollection_AsciiString aSrcVert = theArgVec[theArgNb - 2];
+    const TCollection_AsciiString aSrcFrag = theArgVec[theArgNb - 1];
+    if (!aSrcVert.IsEmpty()
+     && !OSD_File (aSrcVert).Exists())
+    {
+      std::cerr << "Non-existing vertex shader source\n";
+      return 1;
+    }
+    if (!aSrcFrag.IsEmpty()
+     && !OSD_File (aSrcFrag).Exists())
+    {
+      std::cerr << "Non-existing fragment shader source\n";
+      return 1;
+    }
+
+    aProgram = new Graphic3d_ShaderProgram();
+    aProgram->AttachShader (Graphic3d_ShaderObject::CreateFromFile (Graphic3d_TOS_VERTEX,   aSrcVert));
+    aProgram->AttachShader (Graphic3d_ShaderObject::CreateFromFile (Graphic3d_TOS_FRAGMENT, aSrcFrag));
+    anArgsNb = theArgNb - 2;
+  }
+
+  Handle(AIS_InteractiveObject) anIO;
+  if (anArgsNb <= 1
+   || *theArgVec[1] == '*')
+  {
+    for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
+          anIter.More(); anIter.Next())
+    {
+      anIO = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
+      if (!anIO.IsNull())
+      {
+        anIO->Attributes()->ShadingAspect()->Aspect()->SetShaderProgram (aProgram);
+        aCtx->Redisplay (anIO, Standard_False);
+      }
+    }
+    aCtx->UpdateCurrentViewer();
+    return 0;
+  }
+
+  for (Standard_Integer anArgIter = 1; anArgIter < anArgsNb; ++anArgIter)
+  {
+    const TCollection_AsciiString aName (theArgVec[anArgIter]);
+    if (!GetMapOfAIS().IsBound2 (aName))
+    {
+      std::cerr << "Warning: " << aName.ToCString() << " is not displayed\n";
+      continue;
+    }
+    anIO = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aName));
+    if (anIO.IsNull())
+    {
+      std::cerr << "Warning: " << aName.ToCString() << " is not an AIS object\n";
+      continue;
+    }
+    anIO->Attributes()->ShadingAspect()->Aspect()->SetShaderProgram (aProgram);
+    aCtx->Redisplay (anIO, Standard_False);
+  }
+
+  aCtx->UpdateCurrentViewer();
+  return 0;
+}
+
 //=======================================================================
 //function : OpenGlCommands
 //purpose  :
@@ -523,9 +633,14 @@ void ViewerTest::OpenGlCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vimmediatefront",
     "vimmediatefront : render immediate mode to front buffer or to back buffer",
     __FILE__, VImmediateFront, aGroup);
-
   theCommands.Add("vglinfo",
     "vglinfo [GL_VENDOR] [GL_RENDERER] [GL_VERSION] [GL_SHADING_LANGUAGE_VERSION] [GL_EXTENSIONS]"
     " : prints GL info",
     __FILE__, VGlInfo, aGroup);
+  theCommands.Add("vshaderprog",
+            "   'vshaderprog [name] pathToVertexShader pathToFragmentShader'"
+    "\n\t\t: or 'vshaderprog [name] off'   to disable GLSL program"
+    "\n\t\t: or 'vshaderprog [name] phong' to enable per-pixel lighting calculations"
+    "\n\t\t: * might be used to specify all displayed objects",
+    __FILE__, VShaderProg, aGroup);
 }

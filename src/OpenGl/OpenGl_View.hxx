@@ -45,6 +45,7 @@
 #include <OpenGl_Light.hxx>
 
 #include <Handle_OpenGl_Context.hxx>
+#include <Handle_OpenGl_GraphicDriver.hxx>
 #include <Handle_OpenGl_Display.hxx>
 #include <Handle_OpenGl_Workspace.hxx>
 #include <Handle_OpenGl_View.hxx>
@@ -98,11 +99,12 @@ class OpenGl_GraduatedTrihedron;
 class OpenGl_Structure;
 class OpenGl_Trihedron;
 class Handle(OpenGl_PrinterContext);
+class OpenGl_StateCounter;
 
 class OpenGl_View : public MMgt_TShared
 {
  public:
-  OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext);
+  OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext, OpenGl_StateCounter* theCounter);
   virtual ~OpenGl_View ();
 
   void ReleaseGlResources (const Handle(OpenGl_Context)& theCtx);
@@ -265,10 +267,17 @@ public:
   const TEL_TRANSFORM_PERSISTENCE *myTransPers;
   Standard_Boolean myIsTransPers;
 
-  //! Modification flags.
-  Standard_Boolean myOrientationChanged;
-  Standard_Boolean myViewMappingChanged;
-  Standard_Boolean myLightSourcesChanged;
+  OpenGl_StateCounter* myStateCounter;
+
+  Standard_Size myCurrOrientationState; // <-- delete it after merge with new camera
+  Standard_Size myCurrViewMappingState; // <-- delete it after merge with new camera
+  Standard_Size myCurrLightSourceState;
+
+  typedef std::pair<Standard_Size, Standard_Size> StateInfo;
+
+  StateInfo myLastOrientationState;
+  StateInfo myLastViewMappingState;
+  StateInfo myLastLightSourceState;
 
 #ifdef HAVE_OPENCL
   Standard_Size myModificationState;

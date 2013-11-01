@@ -2,18 +2,13 @@ cpulimit 300
 set group "v3d"
 
 pload VISUALIZATION
-vinit
+vinit View1
 pload TOPTEST
 
 if { [info exists imagedir] == 0 } {
-    set imagedir .
+  set imagedir .
 }
 
 if { [info exists test_image ] == 0 } {
-    set test_image photo
+  set test_image photo
 }
-
-
-
-
-

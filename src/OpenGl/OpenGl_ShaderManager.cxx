@@ -55,35 +55,56 @@ OpenGl_ShaderManager::~OpenGl_ShaderManager()
 // function : Create
 // purpose  : Creates new shader program
 // =======================================================================
-Handle(OpenGl_ShaderProgram) OpenGl_ShaderManager::Create (const Handle(Graphic3d_ShaderProgram)& theProxyProgram)
+void OpenGl_ShaderManager::Create (const Handle(Graphic3d_ShaderProgram)& theProxy,
+                                   TCollection_AsciiString&               theShareKey,
+                                   Handle(OpenGl_ShaderProgram)&          theProgram)
 {
-  if (theProxyProgram.IsNull())
+  theProgram.Nullify();
+  if (theProxy.IsNull())
   {
-    return NULL;
+    return;
   }
-  
-  Handle(OpenGl_ShaderProgram) aProgram = new OpenGl_ShaderProgram (theProxyProgram);
-  if (!aProgram->Initialize (myContext, theProxyProgram->ShaderObjects()))
-  {
-    return NULL;
-  }
-  
-  myProgramList.Append (aProgram);
 
-  return aProgram;
+  theShareKey = theProxy->GetId();
+  if (myContext->GetResource<Handle(OpenGl_ShaderProgram)> (theShareKey, theProgram))
+  {
+    theProgram->Share();
+    return;
+  }
+
+  theProgram = new OpenGl_ShaderProgram (theProxy);
+  if (!theProgram->Initialize (myContext, theProxy->ShaderObjects()))
+  {
+    theProgram->Release (myContext);
+    theShareKey.Clear();
+    theProgram.Nullify();
+    return;
+  }
+
+  myProgramList.Append (theProgram);
+  myContext->ShareResource (theShareKey, theProgram);
 }
 
 // =======================================================================
 // function : Unregister
 // purpose  : Removes specified shader program from the manager
 // =======================================================================
-void OpenGl_ShaderManager::Unregister (Handle(OpenGl_ShaderProgram)& theProgram)
+void OpenGl_ShaderManager::Unregister (TCollection_AsciiString&      theShareKey,
+                                       Handle(OpenGl_ShaderProgram)& theProgram)
 {
   for (OpenGl_ShaderProgramList::Iterator anIt (myProgramList); anIt.More(); anIt.Next())
   {
     if (anIt.Value() == theProgram)
     {
+      if (!theProgram->UnShare())
+      {
+        theShareKey.Clear();
+        theProgram.Nullify();
+        return;
+      }
+
       myProgramList.Remove (anIt);
+      myMaterialStates.UnBind (theProgram);
       break;
     }
   }

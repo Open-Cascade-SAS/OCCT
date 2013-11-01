@@ -865,36 +865,30 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
   }
 
   // Set OCCT state uniform variables
-
-  if (!aContext->ShaderManager()->IsEmpty())
+  const Handle(OpenGl_ShaderManager) aManager = aContext->ShaderManager();
+  if (StateInfo (myCurrLightSourceState, aManager->LightSourceState().Index()) != myLastLightSourceState)
   {
-    if (myLightSourcesChanged)
-    {
-      aContext->ShaderManager()->UpdateLightSourceStateTo (&myLights);
-      myLightSourcesChanged = Standard_False;
-    }
-
-    if (myViewMappingChanged)
-    {
-      aContext->ShaderManager()->UpdateProjectionStateTo (myMappingMatrix);
-      myViewMappingChanged = Standard_False;
-    }
-
-    if (myOrientationChanged)
-    {
-      aContext->ShaderManager()->UpdateWorldViewStateTo (myOrientationMatrix);
-      myOrientationChanged = Standard_False;
-    }
-
-    if (aContext->ShaderManager()->ModelWorldState().Index() == 0)
-    {
-      Tmatrix3 aModelWorldState = { { 1.f, 0.f, 0.f, 0.f },
-                                    { 0.f, 1.f, 0.f, 0.f },
-                                    { 0.f, 0.f, 1.f, 0.f },
-                                    { 0.f, 0.f, 0.f, 1.f } };
-
-      aContext->ShaderManager()->UpdateModelWorldStateTo (aModelWorldState);
-    }
+    aManager->UpdateLightSourceStateTo (&myLights);
+    myLastLightSourceState = StateInfo (myCurrLightSourceState, aManager->LightSourceState().Index());
+  }
+  if (StateInfo (myCurrViewMappingState, aManager->ProjectionState().Index()) != myLastViewMappingState)
+  {
+    aManager->UpdateProjectionStateTo (myMappingMatrix);
+    myLastViewMappingState = StateInfo (myCurrViewMappingState, aManager->ProjectionState().Index());
+  }
+  if (StateInfo (myCurrOrientationState, aManager->WorldViewState().Index()) != myLastOrientationState)
+  {
+    aManager->UpdateWorldViewStateTo (myOrientationMatrix);
+    myLastOrientationState = StateInfo (myCurrOrientationState, aManager->WorldViewState().Index());
+  }
+  if (aManager->ModelWorldState().Index() == 0)
+  {
+    Tmatrix3 aModelWorldState = { { 1.f, 0.f, 0.f, 0.f },
+                                  { 0.f, 1.f, 0.f, 0.f },
+                                  { 0.f, 0.f, 1.f, 0.f },
+                                  { 0.f, 0.f, 0.f, 1.f } };
+    
+    aManager->UpdateModelWorldStateTo (aModelWorldState);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1100,9 +1094,9 @@ D = -[Px,Py,Pz] dot |Nx|
       }
     }
     
-    if (!aContext->ShaderManager()->IsEmpty())
+    if (!aManager->IsEmpty())
     {
-      aContext->ShaderManager()->UpdateClippingState();
+      aManager->UpdateClippingState();
     }
   }
 
@@ -1191,10 +1185,15 @@ D = -[Px,Py,Pz] dot |Nx|
 
   aContext->ChangeClipping().RemoveAll();
 
-  if (!aContext->ShaderManager()->IsEmpty())
+  if (!aManager->IsEmpty())
   {
-    aContext->ShaderManager()->ResetMaterialStates();
-    aContext->ShaderManager()->RevertClippingState();
+    aManager->ResetMaterialStates();
+    aManager->RevertClippingState();
+
+    // We need to disable (unbind) all shaders programs to ensure
+    // that all objects without specified aspect will be drawn
+    // correctly (such as background)
+    OpenGl_ShaderProgram::Unbind (aContext);
   }
 
   // display global trihedron

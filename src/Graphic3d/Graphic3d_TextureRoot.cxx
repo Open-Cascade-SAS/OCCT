@@ -60,9 +60,9 @@ TCollection_AsciiString Graphic3d_TextureRoot::TexturesFolder()
 
     if (VarName.IsEmpty())
     {
-      std::cerr << " CSF_MDTVTexturesDirectory and CASROOT not setted\n";
-      std::cerr << " one of these variable are mandatory to use this functionality\n";
-      Standard_Failure::Raise ("CSF_MDTVTexturesDirectory and CASROOT not setted");
+      std::cerr << "Both environment variables CSF_MDTVTexturesDirectory and CASROOT are undefined!\n"
+                << "At least one should be defined to use standard Textures.\n";
+      Standard_Failure::Raise ("CSF_MDTVTexturesDirectory and CASROOT are undefined");
       return VarName;
     }
 

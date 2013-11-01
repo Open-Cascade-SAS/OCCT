@@ -135,11 +135,16 @@ OpenGl_Context::~OpenGl_Context()
   // release shared resources if any
   if (((const Handle(Standard_Transient)& )mySharedResources)->GetRefCount() <= 1)
   {
+    myShaderManager.Nullify();
     for (NCollection_DataMap<TCollection_AsciiString, Handle(OpenGl_Resource)>::Iterator anIter (*mySharedResources);
          anIter.More(); anIter.Next())
     {
       anIter.Value()->Release (this);
     }
+  }
+  else
+  {
+    myShaderManager->SetContext (NULL);
   }
   mySharedResources.Nullify();
   myDelayed.Nullify();
@@ -203,6 +208,7 @@ void OpenGl_Context::Share (const Handle(OpenGl_Context)& theShareCtx)
     mySharedResources = theShareCtx->mySharedResources;
     myDelayed         = theShareCtx->myDelayed;
     myReleaseQueue    = theShareCtx->myReleaseQueue;
+    myShaderManager   = theShareCtx->myShaderManager;
   }
 }
 
@@ -250,6 +256,7 @@ Standard_Boolean OpenGl_Context::MakeCurrent()
   // however some drivers (Intel etc.) may FAIL doing this for unknown reason
   if (IsCurrent())
   {
+    myShaderManager->SetContext (this);
     return Standard_True;
   }
   else if (wglMakeCurrent ((HDC )myWindowDC, (HGLRC )myGContext) != TRUE)
@@ -285,6 +292,7 @@ Standard_Boolean OpenGl_Context::MakeCurrent()
     return Standard_False;
   }
 #endif
+  myShaderManager->SetContext (this);
   return Standard_True;
 }
 
