@@ -80,7 +80,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib TKShapeSchema.lib FWOSPlugin.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV3d.lib"
+				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib TKShapeSchema.lib FWOSPlugin.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV3d.lib TKOpenGl.lib"
 				OutputFile="../../../../win32\vc8\libd/mfcsample.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -178,7 +178,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib TKShapeSchema.lib FWOSPlugin.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV3d.lib"
+				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib TKShapeSchema.lib FWOSPlugin.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV3d.lib TKOpenGl.lib"
 				OutputFile="../../../../win64\vc8\libd/mfcsample.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -277,7 +277,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib TKShapeSchema.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV3d.lib"
+				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib TKShapeSchema.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV3d.lib TKOpenGl.lib"
 				OutputFile="../../../../win32\vc8\lib/mfcsample.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -375,7 +375,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib TKShapeSchema.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV3d.lib"
+				AdditionalDependencies="TKVrml.lib TKStl.lib TKBrep.lib TKIGES.lib TKShHealing.lib TKStep.lib TKXSBase.lib TKShapeSchema.lib PTKernel.lib TKBool.lib TKCAF.lib TKCDF.lib TKernel.lib TKFeat.lib TKFillet.lib TKG2d.lib TKG3d.lib TKGeomAlgo.lib TKGeomBase.lib TKHLR.lib TKMath.lib TKOffset.lib TKPCAF.lib TKPrim.lib TKPShape.lib TKService.lib TKTopAlgo.lib TKMesh.lib TKV3d.lib TKOpenGl.lib"
 				OutputFile="../../../../win64\vc8\lib/mfcsample.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"

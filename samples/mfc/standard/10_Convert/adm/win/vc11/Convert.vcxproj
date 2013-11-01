@@ -117,7 +117,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>FWOSPlugin.lib;PTKernel.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKGeomAlgo.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPCAF.lib;TKPrim.lib;TKPShape.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKBRep.lib;TKG2d.lib;TKG3d.lib;TKGeomBase.lib;mfcsample.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FWOSPlugin.lib;PTKernel.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKGeomAlgo.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPCAF.lib;TKPrim.lib;TKPShape.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;TKBRep.lib;TKG2d.lib;TKG3d.lib;TKGeomBase.lib;mfcsample.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win32\vc11\bin/Convert.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\..\win32\vc11\lib;$(CSF_OPT_LIB32);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -162,7 +162,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>FWOSPlugin.lib;PTKernel.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKGeomAlgo.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPCAF.lib;TKPrim.lib;TKPShape.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKBRep.lib;TKG2d.lib;TKG3d.lib;TKGeomBase.lib;mfcsample.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FWOSPlugin.lib;PTKernel.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKGeomAlgo.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPCAF.lib;TKPrim.lib;TKPShape.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;TKBRep.lib;TKG2d.lib;TKG3d.lib;TKGeomBase.lib;mfcsample.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win64\vc11\bin/Convert.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\..\win64\vc11\lib;$(CSF_OPT_LIB64);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -206,7 +206,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>FWOSPlugin.lib;PTKernel.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKGeomAlgo.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPCAF.lib;TKPrim.lib;TKPShape.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKBRep.lib;TKG2d.lib;TKG3d.lib;TKGeomBase.lib;mfcsample.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FWOSPlugin.lib;PTKernel.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKGeomAlgo.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPCAF.lib;TKPrim.lib;TKPShape.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;TKBRep.lib;TKG2d.lib;TKG3d.lib;TKGeomBase.lib;mfcsample.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win32\vc11\bind/Convert.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\..\win32\vc11\libd;$(CSF_OPT_LIB32D);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -250,7 +250,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>FWOSPlugin.lib;PTKernel.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKGeomAlgo.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPCAF.lib;TKPrim.lib;TKPShape.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKBRep.lib;TKG2d.lib;TKG3d.lib;TKGeomBase.lib;mfcsample.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FWOSPlugin.lib;PTKernel.lib;TKBool.lib;TKCAF.lib;TKCDF.lib;TKernel.lib;TKFeat.lib;TKFillet.lib;TKGeomAlgo.lib;TKHLR.lib;TKMath.lib;TKOffset.lib;TKPCAF.lib;TKPrim.lib;TKPShape.lib;TKService.lib;TKTopAlgo.lib;TKV3d.lib;TKOpenGl.lib;TKBRep.lib;TKG2d.lib;TKG3d.lib;TKGeomBase.lib;mfcsample.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../win64\vc11\bind/Convert.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\..\win64\vc11\libd;$(CSF_OPT_LIB64D);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

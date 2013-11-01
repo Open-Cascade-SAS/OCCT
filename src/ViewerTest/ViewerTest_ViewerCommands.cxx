@@ -532,9 +532,8 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
     (void)theDisplayName; // avoid warning on unused argument
     SetDisplayConnection (new Aspect_DisplayConnection ());
   #endif
-    aGraphicDriver = new OpenGl_GraphicDriver();
+    aGraphicDriver = new OpenGl_GraphicDriver (GetDisplayConnection());
     aGraphicDriver->ChangeOptions() = ViewerTest_myDefaultCaps;
-    aGraphicDriver->Begin (GetDisplayConnection());
     ViewerTest_myDrivers.Bind (aViewNames.GetDriverName(), aGraphicDriver);
     toCreateViewer = Standard_True;
   }

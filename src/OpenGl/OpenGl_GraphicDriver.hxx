@@ -87,10 +87,13 @@ class OpenGl_GraphicDriver : public Graphic3d_GraphicDriver
 public:
 
   //! Constructor
-  Standard_EXPORT OpenGl_GraphicDriver (const Standard_CString theShrName = "TKOpenGl");
+  Standard_EXPORT OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnection)& theDisplayConnection);
 
+  //! Constructor
+  Standard_EXPORT OpenGl_GraphicDriver (const Standard_CString theShrName = "TKOpenGl");
   Standard_EXPORT Standard_Boolean Begin (const Handle(Aspect_DisplayConnection)& theDisplayConnection);
   Standard_EXPORT void End ();
+
   Standard_EXPORT Standard_Integer InquireLightLimit ();
   Standard_EXPORT void InquireMat (const Graphic3d_CView& ACView, TColStd_Array2OfReal& AMatO, TColStd_Array2OfReal& AMatM);
   Standard_EXPORT Standard_Integer InquireViewLimit ();

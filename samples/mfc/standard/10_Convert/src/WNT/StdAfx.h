@@ -36,6 +36,7 @@
 #include <Graphic3d.hxx>
 #include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
+#include <OpenGl_GraphicDriver.hxx>
 #include <WNT_Window.hxx>
 #include <Standard_ErrorHandler.hxx>
 

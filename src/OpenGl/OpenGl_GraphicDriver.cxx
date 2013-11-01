@@ -17,7 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #ifdef HAVE_CONFIG_H
   #include <config.h>
 #endif
@@ -62,6 +61,22 @@ extern "C" {
 #if defined(_MSC_VER)
   #pragma warning(pop)
 #endif
+}
+
+// =======================================================================
+// function : OpenGl_GraphicDriver
+// purpose  :
+// =======================================================================
+OpenGl_GraphicDriver::OpenGl_GraphicDriver (const Handle(Aspect_DisplayConnection)& theDisplayConnection)
+: Graphic3d_GraphicDriver ("TKOpenGl"),
+  myCaps           (new OpenGl_Caps()),
+  myMapOfView      (1, NCollection_BaseAllocator::CommonBaseAllocator()),
+  myMapOfWS        (1, NCollection_BaseAllocator::CommonBaseAllocator()),
+  myMapOfStructure (1, NCollection_BaseAllocator::CommonBaseAllocator()),
+  myUserDrawCallback (NULL),
+  myTempText (new OpenGl_Text())
+{
+  Begin (theDisplayConnection);
 }
 
 // =======================================================================

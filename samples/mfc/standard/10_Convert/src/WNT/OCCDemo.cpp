@@ -32,7 +32,7 @@ COCCDemoApp::COCCDemoApp() : OCC_App()
   try
   {
     Handle(Aspect_DisplayConnection) aDisplayConnection;
-    myGraphicDriver = Graphic3d::InitGraphicDriver (aDisplayConnection);
+    myGraphicDriver = new OpenGl_GraphicDriver (aDisplayConnection);
   }
   catch (Standard_Failure)
   {

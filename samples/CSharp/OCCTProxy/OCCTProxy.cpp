@@ -6,6 +6,7 @@
 #include <WNT_Window.hxx>
 #include <Graphic3d.hxx>
 #include <Graphic3d_GraphicDRiver.hxx>
+#include <OpenGl_GraphicDriver.hxx>
 //for object display
 #include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
@@ -51,6 +52,7 @@
 #pragma comment(lib, "TKXSBase.lib")
 #pragma comment(lib, "TKService.lib")
 #pragma comment(lib, "TKV3d.lib")
+#pragma comment(lib, "TKOpenGl.lib")
 #pragma comment(lib, "TKIGES.lib")
 #pragma comment(lib, "TKSTEP.lib")
 #pragma comment(lib, "TKStl.lib")
@@ -76,7 +78,7 @@ public:
     try
     {
       Handle(Aspect_DisplayConnection) aDisplayConnection;
-      myGraphicDriver() = Graphic3d::InitGraphicDriver (aDisplayConnection);
+      myGraphicDriver() = new OpenGl_GraphicDriver (aDisplayConnection);
     }
     catch (Standard_Failure)
     {

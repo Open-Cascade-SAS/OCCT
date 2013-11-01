@@ -76,6 +76,7 @@
 #include <gp.hxx>
 #include <gp_Pnt2d.hxx>
 
+#include <OpenGl_GraphicDriver.hxx>
 #include <Prs3d_Root.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <Prs3d_IsoAspect.hxx>

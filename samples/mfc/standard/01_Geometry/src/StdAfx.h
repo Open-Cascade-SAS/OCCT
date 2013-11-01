@@ -210,6 +210,7 @@
 #include <IntAna_IntConicQuad.hxx>
 
 #include <OSD_Environment.hxx>
+#include <OpenGl_GraphicDriver.hxx>
 
 #include <Poly_Triangulation.hxx>
 #include <Precision.hxx>
