@@ -405,7 +405,7 @@ void OpenGl_AspectFace::Release (const Handle(OpenGl_Context)& theContext)
       else
       {
         myResources.Texture.Nullify(); // we need nullify all handles before ReleaseResource() call
-        theContext->ReleaseResource (myResources.TextureId);
+        theContext->ReleaseResource (myResources.TextureId, Standard_True);
       }
     }
     myResources.Texture.Nullify();

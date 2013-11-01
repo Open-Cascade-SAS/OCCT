@@ -493,9 +493,10 @@ protected:
 
   //! Increments counter of users.
   //! Used by OpenGl_ShaderManager.
-  void Share()
+  //! @return true when resource has been restored from delayed release queue
+  bool Share()
   {
-    ++myShareCount;
+    return ++myShareCount == 1;
   }
 
   //! Decrements counter of users.

@@ -68,7 +68,10 @@ void OpenGl_ShaderManager::Create (const Handle(Graphic3d_ShaderProgram)& thePro
   theShareKey = theProxy->GetId();
   if (myContext->GetResource<Handle(OpenGl_ShaderProgram)> (theShareKey, theProgram))
   {
-    theProgram->Share();
+    if (theProgram->Share())
+    {
+      myProgramList.Append (theProgram);
+    }
     return;
   }
 
@@ -118,7 +121,7 @@ void OpenGl_ShaderManager::Unregister (TCollection_AsciiString&      theShareKey
   else
   {
     theProgram.Nullify();
-    myContext->ReleaseResource (anID);
+    myContext->ReleaseResource (anID, Standard_True);
   }
 }
 
