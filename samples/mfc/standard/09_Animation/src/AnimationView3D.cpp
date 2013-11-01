@@ -134,7 +134,6 @@ void CAnimationView3D::OnInitialUpdate()
   Handle(V3d_Viewer) aViewer;
 
   aViewer = GetDocument()->GetViewer();
-  aViewer->DefaultPerspectiveView();
   aViewer->SetDefaultTypeOfView (V3d_PERSPECTIVE);
   myView = aViewer->CreateView();
 
