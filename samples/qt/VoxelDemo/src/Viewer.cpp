@@ -34,7 +34,6 @@ Viewer::Viewer(QWidget* parent):QWidget(parent)
                                                 1000, V3d_XposYnegZpos,
                                                 Quantity_NOC_GRAY30, V3d_ZBUFFER, V3d_GOURAUD, V3d_WAIT,
                                                 true, true, V3d_TEX_NONE);
-    aViewer->Init();
 
 	aViewer->SetDefaultBackgroundColor(Quantity_NOC_BLACK);
 
