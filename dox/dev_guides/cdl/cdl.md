@@ -18,21 +18,10 @@ Using the services  described in the **packages**, you can construct an **execut
 
 To save data in a file,  you need to define persistent classes. Then, you group these classes in a  schema, which provides the necessary read/write tools. 
 
-    <table>
-	<tr>
-		<td>
-		
-		</td>
-	</tr>
-	<tr>
-		<td>
-		
-		</td>
-		<td>
-		![](/devs_guide/cdl/images/cdl_image003.jpg)
-		</td>
-	</tr>
-</table>       
+
+		@image html /dev_guides/cdl/images/cdl_image003.jpg
+    @image latex /dev_guides/cdl/images/cdl_image003.jpg
+     
 Figure 1. Building  an Open CASCADE Technology application 
 @section occt_1819379591_986437237 2. Introduction to  CDL
 @subsection occt_1819379591_98643723721  Purposes of the Language
@@ -40,21 +29,8 @@ You can use CDL to **define  data **in the Open CASCADE Technology environment. 
 
 You use CDL in the **design  phase **of a development process to define a set of software components which  best model the concepts stated in the application specification. 
 
-    <table>
-	<tr>
-		<td>
-		
-		</td>
-	</tr>
-	<tr>
-		<td>
-		
-		</td>
-		<td>
-		![](/devs_guide/cdl/images/cdl_image004.jpg)
-		</td>
-	</tr>
-</table>       
+		@image html /dev_guides/cdl/images/cdl_image004.jpg
+    @image latex /dev_guides/cdl/images/cdl_image004.jpg     
 
 Figure 2. The Development Process 
 
@@ -120,21 +96,9 @@ You declare the  variables of a **data manipulation language **as being of certa
 
   * Data types manipulated by  handle (or reference)
   * Data types manipulated by  value
-    <table>
-	<tr>
-		<td>
-		
-		</td>
-	</tr>
-	<tr>
-		<td>
-		
-		</td>
-		<td>
-		![](/devs_guide/cdl/images/cdl_image005.jpg)
-		</td>
-	</tr>
-</table>       
+  
+		@image html /dev_guides/cdl/images/cdl_image005.jpg
+    @image latex /dev_guides/cdl/images/cdl_image005.jpg      
 
 Figure 3. Manipulation of data types 
 
@@ -333,16 +297,16 @@ Capital and small  letters are not equivalent (i.e. AB, Ab, aB, ab are four diff
 
 The following is a list  of keywords. 
 
-alias                      any                    as                     asynchronous 
-class                     client                 deferred            end 
-enumeration           exception           executable        external 
-fields                     friends               from                 generic 
-immutable              imported            inherits              instantiates 
-is                          library                like                   me 
-mutable                 myclass             out                   package 
-pointer                   primitive             private              protected 
-raises                    redefined           returns              schema 
-static                     to                      uses                 virtual 
+alias                      any                    as                     asynchronous 
+class                     client                 deferred            end 
+enumeration           exception           executable        external 
+fields                     friends               from                 generic 
+immutable              imported            inherits              instantiates 
+is                          library                like                   me 
+mutable                 myclass             out                   package 
+pointer                   primitive             private              protected 
+raises                    redefined           returns              schema 
+static                     to                      uses                 virtual 
 
 In a CDL file, the  following characters are used as punctuation: 
 ; : , = ( ) [ ] ‘ “ 
@@ -361,12 +325,12 @@ There are two types of  numeric constants: integer and real.
 An **integer **constant  consists of a string of digits, which may or may not be preceded by a sign.  Integer constants express whole numbers. 
 **Examples** 
 
-1995         0            -273         +78 
+1995         0            -273         +78 
 
 A **real **constant  may or may not be preceded by a sign, and consists of an integral part followed  by a decimal point and a fractional part (either one or both parts may be null,  but both parts must always be present). It may also be followed by the letter E  to indicate that the following figures represent the exponent (also optionally  signed). 
 **Examples** 
 
-5.0        0.0           -0.8E+3          5.67E-12 
+5.0        0.0           -0.8E+3          5.67E-12 
 
 ***Literal Constants*** 
 
@@ -375,12 +339,12 @@ Literal constants  include individual characters and strings of characters.
 An **individual  character **constant is a single printable character enclosed by two  apostrophes. (See the definition of the class Character in the Standard  Package). 
 **Examples** 
 
- ‘B’       ‘y’      ‘&amp;’      ‘*’      ‘’’ ‘‘ 
+ ‘B’       ‘y’      ‘&amp;’      ‘*’      ‘’’ ‘‘ 
 
 A **string **constant  is composed of printable characters enclosed by quotation marks. 
 **Examples** 
 
-’’G’’     ’’jjjj’’      ’’This is a character string, isn’t it?’’ 
+’’G’’     ’’jjjj’’      ’’This is a character string, isn’t it?’’ 
 
 The **quotation mark **can  itself appear within a character string as long as it is preceded by a  backslash. 
 **Examples** 
@@ -408,20 +372,20 @@ Four of these primitives  are known to the schema of the database because they i
 
 The primitives inheriting  from Storable are the following: 
 
-**Boolean                **Is used to represent logical data. It has only  two values: 
+**Boolean                **Is used to represent logical data. It has only  two values: 
 *True *and *False*. 
-**Byte                      **8-bit number. 
-**Character              **Designates any ASCII character. 
-**ExtCharacter         **Is an extended character. 
-**Integer                  **Is an integer number. 
-**Real                                  **Denotes a real number (i.e. one with a whole and  a fractional part, either of which may be null). 
-**ShortReal              **Real with a smaller choice of values and memory  size. 
+**Byte                      **8-bit number. 
+**Character              **Designates any ASCII character. 
+**ExtCharacter         **Is an extended character. 
+**Integer                  **Is an integer number. 
+**Real                                  **Denotes a real number (i.e. one with a whole and  a fractional part, either of which may be null). 
+**ShortReal              **Real with a smaller choice of values and memory  size. 
 
 There are also  non-storable primitives. They are: 
 
-**CString                 **Is used for literal constants. 
-**ExtString              **Is an extended string. 
-**Address                **Represents a byte address of undetermined size. 
+**CString                 **Is used for literal constants. 
+**ExtString              **Is an extended string. 
+**Address                **Represents a byte address of undetermined size. 
 
 The services offered by  each of these types are described in the Standard Package. 
 
@@ -435,7 +399,8 @@ Two types are  manipulated by handle:
   * Types defined using classes  inheriting from the **Transient **class.
 These types are not storable as such in a file. 
 
-![](/devs_guide/cdl/images/cdl_image006.jpg)
+@image html /dev_guides/cdl/images/cdl_image006.jpg
+@image latex /dev_guides/cdl/images/cdl_image006.jpg
 
 Figure 4. Manipulation of a data type by reference 
 
@@ -446,22 +411,9 @@ Types, which are  manipulated by value, behave in a more direct fashion than tho
 
 You can store types  known to the schema (i.e. either primitives or inheriting from Storable) and  manipulated by value inside a persistent object as part of the representation.  This is the only way for you to store objects “manipulated by value” in a file. 
 
-
-    <table>
-	<tr>
-		<td>
-		
-		</td>
-	</tr>
-	<tr>
-		<td>
-		
-		</td>
-		<td>
-		![](/devs_guide/cdl/images/cdl_image007.jpg)
-		</td>
-	</tr>
-</table>       
+		@image html /dev_guides/cdl/images/cdl_image007.jpg
+    @image latex /dev_guides/cdl/images/cdl_image007.jpg
+      
 Figure 5. Manipulation of a data type by value 
 Three types are  manipulated by value: 
 
@@ -522,21 +474,10 @@ The elements, which make  up the definition of a class, are divided into four pa
   * the invariants
   * the internal representation
   * the friend methods and friend  classes.
-    <table>
-	<tr>
-		<td>
-		
-		</td>
-	</tr>
-	<tr>
-		<td>
-		
-		</td>
-		<td>
-		![](/devs_guide/cdl/images/cdl_image009.jpg)
-		</td>
-	</tr>
-</table>       
+
+		@image html /dev_guides/cdl/images/cdl_image009.jpg
+    @image latex /dev_guides/cdl/images/cdl_image009.jpg
+    
 **Figure 7. Contents of a class** 
 *** a deferred class does not have to contain a  constructor** 
 
@@ -588,7 +529,7 @@ data-type}’)’]
 
 @subsubsection occt_1819379591_1718435309331    Package  declaration
 
- **Packages** are  used to group   classes, which have some logical coherence. For example, the  Standard Package groups together all the predefined resources of the language.  In its simplest form, a package contains the declaration of all data types,  which it introduces. You may also use a package to offer public methods and  hide its internal classes by declaring them private. 
+ **Packages** are  used to group   classes, which have some logical coherence. For example, the  Standard Package groups together all the predefined resources of the language.  In its simplest form, a package contains the declaration of all data types,  which it introduces. You may also use a package to offer public methods and  hide its internal classes by declaring them private. 
 **    ** 
 **Example** 
 
@@ -629,7 +570,8 @@ Grouped behind the  keyword **uses **are the names of all the packages containin
 
 The methods you declare  in a package do not belong to any particular class. **Package methods ***must  *carry a name different from the data types contained in the package. Like  any other method, they can be overloaded. With the exception of the keyword **me  **and the visibility (a package method can *only *be either public or  private) package methods are described in the same way as **instance methods**. 
 
-![](/devs_guide/cdl/images/cdl_image010.jpg)
+@image html /dev_guides/cdl/images/cdl_image010.jpg
+@image latex /dev_guides/cdl/images/cdl_image010.jpg
 Figure 8. Contents of a package 
 
 The example of the  package below includes some of the basic data structures: 
@@ -716,7 +658,7 @@ is
 end SingleList; 
 -- Third compilation unit, the class “Set” : 
 generic class Set from Collection (Item as Storable) 
-  inherits 
+  inherits 
 Persistent from Standard; 
 raises 
 NoSuchObject from Collection, 
@@ -724,7 +666,7 @@ NoMoreObject from  Collection
 private class Node  instantiates SingleList 
 from Collection  (Item); 
 -- etc.... 
- end Set; 
+ end Set; 
 
 
 NOTE 
@@ -828,7 +770,7 @@ const Handle(Standard_Type)&amp; TYPE (MyPack_MyImport)
 static Handle(Standard_Type) _aType = 
 new Standard_Type  (“MyPack_MyImport”,sizeof 
 (MyPack_MyImport)) 
- return _aType; 
+ return _aType; 
 } 
 
 Then, add the names of  these two files (MyPack_MyImport.hxx, MyPack_MyImport.cxx) to a file called  FILES in the src subdirectory of the package. If the file does not exist you  must create it. 
@@ -938,11 +880,11 @@ end;
 
 The behavior of an  object class is defined by a list of **methods, **which are either **functions  **or **procedures**. Functions return an object, whereas procedures only  communicate by passing arguments. In both cases, when the transmitted object is  an instance manipulated by a handle, its identifier is passed. There are three  categories of methods: 
 
-**Object constructor            **Creates an instance of the described class. A  class will have one or more object constructors with various arguments or none. 
+**Object constructor            **Creates an instance of the described class. A  class will have one or more object constructors with various arguments or none. 
 
-**Instance method               **Operates on the instance which owns it. 
+**Instance method               **Operates on the instance which owns it. 
 
-**Class method                    **Does not work on individual instances, only on  the class                                                     itself. 
+**Class method                    **Does not work on individual instances, only on  the class                                                     itself. 
 
 @subsubsection occt_1819379591_1972310108411    Object  Constructors
 
@@ -965,7 +907,7 @@ numeric-constant | literal-constant | named-constant
 declaration-of-constructed-type ::= 
 **returns **[ **mutable **] class-name 
 
-The name of the  constructors is fixed: “Create”. The object returned by a constructor  is  always of the type of the described class. If that type is manipulated by a  handle, you *must *declare it as **mutable**, in which case the content  of the instance it references is accessible for further modification. 
+The name of the  constructors is fixed: “Create”. The object returned by a constructor  is  always of the type of the described class. If that type is manipulated by a  handle, you *must *declare it as **mutable**, in which case the content  of the instance it references is accessible for further modification. 
 
 For example, the  constructor of the class “Point” 
 **Example** 
@@ -1004,7 +946,7 @@ identifier formal-part-of-instance-method
 [  declaration-of-returned-type ] 
 [  exception-declaration ] 
 formal-part-of-instance-method  ::= 
- ’(’ me [’:’  passing-mode parameter-access ] {’;’ 
+ ’(’ me [’:’  passing-mode parameter-access ] {’;’ 
 parameter}’)’ 
 parameter ::= 
 identifier {’,’  identifier} ’:’ passing-mode 
@@ -1124,8 +1066,8 @@ coord: Real[3];
 Depending on their type,  Object fields have one of the two forms. When the field is of the “manipulated  by handle” type, it corresponds to an identifier. In this case, the contents of  the object can be shared by other objects or by a handle in a program. When the  field is of a “manipulated by value” type, it contains the value of the object.  In this case you say the object is **embedded**. 
 
 @subsection occt_1819379591_197231010843   Exceptions
-  
-Exceptions describe  exceptional situations, which can arise during the execution of a method. With  the raising of an exception, the normal course of program execution is  interrupted. The actions carried out in response to this situation are called   treatment of exception. 
+  
+Exceptions describe  exceptional situations, which can arise during the execution of a method. With  the raising of an exception, the normal course of program execution is  interrupted. The actions carried out in response to this situation are called   treatment of exception. 
 
 exception-treatment ::= **raises **exception-name  {’,’ 
 exception-name} 
@@ -1146,11 +1088,11 @@ raises OutOfRange;
 
 Instance methods are  likely to raise certain exceptions called **systematic exceptions **which do  not have to appear. They are: 
 
-**NullObject                         **Raised when the principal object does not exist. 
+**NullObject                         **Raised when the principal object does not exist. 
 
-**ImmutableObject                          **Raised when a method tries to modify an immutable  principal object. 
+**ImmutableObject                          **Raised when a method tries to modify an immutable  principal object. 
 
-**TypeMismatch                              **Raised if an argument typed by association is of  an unsuitable type. 
+**TypeMismatch                              **Raised if an argument typed by association is of  an unsuitable type. 
 
 These exceptions are described  in the Standard Package (System Toolkits). 
 
@@ -1176,7 +1118,7 @@ declaration-of-a-sub-class ::=
 
 A class cannot inherit  one of its descendent classes; nor can it inherit a native type. All the  classes of a system can be described in a non-cyclic diagram called the **inheritance  graph**. 
 
-The definition of a  sub-class is identical to that of a simple class. Note that a super-class *must  not *appear in the **uses **clause of the sub-class, even if it appears  in the definition of the sub-class. The behavior of a sub-class includes as a  minimum all  instance methods and protected methods of its super-classes. 
+The definition of a  sub-class is identical to that of a simple class. Note that a super-class *must  not *appear in the **uses **clause of the sub-class, even if it appears  in the definition of the sub-class. The behavior of a sub-class includes as a  minimum all  instance methods and protected methods of its super-classes. 
 
 NOTE 
 Note that constructors and class methods are never  inherited. 
@@ -1191,7 +1133,7 @@ declaration-of-a-redefined-method ::=
 identifier formal-part-of-instance-method [returnedtype- 
 declaration] 
 [declaration-of-exceptions] 
-**  is redefined **[visibility]’;’ 
+**  is redefined **[visibility]’;’ 
 
 A redefined method must conform  to the syntax described in the super-class where it appears. The exceptions  contained in the super-class can be renewed, and others may be added as long as  they inherit from an ancestor class. 
 
@@ -1212,7 +1154,7 @@ declaration-of-a-non-redefinable-method ::=
 identifier formal-part-of-instance-method [returnedtype- 
 declaration] 
 [declaration-of-exceptions] 
-** is virtual **[visibility]’;’ 
+** is virtual **[visibility]’;’ 
 
 All methods are static  by default. To enable redefinition in all the child classes, add “**is virtual;**“ when declaring the method. 
 
@@ -1228,7 +1170,7 @@ The CDL language allows  you to describe a class, which introduces methods witho
 
 declaration-of-a-deferred-class ::= 
 **deferred class **class-name 
- [**inherits **class-name 
+ [**inherits **class-name 
 [**uses **data-type {’,’ data-type}] 
 [**raises **exception-name {’,’ exception-name}] 
 **is **class-definition 
@@ -1376,29 +1318,29 @@ inherits Persistent
 raises NoSuchObject 
 is 
 Create returns mutable SingleList; 
-    ---Purpose: Creates an empty list 
+    ---Purpose: Creates an empty list 
 IsEmpty (me) returns  Boolean; 
-    ---Purpose: Returns true if the list me is  empty 
+    ---Purpose: Returns true if the list me is  empty 
 SwapTail (me :  mutable; S : in out mutable 
 SingleList) 
-    ---Purpose: Exchanges the tail of list me  with S 
+    ---Purpose: Exchanges the tail of list me  with S 
 -- Exception  NoSuchObject raised when me is 
 empty 
 raises NoSuchObject; 
-   Value (me) returns Item 
-   ---Purpose: Returns first element of the list  me 
+   Value (me) returns Item 
+   ---Purpose: Returns first element of the list  me 
 -- Exception NoSuchObject  raised when me is 
 empty 
 raises NoSuchObject; 
-   Tail (me) returns mutable SingleList 
+   Tail (me) returns mutable SingleList 
 ---Purpose: Returns  the tail of the list me 
 -- Exception  NoSuchObject raised when me is 
 empty 
 raises NoSuchObject; 
-   fields 
+   fields 
 Data : Item; 
-   Next : SingleList; 
-   end SingleList; 
+   Next : SingleList; 
+   end SingleList; 
 
 Even though no object of  the type “SingleList” IS created, the class contains a constructor. This class  constitutes a model, which will be recopied at instantiation time to create a  new class which will generate objects. The constructor will then be required. 
 **Example** 
@@ -1423,7 +1365,7 @@ The syntax is as  follows:
 
 instantiation-of-a-generic-class ::= 
 [**deferred**] **class  **class-name 
-**     instantiates **class-name ’(’data-type {’,’ 
+**     instantiates **class-name ’(’data-type {’,’ 
 data-type}’);’ 
 
 Instantiation is said to  be **static**. In other words, it must take place before any use can be made  of the type of the instantiated class. Each data type is associated term by  term with those declared at the definition of the generic class. These latter  ones, when they are not of the type **any**, restrict instantiation to those  classes, which have a behavior at least equal to that of the class specified in  the type constraint, including constructors. Note that this is not guaranteed  by inheritance itself. 
@@ -1443,18 +1385,18 @@ It often happens that  many classes are linked by a common generic type. This is
 **Example** 
 
 declaration-of-a-generic-class ::= 
-   [**deferred**] **generic class **class-name  ’(’generic- 
+   [**deferred**] **generic class **class-name  ’(’generic- 
 type{’,’generic-type}’)’ 
-   [**inherits **class-name {’,’ class-name}] 
-   [**uses **data-type {’,’ data-type}] 
-   [**raises **exception-name {’,’ exception-name}] 
-   [{[visibility] class-declaration}] 
-**   is **class-definition 
+   [**inherits **class-name {’,’ class-name}] 
+   [**uses **data-type {’,’ data-type}] 
+   [**raises **exception-name {’,’ exception-name}] 
+   [{[visibility] class-declaration}] 
+**   is **class-definition 
 **end **[class-name]’;’ 
-   class-declaration ::= 
-   incomplete-declaration-of-a-class | 
-   declaration-of-a-non-generic-class | 
-  instantiation-of-a-generic-class 
+   class-declaration ::= 
+   incomplete-declaration-of-a-class | 
+   declaration-of-a-non-generic-class | 
+  instantiation-of-a-generic-class 
 
 **Nested classes**, even though they are described as non-generic  classes, are generic by construction, being inside the class of which they are  a part. As a consequence, the generic types introduced by the **encompassing  class **can be used in the definition of the nested class. This is true even  if the generic type is only used in a nested class. The generic types still* must  *appear as an argument of the encompassing class. All other types used by a  nested class *must *appear in its **uses **or **raises **clauses,  just as if it were an independent class. 
 
@@ -1467,34 +1409,34 @@ generic class Set (Item as Storable)
 inherits Persistent 
 private class Node  instantiates SingleList (Item); 
 class Iterator 
-   uses Set, Node 
-   raises  NoSuchObject, NoMoreObject 
-   is 
-   Create (S : Set)  returns mutable Iterator; 
+   uses Set, Node 
+   raises  NoSuchObject, NoMoreObject 
+   is 
+   Create (S : Set)  returns mutable Iterator; 
 ---Purpose: Creates  an iterator on the group S 
-   More (me) returns  Boolean; 
+   More (me) returns  Boolean; 
 ---Purpose: Returns  true if there are still elements 
-   -- to explore 
-   Next (me) raises  NoMoreObject; 
+   -- to explore 
+   Next (me) raises  NoMoreObject; 
 ---Purpose: Passes  to the following element 
-   Value (me)  returns any Item raises NoSuchObject; 
+   Value (me)  returns any Item raises NoSuchObject; 
 ---Purpose: Returns  the current element 
-   fields 
-   Current : Node; 
+   fields 
+   Current : Node; 
 end Iterator; 
 is 
-   Create returns  mutable Set; 
+   Create returns  mutable Set; 
 ---Purpose: Creates  an empty group 
-   IsEmpty (me)  returns Boolean; 
+   IsEmpty (me)  returns Boolean; 
 ---Purpose: Returns  true if the group is empty 
-   Add (me :  mutable; T : Item); 
+   Add (me :  mutable; T : Item); 
 ---Purpose: Adds an  item to the group me 
-   Remove (me :  mutable; T : item) raises 
+   Remove (me :  mutable; T : item) raises 
 NoSuchObject; 
 ---Purpose: Removes  an item from the group me 
-   etc. 
-   fields 
-   Head : Node; 
+   etc. 
+   fields 
+   Head : Node; 
 end Set; 
 
 Note that in their  fields, both “Set” and “Iterator” are clients of another class, “Node”. This  last can be effectively declared **private **for it only appears in fields  which are themselves private. 
@@ -1543,19 +1485,19 @@ identifier {’,’ identifier} ’:’ data-type
 Example 
 
 fields 
-   Phi, Delta, Gamma : AngularMomenta [3] 
-   is protected ; 
+   Phi, Delta, Gamma : AngularMomenta [3] 
+   is protected ; 
 
 
 @subsubsection occt_1819379591_1972310108463     Visibility of Methods
 
 Methods act on fields.  Only methods belonging to a class can act on the fields of the class; this  stems from the principle of object encapsulation. Methods can be characterized  in three ways: by default, methods are **public**. Methods can be declared **private  **or **protected **to restrict their usage. 
 
-**Public methods                            **Are the default and are generally the most  common. They describe the behavior of a class or a package, and they are  callable by any part of a program. 
+**Public methods                            **Are the default and are generally the most  common. They describe the behavior of a class or a package, and they are  callable by any part of a program. 
 
-**Private methods                            **Exist only for the internal structuring of their  class or their package. Private class methods can only be called by methods  belonging to the same class. Private package methods can only be called by all  methods belonging to the same package and its classes. 
+**Private methods                            **Exist only for the internal structuring of their  class or their package. Private class methods can only be called by methods  belonging to the same class. Private package methods can only be called by all  methods belonging to the same package and its classes. 
 
-**Protected methods            **Are private methods, which are also callable from  the interior of descendent classes.  
+**Protected methods            **Are private methods, which are also callable from  the interior of descendent classes.  
 
 If you want to restrict  the usage of a method, you associate with it a visibility as follows : 
 
@@ -1588,15 +1530,15 @@ Friend classes or  methods are declared inside the class, which reveals its priv
 
 declaration-of-friends ::= 
 **friends **friend {’,’friend} 
-   friend ::= 
-   identifier **from **[**class**] class-name  [formal-part] | 
+   friend ::= 
+   identifier **from **[**class**] class-name  [formal-part] | 
 **Defining the Software Components 67** 
 identifier **from **[**package**] package-name  [formal-part] | 
-**   class**] class-name 
-   formal-part ::= 
-   simple-formal-part | 
-   formal-part-of-instance-method | 
-   formal-part-of-class-method 
+**   class**] class-name 
+   formal-part ::= 
+   simple-formal-part | 
+   formal-part-of-instance-method | 
+   formal-part-of-class-method 
 
 The formal part *must *be  presented if the method contains one; thus this can be overloaded without  necessarily propagating the friend relationship among its homonyms. The keyword  **class **allows you to avoid certain ambiguities. For example, it removes  any confusion between “method M from class C” and “method M from package P”. 
 
@@ -1606,23 +1548,11 @@ As an example, take a  method, which calculates the perpendicular distance betwe
 friends Distance from Line (me; P : Point) 
 
 A method can be a friend  to many classes. The class to which the method belongs does *not *need to  appear in the **uses **clause of other classes of which it is a friend. 
-    <table>
-	<tr>
-		<td>
-		
-		</td>
-	</tr>
-	<tr>
-		<td>
-		
-		</td>
-		<td>
-		![](/devs_guide/cdl/images/cdl_image011.jpg)
-		</td>
-	</tr>
-</table>      When the methods of a class are all friends  of another class, you can establish the friendship at the level of the class. 
 
+		@image html /dev_guides/cdl/images/cdl_image011.jpg
+    @image latex /dev_guides/cdl/images/cdl_image011.jpg
 
+When the methods of a class are all friends  of another class, you can establish the friendship at the level of the class. 
 
 Figure 9. Visibility of various components 
 @section occt_1819379591_858765726 Appendix A. Syntax  Summary
@@ -1754,7 +1684,7 @@ redefinition |** ****redefined**** **[redefinition]
 **raises**** **exception-name {’,’  exception-name} 
 
 (35)  declaration-of-visibility ::= 
-**is****  **visibility 
+**is****  **visibility 
 
 (36)  declaration-of-attributes-of-instance-method ::= 
 **is**** **visibility | **is **definition-of-level 
@@ -1844,7 +1774,7 @@ package-name]
 [**inherits**** **class-name 
 [**uses**** **data-type {’,’ data-type}] 
 [**raises**** **exception-name {’,’ exception-name}] 
-**   is **definition-of-a-class 
+**   is **definition-of-a-class 
 **end **[class-name]’;’ 
 
 (55) type-constraint ::= 
@@ -1858,19 +1788,6 @@ identifier **as**** **type-constraint
 
 @subsection occt_1819379591_213955286151   Comparison  of CDL &amp; C++ Syntax for Data Types manipulated by Handle and by Value
 
-    <table>
-	<tr>
-		<td>
-		
-		</td>
-	</tr>
-	<tr>
-		<td>
-		
-		</td>
-		<td>
-		![](/devs_guide/cdl/images/cdl_image012.jpg)
-		</td>
-	</tr>
-</table>       
-
+		@image html /dev_guides/cdl/images/cdl_image012.jpg
+    @image latex /dev_guides/cdl/images/cdl_image012.jpg
+    

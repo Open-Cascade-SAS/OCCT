@@ -3,29 +3,31 @@ Overview {#mainpage}
 
 @section OCCT_OVW_SECTION_1 Welcome
 
-Welcome to Open CASCADE Technology version 6.6.0, a minor release, 
+Welcome to Open CASCADE Technology version 6.7.0, a minor release, 
 which introduces a number of new features and improved traditional 
-functionality along with some changes over the previous maintenance release 6.5.5.
+functionality along with some changes over the previous release 6.6.0.
 
 This release makes Open CASCADE Technology even a more powerful and stable 
 development platform for 3D modeling and numerical simulation applications.
 
-Open CASCADE Technology 6.6.0 is a full-featured package that allows developing 
+Open CASCADE Technology 6.7.0 is a full-featured package that allows developing 
 applications on Windows and Linux platforms.
 
 @htmlonly<center>@endhtmlonly http://www.opencascade.org
 
-![](/overview/images/overview_occttransparent.png)
+@image html /overview/images/overview_occttransparent.png
+@image latex /overview/images/overview_occttransparent.png
 
-Copyright © 2001-2013 OPEN CASCADE S.A.S.
+Copyright (c) 2001-2013 OPEN CASCADE S.A.S.
 
-![](/resources/occt_logo.png)
+@image html /resources/occt_logo.png
+@image latex /resources/occt_logo.png
 
 @htmlonly</center>@endhtmlonly
 
 @section OCCT_OVW_SECTION_2 Copyrights
 
-Copyright© 2001-2013 by OPEN CASCADE S.A.S. All rights reserved.
+Copyright(c) 2001-2013 by OPEN CASCADE S.A.S. All rights reserved.
 
  Trademark information
 ----------------------
@@ -77,7 +79,7 @@ text image generation tools, and many other products.
 
 FreeType 2 is released under two open-source licenses: BSD-like FreeType License and the GPL.
 
-**Intel® Threading Building Blocks (TBB)** offers a rich and complete approach to expressing parallelism in a C++ program. 
+**Intel(R) Threading Building Blocks (TBB)** offers a rich and complete approach to expressing parallelism in a C++ program. 
 It is a library that helps you to take advantage of multi-core processor performance without having to be a threading expert. 
 Threading Building Blocks is not just a threads-replacement library. It represents a higher-level, task-based parallelism that 
 abstracts platform details and threading mechanisms for scalability and performance. 
@@ -85,7 +87,7 @@ TBB is available under GPLv2 license with the runtime exception.
 
 Open CASCADE Technology WOK module on Windows also makes use of LGPL-licensed C routines   * regexp and getopt, taken from GNU C library.
 
-**Doxygen** (Copyright © 1997-2010 by Dimitri van Heesch) is open source documentation system for 
+**Doxygen** (Copyright (c) 1997-2010 by Dimitri van Heesch) is open source documentation system for 
 C++, C, Java, Objective-C, Python, IDL, PHP and C#. This product is used in Open CASCADE Technology 
 for automatic creation of Technical Documentation from C++ header files. 
 If you need further information on Doxygen, please refer to http://www.stack.nl/~dimitri/doxygen/index.html.
@@ -169,6 +171,74 @@ then run **wgendoc** command with required arguments
 
 e.g., wgendoc –output=d:/occt/doc {–m=Draw Visualization} -chm
 
+@section OCCT_OVW_SECTION_5 Requirements
+
+@subsection OCCT_OVW_SECTION_5_1 Linux Intel
+<table>
+<tr> <th>Operating System  </th> <th> 64-bit:  Mandriva 2010, CentOS 5. 5, CentOS 6.3, Fedora 17, Fedora 18, Ubuntu-1304, Debian 6.0 *  </th> </tr>
+<tr> <td> Minimum memory </td> <td> 512 Mb, 1 Gb recommended </td > </tr> 
+<tr> <td> Free disk space (complete installation)  </td> <td> For full installation Open CASCADE Technology requires 600 Mb of disk space.  </td > </tr> 
+<tr> <td>Minimum swap space  </td> <td> 500 Mb </td > </tr> 
+<tr> <td> Video card   </td> <td> **GeForce** The following versions of GeForce drivers are recommended: 64-bit Version: 100.14.19 or later http://www.nvidia.com/object/linux_display_amd64_100.14.19.html 32-bit Version: 100.14.19 or later http://www.nvidia.com/object/linux_display_ia32_100.14.19.html  </td > </tr> 
+<tr> <td> Graphic library     </td> <td> OpenGL 1.1+ (OpenGL 1.5+ is recommended) </td > </tr> 
+<tr> <td>C++      </td> <td>GNU gcc 4.0.  - 4.7.3.  </td > </tr> 
+<tr> <td> TCL (for testing tools)    </td> <td> Tcltk 8.5 or 8.6 http://www.tcl.tk/software/tcltk/8.6.html</td > </tr> 
+<tr> <td> Qt (for demonstration tools)  </td> <td> Qt 4.6.2 http://qt.nokia.com/downloads </td > </tr> 
+<tr> <td> Freetype (OCCT Text rendering) </td> <td> freetype-2.4.11 http://sourceforge.net/projects/freetype/files/ </td > </tr> 
+<tr> <td> FreeImage (Support of common graphic formats) </td> <td>FreeImage 3.15.4 http://sourceforge.net/projects/freeimage/files/Source%20Distribution/     </td > </tr> 
+<tr> <td> gl2ps (Export contents of OCCT viewer to vector graphic file)      </td> <td> gl2ps-1.3.8  http://geuz.org/gl2ps/ </td > </tr> 
+<tr> <td>TBB (optional tool for parallelized version of BRepMesh component)  </td> <td> TBB 3.x or 4.x http://www.threadingbuildingblocks.org/    </td > </tr> 
+<tr> <td> OpenCL (optional for providing ray tracing visualization core </td> <td>http://developer.amd.com/tools-and-sdks/heterogeneous-computing/amd-accelerated-parallel-processing-app-sdk/downloads/          </td>  </tr> 
+</table>
+\* Debian 60 64 bit is a permanently tested platform. 
+
+@subsection OCCT_OVW_SECTION_5_2 Windows Intel
+
+<table>
+<tr> <th>Operating System  </th> <th> 32/64-bit: 8/ 7 SP1 / VISTA SP2 /XP SP3    </th> </tr>
+<tr> <td> Minimum memory </td> <td> 512 Mb, 1 Gb recommended </td > </tr> 
+<tr> <td> Free disk space (complete installation)  </td> <td> For full installation Open CASCADE Technology requires 650 Mb of disk space but during the process of installation you will need 1,2 Gb of free disk space.  </td > </tr> 
+<tr> <td>Minimum swap space  </td> <td> 500 Mb </td > </tr> 
+<tr> <td> Video card   </td> <td> **GeForce** Version 266.58 WHQL or later is recommended: http://www.nvidia.com/Download/index.aspx  
+ </td > </tr> 
+<tr> <td> Graphic library     </td> <td> OpenGL 1.1+ (OpenGL 1.5+ is recommended) </td > </tr> 
+<tr> <td>C++      </td> <td>Microsoft Visual Studio .NET 2005 SP1 with all security updates
+Microsoft Visual Studio .NET 2008 SP1*
+Microsoft Visual Studio .NET 2010
+Microsoft Visual Studio .NET 2012
+Microsoft Visual Studio .NET 2013
+  </td > </tr> 
+<tr> <td> TCL (for testing tools)    </td> <td> TActiveTcl 8.5 or 8.6
+http://www.activestate.com/activetcl/downloads  </td > </tr> 
+<tr> <td> Qt (for demonstration tools)  </td> <td> Qt 4.6.2 http://qt.digia.com/downloads </td > </tr> 
+<tr> <td> Freetype (OCCT Text rendering) </td> <td> freetype-2.4.11 http://sourceforge.net/projects/freetype/files/ </td > </tr> 
+<tr> <td> FreeImage (Support of common graphic formats )</td> <td>FreeImage 3.15.4 http://sourceforge.net/projects/freeimage/files/Source%20Distribution/     </td > </tr> 
+<tr> <td> gl2ps (Export contents of OCCT viewer to vector graphic file)      </td> <td> gl2ps-1.3.8  http://geuz.org/gl2ps/ </td > </tr> 
+<tr> <td>TBB (optional tool for parallelized version of BRepMesh component)  </td> <td> TBB 3.x or 4.x http://www.threadingbuildingblocks.org/    </td > </tr> 
+<tr> <td> OpenCL (optional for providing ray tracing visualization core </td> <td>http://developer.amd.com/tools-and-sdks/heterogeneous-computing/amd-accelerated-parallel-processing-app-sdk/downloads/          </td>  </tr> 
+</table>
+
+* The official release of OCCT for Windows contains libraries built with VC++ 2008. 
+
+
+@subsection OCCT_OVW_SECTION_5_3 MAC OS X
+
+<table>
+<tr> <th>Operating System  </th> <th> Mac OS X 10.6.8 Snow Leopard / 10.7 Lion    </th> </tr>
+<tr> <td> Minimum memory </td> <td> 512 Mb, 1 Gb recommended </td > </tr> 
+<tr> <td> Free disk space (complete installation)  </td> <td> For full installation Open CASCADE Technology requires 600 Mb of disk space. </td > </tr> 
+<tr> <td>Minimum swap space  </td> <td> 500 Mb </td > </tr> 
+<tr> <td> Video card   </td> <td> **GeForce** Version 266.58 WHQL or later is recommended: http://www.nvidia.com/Download/index.aspx  
+ </td > </tr> 
+<tr> <td> Graphic library     </td> <td> OpenGL 1.1+ (OpenGL 1.5+ is recommended) </td > </tr> 
+<tr> <td>C++      </td> <td>XCode 3.2 or newer (4.x is recommended)  </td > </tr> 
+<tr> <td> Qt (for demonstration tools)  </td> <td> Qt 4.6.2 http://qt.digia.com/downloads </td > </tr> 
+<tr> <td> Freetype (OCCT Text rendering) </td> <td> freetype-2.4.11 http://sourceforge.net/projects/freetype/files/ </td > </tr> 
+<tr> <td> FreeImage (Support of common graphic formats )</td> <td>FreeImage 3.15.4 http://sourceforge.net/projects/freeimage/files/Source%20Distribution/     </td > </tr> 
+<tr> <td> gl2ps (Export contents of OCCT viewer to vector graphic file)      </td> <td> gl2ps-1.3.8  http://geuz.org/gl2ps/ </td > </tr> 
+<tr> <td>TBB (optional tool for parallelized version of BRepMesh component)  </td> <td> TBB 3.x or 4.x http://www.threadingbuildingblocks.org/    </td > </tr> 
+<tr> <td> OpenCL (optional for providing ray tracing visualization core </td> <td> OpenCL 1.2.8 native </td>  </tr> 
+</table>
 
 @section OCCT_OVW_SECTION_4 Installation
 
@@ -209,26 +279,32 @@ and build it using the relevant tools. For additional convenience of the users,
 OPEN CASCADE also provides the documents with recommendations on building 
 third-party products from source files.
 
+
+
 When the installation is complete, you will find the following directories 
 (some might be absent in case of custom installation):
 
-![](/overview/images/overview_installation.png)
+@image html /overview/images/overview_installation.png "The directory tree"
+@image latex /overview/images/overview_installation.png "The directory tree"
 
-### Description of directory tree
 
 
-  * **3rdparty** * This folder contains third-party products necessary to compile and use OCCT as well as start sample applications with Visual C++ 2008;
-  * **ros/adm**  * This folder contains administration files, which allow rebuilding OCCT;
-  * **ros/adm/cmake** * This folder contains files of CMake building procedure;
-  * **ros/adm/msvc** * This folder contains Visual Studio projects for Visual C++  2005, 2008 and 2010, which allow rebuilding OCCT under Windows platform in 32 and 64-bit mode;
-  * **ros/data** * This folder contains CAD files in different formats, which can be used to test the OCCT functionalities;
-  * **ros/doc** * This folder contains OCCT Overview documentation;
-  * **ros/drv** * This folder contains source files generated by WOK (private header files and instantiations of generic classes);
-  * **ros/inc** * This folder contains all OCCT header files;
-  * **ros/samples** * This folder contains sample applications.
-  * **ros/src** * This folder contains OCCT source files. They are organized in folders, one per development unit;
-  * **ros/tests** * This folder contains scripts for OCCT testing.
-  * **ros/win32/vc9** * This folder contains executable and library files built in optimize mode for Windows platform by Visual C++  2008;
+  * **adm**   This folder contains administration files, which allow rebuilding OCCT;
+  * **adm/cmake**  This folder contains files of CMake building procedure;
+  * **adm/msvc**  This folder contains Visual Studio projects for Visual C++  2005, 2008 and 2010, which allow rebuilding OCCT under Windows platform in 32 and 64-bit mode;
+  * **data**  This folder contains CAD files in different formats, which can be used to test the OCCT functionalities;
+  * **doc**  This folder contains OCCT Overview documentation;
+  * **drv**  This folder contains source files generated by WOK (private header files and instantiations of generic classes);
+  * **inc**  This folder contains all OCCT header files;
+  * **samples**  This folder contains sample applications.
+  * **src**  This folder contains OCCT source files. They are organized in folders, one per development unit;
+  * **tests**  This folder contains scripts for OCCT testing.
+  * **win32/vc9**  This folder contains executable and library files built in optimize mode for Windows platform by Visual C++  2008;
+
+3rd party products have been moved to the root of Open CASCADE installation.
+
+@image html /overview/images/overview_3rdparty.png "The third-party products"
+@image latex /overview/images/overview_3rdparty.png "The third-party products"
 
 
 @subsection OCCT_OVW_SECTION_4_2 System Environment Variables
@@ -266,7 +342,7 @@ The scripts are located in the OpenCACADE<version_number>/ros folder of the sour
   * **PATH** is required to define the path to OCCT binaries and 3rdparty folder;
   * **LD_LIBRARY_PATH** is required to define the path to OCCT libraries (on UNIX platforms only);
   * **MMGT_OPT** if set to 1, the memory manager performs optimizations as described below; if set to 2, 
-  Intel ® TBB optimized memory manager is used; if 0 (default), every memory block is allocated 
+  Intel (R) TBB optimized memory manager is used; if 0 (default), every memory block is allocated 
   in C memory heap directly (via malloc() and free() functions). 
   In the latter case, all other options except MMGT_CLEAR  and MMGT_REENTRANT are ignored;
   * **MMGT_CLEAR** if set to 1 (default), every allocated memory block is cleared by zeros; 
@@ -312,89 +388,12 @@ in XML validators or editors, together with persistent XmlOcaf documents;
 * **CSF_MIGRATION_TYPES** is required in order to read documents that contain old data types, such as *TDataStd_Shape*;
 * **TCLLIBPATH**, **TCL_LIBRARY**, **TK_LIBRARY** and **TIX_LIBRARY** are required to allow work with **DRAW** and **WOK**.
 
-
-@section OCCT_OVW_SECTION_5 Requirements
-
-@subsection OCCT_OVW_SECTION_5_1 Linux Intel
-
-| Operating System                               | 32/64-bit:  Debian: 4.0, Mandriva: 2010*                                                           |
-| :--------------------------------------------- | :------------------------------------------------------------------------------------------------- |
-| Minimum memory                                 | 512 Mb, 1 Gb recommended                                                                           |
-| Free disk space (complete installation)        | For full installation Open CASCADE Technology requires 600 Mb of disk space.                       |
-| Minimum swap space                             | 500 Mb                                                                                             |
-| Video card                                     | GeForce,                                                                                           |
-|                                                | The following versions of GeForce drivers are recommended:                                         |
-|                                                | 64-bit Version: 100.14.19 or later http://www.nvidia.com/object/linux_display_amd64_100.14.19.html |
-|                                                | 32-bit Version: 100.14.19 or later http://www.nvidia.com/object/linux_display_ia32_100.14.19.html  |
-| Graphic library                                | OpenGL 1.1+ (OpenGL 1.5+ is recommended)                                                           |
-| C++                                            | GNU gcc 4.0.   * 4.3.2.                                                                            |
-| TCL (for testing tools)                        | Tcltk 8.5 or 8.6                                                                                   |
-|                                                | http://www.tcl.tk/software/tcltk/8.6.html                                                          |
-| Qt (for demonstration tools)                   | Qt 4.6.2 http://qt.digia.com/downloads                                                             |
-| Freetype (OCCT Text rendering)                 | freetype-2.4.10                                                                                    |
-|                                                | http://sourceforge.net/projects/freetype/files/                                                    |
-| FreeImage (Support of common graphic formats ) | FreeImage 3.14.1                                                                                   |
-|                                                | http://sourceforge.net/projects/freeimage/files/Source%20Distribution/                             |
-| gl2ps (Export contents of OCCT                 | gl2ps-1.3.5                                                                                        |
-|  viewer to vector graphic file)                | http://geuz.org/gl2ps/                                                                             |
-| TBB (optional tool for parallelized            | TBB 3.x or 4.x                                                                                     |
-| version of BRepMesh component)                 | http://www.threadingbuildingblocks.org/                                                            |
-
-@subsection OCCT_OVW_SECTION_5_2 Windows Intel
-
-| Operating System                               | 32/64-bit: 8/ 7 SP1 / VISTA SP2 /XP SP3                                                          |
-| :--------------------------------------------- | :----------------------------------------------------------------------------------------------- |
-| Minimum memory                                 | 512 Mb, 1 Gb recommended                                                                         |
-| Free disk space                                | For full installation Open CASCADE Technology requires 650 Mb of disk space.                     |
-| (complete installation)                        | but during the process of installation you will need 1,2 Gb of free disk space.                  |
-| Minimum swap space                             | 500 Mb                                                                                           |
-| Video card                                     | GeForce,                                                                                         |
-|                                                | Version 266.58 WHQL or later is recommended:http://www.nvidia.com/Download/index.aspx            |
-| Graphic library                                | OpenGL 1.1+ (OpenGL 1.5+ is recommended)                                                         |
-| C++                                            | Microsoft Visual Studio .NET 2005 SP1 with all security updates                                  |
-|                                                | Microsoft Visual Studio .NET 2008 SP1*                                                           |
-|                                                | Microsoft Visual Studio .NET 2010                                                                |
-|                                                | Microsoft Visual Studio .NET 2012                                                                |
-| TCL (for testing tools)                        | ActiveTcl 8.5 or 8.6                                                                             |
-|                                                | http://www.activestate.com/activetcl/downloads                                                   |
-| Qt (for demonstration tools)                   | Qt 4.6.2 http://qt.digia.com/downloads                                                           |
-| Freetype (OCCT Text rendering)                 | freetype-2.4.10                                                                                  |
-|                                                | http://sourceforge.net/projects/freetype/files/                                                  |
-| FreeImage (Support of common graphic formats ) | FreeImage 3.14.1                                                                                 |
-|                                                | http://sourceforge.net/projects/freeimage/files/Source%20Distribution/                           |
-| gl2ps (Export contents of OCCT                 | gl2ps-1.3.5                                                                                      |
-|  viewer to vector graphic file)                | http://geuz.org/gl2ps/                                                                           |
-| TBB (optional tool for parallelized            | TBB 3.x or 4.x                                                                                   |
-| version of BRepMesh component)                 | http://www.threadingbuildingblocks.org/                                                          |
-
-@subsection OCCT_OVW_SECTION_5_3 MAC OS X
-
-| Operating System                               | Requires Mac OS X 10.6.8 Snow Leopard / 10.7 Lion                                                |
-| :--------------------------------------------- | :----------------------------------------------------------------------------------------------- |
-| Minimum memory                                 | 512 Mb, 1 Gb recommended                                                                         |
-| Free disk space (complete installation)        | For full installation Open CASCADE Technology requires 600 Mb of disk space.                     |
-| Minimum swap space                             | 500 Mb                                                                                           |
-| Graphic library                                | OpenGL 1.1+ (OpenGL 1.5+ is recommended)                                                         |
-| C++                                            | XCode 3.2 or newer (4.x is recommended)                                                          |
-| TCL (for testing tools)                        | Tcltk 8.5 or 8.6                                                                                 |
-|                                                | http://www.tcl.tk/software/tcltk/8.6.html                                                        |
-| Qt (for demonstration tools)                   | Qt 4.6.2 http://qt.digia.com/downloads                                                           |
-| Freetype (OCCT Text rendering)                 | freetype-2.4.10                                                                                  |
-|                                                | http://sourceforge.net/projects/freetype/files/                                                  |
-| FreeImage (Support of common graphic formats ) | FreeImage 3.14.1                                                                                 |
-|                                                | http://sourceforge.net/projects/freeimage/files/Source%20Distribution/                           |
-| gl2ps (Export contents of OCCT                 | gl2ps-1.3.5                                                                                      |
-|  viewer to vector graphic file)                | http://geuz.org/gl2ps/                                                                           |
-| TBB (optional tool for parallelized            | TBB 3.x or 4.x                                                                                   |
-| version of BRepMesh component)                 | http://www.threadingbuildingblocks.org/                                                          |
-
-
 @section OCCT_OVW_SECTION_6 Release Notes
 
 
 Open CASCADE Technology latest version 
 @htmlonly 
-<a href="http://occtrel.nnov.opencascade.com/OpenCASCADE6.6.0/doc/release_notes.pdf">Release Notes</a>
+<a href="http://occtrel.nnov.opencascade.com/OpenCASCADE6.7.0/doc/release_notes.pdf">Release Notes</a>
 @endhtmlonly  (PDF)
 
 
@@ -407,7 +406,8 @@ Draw is a command interpreter based on TCL and a graphical system used for testi
 
 Draw can be used interactively to create, display and modify objects such as curves, surfaces and topological shapes.
 
-![](/overview/images/overview_draw.png "")
+@image html /overview/images/overview_draw.png
+@image latex /overview/images/overview_draw.png
 
 Scripts can be written to customize Draw and perform tests. 
 New types of objects and new commands can be added using C++ programming language.
@@ -528,7 +528,8 @@ The list of MFC samples:
   * Animation
   * Convert
 
-![](/overview/images/overview_mvc.png "")
+@image html /overview/images/overview_mvc.png
+@image latex /overview/images/overview_mvc.png
 
 **Remarks:**
 
@@ -545,7 +546,8 @@ OCCT contains three samples based on Qt application framework
 
  Import Export programming sample contains 3D Viewer and Import // Export functionality.
 
-![](/overview/images/overview_qt.png "")
+@image html /overview/images/overview_qt.png
+@image latex /overview/images/overview_qt.png
 
  Tutorial
 ---------
@@ -582,7 +584,8 @@ for testing this functionality (accessible only through TEST pre-processor defin
 
 C# sample containing 3D Viewer and Import // Export functionality.
 
-![](/overview/images/overview_c__ie.png "")
+@image html /overview/images/overview_c__ie.png
+@image latex /overview/images/overview_c__ie.png
 
 Import:
 
@@ -602,3 +605,7 @@ Export:
 
   * C# sample is available only on Windows platform;
   * It is delivered in source code only and must be built with Microsoft Visual C++ 2005.
+  
+  
+  
+  

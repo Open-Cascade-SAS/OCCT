@@ -173,7 +173,8 @@ By convention, names of test groups, grids, and cases should contain no spaces a
 Names begin, end, data, parse.rules, grids.list, cases.list are reserved. 
 General layout of test scripts is shown on Figure 1.
 
-![](/devs_guide/tests/images/tests_image001.png "")
+@image html /dev_guides/tests/images/tests_image001.png
+@image latex /dev_guides/tests/images/tests_image001.png
 
 Figure 1. Layout of tests folder
 

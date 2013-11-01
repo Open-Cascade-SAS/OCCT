@@ -1,23 +1,57 @@
 User Guides {#user_guides}
 ===========
 
-\subpage user_guides__foundation_classes "user_guides__foundation_classes"
+## Foundation Classes
+**short description**
 
-\subpage user_guides__modeling_data "user_guides__modeling_data"
+\subpage user_guides__foundation_classes
 
-\subpage user_guides__modeling_algos "user_guides__modeling_algos"
+## Modeling Data
+**short description**
 
-\subpage user_guides__visualization "user_guides__visualization"
+\subpage user_guides__modeling_data
 
-\subpage user_guides__iges "user_guides__iges"
-\subpage user_guides__step "user_guides__step"
-\subpage user_guides__xde "user_guides__xde"
+## Modeling Algorithms
+**short description**
 
-\subpage user_guides__ocaf "user_guides__ocaf"
-\subpage user_guides__tobj "user_guides__tobj"
+\subpage user_guides__modeling_algos
 
-\subpage user_guides__shape_healing "user_guides__shape_healing"
+## Visualization
+**short description**
 
-\subpage user_guides__test_harness "user_guides__test_harness"
+\subpage user_guides__visualization
 
-\subpage user_guides__wok "user_guides__wok"
+## IGES Support
+**short description**
+
+\subpage user_guides__iges
+
+## STEP processor
+**short description**
+
+\subpage user_guides__step
+
+## Extended Data Exchange (XDE)
+**short description**
+
+\subpage user_guides__xde
+
+## OCAF
+**short description**
+
+\subpage user_guides__ocaf
+
+## TObj Package
+**short description**
+
+\subpage user_guides__tobj
+
+## Shape Healing
+**short description**
+
+\subpage user_guides__shape_healing
+
+## Draw Test Harness
+**short description**
+
+\subpage user_guides__test_harness

@@ -88,7 +88,7 @@ This License does not grant any rights to use the trademarks, trade names and do
 
 ### 11. Copyright
 
-The Initial Developer retains all rights, title and interest in and to the Original Code. You may not remove the copyright © notice which appears when You download the Software.
+The Initial Developer retains all rights, title and interest in and to the Original Code. You may not remove the copyright (c) notice which appears when You download the Software.
 
 
 ### 12. Term
@@ -133,7 +133,7 @@ Open CASCADE S.A.S. is a French société par actions simplifiée having its mai
 
 The content of this file is subject to the Open CASCADE Technology Public License Version 6.5 (the "License"). 
 You may not use the content of this file except in compliance with the License. 
-Please obtain a copy of the License at http://www.opencascade.org and read it completely before using this file. The Initial Developer of the Original Code is Open CASCADE S.A.S., with main offices at  1, place des Frères Montgolfier, 78280 Guyancourt, France. The Original Code is copyright © Open CASCADE S.A.S., 2001. All rights reserved.
+Please obtain a copy of the License at http://www.opencascade.org and read it completely before using this file. The Initial Developer of the Original Code is Open CASCADE S.A.S., with main offices at  1, place des Frères Montgolfier, 78280 Guyancourt, France. The Original Code is copyright (c) Open CASCADE S.A.S., 2001. All rights reserved.
 
 "The Original Code and all software distributed under the License are distributed on an "AS IS" basis, without warranty of any kind, and the Initial Developer hereby disclaims all such warranties, including without limitation, any warranties of merchantability, fitness for a particular purpose or non-infringement. 
 
@@ -146,9 +146,9 @@ Please see the License for the specific terms and conditions governing rights an
 
 #### Schedule "B"
 
-"The content of this file is subject to the Open CASCADE Technology Public License Version 6.5 (the "License"). You may not use the content of this file except in compliance with the License. Please obtain a copy of the License at http://www.opencascade.org and read it completely before using this file. The Initial Developer of the Original Code is Open CASCADE S.A.S., with main offices at  1, place des Frères Montgolfier, 78280 Guyancourt, France. The Original Code is copyright © Open CASCADE S.A.S., 2001. All rights reserved.
+"The content of this file is subject to the Open CASCADE Technology Public License Version 6.5 (the "License"). You may not use the content of this file except in compliance with the License. Please obtain a copy of the License at http://www.opencascade.org and read it completely before using this file. The Initial Developer of the Original Code is Open CASCADE S.A.S., with main offices at  1, place des Frères Montgolfier, 78280 Guyancourt, France. The Original Code is copyright (c) Open CASCADE S.A.S., 2001. All rights reserved.
 
-Modifications to the Original Code have been made by ________________________. Modifications are copyright © [Year to be included]. All rights reserved.
+Modifications to the Original Code have been made by ________________________. Modifications are copyright (c) [Year to be included]. All rights reserved.
 
 The software Open CASCADE Technology and all software distributed under the License are distributed on an "AS IS" basis, without warranty of any kind, and the Initial Developer hereby disclaims all such warranties, including without limitation, any warranties of merchantability, fitness for a particular purpose or non-infringement. Please see the License for the specific terms and conditions governing rights and limitations under the License".
 

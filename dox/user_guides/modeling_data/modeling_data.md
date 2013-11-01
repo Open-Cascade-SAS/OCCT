@@ -3,7 +3,7 @@ Modeling Data {#user_guides__modeling_data}
 
 @section occt_modat_1 Introduction
 
-Modeling Data supplies data structures to represent 2D and 3D geometric models. This manual explains how to use Modeling Data. For advanced information on modeling data, see our offerings on our web site at <a href="http://www.opencascade.org/support/training/">www.opencascade.org/support/training/</a>     
+Modeling Data supplies data structures to represent 2D and 3D geometric models. This manual explains how to use Modeling Data. For advanced information on modeling data, see our offerings on our web site at <a href="http://www.opencascade.org/support/training/">www.opencascade.org/support/training/</a>     
 
 
 
@@ -28,15 +28,16 @@ The class *PEquation* from  *GProp* package allows analyzng a collection or clou
 
 Packages *Geom2dAPI* and *GeomAPI* provide simple methods for approximation and interpolation with minimal programming
 
-2D Interpolation
-----------------
+#### 2D Interpolation
+
 The class *Interpolate* from *Geom2dAPI* package allows building a constrained 2D BSpline curve, defined by a table of points through which the curve passes. If required, the parameter values and vectors of the tangents can be given for each point in the table. 
 
-3D Interpolation
-----------------
+#### 3D Interpolation
+
 The class *Interpolate* from *GeomAPI* package allows building a constrained 3D BSpline curve, defined by a table of points through which the curve passes. If required, the parameter values and vectors of the tangents can be given for each point in the table. 
 
-![](/user_guides/modeling_data/images/modeling_data_image003.jpg "Approximation of a BSpline from scattered points")
+@image html /user_guides/modeling_data/images/modeling_data_image003.jpg "Approximation of a BSpline from scattered points"
+@image latex /user_guides/modeling_data/images/modeling_data_image003.jpg "Approximation of a BSpline from scattered points"
 
 This class may be instantiated as follows:
 ~~~~~ 
@@ -48,12 +49,12 @@ From this object, the BSpline curve may be requested as follows:
 Handle(Geom_BSplineCurve) C = Interp.Curve(); 
 ~~~~~
 
-2D Approximation
-----------------
+#### 2D Approximation
+
 The class *PointsToBSpline* from *Geom2dAPI* package allows building a 2DBSpline curve, which approximates a set of points. You have to define the lowest and highest degree of the curve, its continuity and a tolerance value for it.The tolerance value is used to check that points are not too close to each other, or tangential vectors not too small. The resulting BSpline curve will beC2 or second degree continuous, except where a tangency constraint is defined on a point through which the curve passes. In this case, it will be only C1continuous. 
 
-3D Approximation
----------------
+#### 3D Approximation
+
 The class *PointsToBSpline* from GeomAPI package allows building a 3D BSplinecurve, which approximates a set of points. It is necessary to define the lowest and highest degree of the curve, its continuity and tolerance. The tolerance value is used to check that points are not too close to each other,or that tangential vectors are not too small. 
 
 The resulting BSpline curve will be C2 or second degree continuous, except where a tangency constraint is defined on a point, through which the curve passes. In this case, it will be only C1 continuous. This class is instantiated as follows: 
@@ -68,23 +69,24 @@ From this object, the BSpline curve may be requested as follows:
 Handle(Geom_BSplineCurve) K = Approx.Curve(); 
 ~~~~~
 
-Surface Approximation 
----------------------
+#### Surface Approximation 
+
 The class **PointsToBSplineSurface** from GeomAPI package allows building a BSpline surface, which approximates or interpolates a set of points. 
 
 @subsubsection occt_modat_1_1_3 Advanced Approximation
 
 Packages *AppDef* and *AppParCurves* provide low-level functions, allowing more control over the approximations.
 
-Approximation by multiple point constraints
--------------------------------------------
+#### Approximation by multiple point constraints
+
 *AppDef* package provides low-level tools to allow parallel approximation of groups of points into Bezier or B-Spline curves using multiple point constraints. 
 
 The following low level services are provided: 
 * Definition of an array of point constraints:
 The class *MultiLine* allows defining a given number of multipoint constraints in order to build the multi-line, multiple lines passing through ordered multiple point constraints. 
 
-![](/user_guides/modeling_data/images/modeling_data_image004.jpg "Definition of a MultiLine using Multiple Point Constraints")
+@image html /user_guides/modeling_data/images/modeling_data_image004.jpg "Definition of a MultiLine using Multiple Point Constraints"
+@image latex /user_guides/modeling_data/images/modeling_data_image004.jpg "Definition of a MultiLine using Multiple Point Constraints"
 
 In this image:
   * *Pi*, *Qi*, *Ri* ... *Si* can be 2D or 3Dpoints. 
@@ -103,8 +105,8 @@ The class **BSplineCompute** allows making an approximation of a set of points t
 * Definition of Variational Criteria:
 The class *TheVariational* allows fairing the approximation curve to a given number of points using a least squares method in conjunction with a variational criterion, usually the weights at each constraint point. 
 
-Approximation by parametric or geometric constraints
-----------------------------------------------------
+#### Approximation by parametric or geometric constraints
+
 
 *AppParCurves* package provides low-level tools to allow parallel approximation of groups of points into Bezier or B-Spline curve with parametric or geometric constraints, such as a requirement for the curve to pass through given points, or to have a given tangency or curvature at a particular point. 
 
@@ -178,7 +180,6 @@ Each class from *gp* package, such as *Circ, Circ2d, Mirror, Mirror2d*, etc., ha
 
 It is possible to create a point using a *gce* package class, then question it to recover the corresponding *gp* object. 
 
-**Example ** 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
   gp_Pnt2d Point1,Point2; 
   ...
@@ -188,9 +189,8 @@ It is possible to create a point using a *gce* package class, then question it t
     gp_Lin2d l = L.Value(); 
   }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-This is useful if you are uncertain as to whether the arguments can create the *gp* object without raising an exception. In the case above, if *Point1* and *Point2* are closer than the tolerance value required by *MakeLin2d*, the function *Status* will return the enumeration *gce_ConfusedPoint*. This tells you why the *gp* object cannot be created. If you know that the points *Point1* and *Point2*are separated by the value exceeding the tolerance value, then you may create the *gp* object directly, as follows: 
 
-**Example ** 
+This is useful if you are uncertain as to whether the arguments can create the *gp* object without raising an exception. In the case above, if *Point1* and *Point2* are closer than the tolerance value required by *MakeLin2d*, the function *Status* will return the enumeration *gce_ConfusedPoint*. This tells you why the *gp* object cannot be created. If you know that the points *Point1* and *Point2* are separated by the value exceeding the tolerance value, then you may create the *gp* object directly, as follows: 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
 gp_Lin2d l = gce_MakeLin2d(Point1,Point2); 
@@ -254,18 +254,18 @@ The following characteristic points exist on parameterized curves in 3d space:
 - *UniformAbscissa* calculates a set of points at a given abscissa on a curve.
 - *UniformDeflection* calculates a set of points at maximum constant deflection between the curve and the polygon that results from the computed points. 
 
-Example: Visualizing a curve. 
------------------------------
+### Example: Visualizing a curve. 
+
 
 Let us take an adapted curve **C**, i.e. an object which is an interface between the services provided by either a 2D curve from the package Geom2d (in case of an Adaptor_Curve2d curve) or a 3D curve from the package Geom (in case of an Adaptor_Curve curve), and the services required on the curve by the computation algorithm. The adapted curve is created in the following way: 
 
-**case 2D:** 
+**2D case :** 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
   Handle(Geom2d_Curve) mycurve = ... ; 
   Geom2dAdaptor_Curve C (mycurve) ; 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**case 3D:** 
+**3D case :** 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
   Handle(Geom_Curve) mycurve = ... ; 
   GeomAdaptor_Curve C (mycurve) ; 
@@ -281,7 +281,7 @@ The algorithm is then constructed with this object:
   {
     Standard_Integer nbr = myAlgo.NbPoints() ; 
     Standard_Real param ; 
-     for ( Standard_Integer i = 1 ; i = nbr ; i++ ) 
+     for ( Standard_Integer i = 1 ; i = nbr ; i++ ) 
     { 
       param = myAlgo.Parameter (i) ; 
       ...
@@ -383,10 +383,10 @@ A surface (for two parameters U and V) has the following local properties:
 - Gaussian curvature
 
 The following methods are available:
-* *CLProps* - calculates the local properties of a curve (tangency, curvature,normal); 
-* *CurAndInf2d* - calculates the maximum and minimum curvatures and the inflection points of 2d curves; 
-* *SLProps* - calculates the local properties of a surface (tangency, the normal and curvature). 
-* *Continuity* - calculates regularity at the junction of two curves. 
+* *CLProps* - calculates the local properties of a curve (tangency, curvature,normal); 
+* *CurAndInf2d* - calculates the maximum and minimum curvatures and the inflection points of 2d curves; 
+* *SLProps* - calculates the local properties of a surface (tangency, the normal and curvature). 
+* *Continuity* - calculates regularity at the junction of two curves. 
 
 Note that the B-spline curve and surface are accepted but they are not cut into pieces of the desired continuity. It is the global continuity, which is seen. 
 
@@ -413,7 +413,8 @@ A local coordinate system can be viewed as either of the following:
 - *TopLoc_Datum3D* class provides the elementary reference coordinate, represented by a right-handed orthonormal system of axes or by a right-handed unitary transformation. 
 - *TopLoc_Location* class provides the composite reference coordinate made from elementary ones. It is a marker composed of a chain of references to elementary markers. The resulting cumulative transformation is stored in order to avoid recalculating the sum of the transformations for the whole list. 
 
-![](/user_guides/modeling_data/images/modeling_data_image005.jpg "Structure of TopLoc_Location")
+@image html /user_guides/modeling_data/images/modeling_data_image005.jpg "Structure of TopLoc_Location"
+@image latex /user_guides/modeling_data/images/modeling_data_image005.jpg "Structure of TopLoc_Location"
 
 Two reference coordinates are equal if they are made up of the same elementary coordinates in the same order. There is no numerical comparison. Two coordinates can thus correspond to the same transformation without being equal if they were not built from the same elementary coordinates. 
 
@@ -459,7 +460,8 @@ TopAbs contains the *TopAbs_ShapeEnum* enumeration,which lists the different top
 A topological model can be considered as a graph of objects with adjacency relationships. When modeling a part in 2D or 3D space it must belong to one of the categories listed in the ShapeEnum enumeration. The TopAbspackage lists all the objects, which can be found in any model. It cannot be extended but a subset can be used. For example, the notion of solid is useless in 2D. 
 
 The terms of the enumeration appear in order from the most complex to the most simple, because objects can contain simpler objects in their description. For example, a face references its wires, edges, and vertices. 
-![](/user_guides/modeling_data/images/modeling_data_image006.jpg "ShapeEnum")
+@image html /user_guides/modeling_data/images/modeling_data_image006.jpg "ShapeEnum"
+@image latex /user_guides/modeling_data/images/modeling_data_image006.jpg "ShapeEnum"
 
 @subsubsection occt_modat_5_2_2 Orientation
 
@@ -478,21 +480,23 @@ For a space limited by a face the default region is found on the negative side o
 
 Based on this default region the orientation allows definition of the region to be kept, which is called the *interior* or *material*. There are four orientations defining the interior. 
 
-|FORWARD	| The interior is the default region.|
-|REVERSED	| The interior is the region complementary to the default.|
-|INTERNAL	| The interior includes both regions. The boundary lies inside the material. For example a surface inside a solid.|
-|EXTERNAL	| The interior includes neither region. The boundary lies outside the material. For example an edge in a wire-frame model.|
+| FORWARD	| The interior is the default region. |
+| REVERSED	| The interior is the region complementary to the default. |
+| INTERNAL	| The interior includes both regions. The boundary lies inside the material. For example a surface inside a solid. |
+| EXTERNAL	| The interior includes neither region. The boundary lies outside the material. For  example an edge in a wire-frame model. |
 
-![](/user_guides/modeling_data/images/modeling_data_image007.jpg "Four Orientations")
+@image html /user_guides/modeling_data/images/modeling_data_image007.jpg "Four Orientations"
+@image latex /user_guides/modeling_data/images/modeling_data_image007.jpg "Four Orientations"
 
 The notion of orientation is a very general one, and it can be used in any context where regions or boundaries appear. Thus, for example, when describing the intersection of an edge and a contour it is possible to describe not only the vertex of intersection but also how the edge crosses the contour considering it as a boundary. The edge would therefore be divided into two regions - exterior and interior - with the intersection vertex as the boundary. Thus an orientation can be associated with an intersection vertex as in the following figure: 
 
-|FORWARD 	| Entering |
-|REVERSED 	| Exiting |
-|INTERNAL 	| Touching from inside |
-|EXTERNAL 	| Touching from outside |
+| FORWARD 	| Entering |
+| REVERSED 	| Exiting |
+| INTERNAL 	| Touching from inside |
+| EXTERNAL 	| Touching from outside |
 
-![](/user_guides/modeling_data/images/modeling_data_image008.jpg "Four orientations of intersection vertices")
+@image html /user_guides/modeling_data/images/modeling_data_image008.jpg "Four orientations of intersection vertices"
+@image latex /user_guides/modeling_data/images/modeling_data_image008.jpg "Four orientations of intersection vertices"
 
 
 Along with the Orientation enumeration the *TopAbs* package defines four methods: 
@@ -500,17 +504,21 @@ Along with the Orientation enumeration the *TopAbs* package defines four methods
 @subsubsection occt_modat_5_2_3 State
 
 The **TopAbs_State** enumeration described the position of a vertex or a set of vertices with respect to a region. There are four terms: 
-|IN        | The point is interior. |
-|OUT       | The point is exterior. |
-|ON        | The point is on the boundary(within tolerance). |
-|UNKNOWN   | The state of the point is indeterminate. |
+
+|IN        | The point is interior. |
+|OUT       | The point is exterior. |
+|ON        | The point is on the boundary(within tolerance). |
+|UNKNOWN   | The state of the point is indeterminate. |
+
 The UNKNOWN term has been introduced because this enumeration is often used to express the result of a calculation, which can fail. This term can be used when it is impossible to know if a point is inside or outside, which is the case with an open wire or face. 
 
-![](/user_guides/modeling_data/images/modeling_data_image009.jpg "The four states")
+@image html /user_guides/modeling_data/images/modeling_data_image009.jpg "The four states"
+@image latex /user_guides/modeling_data/images/modeling_data_image009.jpg "The four states"
 
 The State enumeration can also be used to specify various parts of an object. The following figure shows the parts of an edge intersecting a face. 
 
-![](/user_guides/modeling_data/images/modeling_data_image010.jpg  "State specifies the parts of an edge intersecting a face")
+@image html /user_guides/modeling_data/images/modeling_data_image010.jpg  "State specifies the parts of an edge intersecting a face"
+@image latex /user_guides/modeling_data/images/modeling_data_image010.jpg  "State specifies the parts of an edge intersecting a face"
 
 @subsection occt_modat_5_3 Manipulating shapes and sub-shapes
 
@@ -534,11 +542,13 @@ The **TopoDS_Shape** class describes a reference to a shape. It contains a refer
 
 The class representing the underlying abstract shape is never referenced directly. The *TopoDS_Shape* class is always used to refer to it. 
 
-The information specific to each shape (the geometric support) is always added by inheritance to classes deriving from **TopoDS_TShape**.The following figures show the example of a shell formed from two faces connected by an edge. 
+The information specific to each shape (the geometric support) is always added by inheritance to classes deriving from **TopoDS_TShape**. The following figures show the example of a shell formed from two faces connected by an edge. 
 
-![](/user_guides/modeling_data/images/modeling_data_image011.jpg "Structure of a shell formed from two faces")
+@image html /user_guides/modeling_data/images/modeling_data_image011.jpg "Structure of a shell formed from two faces"
+@image latex /user_guides/modeling_data/images/modeling_data_image011.jpg "Structure of a shell formed from two faces"
 
-![](/user_guides/modeling_data/images/modeling_data_image012.jpg "Data structure of the above shell")
+@image html /user_guides/modeling_data/images/modeling_data_image012.jpg "Data structure of the above shell"
+@image latex /user_guides/modeling_data/images/modeling_data_image012.jpg "Data structure of the above shell"
 
 In the previous diagram, the shell is described by the underlying shape TS, and the faces by TF1 and TF2. There are seven edges from TE1 to TE7 and six vertices from TV1 to TV6. 
 
@@ -555,7 +565,8 @@ The compact data structure avoids the loss of information associated with copy o
 The following figure shows a data structure containing two versions of a solid. The second version presents a series of identical holes bored at different positions. The data structure is compact and yet keeps all information on the sub-elements. 
 
 The three references from *TSh2* to the underlying face *TFcyl* have associated local coordinate systems, which correspond to the successive positions of the hole. 
-![](/user_guides/modeling_data/images/modeling_data_image013.jpg "Data structure containing two versions of a solid")
+@image html /user_guides/modeling_data/images/modeling_data_image013.jpg "Data structure containing two versions of a solid"
+@image latex /user_guides/modeling_data/images/modeling_data_image013.jpg "Data structure containing two versions of a solid"
 
 Classes inheriting TopoDS_Shape
 ------------------------------
@@ -578,7 +589,6 @@ There are no constructors for the classes inheriting from the *TopoDS_Shape* cla
 The following example shows a routine receiving an argument of the *TopoDS_Shape* type, then putting it into a variable V if it is a vertex or calling the method ProcessEdge if it is an edge. 
 
 
-**Example** 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
   #include TopoDS_Vertex.hxx 
   #include TopoDS_Edge.hxx 
@@ -621,7 +631,7 @@ The TopExp package provides the class *TopExp_Explorer* to find all sub-objects 
 
 The Explorer visits the whole structure in order to find the shapes of the requested type not contained in the type to avoid. The example below shows  how to find all faces in the shape *S*: 
 
-**Example** 
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
   void test() { 
     TopoDS_Shape S; 
@@ -632,18 +642,15 @@ The Explorer visits the whole structure in order to find the shapes of the reque
   } 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To find all the vertices which are not in an edge: 
+Find all the vertices which are not in an edge 
 
-**Example ** 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
 for (Ex.Init(S,TopAbs_VERTEX,TopAbs_EDGE); ...) 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-To find all the faces in a SHELL, then all the faces not in a SHELL: 
+Find all the faces in a SHELL, then all the faces not in a SHELL: 
 
-
-**Example **
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
   void test() { 
@@ -665,7 +672,7 @@ To find all the faces in a SHELL, then all the faces not in a SHELL:
   }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The Explorer presumes that objects contain only objects of an equal or inferior type. For example, if searching for faces it does not lookat wires, edges, or vertices to see if they contain faces. 
+The Explorer presumes that objects contain only objects of an equal or inferior type. For example, if searching for faces it does not look at wires, edges, or vertices to see if they contain faces. 
 
 The *MapShapes* method from *TopExp* package allows filling a Map. An exploration using the Explorer class can visit an object more than once if it is referenced more than once. For example, an edge of a solid is generally referenced by two faces. To process objects only once, they have to be placed in a Map. 
 
@@ -686,10 +693,10 @@ The *MapShapes* method from *TopExp* package allows filling a Map. An exploratio
 In the following example all  faces and all  edges of an object are drawn in accordance with the following rules: 
 - The faces are represented by a network of *NbIso* iso-parametric lines with *FaceIsoColor* color. 
 - The edges are drawn in a color, which indicates the number of faces sharing the edge:
-1. FreeEdgeColor for edges, which do not belong to a face (i.e. wireframe element). 
-2. BorderEdgeColor for an edge belonging to a single face. 
-3. SharedEdgeColor for an edge belonging to more than one face. 
-- The methods **DrawEdge** and **DrawFaceIso** are also available to display individual edges and faces. 
+	- *FreeEdgeColor* for edges, which do not belong to a face (i.e. wireframe element). 
+	- *BorderEdgeColor* for an edge belonging to a single face. 
+	- *SharedEdgeColor* for an edge belonging to more than one face. 
+- The methods *DrawEdge* and *DrawFaceIso* are also available to display individual edges and faces. 
 
 The following steps are performed: 
 1. Storing the edges in a map and create in parallel an array of integers to count the number of faces sharing the edge. This array is initialized to zero. 
@@ -697,8 +704,6 @@ The following steps are performed:
 3. Exploring the edges and for each of them increment the counter of faces in the array. 
 4. From the Map of edges, drawing each edge with the color corresponding to the number of faces. 
 
-
-**Example ** 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
   void DrawShape ( const TopoDS_Shape&amp; aShape, 
   const Standard_Integer nbIsos, 
@@ -754,10 +759,10 @@ The following steps are performed:
 | *TopTools_MapOfShape* |	Instantiation of the *TCollection_Map*. Allows the construction of sets of shapes. |
 | *TopTools_IndexedMapOfShape* |	Instantiation of the *TCollection_IndexedMap*. Allows the construction of tables of shapes and other data structures. |
 
-With a **TopTools_Map**, a set of references to Shapes can be kept without duplication. 
-The following example program counts the size of a data structure as a number of TShapes. 
+With a *TopTools_Map*, a set of references to Shapes can be kept without duplication. 
+The following example counts the size of a data structure as a number of *TShapes*. 
 
-**Example ** 
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
   #include TopoDS_Iterator.hxx 
   Standard_Integer Size(const TopoDS_Shape&amp; aShape) 
@@ -774,11 +779,10 @@ The following example program counts the size of a data structure as a number of
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This program is incorrect if there is sharing in the data structure. 
-Thus for a contour of four edges it should count 1 wire + 4 edges +4 vertices 
-with the result 9, but as the vertices are each shared by two edges this program will return 13. 
-One solution is to put all the Shapes in a Map so as to avoid counting them twice, as in the following example: 
 
-**Example ** 
+Thus for a contour of four edges it should count 1 wire + 4 edges +4 vertices with the result 9, but as the vertices are each shared by two edges this program will return 13. One solution is to put all the Shapes in a Map so as to avoid counting them twice, as in the following example: 
+
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
   #include TopoDS_Iterator.hxx 
   #includeTopTools_MapOfShape.hxx 
@@ -805,14 +809,12 @@ One solution is to put all the Shapes in a Map so as to avoid counting them twic
   }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Note** For more details about Maps see the TCollection documentation.(Foundation Classes Reference Manual) 
+**Note** For more details about Maps please, refer to the TCollection documentation. (Foundation Classes Reference Manual) 
 
-The following example is more ambitious and writes a program which copies a data structure using an IndexedMap. The copy is an identical structure but it shares nothing with the original. The principal algorithm is as follows: 
-- All Shapes in the structure are put into an IndexedMap. 
+The following example is more ambitious and writes a program which copies a data structure using an *IndexedMap*. The copy is an identical structure but it shares nothing with the original. The principal algorithm is as follows: 
+- All Shapes in the structure are put into an *IndexedMap*. 
 - A table of Shapes is created in parallel with the map to receive the copies. 
 - The structure is copied using the auxiliary recursive function,which copies from the map to the array. 
-
-**Example ** 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
   #include TopoDS_Shape.hxx 
@@ -847,11 +849,11 @@ The following example is more ambitious and writes a program which copies a data
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-In the above example, the index *i* is that of the first object not treated in the Map. When *i* reaches the same size as the Map this means that everything has been treated. The treatment consists of inserting in the Map all the sub-objects, if they are not yet in the Map, they are inserted with an index greater than *i*. 
+In the above example, the index *i* is that of the first object not treated in the Map. When *i* reaches the same size as the Map this means that everything has been treated. The treatment consists in inserting in the Map all the sub-objects, if they are not yet in the Map, they are inserted with an index greater than *i*. 
 
 **Note** that the objects are inserted with a local reference set to the identity and a FORWARD orientation. Only the underlying TShape is of great interest.
 
-**Example ** 
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
   //Create an array to store the copies. 
   TopTools_Array1OfShapetheCopies(1,theMap.Extent());
@@ -873,7 +875,7 @@ In the above example, the index *i* is that of the first object not treated in t
 
 Below is the auxiliary function, which copies the element of rank *i* from the map to the table. This method checks if the object has been copied; if not copied, then an empty copy is performed into the table and the copies of all the sub-elements are inserted by finding their rank in the map. 
 
-**Example ** 
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
   void AuxiliaryCopy(Standard_Integer index, 
   const TopTools_IndexedMapOfShapes&amp;sources, 
@@ -904,12 +906,11 @@ BRepTools_WireExplorer class can access edges of a wire in their order of connec
 
 For example, in the wire in the image we want to recuperate the edges in the order {e1, e2, e3,e4, e5} :
 
-![](/user_guides/modeling_data/images/modeling_data_image014.jpg "A wire composed of 6 edges.")
+@image html /user_guides/modeling_data/images/modeling_data_image014.jpg "A wire composed of 6 edges."
+@image latex /user_guides/modeling_data/images/modeling_data_image014.jpg "A wire composed of 6 edges.
 
-TopExp_Explorer, however, recuperates the lines in any order.
+*TopExp_Explorer*, however, recuperates the lines in any order.
  
-**Example ** 
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
   TopoDS_Wire W = ...; 
   BRepTools_WireExplorer Ex; 

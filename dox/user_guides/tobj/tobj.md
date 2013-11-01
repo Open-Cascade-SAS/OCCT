@@ -1,10 +1,11 @@
 TObj Package  {#user_guides__tobj}
 ==================
  
-@section occt_1746122829_591811643 Introduction
+@section occt_tobj_1 Introduction
 
 This document describes the package TObj, which is an add-on 
 to the Open CASCADE Application Framework (OCAF).
+
 This package provides a set of classes and auxiliary tools facilitating 
 the creation of object-oriented data models on top of low-level OCAF data structures. 
 This includes: 
@@ -17,42 +18,36 @@ This includes:
 This document describes basic principles of logical and physical organization 
 of TObj-based data models and typical approaches to implementation of classes representing model objects.
 
-@subsection occt_1746122829_5918116431 Applicability
+@subsection occt_tobj_1_1 Applicability
 
 The main purpose of the *TObj* data model is rapid development 
 of the object-oriented data models for applications, using the existing 
 functionality provided by OCAF (Undo/Redo and persistence) 
 without the necessity to re-develop such functionality from scratch.
+
 As opposed to using bare OCAF (at the level of labels and attributes), 
 TObj facilitates dealing with higher level abstracts, which are closer 
 to the application domain. It works best when the application data are naturally 
 organized in hierarchical structures, and is especially useful for complex data 
 models with dependencies between objects belonging to different parts of the model.
+
 It should be noted that *TObj* is efficient for representing data structures containing 
 a limited number of objects at each level of the data structure (typically less than 1000).
-A greater number of objects causes performance problems due to list-based organization of OCAF documents.
-Therefore, other methods of storage, such as arrays, are advisable for data models or their 
-sub-parts containing a great number of uniform objects. However, these methods 
+A greater number of objects causes performance problems due to list-based organization of OCAF documents. Therefore, other methods of storage, such as arrays, are advisable for data models or their sub-parts containing a great number of uniform objects. However, these methods 
 can be combined with the usage of *TObj* to represent the high-level structure of the model.
 
-@section occt_1746122829_361293797 *TObj* Model
+@section occt_tobj_2 *TObj* Model
 
-@subsection occt_1746122829_3612937971 *TObj* Model structure
+@subsection occt_tobj_2_1 *TObj* Model structure
 
 In the *TObj* data model the data are separated from the interfaces that manage them.
-It should be emphasized that *TObj* package defines only the interfaces and the basic structure of the model and objects, 
-while the actual contents and structure of the model of a particular application 
-are defined by its specific classes inherited from *TObj* classes. The 
-implementation can add its own features or even change the default behaviour 
-and the data layout, though this is not recommended. Logically the *TObj* data model is represented as a tree of model 
-objects, with upper-level objects typically being collections of other objects 
-(called *partitions*, represented by the class *TObj_Partition*). The root object of the model 
-is called the *Main partition* and is maintained by the model itself. This partition contains a list 
-of sub-objects called its *children* each sub-object may contain its own children (according to its type), etc. 
 
-![](/user_guides/tobj/images/tobj_image003.png)
+It should be emphasized that *TObj* package defines only the interfaces and the basic structure of the model and objects, while the actual contents and structure of the model of a particular application are defined by its specific classes inherited from *TObj* classes. The implementation can add its own features or even change the default behaviour and the data layout, though this is not recommended. 
 
-Picture 1 *TObj* Data Model 
+Logically the *TObj* data model is represented as a tree of model objects, with upper-level objects typically being collections of other objects (called *partitions*, represented by the class *TObj_Partition*). The root object of the model is called the *Main partition* and is maintained by the model itself. This partition contains a list of sub-objects called its *children* each sub-object may contain its own children (according to its type), etc. 
+
+@image html /user_guides/tobj/images/tobj_image003.png "TObj Data Model" 
+@image latex /user_guides/tobj/images/tobj_image003.png "TObj Data Model" 
 
 As the *TObj* Data Model is based on OCAF (Open CASCADE Application Framework) technology, 
 it stores its data in the underlying OCAF document. The OCAF document consists of a tree of 
@@ -65,11 +60,11 @@ of the label, which uniquely identifies its position in the document.
 Generally the structure of the OCAF tree of the *TObj* data 
 model corresponds to the logical structure of the model and can be presented as in the following picture: 
 
-![](/user_guides/tobj/images/tobj_image004.jpg)
+@image html /user_guides/tobj/images/tobj_image004.jpgb "TObj Data Model mapped on OCAF document" 
+@image latex /user_guides/tobj/images/tobj_image004.jpg "TObj Data Model mapped on OCAF document" 
 
-Picture 2 *TObj* Data Model mapped on OCAF document 
 All data of the model are stored in the root label (0:1) of the OCAF document. 
-An attribute TObj_TModel is located in this root label. It 
+An attribute *TObj_TModel* is located in this root label. It 
 stores the object of type *TObj_Model*. This object serves as a main interface tool 
 to access all data and functionalities of the data model.
 
@@ -83,7 +78,7 @@ where the objects of the child models can refer to the objects of the parent
 models, not vice-versa. Provided that the correct order of loading and closing 
 of the models is ensured, the *TObj* classes will maintain references between the objects automatically.
 
-@subsection occt_1746122829_3612937972 Data Model basic features
+@subsection occt_tobj_2_2 Data Model basic features
 
 The class *TObj_Model* describing the data model provides the following functionalities: 
 
@@ -97,7 +92,7 @@ The class *TObj_Model* describing the data model provides the following function
   * Interface to check and update the model if necessary (method *Update*)
   * Support of several data models in one application. For this feature use OCAF multi-transaction manager, unique names and GUIDs of the data model (methods *GetModelName*, *GetGUID*)
 
-@subsection occt_1746122829_3612937973 Model Persistence
+@subsection occt_tobj_2_3 Model Persistence
 
 The persistent representation of any OCAF model is contained in an XML or a binary file, 
 which is defined by the format string returned by the method *GetFormat*. 
@@ -105,18 +100,18 @@ The default implementation works with a binary OCAF document format (*BinOcaf*).
 The other available format is *XmlOcaf*. The class **TObj_Model** declares and provides a default 
 implementation of two virtual methods: 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~~{.cpp}
     virtual Standard_Boolean Load (const char* theFile); 
     virtual Standard_Boolean SaveAs (const char* theFile); 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~
 
 which retrieve and store the model from or 
 in the OCAF file. The descendants 
 should define the following protected method to support Load and Save operations:
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~~{.cpp}
     virtual Standard_Boolean initNewModel (const Standard_Boolean IsNew); 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~
 
 This method is called by *Load* after creation of a new model 
 or after its loading from the file; its purpose is to perform 
@@ -139,6 +134,7 @@ Such fields can be stored into OCAF attributes for saving into persistent storag
 
 To avoid memory leaks, the *TObj_Model* class destructor invokes *Close* method 
 which clears the OCAF document and removes all data from memory before the model is destroyed.
+
 For XML and binary persistence of the *TObj* data model the corresponding drivers are implemented 
 in *BinLDrivers*, *BinMObj* and *XmlLDrivers*, *XmlMObj* packages. 
 These packages contain retrieval and storage drivers for the model, model objects and custom attributes 
@@ -148,39 +144,39 @@ in some cases it can be reasonable to add specific OCAF attributes to
 facilitate the storage of the data specific to the application. 
 In this case the schema should be extended using the standard OCAF mechanism. 
 
-@subsection occt_1746122829_3612937974 Access to the objects in the model
+@subsection occt_tobj_2_4 Access to the objects in the model
 
 All objects in the model are stored in the main partition and accessed by iterators.
 To access all model objects use: 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~~{.cpp}
     virtual Handle(TObj_ObjectIterator) GetObjects () const; 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~
 
 This method returns a recursive iterator on all objects stored in the model.
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~~{.cpp}
     virtual Handle(TObj_ObjectIterator) GetChildren () const; 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~
 
 This method returns an iterator on child objects of the main partition.
 Use the following method to get the main partition: 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~~{.cpp}
     Handle(TObj_Partition) GetMainPartition() const; 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~
 
 To receive the iterator on objects of a specific type *AType* use the following call: 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~~{.cpp}
     GetMainPartition()-&gt;GetChildren(STANDARD_TYPE(AType) ); 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~
 
 The set of protected methods is provided for descendant classes to deal with partitions: 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
-    virtual Handle(TObj_Partition) getPartition (const TDF_Label, const Standard_Boolean  theHidden) const; 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~{.cpp}
+    virtual Handle(TObj_Partition) getPartition (const TDF_Label, const Standard_Boolean  theHidden) const; 
+~~~~~
 
 This method returns (creating if necessary) a partition in the specified label of the document. 
 The partition can be created as hidden (*TObj_HiddenPartition* class). 
@@ -191,19 +187,19 @@ The following two methods allow getting (creating) a partition
 in the sub-label of the specified label in the document 
 (the label of the main partition for the second method) and with the given name: 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
-    virtual Handle(TObj_Partition) getPartition (const TDF_Label, const Standard_Integer theIndex, const TCollection_ExtendedString& theName, const Standard_Boolean  theHidden) const; 
-    virtual Handle(TObj_Partition) getPartition (const Standard_Integer theIndex, const TCollection_ExtendedString& theName, const Standard_Boolean  theHidden) const; 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~{.cpp}
+    virtual Handle(TObj_Partition) getPartition (const TDF_Label, const Standard_Integer theIndex, const TCollection_ExtendedString& theName, const Standard_Boolean  theHidden) const; 
+    virtual Handle(TObj_Partition) getPartition (const Standard_Integer theIndex, const TCollection_ExtendedString& theName, const Standard_Boolean  theHidden) const; 
+~~~~~
 
 If the default object naming and the name register mechanism 
 is turned on, the object can be found in the model by its unique name: 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~~{.cpp}
     Handle(TObj_Object) FindObject (const Handle(TCollection_HExtendedString)& theName, const Handle(TObj_TNameContainer)& theDictionary) const; 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~
 
-@subsection occt_1746122829_3612937975 Own model data
+@subsection occt_tobj_2_5 Own model data
 
 The model object can store its own data in the Data label 
 of its main partition, however, there is no standard API for 
@@ -212,7 +208,7 @@ their own data using standard OCAF methods. The enumeration DataTag is defined
 in *TObj_Model* to avoid conflict of data labels used by this class 
 and its descendants, similarly to objects (see below). 
 
-@subsection occt_1746122829_3612937976 Object naming
+@subsection occt_tobj_2_6 Object naming
 
 The basic implementation of *TObj_Model* provides the default 
 naming mechanism: all objects must have unique names, 
@@ -226,31 +222,31 @@ To ignore name registering it is necessary to redefine the methods *SetName*,
 *AfterRetrieval* of the *TObj_Object* class and skip the registration of the object name. 
 Use the following methods for the naming mechanism: 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~~{.cpp}
     Standard_Boolean IsRegisteredName (const Handle(TCollection_HExtendedString)& theName, const Handle(TObj_TNameContainer)& theDictionary ) const; 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~
 
 Returns **True** if the object name is already registered in the indicated (or model) dictionary. 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~~{.cpp}
     void RegisterName (const Handle(TCollection_HExtendedString)& theName, const TDF_Label& theLabel, const Handle(TObj_TNameContainer)& theDictionary ) const; 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~
 
 Registers the object name with the indicated label where the object 
 is located in the OCAF document. Note that the default implementation 
 of the method *SetName* of the object registers the new name automatically 
 (if the name is not yet registered for any other object) 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~~{.cpp}
     void UnRegisterName (const Handle(TCollection_HExtendedString)& theName, const Handle(TObj_TNameContainer)& theDictionary ) const; 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~
 
 Unregisters the name from the dictionary. Ther names of *TObj* model 
 objects are removed from the dictionary when the objects are deleted from the model. 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~~~{.cpp}
     Handle(TObj_TNameContainer) GetDictionary() const; 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~
 
 Returns a default instance of the model dictionary (located at the model root label). 
 The default implementation works only with one dictionary. 
@@ -258,7 +254,7 @@ If there are a necessity to have more than one dictionary for the model objects,
 it is recommended to redefine the corresponding virtual method of TObj_Object 
 that returns the dictionary where names of objects should be registered.
 
-@subsection occt_1746122829_3612937977 API for transaction mechanism
+@subsection occt_tobj_2_7 API for transaction mechanism
 
 Class *TObj_Model* provides the API for transaction mechanism (supported by OCAF): 
 
@@ -299,7 +295,7 @@ Returns True if the model document has a modified status (has changes after the 
 Changes the modified status by force. For synchronization of transactions 
 within several *TObj_Model* documents use class *TDocStd_MultiTransactionManager*. 
 
-@subsection occt_1746122829_3612937978 Model format and version
+@subsection occt_tobj_28 Model format and version
 
 Class *TObj_Model* provides the descendant classes with a means to control 
 the format of the persistent file by choosing the schema used to store or retrieve operations. 
@@ -355,7 +351,7 @@ for the changes of data stored in the model, not for the changes of
 low-level format of data files (such as the storage format of a specific OCAF attribute). 
 If the format of data files changes, a specific treatment on a case-by-case basis will be required. 
 
-@subsection occt_1746122829_3612937979 Model update
+@subsection occt_tobj_2_9 Model update
 
 The following methods are used for model update to ensure its consistency 
 with respect to the other models in case of cross-model dependencies: 
@@ -381,7 +377,7 @@ This method is called from the previous method to update back references
 of the indicated object after the retrieval of the model from file 
 (see data model - object relationship chapter for more details) 
 
-@subsection occt_1746122829_36129379710 Model copying
+@subsection occt_tobj_2_10 Model copying
 
 To copy the model between OCAF documents use the following methods: 
 
@@ -405,7 +401,7 @@ Redefines a pure virtual method to create a new empty instance of the model.
 
 Copies the references from the current model to the target model. 
 
-@subsection occt_1746122829_36129379711 Messaging
+@subsection occt_tobj_2_11 Messaging
 
 The messaging is organised using Open CASCADE Messenger from the package Message. 
 The messenger is stored as the field of the model instance 
@@ -425,38 +421,40 @@ All message keys are stored in a special resource file TObj.msg.
 This file should be loaded at the start of the application 
 by call to the appropriate method of the class *Message_MsgFile*. 
 
-@section occt_1746122829_87267338 Model object
+@section occt_tobj_3 Model object
 
 Class *TObj_Object* provides basic interface and default implementation 
 of important features of *TObj* model objects. This implementation defines 
 basic approaches that are recommended for all descendants, 
 and provides tools to facilitate their usage. 
 
-![](/user_guides/tobj/images/tobj_image005.png)
+@image html /user_guides/tobj/images/tobj_image005.png "TObj objects hierarchy" 
+@image latex /user_guides/tobj/images/tobj_image005.png "TObj objects hierarchy" 
 
-Picture 3 *TObj* objects hierarchy 
-
-@subsection occt_1746122829_872673381 Separation of data and interface
+@subsection occt_tobj_3_1 Separation of data and interface
 
 In the *TObj* data model, the data are separated from the interfaces that manage them. 
 The data belonging to a model object are stored in its root label and sub-labels 
 in the form of standard OCAF attributes. This allows using standard OCAF mechanisms 
 for work with these data, and eases the implementation of the persistence mechanism. 
+
 The instance of the interface which serves as an API for managing object data 
 (e.g. represents the model object) is stored in the root label of the object, 
 and typically does not bring its own data. The interface classes are organized in a hierarchy 
 corresponding to the natural hierarchy of the model objects according to the application. 
+
 In the text below the term 'object' is used to denote either the instance 
 of the interface class or the object itself (both interface and data stored in OCAF). 
+
 The special type of attribute *TObj_TObject* is used for storing instances of objects interfaces 
 in the OCAF tree. *TObj_TObject* is a simple container for the object of type *TObj_Object*. 
-All objects (interfaces) of the data model  inherit this class. 
+All objects (interfaces) of the data model  inherit this class. 
 
-![](/user_guides/tobj/images/tobj_image006.png)
+@image html /user_guides/tobj/images/tobj_image006.png "*TObj* object stored on OCAF label" 
+@image latex /user_guides/tobj/images/tobj_image006.png "*TObj* object stored on OCAF label"
 
-Picture 4 *TObj* object stored on OCAF label 
 
-@subsection occt_1746122829_872673382 Basic features
+@subsection occt_tobj_3_2 Basic features
 
 The *TObj_Object* class provides some basic features that can be inherited (or, if necessary, redefined) by the descendants: 
 
@@ -464,12 +462,12 @@ The *TObj_Object* class provides some basic features that can be inherited (or, 
   * Supports references (and back references) to other objects in the same or in another model (methods *getReference*, *setReference*, *addReference*, *GetReferences*, *GetBackReferences*, *AddBackReference*, *RemoveBackReference*, *ReplaceReference*)
   * Provides the ability to contain child objects, as it is actual for partition objects (methods *GetChildren*, *GetFatherObject*)
   * Organizes its data in the OCAF structure by separating the sub-labels of the main label intended for various kinds of data and providing tools to organize these data (see <a href="../../../../Documents%20and%20Settings/TEMP/obj-inher">below</a>). The kinds of data stored separately are: 
-  * Child objects stored in the label returned by the method *GetChildLabel* 
-  * References to other objects stored in the label returned by the method* GetReferenceLabel* 
-  * Other data, both common to all objects and specific for each subtype of the model object, are stored in the label returned by the method *GetDataLabel* 
+	  * Child objects stored in the label returned by the method *GetChildLabel* 
+	  * References to other objects stored in the label returned by the method* GetReferenceLabel* 
+	  * Other data, both common to all objects and specific for each subtype of the model object, are stored in the label returned by the method *GetDataLabel* 
   * Provides unique names of all objects in the model (methods *GetDictionary*, *GetName*, *SetName*)
   * Provides unified means to maintain persistence (implemented in descendants with the help of macros *DECLARE_TOBJOCAF_PERSISTENCE* and *IMPLEMENT_TOBJOCAF_PERSISTENCE*)
-  * Allows an object to remove itself from the OCAF document and check the depending objects can be deleted according to the  back references (method *Detach*)
+  * Allows an object to remove itself from the OCAF document and check the depending objects can be deleted according to the  back references (method *Detach*)
   * Implements methods for identification and versioning of objects 
   * Manages the object interaction with OCAF Undo/Redo mechanism (method *IsAlive*, *AfterRetrieval*, *BeforeStoring*)
   * Allows make a clone (methods *Clone*, *CopyReferences*, *CopyChildren*, *copyData*)
@@ -483,7 +481,7 @@ An object can be received from the model by the following methods:
     static Standard_Boolean GetObj ( const TDF_Label& theLabel, Handle(TObj_Object)& theResObject, const Standard_Boolean isSuper = Standard_False ); 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Returns **True** if the object has been found in the indicated label (or in the upper level label if isSuper is **True)**. 
+Returns *True* if the object has been found in the indicated label (or in the upper level label if *isSuper* is *True*). 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
     Handle(TObj_Object) GetFatherObject ( const Handle(Standard_Type)& theType = NULL ) const; 
@@ -492,13 +490,14 @@ Returns **True** if the object has been found in the indicated label (or in the 
 Returns the father object of the indicated type 
 for the current object (the direct father object if the type is NULL). 
 
-@subsection occt_1746122829_872673383 Data layout and inheritance
+@subsection occt_tobj_3_3 Data layout and inheritance
 
 As far as the data objects are separated from the interfaces and stored in the OCAF tree, 
 the functionality to support inheritance is required. Each object has its own data 
 and references stored in the labels in the OCAF tree. All data are stored in the sub-tree 
 of the main object label. If it is necessary to inherit a class from the base class, 
 the descendant class should use different labels for data and references than its ancestor. 
+
 Therefore each *TObj* class can reserve the range of tags in each of 
 *Data*, *References*, and *Child* sub-labels. 
 The reserved range is declared by the enumeration defined 
@@ -522,6 +521,7 @@ The second argument, theRank2, allows accessing the next level of hierarchy
 (theRank2-th sub-label of theRank1-th data label). 
 This is useful when the data to be stored are represented by multiple OCAF attributes 
 of the same type (e.g. sequences of homogeneous data or references). 
+
 The get/set methods allow easily accessing the data located in the specified data label 
 for the most widely used data types (*Standard_Real*, *Standard_Integer*, *TCollection_HExtendedString*,
  *TColStd_HArray1OfReal*, *TColStd_HArray1OfInteger*, *TColStd_HArray1OfExtendedString*). 
@@ -549,13 +549,14 @@ Note that while references to other objects should be defined by descendant clas
 individually according to the type of object, *TObj_Object* provides methods 
 to manipulate (check, remove, iterate) the existing references in the uniform way, as described below. 
 
-@subsection occt_1746122829_872673384 Persistence
+@subsection occt_tobj_3_4 Persistence
 
 The persistence of the *TObj* Data Model is implemented with the help 
 of standard OCAF mechanisms (a schema defining necessary plugins, drivers, etc.). 
 This implies the possibility to store/retrieve all data that are stored 
 as standard OCAF attributes., The corresponding handlers are added 
 to the drivers for *TObj*-specific attributes. 
+
 The special tool is provided for classes inheriting from *TObj_Object* 
 to add the new types of persistence without regeneration of the OCAF schema. 
 The class *TObj_Persistence* provides basic means for that: 
@@ -589,9 +590,9 @@ its persistence handler stores the runtime type of the object class.
 When the type is restored the handler dynamically recognizes the type 
 and creates the corresponding object using mechanisms provided by *TObj_Persistence*. 
 
-@subsection occt_1746122829_872673385 Names of objects
+@subsection occt_tobj_35 Names of objects
 
-All *TObj* model objects  have names by which the user can refer to the object. 
+All *TObj* model objects  have names by which the user can refer to the object. 
 Upon creation, each object receives a default name, constructed 
 from the prefix corresponding to the object type (more precisely, the prefix is defined 
 by the partition to which the object belongs), and the index of the object in the current partition. 
@@ -600,7 +601,8 @@ by the naming mechanism (if the name is already used, it cannot be attributed to
 This default implementation of *TObj* package works with a single instance of the name container (dictionary) 
 for name registration of objects and it is enough in most simple projects. 
 If necessary, it is easy to redefine a couple of object methods 
-(for instance *GetDictionary*()) and to take care of  construction and initialization of containers. 
+(for instance *GetDictionary*()) and to take care of  construction and initialization of containers. 
+
 This functionality is provided by the following methods: 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
@@ -620,33 +622,36 @@ Returns the object name. The methods with in / out argument return False if the 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
     virtual Standard_Boolean SetName ( const Handle(TCollection_HExtendedString)& theName ) const; 
-    Standard_Boolean SetName         ( const Handle(TCollection_HAsciiString)& theName ) const; 
-    Standard_Boolean SetName         ( const Standard_CString theName ) const; 
+    Standard_Boolean SetName         ( const Handle(TCollection_HAsciiString)& theName ) const; 
+    Standard_Boolean SetName         ( const Standard_CString theName ) const; 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Attributes a new name to the object and returns **True** if the name has been attributed successfully. 
 Returns False if the name has been already attributed to another object. 
 The last two methods are short-cuts to the first one. 
 
-@subsection occt_1746122829_872673386 References between objects 
+@subsection occt_tobj_36 References between objects 
 
 Class *TObj_Object* allows creating references to other objects in the model. 
 Such references describe relations among objects which are not adequately reflected 
 by the hierarchical objects structure in the model (parent-child relationship). 
+
 The references are stored internally using the attribute TObj_TReference. 
 This attribute is located in the sub-label of the referring object (called *master*) 
 and keeps reference to the main label of the referred object. 
 At the same time the referred object can maintain the back reference to the master object. 
 
-![](/user_guides/tobj/images/tobj_image007.png)
+@image html /user_guides/tobj/images/tobj_image007.png "Objects relationship" 
+@image latex /user_guides/tobj/images/tobj_image007.png "Objects relationship" 
 
-Picture 5 Objects relationship 
+
 
 The back references are stored not in the OCAF document but as a transient field 
 of the object; they are created when the model is restored from file, 
 and updated automatically when the references are manipulated. 
 The class *TObj_TReference* allows storing references between objects 
 from different *TObj* models, facilitating the construction of complex relations between objects. 
+
 The most used methods for work with references are: 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
@@ -682,14 +687,14 @@ Returns an iterator on the object back references.
 The argument theType restricts the types of master objects, or does not if it is NULL. 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
-    virtual void ReplaceReference  ( const Handle(TObj_Object)& theOldObject,  const Handle(TObj_Object)& theNewObject ); 
+    virtual void ReplaceReference  ( const Handle(TObj_Object)& theOldObject,  const Handle(TObj_Object)& theNewObject ); 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Replaces the reference to theOldObject by the reference to *theNewObject*. 
 The handle theNewObject may be NULL to remove the reference. 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
-    virtual Standard_Boolean RelocateReferences  ( const TDF_Label& theFromRoot,  const TDF_Label& theToRoot, const Standard_Boolean theUpdateackRefs = Standard_True ); 
+    virtual Standard_Boolean RelocateReferences  ( const TDF_Label& theFromRoot,  const TDF_Label& theToRoot, const Standard_Boolean theUpdateackRefs = Standard_True ); 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Replaces all references to a descendant label of *theFromRoot* 
@@ -708,21 +713,24 @@ This affects the behaviour of objects removal from the model – if the referenc
 either the referred object will not be removed, or both the referred 
 and the master objects will be removed (depends on the deletion mode in the method **Detach**) 
 
-@subsection occt_1746122829_872673387 Creation and deletion of objects
+@subsection occt_tobj_3_7 Creation and deletion of objects
 
 It is recommended that all objects inheriting from *TObj_Object*
  should implement the same approach to creation and deletion. 
+ 
 The object of the *TObj* data model cannot be created independently 
 of the model instance, as far as it stores the object data in OCAF data structures. 
 Therefore an object class cannot be created directly as its constructor is protected. 
+
 Instead, each object should provide a static method *Create*(), which accepts the model, 
 with the label, which stores the object and other type-dependent parameters 
 necessary for proper definition of the object. This method creates a new object with its data 
 (a set of OCAF attributes) in the specified label, and returns a handle to the object's interface. 
+
 The method *Detach*() is provided for deletion of objects from OCAF model. 
 Object data are deleted from the corresponding OCAF label; however, 
 the handle on object remains valid. The only operation available after object deletion 
-is the method *IsAlive*()  checking whether the object has been deleted or not, 
+is the method *IsAlive*()  checking whether the object has been deleted or not, 
 which returns False if the object has been deleted. 
 
 When the object is deleted from the data model, the method checks 
@@ -754,9 +762,9 @@ Removes the object from the document if possible
 Unlinks references from removed objects. 
 Returns **True** if the objects have been successfully deleted. 
 
-@subsection occt_1746122829_872673388 Transformation and replication of object data
+@subsection occt_tobj_3_8 Transformation and replication of object data
 
-*TObj_Object* provides a number of special virtual methods  to support replications of objects. These methods should be redefined by descendants when necessary. 
+*TObj_Object* provides a number of special virtual methods  to support replications of objects. These methods should be redefined by descendants when necessary. 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
     virtual Handle(TObj_Object) Clone (const TDF_Label& theTargetLabel, Handle(TDF_RelocationTable) theRelocTable = 0); 
@@ -787,11 +795,11 @@ Adds to the copy of the original object its references.
 
 Copies the children of an object to the target child label. 
 
-@subsection occt_1746122829_872673389 Object flags
+@subsection occt_tobj_3_9 Object flags
 
-Each instance of TObj_Object stores a set of bit flags, 
+Each instance of *TObj_Object* stores a set of bit flags, 
 which facilitate the storage of auxiliary logical information assigned to the objects 
-(object state). Several typical state flags are defined in the enumeration ObjectState: 
+(object state). Several typical state flags are defined in the enumeration *ObjectState*: 
 
   * ObjectState_Hidden – the object is marked as hidden
   * ObjectState_Saved – the object has (or should have) the corresponding saved file on disk
@@ -818,11 +826,11 @@ Type flags can be received by the method:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The default implementation returns the flag **Visible** 
-defined in the enumeration TypeFlags. This flag is used to define visibility 
-of the object for the user browsing the model (see class TObj_HiddenPartition). 
+defined in the enumeration *TypeFlags*. This flag is used to define visibility 
+of the object for the user browsing the model (see class *TObj_HiddenPartition*). 
 Other flags can be added by the applications. 
 
-@subsection occt_1746122829_8726733810 Partitions
+@subsection occt_tobj_310 Partitions
 
 The special kind of objects defined by the class *TObj_Partition* 
 (and its descendant *TObj_HiddenPartition*) is provided for partitioning 
@@ -830,6 +838,7 @@ the model into a hierarchical structure. This object represents the container
 of other objects. Each *TObj* model contains the main partition that is placed 
 in the same OCAF label as the model object, and serves as a root of the object's tree. 
 A hidden partition is a simple partition with a predefined hidden flag. 
+
 The main partition object methods: 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
@@ -839,7 +848,7 @@ The main partition object methods:
 Allocates and returns a new label for creation of a new child object. 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
-    void SetNamePrefix  ( const Handle(TCollection_HExtendedString)& thePrefix); 
+    void SetNamePrefix  ( const Handle(TCollection_HExtendedString)& thePrefix); 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Defines the prefix for automatic generation of names of the newly created objects. 
@@ -868,37 +877,37 @@ Returns the last reserved child index.
 
 Sets the last reserved index. 
 
-@section occt_1746122829_819520128 Auxiliary classes
+@section occt_tobj_4 Auxiliary classes
 
 Apart from the model and the object, package *TObj* provides a set of auxiliary classes: 
 
-  * TObj_Application - defines OCAF application supporting existence and operation with *TObj* documents.
-  * TObj_Assistant – class provides an interface to the static data to be used during save and load operations on models. In particular, in case of cross-model dependencies it allows passing information on the parent model to the OCAF loader to correctly resolve the references when loading a dependent model.
-  * TObj_TReference - OCAF attribute describes the references between objects in the *TObj* model(s). This attribute stores the label of the referred model object, and provides transparent cross-model references. At runtime, these references are simple Handles; in persistence mode, the cross-model references are automatically detected and processed by the persistence mechanism of TObj_TReference attribute. 
-  * Other classes starting with TObj_T... - define OCAF attributes used to store TObj-specific classes and some types of data on OCAF labels. 
-  * Iterators – a set of classes implementing TObj_ObjectIterator interface, used for iterations on *TObj* objects:
-  * TObj_ObjectIterator – a basic abstract class for other *TObj* iterators. Iterates on TObj_Object instances. 
-  * TObj_LabelIterator – iterates on object labels in the *TObj* model document 
-  * TObj_ModelIterator – iterates on all objects in the model. Works with sequences of other iterators. 
-  * TObj_OcafObjectIterator – Iterates on *TObj* data model objects. Can iterate on objects of a specific type. 
-  * TObj_ReferenceIterator – iterates on object references. 
-  * TObj_SequenceIterator – iterates on a sequence of *TObj* objects. 
-  * TObj_CheckModel - a tool that checks the internal consistency of the model. The basic implementation checks only the consistency of references between objects.
+  * *TObj_Application* - defines OCAF application supporting existence and operation with *TObj* documents.
+  * *TObj_Assistant* – class provides an interface to the static data to be used during save and load operations on models. In particular, in case of cross-model dependencies it allows passing information on the parent model to the OCAF loader to correctly resolve the references when loading a dependent model.
+  * *TObj_TReference* - OCAF attribute describes the references between objects in the *TObj* model(s). This attribute stores the label of the referred model object, and provides transparent cross-model references. At runtime, these references are simple Handles; in persistence mode, the cross-model references are automatically detected and processed by the persistence mechanism of *TObj_TReference* attribute. 
+  * Other classes starting with *TObj_T...* - define OCAF attributes used to store TObj-specific classes and some types of data on OCAF labels. 
+  * Iterators – a set of classes implementing *TObj_ObjectIterator* interface, used for iterations on *TObj* objects:
+	  * *TObj_ObjectIterator* – a basic abstract class for other *TObj* iterators. Iterates on *TObj_Object* instances. 
+	  * *TObj_LabelIterator* – iterates on object labels in the *TObj* model document 
+	  * *TObj_ModelIterator* – iterates on all objects in the model. Works with sequences of other iterators. 
+	  * *TObj_OcafObjectIterator* – Iterates on *TObj* data model objects. Can iterate on objects of a specific type. 
+	  * *TObj_ReferenceIterator* – iterates on object references. 
+	  * *TObj_SequenceIterator* – iterates on a sequence of *TObj* objects. 
+	  * *TObj_CheckModel* - a tool that checks the internal consistency of the model. The basic implementation checks only the consistency of references between objects.
 
 The structure of *TObj* iterators hierarchy is presented below: 
 
-![](/user_guides/tobj/images/tobj_image008.png)
+@image html /user_guides/tobj/images/tobj_image008.png "Hierarchy of iterators" 
+@image latex /user_guides/tobj/images/tobj_image008.png "Hierarchy of iterators" 
 
-Picture 6: Hierarchy of iterators 
 
-@section occt_1746122829_579029274 Packaging
+@section occt_tobj_5 Packaging
 
 The *TObj* sources are distributed in the following packages: 
 
-  * TObj - defines basic classes that implement *TObj* interfaces for OCAF-based modelers.
-  * BinLDrivers, XmlLDrivers – binary and XML driver of *TObj* package
-  * BinLPlugin, XmlLPlugin – plugin for binary and XML persistence
-  * BinMObj, XmlMObj – binary and XML drivers to store and retrieve specific *TObj* data to or from OCAF document
-  * TKBinL, TKXmlL – toolkits of binary and XML persistence
+  * *TObj* - defines basic classes that implement *TObj* interfaces for OCAF-based modelers.
+  * *BinLDrivers, XmlLDrivers* – binary and XML driver of *TObj* package
+  * *BinLPlugin, XmlLPlugin* – plugin for binary and XML persistence
+  * *BinMObj, XmlMObj* – binary and XML drivers to store and retrieve specific *TObj* data to or from OCAF document
+  * *TKBinL, TKXmlL* – toolkits of binary and XML persistence
 
 

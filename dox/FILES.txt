@@ -14,14 +14,15 @@ user_guides/ocaf/ocaf.md
 user_guides/tobj/tobj.md
 user_guides/shape_healing/shape_healing.md
 user_guides/draw_test_harness/draw_test_harness.md
-user_guides/wok/wok.md
 
 dev_guides/dev_guides.md
-dev_guides/wok/wok.md
 dev_guides/cdl/cdl.md
 dev_guides/tests/tests.md
 dev_guides/documentation/documentation.md
+dev_guides/wok/wok.md
 
+dev_guides/building/building.md
+dev_guides/building/wok/wok.md
 dev_guides/building/automake.md
 dev_guides/building/cmake.md
 dev_guides/building/code_blocks.md

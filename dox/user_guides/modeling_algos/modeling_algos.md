@@ -17,7 +17,7 @@ The algorithms available  are divided into:
   
 @subsection occt_modalg_1_2 The Topology API
 
-The Topology  API of Open  CASCADE Technology (**OCCT**) includes the following six packages: 
+The Topology  API of Open  CASCADE Technology (**OCCT**) includes the following six packages: 
 
   * BRepAlgoAPI
   * BRepBuilderAPI
@@ -88,7 +88,7 @@ How can BRepBuilderAPI_MakeEdge be both a function and a class? It can do this  
 E = ME.Edge(); 
 ~~~~~
 
-This instruction tells  the C++ compiler that there is an **implicit casting **of a BRepBuilderAPI_MakeEdge into a TopoDS_Edge  using the Edge method. It means this method is automatically called when a BRepBuilderAPI_MakeEdge is found where a TopoDS_Edge is required. 
+This instruction tells  the C++ compiler that there is an **implicit casting** of a *BRepBuilderAPI_MakeEdge* into a *TopoDS_Edge* using the *Edge* method. It means this method is automatically called when a *BRepBuilderAPI_MakeEdge* is found where a *TopoDS_Edge* is required. 
 
 This feature allows you  to provide classes, which have the simplicity of function calls when required  and the power of classes when advanced processing is necessary. All the  benefits of this approach are explained when describing the topology programming  interface classes. 
 
@@ -101,12 +101,12 @@ A method can report an  error in the two following situations:
 
 The second situation is  supposed to become increasingly exceptional as a system is debugged and it is  handled by the **exception mechanism**. Using exceptions avoids handling  error statuses in the call to a method: a very cumbersome style of programming. 
 
-In the first situation,  an exception is also supposed to be raised because the calling method should  have verified the arguments and if it did not do so, there is a bug. For  example if before calling MakeEdge you are not sure that the two points are  non-identical, this situation must be tested. 
+In the first situation,  an exception is also supposed to be raised because the calling method should  have verified the arguments and if it did not do so, there is a bug. For  example if before calling *MakeEdge* you are not sure that the two points are  non-identical, this situation must be tested. 
 
 Making those validity  checks on the arguments can be tedious to program and frustrating as you have  probably correctly surmised that the method will perform the test twice. It  does not trust you. 
 As the test involves a  great deal of computation, performing it twice is also time-consuming. 
 
-Consequently, you might  be tempted to adopt the *highly inadvisable *style of programming  illustrated in the following example: 
+Consequently, you might  be tempted to adopt the highly inadvisable style of programming  illustrated in the following example: 
 
 ~~~~~
 #include <Standard_ErrorHandler.hxx> 
@@ -119,9 +119,9 @@ catch {
 } 
 ~~~~~
 
-To help the user, the  Topology API classes only raise the exception **StdFail_NotDone**. Any other  exception means that something happened which was unforeseen in the design of  this API. 
+To help the user, the  Topology API classes only raise the exception *StdFail_NotDone*. Any other  exception means that something happened which was unforeseen in the design of  this API. 
 
-The **NotDone **exception  is only raised when the user tries to access the result of the computation and  the original data is corrupted. At the construction of the class instance, if  the algorithm cannot be completed, the internal flag NotDone is set. This flag  can be tested and in some situations a more complete description of the error  can be queried. If the user ignores the NotDone status and tries to access the  result, an exception is raised. 
+The *NotDone* exception  is only raised when the user tries to access the result of the computation and  the original data is corrupted. At the construction of the class instance, if  the algorithm cannot be completed, the internal flag *NotDone* is set. This flag  can be tested and in some situations a more complete description of the error  can be queried. If the user ignores the *NotDone* status and tries to access the  result, an exception is raised. 
 
 ~~~~~
 BRepBuilderAPI_MakeEdge ME(P1,P2); 
@@ -148,13 +148,15 @@ Open CASCADE Technology  geometric tools include:
 
 @subsection occt_modalg_2_2 Intersections
 
-The *Geom2dAPI_InterCurveCurve *class  allows the evaluation of the intersection points (*gp_Pnt2d*) between two  geometric curves (*Geom2d_Curve*)* *and the evaluation of the points  of self-intersection of a curve. 
+The *Geom2dAPI_InterCurveCurve* class  allows the evaluation of the intersection points (*gp_Pnt2d*) between two  geometric curves (*Geom2d_Curve*) and the evaluation of the points  of self-intersection of a curve. 
 
-![](/user_guides/modeling_algos/images/modeling_algos_image003.jpg  "Intersection and self-intersection of curves")
+@image html /user_guides/modeling_algos/images/modeling_algos_image003.jpg  "Intersection and self-intersection of curves"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image003.jpg  "Intersection and self-intersection of curves"
 
 In both cases, the  algorithm requires a value for the tolerance (Standard_Real) for the confusion  between two points. The default tolerance value used in all constructors is *1.0e-6.* 
 
-![](/user_guides/modeling_algos/images/modeling_algos_image004.jpg "Intersection and tangent intersection")
+@image html /user_guides/modeling_algos/images/modeling_algos_image004.jpg "Intersection and tangent intersection"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image004.jpg "Intersection and tangent intersection"
 
 The algorithm returns a  point in the case of an intersection and a segment in the case of tangent  intersection. 
 
@@ -180,11 +182,10 @@ To select the desired intersection point, pass an integer index value in argumen
 gp_Pnt2d P = Intersector.Point(Index); 
 ~~~~~
 
+To call the number of intersection segments, use
 ~~~~~
 Standard_Integer M = Intersector.NbSegments(); 
 ~~~~~
-
-Calls the number of intersection segments.
 
 To select the desired intersection segment pass integer index values in argument. 
 ~~~~~
@@ -202,7 +203,7 @@ Geom2dInt_GInter&amp; TheIntersector = Intersector.Intersector();
 ~~~~~
 
 @subsubsection occt_modalg_2_2_2 Intersection of Curves and Surfaces
-The *GeomAPI_IntCS *class  is used to compute the intersection points between a curve and a surface. 
+The *GeomAPI_IntCS* class  is used to compute the intersection points between a curve and a surface. 
 
 This class is  instantiated as follows: 
 ~~~~~
@@ -218,16 +219,16 @@ Calls the number of intersection points.
 gp_Pnt&amp; P = Intersector.Point(Index); 
 ~~~~~
 
-Where *Index *is an  integer between *1 *and *nb*, calls the intersection points.
+Where *Index* is an  integer between 1 and *nb*, calls the intersection points.
 
 @subsubsection occt_modalg_2_2_3 Intersection of two Surfaces
-The *GeomAPI_IntSS *class  is used to compute the intersection of two surfaces from *Geom_Surface *with  respect to a given tolerance. 
+The *GeomAPI_IntSS* class  is used to compute the intersection of two surfaces from *Geom_Surface* with  respect to a given tolerance. 
 
 This class is  instantiated as follows: 
 ~~~~~
 GeomAPI_IntSS Intersector(S1, S2, Tolerance); 
 ~~~~~
-Once the *GeomAPI_IntSS  *object has been created, it can be interpreted. 
+Once the *GeomAPI_IntSS* object has been created, it can be interpreted. 
 
 ~~~~~
 Standard_Integer nb = Intersector. NbLines(); 
@@ -237,14 +238,14 @@ Calls the number of intersection curves.
 ~~~~~
 Handle(Geom_Curve) C = Intersector.Line(Index) 
 ~~~~~
-Where *Index *is an  integer between *1 *and *nb*, calls the intersection curves.
+Where *Index* is an  integer between 1 and *nb*, calls the intersection curves.
 
 @subsection occt_modalg_2_3  Interpolations
 *Interpolation* provides functionalities for interpolating  BSpline curves, whether in 2D, using *Geom2dAPI_Interpolate*, or 3D using *GeomAPI_Interpolate*. 
 
 
 @subsubsection occt_modalg_2_3_1 Geom2dAPI_Interpolate
-This class is used to  interpolate a BSplineCurve passing through an array of points. If tangency is  not requested at the point of interpolation, continuity will be *C2 *. If  tangency is requested at the point, continuity will be *C1*. If  Periodicity is requested, the curve will be closed and the junction will be the  first point given. The curve will then have a continuity of *C1* only. 
+This class is used to  interpolate a BSplineCurve passing through an array of points. If tangency is  not requested at the point of interpolation, continuity will be *C2*. If  tangency is requested at the point, continuity will be *C1*. If  Periodicity is requested, the curve will be closed and the junction will be the  first point given. The curve will then have a continuity of *C1* only. 
 This class may be  instantiated as follows: 
 ~~~~~
 Geom2dAPI_Interpolate 
@@ -253,7 +254,7 @@ const  Standard_Boolean PeriodicFlag,
 const Standard_Real  Tolerance); 
 
 Geom2dAPI_Interpolate Interp(Points, Standard_False, 
-                                    Precision::Confusion()); 
+                                    Precision::Confusion()); 
 ~~~~~
 
 
@@ -262,13 +263,13 @@ It is possible to call the BSpline curve from the object defined  above it.
 Handle(Geom2d_BSplineCurve) C = Interp.Curve(); 
 ~~~~~
 
-Note that the *Handle(Geom2d_BSplineCurve)* operator has been redefined by the method Curve(). Consequently, it is  unnecessary to pass via the construction of an intermediate object of the *Geom2dAPI_Interpolate  *type and the following syntax is correct. 
+Note that the *Handle(Geom2d_BSplineCurve)* operator has been redefined by the method *Curve()*. Consequently, it is  unnecessary to pass via the construction of an intermediate object of the *Geom2dAPI_Interpolate* type and the following syntax is correct. 
 
 ~~~~~
 Handle(Geom2d_BSplineCurve) C = 
 Geom2dAPI_Interpolate(Points, 
-    Standard_False, 
-    Precision::Confusion()); 
+    Standard_False, 
+    Precision::Confusion()); 
 ~~~~~
 
 @subsubsection occt_modalg_2_3_2 GeomAPI_Interpolate
@@ -281,14 +282,14 @@ const  Standard_Boolean PeriodicFlag,
 const Standard_Real  Tolerance); 
 
 GeomAPI_Interpolate Interp(Points, Standard_False, 
-                                    Precision::Confusion()); 
+                                    Precision::Confusion()); 
 ~~~~~
 
 It is possible to call the BSpline curve from the object defined  above it. 
 ~~~~~
 Handle(Geom_BSplineCurve) C = Interp.Curve(); 
 ~~~~~
-Note that the *Handle(Geom_BSplineCurve)* operator has been redefined by the method Curve(). Thus, it is unnecessary  to pass via the construction of an intermediate object of the GeomAPI_Interpolate  type and the following syntax is correct. 
+Note that the *Handle(Geom_BSplineCurve)* operator has been redefined by the method *Curve()*. Thus, it is unnecessary  to pass via the construction of an intermediate object of the *GeomAPI_Interpolate*  type and the following syntax is correct. 
 
 Handle(Geom_BSplineCurve) C = 
 	GeomAPI_Interpolate(Points,  
@@ -304,19 +305,20 @@ AnInterpolator.Load (StartingTangent, EndingTangent);
 
 @subsection occt_modalg_2_4 Lines and  Circles from Constraints
 
-There are two packages  to create lines and circles from constraints: *Geom2dGcc *and *GccAna*. *Geom2dGcc* deals with reference-handled geometric objects from the *Geom2d *package  while *GccAna* deals with value-handled geometric objects from the *gp* package. 
+There are two packages  to create lines and circles from constraints: *Geom2dGcc* and *GccAna*. *Geom2dGcc* deals with reference-handled geometric objects from the *Geom2d* package,  while *GccAna* deals with value-handled geometric objects from the *gp* package. 
 
 The *Geom2dGcc* package  solves geometric constructions of lines and circles expressed by constraints  such as tangency or parallelism, that is, a constraint expressed in geometric  terms. As a simple example the following figure shows a line which is  constrained to pass through a point and be tangent to a circle. 
 
-![](/user_guides/modeling_algos/images/modeling_algos_image005.jpg  "A constrained line")
+@image html /user_guides/modeling_algos/images/modeling_algos_image005.jpg  "A constrained line"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image005.jpg  "A constrained line"
 
-The *Geom2dGcc *package  focuses on algorithms; it is useful for finding results, but it does not offer  any management or modification functions, which could be applied to the  constraints or their arguments. This package is designed to offer optimum  performance, both in rapidity and precision. Trivial cases (for example, a  circle centered on one point and passing through another) are not treated. 
+The *Geom2dGcc* package  focuses on algorithms; it is useful for finding results, but it does not offer  any management or modification functions, which could be applied to the  constraints or their arguments. This package is designed to offer optimum  performance, both in rapidity and precision. Trivial cases (for example, a  circle centered on one point and passing through another) are not treated. 
 
-The *Geom2dGcc *package  deals only with 2d objects from the *Geom2d *package. These objects are  the points, lines and circles available. 
+The *Geom2dGcc* package  deals only with 2d objects from the *Geom2d* package. These objects are  the points, lines and circles available. 
 
-All other lines such as  Bezier curves and conic sections - with the exception of circles -are  considered general curves and must be differentiable twice. 
+All other lines such as  Bezier curves and conic sections except for circles are considered general curves and must be differentiable twice. 
 
-The *GccAna *package  deals with points, lines, and circles from the *gp *package. Apart from  constructors for lines and circles, it also allows the creation of conics from  the bisection of other geometric objects. 
+The *GccAna* package  deals with points, lines, and circles from the *gp* package. Apart from  constructors for lines and circles, it also allows the creation of conics from  the bisection of other geometric objects. 
 
 @subsection occt_modalg_2_5 Provided algorithms
 
@@ -363,18 +365,21 @@ The appropriate  algorithm is the one, which reaches a solution of the required 
 @subsubsection occt_modalg_2_8_1 Exterior/Interior
 It is not hard to define  the interior and exterior of a circle. As is shown in the following diagram,  the exterior is indicated by the sense of the binormal, that is to say the  right side according to the sense of traversing the circle. The left side is  therefore the interior (or &quot;material&quot;). 
 
-![](/user_guides/modeling_algos/images/modeling_algos_image006.jpg "Exterior/Interior of a Circle")
+@image html /user_guides/modeling_algos/images/modeling_algos_image006.jpg "Exterior/Interior of a Circle"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image006.jpg "Exterior/Interior of a Circle"
 
 By extension, the  interior of a line or any open curve is defined as the left side according to  the passing direction, as shown in the following diagram: 
 
-![](/user_guides/modeling_algos/images/modeling_algos_image007.jpg "Exterior/Interior of a Line and a Curve")
+@image html /user_guides/modeling_algos/images/modeling_algos_image007.jpg "Exterior/Interior of a Line and a Curve"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image007.jpg "Exterior/Interior of a Line and a Curve"
 
 @subsubsection occt_modalg_2_8_2 Orientation of a Line
 It is sometimes  necessary to define in advance the sense of travel along a line to be created.  This sense will be from first to second argument. 
 
 The following figure shows a line, which is  first tangent to circle C1 which is interior to the line, and then passes  through point P1. 
 
-![](/user_guides/modeling_algos/images/modeling_algos_image008.jpg "An Oriented Line")
+@image html /user_guides/modeling_algos/images/modeling_algos_image008.jpg "An Oriented Line"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image008.jpg "An Oriented Line"
 
 @subsection occt_modalg_2_9 Examples
 
@@ -385,7 +390,8 @@ Note that the qualifier  &quot;Outside&quot; is used to mean &quot;Mutually exte
 
 **Example 1 Case 1** 
 
-![](/user_guides/modeling_algos/images/modeling_algos_image009.jpg "Both circles outside")
+@image html /user_guides/modeling_algos/images/modeling_algos_image009.jpg "Both circles outside"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image009.jpg "Both circles outside"
 
 Constraints: 
 Tangent and Exterior to  C1. 
@@ -402,7 +408,8 @@ GccAna_Lin2d2Tan
 
 **Example 1 Case 2** 
 
-![](/user_guides/modeling_algos/images/modeling_algos_image010.jpg "Both circles enclosed")
+@image html /user_guides/modeling_algos/images/modeling_algos_image010.jpg "Both circles enclosed"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image010.jpg "Both circles enclosed"
 
 Constraints: 
 Tangent and Including  C1. 
@@ -419,7 +426,8 @@ GccAna_Lin2d2Tan
 
 **Example  1 Case 3**
  
-![](/user_guides/modeling_algos/images/modeling_algos_image011.jpg "C1 enclosed, C2 outside")
+@image html /user_guides/modeling_algos/images/modeling_algos_image011.jpg "C1 enclosed, C2 outside"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image011.jpg "C1 enclosed, C2 outside"
 
 Constraints: 
 Tangent and Including C1. 
@@ -435,7 +443,8 @@ GccAna_Lin2d2Tan
 
 **Example 1 Case 4** 
 
-![](/user_guides/modeling_algos/images/modeling_algos_image012.jpg "C1 outside, C2 enclosed")
+@image html /user_guides/modeling_algos/images/modeling_algos_image012.jpg "C1 outside, C2 enclosed"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image012.jpg "C1 outside, C2 enclosed"
 Constraints: 
 Tangent and Exterior to  C1. 
 Tangent and Including  C2. 
@@ -450,7 +459,8 @@ GccAna_Lin2d2Tan
 
 **Example 1 Case 5** 
 
-![](/user_guides/modeling_algos/images/modeling_algos_image013.jpg "With no qualifiers specified")
+@image html /user_guides/modeling_algos/images/modeling_algos_image013.jpg "With no qualifiers specified"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image013.jpg "With no qualifiers specified"
 
 Constraints: 
 Tangent and Undefined  with respect to C1. 
@@ -468,7 +478,8 @@ GccAna_Lin2d2Tan
 The following four  diagrams show the four cases in using qualifiers in the creation of a circle. 
 
 **Example 2 Case 1** 
-![](/user_guides/modeling_algos/images/modeling_algos_image014.jpg "Both solutions outside")
+@image html /user_guides/modeling_algos/images/modeling_algos_image014.jpg "Both solutions outside"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image014.jpg "Both solutions outside"
 
 Constraints: 
 Tangent and Exterior to  C1. 
@@ -483,7 +494,8 @@ GccAna_Circ2d2TanRad
 
 **Example 2 Case 2** 
 
-![](/user_guides/modeling_algos/images/modeling_algos_image015.jpg "C2 encompasses C1")
+@image html /user_guides/modeling_algos/images/modeling_algos_image015.jpg "C2 encompasses C1"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image015.jpg "C2 encompasses C1"
 
 Constraints: 
 Tangent and Exterior to  C1. 
@@ -497,7 +509,8 @@ GccAna_Circ2d2TanRad
 ~~~~~
 
 **Example  2 Case 3**
-![](/user_guides/modeling_algos/images/modeling_algos_image016.jpg "Solutions enclose C2")
+@image html /user_guides/modeling_algos/images/modeling_algos_image016.jpg "Solutions enclose C2"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image016.jpg "Solutions enclose C2"
 
 Constraints: 
 Tangent and Exterior to  C1. 
@@ -511,7 +524,8 @@ GccAna_Circ2d2TanRad
 ~~~~~
 		
 **Example 2 Case 4**
-![](/user_guides/modeling_algos/images/modeling_algos_image017.jpg "Solutions enclose C1")
+@image html /user_guides/modeling_algos/images/modeling_algos_image017.jpg "Solutions enclose C1"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image017.jpg "Solutions enclose C1"
 
 Constraints: 
 Tangent and Enclosing  C1. 
@@ -525,7 +539,8 @@ GccAna_Circ2d2TanRad
 ~~~~~
 
 **Example 2 Case 5**
-The following syntax  will give all the circles of radius *Rad, *which are tangent to *C1 *and  *C2 *without discrimination of relative position: 
+
+The following syntax  will give all the circles of radius *Rad*, which are tangent to *C1* and *C2* without discrimination of relative position: 
 
 ~~~~~
 GccAna_Circ2d2TanRad  Solver(GccEnt::Unqualified(C1), 
@@ -560,10 +575,10 @@ We consider the  following to be the case:
   * A distinction is made between the trivial case of the center at a point and the complex case of the center on a line.
 
 @subsubsection occt_modalg_2_10_3 Analytic Algorithms
-GccAna package  implements analytic algorithms. It deals only with points, lines, and  circles from  gp package. Here is a list of the services offered: 
+*GccAna* package  implements analytic algorithms. It deals only with points, lines, and  circles from  *gp* package. Here is a list of the services offered: 
 
-Creation of a Line
-------------------
+#### Creation of a Line
+
 
 ~~~~~
 Tangent ( point  | circle ) &amp; Parallel ( line ) 
@@ -573,8 +588,8 @@ Tangent ( 2 { point |  circle } )
 Bisector( line | line ) 
 ~~~~~
 
-Creation of Conics
-------------------
+#### Creation of Conics
+
 
 ~~~~~
 Bisector ( point | point  ) 
@@ -585,8 +600,8 @@ Bisector ( circle | line  )
 Bisector ( circle |  circle ) 
 ~~~~~
 
-Creation of a Circle
---------------------
+#### Creation of a Circle
+
 ~~~~~
 Tangent ( point | line |  circle ) &amp; Center ( point ) 
 Tangent ( 3 { point |  line | circle } ) 
@@ -601,8 +616,7 @@ For each algorithm, the tolerance (and angular tolerance if appropriate) is give
 
 *Geom2dGcc *package  offers algorithms, which produce 2d lines or circles with geometric  constraints. For arguments, it takes curves for which an approximate solution  is not requested. A tolerance value on the result is given as a starting  parameter. The following services are provided: 
 
-Creation of a Circle
---------------------
+#### Creation of a Circle
 
 ~~~~~
 Tangent ( curve ) &amp;  Center ( point ) 
@@ -615,17 +629,16 @@ Tangent ( point | line |  circle ) &amp; Center ( curve ) &amp; Radius ( real )
 All calculations will be  done to the highest precision available from the hardware. 
 
 @subsubsection occt_modalg_2_10_5 Iterative Algorithms
-Geom2dGcc package  offers iterative algorithms find a solution by refining an approximate  solution. It produces 2d lines or circles with geometric constraints. For all  geometric arguments except points, an approximate solution may be given as a  starting parameter. The tolerance or angular tolerance value is given as an  argument. The following services are provided: 
+*Geom2dGcc* package  offers iterative algorithms find a solution by refining an approximate  solution. It produces 2d lines or circles with geometric constraints. For all  geometric arguments except points, an approximate solution may be given as a  starting parameter. The tolerance or angular tolerance value is given as an  argument. The following services are provided: 
 
-Creation of a Line
-------------------
+#### Creation of a Line
+
 ~~~~~
 Tangent ( curve ) &amp;  Oblique ( line ) 
 Tangent ( curve , {  point | circle | curve } ) 
 ~~~~~
 
-Creation of a Circle
---------------------
+#### Creation of a Circle
 
 ~~~~~
 Tangent ( curve , 2 {  point | circle | curve } ) 
@@ -639,8 +652,8 @@ Tangent ( curve , {  point | circle | curve } )
 
 *FairCurve* package  provides a set of classes to create faired 2D curves or 2D curves with minimal  variation in curvature. 
 
-Creation of Batten Curves
--------------------------
+#### Creation of Batten Curves
+
 The class Batten allows  producing faired curves defined on the basis of one or more constraints on  each of the two reference points. These include point, angle of tangency and  curvature settings. 
 The following constraint orders are available: 
 
@@ -651,9 +664,9 @@ The following constraint orders are available:
 Only 0 and 1 constraint orders are used. 
 The function Curve  returns the result as a 2D BSpline curve. 
 
-Creation of Minimal Variation Curves
-------------------------------------
-The class  MinimalVariation allow producing curves with minimal variation in  curvature at each reference point. The following constraint  orders are available: 
+#### Creation of Minimal Variation Curves
+
+The class *MinimalVariation* allows producing curves with minimal variation in  curvature at each reference point. The following constraint  orders are available: 
 
   * 0 the curve must pass through  a point
   * 1 the curve must pass through  a point and have a given tangent
@@ -663,8 +676,8 @@ Constraint orders of 0, 1 and 2 can be used. The algorithm minimizes tension, sa
 
 The function *Curve* returns  the result as a 2D BSpline curve. 
 
-Specifying the length of the curve
-----------------------------------
+#### Specifying the length of the curve
+
 If you want to give a  specific length to a batten curve, use: 
 
 ~~~~~
@@ -672,86 +685,86 @@ b.SetSlidingFactor(L / b.SlidingOfReference())
 ~~~~~
 where *b* is the name of  the batten curve object 
 
-Limitations 
------------
+#### Limitations 
+
 Free sliding is  generally more aesthetically pleasing than constrained sliding. 
 However, the computation  can fail with values such as angles greater than p/2, because in this case, the  length is theoretically infinite. 
 
 In other cases, when  sliding is imposed and the sliding factor is too large, the batten can  collapse. 
 
-Computation Time
-----------------
+#### Computation Time
+
 The constructor parameters, *Tolerance* and *NbIterations*, control how precise the computation is,  and how long it will take. 
 
 @subsubsection occt_modalg_2_11_2 Surfaces from Boundary Curves
 
 The *GeomFill* package  provides the following services for creating surfaces from boundary curves: 
 
-Creation of Bezier surfaces
----------------------------
+#### Creation of Bezier surfaces
+
 The class *BezierCurves* allows producing a Bezier surface from contiguous Bezier curves. Note  that problems may occur with rational Bezier Curves. 
 
-Creation of BSpline surfaces
-----------------------------
+#### Creation of BSpline surfaces
+
 The class *BSplineCurves* allows producing a BSpline surface from contiguous BSpline curves.  Note that problems may occur with rational BSplines. 
 
-Creation of a Pipe
-------------------
-The class *Pipe* allows you producing a pipe by sweeping a curve (the section) along another curve  (the path). The result is a BSpline surface. 
+#### Creation of a Pipe
 
-Filling a contour
-----------------
+The class *Pipe* allows producing a pipe by sweeping a curve (the section) along another curve  (the path). The result is a BSpline surface. 
+
+#### Filling a contour
+
 The class *GeomFill_ConstrainedFilling* allows filling a contour defined by two, three or four curves as well  as by tangency constraints. The resulting surface is a BSpline. 
 
-Creation of a Boundary
-----------------------
+#### Creation of a Boundary
+
 The class *GeomFill_SimpleBound* allows you defining a boundary for the surface to be constructed. 
 
-Creation of a Boundary with an adjoining surface
-------------------------------------------------
+#### Creation of a Boundary with an adjoining surface
+
 The class *GeomFill_BoundWithSurf* allows defining a boundary for the surface to be constructed. This boundary will already be joined to another surface. 
 
-Filling styles
---------------
+#### Filling styles
+
 The enumerations *FillingStyle* specify the styles used to build the surface. These include: 
 
   * *Stretch* - the style with the flattest patches
   * *Coons* - a rounded style with less depth than *Curved*
   * *Curved* - the style with the most rounded patches.
 
-![](/user_guides/modeling_algos/images/modeling_algos_image018.jpg "Intersecting filleted edges with different radii leave a gap, is filled by a surface)
+@image html /user_guides/modeling_algos/images/modeling_algos_image018.jpg "Intersecting filleted edges with different radii leave a gap, is filled by a surface"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image018.jpg "Intersecting filleted edges with different radii leave a gap, is filled by a surface"
 
 
 @subsubsection occt_modalg_2_11_3 Surfaces from curve and point constraints
 The *GeomPlate* package  provides the following services for creating surfaces respecting curve and  point constraints: 
 
-Definition of a Framework
--------------------------
+#### Definition of a Framework
+
 The class *BuildPlateSurface* allows creating a framework to build surfaces according to curve and  point constraints as well as tolerance settings. The result is returned with  the function *Surface*. 
 
 Note that you do not have to specify an initial surface at the time of construction. It can be added later  or, if none is loaded, a surface will  be computed automatically. 
 
-Definition of a Curve Constraint
---------------------------------
+#### Definition of a Curve Constraint
+
 The class *CurveConstraint* allows defining curves as constraints to the surface, which you want  to build. 
 
-Definition of a Point Constraint
---------------------------------
+#### Definition of a Point Constraint
+
 The class *PointConstraint* allows defining points as constraints to the surface, which you want  to build. 
 
-Applying Geom_Surface to Plate Surfaces
---------------------------------------
+#### Applying Geom_Surface to Plate Surfaces
+
 The class *Surface* allows describing the characteristics of plate surface objects returned by **BuildPlateSurface::Surface** using the methods of *Geom_Surface* 
 
-Approximating a Plate surface to a BSpline
-------------------------------------------
+#### Approximating a Plate surface to a BSpline
+
 The class *MakeApprox* allows converting a *GeomPlate* surface into a *Geom_BSplineSurface*. 
 
-![](/user_guides/modeling_algos/images/modeling_algos_image019.jpg "Surface generated from four curves and a point")
+@image html /user_guides/modeling_algos/images/modeling_algos_image019.jpg "Surface generated from four curves and a point"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image019.jpg "Surface generated from four curves and a point"
 
-**Example** 
-
-Create a Plate surface  and approximate it from a polyline as a curve constraint and a point constraint 
+Let us create a Plate surface  and approximate it from a polyline as a curve constraint and a point constraint 
 
 ~~~~~
 Standard_Integer NbCurFront=4, 
@@ -812,10 +825,10 @@ This package provides  functionality for projecting points onto 2D and 3D curves
 *Geom2dAPI_ProjectPointOnCurve*  allows calculation of all the normals projected from a point (*gp_Pnt2d*)  onto a geometric curve (*Geom2d_Curve*). The calculation may be restricted  to a given domain. 
 
 
-![](/user_guides/modeling_algos/images/modeling_algos_image020.jpg  "Normals from a point to a curve")
+@image html /user_guides/modeling_algos/images/modeling_algos_image020.jpg  "Normals from a point to a curve"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image020.jpg  "Normals from a point to a curve"
 
-Note 
-----
+
 The  curve does not have to be a *Geom2d_TrimmedCurve*. The algorithm will function with any 
 class inheriting  Geom2d_Curve. 
 
@@ -835,21 +848,21 @@ Geom2dAPI_ProjectPointOnCurve Projector (P, C, U1, U2);
 ~~~~~
 Having thus created the *Geom2dAPI_ProjectPointOnCurve* object, we can now interrogate it. 
 
-Calling the number of solution points
--------------------------------------
+#### Calling the number of solution points
+
 ~~~~~
 Standard_Integer NumSolutions = Projector.NbPoints(); 
 ~~~~~
 
-Calling the location of a solution point
-----------------------------------------
+#### Calling the location of a solution point
+
 The solutions are  indexed in a range from *1* to *Projector.NbPoints()*. The point,  which corresponds to a given *Index* may be found: 
 ~~~~~
 gp_Pnt2d Pn = Projector.Point(Index); 
 ~~~~~
 
-Calling the parameter of a solution point
------------------------------------------
+#### Calling the parameter of a solution point
+
 For a given point  corresponding to a given *Index*: 
 
 ~~~~~
@@ -863,30 +876,30 @@ Standard_Real U;
 Projector.Parameter(Index,U); 
 ~~~~~
 
-Calling the distance between the start and end points
------------------------------------------------------
+#### Calling the distance between the start and end points
+
 We can find the distance  between the initial point and a point, which corresponds to the given *Index*: 
 
 ~~~~~
 Standard_Real D = Projector.Distance(Index); 
 ~~~~~
 
-Calling the nearest solution point
----------------------------------
+#### Calling the nearest solution point
+
 
 This class offers a  method to return the closest solution point to the starting point. This  solution is accessed as follows: 
 ~~~~~
 gp_Pnt2d P1 = Projector.NearestPoint(); 
 ~~~~~
 
-Calling the parameter of the nearest solution point
----------------------------------------------------
+#### Calling the parameter of the nearest solution point
+
 ~~~~~
 Standard_Real U = Projector.LowerDistanceParameter(); 
 ~~~~~
 
-Calling the minimum distance from the point to the curve
--------------------------------------------------------
+#### Calling the minimum distance from the point to the curve
+
 ~~~~~
 Standard_Real D = Projector.LowerDistance(); 
 ~~~~~
@@ -949,21 +962,21 @@ GeomAPI_ProjectPointOnCurve Projector (P, C, U1, U2);
 ~~~~~
 Having thus created the  *GeomAPI_ProjectPointOnCurve* object, you can now interrogate it. 
 
-Calling the number of solution points
--------------------------------------
+#### Calling the number of solution points
+
 ~~~~~
 Standard_Integer NumSolutions = Projector.NbPoints(); 
 ~~~~~
 
-Calling the location of a solution point
-----------------------------------------
+#### Calling the location of a solution point
+
 The solutions are  indexed in a range from 1 to *Projector.NbPoints()*. The point, which corresponds  to a given index, may be found: 
 ~~~~~
 gp_Pnt Pn = Projector.Point(Index); 
 ~~~~~
 
-Calling the parameter of a solution point
------------------------------------------
+#### Calling the parameter of a solution point
+
 For a given point  corresponding to a given index: 
 
 ~~~~~
@@ -976,34 +989,34 @@ Standard_Real U;
 Projector.Parameter(Index,U); 
 ~~~~~
 
-Calling the distance between the start and end point
-----------------------------------------------------
+#### Calling the distance between the start and end point
+
 The distance between the  initial point and a point, which corresponds to a given index, may be found: 
 ~~~~~
 Standard_Real D = Projector.Distance(Index); 
 ~~~~~
 
-Calling the nearest solution point
-----------------------------------
+#### Calling the nearest solution point
+
 This class offers a  method to return the closest solution point to the starting point. This  solution is accessed as follows: 
 ~~~~~
 gp_Pnt P1 = Projector.NearestPoint(); 
 ~~~~~
 
-Calling the parameter of the nearest solution point
----------------------------------------------------
+#### Calling the parameter of the nearest solution point
+
 ~~~~~
 Standard_Real U = Projector.LowerDistanceParameter(); 
 ~~~~~
 
-Calling the minimum distance from the point to the curve
---------------------------------------------------------
+#### Calling the minimum distance from the point to the curve
+
 ~~~~~
 Standard_Real D =  Projector.LowerDistance(); 
 ~~~~~
 
-Redefined  operators 
---------------------
+#### Redefined  operators 
+
 Some operators have been  redefined to find the nearest solution. 
 
 *Standard_Real()* returns  the minimum distance from the point to the curve. 
@@ -1035,9 +1048,9 @@ gp_Pnt P1 = GeomAPI_ProjectPointOnCurve (P,C);
 ~~~~~
 In the second case,  however, no intermediate *GeomAPI_ProjectPointOnCurve* object is created, and it  is impossible to access other solutions points. 
 
-Access to lower-level functionalities
--------------------------------------
-If you want to use the  wider range of functionalities available from the Extrema package, a call to  the *Extrema()* method will return the algorithmic object for calculating the  extrema. For example: 
+#### Access to lower-level functionalities
+
+If you want to use the  wider range of functionalities available from the *Extrema* package, a call to  the *Extrema()* method will return the algorithmic object for calculating the  extrema. For example: 
 
 ~~~~~
 Extrema_ExtPC&amp; TheExtrema = Projector.Extrema(); 
@@ -1047,11 +1060,9 @@ Extrema_ExtPC&amp; TheExtrema = Projector.Extrema();
 
 *GeomAPI_ProjectPointOnSurf* class allows calculation of all normals  projected from a point from *gp_Pnt* onto a geometric surface from Geom_Surface. 
 
+@image html /user_guides/modeling_algos/images/modeling_algos_image021.jpg  "Projection of normals from a point to a surface"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image021.jpg  "Projection of normals from a point to a surface"
 
-![](/user_guides/modeling_algos/images/modeling_algos_image021.jpg  "Projection of normals from a point to a surface")
-
-Note
----- 
 Note that the  surface does not have to be of *Geom_RectangularTrimmedSurface* type.  
 The algorithm  will function with any class inheriting Geom_Surface.
 
@@ -1075,23 +1086,22 @@ Vmin <=  V1 < V2 <= Vmax
 ~~~~~
 Having thus created the  *GeomAPI_ProjectPointOnSurf* object, you can interrogate it. 
 
-Calling the number of solution points
--------------------------------------
+#### Calling the number of solution points
 
 ~~~~~
 Standard_Integer NumSolutions = Proj.NbPoints(); 
 ~~~~~
 
-Calling the location of a solution point
-----------------------------------------
+#### Calling the location of a solution point
+
 The solutions are  indexed in a range from 1 to *Proj.NbPoints()*. The point corresponding to the  given index may be found: 
 
 ~~~~~
 gp_Pnt Pn = Proj.Point(Index); 
 ~~~~~
 
-Calling the parameters of a solution point
-------------------------------------------
+#### Calling the parameters of a solution point
+
 For a given point  corresponding to the given index: 
 
 ~~~~~
@@ -1099,36 +1109,36 @@ Standard_Real U,V;
 Proj.Parameters(Index, U, V); 
 ~~~~~
 
-Calling the distance between the start and end point
-----------------------------------------------------
+#### Calling the distance between the start and end point
+
 
 The distance between the  initial point and a point corresponding to the given index may be found: 
 ~~~~~
 Standard_Real D = Projector.Distance(Index); 
 ~~~~~
 
-Calling the nearest solution point
-----------------------------------
+#### Calling the nearest solution point
+
 This class offers a  method, which returns the closest solution point to the starting point. This  solution is accessed as follows: 
 ~~~~~
 gp_Pnt P1 = Proj.NearestPoint(); 
 ~~~~~
 
-Calling the parameters of the nearest solution point
-----------------------------------------------------
+#### Calling the parameters of the nearest solution point
+
 ~~~~~
 Standard_Real U,V; 
 Proj.LowerDistanceParameters (U, V); 
 ~~~~~
 
-Calling the minimum distance from a point to the surface
---------------------------------------------------------
+#### Calling the minimum distance from a point to the surface
+
 ~~~~~
 Standard_Real D = Proj.LowerDistance(); 
 ~~~~~
 
-Redefined operators
--------------------
+#### Redefined operators
+
 Some operators have been  redefined to help you find the nearest solution. 
 
 *Standard_Real()* returns  the minimum distance from the point to the surface. 
@@ -1166,7 +1176,7 @@ In the second case,  however, no intermediate *GeomAPI_ProjectPointOnSurf* objec
 
 @subsubsection occt_modalg_2_12_7 Access to lower-level functionalities
 
-If you want to use the  wider range of functionalities available from the Extrema package, a call to  the Extrema() method will return the algorithmic object for calculating the  extrema as follows: 
+If you want to use the  wider range of functionalities available from the *Extrema* package, a call to  the *Extrema()* method will return the algorithmic object for calculating the  extrema as follows: 
 
 ~~~~~
 Extrema_ExtPS&amp; TheExtrema = Proj.Extrema(); 
@@ -1176,8 +1186,8 @@ Extrema_ExtPS&amp; TheExtrema = Proj.Extrema();
 @subsubsection occt_modalg_2_12_8 Switching from 2d and 3d Curves
 The To2d and To3d methods are used to; 
 
-  * build a 2d curve from a 3d  Geom_Curve lying on a gp_Pln plane
-  * build a 3d curve from a  Geom2d_Curve and a gp_Pln plane.
+  * build a 2d curve from a 3d  *Geom_Curve* lying on a *gp_Pln* plane
+  * build a 3d curve from a  *Geom2d_Curve* and a *gp_Pln* plane.
 
 These methods are called  as follows: 
 ~~~~~
@@ -1226,8 +1236,7 @@ This class always creates a new vertex and has no other methods.
 
 Use *BRepBuilderAPI_MakeEdge* to create from a curve and vertices. The basic method is to  construct an edge from a curve, two vertices, and two parameters. All other constructions are derived from this one. The basic method and its arguments are  described first, followed by the other methods. The BRepBuilderAPI_MakeEdge  class can provide extra information and return an error status. 
 
-Basic Edge construction
------------------------
+#### Basic Edge construction
 
 ~~~~~
 Handle(Geom_Curve) C = ...; // a curve 
@@ -1238,7 +1247,8 @@ TopoDS_Edge E = BRepBuilderAPI_MakeEdge(C,V1,V2,p1,p2);
 
 where C is the domain of the edge; V1 is the first vertex oriented FORWARD; V2 is the second vertex oriented REVERSED; p1  and p2 are the parameters for the vertices V1 and V2 on the curve. The default  tolerance is associated with this edge. 
 
-![](/user_guides/modeling_algos/images/modeling_algos_image022.jpg "Basic Edge Construction")
+@image html /user_guides/modeling_algos/images/modeling_algos_image022.jpg "Basic Edge Construction"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image022.jpg "Basic Edge Construction"
 
 The following rules  apply to the arguments: 
 
@@ -1263,11 +1273,12 @@ The following rules  apply to the arguments:
 
 The figure below  illustrates two special cases, a semi-infinite edge and an edge on a periodic  curve. 
 
-![](/user_guides/modeling_algos/images/modeling_algos_image023.jpg   "Infinite and Periodic Edges")
+@image html /user_guides/modeling_algos/images/modeling_algos_image023.jpg   "Infinite and Periodic Edges"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image023.jpg   "Infinite and Periodic Edges"
 
 
-Other Edge constructions
-------------------------
+#### Other Edge constructions
+
 *BRepBuilderAPI_MakeEdge* class provides methods, which are all simplified calls  of the previous one: 
 
   * The parameters can be  omitted. They are computed by projecting the vertices on the curve.
@@ -1298,11 +1309,11 @@ E = BRepBuilderAPI_MakeEdge(C);
 
 Six methods (the five above and the basic method) are also provided for curves from the gp package in  place of Curve from Geom. The methods create the corresponding Curve from Geom  and are implemented for the following classes: 
 
-*gp_Lin*       creates a  *Geom_Line* 
-*gp_Circ*      creates a  *Geom_Circle* 
-*gp_Elips*    creates a  *Geom_Ellipse* 
-*gp_Hypr*    creates a  *Geom_Hyperbola* 
-*gp_Parab*   creates a  *Geom_Parabola* 
+*gp_Lin*       creates a  *Geom_Line* 
+*gp_Circ*      creates a  *Geom_Circle* 
+*gp_Elips*    creates a  *Geom_Ellipse* 
+*gp_Hypr*    creates a  *Geom_Hyperbola* 
+*gp_Parab*   creates a  *Geom_Parabola* 
 
 There are also two  methods to construct edges from two vertices or two points. These methods  assume that the curve is a line; the vertices or points must have different  locations. 
 
@@ -1319,9 +1330,9 @@ E = BRepBuilderAPI_MakeEdge(V1,V2);
 E = BRepBuilderAPI_MakeEdge(P1,P2); 
 ~~~~~
 
-Other information and error status
-----------------------------------
-If BRepBuilderAPI_MakeEdge is used as a class, it can provide two vertices. This is useful when  the vertices were not provided as arguments, for example when the edge was  constructed from a curve and parameters. The two methods Vertex1 and Vertex2  return the vertices. Note that the returned vertices can be null if the edge is  open in the corresponding direction. 
+#### Other information and error status
+
+If *BRepBuilderAPI_MakeEdge* is used as a class, it can provide two vertices. This is useful when  the vertices were not provided as arguments, for example when the edge was  constructed from a curve and parameters. The two methods *Vertex1* and *Vertex2*  return the vertices. Note that the returned vertices can be null if the edge is  open in the corresponding direction. 
 
 The *Error* method  returns a term of the *BRepBuilderAPI_EdgeError* enumeration. It can be used to analyze the error when *IsDone* method returns False. The terms are: 
 
@@ -1335,7 +1346,8 @@ The *Error* method  returns a term of the *BRepBuilderAPI_EdgeError* enumeration
 
 The following example  creates a rectangle centered on the origin of dimensions H, L with fillets of radius R. The edges and the vertices are stored in the arrays *theEdges* and *theVertices*. We use class *Array1OfShape* (i.e. not arrays of edges or vertices).  See the image below. 
 
-![](/user_guides/modeling_algos/images/modeling_algos_image024.jpg "Creating a Wire")
+@image html /user_guides/modeling_algos/images/modeling_algos_image024.jpg "Creating a Wire"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image024.jpg "Creating a Wire"
 
 ~~~~~
 #include <BRepBuilderAPI_MakeEdge.hxx> 
@@ -1446,16 +1458,15 @@ Example of an open  polygon from four points:
 TopoDS_Wire W = BRepBuilderAPI_MakePolygon(P1,P2,P3,P4); 
 ~~~~~
 
-BRepBuilderAPI_MakePolygon class maintains a current wire. The current wire can  be extracted at any moment and the construction can proceed to a longer wire.  After each point insertion, the class maintains the last created edge and  vertex, which are returned by the methods Edge, FirstVertex and LastVertex. 
+*BRepBuilderAPI_MakePolygon* class maintains a current wire. The current wire can  be extracted at any moment and the construction can proceed to a longer wire.  After each point insertion, the class maintains the last created edge and  vertex, which are returned by the methods *Edge, FirstVertex* and *LastVertex*. 
 
-When the added point or  vertex has the same location as the previous one it is not added to the current  wire but the most recently created edge becomes Null. The **Added** method  can be used to test this condition. The MakePolygon class never raises an  error. If no vertex has been added, the Wire is Null. If two vertices are at  the same location, no edge is created. 
+When the added point or  vertex has the same location as the previous one it is not added to the current  wire but the most recently created edge becomes Null. The *Added* method  can be used to test this condition. The *MakePolygon* class never raises an  error. If no vertex has been added, the *Wire* is *Null*. If two vertices are at  the same location, no edge is created. 
 
 @subsubsection occt_modalg_3_1_5 Face
 
 Use *BRepBuilderAPI_MakeFace* class to create a face from a surface and wires. An underlying surface is  constructed from a surface and optional parametric values. Wires can be added  to the surface. A planar surface can be constructed from a wire. An error  status can be returned after face construction. 
 
-Basic face construction
------------------------
+#### Basic face construction
 
 A face can be  constructed from a surface and four parameters to determine a limitation of the  UV space. The parameters are optional, if they are omitted the natural bounds  of the surface are used. Up to four edges and vertices are created with a wire.  No edge is created when the parameter is infinite. 
 
@@ -1465,7 +1476,8 @@ Standard_Real umin,umax,vmin,vmax; // parameters
 TopoDS_Face F =  BRepBuilderAPI_MakeFace(S,umin,umax,vmin,vmax); 
 ~~~~~
 
-![](/user_guides/modeling_algos/images/modeling_algos_image025.jpg   Basic Face Construction)
+@image html /user_guides/modeling_algos/images/modeling_algos_image025.jpg "Basic Face Construction"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image025.jpg "Basic Face Construction"
 
 To make a face from the  natural boundary of a surface, the parameters are not required: 
 
@@ -1475,20 +1487,21 @@ TopoDS_Face F = BRepBuilderAPI_MakeFace(S);
 ~~~~~
 
 Constraints on the  parameters are similar to the constraints in *BRepBuilderAPI_MakeEdge*. 
-  * umin,umax (vmin,vmax) must be  in the range of the surface and must be increasing.
-  * On a U (V) periodic surface  umin and umax (vmin,vmax) are adjusted.
-  * umin, umax, vmin, vmax can be  infinite. There will be no edge in the corresponding direction.
+  * *umin,umax (vmin,vmax)* must be  in the range of the surface and must be increasing.
+  * On a *U (V)* periodic surface  *umin* and *umax (vmin,vmax)* are adjusted.
+  * *umin, umax, vmin, vmax* can be  infinite. There will be no edge in the corresponding direction.
 
 
-Other face constructions
-------------------------
+#### Other face constructions
+
 The two basic  constructions (from a surface and from a surface and parameters) are  implemented for all the gp package surfaces, which are transformed in the  corresponding Surface from Geom. 
 
-*gp_Pln*                creates  a *Geom_Plane* 
-*gp_Cylinder*           creates  a *Geom_CylindricalSurface* 
-*gp_Cone*               creates  a *Geom_ConicalSurface* 
-*gp_Sphere*             creates  a *Geom_SphericalSurface* 
-*gp_Torus*              creates  a *Geom_ToroidalSurface* 
+| :------------------- | :----------- | :------------- |
+| *gp_Pln*             |    | *Geom_Plane* |
+| *gp_Cylinder*        |   | *Geom_CylindricalSurface* |
+| *gp_Cone*            |   creates  a | *Geom_ConicalSurface* |
+| *gp_Sphere*          |    | *Geom_SphericalSurface* |
+| *gp_Torus*           |    | *Geom_ToroidalSurface* |
 
 Once a face has been  created, a wire can be added using the Add method. For example, the following  code creates a cylindrical surface and adds a wire. 
 
@@ -1500,7 +1513,7 @@ MF.Add(W);
 TopoDS_Face F = MF; 
 ~~~~~
 
-More than one wire can  be added to a face, provided that they do not cross each other and they define  only one area on the surface. (Note that this is not checked). The edges on a  Face must have a parametric curve description. 
+More than one wire can  be added to a face, provided that they do not cross each other and they define  only one area on the surface. (Note that this is not checked). The edges on a Face must have a parametric curve description. 
 
 If there is no  parametric curve for an edge of the wire on the Face it is computed by  projection. 
 
@@ -1532,7 +1545,7 @@ return F;
 } 
 ~~~~~
 
-The last use of MakeFace is to copy an existing face to  add new wires. For example the following code adds a new wire to a face: 
+The last use of *MakeFace* is to copy an existing face to  add new wires. For example the following code adds a new wire to a face: 
 
 ~~~~~
 TopoDS_Face F = ...; // a face 
@@ -1540,7 +1553,7 @@ TopoDS_Wire W = ...; // a wire
 F = BRepBuilderAPI_MakeFace(F,W); 
 ~~~~~
 
-To add more than one  wire an instance of the *BRepBuilderAPI_MakeFace* class can be created with the  face and the first wire and the new wires inserted with the Add method. 
+To add more than one  wire an instance of the *BRepBuilderAPI_MakeFace* class can be created with the face and the first wire and the new wires inserted with the Add method. 
 
 Error status
 ------------
@@ -1550,7 +1563,7 @@ The Error method returns  an error status, which is a term from the *BRepBuilder
 * *NoFace* - no initialization of the algorithm; an empty constructor was used. 
 * *NotPlanar* - no  surface was given and the wire was not planar. 
 * *CurveProjectionFailed* - no curve was found  in the parametric space of the surface for an edge. 
-* *ParametersOutOfRange* - the parameters  umin,umax,vmin,vmax are out of the surface. 
+* *ParametersOutOfRange* - the parameters  *umin, umax, vmin, vmax* are out of the surface. 
 
 @subsubsection occt_modalg_3_1_6 Wire
 The wire is a composite shape built not from a geometry, but by the assembly of edges. *BRepBuilderAPI_MakeWire* class can build a wire from one or more edges or connect new edges to an  existing wire. 
@@ -1594,7 +1607,7 @@ BRepBuilderAPI_MakeWire class can return the last edge added to the wire (Edge  
 The Error method returns  a term of the *BRepBuilderAPI_WireError* enumeration: 
 *WireDone* - no  error occurred. 
 *EmptyWire* - no  initialization of the algorithm, an empty constructor was used. 
-*DisconnectedWire* - the last added edge was not connected to the wire. 
+*DisconnectedWire* - the last added edge was not connected to the wire. 
 *NonManifoldWire* - the  wire with some singularity. 
 
 @subsubsection occt_modalg_3_1_7 Shell
@@ -1631,7 +1644,7 @@ TopoDS_Shape myNewShape2 = theTrsf.Shape()
 
 @subsubsection occt_modalg_3_2_2 Duplication
 
-Use the  BRepBuilderAPI_Copy class to duplicate a shape. A new shape is thus created. 
+Use the  *BRepBuilderAPI_Copy* class to duplicate a shape. A new shape is thus created. 
 In the following example, a  solid is copied: 
 
 ~~~~~
@@ -1659,20 +1672,22 @@ TopoDS_Solid theBox = BRepPrimAPI_MakeBox(10.,20.,30.);
 
 The four methods to build a box are shown in the figure: 
 
-![](/user_guides/modeling_algos/images/modeling_algos_image026.jpg  "Making Boxes")
+@image html /user_guides/modeling_algos/images/modeling_algos_image026.jpg  "Making Boxes"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image026.jpg  "Making Boxes"
 
 @subsubsection occt_modalg_4_1_2 Wedge
-BRepPrimAPI_MakeWedge class allows building a wedge, which is a slanted box, i.e. a  box with angles. The wedge is constructed in much the same way as a box i.e.  from three dimensions dx,dy,dz plus arguments or from an axis system, three  dimensions, and arguments. 
+*BRepPrimAPI_MakeWedge* class allows building a wedge, which is a slanted box, i.e. a  box with angles. The wedge is constructed in much the same way as a box i.e.  from three dimensions dx,dy,dz plus arguments or from an axis system, three  dimensions, and arguments. 
 
 The following figure  shows two ways to build wedges. One is to add an ltx dimension, which is the  length in x of the face at dy. The second is to add xmin, xmax, zmin, zmax to  describe the face at dy. 
 
 The first method is a  particular case of the second with xmin = 0, xmax = ltx, zmin = 0, zmax = dz. 
 To make a centered  pyramid you can use xmin = xmax = dx / 2, zmin = zmax = dz / 2. 
 
-![](/user_guides/modeling_algos/images/modeling_algos_image027.jpg "Making Wedges")
+@image html /user_guides/modeling_algos/images/modeling_algos_image027.jpg "Making Wedges"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image027.jpg "Making Wedges"
 
 @subsubsection occt_modalg_4_1_3 Rotation object
-BRepPrimAPI_MakeOneAxis is a deferred class used as a root class for all classes constructing rotational primitives. Rotational primitives are  created by rotating a curve around an axis. They cover the cylinder, the cone,  the sphere, the torus, and the revolution, which provides all other curves. 
+*BRepPrimAPI_MakeOneAxis* is a deferred class used as a root class for all classes constructing rotational primitives. Rotational primitives are  created by rotating a curve around an axis. They cover the cylinder, the cone,  the sphere, the torus, and the revolution, which provides all other curves. 
 
 The particular  constructions of these primitives are described, but they all have some common  arguments, which are: 
 
@@ -1682,10 +1697,11 @@ The particular  constructions of these primitives are described, but they all ha
 
 The result of the  OneAxis construction is a Solid, a Shell, or a Face. The face is the face  covering the rotational surface. Remember that you will not use the OneAxis  directly but one of the derived classes, which provide improved constructions.  The following figure illustrates the OneAxis arguments. 
 
-![](/user_guides/modeling_algos/images/modeling_algos_image028.jpg  "MakeOneAxis  arguments")
+@image html /user_guides/modeling_algos/images/modeling_algos_image028.jpg  "MakeOneAxis  arguments"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image028.jpg  "MakeOneAxis  arguments"
 
 @subsubsection occt_modalg_4_1_4 Cylinder
-BRepPrimAPI_MakeCylinder class allows creating cylindrical primitives. A cylinder is created either in the  default coordinate system or in a given coordinate system (gp_Ax2). There are  two constructions: 
+*BRepPrimAPI_MakeCylinder* class allows creating cylindrical primitives. A cylinder is created either in the  default coordinate system or in a given coordinate system (gp_Ax2). There are  two constructions: 
 
   * Radius and height, to build a  full cylinder.
   * Radius, height and angle to  build a portion of a cylinder.
@@ -1701,10 +1717,11 @@ axes.Translate(gp_Vec(X,Y,Z));
 TopoDS_Face F = 
 BRepPrimAPI_MakeCylinder(axes,R,DY,PI/2.); 
 ~~~~~
-![](/user_guides/modeling_algos/images/modeling_algos_image029.jpg  "Cylinder")
+@image html /user_guides/modeling_algos/images/modeling_algos_image029.jpg  "Cylinder"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image029.jpg  "Cylinder"
 
 @subsubsection occt_modalg_4_1_5 Cone
-BRepPrimAPI_MakeCone  class allows creating conical primitives. Like a cylinder, a cone is created either in  the default coordinate system or in a given coordinate system (gp_Ax2). There  are two constructions: 
+*BRepPrimAPI_MakeCone* class allows creating conical primitives. Like a cylinder, a cone is created either in  the default coordinate system or in a given coordinate system (gp_Ax2). There  are two constructions: 
 
   * Two radii and height, to  build a full cone. One of the radii can be null to make a sharp cone.
   * Radii, height and angle to  build a truncated cone.
@@ -1716,10 +1733,11 @@ Standard_Real R1 = 30, R2 = 10, H = 15;
 TopoDS_Solid S = BRepPrimAPI_MakeCone(R1,R2,H); 
 ~~~~~
 
-![](/user_guides/modeling_algos/images/modeling_algos_image030.jpg "Cone")
+@image html /user_guides/modeling_algos/images/modeling_algos_image030.jpg "Cone"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image030.jpg "Cone"
 
 @subsubsection occt_modalg_4_1_6 Sphere
-BRepPrimAPI_MakeSphere class allows creating spherical primitives. Like a cylinder, a  sphere is created either in the default coordinate system or in a given  coordinate system (gp_Ax2). There are four constructions: 
+*BRepPrimAPI_MakeSphere* class allows creating spherical primitives. Like a cylinder, a  sphere is created either in the default coordinate system or in a given  coordinate system (gp_Ax2). There are four constructions: 
 
   * From a radius - builds a full  sphere. 
   * From a radius and an angle - builds  a lune (digon).
@@ -1739,18 +1757,20 @@ TopoDS_Solid S4 = BRepPrimAPI_MakeSphere(R,a1,a2,ang);
 
 Note that we could  equally well choose to create Shells instead of Solids. 
 
-![](/user_guides/modeling_algos/images/modeling_algos_image031.jpg  "Examples of  Spheres")
+@image html /user_guides/modeling_algos/images/modeling_algos_image031.jpg  "Examples of  Spheres"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image031.jpg  "Examples of  Spheres"
 
 
 @subsubsection occt_modalg_4_1_7 Torus
-BRepPrimAPI_MakeTorus class allows creating toroidal primitives. Like the other  primitives, a torus is created either in the default coordinate system or in a  given coordinate system (gp_Ax2). There are four constructions similar to the  sphere constructions: 
+*BRepPrimAPI_MakeTorus* class allows creating toroidal primitives. Like the other  primitives, a torus is created either in the default coordinate system or in a  given coordinate system (gp_Ax2). There are four constructions similar to the  sphere constructions: 
 
   * Two radii - builds a full  torus.
   * Two radii and an angle - builds  an angular torus segment.
   * Two radii and two angles -  builds a wraparound torus segment between two radial planes. The angles a1, a2 must follow  the relation 0 < a2 - a1 < 2*PI. 
   * Two radii and three angles - a combination of two previous methods builds a portion of torus segment.
 
-![](/user_guides/modeling_algos/images/modeling_algos_image032.gif "Examples of Tori")
+@image html /user_guides/modeling_algos/images/modeling_algos_image032.gif "Examples of Tori"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image032.gif "Examples of Tori"
 
 The following code  builds four toroidal shells from two radii and three angles. 
 
@@ -1767,7 +1787,7 @@ TopoDS_Shell S4 =
 Note that we could  equally well choose to create Solids instead of Shells. 
 
 @subsubsection occt_modalg_4_1_8 Revolution
-BRepPrimAPI_MakeRevolution class allows building a uniaxial primitive from a curve. As other uniaxial primitives it can be created in the default coordinate system  or in a given coordinate system. 
+*BRepPrimAPI_MakeRevolution* class allows building a uniaxial primitive from a curve. As other uniaxial primitives it can be created in the default coordinate system  or in a given coordinate system. 
 
 The curve can be any  *Geom_Curve*, provided it is planar and lies in the same plane as the Z-axis of  local coordinate system. There are four modes of construction: 
 
@@ -1790,7 +1810,8 @@ Sweeps are the objects  you obtain by sweeping a **profile** along a **path**. T
 
 It is forbidden to sweep  Solids and Composite Solids. A Compound generates a Compound with the sweep of  all its elements. 
 
-![](/user_guides/modeling_algos/images/modeling_algos_image033.jpg "Generating a  sweep")
+@image html /user_guides/modeling_algos/images/modeling_algos_image033.jpg "Generating a  sweep"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image033.jpg "Generating a  sweep"
 
 *BRepPrimAPI_MakeSweep class* is a deferred class used as a root of the the following sweep classes:
 * *BRepPrimAPI_MakePrism* - produces a linear sweep
@@ -1799,9 +1820,10 @@ It is forbidden to sweep  Solids and Composite Solids. A Compound generates a Co
 
 
 @subsubsection occt_modalg_4_2_2 Prism
-BRepPrimAPI_MakePrism class allows creating a linear **prism** from a shape and a vector or a direction. 
+*BRepPrimAPI_MakePrism* class allows creating a linear **prism** from a shape and a vector or a direction. 
 * A vector allows creating a finite  prism;
 * A direction allows creating an infinite or semi-infinite prism. The semi-infinite or infinite  prism is toggled by a Boolean argument. All constructors have a boolean argument to copy the original  shape or share it (by default). 
+
 The following code creates a finite, an infinite and a semi-infinite solid using a face, a  direction and a length
 . 
 ~~~~~
@@ -1819,12 +1841,13 @@ TopoDS_Solid P3 =  BRepPrimAPI_MakePrism(F,direc,Standard_False);
 // semi-infinite 
 ~~~~~
 
-![](/user_guides/modeling_algos/images/modeling_algos_image034.jpg   "Finite, infinite, and semi-infinite prisms")
+@image html /user_guides/modeling_algos/images/modeling_algos_image034.jpg   "Finite, infinite, and semi-infinite prisms"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image034.jpg   "Finite, infinite, and semi-infinite prisms"
 
 @subsubsection occt_modalg_4_2_3 Rotation
-BRepPrimAPI_MakeRevol class allows creating a rotational sweep from a shape, an axis  (gp_Ax1), and an angle. The angle has a default value of 2*PI which means a  closed revolution. 
+*BRepPrimAPI_MakeRevol* class allows creating a rotational sweep from a shape, an axis  (gp_Ax1), and an angle. The angle has a default value of 2*PI which means a  closed revolution. 
 
-BRepPrimAPI_MakeRevol constructors  have a last argument to copy or share the original shape. The following code creates a a full and a partial rotation using a face, an axis and an angle.
+*BRepPrimAPI_MakeRevol* constructors  have a last argument to copy or share the original shape. The following code creates a a full and a partial rotation using a face, an axis and an angle.
 
 ~~~~~
 TopoDS_Face F = ...; // the profile 
@@ -1835,29 +1858,32 @@ TopoDS_Solid R1 = BRepPrimAPI_MakeRevol(F,axis);
 TopoDS_Solid R2 = BRepPrimAPI_MakeRevol(F,axis,ang); 
 ~~~~~
 
-![](/user_guides/modeling_algos/images/modeling_algos_image035.jpg "Full and partial  rotation")
+@image html /user_guides/modeling_algos/images/modeling_algos_image035.jpg "Full and partial  rotation"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image035.jpg "Full and partial  rotation"
 
 @section occt_modalg_5 Boolean  Operations
 
 Boolean operations are  used to create new shapes from the combinations of two shapes. 
-|Fuse   |  all points in S1 or S2  |
-|Common |  all points in S1 and S2 |
-|Cut S1 by S2| all points in S1 and not in S2 | 
+
+| Fuse   |  all points in S1 or S2  |
+| Common |  all points in S1 and S2 |
+| Cut S1 by S2| all points in S1 and not in S2 | 
 
 BRepAlgoAPI_BooleanOperation class is the deferred root class for Boolean  operations.
 
-![](/user_guides/modeling_algos/images/modeling_algos_image036.jpg  "Boolean Operations")
+@image html /user_guides/modeling_algos/images/modeling_algos_image036.jpg  "Boolean Operations"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image036.jpg  "Boolean Operations"
 
 @subsection occt_modalg_5_1 Fuse
 
-BRepAlgoAPI_Fuse performs the Fuse operation. 
+*BRepAlgoAPI_Fuse* performs the Fuse operation. 
 ~~~~~
 TopoDS_Shape A = ..., B = ...; 
 TopoDS_Shape S = BRepAlgoAPI_Fuse(A,B); 
 ~~~~~
 
 @subsection occt_modalg_5_2 Common
-BRepAlgoAPI_Common  performs the Common operation. 
+*BRepAlgoAPI_Common*  performs the Common operation. 
 
 ~~~~~
 TopoDS_Shape A = ..., B = ...; 
@@ -1865,7 +1891,7 @@ TopoDS_Shape S = BRepAlgoAPI_Common(A,B);
 ~~~~~
 
 @subsection occt_modalg_5_3 Cut
-BRepAlgoAPI_Cut performs the Cut operation. 
+*BRepAlgoAPI_Cut* performs the Cut operation. 
 
 ~~~~~
 TopoDS_Shape A = ..., B = ...; 
@@ -1874,9 +1900,10 @@ TopoDS_Shape S = BRepAlgoAPI_Cut(A,B);
 
 @subsection occt_modalg_5_4 Section
 
-BRepAlgoAPI_Section performs the section, described as a *TopoDS_Compound* made of *TopoDS_Edge*. 
+*BRepAlgoAPI_Section* performs the section, described as a *TopoDS_Compound* made of *TopoDS_Edge*. 
 
-![](/user_guides/modeling_algos/images/modeling_algos_image037.jpg "Section  operation")
+@image html /user_guides/modeling_algos/images/modeling_algos_image037.jpg "Section  operation"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image037.jpg "Section  operation"
 
 ~~~~~
 TopoDS_Shape A = ...,  TopoDS_ShapeB = ...; 
@@ -1892,15 +1919,16 @@ A fillet is a smooth  face replacing a sharp edge.
 *BRepFilletAPI_MakeFillet* class allows filleting a shape.  
 
 To produce a fillet, it is necessary to define the filleted shape at the construction of the class and  add fillet  descriptions using the *Add* method.
-A fillet description contains an edge and a  radius. The edge must be shared by two faces. The fillet is automatically extended to all edges in a smooth continuity with the original  edge. 
-It is not an error to Add a fillet twice,  the last description holds. 
 
-![](/user_guides/modeling_algos/images/modeling_algos_image038.jpg "Filleting two edges using radii r1 and  r2.")
+A fillet description contains an edge and a  radius. The edge must be shared by two faces. The fillet is automatically extended to all edges in a smooth continuity with the original  edge. It is not an error to add a fillet twice,  the last description holds. 
+
+@image html /user_guides/modeling_algos/images/modeling_algos_image038.jpg "Filleting two edges using radii r1 and  r2."
+@image latex /user_guides/modeling_algos/images/modeling_algos_image038.jpg "Filleting two edges using radii r1 and  r2."
 
 In the following example  a filleted box with dimensions a,b,c and radius r is created. 
 
-Constant  radius 
-----------------
+### Constant  radius 
+
 
 ~~~~~
 #include <TopoDS_Shape.hxx> 
@@ -1929,10 +1957,11 @@ TopoDS_Shape FilletedBox(const Standard_Real a,
 	} 
 ~~~~~
 
-![](/user_guides/modeling_algos/images/modeling_algos_image039.jpg "Fillet with constant radius")
+@image html /user_guides/modeling_algos/images/modeling_algos_image039.jpg "Fillet with constant radius"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image039.jpg "Fillet with constant radius"
 
-Changing radius
----------------
+#### Changing radius
+
 
 ~~~~~
 void CSampleTopologicalOperationsDoc::OnEvolvedblend1() 
@@ -1957,28 +1986,30 @@ void CSampleTopologicalOperationsDoc::OnEvolvedblend1()
 } 
 ~~~~~
 
-![](/user_guides/modeling_algos/images/modeling_algos_image040.jpg	"Fillet with changing radius")
+@image html /user_guides/modeling_algos/images/modeling_algos_image040.jpg	"Fillet with changing radius"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image040.jpg	"Fillet with changing radius"
  
 @subsection occt_modalg_6_1_2 Chamfer
 
 A chamfer is a rectilinear edge  replacing a sharp vertex of the face.
 
 The use of *BRepFilletAPI_MakeChamfer* class is similar to the use of  *BRepFilletAPI_MakeFillet*, except for the following: 
-
-*The surfaces created are  ruled and not smooth. 
-*The *Add* syntax for  selecting edges requires one or two distances, one edge and one face  (contiguous to the edge):
+* The surfaces created are  ruled and not smooth. 
+* The *Add* syntax for  selecting edges requires one or two distances, one edge and one face  (contiguous to the edge).
 
 ~~~~~ 
 Add(dist,  E, F) 
 Add(d1,  d2, E, F) with d1 on the face F. 
 ~~~~~
 
-![](/user_guides/modeling_algos/images/modeling_algos_image041.jpg	"Chamfer")
+@image html /user_guides/modeling_algos/images/modeling_algos_image041.jpg	"Chamfer"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image041.jpg	"Chamfer"
 
 @subsection occt_modalg_6_1_3 Fillet on a planar face
 
-BRepFilletAPI_MakeFillet2d class allows constructing fillets and chamfers on planar faces. 
+*BRepFilletAPI_MakeFillet2d* class allows constructing fillets and chamfers on planar faces. 
 To create a fillet on planar face: define it, indicate, which vertex is  to be deleted, and give the fillet radius with *AddFillet* method. 
+
 A chamfer can be calculated with *AddChamfer* method. It can be  described by 
   * two edges and two distances
   * one edge, one vertex, one  distance and one angle.
@@ -2049,14 +2080,16 @@ Result = BRepOffsetAPI_MakeThickSolid 	(SolidInitial,
 										Tol);
 ~~~~~
 
-![](/user_guides/modeling_algos/images/modeling_algos_image042.jpg	"Shelling")
+@image html /user_guides/modeling_algos/images/modeling_algos_image042.jpg	"Shelling"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image042.jpg	"Shelling"
 
 
 @subsection occt_modalg_7_2  Draft Angle
 
 *BRepOffsetAPI_DraftAngle* class allows modifying a shape by applying draft angles to its planar, cylindrical and conical faces. 
-The class is created or  initialized from a shape, then faces to be modified are added; for each face,  three arguments are used: 
 
+
+The class is created or  initialized from a shape, then faces to be modified are added; for each face,  three arguments are used: 
   * Direction: the direction with  which the draft angle is measured
   * Angle: value of the angle
   * Neutral plane: intersection  between the face and the neutral plane is invariant.
@@ -2101,11 +2134,13 @@ else {
 } 
 ~~~~~
 
-![](/user_guides/modeling_algos/images/modeling_algos_image043.jpg  "DraftAngle")
+@image html /user_guides/modeling_algos/images/modeling_algos_image043.jpg  "DraftAngle"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image043.jpg  "DraftAngle"
 
 @subsection occt_modalg_7_3 Pipe  Constructor
 
 *BRepOffsetAPI_MakePipe* class allows creating a pipe from a Spine,  which is a Wire and a Profile which is a Shape. This implementation is limited  to spines with smooth transitions, sharp transitions are precessed by  *BRepOffsetAPI_MakePipeShell*. To be more precise the continuity must be G1,  which means that the tangent must have the same direction, though not necessarily the same magnitude, at neighboring edges. 
+
 The angle between the spine and the profile is preserved throughout the pipe. 
 
 ~~~~~
@@ -2114,12 +2149,15 @@ TopoDS_Shape Profile = ...;
 TopoDS_Shape Pipe =  BRepOffsetAPI_MakePipe(Spine,Profile); 
 ~~~~~
 
-![](/user_guides/modeling_algos/images/modeling_algos_image044.jpg "Example of a Pipe")
+@image html /user_guides/modeling_algos/images/modeling_algos_image044.jpg "Example of a Pipe"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image044.jpg "Example of a Pipe"
 
 @subsection occt_modalg_7_4 Evolved Solid
 
 *BRepOffsetAPI_MakeEvolved* class allows creating an evolved solid from a Spine (planar face or wire) and a profile (wire). 
+
 The evolved solid is an unlooped sweep generated by the spine and the profile. 
+
 The evolved solid is  created by sweeping the profile’s reference axes on the spine. The origin of  the axes moves to the spine, the X axis and the local tangent coincide and the  Z axis is normal to the face. 
 
 The reference axes of  the profile can be defined following two distinct modes: 
@@ -2142,19 +2180,23 @@ BRepOffsetAPI_MakeEvolved(Spine,Profile);
 
 *BRepOffsetAPI_Sewing*  class allows sewing TopoDS Shapes together along their common edges. The edges  can be partially shared as in the following example. 
 
-![](/user_guides/modeling_algos/images/modeling_algos_image045.jpg "Shapes with partially shared edges")
+@image html /user_guides/modeling_algos/images/modeling_algos_image045.jpg "Shapes with partially shared edges"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image045.jpg "Shapes with partially shared edges"
 
-The constructor takes as  arguments the tolerance (default value is 10-6) and a flag, which is used to mark the  degenerate shapes. 
+The constructor takes as  arguments the tolerance (default value is 10-6) and a flag, which is used to mark the  degenerate shapes.
+ 
 The following methods are used in this class:
 * *Add* adds shapes, as it is needed; 
 * *Perform* forces calculation of the sewed shape. 
 * *SewedShape* returns the result. 
+
 Additional methods can  be used to give information on the number of free boundaries, multiple edges and degenerate shapes. 
 
 @subsection occt_modalg_8_2 Find Contiguous Edges
 *BRepOffsetAPI_FindContiguousEdges* class is used to find edges, which coincide  among a set of shapes within the given tolerance; these edges can be analyzed  for tangency, continuity (C1, G2, etc.)... 
 
 The constructor takes as  arguments the tolerance defining the edge proximity (10-6 by default) and a flag used to mark degenerated  shapes. 
+
 The following methods are used in this class: 
 * *Add* adds shapes, which are to be analyzed; 
 * *NbEdges* returns the total number of edges; 
@@ -2166,14 +2208,14 @@ The following methods are used in this class:
 @section occt_modalg_9 Features
 
 @subsection occt_modalg_9_1 The  BRepFeat Classes and their use
-BRepFeat package is  used to manipulate extensions of the classical boundary representation of  shapes closer to features. In that sense, BRepFeat is an extension of BRepBuilderAPI  package. 
+*BRepFeat* package is  used to manipulate extensions of the classical boundary representation of  shapes closer to features. In that sense, *BRepFeat* is an extension of *BRepBuilderAPI*  package. 
 
 @subsubsection occt_modalg_9_1_1 Form classes
-The Form from BRepFeat  class is a deferred class used as a root for form features. It inherits  MakeShape from BRepBuilderAPI and provides implementation of methods keep track of all sub-shapes. 
+The *Form* from *BRepFeat* class is a deferred class used as a root for form features. It inherits  *MakeShape* from *BRepBuilderAPI* and provides implementation of methods keep track of all sub-shapes. 
 
-MakePrism
----------
-MakePrism from  BRepFeat class is used to build a prism interacting with a shape. It is created  or initialized from 
+#### MakePrism
+
+*MakePrism* from  *BRepFeat* class is used to build a prism interacting with a shape. It is created  or initialized from 
   * a shape (the basic shape),
   * the base of the prism,
   * a face (the face of sketch on  which the base has been defined and used to determine whether the base has been  defined on the basic shape or not),
@@ -2183,19 +2225,20 @@ MakePrism from  BRepFeat class is used to build a prism interacting with a shape
 
 There are six Perform  methods: 
 
-|Perform(Height)       | The  resulting prism is of the given length. |
-|Perform(Until)        | The  prism is defined between the position of the base and the given face. |
-|Perform(From, Until)  | The  prism is defined between the two faces From and Until. |
-|PerformUntilEnd()     | The  prism is semi-infinite, limited by the actual position of the base. |
-|PerformFromEnd(Until) | The  prism is semi-infinite, limited by the face Until. |
-| PerformThruAll()     | The  prism is infinite. In the case of a depression, the result is similar to a cut  with an infinite prism. In the case of a protrusion, infinite parts are not  kept in the result. |
+| ---------------------- | ------------------------------------- |
+| *Perform(Height)*       | The  resulting prism is of the given length. |
+| *Perform(Until)*        | The  prism is defined between the position of the base and the given face. |
+| *Perform(From, Until)*  | The  prism is defined between the two faces From and Until. |
+| *PerformUntilEnd()*     | The  prism is semi-infinite, limited by the actual position of the base. |
+| *PerformFromEnd(Until)* | The  prism is semi-infinite, limited by the face Until. |
+| *PerformThruAll()*     | The  prism is infinite. In the case of a depression, the result is similar to a cut  with an infinite prism. In the case of a protrusion, infinite parts are not  kept in the result. |
 
-**Note** *Add* method can be used before *Perform* methods to indicate that a face  generated by an edge slides onto a face of the base shape.
+**Note** that *Add* method can be used before *Perform* methods to indicate that a face  generated by an edge slides onto a face of the base shape.
 
 In the following  sequence, a protrusion is performed, i.e. a face of the shape is changed into a  prism. 
 
 ~~~~~
-TopoDS_Shape Sbase = ...;  // an initial shape 
+TopoDS_Shape Sbase = ...;  // an initial shape 
 TopoDS_Face Fbase = ....; // a base of prism 
 
 gp_Dir Extrusion (.,.,.); 
@@ -2211,13 +2254,15 @@ if (thePrism.IsDone()) {
 } 
 ~~~~~
 
-![](/user_guides/modeling_algos/images/modeling_algos_image047.jpg  "Fusion with MakePrism")
+@image html /user_guides/modeling_algos/images/modeling_algos_image047.jpg  "Fusion with MakePrism"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image047.jpg  "Fusion with MakePrism"
 
-![](/user_guides/modeling_algos/images/modeling_algos_image048.jpg  "Creating a  prism between two faces with Perform(From, Until)")
+@image html /user_guides/modeling_algos/images/modeling_algos_image048.jpg  "Creating a  prism between two faces with Perform(From, Until)"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image048.jpg  "Creating a  prism between two faces with Perform(From, Until)"
 
-MakeDPrism
-----------
-MakeDPrism from  BRepFeat class is used to build draft prism topologies interacting with a basis  shape . These can be depressions or protrusions. A class object is created or  initialized from 
+#### MakeDPrism
+
+*MakeDPrism* from  *BRepFeat* class is used to build draft prism topologies interacting with a basis  shape . These can be depressions or protrusions. A class object is created or  initialized from 
   * a shape (basic shape),
   * the base of the prism,
   * a face (face of sketch on  which the base has been defined and used to determine whether the base has been  defined on the basic shape or not),
@@ -2266,11 +2311,12 @@ MKDP.Perform(200);
 TopoDS_Shape res1 = MKDP.Shape(); 
 ~~~~~
 
-![](/user_guides/modeling_algos/images/modeling_algos_image049.jpg  "A tapered prism")
+@image html /user_guides/modeling_algos/images/modeling_algos_image049.jpg  "A tapered prism"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image049.jpg  "A tapered prism"
 
-MakeRevol
----------
-The MakeRevol from  BRepFeat class is used to build a revolution interacting with a 
+#### MakeRevol
+
+The *MakeRevol* from  *BRepFeat* class is used to build a revolution interacting with a 
 shape. It is created or initialized from 
 
   * a shape (the basic shape,)
@@ -2281,18 +2327,19 @@ shape. It is created or initialized from
   * another boolean indicating  whether the self-intersections have to be found (not used in every case).
 
 There are four Perform  methods: 
-|Perform(Angle)       | The  resulting revolution is of the given magnitude. |
-|Perform(Until)       |The  revolution is defined between the actual position of the base and the given face. |
-|Perform(From, Until) | The  revolution is defined between the two faces, From and Until. |
-|PerformThruAll()     |          The  result is similar to Perform(2*PI). |
 
-**Note** *Add* method can be used before *Perform* methods to indicate that a face  generated by an edge slides onto a face of the base shape.
+| *Perform(Angle)*       | The  resulting revolution is of the given magnitude. |
+| *Perform(Until)*       | The  revolution is defined between the actual position of the base and the given face. |
+| *Perform(From, Until)* | The  revolution is defined between the two faces, From and Until. |
+| *PerformThruAll()*     |          The  result is similar to Perform(2*PI). |
+
+**Note** that *Add* method can be used before *Perform* methods to indicate that a face  generated by an edge slides onto a face of the base shape.
 
 
 In the following sequence, a face is revolved and  the revolution is limited by a face of the base shape. 
 
 ~~~~~
-TopoDS_Shape Sbase = ...;  // an initial shape 
+TopoDS_Shape Sbase = ...;  // an initial shape 
 TopoDS_Face Frevol = ....; // a base of prism 
 TopoDS_Face FUntil = ....; // face limiting the revol 
 
@@ -2310,8 +2357,8 @@ if (theRevol.IsDone()) {
 } 
 ~~~~~
 
-MakePipe
---------
+#### MakePipe
+
 This method constructs compound  shapes with pipe features: depressions or protrusions. A class object is created or initialized from 
   * a shape (basic shape),
   * a base face (profile of the  pipe)
@@ -2322,9 +2369,9 @@ This method constructs compound  shapes with pipe features: depressions or protr
 
 There are three Perform  methods: 
 
-| Perform()            | The  pipe is defined along the entire path (spine wire)   |
-| Perform(Until)       | The  pipe is defined along the path until a given face |
-| Perform(From, Until) | The  pipe is defined between the two faces From and Until | 
+| *Perform()*            | The  pipe is defined along the entire path (spine wire)   |
+| *Perform(Until)*       | The  pipe is defined along the path until a given face    |
+| *Perform(From, Until)* | The  pipe is defined between the two faces From and Until | 
 
 ~~~~~
 TopoDS_Shape S = BRepPrimAPI_MakeBox(400.,250.,300.); 
@@ -2373,11 +2420,15 @@ MKPipe.Perform();
 TopoDS_Shape res1 = MKPipe.Shape(); 
 ~~~~~
 
-![](/user_guides/modeling_algos/images/modeling_algos_image050.jpg  "Pipe depression")
+@image html /user_guides/modeling_algos/images/modeling_algos_image050.jpg  "Pipe depression"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image050.jpg  "Pipe depression"
+
+
 
 @subsubsection occt_modalg_9_1_2 Linear Form
---------------
+
 *MakeLinearForm* class creates a rib or a groove  along a planar surface. 
+
 The semantics of  mechanical features is built around giving thickness to a contour. This  thickness can either be symmetrical - on one side of the contour - or  dissymmetrical - on both sides. As in the semantics of form features, the  thickness is defined by construction of shapes in specific contexts. 
 
 The development contexts  differ, however, in the case of mechanical features. 
@@ -2394,7 +2445,7 @@ A class object is  created or initialized from
   * a Boolean indicating the type  of operation (fusion=rib or cut=groove) on the basic shape;
   * another Boolean indicating  if self-intersections have to be found (not used in every case).
 
-There is one Perform() method, which performs a  prism from the wire along the direction1 and direction2 interacting base shape Sbase. The height of the prism is Magnitude(Direction1)+Magnitude(direction2).  
+There is one *Perform()* method, which performs a  prism from the wire along the *direction1* and *direction2* interacting with base shape *Sbase*. The height of the prism is *Magnitude(Direction1)+Magnitude(direction2)*.  
 
 ~~~~~
 BRepBuilderAPI_MakeWire mkw; 
@@ -2417,7 +2468,7 @@ p1 = p2;
 mkw.Add(BRepBuilderAPI_MakeEdge(p2,gp_Pnt(0.,0.,0.))); 
 TopoDS_Shape S = BRepBuilderAPI_MakePrism(BRepBuilderAPI_MakeFace 
 	(mkw.Wire()),gp_Vec(gp_Pnt(0.,0.,0.),gp_P 
-	 nt(0.,100.,0.))); 
+	 nt(0.,100.,0.))); 
 TopoDS_Wire W = BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(gp_Pnt 
 	(50.,45.,100.), 
 gp_Pnt(100.,45.,50.))); 
@@ -2429,15 +2480,16 @@ aform.Perform();
 TopoDS_Shape res = aform.Shape(); 
 ~~~~~
 
-![](/user_guides/modeling_algos/images/modeling_algos_image051.jpg  "Creating a rib")
+@image html /user_guides/modeling_algos/images/modeling_algos_image051.jpg  "Creating a rib"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image051.jpg  "Creating a rib"
 
 @subsubsection occt_modalg_9_1_3 Gluer
 
-The Gluer from BRepFeat  class allows gluing two solids along faces. The contact faces of the glued  shape must not have parts outside the contact faces of the basic shape. 
+The *Gluer* from *BRepFeat*  class allows gluing two solids along faces. The contact faces of the glued  shape must not have parts outside the contact faces of the basic shape. 
 The class is created or  initialized from two shapes: the “glued” shape and the basic shape (on which  the other shape is glued). 
-Two Bind methods are  used to bind a face of the glued shape to a face of the basic shape and an edge  of the glued shape to an edge of the basic shape. 
+Two *Bind* methods are  used to bind a face of the glued shape to a face of the basic shape and an edge  of the glued shape to an edge of the basic shape. 
 
-**Note** Every face and edge has to be  bounded, if two edges of two glued faces are  coincident they must be explicitly bounded.
+**Note** that every face and edge has to be  bounded, if two edges of two glued faces are  coincident they must be explicitly bounded.
 
 ~~~~~
 TopoDS_Shape Sbase = ...; // the basic shape 
@@ -2469,16 +2521,16 @@ TopoDS_Shape  theResult = theGlue;
 } 
 ~~~~~
 
-@subsubsection occt_modalg_9_1_3 Split Shape
+@subsubsection occt_modalg_9_1_4 Split Shape
 
-SplitShape from  BRepFeat class is used to split faces of a shape with wires or edges. The shape  containing the new entities is rebuilt, sharing the unmodified ones. 
+*SplitShape* from  *BRepFeat* class is used to split faces of a shape with wires or edges. The shape  containing the new entities is rebuilt, sharing the unmodified ones. 
 
 The class is created or  initialized from a shape (the basic shape). 
 Three Add methods are  available: 
 
-| Add(Wire, Face)  | Adds  a new wire on a face of the basic shape. |
-| Add(Edge, Face)  | Adds  a new edge on a face of the basic shape. |
-| Add(EdgeNew, EdgeOld) | Adds  a new edge on an existing one (the old edge must contain the new edge). |
+| *Add(Wire, Face)*  | Adds  a new wire on a face of the basic shape. |
+| *Add(Edge, Face)*  | Adds  a new edge on a face of the basic shape. |
+| *Add(EdgeNew, EdgeOld)* | Adds  a new edge on an existing one (the old edge must contain the new edge). |
 
 **Note** The added wires and edges must  define closed wires on faces or wires located between two  existing edges. Existing edges must not be intersected. 
 
@@ -2497,16 +2549,16 @@ TopoDS_Shape theResult = Spls;
 
 To provide the  precision required in industrial design, drawings need to offer the possibility  of removing lines, which are hidden in a given projection. 
 
-For this the Hidden  Line Removal component provides two algorithms: HLRBRep_Algo  and HLRBRep_PolyAlgo. 
+For this the Hidden  Line Removal component provides two algorithms: *HLRBRep_Algo*  and *HLRBRep_PolyAlgo*. 
 
 These algorithms are  based on the principle of comparing each edge of the shape to be visualized  with each of its faces, and calculating the visible and the hidden parts of  each edge. Note that these are not the  algorithms used in generating  shading, which calculate the visible and hidden parts of each face in a shape  to be visualized by comparing each face in the shape with every other face in  the same shape. 
 These algorithms operate  on a shape and remove or indicate edges hidden by faces. For a given  projection, they calculate a set of lines characteristic of the object being  represented. They are also used in conjunction with extraction utilities, which  reconstruct a new, simplified shape from a selection of the results of the  calculation. This new shape is made up of edges, which represent the shape  visualized in the projection. 
 
-HLRBRep_Algo takes the shape  itself into account whereas HLRBRep_PolyAlgo works with a polyhedral simplification of the shape. When you use HLRBRep_Algo, you obtain an exact result, whereas, when you  use HLRBRep_PolyAlgo, you reduce the computation time. 
+*HLRBRep_Algo* takes the shape  itself into account whereas *HLRBRep_PolyAlgo* works with a polyhedral simplification of the shape. When you use *HLRBRep_Algo*, you obtain an exact result, whereas, when you use *HLRBRep_PolyAlgo*, you reduce the computation time. 
 
-No smoothing algorithm  is provided. Consequently, a polyhedron will be treated as such and the  algorithms will give the results in  form of line segments conforming to the  mathematical definition of the polyhedron. This is always the case with HLRBRep_PolyAlgo. 
+No smoothing algorithm  is provided. Consequently, a polyhedron will be treated as such and the  algorithms will give the results in  form of line segments conforming to the  mathematical definition of the polyhedron. This is always the case with *HLRBRep_PolyAlgo*. 
 
-HLRBRep_Algo and HLRBRep_PolyAlgo can deal with any kind of object, for example, assemblies of  volumes, surfaces, and lines, as long as there are no unfinished  objects or points within it. 
+*HLRBRep_Algo* and *HLRBRep_PolyAlgo* can deal with any kind of object, for example, assemblies of  volumes, surfaces, and lines, as long as there are no unfinished  objects or points within it. 
 
 However, there some restrictions in HLR use:
   * Points are not processed;
@@ -2514,48 +2566,53 @@ However, there some restrictions in HLR use:
   * Infinite faces or lines are not processed.
 
   
-![](/user_guides/modeling_algos/images/modeling_algos_image052.jpg "Sharp, smooth and sewn edges  in a simple screw shape")
+@image html /user_guides/modeling_algos/images/modeling_algos_image052.jpg "Sharp, smooth and sewn edges  in a simple screw shape"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image052.jpg "Sharp, smooth and sewn edges  in a simple screw shape"
 
-![](/user_guides/modeling_algos/images/modeling_algos_image053.jpg "Outline edges  and isoparameters in the same shape")
+@image html /user_guides/modeling_algos/images/modeling_algos_image053.jpg "Outline edges  and isoparameters in the same shape"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image053.jpg "Outline edges  and isoparameters in the same shape"
 
-![](/user_guides/modeling_algos/images/modeling_algos_image054.jpg "A simple screw shape seen with shading")
+@image html /user_guides/modeling_algos/images/modeling_algos_image054.jpg "A simple screw shape seen with shading"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image054.jpg "A simple screw shape seen with shading"
 
-![](/user_guides/modeling_algos/images/modeling_algos_image055.jpg "An extraction  showing hidden sharp edges")
+@image html /user_guides/modeling_algos/images/modeling_algos_image055.jpg "An extraction  showing hidden sharp edges"
+@image latex /user_guides/modeling_algos/images/modeling_algos_image055.jpg "An extraction  showing hidden sharp edges"
 
 
-@subsection occt_modalg_10_2 Services
 The following services are related to Hidden Lines Removal : 
 
-Loading Shapes
---------------
+### Loading Shapes
+
 To pass a *TopoDS_Shape* to an *HLRBRep_Algo*  object, use *HLRBRep_Algo::Add*. With an *HLRBRep_PolyAlgo* object, use *HLRBRep_PolyAlgo::Load*. If you wish to add several shapes, use Add or Load as often  as necessary. 
 
-Setting view parameters
------------------------
-HLRBRep_Algo::Projector and HLRBRep_PolyAlgo::Projector set a projector object which defines the  parameters of the view. This object is an HLRAlgo_Projector. 
+### Setting view parameters
 
-Computing the projections
--------------------------
-HLRBRep_PolyAlgo::Update  launches the calculation of outlines of the shape visualized by the HLRBRep_PolyAlgo framework. 
-In the case of HLRBRep_Algo, use HLRBRep_Algo::Update. With this algorithm, you must also call the method HLRBRep_Algo::Hide to calculate visible and hidden lines of the  shape to be visualized. With an HLRBRep_PolyAlgo object, visible and hidden lines are computed by HLRBRep_PolyHLRToShape. 
+*HLRBRep_Algo::Projector* and *HLRBRep_PolyAlgo::Projector* set a projector object which defines the  parameters of the view. This object is an *HLRAlgo_Projector*. 
 
-Extracting edges
-----------------
-The classes HLRBRep_HLRToShape and HLRBRep_PolyHLRToShape present a range of extraction filters for an HLRBRep_Algo object and an HLRBRep_PolyAlgo object, respectively. They highlight the type of  edge from the results calculated by the algorithm on a shape. With  both extraction classes, you can highlight the following types of output: 
+### Computing the projections
+
+*HLRBRep_PolyAlgo::Update* launches the calculation of outlines of the shape visualized by the *HLRBRep_PolyAlgo* framework. 
+
+In the case of *HLRBRep_Algo*, use *HLRBRep_Algo::Update*. With this algorithm, you must also call the method *HLRBRep_Algo::Hide* to calculate visible and hidden lines of the  shape to be visualized. With an *HLRBRep_PolyAlgo* object, visible and hidden lines are computed by *HLRBRep_PolyHLRToShape*. 
+
+### Extracting edges
+
+The classes *HLRBRep_HLRToShape* and *HLRBRep_PolyHLRToShape* present a range of extraction filters for an *HLRBRep_Algo object* and an *HLRBRep_PolyAlgo* object, respectively. They highlight the type of  edge from the results calculated by the algorithm on a shape. With  both extraction classes, you can highlight the following types of output: 
   * visible/hidden sharp edges;
   * visible/hidden smooth edges;
   * visible/hidden sewn edges;
   * visible/hidden outline edges. 
 
 To perform extraction on an *HLRBRep_PolyHLRToShape* object, use *HLRBRep_PolyHLRToShape::Update*  function. 
+
 For an *HLRBRep_HLRToShape* object built from an *HLRBRepAlgo* object you can also highlight: 
   * visible isoparameters and
   * hidden isoparameters.
 
-@subsection occt_modalg_10_3 Examples
+@subsection occt_modalg_10_1 Examples
 
-HLRBRep_Algo
-------------
+### HLRBRep_Algo
+
 ~~~~~
 // Build The algorithm object 
 myAlgo = new HLRBRep_Algo(); 
@@ -2579,28 +2636,28 @@ myAlgo->Hide();
 HLRBRep_HLRToShape aHLRToShape(myAlgo); 
 
 // extract the results : 
-TopoDS_Shape VCompound           = aHLRToShape.VCompound(); 
-TopoDS_Shape Rg1LineVCompound                            = 
+TopoDS_Shape VCompound           = aHLRToShape.VCompound(); 
+TopoDS_Shape Rg1LineVCompound                            = 
 aHLRToShape.Rg1LineVCompound(); 
-TopoDS_Shape RgNLineVCompound                            = 
+TopoDS_Shape RgNLineVCompound                            = 
 aHLRToShape.RgNLineVCompound(); 
-TopoDS_Shape OutLineVCompound                            = 
+TopoDS_Shape OutLineVCompound                            = 
 aHLRToShape.OutLineVCompound(); 
-TopoDS_Shape IsoLineVCompound                            = 
+TopoDS_Shape IsoLineVCompound                            = 
 aHLRToShape.IsoLineVCompound(); 
-TopoDS_Shape HCompound           = aHLRToShape.HCompound(); 
-TopoDS_Shape Rg1LineHCompound                            = 
+TopoDS_Shape HCompound           = aHLRToShape.HCompound(); 
+TopoDS_Shape Rg1LineHCompound                            = 
 aHLRToShape.Rg1LineHCompound(); 
-TopoDS_Shape RgNLineHCompound                            = 
+TopoDS_Shape RgNLineHCompound                            = 
 aHLRToShape.RgNLineHCompound(); 
-TopoDS_Shape OutLineHCompound                            = 
+TopoDS_Shape OutLineHCompound                            = 
 aHLRToShape.OutLineHCompound(); 
-TopoDS_Shape IsoLineHCompound                            = 
+TopoDS_Shape IsoLineHCompound                            = 
 aHLRToShape.IsoLineHCompound(); 
 ~~~~~
 
-HLRBRep_PolyAlgo
-----------------
+### HLRBRep_PolyAlgo
+
 
 ~~~~~
 
@@ -2643,7 +2700,7 @@ TopoDS_Shape OutLineHCompound =
 aPolyHLRToShape.OutLineHCompound(); 
 ~~~~~
 
-@section occt_modalg_10_4 Meshing of  Shapes
+@section occt_modalg_10_2 Meshing of  Shapes
 
 The *HLRBRep_PolyAlgo*  algorithm works with triangulation of shapes. This is provided by the function  *BRepMesh::Mesh*, which adds a triangulation of the shape to its topological data  structure. This triangulation is computed with a given deflection. 
 

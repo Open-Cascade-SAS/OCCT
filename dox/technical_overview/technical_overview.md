@@ -3,14 +3,13 @@ Technical Overview {#technical_overview}
 
 @section OCCT_TOVW_SECTION_1 Product Overview
 
-Open CASCADE Technology is an object-oriented C++ class librarLzlz ljky designed for rapid
-production of sophisticated domain-specific design applications. A typical application
-developed using OCCT deals with two or three-dimensional (2D or 3D) geometric modeling
+Open CASCADE Technology is an object-oriented C++ class librarLzlz ljky designed for rapid production of sophisticated domain-specific design applications. A typical application developed using OCCT deals with two or three-dimensional (2D or 3D) geometric modeling
 in general-purpose or specialized Computer Aided Design (CAD) systems, manufacturing
 or analysis applications, simulation applications, or illustration tools. OCCT Object
 Libraries help you to develop your applications significantly faster.
 
-![](/technical_overview/images/technical_overview_over.png "")
+@image html /technical_overview/images/technical_overview_over.png
+@image latex /technical_overview/images/technical_overview_over.png
 
 The OCCT Library provides the following services:
 
@@ -72,7 +71,7 @@ These services are organized into the following libraries:
 
   * Kernel Classes 
   * Math Utilities 
-  * Basic Persistence  
+  * Basic Persistence
 
 The technical overview provides only a basic description of the libraries. Please, refer for more details to Foundation Classes User's guide
 
@@ -81,8 +80,8 @@ See also: our web site at E-learning and Training.
 @subsection OCCT_TOVW_SECTION_2_1 Kernel Classes
 
 
-Root Classes
-------------
+### Root Classes
+
 
 Root Classes, primarily implemented in the Standard package, are the predefined classes on which
 all other Open CASCADE Technology classes are built. They provide:
@@ -94,8 +93,7 @@ all other Open CASCADE Technology classes are built. They provide:
   * Management of exceptions,
   * Encapsulation of C++ streams.
 
-Quantities
------------
+### Quantities
 
 Quantity classes provide the following services:
 
@@ -105,7 +103,7 @@ Quantity classes provide the following services:
   * Resources to manage color definition 
 
 A mathematical quantity is characterized by the name and the value (real).
-A physical quantity is characterized by the name, the value (real) and the unit. 
+A physical quantity is characterized by the name, the value (real) and the unit. 
 The unit may be either an international unit complying with the International Unit System (SI) 
 or a user defined unit. The unit is managed by the physical quantity user.
 
@@ -117,8 +115,7 @@ values means that :
 
 <i>Quantity</i> package includes all commonly used basic physical quantities. 
 
-Exceptions
-----------
+### Exceptions
 
 Exception classes list all the exceptions, which can be raised by any OCCT function.
 
@@ -137,8 +134,7 @@ native exceptions is that they may not work properly on some compilers. In this 
 a specific OCCT code is used instead. 
 
 
-Strings
--------
+### Strings
 
 Strings are classes that handle dynamically sized sequences of characters based on
 ASCII/Unicode UTF-8 (normal 8-bit character type)
@@ -156,8 +152,7 @@ Strings may also be manipulated by handles and therefore, can be shared.
 These classes are implemented in <i>TCollection</i> and <i>NCollection</i> packages.
 
 
-Collections
------------
+### Collections
 
 Apart from strings, the <i> TCollection</i> package contains classes of dynamically sized
 aggregates of data. They include a wide range of collections.
@@ -204,8 +199,8 @@ the ANSI C++ compiler.
 @subsection OCCT_TOVW_SECTION_2_2 Math Utilities
 
 
-Vectors and Matrices
---------------------
+### Vectors and Matrices
+
 
 The <i> Vector</i> and <i> Matrix </i> classes provide commonly used mathematical algorithms which
 include:
@@ -240,7 +235,7 @@ and are copied though assignment.
     math_Vector v1(1, 3), v2(0, 2);
 
     v2 = v1; // v1 is copied into v2
-              // a modification of v1 does not affect v2
+		// a modification of v1 does not affect v2
 ~~~
 
 Vector and Matrix elements can be retrieved using indexes, which must be in the range
@@ -260,32 +255,25 @@ value upon creation as well.
 
 Some operations on Vector and Matrix objects may not be legal. In this case an exception
 is raised. Two standard exceptions are used:
- * <i> Standard_DimensionError </i> exception is raised when two matrices or vectors involved
+ *<i>Standard_DimensionError</i> exception is raised when two matrices or vectors involved
 in an operation are of incompatible dimensions.
- * <i> Standard_RangeError </i>exception is raised if an attempt to access outside the range
+ *<i>Standard_RangeError</i>exception is raised if an attempt to access outside the range
 defined upon creation of a vector or a matrix is made.
 
 ~~~
     math_Vector v1(1, 3), v2(1, 2), v3(0, 2);
 
-    v1 = v2;    // error:
-                // Standard_DimensionError is raised
-
-    v1 = v3;    // OK: ranges are not equal
-                // but dimensions are compatible
-
-    v1(0) = 2.0; // error:
-                 // Standard_RangeError is raised
+    v1 = v2;    	// error: Standard_DimensionError is raised
+    v1 = v3;		// OK: ranges are not equal, but dimensions are compatible
+    v1(0) = 2.0;	// error: Standard_RangeError is raised
 ~~~
 
 
-Fundamental Geometry Types
--------------------------
+### Fundamental Geometry Types
 
 The Fundamental Geometry Types component groups the following packages:
-
-  * geometric processor package <i> gp</i>;
-  * <i>GeomAbs</i> package, which provides enumerations generally used in geometry.
+* geometric processor package <i> gp</i>;
+* <i>GeomAbs</i> package, which provides enumerations generally used in geometry;
 
 <i>gp</i> package is a STEP-compliant implementation of basic geometric and algebraic
 entities, used to define and manipulate elementary data structures.
@@ -293,19 +281,19 @@ entities, used to define and manipulate elementary data structures.
 In particular, <i>gp</i> provides:
 
   * descriptions of primitive geometric shapes, such as:
-  * Points; 
-  * Vectors; 
-  * Lines; 
-  * Circles and conics; 
-  * Planes and elementary surfaces;
-  * positioning of these shapes in space or in a plane by means of an axis or a coordinate system;
-  * definition and application of geometric transformations to these shapes:
-  * Translations; 
-  * Rotations; 
-  * Symmetries; 
-  * Scaling transformations; 
-  * Composed transformations;
-  * Tools (coordinates and matrices) for algebraic computation.
+	  * Points; 
+	  * Vectors; 
+	  * Lines; 
+	  * Circles and conics; 
+	  * Planes and elementary surfaces;
+  * positioning of these shapes in space or in a plane by means of an axis or a coordinate system;
+  * definition and application of geometric transformations to these shapes:
+	  * Translations; 
+	  * Rotations; 
+	  * Symmetries; 
+	  * Scaling transformations; 
+	  * Composed transformations;
+  * Tools (coordinates and matrices) for algebraic computation.
 
 These functions are defined in 3D space and in the plane.
 
@@ -326,15 +314,14 @@ involving complex algorithms where it is particularly important to manipulate th
 simplest data structures, i.e. those of <i> gp</i>. Thus, the <i> ElCLib</i> and <i> ElSLib</i> packages
 provide functions to compute:
 
-  * the point of parameter u on a 2D or 3D gp curve,
-  * the point of parameter (u,v) on a gp elementary surface, and
-  * any derivative vector at this point.
+  * the point of parameter u on a 2D or 3D gp curve,
+  * the point of parameter (u,v) on a gp elementary surface, and
+  * any derivative vector at this point.
 
 Note: the <i> gp</i> entities cannot be shared when they are inside more complex data structures.
 
 
-Common Mathematical Algorithms
-----------------------
+### Common Mathematical Algorithms
 
 Common mathematical algorithms provided in OCCT include:
 
@@ -343,12 +330,12 @@ Common mathematical algorithms provided in OCCT include:
   * Algorithms to find roots of one or of a set of non-linear equations, 
   * An algorithm to find the eigenvalues and eigenvectors of a square matrix.
 
-
 @section OCCT_TOVW_SECTION_3 Modeling Data
 
 Modeling Data supplies data structures to represent 2D and 3D geometric models.
 
-![](/technical_overview/images/technical_overview_md.png "")
+@image html /technical_overview/images/technical_overview_md.png
+@image latex /technical_overview/images/technical_overview_md.png
 
 These services are organized into the following libraries:
 
@@ -369,10 +356,9 @@ See also: our web site at E-learning and Training.
 
 <i> Geom2d</i> package provides an implementation of 2D geometric objects complying with
 STEP, part 42. In particular, it provides functions for:
-
-  * description of points, vectors and curves,
-  * their positioning in the plane using coordinate systems,
-  * their geometric transformation, by applying translations, rotations, symmetries, scaling transformations and combinations thereof.
+* description of points, vectors and curves,
+* their positioning in the plane using coordinate systems,
+* their geometric transformation, by applying translations, rotations, symmetries, scaling transformations and combinations thereof.
 
 The key characteristic of <i> Geom2d </i> curves is that they are parameterized. 
 Each class provides functions to work with the parametric equation of the curve, 
@@ -392,7 +378,7 @@ Thus, an ellipse (specific class <i> Geom2d_Ellipse</i>) is also a conical curve
 from the abstract class <i> Geom2d_Conic</i>, while a Bezier curve (concrete class <i> Geom2d_BezierCurve</i>)
 is also a bounded curve and inherits from the abstract class <i> Geom2d_BoundedCurve</i>;
 both these examples are also curves (abstract class <i>Geom2d_Curve</i>). Curves, points
-and vectors inherit from the abstract class <i> Geom2d_Geometry,<i> which describes the properties
+and vectors inherit from the abstract class <i> Geom2d_Geometry,</i> which describes the properties
 common to any geometric object from the <i>Geom2d</i> package.
 
 This inheritance structure is open and it is possible to describe new objects which
@@ -418,14 +404,14 @@ STEP, part 42. In particular, it provides functions for:
 
   * description of points, vectors, curves and surfaces,
     * their positioning in 3D space using axis or coordinate systems, and
-    * their geometric transformation, by applying translations, rotations, symmetries, scaling transformations and combinations thereof.
+    * their geometric transformation, by applying translations, rotations, symmetries, scaling transformations and combinations thereof.
 
 The key characteristic of Geom curves and surfaces is that they are parameterized.
 Each class provides functions to work with the parametric equation of the curve or
 surface, and, in particular, to compute:
 
-   * the point of parameter u on a curve, or
-   * the point of parameters (u, v) on a surface.
+   * the point of parameter u on a curve, or
+   * the point of parameters (u, v) on a surface.
 
 together with the derivative vectors of order 1, 2, ... N at this point.
 
@@ -457,8 +443,7 @@ You can refer to the <i> GC</i> package to find more evolved construction algori
 Geom objects.
 
 
-Adaptors for Curves and Surfaces
------------------
+### Adaptors for Curves and Surfaces
 
 Some Open CASCADE Technology general algorithms may work theoretically on numerous types of curves or surfaces. 
 To do this, they simply get the services required of the analysed  curve or surface through an interface so as to a single API,  whatever the type of curve or surface. These interfaces are called adaptors.
@@ -481,8 +466,8 @@ For example, <i> Adaptor3d_Curve </i> is the abstract class which provides  the 
 
 When you write an algorithm which operates on geometric objects, use <i> Adaptor3d</i> (or <i> Adaptor2d</i>) objects. 
 As a result, you can use the algorithm with any kind of object, 
-if you provide for this object, an interface derived from Adaptor3d or Adaptor2d.
-These interfaces are easy to use: simply create an adapted curve or surface from a Geom2d curve, 
+if you provide for this object, an interface derived from *Adaptor3d* or *Adaptor2d*.
+These interfaces are easy to use: simply create an adapted curve or surface from a *Geom2d* curve, 
 and then use this adapted curve as an argument for the algorithm which requires it.
 
 
@@ -496,8 +481,7 @@ This library provides standard high-level functions in 2D and 3D geometry such a
   * Calculation of points on a 2D or 3D curve; 
   * Calculation of extrema between two geometries. 
 
-Direct Construction
--------
+### Direct Construction
 
 The <i> gp</i>, <i> Geom2d</i> and <i> Geom</i> packages describe elementary data structures of simple geometric
 objects. The constructors of these objects are elementary: the construction arguments
@@ -519,14 +503,14 @@ see <i> Geom2dGcc</i> and <i> GccAna</i> which describe geometry by constraints)
 <i> gce</i>, <i> GCE2d</i> and <i> GC </i>each offer a series of classes of construction algorithms.
 
 
-For example, the class <i> gce_MakeCirc</i> provides a framework 
+For example, the class <i>gce_MakeCirc</i> provides a framework 
 for defining eight problems encountered in the geometric construction of circles, 
 and implementing the eight related construction algorithms.
 
 The object created (or implemented) is an algorithm which can be consulted to find out, in particular:
 
-  * its result, which is a </i>gp_Circ</i>, and
-  * its status. Here, the status indicates whether or not the construction was successful.
+  * its result, which is a <i>gp_Circ</i>, and
+  * its status. Here, the status indicates whether or not the construction was successful.
 
 If it was unsuccessful, the status gives the reason for the failure.
 
@@ -536,7 +520,7 @@ If it was unsuccessful, the status gives the reason for the failure.
     gp_Pnt P3 (10.,0.,0.);
     gce_MakeCirc MC (P1,P2,P3);
     if (MC.IsDone()) {
-        const gp_Circ& C = MC.Value();
+		const gp_Circ& C = MC.Value();
     }
 ~~~~
 
@@ -547,8 +531,7 @@ construction or construction error) is described by the enumeration <i> gce_Erro
 Note: classes which construct geometric transformations do not return a status, and
 therefore do not inherit from Root.
 
-Approximations
------------
+### Approximations
 
 Approximation of Curves and Surfaces groups together a variety of functions used in 2D and 3D geometry for:
 
@@ -577,8 +560,7 @@ You can also find functions to compute:
   * The minimal box which includes a set of points
   * The mean plane, line or point of a set of coplanar, collinear or coincident points.
 
-Conversion to and from BSplines
-----------------------------
+### Conversion to and from BSplines
  
 The Conversion to and from BSplines component has the following two distinct purposes:
   * Firstly, it provides a homogenous formulation which can be used to describe any curve or surface. 
@@ -622,8 +604,7 @@ The <i> GeomConvert</i> package also provides the following:
   * an algorithm, which converts a BSpline surface into a series of adjacent Bezier surfaces,
   * an algorithm, which converts a grid of adjacent Bezier surfaces into a BSpline surface.
 
-Points on Curves
---------
+### Points on Curves
 
 The Making Points on Curves component comprises high level functions providing an Application Programming Interface for complex algorithms that compute points on a 2D or 3D curve. The functions use various methods.
 
@@ -653,13 +634,13 @@ containing embedded curves and surfaces connected or non-connected to an outer b
 Abstract topological data structure describes a basic entity - a shape, 
 which can be divided into the following component topologies:
 
-  * Vertex   * a zero-dimensional shape corresponding to a point in geometry; 
-  * Edge   * a shape corresponding to a curve, and bound by a vertex at each extremity;
-  * Wire   * a sequence of edges connected by their vertices; 
-  * Face   * part of a plane (in 2D geometry) or a surface (in 3D geometry) bounded by a closed wire;
-  * Shell   * a collection of faces connected by some edges of their wire boundaries; 
-  * Solid   * a part of 3D space bound by a shell; 
-  * Compound solid   * a collection of solids. 
+  * Vertex - a zero-dimensional shape corresponding to a point in geometry; 
+  * Edge - a shape corresponding to a curve, and bound by a vertex at each extremity;
+  * Wire - a sequence of edges connected by their vertices; 
+  * Face - part of a plane (in 2D geometry) or a surface (in 3D geometry) bounded by a closed wire;
+  * Shell - a collection of faces connected by some edges of their wire boundaries; 
+  * Solid - a part of 3D space bound by a shell; 
+  * Compound solid - a collection of solids. 
 
 The wire and the solid can be either infinite or closed.
 
@@ -685,8 +666,7 @@ Three additional packages provide tools to access and manipulate this abstract t
 
 @subsection OCCT_TOVW_SECTION_3_5 Properties of Shapes
 
-Local Properties of Shapes
-----------------------
+### Local Properties of Shapes
 
 <i>BRepLProp</i> package provides the Local Properties of Shapes component, 
 which contains algorithms computing various local properties on edges and faces in a BRep model.
@@ -711,8 +691,8 @@ Analyzed edges and faces are described as <i> BRepAdaptor</i> curves and surface
 which provide shapes with an interface for the description of their geometric support. 
 The base point for local properties is defined by its u parameter value on a curve, or its (u, v) parameter values on a surface.
 
-Local Properties of Curves and Surfaces
-------------------------------------
+### Local Properties of Curves and Surfaces
+
 
 The "Local Properties of Curves and Surfaces" component provides algorithms for computing various local 
 properties on a Geom curve (in 2D or 3D space) or a surface. It is composed of:
@@ -730,8 +710,8 @@ It is possible to query the same local properties for points as mentioned above,
   * the points corresponding to a minimum or a maximum of curvature;
   * the inflection points.
 
-Global Properties of Shapes
-------------------
+### Global Properties of Shapes
+
 The Global Properties of Shapes component provides algorithms for computing the global 
 properties of a composite geometric system in 3D space, and frameworks to query the computed results.
 
@@ -752,18 +732,14 @@ Geometric systems are generally defined as shapes. Depending on the way they are
 
 The global properties of several systems may be brought together to give the global properties of the system composed of the sum of all individual systems.
 
-The Global Properties of Shapes component is composed of :
-
-    * seven functions for computing global properties of a shape: one function for lines, two functions for surfaces and four functions for volumes. The choice of functions depends on input parameters and algorithms used for computation (<i> BRepGProp</i> global functions),
-    * a framework for computing global properties for a set of points (<i> GProp_PGProps</i>),
-    * and a general framework to :
-      * bring together the global properties retained by several more elementary frameworks, and
-      * provide a general programming interface to consult computed global properties.
+The Global Properties of Shapes component is composed of:
+* seven functions for computing global properties of a shape: one function for lines, two functions for surfaces and four functions for volumes. The choice of functions depends on input parameters and algorithms used for computation (<i>BRepGProp</i> global functions),
+* a framework for computing global properties for a set of points (<i>GProp_PGProps</i>),
+* and a general framework to bring together the global properties retained by several more elementary frameworks, and provide a general programming interface to consult computed global properties.
     
 @subsection OCCT_TOVW_SECTION_3_6 Examples
 
-How to compute the curve length
-----------------------
+### How to compute the curve length
 
 To compute curve length, use the method <i>AbscissaPoint::Length</i> from <i> GCPnts</i>.
 
@@ -798,8 +774,7 @@ The length of the curve is then computed using this curve object:
     Standard_Real L = myAlgo.Length( C ) ;
 ~~~~~~~~
 
-How to check the surface concavity
---------------------------------
+### How to check the surface concavity
 
 To check the concavity of a surface, proceed as follows:
 
@@ -807,8 +782,8 @@ To check the concavity of a surface, proceed as follows:
   2. If the value of the curvature changes of sign, the surface is concave or convex depending on the point of view.
   3. To compute a Gaussian curvature, use the class <i> SLprops</i> from <i> GeomLProp</i>, which instantiates the generic class <i> SLProps </i>from <i> LProp</i> and use the method <i> GaussianCurvature</i>.
 
-How to approximate a curve with respect to tangencies
---------------------------------------------
+### How to approximate a curve with respect to tangencies
+
 
 To approximate a curve with respect to tangencies, follow these steps:
 
@@ -816,8 +791,8 @@ To approximate a curve with respect to tangencies, follow these steps:
   2. Create an object of type <i> AppDef_MultiLine </i>from the <i> AppDef_MultiPointConstraint</i>.
   3. Use <i> AppDef_BSplineCompute</i>, which instantiates <i>Approx_BSplineComputeLine</i> to perform the approximation.
 
-How to extract the underlying geometry from shapes
---------------------------------------
+### How to extract the underlying geometry from shapes
+
 
 To extract the underlying geometry from a Shape, use the following methods:
 
@@ -847,15 +822,15 @@ With the second method, you get a copy of the surface on which the location has 
 Note: you can use also a topological object directly just as if it 
 were a geometric one by using the services of <i> BRepAdaptor </i>classes.
 
-How to get the coordinates of a vertex
------------------------------------
+### How to get the coordinates of a vertex
+
 
 To recover the UV coordinates of vertices, 
 use <i> BRep_Tool::Parameters const TopoDS_Vertex& V,const TopoDS_Face& F), </i> 
 which returns the U and V parameters of the vertex V on the face F as a <i> gp_Pnt2d</i>. 
 
-How to explore a Wire
----------------------
+### How to explore a Wire
+
 
 To explore the edges of a wire in a contiguous order, use <i> BrepTools_WireExplorer</i> class.
 
@@ -868,8 +843,8 @@ To explore the edges of a wire in a contiguous order, use <i> BrepTools_WireExpl
     }
 ~~~~
 
-How to merge bspline curves
---------------------------
+### How to merge bspline curves
+
 
 To merge joined bspline curves use the following methods:
 
@@ -972,7 +947,8 @@ These services are organized into the following libraries:
   * Hidden Line Removal
   * Shape Healing 
 
-![](/technical_overview/images/technical_overview_ma.png "")
+@image html /technical_overview/images/technical_overview_ma.png
+@image latex /technical_overview/images/technical_overview_ma.png
 
 The technical overview provides only a basic description of the libraries. 
 Please, refer for more details to Modeling Algorithms User's guide 
@@ -1015,7 +991,7 @@ The Projections component provides functionality for 2D and 3D geometry objects 
   * the projections of a 3D point onto a 3D curve or surface
   * the projection of a 3D curve onto a surface.
   * the planar curve transposition from the 3D to the 2D parametric space of an underlying plane and v. s.
-  * the positioning of a 2D gp object in the 3D geometric space. 
+  * the positioning of a 2D gp object in the 3D geometric space.
 
 @subsubsection OCCT_TOVW_SECTION_4_1_3 Lines and Circles from Constraints
 
@@ -1023,11 +999,11 @@ The Lines and Circles from Constraints component provides numerous
 construction algorithms for 2D circles or lines described with numeric or 
 geometric constraints in relation to other curves. These constraints enable the following to be imposed:
 
-  * the radius of a circle,
-  * the angle that a straight line makes with another straight line,
-  * the tangency of a straight line or circle in relation to a curve,
+  * the radius of a circle,
+  * the angle that a straight line makes with another straight line,
+  * the tangency of a straight line or circle in relation to a curve,
   * the passage of a straight line or circle through a point,
-  * the centering of a circle on a point or curve.
+  * the circle with center in a point or curve.
 
 For example, these algorithms enable to easily construct a circle of a given radius,
 centered on a straight line and tangential to another circle.
@@ -1041,7 +1017,8 @@ to which the tangency constraints are expressed. For example, consider the follo
 case of a circle of a given radius (a small one) which is tangential to two secant
 circles C1 and C2:
 
-![](/technical_overview/images/technical_overview_occ_0005.png "Example of a Tangency Constraint")
+@image html /technical_overview/images/technical_overview_occ_0005.png "Example of a Tangency Constraint"
+@image latex /technical_overview/images/technical_overview_occ_0005.png "Example of a Tangency Constraint"
 
 This diagram clearly shows that there are 8 possible solutions.
 
@@ -1055,10 +1032,10 @@ This technique of qualification of a solution, in relation to the curves to whic
 it is tangential, can be used in all algorithms for constructing a circle or a straight
 line by geometric constraints. Four qualifiers are used, which specify the following:
 
-  * the solution(s) must enclose the argument, or
-  * the solution(s) must be enclosed by the argument, or
-  * the solution(s) and the argument must be external to one another, or
-  * the relative position is not qualified, i.e. all solutions apply.
+  * the solution(s) must enclose the argument, or
+  * the solution(s) must be enclosed by the argument, or
+  * the solution(s) and the argument must be external to one another, or
+  * the relative position is not qualified, i.e. all solutions apply.
 
 These definitions are very easy to interpret on a circle, where it is easy to identify
 the interior and exterior sides. In fact, for any kind of curve the interior is defined
@@ -1066,15 +1043,15 @@ as the left-hand side of the curve in relation to its orientation.
 
 OCCT implements several categories of algorithms:
 
-  * analytic algorithms, where solutions are obtained by the resolution of an equation, such algorithms are used when the geometries which are worked on (tangency arguments,   position of the center, etc.) are points, lines or circles;
-  * geometric algorithms, where the solution is generally obtained by calculating the intersection of parallel or bisecting curves built from geometric arguments;
-  * iterative algorithms, where the solution is obtained by a process of iteration.
+  * analytic algorithms, where solutions are obtained by the resolution of an equation, such algorithms are used when the geometries which are worked on (tangency arguments,   position of the center, etc.) are points, lines or circles;
+  * geometric algorithms, where the solution is generally obtained by calculating the intersection of parallel or bisecting curves built from geometric arguments;
+  * iterative algorithms, where the solution is obtained by a process of iteration.
 
 For each kind of geometric construction of a constrained line or circle, OCCT provides
 two types of access to the user:
 
-  * algorithms from the package <i> Geom2dGcc </i> automatically select the algorithm best suited to the problem to be treated, both in the general case and in all types of specific cases; the arguments used are Geom2d objects; the solutions computed are <i> gp </i> objects;
-  * algorithms from the package <i> GccAna</i> resolve the problem analytically, and can only be used when the geometries to be worked on are lines or circles; the arguments used and solutions computed are <i> gp </i> objects.
+  * algorithms from the package <i> Geom2dGcc </i> automatically select the algorithm best suited to the problem to be treated, both in the general case and in all types of specific cases; the arguments used are Geom2d objects; the solutions computed are <i> gp </i> objects;
+  * algorithms from the package <i> GccAna</i> resolve the problem analytically, and can only be used when the geometries to be worked on are lines or circles; the arguments used and solutions computed are <i> gp </i> objects.
 
 The provided algorithms compute all solutions, which correspond to the stated geometric
 problem, unless the solution is found by an iterative algorithm.
@@ -1082,15 +1059,15 @@ problem, unless the solution is found by an iterative algorithm.
 Iterative algorithms compute only one solution, closest to an initial
 position. They can be used in the following cases:
 
-  * to build a circle, when an argument is more complex than a line or a circle, and where 
+  * to build a circle, when an argument is more complex than a line or a circle, and where 
   the radius is not known or difficult to determine: this is the case for a circle tangential 
   to three geometric elements, or tangential to two geometric elements and centered on a curve;
-  * to build a line, when a tangency argument is more complex than a line or a circle.
+  * to build a line, when a tangency argument is more complex than a line or a circle.
 
 Qualified curves (for tangency arguments) are provided either by:
 
   * the <i> GccEnt</i> package, for direct use by <i> GccAna</i> algorithms, or
-  * the <i> Geom2dGcc </i> package, for general use by <i> Geom2dGcc </i> algorithms.
+  * the <i> Geom2dGcc </i> package, for general use by <i> Geom2dGcc </i> algorithms.
 
 The <i> GccEnt</i> and <i> Geom2dGcc</i> packages also provide simple functions for building qualified curves in a very efficient way.
 
@@ -1114,15 +1091,15 @@ by construction algorithms from the <i> GccAna </i> or <i> Geom2dGcc</i> package
 The Curves and Surfaces from Constraints component groups together high level functions
 used in 2D and 3D geometry for:
 
-  * creation of faired and minimal variation 2D curves
+  * creation of faired and minimal variation 2D curves
   * construction of ruled surfaces
-  * construction of pipe surfaces
-  * filling of surfaces
+  * construction of pipe surfaces
+  * filling of surfaces
   * construction of plate surfaces
-  * extension of a 3D curve or surface beyond its original bounds.
+  * extension of a 3D curve or surface beyond its original bounds.
 
-2D Curves from constraints
-----------------------
+#### 2D Curves from constraints
+
 
 Elastic beam curves have their origin in traditional methods of modeling applied 
 in boat-building, where a long thin piece of wood, a lathe, was forced to pass
@@ -1140,12 +1117,12 @@ on each of the two reference points. These include point and angle of tangency s
 The class <i> MinimalVariation</i> produces curves with minimal variation in curvature. 
 The exact degree of variation is provided by curvature settings.
 
-Ruled Surfaces
-----------------
+#### Ruled Surfaces
+
 A ruled surface is built by ruling a line along the length of two curves.
 
-Pipe Surfaces
---------------
+#### Pipe Surfaces
+
 
 A pipe is built by sweeping a curve (the section) along another curve (the path).
 
@@ -1155,8 +1132,7 @@ The following types of construction are available:
   * pipes with a section evolving between two given curves.
 
 
-Surface filling
---------------
+#### Surface filling
 
 It is often convenient to create a surface from two or more curves which will form
 the boundaries that define the new surface.
@@ -1166,7 +1142,8 @@ the fillet on one edge is different from that of the fillet on another, it becom
 impossible to sew together all the edges of the resulting surfaces. This leaves a
 gap in the overall surface of the object which you are constructing.
 
-![](/technical_overview/images/technical_overview_occ_0006.png "Intersecting filleted edges with differing radiuses")
+@image html /technical_overview/images/technical_overview_occ_0006.png "Intersecting filleted edges with differing radiuses"
+@image latex /technical_overview/images/technical_overview_occ_0006.png "Intersecting filleted edges with differing radiuses"
 
 These algorithms allow you to fill this gap from two, three or four curves. This
 can be done with or without constraints, and the resulting surface will be either
@@ -1176,8 +1153,8 @@ a Bezier or a BSpline surface in one of a range of filling styles.
 This package was designed with a view to handling gaps produced during fillet construction.
 Satisfactory results cannot be guaranteed for other uses.
 
-Plate surfaces
-------------------
+#### Plate surfaces
+
 
 In CAD, it is often necessary to generate a surface which has no exact mathematical
 definition, but which is defined by respective constraints. These can be of a mathematical,
@@ -1197,18 +1174,19 @@ in the input, an initial surface is calculated. This corresponds to the plate pr
 to deformation. Then, the algorithm is called to calculate the final surface. It
 looks for a solution satisfying constraints and minimizing energy input.
 
-![](/technical_overview/images/technical_overview_occ_0007.png "Surface generated from four curves and a point")
+@image html /technical_overview/images/technical_overview_occ_0007.png "Surface generated from four curves and a point"
+@image latex /technical_overview/images/technical_overview_occ_0007.png "Surface generated from four curves and a point"
 
-![](/technical_overview/images/technical_overview_occ_0008.png "Surface generated from two curves and a point")
+@image html /technical_overview/images/technical_overview_occ_0008.png "Surface generated from two curves and a point"
+@image latex /technical_overview/images/technical_overview_occ_0008.png "Surface generated from two curves and a point"
 
-Extension of a 3D curve or surface beyond its original bounds
-----------------------------------------
+#### Extension of a 3D curve or surface beyond its original bounds
 
 The extension is performed according to a geometric requirement and a continuity
 constraint. It should be a small extension with respect to the size of the original
 curve or surface.
 
-@sub?ubsection OCCT_TOVW_SECTION_4_1_5 Interpolation
+@subsubsection OCCT_TOVW_SECTION_4_1_5 Interpolation
 
 The Interpolation Laws component provides definitions of functions: <i> y=f(x) </i>.
 
@@ -1220,8 +1198,6 @@ In particular, it provides definitions of:
 
 Such functions can be used to define, for example, the evolution law of a fillet along the edge of a shape.
 
-Warning
--------
 The validity of the function built is never checked: the Law package does not know for what 
 application or to what end the function will be used. In particular, if the function is used 
 as the evolution law of a fillet, it is important that the function is always positive. The user must check this.
@@ -1316,39 +1292,21 @@ There are two libraries for Boolean Operations:
   * Old Boolean Operations (BOA) provided by <i>BRepAlgo</i> package designed and developed in Open CASCADE 6x in 2000; its architecture and content are out of date.
   * New Boolean Operations (NBOA) provided by <i>BRepAlgoAPI</i> package designed and developed in 2009 and completely revised in 2013.
 
-Major benefits of New Boolean Operations
-------------------------------------------
+New Boolean Operations provide the following major benefits:
 
-  * The NBOA has an expandable architecture of inner sub-algorithms, which  allows to create specific algorithms for the Customers using existing inner sub-algorithms as root algorithms and to reduce the time for the development. 
+  * The NBOA have an expandable architecture of inner sub-algorithms, which  allows to create specific algorithms for the Customers using existing inner sub-algorithms as root algorithms and to reduce the time for the development. 
   * The architecture of inner sub-algorithms of NBOA provides their reusability with maximal independence from the environment of NBOA. The fact allows to create specific algorithms for the Customers using these sub-algorithms as they are or as root classes and thus to reduce the time for the development. 
   * The architecture of NBOA is history-based. The implementation of NBOA internally sets up a correspondence between any sub-shape of the argument and its image in the result. The history is not imposed and thus it is not error-prone as it was in BOA. The fact allows direct and safely usage of the algorithm in parametric modeling.   
-  * NBOA is a general algorithm. It correctly processes without using the workarounds even the cases that cannot be properly processed by BOA.
+  * NBOA provide a general algorithm. It correctly processes without using the workarounds even the cases that cannot be properly processed by BOA.
   * The implementation of NBOA is based on NCollection classes. The usage of opportunities given by local memory allocators ( <i> NCollection_IncAllocator</i>) allows improving memory management and saving memory resources. 
-  * NBOA uses modern algorithms of OCC as auxiliary tools. For e.g. the algorithm of unbalanced binary tree of overlapped bounding boxes <i> NCollection_UBTree</i>. The usage of the algorithm allows to improve the performance of NBOA if there is a big number of sub-shapes in the arguments.
+  * NBOA use modern algorithms of OCC as auxiliary tools. For e.g. the algorithm of unbalanced binary tree of overlapped bounding boxes <i> NCollection_UBTree</i>. The usage of the algorithm allows to improve the performance of NBOA if there is a big number of sub-shapes in the arguments.
 
-The shape type of a Boolean Operation result and types of the arguments
--------------------------------------------------
-
-For arguments having the same shape type (e.g. SOLID / SOLID) 
-the type of the resulting shape will be a COMPOUND, containing shapes of this type;
-
-For arguments having different shape types (e.g. SHELL / SOLID) 
-the type of the resulting shape will be a COMPOUND, 
-containing shapes of the type that is the same as that 
-of the low type of the argument. Example: For SHELL/SOLID the result is a COMPOUND of SHELLs. 
-
-For arguments with different shape types some of Boolean Operations 
-can not be done using the default implementation, because of a non-manifold type 
-of the result. Example: the FUSE operation for SHELL and SOLID can not be done, 
-but the CUT operation can be done, where SHELL is the object and SOLID is the tool.
-
-It is possible to perform Boolean Operations on arguments of the COMPOUND shape type. 
-In this case each compound must not be heterogeneous, i.e. 
-it must contain equidimensional shapes (EDGEs or/and WIREs, FACEs or/and SHELLs, SOLIDs). 
-SOLIDs inside the COMPOUND must not contact (intersect or touch) each other. 
-The same condition should be respected for SHELLs or FACEs, WIREs or EDGEs.
-
-It does not support Boolean Operations for COMPSOLID type of shape.
+Boolean Operations have the following types of the arguments and produce the following results:
+* For arguments having the same shape type (e.g. SOLID / SOLID) the type of the resulting shape will be a COMPOUND, containing shapes of this type;
+* For arguments having different shape types (e.g. SHELL / SOLID) the type of the resulting shape will be a COMPOUND, containing shapes of the type that is the same as that of the low type of the argument. Example: For SHELL/SOLID the result is a COMPOUND of SHELLs. 
+* For arguments with different shape types some of Boolean Operations can not be done using the default implementation, because of a non-manifold type of the result. Example: the FUSE operation for SHELL and SOLID can not be done, but the CUT operation can be done, where SHELL is the object and SOLID is the tool.
+* It is possible to perform Boolean Operations on arguments of the COMPOUND shape type. In this case each compound must not be heterogeneous, i.e. it must contain equidimensional shapes (EDGEs or/and WIREs, FACEs or/and SHELLs, SOLIDs). SOLIDs inside the COMPOUND must not contact (intersect or touch) each other. The same condition should be respected for SHELLs or FACEs, WIREs or EDGEs.
+* Boolean Operations for COMPSOLID type of shape are not supported.
 
 @subsection OCCT_TOVW_SECTION_4_5 Features
 
@@ -1442,8 +1400,7 @@ See also: our web site at E-learning and Training.
 
 @subsection OCCT_TOVW_SECTION_4_8 Miscellaneous modelling algorithms. 
 
-Fillets and Chamfers
----------------------
+### Fillets and Chamfers
 
 This library provides algorithms to make fillets and chamfers on shape edges.
 The following cases are addressed:
@@ -1453,8 +1410,7 @@ The following cases are addressed:
 
 If there is a concavity, both surfaces that need to be extended and those, which do not, are processed.
 
-Offsets, Drafts, Sewing and Sweeps
-----------------------------------
+### Offsets, Drafts, Sewing and Sweeps
 
 These classes provide the following services:
 
@@ -1469,8 +1425,8 @@ These classes provide the following services:
 
 @subsection OCCT_TOVW_SECTION_4_9 Examples
 
-How to compute the state of a point on a face:
----------------------------------------------
+### How to compute the state of a point on a face:
+
 
 Use <i> BRepTools::Pnt </i> to get the point from your vertex.
 Your shape must be of the <i> TopoDS_Shape </i>type.
@@ -1483,8 +1439,8 @@ If it is, you can use <i> BRepTopAdaptor_FClass2d </i>class. For example:
 ~~~~~
 
 
-How to compute the state of a point in a solid:
----------------------------------------
+### How to compute the state of a point in a solid:
+
 
 Use <i>BRepTools::Pnt </i> to get the point from your vertex.
 Your shape must be of the <i> TopoDS_Solid</i> type.
@@ -1498,8 +1454,8 @@ If it is, you can use the <i> BRepClass3d_SolidClassifier </i> class, for exampl
     BRepClass3d_SolidClassifier inherits BRepclass3d_SClassifier
 ~~~~~
 
-How to connect a set of contiguous but independent faces
-------------------------------------------
+### How to connect a set of contiguous but independent faces
+
 
 A unique topological object can be obtained in this way using the class 
 <i> Sewing</i> from the <i> BRepOffsetAPI </i>package which produces a shell as a result.
@@ -1520,8 +1476,7 @@ If all faces have been sewed correctly, the result is a shell. Otherwise, it is 
 
 For more information, refer to the entry for this class in reference documentation.
 
-How to check the orientation of a solid
---------------------------------------
+### How to check the orientation of a solid
 
 If you want to create a solid from a closed shell, you must first check the orientation to determine if you have to reverse the shell or not (for example after creating a closed shell from a sewing operation). To do this, use the <i> PerformInfinitePoint</i> method from the <i> BrepClass3D_SolidClassifier</i> class.
 
@@ -1547,11 +1502,12 @@ Please, refer for more details to Visualization User's guide
 
 See also: our web site at E-learning and Training.
 
-![](/technical_overview/images/technical_overview_viz.png "")
+@image html /technical_overview/images/technical_overview_viz.png
+@image latex /technical_overview/images/technical_overview_viz.png
 
 @subsection OCCT_TOVW_SECTION_5_1 3D Graphics
 
-3D Graphics provided by  <i> Graphic3d </i> package supports three-dimensional manipulation  of 3d graphic objects called structures. Structures, are made up of groups that unite primitives, such as polylines, planar polygons with or without holes, text and markers, and attributes,  such as color, transparency, reflection, line type, line width, and text font. 
+3D Graphics provided by  <i>Graphic3d</i> package supports three-dimensional manipulation  of 3d graphic objects called structures. Structures, are made up of groups that unite primitives, such as polylines, planar polygons with or without holes, text and markers, and attributes,  such as color, transparency, reflection, line type, line width, and text font.
 A group is the smallest editable element of a structure.
 
 A structure can be displayed, erased, highlighted and transformed.
@@ -1562,7 +1518,7 @@ The viewer can perform global manipulation of structures.
 
 Most types of primitives supported by <i> Graphic3d</i> can be dumped to a vector file format such as PDF and PostScript. Export to vector formats is implemented with help of <i> GL2PS</i> library.
 
-@subsection OCCT_TOVW_SECTION_5_2  3D Visualization
+@subsection OCCT_TOVW_SECTION_5_2 3D Visualization
 
 This library provides services for:
 
@@ -1578,8 +1534,7 @@ AIS expand this underlying functionality with standard 3D selection attributes, 
   * A graphic attributes manager 
   * Selection filters 
 
-Interactive Context
--------------------
+### Interactive Context
 
 Interactive context pilots 3D visualizations and selections. 
 The interactive context allows you to manage, in a transparent way, graphic and "selectable" behavior of interactive objects which is not yet defined in the predefined types of these objects.
@@ -1587,13 +1542,11 @@ The interactive context allows you to manage, in a transparent way, graphic and 
 AIS have two operating context types. The default neutral point type allows easily visualizing and selecting entire interactive objects, which have been loaded into the context. 
 Opening a local context allows preparing and using a temporary selection environment to select a part of an interactive object.
 
-Interactive Objects
--------------------
+### Interactive Objects
 
 Entities which are visualized and selected in the AIS viewer are objects.  They connect the underlying reference geometry of a model to its graphic representation in AIS. You can use predefined OCCT classes of standard interactive objects for which all necessary functions have already been programmed, or, in case you are an advanced user, you can implement your own classes of interactive objects.
 
-Graphic Attributes Manager
---------------------------
+### Graphic Attributes Manager
 
 Graphic attributes manager, or AIS Drawer, stores graphic attributes  for specific interactive objects and for interactive objects controlled by interactive context.
 
@@ -1601,8 +1554,7 @@ Initially, all drawer attributes are filled out with the predefined  values whic
 
 When an interactive object is visualized, the required graphic attributes are first taken from its own drawer if one exists, or from the context drawer if no specific drawer for that type of object exists.
 
-Selection Filters
------------------
+### Selection Filters
 
 An important aspect in selection is the filtering of entities you to select. 
 Selection filters allow you to refine the dynamic detection context, which you want to put into effect. Some of these filters can be used at the Neutral Point, others in an open local context only. You can also program your own filters and load them into the context.
@@ -1670,44 +1622,41 @@ When an interactive object is visualized, the required graphic attributes are fi
 
 @subsection OCCT_TOVW_SECTION_5_4 Presentation
 
-Presentation Management
-----------------------   
-
+### Presentation Management
+   
 <i> PrsMgr</i> package provides low level services and is only to be used when you do not want to use the services provided by AIS. It manages the display through the following services:
   * supplying a graphic structure for the object to be presented
   * recalculating presentations when required, e.g. by moving the object or changing its color
-  * defining the display mode of the object to be presented; in the case of <i> AIS_Shape</i>, for example, this determines whether the object is to be displayed in:
-			 wireframe 0
-			 shading 1.
+  * defining the display mode of the object to be presented; in the case of <i> AIS_Shape</i>, for example, this determines whether the object is to be displayed in wireframe (0) or shading (1) mode.
 
 Note that each new Interactive Object must have all its display modes defined.
 
-Presentations of Geometry
--------------------------
+### Presentations of Geometry
+
 The Presentations of Geometry component provides services for advanced programmers to extend the Application Interactive Services component, AIS. 
 This would prove necessary in situations where new Interactive Objects were required.
 
 The <i> StdPrs </i>package provides standard display tools for specific geometries and topologies whereas <i> Prs3d</i> provides those for generic objects. 
 Among these classes are definitions of the display of the specific geometry or topology in various display modes such as wireframe, shading or hidden line removal mode.
 
-Presentation of Dimensions
---------------------------
+### Presentation of Dimensions
+
  <i> DsgPrs </i> package provides tools for display of dimensions, relations and XYZ trihedrons.
 
 @subsection OCCT_TOVW_SECTION_5_5 Selection
 
 Selection of 3D data structures is provided using various algorithms. 
   
-Basic Selection
----------------
+### Basic Selection
+
 
 The <i> SelectBasics </i>package provides the following services:
 
   * the root definition of the sensitive primitive, a selectable entity in a view
   * the definition of the owner of a sensitive primitive; this entity relates the primitive to the application entity which is to be selected in the view.
 
-Standard Selections
--------------------
+### Standard Selections
+
  
 The <i> StdSelect</i> package provides the following services:
 
@@ -1722,8 +1671,8 @@ The <i>Select3D</i> package provides the following services:
   * recovery of the bounding boxes in the 2D graphic selection space, if required;
   * a 3D-2D projector.
 
-Selection Management
---------------------
+### Selection Management
+
  
 The <i> SelectMgr</i> package provides low level services and the classes 
 <i> SelectMgr_SelectionManager</i> and <i> SelectMgr_ViewerSelector </i>
@@ -1920,16 +1869,15 @@ from <i> AIS_InteractiveObject</i> and it should be used accordingly
 
 @subsection OCCT_TOVW_SECTION_5_8 Images and Drivers
 
-Images
---------
+### Images
 
 The <i> Image</i> package provides <i> PseudoColorImage</i> 
 and <i> ColorImage</i> definitions, and a set of key functions from the image fields. 
 
 The <i> AlienImage</i> package allows importing images from other formats into OCCT format.
 
-Drivers
----------
+### Drivers
+
 The <i> Xw </i>package contains the common X graphic interface. It uses <i> XWindow </i> bitmap fonts that cannot be modified.
 
 The <i> WNT</i> package contains the common Windows NT graphic interface.
@@ -1968,8 +1916,8 @@ Please, see for more information Voxels User's Guide white paper.
 
 @subsection OCCT_TOVW_SECTION_5_11 Examples
 
-How to change graphic attributes of an interactive object
-------------------------------------------------
+### How to change graphic attributes of an interactive object
+
 The set of graphic attributes of an interactive object is defined in AIS_Drawer. 
 Each interactive object can have its own visualization attributes.
 
@@ -1992,8 +1940,7 @@ To get the <i> AIS_Drawer</i> of an object, call method <i> AIS_InteractiveObjec
 
 To set the <i> AIS_Drawer</i> of an object, call method <i> AIS_InteractiveObject::SetLocalAttributes </i>. 
 
-How to dump a scene from the viewer
-----------------------------
+### How to dump a scene from the viewer
 
 You can dump the contents of a <i> V3D_View</i> in a file with the same scale or 
 with a different scale according to the required paper size (format) 
@@ -2014,8 +1961,8 @@ Please, note:
   * The time to generate these files is very short with the XWD format but 2 to 4 times longer for the other formats.
   * After getting an image file of your view, you can use any standard application for editing or sending the image file to a printer (i.e.: Microsoft Photo Editor on Windows or Image Viewer on SUN system)
 
-How to add and remove objects from Selections
----------------------------------------------
+### How to add and remove objects from Selections
+
 
 You can add or remove an object from a selection in one of two ways. You can use:
 
@@ -2023,8 +1970,8 @@ You can add or remove an object from a selection in one of two ways. You can use
   * <i> AddOrRemoveCurrent </i> method if a local context is opened.
 
  
-How to detect overlapped objects
---------------------------------
+### How to detect overlapped objects
+
 
 When objects overlap each other and cause difficulties in selection, 
 you can use the mechanism provided with the <i> AIS_InteractiveContext</i> 
@@ -2045,8 +1992,8 @@ This allows you to choose and validate the required object.
 
 
 
-Get mouse coordinates in 3D view
---------------------------------
+### Get mouse coordinates in 3D view
+
 
 To switch from pixel mouse position on the screen to 3D coordinates 
 in <i> V3d_View</i>, use <i>V3d_View::Convert</i> method.
@@ -2058,9 +2005,8 @@ in <i> V3d_View</i>, use <i>V3d_View::Convert</i> method.
 
 Where <i> Xp</i>, <i> Yp</i> are the mouse coordinates in pixels and X,Y,Z the real coordinates in 3D space.
 
-3D Viewer Objects
------------------
- 
+### 3D Viewer Objects
+
 The <i> V3d </i>  package contains the set of commands and services of the 3D Viewer. 
 It provides a set of high level commands to control views and viewing modes. 
 This package is complementary to the <i> Visual3D</i> graphic package.
@@ -2084,7 +2030,8 @@ in particular in respect of allowed data types and arrangements between them, ac
 
 This matter is addressed by Data Exchange Module, which is organized in a modular way.
 
-![](/technical_overview/images/technical_overview_de.png "")
+@image html /technical_overview/images/technical_overview_de.png
+@image latex /technical_overview/images/technical_overview_de.png
 
 Data Exchange interfaces in OCCT allow software based on OCCT 
 to exchange data with various CAD software, thus ensuring a good level of interoperability.
@@ -2092,8 +2039,8 @@ to exchange data with various CAD software, thus ensuring a good level of intero
 Data Exchange interfaces function either in accordance with the standards (IGES, STEP), 
 which can be used by various software packages for CAD, PDM etc., or as direct connectors to proprietary formats.
 
-Standardized Data Exchange
---------------------------
+### Standardized Data Exchange
+
 
 * STEP (AP203 : Mechanical Design, this covers General 3D CAD; AP214: Automotive Design) 
 * IGES (up to 5.3) 
@@ -2103,8 +2050,8 @@ Standardized Data Exchange
 Data Exchange interfaces (STEP, IGES) allow to query and examine a file, 
 results of conversion and its validity. They are designed to support extensions (like new standards) in a common modular architecture.
 
-Extended data exchange
-----------------------
+### Extended data exchange
+
 
 Extended data exchange (XDE) allows you to extend the scope of exchange by translating
  additional data attached to geometric ("BREP") data, thereby improving the interoperability with external software.
@@ -2112,8 +2059,7 @@ Data types such as colors, assembly descriptions and validation properties
 (i.e. center of gravity, etc.) are supported. These data are stored together with shapes in an OCAF (XCAF) document.
 
 
-Proprietary Data Exchange
-------------------------
+### Proprietary Data Exchange
 
 In addition to standard Data Exchange interfaces, separate components are available 
 to provide direct mapping and data adaptation (using Shape Healing) with CAD software supporting the following formats:
@@ -2124,8 +2070,8 @@ to provide direct mapping and data adaptation (using Shape Healing) with CAD sof
 
 These components are based on the same architecture as interfaces with STEP and IGES.
 
-Translating a shape to STL Format
----------------------------------
+### Translating a shape to STL Format
+
 
 OCCT includes a module for translating OCCT shapes to STL (Stereolithography) format. 
 STL is a format designed for rapid prototyping. 
@@ -2144,14 +2090,9 @@ When translating shapes to STL format, remember that all references
 to shapes mean references to OCCT shapes unless otherwise explicitly defined. 
 In addition, sets of faces or unclosed shells may also be translated but visualization in foreign viewers may be incorrect.
 
-Translating a shape to VRML Format
-----------------------------------
+### Translating a shape to VRML Format
 
-The Virtual Reality Modeling Language (VRML) is a language 
-for describing multi-participant interactive simulations   
-* virtual worlds networked via the Internet and hyperlinked 
-with the World Wide Web. VRML is a format designed for animated visualization of solids.
-
+The Virtual Reality Modeling Language (VRML) is a language for describing multi-participant interactive simulations, virtual worlds networked via the Internet and hyperlinked with the World Wide Web. VRML is a format designed for animated visualization of solids.
 OCCT includes a module for translating OCCT shapes to VRML (Virtual Reality Modeling Language). 
 OCCT shapes may be translated in two representations (states): shaded or wireframe. 
 Since shaded VRML format files include only solids described by their mesh structures, the OCCT shapes intended to be written must be solids, components of solids or closed shells with a correct orientation.
@@ -2331,8 +2272,7 @@ variables: <i> CSF_PluginDefaults</i>, which defines the path of the plug-in fil
 The plugin and the resource files of the application will be located in <i> myDirector</i>.
 The name of the plugin file must be <i>Plugin</i>.
 
-Resource File
---------------
+### Resource File
 
 The resource file describes the documents (type and extension) and 
 the type of data that the application can manipulate 
@@ -2365,8 +2305,7 @@ OCAF-MyApplication.AttributeRetrievalPlugin: 47b0b827-d931-11d1-b5da-00a0c906436
 ~~~~
  
   
-Plugin File
------------
+### Plugin File
 
 The plugin file describes the list of required plug-ins to run the application and the
 libraries in which plug-ins are located.
@@ -2403,8 +2342,7 @@ The following ready-to-use attributes are provided:
   * Function attributes which regenerate any data affected by modifications made in a
 document 
 
-Shape Attributes
-----------------
+### Shape Attributes
 
 A topological attribute can be seen as a hook into the topological structure. To
 this hook, data can be attached and references defined.
@@ -2425,11 +2363,11 @@ dependent shapes by the changed one.
 If a shape is newly created, the old shape for the corresponding named shape is an empty
 shape. If a shape is deleted, then the new shape in this named shape is empty.
 
-![](/technical_overview/images/technical_overview_shapeattrib.png "")
+@image html /technical_overview/images/technical_overview_shapeattrib.png
+@image latex /technical_overview/images/technical_overview_shapeattrib.png
 
 
-Shape attributes in data framework. 
--------------------------------
+### Shape attributes in data framework. 
 
 Algorithms can dispose sub-shapes of the result shape at the individual
 label depending on necessity: 
@@ -2458,7 +2396,8 @@ without ambiguity, their number may change. Figure 6 illustrates this example, f
 F1 to F6 of the box each have a hook. Faces F7 to F10, the lateral faces of the protrusion,
 share a single hook, and face F11, the top face, has one hook.
 
-![](/technical_overview/images/technical_overview_occ_0068.png "")
+@image html /technical_overview/images/technical_overview_occ_0068.png
+@image latex /technical_overview/images/technical_overview_occ_0068.png
 
 This structure raises two problems: 
 
@@ -2474,8 +2413,8 @@ that this face could have been split in two faces (for example if the function h
 been a slot) and both new faces would have been attached to the same hook.
 
 
-Standard Attributes
--------------------
+### Standard Attributes
+
 
 Standard attributes are already existing ready-to-use attributes, which allow you
 to create and modify labels and attributes for many basic data types.
@@ -2490,15 +2429,15 @@ attribute you are looking for. For this, find this information using the method
 ~~~~
 
 
-Function Attributes
--------------------
+### Function Attributes
+
 
 A model consists of data and algorithms manipulating with data. OCAF attributes store
 data. A Function attribute stores data corresponding to a Function (see the white
 paper OCAF Function Mechanism User's Guide). This mechanism manipulates with algorithms
 computing the model in the optimal way following the modifications. 
 
-@subsection OCCT_TOVW_SECTION_7_2 Persistent Data Storage
+@subsection OCCT_TOVW_SECTION_7_3 Persistent Data Storage
 
 There are three schemas of persistence, which you can use to store and retrieve OCAF data (documents):
 
@@ -2527,7 +2466,7 @@ Finally, information about opening and saving persistent data is presented in St
 Documents. 
 
 
-@subsubsection OCCT_TOVW_SECTION_7_2_1 Basic Data Storage
+@subsubsection OCCT_TOVW_SECTION_7_3_1 Basic Data Storage
 
 Normally, all data structures provided by Open CASCADE Technology are run-time structures,
 in other words, transient data. As transient data, they exist only while an application
@@ -2537,8 +2476,7 @@ resources, which enable an application to store data on disk as persistent data.
 Data storage services also provide libraries of persistent classes and translation
 functions needed to translate data from transient to persistent state and vice-versa.
 
-Libraries of persistent classes
--------------------------------
+#### Libraries of persistent classes
 
 Libraries of persistent classes are extensible libraries of elementary classes you
 use to define the database schema of your application. They include:
@@ -2549,8 +2487,7 @@ All persistent classes are derived from the \b Persistent base class, which defi
 a unique way of creating and handling persistent objects. You create new persistent
 classes by inheriting from this base class.
 
-Translation Functions
----------------------
+#### Translation Functions
 
 Translation functions allow you to convert persistent objects to transient ones and
 vice-versa. These translation functions are used to build Storage and Retrieval drivers
@@ -2560,8 +2497,7 @@ For each class of 2D and 3D geometric types, and for the general shape class in 
 topological data structure library, there are corresponding persistent class libraries,
 which allow you to translate your data with ease.
 
-Creation of Persistent Classes
--------------------------------
+#### Creation of Persistent Classes
 
 If you are using Unix platforms as well as WOK and CDL, you can create your own persistent
 classes. In this case, data storage is achieved by implementing Storage and Retrieval
@@ -2585,7 +2521,7 @@ The standard procedure for an application in writing a container is as follows:
   *call the function <i> Write </i> from the schema, setting the driver and the <i> Storage_Data </i> instance as parameters,
   *close the driver.
 
-@subsubsection OCCT_TOVW_SECTION_7_2_2 Persistent Collections
+@subsubsection OCCT_TOVW_SECTION_7_3_2 Persistent Collections
 
 Persistent collections are classes which handle dynamically sized collections of
 data that can be stored in the database. These collections provide three categories
@@ -2619,7 +2555,7 @@ Persistent string and array classes are found in the <i> PCollection</i> package
 In addition, <i> PColStd</i> package provides standard, 
 and frequently used, instantiations of persistent arrays, for very simple objects.
 
-@subsubsection OCCT_TOVW_SECTION_7_2_3 Persistent Geometry
+@subsubsection OCCT_TOVW_SECTION_7_3_3 Persistent Geometry
 
 The Persistent Geometry component describes geometric data structures which can be
 stored in the database. These packages provide a way to convert data from the transient
@@ -2682,7 +2618,7 @@ Handle(Geom_Axis2Placement)
 ~~~~
 
 
-@subsubsection OCCT_TOVW_SECTION_7_2_4 Persistent Topology
+@subsubsection OCCT_TOVW_SECTION_7_3_4 Persistent Topology
 
 The Persistent Topology component describes topological data structures which can be stored in the database. These packages provide a way to convert data from the transient "world" to the persistent "world".
 
@@ -2721,7 +2657,7 @@ Handle(TopoDS_HShape) aShape =
 aShape.Nullify();
 ~~~~
 
-@subsubsection OCCT_TOVW_SECTION_7_2_5 Standard Documents
+@subsubsection OCCT_TOVW_SECTION_7_3_5 Standard Documents
 
 Standard documents offer you a ready-to-use document containing a TDF-based data
 structure. The documents themselves are contained in a class inheriting from <i> TDocStd_Application</i>
@@ -2737,64 +2673,6 @@ alone provide access to the data framework. They also allow you to:
 
 @section OCCT_TOVW_SECTION_8 FAQ
 
-Dynamic library loading problem
--------------------------------
-
-Open CASCADE Technology uses a dynamic library loading mode. 
-Sometimes, the error message such as the following appears:
-
-~~~~
- "cannot map <i>libname.so</i> .. under any of the filenames .."
-~~~~
-
-When this happens, check your <i> PATH </i>under Windows, <i> LD_LIBRARY_PATH</i> under UNIX ,
-<i> SHLIB_PATH </i> under HP-UX or <i> LIBPATH</i> under IBM AIX . 
-It should contain the path where the required dynamic library is located.
-
-Running Draw under Windows
----------------------------
-
-When running <i> DRAWEXE</i> and using axo in the Command window you may see the "Invalid command name "axo" " message :
-
-Make sure that the OCCT directory name does not contain any blank spaces.
-It causes some problems when reading the OCCT description TCL Commands files.
-If you have set <i> DRAWHOME</i> and <i> DRAWDEFAULT</i>, replace \ by / in the variable. 
-
-Error on application start on Windows
---------------------------------------
-If Windows shows an error message with the text *Application failed to initialize properly* 
-upon launching the application, check access rights for all libraries used in the application, in particular, third-party libraries. 
-
-Make sure that you have all rights  necessary to access these libraries. 
-It is recommended to use option *Inherit access rights from parent*.
-
-Problems with 3D viewer
---------------------
-
-If the 3D viewer fails to display the scene properly, or works very slowly, or exhibits
-another problem, make sure to have the latest version of the graphics card driver
-installed. If this is not possible or does not help, try to decrease 
-hardware acceleration level (usually found in Troubleshooting section of the graphics card properties).
-
-Fatal error during graphic initialization
-----------------------------------------
-
-If you get the <b>Fatal error during graphic initialization</b> message when running 
-an Open CASCADE Technology based application, or if the application crashes 
-without displaying error messages, you must set the environment variable <i> CSF_GRAPHICSHR </i> as follows:
-
-  * On Windows, if we suppose that OCCT is installed in <i> D:\OpenCASCADE6.3.0 </i>
-
-~~~~
-    Set CSF_GraphicShr= D:\OpenCASCADE6.3.1\ros\win32\bin\TkOpenGl.dll
-~~~~
-
-  * On Linux or Unix, if we suppose that OCCT is installed in  <i> .../mydisk/ OpenCASCADE6.3.0 </i>
-
-~~~~
-    Setenv CSF_GraphicsShr /mydisk/ OpenCASCADE6.3.0ros/lin/lib/libTKOpenGl.so
-~~~~
-
 @subsection OCCT_TOVW_SECTION_8_1 Memory Management
 
 In a work-session, geometry modeling applications create and delete a certain number
@@ -2806,14 +2684,10 @@ on the following principles:
   * small memory arrays are grouped into clusters and then recycled (clusters are never released to the system),
   * large arrays are allocated and de-allocated through the standard functions of the system (the arrays are released to system when they are no longer used).
 
-The Reference Counter
--------------------
+### The Reference Counter
+
 To lighten usual programming difficulties linked to the management of object life duration, before deleting an object, the user must ensure the object is no longer referenced and the delete function is secured by a reference counter. 
-A smart-pointer
-called a Handle automates reference counter management and automatically deletes
-an object when it is no longer referenced – the application never calls the delete
-operator explicitly. To benefit from the memory manager in OCCT, transient classes
-must inherit from <i> TShared</i>. The principle of allocation is as follows:
+A smart-pointer called *Handle* automates reference counter management and automatically deletes an object when it is no longer referenced. The application never calls the delete operator explicitly. To benefit from the memory manager in OCCT, transient classes must inherit from <i>TShared</i>. The principle of allocation is as follows:
 
 ~~~~
     Handle (TColStd_HSequenceOfInteger) H1 = new TColStd_HSequenceOfInteger;
@@ -2837,22 +2711,17 @@ must inherit from <i> TShared</i>. The principle of allocation is as follows:
     // memory. In this case, there is no allocation of memory.
 ~~~~
 
-Cycles
-------
-As cycles are objects which reference one another, memory management is impossible
-if the data structure contains any cycles, particularly if there are back references.
+### Cycles
 
-For example, objects in a graph include primitives and each one of these primitives
-has to know the graphic object to which it belongs (i.e. a reference to this graphic
-object). With normal references, the classical handle is used. With back references,
-a pointer is used. 
+As cycles are objects which reference one another, memory management is impossible if the data structure contains any cycles, particularly if there are back references.
 
-Memory Consumption
-------------------
+For example, objects in a graph include primitives and each one of these primitives has to know the graphic object to which it belongs (i.e. a reference to this graphic object). With normal references, the classical handle is used. With back references, a pointer is used. 
 
-As a general rule, it is advisable to allocate memory through significant blocks.
-In this way, the user can work with blocks of contiguous data and it facilitates
-memory page manager processing.
+### Memory Consumption
+
+
+As a general rule, it is advisable to allocate memory through significant blocks. 
+In this way, the user can work with blocks of contiguous data and it facilitates memory page manager processing.
 
 @subsection OCCT_TOVW_SECTION_8_2 How to define a handled object without CDL
 
@@ -3015,3 +2884,61 @@ to another place defined by a label.
 The filter is used to forbid copying a specified type of attribute. 
 You can also have a look at <i> TDF_Closure*</i>, 
 which can be useful to determine the dependencies of the part you want to cut from the document.
+
+@subsection OCCT_TOVW_SECTION_8_7 Platform-related problems 
+
+### Dynamic library loading 
+
+Open CASCADE Technology uses a dynamic library loading mode. Sometimes, the error message such as the following appears:
+
+~~~~
+ "cannot map <i>libname.so</i> .. under any of the filenames .."
+~~~~
+
+When this happens, check your <i> PATH </i>under Windows, <i> LD_LIBRARY_PATH</i> under UNIX ,
+<i> SHLIB_PATH </i> under HP-UX or <i> LIBPATH</i> under IBM AIX . 
+It should contain the path where the required dynamic library is located.
+
+### Running Draw under Windows
+
+
+When running <i> DRAWEXE</i> and using axo in the Command window you may see the "Invalid command name "axo" " message :
+
+Make sure that the OCCT directory name does not contain any blank spaces.
+It causes some problems when reading the OCCT description TCL Commands files.
+If you have set <i> DRAWHOME</i> and <i> DRAWDEFAULT</i>, replace \ by / in the variable. 
+
+### Error on application start on Windows
+
+If Windows shows an error message with the text *Application failed to initialize properly* 
+upon launching the application, check access rights for all libraries used in the application, in particular, third-party libraries. 
+
+Make sure that you have all rights  necessary to access these libraries. 
+It is recommended to use option *Inherit access rights from parent*.
+
+### Problems with 3D viewer
+
+
+If the 3D viewer fails to display the scene properly, or works very slowly, or exhibits
+another problem, make sure to have the latest version of the graphics card driver
+installed. If this is not possible or does not help, try to decrease 
+hardware acceleration level (usually found in Troubleshooting section of the graphics card properties).
+
+### Fatal error during graphic initialization
+
+
+If you get the <b>Fatal error during graphic initialization</b> message when running 
+an Open CASCADE Technology based application, or if the application crashes 
+without displaying error messages, you must set the environment variable <i> CSF_GRAPHICSHR </i> as follows:
+
+  * On Windows, if we suppose that OCCT is installed in <i> D:\OpenCASCADE6.3.0 </i>
+
+~~~~
+    Set CSF_GraphicShr= D:\OpenCASCADE6.3.1\ros\win32\bin\TkOpenGl.dll
+~~~~
+
+  * On Linux or Unix, if we suppose that OCCT is installed in  <i> .../mydisk/ OpenCASCADE6.3.0 </i>
+
+~~~~
+    Setenv CSF_GraphicsShr /mydisk/ OpenCASCADE6.3.0ros/lin/lib/libTKOpenGl.so
+~~~~
