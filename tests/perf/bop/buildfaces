@@ -1,0 +1,112 @@
+puts "========"
+puts "CR24292"
+puts "========"
+puts ""
+#######################################################################
+# Testing parallelization of BO
+#######################################################################
+
+# test comparing building faces in parallel and serial mode
+# HAVE_TBB must be set
+# It is better using MMGT_OPT=2 (tbb memory allocator)
+
+restore [locate_data_file bug24292_x_256_stars.brep] b1
+
+tcopy b1 b2
+trotate b2 0 0 0 0 0 1 10
+
+tcopy b2 b3
+trotate b3 0 0 0 0 0 1 10
+
+tcopy b3 b4
+trotate b4 0 0 0 0 0 1 10
+#
+# b1 - 256 arguments (faces)
+# b2 - 256 arguments (faces)
+# b3 - 256 arguments (faces)
+# b4 - 256 arguments (faces)
+#
+bclearobjects; bcleartools;
+baddcompound b1
+baddcompound b2
+baddcompound b3
+baddcompound b4
+
+bfillds
+#
+puts "Comparing perfomance of building many faces"
+puts "in parallel and serial modes"
+
+#
+# parallel	
+puts "Build faces in parallel mode:"
+set info1 [bbuild rp -t]
+regexp {Tps: +([-0-9.+eE]+)} ${info1} full Tps1
+puts "Tps1=${Tps1}"
+
+#
+# serial
+puts "Build faces in serial mode:"      
+set info2 [bbuild rs -s -t]
+regexp {Tps: +([-0-9.+eE]+)} ${info2} full Tps2
+puts "Tps2=${Tps2}"
+
+set nb_v_good 23060
+set nb_e_good 35880
+set nb_w_good 11704
+set nb_f_good 11704
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 82349
+
+set dump1 [nbshapes rp]
+regexp {VERTEX +: +([-0-9.+eE]+)} ${dump1} full nb_v1
+regexp {EDGE +: +([-0-9.+eE]+)} ${dump1} full nb_e1
+regexp {WIRE +: +([-0-9.+eE]+)} ${dump1} full nb_w1
+regexp {FACE +: +([-0-9.+eE]+)} ${dump1} full nb_f1
+regexp {SHELL +: +([-0-9.+eE]+)} ${dump1} full nb_sh1
+regexp {SOLID +: +([-0-9.+eE]+)} ${dump1} full nb_sol1
+regexp {COMPSOLID +: +([-0-9.+eE]+)} ${dump1} full nb_compsol1
+regexp {COMPOUND +: +([-0-9.+eE]+)} ${dump1} full nb_compound1
+regexp {SHAPE +: +([-0-9.+eE]+)} ${dump1} full nb_shape1
+
+set dump2 [nbshapes rp]
+regexp {VERTEX +: +([-0-9.+eE]+)} ${dump2} full nb_v2
+regexp {EDGE +: +([-0-9.+eE]+)} ${dump2} full nb_e2
+regexp {WIRE +: +([-0-9.+eE]+)} ${dump2} full nb_w2
+regexp {FACE +: +([-0-9.+eE]+)} ${dump2} full nb_f2
+regexp {SHELL +: +([-0-9.+eE]+)} ${dump2} full nb_sh2
+regexp {SOLID +: +([-0-9.+eE]+)} ${dump2} full nb_sol2
+regexp {COMPSOLID +: +([-0-9.+eE]+)} ${dump2} full nb_compsol2
+regexp {COMPOUND +: +([-0-9.+eE]+)} ${dump2} full nb_compound2
+regexp {SHAPE +: +([-0-9.+eE]+)} ${dump2} full nb_shape2
+
+if { ${nb_v_good} != ${nb_v1} 
+    || ${nb_e_good} != ${nb_e1} 
+    || ${nb_w_good} != ${nb_w1} 
+    || ${nb_f_good} != ${nb_f1} 
+    || ${nb_sh_good} != ${nb_sh1} 
+    || ${nb_sol_good} != ${nb_sol1} 
+    || ${nb_compsol_good} != ${nb_compsol1} 
+    || ${nb_compound_good} != ${nb_compound1} 
+    || ${nb_shape_good} != ${nb_shape1} } {
+    puts "Error : Number of shapes is faulty"
+}
+
+if { ${nb_v2} != ${nb_v1} 
+    || ${nb_e2} != ${nb_e1} 
+    || ${nb_w2} != ${nb_w1} 
+    || ${nb_f2} != ${nb_f1} 
+    || ${nb_sh2} != ${nb_sh1} 
+    || ${nb_sol2} != ${nb_sol1} 
+    || ${nb_compsol2} != ${nb_compsol1} 
+    || ${nb_compound2} != ${nb_compound1} 
+    || ${nb_shape2} != ${nb_shape1} } {
+    puts "Error : Number of shapes is bad"
+}
+
+vinit
+vdisplay rs
+vfit
