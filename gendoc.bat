@@ -9,7 +9,7 @@ if exist "%~dp0env.bat" (
 )
 
 if not ["%1"] == ["-h"] (
-  tclsh85.exe %~dp0dox/start.tcl  %*
+  tclsh86.exe %~dp0dox/start.tcl  %*
 ) else (
   echo.
   echo  gen.bat options:

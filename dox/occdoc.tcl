@@ -18,7 +18,7 @@ proc OverviewDoc_MakeDoxyfile {casDir outDir tagFileDir {doxyFileName} {generato
     # Common configs
     puts $doxyFile "DOXYFILE_ENCODING      = UTF-8"
     puts $doxyFile "PROJECT_NAME           = \"Open CASCADE Technology\""
-    puts $doxyFile "PROJECT_NUMBER         = 6.6.0"
+    puts $doxyFile "PROJECT_NUMBER         = 6.7.0"
     puts $doxyFile "PROJECT_BRIEF          = "
     puts $doxyFile "PROJECT_LOGO           = $inputDir/resources/occt_logo.png"
 
