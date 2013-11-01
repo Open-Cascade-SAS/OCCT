@@ -1,5 +1,4 @@
 if {[string compare $command "SplitAngle"] == 0 } {
-    puts "TODO ?DEBUG_OCC24121 Windows: Faulty shapes in variables faulty_1 to faulty_"
 }
 
 restore [locate_data_file CONTOUR-VITRE.brep] a

@@ -1,6 +1,4 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO ?OCC24048 ALL: NBSHAPES : Faulty"
-puts "TODO ?OCC24048 ALL: Error : 4 differences with reference data found"
 set filename tr10_r1001_ac.stp
 
 set ref_data {

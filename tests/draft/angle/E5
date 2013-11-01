@@ -1,7 +1,5 @@
-puts "TODO ?OCC23667 Mandriva2010: Faulty shapes in variables faulty_1 to faulty_"
 
 #C2----------------------------------------------
-puts "TODO ?OCC23211 Debian40: Error: The tolerance of result shape is too big"
 
 plane p 0 0 0 1 0 0 0 0 -1
 pcone p p 15 18 20

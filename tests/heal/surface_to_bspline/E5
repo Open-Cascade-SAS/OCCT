@@ -1,4 +1,2 @@
-puts "TODO ?OCC24156 MacOS: Process killed by CPU limit"
-puts "TODO ?OCC24156 MacOS: TEST INCOMPLETE"
 
 restore [locate_data_file RevolutionFG.rle] a

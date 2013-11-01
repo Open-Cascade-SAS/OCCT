@@ -1,7 +1,3 @@
-if { [string compare $subgroup "ocaf_xml"] == 0 } {
-    puts "TODO ?OCC23768 ALL: Error : File is not valid"
-}
-    
 set aTestName "caf100-C1"
 puts ${aTestName}
 

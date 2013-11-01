@@ -2,7 +2,6 @@ puts "============"
 puts "OCC13209"
 puts "============"
 puts ""
-puts "TODO ?OCC23878 MacOS: Error : Result shape is WRONG"
 #######################################################################
 # Exception is raised while performing boolean operations
 #######################################################################

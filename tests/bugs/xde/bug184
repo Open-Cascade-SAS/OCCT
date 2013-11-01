@@ -54,14 +54,14 @@ if { ${nb_v2} != ${nb_v1}
     || ${nb_f2} != ${nb_f1} 
     || ${nb_sh2} != ${nb_sh1} 
     || ${nb_sol2} != ${nb_sol1} 
-    || ${nb_compsol2} != ${nb_compsol2} 
+    || ${nb_compsol2} != ${nb_compsol1} 
     || ${nb_compound2} != ${nb_compound1} 
-    || ${nb_shape2} != ${nb_shape2} } {
+    || ${nb_shape2} != ${nb_shape1} } {
     puts "Error : Number of shapes is faulty"
 }
 
 if { ${square2} != ${square1} } {
-   puts "Error : "Square is not valid"
+   puts "Error : Square is not valid"
 }
 
 set 2dviewer 0

@@ -5,8 +5,6 @@ puts "PRO18457"
 puts "Fuse"
 puts ""
 
-puts "TODO ?OCC22911 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO ?OCC22911 ALL: Error : The area of the resulting shape is"
 
 restore [locate_data_file pro18457a.rle] f1
 restore [locate_data_file pro18457b.rle] f2

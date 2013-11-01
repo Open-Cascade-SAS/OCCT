@@ -1,6 +1,3 @@
-puts "TODO ?DEBUG_OCC24121 Windows: \\*\\* Exception \\*\\*.*"
-puts "TODO ?DEBUG_OCC24121 Windows: An exception was caught"
-puts "TODO ?DEBUG_OCC24121 Windows: Faulty OCC22757"
 
 puts "================"
 puts "OCC22757"
