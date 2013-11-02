@@ -93,7 +93,6 @@
   #endif
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
   #include <Cocoa_Window.hxx>
-  #include <tk.h>
 #else
   #include <Xw_Window.hxx>
   #include <X11/Xlib.h> /* contains some dangerous #defines such as Status, True etc. */

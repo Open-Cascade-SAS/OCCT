@@ -112,10 +112,10 @@ void BinLDrivers_DocumentStorageDriver::Write
     ofstream anOS (aFileName.ToCString(), ios::in | ios::binary | ios::ate);
 #else
     ofstream anOS (aFileName.ToCString(), ios::ate);
-    //ofstream anOS (aFileName.ToCString(), ios::out| ios::binary | ios::ate);   
+    //ofstream anOS (aFileName.ToCString(), ios::out| ios::binary | ios::ate);
 #endif
 #ifdef DEB
-    const Standard_Integer aP = (Standard_Integer) anOS.tellp(); 
+    const Standard_Integer aP = (Standard_Integer) anOS.tellp();
     cout << "POS = " << aP <<endl;
 #endif
 //#endif
@@ -127,10 +127,10 @@ void BinLDrivers_DocumentStorageDriver::Write
       for (; anIterS.More(); anIterS.Next())
         anIterS.ChangeValue().WriteTOC (anOS);
 
-      // Shapes Section is the last one, it indicates the end of the table. 
+      // Shapes Section is the last one, it indicates the end of the table.
       BinLDrivers_DocumentSection aShapesSection (SHAPESECTION_POS,
                                                   Standard_False);
-      aShapesSection.WriteTOC (anOS); 
+      aShapesSection.WriteTOC (anOS);
 
 //  3. Write document contents
       // (Storage data to the stream)
@@ -151,7 +151,7 @@ void BinLDrivers_DocumentStorageDriver::Write
         aSection.Write (anOS, aSectionOffset);
       }
 
-// End of processing: close structures and check the status 
+// End of processing: close structures and check the status
       myPAtt.Destroy();   // free buffer
       myEmptyLabels.Clear();
       myMapUnsupported.Clear();
@@ -173,7 +173,7 @@ void BinLDrivers_DocumentStorageDriver::Write
 #if defined(_DEBUG) || defined(DEB)
       WriteMessage (anErrorStr + aMethStr +
                     "Problem with the file stream, rdstate="
-                    + anOS.rdstate());
+                    + (Standard_Integer )anOS.rdstate());
 #else
       TCollection_ExtendedString aStr =
         anErrorStr + aMethStr + "Problem writing the file ";
@@ -188,7 +188,7 @@ void BinLDrivers_DocumentStorageDriver::Write
 
 //=======================================================================
 //function : UnsupportedAttrMsg
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void BinLDrivers_DocumentStorageDriver::UnsupportedAttrMsg
@@ -412,11 +412,11 @@ void BinLDrivers_DocumentStorageDriver::WriteInfoSection
 
     // Info
     aFileDriver.WriteInfo
-      (1,           //   nbObj         
+      (1,           //   nbObj
        BinLDrivers::StorageVersion(),
        Storage_Schema::ICreationDate(),
        TCollection_AsciiString(SchemaName(),'?'),
-       1,           //   schemaVersion 
+       1,           //   schemaVersion
        theData->ApplicationName(),
        theData->ApplicationVersion(),
        theData->DataType(),
@@ -441,9 +441,9 @@ void BinLDrivers_DocumentStorageDriver::WriteInfoSection
     SetIsError(Standard_True);
   }
 #ifdef DEB
-    const Standard_Integer aP = (Standard_Integer) aFileDriver.Tell(); 
+    const Standard_Integer aP = (Standard_Integer) aFileDriver.Tell();
     cout << "POS = " << aP <<endl;
-#endif  
+#endif
   aFileDriver.Close();
 }
 
@@ -462,7 +462,7 @@ void BinLDrivers_DocumentStorageDriver::WriteMessage
 
 //=======================================================================
 //function : AddSection
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void BinLDrivers_DocumentStorageDriver::AddSection
@@ -474,7 +474,7 @@ void BinLDrivers_DocumentStorageDriver::AddSection
 
 //=======================================================================
 //function : WriteSection
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void BinLDrivers_DocumentStorageDriver::WriteSection

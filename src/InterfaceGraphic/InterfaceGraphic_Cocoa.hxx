@@ -35,6 +35,6 @@
   #define EXPORT
 #endif
 
-#endif InterfaceGraphic_CocoaHeader
+#endif // InterfaceGraphic_CocoaHeader
 
 #endif // __APPLE__
