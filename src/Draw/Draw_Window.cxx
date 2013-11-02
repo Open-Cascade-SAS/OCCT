@@ -135,15 +135,30 @@ defaultPrompt:
 #endif
 
 #include <stdio.h>
-#include <tk.h>
+
+#if defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+  // use forward declaration for small subset of used Tk functions
+  // to workaround broken standard Tk framework installation within OS X SDKs
+  // which *HAS* X11 headers in Tk.framework but doesn't install them appropriately
+  #define _TK
+  typedef struct Tk_Window_* Tk_Window;
+  typedef const char* Tk_Uid;
+
+  extern "C" int Tk_Init (Tcl_Interp* interp);
+  extern "C" void Tk_MainLoop();
+  extern "C" Tk_Window Tk_MainWindow (Tcl_Interp* interp) ;
+  extern "C" Tk_Uid Tk_GetUid (const char* str);
+  extern "C" const char* Tk_SetAppName (Tk_Window tkwin, const char* name) ;
+  extern "C" void Tk_GeometryRequest (Tk_Window tkwin, int reqWidth, int reqHeight);
+
+#else
+  #include <tk.h>
+#endif
 
 /*
  * Global variables used by the main program:
  */
 
-static Tk_Window mainWindow;    /* The main window for the application.  If
-                                 * NULL then the application no longer
-                                 * exists. */
 char *tcl_RcFileName = NULL;    /* Name of a user-specific startup script
                                  * to source if the application is being run
                                  * interactively (e.g. "~/.wishrc").  Set
@@ -1092,9 +1107,8 @@ Standard_Boolean Init_Appli()
 
   Tcl_StaticPackage(interp, "Tk", Tk_Init, (Tcl_PackageInitProc *) NULL);
 
-  mainWindow =
-  Tk_MainWindow(interp) ;
-  if (mainWindow == NULL) {
+  Tk_Window aMainWindow = Tk_MainWindow(interp) ;
+  if (aMainWindow == NULL) {
 #if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 5)))
     fprintf(stderr, "%s\n", Tcl_GetStringResult(interp));
 #else
@@ -1102,11 +1116,13 @@ Standard_Boolean Init_Appli()
 #endif
     exit(1);
   }
-  Tk_Name(mainWindow) =
-  Tk_GetUid(Tk_SetAppName(mainWindow,
-                          "Draw")) ;
+#if defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+  Tk_SetAppName(aMainWindow, "Draw");
+#else
+  Tk_Name(aMainWindow) = Tk_GetUid(Tk_SetAppName(aMainWindow, "Draw"));
+#endif
 
-  Tk_GeometryRequest(mainWindow, 200, 200);
+  Tk_GeometryRequest (aMainWindow, 200, 200);
 
 #if !defined(__APPLE__) || defined(MACOSX_USE_GLX)
   if (Draw_DisplayConnection.IsNull())
@@ -1118,7 +1134,7 @@ Standard_Boolean Init_Appli()
     catch (Standard_Failure)
     {
       std::cout << "Cannot open display. Interpret commands in batch mode." << std::endl;
-      return Standard_False;      
+      return Standard_False;
     }
   }
   if (Draw_WindowDisplay == NULL)

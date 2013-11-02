@@ -39,6 +39,7 @@ if { [file isdirectory $dir] } {
     if { ${stationname} == "windows" } {
       wm iconbitmap . -default [file join $dir lamp.ico]
     }
+    wm title . Draw
   }
 } else {
   puts "Warning: could not find DRAW directory"
