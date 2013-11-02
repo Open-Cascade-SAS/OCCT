@@ -784,34 +784,6 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
       break;
     }
     case Aspect_TODT_DIMENSION:
-    {
-      setupMatrix (thePrintCtx, theCtx, theTextAspect, OpenGl_Vec3 (0.0f, 0.0f, 0.00001f));
-
-      glDisable (GL_DEPTH_TEST);
-      glColorMask (GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-
-      glClear (GL_STENCIL_BUFFER_BIT);
-      glEnable (GL_STENCIL_TEST);
-      glStencilFunc (GL_ALWAYS, 1, 0x00);
-      glStencilOp (GL_KEEP, GL_KEEP, GL_REPLACE);
-
-      glBegin (GL_QUADS);
-      glVertex2f (myBndBox.Left,  myBndBox.Top);
-      glVertex2f (myBndBox.Right, myBndBox.Top);
-      glVertex2f (myBndBox.Right, myBndBox.Bottom);
-      glVertex2f (myBndBox.Left,  myBndBox.Bottom);
-      glEnd();
-
-      glStencilFunc (GL_ALWAYS, 0, 0xFF);
-      glDisable (GL_STENCIL_TEST);
-
-      if (!myIs2d)
-      {
-        glEnable (GL_DEPTH_TEST);
-      }
-      glColorMask (GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-      break;
-    }
     case Aspect_TODT_NORMAL:
     {
       break;
@@ -823,8 +795,42 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
   setupMatrix (thePrintCtx, theCtx, theTextAspect, OpenGl_Vec3 (0.0f, 0.0f, 0.0f));
   drawText    (thePrintCtx, theCtx, theTextAspect);
 
-  // revert OpenGL state
   glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, aTexEnvParam);
+
+  if (theTextAspect.DisplayType() == Aspect_TODT_DIMENSION)
+  {
+    setupMatrix (thePrintCtx, theCtx, theTextAspect, OpenGl_Vec3 (0.0f, 0.0f, 0.00001f));
+
+    glDisable (GL_BLEND);
+    glDisable (GL_TEXTURE_2D);
+    glDisable (GL_ALPHA_TEST);
+    if (!myIs2d)
+    {
+      glDisable (GL_DEPTH_TEST);
+    }
+    glColorMask (GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+
+    glClear (GL_STENCIL_BUFFER_BIT);
+    glEnable (GL_STENCIL_TEST);
+    glStencilFunc (GL_ALWAYS, 1, 0xFF);
+    glStencilOp (GL_KEEP, GL_KEEP, GL_REPLACE);
+
+    glBegin (GL_QUADS);
+    glVertex2f (myBndBox.Left,  myBndBox.Top);
+    glVertex2f (myBndBox.Right, myBndBox.Top);
+    glVertex2f (myBndBox.Right, myBndBox.Bottom);
+    glVertex2f (myBndBox.Left,  myBndBox.Bottom);
+    glEnd();
+
+    glStencilFunc (GL_ALWAYS, 0, 0xFF);
+    // glPopAttrib() will reset state for us
+    //glDisable (GL_STENCIL_TEST);
+    //if (!myIs2d) glEnable (GL_DEPTH_TEST);
+
+    glColorMask (GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+  }
+
+  // revert OpenGL state
   glPopAttrib(); // enable bit
   glPopMatrix(); // model view matrix was modified
 }
