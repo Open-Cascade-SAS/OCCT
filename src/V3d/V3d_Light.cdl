@@ -106,6 +106,10 @@ is
 	---Level: Public
 	---Purpose: returns true if the light is a headlight
 
+  SetHeadlight( me : mutable; theValue : Boolean from Standard ) is static;
+  ---Level: Public
+  ---Purpose: Setup headlight flag.
+
         IsDisplayed( me ) returns Boolean from Standard;
         ---Level: Public
         ---Purpose: Returns TRUE when a light representation is displayed

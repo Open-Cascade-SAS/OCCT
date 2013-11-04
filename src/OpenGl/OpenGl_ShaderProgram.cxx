@@ -36,153 +36,32 @@ OpenGl_VariableSetterSelector OpenGl_ShaderProgram::mySetterSelector = OpenGl_Va
 // Declare OCCT-specific OpenGL/GLSL shader variables
 Standard_CString OpenGl_ShaderProgram::PredefinedKeywords[] =
 {
-  /* OpenGl_OCC_MODEL_WORLD_MATRIX */ "occModelWorldMatrix",
-  /* OpenGl_OCC_WORLD_VIEW_MATRIX */ "occWorldViewMatrix",
-  /* OpenGl_OCC_PROJECTION_MATRIX */ "occProjectionMatrix",
-  /* OpenGl_OCC_MODEL_WORLD_MATRIX_INVERSE */ "occModelWorldMatrixInverse",
-  /* OpenGl_OCC_WORLD_VIEW_MATRIX_INVERSE */ "occWorldViewMatrixInverse",
-  /* OpenGl_OCC_PROJECTION_MATRIX_INVERSE */ "occProjectionMatrixInverse",
-  /* OpenGl_OCC_MODEL_WORLD_MATRIX_TRANSPOSE */ "occModelWorldMatrixTranspose",
-  /* OpenGl_OCC_WORLD_VIEW_MATRIX_TRANSPOSE */ "occWorldViewMatrixTranspose",
-  /* OpenGl_OCC_PROJECTION_MATRIX_TRANSPOSE */ "occProjectionMatrixTranspose",
-  /* OpenGl_OCC_MODEL_WORLD_MATRIX_INVERSE_TRANSPOSE */ "occModelWorldMatrixInverseTranspose",
-  /* OpenGl_OCC_WORLD_VIEW_MATRIX_INVERSE_TRANSPOSE */ "occWorldViewMatrixInverseTranspose",
-  /* OpenGl_OCC_PROJECTION_MATRIX_INVERSE_TRANSPOSE */ "occProjectionMatrixInverseTranspose",
+  "occModelWorldMatrix",                 // OpenGl_OCC_MODEL_WORLD_MATRIX
+  "occWorldViewMatrix",                  // OpenGl_OCC_WORLD_VIEW_MATRIX
+  "occProjectionMatrix",                 // OpenGl_OCC_PROJECTION_MATRIX
+  "occModelWorldMatrixInverse",          // OpenGl_OCC_MODEL_WORLD_MATRIX_INVERSE
+  "occWorldViewMatrixInverse",           // OpenGl_OCC_WORLD_VIEW_MATRIX_INVERSE
+  "occProjectionMatrixInverse",          // OpenGl_OCC_PROJECTION_MATRIX_INVERSE
+  "occModelWorldMatrixTranspose",        // OpenGl_OCC_MODEL_WORLD_MATRIX_TRANSPOSE
+  "occWorldViewMatrixTranspose",         // OpenGl_OCC_WORLD_VIEW_MATRIX_TRANSPOSE
+  "occProjectionMatrixTranspose",        // OpenGl_OCC_PROJECTION_MATRIX_TRANSPOSE
+  "occModelWorldMatrixInverseTranspose", // OpenGl_OCC_MODEL_WORLD_MATRIX_INVERSE_TRANSPOSE
+  "occWorldViewMatrixInverseTranspose",  // OpenGl_OCC_WORLD_VIEW_MATRIX_INVERSE_TRANSPOSE
+  "occProjectionMatrixInverseTranspose", // OpenGl_OCC_PROJECTION_MATRIX_INVERSE_TRANSPOSE
 
-  /* OpenGl_OCC_CLIP_PLANE_0_EQUATION */ "occClipPlanes[0].Equation",
-  /* OpenGl_OCC_CLIP_PLANE_1_EQUATION */ "occClipPlanes[1].Equation",
-  /* OpenGl_OCC_CLIP_PLANE_2_EQUATION */ "occClipPlanes[2].Equation",
-  /* OpenGl_OCC_CLIP_PLANE_3_EQUATION */ "occClipPlanes[3].Equation",
-  /* OpenGl_OCC_CLIP_PLANE_4_EQUATION */ "occClipPlanes[4].Equation",
-  /* OpenGl_OCC_CLIP_PLANE_5_EQUATION */ "occClipPlanes[5].Equation",
-  /* OpenGl_OCC_CLIP_PLANE_6_EQUATION */ "occClipPlanes[6].Equation",
-  /* OpenGl_OCC_CLIP_PLANE_7_EQUATION */ "occClipPlanes[7].Equation",
+  "occClipPlaneEquations", // OpenGl_OCC_CLIP_PLANE_EQUATIONS
+  "occClipPlaneSpaces",    // OpenGl_OCC_CLIP_PLANE_SPACES
 
-  /* OpenGl_OCC_CLIP_PLANE_0_SPACE */ "occClipPlanes[0].Space",
-  /* OpenGl_OCC_CLIP_PLANE_1_SPACE */ "occClipPlanes[1].Space",
-  /* OpenGl_OCC_CLIP_PLANE_2_SPACE */ "occClipPlanes[2].Space",
-  /* OpenGl_OCC_CLIP_PLANE_3_SPACE */ "occClipPlanes[3].Space",
-  /* OpenGl_OCC_CLIP_PLANE_4_SPACE */ "occClipPlanes[4].Space",
-  /* OpenGl_OCC_CLIP_PLANE_5_SPACE */ "occClipPlanes[5].Space",
-  /* OpenGl_OCC_CLIP_PLANE_6_SPACE */ "occClipPlanes[6].Space",
-  /* OpenGl_OCC_CLIP_PLANE_7_SPACE */ "occClipPlanes[7].Space",
+  "occLightSourcesCount",  // OpenGl_OCC_LIGHT_SOURCE_COUNT
+  "occLightSourcesTypes",  // OpenGl_OCC_LIGHT_SOURCE_TYPES
+  "occLightSources",       // OpenGl_OCC_LIGHT_SOURCE_PARAMS
+  "occLightAmbient",       // OpenGl_OCC_LIGHT_AMBIENT
 
-  /* OpenGl_OCC_LIGHT_SOURCE_COUNT */ "occLightSourcesCount",
-
-  /* OpenGl_OCC_LIGHT_SOURCE_0_TYPE */ "occLightSources[0].Type",
-  /* OpenGl_OCC_LIGHT_SOURCE_1_TYPE */ "occLightSources[1].Type",
-  /* OpenGl_OCC_LIGHT_SOURCE_2_TYPE */ "occLightSources[2].Type",
-  /* OpenGl_OCC_LIGHT_SOURCE_3_TYPE */ "occLightSources[3].Type",
-  /* OpenGl_OCC_LIGHT_SOURCE_4_TYPE */ "occLightSources[4].Type",
-  /* OpenGl_OCC_LIGHT_SOURCE_5_TYPE */ "occLightSources[5].Type",
-  /* OpenGl_OCC_LIGHT_SOURCE_6_TYPE */ "occLightSources[6].Type",
-  /* OpenGl_OCC_LIGHT_SOURCE_7_TYPE */ "occLightSources[7].Type",
-
-  /* OpenGl_OCC_LIGHT_SOURCE_0_HEAD */ "occLightSources[0].Head",
-  /* OpenGl_OCC_LIGHT_SOURCE_1_HEAD */ "occLightSources[1].Head",
-  /* OpenGl_OCC_LIGHT_SOURCE_2_HEAD */ "occLightSources[2].Head",
-  /* OpenGl_OCC_LIGHT_SOURCE_3_HEAD */ "occLightSources[3].Head",
-  /* OpenGl_OCC_LIGHT_SOURCE_4_HEAD */ "occLightSources[4].Head",
-  /* OpenGl_OCC_LIGHT_SOURCE_5_HEAD */ "occLightSources[5].Head",
-  /* OpenGl_OCC_LIGHT_SOURCE_6_HEAD */ "occLightSources[6].Head",
-  /* OpenGl_OCC_LIGHT_SOURCE_7_HEAD */ "occLightSources[7].Head",
-
-  /* OpenGl_OCC_LIGHT_SOURCE_0_AMBIENT */ "occLightSources[0].Ambient",
-  /* OpenGl_OCC_LIGHT_SOURCE_1_AMBIENT */ "occLightSources[1].Ambient",
-  /* OpenGl_OCC_LIGHT_SOURCE_2_AMBIENT */ "occLightSources[2].Ambient",
-  /* OpenGl_OCC_LIGHT_SOURCE_3_AMBIENT */ "occLightSources[3].Ambient",
-  /* OpenGl_OCC_LIGHT_SOURCE_4_AMBIENT */ "occLightSources[4].Ambient",
-  /* OpenGl_OCC_LIGHT_SOURCE_5_AMBIENT */ "occLightSources[5].Ambient",
-  /* OpenGl_OCC_LIGHT_SOURCE_6_AMBIENT */ "occLightSources[6].Ambient",
-  /* OpenGl_OCC_LIGHT_SOURCE_7_AMBIENT */ "occLightSources[7].Ambient",
-
-  /* OpenGl_OCC_LIGHT_SOURCE_0_DIFFUSE */ "occLightSources[0].Diffuse",
-  /* OpenGl_OCC_LIGHT_SOURCE_1_DIFFUSE */ "occLightSources[1].Diffuse",
-  /* OpenGl_OCC_LIGHT_SOURCE_2_DIFFUSE */ "occLightSources[2].Diffuse",
-  /* OpenGl_OCC_LIGHT_SOURCE_3_DIFFUSE */ "occLightSources[3].Diffuse",
-  /* OpenGl_OCC_LIGHT_SOURCE_4_DIFFUSE */ "occLightSources[4].Diffuse",
-  /* OpenGl_OCC_LIGHT_SOURCE_5_DIFFUSE */ "occLightSources[5].Diffuse",
-  /* OpenGl_OCC_LIGHT_SOURCE_6_DIFFUSE */ "occLightSources[6].Diffuse",
-  /* OpenGl_OCC_LIGHT_SOURCE_7_DIFFUSE */ "occLightSources[7].Diffuse",
-
-  /* OpenGl_OCC_LIGHT_SOURCE_0_SPECULAR */ "occLightSources[0].Specular",
-  /* OpenGl_OCC_LIGHT_SOURCE_1_SPECULAR */ "occLightSources[1].Specular",
-  /* OpenGl_OCC_LIGHT_SOURCE_2_SPECULAR */ "occLightSources[2].Specular",
-  /* OpenGl_OCC_LIGHT_SOURCE_3_SPECULAR */ "occLightSources[3].Specular",
-  /* OpenGl_OCC_LIGHT_SOURCE_4_SPECULAR */ "occLightSources[4].Specular",
-  /* OpenGl_OCC_LIGHT_SOURCE_5_SPECULAR */ "occLightSources[5].Specular",
-  /* OpenGl_OCC_LIGHT_SOURCE_6_SPECULAR */ "occLightSources[6].Specular",
-  /* OpenGl_OCC_LIGHT_SOURCE_7_SPECULAR */ "occLightSources[7].Specular",
-
-  /* OpenGl_OCC_LIGHT_SOURCE_0_POSITION */ "occLightSources[0].Position",
-  /* OpenGl_OCC_LIGHT_SOURCE_1_POSITION */ "occLightSources[1].Position",
-  /* OpenGl_OCC_LIGHT_SOURCE_2_POSITION */ "occLightSources[2].Position",
-  /* OpenGl_OCC_LIGHT_SOURCE_3_POSITION */ "occLightSources[3].Position",
-  /* OpenGl_OCC_LIGHT_SOURCE_4_POSITION */ "occLightSources[4].Position",
-  /* OpenGl_OCC_LIGHT_SOURCE_5_POSITION */ "occLightSources[5].Position",
-  /* OpenGl_OCC_LIGHT_SOURCE_6_POSITION */ "occLightSources[6].Position",
-  /* OpenGl_OCC_LIGHT_SOURCE_7_POSITION */ "occLightSources[7].Position",
-
-  /* OpenGl_OCC_LIGHT_SOURCE_0_SPOT_CUTOFF */ "occLightSources[0].SpotCutoff",
-  /* OpenGl_OCC_LIGHT_SOURCE_1_SPOT_CUTOFF */ "occLightSources[1].SpotCutoff",
-  /* OpenGl_OCC_LIGHT_SOURCE_2_SPOT_CUTOFF */ "occLightSources[2].SpotCutoff",
-  /* OpenGl_OCC_LIGHT_SOURCE_3_SPOT_CUTOFF */ "occLightSources[3].SpotCutoff",
-  /* OpenGl_OCC_LIGHT_SOURCE_4_SPOT_CUTOFF */ "occLightSources[4].SpotCutoff",
-  /* OpenGl_OCC_LIGHT_SOURCE_5_SPOT_CUTOFF */ "occLightSources[5].SpotCutoff",
-  /* OpenGl_OCC_LIGHT_SOURCE_6_SPOT_CUTOFF */ "occLightSources[6].SpotCutoff",
-  /* OpenGl_OCC_LIGHT_SOURCE_7_SPOT_CUTOFF */ "occLightSources[7].SpotCutoff",
-
-  /* OpenGl_OCC_LIGHT_SOURCE_0_SPOT_EXPONENT */ "occLightSources[0].SpotExponent",
-  /* OpenGl_OCC_LIGHT_SOURCE_1_SPOT_EXPONENT */ "occLightSources[1].SpotExponent",
-  /* OpenGl_OCC_LIGHT_SOURCE_2_SPOT_EXPONENT */ "occLightSources[2].SpotExponent",
-  /* OpenGl_OCC_LIGHT_SOURCE_3_SPOT_EXPONENT */ "occLightSources[3].SpotExponent",
-  /* OpenGl_OCC_LIGHT_SOURCE_4_SPOT_EXPONENT */ "occLightSources[4].SpotExponent",
-  /* OpenGl_OCC_LIGHT_SOURCE_5_SPOT_EXPONENT */ "occLightSources[5].SpotExponent",
-  /* OpenGl_OCC_LIGHT_SOURCE_6_SPOT_EXPONENT */ "occLightSources[6].SpotExponent",
-  /* OpenGl_OCC_LIGHT_SOURCE_7_SPOT_EXPONENT */ "occLightSources[7].SpotExponent",
-
-  /* OpenGl_OCC_LIGHT_SOURCE_0_SPOT_DIRECTION */ "occLightSources[0].SpotDirection",
-  /* OpenGl_OCC_LIGHT_SOURCE_1_SPOT_DIRECTION */ "occLightSources[1].SpotDirection",
-  /* OpenGl_OCC_LIGHT_SOURCE_2_SPOT_DIRECTION */ "occLightSources[2].SpotDirection",
-  /* OpenGl_OCC_LIGHT_SOURCE_3_SPOT_DIRECTION */ "occLightSources[3].SpotDirection",
-  /* OpenGl_OCC_LIGHT_SOURCE_4_SPOT_DIRECTION */ "occLightSources[4].SpotDirection",
-  /* OpenGl_OCC_LIGHT_SOURCE_5_SPOT_DIRECTION */ "occLightSources[5].SpotDirection",
-  /* OpenGl_OCC_LIGHT_SOURCE_6_SPOT_DIRECTION */ "occLightSources[6].SpotDirection",
-  /* OpenGl_OCC_LIGHT_SOURCE_7_SPOT_DIRECTION */ "occLightSources[7].SpotDirection",
-
-  /* OpenGl_OCC_LIGHT_SOURCE_0_CONST_ATTENUATION */ "occLightSources[0].ConstAttenuation",
-  /* OpenGl_OCC_LIGHT_SOURCE_1_CONST_ATTENUATION */ "occLightSources[1].ConstAttenuation",
-  /* OpenGl_OCC_LIGHT_SOURCE_2_CONST_ATTENUATION */ "occLightSources[2].ConstAttenuation",
-  /* OpenGl_OCC_LIGHT_SOURCE_3_CONST_ATTENUATION */ "occLightSources[3].ConstAttenuation",
-  /* OpenGl_OCC_LIGHT_SOURCE_4_CONST_ATTENUATION */ "occLightSources[4].ConstAttenuation",
-  /* OpenGl_OCC_LIGHT_SOURCE_5_CONST_ATTENUATION */ "occLightSources[5].ConstAttenuation",
-  /* OpenGl_OCC_LIGHT_SOURCE_6_CONST_ATTENUATION */ "occLightSources[6].ConstAttenuation",
-  /* OpenGl_OCC_LIGHT_SOURCE_7_CONST_ATTENUATION */ "occLightSources[7].ConstAttenuation",
-
-  /* OpenGl_OCC_LIGHT_SOURCE_0_LINEAR_ATTENUATION */ "occLightSources[0].LinearAttenuation",
-  /* OpenGl_OCC_LIGHT_SOURCE_1_LINEAR_ATTENUATION */ "occLightSources[1].LinearAttenuation",
-  /* OpenGl_OCC_LIGHT_SOURCE_2_LINEAR_ATTENUATION */ "occLightSources[2].LinearAttenuation",
-  /* OpenGl_OCC_LIGHT_SOURCE_3_LINEAR_ATTENUATION */ "occLightSources[3].LinearAttenuation",
-  /* OpenGl_OCC_LIGHT_SOURCE_4_LINEAR_ATTENUATION */ "occLightSources[4].LinearAttenuation",
-  /* OpenGl_OCC_LIGHT_SOURCE_5_LINEAR_ATTENUATION */ "occLightSources[5].LinearAttenuation",
-  /* OpenGl_OCC_LIGHT_SOURCE_6_LINEAR_ATTENUATION */ "occLightSources[6].LinearAttenuation",
-  /* OpenGl_OCC_LIGHT_SOURCE_7_LINEAR_ATTENUATION */ "occLightSources[7].LinearAttenuation",
-
-  /* OpenGl_OCCT_ACTIVE_SAMPLER */ "occActiveSampler",
-  /* OpenGl_OCCT_TEXTURE_ENABLE */ "occTextureEnable",
-  /* OpenGl_OCCT_DISTINGUISH_MODE */ "occDistinguishingMode",
-  /* OpenGl_OCCT_FRONT_MATERIAL_AMBIENT */ "occFrontMaterial.Ambient",
-  /* OpenGl_OCCT_BACK_MATERIAL_AMBIENT */ "occBackMaterial.Ambient",
-  /* OpenGl_OCCT_FRONT_MATERIAL_DIFFUSE */ "occFrontMaterial.Diffuse",
-  /* OpenGl_OCCT_BACK_MATERIAL_DIFFUSE */ "occBackMaterial.Diffuse",
-  /* OpenGl_OCCT_FRONT_MATERIAL_SPECULAR */ "occFrontMaterial.Specular",
-  /* OpenGl_OCCT_BACK_MATERIAL_SPECULAR */ "occBackMaterial.Specular",
-  /* OpenGl_OCCT_FRONT_MATERIAL_EMISSION */ "occFrontMaterial.Emission",
-  /* OpenGl_OCCT_BACK_MATERIAL_EMISSION */ "occBackMaterial.Emission",
-  /* OpenGl_OCCT_FRONT_MATERIAL_SHININESS */ "occFrontMaterial.Shininess",
-  /* OpenGl_OCCT_BACK_MATERIAL_SHININESS */ "occBackMaterial.Shininess",
-  /* OpenGl_OCCT_FRONT_MATERIAL_TRANSPARENCY */ "occFrontMaterial.Transparency",
-  /* OpenGl_OCCT_BACK_MATERIAL_TRANSPARENCY */ "occBackMaterial.Transparency"
+  "occActiveSampler",      // OpenGl_OCCT_ACTIVE_SAMPLER
+  "occTextureEnable",      // OpenGl_OCCT_TEXTURE_ENABLE
+  "occDistinguishingMode", // OpenGl_OCCT_DISTINGUISH_MODE
+  "occFrontMaterial",      // OpenGl_OCCT_FRONT_MATERIAL
+  "occBackMaterial"        // OpenGl_OCCT_BACK_MATERIAL
 
 };
 
@@ -260,8 +139,10 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
     return Standard_False;
   }
 
-  OSD_File aDeclFile (Graphic3d_ShaderProgram::ShadersFolder() + "/Declarations.glsl");
-  if (!aDeclFile.Exists())
+  OSD_File aDeclFile     (Graphic3d_ShaderProgram::ShadersFolder() + "/Declarations.glsl");
+  OSD_File aDeclImplFile (Graphic3d_ShaderProgram::ShadersFolder() + "/DeclarationsImpl.glsl");
+  if (!aDeclFile.Exists()
+   || !aDeclImplFile.Exists())
   {
     const TCollection_ExtendedString aMsg = "Error! Failed to load OCCT shader declarations file";
     theCtx->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
@@ -273,10 +154,15 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
   }
 
   TCollection_AsciiString aDeclarations;
-
   aDeclFile.Open (OSD_ReadOnly, OSD_Protection());
   aDeclFile.Read (aDeclarations, (int)aDeclFile.Size());
   aDeclFile.Close();
+
+  TCollection_AsciiString aDeclImpl;
+  aDeclImplFile.Open (OSD_ReadOnly, OSD_Protection());
+  aDeclImplFile.Read (aDeclImpl, (int)aDeclImplFile.Size());
+  aDeclImplFile.Close();
+  aDeclarations += aDeclImpl;
 
   for (Graphic3d_ShaderObjectList::Iterator anIter (theShaders);
        anIter.More(); anIter.Next())
@@ -391,7 +277,7 @@ Standard_Boolean OpenGl_ShaderProgram::Initialize (const Handle(OpenGl_Context)&
                          GL_DEBUG_TYPE_ERROR_ARB,
                          0,
                          GL_DEBUG_SEVERITY_HIGH_ARB,
-                         TCollection_ExtendedString ("Failed to link program object! Linker log:\n"));
+                         TCollection_ExtendedString ("Failed to link program object! Linker log:\n") + aLog);
     return Standard_False;
   }
   else if (theCtx->caps->glslWarnings)

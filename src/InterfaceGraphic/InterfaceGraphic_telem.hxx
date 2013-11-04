@@ -50,14 +50,6 @@ typedef TEL_COLOUR* tel_colour;
 
 typedef  enum
 {
-  TLightAmbient, 
-  TLightDirectional, 
-  TLightPositional, 
-  TLightSpot
-} TLightType;
-
-typedef  enum
-{
   TelCullNone, 
   TelCullFront, 
   TelCullBack

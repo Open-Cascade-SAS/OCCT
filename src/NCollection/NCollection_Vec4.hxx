@@ -215,6 +215,12 @@ public:
     return aSumm += theRight;
   }
 
+  //! Unary -.
+  NCollection_Vec4 operator-() const
+  {
+    return NCollection_Vec4 (-x(), -y(), -z(), -w());
+  }
+
   //! Compute per-component subtraction.
   NCollection_Vec4& operator-= (const NCollection_Vec4& theDec)
   {

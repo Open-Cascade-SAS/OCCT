@@ -17,42 +17,27 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-//! Direction to the viewer.
-varying vec3 View;
+varying vec3 View;     //!< Direction to the viewer
+varying vec3 Normal;   //!< Vertex normal   in view space
+varying vec4 Position; //!< Vertex position in view space
 
-//! Vertex normal in view space.
-varying vec3 Normal;
-
-//! Vertex position in view space.
-varying vec4 Position;
-
-// =======================================================================
-// function : TransformNormal
-// purpose  : Computes the normal in view space
-// =======================================================================
+//! Computes the normal in view space
 vec3 TransformNormal (in vec3 theNormal)
 {
-  vec4 aResult = occWorldViewMatrixInverseTranspose *
-    occModelWorldMatrixInverseTranspose * vec4 (theNormal, 0.0);
-  
+  vec4 aResult = occWorldViewMatrixInverseTranspose
+               * occModelWorldMatrixInverseTranspose
+               * vec4 (theNormal, 0.0);
   return normalize (aResult.xyz);
 }
 
-// =======================================================================
-// function : main
-// purpose  : Entry point to the vertex shader
-// =======================================================================
+//! Entry point to the Vertex Shader
 void main()
 {
-  // Compute vertex position in the view space
-  Position = occWorldViewMatrix * occModelWorldMatrix * occVertex;
-  
-  // Compute vertex normal in the view space
-  Normal = TransformNormal (occNormal);
-  
-  // Note: The specified view vector is absolutely correct only for the orthogonal
-  // projection. For perspective projection it will be approximate, but it is in
-  // good agreement with the OpenGL calculations
+  Position = occWorldViewMatrix * occModelWorldMatrix * occVertex; // position in the view space
+  Normal   = TransformNormal (occNormal);                          // normal   in the view space
+
+  // Note: The specified view vector is absolutely correct only for the orthogonal projection.
+  // For perspective projection it will be approximate, but it is in good agreement with the OpenGL calculations.
   View = vec3 (0.0, 0.0, 1.0);
 
   // Do fixed functionality vertex transform

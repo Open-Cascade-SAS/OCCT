@@ -17,46 +17,22 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-//! Direction to the viewer.
-varying vec3 View;
+varying vec3 View;     //!< Direction to the viewer
+varying vec3 Normal;   //!< Vertex normal in view space
+varying vec4 Position; //!< Vertex position in view space.
 
-//! Vertex normal in view space.
-varying vec3 Normal;
+vec3 Ambient;  //!< Ambient  contribution of light sources
+vec3 Diffuse;  //!< Diffuse  contribution of light sources
+vec3 Specular; //!< Specular contribution of light sources
 
-//! Vertex position in view space.
-varying vec4 Position;
-
-
-//! Ambient contribution of light sources.
-vec3 Ambient;
-
-//! Diffuse contribution of light sources.
-vec3 Diffuse;
-
-//! Specular contribution of light sources.
-vec3 Specular;
-
-
-// =======================================================================
-// function : AmbientLight
-// purpose  : Computes contribution of OCCT pure ambient light source
-// =======================================================================
-void AmbientLight (in int theIndex)
-{
-  Ambient += occLightSources[theIndex].Ambient;
-}
-
-// =======================================================================
-// function : PointLight
-// purpose  : Computes contribution of OCCT isotropic point light source
-// =======================================================================
-void PointLight (in int  theIndex,
+//! Computes contribution of isotropic point light source
+void pointLight (in int  theId,
                  in vec3 theNormal,
                  in vec3 theView,
                  in vec3 thePoint)
 {
-  vec3 aLight = occLightSources[theIndex].Position;
-  if (occLightSources[theIndex].Head == 0)
+  vec3 aLight = occLight_Position (theId).xyz;
+  if (occLight_IsHeadlight (theId) == 0)
   {
     aLight = vec3 (occWorldViewMatrix * occModelWorldMatrix * vec4 (aLight, 1.0));
   }
@@ -64,107 +40,86 @@ void PointLight (in int  theIndex,
 
   float aDist = length (aLight);
   aLight = aLight * (1.0 / aDist);
-  
-  float anAttenuation = 1.0 / (occLightSources[theIndex].ConstAttenuation +
-                               occLightSources[theIndex].LinearAttenuation * aDist);
+
+  float anAtten = 1.0 / (occLight_ConstAttenuation  (theId)
+                       + occLight_LinearAttenuation (theId) * aDist);
 
   vec3 aHalf = normalize (aLight + theView);
 
   float aNdotL = max (0.0, dot (theNormal, aLight));
-  float aNdotH = max (0.0, dot (theNormal,  aHalf));
+  float aNdotH = max (0.0, dot (theNormal, aHalf ));
 
   float aSpecl = 0.0;
   if (aNdotL > 0.0)
   {
-    aSpecl = pow (aNdotH, occFrontMaterial.Shininess);
+    aSpecl = pow (aNdotH, occFrontMaterial_Shininess());
   }
-  
-  Ambient  += occLightSources[theIndex].Ambient * anAttenuation;
-  Diffuse  += occLightSources[theIndex].Diffuse * aNdotL * anAttenuation;
-  Specular += occLightSources[theIndex].Specular * aSpecl * anAttenuation;
+
+  Diffuse  += occLight_Diffuse  (theId).rgb * aNdotL * anAtten;
+  Specular += occLight_Specular (theId).rgb * aSpecl * anAtten;
 }
 
-// =======================================================================
-// function : DirectionalLight
-// purpose  : Computes contribution of OCCT directional light source
-// =======================================================================
-void DirectionalLight (in int theIndex,
+//! Computes contribution of directional light source
+void directionalLight (in int  theId,
                        in vec3 theNormal,
                        in vec3 theView)
 {
-  vec3 aLight = normalize (occLightSources[theIndex].Position);
-
-  if (occLightSources[theIndex].Head == 0)
+  vec3 aLight = normalize (occLight_Position (theId).xyz);
+  if (occLight_IsHeadlight (theId) == 0)
   {
     aLight = vec3 (occWorldViewMatrix * occModelWorldMatrix * vec4 (aLight, 0.0));
   }
-  
+
   vec3 aHalf = normalize (aLight + theView);
-  
   float aNdotL = max (0.0, dot (theNormal, aLight));
-  float aNdotH = max (0.0, dot (theNormal,  aHalf));
+  float aNdotH = max (0.0, dot (theNormal, aHalf ));
 
   float aSpecl = 0.0;
-  
   if (aNdotL > 0.0)
   {
-    aSpecl = pow (aNdotH, occFrontMaterial.Shininess);
+    aSpecl = pow (aNdotH, occFrontMaterial_Shininess());
   }
 
-  Ambient  += occLightSources[theIndex].Ambient;
-  Diffuse  += occLightSources[theIndex].Diffuse * aNdotL;
-  Specular += occLightSources[theIndex].Specular * aSpecl;
+  Diffuse  += occLight_Diffuse  (theId).rgb * aNdotL;
+  Specular += occLight_Specular (theId).rgb * aSpecl;
 }
 
-// =======================================================================
-// function : ComputeLighting
-// purpose  : Computes illumination from OCCT light sources
-// =======================================================================
-vec4 ComputeLighting (in vec3 theNormal,
+//! Computes illumination from light sources
+vec4 computeLighting (in vec3 theNormal,
                       in vec3 theView,
                       in vec4 thePoint)
 {
   // Clear the light intensity accumulators
-  Ambient  = vec3 (0.0);
+  Ambient  = occLightAmbient.rgb;
   Diffuse  = vec3 (0.0);
   Specular = vec3 (0.0);
-
   vec3 aPoint = thePoint.xyz / thePoint.w;
-	
   for (int anIndex = 0; anIndex < occLightSourcesCount; ++anIndex)
   {
-    occLightSource light = occLightSources[anIndex];
-    
-    if (light.Type == occAmbientLight)
+    int aType = occLight_Type (anIndex);
+    if (aType == OccLightType_Direct)
     {
-      AmbientLight (anIndex);
+      directionalLight (anIndex, theNormal, theView);
     }
-    else if (light.Type == occDirectLight)
-	  {
-	    DirectionalLight (anIndex, theNormal, theView);
-	  }
-	  else if (light.Type == occPointLight)
-		{
-      PointLight (anIndex, theNormal, theView, aPoint);
-		}
-		else if (light.Type == occSpotLight)
-		{
-		  /* Not implemented */
-		}
+    else if (aType == OccLightType_Point)
+    {
+      pointLight (anIndex, theNormal, theView, aPoint);
+    }
+    else if (aType == OccLightType_Spot)
+    {
+      // Not implemented
+    }
   }
-  
-  return vec4 (Ambient,  1.0) * occFrontMaterial.Ambient +
-         vec4 (Diffuse,  1.0) * occFrontMaterial.Diffuse +
-         vec4 (Specular, 1.0) * occFrontMaterial.Specular;
+
+  return vec4 (Ambient,  1.0) * occFrontMaterial_Ambient()
+       + vec4 (Diffuse,  1.0) * occFrontMaterial_Diffuse()
+       + vec4 (Specular, 1.0) * occFrontMaterial_Specular();
 }
 
-// =======================================================================
-// function : main
-// purpose  : Entry point to the fragment shader
-// =======================================================================
+//! Entry point to the Fragment Shader
 void main()
 {
-  gl_FragColor = ComputeLighting (normalize (Normal),
+  gl_FragColor = computeLighting (normalize (Normal),
                                   normalize (View),
                                   Position);
 }

@@ -21,7 +21,7 @@
 #include <InterfaceGraphic_Graphic3d.hxx>
 #include <InterfaceGraphic_Visual3d.hxx>
 #include <Handle_Graphic3d_TextureEnv.hxx>
-#include <Standard_Type.hxx>
+#include <Graphic3d_CLight.hxx>
 #include <Graphic3d_SetOfHClipPlane.hxx>
 
 class CALL_DEF_VIEWCONTEXT
@@ -69,7 +69,7 @@ public:
   int   Visualization;
 
   int   NbActiveLight;
-  CALL_DEF_LIGHT* ActiveLight;
+  Graphic3d_CLight* ActiveLight;
 
   Handle(Graphic3d_TextureEnv) TextureEnv;
   int   SurfaceDetail;

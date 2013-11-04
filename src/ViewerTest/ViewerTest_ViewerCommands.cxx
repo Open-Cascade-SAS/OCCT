@@ -42,7 +42,12 @@
 #include <ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName.hxx>
 #include <Visual3d_View.hxx>
 #include <Visual3d_ViewManager.hxx>
+#include <V3d_AmbientLight.hxx>
+#include <V3d_DirectionalLight.hxx>
 #include <V3d_LayerMgr.hxx>
+#include <V3d_LayerMgrPointer.hxx>
+#include <V3d_PositionalLight.hxx>
+#include <V3d_SpotLight.hxx>
 #include <NCollection_DoubleMap.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_Vector.hxx>
@@ -61,8 +66,6 @@
 #include <TColStd_HSequenceOfReal.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <Visual3d_LayerItem.hxx>
-#include <V3d_LayerMgr.hxx>
-#include <V3d_LayerMgrPointer.hxx>
 #include <Aspect_TypeOfLine.hxx>
 #include <Image_Diff.hxx>
 #include <Aspect_DisplayConnection.hxx>
@@ -5352,6 +5355,449 @@ static int VDefaults (Draw_Interpretor& theDi,
   return 0;
 }
 
+//! Auxiliary method
+inline void addLight (const Handle(V3d_Light)& theLightNew,
+                      const Standard_Boolean   theIsGlobal)
+{
+  if (theLightNew.IsNull())
+  {
+    return;
+  }
+
+  if (theIsGlobal)
+  {
+    ViewerTest::GetViewerFromContext()->SetLightOn (theLightNew);
+  }
+  else
+  {
+    ViewerTest::CurrentView()->SetLightOn (theLightNew);
+  }
+}
+
+//! Auxiliary method
+inline Standard_Integer getLightId (const TCollection_AsciiString& theArgNext)
+{
+  TCollection_AsciiString anArgNextCase (theArgNext);
+  anArgNextCase.UpperCase();
+  if (anArgNextCase.Length() > 5
+   && anArgNextCase.SubString (1, 5).IsEqual ("LIGHT"))
+  {
+    return theArgNext.SubString (6, theArgNext.Length()).IntegerValue();
+  }
+  else
+  {
+    return theArgNext.IntegerValue();
+  }
+}
+
+//===============================================================================================
+//function : VLight
+//purpose  :
+//===============================================================================================
+static int VLight (Draw_Interpretor& theDi,
+                   Standard_Integer  theArgsNb,
+                   const char**      theArgVec)
+{
+  Handle(V3d_View)   aView   = ViewerTest::CurrentView();
+  Handle(V3d_Viewer) aViewer = ViewerTest::GetViewerFromContext();
+  if (aView.IsNull()
+   || aViewer.IsNull())
+  {
+    std::cerr << "No active viewer!\n";
+    return 1;
+  }
+
+  Standard_Real        anXYZ[3];
+  Quantity_Coefficient anAtten[2];
+  if (theArgsNb < 2)
+  {
+    // print lights info
+    Standard_Integer aLightId = 0;
+    for (aView->InitActiveLights(); aView->MoreActiveLights(); aView->NextActiveLights(), ++aLightId)
+    {
+      Handle(V3d_Light) aLight = aView->ActiveLight();
+      const Quantity_Color aColor = aLight->Color();
+      theDi << "Light" << aLightId << "\n";
+      switch (aLight->Type())
+      {
+        case V3d_AMBIENT:
+        {
+          theDi << "  Type:      Ambient\n";
+          break;
+        }
+        case V3d_DIRECTIONAL:
+        {
+          Handle(V3d_DirectionalLight) aLightDir = Handle(V3d_DirectionalLight)::DownCast (aLight);
+          theDi << "  Type:      Directional\n";
+          theDi << "  Headlight: " << (aLight->Headlight() ? "TRUE" : "FALSE") << "\n";
+          if (!aLightDir.IsNull())
+          {
+            aLightDir->Position  (anXYZ[0], anXYZ[1], anXYZ[2]);
+            theDi << "  Position:  " << anXYZ[0] << ", " << anXYZ[1] << ", " << anXYZ[2] << "\n";
+            aLightDir->Direction (anXYZ[0], anXYZ[1], anXYZ[2]);
+            theDi << "  Direction: " << anXYZ[0] << ", " << anXYZ[1] << ", " << anXYZ[2] << "\n";
+          }
+          break;
+        }
+        case V3d_POSITIONAL:
+        {
+          Handle(V3d_PositionalLight) aLightPos = Handle(V3d_PositionalLight)::DownCast (aLight);
+          theDi << "  Type:      Positional\n";
+          theDi << "  Headlight: " << (aLight->Headlight() ? "TRUE" : "FALSE") << "\n";
+          if (!aLightPos.IsNull())
+          {
+            aLightPos->Position  (anXYZ[0], anXYZ[1], anXYZ[2]);
+            theDi << "  Position:  " << anXYZ[0] << ", " << anXYZ[1] << ", " << anXYZ[2] << "\n";
+            aLightPos->Attenuation (anAtten[0], anAtten[1]);
+            theDi << "  Atten.:    " << anAtten[0] << " " << anAtten[1] << "\n";
+          }
+          break;
+        }
+        case V3d_SPOT:
+        {
+          Handle(V3d_SpotLight) aLightSpot = Handle(V3d_SpotLight)::DownCast (aLight);
+          theDi << "  Type:      Spot\n";
+          theDi << "  Headlight: " << (aLight->Headlight() ? "TRUE" : "FALSE") << "\n";
+          if (!aLightSpot.IsNull())
+          {
+            aLightSpot->Position  (anXYZ[0], anXYZ[1], anXYZ[2]);
+            theDi << "  Position:  " << anXYZ[0] << ", " << anXYZ[1] << ", " << anXYZ[2] << "\n";
+            aLightSpot->Direction (anXYZ[0], anXYZ[1], anXYZ[2]);
+            theDi << "  Direction: " << anXYZ[0] << ", " << anXYZ[1] << ", " << anXYZ[2] << "\n";
+            aLightSpot->Attenuation (anAtten[0], anAtten[1]);
+            theDi << "  Atten.:    " << anAtten[0] << " " << anAtten[1] << "\n";
+            theDi << "  Angle:     " << (aLightSpot->Angle() * 180.0 / M_PI) << "\n";
+            theDi << "  Exponent:  " << aLightSpot->Concentration() << "\n";
+          }
+          break;
+        }
+        default:
+        {
+          theDi << "  Type:      UNKNOWN\n";
+          break;
+        }
+      }
+      theDi << "  Color:     " << aColor.Red() << ", " << aColor.Green() << ", " << aColor.Blue() << "\n";
+    }
+  }
+
+  Handle(V3d_Light) aLightNew;
+  Handle(V3d_Light) aLightOld;
+  Standard_Boolean  isGlobal = Standard_True;
+  Standard_Boolean  toCreate = Standard_False;
+  for (Standard_Integer anArgIt = 1; anArgIt < theArgsNb; ++anArgIt)
+  {
+    Handle(V3d_Light)            aLightCurr = aLightNew.IsNull() ? aLightOld : aLightNew;
+    Handle(V3d_AmbientLight)     aLightAmb  = Handle(V3d_AmbientLight)    ::DownCast (aLightCurr);
+    Handle(V3d_DirectionalLight) aLightDir  = Handle(V3d_DirectionalLight)::DownCast (aLightCurr);
+    Handle(V3d_PositionalLight)  aLightPos  = Handle(V3d_PositionalLight) ::DownCast (aLightCurr);
+    Handle(V3d_SpotLight)        aLightSpot = Handle(V3d_SpotLight)       ::DownCast (aLightCurr);
+
+    TCollection_AsciiString aName, aValue;
+    const TCollection_AsciiString anArg (theArgVec[anArgIt]);
+    TCollection_AsciiString anArgCase (anArg);
+    anArgCase.UpperCase();
+    if (anArgCase.IsEqual ("NEW")
+     || anArgCase.IsEqual ("ADD")
+     || anArgCase.IsEqual ("CREATE"))
+    {
+      toCreate = Standard_True;
+    }
+    else if (anArgCase.IsEqual ("GLOB")
+          || anArgCase.IsEqual ("GLOBAL"))
+    {
+      isGlobal = Standard_True;
+    }
+    else if (anArgCase.IsEqual ("LOC")
+          || anArgCase.IsEqual ("LOCAL"))
+    {
+      isGlobal = Standard_False;
+    }
+    else if (anArgCase.IsEqual ("AMB")
+          || anArgCase.IsEqual ("AMBIENT")
+          || anArgCase.IsEqual ("AMBLIGHT"))
+    {
+      addLight (aLightNew, isGlobal);
+      if (!toCreate)
+      {
+        std::cerr << "Wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+      toCreate  = Standard_False;
+      aLightNew = new V3d_AmbientLight (aViewer);
+    }
+    else if (anArgCase.IsEqual ("DIRECTIONAL")
+          || anArgCase.IsEqual ("DIRLIGHT"))
+    {
+      addLight (aLightNew, isGlobal);
+      if (!toCreate)
+      {
+        std::cerr << "Wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+      toCreate  = Standard_False;
+      aLightNew = new V3d_DirectionalLight (aViewer);
+    }
+    else if (anArgCase.IsEqual ("SPOT")
+          || anArgCase.IsEqual ("SPOTLIGHT"))
+    {
+      addLight (aLightNew, isGlobal);
+      if (!toCreate)
+      {
+        std::cerr << "Wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+      toCreate  = Standard_False;
+      aLightNew = new V3d_SpotLight (aViewer, 0.0, 0.0, 0.0);
+    }
+    else if (anArgCase.IsEqual ("POSLIGHT")
+          || anArgCase.IsEqual ("POSITIONAL"))
+    {
+      addLight (aLightNew, isGlobal);
+      if (!toCreate)
+      {
+        std::cerr << "Wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+      toCreate  = Standard_False;
+      aLightNew = new V3d_PositionalLight (aViewer, 0.0, 0.0, 0.0);
+    }
+    else if (anArgCase.IsEqual ("CHANGE"))
+    {
+      addLight (aLightNew, isGlobal);
+      aLightNew.Nullify();
+      if (++anArgIt >= theArgsNb)
+      {
+        std::cerr << "Wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+
+      const Standard_Integer aLightId = getLightId (theArgVec[anArgIt]);
+      Standard_Integer aLightIt = 0;
+      for (aView->InitActiveLights(); aView->MoreActiveLights(); aView->NextActiveLights(), ++aLightIt)
+      {
+        if (aLightIt == aLightId)
+        {
+          aLightOld = aView->ActiveLight();
+          break;
+        }
+      }
+
+      if (aLightOld.IsNull())
+      {
+        std::cerr << "Light " << theArgVec[anArgIt] << " is undefined!\n";
+        return 1;
+      }
+    }
+    else if (anArgCase.IsEqual ("DEL")
+          || anArgCase.IsEqual ("DELETE"))
+    {
+      Handle(V3d_Light) aLightDel;
+      if (++anArgIt >= theArgsNb)
+      {
+        std::cerr << "Wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+
+      const TCollection_AsciiString anArgNext (theArgVec[anArgIt]);
+      const Standard_Integer aLightDelId = getLightId (theArgVec[anArgIt]);
+      Standard_Integer aLightIt = 0;
+      for (aView->InitActiveLights(); aView->MoreActiveLights(); aView->NextActiveLights(), ++aLightIt)
+      {
+        aLightDel = aView->ActiveLight();
+        if (aLightIt == aLightDelId)
+        {
+          break;
+        }
+      }
+      if (!aLightDel.IsNull())
+      {
+        aViewer->DelLight (aLightDel);
+      }
+    }
+    else if (anArgCase.IsEqual ("COLOR")
+          || anArgCase.IsEqual ("COLOUR"))
+    {
+      if (++anArgIt >= theArgsNb)
+      {
+        std::cerr << "Wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+
+      TCollection_AsciiString anArgNext (theArgVec[anArgIt]);
+      anArgNext.UpperCase();
+      const Quantity_Color aColor = ViewerTest::GetColorFromName (anArgNext.ToCString());
+      if (!aLightCurr.IsNull())
+      {
+        aLightCurr->SetColor (aColor);
+      }
+    }
+    else if (anArgCase.IsEqual ("POS")
+          || anArgCase.IsEqual ("POSITION"))
+    {
+      if ((anArgIt + 3) >= theArgsNb)
+      {
+        std::cerr << "Wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+
+      anXYZ[0] = Atof (theArgVec[++anArgIt]);
+      anXYZ[1] = Atof (theArgVec[++anArgIt]);
+      anXYZ[2] = Atof (theArgVec[++anArgIt]);
+      if (!aLightDir.IsNull())
+      {
+        aLightDir->SetPosition (anXYZ[0], anXYZ[1], anXYZ[2]);
+      }
+      else if (!aLightPos.IsNull())
+      {
+        aLightPos->SetPosition (anXYZ[0], anXYZ[1], anXYZ[2]);
+      }
+      else if (!aLightSpot.IsNull())
+      {
+        aLightSpot->SetPosition (anXYZ[0], anXYZ[1], anXYZ[2]);
+      }
+      else
+      {
+        std::cerr << "Wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+    }
+    else if (anArgCase.IsEqual ("DIR")
+          || anArgCase.IsEqual ("DIRECTION"))
+    {
+      if ((anArgIt + 3) >= theArgsNb)
+      {
+        std::cerr << "Wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+
+      anXYZ[0] = Atof (theArgVec[++anArgIt]);
+      anXYZ[1] = Atof (theArgVec[++anArgIt]);
+      anXYZ[2] = Atof (theArgVec[++anArgIt]);
+      if (!aLightDir.IsNull())
+      {
+        aLightDir->SetDirection (anXYZ[0], anXYZ[1], anXYZ[2]);
+      }
+      else if (!aLightSpot.IsNull())
+      {
+        aLightSpot->SetDirection (anXYZ[0], anXYZ[1], anXYZ[2]);
+      }
+      else
+      {
+        std::cerr << "Wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+    }
+    else if (anArgCase.IsEqual ("CONSTATTEN")
+          || anArgCase.IsEqual ("CONSTATTENUATION"))
+    {
+      if (++anArgIt >= theArgsNb)
+      {
+        std::cerr << "Wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+
+      if (!aLightPos.IsNull())
+      {
+        aLightPos->Attenuation (anAtten[0], anAtten[1]);
+        anAtten[0] = Atof (theArgVec[anArgIt]);
+        aLightPos->SetAttenuation (anAtten[0], anAtten[1]);
+      }
+      else if (!aLightSpot.IsNull())
+      {
+        aLightSpot->Attenuation (anAtten[0], anAtten[1]);
+        anAtten[0] = Atof (theArgVec[anArgIt]);
+        aLightSpot->SetAttenuation (anAtten[0], anAtten[1]);
+      }
+      else
+      {
+        std::cerr << "Wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+    }
+    else if (anArgCase.IsEqual ("LINATTEN")
+          || anArgCase.IsEqual ("LINEARATTEN")
+          || anArgCase.IsEqual ("LINEARATTENUATION"))
+    {
+      if (++anArgIt >= theArgsNb)
+      {
+        std::cerr << "Wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+
+      if (!aLightPos.IsNull())
+      {
+        aLightPos->Attenuation (anAtten[0], anAtten[1]);
+        anAtten[1] = Atof (theArgVec[anArgIt]);
+        aLightPos->SetAttenuation (anAtten[0], anAtten[1]);
+      }
+      else if (!aLightSpot.IsNull())
+      {
+        aLightSpot->Attenuation (anAtten[0], anAtten[1]);
+        anAtten[1] = Atof (theArgVec[anArgIt]);
+        aLightSpot->SetAttenuation (anAtten[0], anAtten[1]);
+      }
+      else
+      {
+        std::cerr << "Wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+    }
+    else if (anArgCase.IsEqual ("EXP")
+          || anArgCase.IsEqual ("EXPONENT")
+          || anArgCase.IsEqual ("SPOTEXP")
+          || anArgCase.IsEqual ("SPOTEXPONENT"))
+    {
+      if (++anArgIt >= theArgsNb)
+      {
+        std::cerr << "Wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+
+      if (!aLightSpot.IsNull())
+      {
+        aLightSpot->SetConcentration (Atof (theArgVec[anArgIt]));
+      }
+      else
+      {
+        std::cerr << "Wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+    }
+    else if (anArgCase.IsEqual ("HEAD")
+          || anArgCase.IsEqual ("HEADLIGHT"))
+    {
+      if (++anArgIt >= theArgsNb)
+      {
+        std::cerr << "Wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+
+      if (aLightAmb.IsNull()
+       && !aLightCurr.IsNull())
+      {
+        aLightCurr->SetHeadlight (Draw::Atoi (theArgVec[anArgIt]) != 0);
+      }
+      else
+      {
+        std::cerr << "Wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+    }
+    else
+    {
+      std::cerr << "Warning: unknown argument '" << anArg << "'\n";
+    }
+  }
+
+  addLight (aLightNew, isGlobal);
+  aViewer->UpdateLights();
+
+  return 0;
+}
+
+
+
 //==============================================================================
 //function : VClInfo
 //purpose  : Prints info about active OpenCL device
@@ -5749,6 +6195,13 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vdefaults",
     "vdefaults [absDefl=value] [devCoeff=value] [angDefl=value]",
     __FILE__, VDefaults, group);
+  theCommands.Add("vlight",
+            "vlight [add|new {amb}ient|directional|{spot}light|positional]"
+    "\n\t\t:        [{del}ete|change lightId] [local|global]"
+    "\n\t\t:        [{pos}ition X Y Z] [color colorName] [{head}light 0|1]"
+    "\n\t\t:        [{constAtten}uation value] [{linearAtten}uation value]"
+    "\n\t\t:        [angle angleDeg] [{spotexp}onent value]",
+    __FILE__, VLight, group);
   theCommands.Add("vraytrace",
     "vraytrace 0|1",
     __FILE__,VRaytrace,group);

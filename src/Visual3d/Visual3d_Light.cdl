@@ -17,7 +17,6 @@
 -- purpose or non-infringement. Please see the License for the specific terms
 -- and conditions governing the rights and limitations under the License.
 
-
 class Light from Visual3d inherits TShared
 
 	---Version:
@@ -43,17 +42,15 @@ class Light from Visual3d inherits TShared
 
 uses
 
-	Color			from Quantity,
-
-	CLight			from Graphic3d,
-	Vector			from Graphic3d,
-	Vertex			from Graphic3d,
-
-	TypeOfLightSource	from Visual3d
+  Color  from Quantity,
+  CLight from Graphic3d,
+  Vector from Graphic3d,
+  Vertex from Graphic3d,
+  TypeOfLightSource from Visual3d
 
 raises
 
-	LightDefinitionError	from Visual3d
+  LightDefinitionError from Visual3d
 
 is
 
@@ -207,12 +204,16 @@ is
 	-- Category: Inquire methods
 	----------------------------
 
-        Headlight  ( me ) 
-	    	returns  Boolean  from  Standard  is  static; 
-	---Level: Public
-        ---Purpose:  Returns the headlight  state of the light <me>
-        ---Category: Inquire methods
-		
+  Headlight ( me )
+  returns  Boolean  from  Standard  is  static;
+  ---Level: Public
+  ---Purpose:  Returns the headlight  state of the light <me>
+  ---Category: Inquire methods
+
+  SetHeadlight( me : mutable; theValue : Boolean from Standard ) is static;
+  ---Level: Public
+  ---Purpose: Setup headlight flag.
+
 	Color ( me )
 		returns Color from Quantity is static;
 	---Level: Public
@@ -279,6 +280,14 @@ is
 	--	    if the type of the light is not TOLS_SPOT.
 	raises LightDefinitionError is static;
 
+  CLight ( me )
+  returns CLight from Graphic3d
+  is static;
+  ---C++: return const &
+  ---Level: Public
+  ---Purpose: Returns the light defintion.
+  ---Category: Inquire methods
+
 	--------------------------
 	-- Category: Class methods
 	--------------------------
@@ -309,32 +318,12 @@ is
 	--	    spot light spread angle.
 	---Category: Private methods
 
---
+--
 
 fields
 
---
--- Class	:	Visual3d_Light
---
--- Purpose	:	Declaration of variables specific to light sources
---
--- Reminder	:	A light source is defined by:
---			- its type
---			- its colour
---			- the attenuation factor ( positional and spot only)
---			- its angle ( spot only )
---			- its concentration ( spot only )
---			- its direction ( directional and spot only )
---			- its position ( positional and spot only )
---
---			It is actived in a context of view.
---
-
-	-- the type
-	MyType		:	TypeOfLightSource from Visual3d;
-
-	-- the associated C structure
-	MyCLight	:	CLight from Graphic3d;
+  -- the associated C structure
+  myCLight : CLight from Graphic3d;
 
 friends
 

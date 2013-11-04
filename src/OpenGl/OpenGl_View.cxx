@@ -197,83 +197,26 @@ void OpenGl_View::SetSurfaceDetail (const Visual3d_TypeOfSurfaceDetail theMode)
 #endif
 }
 
-/*----------------------------------------------------------------------*/
-
+// =======================================================================
+// function : SetBackfacing
+// purpose  :
+// =======================================================================
 void OpenGl_View::SetBackfacing (const Standard_Integer theMode)
 {
   myBackfacing = theMode;
 }
 
-/*----------------------------------------------------------------------*/
-
-//call_togl_setlight
-void OpenGl_View::SetLights (const CALL_DEF_VIEWCONTEXT &AContext)
+// =======================================================================
+// function : SetLights
+// purpose  :
+// =======================================================================
+void OpenGl_View::SetLights (const CALL_DEF_VIEWCONTEXT& theViewCtx)
 {
   myLights.Clear();
-
-  const int nb_lights = AContext.NbActiveLight;
-
-  int i = 0;
-  const CALL_DEF_LIGHT *alight = &(AContext.ActiveLight[0]);
-  for ( ; i < nb_lights; i++, alight++ )
+  for (Standard_Integer aLightIt = 0; aLightIt < theViewCtx.NbActiveLight; ++aLightIt)
   {
-    OpenGl_Light rep;
-    memset(&rep,0,sizeof(rep));
-
-	switch( alight->LightType )
-    {
-      case 0 : /* TOLS_AMBIENT */
-        rep.type = TLightAmbient;
-        rep.col.rgb[0] = alight->Color.r;
-        rep.col.rgb[1] = alight->Color.g;
-        rep.col.rgb[2] = alight->Color.b;
-        break;
-
-      case 1 : /* TOLS_DIRECTIONAL */
-        rep.type = TLightDirectional;
-        rep.col.rgb[0] = alight->Color.r;
-        rep.col.rgb[1] = alight->Color.g;
-        rep.col.rgb[2] = alight->Color.b;
-        rep.dir[0] = alight->Direction.x;
-        rep.dir[1] = alight->Direction.y;
-        rep.dir[2] = alight->Direction.z;
-        break;
-
-      case 2 : /* TOLS_POSITIONAL */
-        rep.type = TLightPositional;
-        rep.col.rgb[0] = alight->Color.r;
-        rep.col.rgb[1] = alight->Color.g;
-        rep.col.rgb[2] = alight->Color.b;
-        rep.pos[0] = alight->Position.x;
-        rep.pos[1] = alight->Position.y;
-        rep.pos[2] = alight->Position.z;
-        rep.atten[0] = alight->Attenuation[0];
-        rep.atten[1] = alight->Attenuation[1];
-        break;
-
-      case 3 : /* TOLS_SPOT */
-        rep.type = TLightSpot;
-        rep.col.rgb[0] = alight->Color.r;
-        rep.col.rgb[1] = alight->Color.g;
-        rep.col.rgb[2] = alight->Color.b;
-        rep.pos[0] = alight->Position.x;
-        rep.pos[1] = alight->Position.y;
-        rep.pos[2] = alight->Position.z;
-        rep.dir[0] = alight->Direction.x;
-        rep.dir[1] = alight->Direction.y;
-        rep.dir[2] = alight->Direction.z;
-        rep.shine = alight->Concentration;
-        rep.atten[0] = alight->Attenuation[0];
-        rep.atten[1] = alight->Attenuation[1];
-        rep.angle = alight->Angle;
-        break;
-    }
-
-    rep.HeadLight = alight->Headlight;
-
-    myLights.Append(rep);
+    myLights.Append (theViewCtx.ActiveLight[aLightIt]);
   }
-
   myCurrLightSourceState = myStateCounter->Increment();
 }
 

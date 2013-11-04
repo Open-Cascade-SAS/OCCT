@@ -941,16 +941,6 @@ is
         ---Purpose: Get Z layer ID of structure. If the structure doesn't
         -- exists in graphic driver, the method returns -1.
 
-    --------------------------
-    -- Category: Class methods
-    --------------------------
-
-    Light ( myclass;
-        ACLight : CLight from Graphic3d;
-        Update  : Boolean from Standard )
-        returns Integer from Standard;
-    ---Purpose: call_togl_light
-
     -----------------------------
     -- Category: Internal methods
     -----------------------------

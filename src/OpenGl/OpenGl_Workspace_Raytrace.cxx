@@ -917,42 +917,24 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceLightSources (const GLdouble th
 {
   myRaytraceSceneData.LightSources.clear();
 
-  OpenGl_ListOfLight::Iterator anItl (myView->LightList());
-
-  OpenGl_RTVec4f aAmbient (0.f, 0.f, 0.f, 0.f);
-
-  for (; anItl.More(); anItl.Next())
+  OpenGl_RTVec4f anAmbient (0.0f, 0.0f, 0.0f, 0.0f);
+  for (OpenGl_ListOfLight::Iterator anItl (myView->LightList());
+       anItl.More(); anItl.Next())
   {
-    const OpenGl_Light &aLight = anItl.Value();
-
-    if (aLight.type == TLightAmbient)
+    const OpenGl_Light& aLight = anItl.Value();
+    if (aLight.Type == Visual3d_TOLS_AMBIENT)
     {
-      aAmbient += OpenGl_RTVec4f (aLight.col.rgb[0],
-                                  aLight.col.rgb[1],
-                                  aLight.col.rgb[2],
-                                  0.f);
+      anAmbient += OpenGl_RTVec4f (aLight.Color.r(), aLight.Color.g(), aLight.Color.b(), 0.0f);
       continue;
     }
 
-    OpenGl_RTVec4f aDiffuse (aLight.col.rgb[0],
-                             aLight.col.rgb[1],
-                             aLight.col.rgb[2],
-                             1.f);
-
-    OpenGl_RTVec4f aPosition (-aLight.dir[0],
-                              -aLight.dir[1],
-                              -aLight.dir[2],
-                              0.f);
-
-    if (aLight.type != TLightDirectional)
+    OpenGl_RTVec4f aDiffuse  (aLight.Color.r(), aLight.Color.g(), aLight.Color.b(), 1.0f);
+    OpenGl_RTVec4f aPosition (-aLight.Direction.x(), -aLight.Direction.y(), -aLight.Direction.z(), 0.0f);
+    if (aLight.Type != Visual3d_TOLS_DIRECTIONAL)
     {
-      aPosition = OpenGl_RTVec4f (aLight.pos[0],
-                                  aLight.pos[1],
-                                  aLight.pos[2],
-                                  1.f);
+      aPosition = OpenGl_RTVec4f (aLight.Position.x(), aLight.Position.y(), aLight.Position.z(), 1.0f);
     }
-
-    if (aLight.HeadLight)
+    if (aLight.IsHeadlight)
     {
       aPosition = MatVecMult (theInvModelView, aPosition);
     }
@@ -962,11 +944,11 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceLightSources (const GLdouble th
 
   if (myRaytraceSceneData.LightSources.size() > 0)
   {
-    myRaytraceSceneData.LightSources.front().Ambient += aAmbient;
+    myRaytraceSceneData.LightSources.front().Ambient += anAmbient;
   }
   else
   {
-    myRaytraceSceneData.LightSources.push_back (OpenGl_RaytraceLight (OpenGl_RTVec4f (aAmbient.xyz(), -1.0f)));
+    myRaytraceSceneData.LightSources.push_back (OpenGl_RaytraceLight (OpenGl_RTVec4f (anAmbient.rgb(), -1.0f)));
   }
 
   cl_int anError = CL_SUCCESS;

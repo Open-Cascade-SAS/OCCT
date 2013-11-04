@@ -255,88 +255,74 @@ const OpenGl_WorldViewState& OpenGl_ShaderManager::WorldViewState() const
 // =======================================================================
 void OpenGl_ShaderManager::PushLightSourceState (const Handle(OpenGl_ShaderProgram)& theProgram) const
 {
-  if (myLightSourceState.Index() == theProgram->ActiveState (OpenGl_LIGHT_SOURCES_STATE))
+  if (myLightSourceState.Index() == theProgram->ActiveState (OpenGl_LIGHT_SOURCES_STATE)
+   || !theProgram->IsValid())
   {
     return;
   }
-  
-  theProgram->SetUniform (myContext, theProgram->GetStateLocation (
-    OpenGl_OCC_LIGHT_SOURCE_COUNT), myLightSourceState.LightSources()->Size());
 
-  OpenGl_ListOfLight::Iterator anIter (*myLightSourceState.LightSources());
-  for (unsigned int anIndex = 0; anIter.More(); anIter.Next())
+  const GLint aTypesLoc  = theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_TYPES);
+  const GLint aParamsLoc = theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_PARAMS);
+
+  const Standard_Integer aLightsDefNb = Min (myLightSourceState.LightSources()->Size(), OpenGLMaxLights);
+  if (aLightsDefNb < 1)
   {
-    if (anIndex >= OpenGLMaxLights)
-    {
-      break;
-    }
-
-    const OpenGl_Light& aLight = anIter.Value();
-    if (aLight.type == TLightAmbient)
-    {
-      OpenGl_Vec3 anAmbient (aLight.col.rgb[0],
-                             aLight.col.rgb[1],
-                             aLight.col.rgb[2]);
-
-      theProgram->SetUniform (myContext,
-        theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_0_AMBIENT + anIndex), anAmbient);
-
-      anIter.Next();
-      if (!anIter.More())
-      {
-        theProgram->SetUniform (myContext,
-          theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_0_TYPE + anIndex), int (aLight.type));
-        break;
-      }
-    }
-
-    OpenGl_Vec3 aDiffuse (aLight.col.rgb[0],
-                          aLight.col.rgb[1],
-                          aLight.col.rgb[2]);
-
-    OpenGl_Vec3 aPosition (aLight.type == TLightDirectional ? -aLight.dir[0] : aLight.pos[0],
-                           aLight.type == TLightDirectional ? -aLight.dir[1] : aLight.pos[1],
-                           aLight.type == TLightDirectional ? -aLight.dir[2] : aLight.pos[2]);
-
     theProgram->SetUniform (myContext,
-      theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_0_TYPE + anIndex), int (aLight.type));
-
+                            theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_COUNT),
+                            0);
     theProgram->SetUniform (myContext,
-      theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_0_HEAD + anIndex), aLight.HeadLight);
-
-    theProgram->SetUniform (myContext,
-      theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_0_DIFFUSE + anIndex), aDiffuse);
-
-    theProgram->SetUniform (myContext,
-      theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_0_SPECULAR + anIndex), aDiffuse);
-
-    theProgram->SetUniform (myContext,
-      theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_0_POSITION + anIndex), aPosition);
-
-    theProgram->SetUniform (myContext,
-      theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_0_CONST_ATTENUATION + anIndex), aLight.atten[0]);
-
-    theProgram->SetUniform (myContext,
-      theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_0_LINEAR_ATTENUATION + anIndex), aLight.atten[1]);
-
-    if (aLight.type == TLightSpot)
-    {
-      OpenGl_Vec3 aDirection (aLight.dir[0],
-                              aLight.dir[1],
-                              aLight.dir[2]);
-
-      theProgram->SetUniform (myContext,
-        theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_0_SPOT_CUTOFF + anIndex), aLight.angle);
-
-      theProgram->SetUniform (myContext,
-        theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_0_SPOT_EXPONENT + anIndex), aLight.shine);
-
-      theProgram->SetUniform (myContext,
-        theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_0_SPOT_DIRECTION + anIndex), aDirection);
-    }
-
-    ++anIndex;
+                            theProgram->GetStateLocation (OpenGl_OCC_LIGHT_AMBIENT),
+                            OpenGl_Vec4 (0.0f, 0.0f, 0.0f, 0.0f));
+    theProgram->UpdateState (OpenGl_LIGHT_SOURCES_STATE, myLightSourceState.Index());
+    return;
   }
+
+  OpenGl_Vec2i* aTypesArray  = new OpenGl_Vec2i[aLightsDefNb];
+  OpenGl_Vec4*  aParamsArray = new OpenGl_Vec4 [aLightsDefNb * 4];
+
+  OpenGl_Vec4 anAmbient (0.0f, 0.0f, 0.0f, 0.0f);
+  Standard_Integer aLightsNb = 0;
+  for (OpenGl_ListOfLight::Iterator anIter (*myLightSourceState.LightSources()); anIter.More(); anIter.Next())
+  {
+    const OpenGl_Light& aLight = anIter.Value();
+    if (aLight.Type == Visual3d_TOLS_AMBIENT)
+    {
+      anAmbient += aLight.Color;
+      continue;
+    }
+    else if (aLightsNb >= OpenGLMaxLights)
+    {
+      continue;
+    }
+
+    aTypesArray[aLightsNb].x() = aLight.Type;
+    aTypesArray[aLightsNb].y() = aLight.IsHeadlight;
+
+    aParamsArray[aLightsNb * 4 + 0] =   aLight.Color;
+    aParamsArray[aLightsNb * 4 + 1] =   aLight.Type == Visual3d_TOLS_DIRECTIONAL
+                                    ?  -aLight.Direction
+                                    :   aLight.Position;
+    if (aLight.Type == Visual3d_TOLS_SPOT)
+    {
+      aParamsArray[aLightsNb * 4 + 2] = aLight.Direction;
+    }
+    aParamsArray[aLightsNb * 4 + 3] =   aLight.Params;
+    ++aLightsNb;
+  }
+
+  theProgram->SetUniform (myContext,
+                          theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_COUNT),
+                          aLightsNb);
+  theProgram->SetUniform (myContext,
+                          theProgram->GetStateLocation (OpenGl_OCC_LIGHT_AMBIENT),
+                          anAmbient);
+  if (aLightsNb > 0)
+  {
+    myContext->core20->glUniform2iv (aTypesLoc,  aLightsNb,     aTypesArray [0].GetData());
+    myContext->core20->glUniform4fv (aParamsLoc, aLightsNb * 4, aParamsArray[0].GetData());
+  }
+  delete[] aTypesArray;
+  delete[] aParamsArray;
 
   theProgram->UpdateState (OpenGl_LIGHT_SOURCES_STATE, myLightSourceState.Index());
 }
@@ -472,8 +458,18 @@ void OpenGl_ShaderManager::PushClippingState (const Handle(OpenGl_ShaderProgram)
     return;
   }
 
-  Graphic3d_SetOfHClipPlane::Iterator anIter (myContext->Clipping().Planes());
-  for (GLuint anIndex = 0; anIter.More(); anIter.Next())
+  theProgram->UpdateState (OpenGl_CLIP_PLANES_STATE, myClippingState.Index());
+  const GLint aLocEquations = theProgram->GetStateLocation (OpenGl_OCC_CLIP_PLANE_EQUATIONS);
+  const GLint aLocSpaces    = theProgram->GetStateLocation (OpenGl_OCC_CLIP_PLANE_SPACES);
+  if (aLocEquations == OpenGl_ShaderProgram::INVALID_LOCATION
+   && aLocSpaces    == OpenGl_ShaderProgram::INVALID_LOCATION)
+  {
+    return;
+  }
+
+  GLuint aPlanesNb = 0;
+  for (Graphic3d_SetOfHClipPlane::Iterator anIter (myContext->Clipping().Planes());
+       anIter.More(); anIter.Next())
   {
     const Handle(Graphic3d_ClipPlane)& aPlane = anIter.Value();
     if (!myContext->Clipping().IsEnabled (aPlane))
@@ -481,23 +477,37 @@ void OpenGl_ShaderManager::PushClippingState (const Handle(OpenGl_ShaderProgram)
       continue;
     }
 
-    GLint aLocation = theProgram->GetStateLocation (OpenGl_OCC_CLIP_PLANE_0_EQUATION + anIndex);
-    if (aLocation != OpenGl_ShaderProgram::INVALID_LOCATION)
-    {
-      const Graphic3d_ClipPlane::Equation& anEquation = aPlane->GetEquation();
-      theProgram->SetUniform (myContext, aLocation, OpenGl_Vec4 ((float) anEquation.x(),
-                                                                 (float) anEquation.y(),
-                                                                 (float) anEquation.z(),
-                                                                 (float) anEquation.w()));
-    }
-
-    theProgram->SetUniform (myContext,
-                            theProgram->GetStateLocation (OpenGl_OCC_CLIP_PLANE_0_SPACE + anIndex),
-                            myContext->Clipping().GetEquationSpace (aPlane));
-    ++anIndex;
+    ++aPlanesNb;
+  }
+  if (aPlanesNb < 1)
+  {
+    return;
   }
 
-  theProgram->UpdateState (OpenGl_CLIP_PLANES_STATE, myClippingState.Index());
+  OpenGl_Vec4* anEquations = new OpenGl_Vec4[aPlanesNb];
+  GLint*       aSpaces     = new GLint      [aPlanesNb];
+  GLuint aPlaneId = 0;
+  for (Graphic3d_SetOfHClipPlane::Iterator anIter (myContext->Clipping().Planes());
+       anIter.More(); anIter.Next())
+  {
+    const Handle(Graphic3d_ClipPlane)& aPlane = anIter.Value();
+    if (!myContext->Clipping().IsEnabled (aPlane))
+    {
+      continue;
+    }
+
+    const Graphic3d_ClipPlane::Equation& anEquation = aPlane->GetEquation();
+    anEquations[aPlaneId] = OpenGl_Vec4 ((float) anEquation.x(),
+                                         (float) anEquation.y(),
+                                         (float) anEquation.z(),
+                                         (float) anEquation.w());
+    aSpaces[aPlaneId] = myContext->Clipping().GetEquationSpace (aPlane);
+    ++aPlaneId;
+  }
+  myContext->core20->glUniform4fv (aLocEquations, aPlanesNb, anEquations[0].GetData());
+  myContext->core20->glUniform1iv (aLocSpaces,    aPlanesNb, aSpaces);
+  delete[] anEquations;
+  delete[] aSpaces;
 }
 
 // =======================================================================
@@ -559,65 +569,48 @@ static void PushAspectFace (const Handle(OpenGl_Context)&       theCtx,
   theProgram->SetUniform (theCtx,
                           theProgram->GetStateLocation (OpenGl_OCCT_TEXTURE_ENABLE),
                           theAspect->DoTextureMap());
-
   theProgram->SetUniform (theCtx,
                           theProgram->GetStateLocation (OpenGl_OCCT_ACTIVE_SAMPLER),
                           0 /* GL_TEXTURE0 */);
-
   theProgram->SetUniform (theCtx,
                           theProgram->GetStateLocation (OpenGl_OCCT_DISTINGUISH_MODE),
                           theAspect->DistinguishingMode());
 
-  for (int anIndex = 0; anIndex < 2; ++anIndex)
+  OpenGl_Vec4 aParams[5];
+  for (Standard_Integer anIndex = 0; anIndex < 2; ++anIndex)
   {
-    const OPENGL_SURF_PROP& aProperties = (anIndex == 0) ? theAspect->IntFront() : theAspect->IntBack();
-    GLint aLocation = theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL_AMBIENT + anIndex);
-    if (aLocation != OpenGl_ShaderProgram::INVALID_LOCATION)
+    const GLint aLoc = theProgram->GetStateLocation (anIndex == 0
+                                                   ? OpenGl_OCCT_FRONT_MATERIAL
+                                                   : OpenGl_OCCT_BACK_MATERIAL);
+    if (aLoc == OpenGl_ShaderProgram::INVALID_LOCATION)
     {
-      OpenGl_Vec4 anAmbient (aProperties.ambcol.rgb[0] * aProperties.amb,
-                             aProperties.ambcol.rgb[1] * aProperties.amb,
-                             aProperties.ambcol.rgb[2] * aProperties.amb,
-                             aProperties.ambcol.rgb[3] * aProperties.amb);
-      theProgram->SetUniform (theCtx, aLocation, anAmbient);
+      continue;
     }
 
-    aLocation = theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL_DIFFUSE + anIndex);
-    if (aLocation != OpenGl_ShaderProgram::INVALID_LOCATION)
-    {
-      OpenGl_Vec4 aDiffuse (aProperties.difcol.rgb[0] * aProperties.diff,
-                            aProperties.difcol.rgb[1] * aProperties.diff,
-                            aProperties.difcol.rgb[2] * aProperties.diff,
-                            aProperties.difcol.rgb[3] * aProperties.diff);
-      theProgram->SetUniform (theCtx, aLocation, aDiffuse);
-    }
-
-    aLocation = theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL_SPECULAR + anIndex);
-    if (aLocation != OpenGl_ShaderProgram::INVALID_LOCATION)
-    {
-      OpenGl_Vec4 aSpecular (aProperties.speccol.rgb[0] * aProperties.spec,
-                             aProperties.speccol.rgb[1] * aProperties.spec,
-                             aProperties.speccol.rgb[2] * aProperties.spec,
-                             aProperties.speccol.rgb[3] * aProperties.spec);
-      theProgram->SetUniform (theCtx, aLocation, aSpecular);
-    }
-
-    aLocation = theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL_EMISSION + anIndex);
-    if (aLocation != OpenGl_ShaderProgram::INVALID_LOCATION)
-    {
-      OpenGl_Vec4 anEmission (aProperties.emscol.rgb[0] * aProperties.emsv,
-                              aProperties.emscol.rgb[1] * aProperties.emsv,
-                              aProperties.emscol.rgb[2] * aProperties.emsv,
-                              aProperties.emscol.rgb[3] * aProperties.emsv);
-      theProgram->SetUniform (theCtx, aLocation, anEmission);
-    }
-    
-    theProgram->SetUniform (theCtx,
-                            theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL_SHININESS + anIndex),
-                            aProperties.shine);
-
-    theProgram->SetUniform (theCtx,
-                            theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL_TRANSPARENCY + anIndex),
-                            aProperties.trans);
+    const OPENGL_SURF_PROP& aProps = (anIndex == 0) ? theAspect->IntFront() : theAspect->IntBack();
+    const OpenGl_Vec4 anEmission (aProps.emscol.rgb[0] * aProps.emsv,
+                                  aProps.emscol.rgb[1] * aProps.emsv,
+                                  aProps.emscol.rgb[2] * aProps.emsv,
+                                  aProps.emscol.rgb[3] * aProps.emsv);
+    const OpenGl_Vec4 anAmbient  (aProps.ambcol.rgb[0] * aProps.amb,
+                                  aProps.ambcol.rgb[1] * aProps.amb,
+                                  aProps.ambcol.rgb[2] * aProps.amb,
+                                  aProps.ambcol.rgb[3] * aProps.amb);
+    const OpenGl_Vec4 aDiffuse   (aProps.difcol.rgb[0] * aProps.diff,
+                                  aProps.difcol.rgb[1] * aProps.diff,
+                                  aProps.difcol.rgb[2] * aProps.diff,
+                                  aProps.difcol.rgb[3] * aProps.diff);
+    const OpenGl_Vec4 aSpecular  (aProps.speccol.rgb[0] * aProps.spec,
+                                  aProps.speccol.rgb[1] * aProps.spec,
+                                  aProps.speccol.rgb[2] * aProps.spec,
+                                  aProps.speccol.rgb[3] * aProps.spec);
+    aParams[0] = anEmission;
+    aParams[1] = anAmbient;
+    aParams[2] = aDiffuse;
+    aParams[3] = aSpecular;
+    aParams[4].x() = aProps.shine;
+    aParams[4].y() = aProps.trans;
+    theCtx->core20->glUniform4fv (aLoc, 5, aParams[0].GetData());
   }
 }
 
@@ -636,21 +629,15 @@ static void PushAspectLine (const Handle(OpenGl_Context)&       theCtx,
                               theAspect->Color().rgb[1],
                               theAspect->Color().rgb[2],
                               theAspect->Color().rgb[3]);
-  theProgram->SetUniform (theCtx,
-                          theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL_AMBIENT),
-                          THE_COLOR_BLACK_VEC4);
-  theProgram->SetUniform (theCtx,
-                          theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL_DIFFUSE),
-                          aDiffuse);
-  theProgram->SetUniform (theCtx,
-                          theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL_SPECULAR),
-                          THE_COLOR_BLACK_VEC4);
-  theProgram->SetUniform (theCtx,
-                          theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL_EMISSION),
-                          THE_COLOR_BLACK_VEC4);
-  theProgram->SetUniform (theCtx,
-                          theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL_TRANSPARENCY),
-                          0.0f);
+  OpenGl_Vec4 aParams[5];
+  aParams[0] = THE_COLOR_BLACK_VEC4;
+  aParams[1] = THE_COLOR_BLACK_VEC4;
+  aParams[2] = aDiffuse;
+  aParams[3] = THE_COLOR_BLACK_VEC4;
+  aParams[4].x() = 0.0f; // shininess
+  aParams[4].y() = 0.0f; // transparency
+  theCtx->core20->glUniform4fv (theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL),
+                                5, aParams[0].GetData());
 }
 
 // =======================================================================
@@ -678,21 +665,15 @@ static void PushAspectText (const Handle(OpenGl_Context)&       theCtx,
                             theAspect->SubtitleColor().rgb[3]);
   }
 
-  theProgram->SetUniform (theCtx,
-                          theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL_AMBIENT),
-                          THE_COLOR_BLACK_VEC4);
-  theProgram->SetUniform (theCtx,
-                          theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL_DIFFUSE),
-                          aDiffuse);
-  theProgram->SetUniform (theCtx,
-                          theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL_SPECULAR),
-                          THE_COLOR_BLACK_VEC4);
-  theProgram->SetUniform (theCtx,
-                          theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL_EMISSION),
-                          THE_COLOR_BLACK_VEC4);
-  theProgram->SetUniform (theCtx,
-                          theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL_TRANSPARENCY),
-                          0.0f);
+  OpenGl_Vec4 aParams[5];
+  aParams[0] = THE_COLOR_BLACK_VEC4;
+  aParams[1] = THE_COLOR_BLACK_VEC4;
+  aParams[2] = aDiffuse;
+  aParams[3] = THE_COLOR_BLACK_VEC4;
+  aParams[4].x() = 0.0f; // shininess
+  aParams[4].y() = 0.0f; // transparency
+  theCtx->core20->glUniform4fv (theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL),
+                                5, aParams[0].GetData());
 }
 
 // =======================================================================
@@ -711,22 +692,15 @@ static void PushAspectMarker (const Handle(OpenGl_Context)&       theCtx,
                               theAspect->Color().rgb[1],
                               theAspect->Color().rgb[2],
                               theAspect->Color().rgb[3]);
-
-  theProgram->SetUniform (theCtx,
-                          theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL_AMBIENT),
-                          THE_COLOR_BLACK_VEC4);
-  theProgram->SetUniform (theCtx,
-                          theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL_DIFFUSE),
-                          aDiffuse);
-  theProgram->SetUniform (theCtx,
-                          theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL_SPECULAR),
-                          THE_COLOR_BLACK_VEC4);
-  theProgram->SetUniform (theCtx,
-                          theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL_EMISSION),
-                          THE_COLOR_BLACK_VEC4);
-  theProgram->SetUniform (theCtx,
-                          theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL_TRANSPARENCY),
-                          0.0f);
+  OpenGl_Vec4 aParams[5];
+  aParams[0] = THE_COLOR_BLACK_VEC4;
+  aParams[1] = THE_COLOR_BLACK_VEC4;
+  aParams[2] = aDiffuse;
+  aParams[3] = THE_COLOR_BLACK_VEC4;
+  aParams[4].x() = 0.0f; // shininess
+  aParams[4].y() = 0.0f; // transparency
+  theCtx->core20->glUniform4fv (theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL),
+                                5, aParams[0].GetData());
 }
 
 }; // nameless namespace

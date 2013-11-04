@@ -35,37 +35,6 @@ typedef struct {
 
 } CALL_DEF_VERTEX;
 
-/* SOURCE LUMINEUSE */
-
-typedef struct {
-
-	int WsId;
-
-	int ViewId;
-
-	int LightId;
-
-	int Active;
-
-	int LightType;
-
-	int Headlight;
-
-	CALL_DEF_COLOR Color;
-
-	CALL_DEF_VERTEX Position;
-
-	CALL_DEF_VERTEX Direction;
-
-	float Concentration;
-
-	float Attenuation[2];
-
-	float Angle;
-
-} CALL_DEF_LIGHT;
-
-
 /* ORIENTATION */
 
 typedef struct {

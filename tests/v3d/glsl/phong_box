@@ -9,6 +9,7 @@ box b 1 2 3
 vinit View1
 vclear
 vsetdispmode 1
+vaxo
 vdisplay b
 vfit
 vrotate 0.2 0.0 0.0

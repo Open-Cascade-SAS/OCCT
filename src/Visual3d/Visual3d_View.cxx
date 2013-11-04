@@ -79,9 +79,6 @@
 #define BUC60572        //GG_03-08-99    Add protection on Zclipping & Zcueing planes
 //              positions.
 
-#define BUC60570        //GG 14-09-99 Don't activates lighting
-//                      when the view shading model is NONE.
-
 #define GER61454        //GG 14-09-99 Activates model clipping planes
 
 #define RIC120302       //GG Add a NEW SetWindow method which enable
@@ -706,148 +703,45 @@ Standard_Real Rap;
 
 }
 
-void Visual3d_View::UpdateLights () {
-
-Standard_Integer i, j;
-CALL_DEF_LIGHT *lights=NULL;
-
-#ifdef BUC60570
-  if( MyContext.Model() == Visual3d_TOM_NONE ) {
-// Activates only a white ambient light
-    MyCView.Context.NbActiveLight = 1;
-    lights      = new CALL_DEF_LIGHT [MyCView.Context.NbActiveLight];
-    MyCView.Context.ActiveLight = lights;
-
-    lights[0].WsId              = MyCView.ViewId;
-    lights[0].ViewId    = MyCView.ViewId;
-    lights[0].LightType = int (Visual3d_TOLS_AMBIENT);
-    lights[0].Active    = 1;
-    lights[0].LightId   = 0;
-    lights[0].Headlight = 0;
-    lights[0].Color.r   = lights[0].Color.g = lights[0].Color.b = 1.;
-  } else {
-#endif
-        i       = MyContext.NumberOfActivatedLights ();
-        j       = MyGraphicDriver->InquireLightLimit ();
-        MyCView.Context.NbActiveLight   = (i > j ? j : i);
-
-        if (MyCView.Context.NbActiveLight > 0) {
-
-                // Dynamic Allocation
-                lights  = new CALL_DEF_LIGHT [MyCView.Context.NbActiveLight];
-
-                MyCView.Context.ActiveLight     = lights;
-
-Standard_Real X, Y, Z;
-
-Standard_Real LightConcentration = 0.;
-Standard_Real LightAttenuation1 = 0.;
-Standard_Real LightAttenuation2 = 0.;
-Standard_Real LightAngle = 0.;
-Quantity_Color LightColor;
-Graphic3d_Vertex LightPosition;
-Graphic3d_Vector LightDirection;
-Visual3d_TypeOfLightSource LightType=Visual3d_TOLS_AMBIENT;
-
-                // Parcing of light sources
-                for (j=0; j<MyCView.Context.NbActiveLight; j++) {
-                        LightType       = (MyContext.ActivatedLight (j+1))->LightType ();
-
-                        lights[j].WsId          = MyCView.ViewId;
-                        lights[j].ViewId        = MyCView.ViewId;
-
-                        lights[j].LightType     = int (LightType);
-                        lights[j].Active        = 1;
-                        lights[j].LightId       =
-                                int ((MyContext.ActivatedLight (j+1))->Identification ());
-                        lights[j].Headlight = (MyContext.ActivatedLight (j+1))->Headlight ()? 1:0;
-
-                        switch (LightType) {
-
-                        case Visual3d_TOLS_AMBIENT :
-                                (MyContext.ActivatedLight (j+1))->Values (
-                                                        LightColor
-                                                                );
-                        break;
-
-                        case Visual3d_TOLS_POSITIONAL :
-                                (MyContext.ActivatedLight (j+1))->Values (
-                                                        LightColor,
-                                                        LightPosition,
-                                                        LightAttenuation1,
-                                                        LightAttenuation2
-                                                                );
-                        break;
-
-                        case Visual3d_TOLS_DIRECTIONAL :
-                                (MyContext.ActivatedLight (j+1))->Values (
-                                                        LightColor,
-                                                        LightDirection
-                                                                );
-                        break;
-
-                        case Visual3d_TOLS_SPOT :
-                                (MyContext.ActivatedLight (j+1))->Values (
-                                                        LightColor,
-                                                        LightPosition,
-                                                        LightDirection,
-                                                        LightConcentration,
-                                                        LightAttenuation1,
-                                                        LightAttenuation2,
-                                                        LightAngle
-                                                                );
-                        break;
-
-                        }
-
-                        lights[j].Color.r       = float (LightColor.Red ());
-                        lights[j].Color.g       = float (LightColor.Green ());
-                        lights[j].Color.b       = float (LightColor.Blue ());
-
-                        if ( (LightType == Visual3d_TOLS_POSITIONAL) ||
-                             (LightType == Visual3d_TOLS_SPOT) ) {
-                                LightPosition.Coord (X, Y, Z);
-                                lights[j].Position.x    = float (X);
-                                lights[j].Position.y    = float (Y);
-                                lights[j].Position.z    = float (Z);
-                        }
-
-                        if ( (LightType == Visual3d_TOLS_DIRECTIONAL) ||
-                             (LightType == Visual3d_TOLS_SPOT) ) {
-                                LightDirection.Coord (X, Y, Z);
-                                lights[j].Direction.x   = float (X);
-                                lights[j].Direction.y   = float (Y);
-                                lights[j].Direction.z   = float (Z);
-                        }
-
-                        if ( (LightType == Visual3d_TOLS_POSITIONAL) ||
-                             (LightType == Visual3d_TOLS_SPOT) ) {
-                                lights[j].Attenuation[0] =
-                                        float (LightAttenuation1);
-                                lights[j].Attenuation[1] =
-                                        float (LightAttenuation2);
-                        }
-
-                        if (LightType == Visual3d_TOLS_SPOT) {
-                                lights[j].Concentration =
-                                        float (LightConcentration);
-                                lights[j].Angle         =
-                                        float (LightAngle);
-                        }
-                }
-
-        }
-#ifdef BUC60570
+void Visual3d_View::UpdateLights()
+{
+  if (IsDeleted()
+   || !IsDefined())
+  {
+    return;
   }
-#endif
-        // management of light sources
-        if (! IsDeleted ())
-                if (IsDefined ())
-                        MyGraphicDriver->SetLight (MyCView);
 
-        // Dynamic allocation
-        if (MyCView.Context.NbActiveLight > 0) delete [] lights;
+  if (MyContext.Model() == Visual3d_TOM_NONE)
+  {
+    // activate only a white ambient light
+    Graphic3d_CLight aCLight;
+    aCLight.Type        = Visual3d_TOLS_AMBIENT;
+    aCLight.IsHeadlight = Standard_False;
+    aCLight.Color.r() = aCLight.Color.g() = aCLight.Color.b() = 1.0f;
 
+    MyCView.Context.NbActiveLight = 1;
+    MyCView.Context.ActiveLight   = &aCLight;
+    MyGraphicDriver->SetLight (MyCView);
+    MyCView.Context.ActiveLight   = NULL;
+    return;
+  }
+
+  MyCView.Context.NbActiveLight = Min (MyContext.NumberOfActivatedLights(),
+                                       MyGraphicDriver->InquireLightLimit());
+  if (MyCView.Context.NbActiveLight < 1)
+  {
+    return;
+  }
+
+  // parcing of light sources
+  MyCView.Context.ActiveLight = new Graphic3d_CLight[MyCView.Context.NbActiveLight];
+  for (Standard_Integer aLightIter = 0; aLightIter < MyCView.Context.NbActiveLight; ++aLightIter)
+  {
+    MyCView.Context.ActiveLight[aLightIter] = MyContext.ActivatedLight (aLightIter + 1)->CLight();
+  }
+  MyGraphicDriver->SetLight (MyCView);
+  delete[] MyCView.Context.ActiveLight;
+  MyCView.Context.ActiveLight = NULL;
 }
 
 void Visual3d_View::UpdatePlanes() 

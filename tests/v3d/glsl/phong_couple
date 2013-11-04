@@ -12,6 +12,7 @@ vinit View1
 vclear
 vdefaults absDefl=0.5
 vsetdispmode 1
+vaxo
 vdisplay f
 vfit
 vrotate -0.5 0.0 0.0

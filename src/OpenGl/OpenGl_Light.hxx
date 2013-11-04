@@ -17,29 +17,16 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #ifndef OpenGl_Light_Header
 #define OpenGl_Light_Header
 
+#include <Graphic3d_CLight.hxx>
+#include <Visual3d_TypeOfLightSource.hxx>
 #include <NCollection_List.hxx>
 
-#include <InterfaceGraphic_telem.hxx>
+#define OpenGLMaxLights 8
 
-#define  OpenGLMaxLights    8
-
-struct OpenGl_Light
-{
-  TLightType  type;
-  int   HeadLight;
-  TEL_COLOUR  col;
-  Tfloat      pos[3];
-  Tfloat      dir[3];
-  Tfloat      shine;
-  Tfloat      atten[2];
-  Tfloat      angle;
-  DEFINE_STANDARD_ALLOC
-};
-
+typedef Graphic3d_CLight               OpenGl_Light;
 typedef NCollection_List<OpenGl_Light> OpenGl_ListOfLight;
 
-#endif //OpenGl_Light_Header
+#endif // OpenGl_Light_Header

@@ -55,18 +55,6 @@ Graphic3d_GraphicDriver::Graphic3d_GraphicDriver (const Standard_CString AShrNam
 
 }
 
-//-Methods, in order
-
-Standard_Integer Graphic3d_GraphicDriver::Light (const Graphic3d_CLight& ACLight, const Standard_Boolean Update) {
-
-  static Standard_Integer NbLights = 1;
-  Standard_Boolean Result;
-
-  Result = Update ? ACLight.LightId : NbLights++;
-  return Result;
-
-}
-
 //-Internal methods, in order
 
 void Graphic3d_GraphicDriver::PrintBoolean (const Standard_CString AComment, const Standard_Boolean AValue) const {
@@ -87,12 +75,12 @@ void Graphic3d_GraphicDriver::PrintCGroup (const Graphic3d_CGroup& ACGroup, cons
 
 }
 
-void Graphic3d_GraphicDriver::PrintCLight (const Graphic3d_CLight& ACLight, const Standard_Integer AField) const {
-
-  if (AField) {
-    cout << "\tws id " << ACLight.WsId << ", "
-      << "view id " << ACLight.ViewId << "\n";
-    switch (ACLight.LightType) {
+void Graphic3d_GraphicDriver::PrintCLight (const Graphic3d_CLight& theCLight,
+                                           const Standard_Integer  theField) const
+{
+  if (theField)
+  {
+    switch (theCLight.Type) {
     case 0 :
       cout << "\tlight type : ambient\n";
       break;
@@ -111,7 +99,6 @@ void Graphic3d_GraphicDriver::PrintCLight (const Graphic3d_CLight& ACLight, cons
     }
     cout << flush;
   }
-
 }
 
 void Graphic3d_GraphicDriver::PrintCPick (const Graphic3d_CPick& ACPick, const Standard_Integer AField) const {

@@ -114,6 +114,11 @@ Standard_Boolean V3d_Light::Headlight() const {
   return MyLight->Headlight();
 }
 
+void V3d_Light::SetHeadlight (const Standard_Boolean theValue)
+{
+  MyLight->SetHeadlight (theValue);
+}
+
 void V3d_Light::SymetricPointOnSphere (const Handle(V3d_View)& aView, const Graphic3d_Vertex &Center, const Graphic3d_Vertex &aPoint, const Standard_Real Rayon, Standard_Real& X, Standard_Real& Y, Standard_Real& Z, Standard_Real& VX, Standard_Real& VY, Standard_Real& VZ ) {
 
   Standard_Real X0,Y0,Z0,XP,YP,ZP;

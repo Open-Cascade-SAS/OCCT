@@ -43,10 +43,15 @@
 
 #define EPSI 0.0001
 
-static const GLfloat default_amb[4] = { 0.F, 0.F, 0.F, 1.F };
-static const GLfloat default_sptdir[3] = { 0.F, 0.F, -1.F };
-static const GLfloat default_sptexpo = 0.F;
-static const GLfloat default_sptcutoff = 180.F;
+namespace
+{
+
+  static const GLfloat THE_DEFAULT_AMBIENT[4]    = { 0.0f, 0.0f, 0.0f, 1.0f };
+  static const GLfloat THE_DEFAULT_SPOT_DIR[3]   = { 0.0f, 0.0f, -1.0f };
+  static const GLfloat THE_DEFAULT_SPOT_EXPONENT = 0.0f;
+  static const GLfloat THE_DEFAULT_SPOT_CUTOFF   = 180.0f;
+
+};
 
 extern void InitLayerProp (const int theListId); //szvgl: defined in OpenGl_GraphicDriver_Layer.cxx
 
@@ -68,171 +73,89 @@ struct OPENGL_CLIP_PLANE
 /*
 *  Set des lumieres
 */
-static void bind_light(const OpenGl_Light *lptr, int *gl_lid)
+static void bind_light (const OpenGl_Light& theLight,
+                        GLenum&             theLightGlId)
 {
   // Only 8 lights in OpenGL...
-  if (*gl_lid > GL_LIGHT7) return;
-
-  // the light is a headlight ?
-  GLint cur_matrix = 0;
-  if (lptr->HeadLight)
+  if (theLightGlId > GL_LIGHT7)
   {
-    glGetIntegerv(GL_MATRIX_MODE, &cur_matrix);
-    glMatrixMode(GL_MODELVIEW);
+    return;
+  }
+
+  if (theLight.Type == Visual3d_TOLS_AMBIENT)
+  {
+    // setup RGBA intensity of the ambient light
+    glLightModelfv (GL_LIGHT_MODEL_AMBIENT, theLight.Color.GetData());
+    return;
+  }
+
+  // the light is a headlight?
+  GLint aMatrixModeOld = 0;
+  if (theLight.IsHeadlight)
+  {
+    glGetIntegerv (GL_MATRIX_MODE, &aMatrixModeOld);
+    glMatrixMode  (GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
   }
 
-  GLfloat data_amb[4];
-  GLfloat data_diffu[4];
-  GLfloat data_pos[4];
-  GLfloat data_sptdir[3];
-  GLfloat data_sptexpo;
-  GLfloat data_sptcutoff;
-  GLfloat data_constantattenuation;
-  GLfloat data_linearattenuation;
-
-  /* set la light en fonction de son type */
-  switch (lptr->type)
+  // setup light type
+  switch (theLight.Type)
   {
-  case TLightAmbient:
-    data_amb[0] = lptr->col.rgb[0];
-    data_amb[1] = lptr->col.rgb[1];
-    data_amb[2] = lptr->col.rgb[2];
-    data_amb[3] = 1.0;
+    case Visual3d_TOLS_DIRECTIONAL:
+    {
+      // if the last parameter of GL_POSITION, is zero, the corresponding light source is a Directional one
+      const OpenGl_Vec4 anInfDir = -theLight.Direction;
 
-    /*------------------------- Ambient ---------------------------*/
-    /*
-    * The GL_AMBIENT parameter refers to RGBA intensity of the ambient
-    * light.
-    */
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, data_amb);
-    break;
-
-
-  case TLightDirectional:
-    data_diffu[0] = lptr->col.rgb[0];
-    data_diffu[1] = lptr->col.rgb[1];
-    data_diffu[2] = lptr->col.rgb[2];
-    data_diffu[3] = 1.0;
-
-    /*------------------------- Direction ---------------------------*/
-    /* From Open GL Programming Rev 1 Guide Chapt 6 :
-    Lighting The Mathematics of Lighting ( p 168 )
-
-    Directional Light Source ( Infinite ) :
-    if the last parameter of GL_POSITION , w , is zero, the
-    corresponding light source is a Directional one.
-
-    GL_SPOT_CUTOFF a 180 signifie que ce n'est pas un spot.
-    To create a realistic effect,  set the GL_SPECULAR parameter
-    to the same value as the GL_DIFFUSE.
-    */
-
-    data_pos[0] = -lptr->dir[0];
-    data_pos[1] = -lptr->dir[1];
-    data_pos[2] = -lptr->dir[2];
-    data_pos[3] = 0.0;
-
-    glLightfv(*gl_lid, GL_AMBIENT, default_amb);
-    glLightfv(*gl_lid, GL_DIFFUSE, data_diffu);
-    glLightfv(*gl_lid, GL_SPECULAR, data_diffu);
-
-    glLightfv(*gl_lid, GL_POSITION, data_pos);
-    glLightfv(*gl_lid, GL_SPOT_DIRECTION, default_sptdir);
-    glLightf(*gl_lid, GL_SPOT_EXPONENT, default_sptexpo);
-    glLightf(*gl_lid, GL_SPOT_CUTOFF, default_sptcutoff);
-    break;
-
-
-  case TLightPositional:
-    data_diffu[0] = lptr->col.rgb[0];
-    data_diffu[1] = lptr->col.rgb[1];
-    data_diffu[2] = lptr->col.rgb[2];
-    data_diffu[3] = 1.0;
-
-    /*------------------------- Position -----------------------------*/
-    /* From Open GL Programming Rev 1 Guide Chapt 6 :
-    Lighting The Mathematics of Lighting ( p 168 )
-    Positional Light Source :
-    if the last parameter of GL_POSITION , w , is nonzero,
-    the corresponding light source is a Positional one.
-
-    GL_SPOT_CUTOFF a 180 signifie que ce n'est pas un spot.
-
-    To create a realistic effect,  set the GL_SPECULAR parameter
-    to the same value as the GL_DIFFUSE.
-    */
-
-    data_pos[0] = lptr->pos[0];
-    data_pos[1] = lptr->pos[1];
-    data_pos[2] = lptr->pos[2];
-    data_pos[3] = 1.0;
-
-    data_constantattenuation = lptr->atten[0];
-    data_linearattenuation = lptr->atten[1];
-
-    glLightfv(*gl_lid, GL_AMBIENT, default_amb);
-    glLightfv(*gl_lid, GL_DIFFUSE, data_diffu);
-    glLightfv(*gl_lid, GL_SPECULAR, data_diffu);
-
-    glLightfv(*gl_lid, GL_POSITION, data_pos);
-    glLightfv(*gl_lid, GL_SPOT_DIRECTION, default_sptdir);
-    glLightf(*gl_lid, GL_SPOT_EXPONENT, default_sptexpo);
-    glLightf(*gl_lid, GL_SPOT_CUTOFF, default_sptcutoff);
-    glLightf(*gl_lid, GL_CONSTANT_ATTENUATION, data_constantattenuation);
-    glLightf(*gl_lid, GL_LINEAR_ATTENUATION, data_linearattenuation);
-    glLightf(*gl_lid, GL_QUADRATIC_ATTENUATION, 0.0);
-    break;
-
-
-  case TLightSpot:
-    data_diffu[0] = lptr->col.rgb[0];
-    data_diffu[1] = lptr->col.rgb[1];
-    data_diffu[2] = lptr->col.rgb[2];
-    data_diffu[3] = 1.0;
-
-    data_pos[0] = lptr->pos[0];
-    data_pos[1] = lptr->pos[1];
-    data_pos[2] = lptr->pos[2];
-    data_pos[3] = 1.0;
-
-    data_sptdir[0] = lptr->dir[0];
-    data_sptdir[1] = lptr->dir[1];
-    data_sptdir[2] = lptr->dir[2];
-
-    data_sptexpo = ( float )lptr->shine * 128.0F;
-    data_sptcutoff = ( float )(lptr->angle * 180.0F)/( float )M_PI;
-
-    data_constantattenuation = lptr->atten[0];
-    data_linearattenuation = lptr->atten[1];
-
-    glLightfv(*gl_lid, GL_AMBIENT, default_amb);
-    glLightfv(*gl_lid, GL_DIFFUSE, data_diffu);
-    glLightfv(*gl_lid, GL_SPECULAR, data_diffu);
-
-    glLightfv(*gl_lid, GL_POSITION, data_pos);
-    glLightfv(*gl_lid, GL_SPOT_DIRECTION, data_sptdir);
-    glLightf(*gl_lid, GL_SPOT_EXPONENT, data_sptexpo);
-    glLightf(*gl_lid, GL_SPOT_CUTOFF, data_sptcutoff);
-    glLightf(*gl_lid, GL_CONSTANT_ATTENUATION, data_constantattenuation);
-    glLightf(*gl_lid, GL_LINEAR_ATTENUATION, data_linearattenuation);
-    glLightf(*gl_lid, GL_QUADRATIC_ATTENUATION, 0.0);
-    break;
+      // to create a realistic effect,  set the GL_SPECULAR parameter to the same value as the GL_DIFFUSE.
+      glLightfv (theLightGlId, GL_AMBIENT,               THE_DEFAULT_AMBIENT);
+      glLightfv (theLightGlId, GL_DIFFUSE,               theLight.Color.GetData());
+      glLightfv (theLightGlId, GL_SPECULAR,              theLight.Color.GetData());
+      glLightfv (theLightGlId, GL_POSITION,              anInfDir.GetData());
+      glLightfv (theLightGlId, GL_SPOT_DIRECTION,        THE_DEFAULT_SPOT_DIR);
+      glLightf  (theLightGlId, GL_SPOT_EXPONENT,         THE_DEFAULT_SPOT_EXPONENT);
+      glLightf  (theLightGlId, GL_SPOT_CUTOFF,           THE_DEFAULT_SPOT_CUTOFF);
+      break;
+    }
+    case Visual3d_TOLS_POSITIONAL:
+    {
+      // to create a realistic effect, set the GL_SPECULAR parameter to the same value as the GL_DIFFUSE
+      glLightfv (theLightGlId, GL_AMBIENT,               THE_DEFAULT_AMBIENT);
+      glLightfv (theLightGlId, GL_DIFFUSE,               theLight.Color.GetData());
+      glLightfv (theLightGlId, GL_SPECULAR,              theLight.Color.GetData());
+      glLightfv (theLightGlId, GL_POSITION,              theLight.Position.GetData());
+      glLightfv (theLightGlId, GL_SPOT_DIRECTION,        THE_DEFAULT_SPOT_DIR);
+      glLightf  (theLightGlId, GL_SPOT_EXPONENT,         THE_DEFAULT_SPOT_EXPONENT);
+      glLightf  (theLightGlId, GL_SPOT_CUTOFF,           THE_DEFAULT_SPOT_CUTOFF);
+      glLightf  (theLightGlId, GL_CONSTANT_ATTENUATION,  theLight.ConstAttenuation());
+      glLightf  (theLightGlId, GL_LINEAR_ATTENUATION,    theLight.LinearAttenuation());
+      glLightf  (theLightGlId, GL_QUADRATIC_ATTENUATION, 0.0);
+      break;
+    }
+    case Visual3d_TOLS_SPOT:
+    {
+      glLightfv (theLightGlId, GL_AMBIENT,               THE_DEFAULT_AMBIENT);
+      glLightfv (theLightGlId, GL_DIFFUSE,               theLight.Color.GetData());
+      glLightfv (theLightGlId, GL_SPECULAR,              theLight.Color.GetData());
+      glLightfv (theLightGlId, GL_POSITION,              theLight.Position.GetData());
+      glLightfv (theLightGlId, GL_SPOT_DIRECTION,        theLight.Direction.GetData());
+      glLightf  (theLightGlId, GL_SPOT_EXPONENT,         theLight.Concentration() * 128.0f);
+      glLightf  (theLightGlId, GL_SPOT_CUTOFF,          (theLight.Angle() * 180.0f) / GLfloat(M_PI));
+      glLightf  (theLightGlId, GL_CONSTANT_ATTENUATION,  theLight.ConstAttenuation());
+      glLightf  (theLightGlId, GL_LINEAR_ATTENUATION,    theLight.LinearAttenuation());
+      glLightf  (theLightGlId, GL_QUADRATIC_ATTENUATION, 0.0f);
+      break;
+    }
   }
 
-  if (lptr->type != TLightAmbient)
-  {
-    glEnable(*gl_lid);
-    (*gl_lid)++;
-  }
-
-  /* si la light etait une headlight alors restaure la matrice precedente */
-  if (lptr->HeadLight)
+  // restore matrix in case of headlight
+  if (theLight.IsHeadlight)
   {
     glPopMatrix();
-    glMatrixMode(cur_matrix);
+    glMatrixMode (aMatrixModeOld);
   }
+
+  glEnable (theLightGlId++);
 }
 
 /*----------------------------------------------------------------------*/
@@ -1009,23 +932,23 @@ D = -[Px,Py,Pz] dot |Nx|
 
   // Apply Lights
   {
-    int i;
-
-    // Switch off all lights
-    for (i = GL_LIGHT0; i <= GL_LIGHT7; i++)
-      glDisable(i);
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, default_amb);
-
-    /* set les lights */
-    int gl_lid = GL_LIGHT0;
-    OpenGl_ListOfLight::Iterator itl(myLights);
-    for (; itl.More(); itl.Next())
+    // setup lights
+    glLightModelfv (GL_LIGHT_MODEL_AMBIENT, THE_DEFAULT_AMBIENT);
+    GLenum aLightGlId = GL_LIGHT0;
+    for (OpenGl_ListOfLight::Iterator aLightIt (myLights);
+         aLightIt.More(); aLightIt.Next())
     {
-      const OpenGl_Light &alight = itl.Value();
-      bind_light(&alight, &gl_lid);
+      bind_light (aLightIt.Value(), aLightGlId);
     }
-
-    if (gl_lid != GL_LIGHT0) glEnable(GL_LIGHTING);
+    if (aLightGlId != GL_LIGHT0)
+    {
+      glEnable (GL_LIGHTING);
+    }
+    // switch off unused lights
+    for (; aLightGlId <= GL_LIGHT7; ++aLightGlId)
+    {
+      glDisable (aLightGlId);
+    }
   }
 
   // Apply InteriorShadingMethod
