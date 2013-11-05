@@ -92,8 +92,6 @@
 #include <BRepFeat_SplitShape.hxx>
 #include <BRepAlgoAPI_Section.hxx>
 
-#include <tcl.h>
-
 #if ! defined(WNT)
 extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
 #else
@@ -279,53 +277,6 @@ static int BUC60610(Draw_Interpretor& di, Standard_Integer argc, const char ** a
   }
   return (1);
 }
-
-static Standard_Integer BUC60661(Draw_Interpretor& di, Standard_Integer argc, const char ** a)
-{
-  if(argc!=2)
-    {
-      di << "Usage : " << a[0] << " file.igs" << "\n";
-      return -1;
-    }
-
-  Handle(AIS_InteractiveContext) myContext = ViewerTest::GetAISContext();
-
-  if(myContext.IsNull()) {
-    di << "use 'vinit' command before " << a[0] << "\n";
-    return -1;
-  }
-
-  // MKV 30.03.05
-#if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
-  const Standard_Character *DD = Tcl_GetVar(di.Interp(),"Draw_DataDir",TCL_GLOBAL_ONLY);
-#else
-  Standard_Character *DD = Tcl_GetVar(di.Interp(),"Draw_DataDir",TCL_GLOBAL_ONLY);
-#endif
-
-  Standard_Character  *file1 = new Standard_Character [strlen(DD)+strlen(a[1])+2];
-  Sprintf(file1,"%s/%s",DD,a[1]);
-
-  IGESToBRep_Reader reader;
-  Standard_Integer status = reader.LoadFile(file1);
-  if( !status ) {
-    IGESToBRep::Init();
-      reader.TransferRoots();
-      TopoDS_Shape shape = reader.OneShape();
-
-      Handle(AIS_Shape) importedShape = new AIS_Shape(shape);
-
-      Handle(V3d_Viewer) myPView = myContext->CurrentViewer();
-
-      if( ! myPView.IsNull() && (myPView->DefaultVisualization() == V3d_WIREFRAME) )
-	importedShape->SetDisplayMode(AIS_WireFrame);
-      else importedShape->SetDisplayMode(AIS_Shaded);
-      myContext->Display(importedShape);
-    }
-
-  printf("\n End of my  IGES to 3D-viewer *****************>\n");
-  return 0;
-}
-
 
 //====================================================
 //
@@ -5301,7 +5252,6 @@ void QABugs::Commands_11(Draw_Interpretor& theCommands) {
 
   theCommands.Add("OCC136", "OCC136", __FILE__, OCC136, group);
   theCommands.Add("BUC60610","BUC60610 iges_input [name]",__FILE__,BUC60610,group);
-  theCommands.Add("BUC60661","BUC60661 file.igs",__FILE__,BUC60661,  group);
 
 //====================================================
 //

@@ -22,7 +22,7 @@ brepiges buc60661 ${imagedir}/buc60661.igs
 
 dall
 
-if [catch { igesbrep ${imagedir}//buc60661.igs a * } res] {
+if [catch { igesbrep ${imagedir}/buc60661.igs a * } res] {
   puts "Faulty BUC60661: here is reading problem of iges file"
 } else {
   puts "Reading of iges in BUC60661 is OK"

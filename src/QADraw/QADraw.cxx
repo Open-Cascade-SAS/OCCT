@@ -44,8 +44,6 @@
 #  include <unistd.h>
 #endif
 
-#include <tcl.h>
-
 #include <Draw_PluginMacro.hxx>
 
 Handle(TColStd_HSequenceOfReal) GetColorOfPixel (const Image_PixMap&    theImage,

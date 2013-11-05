@@ -28,8 +28,6 @@
 #include <AIS_Shape.hxx>
 #include <TopoDS_Shape.hxx>
 
-#include <tcl.h>
-
 #include <gp_Ax2.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Pln.hxx>
@@ -82,7 +80,7 @@ static Standard_Integer OCC332bug (Draw_Interpretor& di, Standard_Integer argc, 
   //if ((bend_angle >= M_PI)) {
   if ((bend_angle >= M_PI)) {
     di << "The arguments are invalid." << "\n";
-    return(TCL_ERROR);
+    return 1;
   }
   di << "creating the shape for a bent tube" << "\n";
 
@@ -447,7 +445,7 @@ static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, con
   // mkv 15.07.03 if ((bend_angle >= 2.0*M_PI)) {
   if ((bend_angle >= 2.0*M_PI)) {
     di << "The arguments are invalid." << "\n";
-    return(TCL_ERROR);
+    return 1;
   }
   di << "creating the shape for a bent tube" << "\n";
  
@@ -531,7 +529,8 @@ static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, con
   BRepBuilderAPI_MakeEdge mkEdge;
 
   mkEdge.Init(SpineCurve);
-  if (!mkEdge.IsDone()) return TCL_ERROR;
+  if (!mkEdge.IsDone()) 
+    return 1;
   TopoDS_Wire SpineWire = BRepBuilderAPI_MakeWire(mkEdge.Edge()).Wire();
 
   Sprintf (name,"SpineWire");
@@ -568,7 +567,8 @@ static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, con
   mkPipe1.SetMode(Standard_False);
   mkPipe1.SetLaw(Wire1_, myLaw, Location1, Standard_False, Standard_False);
   mkPipe1.Build();
-  if (!mkPipe1.IsDone()) return TCL_ERROR;
+  if (!mkPipe1.IsDone()) 
+    return 1;
 
   // Make outer pipe shell
   BRepOffsetAPI_MakePipeShell mkPipe2(SpineWire);
@@ -577,7 +577,8 @@ static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, con
   mkPipe2.SetMode(Standard_False);
   mkPipe2.SetLaw(outerWire1_, myLaw2, Location1, Standard_False, Standard_False);
  mkPipe2.Build();
-  if (!mkPipe2.IsDone()) return TCL_ERROR;
+  if (!mkPipe2.IsDone()) 
+    return 1;
 
 //    Sprintf(name,"w1-first");
 //    DBRep::Set(name,mkPipe1.FirstShape());
@@ -608,7 +609,8 @@ static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, con
   mkFace.Init(Plane1,Standard_False,Precision::Confusion());
   mkFace.Add(TopoDS::Wire(outerWire1_));
   mkFace.Add(TopoDS::Wire(Wire1_.Reversed()));
-  if (!mkFace.IsDone()) return TCL_ERROR;
+  if (!mkFace.IsDone()) 
+    return 1;
   TopoDS_Face Face1 = mkFace.Face();
 
   // Make face for second opening
@@ -616,7 +618,8 @@ static Standard_Integer OCC544 (Draw_Interpretor& di, Standard_Integer argc, con
   mkFace.Init(Plane2,Standard_False,Precision::Confusion());
   mkFace.Add(TopoDS::Wire(outerWire2_));
   mkFace.Add(TopoDS::Wire(Wire2_.Reversed()));
-  if (!mkFace.IsDone()) return TCL_ERROR;
+  if (!mkFace.IsDone()) 
+    return 1;
   TopoDS_Face Face2 = mkFace.Face();
 
   // Grab the gas solid now that we've extracted the faces.

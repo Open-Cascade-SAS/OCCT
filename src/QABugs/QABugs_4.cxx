@@ -37,8 +37,6 @@
 //#include <AcisData_AcisModel.hxx>
 #include <TopTools_HSequenceOfShape.hxx>
 
-#include <tcl.h>
-
 static Standard_Integer BUC60738 (Draw_Interpretor& di, Standard_Integer /*argc*/, const char ** argv)
 {
   
