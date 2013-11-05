@@ -2,7 +2,7 @@
 
 pload MODELING VISUALIZATION
 
-# Construct bottle body
+puts "Constructing bottle body..."
 
 # set basic dimensions
 dset height 70
@@ -53,7 +53,7 @@ bfuse f b c
 explode c f
 offsetshape body f -thickness/50 1.e-3 c_2
 
-# Construct threading
+puts "Constructing threading..."
 
 # make two cylinders
 cylinder c1 0 0 height 0 0 1 neckradius*0.99
@@ -91,8 +91,10 @@ mkedgecurve tw2 1.e-5
 # build threading as solid
 thrusections -N thread 1 0 tw1 tw2
 
+puts "Putting together and writing \"Open CASCADE\"..."
+
 # add threading to the body
-compound body thread bottle1
+compound body thread bottle
 
 # define text
 text2brep text2d OpenCASCADE Times-Roman 8 bold composite=0
@@ -101,9 +103,21 @@ trotate    text 0 0 0 0 1 0 90
 ttranslate text 24.75 -2 65
 
 # cut operation
-bcut bottle bottle1 text
+bcut bodytext body text
+compound bodytext thread bottle
+
+puts "Showing result..."
 
 # display result
 vdisplay bottle
 vfit
 vsetdispmode 1
+
+# set ray tracing
+if { [regexp {HAVE_OPENCL} [dversion]] } {
+    puts "Trying raytrace mode..."
+    if { ! [catch {vraytrace 1}] } {
+        vtextureenv on 1
+        vfit
+    }
+}
