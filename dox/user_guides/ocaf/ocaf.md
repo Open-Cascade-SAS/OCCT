@@ -1,6 +1,8 @@
 OCAF  {#user_guides__ocaf}
 ========================
 
+@tableofcontents
+
 @section occt_ocaf_1 Introduction
 
 This manual explains how to use the Open CASCADE Application Framework (OCAF).

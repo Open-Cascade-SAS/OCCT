@@ -6,7 +6,7 @@ archive on Windows with MS Visual C++.
 
 If you are building OCCT from bare sources (as in Git repository), or do some 
 changes affecting CDL files, you need to use WOK to re-generate header files
-and build scripts / projects. See file \ref wok "WOK" for instructions.
+and build scripts / projects. See \ref dev_guides__building__wok for instructions.
 
 Before building OCCT, you need to install required third-party libraries; see
 OCCT_Build3rdParty_Windows.pdf for instructions.

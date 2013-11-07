@@ -1,9 +1,11 @@
 Technical Overview {#technical_overview}
 ========================================
 
+@tableofcontents
+
 @section OCCT_TOVW_SECTION_1 Product Overview
 
-Open CASCADE Technology is an object-oriented C++ class librarLzlz ljky designed for rapid production of sophisticated domain-specific design applications. A typical application developed using OCCT deals with two or three-dimensional (2D or 3D) geometric modeling
+Open CASCADE Technology is an object-oriented C++ class library designed for rapid production of sophisticated domain-specific design applications. A typical application developed using OCCT deals with two or three-dimensional (2D or 3D) geometric modeling
 in general-purpose or specialized Computer Aided Design (CAD) systems, manufacturing
 or analysis applications, simulation applications, or illustration tools. OCCT Object
 Libraries help you to develop your applications significantly faster.
@@ -2730,10 +2732,10 @@ To do that you have to use the <i>Define_Standard_Handle</i> macro which is defi
 
 Here is an example which shows how to define a class <i> SamplePoint </i> manipulated by handle.
 
-~~~~
-
 Sample_Point.hxx:
 ---------------
+
+~~~~
 
     #ifndef _Sample_Point_HeaderFile
     #define _Sample_Point_HeaderFile
@@ -2773,8 +2775,12 @@ Sample_Point.hxx:
     };
     #endif
 
+~~~~
+
 Sample_Point.cxx:
 ----------------
+
+~~~~
 
     #include <Sample_Point.hxx>
 
@@ -2882,7 +2888,7 @@ to another place defined by a label.
 ~~~~
 
 The filter is used to forbid copying a specified type of attribute. 
-You can also have a look at <i> TDF_Closure*</i>, 
+You can also have a look at *TDF_Closure**, 
 which can be useful to determine the dependencies of the part you want to cut from the document.
 
 @subsection OCCT_TOVW_SECTION_8_7 Platform-related problems 
@@ -2892,11 +2898,11 @@ which can be useful to determine the dependencies of the part you want to cut fr
 Open CASCADE Technology uses a dynamic library loading mode. Sometimes, the error message such as the following appears:
 
 ~~~~
- "cannot map <i>libname.so</i> .. under any of the filenames .."
+ "cannot map libname.so .. under any of the filenames .."
 ~~~~
 
-When this happens, check your <i> PATH </i>under Windows, <i> LD_LIBRARY_PATH</i> under UNIX ,
-<i> SHLIB_PATH </i> under HP-UX or <i> LIBPATH</i> under IBM AIX . 
+When this happens, check your *PATH* under Windows, *LD_LIBRARY_PATH* under UNIX ,
+*SHLIB_PATH* under HP-UX or *LIBPATH* under IBM AIX . 
 It should contain the path where the required dynamic library is located.
 
 ### Running Draw under Windows
@@ -2906,7 +2912,7 @@ When running <i> DRAWEXE</i> and using axo in the Command window you may see the
 
 Make sure that the OCCT directory name does not contain any blank spaces.
 It causes some problems when reading the OCCT description TCL Commands files.
-If you have set <i> DRAWHOME</i> and <i> DRAWDEFAULT</i>, replace \ by / in the variable. 
+If you have set <i> DRAWHOME</i> and <i> DRAWDEFAULT</i>, replace \\ by / in the variable. 
 
 ### Error on application start on Windows
 
@@ -2923,22 +2929,3 @@ If the 3D viewer fails to display the scene properly, or works very slowly, or e
 another problem, make sure to have the latest version of the graphics card driver
 installed. If this is not possible or does not help, try to decrease 
 hardware acceleration level (usually found in Troubleshooting section of the graphics card properties).
-
-### Fatal error during graphic initialization
-
-
-If you get the <b>Fatal error during graphic initialization</b> message when running 
-an Open CASCADE Technology based application, or if the application crashes 
-without displaying error messages, you must set the environment variable <i> CSF_GRAPHICSHR </i> as follows:
-
-  * On Windows, if we suppose that OCCT is installed in <i> D:\OpenCASCADE6.3.0 </i>
-
-~~~~
-    Set CSF_GraphicShr= D:\OpenCASCADE6.3.1\ros\win32\bin\TkOpenGl.dll
-~~~~
-
-  * On Linux or Unix, if we suppose that OCCT is installed in  <i> .../mydisk/ OpenCASCADE6.3.0 </i>
-
-~~~~
-    Setenv CSF_GraphicsShr /mydisk/ OpenCASCADE6.3.0ros/lin/lib/libTKOpenGl.so
-~~~~

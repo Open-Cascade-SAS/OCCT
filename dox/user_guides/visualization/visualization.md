@@ -1,5 +1,7 @@
 Visualization  {#user_guides__visualization}
 ===================
+
+@tableofcontents
  
 @section occt_1621831385_591811643 Introduction
 
@@ -36,8 +38,8 @@ If you are concerned with 2D visualization, you must familiarize yourself with t
 
 Figure 1 below presents a schematic overview of the relations between the key concepts and packages in visualization. AIS stands for both AIS and AIS2D packages. Naturally, *Geometry &amp; Topology* is just an example of application data that can be handled by AIS, and application-specific interactive objects can deal with any kind of data. 
 
-@image html /user_guides/visualization/images/visualization_image003.jpg
-@image latex /user_guides/visualization/images/visualization_image003.jpg
+@image html /user_guides/visualization/images/visualization_image003.png
+@image latex /user_guides/visualization/images/visualization_image003.png
 **Figure 1. Key concepts and packages in visualization** 
 
 To answer different needs of CASCADE users, this user’s guide offers the following three paths in reading it. 
@@ -131,20 +133,20 @@ This chapter deals with the process used for selecting entities, which are displ
 Objects that may be selected graphically, are displayed as sets of sensitive primitives, which provide sensitive zones in 2D graphic space. These zones are sorted according to their position on the screen when starting the selection process. 
 The position of the mouse is also associated with a sensitive zone. When moving within the window where objects are displayed, the areas touched by the zone of the mouse are analyzed. The owners of these areas are then highlighted or signaled by other means such as the name of the object highlighted in a list. That way, you are informed of the identity of the element detected. 
 
-@image html /user_guides/visualization/images/visualization_image006.jpg
-@image latex /user_guides/visualization/images/visualization_image006.jpg
+@image html /user_guides/visualization/images/visualization_image006.png
+@image latex /user_guides/visualization/images/visualization_image006.png
 **Figure 3. A model ** 
 
-@image html /user_guides/visualization/images/visualization_image007.jpg
-@image latex /user_guides/visualization/images/visualization_image007.jpg
+@image html /user_guides/visualization/images/visualization_image007.png
+@image latex /user_guides/visualization/images/visualization_image007.png
 **Figure 4. Modeling faces with sensitive primitives **
 
-@image html /user_guides/visualization/images/visualization_image008.jpg
-@image latex /user_guides/visualization/images/visualization_image008.jpg
+@image html /user_guides/visualization/images/visualization_image008.png
+@image latex /user_guides/visualization/images/visualization_image008.png
 **Figure  5. In a dynamic selection, each sensitive polygon is represented by its bounding rectangle** 
 
-@image html /user_guides/visualization/images/visualization_image009.jpg
-@image latex /user_guides/visualization/images/visualization_image009.jpg
+@image html /user_guides/visualization/images/visualization_image009.png
+@image latex /user_guides/visualization/images/visualization_image009.png
 Figure 6. Reference to the sensitive primitive, then to the owner 
 
 @subsubsection occt_1621831385_163370828222 The Sensitive Primitive 
@@ -155,8 +157,8 @@ The use of 2D boxes allows a pre-selection of the detected entities. After pre-s
 
 The sensitive line segment below proposes a bounding box to the selector. During selection, positions 1 and 2 of the mouse detect the box but after sorting, only position 2 retains the line segment as selected by the algorithm. 
 
-@image html /user_guides/visualization/images/visualization_image010.jpg
-@image latex /user_guides/visualization/images/visualization_image010.jpg
+@image html /user_guides/visualization/images/visualization_image010.png
+@image latex /user_guides/visualization/images/visualization_image010.png
 **Figure 7. Example of sensitive primitives **
 
 When the 2D box associated with the position of the mouse intersects the 2D box of a sensitive primitive, the owner of the sensitive primitive is called and its presentation is highlighted. 
@@ -257,8 +259,8 @@ You define a selectable object called *House* and propose four possible selectio
 You have to write the method, which calculates the four selections above, i.e. the sensitive primitives which are activated when the mode is. 
 You must define the class *Owner* specific to your application. This class will contain the reference to the house element it represents: wall, door or room. It inherits from *EntityOwner* from *SelectMgr*.  
 For example, let’s consider a house with the following representation: 
-@image html /user_guides/visualization/images/visualization_image011.jpg
-@image latex /user_guides/visualization/images/visualization_image011.jpg
+@image html /user_guides/visualization/images/visualization_image011.png
+@image latex /user_guides/visualization/images/visualization_image011.png
 **Figure 8. Selection of the rooms of a house** 
 
 To build the selection, which corresponds to the mode *selection of the rooms* (selection 2 in the list of selection modes) use the following procedure: 
@@ -276,20 +278,20 @@ aSensitiveBox = new Select3d_SensitiveBox
 ) // ComputeSelection 
 
 
-@image html /user_guides/visualization/images/visualization_image012.jpg
-@image latex /user_guides/visualization/images/visualization_image012.jpg
+@image html /user_guides/visualization/images/visualization_image012.png
+@image latex /user_guides/visualization/images/visualization_image012.png
 **Figure 9. Activated sensitive boxes corresponding to selection mode 0 (selection of the rooms)** 
 
-@image html /user_guides/visualization/images/visualization_image013.jpg
-@image latex /user_guides/visualization/images/visualization_image013.jpg
+@image html /user_guides/visualization/images/visualization_image013.png
+@image latex /user_guides/visualization/images/visualization_image013.png
 
-@image html /user_guides/visualization/images/visualization_image014.jpg
-@image latex /user_guides/visualization/images/visualization_image014.jpg
+@image html /user_guides/visualization/images/visualization_image014.png
+@image latex /user_guides/visualization/images/visualization_image014.png
 **Figure 11. Activated sensitive polygons corresponding to selection mode 1.** 
 
 **(selection of the doors)** 
-@image html /user_guides/visualization/images/visualization_image015.jpg
-@image latex /user_guides/visualization/images/visualization_image015.jpg
+@image html /user_guides/visualization/images/visualization_image015.png
+@image latex /user_guides/visualization/images/visualization_image015.png
 
 **Figure 12. Sensitive rectangles in the selector during dynamic selection in view 2** 
 @section occt_1621831385_810308609  AIS: Application Interactive Services 
@@ -308,14 +310,14 @@ Entities, which are visualized and selected, are Interactive Objects. You can us
 
 @subsubsection occt_1621831385_81030860913 Graphic Attributes Manager or *Drawer* 
 
-@image html /user_guides/visualization/images/visualization_image016.jpg
-@image latex /user_guides/visualization/images/visualization_image016.jpg
+@image html /user_guides/visualization/images/visualization_image016.png
+@image latex /user_guides/visualization/images/visualization_image016.png
 An Interactive Object can have a certain number of graphic attributes specific to it (such as visualization mode, color and material) By the same token, the Interactive Context has a drawer which is valid by default for the objects it controls. When an interactive object is visualized, the required graphic attributes are first taken from its own Drawer if it has the ones required, or from the context drawer if it does not have them. 
 
 @subsubsection occt_1621831385_81030860914 Selection Filters 
 
-@image html /user_guides/visualization/images/visualization_image017.jpg
-@image latex /user_guides/visualization/images/visualization_image017.jpg
+@image html /user_guides/visualization/images/visualization_image017.png
+@image latex /user_guides/visualization/images/visualization_image017.png
 
 An important need in selection is the filtering of entities, which you want to select. Consequently there are FILTER entities, which allow you to refine the dynamic detection context, which you want to put into effect. Some of these filters can be used at the Neutral Point, others only in an open local context. A user will be able to program his own filters and load them into the interactive context. 
 
@@ -325,8 +327,8 @@ An important need in selection is the filtering of entities, which you want to s
 
 @subsubsection occt_1621831385_81030860921 Presentations: 
 
-@image html /user_guides/visualization/images/visualization_image018.jpg
-@image latex /user_guides/visualization/images/visualization_image018.jpg
+@image html /user_guides/visualization/images/visualization_image018.png
+@image latex /user_guides/visualization/images/visualization_image018.png
 *Conventions  * 
   * Either in 2D or in 3D, an interactive object can have as many presentations as its creator wants to give it. 
   * 3D presentations are managed by PresentationManager3D; 2D presentations by PresentationManager2D. As this is transparent in AIS, the user does not have to worry about it. 
@@ -499,12 +501,12 @@ Keep in mind the following points concerning graphic attributes:
   * In the *AIS_InteractiveObject* abstract class, several standard attributes have been privileged. These include: color, thickness of line, material, and transparency. Consequently, a certain number of virtual functions, which allow us to act on these attributes, have been proposed. Each new class of interactive object can redefine these functions in order to bring about the changes it should produce in the behavior of the class. 
 
 
-@image html /user_guides/visualization/images/visualization_image019.jpg
-@image latex /user_guides/visualization/images/visualization_image019.jpg
+@image html /user_guides/visualization/images/visualization_image019.png
+@image latex /user_guides/visualization/images/visualization_image019.png
 **Figure 13. Redefinition of virtual functions for changes in AIS_Point ** 
 
-@image html /user_guides/visualization/images/visualization_image020.jpg
-@image latex /user_guides/visualization/images/visualization_image020.jpg
+@image html /user_guides/visualization/images/visualization_image020.png
+@image latex /user_guides/visualization/images/visualization_image020.png
 **Figure 14. **Redefinition** of virtual functions for changes in AIS_Shape.**
 
 The virtual functions concerned here allow you to provide settings for: 
@@ -1217,19 +1219,21 @@ AIS_PlaneTrihedron offers 3 selection modes:
 For the presentation of planes and trihedra, the default unit of length is millimeter, and the default value for the representation of axes is 100. If you modify these dimensions, you must temporarily recover the object DRAWER. From inside it, take the Aspects in which the values for length are stocked (PlaneAspect for the plane, FirstAxisAspect for trihedra), and change these values inside these Aspects. Finally, recalculate the presentation. 
 
 @subsubsection occt_1621831385_8103086092222 OBJECTS 
+
 AIS_Shape : 3 visualization modes : 
+
   * mode 0 : Line (default mode) 
   * mode 1 : Shading (depending on the type of shape) 
   * mode 2 : Bounding Box 
 
-7 maximum selection modes, depending on the complexity of the shape : 
-  *   *  mode 0 : selection of the AIS_Shape 
-  *   *  mode 1 : selection of the vertices 
-  *   *  mode 2 : selection of the edges 
-  *   *  mode 3 : selection of the wires 
-  *   *  mode 4 : selection of the faces 
-  *   *  mode 5 : selection of the shells 
-  *   *  mode 6 : selection of the constituent solids. 
+Seven maximum selection modes, depending on the complexity of the shape: 
+  * mode 0 : selection of the AIS_Shape 
+  * mode 1 : selection of the vertices 
+  * mode 2 : selection of the edges 
+  * mode 3 : selection of the wires 
+  * mode 4 : selection of the faces 
+  * mode 5 : selection of the shells 
+  * mode 6 : selection of the constituent solids. 
 
 AIS_Triangulation: Simple interactive object for displaying triangular mesh contained in Poly_Triangulation container. 
 
@@ -1385,8 +1389,8 @@ The sensitive primitive is capable of:
 A set of standard sensitive primitives exists in Select3D packages for 3D primitives, and Select2D for 2D primitives. 
 
 The owner is the entity, which makes it possible to link the sensitive primitives and the objects that you really wanted to detect. It stocks the diverse information, which makes it possible to find objects. An owner has a priority (*5* by default), which you can modulate, so as to make one entity more selectable than another. 
-@image html /user_guides/visualization/images/visualization_image021.jpg
-@image latex /user_guides/visualization/images/visualization_image021.jpg
+@image html /user_guides/visualization/images/visualization_image021.png
+@image latex /user_guides/visualization/images/visualization_image021.png
 
 @subsubsection occt_1621831385_81030860912341 Implementation in an interactive/selectable object 
   
@@ -1483,8 +1487,8 @@ VS-Picked();
 SM-Deactivate(box1);  
 // deactivate all active modes of box1 
 
-@image html /user_guides/visualization/images/visualization_image022.jpg
-@image latex /user_guides/visualization/images/visualization_image022.jpg
+@image html /user_guides/visualization/images/visualization_image022.png
+@image latex /user_guides/visualization/images/visualization_image022.png
 1st activation of the box’s mode 1: calculation of sensitive primitives + 3D/2D projection + sorting 
 
 deactivation of mode: only updated by sorting 
@@ -2447,7 +2451,7 @@ The V3d_View has the following methods for dumping the 3D scene:
  const Aspect_FormatOfSheetPaper theFormat, 
  const Image_TypeOfImage theBufferType) 
 These methods dump the 3D scene into an image file passed by its name and path as theFile. 
-The raster image data handling algorithm is based on the Image_PixMap class. The supported extensions are *.png*, *.bmp*, *.jpg*, *.png*. 
+The raster image data handling algorithm is based on the Image_PixMap class. The supported extensions are *.png*, *.bmp*, *.png*, *.png*. 
 The first method dumps the scene into an image file with the view dimensions. The second method allows you to make the dimensions of the output image compatible to a certain format of printing paper passed by theFormat argument. 
 The value passed as theBufferType argument defines the type of the buffer for an output image (RGB, RGBA, floating-point, RGBF, RGBAF). Both methods return Standard_True if the scene has been successfully dumped. 
 **Please note** that dumping the image for a paper format with large dimensions is a memory consuming operation, it might be necessary to take care of preparing enough free memory to perform this operation. 
@@ -2478,6 +2482,8 @@ Handle (WNT_GraphicDevice) aDevice =
    new Graphic3d_WNTGraphicDevice (); 
 
 **// create a window** 
+
+~~~~~{c++}
 Standard_Integer aDefWidth  = 800; 
 Standard_Integer aDefHeight = 600; 
 Handle (WNT_WClass) aWClass = 
@@ -2488,6 +2494,7 @@ Handle (WNT_Window) aWindow =
  new WNT_Window (aDevice, *VirtualWnd*,  aWClass, 
  WS_OVERLAPPEDWINDOW, 0, 0, 
  aDefWidth, aDefHeight); 
+~~~~~
 
 **// set up the window as virtual** 
 aWindow-SetVirtual (Standard_True); 
@@ -2544,6 +2551,7 @@ The following method of Visual3d_View class allows you to export your 3D scene:
  const Standard_Real Precision, 
  const Standard_Address ProgressBarFunc, 
  const Standard_Address ProgressObject) 
+
 The FileName defines the output image file name and the Format argument defines the output file format: 
   * Graphic3d_EF_PostScript (PS),
   * Graphic3d_EF_EhnPostScript (EPS),
@@ -2558,6 +2566,7 @@ The Export method supports only basic 3d graphics and has several limitations:
   * Rendering large scenes could be slow and can lead to large output files;
   * Transparency is only supported for PDF and SVG output;
   * Textures and some effects are not supported by the GL2PS library.
+
 @section occt_1621831385_1090976821 2D Presentations
 @subsection occt_1621831385_10909768211 Glossary of 2D terms 
 
@@ -2581,8 +2590,8 @@ To create 2D graphic objects and display them on the screen, follow the procedur
 
 The marker map defines a set of markers available to the application. Markers may be predefined, Aspect_Tom_X for example, or user-defined. 
 
-@image html /user_guides/visualization/images/visualization_image025.jpg
-@image latex /user_guides/visualization/images/visualization_image025.jpg
+@image html /user_guides/visualization/images/visualization_image025.png
+@image latex /user_guides/visualization/images/visualization_image025.png
 Figure 15. Markers. 
 
 The markers are manipulated by an index. 
@@ -2604,8 +2613,8 @@ mkrmap-AddEntry (mkrmapentry3);
 Maps are created for color, line type, line width, and text font. A map is used to reference a given attribute by an integer value. 
 
 
-@image html /user_guides/visualization/images/visualization_image026.jpg
-@image latex /user_guides/visualization/images/visualization_image026.jpg
+@image html /user_guides/visualization/images/visualization_image026.png
+@image latex /user_guides/visualization/images/visualization_image026.png
 Figure 16. Attributes 
 
 The color map 
@@ -2740,8 +2749,8 @@ rectangle-SetWidthIndex (1);
 rectangle-SetTypeOfPolygonFilling(Graphic2d_TOPF_FILLED); rectangle-SetDrawEdge(Standard_True); 
 *A given primitive can only be assigned to a single graphic object.* 
 
-@image html /user_guides/visualization/images/visualization_image027.jpg
-@image latex/user_guides/visualization/images/visualization_image027.jpg
+@image html /user_guides/visualization/images/visualization_image027.png
+@image latex /user_guides/visualization/images/visualization_image027.png
 Figure 17. Graphic object and view mapping in the space model. 
 
 @subsection occt_1621831385_10909768213 Dealing with images 
@@ -2833,8 +2842,8 @@ Graphic2d_CircleMarker
 (aGrObj, 0.03, -0.03, 0.01, 0.0, 0.01); 
 window-Clear (); 
 
-@image html /user_guides/visualization/images/visualization_image028.jpg
-@image latex /user_guides/visualization/images/visualization_image028.jpg
+@image html /user_guides/visualization/images/visualization_image028.png
+@image latex /user_guides/visualization/images/visualization_image028.png
 Figure 18. Figure of zoom and attachment point of a marker. 
 
 
@@ -3013,17 +3022,15 @@ The **Aspect** package provides classes for the graphic elements, which are comm
 The **Aspect** package provides classes to implement: 
   * Color maps, 
   * Pixels, 
-  *  Groups of graphic attributes, 
-  *  Edges, lines, background, 
-  *  Font classes, 
-  *  Width map classes, 
-  *  Marker map classes, 
-  *  Type of Line map classes, 
-  *  Window, 
-  *  Driver, PlotterDriver (inherited by PS_Driver), WindowDriver, 
-  *  Graphic device (inherited by Xw_GraphicDevice, Graphic3d_GraphicDevice), 
-  *  Enumerations for many of the above, 
-  *  Array instantiations for edges, 
-  *  Array instantiations for map entries for color, type, font, width, and marker. 
-
-
+  * Groups of graphic attributes, 
+  * Edges, lines, background, 
+  * Font classes, 
+  * Width map classes, 
+  * Marker map classes, 
+  * Type of Line map classes, 
+  * Window, 
+  * Driver, PlotterDriver (inherited by PS_Driver), WindowDriver, 
+  * Graphic device (inherited by Xw_GraphicDevice, Graphic3d_GraphicDevice), 
+  * Enumerations for many of the above, 
+  * Array instantiations for edges, 
+  * Array instantiations for map entries for color, type, font, width, and marker. 

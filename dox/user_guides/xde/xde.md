@@ -1,6 +1,8 @@
  Extended Data Exchange (XDE)  {#user_guides__xde}
 ============================
- 
+
+@tableofcontents
+
 @section occt_xde_1_ Introduction
 @subsection occt_xde_1_1 Overview of the Extended Data Exchange (XDE)
 This manual explains how to use the Extended Data Exchange (XDE). It provides basic documentation on setting up and using XDE. For advanced information on XDE and its applications, see our offerings  at <a href="http://www.opencascade.com/services/support/">on our web site</a>. 
@@ -45,12 +47,12 @@ The Document used by XDE usually starts as a *TDocStd_Document*.
 XDE supports assemblies by separating shape definitions and their locations. Shapes are simple OCAF objects without a location definition. An assembly consists of several components. Each of these components references one and the same specified shape with different locations. All this provides an increased flexibility in working on multi-level assemblies. 
 
 For example, a mechanical assembly can be defined as follows: 
-@image html /user_guides/xde/images/xde_image003.jpg "Assembly Description"
-@image latex /user_guides/xde/images/xde_image003.jpg "Assembly Description"
+@image html /user_guides/xde/images/xde_image003.png "Assembly Description"
+@image latex /user_guides/xde/images/xde_image003.png "Assembly Description"
 
 
-@image html /user_guides/xde/images/xde_image004.jpg "Assembly View"
-@image latex /user_guides/xde/images/xde_image004.jpg "Assembly View"
+@image html /user_guides/xde/images/xde_image004.png "Assembly View"
+@image latex /user_guides/xde/images/xde_image004.png "Assembly View"
 
 
 XDE defines the specific organization of the assembly content. Shapes are stored on sub-labels of label 0:1:1. There can be one or more roots (called free shapes) whether they are true trees or simple shapes. A shape can be considered to be an Assembly (such as AS1 under 0:1:1:1 in Figure1) if it is defined with Components (sub-shapes, located or not). 
@@ -62,8 +64,8 @@ Validation properties are geometric characteristics of Shapes (volume, centroid,
 
 Advanced Data Exchange supports both reading and writing of validation properties, and provides a tool to check them. 
 
-	@image html /user_guides/xde/images/xde_image005.jpg "Validation Property Descriptions" 
-    @image latex /user_guides/xde/images/xde_image005.jpg "Validation Property Descriptions" 
+	@image html /user_guides/xde/images/xde_image005.png "Validation Property Descriptions" 
+    @image latex /user_guides/xde/images/xde_image005.png "Validation Property Descriptions" 
 
 
 
@@ -95,8 +97,8 @@ XDE can read and write colors and layers assigned to shapes or their subparts (d
   * surface color *(XCAFDoc_ColorSurf)*
   * curve color *(XCAFDoc_ColorCurv)*
 
-	@image html /user_guides/xde/images/xde_image006.jpg "Colors and Layers" 
-    @image latex /user_guides/xde/images/xde_image006.jpg "Colors and Layers" 
+	@image html /user_guides/xde/images/xde_image006.png "Colors and Layers" 
+    @image latex /user_guides/xde/images/xde_image006.png "Colors and Layers" 
 
 
 

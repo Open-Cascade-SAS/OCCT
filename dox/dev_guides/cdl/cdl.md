@@ -1,6 +1,12 @@
  Component Definition Language (CDL)  {#dev_guides__cdl}
 ==============================
 
+@tableofcontents
+
+@section occt_cdl_0 DEPRECATION WARNING
+
+Please note that CDL is considered as obsolete and is to be removed in one of future releases of OCCT.
+
 @section occt_1819379591_354121062 CDL and Application Architecture
 
 CDL is the component  definition language of the Open CASCADE Technology (**OCCT**) programming  platform. Some components, which CDL allows you to create, are specific to OCCT  application architecture. These and other components, which you can define  using CDL include the following: 
@@ -10,7 +16,7 @@ CDL is the component  definition language of the Open CASCADE Technology (**OCCT
   * Schema
   * Executable
   * Client.
-A** class** is the  fundamental software component in object-oriented development. Because of a  very large number of resources used in large-scale applications, the **class **itself  is too small to be used as a basic management unit. 
+A **class** is the  fundamental software component in object-oriented development. Because of a  very large number of resources used in large-scale applications, the **class** itself  is too small to be used as a basic management unit. 
 
 So, while the class is  the basic data component defined in CDL, this language also provides a way to  group classes, **enumerations**, and **exceptions **together – the **package**.  A package groups together a number of classes, which have semantic links. For  example, a geometry package would contain Point, Line, and Circle classes. A  package can also contain enumerations, exceptions, and package methods. In  practice, a class name is prefixed with the name of its package e.g.  Geom_Circle. 
 
@@ -19,18 +25,18 @@ Using the services  described in the **packages**, you can construct an **execut
 To save data in a file,  you need to define persistent classes. Then, you group these classes in a  schema, which provides the necessary read/write tools. 
 
 
-		@image html /dev_guides/cdl/images/cdl_image003.jpg
-    @image latex /dev_guides/cdl/images/cdl_image003.jpg
+    @image html /dev_guides/cdl/images/cdl_image003.png
+    @image latex /dev_guides/cdl/images/cdl_image003.png
      
 Figure 1. Building  an Open CASCADE Technology application 
 @section occt_1819379591_986437237 2. Introduction to  CDL
 @subsection occt_1819379591_98643723721  Purposes of the Language
-You can use CDL to **define  data **in the Open CASCADE Technology environment. CDL allows you to define  various kinds of data types supporting the application architecture and  development methodology, which you envision. CDL is neither an analysis  formalism (e.g. Booch methodology) nor a data manipulation language (e.g. C++). 
+You can use CDL to **define** **data** in the Open CASCADE Technology environment. CDL allows you to define  various kinds of data types supporting the application architecture and  development methodology, which you envision. CDL is neither an analysis  formalism (e.g. Booch methodology) nor a data manipulation language (e.g. C++). 
 
-You use CDL in the **design  phase **of a development process to define a set of software components which  best model the concepts stated in the application specification. 
+You use CDL in the **design** **phase** of a development process to define a set of software components which  best model the concepts stated in the application specification. 
 
-		@image html /dev_guides/cdl/images/cdl_image004.jpg
-    @image latex /dev_guides/cdl/images/cdl_image004.jpg     
+    @image html /dev_guides/cdl/images/cdl_image004.png
+    @image latex /dev_guides/cdl/images/cdl_image004.png     
 
 Figure 2. The Development Process 
 
@@ -97,8 +103,8 @@ You declare the  variables of a **data manipulation language **as being of certa
   * Data types manipulated by  handle (or reference)
   * Data types manipulated by  value
   
-		@image html /dev_guides/cdl/images/cdl_image005.jpg
-    @image latex /dev_guides/cdl/images/cdl_image005.jpg      
+    @image html /dev_guides/cdl/images/cdl_image005.png
+    @image latex /dev_guides/cdl/images/cdl_image005.png      
 
 Figure 3. Manipulation of data types 
 
@@ -399,8 +405,8 @@ Two types are  manipulated by handle:
   * Types defined using classes  inheriting from the **Transient **class.
 These types are not storable as such in a file. 
 
-@image html /dev_guides/cdl/images/cdl_image006.jpg
-@image latex /dev_guides/cdl/images/cdl_image006.jpg
+@image html /dev_guides/cdl/images/cdl_image006.png
+@image latex /dev_guides/cdl/images/cdl_image006.png
 
 Figure 4. Manipulation of a data type by reference 
 
@@ -411,8 +417,8 @@ Types, which are  manipulated by value, behave in a more direct fashion than tho
 
 You can store types  known to the schema (i.e. either primitives or inheriting from Storable) and  manipulated by value inside a persistent object as part of the representation.  This is the only way for you to store objects “manipulated by value” in a file. 
 
-		@image html /dev_guides/cdl/images/cdl_image007.jpg
-    @image latex /dev_guides/cdl/images/cdl_image007.jpg
+    @image html /dev_guides/cdl/images/cdl_image007.png
+    @image latex /dev_guides/cdl/images/cdl_image007.png
       
 Figure 5. Manipulation of a data type by value 
 Three types are  manipulated by value: 
@@ -475,8 +481,8 @@ The elements, which make  up the definition of a class, are divided into four pa
   * the internal representation
   * the friend methods and friend  classes.
 
-		@image html /dev_guides/cdl/images/cdl_image009.jpg
-    @image latex /dev_guides/cdl/images/cdl_image009.jpg
+    @image html /dev_guides/cdl/images/cdl_image009.png
+    @image latex /dev_guides/cdl/images/cdl_image009.png
     
 **Figure 7. Contents of a class** 
 *** a deferred class does not have to contain a  constructor** 
@@ -570,8 +576,8 @@ Grouped behind the  keyword **uses **are the names of all the packages containin
 
 The methods you declare  in a package do not belong to any particular class. **Package methods ***must  *carry a name different from the data types contained in the package. Like  any other method, they can be overloaded. With the exception of the keyword **me  **and the visibility (a package method can *only *be either public or  private) package methods are described in the same way as **instance methods**. 
 
-@image html /dev_guides/cdl/images/cdl_image010.jpg
-@image latex /dev_guides/cdl/images/cdl_image010.jpg
+@image html /dev_guides/cdl/images/cdl_image010.png
+@image latex /dev_guides/cdl/images/cdl_image010.png
 Figure 8. Contents of a package 
 
 The example of the  package below includes some of the basic data structures: 
@@ -1549,8 +1555,8 @@ friends Distance from Line (me; P : Point)
 
 A method can be a friend  to many classes. The class to which the method belongs does *not *need to  appear in the **uses **clause of other classes of which it is a friend. 
 
-		@image html /dev_guides/cdl/images/cdl_image011.jpg
-    @image latex /dev_guides/cdl/images/cdl_image011.jpg
+    @image html /dev_guides/cdl/images/cdl_image011.png
+    @image latex /dev_guides/cdl/images/cdl_image011.png
 
 When the methods of a class are all friends  of another class, you can establish the friendship at the level of the class. 
 
@@ -1786,8 +1792,8 @@ identifier **as**** **type-constraint
 
 
 
-@subsection occt_1819379591_213955286151   Comparison  of CDL &amp; C++ Syntax for Data Types manipulated by Handle and by Value
+@subsection occt_1819379591_213955286151   Comparison  of CDL & C++ Syntax for Data Types manipulated by Handle and by Value
 
-		@image html /dev_guides/cdl/images/cdl_image012.jpg
-    @image latex /dev_guides/cdl/images/cdl_image012.jpg
+    @image html /dev_guides/cdl/images/cdl_image012.png
+    @image latex /dev_guides/cdl/images/cdl_image012.png
     

@@ -1,6 +1,8 @@
 Foundation Classes  {#user_guides__foundation_classes}
 =================================
 
+@tableofcontents
+
 @section occt_fcug_1 Introduction
 
 @subsection occt_fcug_1_1 Foundation Classes Overview
@@ -108,8 +110,8 @@ Data types described in a package may include one or  more of the following data
   * Pointers to other object classes
 Inside a package, two data types cannot bear the same  name. 
 
-@image html /user_guides/foundation_classes/images/foundation_classes_image003.jpg  "Contents of a package"
-@image latex /user_guides/foundation_classes/images/foundation_classes_image003.jpg  "Contents of a package"
+@image html /user_guides/foundation_classes/images/foundation_classes_image003.png  "Contents of a package"
+@image latex /user_guides/foundation_classes/images/foundation_classes_image003.png  "Contents of a package"
 
 **Methods** are either **functions** or **procedures**.  Functions return an object, whereas procedures only communicate by passing arguments.  In both cases, when the transmitted object is an instance manipulated by a  handle, its identifier is passed. There are three categories of methods: 
 * **Object  constructor** Creates an instance of the described class. A class  will have one or more object constructors with various different arguments or none. 
@@ -168,8 +170,8 @@ The data types in Open CASCADE Technology fall into two  categories:
   * Data types manipulated by handle (or reference)
   * Data types manipulated by value
   
-@image html /user_guides/foundation_classes/images/foundation_classes_image004.jpg  "Manipulation of data types"
-@image latex /user_guides/foundation_classes/images/foundation_classes_image004.jpg  "Manipulation of data types"
+@image html /user_guides/foundation_classes/images/foundation_classes_image004.png  "Manipulation of data types"
+@image latex /user_guides/foundation_classes/images/foundation_classes_image004.png  "Manipulation of data types"
   
 A data type is implemented as a class. The class not only  defines its data representation and the methods available on instances, but it  also suggests how the instance will be manipulated. 
   * A variable of a type manipulated by value contains the instance  itself.
@@ -220,13 +222,14 @@ The services offered by each of these types are described in  the **Standard** P
 The table below presents the equivalence existing between  C++ fundamental types and OCCT primitive types. 
 
 **Table 1: Equivalence between C++ Types and OCCT Primitive  Types** 
-|C++ Types	| OCCT Types |
-|----------:|------------:|
-|int	| Standard_Integer |
+
+| C++ Types	| OCCT Types |
+| :--------- | :----------- |
+| int	| Standard_Integer |
 | double 	| Standard_Real |
-|float	| Standard_ShortReal |
-|unsigned int	| Standard_Boolean |
-|char	| Standard_Character |
+| float	| Standard_ShortReal |
+| unsigned int	| Standard_Boolean |
+| char	| Standard_Character |
 | short	| Standard_ExtCharacter |
 | char\*	| Standard_CString |
 | void\*	| Standard_Address |
@@ -254,8 +257,8 @@ There are three categories of types which are manipulated by  value:
   * Types defined by classes not inheriting from Standard_Persistent  or Standard_Transient, whether directly or not.
 Types which are manipulated by value behave in a more direct  fashion than those manipulated by handle and thus can be expected to perform  operations faster, but they cannot be stored independently in a file. 
 
-@image html /user_guides/foundation_classes/images/foundation_classes_image005.jpg   "Manipulation of a data type by value"
-@image latex /user_guides/foundation_classes/images/foundation_classes_image005.jpg   "Manipulation of a data type by value"
+@image html /user_guides/foundation_classes/images/foundation_classes_image005.png   "Manipulation of a data type by value"
+@image latex /user_guides/foundation_classes/images/foundation_classes_image005.png   "Manipulation of a data type by value"
 
 Types that are known to the schema (i.e. they are either **primitives** or they inherit from **Storable**) and are manipulated by value, can be  stored inside a persistent object as part of the representation. Only in this  way can a “manipulated by value” object be stored in a file. 
 
@@ -264,15 +267,15 @@ There are two categories of types which are manipulated by  handle:
   * Types defined by classes inheriting from the **Persistent** class,  which are therefore storable in a file.
   * Types defined by classes inheriting from the **Transient** class.
   
-@image html /user_guides/foundation_classes/images/foundation_classes_image006.jpg   "Manipulation of a data type by reference"
-@image latex /user_guides/foundation_classes/images/foundation_classes_image006.jpg   "Manipulation of a data type by reference"
+@image html /user_guides/foundation_classes/images/foundation_classes_image006.png   "Manipulation of a data type by reference"
+@image latex /user_guides/foundation_classes/images/foundation_classes_image006.png   "Manipulation of a data type by reference"
   
 @subsubsection occt_fcug_2_1_4 Summary of properties
 
 The following table summarizes how various data types are handled and stored.
 
-|         | Manipulated by handle | Manipulated by value |
-|--------:|----------------------:|---------------------:|
+| Type        | Manipulated by handle | Manipulated by value |
+| :------- | :-------------------- | :-------------------- |
 | storable |     Persistent	| Primitive, Storable (if nested in a persistent class)|
 |temporary | Transient	| Other |
 
@@ -355,7 +358,7 @@ p3 = Handle (Geom_CartesianPoint)::DownCast (p1);
 If conversion is not compatible with the actual type of the  referenced object, the handle which was “cast” becomes null (and no exception  is raised). So, if you require reliable services defined in a sub-class of the  type seen by the handle (static type), write as follows: 
 
 ~~~~~~
-void MyFunction (const Handle(A) &amp; a)
+void MyFunction (const Handle(A) & a)
 {
   Handle(B) b =  Handle(B)::Downcast(a);
   if (! b.IsNull()) {
@@ -611,7 +614,7 @@ For example, if you consider the *TCollection_Array1* class  used with:
 then, the *Value*  function may be implemented as follows: 
 
 ~~~~~
-Item  TCollection_Array1::Value (const Standard_Integer&amp;index) const
+Item  TCollection_Array1::Value (const Standard_Integer&index) const
 {
   // where r1 and r2 are  the lower and upper bounds of the array
   if(index  r1 || index > r2) {
@@ -639,7 +642,7 @@ The entire call may be removed by defining one of the  pre-processor symbols No_
 Using this syntax, the Value  function becomes: 
 
 ~~~~~
-Item  TCollection_Array1::Value (const Standard_Integer&amp;index) const
+Item  TCollection_Array1::Value (const Standard_Integer&index) const
      { 
   OutOfRange_Raise_if(index  r1 || index > r2,
                       “index out of range in  Array1::Value”);
@@ -741,8 +744,8 @@ The exception handling mechanism in Open CASCADE Technology  is implemented in d
 2. On  SUN and Linux, macro *OCC_CONVERT_SIGNALS* is defined by default. The C++  exception mechanism is used for catching exceptions and for throwing them from  normal code. Since it is not possible to throw C++ exception from system signal  handler function, that function makes a long jump to the nearest (in the  execution stack) invocation of macro *OCC_CATCH_SIGNALS*, and only there the C++  exception gets actually thrown. The macro *OCC_CATCH_SIGNALS* is defined in the  file *Standard_ErrorHandler.hxx*. Therefore, including this file is necessary for  successful compilation of a code containing this macro. 
 
 This mode differs from standard  C++ exception handling only for signals: 
-  + macro *OCC_CATCH_SIGNALS* is necessary (besides call to  *OSD::SetSignal()* described above) for conversion of signals into exceptions;
-  + the destructors for automatic C++ objects created in the code  after that macro and till the place where signal is raised will not be called in  case of signal, since no C++ stack unwinding is performed by long jump.
+  * macro *OCC_CATCH_SIGNALS* is necessary (besides call to  *OSD::SetSignal()* described above) for conversion of signals into exceptions;
+  * the destructors for automatic C++ objects created in the code  after that macro and till the place where signal is raised will not be called in  case of signal, since no C++ stack unwinding is performed by long jump.
   
 3. On  SUN and Linux Open CASCADE Technology can also be compiled in compatibility  mode (which was default till Open CASCADE Technology 6.1.0). In that case macro  *NO_CXX_EXCEPTIONS* is defined and the C++ exceptions are simulated with C long  jumps. As a consequence, the behavior is slightly different from that expected  in the C++ standard.  
 
@@ -753,6 +756,7 @@ While exception handling with  NO_CXX_EXCEPTIONS is very similar to C++ by synta
   * Open CASCADE Technology try/catch block will not handle normal  C++ exceptions; however this can be achieved using special workarounds;
   * the try macro defines a C++ object that holds an entry point in the  exception handler. Therefore if exception is raised by code located immediately  after the try/catch block but on the same nesting level as *try*, it may  be handled by that *catch*. This may lead to unexpected behavior,  including infinite loop. To avoid that, always surround the try/catch block in  {} braces;
   * the destructors of the C++ objects allocated on the stack after  handler initialization are not called by exception raising.
+
 In general, for writing platform-independent code it is recommended  to insert macros *OCC_CATCH_SIGNALS* in try {} blocks or other code where signals  may happen. For compatibility with previous versions of Open CASCADE Technology  the limitations described above for *NO_CXX_EXCEPTIONS* shall be assumed. 
 
 @subsection occt_fcug_2_5 Plug-In  Management
@@ -866,7 +870,7 @@ static Standard_GUID
 // purpose :
 //======================================================
  
-Handle(Standard_Transient)  FAFactory::Factory(const Standard_GUID&amp; aGUID) 
+Handle(Standard_Transient)  FAFactory::Factory(const Standard_GUID& aGUID) 
 {
   if(aGUID == StorageDriver) {
     cout  “FAFactory : Create store driver”   endl;
@@ -905,7 +909,7 @@ class Standard_GUID;
 class FAFactory {
 public:
   Standard_EXPORT  static Handle_Standard_Transient
-                  Factory(const Standard_GUID&amp; aGUID)  ;
+                  Factory(const Standard_GUID& aGUID)  ;
   . . .
 };
 ~~~~~
@@ -1686,9 +1690,9 @@ v1(0) = 2.0;
 @subsection occt_occt_fcug_4_3 Primitive Geometric Types
 Before creating a geometric object, you must decide whether  you are in a 2d or in a 3d context and how you want to handle the object. 
 The *gp* package offers classes for both 2d and 3d  objects which are handled by value rather than by reference. When this sort of  object is copied, it is copied entirely. Changes in one instance will not be  reflected in another. 
-The *gp* package defines the basic non-persistent  geometric entities used for algebraic calculation and basic analytical geometry  in 2d &amp; 3d space. It also provides basic transformations such as identity,  rotation, translation, mirroring, scale transformations, combinations of  transformations, etc. Entities are handled by value.  
+The *gp* package defines the basic non-persistent  geometric entities used for algebraic calculation and basic analytical geometry  in 2d & 3d space. It also provides basic transformations such as identity,  rotation, translation, mirroring, scale transformations, combinations of  transformations, etc. Entities are handled by value.  
 The available geometric entities are: 
-  * 2d &amp; 3d Cartesian coordinates (x, y, z)
+  * 2d & 3d Cartesian coordinates (x, y, z)
   * Matrices
   * Cartesian points
   * Vector
@@ -1739,10 +1743,10 @@ The example below demonstrates the use of the Gauss class,  which implements the
 ~~~~~~
 class Gauss {
 public:
-  Gauss (const math_Matrix&amp; A);
+  Gauss (const math_Matrix& A);
   Standard_Boolean IsDone() const;
-  void Solve (const math_Vector&amp; B,
-  math_Vector&amp; X) const;
+  void Solve (const math_Vector& B,
+  math_Vector& X) const;
 };
 ~~~~~~
 
@@ -1777,7 +1781,7 @@ The next example demonstrates the use of the *BissecNewton* class, which impleme
 ~~~~~
 class  BissecNewton { 
 	public: 
-		BissecNewton  (math_FunctionWithDerivative&amp; f, 
+		BissecNewton  (math_FunctionWithDerivative& f, 
 			const Standard_Real bound1, 
 			const Standard_Real bound2, 
 			const Standard_Real tolx); 
@@ -1792,13 +1796,13 @@ The abstract class  *math_FunctionWithDerivative* describes the services which h
 class  math_FunctionWithDerivative { 
 	public: 
 		virtual Standard_Boolean Value 
-			(const Standard_Real x, Standard_Real&amp;  f) = 0; 
+			(const Standard_Real x, Standard_Real&  f) = 0; 
 		virtual Standard_Boolean Derivative 
-			(const Standard_Real x, Standard_Real&amp;  d) = 0; 
+			(const Standard_Real x, Standard_Real&  d) = 0; 
 		virtual Standard_Boolean Values 
 			(const Standard_Real x, 
-			Standard_Real&amp; f, 
-			Standard_Real&amp; d) = 0; 
+			Standard_Real& f, 
+			Standard_Real& d) = 0; 
 }; 
 ~~~~~
 
@@ -1818,19 +1822,19 @@ class myFunction : public math_FunctionWithDerivative
     {}
 
     virtual  Standard_Boolean Value (const Standard_Real x, 
-                                    Standard_Real&amp; f)
+                                    Standard_Real& f)
     {
       f = coefa * x * x + coefb * x + coefc;
     }
 
     virtual  Standard_Boolean Derivative (const Standard_Real x,
-                                         Standard_Real&amp;  d)
+                                         Standard_Real&  d)
     {
       d = coefa * x * 2.0 + coefb;
     }
 
     virtual  Standard_Boolean Values (const Standard_Real x,
-                                     Standard_Real&amp; f, Standard_Real&amp; d)
+                                     Standard_Real& f, Standard_Real& d)
     {
       f = coefa * x * x + coefb * x + coefc;
       d = coefa * x *  2.0 + coefb;
@@ -1926,14 +1930,14 @@ Note that Approximation is greater than Confusion, so care  must be taken when u
 @section occt_fcug_5 Data Storage
 @subsection occt_fcug_5_1 Saving and Opening Files
 
-@image html /user_guides/foundation_classes/images/foundation_classes_image007.jpg "Example of Saving-Opening workflow"
-@image latex /user_guides/foundation_classes/images/foundation_classes_image007.jpg "Example of Saving-Opening workflow"
+@image html /user_guides/foundation_classes/images/foundation_classes_image007.png "Example of Saving-Opening workflow"
+@image latex /user_guides/foundation_classes/images/foundation_classes_image007.png "Example of Saving-Opening workflow"
    
 In the example, the roots of the transferable transient objects *TopoDS_Shape, Geom_Geometry* and *Geom2d_Geometry* are used in algorithms, they contain data and temporary results. 
 The associated objects in the persistent domain are *PTopoDS_HShape, PGeom_Geometry* and *PGeom2d_Geometry*. They contain a real data  structure which is stored in a file. 
 Note that when an object is stored, if it contains another  stored object, the references to the contained object are also managed. 
-@image html /user_guides/foundation_classes/images/foundation_classes_image008.jpg "Saving-Opening mechanism"
-@image latex /user_guides/foundation_classes/images/foundation_classes_image008.jpg "Saving-Opening mechanism"
+@image html /user_guides/foundation_classes/images/foundation_classes_image008.png "Saving-Opening mechanism"
+@image latex /user_guides/foundation_classes/images/foundation_classes_image008.png "Saving-Opening mechanism"
 
 
 @subsection occt_fcug_5_2 Basic Storage Procedures

@@ -1,6 +1,8 @@
 IGES Support  {#user_guides__iges}
 ==================
 
+@tableofcontents
+
 @section occt_iges_1 Introduction
 
 
@@ -33,7 +35,7 @@ The types of IGES  entities, which can be translated, are:
   * Surfaces
   * B-Rep entities
   * Structure entities (groups).  Each entity in the group outputs a shape. There can be a group of groups.
-  * Subfigures. Each entity  defined in a subfigure outputs a shape
+  * Subfigures. Each entity  defined in a sub-figure outputs a shape
   * Transformation Matrix.
   
 **Note** that all non-millimeter  length unit values in the IGES file are converted to millimeters.
@@ -361,7 +363,7 @@ Standard_Boolean  onlyvisible = Standard_True or Standard_False;
 reader.TransferRoots(onlyvisible) 
 ~~~~~
 
-@subsubsection occt_iges_2_36 Getting the  translation results
+@subsubsection occt_iges_2_3_6 Getting the  translation results
 Each successful  translation operation outputs one shape. A series of translations gives a  series of shapes.  
 Each time you invoke  *TransferEntity, Transfer* or *Transferlist*, their results are accumulated and  NbShapes increases. You can clear the results (Clear function) between two  translation operations, if you do not do this, the results from the next  translation will be added to the accumulation. *TransferRoots* operations  automatically clear all existing results before they start.  
 ~~~~~
@@ -405,88 +407,40 @@ If *failsonly* is  *IFSelect_FailOnly*, only fail messages will be output, if it
 
 @subsubsection occt_iges_2_4_1 Points
 
-| IGES entity type	| CASCADE shape  |	Comments  |
-
-| ----------------: | -------------: | ---------: |
-
-| 116: Point	    | TopoDS_Vertex	 |
+| IGES entity type	| CASCADE shape  |	Comments |
+| :---------------- | :------------- | --------- |
+| 116: Point	    | TopoDS_Vertex	 | |
 
 @subsubsection occt_iges_2_4_2 Curves
 Curves, which form the 2D of face boundaries, are translated  as *Geom2D_Curves* (Geom2D circles, etc.). 
 
-IGES entity type	 CASCADE shape	Comments
-100: Circular Arc 	TopoDS_Edge
-	The geometrical support is:
-- a Geom_Circle,
-- or a Geom_TrimmedCurve.
-A Geom_TrimmedCurve is output if the arc is not closed.
-102: Composite Curve
-	TopoDS_Wire
-	The resulting shape is always a TopoDS_Wire that is built from a set of TopoDS_Edges. 
-Each TopoDS_Edge is connected to the preceding and to the following edge by a common TopoDS_Vertex. 
-104: Conic Arc	TopoDS_Edge	The geometric support depends on whether the IGES entity's form is:
-- 0 (Geom_Circle), 
-- 1 (Geom_Ellipse), 
-- 2 (Geom_Hyperbola),
-- or 3 (Geom_Parabola).
-A Geom_TrimmedCurve is output if the arc is not closed.
-106: Copious Data	TopoDS_Edge or TopoDS_Wire	IGES entity Copious Data (type 106, forms 1-3) is translated just as the IGES entities Linear Path (106/11-13) and the Simple Closed Planar Curve (106/63). Vectors applying to forms other than 11,12 or 63 are ignored.
-The Geom_BSplineCurve (geometrical support) has C0 continuity.
-If the Copious Data has vectors (DataType = 3) they will be ignored.
-110: Line	TopoDS_Edge	The supporting curve is a Geom_TrimmedCurve whose basis curve is a Geom_Line.
-112: Parametric Spline Curve	TopoDS_Edge or TopoDS_Wire	The geometric support is a Geom_BsplineCurve.
-126: BSpline Curve	TopoDS_Edge or TopoDS_Wire	
-130: Offset Curve	TopoDS_Edge or TopoDS_Wire
-	The resulting shape is a TopoDS_Edge or a TopoDS_Wire (depending on the translation of the basis curve) whose geometrical support is a Geom_OffsetCurve built from a basis Geom_Curve.
-Limitation: The IGES Offset Type value must be 1.
-141: Boundary	TopoDS_Wire	Same behavior as for the Curve On Surface (see below).
-The translation of a non-referenced Boundary IGES entity in a BoundedSurface IGES entity outputs a TopoDS_Edge or a TopoDS_Wire with a Geom_Curve.
-142: Curve On Surface	TopoDS_Wire	Each TopoDS_Edge is defined by a 3D curve and by a 2D curve that references the surface. 
+| IGES entity type	| CASCADE shape	| Comments |
+| :---------------- | :------------ | :------- |
+| 100: Circular Arc |	TopoDS_Edge | The geometrical support is a *Geom_Circle* or a *Geom_TrimmedCurve* (if the arc is not closed). |
+| 102: Composite Curve  | TopoDS_Wire | The resulting shape is always a *TopoDS_Wire* that is built from a set of *TopoDS_Edges*. Each *TopoDS_Edge* is connected to the preceding and to the following edge by a common *TopoDS_Vertex*. |
+| 104: Conic Arc |	TopoDS_Edge	| The geometric support depends on whether the IGES entity's form is 0 (*Geom_Circle*), 1 (*Geom_Ellipse*), 2 (*Geom_Hyperbola*), or 3 (*Geom_Parabola*). A *Geom_TrimmedCurve* is output if the arc is not closed. |
+| 106: Copious Data	| TopoDS_Edge or TopoDS_Wire | IGES entity Copious Data (type 106, forms 1-3) is translated just as the IGES entities Linear Path (106/11-13) and the Simple Closed Planar Curve (106/63). Vectors applying to forms other than 11,12 or 63 are ignored. The *Geom_BSplineCurve* (geometrical support) has C0 continuity. If the Copious Data has vectors (DataType = 3) they will be ignored. |
+| 110: Line	| TopoDS_Edge	| The supporting curve is a *Geom_TrimmedCurve* whose basis curve is a *Geom_Line*. |
+| 112: Parametric Spline Curve	| TopoDS_Edge or TopoDS_Wire	| The geometric support is a Geom_BsplineCurve. |
+| 126: BSpline Curve	| TopoDS_Edge or TopoDS_Wire	| |
+| 130: Offset Curve	| TopoDS_Edge or TopoDS_Wire |	The resulting shape is a *TopoDS_Edge* or a *TopoDS_Wire* (depending on the translation of the basis curve) whose geometrical support is a *Geom_OffsetCurve* built from a basis *Geom_Curve*. Limitation: The IGES Offset Type value must be 1. |
+| 141: Boundary	| TopoDS_Wire	| Same behavior as for the Curve On Surface (see below). The translation of a non-referenced Boundary IGES entity in a *BoundedSurface* IGES entity outputs a *TopoDS_Edge* or a *TopoDS_Wire* with a *Geom_Curve*. |
+| 142: Curve On Surface	| TopoDS_Wire	| Each *TopoDS_Edge* is defined by a 3D curve and by a 2D curve that references the surface. |
 
 The type of OCCT shapes (either *TopDS_Edges* or  *TopoDS_Wires*) that result from the translation of IGES entities 106, 112 and  126 depends on the continuity of the curve in the IGES file and the value of  the *read.iges.bspline.continuity* translation parameter. 
 
 @subsubsection occt_iges_2_4_3 Surfaces
-Translation of a surface outputs either a TopoDS_Face or a  TopoDS_Shell.  
-If a TopoDS_Face is output, its geometrical support is a  Geom_Surface and its outer and inner boundaries (if it has any) are  TopoDS_Wires. 
+Translation of a surface outputs either a *TopoDS_Face* or a  *TopoDS_Shell*.  
+If a *TopoDS_Face* is output, its geometrical support is a  *Geom_Surface* and its outer and inner boundaries (if it has any) are  *TopoDS_Wires*. 
 
-IGES entity type	 CASCADE shape	Comments
-108: Plane
-	TopoDS_Face
-	The geometrical support for the TopoDS_Face is a Geom_Plane and the orientation of its TopoDS_Wire depends on whether it is an outer TopoDS_Wire or whether it is a hole.
-114: Parametric Spline Surface	TopoDS_Face	The geometrical support of a TopoDS_Face is a Geom_BSplineSurface.
-118: Ruled Surface
-	TopoDS_Face
- or 
-TopoDS_Shell	The translation of a Ruled Surface outputs: 
-- a TopoDS_Face if the profile curves become TopoDS_Edges,
-- a TopoDS_Shell if the profile curves become TopoDS_Wires.
-
-Limitation: This translation cannot be completed when these two TopoDS_Wires are oriented in different directions. 
-120: Surface Of Revolution	TopoDS_Face
- or 
-TopoDS_Shell
-	The translation of a Surface Of Revolution outputs: 
-- a TopoDS_Face if the generatrix becomes a TopoDS_Edge,
-- a TopoDS_Shell if the generatrix becomes a TopoDS_Wire.
-The geometrical support may be:
-         - a Geom_CylindricalSurface, 
-         - a Geom_ConicalSurface, 
-         - a Geom_SphericalSurface, 
-         - a Geom_ToroidalSurface 
-         - or a Geom_SurfaceOfRevolution 
-depending on the result of the CASCADE computation (based on the generatrix type). 
-122: Tabulated Cylinder	TopoDS_Face
- or 
-TopoDS_Shell
-	The translation outputs:
-- a TopoDS_Face if the base becomes a TopoDS_Edge,
-- a TopoDS_Shell if the base becomes a TopoDS_Wire.
-
-The geometrical support may be:
-- a Geom_Plane,
-- a Geom_Cylindrical Surface,
-- a Geom_SurfaceOfLinearExtrusion
-depending on the result of the CASCADE computation (based on the generatrix type).
+| IGES entity type	| CASCADE shape	| Comments |
+| :--------------  | :------------ | :--------- |
+| 108: Plane | 	TopoDS_Face | 	The geometrical support for the TopoDS_Face is a Geom_Plane and the orientation of its TopoDS_Wire depends on whether it is an outer TopoDS_Wire or whether it is a hole. |
+| 114: Parametric Spline Surface | TopoDS_Face |	The geometrical support of a TopoDS_Face is a Geom_BSplineSurface. |
+| 118: Ruled Surface | TopoDS_Face or TopoDS_Shell	| The translation of a Ruled Surface outputs a TopoDS_Face if the profile curves become TopoDS_Edges, or a TopoDS_Shell if the profile curves become TopoDS_Wires. 
+Limitation: This translation cannot be completed when these two TopoDS_Wires are oriented in different directions.  |
+| 120: Surface Of Revolution | TopoDS_Face or TopoDS_Shell | The translation of a Surface Of Revolution outputs: a TopoDS_Face if the generatrix becomes a TopoDS_Edge, a TopoDS_Shell if the generatrix becomes a TopoDS_Wire. The geometrical support may be: *Geom_CylindricalSurface, Geom_ConicalSurface, Geom_SphericalSurface, Geom_ToroidalSurface* or a *Geom_SurfaceOfRevolution* depending on the result of the CASCADE computation (based on the generatrix type). | 
+| 122: Tabulated Cylinder	| TopoDS_Face or TopoDS_Shell | The translation outputs: a TopoDS_Face if the base becomes a TopoDS_Edge, or a TopoDS_Shell if the base becomes a TopoDS_Wire. The geometrical support may be Geom_Plane, Geom_Cylindrical Surface or a Geom_SurfaceOfLinearExtrusion depending on the result of the CASCADE computation (based on the generatrix type). |
 The Geom_Surface geometrical support is limited according to the generatrix. 
 128: BSpline Surface	TopoDS_Face	The geometrical support of the TopoDS_Face is a Geom_BsplineSurface.
 140: Offset Surface	TopoDS_Face
@@ -584,7 +538,7 @@ During the transfer of IGES to Open CASCADE Technology  several parameters are u
 
 <h4>3D (spatial) tolerances</h4>
 
-* Package method  *Precision::Confusion* equal to 10<sup>-7</sup> is used as a minimal  distance between points, which are considered distinct. 
+* Package method  *Precision\::Confusion* equal to 10<sup>-7</sup> is used as a minimal  distance between points, which are considered distinct. 
 * Resolution in the IGES  file is defined in the Global section of an IGES  file. It is used as a fundamental value of precision during the transfer. 
 * User-defined variable  *read.precision.val* can be used instead of resolution from the file when  parameter *read.precision.mode* is set to 1 ("User"). 
 * Field *EpsGeom*  of the  class *IGESToBRep_CurveAndSurface* is a basic precision for translating an IGES  object. It is set for each object of class *IGESToBRep_CurveAndSurface* and its  derived classes. It is initialized for the root of transfer either by value of  resolution from the file or by value of *read.precision.val*, depending on  the value of *read.precision.mode* parameter. It is returned by call to method  *IGESToBRep_CurvAndSurface::GetEpsGeom*.  As this value belongs to measurement units of the IGES  file, it is usually multiplied by the coefficient *UnitFactor* (returned by  method *IGESToBRep_CurvAndSurface::GetUnitFactor*) to convert it to Open CASCADE  Technology units. 
@@ -592,7 +546,7 @@ During the transfer of IGES to Open CASCADE Technology  several parameters are u
  
 <h4>2D (parametric) tolerances</h4>
 
-* Package method  *Precision::PConfusion* equal to <i> 0.01*Precision::Confusion</i>, i.e. 10<sup>-9</sup>.  It is used to compare parametric bounds of curves. 
+* Package method  *Precision\::PConfusion* equal to <i> 0.01*Precision\::Confusion</i>, i.e. 10<sup>-9</sup>.  It is used to compare parametric bounds of curves. 
 * Field *EpsCoeff* of the  class *IGESToBRep_CurveAndSurface* is a parametric precision for translating an IGES  object. It is set for each object of class *IGESToBRep_CurveAndSurface* and its  derived classes. Currently, it always has its default value 10<sup>-6</sup>. It  is returned by call to method *IGESToBRep_CurvAndSurface::GetEpsCoeff*.  This value is used for translating 2d objects (for instance, parametric  curves). 
 * Methods  *UResolution(tolerance3d)* and *VResolution(tolerance3d)* of the class  *GeomAdaptor_Surface* or *BRepAdaptor_Surface* return tolerance in parametric space of a surface computed  from 3D tolerance. When one tolerance value is to be used for both U and V  parametric directions, the maximum or the minimum value of *UResolution* and  *VResolution* is used.
 * Methods *Resolution(tolerance3d)* of the class *GeomAdaptor_Curve* or *BRepAdaptor_Curve* return tolerance in the parametric space of a curve computed  from 3d tolerance. 
@@ -629,72 +583,50 @@ Use of precision parameters is reflected in the following  classes:
 
 <h4>Translating into Topology</h4>
 
-IGES entities represented as topological shapes and  geometrical objects are translated into OCCT shapes by use of the following  classes: 
-IGESToBRep_TopoCurve,  IGESToBRep_TopoSurface,  IGESToBRep_BRepEntity,  ShapeFix_Wire 
-Class IGESToBRep_BRepEntity is intended for transferring  BRep entities (IGES version &sup3; 5.1)  while the two former are used for translating geometry and topology defined in  IGES  5.1. Methods from IGESToBRep_BRepEntity call methods from  IGESToBRep_TopoCurve and IGESToBRep_TopoSurface, while those call methods from  IGESToBRep_BasicCurve and IGESToBRep_BasicSurface in order to translate IGES  geometry into OCCT geometry. 
+IGES entities represented as topological shapes and  geometrical objects are translated into OCCT shapes by use of the classes *IGESToBRep_TopoCurve,  IGESToBRep_TopoSurface,  IGESToBRep_BRepEntity* and *ShapeFix_Wire*. 
+
+Class *IGESToBRep_BRepEntity* is intended for transferring  BRep entities (IGES version 5.1)  while the two former are used for translating geometry and topology defined in  IGES  5.1. Methods from *IGESToBRep_BRepEntity* call methods from  *IGESToBRep_TopoCurve* and *IGESToBRep_TopoSurface*, while those call methods from *IGESToBRep_BasicCurve* and *IGESToBRep_BasicSurface* to translate IGES  geometry into OCCT geometry. 
+
 Although the IGES file contains only one parameter for  tolerance in the Global Section, OCCT shapes are produced with different  tolerances. As a rule, updating the tolerance is fulfilled according to local  distances between shapes (distance between vertices of adjacent edges,  deviation of edge’s 3D curve and its parametric curve and so on) and may be  less or greater than precision in the file. 
+
 The following classes show what default tolerances are used  when creating shapes and how they are updated during transfer. 
+
 <h5>Class  IGESToBRep_TopoCurve</h5>
-All the methods which are in charge of transferring curves  from IGES curve entities (TransferCompositeCurve, Transfer2dCompositeCurve,  TransferCurveOnFace, TransferBoundaryOnFace, TransferOffsetCurve,  TransferTopoBasicCurve) if an entity has transformation call to  IGESData_ToolLocation::ConvertLocation with Epsilon value set to 10-4. 
-  * IGESToBRep_TopoCurve::TransferPoint
-Vertex is constructed from a Point entity with tolerance  EpsGeom*UnitFactor. 
-  * IGESToBRep_TopoCurve::Transfer2dPoint
-Vertex is constructed from a Point entity with tolerance  EpsCoeff. 
-  * IGESToBRep_TopoCurve::TransferCompositeCurveGeneral
-Obtains shapes (edges or wires) from other methods and adds  them into the resulting wire. Two adjacent edges of the wire can be connected  with tolerance up to MaxTol. 
-  * IGESToBRep_TopoCurve::TransferCurveOnFace and  IGESToBRep_TopoCurve::TransferBoundaryOnFace
-This method builds a wire from 3D and 2D representations of  a curve on surface. 
-Edges and vertices of the wire cannot have tolerance larger  than MaxTol. 
-The value EpsGeom*UnitFactor is passed into  ShapeFix_Wire::SetPrecision and MaxTol - into ShapeFix_Wire::MaxTolerance. To  find out how these parameters affect the resulting tolerance changes, please  refer to class ShapeFix_Wire. 
-  * IGESToBRep_TopoCurve::TransferTopoBasicCurve and  IGESToBRep_TopoCurve::Transfer2dTopoBasicCurve
-The boundary vertices of an edge (or a wire if a curve was  of C0 continuity) translated from a basis IGES curve (BSplineCurve,  CopiousData, Line, etc.) are built with tolerance EpsGeom*UnitFactor, the  tolerance of the edge(s) is (are) Precision::Confusion*.* 
-If a curve was divided into several edges, the common  vertices of such adjacent edges have tolerance Precision::Confusion*.* 
+
+All  methods are in charge of transferring curves  from IGES curve entities *(TransferCompositeCurve, Transfer2dCompositeCurve,  TransferCurveOnFace, TransferBoundaryOnFace, TransferOffsetCurve,  TransferTopoBasicCurve)* if an entity has transformation call to *IGESData_ToolLocation::ConvertLocation* with *Epsilon* value set to 10<sup>-4</sup>. 
+  * *IGESToBRep_TopoCurve::TransferPoint* - vertex is constructed from a Point entity with tolerance *EpsGeom*UnitFactor*. 
+  * *IGESToBRep_TopoCurve::Transfer2dPoint* - vertex is constructed from a Point entity with tolerance *EpsCoeff*. 
+  * *IGESToBRep_TopoCurve::TransferCompositeCurveGeneral* - obtains shapes (edges or wires) from other methods and adds  them into the resulting wire. Two adjacent edges of the wire can be connected  with tolerance up to *MaxTol*. 
+  * *IGESToBRep_TopoCurve::TransferCurveOnFace* and  *IGESToBRep_TopoCurve::TransferBoundaryOnFace* build a wire from 3D and 2D representations of  a curve on surface. Edges and vertices of the wire cannot have tolerance larger than *MaxTol*. The value *EpsGeom*UnitFactor* is passed into *ShapeFix_Wire::SetPrecision* and *MaxTol* - into *ShapeFix_Wire::MaxTolerance*. To find out how these parameters affect the resulting tolerance changes, please,  refer to class *ShapeFix_Wire*. 
+  * *IGESToBRep_TopoCurve::TransferTopoBasicCurve* and  *IGESToBRep_TopoCurve::Transfer2dTopoBasicCurve* - the boundary vertices of an edge (or a wire if a curve was  of C0 continuity) translated from a basis IGES curve (*BSplineCurve,  CopiousData, Line,* etc.) are built with tolerance *EpsGeom*UnitFactor*, the edge tolerance is *Precision::Confusion*. If a curve was divided into several edges, the common  vertices of such adjacent edges have tolerance *Precision::Confusion*.
+  
+  
 <h5>Class  IGESToBRep_TopoSurface</h5>
-All the faces created by this class have tolerance  Precision::Confusion*.* 
+
+All faces created by this class have tolerance  *Precision::Confusion*.
+
 <h5>Class  IGESToBRep_BRepEntity</h5>
-  * IGESToBRep_BRepEntity::TransferVertex
-The vertices from the VertexList entity are constructed with  tolerance EpsGeom*UnitFactor. 
-  * IGESToBRep_BRepEntity::TransferEdge
-The edges from the EdgeList entity are constructed with  tolerance Precision::Confusion*.* 
-  * IGESToBRep_BRepEntity::TransferLoop
-This function works like  IGESToBRep_TopoCurve::TransferCurveOnFace* *and* *IGESToBRep_TopoCurve::TransferBoundaryOnFace*.* 
-  * IGESToBRep_BRepEntity::TransferFace
-The face from the Face IGES entity is constructed with  tolerance Precision::Confusion. 
+
+  * *IGESToBRep_BRepEntity::TransferVertex* - the vertices from the *VertexList* entity are constructed with  tolerance *EpsGeom*UnitFactor*. 
+  * *IGESToBRep_BRepEntity::TransferEdge* - the edges from the *EdgeList* entity are constructed with  tolerance *Precision::Confusion*.
+  * *IGESToBRep_BRepEntity::TransferLoop* - this function works like  *IGESToBRep_TopoCurve::TransferCurveOnFace* and *IGESToBRep_TopoCurve::TransferBoundaryOnFace*. 
+  * *IGESToBRep_BRepEntity::TransferFace* the face from the Face IGES entity is constructed with  tolerance *Precision::Confusion*.
+  
 <h5>Shape Healing classes</h5>
-After performing a simple mapping, shape-healing algorithms  are called (class ShapeFix_Shape) by IGESToBRep_Actor::Transfer(). A  shape-healing algorithm performs the correction of a resulting OCCT shape.  
-Class ShapeFix_Wire can increase the tolerance of a shape.  This class is used in IGESToBRep_BRepEntity::TransferLoop*,* IGESToBRep_TopoCurve::TransferBoundaryOnFace  and IGESToBRep_TopoCurve::TransferCurveOnFace for correcting a wire. The  maximum possible tolerance which edges or vertices will have after invoking the  methods of this class is MaxTolerance (set by method ShapeFix_Wire::MaxTolerance()). 
+After performing a simple mapping, shape-healing algorithms  are called (class *ShapeFix_Shape*) by *IGESToBRep_Actor::Transfer()*. Shape-healing algorithm performs the correction of the resulting OCCT shape.  
+Class *ShapeFix_Wire* can increase the tolerance of a shape.  This class is used in *IGESToBRep_BRepEntity::TransferLoop*, *IGESToBRep_TopoCurve::TransferBoundaryOnFace*  and *IGESToBRep_TopoCurve::TransferCurveOnFace* for correcting a wire. The  maximum possible tolerance applied to the edges or vertices after invoking the  methods of this class is *MaxTolerance* (set by method *ShapeFix_Wire::MaxTolerance()* ). 
 
 @subsection occt_iges_2_7 Code architecture
-@subsubsection occt_iges_2_71  List of the classes
-<h5>Package IGESControl</h5>
-IGESControl_Reader 
-<h5>Package IGESToBRep</h5>
-IGESToBRep_Reader 
-IGESToBRep_Actor 
-IGESToBRep_CurveAndSurface 
-IGESToBRep_BasicCurve 
-IGESToBRep_BasicSurface 
-IGESToBRep_TopoCurve 
-IGESToBRep_TopoSurface 
-IGESToBRep_BRepEntity 
-<h5>Package IGESConvGeom</h5>
-For description of classes, refer to CDL. 
-@subsubsection occt_iges_2_72 List of API classes
-<h5>package IGESControl</h5>
-IGESControl_Reader 
-<h5>package IGESToBRep</h5>
-IGESToBRep_Reader 
-<h5>package IGESData</h5>
-class IGESData_IGESModel 
-class IGESData_IGESEntity 
-For details, refer to 4 API for reading/writing IGES and CDL. 
-@subsubsection occt_iges_2_73 Graph of calls
+
 The following diagram illustrates the structure of calls in  reading IGES. 
 The highlighted classes produce OCCT geometry. 
-@image html /user_guides/iges/images/iges_image003.jpg
-@image latex /user_guides/iges/images/iges_image003.jpg
+
+@image html /user_guides/iges/images/iges_image003.png "The structure of calls in reading IGES"
+@image latex /user_guides/iges/images/iges_image003.png "The structure of calls in reading IGES"
 
 @subsection occt_iges_2_8 Example
+
+~~~~~
 #include “IGESControl_Reader.hxx” 
 #include “TColStd_HSequenceOfTransient.hxx” 
 #include “TopoDS_Shape.hxx” 
@@ -716,111 +648,93 @@ cout“IGES Faces: “nIgesFaces“   Transferred:”nTransFacesendl;
 TopoDS_Shape sh = myIgesReader.OneShape(); 
 //and obtains the results in an OCCT shape. 
 } 
+~~~~~
 
+@section occt_iges_3 Writing IGES
+@subsection occt_iges_3_1 Procedure
 
-@section occt_1856844696_874243683 Writing IGES
-@subsection occt_1856844696_8742436831 Procedure
 You can translate OCCT shapes to IGES entities in the  following steps: 
-1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; initialize  the process. 
-2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set  the translation parameters, 
-3.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; perform  the model translation, 
-4.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; write  the output IGES file. 
+1. Initialize  the process. 
+2. Set  the translation parameters, 
+3. Perform  the model translation, 
+4. Write  the output IGES file. 
+
 You can translate several shapes before writing a file. Each  shape will be a root entity in the IGES model. 
-@subsection occt_1856844696_8742436832 Domain covered
+
+@subsection occt_iges_3_2 Domain covered
 There are two families of OCCT objects that can be  translated: 
   * geometrical,
   * topological.
-@subsection occt_1856844696_8742436833 Description of the  process
-@subsubsection occt_1856844696_87424368331 Initializing the  process
-Choose the unit and the mode you want to use to write the  output file as follows: 
-IGESControl_Controller::Init 
-performs standard initialization. Returns False if an error  occurred. 
-IGESControl_Writer writer;  
-uses the default unit (millimeters) and the default write  mode (Face). 
-IGESControl_Writer writer (UNIT);  
-uses the Face write mode and any of the units that are  accepted by IGES.  
-IGESControl_Writer writer (UNIT,modecr);  
-uses the unit (accepted by IGES) and the write mode of your  choice. 
-  * 0: Faces,
-  * 1: BRep
-The result is an IGESControl_Writer object. 
-@subsubsection occt_1856844696_87424368332 Setting the translation parameters 
-The following parameters are used for the OCCT-to-IGES  translation. 
-<h4>write.iges.brep.mode: </h4>
-gives the choice of the  write mode. You can choose the following write modes:  
+  
+@subsection occt_iges_3_3 Description of the process
+@subsubsection occt_iges_3_3_1 Initializing the process
 
-;Faces; (0):       OCCT TopoDS_Faces  will be translated into IGES 144 (Trimmed Surface) entities, no B-Rep entities  will be written to the IGES file,  
-;BRep; (1):        OCCT TopoDS_Faces  will be translated into IGES 510 (Face) entities, the IGES file will contain  B-Rep entities.  
+Choose the unit and the mode you want to use to write the  output file as follows: 
+* *IGESControl_Controller::Init* performs standard initialization. Returns False if an error  occurred. 
+* *IGESControl_Writer writer* uses the default unit (millimeters) and the default write  mode (Face). 
+* *IGESControl_Writer writer (UNIT)* uses the Face write mode and any of the units that are  accepted by IGES.  
+* *IGESControl_Writer writer (UNIT,modecr)* uses the unit (accepted by IGES) and the write mode of your  choice. 
+  *  0: Faces,
+  *  1: BRep
+The result is an *IGESControl_Writer* object. 
+
+@subsubsection occt_iges_3_3_2 Setting the translation parameters 
+
+The following parameters are used for the OCCT-to-IGES  translation. 
+
+* *write.iges.brep.mode:* allows choosing the  write mode:  
+	* "Faces" (0): OCCT *TopoDS_Faces* will be translated into IGES 144 (Trimmed Surface) entities, no B-Rep entities  will be written to the IGES file,  
+	* "BRep" (1): OCCT *TopoDS_Faces*  will be translated into IGES 510 (Face) entities, the IGES file will contain  B-Rep entities.  
 Read this parameter  with:  
-Standard_Integer byvalue =  Interface_Static::IVal(;write.iges.brep.mode;); 
+~~~~~
+Standard_Integer byvalue =  Interface_Static::IVal("write.iges.brep.mode"); 
+~~~~~
 Modify this parameter  with:  
-Interface_Static::SetIVal  (;write.iges.brep.mode;, 1); 
-Default value is  ;Faces; (0).  
-<h4>write.convertsurface.mode</h4>
-For writing to IGES in the BRep mode (see parameter  write.iges.brep.mode), this   parameter indicates whether elementary surfaces (cylindrical, conical,  spherical,   and toroidal) are converted into corresponding IGES 5.3 entities (if  parameter's   value is On), or written as surfaces of revolution (by default). 
-Default value is Off. 
-<h4>write.iges.unit:</h4>
-gives the choice of the  unit. The default unit for Open CASCADE Technology is the millimeter. You can  choose to write your file in any of the units that are accepted by IGES.  
+~~~~~
+Interface_Static::SetIVal  ("write.iges.brep.mode", 1); 
+~~~~~
+Default value is "Faces" (0).  
+* *write.convertsurface.mode* when writing to IGES in the BRep mode, this parameter indicates whether elementary surfaces (cylindrical, conical,  spherical,   and toroidal) are converted into corresponding IGES 5.3 entities (if  the value of a parameter value is On), or written as surfaces of revolution (by default). 
+* *write.iges.unit:* allows choosing the unit. The default unit for Open CASCADE Technology is "MM" (millimeter). You can  choose to write a file into any unit accepted by IGES.  
+	* Read this parameter  with *Standard_String byvalue =  Interface_Static::CVal("write.iges.unit")*; 
+	* Modify this parameter  with *Interface_Static::SetCVal ("write.iges.unit", "INCH");* 
+* *write.iges.header.autor:* gives the name of the  author of the file.  The default value is the system name of the user.  
+	* Read this parameter  with  *Standard_String byvalue =  Interface_Static::CVal("write.iges.header.author")*; 
+	* Modify this value with  *Interface_Static::SetCVal  ("write.iges.header.author", "name")*; 
+* *write.iges.header.company:* gives the name of the  sending company.  The default value is  "" (empty).
+	* Read this parameter  with *Standard_String byvalue =  Interface_Static::CVal("write.iges.header.company");*
+	* Modify this value with *Interface_Static::SetCVal ("write.iges.header.company", "Open CASCADE");* 
+* *write.iges.header.product:* gives the name of the  sending product. The default value is  "CAS.CADE IGES processor Vx.x", where *x.x* means the current version of  Open CASCADE Technology.  
+	* Read this parameter  with *Standard_String byvalue =  Interface_Static::CVal("write.iges.header.product")*; 
+	* Modify this value with *Interface_Static::SetCVal  ("write.iges.header.product", "product name")*; 
+* *write.iges.header.receiver:* - gives the name of the  receiving company.  The default value is  "" (empty).
+	* Read this parameter  with	*Standard_String byvalue =  Interface_Static::CVal("write.iges.header.receiver");* 
+	* Modify this value with *Interface_Static::SetCVal  ("write.iges.header.receiver", "reciever name");* 
+* *write.precision.mode:* specifies the mode of  writing the resolution value into the IGES file.  
+	* "Least" (-1):       resolution value is  set to the minimum tolerance of all edges and all vertices in an OCCT shape.  
+	* "Average" (0):    resolution value is  set to average between the average tolerance of all edges and the average  tolerance of all vertices in an OCCT shape. This is the default value.  
+	* "Greatest" (1):   resolution value is  set to the maximum tolerance of all edges and all vertices in an OCCT shape.  
+	* "Session" (2):    resolution  value is that of the write.precision.val parameter.  
+	
+	* Read this parameter  with *Standard_Integer ic =  Interface_Static::IVal("write.precision.mode");* 
+	* Modify this parameter  with *if  (!Interface_Static\::SetIVal("write.precision.mode",1))  .. error .. *
+* *write.precision.val:* is the user precision value.  This parameter gives the resolution value for an IGES file when the  *write.precision.mode* parameter value is 1.  It is equal to 0.0001 by default, but can take any real positive (non null) value.  
+
 Read this parameter  with:  
-Standard_String byvalue =  Interface_Static::CVal(;write.iges.unit;); 
-Modify this parameter  with:  
-Interface_Static::SetCVal  (;write.iges.unit;, ;INCH;); 
-Default value is  ;MM;.  
-<h4>write.iges.header.autor:</h4>
-gives the name of the  author of the file.  
-Read this parameter  with:  
-Standard_String byvalue =  Interface_Static::CVal(;write.iges.header.author;); 
-Modify this value with:  
-Interface_Static::SetCVal  (;write.iges.header.author;, ;name;); 
-Default value is the  system name of the user.  
-<h4>write.iges.header.company:</h4>
-gives the name of the  sending company.  
-Read this parameter  with:  
-Standard_String byvalue =  Interface_Static::CVal(;write.iges.header.company;); 
-Modify this value with:  
-Interface_Static::SetCVal  (;write.iges.header.company;, ;MDTV;); 
-Default value is  ;; (empty).  
-<h4>write.iges.header.product:</h4>
-gives the name of the  sending product.  
-Read this parameter  with:  
-Standard_String byvalue =  Interface_Static::CVal(;write.iges.header.product;); 
-Modify this value with:  
-Interface_Static::SetCVal  (;write.iges.header.product;, ;product name;); 
-Default value is  ;CAS.CADE IGES processor Vx.x; where x.x means the current version of  Open CASCADE Technology.  
-<h4>write.iges.header.receiver:</h4>
-gives the name of the  receiving company.  
-Read this parameter  with:  
-Standard_String byvalue =  Interface_Static::CVal(;write.iges.header.receiver;); 
-Modify this value with:  
-Interface_Static::SetCVal  (;write.iges.header.receiver;, ;reciever name;); 
-Default value is  ;; (empty).  
-<h4>write.precision.mode:</h4>
-specifies the mode of  writing the resolution value into the IGES file.  
-;Least; (-1):       resolution value is  set to the minimum tolerance of all edges and all vertices in an OCCT shape,  
-;Average; (0):    resolution value is  set to average between the average tolerance of all edges and the average  tolerance of all vertices in an OCCT shape (default),  
-;Greatest; (1):   resolution value is  set to the maximum tolerance of all edges and all vertices in an OCCT shape,  
-;Session; (2):    resolution  value is that of the write.precision.val parameter.  
-Read this parameter  with:  
-Standard_Integer ic =  Interface_Static::IVal(;write.precision.mode;); 
-Modify this parameter  with:  
-if  (!Interface_Static::SetIVal(;write.precision.mode;,1))  
-.. error .. 
-Default value is  ;Average; (0).  
-<h4>write.precision.val:</h4>
-user precision value.  This parameter gives the resolution value for an IGES file when the  write.precision.mode parameter value is 1.  
-     0.0001: default  
-     any real positive  (non null) value.  
-Read this parameter  with:  
+~~~
 Standard_Real rp =  Interface_Static::RVal(;write.precision.val;); 
+~~~
 Modify this parameter  with:  
+~~~
 if  (!Interface_Static::SetRVal(;write.precision.val;,0.01))  
 .. error .. 
+~~~
 Default value is 0.0001. 
 <h4>write.iges.resource.name</h4>
 <h4>write.iges.sequence</h4>
 The same as read.iges.*, please see above. Note that the  default sequence for writing   contains one operator – DirectFaces - which converts elementary surfaces based  on   left-hand axes (valid in CASCADE) to right-hand axes (which are valid only in   IGES). 
 Default values : write.iges.resource.name –  IGES,&nbsp;write.iges.sequence – ToIGES. 
-@subsubsection occt_1856844696_87424368333 Performing the Open  CASCADE Technology shape translation
+@subsubsection occt_iges_333 Performing the Open  CASCADE Technology shape translation
 You can perform the  translation in one or several operations. Here is how you translate topological  and geometrical objects:  
 Standard_Boolean ok =  writer.AddShape (shape); 
 where shape is a  TopoDS_Shape.  
@@ -828,29 +742,29 @@ ok is True if  translation was correctly performed and False if there was at lea
 Standard_Boolean ok =  writer.AddGeom (geom); 
 where geom is either  Handle(Geom_Curve) or Handle(Geom_Surface)  
 ok is True if the  translation was correctly performed and False if there was at least one entity  whose geometry was not among the allowed types. 
-@subsubsection occt_1856844696_87424368334 Writing the IGES  file
+@subsubsection occt_iges_334 Writing the IGES  file
 Write the IGES file  with:  
 Standard_Boolean ok =  writer.Write (;filename.igs;); 
 to give the file name.  
 Standard_Boolean ok =  writer.Write (S); 
 where S is  Standard_OStream  
 ok is True if the  operation was correctly performed and False if an error occurred (for instance,  if the processor could not create the file). 
-@subsection occt_1856844696_8742436834 Mapping Open CASCADE  Technology shapes to IGES entities
+@subsection occt_iges_34 Mapping Open CASCADE  Technology shapes to IGES entities
 Translated objects depend on the write mode that you chose.  If you chose the Face mode, all of the shapes are translated, but the level of  topological entities becomes lower (geometrical one). If you chose the BRep  mode, topological OCCT shapes become topological IGES entities. 
-@subsubsection occt_1856844696_87424368341 Curves
-@subsubsection occt_1856844696_87424368342 Surfaces
+@subsubsection occt_iges_341 Curves
+@subsubsection occt_iges_342 Surfaces
 
-@subsubsection occt_1856844696_87424368343 Topological entities 
+@subsubsection occt_iges_343 Topological entities 
 <h5>Translation in Face mode</h5>
 
 <h5>Translation in BRep mode</h5>
-@subsection occt_1856844696_8742436835 Tolerance  management
-@subsubsection occt_1856844696_87424368351 Setting  resolution in an IGES file
+@subsection occt_iges_35 Tolerance  management
+@subsubsection occt_iges_351 Setting  resolution in an IGES file
 There are several  possibilities to set resolution in an IGES file. They are controlled by  write.precision.mode parameter; the dependence between the value of this  parameter and the set resolution is described in paragraph 3.3.2 Setting the translation parameters. 
 If the value of  parameter write.precision.mode is -1, 0 or 1, resolution is computed from  tolerances of sub-shapes inside the shape to be translated. In this  computation, only tolerances of TopoDS_Edges and TopoDS_Vertices participate  since they reflect the accuracy of the shape. TopoDS_Faces are ignored in  computations since their tolerances may have influence on resulting computed  resolution while IGES resolution mainly concerns points and curves but not  surfaces.  
 
-@subsection occt_1856844696_8742436836 Code architecture
-@subsubsection occt_1856844696_87424368361 List of the  classes
+@subsection occt_iges_36 Code architecture
+@subsubsection occt_iges_361 List of the  classes
 <h5>package IGESControl </h5>
 IGESControl_Controller  
 IGESControl_Writer  
@@ -871,7 +785,7 @@ Geom2dToIGES_Geom2dCurve
 <h5>package IGESConvGeom </h5>
 IGESConvGeom_GeomBuilder  
 For description of  classes refer to CDL. 
-@subsubsection occt_1856844696_87424368362 List of API classes
+@subsubsection occt_iges_362 List of API classes
 <h5>package IGESControl</h5>
   * IGESControl_Controller
   * IGESControl_Writer
@@ -879,14 +793,16 @@ For description of  classes refer to CDL.
   * class IGESData_IGESModel
   * class IGESData_IGESEntity
 For details refer to 4. API for reading/writing  IGES and CDL. 
-@subsubsection occt_1856844696_87424368363 Graph of calls
+@subsubsection occt_iges_363 Graph of calls
 The following diagram illustrates the class structure in  writing IGES. 
 The highlighted classes are intended to translate geometry. 
 
-		@image html /user_guides/iges/images/iges_image004.jpg
-    @image latex /user_guides/iges/images/iges_image004.jpg
+		@image html /user_guides/iges/images/iges_image004.png
+    @image latex /user_guides/iges/images/iges_image004.png
       
-@subsection occt_1856844696_8742436837 Example
+@subsection occt_iges_37 Example
+
+~~~~~{c++}
 #include IGESControl_Controller.hxx 
 #include IGESControl_Writer.hxx 
 #include TopoDS_Shape.hxx 
@@ -902,8 +818,11 @@ Standard_Integer main()
   Standard_Boolean OK = ICW.Write (;MyFile.igs;); 
   //writes a model to the file MyFile.igs 
 } 
+~~~~~
+
 @section occt_1856844696_1288309531 API for reading/writing  IGES
 @subsection occt_1856844696_12883095311 Overview
+
 API classes provides the following tools: 
   * loading IGES files into memory,
   * checking IGES files consistency,
@@ -943,11 +862,11 @@ Handle_Interface_InterfaceModel NewModel() const;
 Purpose: Creates a new empty model ready to receive data of  the norm. The Global section is filled with static parameters (receiver,  author, company and unit). 
 <h5>Method for getting the actor object</h5>
 IGESControl:: ActorRead 
-Handle_Transfer_ActorOfTransientProcess ActorRead(  const Handle(Interface_InterfaceModel)&amp; model) const; 
+Handle_Transfer_ActorOfTransientProcess ActorRead(  const Handle(Interface_InterfaceModel)& model) const; 
 Purpose: Returns the actor object for reading (actually, it  is of type IGESToBRep_Actor) with a set parameter of spline continuity taken  from static parameter. 
 <h5>Method for translating an Open CASCADE Technology shape</h5>
 IGESControl:: TransferWriteShape 
-virtual IFSelect_ReturnStatus  TransferWriteShape(const TopoDS_Shape&amp; shape,                                     const  Handle(Transfer_FinderProcess)&amp; FP,       const  Handle(Interface_InterfaceModel)&amp; model,  const Standard_Integer modetrans = 0) const; 
+virtual IFSelect_ReturnStatus  TransferWriteShape(const TopoDS_Shape& shape,                                     const  Handle(Transfer_FinderProcess)& FP,       const  Handle(Interface_InterfaceModel)& model,  const Standard_Integer modetrans = 0) const; 
 Purpose: Translates shape into the interface model. 
 modetrans: 0 - group of Faces (IGES  5.1) , 1 -  for BRep (IGES = 5.1) 
 Returns: 
@@ -979,12 +898,12 @@ This class complements  IGESToBRep_Reader class:
 <h5>Constructors: </h5>
   * IGESControl_Reader (); 
 Purpose: Creates a  reader from scratch and with a  new WorkSession object. 
-  * IGESControl_Reader (const  Handle(XSControl_WorkSession)&amp; WS, 
+  * IGESControl_Reader (const  Handle(XSControl_WorkSession)& WS, 
                                   const  Standard_Boolean scratch); 
 Purpose: Defines work session for the reader. If  scratch is True the new model will be created in the work session. 
 <h5>Methods for dealing with WorkSession  object </h5>
   * IGESControl_Reader::SetWS
-void SetWS ( const  Handle(XSControl_WorkSession)&amp; WS,  
+void SetWS ( const  Handle(XSControl_WorkSession)& WS,  
              const  Standard_Boolean scratch = Standard_True); 
 Purpose: Defines the  work session for the reader.  
                If  scratch is True the new model will be created in the work session  object. 
@@ -1013,18 +932,18 @@ Purpose: Returns a list  of entities from the model according to the following r
   * if first is a name of  a selection and second is defined - the criterion defined by  second is applied to result of first selection 
 Remarks:  
       if second  is erroneous it is ignored. 
-Handle_TColStd_HSequenceOfTransient  GiveList( const Standard_CString first, const Handle(Standard_Transient)&amp;  ent) ; 
+Handle_TColStd_HSequenceOfTransient  GiveList( const Standard_CString first, const Handle(Standard_Transient)&  ent) ; 
 Purpose: Returns a list  of entities from the model according to the following rules: 
   * if first is a  selection name and second is an entity or a list of entities (as  a         HSequenceOfTransient) - the standard result of this selection is  applied to this list. 
 Remarks:  
       if first  is erroneous, a null handle is returned. 
 <h5>Methods for performing translation</h5>
   * IGESControl_Reader::TransferEntity
-Standard_Boolean TransferEntity(const  Handle(Standard_Transient)&amp; start) ; 
+Standard_Boolean TransferEntity(const  Handle(Standard_Transient)& start) ; 
 Purpose: Performs the translation of the entity specified by  its handle. 
 Returns False if an entity is not in the Model, else returns  the result of the transfer. 
   * IGESControl_Reader:: TransferList
-Standard_Integer TransferList(  const Handle(TColStd_HSequenceOfTransient)&amp; list) ; 
+Standard_Integer TransferList(  const Handle(TColStd_HSequenceOfTransient)& list) ; 
 Purpose: Performs the translation of the list of entities. 
 Returns the number of successful transfers. 
 <h5>Methods for printing statistics</h5>
@@ -1094,7 +1013,7 @@ unit is the name of the units that are accepted by  IGES in the upper case ("IN"
 modecr corresponds to write mode: 
 0 - Face (default), 
 1 - BRep 
-  * IGESControl_Writer( const Handle(IGESData_IGESModel)&amp; model,
+  * IGESControl_Writer( const Handle(IGESData_IGESModel)& model,
  const Standard_Integer modecr = 0); 
 Purpose: Creates a writer object with an already prepared  IGES model and write mode. 
 <h5>Methods dealing with IGES models</h5>
@@ -1106,27 +1025,27 @@ void ComputeModel() ;
 Purpose: Prepares the model before writing by setting the  required statuses inside the model. 
 <h5>Methods dealing with transfer processes</h5>
   * IGESControl_Writer:: SetTransferProcess
-void SetTransferProcess(const  Handle(Transfer_FinderProcess)&amp; TP) ; 
+void SetTransferProcess(const  Handle(Transfer_FinderProcess)& TP) ; 
 Purpose: Sets the FinderProcess object for the writer. 
   * IGESControl_Writer:: TransferProcess
 Handle_Transfer_FinderProcess TransferProcess() const; 
 Purpose: Returns the FinderProcess object (containing final  results and messages if any). 
 <h5>Methods for performing translation</h5>
   * IGESControl_Writer:: AddShape
-Standard_Boolean AddShape(const TopoDS_Shape&amp; sh) ; 
+Standard_Boolean AddShape(const TopoDS_Shape& sh) ; 
 Purpose: Translates a shape sh to IGES entities and  adds them to the model. 
 Returns True if done, False if sh is not suitable  for IGES or is null. 
   * IGESControl_Writer:: AddGeom
-Standard_Boolean AddGeom(const Handle(Standard_Transient)&amp;  geom) ; 
+Standard_Boolean AddGeom(const Handle(Standard_Transient)&  geom) ; 
 Purpose: Translates geom (which must be a curve or a  surface) to IGES entities and adds them to the model. 
 Returns True if done, False if geom is neither a  surface nor a curve suitable for IGES or is null. 
   * IGESControl_Writer:: AddEntity
-Standard_Boolean AddEntity(const  Handle(IGESData_IGESEntity)&amp; ent) ; 
+Standard_Boolean AddEntity(const  Handle(IGESData_IGESEntity)& ent) ; 
 Purpose: Adds an IGES entity (and the ones it references) to  the model. 
 Returns False if ent is null. 
 <h5>Methods for writing an IGES file</h5>
   * IGESControl_Writer:: Write
-Standard_Boolean Write( Standard_OStream&amp; S,  const Standard_Boolean fnes = Standard_False) ; 
+Standard_Boolean Write( Standard_OStream& S,  const Standard_Boolean fnes = Standard_False) ; 
 Standard_Boolean Write( const Standard_CString file,  const Standard_Boolean fnes = Standard_False) ; 
 Purpose: Prepares (call ComputeModel()) and writes the model  to the stream S or to the file file. 
 Returns True if the operation was correctly performed, False  in case of error. 
@@ -1169,13 +1088,13 @@ Standard_Boolean Check(const Standard_Boolean withprint)  const;
 Purpose: Performs checking of a loaded IGES file calling  Interface_CheckTool and Interface_CheckIterator. If withprint is True  outputs the results of checking to the default trace file. 
 <h5>Methods for preparing the transfer process</h5>
   * IGESToBRep_Reader:: SetModel
-void SetModel(const Handle(IGESData_IGESModel)&amp; model) ; 
+void SetModel(const Handle(IGESData_IGESModel)& model) ; 
 Purpose: Sets a new IGES model object. Clears the list of  translated shapes (if there are any), sets a new transfer process object. 
   * IGESToBRep_Reader:: Model
 Handle_IGESData_IGESModel Model() const; 
 Purpose: Returns the used IGES model object. 
   * IGESToBRep_Reader:: SetTransientProcess
-void SetTransientProcess(const  Handle(Transfer_TransientProcess)&amp; TP) ; 
+void SetTransientProcess(const  Handle(Transfer_TransientProcess)& TP) ; 
 Purpose: Sets the transfer process object. 
   * IGESToBRep_Reader:: TransientProcess
 Handle_Transfer_TransientProcess TransientProcess() const; 
@@ -1254,7 +1173,7 @@ Handle_Interface_InterfaceModel NewEmptyModel() const;
 Purpose: Returns a new Empty Model of the same type as this  object, i.e. of type IGESData_IGESModel. 
 <h5>Methods for dealing with the Start and the Global sections</h5>
   * IGESData_IGESModel::DumpHeader
-void DumpHeader(Standard_OStream&amp; S,  const Standard_Integer level = 0) const; 
+void DumpHeader(Standard_OStream& S,  const Standard_Integer level = 0) const; 
 Remark: the Integer parameter is intended to be used as a  level indicator, but not used for the moment. 
   * IGESData_IGESModel::StartSection
 Handle_TColStd_HSequenceOfHAsciiString StartSection() const; 
@@ -1270,17 +1189,17 @@ Remark: An empty string is returned if number num is out of range [1,  NbStartLi
 void ClearStartSection() ; 
 Purpose: Clears the Start section. 
   * IGESData_IGESModel::SetStartSection
-void SetStartSection(const  Handle(TColStd_HSequenceOfHAsciiString)&amp; list, const Standard_Boolean copy  = Standard_True) ; 
+void SetStartSection(const  Handle(TColStd_HSequenceOfHAsciiString)& list, const Standard_Boolean copy  = Standard_True) ; 
 Purpose:  Sets a new Start section from the list of strings  list, copying it if copy is True (by default) or pointing to  the list if copy is False.  
   * IGESData_IGESModel::AddStartLine
 void AddStartLine(const Standard_CString line,  const Standard_Integer atnum = 0) ; 
 Purpose: Adds a new string to the end of the existing Start  section if atnum is 0 or not given, or before the atnum-th  line. 
 Remark: If a number is out of range [0, NbStartLines()], the  line is added at the end of section. 
   * IGESData_IGESModel::GlobalSection
-const IGESData_GlobalSection&amp; GlobalSection() const; 
+const IGESData_GlobalSection& GlobalSection() const; 
 Purpose: Returns the Global section of the Model. 
   * IGESData_IGESModel::SetGlobalSection.
-void SetGlobalSection(const IGESData_GlobalSection&amp;  header) ; 
+void SetGlobalSection(const IGESData_GlobalSection&  header) ; 
 Purpose: Sets the Model's Global section. 
   * IGESData_IGESModel::ApplyStatic
 Standard_Boolean ApplyStatic(const Standard_CString param =  ;;) ; 
@@ -1288,10 +1207,10 @@ Purpose: Sets some parameters of the Global section to those  defined by static 
 Remark: To set a unit into the Global section use the  IGESData_BasicEditor class. 
 See also: User’s Guide: Parameters of translation. 
   * IGESData_IGESModel::GetFromAnother
-void GetFromAnother(const  Handle(Interface_InterfaceModel)&amp; other) ; 
+void GetFromAnother(const  Handle(Interface_InterfaceModel)& other) ; 
 Purpose: Takes the Global section from another Model. 
   * IGESData_IGESModel::VerifyCheck
-virtual void VerifyCheck(Interface_Check&amp; ach) const; 
+virtual void VerifyCheck(Interface_Check& ach) const; 
 Purpose: Checks whether the Global section contains valid  data according to the IGES specification. If the Global section is correct this  method adds nothing into ach, but if not the method adds fail messages. 
   * IGESData_IGESModel::SetLineWeights
 void SetLineWeights(const Standard_Real defw) ; 
@@ -1301,16 +1220,16 @@ Purpose: Sets LineWeights of entities according to the  Global section (MaxLineW
 void ClearLabels() ; 
 Purpose: Erases labels. Not yet implemented. 
   * IGESData_IGESModel::PrintLabel
-void PrintLabel(const Handle(Standard_Transient)&amp; ent,  Standard_OStream&amp; S) const; 
+void PrintLabel(const Handle(Standard_Transient)& ent,  Standard_OStream& S) const; 
 Purpose: Prints the Directory Entry number of a given  entity, i.e. 'Dnn' where Dnn=2*number-1on the stream S. 
   * IGESData_IGESModel::StringLabel
-Handle_TCollection_HAsciiString StringLabel  (const Handle(Standard_Transient)&amp; ent) const; 
+Handle_TCollection_HAsciiString StringLabel  (const Handle(Standard_Transient)& ent) const; 
 Purpose: Returns a string with a Directory Entry number of a  given entity, i.e. a string 'Dnn' where Dnn=2*number-1. 
   * IGESData_IGESModel::Entity
 Handle_IGESData_IGESEntity Entity(const Standard_Integer num)  const; 
 Purpose: Returns an entity given by its rank number. 
   * IGESData_IGESModel::DNum
-Standard_Integer DNum(const Handle(IGESData_IGESEntity)&amp;  ent) const; 
+Standard_Integer DNum(const Handle(IGESData_IGESEntity)&  ent) const; 
 Purpose: Returns the DE Number of an entity, i.e.  2*Number(ent)-1, or 0 if ent is unknown from this Model. 
 @subsubsection occt_1856844696_128830953133 Class  IGESData_IGESEntity
 <h4>General description</h4>
@@ -1335,23 +1254,23 @@ void InitTypeAndForm(  const Standard_Integer typenum, const Standard_Integer fo
 Purpose: Sets the Type  and Form Numbers to new values. 
 Remarks: Private method.  Reserved for special use. 
   * IGESData_IGESEntity::InitDirFieldEntity  
-void InitDirFieldEntity(  const Standard_Integer fieldnum, const Handle(IGESData_IGESEntity)&amp; ent) ; 
+void InitDirFieldEntity(  const Standard_Integer fieldnum, const Handle(IGESData_IGESEntity)& ent) ; 
 Purpose: Sets a  directory field to an ent of any kind (see DirFieldEntity() for more  details). 
 Remarks: If  fieldnum is not equal to values listed in DirFieldEntity(), this method  does nothing. 
   * IGESData_IGESEntity::InitTransf  
-void InitTransf(const  Handle(IGESData_TransfEntity)&amp; ent) ;  
+void InitTransf(const  Handle(IGESData_TransfEntity)& ent) ;  
 Purpose: Sets the Transf  or erases it if ent is null. 
   * IGESData_IGESEntity::InitView
-void InitView(const Handle(IGESData_ViewKindEntity)&amp;  ent) ;  
+void InitView(const Handle(IGESData_ViewKindEntity)&  ent) ;  
 Purpose: Sets the View  or erases it if ent is null. 
   * IGESData_IGESEntity::InitLineFont  
-void InitLineFont( const  Handle(IGESData_LineFontEntity)&amp; ent, const Standard_Integer rank = 0) ; 
+void InitLineFont( const  Handle(IGESData_LineFontEntity)& ent, const Standard_Integer rank = 0) ; 
 Purpose: Sets the  LineFont. If ent is null the RankLineFont is set to rank,  otherwise it is set to a negative value. 
   * IGESData_IGESEntity::InitLevel  
-void InitLevel( const  Handle(IGESData_LevelListEntity)&amp; ent, const Standard_Integer val = 0) ; 
+void InitLevel( const  Handle(IGESData_LevelListEntity)& ent, const Standard_Integer val = 0) ; 
 Purpose: Sets the Level.  If ent is null the DefLevel is set to val, otherwise it is set  to a negative value. 
   * IGESData_IGESEntity::InitColor  
-void InitColor( const  Handle(IGESData_ColorEntity)&amp; ent, const Standard_Integer rank = 0) ; 
+void InitColor( const  Handle(IGESData_ColorEntity)& ent, const Standard_Integer rank = 0) ; 
 Purpose: Sets the Color.  If ent is null the DefColor is set to rank, otherwise it is set  to a negative value. 
   * IGESData_IGESEntity::InitStatus  
 void InitStatus( const  Standard_Integer blank,  
@@ -1360,11 +1279,11 @@ void InitStatus( const  Standard_Integer blank,
           const  Standard_Integer hierarchy) ; 
 Purpose: Sets the flags  of the Directory Part. 
   * IGESData_IGESEntity::SetLabel  
-void SetLabel( const  Handle(TCollection_HAsciiString)&amp; label, const Standard_Integer sub = -1) ; 
+void SetLabel( const  Handle(TCollection_HAsciiString)& label, const Standard_Integer sub = -1) ; 
 Purpose: Sets a new  Label to an Entity. If sub is given, it sets the value of  SubScriptNumber, else SubScriptNumber is erased. 
   * IGESData_IGESEntity::InitMisc  
-void InitMisc( const  Handle(IGESData_IGESEntity)&amp; str,  
-          const  Handle(IGESData_LabelDisplayEntity)&amp; lab,  
+void InitMisc( const  Handle(IGESData_IGESEntity)& str,  
+          const  Handle(IGESData_LabelDisplayEntity)& lab,  
           const  Standard_Integer weightnum) ; 
 Purpose: Sets data or  erases it if it is given as null (zero for weightnum):  
           str  for Structure,  
@@ -1441,7 +1360,7 @@ Purpose: Returns True if  a Transformation Matrix is defined.
   * IGESData_IGESEntity::Transf
 Handle_IGESData_TransfEntity  Transf() const;  
 Purpose: Returns the  Transformation Matrix (under IGES definition). Returns a null handle if there  is none. 
-Remarks: For a more  complete use, see Location &amp; CompoundLocation. 
+Remarks: For a more  complete use, see Location & CompoundLocation. 
   * IGESData_IGESEntity::HasLabelDisplay  
 Standard_Boolean  HasLabelDisplay() const;  
 Purpose: Returns True if  the LabelDisplay mode is defined for this entity. 
@@ -1530,33 +1449,33 @@ Interface_EntityIterator  Associativities() const;
 Purpose: Returns the  Associativity List in the form of an EntityIterator. 
   * IGESData_IGESEntity::NbTypedAssociativities  
 Standard_Integer  NbTypedAssociativities  
-          const  Handle(Standard_Type)&amp; atype) const; 
+          const  Handle(Standard_Type)& atype) const; 
 Purpose: Returns  information on how many Associativities have the given type. 
 
   * IGESData_IGESEntity::TypedAssociativity  
 Handle_IGESData_IGESEntity  TypedAssociativity  
-          (const  Handle(Standard_Type)&amp; atype) const; 
+          (const  Handle(Standard_Type)& atype) const; 
 Purpose: Returns the  Associativity of a given Type (if one exists) 
 Exceptions:  Interface_InterfaceError if there is none or more than one  associativity. 
   * IGESData_IGESEntity::AddAssociativity
-void  AddAssociativity(const Handle(IGESData_IGESEntity)&amp; ent) ;  
+void  AddAssociativity(const Handle(IGESData_IGESEntity)& ent) ;  
 Purpose: Adds an  Associativity to the list (called by Associate only). 
 Exceptions:  Standard_NullObject if ent is null. 
   * IGESData_IGESEntity::RemoveAssociativity  
-void  RemoveAssociativity(const Handle(IGESData_IGESEntity)&amp; ent) ;  
+void  RemoveAssociativity(const Handle(IGESData_IGESEntity)& ent) ;  
 Purpose: Removes an  Associativity from the list (called by Dissociate). 
 Exceptions: Standard_NullObject  if ent is null. 
   * IGESData_IGESEntity::LoadAssociativities  
-void  LoadAssociativities(const Interface_EntityList&amp; list) ;  
+void  LoadAssociativities(const Interface_EntityList& list) ;  
 Purpose: Loads a  complete List of Asociativities (used during Read or Copy operations). 
   * IGESData_IGESEntity::ClearAssociativities  
 void  ClearAssociativities() ;  
 Purpose: Removes all  associativities at once. 
   * IGESData_IGESEntity::Associate  
-void Associate(const  Handle(IGESData_IGESEntity)&amp; ent) const;  
+void Associate(const  Handle(IGESData_IGESEntity)& ent) const;  
 Purpose: Sets this  object to the Associativity list of another Entity. If ent is a null  object, method does nothing. 
   * IGESData_IGESEntity::Dissociate
-void Dissociate(const  Handle(IGESData_IGESEntity)&amp; ent) const;  
+void Dissociate(const  Handle(IGESData_IGESEntity)& ent) const;  
 Purpose: Removes this  object from the Associativity list of another Entity. If ent is a null  object, method does nothing. 
   * IGESData_IGESEntity::ArePresentProperties  
 Standard_Boolean  ArePresentProperties() const;  
@@ -1569,23 +1488,23 @@ Interface_EntityIterator  Properties() const;
 Purpose: Returns the  Property List in the form of an EntityIterator 
   * IGESData_IGESEntity::NbTypedProperties  
 Standard_Integer  NbTypedProperties  
-          (const  Handle(Standard_Type)&amp; atype) const; 
+          (const  Handle(Standard_Type)& atype) const; 
 Purpose: Returns  information on how many Properties have a given type 
   * IGESData_IGESEntity::TypedProperty
 Handle_IGESData_IGESEntity  TypedProperty  
-          (const  Handle(Standard_Type)&amp; atype) const; 
+          (const  Handle(Standard_Type)& atype) const; 
 Purpose: Returns the  Property of a given Type (if only one exists) 
 Exceptions: Interface_InterfaceError  if there is none or more than one Properties. 
   * IGESData_IGESEntity::AddProperty  
-void AddProperty(const  Handle(IGESData_IGESEntity)&amp; ent) ;  
+void AddProperty(const  Handle(IGESData_IGESEntity)& ent) ;  
 Purpose: Adds a Property  to the list. 
 Exceptions:  Standard_NullObject if entis null. 
   * IGESData_IGESEntity::RemoveProperty  
-void RemoveProperty(const  Handle(IGESData_IGESEntity)&amp; ent) ;  
+void RemoveProperty(const  Handle(IGESData_IGESEntity)& ent) ;  
 Purpose: Removes a  Property from the list. 
 Exceptions:  Standard_NullObject if entis null. 
   * IGESData_IGESEntity::LoadProperties  
-void LoadProperties(const  Interface_EntityList&amp; list) ;  
+void LoadProperties(const  Interface_EntityList& list) ;  
 Purpose: Loads a  complete List of Properties (used during Read or Copy operations). 
   * IGESData_IGESEntity::ClearProperties()  ; 
 void ClearProperties() ;  

@@ -1,5 +1,7 @@
- Documentation  {#dev_guides__documentation}
-=================
+ Documentation System {#dev_guides__documentation}
+======================
+
+@tableofcontents
 
 @section  OCCT_DM_SECTION_1 Introduction
 
@@ -8,20 +10,27 @@ This document provides practical guidenes for generation and editing of OCCT use
 @section  OCCT_DM_SECTION_2 Prerequisites
 
 <b>Tcl/Tk</b>
-The lates version: http://www.tcl.tk/software/tcltk/download.html
+Version 8.5 or 8.6: http://www.tcl.tk/software/tcltk/download.html
 
-<b>Doxygen</b> ( >= 1.8.4 ) 
-The latest version: http://www.stack.nl/~dimitri/doxygen/download.html
+<b>Doxygen</b> 
+Version 1.8.4 or above: http://www.stack.nl/~dimitri/doxygen/download.html
 
-<b>MathJax</b> (used for rendering math formulas in browser). Download it for local installation or use the MathJax Content Delivery Network.  \(read 
-@htmlonly <a href="#OCCT_DM_SECTION_A_9">Formulas</a> @endhtmlonly paragraph for more detailed description\). 
+<b>MathJax</b> (used for rendering math formulas in browser). 
+See \ref OCCT_DM_SECTION_A_9 paragraph for more detailed description. 
 The latest version: http://www.mathjax.org/download/
 
 <b>MiKTeX</b> or equivalent tool (used for PDF document creation)
+
 Latest version: http://miktex.org/download
 
-**Note**: to generate pdf documentation with MiKTeX you should execute gen.bat with MiKTeX environment 
-(e.g. into MiKTeX command promt)
+**Note**: to generate pdf documentation with MiKTeX you should execute gendoc.bat within MiKTeX environment 
+(run gendoc.bat in MiKTeX command promt or update PATH for MiKTeX bin folder). Also in process of pdf generation
+MiKTeX can request you to download missing packages if MiKTeX was installed with option below:
+
+@image html /dev_guides/documentation/images/documentation_image002.png
+@image latex /dev_guides/documentation/images/documentation_image002.png
+
+If this option is set to "Yes", MiKTeX will download missing packages automatically.
 
 @section OCCT_DM_SECTION_2_1 Documentation Generation
 
@@ -31,8 +40,8 @@ gendoc.bat options:
 
   * -html                : To generate HTML files (cannot be used with -pdf);
   * -pdf                 : To generate PDF files (cannot be used with -html);
-  * -m=<modules_list>    : Specifies list of articles to generate. If it is not specified, all files, mentioned in FILES.txt are processed;
-  * -l=<document_name>   : Specifies the article caption for a single document;
+  * -m=\<modules_list\>    : Specifies list of articles to generate. If it is not specified, all files, mentioned in FILES.txt are processed;
+  * -l=\<document_name\>   : Specifies the article caption for a single document;
   * -h                   : Prints help message;
   * -v                   : Specifies the Verbose mode (info on all script actions is shown).
 
@@ -55,19 +64,19 @@ where documentation .md is name of article and devs_guid/documentation/ is relat
   * use this name with -m option in the generation process:
 
 @verbatim
-% gen.bat -html -m=devs_guid/documentation/documentation.md
+% gendoc.bat -html -m=devs_guid/documentation/documentation.md
 @endverbatim
 
 Multiple files are separated with comma:
 
 @verbatim
-% gen.bat -html -m=MD_FILE_1,MD_FILE_2
+% gendoc.bat -html -m=MD_FILE_1,MD_FILE_2
 @endverbatim
 
-To sepcify a article name with -l option, use tcl list to prevent whitespaces incorrect interpretation:
+To sepcify a article name with -l option, use quotes to prevent incorrect interpretation of whitespaces:
 
 @verbatim
-% gen.bat -pdf -m=MD_FILE_1 -l=[list MD File 1 Label]
+% gendoc.bat -pdf -m=MD_FILE_1 -l="Label of MD_FILE_1 document"
 @endverbatim
 
 @section  OCCT_DM_SECTION_3 Documentation Conventions
@@ -133,3 +142,304 @@ http://en.wikipedia.org/wiki/Help:Displaying_a_formula
 
 More information on MarkDown and Doxygen syntax can be found at:
 http://www.stack.nl/~dimitri/doxygen/manual
+
+@section  OCCT_DM_SECTION_A Appendix 1: Document Syntax
+
+Each OCCT document file in *.md format has a simple structure.
+It can contain: 
+
+| Content type      | Obligation            |
+| :---------------- | :-------------------: |
+| Header            | M                     |
+| Footer            | M                     |
+| Plain text        | O                     |
+| List              | O                     |
+| Table             | O                     |
+| Code              | O                     |
+| Formula           | O                     |
+| Image             | O                     |
+| Page numbers      | M (auto generation)   |
+| Table of contents | M (auto generation)   |
+
+The legend:
+
+  * M is for Mandatory
+  * O is for Optional
+
+@subsection  OCCT_DM_SECTION_A_1 Text Caption (a header)
+
+headings of different levels can be specified with the following code:
+
+@verbatim
+Header 1  {#header1}
+=======
+@endverbatim
+
+  to get
+
+ Header 1
+=========
+
+  and with the following code:
+
+@verbatim
+Header 2 {#header2}
+--------
+@endverbatim
+
+to get 
+
+Header 2
+---------
+
+Where a word in curly braces is a MarkDown-style reference, which can be used in table of contents.
+If you would like to have the table of contents, it is recommended to use \@section, 
+\@subsection and \@subsubsection pages instead of MarkDown headers as follows:
+
+@verbatim
+  @section Section_Name Section Header
+  @subsection SubSection_Name SubSection Header
+  @subsubsection SubSubSection_Name SubSubSection Header
+@endverbatim
+
+@subsection OCCT_DM_SECTION_A_2 Plain Text
+
+Plain text is a text in a notepad-like format. To insert special symbols, 
+like \< , \> or \\, prepend them with \\ character: \\\<, \\\>, \\\\ 
+To emphasize some words, write one pair of asterisks ( * ) or underscores ( _ ) across the word 
+to make it *italic* and two pairs of these symbols to make a word **Bold**.
+
+@subsection OCCT_DM_SECTION_A_3 Lists
+
+To create a bulleted list, start each line with a hyphen or an asterisk, 
+followed by a space. List items can be nested. This code:
+
+@verbatim
+  * Bullet 1
+  * Bullet 2
+    * Bullet 2a
+    * Bullet 2b
+  * Bullet 3
+@endverbatim
+
+  produces this list:
+
+  * Bullet 1
+  * Bullet 2
+    * Bullet 2a
+    * Bullet 2b
+  * Bullet 3  
+
+To create a numbered list, start each line with number and a period, then a space. Thus this code 
+
+@verbatim
+  1. ListItem_1
+  2. ListItem_2
+  3. ListItem_3
+@endverbatim
+
+  produces this list:
+
+  1. ListItem_1
+  2. ListItem_2
+  3. ListItem_3
+
+It is recommended to indent lists with 2 spaces.
+
+@subsection  OCCT_DM_SECTION_A_4 Tables
+
+A table consists of a header line, a separator line, and at least one row line. 
+Table columns are separated by the pipe (|) character. The following example: 
+
+@verbatim
+First Header  | Second Header
+------------- | -------------
+Content Cell  | Content Cell 
+Content Cell  | Content Cell 
+@endverbatim
+
+  will produce the following table:
+
+First Header | Second Header
+------------ | -------------
+Content Cell | Content Cell 
+Content Cell | Content Cell 
+
+Column alignment can be controlled via one or two colons at the header separator line: 
+
+@verbatim
+| Right | Center | Left  |
+| ----: | :----: | :---- |
+| 10    | 10     | 10    |
+| 1000  | 1000   | 1000  |
+@endverbatim
+
+which will looks as follows:
+
+| Right | Center | Left  |
+| ----: | :----: | :---- |
+| 10    | 10     | 10    |
+| 1000  | 1000   | 1000  |
+
+@subsection  OCCT_DM_SECTION_A_5 Code Blocks
+
+It is recommended to indent a code lines with 4 spaces.
+A fenced code block does not require indentation, and is defined by a pair of "fence lines". 
+Such line consists of 3 or more tilde (~) characters on a line. 
+The end of the block should have the same number of tildes. Here is an example:
+
+~~~~~~~~~~~~~~~~~~~~~~~
+  a one-line code block
+~~~~~~~~~~~~~~~~~~~~~~~
+
+By default the output is the same as for a normal code block.
+To highlight the code, the developer has to indicate the typical file extension, 
+which corresponds to the programming language, after the opening fence. 
+For highlighting according to the C++ language, for instance,  write the following code (the curly braces and dot are optional): 
+
+@verbatim
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+    int func(int a,int b) { return a*b; }
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@endverbatim
+
+which will produce:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp} 
+    int func(int a,int b) { return a*b; }
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Verbatim content can be written by using framing \@verbatim \@endverbatim . For instance
+
+@verbatim
+  verbatim text
+@endverbatim
+
+@subsection  OCCT_DM_SECTION_A_6 References
+
+To insert a reference to a website, it is proposed to write a URL. For example: http://en.wikipedia.org
+To insert a reference to another part of the same document, the developer can write:
+
+@verbatim
+  @htmlonly 
+    <a href="#OCCT_DOC_SECTION_5">Doxygen Configuration file</a>
+  @endhtmlonly 
+@endverbatim
+
+to get a link to paragraph : @htmlonly <a href="#OCCT_DOC_SECTION_5">Doxygen configuration</a> @endhtmlonly 
+
+@subsection  OCCT_DM_SECTION_A_7 Images
+
+To insert image into document the developer can write the following code(in Doxygen-style):
+@verbatim
+![alt-caption](relative/path/to/image/image001.svg "Image Caption")
+@endverbatim
+
+This code tells Doxygen to insert a picture right in the place this code was written. Like this:
+@verbatim
+![](/resources/occ_logo.png "OCCT logo")
+@endverbatim
+
+![](/resources/occ_logo.png "OCCT logo")
+ 
+@subsection  OCCT_DM_SECTION_A_8 Table Of Contents
+
+To get the table of contents at the beginning of the document, write \@tableofcontents tag. 
+But it is not needed now because TreeView option for HTML is used.
+The TOC in the PDF document will be generated automatically.
+
+@subsection  OCCT_DM_SECTION_A_9 Formulas
+
+Formulas within documents will be generated using MathJax tool.
+
+A developer has to specify these parameters in Doxyfile to enable support of MathJax in Doxygen:
+
+    USE_MATHJAX         = YES
+    MATHJAX_FORMAT      = HTML-CSS
+    MATHJAX_RELPATH     = http://cdn.mathjax.org/mathjax/latest
+    MATHJAX_EXTENSIONS  = TeX/AMSmath TeX/AMSsymbols
+
+To use MathJax tool with the HTML page, it's \<head\> block has to contain 
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.html}
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]},
+        displayAlign: "left"
+      });
+    </script>
+
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+First script configures MathJax to understand separator types and to left allign formulas. 
+The second script inserts reference to MathJax tool. 
+This tool will always be used when the HTML output will be shown.
+
+Equations can be written by several ways:
+
+1.Unnumbered displayed formulas that are centered on a separate line. 
+These formulas should be put between \@f\[ and \@f\] tags. An example: 
+
+@verbatim
+@f$[
+    |I_2|=\left| \int_{0}^T \psi(t)
+            \left\{ 
+                u(a,t)-
+                \int_{\gamma(t)}^a 
+                \frac{d\theta}{k(\theta,t)}
+                \int_{a}^\theta c(\xi)u_t(\xi,t)\,d\xi
+            \right\} dt
+        \right|
+@f$]
+@endverbatim
+
+gives the following result:
+
+   @f$
+       |I_2|=\left| \int_{0}^T \psi(t)
+               \left\{ 
+                   u(a,t)-
+                   \int_{\gamma(t)}^a 
+                   \frac{d\theta}{k(\theta,t)}
+                   \int_{a}^\theta c(\xi)u_t(\xi,t)\,d\xi
+               \right\} dt
+           \right|
+   @f$
+   
+2.Formulas can also be put between @verbatim \begin{align} @endverbatim and @verbatim \end{align} @endverbatim tags. An example: 
+
+@verbatim
+  \begin{align}
+  \dot{x} & = \sigma(y-x) \\
+  \dot{y} & = \rho x - y - xz \\
+  \dot{z} & = -\beta z + xy
+  \end{align}
+@endverbatim
+
+  gives the following result:
+@latexonly
+  \begin{align}
+  \dot{x} & = \sigma(y-x) \\
+  \dot{y} & = \rho x - y - xz \\
+  \dot{z} & = -\beta z + xy
+  \end{align}
+@endlatexonly
+
+@htmlonly
+  \begin{align}
+  \dot{x} & = \sigma(y-x) \\
+  \dot{y} & = \rho x - y - xz \\
+  \dot{z} & = -\beta z + xy
+  \end{align}
+@endhtmlonly
+
+3.Inline formulas can be specified using this syntax:
+
+@verbatim
+  @f$ \sqrt{3x-1}+(1+x)^2 @f$
+@endverbatim
+
+  that leads to the following result: @f$ \sqrt{3x-1}+(1+x)^2 @f$
+  

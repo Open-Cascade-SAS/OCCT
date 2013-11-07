@@ -1,16 +1,21 @@
-WOK {#dev_guides__building__wok}
+Using WOK {#dev_guides__building__wok}
 =========
 
-WOK is a legacy build environment for Open CASCADE Technology. It is required 
-for generation of header files for classes defined with @ref ug_cdl "CDL"
-("Cascade Definition Language"). Also tools for generation of project files
-for other build systems, and OCCT documentation, are integrated to WOK.
+@tableofcontents
+
+\ref dev_guides__wok "WOK" is a legacy build environment for Open CASCADE Technology. 
+It is required for generation of header files for classes defined with 
+@ref dev_guides__cdl "CDL" ("Cascade Definition Language"). 
+Also tools for generation of project files for other build systems, and OCCT 
+documentation, are integrated to WOK.
 
 WOK thus is needed in the following situations:
 - Building from OCCT sources from Git repository (do not contain generated files)
 - Building after some changes made in CDL files
 
-Before installing and using WOK, make sure that you have installed a compiler (it is assumed that it is Visual Studio on Windows or gcc on Linux and MacOS) and third-party components required for building OCCT.
+Before installing and using WOK, make sure that you have installed a compiler 
+(it is assumed that it is Visual Studio on Windows or gcc on Linux and MacOS) 
+and third-party components required for building OCCT.
 
 @section wok1 Installing WOK
 
@@ -20,14 +25,14 @@ Before installing and using WOK, make sure that you have installed a compiler (i
 
   Run the installer. You will be prompted to read and accept the OCCT Public License to proceed:
   
-  @image html /dev_guides/building/wok/images/wok_image001.jpg
-  @image latex /dev_guides/building/wok/images/wok_image001.jpg
+  @image html /dev_guides/building/wok/images/wok_image001.png
+  @image latex /dev_guides/building/wok/images/wok_image001.png
  
   Click Next and proceed with the installation.
   At the end of the installation you will be prompted to specify the version and the location of Visual Studio to be used, and the location of third-party libraries:
   
-  @image html /dev_guides/building/wok/images/wok_image002.jpg
-  @image latex /dev_guides/building/wok/images/wok_image002.jpg
+  @image html /dev_guides/building/wok/images/wok_image002.png
+  @image latex /dev_guides/building/wok/images/wok_image002.png
  
   You can change these settings at any time later. For this click on the item "Customize environment (GUI tool)" in the WOK group in the Windows Start menu.
   
@@ -39,52 +44,52 @@ Before installing and using WOK, make sure that you have installed a compiler (i
 
 @subsection wok12 Linux
 
-  * Unpack the .tgz archive containing WOK distributive into an installation directory <WOK_INSTALL_DIR>.
+  * Unpack the .tgz archive containing WOK distributive into an installation directory \<WOK_INSTALL_DIR\>.
 
-  * Perform the following commands assuming that you have unpacked WOK distributive archive into <WOK_INSTALL_DIR>:
+  * Perform the following commands assuming that you have unpacked WOK distributive archive into \<WOK_INSTALL_DIR\>:
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.tcl}
-  cd <WOK_INSTALL_DIR>/site
+  cd \<WOK_INSTALL_DIR\>/site
   wok_confgui.sh
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   
   Define all necessary paths to third-party products in the dialog window:
   
-  @image html /dev_guides/building/wok/images/wok_image003.jpg
-  @image latex /dev_guides/building/wok/images/wok_image003.jpg
+  @image html /dev_guides/building/wok/images/wok_image003.png
+  @image latex /dev_guides/building/wok/images/wok_image003.png
  
   * Run the following commands to create WOK LOC factory:
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.tcl}
-  cd <WOK_INSTALL_DIR>/site
+  cd \<WOK_INSTALL_DIR\>/site
   wok_init.sh
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   
   * Your installation procedure is over. To run WOK use one the following commands:
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.tcl}
-  cd <WOK_INSTALL_DIR>/site
+  cd \<WOK_INSTALL_DIR\>/site
   wok_emacs.sh
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   or
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.tcl}
-  cd <WOK_INSTALL_DIR>/site
+  cd \<WOK_INSTALL_DIR\>/site
   wok_tclsh.sh
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 @subsection wok13 Mac OS X
 
-  * In the Finder double click on wokSetup.dmg file. This will open a new window. Drag and drop "wokSetup" folder from this window at the location in the Finder where you want to install WOK, i.e. <WOK_INSTALL_DIR>.
+  * In the Finder double click on wokSetup.dmg file. This will open a new window. Drag and drop "wokSetup" folder from this window at the location in the Finder where you want to install WOK, i.e. \<WOK_INSTALL_DIR\>.
   
-  * Browse in the Finder to the folder <WOK_INSTALL_DIR>/site and double click on WokConfig. This will open a window with additional search path settings. Define all necessary paths to third-party products in the dialog window:
+  * Browse in the Finder to the folder \<WOK_INSTALL_DIR\>/site and double click on WokConfig. This will open a window with additional search path settings. Define all necessary paths to third-party products in the dialog window:
   
-  @image html /dev_guides/building/wok/images/wok_image004.jpg
-  @image latex /dev_guides/building/wok/images/wok_image004.jpg
+  @image html /dev_guides/building/wok/images/wok_image004.png
+  @image latex /dev_guides/building/wok/images/wok_image004.png
  
   * Run the following commands to create WOK LOC factory:
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.tcl}
-  cd <WOK_INSTALL_DIR>/site
+  cd \<WOK_INSTALL_DIR\>/site
   wok_init.sh
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   
-  * Your installation procedure is over. To run WOK in Emacs navigate in the Finder to the folder <WOK_INSTALL_DIR>/site and double click on WokEmacs.
+  * Your installation procedure is over. To run WOK in Emacs navigate in the Finder to the folder \<WOK_INSTALL_DIR\>/site and double click on WokEmacs.
 
 
 @section wok2 Initialization of Workbench
@@ -100,7 +105,7 @@ Before installing and using WOK, make sure that you have installed a compiler (i
 
   Note: $CASROOT is equal to D:/occt now
 
-  Then you can work with this workbench using normal WOK functionality (wprocess, umake, etc.; see WOK User’s Guide for details) or use it only for generation of derived sources and project files, and build OCCT with Visual Studio on Windows or make command on Linux, as described below.
+  Then you can work with this workbench using normal WOK functionality (wprocess, umake, etc.; see WOK User's Guide for details) or use it only for generation of derived sources and project files, and build OCCT with Visual Studio on Windows or make command on Linux, as described below.
   
 @section wok3 Generation of building projects
 
@@ -134,10 +139,10 @@ The generated building project has been placed into $CASROOT/adm folder:
   * for vc9 - $CASROOT/adm/msvc/vc9
   * for vc10 - $CASROOT/adm/msvc/vc10
   * for vc11 - $CASROOT/adm/msvc/vc11
-  * for cbp - $CASROOT/adm/<OS> /cbp
+  * for cbp - $CASROOT/adm/\<OS\>/cbp
   * for cmake - $CASROOT/adm/cmake
   * for amk - $CASROOT/adm/lin/amk
-  * xcd - $CASROOT/adm/<OS>/xcd
+  * xcd - $CASROOT/adm/\<OS\>/xcd
 
 @section wok4  Generation of documentation
 

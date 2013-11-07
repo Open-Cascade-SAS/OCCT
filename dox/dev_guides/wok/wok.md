@@ -1,5 +1,17 @@
-Workshop Organisation Toolkit  {#dev_guides__wok}
-==============================
+Workshop Organisation Kit  {#dev_guides__wok}
+=========================
+
+@tableofcontents
+
+@section occt_wok_0 DEPRECATION WARNING
+
+Please note that this document describes use of WOK as comprehensive
+build system. This use is outdated, and WOK is to be removed in
+one of future releases of OCCT.
+
+Currently only small subset of WOK capabilities described in this document
+are actually necessary for building OCCT. See @ref dev_guides__building__wok
+for more practical guide.
 
 @section occt_wok_1_ Introduction Glossary
 
@@ -2338,8 +2350,8 @@ Fetches the latest version of *File1.cxx* and *File2.hxx*.
 In the new WOK model: 
   *  each workbench can have its own database 
   *  the version control environment variables are relative to the workbench. 
-@image html /dev_guides/wok/images/wok_image014.jpg "Workshop Installation Model"
-@image latex /dev_guides/wok/images/wok_image014.jpg "Workshop Installation Model"
+@image html /dev_guides/wok/images/wok_image014.png "Workshop Installation Model"
+@image latex /dev_guides/wok/images/wok_image014.png "Workshop Installation Model"
 
 The following procedure explains how to set up the source management environment for a workshop. 
 1. Open the factory and the workshop. 

@@ -1,6 +1,8 @@
 STEP processor  {#user_guides__step}
 ========================
 
+@tableofcontents
+
 @section occt_step_1 Overview
 
 This manual is intended to provide technical documentation on the Open CASCADE Technology (**OCCT**) STEP processor and to help Open CASCADE Technology users with the use of the STEP processor (to read and write STEP files). STEP files conforming to AP 214, AP 203 and partially AP 209 can be read. STEP files that are produced by this interface conform to STEP AP 214 or AP 203, according to the user option. 
@@ -456,15 +458,15 @@ There is a number of predefined operators that can be used. They are:
   * *step214-placed-items* - selects all mapped_items or context_depended_shape_representations. 
   * *step214-shape-def-repr* - selects all shape_definition_representations. 
   * *step214-shape-repr* - selects all shape_representations. 
-  * *step214-type(<entity_type>)* - selects all entities of a given type 
+  * *step214-type(\<entity_type\>)* - selects all entities of a given type 
   * *step214-faces* - selects all faces_surface, advanced_face entities and the surface entity or any sub type if these entities are not shared by any face entity or shared by geometric_set entity. 
-  * *step214-derived(<entity_type>)* - selects entities of a given type or any subtype. 
+  * *step214-derived(\<entity_type\>)* - selects entities of a given type or any subtype. 
   * *step214-GS-curves* - selects all curve entities or any subtype except the composite_curve if these entities are shared by the geometric_set entity. 
   * *step214-assembly* - selects all mapped_items or context_depended_shape_representations involved into the assembly structure. 
   * *xst-model-all* - selects all entities. 
   * *xst-model-roots* - selects all roots. 
-  * *xst-shared + <selection>* - selects all entities shared by at least one entity selected by selection. 
-  * *xst-sharing + <selection>* - selects all entities sharing at least one entity selected by selection. 
+  * *xst-shared + \<selection\>* - selects all entities shared by at least one entity selected by selection. 
+  * *xst-sharing + \<selection\>* - selects all entities sharing at least one entity selected by selection. 
   * *xst-transferrable-all* - selects all transferable entities. 
   * *xst-transferrable-roots* selects all translatable roots. 
 Cumulative lists can be used as well.
@@ -713,8 +715,8 @@ This method is intended to force two adjacent edges in the wire to share the sam
 
 The following diagram illustrates the structure of calls in reading STEP. The highlighted classes are intended to translate geometry
 
-@image html /user_guides/step/images/step_image003.jpg "The structure of calls in reading STEP"
-@image latex /user_guides/step/images/step_image003.jpg "The structure of calls in reading STEP"
+@image html /user_guides/step/images/step_image003.png "The structure of calls in reading STEP"
+@image latex /user_guides/step/images/step_image003.png "The structure of calls in reading STEP"
   
 @subsection occt_step_2_7 Example
 ~~~~~
@@ -1073,8 +1075,8 @@ The following diagram illustrates the structure of calls in writing STEP.
 The highlighted classes are intended to translate geometry. 
 
 
-@image html /user_guides/step/images/step_image004.jpg "The structure of calls in writing STEP"
-@image latex /user_guides/step/images/step_image004.jpg "The structure of calls in writing STEP"
+@image html /user_guides/step/images/step_image004.png "The structure of calls in writing STEP"
+@image latex /user_guides/step/images/step_image004.png "The structure of calls in writing STEP"
 
     
 @subsection occt_step_3_7 Example
@@ -1248,7 +1250,7 @@ During the STEP translation, a map of correspondence between STEP entities and O
 To get information on the result of translation of a given STEP entity use the command *Draw:> tpent \#*. 
 
 To create an OCCT shape, corresponding to a STEP entity, use the command *Draw:> tpdraw \#*. 
-To get the number of a STEP entity, corresponding to an OCCT shape, use the command *Draw:> fromshape <shape_name>*. 
+To get the number of a STEP entity, corresponding to an OCCT shape, use the command *Draw:> fromshape \<shape_name\>*. 
 
 To clear the map of correspondences between STEP entities and OCCT shapes use the command *Draw:> tpclear*.
  
@@ -1259,7 +1261,7 @@ The procedure of analysis of data import can be divided into two stages:
    
 @subsubsection occt_step_6_4_1 Checking file contents
 General statistics on the loaded data can be obtained by using the command 
-Draw:> data <symbol> 
+Draw:> data \<symbol\> 
 Information printed by this command depends on the symbol specified: 
 
 * *g*	- Prints the information contained in the header of the file;
@@ -1289,8 +1291,8 @@ The list cannot be shown for all entities but for a subset of them. This subset 
  
 Two commands are used to calculate statistics on the entities in the model: 
 ~~~~~
-Draw:> count <counter> [<selection>] 
-Draw:> listcount <counter> [<selection>] 
+Draw:> count <counter> [\<selection\>] 
+Draw:> listcount <counter> [\<selection\>] 
 ~~~~~
 The former only prints a count of entities while the latter also gives a list of them. 
 
@@ -1310,7 +1312,7 @@ Information about product names, *next_assembly_usage_occurence, shape_definitio
 @subsubsection occt_step_6_4_2 Estimating the results of reading STEP
 All the following commands are available only after data is converted into OCCT shapes (i.e. after command 214read). 
 
-Command *Draw:> tpstat [*|?]<symbol> [<selection>]* is provided to get all statistics on the last transfer, including a list of transferred entities with mapping from STEP to OCCT types, as well as fail and warning messages. The parameter symbol defines what information will be printed: 
+Command *Draw:> tpstat [*|?]\<symbol\> [\<selection\>]* is provided to get all statistics on the last transfer, including a list of transferred entities with mapping from STEP to OCCT types, as well as fail and warning messages. The parameter symbol defines what information will be printed: 
 
 * *g*	- General statistics (a list of results and messages)
 * *c*	- Count of all warning and fail messages
@@ -1328,20 +1330,20 @@ The sign \* before parameters *n, s, b, t, r* makes it work on all entities (not
 
 The sign ? before *n, s, b, t* limits the scope of information to invalid entities. 
 
-Optional argument <selection> can limit the action of the command to the selection, not to all entities. 
+Optional argument \<selection\> can limit the action of the command to the selection, not to all entities. 
 
 To get help, run this command without arguments. 
 
 The command *Draw:> tpstat \*1* gives statistics on the result of translation of different types of entities (taking check messages into account) and calculates summary translation ratios. 
 
-To get information on OCCT shape contents use command *Draw:> statshape <shape_name>* . It outputs the number of each kind of shapes (vertex, edge, wire, etc.) in the shape and some geometrical data (number of C0 surfaces, curves, indirect surfaces, etc.). 
+To get information on OCCT shape contents use command *Draw:> statshape \<shape_name\>* . It outputs the number of each kind of shapes (vertex, edge, wire, etc.) in the shape and some geometrical data (number of C0 surfaces, curves, indirect surfaces, etc.). 
 
 The number of faces is returned as a number of references. To obtain the number of single instances, the standard command (from TTOPOLOGY executable) nbshapes can be used. 
 
-To analyze the internal validity of the shape, use command *Draw:> checkbrep <shape_name> <expurged_shape_name>*. It checks shape geometry and topology for different cases of inconsistency, like self-intersecting wires or wrong orientation of trimming contours. If an error is found, it copies bad parts of the shape with the names <i>expurged_subshape_name _\#</i> and generates an appropriate message. If possible this command also tries to find STEP entities the OCCT shape was produced from. 
+To analyze the internal validity of the shape, use command *Draw:> checkbrep \<shape_name\> \<expurged_shape_name\>*. It checks shape geometry and topology for different cases of inconsistency, like self-intersecting wires or wrong orientation of trimming contours. If an error is found, it copies bad parts of the shape with the names <i>expurged_subshape_name _\#</i> and generates an appropriate message. If possible this command also tries to find STEP entities the OCCT shape was produced from. 
 
-<i><expurged_shape_name></i> will contain the original shape without invalid subshapes. 
-To get information on tolerances of the shape use command <i>Draw:> tolerance <shape_name> [<min> [<max>] [<symbol>]] </i>. It outputs maximum, average and minimum values of tolerances for each kind of subshapes having tolerances and for the whole shape in general. 
+<i>\<expurged_shape_name\></i> will contain the original shape without invalid subshapes. 
+To get information on tolerances of the shape use command <i>Draw:> tolerance \<shape_name\> [\<min\> [\<max\>] [<symbol>]] </i>. It outputs maximum, average and minimum values of tolerances for each kind of subshapes having tolerances and for the whole shape in general. 
 
 When specifying min and max arguments this command saves shapes with tolerances in the range [min, max] with names shape_name_... and gives their total number. 
 
@@ -1366,7 +1368,7 @@ Value of uncertainty	Write.precision.val	real	Value of uncertainty (used if prev
 Several shapes can be written in one file. To start writing a new file, enter command *Draw:> newmodel*. 
 Actually, command *newmodel* will clear the *InterfaceModel* to empty it, and the next command will convert the specified shape to STEP entities and add them to the *InterfaceModel*: 
 ~~~~~
-Draw:> stepwrite <mode> <shape_name> [<file_name>] 
+Draw:> stepwrite <mode> \<shape_name\> [<file_name>] 
 ~~~~~
 The available modes are following: 
     * *a* - as is; 

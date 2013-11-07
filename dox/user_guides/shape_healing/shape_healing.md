@@ -1,6 +1,8 @@
 Shape Healing  {#user_guides__shape_healing}
 ===================
-  
+
+@tableofcontents
+
 @section occt_shg_1 Overview
 
 This manual explains how to use Shape Healing. It provides basic documentation on its operation. For advanced information on Shape Healing and its applications, see our offerings on our web site at <a href="http://www.opencascade.org/support/training/">www.opencascade.org/support/training/</a>  
@@ -31,10 +33,9 @@ Tools responsible for analysis, fixing and upgrading of shapes can give the info
 Each fixing and upgrading tool has its own status, which is reset when their methods are called. The status can contain several flags, which give the information about how the method was performed. For exploring the statuses, a set of methods named *Status...()* is provided. These methods accept enumeration *ShapeExtend_Status* and return True if the status has the corresponding flag set. The meaning of flags for each method is described below. 
 
 The status may contain a set of Boolean flags (internally represented by bits). Flags are coded by enumeration ShapeExtend_Status. This enumeration provides the following families of statuses: 
-
-| *ShapeExtend_OK*   | The situation is OK, no operation is necessary and has not been performed. |
-| *ShapeExtend_DONE* | The operation has been successfully performed. |
-| *ShapeExtend_FAIL* | An error has occurred during operation. |
+* *ShapeExtend_OK*  -  The situation is OK, no operation is necessary and has not been performed. 
+* *ShapeExtend_DONE* - The operation has been successfully performed. 
+* *ShapeExtend_FAIL* - An error has occurred during operation. 
 
 It is possible to test the status for the presence of some flag(s), using Status...() method(s) provided by the class: 
 
@@ -44,10 +45,9 @@ if ( object.Status.. ( ShapeExtend_DONE ) ) {// something was done
 ~~~~~
 
 8 'DONE' and 8 'FAIL' flags, named ShapeExtend_DONE1 ... ShapeExtend_FAIL8, are defined for a detailed analysis of the encountered situation. Each method assigns its own meaning to each flag, documented in the CDL for that method. There are also three enumerative values used for testing several flags at a time: 
-
-| *ShapeExtend_OK*   |    if no flags have been set; |
-| *ShapeExtend_DONE* | if at least one ShapeExtend_DONEi has been set; | 
-| *ShapeExtend_FAIL* | if at least one ShapeExtend_FAILi has been set; | 
+* *ShapeExtend_OK*   -     if no flags have been set; 
+* *ShapeExtend_DONE* - if at least one ShapeExtend_DONEi has been set; 
+* *ShapeExtend_FAIL* - if at least one ShapeExtend_FAILi has been set. 
 
 @section occt_shg_2 Repair
 
@@ -1148,7 +1148,7 @@ Standard_Real maxTol = …;
 tool.SetMaxTolerance(maxTol); 
 Standard_Integer NbSplitPoints = …; 
 tool.SetNbSplitPoints(num); 
-if ( ! tool.Perform() &amp;&amp; tool.Status (ShapeExtend_FAIL) ) { 
+if ( ! tool.Perform() && tool.Status (ShapeExtend_FAIL) ) { 
   cout;Splitting of closed faces failed;endl; 
   . . . 
 } 
@@ -1168,11 +1168,11 @@ Such calculations are necessary to avoid creation of strip faces. In the process
 
 An example of using this tool is presented in the figures below: 
 
-@image html /user_guides/shape_healing/images/shape_healing003.jpg "Source Face"
-@image latex /user_guides/shape_healing/images/shape_healing003.jpg "Source Face"
+@image html /user_guides/shape_healing/images/shape_healing_image003.png "Source Face"
+@image latex /user_guides/shape_healing/images/shape_healing_image003.png "Source Face"
 
-@image html /user_guides/shape_healing/images/shape_healing004.jpg "Resulting shape"
-@image latex /user_guides/shape_healing/images/shape_healing004.jpg "Resulting shape"
+@image html /user_guides/shape_healing/images/shape_healing_image004.png "Resulting shape"
+@image latex /user_guides/shape_healing/images/shape_healing_image004.png "Resulting shape"
 
 
 *ShapeUpgrade_ShapeDivideArea* is inherited from the base class *ShapeUpgrade_ShapeDivide* and should be used in the following way: 
@@ -1236,7 +1236,7 @@ This method returns a new shape, which is a scaled original shape with a coeffic
 The method with all parameters looks as follows:
 ~~~~~
 ShapeCustom::BsplineRestriction 
-	TopoDS_Shape ShapeCustom::BSplineRestriction (const TopoDS_Shape&amp; S, 
+	TopoDS_Shape ShapeCustom::BSplineRestriction (const TopoDS_Shape& S, 
 		const Standard_Real Tol3d, const Standard_Real Tol2d, 
 		const Standard_Integer MaxDegree, 
 		const Standard_Integer MaxNbSegment, 
@@ -1244,7 +1244,7 @@ ShapeCustom::BsplineRestriction
 		const GeomAbs_Shape Continuity2d, 
 		const Standard_Boolean Degree, 
 		const Standard_Boolean Rational, 
-		const Handle(ShapeCustom_RestrictionParameters)&amp; aParameters) 
+		const Handle(ShapeCustom_RestrictionParameters)& aParameters) 
 ~~~~~
 		
 It returns a new shape with all surfaces, curves and 2D curves of BSpline/Bezier type or based on them, converted with a degree less than *MaxDegree* or with a number of spans less then *NbMaxSegment* depending on the priority parameter *Degree*. If this parameter is equal to True then *Degree* will be increased to the value *GmaxDegree*, otherwise *NbMaxSegments* will be increased to the value *GmaxSegments*. *GmaxDegree* and *GMaxSegments* are the maximum possible degree and the number of spans correspondingly. These values will be used in cases when an approximation with specified parameters is impossible and either *GmaxDegree* or *GMaxSegments* is selected depending on the priority. 
@@ -1283,7 +1283,7 @@ This method returns a new shape with all elementary periodic surfaces converted 
 
 ~~~~~
 ShapeCustom::ConvertToBSpline() 
-	TopoDS_Shape ShapeCustom::ConvertToBSpline( const TopoDS_Shape&amp; S, 
+	TopoDS_Shape ShapeCustom::ConvertToBSpline( const TopoDS_Shape& S, 
 		const Standard_Boolean extrMode, 
 		const Standard_Boolean revolMode, 
 		const Standard_Boolean offsetMode); 
@@ -1356,19 +1356,19 @@ If the sequence of shapes contains faces, only the internal wires from these fac
 
 An example of using this tool is presented in the figures below: 
 
-@image html /user_guides/shape_healing/images/shape_healing005.jpg "Source Face"
-@image latex /user_guides/shape_healing/images/shape_healing005.jpg "Source Face"
-@image html /user_guides/shape_healing/images/shape_healing006.jpg "Resulting shape"
-@image latex /user_guides/shape_healing/images/shape_healing006.jpg "Resulting shape"
+@image html /user_guides/shape_healing/images/shape_healing_image005.png "Source Face"
+@image latex /user_guides/shape_healing/images/shape_healing_image005.png "Source Face"
+@image html /user_guides/shape_healing/images/shape_healing_image006.png "Resulting shape"
+@image latex /user_guides/shape_healing/images/shape_healing_image006.png "Resulting shape"
 
 After the processing three internal wires with contour area less than the specified minimal area have been removed. One internal face has been removed. The outer wire of this face consists of the edges belonging to the removed internal wires and a seam edge. 
 Two other internal faces have not been removed because their outer wires consist not only of edges belonging to the removed wires.
 
-@image html /user_guides/shape_healing/images/shape_healing007.jpg "Source Face"
-@image latex /user_guides/shape_healing/images/shape_healing007.jpg "Source Face"
+@image html /user_guides/shape_healing/images/shape_healing_image007.png "Source Face"
+@image latex /user_guides/shape_healing/images/shape_healing_image007.png "Source Face"
 
-@image html /user_guides/shape_healing/images/shape_healing008.jpg "Resulting shape"
-@image latex /user_guides/shape_healing/images/shape_healing008.jpg "Resulting shape"
+@image html /user_guides/shape_healing/images/shape_healing_image008.png "Resulting shape"
+@image latex /user_guides/shape_healing/images/shape_healing_image008.png "Resulting shape"
 
 After the processing six internal wires with contour area less than the specified minimal area have been removed. Six internal faces have been removed. These faces can be united into groups of faces. Each group of faces has an outer wire consisting only of edges belonging to the removed internal wires. Such groups of faces are also removed. 
 
@@ -1393,13 +1393,13 @@ if(aTool-Status(ShapeExtend_FAIL) {
 } 
 
 if(aTool-Status(ShapeExtend_DONE1)) { 
-    const TopTools_SequenceOfShape&amp; aRemovedWires =aTool-RemovedWires(); 
+    const TopTools_SequenceOfShape& aRemovedWires =aTool-RemovedWires(); 
      coutaRemovedWires.Length(); internal wires were removed;;\n;; 
     
   } 
 
   if(aTool-Status(ShapeExtend_DONE2)) { 
-    const TopTools_SequenceOfShape&amp; aRemovedFaces =aTool-RemovedFaces(); 
+    const TopTools_SequenceOfShape& aRemovedFaces =aTool-RemovedFaces(); 
      coutaRemovedFaces.Length(); small faces were removed;;\n;; 
     
   }   
@@ -1487,6 +1487,8 @@ TopoDS_Shape result_subshape1 = Context-Apply(subshape1);
 *ShapExtend_Status* is used to report the status after executing some methods that can either fail, do something, or do nothing. The status is a set of flags DONEi, FAILi, any combination of them can be set at the same time. For exploring the status, enumeration is used. 
 
 The values have the following meaning: 
+| Value | Meaning |
+| :----- | :----------------- |
 |*OK,*     |  Nothing is done, everything OK |
 |*DONE1,*  |  Something was done, case 1 |
 |*DONE8*,  |  Something was done, case 8 |
@@ -1540,10 +1542,10 @@ MessageReg-Send(Shape1,msg,Message_WARNING);
 Handle(Standard_Transient) ent .. 
 MessageReg-Send(ent,msg,Message_WARNING); 
 //gets messages attached to shape 
-const ShapeExtend_DataMapOfShapeListOfMsg&amp; msgmap = 
+const ShapeExtend_DataMapOfShapeListOfMsg& msgmap = 
 MessageReg-MapShape(); 
 if (msgmap.IsBound (Shape1)) { 
- const Message_ListOfMsg &amp;msglist = msgmap.Find (Shape1); 
+ const Message_ListOfMsg &msglist = msgmap.Find (Shape1); 
  for (Message_ListIteratorOfListOfMsg iter (msglist); 
 iter.More(); iter.Next()) { 
        Message_Msg msg = iter.Value(); 
@@ -1591,9 +1593,8 @@ IGESBRep_Reader.cxx
 ~~~~~
 
 The result of *DumpTimer()* after translation of a file is as follows: 
-
-| TIMER: *IGES_LoadFile*     | 	Elapsed: 1.0 sec CPU User:   0.9 sec CPU Sys: 0.0 sec hits: 1	|
-| TIMER: IGESToBRep_Transfer |	Elapsed: 14.5 sec CPU User:   4.4 sec CPU Sys: 0.1 sec hits: 1311 |
+* TIMER: *IGES_LoadFile* Elapsed: 1.0 sec CPU User:   0.9 sec CPU Sys: 0.0 sec hits: 1	
+* TIMER: *IGESToBRep_Transfer* Elapsed: 14.5 sec CPU User:   4.4 sec CPU Sys: 0.1 sec hits: 1311 
 
 
 @section occt_shg_6 Shape Processing
@@ -1637,7 +1638,7 @@ where *myfunction* is a function which implements the operation.
 4. Create this function in *ShapeProcess_OperLibrary* as follows:
 ~~~~~
 static Standard_Boolean myfunction (const 
-			Handle(ShapeProcess_Context)&amp; context) 
+			Handle(ShapeProcess_Context)& context) 
 { 
 	Handle(ShapeProcess_ShapeContext) ctx = 
 			Handle(ShapeProcess_ShapeContext)::DownCast(context); 
@@ -1844,7 +1845,7 @@ This operator can be called with the following parameters:
 ### SplitClosedEdges
 This operator handles closed edges i.e. edges with one vertex. Such edges are not supported in some receiving systems. This operator  splits topologically closed edges (i.e. edges having one vertex) into two edges. Degenerated edges and edges with a size of less than Tolerance are not processed. 
 
-@section occt_shg_7_ Messaging mechanism
+@section occt_shg_7 Messaging mechanism
 
 Various messages about modification, warnings and fails can be generated in the process of shape fixing or upgrade. The messaging mechanism allows generating messages, which will be sent to the chosen target medium  a file or the screen. The messages may report failures and/or warnings or provide information on events such as analysis, fixing or upgrade of shapes. 
 
@@ -1904,7 +1905,6 @@ msg1.AddInteger (73);
 msg1.AddString (;SampleFile;); 
 //fills out the code areas 
 ~~~~~
-
 
 @subsection occt_shg_7_4 Tool for managing trace files
 

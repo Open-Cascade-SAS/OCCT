@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Helper script to run generation of OCCT documentation on Linux.
+# Running it requires that Tcl, Doxygen, and MikTex (for PDF generation) should be in the PATH
+
+anArgs=$*
+anOldPath="$PATH"
+anOldLd="$LD_LIBRARY_PATH"
+anOldDyLd="$DYLD_LIBRARY_PATH"
+
+# go to the script directory
+aScriptPath=${BASH_SOURCE%/*}; if [ -d "${aScriptPath}" ]; then cd "$aScriptPath"; fi; aScriptPath="$PWD";
+if [ -e "${aScriptPath}/env.sh" ]; then source "${aScriptPath}/env.sh"; fi
+
+tclsh "${aScriptPath}/dox/start.tcl" $anArgs
+
+export PATH="$anOldPath"
+export LD_LIBRARY_PATH="$anOldLd"
+export DYLD_LIBRARY_PATH="$anOldDyLd"

@@ -1,6 +1,8 @@
 TObj Package  {#user_guides__tobj}
 ==================
- 
+
+@tableofcontents
+
 @section occt_tobj_1 Introduction
 
 This document describes the package TObj, which is an add-on 
@@ -60,8 +62,8 @@ of the label, which uniquely identifies its position in the document.
 Generally the structure of the OCAF tree of the *TObj* data 
 model corresponds to the logical structure of the model and can be presented as in the following picture: 
 
-@image html /user_guides/tobj/images/tobj_image004.jpgb "TObj Data Model mapped on OCAF document" 
-@image latex /user_guides/tobj/images/tobj_image004.jpg "TObj Data Model mapped on OCAF document" 
+@image html /user_guides/tobj/images/tobj_image004.png "TObj Data Model mapped on OCAF document" 
+@image latex /user_guides/tobj/images/tobj_image004.png "TObj Data Model mapped on OCAF document" 
 
 All data of the model are stored in the root label (0:1) of the OCAF document. 
 An attribute *TObj_TModel* is located in this root label. It 

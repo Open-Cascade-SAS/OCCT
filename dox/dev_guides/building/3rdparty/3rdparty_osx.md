@@ -1,0 +1,269 @@
+ Building 3rd-party libraries on MacOS X {#dev_guides__building_3rdparty_osx}
+==============================================
+@tableofcontents 
+
+@section dev_guides__building_3rdparty_osx_1 Introduction
+
+  This document presents additional guidelines for building third-party products 
+  used by Open CASCADE Technology and samples on Mac OS X platform (10.6.4  and later). 
+
+  The links for downloading the third-party products are available 
+  on the web site of OPEN CASCADE SAS at 
+  http://www.opencascade.org/getocc/require/</a>. 
+
+  There are two types of third-party products, which are  necessary to build OCCT: 
+  
+  * Mandatory  products: Tcl 8.5, Tk 8.5, FreeType 2.4.10 
+  * Optional  products: TBB 3.x or 4.x, gl2ps 1.3.5, FreeImage 3.14.1 or 3.15.x 
+  
+@section dev_guides__building_3rdparty_osx_2 Building Mandatory Third-party Products
+
+@subsection dev_guides__building_3rdparty_osx_2_1 Tcl/Tk 8.5 
+
+  Tcl/Tk is required for DRAW test harness. Version 8.5 or  8.6 can be used with OCCT. 
+
+@subsubsection dev_guides__building_3rdparty_osx_2_1_1 Installation from binaries
+
+  It is possible to download ready-to-install binaries from 
+  http://www.activestate.com/activetcl/downloads   
+
+  * 1. Download the disk image to some TCL_DOWNLOAD_DIR. 
+  * 2. Open in Finder the directory TCL_DOWNLOAD_DIR. 
+  * 3. Open disk image and follow instructions. 
+
+@subsubsection dev_guides__building_3rdparty_osx_2_1_2 Installation from sources: Tcl 8.5
+
+  Download the necessary archive from http://www.tcl.tk/software/tcltk/download.html and unpack it. 
+
+  * 1. Enter the macosx sub-directory of the directory where the source files of Tcl are located (TCL_SRC_DIR). 
+
+  @verbatim
+    cd TCL_SRC_DIR/macosx   
+  @endverbatim
+
+  * 2. Run the configure command 
+
+  @verbatim
+    configure --enable-gcc  --enable-shared --enable-threads --prefix=TCL_INSTALL_DIR   
+  @endverbatim
+
+  For a 64 bit platform also add --enable-64bit option to the command line. 
+
+  * 3. If the configure command has finished successfully, start the building process 
+
+  @verbatim
+    make   
+  @endverbatim
+  
+  * 4. If building is finished successfully, start the installation of Tcl. 
+  All binary and service files of the product will be copied to the directory defined by TCL_INSTALL_DIR 
+
+  @verbatim
+    make install   
+  @endverbatim
+
+@subsubsection dev_guides__building_3rdparty_osx_2_1_3 Installation from sources: Tk 8.5
+
+  Download the necessary archive from http://www.tcl.tk/software/tcltk/download.html and unpack it. 
+
+  * 1. Enter the macosx sub-directory of the directory where the  source files of Tk are located (TK_SRC_DIR). 
+
+  @verbatim
+    cd TK_SRC_DIR/macosx   
+  @endverbatim
+
+  * 2. Run the configure command, where TCL_LIB_DIR is  TCL_INSTALL_DIR/lib 
+
+  @verbatim
+    configure --enable-gcc --enable-shared --enable-threads --with-tcl=TCL_LIB_DIR --prefix=TK_INSTALL_DIR   
+  @endverbatim
+
+  where TCL_LIB_DIR is TCL_INSTALL_DIR/lib. For a 64 bit platform also add --enable-64bit option to the  command line. 
+
+  * 3. If the configure command has finished successfully, start  the building process 
+
+  @verbatim
+    make   
+  @endverbatim
+
+  * 4. If building has finished successfully, start the  installation of Tk. 
+  All binary and service files of the product will be copied to the directory 
+  defined by TK_INSTALL_DIR (usually TK_INSTALL_DIR  is TCL_INSTALL_DIR) 
+
+  @verbatim
+    make install   
+  @endverbatim
+
+@subsection dev_guides__building_3rdparty_osx_2_2 FreeType 2.4.10
+  
+  FreeType is required for display of text in 3D viewer. 
+
+  Download the necessary archive from http://sourceforge.net/projects/freetype/files/ and unpack it. 
+
+  * 1. Enter the directory where the source files of FreeType  are located (FREETYPE_SRC_DIR). 
+
+  @verbatim
+    cd FREETYPE_SRC_DIR   
+  @endverbatim
+
+  * 2. Run the configure command 
+  
+  @verbatim
+    configure  --prefix=FREETYPE_INSTALL_DIR   
+  @endverbatim
+
+  For a 64 bit platform also add CFLAGS='-m64 -fPIC'  CPPFLAGS='-m64 -fPIC' option to the command line. 
+
+  * 3. If the configure command has finished successfully, start  the building process 
+
+  @verbatim
+    make   
+  @endverbatim
+
+  * 4. If building has finished successfully, start the installation of FreeType. 
+  All binary and service files of the product will be copied to the directory defined by FREETYPE_INSTALL_DIR 
+
+  @verbatim
+    make install   
+  @endverbatim
+
+@section dev_guides__building_3rdparty_osx_3 Building Optional Third-party Products
+    
+@subsection dev_guides__building_3rdparty_osx_3_1 TBB 3.x or 4.x
+
+  This third-party product is installed with binaries from the archive 
+  that can be downloaded from http://threadingbuildingblocks.org/. 
+  Go to \"Downloads / Commercial  Aligned Release\", find the release version you need (e.g. tbb30_018oss) 
+  and  pick the archive for Mac OS X platform. 
+  To install, unpack the downloaded archive of TBB 3.0 product (*tbb30_018oss_osx.tgz*).
+
+@subsection dev_guides__building_3rdparty_osx_3_2 gl2ps 1.3.5
+
+  Download the necessary archive from http://geuz.org/gl2ps/ and unpack it. 
+
+  * 1. Install or build cmake product from source file. 
+
+  * 2. Start cmake in GUI mode with the directory where the source  files of fl2ps are located 
+  @verbatim
+      ccmake GL2PS_SRC_DIR   
+  @endverbatim
+     * 2.1. Press [c] to make the  initial configuration 
+     * 2.2. Define the necessary options  CMAKE_INSTALL_PREFIX 
+     * 2.3. Press [c] to make the final  configuration 
+     * 2.4. Press [g] to generate  Makefile and exit 
+
+  or just run the following command: 
+
+  @verbatim
+    cmake  –DCMAKE_INSTALL_PREFIX=GL2PS_INSTALL_DIR –DCMAKE_BUILD_TYPE=Release   
+  @endverbatim
+
+  * 3. Start building of gl2ps 
+
+  @verbatim
+      make   
+  @endverbatim
+
+  * 4. Start the installation of gl2ps. Binaries will be  installed according to the CMAKE_INSTALL_PREFIX option 
+
+  @verbatim
+      make install   
+  @endverbatim
+
+@subsection dev_guides__building_3rdparty_osx_3_3 FreeImage 3.14.1 or 3.15.x
+
+  Download the necessary archive from 
+  http://sourceforge.net/projects/freeimage/files/Source%20Distribution/   
+  and unpack it. The directory with unpacked sources is  further referred to as FREEIMAGE_SRC_DIR.  
+
+  Note that for building FreeImage on Mac OS X 10.7 you should replace Makefile.osx 
+  in FREEIMAGE_SRC_DIR by corrected one which you  can find in attachment to issue #22811 in OCCT Mantis bug tracker 
+  (http://tracker.dev.opencascade.org/file_download.php?file_id=6937&type=bug) or elsewhere. 
+
+  * 1.If you are building FreeImage 3.15.x you can skip this  step. 
+  Modify FREEIMAGE_SRC_DIR/Source/OpenEXR/Imath/ImathMatrix.h: 
+  
+  In line 60 insert the following: 
+
+  @verbatim
+    #include string.h 
+  @endverbatim
+
+  Modify FREEIMAGE_SRC_DIR/Source/FreeImage/PluginTARGA.cpp: 
+  
+  In line 320 replace: 
+  @verbatim
+    SwapShort(value); 
+  @endverbatim
+
+  with: 
+  @verbatim
+    SwapShort(&value); 
+  @endverbatim
+
+  * 2.Enter the directory where the source files of FreeImage  are located (FREEIMAGE_SRC_DIR). 
+
+  @verbatim
+    cd FREEIMAGE_SRC_DIR 
+  @endverbatim
+
+  * 3.Run the building process 
+
+  @verbatim
+    make   
+  @endverbatim
+
+  * 4.Run the installation process 
+     * 4.1. If you have permissions to write to /usr/local/include  and /usr/local/lib directories then run the following command: 
+  @verbatim
+    make install   
+  @endverbatim
+     * 4.2. If you don’t have permissions to write to /usr/include and /usr/lib directories 
+            then you need to modify the file FREEIMAGE_SRC_DIR/Makefile.osx: 
+
+   Change line 49 from:     
+
+  @verbatim
+    PREFIX ?= /usr/local
+  @endverbatim
+
+   to:
+   
+  @verbatim
+    PREFIX  ?= $(PREFIX) 
+  @endverbatim
+
+  Change lines 65-69 from: 
+
+  @verbatim
+    install -d -m 755 -o  root -g wheel $(INCDIR) $(INSTALLDIR) 
+    install  -m 644 -o root -g wheel $(HEADER) $(INCDIR) 
+    install  -m 644 -o root -g wheel $(SHAREDLIB) $(STATICLIB) $(INSTALLDIR) 
+    ranlib  -sf $(INSTALLDIR)/$(STATICLIB) 
+    ln  -sf $(SHAREDLIB) $(INSTALLDIR)/$(LIBNAME) 
+  @endverbatim
+    
+   to: 
+
+  @verbatim
+    install  -d $(INCDIR) $(INSTALLDIR) 
+    install  -m 755 $(HEADER) $(INCDIR) 
+    install  -m 755 $(STATICLIB) $(INSTALLDIR) 
+    install  -m 755 $(SHAREDLIB) $(INSTALLDIR) 
+    ln  -sf $(SHAREDLIB) $(INSTALLDIR)/$(VERLIBNAME)  
+    ln  -sf $(VERLIBNAME) $(INSTALLDIR)/$(LIBNAME)
+  @endverbatim
+
+  Then run the installation process by the following command: 
+  
+  @verbatim
+    make PREFIX=FREEIMAGE_INSTALL_DIR  install 
+  @endverbatim
+  
+  * 5.Clean the temporary files 
+  
+  @verbatim
+    make clean 
+  @endverbatim
+
+@see http://www.opencascade.org for details

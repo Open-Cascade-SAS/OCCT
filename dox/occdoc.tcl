@@ -4,12 +4,23 @@
 #  Author: omy
 # -----------------------------------------------------------------------
 
-# Generates Doxygen configuration file for Overview documentation
-proc OverviewDoc_MakeDoxyfile {casDir outDir tagFileDir {doxyFileName} {generatorMode ""} DocFilesList verboseMode} {
+# get OCCT version from file Standard_Version.hxx (if available)
+proc OverviewDoc_DetectCasVersion {theCasRoot} {
+  set occt_ver 16.7.0
+  set occt_ver_add ""
+  if { [file exist $theCasRoot/src/Standard/Standard_Version.hxx] } {
+    set fh [open $theCasRoot/src/Standard/Standard_Version.hxx]
+    set fh_loaded [read $fh]
+    close $fh
+    regexp {[^/]\s*#\s*define\s+OCC_VERSION_COMPLETE\s+\"([^\s]*)\"} $fh_loaded dummy occt_ver
+    regexp {#\s*define\s+OCC_VERSION_DEVELOPMENT\s+\"([^\s]*)\"} $fh_loaded dummy occt_ver_add
+    if { "$occt_ver_add" != "" } { set occt_ver ${occt_ver}.$occt_ver_add }
+  }
+  return $occt_ver
+}
 
-    if {$verboseMode == "YES"} {
-        puts "INFO: Doxygen is now generating Doxyfile..."
-    }
+# Generates Doxygen configuration file for Overview documentation
+proc OverviewDoc_MakeDoxyfile {casDir outDir tagFileDir {doxyFileName} {generatorMode ""} DocFilesList verboseMode searchMode} {
 
     set doxyFile [open $doxyFileName "w"]
     set casroot  $casDir
@@ -18,9 +29,9 @@ proc OverviewDoc_MakeDoxyfile {casDir outDir tagFileDir {doxyFileName} {generato
     # Common configs
     puts $doxyFile "DOXYFILE_ENCODING      = UTF-8"
     puts $doxyFile "PROJECT_NAME           = \"Open CASCADE Technology\""
-    puts $doxyFile "PROJECT_NUMBER         = 6.7.0"
+    puts $doxyFile "PROJECT_NUMBER         = [OverviewDoc_DetectCasVersion $casDir]"
     puts $doxyFile "PROJECT_BRIEF          = "
-    puts $doxyFile "PROJECT_LOGO           = $inputDir/resources/occt_logo.png"
+    puts $doxyFile "PROJECT_LOGO           = $inputDir/resources/occ_logo.png"
 
     puts $doxyFile "OUTPUT_DIRECTORY       = $outDir"
     puts $doxyFile "CREATE_SUBDIRS         = NO"
@@ -70,31 +81,20 @@ proc OverviewDoc_MakeDoxyfile {casDir outDir tagFileDir {doxyFileName} {generato
     puts $doxyFile "GENERATE_AUTOGEN_DEF   = NO"
     puts $doxyFile "GENERATE_PERLMOD       = NO"
 
-    set PARAM_INPUT "INPUT                  = "
-    set PARAM_IMAGEPATH "IMAGE_PATH         = $inputDir/resources/ "
+    set PARAM_INPUT "INPUT                  ="
+    set PARAM_IMAGEPATH "IMAGE_PATH             = $inputDir/resources/ "
 
     foreach docFile $DocFilesList {
         set NEW_IMG_PATH [file normalize [file dirname "$inputDir/$docFile"]]
         if { [string compare $NEW_IMG_PATH $casroot] != 0 } {
           if {[file isdirectory "$NEW_IMG_PATH/images"]} {
-            append PARAM_IMAGEPATH " " "$NEW_IMG_PATH/images"
+            append PARAM_IMAGEPATH " $NEW_IMG_PATH/images"
           }
         }
         append PARAM_INPUT " " $inputDir/$docFile
     }
     puts $doxyFile $PARAM_INPUT
     puts $doxyFile $PARAM_IMAGEPATH
-    
-    if { $generatorMode == "PDF_ONLY"} {
-        set PARAM_LATEX_EF "LATEX_EXTRA_FILES      ="
-        foreach docFile $DocFilesList {
-            set NEW_LEF_PATH [file normalize [file dirname "$inputDir/$docFile"]]
-            if { [string compare $NEW_LEF_PATH $casroot] != 0 } {
-                append PARAM_LATEX_EF " " "$NEW_LEF_PATH/images"
-            }
-        }
-        puts $doxyFile $PARAM_LATEX_EF
-    }
 
     if { $generatorMode == "HTML_ONLY"} {
         # Set a reference to a TAGFILE
@@ -104,7 +104,6 @@ proc OverviewDoc_MakeDoxyfile {casDir outDir tagFileDir {doxyFileName} {generato
                 puts $doxyFile "TAGFILES               = $tagFileDir/OCCT.tag=$tagPath/html"
             }
         }
-
         # HTML Output
         puts $doxyFile "GENERATE_LATEX         = NO"
         puts $doxyFile "GENERATE_HTML          = YES"
@@ -119,9 +118,28 @@ proc OverviewDoc_MakeDoxyfile {casDir outDir tagFileDir {doxyFileName} {generato
         puts $doxyFile "ENUM_VALUES_PER_LINE   = 8"
         puts $doxyFile "TREEVIEW_WIDTH         = 250"
         puts $doxyFile "EXTERNAL_PAGES         = NO"
-        puts $doxyFile "SEARCHENGINE           = YES"
-        puts $doxyFile "SERVER_BASED_SEARCH    = NO"
-        puts $doxyFile "EXTERNAL_SEARCH        = NO"
+        # HTML Search engine options
+        if { [string tolower $searchMode] == "none" } {
+          puts $doxyFile "SEARCHENGINE           = NO"
+          puts $doxyFile "SERVER_BASED_SEARCH    = NO"
+          puts $doxyFile "EXTERNAL_SEARCH        = NO"
+        } else {
+          puts $doxyFile "SEARCHENGINE           = YES"
+          if { [string tolower $searchMode] == "local" } {
+            puts $doxyFile "SERVER_BASED_SEARCH    = NO"
+            puts $doxyFile "EXTERNAL_SEARCH        = NO"
+          } elseif { [string tolower $searchMode] == "server" } {
+            puts $doxyFile "SERVER_BASED_SEARCH    = YES"
+            puts $doxyFile "EXTERNAL_SEARCH        = NO"
+          } elseif { [string tolower $searchMode] == "external" } {
+            puts $doxyFile "SERVER_BASED_SEARCH    = YES"
+            puts $doxyFile "EXTERNAL_SEARCH        = YES"
+          } else {
+            puts "ERROR: Wrong search engine type"
+            close $doxyFile 
+            return
+          }
+        }
         puts $doxyFile "SEARCHDATA_FILE        = searchdata.xml"
         puts $doxyFile "SKIP_FUNCTION_MACROS   = YES"
         # Formula options
@@ -179,7 +197,7 @@ proc OverviewDoc_GetRelPath {targetFile currentpath} {
 
 # Prints Help message
 proc OverviewDoc_PrintHelpMessage {} {
-    puts "\nUsage : occdoc \[-h\] \[-html\] \[-pdf\] \[-m=<list of files>\] \[-l=<document name>\] \[-v\]"
+    puts "\nUsage : occdoc \[-h\] \[-html\] \[-pdf\] \[-m=<list of files>\] \[-l=<document name>\] \[-v\] \[-s\]"
     puts ""
     puts " Options are : "
     puts "    -html                : To generate HTML files"
@@ -194,6 +212,9 @@ proc OverviewDoc_PrintHelpMessage {} {
     puts "    -h                   : Prints help message"
     puts "    -v                   : Specifies the Verbose mode"
     puts "                           (info on all script actions is shown)"
+    puts "    -s=<search_mode>     : Specifies the Search mode of HTML documents."
+    puts "                           Can be: none | local | server | external | "
+    puts "                         : Can be used only with -html option"
 }
 
 # Parses command line arguments
@@ -240,7 +261,11 @@ proc OverviewDoc_LoadFilesList {} {
     if { [file exists "$INPUTDIR/FILES.txt"] == 1 } {
         set FILE [open "$INPUTDIR/FILES.txt" r]
         while {1} {
-            set line [gets $FILE]
+            set line [string trim [gets $FILE]]
+
+            # trim possible comments starting with '#'
+            set line [regsub {\#.*} $line {}]
+
             if {$line != ""} {
               lappend available_docfiles $line
             }
@@ -314,8 +339,8 @@ proc OverviewDoc_MakeRefmanTex {fileName latexDir docLabel verboseMode} {
     puts $texfile "\\hfuzz=15pt"
     puts $texfile "\\hbadness=750"
     puts $texfile "\\setlength{\\emergencystretch}{15pt}"
-    puts $texfile "\\setlength{\\parindent}{0.75cm}"
-    puts $texfile "\\setlength{\\parskip}{0.2cm}"
+    puts $texfile "\\setlength{\\parindent}{0cm}";#0.75cm
+    puts $texfile "\\setlength{\\parskip}{0.2cm}"; #0.2
     puts $texfile "\\makeatletter"
     puts $texfile "\\renewcommand{\\paragraph}{%"
     puts $texfile "  \@startsection{paragraph}{4}{0ex}{-1.0ex}{1.0ex}{%"
@@ -340,8 +365,8 @@ proc OverviewDoc_MakeRefmanTex {fileName latexDir docLabel verboseMode} {
     puts $texfile "\\fancyhead\[RO\]{\\fancyplain{}{\\bfseries\\thepage}}"
     puts $texfile "\\fancyfoot\[LE\]{\\fancyplain{}{}}"
     puts $texfile "\\fancyfoot\[CE\]{\\fancyplain{}{}}"
-    puts $texfile "\\fancyfoot\[RE\]{\\fancyplain{}{\\bfseries\\scriptsize (c) Open CASCADE Technology 2001\-2013}}"
-    puts $texfile "\\fancyfoot\[LO\]{\\fancyplain{}{\\bfseries\\scriptsize (c) Open CASCADE Technology 2001\-2013}}"
+    puts $texfile "\\fancyfoot\[RE\]{\\fancyplain{}{\\bfseries\\scriptsize (c) Open CASCADE 2001\-2013}}"
+    puts $texfile "\\fancyfoot\[LO\]{\\fancyplain{}{\\bfseries\\scriptsize (c) Open CASCADE 2001\-2013}}"
     puts $texfile "\\fancyfoot\[CO\]{\\fancyplain{}{}}"
     puts $texfile "\\fancyfoot\[RO\]{\\fancyplain{}{}}"
     puts $texfile "\\renewcommand{\\footrulewidth}{0.4pt}"
@@ -378,7 +403,6 @@ proc OverviewDoc_MakeRefmanTex {fileName latexDir docLabel verboseMode} {
     puts $texfile "}"
     puts $texfile "\n"
     puts $texfile "%===== C O N T E N T S =====\n"
-#    puts $texfile "\\DeclareUnicodeCharacter{00A0}{ }"
     puts $texfile "\\begin{document}"
     puts $texfile ""
     puts $texfile "% Titlepage & ToC"
@@ -387,8 +411,8 @@ proc OverviewDoc_MakeRefmanTex {fileName latexDir docLabel verboseMode} {
     puts $texfile "\\begin{titlepage}"
     puts $texfile "\\vspace*{7cm}"
     puts $texfile "\\begin{center}%"
-    puts $texfile "\\includegraphics\[width=0.75\\textwidth, height=0.2\\textheight\]{overview_occttransparent.png}\\\\\\\\"
-    puts $texfile "{\\Large Open C\\-A\\-S\\-C\\-A\\-D\\-E Technology \\\\\[1ex\]\\Large 6.\\-6.\\-0 }\\\\"
+    puts $texfile "\\includegraphics\[width=0.75\\textwidth, height=0.2\\textheight\]{../../../dox/resources/occt_logo.png}\\\\"; #\\\\\\\\
+    puts $texfile "{\\Large Open C\\-A\\-S\\-C\\-A\\-D\\-E Technology \\\\\[1ex\]\\Large [OverviewDoc_DetectCasVersion $latexDir/../../../] }\\\\"
     puts $texfile "\\vspace*{1cm}"
     puts $texfile "{\\Large $docLabel}\\\\"
     puts $texfile "\\vspace*{1cm}"
@@ -404,6 +428,8 @@ proc OverviewDoc_MakeRefmanTex {fileName latexDir docLabel verboseMode} {
     puts $texfile "\\pagenumbering{arabic}"
     puts $texfile "\\hypersetup{pageanchor=true}"
     puts $texfile ""
+    puts $texfile "\\let\\stdsection\\section"
+    puts $texfile "  \\renewcommand\\section{\\pagebreak\\stdsection}"
     puts $texfile "\\hypertarget{$fileName}{}"
     puts $texfile "\\input{$fileName}"
     puts $texfile ""
@@ -464,7 +490,7 @@ proc OverviewDoc_ProcessTex {{texFiles {}} {latexDir} verboseMode} {
 }
 
 # Main procedure for documents compilation
-proc OverviewDoc_Main { {docfiles {}} generatorMode docLabel verboseMode} {
+proc OverviewDoc_Main { {docfiles {}} generatorMode docLabel verboseMode searchMode} {
 
     set INDIR      [file normalize [file dirname [info script]]]
     set CASROOT    [file normalize [file dirname "$INDIR/../../"]]
@@ -482,29 +508,30 @@ proc OverviewDoc_Main { {docfiles {}} generatorMode docLabel verboseMode} {
     if {[file exists $HTMLDIR] == 0} {
         file mkdir $HTMLDIR
     }
-    if {[file exists $LATEXDIR] == 0} {
-        file mkdir $LATEXDIR
-    }
     if {[file exists $PDFDIR] == 0} {
         file mkdir $PDFDIR
     }
+    
+    if {[file exists $LATEXDIR]} {
+      #file delete {*}[glob -nocomplain $LATEXDIR/*.*]
+      file delete -force $LATEXDIR
+    }
+    file mkdir $LATEXDIR
 
     # Run tools to compile documents
-    puts ""
-    puts " [clock format [clock seconds] -format {%Y.%m.%d %H:%M}] Generation process started..."
-    puts ""
-    puts " Please, wait while Doxygen finishes it\'s work"
-    OverviewDoc_MakeDoxyfile $CASROOT "$OUTDIR/overview" $TAGFILEDIR $DOXYFILE $generatorMode $docfiles $verboseMode
+    puts "[clock format [clock seconds] -format {%Y-%m-%d %H:%M}] Generating Doxyfile..."
+    
+    OverviewDoc_MakeDoxyfile $CASROOT "$OUTDIR/overview" $TAGFILEDIR $DOXYFILE $generatorMode $docfiles $verboseMode $searchMode
 
     # Run doxygen tool
     if { $generatorMode == "HTML_ONLY"} {
-        puts " [clock format [clock seconds] -format {%Y.%m.%d %H:%M}] Doxygen is now generating HTML files...\n"
+        puts "[clock format [clock seconds] -format {%Y-%m-%d %H:%M}] Generating HTML files..."
     }
     set RESULT [catch {exec doxygen $DOXYFILE > $OUTDIR/doxygen_out.log} DOX_ERROR] 
     if {$RESULT != 0} {
         if {[llength [split $DOX_ERROR "\n"]] > 1} {
             if {$verboseMode == "YES"} {
-                puts "INFO: See Doxygen messages in $OUTDIR/doxygen_warnings_and_errors.log"
+                puts "See Doxygen log in $OUTDIR/doxygen_warnings_and_errors.log"
             }
             set DOX_ERROR_FILE [open "$OUTDIR/doxygen_warnings_and_errors.log" "w"]
             puts $DOX_ERROR_FILE $DOX_ERROR
@@ -518,8 +545,7 @@ proc OverviewDoc_Main { {docfiles {}} generatorMode docLabel verboseMode} {
 
     # Start PDF generation routine
     if { $generatorMode == "PDF_ONLY" } {
-        puts ""
-        puts " [clock format [clock seconds] -format {%Y.%m.%d %H:%M}] Doxygen is now generating PDF files...\n"
+        puts "[clock format [clock seconds] -format {%Y-%m-%d %H:%M}] Generating PDF files..."
 
         set OS $::tcl_platform(platform)
         if { $OS == "unix" } {
@@ -529,7 +555,6 @@ proc OverviewDoc_Main { {docfiles {}} generatorMode docLabel verboseMode} {
         }
 
         # Prepare a list of TeX files, generated by Doxygen
-        puts "go to $LATEXDIR"
         cd $LATEXDIR
         
         set TEXFILES [glob $LATEXDIR -type f -directory $LATEXDIR -tails "*.tex" ]
@@ -543,10 +568,14 @@ proc OverviewDoc_Main { {docfiles {}} generatorMode docLabel verboseMode} {
             set IDX [lsearch $TEXFILES "$LATEXDIR"]
         }
 
-        puts "Preprocess generated TeX files"
+        if {$verboseMode == "YES"} {
+            puts "Preprocessing generated TeX files..."
+        }
         OverviewDoc_ProcessTex $TEXFILES $LATEXDIR $verboseMode
-
-        puts "Generate PDF files from"
+        
+        if {$verboseMode == "YES"} {
+            puts "Generating PDF files from TeX files..."
+        }
         foreach TEX $TEXFILES {
             # Rewrite existing REFMAN.tex file...
             set TEX [string range $TEX 0 [ expr "[string length $TEX] - 5"]]
@@ -554,12 +583,15 @@ proc OverviewDoc_Main { {docfiles {}} generatorMode docLabel verboseMode} {
             
             if {$verboseMode == "YES"} {
                 puts "INFO: Generating PDF file from $TEX"
+                # ...and use it to generate PDF from TeX...
+                puts "Executing $LATEXDIR/make$PREFIX..."
             }
-            # ...and use it to generate PDF from TeX...
-            puts "execute $LATEXDIR/make$PREFIX"
             set RESULT [catch {eval exec [auto_execok $LATEXDIR/make$PREFIX] > "$OUTDIR/pdflatex_out.log"} LaTeX_ERROR]
             if {$RESULT != 0} {
                 if {[llength [split $LaTeX_ERROR "\n"]] > 1} {
+                    if {$verboseMode == "YES"} {
+                        puts "See Latex log in $OUTDIR/pdflatex_warnings_and_errors.log"
+                    }
                     set LaTeX_ERROR_FILE [open "$OUTDIR/pdflatex_warnings_and_errors.log" "w"]
                     puts $LaTeX_ERROR_FILE $LaTeX_ERROR
                     close $LaTeX_ERROR_FILE
@@ -574,44 +606,37 @@ proc OverviewDoc_Main { {docfiles {}} generatorMode docLabel verboseMode} {
             }
             
             if {![file exists "$LATEXDIR/refman.pdf"]} {
-              puts "file $LATEXDIR/refman.pdf doesn't exist"
+              puts "Error: file $LATEXDIR/refman.pdf does not exist"
               return
             }
             
             file rename $LATEXDIR/refman.pdf "$PDFDIR/$TEX.pdf"
         }
-        if {$verboseMode == "YES"} {
-            puts "INFO: See LaTeX messages in $OUTDIR/pdflatex_warnings_and_errors.log"
-        }
     }
 
     cd $INDIR
-    puts " [clock format [clock seconds] -format {%Y.%m.%d %H:%M}] Generation process finished..."
-    puts ""
-    puts "--------------------------------------------------------------------"
+    puts "[clock format [clock seconds] -format {%Y-%m-%d %H:%M}] Generation completed"
     if { $generatorMode == "HTML_ONLY" } {
-        puts " You can look at generated HTML pages by opening: "
+        puts "View generated HTML documentation by opening: "
         set RESFILE $OUTDIR/overview/html/index.html
-        puts " $RESFILE"
+        puts "$RESFILE"
     }
     if { $generatorMode == "PDF_ONLY" } {
-        puts " You can look at generated PDF files in: "
-        puts " $OUTDIR/overview/pdf folder"
+        puts "PDF files are generated in: "
+        puts "$OUTDIR/overview/pdf folder"
     }
-    puts ""
-    puts " Copyright \u00a9 Open CASCADE Technology 2001-2013"
-    puts "--------------------------------------------------------------------\n"
 }
 
 # A command for User Documentation compilation
 proc occdoc {args} {
     # Programm options
-    set GEN_HTML  "NO"
-    set GEN_PDF   "NO"
+    set GEN_MODE    "HTML_ONLY"
+    
     set DOCFILES  {}
-    set DOCLABEL  "Default OCCT Document"
-    set VERB_MODE "NO"
-    set GEN_MODE  "DEFAULT"
+    set DOCLABEL    "Default OCCT Document"
+    set VERB_MODE   "NO"
+    set SEARCH_MODE "none"
+
     global available_docfiles
     global args_names
     global args_values
@@ -626,80 +651,69 @@ proc occdoc {args} {
     if {[OverviewDoc_ParseArguments $args] == 1} {
         return
     }
-    if {$args_names == {}} {
-        set GEN_HTML "YES"
-        set VERB_MODE "YES"
-    } else {
-        foreach arg_n $args_names {
-            if {$arg_n == "h"} {
-              OverviewDoc_PrintHelpMessage
-              return
-            } elseif {$arg_n == "html"} {
-                set GEN_HTML "YES"
-            } elseif {$arg_n == "pdf"} {
-                set GEN_PDF "YES"
-            } elseif {$arg_n == "v"} {
-                set VERB_MODE "YES"
-            } elseif {$arg_n == "m"} {
-                if {$args_values(m) != "NULL"} {
-                    set DOCFILES $args_values(m)
-                } else {
-                    puts "Error in argument m"
-                    return
-                }
-                # Check if all chosen docfiles are correct
-                foreach docfile $DOCFILES {
-                    if { [lsearch $available_docfiles $docfile] == -1 } {
-                        puts "File \"$docfile\" is not presented in the list of available docfiles"
-                        puts "Please, specify the correct docfile name"
-                        return
-                    } else {
-                        puts "File $docfile is presented in FILES.TXT"
-                    }
-                }
-            } elseif {$arg_n == "l"} {
-                if { [llength $DOCFILES] <= 1 } {
-                    if {$args_values(l) != "NULL"} {
-                        set DOCLABEL $args_values(l)
-                    } else {
-                        puts "Error in argument l"
-                        return
-                    }
-                }
-            } else {
-                puts "\nWrong argument: $arg_n"
-                OverviewDoc_PrintHelpMessage
-                return
-            }
-        }
-    }
-
-    # Specify generation mode
-    if {$GEN_HTML == "YES" && $GEN_PDF == "NO"} {
+    
+  foreach arg_n $args_names {
+    if {$arg_n == "h"} {
+      OverviewDoc_PrintHelpMessage
+      return
+    } elseif {$arg_n == "html"} {
         set GEN_MODE "HTML_ONLY"
-    } elseif {$GEN_PDF == "YES"} {
+    } elseif {$arg_n == "pdf"} {
         set GEN_MODE "PDF_ONLY"
-    }
-    # Check if -v is the only option
-    if {$GEN_MODE == "DEFAULT"} {
-        if { $VERB_MODE == "YES" } {
-            puts "\nArgument -v can't be used without -pdf or -html argument"
-            OverviewDoc_PrintHelpMessage
-        }
+    } elseif {$arg_n == "v"} {
+        set VERB_MODE "YES"
+    } elseif {$arg_n == "m"} {
+      if {$args_values(m) != "NULL"} {
+        set DOCFILES $args_values(m)
+      } else {
+        puts "Error in argument m"
         return
+      }
+        
+      # Check if all chosen docfiles are correct
+      foreach docfile $DOCFILES {
+        if { [lsearch $available_docfiles $docfile] == -1 } {
+          puts "File \"$docfile\" is not presented in the list of available docfiles"
+          puts "Please, specify the correct docfile name"
+          return
+        } else {
+          puts "File $docfile is presented in FILES.TXT"
+        }
+      }
+    } elseif {$arg_n == "l"} {
+      if { [llength $DOCFILES] <= 1 } {
+        if {$args_values(l) != "NULL"} {
+          set DOCLABEL $args_values(l)
+        } else {
+          puts "Error in argument l"
+          return
+        }
+      }
+    } elseif {$arg_n == "s"} {
+      if {$args_values(s) != "NULL"} {
+        set SEARCH_MODE $args_values(s)
+      } else {
+        puts "Error in argument s"
+        return
+      }
+    } else {
+      puts "\nWrong argument: $arg_n"
+      OverviewDoc_PrintHelpMessage
+      return
     }
-    
-    # Specify verbose mode
-    if { $GEN_PDF != "YES" && [llength $DOCFILES] > 1 } {
-        set DOCLABEL ""
-    }
-    
-    # If we don't specify list for docfiles with -m argument,
-    # we assume that we have to generate all docfiles
-    if { [llength $DOCFILES] == 0 } {
-        set DOCFILES $available_docfiles
-    }
+  }
 
-    # Start main activities
-    OverviewDoc_Main $DOCFILES $GEN_MODE $DOCLABEL $VERB_MODE
+  # Specify verbose mode
+  if { $GEN_MODE != "PDF_ONLY" && [llength $DOCFILES] > 1 } {
+    set DOCLABEL ""
+  }
+    
+  # If we don't specify list for docfiles with -m argument,
+  # we assume that we have to generate all docfiles
+  if { [llength $DOCFILES] == 0 } {
+    set DOCFILES $available_docfiles
+  }
+
+  # Start main activities
+  OverviewDoc_Main $DOCFILES $GEN_MODE $DOCLABEL $VERB_MODE $SEARCH_MODE
 }

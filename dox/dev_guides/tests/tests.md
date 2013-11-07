@@ -1,6 +1,8 @@
  Automated Testing System  {#dev_guides__tests}
 ======================================
 
+@tableofcontents
+
 @section testmanual_1 Introduction
 
 This document provides overview and practical guidelines for work with OCCT automatic testing system.
@@ -10,11 +12,13 @@ more in-depth description of the test system, required for modifying the tests a
 
 @subsection testmanual_1_1 Basic Information
 
-OCCT automatic testing system is organized around DRAW Test Harness [1], 
+OCCT automatic testing system is organized around DRAW Test Harness @ref user_guides__test_harness "DRAW Test Harness", 
 a console application based on Tcl (a scripting language) interpreter extended by OCCT-related commands.
+
 Standard OCCT tests are included with OCCT sources and are located in subdirectory *tests*
  of the OCCT root folder. Other test folders can be included in the scope of the test system, 
  e.g. for testing applications based on OCCT.
+
 Logically the tests are organized in three levels:
 
   * Group: group of related test grids, usually relating to some part of OCCT functionality (e.g. blend)
@@ -257,8 +261,8 @@ which will be added to the test report when this status is detected.
 Example:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.tcl}
-    FAILED /\b[Ee]xception\b/ exception
-    FAILED /\bError\b/ error
+    FAILED /\\b[Ee]xception\\b/ exception
+    FAILED /\\bError\\b/ error
     SKIPPED /Cannot open file for reading/ data file is missing
     SKIPPED /Could not read file .*, abandon/ data file is missing
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -273,7 +277,7 @@ with status IGNORE to ignore messages that would otherwise be treated as errors 
 Example:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.tcl}
-    FAILED /\bFaulty\b/ bad shape
+    FAILED /\\bFaulty\\b/ bad shape
     IGNORE /^Error [23]d = [\d.-]+/ debug output of blend command
     IGNORE /^Tcl Exception: tolerance ang : [\d.-]+/ blend failure
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -431,7 +435,7 @@ Example:
 Make sure that file parse.rules in the grid or group directory contains 
 regular expression to catch possible messages indicating failure of the test. 
 For instance, for catching errors reported by *checkshape* command 
-relevant grids define a rule to recognize its report by the word *Faulty*: FAILED /\bFaulty\b/ bad shape
+relevant grids define a rule to recognize its report by the word *Faulty*: FAILED /\\bFaulty\\b/ bad shape
 For the messages generated in the script the most natural way is to use the word *Error* in the message.
 Example:
 
@@ -499,7 +503,8 @@ The new test created for a fixed problem should return FAILED without the fix, a
 @subsection testmanual_3_5 Marking BAD Cases
 
 If the test produces invalid result at a certain moment then the corresponding bug 
-should be created in the OCCT issue tracker [3], and the problem should be marked as TODO in the test script.
+should be created in the OCCT issue tracker http://tracker.dev.opencascade.org, 
+and the problem should be marked as TODO in the test script.
 The following statement should be added to such test script:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.tcl}
@@ -586,9 +591,3 @@ Example:
       d:/occt/test-data[_path_separator]d:/MyOCCTProject/tests
     return ;# this is to avoid an echo of the last command above in cout
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-@section testmanual_5 References
-
--# DRAW Test Harness User’s Guide
--# Perl regular expressions, http://perldoc.perl.org/perlre.html 
--# OCCT MantisBT issue tracker, http://tracker.dev.opencascade.org 
