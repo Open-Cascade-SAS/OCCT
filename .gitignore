@@ -42,7 +42,6 @@ Release
 *~
 
 #Generated files
-*.in
 /*.am
 /*.m4
 /*.ac

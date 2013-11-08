@@ -55,7 +55,7 @@ Standard_Integer TestTopOpeTools_Trace::SetVerbose
 Standard_Integer TestTopOpeTools_Trace::SetVerbose
 (const t_flag flag,const Standard_Boolean b)
 { 
-  Standard_Integer index;
+  Standard_Integer index = 0;
   if ( !Exist(flag,index) ) return 1;
   if (b) cout<<"set "<<mygenre<<" "<<flag<<" verbose"<<endl;
   else   cout<<"set "<<mygenre<<" "<<flag<<" not verbose"<<endl;
@@ -66,7 +66,7 @@ Standard_Integer TestTopOpeTools_Trace::SetVerbose
 Standard_Integer TestTopOpeTools_Trace::Set
 (const Standard_Integer mute,const t_flag flag,const t_value value)
 { 
-  Standard_Integer index;
+  Standard_Integer index = 0;
   if ( !Exist(flag,index) ) return 1;
   if (mute==0) {
     if (value) cout<<"activation de "<<mygenre<<" "<<flag<<endl;
@@ -88,7 +88,7 @@ Standard_Integer TestTopOpeTools_Trace::Set
 (const Standard_Integer mute,const t_flag flag, const t_value value,
  Standard_Integer n, const char** a)
 { 
-  Standard_Integer index;
+  Standard_Integer index = 0;
   if ( !Exist(flag,index) ) return 1;
   if      ( Getftyp(index) == te_intarg ) {
     (*((tf_intarg)Getfunc(index)))(value,n,a);

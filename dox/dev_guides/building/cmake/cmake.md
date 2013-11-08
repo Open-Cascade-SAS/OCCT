@@ -12,15 +12,17 @@ If you are building OCCT from bare sources (as in Git repository), or do some
 changes affecting CDL files, you need to use WOK to re-generate header files
 and build scripts / projects. See \ref dev_guides__building__wok for instructions.
 
-Before building OCCT, you need to install required third-party libraries; see paragraph 1 of 
-\ref dev_guides__building for instructions.
+Before building OCCT, you need to install required third-party libraries; see
+instructions for your platform in @ref dev_guides__building.
 
 ## Decide on location of build and install directories.
 
 The build directory is the one where intermediate files will be created (projects / makefiles, objects, binaries).
-The install directory is the one where binaries will be installed after build, along with header files and resources required for OCCT use in applications.
+The install directory is the one where binaries will be installed after build, 
+along with header files and resources required for OCCT use in applications.
 
-OCCT CMake scripts assume use of separate build and one install directories for each configuration (Debug or Release).
+OCCT CMake scripts assume use of separate build and one install directories 
+for each configuration (Debug or Release).
 
 It is recommended to separate build and install directories from OCCT source directory, for example:
 
@@ -30,9 +32,13 @@ It is recommended to separate build and install directories from OCCT source dir
 
 ## CMake usage
 
-Run CMake indicating path to OCCT sources ($CASROOT; in previous example CASROOT equal to /user/home/occt in lin case, and d:/occt in win case) and selected build directory (in prev example build directory is /user/home/tmp/occt-build-release). 
+Run CMake indicating path to OCCT sources ($CASROOT; in previous example 
+CASROOT equal to /user/home/occt in lin case, and d:/occt in windows case) 
+and selected build directory (in prev example build directory is 
+/user/home/tmp/occt-build-release). 
 
-It is recommended to use GUI tools provided by CMake: cmake-gui on Windows and Mac, ccmake on Linux.
+It is recommended to use GUI tools provided by CMake: cmake-gui on Windows 
+and Mac, ccmake on Linux.
 
 ### Windows:
 
@@ -75,9 +81,10 @@ Note: In cmake-gui there is "grouped" option, which groups variables with a comm
 
 * BUILD_TYPE - defines build configuration of the future project (Release by default)
 * BUILD_<MODULE> - allows including the toolkit set of the specified module to the future project or excluding it from the project.
-* BUILD_TOOLKITS - allows including additional specified toolkits (list of items separated by a space or a semicolon) to the common set of the future project.
+* BUILD_TOOLKITS - allows including specific OCCT toolkits (list of items separated by a space or a semicolon) to the common set of the future project.
 
-Check USE_\<PRODUCT\> variable (USE_FREEIMAGE, USE_GL2PS, USE_TBB and USE_OPENCL) if you want to use this 3rd-party product in the future project.
+Check USE_\<PRODUCT\> variable (USE_FREEIMAGE, USE_GL2PS, USE_TBB and USE_OPENCL) 
+if you want to use this 3rd-party product in the future project.
 
 ### 3rd-party configuration
 
@@ -87,7 +94,9 @@ specify 3RDPARTY_DIR variable that points to the folders of 3rdparty products (s
 At the next configuration 3rd-party product paths stored in 3RDPARTY_\<PRODUCT\>_DIR variable 
 will be searched for in 3RDPARTY_DIR directory. If the structure of 3RDPARTY_DIR directory 
 is the same as adopted in the OCCT, the directory will contain product dir, lib and header files. 
+
 Press "Configure" ("c" key for ccmake)
+
 Important: The names of searched libraries and header files are hardcoded.
 The result of the 3rdparty product search will be recorded in the corresponding variables:
 
@@ -107,7 +116,7 @@ The search process is as follows:
 If a variable of any level is not defined (empty or \<variable name\>-NOTFOUND) 
 and the upper level variable is defined, the content of the non-defined variable 
 will be searched for at the next configuration step. If search process in level 3 
-doesn't find the required files, it searches in default places also. 
+does not find the required files, it searches in default places also. 
 
 *Note*: Freetype search process tries to find ft2build.h file in 3RDPARTY_FREETYPE INCLUDE dir 
 and after that adds "3RDPARTY_FREETYPE_INCLUDE /freetype2" path to common includes if it exists. 
