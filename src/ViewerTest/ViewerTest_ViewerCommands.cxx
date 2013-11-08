@@ -635,32 +635,33 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
   if (ViewerTest::GetAISContext().IsNull() ||
       !(ViewerTest_myContexts.IsBound1(aViewNames.GetViewerName())))
   {
-    Handle(AIS_InteractiveContext) aContext =
-      new AIS_InteractiveContext(a3DViewer);
+    Handle(AIS_InteractiveContext) aContext = new AIS_InteractiveContext (a3DViewer);
     ViewerTest::SetAISContext (aContext);
     ViewerTest_myContexts.Bind (aViewNames.GetViewerName(), ViewerTest::GetAISContext());
   }
   else
+  {
     ViewerTest::ResetEventManager();
+  }
 
   // Create window
-#if defined(_WIN32) || defined(__WIN32__)
-      VT_GetWindow() = new WNT_Window (aTitle.ToCString(),
-                                       Handle(WNT_WClass)::DownCast (WClass()),
-                                       Draw_VirtualWindows ? WS_POPUPWINDOW : WS_OVERLAPPEDWINDOW,
-                                       aPxLeft, aPxTop,
-                                       aPxWidth, aPxHeight,
-                                       Quantity_NOC_BLACK);
+#if defined(_WIN32)
+  VT_GetWindow() = new WNT_Window (aTitle.ToCString(),
+                                    Handle(WNT_WClass)::DownCast (WClass()),
+                                    Draw_VirtualWindows ? WS_POPUPWINDOW : WS_OVERLAPPEDWINDOW,
+                                    aPxLeft, aPxTop,
+                                    aPxWidth, aPxHeight,
+                                    Quantity_NOC_BLACK);
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
-      VT_GetWindow() = new Cocoa_Window (aTitle.ToCString(),
-                                         aPxLeft, aPxTop,
-                                         aPxWidth, aPxHeight);
-      ViewerTest_SetCocoaEventManagerView (VT_GetWindow());
+  VT_GetWindow() = new Cocoa_Window (aTitle.ToCString(),
+                                     aPxLeft, aPxTop,
+                                     aPxWidth, aPxHeight);
+  ViewerTest_SetCocoaEventManagerView (VT_GetWindow());
 #else
-      VT_GetWindow() = new Xw_Window (aGraphicDriver->GetDisplayConnection(),
-                                      aTitle.ToCString(),
-                                      aPxLeft, aPxTop,
-                                      aPxWidth, aPxHeight);
+  VT_GetWindow() = new Xw_Window (aGraphicDriver->GetDisplayConnection(),
+                                  aTitle.ToCString(),
+                                  aPxLeft, aPxTop,
+                                  aPxWidth, aPxHeight);
 #endif
   VT_GetWindow()->SetVirtual (Draw_VirtualWindows);
 
@@ -688,7 +689,7 @@ TCollection_AsciiString ViewerTest::ViewerInit (const Standard_Integer thePxLeft
     a3DViewer->SetLightOn();
   }
 
-  #if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+  #if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
   #if TCL_MAJOR_VERSION  < 8
   Tk_CreateFileHandler((void*)XConnectionNumber(GetDisplayConnection()->GetDisplay()),
       TK_READABLE, VProcessEvents, (ClientData) VT_GetWindow()->XWindow() );
@@ -749,70 +750,87 @@ Standard_Boolean splitParameter (const TCollection_AsciiString& theString,
 //==============================================================================
 //function : Vinit
 //purpose  : Create the window viewer and initialize all the global variable
-//    Use Tk_CreateFileHandler on UNIX to cath the X11 Viewer event
+//    Use Tk_CreateFileHandler on UNIX to catch the X11 Viewer event
 //==============================================================================
 
 static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const char** theArgVec)
 {
-if (theArgsNb > 9)
+  if (theArgsNb > 9)
   {
-    theDi << theArgVec[0] << ": incorrect number of command arguments.\n"
-      << "Type help for more information.\n";
+    std::cerr << theArgVec[0] << ": incorrect number of command arguments.\n"
+              << "Type help for more information.\n";
     return 1;
   }
-  TCollection_AsciiString aViewName (""),
-                          aDisplayName ("");
-  Standard_Integer aPxLeft = 0,
-                  aPxTop = 0,
-                  aPxWidth = 0,
-                  aPxHeight = 0;
 
-  for (Standard_Integer i = 1; i < theArgsNb; ++i)
+  TCollection_AsciiString aViewName, aDisplayName;
+  Standard_Integer aPxLeft = 0, aPxTop = 0, aPxWidth = 0, aPxHeight = 0;
+  TCollection_AsciiString aName, aValue;
+  for (Standard_Integer anArgIt = 1; anArgIt < theArgsNb; ++anArgIt)
   {
-    TCollection_AsciiString aName = "", aValue = "";
-    if(!splitParameter (TCollection_AsciiString(theArgVec[i]),aName,aValue) && theArgsNb == 2)
+    const TCollection_AsciiString anArg = theArgVec[anArgIt];
+    TCollection_AsciiString anArgCase = anArg;
+    anArgCase.UpperCase();
+    if (splitParameter (anArg, aName, aValue))
     {
-      // In case of syntax: vinit ViewName
-      aViewName = theArgVec[1];
-    }
-    else
-    {
-      if (aName == "name")
+      aName.UpperCase();
+      if (aName.IsEqual ("NAME"))
       {
         aViewName = aValue;
       }
-      else if (aName == "l" || aName == "left")
+      else if (aName.IsEqual ("L")
+            || aName.IsEqual ("LEFT"))
+      {
         aPxLeft = aValue.IntegerValue();
-      else if (aName == "t" || aName == "top")
+      }
+      else if (aName.IsEqual ("T")
+            || aName.IsEqual ("TOP"))
+      {
         aPxTop = aValue.IntegerValue();
-#if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
-      else if (aName == "display")
+      }
+    #if !defined(_WIN32) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
+      else if (aName.IsEqual ("DISP")
+            || aName.IsEqual ("DISPLAY"))
+      {
         aDisplayName = aValue;
-#endif
-      else if (aName == "w" || aName == "width")
+      }
+    #endif
+      else if (aName.IsEqual ("W")
+            || aName.IsEqual ("WIDTH"))
+      {
         aPxWidth = aValue.IntegerValue();
-      else if (aName == "h" || aName == "height")
+      }
+      else if (aName.IsEqual ("H")
+            || aName.IsEqual ("HEIGHT"))
+      {
         aPxHeight = aValue.IntegerValue();
+      }
       else
       {
-        theDi << theArgVec[0] << ": Warning: unknown parameter " << aName.ToCString() << ".\n";
+        std::cerr << theArgVec[0] << ": Warning: unknown argument " << anArg << ".\n";
       }
+    }
+    else if (aViewName.IsEmpty())
+    {
+      aViewName = anArg;
+    }
+    else
+    {
+      std::cerr << theArgVec[0] << ": Warning: unknown argument " << anArg << ".\n";
     }
   }
 
   ViewerTest_Names aViewNames (aViewName);
-  if (ViewerTest_myViews.IsBound1 (aViewNames.GetViewName ()))
+  if (ViewerTest_myViews.IsBound1 (aViewNames.GetViewName()))
   {
-    TCollection_AsciiString aCommand("vactivate ");
-    aCommand = aCommand + aViewNames.GetViewName();
-    theDi.Eval(aCommand.ToCString());
+    TCollection_AsciiString aCommand = TCollection_AsciiString ("vactivate ") + aViewNames.GetViewName();
+    theDi.Eval (aCommand.ToCString());
     return 0;
   }
 
   TCollection_AsciiString aViewId = ViewerTest::ViewerInit (aPxLeft, aPxTop, aPxWidth, aPxHeight,
                                                             aViewName.ToCString(),
                                                             aDisplayName.ToCString());
-  cout << theArgVec[0] << ": 3D View - " << aViewId << " was created.\n";
+  theDi << aViewId;
   return 0;
 }
 
@@ -1499,29 +1517,31 @@ void VT_ProcessConfigure()
 //function : VT_ProcessButton1Press
 //purpose  : Picking
 //==============================================================================
-Standard_Boolean VT_ProcessButton1Press(
-  Standard_Integer ,
-  const char**     argv,
-  Standard_Boolean pick,
-  Standard_Boolean shift)
+Standard_Boolean VT_ProcessButton1Press (Standard_Integer ,
+                                         const char**     theArgVec,
+                                         Standard_Boolean theToPick,
+                                         Standard_Boolean theIsShift)
 {
-  Handle(ViewerTest_EventManager) EM = ViewerTest::CurrentEventManager();
-  if ( pick ) {
+  if (theToPick)
+  {
     Standard_Real X, Y, Z;
+    ViewerTest::CurrentView()->Convert (X_Motion, Y_Motion, X, Y, Z);
 
-    ViewerTest::CurrentView()->Convert(X_Motion, Y_Motion, X, Y, Z);
+    Draw::Set (theArgVec[1], X);
+    Draw::Set (theArgVec[2], Y);
+    Draw::Set (theArgVec[3], Z);
+  }
 
-    Draw::Set(argv[1], X);
-    Draw::Set(argv[2], Y);
-    Draw::Set(argv[3], Z);}
-
-  if(shift)
-    EM->ShiftSelect();
+  if (theIsShift)
+  {
+    ViewerTest::CurrentEventManager()->ShiftSelect();
+  }
   else
-    EM->Select();
+  {
+    ViewerTest::CurrentEventManager()->Select();
+  }
 
-  pick = 0;
-  return pick;
+  return Standard_False;
 }
 
 //==============================================================================
