@@ -184,75 +184,87 @@ then run **wgendoc** command with required arguments, for instance:
 
 @section OCCT_OVW_SECTION_5 Requirements
 
-@subsection OCCT_OVW_SECTION_5_1 Linux Intel
-<table>
-<tr> <th>Operating System  </th> <th> 64-bit:  Mandriva 2010, CentOS 5. 5, CentOS 6.3, Fedora 17, Fedora 18, Ubuntu-1304, Debian 6.0 *  </th> </tr>
-<tr> <td> Minimum memory </td> <td> 512 Mb, 1 Gb recommended </td > </tr> 
-<tr> <td> Free disk space (complete installation)  </td> <td> For full installation Open CASCADE Technology requires 600 Mb of disk space.  </td > </tr> 
-<tr> <td>Minimum swap space  </td> <td> 500 Mb </td > </tr> 
-<tr> <td> Video card   </td> <td> **GeForce** The following versions of GeForce drivers are recommended: 
-- 64-bit Version: 100.14.19 or later http://www.nvidia.com/object/linux_display_amd64_100.14.19.html 
-- 32-bit Version: 100.14.19 or later http://www.nvidia.com/object/linux_display_ia32_100.14.19.html  </td > </tr> 
-<tr> <td> Graphic library     </td> <td> OpenGL 1.1+ (OpenGL 2.1+ is recommended) <br> OpenCL 1.1+ (optional for ray tracing) </td > </tr> 
-<tr> <td>C++      </td> <td>GNU gcc 4.0.  - 4.7.3.  </td > </tr> 
-<tr> <td> TCL (for testing tools)    </td> <td> Tcltk 8.5 or 8.6 http://www.tcl.tk/software/tcltk/8.6.html</td > </tr> 
-<tr> <td> Qt (for demonstration tools)  </td> <td> Qt 4.6.2 http://qt.nokia.com/downloads </td > </tr> 
-<tr> <td> Freetype (OCCT Text rendering) </td> <td> freetype-2.4.11 http://sourceforge.net/projects/freetype/files/ </td > </tr> 
-<tr> <td> FreeImage (Support of common graphic formats) </td> <td>FreeImage 3.15.4 http://sourceforge.net/projects/freeimage/files/Source%20Distribution/     </td > </tr> 
-<tr> <td> gl2ps (Export contents of OCCT viewer to vector graphic file)      </td> <td> gl2ps-1.3.8  http://geuz.org/gl2ps/ </td > </tr> 
-<tr> <td>TBB (optional tool for parallelized version of BRepMesh component)  </td> <td> TBB 3.x or 4.x http://www.threadingbuildingblocks.org/    </td > </tr> 
-<tr> <td> OpenCL (optional for providing ray tracing visualization core </td> <td>http://developer.amd.com/tools-and-sdks/heterogeneous-computing/amd-accelerated-parallel-processing-app-sdk/downloads/          </td>  </tr> 
-</table>
-\* Debian 60 64 bit is a permanently tested platform. 
+Open CASCADE Technology is designed to be highly portable and is known to 
+work on wide range of platforms (UNIX, Linux, Windows, Mac OS X). 
+Current version is officially certified on Windows (IA-32 and x86-64), 
+Linux (x86-64) and MAC OS X (x86-64) platforms. 
 
-@subsection OCCT_OVW_SECTION_5_2 Windows Intel
+The tables below describe the recommended hardware and software configurations
+for which OCCT is certified to work.
 
-<table>
-<tr> <th>Operating System  </th> <th> 32/64-bit: 8/ 7 SP1 / VISTA SP2 /XP SP3    </th> </tr>
-<tr> <td> Minimum memory </td> <td> 512 Mb, 1 Gb recommended </td > </tr> 
-<tr> <td> Free disk space (complete installation)  </td> <td> For full installation Open CASCADE Technology requires 650 Mb of disk space but during the process of installation you will need 1,2 Gb of free disk space.  </td > </tr> 
-<tr> <td>Minimum swap space  </td> <td> 500 Mb </td > </tr> 
-<tr> <td> Video card   </td> <td> **GeForce** Version 266.58 WHQL or later is recommended: http://www.nvidia.com/Download/index.aspx  
- </td > </tr> 
-<tr> <td> Graphic library     </td> <td> OpenGL 1.1+ (OpenGL 2.1+ is recommended) <br> OpenCL 1.1+ (optional for ray tracing) </td > </tr> 
-<tr> <td>C++      </td> <td>
-- Microsoft Visual Studio 2005 SP1 with all security updates
-- Microsoft Visual Studio 2008 SP1*
-- Microsoft Visual Studio 2010 SP1
-- Microsoft Visual Studio 2012 Update 3
-- Microsoft Visual Studio 2013
-- Intel C++ Composer XE 2013 SP1
-  </td > </tr> 
-<tr> <td> TCL (for testing tools)    </td> <td> ActiveTcl 8.5 or 8.6 http://www.activestate.com/activetcl/downloads  </td > </tr> 
-<tr> <td> Qt (for demonstration tools)  </td> <td> Qt 4.6.2 http://qt.digia.com/downloads </td > </tr> 
-<tr> <td> Freetype (OCCT Text rendering) </td> <td> freetype-2.4.11 http://sourceforge.net/projects/freetype/files/ </td > </tr> 
-<tr> <td> FreeImage (Support of common graphic formats )</td> <td>FreeImage 3.15.4 http://sourceforge.net/projects/freeimage/files/Source%20Distribution/     </td > </tr> 
-<tr> <td> gl2ps (Export contents of OCCT viewer to vector graphic file)      </td> <td> gl2ps-1.3.8  http://geuz.org/gl2ps/ </td > </tr> 
-<tr> <td>TBB (optional tool for parallelized version of BRepMesh component)  </td> <td> TBB 3.x or 4.x http://www.threadingbuildingblocks.org/    </td > </tr> 
-<tr> <td> OpenCL (optional for providing ray tracing visualization core </td> <td>http://developer.amd.com/tools-and-sdks/heterogeneous-computing/amd-accelerated-parallel-processing-app-sdk/downloads/          </td>  </tr> 
-</table>
+@subsection OCCT_OVW_SECTION_5_1 Linux
 
-* The official release of OCCT for Windows contains libraries built with VC++ 2008. 
+| Operating System  | Mandriva 2010, CentOS 5.5, CentOS 6.3, Fedora 17, Fedora 18, Ubuntu-1304, Debian 6.0\*  |
+| ----- | ----- |
+| Minimum memory    | 512 MB, 1 GB recommended |
+| Free disk space (complete installation) | 600 MB approx. |
+| Video card   | See \ref overview_req_graphics |
+| Graphic library | OpenGL 1.1+ (OpenGL 2.1+ is recommended)|
+| C++      | GNU gcc 4.0.  - 4.7.3. |
+| TCL (for testing tools)    | Tcltk 8.5 or 8.6 http://www.tcl.tk/software/tcltk/8.6.html |
+| Qt (for demonstration tools) | Qt 4.6.2 http://qt.nokia.com/downloads |
+| Freetype (for text rendering) | freetype-2.4.11 http://sourceforge.net/projects/freetype/files/ |
+| FreeImage (optional, for support of common 2D graphic formats) | FreeImage 3.15.4 http://sourceforge.net/projects/freeimage/files |
+| gl2ps (optional, for export contents of OCCT viewer to vector graphic files) | gl2ps-1.3.8  http://geuz.org/gl2ps/ |
+| Intel TBB (optional, for multithreaded algorithms) | TBB 3.x or 4.x http://www.threadingbuildingblocks.org/ |
+| OpenCL (optional, for ray tracing visualization core | OpenCL 1.1+ http://developer.amd.com/tools-and-sdks/heterogeneous-computing/amd-accelerated-parallel-processing-app-sdk/downloads/ |
 
+* Debian 60 64 bit is a platform used for regular testing of contributions 
+
+@subsection OCCT_OVW_SECTION_5_2 Windows
+
+| Operating System | Windows 8 / 7 SP1 / Vista SP2 / XP SP3 |
+| ----- | ----- |
+| Minimum memory    | 512 MB, 1 GB recommended |
+| Free disk space (complete installation) | 600 MB approx. |
+| Video card   | See \ref overview_req_graphics |
+| Graphic library | OpenGL 1.1+ (OpenGL 2.1+ is recommended)|
+| C++ | Microsoft Visual Studio: 2005 SP1, 2008 SP1\*, 2010 SP1, 2012 Update 3, 2013 <br>Intel C++ Composer XE 2013 SP1 |
+| TCL (for testing tools) | ActiveTcl 8.5 or 8.6 http://www.activestate.com/activetcl/downloads |
+| Qt (for demonstration tools) | Qt 4.6.2 http://qt.nokia.com/downloads |
+| Freetype (OCCT Text rendering) | freetype-2.4.11 http://sourceforge.net/projects/freetype/files/ |
+| FreeImage (Support of common graphic formats) | FreeImage 3.15.4 http://sourceforge.net/projects/freeimage/files |
+| gl2ps (Export contents of OCCT viewer to vector graphic file) | gl2ps-1.3.8  http://geuz.org/gl2ps/ |
+| Intel TBB (optional tool for multithreaded algorithms) | TBB 3.x or 4.x http://www.threadingbuildingblocks.org/ |
+| OpenCL (optional for providing ray tracing visualization core | OpenCL 1.1+ http://developer.amd.com/tools-and-sdks/heterogeneous-computing/amd-accelerated-parallel-processing-app-sdk/downloads/ |
+
+* VC++ 9 32-bit is used for certification of contributions and for building 
+  binary package of official release of OCCT on Windows.
 
 @subsection OCCT_OVW_SECTION_5_3 MAC OS X
 
-<table>
-<tr> <th>Operating System  </th> <th> 64-bit: Mac OS X 10.9 Mavericks / 10.8 Mountain Lion / 10.7 Lion / 10.6.8 Snow Leopard </th> </tr>
-<tr> <td> Minimum memory </td> <td> 512 Mb, 1 Gb recommended </td > </tr> 
-<tr> <td> Free disk space (complete installation)  </td> <td> For full installation Open CASCADE Technology requires 600 Mb of disk space. </td > </tr> 
-<tr> <td>Minimum swap space  </td> <td> 500 Mb </td > </tr> 
-<tr> <td> Video card   </td> <td> **GeForce** Version 266.58 WHQL or later is recommended: http://www.nvidia.com/Download/index.aspx  
- </td > </tr> 
-<tr> <td> Graphic library     </td> <td> OpenGL 1.1+ (OpenGL 2.1+ is recommended) <br> OpenCL 1.1+ (optional for ray tracing) </td > </tr> 
-<tr> <td>C++      </td> <td>XCode 3.2 or newer (4.x is recommended)  </td > </tr> 
-<tr> <td> Qt (for demonstration tools)  </td> <td> Qt 4.6.2 http://qt.digia.com/downloads </td > </tr> 
-<tr> <td> Freetype (OCCT Text rendering) </td> <td> freetype-2.4.11 http://sourceforge.net/projects/freetype/files/ </td > </tr> 
-<tr> <td> FreeImage (Support of common graphic formats )</td> <td>FreeImage 3.15.4 http://sourceforge.net/projects/freeimage/files/Source%20Distribution/     </td > </tr> 
-<tr> <td> gl2ps (Export contents of OCCT viewer to vector graphic file)      </td> <td> gl2ps-1.3.8  http://geuz.org/gl2ps/ </td > </tr> 
-<tr> <td>TBB (optional tool for parallelized version of BRepMesh component)  </td> <td> TBB 3.x or 4.x http://www.threadingbuildingblocks.org/    </td > </tr> 
-<tr> <td> OpenCL (optional for providing ray tracing visualization core </td> <td> OpenCL 1.2.8 native </td>  </tr> 
-</table>
+| Operating System | Mac OS X 10.9 Mavericks / 10.8 Mountain Lion / 10.7 Lion / 10.6.8 Snow Leopard |
+| ----- | ----- |
+| Minimum memory    | 512 MB, 1 GB recommended |
+| Free disk space (complete installation) | 600 MB approx. |
+| Video card | See \ref overview_req_graphics |
+| Graphic library | OpenGL 1.1+ (OpenGL 2.1+ is recommended)|
+| C++      | XCode 3.2 or newer (4.x is recommended) |
+| Qt (for demonstration tools) | Qt 4.6.2 http://qt.nokia.com/downloads |
+| Freetype (OCCT Text rendering) | freetype-2.4.11 http://sourceforge.net/projects/freetype/files/ |
+| FreeImage (Support of common graphic formats) | FreeImage 3.15.4 http://sourceforge.net/projects/freeimage/files |
+| gl2ps (Export contents of OCCT viewer to vector graphic file) | gl2ps-1.3.8  http://geuz.org/gl2ps/ |
+| Intel TBB (optional tool for multithreaded algorithms) | TBB 3.x or 4.x http://www.threadingbuildingblocks.org/ |
+| OpenCL (optional for providing ray tracing visualization core | OpenCL 1.1+ http://developer.amd.com/tools-and-sdks/heterogeneous-computing/amd-accelerated-parallel-processing-app-sdk/downloads/ | 
+
+@subsection overview_req_graphics Graphic cards
+
+For 3d viewer, graphic card or software implementation supporting OpenGL 1.1 
+or above is required. OpenGL 2.1+ is highly recommended.
+For ray tracing, hardware implementation of OpenCL 1.1+ is required.
+
+The following table lists graphic cards tested to work with OCCT.
+
+| Graphic card | Driver/GL/GLSL/CL version | OS | OpenGL (fixed pipeline) | OpenGL (shaders) | OpenCL (ray tracing |
+| ---- | ---- | ---- | :----: | :----: | :----: |
+| NVIDIA GeForce GT 630M | Driver 311.44, GL 4.3.0, GLSL 4.30 | Windows 7 64 bit | OK | OK | OK |
+| Intel(R) HD Graphics 3000 | GL 3.1.0, GLSL 1.40 | Windows 7 64 bit | OK | OK | none |
+| RadeOn 9600 | GL 2.1.8454, GLSL 1.20 | | OK | bad | none |
+| Mesa 7.8.2 Windows GDI Driver\* | GL 2.1, GLSL version 1.20 | Mac OS X 10.6 / OS X 10.9 | OK | artifacts | none |
+| GeForce 320 |  | Mac OS X 10.6 / OS X 10.9 | OK | OK | OK |
+| Apple software OpenGL | | Mac OS X 10.6 / OS X 10.9 | OK | OK | OK |
+
+* Mesa implementation of OpenGL is used for certification testing of OCCT
 
 @section OCCT_OVW_SECTION_4 Installation
 
@@ -357,7 +369,7 @@ The scripts are located in the OCCT root folder.
     they will be allocated in the C heap by malloc();
   * **CSF_LANGUAGE** is required to define the default language of messages;
   * **CSF_DEBUG** (optional, Windows only): if defined then a diagnostic message is displayed in case of an exception;
-  * **CSF_DEBUG_BOP** (optional): if defined then it should specify directovy where diagnostic data on problems occured in Boolean operations will be saved;
+  * **CSF_DEBUG_BOP** (optional): if defined then it should specify directory where diagnostic data on problems occured in Boolean operations will be saved;
   * **CSF_MDTVTexturesDirectory** defines the directory for available textures when using texture mapping;
   * **CSF_UnitsDefinition** and **CSF_UnitsLexicon** should define paths to resource files Lexi_Expr.dat and Units.dat, respectively, required for support of measurement units;
   * **CSF_SHMessage** is required in order to define the path to the messages file for *ShapeHealing*;
