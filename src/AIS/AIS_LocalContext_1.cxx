@@ -1523,7 +1523,6 @@ Handle(SelectMgr_EntityOwner) AIS_LocalContext::FindSelectedOwnerFromShape(const
 
 #ifdef OCC9026
   if (!found) {
-    //now iterate over all shapes loaded into the context (but inside the collector)
     SelectMgr_DataMapIteratorOfDataMapOfIntegerSensitive aSensitiveIt (myMainVS->Primitives());
     for (; aSensitiveIt.More(); aSensitiveIt.Next()) {
       EO = Handle(SelectMgr_EntityOwner)::DownCast (aSensitiveIt.Value()->OwnerId());

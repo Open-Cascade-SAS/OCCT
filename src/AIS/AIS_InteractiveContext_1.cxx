@@ -425,7 +425,6 @@ AIS_StatusOfPick AIS_InteractiveContext::Select(const Standard_Boolean updatevie
     if(myWasLastMain)
       return myLocalContexts(myCurLocalIndex)->Select(updateviewer);
     else
-      // picking was done in the collector, special processing is required...
       {
 	myLocalContexts(myCurLocalIndex)->SetSelected(myLastPicked,updateviewer);
 	return AIS_SOP_OneSelected;

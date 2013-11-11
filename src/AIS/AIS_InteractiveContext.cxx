@@ -83,10 +83,6 @@
 // in spite of the selection mode of the interactive object in Natural Point.
 #define OCC166
 
-// An interactive Object being erased in the main viewer and put into collector should have the same selection mode.
-// It impacts the performance!
-#define OCC328
-
 static Standard_Boolean AISDebugModeOn()
 {
 //  static OSD_Environment aisdb("AISDEBUGMODE");

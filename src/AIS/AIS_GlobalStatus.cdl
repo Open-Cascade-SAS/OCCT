@@ -24,8 +24,7 @@ private class GlobalStatus from AIS inherits TShared from MMgt
 
 	---Purpose: Stores  information  about objects in graphic context:
 	--          - Status Of Display : in the main viewer 
-	--                                in the  collector
-	--                                fully Erased
+	--                                hidden in the main viewer
 	--          - Displayed Modes 
 	--          - Active Selection Modes
 	--          - is the Interactive Object Current ?
@@ -90,16 +89,12 @@ is
     ---C++: inline
     ---Purpose: keeps the information of displayed modes in the 
     --          main viewer.
-    --          (The convention is that the object is displayed
-    --          with the mode 0 in the collector...)
-    
+
     SelectionModes(me) returns ListOfInteger from TColStd;
     ---C++: return const &
     ---C++: inline
     ---Purpose: keeps the active selection modes of the object
     --          in the main viewer.
-    --          (The convention is that the active selection mode
-    --          for an object in the collector is the mode 0).
 
     IsHilighted(me) returns Boolean from Standard;
     ---C++: inline
