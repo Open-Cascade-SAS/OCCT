@@ -50,6 +50,12 @@ inline Standard_Real gp_XYZ::Coord (const Standard_Integer i) const {
   return (&x)[i-1];
 }
 
+inline Standard_Real& gp_XYZ::ChangeCoord(const Standard_Integer theIndex)
+{
+  Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > 3,NULL);
+  return (&x)[theIndex - 1];
+}
+
 inline void gp_XYZ::Coord (Standard_Real& X,
 			   Standard_Real& Y,
 			   Standard_Real& Z) const

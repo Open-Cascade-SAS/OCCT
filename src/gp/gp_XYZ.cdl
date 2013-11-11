@@ -78,6 +78,12 @@ is
       raises OutOfRange
       is static;
 
+   ChangeCoord (me: in out; theIndex : Integer) returns Real
+      ---C++: inline
+      ---C++: return &
+      raises OutOfRange;
+
+
   Coord (me; X, Y, Z : out Real)  is static;
         ---C++: inline
         --Purpose: For this XYZ object, returns:

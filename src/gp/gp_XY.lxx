@@ -47,6 +47,12 @@ inline Standard_Real gp_XY::Coord (const Standard_Integer i) const
   return (&x)[i-1];
 }
 
+inline Standard_Real& gp_XY::ChangeCoord (const Standard_Integer theIndex)
+{
+  Standard_OutOfRange_Raise_if(theIndex < 1 || theIndex > 2,NULL);
+  return (&x)[theIndex - 1];
+}
+
 inline void gp_XY::Coord (Standard_Real& X,
 			  Standard_Real& Y) const
 { X = x;  Y = y; }
