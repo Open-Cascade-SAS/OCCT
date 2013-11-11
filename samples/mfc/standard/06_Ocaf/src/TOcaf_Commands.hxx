@@ -38,6 +38,7 @@ class TOcaf_Object;
 #ifndef _Standard_Macro_HeaderFile
 #include <Standard_Macro.hxx>
 #endif
+#include "TFunction_Logbook.hxx"
 
 class TOcaf_Commands  {
 

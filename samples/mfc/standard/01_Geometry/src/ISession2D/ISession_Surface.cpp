@@ -5,6 +5,10 @@
 #include "stdafx.h"
 #include "..\\GeometryApp.h"
 #include "ISession_Surface.h"
+#include <GeomAdaptor_HSurface.hxx>
+#include <StdPrs_ShadedSurface.hxx>
+#include <StdPrs_WFPoleSurface.hxx>
+#include <StdPrs_WFSurface.hxx>
 
 #ifdef _DEBUG
 #undef THIS_FILE

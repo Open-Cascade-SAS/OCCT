@@ -42,6 +42,10 @@ OCC_2dDoc::OCC_2dDoc() : OCC_BaseDoc()
   AfxInitRichEdit();
 }
 
+OCC_2dDoc::~OCC_2dDoc()
+{
+}
+
 void OCC_2dDoc::FitAll2DViews(Standard_Boolean theUpdateViewer)
 {
   if (theUpdateViewer)

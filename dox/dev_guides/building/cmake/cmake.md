@@ -82,11 +82,16 @@ Note: In cmake-gui there is "grouped" option, which groups variables with a comm
 * BUILD_TYPE - defines build configuration of the future project (Release by default)
 * BUILD_<MODULE> - allows including the toolkit set of the specified module to the future project or excluding it from the project.
 * BUILD_TOOLKITS - allows including specific OCCT toolkits (list of items separated by a space or a semicolon) to the common set of the future project.
+* BUILD_SAMPLES  - allows including MFC samples (for visual studio only) to the common set of the future project. 
+                   In install folder there will be samples.bat script to execute specific sample. 
+                   List of samples is being shown by sample.bat without arguments.
+
+###The variables with USE_ prefix (3rd-party libraries):
 
 Check USE_\<PRODUCT\> variable (USE_FREEIMAGE, USE_GL2PS, USE_TBB and USE_OPENCL) 
-if you want to use this 3rd-party product in the future project.
+if you want to use this 3rd-party product.
 
-### 3rd-party configuration
+### 3rd-party configuration (The variables with 3RDPARTY_ prefix)
 
 If you have 3rd-party libraries in a non-default location 
 (e.g., on Windows, binaries downloaded from "http://www.opencascade.org/getocc/download/3rdparty/"), 
@@ -95,7 +100,7 @@ At the next configuration 3rd-party product paths stored in 3RDPARTY_\<PRODUCT\>
 will be searched for in 3RDPARTY_DIR directory. If the structure of 3RDPARTY_DIR directory 
 is the same as adopted in the OCCT, the directory will contain product dir, lib and header files. 
 
-Press "Configure" ("c" key for ccmake)
+ **Press "Configure" ("c" key for ccmake)**
 
 Important: The names of searched libraries and header files are hardcoded.
 The result of the 3rdparty product search will be recorded in the corresponding variables:
@@ -107,16 +112,16 @@ The result of the 3rdparty product search will be recorded in the corresponding 
 
 The search process is as follows:
 
-1 level:. 3RDPARTY_DIR
-  2 level: 3RDPARTY_\<PRODUCT\>_DIR\
-    3 level: 3RDPARTY_\<PRODUCT\>_LIBRARY
-    3 level: 3RDPARTY_\<PRODUCT\>_INCLUDE
-    3 level: 3RDPARTY_\<PRODUCT\>_DLL
+ - 1 level:. 3RDPARTY_DIR
+   - 2 level: 3RDPARTY_\<PRODUCT\>_DIR\
+     - 3 level: 3RDPARTY_\<PRODUCT\>_LIBRARY
+     - 3 level: 3RDPARTY_\<PRODUCT\>_INCLUDE
+     - 3 level: 3RDPARTY_\<PRODUCT\>_DLL
 
 If a variable of any level is not defined (empty or \<variable name\>-NOTFOUND) 
 and the upper level variable is defined, the content of the non-defined variable 
 will be searched for at the next configuration step. If search process in level 3 
-does not find the required files, it searches in default places also. 
+does not find the required files, it searches in default places also.
 
 *Note*: Freetype search process tries to find ft2build.h file in 3RDPARTY_FREETYPE INCLUDE dir 
 and after that adds "3RDPARTY_FREETYPE_INCLUDE /freetype2" path to common includes if it exists. 
@@ -133,11 +138,11 @@ and the result will be recorded to empty variables (non-empty variables will not
 
 For example, (Linux case) 3RDPARTY_FREETYPE_DIR variable 
 
-/PRODUCTS/maintenance/Mandriva2010/freetype-2.3.7
+    /PRODUCTS/maintenance/Mandriva2010/freetype-2.3.7
 
 can be changed to 
 
-/PRODUCTS/maintenance/Mandriva2010/freetype-2.4.10
+    /PRODUCTS/maintenance/Mandriva2010/freetype-2.4.10
 
 and the related variables: 3RDPARTY_FREETYPE_DLL, 3RDPARTY_FREETYPE_INCLUDE_DIR and  3RDPARTY_FREETYPE_LIBRARY will be cleared.
 
@@ -146,11 +151,12 @@ and the related variables: 3RDPARTY_FREETYPE_DLL, 3RDPARTY_FREETYPE_INCLUDE_DIR 
 
 During configuration process the cleaned variables will be filled with new found values.
 
-### Install path configuration
+###The variables with INSTALL_ prefix:
 
-Define in INSTALL_DIR variable the path to the installed OCCT files (libraries, executables and headers).
+Define in INSTALL_DIR variable the path where will be placed built OCCT files (libraries, executables and headers).
 If INSTALL_\<PRODUCT\> variable is checked - 3rd-party products will be copied to the install directory.
-At the end of the configuration process "configuring done" message will be shown and the generation process can be started.
+
+#### At the end of the configuration process "configuring done" message will be shown and the generation process can be started.
 
 ## OCCT Generation
 

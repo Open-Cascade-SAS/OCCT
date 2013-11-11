@@ -81,7 +81,7 @@ protected:
   DECLARE_MESSAGE_MAP()
 private :
   void UpdateProjector();
-  void ShowHideButton(Standard_Boolean EnableButton=Standard_True;);
+  void ShowHideButton(Standard_Boolean EnableButton=Standard_True);
   void Apply();
   CHLRDoc* myDoc;
 

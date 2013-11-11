@@ -6,6 +6,11 @@
 
 #include <stdafx.h>
 #include <TOcafFunction_BoxDriver.hxx>
+#include "Standard_GUID.hxx"
+#include "TFunction_Logbook.hxx"
+#include "TDataStd_Real.hxx"
+#include "BRepPrimAPI_MakeBox.hxx"
+#include "TNaming_Builder.hxx"
 
 //=======================================================================
 //function : GetID

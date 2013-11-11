@@ -8,6 +8,10 @@
 #include <TOcafFunction_CylDriver.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TDF_Tool.hxx>
+#include "Standard_GUID.hxx"
+#include "TFunction_Logbook.hxx"
+#include "TDataStd_Real.hxx"
+#include "TNaming_Builder.hxx"
 
 
 //=======================================================================

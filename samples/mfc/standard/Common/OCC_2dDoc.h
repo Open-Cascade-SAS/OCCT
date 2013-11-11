@@ -20,6 +20,7 @@ class AFX_EXT_CLASS OCC_2dDoc : public OCC_BaseDoc
 public:
 
   OCC_2dDoc();
+  ~OCC_2dDoc();
 
 // Operations
 public:

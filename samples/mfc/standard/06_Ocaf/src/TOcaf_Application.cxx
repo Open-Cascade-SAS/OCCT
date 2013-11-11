@@ -10,6 +10,10 @@
 #include <TPrsStd_AISPresentation.hxx>
 #include <TPrsStd_AISViewer.hxx>
 #include <TNaming_NamedShape.hxx>
+#include "TFunction_DriverTable.hxx"
+#include "TOcafFunction_BoxDriver.hxx"
+#include "TOcafFunction_CylDriver.hxx"
+#include "TOcafFunction_CutDriver.hxx"
 
 //=======================================================================
 //function : TOcaf_Application

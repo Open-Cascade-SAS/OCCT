@@ -9,7 +9,7 @@
 #include "OCC_3dChildFrame.h"
 #include "ImportExportDoc.h"
 #include <OCC_3dView.h>
-#include <res\resource.h>
+#include <res/resource.h>
 
 BEGIN_MESSAGE_MAP(CImportExportApp, OCC_App)
 	//{{AFX_MSG_MAP(CSerializeApp)

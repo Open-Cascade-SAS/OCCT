@@ -3,6 +3,8 @@
 #include "stdafx.h"
 
 #include <ISession2D_SensitiveCurve.h>
+#include <GCPnts_TangentialDeflection.hxx>
+#include <SelectBasics_BasicTool.hxx>
 
 IMPLEMENT_STANDARD_HANDLE(ISession2D_SensitiveCurve,Select3D_SensitiveEntity)
 IMPLEMENT_STANDARD_RTTIEXT(ISession2D_SensitiveCurve,Select3D_SensitiveEntity)

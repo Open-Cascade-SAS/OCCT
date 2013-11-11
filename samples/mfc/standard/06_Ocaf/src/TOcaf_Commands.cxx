@@ -25,6 +25,13 @@
 #include <Geom_SphericalSurface.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <TPrsStd_AISViewer.hxx>
+#include "TDataStd_Name.hxx"
+#include "TFunction_Function.hxx"
+#include "TOcafFunction_BoxDriver.hxx"
+#include "TFunction_DriverTable.hxx"
+#include "TOcafFunction_CylDriver.hxx"
+#include "TDF_Reference.hxx"
+#include "TOcafFunction_CutDriver.hxx"
 
 //=======================================================================
 //function : TOcaf_Commands

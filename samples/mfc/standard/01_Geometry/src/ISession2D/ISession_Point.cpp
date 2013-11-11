@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "..\\GeometryApp.h"
 #include "ISession_Point.h"
+#include <StdPrs_Point.hxx>
 
 #ifdef _DEBUG
 #undef THIS_FILE

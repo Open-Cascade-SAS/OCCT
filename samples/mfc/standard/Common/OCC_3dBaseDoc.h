@@ -21,6 +21,7 @@ protected:
 public:
 
   OCC_3dBaseDoc();
+  ~OCC_3dBaseDoc();
 
   void SetMaterial(Graphic3d_NameOfMaterial Material);
 

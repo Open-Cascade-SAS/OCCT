@@ -2,6 +2,11 @@
 
 #include <ISession2D_Curve.h>
 #include "..\\GeometryApp.h"
+#include <Graphic3d_ArrayOfPolylines.hxx>
+#include <Geom2d_BezierCurve.hxx>
+#include <Geom2dLProp_CLProps2d.hxx>
+#include <TColStd_Array1OfReal.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 
 IMPLEMENT_STANDARD_HANDLE(ISession2D_Curve,AIS_InteractiveObject)
 IMPLEMENT_STANDARD_RTTIEXT(ISession2D_Curve,AIS_InteractiveObject)

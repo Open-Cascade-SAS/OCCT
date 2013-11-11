@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "..\\GeometryApp.h"
 #include "ISession_Curve.h"
+#include <StdPrs_PoleCurve.hxx>
 
 IMPLEMENT_STANDARD_HANDLE(ISession_Curve,AIS_InteractiveObject)
 IMPLEMENT_STANDARD_RTTIEXT(ISession_Curve,AIS_InteractiveObject)

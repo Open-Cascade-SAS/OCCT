@@ -1,0 +1,52 @@
+cmake_minimum_required (VERSION 2.6)
+
+project (Triangulation)
+
+add_definitions (-DWINVER=0x0500)
+
+set (Triangulation_SRC_DIR      ${MFC_STANDARD_SAMPLES_DIR}/07_Triangulation/src)
+set (Triangulation_HEADER_FILES ${Triangulation_SRC_DIR}/ISession_Curve.h
+                                ${Triangulation_SRC_DIR}/OCCDemo_Presentation.h
+                                ${Triangulation_SRC_DIR}/Tesselate_Presentation.h
+                                ${Triangulation_SRC_DIR}/TriangulationApp.h
+                                ${Triangulation_SRC_DIR}/TriangulationDoc.h
+                                ${Triangulation_SRC_DIR}/StdAfx.h )
+set (Triangulation_SOURCE_FILES ${Triangulation_SRC_DIR}/ISession_Curve.cpp
+                                ${Triangulation_SRC_DIR}/OCCDemo_Presentation.cpp
+                                ${Triangulation_SRC_DIR}/Tesselate_Presentation.cpp
+                                ${Triangulation_SRC_DIR}/TriangulationApp.cpp
+                                ${Triangulation_SRC_DIR}/TriangulationDoc.cpp
+                                ${Triangulation_SRC_DIR}/StdAfx.cpp)
+
+set (Triangulation_RESOURCE_DIR    ${MFC_STANDARD_SAMPLES_DIR}/07_Triangulation/res)
+set (Triangulation_RESOURCE_HEADER ${Triangulation_RESOURCE_DIR}/resource.h)
+set (Triangulation_RESOURCE_FILES  ${Triangulation_RESOURCE_DIR}/Toolbar.bmp
+                                   ${Triangulation_RESOURCE_DIR}/Triangulation.rc)
+
+# groups in the VS solution
+source_group ("Source Files" FILES ${Triangulation_SOURCE_FILES}
+                                   ${COMMON_WINMAIN_FILE})
+
+source_group ("Header Files" FILES ${Triangulation_HEADER_FILES}
+                                   ${Triangulation_RESOURCE_HEADER})
+
+source_group ("Resource Files" FILES ${Triangulation_RESOURCE_FILES})
+
+add_executable (Triangulation WIN32 ${Triangulation_SOURCE_FILES}
+                                    ${Triangulation_HEADER_FILES}
+                                    ${COMMON_WINMAIN_FILE}
+                                    ${Triangulation_RESOURCE_HEADER}
+                                    ${Triangulation_RESOURCE_FILES})
+
+set_property (TARGET Triangulation PROPERTY FOLDER Samples)
+
+install (TARGETS Triangulation RUNTIME DESTINATION "${INSTALL_DIR}/bin"
+                               ARCHIVE DESTINATION "${INSTALL_DIR}/lib"
+                               LIBRARY DESTINATION "${INSTALL_DIR}/lib")
+
+include_directories (${OCCT_ROOT}/inc
+                     ${MFC_STANDARD_SAMPLES_DIR}/Common
+                     ${MFC_STANDARD_SAMPLES_DIR}/07_Triangulation
+                     ${Triangulation_SRC_DIR})
+
+target_link_libraries (Triangulation mfcsample TKSTEP209 TKSTEPAttr TKBO)

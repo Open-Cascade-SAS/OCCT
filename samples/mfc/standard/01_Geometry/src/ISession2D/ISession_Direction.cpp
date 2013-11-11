@@ -5,6 +5,8 @@
 #include "stdafx.h"
 #include "..\\GeometryApp.h"
 #include "ISession_Direction.h"
+#include <Prs3d_ArrowAspect.hxx>
+#include <DsgPrs_LengthPresentation.hxx>
 
 #ifdef _DEBUG
 #undef THIS_FILE

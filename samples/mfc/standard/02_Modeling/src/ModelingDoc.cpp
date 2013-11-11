@@ -16,6 +16,10 @@
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <TColStd_Array2OfReal.hxx>
 #include <OCC_MainFrame.h>
+#include <BRepPrimAPI_MakeCylinder.hxx>
+#include <TopExp_Explorer.hxx>
+#include <Geom_Plane.hxx>
+#include <BRepTools.hxx>
 
 Handle(AIS_Shape) AIS1;
 TopoDS_Face F1,F2;
