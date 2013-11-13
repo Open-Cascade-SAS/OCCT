@@ -226,7 +226,7 @@ void OpenGl_AspectFace::SetAspect (const CALL_DEF_CONTEXTFILLAREA& theAspect)
   const TCollection_AsciiString& aTextureKey = myTexture.IsNull() ? THE_EMPTY_KEY : myTexture->GetId();
   if (aTextureKey.IsEmpty() || myResources.TextureId != aTextureKey)
   {
-    myResources.ResetTexture();
+    myResources.ResetTextureReadiness();
   }
 
   // update shader program binding
@@ -235,7 +235,7 @@ void OpenGl_AspectFace::SetAspect (const CALL_DEF_CONTEXTFILLAREA& theAspect)
   const TCollection_AsciiString& aShaderKey = myShaderProgram.IsNull() ? THE_EMPTY_KEY : myShaderProgram->GetId();
   if (aShaderKey.IsEmpty() || myResources.ShaderProgramId != aShaderKey)
   {
-    myResources.ResetShader();
+    myResources.ResetShaderReadiness();
   }
 }
 
@@ -411,7 +411,7 @@ void OpenGl_AspectFace::Release (const Handle(OpenGl_Context)& theContext)
     myResources.Texture.Nullify();
   }
   myResources.TextureId.Clear();
-  myResources.ResetTexture();
+  myResources.ResetTextureReadiness();
 
   if (!myResources.ShaderProgram.IsNull()
    && !theContext.IsNull())
@@ -420,7 +420,7 @@ void OpenGl_AspectFace::Release (const Handle(OpenGl_Context)& theContext)
                                              myResources.ShaderProgram);
   }
   myResources.ShaderProgramId.Clear();
-  myResources.ResetShader();
+  myResources.ResetShaderReadiness();
 }
 
 // =======================================================================
@@ -484,6 +484,8 @@ void OpenGl_AspectFace::Resources::BuildShader (const Handle(OpenGl_Workspace)& 
   if (!ShaderProgram.IsNull())
   {
     aContext->ShaderManager()->Unregister (ShaderProgramId, ShaderProgram);
+    ShaderProgramId.Clear();
+    ShaderProgram.Nullify();
   }
   if (theShader.IsNull())
   {

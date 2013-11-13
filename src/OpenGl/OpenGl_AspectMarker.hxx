@@ -132,8 +132,8 @@ protected: //! @name OpenGl resources
     Standard_Boolean IsShaderReady() const { return myIsShaderReady; }
     void SetSpriteReady() { myIsSpriteReady = Standard_True; }
     void SetShaderReady() { myIsShaderReady = Standard_True; }
-    void ResetSprite   () { myIsSpriteReady = Standard_False; }
-    void ResetShader   () { myIsShaderReady = Standard_False; }
+    void ResetSpriteReadiness() { myIsSpriteReady = Standard_False; }
+    void ResetShaderReadiness() { myIsShaderReady = Standard_False; }
 
     void BuildSprites (const Handle(OpenGl_Workspace)& theWS,
                        const Handle(Graphic3d_MarkerImage)& theMarkerImage,

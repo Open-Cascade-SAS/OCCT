@@ -1482,11 +1482,11 @@ void OpenGl_AspectMarker::SetAspect (const CALL_DEF_CONTEXTMARKER& theAspect)
 
   if (aSpriteKey.IsEmpty() || myResources.SpriteKey != aSpriteKey)
   {
-    myResources.ResetSprite();
+    myResources.ResetSpriteReadiness();
   }
   if (aSpriteAKey.IsEmpty() || myResources.SpriteAKey != aSpriteAKey)
   {
-    myResources.ResetSprite();
+    myResources.ResetSpriteReadiness();
   }
 
   // update shader program resource bindings
@@ -1494,7 +1494,7 @@ void OpenGl_AspectMarker::SetAspect (const CALL_DEF_CONTEXTMARKER& theAspect)
 
   if (aShaderKey.IsEmpty() || myResources.ShaderProgramId != aShaderKey)
   {
-    myResources.ResetShader();
+    myResources.ResetShaderReadiness();
   }
 }
 
@@ -1535,7 +1535,7 @@ void OpenGl_AspectMarker::Release (const Handle(OpenGl_Context)& theCtx)
   }
   myResources.SpriteKey.Clear();
   myResources.SpriteAKey.Clear();
-  myResources.ResetSprite();
+  myResources.ResetSpriteReadiness();
 
   if (!myResources.ShaderProgram.IsNull() && !theCtx.IsNull())
   {
@@ -1543,7 +1543,7 @@ void OpenGl_AspectMarker::Release (const Handle(OpenGl_Context)& theCtx)
                                          myResources.ShaderProgram);
   }
   myResources.ShaderProgramId.Clear();
-  myResources.ResetShader();
+  myResources.ResetShaderReadiness();
 }
 
 // =======================================================================
@@ -1909,6 +1909,8 @@ void OpenGl_AspectMarker::Resources::BuildShader (const Handle(OpenGl_Workspace)
   if (!ShaderProgram.IsNull())
   {
     aContext->ShaderManager()->Unregister (ShaderProgramId, ShaderProgram);
+    ShaderProgramId.Clear();
+    ShaderProgram.Nullify();
   }
   if (theShader.IsNull())
   {

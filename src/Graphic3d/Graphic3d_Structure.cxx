@@ -750,8 +750,8 @@ Handle(Graphic3d_AspectLine3d) Graphic3d_Structure::Line3dAspect () const {
   ALType  = Aspect_TypeOfLine (MyCStructure.ContextLine.LineType);
   AWidth  = Standard_Real (MyCStructure.ContextLine.Width);
 
-  Handle(Graphic3d_AspectLine3d) CTXL =
-    new Graphic3d_AspectLine3d (AColor, ALType, AWidth);
+  Handle(Graphic3d_AspectLine3d) CTXL = new Graphic3d_AspectLine3d (AColor, ALType, AWidth);
+  CTXL->SetShaderProgram (MyCStructure.ContextLine.ShaderProgram);
 
   return CTXL;
 
@@ -778,8 +778,8 @@ Handle(Graphic3d_AspectText3d) Graphic3d_Structure::Text3dAspect () const {
   AStyle  = Aspect_TypeOfStyleText (MyCStructure.ContextText.Style);
   ADisplayType = Aspect_TypeOfDisplayText (MyCStructure.ContextText.DisplayType);
 
-  Handle(Graphic3d_AspectText3d) CTXT =
-    new Graphic3d_AspectText3d (AColor, AFont, AnExpansion, ASpace,AStyle,ADisplayType);
+  Handle(Graphic3d_AspectText3d) CTXT = new Graphic3d_AspectText3d (AColor, AFont, AnExpansion, ASpace,AStyle,ADisplayType);
+  CTXT->SetShaderProgram (MyCStructure.ContextText.ShaderProgram);
 
   return CTXT;
 
@@ -800,8 +800,8 @@ Handle(Graphic3d_AspectMarker3d) Graphic3d_Structure::Marker3dAspect () const {
   AMType  = MyCStructure.ContextMarker.MarkerType;
   AScale  = Standard_Real (MyCStructure.ContextMarker.Scale);
 
-  Handle(Graphic3d_AspectMarker3d) CTXM =
-    new Graphic3d_AspectMarker3d (AMType, AColor, AScale);
+  Handle(Graphic3d_AspectMarker3d) CTXM = new Graphic3d_AspectMarker3d (AMType, AColor, AScale);
+  CTXM->SetShaderProgram (MyCStructure.ContextMarker.ShaderProgram);
 
   return CTXM;
 
@@ -984,6 +984,7 @@ Graphic3d_MATERIAL_PHYSIC : Graphic3d_MATERIAL_ASPECT;
   {
     CTXF->SetTextureMapOff();
   }
+  CTXF->SetShaderProgram (MyCStructure.ContextFillArea.ShaderProgram);
 
   // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
   CTXF->SetPolygonOffsets(MyCStructure.ContextFillArea.PolygonOffsetMode,
@@ -1020,6 +1021,7 @@ void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectLine
   MyCStructure.ContextLine.Color.b        = float (B);
   MyCStructure.ContextLine.LineType       = int (ALType);
   MyCStructure.ContextLine.Width          = float (AWidth);
+  MyCStructure.ContextLine.ShaderProgram  = CTX->ShaderProgram();
   MyCStructure.ContextLine.IsDef          = 1;
 
   MyGraphicDriver->ContextStructure (MyCStructure);
@@ -1215,6 +1217,7 @@ void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectFill
 
   MyCStructure.ContextFillArea.Texture.TextureMap   = CTX->TextureMap();
   MyCStructure.ContextFillArea.Texture.doTextureMap = CTX->TextureMapState() ? 1 : 0;
+  MyCStructure.ContextFillArea.ShaderProgram        = CTX->ShaderProgram();
 
   // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
   Standard_Integer aPolyMode;
@@ -1274,6 +1277,7 @@ void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectText
   MyCStructure.ContextText.TextZoomable     = ATextZoomable;
   MyCStructure.ContextText.TextAngle        = float (ATextAngle);
   MyCStructure.ContextText.TextFontAspect   = int (ATextFontAspect);
+  MyCStructure.ContextText.ShaderProgram    = CTX->ShaderProgram();
 
   MyCStructure.ContextText.IsDef          = 1;
 
@@ -1307,6 +1311,7 @@ void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectMark
   MyCStructure.ContextMarker.Color.b      = float (B);
   MyCStructure.ContextMarker.MarkerType   = AMType;
   MyCStructure.ContextMarker.Scale        = float (AScale);
+  MyCStructure.ContextMarker.ShaderProgram = CTX->ShaderProgram();
   MyCStructure.ContextMarker.IsDef        = 1;
 
   MyGraphicDriver->ContextStructure (MyCStructure);
@@ -2071,6 +2076,7 @@ void Graphic3d_Structure::UpdateStructure (const Handle(Graphic3d_AspectLine3d)&
   MyCStructure.ContextLine.Color.b        = float (B);
   MyCStructure.ContextLine.LineType       = int (ALType);
   MyCStructure.ContextLine.Width          = float (AWidth);
+  MyCStructure.ContextLine.ShaderProgram  = CTXL->ShaderProgram();
 
   CTXM->Values (AColor, AMType, AScale);
   AColor.Values (R, G, B, Quantity_TOC_RGB);
@@ -2080,6 +2086,7 @@ void Graphic3d_Structure::UpdateStructure (const Handle(Graphic3d_AspectLine3d)&
   MyCStructure.ContextMarker.Color.b      = float (B);
   MyCStructure.ContextMarker.MarkerType   = AMType;
   MyCStructure.ContextMarker.Scale        = float (AScale);
+  MyCStructure.ContextMarker.ShaderProgram = CTXM->ShaderProgram();
 
   CTXT->Values (AColor, AFont, AnExpansion, ASpace,AStyleT,ADisplayType,AColorSubTitle,ATextZoomable,ATextAngle,ATextFontAspect);
   AColor.Values (R, G, B, Quantity_TOC_RGB);
@@ -2099,6 +2106,7 @@ void Graphic3d_Structure::UpdateStructure (const Handle(Graphic3d_AspectLine3d)&
   MyCStructure.ContextText.TextZoomable     = ATextZoomable;
   MyCStructure.ContextText.TextAngle        = float (ATextAngle);
   MyCStructure.ContextText.TextFontAspect   = int (ATextFontAspect);
+  MyCStructure.ContextText.ShaderProgram    = CTXT->ShaderProgram();
 
 
 
@@ -2264,6 +2272,7 @@ void Graphic3d_Structure::UpdateStructure (const Handle(Graphic3d_AspectLine3d)&
 
   MyCStructure.ContextFillArea.Texture.TextureMap   = CTXF->TextureMap();
   MyCStructure.ContextFillArea.Texture.doTextureMap = CTXF->TextureMapState() ? 1 : 0;
+  MyCStructure.ContextFillArea.ShaderProgram        = CTXF->ShaderProgram();
 
   // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
   Standard_Integer aPolyMode;

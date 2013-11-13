@@ -156,8 +156,8 @@ protected:
     Resources() : myIsShaderReady (Standard_False) {}
 
     Standard_Boolean IsShaderReady() const { return myIsShaderReady; }
-    void SetShaderReady() { myIsShaderReady = Standard_True; }
-    void ResetShader   () { myIsShaderReady = Standard_False; }
+    void SetShaderReady()       { myIsShaderReady = Standard_True; }
+    void ResetShaderReadiness() { myIsShaderReady = Standard_False; }
 
     void BuildShader (const Handle(OpenGl_Workspace)& theWS, const Handle(Graphic3d_ShaderProgram)& theShader);
 

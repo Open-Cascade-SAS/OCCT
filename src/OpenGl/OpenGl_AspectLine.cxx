@@ -70,7 +70,7 @@ void OpenGl_AspectLine::SetAspect (const CALL_DEF_CONTEXTLINE &theAspect)
   const TCollection_AsciiString& aShaderKey = myShaderProgram.IsNull() ? THE_EMPTY_KEY : myShaderProgram->GetId();
   if (aShaderKey.IsEmpty() || myResources.ShaderProgramId != aShaderKey)
   {
-    myResources.ResetShader();
+    myResources.ResetShaderReadiness();
   }
 }
 
@@ -96,7 +96,7 @@ void OpenGl_AspectLine::Release (const Handle(OpenGl_Context)& theContext)
                                              myResources.ShaderProgram);
   }
   myResources.ShaderProgramId.Clear();
-  myResources.ResetShader();
+  myResources.ResetShaderReadiness();
 }
 
 // =======================================================================
@@ -116,6 +116,8 @@ void OpenGl_AspectLine::Resources::BuildShader (const Handle(OpenGl_Workspace)& 
   if (!ShaderProgram.IsNull())
   {
     aContext->ShaderManager()->Unregister (ShaderProgramId, ShaderProgram);
+    ShaderProgramId.Clear();
+    ShaderProgram.Nullify();
   }
   if (theShader.IsNull())
   {

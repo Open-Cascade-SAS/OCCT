@@ -88,7 +88,7 @@ void OpenGl_AspectText::SetAspect (const CALL_DEF_CONTEXTTEXT& theAspect)
 
   if (aShaderKey.IsEmpty() || myResources.ShaderProgramId != aShaderKey)
   {
-    myResources.ResetShader();
+    myResources.ResetShaderReadiness();
   }
 }
 
@@ -114,7 +114,7 @@ void OpenGl_AspectText::Release (const Handle(OpenGl_Context)& theContext)
                                              myResources.ShaderProgram);
   }
   myResources.ShaderProgramId.Clear();
-  myResources.ResetShader();
+  myResources.ResetShaderReadiness();
 }
 
 // =======================================================================
@@ -134,6 +134,8 @@ void OpenGl_AspectText::Resources::BuildShader (const Handle(OpenGl_Workspace)& 
   if (!ShaderProgram.IsNull())
   {
     aContext->ShaderManager()->Unregister (ShaderProgramId, ShaderProgram);
+    ShaderProgramId.Clear();
+    ShaderProgram.Nullify();
   }
   if (theShader.IsNull())
   {
