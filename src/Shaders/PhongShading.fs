@@ -97,7 +97,7 @@ vec4 computeLighting (in vec3 theNormal,
   Diffuse  = vec3 (0.0);
   Specular = vec3 (0.0);
   vec3 aPoint = thePoint.xyz / thePoint.w;
-  for (int anIndex = 0; anIndex < occLightSourcesCount; ++anIndex)
+  for (int anIndex = 0; anIndex < THE_MAX_LIGHTS; ++anIndex)
   {
     int aType = occLight_Type (anIndex);
     if (aType == OccLightType_Direct)

@@ -261,7 +261,7 @@ public:
 
   //! Returns packed (serialized) representation of light source properties
   const OpenGl_Vec4* Packed()  { return reinterpret_cast<OpenGl_Vec4*> (this); }
-  static Standard_Size NbOfVec4() { return 4; }
+  static Standard_Integer NbOfVec4() { return 4; }
 
 };
 
@@ -275,7 +275,7 @@ public:
 
   //! Returns packed (serialized) representation of light source type
   const OpenGl_Vec2i* Packed() { return reinterpret_cast<OpenGl_Vec2i*> (this); }
-  static Standard_Size NbOfVec2i() { return 1; }
+  static Standard_Integer NbOfVec2i() { return 1; }
 
 };
 
@@ -291,6 +291,12 @@ void OpenGl_ShaderManager::PushLightSourceState (const Handle(OpenGl_ShaderProgr
     return;
   }
 
+  OpenGl_ShaderLightType* aLightTypeArray = new OpenGl_ShaderLightType[OpenGLMaxLights];
+  for (Standard_Integer aLightIt = 0; aLightIt < OpenGLMaxLights; ++aLightIt)
+  {
+    aLightTypeArray[aLightIt].Type = -1;
+  }
+
   const Standard_Integer aLightsDefNb = Min (myLightSourceState.LightSources()->Size(), OpenGLMaxLights);
   if (aLightsDefNb < 1)
   {
@@ -300,12 +306,15 @@ void OpenGl_ShaderManager::PushLightSourceState (const Handle(OpenGl_ShaderProgr
     theProgram->SetUniform (myContext,
                             theProgram->GetStateLocation (OpenGl_OCC_LIGHT_AMBIENT),
                             OpenGl_Vec4 (0.0f, 0.0f, 0.0f, 0.0f));
+    theProgram->SetUniform (myContext,
+                            theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_TYPES),
+                            OpenGLMaxLights * OpenGl_ShaderLightType::NbOfVec2i(),
+                            aLightTypeArray[0].Packed());
     theProgram->UpdateState (OpenGl_LIGHT_SOURCES_STATE, myLightSourceState.Index());
     return;
   }
 
   OpenGl_ShaderLightParameters* aLightParamsArray = new OpenGl_ShaderLightParameters[aLightsDefNb];
-  OpenGl_ShaderLightType*       aLightTypeArray   = new OpenGl_ShaderLightType[aLightsDefNb];
 
   OpenGl_Vec4 anAmbient (0.0f, 0.0f, 0.0f, 0.0f);
   Standard_Integer aLightsNb = 0;
@@ -345,12 +354,12 @@ void OpenGl_ShaderManager::PushLightSourceState (const Handle(OpenGl_ShaderProgr
   theProgram->SetUniform (myContext,
                           theProgram->GetStateLocation (OpenGl_OCC_LIGHT_AMBIENT),
                           anAmbient);
+  theProgram->SetUniform (myContext,
+                          theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_TYPES),
+                          OpenGLMaxLights * OpenGl_ShaderLightType::NbOfVec2i(),
+                          aLightTypeArray[0].Packed());
   if (aLightsNb > 0)
   {
-    theProgram->SetUniform (myContext,
-                            theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_TYPES),
-                            aLightsNb * OpenGl_ShaderLightType::NbOfVec2i(),
-                            aLightTypeArray[0].Packed());
     theProgram->SetUniform (myContext,
                             theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_PARAMS),
                             aLightsNb * OpenGl_ShaderLightParameters::NbOfVec4(),
