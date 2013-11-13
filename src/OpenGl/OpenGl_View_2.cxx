@@ -74,7 +74,8 @@ struct OPENGL_CLIP_PLANE
 *  Set des lumieres
 */
 static void bind_light (const OpenGl_Light& theLight,
-                        GLenum&             theLightGlId)
+                        GLenum&             theLightGlId,
+                        Graphic3d_Vec4&     theAmbientColor)
 {
   // Only 8 lights in OpenGL...
   if (theLightGlId > GL_LIGHT7)
@@ -84,8 +85,8 @@ static void bind_light (const OpenGl_Light& theLight,
 
   if (theLight.Type == Visual3d_TOLS_AMBIENT)
   {
-    // setup RGBA intensity of the ambient light
-    glLightModelfv (GL_LIGHT_MODEL_AMBIENT, theLight.Color.GetData());
+    // add RGBA intensity of the ambient light
+    theAmbientColor += theLight.Color;
     return;
   }
 
@@ -933,13 +934,21 @@ D = -[Px,Py,Pz] dot |Nx|
   // Apply Lights
   {
     // setup lights
-    glLightModelfv (GL_LIGHT_MODEL_AMBIENT, THE_DEFAULT_AMBIENT);
+    Graphic3d_Vec4 anAmbientColor (THE_DEFAULT_AMBIENT[0],
+                                   THE_DEFAULT_AMBIENT[1],
+                                   THE_DEFAULT_AMBIENT[2],
+                                   THE_DEFAULT_AMBIENT[3]);
     GLenum aLightGlId = GL_LIGHT0;
     for (OpenGl_ListOfLight::Iterator aLightIt (myLights);
          aLightIt.More(); aLightIt.Next())
     {
-      bind_light (aLightIt.Value(), aLightGlId);
+      bind_light (aLightIt.Value(), aLightGlId, anAmbientColor);
     }
+
+    // apply accumulated ambient color
+    anAmbientColor.a() = 1.0f;
+    glLightModelfv (GL_LIGHT_MODEL_AMBIENT, anAmbientColor.GetData());
+
     if (aLightGlId != GL_LIGHT0)
     {
       glEnable (GL_LIGHTING);

@@ -1,0 +1,19 @@
+puts "========"
+puts "Test to verify the lights are turned off after 'vlight clear' (and scene is black)"
+puts "========"
+
+# create box
+box b 1 2 3
+
+# draw box
+vinit View1
+vclear
+vsetdispmode 1
+vdisplay b
+vfit
+
+vlight clear
+
+set color [vreadpixel 100 100 rgb]
+set black "0 0 0\n"
+if {[string equal $color $black] != 1} {error "Lights do not seems to be cleared!"}

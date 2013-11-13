@@ -373,6 +373,54 @@ public:
                                                const Tmatrix3&               theValue,
                                                GLboolean                     theTranspose = GL_FALSE);
 
+  //! Specifies the value of the float uniform array
+  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
+                                               GLint                         theLocation,
+                                               GLuint                        theCount,
+                                               const Standard_ShortReal*     theData);
+
+  //! Specifies the value of the float2 uniform array
+  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
+                                               GLint                         theLocation,
+                                               GLuint                        theCount,
+                                               const OpenGl_Vec2*            theData);
+
+  //! Specifies the value of the float3 uniform array
+  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
+                                               GLint                         theLocation,
+                                               GLuint                        theCount,
+                                               const OpenGl_Vec3*            theData);
+
+  //! Specifies the value of the float4 uniform array
+  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
+                                               GLint                         theLocation,
+                                               GLuint                        theCount,
+                                               const OpenGl_Vec4*            theData);
+
+  //! Specifies the value of the integer uniform array
+  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
+                                               GLint                         theLocation,
+                                               GLuint                        theCount,
+                                               const Standard_Integer*       theData);
+
+  //! Specifies the value of the int2 uniform array
+  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
+                                               GLint                         theLocation,
+                                               GLuint                        theCount,
+                                               const OpenGl_Vec2i*           theData);
+
+  //! Specifies the value of the int3 uniform array
+  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
+                                               GLint                         theLocation,
+                                               GLuint                        theCount,
+                                               const OpenGl_Vec3i*           theData);
+
+  //! Specifies the value of the int4 uniform array
+  Standard_EXPORT Standard_Boolean SetUniform (const Handle(OpenGl_Context)& theCtx,
+                                               GLint                         theLocation,
+                                               GLuint                        theCount,
+                                               const OpenGl_Vec4i*           theData);
+
 public:
 
   //! Specifies the value of the sampler uniform variable.

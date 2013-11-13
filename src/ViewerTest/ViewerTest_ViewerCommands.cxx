@@ -5533,6 +5533,23 @@ static int VLight (Draw_Interpretor& theDi,
     {
       isGlobal = Standard_False;
     }
+    else if (anArgCase.IsEqual ("DEF")
+          || anArgCase.IsEqual ("DEFAULTS"))
+    {
+      toCreate = Standard_False;
+      aViewer->SetDefaultLights();
+    }
+    else if (anArgCase.IsEqual ("CLR")
+          || anArgCase.IsEqual ("CLEAR"))
+    {
+      toCreate = Standard_False;
+      aView->InitActiveLights();
+      while (aView->MoreActiveLights())
+      {
+        aViewer->DelLight (aView->ActiveLight());
+        aView->InitActiveLights();
+      }
+    }
     else if (anArgCase.IsEqual ("AMB")
           || anArgCase.IsEqual ("AMBIENT")
           || anArgCase.IsEqual ("AMBLIGHT"))
@@ -5706,6 +5723,22 @@ static int VLight (Draw_Interpretor& theDi,
       {
         std::cerr << "Wrong syntax at argument '" << anArg << "'!\n";
         return 1;
+      }
+    }
+    else if (anArgCase.IsEqual ("ANG")
+          || anArgCase.IsEqual ("ANGLE"))
+    {
+      if (++anArgIt >= theArgsNb)
+      {
+        std::cerr << "Wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+
+      Standard_Real anAngle = Atof (theArgVec[anArgIt]);
+
+      if (!aLightSpot.IsNull())
+      {
+        aLightSpot->SetAngle (anAngle / 180.0 * M_PI);
       }
     }
     else if (anArgCase.IsEqual ("CONSTATTEN")
@@ -6217,6 +6250,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     __FILE__, VDefaults, group);
   theCommands.Add("vlight",
             "vlight [add|new {amb}ient|directional|{spot}light|positional]"
+    "\n\t\t:        [{def}aults] [clear]"
     "\n\t\t:        [{del}ete|change lightId] [local|global]"
     "\n\t\t:        [{pos}ition X Y Z] [color colorName] [{head}light 0|1]"
     "\n\t\t:        [{constAtten}uation value] [{linearAtten}uation value]"

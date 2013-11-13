@@ -730,6 +730,7 @@ void Visual3d_View::UpdateLights()
                                        MyGraphicDriver->InquireLightLimit());
   if (MyCView.Context.NbActiveLight < 1)
   {
+    MyGraphicDriver->SetLight (MyCView);
     return;
   }
 

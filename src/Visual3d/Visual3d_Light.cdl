@@ -292,23 +292,6 @@ is
 	-- Category: Class methods
 	--------------------------
 
-	Limit ( myclass )
-		returns Integer from Standard;
-	---Level: Internal
-	---Purpose: Maximum number of activatable light sources.
-	---Category: Class methods
-
-	----------------------------
-	-- Category: Private methods
-	----------------------------
-
-	Identification ( me )
-		returns Integer from Standard
-		is static private;
-	---Level: Internal
-	---Purpose: Returns the light identification.
-	---Category: Private methods
-
 	IsValid ( myclass;
 		  AAngle	: Real from Standard )
 		returns Boolean from Standard

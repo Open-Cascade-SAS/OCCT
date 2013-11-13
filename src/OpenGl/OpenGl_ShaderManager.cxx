@@ -249,6 +249,36 @@ const OpenGl_WorldViewState& OpenGl_ShaderManager::WorldViewState() const
   return myWorldViewState;
 }
 
+//! Packed properties of light source
+class OpenGl_ShaderLightParameters
+{
+public:
+
+  OpenGl_Vec4 Color;
+  OpenGl_Vec4 Position;
+  OpenGl_Vec4 Direction;
+  OpenGl_Vec4 Parameters;
+
+  //! Returns packed (serialized) representation of light source properties
+  const OpenGl_Vec4* Packed()  { return reinterpret_cast<OpenGl_Vec4*> (this); }
+  static Standard_Size NbOfVec4() { return 4; }
+
+};
+
+//! Packed light source type information
+class OpenGl_ShaderLightType
+{
+public:
+
+  Standard_Integer Type;
+  Standard_Integer IsHeadlight;
+
+  //! Returns packed (serialized) representation of light source type
+  const OpenGl_Vec2i* Packed() { return reinterpret_cast<OpenGl_Vec2i*> (this); }
+  static Standard_Size NbOfVec2i() { return 1; }
+
+};
+
 // =======================================================================
 // function : PushLightSourceState
 // purpose  : Pushes state of OCCT light sources to the program
@@ -260,9 +290,6 @@ void OpenGl_ShaderManager::PushLightSourceState (const Handle(OpenGl_ShaderProgr
   {
     return;
   }
-
-  const GLint aTypesLoc  = theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_TYPES);
-  const GLint aParamsLoc = theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_PARAMS);
 
   const Standard_Integer aLightsDefNb = Min (myLightSourceState.LightSources()->Size(), OpenGLMaxLights);
   if (aLightsDefNb < 1)
@@ -277,8 +304,8 @@ void OpenGl_ShaderManager::PushLightSourceState (const Handle(OpenGl_ShaderProgr
     return;
   }
 
-  OpenGl_Vec2i* aTypesArray  = new OpenGl_Vec2i[aLightsDefNb];
-  OpenGl_Vec4*  aParamsArray = new OpenGl_Vec4 [aLightsDefNb * 4];
+  OpenGl_ShaderLightParameters* aLightParamsArray = new OpenGl_ShaderLightParameters[aLightsDefNb];
+  OpenGl_ShaderLightType*       aLightTypeArray   = new OpenGl_ShaderLightType[aLightsDefNb];
 
   OpenGl_Vec4 anAmbient (0.0f, 0.0f, 0.0f, 0.0f);
   Standard_Integer aLightsNb = 0;
@@ -295,18 +322,20 @@ void OpenGl_ShaderManager::PushLightSourceState (const Handle(OpenGl_ShaderProgr
       continue;
     }
 
-    aTypesArray[aLightsNb].x() = aLight.Type;
-    aTypesArray[aLightsNb].y() = aLight.IsHeadlight;
+    OpenGl_ShaderLightType& aLightType = aLightTypeArray[aLightsNb];
+    aLightType.Type        = aLight.Type;
+    aLightType.IsHeadlight = aLight.IsHeadlight;
 
-    aParamsArray[aLightsNb * 4 + 0] =   aLight.Color;
-    aParamsArray[aLightsNb * 4 + 1] =   aLight.Type == Visual3d_TOLS_DIRECTIONAL
-                                    ?  -aLight.Direction
-                                    :   aLight.Position;
+    OpenGl_ShaderLightParameters& aLightParams = aLightParamsArray[aLightsNb];
+    aLightParams.Color    = aLight.Color;
+    aLightParams.Position = aLight.Type == Visual3d_TOLS_DIRECTIONAL
+                         ? -aLight.Direction
+                         :  aLight.Position;
     if (aLight.Type == Visual3d_TOLS_SPOT)
     {
-      aParamsArray[aLightsNb * 4 + 2] = aLight.Direction;
+      aLightParams.Direction = aLight.Direction;
     }
-    aParamsArray[aLightsNb * 4 + 3] =   aLight.Params;
+    aLightParams.Parameters = aLight.Params;
     ++aLightsNb;
   }
 
@@ -318,11 +347,17 @@ void OpenGl_ShaderManager::PushLightSourceState (const Handle(OpenGl_ShaderProgr
                           anAmbient);
   if (aLightsNb > 0)
   {
-    myContext->core20->glUniform2iv (aTypesLoc,  aLightsNb,     aTypesArray [0].GetData());
-    myContext->core20->glUniform4fv (aParamsLoc, aLightsNb * 4, aParamsArray[0].GetData());
+    theProgram->SetUniform (myContext,
+                            theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_TYPES),
+                            aLightsNb * OpenGl_ShaderLightType::NbOfVec2i(),
+                            aLightTypeArray[0].Packed());
+    theProgram->SetUniform (myContext,
+                            theProgram->GetStateLocation (OpenGl_OCC_LIGHT_SOURCE_PARAMS),
+                            aLightsNb * OpenGl_ShaderLightParameters::NbOfVec4(),
+                            aLightParamsArray[0].Packed());
   }
-  delete[] aTypesArray;
-  delete[] aParamsArray;
+  delete[] aLightParamsArray;
+  delete[] aLightTypeArray;
 
   theProgram->UpdateState (OpenGl_LIGHT_SOURCES_STATE, myLightSourceState.Index());
 }
@@ -504,8 +539,9 @@ void OpenGl_ShaderManager::PushClippingState (const Handle(OpenGl_ShaderProgram)
     aSpaces[aPlaneId] = myContext->Clipping().GetEquationSpace (aPlane);
     ++aPlaneId;
   }
-  myContext->core20->glUniform4fv (aLocEquations, aPlanesNb, anEquations[0].GetData());
-  myContext->core20->glUniform1iv (aLocSpaces,    aPlanesNb, aSpaces);
+  theProgram->SetUniform (myContext, aLocEquations, aPlanesNb, anEquations[0].GetData());
+  theProgram->SetUniform (myContext, aLocSpaces,    aPlanesNb, aSpaces);
+
   delete[] anEquations;
   delete[] aSpaces;
 }
@@ -610,7 +646,7 @@ static void PushAspectFace (const Handle(OpenGl_Context)&       theCtx,
     aParams[3] = aSpecular;
     aParams[4].x() = aProps.shine;
     aParams[4].y() = aProps.trans;
-    theCtx->core20->glUniform4fv (aLoc, 5, aParams[0].GetData());
+    theProgram->SetUniform (theCtx, aLoc, 5, aParams);
   }
 }
 
@@ -636,8 +672,8 @@ static void PushAspectLine (const Handle(OpenGl_Context)&       theCtx,
   aParams[3] = THE_COLOR_BLACK_VEC4;
   aParams[4].x() = 0.0f; // shininess
   aParams[4].y() = 0.0f; // transparency
-  theCtx->core20->glUniform4fv (theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL),
-                                5, aParams[0].GetData());
+  theProgram->SetUniform (theCtx, theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL),
+                          5, aParams);
 }
 
 // =======================================================================
@@ -672,8 +708,8 @@ static void PushAspectText (const Handle(OpenGl_Context)&       theCtx,
   aParams[3] = THE_COLOR_BLACK_VEC4;
   aParams[4].x() = 0.0f; // shininess
   aParams[4].y() = 0.0f; // transparency
-  theCtx->core20->glUniform4fv (theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL),
-                                5, aParams[0].GetData());
+  theProgram->SetUniform (theCtx, theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL),
+                          5, aParams);
 }
 
 // =======================================================================
@@ -699,8 +735,8 @@ static void PushAspectMarker (const Handle(OpenGl_Context)&       theCtx,
   aParams[3] = THE_COLOR_BLACK_VEC4;
   aParams[4].x() = 0.0f; // shininess
   aParams[4].y() = 0.0f; // transparency
-  theCtx->core20->glUniform4fv (theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL),
-                                5, aParams[0].GetData());
+  theProgram->SetUniform (theCtx, theProgram->GetStateLocation (OpenGl_OCCT_FRONT_MATERIAL),
+                          5, aParams);
 }
 
 }; // nameless namespace

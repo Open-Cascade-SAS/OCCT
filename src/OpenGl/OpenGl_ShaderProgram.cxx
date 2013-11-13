@@ -932,6 +932,150 @@ Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)&
 }
 
 // =======================================================================
+// function : SetUniform
+// purpose  : Specifies the value of the float uniform array
+// =======================================================================
+Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
+                                                   GLint                         theLocation,
+                                                   GLuint                        theCount,
+                                                   const Standard_ShortReal*     theData)
+{
+  if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
+  {
+    return Standard_False;
+  }
+
+  theCtx->core20->glUniform1fv (theLocation, theCount, theData);
+  return Standard_True;
+}
+
+// =======================================================================
+// function : SetUniform
+// purpose  : Specifies the value of the float2 uniform array
+// =======================================================================
+Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
+                                                   GLint                         theLocation,
+                                                   GLuint                        theCount,
+                                                   const OpenGl_Vec2*            theData)
+{
+  if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
+  {
+    return Standard_False;
+  }
+
+  theCtx->core20->glUniform2fv (theLocation, theCount, theData[0].GetData());
+  return Standard_True;
+}
+
+// =======================================================================
+// function : SetUniform
+// purpose  : Specifies the value of the float3 uniform array
+// =======================================================================
+Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
+                                                   GLint                         theLocation,
+                                                   GLuint                        theCount,
+                                                   const OpenGl_Vec3*            theData)
+{
+  if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
+  {
+    return Standard_False;
+  }
+
+  theCtx->core20->glUniform3fv (theLocation, theCount, theData[0].GetData());
+  return Standard_True;
+}
+
+// =======================================================================
+// function : SetUniform
+// purpose  : Specifies the value of the float4 uniform array
+// =======================================================================
+Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
+                                                   GLint                         theLocation,
+                                                   GLuint                        theCount,
+                                                   const OpenGl_Vec4*            theData)
+{
+  if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
+  {
+    return Standard_False;
+  }
+
+  theCtx->core20->glUniform4fv (theLocation, theCount, theData[0].GetData());
+  return Standard_True;
+}
+
+// =======================================================================
+// function : SetUniform
+// purpose  : Specifies the value of the integer uniform array
+// =======================================================================
+Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
+                                                   GLint                         theLocation,
+                                                   GLuint                        theCount,
+                                                   const Standard_Integer*       theData)
+{
+  if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
+  {
+    return Standard_False;
+  }
+
+  theCtx->core20->glUniform1iv (theLocation, theCount, theData);
+  return Standard_True;
+}
+
+// =======================================================================
+// function : SetUniform
+// purpose  : Specifies the value of the int2 uniform array
+// =======================================================================
+Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
+                                                   GLint                         theLocation,
+                                                   GLuint                        theCount,
+                                                   const OpenGl_Vec2i*           theData)
+{
+  if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
+  {
+    return Standard_False;
+  }
+
+  theCtx->core20->glUniform2iv (theLocation, theCount, theData[0].GetData());
+  return Standard_True;
+}
+
+// =======================================================================
+// function : SetUniform
+// purpose  : Specifies the value of the int3 uniform array
+// =======================================================================
+Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
+                                                   GLint                         theLocation,
+                                                   GLuint                        theCount,
+                                                   const OpenGl_Vec3i*           theData)
+{
+  if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
+  {
+    return Standard_False;
+  }
+
+  theCtx->core20->glUniform3iv (theLocation, theCount, theData[0].GetData());
+  return Standard_True;
+}
+
+// =======================================================================
+// function : SetUniform
+// purpose  : Specifies the value of the int4 uniform array
+// =======================================================================
+Standard_Boolean OpenGl_ShaderProgram::SetUniform (const Handle(OpenGl_Context)& theCtx,
+                                                   GLint                         theLocation,
+                                                   GLuint                        theCount,
+                                                   const OpenGl_Vec4i*           theData)
+{
+  if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
+  {
+    return Standard_False;
+  }
+
+  theCtx->core20->glUniform4iv (theLocation, theCount, theData[0].GetData());
+  return Standard_True;
+}
+
+// =======================================================================
 // function : SetSampler
 // purpose  : Specifies the value of the sampler uniform variable
 // =======================================================================

@@ -355,25 +355,6 @@ void Visual3d_Light::SetPosition (const Graphic3d_Vertex& thePos)
 }
 
 // =======================================================================
-// function : Limit
-// purpose  :
-// =======================================================================
-Standard_Integer Visual3d_Light::Limit()
-{
-  // Old method, replaced by GraphicDriver::InquireLightLimit()
-  return 0;
-}
-
-// =======================================================================
-// function : Identification
-// purpose  :
-// =======================================================================
-Standard_Integer Visual3d_Light::Identification() const
-{
-  return 0;
-}
-
-// =======================================================================
 // function : IsValid
 // purpose  :
 // =======================================================================
