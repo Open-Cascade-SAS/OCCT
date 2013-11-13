@@ -15,5 +15,5 @@ vfit
 vlight clear
 
 set color [vreadpixel 100 100 rgb]
-set black "0 0 0\n"
+set black "0 0 0"
 if {[string equal $color $black] != 1} {error "Lights do not seems to be cleared!"}

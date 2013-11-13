@@ -4122,11 +4122,11 @@ static int VReadPixel (Draw_Interpretor& theDI,
   {
     if (aBufferType == Graphic3d_BT_RGBA)
     {
-      theDI << Quantity_Color::StringName (aColor.Name()) << " " << anAlpha << "\n";
+      theDI << Quantity_Color::StringName (aColor.Name()) << " " << anAlpha;
     }
     else
     {
-      theDI << Quantity_Color::StringName (aColor.Name()) << "\n";
+      theDI << Quantity_Color::StringName (aColor.Name());
     }
   }
   else
@@ -4138,22 +4138,22 @@ static int VReadPixel (Draw_Interpretor& theDI,
       {
         if (toShowHls)
         {
-          theDI << aColor.Hue() << " " << aColor.Light() << " " << aColor.Saturation() << "\n";
+          theDI << aColor.Hue() << " " << aColor.Light() << " " << aColor.Saturation();
         }
         else
         {
-          theDI << aColor.Red() << " " << aColor.Green() << " " << aColor.Blue() << "\n";
+          theDI << aColor.Red() << " " << aColor.Green() << " " << aColor.Blue();
         }
         break;
       }
       case Graphic3d_BT_RGBA:
       {
-        theDI << aColor.Red() << " " << aColor.Green() << " " << aColor.Blue() << " " << anAlpha << "\n";
+        theDI << aColor.Red() << " " << aColor.Green() << " " << aColor.Blue() << " " << anAlpha;
         break;
       }
       case Graphic3d_BT_Depth:
       {
-        theDI << aColor.Red() << "\n";
+        theDI << aColor.Red();
         break;
       }
     }

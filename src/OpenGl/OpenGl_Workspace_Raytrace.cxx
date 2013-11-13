@@ -321,27 +321,33 @@ Standard_Boolean OpenGl_Workspace::CheckRaytraceStructure (const OpenGl_Structur
 // function : CreateMaterial
 // purpose  : Creates ray-tracing material properties
 // =======================================================================
-void CreateMaterial (const OPENGL_SURF_PROP& theProp, OpenGl_RaytraceMaterial& theMaterial)
+void CreateMaterial (const OPENGL_SURF_PROP&  theProp,
+                     OpenGl_RaytraceMaterial& theMaterial)
 {
-  theMaterial.Ambient = OpenGl_RTVec4f (theProp.ambcol.rgb[0] * theProp.amb,
-                                        theProp.ambcol.rgb[1] * theProp.amb,
-                                        theProp.ambcol.rgb[2] * theProp.amb,
-                                        1.f);
+  const float* aSrcAmb = theProp.isphysic ? theProp.ambcol.rgb : theProp.matcol.rgb;
+  theMaterial.Ambient = OpenGl_RTVec4f (aSrcAmb[0] * theProp.amb,
+                                        aSrcAmb[1] * theProp.amb,
+                                        aSrcAmb[2] * theProp.amb,
+                                        1.0f);
 
-  theMaterial.Diffuse = OpenGl_RTVec4f (theProp.difcol.rgb[0] * theProp.diff,
-                                        theProp.difcol.rgb[1] * theProp.diff,
-                                        theProp.difcol.rgb[2] * theProp.diff,
-                                        1.f);
+  const float* aSrcDif = theProp.isphysic ? theProp.difcol.rgb : theProp.matcol.rgb;
+  theMaterial.Diffuse = OpenGl_RTVec4f (aSrcDif[0] * theProp.diff,
+                                        aSrcDif[1] * theProp.diff,
+                                        aSrcDif[2] * theProp.diff,
+                                        1.0f);
 
-  theMaterial.Specular = OpenGl_RTVec4f (theProp.speccol.rgb[0] * theProp.spec,
-                                         theProp.speccol.rgb[1] * theProp.spec,
-                                         theProp.speccol.rgb[2] * theProp.spec,
+  const float aDefSpecCol[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+  const float* aSrcSpe = theProp.isphysic ? theProp.speccol.rgb : aDefSpecCol;
+  theMaterial.Specular = OpenGl_RTVec4f (aSrcSpe[0] * theProp.spec,
+                                         aSrcSpe[1] * theProp.spec,
+                                         aSrcSpe[2] * theProp.spec,
                                          theProp.shine);
 
-  theMaterial.Emission = OpenGl_RTVec4f (theProp.emscol.rgb[0] * theProp.emsv,
-                                         theProp.emscol.rgb[1] * theProp.emsv,
-                                         theProp.emscol.rgb[2] * theProp.emsv,
-                                         1.f);
+  const float* aSrcEms = theProp.isphysic ? theProp.emscol.rgb : theProp.matcol.rgb;
+  theMaterial.Emission = OpenGl_RTVec4f (aSrcEms[0] * theProp.emsv,
+                                         aSrcEms[1] * theProp.emsv,
+                                         aSrcEms[2] * theProp.emsv,
+                                         1.0f);
 
   // Note: Here we use sub-linear transparency function
   // to produce realistic-looking transparency effect

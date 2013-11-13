@@ -45,7 +45,7 @@ namespace
 };
 
 // =======================================================================
-// function : OpenGl_Material
+// function : OpenGl_RaytraceMaterial
 // purpose  : Creates new default material
 // =======================================================================
 OpenGl_RaytraceMaterial::OpenGl_RaytraceMaterial()
@@ -59,7 +59,7 @@ OpenGl_RaytraceMaterial::OpenGl_RaytraceMaterial()
 { }
 
 // =======================================================================
-// function : OpenGl_Material
+// function : OpenGl_RaytraceMaterial
 // purpose  : Creates new material with specified properties
 // =======================================================================
 OpenGl_RaytraceMaterial::OpenGl_RaytraceMaterial (const OpenGl_RTVec4f& theAmbient,
@@ -77,7 +77,7 @@ OpenGl_RaytraceMaterial::OpenGl_RaytraceMaterial (const OpenGl_RTVec4f& theAmbie
 }
 
 // =======================================================================
-// function : OpenGl_Material
+// function : OpenGl_RaytraceMaterial
 // purpose  : Creates new material with specified properties
 // =======================================================================
 OpenGl_RaytraceMaterial::OpenGl_RaytraceMaterial (const OpenGl_RTVec4f& theAmbient,
@@ -97,7 +97,7 @@ OpenGl_RaytraceMaterial::OpenGl_RaytraceMaterial (const OpenGl_RTVec4f& theAmbie
 }
 
 // =======================================================================
-// function : OpenGl_Material
+// function : OpenGl_RaytraceMaterial
 // purpose  : Creates new material with specified properties
 // =======================================================================
 OpenGl_RaytraceMaterial::OpenGl_RaytraceMaterial (const OpenGl_RTVec4f& theAmbient,

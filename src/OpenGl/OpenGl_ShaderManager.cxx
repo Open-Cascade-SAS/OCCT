@@ -612,6 +612,7 @@ static void PushAspectFace (const Handle(OpenGl_Context)&       theCtx,
                           theProgram->GetStateLocation (OpenGl_OCCT_DISTINGUISH_MODE),
                           theAspect->DistinguishingMode());
 
+  const float aDefSpecCol[4] = {1.0f, 1.0f, 1.0f, 1.0f};
   OpenGl_Vec4 aParams[5];
   for (Standard_Integer anIndex = 0; anIndex < 2; ++anIndex)
   {
@@ -624,22 +625,27 @@ static void PushAspectFace (const Handle(OpenGl_Context)&       theCtx,
     }
 
     const OPENGL_SURF_PROP& aProps = (anIndex == 0) ? theAspect->IntFront() : theAspect->IntBack();
-    const OpenGl_Vec4 anEmission (aProps.emscol.rgb[0] * aProps.emsv,
-                                  aProps.emscol.rgb[1] * aProps.emsv,
-                                  aProps.emscol.rgb[2] * aProps.emsv,
-                                  aProps.emscol.rgb[3] * aProps.emsv);
-    const OpenGl_Vec4 anAmbient  (aProps.ambcol.rgb[0] * aProps.amb,
-                                  aProps.ambcol.rgb[1] * aProps.amb,
-                                  aProps.ambcol.rgb[2] * aProps.amb,
-                                  aProps.ambcol.rgb[3] * aProps.amb);
-    const OpenGl_Vec4 aDiffuse   (aProps.difcol.rgb[0] * aProps.diff,
-                                  aProps.difcol.rgb[1] * aProps.diff,
-                                  aProps.difcol.rgb[2] * aProps.diff,
-                                  aProps.difcol.rgb[3] * aProps.diff);
-    const OpenGl_Vec4 aSpecular  (aProps.speccol.rgb[0] * aProps.spec,
-                                  aProps.speccol.rgb[1] * aProps.spec,
-                                  aProps.speccol.rgb[2] * aProps.spec,
-                                  aProps.speccol.rgb[3] * aProps.spec);
+    const float* aSrcEms = aProps.isphysic ? aProps.emscol.rgb : aProps.matcol.rgb;
+    const OpenGl_Vec4 anEmission (aSrcEms[0] * aProps.emsv,
+                                  aSrcEms[1] * aProps.emsv,
+                                  aSrcEms[2] * aProps.emsv,
+                                  1.0f);
+    const float* aSrcAmb = aProps.isphysic ? aProps.ambcol.rgb : aProps.matcol.rgb;
+    const OpenGl_Vec4 anAmbient  (aSrcAmb[0] * aProps.amb,
+                                  aSrcAmb[1] * aProps.amb,
+                                  aSrcAmb[2] * aProps.amb,
+                                  1.0f);
+    const float* aSrcDif = aProps.isphysic ? aProps.difcol.rgb : aProps.matcol.rgb;
+    const OpenGl_Vec4 aDiffuse   (aSrcDif[0] * aProps.diff,
+                                  aSrcDif[1] * aProps.diff,
+                                  aSrcDif[2] * aProps.diff,
+                                  1.0f);
+    const float* aSrcSpe = aProps.isphysic ? aProps.speccol.rgb : aDefSpecCol;
+    const OpenGl_Vec4 aSpecular  (aSrcSpe[0] * aProps.spec,
+                                  aSrcSpe[1] * aProps.spec,
+                                  aSrcSpe[2] * aProps.spec,
+                                  1.0f);
+
     aParams[0] = anEmission;
     aParams[1] = anAmbient;
     aParams[2] = aDiffuse;
