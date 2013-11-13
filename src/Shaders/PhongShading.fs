@@ -46,13 +46,14 @@ void pointLight (in int  theId,
 
   vec3 aHalf = normalize (aLight + theView);
 
-  float aNdotL = max (0.0, dot (theNormal, aLight));
-  float aNdotH = max (0.0, dot (theNormal, aHalf ));
+  vec3  aFaceSideNormal = gl_FrontFacing ? theNormal : -theNormal;
+  float aNdotL = max (0.0, dot (aFaceSideNormal, aLight));
+  float aNdotH = max (0.0, dot (aFaceSideNormal, aHalf ));
 
   float aSpecl = 0.0;
   if (aNdotL > 0.0)
   {
-    aSpecl = pow (aNdotH, occFrontMaterial_Shininess());
+    aSpecl = pow (aNdotH, gl_FrontFacing ? occFrontMaterial_Shininess() : occBackMaterial_Shininess());
   }
 
   Diffuse  += occLight_Diffuse  (theId).rgb * aNdotL * anAtten;
@@ -71,13 +72,15 @@ void directionalLight (in int  theId,
   }
 
   vec3 aHalf = normalize (aLight + theView);
-  float aNdotL = max (0.0, dot (theNormal, aLight));
-  float aNdotH = max (0.0, dot (theNormal, aHalf ));
+
+  vec3  aFaceSideNormal = gl_FrontFacing ? theNormal : -theNormal;
+  float aNdotL = max (0.0, dot (aFaceSideNormal, aLight));
+  float aNdotH = max (0.0, dot (aFaceSideNormal, aHalf ));
 
   float aSpecl = 0.0;
   if (aNdotL > 0.0)
   {
-    aSpecl = pow (aNdotH, occFrontMaterial_Shininess());
+    aSpecl = pow (aNdotH, gl_FrontFacing ? occFrontMaterial_Shininess() : occBackMaterial_Shininess());
   }
 
   Diffuse  += occLight_Diffuse  (theId).rgb * aNdotL;
@@ -111,9 +114,12 @@ vec4 computeLighting (in vec3 theNormal,
     }
   }
 
-  return vec4 (Ambient,  1.0) * occFrontMaterial_Ambient()
-       + vec4 (Diffuse,  1.0) * occFrontMaterial_Diffuse()
-       + vec4 (Specular, 1.0) * occFrontMaterial_Specular();
+  vec4 aMaterialAmbient  = gl_FrontFacing ? occFrontMaterial_Ambient()  : occBackMaterial_Ambient();
+  vec4 aMaterialDiffuse  = gl_FrontFacing ? occFrontMaterial_Diffuse()  : occBackMaterial_Diffuse();
+  vec4 aMaterialSpecular = gl_FrontFacing ? occFrontMaterial_Specular() : occBackMaterial_Specular();
+  return vec4 (Ambient,  1.0) * aMaterialAmbient
+       + vec4 (Diffuse,  1.0) * aMaterialDiffuse
+       + vec4 (Specular, 1.0) * aMaterialSpecular;
 }
 
 //! Entry point to the Fragment Shader
