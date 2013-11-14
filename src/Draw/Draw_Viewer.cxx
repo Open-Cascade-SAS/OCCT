@@ -142,7 +142,15 @@ Draw_View::Draw_View(Standard_Integer i, Draw_Viewer* v,
 			Standard_Integer Y,
 			Standard_Integer W,
 			Standard_Integer H) :
-     Draw_Window("Win", X, Y, W, H), id(i), viewer(v)
+     Draw_Window("Win", X, Y, W, H), 
+     id(i),
+	 viewer(v),
+	 FlagPers(0),
+	 Flag2d(0),
+     FocalDist(0.),
+	 Zoom(0.),
+     dX(0),dY(0),
+     lastX(0),lastY(0)
 {
   Framex0=Framey0=Framex1=Framey1=0;
 }
@@ -169,9 +177,16 @@ Draw_View::Draw_View(Standard_Integer i, Draw_Viewer* v,
                      Standard_Integer W,
                      Standard_Integer H,
                      NSWindow* theWindow) :
-Draw_Window(theWindow, "Win", X, Y, W, H), id(i), viewer(v)
+     Draw_Window(theWindow, "Win", X, Y, W, H), id(i), viewer(v),
+	 FlagPers(0),
+	 Flag2d(0),
+     FocalDist(0.),
+	 Zoom(0.),
+     dX(0),dY(0),
+     lastX(0),lastY(0),
+	 Framex0(0),Framey0(0),
+	 Framex1(0),Framey1(0)
 {
-  Framex0=Framey0=Framex1=Framey1=0;
 }
 #endif
 
@@ -180,7 +195,7 @@ Draw_Window(theWindow, "Win", X, Y, W, H), id(i), viewer(v)
 //purpose  :
 //=======================================================================
 #if defined(_WIN32) || defined (__WIN32__) || (defined(__APPLE__) && !defined(MACOSX_USE_GLX))
-Draw_View::Draw_View(Standard_Integer /*i*/, Draw_Viewer* /*v*/, const char* /*w*/)
+	 Draw_View::Draw_View(Standard_Integer /*i*/, Draw_Viewer* /*v*/, const char* /*w*/) : viewer( NULL )
 #else
 Draw_View::Draw_View(Standard_Integer i, Draw_Viewer* v, const char* w) :
      Draw_Window(w), id(i), viewer(v)

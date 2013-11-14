@@ -40,7 +40,10 @@
 //=======================================================================
 
 Adaptor3d_IsoCurve::Adaptor3d_IsoCurve() :
-       myIso(GeomAbs_NoneIso)
+       myIso(GeomAbs_NoneIso),
+	   myFirst ( 0. ),
+	   myLast ( 0. ),
+	   myParameter ( 0. )
 {}
 
 //=======================================================================
@@ -48,7 +51,10 @@ Adaptor3d_IsoCurve::Adaptor3d_IsoCurve() :
 //purpose  : 
 //=======================================================================
 
-Adaptor3d_IsoCurve::Adaptor3d_IsoCurve(const Handle(Adaptor3d_HSurface)& S)
+Adaptor3d_IsoCurve::Adaptor3d_IsoCurve(const Handle(Adaptor3d_HSurface)& S) :
+	   myFirst ( 0. ),
+	   myLast ( 0. ),
+	   myParameter ( 0. )
 {
   Load(S);
 }

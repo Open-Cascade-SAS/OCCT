@@ -28,7 +28,7 @@
 //purpose  : 
 //=======================================================================
 
-PBRep_TVertex::PBRep_TVertex() 
+PBRep_TVertex::PBRep_TVertex() : myTolerance(0.) 
 {
 }
 

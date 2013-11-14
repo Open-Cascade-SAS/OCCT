@@ -214,7 +214,9 @@ static Standard_Boolean ValidArgs(const TNaming_ListOfNamedShape& Args)
 //purpose  : 
 //=======================================================================
 
-TNaming_Name::TNaming_Name():myIndex(-1)
+TNaming_Name::TNaming_Name() : 
+   myType(TNaming_UNKNOWN),
+   myIndex(-1)
 {
 }
 

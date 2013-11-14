@@ -95,7 +95,8 @@ myMaxDegInU(MaxDegInU),
 myMaxDegInV(MaxDegInV),
 myMaxPatches(MaxPatch),
 myDone(Standard_False),
-myHasResult(Standard_False)
+myHasResult(Standard_False),
+myCriterionError(0.)
 {
   myNumSubSpaces[0] = Num1DSS;
   myNumSubSpaces[1] = Num2DSS;

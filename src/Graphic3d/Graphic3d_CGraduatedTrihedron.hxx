@@ -34,7 +34,30 @@ class Graphic3d_CGraduatedTrihedron
 {
   public:
     /* Default constructor. Nullifies the view pointer */
-    Graphic3d_CGraduatedTrihedron () : ptrVisual3dView(NULL) {}
+    Graphic3d_CGraduatedTrihedron () : xdrawname ( Standard_False ),
+    ydrawname ( Standard_False ),
+    zdrawname ( Standard_False ),
+    xdrawvalues ( Standard_False ),
+    ydrawvalues ( Standard_False ),
+    zdrawvalues ( Standard_False ),
+    drawgrid ( Standard_False ),
+    drawaxes ( Standard_False ),
+    nbx ( 0 ),nby ( 0 ),nbz ( 0 ),
+    xoffset ( 0 ),yoffset ( 0 ),zoffset ( 0 ),
+    xaxisoffset ( 0 ),yaxisoffset ( 0 ),zaxisoffset ( 0 ),
+    xdrawtickmarks ( Standard_False ),
+    ydrawtickmarks ( Standard_False ),
+    zdrawtickmarks ( Standard_False ),
+    xtickmarklength ( 0 ), ytickmarklength ( 0 ), ztickmarklength ( 0 ),
+    styleOfNames ( Font_FA_Undefined ),
+    sizeOfNames ( 0 ),
+    styleOfValues ( Font_FA_Undefined ),
+    sizeOfValues ( 0 ),
+    cbCubicAxes ( NULL ),
+    ptrVisual3dView(NULL)
+	{
+		//
+	}
 
     /* Names of axes */
     TCollection_ExtendedString xname, yname, zname;

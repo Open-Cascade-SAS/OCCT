@@ -35,7 +35,8 @@ static const Standard_Real TolConf = Precision::Confusion();
 //purpose  : Constructor
 //=======================================================================
 
-GeomFill_DiscreteTrihedron::GeomFill_DiscreteTrihedron()
+GeomFill_DiscreteTrihedron::GeomFill_DiscreteTrihedron() :
+    myUseFrenet(Standard_False)
 {
   myFrenet = new GeomFill_Frenet();
   myKnots      = new TColStd_HSequenceOfReal();

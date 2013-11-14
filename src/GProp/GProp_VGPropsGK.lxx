@@ -25,7 +25,8 @@
 //==========================================================================
 
 inline GProp_VGPropsGK::GProp_VGPropsGK()
-     : myErrorReached(0.)
+     : myErrorReached(0.),
+     myAbsolutError(0.)
 {
 }
 

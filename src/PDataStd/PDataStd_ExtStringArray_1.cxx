@@ -26,7 +26,7 @@
 //purpose  : 
 //=======================================================================
 
-PDataStd_ExtStringArray_1::PDataStd_ExtStringArray_1 () { }
+PDataStd_ExtStringArray_1::PDataStd_ExtStringArray_1 () : myDelta(Standard_False) { }
 
 //=======================================================================
 //function : Init

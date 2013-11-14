@@ -624,10 +624,11 @@ static ERROR_TABLE fileNodeErrorTable[] = {
 
 static Standard_Integer _get_comm_error ( DWORD );
 
-OSD_Error :: OSD_Error () {
-
+OSD_Error :: OSD_Error () : 
+   myCode((OSD_WhoAmI)0),
+   extCode(0)
+{
  Reset ();
-
 }  // end constructor ( 1 )
 
 void OSD_Error :: Perror () {

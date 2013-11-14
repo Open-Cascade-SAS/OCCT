@@ -227,6 +227,7 @@ STEPCAFControl_Reader::STEPCAFControl_Reader ():
        myNameMode ( Standard_True ),
        myLayerMode( Standard_True ),
        myPropsMode( Standard_True ),
+	   mySHUOMode ( Standard_False ),
        myGDTMode  ( Standard_True ),
        myMatMode  ( Standard_True )
 {
@@ -246,6 +247,7 @@ STEPCAFControl_Reader::STEPCAFControl_Reader (const Handle(XSControl_WorkSession
        myNameMode ( Standard_True ),
        myLayerMode( Standard_True ),
        myPropsMode( Standard_True ),
+	   mySHUOMode ( Standard_False ),
        myGDTMode  ( Standard_True ),
        myMatMode  ( Standard_True )
 {

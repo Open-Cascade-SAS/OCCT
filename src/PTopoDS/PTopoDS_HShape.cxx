@@ -27,7 +27,7 @@
 //=======================================================================
 
 PTopoDS_HShape::PTopoDS_HShape() :
-       myOrient(TopAbs_FORWARD)
+   myOrient(TopAbs_FORWARD)
 {
 }
 

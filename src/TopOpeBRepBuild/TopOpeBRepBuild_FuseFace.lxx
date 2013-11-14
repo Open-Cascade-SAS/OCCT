@@ -26,7 +26,10 @@
 //purpose  : 
 //=======================================================================
 
-inline TopOpeBRepBuild_FuseFace::TopOpeBRepBuild_FuseFace ():myDone(Standard_False)
+inline TopOpeBRepBuild_FuseFace::TopOpeBRepBuild_FuseFace () : 
+      myInternal(Standard_False), 
+      myModified(Standard_False),
+      myDone(Standard_False)
 {}
 
 

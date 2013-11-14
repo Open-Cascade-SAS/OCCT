@@ -28,7 +28,7 @@
 # include <strings.h>
 #endif
 
-VarsTopo::VarsTopo()
+VarsTopo::VarsTopo() : mytolarc(0.), mytoltan(0.)
 {
   Init();
 }

@@ -53,7 +53,9 @@ const Standard_CString MAGICNUMBER = "FSDFILE";
 //purpose  : 
 //=======================================================================
 
-DDF_IOStream::DDF_IOStream()
+DDF_IOStream::DDF_IOStream() : 
+	myIStream(NULL),
+	myOStream(NULL)
 {}
 
 //=======================================================================

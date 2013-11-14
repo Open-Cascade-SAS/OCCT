@@ -26,7 +26,7 @@
 //function : PDataStd_IntPackedMap_1
 //purpose  : Constructor
 //=======================================================================
-PDataStd_IntPackedMap_1::PDataStd_IntPackedMap_1() {}
+PDataStd_IntPackedMap_1::PDataStd_IntPackedMap_1() : myDelta(Standard_False) {}
 
 //=======================================================================
 //function : Init

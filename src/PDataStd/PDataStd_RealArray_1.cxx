@@ -25,7 +25,7 @@
 //purpose  : 
 //=======================================================================
 
-PDataStd_RealArray_1::PDataStd_RealArray_1 () { }
+PDataStd_RealArray_1::PDataStd_RealArray_1 () : myDelta(Standard_False) { }
 
 //=======================================================================
 //function : Init

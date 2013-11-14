@@ -30,7 +30,9 @@
 //=======================================================================
 
 GCPnts_UniformAbscissa::GCPnts_UniformAbscissa ()
-     :myDone(Standard_False) 
+     :myDone(Standard_False),
+	 myNbPoints(0),
+	 myAbscissa(0.)
 {
 } 
 

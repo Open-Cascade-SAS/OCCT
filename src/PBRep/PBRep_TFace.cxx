@@ -29,7 +29,8 @@
 //=======================================================================
 
 PBRep_TFace::PBRep_TFace() :
-       myNaturalRestriction(Standard_False)
+    myTolerance(0.),
+    myNaturalRestriction(Standard_False)
 {
 }
 

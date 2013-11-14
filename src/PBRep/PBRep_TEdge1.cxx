@@ -34,7 +34,9 @@ enum {
 //purpose  : 
 //=======================================================================
 
-PBRep_TEdge1::PBRep_TEdge1() 
+PBRep_TEdge1::PBRep_TEdge1() : 
+    myTolerance(0.),
+    myFlags(0)
 {
 }
 

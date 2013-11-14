@@ -48,7 +48,8 @@ TopOpeBRepDS_DataStructure::TopOpeBRepDS_DataStructure() :
 myNbSurfaces(0),
 myNbCurves(0),
 myNbPoints(0),
-myIsfafa(Standard_False)
+myIsfafa(Standard_False),
+myI(0)
 {
 }
 

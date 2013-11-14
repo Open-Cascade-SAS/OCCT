@@ -27,7 +27,10 @@
 //=======================================================================
 
 inline BRepFeat_MakeCylindricalHole::BRepFeat_MakeCylindricalHole ():
-   myAxDef(Standard_False)
+   myAxDef(Standard_False),
+   myStatus(BRepFeat_NoError),
+   myIsBlind(Standard_False),
+   myValidate(Standard_False)
 {}
 
 //=======================================================================

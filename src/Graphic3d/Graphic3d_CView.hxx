@@ -92,6 +92,7 @@ public:
     ptrUnderLayer (NULL),
     ptrOverLayer  (NULL),
     Backfacing  (0),
+	GContext (NULL),
     GDisplayCB  (NULL),
     GClientData (NULL),
     ptrFBO (NULL),
@@ -101,7 +102,11 @@ public:
     IsReflectionsEnabled (1),
     IsAntialiasingEnabled (0)
   {
-    //
+    memset(&Orientation,0,sizeof(Orientation));
+	memset(&Mapping,0,sizeof(Mapping));
+	memset(&OrientationReset,0,sizeof(OrientationReset));
+	memset(&MappingReset,0,sizeof(MappingReset));
+	memset(&DefWindow,0,sizeof(DefWindow));
   }
 
 public:

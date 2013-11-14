@@ -153,7 +153,7 @@ static
 class ProjectPointOnSurf
 {
  public:
-  ProjectPointOnSurf() : myIsDone (Standard_False) {}
+  ProjectPointOnSurf() : myIsDone (Standard_False),myIndex(0) {}
   void Init(const Handle(Geom_Surface)& Surface,
 	    const Standard_Real Umin,
 	    const Standard_Real Usup,

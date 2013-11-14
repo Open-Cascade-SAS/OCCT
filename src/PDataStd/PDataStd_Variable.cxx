@@ -26,7 +26,7 @@
 //purpose  : 
 //=======================================================================
 
-PDataStd_Variable::PDataStd_Variable()
+PDataStd_Variable::PDataStd_Variable() : isConstant(Standard_False)
 {
 }
 

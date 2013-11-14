@@ -110,6 +110,7 @@ OpenGl_TextFormatter::OpenGl_TextFormatter()
   myLinesNb (0),
   myRectLineStart (0),
   myRectWordStart (0),
+  myNewLineNb(0),
   myPenCurrLine (0.0f),
   myLineLeft (0.0f),
   myLineTail (0.0f),

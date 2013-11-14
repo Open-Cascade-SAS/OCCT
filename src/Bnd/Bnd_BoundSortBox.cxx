@@ -202,7 +202,12 @@ BSB_T3Bits::~BSB_T3Bits() {
   if(ToTest)  { delete [] ToTest; ToTest=0; } 
 }
 //=======================================================================
-BSB_T3Bits::BSB_T3Bits(int size) {
+BSB_T3Bits::BSB_T3Bits(int size)
+	: ind(0),
+    Xmin(0),Xmax(0),
+	Ymin(0),Ymax(0),
+	Zmin(0),Zmax(0)
+{
   switch (size) { 
   case 128: {  _DECAL=7;   _DECAL2=14;   _BASE=128;  _BASEM1=127;  break; } 
   case  64: {  _DECAL=6;   _DECAL2=12;   _BASE= 64;  _BASEM1= 63;  break; } 

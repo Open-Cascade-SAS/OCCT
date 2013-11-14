@@ -26,7 +26,7 @@
 //purpose  : 
 //=======================================================================
 
-PXCAFDoc_Area::PXCAFDoc_Area () { }
+PXCAFDoc_Area::PXCAFDoc_Area () : myValue(0.) { }
 
 //=======================================================================
 //function : PXCAFDoc_Area

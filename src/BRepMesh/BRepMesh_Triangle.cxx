@@ -28,6 +28,9 @@ BRepMesh_Triangle::BRepMesh_Triangle()
 : myEdge1(0),
   myEdge2(0),
   myEdge3(0),
+  myOrientation1(Standard_False),
+  myOrientation2(Standard_False),
+  myOrientation3(Standard_False),
   myMovability(BRepMesh_Free)
 {
 }

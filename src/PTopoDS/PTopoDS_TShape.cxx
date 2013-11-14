@@ -36,8 +36,7 @@ static const Standard_Integer ConvexMask     = 64;
 //purpose  : 
 //=======================================================================
 
-PTopoDS_TShape::PTopoDS_TShape() :
-       myFlags(0)
+PTopoDS_TShape::PTopoDS_TShape() : myFlags(0)
 {
   // UPDATE FMA - 28-11-95
   // These two flags are always set to the Transient Value

@@ -379,6 +379,10 @@ static void  PerformApprox (const Handle(Adaptor3d_HCurve)& C,
 //=======================================================================
 
 ProjLib_ProjectOnPlane::ProjLib_ProjectOnPlane() :
+myKeepParam(Standard_False),
+myFirstPar(0.),
+myLastPar(0.),
+myTolerance(0.),
 myType     (GeomAbs_OtherCurve),
 myIsApprox (Standard_False)
 {
@@ -392,6 +396,10 @@ myIsApprox (Standard_False)
 ProjLib_ProjectOnPlane::ProjLib_ProjectOnPlane(const gp_Ax3& Pl) : 
 myPlane     (Pl)                ,
 myDirection (Pl.Direction())    ,
+myKeepParam(Standard_False),
+myFirstPar(0.),
+myLastPar(0.),
+myTolerance(0.),
 myType      (GeomAbs_OtherCurve),
 myIsApprox  (Standard_False)
 {
@@ -406,6 +414,10 @@ ProjLib_ProjectOnPlane::ProjLib_ProjectOnPlane(const gp_Ax3& Pl,
 					       const gp_Dir& D  ) :
 myPlane     (Pl)                ,
 myDirection (D)                 ,
+myKeepParam(Standard_False),
+myFirstPar(0.),
+myLastPar(0.),
+myTolerance(0.),
 myType      (GeomAbs_OtherCurve),
 myIsApprox  (Standard_False)
 {

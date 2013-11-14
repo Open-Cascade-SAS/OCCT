@@ -560,7 +560,7 @@ class IntTools_DistCC {
     myT11=0.;
     myT12=0.;
     myT21=0.;
-    myT21=0.;
+    myT22=0.;
     myErrorStatus=1;
     myThreshold=1.e-7;
     myDx=0.;

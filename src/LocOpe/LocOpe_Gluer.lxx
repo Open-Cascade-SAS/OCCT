@@ -29,7 +29,7 @@
 //=======================================================================
 
 inline LocOpe_Gluer::LocOpe_Gluer () : 
-   myDone(Standard_False),myOri(TopAbs_INTERNAL)
+   myDone(Standard_False),myOri(TopAbs_INTERNAL),myOpe(LocOpe_INVALID)
 {}
 
 
@@ -40,7 +40,7 @@ inline LocOpe_Gluer::LocOpe_Gluer () :
 
 inline LocOpe_Gluer::LocOpe_Gluer (const TopoDS_Shape& Sbase,
 			       const TopoDS_Shape& Snew) :
-   myDone(Standard_False),mySb(Sbase),mySn(Snew),myOri(TopAbs_INTERNAL)
+   myDone(Standard_False),mySb(Sbase),mySn(Snew),myOri(TopAbs_INTERNAL),myOpe(LocOpe_INVALID)
 {}
 
 

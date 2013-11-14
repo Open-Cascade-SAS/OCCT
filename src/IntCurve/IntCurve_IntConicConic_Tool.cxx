@@ -154,7 +154,12 @@ PeriodicInterval PeriodicInterval::SecondIntersection(PeriodicInterval& PInter)
   return(PeriodicInterval(a,b));
 }
 //----------------------------------------------------------------------
-Interval::Interval() { IsNull=Standard_True; }
+Interval::Interval() : 
+    Binf(0.),
+    Bsup(0.),
+    HasFirstBound(Standard_False),
+    HasLastBound(Standard_False)
+{ IsNull=Standard_True; }
 
 Interval::Interval(const Standard_Real a,const Standard_Real b) { 
   HasFirstBound=HasLastBound=Standard_True;

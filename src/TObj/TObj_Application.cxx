@@ -48,7 +48,7 @@ Handle(TObj_Application) TObj_Application::GetInstance()
 //purpose  : 
 //=======================================================================
 
-TObj_Application::TObj_Application ()
+TObj_Application::TObj_Application () : myIsError(Standard_False)
 {
   myMessenger = new Message_Messenger;
   myMessageDriver = new CDM_COutMessageDriver;

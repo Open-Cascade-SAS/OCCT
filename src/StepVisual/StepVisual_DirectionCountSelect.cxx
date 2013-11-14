@@ -17,7 +17,11 @@
 
 #include <StepVisual_DirectionCountSelect.hxx>
 
-StepVisual_DirectionCountSelect::StepVisual_DirectionCountSelect() {}
+StepVisual_DirectionCountSelect::StepVisual_DirectionCountSelect() :
+    theUDirectionCount(0),
+    theVDirectionCount(0),
+    theTypeOfContent(0)
+{}
 
 void StepVisual_DirectionCountSelect::SetTypeOfContent(const Standard_Integer aType)
 {

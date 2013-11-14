@@ -35,7 +35,8 @@
 //purpose  : 
 //=======================================================================
 
-Geom2dToIGES_Geom2dEntity::Geom2dToIGES_Geom2dEntity()
+Geom2dToIGES_Geom2dEntity::Geom2dToIGES_Geom2dEntity() :
+      TheUnitFactor(0.)
 {  
 }
 

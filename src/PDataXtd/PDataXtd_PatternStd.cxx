@@ -22,6 +22,9 @@
 
 #include <PDataXtd_PatternStd.ixx>
 
-PDataXtd_PatternStd::PDataXtd_PatternStd()
+PDataXtd_PatternStd::PDataXtd_PatternStd() :
+    mySignature(0),
+    myAxis1Reversed(Standard_False),
+    myAxis2Reversed(Standard_False)
 {
 }

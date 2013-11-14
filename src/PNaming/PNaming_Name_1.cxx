@@ -26,7 +26,6 @@
 //purpose  : 
 //=======================================================================
 
-PNaming_Name_1::PNaming_Name_1() 
-:myType(0),myShapeType(0),myIndex(0)
+PNaming_Name_1::PNaming_Name_1() : myType(0), myShapeType(0), myIndex(0)
 {
 }

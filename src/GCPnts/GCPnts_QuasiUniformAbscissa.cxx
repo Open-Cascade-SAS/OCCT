@@ -43,7 +43,8 @@
 //=======================================================================
 
 GCPnts_QuasiUniformAbscissa::GCPnts_QuasiUniformAbscissa ()
-     :myDone(Standard_False) 
+     :myDone(Standard_False),
+	 myNbPoints(0)
 {
 } 
 

@@ -79,6 +79,7 @@ LDOM_XmlReader::LDOM_XmlReader (const int                       aFileDes,
 #endif
        myError          (anErrorString),
        myDocument       (aDocument),
+	   myElement        (NULL),
        myPtr            (&myBuffer[0]),
        myEndPtr         (&myBuffer[0])
 {}
@@ -96,6 +97,7 @@ LDOM_XmlReader::LDOM_XmlReader (istream&                        anInput,
        myIStream        (anInput),
        myError          (anErrorString),
        myDocument       (aDocument),
+	   myElement        (NULL),
        myPtr            (&myBuffer[0]),
        myEndPtr         (&myBuffer[0])
 {}

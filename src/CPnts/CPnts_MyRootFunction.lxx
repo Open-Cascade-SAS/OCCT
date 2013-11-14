@@ -19,4 +19,9 @@
 // and conditions governing the rights and limitations under the License.
 
 
-inline CPnts_MyRootFunction::CPnts_MyRootFunction() {}
+inline CPnts_MyRootFunction::CPnts_MyRootFunction() :
+   myX0( 0. ),
+   myL( 0. ),
+   myOrder( 0 ),
+   myTol( 0. )
+ {}

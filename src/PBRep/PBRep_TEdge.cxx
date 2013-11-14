@@ -31,7 +31,9 @@ static const Standard_Integer DegeneratedMask     = 4;
 //purpose  : 
 //=======================================================================
 
-PBRep_TEdge::PBRep_TEdge() 
+PBRep_TEdge::PBRep_TEdge() : 
+    myTolerance(0.),
+    myFlags(0)
 {
 }
 

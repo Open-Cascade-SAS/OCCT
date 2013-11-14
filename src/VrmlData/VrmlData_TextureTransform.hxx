@@ -42,7 +42,8 @@ class VrmlData_TextureTransform : public VrmlData_Node
    */
   inline VrmlData_TextureTransform (const VrmlData_Scene& theScene,
                                     const char            * theName)
-    : VrmlData_Node (theScene, theName)
+    : VrmlData_Node (theScene, theName),
+	  myRotation(0.)
   {}
 
   /**

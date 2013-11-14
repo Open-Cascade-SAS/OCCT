@@ -24,7 +24,9 @@
 //function : PDataStd_BooleanArray
 //purpose  : 
 //=======================================================================
-PDataStd_BooleanArray::PDataStd_BooleanArray() 
+PDataStd_BooleanArray::PDataStd_BooleanArray() :
+    myLower(0),
+    myUpper(0)
 { 
 
 }

@@ -1042,7 +1042,10 @@ OSD_Path :: OSD_Path () {
 OSD_Path ::  OSD_Path (
               const TCollection_AsciiString& aDependentName,
               const OSD_SysType aSysType
-             ) {
+			  ) :
+  myUNCFlag(Standard_False),
+  SysDep(OSD_WindowsNT)
+{
 
  Standard_Integer        i, j, len;
  static char __drive [ _MAX_DRIVE ];
@@ -1106,7 +1109,10 @@ OSD_Path :: OSD_Path (
              const TCollection_AsciiString& aTrek,
              const TCollection_AsciiString& aName,
              const TCollection_AsciiString& anExtension
-            ) {
+			 ) :
+  myUNCFlag(Standard_False),
+  SysDep(OSD_WindowsNT)
+{
 
  SetValues ( aNode, aUsername, aPassword, aDisk, aTrek, aName, anExtension );
 

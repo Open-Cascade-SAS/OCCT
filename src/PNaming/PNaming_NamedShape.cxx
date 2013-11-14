@@ -27,8 +27,9 @@
 //purpose  : 
 //=======================================================================
 
-PNaming_NamedShape::PNaming_NamedShape() 
-:myShapeStatus(0),myVersion(0)
+PNaming_NamedShape::PNaming_NamedShape() :
+    myShapeStatus(0),
+	myVersion(0)
 {
 }
 

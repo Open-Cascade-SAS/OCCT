@@ -25,7 +25,7 @@
 //purpose  : 
 //=======================================================================
 
-PDataStd_IntegerArray_1::PDataStd_IntegerArray_1 () { }
+PDataStd_IntegerArray_1::PDataStd_IntegerArray_1 () : myDelta(Standard_False) { }
 
 //=======================================================================
 //function : Init

@@ -27,7 +27,8 @@
 //=======================================================================
 
 inline BRepGProp_Face::BRepGProp_Face(const Standard_Boolean IsUseSpan)
-     : myIsUseSpan(IsUseSpan)
+     : mySReverse (Standard_False),
+       myIsUseSpan(IsUseSpan)
 {
 }
 

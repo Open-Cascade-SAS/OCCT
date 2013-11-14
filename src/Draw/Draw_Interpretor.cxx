@@ -82,7 +82,11 @@ class TclUTFToLocalStringSentry {
     delete[] TclArgv;
   }
 #else
-  TclUTFToLocalStringSentry (int, const char **argv) : Argv((char**)argv) {}
+  TclUTFToLocalStringSentry (int, const char **argv) : 
+	   nb(0),
+       TclArgv(NULL),
+	   Argv((char**)argv)
+  {}
 #endif
 
   const char **GetArgv () const { return (const char **)Argv; }

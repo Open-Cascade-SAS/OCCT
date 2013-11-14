@@ -149,7 +149,8 @@ class FilletPoint
 {
 public:
   //! Creates a point on a first curve by parameter on this curve.
-  FilletPoint(Standard_Real theParam) {myParam = theParam;}
+  FilletPoint(Standard_Real theParam) : myParam2(0.)
+	{myParam = theParam;}
 
   //! Changes the point position by changing point parameter on the first curve.
   void setParam(Standard_Real theParam) {myParam = theParam;}

@@ -24,7 +24,7 @@
 //function : PDataStd_ByteArray_1
 //purpose  : 
 //=======================================================================
-PDataStd_ByteArray_1::PDataStd_ByteArray_1() {}
+PDataStd_ByteArray_1::PDataStd_ByteArray_1() : myDelta(Standard_False) {}
 
 //=======================================================================
 //function : Set

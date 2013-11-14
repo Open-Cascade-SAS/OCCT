@@ -25,9 +25,18 @@
 //purpose  : 
 //=======================================================================
 
-inline BRepFeat_Form::BRepFeat_Form () : 
-   mySbOK(Standard_False),myGSOK(Standard_False),mySFOK(Standard_False),
-   mySUOK(Standard_False),myGFOK(Standard_False)
+inline BRepFeat_Form::BRepFeat_Form () :
+   myFuse(Standard_False),
+   myModify(Standard_False),
+   myPerfSelection(BRepFeat_NoSelection),
+   myJustGluer(Standard_False),
+   myJustFeat(Standard_False),
+   mySbOK(Standard_False),mySkOK(Standard_False),
+   myGSOK(Standard_False),mySFOK(Standard_False),
+   mySUOK(Standard_False),myGFOK(Standard_False),
+   myPSOK(Standard_False),
+   myStatusError(BRepFeat_NotInitialized)
+
 {}
 
 //=======================================================================

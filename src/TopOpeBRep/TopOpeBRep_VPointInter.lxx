@@ -33,7 +33,7 @@ inline TopOpeBRep_VPointInter::TopOpeBRep_VPointInter() :
   myState1(TopAbs_UNKNOWN),
   myState2(TopAbs_UNKNOWN),
   myKeep(Standard_False),
-  //myEdgeONPar1, myEdgeONPar2,
+  myEdgeONPar1(0.), myEdgeONPar2(0.),
   myIndex(0),
   myS1(0),myS2(0)
 {

@@ -32,9 +32,9 @@
 //purpose  : 
 //=======================================================================
 
-PTopoDS_Shape1::PTopoDS_Shape1()
-: myOrient(TopAbs_FORWARD)
-{}
+PTopoDS_Shape1::PTopoDS_Shape1() : myOrient(TopAbs_FORWARD)
+{
+}
 
 
 //=======================================================================

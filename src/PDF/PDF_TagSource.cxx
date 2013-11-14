@@ -17,7 +17,7 @@
 
 #include <PDF_TagSource.ixx>
 
-PDF_TagSource::PDF_TagSource() { }
+PDF_TagSource::PDF_TagSource() : myValue (0) { }
 
 PDF_TagSource::PDF_TagSource(const Standard_Integer V)
 : myValue (V) {}

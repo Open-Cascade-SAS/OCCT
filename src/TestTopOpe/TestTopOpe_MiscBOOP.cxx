@@ -28,7 +28,9 @@
 
 
 TestTopOpe_BOOP::TestTopOpe_BOOP(const char* keys[],
-				 const char* resnamdef)
+								 const char* resnamdef) :
+      mynmet(0),
+      myESP(Standard_False)
 {
   Standard_Integer i;
   for (i=0;i<TESTTOPOPE_NKEYS; i++) mykeys[i] = keys[i]; 

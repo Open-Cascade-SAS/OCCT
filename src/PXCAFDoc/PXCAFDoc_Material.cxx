@@ -25,7 +25,7 @@
 //purpose  : 
 //=======================================================================
 
-PXCAFDoc_Material::PXCAFDoc_Material ()
+PXCAFDoc_Material::PXCAFDoc_Material () : myDensity(0.)
 {}
 
 //=======================================================================

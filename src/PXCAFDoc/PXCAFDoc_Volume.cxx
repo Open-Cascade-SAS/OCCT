@@ -26,7 +26,7 @@
 //purpose  : 
 //=======================================================================
 
-PXCAFDoc_Volume::PXCAFDoc_Volume () { }
+PXCAFDoc_Volume::PXCAFDoc_Volume () : myValue(0.) { }
 
 //=======================================================================
 //function : PXCAFDoc_Volume

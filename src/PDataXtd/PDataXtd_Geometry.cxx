@@ -22,7 +22,7 @@
 
 #include <PDataXtd_Geometry.ixx>
 
-PDataXtd_Geometry::PDataXtd_Geometry () { }
+PDataXtd_Geometry::PDataXtd_Geometry () : myType(0) { }
 
 PDataXtd_Geometry::PDataXtd_Geometry (const Standard_Integer Type) : myType (Type) {}
 

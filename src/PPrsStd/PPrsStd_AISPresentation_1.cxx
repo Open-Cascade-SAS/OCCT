@@ -26,9 +26,14 @@
 //purpose  : 
 //=======================================================================
 
-PPrsStd_AISPresentation_1::PPrsStd_AISPresentation_1()
+PPrsStd_AISPresentation_1::PPrsStd_AISPresentation_1() :
+    myIsDisplayed(Standard_False),
+    myTransparency(0.),
+    myColor(0),
+    myMaterial(0),
+    myWidth(0.),
+    myMode(0)
 {
-  myMode=0;
 }
 
 

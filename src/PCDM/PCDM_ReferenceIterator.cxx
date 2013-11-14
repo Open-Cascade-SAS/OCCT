@@ -36,7 +36,9 @@
 //purpose  : 
 //=======================================================================
 
-PCDM_ReferenceIterator::PCDM_ReferenceIterator (const Handle(CDM_MessageDriver)& theMsgDriver) {
+PCDM_ReferenceIterator::PCDM_ReferenceIterator (const Handle(CDM_MessageDriver)& theMsgDriver) :
+      myIterator(0)
+{
   myMessageDriver = theMsgDriver;
 }
 

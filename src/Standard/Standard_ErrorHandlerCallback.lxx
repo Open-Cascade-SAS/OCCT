@@ -23,7 +23,8 @@
 
 #if ! defined(NO_CXX_EXCEPTION) && ! defined(OCC_CONVERT_SIGNALS)
 
-inline Standard_ErrorHandlerCallback::Standard_ErrorHandlerCallback () 
+inline Standard_ErrorHandlerCallback::Standard_ErrorHandlerCallback ()
+		: myHandler(0), myPrev(0), myNext(0) 
 {
 }
 

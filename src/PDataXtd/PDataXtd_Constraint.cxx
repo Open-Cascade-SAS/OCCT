@@ -19,7 +19,12 @@
 
 
 
-PDataXtd_Constraint::PDataXtd_Constraint () { }
+PDataXtd_Constraint::PDataXtd_Constraint () : 
+    myType(0),
+    myIsReversed(Standard_False),
+    myIsInverted(Standard_False),
+    myIsVerified(Standard_False)
+{ }
 
 PDataXtd_Constraint::PDataXtd_Constraint(const Standard_Integer Type,
 					 const Handle(PDF_HAttributeArray1)& Geometries,
