@@ -121,7 +121,7 @@
   void BOPInt_ShrunkRange::Perform()
 {
   Standard_Real aCF, aCL, aTolE, aTolV1, aTolV2, t1, t11, t1C, t2, t12, t2C;
-  Standard_Real aCoeff, dt1, dt2, aR, anEps;
+  Standard_Real aCoeff1, aCoeff2, aTol1, aTol2, dt1, dt2, aR, anEps;
   Standard_Integer pri;
   Standard_Boolean bInf1, bInf2, bAppr;
   GeomAbs_CurveType aCurveType;
@@ -170,9 +170,17 @@
     return;
   }
   //
-  aCoeff=(aTolE>0.05) ? 1. : 2.;
+  aTol1 = aTolV1+aTolE;
+  aTol2 = aTolV2+aTolE;
+  //
+  aCoeff1 = (aTolE>0.05) ? 1. : 2.;
+  aCoeff2 = aCoeff1;
+  if (aCoeff1 == 2.) {
+    aCoeff1=(aTol1>0.05) ? 1.5 : 2.;
+    aCoeff2=(aTol2>0.05) ? 1.5 : 2.;
+  }
   // xf
-  if (aCurveType==GeomAbs_Line) {
+  if (aCurveType==GeomAbs_Line && (aCoeff1 != 1 || aCoeff2 != 1)) {
     Standard_Real aTV1, aTV2, aEps;
     gp_Pnt aPV1, aPV2, aPC1, aPC2;
     gp_Lin aL;
@@ -187,13 +195,16 @@
     aPV2=BRep_Tool::Pnt(myV2);
     aTV2=ElCLib::Parameter(aL, aPV2);
     //
-    if (fabs(aTV1-aCF)<aEps && fabs(aTV2-aCL)<aEps) {
-      aCoeff=1.;
+    if (fabs(aTV1-aCF)<aEps) {
+      aCoeff1=1.;
+    }
+    if (fabs(aTV2-aCL)<aEps) {
+      aCoeff2=1.;
     }
   }
   //
-  dt1=aCoeff*(aTolV1+aTolE);
-  dt2=aCoeff*(aTolV2+aTolE);
+  dt1=aCoeff1*aTol1;
+  dt2=aCoeff2*aTol2;
   // xt
   //
   if (aCurveType==GeomAbs_Line) {
@@ -238,7 +249,7 @@
     }
     //
     else {
-      Standard_Real d1 = aCoeff*(aTolV1+aTolE);
+      Standard_Real d1 = aCoeff1*aTol1;
       //       dt1 = aBAC.Resolution(d1);
       //
       gp_Vec aD1vec1;
@@ -333,7 +344,7 @@
     }
     //
     else {
-      Standard_Real d2 = aCoeff*(aTolV2+aTolE);
+      Standard_Real d2 = aCoeff2*aTol2;
       //       dt2 = aBAC.Resolution(d2);
 
       //

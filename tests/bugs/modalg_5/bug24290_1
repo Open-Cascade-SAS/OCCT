@@ -1,0 +1,13 @@
+puts "================"
+puts "OCC24290"
+puts "================"
+puts ""
+#######################################################################
+# BOP Section produces incorrect result
+#######################################################################
+
+restore [locate_data_file bug24290_TheFace.brep] b1
+restore [locate_data_file bug24290_TheShape.brep] b2
+
+bopcheck b1
+bopcheck b2

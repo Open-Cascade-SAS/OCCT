@@ -1,0 +1,25 @@
+puts "================"
+puts "OCC24290"
+puts "================"
+puts ""
+#######################################################################
+# BOP Section produces incorrect result
+#######################################################################
+
+restore [locate_data_file bug24290_TheFace.brep] b1
+restore [locate_data_file bug24290_TheShape.brep] b2
+
+bop b1 b2
+bopsection result
+
+set nb_v_good 6
+set nb_e_good 6
+set nb_w_good 0
+set nb_f_good 0
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 13
+
+set 2dviewer 1
