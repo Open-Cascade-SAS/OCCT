@@ -1,4 +1,4 @@
-Declarations.glsl
-DeclarationsImpl.glsl
-PhongShading.fs
-PhongShading.vs
+srcinc:::Declarations.glsl
+srcinc:::DeclarationsImpl.glsl
+srcinc:::PhongShading.fs
+srcinc:::PhongShading.vs
