@@ -435,76 +435,50 @@ If a *TopoDS_Face* is output, its geometrical support is a  *Geom_Surface* and i
 
 | IGES entity type	| CASCADE shape	| Comments |
 | :--------------  | :------------ | :--------- |
-| 108: Plane | 	TopoDS_Face | 	The geometrical support for the TopoDS_Face is a Geom_Plane and the orientation of its TopoDS_Wire depends on whether it is an outer TopoDS_Wire or whether it is a hole. |
-| 114: Parametric Spline Surface | TopoDS_Face |	The geometrical support of a TopoDS_Face is a Geom_BSplineSurface. |
-| 118: Ruled Surface | TopoDS_Face or TopoDS_Shell	| The translation of a Ruled Surface outputs a TopoDS_Face if the profile curves become TopoDS_Edges, or a TopoDS_Shell if the profile curves become TopoDS_Wires. 
-Limitation: This translation cannot be completed when these two TopoDS_Wires are oriented in different directions.  |
-| 120: Surface Of Revolution | TopoDS_Face or TopoDS_Shell | The translation of a Surface Of Revolution outputs: a TopoDS_Face if the generatrix becomes a TopoDS_Edge, a TopoDS_Shell if the generatrix becomes a TopoDS_Wire. The geometrical support may be: *Geom_CylindricalSurface, Geom_ConicalSurface, Geom_SphericalSurface, Geom_ToroidalSurface* or a *Geom_SurfaceOfRevolution* depending on the result of the CASCADE computation (based on the generatrix type). | 
-| 122: Tabulated Cylinder	| TopoDS_Face or TopoDS_Shell | The translation outputs: a TopoDS_Face if the base becomes a TopoDS_Edge, or a TopoDS_Shell if the base becomes a TopoDS_Wire. The geometrical support may be Geom_Plane, Geom_Cylindrical Surface or a Geom_SurfaceOfLinearExtrusion depending on the result of the CASCADE computation (based on the generatrix type). |
-The Geom_Surface geometrical support is limited according to the generatrix. 
-128: BSpline Surface	TopoDS_Face	The geometrical support of the TopoDS_Face is a Geom_BsplineSurface.
-140: Offset Surface	TopoDS_Face
-
-	The translation of an Offset Surface outputs a TopoDS_Face whose geometrical support is a Geom_OffsetSurface.
-
-Limitations:
-For OCCT algorithms, the original surface must be C1-continuous so that the Geom_OffsetSurface can be created. 
-If the basis surface is not C1-continuous, its translation outputs a TopoDS_Shell and only the first TopoDS_Face in the TopoDS_Shell is offset.
-143: Bounded Surface	TopoDS_Face or TopoDS_Shell	If the basis surface outputs a TopoDS_Shell (that has more than one TopoDS_Face), the IGES boundaries are not translated.
-
-Limitations:
-If the bounding curves define holes, natural bounds are not created.
-If the orientation of the contours is wrong, it is not corrected.
-144: Trimmed Surface	TopoDS_Face
-or TopoDS_Shell
-	For the needs of interface processing, the basis surface must be a face.
-Shells are only processed if they are single-face.
-The contours (wires that are correctly oriented according to the definition of the IGES 142: Curve On Surface entity) are added to the face that is already created. 
-If the orientation of the contours is wrong, it is corrected.
-190: Plane Surface	TopoDS_Face
-	This type of IGES entity can only be used in BRep entities in place of an IGES 108 type entity.
-The geometrical support of the face is a Geom_Plane.
-
+| 108: Plane | 	TopoDS_Face | 	The geometrical support for the *TopoDS_Face* is a *Geom_Plane* and the orientation of its *TopoDS_Wire* depends on whether it is an outer *TopoDS_Wire* or whether it is a hole. |
+| 114: Parametric Spline Surface | TopoDS_Face |	The geometrical support of a *TopoDS_Face* is a *Geom_BSplineSurface*. |
+| 118: Ruled Surface | TopoDS_Face or TopoDS_Shell	| The translation of a Ruled Surface outputs a *TopoDS_Face* if the profile curves become *TopoDS_Edges*, or a *TopoDS_Shell* if the profile curves become *TopoDS_Wires*. Limitation: This translation cannot be completed when these two *TopoDS_Wires* are oriented in different directions.  |
+| 120: Surface Of Revolution | TopoDS_Face or TopoDS_Shell | The translation of a Surface Of Revolution outputs: a *TopoDS_Face* if the generatrix becomes a *TopoDS_Edge*, a *TopoDS_Shell* if the generatrix becomes a *TopoDS_Wire*. The geometrical support may be: *Geom_CylindricalSurface, Geom_ConicalSurface, Geom_SphericalSurface, Geom_ToroidalSurface* or a *Geom_SurfaceOfRevolution* depending on the result of the CASCADE computation (based on the generatrix type). | 
+| 122: Tabulated Cylinder	| TopoDS_Face or TopoDS_Shell | The translation outputs a *TopoDS_Face* if the base becomes a *TopoDS_Edge* or a *TopoDS_Shell* if the base becomes a *TopoDS_Wire*. The geometrical support may be *Geom_Plane, Geom_Cylindrical Surface* or a *Geom_SurfaceOfLinearExtrusion* depending on the result of the CASCADE computation (based on the generatrix type). The *Geom_Surface* geometrical support is limited according to the generatrix. |
+| 128: BSpline Surface	| TopoDS_Face	| The geometrical support of the *TopoDS_Face* is a *Geom_BsplineSurface*. |
+| 140: Offset Surface	| TopoDS_Face | The translation of an Offset Surface outputs a *TopoDS_Face* whose geometrical support is a *Geom_OffsetSurface*. Limitations: For OCCT algorithms, the original surface must be C1-continuous so that the *Geom_OffsetSurface* can be created. If the basis surface is not C1-continuous, its translation outputs a *TopoDS_Shell* and only the first *TopoDS_Face* in the *TopoDS_Shell* is offset. |
+| 143: Bounded Surface	| TopoDS_Face or TopoDS_Shell	| If the basis surface outputs a *TopoDS_Shell* (that has more than one *TopoDS_Face*), the IGES boundaries are not translated. Limitations: If the bounding curves define holes, natural bounds are not created. If the orientation of the contours is wrong, it is not corrected. |
+| 144: Trimmed Surface	| TopoDS_Face or TopoDS_Shell | For the needs of interface processing, the basis surface must be a face. Shells are only processed if they are single-face. The contours (wires that are correctly oriented according to the definition of the IGES 142: Curve On Surface entity) are added to the face that is already created. If the orientation of the contours is wrong, it is corrected. |
+| 190: Plane Surface	| TopoDS_Face |	This type of IGES entity can only be used in BRep entities in place of an IGES 108 type entity. The geometrical support of the face is a *Geom_Plane*. | 
 
 
 @subsubsection occt_iges_2_4_4 Boundary Representation  Solid Entities
 
-IGES entity type	CASCADE shape	Comments
-186: ManifoldSolid	TopoDS_Solid	
-514: Shell	TopoDS_Shell	
-510: Face	TopoDS_Face	This is the lowest IGES entity in the BRep structure that can be specified as a starting point for translation.
-508: Loop	TopoDS_Wire	
-504: Edge List		
-502: Vertex List		
+| IGES entity type	| CASCADE shape	| Comments |
+| :---------------- | :------------ | :------- |
+| 186: ManifoldSolid	| TopoDS_Solid	| |
+| 514: Shell	| TopoDS_Shell	| |
+| 510: Face	| TopoDS_Face	| This is the lowest IGES entity in the BRep structure that can be specified as a starting point for translation. |
+| 508: Loop |	TopoDS_Wire	| | 
+| 504: Edge List	| | |
+| 502: Vertex List	| | | 
 
 
 @subsubsection occt_iges_2_4_5 Structure Entities
 
-IGES entity type	CASCADE shape	Comments
-402/1: Associativity Instance: Group with back pointers
-	TopoDS_Compound	
-402/7: Associativity Instance: Group without back pointers	TopoDS_Compound	
-402/9: Associativity Instance: Single Parent
-	TopoDS_Face
-	The translation of a SingleParent entity is only performed for 402 form 9 with entities 108/1 and 108/-1.
-The geometrical support for the TopoDS_Face is a Geom_Plane with boundaries:
-- the parent plane defines the outer boundary,
-- child planes define the inner boundaries.
-
-
+| IGES entity type	| CASCADE shape	| Comments | 
+| :---------------- | :------------ | :------- |
+| 402/1: Associativity Instance: Group with back pointers | 	TopoDS_Compound	| |
+| 402/7: Associativity Instance: Group without back pointers |	TopoDS_Compound	| |
+| 402/9: Associativity Instance: Single Parent | TopoDS_Face | The translation of a *SingleParent* entity is only performed for 402 form 9 with entities 108/1 and 108/-1. The geometrical support for the *TopoDS_Face* is a *Geom_Plane* with boundaries: the parent plane defines the outer boundary; the child planes define the inner boundaries. |
 
 @subsubsection occt_iges_2_4_6 Subfigures
 
-IGES entity type	 CASCADE shape	Comments
-308: Subfigure Definition	TopoDS_Compound	This IGES entity is only translated when there are no Singular Subfigure Instance entities. 
-408: Singular Subfigure Instance	TopoDS_Compound	This shape has the Subfigure Definition Compound as its origin and is positioned in space by its translation vector and its scale factor.
-
-
+| IGES entity type	| CASCADE shape	| Comments |
+| :---------------- | :------------ | :------- |
+| 308: Subfigure Definition	| TopoDS_Compound | This IGES entity is only translated when there are no Singular Subfigure Instance entities. |
+| 408: Singular Subfigure Instance	| TopoDS_Compound | This shape has the Subfigure Definition Compound as its origin and is positioned in space by its translation vector and its scale factor. |
 
 @subsubsection occt_iges_2_4_7 Transformation Matrix  
 
-IGES entity type	 CASCADE shape	Comments
-124: Transformation Matrix	Geom_Transformation	This entity is never translated alone. It must be included in the definition of another entity.
+| IGES entity type	| CASCADE shape	| Comments |
+| :---------------  | :------------ | :------- |
+| 124: Transformation Matrix	| Geom_Transformation	| This entity is never translated alone. It must be included in the definition of another entity. |
 
 
 @subsection occt_iges_2_5 Messages
@@ -721,86 +695,129 @@ Default value is "Faces" (0).
 * *write.precision.val:* is the user precision value.  This parameter gives the resolution value for an IGES file when the  *write.precision.mode* parameter value is 1.  It is equal to 0.0001 by default, but can take any real positive (non null) value.  
 
 Read this parameter  with:  
-~~~
+~~~~~
 Standard_Real rp =  Interface_Static::RVal(;write.precision.val;); 
-~~~
+~~~~~
 Modify this parameter  with:  
-~~~
+~~~~~
 if  (!Interface_Static::SetRVal(;write.precision.val;,0.01))  
 .. error .. 
-~~~
+~~~~~
 Default value is 0.0001. 
-<h4>write.iges.resource.name</h4>
-<h4>write.iges.sequence</h4>
-The same as read.iges.*, please see above. Note that the  default sequence for writing   contains one operator – DirectFaces - which converts elementary surfaces based  on   left-hand axes (valid in CASCADE) to right-hand axes (which are valid only in   IGES). 
-Default values : write.iges.resource.name –  IGES,&nbsp;write.iges.sequence – ToIGES. 
-@subsubsection occt_iges_333 Performing the Open  CASCADE Technology shape translation
+
+<h4>write.iges.resource.name</h4> and <h4>write.iges.sequence</h4> are the same as the corresponding read.iges.\* parameters, please, see above. Note that the  default sequence for writing   contains *DirectFaces* operator, which converts elementary surfaces based on left-hand axes (valid in CASCADE) to right-hand axes (which are valid only in IGES). 
+
+Default values : 
+~~~~~
+write.iges.resource.name – IGES,
+write.iges.sequence – ToIGES. 
+~~~~~
+
+@subsubsection occt_iges_3_3_3 Performing the Open  CASCADE Technology shape translation
+
 You can perform the  translation in one or several operations. Here is how you translate topological  and geometrical objects:  
-Standard_Boolean ok =  writer.AddShape (shape); 
-where shape is a  TopoDS_Shape.  
-ok is True if  translation was correctly performed and False if there was at least one entity  that was not translated.  
+~~~~~
+Standard_Boolean ok =  writer.AddShape (TopoDS_Shape); 
+~~~~~
+*ok* is True if translation was correctly performed and False if there was at least one entity that was not translated.  
+~~~~~
 Standard_Boolean ok =  writer.AddGeom (geom); 
-where geom is either  Handle(Geom_Curve) or Handle(Geom_Surface)  
-ok is True if the  translation was correctly performed and False if there was at least one entity  whose geometry was not among the allowed types. 
-@subsubsection occt_iges_334 Writing the IGES  file
+~~~~~
+where *geom* is *Handle(Geom_Curve)* or *Handle(Geom_Surface)*;  
+*ok* is True if the  translation was correctly performed and False if there was at least one entity  whose geometry was not among the allowed types. 
+
+@subsubsection occt_iges_3_3_4 Writing the IGES  file
 Write the IGES file  with:  
-Standard_Boolean ok =  writer.Write (;filename.igs;); 
+~~~~~
+Standard_Boolean ok =  writer.Write ("filename.igs"); 
+~~~~~
 to give the file name.  
+~~~~~
 Standard_Boolean ok =  writer.Write (S); 
-where S is  Standard_OStream  
-ok is True if the  operation was correctly performed and False if an error occurred (for instance,  if the processor could not create the file). 
-@subsection occt_iges_34 Mapping Open CASCADE  Technology shapes to IGES entities
+~~~~~
+where *S* is *Standard_OStream*  
+*ok* is True if the  operation was correctly performed and False if an error occurred (for instance,  if the processor could not create the file). 
+
+@subsection occt_iges_3_4 Mapping Open CASCADE  Technology shapes to IGES entities
+
 Translated objects depend on the write mode that you chose.  If you chose the Face mode, all of the shapes are translated, but the level of  topological entities becomes lower (geometrical one). If you chose the BRep  mode, topological OCCT shapes become topological IGES entities. 
-@subsubsection occt_iges_341 Curves
-@subsubsection occt_iges_342 Surfaces
 
-@subsubsection occt_iges_343 Topological entities 
-<h5>Translation in Face mode</h5>
+@subsubsection occt_iges_3_4_1 Curves
 
-<h5>Translation in BRep mode</h5>
-@subsection occt_iges_35 Tolerance  management
-@subsubsection occt_iges_351 Setting  resolution in an IGES file
-There are several  possibilities to set resolution in an IGES file. They are controlled by  write.precision.mode parameter; the dependence between the value of this  parameter and the set resolution is described in paragraph 3.3.2 Setting the translation parameters. 
-If the value of  parameter write.precision.mode is -1, 0 or 1, resolution is computed from  tolerances of sub-shapes inside the shape to be translated. In this  computation, only tolerances of TopoDS_Edges and TopoDS_Vertices participate  since they reflect the accuracy of the shape. TopoDS_Faces are ignored in  computations since their tolerances may have influence on resulting computed  resolution while IGES resolution mainly concerns points and curves but not  surfaces.  
+| CASCADE shape	| IGES entity type	| Comments |
+| :------------ | :---------------- | :------- | 
+| Geom_BsplineCurve	| 126: BSpline Curve	| |
+| Geom_BezierCurve	| 126: BSpline Curve	| |
+| Geom_TrimmedCurve	| All types of translatable IGES curves	| The type of entity output depends on the type of the basis curve. If the curve is not trimmed, limiting points will be defined by the CASCADE RealLast value. |
+| Geom_Circle	| 100: Circular Arc or 126: BSpline Curve	| A BSpline Curve is output if the *Geom_Circle* is closed |
+| Geom_Ellipse	| 104: Conic Arc or 126: BSpline Curve	| A Conic Arc has Form 1. A BSpline Curve is output if the *Geom_Ellipse* is closed. |
+| Geom_Hyperbola | 104: Conic Arc | Form 2 |
+| Geom_Parabola	| 104: Conic Arc | Form 3 | 
+| Geom_Line	| 110: Line	| |
+| Geom_OffsetCurve	| 130: Offset Curve	| |
 
-@subsection occt_iges_36 Code architecture
-@subsubsection occt_iges_361 List of the  classes
-<h5>package IGESControl </h5>
-IGESControl_Controller  
-IGESControl_Writer  
-<h5>package BRepToIGES </h5>
-BRepToIGES_BREntity  
-BRepToIGES_BRWire  
-BRepToIGES_BRShell  
-BRepToIGES_BRSolid  
-<h5>package BRepToIGESBRep </h5>
-BRepToIGESBRep_Entity  
-<h5>package GeomToIGES </h5>
-GeomToIGES_GeomPoint  
-GeomToIGES_GeomVector  
-GeomToIGES_GeomCurve  
-GeomToIGES_GeomSurface  
-<h5>package Geom2dToIGES </h5>
-Geom2dToIGES_Geom2dCurve  
-<h5>package IGESConvGeom </h5>
-IGESConvGeom_GeomBuilder  
-For description of  classes refer to CDL. 
-@subsubsection occt_iges_362 List of API classes
-<h5>package IGESControl</h5>
-  * IGESControl_Controller
-  * IGESControl_Writer
-<h5>package IGESData</h5>
-  * class IGESData_IGESModel
-  * class IGESData_IGESEntity
-For details refer to 4. API for reading/writing  IGES and CDL. 
-@subsubsection occt_iges_363 Graph of calls
+@subsubsection occt_iges_3_4_2 Surfaces
+
+| CASCADE shapes | IGES entity type	| Comments |
+| :------------- | :--------------- | :------- |
+| Geom_BSplineSurface | 128: BSpline Surface | |
+| Geom_BezierSurface | 128: BSpline Surface	| |
+| Geom_RectangularTrimmedSurface | All types of translatable IGES surfaces. | The type of entity output depends on the type of the basis surface. If the surface is not trimmed and has infinite edges/sides, the coordinates of the sides in IGES will be limited to the CASCADE *RealLast* value. |
+| Geom_Plane | 128: BSpline Surface or 190: Plane Surface | A BSpline Surface (of degree 1 in U and V) is output if you are working in the face mode. A Plane Surface is output if you are working in the BRep mode. |
+| Geom_CylindricalSurface | 120: Surface Of Revolution | |
+| Geom_ConicalSurface | 120: Surface Of Revolution	| | 
+| Geom_SphericalSurface	| 120: Surface Of Revolution | |
+| Geom_ToroidalSurface | 120: Surface Of Revolution	| |
+| Geom_SurfaceOfLinearExtrusion	| 122: Tabulated Cylinder | |
+| Geom_SurfaceOfRevolution | 120: Surface Of Revolution	| |
+| Geom_OffsetSurface | 140: Offset Surface | |
+
+@subsubsection occt_iges_3_4_3 Topological entities - Translation in Face mode
+
+| CASCADE shapes | IGES entity type	| Comments |
+| :------------- | :--------------- | :------- |
+| Single TopoDS_Vertex	| 116: 3D Point	| |
+| TopoDS_Vertex in a TopoDS_Edge | No equivalent | Not transferred. |
+| TopoDS_Edge | All types of translatable IGES curves | The output IGES curve will be the one that corresponds to the Open CASCADE Technology definition. |
+| Single TopoDS_Wire | 102: Composite Curve	| Each *TopoDS_Edge* in the *TopoDS_Wire* results in a curve. |
+| TopoDS_Wire in a TopoDS_Face | 142: Curve On Surface | Both curves (3D and pcurve) are transferred if they are defined and result in a simple curve or a composite curve depending on whether there is one or more edges in the wire.Note: if the basis surface is a plane (108), only the 3D curve is used. |
+| TopoDS_Face | 144: Trimmed Surface | |
+| TopoDS_Shell | 402: Form 1 Group or no equivalent	| Group is created only if *TopoDS_Shell* contains more than one *TopoDS_Face*. The IGES group contains Trimmed Surfaces. |
+| TopoDS_Solid	| 402: Form 1 Group or no equivalent | Group is created only if *TopoDS_Solid* contains more than one *TopoDS_Shell*. One IGES entity is created per *TopoDS_Shell*. |
+| TopoDS_CompSolid | 402: Form 1 Group or no equivalent	| Group is created only if *TopoDS_CompSolid* contains more than one *TopoDS_Solid*. One IGES entity is created per *TopoDS_Solid*. |
+| TopoDS_Compound | 402: Form 1 Group or no equivalent | Group is created only if *TopoDS_Compound* contains more than one item. One IGES entity is created per *TopoDS_Shape* in the *TopoDS_Compound*. If *TopoDS_Compound* is nested into another *TopoDS_Compound*, it is not mapped. |
+
+@subsubsection occt_iges_3_4_4 Topological entities - Translation in BRep mode
+
+| CASCADE shapes | IGES entity type	| Comments |
+| :------------- | :--------------- | :------- |
+| Single TopoDS_Vertex	| No equivalent	| Not transferred. |
+| TopoDS_Vertex in a TopoDS_Edge | One item in a 502: *VertexList* | |	
+| TopoDS_Edge |	No equivalent | Not transferred as such. This entity serves as a part of a Loop entity. |
+| TopoDS_Edge in a TopoDS_Wire | One item in a 504: EdgeList | |
+| TopoDS_Wire | 508: Loop | |
+| TopoDS_Face | 510: Face |	If the geometrical support of the face is a plane, it will be translated as a 190 entity *PlaneSurface*. |
+| TopoDS_Shell | 514: Shell	| |
+| TopoDS_Solid | 186: Manifold Solid | |
+| TopoDS_CompSolid | 402 Form1 Group or no equivalent | Group is created only if *TopoDS_Compound* contains more than one item. One IGES Manifold Solid is created for each *TopoDS_Solid* in the *TopoDS_CompSolid*. |
+| TopoDS_Compound | 402 Form1 Group or no equivalent | Group is created only if *TopoDS_Compound* contains more than one item. One IGES entity is created per *TopoDS_Shape* in the *TopoDS_Compound*. If *TopoDS_Compound* is nested into another *TopoDS_Compound* it is not mapped. | 
+
+@subsection occt_iges_3_5 Tolerance  management
+@subsubsection occt_iges_3_5_1 Setting  resolution in an IGES file
+
+There are several  possibilities to set resolution in an IGES file. They are controlled by  write.precision.mode parameter; the dependence between the value of this  parameter and the set resolution is described in paragraph <a href="#occt_iges_3_3_2">Setting the translation parameters</a>. 
+
+If the value of  parameter *write.precision.mode* is -1, 0 or 1, resolution is computed from  tolerances of sub-shapes inside the shape to be translated. In this  computation, only tolerances of *TopoDS_Edges* and *TopoDS_Vertices* participate  since they reflect the accuracy of the shape. *TopoDS_Faces* are ignored in  computations since their tolerances may have influence on resulting computed  resolution while IGES resolution mainly concerns points and curves but not  surfaces.  
+
+@subsection occt_iges_3_6 Code architecture
+@subsubsection occt_iges_3_6_1 Graph of calls
 The following diagram illustrates the class structure in  writing IGES. 
 The highlighted classes are intended to translate geometry. 
 
-		@image html /user_guides/iges/images/iges_image004.png
-    @image latex /user_guides/iges/images/iges_image004.png
+@image html /user_guides/iges/images/iges_image004.png "The class structure in writing IGES"
+@image latex /user_guides/iges/images/iges_image004.png "The class structure in writing IGES"
       
-@subsection occt_iges_37 Example
+@subsection occt_iges_3_7 Example
 
 ~~~~~{c++}
 #include IGESControl_Controller.hxx 
@@ -820,895 +837,346 @@ Standard_Integer main()
 } 
 ~~~~~
 
-@section occt_1856844696_1288309531 API for reading/writing  IGES
-@subsection occt_1856844696_12883095311 Overview
 
-API classes provides the following tools: 
-  * loading IGES files into memory,
-  * checking IGES files consistency,
-  * translating IGES files into OCCT shapes,
-  * translating OCCT shapes into IGES files,
-  * accessing the IGES model (which is an image of the IGES file in  memory),
-  * selecting entities from the IGES model,
-  * accessing each entity in the IGES model.
-@subsection occt_1856844696_12883095312  Package IGESControl
-@subsubsection occt_1856844696_128830953121 General description 
-This package is intended to provide a tool to convert  IGES-format entities to OCCT shapes and vice versa. 
-The package allows the end-user to perform both import from  and export to an IGES file. 
-IGES files up to and including IGES version 5.3 can be read. 
-IGES files that are produced by this component conform to  IGES version 5.3. 
-The result of reading IGES files is either a single Open  CASCADE Technology shape or a set of them, the result of exporting Open CASCADE  Technology geometric or topologic objects is an IGES file which may include one  or several root entities (the ones not referenced by others). 
-@subsubsection occt_1856844696_128830953122 Class IGESControl_Controller
-<h4>General description </h4>
-This class controls the IGES norm. 
-This class is intended to provide an appropriate  initialization of the IGES norm, namely it includes a set of necessary  parameters for IGES translation and declaration of possible selections for IGES  entities. 
-After the execution of initialization procedures, the use of  IGES norm becomes available. 
-Inheritance 
-Standard_Transient 
-MMgt_TShared 
-XSControl_Controller 
-<h4>Methods</h4>
-<h5>Constructors</h5>
-IGESControl_Controller(const Standard_Boolean modefnes =  Standard_False); 
-Purpose: Initializes the use of IGES (if modefnes is  False) or FNES (if modefnes is True) norm. 
-<h5>Method for performing initialization</h5>
-IGESControl:: Init 
-static  Standard_Boolean Init() ; 
-Purpose: Performs standard initialization creating  controller objects for both IGES and FNES norm. 
-Returns True when done, False if an error occurred. 
-<h5>Method for creating IGES model</h5>
-IGESControl:: NewModel 
-Handle_Interface_InterfaceModel NewModel() const; 
-Purpose: Creates a new empty model ready to receive data of  the norm. The Global section is filled with static parameters (receiver,  author, company and unit). 
-<h5>Method for getting the actor object</h5>
-IGESControl:: ActorRead 
-Handle_Transfer_ActorOfTransientProcess ActorRead(  const Handle(Interface_InterfaceModel)& model) const; 
-Purpose: Returns the actor object for reading (actually, it  is of type IGESToBRep_Actor) with a set parameter of spline continuity taken  from static parameter. 
-<h5>Method for translating an Open CASCADE Technology shape</h5>
-IGESControl:: TransferWriteShape 
-virtual IFSelect_ReturnStatus  TransferWriteShape(const TopoDS_Shape& shape,                                     const  Handle(Transfer_FinderProcess)& FP,       const  Handle(Interface_InterfaceModel)& model,  const Standard_Integer modetrans = 0) const; 
-Purpose: Translates shape into the interface model. 
-modetrans: 0 - group of Faces (IGES  5.1) , 1 -  for BRep (IGES = 5.1) 
-Returns: 
-IFSelect_RetDone:    OK, 
-IFSelect_RetError: if  modetrans is not equal to 0 or 1, or model is not an IGES  model. 
-IFSelect_Fail:         if  shape is null. 
+@section occt_iges_4_ Using XSTEPDRAW
 
-@subsubsection occt_1856844696_128830953123 Class  IGESControl_Reader
-<h4>General description</h4>
-This object reads IGES  files and translates their contents into OCCT shapes.  
-All definitions in IGES  version 5.3 are recognized but only geometric and topologic entities can be  translated. Data, which cannot be translated, is loaded with the file but  during translation it is ignored.  
-The translation of the  IGES model into the OCCT model goes through the following steps:  
-  * loading a file into memory, 
-  * checking file consistency, 
-  * setting translation  parameters, 
-  * performing the translation  itself, 
-  * fetching the results. 
-
-The resulting OCCT  objects belong to topologic shapes. The geometric objects (2D and 3D) are  constructed in intermediate steps and serve as a support for topologic  entities.  
-Each successful  translation operation outputs one shape. A series of translations gives a list  of shapes.  
-Inheritance  
-IGESToBRep_Reader 
-This class complements  IGESToBRep_Reader class:  
-  * deals directly with  WorkSession object, 
-  * computes the list of IGES  entities matching specified criteria, 
-  * performs translation of a  list of entities and the ones specified by handle, 
-  * outputs the results of  checking and translating.
-<h4>Methods</h4>
-<h5>Constructors: </h5>
-  * IGESControl_Reader (); 
-Purpose: Creates a  reader from scratch and with a  new WorkSession object. 
-  * IGESControl_Reader (const  Handle(XSControl_WorkSession)& WS, 
-                                  const  Standard_Boolean scratch); 
-Purpose: Defines work session for the reader. If  scratch is True the new model will be created in the work session. 
-<h5>Methods for dealing with WorkSession  object </h5>
-  * IGESControl_Reader::SetWS
-void SetWS ( const  Handle(XSControl_WorkSession)& WS,  
-             const  Standard_Boolean scratch = Standard_True); 
-Purpose: Defines the  work session for the reader.  
-               If  scratch is True the new model will be created in the work session  object. 
-  * IGESControl_Reader::WS 
-Handle_XSControl_WorkSession()  const;  
-Purpose: Returns the  used work session object. 
-<h5>Method for loading an IGES file into  memory </h5>
-  * IGESControl_Reader::ReadFile 
-IFSelect_ReturnStatus  ReadFile(const Standard_CString filename);  
-Purpose: Loads and  memorizes an IGES file in memory. 
-Returns: 
-IFSelect_RetDone:   the file was successfully read  
-IFSelect_RetVoid:   no file found  
-IFSelect_RetError: an error occurred during reading  
-See also:  
-           IGESToBRep_Reader::LoadFile() 
-
-<h5>Methods for selecting entities to  transfer</h5>
-  * IGESControl_Reader::GiveList 
-Handle_TColStd_HSequenceOfTransient  GiveList( const Standard_CString first = ;;, const Standard_CString  second = ;;); 
-Purpose: Returns a list  of entities from the model according to the following rules: 
-  * if first and  second are empty - the list of roots for transfer, 
-  * if first is a number  or label of an entity - this entity itself, 
-  * if first is a list of  numbers/labels separated by commas - these entities, 
-  * if first is a name of  a selection in work session and second is not defined - the standard  result of this selection, 
-  * if first is a name of  a selection and second is defined - the criterion defined by  second is applied to result of first selection 
-Remarks:  
-      if second  is erroneous it is ignored. 
-Handle_TColStd_HSequenceOfTransient  GiveList( const Standard_CString first, const Handle(Standard_Transient)&  ent) ; 
-Purpose: Returns a list  of entities from the model according to the following rules: 
-  * if first is a  selection name and second is an entity or a list of entities (as  a         HSequenceOfTransient) - the standard result of this selection is  applied to this list. 
-Remarks:  
-      if first  is erroneous, a null handle is returned. 
-<h5>Methods for performing translation</h5>
-  * IGESControl_Reader::TransferEntity
-Standard_Boolean TransferEntity(const  Handle(Standard_Transient)& start) ; 
-Purpose: Performs the translation of the entity specified by  its handle. 
-Returns False if an entity is not in the Model, else returns  the result of the transfer. 
-  * IGESControl_Reader:: TransferList
-Standard_Integer TransferList(  const Handle(TColStd_HSequenceOfTransient)& list) ; 
-Purpose: Performs the translation of the list of entities. 
-Returns the number of successful transfers. 
-<h5>Methods for printing statistics</h5>
-  * IGESControl_Reader:: PrintCheckLoad
-void PrintCheckLoad(  const Standard_Boolean failsonly,  const IFSelect_PrintCount mode) const ; 
-Purpose: Displays the check results on file entities. 
-If failsonly is True prints only "Fail"  messages, otherwise all messages. 
-mode determines the contents and the order of  messages: 
-IFSelect_ItemsByEntity  -  sequential list of messages per entity, 
-IFSelect_CountByItem  -     counts the number of entities per message, 
-IFSelect_ShortByItem  -      the same function but also of the first five entities, 
-IFSelect_ListByItem -       the  same but displays the rank numbers of all (not only five) entities, 
-IFSelect_EntitiesByItem  - the same plus it displays the Directory Entry number for each entity 
-  * IGESControl_Reader:: PrintCheckTransfer
-void PrintCheckTransfer(  const Standard_Boolean failsonly,  const IFSelect_PrintCount mode) const; 
-Purpose: Displays the checking results of the last transfer. 
-The parameters play the same role as in PrintCheckLoad. 
-  * IGESControl_Reader:: PrintStatsTransfer
-void PrintStatsTransfer(  const Standard_Integer what,  const Standard_Integer mode = 0) const; 
-Purpose: Displays all available statistics of the last  transfer on the default trace file. The returned information is filtered by  giving parameters. 
-what defines what kind of statistics are to be  printed: 
-0 - basic figures, 
-1 - root results, 
-2 - all recorded (roots,  intermediate, checked entities), 
-3 - abnormal records, 
-4 - warnings and fails messages, 
-5 - only fail messages 
-mode is used according to what: 
-if what is 0 mode is ignored 
-if what is 1, 2 or 3 mode defines the  following: 
-0 - lists numbers of concerned  entities in the model, 
-1 - for each entity, gives the  number, label, type and result type and/or status (fail / warning...), 
-2 - for each entity, gives the  maximum information (check result), 
-3 - counts per type of starting  entity (class type), 
-4 - counts per result type and/or  status, 
-5 - counts per couple (starting  type / result type/status), 
-6 – does the same thing plus  gives for each item, the list of numbers of entities in the starting model 
-if what is 4 or 5 - mode is treated as  enumeration IFSelect_PrintCount. 
-  * IGESControl_Reader:: PrintTransferInfo
-void PrintTransferInfo(  const IFSelect_PrintFail failwarn,  const IFSelect_PrintCount mode) const; 
-Purpose: Displays information concerning the last transfer  on the default trace file according to the given parameters: 
-mode defines what will be printed: 
-IFSelect_GeneralCount  - general statistics (number of selected IGES entities, number of root IGES  entities, number of resulting OCCT shapes, number of fail and warning  messages), 
-IFSelect_CountByItem  - number of IGES entities per each message type and IGES type and form, 
-IFSelect_ListByItem  - number and a complete list of DE numbers of IGES entities per each message  type and IGES type and form, 
-IFSelect_ResultCount  - number of resulting OCCT shapes per each type of the shape, 
-IFSelect_Mapping  - mapping of root IGES entities into OCCT shapes per IGES type and form and OCCT  shape type. 
-failwarn defines if only fail messages (if  failwarn is IFSelect_FailOnly) or both fail and warning messages (if it  is IFSelect_FailAndWarn) will be printed if mode is  IFSelect_CountByItem or IFSelect_ListByItem. 
-@subsubsection occt_1856844696_128830953124 Class IGESControl_Writer
-<h4>General description </h4>
-This class is intended to create and write an IGES file out  of OCCT models. 
-IGES files produced by this component conform to IGES  version 5.3. 
-This component gives a possibility to write an IGES file  containing either geometric entities (conformant to IGES version less than 5.1)  only or BRep entities (conformant to IGES version up to and including 5.3) as  well. The writing mode is chosen by specifying the appropriate parameter. 
-The translation of an OCCT model (which can be a 2D or 3D  geometric object or a topologic shape) into an IGES file is fulfilled in the  following steps: 
-1. &nbsp;&nbsp;  initializing the file, 
-2. &nbsp;&nbsp;  setting the translation parameters, 
-3. &nbsp;&nbsp;  performing the translation itself, 
-4. &nbsp;&nbsp;  writing the IGES file. 
-Export to the IGES file can be performed on the basis of  either an already existing IGES model (representation of the IGES file in  memory) or a new one. The former case gives an opportunity to add  geometric/topologic OCCT objects into an IGES model (file) that already exists. 
-<h4>Methods</h4>
-<h5>Constructors:</h5>
-  * IGESControl_Writer();
-Purpose: Creates a writer object with the default unit and  write mode (Face). 
-  * IGESControl_Writer( const Standard_CString unit, const  Standard_Integer modecr = 0 );
-Purpose: Creates a writer object with the given values for  the unit and write mode. 
-unit is the name of the units that are accepted by  IGES in the upper case ("IN" or "INCH" for inches,  "MM" for millimeters and so on), 
-modecr corresponds to write mode: 
-0 - Face (default), 
-1 - BRep 
-  * IGESControl_Writer( const Handle(IGESData_IGESModel)& model,
- const Standard_Integer modecr = 0); 
-Purpose: Creates a writer object with an already prepared  IGES model and write mode. 
-<h5>Methods dealing with IGES models</h5>
-  * IGESControl_Writer:: Model
-Handle_IGESData_IGESModel Model() const; 
-Purpose: Returns the produced model. 
-  * IGESControl_Writer:: ComputeModel() ;
-void ComputeModel() ; 
-Purpose: Prepares the model before writing by setting the  required statuses inside the model. 
-<h5>Methods dealing with transfer processes</h5>
-  * IGESControl_Writer:: SetTransferProcess
-void SetTransferProcess(const  Handle(Transfer_FinderProcess)& TP) ; 
-Purpose: Sets the FinderProcess object for the writer. 
-  * IGESControl_Writer:: TransferProcess
-Handle_Transfer_FinderProcess TransferProcess() const; 
-Purpose: Returns the FinderProcess object (containing final  results and messages if any). 
-<h5>Methods for performing translation</h5>
-  * IGESControl_Writer:: AddShape
-Standard_Boolean AddShape(const TopoDS_Shape& sh) ; 
-Purpose: Translates a shape sh to IGES entities and  adds them to the model. 
-Returns True if done, False if sh is not suitable  for IGES or is null. 
-  * IGESControl_Writer:: AddGeom
-Standard_Boolean AddGeom(const Handle(Standard_Transient)&  geom) ; 
-Purpose: Translates geom (which must be a curve or a  surface) to IGES entities and adds them to the model. 
-Returns True if done, False if geom is neither a  surface nor a curve suitable for IGES or is null. 
-  * IGESControl_Writer:: AddEntity
-Standard_Boolean AddEntity(const  Handle(IGESData_IGESEntity)& ent) ; 
-Purpose: Adds an IGES entity (and the ones it references) to  the model. 
-Returns False if ent is null. 
-<h5>Methods for writing an IGES file</h5>
-  * IGESControl_Writer:: Write
-Standard_Boolean Write( Standard_OStream& S,  const Standard_Boolean fnes = Standard_False) ; 
-Standard_Boolean Write( const Standard_CString file,  const Standard_Boolean fnes = Standard_False) ; 
-Purpose: Prepares (call ComputeModel()) and writes the model  to the stream S or to the file file. 
-Returns True if the operation was correctly performed, False  in case of error. 
-If mode fnes is equal to True, the resulting file  will be written in the FNES format. 
-<h5>Method for obtaining statistics</h5>
-  * IGESControl_Writer:: PrintStatsTransfer
-void PrintStatsTransfer( const Standard_Integer what,  const Standard_Integer mode = 0) const; 
-Purpose: Intended to display all statistics on the last  performed translation. 
-Remarks: At the present moment does nothing (an empty  method). 
-Package IGESToBRep 
-
-@subsubsection occt_1856844696_128830953125 General  description
-Performs the actual  translation of IGES entities into OCCT objects.  
-This package recognizes  an IGES entity, performs its translation into an OCCT object (which can be 2D  or 3D geometric objects, topologic shapes or transformation matrices) and  returns the resulting shapes with associated messages (if there are any)  occurred during the translation.  
-Those IGES entities that  can be translated into OCCT objects by this package are given in the following  table:  
-
-Finally, all geometric  IGES entities (curves and surfaces) are translated into topologic shapes. OCCT  geometric objects serve as a support for topology.  
-@subsubsection occt_1856844696_128830953126 Class  IGESToBRep_Reader
-<h4>General description</h4>
-This class reads IGES  files and translates their contents into OCCT shapes. 
-This class provides  basic tools for loading, checking and translating IGES files into OCCT  topologic shapes. It is complemented with more high-level features by class  IGESControl_Reader.  
-The functionalities  provided by this class are the following:  
-  * loading a file into memory, 
-  * checking an IGES model in  memory, 
-  * translating all root entities  or one entity specified by its rank number into OCCT shapes, 
-  * fetching the results. 
-
-<h4>Methods</h4>
-<h5>Constructors: </h5>
-  * IGESToBRep_Reader(); 
-Purpose: Performs  initialization calling IGESAppli::Init() and IGESSolid::Init(), creates a new  Actor object for transfer. 
-
-<h5>Method for loading an IGES file into  memory</h5>
-  * IGESToBRep_Reader:: LoadFile
-Standard_Integer LoadFile(const Standard_CString filename) ; 
-Purpose: Loads an IGES file filename into memory  calling IGESFile_Read(), sets the returned IGES model (representing the loaded  IGES file) calling SetModel(). 
-<h5>Method for checking an IGES file</h5>
-  * IGESToBRep_Reader:: Check
-Standard_Boolean Check(const Standard_Boolean withprint)  const; 
-Purpose: Performs checking of a loaded IGES file calling  Interface_CheckTool and Interface_CheckIterator. If withprint is True  outputs the results of checking to the default trace file. 
-<h5>Methods for preparing the transfer process</h5>
-  * IGESToBRep_Reader:: SetModel
-void SetModel(const Handle(IGESData_IGESModel)& model) ; 
-Purpose: Sets a new IGES model object. Clears the list of  translated shapes (if there are any), sets a new transfer process object. 
-  * IGESToBRep_Reader:: Model
-Handle_IGESData_IGESModel Model() const; 
-Purpose: Returns the used IGES model object. 
-  * IGESToBRep_Reader:: SetTransientProcess
-void SetTransientProcess(const  Handle(Transfer_TransientProcess)& TP) ; 
-Purpose: Sets the transfer process object. 
-  * IGESToBRep_Reader:: TransientProcess
-Handle_Transfer_TransientProcess TransientProcess() const; 
-Purpose: Returns the used transfer process object. 
-  * IGESToBRep_Reader:: Actor
-Handle_IGESToBRep_Actor Actor() const; 
-Purpose: Returns the used actor object. 
-  * IGESToBRep_Reader::Clear
-void Clear() ; 
-Purpose: Clears the list of translated shapes. 
-<h5>Methods for translation</h5>
-  * IGESToBRep_Reader:: TransferRoots
-void TransferRoots(const Standard_Boolean onlyvisible =  Standard_True)  
-Purpose: Performs the translation of root entities (ones  that are not referenced by others). If onlyvisible is True, translates  only visible entities (with Blank status equal to 0). Sets the continuity in  accordance with the static parameter read.iges.bspline.continuity. 
-If parameter read.maxprecision.mode is set to 1, calls to  ShapeTool_Utils::LimitTolerance() for the resulting shape with parameters 0 and  the maximum between read.maxprecision.val and the basis tolerance of processor. 
-  * IGESToBRep_Reader:: Transfer
-Standard_Boolean Transfer(const Standard_Integer num) ; 
-Purpose: Performs the translation of an entity specified by  its rank number.  
-Creates an object of class IGESToBRep_CurveAndSurface and  sets: 
-3D precision (taking its value either from the file or from the work  session in accordance with the static parameter read.precision.mode),  
-the approximation mode parameter  in accordance with static the parameter           read.iges.bspline.approxd1.mode,  
-the mode for a preferred  computation of curves on a surface in accordance with the static parameter  read.surfacecurve.mode,  
-the spline continuity parameter  in accordance with the static parameter read.iges.bspline.continuity,  
-the transfer process object taken  from itself.  
-Once all the fields have been filled out this method calls  method TransferGeometry() with the IGES entity calculated by its rank number to  obtain the OCCT shape.  
-Like method TransferRoots() this one also limits the  tolerance if the static parameter          read.maxprecision.mode is set to 1.  
-Returns False if num is greater than the number of  entities in the model or less than 1, otherwise returns True even if there was  an exception during the transfer. 
-<h5>Methods for fetching the results</h5>
-  * IGESToBRep_Reader:: IsDone
-Standard_Boolean IsDone() const; 
-Purpose: Returns True if the last transfer was successful. 
-  * IGESToBRep_Reader:: NbShapes
-Standard_Integer NbShapes() const; 
-Purpose: Returns the number of shapes recorded in the  result. 
-  * IGESToBRep_Reader:: Shape
-TopoDS_Shape Shape(const Standard_Integer num = 1) const; 
-Purpose: Returns the result number num where  num is an integer between 1 and NbShapes(). If not returns a null  shape. 
-  * IGESToBRep_Reader:: OneShape
-TopoDS_Shape OneShape() const; 
-Purpose: Returns all results in a single shape, which is: 
-  * a null shape if there are no results,
-  * in the case of a single result, only that shape,
-  * a compound that lists all the results if there are several  resulting shapes.
-@subsection occt_1856844696_12883095313 Package IGESData
-@subsubsection occt_1856844696_128830953131 General description 
-This package defines general objects for dealing with the  IGES interface. 
-It gives a basic description of the IGES interface: 
-  * defines the Model for IGES (class IGESData_IGESModel),
-  * defines the Protocol tool specific for IGES (class  IGESData_Protocol)
-  * defines the basic class IGESData_IGESEntity describing abstract  IGES entity
-  * defines classes derived from IGESEntity and representing general  IGES entities (IGESData_LineFontEntity, IGESData_TransfEntity,  IGESData_SingleParentEntity, etc.),
-@subsubsection occt_1856844696_128830953132 Class  IGESData_IGESModel 
-<h4>General description </h4>
-Gives an access to the general data in the Start and the Global  sections of an IGES file. 
-Defines a model specific for IGES. 
-An IGES file includes the following sections: 
-Start, 
-Global, 
-Directory  Entry, 
-Parameter  Data, 
-Terminate 
-Inheritance:  
-Interface_InterfaceModel 
-MMgt_TShared 
-Standard_Transient 
-<h4>Methods</h4>
-<h5>Constructor</h5>
-  * IGESData_IGESModel ();
-Purpose: Creates an empty IGES Model.  
-<h5>Methods for initializing</h5>
-  * IGESData_IGESModel::ClearHeader
-void ClearHeader() ; 
-Purpose: Erases all the data in the Start and Global  sections. 
-  * IGESData_IGESModel::NewEmptyModel
-Handle_Interface_InterfaceModel NewEmptyModel() const; 
-Purpose: Returns a new Empty Model of the same type as this  object, i.e. of type IGESData_IGESModel. 
-<h5>Methods for dealing with the Start and the Global sections</h5>
-  * IGESData_IGESModel::DumpHeader
-void DumpHeader(Standard_OStream& S,  const Standard_Integer level = 0) const; 
-Remark: the Integer parameter is intended to be used as a  level indicator, but not used for the moment. 
-  * IGESData_IGESModel::StartSection
-Handle_TColStd_HSequenceOfHAsciiString StartSection() const; 
-Purpose: Returns the Start section of the Model as a list of  lines. 
-  * IGESData_IGESModel::NbStartLines
-Standard_Integer NbStartLines() const; 
-Purpose: Returns the number of the lines in the Start  section. 
-  * IGESData_IGESModel::StartLine
-Standard_CString StartLine(const Standard_Integer num) const; 
-Purpose: Returns a line from the Start section specified by  number num. 
-Remark: An empty string is returned if number num is out of range [1,  NbStartLines()]. 
-  * IGESData_IGESModel::ClearStartSection
-void ClearStartSection() ; 
-Purpose: Clears the Start section. 
-  * IGESData_IGESModel::SetStartSection
-void SetStartSection(const  Handle(TColStd_HSequenceOfHAsciiString)& list, const Standard_Boolean copy  = Standard_True) ; 
-Purpose:  Sets a new Start section from the list of strings  list, copying it if copy is True (by default) or pointing to  the list if copy is False.  
-  * IGESData_IGESModel::AddStartLine
-void AddStartLine(const Standard_CString line,  const Standard_Integer atnum = 0) ; 
-Purpose: Adds a new string to the end of the existing Start  section if atnum is 0 or not given, or before the atnum-th  line. 
-Remark: If a number is out of range [0, NbStartLines()], the  line is added at the end of section. 
-  * IGESData_IGESModel::GlobalSection
-const IGESData_GlobalSection& GlobalSection() const; 
-Purpose: Returns the Global section of the Model. 
-  * IGESData_IGESModel::SetGlobalSection.
-void SetGlobalSection(const IGESData_GlobalSection&  header) ; 
-Purpose: Sets the Model's Global section. 
-  * IGESData_IGESModel::ApplyStatic
-Standard_Boolean ApplyStatic(const Standard_CString param =  ;;) ; 
-Purpose: Sets some parameters of the Global section to those  defined by static parameters (see parameters of translation). The allowed  values for param (all by default) are: receiver, author and company  (these are acronyms of static parameters). Returns True when done and if  param is given, False if param is unknown or empty. 
-Remark: To set a unit into the Global section use the  IGESData_BasicEditor class. 
-See also: User’s Guide: Parameters of translation. 
-  * IGESData_IGESModel::GetFromAnother
-void GetFromAnother(const  Handle(Interface_InterfaceModel)& other) ; 
-Purpose: Takes the Global section from another Model. 
-  * IGESData_IGESModel::VerifyCheck
-virtual void VerifyCheck(Interface_Check& ach) const; 
-Purpose: Checks whether the Global section contains valid  data according to the IGES specification. If the Global section is correct this  method adds nothing into ach, but if not the method adds fail messages. 
-  * IGESData_IGESModel::SetLineWeights
-void SetLineWeights(const Standard_Real defw) ; 
-Purpose: Sets LineWeights of entities according to the  Global section (MaxLineWeight and LineWeightGrad values) or to a default value  (defw) for undefined weights. 
-<h5>Methods for dealing with IGES entities</h5>
-  * IGESData_IGESModel::ClearLabels() ;
-void ClearLabels() ; 
-Purpose: Erases labels. Not yet implemented. 
-  * IGESData_IGESModel::PrintLabel
-void PrintLabel(const Handle(Standard_Transient)& ent,  Standard_OStream& S) const; 
-Purpose: Prints the Directory Entry number of a given  entity, i.e. 'Dnn' where Dnn=2*number-1on the stream S. 
-  * IGESData_IGESModel::StringLabel
-Handle_TCollection_HAsciiString StringLabel  (const Handle(Standard_Transient)& ent) const; 
-Purpose: Returns a string with a Directory Entry number of a  given entity, i.e. a string 'Dnn' where Dnn=2*number-1. 
-  * IGESData_IGESModel::Entity
-Handle_IGESData_IGESEntity Entity(const Standard_Integer num)  const; 
-Purpose: Returns an entity given by its rank number. 
-  * IGESData_IGESModel::DNum
-Standard_Integer DNum(const Handle(IGESData_IGESEntity)&  ent) const; 
-Purpose: Returns the DE Number of an entity, i.e.  2*Number(ent)-1, or 0 if ent is unknown from this Model. 
-@subsubsection occt_1856844696_128830953133 Class  IGESData_IGESEntity
-<h4>General description</h4>
-Represents an abstract  IGES entity.  
-This class provides an  access to common IGES entity fields (TypeNumber, TransformationMatrix, 
-etc.).  
-This class is a basic  one for other classes complementing it to represent a certain IGES entity.  
-Refer to the IGES  specification for more details.  
-Inheritance  
-MMgt_TShared  
-Standard_Transient 
-<h4>Methods</h4>
-<h5>Constructors: </h5>
-  * IGESData_IGESEntity(); 
-Purpose: Creates an  empty object. Sets all values to defaults (calls Clear()). 
-<h5>Methods for initializing fields of  object.</h5>
-  * IGESData_IGESEntity::Clear 
-void Clear() ;  
-Purpose: Clears all  fields of the object. 
-  * IGESData_IGESEntity::InitTypeAndForm  
-void InitTypeAndForm(  const Standard_Integer typenum, const Standard_Integer formnum) ; 
-Purpose: Sets the Type  and Form Numbers to new values. 
-Remarks: Private method.  Reserved for special use. 
-  * IGESData_IGESEntity::InitDirFieldEntity  
-void InitDirFieldEntity(  const Standard_Integer fieldnum, const Handle(IGESData_IGESEntity)& ent) ; 
-Purpose: Sets a  directory field to an ent of any kind (see DirFieldEntity() for more  details). 
-Remarks: If  fieldnum is not equal to values listed in DirFieldEntity(), this method  does nothing. 
-  * IGESData_IGESEntity::InitTransf  
-void InitTransf(const  Handle(IGESData_TransfEntity)& ent) ;  
-Purpose: Sets the Transf  or erases it if ent is null. 
-  * IGESData_IGESEntity::InitView
-void InitView(const Handle(IGESData_ViewKindEntity)&  ent) ;  
-Purpose: Sets the View  or erases it if ent is null. 
-  * IGESData_IGESEntity::InitLineFont  
-void InitLineFont( const  Handle(IGESData_LineFontEntity)& ent, const Standard_Integer rank = 0) ; 
-Purpose: Sets the  LineFont. If ent is null the RankLineFont is set to rank,  otherwise it is set to a negative value. 
-  * IGESData_IGESEntity::InitLevel  
-void InitLevel( const  Handle(IGESData_LevelListEntity)& ent, const Standard_Integer val = 0) ; 
-Purpose: Sets the Level.  If ent is null the DefLevel is set to val, otherwise it is set  to a negative value. 
-  * IGESData_IGESEntity::InitColor  
-void InitColor( const  Handle(IGESData_ColorEntity)& ent, const Standard_Integer rank = 0) ; 
-Purpose: Sets the Color.  If ent is null the DefColor is set to rank, otherwise it is set  to a negative value. 
-  * IGESData_IGESEntity::InitStatus  
-void InitStatus( const  Standard_Integer blank,  
-          const  Standard_Integer subordinate,  
-          const  Standard_Integer useflag,  
-          const  Standard_Integer hierarchy) ; 
-Purpose: Sets the flags  of the Directory Part. 
-  * IGESData_IGESEntity::SetLabel  
-void SetLabel( const  Handle(TCollection_HAsciiString)& label, const Standard_Integer sub = -1) ; 
-Purpose: Sets a new  Label to an Entity. If sub is given, it sets the value of  SubScriptNumber, else SubScriptNumber is erased. 
-  * IGESData_IGESEntity::InitMisc  
-void InitMisc( const  Handle(IGESData_IGESEntity)& str,  
-          const  Handle(IGESData_LabelDisplayEntity)& lab,  
-          const  Standard_Integer weightnum) ; 
-Purpose: Sets data or  erases it if it is given as null (zero for weightnum):  
-          str  for Structure,  
-          lab  for LabelDisplay,  
-           weightnum for WeightNumber 
-  * IGESData_IGESEntity::SetLineWeight  
-void SetLineWeight( const  Standard_Real defw,  
-                   const  Standard_Real maxw,  
-                   const  Standard_Integer gradw) ; 
-Purpose: Computes and  sets the ;true; line weight according to IGES rules from the global  data          MaxLineWeight (maxw) and LineWeightGrad (gradw),  or sets it to defw (Default) if LineWeightNumber is null 
-Remarks: If gradw is  zero, there is division by zero in this method. 
-<h5>Methods for querying the corresponding  fields of an IGES entity. </h5>
-  * IGESData_IGESEntity::IGESType  
-IGESData_IGESType  IGESType() const;  
-Purpose: Returns  information on the IGES type of an entity including the type and the form of  that entity. 
-  * IGESData_IGESEntity::TypeNumber  
-Standard_Integer  TypeNumber() const;  
-Purpose: Returns the  IGES Type number. 
-  * IGESData_IGESEntity::FormNumber  
-Standard_Integer  FormNumber() const;  
-Purpose: Returns the  IGES Form number. 
-  * IGESData_IGESEntity::DirFieldEntity  
-Handle_IGESData_IGESEntity  DirFieldEntity(const Standard_Integer fieldnum) const; 
-Purpose: Returns the  Entity that is recorded for a given Field Number fieldnum where:  
-               3 - Structure  
-               4  - LineFont  
-               5  - LevelList  
-               6  - View  
-               7  - Transf(ormation Matrix)  
-               8 - LabelDisplay  
-               13 -  Color.  
-               In a case  of other values it returns a null handle. 
-
-  * IGESData_IGESEntity::HasStructure  
-Standard_Boolean  HasStructure() const;  
-Purpose: Returns True if  an IGES entity is defined with a structure (it is normally reserved for certain  classes, such as Macros). 
-  * IGESData_IGESEntity::Structure  
-Handle_IGESData_IGESEntity  Structure() const;  
-Purpose: Returns the  Structure (used by some types of IGES entities only), returns a null handle if  Structure is not defined. 
-  * IGESData_IGESEntity::DefLineFont  
-IGESData_DefType  DefLineFont() const;  
-Purpose: Returns the  definition status of LineFont. 
-  * IGESData_IGESEntity::RankLineFont
-Standard_Integer  RankLineFont() const;  
-Purpose: Returns  LineFont definition as an integer if it is defined as Rank. If LineFont is  defined as an Entity, returns a negative value 
-  * IGESData_IGESEntity::LineFont  
-Handle_IGESData_LineFontEntity  LineFont() const;  
-Purpose: Returns  LineFont as an entity if it is defined as Reference. Returns a null handle  if          DefLineFont is not ;DefReference;. 
-  * IGESData_IGESEntity::DefLevel  
-IGESData_DefList  DefLevel() const;  
-Purpose: Returns the  definition status of Level. 
-  * IGESData_IGESEntity::Level 
-Standard_Integer Level()  const;  
-Purpose: Returns Level  definition as an integer. 
-  * IGESData_IGESEntity::LevelList  
-Handle_IGESData_LevelListEntity  LevelList() const;  
-Purpose: Returns  LevelList if Level is defined as List. Returns a null handle if DefLevel is  not          ;DefSeveral;. 
-  * IGESData_IGESEntity::DefView
-IGESData_DefList DefView()  const;  
-Purpose: Returns the  definition status of View (None,One or Several). 
-  * IGESData_IGESEntity::View 
-Handle_IGESData_ViewKindEntity  View() const;  
-Purpose: Returns the  View (either Single or List) if it is defined. Returns a null handle if it is  not defined. 
-
-  * IGESData_IGESEntity::SingleView  
-Handle_IGESData_ViewKindEntity  SingleView() const;  
-Purpose: Returns View as  Single, if defined as One. Returns a null handle if DefView is not           ;DefOne;. 
-  * IGESData_IGESEntity::ViewList  
-Handle_IGESData_ViewKindEntity  ViewList() const;  
-Purpose: Returns View as  a List. Returns a null handle if DefView is not ;DefSeveral;. 
-  * IGESData_IGESEntity::HasTransf  
-Standard_Boolean  HasTransf() const;  
-Purpose: Returns True if  a Transformation Matrix is defined. 
-  * IGESData_IGESEntity::Transf
-Handle_IGESData_TransfEntity  Transf() const;  
-Purpose: Returns the  Transformation Matrix (under IGES definition). Returns a null handle if there  is none. 
-Remarks: For a more  complete use, see Location & CompoundLocation. 
-  * IGESData_IGESEntity::HasLabelDisplay  
-Standard_Boolean  HasLabelDisplay() const;  
-Purpose: Returns True if  the LabelDisplay mode is defined for this entity. 
-  * IGESData_IGESEntity::LabelDisplay  
-Handle_IGESData_LabelDisplayEntity  LabelDisplay() const;  
-Purpose: Returns the  LabelDisplay, if there is one; else returns a null handle. 
-  * IGESData_IGESEntity::BlankStatus  
-Standard_Integer  BlankStatus() const;  
-Purpose: Returns the  Blank Status (0 - visible, 1 - blanked). 
-  * IGESData_IGESEntity::SubordinateStatus  
-Standard_Integer  SubordinateStatus() const;  
-Purpose: Returns the  Subordinate Switch (0-1-2-3) 
-  * IGESData_IGESEntity::UseFlag
-Standard_Integer UseFlag()  const;  
-Purpose: Returns the Use  Flag (0 to 5) of an entity. 
-  * IGESData_IGESEntity::HierarchyStatus  
-Standard_Integer  HierarchyStatus() const;  
-Purpose: Returns the  Hierarchy status (0-1-2). 
-  * IGESData_IGESEntity::LineWeightNumber  
-Standard_Integer  LineWeightNumber() const;  
-Purpose: Returns the  LineWeight Number (0 if it is not defined). 
-See also: LineWeight. 
-
-  * IGESData_IGESEntity::LineWeight  
-Standard_Real LineWeight()  const;  
-Purpose: Returns  ;true; LineWeight, computed from LineWeightNumber and the global  parameter of          the Model by call to SetLineWeight. 
-  * IGESData_IGESEntity::DefColor  
-IGESData_DefType  DefColor() const;  
-Purpose: Returns the  definition status of Color. 
-  * IGESData_IGESEntity::RankColor
-Standard_Integer  RankColor() const;  
-Purpose: Returns the  Color definition as an Integer (if defined as Rank). If Color is defined as an  Entity, returns a negative value. 
-  * IGESData_IGESEntity::Color 
-Handle_IGESData_ColorEntity  Color() const;  
-Purpose: Returns the  Color as an Entity (if defined as Reference) or a null handle if Color           Definition is not ;DefReference;. 
-  * IGESData_IGESEntity::CResValues  
-Standard_Boolean  CResValues( const Standard_CString res1,  
-          const  Standard_CString res2) const; 
-Purpose: Fills  res1 and res2 with inner ;reserved; alphanumeric  fields theRes1 and          theRes2. Returns False if both are blank, otherwise  returns True. 
-Warning: Both must be of  a length equal to at least 9 characters. The contents of res1 and  res2 are modofied. The 9-th character becomes null. 
-  * IGESData_IGESEntity::HasShortLabel  
-Standard_Boolean  HasShortLabel() const;  
-Purpose: Returns True if  ShortLabel is not null. 
-  * IGESData_IGESEntity::ShortLabel
-Handle_TCollection_HAsciiString  ShortLabel() const;  
-Purpose: Returns label  value as a string (null if ShortLabel is blank). 
-  * IGESData_IGESEntity::HasSubScriptNumber  
-virtualStandard_Boolean  HasSubScriptNumber() const;  
-Purpose: Returns True if  SubScript Number is defined. 
-  * IGESData_IGESEntity::SubScriptNumber  
-Standard_Integer  SubScriptNumber() const;  
-Purpose: Returns  SubScript Number as an integer (0 if not defined). 
-  * IGESData_IGESEntity::HasOneParent()  
-Standard_Boolean  HasOneParent() const;  
-Purpose: Returns True if  an entity has one and only one parent, defined by a SingleParentEntity Type  Associativity (explicit sharing). 
-Remarks: Thus, implicit  sharing remains defined at the model level.  
-See class ToolLocation. 
-  * IGESData_IGESEntity::UniqueParent()  const; 
-Handle_IGESData_IGESEntity  UniqueParent() const;  
-Purpose: Returns the  Unique Parent (if it is the one). 
-Exceptions:  Interface_InterfaceError if there are either several or no parents. 
-  * IGESData_IGESEntity::Location()
-gp_GTrsf Location() const;   
-Purpose: Returns the  entity Location given by Transf in the Directory Part (see above). Considers  local location only (not taking into account the parent's one - see  CompoundLocation for that). If no Transf is defined, returns Identity. 
-  * IGESData_IGESEntity::VectorLocation()  
-gp_GTrsf VectorLocation()  const;  
-Purpose: Returns the  Translation part of a local location (as for Location). 
-  * IGESData_IGESEntity::CompoundLocation()  
-gp_GTrsf  CompoundLocation() const;  
-Purpose: Returns the  location of this object combined with CompoundLocation of its Parent (i.e.  can          be recursive). If the Parent is not single (see HasOneParent)  returns Location. 
-  * IGESData_IGESEntity::HasName()  
-Standard_Boolean HasName()  const;  
-Purpose: Says if a Name  is defined as Short Label or as Name Property. (Property is looked for           first, otherwise ShortLabel is considered). 
-  * IGESData_IGESEntity::NameValue()  
-Handle_TCollection_HAsciiString  NameValue() const;  
-Purpose: Returns the  Name value as a String (Property Name or ShortLabel). If SubNumber is           defined, it is concatenated after ShortLabel as follows - label (number).  Ignored in case of Property Name. 
-<h5>Methods for dealing with  associativities and properties.</h5>
-  * IGESData_IGESEntity::ArePresentAssociativities()  
-Standard_Boolean  ArePresentAssociativities() const;  
-Purpose: Returns True if  the Entity is defined with an Associativity list, even an empty one (i.e., the  file is of 0 length). Otherwise returns False (the file contains no  identification concerning this list at all). 
-  * IGESData_IGESEntity::NbAssociativities  
-Standard_Integer  NbAssociativities() const;  
-Purpose: Returns the  number of recorded associativities (0 if no list is defined). 
-  * IGESData_IGESEntity::Associativities  
-Interface_EntityIterator  Associativities() const;  
-Purpose: Returns the  Associativity List in the form of an EntityIterator. 
-  * IGESData_IGESEntity::NbTypedAssociativities  
-Standard_Integer  NbTypedAssociativities  
-          const  Handle(Standard_Type)& atype) const; 
-Purpose: Returns  information on how many Associativities have the given type. 
-
-  * IGESData_IGESEntity::TypedAssociativity  
-Handle_IGESData_IGESEntity  TypedAssociativity  
-          (const  Handle(Standard_Type)& atype) const; 
-Purpose: Returns the  Associativity of a given Type (if one exists) 
-Exceptions:  Interface_InterfaceError if there is none or more than one  associativity. 
-  * IGESData_IGESEntity::AddAssociativity
-void  AddAssociativity(const Handle(IGESData_IGESEntity)& ent) ;  
-Purpose: Adds an  Associativity to the list (called by Associate only). 
-Exceptions:  Standard_NullObject if ent is null. 
-  * IGESData_IGESEntity::RemoveAssociativity  
-void  RemoveAssociativity(const Handle(IGESData_IGESEntity)& ent) ;  
-Purpose: Removes an  Associativity from the list (called by Dissociate). 
-Exceptions: Standard_NullObject  if ent is null. 
-  * IGESData_IGESEntity::LoadAssociativities  
-void  LoadAssociativities(const Interface_EntityList& list) ;  
-Purpose: Loads a  complete List of Asociativities (used during Read or Copy operations). 
-  * IGESData_IGESEntity::ClearAssociativities  
-void  ClearAssociativities() ;  
-Purpose: Removes all  associativities at once. 
-  * IGESData_IGESEntity::Associate  
-void Associate(const  Handle(IGESData_IGESEntity)& ent) const;  
-Purpose: Sets this  object to the Associativity list of another Entity. If ent is a null  object, method does nothing. 
-  * IGESData_IGESEntity::Dissociate
-void Dissociate(const  Handle(IGESData_IGESEntity)& ent) const;  
-Purpose: Removes this  object from the Associativity list of another Entity. If ent is a null  object, method does nothing. 
-  * IGESData_IGESEntity::ArePresentProperties  
-Standard_Boolean  ArePresentProperties() const;  
-Purpose: Returns True if  the Entity is defined with a Property list, even an empty one (i.e., the file  is of 0 length). Otherwise, returns False (file contains no identification  concerning this list at all). 
-  * IGESData_IGESEntity::NbProperties()  
-Standard_Integer  NbProperties() const;  
-Purpose: Returns the  number of recorded properties (0 if no list is defined) 
-  * IGESData_IGESEntity::Properties()  
-Interface_EntityIterator  Properties() const;  
-Purpose: Returns the  Property List in the form of an EntityIterator 
-  * IGESData_IGESEntity::NbTypedProperties  
-Standard_Integer  NbTypedProperties  
-          (const  Handle(Standard_Type)& atype) const; 
-Purpose: Returns  information on how many Properties have a given type 
-  * IGESData_IGESEntity::TypedProperty
-Handle_IGESData_IGESEntity  TypedProperty  
-          (const  Handle(Standard_Type)& atype) const; 
-Purpose: Returns the  Property of a given Type (if only one exists) 
-Exceptions: Interface_InterfaceError  if there is none or more than one Properties. 
-  * IGESData_IGESEntity::AddProperty  
-void AddProperty(const  Handle(IGESData_IGESEntity)& ent) ;  
-Purpose: Adds a Property  to the list. 
-Exceptions:  Standard_NullObject if entis null. 
-  * IGESData_IGESEntity::RemoveProperty  
-void RemoveProperty(const  Handle(IGESData_IGESEntity)& ent) ;  
-Purpose: Removes a  Property from the list. 
-Exceptions:  Standard_NullObject if entis null. 
-  * IGESData_IGESEntity::LoadProperties  
-void LoadProperties(const  Interface_EntityList& list) ;  
-Purpose: Loads a  complete List of Properties (used during Read or Copy operations). 
-  * IGESData_IGESEntity::ClearProperties()  ; 
-void ClearProperties() ;  
-Purpose: Removes all  properties at once 
-
-
-
-@section occt_1856844696_722523915 Using XSTEPDRAW
-@subsection occt_1856844696_7225239151 XSDRAWIGES Overview
 XSTEPDRAW UL is intended  for creating executables for testing XSTEP interfaces interactively in the DRAW  environment. It provides an additional set of DRAW commands specific for the  data exchange tasks, which allow loading and writing data files and analysis of  resulting data structures and shapes.  
-This paragraph 5 is  divided into several sections. Sections 5.3 and 5.5 deal with reading and  writing of IGES files and are intended specifically for the IGES processor,  sections 5.2 and 5.4 describe some general tools for setting parameters and  analyzing the data. Most of them are independent of the norm being tested.  Additionally, a table of mentioned DRAW commands is provided.  
-***NOTE*** 
-In the description of  commands, square brackets ([]) are used to indicate optional parameters.  Parameters given in the angle brackets () and sharps (#) are to be  substituted by an appropriate value. When several exclusive variants are  possible, vertical dash (|) is used.  
-@subsection occt_1856844696_7225239152 Setting interface  parameters
+
+In the description of  commands, square brackets ([]) are used to indicate optional parameters.  Parameters given in the angle brackets (<>) and sharps (#) are to be  substituted by an appropriate value. When several exclusive variants are  possible, vertical dash (|) is used.  
+
+@subsection occt_iges_4_2 Setting interface  parameters
+
 A set of parameters for  importing and exporting IGES files is defined in the XSTEP resource file. In  XSTEPDRAW, these parameters can be viewed or changed using command  
-Draw param  [parameter_name [value]]  
-Command param with no  arguments gives a list of all parameters with their values. When argument  parameter_name is specified, information about this parameter is  printed (current value and short description).  
+Draw> param [<parameter_name> [<value>]]  
+Command *param* with no  arguments gives a list of all parameters with their values. When argument  *parameter_name* is specified, information about this parameter is  printed (current value and short description).  
+
 The third argument is  used to set a new value of the given parameter. The result of the setting is  printed immediately.  
+
 During all interface  operations, the protocol of the process (fail and warning messages, mapping of  the loaded entities into OCCT shapes etc.) can be output to the trace file. Two  parameters are defined in the DRAW session: trace level (integer value from 0  to 9, default is 0), and trace file (default is a standard output).  
-Command xtrace is  intended to view and change these parameters:  
-Draw xtrace  
-- prints current settings (e.g.: ;Level=0 -  Standard Output;);  
-Draw xtrace #  
-- sets the trace level to the value #;  
-Draw xtrace  tracefile.log  
-- sets the trace file as tracefile.log; and  
-Draw xtrace .  
-- directs all messages to the standard output.  
 
-@subsection occt_1856844696_7225239153 Reading IGES files
-For a description of  parameters used in reading an IGES file refer to 2.3.3 ;Setting the  translation parameters ;.  
-These parameters are set  by command param:  
+Command *xtrace* is  intended to view and change these parameters:  
+* *Draw> xtrace* -  prints current settings (e.g.: "Level=0 -  Standard Output");  
+* *Draw> xtrace #* -  sets the trace level to the value #;  
+* *Draw> xtrace  tracefile.log* - sets the trace file as *tracefile.log*;  
+* *Draw xtrace* - directs all messages to the standard output.  
 
+@subsection occt_iges_4_3 Reading IGES files
+For a description of  parameters used in reading an IGES file refer to <a href="#occt_iges_2_3_3">Setting the translation parameters</a>.  
+
+These parameters are set  by command *param* :  
+
+| Description	| Name	| Values |
+| :------------ | :---- | :----- |
+| Precision for input entities	| read.precision.mode |	0 or 1 |
+| |	read.precision.val	| real |
+| Continuity of B splines | read.iges.bspline.continuity | 0-2 |
+| Surface curves | read.surfacecurve.mode | 2, 3 or 0 |
 
 It is possible either only to load an IGES file into memory  (i.e. to fill the model with data from the file), or to read it (i.e. to load  and convert all entities to OCCT shapes).  
-Loading is done by the command 
-Draw xload file_name 
-Once the file is loaded, it is possible to investigate the  structure of the loaded data. To learn how to do it see 5.4 Analyzing the  transferred. 
-Reading of an IGES file is done by the command  
-Draw igesbrep file_name result_shape_name  [selection] 
-Here a dot can be used instead of a filename if the file is  already loaded by **xload** or **igesbrep** command. In that case, only  conversion of IGES entities to OCCT shapes will be done. 
-Command **igesbrep** will interactively ask the user to  select a set of entities to be converted: 
 
+Loading is done by the command 
+~~~~~
+Draw> xload <file_name>
+~~~~~
+Once the file is loaded, it is possible to investigate the  structure of the loaded data. To learn how to do it see <a href="#occt_iges_4_4">Analyzing the  transferred</a>
+ 
+Reading of an IGES file is done by the command  
+~~~~~
+Draw> igesbrep <file_name> <result_shape_name> [<selection>]
+~~~~~
+Here a dot can be used instead of a filename if the file is  already loaded by *xload* or *igesbrep* command. In that case, only  conversion of IGES entities to OCCT shapes will be done. 
+
+Command *igesbrep* will interactively ask the user to  select a set of entities to be converted: 
+
+| N	| Mode	| Description |
+| :-- | :-- | :---------- |
+| 0	| End	| finish conversion and exit igesbrep |
+| 1	| Visible roots	| convert only visible roots |
+| 2	| All roots	| convert all roots |
+| 3	| One entity | convert entity with number provided by the user |
+| 4	| Selection	| convert only entities contained in selection |
 
 After the selected set of entities is loaded the user will  be asked how loaded entities should be converted into OCCT shapes (e.g., one  shape per root or one shape for all the entities). It is also possible to save  loaded shapes in files, and to cancel loading. 
-The second parameter of the **igesbrep** command defines  the name of the loaded shape. If several shapes are created, they will get  indexed names. For instance, if the last parameter was ‘s’, they will be s_1,  ... s_N. 
-selection specifies the scope of selected entities  in the model, it is xst-transferrable-roots by default. An asterisk “*” can be  specified instead of iges-visible-transf-roots. For possible values for  selection refer to 2.3.4. 
-Instead of igesbrep the following commands can be used: 
-Draw trimport file_name result_shape_name  selection 
-which outputs the result of translation of each selected  entity into one shape, 
-Draw trimpcomp file_name result_shape_name  selection 
-which outputs the result of translation of all selected  entities into one shape (TopoDS_Compound for several entities). 
-An asterisk “*” can be specified instead of  selection, it means xst-transferrable-roots. 
+
+The second parameter of the *igesbrep* command defines  the name of the loaded shape. If several shapes are created, they will get  indexed names. For instance, if the last parameter was ‘s’, they will be *s_1,  ... s_N. 
+
+*<selection>* specifies the scope of selected entities  in the model, it is *xst-transferrable-roots* by default. An asterisk “*” can be  specified instead of *iges-visible-transf-roots*. For possible values for  selection refer to <a href="#occt_iges_2_3_4">Selecting entities</a> section. 
+
+
+Instead of *igesbrep* it is possible to use commands:
+~~~~~ 
+Draw> trimport <file_name> <result_shape_name> <selection>
+~~~~~
+which outputs the result of translation of each selected  entity into one shape, or
+~~~~~
+Draw> trimpcomp <file_name> <result_shape_name> <selection>
+~~~~~
+which outputs the result of translation of all selected  entities into one shape (*TopoDS_Compound* for several entities). 
+
+An asterisk “*” can be specified instead of  selection, it means *xst-transferrable-roots*.
+ 
 During the IGES translation, a map of correspondence between  IGES entities and OCCT shapes is created. 
-To get information on the result of translation of the given  IGES entity the command 
-Draw tpent # 
-is used. 
-To create an OCCT shape corresponding to an IGES entity the  command 
-Draw tpdraw # 
-is used. 
-To get the number of an IGES entity corresponding to an OCCT  shape the command 
-Draw fromshape shape_name 
-is used. 
-To clear the map of correspondences between IGES entities  and OCCT shapes the command 
-Draw tpclear 
-is used. 
-@subsection occt_1856844696_7225239154  Analyzing the transferred data
+The following commands are available:  
+
+* *Draw> tpent \# * - provides information on the result of translation of the given  IGES entity;
+* *Draw> tpdraw \#* - creates an OCCT shape corresponding to an IGES entity;
+* *Draw> fromshape <shape_name>* provides the number of an IGES entity corresponding to an OCCT  shape;
+* *Draw> tpclear* clears the map of correspondences between IGES entities  and OCCT shapes. 
+
+@subsection occt_iges_4_4  Analyzing the transferred data
+
 The procedure of analysis of the data import can be divided  into two stages: 
-1. &nbsp;&nbsp;  checking the file contents, 
-2. &nbsp;&nbsp;  estimation of translation results (conversion and validated  ratios). 
-@subsubsection occt_1856844696_72252391541 Checking file contents
+1. Checking the file contents;
+2. Estimation of translation results (conversion and validated  ratios). 
+
+@subsubsection occt_iges_4_4_1 Checking file contents
+
 General statistics on the loaded data can be obtained by  using command  
-Draw data symbol 
+~~~~~
+Draw> data <symbol> 
+~~~~~
 The information printed by this command depends on the  symbol specified: 
+
+| Symbol	| Output |
+| :-------- | :----- |
+| g	| Prints information contained in the header of the file (Start and Global sections) |
+| c or f | Runs check procedure of the integrity of the loaded data and prints the resulting statistics (f works only with fails while c with both fail and warning messages) |
+| t	| The same as c or f, with a list of failed or warned entities |
+| m or l | The same as t but also prints a status for each entity |
+| e  | Lists all entities of the model with their numbers, types, status of validity etc. |
+| r	| The same as e but lists only root entities |
 
 
 There is a set of special objects, which can be used to  operate with the loaded model. They can be of the following types: 
+| Special object type	| Operation |
+| :------------------ | :---------- |
+| Selection	Filters | allow selecting subsets of entities of the loaded model |
+| Counters	| Calculate statistics on the model data |
+
 
 A list of these objects defined in the current session can  be printed in DRAW by command 
-Draw listitems 
-In the following commands if several selection  arguments are specified the results of each following selection are applied to  those of the one preceding it. 
-Command  
-Draw givelist selection_name  [selection_name] 
-prints a list of loaded entities defined by selection  argument. For possible values of selection_name please refer to 2.3.4. 
-Command  
-Draw givecount selection_name  [selection_name] 
-prints a number of loaded entities defined by selection  argument. For possible values of selection_name please refer to 2.3.4.  
-Three commands are used to calculate statistics on the  entities in the model: 
-Draw count counter [selection ...] 
-Prints only a number of entities per each type matching the  criteria defined by arguments. 
-Draw sumcount counter [selection ...] 
-Prints the total number of entities of all types matching  the criteria defined by arguments and the largest number corresponding to one  type. 
-Draw listcount counter [selection ...] 
-Prints a list of entities per each type matching the  criteria defined by arguments. 
-Optional selection argument, if specified, defines a  subset of entities, which are to be taken into account. Argument  counter should be one of the currently defined counters: 
+~~~~~
+Draw> listitems 
+~~~~~
+In the following commands if several <i><selection></i>  arguments are specified the results of each following selection are applied to the results of the previous one. 
+~~~~~
+Draw> givelist <selection_name> [<selection_name>]
+~~~~~
+prints a list of loaded entities defined by selection argument. 
 
-Command  
-Draw listtypes selection_name ... 
+~~~~~
+Draw> givecount <selection_name> [<selection_name>]
+~~~~~
+prints a number of loaded entities defined by <i>selection</i> argument. 
+
+Three commands are used to calculate statistics on the entities in the model:
+* *Draw> count <counter> [<selection> ...]* - prints only a number of entities per each type matching the criteria defined by arguments.
+* *Draw> sumcount <counter> [<selection> ...]* - prints the total number of entities of all types matching the criteria defined by arguments and the largest number corresponding to one type.
+* *Draw> listcount <counter> [<selection> ...]* prints a list of entities per each type matching the criteria defined by arguments.
+
+Optional <i><selection></i> argument, if specified, defines a subset of entities, which are to be taken into account. Argument <i><counter></i> should be one of the currently defined counters:
+
+| Counter	| Operation |
+| :-------- | :-------- |
+| xst-types	| Calculates how much entities of each OCCT type exist |
+| iges-types | Calculates how much entities of each IGES type and form exist |
+| iges-levels | Calculates how much entities lie in different IGES levels |
+
+The command:
+~~~~~
+Draw> listtypes <selection_name> ...
+~~~~~
 gives a list of entity types which were encountered in the  last loaded file (with a number of IGES entities of each type). The list can be  shown not for all entities but for a subset of them. This subset is defined by  an optional selection argument. 
 
-Entities in the IGES file are numbered in the succeeding  order. An entity can be identified either by its number (#) or by its label.  Label is the letter ‘D’ followed by the index of the first line with the data  for this entity in the Directory Entry section of the IGES file. The label can  be calculated on the basis of the number as ‘D(2*# -1)’. For example, entity #  6 has label D11. To get a label for an entity with a known number, command  
-Draw elab # 
-can be used.  
-In the same way, command  
-Draw enum D# 
-prints a number for an entity with the given label. 
-The content of an IGES entity can be obtained by using  command 
-Draw entity # level_of_information 
-The list of entities referenced by a given entity and the  list of entities referencing to it can be obtained by command 
-Draw estat # 
-@subsubsection occt_1856844696_72252391542 Estimating the results of reading IGES
-All of the following commands are available only after the  data are converted into OCCT shapes (i.e. after command **igesbrep**). 
-Command  
-Draw tpstat [*|?]symbol [selection] 
-is provided to get all statistics on the last transfer,  including the list of transferred entities with mapping from IGES to OCCT  types, as well as fail and warning messages. The parameter *symbol *defines  what information will be printed: 
+Entities in the IGES file are numbered in the succeeding  order. An entity can be identified either by its number (#) or by its label.  Label is the letter ‘D’ followed by the index of the first line with the data  for this entity in the Directory Entry section of the IGES file. The label can  be calculated on the basis of the number as ‘D(2*# -1)’. For example, entity #  6 has label D11. 
 
+* *Draw> elab \#*  - provides  a label for an entity with a known number;
+* *Draw> enum \#* - prints a number for an entity with the given label; 
+* *Draw> entity \# <level_of_information>*  - gives the content of an IGES entity;
+* *Draw> estat \#* - provides the list of entities referenced by a given entity and the list of entities referencing to it.
+
+@subsubsection occt_iges_4_4_2 Estimating the results of reading IGES
+All of the following commands are available only after the  data are converted into OCCT shapes (i.e. after command **igesbrep**). 
+
+~~~~~
+Draw> tpstat [*|?]<symbol> [<selection>]
+~~~~~
+provides all statistics on the last transfer,  including the list of transferred entities with mapping from IGES to OCCT  types, as well as fail and warning messages. The parameter <i><symbol></i> defines  what information will be printed: 
+* G	- General statistics (list of results and messages)
+* C	- Count of all warning and fail messages
+* C	- List of all warning and fail messages
+* F	- Count of all fail messages
+* F	- List of all fail messages
+* N	- List of all transferred roots
+* S	- The same, with types of source entity and result type
+* B	- The same, with messages
+* T	- Count of roots for geometrical types
+* R	- Count of roots for topological types
+* l	- The same, with a type of the source entity
 
 The sign ‘*’ before the parameters **n**, **s**, **b**,  **t**, **r** makes it work on all entities (not only on roots). The sign  ‘?’ before **n**, **s**, **b**, **t** limits the scope of  information to invalid entities. 
-Optional argument selection can limit the action of  the command with a selected subset of entities. 
+
+Optional argument <i><selection></i> can limit the action of  the command with a selected subset of entities. 
 To get help, run this command without arguments. 
-Example. Translation ratio on IGES faces. 
-Draw: tpstat *l iges-faces 
+
+For example, to get translation ratio on IGES faces, you can use. 
+~~~~~
+Draw:> tpstat *l iges-faces
+~~~~~
 The second version of the same command is TPSTAT (not  capital spelling). 
-Draw: TPSTAT symbol 
+~~~~~
+Draw:> TPSTAT symbol 
+~~~~~
 Symbol can be of the following values: 
+* g	-  General statistics (list of results and messages)
+* c	- Count of all warning and fail messages
+* C	- List of all warning and fail messages
+* r	- Count of resulting OCCT shapes per each type
+* s	- Mapping of IGES roots and resulting OCCT shapes
 
-Sometimes the trimming contours of IGES faces (i.e., entity  141 for 143, 142 for 144) can be lost during translation due to fails. To  obtain the number of lost trims and the number of corresponding IGES entities  the command 
-Draw tplosttrim [IGES_type] 
-is used. It outputs the rank and DE numbers of faces that  lost their trims and their numbers for each type (143, 144, 510) and their  total number. If a face lost several of its trims it is output only once. 
-Optional parameter IGES_type can be TrimmedSurface,  BoundedSurface or Face to specify the only type of IGES faces. 
-Example. Untrimmed 144 entities. 
-Draw tplosttrim TrimmedSurface 
-To get information on OCCT shape contents the command 
-Draw statshape shape_name 
-is used. 
+Sometimes the trimming contours of IGES faces (i.e., entity  141 for 143, 142 for 144) can be lost during translation due to fails. 
+
+The number of lost trims and the corresponding IGES entities can be obtained by the command:
+~~~~~ 
+Draw> tplosttrim [<IGES_type>] 
+~~~~~
+It outputs the rank and DE numbers of faces that  lost their trims and their numbers for each type (143, 144, 510) and their  total number. If a face lost several of its trims it is output only once. 
+
+Optional parameter <i><IGES_type></i> can be *TrimmedSurface,  BoundedSurface* or *Face* to specify the only type of IGES faces. 
+
+For example, to get untrimmed 144 entities, use command 
+~~~~~ 
+Draw> tplosttrim TrimmedSurface 
+~~~~~
+To get the information on OCCT shape contents, use command 
+~~~~~
+Draw> statshape <shape_name> 
+~~~~~
 It outputs the number of each kind of shapes (vertex, edge,  wire, etc.) in a shape and some geometrical data (number of C0 surfaces,  curves, indirect surfaces, etc.). 
-Note. The number of faces is returned as a number of  references. To obtain the number of single instances the standard command (from  TTOPOLOGY executable) **nbshapes** can be used. 
-To analyze the internal validity of a shape, command  
-Draw checkbrep shape_name  expurged_shape_name 
-is used. It checks the geometry and topology of a shape for  different cases of inconsistency, like self-intersecting wires or wrong  orientation of trimming contours. If an error is found, it copies bad parts of  the shape with the names ; expurged_subshape_name _#; and generates  an appropriate message. If possible, this command also tries to find IGES  entities the OCCT shape was produced from. 
-expurged_shape_name will contain the original shape  without invalid subshapes. 
-To get information on tolerances of subshapes the command 
-Draw tolerance shape_name [min  [max] [symbol]] 
-is used. It outputs maximum, average and minimum values of  tolerances for each kind of subshapes having tolerances or it can output  tolerances of all subshapes of the whole shape. 
-When specifying min and max arguments this  command outputs shapes with names shape_name_... and their total number  with tolerances in the range [min, max]. 
-Symbol is used for specifying the kind of sub-shapes  to analyze: v - for vertices, e - for edges, f - for faces, c - for shells and  faces. 
-@subsection occt_1856844696_7225239155 Writing an IGES file
-For a description of parameters used in reading an IGES file  refer to 3.3.2 Setting the translation parameters. 
-These parameters are set by command **param**: 
 
+Note. The number of faces is returned as a number of  references. To obtain the number of single instances the standard command (from  TTOPOLOGY executable) **nbshapes** can be used. 
+
+To analyze the internal validity of a shape, use command  
+~~~~~
+Draw> checkbrep <shape_name> <expurged_shape_name>
+~~~~~
+It checks the geometry and topology of a shape for  different cases of inconsistency, like self-intersecting wires or wrong  orientation of trimming contours. If an error is found, it copies bad parts of  the shape with the names "expurged_subshape_name _#" and generates  an appropriate message. If possible, this command also tries to find IGES  entities the OCCT shape was produced from. 
+
+<i><expurged_shape_name></i> will contain the original shape  without invalid subshapes. 
+
+To get information on tolerances of subshapes, use command 
+~~~~~
+Draw> tolerance <shape_name> [<min> [<max>] [<symbol>]]
+~~~~~
+It outputs maximum, average and minimum values of  tolerances for each kind of subshapes having tolerances or it can output  tolerances of all subshapes of the whole shape. 
+
+When specifying <min> and <max> arguments this  command outputs shapes with names <i><shape_name>...</i> and their total number  with tolerances in the range [min, max]. 
+
+<i><Symbol></i> is used for specifying the kind of sub-shapes to analyze: 
+* v - for vertices,
+* e - for edges,
+* f - for faces,
+* c - for shells and faces. 
+
+@subsection occt_iges_4_5 Writing an IGES file
+
+Refer to <a href="#occt_iges_3_3_2">Setting the translation parameters</a> for a description of parameters used in reading an IGES file. The parameters are set by command *param*: 
+
+| Description	| Name	| Values |
+| :-----------  | :---- | :----- |
+| Author	| XSTEP.iges.header.author	| String |
+| Company	| XSTEP.iges.header.company	| String |
+| Receiver	| XSTEP.iges.header.receiver |	String |
+| Write mode for shapes	| XSTEP.iges.writebrep.mode	| 0/Faces or 1/BRep |
+| Measurement units	| XSTEP.iges.unit | 1-11 (or a string value) |
 
 Several shapes can be written in one file. To start writing  a new file, enter command 
-Draw newmodel 
-Actually, command **newmodel** will clear the  InterfaceModel to make it empty, and the next command will convert the  specified shapes to IGES entities and put them into the InterfaceModel: 
-Draw brepiges shape_name_1 [filename.igs] 
-To write the prepared model to a file with name **filename.igs**,  enter 
-Draw writeall filename.igs 
-@subsection occt_1856844696_7225239156 Index of useful commands
+~~~~~
+Draw> newmodel 
+~~~~~
+This command clears the *InterfaceModel* to make it empty.
 
+~~~~~
+Draw> brepiges <shape_name_1> [<filename.igs>]
+~~~~~
+Converts the  specified shapes into IGES entities and puts them into the *InterfaceModel*.
 
+~~~~~
+Draw> writeall <filename.igs>
+~~~~~
+Allows writing the prepared model to a file with name *filename.igs*.
 
+@section occt_iges_5_ Reading from and writing to XDE
 
-@section occt_1856844696_332489123 Reading from and writing to XDE
-@subsection occt_1856844696_3324891231 Description of the process
-@subsubsection occt_1856844696_33248912311 Loading an IGES file
+@subsection occt_iges_5_1 Loading an IGES file
+
 Before performing any other operation, you must load an IGES  file with: 
+~~~~~
 IGESCAFControl_Reader reader(XSDRAW::Session(),  Standard_False); 
 IFSelect_ReturnStatus stat = reader.ReadFile(“filename.igs”); 
+~~~~~
 Loading the file only memorizes, but does not translate the  data. 
-@subsubsection occt_1856844696_33248912312 Checking the loaded IGES file
-This step is not obligatory. See the description of this  step below in paragraph 2.3.2. 
-@subsubsection occt_1856844696_33248912313 Setting parameters for translation to XDE
-See the description of this step below in paragraph 2.3.3. 
+
+@subsection occt_iges_5_2 Checking the loaded IGES file
+
+This step is not obligatory. See the description of this  step <a href="#occt_iges_2_3_2"> above</a>. 
+
+@subsection occt_iges_5_3 Setting parameters for translation to XDE
+See the description of this step <a href="#occt_iges_2_3_3"> above</a>. 
+
 In  addition, the following parameters can be set for XDE translation of  attributes: 
-• Parameter for transferring colors: 
+* For transferring colors: 
+~~~~~
 reader.SetColorMode(mode); 
 // mode can be Standard_True or Standard_False 
-• Parameter for transferring names: 
+~~~~~
+* For transferring names: 
+~~~~~
 reader.SetNameMode(mode); 
 // mode can be Standard_True or Standard_False 
-@subsubsection occt_1856844696_33248912314 Performing the translation of an IGES file  to XDE
+~~~~~
+@subsection occt_iges_5_4 Performing the translation of an IGES file  to XDE
 The following function performs a translation of the whole  document: 
+~~~~~
 Standard_Boolean ok = reader.Transfer(doc);  
-where ;doc;   is a variable which contains a handle to the output document and should have a  type Handle(TDocStd_Document). 
-@subsubsection occt_1856844696_33248912315 Initializing the process of translation from XDE to  IGES
-Here is how the process is initialized: 
+~~~~~
+where *doc* is a variable which contains a handle to the output document and should have a  type *Handle(TDocStd_Document)*. 
+
+@subsection occt_iges_5_5 Initializing the process of translation from XDE to  IGES
+The process can be initialized as follows: 
+~~~~~
 IGESCAFControl_Writer aWriter(XSDRAW::Session(),Standard_False); 
-@subsubsection occt_1856844696_33248912316 Setting parameters for translation from XDE to IGES
+~~~~~
+@subsection occt_iges_5_6 Setting parameters for translation from XDE to IGES
+
 The  following parameters can be set for translation of attributes to IGES: 
-• Parameter for transferring colors: 
+* For transferring colors: 
+~~~~~
 aWriter.SetColorMode(mode); 
 // mode can be Standard_True or Standard_False 
-• Parameter for transferring names: 
+~~~~~
+* For transferring names: 
+~~~~~
 aWriter.SetNameMode(mode); 
 // mode can be Standard_True or Standard_False 
-@subsubsection occt_1856844696_33248912317 Performing the translation of an XDE  document to IGES
+~~~~~
+@subsection occt_iges_5_7 Performing the translation of an XDE  document to IGES
+
 You can perform the translation of a document by calling the  function: 
+~~~~~
 IFSelect_ReturnStatus aRetSt = aWriter.Transfer(doc); 
-where ;doc;   is a variable which contains a handle to the input document for transferring  and should have a type Handle(TDocStd_Document). 
-@subsubsection occt_1856844696_33248912318 Writing an IGES file
+~~~~~
+where "doc" is a variable which contains a handle to the input document for transferring  and should have a type *Handle(TDocStd_Document)*.
+ 
+@subsection occt_iges_5_8 Writing an IGES file
 Write an IGES file with: 
-IFSelect_ReturnStatus statw =  aWriter.WriteFile(;filename.igs;); 
+~~~~~
+IFSelect_ReturnStatus statw =  aWriter.WriteFile("filename.igs"); 
+~~~~~
 or 
+~~~~~
 IFSelect_ReturnStatus statw = writer.WriteFile (S); 
-where S is OStream 
+~~~~~
+where S is OStream.  
 
 

@@ -1484,7 +1484,7 @@ vhlrtype  algo_type={algo|polyalgo} [shape_1 ... shape_n]
 Changes the type of HLR algorithm used for shapes.
 If the algo_type is algo, the exact HLR algorithm is used, otherwise the polygonal algorithm is used for defined shapes. 
 
-If no shape is specified through the command arguments, the given HLR algorithm_type is applied to all *AIS_Shape* isntances in the current context, and the command also changes the default HLR algorithm type.
+If no shape is specified through the command arguments, the given HLR algorithm_type is applied to all *AIS_Shape* instances in the current context, and the command also changes the default HLR algorithm type.
 
 **Note** that this command works with instances of *AIS_Shape* or derived classes only, other interactive object types are ignored.
 
@@ -1494,108 +1494,147 @@ If no shape is specified through the command arguments, the given HLR algorithm_
 @subsubsection occt_draw_4_3_1 vdisplay
 
 Syntax:                  
+~~~~~
 vdisplay name1 [name2] … [name n] 
-
+~~~~~
 Displays named objects. 
-**Example:** 
 
+**Example:** 
+~~~~~
 vinit 
 box b 40 40 40 10 10 10 
 psphere s 20 
 vdisplay s b 
 vfit 
+~~~~~
 
+@subsubsection occt_draw_4_3_2 vdonly
 
-@subsubsection occt_draw_4_32 vdonly
-
-Syntax:                  vdonly [name1] … [name n] 
-
+Syntax:                  
+~~~~~
+vdonly [name1] … [name n] 
+~~~~~
 Displays only selected or named objects. If there are no selected or named objects, nothing is done. 
-**Example:** 
 
+**Example:** 
+~~~~~
 vinit 
 box b 40 40 40 10 10 10 
 psphere s 20 
 vdonly b 
 vfit 
-@subsubsection occt_draw_4_33 vdisplayall
+~~~~~
 
-Syntax:                  vdisplayall 
+@subsubsection occt_draw_4_3_3 vdisplayall
 
+Syntax:                  
+~~~~~
+vdisplayall 
+~~~~~
 Displays all created objects. 
-**Example:** 
 
+
+**Example:** 
+~~~~~
 vinit 
 box b 40 40 40 10 10 10 
 psphere s 20 
 vdisplayall 
 vfit 
-@subsubsection occt_draw_4_34 verase
+~~~~~
 
-Syntax:                  verase [name1] [name2] … [name n] 
+@subsubsection occt_draw_4_3_4 verase
+
+Syntax: 
+~~~~~
+verase [name1] [name2] … [name n] 
+~~~~~
 
 Erases some selected or named objects. If there are no selected or named objects, the whole viewer is erased. 
-**Example:** 
 
+**Example:** 
+~~~~~
 vinit 
 box b1 40 40 40 10 10 10 
 box b2 -40 -40 -40 10 10 10 
 psphere s 20 
 vdisplayall 
 vfit 
-# erase only first box 
+# erase only the first box 
 verase b1 
-# erase second box and sphere 
+# erase the second box and sphere 
 verase 
-@subsubsection occt_draw_4_35 veraseall
+~~~~~
 
-Syntax:                  veraseall 
+@subsubsection occt_draw_4_3_5 veraseall
 
+Syntax:                  
+~~~~~
+veraseall 
+~~~~~
 Erases all objects displayed in the viewer. 
+
 **Example:** 
+
+~~~~~
 vinit 
 box b1 40 40 40 10 10 10 
 box b2 -40 -40 -40 10 10 10 
 psphere s 20 
 vdisplayall 
 vfit 
-# erase only first box 
+# erase only the first box 
 verase b1 
-# erase second box and sphere 
+# erase the second box and sphere 
 verseall 
+~~~~~
 
-@subsubsection occt_draw_4_36 vsetdispmode
+@subsubsection occt_draw_4_3_6 vsetdispmode
 
-Syntax:                  vsetdispmode [name] mode(0,1,2,3) 
+Syntax:                  
 
-Sets display mode for all, selected or named objects. 
-**mode** is **0** (**WireFrame**), **1** (**Shading**), **2** (**Quick HideLineremoval**), **3** (**Exact HideLineremoval**). 
+~~~~~
+vsetdispmode [name] mode(0,1,2,3) 
+~~~~~
+
+Sets display mode for all, selected or named objects to the following values:
+* **0** - WireFrame,
+* **1** - Shading, 
+* **2** - Quick HideLineremoval,
+* **3** - Exact HideLineremoval. 
+
 **Example:** 
 
+~~~~~
 vinit 
 box b 10 10 10 
 vdisplay b 
 vsetdispmode 1 
 vfit 
-@subsubsection occt_draw_4_37 vdisplaytype
+~~~~~
+@subsubsection occt_draw_4_39 vtypes
 
-Syntax:                  vdisplaytype type 
+Syntax:                  vtypes 
 
-Displays all objects of a given type. 
-Possible **type**s are **;Point;, ;Axis;, ;Trihedron;, ;PlaneTrihedron;, ;Line;, ;Circle;, ;Plane;, ;Shape;, ;ConnectedShape;, ;MultiConn.Shape;, ;ConnectedInter.;, ;MultiConn.;, ;Constraint; **and** ;Dimension; **(see **vtypes**). 
+Makes a list of known types and signatures in AIS. 
 
-@subsubsection occt_draw_4_38 verasetype
+@subsubsection occt_draw_4_3_7 vdisplaytype
+
+Syntax:                  
+~~~~~
+vdisplaytype type 
+~~~~~
+
+Displays all objects of a given type. The following types are possible: **Point, Axis, Trihedron, PlaneTrihedron, Line, Circle, Plane, Shape, ConnectedShape, MultiConn.Shape, ConnectedInter., MultiConn., Constraint** and **Dimension**. 
+
+@subsubsection occt_draw_4_3_8 verasetype
 
 Syntax:                  verasetype type 
 
 Erases all objects of a given type. 
 Possible** type**s are **;Point;, ;Axis;, ;Trihedron;, ;PlaneTrihedron;, ;Line;, ;Circle;, ;Plane;, ;Shape;, ;ConnectedShape;, ;MultiConn.Shape;, ;ConnectedInter.;, ;MultiConn.;, ;Constraint; **and **;Dimension; **(see **vtypes**). 
 
-@subsubsection occt_draw_4_39 vtypes
 
-Syntax:                  vtypes 
-
-Makes a list of known types and signatures in AIS. 
 
 @subsubsection occt_draw_4_310 vsetcolor
 
