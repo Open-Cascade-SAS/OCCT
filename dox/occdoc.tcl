@@ -20,7 +20,7 @@ proc OverviewDoc_DetectCasVersion {theCasRoot} {
 }
 
 # Generates Doxygen configuration file for Overview documentation
-proc OverviewDoc_MakeDoxyfile {casDir outDir tagFileDir {doxyFileName} {generatorMode ""} DocFilesList verboseMode searchMode} {
+proc OverviewDoc_MakeDoxyfile {casDir outDir tagFileDir {doxyFileName} {generatorMode ""} DocFilesList verboseMode searchMode hhcPath} {
 
     set doxyFile [open $doxyFileName "w"]
     set casroot  $casDir
@@ -70,7 +70,6 @@ proc OverviewDoc_MakeDoxyfile {casDir outDir tagFileDir {doxyFileName} {generato
     
     # Generation options
     puts $doxyFile "GENERATE_DOCSET        = NO"
-    puts $doxyFile "GENERATE_HTMLHELP      = NO"
     puts $doxyFile "GENERATE_CHI           = NO"
     puts $doxyFile "GENERATE_QHP           = NO"
     puts $doxyFile "GENERATE_ECLIPSEHELP   = NO"
@@ -106,6 +105,7 @@ proc OverviewDoc_MakeDoxyfile {casDir outDir tagFileDir {doxyFileName} {generato
         }
         # HTML Output
         puts $doxyFile "GENERATE_LATEX         = NO"
+        puts $doxyFile "GENERATE_HTMLHELP      = NO"
         puts $doxyFile "GENERATE_HTML          = YES"
         puts $doxyFile "HTML_COLORSTYLE_HUE    = 220"
         puts $doxyFile "HTML_COLORSTYLE_SAT    = 100"
@@ -149,8 +149,20 @@ proc OverviewDoc_MakeDoxyfile {casDir outDir tagFileDir {doxyFileName} {generato
         puts $doxyFile "MATHJAX_FORMAT         = HTML-CSS"
         puts $doxyFile "MATHJAX_RELPATH        = http://cdn.mathjax.org/mathjax/latest"
         
+    } elseif { $generatorMode == "CHM_ONLY"} {
+        puts $doxyFile "GENERATE_HTMLHELP      = YES"
+        puts $doxyFile "CHM_FILE               = ../../overview.chm"
+        puts $doxyFile "HHC_LOCATION           = \"$hhcPath\""
+        puts $doxyFile "DISABLE_INDEX          = YES"
+        # Formula options
+        puts $doxyFile "FORMULA_FONTSIZE       = 12"
+        puts $doxyFile "FORMULA_TRANSPARENT    = YES"
+        puts $doxyFile "USE_MATHJAX            = YES"
+        puts $doxyFile "MATHJAX_FORMAT         = HTML-CSS"
+        puts $doxyFile "MATHJAX_RELPATH        = http://cdn.mathjax.org/mathjax/latest"
+
     } elseif { $generatorMode == "PDF_ONLY"} {
-        
+        puts $doxyFile "GENERATE_HTMLHELP      = NO"
         puts $doxyFile "GENERATE_HTML          = NO"
         puts $doxyFile "DISABLE_INDEX          = YES"
         puts $doxyFile "GENERATE_TREEVIEW      = NO"
@@ -201,9 +213,13 @@ proc OverviewDoc_PrintHelpMessage {} {
     puts ""
     puts " Options are : "
     puts "    -html                : To generate HTML files"
-    puts "                           (cannot be used with -pdf)"
+    puts "                           (cannot be used with -pdf or -chm)"
     puts "    -pdf                 : To generate PDF files"
-    puts "                           (cannot be used with -html)"
+    puts "                           (cannot be used with -html or chm)"
+    puts "    -chm                 : To generate CHM files"
+    puts "                           (cannot be used with -html or pdf)"
+    puts "    -hhc                 : To define path to hhc - chm generator"
+    puts "                         : is used with just -chm option"
     puts "    -m=<modules_list>    : Specifies list of documents to generate."
     puts "                           If it is not specified, all files, "
     puts "                           mentioned in FILES.txt are processed."
@@ -490,7 +506,7 @@ proc OverviewDoc_ProcessTex {{texFiles {}} {latexDir} verboseMode} {
 }
 
 # Main procedure for documents compilation
-proc OverviewDoc_Main { {docfiles {}} generatorMode docLabel verboseMode searchMode} {
+proc OverviewDoc_Main { {docfiles {}} generatorMode docLabel verboseMode searchMode hhcPath} {
 
     set INDIR      [file normalize [file dirname [info script]]]
     set CASROOT    [file normalize [file dirname "$INDIR/../../"]]
@@ -521,11 +537,13 @@ proc OverviewDoc_Main { {docfiles {}} generatorMode docLabel verboseMode searchM
     # Run tools to compile documents
     puts "[clock format [clock seconds] -format {%Y-%m-%d %H:%M}] Generating Doxyfile..."
     
-    OverviewDoc_MakeDoxyfile $CASROOT "$OUTDIR/overview" $TAGFILEDIR $DOXYFILE $generatorMode $docfiles $verboseMode $searchMode
+    OverviewDoc_MakeDoxyfile $CASROOT "$OUTDIR/overview" $TAGFILEDIR $DOXYFILE $generatorMode $docfiles $verboseMode $searchMode $hhcPath
 
     # Run doxygen tool
     if { $generatorMode == "HTML_ONLY"} {
-        puts "[clock format [clock seconds] -format {%Y-%m-%d %H:%M}] Generating HTML files..."
+      puts "[clock format [clock seconds] -format {%Y-%m-%d %H:%M}] Generating HTML files..."
+    } elseif { $generatorMode == "CHM_ONLY" } {
+      puts "[clock format [clock seconds] -format {%Y-%m-%d %H:%M}] Generating CHM file..."
     }
     set RESULT [catch {exec doxygen $DOXYFILE > $OUTDIR/doxygen_out.log} DOX_ERROR] 
     if {$RESULT != 0} {
@@ -636,10 +654,13 @@ proc occdoc {args} {
     set DOCLABEL    "Default OCCT Document"
     set VERB_MODE   "NO"
     set SEARCH_MODE "none"
+    set hhcPath ""
 
     global available_docfiles
+    global tcl_platform
     global args_names
     global args_values
+    global env
 
     # Load list of docfiles
     if { [OverviewDoc_LoadFilesList] != 0 } {
@@ -651,13 +672,51 @@ proc occdoc {args} {
     if {[OverviewDoc_ParseArguments $args] == 1} {
         return
     }
-    
-  foreach arg_n $args_names {
+
+    foreach arg_n $args_names {
     if {$arg_n == "h"} {
       OverviewDoc_PrintHelpMessage
       return
     } elseif {$arg_n == "html"} {
         set GEN_MODE "HTML_ONLY"
+    } elseif {$arg_n == "chm"} {
+        set GEN_MODE "CHM_ONLY"
+
+        if {"$tcl_platform(platform)" == "windows" && [lsearch $args_names hhc] == -1} {
+        if { [info exist env(ProgramFiles\(x86\))] } {
+          set hhcPath "$env(ProgramFiles\(x86\))\\HTML Help Workshop\\hhc.exe"
+          puts "Info: hhc found: $hhcPath"
+        } elseif { [info exist env(ProgramFiles)] } {
+            set hhcPath "$env(ProgramFiles)\\HTML Help Workshop\\hhc.exe"
+            puts "Info: hhc found: $hhcPath"
+        }
+        
+        if { ! [file exists $hhcPath] } {
+          puts "Error: HTML Help Compiler is not found in standard location [file dirname $hhcPath]; use option -hhc"
+          return
+        }
+      }
+
+    } elseif {$arg_n == "hhc"} {
+      global tcl_platform
+      if { $tcl_platform(platform) != "windows" } {
+        continue
+      }
+
+      if {$args_values(hhc) != "NULL"} {
+        set hhcPath $args_values(hhc)
+        if { [file isdirectory $hhcPath] } { 
+          set hhcPath [file join ${hhcPath} hhc.exe]
+        }
+        if { ! [file exists $hhcPath] } {
+          puts "Error: HTML Help Compiler is not found in $hhcPath"
+          return
+        }
+      } else {
+        puts "Error in argument hhc"
+        return
+      }
+
     } elseif {$arg_n == "pdf"} {
         set GEN_MODE "PDF_ONLY"
     } elseif {$arg_n == "v"} {
@@ -669,7 +728,7 @@ proc occdoc {args} {
         puts "Error in argument m"
         return
       }
-        
+
       # Check if all chosen docfiles are correct
       foreach docfile $DOCFILES {
         if { [lsearch $available_docfiles $docfile] == -1 } {
@@ -715,5 +774,5 @@ proc occdoc {args} {
   }
 
   # Start main activities
-  OverviewDoc_Main $DOCFILES $GEN_MODE $DOCLABEL $VERB_MODE $SEARCH_MODE
+  OverviewDoc_Main $DOCFILES $GEN_MODE $DOCLABEL $VERB_MODE $SEARCH_MODE $hhcPath
 }
