@@ -2367,25 +2367,57 @@ Standard_Integer GeomLib::NormEstim(const Handle(Geom_Surface)& S,
      Standard_Real Umin, Umax, Vmin, Vmax;
      Standard_Real step = 1.0e-5;
      Standard_Real eps = 1.0e-16;
-     Standard_Real sign = 1;
+     Standard_Real sign = -1.0;
      
      S->Bounds(Umin, Umax, Vmin, Vmax);
+
+     // check for cone apex singularity point
+     if ((UV.Y() > Vmin + step) && (UV.Y() < Vmax - step))
+     {
+       gp_Dir aNormal1, aNormal2;
+       Standard_Real aConeSingularityAngleEps = 1.0e-4;
+       S->D1(UV.X(), UV.Y() - sign * step, DummyPnt, DU, DV);
+       if ((DU.XYZ().SquareModulus() > eps) && (DV.XYZ().SquareModulus() > eps)) {
+         aNormal1 = DU^DV;
+         S->D1(UV.X(), UV.Y() + sign * step, DummyPnt, DU, DV);
+         if ((DU.XYZ().SquareModulus() > eps) && (DV.XYZ().SquareModulus() > eps)) {
+           aNormal2 = DU^DV;
+           if (aNormal1.IsOpposite(aNormal2, aConeSingularityAngleEps))
+             return 2;
+         }
+       }
+     }
+
      // Along V
      if(MDU < aTol2 && MDV >= aTol2) {
-       if (UV.Y() + step >= Vmax)
-         sign = -1.0;
+       if ((Vmax - UV.Y()) > (UV.Y() - Vmin))
+         sign = 1.0;
        S->D1(UV.X(), UV.Y() + sign * step, DummyPnt, DU, DV);
        gp_Vec Norm = DU^DV;
+       if (Norm.SquareMagnitude() < eps) {
+         Standard_Real sign1 = -1.0;
+         if ((Umax - UV.X()) > (UV.X() - Umin))
+           sign1 = 1.0;
+         S->D1(UV.X() + sign1 * step, UV.Y() + sign * step, DummyPnt, DU, DV);
+         Norm = DU^DV;
+       }
        if ((Norm.SquareMagnitude() >= eps) && (Norm.Dot(aNormal) < 0.0))
-        aNormal.Reverse();
-
+         aNormal.Reverse();
      }
+
      // Along U
      if(MDV < aTol2 && MDU >= aTol2) {
-       if (UV.X() + step >= Umax)
-         sign = -1.0;
+       if ((Umax - UV.X()) > (UV.X() - Umin))
+         sign = 1.0;
        S->D1(UV.X() + sign * step, UV.Y(), DummyPnt, DU, DV);
        gp_Vec Norm = DU^DV;
+       if (Norm.SquareMagnitude() < eps) {
+         Standard_Real sign1 = -1.0;
+         if ((Vmax - UV.Y()) > (UV.Y() - Vmin))
+           sign1 = 1.0;
+         S->D1(UV.X() + sign * step, UV.Y() + sign1 * step, DummyPnt, DU, DV);
+         Norm = DU^DV;
+       }
        if ((Norm.SquareMagnitude() >= eps) && (Norm.Dot(aNormal) < 0.0))
          aNormal.Reverse();
      }
