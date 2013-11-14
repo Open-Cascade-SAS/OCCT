@@ -1,0 +1,33 @@
+puts "============"
+puts "OCC24305"
+puts "============"
+puts ""
+#######################################################################
+# New option in BRepOffsetAPI_MakePipeShell algofithm: the swept shell with varying width of section bounded by auxiliary spine
+#######################################################################
+
+restore [locate_data_file bug24305_mainSpine.brep] sp
+restore [locate_data_file bug24305_auxSpine.brep] aux
+restore [locate_data_file bug24305_profile.brep] pr
+
+wire sp sp
+wire aux aux
+mksweep sp
+
+setsweep -G aux 1 2
+addsweep pr
+buildsweep result
+
+set square 69608
+
+set nb_v_good 12
+set nb_e_good 16
+set nb_w_good 5
+set nb_f_good 5
+set nb_sh_good 1
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 39
+
+set 2dviewer 1

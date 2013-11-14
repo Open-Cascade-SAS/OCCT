@@ -278,6 +278,8 @@ is
     	      Param2  :  Real)  
   is static;
  
+  ComputeAutomaticLaw(me; ParAndRad : out HArray1OfPnt2d from TColgp)
+    returns PipeError from GeomFill;
 
 fields     
     myLaw   :  TrihedronWithGuide  from  GeomFill; -- loi  de  triedre     

@@ -80,6 +80,7 @@ GeomFill_GuideTrihedronAC::GeomFill_GuideTrihedronAC(const Handle(Adaptor3d_HCur
   gp_Vec To, B;
   myTrimmed->D1(Param, P, To);//point et derivee au parametre Param sur myCurve
   myTrimG->D0(tG, PG);// point au parametre tG sur myGuide
+  myCurPointOnGuide = PG;
  
   gp_Vec n (P, PG); // vecteur definissant la normale
   
@@ -118,6 +119,7 @@ GeomFill_GuideTrihedronAC::GeomFill_GuideTrihedronAC(const Handle(Adaptor3d_HCur
   
   myTrimmed->D2(Param, P, To, DTo);
   myTrimG->D1(tG, PG, TG);
+  myCurPointOnGuide = PG;
   
   gp_Vec n (P, PG), dn; 
   Standard_Real Norm = n.Magnitude();
@@ -188,6 +190,7 @@ GeomFill_GuideTrihedronAC::GeomFill_GuideTrihedronAC(const Handle(Adaptor3d_HCur
   
   myTrimmed->D3(Param, P, To, DTo, D2To);
   myTrimG->D2(tG, PG, TG, DTG);
+  myCurPointOnGuide = PG;
 
   Standard_Real NTo = To.Magnitude();
   Standard_Real N2To = To.SquareMagnitude();

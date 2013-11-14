@@ -72,6 +72,9 @@ is
     enumeration TransitionStyle 
     is Modified, Right, Round end; 
     
+    enumeration TypeOfContact
+    is NoContact, Contact, ContactOnBorder end;
+    
 --    private class FilledPair;
     	---Purpose: A pair of bound shapes with the result.
 

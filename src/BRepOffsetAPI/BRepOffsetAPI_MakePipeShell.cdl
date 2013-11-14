@@ -53,7 +53,8 @@ uses
  Vertex  from  TopoDS, 
  TransitionMode  from  BRepBuilderAPI,  
  PipeError       from  BRepBuilderAPI,
- PipeShell       from  BRepFill
+ PipeShell       from  BRepFill,
+ TypeOfContact   from  BRepFill
 
 raises
  DomainError from Standard, 
@@ -98,7 +99,7 @@ is
     SetMode(me  :  in  out;   
         AuxiliarySpine  :  Wire  from  TopoDS; 
         CurvilinearEquivalence :  Boolean; 
-        KeepContact  : Boolean  =  Standard_False );
+        KeepContact  : TypeOfContact from BRepFill  =  BRepFill_NoContact );
 
 	---Purpose: Sets  an  auxiliary  spine  to  define  the Normal
         --  For  each  Point  of  the  Spine  P,  an  Point  Q  is  evalued
@@ -332,6 +333,7 @@ is
     is redefined; 
      
 fields 
+
   myPipe  :  PipeShell  from  BRepFill;
 
 end MakePipeShell;

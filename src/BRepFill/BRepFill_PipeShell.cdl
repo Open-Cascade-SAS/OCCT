@@ -41,8 +41,8 @@ uses
  Section           from  BRepFill, 
  Sweep             from BRepFill,
  DataMapOfShapeListOfShape from TopTools,
- SequenceOfSection from  BRepFill 
-
+ SequenceOfSection from  BRepFill,
+ TypeOfContact     from  BRepFill
 
 raises
  DomainError from Standard, 
@@ -96,7 +96,7 @@ is
     Set(me  :  mutable;   
         AuxiliarySpine  :  Wire  from  TopoDS; 
         CurvilinearEquivalence :  Boolean  =  Standard_True; 
-        KeepContact  : Boolean  =  Standard_False );
+        KeepContact  : TypeOfContact from BRepFill  =  BRepFill_NoContact );
 
 	---Purpose: Set  an  auxiliary  spine  to  define  the Normal
         --  For  each  Point  of  the  Spine  P,  an  Point  Q  is  evalued
@@ -269,7 +269,7 @@ is
     	param  :  out  Real  from  Standard)  is  private; 
 	   
     ResetLoc(me  :  mutable)  is  private;
-
+    
     BuildHistory(me: mutable; theSweep: Sweep from BRepFill)
     	is private;
 	  
@@ -289,6 +289,7 @@ fields
   myForceApproxC1 : Boolean;
   
   myLaw         :  Function         from  Law;    
+  myIsAutomaticLaw : Boolean        from  Standard;
   myLocation    :  LocationLaw      from  BRepFill; 
   mySection     :  SectionLaw       from  BRepFill; 
   myFaces       :  HArray2OfShape   from  TopTools;

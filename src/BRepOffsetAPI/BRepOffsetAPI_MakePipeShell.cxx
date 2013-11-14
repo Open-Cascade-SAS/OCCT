@@ -90,8 +90,8 @@ BRepOffsetAPI_MakePipeShell::BRepOffsetAPI_MakePipeShell(const TopoDS_Wire& Spin
 //purpose  : 
 //=======================================================================
  void BRepOffsetAPI_MakePipeShell::SetMode(const TopoDS_Wire& AuxiliarySpine,
-				const Standard_Boolean CurvilinearEquivalence,
-				const Standard_Boolean KeepContact) 
+                                           const Standard_Boolean CurvilinearEquivalence,
+                                           const BRepFill_TypeOfContact KeepContact) 
 {
    myPipe->Set(AuxiliarySpine, CurvilinearEquivalence, KeepContact);
 }

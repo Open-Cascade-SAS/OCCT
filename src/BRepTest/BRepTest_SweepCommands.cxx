@@ -65,6 +65,7 @@ static BRepOffsetAPI_MakePipeShell* Sweep= 0;
 #include <Geom_Circle.hxx>
 #include <gp_Ax2.hxx>
 
+
 //=======================================================================
 // prism
 //=======================================================================
@@ -464,7 +465,7 @@ static Standard_Integer setsweep(Draw_Interpretor& di,
     di << "       Surf have to be a shell or a face" <<"\n";
     di << "   -CN dx dy dz : BiNormal is given by dx dy dz" << "\n";
     di << "   -FX Tx Ty TZ [Nx Ny Nz] : Tangent and Normal are fixed" <<"\n";
-    di << "   -G guide  0|1(ACR|Plan)  0|1(contact|no contact) : with guide"<<"\n";
+    di << "   -G guide  0|1(Plan|ACR)  0|1|2(no contact|contact|contact on border) : with guide"<<"\n";
     return 0;
   }
 
@@ -534,7 +535,11 @@ static Standard_Integer setsweep(Draw_Interpretor& di,
      else
 	{  
 	  TopoDS_Shape Guide = DBRep::Get(a[2],TopAbs_WIRE);
-	  Sweep->SetMode(TopoDS::Wire(Guide), Draw::Atoi(a[3]), Draw::Atoi(a[4]));
+          Standard_Integer CurvilinearEquivalence = Draw::Atoi(a[3]);
+          Standard_Integer KeepContact = Draw::Atoi(a[4]);
+          Sweep->SetMode(TopoDS::Wire(Guide),
+                         CurvilinearEquivalence,
+                         (BRepFill_TypeOfContact)KeepContact);
 	}
     }
  
@@ -623,9 +628,9 @@ static Standard_Integer addsweep(Draw_Interpretor& di,
 	Standard_Integer ii, L= nbreal/2;
 	TColgp_Array1OfPnt2d ParAndRad(1, L);
 	for (ii=1; ii<=L; ii++, cur+=2) {
-	   ParAndRad(ii).SetX(Draw::Atof(a[cur]));
-	   ParAndRad(ii).SetY(Draw::Atof(a[cur+1]));
-	 }
+          ParAndRad(ii).SetX(Draw::Atof(a[cur]));
+          ParAndRad(ii).SetY(Draw::Atof(a[cur+1]));
+        }
 	thelaw = new (Law_Interpol) ();
 	thelaw->Set(ParAndRad, 
 		   Abs(ParAndRad(1).Y() - ParAndRad(L).Y()) < Precision::Confusion());

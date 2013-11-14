@@ -28,4 +28,12 @@ Handle(Adaptor3d_HCurve) GeomFill_TrihedronWithGuide::Guide()const
   return myGuide;
 }
 
+//=======================================================================
+//function : CurrentPointOnGuide
+//purpose  : 
+//=======================================================================
+gp_Pnt GeomFill_TrihedronWithGuide::CurrentPointOnGuide() const
+{
+  return myCurPointOnGuide;
+}
 

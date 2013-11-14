@@ -29,7 +29,8 @@ inherits TrihedronLaw from GeomFill
       
 uses 
     HCurve from  Adaptor3d, 
-    Real  from  Standard 
+    Real   from  Standard,
+    Pnt    from  gp
 
 raises 
     OutOfRange,  NotImplemented   
@@ -45,9 +46,15 @@ is
     	    Param2  :  Real) 
     is deferred;
           
+    CurrentPointOnGuide(me) 
+     ---Purpose: Returns the current point on guide
+     --          found by D0, D1 or D2.
+    returns  Pnt from gp;
+
 fields 
     myGuide  :  HCurve  from  Adaptor3d  is  protected; 
     myTrimG  :  HCurve  from  Adaptor3d  is  protected; 
+    myCurPointOnGuide : Pnt from gp      is  protected;
 
 end TrihedronWithGuide;
     
