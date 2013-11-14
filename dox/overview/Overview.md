@@ -34,7 +34,15 @@ You are hereby informed that all software is a property of its respective author
 international and domestic laws on intellectual property and trademarks. 
 Should you need further information, please directly contact the authors.
 
-CAS.CADE and Open CASCADE are registered trademarks of OPEN CASCADE S.A.S.
+**CAS.CADE** and **Open CASCADE** are registered trademarks of 
+OPEN CASCADE S.A.S.
+
+**Linux** is a registered trademark of Linus Torvalds.
+
+**Windows** is a registered trademark of Microsoft Corporation in the United States and other countries.
+
+**Mac** and the Mac logo, **OpenCL** and the OpenCL logo, are trademarks of 
+Apple Inc., registered in the U.S. and other countries.
 
  Acknowledgements
 ------------------
@@ -87,6 +95,20 @@ TBB is available under GPLv2 license with the runtime exception.
 Open CASCADE Technology WOK module on Windows also makes use of LGPL-licensed C routines **regexp** 
 and **getopt**, taken from GNU C library.
 
+**OpenGL** is an industry standard API for 3D graphics used by OCCT for 
+implementation of 3D viewer. OpenGL specification is developed by the
+Khronos group, http://www.khronos.org/opengl/. OCCT code includes header 
+file *glext.h* obtained from Khronos web site.
+
+**OpenCL** (Open Computing Language) is open, royalty-free standard for 
+cross-platform, parallel programming of modern processors, optionally used by 
+OCCT for ray tracing. OpenCL specification is developed by the
+Khronos group, http://www.khronos.org/opencl/. The implementations of OpenCL 
+are available from Apple, AMD, NVIDIA, Intel, and other vendors. 
+**OpenCL Installable Client Driver (ICD) Loader** is a library provided by
+Khronos group which allows dispatching OpenCL calls to underlying 
+implementation.
+
 **Doxygen** developed by Dimitri van Heesch is open source documentation system for 
 C++, C, Java, Objective-C, Python, IDL, PHP and C#. This product is used in Open CASCADE Technology 
 for automatic creation of Technical Documentation from C++ header files. 
@@ -113,12 +135,6 @@ for generation of User and Developer Guides in PDF format. See http://miktex.org
 on this tool.
 
 Adobe Systems, Inc. provides **Adobe Reader**, which can be used to view files in Portable Document Format (PDF). 
-
-**Linux** is a registered trademark of Linus Torvalds.
-
-**Windows** is a registered trademark of Microsoft Corporation in the United States and other countries.
-
-**Mac** and the Mac logo are trademarks of Apple Inc., registered in the U.S. and other countries.
 
 @section OCCT_OVW_SECTION_3 Documentation
 
@@ -207,7 +223,7 @@ for which OCCT is certified to work.
 | FreeImage (optional, for support of common 2D graphic formats) | FreeImage 3.15.4 http://sourceforge.net/projects/freeimage/files |
 | gl2ps (optional, for export contents of OCCT viewer to vector graphic files) | gl2ps-1.3.8  http://geuz.org/gl2ps/ |
 | Intel TBB (optional, for multithreaded algorithms) | TBB 3.x or 4.x http://www.threadingbuildingblocks.org/ |
-| OpenCL (optional, for ray tracing visualization core | OpenCL 1.1+ http://developer.amd.com/tools-and-sdks/heterogeneous-computing/amd-accelerated-parallel-processing-app-sdk/downloads/ |
+| OpenCL (optional, for ray tracing visualization) | OpenCL SDK (usually one provided by vendor of your graphic card) or OpenCL ICD Loader by Khronos group, http://www.khronos.org/registry/cl |
 
 * Debian 60 64 bit is a platform used for regular testing of contributions 
 
@@ -225,8 +241,8 @@ for which OCCT is certified to work.
 | Freetype (OCCT Text rendering) | freetype-2.4.11 http://sourceforge.net/projects/freetype/files/ |
 | FreeImage (Support of common graphic formats) | FreeImage 3.15.4 http://sourceforge.net/projects/freeimage/files |
 | gl2ps (Export contents of OCCT viewer to vector graphic file) | gl2ps-1.3.8  http://geuz.org/gl2ps/ |
-| Intel TBB (optional tool for multithreaded algorithms) | TBB 3.x or 4.x http://www.threadingbuildingblocks.org/ |
-| OpenCL (optional for providing ray tracing visualization core | OpenCL 1.1+ http://developer.amd.com/tools-and-sdks/heterogeneous-computing/amd-accelerated-parallel-processing-app-sdk/downloads/ |
+| Intel TBB (optional, for multithreaded algorithms) | TBB 3.x or 4.x http://www.threadingbuildingblocks.org/ |
+| OpenCL (optional, for ray tracing visualization) | OpenCL SDK (usually one provided by vendor of your graphic card) or OpenCL ICD Loader by Khronos group, http://www.khronos.org/registry/cl |
 
 * VC++ 9 32-bit is used for certification of contributions and for building 
   binary package of official release of OCCT on Windows.
@@ -244,8 +260,8 @@ for which OCCT is certified to work.
 | Freetype (OCCT Text rendering) | freetype-2.4.11 http://sourceforge.net/projects/freetype/files/ |
 | FreeImage (Support of common graphic formats) | FreeImage 3.15.4 http://sourceforge.net/projects/freeimage/files |
 | gl2ps (Export contents of OCCT viewer to vector graphic file) | gl2ps-1.3.8  http://geuz.org/gl2ps/ |
-| Intel TBB (optional tool for multithreaded algorithms) | TBB 3.x or 4.x http://www.threadingbuildingblocks.org/ |
-| OpenCL (optional for providing ray tracing visualization core | OpenCL 1.1+ http://developer.amd.com/tools-and-sdks/heterogeneous-computing/amd-accelerated-parallel-processing-app-sdk/downloads/ | 
+| Intel TBB (optional, for multithreaded algorithms) | TBB 3.x or 4.x http://www.threadingbuildingblocks.org/ |
+| OpenCL (optional, for ray tracing visualization) | Native OpenCL 1.2.8 | 
 
 @subsection overview_req_graphics Graphic cards
 
@@ -255,13 +271,15 @@ For ray tracing, hardware implementation of OpenCL 1.1+ is required.
 
 The following table lists graphic cards tested to work with OCCT.
 
-| Graphic card | Driver/GL/GLSL/CL version | OS | OpenGL (fixed pipeline) | OpenGL (shaders) | OpenCL (ray tracing |
+| Graphic card | Driver/GL/GLSL/CL version | OS | OpenGL (fixed pipeline) | OpenGL (shaders) | OpenCL (ray tracing) |
 | ---- | ---- | ---- | :----: | :----: | :----: |
-| NVIDIA GeForce GT 630M | Driver 311.44, GL 4.3.0, GLSL 4.30 | Windows 7 64 bit | OK | OK | OK |
+| NVIDIA GeForce GT 610, 630M, 640 | Driver 311.44, GL 4.3.0, GLSL 4.30 | Windows 7 64 bit | OK | OK | OK |
 | Intel(R) HD Graphics 3000 | GL 3.1.0, GLSL 1.40 | Windows 7 64 bit | OK | OK | none |
 | RadeOn 9600 | GL 2.1.8454, GLSL 1.20 | | OK | bad | none |
+| AMD/ATI RadeOn HD 7870 | Driver 6.14.10.12002, GL 4.2.12002, GLSL 4.20 | Windows 7 64-bit | OK | OK | OK |
 | Mesa 7.8.2 Windows GDI Driver\* | GL 2.1, GLSL version 1.20 | Mac OS X 10.6 / OS X 10.9 | OK | artifacts | none |
-| GeForce 320 |  | Mac OS X 10.6 / OS X 10.9 | OK | OK | OK |
+| NVIDIA GeForce 320 |  | Mac OS X 10.6 / OS X 10.9 | OK | OK | OK on OSX 10.6, bad on OSX 10.9 |
+| NVIDIA GeForce 6600 GT | GL 2.1.2, GLSL 1.20 | Windows XP 32-bit | OK | OK | none |
 | Apple software OpenGL | | Mac OS X 10.6 / OS X 10.9 | OK | OK | OK |
 
 * Mesa implementation of OpenGL is used for certification testing of OCCT

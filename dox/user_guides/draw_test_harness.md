@@ -7532,7 +7532,9 @@ Syntax:      DT_SplitSurface result Surface|GridSurf tol split(0|1)
 Divides surface with C1 criterion and returns the result of splitting of a given surface into surface, which is given as parameter result. If the surface has been divided into segments, then each segment is put to an individual result.  This command can correct a given C0 surface at a knot with a given tolerance, if it is impossible, then the given surface is split at that knot. If the last parameter is 1, then 5 knots are added to the given surface, and its surface is split by segments, but this will be performed not for all parametric spaces. 
 **Example:** 
     
-# split surface with name ‘su’ 
+
+~~~~~
+# split surface with name "su"
 DT_SplitSurface res su 0.1 1 
 == single surf 
 == appel a SplitSurface::Init 
@@ -7542,7 +7544,7 @@ DT_SplitSurface res su 0.1 1
 == appel a Surfaces 
 == transfert resultat 
 == res1_1_1 res1_2_1 res1_3_1 res1_4_1 res1_5_1 res1_6_1 
-
+~~~~~
 
 @subsubsection occt_2142243456_1672096717128 DT_ToBspl
 
@@ -7555,10 +7557,10 @@ DT_ToBspl res sh
 == error = 5.20375663162094e-08   spans = 10 
 ==  Surface is aproximated with continuity 2 
 
-@section occt_2142243456_1640587828 Performance evaluation commands
+@section occt_draw_commands_perf Performance evaluation commands
 
 
-@subsubsection occt_2142243456_16405878281.1 VDrawSphere
+@subsection occt_draw_commands_perf_vdrawsphere VDrawSphere
 
 Syntax:      vdrawsphere shapeName Fineness [X=0.0 Y=0.0 Z=0.0] [Radius=100.0] [ToEnableVBO=1] [NumberOfViewerUpdate=1] [ToShowEdges=0] 
 
@@ -7582,12 +7584,14 @@ The following chapters explain how to extend Test Harness with custom commands a
 Custom command implementation has not undergone any changes since the introduction of the plug-in mechanism. The syntax of every command should still be like in the following example. 
 **Example:** 
 
+~~~~~
 static Standard_Integer myadvcurve(Draw_Interpretor&amp; di, 
 Standard_Integer n, 
 char** a) 
 { 
 ... 
 } 
+~~~~~
 
 For examples of existing commands refer to Open CASCADE Technology (e.g. GeomliteTest.cxx). 
 
@@ -7597,6 +7601,7 @@ For examples of existing commands refer to Open CASCADE Technology (e.g. Geomlit
 To become available in the Test Harness the custom command must be registered in it. This should be done as follows. 
 **Example:** 
 
+~~~~~
 void MyPack::CurveCommands(Draw_Interpretor&amp; theCommands) 
 { 
 ... 
@@ -7608,6 +7613,7 @@ char* g = ;Advanced curves creation;;
 __FILE__, myadvcurve, g); 
 ... 
 } 
+~~~~~
 
 @subsection occt_2142243456_7136599993 Creating a toolkit (library) as a plug-in
 

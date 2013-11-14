@@ -9,7 +9,7 @@ changes affecting CDL files, you need to use WOK to re-generate header files
 and build scripts / projects. See \ref dev_guides__building__wok for instructions.
 
 Before building OCCT, you need to install required third-party libraries; see
-OCCT_Build3rdParty_OSX.pdf for details.
+paragraph 1 of \ref dev_guides__building for details.
 
 1. Add paths to the mandatory 3rd-party products (Tcl/Tk and FreeType) in file 
    custom.sh located in \<OCCT_ROOT_DIR\>. For this:

@@ -12,9 +12,8 @@ If you are building OCCT from bare sources (as in Git repository), or do some
 changes affecting CDL files, you need to use WOK to re-generate header files
 and build scripts / projects. See \ref dev_guides__building__wok for instructions.
 
-Before building OCCT, you need to install required third-party libraries; see
-instructions for your platform on Resources page at http://dev.opencascade.org 
-and @ref dev_guides__building article for details.
+Before building OCCT, you need to install required third-party libraries; see paragraph 1 of 
+\ref dev_guides__building for instructions.
 
 ## Decide on location of build and install directories.
 
@@ -52,7 +51,7 @@ It is recommended to use GUI tools provided by CMake: cmake-gui on Windows and M
 In the console, change to the build directory and call ccmake with the path to the source directory of the project:
 
        > cd ~/occt/build/debug
-       > ccmake ~/occt/adm/cmake
+       > ccmake ~/occt
 
 @image html /dev_guides/building/cmake/images/cmake_image003.png
 @image latex /dev_guides/building/cmake/images/cmake_image003.png

@@ -86,9 +86,9 @@ structure of documentation directories, etc.
 
 @subsection  OCCT_DM_SECTION_3_1 File Format
 
-It is proposed to use MarkDown file format for easy maintainance of generic text documents. 
+The format used for documentation is MarkDown with Doxygen extensions. 
 The MarkDown files have a "*.md" extension and are based on rules desribed in 
-@htmlonly <a href="#OCCT_DM_SECTION_A">Document Syntax</a> @endhtmlonly section.
+\ref OCCT_DM_SECTION_A section.
 
 @subsection  OCCT_DM_SECTION_3_2 Directory Structure
 
@@ -215,36 +215,95 @@ To create a bulleted list, start each line with a hyphen or an asterisk,
 followed by a space. List items can be nested. This code:
 
 @verbatim
-  * Bullet 1
-  * Bullet 2
-    * Bullet 2a
-    * Bullet 2b
-  * Bullet 3
+* Bullet 1
+* Bullet 2
+  - Bullet 2a
+  - Bullet 2b
+* Bullet 3
 @endverbatim
 
-  produces this list:
+produces this list:
 
-  * Bullet 1
-  * Bullet 2
-    * Bullet 2a
-    * Bullet 2b
-  * Bullet 3  
+* Bullet 1
+* Bullet 2
+  * Bullet 2a
+  * Bullet 2b
+* Bullet 3  
 
-To create a numbered list, start each line with number and a period, then a space. Thus this code 
+To create a numbered list, start each line with number and a period, 
+then a space. Numbered lists can also be nested. Thus this code 
 
 @verbatim
-  1. ListItem_1
-  2. ListItem_2
-  3. ListItem_3
+1. List item 1
+   1. Sub-item 1
+   2. Sub-item 2
+2. List item 2
+3. List item 3
 @endverbatim
 
-  produces this list:
+produces this list:
 
-  1. ListItem_1
-  2. ListItem_2
-  3. ListItem_3
+1. List item 1
+   1. Sub-item 1
+   2. Sub-item 2
+2. List item 2
+3. List item 3
 
-It is recommended to indent lists with 2 spaces.
+Each list item can contain several paragraphs of text; these paragraphs must 
+have the same indentation as text after bullet or number in the numbered list 
+item (otherwise numbering will be broken). 
+
+Code blocks can be inserted as paragraphs with additional indentation 
+(4 spaces more). Note that fenced code blocks do not work within numbered lists
+and their use may cause numeration to be reset.
+
+
+Example of complex nested list:
+
+@verbatim
+1. ListItem_1
+
+   Additional paragraph
+
+       code fragment
+
+   One more paragraph
+
+   1. Sub-item 1
+
+          code fragment for sub-item 1
+
+   2. Sub-item 2
+
+      Paragraph for sub-item 2
+
+   Yet one more paragraph for list item 1
+
+2. ListItem_2
+@endverbatim
+
+1. List item 1
+
+   Additional paragraph
+
+       code fragment
+
+   One more paragraph
+
+   1. Sub-item 1
+
+          code fragment for sub-item 1
+
+   2. Sub-item 2
+
+      Paragraph for sub-item 2
+
+   Yet one more paragraph for list item 1
+
+2. List item 2
+
+Note that numbers of paragraphs are regenerated so they do not necessarily 
+follow numbering of source items.
 
 @subsection  OCCT_DM_SECTION_A_4 Tables
 
@@ -280,6 +339,9 @@ which will looks as follows:
 | ----: | :----: | :---- |
 | 10    | 10     | 10    |
 | 1000  | 1000   | 1000  |
+
+Note that each table raw should be contained in one line of text; complex
+tables can be created using HTML tags.
 
 @subsection  OCCT_DM_SECTION_A_5 Code Blocks
 
