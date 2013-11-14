@@ -94,10 +94,6 @@ public:
   Standard_EXPORT AIS_LengthDimension (const TopoDS_Face& theFace,
                                        const TopoDS_Edge& theEdge);
 
-  Standard_EXPORT void SetFlyout (const Standard_Real theFlyout);
-
-  Standard_EXPORT Standard_Real GetFlyout () const;
-
   DEFINE_STANDARD_RTTI(AIS_LengthDimension)
 private:
   Standard_Boolean initTwoEdgesLength (const TopoDS_Edge & theFirstEdge,
@@ -126,14 +122,7 @@ private:
   virtual  void Compute (const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
                          const Handle(Prs3d_Presentation)& thePresentation,
                          const Standard_Integer theMode = 0) ;
-  // Fields
 
-  //! Defines flyout lines and direction
-  //! Flyout direction in the working plane (stored in the base AIS_Dimension).
-  //! can be negative , or positive and is defined by the sign of <myFlyout> value.
-  //! The direction vector is counting using the working plane.
-  //! <myFlyout> value defined the size of flyout.
-  Standard_Real myFlyout;
 };
 
 #endif

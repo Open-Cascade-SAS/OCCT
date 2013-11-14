@@ -87,9 +87,8 @@
 #include <Prs3d_Root.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
 #include <Select3D_SensitiveCurve.hxx>
+#include <Select3D_SensitiveGroup.hxx>
 #include <Select3D_SensitiveSegment.hxx>
-#include <Select3D_SensitiveBox.hxx>
-#include <SelectMgr_EntityOwner.hxx>
 #include <SelectMgr_Selection.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
@@ -114,6 +113,8 @@ IMPLEMENT_STANDARD_RTTIEXT (AIS_AngleDimension, AIS_Dimension)
 
 void AIS_AngleDimension::init()
 {
+  SetKindOfDimension (AIS_KOD_PLANEANGLE);
+  SetFlyout (15.0);
   // Default values of units
   UnitsAPI::SetLocalSystem (UnitsAPI_SI);
   SetUnitsQuantity ("PLANE ANGLE");
@@ -132,12 +133,10 @@ void AIS_AngleDimension::init()
 AIS_AngleDimension::AIS_AngleDimension (const TopoDS_Edge& theFirstEdge,
                                         const TopoDS_Edge& theSecondEdge)
 : AIS_Dimension(),
-  myIsFlyoutLines (Standard_True),
-  myFlyout (15.0)
+  myIsFlyoutLines (Standard_True)
 {
   init();
   myShapesNumber = 2;
-  SetKindOfDimension (AIS_KOD_PLANEANGLE);
   myFirstShape  = theFirstEdge;
   mySecondShape = theSecondEdge;
 }
@@ -152,12 +151,10 @@ AIS_AngleDimension::AIS_AngleDimension (const TopoDS_Edge& theFirstEdge,
                                         const TopoDS_Edge& theSecondEdge,
                                         const gp_Pln& thePlane)
 : AIS_Dimension(),
-  myIsFlyoutLines (Standard_True),
-  myFlyout (15.0)
+  myIsFlyoutLines (Standard_True)
 {
   init();
   myShapesNumber = 2;
-  SetKindOfDimension (AIS_KOD_PLANEANGLE);
   myFirstShape  = theFirstEdge;
   mySecondShape = theSecondEdge;
   SetWorkingPlane (thePlane);
@@ -175,11 +172,9 @@ AIS_AngleDimension::AIS_AngleDimension (const TopoDS_Edge& theFirstEdge,
                                         const Handle(Prs3d_DimensionAspect)& theDimensionAspect,
                                         const Standard_Real theExtensionSize)
 : AIS_Dimension (theDimensionAspect,theExtensionSize),
-  myIsFlyoutLines (Standard_True),
-  myFlyout (15.0)
+  myIsFlyoutLines (Standard_True)
 {
   myShapesNumber = 2;
-  SetKindOfDimension (AIS_KOD_PLANEANGLE);
   myFirstShape  = theFirstEdge;
   mySecondShape = theSecondEdge;
   SetWorkingPlane (thePlane);
@@ -194,12 +189,10 @@ AIS_AngleDimension::AIS_AngleDimension (const gp_Pnt& theFirstPoint,
                                         const gp_Pnt& theSecondPoint,
                                         const gp_Pnt& theThirdPoint)
 : AIS_Dimension(),
-  myIsFlyoutLines (Standard_True),
-  myFlyout (15.0)
+  myIsFlyoutLines (Standard_True)
 {
   init();
   myIsInitialized = Standard_True;
-  SetKindOfDimension (AIS_KOD_PLANEANGLE);
   myFirstPoint   = theFirstPoint;
   myCenter       = theSecondPoint;
   mySecondPoint  = theThirdPoint;
@@ -217,11 +210,9 @@ AIS_AngleDimension::AIS_AngleDimension (const gp_Pnt& theFirstPoint,
                                         const Handle(Prs3d_DimensionAspect)& theDimensionAspect,
                                         const Standard_Real theExtensionSize)
 : AIS_Dimension (theDimensionAspect,theExtensionSize),
-  myIsFlyoutLines (Standard_True),
-  myFlyout (15.0)
+  myIsFlyoutLines (Standard_True)
 {
   myIsInitialized = Standard_True;
-  SetKindOfDimension (AIS_KOD_PLANEANGLE);
   myFirstPoint   = theFirstPoint;
   myCenter       = theSecondPoint;
   mySecondPoint  = theThirdPoint;
@@ -235,12 +226,10 @@ AIS_AngleDimension::AIS_AngleDimension (const gp_Pnt& theFirstPoint,
 
 AIS_AngleDimension::AIS_AngleDimension (const TopoDS_Face& theCone)
 : AIS_Dimension(),
-  myIsFlyoutLines (Standard_True),
-  myFlyout (15.0)
+  myIsFlyoutLines (Standard_True)
 {
   init();
   myIsInitialized = Standard_False;
-  SetKindOfDimension (AIS_KOD_PLANEANGLE);
   myFirstShape   = theCone;
   myShapesNumber = 1;
 }
@@ -254,12 +243,10 @@ AIS_AngleDimension::AIS_AngleDimension (const TopoDS_Face& theFirstFace,
                                         const TopoDS_Face& theSecondFace,
                                         const gp_Ax1& theAxis)
 : AIS_Dimension(),
-  myIsFlyoutLines (Standard_True),
-  myFlyout (15.0)
+  myIsFlyoutLines (Standard_True)
 {
   init();
   myIsInitialized = Standard_False;
-  SetKindOfDimension (AIS_KOD_PLANEANGLE);
   myFirstShape   = theFirstFace;
   mySecondShape  = theSecondFace;
   myShapesNumber = 2;
@@ -465,26 +452,6 @@ Standard_Boolean AIS_AngleDimension::initTwoFacesAngle ()
     SetWorkingPlane (aPlane->Pln());
   }
   return Standard_True;
-}
-
-//=======================================================================
-//function : SetFlyout
-//purpose  : 
-//=======================================================================
-
-void AIS_AngleDimension::SetFlyout (const Standard_Real theFlyout)
-{
-  myFlyout = theFlyout;
-}
-
-//=======================================================================
-//function : GetFlyout
-//purpose  : 
-//=======================================================================
-
-Standard_Real AIS_AngleDimension::GetFlyout () const
-{
-  return myFlyout;
 }
 
 //=======================================================================
@@ -1026,4 +993,23 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
   }
 
   setComputed (Standard_True);
+}
+
+//=======================================================================
+//function : computeFlyoutSelection
+//purpose  : computes selection for flyouts
+//=======================================================================
+
+void AIS_AngleDimension::computeFlyoutSelection (const Handle(SelectMgr_Selection)& theSelection,
+                                                const Handle(AIS_DimensionOwner)& theOwner)
+{
+ if (!myIsFlyoutLines)
+   return;
+
+ gp_Pnt aFirstAttach = myCenter.Translated (gp_Vec (myCenter, myFirstPoint).Normalized() * GetFlyout());
+ gp_Pnt aSecondAttach = myCenter.Translated (gp_Vec (myCenter, mySecondPoint).Normalized() * GetFlyout());
+ Handle(Select3D_SensitiveGroup) aSensitiveEntity = new Select3D_SensitiveGroup (theOwner);
+ aSensitiveEntity->Add (new Select3D_SensitiveSegment (theOwner, myCenter, aFirstAttach));
+ aSensitiveEntity->Add (new Select3D_SensitiveSegment (theOwner, myCenter, aSecondAttach));
+ theSelection->Add (aSensitiveEntity);
 }

@@ -93,13 +93,6 @@ public:
                                        const TopoDS_Face& theSecondFace,
                                        const gp_Ax1& theAxis);
 
-  //! Sets the flyout.
-  Standard_EXPORT void SetFlyout (const Standard_Real theFlyout);
-
-  //! Returns flyout value. If value > 0 the dimension is to be displayed inside the angle.
-  //! Otherwise it is displayed outside one.
-  Standard_EXPORT Standard_Real GetFlyout() const;
-
   //! Sets first shape
   Standard_EXPORT  void SetFirstShape (const TopoDS_Shape& theShape,
                                        const Standard_Boolean isSingleShape = Standard_False);
@@ -156,6 +149,10 @@ protected:
 
   //! Fills default plane object if it is possible to count plane automatically.
   Standard_EXPORT virtual void countDefaultPlane ();
+  
+ //! Fills sensitive entity for flyouts and adds it to the selection
+ Standard_EXPORT virtual void computeFlyoutSelection (const Handle(SelectMgr_Selection)& theSelection,
+                                                      const Handle(AIS_DimensionOwner)& theOwner);
 
 protected:
 
@@ -165,13 +162,6 @@ protected:
 
   //! The center of dimension arc
   gp_Pnt myCenter;
-
-  //! Defines flyout lines and direction
-  //! Flyout direction in the working plane (stored in the base AIS_Dimension).
-  //! can be negative , or positive and is defined by the sign of <myFlyout> value.
-  //! The direction vector is counting using the working plane.
-  //! <myFlyout> value defined the size of flyout (radius of angle).
-  Standard_Real myFlyout;
 };
 
 #endif

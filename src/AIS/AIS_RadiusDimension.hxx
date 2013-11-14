@@ -61,10 +61,6 @@ public:
   //! shape aShape, the dimension aVal, and the text aText.
   Standard_EXPORT  AIS_RadiusDimension (const TopoDS_Shape& aShape);
 
-  Standard_EXPORT void SetFlyout (const Standard_Real theFlyoutSize);
-
-  Standard_EXPORT Standard_Real GetFlyout () const;
-
   DEFINE_STANDARD_RTTI(AIS_RadiusDimension)
 
 protected:
@@ -80,12 +76,6 @@ private:
 
 // Fields
 
-  //! Defines flyout lines and direction
-  //! Flyout direction in the working plane (stored in the base AIS_Dimension).
-  //! can be negative , or positive and is defined by the sign of <myFlyout> value.
-  //! The direction vector is counting using the working plane.
-  //! <myFlyout> value defined the size of flyout.
-  Standard_Real myFlyout;
   gp_Circ myCircle;
 };
 #endif

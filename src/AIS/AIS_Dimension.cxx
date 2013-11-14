@@ -93,6 +93,7 @@ AIS_Dimension::AIS_Dimension (const Standard_Real theExtensionSize /*= 1.0*/)
   myIsTextReversed (Standard_False),
   myTextOffset (DimensionAspect()->ArrowAspect()->Length()),
   myIsInitialized (Standard_False),
+  myFlyout (0.0),
   myKindOfDimension (AIS_KOD_NONE),
   myExtensionSize (theExtensionSize)
 {
@@ -122,6 +123,7 @@ AIS_Dimension::AIS_Dimension (const Handle(Prs3d_DimensionAspect)& theAspect,
   myIsTextReversed (Standard_False),
   myTextOffset (DimensionAspect()->ArrowAspect()->Length()),
   myIsInitialized (Standard_False),
+  myFlyout (0.0),
   myKindOfDimension (AIS_KOD_NONE),
   myExtensionSize (theExtensionSize)
 {
@@ -1294,6 +1296,53 @@ Standard_Real AIS_Dimension::SelToleranceForText2d() const
 }
 
 //=======================================================================
+//function : SetFlyout
+//purpose  : 
+//=======================================================================
+
+void AIS_Dimension::SetFlyout (const Standard_Real theFlyout)
+{
+ myFlyout = theFlyout;
+}
+
+//=======================================================================
+//function : GetFlyout
+//purpose  : 
+//=======================================================================
+
+Standard_Real AIS_Dimension::GetFlyout () const
+{
+ return myFlyout;
+}
+
+//=======================================================================
+//function : computeFlyoutSelection
+//purpose  : computes selection for flyouts
+//=======================================================================
+
+void AIS_Dimension::computeFlyoutSelection (const Handle(SelectMgr_Selection)& theSelection,
+                                           const Handle(AIS_DimensionOwner)& theOwner)
+{
+ //Count flyout direction
+ gp_Ax1 aWorkingPlaneNormal = GetWorkingPlane().Axis();
+ gp_Dir aTargetPointsVector = gce_MakeDir (myFirstPoint, mySecondPoint);
+ // Count a flyout direction vector.
+ gp_Dir aFlyoutVector = aWorkingPlaneNormal.Direction()^aTargetPointsVector;
+ // Create lines for layouts
+ gp_Lin aLine1 (myFirstPoint, aFlyoutVector);
+ gp_Lin aLine2 (mySecondPoint, aFlyoutVector);
+ // Get flyout end points
+ gp_Pnt aFlyoutEnd1 = ElCLib::Value (ElCLib::Parameter (aLine1, myFirstPoint) + GetFlyout(), aLine1);
+ gp_Pnt aFlyoutEnd2 = ElCLib::Value (ElCLib::Parameter (aLine2, mySecondPoint) + GetFlyout(), aLine2);
+
+ // Fill sensitive entity for flyouts
+ Handle(Select3D_SensitiveGroup) aSensitiveEntity = new Select3D_SensitiveGroup (theOwner);
+ aSensitiveEntity->Add (new Select3D_SensitiveSegment (theOwner, myFirstPoint, aFlyoutEnd1));
+ aSensitiveEntity->Add (new Select3D_SensitiveSegment (theOwner, mySecondPoint, aFlyoutEnd2));
+ theSelection->Add (aSensitiveEntity);
+}
+
+//=======================================================================
 //function : ComputeSelection
 //purpose  : 
 //=======================================================================
@@ -1306,7 +1355,7 @@ void AIS_Dimension::ComputeSelection (const Handle(SelectMgr_Selection)& theSele
     return;
   }
 
-  Handle( Select3D_SensitiveGroup) aSensitiveForLine;
+  Handle(Select3D_SensitiveGroup) aSensitiveForLine;
   Handle(Select3D_SensitiveEntity) aSensitiveForText;
   Select3D_ListOfSensitive aSensitiveList;
   aSensitiveList.Assign (myGeom.mySensitiveSegments);
@@ -1338,6 +1387,8 @@ void AIS_Dimension::ComputeSelection (const Handle(SelectMgr_Selection)& theSele
     Handle(AIS_DimensionOwner) aTextOwner = new AIS_DimensionOwner (this, AIS_DDM_Text, 7);
     aSensitiveForText->Set (aTextOwner);
   }
+  else
+    computeFlyoutSelection (theSelection, anOwner);
 
   theSelection->Add (aSensitiveForLine);
   theSelection->Add (aSensitiveForText);

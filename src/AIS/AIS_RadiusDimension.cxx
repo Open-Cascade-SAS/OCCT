@@ -75,7 +75,6 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_RadiusDimension, AIS_Dimension)
 
 AIS_RadiusDimension::AIS_RadiusDimension (const gp_Circ& theCircle)
 : AIS_Dimension(),
-  myFlyout (0.0),
   myCircle (theCircle)
 {
   myFirstPoint = ElCLib::Value(0, myCircle);
@@ -89,7 +88,6 @@ AIS_RadiusDimension::AIS_RadiusDimension (const gp_Circ& theCircle)
 AIS_RadiusDimension::AIS_RadiusDimension (const gp_Circ& theCircle,
                                           const gp_Pnt& theAttachPoint)
 : AIS_Dimension(),
-  myFlyout (0.0),
   myCircle (theCircle)
 {
   myFirstPoint = theAttachPoint;
@@ -106,8 +104,7 @@ AIS_RadiusDimension::AIS_RadiusDimension (const gp_Circ& theCircle,
 //=======================================================================
 
 AIS_RadiusDimension::AIS_RadiusDimension (const TopoDS_Shape& theShape)
-: AIS_Dimension (),
-  myFlyout (0.0)
+: AIS_Dimension ()
 {
   myFirstShape = theShape;
   myIsInitialized = Standard_False;
@@ -126,7 +123,6 @@ AIS_RadiusDimension::AIS_RadiusDimension (const gp_Circ& theCircle,
                                           const Standard_Real theExtensionSize/* = 1.0*/)
 
 : AIS_Dimension (theDimensionAspect,theExtensionSize),
-  myFlyout (0.0),
   myCircle (theCircle)
 {
   myFirstPoint = ElCLib::Value(0, myCircle);
@@ -146,7 +142,6 @@ AIS_RadiusDimension::AIS_RadiusDimension (const gp_Circ& theCircle,
                                           const Handle(Prs3d_DimensionAspect)& theDimensionAspect,
                                           const Standard_Real theExtensionSize/* = 1.0*/)
 : AIS_Dimension (theDimensionAspect,theExtensionSize),
-  myFlyout (0.0),
   myCircle (theCircle)
 {
   myFirstPoint = theAttachPoint;
@@ -161,9 +156,9 @@ AIS_RadiusDimension::AIS_RadiusDimension (const gp_Circ& theCircle,
 //purpose  : 
 //=======================================================================
 
-void AIS_RadiusDimension::Compute(const Handle(PrsMgr_PresentationManager3d)& /*thePM*/,
-                                  const Handle(Prs3d_Presentation)& thePresentation,
-                                  const Standard_Integer theMode)
+void AIS_RadiusDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePM*/,
+                                   const Handle(Prs3d_Presentation)& thePresentation,
+                                   const Standard_Integer theMode)
 {
   thePresentation->Clear();
 
@@ -190,7 +185,6 @@ void AIS_RadiusDimension::Compute(const Handle(PrsMgr_PresentationManager3d)& /*
   gp_Dir aTargetPointsVector = gce_MakeDir (myFirstPoint, mySecondPoint);
   // Count a flyout direction vector.
   gp_Dir aFlyoutVector = aWorkingPlaneNormal.Direction()^aTargetPointsVector;
-  gp_Ax3 aLocalSystem (myFirstPoint, aTargetPointsVector, aFlyoutVector);
 
   // Create lines for layouts
   gp_Lin aLine1 (myFirstPoint, aFlyoutVector);
@@ -241,24 +235,4 @@ void AIS_RadiusDimension::countDefaultPlane ()
   myDefaultPlane = gp_Pln(myCircle.Location(), aVec1^aVec2);
   // Set computed value to <myWorkingPlane>
   ResetWorkingPlane ();
-}
-
-//=======================================================================
-//function : SetFlyout
-//purpose  : 
-//=======================================================================
-
-void AIS_RadiusDimension::SetFlyout (const Standard_Real theFlyout)
-{
-  myFlyout = theFlyout;
-}
-
-//=======================================================================
-//function : GetFlyout
-//purpose  : 
-//=======================================================================
-
-Standard_Real AIS_RadiusDimension::GetFlyout () const
-{
-  return myFlyout;
 }

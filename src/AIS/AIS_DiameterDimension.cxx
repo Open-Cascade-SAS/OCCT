@@ -71,7 +71,6 @@ IMPLEMENT_STANDARD_RTTIEXT(AIS_DiameterDimension, AIS_Dimension)
 
 AIS_DiameterDimension::AIS_DiameterDimension(const gp_Circ& theCircle)
 : AIS_Dimension(),
-  myFlyout (0.0),
   myCircle (theCircle)
 {
   SetKindOfDimension(AIS_KOD_DIAMETER);
@@ -90,7 +89,6 @@ AIS_DiameterDimension::AIS_DiameterDimension(const gp_Circ& theCircle)
 
 AIS_DiameterDimension::AIS_DiameterDimension(const gp_Circ& theCircle, const gp_Pnt& theAttachPoint)
 : AIS_Dimension(),
-  myFlyout (0.0),
   myCircle (theCircle)
 {
   SetKindOfDimension(AIS_KOD_DIAMETER);
@@ -119,7 +117,6 @@ AIS_DiameterDimension::AIS_DiameterDimension (const gp_Circ& theCircle,
                                               const Handle(Prs3d_DimensionAspect)& theDimensionStyle,
                                               const Standard_Real theExtensionSize /*= 1.0*/)
 : AIS_Dimension (theExtensionSize),
-  myFlyout (0.0),
   myCircle (theCircle)
 {
   SetKindOfDimension(AIS_KOD_DIAMETER);
@@ -135,8 +132,7 @@ AIS_DiameterDimension::AIS_DiameterDimension (const gp_Circ& theCircle,
 //=======================================================================
 
 AIS_DiameterDimension::AIS_DiameterDimension (const TopoDS_Shape& theShape)
-: AIS_Dimension (),
-  myFlyout (0.)
+: AIS_Dimension ()
 {
   SetKindOfDimension(AIS_KOD_DIAMETER);
   SetSpecialSymbol (0x00D8);
@@ -175,7 +171,6 @@ void AIS_DiameterDimension::Compute (const Handle(PrsMgr_PresentationManager3d)&
   gp_Dir aTargetPointsVector = gce_MakeDir (myFirstPoint, mySecondPoint);
   // Count a flyout direction vector.
   gp_Dir aFlyoutVector = aWorkingPlaneNormal.Direction()^aTargetPointsVector;
-  gp_Ax3 aLocalSystem (myFirstPoint, aTargetPointsVector, aFlyoutVector);
 
   // Create lines for layouts
   gp_Lin aLine1 (myFirstPoint, aFlyoutVector);
@@ -226,24 +221,4 @@ void AIS_DiameterDimension::countDefaultPlane ()
   myDefaultPlane = gp_Pln(gp_Ax3(myCircle.Position()));
   // Set computed value to <myWorkingPlane>
   ResetWorkingPlane ();
-}
-
-//=======================================================================
-//function : SetFlyout
-//purpose  : 
-//=======================================================================
-
-void AIS_DiameterDimension::SetFlyout (const Standard_Real theFlyout)
-{
-  myFlyout = theFlyout;
-}
-
-//=======================================================================
-//function : GetFlyout
-//purpose  : 
-//=======================================================================
-
-Standard_Real AIS_DiameterDimension::GetFlyout () const
-{
-  return myFlyout;
 }

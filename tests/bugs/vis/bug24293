@@ -1,0 +1,25 @@
+puts "============"
+puts "CR24293"
+puts "============"
+puts ""
+#######################################################################
+#  Dimension flyout lines don't belong to the dimension sensitive entity.
+#######################################################################
+pload VISUALIZATION
+
+vinit
+vpoint lengthP1 0 0 0
+vpoint lengthP2 10 10 10
+vdim -length -name=dim1 -plane=xoy lengthP1 lengthP2
+vdisplay dim1
+vfit
+vmoveto 202 191
+
+set x_coord 272
+set y_coord 198
+checkcolor $x_coord $y_coord 0 1 1
+if { $stat != 1 } {
+   puts "Error : Highlighting of length dimension is wrong."
+}
+
+set only_screen 1

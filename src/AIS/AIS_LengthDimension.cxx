@@ -91,8 +91,7 @@ AIS_LengthDimension::AIS_LengthDimension (const gp_Pnt& theFirstPoint,
                                           const gp_Pln& theDimensionPlane,
                                           const Handle(Prs3d_DimensionAspect)& theDimensionAspect,
                                           const Standard_Real theExtensionSize /*= 1.0*/)
- :AIS_Dimension (theDimensionAspect,theExtensionSize),
-  myFlyout (15.)
+ :AIS_Dimension (theDimensionAspect,theExtensionSize)
 {
   myIsInitialized = Standard_True;
   myFirstPoint = theFirstPoint;
@@ -100,6 +99,7 @@ AIS_LengthDimension::AIS_LengthDimension (const gp_Pnt& theFirstPoint,
   myShapesNumber = 2;
   myFirstShape = BRepLib_MakeVertex (myFirstPoint);
   mySecondShape = BRepLib_MakeVertex (mySecondPoint);
+  SetFlyout (15.0);
   SetKindOfDimension(AIS_KOD_LENGTH);
   SetWorkingPlane (theDimensionPlane);
 }
@@ -112,8 +112,7 @@ AIS_LengthDimension::AIS_LengthDimension (const gp_Pnt& theFirstPoint,
 AIS_LengthDimension::AIS_LengthDimension (const gp_Pnt& theFirstPoint,
                                           const gp_Pnt& theSecondPoint,
                                           const gp_Pln& theDimensionPlane)
-: AIS_Dimension (),
-  myFlyout (15.)
+: AIS_Dimension ()
 {
   myIsInitialized = Standard_True;
   myFirstPoint = theFirstPoint;
@@ -121,6 +120,7 @@ AIS_LengthDimension::AIS_LengthDimension (const gp_Pnt& theFirstPoint,
   myFirstShape = BRepLib_MakeVertex (myFirstPoint);
   mySecondShape = BRepLib_MakeVertex (mySecondPoint);
   myShapesNumber = 2;
+  SetFlyout (15.0);
   SetKindOfDimension (AIS_KOD_LENGTH);
   SetWorkingPlane (theDimensionPlane);
 }
@@ -133,13 +133,13 @@ AIS_LengthDimension::AIS_LengthDimension (const gp_Pnt& theFirstPoint,
 AIS_LengthDimension::AIS_LengthDimension (const TopoDS_Shape& theFirstShape,
                                           const TopoDS_Shape& theSecondShape,
                                           const gp_Pln& theWorkingPlane)
-: AIS_Dimension (),
-  myFlyout (15.)
+: AIS_Dimension ()
 {
   myIsInitialized = Standard_False;
   myFirstShape = theFirstShape;
   mySecondShape = theSecondShape;
   myShapesNumber = 2;
+  SetFlyout (15.0);
   SetKindOfDimension (AIS_KOD_LENGTH);
   SetWorkingPlane (theWorkingPlane);
 }
@@ -151,12 +151,12 @@ AIS_LengthDimension::AIS_LengthDimension (const TopoDS_Shape& theFirstShape,
 
 AIS_LengthDimension::AIS_LengthDimension (const TopoDS_Edge& theEdge,
                                           const gp_Pln& theWorkingPlane)
-: AIS_Dimension (),
-  myFlyout (15.)
+: AIS_Dimension ()
 {
   myIsInitialized = Standard_False;
   myFirstShape = theEdge;
   myShapesNumber = 1;
+  SetFlyout (15.0);
   SetKindOfDimension (AIS_KOD_LENGTH);
   SetWorkingPlane (theWorkingPlane);
 }
@@ -168,13 +168,13 @@ AIS_LengthDimension::AIS_LengthDimension (const TopoDS_Edge& theEdge,
 
 AIS_LengthDimension::AIS_LengthDimension (const TopoDS_Face& theFirstFace,
                                           const TopoDS_Face& theSecondFace)
-: AIS_Dimension (),
-  myFlyout (15.)
+: AIS_Dimension ()
 {
   myIsInitialized = Standard_False;
   myFirstShape = theFirstFace;
   mySecondShape = theSecondFace;
   myShapesNumber = 2;
+  SetFlyout (15.0);
   SetKindOfDimension(AIS_KOD_LENGTH);
 }
 
@@ -185,14 +185,14 @@ AIS_LengthDimension::AIS_LengthDimension (const TopoDS_Face& theFirstFace,
 
 AIS_LengthDimension::AIS_LengthDimension (const TopoDS_Face& theFace,
                                           const TopoDS_Edge& theEdge)
- : AIS_Dimension (),
-  myFlyout (15.)
+ : AIS_Dimension ()
 {
   SetKindOfDimension(AIS_KOD_LENGTH);
   myIsInitialized = Standard_False;
   myFirstShape = theFace;
   mySecondShape = theEdge;
   myShapesNumber = 2;
+  SetFlyout (15.0);
 }
 
 //=======================================================================
@@ -582,7 +582,6 @@ void AIS_LengthDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /
   gp_Dir aTargetPointsVector = gce_MakeDir (myFirstPoint, mySecondPoint);
   // Count a flyout direction vector.
   gp_Dir aFlyoutVector = aWorkingPlaneNormal.Direction()^aTargetPointsVector;
-  gp_Ax3 aLocalSystem (myFirstPoint, aTargetPointsVector, aFlyoutVector);
 
   // Create lines for layouts
   gp_Lin aLine1 (myFirstPoint, aFlyoutVector);
@@ -617,24 +616,4 @@ void AIS_LengthDimension::computeValue ()
 {
   myValue = myFirstPoint.Distance (mySecondPoint);
   AIS_Dimension::computeValue ();
-}
-
-//=======================================================================
-//function : SetFlyout
-//purpose  : 
-//=======================================================================
-
-void AIS_LengthDimension::SetFlyout (const Standard_Real theFlyout)
-{
-  myFlyout = theFlyout;
-}
-
-//=======================================================================
-//function : GetFlyout
-//purpose  : 
-//=======================================================================
-
-Standard_Real AIS_LengthDimension::GetFlyout () const
-{
-  return myFlyout;
 }

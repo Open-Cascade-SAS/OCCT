@@ -20,6 +20,7 @@
 #define _AIS_Dimension_Headerfile
 
 #include <AIS_DimensionDisplayMode.hxx>
+#include <AIS_DimensionOwner.hxx>
 #include <AIS_DisplaySpecialSymbol.hxx>
 #include <AIS_InteractiveObject.hxx>
 #include <AIS_KindOfInteractive.hxx>
@@ -157,7 +158,10 @@ public:
   //! For 2d text selection detection sensitive point with tolerance is used
   //! Important! Only for 2d text
   Standard_EXPORT  Standard_Real SelToleranceForText2d() const;
-
+  //! Sets flyout size for dimension.
+  Standard_EXPORT void SetFlyout (const Standard_Real theFlyout);
+  //! @return flyout size for dimension.
+  Standard_EXPORT Standard_Real GetFlyout () const;
 
   DEFINE_STANDARD_RTTI(AIS_Dimension)
 
@@ -224,6 +228,9 @@ protected:
 
   Standard_EXPORT void resetGeom();
 
+  //! Fills sensitive entity for flyouts and adds it to the selection.
+  Standard_EXPORT virtual void computeFlyoutSelection (const Handle(SelectMgr_Selection)& theSelection,
+                                                       const Handle(AIS_DimensionOwner)& theOwner);
   // Fields
 protected:
 
@@ -299,6 +306,12 @@ protected:
   TopoDS_Shape mySecondShape;
   //! Number of shapes
   Standard_Integer myShapesNumber;
+  //! Defines flyout lines and direction
+  //! Flyout direction in the working plane.
+  //! Can be negative, or positive and is defined by the sign of myFlyout value.
+  //! The direction vector is counting using the working plane.
+  //! myFlyout value defined the size of flyout.
+  Standard_Real myFlyout;
   //! Geometry of dimensions, needs for advanced selection
   //! Geometry is computed in Compute() method and is used 
   //! in ComputeSelection() method.
