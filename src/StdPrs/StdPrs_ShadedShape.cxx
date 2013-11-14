@@ -328,7 +328,7 @@ namespace
     Handle(Graphic3d_AspectLine3d) aBoundaryAspect = 
       theDrawer->FaceBoundaryAspect ()->Aspect ();
 
-    Handle(Graphic3d_Group) & aPrsGrp = Prs3d_Root::CurrentGroup (thePresentation);
+    Handle(Graphic3d_Group) aPrsGrp = Prs3d_Root::CurrentGroup (thePresentation);
     aPrsGrp->SetGroupPrimitivesAspect (aBoundaryAspect);
     aPrsGrp->AddPrimitiveArray (aSegments);
   }

@@ -361,20 +361,19 @@ For highlighting according to the C++ language, for instance,  write the followi
 
 @verbatim
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
-    int func(int a,int b) { return a*b; }
+int func(int a,int b) { return a*b; }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 @endverbatim
 
 which will produce:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp} 
-    int func(int a,int b) { return a*b; }
+int func(int a,int b) { return a*b; }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Verbatim content can be written by using framing \@verbatim \@endverbatim . For instance
 
-@verbatim
-  verbatim text
-@endverbatim
+    verbatim text
+
 
 @subsection  OCCT_DM_SECTION_A_6 References
 
@@ -392,16 +391,32 @@ to get a link to paragraph : @htmlonly <a href="#OCCT_DOC_SECTION_5">Doxygen con
 @subsection  OCCT_DM_SECTION_A_7 Images
 
 To insert image into document the developer can write the following code(in Doxygen-style):
+
+For HTML document:
 @verbatim
-![alt-caption](relative/path/to/image/image001.svg "Image Caption")
+  @image html /relative/path/to/image/image001.png "Image caption"
 @endverbatim
 
-This code tells Doxygen to insert a picture right in the place this code was written. Like this:
+For latex document:
 @verbatim
-![](/resources/occ_logo.png "OCCT logo")
+  @image latex /relative/path/to/image/image001.png "Image caption"
 @endverbatim
 
-![](/resources/occ_logo.png "OCCT logo")
+*Note*: When markdown document is used to generate html document the latex insertion is ignored (and vice versa) 
+due to this fact you can use image insertions in the pair, like example below:
+@verbatim
+  @image html /relative/path/to/image/image001.png "Image caption"
+  @image latex /relative/path/to/image/image001.png "Image caption"
+@endverbatim
+
+The code below tells Doxygen to insert a picture right in the place this code was written:
+@verbatim
+  @image html /resources/occ_logo.png "OCCT logo"
+  @image latex /resources/occ_logo.png "OCCT logo"
+@endverbatim
+
+@image html /resources/occ_logo.png "OCCT logo"
+@image latex /resources/occ_logo.png "OCCT logo"
  
 @subsection  OCCT_DM_SECTION_A_8 Table Of Contents
 
