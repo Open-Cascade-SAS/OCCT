@@ -1,0 +1,67 @@
+puts "============"
+puts "OCC24303"
+puts "============"
+puts ""
+###############################
+## Precision degradation for Geom2dGcc_Circ2d2TanRad in OCCT6.6.0.
+###############################
+
+pload QAcommands
+
+set status 0
+
+set info1 [OCC24303 4]
+regexp {Solutions +([-0-9.+eE]+)} ${info1} full Solution
+regexp {Distance += +([-0-9.+eE]+)} ${info1} full Distance
+
+if { [info exists Sol4] } {
+   set info2 [dump Sol4]
+   regexp {Center +:([-0-9.+eE]+), +([-0-9.+eE]+)} ${info2} full CenterX CenterY
+   regexp {XAxis +:([-0-9.+eE]+), +([-0-9.+eE]+)} ${info2} full XAxisX XAxisY
+   regexp {YAxis +:([-0-9.+eE]+), +([-0-9.+eE]+)} ${info2} full YAxisX YAxisY
+   regexp {Radius +:([-0-9.+eE]+)} ${info2} full Radius
+   set good_CenterX 5
+   set good_CenterY 0
+   set good_XAxisX 1
+   set good_XAxisY 0
+   set good_YAxisX 0
+   set good_YAxisY 1
+   set good_Radius 3
+   if { ${CenterX} != ${good_CenterX} } {
+      puts "Faulty : Bad CenterX"
+      set status 1
+   }
+   if { ${CenterY} != ${good_CenterY} } {
+      puts "Faulty : Bad CenterY"
+      set status 1
+   }
+   if { ${XAxisX} != ${good_XAxisX} } {
+      puts "Faulty : Bad XAxisX"
+      set status 1
+   }
+   if { ${XAxisY} != ${good_XAxisY} } {
+      puts "Faulty : Bad XAxisY"
+      set status 1
+   }
+   if { ${YAxisX} != ${good_YAxisX} } {
+      puts "Faulty : Bad YAxisX"
+      set status 1
+   }
+   if { ${YAxisY} != ${good_YAxisY} } {
+      puts "Faulty : Bad YAxisY"
+       set status 1
+  }
+   if { ${Radius} != ${good_Radius} } {
+      puts "Faulty : Bad Radius"
+      set status 1
+   }
+   } else {
+   puts "Faulty : Bad solution"
+   set status 1
+}
+
+if { ${status} != 0 } {
+    puts "Faulty : solution is wrong"
+} else {
+    puts "OK : solution is correct"
+}
