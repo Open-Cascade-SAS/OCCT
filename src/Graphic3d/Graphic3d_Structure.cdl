@@ -75,7 +75,7 @@ uses
 	Vertex			from Graphic3d,
 	TransModeFlags          from Graphic3d,
 	Pnt                     from gp,
-    SetOfHClipPlane from Graphic3d
+    SequenceOfHClipPlane from Graphic3d
 
 raises
 
@@ -271,11 +271,11 @@ is
         ---Purpose: Get Z layer ID of displayed structure. The method
         -- returns -1 if the structure has no ID (deleted from graphic driver).
 
-    SetClipPlanes (me : mutable; thePlanes : SetOfHClipPlane from Graphic3d) is static;
-    ---Purpose: Changes a set of clip planes slicing the structure on rendering.
+    SetClipPlanes (me : mutable; thePlanes : SequenceOfHClipPlane from Graphic3d) is static;
+    ---Purpose: Changes a sequence of clip planes slicing the structure on rendering.
     -- @param thePlanes [in] the set of clip planes.
 
-    GetClipPlanes (me) returns SetOfHClipPlane from Graphic3d;
+    GetClipPlanes (me) returns SequenceOfHClipPlane from Graphic3d;
     ---C++: return const&
     ---Purpose: Get clip planes slicing the structure on rendering.
     -- @return set of clip planes.

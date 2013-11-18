@@ -146,12 +146,8 @@ Standard_Boolean V3d_View::IfMoreLights() const {
 //=======================================================================
 void V3d_View::AddClipPlane (const Handle(Graphic3d_ClipPlane)& thePlane)
 {
-  Graphic3d_SetOfHClipPlane aCurrPlanes = MyViewContext.GetClipPlanes();
-  if (!aCurrPlanes.Add (thePlane))
-    return;
-
-  MyViewContext.SetClipPlanes (aCurrPlanes);
-  MyView->SetContext (MyViewContext) ;
+  MyViewContext.ChangeClipPlanes().Append (thePlane);
+  MyView->SetContext (MyViewContext);
 }
 
 //=======================================================================
@@ -160,29 +156,35 @@ void V3d_View::AddClipPlane (const Handle(Graphic3d_ClipPlane)& thePlane)
 //=======================================================================
 void V3d_View::RemoveClipPlane (const Handle(Graphic3d_ClipPlane)& thePlane)
 {
-  Graphic3d_SetOfHClipPlane aCurrPlanes = MyViewContext.GetClipPlanes();
-  if (!aCurrPlanes.Remove (thePlane))
-    return;
+  Graphic3d_SequenceOfHClipPlane& aSeqOfPlanes = MyViewContext.ChangeClipPlanes();
+  Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (aSeqOfPlanes);
+  for (; aPlaneIt.More(); aPlaneIt.Next())
+  {
+    const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIt.Value();
+    if (aPlane != thePlane)
+      continue;
 
-  MyViewContext.SetClipPlanes (aCurrPlanes);
-  MyView->SetContext (MyViewContext) ;
+    aSeqOfPlanes.Remove (aPlaneIt);
+    MyView->SetContext (MyViewContext);
+    return;
+  }
 }
 
 //=======================================================================
 //function : SetClipPlanes
 //purpose  :
 //=======================================================================
-void V3d_View::SetClipPlanes (const Graphic3d_SetOfHClipPlane& thePlanes)
+void V3d_View::SetClipPlanes (const Graphic3d_SequenceOfHClipPlane& thePlanes)
 {
-  MyViewContext.SetClipPlanes (thePlanes);
-  MyView->SetContext (MyViewContext) ;
+  MyViewContext.ChangeClipPlanes() = thePlanes;
+  MyView->SetContext (MyViewContext);
 }
 
 //=======================================================================
 //function : GetClipPlanes
 //purpose  :
 //=======================================================================
-const Graphic3d_SetOfHClipPlane& V3d_View::GetClipPlanes() const
+const Graphic3d_SequenceOfHClipPlane& V3d_View::GetClipPlanes() const
 {
-  return MyViewContext.GetClipPlanes();
+  return MyViewContext.ClipPlanes();
 }

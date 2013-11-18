@@ -745,12 +745,13 @@ void Visual3d_View::UpdateLights()
   MyCView.Context.ActiveLight = NULL;
 }
 
-void Visual3d_View::UpdatePlanes() 
+void Visual3d_View::UpdatePlanes()
 {
-  MyCView.Context.ClipPlanes = MyContext.GetClipPlanes();
-  
+  MyCView.Context.ClipPlanes = MyContext.ClipPlanes();
   if (IsDeleted() || !IsDefined())
+  {
     return;
+  }
 
   MyGraphicDriver->SetClipPlanes (MyCView);
 }

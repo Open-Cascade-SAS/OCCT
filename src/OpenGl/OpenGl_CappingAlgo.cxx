@@ -74,8 +74,8 @@ void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)& theWorks
 
   // check whether algorithm need to be performed
   Standard_Boolean isCapping = Standard_False;
-  const Graphic3d_SetOfHClipPlane& aContextPlanes = aContext->Clipping().Planes();
-  Graphic3d_SetOfHClipPlane::Iterator aCappingIt (aContextPlanes);
+  const Graphic3d_SequenceOfHClipPlane& aContextPlanes = aContext->Clipping().Planes();
+  Graphic3d_SequenceOfHClipPlane::Iterator aCappingIt (aContextPlanes);
   for (; aCappingIt.More(); aCappingIt.Next())
   {
     const Handle(Graphic3d_ClipPlane)& aPlane = aCappingIt.Value();
@@ -117,7 +117,7 @@ void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)& theWorks
     }
 
     // enable only the rendering plane to generate stencil mask
-    Graphic3d_SetOfHClipPlane::Iterator aPlaneIt (aContextPlanes);
+    Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (aContextPlanes);
     for (; aPlaneIt.More(); aPlaneIt.Next())
     {
       const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIt.Value();

@@ -137,7 +137,7 @@ uses
         ExtendedString                    from TCollection,
         PrintAlgo                         from Aspect,
         ClipPlane_Handle                  from Graphic3d,
-        SetOfHClipPlane                   from Graphic3d
+        SequenceOfHClipPlane              from Graphic3d
 raises
 
         BadValue from V3d, TypeMismatch from Standard,
@@ -1566,8 +1566,8 @@ is
      ---Purpose: Removes clip plane from the view.
      -- @param thePlane [in] the clip plane to be removed from view.
 
-     SetClipPlanes (me : mutable; thePlanes : SetOfHClipPlane from Graphic3d);
-     ---Purpose: Set clip planes to the view. The planes that have been set
+     SetClipPlanes (me : mutable; thePlanes : SequenceOfHClipPlane from Graphic3d);
+     ---Purpose: Sets sequence of clip planes to the view. The planes that have been set
      -- before are removed from the view. The composition of clip planes
      -- truncates the rendering space to convex volume. Number of supported
      -- clip planes can be consulted by PlaneLimit method of associated
@@ -1575,7 +1575,7 @@ is
      -- are igonred during rendering. 
      -- @param thePlanes [in] the clip planes to set.
 
-     GetClipPlanes (me) returns SetOfHClipPlane from Graphic3d;
+     GetClipPlanes (me) returns SequenceOfHClipPlane from Graphic3d;
      ---C++: return const&
      ---Purpose: Get clip planes.
      -- @return sequence clip planes that have been set for the view

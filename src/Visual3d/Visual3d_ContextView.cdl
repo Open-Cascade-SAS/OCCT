@@ -38,15 +38,14 @@ class ContextView from Visual3d
 
 uses
 
-	SequenceOfAddress	from TColStd,
-	Light			from Visual3d,
-	HSetOfLight		from Visual3d,
-	
-	TypeOfModel		from Visual3d,
-	TypeOfVisualization	from Visual3d, 
-	TypeOfSurfaceDetail     from Visual3d,
-	TextureEnv              from Graphic3d,
-    SetOfHClipPlane         from Graphic3d
+    SequenceOfAddress    from TColStd,
+    Light                from Visual3d,
+    HSetOfLight          from Visual3d,
+    TypeOfModel          from Visual3d,
+    TypeOfVisualization  from Visual3d,
+    TypeOfSurfaceDetail  from Visual3d,
+    TextureEnv           from Graphic3d,
+    SequenceOfHClipPlane from Graphic3d
 
 raises
 
@@ -147,13 +146,14 @@ is
 	--	     Clip Plane
 	---------------------------------------------------
 
-   SetClipPlanes (me : in out; thePlanes : SetOfHClipPlane from Graphic3d);
-   ---Purpose: Set list of clip planes to the view context.
-   -- @param thePlanes [in] the clip planes to set.
-
-   GetClipPlanes (me) returns SetOfHClipPlane from Graphic3d;
+   ClipPlanes (me) returns SequenceOfHClipPlane from Graphic3d;
    ---C++: return const&
-   ---Purpose: Get clip planes.
+   ---Purpose: Returns sequence of clip planes.
+   -- @return sequence of clip planes.
+
+   ChangeClipPlanes (me : in out) returns SequenceOfHClipPlane from Graphic3d;
+   ---C++: return&
+   ---Purpose: Change clip planes.
    -- @return sequence of clip planes.
 
 	---------------------------------------------------
@@ -440,6 +440,6 @@ fields
     	MyTextureEnv            :       TextureEnv  from  Graphic3d; 
 	MySurfaceDetail         :       TypeOfSurfaceDetail  from  Visual3d;
 
-    myClipPlanes : SetOfHClipPlane from Graphic3d;
+    myClipPlanes : SequenceOfHClipPlane from Graphic3d;
 
 end ContextView;

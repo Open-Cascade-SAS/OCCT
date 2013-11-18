@@ -37,7 +37,7 @@
 
 #include <Graphic3d_CView.hxx>
 #include <Graphic3d_CGraduatedTrihedron.hxx>
-#include <Graphic3d_SetOfHClipPlane.hxx>
+#include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <Visual3d_TypeOfSurfaceDetail.hxx>
 
 #include <OpenGl_telem_view.hxx>
@@ -115,7 +115,7 @@ class OpenGl_View : public MMgt_TShared
   void SetBackfacing (const Standard_Integer AMode);
   void SetLights (const CALL_DEF_VIEWCONTEXT &AContext);
   void SetAntiAliasing (const Standard_Boolean AMode) { myAntiAliasing = AMode; }
-  void SetClipPlanes (const Graphic3d_SetOfHClipPlane &thePlanes) { myClipPlanes = thePlanes; }
+  void SetClipPlanes (const Graphic3d_SequenceOfHClipPlane &thePlanes) { myClipPlanes = thePlanes; }
   void SetVisualisation (const CALL_DEF_VIEWCONTEXT &AContext);
 
   void SetClipLimit (const Graphic3d_CView& theCView);
@@ -243,7 +243,7 @@ public:
   OPENGL_EXTRA_REP myExtra;
   //}
 
-  Graphic3d_SetOfHClipPlane myClipPlanes;
+  Graphic3d_SequenceOfHClipPlane myClipPlanes;
   
   OPENGL_FOG myFog;
   OpenGl_Trihedron*          myTrihedron;

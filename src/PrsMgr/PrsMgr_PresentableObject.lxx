@@ -26,7 +26,7 @@ inline PrsMgr_TypeOfPresentation3d PrsMgr_PresentableObject::TypeOfPresentation3
 inline const TopLoc_Location& PrsMgr_PresentableObject::Location() const
 {return myLocation;}
 
-inline const Graphic3d_SetOfHClipPlane& PrsMgr_PresentableObject::GetClipPlanes() const
+inline const Graphic3d_SequenceOfHClipPlane& PrsMgr_PresentableObject::GetClipPlanes() const
 {
   return myClipPlanes;
 }

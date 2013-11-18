@@ -64,7 +64,7 @@ uses
     ListOfInteger         from TColStd,
     Location              from TopLoc, 
     ClipPlane_Handle      from Graphic3d,
-    SetOfHClipPlane       from Graphic3d,
+    SequenceOfHClipPlane  from Graphic3d,
     --   ABD 29/10/04  Transform Persistence of Presentation( pan, zoom, rotate )
     TransModeFlags        from Graphic3d, 
     Pnt                   from gp, 
@@ -266,7 +266,7 @@ is
    ---Purpose: Removes previously added clip plane.
    -- @param thePlane [in] the clip plane to be removed from map of clip planes.
 
-   SetClipPlanes (me : mutable; thePlanes : SetOfHClipPlane from Graphic3d) is virtual;
+   SetClipPlanes (me : mutable; thePlanes : SequenceOfHClipPlane from Graphic3d) is virtual;
    ---Purpose: Set clip planes for graphical clipping for all display mode presentations.
    -- The composition of clip planes truncates the rendering space to convex
    -- volume. Please be aware that number of supported clip plane is limited.
@@ -275,7 +275,7 @@ is
    -- of these planes should be substracted from limit to predict the maximum
    -- possible number of object clipping planes.
 
-   GetClipPlanes (me) returns SetOfHClipPlane from Graphic3d;
+   GetClipPlanes (me) returns SequenceOfHClipPlane from Graphic3d;
    ---C++: inline
    ---C++: return const&
    ---Purpose: Get clip planes.
@@ -290,7 +290,7 @@ fields
     myPresentations: Presentations from PrsMgr is protected;
     myTypeOfPresentation3d: TypeOfPresentation3d from PrsMgr is protected;
     myLocation  : Location from TopLoc is protected; 
-    myClipPlanes : SetOfHClipPlane from Graphic3d is protected;
+    myClipPlanes : SequenceOfHClipPlane from Graphic3d is protected;
     --myTransformPersistence  :  TransModeFlags  from  Graphic3d; 
     myTransformPersistence  :  CTransPersStruct  from  Graphic3d;
 

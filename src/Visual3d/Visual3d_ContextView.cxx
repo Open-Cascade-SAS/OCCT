@@ -334,12 +334,20 @@ Visual3d_TypeOfSurfaceDetail Visual3d_ContextView::SurfaceDetail() const
   return MySurfaceDetail;
 }
 
-void Visual3d_ContextView::SetClipPlanes (const Graphic3d_SetOfHClipPlane& thePlanes)
+//=======================================================================
+//function : ClipPlanes
+//purpose  :
+//=======================================================================
+const Graphic3d_SequenceOfHClipPlane& Visual3d_ContextView::ClipPlanes() const
 {
-  myClipPlanes = thePlanes;
+  return myClipPlanes;
 }
 
-const Graphic3d_SetOfHClipPlane& Visual3d_ContextView::GetClipPlanes() const
+//=======================================================================
+//function : ChangeClipPlanes
+//purpose  :
+//=======================================================================
+Graphic3d_SequenceOfHClipPlane& Visual3d_ContextView::ChangeClipPlanes()
 {
   return myClipPlanes;
 }

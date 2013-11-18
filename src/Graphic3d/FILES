@@ -68,5 +68,5 @@ Graphic3d_MarkerImage_Handle.hxx
 Graphic3d_ClipPlane.hxx
 Graphic3d_ClipPlane.cxx
 Graphic3d_ClipPlane_Handle.hxx
-Graphic3d_SetOfHClipPlane.hxx
-Graphic3d_SetOfHClipPlane_Handle.hxx
+Graphic3d_SequenceOfHClipPlane.hxx
+Graphic3d_SequenceOfHClipPlane_Handle.hxx

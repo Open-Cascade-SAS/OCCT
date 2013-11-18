@@ -33,7 +33,7 @@
 #include <V3d_PerspectiveView.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
-#include <Graphic3d_SetOfHClipPlane.hxx>
+#include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <SelectMgr_SelectableObject.hxx>
 #include <SelectMgr_DataMapIteratorOfDataMapOfIntegerSensitive.hxx>
 #include <SelectBasics_ListOfBox2d.hxx>
@@ -1048,7 +1048,7 @@ void StdSelect_ViewerSelector3d::ComputeAreasPrs (const Handle(SelectMgr_Selecti
 //function : SetClipping
 //purpose  :
 //=======================================================================
-void StdSelect_ViewerSelector3d::SetClipping (const Graphic3d_SetOfHClipPlane& thePlanes)
+void StdSelect_ViewerSelector3d::SetClipping (const Graphic3d_SequenceOfHClipPlane& thePlanes)
 {
   myClipPlanes = thePlanes;
 }
@@ -1057,7 +1057,7 @@ void StdSelect_ViewerSelector3d::SetClipping (const Graphic3d_SetOfHClipPlane& t
 //function : ComputeClipRange
 //purpose  :
 //=======================================================================
-void StdSelect_ViewerSelector3d::ComputeClipRange (const Graphic3d_SetOfHClipPlane& thePlanes,
+void StdSelect_ViewerSelector3d::ComputeClipRange (const Graphic3d_SequenceOfHClipPlane& thePlanes,
                                                    const gp_Lin& thePickLine,
                                                    Standard_Real& theDepthMin,
                                                    Standard_Real& theDepthMax) const
@@ -1066,7 +1066,7 @@ void StdSelect_ViewerSelector3d::ComputeClipRange (const Graphic3d_SetOfHClipPla
   theDepthMax = RealLast();
   Standard_Real aPlaneA, aPlaneB, aPlaneC, aPlaneD;
 
-  Graphic3d_SetOfHClipPlane::Iterator aPlaneIt (thePlanes);
+  Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (thePlanes);
   for (; aPlaneIt.More(); aPlaneIt.Next())
   {
     const Handle(Graphic3d_ClipPlane)& aClipPlane = aPlaneIt.Value();

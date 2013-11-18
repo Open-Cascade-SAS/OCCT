@@ -2497,7 +2497,7 @@ Standard_Integer Graphic3d_Structure::GetZLayer () const
 //function : SetClipPlanes
 //purpose  :
 //=======================================================================
-void Graphic3d_Structure::SetClipPlanes (const Graphic3d_SetOfHClipPlane& thePlanes)
+void Graphic3d_Structure::SetClipPlanes (const Graphic3d_SequenceOfHClipPlane& thePlanes)
 {
   MyCStructure.ClipPlanes = thePlanes;
   MyGraphicDriver->SetClipPlanes (MyCStructure);
@@ -2507,7 +2507,7 @@ void Graphic3d_Structure::SetClipPlanes (const Graphic3d_SetOfHClipPlane& thePla
 //function : GetClipPlanes
 //purpose  :
 //=======================================================================
-const Graphic3d_SetOfHClipPlane& Graphic3d_Structure::GetClipPlanes() const
+const Graphic3d_SequenceOfHClipPlane& Graphic3d_Structure::GetClipPlanes() const
 {
   return MyCStructure.ClipPlanes;
 }

@@ -33,7 +33,7 @@
 #include <OpenGl_View.hxx>
 #include <OpenGl_Workspace.hxx>
 
-#include <Graphic3d_SetOfHClipPlane_Handle.hxx>
+#include <Graphic3d_SequenceOfHClipPlane_Handle.hxx>
 
 //! Auxiliary class for bounding box presentation
 class OpenGl_BndBoxPrs : public OpenGl_Element
@@ -682,12 +682,12 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
   const Handle(OpenGl_Context)& aContext = AWorkspace->GetGlContext();
 
   // List of planes to be applied to context state
-  Handle(Graphic3d_SetOfHClipPlane) aUserPlanes;
+  Handle(Graphic3d_SequenceOfHClipPlane) aUserPlanes;
 
   // Collect clipping planes of structure scope
   if (!myClipPlanes.IsEmpty())
   {
-    Graphic3d_SetOfHClipPlane::Iterator aClippingIt (myClipPlanes);
+    Graphic3d_SequenceOfHClipPlane::Iterator aClippingIt (myClipPlanes);
     for (; aClippingIt.More(); aClippingIt.Next())
     {
       const Handle(Graphic3d_ClipPlane)& aClipPlane = aClippingIt.Value();
@@ -698,10 +698,10 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
 
       if (aUserPlanes.IsNull())
       {
-        aUserPlanes = new Graphic3d_SetOfHClipPlane();
+        aUserPlanes = new Graphic3d_SequenceOfHClipPlane();
       }
 
-      aUserPlanes->Add (aClipPlane);
+      aUserPlanes->Append (aClipPlane);
     }
   }
 

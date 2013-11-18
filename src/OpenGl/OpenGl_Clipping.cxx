@@ -53,7 +53,7 @@ void OpenGl_Clipping::Init (const Standard_Integer theMaxPlanes)
 // function : Add
 // purpose  :
 // =======================================================================
-void OpenGl_Clipping::Add (Graphic3d_SetOfHClipPlane& thePlanes,
+void OpenGl_Clipping::Add (Graphic3d_SequenceOfHClipPlane& thePlanes,
                            const EquationCoords& theCoordSpace,
                            const Handle(OpenGl_Workspace)& theWS)
 {
@@ -90,9 +90,9 @@ void OpenGl_Clipping::Add (Graphic3d_SetOfHClipPlane& thePlanes,
 // function : Add
 // purpose  :
 // =======================================================================
-void OpenGl_Clipping::Add (Graphic3d_SetOfHClipPlane& thePlanes, const EquationCoords& theCoordSpace)
+void OpenGl_Clipping::Add (Graphic3d_SequenceOfHClipPlane& thePlanes, const EquationCoords& theCoordSpace)
 {
-  Graphic3d_SetOfHClipPlane::Iterator aPlaneIt (thePlanes);
+  Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (thePlanes);
   while (aPlaneIt.More() && myEmptyPlaneIds->Available() > 0)
   {
     const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIt.Value();
@@ -103,7 +103,7 @@ void OpenGl_Clipping::Add (Graphic3d_SetOfHClipPlane& thePlanes, const EquationC
     }
 
     Standard_Integer anID = myEmptyPlaneIds->Next();
-    myPlanes.Add (aPlane);
+    myPlanes.Append (aPlane);
     myPlaneStates.Bind (aPlane, PlaneProps (theCoordSpace, anID, Standard_True));
 
     glEnable ((GLenum)anID);
@@ -121,9 +121,9 @@ void OpenGl_Clipping::Add (Graphic3d_SetOfHClipPlane& thePlanes, const EquationC
 // function : Remove
 // purpose  :
 // =======================================================================
-void OpenGl_Clipping::Remove (const Graphic3d_SetOfHClipPlane& thePlanes)
+void OpenGl_Clipping::Remove (const Graphic3d_SequenceOfHClipPlane& thePlanes)
 {
-  Graphic3d_SetOfHClipPlane::Iterator aPlaneIt (thePlanes);
+  Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (thePlanes);
   for (; aPlaneIt.More(); aPlaneIt.Next())
   {
     const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIt.Value();
@@ -160,7 +160,7 @@ void OpenGl_Clipping::Remove (const Graphic3d_SetOfHClipPlane& thePlanes)
 // purpose  :
 // =======================================================================
 void OpenGl_Clipping::SetEnabled (const Handle(Graphic3d_ClipPlane)& thePlane,
-                                       const Standard_Boolean theIsEnabled)
+                                  const Standard_Boolean theIsEnabled)
 {
   if (!Contains (thePlane))
   {

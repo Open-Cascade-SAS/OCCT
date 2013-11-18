@@ -587,9 +587,9 @@ is
     imported ShaderProgram_Handle;
     ---Category: Instantiated classes
 
-    imported SetOfHClipPlane;
+    imported SequenceOfHClipPlane;
     ---Category: Instantiated classes
-    -- Set of handles on clip planes
+    -- Sequence of handles on clip planes
 
     deferred  class  TextureRoot  from  Graphic3d;
     deferred  class  TextureMap   from  Graphic3d;

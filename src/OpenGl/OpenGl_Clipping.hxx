@@ -22,7 +22,7 @@
 
 #include <Aspect_GenId.hxx>
 #include <Graphic3d_ClipPlane.hxx>
-#include <Graphic3d_SetOfHClipPlane.hxx>
+#include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Handle.hxx>
 #include <Standard_TypeDef.hxx>
@@ -66,7 +66,7 @@ public: //! @name non-modifying getters
 
   //! Get clip planes defined for context.
   //! @return sequence of set clipping planes.
-  inline const Graphic3d_SetOfHClipPlane& Planes() const
+  inline const Graphic3d_SequenceOfHClipPlane& Planes() const
   {
     return myPlanes;
   }
@@ -97,7 +97,7 @@ public: //! @name clipping state modification commands
   //! This list then can be used to fall back to previous state.
   //! @param theCoordSpace [in] the equation definition space.
   //! @param theWS [in] the workspace to access the matrices.
-  Standard_EXPORT void Add (Graphic3d_SetOfHClipPlane& thePlanes,
+  Standard_EXPORT void Add (Graphic3d_SequenceOfHClipPlane& thePlanes,
                             const EquationCoords& theCoordSpace,
                             const Handle(OpenGl_Workspace)& theWS);
 
@@ -109,12 +109,12 @@ public: //! @name clipping state modification commands
   //! The list then provides information on which planes were really added to clipping state.
   //! This list then can be used to fall back to previous state.
   //! @param theCoordSpace [in] the equation definition space.
-  Standard_EXPORT void Add (Graphic3d_SetOfHClipPlane& thePlanes,
+  Standard_EXPORT void Add (Graphic3d_SequenceOfHClipPlane& thePlanes,
                             const EquationCoords& theCoordSpace);
 
   //! Remove the passed set of clipping planes from the context state.
   //! @param thePlanes [in] the planes to remove from list.
-  Standard_EXPORT void Remove (const Graphic3d_SetOfHClipPlane& thePlanes);
+  Standard_EXPORT void Remove (const Graphic3d_SequenceOfHClipPlane& thePlanes);
 
   //! Enable or disable clipping plane in the OpenGl context.
   //! @param thePlane [in] the plane to affect.
@@ -131,7 +131,7 @@ public: //! @name Short-cuts
   //! The list then provides information on which planes were really added to clipping state.
   //! This list then can be used to fall back to previous state.
   //! @param theWS [in] the workspace to access the matrices.
-  inline void AddView (Graphic3d_SetOfHClipPlane& thePlanes, const Handle(OpenGl_Workspace)& theWS)
+  inline void AddView (Graphic3d_SequenceOfHClipPlane& thePlanes, const Handle(OpenGl_Workspace)& theWS)
   {
     Add (thePlanes, EquationCoords_View, theWS);
   }
@@ -142,7 +142,7 @@ public: //! @name Short-cuts
   //! @param thePlanes [in/out] the list of planes to be added.
   //! The list then provides information on which planes were really added to clipping state.
   //! This list then can be used to fall back to previous state.
-  inline void AddView (Graphic3d_SetOfHClipPlane& thePlanes)
+  inline void AddView (Graphic3d_SequenceOfHClipPlane& thePlanes)
   {
     Add (thePlanes, EquationCoords_View);
   }
@@ -154,7 +154,7 @@ public: //! @name Short-cuts
   //! The list then provides information on which planes were really added to clipping state.
   //! This list then can be used to fall back to previous state.
   //! @param theWS [in] the workspace to access the matrices.
-  inline void AddWorld (Graphic3d_SetOfHClipPlane& thePlanes, const Handle(OpenGl_Workspace)& theWS)
+  inline void AddWorld (Graphic3d_SequenceOfHClipPlane& thePlanes, const Handle(OpenGl_Workspace)& theWS)
   {
     Add (thePlanes, EquationCoords_World, theWS);
   }
@@ -165,7 +165,7 @@ public: //! @name Short-cuts
   //! @param thePlanes [in/out] the list of planes to be added.
   //! The list then provides information on which planes were really added to clipping state.
   //! This list then can be used to fall back to previous state.
-  inline void AddWorld (Graphic3d_SetOfHClipPlane& thePlanes)
+  inline void AddWorld (Graphic3d_SequenceOfHClipPlane& thePlanes)
   {
     Add (thePlanes, EquationCoords_World);
   }
@@ -202,9 +202,9 @@ private:
   typedef NCollection_DataMap<Handle(Graphic3d_ClipPlane), PlaneProps> OpenGl_MapOfPlaneStates;
   typedef NCollection_Handle<Aspect_GenId> OpenGl_EmptyPlaneIds;
 
-  Graphic3d_SetOfHClipPlane myPlanes;          //!< defined clipping planes.
-  OpenGl_MapOfPlaneStates   myPlaneStates;     //!< map of clip planes bound for the props.
-  OpenGl_EmptyPlaneIds      myEmptyPlaneIds;   //!< generator of empty ids.
+  Graphic3d_SequenceOfHClipPlane myPlanes;        //!< defined clipping planes.
+  OpenGl_MapOfPlaneStates        myPlaneStates;   //!< map of clip planes bound for the props.
+  OpenGl_EmptyPlaneIds           myEmptyPlaneIds; //!< generator of empty ids.
 
 private:
 

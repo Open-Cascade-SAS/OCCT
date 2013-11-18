@@ -512,7 +512,7 @@ void OpenGl_ShaderManager::PushClippingState (const Handle(OpenGl_ShaderProgram)
   }
 
   GLuint aPlanesNb = 0;
-  for (Graphic3d_SetOfHClipPlane::Iterator anIter (myContext->Clipping().Planes());
+  for (Graphic3d_SequenceOfHClipPlane::Iterator anIter (myContext->Clipping().Planes());
        anIter.More(); anIter.Next())
   {
     const Handle(Graphic3d_ClipPlane)& aPlane = anIter.Value();
@@ -531,7 +531,7 @@ void OpenGl_ShaderManager::PushClippingState (const Handle(OpenGl_ShaderProgram)
   OpenGl_Vec4* anEquations = new OpenGl_Vec4[aPlanesNb];
   GLint*       aSpaces     = new GLint      [aPlanesNb];
   GLuint aPlaneId = 0;
-  for (Graphic3d_SetOfHClipPlane::Iterator anIter (myContext->Clipping().Planes());
+  for (Graphic3d_SequenceOfHClipPlane::Iterator anIter (myContext->Clipping().Planes());
        anIter.More(); anIter.Next())
   {
     const Handle(Graphic3d_ClipPlane)& aPlane = anIter.Value();

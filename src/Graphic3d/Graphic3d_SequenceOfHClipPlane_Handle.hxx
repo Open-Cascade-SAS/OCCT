@@ -17,12 +17,12 @@
 // purpose or non-infringement Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License
 
-#ifndef _Graphic3d_SetOfHClipPlane_Handle_HeaderFile
-#define _Graphic3d_SetOfHClipPlane_Handle_HeaderFile
+#ifndef _Graphic3d_SequenceOfHClipPlane_Handle_HeaderFile
+#define _Graphic3d_SequenceOfHClipPlane_Handle_HeaderFile
 
 #include <NCollection_Handle.hxx>
-#include <Graphic3d_SetOfHClipPlane.hxx>
+#include <Graphic3d_SequenceOfHClipPlane.hxx>
 
-typedef NCollection_Handle<Graphic3d_SetOfHClipPlane> Handle(Graphic3d_SetOfHClipPlane);
+typedef NCollection_Handle<Graphic3d_SequenceOfHClipPlane> Handle(Graphic3d_SequenceOfHClipPlane);
 
 #endif

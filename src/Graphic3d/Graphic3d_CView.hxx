@@ -22,7 +22,7 @@
 #include <InterfaceGraphic_Visual3d.hxx>
 #include <Handle_Graphic3d_TextureEnv.hxx>
 #include <Graphic3d_CLight.hxx>
-#include <Graphic3d_SetOfHClipPlane.hxx>
+#include <Graphic3d_SequenceOfHClipPlane.hxx>
 
 class CALL_DEF_VIEWCONTEXT
 {
@@ -74,7 +74,7 @@ public:
   Handle(Graphic3d_TextureEnv) TextureEnv;
   int   SurfaceDetail;
 
-  Graphic3d_SetOfHClipPlane ClipPlanes;
+  Graphic3d_SequenceOfHClipPlane ClipPlanes;
 };
 
 class Graphic3d_CView

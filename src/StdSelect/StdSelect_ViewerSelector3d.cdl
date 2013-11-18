@@ -28,17 +28,17 @@ class ViewerSelector3d from StdSelect inherits ViewerSelector from SelectMgr
 	--          
 
 uses
-    View      from V3d,
-    Selection from SelectMgr,
-    EntityOwner from SelectMgr,
-    Projector from Select3D,
-    Group     from Graphic3d,
-    Structure from Graphic3d,
-    SetOfHClipPlane from Graphic3d,
-    Array1OfReal    from TColStd, 
-    Array1OfPnt2d from TColgp,
-    SensitivityMode from StdSelect,
-    Lin from gp
+    View                 from V3d,
+    Selection            from SelectMgr,
+    EntityOwner          from SelectMgr,
+    Projector            from Select3D,
+    Group                from Graphic3d,
+    Structure            from Graphic3d,
+    SequenceOfHClipPlane from Graphic3d,
+    Array1OfReal         from TColStd, 
+    Array1OfPnt2d        from TColgp,
+    SensitivityMode      from StdSelect,
+    Lin                  from gp
 
 is
 
@@ -152,12 +152,12 @@ is
      is static private;
     	---Level: Internal 
 
-    SetClipping (me : mutable; thePlanes : SetOfHClipPlane from Graphic3d) is protected;
+    SetClipping (me : mutable; thePlanes : SequenceOfHClipPlane from Graphic3d) is protected;
     ---Level: Internal
     ---Purpose: Set view clipping for the selector.
     -- @param thePlanes [in] the view planes.
 
-    ComputeClipRange (me; thePlanes : SetOfHClipPlane from Graphic3d;
+    ComputeClipRange (me; thePlanes : SequenceOfHClipPlane from Graphic3d;
                       thePickLine : Lin from gp;
                       theDepthMin, theDepthMax : out Real from Standard)
       is protected;
@@ -207,12 +207,9 @@ fields
     
              --areas verification...
 
-    myareagroup : Group            from Graphic3d;
-    mysensgroup : Group            from Graphic3d;
-    mystruct: Structure        from Graphic3d;
-    myClipPlanes : SetOfHClipPlane from Graphic3d;
+    myareagroup  : Group                from Graphic3d;
+    mysensgroup  : Group                from Graphic3d;
+    mystruct     : Structure            from Graphic3d;
+    myClipPlanes : SequenceOfHClipPlane from Graphic3d;
 
 end ViewerSelector3d;
-
-
-

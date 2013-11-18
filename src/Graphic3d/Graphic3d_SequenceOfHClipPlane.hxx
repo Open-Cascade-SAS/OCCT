@@ -17,14 +17,13 @@
 // purpose or non-infringement Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License
 
-#ifndef _Graphic3d_SetOfHClipPlane_HeaderFile
-#define _Graphic3d_SetOfHClipPlane_HeaderFile
+#ifndef _Graphic3d_SequenceOfHClipPlane_HeaderFile
+#define _Graphic3d_SequenceOfHClipPlane_HeaderFile
 
-#include <NCollection_Set.hxx>
+#include <NCollection_Sequence.hxx>
 #include <Graphic3d_ClipPlane.hxx>
 
-// CDL-header shortcut for set of graphical clipping planes. This is a compact
-// way (compared to list) to store clippings, with mandatory uniqueness check.
-typedef NCollection_Set<Handle(Graphic3d_ClipPlane)> Graphic3d_SetOfHClipPlane;
+// CDL-header shortcut for sequence of graphical clipping planes.
+typedef NCollection_Sequence<Handle(Graphic3d_ClipPlane)> Graphic3d_SequenceOfHClipPlane;
 
 #endif

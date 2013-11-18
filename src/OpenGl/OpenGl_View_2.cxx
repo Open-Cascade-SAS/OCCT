@@ -989,15 +989,15 @@ D = -[Px,Py,Pz] dot |Nx|
       // do some "memory allocation"-wise optimization
       if (!aPlaneBack.IsNull() || !aPlaneFront.IsNull())
       {
-        Graphic3d_SetOfHClipPlane aSlicingPlanes;
+        Graphic3d_SequenceOfHClipPlane aSlicingPlanes;
         if (!aPlaneBack.IsNull())
         {
-          aSlicingPlanes.Add (aPlaneBack);
+          aSlicingPlanes.Append (aPlaneBack);
         }
 
         if (!aPlaneFront.IsNull())
         {
-          aSlicingPlanes.Add (aPlaneFront);
+          aSlicingPlanes.Append (aPlaneFront);
         }
 
         // add planes at loaded view matrix state
@@ -1008,14 +1008,14 @@ D = -[Px,Py,Pz] dot |Nx|
     // Apply user clipping planes
     if (!myClipPlanes.IsEmpty())
     {
-      Graphic3d_SetOfHClipPlane aUserPlanes;
-      Graphic3d_SetOfHClipPlane::Iterator aClippingIt (myClipPlanes);
+      Graphic3d_SequenceOfHClipPlane aUserPlanes;
+      Graphic3d_SequenceOfHClipPlane::Iterator aClippingIt (myClipPlanes);
       for (; aClippingIt.More(); aClippingIt.Next())
       {
         const Handle(Graphic3d_ClipPlane)& aClipPlane = aClippingIt.Value();
         if (aClipPlane->IsOn())
         {
-          aUserPlanes.Add (aClipPlane);
+          aUserPlanes.Append (aClipPlane);
         }
       }
 

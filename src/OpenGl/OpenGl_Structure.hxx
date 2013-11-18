@@ -32,7 +32,7 @@
 #include <OpenGl_Matrix.hxx>
 #include <OpenGl_NamedStatus.hxx>
 
-#include <Graphic3d_SetOfHClipPlane.hxx>
+#include <Graphic3d_SequenceOfHClipPlane.hxx>
 
 class OpenGl_Structure;
 
@@ -71,7 +71,7 @@ public:
 
   Standard_Boolean IsVisible() const { return !(myNamedStatus & OPENGL_NS_HIDE); }
 
-  void SetClipPlanes (const Graphic3d_SetOfHClipPlane& thePlanes) { myClipPlanes = thePlanes; }
+  void SetClipPlanes (const Graphic3d_SequenceOfHClipPlane& thePlanes) { myClipPlanes = thePlanes; }
 
   void Connect (const OpenGl_Structure *astructure);
   void Disconnect (const OpenGl_Structure *astructure);
@@ -169,9 +169,9 @@ protected:
   int                        myNamedStatus; //Structure_LABNameSet
   int                        myZLayer;
 
-  OpenGl_ListOfStructure     myConnected;
-  OpenGl_ListOfGroup         myGroups;
-  Graphic3d_SetOfHClipPlane  myClipPlanes;
+  OpenGl_ListOfStructure           myConnected;
+  OpenGl_ListOfGroup               myGroups;
+  Graphic3d_SequenceOfHClipPlane   myClipPlanes;
 
 #ifdef HAVE_OPENCL
   mutable OpenGl_ListOfStructure   myAncestorStructures;

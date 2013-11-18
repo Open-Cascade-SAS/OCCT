@@ -378,9 +378,9 @@ Standard_Integer PrsMgr_PresentableObject::GetZLayer
 // =======================================================================
 void PrsMgr_PresentableObject::AddClipPlane (const Handle(Graphic3d_ClipPlane)& thePlane)
 {
-  myClipPlanes.Add (thePlane);
-
-  UpdateClipping(); // process changes
+  // add to collection and process changes
+  myClipPlanes.Append (thePlane);
+  UpdateClipping();
 }
 
 // =======================================================================
@@ -389,19 +389,28 @@ void PrsMgr_PresentableObject::AddClipPlane (const Handle(Graphic3d_ClipPlane)& 
 // =======================================================================
 void PrsMgr_PresentableObject::RemoveClipPlane (const Handle(Graphic3d_ClipPlane)& thePlane)
 {
-  myClipPlanes.Remove (thePlane);
+  // remove from collection and process changes
+  Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (myClipPlanes);
+  for (; aPlaneIt.More(); aPlaneIt.Next())
+  {
+    const Handle(Graphic3d_ClipPlane)& aPlane = aPlaneIt.Value();
+    if (aPlane != thePlane)
+      continue;
 
-  UpdateClipping(); // process changes
+    myClipPlanes.Remove (aPlaneIt);
+    UpdateClipping();
+    return;
+  }
 }
 
 // =======================================================================
 // function : SetClipPlanes
 // purpose  :
 // =======================================================================
-void PrsMgr_PresentableObject::SetClipPlanes (const Graphic3d_SetOfHClipPlane& thePlanes)
+void PrsMgr_PresentableObject::SetClipPlanes (const Graphic3d_SequenceOfHClipPlane& thePlanes)
 {
+  // change collection and process changes
   myClipPlanes = thePlanes;
-
   UpdateClipping();
 }
 
