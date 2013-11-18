@@ -443,7 +443,7 @@ void OpenGl_AspectFace::Resources::BuildTexture (const Handle(OpenGl_Workspace)&
     else
     {
       Texture.Nullify(); // we need nullify all handles before ReleaseResource() call
-      aContext->ReleaseResource (TextureId);
+      aContext->ReleaseResource (TextureId, Standard_True);
     }
   }
 

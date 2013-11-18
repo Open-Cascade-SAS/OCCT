@@ -1578,7 +1578,7 @@ void OpenGl_AspectMarker::Resources::BuildSprites (const Handle(OpenGl_Workspace
       else
       {
         Sprite.Nullify(); // we need nullify all handles before ReleaseResource() call
-        aContext->ReleaseResource (SpriteKey);
+        aContext->ReleaseResource (SpriteKey, Standard_True);
       }
     }
     SpriteKey = aNewKey;
@@ -1595,7 +1595,7 @@ void OpenGl_AspectMarker::Resources::BuildSprites (const Handle(OpenGl_Workspace
       else
       {
         SpriteA.Nullify(); // we need nullify all handles before ReleaseResource() call
-        aContext->ReleaseResource (SpriteKey);
+        aContext->ReleaseResource (SpriteAKey, Standard_True);
       }
     }
     SpriteAKey = aNewKeyA;
