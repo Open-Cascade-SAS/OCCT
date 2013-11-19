@@ -23,6 +23,7 @@ user_guides/shape_healing/shape_healing.md
 user_guides/draw_test_harness.md
 
 dev_guides/dev_guides.md
+dev_guides/contribution/coding_rules.md
 dev_guides/cdl/cdl.md
 dev_guides/tests/tests.md
 dev_guides/documentation/documentation.md

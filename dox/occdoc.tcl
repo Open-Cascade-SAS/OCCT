@@ -80,6 +80,9 @@ proc OverviewDoc_MakeDoxyfile {casDir outDir tagFileDir {doxyFileName} {generato
     puts $doxyFile "GENERATE_AUTOGEN_DEF   = NO"
     puts $doxyFile "GENERATE_PERLMOD       = NO"
 
+    # Keep doxygen comments within code blocks
+    puts $doxyFile "STRIP_CODE_COMMENTS    = NO"
+
     set PARAM_INPUT "INPUT                  ="
     set PARAM_IMAGEPATH "IMAGE_PATH             = $inputDir/resources/ "
 
