@@ -49,6 +49,7 @@
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <BOPTools_AlgoTools2D.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 //
 
 static
@@ -739,7 +740,7 @@ Standard_Integer NbWaysOut(const BOPAlgo_ListOfEdgeInfo& aLEInfo)
   }
   //
   BOPTools_AlgoTools2D::CurveOnSurface (anEdge, myFace, aC2D, 
-                                    aFirst, aLast, aToler);
+					aFirst, aLast, aToler);
   dt=2.*Tolerance2D(aV, aGAS);
   //
   //for case chl/927/r9
@@ -753,6 +754,12 @@ Standard_Integer NbWaysOut(const BOPAlgo_ListOfEdgeInfo& aLEInfo)
     dt = aTX; 
   }
   //
+  GeomAbs_CurveType aType;
+  Geom2dAdaptor_Curve aGAC2D(aC2D);
+  aType=aGAC2D.GetType();
+  if (aType==GeomAbs_BSplineCurve || aType==GeomAbs_BezierCurve) {
+    dt=1.1*dt;
+  }
   if (fabs (aTV-aFirst) < fabs(aTV - aLast)) {
     aTV1=aTV + dt;
   }

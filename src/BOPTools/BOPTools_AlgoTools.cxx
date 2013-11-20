@@ -76,8 +76,6 @@ static
   Standard_Real AngleWithRef(const gp_Dir& theD1,
                              const gp_Dir& theD2,
                              const gp_Dir& theDRef);
-static 
-  inline Standard_Real fsqrt(Standard_Real val);
 
 static
   Standard_Boolean FindFacePairs (const TopoDS_Edge& theE,
@@ -1480,7 +1478,7 @@ void BOPTools_AlgoTools::MakeVertex(BOPCol_ListOfShape& aLV,
       aPi=BRep_Tool::Pnt(aVi);
       aTi=BRep_Tool::Tolerance(aVi);
       aDi=aP.SquareDistance(aPi);
-      aDi=fsqrt(aDi);
+      aDi=sqrt(aDi);
       aDi=aDi+aTi;
       if (aDi > aDmax) {
         aDmax=aDi;
@@ -1644,26 +1642,6 @@ Standard_Real AngleWithRef(const gp_Dir& theD1,
   }
   return aBeta;
 }
-//=======================================================================
-//function : fsqrt
-//purpose  : 
-//=======================================================================
-Standard_Real fsqrt(Standard_Real val)  
-{
-  union {
-    int tmp;
-    float val;
-  } u;
-  //
-  u.val = (float)val;
-  u.tmp -= 1<<23; /* Remove last bit so 1.0 gives 1.0 */
-  /* tmp is now an approximation to logbase2(val) */
-  u.tmp >>= 1; /* divide by 2 */
-  u.tmp += 1<<29; /* add 64 to exponent: (e+127)/2 =(e/2)+63, */
-  /* that represents (e/2)-64 but we want e/2 */
-  return (double)u.val;
-}
-
 //=======================================================================
 // function: IsBlockInOnFace
 // purpose: 
