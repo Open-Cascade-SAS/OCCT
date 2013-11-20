@@ -78,6 +78,18 @@ is
   ---         are not found in the system.
   ---Level: Public
 
+  CheckFont (me; theFontPath : CString from Standard) returns SystemFont;
+  ---Purpose: Read font file and retrieve information from it.
+  ---Level: Public
+
+  RegisterFont (me            : mutable;
+                theFont       : SystemFont;
+                theToOverride : Boolean from Standard) returns Boolean from Standard;
+  ---Purpose: Register new font.
+  ---         If there is existing entity with the same name and properties but different path
+  ---         then font will will be overridden or ignored depending on theToOverride flag.
+  ---Level: Public
+
   --- Private methods
 
   Create returns FontMgr is private;

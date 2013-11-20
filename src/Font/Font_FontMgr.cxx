@@ -19,6 +19,7 @@
 
 #include <Font_FontMgr.ixx>
 
+#include <Font_FTLibrary.hxx>
 #include <OSD_Environment.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_Map.hxx>
@@ -170,11 +171,11 @@ static const Font_FontMgr_FontAliasMapNode Font_FontMgr_MapOfFontsAliases[] =
 // function : checkFont
 // purpose  :
 // =======================================================================
-static Handle(Font_SystemFont) checkFont (FT_Library             theFTLib,
-                                          const Standard_CString theFontPath)
+static Handle(Font_SystemFont) checkFont (const Handle(Font_FTLibrary)& theFTLib,
+                                          const Standard_CString        theFontPath)
 {
   FT_Face aFontFace;
-  FT_Error aFaceError = FT_New_Face (theFTLib, theFontPath, 0, &aFontFace);
+  FT_Error aFaceError = FT_New_Face (theFTLib->Instance(), theFontPath, 0, &aFontFace);
   if (aFaceError != FT_Err_Ok)
   {
     return NULL;
@@ -228,15 +229,73 @@ Font_FontMgr::Font_FontMgr()
 }
 
 // =======================================================================
+// function : CheckFont
+// purpose  :
+// =======================================================================
+Handle(Font_SystemFont) Font_FontMgr::CheckFont (Standard_CString theFontPath) const
+{
+  Handle(Font_FTLibrary) aFtLibrary = new Font_FTLibrary();
+  return checkFont (aFtLibrary, theFontPath);
+}
+
+// =======================================================================
+// function : RegisterFont
+// purpose  :
+// =======================================================================
+Standard_Boolean Font_FontMgr::RegisterFont (const Handle(Font_SystemFont)& theFont,
+                                             const Standard_Boolean         theToOverride)
+{
+  if (theFont.IsNull())
+  {
+    return Standard_False;
+  }
+
+  for (Font_NListOfSystemFont::Iterator aFontIter (myListOfFonts);
+       aFontIter.More(); aFontIter.Next())
+  {
+    if (!aFontIter.Value()->FontName()->IsSameString (theFont->FontName(), Standard_False))
+    {
+      continue;
+    }
+
+    if (theFont->FontAspect() != Font_FA_Undefined
+     && aFontIter.Value()->FontAspect() != theFont->FontAspect())
+    {
+      continue;
+    }
+
+    if (theFont->FontHeight() == -1 || aFontIter.Value()->FontHeight() == -1
+     || theFont->FontHeight() ==       aFontIter.Value()->FontHeight())
+    {
+      if (theFont->FontPath()->String() == aFontIter.Value()->FontPath()->String())
+      {
+        return Standard_True;
+      }
+      else if (theToOverride)
+      {
+        myListOfFonts.Remove (aFontIter);
+      }
+      else
+      {
+        return Standard_False;
+      }
+    }
+  }
+
+  myListOfFonts.Append (theFont);
+  return Standard_True;
+}
+
+// =======================================================================
 // function : InitFontDataBase
 // purpose  :
 // =======================================================================
 void Font_FontMgr::InitFontDataBase()
 {
   myListOfFonts.Clear();
-  FT_Library aFtLibrary = NULL;
+  Handle(Font_FTLibrary) aFtLibrary;
 
-#if (defined(_WIN32) || defined(__WIN32__))
+#if defined(_WIN32)
 
   // font directory is placed in "C:\Windows\Fonts\"
   UINT aStrLength = GetSystemWindowsDirectoryA (NULL, 0);
@@ -266,7 +325,7 @@ void Font_FontMgr::InitFontDataBase()
     aSupportedExtensions.Add (TCollection_AsciiString (anExt));
   }
 
-  FT_Init_FreeType (&aFtLibrary);
+  aFtLibrary = new Font_FTLibrary();
   static const DWORD aBufferSize = 256;
   char aNameBuff[aBufferSize];
   char aPathBuff[aBufferSize];
@@ -383,7 +442,7 @@ void Font_FontMgr::InitFontDataBase()
     aSupportedExtensions.Add (TCollection_AsciiString (anExt));
   }
 
-  FT_Init_FreeType (&aFtLibrary);
+  aFtLibrary = new Font_FTLibrary();
   for (NCollection_Map<TCollection_AsciiString>::Iterator anIter (aMapOfFontsDirs);
        anIter.More(); anIter.Next())
   {
@@ -468,7 +527,6 @@ void Font_FontMgr::InitFontDataBase()
     aReadFile.Close();
   }
 #endif
-  FT_Done_FreeType (aFtLibrary);
 }
 
 // =======================================================================
@@ -506,9 +564,8 @@ Handle(Font_SystemFont) Font_FontMgr::GetFont (const Handle(TCollection_HAsciiSt
     return NULL; 
   }
 
-  Font_NListOfSystemFont::Iterator aFontsIterator (myListOfFonts);
-
-  for (; aFontsIterator.More(); aFontsIterator.Next())
+  for (Font_NListOfSystemFont::Iterator aFontsIterator (myListOfFonts);
+       aFontsIterator.More(); aFontsIterator.Next())
   {
     if (!theFontName->IsEmpty() && !aFontsIterator.Value()->FontName()->IsSameString (theFontName, Standard_False))
     {
