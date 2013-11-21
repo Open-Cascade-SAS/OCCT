@@ -66,7 +66,7 @@ void IntAna2d_AnaIntersection::Perform (const gp_Circ2d& C1,
     if (ang1<0) {ang1=2*M_PI+ang1;}                // On revient entre 0 et 2PI
     lpnt[0].SetValue(XS,YS,ang1,ang2);
   }
-  else if (((sum-d)>Epsilon(sum)) && ((d-dif)>Epsilon(sum))) {
+  else if (((sum-d)>Epsilon(sum)) && ((d-dif)>Epsilon(d+dif))) {
     empt=Standard_False;
     para=Standard_False;
     iden=Standard_False;
