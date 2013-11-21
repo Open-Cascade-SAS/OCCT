@@ -255,10 +255,15 @@ IntWalk_StatusDeflection IntWalk_IWalking::TestDeflection
 	
       }
       else {
-//	if (FlecheCourante > fleche) {  // not too great
-	if (FlecheCourante > fleche*fleche) {  // not too great
+//	if (FlecheCourante > fleche) {  // step too great
+	if (FlecheCourante > fleche*fleche) {  // step too great
 	  Step = Step /2.;
-	  Status = IntWalk_PasTropGrand;
+          StepU = Abs(Step*previousd2d.X());
+          StepV = Abs(Step*previousd2d.Y());
+          if (StepU < tolerance(1) && StepV < tolerance(2)) 
+            Status = IntWalk_ArretSurPointPrecedent;
+          else 
+            Status = IntWalk_PasTropGrand;
 	}
 	else {
 	  Standard_Real d2dx = Abs(sp.Direction2d().X()); 
