@@ -36,11 +36,9 @@ OCC_3dDoc::~OCC_3dDoc()
 void OCC_3dDoc::PocessTextInDialog(char* aTitle, TCollection_AsciiString& aMessage)
 {
 //    aMessage+= "-------------------------------- END ----------------------------------------\n";
-	CString text(aMessage.ToCString());
-    myCResultDialog.SetTitle(CString(aTitle));
-    myCResultDialog.SetText(text);
-    SetTitle(CString(aTitle));
-
+  myCResultDialog.SetTitle(aTitle);
+  myCResultDialog.SetText(aMessage.ToCString());
+  SetTitle(aTitle);
 }
 
 void OCC_3dDoc::ClearDialog()
@@ -72,5 +70,5 @@ CString OCC_3dDoc::GetDialogText()
 
 void OCC_3dDoc::SetDialogTitle(TCollection_AsciiString theTitle)
 {
-    myCResultDialog.SetTitle(CString(theTitle.ToCString()));
+    myCResultDialog.SetTitle(theTitle.ToCString());
 }

@@ -243,10 +243,10 @@ void CGeometryDoc::Dump(CDumpContext& dc) const
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void CGeometryDoc::DragEvent2D(const Standard_Integer  x        ,
-              const Standard_Integer  y        ,
-              const Standard_Integer  TheState ,
-              const Handle(V3d_View)& aView    )
+void CGeometryDoc::DragEvent2D(const Standard_Integer /*x*/,
+                               const Standard_Integer /*y*/,
+                               const Standard_Integer /*TheState*/,
+                               const Handle(V3d_View)& /*aView*/)
 {
 }
 
@@ -254,9 +254,9 @@ void CGeometryDoc::DragEvent2D(const Standard_Integer  x        ,
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void CGeometryDoc::InputEvent2D(const Standard_Integer  x     ,
-               const Standard_Integer  y     ,
-               const Handle(V3d_View)& aView ) 
+void CGeometryDoc::InputEvent2D(const Standard_Integer /*x*/,
+                                const Standard_Integer /*y*/,
+                                const Handle(V3d_View)& /*aView*/)
 {
   myAISContext2D->Select(Standard_True);
 }
@@ -264,9 +264,9 @@ void CGeometryDoc::InputEvent2D(const Standard_Integer  x     ,
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void CGeometryDoc::MoveEvent2D(const Standard_Integer  x,
-              const Standard_Integer  y,
-              const Handle(V3d_View)& aView) 
+void CGeometryDoc::MoveEvent2D(const Standard_Integer x,
+                               const Standard_Integer y,
+                               const Handle(V3d_View)& aView)
 {
   if(aView->Viewer()->Grid()->IsActive())
   {
@@ -281,19 +281,19 @@ void CGeometryDoc::MoveEvent2D(const Standard_Integer  x,
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void CGeometryDoc::ShiftMoveEvent2D(const Standard_Integer  x,
-                                    const Standard_Integer  y  ,
-                                    const Handle(V3d_View)& aView) 
+void CGeometryDoc::ShiftMoveEvent2D(const Standard_Integer /*x*/,
+                                    const Standard_Integer /*y*/,
+                                    const Handle(V3d_View)& /*aView*/)
 {
 }
 
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void CGeometryDoc::ShiftDragEvent2D(const Standard_Integer  x,
-                                    const Standard_Integer  y,
-                                    const Standard_Integer  TheState,
-                                    const Handle(V3d_View)& aView) 
+void CGeometryDoc::ShiftDragEvent2D(const Standard_Integer /*x*/,
+                                    const Standard_Integer /*y*/,
+                                    const Standard_Integer /*TheState*/,
+                                    const Handle(V3d_View)& /*aView*/)
 {
 }
 
@@ -301,18 +301,18 @@ void CGeometryDoc::ShiftDragEvent2D(const Standard_Integer  x,
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void CGeometryDoc::ShiftInputEvent2D(const Standard_Integer  x,
-                                    const Standard_Integer  y,
-                                    const Handle(V3d_View)& aView) 
+void CGeometryDoc::ShiftInputEvent2D(const Standard_Integer /*x*/,
+                                     const Standard_Integer /*y*/,
+                                     const Handle(V3d_View)& /*aView*/)
 {
 }
 
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void  CGeometryDoc::Popup2D(const Standard_Integer  x,
-                            const Standard_Integer  y ,
-                            const Handle(V3d_View)& aView) 
+void  CGeometryDoc::Popup2D(const Standard_Integer x,
+                            const Standard_Integer y,
+                            const Handle(V3d_View)& aView)
 {
   CMenu menu;
   VERIFY(menu.LoadMenu(IDR_Popup3D));
@@ -1129,7 +1129,7 @@ void CGeometryDoc::OnSimplify()
   if (!isRead)
   {
     Path += " was not found.  The sample can not be shown.";
-    myCResultDialog.SetText((CString)Path.ToCString());
+    myCResultDialog.SetText(Path.ToCString());
     return;
   }
   myAISContext->SetDisplayMode(AIS_Shaded);
@@ -1138,165 +1138,164 @@ void CGeometryDoc::OnSimplify()
 
 void CGeometryDoc::simplify(const TopoDS_Shape& aShape)
 {
-  myCResultDialog.SetTitle(CString("Simplify Face"));
-  myCResultDialog.SetText((CString)
-    "  TopoDS_Shape aShape;" EOL
-    "" EOL
-    "  // initialize aShape" EOL
-    "  //aShape = ..." EOL
-    "" EOL
-    "  // define parameter triangulation" EOL
-    "  Standard_Real aDeflection = 0.1;" EOL
-    "  " EOL
-    "  // removes all the triangulations of the faces ," EOL
-    "  //and all the polygons on the triangulations of the edges" EOL
-    "  BRepTools::Clean(aShape);" EOL
-    "  // adds a triangulation of the shape aShape with the deflection aDeflection" EOL
-    "  BRepMesh::Mesh(aShape,aDeflection);" EOL
-    "" EOL
-    "  Standard_Integer aIndex = 1, nbNodes = 0;" EOL
-    "  " EOL
-    "  // define two sequence of points" EOL
-    "  TColgp_SequenceOfPnt aPoints, aPoints1;" EOL
-    " " EOL
-    "  // triangulation" EOL
-    "  for(TopExp_Explorer aExpFace(aShape,TopAbs_FACE); aExpFace.More(); aExpFace.Next())" EOL
-    "  {  " EOL
-    "    TopoDS_Face aFace = TopoDS::Face(aExpFace.Current());" EOL
-    "    TopLoc_Location aLocation;" EOL
-    "" EOL
-    "    // takes the triangulation of the face aFace" EOL
-    "    Handle_Poly_Triangulation aTr = BRep_Tool::Triangulation(aFace,aLocation);" EOL
-    "" EOL
-    "    if(!aTr.IsNull())" EOL
-    "    { " EOL
-    "      // takes the array of nodes for this triangulation" EOL
-    "      const TColgp_Array1OfPnt& aNodes = aTr->Nodes();    " EOL
-    "      nbNodes = aNodes.Length();" EOL
-    "" EOL
-    "      for( Standard_Integer i = 1; i <= nbNodes; i++)" EOL
-    "      {" EOL
-    "        // create seguence of node points in absolute coordinate system" EOL
-    "        gp_Pnt aPnt = aNodes(i).Transformed(aLocation);" EOL
-    "        aPoints.Append(aPnt);" EOL
-    "        " EOL
-    "      }" EOL
-    "    }" EOL
-    "  }" EOL
-    " " EOL
-    "  // remove double points" EOL
-    "  nbNodes = aPoints.Length();" EOL
-    "  for( Standard_Integer i = 1; i <= nbNodes; i++)" EOL
-    "  {" EOL
-    "    gp_Pnt aPi = aPoints(i);" EOL
-    "    for( Standard_Integer j = i + 1; j < nbNodes; j++)" EOL
-    "    {" EOL
-    "      gp_Pnt aPj = aPoints(j);" EOL
-    "      if(!aPi.IsEqual(aPj,0.9))" EOL
-    "        aIndex++;" EOL
-    "    }" EOL
-    "    if(aIndex == j - 1)" EOL
-    "      aPoints1.Append(aPi);" EOL
-    "" EOL
-    "    aIndex = i + 1;" EOL
-    "  }" EOL
-    "" EOL
-    "  // find max point" EOL
-    "  aIndex = 0;" EOL
-    "  gp_Pnt aPntMax = aPoints1(1);" EOL
-    "  nbNodes = aPoints1.Length();" EOL
-    "  for(i = 2; i <= nbNodes; i++)" EOL
-    "  {" EOL
-    "    if(aPoints1(i).X() > aPntMax.X())" EOL
-    "    {" EOL
-    "      aIndex = i;" EOL
-    "      aPntMax = aPoints1(aIndex);      " EOL
-    "    } " EOL
-    "  }" EOL
-    "" EOL
-    "  // clear seguence" EOL
-    "  aPoints.Clear();" EOL
-    "" EOL
-    "  Standard_Integer nbLeftNodes = nbNodes;" EOL
-    "" EOL
-    "  // ascending sort - fill aPoints with ascending " EOL
-    "  // by X coordinate points from aPoints1" EOL
-    "  for(i = 1; i < nbNodes; i++)" EOL
-    "  {" EOL
-    "    Standard_Real aMin = aPntMax.X();" EOL
-    "    aIndex = 1;" EOL
-    "    for( Standard_Integer j = 1; j <= nbLeftNodes; j++)" EOL
-    "    {" EOL
-    "      if(aPoints1(j).X() < aMin)" EOL
-    "      {" EOL
-    "        aMin = aPoints1(j).X();" EOL
-    "        aIndex = j;" EOL
-    "      } " EOL
-    "    }" EOL
-    "    aPoints.Append(aPoints1(aIndex));" EOL
-    "    aPoints1.Remove(aIndex);" EOL
-    "    nbLeftNodes = aPoints1.Length();" EOL
-    "  }" EOL
-    "  aPoints.Append(aPntMax);" EOL
-    "" EOL
-    "  // define parameters GeomPlate_BuildPlateSurface" EOL
-    "  Standard_Integer Degree = 3;" EOL
-    "  Standard_Integer NbPtsOnCur = 10;" EOL
-    "  Standard_Integer NbIter = 3;" EOL
-    "  Standard_Integer Order = 0;" EOL
-    "  Standard_Integer MaxSeg = 9;" EOL
-    "  Standard_Integer MaxDegree = 5;" EOL
-    "  Standard_Real dmax, anApproxTol = 0.001;" EOL
-    "  Standard_Real aConstrTol = Precision::Confusion();" EOL
-    "  " EOL
-    "  // define object BuildPlateSurface" EOL
-    "  GeomPlate_BuildPlateSurface BPSurf(Degree,NbPtsOnCur,NbIter);" EOL
-    "  " EOL
-    "  // add point constraints to GeomPlate_BuildPlateSurface object" EOL
-    "  nbNodes = aPoints.Length();" EOL
-    "  for (i = 1; i <= nbNodes; i++)" EOL
-    "    BPSurf.Add(new GeomPlate_PointConstraint(aPoints(i), Order, aConstrTol));" EOL
-    "" EOL
-    "  BPSurf.Perform();" EOL
-    "" EOL
-    "  // make PlateSurface" EOL
-    "  Handle(GeomPlate_Surface) PSurf;" EOL
-    "  Handle(Geom_Surface) aSurf;" EOL
-    "  " EOL
-    "  if (BPSurf.IsDone())" EOL
-    "  {" EOL
-    "    PSurf = BPSurf.Surface();" EOL
-    "" EOL
-    "    // define parameter approximation" EOL
-    "    dmax = Max(0.01,10*BPSurf.G0Error());" EOL
-    "" EOL
-    "    // make approximation" EOL
-    "    GeomPlate_MakeApprox Mapp(PSurf,anApproxTol, MaxSeg,MaxDegree,dmax);" EOL
-    "    aSurf = Mapp.Surface();" EOL
-    "  }" EOL
-    "  else " EOL
-    "    return;" EOL
-    "" EOL
-    "  ShapeAnalysis_FreeBounds aFreeBounds(aShape, Standard_False, Standard_True);" EOL
-    "  TopoDS_Compound aClosedWires = aFreeBounds.GetClosedWires();" EOL
-    "  TopTools_IndexedMapOfShape aWires;" EOL
-    "  TopExp::MapShapes(aClosedWires, TopAbs_WIRE, aWires);" EOL
-    "  TopoDS_Wire aWire;" EOL
-    "  Standard_Integer nbWires = aWires.Extent();" EOL
-    "  if (nbWires) " EOL
-    "    aWire = TopoDS::Wire(aWires(1));" EOL
-    "  else " EOL
-    "    return;" EOL
-    "" EOL
-    "  BRep_Builder B;" EOL
-    "  TopoDS_Face aFace;" EOL
-    "  B.MakeFace(aFace, aSurf, Precision::Confusion());" EOL
-    "  B.Add(aFace, aWire);" EOL
-    "  Handle_ShapeFix_Shape sfs = new ShapeFix_Shape(aFace);" EOL
-    "  sfs->Perform();" EOL
-    "  TopoDS_Shape aFixedFace = sfs->Shape();" EOL
-    "  if (aFixedFace.IsNull()) " EOL
-    "    return;" EOL);
+    myCResultDialog.SetTitle("Simplify Face");
+    myCResultDialog.SetText("  TopoDS_Shape aShape;\n"
+    "\n"
+    "  // initialize aShape\n"
+    "  //aShape = ...\n"
+    "\n"
+    "  // define parameter triangulation\n"
+    "  Standard_Real aDeflection = 0.1;\n"
+    "  \n"
+    "  // removes all the triangulations of the faces ,\n"
+    "  //and all the polygons on the triangulations of the edges\n"
+    "  BRepTools::Clean(aShape);\n"
+    "  // adds a triangulation of the shape aShape with the deflection aDeflection\n"
+    "  BRepMesh::Mesh(aShape,aDeflection);\n"
+    "\n"
+    "  Standard_Integer aIndex = 1, nbNodes = 0;\n"
+    "  \n"
+    "  // define two sequence of points\n"
+    "  TColgp_SequenceOfPnt aPoints, aPoints1;\n"
+    " \n"
+    "  // triangulation\n"
+    "  for(TopExp_Explorer aExpFace(aShape,TopAbs_FACE); aExpFace.More(); aExpFace.Next())\n"
+    "  {  \n"
+    "    TopoDS_Face aFace = TopoDS::Face(aExpFace.Current());\n"
+    "    TopLoc_Location aLocation;\n"
+    "\n"
+    "    // takes the triangulation of the face aFace\n"
+    "    Handle_Poly_Triangulation aTr = BRep_Tool::Triangulation(aFace,aLocation);\n"
+    "\n"
+    "    if(!aTr.IsNull())\n"
+    "    { \n"
+    "      // takes the array of nodes for this triangulation\n"
+    "      const TColgp_Array1OfPnt& aNodes = aTr->Nodes();    \n"
+    "      nbNodes = aNodes.Length();\n"
+    "\n"
+    "      for( Standard_Integer i = 1; i <= nbNodes; i++)\n"
+    "      {\n"
+    "        // create seguence of node points in absolute coordinate system\n"
+    "        gp_Pnt aPnt = aNodes(i).Transformed(aLocation);\n"
+    "        aPoints.Append(aPnt);\n"
+    "        \n"
+    "      }\n"
+    "    }\n"
+    "  }\n"
+    " \n"
+    "  // remove double points\n"
+    "  nbNodes = aPoints.Length();\n"
+    "  for( Standard_Integer i = 1; i <= nbNodes; i++)\n"
+    "  {\n"
+    "    gp_Pnt aPi = aPoints(i);\n"
+    "    for( Standard_Integer j = i + 1; j < nbNodes; j++)\n"
+    "    {\n"
+    "      gp_Pnt aPj = aPoints(j);\n"
+    "      if(!aPi.IsEqual(aPj,0.9))\n"
+    "        aIndex++;\n"
+    "    }\n"
+    "    if(aIndex == j - 1)\n"
+    "      aPoints1.Append(aPi);\n"
+    "\n"
+    "    aIndex = i + 1;\n"
+    "  }\n"
+    "\n"
+    "  // find max point\n"
+    "  aIndex = 0;\n"
+    "  gp_Pnt aPntMax = aPoints1(1);\n"
+    "  nbNodes = aPoints1.Length();\n"
+    "  for(i = 2; i <= nbNodes; i++)\n"
+    "  {\n"
+    "    if(aPoints1(i).X() > aPntMax.X())\n"
+    "    {\n"
+    "      aIndex = i;\n"
+    "      aPntMax = aPoints1(aIndex);      \n"
+    "    } \n"
+    "  }\n"
+    "\n"
+    "  // clear seguence\n"
+    "  aPoints.Clear();\n"
+    "\n"
+    "  Standard_Integer nbLeftNodes = nbNodes;\n"
+    "\n"
+    "  // ascending sort - fill aPoints with ascending \n"
+    "  // by X coordinate points from aPoints1\n"
+    "  for(i = 1; i < nbNodes; i++)\n"
+    "  {\n"
+    "    Standard_Real aMin = aPntMax.X();\n"
+    "    aIndex = 1;\n"
+    "    for( Standard_Integer j = 1; j <= nbLeftNodes; j++)\n"
+    "    {\n"
+    "      if(aPoints1(j).X() < aMin)\n"
+    "      {\n"
+    "        aMin = aPoints1(j).X();\n"
+    "        aIndex = j;\n"
+    "      } \n"
+    "    }\n"
+    "    aPoints.Append(aPoints1(aIndex));\n"
+    "    aPoints1.Remove(aIndex);\n"
+    "    nbLeftNodes = aPoints1.Length();\n"
+    "  }\n"
+    "  aPoints.Append(aPntMax);\n"
+    "\n"
+    "  // define parameters GeomPlate_BuildPlateSurface\n"
+    "  Standard_Integer Degree = 3;\n"
+    "  Standard_Integer NbPtsOnCur = 10;\n"
+    "  Standard_Integer NbIter = 3;\n"
+    "  Standard_Integer Order = 0;\n"
+    "  Standard_Integer MaxSeg = 9;\n"
+    "  Standard_Integer MaxDegree = 5;\n"
+    "  Standard_Real dmax, anApproxTol = 0.001;\n"
+    "  Standard_Real aConstrTol = Precision::Confusion();\n"
+    "  \n"
+    "  // define object BuildPlateSurface\n"
+    "  GeomPlate_BuildPlateSurface BPSurf(Degree,NbPtsOnCur,NbIter);\n"
+    "  \n"
+    "  // add point constraints to GeomPlate_BuildPlateSurface object\n"
+    "  nbNodes = aPoints.Length();\n"
+    "  for (i = 1; i <= nbNodes; i++)\n"
+    "    BPSurf.Add(new GeomPlate_PointConstraint(aPoints(i), Order, aConstrTol));\n"
+    "\n"
+    "  BPSurf.Perform();\n"
+    "\n"
+    "  // make PlateSurface\n"
+    "  Handle(GeomPlate_Surface) PSurf;\n"
+    "  Handle(Geom_Surface) aSurf;\n"
+    "  \n"
+    "  if (BPSurf.IsDone())\n"
+    "  {\n"
+    "    PSurf = BPSurf.Surface();\n"
+    "\n"
+    "    // define parameter approximation\n"
+    "    dmax = Max(0.01,10*BPSurf.G0Error());\n"
+    "\n"
+    "    // make approximation\n"
+    "    GeomPlate_MakeApprox Mapp(PSurf,anApproxTol, MaxSeg,MaxDegree,dmax);\n"
+    "    aSurf = Mapp.Surface();\n"
+    "  }\n"
+    "  else \n"
+    "    return;\n"
+    "\n"
+    "  ShapeAnalysis_FreeBounds aFreeBounds(aShape, Standard_False, Standard_True);\n"
+    "  TopoDS_Compound aClosedWires = aFreeBounds.GetClosedWires();\n"
+    "  TopTools_IndexedMapOfShape aWires;\n"
+    "  TopExp::MapShapes(aClosedWires, TopAbs_WIRE, aWires);\n"
+    "  TopoDS_Wire aWire;\n"
+    "  Standard_Integer nbWires = aWires.Extent();\n"
+    "  if (nbWires) \n"
+    "    aWire = TopoDS::Wire(aWires(1));\n"
+    "  else \n"
+    "    return;\n"
+    "\n"
+    "  BRep_Builder B;\n"
+    "  TopoDS_Face aFace;\n"
+    "  B.MakeFace(aFace, aSurf, Precision::Confusion());\n"
+    "  B.Add(aFace, aWire);\n"
+    "  Handle_ShapeFix_Shape sfs = new ShapeFix_Shape(aFace);\n"
+    "  sfs->Perform();\n"
+    "  TopoDS_Shape aFixedFace = sfs->Shape();\n"
+    "  if (aFixedFace.IsNull()) \n"
+    "    return;\n");
 
     // define parameter triangulation
     Standard_Real aDeflection = 0.1;

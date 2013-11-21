@@ -105,7 +105,7 @@
       <AssemblerListingLocation>.\win32\objd/</AssemblerListingLocation>
       <ObjectFileName>.\win32\objd/</ObjectFileName>
       <ProgramDataBaseFileName>.\win32\objd/</ProgramDataBaseFileName>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
@@ -149,7 +149,7 @@
       <AssemblerListingLocation>.\win64\objd/</AssemblerListingLocation>
       <ObjectFileName>.\win64\objd/</ObjectFileName>
       <ProgramDataBaseFileName>.\win64\objd/</ProgramDataBaseFileName>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
@@ -195,7 +195,7 @@
       <AssemblerListingLocation>.\win32\obj/</AssemblerListingLocation>
       <ObjectFileName>.\win32\obj/</ObjectFileName>
       <ProgramDataBaseFileName>.\win32\obj/</ProgramDataBaseFileName>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
     </ClCompile>
@@ -239,7 +239,7 @@
       <AssemblerListingLocation>.\win64\obj/</AssemblerListingLocation>
       <ObjectFileName>.\win64\obj/</ObjectFileName>
       <ProgramDataBaseFileName>.\win64\obj/</ProgramDataBaseFileName>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
       <AdditionalOptions>/p:ResGenExecuteAsTool=true;ResGenToolArchitecture=ManagedIL;ResGenTrackerSdkPath="%programfiles(x86)%\Microsoft SDKs\Windows\v7.0A\bin\NETFX 4.0 Tools\win64" %(AdditionalOptions)</AdditionalOptions>

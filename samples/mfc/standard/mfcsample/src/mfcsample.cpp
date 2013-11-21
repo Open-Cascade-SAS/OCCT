@@ -47,5 +47,5 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 		// Terminate the library before destructors are called
 		AfxTermExtensionModule(mfcsampleDLL);
 	}
-	return 1;   // ok
+	return 1; // ok
 }

@@ -172,9 +172,9 @@ void Sample2D_Face::FillData(Standard_Boolean isSizesRecompute)
   }
 }
 
-void Sample2D_Face::Compute (  const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
+void Sample2D_Face::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePresentationManager*/,
                              const Handle(Prs3d_Presentation)& thePresentation,
-                             const Standard_Integer theMode)
+                             const Standard_Integer /*theMode*/)
 {
   thePresentation->Clear();
   myDrawer->SetWireDraw(1);
@@ -385,7 +385,7 @@ void Sample2D_Face::HilightOwnerWithColor ( const Handle(PrsMgr_PresentationMana
 
 //for auto select
 void Sample2D_Face::ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
-                                      const Standard_Integer theMode)
+                                      const Standard_Integer /*theMode*/)
 {
   if(myshape.IsNull()) 
     return;

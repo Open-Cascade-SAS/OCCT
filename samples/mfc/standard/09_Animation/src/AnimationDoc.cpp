@@ -205,9 +205,9 @@ void CAnimationDoc::DragEvent(const Standard_Integer  x        ,
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void CAnimationDoc::InputEvent(const Standard_Integer  x     ,
-				                   const Standard_Integer  y     ,
-                                   const Handle(V3d_View)& aView ) 
+void CAnimationDoc::InputEvent(const Standard_Integer  /*x*/,
+                               const Standard_Integer  /*y*/,
+                               const Handle(V3d_View)& /*aView*/ )
 {
     myAISContext->Select(); 
 }
@@ -257,19 +257,19 @@ void CAnimationDoc::ShiftDragEvent(const Standard_Integer  x        ,
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void CAnimationDoc::ShiftInputEvent(const Standard_Integer  x       ,
-									    const Standard_Integer  y       ,
-                                        const Handle(V3d_View)& aView   ) 
+void CAnimationDoc::ShiftInputEvent(const Standard_Integer  /*x*/,
+                                    const Standard_Integer  /*y*/,
+                                    const Handle(V3d_View)& /*aView*/)
 {
-	myAISContext->ShiftSelect(); 
+  myAISContext->ShiftSelect(); 
 }
 
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void  CAnimationDoc::Popup(const Standard_Integer  x,
-							   const Standard_Integer  y ,
-                               const Handle(V3d_View)& aView   ) 
+void  CAnimationDoc::Popup(const Standard_Integer  /*x*/,
+                           const Standard_Integer  /*y*/ ,
+                           const Handle(V3d_View)& /*aView*/)
 {
 }
 

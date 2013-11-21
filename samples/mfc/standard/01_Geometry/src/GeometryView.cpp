@@ -98,7 +98,7 @@ void CGeometryView::OnFileExportImage()
   SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 }
 
-void CGeometryView::OnSize(UINT nType, int cx, int cy) 
+void CGeometryView::OnSize(UINT /*nType*/, int /*cx*/, int /*cy*/)
 {
   if (!myView.IsNull())
     myView->MustBeResized();
@@ -213,7 +213,7 @@ void CGeometryView::OnLButtonUp(UINT nFlags, CPoint point)
   } //	else // if ( Ctrl )
 }
 
-void CGeometryView::OnMButtonDown(UINT nFlags, CPoint point) 
+void CGeometryView::OnMButtonDown(UINT nFlags, CPoint /*point*/) 
 {
   if ( nFlags & MK_CONTROL ) 
   {
@@ -222,7 +222,7 @@ void CGeometryView::OnMButtonDown(UINT nFlags, CPoint point)
   }
 }
 
-void CGeometryView::OnMButtonUp(UINT nFlags, CPoint point) 
+void CGeometryView::OnMButtonUp(UINT nFlags, CPoint /*point*/)
 {
   if ( nFlags & MK_CONTROL ) 
   {
@@ -248,7 +248,7 @@ void CGeometryView::OnRButtonDown(UINT nFlags, CPoint point)
   }
 }
 
-void CGeometryView::OnRButtonUp(UINT nFlags, CPoint point) 
+void CGeometryView::OnRButtonUp(UINT /*nFlags*/, CPoint /*point*/) 
 {
   SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
   myView->SetComputedMode (myHlrModeIsOn);
@@ -412,8 +412,8 @@ void CGeometryView::DragEvent(const Standard_Integer  x        ,
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void CGeometryView::InputEvent(const Standard_Integer  x     ,
-                               const Standard_Integer  y     ) 
+void CGeometryView::InputEvent(const Standard_Integer /*x*/,
+                               const Standard_Integer /*y*/)
 {
   GetDocument()->GetAISContext()->Select(); 
 }
@@ -421,8 +421,8 @@ void CGeometryView::InputEvent(const Standard_Integer  x     ,
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void CGeometryView::MoveEvent(const Standard_Integer  x       ,
-                              const Standard_Integer  y       ) 
+void CGeometryView::MoveEvent(const Standard_Integer x,
+                              const Standard_Integer y)
 {
   GetDocument()->GetAISContext()->MoveTo(x,y,myView);
 }
@@ -460,8 +460,8 @@ void CGeometryView::ShiftDragEvent(const Standard_Integer  x        ,
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void CGeometryView::ShiftInputEvent(const Standard_Integer  x       ,
-                                    const Standard_Integer  y       ) 
+void CGeometryView::ShiftInputEvent(const Standard_Integer /*x*/,
+                                    const Standard_Integer /*y*/)
 {
   GetDocument()->GetAISContext()->ShiftSelect(); 
 }

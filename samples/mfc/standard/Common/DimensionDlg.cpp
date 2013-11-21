@@ -399,7 +399,7 @@ void CDimensionDlg::OnBnClickedDimRadius()
 //purpose  : it is called when in Length tab control current tab was changed
 //=======================================================================
 
-void CDimensionDlg::OnTcnSelChangeLengthTab (NMHDR *pNMHDR, LRESULT *pResult)
+void CDimensionDlg::OnTcnSelChangeLengthTab (NMHDR * /*pNMHDR*/, LRESULT *pResult)
 {
   // Show this chosen tab page
   int aTabNum = ((CTabCtrl*) GetDlgItem (IDC_LengthTab))->GetCurSel();
@@ -420,7 +420,7 @@ void CDimensionDlg::OnTcnSelChangeLengthTab (NMHDR *pNMHDR, LRESULT *pResult)
 //           It is used to hide the current tab here to prevent collisions.
 //=======================================================================
 
-void CDimensionDlg::OnTcnSelChangingLengthTab (NMHDR *pNMHDR, LRESULT *pResult)
+void CDimensionDlg::OnTcnSelChangingLengthTab (NMHDR * /*pNMHDR*/, LRESULT *pResult)
 {
   // Hide current tab page
   int aTabNum =  ((CTabCtrl*) GetDlgItem (IDC_LengthTab))->GetCurSel();
@@ -438,7 +438,7 @@ void CDimensionDlg::OnTcnSelChangingLengthTab (NMHDR *pNMHDR, LRESULT *pResult)
 //purpose  : it is called when in Angle tab control current tab was changed
 //=======================================================================
 
-void CDimensionDlg::OnTcnSelChangeAngleTab (NMHDR *pNMHDR, LRESULT *pResult)
+void CDimensionDlg::OnTcnSelChangeAngleTab (NMHDR * /*pNMHDR*/, LRESULT *pResult)
 {
   int aTabNum = ((CTabCtrl*) GetDlgItem (IDC_AngleTab))->GetCurSel();
   TC_ITEM anItem;
@@ -458,7 +458,7 @@ void CDimensionDlg::OnTcnSelChangeAngleTab (NMHDR *pNMHDR, LRESULT *pResult)
 //           It is used to hide the current tab here to prevent collisions.
 //=======================================================================
 
-void CDimensionDlg::OnTcnSelChangingAngleTab (NMHDR *pNMHDR, LRESULT *pResult)
+void CDimensionDlg::OnTcnSelChangingAngleTab (NMHDR * /*pNMHDR*/, LRESULT *pResult)
 {
   int aTabNum = ((CTabCtrl*) GetDlgItem (IDC_AngleTab))->GetCurSel();
   TC_ITEM anItem;

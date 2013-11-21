@@ -31,7 +31,7 @@ ISession_Surface::~ISession_Surface()
 {
 
 }
-void ISession_Surface::Compute(const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
+void ISession_Surface::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
                              const Handle(Prs3d_Presentation)& aPresentation,
                              const Standard_Integer aMode)
 {
@@ -56,12 +56,12 @@ void ISession_Surface::Compute(const Handle(PrsMgr_PresentationManager3d)& aPres
 
 }
 
-void ISession_Surface::Compute(const Handle(Prs3d_Projector)& aProjector,
-                             const Handle(Prs3d_Presentation)& aPresentation) 
+void ISession_Surface::Compute(const Handle(Prs3d_Projector)& /*aProjector*/,
+                               const Handle(Prs3d_Presentation)& /*aPresentation*/) 
 {
 }
 
-void ISession_Surface::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
-				      const Standard_Integer aMode) 
+void ISession_Surface::ComputeSelection(const Handle(SelectMgr_Selection)& /*aSelection*/,
+				        const Standard_Integer /*aMode*/) 
 { 
 }

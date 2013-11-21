@@ -99,7 +99,7 @@ Standard_Boolean TOcafFunction_CutDriver::MustExecute(const TFunction_Logbook& l
 //         : 0 - no mistakes were found.
 //=======================================================================
 
-Standard_Integer TOcafFunction_CutDriver::Execute(TFunction_Logbook& log) const
+Standard_Integer TOcafFunction_CutDriver::Execute(TFunction_Logbook& /*log*/) const
 {
   // Let's get the arguments (OriginalNShape, ToolNShape of the object):
 

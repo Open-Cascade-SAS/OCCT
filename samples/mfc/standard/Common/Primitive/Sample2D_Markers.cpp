@@ -37,9 +37,9 @@ Sample2D_Markers::Sample2D_Markers (const Quantity_Length theXPosition ,
 }
 
 
-void Sample2D_Markers::Compute (  const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
-                  const Handle(Prs3d_Presentation)& aPresentation,
-                  const Standard_Integer aMode)
+void Sample2D_Markers::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
+                                const Handle(Prs3d_Presentation)& aPresentation,
+                                const Standard_Integer /*aMode*/)
 {
   if(myMarkerType == Aspect_TOM_USERDEFINED)
   {

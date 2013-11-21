@@ -504,9 +504,9 @@ void CViewer3dDoc::DragEvent(const Standard_Integer  x        ,
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void CViewer3dDoc::InputEvent(const Standard_Integer  x     ,
-				                   const Standard_Integer  y     ,
-                                   const Handle(V3d_View)& aView ) 
+void CViewer3dDoc::InputEvent(const Standard_Integer /*x*/,
+                              const Standard_Integer /*y*/,
+                              const Handle(V3d_View)& /*aView*/ )
 {
   if (myOffsetDlg && myOffsetDlg->IsWindowVisible())
     myOffsetDlg->UpdateValues();
@@ -560,7 +560,8 @@ void CViewer3dDoc::InputEvent(const Standard_Integer  x     ,
       }
     }
 
-    TCollection_AsciiString aMessage ("  TopoDS_Shape S = myAISContext->SelectedShape(); \n"
+    myCResultDialog.SetTitle("Change face color");
+    myCResultDialog.SetText("  TopoDS_Shape S = myAISContext->SelectedShape(); \n"
                                       "  \n"
                                       "  Handle(Geom_Surface) Surface = BRep_Tool::Surface(TopoDS::Face(S));"
                                       "  if (Surface->IsKind(STANDARD_TYPE(Geom_Plane))) \n"
@@ -579,11 +580,7 @@ void CViewer3dDoc::InputEvent(const Standard_Integer  x     ,
                                       "  Methods SetPlanarFaceColor and SetCylindricalFaceColor are also \n"
                                       "  defined in the User_Cylinder class. \n"
                                       "  \n");
-
-    CString aMsgStr (aMessage.ToCString());
-    myCResultDialog.SetTitle (CString ("Change face color"));
-    myCResultDialog.SetText (aMsgStr);
-    SetTitle (CString ("Change face color"));
+    SetTitle("Change face color");
   }
 }
 
@@ -716,15 +713,12 @@ void CViewer3dDoc::OnFaces()
   myAISContext->OpenLocalContext();
   myAISContext->ActivateStandardMode (TopAbs_FACE);
 
-  TCollection_AsciiString aMessage ("  myAISContext->OpenLocalContext(); \n"
+  myCResultDialog.SetTitle("Standard mode: TopAbs_FACE");
+  myCResultDialog.SetText("  myAISContext->OpenLocalContext(); \n"
                                     "  \n"
                                     "  myAISContext->ActivateStandardMode(TopAbs_FACE); \n"
                                     "  \n");
-
-  CString aMsgStr (aMessage.ToCString());
-  myCResultDialog.SetTitle (CString("Standard mode: TopAbs_FACE"));
-  myCResultDialog.SetText (aMsgStr);
-  SetTitle (CString ("Standard mode: TopAbs_FACE"));
+  SetTitle("Standard mode: TopAbs_FACE");
 }
 
 //Set edges selection mode
@@ -734,15 +728,12 @@ void CViewer3dDoc::OnEdges()
   myAISContext->OpenLocalContext();
   myAISContext->ActivateStandardMode(TopAbs_EDGE);
 
-  TCollection_AsciiString aMessage ("  myAISContext->OpenLocalContext(); \n"
+  myCResultDialog.SetTitle("Standard mode: TopAbs_EDGE");
+  myCResultDialog.SetText("  myAISContext->OpenLocalContext(); \n"
                                     "  \n"
                                     "  myAISContext->ActivateStandardMode(TopAbs_EDGE); \n"
                                     "  \n");
-
-  CString aMsgStr (aMessage.ToCString());
-  myCResultDialog.SetTitle (CString ("Standard mode: TopAbs_EDGE"));
-  myCResultDialog.SetText (aMsgStr);
-  SetTitle (CString ("Standard mode: TopAbs_EDGE"));
+  SetTitle("Standard mode: TopAbs_EDGE");
 }
 
 // Set vertices selection mode
@@ -752,15 +743,12 @@ void CViewer3dDoc::OnVertices()
   myAISContext->OpenLocalContext();
   myAISContext->ActivateStandardMode (TopAbs_VERTEX);
 
-  TCollection_AsciiString aMessage ("  myAISContext->OpenLocalContext(); \n"
+  myCResultDialog.SetTitle("Standard mode: TopAbs_VERTEX");
+  myCResultDialog.SetText("  myAISContext->OpenLocalContext(); \n"
                                     "  \n"
                                     "  myAISContext->ActivateStandardMode(TopAbs_VERTEX); \n"
                                     "  \n");
-
-  CString aMsgStr (aMessage.ToCString());
-  myCResultDialog.SetTitle (CString ("Standard mode: TopAbs_VERTEX"));
-  myCResultDialog.SetText (aMsgStr);
-  SetTitle (CString ("Standard mode: TopAbs_VERTEX"));
+  SetTitle("Standard mode: TopAbs_VERTEX");
 }
 
 //Neutral selection mode
@@ -768,13 +756,10 @@ void CViewer3dDoc::OnNeutral()
 {
   myAISContext->CloseAllContexts();
 
-  TCollection_AsciiString aMessage ("  myAISContext->CloseAllContexts(); \n"
+  myCResultDialog.SetTitle("Standard mode: Neutral");
+  myCResultDialog.SetText("  myAISContext->CloseAllContexts(); \n"
                                     "  \n");
-
-  CString aMsgStr (aMessage.ToCString());
-  myCResultDialog.SetTitle (CString ("Standard mode: Neutral"));
-  myCResultDialog.SetText (aMsgStr);
-  SetTitle (CString ("Standard mode: Neutral"));
+  SetTitle("Standard mode: Neutral");
 }
 
 // Change the color of faces on a user cylinder
@@ -854,7 +839,8 @@ void CViewer3dDoc::OnFillet3d()
     myAISContext->Redisplay (S);
   }
 
-  TCollection_AsciiString aMessage ("  Handle(AIS_Shape) S = Handle(AIS_Shape)::DownCast(myAISContext->Interactive()); \n"
+  myCResultDialog.SetTitle("Make a fillet");
+  myCResultDialog.SetText("  Handle(AIS_Shape) S = Handle(AIS_Shape)::DownCast(myAISContext->Interactive()); \n"
                                     "  \n"
                                     "  BRepAPI_MakeFillet aFillet(S->Shape()); \n"
                                     "  \n"
@@ -868,11 +854,7 @@ void CViewer3dDoc::OnFillet3d()
                                     "  \n"
                                     "  myAISContext->Redisplay(S); \n"
                                     "  \n");
-
-  CString aMsgStr (aMessage.ToCString());
-  myCResultDialog.SetTitle (CString ("Make a fillet"));
-  myCResultDialog.SetText (aMsgStr);
-  SetTitle (CString ("Make a fillet"));
+  SetTitle("Make a fillet");
 }
 
 // Create and display a circle with standard tools
@@ -888,17 +870,14 @@ void CViewer3dDoc::OnCircle()
   Handle(AIS_Circle) anAISCirc = new AIS_Circle(aGeomCircle);
   myAISContext->Display (anAISCirc);
 
-  TCollection_AsciiString aMessage ("  GC_MakeCircle C(gp_Pnt(-100.,-300.,0.),gp_Pnt(-50.,-200.,0.),gp_Pnt(-10.,-250.,0.)); \n"
+  myCResultDialog.SetTitle("Create a circle");
+  myCResultDialog.SetText("  GC_MakeCircle C(gp_Pnt(-100.,-300.,0.),gp_Pnt(-50.,-200.,0.),gp_Pnt(-10.,-250.,0.)); \n"
                                     "  \n"
                                     "  Handle(AIS_Circle) anAISCirc = new AIS_Circle(C.Value()); \n"
                                     "  \n"
                                     "  myAISContext->Display(anAISCirc); \n"
                                     "  \n");
-
-  CString aMsgStr (aMessage.ToCString());
-  myCResultDialog.SetTitle (CString ("Create a circle"));
-  myCResultDialog.SetText (aMsgStr);
-  SetTitle (CString ("Create a circle"));
+  SetTitle("Create a circle");
 }
 
 void CViewer3dDoc::OnLine() 
@@ -909,7 +888,8 @@ void CViewer3dDoc::OnLine()
   Handle(AIS_Line) anAISLine = new AIS_Line (aGeomLin);
   myAISContext->Display (anAISLine);
 
-  TCollection_AsciiString aMessage ("  gp_Lin L(gp_Pnt(0.,0.,0.),gp_Dir(1.,0.,0.)); \n"
+  myCResultDialog.SetTitle("Create a line");
+  myCResultDialog.SetText("  gp_Lin L(gp_Pnt(0.,0.,0.),gp_Dir(1.,0.,0.)); \n"
                                     "  \n"
                                     "  Handle(Geom_Line) aLine = new Geom_Line(L); \n"
                                     "  \n"
@@ -917,11 +897,7 @@ void CViewer3dDoc::OnLine()
                                     "  \n"
                                     "  myAISContext->Display(anAISLine); \n"
                                     "  \n");
-
-  CString aMsgStr (aMessage.ToCString());
-  myCResultDialog.SetTitle (CString("Create a line"));
-  myCResultDialog.SetText (aMsgStr);
-  SetTitle (CString ("Create a line"));
+  SetTitle("Create a line");
 }
 
 void CViewer3dDoc::OnNbisos() 
@@ -936,15 +912,12 @@ void CViewer3dDoc::OnNbisos()
     myAISContext->DefaultDrawer()->UIsoAspect()->SetNumber (aDlg.m_isou);
     myAISContext->DefaultDrawer()->VIsoAspect()->SetNumber (aDlg.m_isov);
 
-    TCollection_AsciiString aMessage ("  myAISContext->DefaultDrawer()->UIsoAspect()->SetNumber(dlg.m_isou); \n"
+    myCResultDialog.SetTitle("Iso Aspect");
+    myCResultDialog.SetText("  myAISContext->DefaultDrawer()->UIsoAspect()->SetNumber(dlg.m_isou); \n"
                                       "  \n"
                                       "  myAISContext->DefaultDrawer()->VIsoAspect()->SetNumber(dlg.m_isov); \n"
                                       "  \n");
-
-    CString aMsgStr (aMessage.ToCString());
-    myCResultDialog.SetTitle (CString("Iso Aspect"));
-    myCResultDialog.SetText (aMsgStr);
-    SetTitle (CString ("Iso Aspect"));
+    SetTitle("Iso Aspect");
   }
 }
 

@@ -214,8 +214,8 @@ void COffsetDlg::UpdateValues()
 	BOOL IsOverlappedBoxCurrent = aAISContext->IsCurrent(aOverlappedBox);
 
 
-	BOOL IsAnyOverlappedObjectCurrent = 
-		IsOverlappedCylinderCurrent || IsOverlappedSphereCurrent || IsOverlappedBoxCurrent;
+	/*BOOL IsAnyOverlappedObjectCurrent = 
+		IsOverlappedCylinderCurrent || IsOverlappedSphereCurrent || IsOverlappedBoxCurrent;*/
 
 
 	BOOL IsCylinderCurrent = aAISContext->IsCurrent(aCylinder);

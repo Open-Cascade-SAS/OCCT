@@ -117,41 +117,42 @@ int CImportExport::ReadBREP(const Handle_AIS_InteractiveContext& anInteractiveCo
 	return 0;
 }
 
-Handle(TopTools_HSequenceOfShape) CImportExport::ReadBREP(LPCTSTR  InitialDir /* = NULL*/) // not by reference --> the sequence is created here !!
+Handle(TopTools_HSequenceOfShape) CImportExport::ReadBREP(LPCTSTR  /*InitialDir*/ /* = NULL*/) // not by reference --> the sequence is created here !!
 {
   CFileDialog dlg(TRUE,
-				  NULL,
-				  NULL,
-				  OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-				  "BREP Files (*.brep , *.rle)|*.brep;  *.BREP; *.rle; *.RLE; |All Files (*.*)|*.*||", 
-				  NULL ); 
+		  NULL,
+		  NULL,
+		  OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
+		  "BREP Files (*.brep , *.rle)|*.brep;  *.BREP; *.rle; *.RLE; |All Files (*.*)|*.*||", 
+		  NULL ); 
 
-TCHAR tchBuf[80];
+  TCHAR tchBuf[80];
 
-CString CASROOTValue = ((GetEnvironmentVariable("CASROOT", tchBuf, 80) > 0) ? tchBuf : NULL); 
-CString initdir = (CASROOTValue + "\\..\\data\\occ");
+  CString CASROOTValue = ((GetEnvironmentVariable("CASROOT", tchBuf, 80) > 0) ? tchBuf : NULL); 
+  CString initdir = (CASROOTValue + "\\..\\data\\occ");
 
-dlg.m_ofn.lpstrInitialDir = initdir;
+  dlg.m_ofn.lpstrInitialDir = initdir;
 
   Handle(TopTools_HSequenceOfShape) aSequence= new TopTools_HSequenceOfShape();
 
   if (dlg.DoModal() == IDOK) 
   {
-	SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-	CString filename = dlg.GetPathName();
+    SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
+    CString filename = dlg.GetPathName();
     TopoDS_Shape aShape;
     Standard_CString aFileName = (Standard_CString)(LPCTSTR)filename;
-	Standard_Boolean result = ReadBREP(aFileName,aShape);
-	if (result)
+    Standard_Boolean result = ReadBREP(aFileName,aShape);
+    if (result)
     {
-	 	    if (!BRepAlgo::IsValid(aShape))
-	        MessageBox(AfxGetMainWnd()->m_hWnd,"Warning: The shape is not valid!","Cascade Warning",MB_ICONWARNING);
-		    aSequence->Append(aShape);
+      if (!BRepAlgo::IsValid(aShape))
+        MessageBox(AfxGetMainWnd()->m_hWnd,"Warning: The shape is not valid!","Cascade Warning",MB_ICONWARNING);
+
+      aSequence->Append(aShape);
     }
     else 
-	   MessageBox(AfxGetMainWnd()->m_hWnd,"Error: The file was not read","Cascade Error",MB_ICONERROR);
+      MessageBox(AfxGetMainWnd()->m_hWnd,"Error: The file was not read","Cascade Error",MB_ICONERROR);
 
-	SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
+    SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
   }
 
   return aSequence;
@@ -449,14 +450,15 @@ void CImportExport::SaveCSFDB(const Handle(AIS_InteractiveContext)& anInteractiv
 Standard_Boolean CImportExport::SaveCSFDB(const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape)
 {
   Standard_Boolean result = Standard_False; 
-	CFileSaveCSFDBDialog aDlg(NULL);
-	aDlg.m_TriangleMode = MgtBRep_WithTriangle;
-	if (aDlg.DoModal() == IDOK) {
+  CFileSaveCSFDBDialog aDlg(NULL);
+  aDlg.m_TriangleMode = MgtBRep_WithTriangle;
+  if (aDlg.DoModal() == IDOK) 
+  {
         SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT)); 
         CString filename = aDlg.GetPathName(); 
         Standard_CString aFileName = (Standard_CString)(LPCTSTR)filename;
         TCollection_AsciiString Message;
-		MgtBRep_TriangleMode selection = aDlg.m_TriangleMode;
+    //MgtBRep_TriangleMode selection = aDlg.m_TriangleMode;
         Standard_Boolean result = SaveCSFDB(aFileName,aHSequenceOfShape,Message);
 	    if (result)
         {
@@ -473,7 +475,7 @@ Standard_Boolean CImportExport::SaveCSFDB(const Handle(TopTools_HSequenceOfShape
 Standard_Boolean CImportExport::SaveCSFDB(const Standard_CString& aFileName,
                                           const Handle(TopTools_HSequenceOfShape)& aHSequenceOfShape,
                                           TCollection_AsciiString& ReturnMessage,// out parameter
-                                          MgtBRep_TriangleMode aTriangleMode /* = MgtBRep_WithTriangle */)
+                                          MgtBRep_TriangleMode /*aTriangleMode*/ /* = MgtBRep_WithTriangle */)
 {
 	Standard_Boolean ReturnValue = Standard_True;
     if (aHSequenceOfShape->Length() == 0)
@@ -763,7 +765,7 @@ IFSelect_ReturnStatus CImportExport::ReadSTEP(const Standard_CString& aFileName,
   Standard_Integer nbr = aReader.NbRootsForTransfer();
   aReader.PrintCheckTransfer (failsonly, IFSelect_ItemsByEntity);
   for ( Standard_Integer n = 1; n<=nbr; n++) {
-    Standard_Boolean ok = aReader.TransferRoot(n);
+    /*Standard_Boolean ok =*/ aReader.TransferRoot(n);
   }
 
   // Collecting resulting entities
@@ -833,7 +835,7 @@ IFSelect_ReturnStatus CImportExport::SaveSTEP(const Handle(TopTools_HSequenceOfS
         return IFSelect_RetError;
       }
 
-    IFSelect_ReturnStatus status;
+    IFSelect_ReturnStatus status = IFSelect_RetVoid;
 
 	CFileSaveSTEPDialog aDlg(NULL);
 

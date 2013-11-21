@@ -32,7 +32,7 @@ Standard_Boolean grid2surf(const CString  aCStringShapeName,
 {
     char tmp_char[256] ="";
     strcpy_s(tmp_char,aCStringShapeName);
-    int i = 0, len = strlen(tmp_char);
+    int i = 0, len = (int)strlen(tmp_char);
     while (i < len)
     {
         if (tmp_char[i] == '\\')
@@ -70,8 +70,8 @@ Handle(TColStd_HArray2OfReal) ReadRegularGrid(Standard_CString FileName,
       
       H = new TColStd_HArray2OfReal(C1, C2, R1, R2);
       
-      Standard_Real	FirstX;
-      Standard_Real	FirstY;
+      Standard_Real FirstX = 0.0;
+      Standard_Real FirstY = 0.0;
       
       for(R = R1; R <= R2; R++) 
 	{
@@ -125,7 +125,7 @@ Handle(TColStd_HArray2OfReal) ReadRegularGrid(const CString aCStringFileName,
 {
     char tmp_char[256] ="";
     strcpy_s(tmp_char,aCStringFileName);
-    int i = 0, len = strlen(tmp_char);
+    int i = 0, len = (int)strlen(tmp_char);
     while (i < len)
     {
         if (tmp_char[i] == '\\')

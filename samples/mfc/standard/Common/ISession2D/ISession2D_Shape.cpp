@@ -64,9 +64,9 @@ void ISession2D_Shape::BuildPolyAlgo()
   myPolyAlgo->Update();
 }
 
-void ISession2D_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
-			     const Handle(Prs3d_Presentation)& thePresentation,
-			     const Standard_Integer theMode) 
+void ISession2D_Shape::Compute(const Handle(PrsMgr_PresentationManager3d)& /*thePresentationManager*/,
+                               const Handle(Prs3d_Presentation)& thePresentation,
+                               const Standard_Integer theMode)
 {
   
   Standard_Integer aMode = theMode;
@@ -306,8 +306,8 @@ void ISession2D_Shape::DrawCompound(const Handle(Prs3d_Presentation)& thePresent
   StdPrs_WFDeflectionShape::Add(thePresentation,TopoDS_Shape(theCompound),myDrawer);
 }
 
-void ISession2D_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
-				      const Standard_Integer aMode) 
+void ISession2D_Shape::ComputeSelection(const Handle(SelectMgr_Selection)& /*aSelection*/,
+                                        const Standard_Integer /*aMode*/)
 {
 
 }

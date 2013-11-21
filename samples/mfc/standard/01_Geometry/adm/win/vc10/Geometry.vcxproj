@@ -103,7 +103,7 @@
       <AssemblerListingLocation>.\win32\obj/</AssemblerListingLocation>
       <ObjectFileName>.\win32\obj/</ObjectFileName>
       <ProgramDataBaseFileName>.\win32\obj/</ProgramDataBaseFileName>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
     </ClCompile>
@@ -146,7 +146,7 @@
       <AssemblerListingLocation>.\win64\obj/</AssemblerListingLocation>
       <ObjectFileName>.\win64\obj/</ObjectFileName>
       <ProgramDataBaseFileName>.\win64\obj/</ProgramDataBaseFileName>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
     </ClCompile>
@@ -188,7 +188,7 @@
       <ObjectFileName>.\win32\objd/</ObjectFileName>
       <ProgramDataBaseFileName>.\win32\objd/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
@@ -232,7 +232,7 @@
       <ObjectFileName>.\win64\objd/</ObjectFileName>
       <ProgramDataBaseFileName>.\win64\objd/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>

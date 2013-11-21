@@ -6,7 +6,12 @@
 # in the generated documentation.
 
 overview/overview.md
+
+../samples/mfc/standard/ReadMe.md
+../samples/CSharp/ReadMe.md
+
 tutorial/tutorial.md
+
 technical_overview/technical_overview.md
 
 user_guides/user_guides.md

@@ -52,7 +52,7 @@ Storage_Error FSD_Archive::IsGoodFileType(const TCollection_AsciiString&
 
   if (s == Storage_VSOk) {
     TCollection_AsciiString l;
-    Standard_Integer        len = strlen(FSD_Archive::MagicNumber());
+    Standard_Integer len = (int)strlen(FSD_Archive::MagicNumber());
 
     f.ReadChar(l,len);
 
@@ -851,7 +851,7 @@ Storage_Error FSD_Archive::BeginReadInfoSection()
   Storage_Error s;
 #ifdef WNT
   TCollection_AsciiString l;
-  Standard_Integer        len = strlen(FSD_Archive::MagicNumber());
+  Standard_Integer len = (int)strlen(FSD_Archive::MagicNumber());
 
   // first character is length of the magic number
   ReadChar(l,1);

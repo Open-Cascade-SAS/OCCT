@@ -42,7 +42,7 @@ void CResultDialog::Empty()
    pEd->SetWindowText("");
 }
 
-void CResultDialog::SetText(CString & aText)
+void CResultDialog::SetText(const CString & aText)
 {
    pEd = (CRichEditCtrl *) GetDlgItem (IDC_RICHEDIT_ResultDialog);
    pEd->SetWindowText(aText);
@@ -65,7 +65,7 @@ BOOL CResultDialog::OnInitDialog()
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CResultDialog::SetTitle(CString & aTitle)
+void CResultDialog::SetTitle(const CString & aTitle)
 {
   SetWindowText(aTitle);
 }

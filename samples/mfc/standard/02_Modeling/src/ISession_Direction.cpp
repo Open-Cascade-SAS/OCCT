@@ -21,20 +21,20 @@ IMPLEMENT_STANDARD_RTTIEXT(ISession_Direction,AIS_InteractiveObject)
 //////////////////////////////////////////////////////////////////////
 
 
-ISession_Direction::ISession_Direction(gp_Pnt& aPnt,gp_Pnt& aPnt2)
+ISession_Direction::ISession_Direction(const gp_Pnt& aPnt,const gp_Pnt& aPnt2)
 :myStartPnt(aPnt),myEndPnt(aPnt2)
 {}
 
-ISession_Direction::ISession_Direction(gp_Pnt& aPnt,gp_Vec& aVec)
+ISession_Direction::ISession_Direction(const gp_Pnt& aPnt,const gp_Vec& aVec)
 :myStartPnt(aPnt)
 {
   myEndPnt = myStartPnt.Translated(aVec);
 }
 
 
-void ISession_Direction::Compute(const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
-                             const Handle(Prs3d_Presentation)& aPresentation,
-                             const Standard_Integer aMode)
+void ISession_Direction::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
+                                 const Handle(Prs3d_Presentation)& aPresentation,
+                                 const Standard_Integer /*aMode*/)
 {
     Handle(Prs3d_ArrowAspect) anArrowAspect = myDrawer->ArrowAspect();
     anArrowAspect->SetLength(myStartPnt.Distance(myEndPnt));

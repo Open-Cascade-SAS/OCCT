@@ -29,9 +29,9 @@ ISession2D_Curve::ISession2D_Curve(const Handle_Geom2d_Curve aGeom2dCurve,
   myradiusratio = 1;
 }
 
-void ISession2D_Curve::Compute(const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
+void ISession2D_Curve::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
                                const Handle(Prs3d_Presentation)& aPresentation,
-                               const Standard_Integer aMode) 
+                               const Standard_Integer /*aMode*/) 
 {
 
   Geom2dAdaptor_Curve anAdaptor(myGeom2dCurve);
@@ -118,8 +118,8 @@ void ISession2D_Curve::Compute(const Handle(PrsMgr_PresentationManager3d)& aPres
   }
 }
 
-void ISession2D_Curve::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
-                                        const Standard_Integer aMode) 
+void ISession2D_Curve::ComputeSelection(const Handle(SelectMgr_Selection)& /*aSelection*/,
+                                        const Standard_Integer /*aMode*/) 
 { 
 }
 

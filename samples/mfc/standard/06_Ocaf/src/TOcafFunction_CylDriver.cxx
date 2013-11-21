@@ -81,7 +81,7 @@ Standard_Boolean TOcafFunction_CylDriver::MustExecute(const TFunction_Logbook& l
 //         : if there are no any mistakes occurred we return 0:
 //         : 0 - no mistakes were found.
 //=======================================================================
-Standard_Integer TOcafFunction_CylDriver::Execute(TFunction_Logbook& log) const
+Standard_Integer TOcafFunction_CylDriver::Execute(TFunction_Logbook& /*log*/) const
 {
 	// Get the values of dimension and position attributes 
 	Handle(TDataStd_Real) TSR;

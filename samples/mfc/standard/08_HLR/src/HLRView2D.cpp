@@ -79,9 +79,9 @@ void CHLRView2D::OnInitialUpdate()
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void CHLRView2D::DragEvent2D(const Standard_Integer  x        ,
-                            const Standard_Integer  y        ,
-                            const Standard_Integer  TheState )
+void CHLRView2D::DragEvent2D(const Standard_Integer /*x*/,
+                             const Standard_Integer /*y*/,
+                             const Standard_Integer /*TheState*/)
 {
 }
 
@@ -89,33 +89,33 @@ void CHLRView2D::DragEvent2D(const Standard_Integer  x        ,
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void CHLRView2D::InputEvent2D(const Standard_Integer  x     ,
-                              const Standard_Integer  y     ) 
+void CHLRView2D::InputEvent2D(const Standard_Integer /*x*/,
+                              const Standard_Integer /*y*/)
 {
 }
 
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void CHLRView2D::MoveEvent2D(const Standard_Integer  x       ,
-                            const Standard_Integer  y       ) 
+void CHLRView2D::MoveEvent2D(const Standard_Integer /*x*/,
+                             const Standard_Integer /*y*/)
 {
 }
 
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void CHLRView2D::MultiMoveEvent2D(const Standard_Integer  x       ,
-                                  const Standard_Integer  y      ) 
+void CHLRView2D::MultiMoveEvent2D(const Standard_Integer /*x*/,
+                                  const Standard_Integer /*y*/)
 {
 }
 
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void CHLRView2D::MultiDragEvent2D(const Standard_Integer  x        ,
-                                  const Standard_Integer  y        ,
-                                  const Standard_Integer  TheState) 
+void CHLRView2D::MultiDragEvent2D(const Standard_Integer /*x*/,
+                                  const Standard_Integer /*y*/,
+                                  const Standard_Integer /*TheState*/)
 {
 }
 
@@ -123,8 +123,8 @@ void CHLRView2D::MultiDragEvent2D(const Standard_Integer  x        ,
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void CHLRView2D::MultiInputEvent2D(const Standard_Integer  x       ,
-                                  const Standard_Integer  y       ) 
+void CHLRView2D::MultiInputEvent2D(const Standard_Integer /*x*/,
+                                   const Standard_Integer /*y*/)
 {
 }
 

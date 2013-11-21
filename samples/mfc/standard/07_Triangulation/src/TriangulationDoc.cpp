@@ -164,7 +164,7 @@ for (TopExp_Explorer ex(ShapeFused,TopAbs_FACE) ; ex.More(); ex.Next()) {
 
 	for (Standard_Integer i=1;i<=(facing->NbTriangles());i++) {
 		Poly_Triangle trian = tri.Value(i);
-		Standard_Integer index1,index2,index3,M,N;
+		Standard_Integer index1,index2,index3,M = 0, N = 0;
 		trian.Get(index1,index2,index3);
 	
 		for (Standard_Integer j=1;j<=3;j++) {
@@ -323,7 +323,7 @@ void CTriangulationDoc::OnFileNew()
 
 void CTriangulationDoc::InitViewButtons()
 {
-  POSITION pos = GetFirstViewPosition();
+  //POSITION pos = GetFirstViewPosition();
 /* LLS
   while (pos != NULL)
   {

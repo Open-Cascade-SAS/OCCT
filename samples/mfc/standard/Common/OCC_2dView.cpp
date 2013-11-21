@@ -89,7 +89,7 @@ BOOL OCC_2dView::PreCreateWindow(CREATESTRUCT& cs)
 /////////////////////////////////////////////////////////////////////////////
 // OCC_2dView drawing
 
-void OCC_2dView::OnDraw(CDC* pDC)
+void OCC_2dView::OnDraw(CDC* /*pDC*/)
 {
   if (!myV2dView.IsNull())
     myV2dView->Update();
@@ -382,7 +382,7 @@ void OCC_2dView::OnLButtonUp(UINT nFlags, CPoint point)
   } //	else // if ( CASCADESHORTCUTKEY )	
 }
 
-void OCC_2dView::OnMButtonDown(UINT nFlags, CPoint point) 
+void OCC_2dView::OnMButtonDown(UINT nFlags, CPoint /*point*/) 
 {
   if ( nFlags & CASCADESHORTCUTKEY ) 
   {
@@ -391,7 +391,7 @@ void OCC_2dView::OnMButtonDown(UINT nFlags, CPoint point)
   }
 }
 
-void OCC_2dView::OnMButtonUp(UINT nFlags, CPoint point) 
+void OCC_2dView::OnMButtonUp(UINT nFlags, CPoint /*point*/) 
 {
   if ( nFlags & CASCADESHORTCUTKEY ) 
   {
@@ -407,10 +407,18 @@ void OCC_2dView::OnRButtonDown(UINT nFlags, CPoint point)
 #endif
 }
 
-void OCC_2dView::OnRButtonUp(UINT nFlags, CPoint point) 
+void OCC_2dView::OnRButtonUp(UINT 
+#ifndef POPUPONBUTTONDOWN
+                             nFlags
+#endif
+                             , CPoint 
+#ifndef POPUPONBUTTONDOWN
+                             point
+#endif
+                             )
 {
 #ifndef POPUPONBUTTONDOWN
-   if ( !(nFlags & CASCADESHORTCUTKEY) ) 
+   if ( !(nFlags & CASCADESHORTCUTKEY) )
     Popup2D(point.x,point.y);
 #endif
 }
@@ -495,7 +503,7 @@ void OCC_2dView::OnMouseMove(UINT nFlags, CPoint point)
 }
 
 
-void OCC_2dView::OnSize(UINT nType, int cx, int cy) 
+void OCC_2dView::OnSize(UINT /*nType*/, int /*cx*/, int /*cy*/) 
 {
   // Take care : This fonction is call before OnInitialUpdate
   if (!myV2dView.IsNull())
@@ -599,7 +607,7 @@ void OCC_2dView::DrawRectangle2D(const Standard_Integer  MinX,
   else if (aLineStyle == Default) 
   { m_Pen = NULL;	m_DrawMode = R2_MERGEPENNOT;}
 
-  CPen* aOldPen;
+  CPen* aOldPen = NULL;
   CClientDC clientDC(this);
   if (m_Pen) aOldPen = clientDC.SelectObject(m_Pen);
   clientDC.SetROP2(m_DrawMode);
@@ -671,8 +679,8 @@ void OCC_2dView::DragEvent2D(const Standard_Integer  x,
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void OCC_2dView::InputEvent2D(const Standard_Integer  x     ,
-                              const Standard_Integer  y     ) 
+void OCC_2dView::InputEvent2D(const Standard_Integer /*x*/,
+                              const Standard_Integer /*y*/)
 {
   ((OCC_2dDoc*)GetDocument())->GetInteractiveContext()->Select(true);
 }
@@ -735,8 +743,8 @@ void OCC_2dView::MultiDragEvent2D(const Standard_Integer  x        ,
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void OCC_2dView::MultiInputEvent2D(const Standard_Integer  x       ,
-                                  const Standard_Integer  y       ) 
+void OCC_2dView::MultiInputEvent2D(const Standard_Integer /*x*/,
+                                   const Standard_Integer /*y*/)
 {
   ((OCC_2dDoc*)GetDocument())->GetInteractiveContext()->ShiftSelect(true);
 }

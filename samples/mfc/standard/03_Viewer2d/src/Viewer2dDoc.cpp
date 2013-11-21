@@ -249,7 +249,8 @@ void CViewer2dDoc::OnBUTTONTestFace()
 
     TopoDS_Shape aFaceShape;
     BRep_Builder aBuilder;
-    Standard_Boolean result = BRepTools::Read(aFaceShape,aFileName,aBuilder);
+    //Standard_Boolean result = BRepTools::Read(aFaceShape,aFileName,aBuilder);
+    BRepTools::Read(aFaceShape,aFileName,aBuilder);
 
     if(aFaceShape.IsNull() || aFaceShape.ShapeType() != TopAbs_FACE) 
     {

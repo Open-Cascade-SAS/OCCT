@@ -108,10 +108,10 @@ void CModelingDoc::OnMirror()
 	for(aListIterator.Initialize(aList);aListIterator.More();aListIterator.Next()){
 		myAISContext->Remove(aListIterator.Value());
 	}
-	TopoDS_Shape S = BRepPrimAPI_MakeWedge(60.,100.,80.,20.); 
+	TopoDS_Shape S = BRepPrimAPI_MakeWedge(60.,100.,80.,20.);
 	Handle(AIS_Shape) ais1 = new AIS_Shape(S);
-	myAISContext->SetColor(ais1,Quantity_NOC_GREEN,Standard_False); 
-	myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);   
+	myAISContext->SetColor(ais1,Quantity_NOC_GREEN,Standard_False);
+	myAISContext->SetMaterial(ais1,Graphic3d_NOM_PLASTIC,Standard_False);
 	myAISContext->Display(ais1,Standard_False);
 	gp_Trsf theTransformation;
 	gp_Pnt PntCenterOfTheTransformation(110,60,60);
@@ -277,7 +277,7 @@ void CModelingDoc::OnTranslation()
 	myAISContext->Display(ais1,Standard_False);
 	gp_Trsf theTransformation;
 	gp_Vec theVectorOfTranslation(-6,-6,6);
- 
+
 	Handle (ISession_Direction) aDirection1 = new ISession_Direction(gp_Pnt(0,0,0),theVectorOfTranslation);
 	myAISContext->Display(aDirection1,Standard_False);
 
@@ -3651,7 +3651,7 @@ void CModelingDoc::OnBuilder()
 
 	//Circular Edges
 	Handle (Geom_Circle) C;
-	Standard_Real R = 100;
+	//Standard_Real R = 100;
 
 	//Edge EX01
 	C = new Geom_Circle(gp_Ax2(gp_Pnt(100,0,100),gp_Dir(0,1,0),gp_Dir(-1,0,0)),100);
@@ -4810,9 +4810,9 @@ Please, select a face to continue\nthe creation of a tangent surface.");
 	}
 }
 
-void CModelingDoc::InputEvent(const Standard_Integer  x     ,
-					          const Standard_Integer  y     ,
-                              const Handle(V3d_View)& aView ) 
+void CModelingDoc::InputEvent(const Standard_Integer /*x*/,
+                              const Standard_Integer /*y*/,
+                              const Handle(V3d_View)& /*aView*/)
 {
     myAISContext->Select();
 	if (myState == SELECT_EDGE_PLATE_TGTES_1) {

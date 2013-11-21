@@ -21,8 +21,8 @@ class Standard_EXPORT CResultDialog : public CDialog
 
 public:
 	CResultDialog(CWnd* pParent = NULL);
-	void SetTitle(CString& aTitle);
-	void SetText(CString& aText);
+	void SetTitle(const CString& aTitle);
+	void SetText(const CString& aText);
 	void GetText(CString& aText);
 	void Empty();
 

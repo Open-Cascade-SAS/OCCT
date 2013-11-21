@@ -114,7 +114,7 @@ BOOL CAnimationView3D::PreCreateWindow(CREATESTRUCT& cs)
 /////////////////////////////////////////////////////////////////////////////
 // CAnimationView3D drawing
 
-void CAnimationView3D::OnDraw(CDC* pDC)
+void CAnimationView3D::OnDraw(CDC* /*pDC*/)
 {
 	CAnimationDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
@@ -245,7 +245,7 @@ void CAnimationView3D::OnFileExportImage()
   SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
 }
 
-void CAnimationView3D::OnSize(UINT nType, int cx, int cy) 
+void CAnimationView3D::OnSize(UINT /*nType*/, int cx, int cy) 
 {
 	m_cx = cx ;
 	m_cy = cy ;
@@ -449,7 +449,7 @@ void CAnimationView3D::OnLButtonUp(UINT nFlags, CPoint point)
     } //	else // if ( Ctrl )
 }
 
-void CAnimationView3D::OnMButtonDown(UINT nFlags, CPoint point) 
+void CAnimationView3D::OnMButtonDown(UINT nFlags, CPoint /*point*/) 
 {
    if ( nFlags & MK_CONTROL ) 
 	  {
@@ -458,7 +458,7 @@ void CAnimationView3D::OnMButtonDown(UINT nFlags, CPoint point)
 	  }
 }
 
-void CAnimationView3D::OnMButtonUp(UINT nFlags, CPoint point) 
+void CAnimationView3D::OnMButtonUp(UINT nFlags, CPoint /*point*/) 
 {
    if ( nFlags & MK_CONTROL ) 
 	  {
@@ -484,7 +484,7 @@ void CAnimationView3D::OnRButtonDown(UINT nFlags, CPoint point)
   }
 }
 
-void CAnimationView3D::OnRButtonUp(UINT nFlags, CPoint point) 
+void CAnimationView3D::OnRButtonUp(UINT /*nFlags*/, CPoint /*point*/) 
 {
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
     myView->SetComputedMode (myHlrModeIsOn);
@@ -682,7 +682,7 @@ void CAnimationView3D::DrawRectangle(const Standard_Integer  MinX    ,
     else if (aLineStyle == Default) 
         { m_Pen = NULL;	m_DrawMode = R2_MERGEPENNOT;}
 
-    CPen* aOldPen;
+    CPen* aOldPen = NULL;
     CClientDC clientDC(this);
     if (m_Pen) aOldPen = clientDC.SelectObject(m_Pen);
     clientDC.SetROP2(m_DrawMode);
@@ -792,7 +792,7 @@ void CAnimationView3D::OnSensitivity()
 	}
 }
 
-void CAnimationView3D::Fly (int x , int y)
+void CAnimationView3D::Fly (int /*x*/ , int y)
 {
 	double v [3] ;
 	double l ;
@@ -824,7 +824,7 @@ void CAnimationView3D::Fly (int x , int y)
 
 /* Rotation */
 
-void CAnimationView3D::Turn (int x , int y)
+void CAnimationView3D::Turn (int x , int /*y*/)
 {
 	gp_Vec z (0.,0.,1.) ;
 
@@ -859,7 +859,7 @@ void CAnimationView3D::Turn (int x , int y)
 	m_Atz = m_Eyez + aZ ;
 }
 
-void CAnimationView3D::Roll (int x , int y)
+void CAnimationView3D::Roll (int x , int /*y*/)
 {
 	gp_Vec z (0.,0.,1.) ;
 
@@ -893,7 +893,7 @@ void CAnimationView3D::Roll (int x , int y)
 	m_Atz = m_Eyez + aZ ;
 }
 
-void CAnimationView3D::Twist (int x , int y)
+void CAnimationView3D::Twist (int x , int /*y*/)
 {
 	double sens ;
 	double a ;

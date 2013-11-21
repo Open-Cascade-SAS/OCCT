@@ -168,9 +168,9 @@ void OCC_3dBaseDoc::ShiftDragEvent (const Standard_Integer theMouseX,
 //-----------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------
-void OCC_3dBaseDoc::ShiftInputEvent (const Standard_Integer theMouseX,
-                                     const Standard_Integer theMouseY,
-                                     const Handle(V3d_View)& theView)
+void OCC_3dBaseDoc::ShiftInputEvent (const Standard_Integer /*theMouseX*/,
+                                     const Standard_Integer /*theMouseY*/,
+                                     const Handle(V3d_View)& /*theView*/)
 {
   myAISContext->ShiftSelect();
 }
@@ -322,9 +322,9 @@ void OCC_3dBaseDoc::OnObjectMaterial()
 {
   CDialogMaterial DialBox(myAISContext);
   DialBox.DoModal();
-  CMDIFrameWnd *pFrame =  (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
-  CMDIChildWnd *pChild =  (CMDIChildWnd *) pFrame->GetActiveFrame();
-  OCC_3dView *pView = (OCC_3dView *) pChild->GetActiveView();
+  //CMDIFrameWnd *pFrame =  (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
+  //CMDIChildWnd *pChild =  (CMDIChildWnd *) pFrame->GetActiveFrame();
+  //OCC_3dView *pView = (OCC_3dView *) pChild->GetActiveView();
 }
 
 void OCC_3dBaseDoc::OnUpdateObjectMaterial(CCmdUI* pCmdUI) 
@@ -366,9 +366,9 @@ void OCC_3dBaseDoc::OnObjectTransparency()
 {
 	CDialogTransparency DialBox(myAISContext);
 	DialBox.DoModal();
-	CMDIFrameWnd *pFrame =  (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
-	CMDIChildWnd *pChild =  (CMDIChildWnd *) pFrame->GetActiveFrame();
-	OCC_3dView *pView = (OCC_3dView *) pChild->GetActiveView();
+	//CMDIFrameWnd *pFrame =  (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
+	//CMDIChildWnd *pChild =  (CMDIChildWnd *) pFrame->GetActiveFrame();
+	//OCC_3dView *pView = (OCC_3dView *) pChild->GetActiveView();
 //	pView->Redraw();
 }
 
@@ -429,7 +429,7 @@ void OCC_3dBaseDoc::OnObjectAddDimensions()
   myDimensionDlg.UpdateStandardMode ();
 }
 
-void OCC_3dBaseDoc::OnUpdateObjectAddDimensions(CCmdUI* pCmdUI) 
+void OCC_3dBaseDoc::OnUpdateObjectAddDimensions(CCmdUI* /*pCmdUI*/) 
 {
   // Check if local context is opened
   //pCmdUI->Enable (myAISContext->HasOpenedContext());

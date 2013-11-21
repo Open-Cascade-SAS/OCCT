@@ -37,15 +37,15 @@ DEFINE_STANDARD_RTTI(Sample2D_Markers)
 
 private: 
 
-virtual void Compute (  const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
-                  const Handle(Prs3d_Presentation)& aPresentation,
-                  const Standard_Integer aMode);
+virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
+                      const Handle(Prs3d_Presentation)& /*aPresentation*/,
+                      const Standard_Integer /*aMode*/);
 
-virtual void ComputeSelection (const Handle(SelectMgr_Selection)& aSelection,
-                           const Standard_Integer aMode){} ;
+virtual void ComputeSelection (const Handle(SelectMgr_Selection)& /*aSelection*/,
+                               const Standard_Integer /*aMode*/) {}
 
 
-Standard_EXPORT virtual void SetContext(const Handle(AIS_InteractiveContext)& theContext){};
+Standard_EXPORT virtual void SetContext(const Handle(AIS_InteractiveContext)& /*theContext*/) {}
 
 
 

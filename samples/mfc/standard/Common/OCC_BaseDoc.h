@@ -24,35 +24,35 @@ public:
   Handle(V3d_Viewer) GetViewer()  { return myViewer; }
 
   //Events
-  virtual void DragEvent (const Standard_Integer theMouseX,
-                          const Standard_Integer theMouseY,
-                          const Standard_Integer theState,
-                          const Handle(V3d_View)& theView) {}
+  virtual void DragEvent (const Standard_Integer /*theMouseX*/,
+                          const Standard_Integer /*theMouseY*/,
+                          const Standard_Integer /*theState*/,
+                          const Handle(V3d_View)& /*theView*/) {}
 
-  virtual void InputEvent (const Standard_Integer theMouseX,
-                           const Standard_Integer theMouseY,
-                           const Handle(V3d_View)& theView) {}
+  virtual void InputEvent (const Standard_Integer /*theMouseX*/,
+                           const Standard_Integer /*theMouseY*/,
+                           const Handle(V3d_View)& /*theView*/) {}
 
-  virtual void MoveEvent (const Standard_Integer theMouseX,
-                          const Standard_Integer theMouseY,
-                          const Handle(V3d_View)& theView) {}
+  virtual void MoveEvent (const Standard_Integer /*theMouseX*/,
+                          const Standard_Integer /*theMouseY*/,
+                          const Handle(V3d_View)& /*theView*/) {}
 
-  virtual void ShiftMoveEvent (const Standard_Integer theMouseX,
-                               const Standard_Integer theMouseY,
-                               const Handle(V3d_View)& theView) {}
+  virtual void ShiftMoveEvent (const Standard_Integer /*theMouseX*/,
+                               const Standard_Integer /*theMouseY*/,
+                               const Handle(V3d_View)& /*theView*/) {}
 
-  virtual void ShiftDragEvent (const Standard_Integer theMouseX,
-                               const Standard_Integer theMouseY,
-                               const Standard_Integer theState,
-                               const Handle(V3d_View)& theView) {}
+  virtual void ShiftDragEvent (const Standard_Integer /*theMouseX*/,
+                               const Standard_Integer /*theMouseY*/,
+                               const Standard_Integer /*theState*/,
+                               const Handle(V3d_View)& /*theView*/) {}
 
-  virtual void ShiftInputEvent(const Standard_Integer theMouseX,
-                               const Standard_Integer theMouseY,
-                               const Handle(V3d_View)& theView) {}
+  virtual void ShiftInputEvent(const Standard_Integer /*theMouseX*/,
+                               const Standard_Integer /*theMouseY*/,
+                               const Handle(V3d_View)& /*theView*/) {}
 
-  virtual void Popup (const Standard_Integer theMouseX,
-                      const Standard_Integer theMouseY,
-                      const Handle(V3d_View)& theView) {}
+  virtual void Popup (const Standard_Integer /*theMouseX*/,
+                      const Standard_Integer /*theMouseY*/,
+                      const Handle(V3d_View)& /*theView*/) {}
 protected:
 
   Handle(V3d_Viewer) myViewer;

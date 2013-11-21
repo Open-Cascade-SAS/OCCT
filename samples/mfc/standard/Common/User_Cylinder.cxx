@@ -54,7 +54,7 @@ AIS_InteractiveObject(PrsMgr_TOP_ProjectorDependant)
   myCylindricalFaceColor = Quantity_NOC_KHAKI4;
 }
 
-void User_Cylinder::Compute(const Handle_PrsMgr_PresentationManager3d& aPresentationManager,
+void User_Cylinder::Compute(const Handle_PrsMgr_PresentationManager3d& /*aPresentationManager*/,
                             const Handle_Prs3d_Presentation& aPresentation,
                             const Standard_Integer aMode ) 
 {
@@ -238,7 +238,7 @@ case 6: //color
       BAR = GProp_PGProps::Barycentre(Nodes);
 
 
-      const TColgp_Array1OfPnt2d& UVNodes = myT->UVNodes();
+      //const TColgp_Array1OfPnt2d& UVNodes = myT->UVNodes();
       const Poly_Array1OfTriangle& triangles = myT->Triangles();
       TColgp_Array1OfDir myNormal(Nodes.Lower(), Nodes.Upper());
 
@@ -388,7 +388,7 @@ Quantity_Color User_Cylinder::Color(gp_Pnt& thePoint,Standard_Real AltMin,Standa
       AltDelta = AltMax-AltMin;
 
       red = 0.5- ((0.5*(AltMax-Alt))/(AltDelta));
-      Standard_Real A = 7*Alt-7*AltMin;
+      //Standard_Real A = 7*Alt-7*AltMin;
       green = (3*AltMax-AltMin)/(3*AltMax-AltMin+(7*Alt-7*AltMin));
       blue = 0 ;
 

@@ -21,8 +21,8 @@ class ISession_Direction : public AIS_InteractiveObject
 {
 public:
 	ISession_Direction();
-    ISession_Direction(gp_Pnt& aPnt,gp_Pnt& aPnt2);
-    ISession_Direction(gp_Pnt& aPnt,gp_Vec& aVec);
+    ISession_Direction(const gp_Pnt& aPnt,const gp_Pnt& aPnt2);
+    ISession_Direction(const gp_Pnt& aPnt,const gp_Vec& aVec);
 
     DEFINE_STANDARD_RTTI(ISession_Direction)
 

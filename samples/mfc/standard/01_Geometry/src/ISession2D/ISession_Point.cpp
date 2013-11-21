@@ -24,13 +24,13 @@ ISession_Point::ISession_Point(Standard_Real X,Standard_Real Y ,Standard_Real Z)
 
 }
 
-ISession_Point::ISession_Point(gp_Pnt2d& aPoint,Standard_Real Elevation)
+ISession_Point::ISession_Point(const gp_Pnt2d& aPoint,Standard_Real Elevation)
 :myPoint(gp_Pnt(aPoint.X(),aPoint.Y(),Elevation))
 {
 
 }
 
-ISession_Point::ISession_Point(gp_Pnt& aPoint)
+ISession_Point::ISession_Point(const gp_Pnt& aPoint)
 :myPoint(aPoint)
 {
 
@@ -41,9 +41,9 @@ ISession_Point::~ISession_Point()
 
 }
 
-void ISession_Point::Compute(const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
+void ISession_Point::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
                              const Handle(Prs3d_Presentation)& aPresentation,
-                             const Standard_Integer aMode)
+                             const Standard_Integer /*aMode*/)
 {
     Handle(Geom_CartesianPoint) aGeomPoint = new Geom_CartesianPoint(myPoint);
 
@@ -51,13 +51,13 @@ void ISession_Point::Compute(const Handle(PrsMgr_PresentationManager3d)& aPresen
  }
 
 
-void ISession_Point::Compute(const Handle(Prs3d_Projector)& aProjector,
-                             const Handle(Prs3d_Presentation)& aPresentation) 
+void ISession_Point::Compute(const Handle(Prs3d_Projector)& /*aProjector*/,
+                             const Handle(Prs3d_Presentation)& /*aPresentation*/) 
  {
  }
 
-void ISession_Point::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection, 
-				      const Standard_Integer unMode)
+void ISession_Point::ComputeSelection(const Handle(SelectMgr_Selection)& /*aSelection*/, 
+				      const Standard_Integer /*unMode*/)
 {
 }
 

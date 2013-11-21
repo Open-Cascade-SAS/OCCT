@@ -79,14 +79,14 @@ private:
   static  void PreProcess (CGeometryDoc* aDoc,DisplayType aDisplayType);
   static void PostProcess(CGeometryDoc* aDoc,UINT anID,DisplayType aDisplayType,const char* aString="",Quantity_Coefficient Coef = -1/*double zoom =-1*/);
   static void DisplayPoint(CGeometryDoc* aDoc,
-    gp_Pnt2d& aPoint,
+    const gp_Pnt2d& aPoint,
     const char* aText,
     Standard_Boolean UpdateViewer = Standard_False,
     Standard_Real anXoffset =0,
     Standard_Real anYoffset =0,
     Standard_Real TextScale = 0.05);
   static void DisplayPoint(CGeometryDoc* aDoc,
-    gp_Pnt& aPoint,
+    const gp_Pnt& aPoint,
     const char* aText,
     Standard_Boolean UpdateViewer = Standard_False,
     Standard_Real anXoffset = 0,

@@ -25,24 +25,24 @@ ISession_Direction::ISession_Direction()
 
 }
 
-ISession_Direction::ISession_Direction(gp_Pnt& aPnt,gp_Dir&   aDir,Standard_Real aLength,Standard_Real anArrowLength)
+ISession_Direction::ISession_Direction(const gp_Pnt& aPnt,const gp_Dir&   aDir,Standard_Real aLength,Standard_Real anArrowLength)
 :myPnt(aPnt),myDir(aDir),myLength(aLength),myArrowLength(anArrowLength)
 {}
 
-ISession_Direction::ISession_Direction(gp_Pnt& aPnt,gp_Vec&   aVec,Standard_Real anArrowLength)
+ISession_Direction::ISession_Direction(const gp_Pnt& aPnt,const gp_Vec&   aVec,Standard_Real anArrowLength)
 :myPnt(aPnt),myDir(aVec),myArrowLength(anArrowLength)
 {
   myLength = aVec.Magnitude();
 }
 
-ISession_Direction::ISession_Direction(gp_Pnt2d& aPnt2d,
-                                       gp_Dir2d& aDir2d,
+ISession_Direction::ISession_Direction(const gp_Pnt2d& aPnt2d,
+                                       const gp_Dir2d& aDir2d,
                                        Standard_Real aLength)
 :myPnt(gp_Pnt(aPnt2d.X(),aPnt2d.Y(),0)),myDir(gp_Dir(aDir2d.X(),aDir2d.Y(),0)),myLength(aLength)
 {}
 
-ISession_Direction::ISession_Direction(gp_Pnt2d& aPnt2d,
-                                       gp_Vec2d&   aVec2d)
+ISession_Direction::ISession_Direction(const gp_Pnt2d& aPnt2d,
+                                       const gp_Vec2d&   aVec2d)
 :myPnt(gp_Pnt(aPnt2d.X(),aPnt2d.Y(),0)),myDir(gp_Dir(aVec2d.X(),aVec2d.Y(),0))
 {
   myLength = aVec2d.Magnitude();
@@ -54,9 +54,9 @@ ISession_Direction::~ISession_Direction()
 
 }
 
-void ISession_Direction::Compute(const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
+void ISession_Direction::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
                              const Handle(Prs3d_Presentation)& aPresentation,
-                             const Standard_Integer aMode)
+                             const Standard_Integer /*aMode*/)
 {
     Handle(Prs3d_ArrowAspect) anArrowAspect = myDrawer->ArrowAspect();
     anArrowAspect->SetLength(myArrowLength);
@@ -76,17 +76,22 @@ void ISession_Direction::Compute(const Handle(PrsMgr_PresentationManager3d)& aPr
 }
 
 
-void ISession_Direction::Compute(const Handle(Prs3d_Projector)& aProjector,
-                             const Handle(Prs3d_Presentation)& aPresentation) 
+void ISession_Direction::Compute(const Handle(Prs3d_Projector)& /*aProjector*/,
+                                 const Handle(Prs3d_Presentation)& /*aPresentation*/) 
  {
  }
 
-void ISession_Direction::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
-				      const Standard_Integer aMode) 
+void ISession_Direction::ComputeSelection(const Handle(SelectMgr_Selection)& /*aSelection*/,
+				          const Standard_Integer /*aMode*/) 
 { 
 }
 
 void ISession_Direction::SetText(TCollection_ExtendedString & aText)
+{
+    myText = aText;
+}
+
+void ISession_Direction::SetText(Standard_CString aText)
 {
     myText = aText;
 }

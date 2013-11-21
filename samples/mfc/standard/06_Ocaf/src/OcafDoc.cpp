@@ -95,8 +95,8 @@ COcafDoc::~COcafDoc()
  //  Setting the number of memorized undos \n\
  myOcafDoc->SetUndoLimit(10); \n\
  \n");
- 
- 	myCResultDialog.SetTitle(CString("New document"));
+
+  myCResultDialog.SetTitle("New document");
  	CString text(Message.ToCString());
  	myCResultDialog.SetText(text);
  
@@ -158,7 +158,7 @@ myOcafDoc->CommitCommand(); \n\
  \n\
 \n");
 
-	myCResultDialog.SetTitle(CString("Redo"));
+	myCResultDialog.SetTitle("Redo");
 	CString text(Message.ToCString());
 	myCResultDialog.SetText(text);
 }
@@ -180,7 +180,7 @@ myOcafDoc->CommitCommand(); \n\
  \n\
 \n");
 
-	myCResultDialog.SetTitle(CString("Undo"));
+	myCResultDialog.SetTitle("Undo");
 	CString text(Message.ToCString());
 	myCResultDialog.SetText(text);
 }
@@ -252,7 +252,7 @@ prs->Display(1); \n\
 D->CommitCommand(); \n\
 \n");
 
-	myCResultDialog.SetTitle(CString("Create box"));
+	myCResultDialog.SetTitle("Create box");
 	CString text(Message.ToCString());
 	myCResultDialog.SetText(text);
 }
@@ -310,7 +310,7 @@ prs->Display(1); \n\
 D->CommitCommand(); \n\
 \n");
 
-	myCResultDialog.SetTitle(CString("Create cylinder"));
+	myCResultDialog.SetTitle("Create cylinder");
 	CString text(Message.ToCString());
 	myCResultDialog.SetText(text);
 }
@@ -442,7 +442,8 @@ prs->Display(1); \n\
 D->CommitCommand(); \n\
 } \n\
 \n");
-		myCResultDialog.SetTitle(CString("Modify Box"));
+
+		myCResultDialog.SetTitle("Modify Box");
 	}
 	// Case of a cylinder created with the box function driver
 	else if(myDriverID==TOcafFunction_CylDriver::GetID())
@@ -525,7 +526,8 @@ prs->Display(1); \n\
 D->CommitCommand(); \n\
 } \n\
 \n");
-		myCResultDialog.SetTitle(CString("Modify cylinder"));
+
+		myCResultDialog.SetTitle("Modify cylinder");
 	}
 	// Case of a cut solid created with the cut function driver
 	else if(myDriverID==TOcafFunction_CutDriver::GetID())
@@ -665,7 +667,8 @@ prs->Display(1); \n\
 D->CommitCommand(); \n\
 } \n\
 \n");
-		myCResultDialog.SetTitle(CString("Modify Cut"));
+
+		myCResultDialog.SetTitle("Modify Cut");
 	}
 	else
 	{
@@ -787,7 +790,7 @@ prs->Display(1); \n\
 D->CommitCommand(); \n\
 \n");
 
-	myCResultDialog.SetTitle(CString("Cut operation"));
+	myCResultDialog.SetTitle("Cut operation");
 	CString text(Message.ToCString());
 	myCResultDialog.SetText(text);
 }
@@ -853,8 +856,8 @@ void COcafDoc::OnObjectDelete()
  //  Commit the command\n\
  D->CommitCommand(); \n\
  \n");
- 
- 	myCResultDialog.SetTitle(CString("Delete"));
+
+  myCResultDialog.SetTitle("Delete");
  	CString text(Message.ToCString());
  	myCResultDialog.SetText(text);
  }
@@ -979,7 +982,7 @@ Handle(TOcaf_Application) m_App= ((COcafApp*)AfxGetApp())->GetApp(); \n\
 m_App->SaveAs(myOcafDoc,(TCollection_ExtendedString) TPath); \n\
 \n");
 
-	myCResultDialog.SetTitle(CString("Save a document"));
+	myCResultDialog.SetTitle("Save a document");
 	CString text(Message.ToCString());
 	myCResultDialog.SetText(text);
 }
@@ -1036,7 +1039,7 @@ Handle(TOcaf_Application) m_App= ((COcafApp*)AfxGetApp())->GetApp(); \n\
 m_App->SaveAs(myOcafDoc,(TCollection_ExtendedString) TPath); \n\
 \n");
 
-		myCResultDialog.SetTitle(CString("Save a document"));
+		myCResultDialog.SetTitle("Save a document");
 		CString text(Message.ToCString());
 		myCResultDialog.SetText(text);
 		return;
@@ -1113,7 +1116,7 @@ Handle(TOcaf_Application) m_App= ((COcafApp*)AfxGetApp())->GetApp(); \n\
 m_App->SaveAs(myOcafDoc,(TCollection_ExtendedString) TPath); \n\
 \n");
 
-	myCResultDialog.SetTitle(CString("Save a document"));
+	myCResultDialog.SetTitle("Save a document");
 	CString text(Message.ToCString());
 	myCResultDialog.SetText(text);
 }
@@ -1132,12 +1135,13 @@ BOOL COcafDoc::OnOpenDocument(LPCTSTR lpszPathName)
 	TCollection_ExtendedString TPath(SPath);
 	PathName=lpszPathName;
 
-	// open the document in the current application
-	PCDM_ReaderStatus RS = m_App->Open(TPath,myOcafDoc);
-//	CDF_RetrievableStatus RS = m_App->Open(TPath,myOcafDoc);
+  // open the document in the current application
+  //PCDM_ReaderStatus RS = m_App->Open(TPath,myOcafDoc);
+  m_App->Open(TPath,myOcafDoc);
+  //CDF_RetrievableStatus RS = m_App->Open(TPath,myOcafDoc);
 
 	//connect the document CAF (myDoc) with the AISContext (myAISContext)
-//	TPrsStd_AISViewer::Has(myOcafDoc->Main());
+  //TPrsStd_AISViewer::Has(myOcafDoc->Main());
 	TPrsStd_AISViewer::New(myOcafDoc->Main(),myViewer);
 	myOcafDoc->SetUndoLimit(10);
 
@@ -1165,7 +1169,8 @@ TPrsStd_AISViewer::New(myOcafDoc->Main(),myViewer); \n\
 myOcafDoc->SetUndoLimit(10); \n\
  \n\
 \n");
-	myCResultDialog.SetTitle(CString("Open a document"));
+
+	myCResultDialog.SetTitle("Open a document");
 	CString text(Message.ToCString());
 	myCResultDialog.SetText(text);
 

@@ -1,4 +1,5 @@
-#### OCCT CSharp sample
+OCCT CSharp sample {#samples_csharp}
+================== 
 	
 This sample demonstrates simple way of using OCCT libraries in .Net application
 whitten using CSharp and Windows Forms or Windows Presentation Foundation (WPF).

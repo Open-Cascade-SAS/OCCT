@@ -107,7 +107,7 @@ void COCCDemoView::OnInitialUpdate()
   RedrawVisMode();
 }
 
-void COCCDemoView::OnDraw(CDC* pDC)
+void COCCDemoView::OnDraw(CDC* /*pDC*/)
 {
 	COCCDemoDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
@@ -139,7 +139,7 @@ COCCDemoDoc* COCCDemoView::GetDocument() // non-debug version is inline
 /////////////////////////////////////////////////////////////////////////////
 // COCCDemoView message handlers
 
-void COCCDemoView::OnSize(UINT nType, int cx, int cy) 
+void COCCDemoView::OnSize(UINT /*nType*/, int /*cx*/, int /*cy*/) 
 {
   if (!myView.IsNull())
     myView->MustBeResized();
@@ -291,7 +291,7 @@ void COCCDemoView::OnRButtonDown(UINT nFlags, CPoint point)
   }
 }
 
-void COCCDemoView::OnRButtonUp(UINT nFlags, CPoint point) 
+void COCCDemoView::OnRButtonUp(UINT /*nFlags*/, CPoint /*point*/) 
 {
   if (myVisMode == VIS_HLR)
   {
@@ -431,7 +431,7 @@ void COCCDemoView::DrawRectangle(const Standard_Integer  MinX,
     m_Pen = NULL;	m_DrawMode = R2_MERGEPENNOT;
   }
 
-  CPen* aOldPen;
+  CPen* aOldPen = NULL;
   CClientDC clientDC(this);
   if (m_Pen) 
     aOldPen = clientDC.SelectObject(m_Pen);

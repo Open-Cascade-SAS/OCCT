@@ -77,19 +77,26 @@ The error message which appears at the end of configuration process, informs you
 which need to be defined. This error will appear until all required variables are defined correctly.
 Note: In cmake-gui there is "grouped" option, which groups variables with a common prefix.
 
-###The variables with BUILD_ prefix:
+### Selection of components to be built
 
-* BUILD_TYPE - defines build configuration of the future project (Release by default)
-* BUILD_<MODULE> - allows including the toolkit set of the specified module to the future project or excluding it from the project.
-* BUILD_TOOLKITS - allows including specific OCCT toolkits (list of items separated by a space or a semicolon) to the common set of the future project.
-* BUILD_SAMPLES  - allows including MFC samples (for visual studio only) to the common set of the future project. 
-                   In install folder there will be samples.bat script to execute specific sample. 
-                   List of samples is being shown by sample.bat without arguments.
+The variables with "BUILD_" prefix allow specifying OCCT components and
+configuration to be built:
 
-###The variables with USE_ prefix (3rd-party libraries):
+* BUILD_CONFIGURATION - defines configuration to be built (Release by default).
+* BUILD_<MODULE> - specify whether corresponding OCCT module should be 
+                   built (all toolkits). Note that even if whole module is not 
+                   selected for build, its toolkits used by other toolkits 
+                   selected for build will be included automatically.
+* BUILD_TOOLKITS - allows including additional toolkits from non-selected 
+                   modules (should be list of toolkit names separated by a 
+                   space or a semicolon).
+* BUILD_SAMPLES - specify whether OCCT MFC samples should be built.
 
-Check USE_\<PRODUCT\> variable (USE_FREEIMAGE, USE_GL2PS, USE_TBB and USE_OPENCL) 
-if you want to use this 3rd-party product.
+Check variables with "USE_" prefix (USE_FREEIMAGE, USE_GL2PS, USE_TBB, and 
+USE_OPENCL) if you want to enable use of the corresponding optional 3rd-party 
+library.
+
+### 3rd-party configuration
 
 ### 3rd-party configuration (The variables with 3RDPARTY_ prefix)
 
@@ -100,9 +107,8 @@ At the next configuration 3rd-party product paths stored in 3RDPARTY_\<PRODUCT\>
 will be searched for in 3RDPARTY_DIR directory. If the structure of 3RDPARTY_DIR directory 
 is the same as adopted in the OCCT, the directory will contain product dir, lib and header files. 
 
- **Press "Configure" ("c" key for ccmake)**
+Press "Configure" ("c" key for ccmake).
 
-Important: The names of searched libraries and header files are hardcoded.
 The result of the 3rdparty product search will be recorded in the corresponding variables:
 
 * 3RDPARTY_\<PRODUCT\>_DIR - path to the product directory (with directory name) (e.g., D:/3rdparty/Tcl-8.5.12.0-32)
@@ -112,20 +118,23 @@ The result of the 3rdparty product search will be recorded in the corresponding 
 
 The search process is as follows:
 
- - 1 level:. 3RDPARTY_DIR
-   - 2 level: 3RDPARTY_\<PRODUCT\>_DIR\
-     - 3 level: 3RDPARTY_\<PRODUCT\>_LIBRARY
-     - 3 level: 3RDPARTY_\<PRODUCT\>_INCLUDE
-     - 3 level: 3RDPARTY_\<PRODUCT\>_DLL
+1. Common path: 3RDPARTY_DIR
+2. Path to particular 3rd-party library: 3RDPARTY_\<PRODUCT\>_DIR
+3. Paths to headers and binaries:
+   1. 3RDPARTY_\<PRODUCT\>_INCLUDE
+   2. 3RDPARTY_\<PRODUCT\>_LIBRARY
+   3. 3RDPARTY_\<PRODUCT\>_DLL
 
 If a variable of any level is not defined (empty or \<variable name\>-NOTFOUND) 
 and the upper level variable is defined, the content of the non-defined variable 
 will be searched for at the next configuration step. If search process in level 3 
 does not find the required files, it searches in default places also.
 
-*Note*: Freetype search process tries to find ft2build.h file in 3RDPARTY_FREETYPE INCLUDE dir 
+**Note**: the names of searched libraries and header files are hardcoded.
+Freetype search process tries to find ft2build.h file in 3RDPARTY_FREETYPE INCLUDE dir 
 and after that adds "3RDPARTY_FREETYPE_INCLUDE /freetype2" path to common includes if it exists. 
-Important: If BUILD_TYPE or BITNESS variable is changed - at the next configuration 
+
+Important: If BUILD_CONFIGURATION variable is changed - at the next configuration 
 3RDPARTY_ variables will be replaced by the search process result, except for the 3RDPARTY_DIR variable.
 
 *Note*: CMake will produce an error after the configuration step until all required variables are defined correctly.
@@ -133,6 +142,7 @@ If the search result (include path, or library path, or dll path) does not meet 
 you can  change 3RDPARTY_\<PRODUCT\>_DIR variable, clear (if they are not empty) 
 3RDPARTY_\<PRODUCT\>_DLL, 3RDPARTY_\<PRODUCT\>_INCLUDE_DIR and 3RDPARTY_\<PRODUCT\>_LIBRARY variables 
 (or clear one of them) and run the configuration process again. 
+
 At this time the search will be performed in the new identified directory 
 and the result will be recorded to empty variables (non-empty variables will not be replaced).
 

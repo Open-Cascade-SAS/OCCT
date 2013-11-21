@@ -99,12 +99,12 @@ void GeomSources::PostProcess(CGeometryDoc* aDoc,
   aDoc->SetTitle(Title);
 }
 
-void GeomSources::AddSeparator(CGeometryDoc* aDoc,TCollection_AsciiString& aMessage)
+void GeomSources::AddSeparator(CGeometryDoc* /*aDoc*/,TCollection_AsciiString& aMessage)
 {
   aMessage+= "------------------------------------------------------------------------\n";
 }
 void GeomSources::DisplayPoint(CGeometryDoc* aDoc,
-                          gp_Pnt2d& aPoint,
+                          const gp_Pnt2d& aPoint,
                           const char* aText,
                           Standard_Boolean UpdateViewer,
                           Standard_Real anXoffset,
@@ -119,7 +119,7 @@ void GeomSources::DisplayPoint(CGeometryDoc* aDoc,
 }
 
 void GeomSources::DisplayPoint(CGeometryDoc* aDoc,
-                          gp_Pnt& aPoint,
+                          const gp_Pnt& aPoint,
                           const char* aText,
                           Standard_Boolean UpdateViewer,
                           Standard_Real anXoffset,
@@ -224,9 +224,10 @@ Standard_Real result = A.DotCross(B,C); \n\
                                         \n");
   AddSeparator(aDoc,Message);
 //--------------------------------------------------------------
+
     DisplayPoint(aDoc,gp_Pnt(A),"A (1,2,3)",false,0.1);
     DisplayPoint(aDoc,gp_Pnt(B),"B (2,2,2)",false,0.1);
-    DisplayPoint(aDoc,gp_Pnt(C),"C (3,2,3)", false,0.1);
+    DisplayPoint(aDoc,gp_Pnt(C),"C (3,2,3)",false,0.1);
 
 // to add a numeric value in a TCollectionAsciiString	
   TCollection_AsciiString Message2 (result);
@@ -709,7 +710,7 @@ void GeomSources::gpTest10(CGeometryDoc* aDoc)
     for(;count<=N;count++)
     {                                                  
       C->D0(UA.Parameter(count),P);
-      Standard_Real Parameter = UA.Parameter(count);
+      //Standard_Real Parameter = UA.Parameter(count);
       // append P in a Sequence
       aSequence.Append(P);
     }                                                   
@@ -1308,10 +1309,10 @@ gp_Dir A2YDirection = A2.YDirection() ;     \n\
  aDoc->GetAISContext()->Display(aDirection, Standard_False);
 
  Handle(ISession_Direction) aDirection2 = new ISession_Direction(P1,AXDirection,2);
- aDirection2->SetText(TCollection_ExtendedString("A.XDirection"));
+ aDirection2->SetText("A.XDirection");
  aDoc->GetAISContext()->Display(aDirection2, Standard_False);
  Handle(ISession_Direction) aDirection3 = new ISession_Direction(P1,AYDirection,2);
- aDirection3->SetText(TCollection_ExtendedString("A.YDirection"));
+ aDirection3->SetText("A.YDirection");
  aDoc->GetAISContext()->Display(aDirection3, Standard_False);
 
  DisplayPoint(aDoc,P2,"P2",false,0.1);
@@ -1319,10 +1320,10 @@ gp_Dir A2YDirection = A2.YDirection() ;     \n\
  aDoc->GetAISContext()->Display(aDirection4, Standard_False);
 
  Handle(ISession_Direction) aDirection5 = new ISession_Direction(P2,A2XDirection,2);
- aDirection5->SetText(TCollection_ExtendedString("A2 XDirection"));
+ aDirection5->SetText("A2 XDirection");
  aDoc->GetAISContext()->Display(aDirection5, Standard_False);
  Handle(ISession_Direction) aDirection6 = new ISession_Direction(P2,A2YDirection,2);
- aDirection6->SetText(TCollection_ExtendedString("A2 YDirection"));
+ aDirection6->SetText("A2 YDirection");
  aDoc->GetAISContext()->Display(aDirection6, Standard_False);
 
  Message += "IsDirectA = ";
@@ -1703,19 +1704,13 @@ gp_Ax2d C2DCircleXAxis = C2DCircle->XAxis();            \n\
  DisplayCurve(aDoc,C3D,false);
  DisplayCurve(aDoc,C2D,5,false);
 
- Handle(ISession_Direction) aC3DCircleXAxisDirection = new ISession_Direction((gp_Pnt)C3DCircleXAxis.Location(),
-   (gp_Dir)C3DCircleXAxis.Direction(),
-   5.2);
+ Handle(ISession_Direction) aC3DCircleXAxisDirection = new ISession_Direction(C3DCircleXAxis.Location(),C3DCircleXAxis.Direction(),5.2);
  aDoc->GetAISContext()->Display(aC3DCircleXAxisDirection, Standard_False);
 
- Handle(ISession_Direction) acirc2dXAxisDirection = new ISession_Direction((gp_Pnt2d)circ2dXAxis.Location(),
-   (gp_Dir2d)circ2dXAxis.Direction(),
-   5.2);
+ Handle(ISession_Direction) acirc2dXAxisDirection = new ISession_Direction(circ2dXAxis.Location(),circ2dXAxis.Direction(),5.2);
  aDoc->GetISessionContext()->Display(acirc2dXAxisDirection, Standard_False);
 
- Handle(ISession_Direction) aC2DCircleXAxisDirection = new ISession_Direction((gp_Pnt2d)C2DCircleXAxis.Location(),
-   (gp_Dir2d)C2DCircleXAxis.Direction(),
-   5.2);
+ Handle(ISession_Direction) aC2DCircleXAxisDirection = new ISession_Direction(C2DCircleXAxis.Location(),C2DCircleXAxis.Direction(),5.2);
  aDoc->GetISessionContext()->Display(aC2DCircleXAxisDirection, Standard_False);
 
  PostProcess(aDoc,ID_BUTTON_Test_24,TheDisplayType,Message.ToCString());
@@ -2149,7 +2144,7 @@ void GeomSources::gpTest30(CGeometryDoc* aDoc)
   gp_Circ2d C = gce_MakeCirc2d (P1,P2,P3);
   GccEnt_QualifiedCirc QC = GccEnt::Outside(C);
   GccAna_Lin2d2Tan LT (QC,P4,Precision::Confusion());
-  Standard_Integer NbSol;
+  Standard_Integer NbSol = 0;
   if (LT.IsDone())
   {
     NbSol = LT.NbSolutions();
@@ -2601,8 +2596,8 @@ void GeomSources::gpTest35(CGeometryDoc* aDoc)
   GeomAPI_IntCS CS (aCurve,aSurface);
   Handle(Geom_Curve) segment;
 
-  Standard_Integer NbSeg;
-  Standard_Integer NbPoints;
+  Standard_Integer NbSeg = 0;
+  Standard_Integer NbPoints = 0;
   if(CS.IsDone())
   {
     NbSeg = CS.NbSegments();
@@ -3782,7 +3777,7 @@ void GeomSources::gpTest47(CGeometryDoc* aDoc)
     GeomAPI_PointsToBSplineSurface(array3).Surface();
 
   GeomAPI_ExtremaSurfaceSurface ESS(aSurf1,aSurf2);
-  Quantity_Length dist = ESS.LowerDistance();
+  //Quantity_Length dist = ESS.LowerDistance();
   gp_Pnt P1,P2;
   ESS.NearestPoints(P1,P2);
 
@@ -3952,10 +3947,10 @@ aSPL2Box.Get(  aSPL2Xmin, aSPL2Ymin, aSPL2Xmax,aSPL2Ymax);             \n\
   DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aSPL1Xmin,aSPL1Ymin),gp_Pnt2d(aSPL1Xmin,aSPL1Ymax)) ,4); // Xmin,Y
   DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aSPL1Xmax,aSPL1Ymin),gp_Pnt2d(aSPL1Xmax,aSPL1Ymax)) ,4); // Xmax,Y
 
-  DisplayPoint(aDoc,gp_Pnt2d(aSPL2Xmin,aSPL2Ymax),Standard_CString("aSPL2Xmin,aSPL2Ymax"));
-  DisplayPoint(aDoc,gp_Pnt2d(aSPL2Xmax,aSPL2Ymax),Standard_CString("aSPL2Xmax,aSPL2Ymax"));
-  DisplayPoint(aDoc,gp_Pnt2d(aSPL2Xmin,aSPL2Ymin),Standard_CString("aSPL2Xmin,aSPL2Ymin"));
-  DisplayPoint(aDoc,gp_Pnt2d(aSPL2Xmax,aSPL2Ymin),Standard_CString("aSPL2Xmax,aSPL2Ymin"));
+  DisplayPoint(aDoc,gp_Pnt2d(aSPL1Xmin,aSPL1Ymax),Standard_CString("aSPL2Xmin,aSPL2Ymax"));
+  DisplayPoint(aDoc,gp_Pnt2d(aSPL1Xmax,aSPL1Ymax),Standard_CString("aSPL2Xmax,aSPL2Ymax"));
+  DisplayPoint(aDoc,gp_Pnt2d(aSPL1Xmin,aSPL1Ymin),Standard_CString("aSPL2Xmin,aSPL2Ymin"));
+  DisplayPoint(aDoc,gp_Pnt2d(aSPL1Xmax,aSPL1Ymin),Standard_CString("aSPL2Xmax,aSPL2Ymin"));
 
   DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aSPL2Xmin,aSPL2Ymax),gp_Pnt2d(aSPL2Xmax,aSPL2Ymax)) ,4); // X,Ymax
   DisplayCurve(aDoc,GCE2d_MakeSegment(gp_Pnt2d(aSPL2Xmin,aSPL2Ymin),gp_Pnt2d(aSPL2Xmax,aSPL2Ymin)) ,4); // X,Ymin

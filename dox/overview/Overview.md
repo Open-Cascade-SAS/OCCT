@@ -531,6 +531,8 @@ The list of MFC samples:
   * To start a sample use Open CASCADE Technology\\Samples\\Mfc\\ item of the Start\\Programs menu;
   * Read carefully readme.txt to learn about launching and compilation options.
 
+See \subpage samples_mfc_standard "Readme" for details.
+
 @subsubsection OCCT_OVW_SECTION_7_3_2 Qt
 
 OCCT contains three samples based on Qt application framework
@@ -592,3 +594,6 @@ Export:
   * Step
   * Stl
   * Vrml
+
+See \subpage samples_csharp "Readme" for details.
+

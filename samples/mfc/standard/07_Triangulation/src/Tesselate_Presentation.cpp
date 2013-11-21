@@ -219,8 +219,8 @@ void Tesselate_Presentation::tesselateShape(const TopoDS_Shape& aShape)
     { 
       const TColgp_Array1OfPnt& aNodes = aTr->Nodes();
       aNumOfNodes += aTr->NbNodes();
-      Standard_Integer aLower = aNodes.Lower();
-      Standard_Integer anUpper = aNodes.Upper();
+      //Standard_Integer aLower = aNodes.Lower();
+      //Standard_Integer anUpper = aNodes.Upper();
       const Poly_Array1OfTriangle& triangles = aTr->Triangles();
       aNumOfTriangles += aTr->NbTriangles();
 

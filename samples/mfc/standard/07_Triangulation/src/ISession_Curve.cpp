@@ -32,7 +32,7 @@ ISession_Curve::~ISession_Curve()
 {
 
 }
-void ISession_Curve::Compute(const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
+void ISession_Curve::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
                              const Handle(Prs3d_Presentation)& aPresentation,
                              const Standard_Integer /*aMode*/)
 {
@@ -45,14 +45,14 @@ void ISession_Curve::Compute(const Handle(PrsMgr_PresentationManager3d)& aPresen
   StdPrs_Curve::Add (aPresentation, anAdaptorCurve, myDrawer);
 }
 
-void ISession_Curve::Compute(const Handle(Prs3d_Projector)& aProjector,
-                             const Handle(Prs3d_Presentation)& aPresentation) 
+void ISession_Curve::Compute(const Handle(Prs3d_Projector)& /*aProjector*/,
+                             const Handle(Prs3d_Presentation)& /*aPresentation*/) 
  {
 
  }
 
-void ISession_Curve::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
-				      const Standard_Integer aMode) 
+void ISession_Curve::ComputeSelection(const Handle(SelectMgr_Selection)& /*aSelection*/,
+				      const Standard_Integer /*aMode*/) 
 { 
 }
 

@@ -32,9 +32,9 @@ Sample2D_Text::Sample2D_Text   (const TCollection_AsciiString& theText,
   myVAlign     = theVAlign     ;
 }
 
-void Sample2D_Text::Compute (  const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
-                  const Handle(Prs3d_Presentation)& aPresentation,
-                  const Standard_Integer aMode)
+void Sample2D_Text::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
+                             const Handle(Prs3d_Presentation)& aPresentation,
+                             const Standard_Integer /*aMode*/)
 {
   aPresentation->Clear();
 

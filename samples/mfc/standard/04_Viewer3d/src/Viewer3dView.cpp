@@ -166,7 +166,7 @@ void CViewer3dView::OnInitialUpdate()
   RedrawVisMode();
 }
 
-void CViewer3dView::OnDraw(CDC* pDC)
+void CViewer3dView::OnDraw(CDC* /*pDC*/)
 {
 	CViewer3dDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
@@ -228,7 +228,7 @@ gp_Pnt ConvertClickToPoint(Standard_Real x, Standard_Real y, Handle(V3d_View) aV
 	return ResultPoint;
 }
 
-void CViewer3dView::OnSize(UINT nType, int cx, int cy) 
+void CViewer3dView::OnSize(UINT /*nType*/, int /*cx*/, int /*cy*/) 
 {
   if (!myView.IsNull())
    myView->MustBeResized();
@@ -498,7 +498,7 @@ GetDocument()->UpdateResultMessageDlg("SetDirection",Message);
     }
 }
 
-void CViewer3dView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) 
+void CViewer3dView::OnKeyDown(UINT nChar, UINT /*nRepCnt*/, UINT /*nFlags*/) 
 {
   
   if( nChar == X_Key || nChar == Y_Key || nChar == Z_Key )
@@ -594,7 +594,7 @@ void CViewer3dView::OnLButtonUp(UINT nFlags, CPoint point)
     } //	else // if ( Ctrl )
 }
 
-void CViewer3dView::OnMButtonDown(UINT nFlags, CPoint point) 
+void CViewer3dView::OnMButtonDown(UINT nFlags, CPoint /*point*/) 
 {
    if ( nFlags & MK_CONTROL ) 
 	  {
@@ -603,7 +603,7 @@ void CViewer3dView::OnMButtonDown(UINT nFlags, CPoint point)
 	  }
 }
 
-void CViewer3dView::OnMButtonUp(UINT nFlags, CPoint point) 
+void CViewer3dView::OnMButtonUp(UINT nFlags, CPoint /*point*/) 
 {
    if ( nFlags & MK_CONTROL ) 
 	  {
@@ -629,7 +629,7 @@ void CViewer3dView::OnRButtonDown(UINT nFlags, CPoint point)
   }
 }
 
-void CViewer3dView::OnRButtonUp(UINT nFlags, CPoint point) 
+void CViewer3dView::OnRButtonUp(UINT /*nFlags*/, CPoint /*point*/) 
 {
   SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
   myView->SetComputedMode (myHlrModeIsOn);
@@ -716,7 +716,7 @@ void CViewer3dView::OnMouseMove(UINT nFlags, CPoint point)
 			{
 				BRepBuilderAPI_MakeEdge MakeEdge(p1, p2);
 				directionalEdgeShape->Set(MakeEdge.Edge());
-				GetDocument()->GetAISContext()->Redisplay(directionalEdgeShape,0,-1);
+				GetDocument()->GetAISContext()->Redisplay(directionalEdgeShape,0,Standard_True);
 				myCurrent_DirectionalLight->SetDirection(p2.X()-p1.X(),p2.Y()-p1.Y(),p2.Z()-p1.Z());
 				myView->UpdateLights();
 			}
@@ -738,7 +738,7 @@ void CViewer3dView::OnMouseMove(UINT nFlags, CPoint point)
 				BRepPrimAPI_MakeCone MakeCone(gp_Ax2(p1, gp_Dir(gp_Vec(p1, p2))), 
 					0, (p1.Distance(p2))/tan(1.04), coneHeigth);
 				spotConeShape->Set(MakeCone.Solid());
-				GetDocument()->GetAISContext()->Redisplay(spotConeShape,0,-1);
+				GetDocument()->GetAISContext()->Redisplay(spotConeShape,0,Standard_True);
 				myCurrent_SpotLight->SetDirection(p2.X()-p1.X(),p2.Y()-p1.Y(),p2.Z()-p1.Z());
 				myView->UpdateLights();
 			}
@@ -753,7 +753,7 @@ void CViewer3dView::OnMouseMove(UINT nFlags, CPoint point)
 				BRepPrimAPI_MakeCone MakeCone(gp_Ax2(p1, gp_Dir(gp_Vec(p1, p2))), 
 					0, p2.Distance(p3), coneHeigth);
 				spotConeShape->Set(MakeCone.Solid());
-				GetDocument()->GetAISContext()->Redisplay(spotConeShape,0,-1);
+				GetDocument()->GetAISContext()->Redisplay(spotConeShape,0,Standard_True);
 				myCurrent_SpotLight->SetAngle(atan(p2.Distance(p3)/p1.Distance(p2))) ;
 				myView->UpdateLights();
 			}
@@ -827,7 +827,7 @@ void CViewer3dView::DrawRectangle(const Standard_Integer  MinX    ,
     else if (aLineStyle == Default) 
         { m_Pen = NULL;	m_DrawMode = R2_MERGEPENNOT;}
 
-    CPen* aOldPen;
+    CPen* aOldPen = NULL;
     CClientDC clientDC(this);
     if (m_Pen) aOldPen = clientDC.SelectObject(m_Pen);
     clientDC.SetROP2(m_DrawMode);

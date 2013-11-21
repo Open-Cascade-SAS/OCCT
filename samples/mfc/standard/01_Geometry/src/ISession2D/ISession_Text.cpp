@@ -62,20 +62,20 @@ ISession_Text::~ISession_Text()
 
 }
 
-void ISession_Text::Compute(const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
-                             const Handle(Prs3d_Presentation)& aPresentation,
-                             const Standard_Integer aMode)
+void ISession_Text::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
+                            const Handle(Prs3d_Presentation)& aPresentation,
+                            const Standard_Integer /*aMode*/)
 {
     Prs3d_Text::Draw(aPresentation,myDrawer,MyText,gp_Pnt(  MyX ,MyY,MyZ ));
 }
 
-void ISession_Text::Compute(const Handle(Prs3d_Projector)& aProjector,
-                             const Handle(Prs3d_Presentation)& aPresentation) 
+void ISession_Text::Compute(const Handle(Prs3d_Projector)& /*aProjector*/,
+                            const Handle(Prs3d_Presentation)& /*aPresentation*/) 
  {
  }
 
-void ISession_Text::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection, 
-				      const Standard_Integer unMode)
+void ISession_Text::ComputeSelection(const Handle(SelectMgr_Selection)& /*aSelection*/, 
+				     const Standard_Integer /*unMode*/)
 {
 }
 

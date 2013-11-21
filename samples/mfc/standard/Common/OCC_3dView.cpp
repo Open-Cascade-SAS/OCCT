@@ -108,17 +108,16 @@ void OCC_3dView::OnInitialUpdate()
   myCurrentMode = CurAction3d_Nothing;
 }
 
-void OCC_3dView::OnDraw(CDC* pDC)
+void OCC_3dView::OnDraw(CDC* /*pDC*/)
 {
-	CRect aRect;
-	GetWindowRect(aRect);
-	if(myWidth != aRect.Width() || myHeight != aRect.Height()) {
-		myWidth = aRect.Width();
-		myHeight = aRect.Height();
-		::PostMessage ( GetSafeHwnd () , WM_SIZE , SW_SHOW , myWidth + myHeight*65536 );
-	}
-	myView->Redraw();
-
+  CRect aRect;
+  GetWindowRect(aRect);
+  if(myWidth != aRect.Width() || myHeight != aRect.Height()) {
+    myWidth = aRect.Width();
+    myHeight = aRect.Height();
+    ::PostMessage ( GetSafeHwnd () , WM_SIZE , SW_SHOW , myWidth + myHeight*65536 );
+  }
+  myView->Redraw();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -176,7 +175,7 @@ void OCC_3dView::OnFileExportImage()
   }
 }
 
-void OCC_3dView::OnSize(UINT nType, int cx, int cy) 
+void OCC_3dView::OnSize(UINT /*nType*/, int /*cx*/, int /*cy*/) 
 {
   if (!myView.IsNull())
    myView->MustBeResized();
@@ -390,7 +389,7 @@ void OCC_3dView::OnLButtonUp(UINT nFlags, CPoint point)
   } //	else // if ( Ctrl )
 }
 
-void OCC_3dView::OnMButtonDown(UINT nFlags, CPoint point) 
+void OCC_3dView::OnMButtonDown(UINT nFlags, CPoint /*point*/) 
 {
   if ( nFlags & MK_CONTROL ) 
   {
@@ -399,7 +398,7 @@ void OCC_3dView::OnMButtonDown(UINT nFlags, CPoint point)
   }
 }
 
-void OCC_3dView::OnMButtonUp(UINT nFlags, CPoint point) 
+void OCC_3dView::OnMButtonUp(UINT nFlags, CPoint /*point*/) 
 {
   if ( nFlags & MK_CONTROL ) 
   {
@@ -424,7 +423,7 @@ void OCC_3dView::OnRButtonDown(UINT nFlags, CPoint point)
   }	
 }
 
-void OCC_3dView::OnRButtonUp(UINT nFlags, CPoint point) 
+void OCC_3dView::OnRButtonUp(UINT /*nFlags*/, CPoint /*point*/) 
 {
     SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
     myView->SetComputedMode (myHlrModeIsOn);
@@ -530,7 +529,7 @@ void OCC_3dView::DrawRectangle(const Standard_Integer  MinX    ,
     else if (aLineStyle == Default) 
         { m_Pen = NULL;	m_DrawMode = R2_MERGEPENNOT;}
 
-    CPen* aOldPen;
+    CPen* aOldPen = NULL;
     CClientDC clientDC(this);
     if (m_Pen) aOldPen = clientDC.SelectObject(m_Pen);
     clientDC.SetROP2(m_DrawMode);

@@ -39,7 +39,7 @@ CGeometryView2D::~CGeometryView2D()
 
 // CNSGView drawing
 
-void CGeometryView2D::OnDraw(CDC* pDC)
+void CGeometryView2D::OnDraw(CDC* /*pDC*/)
 {
   CGeometryDoc* pDoc = GetDocument();
   ASSERT_VALID(pDoc);
@@ -170,7 +170,7 @@ void CGeometryView2D::OnLButtonUp(UINT nFlags, CPoint point)
 
 }
 
-void CGeometryView2D::OnMButtonDown(UINT nFlags, CPoint point) 
+void CGeometryView2D::OnMButtonDown(UINT nFlags, CPoint /*point*/) 
 {
   if ( nFlags & MK_CONTROL ) 
   {
@@ -179,7 +179,7 @@ void CGeometryView2D::OnMButtonDown(UINT nFlags, CPoint point)
   }
 }
 
-void CGeometryView2D::OnMButtonUp(UINT nFlags, CPoint point) 
+void CGeometryView2D::OnMButtonUp(UINT nFlags, CPoint /*point*/) 
 {
   if ( nFlags & MK_CONTROL ) 
   {
@@ -201,7 +201,7 @@ void CGeometryView2D::OnRButtonDown(UINT nFlags, CPoint point)
   }	
 }
 
-void CGeometryView2D::OnRButtonUp(UINT nFlags, CPoint point) 
+void CGeometryView2D::OnRButtonUp(UINT /*nFlags*/, CPoint point) 
 {
   OCC_2dView::Popup2D(point.x,point.y);
 }
@@ -277,7 +277,7 @@ void CGeometryView2D::OnMouseMove(UINT nFlags, CPoint point)
       }
 }
 
-void CGeometryView2D::OnSize(UINT nType, int cx, int cy) 
+void CGeometryView2D::OnSize(UINT /*nType*/, int /*cx*/, int /*cy*/) 
 {
   if (!myV2dView.IsNull())
   {

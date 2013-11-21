@@ -1,3 +1,5 @@
+MFC samples {#samples_mfc_standard}
+==========
 
 1. Description of the tree structure:
 ---------------------------------------------
@@ -6,7 +8,7 @@
     |-- 01_Geometry                
     |-- 02_Modeling
     |-- 03_Viewer2d
-    |-- 04_Viewer3d                          	<Projects and sources of samples>
+    |-- 04_Viewer3d                          	Projects and sources of samples
     |-- 05_ImportExport 			   
     |-- 06_Ocaf
     |-- 07_Triangulation
@@ -14,18 +16,18 @@
     |-- 09_Animation
     |-- 10_Convert                        
     |    
-    |-- All-vc"number".sln            			< Auxilary utility project. It depends on all other sample
+    |-- All-vc"number".sln            			Auxilary utility project. It depends on all other sample
     |                  			   projects, so when rebuilded it rebuilds all samples and 
-    |                   			   mfcsample library. >
+    |                   			   mfcsample library.
     |
-    |-- Common 			< Common source and header files for samples and
-    |    				   dynamic-link library mfcsample.dll. >
+    |-- Common 			Common source and header files for samples and
+    |    				   dynamic-link library mfcsample.dll.
     | 
-    |-- Data            			< Data files. >   
+    |-- Data            			Data files.
     |
-    |-- mfcsample			< Project for mfcsample.dll. This library is used by all 
+    |-- mfcsample			Project for mfcsample.dll. This library is used by all 
     |			 	   samples. It contains basic funcionality that commonly 
-    |				   needed in every OCC sample. >    
+    |				   needed in every OCC sample.
     |
     |
     |-- env.bat       		This file is called from msvc.bat.
@@ -36,22 +38,22 @@
 
 To run the Open CASCADE Technology samples:
     
-   > execute run.bat [vc8|vc9|vc10] [win32|win64] [Release|Debug] [SampleName]
+   execute run.bat [vc8|vc9|vc10] [win32|win64] [Release|Debug] [SampleName]
 
 To run the Animation sample:
 
-   > execute run.bat vc8 win32 Debug Animation
+   execute run.bat vc8 win32 Debug Animation
 
 3. Modifying and rebuilding samples:
 --------------------------------------------
 
 You can modify, compile and launch all sample projects in MS Visual C++ at once:
   
-    > execute msvc.bat [vc8|vc9|vc10] [win32|win64] [Release|Debug]
+   execute msvc.bat [vc8|vc9|vc10] [win32|win64] [Release|Debug]
 
 To run all sample projects in MS Visual C++ at once: 
     
-    > execute msvc.bat vc8 win32 Debug
+   execute msvc.bat vc8 win32 Debug
 
 
 Note: make sure your PATH environment variable contains a directory, 
