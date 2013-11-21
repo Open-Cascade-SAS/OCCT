@@ -198,7 +198,7 @@ The parameter  *read.surfacecurve.mode* defines which curve (3D or 2D) is used f
   * 2: use 3D for 142 entities  and 2D for 141 entities, 
   * 3: both representations are  equally preferred. 
 * *2DUse_Preferred (2)* : the 2D is used to rebuild the 3D in case of their inconsistency,  
-* *2DUse_Forced (-2)*: the 2D is always used to rebuild the 3D (even if 2D is present in the  file),  
+* *2DUse_Forced (-2)*: the 2D is always used to rebuild the 3D (even if 3D is present in the  file),  
 * *3DUse_Preferred (3)*: the 3D is used to rebuild the 2D in case of their inconsistency,  
 * *3DUse_Forced  (-3)*: the 3D is always used to rebuild the 2D (even if 2D is present in the  file),  
 

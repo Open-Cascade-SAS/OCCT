@@ -1207,7 +1207,7 @@ There is a set of special objects, which can be used to operate with a loaded mo
 
 A list of these objects defined in the current session can be printed in DRAW by command *Draw:> listitems*. 
 
-Command *Draw:> givelist <selection_name>* prints a list of a subset of loaded entities defined by the selection argument: 
+Command *Draw:> givelist <selection_name>* prints a list of a subset of loaded entities defined by the <i><selection></i> argument: 
 
 * *xst-model-all*	all entities of the model;
 * *xst-model-roots*	all roots;
@@ -1242,7 +1242,7 @@ Information about product names, *next_assembly_usage_occurence, shape_definitio
 @subsubsection occt_step_6_4_2 Estimating the results of reading STEP
 All the following commands are available only after data is converted into OCCT shapes (i.e. after command 214read). 
 
-Command *Draw:> tpstat [*|?]\<symbol\> [\<selection\>]* is provided to get all statistics on the last transfer, including a list of transferred entities with mapping from STEP to OCCT types, as well as fail and warning messages. The parameter symbol defines what information will be printed: 
+Command *Draw:> tpstat [*|?]\<symbol\> [\<selection\>]* is provided to get all statistics on the last transfer, including a list of transferred entities with mapping from STEP to OCCT types, as well as fail and warning messages. The parameter <i><symbol></i> defines what information will be printed: 
 
 * *g*	- General statistics (a list of results and messages)
 * *c*	- Count of all warning and fail messages
@@ -1298,12 +1298,12 @@ Actually, command *newmodel* will clear the *InterfaceModel* to empty it, and th
 Draw:> stepwrite <mode> \<shape_name\> [<file_name>] 
 ~~~~~
 
-The available modes are following: 
-    * *a* - as is; 
-    * *m* - manifold_solid_brep or brep_with_voids 
-    * *f* - faceted_brep 
-    * *w* - geometric_curve_set 
-    * *s* - shell_based_surface_model 
+The following  modes are available : 
+    * *a* - as is - the mode is selected automatically depending on the type & geometry of the shape;
+    * *m* - *manifold_solid_brep* or *brep_with_voids* 
+    * *f* - *faceted_brep* 
+    * *w* - *geometric_curve_set* 
+    * *s* - *shell_based_surface_model* 
 	
 After a successful translation, if file_name parameter is not specified, the procedure asks you whether to write a STEP model in the file or not: 
 ~~~~~

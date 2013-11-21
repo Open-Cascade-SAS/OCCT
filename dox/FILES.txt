@@ -21,6 +21,11 @@ user_guides/ocaf/ocaf.md
 user_guides/tobj/tobj.md
 user_guides/shape_healing/shape_healing.md
 user_guides/draw_test_harness.md
+user_guides/brep_wp/brep_wp.md
+user_guides/ocaf_functionmechanism_wp/ocaf_functionmechanism_wp.md
+user_guides/ocaf_tree_wp/ocaf_tree_wp.md
+user_guides/ocaf_wp/ocaf_wp.md
+user_guides/voxels_wp/voxels_wp.md
 
 dev_guides/dev_guides.md
 dev_guides/contribution/coding_rules.md
@@ -28,6 +33,9 @@ dev_guides/cdl/cdl.md
 dev_guides/tests/tests.md
 dev_guides/documentation/documentation.md
 dev_guides/wok/wok.md
+dev_guides/contribution_workflow/contribution_workflow.md
+dev_guides/git_guide/git_guide.md
+
 
 dev_guides/building/building.md
 dev_guides/building/3rdparty/3rdparty_windows.md

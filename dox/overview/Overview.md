@@ -456,17 +456,17 @@ Remarks:
 
 **On Linux:**
 
-1. If OCCT was built by Code::Blocks   * use $CASROOT/draw_cbp.sh file to launch DRAWEXE executable;
-2. If OCCT was built by Automake    * use $CASROOT/draw_amk.sh file to launch DRAWEXE executable;
+1. If OCCT was built by Code::Blocks  use <i>$CASROOT/draw_cbp.sh</i> file to launch *DRAWEXE* executable;
+2. If OCCT was built by Automake    use <i>$CASROOT/draw_amk.sh</i> file to launch *DRAWEXE* executable;
 
 Draw[1]> prompt appears in the command window
 
-Type pload ALL
+Type *pload ALL*
 
 **On Windows:**
 
 Launch Draw executable from Open CASCADE Technology\\Test Harness\\Draw Test Harness 
-item of the Start\\Programs menu or Use $CASROOT\\draw.bat file to launch DRAWEXE executable.
+item of the Start\\Programs menu or Use <i>$CASROOT\\draw.bat</i> file to launch *DRAWEXE* executable.
 
 Draw[1]> prompt appears in the command window
 
@@ -474,36 +474,33 @@ Type pload ALL
 
 **Creating your first geometric objects**
 
-1. In the command window, type axo to create an axonometric view
-2. Type box b -10 -10 -10 20 20 20 to create a cube b of size 20, 
-   parallel to the X Y Z axis and centered on the origin. 
-   The cube will be displayed in the axonometric view in wireframe mode
-3. Type fit to fill the viewer with the cube
-4. Type pcylinder c 2 30 to create a cylinder c of radius 2 and height 30.
-   The cylinder will be displayed in addition to the cube
+1. In the command window, type *axo* to create an axonometric view
+2. Type *box b -10 -10 -10 20 20 20* to create a cube *b* of size 20, parallel to the X Y Z axis and centered on the origin. The cube will be displayed in the axonometric view in wireframe mode.
+3. Type *fit* to fill the viewer with the cube
+4. Type *pcylinder c 2 30* to create a cylinder *c* of radius 2 and height 30. The cylinder will be displayed in addition to the cube
 
 **Manipulating the view**
 
-1. Type clear to erase the view
-2. Type donly c to display the cylinder only
-3. Type donly b to display the cube only
-4. Type hlr hlr b to display the cube in the hidden line removal mode
+1. Type *clear* to erase the view
+2. Type *donly c* to display the cylinder only
+3. Type *donly b* to display the cube only
+4. Type *hlr hlr b* to display the cube in the hidden line removal mode
 
 **Running demonstration files**
 
-1. Type cd ../.. to return to the root directory
-2. Type cd src/DrawResources to reach the DrawResources directory
-3. Type source "Available Demo File" to run the demonstration provided with Open CASCADE
-4. The following demonstration files are available:
+1. Type *cd ../..* to return to the root directory
+2. Type *cd samples/tcl* to reach the *DrawResources* directory
+3. Type *source <demo_file>* to run the demonstration file provided with Open CASCADE. The following demonstration files are available:
+  * bottle.tcl
+  * challenge.tcl  
   * DataExchangeDemo.tcl
   * ModelingDemo.tcl
-  * OCAFDemo.tcl
   * VisualizationDemo.tcl
 
 **Getting Help**
 
-1. Type help to see all available commands
-2. Type help command-name to find out the arguments for a given command
+1. Type *help* to see all available commands
+2. Type *help <command_name>* to find out the arguments for a given command
 
 @subsection OCCT_OVW_SECTION_7_3 Programming Samples
 
