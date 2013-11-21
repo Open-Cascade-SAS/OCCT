@@ -155,6 +155,10 @@ public:
   const OpenGl_Matrix* SetViewMatrix (const OpenGl_Matrix* );
   const OpenGl_Matrix* SetStructureMatrix (const OpenGl_Matrix*, bool aRevert = false);
 
+  //! Updates current model-view matrix
+  //! replacing it with StructureMatrixT*ViewMatrix from the workspace.
+  const void UpdateModelViewMatrix();
+
   const OpenGl_AspectLine*   SetAspectLine   (const OpenGl_AspectLine*   theAspect);
   const OpenGl_AspectFace*   SetAspectFace   (const OpenGl_AspectFace*   theAspect);
   const OpenGl_AspectMarker* SetAspectMarker (const OpenGl_AspectMarker* theAspect);
@@ -412,6 +416,9 @@ protected: //! @name fields related to status
 
   const OpenGl_Matrix* ViewMatrix_applied;
   const OpenGl_Matrix* StructureMatrix_applied;
+
+  //! Model matrix with applied structure transformations
+  OpenGl_Matrix myModelViewMatrix;
 
   const TEL_POFFSET_PARAM* PolygonOffset_applied;
 

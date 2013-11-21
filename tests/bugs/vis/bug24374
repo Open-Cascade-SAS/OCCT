@@ -1,0 +1,28 @@
+puts "============"
+puts "CR24374"
+puts "============"
+puts ""
+#######################################################################
+#  Flipping affects highlight presentation of dimension
+#######################################################################
+pload ALL
+pload QAcommands
+box b 100 100 100
+explode b e
+vdisplay b
+vdisplay b_9
+vdim -length -name=dim1 b_9 -text=3d -plane=zox
+vdisplay dim1
+vselmode b 2 1
+vfit
+vmoveto 110 352
+
+set x_coord 161
+set y_coord 372
+checkcolor $x_coord $y_coord 0 1 1
+
+if { $stat != 1 } {
+  puts "Error : Highlighting of dimension with flipping in local context failed."
+}
+
+set only_screen 1

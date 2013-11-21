@@ -28,6 +28,7 @@
 #include <OpenGl_AspectText.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_ShaderManager.hxx>
+#include <OpenGl_telem_util.hxx>
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -425,18 +426,13 @@ const OpenGl_AspectText * OpenGl_Workspace::SetAspectText(const OpenGl_AspectTex
 
 /*----------------------------------------------------------------------*/
 
-const OpenGl_Matrix * OpenGl_Workspace::SetViewMatrix(const OpenGl_Matrix *AMatrix)
+const OpenGl_Matrix * OpenGl_Workspace::SetViewMatrix (const OpenGl_Matrix *AMatrix)
 {
   const OpenGl_Matrix *ViewMatrix_old = ViewMatrix_applied;
   ViewMatrix_applied = AMatrix;
 
-  OpenGl_Matrix lmat;
-  OpenGl_Transposemat3( &lmat, StructureMatrix_applied );
-
-  glMatrixMode (GL_MODELVIEW);
-  OpenGl_Matrix rmat;
-  OpenGl_Multiplymat3 (&rmat, &lmat, ViewMatrix_applied);
-  glLoadMatrixf ((const GLfloat* )rmat.mat);
+  // Update model-view matrix with new view matrix
+  UpdateModelViewMatrix();
 
   return ViewMatrix_old;
 }
@@ -451,10 +447,8 @@ const OpenGl_Matrix * OpenGl_Workspace::SetStructureMatrix (const OpenGl_Matrix 
   OpenGl_Matrix lmat;
   OpenGl_Transposemat3( &lmat, AMatrix );
 
-  glMatrixMode (GL_MODELVIEW);
-  OpenGl_Matrix rmat;
-  OpenGl_Multiplymat3 (&rmat, &lmat, ViewMatrix_applied);
-  glLoadMatrixf ((const GLfloat* )rmat.mat);
+  // Update model-view matrix with new structure matrix
+  UpdateModelViewMatrix();
 
   if (!myGlContext->ShaderManager()->IsEmpty())
   {
@@ -469,6 +463,18 @@ const OpenGl_Matrix * OpenGl_Workspace::SetStructureMatrix (const OpenGl_Matrix 
   }
 
   return StructureMatrix_old;
+}
+
+/*----------------------------------------------------------------------*/
+
+const void OpenGl_Workspace::UpdateModelViewMatrix()
+{
+  OpenGl_Matrix aStructureMatT;
+  OpenGl_Transposemat3( &aStructureMatT, StructureMatrix_applied);
+
+  glMatrixMode (GL_MODELVIEW);
+  OpenGl_Multiplymat3 (&myModelViewMatrix, &aStructureMatT, ViewMatrix_applied);
+  glLoadMatrixf ((const GLfloat* )&myModelViewMatrix.mat);
 }
 
 /*----------------------------------------------------------------------*/

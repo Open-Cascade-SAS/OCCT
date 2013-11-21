@@ -18,6 +18,9 @@
 // and conditions governing the rights and limitations under the License.
 
 #include <OpenGl_Flipper.hxx>
+
+#include <OpenGl_Context.hxx>
+#include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_Vec.hxx>
 #include <OpenGl_Workspace.hxx>
 
@@ -65,11 +68,71 @@ void OpenGl_Flipper::Release (const Handle(OpenGl_Context)& )
 // =======================================================================
 void OpenGl_Flipper::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
+  // Check if rendering is to be in immediate mode
+  const Standard_Boolean isImmediate = (theWorkspace->NamedStatus & (OPENGL_NS_ADD | OPENGL_NS_IMMEDIATE)) != 0;
+  const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
+  GLint aCurrMode = GL_MODELVIEW;
+  glGetIntegerv (GL_MATRIX_MODE, &aCurrMode);
+
   if (!myIsEnabled)
   {
-    glMatrixMode (GL_MODELVIEW);
-    glLoadMatrixf ((GLfloat*) theWorkspace->ViewMatrix());
+    // Restore transformation
+    if (isImmediate)
+    {
+      if (aCurrMode != GL_MODELVIEW)
+      {
+        glMatrixMode (GL_MODELVIEW);
+      }
+
+      glPopMatrix();
+
+      if (aCurrMode != GL_MODELVIEW)
+      {
+        glMatrixMode (aCurrMode);
+      }
+
+      Tmatrix3 aModelWorldState = { { 1.f, 0.f, 0.f, 0.f },
+                                    { 0.f, 1.f, 0.f, 0.f },
+                                    { 0.f, 0.f, 1.f, 0.f },
+                                    { 0.f, 0.f, 0.f, 1.f } };
+
+      aContext->ShaderManager()->RevertModelWorldStateTo (aModelWorldState);
+    }
+    else
+    {
+      // Update current model-view matrix in the top of the stack
+      // replacing it with StructureMatrixT*ViewMatrix from the workspace.
+      theWorkspace->UpdateModelViewMatrix();
+    }
     return;
+  }
+
+  if (isImmediate)
+  {
+
+    if (!aContext->ShaderManager()->IsEmpty())
+    {
+      Tmatrix3 aWorldView;
+      glGetFloatv (GL_MODELVIEW_MATRIX, *aWorldView);
+
+      Tmatrix3 aProjection;
+      glGetFloatv (GL_PROJECTION_MATRIX, *aProjection);
+
+      aContext->ShaderManager()->UpdateWorldViewStateTo (aWorldView);
+      aContext->ShaderManager()->UpdateProjectionStateTo (aProjection);
+    }
+
+    if (aCurrMode != GL_MODELVIEW)
+    {
+      glMatrixMode (GL_MODELVIEW);
+    }
+
+    glPushMatrix();
+
+    if (aCurrMode != GL_MODELVIEW)
+    {
+      glMatrixMode (aCurrMode);
+    }
   }
 
   OpenGl_Mat4 aMatrixMV;
@@ -128,8 +191,6 @@ void OpenGl_Flipper::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
   aMatrixMV = aMatrixMV * aTransform;
 
   // load transformed model-view matrix
-  GLint aCurrMode = GL_MODELVIEW;
-  glGetIntegerv (GL_MATRIX_MODE, &aCurrMode);
   if (aCurrMode != GL_MODELVIEW)
   {
     glMatrixMode (GL_MODELVIEW);

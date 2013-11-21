@@ -104,6 +104,7 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_Display)& theDisplay,
   TextParam_applied (NULL),
   ViewMatrix_applied (&myDefaultMatrix),
   StructureMatrix_applied (&myDefaultMatrix),
+  myModelViewMatrix (myDefaultMatrix),
   PolygonOffset_applied (NULL)
 {
   theDisplay->InitAttributes();
