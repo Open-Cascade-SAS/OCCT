@@ -1304,15 +1304,20 @@ gp_Dir A2YDirection = A2.YDirection() ;     \n\
  AddSeparator(aDoc,Message);
  //--------------------------------------------------------------
 
+ // Set style for vector lines
+ Handle(Prs3d_LineAspect) anAxesAspect = new Prs3d_LineAspect (Quantity_NOC_GREEN, Aspect_TOL_SOLID, 1.0);
+
  DisplayPoint(aDoc,P1,"P1",false,0.1);
  Handle(ISession_Direction) aDirection = new ISession_Direction(P1,D,2);
  aDoc->GetAISContext()->Display(aDirection, Standard_False);
 
  Handle(ISession_Direction) aDirection2 = new ISession_Direction(P1,AXDirection,2);
  aDirection2->SetText("A.XDirection");
+ aDirection2->SetLineAspect (anAxesAspect);
  aDoc->GetAISContext()->Display(aDirection2, Standard_False);
  Handle(ISession_Direction) aDirection3 = new ISession_Direction(P1,AYDirection,2);
  aDirection3->SetText("A.YDirection");
+ aDirection3->SetLineAspect (anAxesAspect);
  aDoc->GetAISContext()->Display(aDirection3, Standard_False);
 
  DisplayPoint(aDoc,P2,"P2",false,0.1);
@@ -1321,9 +1326,11 @@ gp_Dir A2YDirection = A2.YDirection() ;     \n\
 
  Handle(ISession_Direction) aDirection5 = new ISession_Direction(P2,A2XDirection,2);
  aDirection5->SetText("A2 XDirection");
+ aDirection5->SetLineAspect (anAxesAspect);
  aDoc->GetAISContext()->Display(aDirection5, Standard_False);
  Handle(ISession_Direction) aDirection6 = new ISession_Direction(P2,A2YDirection,2);
  aDirection6->SetText("A2 YDirection");
+ aDirection6->SetLineAspect (anAxesAspect);
  aDoc->GetAISContext()->Display(aDirection6, Standard_False);
 
  Message += "IsDirectA = ";

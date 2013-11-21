@@ -57,6 +57,8 @@
 #include <Geom_Circle.hxx>
 #include <Geom_Transformation.hxx>
 #include <Geom_CylindricalSurface.hxx>
+#include <Graphic3d_ArrayOfSegments.hxx>
+#include <Graphic3d_Group.hxx>
 #include <BRepBuilderAPI_GTransform.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCone.hxx>
@@ -125,6 +127,9 @@
 #include <Plate_PinpointConstraint.hxx>
 #include <Plate_D1.hxx>
 #include <Plate_GtoCConstraint.hxx>
+#include <Prs3d_Arrow.hxx>
+#include <Prs3d_LineAspect.hxx>
+#include <Prs3d_Root.hxx>
 #include <GeomPlate_Surface.hxx>
 #include <GeomProjLib.hxx>
 #include <GCE2d_MakeSegment.hxx>

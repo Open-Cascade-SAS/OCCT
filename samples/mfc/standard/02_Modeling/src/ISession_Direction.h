@@ -17,23 +17,27 @@
 #include "AIS_InteractiveObject.hxx"
 
 DEFINE_STANDARD_HANDLE(ISession_Direction,AIS_InteractiveObject)
-class ISession_Direction : public AIS_InteractiveObject  
+class ISession_Direction : public AIS_InteractiveObject
 {
 public:
-	ISession_Direction();
+  ISession_Direction();
     ISession_Direction(const gp_Pnt& aPnt,const gp_Pnt& aPnt2);
     ISession_Direction(const gp_Pnt& aPnt,const gp_Vec& aVec);
 
-    DEFINE_STANDARD_RTTI(ISession_Direction)
+  DEFINE_STANDARD_RTTI(ISession_Direction)
 
 private:
 
-    void Compute         (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
-                          const Handle(Prs3d_Presentation)& aPresentation,
-                          const Standard_Integer aMode);
-	void ComputeSelection(const class Handle_SelectMgr_Selection &,const int){};
-    gp_Pnt myStartPnt;
-    gp_Pnt myEndPnt;
+  void Compute (const Handle(PrsMgr_PresentationManager3d)& aPresentationManager,
+                const Handle(Prs3d_Presentation)& aPresentation,
+                const Standard_Integer aMode);
+
+  void ComputeSelection (const class Handle_SelectMgr_Selection &,const int){};
+
+private:
+
+  gp_Pnt myStartPnt;
+  gp_Pnt myEndPnt;
 };
 
 #endif // !defined(AFX_ISession_Direction_H__767C0DB3_A3B0_11D1_8DA3_0800369C8A03__INCLUDED_)

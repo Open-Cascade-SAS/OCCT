@@ -25,27 +25,43 @@ ISession_Direction::ISession_Direction()
 
 }
 
-ISession_Direction::ISession_Direction(const gp_Pnt& aPnt,const gp_Dir&   aDir,Standard_Real aLength,Standard_Real anArrowLength)
-:myPnt(aPnt),myDir(aDir),myLength(aLength),myArrowLength(anArrowLength)
+ISession_Direction::ISession_Direction (const gp_Pnt& aPnt,
+                                        const gp_Dir& aDir,
+                                        Standard_Real aLength,
+                                        Standard_Real anArrowLength)
+: myPnt (aPnt),
+  myDir (aDir),
+  myLength (aLength),
+  myArrowLength (anArrowLength)
 {}
 
-ISession_Direction::ISession_Direction(const gp_Pnt& aPnt,const gp_Vec&   aVec,Standard_Real anArrowLength)
-:myPnt(aPnt),myDir(aVec),myArrowLength(anArrowLength)
+ISession_Direction::ISession_Direction (const gp_Pnt& aPnt,
+                                        const gp_Vec& aVec,
+                                        Standard_Real anArrowLength)
+: myPnt (aPnt),
+  myDir (aVec),
+  myArrowLength (anArrowLength)
 {
   myLength = aVec.Magnitude();
 }
 
-ISession_Direction::ISession_Direction(const gp_Pnt2d& aPnt2d,
-                                       const gp_Dir2d& aDir2d,
-                                       Standard_Real aLength)
-:myPnt(gp_Pnt(aPnt2d.X(),aPnt2d.Y(),0)),myDir(gp_Dir(aDir2d.X(),aDir2d.Y(),0)),myLength(aLength)
-{}
+ISession_Direction::ISession_Direction (const gp_Pnt2d& aPnt2d,
+                                        const gp_Dir2d& aDir2d,
+                                        Standard_Real aLength)
+: myPnt (gp_Pnt(aPnt2d.X(),aPnt2d.Y(),0.0)),
+  myDir (gp_Dir(aDir2d.X(),aDir2d.Y(),0.0)),
+  myLength (aLength)
+{
+  myArrowLength = myDrawer->ArrowAspect()->Length();
+}
 
-ISession_Direction::ISession_Direction(const gp_Pnt2d& aPnt2d,
-                                       const gp_Vec2d&   aVec2d)
-:myPnt(gp_Pnt(aPnt2d.X(),aPnt2d.Y(),0)),myDir(gp_Dir(aVec2d.X(),aVec2d.Y(),0))
+ISession_Direction::ISession_Direction (const gp_Pnt2d& aPnt2d,
+                                        const gp_Vec2d& aVec2d)
+: myPnt (gp_Pnt (aPnt2d.X(), aPnt2d.Y(), 0.0)),
+  myDir (gp_Dir(aVec2d.X(), aVec2d.Y(), 0.0))
 {
   myLength = aVec2d.Magnitude();
+  myArrowLength = myDrawer->ArrowAspect()->Length();
 }
 
 
@@ -54,44 +70,63 @@ ISession_Direction::~ISession_Direction()
 
 }
 
-void ISession_Direction::Compute(const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
-                             const Handle(Prs3d_Presentation)& aPresentation,
-                             const Standard_Integer /*aMode*/)
+void ISession_Direction::Compute (const Handle(PrsMgr_PresentationManager3d)& /*aPresentationManager*/,
+                                  const Handle(Prs3d_Presentation)& aPresentation,
+                                  const Standard_Integer /*aMode*/)
 {
-    Handle(Prs3d_ArrowAspect) anArrowAspect = myDrawer->ArrowAspect();
-    anArrowAspect->SetLength(myArrowLength);
-    myDrawer->SetArrowAspect(anArrowAspect);
+  // Set style for arrow
+  Handle(Prs3d_ArrowAspect) anArrowAspect = myDrawer->ArrowAspect();
+  anArrowAspect->SetLength (myArrowLength);
 
-    gp_Pnt LastPoint = myPnt  ;
-    LastPoint.Translate (myLength*gp_Vec(myDir))  ;
+  gp_Pnt aLastPoint = myPnt;
+  aLastPoint.Translate (myLength*gp_Vec(myDir));
 
-    if (myText.Length() == 0)
-        DsgPrs_LengthPresentation::Add(aPresentation,myDrawer,myPnt,LastPoint,DsgPrs_AS_LASTAR);
-    else
-    {
-        gp_Pnt OffsetPoint = myPnt;
-        OffsetPoint.Translate ( (myLength) *gp_Vec(myDir))  ;
-        DsgPrs_LengthPresentation::Add(aPresentation,myDrawer,myText,myPnt,LastPoint, -myDir, OffsetPoint,  DsgPrs_AS_LASTAR);
-    }
+  // Draw Line
+  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments (2);
+  aPrims->AddVertex (myPnt);
+  aPrims->AddVertex (aLastPoint);
+  Prs3d_Root::CurrentGroup (aPresentation)->SetPrimitivesAspect (myDrawer->LineAspect()->Aspect());
+  Prs3d_Root::CurrentGroup (aPresentation)->AddPrimitiveArray (aPrims);
+  // Draw arrow
+  Prs3d_Arrow::Draw (aPresentation,
+                     aLastPoint,
+                     myDir,
+                     anArrowAspect->Angle(),
+                     anArrowAspect->Length());
+
+  // Draw text
+  if (myText.Length() != 0)
+  {
+    gp_Pnt aTextPosition = aLastPoint;
+    Prs3d_Text::Draw (aPresentation,
+                      myDrawer->TextAspect(),
+                      myText,
+                      aTextPosition);
+  }
 }
 
 
-void ISession_Direction::Compute(const Handle(Prs3d_Projector)& /*aProjector*/,
-                                 const Handle(Prs3d_Presentation)& /*aPresentation*/) 
- {
- }
-
-void ISession_Direction::ComputeSelection(const Handle(SelectMgr_Selection)& /*aSelection*/,
-				          const Standard_Integer /*aMode*/) 
-{ 
+void ISession_Direction::Compute (const Handle(Prs3d_Projector)& /*aProjector*/,
+                                  const Handle(Prs3d_Presentation)& /*aPresentation*/) 
+{
 }
 
-void ISession_Direction::SetText(TCollection_ExtendedString & aText)
+void ISession_Direction::ComputeSelection (const Handle(SelectMgr_Selection)& /*aSelection*/,
+                                           const Standard_Integer /*aMode*/) 
 {
-    myText = aText;
 }
 
-void ISession_Direction::SetText(Standard_CString aText)
+void ISession_Direction::SetText (TCollection_ExtendedString & theText)
 {
-    myText = aText;
+  myText = theText;
+}
+
+void ISession_Direction::SetText (Standard_CString theText)
+{
+  myText = theText;
+}
+
+void ISession_Direction::SetLineAspect (const Handle(Prs3d_LineAspect)& theAspect)
+{
+  myDrawer->SetLineAspect (theAspect);
 }

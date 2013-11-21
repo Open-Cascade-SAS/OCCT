@@ -36,13 +36,19 @@ void ISession_Direction::Compute(const Handle(PrsMgr_PresentationManager3d)& /*a
                                  const Handle(Prs3d_Presentation)& aPresentation,
                                  const Standard_Integer /*aMode*/)
 {
-    Handle(Prs3d_ArrowAspect) anArrowAspect = myDrawer->ArrowAspect();
-    anArrowAspect->SetLength(myStartPnt.Distance(myEndPnt));
-    myDrawer->SetArrowAspect(anArrowAspect);
+  // Set style for arrow
+  Handle(Prs3d_ArrowAspect) anArrowAspect = myDrawer->ArrowAspect();
 
-    DsgPrs_LengthPresentation::Add(aPresentation,myDrawer,
-		                           myStartPnt,myEndPnt,
-								   DsgPrs_AS_LASTAR);
+  // Draw Line
+  Handle(Graphic3d_ArrayOfSegments) aPrims = new Graphic3d_ArrayOfSegments (2);
+  aPrims->AddVertex (myStartPnt);
+  aPrims->AddVertex (myEndPnt);
+  Prs3d_Root::CurrentGroup (aPresentation)->SetPrimitivesAspect (myDrawer->LineAspect()->Aspect());
+  Prs3d_Root::CurrentGroup (aPresentation)->AddPrimitiveArray (aPrims);
+  // Draw arrow
+  Prs3d_Arrow::Draw (aPresentation,
+                     myEndPnt,
+                     gp_Dir (gp_Vec(myStartPnt, myEndPnt)),
+                     anArrowAspect->Angle(),
+                     anArrowAspect->Length());
 }
-
-
