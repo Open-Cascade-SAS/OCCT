@@ -1,0 +1,34 @@
+puts "============"
+puts "OCC24327"
+puts "============"
+puts ""
+#################################################
+# Wrong result obtained by Exterma Curve/Curve
+#################################################
+
+restore [locate_data_file bug24200_c1] c1
+restore [locate_data_file bug24200_c2] c2
+
+trim c1t c1 0. 1260.
+trim c2t c2 0. 6142.
+
+set info_1 [extrema c1t c2t]
+set extrema_N [llength ${info_1}]
+if { ${extrema_N} < 1 } {
+   puts "Error : Extrema is wrong"
+} else {
+   for { set i 1 } { ${i} <= ${extrema_N} } { incr i } {
+      set info_2 [length ext_${i}]
+      regexp { is +([-0-9.+eE]+)} ${info_2} full edge_length
+      if { ${i} == 1 } {
+         set min_length ${edge_length}
+      }
+      if { ${min_length} > ${edge_length} } {
+         set min_length ${edge_length}
+      }
+   }
+   set expected_length 2.8421709430404007e-13
+   set tol_abs_length 1.0e-07
+   set tol_rel_length 0.01
+   checkreal "Minimal length" ${min_length} ${expected_length} ${tol_abs_length} ${tol_rel_length}
+}

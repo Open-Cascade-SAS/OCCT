@@ -57,9 +57,9 @@ Extrema_CurveCache::Extrema_CurveCache(const Curve& theC,
   myTrimFirst = myFirst = theUFirst;
   myTrimLast = myLast = theULast;
 
-  Standard_Integer Nbp = 2;
+  Standard_Integer Nbp = 3;
   if (2 * Coeff < 10000.0)
-    Nbp = (Standard_Integer) (2 * Coeff);
+    Nbp = Max((Standard_Integer) (2 * Coeff), Nbp);
   myNbSamples = (EndIndex - StartIndex)*Nbp + 1;
 
   const Standard_Integer aNbSTresh = 10000;
