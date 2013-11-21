@@ -31,6 +31,7 @@
 #include <gp_Cone.hxx>
 #include <gp_Sphere.hxx>
 #include <gp_Torus.hxx>
+#include <gp_Lin.hxx>
 //
 #include <Geom2d_Curve.hxx>
 #include <Geom_Surface.hxx>
@@ -1853,9 +1854,11 @@ Standard_Boolean FindPointInFace(const TopoDS_Edge& aE,
     case GeomAbs_Cylinder:
       aR = aBAS.Cylinder().Radius();
       break;
-    case GeomAbs_Cone:
-      aR = aBAS.Cone().RefRadius();
+    case GeomAbs_Cone: {
+      gp_Lin aL(aBAS.Cone().Axis());
+      aR = aL.Distance(aP);
       break;
+    }
     case GeomAbs_Sphere:
       aR = aBAS.Sphere().Radius();
       break;

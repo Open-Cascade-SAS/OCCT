@@ -784,21 +784,17 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
     }
 
     //// modified by jgv, 15.12.02 for OCC565 ////
-    if (typs1 == GeomAbs_Cone)
+    if (typs1 == GeomAbs_Cone && TreatAsBiParametric)
     {
       const gp_Cone Con1 = theS1->Cone();
       const Standard_Real a1 = Abs(Con1.SemiAngle());
-      if (a1 < 0.02 && a2 < 0.02) //quasi-cylinders: if same domain, treat as canonic
+      //if collinear, treat as canonical
+      const gp_Ax1 A1 = Con1.Axis(), A2 = Con2.Axis();
+      const gp_Lin L1(A1);
+      if (A1.IsParallel(A2,Precision::Angular()) && 
+         (L1.Distance(A2.Location()) <= Precision::Confusion()))
       {
-        const gp_Ax1 A1 = Con1.Axis(), A2 = Con2.Axis();
-        if (A1.IsParallel(A2,Precision::Angular()))
-        {
-          const gp_Lin L1(A1);
-          if (L1.Distance(A2.Location()) <= Precision::Confusion())
-          {
-            TreatAsBiParametric = Standard_False;
-          }
-        }
+        TreatAsBiParametric = Standard_False;
       }
       else if (a1 > 1.55 && a2 > 1.55) //quasi-planes: if same domain, treat as canonic
       {
@@ -811,14 +807,6 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
           {
             TreatAsBiParametric = Standard_False;
           }
-        }
-      }
-      else if ((a1 > 1.55) || (a2 > 1.55))
-      {
-        const gp_Ax1 A1 = Con1.Axis(), A2 = Con2.Axis();
-        if (A1.IsCoaxial(A2,Precision::Angular(),Precision::Confusion()))
-        {
-          TreatAsBiParametric = Standard_False;
         }
       }
     }// if (typs1 == GeomAbs_Cone)    {
@@ -984,21 +972,17 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
     }
 
     //// modified by jgv, 15.12.02 for OCC565 ////
-    if (typs1 == GeomAbs_Cone)
+    if (typs1 == GeomAbs_Cone && TreatAsBiParametric)
     {
       const gp_Cone Con1 = theS1->Cone();
       const Standard_Real a1 = Abs(Con1.SemiAngle());
-      if (a1 < 0.02 && a2 < 0.02) //quasi-cylinders: if same domain, treat as canonic
+      //if collinear, treat as canonical
+      const gp_Ax1 A1 = Con1.Axis(), A2 = Con2.Axis();
+      const gp_Lin L1(A1);
+      if (A1.IsParallel(A2,Precision::Angular()) &&
+         (L1.Distance(A2.Location()) <= Precision::Confusion()))
       {
-        const gp_Ax1 A1 = Con1.Axis(), A2 = Con2.Axis();
-        if (A1.IsParallel(A2,Precision::Angular()))
-        {
-          const gp_Lin L1(A1);
-          if (L1.Distance(A2.Location()) <= Precision::Confusion())
-          {
-            TreatAsBiParametric = Standard_False;
-          }
-        }
+        TreatAsBiParametric = Standard_False;
       }
       else if (a1 > 1.55 && a2 > 1.55) //quasi-planes: if same domain, treat as canonic
       {
@@ -1011,14 +995,6 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
           {
             TreatAsBiParametric = Standard_False;
           }
-        }
-      }
-      else if ((a1 > 1.55) || (a2 > 1.55))
-      {
-        const gp_Ax1 A1 = Con1.Axis(), A2 = Con2.Axis();
-        if (A1.IsCoaxial(A2,Precision::Angular(),Precision::Confusion()))
-        {
-          TreatAsBiParametric = Standard_False;
         }
       }
     }// if (typs1 == GeomAbs_Cone)    {
