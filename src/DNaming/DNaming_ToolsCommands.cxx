@@ -31,6 +31,7 @@
 #include <TopExp_Explorer.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TopAbs.hxx>
+#include <TNaming_CopyShape.hxx>
 #include <TNaming_Translator.hxx>
 #include <TopTools_DataMapIteratorOfDataMapOfShapeShape.hxx>
 #include <DNaming_DataMapOfShapeOfName.hxx>
@@ -147,6 +148,61 @@ static Standard_Integer DNaming_TCopyShape (Draw_Interpretor& di,
 }
 
 //=======================================================================
+//function : DNaming_TCopyTool
+//purpose  : CopyTool  Shape1 [Shape2 ...] 
+//           - for test TNaming_CopyShape::CopyTool mechanism
+//=======================================================================
+
+static Standard_Integer DNaming_TCopyTool (Draw_Interpretor& di,
+					   Standard_Integer nb, 
+					   const char** arg)
+{
+  if (nb < 2) {
+    di << "Usage: CopyTool Shape1 [Shape2] ..." << "\n";
+    return 1;
+  }
+
+  Standard_Integer                           i;
+  TCollection_AsciiString                    aCopyNames;
+  BRep_Builder                               aBuilder;
+  TColStd_IndexedDataMapOfTransientTransient aMap;
+  TopoDS_Shape                               aResult;
+
+  for (i = 1; i < nb; i++) {
+    TopoDS_Shape aShape = DBRep::Get(arg[i]);
+
+    if (aShape.IsNull()) {
+      BRepTools::Read(aShape, arg[i], aBuilder);
+    }
+
+    if (aShape.IsNull()) {
+      di << arg[i] << " is neither a shape nor a BREP file. Skip it." << "\n";
+      continue;
+    }
+
+    // Perform copying.
+    TNaming_CopyShape::CopyTool(aShape, aMap, aResult);
+
+    // Draw result.
+    TCollection_AsciiString aName(arg[i]);
+
+    aName.AssignCat("_c");
+    DBRep::Set(aName.ToCString(), aResult);
+
+    // Compose all names of copies.
+    if (!aCopyNames.IsEmpty()) {
+      aCopyNames.AssignCat(" ");
+    }
+
+    aCopyNames.AssignCat(aName);
+  }
+
+  di << aCopyNames.ToCString() << "\n";
+
+  return 0;
+}
+
+//=======================================================================
 //function : ToolsCommands
 //purpose  : 
 //=======================================================================
@@ -162,6 +218,10 @@ void DNaming::ToolsCommands (Draw_Interpretor& theCommands)
   theCommands.Add ("CopyShape", 
                    "CopyShape (Shape1 [Shape2] ...)",
 		   __FILE__, DNaming_TCopyShape, g); 
+
+  theCommands.Add ("CopyTool", 
+                   "CopyTool Shape1 [Shape2] ...",
+		   __FILE__, DNaming_TCopyTool, g); 
 
   theCommands.Add ("CheckSame", 
                    "CheckSame (Shape1 Shape2 ExploMode[F|E|V])",

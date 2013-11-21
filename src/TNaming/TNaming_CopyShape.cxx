@@ -51,6 +51,7 @@ void TNaming_CopyShape::Translate( const TopoDS_Shape& aShape,
 				  TopoDS_Shape& aResult,
 				  const Handle(TNaming_TranslateTool)& TrTool)
 {
+  aResult.Nullify();
 
   if (aShape.IsNull()) return;
 
