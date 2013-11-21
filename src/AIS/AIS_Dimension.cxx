@@ -471,6 +471,8 @@ Standard_Real AIS_Dimension::drawText (const Handle(Prs3d_Presentation)& thePres
     // Set display parameters for advanced selection
     BRepBndLib::AddClose (aTextShape, myGeom.myTextBndBox);
     // Drawing text
+    gp_Pnt aTextCenter = myGeom.myTextPosition.Translated (gp_Vec (theTextDir) * aTextWidth * 0.5);
+    Prs3d_Root::CurrentGroup (thePresentation)->SetFlippingOptions (Standard_True, gp_Ax2 (aTextCenter, myWorkingPlane.Axis().Direction(), aTextDir));
     if (myDrawer->DimensionAspect()->IsTextShaded())
     {
       // Setting text shading and color parameters
@@ -493,6 +495,7 @@ Standard_Real AIS_Dimension::drawText (const Handle(Prs3d_Presentation)& thePres
       StdPrs_WFShape::Add (thePresentation, aTextShape, myDrawer);
     }
     // Creating new group for lines
+    Prs3d_Root::CurrentGroup (thePresentation)->SetFlippingOptions (Standard_False, aPenAx3.Ax2());
     Prs3d_Root::NewGroup (thePresentation);
   }
   else

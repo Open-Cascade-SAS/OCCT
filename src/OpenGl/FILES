@@ -143,3 +143,5 @@ OpenGl_SceneGeometry.cxx
 OpenGl_RaytraceTypes.hxx
 OpenGl_RaytraceSource.cxx
 OpenGl_Workspace_Raytrace.cxx
+OpenGl_Flipper.hxx
+OpenGl_Flipper.cxx

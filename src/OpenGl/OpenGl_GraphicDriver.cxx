@@ -22,8 +22,8 @@
 #endif
 
 #include <OpenGl_GraphicDriver.hxx>
-
 #include <OpenGl_Context.hxx>
+#include <OpenGl_Flipper.hxx>
 #include <OpenGl_GraduatedTrihedron.hxx>
 #include <OpenGl_Group.hxx>
 #include <OpenGl_CView.hxx>
@@ -581,4 +581,17 @@ void OpenGl_GraphicDriver::GraduatedTrihedronMinMaxValues (const Standard_ShortR
                                                            const Standard_ShortReal theMaxZ)
 {
   OpenGl_GraduatedTrihedron::SetMinMax (theMinX, theMinY, theMinZ, theMaxX, theMaxY, theMaxZ);
+}
+
+// =======================================================================
+// function : SetFlippingOptions
+// purpose  : Enable or disable flipping option for the given group
+// =======================================================================
+void OpenGl_GraphicDriver::SetFlippingOptions (const Graphic3d_CGroup& theCGroup,
+                                               const Standard_Boolean  theIsEnabled,
+                                               const gp_Ax2&           theRefPlane)
+{
+  OpenGl_Flipper* aFlipper = new OpenGl_Flipper (theRefPlane);
+  aFlipper->SetOptions (theIsEnabled);
+  ((OpenGl_Group* )theCGroup.ptrGroup)->AddElement (TelNil, aFlipper);
 }

@@ -16,11 +16,6 @@
 // limitation, any warranties of merchantability, fitness for a particular
 // purpose or non-infringement Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License
-//
-// The code was inspired by "sView" project by
-// Kirill GAVRILOV: https://github.com/gkv311/sview.
-// Files: StGLMatrix.hxx, StGLMatrix.cxx.
-// Copyright (c) 2010-2013 Kirill Gavrilov <kirill@sview.ru>
 
 #ifndef _NCollection_Mat4_HeaderFile
 #define _NCollection_Mat4_HeaderFile
@@ -210,9 +205,10 @@ public:
   }
 
   //! Raw access to the data (for OpenGL exchange).
-  const Element_t*  GetData() const { return myMat; }
-  operator const Element_t*() const { return myMat; }
-  operator       Element_t*()       { return myMat; }
+  const Element_t* GetData()    const { return myMat; }
+  Element_t*       ChangeData()       { return myMat; }
+  operator const   Element_t*() const { return myMat; }
+  operator         Element_t*()       { return myMat; }
 
   //! Multiply by the vector (M * V).
   //! @param theVec [in] the vector to multiply.
@@ -267,7 +263,7 @@ public:
   //! @return result of multiplication.
   NCollection_Mat4 operator* (const NCollection_Mat4& theMat) const
   {
-    return Mutiplied (theMat);
+    return Multiplied (theMat);
   }
 
   //! Compute matrix multiplication product.
@@ -323,6 +319,24 @@ public:
     NCollection_Mat4 aTempMat;
     aTempMat.SetColumn (3, theVec);
     this->Multiply (aTempMat);
+  }
+
+  //! Transpose the matrix.
+  //! @return transposed copy of the matrix.
+  NCollection_Mat4 Transposed() const
+  {
+    NCollection_Mat4 aTempMat;
+    aTempMat.SetRow (0, GetColumn (0));
+    aTempMat.SetRow (1, GetColumn (1));
+    aTempMat.SetRow (2, GetColumn (2));
+    aTempMat.SetRow (3, GetColumn (3));
+    return aTempMat;
+  }
+
+  //! Transpose the matrix.
+  void Transpose()
+  {
+    *this = Transposed();
   }
 
   //! Compute inverted matrix.
@@ -421,4 +435,4 @@ private:
 
 };
 
-#endif // _NCollection_Matrix_H__
+#endif // _NCollection_Mat4_HeaderFile

@@ -44,7 +44,7 @@
 #include <Aspect_TypeOfTriedronEcho.hxx>
 #include <Aspect_Handle.hxx>
 #include <Aspect_PrintAlgo.hxx>
-
+#include <gp_Ax2.hxx>
 #include <Graphic3d_CView.hxx>
 #include <Graphic3d_CStructure.hxx>
 #include <Graphic3d_CGroup.hxx>
@@ -215,6 +215,7 @@ public:
   Standard_EXPORT void SetTransparency (const Standard_ShortReal ATransparency);
   Standard_EXPORT void UnsetTransparency ();
   Standard_EXPORT void SetLineAttributes (const Standard_Integer Type,const Standard_ShortReal Width);
+  Standard_EXPORT void SetFlippingOptions (const Graphic3d_CGroup& theCGroup, const Standard_Boolean theIsEnabled, const gp_Ax2& theRefPlane);
 
   //! Set text attributes for under-/overlayer. <br>
   //! <Font> argument defines the name of the font to be used, <br>

@@ -91,7 +91,8 @@ uses
     NListOfHAsciiString from Graphic3d,
     FontAspect          from Font,
     CGraduatedTrihedron from Graphic3d,
-    ClipPlane           from Graphic3d
+    ClipPlane           from Graphic3d,
+    Ax2                 from gp
 
 raises
 
@@ -456,6 +457,13 @@ is
                             theIsEnabled: Boolean from Standard)
     is deferred;
     ---Purpose: sets the stencil test to theIsEnabled state;
+    
+    SetFlippingOptions (me          : mutable;
+                        theCGroup   : CGroup from Graphic3d;
+                        theIsEnabled: Boolean from Standard;
+                        theRefPlane : Ax2 from gp)
+    is deferred;
+    ---Purpose: sets the flipping to theIsEnabled state for the given graphic group.
 
     ----------------------------------------
     -- Category: Methods to create Text

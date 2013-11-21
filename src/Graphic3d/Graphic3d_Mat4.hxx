@@ -1,5 +1,3 @@
-// Created on: 2013-10-25
-// Created by: Kirill GAVRILOV
 // Copyright (c) 2013 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
@@ -17,12 +15,13 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-#ifndef _Graphic3d_Vec_H__
-#define _Graphic3d_Vec_H__
+#ifndef _Graphic3d_Mat4_HeaderFile
+#define _Graphic3d_Mat4_HeaderFile
 
-#include <Graphic3d_Vec2.hxx>
-#include <Graphic3d_Vec3.hxx>
-#include <Graphic3d_Vec4.hxx>
-#include <Graphic3d_Mat4.hxx>
+#include <NCollection_Mat4.hxx>
+#include <Standard_TypeDef.hxx>
 
-#endif // _Graphic3d_Vec_H__
+typedef NCollection_Mat4<Standard_ShortReal> Graphic3d_Mat4;
+typedef NCollection_Mat4<Standard_Real>      Graphic3d_Mat4d;
+
+#endif // _Graphic3d_Mat4_HeaderFile

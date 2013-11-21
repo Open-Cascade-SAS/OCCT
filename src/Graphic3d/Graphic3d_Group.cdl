@@ -91,7 +91,8 @@ class Group from Graphic3d inherits TShared
         ArrayOfPrimitives           from Graphic3d,
         ListOfPArray                from Graphic3d,
         TransModeFlags              from Graphic3d,
-        CBounds                     from Graphic3d
+        CBounds                     from Graphic3d,
+        Ax2                         from gp
     
     raises
     
@@ -372,6 +373,11 @@ class Group from Graphic3d inherits TShared
     SetStencilTestOptions (me          : mutable;
                            theIsEnabled: Boolean from Standard);
     ---Purpose: sets the stencil test to theIsEnabled state;
+
+    SetFlippingOptions (me           : mutable;
+                        theIsEnabled : Boolean from Standard;
+                        theRefPlane  : Ax2 from gp);
+    ---Purpose: sets the flipping to theIsEnabled state.
 
         ----------------------------
         -- Category: Inquire methods

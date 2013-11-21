@@ -420,6 +420,8 @@ is
     primitive Vec2;
     primitive Vec3;
     primitive Vec4;
+    primitive Mat4;
+    primitive Mat4d;
 
     --------------------
     -- Category: Classes

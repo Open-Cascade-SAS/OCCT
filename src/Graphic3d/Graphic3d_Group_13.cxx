@@ -21,6 +21,11 @@
 #include <Graphic3d_Group.pxx>
 #include <gp_Pnt.hxx>
 
+// =======================================================================
+// function : AddPrimitiveArray
+// purpose  :
+// =======================================================================
+
 void Graphic3d_Group :: AddPrimitiveArray ( const Handle(Graphic3d_ArrayOfPrimitives)& elem,const Standard_Boolean EvalMinMax )  
 {
 	if (IsDeleted () ) return;
@@ -60,6 +65,11 @@ void Graphic3d_Group :: AddPrimitiveArray ( const Handle(Graphic3d_ArrayOfPrimit
 	Update ();
 }
 
+// =======================================================================
+// function : UserDraw
+// purpose  :
+// =======================================================================
+
 void Graphic3d_Group :: UserDraw ( const Standard_Address AnObject,				   
 				   const Standard_Boolean EvalMinMax,
 				   const Standard_Boolean ContainsFacet )
@@ -83,6 +93,21 @@ void Graphic3d_Group :: UserDraw ( const Standard_Address AnObject,
 	Update ();
 }
 
+// =======================================================================
+// function : SetFlippingOptions
+// purpose  :
+// =======================================================================
+
+void Graphic3d_Group::SetFlippingOptions (const Standard_Boolean theIsEnabled,
+                                          const gp_Ax2&          theRefPlane)
+{
+  MyGraphicDriver->SetFlippingOptions (MyCGroup, theIsEnabled, theRefPlane);
+}
+
+// =======================================================================
+// function : SetStencilTestOptions
+// purpose  :
+// =======================================================================
 void Graphic3d_Group::SetStencilTestOptions (const Standard_Boolean theIsEnabled)
 {
   MyGraphicDriver->SetStencilTestOptions (MyCGroup, theIsEnabled);

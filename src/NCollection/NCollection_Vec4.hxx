@@ -193,9 +193,10 @@ public:
   }
 
   //! Raw access to the data (for OpenGL exchange).
-  const Element_t* GetData() const { return v; }
-  operator const Element_t*() const { return v; }
-  operator Element_t*() { return v; }
+  const Element_t* GetData()    const { return v; }
+        Element_t* ChangeData()       { return v; }
+  operator const   Element_t*() const { return v; }
+  operator         Element_t*()       { return v; }
 
   //! Compute per-component summary.
   NCollection_Vec4& operator+= (const NCollection_Vec4& theAdd)

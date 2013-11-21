@@ -46,4 +46,7 @@ typedef Graphic3d_Vec2d  OpenGl_Vec2d;
 typedef Graphic3d_Vec3d  OpenGl_Vec3d;
 typedef Graphic3d_Vec4d  OpenGl_Vec4d;
 
+typedef Graphic3d_Mat4   OpenGl_Mat4;
+typedef Graphic3d_Mat4d  OpenGl_Mat4d;
+
 #endif // _OpenGl_Vec_H__
