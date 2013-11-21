@@ -11,7 +11,7 @@ pload VISUALIZATION
 vinit
 vpoint lengthP1 0 0 0
 vpoint lengthP2 50 50 50
-vdim -length -name=dim1 -plane=xoy lengthP1 lengthP2
+vdimension length name=dim1 plane=xoy lengthP1 lengthP2
 vdisplay dim1
 vfit
 vmoveto 82 254

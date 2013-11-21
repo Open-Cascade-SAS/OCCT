@@ -1,0 +1,66 @@
+puts "============"
+puts "CR24351"
+puts "============"
+puts ""
+#######################################################################
+#  Test AIS Length dimensions: label position and arrow orientation
+#######################################################################
+pload VISUALIZATION
+
+vinit
+vright
+
+set hpos "left hcenter right"
+set vpos "above vcenter below"
+
+# ---------------------------------------------------------------------
+# create dimensions with different arrow orientation and fit algorithm
+# ---------------------------------------------------------------------
+
+vpoint arrow_p1  0 0 0
+vpoint arrow_p2 50 0 0
+
+vpoint arrow_p3 100 0 0
+vpoint arrow_p4 150 0 0
+
+vpoint arrow_p5  0 0 50
+vpoint arrow_p6 10 0 50
+
+vpoint arrow_p7 100 0 50
+vpoint arrow_p8 127 0 50
+
+vdimension length name=arrow_d1 text=3d plane=zox label=hfit flyout=10.0 arrows=internal arrow_p1 arrow_p2
+vdimension length name=arrow_d2 text=3d plane=zox label=hfit flyout=10.0 arrows=external arrow_p3 arrow_p4
+vdimension length name=arrow_d3 text=3d plane=zox label=hfit flyout=10.0 arrows=fit arrow_p5 arrow_p6
+vdimension length name=arrow_d4 text=3d plane=zox label=hfit flyout=10.0 arrows=fit arrow_p7 arrow_p8
+vdisplay arrow_d1 arrow_d2 arrow_d3 arrow_d4
+vfit
+
+# ------------------------------------------------
+# create dimension with different label positions
+# ------------------------------------------------
+
+vinit Viewer2/View2
+vright
+
+set idx 0
+for {set r 0} {$r < 3} {incr r} {
+  for {set c 0} {$c < 3} {incr c} {
+
+    set point1 p_[expr "$idx * 2 + 0"]
+    set point2 p_[expr "$idx * 2 + 1"]
+
+    vpoint $point1 [expr "50.0 * ($c*2 + 0)"] 0.0 [expr "50.0 * $r"]
+    vpoint $point2 [expr "50.0 * ($c*2 + 1)"] 0.0 [expr "50.0 * $r"]
+
+    set dimension d_$idx
+
+    vdimension length name=$dimension text=3d plane=zox label=[lindex $hpos $c],[lindex $vpos $r] arrows=external flyout=10.0 $point1 $point2
+    vdisplay $dimension
+
+    incr idx
+  }
+}
+vfit
+
+set only_screen 1

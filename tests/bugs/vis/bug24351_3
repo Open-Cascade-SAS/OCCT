@@ -1,0 +1,78 @@
+puts "============"
+puts "CR24351"
+puts "============"
+puts ""
+#######################################################################
+#  Test AIS Radius dimensions: label position and arrow orientation
+#######################################################################
+pload VISUALIZATION
+
+vinit
+vright
+
+set hpos "left hcenter"
+set vpos "above vcenter below"
+
+# ---------------------------------------------------------------------
+# create dimensions with different arrow orientation and fit algorithm
+# ---------------------------------------------------------------------
+
+vpoint  circle1_p1 0  0 30
+vpoint  circle1_p2 30 0  0
+vpoint  circle1_p3 60 0 30
+vcircle circle1 circle1_p1 circle1_p2 circle1_p3 0
+vdimension radius name=rad1 text=3d plane=zox label=hfit flyout=0 arrows=internal circle1
+
+vpoint  circle2_p1 100 0 30
+vpoint  circle2_p2 130 0  0
+vpoint  circle2_p3 160 0 30
+vcircle circle2 circle2_p1 circle2_p2 circle2_p3 0
+vdimension radius name=rad2 text=3d plane=zox label=hfit flyout=0 arrows=external circle2
+
+vpoint  circle3_p1 0  0 113
+vpoint  circle3_p2 33 0  80
+vpoint  circle3_p3 66 0 113
+vcircle circle3 circle3_p1 circle3_p2 circle3_p3 0
+vdimension radius name=rad3 text=3d plane=zox label=hfit flyout=0 arrows=fit circle3
+
+vpoint  circle4_p1 120 0 95
+vpoint  circle4_p2 135 0 80
+vpoint  circle4_p3 150 0 95
+vcircle circle4 circle4_p1 circle4_p2 circle4_p3 0
+vdimension radius name=rad4 text=3d plane=zox label=hfit flyout=0 arrows=fit circle4
+
+vdisplay rad1 rad2 rad3 rad4
+vfit
+
+# ------------------------------------------------
+# create dimension with different label positions
+# ------------------------------------------------
+
+vinit Viewer2/View2
+vright
+
+set idx 0
+for {set r 0} {$r < 3} {incr r} {
+  for {set c 0} {$c < 2} {incr c} {
+
+    set point1 p_[expr "$idx * 3 + 0"]
+    set point2 p_[expr "$idx * 3 + 1"]
+    set point3 p_[expr "$idx * 3 + 2"]
+    set circle c_[expr "$idx"]
+
+    vpoint $point1 [expr "90.0 * $c +  0"] 0.0 [expr "80.0 * $r + 33"]
+    vpoint $point2 [expr "90.0 * $c + 33"] 0.0 [expr "80.0 * $r +  0"]
+    vpoint $point3 [expr "90.0 * $c + 66"] 0.0 [expr "80.0 * $r + 33"]
+    vcircle $circle $point1 $point2 $point3 0
+
+    set dimension r_$idx
+
+    vdimension radius name=$dimension text=3d plane=zox label=[lindex $hpos $c],[lindex $vpos $r] arrows=external flyout=0.0 $circle
+    vdisplay $dimension
+
+    incr idx
+  }
+}
+vfit
+
+set only_screen 1

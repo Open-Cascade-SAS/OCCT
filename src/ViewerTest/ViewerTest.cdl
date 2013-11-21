@@ -197,4 +197,12 @@ is
     RedrawAllViews;
     ---Purpose: redraws all defined views.
 
+    SplitParameter (theString : AsciiString from TCollection;
+                    theName   : out AsciiString from TCollection;
+                    theValue  : out AsciiString from TCollection)
+    returns Boolean from Standard;
+    ---Purpose: Splits "parameter=value" string into separate
+    -- parameter and value strings.
+    -- @return TRUE if the string matches pattern "<string>=<empty or string>"
+
 end;

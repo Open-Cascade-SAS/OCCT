@@ -727,27 +727,6 @@ void ViewerTest::RedrawAllViews()
 }
 
 //==============================================================================
-//function : splitParameter
-//purpose  : Split parameter string to parameter name an parameter value
-//==============================================================================
-Standard_Boolean splitParameter (const TCollection_AsciiString& theString,
-                                 TCollection_AsciiString&       theName,
-                                 TCollection_AsciiString&       theValue)
-{
-  Standard_Integer aParamNameEnd = theString.FirstLocationInSet("=",1, theString.Length());
-  if (aParamNameEnd == 0)
-    return Standard_False;
-  TCollection_AsciiString aString(theString);
-  if (aParamNameEnd != 0)
-  {
-    theValue = aString.Split(aParamNameEnd);
-    aString.Split(aString.Length()-1);
-    theName = aString;
-  }
-  return Standard_True;
-}
-
-//==============================================================================
 //function : Vinit
 //purpose  : Create the window viewer and initialize all the global variable
 //    Use Tk_CreateFileHandler on UNIX to catch the X11 Viewer event
@@ -770,7 +749,7 @@ static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
     const TCollection_AsciiString anArg = theArgVec[anArgIt];
     TCollection_AsciiString anArgCase = anArg;
     anArgCase.UpperCase();
-    if (splitParameter (anArg, aName, aValue))
+    if (ViewerTest::SplitParameter (anArg, aName, aValue))
     {
       aName.UpperCase();
       if (aName.IsEqual ("NAME"))
@@ -5334,7 +5313,7 @@ static int VDefaults (Draw_Interpretor& theDi,
   {
     TCollection_AsciiString anArg (theArgVec[anArgIter]);
     TCollection_AsciiString aKey, aValue;
-    if (!splitParameter (anArg, aKey, aValue)
+    if (!ViewerTest::SplitParameter (anArg, aKey, aValue)
      || aValue.IsEmpty())
     {
       std::cerr << "Error, wrong syntax at: '" << anArg.ToCString() << "'!\n";

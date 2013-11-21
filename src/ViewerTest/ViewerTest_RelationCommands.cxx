@@ -191,41 +191,39 @@ static void ComputeNewPlaneForDim (const Handle(AIS_Relation)& R,
 
 //=======================================================================
 //function : VDimBuilder
-//purpose  : Command for updated dimenasions: angle, length, radius, diameter
-//draw args : vdim -{angle|length|radius|diameter} -name={Dim_Name} 
-//                 shape1 [shape2 [shape3]] [-text={2d|3d} -plane={xoy|yoz|zox}]
+//purpose  : Command for building dimension presentations: angle,
+//           length, radius, diameter
 //=======================================================================
-
 static int VDimBuilder(Draw_Interpretor& theDi, Standard_Integer theArgsNb, const char** theArgs)
 {
   if (theArgsNb < 2)
   {
-    theDi << theArgs[0] << ": command argument is required. Type help for more information.\n";
+    std::cerr << theArgs[0] << ": command argument is required. Type help for more information.\n";
     return 1;
   }
 
   // Parse parameters
   TCollection_AsciiString aDimType(theArgs[1]);
   AIS_KindOfDimension aKindOfDimension;
-  if (aDimType == "-length")
+  if (aDimType == "length")
   {
     aKindOfDimension = AIS_KOD_LENGTH;
   }
-  else if (aDimType == "-angle")
+  else if (aDimType == "angle")
   {
     aKindOfDimension = AIS_KOD_PLANEANGLE;
   }
-  else if (aDimType == "-radius")
+  else if (aDimType == "radius")
   {
     aKindOfDimension = AIS_KOD_RADIUS;
   }
-  else if (aDimType == "-diameter" || aDimType == "-diam")
+  else if (aDimType == "diameter" || aDimType == "diam")
   {
     aKindOfDimension = AIS_KOD_DIAMETER;
   }
   else
   {
-    theDi << theArgs[0] << ": wrong type of dimension. Type help for more information.\n";
+    std::cerr << theArgs[0] << ": wrong type of dimension. Type help for more information.\n";
     return 1;
   }
   NCollection_List<Handle(AIS_InteractiveObject)> aShapes;
@@ -233,61 +231,181 @@ static int VDimBuilder(Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
   Standard_Boolean isPlaneCustom = Standard_False;
   TCollection_AsciiString aName;
   gp_Pln aWorkingPlane;
+  Standard_Boolean isCustomFlyout = Standard_False;
+  Standard_Real aCustomFlyout = 0.0;
+
   for (Standard_Integer anIt = 2; anIt < theArgsNb; ++anIt)
   {
-    TCollection_AsciiString aParam (theArgs[anIt]);
-    if (aParam.Search("-text") == 1)
+    TCollection_AsciiString anArgString = theArgs[anIt];
+    TCollection_AsciiString aParamName;
+    TCollection_AsciiString aParamValue;
+    if (ViewerTest::SplitParameter (anArgString, aParamName, aParamValue))
     {
-      anAspect->MakeText3d(aParam.Search("3d") != -1 ? Standard_True : Standard_False);
-    }
-    else if (aParam.Search("-name") == 1)
-    {
-      Standard_Integer aParamNameEnd = aParam.FirstLocationInSet("=",1, aParam.Length());
-      if (aParamNameEnd == 0)
+      aParamName.LowerCase();
+      aParamValue.LowerCase();
+
+      if (aParamName == "text")
       {
-        theDi << theArgs[0] << ": no name for dimension.\n";
-        return 1;
+        anAspect->MakeText3d (aParamValue == "3d");
       }
-      aName = aParam.Split(aParamNameEnd);
-    }
-    else if (aParam.Search("-plane") == 1)
-    {
-      isPlaneCustom = Standard_True;
-      if (aParam.Search("xoy") != -1)
-        aWorkingPlane = gp_Pln (gp_Ax3(gp::XOY()));
-      else if (aParam.Search("zox") != -1)
-        aWorkingPlane = gp_Pln (gp_Ax3(gp::ZOX()));
-      else if (aParam.Search("yoz") != -1)
-        aWorkingPlane = gp_Pln (gp_Ax3(gp::YOZ()));
+      else if (aParamName == "name")
+      {
+        if (aParamValue.IsEmpty())
+        {
+          std::cerr << theArgs[0] << ": no name for dimension.\n";
+          return 1;
+        }
+
+        aName = aParamValue;
+      }
+      else if (aParamName == "plane")
+      {
+        if (aParamValue == "xoy")
+        {
+          aWorkingPlane = gp_Pln (gp_Ax3 (gp::XOY()));
+        }
+        else if (aParamValue == "zox")
+        {
+          aWorkingPlane = gp_Pln (gp_Ax3 (gp::ZOX()));
+        }
+        else if (aParamValue == "yoz")
+        {
+          aWorkingPlane = gp_Pln (gp_Ax3 (gp::YOZ()));
+        }
+        else
+        {
+          std::cerr << theArgs[0] << ": wrong plane.\n";
+          return 1;
+        }
+
+        isPlaneCustom = Standard_True;
+      }
+      else if (aParamName == "label")
+      {
+        NCollection_List<TCollection_AsciiString> aListOfLabelVals;
+        while (aParamValue.Length() > 0)
+        {
+          TCollection_AsciiString aValue = aParamValue;
+
+          Standard_Integer aSeparatorPos = aParamValue.Search (",");
+          if (aSeparatorPos >= 0)
+          {
+            aValue.Trunc (aSeparatorPos - 1);
+            aParamValue.Remove (aSeparatorPos, 1);
+          }
+
+          aListOfLabelVals.Append (aValue);
+
+          aParamValue.Remove (1, aValue.Length());
+        }
+
+        NCollection_List<TCollection_AsciiString>::Iterator aLabelValueIt (aListOfLabelVals);
+        for ( ; aLabelValueIt.More(); aLabelValueIt.Next())
+        {
+          aParamValue = aLabelValueIt.Value();
+
+          if (aParamValue == "left")
+          {
+            anAspect->SetTextHorizontalPosition (Prs3d_DTHP_Left);
+          }
+          else if (aParamValue == "right")
+          {
+            anAspect->SetTextHorizontalPosition (Prs3d_DTHP_Right);
+          }
+          else if (aParamValue == "hcenter")
+          {
+            anAspect->SetTextHorizontalPosition (Prs3d_DTHP_Center);
+          }
+          else if (aParamValue == "hfit")
+          {
+            anAspect->SetTextHorizontalPosition (Prs3d_DTHP_Fit);
+          }
+          else if (aParamValue == "above")
+          {
+            anAspect->SetTextVerticalPosition (Prs3d_DTVP_Above);
+          }
+          else if (aParamValue == "below")
+          {
+            anAspect->SetTextVerticalPosition (Prs3d_DTVP_Below);
+          }
+          else if (aParamValue == "vcenter")
+          {
+            anAspect->SetTextVerticalPosition (Prs3d_DTVP_Center);
+          }
+          else
+          {
+            std::cerr << theArgs[0] << ": invalid label position: \"" << aParamValue << "\".\n";
+            return 1;
+          }
+        }
+      }
+      else if (aParamName == "flyout")
+      {
+        if (!aParamValue.IsRealValue())
+        {
+          std::cerr << theArgs[0] << ": numeric value expected for flyout.\n";
+          return 1;
+        }
+
+        aCustomFlyout = aParamValue.RealValue();
+
+        isCustomFlyout = Standard_True;
+      }
+      else if (aParamName == "arrows")
+      {
+        if (aParamValue == "external")
+        {
+          anAspect->SetArrowOrientation (Prs3d_DAO_External);
+        }
+        else if (aParamValue == "internal")
+        {
+          anAspect->SetArrowOrientation (Prs3d_DAO_Internal);
+        }
+        else if (aParamValue == "fit")
+        {
+          anAspect->SetArrowOrientation (Prs3d_DAO_Fit);
+        }
+      }
       else
       {
-        theDi << theArgs[0] << ": wrong plane.\n";
+        std::cerr << theArgs[0] << ": unknow parameter: \"" << aParamName << "\".\n";
         return 1;
       }
     }
-    else if (aParam.Search("-") != 1) // Shape
+    else // Shape
     {
-      if (!GetMapOfAIS().IsBound2 (aParam))
+      if (!GetMapOfAIS().IsBound2 (anArgString))
       {
-        theDi << theArgs[0] << ": wrong name of shape. May be here is a wrong parameter.\n";
+        std::cerr << theArgs[0] << ": wrong name of shape. May be here is a wrong parameter.\n";
         return 1;
       }
-      Handle(AIS_InteractiveObject) aShape = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aParam));
+
+      Handle(AIS_InteractiveObject) aShape = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (anArgString));
       if (aShape.IsNull())
+      {
+        std::cerr << theArgs[0] << ": wrong name of shape. Not a shape.\n";
         return 1;
+      }
+
       aShapes.Append (aShape);
     }
+  }
+
+  if (aName.IsEmpty())
+  {
+    std::cerr << theArgs[0] << ": no name for dimension.\n";
+    return 1;
   }
 
   // Build dimension
   Handle(AIS_Dimension) aDim;
   switch (aKindOfDimension)
   {
-  case AIS_KOD_LENGTH:
+    case AIS_KOD_LENGTH:
     {
       if (!isPlaneCustom)
       {
-        theDi << theArgs[0] << ": can build dimension without working plane.\n";
+        std::cerr << theArgs[0] << ": can not build dimension without working plane.\n";
         return 1;
       }
       if (aShapes.Extent() == 1)
@@ -295,7 +413,7 @@ static int VDimBuilder(Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
         if (aShapes.First()->Type() == AIS_KOI_Shape
             && (Handle(AIS_Shape)::DownCast(aShapes.First()))->Shape().ShapeType() != TopAbs_EDGE)
         {
-          theDi << theArgs[0] << ": wrong shape type.\n";
+          std::cerr << theArgs[0] << ": wrong shape type.\n";
           return 1;
         }
         aDim = new AIS_LengthDimension (TopoDS::Edge ((Handle(AIS_Shape)::DownCast(aShapes.First()))->Shape()), aWorkingPlane);
@@ -317,12 +435,14 @@ static int VDimBuilder(Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
       }
       else
       {
-        theDi << theArgs[0] << ": wrong number of shapes to build dimension.\n";
+        std::cerr << theArgs[0] << ": wrong number of shapes to build dimension.\n";
         return 1;
       }
+
+      break;
     }
-    break;
-  case AIS_KOD_PLANEANGLE:
+
+    case AIS_KOD_PLANEANGLE:
     {
       if (aShapes.Extent() == 1 && aShapes.First()->Type()==AIS_KOI_Shape)
       {
@@ -340,7 +460,7 @@ static int VDimBuilder(Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
           aDim = new AIS_AngleDimension (TopoDS::Edge(aShape1->Shape()),TopoDS::Edge(aShape2->Shape()));
         else
         {
-          theDi << theArgs[0] << ": wrong shapes for angle dimension.\n";
+          std::cerr << theArgs[0] << ": wrong shapes for angle dimension.\n";
           return 1;
         }
       }
@@ -365,12 +485,14 @@ static int VDimBuilder(Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
       }
       else
       {
-        theDi << theArgs[0] << ": wrong number of shapes to build dimension.\n";
+        std::cerr << theArgs[0] << ": wrong number of shapes to build dimension.\n";
         return 1;
       }
+
+      break;
     }
-    break;
-  case AIS_KOD_RADIUS: // radius of the circle
+
+    case AIS_KOD_RADIUS: // radius of the circle
     {
       if (aShapes.Extent() == 1)
       {
@@ -380,12 +502,14 @@ static int VDimBuilder(Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
       }
       else
       {
-        theDi << theArgs[0] << ": wrong number of shapes to build dimension.\n";
+        std::cerr << theArgs[0] << ": wrong number of shapes to build dimension.\n";
         return 1;
       }
+
+      break;
     }
-    break;
-  case AIS_KOD_DIAMETER:
+
+    case AIS_KOD_DIAMETER:
     {
       if (aShapes.Extent() == 1)
       {
@@ -395,18 +519,27 @@ static int VDimBuilder(Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
       }
       else
       {
-        theDi << theArgs[0] << ": wrong number of shapes to build dimension.\n";
+        std::cerr << theArgs[0] << ": wrong number of shapes to build dimension.\n";
         return 1;
       }
+
+      break;
     }
-    break;
-  default:
+
+    default:
     {
-      theDi << theArgs[0] << ": wrong type of dimension. Type help for more information.\n";
+      std::cerr << theArgs[0] << ": wrong type of dimension. Type help for more information.\n";
       return 1;
     }
   }
+
   aDim->SetDimensionAspect (anAspect);
+
+  if (isCustomFlyout)
+  {
+    aDim->SetFlyout (aCustomFlyout);
+  }
+
   if (GetMapOfAIS().IsBound2(aName))
   {
     theDi << theArgs[0] << ": shape with name " << aName.ToCString ()<< " already exists. It will be replaced\n";
@@ -415,7 +548,9 @@ static int VDimBuilder(Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
     TheAISContext()->Remove(anObj, Standard_False);
     GetMapOfAIS().UnBind2(aName);
   }
+
   GetMapOfAIS().Bind (aDim,aName);
+
   return 0;
 }
 
@@ -2374,11 +2509,12 @@ void ViewerTest::RelationCommands(Draw_Interpretor& theCommands)
 {
   const char *group = "AISRelations";
 
-  theCommands.Add("vdim",
-      "vdim -{angle|length|radius|diameter} -name={Dim_Name}"
-      " shape1 [shape2 [shape3]] [-text={2d|3d} -plane={xoy|yoz|zox}]"
-      " -Build a angle, length, radius and diameter dimensions;"
-      " -Workis only with interactive objects",
+  theCommands.Add("vdimension",
+      "vdimension {angle|length|radius|diameter} name={Dim_Name} shape1 [shape2 [shape3]]\n"
+      " [text={2d|3d}] [plane={xoy|yoz|zox}]\n"
+      " [label={left|right|hcenter|hfit},{above|below|vcenter}]\n"
+      " [flyout=value] [arrows={external|internal|fit}]\n"
+      " -Builds angle, length, radius and diameter dimensions.\n"
       __FILE__,VDimBuilder,group);
 
   theCommands.Add("vangledim",

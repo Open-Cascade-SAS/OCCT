@@ -781,6 +781,8 @@ void AIS_Dimension::drawLinearDimension (const Handle(Prs3d_Presentation)& thePr
                        aSecondArrowEnd, aSecondExtensionDir,
                        THE_EMPTY_LABEL, theMode, LabelPosition_None);
       }
+
+      break;
     }
     // ------------------------------------------------------------------------ //
     //                                LEFT                                      //
