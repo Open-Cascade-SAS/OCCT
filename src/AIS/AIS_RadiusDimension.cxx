@@ -18,52 +18,16 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-#include <Standard_NotImplemented.hxx>
-
 #include <AIS_RadiusDimension.hxx>
 
 #include <AIS.hxx>
 #include <AIS_Drawer.hxx>
-#include <AIS_KindOfDimension.hxx>
-#include <Adaptor3d_HCurve.hxx>
-#include <BRep_Tool.hxx>
-#include <BRepAdaptor_Surface.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <DsgPrs.hxx>
 #include <ElCLib.hxx>
-#include <GC_MakeCircle.hxx>
-#include <gce_MakeCirc.hxx>
 #include <gce_MakeDir.hxx>
-#include <gce_MakeLin.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_Plane.hxx>
-#include <Geom_Circle.hxx>
-#include <Geom_Curve.hxx>
-#include <Geom_TrimmedCurve.hxx>
-#include <Geom_ToroidalSurface.hxx>
-#include <Geom_CylindricalSurface.hxx>
-#include <Geom_SurfaceOfLinearExtrusion.hxx>
-#include <gp_Circ.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Trsf.hxx>
 #include <Graphic3d_ArrayOfSegments.hxx>
 #include <Graphic3d_Group.hxx>
-#include <Precision.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
-#include <Prs3d_DimensionAspect.hxx>
-#include <Prs3d_ArrowAspect.hxx>
-#include <Prs3d_Drawer.hxx>
 #include <Prs3d_Root.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopAbs_ShapeEnum.hxx>
-#include <TopoDS.hxx>
-#include <TopoDS_Face.hxx>
-#include <TopoDS_Wire.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopLoc_Location.hxx>
 
 IMPLEMENT_STANDARD_HANDLE(AIS_RadiusDimension, AIS_Dimension)
 IMPLEMENT_STANDARD_RTTIEXT(AIS_RadiusDimension, AIS_Dimension)
@@ -82,8 +46,14 @@ AIS_RadiusDimension::AIS_RadiusDimension (const gp_Circ& theCircle)
   myIsInitialized = Standard_True;
   SetSpecialSymbol ('R');
   SetDisplaySpecialSymbol (AIS_DSS_Before);
-  SetKindOfDimension(AIS_KOD_RADIUS);
+  SetKindOfDimension (AIS_KOD_RADIUS);
+  SetFlyout (0.0);
 }
+
+//=======================================================================
+//function : Constructor
+//purpose  : 
+//=======================================================================
 
 AIS_RadiusDimension::AIS_RadiusDimension (const gp_Circ& theCircle,
                                           const gp_Pnt& theAttachPoint)
@@ -96,6 +66,7 @@ AIS_RadiusDimension::AIS_RadiusDimension (const gp_Circ& theCircle,
   SetSpecialSymbol ('R');
   SetDisplaySpecialSymbol (AIS_DSS_Before);
   SetKindOfDimension (AIS_KOD_RADIUS);
+  SetFlyout (0.0);
 }
 
 //=======================================================================
@@ -111,44 +82,7 @@ AIS_RadiusDimension::AIS_RadiusDimension (const TopoDS_Shape& theShape)
   SetSpecialSymbol ('R');
   SetDisplaySpecialSymbol (AIS_DSS_Before);
   SetKindOfDimension (AIS_KOD_RADIUS);
-}
-
-//=======================================================================
-//function : Constructor
-//purpose  : 
-//=======================================================================
-
-AIS_RadiusDimension::AIS_RadiusDimension (const gp_Circ& theCircle,
-                                          const Handle(Prs3d_DimensionAspect)& theDimensionAspect,
-                                          const Standard_Real theExtensionSize/* = 1.0*/)
-
-: AIS_Dimension (theDimensionAspect,theExtensionSize),
-  myCircle (theCircle)
-{
-  myFirstPoint = ElCLib::Value(0, myCircle);
-  mySecondPoint = theCircle.Location();
-  SetSpecialSymbol ('R');
-  SetDisplaySpecialSymbol (AIS_DSS_Before);
-  SetKindOfDimension (AIS_KOD_RADIUS);
-}
-
-//=======================================================================
-//function : Constructor
-//purpose  : 
-//=======================================================================
-
-AIS_RadiusDimension::AIS_RadiusDimension (const gp_Circ& theCircle,
-                                          const gp_Pnt& theAttachPoint,
-                                          const Handle(Prs3d_DimensionAspect)& theDimensionAspect,
-                                          const Standard_Real theExtensionSize/* = 1.0*/)
-: AIS_Dimension (theDimensionAspect,theExtensionSize),
-  myCircle (theCircle)
-{
-  myFirstPoint = theAttachPoint;
-  mySecondPoint = theCircle.Location();
-  SetSpecialSymbol ('R');
-  SetDisplaySpecialSymbol (AIS_DSS_Before);
-  SetKindOfDimension (AIS_KOD_RADIUS);
+  SetFlyout (0.0);
 }
 
 //=======================================================================
@@ -177,38 +111,13 @@ void AIS_RadiusDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /
       myIsInitialized = Standard_True;
     }
   }
+
   if (!myIsWorkingPlaneCustom)
-    countDefaultPlane();
-
-  //Count flyout direction
-  gp_Ax1 aWorkingPlaneNormal = GetWorkingPlane().Axis();
-  gp_Dir aTargetPointsVector = gce_MakeDir (myFirstPoint, mySecondPoint);
-  // Count a flyout direction vector.
-  gp_Dir aFlyoutVector = aWorkingPlaneNormal.Direction()^aTargetPointsVector;
-
-  // Create lines for layouts
-  gp_Lin aLine1 (myFirstPoint, aFlyoutVector);
-  gp_Lin aLine2 (mySecondPoint, aFlyoutVector);
-
-  // Get flyout end points
-  gp_Pnt aFlyoutEnd1 = ElCLib::Value (ElCLib::Parameter (aLine1, myFirstPoint) + GetFlyout(), aLine1);
-  gp_Pnt aFlyoutEnd2 = ElCLib::Value (ElCLib::Parameter (aLine2, mySecondPoint) + GetFlyout(), aLine2);
-
-    // Add layout lines to graphic group
-  // Common to all type of dimension placement.
-  if (theMode == 0)
   {
-    Handle(Graphic3d_ArrayOfSegments) aPrimSegments = new Graphic3d_ArrayOfSegments(4);
-    aPrimSegments->AddVertex (myFirstPoint);
-    aPrimSegments->AddVertex (aFlyoutEnd1);
-
-    aPrimSegments->AddVertex (mySecondPoint);
-    aPrimSegments->AddVertex (aFlyoutEnd2);
-
-    Prs3d_Root::CurrentGroup (thePresentation)->AddPrimitiveArray (aPrimSegments);
+    countDefaultPlane();
   }
 
-  drawLinearDimension (thePresentation, aFlyoutEnd1, aFlyoutEnd2, (AIS_DimensionDisplayMode)theMode, Standard_True);
+  drawLinearDimension (thePresentation, (AIS_DimensionDisplayMode)theMode, Standard_True);
 }
 
 //=======================================================================

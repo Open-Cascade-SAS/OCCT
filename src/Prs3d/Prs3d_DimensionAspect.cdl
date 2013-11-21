@@ -20,8 +20,8 @@ class DimensionAspect from Prs3d inherits BasicAspect from Prs3d
 
     	---Purpose: defines the attributes when drawing a Length Presentation.
 uses 
-    HorizontalTextAlignment from Prs3d,
-    VerticalTextAlignment from Prs3d,
+    DimensionTextHorizontalPosition from Prs3d,
+    DimensionTextVerticalPosition from Prs3d,
     DimensionArrowOrientation from Prs3d,
     AspectLine3d from Graphic3d,
     ArrowAspect from Prs3d,
@@ -71,19 +71,19 @@ is
       --- Purpose: Sets orientation of arrows (external or internal).
       -- By default orientation is chosen automatically according to situation and text label size.   
 
-    GetArrowOrientation (me) returns DimensionArrowOrientation from Prs3d;
+    ArrowOrientation (me) returns DimensionArrowOrientation from Prs3d;
       --- Purpose: Gets orientation of arrows (external or internal).
 
-    SetVerticalTextAlignment(me: mutable; theVertTextAlignment: VerticalTextAlignment from Prs3d);
+    SetTextVerticalPosition (me: mutable; thePosition : DimensionTextVerticalPosition from Prs3d);
       --- Purpose: Sets vertical text alignment for text label.
 
-    VerticalTextAlignment (me) returns VerticalTextAlignment from Prs3d;
+    TextVerticalPosition (me) returns DimensionTextVerticalPosition from Prs3d;
       --- Purpose: Gets vertical text alignment for text label.
 
-    SetHorizontalTextAlignment (me: mutable; theHorTextAlignment: HorizontalTextAlignment from Prs3d);
+    SetTextHorizontalPosition (me: mutable; thePosition: DimensionTextHorizontalPosition from Prs3d);
       --- Purpose: Sets horizontal text alignment for text label.
 
-    HorizontalTextAlignment (me) returns HorizontalTextAlignment from Prs3d;
+    TextHorizontalPosition (me) returns DimensionTextHorizontalPosition from Prs3d;
       --- Purpose: Gets horizontal text alignment for text label.
 
     ArrowAspect(me) returns mutable ArrowAspect from Prs3d is static;
@@ -95,24 +95,38 @@ is
     SetCommonColor(me:mutable; theColor: Color from Quantity) is static; 
       ---Purpose: Sets the same color for all parts of dimension: lines, arrows and text.
 
+    SetExtensionSize (me : mutable; theSize : Real from Standard) is static;
+    ---Purpose: Sets extension size.
+
+    ExtensionSize (me) returns Real from Standard;
+    ---Purpose: Returns extension size.
+
 fields
 
     myLineAspect: LineAspect from Prs3d;
     ---Purpose: Text style. The size for 3d (or 2d) text is also inside here.
+
     myTextAspect: TextAspect from Prs3d;
     myArrowAspect : ArrowAspect from Prs3d;
     myIsText3d : Boolean from Standard;
     myIsTextShaded : Boolean from Standard;
     myIsArrows3d: Boolean from Standard;
+
     myArrowOrientation : DimensionArrowOrientation from Prs3d;
-    ---Purpose: Dimension arrow orientation
+    ---Purpose: Dimension arrow orientation.
     -- By default, it is computed automatically. Its value depends on the text
     -- bouning rectangle size and distance between two flyouts.
-    -- By default, it is internal one.
-    myHorTextAlignment: HorizontalTextAlignment from Prs3d;
-    ---Purpose:Horizontal text alignment (Prs3d_HTA_Left/Prs3d_HTA_Right/Prs3d_HTA_Center).
-    -- Defines horizontal position of text value label, by default it is center.
-    myVerTextAlignment: VerticalTextAlignment from Prs3d;
-    ---Purpose: Vertical text alignment (Prs3d_VTA_Top, Prs3d_VTA_Bottom/Prs3d_VTA_Center)
-    -- Defines vertical position of text value lable, by default it is center.
+    -- By default, it is "fit" one.
+
+    myTextHPosition : DimensionTextHorizontalPosition from Prs3d;
+    ---Purpose: Defines horizontal position of text value label, by default it is
+    -- "fit" - selected automatically depending on label-to-dimension size relation.
+
+    myTextVPosition : DimensionTextVerticalPosition from Prs3d;
+    ---Purpose: Defines vertical position of text value label, by default it is center.
+
+    myExtensionSize : Real from Standard;
+    ---Purpose: Size of arrow extensions.
+    -- The length of arrow tails if arrows are located outside dimension line.
+
 end DimensionAspect from Prs3d;

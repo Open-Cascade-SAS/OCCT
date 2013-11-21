@@ -44,19 +44,12 @@ DEFINE_STANDARD_HANDLE(AIS_RadiusDimension,AIS_Dimension)
 class AIS_RadiusDimension : public AIS_Dimension
 {
 public:
+
   Standard_EXPORT  AIS_RadiusDimension (const gp_Circ& theCircle);
 
   Standard_EXPORT  AIS_RadiusDimension (const gp_Circ& theCircle,
-                                         const gp_Pnt& theAttachPoint);
+                                        const gp_Pnt& theAttachPoint);
 
-  Standard_EXPORT  AIS_RadiusDimension (const gp_Circ& theCircle,
-                                        const Handle(Prs3d_DimensionAspect)& theDimensionAspect,
-                                        const Standard_Real theExtensionSize = 1.0);
-
-  Standard_EXPORT  AIS_RadiusDimension (const gp_Circ& theCircle,
-                                        const gp_Pnt& theAttachPoint,
-                                        const Handle(Prs3d_DimensionAspect)& theDimensionAspect,
-                                        const Standard_Real theExtensionSize = 1.0);
   //! Constructs the radius display object defined by the <br>
   //! shape aShape, the dimension aVal, and the text aText.
   Standard_EXPORT  AIS_RadiusDimension (const TopoDS_Shape& aShape);
@@ -64,17 +57,21 @@ public:
   DEFINE_STANDARD_RTTI(AIS_RadiusDimension)
 
 protected:
+
   //! Computes dimension value in display units
   Standard_EXPORT virtual void computeValue ();
+
     //! Fills default plane object if it is possible to count plane automatically.
   Standard_EXPORT virtual void countDefaultPlane ();
 
-private: 
-  virtual  void Compute (const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
-                         const Handle(Prs3d_Presentation)& thePresentation,
-                         const Standard_Integer theMode = 0);
+private:
+
+  virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
+                        const Handle(Prs3d_Presentation)& thePresentation,
+                        const Standard_Integer theMode = 0);
 
 // Fields
+private:
 
   gp_Circ myCircle;
 };

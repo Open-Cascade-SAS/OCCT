@@ -25,14 +25,15 @@ checkcolor $x_coord $y_coord 0 1 1
 if { $stat != 1 } {
    puts "Error : Highlighting of angle dimension with 2d text is wrong."
 }
-verase dim1
+vinit Viewer2/View2
+vdisplay angleP1 angleP2 angleP3
 vdim -angle -name=dim2 -text=3d angleP1 angleP2 angleP3
 vdisplay dim2
 vfit
 vmoveto 263 251
 
-set x_coord 332
-set y_coord 326
+set x_coord 335
+set y_coord 319
 
 checkcolor $x_coord $y_coord 0 1 1
 

@@ -14,13 +14,13 @@ vpoint radP2 50 50 0
 vpoint radP3 100 0 0
 vcircle circle radP1 radP2 radP3 0
 verase radP1 radP2 radP3
-vdim -radius -name=dim3 circle
-vdisplay dim3
+vdim -radius -name=dim1 circle
+vdisplay dim1
 vfit
-vmoveto 102 144
+vmoveto 123 158
 
-set x_coord 172
-set y_coord 186
+set x_coord 112
+set y_coord 151
 
 checkcolor $x_coord $y_coord 0 1 1
 
@@ -28,14 +28,15 @@ if { $stat != 1 } {
    puts "Error : Highlighting of radius dimension with 2d text is wrong."
 }
 
-verase dim3
-vdim -radius -name=dim3 -text=3d circle
-vdisplay dim3
+vinit Viewer2/View2
+vdisplay circle
+vdim -radius -name=dim2 -text=3d circle
+vdisplay dim2
 vfit
-vmoveto 102 144
+vmoveto 191 196
 
-set x_coord 172
-set y_coord 186
+set x_coord 129
+set y_coord 172
 
 checkcolor $x_coord $y_coord 0 1 1
 

@@ -710,7 +710,7 @@ static Standard_Integer OCC301 (Draw_Interpretor& di, Standard_Integer argc, con
   Handle(Prs3d_DimensionAspect) anAspect = new Prs3d_DimensionAspect;
   anAspect->MakeArrows3d (Standard_True);
   anAspect->ArrowAspect()->SetLength (anArrowSize);
-  anAspect->SetHorizontalTextAlignment (Prs3d_HTA_Right);
+  anAspect->SetTextHorizontalPosition (Prs3d_DTHP_Right);
   anAspect->TextAspect ()->SetColor (Quantity_NOC_YELLOW);
   anAngleDimension->SetDimensionAspect (anAspect);
   // Another position of dimension

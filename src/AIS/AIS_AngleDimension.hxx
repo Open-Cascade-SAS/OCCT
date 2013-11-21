@@ -48,6 +48,7 @@ DEFINE_STANDARD_HANDLE (AIS_AngleDimension, AIS_Dimension)
 class AIS_AngleDimension : public AIS_Dimension
 {
 public:
+
   //! Constructs angle dimension between two edges
   //! with automatic working plane computing
   //! if it is possible. In case of PI angle please
@@ -63,27 +64,11 @@ public:
   Standard_EXPORT  AIS_AngleDimension (const TopoDS_Edge& theFirstEdge,
                                        const TopoDS_Edge& theSecondEdge,
                                        const gp_Pln& thePlane);
-  
-  //!  Constructs the angle display object defined by the <br>
-  //! two edges and custom working plane and dimension aspect.
-  Standard_EXPORT  AIS_AngleDimension (const TopoDS_Edge& theFirstEdge,
-                                       const TopoDS_Edge& theSecondEdge,
-                                       const gp_Pln& thePlane,
-                                       const Handle(Prs3d_DimensionAspect)& theDimensionAspect,
-                                       const Standard_Real theExtensionSize = 1.0);
 
   //! Constructs the angle display object defined by three points.
   Standard_EXPORT  AIS_AngleDimension (const gp_Pnt& theFirstPoint,
                                        const gp_Pnt& theSecondPoint,
                                        const gp_Pnt& theThirdPoint);
-
-   //! Constructs the angle display object defined by three points
-  //! and dimension aspect that defines line, arrow and text aspect.
-  Standard_EXPORT  AIS_AngleDimension (const gp_Pnt& theFirstPoint,
-                                       const gp_Pnt& theSecondPoint,
-                                       const gp_Pnt& theThirdPoint,
-                                       const Handle(Prs3d_DimensionAspect)& theDimensionAspect,
-                                       const Standard_Real theExtensionSize = 1.0);
 
   //! Angle of cone
   Standard_EXPORT  AIS_AngleDimension (const TopoDS_Face& theCone);
@@ -97,7 +82,9 @@ public:
   Standard_EXPORT  void SetFirstShape (const TopoDS_Shape& theShape,
                                        const Standard_Boolean isSingleShape = Standard_False);
 
-  DEFINE_STANDARD_RTTI(AIS_AngleDimension)
+public:
+
+  DEFINE_STANDARD_RTTI (AIS_AngleDimension)
 
 protected:
 
@@ -120,7 +107,8 @@ protected:
                                          const gp_Pnt& theFirstAttach,
                                          const gp_Pnt& theSecondAttach,
                                          const TCollection_ExtendedString& theText,
-                                         const AIS_DimensionDisplayMode theMode);
+                                         const AIS_DimensionDisplayMode theMode,
+                                         const Standard_Integer theLabelPosition);
 
   Standard_EXPORT  virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& thePM,
                                          const Handle(Prs3d_Presentation)& thePresentation,
@@ -140,12 +128,6 @@ protected:
   Standard_EXPORT Standard_Integer aboveInBelowCone (const gp_Circ &theCMax,
                                                      const gp_Circ &theCMin,
                                                      const gp_Circ &theC);
-
-  //! Auxiliary method to arrange text and arrows
-  Standard_EXPORT Standard_Boolean canTextBeInCenter (const gp_Pnt& theFirstAttach,
-                                                      const gp_Pnt& theSecondAttach,
-                                                      const Quantity_Length& theTextLength,
-                                                      const Quantity_Length& theArrowLength);
 
   //! Fills default plane object if it is possible to count plane automatically.
   Standard_EXPORT virtual void countDefaultPlane ();

@@ -75,18 +75,27 @@ is
   --          For more details see AIS_Drawer class, AIS_Shape::Compute() method and
   --          HLRAlgo package from TKHLR toolkit.
   
-  enumeration  HorizontalTextAlignment is HTA_Left, HTA_Right, HTA_Center;
-  ---Purpose: To declare horisontal alignment for dimension text.
-  
-  enumeration VerticalTextAlignment is VTA_Top, VTA_Bottom, VTA_Center;
-  ---Purpose: To declare vertical alignment for dimension text label. 
-  
-  enumeration DimensionArrowOrientation is DAO_Internal, DAO_External;
-  ---Purpose: To declare arrow orientation for dimenation.
-  -- External orientation means that dimension has extension parts outside the measured area.
-  --Internal orientation means the dimension arrows are in the measured area, and no extension parts are needed.    
+  enumeration DimensionTextHorizontalPosition is DTHP_Left, DTHP_Right, DTHP_Center, DTHP_Fit;
+  ---Purpose: Specifies options for positioning dimension value label in horizontal direction.
+  -- DTHP_Left   - value label located at left side on dimension extension.
+  -- DTHP_Right  - value label located at right side on dimension extension.
+  -- DTHP_Center - value label located at center of dimension line.
+  -- DTHP_Fit    - value label located automatically at left side if does not fits
+  --               the dimension space, otherwise the value label is placed at center.
 
+  enumeration DimensionTextVerticalPosition is DTVP_Above, DTVP_Below, DTVP_Center;
+  ---Purpose: Specifies options for positioning dimension value label in vertical direction
+  -- with respect to dimension (extension) line.
+  -- DTVP_Above - text label is located above the dimension or extension line.
+  -- DTVP_Below - text label is located below the dimension or extension line.
+  -- DTVP_Center - the text label middle-point is in line with dimension or extension line.
 
+  enumeration DimensionArrowOrientation is DAO_Internal, DAO_External, DAO_Fit;
+  ---Purpose: Specifies dimension arrow location and orientation.
+  -- DAO_Internal - arrows "inside", pointing outwards.
+  -- DAO_External - arrows "outside", pointing inwards.
+  -- DAO_Fit      - arrows oriented inside if value label with arrowtips fit the dimension line,
+  --                otherwise - externally
 
   class Presentation;
   ---Purpose: defines the presentation object. This object can be

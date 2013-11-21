@@ -20,10 +20,10 @@ verase radP1 radP2 radP3
 vdim -radius -name=dim -text=3d circle
 vdisplay dim
 vfit
-vmoveto 102 144
+vmoveto 110 111
 
-set x_coord 153
-set y_coord 153
+set x_coord 196
+set y_coord 196
 checkcolor $x_coord $y_coord 0 1 1
 
 if { $stat != 1 } {
@@ -33,10 +33,10 @@ if { $stat != 1 } {
 # Z axis rotation
 vrotate 0 0 $m_pi
 vfit
-vmoveto 176 184
+vmoveto 221 217
 
-set x_coord 294
-set y_coord 257
+set x_coord 209
+set y_coord 208
 checkcolor $x_coord $y_coord 0 1 1
 
 if { $stat != 1 } {

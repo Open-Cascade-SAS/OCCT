@@ -14,10 +14,10 @@ vpoint lengthP2 50 50 50
 vdim -length -name=dim1 -plane=xoy lengthP1 lengthP2
 vdisplay dim1
 vfit
-vmoveto 82 268
+vmoveto 82 254
 
-set x_coord 337
-set y_coord 130
+set x_coord 362
+set y_coord 102
 checkcolor $x_coord $y_coord 0 1 1
 if { $stat != 1 } {
    puts "Error : Highlighting of length dimension is wrong."

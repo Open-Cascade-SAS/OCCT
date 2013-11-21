@@ -18,11 +18,12 @@
 
 #include <Prs3d_DimensionAspect.hxx>
 
+#include <Prs3d_ArrowAspect.hxx>
+#include <Prs3d_TextAspect.hxx>
+#include <Prs3d_LineAspect.hxx>
+
 #include <Aspect_TypeOfLine.hxx>
 #include <Graphic3d_AspectText3d.hxx>
-#include <Prs3d_LineAspect.hxx>
-#include <Prs3d_TextAspect.hxx>
-#include <Prs3d_ArrowAspect.hxx>
 #include <Quantity_Color.hxx>
 
 IMPLEMENT_STANDARD_HANDLE (Prs3d_DimensionAspect, Prs3d_BasicAspect)
@@ -33,13 +34,12 @@ IMPLEMENT_STANDARD_RTTIEXT (Prs3d_DimensionAspect, Prs3d_BasicAspect)
 //purpose  : 
 //=======================================================================
 
-Prs3d_DimensionAspect::Prs3d_DimensionAspect ()
+Prs3d_DimensionAspect::Prs3d_DimensionAspect()
 {
-  // Text alignment
-  myHorTextAlignment = Prs3d_HTA_Center;
-  myVerTextAlignment = Prs3d_VTA_Center;
-  // Arrow orientation, will be computed on further steps, by default it is internal.
-  myArrowOrientation = Prs3d_DAO_Internal;
+  myTextHPosition    = Prs3d_DTHP_Fit;
+  myTextVPosition    = Prs3d_DTVP_Center;
+  myArrowOrientation = Prs3d_DAO_Fit;
+
   myLineAspect = new Prs3d_LineAspect (Quantity_NOC_LAWNGREEN,Aspect_TOL_SOLID,1.);
   myTextAspect = new Prs3d_TextAspect;
   myTextAspect->Aspect()->SetTextZoomable (Standard_False);
@@ -48,7 +48,8 @@ Prs3d_DimensionAspect::Prs3d_DimensionAspect ()
   myTextAspect->SetVerticalJustification (Graphic3d_VTA_CENTER);
   myArrowAspect = new Prs3d_ArrowAspect;
   myArrowAspect->SetColor (Quantity_NOC_LAWNGREEN);
-  myArrowAspect->SetLength (6.);
+  myArrowAspect->SetLength (6.0);
+  myExtensionSize = 6.0;
 }
 
 //=======================================================================
@@ -176,49 +177,49 @@ void Prs3d_DimensionAspect::SetArrowOrientation (const Prs3d_DimensionArrowOrien
 //purpose  : 
 //======================================================================= 
 
-Prs3d_DimensionArrowOrientation Prs3d_DimensionAspect::GetArrowOrientation () const
+Prs3d_DimensionArrowOrientation Prs3d_DimensionAspect::ArrowOrientation() const
 {
   return myArrowOrientation;
 }
 
 //=======================================================================
-//function : VerticalTextAlignment
+//function : SetTextVerticalPosition
+//purpose  :
+//=======================================================================
+
+void Prs3d_DimensionAspect::SetTextVerticalPosition (const Prs3d_DimensionTextVerticalPosition thePosition)
+{
+  myTextVPosition = thePosition;
+}
+
+//=======================================================================
+//function : TextVerticalPosition
+//purpose  :
+//======================================================================= 
+
+Prs3d_DimensionTextVerticalPosition Prs3d_DimensionAspect::TextVerticalPosition() const
+{
+  return myTextVPosition;
+}
+
+//=======================================================================
+//function : SetTextHorizontalPosition
+//purpose  : 
+//=======================================================================
+
+void Prs3d_DimensionAspect::SetTextHorizontalPosition (const Prs3d_DimensionTextHorizontalPosition thePosition)
+{
+  myTextHPosition = thePosition;
+}
+
+//=======================================================================
+//function : TextHorizontalPosition
 //purpose  : 
 //======================================================================= 
 
-Prs3d_VerticalTextAlignment Prs3d_DimensionAspect::VerticalTextAlignment () const
+Prs3d_DimensionTextHorizontalPosition Prs3d_DimensionAspect::TextHorizontalPosition() const
 {
-  return myVerTextAlignment;
-}
-   
-//=======================================================================
-//function : SetVerticalTextAlignment
-//purpose  : 
-//=======================================================================
-
-void Prs3d_DimensionAspect::SetVerticalTextAlignment (const Prs3d_VerticalTextAlignment theVertTextAlignment)
-{
-  myVerTextAlignment = theVertTextAlignment;
-}
-
-//=======================================================================
-//function : HorizontalTextAlignment
-//purpose  : 
-//======================================================================= 
-
-Prs3d_HorizontalTextAlignment Prs3d_DimensionAspect::HorizontalTextAlignment () const
-{
-  return myHorTextAlignment;
-}
-   
-//=======================================================================
-//function : SetHorizontalTextAlignment
-//purpose  : 
-//=======================================================================
-
-void Prs3d_DimensionAspect::SetHorizontalTextAlignment (const Prs3d_HorizontalTextAlignment theHorTextAlignment)
-{
-  myHorTextAlignment = theHorTextAlignment;
+  return myTextHPosition;
 }
 
 //=======================================================================
@@ -239,4 +240,24 @@ Handle(Prs3d_ArrowAspect) Prs3d_DimensionAspect::ArrowAspect () const
 void Prs3d_DimensionAspect::SetArrowAspect (const Handle(Prs3d_ArrowAspect)& theAspect)
 {
   myArrowAspect = theAspect;
+}
+
+//=======================================================================
+//function : SetExtensioSize
+//purpose  : 
+//=======================================================================
+
+void Prs3d_DimensionAspect::SetExtensionSize (const Standard_Real theSize)
+{
+  myExtensionSize = theSize;
+}
+
+//=======================================================================
+//function : ExtensionSize
+//purpose  : 
+//=======================================================================
+
+Standard_Real Prs3d_DimensionAspect::ExtensionSize() const
+{
+  return myExtensionSize;
 }

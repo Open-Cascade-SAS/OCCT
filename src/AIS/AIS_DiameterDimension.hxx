@@ -47,19 +47,16 @@ public:
   Standard_EXPORT  AIS_DiameterDimension (const gp_Circ& theCircle,
                                           const gp_Pnt& theAttachPoint);
 
-  Standard_EXPORT   AIS_DiameterDimension (const gp_Circ& theCircle,
-                                           const Handle(Prs3d_DimensionAspect)& theDimensionStyle,
-                                           const Standard_Real theExtensionSize = 1.0);
-
   Standard_EXPORT  AIS_DiameterDimension (const TopoDS_Shape& theShape);
 
   DEFINE_STANDARD_RTTI(AIS_DiameterDimension)
 
 protected:
 
-  Standard_EXPORT  virtual void computeValue ();
+  Standard_EXPORT  virtual void computeValue();
+
     //! Fills default plane object if it is possible to count plane automatically.
-  Standard_EXPORT  virtual void countDefaultPlane ();
+  Standard_EXPORT  virtual void countDefaultPlane();
 
 private: 
 
@@ -68,6 +65,7 @@ private:
                          const Standard_Integer theMode = 0);
 
 // Fields
+private:
 
   gp_Circ myCircle;
 };

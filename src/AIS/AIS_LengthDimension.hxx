@@ -67,15 +67,6 @@ class AIS_LengthDimension : public AIS_Dimension
 {
 public:
 
-  //! Constructor with full parameter list.
-  //! Construct dimension between two vertices.
-  //! Style of line, arrow and text can be set by default.
-  Standard_EXPORT  AIS_LengthDimension (const gp_Pnt& theFirstPoint,
-                                        const gp_Pnt& theSecondPoint,
-                                        const gp_Pln& theDimensionPlane,
-                                        const Handle(Prs3d_DimensionAspect)& theDimensionAspect,
-                                        const Standard_Real theExtensionSize = 1.0);
-
   Standard_EXPORT  AIS_LengthDimension (const gp_Pnt& theFirstPoint,
                                         const gp_Pnt& theSecondPoint,
                                         const gp_Pln& theDimensionPlane);
@@ -94,35 +85,42 @@ public:
   Standard_EXPORT AIS_LengthDimension (const TopoDS_Face& theFace,
                                        const TopoDS_Edge& theEdge);
 
+public:
+
   DEFINE_STANDARD_RTTI(AIS_LengthDimension)
+
 private:
+
   Standard_Boolean initTwoEdgesLength (const TopoDS_Edge & theFirstEdge,
-                           const TopoDS_Edge& theSecondEdge,
-                           gp_Dir& theDirAttach);
+                                       const TopoDS_Edge& theSecondEdge,
+                                       gp_Dir& theDirAttach);
+
   //! Auxiliary method for <InitTwoShapesPoints()>
   //! in case of the distance between edge and vertex
   Standard_Boolean initEdgeVertexLength (const TopoDS_Edge & theEdge,
-                             const TopoDS_Vertex & theVertex,
-                             gp_Dir & theDirAttach,
-                             Standard_Boolean isInfinite);
+                                         const TopoDS_Vertex & theVertex,
+                                         gp_Dir & theDirAttach,
+                                         Standard_Boolean isInfinite);
+
   //! Auxiliary method for <InitTwoShapesPoints()>
   //! in case of the distance between face and edge
   Standard_Boolean initEdgeFaceLength (const TopoDS_Edge& theEdge,
                                        const TopoDS_Face& theFace,
                                        gp_Dir& theDirAttach);
+
   //! Initialization of two attach points in case of two owner shapes
   Standard_Boolean initTwoShapesPoints (const TopoDS_Shape& theFirstShape,
-                            const TopoDS_Shape& theSecondShape);
+                                        const TopoDS_Shape& theSecondShape);
+
   //! Initialization of two attach points in case of one owner shape
   Standard_Boolean initOneShapePoints (const TopoDS_Shape& theShape);
 
   //! Compute length in display units.
-  virtual void computeValue ();
+  virtual void computeValue();
 
   virtual  void Compute (const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
                          const Handle(Prs3d_Presentation)& thePresentation,
                          const Standard_Integer theMode = 0) ;
-
 };
 
 #endif
