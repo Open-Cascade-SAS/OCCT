@@ -146,7 +146,8 @@ OpenGl_RaytraceLight::OpenGl_RaytraceLight (const OpenGl_RTVec4f& theDiffuse,
 // =======================================================================
 OpenGl_RTVec4f OpenGl_RaytraceScene::Center (const int theTriangle) const
 {
-  const OpenGl_RTVec4i anIndex (Triangles [theTriangle]);
+  const OpenGl_RTVec4i& anIndex = Triangles [theTriangle];
+
   return ( Vertices[anIndex.x()] +
            Vertices[anIndex.y()] +
            Vertices[anIndex.z()] ) * ( 1.f / 3.f );
@@ -159,7 +160,8 @@ OpenGl_RTVec4f OpenGl_RaytraceScene::Center (const int theTriangle) const
 float OpenGl_RaytraceScene::CenterAxis (const int theTriangle,
                                         const int theAxis) const
 {
-  const OpenGl_RTVec4i anIndex (Triangles [theTriangle]);
+  const OpenGl_RTVec4i& anIndex = Triangles [theTriangle];
+
   return ( Vertices[anIndex.x()][theAxis] +
            Vertices[anIndex.y()][theAxis] +
            Vertices[anIndex.z()][theAxis] ) * ( 1.f / 3.f );
@@ -171,11 +173,11 @@ float OpenGl_RaytraceScene::CenterAxis (const int theTriangle,
 // =======================================================================
 OpenGl_AABB OpenGl_RaytraceScene::Box (const int theTriangle) const
 {
-  const OpenGl_RTVec4i anIndex (Triangles[theTriangle]);
+  const OpenGl_RTVec4i& anIndex = Triangles[theTriangle];
 
-  const OpenGl_RTVec4f pA = Vertices[anIndex.x()];
-  const OpenGl_RTVec4f pB = Vertices[anIndex.y()];
-  const OpenGl_RTVec4f pC = Vertices[anIndex.z()];
+  const OpenGl_RTVec4f& pA = Vertices[anIndex.x()];
+  const OpenGl_RTVec4f& pB = Vertices[anIndex.y()];
+  const OpenGl_RTVec4f& pC = Vertices[anIndex.z()];
 
   OpenGl_AABB aBox (pA);
 

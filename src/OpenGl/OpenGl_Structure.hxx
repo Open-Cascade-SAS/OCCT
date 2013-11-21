@@ -138,6 +138,9 @@ protected:
   //! Unregisters ancestor connected structure (for updating ray-tracing state).
   void UnregisterAncestorStructure (const OpenGl_Structure* theStructure) const;
 
+  //! Unregisters structure from ancestor structure (for updating ray-tracing state).
+  void UnregisterFromAncestorStructure() const;
+
   //! Updates modification state for structure and its parents.
   void UpdateStateWithAncestorStructures() const;
 

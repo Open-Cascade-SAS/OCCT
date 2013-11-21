@@ -386,6 +386,27 @@ void OpenGl_Structure::UnregisterAncestorStructure (const OpenGl_Structure* theS
 }
 
 // =======================================================================
+// function : UnregisterFromAncestorStructure
+// purpose  :
+// =======================================================================
+void OpenGl_Structure::UnregisterFromAncestorStructure() const
+{
+  for (OpenGl_ListOfStructure::Iterator anIta (myAncestorStructures); anIta.More(); anIta.Next())
+  {
+    OpenGl_Structure* anAncestor = const_cast<OpenGl_Structure*> (anIta.ChangeValue());
+
+    for (OpenGl_ListOfStructure::Iterator anIts (anAncestor->myConnected); anIts.More(); anIts.Next())
+    {
+      if (anIts.Value() == this)
+      {
+        anAncestor->myConnected.Remove (anIts);
+        return;
+      }      
+    }
+  }
+}
+
+// =======================================================================
 // function : UpdateStateWithAncestorStructures
 // purpose  :
 // =======================================================================
@@ -778,6 +799,11 @@ void OpenGl_Structure::Release (const Handle(OpenGl_Context)& theGlCtx)
   OpenGl_Element::Destroy (theGlCtx, myAspectMarker);
   OpenGl_Element::Destroy (theGlCtx, myAspectText);
   ClearHighlightColor (theGlCtx);
+
+#ifdef HAVE_OPENCL
+  // Remove from connected list of ancestor
+  UnregisterFromAncestorStructure();
+#endif
 }
 
 // =======================================================================

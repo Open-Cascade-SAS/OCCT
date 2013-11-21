@@ -1,0 +1,32 @@
+puts "TODO ?OCC24130 Windows: TKOpenGl | Type\: Error | ID\: 0 | Severity\: High | Message\:"
+
+puts "========"
+puts "Ray Tracing - check rendering of multi-connected structures"
+puts "========"
+
+# create boxes
+box b1 0 0 0 1 2 3
+box b2 3 0 0 3 2 1
+
+# draw box
+vinit View1
+vclear
+vsetdispmode 1
+vraytrace 0
+vaxo
+vconnectsh b1c -3 0 0 1 0 0 0 0 1 b1 b2
+vfit
+vrotate 0.2 0.0 0.0
+vclear
+vconnectsh b1c -3 0 0 1 0 0 0 0 1 b1 b2
+
+# take snapshot with fixed pipeline
+vdump $::imagedir/${::casename}_OFF.png
+
+# turn on ray tracing
+vraytrace 1
+vclinfo
+vdump $::imagedir/${::casename}_rt1.png
+
+vclear
+vconnectsh b1c -3 0 0 1 0 0 0 0 1 b1 b2

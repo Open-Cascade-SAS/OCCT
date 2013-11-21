@@ -47,7 +47,7 @@
 using namespace OpenGl_Raytrace;
 
 //! Use this macro to output ray-tracing debug info
-// #define RAY_TRACE_PRINT_INFO
+//#define RAY_TRACE_PRINT_INFO
 
 #ifdef RAY_TRACE_PRINT_INFO
   #include <OSD_Timer.hxx>
