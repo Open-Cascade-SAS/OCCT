@@ -470,7 +470,8 @@ OSD_MAllocHook::CollectBySize::CollectBySize()
 : myArray(NULL),
   myTotalLeftSize(0),
   myTotalPeakSize(0),
-  myBreakSize(0)
+  myBreakSize(0),
+  myBreakPeak(0)
 {
   Reset();
 }
@@ -587,7 +588,18 @@ void OSD_MAllocHook::CollectBySize::AllocEvent
     myTotalLeftSize += theSize;
     int nbLeft = myArray[ind].nbAlloc - myArray[ind].nbFree;
     if (nbLeft > myArray[ind].nbLeftPeak)
+    {
       myArray[ind].nbLeftPeak = nbLeft;
+      if (myBreakPeak != 0
+       && (myBreakSize == theSize || myBreakSize == 0))
+      {
+        const Standard_Size aSizePeak = myArray[ind].nbLeftPeak * theSize;
+        if (aSizePeak > myBreakPeak)
+        {
+          place_for_breakpoint();
+        }
+      }
+    }
     if (myTotalLeftSize > (ptrdiff_t)myTotalPeakSize)
       myTotalPeakSize = myTotalLeftSize;
     myMutex.Unlock();
