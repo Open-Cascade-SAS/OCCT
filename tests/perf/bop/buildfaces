@@ -1,3 +1,5 @@
+cpulimit 800
+
 puts "========"
 puts "CR24292"
 puts "========"
