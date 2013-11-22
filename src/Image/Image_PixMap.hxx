@@ -156,13 +156,15 @@ public: // high-level API
 
 public: // low-level API for batch-processing (pixels reading / comparison / modification)
 
-  //! Returns true if image data stored from Top to the Down (default).
-  //! Some external APIs can return bottom-up data instead
+  //! Returns TRUE if image data is stored from Top to the Down.
+  //! By default Bottom Up order is used instead
   //! (topmost scanlines starts from the bottom in memory).
+  //! which is most image frameworks naturally support.
+  //!
   //! Notice that access methods within this class automatically
   //! convert input row-index to apply this flag!
   //! You should use this flag only if interconnect with alien APIs and buffers.
-  //! @return true if image data is top-down.
+  //! @return true if image data is top-down
   inline bool IsTopDown() const
   {
     return myData.myTopToDown == 1;
@@ -170,8 +172,8 @@ public: // low-level API for batch-processing (pixels reading / comparison / mod
 
   //! Setup scanlines order in memory - top-down or bottom-up.
   //! Drawers should explicitly specify this value if current state IsTopDown() was ignored!
-  //! @param theIsTopDown - top-down flag.
-  inline void SetTopDown (bool theIsTopDown)
+  //! @param theIsTopDown top-down flag
+  inline void SetTopDown (const bool theIsTopDown)
   {
     myData.myTopToDown = (theIsTopDown ? 1 : Standard_Size(-1));
     setTopDown();

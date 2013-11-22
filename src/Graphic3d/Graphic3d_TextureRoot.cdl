@@ -92,6 +92,7 @@ is
   -- Default implementation will dynamically load image from specified path within this method
   -- (and no copy will be preserved in this class instance).
   -- Inheritors may dynamically generate the image or return cached instance.
+  -- Notice, image data should be in Bottom-Up order (see Image_PixMap::IsTopDown())!
   -- @return the image for texture.
 
   GetParams (me) returns TextureParams from Graphic3d;
