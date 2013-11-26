@@ -64,7 +64,7 @@ void IntImpParGen_Intersector::And_Domaine_Objet1_Intersections(const ImpTool& T
   NbResultats=0;
   
   for(Standard_Integer i=1; i<=Nb_Bornes_Intersection; i+=2) {
-    Standard_Boolean reverse=Standard_False;
+    Standard_Boolean aReverse=Standard_False;
     
     Standard_Real param1=Inter1.Value(i);
     Standard_Real param2=Inter1.Value(i+1);
@@ -76,7 +76,7 @@ void IntImpParGen_Intersector::And_Domaine_Objet1_Intersections(const ImpTool& T
       Standard_Real t=param1; param1=param2; param2=t;
       indice_1=i+1;
       indice_2=i;
-      reverse=Standard_True;
+      aReverse=Standard_True;
     }
 
     gp_Pnt2d Pt1=TheImpTool.Value(param1);

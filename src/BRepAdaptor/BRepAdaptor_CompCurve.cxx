@@ -432,7 +432,7 @@ const TopoDS_Wire& BRepAdaptor_CompCurve::Wire() const
 
  void BRepAdaptor_CompCurve::Prepare(Standard_Real& W,
 				     Standard_Real& Delta,
-				     Standard_Integer& CurIndex) const
+				     Standard_Integer& theCurIndex) const
 {
   Standard_Real f,l, Wtest, Eps;
   Standard_Integer ii;
@@ -450,26 +450,26 @@ const TopoDS_Wire& BRepAdaptor_CompCurve::Wire() const
 
   // Find the index
   Standard_Boolean Trouve = Standard_False;
-  if (myKnots->Value(CurIndex) > Wtest) {
-    for (ii=CurIndex-1; ii>0 && !Trouve; ii--)
+  if (myKnots->Value(theCurIndex) > Wtest) {
+    for (ii=theCurIndex-1; ii>0 && !Trouve; ii--)
       if (myKnots->Value(ii)<= Wtest) {
-	CurIndex = ii;
+	theCurIndex = ii;
 	Trouve = Standard_True;
       }
-    if (!Trouve) CurIndex = 1; // Out of limits...
+    if (!Trouve) theCurIndex = 1; // Out of limits...
   }
 
-  else if (myKnots->Value(CurIndex+1) <= Wtest) {
-    for (ii=CurIndex+1; ii<=myCurves->Length() && !Trouve; ii++)
+  else if (myKnots->Value(theCurIndex+1) <= Wtest) {
+    for (ii=theCurIndex+1; ii<=myCurves->Length() && !Trouve; ii++)
       if (myKnots->Value(ii+1)> Wtest) {
-	CurIndex = ii;
+	theCurIndex = ii;
 	Trouve = Standard_True;
       }
-    if (!Trouve) CurIndex = myCurves->Length(); // Out of limits...
+    if (!Trouve) theCurIndex = myCurves->Length(); // Out of limits...
   }
 
   // Invert ?
-  const TopoDS_Edge& E = myCurves->Value(CurIndex).Edge();
+  const TopoDS_Edge& E = myCurves->Value(theCurIndex).Edge();
   TopAbs_Orientation Or = E.Orientation();
   Standard_Boolean Reverse;
   Reverse = (Forward && (Or == TopAbs_REVERSED)) ||
@@ -477,15 +477,15 @@ const TopoDS_Wire& BRepAdaptor_CompCurve::Wire() const
 
   // Calculate the local parameter
   BRep_Tool::Range(E, f, l);
-  Delta = myKnots->Value(CurIndex+1) - myKnots->Value(CurIndex);
+  Delta = myKnots->Value(theCurIndex+1) - myKnots->Value(theCurIndex);
   if (Delta > PTol*1.e-9) Delta = (l-f)/Delta;
 
   if (Reverse) {
     Delta *= -1;
-    W = l + (W-myKnots->Value(CurIndex)) * Delta;
+    W = l + (W-myKnots->Value(theCurIndex)) * Delta;
   }
   else {
-    W = f + (W-myKnots->Value(CurIndex)) * Delta;
+    W = f + (W-myKnots->Value(theCurIndex)) * Delta;
   }
 }
 

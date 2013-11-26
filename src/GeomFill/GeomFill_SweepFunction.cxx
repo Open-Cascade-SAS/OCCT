@@ -356,11 +356,11 @@ void GeomFill_SweepFunction::Resolution(const Standard_Integer Index,
 {
   gp_Pnt Bary;
   gp_Vec Translate;
-  gp_Mat M;
+  gp_Mat aM;
 
   Bary =  mySec->BarycentreOfSurf();
-  myLoc->GetAverageLaw(M, Translate);
-  Bary.ChangeCoord() *= M;
+  myLoc->GetAverageLaw(aM, Translate);
+  Bary.ChangeCoord() *= aM;
   Bary.ChangeCoord() += Translate.XYZ();
 
   return Bary;

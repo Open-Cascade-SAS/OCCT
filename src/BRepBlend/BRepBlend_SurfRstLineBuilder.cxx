@@ -154,7 +154,7 @@ static void Drawsect(const Standard_Real param,
 //=======================================================================
 
 Standard_Integer BRepBlend_SurfRstLineBuilder::
-   ArcToRecadre(const math_Vector& sol,
+   ArcToRecadre(const math_Vector& theSol,
 		const Standard_Integer PrevIndex, 
 		gp_Pnt2d& lastpt2d,
 		gp_Pnt2d& pt2d,
@@ -167,7 +167,7 @@ Standard_Integer BRepBlend_SurfRstLineBuilder::
   Standard_Real uprev = 0.,vprev = 0., prm =  0., dist = 0.;
 
   if(byinter) previousP.ParametersOnS(uprev,vprev);
-  pt2d.SetCoord(sol(1),sol(2));
+  pt2d.SetCoord(theSol(1),theSol(2));
   lastpt2d.SetCoord(uprev,vprev);
   domain1->Init();
 

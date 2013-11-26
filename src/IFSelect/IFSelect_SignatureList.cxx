@@ -79,13 +79,13 @@ IFSelect_SignatureList::IFSelect_SignatureList
 
     void IFSelect_SignatureList::Init
   (const Standard_CString name,
-   const Handle(Dico_DictionaryOfInteger)&   count,
+   const Handle(Dico_DictionaryOfInteger)&   theCount,
    const Handle(Dico_DictionaryOfTransient)& list,
    const Standard_Integer nbnuls)
 {
   thelastval.Clear();
   thename    = new TCollection_HAsciiString (name);
-  thedicount = count;
+  thedicount = theCount;
   thediclist = list;
   thenbnuls  = nbnuls;
   if (thediclist.IsNull()) thelistat = Standard_False;

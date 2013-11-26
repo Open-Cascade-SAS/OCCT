@@ -30,9 +30,9 @@ inline gp_Quaternion::gp_Quaternion()
 //purpose  : 
 //=======================================================================
 
-inline gp_Quaternion::gp_Quaternion (const Standard_Real x, const Standard_Real y, 
-                                     const Standard_Real z, const Standard_Real w)
-: x(x), y(y), z(z), w(w) 
+inline gp_Quaternion::gp_Quaternion (const Standard_Real theX, const Standard_Real theY,
+                                     const Standard_Real theZ, const Standard_Real theW)
+: x(theX), y(theY), z(theZ), w(theW)
 {
 }
 
@@ -42,7 +42,7 @@ inline gp_Quaternion::gp_Quaternion (const Standard_Real x, const Standard_Real 
 //=======================================================================
 
 inline gp_Quaternion::gp_Quaternion (const gp_Quaternion& theToCopy)
-: x(theToCopy.x), y(theToCopy.y), z(theToCopy.z), w(theToCopy.w) 
+: x(theToCopy.x), y(theToCopy.y), z(theToCopy.z), w(theToCopy.w)
 {
 }
 
@@ -91,13 +91,13 @@ inline gp_Quaternion::gp_Quaternion (const gp_Mat& theMat)
 //purpose  : 
 //=======================================================================
 
-inline void gp_Quaternion::Set (Standard_Real x, Standard_Real y, 
-                                Standard_Real z, Standard_Real w)
+inline void gp_Quaternion::Set (Standard_Real theX, Standard_Real theY,
+                                Standard_Real theZ, Standard_Real theW)
 {
-  this->x = x; 
-  this->y = y; 
-  this->z = z; 
-  this->w = w;
+  this->x = theX;
+  this->y = theY;
+  this->z = theZ;
+  this->w = theW;
 }
 
 //=======================================================================

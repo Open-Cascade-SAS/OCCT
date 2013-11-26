@@ -40,12 +40,12 @@ GeomFill_LocFunction::GeomFill_LocFunction(const Handle(GeomFill_LocationLaw)& L
 //					   const Standard_Real Last) 
 					   const Standard_Real ) 
 {
-  gp_Mat M;
+  gp_Mat aM;
   Standard_Boolean B;
-  B = myLaw->D0(Param, M, V.ChangeValue(1));
-  V(2).SetXYZ(M.Column(1));
-  V(3).SetXYZ(M.Column(2));
-  V(4).SetXYZ(M.Column(3));  
+  B = myLaw->D0(Param, aM, V.ChangeValue(1));
+  V(2).SetXYZ(aM.Column(1));
+  V(3).SetXYZ(aM.Column(2));
+  V(4).SetXYZ(aM.Column(3));
   return B;
 }
 
@@ -57,19 +57,19 @@ GeomFill_LocFunction::GeomFill_LocFunction(const Handle(GeomFill_LocationLaw)& L
 {
   TColgp_Array1OfPnt2d T1(1,1);
   TColgp_Array1OfVec2d T2(1,1);
-  gp_Mat M, DM;
+  gp_Mat aM, aDM;
   Standard_Boolean B;
-  B = myLaw->D1(Param, M, V.ChangeValue(1),
-		DM, DV.ChangeValue(1), 
+  B = myLaw->D1(Param, aM, V.ChangeValue(1),
+		aDM, DV.ChangeValue(1),
 		T1, T2);
 
-  V(2).SetXYZ(M.Column(1));
-  V(3).SetXYZ(M.Column(2));
-  V(4).SetXYZ(M.Column(3));
+  V(2).SetXYZ(aM.Column(1));
+  V(3).SetXYZ(aM.Column(2));
+  V(4).SetXYZ(aM.Column(3));
 
-  DV(2).SetXYZ(DM.Column(1));
-  DV(3).SetXYZ(DM.Column(2));
-  DV(4).SetXYZ(DM.Column(3)); 
+  DV(2).SetXYZ(aDM.Column(1));
+  DV(3).SetXYZ(aDM.Column(2));
+  DV(4).SetXYZ(aDM.Column(3));
   return B;
 }
 
@@ -81,24 +81,24 @@ GeomFill_LocFunction::GeomFill_LocFunction(const Handle(GeomFill_LocationLaw)& L
 {
   TColgp_Array1OfPnt2d T1(1,1);
   TColgp_Array1OfVec2d T2(1,1), T3(1,1);
-  gp_Mat M, DM, D2M;
+  gp_Mat aM, aDM, aD2M;
   Standard_Boolean B;
-  B = myLaw->D2(Param, M, V.ChangeValue(1),
-		DM, DV.ChangeValue(1),
-		D2M, D2V.ChangeValue(1), 
+  B = myLaw->D2(Param, aM, V.ChangeValue(1),
+		aDM, DV.ChangeValue(1),
+		aD2M, D2V.ChangeValue(1),
 		T1, T2, T3);
-  V(2).SetXYZ(M.Column(1));
-  V(3).SetXYZ(M.Column(2));
-  V(4).SetXYZ(M.Column(3));
+  V(2).SetXYZ(aM.Column(1));
+  V(3).SetXYZ(aM.Column(2));
+  V(4).SetXYZ(aM.Column(3));
 
-  DV(2).SetXYZ(DM.Column(1));
-  DV(3).SetXYZ(DM.Column(2));
-  DV(4).SetXYZ(DM.Column(3)); 
+  DV(2).SetXYZ(aDM.Column(1));
+  DV(3).SetXYZ(aDM.Column(2));
+  DV(4).SetXYZ(aDM.Column(3));
 
 
-  D2V(2).SetXYZ(D2M.Column(1));
-  D2V(3).SetXYZ(D2M.Column(2));
-  D2V(4).SetXYZ(D2M.Column(3)); 
+  D2V(2).SetXYZ(aD2M.Column(1));
+  D2V(3).SetXYZ(aD2M.Column(2));
+  D2V(4).SetXYZ(aD2M.Column(3));
 
   return B;  
 }

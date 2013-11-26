@@ -1182,13 +1182,13 @@ static Standard_Integer OCC884 (Draw_Interpretor& di, Standard_Integer argc, con
   di << "Info: No. of self-intersection points : " << num << "\n";
 
   char str[80];
-  Standard_CString name = str;
+  Standard_CString aName = str;
   for (i = 1; i <= num; ++i)
   { 
     gp_Pnt pt = points3d(i); 
     di << "Info: Intersecting pt : (" << pt.X() << ", " << pt.Y() << ", " << pt.Z() << ")\n";
     Sprintf(str,"p_%d",i);
-    DrawTrSurf::Set(name,pt);
+    DrawTrSurf::Set(aName,pt);
   }
 
   Handle(ShapeFix_Wire) sfw = new ShapeFix_Wire;

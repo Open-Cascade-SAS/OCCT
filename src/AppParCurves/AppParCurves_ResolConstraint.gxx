@@ -489,31 +489,31 @@ const
 {
   // Boucle de calcul du nombre de points de passage afin de dimensionner 
   // les matrices.
-  Standard_Integer IncPass, IncTan, IncCurv, CCol;
+  Standard_Integer aIncPass, aIncTan, aIncCurv, aCCol;
   Standard_Integer i;
   AppParCurves_Constraint Cons;
 
-  IncPass = 0;
-  IncTan = 0;
-  IncCurv = 0;
+  aIncPass = 0;
+  aIncTan = 0;
+  aIncCurv = 0;
 
   for (i = TheConstraints->Lower(); i <= TheConstraints->Upper(); i++) {
     Cons = (TheConstraints->Value(i)).Constraint();
     if (Cons >= 1) {
-      IncPass++;                       // IncPass = nbre de points de passage.
+      aIncPass++;                       // IncPass = nbre de points de passage.
     }
     if (Cons >= 2) {
-      IncTan++;                          // IncTan= nbre de points de tangence.
+      aIncTan++;                          // IncTan= nbre de points de tangence.
     }
     if (Cons == 3) {
-      IncCurv++;                      // IncCurv = nbre de pts de courbure.
+      aIncCurv++;                      // IncCurv = nbre de pts de courbure.
     }
   }
   Standard_Integer nb3d = ToolLine::NbP3d(SSP);
   Standard_Integer nb2d = ToolLine::NbP2d(SSP);
-  CCol = nb3d* 3 + nb2d* 2;
+  aCCol = nb3d* 3 + nb2d* 2;
 
-  return CCol*IncPass + IncTan*(CCol-1) + 3*IncCurv;
+  return aCCol*aIncPass + aIncTan*(aCCol-1) + 3*aIncCurv;
 
 }
 

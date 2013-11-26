@@ -1223,7 +1223,7 @@ extern void (*Draw_AfterCommand)(Standard_Integer);
 //function : Commands
 //purpose  : 
 //=======================================================================
-void  Draw::VariableCommands(Draw_Interpretor& theCommands)
+void  Draw::VariableCommands(Draw_Interpretor& theCommandsArg)
 {
   static Standard_Boolean Done = Standard_False;
   if (Done) return;
@@ -1268,50 +1268,49 @@ void  Draw::VariableCommands(Draw_Interpretor& theCommands)
 
   g = "DRAW Numeric functions";
 
-  theCommands.Add("cos" ,"cos(x)" ,__FILE__,trigo,g);
-  theCommands.Add("sin" ,"sin(x)" ,__FILE__,trigo,g);
-  theCommands.Add("tan" ,"tan(x)" ,__FILE__,trigo,g);
-  theCommands.Add("acos" ,"acos(x)" ,__FILE__,trigo,g);
-  theCommands.Add("asin" ,"asin(x)" ,__FILE__,trigo,g);
-  theCommands.Add("atan2" ,"atan2(x,y)" ,__FILE__,trigo,g);
-  theCommands.Add("sqrt","sqrt(x)",__FILE__,trigo,g);
+  theCommandsArg.Add("cos" ,"cos(x)" ,__FILE__,trigo,g);
+  theCommandsArg.Add("sin" ,"sin(x)" ,__FILE__,trigo,g);
+  theCommandsArg.Add("tan" ,"tan(x)" ,__FILE__,trigo,g);
+  theCommandsArg.Add("acos" ,"acos(x)" ,__FILE__,trigo,g);
+  theCommandsArg.Add("asin" ,"asin(x)" ,__FILE__,trigo,g);
+  theCommandsArg.Add("atan2" ,"atan2(x,y)" ,__FILE__,trigo,g);
+  theCommandsArg.Add("sqrt","sqrt(x)",__FILE__,trigo,g);
 
   g = "DRAW Variables management";
 
-  theCommands.Add("protect","protect name ...",__FILE__,protect,g);
-  theCommands.Add("unprotect","unprotect name ...",__FILE__,protect,g);
+  theCommandsArg.Add("protect","protect name ...",__FILE__,protect,g);
+  theCommandsArg.Add("unprotect","unprotect name ...",__FILE__,protect,g);
 
-  theCommands.Add("bsave","bsave name filename",__FILE__,save,g);
-  theCommands.Add("brestore","brestore filename name",__FILE__,restore,g);
+  theCommandsArg.Add("bsave","bsave name filename",__FILE__,save,g);
+  theCommandsArg.Add("brestore","brestore filename name",__FILE__,restore,g);
 
-  theCommands.Add("isdraw","isdraw var, return 1 if Draw value",__FILE__,isdraw,g);
-  theCommands.Add("isprot","isprot var, return 1 if Draw var is protected",__FILE__,isprot,g);
+  theCommandsArg.Add("isdraw","isdraw var, return 1 if Draw value",__FILE__,isdraw,g);
+  theCommandsArg.Add("isprot","isprot var, return 1 if Draw var is protected",__FILE__,isprot,g);
   
-  theCommands.Add("autodisplay","toggle autodisplay [0/1]",__FILE__,autodisplay,g);
-  theCommands.Add("display","display [name1 name2 ...], no names display all",__FILE__,display,g);
-  theCommands.Add("donly","donly [name1 name2 ...], erase and display",__FILE__,erase,g);
-  theCommands.Add("erase","erase [name1 name2 ...], no names erase all",__FILE__,erase,g);
-  theCommands.Add("draw","draw view mode [name1 name2 ...], draw on view with mode",__FILE__,draw,g);
-  theCommands.Add("clear","clear display",__FILE__,erase,g);
-  theCommands.Add("2dclear","clear display (2d objects)",__FILE__,erase,g);
-  theCommands.Add("repaint","repaint, force redraw",__FILE__,repaintall,g);
+  theCommandsArg.Add("autodisplay","toggle autodisplay [0/1]",__FILE__,autodisplay,g);
+  theCommandsArg.Add("display","display [name1 name2 ...], no names display all",__FILE__,display,g);
+  theCommandsArg.Add("donly","donly [name1 name2 ...], erase and display",__FILE__,erase,g);
+  theCommandsArg.Add("erase","erase [name1 name2 ...], no names erase all",__FILE__,erase,g);
+  theCommandsArg.Add("draw","draw view mode [name1 name2 ...], draw on view with mode",__FILE__,draw,g);
+  theCommandsArg.Add("clear","clear display",__FILE__,erase,g);
+  theCommandsArg.Add("2dclear","clear display (2d objects)",__FILE__,erase,g);
+  theCommandsArg.Add("repaint","repaint, force redraw",__FILE__,repaintall,g);
 
-  theCommands.Add("dtyp", "dtyp name1 name2",__FILE__,whatis,g);
-  theCommands.Add("dval", "dval name, return value",__FILE__,value,g);
-  theCommands.Add("dname", "dname name, print name",__FILE__,dname,g);
-  theCommands.Add("dump", "dump name1 name2 ...",__FILE__,dump,g);
-  theCommands.Add("copy",  "copy name1 toname1 name2 toname2 ...",__FILE__,copy,g);
+  theCommandsArg.Add("dtyp", "dtyp name1 name2",__FILE__,whatis,g);
+  theCommandsArg.Add("dval", "dval name, return value",__FILE__,value,g);
+  theCommandsArg.Add("dname", "dname name, print name",__FILE__,dname,g);
+  theCommandsArg.Add("dump", "dump name1 name2 ...",__FILE__,dump,g);
+  theCommandsArg.Add("copy",  "copy name1 toname1 name2 toname2 ...",__FILE__,copy,g);
   // san - 02/08/2002 - `rename` command changed to `renamevar` since it conflicts with 
   // the built-in Tcl command `rename`
   //theCommands.Add("rename","rename name1 toname1 name2 toname2 ...",__FILE__,copy,g);
-  theCommands.Add("renamevar","renamevar name1 toname1 name2 toname2 ...",__FILE__,copy,g);
-  theCommands.Add("dset","var1 value1 vr2 value2 ...",__FILE__,set,g);
+  theCommandsArg.Add("renamevar","renamevar name1 toname1 name2 toname2 ...",__FILE__,copy,g);
+  theCommandsArg.Add("dset","var1 value1 vr2 value2 ...",__FILE__,set,g);
 
   // commands to access C environment variables; see Mantis issue #23197
-  theCommands.Add("dgetenv","var : get value of environment variable in C subsystem",__FILE__,dgetenv,g);
-  theCommands.Add("dsetenv","var [value] : set (unset if value is empty) environment variable in C subsystem",__FILE__,dsetenv,g);
+  theCommandsArg.Add("dgetenv","var : get value of environment variable in C subsystem",__FILE__,dgetenv,g);
+  theCommandsArg.Add("dsetenv","var [value] : set (unset if value is empty) environment variable in C subsystem",__FILE__,dsetenv,g);
 
-  theCommands.Add("pick","pick id X Y Z b [nowait]",__FILE__,pick,g);
-  theCommands.Add("lastrep","lastrep id X Y [Z] b, return name",__FILE__,lastrep,g);
-
+  theCommandsArg.Add("pick","pick id X Y Z b [nowait]",__FILE__,pick,g);
+  theCommandsArg.Add("lastrep","lastrep id X Y [Z] b, return name",__FILE__,lastrep,g);
 }

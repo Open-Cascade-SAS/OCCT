@@ -19,7 +19,7 @@
 //26-04-1997 modified by pmn : Initialisation plus fine de la resolution
 
 Standard_Integer Blend_Walking::ArcToRecadre(const Standard_Boolean OnFirst,
-					     const math_Vector& sol,
+					     const math_Vector& theSol,
 					     const Standard_Integer PrevIndex,
 					     gp_Pnt2d& lastpt2d,
 					     gp_Pnt2d& pt2d,
@@ -34,12 +34,12 @@ Standard_Integer Blend_Walking::ArcToRecadre(const Standard_Boolean OnFirst,
 
   if (OnFirst) {
     if(byinter) previousP.ParametersOnS1(uprev,vprev);
-    pt2d.SetCoord(sol(1),sol(2));
+    pt2d.SetCoord(theSol(1),theSol(2));
     Iter = recdomain1;
   }
   else {
     if(byinter) previousP.ParametersOnS2(uprev,vprev);
-    pt2d.SetCoord(sol(3),sol(4));
+    pt2d.SetCoord(theSol(3),theSol(4));
     Iter = recdomain2;
   }
   lastpt2d.SetCoord(uprev,vprev);
@@ -75,7 +75,7 @@ Standard_Integer Blend_Walking::ArcToRecadre(const Standard_Boolean OnFirst,
 
 Standard_Boolean Blend_Walking::Recadre(Blend_FuncInv& FuncInv,
 					const Standard_Boolean OnFirst,
-					const math_Vector& sol,
+					const math_Vector& theSol,
 					math_Vector& solrst,
 					Standard_Integer& Indexsol,
 					Standard_Boolean& IsVtx,
@@ -100,7 +100,7 @@ Standard_Boolean Blend_Walking::Recadre(Blend_FuncInv& FuncInv,
   if (OnFirst) Iter = recdomain1;
   else         Iter = recdomain2;
 
-  Indexsol = ArcToRecadre(OnFirst, sol, 0, 
+  Indexsol = ArcToRecadre(OnFirst, theSol, 0,
 			  lastpt2d, pt2d, pmin);
   IsVtx = Standard_False;
   if (Indexsol == 0) {
@@ -175,12 +175,12 @@ Standard_Boolean Blend_Walking::Recadre(Blend_FuncInv& FuncInv,
       if (OnFirst) {
 	previousP.ParametersOnS2(u,v);
 	Pnt1.SetCoord(u, v);
-	Pnt2.SetCoord(sol(3), sol(4));
+	Pnt2.SetCoord(theSol(3), theSol(4));
       }
       else {
 	previousP.ParametersOnS1(u,v);
 	Pnt1.SetCoord(u, v);
-	Pnt2.SetCoord(sol(1), sol(2));
+	Pnt2.SetCoord(theSol(1), theSol(2));
       }
 
       lambda = Pnt.Distance(lastpt2d);
@@ -196,12 +196,12 @@ Standard_Boolean Blend_Walking::Recadre(Blend_FuncInv& FuncInv,
     solrst(1) = pmin;
     solrst(2) = param; 
     if (OnFirst) {
-      solrst(3) = sol(3);
-      solrst(4) = sol(4);
+      solrst(3) = theSol(3);
+      solrst(4) = theSol(4);
     }
     else {
-      solrst(3) = sol(1);
-      solrst(4) = sol(2);
+      solrst(3) = theSol(1);
+      solrst(4) = theSol(2);
     }
   }
 
@@ -288,7 +288,7 @@ Standard_Boolean Blend_Walking::Recadre(Blend_FuncInv& FuncInv,
   if ((!recadre) && 
       ((Abs(pmin-ulast) < dist) || (Abs(pmin-ufirst) < dist)) ) {
 
-    Indexsol =  ArcToRecadre(OnFirst, sol, Indexsol, 
+    Indexsol =  ArcToRecadre(OnFirst, theSol, Indexsol,
 			     lastpt2d, pt2d, pmin);
     if (Indexsol == 0) {
       return Standard_False;

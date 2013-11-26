@@ -887,7 +887,7 @@ TColStd_Array1OfReal& DWeigths)
   gp_Vec d1urst,d1vrst;
   gp_Pnt Center,bid;
   
-  Standard_Real norm,ndotns,grosterme,dray;
+  Standard_Real norm,ndotns,grosterme,aDray;
   
   math_Vector sol(1,3),valsol(1,3),secmember(1,3);
   math_Matrix gradsol(1,3,1,3);
@@ -899,9 +899,9 @@ TColStd_Array1OfReal& DWeigths)
   
   tguide->D2(prm,ptgui,d1gui,d2gui);
 
-  tevol->D1(prm,ray,dray);
+  tevol->D1(prm,ray,aDray);
   ray=sg1*ray;
-  dray=sg1*dray;
+  aDray=sg1*aDray;
   normtg = d1gui.Magnitude();
   nplan  = d1gui.Normalized();
   dnplan.SetLinearForm(1./normtg,d2gui,
@@ -944,7 +944,7 @@ TColStd_Array1OfReal& DWeigths)
   resul.SetLinearForm(ray,temp,gp_Vec(ptrst,pts));
 
   //secmember(3) = -2.*ray*(dnw.Dot(resul)); // jag 950105 il manquait ray
-  secmember(3) = -2.*ray*(dnw.Dot(resul)) - 2.*dray*(temp.Dot(resul)) + 2.*ray*dray;
+  secmember(3) = -2.*ray*(dnw.Dot(resul)) - 2.*aDray*(temp.Dot(resul)) + 2.*ray*aDray;
   math_Gauss Resol(gradsol);
   
   if (Resol.IsDone()) {
@@ -985,7 +985,7 @@ TColStd_Array1OfReal& DWeigths)
     ns.SetLinearForm(ndotns/norm,nplan, -1./norm,ns);
     
     dn2w.SetLinearForm(ray, dnw, -1., tgrst, tgs);
-    dn2w.SetLinearForm(dray,ns,dn2w);
+    dn2w.SetLinearForm(aDray,ns,dn2w);
     norm = resul.Magnitude();
     dn2w.Divide(norm);
     ns2 = -resul.Normalized();
@@ -1029,7 +1029,7 @@ TColStd_Array1OfReal& DWeigths)
   // Case of the circle
   Center.SetXYZ(pts.XYZ()+ray*ns.XYZ());
   if (!istgt) {
-    tgct.SetLinearForm(ray,dnw,dray,ns,tgs);
+    tgct.SetLinearForm(ray,dnw,aDray,ns,tgs);
   }
   
   if (ray > 0.) {
@@ -1044,9 +1044,9 @@ TColStd_Array1OfReal& DWeigths)
   }
   if (!istgt) {
     if (ray < 0.) { // to avoid Abs(dray) some lines below
-      rayprim = -dray;
+      rayprim = -aDray;
     }
-    else rayprim = dray;
+    else rayprim = aDray;
 
     return GeomFill::GetCircle(myTConv, 
 			       ns, ns2, 

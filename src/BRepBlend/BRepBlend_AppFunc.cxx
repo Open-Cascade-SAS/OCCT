@@ -31,18 +31,18 @@ BRepBlend_AppFunc::BRepBlend_AppFunc(Handle(BRepBlend_Line)& Line,
 
 void BRepBlend_AppFunc::Point(const Blend_AppFunction& Func,
 			      const Standard_Real Param,
-			      const math_Vector& Sol,
+			      const math_Vector& theSol,
 			      Blend_Point& Pnt)const
 {
   Pnt.SetValue(Func.Pnt1(), Func.Pnt2(),
 	       Param,
-	       Sol(1), Sol(2), Sol(3), Sol(4));
+	       theSol(1), theSol(2), theSol(3), theSol(4));
 }
 
-void BRepBlend_AppFunc::Vec(math_Vector& Sol,
+void BRepBlend_AppFunc::Vec(math_Vector& theSol,
 			    const Blend_Point& Pnt)const
 {
-  Pnt.ParametersOnS1(Sol(1),Sol(2));
-  Pnt.ParametersOnS2(Sol(3),Sol(4));
+  Pnt.ParametersOnS1(theSol(1),theSol(2));
+  Pnt.ParametersOnS2(theSol(3),theSol(4));
 }
 

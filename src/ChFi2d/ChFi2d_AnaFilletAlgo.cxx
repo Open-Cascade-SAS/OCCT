@@ -455,10 +455,10 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::Perform(const Standard_Real radius)
 }
 
 // Retrieves a result (fillet and shrinked neighbours).
-const TopoDS_Edge& ChFi2d_AnaFilletAlgo::Result(TopoDS_Edge& e1, TopoDS_Edge& e2)
+const TopoDS_Edge& ChFi2d_AnaFilletAlgo::Result(TopoDS_Edge& theE1, TopoDS_Edge& theE2)
 {
-  e1 = shrinke1;
-  e2 = shrinke2;
+  theE1 = shrinke1;
+  theE2 = shrinke2;
   return fillet;
 }
 
@@ -868,14 +868,14 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::ArcFilletArc(const Standard_Real radius,
 }
 
 // Cuts intersecting edges of a contour.
-Standard_Boolean ChFi2d_AnaFilletAlgo::Cut(const gp_Pln& plane, TopoDS_Edge& e1, TopoDS_Edge& e2)
+Standard_Boolean ChFi2d_AnaFilletAlgo::Cut(const gp_Pln& thePlane, TopoDS_Edge& theE1, TopoDS_Edge& theE2)
 {
   gp_Pnt p;
   Standard_Boolean found(Standard_False);
   Standard_Real param1 = 0.0, param2 = 0.0;
   Standard_Real f1, l1, f2, l2;
-  Handle(Geom_Curve) c1 = BRep_Tool::Curve(e1, f1, l1);
-  Handle(Geom_Curve) c2 = BRep_Tool::Curve(e2, f2, l2);
+  Handle(Geom_Curve) c1 = BRep_Tool::Curve(theE1, f1, l1);
+  Handle(Geom_Curve) c2 = BRep_Tool::Curve(theE2, f2, l2);
   GeomAPI_ExtremaCurveCurve extrema(c1, c2, f1, l1, f2, l2);
   if (extrema.NbExtrema())
   {
@@ -902,14 +902,14 @@ Standard_Boolean ChFi2d_AnaFilletAlgo::Cut(const gp_Pln& plane, TopoDS_Edge& e1,
     BRepBuilderAPI_MakeEdge mkEdge1(c1, f1, param1);
     if (mkEdge1.IsDone())
     {
-      e1 = mkEdge1.Edge();
+      theE1 = mkEdge1.Edge();
 
       BRepBuilderAPI_MakeEdge mkEdge2(c2, param2, l2);
       if (mkEdge2.IsDone())
       {
-        e2 = mkEdge2.Edge();
+        theE2 = mkEdge2.Edge();
 
-        gp_Pnt2d p2d = ProjLib::Project(plane, p);
+        gp_Pnt2d p2d = ProjLib::Project(thePlane, p);
         p2d.Coord(x12, y12);
         x21 = x12;
         y21 = y12;

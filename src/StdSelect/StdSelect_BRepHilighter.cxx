@@ -136,12 +136,12 @@ Update()
   
   switch(mytype){
   case StdSelect_TOR_MULTIPLE:{
-    TColStd_MapIteratorOfMapOfInteger it;
+    TColStd_MapIteratorOfMapOfInteger aIt;
     if(!myselector->More())
       {
-	for(it.Initialize(myold);it.More();it.Next())
-	  {myhimap.FindFromIndex(it.Key())->UnHighlight();
-	   myhimap.FindFromIndex(it.Key())->SetVisible(Standard_False);
+	for(aIt.Initialize(myold);aIt.More();aIt.Next())
+	  {myhimap.FindFromIndex(aIt.Key())->UnHighlight();
+	   myhimap.FindFromIndex(aIt.Key())->SetVisible(Standard_False);
 	 }
 	myold.Clear();
 	mynew.Clear();
@@ -168,17 +168,17 @@ Update()
 	      }
 	    }
 	}
-      for(it.Initialize(myold);it.More();it.Next()){
-	myhimap.FindFromIndex(it.Key())->UnHighlight();
-	myhimap.FindFromIndex(it.Key())->SetVisible(Standard_False);
+      for(aIt.Initialize(myold);aIt.More();aIt.Next()){
+	myhimap.FindFromIndex(aIt.Key())->UnHighlight();
+	myhimap.FindFromIndex(aIt.Key())->SetVisible(Standard_False);
       }
       
       myold = mynew;
       mynew.Clear();
-      for(it.Initialize(myold);it.More();it.Next()){
-	myhimap.FindFromIndex(it.Key())->SetVisible(Standard_True);
-	myhimap.FindFromIndex(it.Key())->SetDisplayPriority(10);
-	myhimap.FindFromIndex(it.Key())->Color(mycolor);
+      for(aIt.Initialize(myold);aIt.More();aIt.Next()){
+	myhimap.FindFromIndex(aIt.Key())->SetVisible(Standard_True);
+	myhimap.FindFromIndex(aIt.Key())->SetDisplayPriority(10);
+	myhimap.FindFromIndex(aIt.Key())->Color(mycolor);
       }
     }
     break;

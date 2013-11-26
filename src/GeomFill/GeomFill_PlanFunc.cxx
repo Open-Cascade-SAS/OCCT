@@ -23,13 +23,13 @@
 #include <GeomFill_PlanFunc.ixx>
 
 
-GeomFill_PlanFunc::GeomFill_PlanFunc(const gp_Pnt& P,
-				      const gp_Vec& V,
-				      const Handle(Adaptor3d_HCurve)& C) :
-				      myCurve(C)
+GeomFill_PlanFunc::GeomFill_PlanFunc(const gp_Pnt& theP,
+				      const gp_Vec& theV,
+				      const Handle(Adaptor3d_HCurve)& theC) :
+				      myCurve(theC)
 {
-  myPnt = P.XYZ();
-  myVec = V.XYZ();
+  myPnt = theP.XYZ();
+  myVec = theV.XYZ();
 }
 
 

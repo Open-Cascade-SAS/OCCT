@@ -705,16 +705,16 @@ void math_FunctionSetRoot::SetTolerance(const math_Vector& Tolerance)
 
 void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
                                    const math_Vector& StartingPoint,
-                                   const math_Vector& InfBound,
-                                   const math_Vector& SupBound,
+                                   const math_Vector& theInfBound,
+                                   const math_Vector& theSupBound,
                                    Standard_Boolean theStopOnDivergent)
 {
   Standard_Integer Ninc = F.NbVariables(), Neq = F.NbEquations();
 
   if ((Neq <= 0)                      ||
     (StartingPoint.Length()!= Ninc) ||
-    (InfBound.Length() != Ninc)     ||
-    (SupBound.Length() != Ninc))  { Standard_DimensionError:: Raise(); }
+    (theInfBound.Length() != Ninc)     ||
+    (theSupBound.Length() != Ninc))  { Standard_DimensionError:: Raise(); }
 
   Standard_Integer i;
   Standard_Boolean ChangeDirection = Standard_False, Sort = Standard_False, isNewSol = Standard_False;
@@ -724,11 +724,11 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
   Standard_Real F2, PreviousMinimum, Dy, OldF;
   Standard_Real Ambda, Ambda2, Gnr1, Oldgr;
   math_Vector InvLengthMax(1, Ninc); // Pour bloquer les pas a 1/4 du domaine
-  math_IntegerVector Constraints(1, Ninc); // Pour savoir sur quels bord on se trouve
+  math_IntegerVector aConstraints(1, Ninc); // Pour savoir sur quels bord on se trouve
   for (i = 1; i <= Ninc ; i++) {
     // modified by NIZHNY-MKK  Mon Oct  3 18:03:50 2005
     //      InvLengthMax(i) = 1. / Max(Abs(SupBound(i) - InfBound(i))/4, 1.e-9);
-    InvLengthMax(i) = 1. / Max((SupBound(i) - InfBound(i))/4, 1.e-9);
+    InvLengthMax(i) = 1. / Max((theSupBound(i) - theInfBound(i))/4, 1.e-9);
   }
 
   MyDirFunction F_Dir(Temp1, Temp2, Temp3, Temp4, F);
@@ -742,7 +742,7 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
   myIsDivergent = Standard_False;
   for (i = 1; i <= Ninc; i++)
   {
-    myIsDivergent |= (Sol(i) < InfBound(i)) | (SupBound(i) < Sol(i));
+    myIsDivergent |= (Sol(i) < theInfBound(i)) | (theSupBound(i) < Sol(i));
   }
   if (theStopOnDivergent & myIsDivergent)
   {
@@ -751,8 +751,8 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
   // Verification de la validite des inconnues par rapport aux bornes.
   // Recentrage sur les bornes si pas valide.
   for ( i = 1; i <= Ninc; i++) {
-    if (Sol(i) <= InfBound(i)) Sol(i) = InfBound(i);
-    else if (Sol(i) > SupBound(i)) Sol(i) = SupBound(i);
+    if (Sol(i) <= theInfBound(i)) Sol(i) = theInfBound(i);
+    else if (Sol(i) > theSupBound(i)) Sol(i) = theSupBound(i);
   }
 
   // Calcul de la premiere valeur de F et de son gradient
@@ -817,15 +817,15 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
     //
     for (i = 1; i <= Ninc; i++)
     {
-      myIsDivergent |= (Sol(i) < InfBound(i)) | (SupBound(i) < Sol(i));
+      myIsDivergent |= (Sol(i) < theInfBound(i)) | (theSupBound(i) < Sol(i));
     }
     if (theStopOnDivergent & myIsDivergent)
     {
       return;
     }
     //
-    Sort = Bounds(InfBound, SupBound, Tol, Sol, SolSave,
-      Constraints, Delta, isNewSol);
+    Sort = Bounds(theInfBound, theSupBound, Tol, Sol, SolSave,
+      aConstraints, Delta, isNewSol);
 
 
     DHSave = GH;
@@ -883,15 +883,15 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
             //
             for (i = 1; i <= Ninc; i++)
             {
-              myIsDivergent |= (Sol(i) < InfBound(i)) | (SupBound(i) < Sol(i));
+              myIsDivergent |= (Sol(i) < theInfBound(i)) | (theSupBound(i) < Sol(i));
             }
             if (theStopOnDivergent & myIsDivergent)
             {
               return;
             }
             //
-            Stop = Bounds(InfBound, SupBound, Tol, Sol, SolSave, 
-              Constraints, Delta, isNewSol);
+            Stop = Bounds(theInfBound, theSupBound, Tol, Sol, SolSave,
+              aConstraints, Delta, isNewSol);
             FSR_DEBUG(" Augmentation de lambda");
             Ambda *= 1.7;
           }
@@ -921,15 +921,15 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
                 //
                 for (i = 1; i <= Ninc; i++)
                 {
-                  myIsDivergent |= (Sol(i) < InfBound(i)) | (SupBound(i) < Sol(i));
+                  myIsDivergent |= (Sol(i) < theInfBound(i)) | (theSupBound(i) < Sol(i));
                 }
                 if (theStopOnDivergent & myIsDivergent)
                 {
                   return;
                 }
                 //
-                Sort = Bounds(InfBound, SupBound, Tol, Sol, SolSave,
-                  Constraints, Delta, isNewSol);
+                Sort = Bounds(theInfBound, theSupBound, Tol, Sol, SolSave,
+                  aConstraints, Delta, isNewSol);
               }
               Sort = Standard_False; // On a rejete le point sur la frontiere
             }
@@ -982,7 +982,7 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
             // On essaye de progresser sur le bord
             SolSave = Sol;
             OldF = F2;
-            SearchDirection(DF, GH, FF,  Constraints, Sol, 
+            SearchDirection(DF, GH, FF,  aConstraints, Sol,
               ChangeDirection, InvLengthMax, DH, Dy);
             FSR_DEBUG(" Conditional Direction = " << ChangeDirection);
             if (Dy<-Eps) { //Pour eviter des calculs inutiles et des /0...
@@ -1003,15 +1003,15 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
               //
               for (i = 1; i <= Ninc; i++)
               {
-                myIsDivergent |= (Sol(i) < InfBound(i)) | (SupBound(i) < Sol(i));
+                myIsDivergent |= (Sol(i) < theInfBound(i)) | (theSupBound(i) < Sol(i));
               }
               if (theStopOnDivergent & myIsDivergent)
               {
                 return;
               }
               //
-              Sortbis = Bounds(InfBound, SupBound, Tol, Sol, SolSave,
-                Constraints, Delta, isNewSol);
+              Sortbis = Bounds(theInfBound, theSupBound, Tol, Sol, SolSave,
+                aConstraints, Delta, isNewSol);
 
               DHSave = GH;
               if (isNewSol) {
@@ -1046,15 +1046,15 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
                 //
                 for (i = 1; i <= Ninc; i++)
                 {
-                  myIsDivergent |= (Sol(i) < InfBound(i)) | (SupBound(i) < Sol(i));
+                  myIsDivergent |= (Sol(i) < theInfBound(i)) | (theSupBound(i) < Sol(i));
                 }
                 if (theStopOnDivergent & myIsDivergent)
                 {
                   return;
                 }
                 //
-                Sortbis = Bounds(InfBound, SupBound, Tol, Sol, SolSave,
-                  Constraints, Delta, isNewSol);     
+                Sortbis = Bounds(theInfBound, theSupBound, Tol, Sol, SolSave,
+                  aConstraints, Delta, isNewSol);
               }
               DHSave = GH;
               if (isNewSol) {
@@ -1089,15 +1089,15 @@ void math_FunctionSetRoot::Perform(math_FunctionSetWithDerivatives& F,
               //
               for (i = 1; i <= Ninc; i++)
               {
-                myIsDivergent |= (Sol(i) < InfBound(i)) | (SupBound(i) < Sol(i));
+                myIsDivergent |= (Sol(i) < theInfBound(i)) | (theSupBound(i) < Sol(i));
               }
               if (theStopOnDivergent & myIsDivergent)
               {
                 return;
               }
               //
-              Sort = Bounds(InfBound, SupBound, Tol, Sol, SolSave,
-                Constraints, Delta, isNewSol);
+              Sort = Bounds(theInfBound, theSupBound, Tol, Sol, SolSave,
+                aConstraints, Delta, isNewSol);
               if (isNewSol) {
                 //              F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1);
                 if(!F_Dir.Value(Sol, FF, DF, GH, F2, Gnr1)) {

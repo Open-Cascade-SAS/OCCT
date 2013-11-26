@@ -165,8 +165,8 @@ Draw_View::Draw_View(Standard_Integer i, Draw_Viewer* v,
 			Standard_Integer Y,
 			Standard_Integer W,
 			Standard_Integer H,
-      HWND win) :
-     Draw_Window("Win", X, Y, W, H, win), id(i), viewer(v)
+      HWND theWin) :
+     Draw_Window("Win", X, Y, W, H, theWin), id(i), viewer(v)
 {
   Framex0=Framey0=Framex1=Framey1=0;
 }

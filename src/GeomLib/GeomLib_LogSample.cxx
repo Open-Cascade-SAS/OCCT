@@ -36,14 +36,14 @@ GeomLib_LogSample::GeomLib_LogSample(const Standard_Real A,
 
 Standard_Real GeomLib_LogSample::GetParameter(const Standard_Integer Index) const
 {
-  Standard_Integer n = NbPoints();
+  Standard_Integer aN = NbPoints();
  
 
-  if ((Index >= n) || (Index <= 1)) {
-    Standard_Real a, b;
-    Bounds(a, b);
-    if (Index == 1) return a;
-    else if (Index == n) return b;
+  if ((Index >= aN) || (Index <= 1)) {
+    Standard_Real aA, aB;
+    Bounds(aA, aB);
+    if (Index == 1) return aA;
+    else if (Index == aN) return aB;
     else Standard_OutOfRange::Raise("GeomLib_LogSample::GetParameter");
   }
 

@@ -102,11 +102,11 @@ Handle(GeomFill_TrihedronLaw) GeomFill_Fixed::Copy() const
   return 1;
 }
 
- void GeomFill_Fixed::Intervals(TColStd_Array1OfReal& T,
+ void GeomFill_Fixed::Intervals(TColStd_Array1OfReal& theT,
 					    const GeomAbs_Shape) const
 {
-  T(T.Lower()) = - Precision::Infinite();
-  T(T.Upper()) =   Precision::Infinite();
+  theT(theT.Lower()) = - Precision::Infinite();
+  theT(theT.Upper()) =   Precision::Infinite();
 }
 
  void GeomFill_Fixed::GetAverageLaw(gp_Vec& ATangent,
