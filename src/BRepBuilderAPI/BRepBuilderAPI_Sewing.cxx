@@ -4725,3 +4725,22 @@ NCollection_CellFilter_Action BRepBuilderAPI_VertexInspector::Inspect (const Sta
     myResInd.Append (theTarget);
   return CellFilter_Keep; 
 }
+
+//=======================================================================
+//function : Context
+//purpose  : 
+//=======================================================================
+const Handle(BRepTools_ReShape)& BRepBuilderAPI_Sewing::GetContext() const
+{
+  return myReShape;
+}
+
+//=======================================================================
+//function : SetContext
+//purpose  : 
+//=======================================================================
+void BRepBuilderAPI_Sewing::SetContext(const Handle(BRepTools_ReShape)& theContext)
+{
+  myReShape = theContext;
+}
+

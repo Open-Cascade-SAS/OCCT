@@ -143,6 +143,13 @@ is
     	---Purpose: Gives the sewed shape
     	--          a null shape if nothing constructed
     	--          may be a face, a shell, a solid or a compound
+        
+    SetContext(me : mutable; theContext : ReShape from BRepTools);
+        ---Purpose: set context
+        
+    GetContext(me) returns ReShape from BRepTools;
+        ---C++: return const &
+        ---Purpose: return context
 
     NbFreeEdges(me) returns Integer;
     	---Purpose: Gives the number of free edges (edge shared by one face)
