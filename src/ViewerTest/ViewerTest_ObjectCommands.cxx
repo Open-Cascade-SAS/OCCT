@@ -3757,156 +3757,115 @@ static Standard_Integer VConnectShape(Draw_Interpretor& /*di*/,
   return 0;
 }
 
+namespace
+{
+  //! Checks if theMode is already turned on for theObj.
+  static Standard_Boolean InList (const Handle(AIS_InteractiveContext)& theAISContext,
+                                  const Handle(AIS_InteractiveObject)&  theObj,
+                                  const Standard_Integer                theMode)
+  {
+    TColStd_ListOfInteger anActiveModes;
+    theAISContext->ActivatedModes (theObj, anActiveModes);
+    for (TColStd_ListIteratorOfListOfInteger aModeIt (anActiveModes); aModeIt.More(); aModeIt.Next())
+    {
+      if (aModeIt.Value() == theMode)
+      {
+        return Standard_True;
+      }
+    }
+    return Standard_False;
+  }
+};
+
 //===============================================================================================
 //function : VSetSelectionMode
 //purpose  : Sets input selection mode for input object or for all displayed objects 
 //Draw arg : vselmode [object] mode On/Off (1/0)
 //===============================================================================================
-
-// function : InList 
-// purpose  : checks if theMode is already turned on for theObj
-Standard_Boolean InList(Handle(AIS_InteractiveContext) theAISContext, 
-                          Handle(AIS_InteractiveObject) theObj, 
-                          Standard_Integer theMode)
-{
-  TColStd_ListOfInteger anArray; 
-  theAISContext->ActivatedModes(theObj, anArray);
-  TColStd_ListIteratorOfListOfInteger anIt(anArray);
-  for(; anIt.More(); anIt.Next())
-  {
-    if(anIt.Value() == theMode) 
-      return Standard_True;
-  }
-  return Standard_False;
-}
-
-static Standard_Integer VSetSelectionMode(Draw_Interpretor& /*di*/, 
-                                          Standard_Integer argc, 
-                                          const char ** argv)
+static Standard_Integer VSetSelectionMode (Draw_Interpretor& /*di*/,
+                                           Standard_Integer  theArgc,
+                                           const char**      theArgv)
 {
   // Check errors
   Handle(AIS_InteractiveContext) anAISContext = ViewerTest::GetAISContext();
-  if(anAISContext.IsNull())
+  if (anAISContext.IsNull())
   {
-    std::cout << "Call vinit before!\n";
-    return 1; // TCL_ERROR
+    std::cerr << "Call vinit before!\n";
+    return 1;
   }
 
-  // Check the arguments 
-  if(argc != 3 && argc != 4)
+  // Check the arguments
+  if (theArgc != 3 && theArgc != 4)
   {
-    std::cout << "vselmode error : expects at least 2 arguments.\n"
-      << "Type help "<< argv[0] <<" for more information."; 
-    return 1; // TCL_ERROR
+    std::cerr << "vselmode error : expects at least 2 arguments.\n"
+              << "Type help "<< theArgv[0] <<" for more information.";
+    return 1;
   }
 
-  Handle(AIS_InteractiveObject) anObj;
-
-  // Set new selection mode for all objects in context
-  if(argc == 3)
+  // get objects to change selection mode
+  AIS_ListOfInteractive aTargetIOs;
+  if (theArgc == 3)
   {
-    // Get arguments 
-    Standard_Integer aMode = Draw::Atoi(argv[1]);
-    Standard_Boolean isTurnOn = Draw::Atoi(argv[2]); 
-
-    // Get all displayed objects
-    AIS_ListOfInteractive anObjList;
-    anAISContext->DisplayedObjects(anObjList);
-    AIS_ListIteratorOfListOfInteractive anObjIter;
-
-    if(aMode == 0)
-    {
-      if(anAISContext->HasOpenedContext())
-        anAISContext->CloseLocalContext();
-    }
-
-    // Turn on aMode
-    if(aMode != 0 && isTurnOn)
-    {
-      if(!anAISContext->HasOpenedContext())
-      {
-        anAISContext->OpenLocalContext(); 
-        for(anObjIter.Initialize(anObjList); anObjIter.More(); anObjIter.Next())
-        {
-          anAISContext->Activate(anObjIter.Value(), aMode); 
-        }
-      }
-      else
-      {
-        for(anObjIter.Initialize(anObjList); anObjIter.More(); anObjIter.Next())
-        {
-          anObj = anObjIter.Value();
-          if(!InList(anAISContext, anObj, aMode))
-            anAISContext->Activate(anObj, aMode);
-        }
-      }
-    }
-
-    // Turn off aMode
-    if(aMode != 0 && !isTurnOn)
-    {
-      if(anAISContext->HasOpenedContext())
-      {
-        for(anObjIter.Initialize(anObjList); anObjIter.More(); anObjIter.Next())
-        {
-          anObj = anObjIter.Value();
-          if(InList(anAISContext, anObj, aMode))
-            anAISContext->Deactivate(anObj, aMode);
-        }
-      }
-    }
+    anAISContext->DisplayedObjects (aTargetIOs);
   }
-
-  // Set new selection mode for named object 
   else
   {
-    // Get argumnets 
-    Standard_Integer aMode = Draw::Atoi(argv[2]);
-    Standard_Boolean isTurnOn = Draw::Atoi(argv[3]);
-    TCollection_AsciiString aName(argv[1]); 
-
     // Check if there is an object with given name in context
-    if(GetMapOfAIS().IsBound2(aName))
+    const TCollection_AsciiString aNameIO (theArgv[1]);
+    if (GetMapOfAIS().IsBound2 (aNameIO))
     {
-      anObj = Handle(AIS_InteractiveObject)::
-        DownCast(GetMapOfAIS().Find2(aName));
-      if(anObj.IsNull())
+      Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aNameIO));
+      if (anIO.IsNull())
       {
-        std::cout << "vselmode error : object name is used for non AIS viewer\n"; 
-        return 1; // TCL_ERROR
+        std::cerr << "vselmode error : object name is used for non AIS viewer\n"; 
+        return 1;
       }
+      aTargetIOs.Append (anIO);
+    }
+  }
+
+  const Standard_Integer aSelectionMode = Draw::Atoi (theArgc == 3 ? theArgv[1] : theArgv[2]);
+  const Standard_Boolean toTurnOn       = Draw::Atoi (theArgc == 3 ? theArgv[2] : theArgv[3]);
+  if (aSelectionMode == 0 && anAISContext->HasOpenedContext())
+  {
+    anAISContext->CloseLocalContext();
+  }
+
+  if (aSelectionMode != 0 && toTurnOn) // Turn on specified mode
+  {
+    if (!anAISContext->HasOpenedContext())
+    {
+      anAISContext->OpenLocalContext (Standard_False);
     }
 
-    if(aMode == 0)
+    for (AIS_ListIteratorOfListOfInteractive aTargetIt (aTargetIOs); aTargetIt.More(); aTargetIt.Next())
     {
-      if(anAISContext->HasOpenedContext())
-        anAISContext->CloseLocalContext();
-    }
-    // Turn on aMode
-    if(aMode != 0 && isTurnOn) 
-    {
-      if(!anAISContext->HasOpenedContext())
+      const Handle(AIS_InteractiveObject)& anIO = aTargetIt.Value();
+      if (!InList (anAISContext, anIO, aSelectionMode))
       {
-        anAISContext->OpenLocalContext(); 
-        anAISContext->Activate(anObj, aMode);
-      }
-      else
-      {
-        if(!InList(anAISContext, anObj, aMode))
-          anAISContext->Activate(anObj, aMode);
-      }
-    }
-
-    // Turn off aMode
-    if(aMode != 0 && !isTurnOn)
-    {
-      if(anAISContext->HasOpenedContext())
-      {
-        if(InList(anAISContext, anObj, aMode))
-          anAISContext->Deactivate(anObj, aMode);
+        anAISContext->Load (anIO, -1, Standard_True);
+        anAISContext->Activate (anIO, aSelectionMode);
       }
     }
   }
+
+  if (aSelectionMode != 0 && !toTurnOn) // Turn off specified mode
+  {
+    if (!anAISContext->HasOpenedContext())
+    {
+      return 0;
+    }
+
+    for (AIS_ListIteratorOfListOfInteractive aTargetIt (aTargetIOs); aTargetIt.More(); aTargetIt.Next())
+    {
+      const Handle(AIS_InteractiveObject)& anIO = aTargetIt.Value();
+      if (InList (anAISContext, anIO, aSelectionMode))
+      {
+        anAISContext->Deactivate (anIO, aSelectionMode);
+      }
+    }
+  }
+
   return 0;
 }
 
