@@ -272,67 +272,49 @@ static void SIGWntHandler (int signum, int sub_code)
     Standard_Mutex::Sentry aSentry (THE_SIGNAL_MUTEX); // lock the mutex to prevent simultaneous handling
     switch( signum ) {
     case SIGFPE :
-      if ( signal( signum , ( void (*)(int) ) &SIGWntHandler ) == SIG_ERR )
-            cout << "signal error" << endl ;
-          switch( sub_code ) {
-          case _FPE_INVALID :
-            CallHandler( EXCEPTION_FLT_INVALID_OPERATION ,0,0) ;
-            break ;
-          case _FPE_DENORMAL :
-            CallHandler( EXCEPTION_FLT_DENORMAL_OPERAND ,0,0) ;
-            break ;
-          case _FPE_ZERODIVIDE :
-            CallHandler( EXCEPTION_FLT_DIVIDE_BY_ZERO ,0,0) ;
-            break ;
-          case _FPE_OVERFLOW :
-            CallHandler( EXCEPTION_FLT_OVERFLOW ,0,0) ;
-            break ;
-          case _FPE_UNDERFLOW :
-            CallHandler( EXCEPTION_FLT_UNDERFLOW ,0,0) ;
-            break ;
-          case _FPE_INEXACT :
-            CallHandler( EXCEPTION_FLT_INEXACT_RESULT ,0,0) ;
-            break ;
-          default:
-            cout << "SIGWntHandler(default) -> Standard_NumericError::Raise(\"Floating Point Error\");"
-                 << endl ;
-            Standard_NumericError::Raise("Floating Point Error");
-            break ;
-          }
-          break ;
-	case SIGSEGV :
-      if ( signal( signum , ( void (*)(int) )  &SIGWntHandler ) == SIG_ERR )
-            cout << "signal error" << endl ;
-          CallHandler( EXCEPTION_ACCESS_VIOLATION ,0,0) ;
-	  break ;
+      if ( signal( signum , (void(*)(int))SIGWntHandler ) == SIG_ERR )
+          cout << "signal error" << endl ;
+      switch( sub_code ) {
+      case _FPE_INVALID :
+        CallHandler( EXCEPTION_FLT_INVALID_OPERATION ,0,0) ;
+        break ;
+      case _FPE_DENORMAL :
+        CallHandler( EXCEPTION_FLT_DENORMAL_OPERAND ,0,0) ;
+        break ;
+      case _FPE_ZERODIVIDE :
+        CallHandler( EXCEPTION_FLT_DIVIDE_BY_ZERO ,0,0) ;
+        break ;
+      case _FPE_OVERFLOW :
+        CallHandler( EXCEPTION_FLT_OVERFLOW ,0,0) ;
+        break ;
+      case _FPE_UNDERFLOW :
+        CallHandler( EXCEPTION_FLT_UNDERFLOW ,0,0) ;
+        break ;
+      case _FPE_INEXACT :
+        CallHandler( EXCEPTION_FLT_INEXACT_RESULT ,0,0) ;
+        break ;
+      default:
+        cout << "SIGWntHandler(default) -> Standard_NumericError::Raise(\"Floating Point Error\");" << endl;
+        Standard_NumericError::Raise("Floating Point Error");
+        break ;
+      }
+      break ;
+    case SIGSEGV :
+      if ( signal( signum, (void(*)(int))SIGWntHandler ) == SIG_ERR )
+        cout << "signal error" << endl ;
+      CallHandler( EXCEPTION_ACCESS_VIOLATION ,0,0) ;
+      break ;
     case SIGILL :
-      if ( signal( signum , ( void (*)(int) )  &SIGWntHandler ) == SIG_ERR )
-            cout << "signal error" << endl ;
-          CallHandler( EXCEPTION_ILLEGAL_INSTRUCTION ,0,0) ;
-	  break ;
-        default:
-          cout << "SIGWntHandler unexpected signal : "
-               << signum << endl ;
-          break ;
-	}
+      if ( signal( signum, (void(*)(int))SIGWntHandler ) == SIG_ERR )
+        cout << "signal error" << endl ;
+      CallHandler( EXCEPTION_ILLEGAL_INSTRUCTION ,0,0) ;
+      break ;
+    default:
+      cout << "SIGWntHandler unexpected signal : " << signum << endl ;
+      break ;
+    }
  DebugBreak ();
 #endif
-}
-
-//=======================================================================
-//function : WntHandler
-//purpose  : Will be used when user's code is compiled with /EHs
-//           option and unless user sets his own exception handler with 
-//           ::SetUnhandledExceptionFilter().
-//=======================================================================
-Standard_Integer OSD::WntHandler (const Standard_Address theExceptionInfo)
-{
-  LPEXCEPTION_POINTERS lpXP = (LPEXCEPTION_POINTERS )theExceptionInfo;
-  DWORD                dwExceptionCode = lpXP->ExceptionRecord->ExceptionCode;
-
-  return CallHandler (dwExceptionCode,
-                      lpXP->ExceptionRecord->ExceptionInformation[1],
-                      lpXP->ExceptionRecord->ExceptionInformation[0]);
 }
 
 //=======================================================================
@@ -360,7 +342,20 @@ static void TranslateSE( unsigned int theCode, EXCEPTION_POINTERS* theExcPtr )
   CallHandler(theCode, info1, info0);
 }
 #endif
+//=======================================================================
+//function : WntHandler
+//purpose  : Will be used when user's code is compiled with /EHs
+//           option and unless user sets his own exception handler with
+//           ::SetUnhandledExceptionFilter().
+//=======================================================================
+static LONG WINAPI WntHandler (EXCEPTION_POINTERS *lpXP)
+{
+  DWORD                dwExceptionCode = lpXP->ExceptionRecord->ExceptionCode;
 
+  return CallHandler (dwExceptionCode,
+                      lpXP->ExceptionRecord->ExceptionInformation[1],
+                      lpXP->ExceptionRecord->ExceptionInformation[0]);
+}
 //=======================================================================
 //function : SetSignal
 //purpose  :
@@ -387,15 +382,15 @@ void OSD::SetSignal (const Standard_Boolean theFloatingSignal)
   // when user's code is compiled with /EHs
   // Replaces the existing top-level exception filter for all existing and all future threads
   // in the calling process
-  aPreviousFilter = ::SetUnhandledExceptionFilter ((LPTOP_LEVEL_EXCEPTION_FILTER )&OSD::WntHandler);
+  aPreviousFilter = ::SetUnhandledExceptionFilter (/*(LPTOP_LEVEL_EXCEPTION_FILTER)*/ WntHandler);
 
   // Signal handlers will only be used when the method ::raise() will be used
   // Handlers must be set for every thread
-  if (signal (SIGSEGV, (void (*)(int ) )&SIGWntHandler) == SIG_ERR)
+  if (signal (SIGSEGV, (void(*)(int))SIGWntHandler) == SIG_ERR)
     cout << "signal(OSD::SetSignal) error\n";
-  if (signal (SIGFPE,  (void (*)(int ) )&SIGWntHandler) == SIG_ERR)
+  if (signal (SIGFPE,  (void(*)(int))SIGWntHandler) == SIG_ERR)
     cout << "signal(OSD::SetSignal) error\n";
-  if (signal (SIGILL,  (void (*)(int ) )&SIGWntHandler) == SIG_ERR)
+  if (signal (SIGILL,  (void(*)(int))SIGWntHandler) == SIG_ERR)
     cout << "signal(OSD::SetSignal) error\n";
 
   // Set Ctrl-C and Ctrl-Break handler
@@ -616,17 +611,4 @@ LONG _osd_debug ( void ) {
 #undef __finally
 #undef __leave
 #endif
-
-// Must be there for compatibility with UNIX system code ----------------------
-
-//void OSD::Handler(const OSD_Signals aSig,
-//                  const OSD_Signals aCode){}
-void OSD::Handler(const OSD_Signals /*theSignal*/,
-		  const Standard_Address /*theSigInfo*/,
-		  const Standard_Address /*theContext*/) {}
-
-void OSD::SegvHandler(const OSD_Signals /*aSig*/,
-                      const Standard_Address /*code*/,
-                      const Standard_Address /*scp*/){}
-
 #endif // WNT

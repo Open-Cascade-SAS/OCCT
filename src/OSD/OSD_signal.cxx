@@ -144,6 +144,307 @@ static sigfpe_handler_type *GetOldFPE()
 #endif
 #endif
 
+//============================================================================
+//==== Handler
+//====     Catche the differents signals:
+//====          1- The Fatal signals, which cause the end of process:
+//====          2- The exceptions which are "signaled" by Raise.
+//====     The Fatal Signals:
+//====        SIGHUP, SIGINT, SIGQUIT, SIGILL, SIGKILL, SIGBUS, SIGSYS
+//====     The Exceptions:
+//====        SIGFPE
+//====         (SUN versions)
+//====           FPE_INTOVF_TRAP    // ..... integer overflow
+//====           FPE_INTDIV_TRAP    // ..... integer divide by zero
+//====           FPE_FLTINEX_TRAP   // ..... [floating inexact result]
+//====           FPE_FLTDIV_TRAP    // ..... [floating divide by zero]
+//====           FPE_FLTUND_TRAP    // ..... [floating underflow]
+//====           FPE_FLTOPER_TRAP   // ..... [floating inexact result]
+//====           FPE_FLTOVF_TRAP    // ..... [floating overflow]
+//==== SIGSEGV is handled by "SegvHandler()"
+//============================================================================
+#ifdef SA_SIGINFO
+static void Handler (const int theSignal, siginfo_t *theSigInfo, const Standard_Address theContext)
+#else
+static void Handler (const int theSignal)
+#endif
+{
+  struct sigaction oldact, act;
+  // re-install the signal
+  if ( ! sigaction (theSignal, NULL, &oldact) ) {
+    // cout << " signal is " << theSignal << " handler is " <<  oldact.sa_handler << endl;
+    if (sigaction (theSignal, &oldact, &act)) perror ("sigaction");
+  }
+  else {
+    perror ("sigaction");
+  }
+
+  siginfo_t * aSigInfo = NULL;
+#ifdef SA_SIGINFO
+  aSigInfo = theSigInfo;
+#endif
+
+#if defined(HAVE_PTHREAD_H) && defined(NO_CXX_EXCEPTION)
+  if (pthread_self() != getOCCThread()  || !Standard_ErrorHandler::IsInTryBlock()) {
+    // use the previous signal handler
+    // cout << "OSD::Handler: signal " << (int) theSignal << " occured outside a try block " <<  endl ;
+    struct sigaction *oldSignals = GetOldSigAction();
+    struct sigaction  asigacthandler =  oldSignals[theSignal >= 0 && theSignal < NSIG ? theSignal : 0];
+
+    if (asigacthandler.sa_flags & SA_SIGINFO) {
+      void (*aCurInfoHandle)(int, siginfo_t *, void *) = asigacthandler.sa_sigaction;
+      if (aSigInfo) {
+        switch (aSigInfo->si_signo) {
+          case SIGFPE:
+          {
+#ifdef SOLARIS
+            sigfpe_handler_type *aIEEEHandlerTab = GetOldFPE();
+            sigfpe_handler_type  aIEEEHandler = NULL;
+            switch (aSigInfo->si_code) {
+              case FPE_INTDIV_TRAP :
+              case FPE_FLTDIV_TRAP :
+               aIEEEHandler = aIEEEHandlerTab[1];
+                break;
+              case FPE_INTOVF_TRAP :
+              case FPE_FLTOVF_TRAP :
+                aIEEEHandler = aIEEEHandlerTab[2];
+                break;
+              case FPE_FLTUND_TRAP :
+                aIEEEHandler = aIEEEHandlerTab[4];
+                break;
+              case FPE_FLTRES_TRAP :
+                aIEEEHandler = aIEEEHandlerTab[3];
+                break;
+              case FPE_FLTINV_TRAP :
+                aIEEEHandler = aIEEEHandlerTab[0];
+                break;
+              case FPE_FLTSUB_TRAP :
+              default:
+                break;
+            }
+            if (aIEEEHandler) {
+              // cout << "OSD::Handler: calling previous IEEE signal handler with info" <<  endl ;
+              (*aIEEEHandler) (theSignal, aSigInfo, theContext);
+              return;
+            }
+#endif
+            break;
+          }
+          default:
+            break;
+        }
+      }
+      if (aCurInfoHandle) {
+        // cout << "OSD::Handler: calling previous signal handler with info " << aCurInfoHandle <<  endl ;
+        (*aCurInfoHandle) (theSignal, aSigInfo, theContext);
+        cerr << " previous signal handler return" <<  endl ;
+        return;
+      }
+      else {
+	// cout << "OSD::Handler: no handler with info for the signal" << endl;
+      }
+    }
+    else {
+      // no siginfo needed for the signal
+      void (*aCurHandler) (int) = asigacthandler.sa_handler;
+      if(aCurHandler) {
+        // cout << "OSD::Handler: calling previous signal handler" <<  endl ;
+        (*aCurHandler) (theSignal);
+        cerr << " previous signal handler return" <<  endl ;
+        return;
+      }
+    }
+    // cout << " Signal occured outside a try block, but no handler for it" <<endl;
+    return;
+  }
+#endif
+
+  // cout << "OSD::Handler: signal " << (int) theSignal << " occured inside a try block " <<  endl ;
+  if ( ADR_ACT_SIGIO_HANDLER != NULL )
+    (*ADR_ACT_SIGIO_HANDLER)() ;
+#ifdef linux
+  if (fFltExceptions)
+    feenableexcept (FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW);
+    //feenableexcept (FE_INVALID | FE_DIVBYZERO);
+#endif
+  sigset_t set;
+  sigemptyset(&set);
+  switch (theSignal) {
+  case SIGHUP:
+    OSD_SIGHUP::NewInstance("SIGHUP 'hangup' detected.")->Jump();
+    exit(SIGHUP);
+    break;
+  case SIGINT:
+    // For safe handling of Control-C as stop event, arm a variable but do not
+    // generate longjump (we are out of context anyway)
+    fCtrlBrk = Standard_True;
+    // OSD_SIGINT::NewInstance("SIGINT 'interrupt' detected.")->Jump();
+    // exit(SIGINT);
+    break;
+  case SIGQUIT:
+    OSD_SIGQUIT::NewInstance("SIGQUIT 'quit' detected.")->Jump();
+    exit(SIGQUIT);
+    break;
+  case SIGILL:
+    OSD_SIGILL::NewInstance("SIGILL 'illegal instruction' detected.")->Jump();
+    exit(SIGILL);
+    break;
+  case SIGKILL:
+    OSD_SIGKILL::NewInstance("SIGKILL 'kill' detected.")->Jump();
+    exit(SIGKILL);
+    break;
+  case SIGBUS:
+    sigaddset(&set, SIGBUS);
+    sigprocmask(SIG_UNBLOCK, &set, NULL) ;
+    OSD_SIGBUS::NewInstance("SIGBUS 'bus error' detected.")->Jump();
+    exit(SIGBUS);
+    break;
+  case SIGSEGV:
+    OSD_SIGSEGV::NewInstance("SIGSEGV 'segmentation violation' detected.")->Jump();
+    exit(SIGSEGV);
+    break;
+#ifdef SIGSYS
+  case SIGSYS:
+    OSD_SIGSYS::NewInstance("SIGSYS 'bad argument to system call' detected.")->Jump();
+    exit(SIGSYS);
+    break;
+#endif
+  case SIGFPE:
+    sigaddset(&set, SIGFPE);
+    sigprocmask(SIG_UNBLOCK, &set, NULL) ;
+#ifdef DECOSF1
+    // Pour DEC/OSF1 SIGFPE = Division par zero.
+    // should be clarified why in debug mode only?
+#ifdef DEBUG
+    Standard_DivideByZero::NewInstance('')->Jump;
+#endif
+    break;
+#endif
+#if (!defined (__sun)) && (!defined(SOLARIS))
+    Standard_NumericError::NewInstance("SIGFPE Arithmetic exception detected")->Jump();
+    break;
+#else
+    // Reste SOLARIS
+    if (aSigInfo) {
+      switch(aSigInfo->si_code) {
+      case FPE_FLTDIV_TRAP :
+        Standard_DivideByZero::NewInstance("Floating Divide By Zero")->Jump();
+        break;
+      case FPE_INTDIV_TRAP :
+        Standard_DivideByZero::NewInstance("Integer Divide By Zero")->Jump();
+        break;
+      case FPE_FLTOVF_TRAP :
+        Standard_Overflow::NewInstance("Floating Overflow")->Jump();
+        break;
+      case FPE_INTOVF_TRAP :
+        Standard_Overflow::NewInstance("Integer Overflow")->Jump();
+        break;
+      case FPE_FLTUND_TRAP :
+        Standard_NumericError::NewInstance("Floating Underflow")->Jump();
+        break;
+      case FPE_FLTRES_TRAP:
+        Standard_NumericError::NewInstance("Floating Point Inexact Result")->Jump();
+        break;
+      case FPE_FLTINV_TRAP :
+        Standard_NumericError::NewInstance("Invalid Floating Point Operation")->Jump();
+        break;
+      default:
+        Standard_NumericError::NewInstance("Numeric Error")->Jump();
+        break;
+      }
+    } else {
+      Standard_NumericError::NewInstance("SIGFPE Arithmetic exception detected")->Jump();
+    }
+#endif
+    break;
+#if defined (__sgi) || defined(IRIX)
+  case SIGTRAP:
+    sigaddset(&set, SIGTRAP);
+    sigprocmask(SIG_UNBLOCK, &set, NULL) ;
+    Standard_DivideByZero::NewInstance("SIGTRAP IntegerDivideByZero")->Jump(); break;
+#endif
+  default:
+    cout << "Unexpected signal " << theSignal << endl ;
+    break;
+  }
+}
+
+//============================================================================
+//==== SegvHandler
+//============================================================================
+#ifdef SA_SIGINFO
+
+static void SegvHandler(const int theSignal,
+                        siginfo_t *ip,
+                        const Standard_Address theContext)
+{
+#ifdef NO_CXX_EXCEPTION
+  if (!Standard_ErrorHandler::IsInTryBlock()) {
+    Handler(theSignal, ip, theContext);
+    return;
+  }
+#endif
+#ifdef linux
+  if (fFltExceptions)
+    feenableexcept (FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW);
+    //feenableexcept (FE_INVALID | FE_DIVBYZERO);
+#endif
+//  cout << "OSD::SegvHandler activated(SA_SIGINFO)" << endl ;
+  if ( ip != NULL ) {
+     sigset_t set;
+     sigemptyset(&set);
+     sigaddset(&set, SIGSEGV);
+     sigprocmask (SIG_UNBLOCK, &set, NULL) ;
+     void *address = ip->si_addr ;
+     if ( (((long) address )& ~0xffff) == (long) UndefinedHandleAddress ) {
+       Standard_NullObject::NewInstance("Attempt to access to null object")->Jump();
+     }
+     else {
+       char Msg[100];
+       sprintf(Msg,"SIGSEGV 'segmentation violation' detected. Address %lx",
+         (long ) address ) ;
+       OSD_SIGSEGV::NewInstance(Msg)->Jump();
+     }
+  }
+  else {
+    cout << "Wrong undefined address." << endl ;
+  }
+  exit(SIGSEGV);
+}
+
+#elif defined (_hpux) || defined(HPUX)
+// Not ACTIVE ? SA_SIGINFO is defined on SUN, OSF, SGI and HP (and Linux) !
+// pour version 09.07
+
+static void SegvHandler(const int theSignal,
+                        siginfo_t *ip,
+                        const Standard_Address theContext)
+{
+  unsigned long Space  ;
+  unsigned long Offset ;
+  char Msg[100] ;
+
+  if ( theContext != NULL ) {
+    Space = ((struct sigcontext *)theContext)->sc_sl.sl_ss.ss_cr20 ;
+    Offset = ((struct sigcontext *)theContext)->sc_sl.sl_ss.ss_cr21 ;
+//    cout << "Wrong address = " << hex(Offset) << endl ;
+    if ((Offset & ~0xffff) == (long)UndefinedHandleAddress) {
+      Standard_NullObject::Jump("Attempt to access to null object") ;
+    }
+    else {
+      sprintf(Msg,"SIGSEGV 'segmentation violation' detected. Address %lx",Offset) ;
+      OSD_SIGSEGV::Jump(Msg);
+//    scp->sc_pcoq_head = scp->sc_pcoq_tail ;       Permettrait de continuer a
+//    scp->sc_pcoq_tail = scp->sc_pcoq_tail + 0x4 ; l'intruction suivant le segv.
+    }
+  }
+  else {
+    cout << "Wrong undefined address." << endl ;
+  }
+  exit(SIGSEGV);
+}
+
+#endif
 
 //============================================================================
 //==== SetSignal 
@@ -163,8 +464,10 @@ void OSD::SetSignal(const Standard_Boolean aFloatingSignal)
     stat = ieee_handler("set", "invalid",  PHandler);
     stat = ieee_handler("set", "division", PHandler) || stat;
     stat = ieee_handler("set", "overflow", PHandler) || stat;
+
     //stat = ieee_handler("set", "underflow", PHandler) || stat;
     //stat = ieee_handler("set", "inexact", PHandler) || stat;
+
     if (stat) {
       cerr << "ieee_handler does not work !!! KO " << endl;
     }
@@ -203,9 +506,9 @@ void OSD::SetSignal(const Standard_Boolean aFloatingSignal)
 #endif
 #ifdef SA_SIGINFO
   act.sa_flags = act.sa_flags | SA_SIGINFO ;
-  act.sa_sigaction = (void(*)(int, siginfo_t *, void*)) &Handler ;
+  act.sa_sigaction = /*(void(*)(int, siginfo_t *, void*))*/ Handler;
 #else
-  act.sa_handler =  (SIG_PFV) &Handler ;
+  act.sa_handler = /*(SIG_PFV)*/ Handler;
 #endif
 
   //==== Always detected the signal "SIGFPE" =================================
@@ -270,9 +573,9 @@ void OSD::SetSignal(const Standard_Boolean aFloatingSignal)
 #endif
 
 #ifdef SA_SIGINFO
-	act.sa_sigaction = (void(*)(int, siginfo_t *, void*)) &SegvHandler ;
+  act.sa_sigaction = /*(void(*)(int, siginfo_t *, void*))*/ SegvHandler;
 #else
-	act.sa_handler = (SIG_PFV) &SegvHandler ; 
+  act.sa_handler = /*(SIG_PFV)*/ SegvHandler;
 #endif
 
   if ( sigaction( SIGSEGV , &act , &oact ) )  // ...... segmentation violation
@@ -295,295 +598,6 @@ void OSD::SetSignal(const Standard_Boolean aFloatingSignal)
 #endif
 
 }
-//============================================================================
-//==== Handler 
-//====     Catche the differents signals:
-//====          1- The Fatal signals, which cause the end of process:
-//====          2- The exceptions which are "signaled" by Raise.
-//====     The Fatal Signals:
-//====        SIGHUP, SIGINT, SIGQUIT, SIGILL, SIGKILL, SIGBUS, SIGSYS
-//====     The Exceptions:
-//====        SIGFPE
-//====         (SUN versions)
-//====           FPE_INTOVF_TRAP    // ..... integer overflow
-//====           FPE_INTDIV_TRAP    // ..... integer divide by zero
-//====           FPE_FLTINEX_TRAP   // ..... [floating inexact result]
-//====           FPE_FLTDIV_TRAP    // ..... [floating divide by zero]
-//====           FPE_FLTUND_TRAP    // ..... [floating underflow]
-//====           FPE_FLTOPER_TRAP   // ..... [floating inexact result]
-//====           FPE_FLTOVF_TRAP    // ..... [floating overflow]
-//==== SIGSEGV is handled by "SegvHandler()"
-//============================================================================
-
-
-void OSD::Handler(const OSD_Signals theSignal,
-		  const Standard_Address
-#ifdef SA_SIGINFO
-		                         theSigInfo
-#endif
-		  ,const Standard_Address
-#if defined(HAVE_PTHREAD_H) && defined(NO_CXX_EXCEPTION) 
-                                         theContext
-#endif
-		  )
-{
-  struct sigaction oldact, act;
-
-  // re-install the signal
-
-  if ( ! sigaction (theSignal, NULL, &oldact) ) {
-      // cout << " signal is " << theSignal << " handler is " <<  oldact.sa_handler << endl;
-      if (sigaction (theSignal, &oldact, &act)) perror ("sigaction");
-  }
-  else 
-      perror ("sigaction");
-
-  siginfo_t * aSigInfo = NULL;
-#ifdef SA_SIGINFO
-  aSigInfo = (siginfo_t *) theSigInfo;
-#endif
-
-#if defined(HAVE_PTHREAD_H) && defined(NO_CXX_EXCEPTION) 
-
-//#ifdef DEB
-//  cout << " current thread " << pthread_self() << endl;
-//#endif
-
-
-  if (pthread_self() != getOCCThread()  || !Standard_ErrorHandler::IsInTryBlock()) {
-    // use the previous signal handler
-      // cout << "OSD::Handler: signal " << (int) theSignal << " occured outside a try block " <<  endl ;
-    
-    struct sigaction *oldSignals = GetOldSigAction();
-    struct sigaction  asigacthandler =  oldSignals[(int) theSignal];
-  
-    if (asigacthandler.sa_flags & SA_SIGINFO) {
-      void (*aCurInfoHandle)(int, siginfo_t *, void *) = asigacthandler.sa_sigaction;
-      if (aSigInfo) {
-	switch (aSigInfo->si_signo) {
-	case SIGFPE:
-	  {
-#ifdef SOLARIS
-	    sigfpe_handler_type *aIEEEHandlerTab = GetOldFPE();
-	    sigfpe_handler_type  aIEEEHandler = NULL;
-
-	    switch (aSigInfo->si_code) {
-	    case FPE_INTDIV_TRAP :
-	    case FPE_FLTDIV_TRAP :
-	      aIEEEHandler = aIEEEHandlerTab[1];
-	      break;
-	    case FPE_INTOVF_TRAP :
-	    case FPE_FLTOVF_TRAP :
-	      aIEEEHandler = aIEEEHandlerTab[2];
-	      break;
-	    case FPE_FLTUND_TRAP :
-	      aIEEEHandler = aIEEEHandlerTab[4];
-	      break;
-	    case FPE_FLTRES_TRAP:
-	      aIEEEHandler = aIEEEHandlerTab[3];
-	      break;
-	    case FPE_FLTINV_TRAP :
-	      aIEEEHandler = aIEEEHandlerTab[0];
-	      break;
-	    case FPE_FLTSUB_TRAP :
-	    default:
-	      break;
-	    }
-	    if (aIEEEHandler) {
-	      // cout << "OSD::Handler: calling previous IEEE signal handler with info" <<  endl ;
-	      void (*aFPEHandler)(int, siginfo_t *, void *) = (void(*)(int, siginfo*, void*)) aIEEEHandler;
-	      (*aFPEHandler) (theSignal, aSigInfo, theContext);
-	      return;
-	    }
-#endif
-	  }
-	  break;
-	case SIGSEGV:
-	  switch (aSigInfo->si_code) {
-	  case SEGV_MAPERR:   
-	    // cout << "OSD::Handler: SIGSEGV signal : address not mapped to object"; 
-	    break;
-	  case SEGV_ACCERR:
-	    // cout << "OSD::Handler: SIGSEGV signal : invalid permissions for mapped object"; 
-	    break;
-	  default:
-	    // cout << "OSD::Handler: SIGSEGV signal : unknown segv"; 
-	    break;
-	  }
-	  // cout << " at address " << (void *) aSigInfo->si_addr << endl; 
-	  break;
-	case SIGBUS:
-	  switch (aSigInfo->si_code) {
-	  case BUS_ADRALN:
-	    // cout << "OSD::Handler: SIGBUS signal : invalid address alignment";
-	    break;
-	  case BUS_ADRERR:
-	    // cout << "OSD::Handler: SIGBUS signal : non-existent physical address"; 
-	    break;
-	  case BUS_OBJERR:
-	    // cout << "OSD::Handler: SIGBUS signal :  object specific hardware error"; 
-	    break;
-	  default:
-	    // cout << "OSD::Handler: SIGBUS signal : unknown sig bus";
-	    break;
-	  }
-	  // cout << " at " << (void *) aSigInfo->si_addr << endl; 
-	  break;
-	case SIGILL:
-	    // cout << "OSD::Handler: illegal instruction signal " << endl; 
-	    break;
-#ifdef SIGSYS
-	case SIGSYS:
-	    // cout << "OSD::Handler: bad argument to system call signal"<< endl ;
-	    break;
-#endif
-	case SIGINT:
-	    // cout << "OSD::Handler:  interrupt signal" << endl;
-	    break;
-	default:
-	  break;
-	}
-      }
-      if (aCurInfoHandle) {
-	  // cout << "OSD::Handler: calling previous signal handler with info " << aCurInfoHandle <<  endl ;
-	(*aCurInfoHandle) (theSignal, aSigInfo, theContext);
-	cerr << " previous signal handler return" <<  endl ;
-	return;
-      }
-      else {
-	// cout << "OSD::Handler: no handler with info for the signal" << endl;
-      }
-    } else {
-	// no siginfi needed for the signal
-      void (*aCurHandler) (int) = asigacthandler.sa_handler;
-      if(aCurHandler) {
-	// cout << "OSD::Handler: calling previous signal handler" <<  endl ;
-	(*aCurHandler) (theSignal);
-	cerr << " previous signal handler return" <<  endl ;
-	return;
-      } 
-    }
-    // cout << " Signal occured outside a try block, but no handler for it" <<endl;
-    return;
-  }
-#endif
-
-
-  // cout << "OSD::Handler: signal " << (int) theSignal << " occured inside a try block " <<  endl ;
-
-  if ( ADR_ACT_SIGIO_HANDLER != NULL ) (*ADR_ACT_SIGIO_HANDLER)() ;
-    
-#ifdef linux
-  if (fFltExceptions)
-    feenableexcept (FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW);
-    //feenableexcept (FE_INVALID | FE_DIVBYZERO);
-#endif
-
-  sigset_t set;
-  sigemptyset(&set);
-
-  switch(theSignal) {
-
-  case SIGHUP:
-    OSD_SIGHUP::NewInstance("SIGHUP 'hangup' detected.")->Jump();
-    exit(SIGHUP);
-    break;
-
-  case SIGINT:
-    // For safe handling of Control-C as stop event, arm a variable but do not
-    // generate longjump (we are out of context anyway)
-    fCtrlBrk = Standard_True;
-//    OSD_SIGINT::NewInstance("SIGINT 'interrupt' detected.")->Jump();
-//    exit(SIGINT);
-    break;
-
-  case SIGQUIT:
-    OSD_SIGQUIT::NewInstance("SIGQUIT 'quit' detected.")->Jump();
-    exit(SIGQUIT);
-    break;
-
-  case SIGILL:
-    OSD_SIGILL::NewInstance("SIGILL 'illegal instruction' detected.")->Jump();
-    exit(SIGILL);
-    break;
-
-  case SIGKILL:
-    OSD_SIGKILL::NewInstance("SIGKILL 'kill' detected.")->Jump();
-    exit(SIGKILL);
-    break;
-
-  case SIGBUS:
-    sigaddset(&set, SIGBUS);
-    sigprocmask(SIG_UNBLOCK, &set, NULL) ;
-    OSD_SIGBUS::NewInstance("SIGBUS 'bus error' detected.")->Jump();
-    exit(SIGBUS);
-    break;
-
-  case SIGSEGV:
-    OSD_SIGSEGV::NewInstance("SIGSEGV 'segmentation violation' detected.")->Jump();
-    exit(SIGSEGV);
-    break;
-
-#ifdef SIGSYS
-  case SIGSYS:
-    OSD_SIGSYS::NewInstance("SIGSYS 'bad argument to system call' detected.")->Jump();
-    exit(SIGSYS);
-    break;
-#endif
-
-  case SIGFPE: 
-    {
-    sigaddset(&set, SIGFPE);
-    sigprocmask(SIG_UNBLOCK, &set, NULL) ;
-#ifdef DECOSF1
-// Pour DEC/OSF1 SIGFPE = Division par zero.
-// should be clarified why in debug mode only?
-#ifdef DEBUG
-    Standard_DivideByZero::NewInstance('')->Jump;
-#endif
-    break;
-#endif	
-#if (!defined (__sun)) && (!defined(SOLARIS))
-    Standard_NumericError::NewInstance("SIGFPE Arithmetic exception detected")->Jump();
-    break;
-#else
-    // Reste SOLARIS
-    if (aSigInfo ) {
-      switch(aSigInfo->si_code) {
-      case FPE_FLTDIV_TRAP :
-	Standard_DivideByZero::NewInstance("Floating Divide By Zero")->Jump(); break;
-      case FPE_INTDIV_TRAP :
-	Standard_DivideByZero::NewInstance("Integer Divide By Zero")->Jump(); break;
-      case FPE_FLTOVF_TRAP :
-	Standard_Overflow::NewInstance("Floating Overflow")->Jump(); break;
-      case FPE_INTOVF_TRAP :
-	Standard_Overflow::NewInstance("Integer Overflow")->Jump(); break;
-      case FPE_FLTUND_TRAP :
-	Standard_NumericError::NewInstance("Floating Underflow")->Jump(); break;
-      case FPE_FLTRES_TRAP:
-	Standard_NumericError::NewInstance("Floating Point Inexact Result")->Jump(); break;
-      case FPE_FLTINV_TRAP :
-	Standard_NumericError::NewInstance("Invalid Floating Point Operation")->Jump(); break;
-      default:
-	Standard_NumericError::NewInstance("Numeric Error")->Jump(); break;
-      }
-    }
-    else {
-      Standard_NumericError::NewInstance("SIGFPE Arithmetic exception detected")->Jump();
-    }
-#endif
-    break;
-  }
-#if defined (__sgi) || defined(IRIX)
-  case SIGTRAP: 
-    sigaddset(&set, SIGTRAP);
-    sigprocmask(SIG_UNBLOCK, &set, NULL) ;
-    Standard_DivideByZero::NewInstance("SIGTRAP IntegerDivideByZero")->Jump(); break;
-#endif
-  default:
-    cout << "Unexpected signal " << (Standard_Integer ) theSignal << endl ;
-  }
-}
 
 //============================================================================
 //==== ControlBreak 
@@ -597,95 +611,4 @@ void OSD :: ControlBreak ()
   }
 }
 
-//============================================================================
-//==== SegvHandler 
-//============================================================================
-
-#ifdef SA_SIGINFO
-
-#ifdef NO_CXX_EXCEPTION
-void OSD::SegvHandler(const OSD_Signals theSig,
-                      const Standard_Address ip,
-		      const Standard_Address theContext)
-{
-  if (!Standard_ErrorHandler::IsInTryBlock()) {
-    Handler(theSig, ip, theContext);
-    return;
-  }
-#else
-void OSD::SegvHandler(const OSD_Signals,
-                      const Standard_Address ip,
-		      const Standard_Address)
-{
-#endif
-
-#ifdef linux
-  if (fFltExceptions)
-    feenableexcept (FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW);
-    //feenableexcept (FE_INVALID | FE_DIVBYZERO);
-#endif
-
-//  cout << "OSD::SegvHandler activated(SA_SIGINFO)" << endl ;
-  if ( ip != NULL ) {
-     sigset_t set;
-     sigemptyset(&set);
-     sigaddset(&set, SIGSEGV);
-     sigprocmask (SIG_UNBLOCK, &set, NULL) ;
-     void *address = ((siginfo_t *)ip)->si_addr ;
-     if ( (((long) address )& ~0xffff) == (long) UndefinedHandleAddress ) {
-	Standard_NullObject::NewInstance("Attempt to access to null object")->Jump();
-      }
-     else {
-       char Msg[100];
-       sprintf(Msg,"SIGSEGV 'segmentation violation' detected. Address %lx",
-	       (long ) address ) ;
-       OSD_SIGSEGV::NewInstance(Msg)->Jump();
-     }
-   }
-  else
-    cout << "Wrong undefined address." << endl ;
-  exit(SIGSEGV);
-}
-
-#if defined (_hpux) || defined(HPUX)
-//============================================================================
-//==== SegvHandler 
-//============================================================================
-
-// Not ACTIVE ? SA_SIGINFO is defined on SUN, OSF, SGI and HP (and Linux) !
-// pour version 09.07
-void OSD::SegvHandler(const OSD_Signals aSig, const Standard_Address code,
-                      const Standard_Address scp)
-//void OSD::SegvHandler(const OSD_Signals aSig, int code, const Standard_Address scp)
-{
-  unsigned long Space  ;
-  unsigned long Offset ;
-  char Msg[100] ;
-
-  if ( scp != NULL ) {
-    Space = ((struct sigcontext *)scp)->sc_sl.sl_ss.ss_cr20 ;
-    Offset = ((struct sigcontext *)scp)->sc_sl.sl_ss.ss_cr21 ;
-//    cout << "Wrong address = " << hex(Offset) << endl ;
-    if ((Offset & ~0xffff) == (long)UndefinedHandleAddress)
-	Standard_NullObject::Jump("Attempt to access to null object") ;
-    else {
-       sprintf(Msg,"SIGSEGV 'segmentation violation' detected. Address %lx",Offset) ;
-       OSD_SIGSEGV::Jump(Msg);
-//    scp->sc_pcoq_head = scp->sc_pcoq_tail ;       Permettrait de continuer a
-//    scp->sc_pcoq_tail = scp->sc_pcoq_tail + 0x4 ; l'intruction suivant le segv.
-    }
-  }
-  else
-    cout << "Wrong undefined address." << endl ;
-  exit(SIGSEGV);
-} 
-
-#endif
-#else
-// Must be there for compatibility with Windows NT system ---------------
-
-Standard_Integer OSD :: WntHandler ( const Standard_Address )
-  {return 0 ;}
-
-#endif
 #endif

@@ -18,7 +18,7 @@
 
 
 #include <OSD.ixx>
-
+#include <Standard_Stream.hxx>
 #include <stdio.h>
 #include <math.h>
 #if HAVE_IEEEFP_H
