@@ -1588,6 +1588,141 @@ static int VDonly2(Draw_Interpretor& , Standard_Integer argc, const char** argv)
 }
 
 //==============================================================================
+//function : VRemove
+//purpose  : Removes selected or named objects.
+//           If there is no selected or named objects,
+//           all objects in the viewer can be removed with argument -all.
+//           If -context is in arguments, the object is not deleted from the map of
+//           objects (deleted only from the current context).
+//==============================================================================
+int VRemove (Draw_Interpretor& theDI,
+            Standard_Integer  theArgNb,
+            const char**      theArgVec)
+{
+  if (a3DView().IsNull())
+  {
+    return 1;
+  }
+
+  TheAISContext()->CloseAllContexts (Standard_False);
+
+  //Standard_Boolean isStayedInMap = Standard_False;
+  TCollection_AsciiString aContextOnlyStr ("-context");
+  TCollection_AsciiString aRemoveAllStr ("-all");
+  
+  Standard_Boolean isContextOnly = (theArgNb > 1 && TCollection_AsciiString (theArgVec[1]) == aContextOnlyStr);
+  
+  Standard_Boolean isRemoveAll = (theArgNb == 3 && TCollection_AsciiString (theArgVec[2]) == aRemoveAllStr) ||
+                                 (theArgNb == 2 && TCollection_AsciiString (theArgVec[1]) == aRemoveAllStr);
+  
+  NCollection_List<TCollection_AsciiString> anIONameList;
+  
+  if (isRemoveAll)
+  {
+    for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
+         anIter.More(); anIter.Next())
+    {
+      anIONameList.Append (anIter.Key2());
+    }
+  }
+  else if (isContextOnly ? theArgNb > 2 : theArgNb > 1) // removed objects names are in argument list
+  {
+    for (Standard_Integer anIt = isContextOnly ? 2 : 1; anIt < theArgNb; ++anIt)
+    {
+      TCollection_AsciiString aName = theArgVec[anIt];
+
+      if (!GetMapOfAIS().IsBound2 (aName))
+      {
+        theDI << aName.ToCString() << " was not bound to some object.\n";
+        continue;
+      }
+
+      const Handle(Standard_Transient)& aTransientObj = GetMapOfAIS().Find2 (aName);
+
+      const Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (aTransientObj);
+      if (!anIO.IsNull())
+      {
+        if (anIO->GetContext() != TheAISContext())
+        {
+          theDI << aName.ToCString() << " was not displayed in current context.\n";
+          theDI << "Please activate view with this object displayed and try again.\n";
+          continue;
+        }
+
+        anIONameList.Append (aName);
+        continue;
+      }
+
+      const Handle(NIS_InteractiveObject) aNisIO = Handle(NIS_InteractiveObject)::DownCast (aTransientObj);
+      if (!aNisIO.IsNull())
+      {
+        anIONameList.Append (aName);
+      }
+    }
+  }
+  else if (TheAISContext()->NbCurrents() > 0
+        || TheNISContext()->GetSelected().Extent() > 0)
+  {
+    for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anIter (GetMapOfAIS());
+         anIter.More(); anIter.Next())
+    {
+      const Handle(AIS_InteractiveObject) anIO = Handle(AIS_InteractiveObject)::DownCast (anIter.Key1());
+      if (!anIO.IsNull())
+      {
+        if (!TheAISContext()->IsCurrent (anIO))
+        {
+          continue;
+        }
+
+        anIONameList.Append (anIter.Key2());
+        continue;
+      }
+
+      const Handle(NIS_InteractiveObject) aNisIO = Handle(NIS_InteractiveObject)::DownCast (anIter.Key1());
+      if (!aNisIO.IsNull())
+      {
+        if (!TheNISContext()->IsSelected (aNisIO))
+        {
+          continue;
+        }
+
+        anIONameList.Append (anIter.Key2());
+      }
+    }
+  }
+
+  // Unbind all removed objects from the map of displayed IO.
+  for (NCollection_List<TCollection_AsciiString>::Iterator anIter (anIONameList);
+       anIter.More(); anIter.Next())
+  {
+      const Handle(AIS_InteractiveObject) anIO  = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (anIter.Value()));
+      
+      if (!anIO.IsNull())
+      {
+        TheAISContext()->Remove (anIO, Standard_False);
+        theDI << anIter.Value().ToCString() << " was removed\n";
+      }
+      else
+      {
+        const Handle(NIS_InteractiveObject) aNisIO = Handle(NIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (anIter.Value()));
+        if (!aNisIO.IsNull())
+        {
+          TheNISContext()->Remove (aNisIO);
+          theDI << anIter.Value().ToCString() << " was removed\n";
+        }
+      }
+      
+      if (!isContextOnly)
+      {
+        GetMapOfAIS().UnBind2 (anIter.Value());
+      }
+  }
+
+  TheAISContext()->UpdateCurrentViewer();
+  return 0;
+}
+
+//==============================================================================
 //function : VErase
 //purpose  : Erase some selected or named objects
 //           if there is no selected or named objects, the whole viewer is erased
@@ -3137,6 +3272,14 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
       "\n\t\t: Erases selected or named objects."
       "\n\t\t: If there are no selected or named objects the whole viewer is erased.",
 		  __FILE__, VErase, group);
+
+  theCommands.Add("vremove",
+    "vremove [-context] [name1] ...  [name n]"
+    "or vremove [-context] -all to remove all objects"
+      "\n\t\t: Removes selected or named objects."
+      "\n\t\t  If -context is in arguments, the objects are not deleted"
+      "\n\t\t  from the map of objects and names.",
+      __FILE__, VRemove, group);
 
   theCommands.Add("vdonly",
 		  "vdonly [name1] ...  [name n]"

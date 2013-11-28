@@ -102,6 +102,8 @@ void OpenGl_GraphicDriver::RemoveStructure (const Graphic3d_CStructure& theCStru
 
   OpenGl_Structure* aStructure = myMapOfStructure.Find (theCStructure.Id);
   myMapOfStructure.UnBind (theCStructure.Id);
+  Graphic3d_CStructure& aCStruct = const_cast<Graphic3d_CStructure&>(theCStructure);
+  aCStruct.ptrStructure = 0;
   OpenGl_Element::Destroy (GetSharedContext(), aStructure);
 }
 

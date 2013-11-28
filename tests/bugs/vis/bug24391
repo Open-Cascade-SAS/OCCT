@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC24391"
+puts "============"
+puts ""
+#######################################################################
+#  Erased AIS object can not be displayed in AIS_InteractiveContext 
+#  after AIS_InteractiveContext::Remove
+#######################################################################
+
+pload VISUALLIZATION
+vinit
+box a 1 1 1
+vdisplay a
+verase a
+vremove -context a
+vdisplay a
+vfit
+
+vmoveto 204 205
+
+set x_coord 204
+set y_coord 205
+checkcolor $x_coord $y_coord 0 1 1
+if { $stat != 1 } {
+   puts "Error : Erased object is not displayed after its removing."
+}
+
+set only_screen 1

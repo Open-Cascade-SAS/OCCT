@@ -68,8 +68,13 @@ void PrsMgr_Presentation3d::Display(const Standard_Boolean theIsHighlight)
   }
 }
 
-void PrsMgr_Presentation3d::Erase () const {
-  myStructure->Erase();}
+void PrsMgr_Presentation3d::Erase ()
+{
+  // Erase structure from structure manager
+  myStructure->Erase();
+  // Clear groups and remove graphic structure
+  myStructure.Nullify();
+}
 
 void PrsMgr_Presentation3d::SetVisible (const Standard_Boolean theValue)
 {

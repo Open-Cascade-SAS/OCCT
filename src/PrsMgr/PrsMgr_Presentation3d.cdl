@@ -61,7 +61,7 @@ is
     ---Purpose: displays myStructure and sets myDisplayReason to theIsHighlight value if
     -- myStructure was not displayed or was invisible
     
-    Erase(me) is redefined static private;
+    Erase(me: mutable) is redefined static private;
 
     SetVisible (me: mutable; theValue: Boolean from Standard) is redefined static private;
 

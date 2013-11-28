@@ -49,11 +49,19 @@ void PrsMgr_PresentationManager::Erase(
     const Handle(PrsMgr_PresentableObject)& aPresentableObject,
     const Standard_Integer aMode) 
 {
-  if (HasPresentation(aPresentableObject,aMode)){
+  if (HasPresentation(aPresentableObject,aMode))
+  {
     if(myImmediateMode)
+    {
       Remove(aPresentableObject,aMode);
+    }
     else
-     Presentation(aPresentableObject,aMode)->Erase();}
+    {
+     Presentation(aPresentableObject,aMode)->Erase();
+    }
+
+    RemovePresentation (aPresentableObject,aMode);
+  }
 }
 
 void PrsMgr_PresentationManager::Clear(const Handle(PrsMgr_PresentableObject)& aPresentableObject,

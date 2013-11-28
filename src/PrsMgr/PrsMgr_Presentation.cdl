@@ -39,7 +39,7 @@ is
     
     Display(me: mutable) is deferred private;
     
-    Erase(me) is deferred private;
+    Erase(me: mutable) is deferred private;
 
     SetVisible (me: mutable; theValue: Boolean from Standard) is deferred private;
 
