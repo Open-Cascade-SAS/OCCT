@@ -567,6 +567,45 @@ static int test_offset(Draw_Interpretor& di, Standard_Integer argc, const char**
   return 0;
 }
 
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
+#include <Precision.hxx>
+#include <ShapeConstruct_ProjectCurveOnSurface.hxx>
+//=======================================================================
+//function : OCC24008
+//purpose  : 
+//=======================================================================
+static Standard_Integer OCC24008 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
+{
+  if (argc != 3) {
+    di << "Usage: " << argv[0] << " invalid number of arguments" << "\n";
+    return 1;
+  }
+  Handle(Geom_Curve) aCurve = DrawTrSurf::GetCurve(argv[1]);
+  Handle(Geom_Surface) aSurf = DrawTrSurf::GetSurface(argv[2]);
+  if (aCurve.IsNull()) {
+    di << "Curve was not read" << "\n";
+	return 1;
+  }
+  if (aSurf.IsNull()) {
+	di << "Surface was not read" << "\n";
+	return 1;
+  }
+  ShapeConstruct_ProjectCurveOnSurface aProj;
+  aProj.Init (aSurf, Precision::Confusion());
+  try {
+    Handle(Geom2d_Curve) aPCurve;
+    aProj.Perform (aCurve, aCurve->FirstParameter(), aCurve->LastParameter(), aPCurve);
+    if (aPCurve.IsNull()) {
+	  di << "PCurve was not created" << "\n";
+	  return 1;
+    }
+  } catch (...) {
+    di << "Exception was caught" << "\n";
+  }
+  return 0;
+}
+
 #include <GeomAdaptor_Surface.hxx>
 #include <Draw.hxx>
 //=======================================================================
@@ -1410,6 +1449,7 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC23952intersect", "OCC23952intersect nbsol shape1 shape2", __FILE__, OCC23952intersect, group);
   theCommands.Add ("test_offset", "test_offset", __FILE__, test_offset, group);
   theCommands.Add("OCC23945", "OCC23945 surfname U V X Y Z [DUX DUY DUZ DVX DVY DVZ [D2UX D2UY D2UZ D2VX D2VY D2VZ D2UVX D2UVY D2UVZ]]", __FILE__, OCC23945,group);
+  theCommands.Add ("OCC24008", "OCC24008 curve surface", __FILE__, OCC24008, group);
   theCommands.Add ("OCC24019", "OCC24019 aShape", __FILE__, OCC24019, group);
   theCommands.Add ("OCC11758", "OCC11758", __FILE__, OCC11758, group);
   theCommands.Add ("OCC24005", "OCC24005 result", __FILE__, OCC24005, group);

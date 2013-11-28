@@ -1,0 +1,19 @@
+puts "========"
+puts "OCC24008"
+puts "========"
+puts ""
+#################################################################
+# ShapeAnalysis_Surface causes exception in Geom_OffsetSurface
+#################################################################
+
+pload QAcommands
+
+restore [locate_data_file bug24008_curv_6964.draw] a
+restore [locate_data_file bug24008_surf_6962.draw] b
+
+set info [OCC24008 a b]
+if { [regexp "Exception" $info] != 0 } {
+    puts "Error : Exception was caught"
+} else {
+    puts "OK: COmmand wrong propery"
+}

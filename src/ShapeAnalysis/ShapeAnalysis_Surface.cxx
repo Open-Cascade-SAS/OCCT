@@ -828,7 +828,7 @@ Standard_Boolean ShapeAnalysis_Surface::SurfaceNewton(const gp_Pnt2d &p2dPrev,
     dv = ( rs * ( ( ru ^ n ) + rv * rSuu - ru * rSuv ) ) * fract;
     U += du;
     V += dv;
-
+    if ( U < UF || U > UL || V < VF || V > VL ) break;
     // check that iterations do not diverge
 //pdn    Standard_Real rs2 = rs.SquareMagnitude();
 //    if ( rs2 > 4.*rs2p ) break;
@@ -838,7 +838,7 @@ Standard_Boolean ShapeAnalysis_Surface::SurfaceNewton(const gp_Pnt2d &p2dPrev,
     Standard_Real aResolution = Max(1e-12,(U+V)*10e-16);
     if ( fabs ( du ) + fabs ( dv ) > aResolution ) continue; //Precision::PConfusion()  continue;
 
-    if ( U < UF || U > UL || V < VF || V > VL ) break;
+    //if ( U < UF || U > UL || V < VF || V > VL ) break;
 
     //pdn PRO10109 4517: protect against wrong result
     Standard_Real rs2 = rs.SquareMagnitude();
