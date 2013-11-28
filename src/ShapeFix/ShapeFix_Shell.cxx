@@ -871,12 +871,19 @@ Standard_Boolean ShapeFix_Shell::FixFaceOrientation(const TopoDS_Shell& shell,co
   TopTools_IndexedDataMapOfShapeListOfShape aMapEdgeFaces;
   TopExp::MapShapesAndAncestors(myShell,TopAbs_EDGE,TopAbs_FACE,aMapEdgeFaces);
   TopTools_MapOfShape aMapMultiConnectEdges;
-  if(isAccountMultiConex) {
+  Standard_Boolean isFreeBoundaries = Standard_False;
+  for(Standard_Integer k = 1; k <= aMapEdgeFaces.Extent(); k++) {
+    Standard_Integer aFaceCount = aMapEdgeFaces.FindFromIndex(k).Extent();
     //Finds multishared edges
-    for(Standard_Integer k = 1; k <= aMapEdgeFaces.Extent(); k++) {
-      if(aMapEdgeFaces.FindFromIndex(k).Extent() >2)
-        aMapMultiConnectEdges.Add(aMapEdgeFaces.FindKey(k));
-    }
+    if (isAccountMultiConex && aFaceCount > 2)
+      aMapMultiConnectEdges.Add(aMapEdgeFaces.FindKey(k));
+    if (aFaceCount == 1)
+      isFreeBoundaries = Standard_True; 
+  }
+  if (BRep_Tool::IsClosed (myShell) == isFreeBoundaries)
+  {
+    myShell.Closed (!isFreeBoundaries);
+    SendWarning (Message_Msg ("FixAdvShell.FixClosedFlag.MSG0"));//Shell has incorrect flag isClosed
   }
   Standard_Boolean isGetShells = Standard_True;
   //Gets possible shells with taking in account of multiconnexity.
