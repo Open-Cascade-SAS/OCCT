@@ -738,10 +738,11 @@ TopoDS_Edge BRepBuilderAPI_Sewing::SameParameterEdge(const TopoDS_Edge& edgeFirs
   if (whichSec == 1) itf2.Initialize(listFacesLast);
   else               itf2.Initialize(listFacesFirst);
   Standard_Boolean isResEdge = Standard_False;
+  TopoDS_Face fac2;
   for (; itf2.More(); itf2.Next()) {
     Handle(Geom2d_Curve) c2d2, c2d21;
     Standard_Real firstOld, lastOld;
-    const TopoDS_Face& fac2 = TopoDS::Face(itf2.Value());
+    fac2 = TopoDS::Face(itf2.Value());
 
     surf2 = BRep_Tool::Surface(fac2, loc2);
     Standard_Boolean isSeam2 = ((IsUClosedSurface(surf2,edge2,loc2) || IsVClosedSurface(surf2,edge2,loc2)) &&
@@ -899,6 +900,7 @@ TopoDS_Edge BRepBuilderAPI_Sewing::SameParameterEdge(const TopoDS_Edge& edgeFirs
       {
         edge = s_edge;
         whichSec = whichSecn;
+        tolReached = tolReached_2;
       }
     }
 
@@ -907,30 +909,42 @@ TopoDS_Edge BRepBuilderAPI_Sewing::SameParameterEdge(const TopoDS_Edge& edgeFirs
       GeomAdaptor_Curve c3dAdapt(c3d);
 
       // Discretize edge curve
-      Standard_Integer i, j, nbp = 15;
+      Standard_Integer i, j, nbp = 23;
       Standard_Real deltaT = (last3d - first3d) / (nbp + 1);
       TColgp_Array1OfPnt c3dpnt(1,nbp);
-      for (i = 1; i <= nbp; i++) c3dpnt(i) = c3dAdapt.Value(first3d + i*deltaT);
+      for (i = 1; i <= nbp; i++) 
+        c3dpnt(i) = c3dAdapt.Value(first3d + i*deltaT);
 
-      Standard_Real u, v, dist, maxTol = -1.0;
+      Standard_Real dist = 0., maxTol = -1.0;
       Standard_Boolean more = Standard_True;
+      Standard_Boolean useFace = Standard_False;
 
       for (j = 1; more; j++) {
         Handle(Geom2d_Curve) c2d2;
         BRep_Tool::CurveOnSurface(edge, c2d2, surf2, loc2, first, last, j);
+            
         more = !c2d2.IsNull();
         if (more) {
+          Handle(Geom_Surface) aS = surf2;
+          if(!loc2.IsIdentity())
+            aS = Handle(Geom_Surface)::DownCast(surf2->Transformed ( loc2 ));
 
+          Standard_Real dist2 = 0.;
           deltaT = (last - first) / (nbp + 1);
           for (i = 1; i <= nbp; i++) {
-            c2d2->Value(first + i*deltaT).Coord(u,v);
-            dist = surf2->Value(u,v).Distance(c3dpnt(i));
-            if (dist > maxTol) maxTol = dist;
+            gp_Pnt2d aP2d =  c2d2->Value(first + i*deltaT);
+            gp_Pnt aP2(0.,0.,0.);
+            aS->D0(aP2d.X(),aP2d.Y(), aP2);
+            gp_Pnt aP1 = c3dpnt(i);
+            dist = aP2.SquareDistance(aP1);
+            if (dist > dist2) 
+              dist2 = dist;
           }
+          maxTol = Max(sqrt(dist2), Precision::Confusion());
         }
       }
-
-      if (maxTol >= 0.) aBuilder.UpdateEdge(edge, maxTol);
+      if(maxTol >= 0. && maxTol < tolReached)
+        aBuilder.UpdateEdge(edge, maxTol);
       aBuilder.SameParameter(edge,Standard_True);
     }
   }

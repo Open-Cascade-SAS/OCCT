@@ -1,0 +1,44 @@
+puts "========================"
+puts "OCC24390"
+puts "========================" 
+puts ""
+#######################################################################
+# Sewing produces the result with huge tolerance
+#######################################################################
+
+pload XSDRAW
+
+restore [locate_data_file bug24390_face_0.brep] f1
+restore [locate_data_file bug24390_face_1.brep] f2
+restore [locate_data_file bug24390_face_2.brep] f3
+restore [locate_data_file bug24390_face_3.brep] f4
+restore [locate_data_file bug24390_face_4.brep] f5
+restore [locate_data_file bug24390_face_5.brep] f6
+
+sewing result f1 f2 f3 f4 f5 f6
+
+checkshape result
+
+set tolmax_f [tolmax f1]
+regexp {max tol = ([-0-9.+eE]+)} ${tolmax_f} full CMP_TOL
+
+set face_list {f2 f3 f4 f5 f6}
+foreach f ${face_list} {
+   set tolmax_f [tolmax ${f}]
+   regexp {max tol = ([-0-9.+eE]+)} ${tolmax_f} full FaceMaxTolerance
+   if { ${FaceMaxTolerance} > ${CMP_TOL} } {
+      set CMP_TOL ${FaceMaxTolerance}
+   }
+}
+
+set CMP_TOL [expr 5. * ${CMP_TOL}]
+puts "CMP_TOL=${CMP_TOL}"
+
+set tolmaxres [tolmax result]
+regexp {max tol = ([-0-9.+eE]+)} ${tolmaxres} full MaxTolerance
+puts "MaxTolerance=${MaxTolerance}"
+if { ${MaxTolerance} > ${CMP_TOL} } {
+   puts "Error: invalid tolerance"
+}
+
+set 2dviewer 1
