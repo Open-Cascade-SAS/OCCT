@@ -2638,15 +2638,6 @@ Handle(Geom2d_BSplineCurve) MakeBSpline2d(const Handle(IntPatch_WLine)& theWLine
     enlarge=Standard_True;
   }
   //
-  if (aType==GeomAbs_Sphere) {
-    Standard_Real dV;
-    //
-    dV=thevmax-thevmin;
-    if (dV+delta<M_PI) {
-      enlarge=Standard_True;
-    }
-  }
-  //
   if(!isuperiodic && enlarge) {
 
     if((theumin - uinf) > delta )
