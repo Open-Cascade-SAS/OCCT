@@ -957,7 +957,7 @@ Standard_Boolean Exist = Standard_False;
 
 #if defined(_WIN32) || defined(__WIN32__)
   const Handle(WNT_Window) THEWindow = Handle(WNT_Window)::DownCast (AWindow);
-  int TheSpecifiedWindowId = int (THEWindow->HWindow ());
+  Aspect_Handle TheSpecifiedWindowId = THEWindow->HWindow ();
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
   const Handle(Cocoa_Window) THEWindow = Handle(Cocoa_Window)::DownCast (AWindow);
   NSView* TheSpecifiedWindowId = THEWindow->HView();
@@ -974,7 +974,7 @@ Standard_Boolean Exist = Standard_False;
 const Handle(Aspect_Window) AspectWindow = (MyIterator.Value ())->Window ();
 #if defined(_WIN32) || defined(__WIN32__)
    const Handle(WNT_Window) theWindow = Handle(WNT_Window)::DownCast (AspectWindow);
-   int TheWindowIdOfView = int (theWindow->HWindow ());
+   Aspect_Handle TheWindowIdOfView = theWindow->HWindow ();
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
    const Handle(Cocoa_Window) theWindow = Handle(Cocoa_Window)::DownCast (AspectWindow);
    NSView* TheWindowIdOfView = theWindow->HView();

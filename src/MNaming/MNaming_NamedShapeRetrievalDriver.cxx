@@ -149,7 +149,7 @@ void MNaming_NamedShapeRetrievalDriver::Paste (
     case TNaming_SELECTED     : {
       Bld.Select(NewShape, OldShape); break;
     }
-    case TNaming_REPLACE      :{
+    case TNaming_REPLACE      : {
       //Bld.Replace(OldShape,NewShape); break;
       Bld.Modify(OldShape,NewShape); break;// for compatibility only
     }  

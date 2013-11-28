@@ -604,7 +604,7 @@ static ERROR_TABLE fileErrorTable[] = {
 
 };
 
-#define FILE_ERR_TABLE_SIZE (  sizeof ( fileErrorTable ) / sizeof ( fileErrorTable[ 0 ] )  )
+#define FILE_ERR_TABLE_SIZE (int)(sizeof(fileErrorTable) / sizeof(fileErrorTable[0]))
 
 static ERROR_TABLE fileNodeErrorTable[] = {
 

@@ -261,17 +261,32 @@ static Standard_Integer DDocStd_SaveAs (Draw_Interpretor& di,
     PCDM_StoreStatus theStatus = A->SaveAs(D,path);
     if (theStatus != PCDM_SS_OK ) {
       switch ( theStatus ) {
-      case PCDM_SS_DriverFailure: {
-	di << " could not store , no driver found to make it " <<"\n" ;
-	break ;
-      }
-      case PCDM_SS_WriteFailure: {
-	di << " Write access failure " << "\n" ;  
-	break;
-      }
-      case PCDM_SS_Failure: {
-	di << " Write failure " << "\n" ;  
-      }
+        case PCDM_SS_DriverFailure: {
+          di << "Error saving document: Could not store , no driver found to make it" << "\n";
+          break ;
+        }
+        case PCDM_SS_WriteFailure: {
+          di << "Error saving document: Write access failure" << "\n";
+          break;
+        }
+        case PCDM_SS_Failure: {
+          di << "Error saving document: Write failure" << "\n" ;
+          break;
+        }
+        case PCDM_SS_Doc_IsNull: {
+          di << "Error saving document: No document to save" << "\n";
+          break ;
+        }
+        case PCDM_SS_No_Obj: {
+          di << "Error saving document: No objects written" << "\n";
+          break;
+        }
+        case PCDM_SS_Info_Section_Error: {
+          di << "Error saving document: Write info section failure" << "\n" ;
+          break;
+        }
+        default:
+          break;
       }
       return 1;
     } else {

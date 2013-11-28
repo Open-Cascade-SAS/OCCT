@@ -25,7 +25,7 @@
 #include <Standard_Integer.hxx>
 
 // macro to get size of C array
-#define CARRAY_LENGTH(arr) (sizeof(arr)/sizeof(arr[0]))
+#define CARRAY_LENGTH(arr) (int)(sizeof(arr)/sizeof(arr[0]))
 
 void math_DoubleTab::Allocate()
 {

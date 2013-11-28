@@ -38,8 +38,10 @@
 #include <BinMNaming.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TDF_Tool.hxx>
+
 #define  NULL_ENTRY "0:0"
-#define  OBSOLETE_NUM sizeof(Standard_Integer)
+#define  OBSOLETE_NUM (int)sizeof(Standard_Integer)
+
 //=======================================================================
 // 'Z' - is reserved for: forfidden to use
 //=======================================================================

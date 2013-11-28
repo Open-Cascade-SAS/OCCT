@@ -187,21 +187,25 @@ static Standard_Integer loadvrml
           shape = aScene.GetShape(ShapeAppMap);
           break;
         }
-      case VrmlData_EmptyData:          aStr = "EmptyData"; break;
-      case VrmlData_UnrecoverableError: aStr = "UnrecoverableError"; break;
-      case VrmlData_GeneralError:       aStr = "GeneralError"; break;
-      case VrmlData_EndOfFile:          aStr = "EndOfFile"; break;
-      case VrmlData_NotVrmlFile:        aStr = "NotVrmlFile"; break;
-      case VrmlData_CannotOpenFile:     aStr = "CannotOpenFile"; break;
-      case VrmlData_VrmlFormatError:    aStr = "VrmlFormatError"; break;
-      case VrmlData_NumericInputError:  aStr = "NumericInputError"; break;
-      case VrmlData_IrrelevantNumber:   aStr = "IrrelevantNumber"; break;
-      case VrmlData_BooleanInputError:  aStr = "BooleanInputError"; break;
-      case VrmlData_StringInputError:   aStr = "StringInputError"; break;
-      case VrmlData_NodeNameUnknown:    aStr = "NodeNameUnknown"; break;
-      case VrmlData_NonPositiveSize:    aStr = "NonPositiveSize"; break;
-      case VrmlData_ReadUnknownNode:    aStr = "ReadUnknownNode"; break;
-      case VrmlData_NonSupportedFeature:aStr = "NonSupportedFeature"; break;
+      case VrmlData_EmptyData:            aStr = "EmptyData"; break;
+      case VrmlData_UnrecoverableError:   aStr = "UnrecoverableError"; break;
+      case VrmlData_GeneralError:         aStr = "GeneralError"; break;
+      case VrmlData_EndOfFile:            aStr = "EndOfFile"; break;
+      case VrmlData_NotVrmlFile:          aStr = "NotVrmlFile"; break;
+      case VrmlData_CannotOpenFile:       aStr = "CannotOpenFile"; break;
+      case VrmlData_VrmlFormatError:      aStr = "VrmlFormatError"; break;
+      case VrmlData_NumericInputError:    aStr = "NumericInputError"; break;
+      case VrmlData_IrrelevantNumber:     aStr = "IrrelevantNumber"; break;
+      case VrmlData_BooleanInputError:    aStr = "BooleanInputError"; break;
+      case VrmlData_StringInputError:     aStr = "StringInputError"; break;
+      case VrmlData_NodeNameUnknown:      aStr = "NodeNameUnknown"; break;
+      case VrmlData_NonPositiveSize:      aStr = "NonPositiveSize"; break;
+      case VrmlData_ReadUnknownNode:      aStr = "ReadUnknownNode"; break;
+      case VrmlData_NonSupportedFeature:  aStr = "NonSupportedFeature"; break;
+      case VrmlData_OutputStreamUndefined:aStr = "OutputStreamUndefined"; break;
+      case VrmlData_NotImplemented:       aStr = "NotImplemented"; break;
+      default:
+        break;
       }
       if (aStr) {
         di << " ++ VRML Error: " << aStr << " in line "

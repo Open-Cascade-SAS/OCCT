@@ -88,6 +88,11 @@ void QANewBRepNaming::LoadNamedShape (TNaming_Builder& theBuilder,
       theBuilder.Modify(theOS, theNS);
       break;
     }
+    case TNaming_REPLACE :
+    {
+      theBuilder.Modify(theOS, theNS);
+      break;
+    } // for compatibility
 //  case TNaming_REPLACE :
 //    {
 //      theBuilder.Replace(theOS, theNS);

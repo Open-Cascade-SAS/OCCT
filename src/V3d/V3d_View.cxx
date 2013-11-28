@@ -266,12 +266,12 @@ static Graphic3d_Vertex& _MyProjReferencePoint() {
 
 V3d_View::V3d_View(const Handle(V3d_Viewer)& VM, const V3d_TypeOfView Type ) :
 MyType ( Type ),
+MyProjModel(V3d_TPM_SCREEN),
 MyViewer(VM.operator->()),
 MyActiveLights(),
 MyViewContext (),
 myActiveLightsIterator(),
 SwitchSetFront(Standard_False),
-MyProjModel(V3d_TPM_SCREEN),
 MyTrsf (1, 4, 1, 4)         // S3892
 {
   myImmediateUpdate = Standard_False;
@@ -367,13 +367,13 @@ MyTrsf (1, 4, 1, 4)         // S3892
 
 V3d_View::V3d_View(const Handle(V3d_Viewer)& VM,const Handle(V3d_View)& V, const V3d_TypeOfView Type ) :
 MyType ( Type ),
+MyProjModel(V3d_TPM_SCREEN),
 MyViewer(VM.operator->()),
 MyActiveLights(),
 MyViewContext (),
 myActiveLightsIterator(),
 SwitchSetFront(Standard_False),
-MyTrsf (1, 4, 1, 4),                                    // S3892
-MyProjModel(V3d_TPM_SCREEN)
+MyTrsf (1, 4, 1, 4)                                    // S3892
 {
   Handle(Visual3d_View) FromView = V->View() ;
 

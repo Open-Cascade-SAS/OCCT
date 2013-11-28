@@ -22,7 +22,7 @@
 #include <Standard_Failure.hxx>
 
 // macro to get size of C array
-#define CARRAY_LENGTH(arr) (sizeof(arr)/sizeof(arr[0]))
+#define CARRAY_LENGTH(arr) (int)(sizeof(arr)/sizeof(arr[0]))
 
 math_SingleTab::math_SingleTab(const Standard_Integer LowerIndex,
 		               const Standard_Integer UpperIndex) :

@@ -628,6 +628,8 @@ static void FUN_NewFirstLast(const GeomAbs_CurveType& ga_ct,
 	  }
       break;
     }
+  default:
+    break;
   }
 }
 //================================================================================
@@ -1477,7 +1479,7 @@ void IntPatch_Intersection::Dump(const Standard_Integer ,
     nbR2++;
   }
   
-  printf("\nDUMP_INT:  ----empt:%2d  tgte:%2d  oppo:%2d ---------------------------------",empt,tgte,empt);
+  printf("\nDUMP_INT:  ----empt:%2ud  tgte:%2ud  oppo:%2ud ---------------------------------",empt,tgte,empt);
   Standard_Integer i,j,nbr1,nbr2,nbgl,nbgc,nbge,nbgp,nbgh,nbl,nbr,nbg,nbw,nba;
   nbl=nbr=nbg=nbw=nba=nbgl=nbge=nbr1=nbr2=nbgc=nbgp=nbgh=0;
   nbl=NbLines();

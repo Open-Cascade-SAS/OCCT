@@ -345,6 +345,8 @@ Standard_Boolean TopOpeBRep_LineInter::IsPeriodic() const
   {
     case TopOpeBRep_CIRCLE  :
     case TopOpeBRep_ELLIPSE : return Standard_True;
+    default:
+      break;
   }
   return Standard_False;
 }
@@ -410,6 +412,8 @@ Standard_Integer TopOpeBRep_LineInter::NbWPoint() const
   switch (myTypeLineCurve)
   {
     case TopOpeBRep_WALKING : return myILW->NbPnts();
+    default:
+      break;
   }
   return 0;
 }

@@ -69,7 +69,7 @@ static const Font_FontMgr_FontAliasMapNode Font_FontMgr_MapOfFontsAliases[] =
 
 };
 
-#define NUM_FONT_ENTRIES (sizeof(Font_FontMgr_MapOfFontsAliases)/sizeof(Font_FontMgr_FontAliasMapNode))
+#define NUM_FONT_ENTRIES (int)(sizeof(Font_FontMgr_MapOfFontsAliases)/sizeof(Font_FontMgr_FontAliasMapNode))
 
 #if (defined(_WIN32) || defined(__WIN32__))
 

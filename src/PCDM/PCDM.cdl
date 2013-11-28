@@ -58,8 +58,6 @@ is
 	    SS_DriverFailure,
 	    SS_WriteFailure,
 	    SS_Failure,
-	    SS_DiskWritingFailure,
-	    SS_UserRightsFailure,
 	    SS_Doc_IsNull,
 	    SS_No_Obj,
 	    SS_Info_Section_Error

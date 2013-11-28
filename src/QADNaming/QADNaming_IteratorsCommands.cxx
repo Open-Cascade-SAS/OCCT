@@ -50,8 +50,8 @@ static const char* EvolutionString(TNaming_Evolution theEvolution) {
     return "DELETE";
   case TNaming_SELECTED :
     return "SELECTED";
-//  case TNaming_REPLACE :
-//    return "REPLACE";
+  case TNaming_REPLACE :
+    return "MODIFY";
   }
   return "UNKNOWN_Evolution";
 }

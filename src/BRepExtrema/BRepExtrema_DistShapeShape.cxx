@@ -461,6 +461,8 @@ void BRepExtrema_DistShapeShape::Dump(Standard_OStream& o) const
     
     switch (SupportTypeShape1(i))
     {
+      case BRepExtrema_IsVertex:
+        break;
       case BRepExtrema_IsOnEdge:
         ParOnEdgeS1(i,r1);
         o << "parameter on the first edge :  t= " << r1 << endl;
@@ -472,6 +474,8 @@ void BRepExtrema_DistShapeShape::Dump(Standard_OStream& o) const
     }
     switch (SupportTypeShape2(i))
     {
+      case BRepExtrema_IsVertex:
+        break;
       case BRepExtrema_IsOnEdge:
         ParOnEdgeS2(i,r1);
         o << "parameter on the second edge : t=" << r1 << endl;

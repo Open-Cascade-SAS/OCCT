@@ -82,16 +82,20 @@ void IntPatch_Point::ReverseTransition()
     IntSurf_Transition TLine;
     switch (traline1.TransitionType())
     {
-	  case IntSurf_In: TLine.SetValue(Standard_False,IntSurf_Out); break;
-	  case IntSurf_Out: TLine.SetValue(Standard_False,IntSurf_In); break;
-	}
+    case IntSurf_In: TLine.SetValue(Standard_False,IntSurf_Out); break;
+    case IntSurf_Out: TLine.SetValue(Standard_False,IntSurf_In); break;
+    default:
+      break;
+    }
     traline1=TLine;
     IntSurf_Transition TArc;
     switch (tra1.TransitionType())
     {
-	  case IntSurf_In: TArc.SetValue(Standard_False,IntSurf_Out); break;
-	  case IntSurf_Out: TArc.SetValue(Standard_False,IntSurf_In); break;
-	}
+    case IntSurf_In: TArc.SetValue(Standard_False,IntSurf_Out); break;
+    case IntSurf_Out: TArc.SetValue(Standard_False,IntSurf_In); break;
+    default:
+      break;
+    }
     tra1=TArc;
   }
   if(onS2)
@@ -99,16 +103,20 @@ void IntPatch_Point::ReverseTransition()
     IntSurf_Transition TLine;
     switch (traline2.TransitionType())
     {
-	  case IntSurf_In: TLine.SetValue(Standard_False,IntSurf_Out); break;
-	  case IntSurf_Out: TLine.SetValue(Standard_False,IntSurf_In); break;
-	}
+    case IntSurf_In: TLine.SetValue(Standard_False,IntSurf_Out); break;
+    case IntSurf_Out: TLine.SetValue(Standard_False,IntSurf_In); break;
+    default:
+      break;
+    }
     traline2=TLine;
     IntSurf_Transition TArc;
     switch (tra2.TransitionType())
     {
-	  case IntSurf_In: TArc.SetValue(Standard_False,IntSurf_Out); break;
-	  case IntSurf_Out: TArc.SetValue(Standard_False,IntSurf_In); break;
-	}
+    case IntSurf_In: TArc.SetValue(Standard_False,IntSurf_Out); break;
+    case IntSurf_Out: TArc.SetValue(Standard_False,IntSurf_In); break;
+    default:
+      break;
+    }
     tra2=TArc;
   }  
 }

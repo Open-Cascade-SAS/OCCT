@@ -64,6 +64,9 @@ Standard_Integer IntPatch_HInterTool::NbSamplesV (const Handle(Adaptor3d_HSurfac
     case GeomAbs_Torus:
     case GeomAbs_SurfaceOfRevolution:
     case GeomAbs_SurfaceOfExtrusion: return 15;
+
+    case GeomAbs_OffsetSurface:
+    case GeomAbs_OtherSurface: return 10;
   }
   return 10;
 }
@@ -82,13 +85,16 @@ Standard_Integer IntPatch_HInterTool::NbSamplesU (const Handle(Adaptor3d_HSurfac
       if (!S->IsURational()) nbs *= 2;
       if (nbs < 4) nbs = 4;
       return nbs;
-	}
+	  }
     case GeomAbs_Torus: return 20;
-    //case GeomAbs_Cylinder:
-    //case GeomAbs_Cone:
-    //case GeomAbs_Sphere:
-    //case GeomAbs_SurfaceOfRevolution:
-    //case GeomAbs_SurfaceOfExtrusion: return 10;
+
+    case GeomAbs_Cylinder:
+    case GeomAbs_Cone:
+    case GeomAbs_Sphere:
+    case GeomAbs_SurfaceOfRevolution:
+    case GeomAbs_SurfaceOfExtrusion:
+    case GeomAbs_OffsetSurface:
+    case GeomAbs_OtherSurface: return 10;
   }
   return 10;
 }

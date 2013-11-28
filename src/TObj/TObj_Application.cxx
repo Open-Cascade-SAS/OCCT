@@ -103,9 +103,6 @@ Standard_Boolean TObj_Application::SaveDocument
     case PCDM_SS_Failure:
       ErrorMessage (Message_Msg("TObj_Appl_SFailure") << aPath);
       break;
-    case PCDM_SS_DiskWritingFailure:
-      ErrorMessage (Message_Msg("TObj_Appl_SDiskWritingFailure") << aPath);
-      break;
     case PCDM_SS_Doc_IsNull:
       ErrorMessage (Message_Msg("TObj_Appl_SDocIsNull") << aPath);
       break;

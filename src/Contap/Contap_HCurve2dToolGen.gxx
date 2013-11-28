@@ -48,6 +48,8 @@ Standard_Integer Contap_HCurve2dToolGen::NbSamples (const CurveGen& C,
       nbs/= U1-U0;
       if(nbs < 2.0) nbs = 2.;
       break;
+    default:
+      break;
   }
   if (nbs>50.)
     nbs = 50.;

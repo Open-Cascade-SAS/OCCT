@@ -50,6 +50,11 @@ void rec_typarg(int argtype);
 #pragma warning(disable:4131 4244 4273 4267 4127)
 #endif
 
+// disable GCC warnings in flex code
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wunused-function"
+#endif
+
 %}
 %%
 "	"	{;}

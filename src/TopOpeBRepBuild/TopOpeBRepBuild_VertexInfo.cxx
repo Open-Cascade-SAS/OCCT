@@ -141,7 +141,7 @@ TopOpeBRepBuild_VertexInfo::TopOpeBRepBuild_VertexInfo()
   void TopOpeBRepBuild_VertexInfo::Dump() const
 {
   printf(" *** Dump the Vertex Info ***\n");
-  printf(" mySmart  : %d\n", mySmart);
+  printf(" mySmart  : %ud\n", mySmart);
   printf(" Edges    : %d In, %d Out\n", myEdgesIn.Extent(), myEdgesOut.Extent());
   
   

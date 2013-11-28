@@ -180,7 +180,7 @@ void BinLDrivers_DocumentStorageDriver::Write
       WriteMessage (aStr + theFileName);
 #endif
       SetIsError(Standard_True);
-      SetStoreStatus(PCDM_SS_DiskWritingFailure);
+      SetStoreStatus(PCDM_SS_WriteFailure);
     }
 
   }
