@@ -400,28 +400,31 @@ Standard_Boolean OpenGl_Workspace::BufferDump (OpenGl_FrameBuffer*         theFB
     glReadBuffer (aDrawBufferPrev);
   }
 
-  GLint anAlignBack = 1;
-  glGetIntegerv (GL_PACK_ALIGNMENT, &anAlignBack);
-  GLint anExtraBytes = (GLint )theImage.RowExtraBytes();
-  GLint anAligment   = Min (GLint(theImage.MaxRowAligmentBytes()), 8); // limit to 8 bytes for OpenGL
+  // setup alignment
+  const GLint anExtraBytes = (GLint )theImage.RowExtraBytes();
+  const GLint anAligment   = Min (GLint(theImage.MaxRowAligmentBytes()), 8); // limit to 8 bytes for OpenGL
   glPixelStorei (GL_PACK_ALIGNMENT, anAligment);
 
-  if (anExtraBytes >= anAligment)
+  const GLint aPixelsWidth = GLint(theImage.SizeRowBytes() / theImage.SizePixelBytes());
+  glPixelStorei (GL_PACK_ROW_LENGTH, (anExtraBytes >= anAligment) ? aPixelsWidth : 0);
+
+  if (theImage.IsTopDown())
   {
     // copy row by row
     for (Standard_Size aRow = 0; aRow < theImage.SizeY(); ++aRow)
     {
-      glReadPixels (0, GLint(aRow), GLsizei (theImage.SizeX()), 1, aFormat, aType, theImage.ChangeRow (aRow));
+      // Image_PixMap rows indexation always starts from the upper corner
+      // while order in memory depends on the flag and processed by ChangeRow() method
+      glReadPixels (0, GLint(theImage.SizeY() - aRow - 1), GLsizei (theImage.SizeX()), 1, aFormat, aType, theImage.ChangeRow (aRow));
     }
   }
   else
   {
-    // read pixels
     glReadPixels (0, 0, GLsizei (theImage.SizeX()), GLsizei (theImage.SizeY()), aFormat, aType, theImage.ChangeData());
-    theImage.SetTopDown (false); // image bottom-up in OpenGL
   }
 
-  glPixelStorei (GL_PACK_ALIGNMENT, anAlignBack);
+  glPixelStorei (GL_PACK_ALIGNMENT,  1);
+  glPixelStorei (GL_PACK_ROW_LENGTH, 0);
 
   if (theFBOPtr != NULL && theFBOPtr->IsValid())
   {

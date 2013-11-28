@@ -27,6 +27,24 @@
 IMPLEMENT_STANDARD_HANDLE (OpenGl_Texture, OpenGl_Resource)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Texture, OpenGl_Resource)
 
+//! Simple class to reset unpack alignment settings
+struct OpenGl_UnpackAlignmentSentry
+{
+
+  //! Reset unpack alignment settings to safe values
+  void Reset()
+  {
+    glPixelStorei (GL_UNPACK_ALIGNMENT,  1);
+    glPixelStorei (GL_UNPACK_ROW_LENGTH, 0);
+  }
+
+  ~OpenGl_UnpackAlignmentSentry()
+  {
+    Reset();
+  }
+
+};
+
 // =======================================================================
 // function : OpenGl_Texture
 // purpose  :
@@ -287,7 +305,16 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
   GLint aTestWidth  = 0;
   GLint aTestHeight = 0;
 
-  glPixelStorei (GL_UNPACK_ALIGNMENT, 1); // ensure alignment will not screw up the party
+  // setup the alignment
+  OpenGl_UnpackAlignmentSentry anUnpackSentry;
+  const GLint anAligment = Min ((GLint )theImage.MaxRowAligmentBytes(), 8); // OpenGL supports alignment upto 8 bytes
+  glPixelStorei (GL_UNPACK_ALIGNMENT, anAligment);
+
+  // notice that GL_UNPACK_ROW_LENGTH is not available on OpenGL ES 2.0 without GL_EXT_unpack_subimage extension
+  const GLint anExtraBytes = GLint(theImage.RowExtraBytes());
+  const GLint aPixelsWidth = GLint(theImage.SizeRowBytes() / theImage.SizePixelBytes());
+  glPixelStorei (GL_UNPACK_ROW_LENGTH, (anExtraBytes >= anAligment) ? aPixelsWidth : 0);
+
   switch (theType)
   {
     case Graphic3d_TOT_1D:
@@ -301,6 +328,8 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       GLvoid* aDataPtr = (GLvoid* )theImage.Data();
       if (aWidth != aWidthOut)
       {
+        glPixelStorei (GL_PACK_ALIGNMENT,  1);
+        glPixelStorei (GL_PACK_ROW_LENGTH, 0);
         if (!aCopy.InitTrash (theImage.Format(), Standard_Size(aWidthOut), 1)
           || gluScaleImage (aPixelFormat,
                             aWidth,    1, aDataType, theImage.Data(),
@@ -311,6 +340,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
         }
 
         aDataPtr = (GLvoid* )aCopy.Data();
+        anUnpackSentry.Reset();
       }
 
       // use proxy to check texture could be created or not
@@ -352,6 +382,8 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       if (aWidth != aWidthOut || aHeight != aHeightOut)
       {
         // scale texture
+        glPixelStorei (GL_PACK_ALIGNMENT,  1);
+        glPixelStorei (GL_PACK_ROW_LENGTH, 0);
         if (!aCopy.InitTrash (theImage.Format(), Standard_Size(aWidthOut), Standard_Size(aHeightOut))
           || gluScaleImage (aPixelFormat,
                             aWidth,    aHeight,    aDataType, theImage.Data(),
@@ -362,6 +394,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
         }
 
         aDataPtr = (GLvoid* )aCopy.Data();
+        anUnpackSentry.Reset();
       }
 
       // use proxy to check texture could be created or not
