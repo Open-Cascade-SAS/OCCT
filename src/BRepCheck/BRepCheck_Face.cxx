@@ -41,6 +41,7 @@
 #include <BRepClass_FaceClassifier.hxx>
 //#include <Geom2dInt_GInter.hxx>
 #include <Geom2d_Curve.hxx>
+#include <Geom_Curve.hxx>
 #include <GProp_GProps.hxx>
 
 #include <IntRes2d_Domain.hxx>
@@ -650,50 +651,83 @@ static Standard_Boolean Intersect(const TopoDS_Wire& wir1,
 //purpose  : 
 //=======================================================================
 
-static Standard_Boolean IsInside(const TopoDS_Wire& wir,
+static Standard_Boolean IsInside(const TopoDS_Wire& theWire,
 				 const Standard_Boolean WireBienOriente,
 				 const BRepTopAdaptor_FClass2d& FClass2d,
-				 const TopoDS_Face& F)
+				 const TopoDS_Face& theFace)
 {
-  // Standard_Real U,V;
-  TopExp_Explorer exp;
-  exp.Init(wir,TopAbs_EDGE);
-  if (exp.More()) {
+  Standard_Real aParameter, aFirst, aLast;
 
-    const TopoDS_Edge& edg = TopoDS::Edge(exp.Current());
-    Standard_Real f,l;
-    Handle(Geom2d_Curve) C2d = BRep_Tool::CurveOnSurface(edg,F,f,l);
-    Standard_Real prm;
+  TopExp_Explorer anExplorer(theWire, TopAbs_EDGE);
+  for( ; anExplorer.More(); anExplorer.Next() )
+  {
+    const TopoDS_Edge& anEdge = TopoDS::Edge( anExplorer.Current() );
+    Handle(Geom2d_Curve) aCurve2D =
+      BRep_Tool::CurveOnSurface( anEdge, theFace, aFirst, aLast );
 
-    if (!Precision::IsNegativeInfinite(f) && 
-	!Precision::IsPositiveInfinite(l)) {
-      prm = (f+l)/2.;
+    // Selects the parameter of point on the curve
+    if( !Precision::IsNegativeInfinite(aFirst) &&
+        !Precision::IsPositiveInfinite(aLast) )
+    {
+      aParameter = (aFirst + aLast) * 0.5;
+
+      // Edge is skipped if its parametric range is too small
+      if( Abs(aParameter - aFirst) < Precision::PConfusion() )
+      {
+        continue;
+      }
+
+	  //Edge is skipped if its length is too small
+	  Standard_Real aFirst3D, aLast3D;
+	  Handle(Geom_Curve) aCurve = BRep_Tool::Curve( anEdge, aFirst3D, aLast3D );      
+      if ( aCurve.IsNull() )
+      {
+        continue;
+      }
+
+      gp_Pnt aPoints[2];
+      // Compute start point of edge
+      aCurve->D0( aFirst, aPoints[0] );
+      // Compute middle point of edge 
+      aCurve->D0( (aFirst3D+aLast3D)/2., aPoints[1] );
+      if( aPoints[0].Distance(aPoints[1]) < Precision::Confusion() )
+      {
+        continue;
+      }
     }
-    else {
-      if (Precision::IsNegativeInfinite(f) && 
-	  Precision::IsPositiveInfinite(l)){
-	prm = 0.;
+    else
+    {
+      if( Precision::IsNegativeInfinite(aFirst) &&
+          Precision::IsPositiveInfinite(aLast) )
+      {
+        aParameter = 0.;
       }
-      else if (Precision::IsNegativeInfinite(f)) {
-	prm = l-1.;
+      else if( Precision::IsNegativeInfinite(aFirst) )
+      {
+        aParameter = aLast - 1.;
       }
-      else {
-	prm = f+1.;
+      else
+      {
+        aParameter = aFirst + 1.;
       }
     }
 
-    gp_Pnt2d pt2d(C2d->Value(prm));
-    
-    if(WireBienOriente) { 
-      return(FClass2d.Perform(pt2d,Standard_False) == TopAbs_OUT);     
+    // Find point on curve (edge)
+    gp_Pnt2d aPoint2D(aCurve2D->Value(aParameter));
+    // Compute the topological position of a point relative to face
+    TopAbs_State aState = FClass2d.Perform(aPoint2D, Standard_False);
+
+    if( WireBienOriente )
+    {
+      return aState == TopAbs_OUT;
     }
-    else { 
-      return(FClass2d.Perform(pt2d,Standard_False) == TopAbs_IN);
+    else
+    {
+      return aState == TopAbs_IN;
     }
   }
   return Standard_False;
 }
-
 Standard_Boolean CheckThin(const TopoDS_Shape& w, const TopoDS_Shape& f)
 {
   TopoDS_Face aF = TopoDS::Face(f);

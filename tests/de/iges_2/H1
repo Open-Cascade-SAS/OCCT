@@ -1,13 +1,10 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
-
-
 set filename waaier_para.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 1 )  Warnings = 0  ( 1 )  Summary  = 0  ( 2 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 40  ( 617 )  Summary  = 40  ( 617 )
-CHECKSHAPE  : Wires    = 2  ( 2 )  Faces    = 3  ( 2 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+CHECKSHAPE  : Wires    = 2  ( 2 )  Faces    = 3  ( 3 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 162  ( 162 )   Summary  = 4900  ( 4895 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 162  ( 162 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 2291  ( 2288 )
 TOLERANCE   : MaxTol   =   0.9221218176  (   0.9410156556 )  AvgTol   =   0.01501963159  (   0.01437988687 )
