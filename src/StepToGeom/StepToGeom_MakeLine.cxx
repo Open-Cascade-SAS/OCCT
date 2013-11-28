@@ -32,6 +32,7 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Dir.hxx>
+#include <Precision.hxx>
 
 //=============================================================================
 // Creation d' une Line de Geom a partir d' une Line de Step
@@ -46,6 +47,8 @@ Standard_Boolean StepToGeom_MakeLine::Convert (const Handle(StepGeom_Line)& SC, 
     Handle(Geom_VectorWithMagnitude) D;
     if (StepToGeom_MakeVectorWithMagnitude::Convert(SC->Dir(),D))
     {
+      if( D->Vec().SquareMagnitude() < Precision::Confusion() * Precision::Confusion())
+        return Standard_False;
       const gp_Dir V(D->Vec());
       CC = new Geom_Line(P->Pnt(), V);
       return Standard_True;
