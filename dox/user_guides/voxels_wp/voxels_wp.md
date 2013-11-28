@@ -16,8 +16,8 @@ Voxel Package {#occt_voxels_wp}
   To produce a voxel representation the 3D space is split by equal intervals 
   along the main orthogonal coordinate axes to obtain nx  x ny x nz voxels (small cubes):  
 
-@image html voxels_wp_image003.jpg "A cube of 3 X 3 X 3  = 9 voxels."
-@image latex voxels_wp_image003.jpg "A cube of 3 X 3 X 3  = 9 voxels."
+@image html voxels_wp_image003.png "A cube of 3 X 3 X 3  = 9 voxels."
+@image latex voxels_wp_image003.png "A cube of 3 X 3 X 3  = 9 voxels."
 
   The data are attached to each voxel and remain the same  within the voxel. 
   It means that we obtain the 3D space with discrete data distribution.  
@@ -34,10 +34,11 @@ Voxel Package {#occt_voxels_wp}
   as colored or black/white points and cubes, displaying only the voxels 
   visible from the user's point of view.  
 
-@image html voxels_wp_image004.jpg "A shape and its voxel representation"
-@image html voxels_wp_image005.jpg  "A shape and its voxel representation"
-@image latex voxels_wp_image004.jpg "A shape and its voxel representation"
-@image latex voxels_wp_image005.jpg "A shape and its voxel representation"
+@image html voxels_wp_image004.png "A shape and its voxel representation"
+@image html voxels_wp_image005.png  "A shape and its voxel representation"
+
+@image latex voxels_wp_image004.png "A shape and its voxel representation"
+@image latex voxels_wp_image005.png "A shape and its voxel representation"
 
 In these images a boundary representation is displayed to the  left.  In the center and to the right there are 3D discrete representations (or  3D discrete topology).  Any solid shape can be translated into a voxel  representation.  
 
@@ -100,8 +101,8 @@ The algorithm can run in multi-threaded mode (the number  of threads is unlimite
   
   It is possible to display the voxels from a particular range of values (iso-volume):  
 
-@image html voxels_wp_image006.jpg  "Iso-volume of a shape"
-@image latex voxels_wp_image006.jpg  "Iso-volume of a shape"
+@image html voxels_wp_image006.png  "Iso-volume of a shape"
+@image latex voxels_wp_image006.png  "Iso-volume of a shape"
 
 The voxels are displayed by means of "direct drawing  in Open GL" technology or "user draw" technology.   Therefore, some visualization  files are compiled within Open CASCADE Technology, but the files of "direct  drawing" are compiled  by the end-user application.  
   
@@ -115,15 +116,15 @@ It is necessary to include the files *Voxel_VisData.h*,  *VoxelClient_VisDrawer.
   
   The *File* menu allows creation of canonical  shapes (box, cylinder, sphere, torus) or loading of shapes in BREP format:  
 
-@image html voxels_wp_image007.jpg "Demo-application. Creation or loading of a shape"
-@image latex voxels_wp_image007.jpg "Demo-application. Creation or loading of a shape"
+@image html voxels_wp_image007.png "Demo-application. Creation or loading of a shape"
+@image latex voxels_wp_image007.png "Demo-application. Creation or loading of a shape"
 
 The menu *Converter* voxelizes the shape.   Two  types of voxels can be obtained: 1-bit or 4-bit voxels. 
   * 1-bit voxels are displayed in white color on black background. 
   * 4-bit voxels use 16 colors filling the model in a special way for demonstrative purposes:  
 
-@image html voxels_wp_image008.jpg "Demo-application.  Voxelization"
-@image latex voxels_wp_image008.jpg "Demo-application.  Voxelization"
+@image html voxels_wp_image008.png "Demo-application.  Voxelization"
+@image latex voxels_wp_image008.png "Demo-application.  Voxelization"
 
   The converter uses two threads (two processors, if  available) to perform voxelization.  
   
@@ -131,13 +132,13 @@ The menu *Converter* voxelizes the shape.   Two  types of voxels can be obtained
   allows defining the size of points and boxes  (quadrangles), 
   the minimum and the maximum displayed color, and the boundaries of the bounding box for displayed voxels:  
 
-@image html voxels_wp_image009.jpg "Demo-application.  Visualization"
-@image latex voxels_wp_image009.jpg "Demo-application.  Visualization"
+@image html voxels_wp_image009.png "Demo-application.  Visualization"
+@image latex voxels_wp_image009.png "Demo-application.  Visualization"
 
   The last menu, *Demo* contains a demo-command for  running waves of 4-bit voxels:  
 
-@image html voxels_wp_image010.jpg  "Demo-application.  Running waves"
-@image latex voxels_wp_image010.jpg  "Demo-application.  Running waves"
+@image html voxels_wp_image010.png  "Demo-application.  Running waves"
+@image latex voxels_wp_image010.png  "Demo-application.  Running waves"
 
 @section occt_voxels_wp_6 Future development
 

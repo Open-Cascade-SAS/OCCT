@@ -1,4 +1,4 @@
-Contribution Workflow {#dev_guides_contribution_workflow}
+Contribution Workflow {#dev_guides__contribution_workflow}
 ====================================
 @tableofcontents 
 
@@ -143,8 +143,8 @@ The definition of the following attributes is obligatory:
   This is done to have the master branch history plain and clean. 
   The following picture illustrates the process:
   
-@image html OCCT_ContributionWorkflow_V3_image002.jpg "Integration of several branches"
-@image latex OCCT_ContributionWorkflow_V3_image002.jpg "Integration of several branches"
+@image html OCCT_ContributionWorkflow_V3_image002.png "Integration of several branches"
+@image latex OCCT_ContributionWorkflow_V3_image002.png "Integration of several branches"
   
   The new master branch is tested against possible regressions that might appear due to interference between separate changes. When the tests are Ok, the new master is pushed to the official repository 
   and the original branches are removed from it.

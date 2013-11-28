@@ -6,7 +6,7 @@
 
 # get OCCT version from file Standard_Version.hxx (if available)
 proc OverviewDoc_DetectCasVersion {theCasRoot} {
-  set occt_ver 16.7.0
+  set occt_ver 6.7.0
   set occt_ver_add ""
   if { [file exist $theCasRoot/src/Standard/Standard_Version.hxx] } {
     set fh [open $theCasRoot/src/Standard/Standard_Version.hxx]

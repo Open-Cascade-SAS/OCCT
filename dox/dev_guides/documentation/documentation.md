@@ -460,7 +460,7 @@ Equations can be written by several ways:
 These formulas should be put between \@f\[ and \@f\] tags. An example: 
 
 @verbatim
-@f$[
+@f[
     |I_2|=\left| \int_{0}^T \psi(t)
             \left\{ 
                 u(a,t)-
@@ -469,7 +469,7 @@ These formulas should be put between \@f\[ and \@f\] tags. An example:
                 \int_{a}^\theta c(\xi)u_t(\xi,t)\,d\xi
             \right\} dt
         \right|
-@f$]
+@f]
 @endverbatim
 
 gives the following result:

@@ -438,8 +438,7 @@ Declaration of available plug-ins is done through special resource file(s).
 The pload command loads the plug-in in accordance with 
 the specified resource file and activates the commands implemented in the plug-in.
 
-The whole process of using the plug-in mechanism as well as the instructions for extending Test Harness is described in the 
-@ref user_guides__test_harness.
+The whole process of using the plug-in mechanism as well as the instructions for extending Test Harness is described in the @ref user_guides__test_harness.
 
 Draw Test Harness provides an environment for OCCT automated testing system. 
 Please, consult its @ref dev_guides__tests "Automated Testing System" for details.
@@ -562,11 +561,9 @@ The combination of these resources allows creating substantial applications.
  Voxel
 ------
 
-This is a demonstration application showing OCCT voxel models. 
-It also includes a set of non-regression tests and other commands 
-for testing this functionality (accessible only through TEST pre-processor definition).
+This is a demonstration application showing OCCT voxel models. It also includes a set of non-regression tests and other commands for testing this functionality (accessible only through TEST pre-processor definition).
 
-**See also:** Voxels User's guide (under construction)
+**See also:** <a href="occt_voxels_wp.html">Voxels User's guide</a> 
 
 **Remarks:**
 
@@ -575,8 +572,7 @@ for testing this functionality (accessible only through TEST pre-processor defin
 
 @subsubsection OCCT_OVW_SECTION_7_3_3 C#
 
-C# sample demonstrates integration of OCCT 3D Viewer and Import / Export functionality
-into .NET applications (using Windows Forms and WPF front ends).
+C# sample demonstrates integration of OCCT 3D Viewer and Import / Export functionality into .NET applications (using Windows Forms and WPF front ends).
 
 @image html /overview/images/overview_c__ie.png
 @image latex /overview/images/overview_c__ie.png

@@ -75,9 +75,9 @@ These services are organized into the following libraries:
   * Math Utilities 
   * Basic Persistence
 
-The technical overview provides only a basic description of the libraries. Please, refer for more details to Foundation Classes User's guide
+The technical overview provides only a basic description of the libraries. Please, refer for more details to  <a href="user_guides__foundation_classes.html">Foundation Classes User's guide</a>
 
-See also: our web site at E-learning and Training.
+See also: our web site at <a href="http://www.opencascade.org/support/training/">E-learning and Training</a>.
 
 @subsection OCCT_TOVW_SECTION_2_1 Kernel Classes
 
@@ -346,13 +346,12 @@ These services are organized into the following libraries:
   * Geometry Utilities 
   * Topology 
 
-The technical overview provides only a basic description of the libraries. Please,
-refer for more details to Modeling Data User's guide 
+The technical overview provides only a basic description of the libraries. Please, refer for more details to  <a href="user_guides__modeling_data.html">Modeling Data User's guide</a>
 
 3D geometric models are stored in OCCT native BREP format. It is possible to learn
-more about it in BREP Format Description White Paper
+more about it in <a href="occt_brep_format.html">BREP Format Description White Paper</a> 
 
-See also: our web site at E-learning and Training.
+See also: our web site at <a href="http://www.opencascade.org/support/training/">E-learning and Training</a>.
 
 @subsection OCCT_TOVW_SECTION_3_1 2D Geometry Types
 
@@ -952,10 +951,9 @@ These services are organized into the following libraries:
 @image html /technical_overview/images/technical_overview_ma.png
 @image latex /technical_overview/images/technical_overview_ma.png
 
-The technical overview provides only a basic description of the libraries. 
-Please, refer for more details to Modeling Algorithms User's guide 
+The technical overview provides only a basic description of the libraries. Please, refer for more details to  <a href="user_guides__modeling_algos.html">Modeling Algorithms User's guide</a>
 
-See also: our web site at E-learning and Training.
+See also: our web site at <a href="http://www.opencascade.org/support/training/">E-learning and Training</a>.
 
 @subsection OCCT_TOVW_SECTION_4_1 Geometric Tools
 
@@ -1177,10 +1175,10 @@ to deformation. Then, the algorithm is called to calculate the final surface. It
 looks for a solution satisfying constraints and minimizing energy input.
 
 @image html /technical_overview/images/technical_overview_occ_0007.png "Surface generated from four curves and a point"
-@image latex /technical_overview/images/technical_overview_occ_0007.png "Surface generated from four curves and a point"
+@image latex /technical_overview/images/technical_overview_occ_0007.png  "Surface generated from four curves and a point" 
 
 @image html /technical_overview/images/technical_overview_occ_0008.png "Surface generated from two curves and a point"
-@image latex /technical_overview/images/technical_overview_occ_0008.png "Surface generated from two curves and a point"
+@image latex /technical_overview/images/technical_overview_occ_0008.png "Surface generated from two curves and a point" 
 
 #### Extension of a 3D curve or surface beyond its original bounds
 
@@ -1395,9 +1393,9 @@ It has several sub-domains, each with its own scope of functionality:
   * customization   - modifying shape representation to fit specific needs (the shape is not modified, only the form of its representation is modified);
   * processing      - mechanism of shape modification via a user-editable resource file.
 
-The technical overview provides only a basic description of the libraries. Please, refer for more details to Shape Healing User's guide
+The technical overview provides only a basic description of the libraries. Please, refer for more details to  <a href="user_guides__shape_healing.html">Shape Healing User's guide</a>
 
-See also: our web site at E-learning and Training.
+See also: our web site at <a href="http://www.opencascade.org/support/training/">E-learning and Training</a>.
 
 
 @subsection OCCT_TOVW_SECTION_4_8 Miscellaneous modelling algorithms. 
@@ -1496,13 +1494,13 @@ Visualization in Open CASCADE Technology is based on the separation of modeling 
 
 For visualizing data structures, OCCT provides ready-to-use algorithms, which create graphic presentations from geometric models. These data structures may be used with the viewers supplied, and can be customized to take the specificity of your application into account.
 
-Displaying is managed through presentation services, and selection in its turn is managed through selection services. With these services, data structures and algorithms are provided to display objects of an application, and to support graphical selection of these objects.
+Display is managed through presentation services, and selection in its turn is managed through selection services. With these services, data structures and algorithms are provided to display objects of an application and to support graphical selection of these objects.
 
 Application Interactive Services (AIS) are provided to manage displaying, detection and selection of graphical presentations. These services associate data structures and interactive objects.
 
-Please, refer for more details to Visualization User's guide 
+The technical overview provides only a basic description of the libraries. Please, refer for more details to  <a href="user_guides__visualization.html">Visualization User's guide</a>
 
-See also: our web site at E-learning and Training.
+See also: our web site at <a href="http://www.opencascade.org/support/training/">E-learning and Training</a>.
 
 @image html /technical_overview/images/technical_overview_viz.png
 @image latex /technical_overview/images/technical_overview_viz.png
@@ -1914,7 +1912,8 @@ with fast access to the data and optimal allocation of data in memory.
 Also, a special visualization toolkit allows visualizing voxels 
 as colored or black/white points and cubes, displaying only the voxels visible from the user's point of view.
 
-Please, see for more information Voxels User's Guide white paper.
+Please, see for more information <a href="occt_voxels_wp.html">Voxels User's Guide</a>.
+
 
 @subsection OCCT_TOVW_SECTION_5_11 Examples
 
@@ -2119,9 +2118,10 @@ of the loading operation, you use the following enumerations from the <i> IFSele
 To read and write attributes such as names, colors, layers for IGES and STEP 
 and validation properties and structure of assemblies for STEP, you can use an XDE document.
 
-It is possible to learn more about XDE documents from XDE User's guide 
+It is possible to learn more about XDE documents from <a href="user_guides__xde.html">XDE User's guide</a>.
 
-See also: our web site at E-learning and Training.
+See also: our web site at <a href="http://www.opencascade.org/support/training/">E-learning and Training</a>.
+
 
  
 @subsection OCCT_TOVW_SECTION_6_2 IGES
@@ -2144,27 +2144,21 @@ Please, note:
   * an IGES entity is an entity in the IGES normal sense.
   * a root entity is the highest level entity of any given type, e.g. type 144 for surfaces and type 186 for solids. Roots are not referenced by other entities.
 
-It is possible to learn more about the IGES interface from IGES User's guide 
+It is possible to learn more about the IGES interface from <a href="user_guides__iges.html">IGES User's guide</a>.
 
-See also: our web site at E-learning and Training.
+See also: our web site at <a href="http://www.opencascade.org/support/training/">E-learning and Training</a>.
 
 @subsection OCCT_TOVW_SECTION_6_3 STEP
 
-The STEP interface reads STEP files produced in accordance with STEP Application Protocol 214 
-(Conformance Class 2 both CD and DIS versions of schema) and translates them 
-to Open CASCADE Technology models. STEP Application Protocol 203 is also supported.
+The STEP interface reads STEP files produced in accordance with STEP Application Protocol 214 (Conformance Class 2 both CD and DIS versions of schema) and translates them to Open CASCADE Technology models. STEP Application Protocol 203 is also supported.
 
-The STEP interface also translates OCCT models to STEP files. STEP files that are produced 
-by this interface conform to STEP AP 203 or AP 214 (
-Conformance Class 2, either CD or DIS version of the schema) depending on the user's option.
+The STEP interface also translates OCCT models to STEP files. STEP files that are produced by this interface conform to STEP AP 203 or AP 214 (Conformance Class 2, either CD or DIS version of the schema) depending on the user's option.
 
 Basic interface reads and writes geometrical, topological STEP data and assembly structures. 
 
 The interface is able to translate one entity, a group of entities or a whole file.
 
-Other kinds of data such as colors, validation properties, layers, names 
-and the structure of assemblies can be read or written 
-with the help of XDE tools - <i> STEPCAFControl_Reader</i> and <i> STEPCAFControl_Writer</i>. 
+Other kinds of data such as colors, validation properties, layers, names and the structure of assemblies can be read or written with the help of XDE tools - <i> STEPCAFControl_Reader</i> and <i> STEPCAFControl_Writer</i>. 
 
 To choose a translation mode when exporting to a STEP format, use <i> STEPControl_STEPModelType</i>.
 
@@ -2175,8 +2169,9 @@ Please, note:
 * all references to shapes indicate OCCT shapes unless otherwise explicitly stated;
 * a root entity is the highest level entity of any given type, i.e. an entity that is not referenced by any other one.
 
-It is possible to learn more about the STEP interface from STEP User's guide 
-See also: our web site at E-learning and Training.
+It is possible to learn more about the STEP interface from <a href="user_guides__step.html">STEP User's guide</a>.
+
+See also: our web site at <a href="http://www.opencascade.org/support/training/">E-learning and Training</a>.
 
 @subsection OCCT_TOVW_SECTION_6_4 STL
 
@@ -2228,12 +2223,12 @@ in the same way as a number is the value of the Integer attribute and a string i
 
 OCAF documents are in their turn managed by an OCAF application.
 
-Please, refer for more details to OCAF User's guide and the OCAF white papers:
-* Application Framework
-* Distribution of Data through OCAF Tree
-* Application Framework Function Mechanism
+Please, refer for more details to <a href="user_guides__ocaf.html">OCAF User's guide</a> and the OCAF white papers:
+* <a href="ocaf_wp.html">Application Framework</a>  
+* <a href="occt_ocaf_tree_wp.html">Distribution of Data through OCAF Tree</a>  
+* <a href="occt_ocaf_functionmechanism_wp.html">Application Framework Function Mechanism</a>  
 
-See also: our web site at E-learning and Training.
+See also: our web site at <a href="http://www.opencascade.org/support/training/">E-learning and Training</a>.
 
 @subsection OCCT_TOVW_SECTION_7_1 How to start working with OCAF
 
@@ -2380,23 +2375,11 @@ label depending on necessity:
 <i> TNaming_NamedShape </i> may contain a few pairs of hooks with the same evolution. In this
 case topology shape, which belongs to the named shape, is a compound of new shapes.
 
-The data model contains both the topology and the hooks, and functions handle both
-topological entities and hooks. Consider the case of a box function, which creates
-a solid with six faces and six hooks. Each hook is attached to a face. If you want,
-you can also have this function create hooks for edges and vertices as well as for
-faces. 
+The data model contains both the topology and the hooks, and functions handle both topological entities and hooks. Consider the case of a box function, which creates a solid with six faces and six hooks. Each hook is attached to a face. If you want, you can also have this function create hooks for edges and vertices as well as for faces. 
 
-Not all functions can define explicit hooks for all topological entities they create,
-but all topological entities can be turned into hooks when necessary. This is where
-topological naming is necessary. 
+Not all functions can define explicit hooks for all topological entities they create, but all topological entities can be turned into hooks when necessary. This is where topological naming is necessary. 
 
-Consider the following example. A box defines six hooks for the six faces, but a
-protrusion created on a face of the box can only define two hooks, one for the top
-face, and one for all the lateral faces. As the basic wire defining the protrusion
-may change in the future the protrusion function cannot designate the lateral faces
-without ambiguity, their number may change. Figure 6 illustrates this example, faces
-F1 to F6 of the box each have a hook. Faces F7 to F10, the lateral faces of the protrusion,
-share a single hook, and face F11, the top face, has one hook.
+Consider the following example. A box defines six hooks for the six faces, but a protrusion created on a face of the box can only define two hooks, one for the top face, and one for all the lateral faces. As the basic wire defining the protrusion may change in the future the protrusion function cannot designate the lateral faces without ambiguity, their number may change. Figure 6 illustrates this example, faces F1 to F6 of the box each have a hook. Faces F7 to F10, the lateral faces of the protrusion, share a single hook, and face F11, the top face, has one hook.
 
 @image html /technical_overview/images/technical_overview_occ_0068.png
 @image latex /technical_overview/images/technical_overview_occ_0068.png
@@ -2434,10 +2417,8 @@ attribute you are looking for. For this, find this information using the method
 ### Function Attributes
 
 
-A model consists of data and algorithms manipulating with data. OCAF attributes store
-data. A Function attribute stores data corresponding to a Function (see the white
-paper OCAF Function Mechanism User's Guide). This mechanism manipulates with algorithms
-computing the model in the optimal way following the modifications. 
+A model consists of data and algorithms manipulating with data. OCAF attributes store data. A Function attribute stores data corresponding to a Function (see the white paper <a href="occt_ocaf_functionmechanism_wp.html"> Application Framework Function Mechanism </a>). This mechanism manipulates with algorithms computing the model in the optimal way following the modifications. 
+
 
 @subsection OCCT_TOVW_SECTION_7_3 Persistent Data Storage
 
@@ -2525,9 +2506,7 @@ The standard procedure for an application in writing a container is as follows:
 
 @subsubsection OCCT_TOVW_SECTION_7_3_2 Persistent Collections
 
-Persistent collections are classes which handle dynamically sized collections of
-data that can be stored in the database. These collections provide three categories
-of service:
+Persistent collections are classes which handle dynamically sized collections of data that can be stored in the database. These collections provide three categories of service:
 
   * persistent strings,
   * generic arrays of data, 
@@ -2536,47 +2515,26 @@ of service:
 Persistent strings are concrete classes that handle sequences of characters based
 on both ASCII (normal 8-bit) and Unicode (16-bit) character sets.
 
-Arrays are generic classes, that is, they can hold a variety of objects not necessarily
-inheriting from a unique root class. These arrays can be instantiated with any kind
-of storable or persistent object, and then inserted into the persistent data model
-of a user application.
+Arrays are generic classes, that is, they can hold a variety of objects not necessarily inheriting from a unique root class. These arrays can be instantiated with any kind of storable or persistent object, and then inserted into the persistent data model of a user application.
 
-The purpose of these data collections is simply to convert transient data into its
-persistent equivalent so that it can be stored in the database. To this end, the
-collections are used to create the persistent data model and assure the link with
-the database. They do not provide editing or query capabilities because it is more
-efficient, within the operative data model of the application, to work with transient
-data structures (from the <i> TCollection</i> package).
+The purpose of these data collections is simply to convert transient data into its persistent equivalent so that it can be stored in the database. To this end, the collections are used to create the persistent data model and assure the link with the database. They do not provide editing or query capabilities because it is more efficient, within the operative data model of the application, to work with transient data structures (from the <i> TCollection</i> package).
 
 For this reason:
 
   * the persistent strings only provide constructors and functions to convert between transient and persistent strings, and
   * the persistent data collections are limited to arrays. In other words, <i> PCollection</i> does not include sequences, lists, queues, sets, stacks and so on (unlike <i> TCollection</i>).
 
-Persistent string and array classes are found in the <i> PCollection</i> package.
-In addition, <i> PColStd</i> package provides standard, 
-and frequently used, instantiations of persistent arrays, for very simple objects.
+Persistent string and array classes are found in the <i> PCollection</i> package. In addition, <i> PColStd</i> package provides standard, and frequently used, instantiations of persistent arrays, for very simple objects.
 
 @subsubsection OCCT_TOVW_SECTION_7_3_3 Persistent Geometry
 
-The Persistent Geometry component describes geometric data structures which can be
-stored in the database. These packages provide a way to convert data from the transient
-"world" to the persistent "world".
+The Persistent Geometry component describes geometric data structures which can be stored in the database. These packages provide a way to convert data from the transient "world" to the persistent "world".
 
-Persistent Geometry consists of a set of atomic data models parallel to the geometric
-data structures described in the geometry packages. Geometric data models, independent
-of each other, can appear within the data model of any application. The system provides
-the means to convert each atomic transient data model into a persistent one, but
-it does not provide a way for these data models to share data.
+Persistent Geometry consists of a set of atomic data models parallel to the geometric data structures described in the geometry packages. Geometric data models, independent of each other, can appear within the data model of any application. The system provides the means to convert each atomic transient data model into a persistent one, but it does not provide a way for these data models to share data.
 
-Consequently, you can create a data model using these components, store data in,
-and retrieve it from a file or a database, using the geometric components provided
-in the transient and persistent "worlds". In other words, you customize the system
-by declaring your own objects, and the conversion of the geometric components from
-persistent to transient and vice versa is automatically managed for you by the system.
+Consequently, you can create a data model using these components, store data in, and retrieve it from a file or a database, using the geometric components provided in the transient and persistent "worlds". In other words, you customize the system by declaring your own objects, and the conversion of the geometric components from persistent to transient and vice versa is automatically managed for you by the system.
 
-However, these simple objects cannot be shared within a more complex data model.
-To allow data to be shared, you must provide additional tools.
+However, these simple objects cannot be shared within a more complex data model. To allow data to be shared, you must provide additional tools.
 
 Persistent Geometry is provided by several packages.
 
@@ -2923,7 +2881,6 @@ Make sure that you have all rights  necessary to access these libraries.
 It is recommended to use option *Inherit access rights from parent*.
 
 ### Problems with 3D viewer
-
 
 If the 3D viewer fails to display the scene properly, or works very slowly, or exhibits
 another problem, make sure to have the latest version of the graphics card driver
