@@ -395,14 +395,14 @@ static Standard_Integer extrema(Draw_Interpretor& di, Standard_Integer n, const 
           Handle(Geom_Line) L = new Geom_Line(P1,gp_Vec(P1,P2));
           Handle(Geom_TrimmedCurve) CT = 
             new Geom_TrimmedCurve(L, 0., P1.Distance(P2));
-#ifdef DEB          
-          Sprintf(name,"%s%d (U=%f; V=%f)","ext_",i,U1,V1);
-#else
           Sprintf(name,"%s%d","ext_",i);
-#endif
           char* temp = name; // portage WNT
           DrawTrSurf::Set(temp, CT);
+#ifdef DEB          
+          di << name << "(U=" << U1 << ";V=" << V1 << ")" << "\n";
+#else
           di << name << " ";
+#endif
           }
         }
       }
