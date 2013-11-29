@@ -917,7 +917,6 @@ TopoDS_Edge BRepBuilderAPI_Sewing::SameParameterEdge(const TopoDS_Edge& edgeFirs
 
       Standard_Real dist = 0., maxTol = -1.0;
       Standard_Boolean more = Standard_True;
-      Standard_Boolean useFace = Standard_False;
 
       for (j = 1; more; j++) {
         Handle(Geom2d_Curve) c2d2;
