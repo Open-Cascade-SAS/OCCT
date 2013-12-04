@@ -428,7 +428,7 @@ Standard_Boolean STEPCAFControl_Reader::Transfer (STEPControl_Reader &reader,
   if ( num <=0 ) return Standard_False;
   if ( nroot ) {
     if ( nroot > num ) return Standard_False;
-    reader.TransferOneRoot ( num );
+    reader.TransferOneRoot ( nroot );
   }
   else {
     for ( i=1; i <= num; i++ ) reader.TransferOneRoot ( i );
