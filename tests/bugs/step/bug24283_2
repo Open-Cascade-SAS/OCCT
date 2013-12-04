@@ -1,0 +1,19 @@
+puts "============"
+puts "OCC24283"
+puts "============"
+puts ""
+#####################################################
+# STEP read failes to read unbound advanced_face
+#####################################################
+
+stepread [locate_data_file bug24283_spheres.stp] a *
+tpcompound result
+
+vinit
+vdisplay result
+vfit
+vsetdispmode 1
+set only_screen 1
+
+
+

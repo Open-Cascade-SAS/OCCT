@@ -55,12 +55,15 @@ void RWStepShape_RWAdvancedFace::ReadStep
 	Standard_Integer nsub2;
 	if (data->ReadSubList (num,2,"bounds",ach,nsub2)) {
 	  Standard_Integer nb2 = data->NbParams(nsub2);
-	  aBounds = new StepShape_HArray1OfFaceBound (1, nb2);
-	  for (Standard_Integer i2 = 1; i2 <= nb2; i2 ++) {
-	    //szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
-	    if (data->ReadEntity (nsub2, i2,"face_bound", ach, STANDARD_TYPE(StepShape_FaceBound), anent2))
-	      aBounds->SetValue(i2, anent2);
-	  }
+    if( nb2)
+    {
+	    aBounds = new StepShape_HArray1OfFaceBound (1, nb2);
+	    for (Standard_Integer i2 = 1; i2 <= nb2; i2 ++) {
+	      //szv#4:S4163:12Mar99 `Standard_Boolean stat2 =` not needed
+	      if (data->ReadEntity (nsub2, i2,"face_bound", ach, STANDARD_TYPE(StepShape_FaceBound), anent2))
+	        aBounds->SetValue(i2, anent2);
+	    }
+    }
 	}
 
 	// --- inherited field : faceGeometry ---
