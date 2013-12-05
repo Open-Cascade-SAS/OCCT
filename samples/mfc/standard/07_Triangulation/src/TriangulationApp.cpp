@@ -16,6 +16,7 @@
 CTriangulationApp::CTriangulationApp() : OCC_App()
 {
   SampleName = "TopologyTriangulation"; //for about dialog
+  SetSamplePath("..\\..\\07_Triangulation");
 }
 
 /////////////////////////////////////////////////////////////////////////////

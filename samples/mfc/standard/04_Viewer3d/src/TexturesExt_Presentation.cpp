@@ -59,7 +59,7 @@ TexturesExt_Presentation::TexturesExt_Presentation()
 void TexturesExt_Presentation::DoSample()
 {
 	((CViewer3dApp*) AfxGetApp())->SetSampleName("Viewer3d");
-	((CViewer3dApp*) AfxGetApp())->SetSamplePath("..\\..\\04_Viewer3d");
+	((CViewer3dApp*) AfxGetApp())->SetSamplePath ("..\\..\\04_Viewer3d");
 	getAISContext()->EraseAll();
 	if (myIndex >=0 && myIndex < myNbSamples)
 	{

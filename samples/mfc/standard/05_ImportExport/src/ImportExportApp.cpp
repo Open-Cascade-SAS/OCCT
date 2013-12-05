@@ -33,6 +33,7 @@ CImportExportApp::CImportExportApp() : OCC_App()
   }
 
   SampleName = "ImportExport"; //for about dialog
+  SetSamplePath ("..\\..\\05_ImportExport");
 }
 
 /////////////////////////////////////////////////////////////////////////////

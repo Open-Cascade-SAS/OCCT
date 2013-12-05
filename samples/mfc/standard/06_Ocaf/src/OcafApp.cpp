@@ -35,9 +35,9 @@ END_MESSAGE_MAP()
 
 COcafApp::COcafApp() : OCC_App()
 {
-  SetSamplePath("06_Ocaf");
   myApp = new TOcaf_Application();
   SampleName = "OCAF"; //for about dialog
+  SetSamplePath ("..\\..\\06_Ocaf");
 
   try
   {

@@ -39,6 +39,7 @@ protected:
   afx_msg void OnWindowNew2d();
   afx_msg void OnFileImportBrep();
   afx_msg void OnBUTTONHLRDialog();
+  afx_msg void OnObjectErase();
   //}}AFX_MSG
   DECLARE_MESSAGE_MAP()
 

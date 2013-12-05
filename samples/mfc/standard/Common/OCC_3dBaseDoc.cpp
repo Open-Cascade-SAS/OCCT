@@ -274,21 +274,26 @@ void OCC_3dBaseDoc::OnUpdateObjectColor(CCmdUI* pCmdUI)
     if (myAISContext->IsDisplayed(myAISContext->Current(),0)
 		||myAISContext->IsDisplayed(myAISContext->Current(),1)) 
 		OneOrMoreIsShadingOrWireframe=true;
-  pCmdUI->Enable (OneOrMoreIsShadingOrWireframe);	
+  pCmdUI->Enable (OneOrMoreIsShadingOrWireframe);
 }
 
 void OCC_3dBaseDoc::OnObjectErase() 
 {
-  for(myAISContext->InitCurrent();myAISContext->MoreCurrent();myAISContext->NextCurrent())
-        myAISContext->Erase(myAISContext->Current(),Standard_True);
-	myAISContext->ClearCurrents();
+  for (myAISContext->InitCurrent(); myAISContext->MoreCurrent(); myAISContext->NextCurrent())
+  {
+    myAISContext->Erase (myAISContext->Current(), Standard_True);
+  }
+  myAISContext->ClearCurrents();
 }
 void OCC_3dBaseDoc::OnUpdateObjectErase(CCmdUI* pCmdUI) 
 {
   bool OneOrMoreIsDisplayed = false;
-  for (myAISContext->InitCurrent();myAISContext->MoreCurrent ();myAISContext->NextCurrent ())
-    if (myAISContext->IsDisplayed(myAISContext->Current())) OneOrMoreIsDisplayed=true;
-  pCmdUI->Enable (OneOrMoreIsDisplayed);	
+  for (myAISContext->InitCurrent(); myAISContext->MoreCurrent(); myAISContext->NextCurrent())
+  {
+    if (myAISContext->IsDisplayed (myAISContext->Current()))
+      OneOrMoreIsDisplayed = true;
+  }
+  pCmdUI->Enable (OneOrMoreIsDisplayed);
 }
 
 void OCC_3dBaseDoc::OnObjectWireframe() 

@@ -17,7 +17,8 @@
 
 CGeometryApp::CGeometryApp() : OCC_App()
 {
-  SampleName = "Geometry";	//for about dialog
+  SampleName = "Geometry"; //for about dialog
+  SetSamplePath ("..\\..\\01_Geometry");
 }
 
 CGeometryApp::~CGeometryApp()

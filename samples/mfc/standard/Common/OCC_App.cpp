@@ -129,24 +129,24 @@ BOOL CAboutDlgStd::OnInitDialog(){
 
   Title->SetWindowText(strTitle);
   SetWindowText(dlgTitle);
-  if(SampleName.Find("Viewer2d")==-1)
+
+  CWnd* aReadmeEdit = GetDlgItem(IDC_README);
+  CFile aFile;
+  CString aHelpFilePath = CString (((OCC_App*)AfxGetApp())->GetInitDataDir()) + "\\README.txt";
+  if(aFile.Open (aHelpFilePath, CFile::modeRead))
   {
-    CWnd* aReadmeEdit = GetDlgItem(IDC_README);
-    aReadmeEdit->ShowWindow(FALSE);
+    aReadmeEdit->ShowWindow(TRUE);
+    UINT aFileLength = (UINT)aFile.GetLength();
+    char* buffer=new char[aFileLength];
+    aFile.Read(buffer,aFileLength);
+    ReadmeText.SetString(buffer);
+    ReadmeText.SetAt(aFileLength,'\0');
+    ReadmeText.Replace("\n","\r\n");
+    UpdateData(FALSE);
   }
   else
   {
-    CFile aFile;
-    if(aFile.Open("..//..//..//README.txt",CFile::modeRead))
-    {
-      UINT aFileLength = (UINT)aFile.GetLength();
-      char* buffer=new char[aFileLength];
-      aFile.Read(buffer,aFileLength);
-      ReadmeText.SetString(buffer);
-      ReadmeText.SetAt(aFileLength,'\0');
-      ReadmeText.Replace("\n","\r\n");
-      UpdateData(FALSE);
-    }
+    aReadmeEdit->ShowWindow(FALSE);
   }
 
   CenterWindow();

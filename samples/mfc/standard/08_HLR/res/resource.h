@@ -111,7 +111,8 @@
 #define IDC_BackView                    1534
 #define IDC_FrontView                   1535
 #define IDC_AxoView                     1536
-#define ID_BUTTON_HLRDialog             32795
+#define ID_BUTTON_HLRDialog             1537
+#define ID_FILE_HLR                     1539
 
 // Next default values for new objects
 // 
@@ -119,7 +120,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        173
-#define _APS_NEXT_COMMAND_VALUE         32796
+#define _APS_NEXT_COMMAND_VALUE         32797
 #define _APS_NEXT_CONTROL_VALUE         1538
 #define _APS_NEXT_SYMED_VALUE           170
 #endif

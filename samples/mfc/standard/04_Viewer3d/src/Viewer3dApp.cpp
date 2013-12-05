@@ -29,6 +29,7 @@ END_MESSAGE_MAP()
 CViewer3dApp::CViewer3dApp() : OCC_App()
 {
   SampleName = "Viewer3d"; //for about dialog
+  SetSamplePath ("..\\..\\03_Viewer3d");
 }
 
 /////////////////////////////////////////////////////////////////////////////

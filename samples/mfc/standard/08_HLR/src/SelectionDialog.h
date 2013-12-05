@@ -18,18 +18,26 @@ class CSelectionDialog : public CDialog
 {
   // Construction
 public:
-  void SetTitle(CString& aTitle);
-  CSelectionDialog(CHLRDoc* aDoc,CWnd* pParent = NULL);   // standard constructor
-  void OnDisplay(bool isfit);
+  // standard constructor
+  CSelectionDialog (CHLRDoc* aDoc,CWnd* pParent = NULL);
+
+  void SetTitle (const CString& aTitle);
+
+  void OnDisplay (bool isFit);
+
+  const Handle(ISession2D_Shape) DiplayableShape() { return myDisplayableShape; }
+
+  // Updates in dialog view and main 2d nad 3d views shapes for which HLR presentations are going to be displayed in 2d view.
+  void UpdateViews();
 
   // Dialog Data
   //{{AFX_DATA(CSelectionDialog)
   enum { IDD = IDD_SelectionDialog };
-  int		m_Algo;
-  int		m_DisplayMode;
-  int		m_NbIsos;
-  BOOL	m_DrawHiddenLine;
-  BOOL	m_HlrModeIsOn;
+  int m_Algo;
+  int m_DisplayMode;
+  int m_NbIsos;
+  BOOL m_DrawHiddenLine;
+  BOOL m_HlrModeIsOn;
   //}}AFX_DATA
 
   // Overrides
@@ -45,7 +53,7 @@ protected:
   // Generated message map functions
   //{{AFX_MSG(CSelectionDialog)
   virtual BOOL OnInitDialog();
-  afx_msg void OnGetShape();
+  afx_msg void OnGetSelectedShapes();
   afx_msg void OnDisplayDefault();
   afx_msg void OnVIsoParametrics();
   afx_msg void OnVApparentContour();
@@ -85,26 +93,32 @@ private :
   void Apply();
   CHLRDoc* myDoc;
 
+  Handle(AIS_InteractiveContext) myInteractiveContext;
   Handle(V3d_Viewer) myActiveViewer;
   Handle(V3d_View)   myActiveView;
-  Standard_Integer   myPosMaxX,  myPosMinX ,myBoxX;
-  Standard_Integer   myPosMinY, myPosMaxY ,myBoxY;
+  Handle(AIS_Trihedron)          myTrihedron;
+  Handle(ISession2D_Shape)       myDisplayableShape;
+
+  Standard_Integer myPosMaxX;
+  Standard_Integer myPosMinX;
+  Standard_Integer myBoxX;
+
+  Standard_Integer myPosMinY;
+  Standard_Integer myPosMaxY;
+  Standard_Integer myBoxY;
+
   Standard_Integer   myXmax;
   Standard_Integer   myYmax;
 
-  Handle(AIS_InteractiveContext) myInteractiveContext;
-  Handle(AIS_Trihedron)          myTrihedron;
-  Handle(ISession2D_Shape)        myDisplayableShape;
-
 protected:
-  CBitmapButton TopView    ;
-  CBitmapButton BottomView ;
-  CBitmapButton LeftView   ;
-  CBitmapButton RightView  ;
-  CBitmapButton FrontView  ;
-  CBitmapButton BackView   ;
-  CBitmapButton AxoView    ;
-  bool myDisplay;
+  CBitmapButton TopView;
+  CBitmapButton BottomView;
+  CBitmapButton LeftView;
+  CBitmapButton RightView;
+  CBitmapButton FrontView;
+  CBitmapButton BackView;
+  CBitmapButton AxoView;
+  bool myIsDisplayed;
 };
 
 //{{AFX_INSERT_LOCATION}}

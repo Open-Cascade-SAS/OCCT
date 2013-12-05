@@ -21,7 +21,24 @@ void ISession2D_Shape::Add(const TopoDS_Shape& aShape)
   Update(); // protected method used to specify that the presentation are not up to date 
 }
 
-void ISession2D_Shape::SetProjector(HLRAlgo_Projector& aProjector) 
+void ISession2D_Shape::Remove (const TopoDS_Shape& theShape)
+{
+  if (myListOfShape.Size() == 0)
+  {
+    return;
+  }
+
+  for (NCollection_List<TopoDS_Shape>::Iterator anIt (myListOfShape); anIt.More(); anIt.Next())
+ {
+   if (anIt.Value() == theShape)
+   {
+     myListOfShape.Remove (anIt);
+     return;
+   }
+ }
+}
+
+void ISession2D_Shape::SetProjector (HLRAlgo_Projector& aProjector) 
 {
   myProjector= aProjector;
   myAlgo.Nullify();
@@ -48,7 +65,7 @@ void ISession2D_Shape::SetNbIsos(Standard_Integer& aNbIsos)
 void ISession2D_Shape::BuildAlgo() 
 {
   myAlgo = new HLRBRep_Algo();
-  TopTools_ListIteratorOfListOfShape anIterator(myListOfShape);
+  NCollection_List<TopoDS_Shape>::Iterator anIterator(myListOfShape);
   for (;anIterator.More();anIterator.Next()) myAlgo->Add(anIterator.Value(),myNbIsos);
   myAlgo->Projector(myProjector);
   myAlgo->Update();
@@ -58,7 +75,7 @@ void ISession2D_Shape::BuildAlgo()
 void ISession2D_Shape::BuildPolyAlgo() 
 {
   myPolyAlgo = new HLRBRep_PolyAlgo();
-  TopTools_ListIteratorOfListOfShape anIterator(myListOfShape);
+  NCollection_List<TopoDS_Shape>::Iterator anIterator(myListOfShape);
   for (;anIterator.More();anIterator.Next()) myPolyAlgo->Load(anIterator.Value());
   myPolyAlgo->Projector(myProjector);
   myPolyAlgo->Update();

@@ -22,11 +22,11 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CSelectionDialog dialog
 
-CSelectionDialog::CSelectionDialog(CHLRDoc* aDoc,CWnd* pParent /*=NULL*/)
+CSelectionDialog::CSelectionDialog (CHLRDoc* aDoc,CWnd* pParent /*=NULL*/)
 : CDialog(CSelectionDialog::IDD, pParent)
 {
   myDoc =  aDoc;
-  myDisplay = false;
+  myIsDisplayed = false;
   //{{AFX_DATA_INIT(CSelectionDialog)
   m_Algo        = 0;
   m_DisplayMode = 0;
@@ -36,7 +36,7 @@ CSelectionDialog::CSelectionDialog(CHLRDoc* aDoc,CWnd* pParent /*=NULL*/)
   //}}AFX_DATA_INIT
 }
 
-void CSelectionDialog::DoDataExchange(CDataExchange* pDX)
+void CSelectionDialog::DoDataExchange (CDataExchange* pDX)
 {
   CDialog::DoDataExchange(pDX);
   //{{AFX_DATA_MAP(CSelectionDialog)
@@ -51,7 +51,7 @@ void CSelectionDialog::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CSelectionDialog, CDialog)
   //{{AFX_MSG_MAP(CSelectionDialog)
-  ON_BN_CLICKED(ID_GetShape, OnGetShape)
+  ON_BN_CLICKED(ID_GetShape, OnGetSelectedShapes)
   ON_BN_CLICKED(IDC_DisplayDefault, OnDisplayDefault)
   ON_BN_CLICKED(IDC_VIsoParametrics, OnVIsoParametrics)
   ON_BN_CLICKED(IDC_VApparentContour, OnVApparentContour)
@@ -89,136 +89,171 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CSelectionDialog message handlers
 
-BOOL CSelectionDialog::OnInitDialog() 
+BOOL CSelectionDialog::OnInitDialog()
 {
   CDialog::OnInitDialog();
 
-  VERIFY(TopView.AutoLoad(IDC_TopView, this));
-  VERIFY(BottomView.AutoLoad(IDC_BottomView, this)) ;
-  VERIFY(LeftView  .AutoLoad(IDC_LeftView  , this)) ;
-  VERIFY(RightView .AutoLoad(IDC_RightView , this)) ;
-  VERIFY(FrontView .AutoLoad(IDC_FrontView , this)) ;
-  VERIFY(BackView  .AutoLoad(IDC_BackView  , this)) ;
-  VERIFY(AxoView   .AutoLoad(IDC_AxoView   , this)) ;
+  VERIFY(TopView.AutoLoad (IDC_TopView, this));
+  VERIFY(BottomView.AutoLoad (IDC_BottomView, this)) ;
+  VERIFY(LeftView  .AutoLoad (IDC_LeftView  , this)) ;
+  VERIFY(RightView .AutoLoad (IDC_RightView , this)) ;
+  VERIFY(FrontView .AutoLoad (IDC_FrontView , this)) ;
+  VERIFY(BackView  .AutoLoad (IDC_BackView  , this)) ;
+  VERIFY(AxoView   .AutoLoad (IDC_AxoView   , this)) ;
 
   // get the View Window position to managed mouse move
   CRect BoxRect,ViewRect;
-  GetWindowRect(BoxRect);
-  CWnd * TheViewerWindow = GetDlgItem(IDC_DUMMYBUTTON);
-  TheViewerWindow->GetWindowRect(ViewRect);
+  GetWindowRect (BoxRect);
+  CWnd * TheViewerWindow = GetDlgItem (IDC_DUMMYBUTTON);
+  TheViewerWindow->GetWindowRect (ViewRect);
   myPosMinX = ViewRect.TopLeft().x - BoxRect.TopLeft().x;
   myPosMaxX = ViewRect.Width()+myPosMinX;
   myPosMinY = ViewRect.TopLeft().y - BoxRect.TopLeft().y;
   myPosMaxY = myPosMinY + ViewRect.Height();
 
-  ShowHideButton(Standard_False);
-  OnDisplay(true);
+  ShowHideButton (Standard_False);
+  OnDisplay (true);
 
-  return TRUE;  // return TRUE unless you set the focus to a control
+  // return TRUE unless you set the focus to a control
   // EXCEPTION: OCX Property Pages should return FALSE
+  return TRUE;
 }
 
-void CSelectionDialog::OnDisplay(bool isFit) 
+void CSelectionDialog::OnDisplay (bool isFit)
 {
-  GetDlgItem(IDC_DUMMYBUTTON)->SetRedraw(true);
-  if(!myDisplay) {
+  GetDlgItem(IDC_DUMMYBUTTON)->SetRedraw (true);
+  if (!myIsDisplayed)
+  {
     Handle(Graphic3d_GraphicDriver) aGraphicDriver = 
       ((CHLRApp*)AfxGetApp())->GetGraphicDriver();
 
-    myActiveViewer = new V3d_Viewer(aGraphicDriver,(short *) "Visu3D");
+    myActiveViewer = new V3d_Viewer (aGraphicDriver, (short *) "Visu3D");
     myActiveViewer->SetDefaultLights();
     myActiveViewer->SetLightOn();
     myActiveView = myActiveViewer->CreateView();
 
-    Handle(WNT_Window) aWNTWindow = new WNT_Window (GetDlgItem(IDC_DUMMYBUTTON)->GetSafeHwnd(),
+    Handle(WNT_Window) aWNTWindow = new WNT_Window (GetDlgItem (IDC_DUMMYBUTTON)->GetSafeHwnd(),
                                                     Quantity_NOC_GRAY);
     myActiveView->SetComputedMode (m_HlrModeIsOn);
     myActiveView->SetWindow(aWNTWindow);
 
-    myInteractiveContext = new AIS_InteractiveContext(myActiveViewer);
+    myInteractiveContext = new AIS_InteractiveContext (myActiveViewer);
 
     // TRIHEDRON
-    Handle(Geom_Axis2Placement) aTrihedronAxis=new Geom_Axis2Placement(gp::XOY());
-    myTrihedron=new AIS_Trihedron(aTrihedronAxis);
+    Handle(Geom_Axis2Placement) aTrihedronAxis = new Geom_Axis2Placement (gp::XOY());
+    myTrihedron = new AIS_Trihedron (aTrihedronAxis);
 
-    myInteractiveContext->Display(myTrihedron);
+    myInteractiveContext->Display (myTrihedron);
   }
-  if(isFit) {
+  if(isFit)
+  {
     myActiveView->ZFitAll();
     myActiveView->FitAll();
   }
+
   myActiveView->Redraw();
-  myDisplay = Standard_True;
-  GetDlgItem(IDC_DUMMYBUTTON)->SetRedraw(false);
+  myIsDisplayed = Standard_True;
+  GetDlgItem (IDC_DUMMYBUTTON)->SetRedraw (false);
 }
 
 
-void CSelectionDialog::SetTitle(CString & aTitle)
+void CSelectionDialog::SetTitle (const CString & aTitle)
 {
-  SetWindowText(aTitle);
+  SetWindowText (aTitle);
 }
 
-void CSelectionDialog::OnGetShape() 
+void CSelectionDialog::UpdateViews()
 {
-  UpdateData(true);
-  myDoc->GetInteractiveContext2D()->RemoveAll();
-  myDisplayableShape = new ISession2D_Shape( );
+  // Clear HLR dialog view
+  myInteractiveContext->RemoveAll();
+  myInteractiveContext->Display (myTrihedron);
+
   UpdateProjector();
-  myDisplayableShape->SetNbIsos(m_NbIsos);
 
-  myInteractiveContext->EraseAll();
-  myInteractiveContext->Display(myTrihedron);
+  // Display chosen shapes in the HLR dialog view.
+  Standard_Boolean OneOrMoreFound = Standard_False;
+  for (myDoc->GetAISContext()->InitCurrent();
+       myDoc->GetAISContext()->MoreCurrent();
+       myDoc->GetAISContext()->NextCurrent())
+  {
+    Handle(AIS_Shape) anAISShape = Handle(AIS_Shape)::DownCast (myDoc->GetAISContext()->Current());
+    if (!anAISShape.IsNull())
+    {
+      OneOrMoreFound = Standard_True;
+      myInteractiveContext->Display (anAISShape);
+    }
+  }
+
+  // Apply HLR to chosen shapes and display result into the 2d view.
+  Apply();
+  // Update viewer
+  myDoc->FitAll2DViews (Standard_False);
+  // Check the selection: if no object : disable all possiblity.
+  ShowHideButton (OneOrMoreFound);
+  OnDisplay (true);
+}
+
+void CSelectionDialog::OnGetSelectedShapes()
+{
+  // Create new displayable shape.
+  myDisplayableShape = new ISession2D_Shape();
+  UpdateProjector();
+  myDisplayableShape->SetNbIsos (m_NbIsos);
+
+  // Clear HLR dialog view
+  myInteractiveContext->RemoveAll();
+  myInteractiveContext->Display (myTrihedron);
 
   Standard_Boolean OneOrMoreFound = Standard_False;
   for (myDoc->GetAISContext()->InitCurrent();
-       myDoc->GetAISContext()->MoreCurrent ();
-       myDoc->GetAISContext()->NextCurrent ())
+       myDoc->GetAISContext()->MoreCurrent();
+       myDoc->GetAISContext()->NextCurrent())
   {
-    Handle(AIS_Shape) anAISShape = Handle(AIS_Shape)::DownCast(myDoc->GetAISContext()->Current());
+    Handle(AIS_Shape) anAISShape = Handle(AIS_Shape)::DownCast (myDoc->GetAISContext()->Current());
 
     if (!anAISShape.IsNull())
-      {
-        OneOrMoreFound = Standard_True;
-        TopoDS_Shape aShape = anAISShape->Shape();
-        myDisplayableShape->Add( aShape  );
-        myInteractiveContext->Display(anAISShape);
-      }
+    {
+      OneOrMoreFound = Standard_True;
+      TopoDS_Shape aShape = anAISShape->Shape();
+      myDisplayableShape->Add (aShape);
+      myInteractiveContext->Display (anAISShape);
+    }
   }
 
-  Standard_Integer DisplayMode = m_DisplayMode;
-  if (m_Algo == 1) DisplayMode+=100;
-  if (!m_DrawHiddenLine) DisplayMode+=1000;
+  // Apply HLR to chosen shapes and display result into the 2d view.
+  Apply();
+  // Update viewer
+  myDoc->FitAll2DViews (Standard_False);
 
-   myDoc->GetInteractiveContext2D()->Display(myDisplayableShape,  // object
-                                             DisplayMode,  // display mode
-                                             DisplayMode,   // selection mode 
-                                             Standard_True);   // Redraw
-
-  myDoc->FitAll2DViews(Standard_False); // Update Viewer
-
-  // check the selection :
-  // if no object : disable all possiblity!!
-  ShowHideButton(OneOrMoreFound);
-  OnDisplay(true);
+  // Check the selection: if no object : disable all possiblity.
+  ShowHideButton (OneOrMoreFound);
+  OnDisplay (true);
 }
 
-void CSelectionDialog::Apply() 
+void CSelectionDialog::Apply()
 {
-  SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
+  SetCursor(AfxGetApp()->LoadStandardCursor (IDC_WAIT));
   myDoc->GetInteractiveContext2D()->RemoveAll();
-  UpdateData(true);
+  UpdateData (true);
 
-  Standard_Integer DisplayMode = m_DisplayMode;
-  if (m_Algo == 1) DisplayMode+=100;
+  Standard_Integer aDisplayMode = m_DisplayMode;
 
-  if (!m_DrawHiddenLine) DisplayMode+=1000;
+  if (m_Algo == 1)
+  {
+    aDisplayMode += 100;
+  }
 
-  myDoc->GetInteractiveContext2D()->Display(myDisplayableShape,  // object
-                                            DisplayMode,  
-                                            DisplayMode,
-                                            Standard_True); // Redraw
+  if (!m_DrawHiddenLine)
+  {
+    aDisplayMode += 1000;
+  }
 
-  SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
+  myDoc->GetInteractiveContext2D()->Display (myDisplayableShape,  // object
+                                             aDisplayMode,
+                                             aDisplayMode,
+                                             Standard_True); // Redraw
+
+  SetCursor(AfxGetApp()->LoadStandardCursor (IDC_ARROW));
 }
 
 void CSelectionDialog::UpdateProjector()
@@ -265,8 +300,10 @@ void CSelectionDialog::ShowHideButton(Standard_Boolean EnableButton)
 
   if(m_Algo == 0)
   {
-    if (m_DisplayMode == 5) m_DisplayMode=0;
-    if (m_DisplayMode == 10) m_DisplayMode=0;
+    if (m_DisplayMode == 5 || m_DisplayMode == 10)
+    {
+      m_DisplayMode=0;
+    }
 
     GetDlgItem(IDC_VIsoParametrics)->EnableWindow(false);
     GetDlgItem(IDC_HIsoParametrics)->EnableWindow(false);
@@ -458,7 +495,7 @@ void CSelectionDialog::OnRButtonUp(UINT nFlags, CPoint point)
   }
 
   SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-  // reset tyhe good HLR mode according to the strored one
+  // reset the good HLR mode according to the stored one
   //   --> dynamic rotation may have change it
   myActiveView->SetComputedMode (m_HlrModeIsOn);
   OnDisplay(false);

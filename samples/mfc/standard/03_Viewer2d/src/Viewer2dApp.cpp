@@ -22,6 +22,7 @@ static char THIS_FILE[] = __FILE__;
 CViewer2dApp::CViewer2dApp() : OCC_App()
 {
   SampleName = "Viewer2d"; //for about dialog
+  SetSamplePath ("..\\..\\03_Viewer2d");
 }
 
 /////////////////////////////////////////////////////////////////////////////

@@ -343,6 +343,7 @@ BEGIN
         MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
         MENUITEM "&Close",                      ID_FILE_CLOSE
         MENUITEM SEPARATOR
+        MENUITEM "Process HLR",                 ID_FILE_HLR
         POPUP "Import"
         BEGIN
             MENUITEM "BRep...",                     ID_FILE_IMPORT_BREP
@@ -443,7 +444,8 @@ END
 
 STRINGTABLE 
 BEGIN
-    ID_BUTTON_HLRDialog     "Display The HLR Dialog \nHLR Dialog"
+    ID_BUTTON_HLRDialog     "Open the HLR dialog \nHLR dialog"
+    ID_FILE_HLR             "Open the HLR dialog \nHLR dialog"
 END
 
 #endif    // English (U.S.) resources

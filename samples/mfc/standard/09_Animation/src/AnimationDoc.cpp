@@ -360,7 +360,7 @@ void CAnimationDoc::OnFileLoadgrid()
 		  NULL );
 
 	CString initdir(((OCC_App*) AfxGetApp())->GetInitDataDir());
-	initdir += "\\..\\..\\Data\\";
+	initdir += "\\Data\\";
 
 	dlg.m_ofn.lpstrInitialDir = initdir;
 

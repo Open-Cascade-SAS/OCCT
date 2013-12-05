@@ -30,8 +30,10 @@ BEGIN_MESSAGE_MAP(CHLRDoc, OCC_3dBaseDoc)
   //{{AFX_MSG_MAP(CHLRDoc)
   ON_COMMAND(ID_WINDOW_NEW3D, OnWindowNew3d)
   ON_COMMAND(ID_WINDOW_NEW2D, OnWindowNew2d)
+  ON_COMMAND(ID_FILE_HLR, OnBUTTONHLRDialog)
   ON_COMMAND(ID_FILE_IMPORT_BREP, OnFileImportBrep)
   ON_COMMAND(ID_BUTTON_HLRDialog, OnBUTTONHLRDialog)
+  ON_COMMAND(ID_OBJECT_ERASE, OnObjectErase)
   //}}AFX_MSG_MAP
 
 
@@ -83,17 +85,17 @@ CHLRDoc::~CHLRDoc()
   }
 }
 
-void CHLRDoc::OnWindowNew2d() 
+void CHLRDoc::OnWindowNew2d()
 {
-  ((CHLRApp*)AfxGetApp())->CreateView2D(this);	
+  ((CHLRApp*)AfxGetApp())->CreateView2D(this);
 }
 
-void CHLRDoc::OnWindowNew3d() 
+void CHLRDoc::OnWindowNew3d()
 {
-  ((CHLRApp*)AfxGetApp())->CreateView3D(this);	
+  ((CHLRApp*)AfxGetApp())->CreateView3D(this);
 }
 
-//  nCmdShow could be :    ( default is SW_RESTORE ) 
+//  nCmdShow could be :    ( default is SW_RESTORE )
 // SW_HIDE   SW_SHOWNORMAL   SW_NORMAL   
 // SW_SHOWMINIMIZED     SW_SHOWMAXIMIZED    
 // SW_MAXIMIZE          SW_SHOWNOACTIVATE   
@@ -154,7 +156,7 @@ void CHLRDoc::Dump(CDumpContext& dc) const
 
 /////////////////////////////////////////////////////////////////////////////
 // CHLRDoc commands
-void CHLRDoc::OnBUTTONHLRDialog() 
+void CHLRDoc::OnBUTTONHLRDialog()
 {
   if (!myCSelectionDialogIsCreated)
   {
@@ -162,7 +164,7 @@ void CHLRDoc::OnBUTTONHLRDialog()
     myCSelectionDialog->Create(CSelectionDialog::IDD, AfxGetMainWnd());
     myCSelectionDialogIsCreated = true;
   }
-  myCSelectionDialog->ShowWindow(SW_RESTORE);	
+  myCSelectionDialog->ShowWindow(SW_RESTORE);
 }
 
 void CHLRDoc::OnFileImportBrep() 
@@ -179,5 +181,27 @@ void CHLRDoc::Fit()
     {
       ((OCC_3dView *) pCurrentView)->FitAll();
     }
+  }
+}
+
+void CHLRDoc::OnObjectErase()
+{
+  Standard_Boolean toUpdateDisplayable = Standard_False;
+  for (myAISContext->InitCurrent(); myAISContext->MoreCurrent(); myAISContext->NextCurrent())
+  {
+    myAISContext->Erase (myAISContext->Current(), Standard_True);
+    if (myAISContext->Current()->Type() == AIS_KOI_Shape && myCSelectionDialogIsCreated)
+    {
+      myCSelectionDialog->DiplayableShape()->Remove (Handle(AIS_Shape)::DownCast (myAISContext->Current())->Shape());
+      toUpdateDisplayable = Standard_True;
+    }
+  }
+
+  myAISContext->ClearCurrents();
+
+  if (toUpdateDisplayable)
+  {
+    // Update view in the HLR dialog if list of displayable shapes has been changed.
+    myCSelectionDialog->UpdateViews();
   }
 }
