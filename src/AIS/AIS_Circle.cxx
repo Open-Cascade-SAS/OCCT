@@ -48,7 +48,8 @@ AIS_InteractiveObject(PrsMgr_TOP_AllView),
 myComponent(aComponent),
 myUStart(0.),
 myUEnd(2*M_PI),
-myCircleIsArc(Standard_False)
+myCircleIsArc(Standard_False),
+myIsFilledCircleSens (Standard_False)
 {
 }
 
@@ -56,17 +57,17 @@ myCircleIsArc(Standard_False)
 //function : AIS_Circle
 //purpose  : 
 //=======================================================================
-AIS_Circle::AIS_Circle(const Handle(Geom_Circle)& aComponent,
-                       const Standard_Real aUStart,
-                       const Standard_Real aUEnd,
-                       const Standard_Boolean aSens):
-       AIS_InteractiveObject(PrsMgr_TOP_AllView)
+AIS_Circle::AIS_Circle(const Handle(Geom_Circle)& theComponent,
+                       const Standard_Real theUStart,
+                       const Standard_Real theUEnd,
+                       const Standard_Boolean theIsFilledCircleSens)
+: AIS_InteractiveObject(PrsMgr_TOP_AllView),
+  myComponent (theComponent),
+  myUStart (theUStart),
+  myUEnd (theUEnd),
+  myCircleIsArc (Standard_True),
+  myIsFilledCircleSens (theIsFilledCircleSens)
 {
-  myComponent = aComponent;
-  myUStart    = aUStart;
-  myUEnd      = aUEnd;
-  mySens      = aSens;
-  myCircleIsArc = Standard_True;
 }
 
 //=======================================================================
@@ -236,8 +237,9 @@ void AIS_Circle::ComputeArc( const Handle(Prs3d_Presentation)& aPresentation)
 void AIS_Circle::ComputeCircleSelection(const Handle(SelectMgr_Selection)& aSelection)
 {
   Handle(SelectMgr_EntityOwner) eown = new SelectMgr_EntityOwner(this);
-  Handle(Select3D_SensitiveCircle) seg = new Select3D_SensitiveCircle(eown,
-								       myComponent);
+  Handle(Select3D_SensitiveCircle) seg = new Select3D_SensitiveCircle (eown,
+                                                                       myComponent,
+                                                                       myIsFilledCircleSens);
   aSelection->Add(seg);
 }
 //=======================================================================
@@ -250,8 +252,10 @@ void AIS_Circle::ComputeArcSelection(const Handle(SelectMgr_Selection)& aSelecti
 
 
   Handle(SelectMgr_EntityOwner) eown = new SelectMgr_EntityOwner(this);
-  Handle(Select3D_SensitiveCircle) seg = new Select3D_SensitiveCircle(eown,
-								      myComponent,myUStart,myUEnd);
+  Handle(Select3D_SensitiveCircle) seg = new Select3D_SensitiveCircle (eown,
+                                                                       myComponent,
+                                                                       myUStart, myUEnd,
+                                                                       myIsFilledCircleSens);
   aSelection->Add(seg);
 }
 

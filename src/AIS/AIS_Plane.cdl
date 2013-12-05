@@ -35,6 +35,7 @@ uses
     NameOfColor           from Quantity,
     Color			  from Quantity,
     Selection             from SelectMgr,
+    TypeOfSensitivity     from Select3D,
     Pnt                   from gp,
     Projector             from Prs3d,
     Transformation        from Geom,
@@ -187,6 +188,15 @@ is
     SetContext(me:mutable; aCtx : InteractiveContext from AIS) is redefined;
     	---Purpose: connection to <aCtx> default drawer implies a recomputation of Frame values.
 
+    TypeOfSensitivity (me) returns TypeOfSensitivity from Select3D;
+    ---C++: inline
+    ---Purpose: Returns the type of sensitivity for the plane;
+
+    SetTypeOfSensitivity (me: mutable;
+                          theTypeOfSensitivity: TypeOfSensitivity from Select3D);
+    ---C++: inline
+    ---Purpose: Sets the type of sensitivity for the plane.
+
 -- Methods from PresentableObject
 
     Compute(me            : mutable;
@@ -249,5 +259,6 @@ fields
     myTypeOfPlane  : TypeOfPlane from AIS;
     myIsXYZPlane   : Boolean from Standard;
     myHasOwnSize   : Boolean from Standard;
+    myTypeOfSensitivity: TypeOfSensitivity from Select3D;
     
 end Plane;

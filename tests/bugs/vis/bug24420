@@ -1,0 +1,49 @@
+puts "============"
+puts "CR24420"
+puts "============"
+puts ""
+
+#######################################################################
+#  Test for type of sensitivity of AIS_Plane
+#######################################################################
+
+set aV "Driver1/Viewer1/View1"
+vinit name=$aV l=32 t=32 w=400 h=400
+vactivate $aV
+vclear
+
+vpoint p1 0 0 0
+vpoint p2 1 0 0
+vpoint p3 0 1 0
+
+puts "Testing Select3D_TOS_INTERIOR type of sensitivity:"
+vplane pl1 p1 p2 p3 0
+vfit
+
+vmoveto 200 200
+checkcolor 395 200 0 1 1
+
+if { $stat != 1 } {
+  puts "Error : Select3D_SensitiveFace does not work properly with type of sensitivity Select3D_TOS_INTERIOR!"
+}
+
+verase pl1
+
+puts "Testing Select3D_TOS_BOUNDARY type of sensitivity:"
+
+vplane pl2 p1 p2 p3 1
+vfit
+
+vmoveto 200 200
+checkcolor 395 200 0.5 0.8 0.9
+
+if { $stat != 1 } {
+  puts "Error : Select3D_SensitiveFace does not work properly with type of sensitivity Select3D_TOS_BOUNDARY!"
+}
+
+vmoveto 395 200
+checkcolor 395 200 0 1 1
+
+if { $stat != 1 } {
+  puts "Error : Select3D_SensitiveFace does not work properly with type of sensitivity Select3D_TOS_BOUNDARY!"
+}

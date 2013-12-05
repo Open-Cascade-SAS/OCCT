@@ -47,7 +47,7 @@ is
     
     ---Category: sensitive entities
 
-    enumeration TypeOfSensitivity is TOS_INTERIOR,TOS_BOUNDARY,TOS_EXTERIOR
+    enumeration TypeOfSensitivity is TOS_INTERIOR,TOS_BOUNDARY
     end TypeOfSensitivity;
     	---Purpose: Provides values for type of sensitivity in 3D.
     	-- These are used to specify whether it is the interior,

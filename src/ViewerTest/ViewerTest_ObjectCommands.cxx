@@ -893,9 +893,9 @@ static int VPointBuilder(Draw_Interpretor& di, Standard_Integer argc, const char
 //==============================================================================
 //function : VPlaneBuilder
 //purpose  : Build an AIS_Plane from selected entities or Named AIS components
-//Draw arg : vplane PlaneName [AxisName]  [PointName]
-//                            [PointName] [PointName] [PointName]
-//                            [PlaneName] [PointName]
+//Draw arg : vplane PlaneName [AxisName]  [PointName] [TypeOfSensitivity]
+//                            [PointName] [PointName] [PointName] [TypeOfSensitivity]
+//                            [PlaneName] [PointName] [TypeOfSensitivity]
 //==============================================================================
 
 static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
@@ -908,12 +908,12 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
   Standard_Integer aCurrentIndex;
 
   // Verification
-  if (argc<2 || argc>5 )
+  if (argc<2 || argc>6 )
   {
     std::cout<<" Syntax error\n";
     return 1;
   }
-  if (argc==5 || argc==4)
+  if (argc == 6 || argc==5 || argc==4)
     hasArg=Standard_True;
   else 
     hasArg=Standard_False;
@@ -1019,6 +1019,23 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
         Handle(Geom_Plane) aGeomPlane = MkPlane.Value();
         Handle(AIS_Plane)  anAISPlane = new AIS_Plane(aGeomPlane );
         GetMapOfAIS().Bind (anAISPlane,aName );
+        if (argc == 6)
+        {
+          Standard_Integer aType = Draw::Atoi (argv[5]);
+          if (aType != 0 && aType != 1)
+          {
+            std::cout << "vplane error: wrong type of sensitivity!\n"
+                      << "Should be one of the following values:\n"
+                      << "0 - Interior\n"
+                      << "1 - Boundary"
+                      << std::endl;
+            return 1;
+          }
+          else
+          {
+            anAISPlane->SetTypeOfSensitivity (Select3D_TypeOfSensitivity (aType));
+          }
+        }
         TheAISContext()->Display(anAISPlane);
       }
 
@@ -1060,6 +1077,23 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
       Handle(Geom_Plane) aGeomPlane = new Geom_Plane(B,D);
       Handle(AIS_Plane) anAISPlane = new AIS_Plane(aGeomPlane,B );
       GetMapOfAIS().Bind (anAISPlane,aName );
+      if (argc == 5)
+      {
+        Standard_Integer aType = Draw::Atoi (argv[4]);
+        if (aType != 0 && aType != 1)
+        {
+          std::cout << "vplane error: wrong type of sensitivity!\n"
+                    << "Should be one of the following values:\n"
+                    << "0 - Interior\n"
+                    << "1 - Boundary"
+                    << std::endl;
+          return 1;
+        }
+        else
+        {
+          anAISPlane->SetTypeOfSensitivity (Select3D_TypeOfSensitivity (aType));
+        }
+      }
       TheAISContext()->Display(anAISPlane);
 
     }
@@ -1098,6 +1132,23 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
       // Construction of an AIS_Plane
       Handle(AIS_Plane) anAISPlane = new AIS_Plane(aNewGeomPlane, B);
       GetMapOfAIS().Bind (anAISPlane, aName);
+      if (argc == 5)
+      {
+        Standard_Integer aType = Draw::Atoi (argv[4]);
+        if (aType != 0 && aType != 1)
+        {
+          std::cout << "vplane error: wrong type of sensitivity!\n"
+                    << "Should be one of the following values:\n"
+                    << "0 - Interior\n"
+                    << "1 - Boundary"
+                    << std::endl;
+          return 1;
+        }
+        else
+        {
+          anAISPlane->SetTypeOfSensitivity (Select3D_TypeOfSensitivity (aType));
+        }
+      }
       TheAISContext()->Display(anAISPlane);
     }
     // Error
@@ -1888,6 +1939,7 @@ void DisplayCircle (Handle (Geom_Circle) theGeomCircle,
   else
   {
     aCircle = new AIS_Circle(theGeomCircle);
+    Handle(AIS_Circle)::DownCast (aCircle)->SetFilledCircleSens (Standard_False);
   }
 
   // Check if there is an object with given name
@@ -4916,7 +4968,7 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
     __FILE__,VPointBuilder,group);
 
   theCommands.Add("vplane",
-    "vplane  PlaneName [AxisName/PlaneName/PointName] [PointName/PointName/PointName] [Nothing/Nothing/PointName] ",
+    "vplane  PlaneName [AxisName/PlaneName/PointName] [PointName/PointName/PointName] [Nothing/Nothing/PointName] [TypeOfSensitivity]",
     __FILE__,VPlaneBuilder,group);
 
   theCommands.Add("vplanepara",

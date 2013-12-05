@@ -39,3 +39,13 @@ inline void AIS_Circle::SetFirstParam(const Standard_Real U)
 {myUStart=U;myCircleIsArc = Standard_True;}
 inline void AIS_Circle::SetLastParam(const Standard_Real U)
 {myUEnd=U; myCircleIsArc = Standard_True;}
+
+inline Standard_Boolean AIS_Circle::IsFilledCircleSens() const
+{
+  return myIsFilledCircleSens;
+}
+
+inline void AIS_Circle::SetFilledCircleSens (const Standard_Boolean theIsFilledCircleSens)
+{
+  myIsFilledCircleSens = theIsFilledCircleSens;
+}

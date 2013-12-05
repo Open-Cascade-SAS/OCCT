@@ -45,15 +45,15 @@ is
     returns mutable Circle from AIS;
     	---Purpose: Initializes this algorithm for constructing AIS circle
     	-- datums initializes the circle aCircle
-    Create(aCircle : Circle from Geom;
-    	   aUStart : Real from Standard;
-    	   aUEnd   : Real from Standard;
-	   aSens   : Boolean from Standard = Standard_True) 
+    Create(theCircle : Circle from Geom;
+           theUStart : Real from Standard;
+           theUEnd   : Real from Standard;
+           theIsFilledCircleSens : Boolean from Standard = Standard_False) 
     returns mutable Circle from AIS;
-    	---Purpose: Initializes this algorithm for constructing AIS circle datums.    
-    	-- Initializes the circle aCircle, the arc
-    	--   starting point UStart, the arc ending point UEnd,
-    	--   and the direction aSens.
+    ---Purpose: Initializes this algorithm for constructing AIS circle datums.    
+    -- Initializes the circle theCircle, the arc
+    --   starting point theUStart, the arc ending point theUEnd,
+    --   and the type of sensitivity theIsFilledCircleSens.
 
     Compute(me            : mutable;
     	    aPresentationManager: PresentationManager3d from PrsMgr;
@@ -136,6 +136,15 @@ is
     is redefined static; 
     	---Purpose: Removes width settings from the solid line boundary of the circle datum.
 
+    IsFilledCircleSens (me) returns Boolean from Standard;
+    ---C++: inline
+    ---Purpose: Returns the type of sensitivity for the circle;
+
+    SetFilledCircleSens (me: mutable;
+                         theIsFilledCircleSens : Boolean from Standard);
+    ---C++: inline
+    ---Purpose: Sets the type of sensitivity for the circle. If theIsFilledCircleSens set to Standard_True
+    -- then the whole circle will be detectable, otherwise only the boundary of the circle.
 
     ComputeCircle(me: mutable;
                   aPresentation : mutable Presentation from Prs3d)
@@ -159,6 +168,6 @@ fields
     myUStart      : Real    from Standard;
     myUEnd        : Real    from Standard;
     myCircleIsArc : Boolean from Standard;
-    mySens        : Boolean from Standard;
+    myIsFilledCircleSens : Boolean from Standard;
     
 end Circle ;

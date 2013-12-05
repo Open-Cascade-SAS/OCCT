@@ -74,7 +74,8 @@ myCenter(gp_Pnt(0.,0.,0.)),
 myCurrentMode(aCurrentMode),
 myAutomaticPosition(Standard_True),
 myTypeOfPlane(AIS_TOPL_Unknown),
-myIsXYZPlane(Standard_False)
+myIsXYZPlane(Standard_False),
+myTypeOfSensitivity (Select3D_TOS_BOUNDARY)
 {
   InitDrawerAttributes();
 }
@@ -91,7 +92,8 @@ myCenter(aCenter),
 myCurrentMode(aCurrentMode),
 myAutomaticPosition(Standard_True),
 myTypeOfPlane(AIS_TOPL_Unknown),
-myIsXYZPlane(Standard_False)
+myIsXYZPlane(Standard_False),
+myTypeOfSensitivity (Select3D_TOS_BOUNDARY)
 {
   InitDrawerAttributes();
 }
@@ -112,7 +114,8 @@ myPmax(aPmax),
 myCurrentMode(aCurrentMode),
 myAutomaticPosition(Standard_False),
 myTypeOfPlane(AIS_TOPL_Unknown),
-myIsXYZPlane(Standard_False)
+myIsXYZPlane(Standard_False),
+myTypeOfSensitivity (Select3D_TOS_BOUNDARY)
 {
   InitDrawerAttributes();
   SetHilightMode(0);
@@ -129,7 +132,8 @@ myAx2(aComponent),
 myCurrentMode(aCurrentMode),
 myAutomaticPosition(Standard_True),
 myTypeOfPlane(aPlaneType),
-myIsXYZPlane(Standard_True)
+myIsXYZPlane(Standard_True),
+myTypeOfSensitivity (Select3D_TOS_BOUNDARY)
 {
   InitDrawerAttributes();
   ComputeFields();
@@ -325,7 +329,7 @@ void AIS_Plane::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
     thegoodpl->D0(-lx,-ly,arr(3));
     thegoodpl->D0(-lx,ly,arr(4));
     arr(5) = arr(1);
-    sfac = new Select3D_SensitiveFace(eown,harr,Select3D_TOS_BOUNDARY);
+    sfac = new Select3D_SensitiveFace(eown,harr,myTypeOfSensitivity);
 
   }
   else {
@@ -336,7 +340,7 @@ void AIS_Plane::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
     arr1(2) = myPmin;
     arr1(3) = myPmax;
     arr1(4) = myCenter;
-    sfac = new Select3D_SensitiveFace(eown,harr1,Select3D_TOS_BOUNDARY);
+    sfac = new Select3D_SensitiveFace(eown,harr1,myTypeOfSensitivity);
 
   }
     aSelection->Add(sfac);
