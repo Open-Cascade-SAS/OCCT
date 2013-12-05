@@ -202,7 +202,7 @@ BEGIN
     ID_BUTTONStart          "Press to go to the first sample\nFirst sample (Home)"
     ID_BUTTONNext           "Press to go to the next sample\nNext sample (PgDn)"
     ID_BUTTONEnd            "Press to go to the last sample\nLast sample (End)"
-    ID_DUMP_VIEW            "Save current frame into a GIF file\nExport view to GIF (F12)"
+    ID_DUMP_VIEW            "Save current frame into an image file\nExport view (F12)"
 END
 
 #endif    // English (U.S.) resources

@@ -79,23 +79,7 @@ CGeometryDoc* CGeometryView::GetDocument() // non-debug version is inline
 
 void CGeometryView::OnFileExportImage()
 {
-  CFileDialog aDlg (FALSE, "*.BMP", NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-    "BMP  Files (*.BMP)|*.bmp|"
-    "GIF  Files (*.GIF)|*.gif|"
-    "PNG  Files (*.PNG)|*.png|"
-    "JPEG Files (*.JPG)|*.jpg|"
-    "PPM  Files (*.PPM)|*.ppm|"
-    "TIFF Files (*.TIFF)|*.tiff|"
-    "TGA  Files (*.TGA)|*.tga|"
-    "EXR  Files (*.EXR)|*.exr||", NULL);
-  if (aDlg.DoModal() != IDOK)
-  {
-    return;
-  }
-
-  SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-  myView->Dump (aDlg.GetPathName());
-  SetCursor(AfxGetApp()->LoadStandardCursor(IDC_ARROW));
+  GetDocument()->ExportView (myView);
 }
 
 void CGeometryView::OnSize(UINT /*nType*/, int /*cx*/, int /*cy*/)

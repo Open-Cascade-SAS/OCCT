@@ -405,30 +405,17 @@ void CTriangulationDoc::OnUpdateBUTTONPrev(CCmdUI* pCmdUI)
 	pCmdUI->Enable (!myPresentation->AtFirstSample());
 }
 
-void CTriangulationDoc::OnDumpView() 
+void CTriangulationDoc::OnDumpView()
 {
-  CFileDialog aDlg (false, "gif", "OCCView.gif", OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-    "GIF  Files (*.GIF)|*.gif|"
-    "BMP  Files (*.BMP)|*.bmp|"
-    "PNG  Files (*.PNG)|*.png|"
-    "JPEG Files (*.JPEG)|*.jpeg|"
-    "PPM  Files (*.PPM)|*.ppm|"
-    "TIFF Files (*.TIFF)|*.tiff|"
-    "TGA  Files (*.TGA)|*.tga|"
-    "EXR  Files (*.EXR)|*.exr||", NULL);
-  if (aDlg.DoModal() != IDOK)
-  {
-    return;
-  }
-
   for (POSITION aPos = GetFirstViewPosition(); aPos != NULL;)
   {
     OCC_3dView* pView = (OCC_3dView* )GetNextView (aPos);
     pView->UpdateWindow();
   }
+
   myViewer->InitActiveViews();
   Handle(V3d_View) aView = myViewer->ActiveView();
-  aView->Dump (aDlg.GetPathName());
+  ExportView (aView);
 }
 
 void CTriangulationDoc::Fit()

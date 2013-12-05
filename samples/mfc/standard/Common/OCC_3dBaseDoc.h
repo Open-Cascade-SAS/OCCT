@@ -13,7 +13,7 @@
 #include "DimensionDlg.h"
 #include <Standard_Macro.hxx>
 
-class AFX_EXT_CLASS OCC_3dBaseDoc : public OCC_BaseDoc  
+class AFX_EXT_CLASS OCC_3dBaseDoc : public OCC_BaseDoc
 {
 protected:
   CDimensionDlg myDimensionDlg;

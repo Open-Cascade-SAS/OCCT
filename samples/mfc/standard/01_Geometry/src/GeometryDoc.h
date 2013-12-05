@@ -9,11 +9,12 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
+#include "OCC_BaseDoc.h"
 #include "ResultDialog.h"
 
 class Handle_AIS_Point;
 
-class CGeometryDoc : public CDocument
+class CGeometryDoc : public OCC_BaseDoc
 {
 public:
   void Put2DOnTop(bool isMax = true);
@@ -210,26 +211,16 @@ protected:
   //}}AFX_MSG
   DECLARE_MESSAGE_MAP()
 
-
-private:
-  Handle_V3d_Viewer myViewer;
-  Handle_V3d_Viewer myViewerCollector;
-  Handle_AIS_InteractiveContext myAISContext;
-public :
-  Handle_AIS_InteractiveContext& GetAISContext(){ return myAISContext; };
-  Handle_V3d_Viewer GetViewer()  { return myViewer; };
-  Handle_V3d_Viewer GetViewerCollector()  { return myViewerCollector; };
-
-
 private:
   Handle_V3d_Viewer myViewer2D;
   Handle_AIS_InteractiveContext myAISContext2D;
-public :
+
+public:
   int Current;
   void Minimize3D();
   void Minimize2D();
-  Handle_V3d_Viewer GetViewer2D()  { return myViewer2D; };
-  Handle_AIS_InteractiveContext& GetISessionContext(){ return myAISContext2D; };
+  Handle_V3d_Viewer GetViewer2D() { return myViewer2D; };
+  Handle_AIS_InteractiveContext& GetISessionContext() { return myAISContext2D; };
   BOOL FitMode;
 
 public :

@@ -146,33 +146,7 @@ OCC_3dDoc* OCC_3dView::GetDocument() // non-debug version is inline
 // OCC_3dView message handlers
 void OCC_3dView::OnFileExportImage()
 {
-  LPCTSTR filter;
-  filter = _T("EXR Files (*.EXR)|*.exr|TGA Files (*.TGA)|*.tga|TIFF Files (*.TIFF)|*.tiff|"
-              "PPM Files (*.PPM)|*.ppm|JPEG Files(*.JPEG)|*.jpeg|PNG Files (*.PNG)|*.png|"
-              "GIF Files (*.GIF)|*.gif|BMP Files (*.BMP)|*.bmp|PS Files (*.PS)|*.ps|"
-              "EPS Files (*.EPS)|*.eps|TEX Files (*.TEX)|*.tex|PDF Files (*.PDF)|*.pdf"
-              "|SVG Files (*.SVG)|*.svg|PGF Files (*.PGF)|*.pgf|EMF Files (*.EMF)|*.emf||");
-  CFileDialog dlg(FALSE,_T("*.BMP"),NULL,OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-                  filter, 
-                  NULL );
-
-  if (dlg.DoModal() == IDOK) 
-  {
-    CString aFileName = dlg.GetPathName();
-    CString ext = dlg.GetFileExt();
-    if (!(ext.CompareNoCase("ps")) || !(ext.CompareNoCase("emf"))
-        || !(ext.CompareNoCase("pdf")) || !(ext.CompareNoCase("eps"))
-        || !(ext.CompareNoCase("tex")) || !(ext.CompareNoCase("svg"))
-        || !(ext.CompareNoCase("pgf")))
-    {
-      Graphic3d_ExportFormat exFormat;
-      if (!(ext.CompareNoCase("ps"))) exFormat = Graphic3d_EF_PostScript;
-      else             exFormat = Graphic3d_EF_EnhPostScript;
-      myView->View()->Export( aFileName, exFormat );
-      return;
-    }
-    myView->Dump(aFileName);
-  }
+  GetDocument()->ExportView (myView);
 }
 
 void OCC_3dView::OnSize(UINT /*nType*/, int /*cx*/, int /*cy*/) 

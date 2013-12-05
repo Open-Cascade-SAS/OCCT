@@ -9,9 +9,18 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include <stdafx.h>
+#include <AIS_InteractiveContext.hxx>
+#include <V3d_Viewer.hxx>
 
-class OCC_BaseDoc : public CDocument  
+// Base class for all documents in the sample.
+// Declares base functionlaity and interface for the sample documents.
+// Common properties:
+// - interactive context
+// - 3d viewer
+// Common methods:
+// - base events
+// - export into one of supported export formats.
+class AFX_EXT_CLASS OCC_BaseDoc : public CDocument
 {
 public:
 
@@ -21,7 +30,13 @@ public:
 
   Handle(AIS_InteractiveContext)& GetAISContext() { return myAISContext; }
 
-  Handle(V3d_Viewer) GetViewer()  { return myViewer; }
+  Handle(V3d_Viewer) GetViewer() { return myViewer; }
+
+  // Returns string with supported export pixel and vector images formats.
+  const CString SupportedImageFormats() const;
+
+  // Exports the given view into of the supported formats.
+  void ExportView (const Handle(V3d_View)& theView) const;
 
   //Events
   virtual void DragEvent (const Standard_Integer /*theMouseX*/,

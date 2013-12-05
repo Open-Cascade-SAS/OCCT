@@ -317,114 +317,110 @@ void CViewer2dDoc::OnBUTTONTestCurve()
 
 void CViewer2dDoc::OnBUTTONTestImage()
 {
-  CFileDialog dlg(TRUE,
-                  NULL,
-                  NULL,
-                  OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-                  "image Files (*.bmp , *.gif , *.jpeg, *.bmp, *.ppm, *.exr, *.tga, *.tiff, *.pgf, *.pdf)"
-                  "|*.bmp; *.gif; *.jpeg;  *.bmp; *.ppm; *.exr; *.tga; *.tiff; *.pgf; *.pdf;"
-                  "| all files (*.*)|*.*;||",  
-                  NULL );
+  CFileDialog anOpenImageDlg (TRUE,
+                              NULL,
+                              NULL,
+                              OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
+                              SupportedImageFormats() + "| all files (*.*)|*.*;||",
+                              NULL);
 
-  CString initdir(((OCC_App*) AfxGetApp())->GetInitDataDir());
-  initdir += "\\Data";
+  CString anInitDir (((OCC_App*) AfxGetApp())->GetInitDataDir());
+  anInitDir += "\\Data";
 
-  dlg.m_ofn.lpstrInitialDir = initdir;
-  if(dlg.DoModal() == IDOK)
+  anOpenImageDlg.m_ofn.lpstrInitialDir = anInitDir;
+  if(anOpenImageDlg.DoModal() == IDOK)
   {
-    SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-    CString filename = dlg.GetPathName();
-    TCollection_AsciiString aFileName(filename);
+    SetCursor(AfxGetApp()->LoadStandardCursor (IDC_WAIT));
+    CString aFilePath = anOpenImageDlg.GetPathName();
+    TCollection_AsciiString aFileName (aFilePath);
 
     //erase viewer
     if(myAISContext->HasOpenedContext())
       myAISContext->CloseAllContexts();
     myAISContext->EraseAll();
 
-    Handle(Sample2D_Image) anImage = new Sample2D_Image(aFileName);
-    anImage->SetCoord(40,50) ;
-    anImage->SetScale(1.0);
-    myAISContext->Display(anImage, Standard_False);
-    myAISContext->SetDisplayMode(anImage,3,Standard_False);
-    FitAll2DViews(Standard_True);
+    Handle(Sample2D_Image) anImage = new Sample2D_Image (aFileName);
+    anImage->SetCoord (40,50) ;
+    anImage->SetScale (1.0);
+    myAISContext->Display (anImage, Standard_False);
+    myAISContext->SetDisplayMode (anImage,3,Standard_False);
+    FitAll2DViews (Standard_True);
   }
 }
 
 void CViewer2dDoc::OnBUTTONMultipleImage()
 {
-  CFileDialog dlg(TRUE,
-                  NULL,
-                  NULL,
-                  OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-                  "image Files (*.bmp , *.gif , *.jpeg, *.bmp, *.ppm, *.exr, *.tga, *.tiff, *.pgf, *.pdf)"
-                  "|*.bmp; *.gif; *.jpeg;  *.bmp; *.ppm; *.exr; *.tga; *.tiff; *.pgf; *.pdf;"
-                  "| all files (*.*)|*.*;||",  
-                  NULL );
+  CFileDialog anOpenImageDlg (TRUE,
+                              NULL,
+                              NULL,
+                              OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
+                              SupportedImageFormats() + "| all files (*.*)|*.*;||",
+                              NULL);
 
-  CString initdir(((OCC_App*) AfxGetApp())->GetInitDataDir());
-  initdir += "\\Data";
+  CString anInitDir (((OCC_App*) AfxGetApp())->GetInitDataDir());
+  anInitDir += "\\Data";
 
-  dlg.m_ofn.lpstrInitialDir = initdir;
- 
+  anOpenImageDlg.m_ofn.lpstrInitialDir = anInitDir;
 
-  if (dlg.DoModal() == IDOK) 
+  if (anOpenImageDlg.DoModal() == IDOK) 
   {
-    SetCursor(AfxGetApp()->LoadStandardCursor(IDC_WAIT));
-    CString filename = dlg.GetPathName();
-    TCollection_AsciiString aFileName(filename);
+    SetCursor(AfxGetApp()->LoadStandardCursor (IDC_WAIT));
+    CString aFilePath = anOpenImageDlg.GetPathName();
+    TCollection_AsciiString aFileName (aFilePath);
+
     //erase viewer
     if(myAISContext->HasOpenedContext())
       myAISContext->CloseAllContexts();
     myAISContext->EraseAll();
+
     //create images
     {  // 1
-    Handle(Sample2D_Image) anImage = new Sample2D_Image(aFileName);
-    anImage->SetCoord(40,50) ;
-    anImage->SetScale(0.5);
-    myAISContext->Display(anImage, Standard_False);
-    myAISContext->SetDisplayMode(anImage,3,Standard_False);
+    Handle(Sample2D_Image) anImage = new Sample2D_Image (aFileName);
+    anImage->SetCoord (40, 50);
+    anImage->SetScale (0.5);
+    myAISContext->Display (anImage, Standard_False);
+    myAISContext->SetDisplayMode (anImage, 3, Standard_False);
     }
     {  // 2
-    Handle(Sample2D_Image) anImage = new Sample2D_Image(aFileName);
-
-    anImage->SetCoord(100,50) ;
-	  anImage->SetScale(0.9);
-    myAISContext->Display(anImage,Standard_False);
-    myAISContext->SetDisplayMode(anImage,3,Standard_False);
+    Handle(Sample2D_Image) anImage = new Sample2D_Image (aFileName);
+    anImage->SetCoord (100, 50);
+    anImage->SetScale (0.9);
+    myAISContext->Display (anImage, Standard_False);
+    myAISContext->SetDisplayMode (anImage, 3, Standard_False);
     }
     {  // 3
-    Handle(Sample2D_Image) anImage = new Sample2D_Image(aFileName);
-    anImage->SetCoord(40,40) ;
-    anImage->SetScale(0.3);
-    myAISContext->Display(anImage, Standard_False);
-    myAISContext->SetDisplayMode(anImage,3,Standard_False);
+    Handle(Sample2D_Image) anImage = new Sample2D_Image (aFileName);
+    anImage->SetCoord (40, 40);
+    anImage->SetScale (0.3);
+    myAISContext->Display (anImage, Standard_False);
+    myAISContext->SetDisplayMode (anImage, 3, Standard_False);
     }
     {  // 4
-    Handle(Sample2D_Image) anImage = new Sample2D_Image(aFileName);
-    anImage->SetCoord(50,40) ;
-    myAISContext->Display(anImage, Standard_False);
-    myAISContext->SetDisplayMode(anImage,3,Standard_False);
+    Handle(Sample2D_Image) anImage = new Sample2D_Image (aFileName);
+    anImage->SetCoord (50, 40);
+    myAISContext->Display (anImage, Standard_False);
+    myAISContext->SetDisplayMode (anImage, 3, Standard_False);
     }
     {  // 5
-    Handle(Sample2D_Image) anImage = new Sample2D_Image(aFileName);
-    anImage->SetCoord(80,45) ;
-	  anImage->SetScale(2);
-    myAISContext->Display(anImage,  Standard_False);
-    myAISContext->SetDisplayMode(anImage,3,Standard_False);
+    Handle(Sample2D_Image) anImage = new Sample2D_Image (aFileName);
+    anImage->SetCoord (80, 45);
+    anImage->SetScale (2);
+    myAISContext->Display (anImage, Standard_False);
+    myAISContext->SetDisplayMode (anImage, 3, Standard_False);
     }
     {  // 6
-    Handle(Sample2D_Image) anImage = new Sample2D_Image(aFileName);
-    anImage->SetCoord(20,-20) ;
-    myAISContext->Display(anImage, Standard_False);
-    myAISContext->SetDisplayMode(anImage,3,Standard_False);
+    Handle(Sample2D_Image) anImage = new Sample2D_Image (aFileName);
+    anImage->SetCoord (20, -20);
+    myAISContext->Display (anImage, Standard_False);
+    myAISContext->SetDisplayMode (anImage, 3, Standard_False);
     }
     {  // 7
-    Handle(Sample2D_Image) anImage = new Sample2D_Image(aFileName);
-    anImage->SetCoord(0,0) ;
-	  anImage->SetScale(0.5);
-    myAISContext->Display(anImage, Standard_False);
-    myAISContext->SetDisplayMode(anImage,3,Standard_False);
+    Handle(Sample2D_Image) anImage = new Sample2D_Image (aFileName);
+    anImage->SetCoord (0, 0);
+    anImage->SetScale (0.5);
+    myAISContext->Display (anImage, Standard_False);
+    myAISContext->SetDisplayMode (anImage, 3, Standard_False);
     }
-    FitAll2DViews(Standard_True); // Update Viewer
+    FitAll2DViews (Standard_True); // Update Viewer
   }
 }

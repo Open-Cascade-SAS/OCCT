@@ -511,7 +511,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    ID_DUMP_VIEW            "Save current frame into a GIF file\nExport view to GIF (F12)"
+    ID_DUMP_VIEW            "Save current frame into an image file\nExport view (F12)"
     ID_TEXTURE_ON           "Run texture example\nRun texture example"
 END
 

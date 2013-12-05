@@ -9,14 +9,13 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#include <OCC_BaseDoc.h>
 #include "ResultDialog.h"
 class OCCDemo_Presentation;
 
-class COCCDemoDoc : public CDocument
+class COCCDemoDoc : public OCC_BaseDoc
 {
 public:
-  Handle_V3d_Viewer GetViewer() const { return myViewer; };
-  Handle_AIS_InteractiveContext GetAISContext() const { return myAISContext; };
   CResultDialog* GetResultDialog () {return &myCResultDialog;}
   Standard_CString GetDataDir() {return myDataDir;}
 
@@ -72,8 +71,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-  Handle_V3d_Viewer myViewer;
-  Handle_AIS_InteractiveContext myAISContext;
   OCCDemo_Presentation *myPresentation;
   CResultDialog myCResultDialog;
   BOOL myShowResult;

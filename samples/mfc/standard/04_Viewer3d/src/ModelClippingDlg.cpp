@@ -120,7 +120,18 @@ BOOL CModelClippingDlg::OnInitDialog()
   if (m_ModelClippingONOFF)
   {
     // register and activate clipping plane
-    if (!myView->GetClipPlanes().Contains (myClippingPlane))
+    Standard_Boolean toAddPlane = Standard_True;
+    Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (myView->GetClipPlanes());
+    for (; aPlaneIt.More(); aPlaneIt.Next())
+    {
+      if (aPlaneIt.Value() == myClippingPlane)
+      {
+        toAddPlane = Standard_False;
+        break;
+      }
+    }
+
+    if (toAddPlane)
     {
       myView->AddClipPlane (myClippingPlane);
     }
@@ -188,7 +199,18 @@ void CModelClippingDlg::OnCheckModelclippingonoff()
   if (m_ModelClippingONOFF)
   {
     // register and activate clipping plane
-    if (!myView->GetClipPlanes().Contains (myClippingPlane))
+    Standard_Boolean toAddPlane = Standard_True;
+    Graphic3d_SequenceOfHClipPlane::Iterator aPlaneIt (myView->GetClipPlanes());
+    for (; aPlaneIt.More(); aPlaneIt.Next())
+    {
+      if (aPlaneIt.Value() == myClippingPlane)
+      {
+        toAddPlane = Standard_False;
+        break;
+      }
+    }
+
+    if (toAddPlane)
     {
       myView->AddClipPlane (myClippingPlane);
     }
