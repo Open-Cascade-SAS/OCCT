@@ -524,7 +524,10 @@ TDF_Label XCAFDoc_ShapeTool::addShape (const TopoDS_Shape& S, const Standard_Boo
     //for(Standard_Integer i=1; i<=tmpMap.Extent(); i++)
     //mySubShapes.Bind(tmpMap.FindKey(i),ShapeLabel);
     for(Standard_Integer i=1; i<=A->GetMap().Extent(); i++)
-    mySubShapes.Bind(A->GetMap().FindKey(i),ShapeLabel);
+    {
+      TopoDS_Shape aSh = A->GetMap().FindKey(i);
+      mySubShapes.Bind(aSh,ShapeLabel);
+    }
     //mySubShapes.Bind(ShapeLabel,A->GetMap());
   }
 
