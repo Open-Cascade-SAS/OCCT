@@ -133,18 +133,21 @@ static gp_Pnt2d Function_Value(const Standard_Real U,
   }
 
   if ( UCouture) {
-    S = ElCLib::InPeriod(S, U1, U2);
+    if(S < U1 || S > U2)
+      S = ElCLib::InPeriod(S, U1, U2);
   }
  
   if ( VCouture) {
     if(SType == GeomAbs_Sphere) {
       if ( Abs( S - U1 ) > M_PI ) {
-	T = M_PI - T;
-	S = M_PI + S;
+	      T = M_PI - T;
+	      S = M_PI + S;
       }
-      S = ElCLib::InPeriod(S, U1, U2);
+      if(S > U1 || S < U2)
+        S = ElCLib::InPeriod(S, U1, U2);
     }
-    T = ElCLib::InPeriod(T, V1, V2);
+    if(T < V1 || T > V2)
+      T = ElCLib::InPeriod(T, V1, V2);
   }
   
   return gp_Pnt2d(S, T);
@@ -190,7 +193,7 @@ static Standard_Boolean Function_D1( const Standard_Real U,
       Standard_Real Nv = D1V.SquareMagnitude(); 
       
       if ( Nu < Epsilon(1.) || Nv < Epsilon(1.))
-	return Standard_False;
+	      return Standard_False;
       
       dU /= Nu;
       dV /= Nv;
@@ -233,130 +236,130 @@ static void Function_SetUVBounds(Standard_Real& myU1,
 
   switch ( mySurface->GetType()) {
 
-  case GeomAbs_Cone:    {
-    gp_Cone Cone = mySurface->Cone();
-    VCouture = Standard_False;
-    
-    switch( myCurve->GetType() ){
-    case GeomAbs_Parabola:
-    case GeomAbs_Hyperbola:
-    case GeomAbs_Ellipse:{
-      Standard_Real U1, U2, V1, V2, U , V;
-      ElSLib::Parameters( Cone, P1, U1, V1);
-      ElSLib::Parameters( Cone, P2, U2, V2);
-      ElSLib::Parameters( Cone, P , U , V );
-      myU1 = Min(U1,U2);
-      myU2 = Max(U1,U2);
-      if (  ( U1 < U  &&  U < U2 ) && !myCurve->IsClosed() ) {
-	UCouture = Standard_False;
-      }      
-      else {
-	UCouture = Standard_True;
-	myU2 = myU1 + 2*M_PI;
-      }
-      
-    }
-      break;
-    default:	  { 
-      Standard_Real U1, V1, U , V, Delta = 0., d = 0., pmin = W1, pmax = W1, dmax = 0., Uf, Ul;
-      ElSLib::Parameters( Cone, P1, U1, V1);
-      ElSLib::Parameters( Cone, P2, Ul, V1);
-      myU1 = U1; myU2 = U1; Uf = U1; 
-      Standard_Real Step = .1;
-      Standard_Integer nbp = (Standard_Integer)((W2 - W1) / Step + 1);
-      nbp = Max(nbp, 3);
-      Step = (W2 - W1) / (nbp - 1);
-      Standard_Boolean isclandper = (!(myCurve->IsClosed()) && !(myCurve->IsPeriodic()));
-      for(Standard_Real par = W1 + Step; par <= W2; par += Step) {
-	if(!isclandper) par += Step;
-	P = myCurve->Value(par);
-	ElSLib::Parameters( Cone, P, U, V);
-	U += Delta;
-	d = U - U1;
-	if(d > M_PI)  {
-	  if( ( (IsEqual(U,(2*M_PI),1.e-10) && (U1 >= 0. && U1 <= M_PI)) && 
-	       (IsEqual(U,Ul,1.e-10) && !IsEqual(Uf,0.,1.e-10)) ) && isclandper ) U = 0.;
-	  else Delta -= 2*M_PI;
-	  U += Delta;
-	  d = U - U1;
-	}
-	else if(d < -M_PI)	  {
-	  if( ( (IsEqual(U,0.,1.e-10) && (U1 >= M_PI && U1 <= (2*M_PI))) &&
-	       (IsEqual(U,Ul,1.e-10) && !IsEqual(Uf,(2*M_PI),1.e-10)) ) && isclandper ) U = 2*M_PI;
-	  else Delta += 2*M_PI;
-	  U += Delta;
-	  d = U - U1;
-	}
-	dmax = Max(dmax, Abs(d));
-	if(U < myU1) {myU1 = U; pmin = par;}
-	if(U > myU2) {myU2 = U; pmax = par;}
-	U1 = U;
-      }
-      
-      if(!(Abs(pmin - W1) <= Precision::PConfusion() || Abs(pmin - W2) <= Precision::PConfusion()) ) myU1 -= dmax*.5;
-      if(!(Abs(pmax - W1) <= Precision::PConfusion() || Abs(pmax - W2) <= Precision::PConfusion()) ) myU2 += dmax*.5;
+    case GeomAbs_Cone:    {
+      gp_Cone Cone = mySurface->Cone();
+      VCouture = Standard_False;
 
-      if((myU1 >=0. && myU1 <= 2*M_PI) && (myU2 >=0. && myU2 <= 2*M_PI) ) UCouture = Standard_False;
-      else{
-	U = ( myU1 + myU2 ) /2.;
-	myU1 = U - M_PI;
-	myU2 = U + M_PI;
-	UCouture = Standard_True;
+      switch( myCurve->GetType() ){
+      case GeomAbs_Parabola:
+      case GeomAbs_Hyperbola:
+      case GeomAbs_Ellipse:{
+        Standard_Real U1, U2, V1, V2, U , V;
+        ElSLib::Parameters( Cone, P1, U1, V1);
+        ElSLib::Parameters( Cone, P2, U2, V2);
+        ElSLib::Parameters( Cone, P , U , V );
+        myU1 = Min(U1,U2);
+        myU2 = Max(U1,U2);
+        if (  ( U1 < U  &&  U < U2 ) && !myCurve->IsClosed() ) {
+          UCouture = Standard_False;
+        }      
+        else {
+          UCouture = Standard_True;
+          myU2 = myU1 + 2*M_PI;
+        }
+
       }
-    }
+      break;
+      default:	  { 
+        Standard_Real U1, V1, U , V, Delta = 0., d = 0., pmin = W1, pmax = W1, dmax = 0., Uf, Ul;
+        ElSLib::Parameters( Cone, P1, U1, V1);
+        ElSLib::Parameters( Cone, P2, Ul, V1);
+        myU1 = U1; myU2 = U1; Uf = U1; 
+        Standard_Real Step = .1;
+        Standard_Integer nbp = (Standard_Integer)((W2 - W1) / Step + 1);
+        nbp = Max(nbp, 3);
+        Step = (W2 - W1) / (nbp - 1);
+        Standard_Boolean isclandper = (!(myCurve->IsClosed()) && !(myCurve->IsPeriodic()));
+        for(Standard_Real par = W1 + Step; par <= W2; par += Step) {
+          if(!isclandper) par += Step;
+          P = myCurve->Value(par);
+          ElSLib::Parameters( Cone, P, U, V);
+          U += Delta;
+          d = U - U1;
+          if(d > M_PI)  {
+            if( ( (IsEqual(U,(2*M_PI),1.e-10) && (U1 >= 0. && U1 <= M_PI)) && 
+              (IsEqual(U,Ul,1.e-10) && !IsEqual(Uf,0.,1.e-10)) ) && isclandper ) U = 0.;
+            else Delta -= 2*M_PI;
+            U += Delta;
+            d = U - U1;
+          }
+          else if(d < -M_PI)	  {
+            if( ( (IsEqual(U,0.,1.e-10) && (U1 >= M_PI && U1 <= (2*M_PI))) &&
+              (IsEqual(U,Ul,1.e-10) && !IsEqual(Uf,(2*M_PI),1.e-10)) ) && isclandper ) U = 2*M_PI;
+            else Delta += 2*M_PI;
+            U += Delta;
+            d = U - U1;
+          }
+          dmax = Max(dmax, Abs(d));
+          if(U < myU1) {myU1 = U; pmin = par;}
+          if(U > myU2) {myU2 = U; pmax = par;}
+          U1 = U;
+        }
+
+        if(!(Abs(pmin - W1) <= Precision::PConfusion() || Abs(pmin - W2) <= Precision::PConfusion()) ) myU1 -= dmax*.5;
+        if(!(Abs(pmax - W1) <= Precision::PConfusion() || Abs(pmax - W2) <= Precision::PConfusion()) ) myU2 += dmax*.5;
+
+        if((myU1 >=0. && myU1 <= 2*M_PI) && (myU2 >=0. && myU2 <= 2*M_PI) ) UCouture = Standard_False;
+        else{
+          U = ( myU1 + myU2 ) /2.;
+          myU1 = U - M_PI;
+          myU2 = U + M_PI;
+          UCouture = Standard_True;
+        }
+      }
       break;
     }// switch curve type
   }// case Cone
-    break;
-      
+  break;
+
   case GeomAbs_Cylinder:    {
     gp_Cylinder Cylinder = mySurface->Cylinder();
     VCouture = Standard_False;
-    
+
     if (myCurve->GetType() == GeomAbs_Ellipse) {
-      
+
       Standard_Real U1, U2, V1, V2, U , V;
       ElSLib::Parameters( Cylinder, P1, U1, V1);
       ElSLib::Parameters( Cylinder, P2, U2, V2);
       ElSLib::Parameters( Cylinder, P , U , V );
       myU1 = Min(U1,U2);
       myU2 = Max(U1,U2);
-      
+
       if ( !myCurve->IsClosed()) {
-	if ( myU1 < U && U < myU2) {
-	  U = ( myU1 + myU2 ) /2.;
-	  myU1 = U - M_PI;
-	  myU2 = U + M_PI;
-	}
-	else {
-	  U = ( myU1 + myU2 ) /2.;
-	  if ( myU1 < U) {
-	    myU1 = U - 2*M_PI;
-	    myU2 = U;
-	  }
-	  else {
-	    myU1 = U;
-	    myU2 = U + 2*M_PI;
-	  }
-	}
-	UCouture = Standard_True;
+        if ( myU1 < U && U < myU2) {
+          U = ( myU1 + myU2 ) /2.;
+          myU1 = U - M_PI;
+          myU2 = U + M_PI;
+        }
+        else {
+          U = ( myU1 + myU2 ) /2.;
+          if ( myU1 < U) {
+            myU1 = U - 2*M_PI;
+            myU2 = U;
+          }
+          else {
+            myU1 = U;
+            myU2 = U + 2*M_PI;
+          }
+        }
+        UCouture = Standard_True;
       }
       else {
-	gp_Vec D1U, D1V;
-	gp_Vec T;
-	gp_Pnt P3d;
-	myCurve->D1(W1,P3d,T);
-	  mySurface->D1(U1,U2,P3d,D1U,D1V);
-	Standard_Real dU = T.Dot(D1U);
-	
-	UCouture = Standard_True;
-	if ( dU > 0.) {
-	  myU2 = myU1 + 2*M_PI;
-	}
-	else {
-	  myU2 = myU1;
-	  myU1 -= 2*M_PI;
-	}
+        gp_Vec D1U, D1V;
+        gp_Vec T;
+        gp_Pnt P3d;
+        myCurve->D1(W1,P3d,T);
+        mySurface->D1(U1,U2,P3d,D1U,D1V);
+        Standard_Real dU = T.Dot(D1U);
+
+        UCouture = Standard_True;
+        if ( dU > 0.) {
+          myU2 = myU1 + 2*M_PI;
+        }
+        else {
+          myU2 = myU1;
+          myU1 -= 2*M_PI;
+        }
       }
     }
     else {
@@ -370,53 +373,53 @@ static void Function_SetUVBounds(Standard_Real& myU1,
       myU1 = U1; myU2 = U1;
       Standard_Real pmin = W1, pmax = W1, plim = W2+.1*Step;
       for(Standard_Real par = W1 + Step; par <= plim; par += Step) {
-	P = myCurve->Value(par);
-	  ElSLib::Parameters( Cylinder, P, U, V);
-	U += Delta;
-	d = U - U1;
-	if(d > eps) {
-	  U -= Delta;
-	  Delta -= 2*M_PI;
-	  U += Delta;
-	  d = U - U1;
-	  }
-	else if(d < -eps) {
-	  U -= Delta;
-	  Delta += 2*M_PI;
-	  U += Delta;
-	  d = U - U1;
-	}
-	dmax = Max(dmax, Abs(d));
-	if(U < myU1) {myU1 = U; pmin = par;}
-	if(U > myU2) {myU2 = U; pmax = par;}
-	  U1 = U;
+        P = myCurve->Value(par);
+        ElSLib::Parameters( Cylinder, P, U, V);
+        U += Delta;
+        d = U - U1;
+        if(d > eps) {
+          U -= Delta;
+          Delta -= 2*M_PI;
+          U += Delta;
+          d = U - U1;
+        }
+        else if(d < -eps) {
+          U -= Delta;
+          Delta += 2*M_PI;
+          U += Delta;
+          d = U - U1;
+        }
+        dmax = Max(dmax, Abs(d));
+        if(U < myU1) {myU1 = U; pmin = par;}
+        if(U > myU2) {myU2 = U; pmax = par;}
+        U1 = U;
       }
-      
+
       if(!(Abs(pmin - W1) <= Precision::PConfusion() ||
-	   Abs(pmin - W2) <= Precision::PConfusion())  ) myU1 -= dmax*.5;
+        Abs(pmin - W2) <= Precision::PConfusion())  ) myU1 -= dmax*.5;
       if(!(Abs(pmax - W1) <= Precision::PConfusion() ||
-	   Abs(pmax - W2) <= Precision::PConfusion())  ) myU2 += dmax*.5;
-      
+        Abs(pmax - W2) <= Precision::PConfusion())  ) myU2 += dmax*.5;
+
       if((myU1 >=0. && myU1 <= 2*M_PI) &&
-	 (myU2 >=0. && myU2 <= 2*M_PI)    ) {
-	UCouture = Standard_False;
+        (myU2 >=0. && myU2 <= 2*M_PI)    ) {
+          UCouture = Standard_False;
       }
       else {
-	U = ( myU1 + myU2 ) /2.;
-	myU1 = U - M_PI;
-	myU2 = U + M_PI;
-	UCouture = Standard_True;
+        U = ( myU1 + myU2 ) /2.;
+        myU1 = U - M_PI;
+        myU2 = U + M_PI;
+        UCouture = Standard_True;
       }
     }
   }
-    break;
-    //    
+  break;
+  //    
   case GeomAbs_Sphere:{
     VCouture = Standard_False;
     gp_Sphere SP = mySurface->Sphere();
     if ( myCurve->GetType() == GeomAbs_Circle) {
       UCouture = Standard_True;
-      
+
       // on cherche a savoir le nombre de fois que la couture est
       // traversee.
       // si 0 ou 2 fois : la PCurve est fermee et dans l`intervalle 
@@ -447,151 +450,163 @@ static void Function_SetUVBounds(Standard_Real& myU1,
       Plane.Coefficients(A,B,C,D);
       //
       if ( Abs(C) < Tol) {
-	if ( Abs(A) > Tol) {
-	  if ( (D/A) < 0.) {
-	    if      ( ( R - Abs(D/A))  > Tol)  NbSolutions = 2;
-	    else if ( Abs(R - Abs(D/A))< Tol)  NbSolutions = 1;
-	    else                               NbSolutions = 0;
-	  }
-	}
+        if ( Abs(A) > Tol) {
+          if ( (D/A) < 0.) {
+            if      ( ( R - Abs(D/A))  > Tol)  NbSolutions = 2;
+            else if ( Abs(R - Abs(D/A))< Tol)  NbSolutions = 1;
+            else                               NbSolutions = 0;
+          }
+        }
       }
       else {
-	Standard_Real delta = R*R*(A*A+C*C) - D*D;
-	delta *= C*C;
-	if ( Abs(delta) < Tol*Tol) {
-	  if ( A*D > 0.) NbSolutions = 1;
-	}
-	else if ( delta > 0) {
-	  Standard_Real xx;
-	  delta = Sqrt(delta);
-	  xx = -A*D+delta;
-	  //	  
-	  if ( xx > Tol) NbSolutions++;
-	  xx = -A*D-delta;
-	  //	
-	  if ( xx > Tol) NbSolutions++;
-	}
+        Standard_Real delta = R*R*(A*A+C*C) - D*D;
+        delta *= C*C;
+        if ( Abs(delta) < Tol*Tol) {
+          if ( A*D > 0.) NbSolutions = 1;
+        }
+        else if ( delta > 0) {
+          Standard_Real xx;
+          delta = Sqrt(delta);
+          xx = -A*D+delta;
+          //	  
+          if ( xx > Tol) NbSolutions++;
+          xx = -A*D-delta;
+          //	
+          if ( xx > Tol) NbSolutions++;
+        }
       }
       //
 
       // box+sphere >>
       Standard_Real UU = 0.;
       ElSLib::Parameters(SP, P1, U1, V1);
+      Standard_Real eps = 2.*Epsilon(1.);
+      Standard_Real dt = Max(Precision::PConfusion(), 0.01*(W2-W1)); 
+      if(Abs(U1) < eps)
+      {
+        //May be U1 must be equal 2*PI?
+        gp_Pnt Pd  = myCurve->Value(W1+dt);
+        Standard_Real ud, vd;
+        ElSLib::Parameters(SP, Pd, ud, vd);
+        if(Abs(U1 - ud) > M_PI)
+        {
+          U1 = 2.*M_PI;
+        }
+      }
+      else if(Abs(2.*M_PI - U1) < eps)
+      {
+        //maybe U1 = 0.?
+        gp_Pnt Pd  = myCurve->Value(W1+dt);
+        Standard_Real ud, vd;
+        ElSLib::Parameters(SP, Pd, ud, vd);
+        if(Abs(U1 - ud) > M_PI)
+        {
+          U1 = 0.;
+        }
+      }
+      //
       ElSLib::Parameters(SP, P2, U2, V1);
+      if(Abs(U2) < eps)
+      {
+        //May be U2 must be equal 2*PI?
+        gp_Pnt Pd  = myCurve->Value(W2-dt);
+        Standard_Real ud, vd;
+        ElSLib::Parameters(SP, Pd, ud, vd);
+        if(Abs(U2 - ud) > M_PI)
+        {
+          U2 = 2.*M_PI;
+        }
+      }
+      else if(Abs(2.*M_PI - U2) < eps)
+      {
+        //maybe U2 = 0.?
+        gp_Pnt Pd  = myCurve->Value(W2-dt);
+        Standard_Real ud, vd;
+        ElSLib::Parameters(SP, Pd, ud, vd);
+        if(Abs(U2 - ud) > M_PI)
+        {
+          U2 = 0.;
+        }
+      }
+      //
       ElSLib::Parameters(SP, P, UU, V1);
       Standard_Real UUmi = Min(Min(U1,UU),Min(UU,U2));
       Standard_Real UUma = Max(Max(U1,UU),Max(UU,U2));
       Standard_Boolean reCalc = ((UUmi >= 0. && UUmi <= M_PI) && (UUma >= 0. && UUma <= M_PI));
       // box+sphere <<
-      
-      ElSLib::Parameters(SP, P1, U1, V1);//*
-      //
-      Parameters(myCurve, mySurface, P1, 1, aTPC, U1, V1);
-      //
-      //
       P2 = myCurve->Value(W1+M_PI/8);
       ElSLib::Parameters(SP,P2,U2,V2);
       //
       if ( NbSolutions == 1) {
-	if ( Abs(U1-U2) > M_PI) { // on traverse la couture
-	  if ( U1 > M_PI) {
-	    myU1 = U1;
-	    myU2 = U1+2*M_PI;
-	  }
-	  else {
-	    myU2 = U1;
-	    myU1 = U1-2*M_PI;
-	  }
-	}
-	else { // on ne traverse pas la couture
-	  if ( U1 > U2) {
-	    myU2 = U1;
-	    myU1 = U1-2*M_PI;
-	  }
-	  else {
-	    myU1 = U1;
-	    myU2 = U1+2*M_PI;
-	  }
-	}
+        if ( Abs(U1-U2) > M_PI) { // on traverse la couture
+          if ( U1 > M_PI) {
+            myU1 = U1;
+            myU2 = U1+2*M_PI;
+          }
+          else {
+            myU2 = U1;
+            myU1 = U1-2*M_PI;
+          }
+        }
+        else { // on ne traverse pas la couture
+          if ( U1 > U2) {
+            myU2 = U1;
+            myU1 = U1-2*M_PI;
+          }
+          else {
+            myU1 = U1;
+            myU2 = U1+2*M_PI;
+          }
+        }
       }
       else { // 0 ou 2 solutions
-	gp_Pnt Center = Circle.Location();
-	Standard_Real U,V;
-	ElSLib::SphereParameters(gp_Ax3(gp::XOY()),1,Center, U, V);
-	myU1 = U-M_PI;
-	myU2 = U+M_PI;
+        gp_Pnt Center = Circle.Location();
+        Standard_Real U,V;
+        ElSLib::SphereParameters(gp_Ax3(gp::XOY()),1,Center, U, V);
+        myU1 = U-M_PI;
+        myU2 = U+M_PI;
       }
       //
       // eval the VCouture.
       if ( (C==0) || Abs(Abs(D/C)-R) > 1.e-10) {
-	VCouture = Standard_False;
+        VCouture = Standard_False;
       }
       else {
-	VCouture = Standard_True;
-	UCouture = Standard_True;
-	
-	if ( D/C < 0.) {
-	  myV1 =   - M_PI / 2.;
-	  myV2 = 3 * M_PI / 2.;
-	}
-	else {
-	  myV1 = -3 * M_PI / 2.;
-	  myV2 =      M_PI / 2.;
-	}
-	
-	// si P1.Z() vaut +/- R on est sur le sommet : pas significatif.
-	gp_Pnt pp = P1.Transformed(Trsf);
-	
-	if ( Abs( Abs(pp.Z()) - R) < Tol) {
-	  gp_Pnt Center = Circle.Location();
-	  Standard_Real U,V;
-	  ElSLib::SphereParameters(gp_Ax3(gp::XOY()),1,Center, U, V);
-	  myU1 = U-M_PI;
-	  myU2 = U+M_PI;
-	  VCouture = Standard_False;
-	}
-	else {
-	  ElSLib::Parameters(SP,P1,U1,V1);//*
-	  //
-	  Parameters(myCurve, mySurface, P1, 1, aTPC, U1, V1);
-	  //
-	  P2 = myCurve->Value(W1+M_PI/8);
-	  ElSLib::Parameters(SP,P2,U2,V2);
-	  
-	  if ( Abs(U1-U2) > M_PI) { // on traverse la couture
-	    if ( U1 > M_PI) {
-	      myU1 = U1;
-	      myU2 = U1+2*M_PI;
-	    }
-	    else {
-	      myU2 = U1;
-	      myU1 = U1-2*M_PI;
-	    }
-	  }
-	  else { // on ne traverse pas la couture
-	    if ( U1 > U2) {
-	      myU2 = U1;
-	      myU1 = U1-2*M_PI;
-	    }
-	    else {
-	      myU1 = U1;
-	      myU2 = U1+2*M_PI;
-	    }
-	  }
-	}
+        VCouture = Standard_True;
+        UCouture = Standard_True;
+
+        if ( D/C < 0.) {
+          myV1 =   - M_PI / 2.;
+          myV2 = 3 * M_PI / 2.;
+        }
+        else {
+          myV1 = -3 * M_PI / 2.;
+          myV2 =      M_PI / 2.;
+        }
+
+        // si P1.Z() vaut +/- R on est sur le sommet : pas significatif.
+        gp_Pnt pp = P1.Transformed(Trsf);
+
+        if ( Abs( Abs(pp.Z()) - R) < Tol) {
+          gp_Pnt Center = Circle.Location();
+          Standard_Real U,V;
+          ElSLib::SphereParameters(gp_Ax3(gp::XOY()),1,Center, U, V);
+          myU1 = U-M_PI;
+          myU2 = U+M_PI;
+          VCouture = Standard_False;
+        }
       }
-      
+
       // box+sphere >>
       myV1 = -1.e+100; myV2 = 1.e+100;
       Standard_Real UU1 = myU1, UU2 = myU2;
       if((Abs(UU1) <= (2.*M_PI) && Abs(UU2) <= (2.*M_PI)) && NbSolutions == 1 && reCalc) {
-	gp_Pnt Center = Circle.Location();
-	Standard_Real U,V;
-	ElSLib::SphereParameters(gp_Ax3(gp::XOY()),1,Center, U, V);
-	myU1 = U-M_PI;
-	myU2 = U+M_PI;
-	myU1 = Min(UU1,myU1);
-	myU2 = Max(UU2,myU2);
+        gp_Pnt Center = Circle.Location();
+        Standard_Real U,V;
+        ElSLib::SphereParameters(gp_Ax3(gp::XOY()),1,Center, U, V);
+        myU1 = U-M_PI;
+        myU1 = Min(UU1,myU1);
+        myU2 = myU1 + 2.*M_PI;
       }
       // box+sphere <<
 
@@ -608,51 +623,51 @@ static void Function_SetUVBounds(Standard_Real& myU1,
       myU1 = U1; myU2 = U1;
       Standard_Real pmin = W1, pmax = W1, plim = W2+.1*Step;
       for(Standard_Real par = W1 + Step; par <= plim; par += Step) {
-	P = myCurve->Value(par);
-	ElSLib::Parameters( SP, P, U, V);
-	U += Delta;
-	d = U - U1;
-	if(d > eps) {
-	  U -= Delta;
-	  Delta -= 2*M_PI;
-	  U += Delta;
-	  d = U - U1;
-	}
-	else if(d < -eps) {
-	  U -= Delta;
-	  Delta += 2*M_PI;
-	  U += Delta;
-	  d = U - U1;
-	  }
-	dmax = Max(dmax, Abs(d));
-	if(U < myU1) {myU1 = U; pmin = par;}
-	if(U > myU2) {myU2 = U; pmax = par;}
-	U1 = U;
+        P = myCurve->Value(par);
+        ElSLib::Parameters( SP, P, U, V);
+        U += Delta;
+        d = U - U1;
+        if(d > eps) {
+          U -= Delta;
+          Delta -= 2*M_PI;
+          U += Delta;
+          d = U - U1;
+        }
+        else if(d < -eps) {
+          U -= Delta;
+          Delta += 2*M_PI;
+          U += Delta;
+          d = U - U1;
+        }
+        dmax = Max(dmax, Abs(d));
+        if(U < myU1) {myU1 = U; pmin = par;}
+        if(U > myU2) {myU2 = U; pmax = par;}
+        U1 = U;
       }
-      
+
       if(!(Abs(pmin - W1) <= Precision::PConfusion() ||
-	   Abs(pmin - W2) <= Precision::PConfusion())  ) myU1 -= dmax*.5;
+        Abs(pmin - W2) <= Precision::PConfusion())  ) myU1 -= dmax*.5;
       if(!(Abs(pmax - W1) <= Precision::PConfusion() ||
-	   Abs(pmax - W2) <= Precision::PConfusion())  ) myU2 += dmax*.5;
-      
+        Abs(pmax - W2) <= Precision::PConfusion())  ) myU2 += dmax*.5;
+
       if((myU1 >=0. && myU1 <= 2*M_PI) &&
-	 (myU2 >=0. && myU2 <= 2*M_PI)    ) {
-	myU1 = 0.;
-	myU2 = 2.*M_PI;
-	UCouture = Standard_False;
+        (myU2 >=0. && myU2 <= 2*M_PI)    ) {
+          myU1 = 0.;
+          myU2 = 2.*M_PI;
+          UCouture = Standard_False;
       }
       else {
-	U = ( myU1 + myU2 ) /2.;
-	myU1 = U - M_PI;
-	myU2 = U + M_PI;
-	UCouture = Standard_True;
+        U = ( myU1 + myU2 ) /2.;
+        myU1 = U - M_PI;
+        myU2 = U + M_PI;
+        UCouture = Standard_True;
       }
-      
+
       VCouture = Standard_False;
     }
   }
-    break;
-    //     
+  break;
+  //     
   case GeomAbs_Torus:{
     gp_Torus TR = mySurface->Torus();
     Standard_Real U1, V1, U , V;
@@ -665,7 +680,7 @@ static void Function_SetUVBounds(Standard_Real& myU1,
     myU1 = U1; myU2 = U1;
     myV1 = V1; myV2 = V1;
     Standard_Real pminU = W1, pmaxU = W1, pminV = W1, pmaxV = W1,
-    plim = W2+.1*Step;
+      plim = W2+.1*Step;
     for(Standard_Real par = W1 + Step; par <= plim; par += Step) {
       P = myCurve->Value(par);
       ElSLib::Parameters( TR, P, U, V);
@@ -674,28 +689,28 @@ static void Function_SetUVBounds(Standard_Real& myU1,
       dU = U - U1;
       dV = V - V1;
       if(dU > eps) {
-	U -= DeltaU;
-	DeltaU -= 2*M_PI;
-	U += DeltaU;
-	dU = U - U1;
+        U -= DeltaU;
+        DeltaU -= 2*M_PI;
+        U += DeltaU;
+        dU = U - U1;
       }
       else if(dU < -eps) {
-	U -= DeltaU;
-	DeltaU += 2*M_PI;
-	U += DeltaU;
-	dU = U - U1;
+        U -= DeltaU;
+        DeltaU += 2*M_PI;
+        U += DeltaU;
+        dU = U - U1;
       }
       if(dV > eps) {
-	V -= DeltaV;
-	DeltaV -= 2*M_PI;
-	V += DeltaV;
-	dV = V - V1;
+        V -= DeltaV;
+        DeltaV -= 2*M_PI;
+        V += DeltaV;
+        dV = V - V1;
       }
       else if(dV < -eps) {
-	V -= DeltaV;
-	DeltaV += 2*M_PI;
-	V += DeltaV;
-	dV = V - V1;
+        V -= DeltaV;
+        DeltaV += 2*M_PI;
+        V += DeltaV;
+        dV = V - V1;
       }
       dmaxU = Max(dmaxU, Abs(dU));
       dmaxV = Max(dmaxV, Abs(dV));
@@ -706,21 +721,21 @@ static void Function_SetUVBounds(Standard_Real& myU1,
       U1 = U;
       V1 = V;
     }
-    
+
     if(!(Abs(pminU - W1) <= Precision::PConfusion() ||
-	 Abs(pminU - W2) <= Precision::PConfusion())  ) myU1 -= dmaxU*.5;
+      Abs(pminU - W2) <= Precision::PConfusion())  ) myU1 -= dmaxU*.5;
     if(!(Abs(pmaxU - W1) <= Precision::PConfusion() ||
-	 Abs(pmaxU - W2) <= Precision::PConfusion())  ) myU2 += dmaxU*.5;
+      Abs(pmaxU - W2) <= Precision::PConfusion())  ) myU2 += dmaxU*.5;
     if(!(Abs(pminV - W1) <= Precision::PConfusion() ||
-	 Abs(pminV - W2) <= Precision::PConfusion())  ) myV1 -= dmaxV*.5;
+      Abs(pminV - W2) <= Precision::PConfusion())  ) myV1 -= dmaxV*.5;
     if(!(Abs(pmaxV - W1) <= Precision::PConfusion() ||
-	 Abs(pmaxV - W2) <= Precision::PConfusion())  ) myV2 += dmaxV*.5;
-    
+      Abs(pmaxV - W2) <= Precision::PConfusion())  ) myV2 += dmaxV*.5;
+
     if((myU1 >=0. && myU1 <= 2*M_PI) &&
-       (myU2 >=0. && myU2 <= 2*M_PI)    ) {
-      myU1 = 0.;
-      myU2 = 2.*M_PI;
-      UCouture = Standard_False;
+      (myU2 >=0. && myU2 <= 2*M_PI)    ) {
+        myU1 = 0.;
+        myU2 = 2.*M_PI;
+        UCouture = Standard_False;
     }
     else {
       U = ( myU1 + myU2 ) /2.;
@@ -729,19 +744,19 @@ static void Function_SetUVBounds(Standard_Real& myU1,
       UCouture = Standard_True;
     }
     if((myV1 >=0. && myV1 <= 2*M_PI) &&
-       (myV2 >=0. && myV2 <= 2*M_PI)    ) {
-      VCouture = Standard_False;
+      (myV2 >=0. && myV2 <= 2*M_PI)    ) {
+        VCouture = Standard_False;
     }
     else {
       V = ( myV1 + myV2 ) /2.;
       myV1 = V - M_PI;
       myV2 = V + M_PI;
-	  VCouture = Standard_True;
+      VCouture = Standard_True;
     }
-    
+
   }
-    break;
-    
+  break;
+
   default:
     {
       UCouture = Standard_False;
@@ -751,58 +766,6 @@ static void Function_SetUVBounds(Standard_Real& myU1,
   }
 }
 //
-//=======================================================================
-//function : Parameters
-//purpose  : 
-//=======================================================================
-void Parameters(const Handle(Adaptor3d_HCurve)&   myCurve,
-		const Handle(Adaptor3d_HSurface)& mySurface,
-		const gp_Pnt& aP1, 
-		const Standard_Integer iFirst,
-		const Standard_Real aTolU, 
-		Standard_Real& aU, 
-		Standard_Real& aV)
-{
-  Standard_Real aTwoPI, aU1, aV1, aU2, aV2, aRSp, aTol3D;
-  Standard_Real aTF, aTL, aT2, dT;
-  GeomAbs_SurfaceType aSType;
-  GeomAbs_CurveType aCType;
-  gp_Pnt aP2;
-  //
-  aTwoPI=2.*M_PI;
-  //
-  aSType=mySurface->GetType();
-  aCType=myCurve->GetType();
-  //
-  if (aSType==GeomAbs_Sphere && aCType==GeomAbs_Circle) {
-    gp_Sphere aSp=mySurface->Sphere();
-    //
-    aRSp=aSp.Radius();
-    aTol3D=aRSp*aTolU;
-    //
-    aTF = myCurve->FirstParameter();
-    aTL = myCurve->LastParameter ();
-    dT=myCurve->Resolution(aTol3D);
-    //
-    ElSLib::Parameters(aSp, aP1, aU1, aV1);
-    if (fabs(aU)<aTolU || fabs(aU-aTwoPI)<aTolU){
-      aT2=aTF+dT;
-      if (!iFirst) {
-	aT2=aTL-dT;
-      }
-      //
-      aP2=myCurve->Value(aT2);
-      ElSLib::Parameters(aSp, aP2, aU2, aV2);
-      //
-      aU1=0.;
-      if (aU2>M_PI) {
-	aU1=aTwoPI;
-      }
-    }
-    aU=aU1;
-    aV=aV1;
-  }
-}
 //
 //=======================================================================
 //classn : ProjLib_Function
@@ -953,10 +916,10 @@ ProjLib_ComputeApprox::ProjLib_ComputeApprox
       TColStd_Array1OfReal    Knots(1,Nb+1);
       TColgp_Array1OfPnt2d    Poles(1,Nb+1);
       for ( Standard_Integer i = 1; i <= Nb+1; i++) {
-	U = U1 + (i-1)*dU;
-	Poles(i) = F.Value(U);
-	Knots(i) = i;
-	Mults(i) = 1;
+	      U = U1 + (i-1)*dU;
+	      Poles(i) = F.Value(U);
+	      Knots(i) = i;
+	      Mults(i) = 1;
       }
       Mults(1)    = 2;
       Mults(Nb+1) = 2;
@@ -992,13 +955,13 @@ ProjLib_ComputeApprox::ProjLib_ComputeApprox
       myTolerance = 0;
       Standard_Real Tol3d,Tol2d;
       for (i = 1; i <= NbCurves; i++) {
-	Fit.Error(i,Tol3d, Tol2d);
-	myTolerance = Max(myTolerance, Tol2d);
-	AppParCurves_MultiCurve MC = Fit.Value( i);       //Charge la Ieme Curve
-	TColgp_Array1OfPnt2d Poles2d( 1, MC.Degree() + 1);//Recupere les poles
-	MC.Curve(1, Poles2d);
-      
-	Conv.AddCurve(Poles2d);
+	      Fit.Error(i,Tol3d, Tol2d);
+	      myTolerance = Max(myTolerance, Tol2d);
+	      AppParCurves_MultiCurve MC = Fit.Value( i);       //Charge la Ieme Curve
+	      TColgp_Array1OfPnt2d Poles2d( 1, MC.Degree() + 1);//Recupere les poles
+	      MC.Curve(1, Poles2d);
+            
+	      Conv.AddCurve(Poles2d);
       }
     
     //mise a jour des fields de ProjLib_Approx
@@ -1009,9 +972,9 @@ ProjLib_ComputeApprox::ProjLib_ComputeApprox
 
       //7626
       if(NbPoles <= 0 || NbPoles > 100000)
-	return;
+	      return;
       if(NbKnots <= 0 || NbKnots > 100000)
-	return;
+	      return;
 
       TColgp_Array1OfPnt2d    NewPoles(1,NbPoles);
       TColStd_Array1OfReal    NewKnots(1,NbKnots);
@@ -1063,9 +1026,9 @@ ProjLib_ComputeApprox::ProjLib_ComputeApprox
     else {
       Standard_Integer NbCurves = Fit.NbMultiCurves();
       if(NbCurves != 0) {
-	Standard_Real Tol3d,Tol2d;
-	Fit.Error(NbCurves,Tol3d, Tol2d);
-	myTolerance = Tol2d;
+	      Standard_Real Tol3d,Tol2d;
+	      Fit.Error(NbCurves,Tol3d, Tol2d);
+	      myTolerance = Tol2d;
       }
     }
 
@@ -1074,72 +1037,72 @@ ProjLib_ComputeApprox::ProjLib_ComputeApprox
     gp_Pnt P3d = C->Value( UFirst );
     Standard_Real u = 0., v = 0.;
     switch (SType)
+    {
+    case GeomAbs_Plane:
       {
-      case GeomAbs_Plane:
-	{
-	  gp_Pln Plane = S->Plane();
-	  ElSLib::Parameters( Plane, P3d, u, v );
-	  break;
-	}
-      case GeomAbs_Cylinder:
-	{
-	  gp_Cylinder Cylinder = S->Cylinder();
-	  ElSLib::Parameters( Cylinder, P3d, u, v );
-	  break;
-	}
-      case GeomAbs_Cone:
-	{
-	  gp_Cone Cone = S->Cone();
-	  ElSLib::Parameters( Cone, P3d, u, v );
-	  break;
-	}
-      case GeomAbs_Sphere:
-	{
-	  gp_Sphere Sphere = S->Sphere();
-	  ElSLib::Parameters( Sphere, P3d, u, v );
-	  break;
-	}
-      case GeomAbs_Torus:
-	{
-	  gp_Torus Torus = S->Torus();
-	  ElSLib::Parameters( Torus, P3d, u, v );
-	  break;
-	}
-      default:
-	Standard_NoSuchObject::Raise("ProjLib_ComputeApprox::Value");
+        gp_Pln Plane = S->Plane();
+        ElSLib::Parameters( Plane, P3d, u, v );
+        break;
       }
+    case GeomAbs_Cylinder:
+      {
+        gp_Cylinder Cylinder = S->Cylinder();
+        ElSLib::Parameters( Cylinder, P3d, u, v );
+        break;
+      }
+    case GeomAbs_Cone:
+      {
+        gp_Cone Cone = S->Cone();
+        ElSLib::Parameters( Cone, P3d, u, v );
+        break;
+      }
+    case GeomAbs_Sphere:
+      {
+        gp_Sphere Sphere = S->Sphere();
+        ElSLib::Parameters( Sphere, P3d, u, v );
+        break;
+      }
+    case GeomAbs_Torus:
+      {
+        gp_Torus Torus = S->Torus();
+        ElSLib::Parameters( Torus, P3d, u, v );
+        break;
+      }
+    default:
+      Standard_NoSuchObject::Raise("ProjLib_ComputeApprox::Value");
+    }
     Standard_Boolean ToMirror = Standard_False;
     Standard_Real du = 0., dv = 0.;
     Standard_Integer number;
     if (F.VCouture)
-      { 
-	if (SType == GeomAbs_Sphere && Abs(u-F.myU1) > M_PI)
-	  {
-	    ToMirror = Standard_True;
-	    dv = -M_PI;
-	    v = M_PI - v;
-	  }
-	Standard_Real newV = ElCLib::InPeriod( v, F.myV1, F.myV2 );
-	number = (Standard_Integer) (Floor((newV-v)/(F.myV2-F.myV1)));
-	dv -= number*(F.myV2-F.myV1);
-      }
-    if (F.UCouture || (F.VCouture && SType == GeomAbs_Sphere))
+    { 
+      if (SType == GeomAbs_Sphere && Abs(u-F.myU1) > M_PI)
       {
-	gp_Pnt2d P2d = F.Value( UFirst );
-	number = (Standard_Integer) (Floor((P2d.X()-u)/M_PI + Epsilon(M_PI)));
-	du = -number*M_PI;
+        ToMirror = Standard_True;
+        dv = -M_PI;
+        v = M_PI - v;
       }
+      Standard_Real newV = ElCLib::InPeriod( v, F.myV1, F.myV2 );
+      number = (Standard_Integer) (Floor((newV-v)/(F.myV2-F.myV1)));
+      dv -= number*(F.myV2-F.myV1);
+    }
+    if (F.UCouture || (F.VCouture && SType == GeomAbs_Sphere))
+    {
+      gp_Pnt2d P2d = F.Value( UFirst );
+      number = (Standard_Integer) (Floor((P2d.X()-u)/M_PI + Epsilon(M_PI)));
+      du = -number*M_PI;
+    }
 
     if (!myBSpline.IsNull())
+    {
+      if (du != 0. || dv != 0.)
+        myBSpline->Translate( gp_Vec2d(du,dv) );
+      if (ToMirror)
       {
-	if (du != 0. || dv != 0.)
-	  myBSpline->Translate( gp_Vec2d(du,dv) );
-	if (ToMirror)
-	  {
-	    gp_Ax2d Axe( gp_Pnt2d(0.,0.), gp_Dir2d(1.,0.) );
-	    myBSpline->Mirror( Axe );
-	  }
+        gp_Ax2d Axe( gp_Pnt2d(0.,0.), gp_Dir2d(1.,0.) );
+        myBSpline->Mirror( Axe );
       }
+    }
   }
 }
 
