@@ -1,3 +1,7 @@
+## It's impossible to make vdump with non-default parameters (width and height) on remote PC
+puts "TODO ?OCC23813 Windows: Tcl Exception: Dumping failed!"
+puts "TODO ?OCC23813 Windows: TEST INCOMPLETE"
+
 puts "============"
 puts "OCC23813"
 puts "============"
