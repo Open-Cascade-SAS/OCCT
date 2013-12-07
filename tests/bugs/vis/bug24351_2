@@ -17,24 +17,28 @@ set vpos "above vcenter below"
 # create dimensions with different arrow orientation and fit algorithm
 # ---------------------------------------------------------------------
 
+# test forced internal arrow orientation
 vpoint  circle1_p1 0  0 30
 vpoint  circle1_p2 30 0  0
 vpoint  circle1_p3 60 0 30
 vcircle circle1 circle1_p1 circle1_p2 circle1_p3 0
 vdimension diameter name=diam1 text=3d plane=zox label=hfit flyout=0 arrows=internal circle1
 
+# test forced external arrow orientation
 vpoint  circle2_p1 100 0 30
 vpoint  circle2_p2 130 0  0
 vpoint  circle2_p3 160 0 30
 vcircle circle2 circle2_p1 circle2_p2 circle2_p3 0
 vdimension diameter name=diam2 text=3d plane=zox label=hfit flyout=0 arrows=external circle2
 
+# test that auto-fit for arrow places them externally for small geometry
 vpoint  circle3_p1 0  0 102
 vpoint  circle3_p2 22 0  80
 vpoint  circle3_p3 44 0 102
 vcircle circle3 circle3_p1 circle3_p2 circle3_p3 0
-vdimension diameter name=diam3 text=3d plane=zox label=hfit flyout=0 label=hfit arrows=fit circle3
+vdimension diameter name=diam3 text=3d plane=zox label=hcenter flyout=0 label=hfit arrows=fit circle3
 
+# test that auto-fit for text places the label externally for small geometry
 vpoint  circle4_p1 100 0 92
 vpoint  circle4_p2 112 0 80
 vpoint  circle4_p3 124 0 92

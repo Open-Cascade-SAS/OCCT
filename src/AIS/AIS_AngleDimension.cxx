@@ -28,6 +28,12 @@
 #include <ElCLib.hxx>
 #include <gce_MakeLin2d.hxx>
 #include <gce_MakeCone.hxx>
+#include <gce_MakePln.hxx>
+#include <gce_MakeCirc.hxx>
+#include <gce_MakeDir.hxx>
+#include <GC_MakeArcOfCircle.hxx>
+#include <GCPnts_UniformAbscissa.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
@@ -53,8 +59,10 @@ IMPLEMENT_STANDARD_RTTIEXT (AIS_AngleDimension, AIS_Dimension)
 
 namespace
 {
-  static const TCollection_ExtendedString THE_EMPTY_LABEL;
-  static const Standard_ExtCharacter THE_DEGREE_SYMBOL (0x00B0);
+  static const TCollection_ExtendedString THE_EMPTY_LABEL_STRING;
+  static const Standard_Real              THE_EMPTY_LABEL_WIDTH = 0.0;
+  static const Standard_ExtCharacter      THE_DEGREE_SYMBOL (0x00B0);
+  static const Standard_Real              THE_3D_TEXT_MARGIN = 0.1;
 };
 
 //=======================================================================
@@ -305,6 +313,7 @@ Standard_Boolean AIS_AngleDimension::initTwoFacesAngle ()
   TopoDS_Face aSecondFace = TopoDS::Face (mySecondShape);
   gp_Dir aFirstDir, aSecondDir;
   gp_Pln aFirstPlane, aSecondPlane;
+  gp_Pnt aTextPos;
   Handle(Geom_Surface) aFirstBasisSurf, aSecondBasisSurf;
   AIS_KindOfSurface aFirstSurfType, aSecondSurfType;
   Standard_Real aFirstOffset, aSecondOffset;
@@ -323,7 +332,7 @@ Standard_Boolean AIS_AngleDimension::initTwoFacesAngle ()
                                         GetWorkingPlane().Axis(),
                                         myValue,
                                         Standard_True,
-                                        myGeom.myTextPosition,
+                                        aTextPos,
                                         myCenter,
                                         myFirstPoint,
                                         mySecondPoint,
@@ -343,7 +352,7 @@ Standard_Boolean AIS_AngleDimension::initTwoFacesAngle ()
                                              GetWorkingPlane().Axis(),
                                              myValue,
                                              Standard_True,
-                                             myGeom.myTextPosition,
+                                             aTextPos,
                                              myCenter,
                                              myFirstPoint,
                                              mySecondPoint,
@@ -572,67 +581,81 @@ void AIS_AngleDimension::drawArcWithText (const Handle(Prs3d_Presentation)& theP
                                           const gp_Pnt& theFirstAttach,
                                           const gp_Pnt& theSecondAttach,
                                           const TCollection_ExtendedString& theText,
-                                          const AIS_DimensionDisplayMode theMode,
+                                          const Standard_Real theTextWidth,
+                                          const Standard_Integer theMode,
                                           const Standard_Integer theLabelPosition)
 {
-  gp_Pnt2d aCenter2d       = ProjLib::Project (GetWorkingPlane(), myCenter),
-           aFirstAttach2d  = ProjLib::Project (GetWorkingPlane(), theFirstAttach),
-           aSecondAttach2d = ProjLib::Project (GetWorkingPlane(), theSecondAttach);
-  gp_Lin2d anAttachLine2d = gce_MakeLin2d (aFirstAttach2d, aSecondAttach2d);
-
-  // Getting text center
-  gp_Pnt2d aTextCenterPnt = ElCLib::Value ((ElCLib::Parameter (anAttachLine2d, aFirstAttach2d) + ElCLib::Parameter (anAttachLine2d, aSecondAttach2d)) / 2., anAttachLine2d);
-  gp_Lin2d aCenterToTextCenterLin = gce_MakeLin2d (aCenter2d, aTextCenterPnt);
-
-  // Drawing circle
-  Standard_Real aRadius = theFirstAttach.Distance (myCenter);
-  gp_Circ2d aCircle (gp_Ax22d (aCenter2d, gp_Dir2d (1, 0)), aRadius);
-
-  // Getting text position in the center of arc
-  IntAna2d_AnaIntersection anInt2d (aCenterToTextCenterLin, aCircle);
-  gp_Pnt2d aTextCenterOnArc2d;
-  if (anInt2d.IsDone())
-    if (!anInt2d.IsEmpty())
-      aTextCenterOnArc2d = gp_Pnt2d (anInt2d.Point (1).Value());
-  myGeom.myTextPosition = ElCLib::To3d (GetWorkingPlane().Position().Ax2(), aTextCenterOnArc2d);
-
-  // Drawing text
-  gp_Vec aVec (theFirstAttach, theSecondAttach);
-  Standard_Real aTextWidth = drawText (thePresentation,
-                                       myIsTextReversed ? aVec.Reversed() : aVec,
-                                       theText, theMode,
-                                       theLabelPosition);
-
-  // Getting text begin and end points
-  gp_Pnt2d aTextBeginPnt = ElCLib::Value ((ElCLib::Parameter (anAttachLine2d, aFirstAttach2d) +
-                                           ElCLib::Parameter (anAttachLine2d, aSecondAttach2d) -
-                                           aTextWidth) / 2., anAttachLine2d),
-           aTextEndPnt   = ElCLib::Value (ElCLib::Parameter (anAttachLine2d,aTextBeginPnt) + aTextWidth, anAttachLine2d);
-
-
-  gp_Lin2d aCenterToTextBeginLin = gce_MakeLin2d (aCenter2d, aTextBeginPnt),
-           aCenterToTextEndLin   = gce_MakeLin2d (aCenter2d, aTextEndPnt);
-
-  // Text begin and end on the dimension arc
-  gp_Pnt2d aTextBeginOnArc2d, aTextEndOnArc2d;
-  anInt2d.Perform (aCenterToTextBeginLin, aCircle);
-  if (anInt2d.IsDone())
-    if (!anInt2d.IsEmpty())
-      aTextBeginOnArc2d = gp_Pnt2d (anInt2d.Point (1).Value());
-
-  anInt2d.Perform (aCenterToTextEndLin, aCircle);
-  if (anInt2d.IsDone())
-    if (!anInt2d.IsEmpty())
-      aTextEndOnArc2d = gp_Pnt2d (anInt2d.Point (1).Value());
-
-  gp_Pnt aTextBeginOnArc = ElCLib::To3d (GetWorkingPlane().Position().Ax2(), aTextBeginOnArc2d);
-  gp_Pnt aTextEndOnArc   = ElCLib::To3d (GetWorkingPlane().Position().Ax2(), aTextEndOnArc2d);
-
-  // Drawing arcs
-  if (theMode != AIS_DDM_Text)
+  // construct plane where the circle and the arc are located
+  gce_MakePln aConstructPlane (theFirstAttach, theSecondAttach, myCenter);
+  if (!aConstructPlane.IsDone())
   {
-    drawArc (thePresentation, theFirstAttach, aTextBeginOnArc, myCenter, aRadius, theMode);
-    drawArc (thePresentation, aTextEndOnArc, theSecondAttach, myCenter, aRadius, theMode);
+    return;
+  }
+  
+  gp_Pln aPlane = aConstructPlane.Value();
+
+  Standard_Real aRadius = theFirstAttach.Distance (myCenter);
+
+  // construct circle forming the arc
+  gce_MakeCirc aConstructCircle (myCenter, aPlane, aRadius);
+  if (!aConstructCircle.IsDone())
+  {
+    return;
+  }
+
+  gp_Circ aCircle = aConstructCircle.Value();
+
+  // compute angle parameters of arc end-points on circle
+  Standard_Real aParamBeg = ElCLib::Parameter (aCircle, theFirstAttach);
+  Standard_Real aParamEnd = ElCLib::Parameter (aCircle, theSecondAttach);
+  ElCLib::AdjustPeriodic (aParamBeg, aParamEnd,
+                          Precision::PConfusion(),
+                          aParamBeg, aParamEnd);
+
+  // middle point of arc parameter on circle
+  Standard_Real aParamMid = (aParamBeg + aParamEnd) * 0.5;
+
+  // add text graphical primitives
+  if (theMode == ComputeMode_All || theMode == ComputeMode_Text)
+  {
+    gp_Pnt aTextPos = ElCLib::Value (aParamMid, aCircle);
+    gp_Dir aTextDir = IsTextReversed()
+      ? gce_MakeDir (theSecondAttach, theFirstAttach)
+      : gce_MakeDir (theFirstAttach, theSecondAttach);
+
+    // Drawing text
+    drawText (thePresentation,
+              aTextPos,
+              aTextDir,
+              theText,
+              theLabelPosition);
+  }
+
+  if (theMode != ComputeMode_All && theMode != ComputeMode_Line)
+  {
+    return;
+  }
+
+  Handle(Prs3d_DimensionAspect) aDimensionAspect = myDrawer->DimensionAspect();
+
+  Standard_Boolean isLineBreak = aDimensionAspect->TextVerticalPosition() == Prs3d_DTVP_Center
+                              && aDimensionAspect->IsText3d();
+
+  if (isLineBreak)
+  {
+    // compute gap for label as parameteric size of sector on circle segment
+    Standard_Real aSectorOnCircle = theTextWidth / aRadius;
+  
+    gp_Pnt aTextPntBeg = ElCLib::Value (aParamMid - aSectorOnCircle * 0.5, aCircle);
+    gp_Pnt aTextPntEnd = ElCLib::Value (aParamMid + aSectorOnCircle * 0.5, aCircle);
+
+    // Drawing arcs
+    drawArc (thePresentation, theFirstAttach, aTextPntBeg, myCenter, aRadius, theMode);
+    drawArc (thePresentation, theSecondAttach, aTextPntEnd, myCenter, aRadius, theMode);
+  }
+  else
+  {
+    drawArc (thePresentation, theFirstAttach, theSecondAttach, myCenter, aRadius, theMode);
   }
 }
 
@@ -645,48 +668,74 @@ void AIS_AngleDimension::drawArc (const Handle(Prs3d_Presentation)& thePresentat
                                   const gp_Pnt& theSecondAttach,
                                   const gp_Pnt& theCenter,
                                   const Standard_Real theRadius,
-                                  const AIS_DimensionDisplayMode theMode)
+                                  const Standard_Integer theMode)
 {
-  Handle(SelectMgr_EntityOwner) anEmptyOwner;
-
-  gp_Vec aCenterToFirstVec (theCenter,theFirstAttach);
-  gp_Vec aCenterToSecondVec (theCenter,theSecondAttach);
-  gp_Dir aCenterToFirstDir (aCenterToFirstVec);
-  gp_Dir aPlaneNormal = GetWorkingPlane().Axis().Direction();
-  gp_Dir aCenterToSecondDir = aPlaneNormal.Crossed (aCenterToFirstDir);
-
-  const Standard_Real anAngle = aCenterToFirstVec.Angle(aCenterToSecondVec);
-  const Standard_Integer aPointsOnArc = Max (4 , Standard_Integer (50. * anAngle / M_PI));
-  const Standard_Real anAngleStep = anAngle / (aPointsOnArc - 1);
-  TColgp_Array1OfPnt aPointArray (0,aPointsOnArc-1);
-  Handle(Graphic3d_ArrayOfPolylines) aPrimSegments = new Graphic3d_ArrayOfPolylines (aPointsOnArc,2);
-  aPrimSegments->AddVertex (theFirstAttach);
-  aPointArray.SetValue(0, theFirstAttach);
-  gp_Pnt aPoint = theFirstAttach;
-  gp_Vec aVector;
-
-  for (Standard_Integer anI = 1; anI < aPointsOnArc - 1; ++anI)
+  // construct plane where the circle and the arc are located
+  gce_MakePln aConstructPlane (theFirstAttach, theSecondAttach, theCenter);
+  if (!aConstructPlane.IsDone())
   {
-    aVector = (gp_Vec(aCenterToFirstDir) * Cos ( (anI - 1) * anAngleStep) + gp_Vec(aCenterToSecondDir) * Sin ( (anI - 1) * anAngleStep)) * theRadius;
-    aPoint = theCenter.Translated(aVector);
-    aPrimSegments->AddVertex(aPoint);
-    aPointArray.SetValue (anI,aPoint);
+    return;
   }
-  aPrimSegments->AddVertex (theSecondAttach);
-  aPointArray.SetValue (aPointsOnArc - 1,theSecondAttach);
 
-  // Fill sensitive list
-  myGeom.mySensitiveSegments.Append(new Select3D_SensitiveCurve(anEmptyOwner,aPointArray));
+  gp_Pln aPlane = aConstructPlane.Value();
 
-  // Fill display presentation
-  if (!myDrawer->DimensionAspect()->IsText3d() && theMode == AIS_DDM_All)
+  // construct circle forming the arc
+  gce_MakeCirc aConstructCircle (theCenter, aPlane, theRadius);
+  if (!aConstructCircle.IsDone())
+  {
+    return;
+  }
+
+  gp_Circ aCircle = aConstructCircle.Value();
+
+  // construct the arc
+  GC_MakeArcOfCircle aConstructArc (aCircle, theFirstAttach, theSecondAttach, Standard_True);
+  if (!aConstructArc.IsDone())
+  {
+    return;
+  }
+
+  // generate points with specified deflection
+  const Handle(Geom_TrimmedCurve)& anArcCurve = aConstructArc.Value();
+  
+  GeomAdaptor_Curve anArcAdaptor (anArcCurve, anArcCurve->FirstParameter(), anArcCurve->LastParameter());
+
+  // compute number of discretization elements in old-fanshioned way
+  gp_Vec aCenterToFirstVec  (theCenter, theFirstAttach);
+  gp_Vec aCenterToSecondVec (theCenter, theSecondAttach);
+  const Standard_Real anAngle = aCenterToFirstVec.Angle (aCenterToSecondVec);
+  const Standard_Integer aNbPoints = Max (4, Standard_Integer (50.0 * anAngle / M_PI));
+
+  GCPnts_UniformAbscissa aMakePnts (anArcAdaptor, aNbPoints);
+  if (!aMakePnts.IsDone())
+  {
+    return;
+  }
+
+  // init data arrays for graphical and selection primitives
+  Handle(Graphic3d_ArrayOfPolylines) aPrimSegments = new Graphic3d_ArrayOfPolylines (aNbPoints);
+
+  SelectionGeometry::Curve& aSensitiveCurve = mySelectionGeom.NewCurve();
+
+  // load data into arrays
+  for (Standard_Integer aPntIt = 1; aPntIt <= aMakePnts.NbPoints(); ++aPntIt)
+  {
+    gp_Pnt aPnt = anArcAdaptor.Value (aMakePnts.Parameter (aPntIt));
+
+    aPrimSegments->AddVertex (aPnt);
+
+    aSensitiveCurve.Append (aPnt);
+  }
+
+  // add display presentation
+  if (!myDrawer->DimensionAspect()->IsText3d() && theMode == ComputeMode_All)
   {
     Prs3d_Root::CurrentGroup (thePresentation)->SetStencilTestOptions (Standard_True);
   }
   Handle(Graphic3d_AspectLine3d) aDimensionLineStyle = myDrawer->DimensionAspect()->LineAspect()->Aspect();
   Prs3d_Root::CurrentGroup (thePresentation)->SetPrimitivesAspect (aDimensionLineStyle);
   Prs3d_Root::CurrentGroup (thePresentation)->AddPrimitiveArray (aPrimSegments);
-  if (!myDrawer->DimensionAspect()->IsText3d() && theMode == AIS_DDM_All)
+  if (!myDrawer->DimensionAspect()->IsText3d() && theMode == ComputeMode_All)
   {
     Prs3d_Root::CurrentGroup (thePresentation)->SetStencilTestOptions (Standard_False);
   }
@@ -701,7 +750,7 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
                                   const Standard_Integer theMode)
 {
   thePresentation->Clear();
-  myGeom.mySensitiveSegments.Clear();
+  mySelectionGeom.Clear (theMode);
   Handle(SelectMgr_EntityOwner) anEmptyOwner;
 
   if (!myIsInitialized)
@@ -752,6 +801,12 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
   Standard_Real aTextLength;
   getTextWidthAndString (aTextLength, aValueString);
 
+  // add margins to label width
+  if (aDimensionAspect->IsText3d())
+  {
+    aTextLength += aDimensionAspect->TextAspect()->Height() * THE_3D_TEXT_MARGIN * 2.0;
+  }
+
   if (!myIsWorkingPlaneCustom)
   {
     countDefaultPlane();
@@ -770,7 +825,13 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
     {
       gp_Vec anAttachVector (aFirstAttach, aSecondAttach);
       Standard_Real aDimensionWidth = anAttachVector.Magnitude();
-      Standard_Real anArrowsWidth   = anArrowLength * 2.0;
+
+      // add margin to ensure a small tail between text and arrow
+      Standard_Real anArrowMargin   = aDimensionAspect->IsText3d() 
+                                    ? aDimensionAspect->TextAspect()->Height() * THE_3D_TEXT_MARGIN
+                                    : 0.0;
+
+      Standard_Real anArrowsWidth   = (anArrowLength + anArrowMargin) * 2.0;
 
       isArrowsExternal = aDimensionWidth < aTextLength + anArrowsWidth;
       break;
@@ -850,31 +911,35 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
                          aFirstAttach,
                          aSecondAttach,
                          aValueString,
-                         (AIS_DimensionDisplayMode)theMode,
+                         aTextLength,
+                         theMode,
                          aLabelPosition);
         break;
       }
 
-      gp_Vec aTextDir (aFirstArrowEnd, aSecondArrowBegin);
-      myGeom.myTextPosition = getCenterOnArc (aFirstArrowEnd, aSecondArrowBegin);
-
-      drawText (thePresentation,
-                myIsTextReversed ? aTextDir.Reversed() : aTextDir,
-                aValueString,
-                (AIS_DimensionDisplayMode)theMode,
-                aLabelPosition);
-
-      if (theMode == AIS_DDM_Text)
+      // compute text primitives
+      if (theMode == ComputeMode_All || theMode == ComputeMode_Text)
       {
-        break;
+        gp_Vec aDimensionDir (aFirstArrowEnd, aSecondArrowBegin);
+        gp_Pnt aTextPos = getCenterOnArc (aFirstArrowEnd, aSecondArrowBegin);
+        gp_Dir aTextDir = myIsTextReversed ? aDimensionDir.Reversed() : aDimensionDir;
+
+        drawText (thePresentation,
+                  aTextPos,
+                  aTextDir,
+                  aValueString,
+                  aLabelPosition);
       }
 
-      drawArc (thePresentation,
-               isArrowsExternal ? aFirstAttach : aFirstArrowEnd,
-               isArrowsExternal ? aSecondAttach : aSecondArrowEnd,
-               myCenter,
-               Abs (GetFlyout()),
-               (AIS_DimensionDisplayMode)theMode);
+      if (theMode == ComputeMode_All || theMode == ComputeMode_Line)
+      {
+        drawArc (thePresentation,
+                 isArrowsExternal ? aFirstAttach : aFirstArrowEnd,
+                 isArrowsExternal ? aSecondAttach : aSecondArrowEnd,
+                 myCenter,
+                 Abs (GetFlyout()),
+                 theMode);
+      }
     }
     break;
 
@@ -885,7 +950,8 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
                      isArrowsExternal ? aFirstArrowEnd : aFirstAttach,
                      aFirstExtensionDir,
                      aValueString,
-                     (AIS_DimensionDisplayMode)theMode,
+                     aTextLength,
+                     theMode,
                      aLabelPosition);
     }
     break;
@@ -897,14 +963,15 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
                      isArrowsExternal ? aSecondArrowEnd : aSecondAttach,
                      aSecondExtensionDir,
                      aValueString,
-                     (AIS_DimensionDisplayMode)theMode,
+                     aTextLength,
+                     theMode,
                      aLabelPosition);
     }
     break;
   }
 
   // dimension arc without text
-  if (theMode != AIS_DDM_Text && aHPosition != LabelPosition_HCenter)
+  if ((theMode == ComputeMode_All || theMode == ComputeMode_Line) && aHPosition != LabelPosition_HCenter)
   {
     Prs3d_Root::NewGroup (thePresentation);
 
@@ -913,11 +980,11 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
              isArrowsExternal ? aSecondAttach : aSecondArrowEnd,
              myCenter,
              Abs(GetFlyout ()),
-             (AIS_DimensionDisplayMode)theMode);
+             theMode);
   }
 
   // arrows and arrow extensions
-  if (theMode != AIS_DDM_Text)
+  if (theMode == ComputeMode_All || theMode == ComputeMode_Line)
   {
     Prs3d_Root::NewGroup (thePresentation);
 
@@ -925,7 +992,7 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
     drawArrow (thePresentation, aSecondArrowBegin, gp_Dir (aSecondArrowVec));
   }
 
-  if (theMode != AIS_DDM_Text && isArrowsExternal)
+  if ((theMode == ComputeMode_All || theMode == ComputeMode_Line) && isArrowsExternal)
   {
     Prs3d_Root::NewGroup (thePresentation);
 
@@ -935,8 +1002,9 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
                      anExtensionSize,
                      aFirstArrowEnd,
                      aFirstExtensionDir,
-                     THE_EMPTY_LABEL,
-                     (AIS_DimensionDisplayMode)theMode,
+                     THE_EMPTY_LABEL_STRING,
+                     THE_EMPTY_LABEL_WIDTH,
+                     theMode,
                      LabelPosition_None);
     }
 
@@ -946,14 +1014,15 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
                      anExtensionSize,
                      aSecondArrowEnd,
                      aSecondExtensionDir,
-                     THE_EMPTY_LABEL,
-                     (AIS_DimensionDisplayMode)theMode,
+                     THE_EMPTY_LABEL_STRING,
+                     THE_EMPTY_LABEL_WIDTH,
+                     theMode,
                      LabelPosition_None);
     }
   }
 
   // flyouts
-  if (theMode == AIS_DDM_All && myIsFlyoutLines)
+  if (theMode == ComputeMode_All && myIsFlyoutLines)
   {
     Prs3d_Root::NewGroup (thePresentation);
 
@@ -976,17 +1045,19 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
 //purpose  : computes selection for flyouts
 //=======================================================================
 void AIS_AngleDimension::computeFlyoutSelection (const Handle(SelectMgr_Selection)& theSelection,
-                                                const Handle(AIS_DimensionOwner)& theOwner)
+                                                 const Handle(SelectMgr_EntityOwner)& theOwner)
 {
- if (!myIsFlyoutLines)
- {
-   return;
- }
+  if (!myIsFlyoutLines)
+  {
+    return;
+  }
 
- gp_Pnt aFirstAttach = myCenter.Translated (gp_Vec (myCenter, myFirstPoint).Normalized() * GetFlyout());
- gp_Pnt aSecondAttach = myCenter.Translated (gp_Vec (myCenter, mySecondPoint).Normalized() * GetFlyout());
- Handle(Select3D_SensitiveGroup) aSensitiveEntity = new Select3D_SensitiveGroup (theOwner);
- aSensitiveEntity->Add (new Select3D_SensitiveSegment (theOwner, myCenter, aFirstAttach));
- aSensitiveEntity->Add (new Select3D_SensitiveSegment (theOwner, myCenter, aSecondAttach));
- theSelection->Add (aSensitiveEntity);
+  gp_Pnt aFirstAttach  = myCenter.Translated (gp_Vec (myCenter, myFirstPoint).Normalized()  * GetFlyout());
+  gp_Pnt aSecondAttach = myCenter.Translated (gp_Vec (myCenter, mySecondPoint).Normalized() * GetFlyout());
+
+  Handle(Select3D_SensitiveGroup) aSensitiveEntity = new Select3D_SensitiveGroup (theOwner);
+  aSensitiveEntity->Add (new Select3D_SensitiveSegment (theOwner, myCenter, aFirstAttach));
+  aSensitiveEntity->Add (new Select3D_SensitiveSegment (theOwner, myCenter, aSecondAttach));
+
+  theSelection->Add (aSensitiveEntity);
 }

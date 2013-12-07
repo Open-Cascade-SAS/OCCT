@@ -42,7 +42,8 @@ public:
   //! Constructs a diameter display object defined by the <br>
   //! circle <theCircle>
   Standard_EXPORT  AIS_DiameterDimension(const gp_Circ& theCircle);
-  //! Consctructor that allows to set a attach point <br>
+
+  //! Constructor that allows to set a attach point <br>
   //! on the circle <theCircle> where to attach dimension
   Standard_EXPORT  AIS_DiameterDimension (const gp_Circ& theCircle,
                                           const gp_Pnt& theAttachPoint);

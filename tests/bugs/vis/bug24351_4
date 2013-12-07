@@ -17,25 +17,29 @@ set vpos "above vcenter below"
 # create dimensions with different arrow orientation and fit algorithm
 # ---------------------------------------------------------------------
 
+# test forced internal arrow orientation
 vpoint  angle1_p1  0 0 40
 vpoint  angle1_p2  0 0  0
 vpoint  angle1_p3 40 0  0
 vdimension angle name=ang1 text=3d plane=zox label=hfit flyout=40.0 arrows=internal angle1_p1 angle1_p2 angle1_p3
 
+# test forced external arrow orientation
 vpoint  angle2_p1  80 0 40
 vpoint  angle2_p2  80 0  0
 vpoint  angle2_p3 120 0  0
 vdimension angle name=ang2 text=3d plane=zox label=hfit flyout=40.0 arrows=external angle2_p1 angle2_p2 angle2_p3
 
-vpoint  angle3_p1  0 0 115
+# test that auto-fit for arrow places them externally for small geometry
+vpoint  angle3_p1  0 0 100
 vpoint  angle3_p2  0 0  80
-vpoint  angle3_p3 35 0  80
-vdimension angle name=ang3 text=3d plane=zox label=hfit flyout=35.0 arrows=fit angle3_p1 angle3_p2 angle3_p3
+vpoint  angle3_p3 20 0  80
+vdimension angle name=ang3 text=3d plane=zox label=hcenter flyout=20.0 arrows=fit angle3_p1 angle3_p2 angle3_p3
 
-vpoint  angle4_p1  80 0 100
-vpoint  angle4_p2  80 0  80
-vpoint  angle4_p3 100 0  80
-vdimension angle name=ang4 text=3d plane=zox label=hfit flyout=20.0 arrows=fit angle4_p1 angle4_p2 angle4_p3
+# test that auto-fit for text places the label externally for small geometry
+vpoint  angle4_p1  85 0 100
+vpoint  angle4_p2  85 0  85
+vpoint  angle4_p3 100 0  85
+vdimension angle name=ang4 text=3d plane=zox label=hfit flyout=15.0 arrows=fit angle4_p1 angle4_p2 angle4_p3
 
 vdisplay ang1 ang2 ang3 ang4
 vfit

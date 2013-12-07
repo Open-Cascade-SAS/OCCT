@@ -1,0 +1,251 @@
+puts "============"
+puts "CR24389"
+puts "============"
+puts ""
+#######################################################################
+#  Invalid hilight of AIS dimension line in local selection
+#######################################################################
+
+# ----------------------------------------------#
+#  Check highlight of length dimension elements #
+# ----------------------------------------------#
+
+vinit View1
+vtop
+
+set anImage1 $imagedir/${casename}_1.png
+set anImage2 $imagedir/${casename}_2.png
+set anImage3 $imagedir/${casename}_3.png
+
+# length
+
+vpoint len_p1  0 0 0
+vpoint len_p2 40 0 0
+verase len_p1 len_p2
+
+vdimension length name=len1 text=3d plane=xoy flyout=20 arrows=external label=left len_p1 len_p2
+vdimension length name=len2 text=3d plane=xoy flyout=-20 arrows=external label=right len_p1 len_p2
+
+vpoint len_p3  0 20 0
+vpoint len_p4 40 20 0
+verase len_p3 len_p4
+
+vdimension length name=len3 text=3d plane=xoy flyout=20 arrows=internal label=hcenter len_p3 len_p4
+vdisplay len1 len2 len3
+
+# diameter
+
+vpoint diam_p1  90 0   0
+vpoint diam_p2 120 0   0
+vpoint diam_p3 105 -15 0
+verase diam_p1 diam_p2 diam_p3
+vcircle diam_c1 diam_p1 diam_p2 diam_p3 0
+vdimension diameter name=diam1 text=3d plane=xoy arrows=external label=left diam_c1
+
+vpoint diam_p4  90 40 0
+vpoint diam_p5 120 40 0
+vpoint diam_p6 105 25 0
+verase diam_p4 diam_p5 diam_p6
+vcircle diam_c2 diam_p4 diam_p5 diam_p6 0
+vdimension diameter name=diam2 text=3d plane=xoy arrows=external label=right diam_c2
+
+vpoint diam_p7  80 -40 0
+vpoint diam_p8 120 -40 0
+vpoint diam_p9 100 -60 0
+verase diam_p7 diam_p8 diam_p9
+vcircle diam_c3 diam_p7 diam_p8 diam_p9 0
+vdimension diameter name=diam3 text=3d plane=xoy arrows=external label=hcenter flyout=30 diam_c3
+vdisplay diam1 diam2 diam3
+
+# radius
+
+vpoint rad_p1 140  -5 0
+vpoint rad_p2 180 -45 0
+vpoint rad_p3 220  -5 0
+verase rad_p1 rad_p2 rad_p3
+vcircle rad_c1 rad_p1 rad_p2 rad_p3 0
+vdimension radius name=rad1 text=3d plane=xoy arrows=internal label=hcenter flyout=0 rad_c1
+
+vpoint rad_p4 180 -70 0
+vpoint rad_p5 160 -90 0
+vpoint rad_p6 140 -70 0
+verase rad_p4 rad_p5 rad_p6
+vcircle rad_c2 rad_p4 rad_p5 rad_p6 0
+vdimension radius name=rad2 text=3d plane=xoy arrows=external label=left rad_c2
+vdisplay rad1 rad2
+
+# angles
+
+vpoint ang_p1 0  -50 0
+vpoint ang_p2 25 -75 0
+vpoint ang_p3 0  -100 0
+verase ang_p1 ang_p2 ang_p3
+vdimension angle name=ang1 text=3d plane=xoy arrows=internal label=hcenter flyout=35 ang_p1 ang_p2 ang_p3
+
+vpoint ang_p4   0 -120 0
+vpoint ang_p5  30 -80  0
+vpoint ang_p6  30 -120 0
+verase ang_p4 ang_p5 ang_p6
+vdimension angle name=ang2 text=3d plane=xoy arrows=external label=left flyout=55 ang_p4 ang_p5 ang_p6
+
+vpoint ang_p8  55 -120 0
+vpoint ang_p9  55 -80  0
+vpoint ang_p10 95 -120 0
+verase ang_p8 ang_p9 ang_p10
+vdimension angle name=ang3 text=3d plane=xoy arrows=external label=right flyout=55 ang_p8 ang_p9 ang_p10
+
+vdisplay ang1 ang2 ang3
+vpoint fit1 -75 0 0
+vpoint fit2 235 0 0
+vfit
+
+# ----------------------------------------------------------------------------- #
+#               Verify picking in neutral and local selections                  #
+# ----------------------------------------------------------------------------- #
+
+proc check_picking { pick check name } {
+  for {set i 0} {$i < [llength $pick]} {incr i} {
+  
+    set pick_x [lindex [lindex $pick $i] 0]
+    set pick_y [lindex [lindex $pick $i] 1]
+    set check_x [lindex $check 0]
+    set check_y [lindex $check 1]
+    
+    vmoveto $pick_x $pick_y
+    set res [checkcolor $check_x $check_y 0 1 1]
+    
+    if { $res != 1 } {
+      puts "Error : Highlighting of $name at pick coordinates ($pick_x, $pick_y) check coordinates ($check_x, $check_y)"
+    }
+  }
+}
+
+proc check_cross_picking { pick object name } {
+
+  vselmode 0 0
+
+  for {set i 1} {$i < 3} {incr i} {
+    
+    vselmode $object $i 1
+
+    for {set j 1} {$j < 3} {incr j} {
+
+      set pick_idx_i [expr "[llength $pick] - 2 + $i - 1"]
+      set pick_idx_j [expr "[llength $pick] - 2 + $j - 1"]
+
+      set pick_x [lindex [lindex $pick $pick_idx_i] 0]
+      set pick_y [lindex [lindex $pick $pick_idx_i] 1]
+      set check_x [lindex [lindex $pick $pick_idx_j] 0]
+      set check_y [lindex [lindex $pick $pick_idx_j] 1]
+      
+      vmoveto $pick_x $pick_y
+      
+      if {$i == $j} {
+        set res [checkcolor $check_x $check_y 0 1 1]
+        if { $res != 1 } {
+          puts "Error : No local hilighting of $name at pick coordinates ($pick_x, $pick_y) check coordinates ($check_x, $check_y)"
+        }
+      } else {
+        set res [checkcolor $check_x $check_y 0 0 0]
+        if { $res != 1 } {
+          puts "Error : Unwanted hilighting of $name at pick coordinates ($pick_x, $pick_y) check coordinates ($check_x, $check_y)"
+        }
+      }
+    }
+    vselmode $object $i 0
+  }
+  vselmode 0 0
+}
+
+# pick coord { [flyout], dimension line, text }
+
+# check sensitives "len1"
+set pick_coord { { 99 133 } { 106 124 } { 76 131 } }
+set check_coord { 125 124 }
+check_picking $pick_coord $check_coord "length dimension (len1)"
+check_cross_picking $pick_coord len1 "length dimension (len1)"
+
+# check sensitives "len2"
+set pick_coord { { 99 167 } { 127 176 } { 185 183 } }
+set check_coord { 112 176 }
+check_picking $pick_coord $check_coord "length dimension (len2)"
+check_cross_picking $pick_coord len2 "length dimension (len2)"
+
+# check sensitives "len3"
+set pick_coord { { 99 114 } { 110 98 } { 131 105 } }
+set check_coord { 152 109 }
+check_picking $pick_coord $check_coord "length dimension (len3)"
+check_cross_picking $pick_coord len3 "length dimension (len3)"
+
+# check sensitives "diam1"
+set pick_coord { { 247 150 } { 194 157 } }
+set check_coord { 236 150 }
+check_picking $pick_coord $check_coord "diameter dimension (diam1)"
+check_cross_picking $pick_coord diam1 "diameter dimension (diam1)"
+
+# check sensitives "diam2"
+set pick_coord { { 221 98 } { 305 105 } }
+set check_coord { 238 98 }
+check_picking $pick_coord $check_coord "diameter dimension (diam2)"
+check_cross_picking $pick_coord diam2 "diameter dimension (diam2)"
+
+# check sensitives "diam3"
+set pick_coord { { 204 225 } { 268 242 } { 243 249 } }
+set check_coord { 204 233 }
+check_picking $pick_coord $check_coord "diameter dimension (diam3)"
+check_cross_picking $pick_coord diam3 "diameter dimension (diam3)"
+
+# check sensitives "rad1"
+set pick_coord { { 287 157 } { 326 165 } }
+set check_coord { 287 157 }
+check_picking $pick_coord $check_coord "radius dimension (rad1)"
+check_cross_picking $pick_coord rad1 "radius dimension (rad1)"
+
+# check sensitives "rad2"
+set pick_coord { { 320 242 } { 383 249 } }
+set check_coord { 340 242 }
+check_picking $pick_coord $check_coord "radius dimension (rad2)"
+check_cross_picking $pick_coord rad2 "radius dimension (rad2)"
+
+# check sensitives "ang1"
+set pick_coord { { 112 268 } { 96 220 } { 80 250 } }
+set check_coord { 96 220 }
+check_picking $pick_coord $check_coord "angle dimension (ang1)"
+check_cross_picking $pick_coord ang1 "angle dimension (ang1)"
+
+# check sensitives "ang2"
+set pick_coord { { 139 301 } { 152 327 } { 65 297 } }
+set check_coord { 108 320 }
+check_picking $pick_coord $check_coord "angle dimension (ang2)"
+check_cross_picking $pick_coord ang2 "angle dimension (ang2)"
+
+# check sensitives "ang3"
+set pick_coord { { 171 304 } { 199 321 } { 252 285 } }
+set check_coord { 191 324 }
+check_picking $pick_coord $check_coord "angle dimension (ang3)"
+check_cross_picking $pick_coord ang3 "angle dimension (ang3)"
+
+# --------------------------------------------------- #
+#               Dump selected images                  #
+# --------------------------------------------------- #
+
+set xmin -500
+set xmax  500
+set ymin -500
+set ymax  500
+set shift 0
+
+vselmode 0 0
+vselect $xmin $ymin $xmax $ymax $shift
+vdump $anImage1
+
+vselect 0 0 0 0 0
+vselmode 1 1
+vselect $xmin $ymin $xmax $ymax $shift
+vdump $anImage2
+
+vselect 0 0 0 0 0
+vselmode 0 0
+vselmode 2 1
+vselect $xmin $ymin $xmax $ymax $shift
+vdump $anImage3

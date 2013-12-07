@@ -35,26 +35,24 @@ class DimensionOwner from AIS inherits EntityOwner from SelectMgr
 
 uses
 
-    SelectableObject      from SelectMgr,
-    PresentationManager   from PrsMgr,
-    PresentationManager3d from PrsMgr,
-    NameOfColor           from Quantity,
-    DimensionDisplayMode  from AIS
+    SelectableObject       from SelectMgr,
+    PresentationManager    from PrsMgr,
+    PresentationManager3d  from PrsMgr,
+    NameOfColor            from Quantity,
+    DimensionSelectionMode from AIS
 
 is
 
     Create (theSelObject  : SelectableObject;
-            theDisplayMode    : DimensionDisplayMode from AIS;
+            theSelMode    : DimensionSelectionMode from AIS;
             thePriority   : Integer from Standard = 0)
     returns mutable DimensionOwner from AIS;
       ---Purpose:
       -- Initializes the dimension owner, theSO, and attributes it
       -- the priority, thePriority.
 
-    SetDisplayMode (me : mutable; theMode : DimensionDisplayMode from AIS);
-
-    DisplayMode (me)
-    returns DimensionDisplayMode from AIS;
+    SelectionMode (me)
+    returns DimensionSelectionMode from AIS;
 
     HilightWithColor (me       : mutable;
                       thePM    : PresentationManager3d from PrsMgr;
@@ -77,8 +75,9 @@ is
               thePM   : PresentationManager from PrsMgr;
               theMode : Integer  from  Standard  =0) is redefined virtual;
     ---Purpose: Removes highlighting from the selected part of dimension.
+
 fields
 
-    myDisplayMode : DimensionDisplayMode from AIS;
+    mySelectionMode : DimensionSelectionMode from AIS;
 
 end DimensionOwner;

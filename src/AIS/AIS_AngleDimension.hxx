@@ -101,13 +101,14 @@ protected:
                                  const gp_Pnt& theSecondAttach,
                                  const gp_Pnt& theCenter,
                                  const Standard_Real theRadius,
-                                 const AIS_DimensionDisplayMode theMode);
+                                 const Standard_Integer theMode);
 
   Standard_EXPORT  void drawArcWithText (const Handle(Prs3d_Presentation)& thePresentation,
                                          const gp_Pnt& theFirstAttach,
                                          const gp_Pnt& theSecondAttach,
                                          const TCollection_ExtendedString& theText,
-                                         const AIS_DimensionDisplayMode theMode,
+                                         const Standard_Real theTextWidth,
+                                         const Standard_Integer theMode,
                                          const Standard_Integer theLabelPosition);
 
   Standard_EXPORT  virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& thePM,
@@ -134,7 +135,7 @@ protected:
   
  //! Fills sensitive entity for flyouts and adds it to the selection
  Standard_EXPORT virtual void computeFlyoutSelection (const Handle(SelectMgr_Selection)& theSelection,
-                                                      const Handle(AIS_DimensionOwner)& theOwner);
+                                                      const Handle(SelectMgr_EntityOwner)& theOwner);
 
 protected:
 

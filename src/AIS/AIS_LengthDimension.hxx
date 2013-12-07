@@ -60,7 +60,7 @@ class AIS_LengthDimension;
 
 DEFINE_STANDARD_HANDLE(AIS_LengthDimension,AIS_Dimension)
 
-//! A dimention  to display lengths. <br>
+//! A dimension  to display lengths. <br>
 //! These can be lengths along a face or edge, or <br>
 //! between two faces or two edges.
 class AIS_LengthDimension : public AIS_Dimension

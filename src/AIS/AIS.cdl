@@ -321,8 +321,8 @@ is
     enumeration DisplaySpecialSymbol is DSS_No, DSS_Before, DSS_After;
     ---Purpose: Specifies dimension special symbol display options
 
-    enumeration DimensionDisplayMode is DDM_All, DDM_Line, DDM_Text;
-    ---Purpose: Specifies dimension display modes for advanced highlighting and selection.
+    enumeration DimensionSelectionMode is DSM_All, DSM_Line, DSM_Text;
+    ---Purpose: Specifies dimension selection modes.
 
     class Triangulation;
 

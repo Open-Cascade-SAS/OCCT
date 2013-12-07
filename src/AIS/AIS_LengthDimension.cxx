@@ -183,29 +183,29 @@ Standard_Boolean AIS_LengthDimension::initTwoEdgesLength (const TopoDS_Edge & th
   
   // Offset to avoid confusion Edge and Dimension
   gp_Vec anOffset(theDirAttach);
-  anOffset = anOffset*myDrawer->DimensionAspect()->ArrowAspect()->Length()*(-10.);
-  aCurPos.Translate(anOffset);
-  myGeom.myTextPosition = aCurPos;
+  anOffset = anOffset * myDrawer->DimensionAspect()->ArrowAspect()->Length()*(-10.);
+  aCurPos.Translate (anOffset);
+
   // Find attachment points
   if (!isFirstInfinite)
   {
-    if (myGeom.myTextPosition.Distance(aPoint11) > myGeom.myTextPosition.Distance(aPoint12))
+    if (aCurPos.Distance (aPoint11) > aCurPos.Distance (aPoint12))
       myFirstPoint = aPoint12;
     else
       myFirstPoint = aPoint11;
   }
   else
-    myFirstPoint = ElCLib::Value(ElCLib::Parameter(aLin1,myGeom.myTextPosition), aLin1);
+    myFirstPoint = ElCLib::Value (ElCLib::Parameter (aLin1, aCurPos), aLin1);
 
   if (!isSecondInfinite)
   {
-    if (myGeom.myTextPosition.Distance(aPoint21) > myGeom.myTextPosition.Distance(aPoint22))
+    if (aCurPos.Distance (aPoint21) > aCurPos.Distance (aPoint22))
       mySecondPoint = aPoint22;
     else
       mySecondPoint = aPoint21;
   }
   else
-    mySecondPoint = ElCLib::Value(ElCLib::Parameter(aLin2, myGeom.myTextPosition), aLin2);
+    mySecondPoint = ElCLib::Value (ElCLib::Parameter (aLin2, aCurPos), aLin2);
 
   return Standard_True;
 }
@@ -240,13 +240,13 @@ Standard_Boolean AIS_LengthDimension::initEdgeVertexLength (const TopoDS_Edge & 
 
   if (!isInfinite)
   {
-    if (myGeom.myTextPosition.Distance(anEdgePoint1) > myGeom.myTextPosition.Distance(anEdgePoint2))
+    if (aCurPos.Distance (anEdgePoint1) > aCurPos.Distance (anEdgePoint2))
       mySecondPoint = anEdgePoint2;
     else
       mySecondPoint = anEdgePoint1;
   }
   else
-    mySecondPoint = ElCLib::Value(ElCLib::Parameter(aLin,myGeom.myTextPosition),aLin);
+    mySecondPoint = ElCLib::Value (ElCLib::Parameter (aLin, aCurPos), aLin);
   return Standard_True;
 }
 
@@ -326,8 +326,8 @@ Standard_Boolean AIS_LengthDimension::initEdgeFaceLength (const TopoDS_Edge& the
   else theDirAttach = gp::DZ ();
 
   gp_Vec aVector (theDirAttach);
-  aVector.Multiply (1.5 * myValue); 
-  myGeom.myTextPosition = mySecondPoint.Translated (aVector);
+  aVector.Multiply (1.5 * myValue);
+
   return Standard_True;
 }
 
@@ -395,9 +395,10 @@ Standard_Boolean AIS_LengthDimension::initTwoShapesPoints (const TopoDS_Shape& t
         }
         else // curvilinear faces
         {
-          AIS::ComputeLengthBetweenCurvilinearFaces (aFirstFace, aSecondFace, aFirstSurface, 
-                                                     aSecondSurface,Standard_True, myValue,
-                                                     myGeom.myTextPosition,myFirstPoint,mySecondPoint,aDirAttach);
+          AIS::ComputeLengthBetweenCurvilinearFaces (aFirstFace, aSecondFace, aFirstSurface,
+                                                     aSecondSurface, Standard_True, myValue,
+                                                     mySelectionGeom.TextPos, myFirstPoint,
+                                                     mySecondPoint, aDirAttach);
           isSuccess = Standard_True;
         }
       }
@@ -493,6 +494,9 @@ void AIS_LengthDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /
                                    const Handle(Prs3d_Presentation)& thePresentation,
                                    const Standard_Integer theMode)
 {
+  thePresentation->Clear();
+  mySelectionGeom.Clear (theMode);
+
   // Initialization of points, if they are not set
   if (!myIsInitialized)
   {
@@ -516,9 +520,7 @@ void AIS_LengthDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /
     return;
   }
 
-  thePresentation->Clear();
-
-  drawLinearDimension (thePresentation, (AIS_DimensionDisplayMode)theMode);
+  drawLinearDimension (thePresentation, theMode);
 }
 
 //=======================================================================

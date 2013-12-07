@@ -19,7 +19,7 @@
 #ifndef _AIS_Dimension_Headerfile
 #define _AIS_Dimension_Headerfile
 
-#include <AIS_DimensionDisplayMode.hxx>
+#include <AIS_DimensionSelectionMode.hxx>
 #include <AIS_DimensionOwner.hxx>
 #include <AIS_DisplaySpecialSymbol.hxx>
 #include <AIS_InteractiveObject.hxx>
@@ -38,9 +38,11 @@
 #include <SelectMgr_EntityOwner.hxx>
 #include <Standard.hxx>
 #include <TCollection_ExtendedString.hxx>
-#include <TColgp_HArray1OfPnt.hxx>
+#include <TColgp_HSequenceOfPnt.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
+#include <NCollection_Sequence.hxx>
+#include <NCollection_Handle.hxx>
 
 DEFINE_STANDARD_HANDLE(AIS_Dimension, AIS_InteractiveObject)
 
@@ -63,6 +65,18 @@ protected:
     LabelPosition_Below   = 0x20,
     LabelPosition_VCenter = 0x40,
     LabelPosition_VMask  = LabelPosition_Above | LabelPosition_Below | LabelPosition_VCenter
+  };
+
+public:
+
+  //! Specifies supported presentation compute modes.
+  //! Used to compute only parts of presentation for
+  //! advanced highlighting.
+  enum ComputeMode
+  {
+    ComputeMode_All  = 0, //!< "0" is reserved as neutral mode
+    ComputeMode_Line = 1, //!< corresponds to selection mode
+    ComputeMode_Text = 2  //!< corresponds to selection mode
   };
 
 public:
@@ -136,7 +150,7 @@ public:
   //! shows if Units are to be displayed along with dimension value
   Standard_EXPORT  Standard_Boolean IsUnitsDisplayed() const;
 
-  //! sets to display units along with the dimansion value or no
+  //! sets to display units along with the dimension value or no
   Standard_EXPORT  void MakeUnitsDisplayed (const Standard_Boolean toDisplayUnits);
 
   //! returns the current type of units
@@ -218,31 +232,33 @@ protected:
 
   //! Performs drawing of 2d or 3d text on the working plane
   //! @return text width relative to the dimension working plane. For 2d text this value will be zero.
-  Standard_EXPORT Standard_Real drawText (const Handle(Prs3d_Presentation)& thePresentation,
-                                          const gp_Dir& theTextDir,
-                                          const TCollection_ExtendedString theText,
-                                          const AIS_DimensionDisplayMode theMode,
-                                          const Standard_Integer theLabelPosition);
+  Standard_EXPORT void drawText (const Handle(Prs3d_Presentation)& thePresentation,
+                                 const gp_Pnt& theTextPos,
+                                 const gp_Dir& theTextDir,
+                                 const TCollection_ExtendedString& theText,
+                                 const Standard_Integer theLabelPosition);
 
   //! Performs computing of dimension linear extension with text
   //! @param thePresentation [in] the presentation to fill with graphical primitives.
   //! @param theExtensionSize [in] the size of extension line.
   //! @param theExtensionStart [in] the point where extension line connects to dimension.
   //! @param theExtensionDir [in] the direction of extension line.
-  //! @param theValueString [in] the string with value.
+  //! @param theLabelString [in] the string with value.
+  //! @param theLabelWidth [in] the geometrical width computed for value string.
   //! @param theMode [in] the display mode.
   //! @param theLabelPosition [in] position flags for the text label.
   Standard_EXPORT void drawExtension (const Handle(Prs3d_Presentation)& thePresentation,
                                       const Standard_Real theExtensionSize,
                                       const gp_Pnt& theExtensionStart,
                                       const gp_Dir& theExtensionDir,
-                                      const TCollection_ExtendedString& theValueString,
-                                      const AIS_DimensionDisplayMode theMode,
+                                      const TCollection_ExtendedString& theLabelString,
+                                      const Standard_Real theLabelWidth,
+                                      const Standard_Integer theMode,
                                       const Standard_Integer theLabelPosition);
 
   //! Performs computing of linear dimension (for length, diameter, radius and so on)
   Standard_EXPORT void drawLinearDimension (const Handle(Prs3d_Presentation)& thePresentation,
-                                            const AIS_DimensionDisplayMode theMode,
+                                            const Standard_Integer theMode,
                                             const Standard_Boolean isOneSideDimension = Standard_False);
 
   //! If it's possible computes circle from planar face
@@ -261,15 +277,28 @@ protected:
 
   Standard_EXPORT void setComputed (Standard_Boolean isComputed);
 
-  Standard_EXPORT gp_Pnt textPosition() const;
-
-  Standard_EXPORT void setTextPosition (const gp_Pnt thePosition);
-
   Standard_EXPORT void resetGeom();
 
   //! Fills sensitive entity for flyouts and adds it to the selection.
   Standard_EXPORT virtual void computeFlyoutSelection (const Handle(SelectMgr_Selection)& theSelection,
-                                                       const Handle(AIS_DimensionOwner)& theOwner);
+                                                       const Handle(SelectMgr_EntityOwner)& theOwner);
+
+  //! Produce points for triangular arrow face.
+  //! @param thePeakPnt [in] the arrow peak position.
+  //! @param theDirection [in] the arrow direction.
+  //! @param thePlane [in] the face plane.
+  //! @param theArrowLength [in] the length of arrow.
+  //! @param theArrowAngle [in] the angle of arrow.
+  //! @param thePeakPnt [in] the arrow peak point.
+  //! @param theSidePnt1 [in] the first side point.
+  //! @param theSidePnt2 [in] the second side point.
+  Standard_EXPORT void PointsForArrow (const gp_Pnt& thePeakPnt,
+                                       const gp_Dir& theDirection,
+                                       const gp_Dir& thePlane,
+                                       const Standard_Real theArrowLength,
+                                       const Standard_Real theArrowAngle,
+                                       gp_Pnt& theSidePnt1,
+                                       gp_Pnt& theSidePnt2);
 
 protected: //! @name Working plane properties
 
@@ -307,34 +336,74 @@ protected: // !@name Units properties
   //! Special symbol display options
   AIS_DisplaySpecialSymbol myDisplaySpecialSymbol;
 
-protected: //! @name Geometry properties
+protected: //! @name Selection geometry
 
-  //! Geometry of dimensions, needs for advanced selection
-  //! Geometry is computed in Compute() method and is used 
-  //! in ComputeSelection() method.
-  //! If it is computed successfully, myIsComputed = Standard_True.
-  //! to check computing result use IsComputed() method
-  struct DimensionGeom
+  //! Selection geometry of dimension presentation. The structure is filled with data
+  //! during compute of presentation, then this data is used to generate selection
+  //! sensitives when computing selection.
+  struct SelectionGeometry
   {
-    //! Text position
-    gp_Pnt myTextPosition;
+    //! Arrows are represented by directed triangles.
+    struct Arrow
+    {
+      gp_Pnt Position;
+      gp_Dir Direction;
+    };
+    typedef NCollection_Sequence<gp_Pnt> Curve;
+    typedef NCollection_Handle<Curve>    HCurve;
+    typedef NCollection_Handle<Arrow>    HArrow;
+    typedef NCollection_Sequence<HCurve> SeqOfCurves;
+    typedef NCollection_Sequence<HArrow> SeqOfArrows;
 
-    //! Text bounding box, stored for advanced selection
-    Bnd_Box myTextBndBox;
+    gp_Pnt           TextPos;            //!< Center of text label.
+    gp_Dir           TextDir;            //!< Direction of text label.
+    Standard_Real    TextWidth;          //!< Width of text label.
+    Standard_Real    TextHeight;         //!< Height of text label.
+    SeqOfCurves      DimensionLine;      //!< Sequence of points for composing the segments of dimension line.
+    SeqOfArrows      Arrows;             //!< Sequence of arrow geometries.
 
-    //! Sensitive point tolerance for 2d text selection
-    Standard_Real mySelToleranceForText2d;
+  public:
 
-    //! For advanced dimension line selection
-    Select3D_ListOfSensitive mySensitiveSegments;
+    //! Clear geometry of sensitives for the specified compute mode.
+    //! @param theMode [in] the compute mode to clear.
+    void Clear (const Standard_Integer theMode)
+    {
+      if (theMode == ComputeMode_All || theMode == ComputeMode_Line)
+      {
+        DimensionLine.Clear();
+        Arrows.Clear();
+      }
 
-    //! Shows if attachment points were computed
-    Standard_Boolean myIsComputed;
+      if (theMode == ComputeMode_All || theMode == ComputeMode_Text)
+      {
+        TextPos    = gp::Origin();
+        TextDir    = gp::DX();
+        TextWidth  = 0.0;
+        TextHeight = 0.0;
+      }
+    }
 
-  public: 
+    //! Add new curve entry and return the referenece to populate it.
+    Curve& NewCurve()
+    {
+      DimensionLine.Append( new Curve );
+      HCurve& aLastCurve = DimensionLine.ChangeLast();
+      return *aLastCurve;
+    }
 
-    DimensionGeom () : myIsComputed (Standard_False) {}
-  };
+    //! Add new arrow entry and return the referenece to populate it.
+    Arrow& NewArrow()
+    {
+      Arrows.Append( new Arrow );
+      HArrow& aLastArrow = Arrows.ChangeLast();
+      return *aLastArrow;
+    }
+  } mySelectionGeom;
+
+  Standard_Real mySelToleranceForText2d; //!< Sensitive point tolerance for 2d text selection.
+  Standard_Boolean myIsComputed;         //!< Shows if the presentation and selection was computed.
+
+protected:
 
   //! Shows if text is inverted
   Standard_Boolean myIsTextReversed;
@@ -364,13 +433,6 @@ protected: //! @name Geometry properties
   //! The direction vector is counting using the working plane.
   //! myFlyout value defined the size of flyout.
   Standard_Real myFlyout;
-
-  //! Geometry of dimensions, needs for advanced selection
-  //! Geometry is computed in Compute() method and is used 
-  //! in ComputeSelection() method.
-  //! If it is computed successfully, myIsComputed = Standard_True.
-  //! to check computing result use IsComputed() method
-  DimensionGeom myGeom;
 
 private:
 

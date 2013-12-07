@@ -108,6 +108,7 @@ void AIS_DiameterDimension::Compute (const Handle(PrsMgr_PresentationManager3d)&
                                      const Standard_Integer theMode)
 {
   thePresentation->Clear();
+  mySelectionGeom.Clear (theMode);
 
   Handle(Prs3d_DimensionAspect) aDimensionAspect = myDrawer->DimensionAspect();
   Prs3d_Root::CurrentGroup (thePresentation)->SetPrimitivesAspect (aDimensionAspect->LineAspect()->Aspect());
@@ -126,7 +127,7 @@ void AIS_DiameterDimension::Compute (const Handle(PrsMgr_PresentationManager3d)&
    countDefaultPlane();
   }
 
-  drawLinearDimension (thePresentation, (AIS_DimensionDisplayMode)theMode);
+  drawLinearDimension (thePresentation, theMode);
 }
 
 //=======================================================================
