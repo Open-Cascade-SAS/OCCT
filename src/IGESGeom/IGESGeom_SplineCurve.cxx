@@ -46,7 +46,7 @@ IGESGeom_SplineCurve::IGESGeom_SplineCurve ()    {  }
   if (allBreakPoints->Lower() != 1 || allXvalues->Lower() != 1 ||
       allYvalues->Lower()     != 1 || allZvalues->Lower() != 1 ||
       allXPolynomials->LowerCol() != 1 || allXPolynomials->LowerRow() != 1 ||
-      allYPolynomials->LowerCol() != 1 || allXPolynomials->LowerRow() != 1 ||
+      allYPolynomials->LowerCol() != 1 || allYPolynomials->LowerRow() != 1 ||
       allZPolynomials->LowerCol() != 1 || allZPolynomials->LowerRow() != 1)
     Standard_DimensionMismatch::Raise
   ("IGESGeom_SplineCurve : Lower Indices of HArrays in Init");
