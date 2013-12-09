@@ -91,8 +91,8 @@ static
                                                 const TopoDS_Face& aF)
 {
   Standard_Boolean bIsUPeriodic, bIsVPeriodic, bIsLeft = Standard_False;
-  Standard_Real aTol, a, b, anUPeriod, anVPeriod, aT, anU, dU=1.e-7, anU1,
-                anV, dV=1.e-7, anV1;
+  Standard_Real aTol, a, b, anUPeriod, anVPeriod, aT, anU, dU/*=1.e-7*/, anU1,
+                anV, dV/*=1.e-7*/, anV1;
   Standard_Real aScPr;
   gp_Pnt2d aP2D;
   gp_Vec2d aVec2D;
@@ -158,6 +158,10 @@ static
   //
   anU1=anU;
   anV1=anV;
+  //
+  GeomAdaptor_Surface aGAS(aS);
+  dU = aGAS.UResolution(aTol);
+  dV = aGAS.VResolution(aTol);
   //
   if (anUPeriod > 0.){
     if (fabs (anU) < dU) {
