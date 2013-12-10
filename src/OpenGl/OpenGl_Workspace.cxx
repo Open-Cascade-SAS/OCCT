@@ -17,7 +17,6 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-
 #ifdef HAVE_CONFIG_H
   #include <config.h>
 #endif
@@ -48,7 +47,8 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Workspace,OpenGl_Window)
 
 namespace
 {
-  static const TEL_COLOUR myDefaultHighlightColor = { { 1.F, 1.F, 1.F, 1.F } };
+  static const TEL_COLOUR  THE_WHITE_COLOR = { { 1.0f, 1.0f, 1.0f, 1.0f } };
+  static const OpenGl_Vec4 THE_BLACK_COLOR      (0.0f, 0.0f, 0.0f, 1.0f);
 
   static const OpenGl_AspectLine myDefaultAspectLine;
   static const OpenGl_AspectFace myDefaultAspectFace;
@@ -71,6 +71,72 @@ namespace
 };
 
 // =======================================================================
+// function : Init
+// purpose  :
+// =======================================================================
+void OpenGl_Material::Init (const OPENGL_SURF_PROP& theProp)
+{
+  // ambient component
+  if (theProp.color_mask & OPENGL_AMBIENT_MASK)
+  {
+    const float* aSrcAmb = theProp.isphysic ? theProp.ambcol.rgb : theProp.matcol.rgb;
+    Ambient = OpenGl_Vec4 (aSrcAmb[0] * theProp.amb,
+                           aSrcAmb[1] * theProp.amb,
+                           aSrcAmb[2] * theProp.amb,
+                           1.0f);
+  }
+  else
+  {
+    Ambient = THE_BLACK_COLOR;
+  }
+
+  // diffusion component
+  if (theProp.color_mask & OPENGL_DIFFUSE_MASK)
+  {
+    const float* aSrcDif = theProp.isphysic ? theProp.difcol.rgb : theProp.matcol.rgb;
+    Diffuse = OpenGl_Vec4 (aSrcDif[0] * theProp.diff,
+                           aSrcDif[1] * theProp.diff,
+                           aSrcDif[2] * theProp.diff,
+                           1.0f);
+  }
+  else
+  {
+    Diffuse = THE_BLACK_COLOR;
+  }
+
+  // specular component
+  if (theProp.color_mask & OPENGL_SPECULAR_MASK)
+  {
+    const float* aSrcSpe = theProp.isphysic ? theProp.speccol.rgb : THE_WHITE_COLOR.rgb;
+    Specular = OpenGl_Vec4 (aSrcSpe[0] * theProp.spec,
+                            aSrcSpe[1] * theProp.spec,
+                            aSrcSpe[2] * theProp.spec,
+                            1.0f);
+  }
+  else
+  {
+    Specular = THE_BLACK_COLOR;
+  }
+
+  // emission component
+  if (theProp.color_mask & OPENGL_EMISSIVE_MASK)
+  {
+    const float* aSrcEms = theProp.isphysic ? theProp.emscol.rgb : theProp.matcol.rgb;
+    Emission = OpenGl_Vec4 (aSrcEms[0] * theProp.emsv,
+                            aSrcEms[1] * theProp.emsv,
+                            aSrcEms[2] * theProp.emsv,
+                            1.0f);
+  }
+  else
+  {
+    Emission = THE_BLACK_COLOR;
+  }
+
+  ChangeShine()        = theProp.shine;
+  ChangeTransparency() = theProp.trans;
+}
+
+// =======================================================================
 // function : OpenGl_Workspace
 // purpose  :
 // =======================================================================
@@ -81,7 +147,7 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_Display)& theDisplay,
                                     const Handle(OpenGl_Context)& theShareCtx)
 : OpenGl_Window (theDisplay, theCWindow, theGContext, theCaps, theShareCtx),
   NamedStatus (0),
-  HighlightColor (&myDefaultHighlightColor),
+  HighlightColor (&THE_WHITE_COLOR),
   //
   myIsTransientOpen (Standard_False),
   myRetainMode (Standard_False),
@@ -195,7 +261,7 @@ void OpenGl_Workspace::UseTransparency (const Standard_Boolean theFlag)
 void OpenGl_Workspace::ResetAppliedAspect()
 {
   NamedStatus           = !myTextureBound.IsNull() ? OPENGL_NS_TEXTURE : 0;
-  HighlightColor        = &myDefaultHighlightColor;
+  HighlightColor        = &THE_WHITE_COLOR;
   AspectLine_set        = &myDefaultAspectLine;
   AspectLine_applied    = NULL;
   AspectFace_set        = &myDefaultAspectFace;

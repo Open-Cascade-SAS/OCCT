@@ -21,17 +21,17 @@ uniform vec4 occFrontMaterial[5];
 uniform vec4 occBackMaterial[5];
 
 // front material properties accessors
-vec4  occFrontMaterial_Emission(void)     { return occFrontMaterial[0]; }
-vec4  occFrontMaterial_Ambient(void)      { return occFrontMaterial[1]; }
-vec4  occFrontMaterial_Diffuse(void)      { return occFrontMaterial[2]; }
-vec4  occFrontMaterial_Specular(void)     { return occFrontMaterial[3]; }
+vec4  occFrontMaterial_Ambient(void)      { return occFrontMaterial[0]; }
+vec4  occFrontMaterial_Diffuse(void)      { return occFrontMaterial[1]; }
+vec4  occFrontMaterial_Specular(void)     { return occFrontMaterial[2]; }
+vec4  occFrontMaterial_Emission(void)     { return occFrontMaterial[3]; }
 float occFrontMaterial_Shininess(void)    { return occFrontMaterial[4].x; }
 float occFrontMaterial_Transparency(void) { return occFrontMaterial[4].y; }
 
 // back material properties accessors
-vec4  occBackMaterial_Emission(void)      { return occBackMaterial[0]; }
-vec4  occBackMaterial_Ambient(void)       { return occBackMaterial[1]; }
-vec4  occBackMaterial_Diffuse(void)       { return occBackMaterial[2]; }
-vec4  occBackMaterial_Specular(void)      { return occBackMaterial[3]; }
+vec4  occBackMaterial_Ambient(void)       { return occBackMaterial[0]; }
+vec4  occBackMaterial_Diffuse(void)       { return occBackMaterial[1]; }
+vec4  occBackMaterial_Specular(void)      { return occBackMaterial[2]; }
+vec4  occBackMaterial_Emission(void)      { return occBackMaterial[3]; }
 float occBackMaterial_Shininess(void)     { return occBackMaterial[4].x; }
 float occBackMaterial_Transparency(void)  { return occBackMaterial[4].y; }

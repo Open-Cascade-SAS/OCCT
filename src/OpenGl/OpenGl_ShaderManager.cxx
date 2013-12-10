@@ -27,6 +27,7 @@
 #include <OpenGl_Context.hxx>
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_ShaderProgram.hxx>
+#include <OpenGl_Workspace.hxx>
 
 IMPLEMENT_STANDARD_HANDLE (OpenGl_ShaderManager, Standard_Transient)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_ShaderManager, Standard_Transient)
@@ -260,7 +261,7 @@ public:
   OpenGl_Vec4 Parameters;
 
   //! Returns packed (serialized) representation of light source properties
-  const OpenGl_Vec4* Packed()  { return reinterpret_cast<OpenGl_Vec4*> (this); }
+  const OpenGl_Vec4* Packed() const { return reinterpret_cast<const OpenGl_Vec4*> (this); }
   static Standard_Integer NbOfVec4() { return 4; }
 
 };
@@ -274,7 +275,7 @@ public:
   Standard_Integer IsHeadlight;
 
   //! Returns packed (serialized) representation of light source type
-  const OpenGl_Vec2i* Packed() { return reinterpret_cast<OpenGl_Vec2i*> (this); }
+  const OpenGl_Vec2i* Packed() const { return reinterpret_cast<const OpenGl_Vec2i*> (this); }
   static Standard_Integer NbOfVec2i() { return 1; }
 
 };
@@ -621,8 +622,7 @@ static void PushAspectFace (const Handle(OpenGl_Context)&       theCtx,
                           theProgram->GetStateLocation (OpenGl_OCCT_DISTINGUISH_MODE),
                           theAspect->DistinguishingMode());
 
-  const float aDefSpecCol[4] = {1.0f, 1.0f, 1.0f, 1.0f};
-  OpenGl_Vec4 aParams[5];
+  OpenGl_Material aParams;
   for (Standard_Integer anIndex = 0; anIndex < 2; ++anIndex)
   {
     const GLint aLoc = theProgram->GetStateLocation (anIndex == 0
@@ -633,35 +633,9 @@ static void PushAspectFace (const Handle(OpenGl_Context)&       theCtx,
       continue;
     }
 
-    const OPENGL_SURF_PROP& aProps = (anIndex == 0) ? theAspect->IntFront() : theAspect->IntBack();
-    const float* aSrcEms = aProps.isphysic ? aProps.emscol.rgb : aProps.matcol.rgb;
-    const OpenGl_Vec4 anEmission (aSrcEms[0] * aProps.emsv,
-                                  aSrcEms[1] * aProps.emsv,
-                                  aSrcEms[2] * aProps.emsv,
-                                  1.0f);
-    const float* aSrcAmb = aProps.isphysic ? aProps.ambcol.rgb : aProps.matcol.rgb;
-    const OpenGl_Vec4 anAmbient  (aSrcAmb[0] * aProps.amb,
-                                  aSrcAmb[1] * aProps.amb,
-                                  aSrcAmb[2] * aProps.amb,
-                                  1.0f);
-    const float* aSrcDif = aProps.isphysic ? aProps.difcol.rgb : aProps.matcol.rgb;
-    const OpenGl_Vec4 aDiffuse   (aSrcDif[0] * aProps.diff,
-                                  aSrcDif[1] * aProps.diff,
-                                  aSrcDif[2] * aProps.diff,
-                                  1.0f);
-    const float* aSrcSpe = aProps.isphysic ? aProps.speccol.rgb : aDefSpecCol;
-    const OpenGl_Vec4 aSpecular  (aSrcSpe[0] * aProps.spec,
-                                  aSrcSpe[1] * aProps.spec,
-                                  aSrcSpe[2] * aProps.spec,
-                                  1.0f);
-
-    aParams[0] = anEmission;
-    aParams[1] = anAmbient;
-    aParams[2] = aDiffuse;
-    aParams[3] = aSpecular;
-    aParams[4].x() = aProps.shine;
-    aParams[4].y() = aProps.trans;
-    theProgram->SetUniform (theCtx, aLoc, 5, aParams);
+    aParams.Init (anIndex == 0 ? theAspect->IntFront() : theAspect->IntBack());
+    theProgram->SetUniform (theCtx, aLoc, OpenGl_Material::NbOfVec4(),
+                            aParams.Packed());
   }
 }
 

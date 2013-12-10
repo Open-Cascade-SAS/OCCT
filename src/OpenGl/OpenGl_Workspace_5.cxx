@@ -71,7 +71,7 @@ static void TelUpdatePolygonOffsets( const TEL_POFFSET_PARAM *pdata )
 
 /*----------------------------------------------------------------------*/
 
-void OpenGl_Workspace::UpdateMaterial( const int flag )
+void OpenGl_Workspace::updateMaterial (const int theFlag)
 {
   // Case of hidden line
   if (AspectFace_set->InteriorStyle() == Aspect_IS_HIDDENLINE)
@@ -85,306 +85,123 @@ void OpenGl_Workspace::UpdateMaterial( const int flag )
     return;
   }
 
-  const OPENGL_SURF_PROP *prop = NULL;
-  GLenum face = 0;
-  if ( flag == TEL_FRONT_MATERIAL )
+  const OPENGL_SURF_PROP* aProps = &AspectFace_set->IntFront();
+  GLenum aFace = GL_FRONT_AND_BACK;
+  if (theFlag == TEL_BACK_MATERIAL)
   {
-    prop = &AspectFace_set->IntFront();
-    face = GL_FRONT_AND_BACK;
+    aFace  = GL_BACK;
+    aProps = &AspectFace_set->IntBack();
+  }
+  else if (AspectFace_set->DistinguishingMode() == TOn
+        && !(NamedStatus & OPENGL_NS_RESMAT))
+  {
+    aFace = GL_FRONT;
+  }
+
+  myMatTmp.Init (*aProps);
+
+  // handling transparency
+  if (NamedStatus & OPENGL_NS_2NDPASSDO)
+  {
+    // second pass
+    myMatTmp.Diffuse.a() = aProps->env_reflexion;
   }
   else
   {
-    prop = &AspectFace_set->IntBack();
-    face = GL_BACK;
-  }
-
-  // Handling transparency
-  if ( (NamedStatus & OPENGL_NS_2NDPASSDO) == 0 )
-  {
-    if ( myUseTransparency && prop->trans != 1.0F )
+    if (aProps->env_reflexion != 0.0f)
     {
-      // Render transparent
+      // if the material reflects the environment scene, the second pass is needed
+      NamedStatus |= OPENGL_NS_2NDPASSNEED;
+    }
+
+    if (myUseTransparency && aProps->trans != 1.0f)
+    {
+      // render transparent
+      myMatTmp.Diffuse.a() = aProps->trans;
       glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-      glEnable (GL_BLEND);
+      glEnable    (GL_BLEND);
       glDepthMask (GL_FALSE);
     }
     else
     {
-      // Render opaque
-      if ( (NamedStatus & OPENGL_NS_ANTIALIASING) == 0 )
+      // render opaque
+      if ((NamedStatus & OPENGL_NS_ANTIALIASING) == 0)
       {
         glBlendFunc (GL_ONE, GL_ZERO);
-        glDisable (GL_BLEND);
+        glDisable   (GL_BLEND);
       }
       glDepthMask (GL_TRUE);
     }
   }
 
-  // Obtaining reflection mode flags to update GL material properties
-  const unsigned int aReflectionMode = prop->color_mask;
-
-  // Do not update material properties in case of zero reflection mode, 
-  // because GL lighting will be disabled by OpenGl_PrimitiveArray::DrawArray()
-  // anyway.
-  if ( !aReflectionMode ) return;
-
-  static float  mAmb[4];
-  static float  mDiff[4];
-  static float  mSpec[4];
-  static float  mEmsv[4];
-  static float  mShin;
-
-  static const float defspeccol[4] = { 1.F, 1.F, 1.F, 1.F };
-
-  // Reset material
-  if ( NamedStatus & OPENGL_NS_RESMAT )
+  // do not update material properties in case of zero reflection mode,
+  // because GL lighting will be disabled by OpenGl_PrimitiveArray::DrawArray() anyway.
+  if (aProps->color_mask == 0)
   {
-    // Ambient component
-    if( aReflectionMode & OPENGL_AMBIENT_MASK )
-    {
-      const float *c = prop->isphysic? prop->ambcol.rgb : prop->matcol.rgb;
-
-      mAmb[0] = prop->amb * c[0];
-      mAmb[1] = prop->amb * c[1];
-      mAmb[2] = prop->amb * c[2];
-    }
-    else
-    {
-      mAmb[0] = 0.F;
-      mAmb[1] = 0.F;
-      mAmb[2] = 0.F;
-    }
-    mAmb[3] = 1.F;
-
-    // Diffusion component
-    if( aReflectionMode & OPENGL_DIFFUSE_MASK )
-    {
-      const float *c = prop->isphysic? prop->difcol.rgb : prop->matcol.rgb;
-
-      mDiff[0] = prop->diff * c[0];
-      mDiff[1] = prop->diff * c[1];
-      mDiff[2] = prop->diff * c[2];
-    }
-    else
-    {
-      mDiff[0] = 0.F;
-      mDiff[1] = 0.F;
-      mDiff[2] = 0.F;
-    }
-    mDiff[3] = 1.F;
-
-    if (NamedStatus & OPENGL_NS_2NDPASSDO)
-    {
-      mDiff[3] = prop->env_reflexion;
-    }
-    else
-    {
-      if (myUseTransparency) mDiff[3] = prop->trans;
-      // If the material reflects the environment scene, the second pass is needed
-      if (prop->env_reflexion != 0.0) NamedStatus |= OPENGL_NS_2NDPASSNEED;
-    }
-
-    // Specular component
-    if( aReflectionMode & OPENGL_SPECULAR_MASK )
-    {
-      const float *c = prop->isphysic? prop->speccol.rgb : defspeccol;
-
-      mSpec[0] = prop->spec * c[0];
-      mSpec[1] = prop->spec * c[1];
-      mSpec[2] = prop->spec * c[2];
-    }
-    else {
-      mSpec[0] = 0.F;
-      mSpec[1] = 0.F;
-      mSpec[2] = 0.F;
-    }
-    mSpec[3] = 1.F;
-
-    // Emissive component
-    if( aReflectionMode & OPENGL_EMISSIVE_MASK )
-    {
-      const float *c = prop->isphysic? prop->emscol.rgb : prop->matcol.rgb;
-
-      mEmsv[0] = prop->emsv * c[0];
-      mEmsv[1] = prop->emsv * c[1];
-      mEmsv[2] = prop->emsv * c[2];
-    }
-    else {
-      mEmsv[0] = 0.F;
-      mEmsv[1] = 0.F;
-      mEmsv[2] = 0.F;
-    }
-    mEmsv[3] = 1.F;
-
-    /* Coeficient de brillance */
-    mShin = prop->shine;
-
-    glMaterialfv(face, GL_AMBIENT, mAmb );
-    glMaterialfv(face, GL_DIFFUSE, mDiff );
-    glMaterialfv(face, GL_SPECULAR, mSpec);
-    glMaterialfv(face, GL_EMISSION, mEmsv);
-    glMaterialf(face, GL_SHININESS, mShin);
-
-    NamedStatus &= ~OPENGL_NS_RESMAT;
+    return;
   }
 
-  // Set Material Optimize
-  else
+  // reset material
+  if (NamedStatus & OPENGL_NS_RESMAT)
   {
-    // Ambient component
-    if( aReflectionMode & OPENGL_AMBIENT_MASK )
+    glMaterialfv (aFace, GL_AMBIENT,   myMatTmp.Ambient.GetData());
+    glMaterialfv (aFace, GL_DIFFUSE,   myMatTmp.Diffuse.GetData());
+    glMaterialfv (aFace, GL_SPECULAR,  myMatTmp.Specular.GetData());
+    glMaterialfv (aFace, GL_EMISSION,  myMatTmp.Emission.GetData());
+    glMaterialf  (aFace, GL_SHININESS, myMatTmp.Shine());
+
+    if (theFlag == TEL_FRONT_MATERIAL)
     {
-      const float *c = prop->isphysic? prop->ambcol.rgb : prop->matcol.rgb;
-
-      if (mAmb[0] != prop->amb * c[0] ||
-          mAmb[1] != prop->amb * c[1] ||
-          mAmb[2] != prop->amb * c[2] )
-      {
-        mAmb[0] = prop->amb * c[0];
-        mAmb[1] = prop->amb * c[1];
-        mAmb[2] = prop->amb * c[2];
-        mAmb[3] = 1.F;
-
-        glMaterialfv(face, GL_AMBIENT, mAmb);
-      }
+      myMatFront = myMatTmp;
+      myMatBack  = myMatTmp;
     }
     else
     {
-      if ( mAmb[0] != 0.F || mAmb[1] != 0.F || mAmb[2] != 0.F )
-      {
-        mAmb[0] = 0.F;
-        mAmb[1] = 0.F;
-        mAmb[2] = 0.F;
-        mAmb[3] = 1.F;
-
-        glMaterialfv(face, GL_AMBIENT, mAmb);
-      }
+      myMatBack = myMatTmp;
     }
 
-    // Diffusion component
-    if( aReflectionMode & OPENGL_DIFFUSE_MASK )
-    {
-      const float *c = prop->isphysic? prop->difcol.rgb : prop->matcol.rgb;
+    NamedStatus &= ~OPENGL_NS_RESMAT;
+    return;
+  }
 
-      if (mDiff[0] != prop->diff * c[0] ||
-          mDiff[1] != prop->diff * c[1] ||
-          mDiff[2] != prop->diff * c[2] ||
-          mDiff[3] != ((NamedStatus & OPENGL_NS_2NDPASSDO)? prop->env_reflexion : (myUseTransparency? prop->trans : 1.0F)))
-      {
-        mDiff[0] = prop->diff * c[0];
-        mDiff[1] = prop->diff * c[1];
-        mDiff[2] = prop->diff * c[2];
-        mDiff[3] = 1.F;
+  // reduce updates
+  OpenGl_Material& anOld = (theFlag == TEL_FRONT_MATERIAL)
+                         ? myMatFront
+                         : myMatBack;
 
-        if (NamedStatus & OPENGL_NS_2NDPASSDO)
-        {
-          mDiff[3] = prop->env_reflexion;
-        }
-        else
-        {
-          if (myUseTransparency) mDiff[3] = prop->trans;
-          // If the material reflects the environment scene, the second pass is needed
-          if (prop->env_reflexion != 0.0) NamedStatus |= OPENGL_NS_2NDPASSNEED;
-        }
-
-        glMaterialfv(face, GL_DIFFUSE, mDiff );
-      }
-    }
-    else
-    {
-      Tfloat newDiff3 = 1.F;
-
-      if (NamedStatus & OPENGL_NS_2NDPASSDO)
-      {
-        newDiff3 = prop->env_reflexion;
-      }
-      else
-      {
-        if (myUseTransparency) newDiff3 = prop->trans;
-        // If the material reflects the environment scene, the second pass is needed
-        if (prop->env_reflexion != 0.0) NamedStatus |= OPENGL_NS_2NDPASSNEED;
-      }
-
-      /* OCC19915: Even if diffuse reflectance is disabled,
-      still trying to update the current transparency if it
-      differs from the previous value  */
-      if ( mDiff[0] != 0.F || mDiff[1] != 0.F || mDiff[2] != 0.F || fabs(mDiff[3] - newDiff3) > 0.01F )
-      {
-        mDiff[0] = 0.F;
-        mDiff[1] = 0.F;
-        mDiff[2] = 0.F;
-        mDiff[3] = newDiff3;
-
-        glMaterialfv(face, GL_DIFFUSE, mDiff);
-      }
-    }
-
-    // Specular component
-    if( aReflectionMode & OPENGL_SPECULAR_MASK )
-    {
-      const float *c = prop->isphysic? prop->speccol.rgb : defspeccol;
-
-      if (mSpec[0] != prop->spec * c[0] ||
-          mSpec[1] != prop->spec * c[1] ||
-          mSpec[2] != prop->spec * c[2])
-      {
-        mSpec[0] = prop->spec * c[0];
-        mSpec[1] = prop->spec * c[1];
-        mSpec[2] = prop->spec * c[2];
-        mSpec[3] = 1.F;
-
-        glMaterialfv(face, GL_SPECULAR, mSpec);
-      }
-    }
-    else
-    {
-      if ( mSpec[0] != 0.F || mSpec[1] != 0.F || mSpec[2] != 0.F )
-      {
-        mSpec[0] = 0.F;
-        mSpec[1] = 0.F;
-        mSpec[2] = 0.F;
-        mSpec[3] = 1.F;
-
-        glMaterialfv(face, GL_SPECULAR, mSpec);
-      }
-    }
-
-    // Emissive component
-    if( aReflectionMode & OPENGL_EMISSIVE_MASK )
-    {
-      const float *c = prop->isphysic? prop->emscol.rgb : prop->matcol.rgb;
-
-      if (mEmsv[0] != prop->emsv * c[0] ||
-          mEmsv[1] != prop->emsv * c[1] ||
-          mEmsv[2] != prop->emsv * c[2])
-      {
-        mEmsv[0] = prop->emsv * c[0];
-        mEmsv[1] = prop->emsv * c[1];
-        mEmsv[2] = prop->emsv * c[2];
-        mEmsv[3] = 1.F;
-
-        glMaterialfv(face, GL_EMISSION, mEmsv);
-      }
-    }
-    else
-    {
-      if ( mEmsv[0] != 0.F || mEmsv[1] != 0.F || mEmsv[2] != 0.F )
-      {
-        mEmsv[0] = 0.F;
-        mEmsv[1] = 0.F;
-        mEmsv[2] = 0.F;
-        mEmsv[3] = 1.F;
-
-        glMaterialfv(face, GL_EMISSION, mEmsv);
-      }
-    }
-
-    // Shining coefficient
-    if( mShin != prop->shine )
-    {
-      mShin = prop->shine;
-      glMaterialf(face, GL_SHININESS, mShin);
-    }
+  if (myMatTmp.Ambient.r() != anOld.Ambient.r()
+   || myMatTmp.Ambient.g() != anOld.Ambient.g()
+   || myMatTmp.Ambient.b() != anOld.Ambient.b())
+  {
+    glMaterialfv (aFace, GL_AMBIENT, myMatTmp.Ambient.GetData());
+  }
+  if (myMatTmp.Diffuse.r() != anOld.Diffuse.r()
+   || myMatTmp.Diffuse.g() != anOld.Diffuse.g()
+   || myMatTmp.Diffuse.b() != anOld.Diffuse.b()
+   || fabs (myMatTmp.Diffuse.a() - anOld.Diffuse.a()) > 0.01f)
+  {
+    glMaterialfv (aFace, GL_DIFFUSE, myMatTmp.Diffuse.GetData());
+  }
+  if (myMatTmp.Specular.r() != anOld.Specular.r()
+   || myMatTmp.Specular.g() != anOld.Specular.g()
+   || myMatTmp.Specular.b() != anOld.Specular.b())
+  {
+    glMaterialfv (aFace, GL_SPECULAR, myMatTmp.Specular.GetData());
+  }
+  if (myMatTmp.Emission.r() != anOld.Emission.r()
+   || myMatTmp.Emission.g() != anOld.Emission.g()
+   || myMatTmp.Emission.b() != anOld.Emission.b())
+  {
+    glMaterialfv (aFace, GL_EMISSION, myMatTmp.Emission.GetData());
+  }
+  if (myMatTmp.Shine() != anOld.Shine())
+  {
+    glMaterialf (aFace, GL_SHININESS, myMatTmp.Shine());
+  }
+  anOld = myMatTmp;
+  if (aFace == GL_FRONT_AND_BACK)
+  {
+    myMatBack = myMatTmp;
   }
 }
 
@@ -536,9 +353,9 @@ const OpenGl_AspectFace* OpenGl_Workspace::AspectFace (const Standard_Boolean th
         glDisable (GL_POLYGON_STIPPLE);
         break;
       }
-      case Aspect_IS_POINT: //szvgl - no corresponding enumeration item Aspect_IS_POINT // = 5
+      case Aspect_IS_POINT:
       {
-        glPolygonMode(GL_FRONT_AND_BACK,GL_POINT);
+        glPolygonMode (GL_FRONT_AND_BACK, GL_POINT);
         break;
       }
     }
@@ -594,10 +411,10 @@ const OpenGl_AspectFace* OpenGl_Workspace::AspectFace (const Standard_Boolean th
     }
   }
 
-  UpdateMaterial (TEL_FRONT_MATERIAL);
+  updateMaterial (TEL_FRONT_MATERIAL);
   if (AspectFace_set->DistinguishingMode() == TOn)
   {
-    UpdateMaterial (TEL_BACK_MATERIAL);
+    updateMaterial (TEL_BACK_MATERIAL);
   }
 
   if ((NamedStatus & OPENGL_NS_FORBIDSETTEX) == 0)

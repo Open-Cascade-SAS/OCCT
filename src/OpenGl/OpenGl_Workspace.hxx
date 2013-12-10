@@ -60,6 +60,7 @@
 #endif
 #include <OpenGl_TextParam.hxx>
 #include <OpenGl_RenderFilter.hxx>
+#include <OpenGl_Vec.hxx>
 
 #include <Handle_OpenGl_View.hxx>
 #include <Handle_OpenGl_Texture.hxx>
@@ -71,6 +72,31 @@ class OpenGl_FrameBuffer;
 class OpenGl_Structure;
 class OpenGl_Element;
 class Image_PixMap;
+
+//! OpenGL material definition
+struct OpenGl_Material
+{
+
+  OpenGl_Vec4 Ambient;  //!< ambient reflection coefficient
+  OpenGl_Vec4 Diffuse;  //!< diffuse reflection coefficient
+  OpenGl_Vec4 Specular; //!< glossy  reflection coefficient
+  OpenGl_Vec4 Emission; //!< material emission
+  OpenGl_Vec4 Params;   //!< extra packed parameters
+
+  Standard_ShortReal  Shine()              const { return Params.x(); }
+  Standard_ShortReal& ChangeShine()              { return Params.x(); }
+
+  Standard_ShortReal  Transparency()       const { return Params.y(); }
+  Standard_ShortReal& ChangeTransparency()       { return Params.y(); }
+
+  //! Initialize material
+  void Init (const OPENGL_SURF_PROP& theProps);
+
+  //! Returns packed (serialized) representation of material properties
+  const OpenGl_Vec4* Packed() const { return reinterpret_cast<const OpenGl_Vec4*> (this); }
+  static Standard_Integer NbOfVec4() { return 5; }
+
+};
 
 //! Represents window with GL context.
 //! Provides methods to render primitives and maintain GL state.
@@ -217,7 +243,7 @@ protected:
                 const Aspect_CLayer2d& theCOverLayer,
                 const int theToSwap);
 
-  void UpdateMaterial (const int flag);
+  void updateMaterial (const int theFlag);
 
   void setTextureParams (Handle(OpenGl_Texture)&                theTexture,
                          const Handle(Graphic3d_TextureParams)& theParams);
@@ -416,6 +442,10 @@ protected: //! @name fields related to status
 
   const OpenGl_Matrix* ViewMatrix_applied;
   const OpenGl_Matrix* StructureMatrix_applied;
+
+  OpenGl_Material myMatFront; //!< current front material state (cached to reduce GL context updates)
+  OpenGl_Material myMatBack;  //!< current back  material state
+  OpenGl_Material myMatTmp;   //!< temporary variable
 
   //! Model matrix with applied structure transformations
   OpenGl_Matrix myModelViewMatrix;
