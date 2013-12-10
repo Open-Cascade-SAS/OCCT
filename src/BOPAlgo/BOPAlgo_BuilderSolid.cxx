@@ -90,7 +90,7 @@ static
 //function : 
 //purpose  : 
 //=======================================================================
-  BOPAlgo_BuilderSolid::BOPAlgo_BuilderSolid(const Handle(NCollection_BaseAllocator)& theAllocator)
+BOPAlgo_BuilderSolid::BOPAlgo_BuilderSolid(const Handle(NCollection_BaseAllocator)& theAllocator)
 :
   BOPAlgo_BuilderArea(theAllocator)
 {
@@ -99,14 +99,30 @@ static
 //function : ~
 //purpose  : 
 //=======================================================================
-  BOPAlgo_BuilderSolid::~BOPAlgo_BuilderSolid()
+BOPAlgo_BuilderSolid::~BOPAlgo_BuilderSolid()
 {
+}
+//=======================================================================
+//function : SetSolid 
+//purpose  : 
+//=======================================================================
+void BOPAlgo_BuilderSolid::SetSolid(const TopoDS_Solid& aS)
+{
+  mySolid=aS;
+}
+//=======================================================================
+//function : Solid 
+//purpose  : 
+//=======================================================================
+const TopoDS_Solid& BOPAlgo_BuilderSolid::Solid()const
+{
+  return mySolid;
 }
 //=======================================================================
 //function : Perform
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_BuilderSolid::Perform()
+void BOPAlgo_BuilderSolid::Perform()
 {
   myErrorStatus=0;
   //
@@ -150,7 +166,7 @@ static
 //function :PerformShapesToAvoid
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_BuilderSolid::PerformShapesToAvoid()
+void BOPAlgo_BuilderSolid::PerformShapesToAvoid()
 {
   Standard_Boolean bFound;
   Standard_Integer i, iCnt, aNbE, aNbF;
@@ -227,7 +243,7 @@ static
 //function : PerformLoops
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_BuilderSolid::PerformLoops()
+void BOPAlgo_BuilderSolid::PerformLoops()
 {
   myErrorStatus=0;
   //
@@ -447,7 +463,7 @@ static
 //function : PerformAreas
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_BuilderSolid::PerformAreas()
+void BOPAlgo_BuilderSolid::PerformAreas()
 {
   myErrorStatus=0;
   //
@@ -583,7 +599,7 @@ static
 //function : PerformInternalShapes
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_BuilderSolid::PerformInternalShapes()
+void BOPAlgo_BuilderSolid::PerformInternalShapes()
 {
   myErrorStatus=0;
   //

@@ -30,7 +30,8 @@ uses
     Vertex from TopoDS, 
     Edge from TopoDS, 
     Face from TopoDS, 
-    Wire from TopoDS,  
+    Wire from TopoDS, 
+    Shell from TopoDS,  
     Solid from TopoDS, 
     --  
     BaseAllocator from BOPCol,
@@ -446,5 +447,15 @@ is
     returns Integer from Standard;
     ---Purpose: 
     --- Retutns dimension of the shape <theS>. 
-    
+     
+    IsOpenShell(myclass; 
+    	    theShell:Shell from TopoDS)  
+    	returns Boolean from Standard;  
+    	---Purpose: Returns true if the  shell <theShell> is open  
+     
+    IsInvertedSolid(myclass; 
+    	    theSolid:Solid from TopoDS)  
+    	returns Boolean from Standard;  
+    	---Purpose: Returns true if the solid <theSolid> is inverted 	
+ 
 end AlgoTools;

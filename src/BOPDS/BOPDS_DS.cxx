@@ -522,6 +522,17 @@ void BOPDS_DS::Init()
     }//if (aTS==TopAbs_FACE) {
   }//for (j=0; j<myNbSourceShapes; ++j) {
   //
+  // 2.4 Solids
+  for (j=0; j<myNbSourceShapes; ++j) {
+    BOPDS_ShapeInfo& aSI=ChangeShapeInfo(j);
+    //
+    aTS=aSI.ShapeType();
+    if (aTS==TopAbs_SOLID) {
+      Bnd_Box& aBox=aSI.ChangeBox();
+      BuildBndBoxSolid(j, aBox); 
+    }
+  }//for (j=0; j<myNbSourceShapes; ++j) {
+  //
   aMI.Clear();
   aAllocator.Nullify();
   //-----------------------------------------------------scope_1 t
@@ -1831,4 +1842,80 @@ void SortShell(const int n, BOPDS_Pave *a)
       }//if (a[l] < a[j]){
     }//for (i=0; i<nd; ++i) 
   }//while (1)
+}
+//=======================================================================
+//function : BuildBndBoxSolid
+//purpose  : 
+//=======================================================================
+void BOPDS_DS::BuildBndBoxSolid(const Standard_Integer theIndex,
+				Bnd_Box& aBoxS)
+{
+  Standard_Boolean bIsOpenBox, bIsInverted;
+  Standard_Integer nSh, nFc;
+  Standard_Real aTolS, aTolFc;
+  BOPCol_ListIteratorOfListOfInteger aItLI, aItLI1;
+  //
+  const BOPDS_ShapeInfo& aSI=ShapeInfo(theIndex);
+  const TopoDS_Shape& aS=aSI.Shape();
+  const TopoDS_Solid& aSolid=(*(TopoDS_Solid*)(&aS));
+  //
+  bIsOpenBox=Standard_False;
+  //
+  aTolS=0.;
+  const BOPCol_ListOfInteger& aLISh=aSI.SubShapes();
+  aItLI.Initialize(aLISh);
+  for (; aItLI.More(); aItLI.Next()) {
+    nSh=aItLI.Value();
+    const BOPDS_ShapeInfo& aSISh=ShapeInfo(nSh);
+    if (aSISh.ShapeType()!=TopAbs_SHELL) {
+      continue;
+    }
+    //
+    const BOPCol_ListOfInteger& aLIFc=aSISh.SubShapes();
+    aItLI1.Initialize(aLIFc);
+    for (; aItLI1.More(); aItLI1.Next()) {
+      nFc=aItLI1.Value();
+      const BOPDS_ShapeInfo& aSIFc=ShapeInfo(nFc);
+      if (aSIFc.ShapeType()!=TopAbs_FACE) {
+	continue;
+      }
+      //
+      const Bnd_Box& aBFc=aSIFc.Box();
+      aBoxS.Add(aBFc);
+      //
+      if (!bIsOpenBox) {
+	bIsOpenBox=(aBFc.IsOpenXmin() || aBFc.IsOpenXmax() ||
+		    aBFc.IsOpenYmin() || aBFc.IsOpenYmax() ||
+		    aBFc.IsOpenZmin() || aBFc.IsOpenZmax()); 
+	if (bIsOpenBox) {
+	  break;
+	}
+      }
+      //
+      const TopoDS_Face& aFc=*((TopoDS_Face*)&aSIFc.Shape());
+      aTolFc=BRep_Tool::Tolerance(aFc);
+      if (aTolFc>aTolS) {
+	aTolS=aTolFc;
+      }
+    }//for (; aItLI1.More(); aItLI1.Next()) {
+    if (bIsOpenBox) {
+      break;
+    }
+    //
+    const TopoDS_Shell& aSh=*((TopoDS_Shell*)&aSISh.Shape());
+    bIsOpenBox=BOPTools_AlgoTools::IsOpenShell(aSh);
+    if (bIsOpenBox) {
+      break;
+    }
+  }//for (; aItLI.More(); aItLI.Next()) {
+  //
+  if (bIsOpenBox) {
+    aBoxS.SetWhole();
+  }
+  else {
+    bIsInverted=BOPTools_AlgoTools::IsInvertedSolid(aSolid);
+    if (bIsInverted) {
+      aBoxS.SetWhole(); 
+    }
+  }
 }

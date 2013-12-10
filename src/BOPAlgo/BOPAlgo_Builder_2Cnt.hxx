@@ -30,16 +30,14 @@
 #include <BOPInt_Context.hxx>
 
 #include <BOPAlgo_BuilderFace.hxx>
+#include <BOPAlgo_BuilderSolid.hxx>
 
-//=======================================================================
-//class    : BOPAlgo_VectorOfBuilderFace
-//purpose  : 
-//=======================================================================
 typedef BOPCol_NCVector<BOPAlgo_BuilderFace> BOPAlgo_VectorOfBuilderFace;
 //
 //=======================================================================
 //class    : BOPAlgo_BuilderFaceFunctor
-//purpose  : 
+//purpose  : The class provides the interface and implementation 
+//           of the parallel computations
 //=======================================================================
 class BOPAlgo_BuilderFaceFunctor {
  protected:
@@ -67,7 +65,8 @@ class BOPAlgo_BuilderFaceFunctor {
 };
 //=======================================================================
 //class    : BOPAlgo_BuilderFaceCnt
-//purpose  : 
+//purpose  : The class provides the interface and implementation 
+//           of the parallel computations
 //=======================================================================
 class BOPAlgo_BuilderFaceCnt {
  public:
@@ -89,10 +88,11 @@ class BOPAlgo_BuilderFaceCnt {
   //
 };
 //
-//-------------------------------------------------------------------------
 typedef BOPCol_NCVector<TopoDS_Shape> BOPAlgo_VectorOfShape;
-typedef BOPCol_NCVector<BOPAlgo_VectorOfShape> BOPAlgo_VectorOfVectorOfShape;
-
+//
+typedef BOPCol_NCVector<BOPAlgo_VectorOfShape> \
+  BOPAlgo_VectorOfVectorOfShape;
+//
 typedef NCollection_IndexedDataMap\
   <BOPTools_Set, Standard_Integer, BOPTools_SetMapHasher> \
     BOPAlgo_IndexedDataMapOfSetInteger;
@@ -124,13 +124,14 @@ class BOPAlgo_PairOfShapeBoolean {
   TopoDS_Shape myShape1;
   TopoDS_Shape myShape2;
 };
-
-typedef BOPCol_NCVector<BOPAlgo_PairOfShapeBoolean> BOPAlgo_VectorOfPairOfShapeBoolean;
 //
-
+typedef BOPCol_NCVector<BOPAlgo_PairOfShapeBoolean> \
+  BOPAlgo_VectorOfPairOfShapeBoolean;
+//
 //=======================================================================
 //function : BOPAlgo_BuilderSDFaceFunctor
-//purpose  : 
+//purpose  : The class provides the interface and implementation 
+//           of the parallel computations
 //=======================================================================
 class BOPAlgo_BuilderSDFaceFunctor {
  protected:
@@ -167,7 +168,8 @@ class BOPAlgo_BuilderSDFaceFunctor {
 //
 //=======================================================================
 //function : BOPAlgo_BuilderSDFaceCnt
-//purpose  : 
+//purpose  : The class provides the interface and implementation 
+//           of the parallel computations
 //=======================================================================
 class BOPAlgo_BuilderSDFaceCnt {
  public:
@@ -190,6 +192,61 @@ class BOPAlgo_BuilderSDFaceCnt {
   }
   //
 };
-
+//
+typedef BOPCol_NCVector<BOPAlgo_BuilderSolid> BOPAlgo_VectorOfBuilderSolid;
+//
+//=======================================================================
+//class    : BOPAlgo_BuilderSolidFunctor
+//purpose  : The class provides the interface and implementation 
+//           of the parallel computations
+//=======================================================================
+class BOPAlgo_BuilderSolidFunctor {
+ protected:
+  BOPAlgo_VectorOfBuilderSolid* myPVBS;
+  //
+ public:
+  //
+  BOPAlgo_BuilderSolidFunctor(BOPAlgo_VectorOfBuilderSolid& aVBS) 
+    : myPVBS(&aVBS) {
+  }
+  //
+  void operator()( const flexible_range<Standard_Integer>& aBR ) const{
+    Standard_Integer i, iBeg, iEnd;
+    //
+    BOPAlgo_VectorOfBuilderSolid& aVBS=*myPVBS;
+    //
+    iBeg=aBR.begin();
+    iEnd=aBR.end();
+    for(i=iBeg; i!=iEnd; ++i) {
+      BOPAlgo_BuilderSolid& aBS=aVBS(i);
+      //
+      aBS.Perform();
+    }
+  }
+};
+//=======================================================================
+//class    : BOPAlgo_BuilderSolidCnt
+//purpose  : The class provides the interface and implementation 
+//           of the parallel computations
+//=======================================================================
+class BOPAlgo_BuilderSolidCnt {
+ public:
+  //-------------------------------
+  // Perform
+  Standard_EXPORT static void Perform(const Standard_Boolean bRunParallel,
+				      BOPAlgo_VectorOfBuilderSolid& aVBS) {
+    
+    Standard_Size aNbBS=aVBS.Extent();
+    BOPAlgo_BuilderSolidFunctor aBSF(aVBS);
+    //
+    if (bRunParallel) {
+      flexible_for(flexible_range<Standard_Integer>(0,aNbBS), aBSF);
+    }
+    else {
+      aBSF.operator()(flexible_range<Standard_Integer>(0,aNbBS));
+    }
+  }
+  //
+};
 
 #endif

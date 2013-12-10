@@ -21,8 +21,9 @@ class BuilderSolid from BOPAlgo
 ---Purpose: The algorithm to build solids from set of faces  
 
 uses 
-    BaseAllocator from BOPCol
-
+    BaseAllocator from BOPCol,
+    Solid from TopoDS 
+    
 --raises
 
 is 
@@ -33,6 +34,15 @@ is
       
     Create (theAllocator: BaseAllocator from BOPCol) 
     returns BuilderSolid from BOPAlgo; 
+      
+    SetSolid(me:out; 
+            theSolid:Solid from TopoDS); 
+    ---Purpose: Sets the source solid <theSolid>   
+     
+    Solid(me) 
+    	 returns Solid from TopoDS; 
+    ---C++:  return const &	 
+    ---Purpose: Returns the source solid 
      
     Perform(me:out)  
     ---Purpose:  Performs the algorithm 
@@ -60,6 +70,7 @@ is
     ---Purpose: Build finalized solids with internal shells   
     is redefined protected;   
 
---fields 
+fields 
+    mySolid:Solid from TopoDS is protected;       
   
 end BuilderSolid; 

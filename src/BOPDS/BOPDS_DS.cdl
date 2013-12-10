@@ -33,7 +33,8 @@ class DS from BOPDS
         --     myInterfVV,..myInterfFF] 
         
 uses  
-    ShapeEnum     from TopAbs,
+    ShapeEnum     from TopAbs, 
+    Box from Bnd, 
     Shape         from TopoDS,
     -- 
     ListOfShape from BOPCol,  
@@ -580,7 +581,14 @@ is
              ---Purpose: 
              --- Updates tolerance of the sub-shapes of the shape with index <theIndex>.
              ---
-               
+ 
+    BuildBndBoxSolid (me:out; 
+    	    	theIndex:Integer from Standard;  
+		theBox:out Box from Bnd) 
+    	is protected;  
+	    ---Purpose: 
+            --- Computes bouding box <theBox> for the solid with DS-index <theIndex>
+            ---
 fields  
     myAllocator        : BaseAllocator from BOPCol is protected;
     myArguments        : ListOfShape from BOPCol is protected;   

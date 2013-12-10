@@ -203,13 +203,8 @@ is
         theInParts:out DataMapOfShapeListOfShape from BOPCol; 
         theDraftSolids:out DataMapOfShapeShape from BOPCol; 
         theAllocator:BaseAllocator from BOPCol)   
-    is protected;  
- 
-    BuildBndBox(me:out;  
-    	theIndex:Integer from Standard; 
-	theBox:  out Box from Bnd) 
-    is protected;
- 
+    is protected;   
+    
     FillInternalShapes(me:out)  
     is protected; 
     --	 

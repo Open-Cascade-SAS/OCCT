@@ -1880,3 +1880,63 @@ Standard_Boolean FindPointInFace(const TopoDS_Edge& aE,
   bRet = aDist < Precision::Angular();
   return bRet;
 }
+//=======================================================================
+//function : IsOpenShell
+//purpose  : 
+//=======================================================================
+Standard_Boolean 
+  BOPTools_AlgoTools::IsOpenShell(const TopoDS_Shell& aSh)
+{
+  Standard_Boolean bRet;
+  Standard_Integer i, aNbE, aNbF;
+  TopAbs_Orientation aOrF;
+  BOPCol_IndexedDataMapOfShapeListOfShape aMEF; 
+  BOPCol_ListIteratorOfListOfShape aItLS;
+  //
+  bRet=Standard_False;
+  //
+  BOPTools::MapShapesAndAncestors(aSh, TopAbs_EDGE, TopAbs_FACE, aMEF);
+  // 
+  aNbE=aMEF.Extent();
+  for (i=1; i<=aNbE; ++i) {
+    const TopoDS_Edge& aE=*((TopoDS_Edge*)&aMEF.FindKey(i));
+    if (BRep_Tool::Degenerated(aE)) {
+      continue;
+    }
+    //
+    aNbF=0;
+    const BOPCol_ListOfShape& aLF=aMEF(i);
+    aItLS.Initialize(aLF);
+    for (; aItLS.More(); aItLS.Next()) {
+      const TopoDS_Shape& aF=aItLS.Value();
+      aOrF=aF.Orientation();
+      if (aOrF==TopAbs_INTERNAL || aOrF==TopAbs_EXTERNAL) {
+	continue;
+      }
+      ++aNbF;
+    }
+    //
+    if (aNbF==1) {
+      bRet=!bRet; // True
+      break;
+    }
+  }
+  //
+  return bRet;
+}
+//=======================================================================
+//function : IsInvertedSolid
+//purpose  : 
+//=======================================================================
+Standard_Boolean 
+  BOPTools_AlgoTools::IsInvertedSolid(const TopoDS_Solid& aSolid)
+{
+  Standard_Real aTolS;
+  TopAbs_State aState;
+  BRepClass3d_SolidClassifier aSC(aSolid);
+  //
+  aTolS=1.e-7;
+  aSC.PerformInfinitePoint(aTolS);
+  aState=aSC.State();
+  return (aState==TopAbs_IN); 
+}
