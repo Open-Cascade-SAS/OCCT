@@ -43,6 +43,7 @@
 #include <AIS_Relation.hxx>
 #include <AIS_TypeFilter.hxx>
 #include <AIS_SignatureFilter.hxx>
+#include <AIS_LocalContext.hxx>
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <Aspect_InteriorStyle.hxx>
@@ -52,6 +53,7 @@
 #include <Image_AlienPixMap.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <Prs3d_IsoAspect.hxx>
+#include <TopTools_MapOfShape.hxx>
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -2540,122 +2542,209 @@ static int VActivatedMode (Draw_Interpretor& di, Standard_Integer argc, const ch
     }
   }
   return 0;
-
 }
 
+//! Auxiliary method to print Interactive Object information
+static void objInfo (const NCollection_Map<Handle(AIS_InteractiveObject)>& theDetected,
+                     const Handle(Standard_Transient)&                     theObject,
+                     Draw_Interpretor&                                     theDI)
+{
+  const Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (theObject);
+  if (anObj.IsNull())
+  {
+    theDI << theObject->DynamicType()->Name() << " is not AIS presentation\n";
+    return;
+  }
 
-
-//==============================================================================
-// function : WhoAmI
-// user : vState
-//==============================================================================
-void WhoAmI (const Handle(AIS_InteractiveObject )& theShape ,Draw_Interpretor& di) {
-
-  // AIS_Datum
-  if (theShape->Type()==AIS_KOI_Datum) {
-    if      (theShape->Signature()==3 ) { di<<"  AIS_Trihedron"; }
-    else if (theShape->Signature()==2 ) { di<<"  AIS_Axis"; }
-    else if (theShape->Signature()==6 ) { di<<"  AIS_Circle"; }
-    else if (theShape->Signature()==5 ) { di<<"  AIS_Line"; }
-    else if (theShape->Signature()==7 ) { di<<"  AIS_Plane"; }
-    else if (theShape->Signature()==1 ) { di<<"  AIS_Point"; }
-    else if (theShape->Signature()==4 ) { di<<"  AIS_PlaneTrihedron"; }
+  theDI << (TheAISContext()->IsDisplayed  (anObj) ? "Displayed"  : "Hidden   ")
+        << (TheAISContext()->IsSelected   (anObj) ? " Selected" : "         ")
+        << (theDetected.Contains (anObj)          ? " Detected" : "         ")
+        << " Type: ";
+  if (anObj->Type() == AIS_KOI_Datum)
+  {
+    // AIS_Datum
+    if      (anObj->Signature() == 3) { theDI << " AIS_Trihedron"; }
+    else if (anObj->Signature() == 2) { theDI << " AIS_Axis"; }
+    else if (anObj->Signature() == 6) { theDI << " AIS_Circle"; }
+    else if (anObj->Signature() == 5) { theDI << " AIS_Line"; }
+    else if (anObj->Signature() == 7) { theDI << " AIS_Plane"; }
+    else if (anObj->Signature() == 1) { theDI << " AIS_Point"; }
+    else if (anObj->Signature() == 4) { theDI << " AIS_PlaneTrihedron"; }
   }
   // AIS_Shape
-  else if (theShape->Type()==AIS_KOI_Shape && theShape->Signature()==0 ) { di<<"  AIS_Shape"; }
-  // AIS_Dimentions et AIS_Relations
-  else if (theShape->Type()==AIS_KOI_Relation) {
-    Handle(AIS_Relation) TheShape= ((*(Handle(AIS_Relation)*)&theShape));
-
-    if      (TheShape->KindOfDimension()==AIS_KOD_PLANEANGLE)      {di<<"  AIS_AngleDimension";}
-    else if (TheShape->KindOfDimension()==AIS_KOD_LENGTH )         {di<<"  AIS_Chamf2/3dDimension/AIS_LengthDimension ";  }
-    else if (TheShape->KindOfDimension()==AIS_KOD_DIAMETER  )      {di<<"  AIS_DiameterDimension ";}
-    else if (TheShape->KindOfDimension()==AIS_KOD_ELLIPSERADIUS  ) {di<<"  AIS_EllipseRadiusDimension ";}
-    //else if (TheShape->KindOfDimension()==AIS_KOD_FILLETRADIUS  )  {di<<" AIS_FilletRadiusDimension "<<endl;}
-    else if (TheShape->KindOfDimension()==AIS_KOD_OFFSET  )        {di<<"  AIS_OffsetDimension ";}
-    else if (TheShape->KindOfDimension()==AIS_KOD_RADIUS  )        {di<<"  AIS_RadiusDimension ";}
-    // AIS no repertorie.
-    else {di<<"  Type Unknown.";}
+  else if (anObj->Type()      == AIS_KOI_Shape
+        && anObj->Signature() == 0)
+  {
+    theDI << " AIS_Shape";
   }
+  else if (anObj->Type() == AIS_KOI_Relation)
+  {
+    // AIS_Dimention and AIS_Relation
+    Handle(AIS_Relation) aRelation = Handle(AIS_Relation)::DownCast (anObj);
+    switch (aRelation->KindOfDimension())
+    {
+      case AIS_KOD_PLANEANGLE:     theDI << " AIS_AngleDimension"; break;
+      case AIS_KOD_LENGTH:         theDI << " AIS_Chamf2/3dDimension/AIS_LengthDimension"; break;
+      case AIS_KOD_DIAMETER:       theDI << " AIS_DiameterDimension"; break;
+      case AIS_KOD_ELLIPSERADIUS:  theDI << " AIS_EllipseRadiusDimension"; break;
+      //case AIS_KOD_FILLETRADIUS:   theDI << " AIS_FilletRadiusDimension "; break;
+      case AIS_KOD_OFFSET:         theDI << " AIS_OffsetDimension"; break;
+      case AIS_KOD_RADIUS:         theDI << " AIS_RadiusDimension"; break;
+      default:                     theDI << " UNKNOWN dimension"; break;
+    }
+  }
+  else
+  {
+    theDI << " UserPrs";
+  }
+  theDI << " (" << theObject->DynamicType()->Name() << ")";
 }
 
+//! Print information about locally selected sub-shapes
+static void localCtxInfo (Draw_Interpretor& theDI)
+{
+  Handle(AIS_InteractiveContext) aCtx = TheAISContext();
+  if (!aCtx->HasOpenedContext())
+  {
+    return;
+  }
 
+  TCollection_AsciiString aPrevName;
+  Handle(AIS_LocalContext) aCtxLoc = aCtx->LocalContext();
+  for (aCtxLoc->InitSelected(); aCtxLoc->MoreSelected(); aCtxLoc->NextSelected())
+  {
+    const TopoDS_Shape      aSubShape = aCtxLoc->SelectedShape();
+    const Handle(AIS_Shape) aShapeIO  = Handle(AIS_Shape)::DownCast (aCtxLoc->SelectedInteractive());
+    if (aSubShape.IsNull()
+      || aShapeIO.IsNull()
+      || !GetMapOfAIS().IsBound1 (aShapeIO))
+    {
+      continue;
+    }
+
+    const TCollection_AsciiString aParentName = GetMapOfAIS().Find1 (aShapeIO);
+    TopTools_MapOfShape aFilter;
+    Standard_Integer    aNumber = 0;
+    const TopoDS_Shape  aShape  = aShapeIO->Shape();
+    for (TopExp_Explorer anIter (aShape, aSubShape.ShapeType());
+         anIter.More(); anIter.Next())
+    {
+      if (!aFilter.Add (anIter.Current()))
+      {
+        continue; // filter duplicates
+      }
+
+      ++aNumber;
+      if (!anIter.Current().IsSame (aSubShape))
+      {
+        continue;
+      }
+
+      Standard_CString aShapeName = NULL;
+      switch (aSubShape.ShapeType())
+      {
+        case TopAbs_COMPOUND:  aShapeName = " Compound"; break;
+        case TopAbs_COMPSOLID: aShapeName = "CompSolid"; break;
+        case TopAbs_SOLID:     aShapeName = "    Solid"; break;
+        case TopAbs_SHELL:     aShapeName = "    Shell"; break;
+        case TopAbs_FACE:      aShapeName = "     Face"; break;
+        case TopAbs_WIRE:      aShapeName = "     Wire"; break;
+        case TopAbs_EDGE:      aShapeName = "     Edge"; break;
+        case TopAbs_VERTEX:    aShapeName = "   Vertex"; break;
+        default:
+        case TopAbs_SHAPE:     aShapeName = "    Shape"; break;
+      }
+
+      if (aParentName != aPrevName)
+      {
+        theDI << "Locally selected sub-shapes within " << aParentName << ":\n";
+        aPrevName = aParentName;
+      }
+      theDI << "  " << aShapeName << " #" << aNumber << "\n";
+      break;
+    }
+  }
+}
 
 //==============================================================================
 //function : VState
 //purpose  :
 //Draw arg : vstate [nameA] ... [nameN]
 //==============================================================================
-static int VState(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static Standard_Integer VState (Draw_Interpretor& theDI,
+                                Standard_Integer  theArgNb,
+                                Standard_CString* theArgVec)
 {
-  TheAISContext()->CloseAllContexts();
-  const Standard_Boolean ThereIsArguments=(argc>=2);
-  const Standard_Boolean ThereIsCurrent=(TheAISContext()->NbCurrents()>0);
-  // Debut...
-  // ==================
-  // Il y a un argument
-  // ==================
-  if (ThereIsArguments) {
-    for (int cpt=1;cpt<argc;cpt++) {
-      // Verification que lq piece est bien bindee.
-      if (GetMapOfAIS().IsBound2(argv[cpt]) ) {
-	const Handle(AIS_InteractiveObject) theShape=
-          Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2
-                                                  (argv[cpt]));
-        if (!theShape.IsNull()) {
-          di<<argv[cpt];WhoAmI(theShape, di);
-          if (TheAISContext()->IsDisplayed(theShape) ) {
-            di<<"    Displayed"<<"\n";
-          }
-          else {
-            di<<"    Not Displayed"<<"\n";
-          }
-        }
-      }
-      else {
-	di<<"vstate error: Shape "<<cpt<<" doesn't exist;" <<"\n";return 1;
-      }
-    }
+  Handle(AIS_InteractiveContext) aCtx = TheAISContext();
+  if (aCtx.IsNull())
+  {
+    std::cerr << "Error: No opened viewer!\n";
+    return 1;
   }
-  else if (ThereIsCurrent ) {
-    for (TheAISContext() -> InitCurrent() ;
-         TheAISContext() -> MoreCurrent() ;
-         TheAISContext() ->NextCurrent() )
+
+  NCollection_Map<Handle(AIS_InteractiveObject)> aDetected;
+  for (aCtx->InitDetected(); aCtx->MoreDetected(); aCtx->NextDetected())
+  {
+    aDetected.Add (aCtx->DetectedCurrentObject());
+  }
+
+  const Standard_Boolean toShowAll = (theArgNb >= 2 && *theArgVec[1] == '*');
+  if (theArgNb >= 2
+   && !toShowAll)
+  {
+    for (Standard_Integer anArgIter = 1; anArgIter < theArgNb; ++anArgIter)
     {
-      Handle(AIS_InteractiveObject) theShape=TheAISContext()->Current();
-      di<<GetMapOfAIS().Find1(theShape).ToCString(); WhoAmI(theShape, di);
-      if (TheAISContext()->IsDisplayed(theShape) ) {
-	di<<"    Displayed"<<"\n";
-      }
-      else {
-	di<<"    Not Displayed"<<"\n";
+      const TCollection_AsciiString anObjName = theArgVec[anArgIter];
+      if (!GetMapOfAIS().IsBound2 (anObjName))
+      {
+        theDI << anObjName << " doesn't exist!\n";
+        continue;
       }
 
+      const Handle(Standard_Transient) anObjTrans = GetMapOfAIS().Find2 (anObjName);
+      TCollection_AsciiString aName = anObjName;
+      aName.LeftJustify (20, ' ');
+      theDI << "  " << aName << " ";
+      objInfo (aDetected, anObjTrans, theDI);
+      theDI << "\n";
     }
-  }
-  else {
-    ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName
-      it(GetMapOfAIS());
-    while ( it.More() ) {
-      Handle(AIS_InteractiveObject) theShape =
-        Handle(AIS_InteractiveObject)::DownCast(it.Key1());
-      if (!theShape.IsNull()) {
-        di<<it.Key2().ToCString();
-        WhoAmI(theShape, di);
-        if (TheAISContext()->IsDisplayed(theShape) ) {
-          di<<"    Displayed"<<"\n";
-        }
-        else {
-          di<<"    Not Displayed"<<"\n";
-        }
-      }
-      it.Next();
-    }
+    return 0;
   }
 
+  if (aCtx->NbCurrents() > 0
+   && !toShowAll)
+  {
+    for (aCtx->InitCurrent(); aCtx->MoreCurrent(); aCtx->NextCurrent())
+    {
+      Handle(AIS_InteractiveObject) anObj = aCtx->Current();
+      TCollection_AsciiString aName = GetMapOfAIS().Find1 (anObj);
+      aName.LeftJustify (20, ' ');
+      theDI << aName << " ";
+      objInfo (aDetected, anObj, theDI);
+      theDI << "\n";
+    }
+    return 0;
+  }
+
+  theDI << "Neutral-point state:\n";
+  for (ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName anObjIter (GetMapOfAIS());
+       anObjIter.More(); anObjIter.Next())
+  {
+    Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (anObjIter.Key1());
+    if (anObj.IsNull())
+    {
+      continue;
+    }
+
+    TCollection_AsciiString aName = anObjIter.Key2();
+    aName.LeftJustify (20, ' ');
+    theDI << "  " << aName << " ";
+    objInfo (aDetected, anObj, theDI);
+    theDI << "\n";
+  }
+  localCtxInfo (theDI);
   return 0;
 }
-
 
 //=======================================================================
 //function : PickObjects
