@@ -312,6 +312,7 @@ void OpenGl_ShaderManager::PushLightSourceState (const Handle(OpenGl_ShaderProgr
                             OpenGLMaxLights * OpenGl_ShaderLightType::NbOfVec2i(),
                             aLightTypeArray[0].Packed());
     theProgram->UpdateState (OpenGl_LIGHT_SOURCES_STATE, myLightSourceState.Index());
+    delete[] aLightTypeArray;
     return;
   }
 
