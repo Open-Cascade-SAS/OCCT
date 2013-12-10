@@ -1153,7 +1153,7 @@ static Standard_Integer DDataStd_SetByteArray (Draw_Interpretor& di,
     j = 6;
     for(Standard_Integer i = From; i<=To; ++i) {
       Standard_Integer ival = Draw::Atoi(arg[j]);
-      if(ival < 0 && 255 < ival) {
+      if(ival < 0 || 255 < ival) {
         cout << "Bad value = " << ival<< endl;
         return 1;
       }
