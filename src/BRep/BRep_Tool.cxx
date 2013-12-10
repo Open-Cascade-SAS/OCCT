@@ -220,10 +220,9 @@ Standard_Boolean  BRep_Tool::IsGeometric(const TopoDS_Edge& E)
   while (itcr.More()) {
     const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
     if (cr->IsCurve3D()) {
-      Standard_Real first, last;
-      TopLoc_Location L;
-      const Handle(Geom_Curve)&  C = BRep_Tool::Curve(E, L, first, last);
-      if (!C.IsNull()) return Standard_True;
+      Handle(BRep_Curve3D) GC (Handle(BRep_Curve3D)::DownCast (cr));
+      if (! GC.IsNull() && ! GC->Curve3D().IsNull())
+        return Standard_True;
     }
     else if (cr->IsCurveOnSurface()) return Standard_True;
     itcr.Next();

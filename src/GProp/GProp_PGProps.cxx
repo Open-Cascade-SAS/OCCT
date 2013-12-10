@@ -84,7 +84,7 @@ void GProp_PGProps::AddPoint (const gp_Pnt& P, const Standard_Real Density)
   Mat Mp (XYZ (Ixx, Ixy, Ixz), XYZ (Ixy, Iyy, Iyz), XYZ (Ixz, Iyz, Izz));
   if (dim == 0) {
     dim = Density;
-    g.SetXYZ (P.XYZ().Multiplied (Density));
+    g = P;
     inertia = Mp * Density;
   }
   else {
