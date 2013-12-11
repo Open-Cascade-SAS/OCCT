@@ -16,63 +16,134 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-//!  A framework to define display of radii. <br>
-//! These displays serve as relational references in 3D <br>
-//! presentations of surfaces, and are particularly useful <br>
-//! in viewing fillets. The display consists of arrows and <br>
-//! text giving the length of a radius. This display is <br>
-//! recalculated if the applicative owner shape changes <br>
-//! in dimension, and the text gives the modified length. <br>
-//! The algorithm analyzes a length along a face as an <br>
-//! arc. It then reconstructs the circle corresponding to <br>
-//! the arc and calculates the radius of this circle. <br>
-
 #ifndef _AIS_RadiusDimension_HeaderFile
 #define _AIS_RadiusDimension_HeaderFile
 
 #include <AIS.hxx>
 #include <AIS_Dimension.hxx>
-#include <gp_Circ.hxx>
 #include <gp_Pnt.hxx>
-#include <Prs3d_DimensionAspect.hxx>
+#include <gp_Circ.hxx>
 #include <Standard.hxx>
 #include <Standard_Macro.hxx>
-#include <TopoDS_Shape.hxx>
 
-DEFINE_STANDARD_HANDLE(AIS_RadiusDimension,AIS_Dimension)
+DEFINE_STANDARD_HANDLE (AIS_RadiusDimension,AIS_Dimension)
 
+//! Radius dimension. Can be constructued:
+//! - On generic circle.
+//! - On generic circle with user-defined anchor point on that circle.
+//! - On generic shape containing geometry that can be measured
+//!   by diameter dimension: circle wire, arc, circular face, etc.
+//! The anchor point is the location of left attachement point of
+//! dimension on the circle. It can be user-specified, or computed as
+//! middle point on the arc. The radius dimension always lies in the
+//! plane of the measured circle. The dimension is considered as
+//! invalid if the user-specified anchor point is not lying on the circle,
+//! if the radius of the circle is less than Precision::Confusion().
+//! In case if the dimension is built on the arbitrary shape,
+//! it can be considered as invalid if the shape does not contain
+//! circle geometry.
 class AIS_RadiusDimension : public AIS_Dimension
 {
 public:
 
-  Standard_EXPORT  AIS_RadiusDimension (const gp_Circ& theCircle);
+  //! Create radius dimension for the circle geometry.
+  //! @param theCircle [in] the circle to measure.
+  Standard_EXPORT AIS_RadiusDimension (const gp_Circ& theCircle);
 
-  Standard_EXPORT  AIS_RadiusDimension (const gp_Circ& theCircle,
-                                        const gp_Pnt& theAttachPoint);
+  //! Create radius dimension for the circle geometry and define its
+  //! orientation by location of the first point on that circle.
+  //! @param theCircle [in] the circle to measure.
+  //! @param theAnchorPoint [in] the point to define the position
+  //!        of the dimension attachement on the circle.
+  Standard_EXPORT AIS_RadiusDimension (const gp_Circ& theCircle,
+                                       const gp_Pnt& theAnchorPoint);
 
-  //! Constructs the radius display object defined by the <br>
-  //! shape aShape, the dimension aVal, and the text aText.
-  Standard_EXPORT  AIS_RadiusDimension (const TopoDS_Shape& aShape);
+  //! Create radius dimension for the arbitrary shape (if possible).
+  //! @param theShape [in] the shape to measure.
+  Standard_EXPORT AIS_RadiusDimension (const TopoDS_Shape& theShape);
 
-  DEFINE_STANDARD_RTTI(AIS_RadiusDimension)
+public:
+
+  //! @return measured geometry circle.
+  const gp_Circ& Circle() const
+  {
+    return myCircle;
+  }
+
+  //! @return anchor point on circle for radius dimension.
+  const gp_Pnt& AnchorPoint() const
+  {
+    return myAnchorPoint;
+  }
+
+  //! @return the measured shape.
+  const TopoDS_Shape& Shape() const
+  {
+    return myShape;
+  }
+
+public:
+
+  //! Measure radius of the circle.
+  //! The dimension will become invalid if the radius of the circle
+  //! is less than Precision::Confusion().
+  //! @param theCircle [in] the circle to measure.
+  Standard_EXPORT void SetMeasuredGeometry (const gp_Circ& theCircle);
+
+  //! Measure radius of the circle and orient the dimension so
+  //! the dimension lines attaches to anchor point on the circle.
+  //! The dimension will become invalid if the radiuss of the circle
+  //! is less than Precision::Confusion().
+  //! @param theCircle [in] the circle to measure.
+  //! @param theAnchorPoint [in] the point to attach the dimension lines.
+  Standard_EXPORT void SetMeasuredGeometry (const gp_Circ& theCircle,
+                                            const gp_Pnt& theAnchorPoint);
+
+  //! Measure radius on the passed shape, if applicable.
+  //! The dimension will become invalid if the passed shape is not
+  //! measurable or if measured diameter value is less than Precision::Confusion().
+  //! @param theShape [in] the shape to measure.
+  Standard_EXPORT void SetMeasuredGeometry (const TopoDS_Shape& theShape);
+
+  //! @return the display units string.
+  Standard_EXPORT virtual const TCollection_AsciiString& GetDisplayUnits () const;
+  
+  //! @return the model units string.
+  Standard_EXPORT virtual const TCollection_AsciiString& GetModelUnits () const;
+
+  Standard_EXPORT virtual void SetDisplayUnits (const TCollection_AsciiString& theUnits);
+
+  Standard_EXPORT virtual void SetModelUnits (const TCollection_AsciiString& theUnits);
+
+public:
+
+  DEFINE_STANDARD_RTTI (AIS_RadiusDimension)
 
 protected:
 
-  //! Computes dimension value in display units
-  Standard_EXPORT virtual void computeValue ();
+  Standard_EXPORT virtual void ComputePlane();
 
-    //! Fills default plane object if it is possible to count plane automatically.
-  Standard_EXPORT virtual void countDefaultPlane ();
+  //! Checks if anchor point and the center of the circle are on the plane.
+  Standard_EXPORT virtual Standard_Boolean CheckPlane (const gp_Pln& thePlane) const;
+
+  Standard_EXPORT virtual Standard_Real ComputeValue() const;
+
+  Standard_EXPORT virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
+                                        const Handle(Prs3d_Presentation)& thePresentation,
+                                        const Standard_Integer theMode = 0);
+
+protected:
+
+  Standard_EXPORT Standard_Boolean IsValidCircle (const gp_Circ& theCircle) const;
+
+  Standard_EXPORT Standard_Boolean IsValidAnchor (const gp_Circ& theCircle,
+                                                  const gp_Pnt& thePnt) const;
 
 private:
 
-  virtual void Compute (const Handle(PrsMgr_PresentationManager3d)& thePresentationManager,
-                        const Handle(Prs3d_Presentation)& thePresentation,
-                        const Standard_Integer theMode = 0);
-
-// Fields
-private:
-
-  gp_Circ myCircle;
+  gp_Circ      myCircle;
+  gp_Pnt       myAnchorPoint;
+  TopoDS_Shape myShape;
 };
-#endif
+
+#endif // _AIS_RadiusDimension_HeaderFile

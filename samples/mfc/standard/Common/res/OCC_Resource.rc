@@ -281,6 +281,16 @@ BEGIN
     CONTROL         "",IDC_Flyout,"msctls_trackbar32",TBS_TOP | TBS_TOOLTIPS | WS_TABSTOP,73,112,100,20
 END
 
+IDD_ParamsFacesPage DIALOGEX 0, 0, 134, 73
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    LTEXT           "Face1",IDC_FacesSt1,18,14,20,8
+    LTEXT           "Face2",IDC_FacesSt2,18,35,20,8
+    PUSHBUTTON      "Click to set up selected face",IDC_FacesBtn1,63,7,52,24,BS_MULTILINE
+    PUSHBUTTON      "Click to set up selected face",IDC_FacesBtn2,64,39,51,24,BS_MULTILINE
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -474,6 +484,14 @@ BEGIN
         RIGHTMARGIN, 235
         BOTTOMMARGIN, 336
         HORZGUIDE, 336
+    END
+
+    IDD_ParamsFacesPage, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 127
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 66
     END
 END
 #endif    // APSTUDIO_INVOKED

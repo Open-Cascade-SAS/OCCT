@@ -21,32 +21,28 @@
 #include <AIS_RadiusDimension.hxx>
 
 #include <AIS.hxx>
-#include <AIS_Drawer.hxx>
+#include <BRepLib_MakeEdge.hxx>
 #include <ElCLib.hxx>
 #include <gce_MakeDir.hxx>
-#include <Graphic3d_ArrayOfSegments.hxx>
-#include <Graphic3d_Group.hxx>
-#include <PrsMgr_PresentationManager3d.hxx>
-#include <Prs3d_Root.hxx>
 
-IMPLEMENT_STANDARD_HANDLE(AIS_RadiusDimension, AIS_Dimension)
-IMPLEMENT_STANDARD_RTTIEXT(AIS_RadiusDimension, AIS_Dimension)
+IMPLEMENT_STANDARD_HANDLE (AIS_RadiusDimension, AIS_Dimension)
+IMPLEMENT_STANDARD_RTTIEXT (AIS_RadiusDimension, AIS_Dimension)
+
+namespace
+{
+  static const Standard_ExtCharacter THE_RADIUS_SYMBOL ('R');
+};
 
 //=======================================================================
 //function : Constructor
 //purpose  : 
 //=======================================================================
-
 AIS_RadiusDimension::AIS_RadiusDimension (const gp_Circ& theCircle)
-: AIS_Dimension(),
-  myCircle (theCircle)
+: AIS_Dimension (AIS_KOD_RADIUS)
 {
-  myFirstPoint = ElCLib::Value(0, myCircle);
-  mySecondPoint = theCircle.Location();
-  myIsInitialized = Standard_True;
-  SetSpecialSymbol ('R');
+  SetMeasuredGeometry (theCircle);
+  SetSpecialSymbol (THE_RADIUS_SYMBOL);
   SetDisplaySpecialSymbol (AIS_DSS_Before);
-  SetKindOfDimension (AIS_KOD_RADIUS);
   SetFlyout (0.0);
 }
 
@@ -54,18 +50,13 @@ AIS_RadiusDimension::AIS_RadiusDimension (const gp_Circ& theCircle)
 //function : Constructor
 //purpose  : 
 //=======================================================================
-
 AIS_RadiusDimension::AIS_RadiusDimension (const gp_Circ& theCircle,
                                           const gp_Pnt& theAttachPoint)
-: AIS_Dimension(),
-  myCircle (theCircle)
+: AIS_Dimension (AIS_KOD_RADIUS)
 {
-  myFirstPoint = theAttachPoint;
-  mySecondPoint = theCircle.Location();
-  myIsInitialized = Standard_True;
-  SetSpecialSymbol ('R');
+  SetMeasuredGeometry (theCircle, theAttachPoint);
+  SetSpecialSymbol (THE_RADIUS_SYMBOL);
   SetDisplaySpecialSymbol (AIS_DSS_Before);
-  SetKindOfDimension (AIS_KOD_RADIUS);
   SetFlyout (0.0);
 }
 
@@ -73,23 +64,170 @@ AIS_RadiusDimension::AIS_RadiusDimension (const gp_Circ& theCircle,
 //function : Constructor
 //purpose  :
 //=======================================================================
-
 AIS_RadiusDimension::AIS_RadiusDimension (const TopoDS_Shape& theShape)
-: AIS_Dimension ()
+: AIS_Dimension (AIS_KOD_RADIUS)
 {
-  myFirstShape = theShape;
-  myIsInitialized = Standard_False;
-  SetSpecialSymbol ('R');
+  SetMeasuredGeometry (theShape);
+  SetSpecialSymbol (THE_RADIUS_SYMBOL);
   SetDisplaySpecialSymbol (AIS_DSS_Before);
-  SetKindOfDimension (AIS_KOD_RADIUS);
   SetFlyout (0.0);
+}
+
+//=======================================================================
+//function : SetMeasuredGeometry
+//purpose  : 
+//=======================================================================
+void AIS_RadiusDimension::SetMeasuredGeometry (const gp_Circ& theCircle)
+{
+  myCircle       = theCircle;
+  myGeometryType = GeometryType_Edge;
+  myShape        = BRepLib_MakeEdge (theCircle);
+  myAnchorPoint  = ElCLib::Value (0, myCircle);
+  myIsValid      = IsValidCircle (myCircle);
+
+  if (myIsValid)
+  {
+    ComputePlane();
+  }
+
+  myIsValid &= CheckPlane (myPlane);
+
+  SetToUpdate();
+}
+
+//=======================================================================
+//function : SetMeasuredGeometry
+//purpose  : 
+//=======================================================================
+void AIS_RadiusDimension::SetMeasuredGeometry (const gp_Circ& theCircle,
+                                               const gp_Pnt&  theAnchorPoint)
+{
+  myCircle       = theCircle;
+  myGeometryType = GeometryType_Edge;
+  myShape        = BRepLib_MakeEdge (theCircle);
+  myAnchorPoint  = theAnchorPoint;
+  myIsValid      = IsValidCircle (myCircle) && IsValidAnchor (myCircle, theAnchorPoint);
+
+  if (myIsValid)
+  {
+    ComputePlane();
+  }
+
+  myIsValid &= CheckPlane (myPlane);
+
+  SetToUpdate();
+}
+
+//=======================================================================
+//function : SetMeasuredGeometry
+//purpose  : 
+//=======================================================================
+void AIS_RadiusDimension::SetMeasuredGeometry (const TopoDS_Shape& theShape)
+{
+  Standard_Boolean isClosed = Standard_False;
+  myShape        = theShape;
+  myGeometryType = GeometryType_UndefShapes;
+  myIsValid      = InitCircularDimension (theShape, myCircle, myAnchorPoint, isClosed) 
+                && IsValidCircle (myCircle);
+
+  if (myIsValid)
+  {
+    ComputePlane();
+  }
+
+  myIsValid &= CheckPlane (myPlane);
+
+  SetToUpdate();
+}
+
+//=======================================================================
+//function : CheckPlane
+//purpose  : 
+//=======================================================================
+Standard_Boolean AIS_RadiusDimension::CheckPlane (const gp_Pln& thePlane) const
+{
+  // Check if anchor point and circle center point belong to plane.
+  if (!thePlane.Contains (myAnchorPoint, Precision::Confusion()) &&
+      !thePlane.Contains (myCircle.Location(), Precision::Confusion()))
+  {
+    return Standard_False;
+  }
+
+  return Standard_True;
+}
+
+//=======================================================================
+//function : ComputePlane
+//purpose  : 
+//=======================================================================
+void AIS_RadiusDimension::ComputePlane()
+{
+  if (!IsValid())
+  {
+    return;
+  }
+
+  gp_Dir aDimensionX = gce_MakeDir (myAnchorPoint, myCircle.Location());
+
+  myPlane = gp_Pln (gp_Ax3 (myCircle.Location(),
+                            myCircle.Axis().Direction(),
+                            aDimensionX));
+}
+
+//=======================================================================
+//function : GetModelUnits
+//purpose  :
+//=======================================================================
+const TCollection_AsciiString& AIS_RadiusDimension::GetModelUnits() const
+{
+  return myDrawer->DimLengthModelUnits();
+}
+
+//=======================================================================
+//function : GetDisplayUnits
+//purpose  :
+//=======================================================================
+const TCollection_AsciiString& AIS_RadiusDimension::GetDisplayUnits() const
+{
+  return myDrawer->DimLengthDisplayUnits();
+}
+
+//=======================================================================
+//function : SetModelUnits
+//purpose  :
+//=======================================================================
+void AIS_RadiusDimension::SetModelUnits (const TCollection_AsciiString& theUnits)
+{
+  myDrawer->SetDimLengthModelUnits (theUnits);
+}
+
+//=======================================================================
+//function : SetDisplayUnits
+//purpose  :
+//=======================================================================
+void AIS_RadiusDimension::SetDisplayUnits (const TCollection_AsciiString& theUnits)
+{
+  myDrawer->SetDimLengthDisplayUnits(theUnits);
+}
+
+//=======================================================================
+//function : ComputeValue
+//purpose  : 
+//=======================================================================
+Standard_Real AIS_RadiusDimension::ComputeValue() const
+{
+  if (!IsValid())
+  {
+    return 0.0;
+  }
+
+  return myCircle.Radius();
 }
 
 //=======================================================================
 //function : Compute
 //purpose  : 
 //=======================================================================
-
 void AIS_RadiusDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePM*/,
                                    const Handle(Prs3d_Presentation)& thePresentation,
                                    const Standard_Integer theMode)
@@ -97,52 +235,34 @@ void AIS_RadiusDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /
   thePresentation->Clear();
   mySelectionGeom.Clear (theMode);
 
-  Handle(Prs3d_DimensionAspect) aDimensionAspect = myDrawer->DimensionAspect();
-  Prs3d_Root::CurrentGroup (thePresentation)->SetPrimitivesAspect (aDimensionAspect->LineAspect()->Aspect());
-
-  if (!myIsInitialized)
+  if (!IsValid())
   {
-    gp_Pnt aLastPoint;
-    if (!initCircularDimension (myFirstShape, myCircle,
-      myFirstPoint, aLastPoint))
-      return;
-    else
-    {
-      mySecondPoint = myCircle.Location();
-      myIsInitialized = Standard_True;
-    }
+    return;
   }
 
-  if (!myIsWorkingPlaneCustom)
-  {
-    countDefaultPlane();
-  }
-
-  drawLinearDimension (thePresentation, theMode, Standard_True);
+  DrawLinearDimension (thePresentation, theMode, myAnchorPoint, myCircle.Location(), Standard_True);
 }
 
 //=======================================================================
-//function : computeValue
+//function : IsValidCircle
 //purpose  : 
 //=======================================================================
-
-void AIS_RadiusDimension::computeValue ()
+Standard_Boolean AIS_RadiusDimension::IsValidCircle (const gp_Circ& theCircle) const
 {
-  myValue = myFirstPoint.Distance (mySecondPoint);
-  AIS_Dimension::computeValue ();
+  return theCircle.Radius() > Precision::Confusion();
 }
 
 //=======================================================================
-//function : countDefaultPlane
+//function : IsValidAnchor
 //purpose  : 
 //=======================================================================
-
-void AIS_RadiusDimension::countDefaultPlane ()
+Standard_Boolean AIS_RadiusDimension::IsValidAnchor (const gp_Circ& theCircle,
+                                                     const gp_Pnt& theAnchor) const
 {
-  // Compute normal of the default plane.
-  gp_Vec aVec1(mySecondPoint, myFirstPoint),
-         aVec2(mySecondPoint, ElCLib::Value(M_PI_2, myCircle));
-  myDefaultPlane = gp_Pln(myCircle.Location(), aVec1^aVec2);
-  // Set computed value to <myWorkingPlane>
-  ResetWorkingPlane ();
+  gp_Pln aCirclePlane (theCircle.Location(), theCircle.Axis().Direction());
+  Standard_Real anAnchorDist = theAnchor.Distance (theCircle.Location());
+  Standard_Real aRadius      = myCircle.Radius();
+
+  return Abs (anAnchorDist - aRadius) > Precision::Confusion()
+      && aCirclePlane.Contains (theAnchor, Precision::Confusion());
 }

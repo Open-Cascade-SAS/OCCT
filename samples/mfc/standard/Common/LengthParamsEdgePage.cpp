@@ -96,8 +96,8 @@ void CLengthParamsEdgePage::OnBnClickedChooseEdgeBtn()
   anAspect->TextAspect()->SetHeight (aDimDlg->GetFontHeight());
   anAspect->MakeTextShaded (aDimDlg->IsText3dShaded());
   anAspect->SetCommonColor (aDimDlg->GetDimensionColor());
-  aLenDim->MakeUnitsDisplayed (aDimDlg->IsUnitsDisplayed());
-  if (aLenDim->IsUnitsDisplayed())
+  aLenDim->DimensionAspect()->MakeUnitsDisplayed (aDimDlg->IsUnitsDisplayed());
+  if (aDimDlg->IsUnitsDisplayed())
   {
     aLenDim->SetDisplayUnits (aDimDlg->GetUnits());
   }

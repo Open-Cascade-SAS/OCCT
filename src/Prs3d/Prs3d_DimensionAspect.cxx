@@ -50,7 +50,9 @@ Prs3d_DimensionAspect::Prs3d_DimensionAspect()
   myArrowAspect->SetColor (Quantity_NOC_LAWNGREEN);
   myArrowAspect->SetAngle (M_PI * 20.0 / 180.0);
   myArrowAspect->SetLength (6.0);
-  myExtensionSize = 6.0;
+  myExtensionSize     = 6.0;
+  myValueStringFormat = "%g";
+  myToDisplayUnits    = Standard_False;
 }
 
 //=======================================================================
@@ -58,7 +60,6 @@ Prs3d_DimensionAspect::Prs3d_DimensionAspect()
 //purpose  : Sets the same color for all parts of dimension:
 //           lines, arrows and text.
 //=======================================================================
-
 void Prs3d_DimensionAspect::SetCommonColor (const Quantity_Color& theColor)
 {
   myLineAspect->SetColor (theColor);
@@ -70,7 +71,6 @@ void Prs3d_DimensionAspect::SetCommonColor (const Quantity_Color& theColor)
 //function : LineAspect
 //purpose  : 
 //=======================================================================
-
 Handle(Prs3d_LineAspect) Prs3d_DimensionAspect::LineAspect () const
 {
   return myLineAspect;
@@ -80,7 +80,6 @@ Handle(Prs3d_LineAspect) Prs3d_DimensionAspect::LineAspect () const
 //function : SetLineAspect
 //purpose  : 
 //=======================================================================
-
 void Prs3d_DimensionAspect::SetLineAspect(const Handle(Prs3d_LineAspect)& theAspect)
 {
   myLineAspect = theAspect;
@@ -90,7 +89,6 @@ void Prs3d_DimensionAspect::SetLineAspect(const Handle(Prs3d_LineAspect)& theAsp
 //function : TextAspect
 //purpose  : 
 //=======================================================================
-
 Handle(Prs3d_TextAspect) Prs3d_DimensionAspect::TextAspect () const
 {
   return myTextAspect;
@@ -100,7 +98,6 @@ Handle(Prs3d_TextAspect) Prs3d_DimensionAspect::TextAspect () const
 //function : SetTextAspect
 //purpose  : 
 //=======================================================================
-
 void Prs3d_DimensionAspect::SetTextAspect (const Handle(Prs3d_TextAspect)& theAspect)
 {
   myTextAspect = theAspect;
@@ -110,12 +107,11 @@ void Prs3d_DimensionAspect::SetTextAspect (const Handle(Prs3d_TextAspect)& theAs
 //function : MakeArrows3D
 //purpose  : 
 //=======================================================================
-
 void Prs3d_DimensionAspect::MakeArrows3d (const Standard_Boolean isArrows3d)
 {
   myIsArrows3d = isArrows3d;
 }
- 
+
 //=======================================================================
 //function : IsArrows3D
 //purpose  : 
@@ -129,12 +125,11 @@ Standard_Boolean Prs3d_DimensionAspect::IsArrows3d () const
 //function : MakeText3D
 //purpose  : 
 //=======================================================================
-
 void Prs3d_DimensionAspect::MakeText3d (const Standard_Boolean isText3d)
 {
   myIsText3d = isText3d;
 }
- 
+
 //=======================================================================
 //function : IsText3D
 //purpose  : 
@@ -142,6 +137,24 @@ void Prs3d_DimensionAspect::MakeText3d (const Standard_Boolean isText3d)
 Standard_Boolean Prs3d_DimensionAspect::IsText3d () const
 {
   return myIsText3d;
+}
+
+//=======================================================================
+//function : IsUnitsDisplayed
+//purpose  : 
+//======================================================================= 
+Standard_Boolean Prs3d_DimensionAspect::IsUnitsDisplayed () const
+{
+  return myToDisplayUnits;
+}
+
+//=======================================================================
+//function : MakeUnitsDisplayed
+//purpose  : 
+//=======================================================================
+void Prs3d_DimensionAspect::MakeUnitsDisplayed (const Standard_Boolean theIsDisplayed)
+{
+  myToDisplayUnits = theIsDisplayed;
 }
 
 //=======================================================================
@@ -157,7 +170,6 @@ Standard_Boolean Prs3d_DimensionAspect::IsTextShaded () const
 //function : MakeTextShaded
 //purpose  : 
 //=======================================================================
-
 void Prs3d_DimensionAspect::MakeTextShaded (const Standard_Boolean isTextShaded)
 {
   myIsTextShaded = isTextShaded;
@@ -167,7 +179,6 @@ void Prs3d_DimensionAspect::MakeTextShaded (const Standard_Boolean isTextShaded)
 //function : SetArrowOrientation
 //purpose  : 
 //======================================================================= 
-
 void Prs3d_DimensionAspect::SetArrowOrientation (const Prs3d_DimensionArrowOrientation theArrowOrient)
 {
   myArrowOrientation = theArrowOrient;
@@ -177,7 +188,6 @@ void Prs3d_DimensionAspect::SetArrowOrientation (const Prs3d_DimensionArrowOrien
 //function : GetArrowOrientation
 //purpose  : 
 //======================================================================= 
-
 Prs3d_DimensionArrowOrientation Prs3d_DimensionAspect::ArrowOrientation() const
 {
   return myArrowOrientation;
@@ -187,7 +197,6 @@ Prs3d_DimensionArrowOrientation Prs3d_DimensionAspect::ArrowOrientation() const
 //function : SetTextVerticalPosition
 //purpose  :
 //=======================================================================
-
 void Prs3d_DimensionAspect::SetTextVerticalPosition (const Prs3d_DimensionTextVerticalPosition thePosition)
 {
   myTextVPosition = thePosition;
@@ -197,7 +206,6 @@ void Prs3d_DimensionAspect::SetTextVerticalPosition (const Prs3d_DimensionTextVe
 //function : TextVerticalPosition
 //purpose  :
 //======================================================================= 
-
 Prs3d_DimensionTextVerticalPosition Prs3d_DimensionAspect::TextVerticalPosition() const
 {
   return myTextVPosition;
@@ -207,7 +215,6 @@ Prs3d_DimensionTextVerticalPosition Prs3d_DimensionAspect::TextVerticalPosition(
 //function : SetTextHorizontalPosition
 //purpose  : 
 //=======================================================================
-
 void Prs3d_DimensionAspect::SetTextHorizontalPosition (const Prs3d_DimensionTextHorizontalPosition thePosition)
 {
   myTextHPosition = thePosition;
@@ -217,7 +224,6 @@ void Prs3d_DimensionAspect::SetTextHorizontalPosition (const Prs3d_DimensionText
 //function : TextHorizontalPosition
 //purpose  : 
 //======================================================================= 
-
 Prs3d_DimensionTextHorizontalPosition Prs3d_DimensionAspect::TextHorizontalPosition() const
 {
   return myTextHPosition;
@@ -227,7 +233,6 @@ Prs3d_DimensionTextHorizontalPosition Prs3d_DimensionAspect::TextHorizontalPosit
 //function : ArrowAspect
 //purpose  : 
 //=======================================================================
-
 Handle(Prs3d_ArrowAspect) Prs3d_DimensionAspect::ArrowAspect () const
 {
   return myArrowAspect;
@@ -237,7 +242,6 @@ Handle(Prs3d_ArrowAspect) Prs3d_DimensionAspect::ArrowAspect () const
 //function : SetArrowAspect
 //purpose  : 
 //=======================================================================
-
 void Prs3d_DimensionAspect::SetArrowAspect (const Handle(Prs3d_ArrowAspect)& theAspect)
 {
   myArrowAspect = theAspect;
@@ -247,7 +251,6 @@ void Prs3d_DimensionAspect::SetArrowAspect (const Handle(Prs3d_ArrowAspect)& the
 //function : SetExtensioSize
 //purpose  : 
 //=======================================================================
-
 void Prs3d_DimensionAspect::SetExtensionSize (const Standard_Real theSize)
 {
   myExtensionSize = theSize;
@@ -257,8 +260,25 @@ void Prs3d_DimensionAspect::SetExtensionSize (const Standard_Real theSize)
 //function : ExtensionSize
 //purpose  : 
 //=======================================================================
-
 Standard_Real Prs3d_DimensionAspect::ExtensionSize() const
 {
   return myExtensionSize;
+}
+
+//=======================================================================
+//function : SetValueStringFormat
+//purpose  : 
+//=======================================================================
+void Prs3d_DimensionAspect::SetValueStringFormat (const TCollection_AsciiString& theFormat)
+{
+  myValueStringFormat = theFormat;
+}
+
+//=======================================================================
+//function : ValueStringFormat
+//purpose  : 
+//=======================================================================
+TCollection_AsciiString Prs3d_DimensionAspect::ValueStringFormat() const
+{
+  return myValueStringFormat;
 }

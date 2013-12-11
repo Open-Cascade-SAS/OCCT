@@ -104,5 +104,7 @@ inline Prs3d_TypeOfHLR AIS_Drawer::TypeOfHLR ( ) const
   return (myTypeOfHLR == Prs3d_TOH_NotSet) ? myLink->TypeOfHLR() : myTypeOfHLR;
 }
 
-inline Standard_Boolean AIS_Drawer::HasDimensionAspect ()  const 
-{ return !myDimensionAspect.IsNull();}
+inline Standard_Boolean AIS_Drawer::HasDimensionAspect() const
+{
+  return !myDimensionAspect.IsNull();
+}

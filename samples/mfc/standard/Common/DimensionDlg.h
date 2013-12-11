@@ -76,4 +76,5 @@ public:
   afx_msg void OnBnClicked2dText();
   afx_msg void OnBnClicked3dText();
   afx_msg void OnBnClickedDimensionColor();
+  afx_msg void OnClose();
 };

@@ -127,13 +127,13 @@ void CLengthParamsEdgesPage::OnBnClickedEdge2Btn()
     // Build an angle dimension between two non-parallel edges
     Handle(AIS_AngleDimension) anAngleDim = new AIS_AngleDimension (myFirstEdge, mySecondEdge);
     anAngleDim->SetDimensionAspect (anAspect);
-    anAngleDim->MakeUnitsDisplayed (aDimDlg->IsUnitsDisplayed());
-    if (anAngleDim->IsUnitsDisplayed())
+    anAngleDim->DimensionAspect()->MakeUnitsDisplayed (aDimDlg->IsUnitsDisplayed());
+    if (aDimDlg->IsUnitsDisplayed())
     {
       anAngleDim->SetDisplayUnits (aDimDlg->GetUnits ());
-      if ((anAngleDim->DisplayUnits().IsEqual (TCollection_AsciiString ("deg"))))
+      if ((anAngleDim->GetDisplayUnits().IsEqual (TCollection_AsciiString ("deg"))))
       {
-        anAngleDim->MakeUnitsDisplayed (Standard_False);
+        anAngleDim->DimensionAspect()->MakeUnitsDisplayed (Standard_False);
       }
       else
       {
@@ -148,8 +148,8 @@ void CLengthParamsEdgesPage::OnBnClickedEdge2Btn()
   {
     Handle(AIS_LengthDimension) aLenDim = new AIS_LengthDimension (myFirstEdge, mySecondEdge, aPlane->Pln());
     aLenDim->SetDimensionAspect (anAspect);
-    aLenDim->MakeUnitsDisplayed (aDimDlg->IsUnitsDisplayed());
-    if (aLenDim->IsUnitsDisplayed())
+    aLenDim->DimensionAspect()->MakeUnitsDisplayed (aDimDlg->IsUnitsDisplayed());
+    if (aDimDlg->IsUnitsDisplayed())
     {
       aLenDim->SetFlyout (aDimDlg->GetFlyout());
       aLenDim->SetDisplayUnits (aDimDlg->GetUnits());

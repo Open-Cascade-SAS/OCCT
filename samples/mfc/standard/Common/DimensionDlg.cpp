@@ -9,6 +9,7 @@
 #include "LengthParamsEdgesPage.h"
 #include "AngleParamsVerticesPage.h"
 #include "RadiusParamsPage.h"
+#include "ParamsFacesPage.h"
 #include <Standard_Macro.hxx>
 #include <AIS_InteractiveContext.hxx>
 #include <TColStd_ListIteratorOfListOfInteger.hxx>
@@ -30,6 +31,7 @@ BEGIN_MESSAGE_MAP(CDimensionDlg, CDialog)
   ON_BN_CLICKED(IDC_2DText, &CDimensionDlg::OnBnClicked2dText)
   ON_BN_CLICKED(IDC_3DText, &CDimensionDlg::OnBnClicked3dText)
   ON_BN_CLICKED(IDC_DimensionColor, &CDimensionDlg::OnBnClickedDimensionColor)
+  ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 //=======================================================================
@@ -171,6 +173,8 @@ void CDimensionDlg::CreateLengthParamsTab()
   myLengthParams->InsertItem (1, &aTabItem);
   aTabItem.pszText = "Parallel edges";
   myLengthParams->InsertItem (2, &aTabItem);
+  aTabItem.pszText = "Parallel faces";
+  myLengthParams->InsertItem (3, &aTabItem);
 
   CLengthParamsEdgePage *aPage1 = new CLengthParamsEdgePage (myAISContext);
   aTabItem.mask = TCIF_PARAM;
@@ -186,6 +190,7 @@ void CDimensionDlg::CreateLengthParamsTab()
   myLengthParams->SetItem (1, &aTabItem);
   VERIFY (aPage2->Create (CLengthParamsVerticesPage::IDD,myLengthParams));
   aPage2->SetWindowPos (NULL,10,30,0,0,SWP_NOSIZE | SWP_NOZORDER);
+  aPage2->ShowWindow (SW_HIDE);
 
   CLengthParamsEdgesPage *aPage3 = new CLengthParamsEdgesPage (myAISContext);
   aTabItem.mask = TCIF_PARAM;
@@ -193,6 +198,15 @@ void CDimensionDlg::CreateLengthParamsTab()
   myLengthParams->SetItem (2, &aTabItem);
   VERIFY (aPage3->Create (CLengthParamsEdgesPage::IDD,myLengthParams));
   aPage3->SetWindowPos (NULL,10,30,0,0,SWP_NOSIZE | SWP_NOZORDER);
+  aPage3->ShowWindow (SW_HIDE);
+
+  CParamsFacesPage *aPage4 = new CParamsFacesPage (myAISContext);
+  aTabItem.mask = TCIF_PARAM;
+  aTabItem.lParam = (LPARAM)aPage4;
+  myLengthParams->SetItem (3, &aTabItem);
+  VERIFY (aPage4->Create (CParamsFacesPage::IDD,myLengthParams));
+  aPage4->SetWindowPos (NULL,10,30,0,0,SWP_NOSIZE | SWP_NOZORDER);
+  aPage4->ShowWindow (SW_HIDE);
 }
 
 //=======================================================================
@@ -208,6 +222,8 @@ void CDimensionDlg::CreateAngleParamsTab()
   myAngleParams->InsertItem (0, &aTabItem);
   aTabItem.pszText = "Three vertices";
   myAngleParams->InsertItem (1, &aTabItem);
+  aTabItem.pszText = "Two faces";
+  myAngleParams->InsertItem (2, &aTabItem);
 
   CLengthParamsEdgesPage *aPage1 = new CLengthParamsEdgesPage (myAISContext, true);
   aTabItem.mask = TCIF_PARAM;
@@ -223,6 +239,15 @@ void CDimensionDlg::CreateAngleParamsTab()
   myAngleParams->SetItem (1, &aTabItem);
   VERIFY (aPage2->Create (CAngleParamsVerticesPage::IDD,myAngleParams));
   aPage2->SetWindowPos (NULL,10,30,0,0,SWP_NOSIZE | SWP_NOZORDER);
+  aPage2->ShowWindow (SW_HIDE);
+
+  CParamsFacesPage *aPage3 = new CParamsFacesPage (myAISContext, true);
+  aTabItem.mask = TCIF_PARAM;
+  aTabItem.lParam = (LPARAM)aPage3;
+  myAngleParams->SetItem (2, &aTabItem);
+  VERIFY (aPage3->Create (CParamsFacesPage::IDD,myAngleParams));
+  aPage3->SetWindowPos (NULL,10,30,0,0,SWP_NOSIZE | SWP_NOZORDER);
+  aPage3->ShowWindow (SW_HIDE);
 }
 
 //=======================================================================
@@ -275,7 +300,22 @@ void CDimensionDlg::UpdateStandardModeForAngle()
   int aTabNum = ((CTabCtrl*) GetDlgItem (IDC_AngleTab))->GetCurSel();
   myAISContext->CloseAllContexts();
   myAISContext->OpenLocalContext();
-  myAISContext->ActivateStandardMode (aTabNum == 1 ? TopAbs_VERTEX : TopAbs_EDGE);
+  TopAbs_ShapeEnum aMode;
+
+  if (aTabNum == 1)
+  {
+    aMode = TopAbs_VERTEX;
+  }
+  else if (aTabNum == 2)
+  {
+    aMode = TopAbs_FACE;
+  }
+  else
+  {
+   aMode = TopAbs_EDGE;
+  }
+
+  myAISContext->ActivateStandardMode (aMode);
 }
 
 //=======================================================================
@@ -288,7 +328,21 @@ void CDimensionDlg::UpdateStandardModeForLength()
   int aTabNum = ((CTabCtrl*) GetDlgItem (IDC_LengthTab))->GetCurSel();
   myAISContext->CloseAllContexts();
   myAISContext->OpenLocalContext();
-  myAISContext->ActivateStandardMode (aTabNum == 1 ? TopAbs_VERTEX : TopAbs_EDGE);
+  TopAbs_ShapeEnum aMode;
+
+  if (aTabNum == 1)
+  {
+    aMode = TopAbs_VERTEX;
+  }
+  else if (aTabNum == 3)
+  {
+    aMode = TopAbs_FACE;
+  }
+  else
+  {
+   aMode = TopAbs_EDGE;
+  }
+  myAISContext->ActivateStandardMode (aMode);
 }
 
 //=======================================================================
@@ -500,11 +554,12 @@ void CDimensionDlg::OnDestroy()
   {
     myAISContext->CloseAllContexts();
   }
-  // Destroy length tab
   CWnd *aWnd;
   TC_ITEM anItem;
   anItem.mask = TCIF_PARAM;
-  for (int i = 2; i >= 0; --i)
+
+  // Destroy length tab
+  for (int i = 3; i >= 0; --i)
   {
     ((CTabCtrl*) GetDlgItem (IDC_LengthTab))->GetItem (i, &anItem);
     ASSERT (anItem.lParam);
@@ -513,7 +568,7 @@ void CDimensionDlg::OnDestroy()
     delete aWnd;
   }
   // Destroy angle tab
-  for (int i = 1; i >= 0; --i)
+  for (int i = 2; i >= 0; --i)
   {
     ((CTabCtrl*) GetDlgItem (IDC_AngleTab))->GetItem (i, &anItem);
     ASSERT(anItem.lParam);
@@ -521,6 +576,20 @@ void CDimensionDlg::OnDestroy()
     aWnd->DestroyWindow();
     delete aWnd;
   }
+
+  // Destroy radius tab
+    ((CTabCtrl*) GetDlgItem (IDC_RadiusTab))->GetItem (0, &anItem);
+    ASSERT(anItem.lParam);
+    aWnd  = (CWnd*) anItem.lParam;
+    aWnd->DestroyWindow();
+    delete aWnd;
+
+  // Destroy diameter tab
+  ((CTabCtrl*) GetDlgItem (IDC_DiameterTab))->GetItem (0, &anItem);
+  ASSERT(anItem.lParam);
+  aWnd  = (CWnd*) anItem.lParam;
+  aWnd->DestroyWindow();
+  delete aWnd;
 
   CDialog::OnDestroy();
 }
@@ -683,4 +752,13 @@ void CDimensionDlg::OnBnClickedDimensionColor()
 const Quantity_Color CDimensionDlg::GetDimensionColor() const
 {
   return myDimensionColor;
+}
+
+void CDimensionDlg::OnClose()
+{
+  if (myAISContext->HasOpenedContext())
+  {
+    myAISContext->CloseAllContexts();
+  }
+  CDialog::OnClose();
 }

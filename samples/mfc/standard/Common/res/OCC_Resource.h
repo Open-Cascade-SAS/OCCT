@@ -2,6 +2,7 @@
 // Microsoft Visual C++ generated include file.
 // Used by OCC_Resource.rc
 //
+#define IDD_ParamsFacesPage             101
 #define IDR_POPUP                       116
 #define IDD_Dimension                   119
 #define IDD_LengthParamsEdgePage        122
@@ -61,6 +62,10 @@
 #define IDC_TextDisplayMode             1047
 #define IDC_TextDisplayModeStatic       1048
 #define IDC_DimensionColor              1049
+#define IDC_FacesSt1                    1052
+#define IDC_FacesSt2                    1053
+#define IDC_FacesBtn1                   1054
+#define IDC_FacesBtn2                   1055
 #define ID_WINDOW_NEW3D                 1151
 #define ID_OBJECT_DISPLAYALL            1201
 #define ID_OBJECT_MATERIAL              1205
@@ -176,7 +181,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        131
 #define _APS_NEXT_COMMAND_VALUE         40038
-#define _APS_NEXT_CONTROL_VALUE         1052
+#define _APS_NEXT_CONTROL_VALUE         1055
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

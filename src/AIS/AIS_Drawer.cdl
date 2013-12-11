@@ -64,7 +64,10 @@ uses
     NameOfColor from Quantity,
     PlaneAngle from Quantity,
     Length from Quantity,
-    TypeOfHLR from Prs3d
+    DimensionUnits from Prs3d,
+    AsciiString from TCollection,
+    TypeOfHLR from Prs3d,
+    Ax2 from gp
 
 is
     Create returns mutable Drawer from AIS;
@@ -542,16 +545,42 @@ is
 --  Attributes for the presentation of a dimensions.
 --  
 
-    DimensionAspect(me:mutable) returns mutable DimensionAspect from Prs3d
+    DimensionAspect (me : mutable) returns mutable DimensionAspect from Prs3d is redefined static;
     ---Purpose: Returns a link with Prs3d_Drawer_DimensionAspect,
--- which provides settings for the appearance of dimensions.
-    is redefined static;
+    -- which provides settings for the appearance of dimensions.
 
-    HasDimensionAspect (me) returns Boolean from Standard
-        ---C++: inline 
-    	---Purpose: Returns true if the Drawer has a dimension aspect setting active.
-    is static;      
-     
+    HasDimensionAspect (me) returns Boolean from Standard is static;
+    ---C++: inline
+    -- Purpose: Returns true if the Drawer has a dimension aspect setting active.
+
+    SetDimLengthModelUnits (me: mutable; theUnits : AsciiString from TCollection) is redefined static;
+    ---Purpose: Sets dimension length model units for computing of dimension presentation.
+
+    SetDimAngleModelUnits (me: mutable; theUnits : AsciiString from TCollection) is redefined static;
+    ---Purpose: Sets dimension angle model units for computing of dimension presentation.
+
+    DimAngleModelUnits (me) returns AsciiString from TCollection is redefined static;
+    ---Purpose: Returns angle model units for the dimension presentation.
+    ---C++: return const &
+
+    DimLengthModelUnits (me) returns AsciiString from TCollection is redefined static;
+    ---Purpose: Returns length model units for the dimension presentation.
+    ---C++: return const &
+
+    SetDimLengthDisplayUnits (me: mutable; theUnits : AsciiString from TCollection) is redefined static;
+    ---Purpose: Sets length units in which value for dimension presentation is displayed.
+
+    SetDimAngleDisplayUnits (me: mutable; theUnits : AsciiString from TCollection) is redefined static;
+    ---Purpose: Sets angle units in which value for dimension presentation is displayed.
+
+    DimLengthDisplayUnits (me) returns AsciiString from TCollection is redefined static;
+    ---Purpose: Returns length units in which dimension presentation is displayed.
+    ---C++: return const &
+
+    DimAngleDisplayUnits (me) returns AsciiString from TCollection is redefined static;
+    ---Purpose: Returns angle units in which dimension presentation is displayed.
+    ---C++: return const &
+
 -- Attributes for the sections
 
     SectionAspect (me:mutable) returns mutable LineAspect from Prs3d
@@ -593,25 +622,32 @@ is
     	-- for Interactive Objects.
 
 fields
+
     myLink                           : Drawer from Prs3d;
     hasLocalAttributes               : Boolean from Standard;		
-    
+
     myhasOwnDeviationCoefficient     : Boolean from Standard;
     myOwnDeviationCoefficient        : Real from Standard;
     myPreviousDeviationCoefficient   : Real from Standard;
-    
+
     myhasOwnHLRDeviationCoefficient  : Boolean from Standard;
     myOwnHLRDeviationCoefficient     : Real from Standard;
     myPreviousHLRDeviationCoefficient: Real from Standard;
-    
+
     myhasOwnDeviationAngle           : Boolean from Standard;
     myOwnDeviationAngle              : Real from Standard;
     myPreviousDeviationAngle         : Real from Standard;
-    
+
     myhasOwnHLRDeviationAngle        : Boolean from Standard;
     myOwnHLRDeviationAngle           : Real from Standard; 
     myPreviousHLRDeviationAngle      : Real from Standard;
     myHasOwnFaceBoundaryDraw         : Boolean from Standard;
+
+    myHasOwnDimLengthModelUnits      : Boolean from Standard;
+    myHasOwnDimLengthDisplayUnits    : Boolean from Standard;
+    myHasOwnDimAngleModelUnits      : Boolean from Standard;
+    myHasOwnDimAngleDisplayUnits    : Boolean from Standard;
+
 end Drawer;
  
 

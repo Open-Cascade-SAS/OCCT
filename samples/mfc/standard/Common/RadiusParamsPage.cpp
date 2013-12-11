@@ -98,14 +98,12 @@ void CRadiusParamsPage::OnBnClickedObjectBtn()
   Handle(AIS_Dimension) aDim;
   if (myIsDiameterDimension)
   {
-    aDim = isAttachPoint ? new AIS_DiameterDimension (aCircle, ElCLib::Value ((aFirstPar + aLastPar) / 2.0, aCircle))
-                         : new AIS_DiameterDimension (aCircle);
+    aDim = new AIS_DiameterDimension (aCircle);
     Handle(AIS_DiameterDimension)::DownCast(aDim)->SetFlyout (aDimDlg->GetFlyout());
   }
   else
   {
-    aDim = isAttachPoint ? new AIS_RadiusDimension (aCircle, ElCLib::Value ((aFirstPar + aLastPar) / 2.0, aCircle))
-                         : new AIS_RadiusDimension (aCircle);
+    aDim = new AIS_RadiusDimension (aCircle);
     Handle(AIS_RadiusDimension)::DownCast(aDim)->SetFlyout (aDimDlg->GetFlyout());
   }
 
@@ -115,8 +113,8 @@ void CRadiusParamsPage::OnBnClickedObjectBtn()
   anAspect->TextAspect()->SetHeight (aDimDlg->GetFontHeight());
   anAspect->MakeTextShaded (aDimDlg->IsText3dShaded());
   anAspect->SetCommonColor (aDimDlg->GetDimensionColor());
-  aDim->MakeUnitsDisplayed (aDimDlg->IsUnitsDisplayed());
-  if (aDim->IsUnitsDisplayed())
+  aDim->DimensionAspect()->MakeUnitsDisplayed (aDimDlg->IsUnitsDisplayed());
+  if (aDimDlg->IsUnitsDisplayed())
   {
     aDim->SetDisplayUnits (aDimDlg->GetUnits());
   }

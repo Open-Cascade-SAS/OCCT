@@ -25,16 +25,19 @@
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
+#include <BRepLib_MakeVertex.hxx>
+#include <BRep_Tool.hxx>
 #include <ElCLib.hxx>
+#include <GCPnts_UniformAbscissa.hxx>
+#include <GC_MakeArcOfCircle.hxx>
 #include <gce_MakeLin2d.hxx>
+#include <gce_MakeLin.hxx>
+#include <gce_MakeCirc.hxx>
 #include <gce_MakeCone.hxx>
 #include <gce_MakePln.hxx>
-#include <gce_MakeCirc.hxx>
 #include <gce_MakeDir.hxx>
-#include <GC_MakeArcOfCircle.hxx>
-#include <GCPnts_UniformAbscissa.hxx>
-#include <Geom_TrimmedCurve.hxx>
 #include <Geom_Circle.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <Geom_ConicalSurface.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_OffsetSurface.hxx>
@@ -42,13 +45,10 @@
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
-#include <IntAna2d_IntPoint.hxx>
-#include <IntAna_ResultType.hxx>
 #include <ProjLib.hxx>
 #include <Prs3d_Root.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
-#include <Select3D_SensitiveCurve.hxx>
 #include <Select3D_SensitiveGroup.hxx>
 #include <Select3D_SensitiveSegment.hxx>
 #include <SelectMgr_Selection.hxx>
@@ -66,541 +66,262 @@ namespace
 };
 
 //=======================================================================
-//function : init
-//purpose  : Private constructor for default initialization
-//=======================================================================
-void AIS_AngleDimension::init()
-{
-  // Default values of units
-  UnitsAPI::SetLocalSystem (UnitsAPI_SI);
-  SetUnitsQuantity ("PLANE ANGLE");
-  SetModelUnits ("rad");
-  SetDisplayUnits ("deg");
-  SetSpecialSymbol (THE_DEGREE_SYMBOL);
-  SetDisplaySpecialSymbol (AIS_DSS_After);
-  SetFlyout (15.0);
-  SetKindOfDimension (AIS_KOD_PLANEANGLE);
-  MakeUnitsDisplayed (Standard_False);
-}
-
-//=======================================================================
 //function : Constructor
-//purpose  : Two edges dimension
+//purpose  : 
 //=======================================================================
 AIS_AngleDimension::AIS_AngleDimension (const TopoDS_Edge& theFirstEdge,
                                         const TopoDS_Edge& theSecondEdge)
-: AIS_Dimension(),
-  myIsFlyoutLines (Standard_True)
+: AIS_Dimension (AIS_KOD_PLANEANGLE)
 {
-  init();
-  myShapesNumber = 2;
-  myFirstShape   = theFirstEdge;
-  mySecondShape  = theSecondEdge;
+  Init();
+  SetMeasuredGeometry (theFirstEdge, theSecondEdge);
 }
 
 //=======================================================================
 //function : Constructor
-//purpose  : Two edges dimension
-//           <thePlane> is used in case of Angle=PI
-//=======================================================================
-AIS_AngleDimension::AIS_AngleDimension (const TopoDS_Edge& theFirstEdge,
-                                        const TopoDS_Edge& theSecondEdge,
-                                        const gp_Pln& thePlane)
-: AIS_Dimension(),
-  myIsFlyoutLines (Standard_True)
-{
-  init();
-  myShapesNumber = 2;
-  myFirstShape   = theFirstEdge;
-  mySecondShape  = theSecondEdge;
-  SetWorkingPlane (thePlane);
-}
-
-//=======================================================================
-//function : Constructor
-//purpose  : Three points dimension
+//purpose  : 
 //=======================================================================
 AIS_AngleDimension::AIS_AngleDimension (const gp_Pnt& theFirstPoint,
                                         const gp_Pnt& theSecondPoint,
                                         const gp_Pnt& theThirdPoint)
-: AIS_Dimension(),
-  myIsFlyoutLines (Standard_True)
+: AIS_Dimension (AIS_KOD_PLANEANGLE)
 {
-  init();
-  myIsInitialized = Standard_True;
-  myFirstPoint    = theFirstPoint;
-  myCenter        = theSecondPoint;
-  mySecondPoint   = theThirdPoint;
-  myShapesNumber  = 3;
+  Init();
+  SetMeasuredGeometry (theFirstPoint, theSecondPoint, theThirdPoint);
 }
 
 //=======================================================================
 //function : Constructor
-//purpose  : Cone dimension
+//purpose  : 
+//=======================================================================
+AIS_AngleDimension::AIS_AngleDimension (const TopoDS_Vertex& theFirstVertex,
+                                        const TopoDS_Vertex& theSecondVertex,
+                                        const TopoDS_Vertex& theThirdVertex)
+: AIS_Dimension (AIS_KOD_PLANEANGLE)
+{
+  Init();
+  SetMeasuredGeometry (theFirstVertex, theSecondVertex, theThirdVertex);
+}
+
+//=======================================================================
+//function : Constructor
+//purpose  : 
 //=======================================================================
 AIS_AngleDimension::AIS_AngleDimension (const TopoDS_Face& theCone)
-: AIS_Dimension(),
-  myIsFlyoutLines (Standard_True)
+: AIS_Dimension (AIS_KOD_PLANEANGLE)
 {
-  init();
-  myIsInitialized = Standard_False;
-  myFirstShape    = theCone;
-  myShapesNumber  = 1;
+  Init();
+  SetMeasuredGeometry (theCone);
 }
 
 //=======================================================================
 //function : Constructor
-//purpose  : Two faces dimension
+//purpose  : 
+//=======================================================================
+AIS_AngleDimension::AIS_AngleDimension (const TopoDS_Face& theFirstFace,
+                                        const TopoDS_Face& theSecondFace)
+: AIS_Dimension (AIS_KOD_PLANEANGLE)
+{
+  Init();
+  SetMeasuredGeometry (theFirstFace, theSecondFace);
+}
+
+//=======================================================================
+//function : Constructor
+//purpose  : 
 //=======================================================================
 AIS_AngleDimension::AIS_AngleDimension (const TopoDS_Face& theFirstFace,
                                         const TopoDS_Face& theSecondFace,
-                                        const gp_Ax1& theAxis)
-: AIS_Dimension(),
-  myIsFlyoutLines (Standard_True)
+                                        const gp_Pnt& thePoint)
+: AIS_Dimension (AIS_KOD_PLANEANGLE)
 {
-  init();
-  myIsInitialized = Standard_False;
-  myFirstShape    = theFirstFace;
-  mySecondShape   = theSecondFace;
-  myShapesNumber  = 2;
-  gp_Pln aPlane;
-  aPlane.SetAxis (theAxis);
-  SetWorkingPlane (aPlane);
+  Init();
+  SetMeasuredGeometry (theFirstFace, theSecondFace, thePoint);
 }
 
 //=======================================================================
-//function : SetFirstShape
+//function : SetMeasuredGeometry
 //purpose  : 
 //=======================================================================
-void AIS_AngleDimension::SetFirstShape (const TopoDS_Shape& theShape,
-                                        const Standard_Boolean isSingleShape /*= Standard_False*/)
+void AIS_AngleDimension::SetMeasuredGeometry (const TopoDS_Edge& theFirstEdge,
+                                              const TopoDS_Edge& theSecondEdge)
 {
-  AIS_Dimension::SetFirstShape (theShape);
-  if (isSingleShape)
-    myShapesNumber = 1;
+  gp_Pln aComputedPlane;
+
+  myFirstShape   = theFirstEdge;
+  mySecondShape  = theSecondEdge;
+  myThirdShape   = TopoDS_Shape();
+  myGeometryType = GeometryType_Edges;
+  myIsValid      = InitTwoEdgesAngle (aComputedPlane);
+
+  if (myIsValid && !myIsPlaneCustom)
+  {
+    myPlane = aComputedPlane;
+  }
+
+  myIsValid &= CheckPlane (myPlane);
+
+  SetToUpdate();
 }
 
 //=======================================================================
-//function : aboveInBelowCone
-//purpose  : Returns 1 if <theC> center is above of <theCMin> center;
-//                   0 if <theC> center is between <theCMin> and
-//                        <theCMax> centers;
-//                  -1 if <theC> center is below <theCMax> center.
-//=======================================================================
-Standard_Integer AIS_AngleDimension::aboveInBelowCone (const gp_Circ &theCMax,
-                                                       const gp_Circ &theCMin,
-                                                       const gp_Circ &theC)
-{
-  const Standard_Real aD  = theCMax.Location().Distance (theCMin.Location());
-  const Standard_Real aD1 = theCMax.Location().Distance (theC.Location());
-  const Standard_Real aD2 = theCMin.Location().Distance (theC.Location());
-
-  if (aD >= aD1 && aD >= aD2) return  0;
-  if (aD  < aD2 && aD1 < aD2) return -1;
-  if (aD  < aD1 && aD2 < aD1) return  1;
-  return 0;
-}
-
-//=======================================================================
-//function : initConeAngle
-//purpose  : initialization of the cone angle
-//=======================================================================
-Standard_Boolean AIS_AngleDimension::initConeAngle (const TopoDS_Face& theCone)
-{
-  if (theCone.IsNull ())
-    return Standard_False;
-
-  gp_Pln aPln;
-  gp_Cone aCone;
-  gp_Circ aCircle;
-  // A surface from the Face
-  Handle(Geom_Surface) aSurf;
-  Handle(Geom_OffsetSurface) aOffsetSurf; 
-  Handle(Geom_ConicalSurface) aConicalSurf;
-  Handle(Geom_SurfaceOfRevolution) aRevSurf;
-  Handle(Geom_Line) aLine;
-  BRepAdaptor_Surface aConeAdaptor (theCone);
-  TopoDS_Face aFace;
-  AIS_KindOfSurface aSurfType;
-  Standard_Real anOffset = 0.;
-  Handle(Standard_Type) aType;
-
-  Standard_Real aMaxV = aConeAdaptor.FirstVParameter();
-  Standard_Real aMinV = aConeAdaptor.LastVParameter();
-
-  AIS::GetPlaneFromFace(theCone, aPln, aSurf, aSurfType, anOffset);
-
-  if (aSurfType == AIS_KOS_Revolution)
-  {
-    // Surface of revolution
-    aRevSurf = Handle(Geom_SurfaceOfRevolution)::DownCast(aSurf);
-    gp_Lin aLin (aRevSurf->Axis());
-    Handle(Geom_Curve) aBasisCurve = aRevSurf->BasisCurve();
-    //Must be a part of line (basis curve should be linear)
-    if (aBasisCurve ->DynamicType() != STANDARD_TYPE(Geom_Line))
-      return Standard_False;
-
-    gp_Pnt aFirst1 = aConeAdaptor.Value (0., aMinV);
-    gp_Pnt aLast1 = aConeAdaptor.Value (0., aMaxV);
-    gp_Vec aVec1 (aFirst1, aLast1);
-
-    //Projection <aFirst> on <aLin>
-    gp_Pnt aFirst2 = ElCLib::Value (ElCLib::Parameter (aLin, aFirst1), aLin);
-    // Projection <aLast> on <aLin>
-    gp_Pnt aLast2 = ElCLib::Value (ElCLib::Parameter (aLin, aLast1), aLin);
-
-    gp_Vec aVec2 (aFirst2, aLast2);
-
-    // Check if two parts of revolution are parallel (it's a cylinder) or normal (it's a circle).
-    if (aVec1.IsParallel (aVec2, Precision::Angular())
-        || aVec1.IsNormal (aVec2,Precision::Angular()))
-      return Standard_False;
-
-    gce_MakeCone aMkCone (aRevSurf->Axis(), aFirst1, aLast1);
-    aCone =  aMkCone.Value();
-    myCenter = aCone.Apex();
-  }
-  else
-  {
-    aType = aSurf->DynamicType();
-    if (aType == STANDARD_TYPE(Geom_OffsetSurface) || anOffset > 0.01)
-    {
-      // Offset surface
-      aOffsetSurf = new Geom_OffsetSurface (aSurf, anOffset);
-      aSurf = aOffsetSurf->Surface();
-      BRepBuilderAPI_MakeFace aMkFace(aSurf, Precision::Confusion());
-      aMkFace.Build();
-      if (!aMkFace.IsDone())
-        return Standard_False;
-      aConeAdaptor.Initialize (aMkFace.Face());
-    }
-    aCone = aConeAdaptor.Cone();
-    aConicalSurf = Handle(Geom_ConicalSurface)::DownCast (aSurf);
-    myCenter =  aConicalSurf->Apex();
-  }
-
-  // A circle where the angle is drawn
-  Handle(Geom_Curve) aCurve;
-  Standard_Real aMidV = ( aMinV + aMaxV ) / 2.5;
-  aCurve = aSurf->VIso (aMidV);
-  aCircle = Handle(Geom_Circle)::DownCast (aCurve)->Circ();
-
-  aCurve = aSurf->VIso(aMaxV);
-  gp_Circ aCircVmax = Handle(Geom_Circle)::DownCast(aCurve)->Circ();
-  aCurve = aSurf->VIso(aMinV);
-  gp_Circ aCircVmin = Handle(Geom_Circle)::DownCast(aCurve)->Circ();
-
-
-  if (aCircVmax.Radius() < aCircVmin.Radius())
-  {
-   gp_Circ aTmpCirc = aCircVmax;
-   aCircVmax = aCircVmin;
-   aCircVmin = aTmpCirc;
-  }
-
-  myFirstPoint  = ElCLib::Value (0, aCircle);
-  mySecondPoint = ElCLib::Value (M_PI, aCircle);
-  return Standard_True;
-}
-
-//=======================================================================
-//function : initTwoFacesAngle
-//purpose  : initialization of angle dimension between two faces
-//=======================================================================
-Standard_Boolean AIS_AngleDimension::initTwoFacesAngle ()
-{
-  TopoDS_Face aFirstFace = TopoDS::Face (myFirstShape);
-  TopoDS_Face aSecondFace = TopoDS::Face (mySecondShape);
-  gp_Dir aFirstDir, aSecondDir;
-  gp_Pln aFirstPlane, aSecondPlane;
-  gp_Pnt aTextPos;
-  Handle(Geom_Surface) aFirstBasisSurf, aSecondBasisSurf;
-  AIS_KindOfSurface aFirstSurfType, aSecondSurfType;
-  Standard_Real aFirstOffset, aSecondOffset;
-  
-  AIS::GetPlaneFromFace (aFirstFace, aFirstPlane,
-                         aFirstBasisSurf,aFirstSurfType,aFirstOffset);
-  AIS::GetPlaneFromFace (aSecondFace, aSecondPlane,
-                         aSecondBasisSurf, aSecondSurfType, aSecondOffset);
-
-  if (aFirstSurfType == AIS_KOS_Plane)
-  {
-    //Planar faces angle
-    AIS::ComputeAngleBetweenPlanarFaces (aFirstFace,
-                                        aSecondFace,
-                                        aSecondBasisSurf,
-                                        GetWorkingPlane().Axis(),
-                                        myValue,
-                                        Standard_True,
-                                        aTextPos,
-                                        myCenter,
-                                        myFirstPoint,
-                                        mySecondPoint,
-                                        aFirstDir,
-                                        aSecondDir);
-  }
-  else
-  {
-        // Curvilinear faces angle
-    Handle(Geom_Plane) aPlane = new Geom_Plane (GetWorkingPlane());
-    AIS::ComputeAngleBetweenCurvilinearFaces (aFirstFace,
-                                             aSecondFace,
-                                             aFirstBasisSurf,
-                                             aSecondBasisSurf,
-                                             aFirstSurfType,
-                                             aSecondSurfType,
-                                             GetWorkingPlane().Axis(),
-                                             myValue,
-                                             Standard_True,
-                                             aTextPos,
-                                             myCenter,
-                                             myFirstPoint,
-                                             mySecondPoint,
-                                             aFirstDir,
-                                             aSecondDir,
-                                             aPlane);
-    SetWorkingPlane (aPlane->Pln());
-  }
-  return Standard_True;
-}
-
-//=======================================================================
-//function : countDefaultPlane
+//function : SetMeasuredGeometry
 //purpose  : 
 //=======================================================================
-void AIS_AngleDimension::countDefaultPlane ()
+void AIS_AngleDimension::SetMeasuredGeometry (const gp_Pnt& theFirstPoint,
+                                              const gp_Pnt& theSecondPoint,
+                                              const gp_Pnt& theThirdPoint)
 {
-  if (!myIsInitialized)
-    return;
-  // Compute normal of the default plane.
-  gp_Vec aVec1(myCenter, myFirstPoint),
-         aVec2(myCenter, mySecondPoint);
-  myDefaultPlane = gp_Pln(myCenter, aVec1^aVec2);
-  // Set computed value to <myWorkingPlane>
-  ResetWorkingPlane ();
+  myFirstPoint    = theFirstPoint;
+  myCenterPoint   = theSecondPoint;
+  mySecondPoint   = theThirdPoint;
+  myFirstShape    = BRepLib_MakeVertex (myFirstPoint);
+  mySecondShape   = BRepLib_MakeVertex (myCenterPoint);
+  myThirdShape    = BRepLib_MakeVertex (mySecondPoint);
+  myGeometryType  = GeometryType_Points;
+  myIsValid       = IsValidPoints (myFirstPoint, myCenterPoint, mySecondPoint);
+
+  if (myIsValid && !myIsPlaneCustom)
+  {
+    ComputePlane();
+  }
+
+  myIsValid &= CheckPlane (myPlane);
+
+  SetToUpdate();
 }
 
 //=======================================================================
-//function : computeValue
+//function : SetMeasuredGeometry
 //purpose  : 
 //=======================================================================
-void AIS_AngleDimension::computeValue ()
+void AIS_AngleDimension::SetMeasuredGeometry (const TopoDS_Vertex& theFirstVertex,
+                                              const TopoDS_Vertex& theSecondVertex,
+                                              const TopoDS_Vertex& theThirdVertex)
 {
-  gp_Vec aVec1 (myCenter, myFirstPoint),
-         aVec2 (myCenter, mySecondPoint);
-  myValue = aVec1.Angle (aVec2);
-  // To model units
-  AIS_Dimension::computeValue();
+  myFirstShape   = theFirstVertex;
+  mySecondShape  = theSecondVertex;
+  myThirdShape   = theThirdVertex;
+  myFirstPoint   = BRep_Tool::Pnt (theFirstVertex);
+  myCenterPoint  = BRep_Tool::Pnt (theSecondVertex);
+  mySecondPoint  = BRep_Tool::Pnt (theThirdVertex);
+  myGeometryType = GeometryType_Points;
+  myIsValid      = IsValidPoints (myFirstPoint, myCenterPoint, mySecondPoint);
+
+  if (myIsValid && !myIsPlaneCustom)
+  {
+    ComputePlane();
+  }
+
+  myIsValid &= CheckPlane (myPlane);
+
+  SetToUpdate();
 }
 
 //=======================================================================
-//function : initTwoEdgesAngle
-//purpose  : Fill gp_Pnt fields for further presentation computation
-//           If intersection between two edges doesn't exist
-//           <myIsInitialized> is set to false
+//function : SetMeasuredGeometry
+//purpose  : 
 //=======================================================================
-Standard_Boolean AIS_AngleDimension::initTwoEdgesAngle ()
+void AIS_AngleDimension::SetMeasuredGeometry (const TopoDS_Face& theCone)
 {
-  // Data initialization
-  TopoDS_Edge aFirstEdge = TopoDS::Edge (myFirstShape);
-  TopoDS_Edge aSecondEdge = TopoDS::Edge (mySecondShape);
-  BRepAdaptor_Curve aMakeFirstLine (aFirstEdge);
-  BRepAdaptor_Curve aMakeSecondLine (aSecondEdge);
+  myFirstShape   = theCone;
+  mySecondShape  = TopoDS_Shape();
+  myThirdShape   = TopoDS_Shape();
+  myGeometryType = GeometryType_Face;
+  myIsValid      = InitConeAngle();
 
-  if (aMakeFirstLine.GetType() != GeomAbs_Line || aMakeSecondLine.GetType() != GeomAbs_Line)
+  if (myIsValid && !myIsPlaneCustom)
   {
-    return  Standard_False;
+    ComputePlane();
   }
 
-  Handle(Geom_Line) aFirstLine  = new Geom_Line (aMakeFirstLine.Line());
-  Handle(Geom_Line) aSecondLine = new Geom_Line (aMakeSecondLine.Line());
+  myIsValid &= CheckPlane (myPlane);
 
-  gp_Lin aFirstLin  = aFirstLine->Lin ();
-  gp_Lin aSecondLin = aSecondLine->Lin ();
-  gp_Lin2d aFirstLin2d, aSecondLin2d;
-  Standard_Boolean isParallelLines = aFirstLin.Direction().IsParallel (aSecondLin.Direction(), Precision::Angular());
-  Standard_Boolean isSameLines = isParallelLines && aFirstLin.Distance (aSecondLin.Location()) <= Precision::Confusion();
-  // In case where we can't compute plane automatically
-  if ((isParallelLines || isSameLines) && !myIsWorkingPlaneCustom)
-  {
-    return Standard_False;
-  }
-
-  gp_Pln aPlane;
-
-  /// PART 1 is for automatic plane computation from two edges if it is possible
-  // Build plane
-  if (!myIsWorkingPlaneCustom)
-  {
-    gp_Pnt aPoint = aFirstLine->Value (0.);
-    gp_Dir aNormal = isParallelLines
-                     ? gp_Vec(aSecondLin.Normal (aPoint).Direction()) ^ gp_Vec (aSecondLin.Direction())
-                     : gp_Vec (aFirstLin.Direction()) ^ gp_Vec (aSecondLin.Direction());
-    aPlane = gp_Pln (aPoint, aNormal);
-    resetWorkingPlane (aPlane);
-  }
-  else
-  {
-    aPlane = GetWorkingPlane();
-  }
-
-  // Compute geometry for this plane and edges
-  Standard_Boolean isInfinite1,isInfinite2;
-  gp_Pnt aFirstPoint1, aLastPoint1, aFirstPoint2, aLastPoint2;
-  Standard_Integer anExtIndex = -1;
-  Handle(Geom_Curve) anExtCurve;
-  Handle(Geom_Plane) aGeomPlane = new Geom_Plane (aPlane);
-  if (!AIS::ComputeGeometry (aFirstEdge, aSecondEdge,
-                             anExtIndex,
-                             aFirstLine, aSecondLine,
-                             aFirstPoint1, aLastPoint1,
-                             aFirstPoint2, aLastPoint2,
-                             anExtCurve,
-                             isInfinite1, isInfinite2,
-                             aGeomPlane))
-  {
-    return Standard_False;
-  }
-
-  // Check if both edges are on this plane
-  if (!anExtCurve.IsNull())
-  {
-    if (anExtIndex == 1) // First curve is out of the plane
-    {
-      // Project curve on the plane
-      if (myIsWorkingPlaneCustom)
-      {
-        aFirstLin2d = ProjLib::Project (aPlane, aFirstLin);
-        aFirstLin = ElCLib::To3d (aPlane.Position().Ax2(), aFirstLin2d);
-      }
-      else
-      {
-        aFirstLin.Translate (gp_Vec (aFirstLin.Location(), aSecondLin.Location()));
-      }
-
-      aFirstLine = new Geom_Line (aFirstLin);
-    }
-    else if (anExtIndex == 2) // Second curve is out of the plane
-    {
-      if (myIsWorkingPlaneCustom)
-      {
-        aSecondLin2d = ProjLib::Project (aPlane, aSecondLin);
-        aSecondLin = ElCLib::To3d (aPlane.Position().Ax2(), aSecondLin2d);
-      }
-      else
-      {
-        aSecondLin.Translate (gp_Vec (aSecondLin.Location(), aFirstLin.Location()));
-      }
-
-      aSecondLine = new Geom_Line (aSecondLin);
-    }
-  }
-
-  /// PART 2 is for dimension computation using the working plane
-
-  if (aFirstLin.Direction ().IsParallel (aSecondLin.Direction (), Precision::Angular ()))
-  {
-    // Parallel lines
-    isSameLines = aFirstLin.Distance(aSecondLin.Location()) <= Precision::Confusion();
-    if (!isSameLines)
-      return Standard_False;
-
-     myFirstPoint = aFirstLin.Location();
-     mySecondPoint = ElCLib::Value (ElCLib::Parameter (aFirstLin, myFirstPoint), aSecondLin);
-     if (mySecondPoint.Distance (mySecondPoint) <= Precision::Confusion ())
-       mySecondPoint.Translate (gp_Vec (aSecondLin.Direction ())*Abs(GetFlyout()));
-     myCenter.SetXYZ( (myFirstPoint.XYZ() + mySecondPoint.XYZ()) / 2. );
-  }
-  else
-  {
-    // Find intersection
-    aFirstLin2d = ProjLib::Project (aPlane, aFirstLin);
-    aSecondLin2d = ProjLib::Project (aPlane, aSecondLin);
-
-    IntAna2d_AnaIntersection anInt2d (aFirstLin2d, aSecondLin2d);
-    gp_Pnt2d anIntersectPoint;
-    if (!anInt2d.IsDone() || anInt2d.IsEmpty())
-    {
-      return Standard_False;
-    }
-
-    anIntersectPoint = gp_Pnt2d (anInt2d.Point(1).Value());
-    myCenter = ElCLib::To3d(aPlane.Position().Ax2(), anIntersectPoint);
-
-    if (isInfinite1 || isInfinite2)
-    {
-      myFirstPoint  = myCenter.Translated (gp_Vec (aFirstLin.Direction())*Abs (GetFlyout()));
-      mySecondPoint = myCenter.Translated (gp_Vec (aSecondLin.Direction())*Abs (GetFlyout()));
-      return Standard_True;
-    }
-
-    // |
-    // | <- dimension should be here
-    // *----
-    myFirstPoint  = myCenter.Distance (aFirstPoint1) > myCenter.Distance (aLastPoint1) ? aFirstPoint1 : aLastPoint1;
-    mySecondPoint = myCenter.Distance (aFirstPoint2) > myCenter.Distance (aLastPoint2) ? aFirstPoint2 : aLastPoint2;
-  }
-  return Standard_True;
+  SetToUpdate();
 }
 
 //=======================================================================
-//function: getCenterOnArc
+//function : SetMeasuredGeometry
+//purpose  : 
+//=======================================================================
+void AIS_AngleDimension::SetMeasuredGeometry (const TopoDS_Face& theFirstFace,
+                                              const TopoDS_Face& theSecondFace)
+{
+  myFirstShape   = theFirstFace;
+  mySecondShape  = theSecondFace;
+  myThirdShape   = TopoDS_Shape();
+  myGeometryType = GeometryType_Faces;
+  myIsValid      = InitTwoFacesAngle();
+
+  if (myIsValid && !myIsPlaneCustom)
+  {
+    ComputePlane();
+  }
+
+  myIsValid &= CheckPlane (myPlane);
+
+  SetToUpdate();
+}
+
+//=======================================================================
+//function : SetMeasuredGeometry
+//purpose  : 
+//=======================================================================
+void AIS_AngleDimension::SetMeasuredGeometry (const TopoDS_Face& theFirstFace,
+                                              const TopoDS_Face& theSecondFace,
+                                              const gp_Pnt& thePoint)
+{
+  myFirstShape   = theFirstFace;
+  mySecondShape  = theSecondFace;
+  myThirdShape   = TopoDS_Shape();
+  myGeometryType = GeometryType_Faces;
+  myIsValid      = InitTwoFacesAngle (thePoint);
+
+  if (myIsValid && !myIsPlaneCustom)
+  {
+    ComputePlane();
+  }
+
+  myIsValid &= CheckPlane (myPlane);
+
+  SetToUpdate();
+}
+
+//=======================================================================
+//function : Init
+//purpose  : 
+//=======================================================================
+void AIS_AngleDimension::Init()
+{
+  SetSpecialSymbol (THE_DEGREE_SYMBOL);
+  SetDisplaySpecialSymbol (AIS_DSS_After);
+  SetFlyout (15.0);
+}
+
+//=======================================================================
+//function: GetCenterOnArc
 //purpose :
 //=======================================================================
-gp_Pnt AIS_AngleDimension::getCenterOnArc (const gp_Pnt& theFirstAttach,
-                                           const gp_Pnt& theSecondAttach)
-{
-  gp_Pnt2d aCenter2d       = ProjLib::Project (GetWorkingPlane(), myCenter),
-           aFirstAttach2d  = ProjLib::Project (GetWorkingPlane(), theFirstAttach),
-           aSecondAttach2d = ProjLib::Project (GetWorkingPlane(), theSecondAttach);
-  gp_Lin2d anAttachLine2d = gce_MakeLin2d (aFirstAttach2d, aSecondAttach2d);
-
-  // Getting text center
-  gp_Pnt2d aTextCenterPnt = ElCLib::Value ((ElCLib::Parameter (anAttachLine2d, aFirstAttach2d) + ElCLib::Parameter (anAttachLine2d, aSecondAttach2d)) / 2., anAttachLine2d);
-  gp_Lin2d aCenterToTextCenterLin = gce_MakeLin2d (aCenter2d, aTextCenterPnt);
-
-  // Drawing circle
-  Standard_Real aRadius = theFirstAttach.Distance (myCenter);
-  gp_Circ2d aCircle (gp_Ax22d (aCenter2d, gp_Dir2d (1, 0)), aRadius);
-
-  // Getting text position in the center of arc
-  IntAna2d_AnaIntersection anInt2d (aCenterToTextCenterLin, aCircle);
-  gp_Pnt2d aTextCenterOnArc2d;
-  if (anInt2d.IsDone())
-    if (!anInt2d.IsEmpty())
-      aTextCenterOnArc2d = gp_Pnt2d (anInt2d.Point (1).Value());
-  gp_Pnt aCenterOnArc = ElCLib::To3d (GetWorkingPlane().Position().Ax2(), aTextCenterOnArc2d);
-  return aCenterOnArc;
-}
-
-//=======================================================================
-//function: drawArcWithText
-//purpose :
-//=======================================================================
-void AIS_AngleDimension::drawArcWithText (const Handle(Prs3d_Presentation)& thePresentation,
-                                          const gp_Pnt& theFirstAttach,
-                                          const gp_Pnt& theSecondAttach,
-                                          const TCollection_ExtendedString& theText,
-                                          const Standard_Real theTextWidth,
-                                          const Standard_Integer theMode,
-                                          const Standard_Integer theLabelPosition)
+gp_Pnt AIS_AngleDimension::GetCenterOnArc (const gp_Pnt& theFirstAttach,
+                                           const gp_Pnt& theSecondAttach,
+                                           const gp_Pnt& theCenter)
 {
   // construct plane where the circle and the arc are located
-  gce_MakePln aConstructPlane (theFirstAttach, theSecondAttach, myCenter);
+  gce_MakePln aConstructPlane (theFirstAttach, theSecondAttach, theCenter);
   if (!aConstructPlane.IsDone())
   {
-    return;
+    return gp::Origin();
   }
   
   gp_Pln aPlane = aConstructPlane.Value();
 
-  Standard_Real aRadius = theFirstAttach.Distance (myCenter);
+  Standard_Real aRadius = theFirstAttach.Distance (theCenter);
 
   // construct circle forming the arc
-  gce_MakeCirc aConstructCircle (myCenter, aPlane, aRadius);
+  gce_MakeCirc aConstructCircle (theCenter, aPlane, aRadius);
   if (!aConstructCircle.IsDone())
   {
-    return;
+    return gp::Origin();
   }
 
   gp_Circ aCircle = aConstructCircle.Value();
@@ -608,62 +329,16 @@ void AIS_AngleDimension::drawArcWithText (const Handle(Prs3d_Presentation)& theP
   // compute angle parameters of arc end-points on circle
   Standard_Real aParamBeg = ElCLib::Parameter (aCircle, theFirstAttach);
   Standard_Real aParamEnd = ElCLib::Parameter (aCircle, theSecondAttach);
-  ElCLib::AdjustPeriodic (aParamBeg, aParamEnd,
-                          Precision::PConfusion(),
-                          aParamBeg, aParamEnd);
+  ElCLib::AdjustPeriodic (0.0, M_PI * 2, Precision::PConfusion(), aParamBeg, aParamEnd);
 
-  // middle point of arc parameter on circle
-  Standard_Real aParamMid = (aParamBeg + aParamEnd) * 0.5;
-
-  // add text graphical primitives
-  if (theMode == ComputeMode_All || theMode == ComputeMode_Text)
-  {
-    gp_Pnt aTextPos = ElCLib::Value (aParamMid, aCircle);
-    gp_Dir aTextDir = IsTextReversed()
-      ? gce_MakeDir (theSecondAttach, theFirstAttach)
-      : gce_MakeDir (theFirstAttach, theSecondAttach);
-
-    // Drawing text
-    drawText (thePresentation,
-              aTextPos,
-              aTextDir,
-              theText,
-              theLabelPosition);
-  }
-
-  if (theMode != ComputeMode_All && theMode != ComputeMode_Line)
-  {
-    return;
-  }
-
-  Handle(Prs3d_DimensionAspect) aDimensionAspect = myDrawer->DimensionAspect();
-
-  Standard_Boolean isLineBreak = aDimensionAspect->TextVerticalPosition() == Prs3d_DTVP_Center
-                              && aDimensionAspect->IsText3d();
-
-  if (isLineBreak)
-  {
-    // compute gap for label as parameteric size of sector on circle segment
-    Standard_Real aSectorOnCircle = theTextWidth / aRadius;
-  
-    gp_Pnt aTextPntBeg = ElCLib::Value (aParamMid - aSectorOnCircle * 0.5, aCircle);
-    gp_Pnt aTextPntEnd = ElCLib::Value (aParamMid + aSectorOnCircle * 0.5, aCircle);
-
-    // Drawing arcs
-    drawArc (thePresentation, theFirstAttach, aTextPntBeg, myCenter, aRadius, theMode);
-    drawArc (thePresentation, theSecondAttach, aTextPntEnd, myCenter, aRadius, theMode);
-  }
-  else
-  {
-    drawArc (thePresentation, theFirstAttach, theSecondAttach, myCenter, aRadius, theMode);
-  }
+  return ElCLib::Value ((aParamBeg + aParamEnd) * 0.5, aCircle);
 }
 
 //=======================================================================
-//function : drawArc
+//function : DrawArc
 //purpose  : draws the arc between two attach points
 //=======================================================================
-void AIS_AngleDimension::drawArc (const Handle(Prs3d_Presentation)& thePresentation,
+void AIS_AngleDimension::DrawArc (const Handle(Prs3d_Presentation)& thePresentation,
                                   const gp_Pnt& theFirstAttach,
                                   const gp_Pnt& theSecondAttach,
                                   const gp_Pnt& theCenter,
@@ -742,6 +417,180 @@ void AIS_AngleDimension::drawArc (const Handle(Prs3d_Presentation)& thePresentat
 }
 
 //=======================================================================
+//function: DrawArcWithText
+//purpose :
+//=======================================================================
+void AIS_AngleDimension::DrawArcWithText (const Handle(Prs3d_Presentation)& thePresentation,
+                                          const gp_Pnt& theFirstAttach,
+                                          const gp_Pnt& theSecondAttach,
+                                          const gp_Pnt& theCenter,
+                                          const TCollection_ExtendedString& theText,
+                                          const Standard_Real theTextWidth,
+                                          const Standard_Integer theMode,
+                                          const Standard_Integer theLabelPosition)
+{
+  // construct plane where the circle and the arc are located
+  gce_MakePln aConstructPlane (theFirstAttach, theSecondAttach, theCenter);
+  if (!aConstructPlane.IsDone())
+  {
+    return;
+  }
+
+  gp_Pln aPlane = aConstructPlane.Value();
+
+  Standard_Real aRadius = theFirstAttach.Distance (myCenterPoint);
+
+  // construct circle forming the arc
+  gce_MakeCirc aConstructCircle (theCenter, aPlane, aRadius);
+  if (!aConstructCircle.IsDone())
+  {
+    return;
+  }
+
+  gp_Circ aCircle = aConstructCircle.Value();
+
+  // compute angle parameters of arc end-points on circle
+  Standard_Real aParamBeg = ElCLib::Parameter (aCircle, theFirstAttach);
+  Standard_Real aParamEnd = ElCLib::Parameter (aCircle, theSecondAttach);
+  ElCLib::AdjustPeriodic (0.0, M_PI * 2, Precision::PConfusion(), aParamBeg, aParamEnd);
+
+  // middle point of arc parameter on circle
+  Standard_Real aParamMid = (aParamBeg + aParamEnd) * 0.5;
+
+  // add text graphical primitives
+  if (theMode == ComputeMode_All || theMode == ComputeMode_Text)
+  {
+    gp_Pnt aTextPos = ElCLib::Value (aParamMid, aCircle);
+    gp_Dir aTextDir = gce_MakeDir (theFirstAttach, theSecondAttach);
+
+    // Drawing text
+    DrawText (thePresentation,
+              aTextPos,
+              aTextDir,
+              theText,
+              theLabelPosition);
+  }
+
+  if (theMode != ComputeMode_All && theMode != ComputeMode_Line)
+  {
+    return;
+  }
+
+  Handle(Prs3d_DimensionAspect) aDimensionAspect = myDrawer->DimensionAspect();
+
+  Standard_Boolean isLineBreak = aDimensionAspect->TextVerticalPosition() == Prs3d_DTVP_Center
+                              && aDimensionAspect->IsText3d();
+
+  if (isLineBreak)
+  {
+    // compute gap for label as parameteric size of sector on circle segment
+    Standard_Real aSectorOnCircle = theTextWidth / aRadius;
+  
+    gp_Pnt aTextPntBeg = ElCLib::Value (aParamMid - aSectorOnCircle * 0.5, aCircle);
+    gp_Pnt aTextPntEnd = ElCLib::Value (aParamMid + aSectorOnCircle * 0.5, aCircle);
+
+    // Drawing arcs
+    DrawArc (thePresentation, theFirstAttach, aTextPntBeg, theCenter, aRadius, theMode);
+    DrawArc (thePresentation, theSecondAttach, aTextPntEnd, theCenter, aRadius, theMode);
+  }
+  else
+  {
+    DrawArc (thePresentation, theFirstAttach, theSecondAttach, theCenter, aRadius, theMode);
+  }
+}
+
+//=======================================================================
+//function : CheckPlane
+//purpose  : 
+//=======================================================================
+Standard_Boolean AIS_AngleDimension::CheckPlane (const gp_Pln& thePlane)const
+{
+  if (!thePlane.Contains (myFirstPoint, Precision::Confusion()) &&
+      !thePlane.Contains (mySecondPoint, Precision::Confusion()) &&
+      !thePlane.Contains (myCenterPoint, Precision::Confusion()))
+  {
+    return Standard_False;
+  }
+
+  return Standard_True;
+}
+
+//=======================================================================
+//function : ComputePlane
+//purpose  : 
+//=======================================================================
+void AIS_AngleDimension::ComputePlane()
+{
+  if (!IsValid())
+  {
+    return;
+  }
+
+  gp_Vec aFirstVec   = gp_Vec (myCenterPoint, myFirstPoint).Normalized();
+  gp_Vec aSecondVec  = gp_Vec (myCenterPoint, mySecondPoint).Normalized();
+  gp_Vec aDirectionN = aSecondVec.Crossed (aFirstVec).Normalized();
+  gp_Vec aDirectionY = (aFirstVec + aSecondVec).Normalized();
+  gp_Vec aDirectionX = aDirectionY.Crossed (aDirectionN).Normalized();
+
+  myPlane = gp_Pln (gp_Ax3 (myCenterPoint, gp_Dir (aDirectionN), gp_Dir (aDirectionX)));
+}
+
+//=======================================================================
+//function : GetModelUnits
+//purpose  :
+//=======================================================================
+const TCollection_AsciiString& AIS_AngleDimension::GetModelUnits() const
+{
+  return myDrawer->DimAngleModelUnits();
+}
+
+//=======================================================================
+//function : GetDisplayUnits
+//purpose  :
+//=======================================================================
+const TCollection_AsciiString& AIS_AngleDimension::GetDisplayUnits() const
+{
+  return myDrawer->DimAngleDisplayUnits();
+}
+
+//=======================================================================
+//function : SetModelUnits
+//purpose  :
+//=======================================================================
+void AIS_AngleDimension::SetModelUnits (const TCollection_AsciiString& theUnits)
+{
+  myDrawer->SetDimAngleModelUnits (theUnits);
+}
+
+//=======================================================================
+//function : SetDisplayUnits
+//purpose  :
+//=======================================================================
+void AIS_AngleDimension::SetDisplayUnits (const TCollection_AsciiString& theUnits)
+{
+  myDrawer->SetDimAngleDisplayUnits (theUnits);
+}
+
+//=======================================================================
+//function : ComputeValue
+//purpose  : 
+//=======================================================================
+Standard_Real AIS_AngleDimension::ComputeValue() const
+{
+  if (!IsValid())
+  {
+    return 0.0;
+  }
+
+  gp_Vec aVec1 (myCenterPoint, myFirstPoint);
+  gp_Vec aVec2 (myCenterPoint, mySecondPoint);
+
+  Standard_Real anAngle = aVec2.AngleWithRef (aVec1, GetPlane().Axis().Direction());
+
+  return anAngle > 0.0 ? anAngle : (2.0 * M_PI - anAngle);
+}
+
+//=======================================================================
 //function : Compute
 //purpose  : Having three gp_Pnt points compute presentation
 //=======================================================================
@@ -751,69 +600,31 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
 {
   thePresentation->Clear();
   mySelectionGeom.Clear (theMode);
-  Handle(SelectMgr_EntityOwner) anEmptyOwner;
 
-  if (!myIsInitialized)
+  if (!IsValid())
   {
-    if (myShapesNumber == 1)
-    {
-      myIsInitialized = initConeAngle (TopoDS::Face (myFirstShape));
-    }
-    else if (myShapesNumber == 2)
-    {
-      switch (myFirstShape.ShapeType())
-      {
-      case TopAbs_FACE:
-        {
-          myIsInitialized = initTwoFacesAngle ();
-        }
-        break;
-      case TopAbs_EDGE:
-        {
-          myIsInitialized = initTwoEdgesAngle ();
-        }
-        break;
-      default:
-        return;
-      }
-    }
-    else
-      return;
-  }
-
-  // If initialization failed
-  if (!myIsInitialized)
     return;
+  }
 
   // Parameters for presentation
   Handle(Prs3d_DimensionAspect) aDimensionAspect = myDrawer->DimensionAspect();
 
-  Prs3d_Root::CurrentGroup(thePresentation)->SetPrimitivesAspect(aDimensionAspect->LineAspect()->Aspect());
+  Prs3d_Root::CurrentGroup(thePresentation)->SetPrimitivesAspect (aDimensionAspect->LineAspect()->Aspect());
 
   Quantity_Length anArrowLength = aDimensionAspect->ArrowAspect()->Length();
 
-  if (!myIsValueCustom)
-  {
-    computeValue();
-  }
-
-  TCollection_ExtendedString aValueString;
-  Standard_Real aTextLength;
-  getTextWidthAndString (aTextLength, aValueString);
+  // prepare label string and compute its geometrical width
+  Standard_Real aLabelWidth;
+  TCollection_ExtendedString aLabelString = GetValueString (aLabelWidth);
 
   // add margins to label width
   if (aDimensionAspect->IsText3d())
   {
-    aTextLength += aDimensionAspect->TextAspect()->Height() * THE_3D_TEXT_MARGIN * 2.0;
+    aLabelWidth += aDimensionAspect->TextAspect()->Height() * THE_3D_TEXT_MARGIN * 2.0;
   }
 
-  if (!myIsWorkingPlaneCustom)
-  {
-    countDefaultPlane();
-  }
-
-  gp_Pnt aFirstAttach = myCenter.Translated (gp_Vec(myCenter, myFirstPoint).Normalized() * GetFlyout());
-  gp_Pnt aSecondAttach = myCenter.Translated (gp_Vec(myCenter, mySecondPoint).Normalized() * GetFlyout());
+  gp_Pnt aFirstAttach = myCenterPoint.Translated (gp_Vec(myCenterPoint, myFirstPoint).Normalized() * GetFlyout());
+  gp_Pnt aSecondAttach = myCenterPoint.Translated (gp_Vec(myCenterPoint, mySecondPoint).Normalized() * GetFlyout());
 
   // Handle user-defined and automatic arrow placement
   bool isArrowsExternal = false;
@@ -833,16 +644,16 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
 
       Standard_Real anArrowsWidth   = (anArrowLength + anArrowMargin) * 2.0;
 
-      isArrowsExternal = aDimensionWidth < aTextLength + anArrowsWidth;
+      isArrowsExternal = aDimensionWidth < aLabelWidth + anArrowsWidth;
       break;
     }
   }
 
   //Arrows positions and directions
-  gp_Vec aWPDir = gp_Vec (GetWorkingPlane().Axis().Direction());
+  gp_Vec aWPDir = gp_Vec (GetPlane().Axis().Direction());
 
-  gp_Dir aFirstExtensionDir  = gp_Vec (myCenter, aFirstAttach) ^ aWPDir;
-  gp_Dir aSecondExtensionDir = gp_Vec (myCenter, aSecondAttach)^ aWPDir.Reversed();
+  gp_Dir aFirstExtensionDir  = aWPDir            ^ gp_Vec (myCenterPoint, aFirstAttach);
+  gp_Dir aSecondExtensionDir = aWPDir.Reversed() ^ gp_Vec (myCenterPoint, aSecondAttach);
 
   gp_Vec aFirstArrowVec  = gp_Vec (aFirstExtensionDir)  * anArrowLength;
   gp_Vec aSecondArrowVec = gp_Vec (aSecondExtensionDir) * anArrowLength;
@@ -876,7 +687,7 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
       gp_Vec anAttachVector (aFirstAttach, aSecondAttach);
       Standard_Real aDimensionWidth = anAttachVector.Magnitude();
       Standard_Real anArrowsWidth   = anArrowLength * 2.0;
-      Standard_Real aContentWidth   = isArrowsExternal ? aTextLength : aTextLength + anArrowsWidth;
+      Standard_Real aContentWidth   = isArrowsExternal ? aLabelWidth : aLabelWidth + anArrowsWidth;
 
       aLabelPosition |= aDimensionWidth < aContentWidth ? LabelPosition_Left : LabelPosition_HCenter;
       break;
@@ -907,11 +718,12 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
 
       if (isLineBreak)
       {
-        drawArcWithText (thePresentation,
+        DrawArcWithText (thePresentation,
                          aFirstAttach,
                          aSecondAttach,
-                         aValueString,
-                         aTextLength,
+                         myCenterPoint,
+                         aLabelString,
+                         aLabelWidth,
                          theMode,
                          aLabelPosition);
         break;
@@ -920,23 +732,23 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
       // compute text primitives
       if (theMode == ComputeMode_All || theMode == ComputeMode_Text)
       {
-        gp_Vec aDimensionDir (aFirstArrowEnd, aSecondArrowBegin);
-        gp_Pnt aTextPos = getCenterOnArc (aFirstArrowEnd, aSecondArrowBegin);
-        gp_Dir aTextDir = myIsTextReversed ? aDimensionDir.Reversed() : aDimensionDir;
+        gp_Vec aDimensionDir (aFirstAttach, aSecondAttach);
+        gp_Pnt aTextPos = GetCenterOnArc (aFirstAttach, aSecondAttach, myCenterPoint);
+        gp_Dir aTextDir = aDimensionDir;
 
-        drawText (thePresentation,
+        DrawText (thePresentation,
                   aTextPos,
                   aTextDir,
-                  aValueString,
+                  aLabelString,
                   aLabelPosition);
       }
 
       if (theMode == ComputeMode_All || theMode == ComputeMode_Line)
       {
-        drawArc (thePresentation,
+        DrawArc (thePresentation,
                  isArrowsExternal ? aFirstAttach : aFirstArrowEnd,
                  isArrowsExternal ? aSecondAttach : aSecondArrowEnd,
-                 myCenter,
+                 myCenterPoint,
                  Abs (GetFlyout()),
                  theMode);
       }
@@ -945,12 +757,12 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
 
     case LabelPosition_Left :
     {
-      drawExtension (thePresentation,
+      DrawExtension (thePresentation,
                      anExtensionSize,
                      isArrowsExternal ? aFirstArrowEnd : aFirstAttach,
                      aFirstExtensionDir,
-                     aValueString,
-                     aTextLength,
+                     aLabelString,
+                     aLabelWidth,
                      theMode,
                      aLabelPosition);
     }
@@ -958,12 +770,12 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
 
     case LabelPosition_Right :
     {
-      drawExtension (thePresentation,
+      DrawExtension (thePresentation,
                      anExtensionSize,
                      isArrowsExternal ? aSecondArrowEnd : aSecondAttach,
                      aSecondExtensionDir,
-                     aValueString,
-                     aTextLength,
+                     aLabelString,
+                     aLabelWidth,
                      theMode,
                      aLabelPosition);
     }
@@ -975,10 +787,10 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
   {
     Prs3d_Root::NewGroup (thePresentation);
 
-    drawArc (thePresentation,
+    DrawArc (thePresentation,
              isArrowsExternal ? aFirstAttach  : aFirstArrowEnd,
              isArrowsExternal ? aSecondAttach : aSecondArrowEnd,
-             myCenter,
+             myCenterPoint,
              Abs(GetFlyout ()),
              theMode);
   }
@@ -988,8 +800,8 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
   {
     Prs3d_Root::NewGroup (thePresentation);
 
-    drawArrow (thePresentation, aFirstArrowBegin,  gp_Dir (aFirstArrowVec));
-    drawArrow (thePresentation, aSecondArrowBegin, gp_Dir (aSecondArrowVec));
+    DrawArrow (thePresentation, aFirstArrowBegin,  gp_Dir (aFirstArrowVec));
+    DrawArrow (thePresentation, aSecondArrowBegin, gp_Dir (aSecondArrowVec));
   }
 
   if ((theMode == ComputeMode_All || theMode == ComputeMode_Line) && isArrowsExternal)
@@ -998,7 +810,7 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
 
     if (aHPosition != LabelPosition_Left)
     {
-      drawExtension (thePresentation,
+      DrawExtension (thePresentation,
                      anExtensionSize,
                      aFirstArrowEnd,
                      aFirstExtensionDir,
@@ -1010,7 +822,7 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
 
     if (aHPosition != LabelPosition_Right)
     {
-      drawExtension (thePresentation,
+      DrawExtension (thePresentation,
                      anExtensionSize,
                      aSecondArrowEnd,
                      aSecondExtensionDir,
@@ -1022,14 +834,14 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
   }
 
   // flyouts
-  if (theMode == ComputeMode_All && myIsFlyoutLines)
+  if (theMode == ComputeMode_All)
   {
     Prs3d_Root::NewGroup (thePresentation);
 
     Handle(Graphic3d_ArrayOfSegments) aPrimSegments = new Graphic3d_ArrayOfSegments (4);
-    aPrimSegments->AddVertex (myCenter);
+    aPrimSegments->AddVertex (myCenterPoint);
     aPrimSegments->AddVertex (aFirstAttach);
-    aPrimSegments->AddVertex (myCenter);
+    aPrimSegments->AddVertex (myCenterPoint);
     aPrimSegments->AddVertex (aSecondAttach);
 
     Handle(Graphic3d_AspectLine3d) aFlyoutStyle = myDrawer->DimensionAspect()->LineAspect()->Aspect();
@@ -1037,27 +849,342 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
     Prs3d_Root::CurrentGroup (thePresentation)->AddPrimitiveArray (aPrimSegments);
   }
 
-  setComputed (Standard_True);
+  myIsComputed = Standard_True;
 }
 
 //=======================================================================
-//function : computeFlyoutSelection
+//function : ComputeFlyoutSelection
 //purpose  : computes selection for flyouts
 //=======================================================================
-void AIS_AngleDimension::computeFlyoutSelection (const Handle(SelectMgr_Selection)& theSelection,
+void AIS_AngleDimension::ComputeFlyoutSelection (const Handle(SelectMgr_Selection)& theSelection,
                                                  const Handle(SelectMgr_EntityOwner)& theOwner)
 {
-  if (!myIsFlyoutLines)
-  {
-    return;
-  }
-
-  gp_Pnt aFirstAttach  = myCenter.Translated (gp_Vec (myCenter, myFirstPoint).Normalized()  * GetFlyout());
-  gp_Pnt aSecondAttach = myCenter.Translated (gp_Vec (myCenter, mySecondPoint).Normalized() * GetFlyout());
+  gp_Pnt aFirstAttach  = myCenterPoint.Translated (gp_Vec (myCenterPoint, myFirstPoint).Normalized()  * GetFlyout());
+  gp_Pnt aSecondAttach = myCenterPoint.Translated (gp_Vec (myCenterPoint, mySecondPoint).Normalized() * GetFlyout());
 
   Handle(Select3D_SensitiveGroup) aSensitiveEntity = new Select3D_SensitiveGroup (theOwner);
-  aSensitiveEntity->Add (new Select3D_SensitiveSegment (theOwner, myCenter, aFirstAttach));
-  aSensitiveEntity->Add (new Select3D_SensitiveSegment (theOwner, myCenter, aSecondAttach));
+  aSensitiveEntity->Add (new Select3D_SensitiveSegment (theOwner, myCenterPoint, aFirstAttach));
+  aSensitiveEntity->Add (new Select3D_SensitiveSegment (theOwner, myCenterPoint, aSecondAttach));
 
   theSelection->Add (aSensitiveEntity);
+}
+
+//=======================================================================
+//function : InitTwoEdgesAngle
+//purpose  : 
+//=======================================================================
+Standard_Boolean AIS_AngleDimension::InitTwoEdgesAngle (gp_Pln& theComputedPlane)
+{
+  TopoDS_Edge aFirstEdge  = TopoDS::Edge (myFirstShape);
+  TopoDS_Edge aSecondEdge = TopoDS::Edge (mySecondShape);
+
+  BRepAdaptor_Curve aMakeFirstLine  (aFirstEdge);
+  BRepAdaptor_Curve aMakeSecondLine (aSecondEdge);
+
+  if (aMakeFirstLine.GetType() != GeomAbs_Line || aMakeSecondLine.GetType() != GeomAbs_Line)
+  {
+    return  Standard_False;
+  }
+
+  Handle(Geom_Line) aFirstLine  = new Geom_Line (aMakeFirstLine.Line());
+  Handle(Geom_Line) aSecondLine = new Geom_Line (aMakeSecondLine.Line());
+
+  gp_Lin aFirstLin  = aFirstLine->Lin();
+  gp_Lin aSecondLin = aSecondLine->Lin();
+
+  Standard_Boolean isParallelLines = Abs (aFirstLin.Angle (aSecondLin) - M_PI) <= Precision::Angular();
+
+  gp_Pnt aPoint  = aFirstLine->Value (0.0);
+  gp_Dir aNormal = isParallelLines
+                     ? gp_Vec (aSecondLin.Normal (aPoint).Direction()) ^ gp_Vec (aSecondLin.Direction())
+                     : gp_Vec (aFirstLin.Direction()) ^ gp_Vec (aSecondLin.Direction());
+
+  theComputedPlane = gp_Pln (aPoint, aNormal);
+
+    // Compute geometry for this plane and edges
+  Standard_Boolean isInfinite1,isInfinite2;
+  gp_Pnt aFirstPoint1, aLastPoint1, aFirstPoint2, aLastPoint2;
+  gp_Lin2d aFirstLin2d, aSecondLin2d;
+
+  if (!AIS::ComputeGeometry (aFirstEdge, aSecondEdge,
+                             aFirstLine, aSecondLine,
+                             aFirstPoint1, aLastPoint1,
+                             aFirstPoint2, aLastPoint2,
+                             isInfinite1, isInfinite2))
+  {
+    return Standard_False;
+  }
+
+  if (aFirstLin.Direction().IsParallel (aSecondLin.Direction(), Precision::Angular()))
+  {
+    myFirstPoint  = aFirstLin.Location();
+    mySecondPoint = ElCLib::Value (ElCLib::Parameter (aFirstLin, myFirstPoint), aSecondLin);
+
+    if (mySecondPoint.Distance (myFirstPoint) <= Precision::Confusion())
+    {
+      mySecondPoint.Translate (gp_Vec (aSecondLin.Direction()) * Abs (GetFlyout()));
+    }
+
+    myCenterPoint.SetXYZ ((myFirstPoint.XYZ() + mySecondPoint.XYZ()) / 2.0);
+  }
+  else
+  {
+    // Find intersection
+    gp_Lin2d aFirstLin2d  = ProjLib::Project (theComputedPlane, aFirstLin);
+    gp_Lin2d aSecondLin2d = ProjLib::Project (theComputedPlane, aSecondLin);
+
+    IntAna2d_AnaIntersection anInt2d (aFirstLin2d, aSecondLin2d);
+    gp_Pnt2d anIntersectPoint;
+    if (!anInt2d.IsDone() || anInt2d.IsEmpty())
+    {
+      return Standard_False;
+    }
+
+    anIntersectPoint = gp_Pnt2d (anInt2d.Point(1).Value());
+    myCenterPoint = ElCLib::To3d (theComputedPlane.Position().Ax2(), anIntersectPoint);
+
+    if (isInfinite1 || isInfinite2)
+    {
+      myFirstPoint  = myCenterPoint.Translated (gp_Vec (aFirstLin.Direction()) * Abs (GetFlyout()));
+      mySecondPoint = myCenterPoint.Translated (gp_Vec (aSecondLin.Direction()) * Abs (GetFlyout()));
+
+      return IsValidPoints (myFirstPoint, myCenterPoint, mySecondPoint);
+    }
+
+    // |
+    // | <- dimension should be here
+    // *----
+    myFirstPoint  = myCenterPoint.Distance (aFirstPoint1) > myCenterPoint.Distance (aLastPoint1)
+                  ? aFirstPoint1
+                  : aLastPoint1;
+
+    mySecondPoint = myCenterPoint.Distance (aFirstPoint2) > myCenterPoint.Distance (aLastPoint2)
+                  ? aFirstPoint2
+                  : aLastPoint2;
+  }
+
+  return IsValidPoints (myFirstPoint, myCenterPoint, mySecondPoint);
+}
+
+//=======================================================================
+//function : InitTwoFacesAngle
+//purpose  : initialization of angle dimension between two faces
+//=======================================================================
+Standard_Boolean AIS_AngleDimension::InitTwoFacesAngle()
+{
+  TopoDS_Face aFirstFace = TopoDS::Face (myFirstShape);
+  TopoDS_Face aSecondFace = TopoDS::Face (mySecondShape);
+
+  gp_Dir aFirstDir, aSecondDir;
+  gp_Pln aFirstPlane, aSecondPlane;
+  Handle(Geom_Surface) aFirstBasisSurf, aSecondBasisSurf;
+  AIS_KindOfSurface aFirstSurfType, aSecondSurfType;
+  Standard_Real aFirstOffset, aSecondOffset;
+
+  AIS::GetPlaneFromFace (aFirstFace, aFirstPlane,
+                         aFirstBasisSurf,aFirstSurfType,aFirstOffset);
+
+  AIS::GetPlaneFromFace (aSecondFace, aSecondPlane,
+                         aSecondBasisSurf, aSecondSurfType, aSecondOffset);
+
+  if (aFirstSurfType == AIS_KOS_Plane && aSecondSurfType == AIS_KOS_Plane)
+  {
+    //Planar faces angle
+    Handle(Geom_Plane) aFirstPlane = Handle(Geom_Plane)::DownCast (aFirstBasisSurf);
+    Handle(Geom_Plane) aSecondPlane = Handle(Geom_Plane)::DownCast (aSecondBasisSurf);
+    return AIS::InitAngleBetweenPlanarFaces (aFirstFace,
+                                             aSecondFace,
+                                             myCenterPoint,
+                                             myFirstPoint,
+                                             mySecondPoint)
+           && IsValidPoints (myFirstPoint,
+                             myCenterPoint,
+                             mySecondPoint);
+  }
+  else
+  {
+    // Curvilinear faces angle
+    return AIS::InitAngleBetweenCurvilinearFaces (aFirstFace,
+                                                  aSecondFace,
+                                                  aFirstSurfType,
+                                                  aSecondSurfType,
+                                                  myCenterPoint,
+                                                  myFirstPoint,
+                                                  mySecondPoint)
+           && IsValidPoints (myFirstPoint,
+                             myCenterPoint,
+                             mySecondPoint);
+  }
+}
+
+//=======================================================================
+//function : InitTwoFacesAngle
+//purpose  : initialization of angle dimension between two faces
+//=======================================================================
+Standard_Boolean AIS_AngleDimension::InitTwoFacesAngle (const gp_Pnt thePointOnFirstFace)
+{
+  TopoDS_Face aFirstFace = TopoDS::Face (myFirstShape);
+  TopoDS_Face aSecondFace = TopoDS::Face (mySecondShape);
+
+  gp_Dir aFirstDir, aSecondDir;
+  gp_Pln aFirstPlane, aSecondPlane;
+  Handle(Geom_Surface) aFirstBasisSurf, aSecondBasisSurf;
+  AIS_KindOfSurface aFirstSurfType, aSecondSurfType;
+  Standard_Real aFirstOffset, aSecondOffset;
+
+  AIS::GetPlaneFromFace (aFirstFace, aFirstPlane,
+                         aFirstBasisSurf,aFirstSurfType,aFirstOffset);
+
+  AIS::GetPlaneFromFace (aSecondFace, aSecondPlane,
+                         aSecondBasisSurf, aSecondSurfType, aSecondOffset);
+
+  myFirstPoint = thePointOnFirstFace;
+  if (aFirstSurfType == AIS_KOS_Plane && aSecondSurfType == AIS_KOS_Plane)
+  {
+    //Planar faces angle
+    Handle(Geom_Plane) aFirstPlane = Handle(Geom_Plane)::DownCast (aFirstBasisSurf);
+    Handle(Geom_Plane) aSecondPlane = Handle(Geom_Plane)::DownCast (aSecondBasisSurf);
+    return AIS::InitAngleBetweenPlanarFaces (aFirstFace,
+                                             aSecondFace,
+                                             myCenterPoint,
+                                             myFirstPoint,
+                                             mySecondPoint,
+                                             Standard_True)
+           && IsValidPoints (myFirstPoint,
+                             myCenterPoint,
+                             mySecondPoint);
+  }
+  else
+  {
+    // Curvilinear faces angle
+    return AIS::InitAngleBetweenCurvilinearFaces (aFirstFace,
+                                                  aSecondFace,
+                                                  aFirstSurfType,
+                                                  aSecondSurfType,
+                                                  myCenterPoint,
+                                                  myFirstPoint,
+                                                  mySecondPoint,
+                                                  Standard_True)
+           && IsValidPoints (myFirstPoint,
+                             myCenterPoint,
+                             mySecondPoint);
+  }
+}
+
+//=======================================================================
+//function : InitConeAngle
+//purpose  : initialization of the cone angle
+//=======================================================================
+Standard_Boolean AIS_AngleDimension::InitConeAngle()
+{
+  if (myFirstShape.IsNull())
+  {
+    return Standard_False;
+  }
+
+  TopoDS_Face aConeShape = TopoDS::Face (myFirstShape);
+  gp_Pln aPln;
+  gp_Cone aCone;
+  gp_Circ aCircle;
+  // A surface from the Face
+  Handle(Geom_Surface) aSurf;
+  Handle(Geom_OffsetSurface) aOffsetSurf; 
+  Handle(Geom_ConicalSurface) aConicalSurf;
+  Handle(Geom_SurfaceOfRevolution) aRevSurf;
+  Handle(Geom_Line) aLine;
+  BRepAdaptor_Surface aConeAdaptor (aConeShape);
+  TopoDS_Face aFace;
+  AIS_KindOfSurface aSurfType;
+  Standard_Real anOffset = 0.;
+  Handle(Standard_Type) aType;
+
+  Standard_Real aMaxV = aConeAdaptor.FirstVParameter();
+  Standard_Real aMinV = aConeAdaptor.LastVParameter();
+
+  AIS::GetPlaneFromFace (aConeShape, aPln, aSurf, aSurfType, anOffset);
+
+  if (aSurfType == AIS_KOS_Revolution)
+  {
+    // Surface of revolution
+    aRevSurf = Handle(Geom_SurfaceOfRevolution)::DownCast(aSurf);
+    gp_Lin aLin (aRevSurf->Axis());
+    Handle(Geom_Curve) aBasisCurve = aRevSurf->BasisCurve();
+    //Must be a part of line (basis curve should be linear)
+    if (aBasisCurve ->DynamicType() != STANDARD_TYPE(Geom_Line))
+      return Standard_False;
+
+    gp_Pnt aFirst1 = aConeAdaptor.Value (0., aMinV);
+    gp_Pnt aLast1 = aConeAdaptor.Value (0., aMaxV);
+    gp_Vec aVec1 (aFirst1, aLast1);
+
+    //Projection <aFirst> on <aLin>
+    gp_Pnt aFirst2 = ElCLib::Value (ElCLib::Parameter (aLin, aFirst1), aLin);
+    // Projection <aLast> on <aLin>
+    gp_Pnt aLast2 = ElCLib::Value (ElCLib::Parameter (aLin, aLast1), aLin);
+
+    gp_Vec aVec2 (aFirst2, aLast2);
+
+    // Check if two parts of revolution are parallel (it's a cylinder) or normal (it's a circle).
+    if (aVec1.IsParallel (aVec2, Precision::Angular())
+        || aVec1.IsNormal (aVec2,Precision::Angular()))
+      return Standard_False;
+
+    gce_MakeCone aMkCone (aRevSurf->Axis(), aFirst1, aLast1);
+    aCone =  aMkCone.Value();
+    myCenterPoint = aCone.Apex();
+  }
+  else
+  {
+    aType = aSurf->DynamicType();
+    if (aType == STANDARD_TYPE(Geom_OffsetSurface) || anOffset > 0.01)
+    {
+      // Offset surface
+      aOffsetSurf = new Geom_OffsetSurface (aSurf, anOffset);
+      aSurf = aOffsetSurf->Surface();
+      BRepBuilderAPI_MakeFace aMkFace(aSurf, Precision::Confusion());
+      aMkFace.Build();
+      if (!aMkFace.IsDone())
+        return Standard_False;
+      aConeAdaptor.Initialize (aMkFace.Face());
+    }
+    aCone = aConeAdaptor.Cone();
+    aConicalSurf = Handle(Geom_ConicalSurface)::DownCast (aSurf);
+    myCenterPoint =  aConicalSurf->Apex();
+  }
+
+  // A circle where the angle is drawn
+  Handle(Geom_Curve) aCurve;
+  Standard_Real aMidV = ( aMinV + aMaxV ) / 2.5;
+  aCurve = aSurf->VIso (aMidV);
+  aCircle = Handle(Geom_Circle)::DownCast (aCurve)->Circ();
+
+  aCurve = aSurf->VIso(aMaxV);
+  gp_Circ aCircVmax = Handle(Geom_Circle)::DownCast(aCurve)->Circ();
+  aCurve = aSurf->VIso(aMinV);
+  gp_Circ aCircVmin = Handle(Geom_Circle)::DownCast(aCurve)->Circ();
+
+  if (aCircVmax.Radius() < aCircVmin.Radius())
+  {
+   gp_Circ aTmpCirc = aCircVmax;
+   aCircVmax = aCircVmin;
+   aCircVmin = aTmpCirc;
+  }
+
+  myFirstPoint  = ElCLib::Value (0, aCircle);
+  mySecondPoint = ElCLib::Value (M_PI, aCircle);
+  return Standard_True;
+}
+
+//=======================================================================
+//function : IsValidPoints
+//purpose  : 
+//=======================================================================
+Standard_Boolean AIS_AngleDimension::IsValidPoints (const gp_Pnt& theFirstPoint,
+                                                    const gp_Pnt& theCenterPoint,
+                                                    const gp_Pnt& theSecondPoint) const
+{
+  return theFirstPoint.Distance (theCenterPoint) > Precision::Confusion()
+      && theSecondPoint.Distance (theCenterPoint) > Precision::Confusion()
+      && gp_Vec (theCenterPoint, theFirstPoint).Angle (
+           gp_Vec (theCenterPoint, theSecondPoint)) > Precision::Angular();
 }

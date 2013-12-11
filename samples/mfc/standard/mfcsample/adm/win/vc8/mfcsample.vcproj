@@ -1173,6 +1173,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\Common\ParamsFacesPage.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\Common\ResultDialog.cpp"
 				>
 				<FileConfiguration
@@ -1837,6 +1841,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\Common\RadiusParamsPage.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Common\ParamsFacesPage.h"
 				>
 			</File>
 			<File

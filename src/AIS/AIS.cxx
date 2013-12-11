@@ -32,14 +32,19 @@
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepTopAdaptor_FClass2d.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepTools.hxx>
 #include <Bnd_Box.hxx>
 
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>
 
 #include <GccEnt_QualifiedLin.hxx>
+#include <gce_MakeDir.hxx>
+#include <gce_MakeLin.hxx>
 #include <Geom2d_Circle.hxx>
 #include <GeomAPI_ExtremaCurveCurve.hxx>
+#include <GeomAPI_IntSS.hxx>
+#include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 #include <GeomLib.hxx>
 #include <GeomProjLib.hxx>
@@ -58,6 +63,15 @@
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_ToroidalSurface.hxx>
 #include <Geom_TrimmedCurve.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_XYZ.hxx>
 #include <Precision.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_PointAspect.hxx>
@@ -69,16 +83,6 @@
 #include <TopExp_Explorer.hxx>
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
 #include <TopoDS.hxx>
-#include <gce_MakeLin.hxx>
-#include <gp_Ax1.hxx>
-#include <gp_Ax3.hxx>
-#include <gp_Dir.hxx>
-#include <gp_Elips.hxx>
-#include <gp_Lin.hxx>
-#include <gp_Pln.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
-#include <gp_XYZ.hxx>
 
 const Standard_Real SquareTolerance = Precision::SquareConfusion();
 
@@ -86,7 +90,6 @@ const Standard_Real SquareTolerance = Precision::SquareConfusion();
 //function : Nearest
 //purpose  :
 //=======================================================================
-
 gp_Pnt AIS::Nearest(const TopoDS_Shape& ashape, const gp_Pnt& apoint)
 {
   Standard_Real dist2 = RealLast();
@@ -109,10 +112,47 @@ gp_Pnt AIS::Nearest(const TopoDS_Shape& ashape, const gp_Pnt& apoint)
 }
 
 //=======================================================================
+//function : Nearest
+//purpose  : For <thePoint> finds the nearest point on <theLine>.
+//=======================================================================
+gp_Pnt AIS::Nearest (const gp_Lin& theLine, const gp_Pnt& thePoint)
+{
+  Handle(Geom_Line) aLine = new Geom_Line (theLine);
+
+  GeomAPI_ProjectPointOnCurve aPointProj (thePoint, aLine);
+  return aPointProj.Point (1);
+}
+
+//=======================================================================
+//function : Nearest
+//purpose  : For the given point finds nearest point on the curve,
+//           return TRUE if found point is belongs to curve
+//              and FALSE otherwise.
+//=======================================================================
+Standard_Boolean AIS::Nearest (const Handle(Geom_Curve)& theCurve,
+                               const gp_Pnt& thePoint,
+                               const gp_Pnt& theFirstPoint,
+                               const gp_Pnt& theLastPoint,
+                               gp_Pnt& theNearestPoint)
+{
+  GeomAPI_ProjectPointOnCurve aPointProj (thePoint, theCurve);
+  theNearestPoint = theCurve->Value (aPointProj.LowerDistanceParameter());
+
+  Standard_Real aLength = theFirstPoint.Distance (theLastPoint);
+
+  if (theNearestPoint.Distance (theFirstPoint) > aLength
+      || theNearestPoint.Distance (theLastPoint) >aLength)
+  {
+    return Standard_False;
+  }
+
+  return Standard_True;
+}
+
+//=======================================================================
 //function : Farest
 //purpose  :
 //=======================================================================
-
 gp_Pnt AIS::Farest( const TopoDS_Shape& aShape, const gp_Pnt& aPoint )
 {
   Standard_Real MaxDist2 = 0.0e0, curdist2;
@@ -135,56 +175,102 @@ gp_Pnt AIS::Farest( const TopoDS_Shape& aShape, const gp_Pnt& aPoint )
 
 //=======================================================================
 //function : ComputeGeometry
-//purpose  : for line, circle, ellipse 
+//purpose  : for line, circle, ellipse.
 //=======================================================================
-
-Standard_Boolean AIS::ComputeGeometry(const TopoDS_Edge& anEdge,
-				      Handle(Geom_Curve)& aCurve,
-				      gp_Pnt& FirstPnt,
-				      gp_Pnt& LastPnt)
+Standard_Boolean AIS::ComputeGeometry (const TopoDS_Edge&  theEdge,
+                                       Handle(Geom_Curve)& theCurve,
+                                       gp_Pnt&             theFirstPnt,
+                                       gp_Pnt&             theLastPnt)
 {
-  TopLoc_Location loc_edge;
-  Standard_Real first,last;
-  aCurve = BRep_Tool::Curve(anEdge,loc_edge,first,last);
-  if (aCurve.IsNull()) return Standard_False;
-  if (!loc_edge.IsIdentity()) {
-//#ifndef DEB
-    Handle(Geom_Geometry) aGeomGeometry = aCurve->Transformed(loc_edge.Transformation());
-    aCurve = (Handle(Geom_Curve)&) aGeomGeometry ;
-//#else
-//    aCurve = (Handle(Geom_Curve)&) aCurve->Transformed(loc_edge.Transformation());
-//#endif
-  }
-  if (aCurve->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve))) {
-    aCurve = ((Handle(Geom_TrimmedCurve)&) aCurve)->BasisCurve();
+  TopLoc_Location anEdgeLoc;
+  Standard_Real aFirst, aLast;
+  theCurve = BRep_Tool::Curve (theEdge, anEdgeLoc, aFirst, aLast);
+  if (theCurve.IsNull())
+  {
+    return Standard_False;
   }
 
-  if (aCurve->IsInstance(STANDARD_TYPE(Geom_Line))) {
-    // CLE
-    // const Handle(Geom_Line)& line = (Handle(Geom_Line)&) aCurve;
-    Handle(Geom_Line) line = (Handle(Geom_Line)&) aCurve;
-    // ENDCLE
+  if (!anEdgeLoc.IsIdentity())
+  {
+    Handle(Geom_Geometry) aGeometry = theCurve->Transformed (anEdgeLoc.Transformation());
+    theCurve = (Handle(Geom_Curve)&) aGeometry;
+  }
 
-    FirstPnt = ElCLib::Value(first,line->Lin());
-    LastPnt = ElCLib::Value(last,line->Lin());
+  if (theCurve->IsInstance (STANDARD_TYPE (Geom_TrimmedCurve)))
+  {
+    theCurve = ((Handle(Geom_TrimmedCurve)&) theCurve)->BasisCurve();
   }
-  else if (aCurve->IsInstance(STANDARD_TYPE(Geom_Circle))) {
-    // CLE
-    // const Handle(Geom_Circle)& circ = (Handle(Geom_Circle)&) aCurve;
-    Handle(Geom_Circle) circ = (Handle(Geom_Circle)&) aCurve;
-    // ENDCLE
-    FirstPnt = ElCLib::Value(first,circ->Circ());
-    LastPnt = ElCLib::Value(last,circ->Circ());
+
+  if (theCurve->IsInstance (STANDARD_TYPE (Geom_Line)))
+  {
+    Handle(Geom_Line) aLine = (Handle(Geom_Line)&) theCurve;
+    theFirstPnt = ElCLib::Value (aFirst, aLine->Lin());
+    theLastPnt = ElCLib::Value (aLast, aLine->Lin());
   }
-  else if (aCurve->IsInstance(STANDARD_TYPE(Geom_Ellipse))) {
-    // CLE
-    // const Handle(Geom_Ellipse)& elips = (Handle(Geom_Ellipse)&) aCurve;
-    Handle(Geom_Ellipse) elips = (Handle(Geom_Ellipse)&) aCurve;
-    // ENDCLE
-    FirstPnt = ElCLib::Value(first, elips->Elips());
-    LastPnt = ElCLib::Value(last, elips->Elips());
+  else if (theCurve->IsInstance (STANDARD_TYPE (Geom_Circle)))
+  {
+    Handle(Geom_Circle) aCirc = (Handle(Geom_Circle)&) theCurve;
+
+    theFirstPnt = ElCLib::Value (aFirst, aCirc->Circ());
+    theLastPnt = ElCLib::Value (aLast, aCirc->Circ());
   }
-  else return Standard_False;
+  else if (theCurve->IsInstance (STANDARD_TYPE (Geom_Ellipse)))
+  {
+    Handle(Geom_Ellipse) anEllipse = (Handle(Geom_Ellipse)&) theCurve;
+    theFirstPnt = ElCLib::Value (aFirst, anEllipse->Elips());
+    theLastPnt = ElCLib::Value (aLast, anEllipse->Elips());
+  }
+  else
+  {
+    return Standard_False;
+  }
+
+  return Standard_True;
+}
+
+//=======================================================================
+//function : ComputeGeometry
+//purpose  : for line, circle, ellipse.
+//=======================================================================
+Standard_Boolean AIS::ComputeGeometry (const TopoDS_Edge& theEdge,
+                                       Handle(Geom_Curve)& theCurve,
+                                       gp_Pnt& theFirstPnt,
+                                       gp_Pnt& theLastPnt,
+                                       Standard_Boolean& theIsInfinite)
+{
+  Standard_Real aFirst, aLast;
+
+  BRepAdaptor_Curve anAdaptor (theEdge);
+
+  theCurve = Handle(Geom_Curve)::DownCast
+    (anAdaptor.Curve().Curve()->Transformed (anAdaptor.Trsf()));
+
+  if (theCurve.IsNull())
+  {
+    return Standard_False;
+  }
+
+  aFirst = anAdaptor.FirstParameter();
+  aLast = anAdaptor.LastParameter();
+
+  theIsInfinite = (Precision::IsInfinite (aFirst) || Precision::IsInfinite (aLast));
+
+  if (theCurve->IsInstance (STANDARD_TYPE (Geom_TrimmedCurve)))
+  {
+    theCurve = ((Handle(Geom_TrimmedCurve)&) theCurve)->BasisCurve();
+  }
+
+  if (!theIsInfinite)
+  {
+    theFirstPnt = theCurve->Value (aFirst);
+    theLastPnt  = theCurve->Value (aLast);
+  }
+  else
+  {
+    theFirstPnt = gp::Origin();
+    theLastPnt  = gp::Origin();
+  }
+
   return Standard_True;
 }
 
@@ -193,89 +279,95 @@ Standard_Boolean AIS::ComputeGeometry(const TopoDS_Edge& anEdge,
 //purpose  :
 //=======================================================================
 
-Standard_Boolean AIS::ComputeGeometry(const TopoDS_Edge& anEdge,
-                                      Handle(Geom_Curve)& aCurve,
-                                      gp_Pnt& FirstPnt,
-                                      gp_Pnt& LastPnt,
-                                      Handle(Geom_Curve)& extCurve,
-                                      Standard_Boolean& isInfinite,
-                                      Standard_Boolean& isOnPlane,
-                                      const Handle(Geom_Plane)& aPlane)
+Standard_Boolean AIS::ComputeGeometry (const TopoDS_Edge& theEdge,
+                                       Handle(Geom_Curve)& theCurve,
+                                       gp_Pnt& theFirstPnt,
+                                       gp_Pnt& theLastPnt,
+                                       Handle(Geom_Curve)& theExtCurve,
+                                       Standard_Boolean& theIsInfinite,
+                                       Standard_Boolean& theIsOnPlane,
+                                       const Handle(Geom_Plane)& thePlane)
 {
-  if (aPlane.IsNull()) return Standard_False;
-
-  Standard_Real first,last;
-  BRepAdaptor_Curve brepCurv(anEdge);
-  aCurve = Handle(Geom_Curve)::DownCast(brepCurv.Curve().Curve()->Transformed(brepCurv.Trsf()));
-  first = brepCurv.FirstParameter();
-  last = brepCurv.LastParameter();
-
-  if (aCurve.IsNull()) return Standard_False;
-  
-  extCurve = aCurve;
-  isInfinite = (Precision::IsInfinite(first) || Precision::IsInfinite(last));
-
-  // Checks that the projcurve is not in the plane
-  isOnPlane = Standard_True;
-  if (extCurve->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve))) {
-    extCurve = ((Handle(Geom_TrimmedCurve)&) extCurve)->BasisCurve();
+  if (thePlane.IsNull())
+  {
+    return Standard_False;
   }
 
-  if ( extCurve->IsInstance(STANDARD_TYPE(Geom_Line)) ) {
-    // CLE
-    // const Handle(Geom_Line) & gl = (Handle(Geom_Line)&) extCurve;
-    Handle(Geom_Line) gl = (Handle(Geom_Line)&) extCurve;
-    // ENDCLE
-    isOnPlane = aPlane->Pln().Contains( gl->Lin(), Precision::Confusion(), Precision::Angular() );
-  }
-  else if (extCurve->IsInstance(STANDARD_TYPE(Geom_Circle)) ) {
-    // CLE
-    // const Handle(Geom_Circle) & gc = (Handle(Geom_Circle)&) extCurve;
-    Handle(Geom_Circle) gc = (Handle(Geom_Circle)&) extCurve;
-    // ENDCLE
-    gp_Ax3 ax(gc->Position());
-    isOnPlane = ax.IsCoplanar(aPlane->Pln().Position(),
-                              Precision::Confusion(),
-                              Precision::Angular());
-  }
-  if ( isOnPlane ) {
-    extCurve.Nullify();
+  Standard_Real aFirst, aLast;
+  BRepAdaptor_Curve aCurveAdaptor (theEdge);
+  theCurve = Handle(Geom_Curve)::DownCast (aCurveAdaptor.Curve().Curve()->Transformed (aCurveAdaptor.Trsf()));
+  aFirst = aCurveAdaptor.FirstParameter();
+  aLast = aCurveAdaptor.LastParameter();
+
+  if (theCurve.IsNull())
+  {
+    return Standard_False;
   }
   
-//#ifndef DEB
-  Handle(Geom_Curve) aGeomCurve = GeomProjLib::ProjectOnPlane(aCurve,aPlane,aPlane->Pln().Axis().Direction(),Standard_False);
-  aCurve = aGeomCurve ;
-//#else
-//  aCurve = (Handle(Geom_Curve)&) GeomProjLib::ProjectOnPlane(aCurve,aPlane,aPlane->Pln().Axis().Direction(),Standard_False);
-//#endif
-  
-  if (aCurve->IsInstance(STANDARD_TYPE(Geom_Line))) {
-    // CLE
-    // const Handle(Geom_Line)& line = (Handle(Geom_Line)&) aCurve;
-    Handle(Geom_Line) line = (Handle(Geom_Line)&) aCurve;
-    // EDNCLE
-    if (!isInfinite) {
-      FirstPnt = ElCLib::Value(first,line->Lin());
-      LastPnt = ElCLib::Value(last,line->Lin());
-    }
+  theExtCurve = theCurve;
+  theIsInfinite = (Precision::IsInfinite (aFirst) || Precision::IsInfinite (aLast));
+
+  // Checks that the projected curve is not in the plane.
+  theIsOnPlane = Standard_True;
+  if (theExtCurve->IsInstance (STANDARD_TYPE (Geom_TrimmedCurve)))
+  {
+    theExtCurve = ((Handle(Geom_TrimmedCurve)&) theExtCurve)->BasisCurve();
   }
-  else if (aCurve->IsInstance(STANDARD_TYPE(Geom_Circle))) {
-    // CLE
-    // const Handle(Geom_Circle)& circ = (Handle(Geom_Circle)&) aCurve;
-    Handle(Geom_Circle) circ = (Handle(Geom_Circle)&) aCurve;
-    // ENDCLE
-    FirstPnt = ElCLib::Value(first,circ->Circ());
-    LastPnt = ElCLib::Value(last,circ->Circ());
+
+  if (theExtCurve->IsInstance (STANDARD_TYPE (Geom_Line)))
+  {
+    Handle(Geom_Line) aLine = (Handle(Geom_Line)&) theExtCurve;
+    theIsOnPlane = thePlane->Pln().Contains (aLine->Lin(),
+                                             Precision::Confusion(),
+                                             Precision::Angular());
   }
-  // jfa 10/10/2000
-  else if (aCurve->IsInstance(STANDARD_TYPE(Geom_Ellipse)))
+  else if (theExtCurve->IsInstance (STANDARD_TYPE (Geom_Circle)))
+  {
+    Handle(Geom_Circle) aCircle = (Handle(Geom_Circle)&) theExtCurve;
+
+    gp_Ax3 aCircPos (aCircle->Position());
+    theIsOnPlane = aCircPos.IsCoplanar (thePlane->Pln().Position(),
+                                                Precision::Confusion(),
+                                                Precision::Angular());
+  }
+
+  if (theIsOnPlane)
+  {
+    theExtCurve.Nullify();
+  }
+
+  theCurve = GeomProjLib::ProjectOnPlane (theCurve, thePlane,
+                                          thePlane->Pln().Axis().Direction(),
+                                          Standard_False);
+
+  if (theCurve->IsInstance (STANDARD_TYPE (Geom_Line)))
+  {
+    Handle(Geom_Line) aLine = (Handle(Geom_Line)&) theCurve;
+    if (!theIsInfinite)
     {
-      Handle(Geom_Ellipse) ell = (Handle(Geom_Ellipse)&) aCurve;
-      FirstPnt = ElCLib::Value(first,ell->Elips());
-      LastPnt = ElCLib::Value(last,ell->Elips());
+      theFirstPnt = ElCLib::Value (aFirst, aLine->Lin());
+      theLastPnt = ElCLib::Value (aLast, aLine->Lin());
     }
-  // jfa 10/10/2000 end
-  else return Standard_False;
+  }
+  else if (theCurve->IsInstance (STANDARD_TYPE (Geom_Circle)))
+  {
+    Handle(Geom_Circle) aCirc = (Handle(Geom_Circle)&) theCurve;
+
+    theFirstPnt = ElCLib::Value (aFirst, aCirc->Circ());
+    theLastPnt = ElCLib::Value (aLast, aCirc->Circ());
+  }
+  else if (theCurve->IsInstance (STANDARD_TYPE (Geom_Ellipse)))
+    {
+      Handle(Geom_Ellipse) anEllipse = (Handle(Geom_Ellipse)&) theCurve;
+
+      theFirstPnt = ElCLib::Value (aFirst, anEllipse->Elips());
+      theLastPnt = ElCLib::Value (aLast, anEllipse->Elips());
+    }
+  else
+  {
+    return Standard_False;
+  }
+
   return Standard_True;
 }
 
@@ -283,102 +375,181 @@ Standard_Boolean AIS::ComputeGeometry(const TopoDS_Edge& anEdge,
 //function : ComputeGeometry
 //purpose  :
 //=======================================================================
-
-Standard_Boolean AIS::ComputeGeometry(const TopoDS_Edge& anEdge1,
-				      const TopoDS_Edge& anEdge2,
-				      Handle(Geom_Curve)& aCurve1,
-				      Handle(Geom_Curve)& aCurve2,
-				      gp_Pnt& FirstPnt1,
-				      gp_Pnt& LastPnt1,
-				      gp_Pnt& FirstPnt2,
-				      gp_Pnt& LastPnt2,
-				      const Handle(Geom_Plane)& aPlane)
+Standard_Boolean AIS::ComputeGeometry (const TopoDS_Edge& theFirstEdge,
+                                      const TopoDS_Edge& theSecondEdge,
+                                      Handle(Geom_Curve)& theFirstCurve,
+                                      Handle(Geom_Curve)& theSecondCurve,
+                                      gp_Pnt& theFirstPnt1,
+                                      gp_Pnt& theLastPnt1,
+                                      gp_Pnt& theFirstPnt2,
+                                      gp_Pnt& theLastPnt2,
+                                      const Handle(Geom_Plane)& thePlane)
 {
-  if (aPlane.IsNull()) return Standard_False;
+  if (thePlane.IsNull())
+  {
+    return Standard_False;
+  }
 
-  TopLoc_Location loc_edge1,loc_edge2;
-  Standard_Real first1,last1,first2,last2;
+  TopLoc_Location aFirstEdgeLoc, aSecondEdgeLoc;
+  Standard_Real aFirst1, aLast1, aFirst2, aLast2;
   
-  aCurve1 = BRep_Tool::Curve(anEdge1,loc_edge1,first1,last1);
-  aCurve2 = BRep_Tool::Curve(anEdge2,loc_edge2,first2,last2);
+  theFirstCurve = BRep_Tool::Curve (theFirstEdge, aFirstEdgeLoc, aFirst1, aLast1);
+  theSecondCurve = BRep_Tool::Curve (theSecondEdge, aSecondEdgeLoc, aFirst2, aLast2);
 
-  if (aCurve1.IsNull()) return Standard_False;
-  if (aCurve2.IsNull()) return Standard_False;
+  if (theFirstCurve.IsNull())
+  {
+    return Standard_False;
+  }
+    
+  if (theSecondCurve.IsNull())
+  {
+    return Standard_False;
+  }
   
-  if (!loc_edge1.IsIdentity()) {
-//#ifndef DEB
-    Handle(Geom_Geometry) aGeomGeometry = aCurve1->Transformed(loc_edge1.Transformation());
-    aCurve1 = (Handle(Geom_Curve)&) aGeomGeometry ;
-//#else
-//    aCurve1 = (Handle(Geom_Curve)&) aCurve1->Transformed(loc_edge1.Transformation());
-//#endif
+  if (!aFirstEdgeLoc.IsIdentity())
+  {
+    Handle(Geom_Geometry) aGeomGeometry = theFirstCurve->Transformed (aFirstEdgeLoc.Transformation());
+    theFirstCurve = (Handle(Geom_Curve)&) aGeomGeometry;
   }
-  if (!loc_edge2.IsIdentity()) {
-//#ifndef DEB
-    Handle(Geom_Geometry) aGeomGeometry = aCurve2->Transformed(loc_edge2.Transformation());
-    aCurve2 = (Handle(Geom_Curve)&) aGeomGeometry ;
-//#else
-//    aCurve2 = (Handle(Geom_Curve)&) aCurve2->Transformed(loc_edge2.Transformation());
-//#endif
+    
+  if (!aSecondEdgeLoc.IsIdentity())
+  {
+    Handle(Geom_Geometry) aGeomGeometry = theSecondCurve->Transformed (aSecondEdgeLoc.Transformation());
+    theSecondCurve = (Handle(Geom_Curve)&) aGeomGeometry;
   }
 
-//#ifndef DEB
-  Handle(Geom_Curve) aGeomCurve = GeomProjLib::ProjectOnPlane(aCurve1,aPlane,aPlane->Pln().Axis().Direction(),Standard_False);
-  aCurve1 = aGeomCurve ;
-//#else
-//  aCurve1 =  (Handle(Geom_Curve)&) GeomProjLib::ProjectOnPlane(aCurve1,aPlane,aPlane->Pln().Axis().Direction(),Standard_False);
-//#endif
-//#ifndef DEB
-  aGeomCurve = GeomProjLib::ProjectOnPlane(aCurve2,aPlane,aPlane->Pln().Axis().Direction(),Standard_False);
-  aCurve2 = aGeomCurve;
-//#else
-//  aCurve2 =  (Handle(Geom_Curve)&) GeomProjLib::ProjectOnPlane(aCurve2,aPlane,aPlane->Pln().Axis().Direction(),Standard_False);
-//#endif
+  theFirstCurve = GeomProjLib::ProjectOnPlane (theFirstCurve, thePlane,
+                                               thePlane->Pln().Axis().Direction(),
+                                               Standard_False);
 
-  if (aCurve1->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve))) {
-    aCurve1 = ((Handle(Geom_TrimmedCurve)&) aCurve1)->BasisCurve();
+
+  theSecondCurve = GeomProjLib::ProjectOnPlane (theSecondCurve, thePlane,
+                                                thePlane->Pln().Axis().Direction(),
+                                                Standard_False);
+
+
+  if (theFirstCurve->IsInstance (STANDARD_TYPE(Geom_TrimmedCurve)))
+  {
+    theFirstCurve = ((Handle(Geom_TrimmedCurve)&) theFirstCurve)->BasisCurve();
   }
-  if (aCurve2->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve))) {
-    aCurve2 = ((Handle(Geom_TrimmedCurve)&) aCurve2)->BasisCurve();
+    
+  if (theSecondCurve->IsInstance (STANDARD_TYPE (Geom_TrimmedCurve)))
+  {
+    theSecondCurve = ((Handle(Geom_TrimmedCurve)&) theSecondCurve)->BasisCurve();
   }
 
-  if (aCurve1->IsInstance(STANDARD_TYPE(Geom_Line))) {
-    // CLE
-    // const Handle(Geom_Line)& line = (Handle(Geom_Line)&) aCurve1;
-    Handle(Geom_Line) line = (Handle(Geom_Line)&) aCurve1;
-    // ENDCLE
-    FirstPnt1 = ElCLib::Value(first1,line->Lin());
-    LastPnt1 = ElCLib::Value(last1,line->Lin());
-  }
-  else if (aCurve1->IsInstance(STANDARD_TYPE(Geom_Circle))) {
-    // CLE
-    // const Handle(Geom_Circle)& circ = (Handle(Geom_Circle)&) aCurve1;
-    Handle(Geom_Circle) circ = (Handle(Geom_Circle)&) aCurve1;
-    // ENDCLE
-    FirstPnt1 = ElCLib::Value(first1,circ->Circ());
-    LastPnt1 = ElCLib::Value(last1,circ->Circ());
-  }
-  else return Standard_False;
+  if (theFirstCurve->IsInstance(STANDARD_TYPE(Geom_Line)))
+  {
+    Handle(Geom_Line) aLine = (Handle(Geom_Line)&) theFirstCurve;
 
-  if (aCurve2->IsInstance(STANDARD_TYPE(Geom_Line))) {
-    // CLE
-    // const Handle(Geom_Line)& line = (Handle(Geom_Line)&) aCurve2;
-    Handle(Geom_Line) line = (Handle(Geom_Line)&) aCurve2;
-    // ENDCLE
-    FirstPnt2 = ElCLib::Value(first2,line->Lin());
-    LastPnt2 = ElCLib::Value(last2,line->Lin());
+    theFirstPnt1 = ElCLib::Value (aFirst1, aLine->Lin());
+    theLastPnt1 = ElCLib::Value (aLast1, aLine->Lin());
   }
-  else if (aCurve2->IsInstance(STANDARD_TYPE(Geom_Circle))) {
-    // CLE
-    // const Handle(Geom_Circle)& circ = (Handle(Geom_Circle)&) aCurve2;
-    Handle(Geom_Circle) circ = (Handle(Geom_Circle)&) aCurve2;
-    // ENDCLE
-    FirstPnt2 = ElCLib::Value(first2,circ->Circ());
-    LastPnt2 = ElCLib::Value(last2,circ->Circ());
+  else if (theFirstCurve->IsInstance(STANDARD_TYPE(Geom_Circle)))
+  {
+    Handle(Geom_Circle) aCirc = (Handle(Geom_Circle)&) theFirstCurve;
+      
+    theFirstPnt1 = ElCLib::Value (aFirst1, aCirc->Circ());
+    theLastPnt1 = ElCLib::Value (aLast1, aCirc->Circ());
   }
-  else return Standard_False;
+  else
+  {
+    return Standard_False;
+  }
+
+  if (theSecondCurve->IsInstance (STANDARD_TYPE (Geom_Line)))
+{
+    Handle(Geom_Line) aLine = (Handle(Geom_Line)&) theSecondCurve;
+
+    theFirstPnt2 = ElCLib::Value (aFirst2, aLine->Lin());
+    theLastPnt2 = ElCLib::Value (aLast2, aLine->Lin());
+  }
+  else if (theSecondCurve->IsInstance (STANDARD_TYPE (Geom_Circle)))
+  {
+    Handle(Geom_Circle) aCirc = (Handle(Geom_Circle)&) theSecondCurve;
+
+    theFirstPnt2 = ElCLib::Value (aFirst2, aCirc->Circ());
+    theLastPnt2 = ElCLib::Value (aLast2, aCirc->Circ());
+  }
+  else
+  {
+    return Standard_False;
+  }
 
   return Standard_True;
+}
+
+//=======================================================================
+//function : ComputeGeometry
+//purpose  : Computes the geometry of the 2 edges.
+//=======================================================================
+Standard_Boolean AIS::ComputeGeometry (const TopoDS_Edge& theFirstEdge,
+                                       const TopoDS_Edge& theSecondEdge,
+                                       Handle(Geom_Curve)& theFirstCurve,
+                                       Handle(Geom_Curve)& theSecondCurve,
+                                       gp_Pnt& theFirstPnt1,
+                                       gp_Pnt& theLastPnt1,
+                                       gp_Pnt& theFirstPnt2,
+                                       gp_Pnt& theLastPnt2,
+                                       Standard_Boolean& theIsInfinite1,
+                                       Standard_Boolean& theIsInfinite2)
+{
+    theIsInfinite1 = theIsInfinite2 = Standard_False;
+
+   if (!AIS::ComputeGeometry (theFirstEdge, theFirstCurve,theFirstPnt1, theLastPnt1, theIsInfinite1))
+   {
+     return Standard_False;
+   }
+
+   if (!AIS::ComputeGeometry (theSecondEdge, theSecondCurve,theFirstPnt2, theLastPnt2, theIsInfinite2))
+   {
+     return Standard_False;
+   }
+
+  if (theIsInfinite1 || theIsInfinite2)
+  {
+      if (theFirstCurve->DynamicType() == theSecondCurve->DynamicType())
+      {
+          gp_Lin aLin1 = ((Handle(Geom_Line)&) theFirstCurve)->Lin();
+          gp_Lin aLin2 = ((Handle(Geom_Line)&) theSecondCurve)->Lin();
+
+          if (theIsInfinite1)
+          {
+              theFirstPnt1 = ElCLib::Value (ElCLib::Parameter (aLin2, theFirstPnt2), aLin1);
+              theLastPnt1 = ElCLib::Value (ElCLib::Parameter (aLin2, theLastPnt2), aLin1);
+          }
+          else if (theIsInfinite2)
+          {
+              theFirstPnt2 = ElCLib::Value (ElCLib::Parameter (aLin1, theFirstPnt1), aLin2);
+              theLastPnt2 = ElCLib::Value (ElCLib::Parameter (aLin1, theLastPnt1), aLin2);
+          }
+      }
+      else
+      {
+        if (theIsInfinite1 && !theIsInfinite2)
+        {
+          GeomAPI_ProjectPointOnCurve aProjector (theFirstPnt2, theFirstCurve);
+          theFirstPnt1 = theFirstCurve->Value (aProjector.LowerDistanceParameter ());
+
+          aProjector.Init (theLastPnt2, theFirstCurve);
+          theLastPnt1 = theFirstCurve->Value (aProjector.LowerDistanceParameter ());
+        }
+        else if (!theIsInfinite1 && theIsInfinite2)
+        {
+          GeomAPI_ProjectPointOnCurve aProjector (theFirstPnt1, theSecondCurve);
+          theFirstPnt2 = theSecondCurve->Value (aProjector.LowerDistanceParameter ());
+
+          aProjector.Init (theLastPnt1, theSecondCurve);
+          theLastPnt2 = theSecondCurve->Value (aProjector.LowerDistanceParameter ());
+        }
+        else
+        {
+          return Standard_False;
+        }
+      }
+  }
+
+    return Standard_True;
 }
 
 //=======================================================================
@@ -396,103 +567,128 @@ Standard_Boolean AIS::ComputeGeometry(const TopoDS_Edge& anEdge1,
 //           if none of the two edges is in the current wp ,
 //           it returns Standard_False
 //=======================================================================
-
-Standard_Boolean AIS::ComputeGeometry (const TopoDS_Edge& anEdge1,
-                                       const TopoDS_Edge& anEdge2,
-                                       Standard_Integer& indexExt,
-                                       Handle(Geom_Curve)& aCurve1,
-                                       Handle(Geom_Curve)& aCurve2,
-                                       gp_Pnt& FirstPnt1,
-                                       gp_Pnt& LastPnt1,
-                                       gp_Pnt& FirstPnt2,
-                                       gp_Pnt& LastPnt2,
-                                       Handle(Geom_Curve)& extCurve,
-                                       Standard_Boolean& isInfinite1,
-                                       Standard_Boolean& isInfinite2,
-                                       const Handle(Geom_Plane)& aPlane)
+Standard_Boolean AIS::ComputeGeometry (const TopoDS_Edge& theFirstEdge,
+                                       const TopoDS_Edge& theSecondEdge,
+                                       Standard_Integer& theExtIndex,
+                                       Handle(Geom_Curve)& theFirstCurve,
+                                       Handle(Geom_Curve)& theSecondCurve,
+                                       gp_Pnt& theFirstPnt1,
+                                       gp_Pnt& theLastPnt1,
+                                       gp_Pnt& theFirstPnt2,
+                                       gp_Pnt& theLastPnt2,
+                                       Handle(Geom_Curve)& theExtCurve,
+                                       Standard_Boolean& theIsInfinite1,
+                                       Standard_Boolean& theIsInfinite2,
+                                       const Handle(Geom_Plane)& thePlane)
 {
-  if (aPlane.IsNull()) return Standard_False;
-  extCurve.Nullify();
-  indexExt = 0;
-
-  Standard_Real first1,last1,first2,last2;
-  isInfinite1 = isInfinite2 = Standard_False;
-
-  BRepAdaptor_Curve brepCurv1(anEdge1);
-  BRepAdaptor_Curve brepCurv2(anEdge2);
-  aCurve1 = Handle(Geom_Curve)::DownCast(brepCurv1.Curve().Curve()->Transformed(brepCurv1.Trsf()));
-  aCurve2 = Handle(Geom_Curve)::DownCast(brepCurv2.Curve().Curve()->Transformed(brepCurv2.Trsf()));
-  if (aCurve1->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve))) {
-    aCurve1 = ((Handle(Geom_TrimmedCurve)&) aCurve1)->BasisCurve();
-  }
-  if (aCurve2->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve))) {
-    aCurve2 = ((Handle(Geom_TrimmedCurve)&) aCurve2)->BasisCurve();
-  }
-
-  first1 = brepCurv1.FirstParameter();
-  last1 = brepCurv1.LastParameter();
-  first2 = brepCurv2.FirstParameter();
-  last2 = brepCurv2.LastParameter();
-
-  if (aCurve1.IsNull()) return Standard_False;
-  if (aCurve2.IsNull()) return Standard_False;
-  
-  Handle(Geom_Curve) aSov1 = aCurve1;
-  Handle(Geom_Curve) aSov2 = aCurve2;
- 
-  // Checks that the projcurve is not in the plane
-  Standard_Boolean isOnPlanC1,isOnPlanC2;
-  if ((!ComputeGeomCurve(aCurve1,first1,last1,FirstPnt1,LastPnt1,aPlane,isOnPlanC1))
-      || (!ComputeGeomCurve(aCurve2,first2,last2,FirstPnt2,LastPnt2,aPlane,isOnPlanC2)))
+  if (thePlane.IsNull())
+  {
     return Standard_False;
-  
-  if (Precision::IsInfinite(first1) || Precision::IsInfinite(last1)) {
-    isInfinite1 = Standard_True;
-    indexExt = 1;
   }
-  if (Precision::IsInfinite(first2) || Precision::IsInfinite(last2)) {
-    isInfinite2 = Standard_True;    
-    indexExt = 2;
-  }
-  if (isInfinite1 && isInfinite2) indexExt = 0;  //New
 
-  if (isInfinite1 || isInfinite2) {
-    if (aCurve1->DynamicType() == aCurve2->DynamicType()) {
-      // CLE
-      // const gp_Lin& lin1 = ((Handle(Geom_Line)&) aCurve1)->Lin();
-      // const gp_Lin& lin2 = ((Handle(Geom_Line)&) aCurve2)->Lin();
-      gp_Lin lin1 = ((Handle(Geom_Line)&) aCurve1)->Lin();
-      gp_Lin lin2 = ((Handle(Geom_Line)&) aCurve2)->Lin();
-      // ENDCLE
-      if (indexExt == 1) {
-        FirstPnt1 = ElCLib::Value(ElCLib::Parameter(lin2,FirstPnt2),lin1);
-        LastPnt1 = ElCLib::Value(ElCLib::Parameter(lin2,LastPnt2),lin1);
+  theExtCurve.Nullify();
+  theExtIndex = 0;
+
+  Standard_Real aFirst1, aLast1, aFirst2, aLast2;
+  theIsInfinite1 = theIsInfinite2 = Standard_False;
+
+  BRepAdaptor_Curve aFirstAdaptor (theFirstEdge);
+  BRepAdaptor_Curve aSecondAdaptor (theSecondEdge);
+
+  theFirstCurve = Handle(Geom_Curve)::DownCast
+                  (aFirstAdaptor.Curve().Curve()->Transformed (aFirstAdaptor.Trsf()));
+  theSecondCurve = Handle(Geom_Curve)::DownCast
+                  (aSecondAdaptor.Curve().Curve()->Transformed (aSecondAdaptor.Trsf()));
+
+  if (theFirstCurve->IsInstance (STANDARD_TYPE (Geom_TrimmedCurve)))
+  {
+    theFirstCurve = ((Handle(Geom_TrimmedCurve)&) theFirstCurve)->BasisCurve();
+  }
+  if (theSecondCurve->IsInstance (STANDARD_TYPE (Geom_TrimmedCurve)))
+  {
+    theSecondCurve = ((Handle(Geom_TrimmedCurve)&) theSecondCurve)->BasisCurve();
+  }
+
+  aFirst1 = aFirstAdaptor.FirstParameter();
+  aLast1 = aFirstAdaptor.LastParameter();
+
+  aFirst2 = aSecondAdaptor.FirstParameter();
+  aLast2 = aSecondAdaptor.LastParameter();
+
+  if (theFirstCurve.IsNull() || theSecondCurve.IsNull())
+  {
+    return Standard_False;
+  }
+
+  Handle(Geom_Curve) aFirstSaved = theFirstCurve;
+  Handle(Geom_Curve) aSecondSaved = theSecondCurve;
+
+  // Checks that the projected curve is not in the plane
+  Standard_Boolean isFirstOnPlane,isSecondOnPlane;
+
+  if ((!ComputeGeomCurve (theFirstCurve, aFirst1, aLast1, theFirstPnt1, theLastPnt1, thePlane, isFirstOnPlane))
+      || (!ComputeGeomCurve( theSecondCurve, aFirst2, aLast2, theFirstPnt2, theLastPnt2, thePlane,isSecondOnPlane)))
+  {
+    return Standard_False;
+  }
+
+  if (Precision::IsInfinite (aFirst1) || Precision::IsInfinite (aLast1))
+  {
+    theIsInfinite1 = Standard_True;
+    theExtIndex = 1;
+  }
+  if (Precision::IsInfinite (aFirst2) || Precision::IsInfinite (aLast2))
+  {
+    theIsInfinite2 = Standard_True;
+    theExtIndex = 2;
+  }
+  if (theIsInfinite1 && theIsInfinite2)
+  {
+    theExtIndex = 0;
+  }
+
+  if (theIsInfinite1 || theIsInfinite2)
+  {
+    if (theFirstCurve->DynamicType() == theSecondCurve->DynamicType())
+    {
+      gp_Lin aLin1 = ((Handle(Geom_Line)&) theFirstCurve)->Lin();
+      gp_Lin aLin2 = ((Handle(Geom_Line)&) theSecondCurve)->Lin();
+
+      if (theExtIndex == 1)
+      {
+        theFirstPnt1 = ElCLib::Value (ElCLib::Parameter (aLin2, theFirstPnt2), aLin1);
+        theLastPnt1 = ElCLib::Value (ElCLib::Parameter (aLin2, theLastPnt2), aLin1);
       }
-      else if (indexExt == 2) {
-	FirstPnt2 = ElCLib::Value(ElCLib::Parameter(lin1,FirstPnt1),lin2);
-	LastPnt2 = ElCLib::Value(ElCLib::Parameter(lin1,LastPnt1),lin2);
+      else if (theExtIndex == 2)
+      {
+        theFirstPnt2 = ElCLib::Value (ElCLib::Parameter (aLin1, theFirstPnt1), aLin2);
+        theLastPnt2 = ElCLib::Value (ElCLib::Parameter (aLin1, theLastPnt1), aLin2);
       }
     }
   }
 
-  if (isOnPlanC1 && isOnPlanC2) return Standard_True;
-
-  if (!isOnPlanC1 && isOnPlanC2) {// curve 2 only in the plane
-    indexExt = 1;
-    extCurve = aSov1;
+  if (isFirstOnPlane && isSecondOnPlane)
+  {
+    return Standard_True;
   }
-  else if (isOnPlanC1 && !isOnPlanC2) {// curve 1 only in the plane
-    indexExt = 2;
-    extCurve = aSov2;
+
+  if (!isFirstOnPlane && isSecondOnPlane)
+  {// curve 2 only in the plane
+    theExtIndex = 1;
+    theExtCurve = aFirstSaved;
+  }
+  else if (isFirstOnPlane && !isSecondOnPlane)
+  {// curve 1 only in the plane
+    theExtIndex = 2;
+    theExtCurve = aSecondSaved;
   }
   else
+  {
     return Standard_False;
-  
+  }
+
   return Standard_True;
 }
-
-
-// it is patch!
 
 //=======================================================================
 //function : ComputeGeomCurve
@@ -500,63 +696,60 @@ Standard_Boolean AIS::ComputeGeometry (const TopoDS_Edge& anEdge1,
 //           and returns aCurveproj;
 //           Return TRUE if ok
 //=======================================================================
-
-Standard_Boolean AIS::ComputeGeomCurve(Handle(Geom_Curve)& aCurve,
-                                          const Standard_Real first1,
-                                          const Standard_Real last1,
-                                          gp_Pnt& FirstPnt1,
-                                          gp_Pnt& LastPnt1,
-                                          const Handle(Geom_Plane)& aPlane,
-                                          Standard_Boolean& isOnPlane)
+Standard_Boolean AIS::ComputeGeomCurve (Handle(Geom_Curve)& aCurve,
+                                        const Standard_Real first1,
+                                        const Standard_Real last1,
+                                        gp_Pnt& FirstPnt1,
+                                        gp_Pnt& LastPnt1,
+                                        const Handle(Geom_Plane)& aPlane,
+                                        Standard_Boolean& isOnPlane)
 {
   isOnPlane = Standard_True;
-
   const Standard_Integer NodeNumber = 20;
   Standard_Real Delta = (last1 - first1) / (NodeNumber - 1);
   if (Delta <= Precision::PConfusion())
+  {
     Delta = last1 - first1;
-  gp_Pnt CurPnt(0.0,0.0,0.0);
+  }
+
+  gp_Pnt CurPnt(0.0, 0.0, 0.0);
   Standard_Real CurPar = first1;
   for (Standard_Integer i = 1; i <= NodeNumber; i++)
+  {
+    CurPnt = aCurve->Value( CurPar );
+    if (aPlane->Pln().SquareDistance( CurPnt ) > SquareTolerance)
     {
-      CurPnt = aCurve->Value( CurPar );
-      if (aPlane->Pln().SquareDistance( CurPnt ) > SquareTolerance)
-	{
-	  isOnPlane = Standard_False;
-	  break;
-	}
-      CurPar += Delta;
+      isOnPlane = Standard_False;
+      break;
     }
-  
-  if (! Precision::IsInfinite(first1) && ! Precision::IsInfinite(last1))
+    CurPar += Delta;
+  }
+
+  if (!Precision::IsInfinite(first1) && !Precision::IsInfinite(last1))
+  {
+    FirstPnt1 = aCurve->Value (first1);
+    LastPnt1  = aCurve->Value (last1);
+  }
+
+  if (!isOnPlane)
+  {
+    Handle(Geom_Curve) aGeomCurve = GeomProjLib::ProjectOnPlane (aCurve,
+                                                                aPlane,
+                                                                aPlane->Pln().Axis().Direction(),
+                                                                Standard_False);
+    aCurve = aGeomCurve;
+    if (aCurve->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve)))
     {
-      FirstPnt1 = aCurve->Value( first1 );
-      LastPnt1  = aCurve->Value( last1 );
-    }
-  if (!isOnPlane) {
-//#ifndef DEB
-    Handle( Geom_Curve ) aGeomCurve = GeomProjLib::ProjectOnPlane( aCurve,
-								   aPlane,
-								   aPlane->Pln().Axis().Direction(),
-								   Standard_False);
-    aCurve = aGeomCurve ;
-//#else
-//    aCurve =  (Handle( Geom_Curve )&) GeomProjLib::ProjectOnPlane( aCurve,
-//								   aPlane,
-//								   aPlane->Pln().Axis().Direction(),
-//								   Standard_False);
-//#endif
-    if (aCurve->IsInstance(STANDARD_TYPE(Geom_TrimmedCurve))) {
       aCurve = ((Handle(Geom_TrimmedCurve)&) aCurve)->BasisCurve();
     }
-    if (! Precision::IsInfinite(first1) && ! Precision::IsInfinite(last1)) {
+    if (! Precision::IsInfinite(first1) && ! Precision::IsInfinite(last1))
+    {
       FirstPnt1 = AIS::ProjectPointOnPlane( FirstPnt1, aPlane->Pln() );
       LastPnt1 = AIS::ProjectPointOnPlane( LastPnt1, aPlane->Pln() );
     }
   }
   return Standard_True;
 }
-
 
 //=======================================================================
 //function : ComputeGeometry
@@ -565,7 +758,6 @@ Standard_Boolean AIS::ComputeGeomCurve(Handle(Geom_Curve)& aCurve,
 //           <isOnPlane>, <isOnPlane> = true.
 //           <point> is the projected vertex in the plane.
 //=======================================================================
-
 Standard_Boolean  AIS::ComputeGeometry(const TopoDS_Vertex& aVertex,
                                        gp_Pnt& point,
                                        const Handle(Geom_Plane)& aPlane,
@@ -584,26 +776,24 @@ Standard_Boolean  AIS::ComputeGeometry(const TopoDS_Vertex& aVertex,
 //purpose  :
 //           Returns type of surface which can be Plane or OtherSurface
 //=======================================================================
-
-Standard_Boolean AIS::GetPlaneFromFace( const TopoDS_Face&            aFace,
+Standard_Boolean AIS::GetPlaneFromFace(const TopoDS_Face&            aFace,
                                         gp_Pln &                     aPlane,
                                         Handle( Geom_Surface )&      aSurf,
                                         AIS_KindOfSurface &          aSurfType,
-                                        Standard_Real &              Offset )
+                                        Standard_Real &              Offset)
 
 {
   Standard_Boolean Result = Standard_False;
   BRepAdaptor_Surface surf1( aFace );
   Handle( Adaptor3d_HSurface ) surf2;
-  //gp_Vec OffsetVec( 1.0e0, 0.0e0, 0.0e0 );
   Standard_Boolean isOffset = Standard_False;
 
   if (surf1.GetType() == GeomAbs_OffsetSurface)
-    {
-      // Extracting Basis Surface
-      surf2 = surf1.BasisSurface();
-      isOffset = Standard_True;
-    }
+  {
+    // Extracting Basis Surface
+    surf2 = surf1.BasisSurface();
+    isOffset = Standard_True;
+  }
   else
     surf2 = new BRepAdaptor_HSurface( surf1 );
 
@@ -612,81 +802,71 @@ Standard_Boolean AIS::GetPlaneFromFace( const TopoDS_Face&            aFace,
   aSurf = Handle( Geom_Surface )::DownCast( aSurf->Transformed( surf1.Trsf() ) );
 
   if (surf2->GetType() == GeomAbs_Plane)
+  {
+    aPlane = surf2->Plane();
+    aSurfType = AIS_KOS_Plane;
+    Offset = 0.;
+    Result = Standard_True;
+  }
+
+  else if (surf2->GetType() == GeomAbs_SurfaceOfExtrusion)
+  {
+    Handle( Adaptor3d_HCurve ) BasisCurve = surf2->BasisCurve();
+    gp_Dir ExtrusionDir = surf2->Direction();
+    if (BasisCurve->GetType() == GeomAbs_Line)
     {
-      aPlane = surf2->Plane();
+      gp_Lin BasisLine = BasisCurve->Line();
+      gp_Dir LineDir = BasisLine.Direction();
+      gp_Pnt LinePos = BasisLine.Location();
+      gp_Pln thePlane( LinePos, LineDir ^ ExtrusionDir);
+      aPlane = thePlane;
       aSurfType = AIS_KOS_Plane;
       Offset = 0.;
       Result = Standard_True;
     }
-
-  else if (surf2->GetType() == GeomAbs_SurfaceOfExtrusion)
-    {
-      Handle( Adaptor3d_HCurve ) BasisCurve = surf2->BasisCurve();
-      gp_Dir ExtrusionDir = surf2->Direction();
-      if (BasisCurve->GetType() == GeomAbs_Line)
-        {
-          gp_Lin BasisLine = BasisCurve->Line();
-          gp_Dir LineDir = BasisLine.Direction();
-          gp_Pnt LinePos = BasisLine.Location();
-          gp_Pln thePlane( LinePos, LineDir ^ ExtrusionDir);
-          aPlane = thePlane;
-          aSurfType = AIS_KOS_Plane;
-          Offset = 0.;
-          Result = Standard_True;
-        }
-    }
+  }
 
   if (Result == Standard_True && isOffset)
-    {
-      aSurf = (Handle( Geom_OffsetSurface )::DownCast( aSurf ))->Surface();
-      aPlane = (Handle( Geom_Plane )::DownCast( aSurf ))->Pln();
-      /*
-      Handle( Geom_OffsetSurface ) OffsetSurf = Handle( Geom_OffsetSurface )::DownCast( aSurf );
-      gp_Pnt PointOnPlane;
-      gp_Vec D1u, D1v;
-      OffsetSurf->D1( 0, 0, PointOnPlane, D1u, D1v );
-      D1u.Normalize();
-      D1v.Normalize();
-      OffsetVec = D1u ^ D1v;
-      aPlane.Translate( OffsetValue * OffsetVec );
-      */
-      Offset = 0.0e0;
-    }
+  {
+    aSurf = (Handle( Geom_OffsetSurface )::DownCast( aSurf ))->Surface();
+    aPlane = (Handle( Geom_Plane )::DownCast( aSurf ))->Pln();
+    Offset = 0.0e0;
+  }
   if (Result == Standard_False)
+  {
+    if (isOffset)
     {
-      if (isOffset)
-	{
-	  Handle( Standard_Type ) TheType = aSurf->DynamicType();
-	  if (TheType == STANDARD_TYPE(Geom_CylindricalSurface) ||
-	      TheType == STANDARD_TYPE(Geom_ConicalSurface)     ||
-	      TheType == STANDARD_TYPE(Geom_SphericalSurface)   ||
-	      TheType == STANDARD_TYPE(Geom_ToroidalSurface))
-	    {
-	      aSurf = (Handle( Geom_OffsetSurface )::DownCast( aSurf ))->Surface();
-	      Offset = 0.0e0;
-	    }
-	  else
-	    {
-	      Offset = (Handle( Geom_OffsetSurface )::DownCast( aSurf ))->Offset();
-	      aSurf =  (Handle( Geom_OffsetSurface )::DownCast( aSurf ))->BasisSurface();
-	    }
-	}
       Handle( Standard_Type ) TheType = aSurf->DynamicType();
-      if (TheType == STANDARD_TYPE(Geom_CylindricalSurface))
-        aSurfType = AIS_KOS_Cylinder;
-      else if (TheType == STANDARD_TYPE(Geom_ConicalSurface))
-        aSurfType = AIS_KOS_Cone;
-      else if (TheType == STANDARD_TYPE(Geom_SphericalSurface))
-        aSurfType = AIS_KOS_Sphere;
-      else if (TheType == STANDARD_TYPE(Geom_ToroidalSurface))
-        aSurfType = AIS_KOS_Torus;
-      else if (TheType == STANDARD_TYPE(Geom_SurfaceOfRevolution))
-        aSurfType = AIS_KOS_Revolution;
-      else if (TheType == STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion))
-        aSurfType = AIS_KOS_Extrusion;
+      if (TheType == STANDARD_TYPE(Geom_CylindricalSurface) ||
+        TheType == STANDARD_TYPE(Geom_ConicalSurface)     ||
+        TheType == STANDARD_TYPE(Geom_SphericalSurface)   ||
+        TheType == STANDARD_TYPE(Geom_ToroidalSurface))
+      {
+        aSurf = (Handle( Geom_OffsetSurface )::DownCast( aSurf ))->Surface();
+        Offset = 0.0e0;
+      }
       else
-        aSurfType = AIS_KOS_OtherSurface;
+      {
+        Offset = (Handle( Geom_OffsetSurface )::DownCast( aSurf ))->Offset();
+        aSurf =  (Handle( Geom_OffsetSurface )::DownCast( aSurf ))->BasisSurface();
+      }
     }
+    Handle( Standard_Type ) TheType = aSurf->DynamicType();
+    if (TheType == STANDARD_TYPE(Geom_CylindricalSurface))
+      aSurfType = AIS_KOS_Cylinder;
+    else if (TheType == STANDARD_TYPE(Geom_ConicalSurface))
+      aSurfType = AIS_KOS_Cone;
+    else if (TheType == STANDARD_TYPE(Geom_SphericalSurface))
+      aSurfType = AIS_KOS_Sphere;
+    else if (TheType == STANDARD_TYPE(Geom_ToroidalSurface))
+      aSurfType = AIS_KOS_Torus;
+    else if (TheType == STANDARD_TYPE(Geom_SurfaceOfRevolution))
+      aSurfType = AIS_KOS_Revolution;
+    else if (TheType == STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion))
+      aSurfType = AIS_KOS_Extrusion;
+    else
+      aSurfType = AIS_KOS_OtherSurface;
+  }
   return Result;
 }
 
@@ -719,17 +899,15 @@ gp_Pnt AIS::ProjectPointOnLine( const gp_Pnt & aPoint, const gp_Lin & aLine )
   return Result;
 }
 
-
 //=======================================================================
 //function : InitFaceLength
 //purpose  : 
 //=======================================================================
-
-void AIS::InitFaceLength( const TopoDS_Face& aFace, 
-			 gp_Pln               & aPlane,
-			 Handle(Geom_Surface) & aSurface,
-			 AIS_KindOfSurface    & aSurfaceType,
-			 Standard_Real        & anOffset) 
+void AIS::InitFaceLength (const TopoDS_Face& aFace,
+                          gp_Pln               & aPlane,
+                          Handle(Geom_Surface) & aSurface,
+                          AIS_KindOfSurface    & aSurfaceType,
+                          Standard_Real        & anOffset)
 {
   AIS::GetPlaneFromFace( aFace, aPlane, aSurface, aSurfaceType, anOffset );
   
@@ -742,449 +920,321 @@ void AIS::InitFaceLength( const TopoDS_Face& aFace,
 }
 
 //=======================================================================
-//function : ComputeLengthBetweenPlanarFaces
+//function : InitAngleBetweenPlanarFaces
 //purpose  :
 //=======================================================================
-
-void AIS::ComputeLengthBetweenPlanarFaces( const TopoDS_Face &      FirstFace,
-                                           const TopoDS_Face &      SecondFace,
-                                           const gp_Pln &           Plane1,
-                                           const gp_Pln &           Plane2,
-                                           Standard_Real &          Value,
-                                           gp_Pnt &                 FirstAttach,
-                                           gp_Pnt &                 SecondAttach,
-                                           gp_Dir       &           DirAttach,
-                                           const Standard_Boolean   AutomaticPos,
-                                           gp_Pnt &                 Position )
+Standard_Boolean AIS::InitAngleBetweenPlanarFaces (const TopoDS_Face&          theFirstFace,
+                                                   const TopoDS_Face&          theSecondFace,
+                                                   gp_Pnt &                    theCenter,
+                                                   gp_Pnt &                    theFirstAttach,
+                                                   gp_Pnt &                    theSecondAttach,
+                                                   const Standard_Boolean      theIsFirstPointSet)
 {
-  TopExp_Explorer aExp( FirstFace, TopAbs_VERTEX );
-  // case of infinite planes. SMO.
-  if (!aExp.More())
-    FirstAttach = Plane1.Location();
-  else  
-    FirstAttach = BRep_Tool::Pnt( TopoDS::Vertex( aExp.Current() ) );
-  SecondAttach = AIS::ProjectPointOnPlane( FirstAttach, Plane2 );
+  Handle(Geom_Plane) aFirstPlane = Handle(Geom_Plane)::DownCast (BRep_Tool::Surface (theFirstFace));
+  Handle(Geom_Plane) aSecondPlane = Handle(Geom_Plane)::DownCast (BRep_Tool::Surface (theSecondFace));
 
-  Value = FirstAttach.Distance( SecondAttach );
+  GeomAPI_IntSS aPlaneIntersector (aFirstPlane, aSecondPlane, Precision::Confusion());
 
-  gp_Dir LengthDir = Plane1.Axis().Direction();
-  /*
-  if (Value > Precision::Confusion())
-    LengthDir = gp_Dir( gp_Vec( FirstAttach, SecondAttach ) );
-    */
-  DirAttach = Plane1.Position().XDirection();
+  // Fails if two planes haven't only one intersection line.
+  if (!aPlaneIntersector.IsDone())
+  {
+    return Standard_False;
+  }
 
-  if (AutomaticPos)
-    Position.SetXYZ((FirstAttach.XYZ() + SecondAttach.XYZ())/2.0e0) ;
- 
-  else // position is given
+  if (aPlaneIntersector.NbLines() != 1)
+  {
+    return Standard_False;
+  }
+
+  // Get intersect line.
+  Handle(Geom_Curve) anIntersectCurve = aPlaneIntersector.Line (1);
+
+  Handle(Geom_Line) anIntersectLine = Handle(Geom_Line)::DownCast (anIntersectCurve);
+
+  if (anIntersectLine.IsNull())
+  {
+    return Standard_False;
+  }
+
+  gp_Lin anIntersectLin = anIntersectLine->Lin();
+
+  gp_Pnt aFirstCenter, aSecondCenter;
+  Standard_Real anU1Min, anU1Max, aV1Min, aV1Max;
+  Standard_Real anU2Min, anU2Max, aV2Min, aV2Max;
+
+  BRepTools::UVBounds (theFirstFace, anU1Min, anU1Max, aV1Min, aV1Max);
+  BRepTools::UVBounds (theSecondFace, anU2Min, anU2Max, aV2Min, aV2Max);
+
+  // Get first and second attach.
+  if (theIsFirstPointSet)
+  {
+    GeomAPI_ProjectPointOnSurf aProjector (theFirstAttach, aFirstPlane);
+    if (!aProjector.IsDone())
     {
-      FirstAttach = AIS::Nearest( FirstFace, Position );
-      SecondAttach = AIS::ProjectPointOnPlane( FirstAttach, Plane2 );
+      return Standard_False;
     }
 
-  Quantity_Parameter U, V ;
-  ElSLib::Parameters( Plane2, SecondAttach, U, V );
-  BRepTopAdaptor_FClass2d aClassifier( SecondFace, Precision::Confusion() );
-  TopAbs_State State = aClassifier.Perform( gp_Pnt2d( U, V ), Standard_False );
-  if (State == TopAbs_OUT || State == TopAbs_UNKNOWN)
-    {
-      SecondAttach = AIS::Nearest( SecondFace, Position );
-      if (Value > Precision::Confusion())
-        {
-          gp_Vec aVector = gp_Vec( FirstAttach, SecondAttach ) ^ LengthDir;
-          if (aVector.SquareMagnitude() > SquareTolerance)
-            DirAttach = aVector ^ LengthDir;
-        }
-      else
-        {
-          gp_Vec DirVec( FirstAttach, SecondAttach );
-          if (DirVec.SquareMagnitude() > SquareTolerance)
-            DirAttach = gp_Dir( DirVec );
-        }
-    }
-  if (!AutomaticPos)
-    {
-      gp_Pln PlaneOfDim( FirstAttach, DirAttach ^ LengthDir );
-      Position = AIS::ProjectPointOnPlane( Position, PlaneOfDim );
-    }
+    aFirstCenter = aProjector.Point (1);
+  }
+  else
+  {
+    aFirstCenter = aFirstPlane->Value ((anU1Min + anU1Max) * 0.5, (aV1Min + aV1Max) * 0.5);
+  }
+
+  aSecondCenter = aSecondPlane->Value ((anU2Min + anU2Max) * 0.5, (aV2Min + aV2Max) * 0.5);
+
+  GeomAPI_ProjectPointOnCurve aProj (aFirstCenter, anIntersectCurve);
+  theCenter = aProj.NearestPoint();
+
+  gp_Vec aFirstNormal = anIntersectLin.Direction() ^ aFirstPlane->Pln().Axis().Direction();
+  if (aFirstNormal * gp_Vec (theCenter, aFirstCenter) < 0.0)
+  {
+    aFirstNormal.Reverse();
+  }
+  theFirstAttach = theCenter.Translated (aFirstNormal);
+
+  gp_Vec aSecondNormal = anIntersectLin.Direction() ^ aSecondPlane->Pln().Axis().Direction();
+  if (aSecondNormal * gp_Vec (theCenter, aSecondCenter) < 0.0)
+  {
+    aSecondNormal.Reverse();
+  }
+  theSecondAttach = theCenter.Translated (aSecondNormal);
+
+  return Standard_True;
 }
 
-
-// Purpose: Return the point from <aFace> wich is the more distant
-//          from <anAxis>
-static gp_Pnt FindFarPoint (const gp_Ax1 &           anAxis,
-                            const TopoDS_Face &      aFace )
+//=======================================================================
+//function : InitAngleBetweenCurvilinearFaces
+//purpose  :
+//=======================================================================
+Standard_Boolean AIS::InitAngleBetweenCurvilinearFaces (const TopoDS_Face&          theFirstFace,
+                                                        const TopoDS_Face&          theSecondFace,
+                                                        const AIS_KindOfSurface     theFirstSurfType,
+                                                        const AIS_KindOfSurface     theSecondSurfType,
+                                                        gp_Pnt&                     theCenter,
+                                                        gp_Pnt&                     theFirstAttach,
+                                                        gp_Pnt&                     theSecondAttach,
+                                                        const Standard_Boolean      theIsFirstPointSet)
 {
-  gp_Pnt ResPnt(0.0,0.0,0.0);
-  Standard_Real MaxDist = 0.e0, curdist2;
+  Handle(Geom_Surface) aFirstSurf = BRep_Tool::Surface (theFirstFace);
+  Handle(Geom_Surface) aSecondSurf = BRep_Tool::Surface (theSecondFace);
 
-  gp_Lin Line (anAxis);
+  // Find intersection curve between two surfaces.
+  GeomAPI_IntSS aSurfaceIntersector (aFirstSurf, aSecondSurf, Precision::Confusion());
 
-  TopExp_Explorer Explo (aFace, TopAbs_VERTEX);
+  // Fails if two planes haven't only one intersection line.
+  if (!aSurfaceIntersector.IsDone())
+  {
+    return Standard_False;
+  }
 
-  if (!Explo.More()) {
-    // Case of infinite planes (no Vertex, no edge)
-    gp_Pln plane;
-    Handle( Geom_Surface ) aSurf;
-    AIS_KindOfSurface KOS;
-    Standard_Real offset;
-    AIS::GetPlaneFromFace (aFace,plane,aSurf,KOS,offset );
-    gp_Pnt aPoint = plane.Location();
-    MaxDist = Line.SquareDistance (aPoint);
-    if (MaxDist <= SquareTolerance)  {
-      MaxDist = 100;
-      gp_Dir DMove = plane.Axis().Direction()^anAxis.Direction();
-      gp_Vec VMove (DMove.XYZ()*100);
-      ResPnt = aPoint.Translated (VMove);
+  if (aSurfaceIntersector.NbLines() != 1)
+  {
+    return Standard_False;
+  }
+
+  // Get intersect line.
+  Handle(Geom_Curve) anIntersectCurve = aSurfaceIntersector.Line (1);
+
+  Handle(Geom_Line) aFirstLine, aSecondLine;
+  Standard_Real aFirstU = 0.0;
+  Standard_Real aFirstV = 0.0;
+
+  if (theIsFirstPointSet)
+  {
+    GeomAPI_ProjectPointOnSurf aProjector (theFirstAttach, aFirstSurf);
+    if (!aProjector.IsDone())
+    {
+      return Standard_False;
+    }
+
+    theFirstAttach = aProjector.Point (1);
+  }
+  else
+  {
+    theFirstAttach = aFirstSurf->Value (aFirstU, aFirstV);
+  }
+
+  aFirstLine = Handle(Geom_Line)::DownCast (aFirstSurf->UIso (aFirstU));
+
+  if (theSecondSurfType == AIS_KOS_Cylinder)
+  {
+    Handle(Geom_CylindricalSurface) aCylinder = Handle(Geom_CylindricalSurface)::DownCast (aSecondSurf);
+
+    Standard_Real aSecondU = aCylinder->Cylinder().XAxis().Direction().Angle(
+                               gce_MakeDir (ProjectPointOnLine (theFirstAttach,
+                                                                gp_Lin (aCylinder->Cylinder().Axis())),
+                                            theFirstAttach));
+
+    aSecondLine = Handle(Geom_Line)::DownCast (aCylinder->UIso (aSecondU));
+  }
+  else if (theSecondSurfType == AIS_KOS_Cone)
+  {
+    Handle(Geom_ConicalSurface) aCone = Handle(Geom_ConicalSurface)::DownCast (aSecondSurf);
+
+    gp_Dir anXdirection = aCone->Cone().XAxis().Direction();
+
+    gp_Dir aToFirstAttach = gce_MakeDir (ProjectPointOnLine (theFirstAttach,
+                                                             gp_Lin (aCone->Cone().Axis())),
+                                         theFirstAttach);
+
+    Standard_Real aSecondU = anXdirection.Angle (aToFirstAttach);
+
+    // Check sign
+    if (!anXdirection.IsEqual (aToFirstAttach, Precision::Angular()) &&
+        !anXdirection.IsOpposite (aToFirstAttach, Precision::Angular()) &&
+        (anXdirection ^ aToFirstAttach) * aCone->Cone().Axis().Direction() < 0.0)
+    {
+      aSecondU = 2*M_PI - aSecondU;
+    }
+    aSecondLine = Handle( Geom_Line )::DownCast (aCone->UIso(aSecondU));
+  }
+  else
+  {
+    return Standard_False;
+  }
+
+  // If angle can be computed between two lines.
+  if (!(aFirstLine->Lin().Direction().IsEqual (aSecondLine->Lin().Direction(), Precision::Angular() )) &&
+      !(aFirstLine->Lin().Direction().IsOpposite (aSecondLine->Lin().Direction(), Precision::Angular())))
+  {
+    GeomAPI_ExtremaCurveCurve anIntersector (aFirstLine, aSecondLine);
+    anIntersector.Points (1, theCenter, theCenter);
+
+    // Move theFirstAttach on aFirstLine if it is on theCenter.
+    if (theCenter.SquareDistance(theFirstAttach ) <= SquareTolerance)
+    {
+      gp_Vec aDir (aFirstLine->Lin().Direction());
+      theFirstAttach = theCenter.Translated (aDir);
+
+      // theFirstAttach should be on theFirstSurf.
+      Standard_Real anU, aV;
+      if (theFirstSurfType == AIS_KOS_Cylinder)
+      {
+        ElSLib::Parameters ((Handle(Geom_CylindricalSurface)::DownCast (aFirstSurf))->Cylinder(),
+                            theFirstAttach, anU, aV);
+
+        theFirstAttach = ElSLib::Value (aFirstU, aV,
+                                        (Handle( Geom_CylindricalSurface )::DownCast (aFirstSurf))->Cylinder() );
+      }
+      else if (theFirstSurfType == AIS_KOS_Cone)
+      {
+        ElSLib::Parameters ((Handle(Geom_ConicalSurface)::DownCast (aFirstSurf))->Cone(),
+                             theFirstAttach, anU, aV);
+        theFirstAttach = ElSLib::Value (aFirstU, aV,
+                                       (Handle(Geom_ConicalSurface)::DownCast (aFirstSurf))->Cone());
+      }
+      else
+      {
+        return Standard_False;
+      }
+    }
+
+    // Find theSecondAttach
+    GeomAPI_ProjectPointOnSurf aProjector (theFirstAttach, aSecondSurf);
+    if (!aProjector.IsDone())
+    {
+      return Standard_False;
+    }
+    Quantity_Parameter anU, aV;
+    aProjector.LowerDistanceParameters (anU, aV);
+    theSecondAttach = aSecondSurf->Value (anU, aV);
+  }
+  else // aFirstLine and aSecondLine are coincident
+  {
+      gp_Vec aDir (aFirstLine->Lin().Direction());
+      theFirstAttach = theCenter.Translated (aDir);
+      theSecondAttach = theCenter.Translated (-aDir);
+  }
+  return Standard_True;
+}
+
+//=======================================================================
+//function : ComputeLengthBetweenCurvilinearFaces
+//purpose  : 
+//=======================================================================
+void AIS::InitLengthBetweenCurvilinearFaces (const TopoDS_Face&    theFirstFace,
+                                             const TopoDS_Face&    theSecondFace,
+                                             Handle(Geom_Surface)& theFirstSurf,
+                                             Handle(Geom_Surface)& theSecondSurf,
+                                             gp_Pnt&               theFirstAttach,
+                                             gp_Pnt&               theSecondAttach,
+                                             gp_Dir&               theDirOnPlane)
+{
+  GeomAPI_ProjectPointOnSurf aProjector;
+  Quantity_Parameter aPU, aPV;
+
+  TopExp_Explorer anExplorer (theFirstFace, TopAbs_VERTEX);
+
+  theFirstAttach = BRep_Tool::Pnt (TopoDS::Vertex (anExplorer.Current()));
+  aProjector.Init (theFirstAttach, theFirstSurf);
+
+  theFirstAttach = aProjector.NearestPoint();
+  aProjector.LowerDistanceParameters (aPU, aPV);
+
+  gp_Vec aD1U, aD1V;
+  theFirstSurf->D1 (aPU, aPV, theFirstAttach, aD1U, aD1V);
+
+  if (aD1U.SquareMagnitude() <= SquareTolerance || aD1V.SquareMagnitude() <= SquareTolerance)
+  {
+    theFirstAttach = AIS::Farest (theFirstFace, theFirstAttach);
+    aProjector.Init (theFirstAttach, theFirstSurf);
+    aProjector.LowerDistanceParameters (aPU, aPV);
+    theFirstSurf->D1 (aPU, aPV, theFirstAttach, aD1U, aD1V);
+  }
+
+  aD1U.Normalize();
+  aD1V.Normalize();
+
+  theDirOnPlane = gp_Dir (aD1U);
+
+  gp_Dir aFirstSurfN = gp_Dir (aD1U ^ aD1V);
+
+  aProjector.Init (theFirstAttach, theSecondSurf);
+
+  Standard_Integer aBestPointIndex = 0;
+  Quantity_Length aMinDist = RealLast();
+  gp_Dir aLocalDir;
+
+  for (Standard_Integer aPointIt = 1; aPointIt <= aProjector.NbPoints(); aPointIt++)
+  {
+    aProjector.Parameters (aPointIt, aPU, aPV);
+
+    theSecondSurf->D1 (aPU, aPV, theSecondAttach, aD1U, aD1V);
+
+    aLocalDir = aD1U.SquareMagnitude() <= SquareTolerance || aD1V.SquareMagnitude() <= SquareTolerance
+              ? gp_Dir (gp_Vec (theFirstAttach, aProjector.Point (aPointIt)))
+              : gp_Dir (aD1U ^ aD1V);
+
+    if (aFirstSurfN.IsParallel (aLocalDir, Precision::Angular()) && aProjector.Distance (aPointIt) < aMinDist)
+    {
+      aBestPointIndex = aPointIt;
+      aMinDist = aProjector.Distance (aPointIt);
     }
   }
 
-  for (; Explo.More(); Explo.Next())
-    {
-      // CLE
-      // const TopoDS_Vertex & aVertex = TopoDS::Vertex( Explo.Current() );
-      TopoDS_Vertex aVertex = TopoDS::Vertex( Explo.Current() );
-      // ENDCLE
-      gp_Pnt aPoint = BRep_Tool::Pnt( aVertex );
-      curdist2 = Line.SquareDistance( aPoint );
-      if (curdist2 > MaxDist)
-        {
-          MaxDist = curdist2;
-          ResPnt = aPoint;
-        }
-    }
-
-  if (MaxDist <= SquareTolerance)
-    {
-      const Standard_Integer NodeNumber = 20;
-      Explo.Init( aFace, TopAbs_EDGE );
-      for (; Explo.More(); Explo.Next())
-        {
-	  // CLE
-          // const TopoDS_Edge & anEdge = TopoDS::Edge( Explo.Current() );
-	  TopoDS_Edge anEdge = TopoDS::Edge( Explo.Current() );
-	  // ENDCLE
-          BRepAdaptor_Curve aCurve( anEdge );
-          Standard_Real FirstPar = aCurve.FirstParameter();
-          Standard_Real LastPar = aCurve.LastParameter();
-          Standard_Real Delta = (LastPar - FirstPar) / (NodeNumber - 1);
-          for (Standard_Integer i = 0; i < NodeNumber; i++)
-            {
-              gp_Pnt aPoint(0.0,0.0,0.0);
-              aCurve.D0( FirstPar, aPoint );
-              curdist2 = Line.SquareDistance( aPoint );
-              if (curdist2 > MaxDist)
-                {
-                  MaxDist = curdist2;
-                  ResPnt = aPoint;
-                }
-              FirstPar += Delta;
-            }
-          if (MaxDist > SquareTolerance) break;
-        }
-    }
-  if (MaxDist <= SquareTolerance)
-    Standard_ConstructionError::Raise("AIS:: problem attach point") ;
-  return ResPnt;
-}
-
-void AIS::ComputeAngleBetweenPlanarFaces( const TopoDS_Face &      FirstFace,
-                                          const TopoDS_Face &      SecondFace,
-                                          const Handle( Geom_Surface )& Surf2,
-                                          const gp_Ax1 &           Axis,
-                                          const Standard_Real      Value,
-                                          const Standard_Boolean   AutomaticPos,
-                                          gp_Pnt &                 Position,
-                                          gp_Pnt &                 Center,
-                                          gp_Pnt &                 FirstAttach,
-                                          gp_Pnt &                 SecondAttach,
-                                          gp_Dir &                 FirstDir,
-                                          gp_Dir &                 SecondDir )
-{
-  FirstAttach = FindFarPoint( Axis, FirstFace );
-  Center = AIS::ProjectPointOnLine( FirstAttach, gp_Lin( Axis ) );
-  gp_Dir aDir1( gp_Vec( Center, FirstAttach ) );
-  FirstDir = aDir1;
-  SecondAttach = FirstAttach.Rotated( Axis, Value );
-  gp_Dir aDir2( gp_Vec( Center, SecondAttach ) );
-  SecondDir = aDir2;
-
-  GeomAPI_ProjectPointOnSurf   aProjPnt( SecondAttach,
-                                         Surf2 ) ;
-  //SecondAttach = aProjPnt.Point(1) ;
-  Quantity_Parameter U,V ;
-  aProjPnt.Parameters(1,U,V) ;
-  BRepTopAdaptor_FClass2d aClassifier(SecondFace,
-                                      Precision::Confusion());
-  if (aClassifier.Perform(gp_Pnt2d(U,V),Standard_False) == TopAbs_OUT ||
-      aClassifier.Perform(gp_Pnt2d(U,V),Standard_False) == TopAbs_UNKNOWN)
-    SecondAttach = FindFarPoint( Axis, SecondFace );
-
-  if (AutomaticPos)
-    Position = FirstAttach.Rotated( Axis, Value*0.5 );
+  if (aBestPointIndex == 0)
+  {
+    theSecondAttach = theFirstAttach;
+  }
   else
-    {
-      gp_Pln PlaneOfDim( Center, Axis.Direction() );
-      Position = AIS::ProjectPointOnPlane( Position, PlaneOfDim );
-    }
-}
-                                     
-                                     
-void AIS::ComputeAngleBetweenCurvilinearFaces( const TopoDS_Face &      FirstFace,
-                                               const TopoDS_Face &      SecondFace,
-                                               const Handle( Geom_Surface )& FirstSurf,
-                                               const Handle( Geom_Surface )& SecondSurf,
-                                               const AIS_KindOfSurface  FirstSurfType,
-                                               const AIS_KindOfSurface  SecondSurfType,
-                                               const gp_Ax1 &           Axis,
-                                               const Standard_Real      Value,
-                                               const Standard_Boolean   AutomaticPos,
-                                               gp_Pnt &                 Position,
-                                               gp_Pnt &                 Center,
-                                               gp_Pnt &                 FirstAttach,
-                                               gp_Pnt &                 SecondAttach,
-                                               gp_Dir &                 FirstDir,
-                                               gp_Dir &                 SecondDir,
-                                               Handle( Geom_Plane ) &   Plane )
-{
-  //
-  // even if it is not AutomaticPosition do not assume the Automatic
-  // case has saved the values in the AIS_AngleDimension class : this
-  // is not always the case
-  //
-  gp_Pnt SavedPosition = Position ;
-  FirstAttach = FindFarPoint( Axis, FirstFace );
-  Plane = new Geom_Plane( Axis.Location(),
-                          gp_Dir( gp_Vec( Axis.Location(), FirstAttach ) ^
-                                  gp_Vec( Axis.Direction() ) ) );
-  
-  Handle( Geom_Line ) FirstLine, SecondLine;
-  Standard_Real FirstU, FirstV;
-  if (FirstSurfType == AIS_KOS_Cylinder)
-    ElSLib::Parameters( Handle( Geom_CylindricalSurface )::DownCast( FirstSurf )->Cylinder(),
-                        FirstAttach,
-                        FirstU, FirstV );
-  else // it is Cone
-    ElSLib::Parameters( Handle( Geom_ConicalSurface )::DownCast( FirstSurf )->Cone(),
-                        FirstAttach,
-                        FirstU, FirstV );
-  FirstLine = Handle( Geom_Line )::DownCast( FirstSurf->UIso( FirstU ) );
-  
-  if (SecondSurfType == AIS_KOS_Cylinder)
-    {
-      Handle( Geom_CylindricalSurface ) Cylinder2 =
-        Handle( Geom_CylindricalSurface )::DownCast( SecondSurf );
-      Standard_Real SecondU = Cylinder2->Cylinder().XAxis().Direction().Angle(
-                                                                              gp_Dir( gp_Vec( ProjectPointOnLine( FirstAttach, gp_Lin( Cylinder2->Cylinder().Axis() ) ),
-                                                                                              FirstAttach ) ) );
-      
-      SecondLine = Handle( Geom_Line )::DownCast( Cylinder2->UIso( SecondU ) );
-    }
-  
-  else // it is Cone
-    {
-      Handle( Geom_ConicalSurface ) Cone2 = Handle( Geom_ConicalSurface )::DownCast( SecondSurf );
-      gp_Dir Xdirection = Cone2->Cone().XAxis().Direction() ;
-      gp_Dir ToFirstAttach = gp_Dir( gp_Vec(
-                                            ProjectPointOnLine( FirstAttach, gp_Lin( Cone2->Cone().Axis() )),
-                                            FirstAttach ) );
-      
-      Standard_Real SecondU = Xdirection.Angle( ToFirstAttach );
-      // check sign
-      if (! Xdirection.IsEqual( ToFirstAttach, Precision::Angular() ) &&
-          ! Xdirection.IsOpposite( ToFirstAttach, Precision::Angular() ) &&
-          (Xdirection ^ ToFirstAttach) * Cone2->Cone().Axis().Direction() < 0.0e0)
-        SecondU = 2*M_PI - SecondU ;
-      
-      SecondLine = Handle( Geom_Line )::DownCast( Cone2->UIso( SecondU ) );
-      
-    }
-  if (! (FirstLine->Lin().Direction().IsEqual( SecondLine->Lin().Direction(), Precision::Angular() )) &&
-      ! (FirstLine->Lin().Direction().IsOpposite( SecondLine->Lin().Direction(), Precision::Angular() )))
-    {
-      GeomAPI_ExtremaCurveCurve Intersection( FirstLine, SecondLine );
-      Intersection.Points( 1, Center, Center );
-      
-      if (Center.SquareDistance( FirstAttach ) <= SquareTolerance)
-        {
-          FirstAttach = AIS::Farest( FirstFace, Center );
-          Standard_Real U, V;
-          if (FirstSurfType == AIS_KOS_Cylinder)
-            {
-              ElSLib::Parameters ( (Handle( Geom_CylindricalSurface )::DownCast( FirstSurf ))->Cylinder(),
-                                   FirstAttach,
-                                   U, V );
-              FirstAttach = ElSLib::Value( FirstU, V,
-                                           (Handle( Geom_CylindricalSurface )::DownCast( FirstSurf ))
-                                           ->Cylinder() );
-            }
-          else // it is Cone
-            {
-              ElSLib::Parameters ( (Handle( Geom_ConicalSurface )::DownCast( FirstSurf ))->Cone(),
-                                   FirstAttach,
-                                   U, V );
-              FirstAttach = ElSLib::Value( FirstU, V,
-                                           (Handle( Geom_ConicalSurface )::DownCast( FirstSurf ))
-                                           ->Cone() );
-            }
-        }
-      gp_Vec FirstVec( Center, FirstAttach );
-      FirstDir = gp_Dir( FirstVec );
-      
-      gp_Ax1 AxisOfRotation( Center, Plane->Pln().Axis().Direction() );
-      SecondAttach = FirstAttach.Rotated( AxisOfRotation, Value );
-      if (! SecondLine->Lin().Contains( SecondAttach, Precision::Confusion() ))
-        {
-          AxisOfRotation.Reverse();
-          SecondAttach = FirstAttach.Rotated( AxisOfRotation, Value );
-        }
-      
-      Position = FirstAttach.Rotated( AxisOfRotation, Value/2 );
+  {
+    theSecondAttach = aProjector.Point (aBestPointIndex);
+    aProjector.Parameters (aBestPointIndex, aPU, aPV);
 
-      gp_Vec SecondVec( Center, SecondAttach );
-      SecondDir = gp_Dir( SecondVec );
-      
-    }
-  else // FirstLine and SecondLine are coincident
-    {
-      Position = SecondAttach = FirstAttach;
-      FirstDir = FirstLine->Lin().Direction();
-      SecondDir = FirstDir;
-      Center = Position.Translated( gp_Vec( -FirstDir ) );
-      //Position.Translate( gp_Vec( FirstDir ) );
-    }
-  
-  GeomAPI_ProjectPointOnSurf   aProjPnt( SecondAttach, SecondSurf ) ;
-  Quantity_Parameter U, V;
-  aProjPnt.LowerDistanceParameters( U, V ) ;
-  BRepTopAdaptor_FClass2d aClassifier2( SecondFace, Precision::Confusion());
-  TopAbs_State State = aClassifier2.Perform( gp_Pnt2d( U, V ), Standard_True );
-  if (State == TopAbs_OUT || State == TopAbs_UNKNOWN)
-    {
-      Standard_Real MinDist2 = RealLast();
-      Standard_Real curdist2;
-      gp_Pnt curpnt(0.0,0.0,0.0);
-      gp_Pnt Result(0.0,0.0,0.0);
-      TopExp_Explorer Explo( SecondFace, TopAbs_VERTEX );
-      for (; Explo.More(); Explo.Next())
-        {
-          curpnt = BRep_Tool::Pnt( TopoDS::Vertex( Explo.Current() ) );
-          curdist2 = SecondAttach.SquareDistance( curpnt ) ;
-          if (curpnt.SquareDistance( Center ) > SquareTolerance && curdist2 < MinDist2)
-            {
-              Result = curpnt;
-              MinDist2 = curdist2;
-            }
-        }
-      SecondAttach = Result;
-    }
+    // Now there is projection of FirstAttach onto SecondSurf in aProjector
+    BRepTopAdaptor_FClass2d aClassifier (theSecondFace, Precision::Confusion());
 
-  if (! AutomaticPos)
-    {  // protection in case this is created using the manual position
-      
-      
-      Position = AIS::ProjectPointOnPlane( SavedPosition, Plane->Pln() );
+    TopAbs_State aState = 
+      aClassifier.Perform (gp_Pnt2d (aPU, aPV), theSecondSurf->IsUPeriodic() || theSecondSurf->IsVPeriodic());
+
+    if (aState == TopAbs_OUT || aState == TopAbs_UNKNOWN)
+    {
+      theSecondAttach = AIS::Nearest (theSecondFace, theSecondAttach);
     }
+  }
 }
 
-
-void AIS::ComputeLengthBetweenCurvilinearFaces( const TopoDS_Face &      FirstFace,
-                                                const TopoDS_Face &      SecondFace,
-                                                Handle( Geom_Surface )&  FirstSurf,
-                                                Handle( Geom_Surface )&  SecondSurf,
-                                                const Standard_Boolean   AutomaticPos,
-                                                Standard_Real &          Value,
-                                                gp_Pnt &                 Position,
-                                                gp_Pnt &                 FirstAttach,
-                                                gp_Pnt &                 SecondAttach,
-                                                gp_Dir &                 DirAttach )
-{
-  GeomAPI_ProjectPointOnSurf aProjector;
-  Quantity_Parameter U, V;
-  TopAbs_State State = TopAbs_UNKNOWN;
-  if (AutomaticPos)
-    {
-      TopExp_Explorer Explo( FirstFace, TopAbs_VERTEX );
-      FirstAttach = BRep_Tool::Pnt( TopoDS::Vertex( Explo.Current() ) );
-      aProjector.Init(FirstAttach , FirstSurf );
-      FirstAttach = aProjector.NearestPoint();
-      aProjector.LowerDistanceParameters( U, V );
-    }
-  else // posiiton is given
-    {
-      aProjector.Init( Position, FirstSurf );
-      FirstAttach = aProjector.NearestPoint();
-
-      aProjector.LowerDistanceParameters( U, V );
-      BRepTopAdaptor_FClass2d aClassifier( FirstFace, Precision::Confusion() );
-      State = aClassifier.Perform( gp_Pnt2d( U, V ), ( (FirstSurf->IsUPeriodic() || FirstSurf->IsVPeriodic())?
-                                                       Standard_True
-                                                       : Standard_False ) );
-      if (State == TopAbs_OUT || State == TopAbs_UNKNOWN)
-        {
-          FirstAttach = AIS::Nearest( FirstFace, Position );
-          aProjector.Init( FirstAttach, FirstSurf );
-          aProjector.LowerDistanceParameters( U, V );
-        }
-    }
-
-  gp_Vec D1U, D1V;
-  FirstSurf->D1( U, V, FirstAttach, D1U, D1V );
-  if (D1U.SquareMagnitude() <= SquareTolerance || D1V.SquareMagnitude() <= SquareTolerance)
-    {
-      FirstAttach = AIS::Farest( FirstFace, FirstAttach );
-      aProjector.Init( FirstAttach, FirstSurf );
-      aProjector.LowerDistanceParameters( U, V );
-      FirstSurf->D1( U, V, FirstAttach, D1U, D1V );
-    }
-  D1U.Normalize();
-  D1V.Normalize();
-  DirAttach = gp_Dir( D1U ^ D1V );
-
-  aProjector.Init( FirstAttach, SecondSurf );
-  Standard_Integer Index = 0;
-  Quantity_Length MinDist = RealLast();
-  gp_Dir LocalDir;
-  for (Standard_Integer i = 1; i <= aProjector.NbPoints(); i++)
-    {
-      aProjector.Parameters( i, U, V );
-
-      SecondSurf->D1( U, V, SecondAttach, D1U, D1V );
-      if (D1U.SquareMagnitude() <= SquareTolerance || D1V.SquareMagnitude() <= SquareTolerance)
-        LocalDir = gp_Dir( gp_Vec( FirstAttach, aProjector.Point( i ) ) );
-      else
-        LocalDir = gp_Dir( D1U ^ D1V );
-      if (DirAttach.IsParallel( LocalDir, Precision::Angular() ) && aProjector.Distance( i ) < MinDist)
-        {
-          Index = i;
-          MinDist = aProjector.Distance( i );
-        }
-    }
-if (Index == 0)  { 
-  SecondAttach = FirstAttach;
-} else {
-  SecondAttach = aProjector.Point( Index );
-  aProjector.Parameters( Index, U, V );
-
-  Value = FirstAttach.Distance( SecondAttach );
-  if (Value > Precision::Confusion())
-    DirAttach = gp_Dir( gp_Vec( FirstAttach, SecondAttach ) );
-
-  if (AutomaticPos)
-    Position.SetXYZ( (FirstAttach.XYZ() + SecondAttach.XYZ()) / 2 );
-  else if (State == TopAbs_OUT || State == TopAbs_UNKNOWN)
-    Position = AIS::ProjectPointOnLine( Position, gp_Lin( FirstAttach, DirAttach ) );
-
-  // Now there is projection of FirstAttach onto SecondSurf in aProjector
-  BRepTopAdaptor_FClass2d aClassifier( SecondFace, Precision::Confusion() );
-  State = aClassifier.Perform( gp_Pnt2d( U, V ), ( (SecondSurf->IsUPeriodic() || SecondSurf->IsVPeriodic())?
-                                                   Standard_True
-                                                   : Standard_False ) );
-  if (State == TopAbs_OUT || State == TopAbs_UNKNOWN)
-    SecondAttach = AIS::Nearest( SecondFace, SecondAttach );
-}
-}
 gp_Pnt AIS::TranslatePointToBound( const gp_Pnt & aPoint, const gp_Dir & aDir, const Bnd_Box & aBndBox )
 {
   if (aBndBox.IsOut( aPoint ))

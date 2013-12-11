@@ -3,3 +3,5 @@ Prs3d_NListOfSequenceOfPnt.hxx
 Prs3d_Point.hxx
 Prs3d_WFShape.hxx
 Prs3d_WFShape.cxx
+Prs3d_DimensionUnits.hxx
+Prs3d_DimensionUnits.cxx

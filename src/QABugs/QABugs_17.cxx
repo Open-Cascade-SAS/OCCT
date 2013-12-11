@@ -292,15 +292,20 @@ static Standard_Integer  BUC60818(Draw_Interpretor& di, Standard_Integer argc, c
   return 0;
 }
 
-static Standard_Integer BUC60915_1(Draw_Interpretor& di, Standard_Integer argc, const char ** /*argv*/)
+static Standard_Integer BUC60915_1(Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {
   if (argc > 1) {
     di<<"Function don't has parameters"<<"\n";
     return 1;
   }
 
-  Handle(AIS_InteractiveContext)   context= ViewerTest_Tool::MakeContext ("buc60915");
-  ViewerTest_Tool::InitViewerTest (context);
+  if(ViewerTest::GetAISContext().IsNull())
+  {
+    di << "View was not created. Use 'vinit' command before "
+       << argv[0] << "\n";
+    return 1;
+  }
+  Handle(AIS_InteractiveContext) context = ViewerTest::GetAISContext();
 
   //The following dimesion code has problems regarding arrow_size. The desired effect is not produced.
   /***************************************/
@@ -325,20 +330,29 @@ static Standard_Integer BUC60915_1(Draw_Interpretor& di, Standard_Integer argc, 
   gp_Pnt plnpt(0, 0, 0);
   gp_Dir plndir(0, 0, 1);
   Handle(Geom_Plane) pln = new Geom_Plane(plnpt,plndir);
+  Handle(Prs3d_DimensionAspect) anAspect = new Prs3d_DimensionAspect();
+  anAspect->MakeArrows3d (Standard_True);
+  anAspect->ArrowAspect()->SetAngle (M_PI/180.0 * 10.0);
   /***************************************/
   //dimension "L 502.51"
   /***************************************/
   Handle(AIS_LengthDimension) len = new AIS_LengthDimension(V2, V3, pln->Pln());
+  anAspect->ArrowAspect()->SetLength (30.0);
+  len->SetDimensionAspect (anAspect);
   context->Display(len);
   /***************************************/
   //dimension "L 90"
   /***************************************/
-  Handle(AIS_LengthDimension) len1 = new AIS_LengthDimension(V4, V7, pln->Pln());
+  Handle(AIS_LengthDimension) len1 = new AIS_LengthDimension(V7, V4, pln->Pln());
+  len1->SetDimensionAspect (anAspect);
+  len1->SetFlyout (30.0);
+  anAspect->ArrowAspect()->SetLength (100.0);
   context->Display(len1);
   /***************************************/
   //dimension "L 150"
   /***************************************/
   Handle(AIS_LengthDimension) len2 = new AIS_LengthDimension(V1, V2, pln->Pln());
+  len2->SetDimensionAspect (anAspect);
   context->Display(len2);
   /***************************************/
   //dimension "R 88.58"
@@ -346,6 +360,7 @@ static Standard_Integer BUC60915_1(Draw_Interpretor& di, Standard_Integer argc, 
   gp_Circ cir = gp_Circ(gp_Ax2(gp_Pnt(191.09, -88.58, 0), gp_Dir(0, 0, 1)), 88.58);
   TopoDS_Edge E1 = BRepBuilderAPI_MakeEdge(cir,gp_Pnt(191.09,0,0.),gp_Pnt(191.09,-177.16,0.) );
   Handle(AIS_RadiusDimension) dim1 = new AIS_RadiusDimension(E1);
+  dim1->SetDimensionAspect (anAspect);
   context->Display(dim1);
   /***************************************/
   //dimension "R 43.80"
@@ -353,6 +368,8 @@ static Standard_Integer BUC60915_1(Draw_Interpretor& di, Standard_Integer argc, 
   gp_Circ cir1 = gp_Circ(gp_Ax2(gp_Pnt(191.09, -88.58, 0), gp_Dir(0, 0, 1)), 43.80);
   TopoDS_Edge E_cir1 = BRepBuilderAPI_MakeEdge(cir1);
   dim1 = new AIS_RadiusDimension(E_cir1);
+  anAspect->ArrowAspect()->SetLength (60.0);
+  dim1->SetDimensionAspect (anAspect);
   context->Display(dim1);
   /***************************************/
   //dimension "R 17.86"
@@ -360,6 +377,8 @@ static Standard_Integer BUC60915_1(Draw_Interpretor& di, Standard_Integer argc, 
   gp_Circ cir2 = gp_Circ(gp_Ax2(gp_Pnt(566.11, -88.58, 0), gp_Dir(0, 0, -1)), 17.86);
   TopoDS_Edge E_cir2 = BRepBuilderAPI_MakeEdge(cir2);
   dim1 = new AIS_RadiusDimension(E_cir2);
+  anAspect->ArrowAspect()->SetLength (40.0);
+  dim1->SetDimensionAspect (anAspect);
   context->Display(dim1);
 
   return 0;

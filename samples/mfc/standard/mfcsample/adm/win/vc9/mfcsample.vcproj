@@ -466,6 +466,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\Common\ParamsFacesPage.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\Common\DimensionDlg.cpp"
 				>
 			</File>
@@ -1770,6 +1774,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\Common\LengthParamsEdgePage.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Common\ParamsFacesPage.h"
 				>
 			</File>
 			<File

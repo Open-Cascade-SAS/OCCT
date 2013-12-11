@@ -616,7 +616,7 @@ static int VAngleDimBuilder(Draw_Interpretor& di, Standard_Integer argc, const c
     TheAISContext()->CloseLocalContext(myCurrentIndex);
     
     // Construction de l'AIS dimension
-    Handle (AIS_AngleDimension) myAISDim= new AIS_AngleDimension (TopoDS::Edge(ShapeA) ,TopoDS::Edge(ShapeB) ,theGeomPlane->Pln());
+    Handle (AIS_AngleDimension) myAISDim= new AIS_AngleDimension (TopoDS::Edge(ShapeA) ,TopoDS::Edge(ShapeB));
     GetMapOfAIS().Bind (myAISDim,argv[1]);
     TheAISContext()->Display(myAISDim );
     
@@ -1534,10 +1534,10 @@ static int VLenghtDimension(Draw_Interpretor& di, Standard_Integer argc, const c
       TopoDS_Vertex  Va,Vc;
       TopExp::Vertices(EdFromA,Va,Vc);
       gp_Pnt A=BRep_Tool::Pnt(Va);
+
 #ifdef DEB
-      gp_Pnt C=
+      gp_Pnt C = BRep_Tool::Pnt(Vc);
 #endif
-               BRep_Tool::Pnt(Vc);
 
       // On projette le point B sur la Face car il 
       // n'existe pas de constructeurs AIS_LD PointFace

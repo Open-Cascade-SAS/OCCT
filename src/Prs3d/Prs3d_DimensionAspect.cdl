@@ -18,8 +18,9 @@
 
 class DimensionAspect from Prs3d inherits BasicAspect from Prs3d
 
-    	---Purpose: defines the attributes when drawing a Length Presentation.
-uses 
+    ---Purpose: defines the attributes when drawing a Length Presentation.
+
+uses
     DimensionTextHorizontalPosition from Prs3d,
     DimensionTextVerticalPosition from Prs3d,
     DimensionArrowOrientation from Prs3d,
@@ -31,7 +32,8 @@ uses
     Color from Quantity,
     TypeOfLine from Aspect,
     PlaneAngle from Quantity,
-    TypeOfLine from Aspect
+    TypeOfLine from Aspect,
+    AsciiString from TCollection
 is
 
     Create returns mutable DimensionAspect from Prs3d;
@@ -64,8 +66,15 @@ is
     IsArrows3d(me) returns Boolean from Standard;
       --- Purpose: Gets type of arrows.   
 
-    MakeArrows3d (me:mutable; isArrows3d: Boolean from Standard); 
-      ---Purpose: Sets type of arrows. 
+    MakeArrows3d (me : mutable; isArrows3d: Boolean from Standard);
+      ---Purpose: Sets type of arrows.
+
+    IsUnitsDisplayed (me) returns Boolean from Standard;
+    ---Purpose: Shows if Units are to be displayed along with dimension value.
+
+    MakeUnitsDisplayed (me : mutable; theIsDisplayed : Boolean from Standard);
+    ---Purpose: Specifies whether the units string should be displayed 
+    -- along with value label or not.
 
     SetArrowOrientation(me: mutable; theArrowOrient: DimensionArrowOrientation from Prs3d);
       --- Purpose: Sets orientation of arrows (external or internal).
@@ -95,15 +104,21 @@ is
     SetCommonColor(me:mutable; theColor: Color from Quantity) is static; 
       ---Purpose: Sets the same color for all parts of dimension: lines, arrows and text.
 
-    SetExtensionSize (me : mutable; theSize : Real from Standard) is static;
+    SetExtensionSize (me : mutable; theSize : Real from Standard);
     ---Purpose: Sets extension size.
 
     ExtensionSize (me) returns Real from Standard;
     ---Purpose: Returns extension size.
 
+    SetValueStringFormat (me : mutable; theFormat : AsciiString from TCollection);
+    ---Purpose: Sets "sprintf"-syntax format for formatting dimension value labels.
+
+    ValueStringFormat (me) returns AsciiString from TCollection;
+    ---Purpose: Returns format.
+
 fields
 
-    myLineAspect: LineAspect from Prs3d;
+    myLineAspect : LineAspect from Prs3d;
     ---Purpose: Text style. The size for 3d (or 2d) text is also inside here.
 
     myTextAspect: TextAspect from Prs3d;
@@ -128,5 +143,13 @@ fields
     myExtensionSize : Real from Standard;
     ---Purpose: Size of arrow extensions.
     -- The length of arrow tails if arrows are located outside dimension line.
+
+    myValueStringFormat : AsciiString from TCollection;
+    ---Purpose: "sprintf"-syntax format for formatting dimension value labels.
+    -- Default is "%g".
+
+    myToDisplayUnits : Boolean from Standard;
+    ---Purpose: Defines if the units need to be displayed.
+    -- Default is FALSE.
 
 end DimensionAspect from Prs3d;

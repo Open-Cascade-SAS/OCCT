@@ -19,21 +19,24 @@
 #include <AIS_Drawer.ixx>
 #include <Standard_ProgramError.hxx>
 
-AIS_Drawer::AIS_Drawer(): 
-myLink(new Prs3d_Drawer()),
-hasLocalAttributes(Standard_False),
-myhasOwnDeviationCoefficient(Standard_False),
-myPreviousDeviationCoefficient(0.1),
-myhasOwnHLRDeviationCoefficient (Standard_False),
-myhasOwnDeviationAngle (Standard_False),
-myhasOwnHLRDeviationAngle (Standard_False),
-myHasOwnFaceBoundaryDraw (Standard_False)
+// =======================================================================
+// function : AIS_Drawer
+// purpose  :
+// =======================================================================
+AIS_Drawer::AIS_Drawer()
+: myLink (new Prs3d_Drawer()),
+  hasLocalAttributes (Standard_False),
+  myhasOwnDeviationCoefficient (Standard_False),
+  myPreviousDeviationCoefficient (0.1),
+  myhasOwnHLRDeviationCoefficient (Standard_False),
+  myhasOwnDeviationAngle (Standard_False),
+  myhasOwnHLRDeviationAngle (Standard_False),
+  myHasOwnFaceBoundaryDraw (Standard_False)
 {
-  SetMaximalParameterValue(500000.);
-  myLink->SetMaximalParameterValue(500000.);
+  SetMaximalParameterValue (500000.0);
+  myLink->SetMaximalParameterValue (500000.0);
   SetTypeOfHLR (Prs3d_TOH_NotSet);
-} 
-
+}
 
 Aspect_TypeOfDeflection AIS_Drawer::TypeOfDeflection () const 
 {
@@ -216,8 +219,97 @@ Handle (Prs3d_DatumAspect) AIS_Drawer::DatumAspect ()
 Handle (Prs3d_PlaneAspect) AIS_Drawer::PlaneAspect () 
 {return myPlaneAspect.IsNull() ? myLink->PlaneAspect (): myPlaneAspect;}
 
-Handle (Prs3d_DimensionAspect) AIS_Drawer::DimensionAspect ()  
-{return myDimensionAspect.IsNull()? myLink->DimensionAspect () : myDimensionAspect ;}
+// =======================================================================
+// function : DimensionAspect
+// purpose  :
+// =======================================================================
+Handle (Prs3d_DimensionAspect) AIS_Drawer::DimensionAspect()
+{
+  return myDimensionAspect.IsNull()? myLink->DimensionAspect () : myDimensionAspect;
+}
+
+// =======================================================================
+// function : DimAngleModelUnits
+// purpose  :
+// =======================================================================
+const TCollection_AsciiString& AIS_Drawer::DimAngleModelUnits() const
+{
+  return myHasOwnDimAngleModelUnits
+    ? Prs3d_Drawer::DimAngleModelUnits()
+    : myLink->DimAngleModelUnits();
+}
+
+// =======================================================================
+// function : DimensionModelUnits
+// purpose  :
+// =======================================================================
+const TCollection_AsciiString& AIS_Drawer::DimLengthModelUnits() const
+{
+  return myHasOwnDimLengthModelUnits
+    ? Prs3d_Drawer::DimLengthModelUnits()
+    : myLink->DimLengthModelUnits();
+}
+// =======================================================================
+// function : SetDimLengthModelUnits
+// purpose  :
+// =======================================================================
+void AIS_Drawer::SetDimLengthModelUnits (const TCollection_AsciiString& theUnits)
+{
+  myHasOwnDimLengthModelUnits = Standard_True;
+  Prs3d_Drawer::SetDimLengthDisplayUnits (theUnits);
+}
+
+// =======================================================================
+// function : SetDimAngleModelUnits
+// purpose  :
+// =======================================================================
+void AIS_Drawer::SetDimAngleModelUnits (const TCollection_AsciiString& theUnits)
+{
+  myHasOwnDimAngleModelUnits = Standard_True;
+  Prs3d_Drawer::SetDimAngleDisplayUnits (theUnits);
+}
+
+// =======================================================================
+// function : DimAngleDisplayUnits
+// purpose  :
+// =======================================================================
+const TCollection_AsciiString& AIS_Drawer::DimAngleDisplayUnits() const
+{
+  return myHasOwnDimAngleDisplayUnits
+    ? Prs3d_Drawer::DimAngleDisplayUnits()
+    : myLink->DimAngleDisplayUnits();
+}
+
+// =======================================================================
+// function : DimLengthDisplayUnits
+// purpose  :
+// =======================================================================
+const TCollection_AsciiString& AIS_Drawer::DimLengthDisplayUnits() const
+{
+  return myHasOwnDimLengthDisplayUnits
+    ? Prs3d_Drawer::DimLengthDisplayUnits()
+    : myLink->DimLengthDisplayUnits();
+}
+
+// =======================================================================
+// function : SetDimLengthDisplayUnits
+// purpose  :
+// =======================================================================
+void AIS_Drawer::SetDimLengthDisplayUnits (const TCollection_AsciiString& theUnits)
+{
+  myHasOwnDimLengthDisplayUnits = Standard_True;
+  Prs3d_Drawer::SetDimLengthDisplayUnits (theUnits);
+}
+
+// =======================================================================
+// function : SetDimAngleDisplayUnits
+// purpose  :
+// =======================================================================
+void AIS_Drawer::SetDimAngleDisplayUnits (const TCollection_AsciiString& theUnits)
+{
+  myHasOwnDimAngleDisplayUnits = Standard_True;
+  Prs3d_Drawer::SetDimAngleDisplayUnits (theUnits);
+}
 
 Handle (Prs3d_LineAspect) AIS_Drawer::SectionAspect ()
 {return mySectionAspect.IsNull()? myLink->SectionAspect (): mySectionAspect;}
@@ -256,6 +348,10 @@ void AIS_Drawer::ClearLocalAttributes()
   if (!myFaceBoundaryAspect.IsNull()) myFaceBoundaryAspect.Nullify();
   
   myHasOwnFaceBoundaryDraw = Standard_False;
+  myHasOwnDimLengthModelUnits = Standard_False;
+  myHasOwnDimLengthDisplayUnits = Standard_False;
+  myHasOwnDimAngleModelUnits = Standard_False;
+  myHasOwnDimAngleDisplayUnits = Standard_False;
 
   hasLocalAttributes = Standard_False;
 

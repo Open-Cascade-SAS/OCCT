@@ -254,7 +254,7 @@ static Standard_Integer BUC60972 (Draw_Interpretor& di, Standard_Integer argc, c
   //di << ExtString_aText << " " << Draw::Atof(argv[4]) << "\n";
   di << argv[5] << " " << Draw::Atof(argv[4]) << "\n";
   
-  Handle(AIS_AngleDimension) aDim = new AIS_AngleDimension(aFirst, aSecond, aPlane->Pln());
+  Handle(AIS_AngleDimension) aDim = new AIS_AngleDimension(aFirst, aSecond);
   aContext->Display(aDim);                                                         
   
   return 0;

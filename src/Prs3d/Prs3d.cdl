@@ -119,6 +119,7 @@ is
 	class PlaneAspect;
   class DimensionAspect;
 	class DatumAspect;
+  imported DimensionUnits;
 
   class Drawer;
 	---Purpose: qualifies how the presentation algorithms compute

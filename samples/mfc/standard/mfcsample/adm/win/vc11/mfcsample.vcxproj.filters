@@ -138,6 +138,9 @@
     <ClCompile Include="..\..\..\..\Common\RadiusParamsPage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Common\ParamsFacesPage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\..\..\Common\res\OCC_Resource.rc">
@@ -245,6 +248,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Common\RadiusParamsPage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Common\ParamsFacesPage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

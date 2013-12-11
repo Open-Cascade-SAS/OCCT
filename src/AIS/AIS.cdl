@@ -464,29 +464,56 @@ is
     	 ---Purpose:
     	 -- Returns the nearest point in a shape. This is used by
     	 -- several classes in calculation of dimensions.
-    
+
+    Nearest (theLine : Lin from gp;
+             thePoint  : Pnt from gp)
+    returns Pnt from gp;
+    ---Purpose:
+    -- @return the nearest point on the line.
+
+    Nearest (theCurve        : Curve from Geom;
+             thePoint        : Pnt from gp;
+             theFirstPoint     : Pnt from gp;
+             theLastPoint      : Pnt from gp;
+             theNearestPoint : out Pnt from gp)
+    returns Boolean from Standard;
+    ---Purpose:
+    -- For the given point finds nearest point on the curve,
+    -- @return TRUE if found point is belongs to the curve
+    -- and FALSE otherwise.
+
     Farest( aShape : Shape from TopoDS;
             aPoint : Pnt from gp )
     returns Pnt from gp;
 
-    ComputeGeometry(anEdge   : Edge from TopoDS;
-    	    	    aCurve   : out Curve from Geom;
-    	    	    FirstPnt : out Pnt from gp;
-    	    	    LastPnt  : out Pnt from gp)
+    ComputeGeometry (theEdge     : Edge from TopoDS;
+                     theCurve    : out Curve from Geom;
+                     theFirstPnt : out Pnt from gp;
+                     theLastPnt  : out Pnt from gp)
     ---Purpose: Used by 2d Relation only
     --          Computes the 3d geometry of <anEdge> in the current WorkingPlane
     --          and the extremities if any
-    --          Return TRUE if ok
+    --          Return TRUE if ok.
     returns Boolean  from Standard;
-    
-    ComputeGeometry(anEdge   : Edge from TopoDS;
-    	    	    aCurve   : out Curve from Geom;
-    	    	    FirstPnt : out Pnt from gp;
-    	    	    LastPnt  : out Pnt from gp;
-    	    	    extCurve : out Curve from Geom;
-		    isinfinite: out Boolean from Standard;
-		    isOnPlane : out Boolean from Standard;	
-    	    	    aPlane   : Plane from Geom)
+
+    ComputeGeometry (theEdge       : Edge from TopoDS;
+                     theCurve      : out Curve from Geom;
+                     theFirstPnt   : out Pnt from gp;
+                     theLastPnt    : out Pnt from gp;
+                     theIsInfinite : out Boolean from Standard)
+    ---Purpose: Used by dimensions only.
+    --          Computes the 3d geometry of <anEdge>.
+    --          Return TRUE if ok.
+    returns Boolean  from Standard;
+
+    ComputeGeometry (theEdge       : Edge from TopoDS;
+                     theCurve      : out Curve from Geom;
+                     theFirstPnt   : out Pnt from gp;
+                     theLastPnt    : out Pnt from gp;
+                     theExtCurve   : out Curve from Geom;
+                     theIsInfinite : out Boolean from Standard;
+                     theIsOnPlane  : out Boolean from Standard;
+                     thePlane      : Plane from Geom)
     ---Purpose: Used by 2d Relation only
     --          Computes the 3d geometry of <anEdge> in the current WorkingPlane
     --          and the extremities if any.
@@ -494,39 +521,51 @@ is
     --          the not projected curve associated to <anEdge>.
     --          If <anEdge> is infinite, <isinfinite> = true and the 2
     --          parameters <FirstPnt> and <LastPnt> have no signification.
-    --          Return TRUE if ok
+    --          Return TRUE if ok.
     returns Boolean from Standard;
-    
-    ComputeGeometry     (anEdge1   : Edge from TopoDS;
-    	    	    	 anEdge2   : Edge from TopoDS;
-    	    	    	 aCurve1   : out Curve from Geom;
-    	    	    	 aCurve2   : out Curve from Geom;
-    	    	    	 FirstPnt1 : out Pnt from gp;
-    	    	    	 LastPnt1  : out Pnt from gp;
-    	    	    	 FirstPnt2 : out Pnt from gp;
-    	    	    	 LastPnt2  : out Pnt from gp;
-    	    	    	 aPlane    : Plane from Geom)
+
+    ComputeGeometry (theFirstEdge   : Edge from TopoDS;
+                     theSecondEdge  : Edge from TopoDS;
+                     theFirstCurve  : out Curve from Geom;
+                     theSecondCurve : out Curve from Geom;
+                     theFirstPnt1   : out Pnt from gp;
+                     theLastPnt1    : out Pnt from gp;
+                     theFirstPnt2   : out Pnt from gp;
+                     theLastPnt2    : out Pnt from gp;
+                     thePlane       : Plane from Geom)
     ---Purpose: Used by 2d Relation only
     --          Computes the 3d geometry of <anEdge> in the current WorkingPlane
     --          and the extremities if any
-    --          Return TRUE if ok
+    --          Return TRUE if ok.
     returns Boolean from Standard;
 
+    ComputeGeometry (theFirstEdge   : Edge from TopoDS;
+                     theSecondEdge  : Edge from TopoDS;
+                     theFirstCurve  : out Curve from Geom;
+                     theSecondCurve : out Curve from Geom;
+                     theFirstPnt1   : out Pnt from gp;
+                     theLastPnt1    : out Pnt from gp;
+                     theFirstPnt2   : out Pnt from gp;
+                     theLastPnt2    : out Pnt from gp;
+                     theIsinfinite1 : out Boolean from Standard;
+                     theIsinfinite2 : out Boolean from Standard)
+    ---Purpose: Used  by  dimensions  only.Computes  the  3d geometry
+    --          of<anEdge1> and <anEdge2> and checks if they are infinite.
+    returns Boolean from Standard;
 
-    ComputeGeometry    (anEdge1   : Edge from TopoDS;
-    	    	    	anEdge2   : Edge from TopoDS;
-			indexExt  : out Integer from Standard;
-    	    	    	aCurve1   : out Curve from Geom;
-    	    	    	aCurve2   : out Curve from Geom;
-    	    	        FirstPnt1 : out Pnt from gp;
-    	    	    	LastPnt1  : out Pnt from gp;
-    	    	    	FirstPnt2 : out Pnt from gp;
-    	    	    	LastPnt2  : out Pnt from gp;
-    	    	    	ExtCurve  : out Curve from Geom;
-			isinfinite1 : out Boolean from Standard;
-			isinfinite2 : out Boolean from Standard;			
-    	    	    	aPlane    : Plane from Geom)
-    	    	    	
+    ComputeGeometry (theFirstEdge   : Edge from TopoDS;
+                     theSecondEdge  : Edge from TopoDS;
+                     theExtIndex    : out Integer from Standard;
+                     theFirstCurve  : out Curve from Geom;
+                     theSecondCurve : out Curve from Geom;
+                     theFirstPnt1   : out Pnt from gp;
+                     theLastPnt1    : out Pnt from gp;
+                     theFirstPnt2   : out Pnt from gp;
+                     theLastPnt2    : out Pnt from gp;
+                     theExtCurve    : out Curve from Geom;
+                     theIsinfinite1 : out Boolean from Standard;
+                     theIsinfinite2 : out Boolean from Standard;
+                     thePlane       : Plane from Geom)
     ---Purpose: Used  by  2d Relation  only Computes  the  3d geometry
     --          of<anEdge1> and <anEdge2> in the current Plane and the
     --          extremities if any.   Return in ExtCurve  the 3d curve
@@ -538,102 +577,78 @@ is
     --          significant.  Return TRUE if ok
     returns Boolean from Standard;
 
-    ComputeGeomCurve   (aCurve    : in out Curve from Geom;
-    	    	    	first1    : Real from Standard;
-    	    	    	last1     : Real from Standard;
-    	    	    	FirstPnt1 : out Pnt from gp;
-    	    	    	LastPnt1  : out Pnt from gp;
-    	    	    	aPlane    : Plane from Geom;
-    	    	    	isOnPlane: out Boolean from Standard)
-    	    	    	
+    ComputeGeomCurve (aCurve    : in out Curve from Geom;
+                      first1    : Real from Standard;
+                      last1     : Real from Standard;
+                      FirstPnt1 : out Pnt from gp;
+                      LastPnt1  : out Pnt from gp;
+                      aPlane    : Plane from Geom;
+                      isOnPlane: out Boolean from Standard)
     ---Purpose: Checks if aCurve belongs to aPlane; if not, projects aCurve in aPlane 
     --          and returns aCurve;
     --          Return TRUE if ok
     returns Boolean from Standard;
 
-    ComputeGeometry(aVertex  : Vertex      from TopoDS;
-    	    	    point    : out Pnt     from gp;
-    	    	    aPlane   : Plane       from Geom;
-		    isOnPlane: out Boolean from Standard)
+    ComputeGeometry (aVertex  : Vertex      from TopoDS;
+                     point    : out Pnt     from gp;
+                     aPlane   : Plane       from Geom;
+                     isOnPlane: out Boolean from Standard)
     returns Boolean from Standard;
-    
 
-    GetPlaneFromFace( aFace     : Face            from TopoDS;
-    	    	      aPlane    : out Pln         from gp;
-		      aSurf     : out Surface     from Geom;
-    	    	      aSurfType : out KindOfSurface from AIS;
-    	    	      Offset    : out Real from Standard )
+    GetPlaneFromFace (aFace     : Face from TopoDS;
+                      aPlane    : out Pln         from gp;
+                      aSurf     : out Surface     from Geom;
+                      aSurfType : out KindOfSurface from AIS;
+                      Offset    : out Real from Standard)
     returns Boolean from Standard;
     ---Purpose: Tryes to get Plane from Face.  Returns Surface of Face
     --          in aSurf.  Returns Standard_True  and Plane of Face in
     --           aPlane in following  cases:
     --          Face is Plane, Offset of Plane,
     --                  Extrusion of Line  and Offset of  Extrusion of Line
-    --	        Returns pure type of Surface which can be:
-    --	        Plane, Cylinder, Cone, Sphere, Torus, 
-    --	        SurfaceOfRevolution, SurfaceOfExtrusion
+    --          Returns pure type of Surface which can be:
+    --          Plane, Cylinder, Cone, Sphere, Torus, 
+    --          SurfaceOfRevolution, SurfaceOfExtrusion
 
-    InitFaceLength(  aFace         :  Face                from  TopoDS; 
-    	    	     aPlane        :  out  Pln            from  gp; 
-		     aSurface      :  out  Surface        from  Geom; 
-		     aSurfaceType  :  out  KindOfSurface  from  AIS; 
-		     anOffset      :  out  Real           from  Standard  ); 
-		     
-    ComputeLengthBetweenPlanarFaces( FirstFace     : Face        from TopoDS;
-    	                             SecondFace    : Face        from TopoDS;
-    	    	    	             Plane1        : Pln         from gp;
-			             Plane2        : Pln         from gp;
-				     Value         : out Real    from Standard;
-			             FirstAttach   : out Pnt     from gp ;
-			             SecondAttach  : out Pnt     from gp ;
-			             DirAttach     : out Dir     from gp ;
-			             AutomaticPos  : Boolean     from Standard;
-			             Position      : in out Pnt  from gp);
-    
-     ComputeLengthBetweenCurvilinearFaces( FirstFace      : Face from TopoDS;
-				           SecondFace     : Face from TopoDS;
-    	    	    	    	           FirstSurf      : in out Surface from Geom;
-    	    	    	    	           SecondSurf     : in out Surface from Geom;
-				     	   AutomaticPos   : Boolean from Standard; 
-              				   Value          : out Real from Standard;
-				           Position       : out Pnt from gp;
-				           FirstAttach    : out Pnt from gp;
-				           SecondAttach   : out Pnt from gp;
-    	    	    	    	    	   DirAttach      : out Dir from gp );
-					  
-     ComputeAngleBetweenPlanarFaces( FirstFace    : Face from TopoDS;
-				     SecondFace   : Face from TopoDS;
-    	    	    	    	     Surf2        : Surface from Geom;
-				     Axis         : Ax1 from gp;
-				     Value        : Real from Standard;
-				     AutomaticPos : Boolean from Standard; 
-				     Position     : out Pnt from gp;
-				     Center       : out Pnt from gp;
-				     FirstAttach  : out Pnt from gp;
-				     SecondAttach : out Pnt from gp;
-				     FirstDir     : out Dir from gp;
-				     SecondDir    : out Dir from gp);
-    ---Purpose: Computes geometric   parameters for planar   faces for
-    --          Angular dimensions
- 
-     ComputeAngleBetweenCurvilinearFaces( FirstFace    : Face from TopoDS;
-				          SecondFace   : Face from TopoDS;
-    	    	    	    	          FirstSurf    : Surface from Geom;
-    	    	    	    	          SecondSurf   : Surface from Geom;
-					  FirstSurfType  : KindOfSurface from AIS;
-					  SecondSurfType : KindOfSurface from AIS;
-				          Axis         : Ax1 from gp;
-				     	  Value        : Real from Standard;
-				     	  AutomaticPos : Boolean from Standard; 
-				          Position     : out Pnt from gp;
-				          Center       : out Pnt from gp;
-				          FirstAttach  : out Pnt from gp;
-				          SecondAttach : out Pnt from gp;
-				          FirstDir     : out Dir from gp;
-				          SecondDir    : out Dir from gp;
-    	    	    	    	    	  Plane        : out Plane from Geom );
-    ---Purpose: Computes geometric   parameters for curvilinear   faces for
-    --          Angular dimensions
+   InitFaceLength (aFace        : Face from TopoDS;
+                   aPlane       : out Pln from gp;
+                   aSurface     : out Surface from Geom;
+                   aSurfaceType : out KindOfSurface from AIS;
+                   anOffset     : out Real from Standard );
+
+     InitLengthBetweenCurvilinearFaces (theFirstFace    : Face from TopoDS;
+                                        theSecondFace   : Face from TopoDS;
+                                        theFirstSurf    : in out Surface from Geom;
+                                        theSecondSurf   : in out Surface from Geom;
+                                        theFirstAttach  : out Pnt from gp;
+                                        theSecondAttach : out Pnt from gp;
+                                        theDirOnPlane   : out Dir from gp);
+     ---Purpose: Finds attachment points on two curvilinear faces for length dimension.
+     -- @param thePlaneDir [in] the direction on the dimension plane to
+     -- compute the plane automatically. It will not be taken into account if
+     -- plane is defined by user.
+
+    InitAngleBetweenPlanarFaces (theFirstFace      : Face from TopoDS;
+                                 theSecondFace     : Face from TopoDS;
+                                 theCenter          : out Pnt from gp;
+                                 theFirstAttach     : out Pnt from gp;
+                                 theSecondAttach    : out Pnt from gp;
+                                 theIsFirstPointSet : Boolean from Standard = Standard_False)
+    returns Boolean from Standard;
+    ---Purpose: Finds three points for the angle dimension between
+    -- two planes.
+
+    InitAngleBetweenCurvilinearFaces (theFirstFace      : Face from TopoDS;
+                                      theSecondFace     : Face from TopoDS;
+                                      theFirstSurfType   : KindOfSurface from AIS;
+                                      theSecondSurfType  : KindOfSurface from AIS;
+                                      theCenter          : out Pnt from gp;
+                                      theFirstAttach     : out Pnt from gp;
+                                      theSecondAttach    : out Pnt from gp;
+                                      theIsFirstPointSet : Boolean from Standard = Standard_False)
+    returns Boolean from Standard;
+    ---Purpose: Finds three points for the angle dimension between
+    -- two curvilinear surfaces.
 
     ProjectPointOnPlane( aPoint : Pnt from gp; aPlane : Pln from gp )
     returns Pnt from gp;

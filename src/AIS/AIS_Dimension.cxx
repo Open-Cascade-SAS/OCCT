@@ -1,4 +1,6 @@
-// Copyright (c) 1999-2013 OPEN CASCADE SAS
+// Created on: 2013-11-11
+// Created by: Anastasia BORISOVA
+// Copyright (c) 2013 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -19,11 +21,11 @@
 
 #include <AIS.hxx>
 #include <AIS_DimensionOwner.hxx>
-#include <AIS_Drawer.hxx>
 #include <Adaptor3d_HCurve.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepBndLib.hxx>
+#include <Bnd_Box.hxx>
 #include <ElCLib.hxx>
 #include <Font_BRepFont.hxx>
 #include <GC_MakeCircle.hxx>
@@ -70,6 +72,7 @@
 #include <Units_UnitsDictionary.hxx>
 #include <UnitsAPI.hxx>
 #include <UnitsAPI_SystemUnits.hxx>
+#include <Standard_ProgramError.hxx>
 
 IMPLEMENT_STANDARD_HANDLE(AIS_Dimension, AIS_InteractiveObject)
 IMPLEMENT_STANDARD_RTTIEXT(AIS_Dimension, AIS_InteractiveObject)
@@ -79,6 +82,7 @@ namespace
   // default text strings
   static const Standard_Utf32Char THE_FILL_CHARACTER ('0');
   static const TCollection_ExtendedString THE_EMPTY_LABEL;
+  static const TCollection_AsciiString    THE_UNDEFINED_UNITS;
 
   // default text margin and resolution
   static const Standard_Real THE_3D_TEXT_MARGIN    = 0.1;
@@ -93,133 +97,19 @@ namespace
 //function : Constructor
 //purpose  : 
 //=======================================================================
-AIS_Dimension::AIS_Dimension()
+AIS_Dimension::AIS_Dimension (const AIS_KindOfDimension theType)
 : AIS_InteractiveObject(),
-  myDefaultPlane (gp_Pln (gp::XOY())),
-  myIsWorkingPlaneCustom (Standard_False),
-  myValue (0.0),
+  myCustomValue (0.0),
   myIsValueCustom (Standard_False),
-  myUnitsQuantity (TCollection_AsciiString("LENGTH")),
-  myToDisplayUnits (Standard_False),
   mySpecialSymbol (' '),
   myDisplaySpecialSymbol (AIS_DSS_No),
-  myIsTextReversed (Standard_False),
-  myIsInitialized (Standard_False),
+  myGeometryType (GeometryType_UndefShapes),
+  myIsPlaneCustom (Standard_False),
   myFlyout (0.0),
-  myKindOfDimension (AIS_KOD_NONE)
-{
-  ResetWorkingPlane();
-  // Units default settings
-  UnitsAPI::SetLocalSystem (UnitsAPI_SI);
-  myModelUnits = Units::DictionaryOfUnits()->ActiveUnit (myUnitsQuantity.ToCString());
-  myDisplayUnits = Units::DictionaryOfUnits()->ActiveUnit (myUnitsQuantity.ToCString());
-}
-
-//=======================================================================
-//function : AcceptDisplayMode
-//purpose  : Checks if display mode <theMode> is allowed to display object.
-//=======================================================================
-Standard_Boolean AIS_Dimension::AcceptDisplayMode (const Standard_Integer theMode) const
-{
-  return theMode == ComputeMode_All;
-}
-
-//=======================================================================
-//function : computeValue
-//purpose  : Computes dimension value in display units.
-//=======================================================================
-void AIS_Dimension::computeValue()
-{
-  UnitsAPI::SetCurrentUnit (myUnitsQuantity.ToCString(), myModelUnits.ToCString());
-  myValue = UnitsAPI::CurrentFromLS (myValue, myUnitsQuantity.ToCString());
-  myValue = valueToDisplayUnits();
-}
-
-//=======================================================================
-//function : countDefaultPlane
-//purpose  : 
-//=======================================================================
-void AIS_Dimension::countDefaultPlane()
+  myIsValid (Standard_False),
+  myKindOfDimension (theType)
 {
 }
-
-//=======================================================================
-//function : GetWorkingPlane
-//purpose  : 
-//=======================================================================
-const gp_Pln& AIS_Dimension::GetWorkingPlane() const
-{
-  return myWorkingPlane;
-}
-
-//=======================================================================
-//function : SetWorkingPlane
-//purpose  : 
-//=======================================================================
-void AIS_Dimension::SetWorkingPlane (const gp_Pln& thePlane)
-{
-  myWorkingPlane = thePlane;
-  myIsWorkingPlaneCustom = Standard_True;
-}
-
-//=======================================================================
-//function : ResetWorkingPlane
-//purpose  : Set default value of working plane
-//=======================================================================
-void AIS_Dimension::ResetWorkingPlane()
-{
-  myWorkingPlane = myDefaultPlane;
-  myIsWorkingPlaneCustom = Standard_False;
-}
-
-//=======================================================================
-//function : resetWorkingPlane
-//purpose  : Set default value of working plane
-//           Only for internal use.
-//=======================================================================
-void AIS_Dimension::resetWorkingPlane (const gp_Pln& theNewDefaultPlane)
-{
-  myDefaultPlane = theNewDefaultPlane;
-  ResetWorkingPlane();
-}
-
-//=======================================================================
-//function : valueInDisplayUnits
-//purpose  :
-//=======================================================================
-Standard_Real AIS_Dimension::valueToDisplayUnits()
-{
-  return  UnitsAPI::AnyToAny (myValue,
-                              myModelUnits.ToCString(),
-                              myDisplayUnits.ToCString());
-}
-
-//=======================================================================
-//function : KindOfDimension
-//purpose  : 
-//=======================================================================
-AIS_KindOfDimension AIS_Dimension::KindOfDimension() const 
-{
-  return myKindOfDimension;
-}
-
-//=======================================================================
-//function : SetKindOfDimension
-//purpose  : 
-//=======================================================================
-void AIS_Dimension::SetKindOfDimension (const AIS_KindOfDimension theKindOfDimension)
-{
-  myKindOfDimension = theKindOfDimension;
-}
-
-//=======================================================================
-//function : GetValue
-//purpose  : 
-//=======================================================================
-Standard_Real AIS_Dimension::GetValue() const
- {
-  return myValue;
- }
 
 //=======================================================================
 //function : SetCustomValue
@@ -227,56 +117,182 @@ Standard_Real AIS_Dimension::GetValue() const
 //=======================================================================
 void AIS_Dimension::SetCustomValue (const Standard_Real theValue)
 {
-  myValue = theValue;
+  if (myIsValueCustom && myCustomValue == theValue)
+  {
+    return;
+  }
+
   myIsValueCustom = Standard_True;
+
+  myCustomValue = theValue;
+
+  SetToUpdate();
 }
 
 //=======================================================================
-//function : SetFirstShape
+//function : GetPlane
 //purpose  : 
 //=======================================================================
-void AIS_Dimension::SetFirstShape (const TopoDS_Shape& theShape)
+const gp_Pln& AIS_Dimension::GetPlane() const
 {
-  myFirstShape = theShape;
-  myIsInitialized = Standard_False;
-  resetGeom();
+  return myPlane;
 }
 
 //=======================================================================
-//function : SetSecondShape
+//function : GetGeometryType
 //purpose  : 
 //=======================================================================
-void AIS_Dimension::SetSecondShape (const TopoDS_Shape& theShape)
+const Standard_Integer AIS_Dimension::GetGeometryType () const
 {
-  mySecondShape = theShape;
-  myIsInitialized = Standard_False;
-  resetGeom();
+  return myGeometryType;
 }
 
 //=======================================================================
-//function : getTextWidthAndString
+//function : SetUserPlane
 //purpose  : 
 //=======================================================================
-void AIS_Dimension::getTextWidthAndString (Quantity_Length& theWidth,
-                                           TCollection_ExtendedString& theString) const
+void AIS_Dimension::SetCustomPlane (const gp_Pln& thePlane)
 {
-  char aValueSimpleStr[25];
-  sprintf (aValueSimpleStr, "%g", GetValue());
-  theString = TCollection_ExtendedString (aValueSimpleStr);
+  myPlane = thePlane;
+  myIsPlaneCustom = Standard_True;
 
-  if (IsUnitsDisplayed())
+  // Check validity if geometry has been set already.
+  if (myIsValid)
   {
-    theString += " ";
-    theString += TCollection_ExtendedString (myDisplayUnits);
+    myIsValid &= CheckPlane (myPlane);
+    SetToUpdate();
+  }
+}
+
+//=======================================================================
+//function : SetDimensionAspect
+//purpose  :
+//=======================================================================
+void AIS_Dimension::SetDimensionAspect (const Handle(Prs3d_DimensionAspect)& theDimensionAspect)
+{
+  myDrawer->SetDimensionAspect (theDimensionAspect);
+
+  SetToUpdate();
+}
+
+//=======================================================================
+//function : SetDisplaySpecialSymbol
+//purpose  :
+//=======================================================================
+void AIS_Dimension::SetDisplaySpecialSymbol (const AIS_DisplaySpecialSymbol theDisplaySpecSymbol)
+{
+  if (myDisplaySpecialSymbol == theDisplaySpecSymbol)
+  {
+    return;
   }
 
-  if (myDisplaySpecialSymbol == AIS_DSS_Before)
+  myDisplaySpecialSymbol = theDisplaySpecSymbol;
+
+  SetToUpdate();
+}
+
+//=======================================================================
+//function : SetSpecialSymbol
+//purpose  :
+//=======================================================================
+void AIS_Dimension::SetSpecialSymbol (const Standard_ExtCharacter theSpecialSymbol)
+{
+  if (mySpecialSymbol == theSpecialSymbol)
   {
-    theString = TCollection_ExtendedString (mySpecialSymbol) + theString;
+    return;
   }
-  else if (myDisplaySpecialSymbol == AIS_DSS_After)
+
+  mySpecialSymbol = theSpecialSymbol;
+
+  SetToUpdate();
+}
+
+//=======================================================================
+//function : SetSelToleranceForText2d
+//purpose  :
+//=======================================================================
+void AIS_Dimension::SetSelToleranceForText2d (const Standard_Real theTol)
+{
+  if (mySelToleranceForText2d == theTol)
   {
-    theString += TCollection_ExtendedString (mySpecialSymbol);
+    return;
+  }
+
+  mySelToleranceForText2d = theTol;
+
+  SetToUpdate();
+}
+
+//=======================================================================
+//function : SetFlyout
+//purpose  :
+//=======================================================================
+void AIS_Dimension::SetFlyout (const Standard_Real theFlyout)
+{
+  if (myFlyout == theFlyout)
+  {
+    return;
+  }
+
+  myFlyout = theFlyout;
+
+  SetToUpdate();
+}
+
+//=======================================================================
+//function : GetDisplayUnits
+//purpose  :
+//=======================================================================
+const TCollection_AsciiString& AIS_Dimension::GetDisplayUnits() const
+{
+  return THE_UNDEFINED_UNITS;
+}
+
+//=======================================================================
+//function : GetModelUnits
+//purpose  :
+//=======================================================================
+const TCollection_AsciiString& AIS_Dimension::GetModelUnits() const
+{
+  return THE_UNDEFINED_UNITS;
+}
+
+//=======================================================================
+//function : ValueToDisplayUnits
+//purpose  :
+//=======================================================================
+Standard_Real AIS_Dimension::ValueToDisplayUnits() const
+{
+  return UnitsAPI::AnyToAny (GetValue(),
+                             GetModelUnits().ToCString(),
+                             GetDisplayUnits().ToCString());
+}
+
+//=======================================================================
+//function : GetValueString
+//purpose  : 
+//=======================================================================
+TCollection_ExtendedString AIS_Dimension::GetValueString (Standard_Real& theWidth) const
+{
+  // format value string using "sprintf"
+  TCollection_AsciiString aFormatStr = myDrawer->DimensionAspect()->ValueStringFormat();
+
+  char aFmtBuffer[256];
+  sprintf (aFmtBuffer, aFormatStr.ToCString(), ValueToDisplayUnits());
+  TCollection_ExtendedString aValueStr = TCollection_ExtendedString (aFmtBuffer);
+
+  // add units to values string
+  if (myDrawer->DimensionAspect()->IsUnitsDisplayed())
+  {
+    aValueStr += " ";
+    aValueStr += TCollection_ExtendedString (GetDisplayUnits());
+  }
+
+  switch (myDisplaySpecialSymbol)
+  {
+    case AIS_DSS_Before : aValueStr.Insert (1, mySpecialSymbol); break;
+    case AIS_DSS_After  : aValueStr.Insert (aValueStr.Length() + 1, mySpecialSymbol); break;
+    case AIS_DSS_No     : break;
   }
 
   // Get text style parameters
@@ -288,7 +304,7 @@ void AIS_Dimension::getTextWidthAndString (Quantity_Length& theWidth,
   Font_FontAspect aFontAspect = myDrawer->DimensionAspect()->TextAspect()->Aspect()->GetTextFontAspect();
   Standard_Real   aFontHeight = myDrawer->DimensionAspect()->TextAspect()->Height();
 
-  NCollection_Utf8String anUTFString = (Standard_Utf16Char* )theString.ToExtString();
+  NCollection_Utf8String anUTFString = (Standard_Utf16Char* )aValueStr.ToExtString();
 
   theWidth = 0.0;
 
@@ -307,7 +323,7 @@ void AIS_Dimension::getTextWidthAndString (Quantity_Length& theWidth,
   else
   {
     // Text width for 1:1 scale 2D case
-    Handle(Font_FTFont) aFont = new Font_FTFont ();
+    Handle(Font_FTFont) aFont = new Font_FTFont();
     aFont->Init (aFontName, aFontAspect, (const unsigned int)aFontHeight, THE_2D_TEXT_RESOLUTION);
 
     for (NCollection_Utf8Iter anIter = anUTFString.Iterator(); *anIter != 0; )
@@ -317,13 +333,15 @@ void AIS_Dimension::getTextWidthAndString (Quantity_Length& theWidth,
       theWidth += (Standard_Real) aFont->AdvanceX (aCurrChar, aNextChar);
     }
   }
+
+  return aValueStr;
 }
 
 //=======================================================================
-//function : drawArrow
+//function : DrawArrow
 //purpose  : 
 //=======================================================================
-void AIS_Dimension::drawArrow (const Handle(Prs3d_Presentation)& thePresentation,
+void AIS_Dimension::DrawArrow (const Handle(Prs3d_Presentation)& thePresentation,
                                const gp_Pnt& theLocation,
                                const gp_Dir& theDirection)
 {
@@ -344,7 +362,7 @@ void AIS_Dimension::drawArrow (const Handle(Prs3d_Presentation)& thePresentation
   {
     gp_Pnt aLeftPoint (gp::Origin());
     gp_Pnt aRightPoint (gp::Origin());
-    const gp_Dir& aPlane = myWorkingPlane.Axis().Direction();
+    const gp_Dir& aPlane = GetPlane().Axis().Direction();
 
     PointsForArrow (theLocation, theDirection, aPlane, aLength, anAngle, aLeftPoint, aRightPoint);
 
@@ -378,10 +396,10 @@ void AIS_Dimension::drawArrow (const Handle(Prs3d_Presentation)& thePresentation
 }
 
 //=======================================================================
-//function : drawText
+//function : DrawText
 //purpose  : 
 //=======================================================================
-void AIS_Dimension::drawText (const Handle(Prs3d_Presentation)& thePresentation,
+void AIS_Dimension::DrawText (const Handle(Prs3d_Presentation)& thePresentation,
                               const gp_Pnt& theTextPos,
                               const gp_Dir& theTextDir,
                               const TCollection_ExtendedString& theText,
@@ -458,7 +476,7 @@ void AIS_Dimension::drawText (const Handle(Prs3d_Presentation)& thePresentation,
     aTextShape.Move (anOffsetTrsf);
 
     // transform text to myWorkingPlane coordinate system
-    gp_Ax3 aTextCoordSystem (theTextPos, myWorkingPlane.Axis().Direction(), aTextDir);
+    gp_Ax3 aTextCoordSystem (theTextPos, GetPlane().Axis().Direction(), aTextDir);
     gp_Trsf aTextPlaneTrsf;
     aTextPlaneTrsf.SetTransformation (aTextCoordSystem, gp_Ax3 (gp::XOY()));
     aTextShape.Move (aTextPlaneTrsf);
@@ -472,7 +490,7 @@ void AIS_Dimension::drawText (const Handle(Prs3d_Presentation)& thePresentation,
     aCenterOfLabel.Transform (aCenterOffsetTrsf);
     aCenterOfLabel.Transform (aTextPlaneTrsf);
 
-    gp_Ax2 aFlippingAxes (aCenterOfLabel, myWorkingPlane.Axis().Direction(), aTextDir);
+    gp_Ax2 aFlippingAxes (aCenterOfLabel, GetPlane().Axis().Direction(), aTextDir);
     Prs3d_Root::CurrentGroup (thePresentation)->SetFlippingOptions (Standard_True, aFlippingAxes);
 
     // draw text
@@ -522,10 +540,10 @@ void AIS_Dimension::drawText (const Handle(Prs3d_Presentation)& thePresentation,
 }
 
 //=======================================================================
-//function : drawExtension
+//function : DrawExtension
 //purpose  : 
 //=======================================================================
-void AIS_Dimension::drawExtension (const Handle(Prs3d_Presentation)& thePresentation,
+void AIS_Dimension::DrawExtension (const Handle(Prs3d_Presentation)& thePresentation,
                                    const Standard_Real theExtensionSize,
                                    const gp_Pnt& theExtensionStart,
                                    const gp_Dir& theExtensionDir,
@@ -538,14 +556,13 @@ void AIS_Dimension::drawExtension (const Handle(Prs3d_Presentation)& thePresenta
   gp_Lin anExtensionLine (theExtensionStart, theExtensionDir);
 
   Standard_Boolean hasLabel = theLabelString.Length() > 0;
-
   if (hasLabel && (theMode == ComputeMode_All || theMode == ComputeMode_Text))
   {
     // compute text primitives; get its model width
     gp_Pnt aTextPos = ElCLib::Value (theExtensionSize, anExtensionLine);
-    gp_Dir aTextDir = myIsTextReversed ? -theExtensionDir : theExtensionDir;
+    gp_Dir aTextDir = theExtensionDir;
 
-    drawText (thePresentation,
+    DrawText (thePresentation,
               aTextPos,
               aTextDir,
               theLabelString,
@@ -590,71 +607,46 @@ void AIS_Dimension::drawExtension (const Handle(Prs3d_Presentation)& thePresenta
 }
 
 //=======================================================================
-//function : SetDimensionAspect
+//function : DrawLinearDimension
 //purpose  : 
 //=======================================================================
-void AIS_Dimension::SetDimensionAspect (const Handle(Prs3d_DimensionAspect)& theDimensionAspect)
-{
-  myDrawer->SetDimensionAspect (theDimensionAspect);
-}
-
-//=======================================================================
-//function : DimensionAspect
-//purpose  : 
-//=======================================================================
-Handle(Prs3d_DimensionAspect) AIS_Dimension::DimensionAspect() const
-{
-  return myDrawer->DimensionAspect();
-}
-
-//=======================================================================
-//function : drawLinearDimension
-//purpose  : 
-//=======================================================================
-void AIS_Dimension::drawLinearDimension (const Handle(Prs3d_Presentation)& thePresentation,
+void AIS_Dimension::DrawLinearDimension (const Handle(Prs3d_Presentation)& thePresentation,
                                          const Standard_Integer theMode,
-                                         const Standard_Boolean isOneSideDimension/* = Standard_False*/)
+                                         const gp_Pnt& theFirstPoint,
+                                         const gp_Pnt& theSecondPoint,
+                                         const Standard_Boolean theIsOneSide)
 {
-  // don not build any dimension for equal points
-  if (myFirstPoint.IsEqual (mySecondPoint, Precision::Confusion()))
+  // do not build any dimension for equal points
+  if (theFirstPoint.IsEqual (theSecondPoint, Precision::Confusion()))
   {
-    setComputed (Standard_False);
-    return;
+    Standard_ProgramError::Raise ("Can not build presentation for equal points.");
   }
 
   // compute dimension line points
-  gp_Ax1 aWorkingPlaneNormal = GetWorkingPlane().Axis();
-  gp_Dir aTargetPointsVector = gce_MakeDir (myFirstPoint, mySecondPoint);
+  gp_Ax1 aPlaneNormal = GetPlane().Axis();
+  gp_Dir aTargetPointsVector = gce_MakeDir (theFirstPoint, theSecondPoint);
 
   // compute flyout direction vector
-  gp_Dir aFlyoutVector = aWorkingPlaneNormal.Direction() ^ aTargetPointsVector;
+  gp_Dir aFlyoutVector = aPlaneNormal.Direction() ^ aTargetPointsVector;
 
   // create lines for layouts
-  gp_Lin aLine1 (myFirstPoint, aFlyoutVector);
-  gp_Lin aLine2 (mySecondPoint, aFlyoutVector);
+  gp_Lin aLine1 (theFirstPoint, aFlyoutVector);
+  gp_Lin aLine2 (theSecondPoint, aFlyoutVector);
 
   // Get flyout end points
-  gp_Pnt aLineBegPoint = ElCLib::Value (ElCLib::Parameter (aLine1, myFirstPoint)  + GetFlyout(), aLine1);
-  gp_Pnt aLineEndPoint = ElCLib::Value (ElCLib::Parameter (aLine2, mySecondPoint) + GetFlyout(), aLine2);
+  gp_Pnt aLineBegPoint = ElCLib::Value (ElCLib::Parameter (aLine1, theFirstPoint)  + GetFlyout(), aLine1);
+  gp_Pnt aLineEndPoint = ElCLib::Value (ElCLib::Parameter (aLine2, theSecondPoint) + GetFlyout(), aLine2);
 
   Handle(Prs3d_DimensionAspect) aDimensionAspect = myDrawer->DimensionAspect();
-  Handle(SelectMgr_EntityOwner) anEmptyOwner;
 
   gp_Lin aDimensionLine = gce_MakeLin (aLineBegPoint, aLineEndPoint);
 
   // For extensions we need to know arrow size, text size and extension size: get it from aspect
   Quantity_Length anArrowLength   = aDimensionAspect->ArrowAspect()->Length();
   Standard_Real   anExtensionSize = aDimensionAspect->ExtensionSize();
-
-  if (!myIsValueCustom)
-  {
-   computeValue();
-  }
-
   // prepare label string and compute its geometrical width
   Standard_Real aLabelWidth;
-  TCollection_ExtendedString aLabelString;
-  getTextWidthAndString (aLabelWidth, aLabelString);
+  TCollection_ExtendedString aLabelString = GetValueString (aLabelWidth);
 
   // add margins to cut dimension lines for 3d text
   if (aDimensionAspect->IsText3d())
@@ -676,7 +668,7 @@ void AIS_Dimension::drawLinearDimension (const Handle(Prs3d_Presentation)& thePr
                                     : 0.0;
 
       Standard_Real aDimensionWidth = aLineBegPoint.Distance (aLineEndPoint);
-      Standard_Real anArrowsWidth   = isOneSideDimension 
+      Standard_Real anArrowsWidth   = theIsOneSide 
                                     ?  anArrowLength + anArrowMargin
                                     : (anArrowLength + anArrowMargin) * 2.0;
 
@@ -708,9 +700,9 @@ void AIS_Dimension::drawLinearDimension (const Handle(Prs3d_Presentation)& thePr
   aSecondArrowEnd   = aLineEndPoint.Translated (-gp_Vec (aSecondArrowDir).Scaled (anArrowLength));
 
   gp_Pnt aCenterLineBegin = isArrowsExternal 
-    ? aLineBegPoint  : aFirstArrowEnd;
+    ? aLineBegPoint : aFirstArrowEnd;
 
-  gp_Pnt aCenterLineEnd   = isArrowsExternal || isOneSideDimension
+  gp_Pnt aCenterLineEnd = isArrowsExternal || theIsOneSide
     ? aLineEndPoint : aSecondArrowEnd;
 
   Standard_Integer aLabelPosition = LabelPosition_None;
@@ -724,7 +716,7 @@ void AIS_Dimension::drawLinearDimension (const Handle(Prs3d_Presentation)& thePr
     case Prs3d_DTHP_Fit:
     {
       Standard_Real aDimensionWidth = aLineBegPoint.Distance (aLineEndPoint);
-      Standard_Real anArrowsWidth   = isOneSideDimension ? anArrowLength : 2.0 * anArrowLength;
+      Standard_Real anArrowsWidth   = theIsOneSide ? anArrowLength : 2.0 * anArrowLength;
       Standard_Real aContentWidth   = isArrowsExternal ? aLabelWidth : aLabelWidth + anArrowsWidth;
 
       aLabelPosition |= aDimensionWidth < aContentWidth ? LabelPosition_Left : LabelPosition_HCenter;
@@ -751,14 +743,12 @@ void AIS_Dimension::drawLinearDimension (const Handle(Prs3d_Presentation)& thePr
       Prs3d_Root::NewGroup (thePresentation);
 
       gp_Pnt aTextPos = (aCenterLineBegin.XYZ() + aCenterLineEnd.XYZ()) * 0.5;
-      gp_Dir aTextDir = myIsTextReversed 
-                      ? -aDimensionLine.Direction()
-                      :  aDimensionLine.Direction();
+      gp_Dir aTextDir = aDimensionLine.Direction();
 
       // add text primitives
       if (theMode == ComputeMode_All || theMode == ComputeMode_Text)
       {
-        drawText (thePresentation,
+        DrawText (thePresentation,
                   aTextPos,
                   aTextDir,
                   aLabelString,
@@ -829,10 +819,10 @@ void AIS_Dimension::drawLinearDimension (const Handle(Prs3d_Presentation)& thePr
         // add arrows to presentation
         Prs3d_Root::NewGroup (thePresentation);
 
-        drawArrow (thePresentation, aFirstArrowBegin, aFirstArrowDir);
-        if (!isOneSideDimension)
+        DrawArrow (thePresentation, aFirstArrowBegin, aFirstArrowDir);
+        if (!theIsOneSide)
         {
-          drawArrow (thePresentation, aSecondArrowBegin, aSecondArrowDir);
+          DrawArrow (thePresentation, aSecondArrowBegin, aSecondArrowDir);
         }
 
         if (!isArrowsExternal)
@@ -843,12 +833,12 @@ void AIS_Dimension::drawLinearDimension (const Handle(Prs3d_Presentation)& thePr
         // add arrow extension lines to presentation
         Prs3d_Root::NewGroup (thePresentation);
 
-        drawExtension (thePresentation, anExtensionSize,
+        DrawExtension (thePresentation, anExtensionSize,
                        aFirstArrowEnd, aFirstExtensionDir,
                        THE_EMPTY_LABEL, 0.0, theMode, LabelPosition_None);
-        if (!isOneSideDimension)
+        if (!theIsOneSide)
         {
-          drawExtension (thePresentation, anExtensionSize,
+          DrawExtension (thePresentation, anExtensionSize,
                          aSecondArrowEnd, aSecondExtensionDir,
                          THE_EMPTY_LABEL, 0.0, theMode, LabelPosition_None);
         }
@@ -866,8 +856,10 @@ void AIS_Dimension::drawLinearDimension (const Handle(Prs3d_Presentation)& thePr
       Prs3d_Root::NewGroup (thePresentation);
 
       // Left extension with the text
-      drawExtension (thePresentation, anExtensionSize,
-                     isArrowsExternal ? aFirstArrowEnd : aFirstArrowBegin,
+      DrawExtension (thePresentation, anExtensionSize,
+                     isArrowsExternal
+                       ? aFirstArrowEnd
+                       : aFirstArrowBegin,
                      aFirstExtensionDir,
                      aLabelString,
                      aLabelWidth,
@@ -896,13 +888,13 @@ void AIS_Dimension::drawLinearDimension (const Handle(Prs3d_Presentation)& thePr
         // add arrows to presentation
         Prs3d_Root::NewGroup (thePresentation);
 
-        drawArrow (thePresentation, aFirstArrowBegin, aFirstArrowDir);
-        if (!isOneSideDimension)
+        DrawArrow (thePresentation, aFirstArrowBegin, aFirstArrowDir);
+        if (!theIsOneSide)
         {
-          drawArrow (thePresentation, aSecondArrowBegin, aSecondArrowDir);
+          DrawArrow (thePresentation, aSecondArrowBegin, aSecondArrowDir);
         }
 
-        if (!isArrowsExternal || isOneSideDimension)
+        if (!isArrowsExternal || theIsOneSide)
         {
           break;
         }
@@ -910,7 +902,7 @@ void AIS_Dimension::drawLinearDimension (const Handle(Prs3d_Presentation)& thePr
         // add extension lines for external arrows
         Prs3d_Root::NewGroup (thePresentation);
 
-        drawExtension (thePresentation, anExtensionSize,
+        DrawExtension (thePresentation, anExtensionSize,
                        aSecondArrowEnd, aSecondExtensionDir,
                        THE_EMPTY_LABEL, 0.0, theMode, LabelPosition_None);
       }
@@ -927,8 +919,10 @@ void AIS_Dimension::drawLinearDimension (const Handle(Prs3d_Presentation)& thePr
       Prs3d_Root::NewGroup (thePresentation);
 
       // Right extension with text
-      drawExtension (thePresentation, anExtensionSize,
-                     isArrowsExternal ? aSecondArrowEnd : aSecondArrowBegin,
+      DrawExtension (thePresentation, anExtensionSize,
+                     isArrowsExternal
+                       ? aSecondArrowEnd
+                       : aSecondArrowBegin,
                      aSecondExtensionDir,
                      aLabelString, aLabelWidth,
                      theMode,
@@ -954,13 +948,13 @@ void AIS_Dimension::drawLinearDimension (const Handle(Prs3d_Presentation)& thePr
         // add arrows to presentation
         Prs3d_Root::NewGroup (thePresentation);
 
-        drawArrow (thePresentation, aSecondArrowBegin, aSecondArrowDir);
-        if (!isOneSideDimension)
+        DrawArrow (thePresentation, aSecondArrowBegin, aSecondArrowDir);
+        if (!theIsOneSide)
         {
-          drawArrow (thePresentation, aFirstArrowBegin, aFirstArrowDir);
+          DrawArrow (thePresentation, aFirstArrowBegin, aFirstArrowDir);
         }
 
-        if (!isArrowsExternal || isOneSideDimension)
+        if (!isArrowsExternal || theIsOneSide)
         {
           break;
         }
@@ -968,7 +962,7 @@ void AIS_Dimension::drawLinearDimension (const Handle(Prs3d_Presentation)& thePr
         // add extension lines for external arrows
         Prs3d_Root::NewGroup (thePresentation);
 
-        drawExtension (thePresentation, anExtensionSize,
+        DrawExtension (thePresentation, anExtensionSize,
                        aFirstArrowEnd, aFirstExtensionDir,
                        THE_EMPTY_LABEL, 0.0, theMode, LabelPosition_None);
       }
@@ -983,10 +977,10 @@ void AIS_Dimension::drawLinearDimension (const Handle(Prs3d_Presentation)& thePr
     Prs3d_Root::NewGroup (thePresentation);
 
     Handle(Graphic3d_ArrayOfSegments) aPrimSegments = new Graphic3d_ArrayOfSegments(4);
-    aPrimSegments->AddVertex (myFirstPoint);
+    aPrimSegments->AddVertex (theFirstPoint);
     aPrimSegments->AddVertex (aLineBegPoint);
 
-    aPrimSegments->AddVertex (mySecondPoint);
+    aPrimSegments->AddVertex (theSecondPoint);
     aPrimSegments->AddVertex (aLineEndPoint);
 
     Handle(Prs3d_DimensionAspect) aDimensionAspect = myDrawer->DimensionAspect();
@@ -994,44 +988,48 @@ void AIS_Dimension::drawLinearDimension (const Handle(Prs3d_Presentation)& thePr
     Prs3d_Root::CurrentGroup (thePresentation)->AddPrimitiveArray (aPrimSegments);
   }
 
-  setComputed (Standard_True);
+  myIsComputed = Standard_True;
 }
 
 //=======================================================================
-//function : SetFirstPoint
-//purpose  : 
-//=======================================================================
-void AIS_Dimension::SetFirstPoint (const gp_Pnt& thePoint)
-{
-  myFirstPoint = thePoint;
-}
-
-//=======================================================================
-//function : SetSecondPoint
-//purpose  : 
-//=======================================================================
-void AIS_Dimension::SetSecondPoint (const gp_Pnt& thePoint)
-{
-  mySecondPoint = thePoint;
-}
-
-//=======================================================================
-//function : Type
+//function : ComputeLinearFlyouts
 //purpose  :
 //=======================================================================
-AIS_KindOfInteractive AIS_Dimension::Type() const
+void AIS_Dimension::ComputeLinearFlyouts (const Handle(SelectMgr_Selection)& theSelection,
+                                          const Handle(SelectMgr_EntityOwner)& theOwner,
+                                          const gp_Pnt& theFirstPoint,
+                                          const gp_Pnt& theSecondPoint)
 {
-  return AIS_KOI_Relation;
+  // count flyout direction
+  gp_Ax1 aPlaneNormal = GetPlane().Axis();
+  gp_Dir aTargetPointsVector = gce_MakeDir (theFirstPoint, theSecondPoint);
+
+  // count a flyout direction vector.
+  gp_Dir aFlyoutVector = aPlaneNormal.Direction() ^ aTargetPointsVector;
+
+  // create lines for layouts
+  gp_Lin aLine1 (theFirstPoint,  aFlyoutVector);
+  gp_Lin aLine2 (theSecondPoint, aFlyoutVector);
+
+  // get flyout end points
+  gp_Pnt aFlyoutEnd1 = ElCLib::Value (ElCLib::Parameter (aLine1, theFirstPoint) + GetFlyout(), aLine1);
+  gp_Pnt aFlyoutEnd2 = ElCLib::Value (ElCLib::Parameter (aLine2, theSecondPoint) + GetFlyout(), aLine2);
+
+  // fill sensitive entity for flyouts
+  Handle(Select3D_SensitiveGroup) aSensitiveEntity = new Select3D_SensitiveGroup (theOwner);
+  aSensitiveEntity->Add (new Select3D_SensitiveSegment (theOwner, theFirstPoint, aFlyoutEnd1));
+  aSensitiveEntity->Add (new Select3D_SensitiveSegment (theOwner, theSecondPoint, aFlyoutEnd2));
+  theSelection->Add (aSensitiveEntity);
 }
 
 //=======================================================================
-//function : circleFromPlanarFace
+//function : CircleFromPlanarFace
 //purpose  : if possible computes circle from planar face
 //=======================================================================
-Standard_Boolean AIS_Dimension::circleFromPlanarFace (const TopoDS_Face& theFace,
+Standard_Boolean AIS_Dimension::CircleFromPlanarFace (const TopoDS_Face& theFace,
                                                       Handle(Geom_Curve)& theCurve,
-                                                      gp_Pnt & theFirstPoint,
-                                                      gp_Pnt & theLastPoint)
+                                                      gp_Pnt& theFirstPoint,
+                                                      gp_Pnt& theLastPoint)
 {
   TopExp_Explorer anIt (theFace, TopAbs_EDGE);
   for ( ; anIt.More(); anIt.Next())
@@ -1049,13 +1047,13 @@ Standard_Boolean AIS_Dimension::circleFromPlanarFace (const TopoDS_Face& theFace
 }
 
 //=======================================================================
-//function : initCircularDimension
-//purpose  : if it's possible computes circle from planar face
+//function : InitCircularDimension
+//purpose  : 
 //=======================================================================
-Standard_Boolean AIS_Dimension::initCircularDimension (const TopoDS_Shape& theShape,
+Standard_Boolean AIS_Dimension::InitCircularDimension (const TopoDS_Shape& theShape,
                                                        gp_Circ& theCircle,
                                                        gp_Pnt& theMiddleArcPoint,
-                                                       gp_Pnt& theOppositeDiameterPoint)
+                                                       Standard_Boolean& theIsClosed)
 {
   gp_Pln aPln;
   Handle(Geom_Surface) aBasisSurf;
@@ -1064,8 +1062,8 @@ Standard_Boolean AIS_Dimension::initCircularDimension (const TopoDS_Shape& theSh
   Standard_Real anOffset    = 0.0;
   Standard_Real aFirstParam = 0.0;
   Standard_Real aLastParam  = 0.0;
-  Standard_Boolean isAnArc  = Standard_False;
 
+  // discover circular geometry
   if (theShape.ShapeType() == TopAbs_FACE)
   {
     AIS::GetPlaneFromFace (TopoDS::Face (theShape), aPln, aBasisSurf, aSurfType, anOffset);
@@ -1073,14 +1071,12 @@ Standard_Boolean AIS_Dimension::initCircularDimension (const TopoDS_Shape& theSh
     if (aSurfType == AIS_KOS_Plane)
     {
       Handle(Geom_Curve) aCurve;
-      if (!circleFromPlanarFace (TopoDS::Face (theShape), aCurve, aFirstPoint, aLastPoint))
+      if (!CircleFromPlanarFace (TopoDS::Face (theShape), aCurve, aFirstPoint, aLastPoint))
       {
-        Standard_ConstructionError::Raise ("AIS_Dimension:: Curve is not a circle or is Null") ;
         return Standard_False;
       }
 
       theCircle = Handle(Geom_Circle)::DownCast (aCurve)->Circ();
-      isAnArc = !(aFirstPoint.IsEqual (aLastPoint, Precision::Confusion()));
     }
     else
     {
@@ -1092,7 +1088,7 @@ Standard_Boolean AIS_Dimension::initCircularDimension (const TopoDS_Shape& theSh
       Standard_Real aLastV  = aSurf1.LastVParameter();
       Standard_Real aMidU   = (aFirstU + aLastU) * 0.5;
       Standard_Real aMidV   = (aFirstV + aLastV) * 0.5;
-      aSurf1.D0(aMidU, aMidV, aCurPos);
+      aSurf1.D0 (aMidU, aMidV, aCurPos);
       Handle (Adaptor3d_HCurve) aBasisCurve;
       Standard_Boolean isExpectedType = Standard_False;
       if (aSurfType == AIS_KOS_Cylinder)
@@ -1121,9 +1117,9 @@ Standard_Boolean AIS_Dimension::initCircularDimension (const TopoDS_Shape& theSh
 
       if (!isExpectedType)
       {
-        Standard_ConstructionError::Raise ("AIS_Dimension:: Unexpected type of surface") ;
         return Standard_False;
       }
+
       Handle(Geom_Curve) aCurve;
       aCurve = aBasisSurf->VIso(aMidV);
       if (aCurve->DynamicType() == STANDARD_TYPE (Geom_Circle))
@@ -1172,259 +1168,44 @@ Standard_Boolean AIS_Dimension::initCircularDimension (const TopoDS_Shape& theSh
     }
     else // Unexpected type of shape
     {
-      Standard_ConstructionError::Raise ("AIS_Dimension:: Unexpected type of shape");
       return Standard_False;
     }
+
     BRepAdaptor_Curve anAdaptedCurve (anEdge);
     if (!anAdaptedCurve.GetType() == GeomAbs_Circle)
     {
       return Standard_False;
     }
-    theCircle = anAdaptedCurve.Circle();
+
+    theCircle   = anAdaptedCurve.Circle();
     aFirstPoint = anAdaptedCurve.Value (anAdaptedCurve.FirstParameter());
-    aLastPoint = anAdaptedCurve.Value (anAdaptedCurve.LastParameter());
+    aLastPoint  = anAdaptedCurve.Value (anAdaptedCurve.LastParameter());
   }
-  // Get <theMiddleArcPoint> and <theOppositeDiameterPoint> values from <theCircle>
-  isAnArc = !(aFirstPoint.IsEqual (aLastPoint, Precision::Confusion()));
+
+  theIsClosed = aFirstPoint.IsEqual (aLastPoint, Precision::Confusion());
+
   gp_Pnt aCenter = theCircle.Location();
-  if (!isAnArc)
+
+  if (theIsClosed) // Circle
   {
-    // Circle
     gp_Dir anXDir = theCircle.XAxis().Direction();
     theMiddleArcPoint = aCenter.Translated (gp_Vec (anXDir) * theCircle.Radius());
-    theOppositeDiameterPoint = aCenter.Translated (-gp_Vec (anXDir) * theCircle.Radius());
   }
-  else
+  else // Arc
   {
-    // Arc
     aFirstParam = ElCLib::Parameter (theCircle, aFirstPoint);
     aLastParam  = ElCLib::Parameter (theCircle, aLastPoint);
     if (aFirstParam > aLastParam)
     {
       aFirstParam -= 2.0 * M_PI;
     }
+
     Standard_Real aParCurPos = (aFirstParam + aLastParam) * 0.5;
     gp_Vec aVec = gp_Vec (aCenter, ElCLib::Value (aParCurPos, theCircle)).Normalized () * theCircle.Radius ();
     theMiddleArcPoint = aCenter.Translated (aVec);
-    theOppositeDiameterPoint = aCenter.Translated (-aVec);
   }
 
   return Standard_True;
-}
-
-//=======================================================================
-//function : SetDisplaySpecialSymbol
-//purpose  : specifies dimension special symbol display options
-//=======================================================================
-void AIS_Dimension::SetDisplaySpecialSymbol (const AIS_DisplaySpecialSymbol theDisplaySpecSymbol)
-{
-  myDisplaySpecialSymbol = theDisplaySpecSymbol;
-}
-
-//=======================================================================
-//function : DisplaySpecialSymbol
-//purpose  : shows dimension special symbol display options
-//=======================================================================
-AIS_DisplaySpecialSymbol AIS_Dimension::DisplaySpecialSymbol() const
-{
-  return myDisplaySpecialSymbol;
-}
-
-//=======================================================================
-//function : SetSpecialSymbol
-//purpose  : specifies special symbol
-//=======================================================================
-void AIS_Dimension::SetSpecialSymbol (const Standard_ExtCharacter theSpecialSymbol)
-{
-  mySpecialSymbol = theSpecialSymbol;
-}
-
-//=======================================================================
-//function : SpecialSymbol
-//purpose  : returns special symbol
-//=======================================================================
-Standard_ExtCharacter AIS_Dimension::SpecialSymbol() const
-{
-  return mySpecialSymbol;
-}
-
-//=======================================================================
-//function : IsUnitsDisplayed
-//purpose  : shows if Units are to be displayed along with dimension value
-//=======================================================================
-Standard_Boolean AIS_Dimension::IsUnitsDisplayed() const
-{
-  return myToDisplayUnits;
-}
-
-//=======================================================================
-//function : MakeUnitsDisplayed
-//purpose  : sets to display units along with the dimension value or no
-//=======================================================================
-void AIS_Dimension::MakeUnitsDisplayed (const Standard_Boolean toDisplayUnits)
-{
-  myToDisplayUnits = toDisplayUnits;
-}
-
-//=======================================================================
-//function : MakeUnitsDisplayed
-//purpose  : returns the current type of units
-//=======================================================================
-TCollection_AsciiString AIS_Dimension::UnitsQuantity() const
-{
-  return myUnitsQuantity;
-}
-
-//=======================================================================
-//function : SetUnitsQuantity
-//purpose  : sets the current type of units
-//=======================================================================
-void AIS_Dimension::SetUnitsQuantity (const TCollection_AsciiString& theUnitsQuantity)
-{
-  myUnitsQuantity = theUnitsQuantity;
-}
-
-//=======================================================================
-//function : ModelUnits
-//purpose  : returns the current model units
-//=======================================================================
-TCollection_AsciiString AIS_Dimension::ModelUnits() const
-{
-  return myModelUnits;
-}
-
-//=======================================================================
-//function : SetModelUnits
-//purpose  : sets the current model units
-//=======================================================================
-void AIS_Dimension::SetModelUnits (const TCollection_AsciiString& theUnits)
-{
-  myModelUnits = theUnits;
-}
-
-//=======================================================================
-//function : DisplayUnits
-//purpose  : returns the current display units
-//=======================================================================
-TCollection_AsciiString AIS_Dimension::DisplayUnits() const
-{
-  return myDisplayUnits;
-}
-
-//=======================================================================
-//function : SetDisplayUnits
-//purpose  : sets the current display units
-//=======================================================================
-void AIS_Dimension::SetDisplayUnits (const TCollection_AsciiString& theUnits)
-{
-  myDisplayUnits = theUnits;
-}
-
-//=======================================================================
-//function : isComputed
-//purpose  :
-//=======================================================================
-Standard_Boolean AIS_Dimension::isComputed() const
-{
-  return myIsComputed;
-}
-
-//=======================================================================
-//function : setComputed
-//purpose  :
-//=======================================================================
-void AIS_Dimension::setComputed (Standard_Boolean isComputed)
-{
-  myIsComputed = isComputed;
-}
-
-//=======================================================================
-//function : resetGeom
-//purpose  :
-//=======================================================================
-void AIS_Dimension::resetGeom()
-{
-  mySelectionGeom.Clear (ComputeMode_All);
-}
-
-//=======================================================================
-//function : IsTextReversed
-//purpose  :
-//=======================================================================
-Standard_Boolean AIS_Dimension::IsTextReversed() const
-{
-  return myIsTextReversed;
-}
-
-//=======================================================================
-//function : MakeTextReversed
-//purpose  :
-//=======================================================================
-void AIS_Dimension::MakeTextReversed (const Standard_Boolean isTextReversed)
-{
-  myIsTextReversed = isTextReversed;
-}
-
-//=======================================================================
-//function : SetSelToleranceForText2d
-//purpose  :
-//=======================================================================
-void AIS_Dimension::SetSelToleranceForText2d (const Standard_Real theTol)
-{
-  mySelToleranceForText2d = theTol;
-}
-
-//=======================================================================
-//function : SelToleranceForText2d
-//purpose  :
-//=======================================================================
-Standard_Real AIS_Dimension::SelToleranceForText2d() const
-{
-  return mySelToleranceForText2d;
-}
-
-//=======================================================================
-//function : SetFlyout
-//purpose  :
-//=======================================================================
-void AIS_Dimension::SetFlyout (const Standard_Real theFlyout)
-{
-  if (myFlyout == theFlyout)
-  {
-    return;
-  }
-
-  myFlyout = theFlyout;
-  SetToUpdate();
-}
-
-//=======================================================================
-//function : computeFlyoutSelection
-//purpose  : computes selection for flyouts
-//=======================================================================
-void AIS_Dimension::computeFlyoutSelection (const Handle(SelectMgr_Selection)& theSelection,
-                                            const Handle(SelectMgr_EntityOwner)& theOwner)
-{
-  //Count flyout direction
-  gp_Ax1 aWorkingPlaneNormal = GetWorkingPlane().Axis();
-  gp_Dir aTargetPointsVector = gce_MakeDir (myFirstPoint, mySecondPoint);
-
-  // Count a flyout direction vector.
-  gp_Dir aFlyoutVector = aWorkingPlaneNormal.Direction() ^ aTargetPointsVector;
-
-  // Create lines for layouts
-  gp_Lin aLine1 (myFirstPoint, aFlyoutVector);
-  gp_Lin aLine2 (mySecondPoint, aFlyoutVector);
-
-  // Get flyout end points
-  gp_Pnt aFlyoutEnd1 = ElCLib::Value (ElCLib::Parameter (aLine1, myFirstPoint) + GetFlyout(), aLine1);
-  gp_Pnt aFlyoutEnd2 = ElCLib::Value (ElCLib::Parameter (aLine2, mySecondPoint) + GetFlyout(), aLine2);
-
-  // Fill sensitive entity for flyouts
-  Handle(Select3D_SensitiveGroup) aSensitiveEntity = new Select3D_SensitiveGroup (theOwner);
-  aSensitiveEntity->Add (new Select3D_SensitiveSegment (theOwner, myFirstPoint, aFlyoutEnd1));
-  aSensitiveEntity->Add (new Select3D_SensitiveSegment (theOwner, mySecondPoint, aFlyoutEnd2));
-  theSelection->Add (aSensitiveEntity);
 }
 
 //=======================================================================
@@ -1434,7 +1215,7 @@ void AIS_Dimension::computeFlyoutSelection (const Handle(SelectMgr_Selection)& t
 void AIS_Dimension::ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
                                       const Standard_Integer theMode)
 {
-  if (!isComputed())
+  if (!myIsComputed)
   {
     return;
   }
@@ -1488,7 +1269,7 @@ void AIS_Dimension::ComputeSelection (const Handle(SelectMgr_Selection)& theSele
 
       gp_Pnt aSidePnt1 (gp::Origin());
       gp_Pnt aSidePnt2 (gp::Origin());
-      const gp_Dir& aPlane = myWorkingPlane.Axis().Direction();
+      const gp_Dir& aPlane = GetPlane().Axis().Direction();
       const gp_Pnt& aPeak  = anArrow->Position;
       const gp_Dir& aDir   = anArrow->Direction;
 
@@ -1519,7 +1300,7 @@ void AIS_Dimension::ComputeSelection (const Handle(SelectMgr_Selection)& theSele
     Handle(Select3D_SensitiveEntity) aTextSensitive;
 
     gp_Ax2 aTextAxes (mySelectionGeom.TextPos,
-                      myWorkingPlane.Axis().Direction(),
+                      GetPlane().Axis().Direction(),
                       mySelectionGeom.TextDir);
 
     if (myDrawer->DimensionAspect()->IsText3d())
@@ -1555,7 +1336,7 @@ void AIS_Dimension::ComputeSelection (const Handle(SelectMgr_Selection)& theSele
   // callback for flyout sensitive calculation
   if (aSelectionMode == AIS_DSM_All)
   {
-    computeFlyoutSelection (theSelection, aSensitiveOwner);
+    ComputeFlyoutSelection (theSelection, aSensitiveOwner);
   }
 }
 

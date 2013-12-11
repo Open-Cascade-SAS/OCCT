@@ -16,31 +16,37 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-#define BUC60488	//GG_10/10/99	Set correctly all fields
-
 #include <Prs3d_Drawer.ixx>
 
-Prs3d_Drawer::Prs3d_Drawer(): myNbPoints(30),myIsoOnPlane(Standard_False),
- myFreeBoundaryDraw(Standard_True),
- myUnFreeBoundaryDraw(Standard_True),
- myWireDraw(Standard_True),
-#ifdef BUC60488
- myShadingAspect( new Prs3d_ShadingAspect()),
-#endif
- myShadingAspectGlobal(Standard_True),
- myChordialDeviation(0.0001),
- myTypeOfDeflection(Aspect_TOD_RELATIVE),
- myMaximalParameterValue(500000.),
- myDeviationCoefficient(0.001),
- myHLRDeviationCoefficient(0.02),
- myDeviationAngle(12*M_PI/180),
- myHLRAngle(20*M_PI/180),
- myLineDrawArrow(Standard_False),
- myDrawHiddenLine(Standard_False),
- myFaceBoundaryDraw(Standard_False),
- myTypeOfHLR(Prs3d_TOH_PolyAlgo)
+// =======================================================================
+// function : Prs3d_Drawer
+// purpose  :
+// =======================================================================
+Prs3d_Drawer::Prs3d_Drawer()
+: myNbPoints (30),
+  myIsoOnPlane (Standard_False),
+  myFreeBoundaryDraw (Standard_True),
+  myUnFreeBoundaryDraw (Standard_True),
+  myWireDraw (Standard_True),
+  myShadingAspect (new Prs3d_ShadingAspect()),
+  myShadingAspectGlobal (Standard_True),
+  myChordialDeviation (0.0001),
+  myTypeOfDeflection (Aspect_TOD_RELATIVE),
+  myMaximalParameterValue (500000.),
+  myDeviationCoefficient (0.001),
+  myHLRDeviationCoefficient (0.02),
+  myDeviationAngle (12.0 * M_PI / 180.0),
+  myHLRAngle (20.0 * M_PI / 180.0),
+  myLineDrawArrow (Standard_False),
+  myDrawHiddenLine (Standard_False),
+  myFaceBoundaryDraw (Standard_False),
+  myTypeOfHLR (Prs3d_TOH_PolyAlgo)
 {
-} 
+  myDimensionModelUnits.SetLengthUnits ("m");
+  myDimensionModelUnits.SetAngleUnits ("rad");
+  myDimensionDisplayUnits.SetLengthUnits ("m");
+  myDimensionDisplayUnits.SetAngleUnits ("deg");
+}
 
 void Prs3d_Drawer::SetTypeOfDeflection(const Aspect_TypeOfDeflection aTypeOfDeflection){
 
@@ -397,30 +403,122 @@ void Prs3d_Drawer::SetPlaneAspect ( const Handle(Prs3d_PlaneAspect)& anAspect) {
   myPlaneAspect = anAspect;
 }
 
-Handle (Prs3d_DimensionAspect) Prs3d_Drawer::DimensionAspect ()
+// =======================================================================
+// function : DimensionAspect
+// purpose  :
+// =======================================================================
+Handle(Prs3d_DimensionAspect) Prs3d_Drawer::DimensionAspect()
 {
   if (myDimensionAspect.IsNull())
+  {
     myDimensionAspect = new Prs3d_DimensionAspect;
+  }
 
   return myDimensionAspect;
 }
 
-void Prs3d_Drawer::SetDimensionAspect ( const Handle(Prs3d_DimensionAspect)& theAspect)
+// =======================================================================
+// function : SetDimensionAspect
+// purpose  :
+// =======================================================================
+void Prs3d_Drawer::SetDimensionAspect (const Handle(Prs3d_DimensionAspect)& theAspect)
 {
- myDimensionAspect = theAspect;
+  myDimensionAspect = theAspect;
 }
 
+// =======================================================================
+// function : SetDimLengthModelUnits
+// purpose  :
+// =======================================================================
+void Prs3d_Drawer::SetDimLengthModelUnits (const TCollection_AsciiString& theUnits)
+{
+  myDimensionModelUnits.SetLengthUnits (theUnits);
+}
 
-Handle (Prs3d_LineAspect) Prs3d_Drawer::SectionAspect ()  {
+// =======================================================================
+// function : SetDimAngleModelUnits
+// purpose  :
+// =======================================================================
+void Prs3d_Drawer::SetDimAngleModelUnits (const TCollection_AsciiString& theUnits)
+{
+  myDimensionModelUnits.SetAngleUnits (theUnits);
+}
+
+// =======================================================================
+// function : DimLengthModelUnits
+// purpose  :
+// =======================================================================
+const TCollection_AsciiString& Prs3d_Drawer::DimLengthModelUnits() const
+{
+  return myDimensionModelUnits.GetLengthUnits();
+}
+
+// =======================================================================
+// function : DimAngleModelUnits
+// purpose  :
+// =======================================================================
+const TCollection_AsciiString& Prs3d_Drawer::DimAngleModelUnits() const
+{
+  return myDimensionModelUnits.GetAngleUnits();
+}
+
+// =======================================================================
+// function : SetDimLengthDisplayUnits
+// purpose  :
+// =======================================================================
+void Prs3d_Drawer::SetDimLengthDisplayUnits (const TCollection_AsciiString& theUnits)
+{
+  myDimensionDisplayUnits.SetLengthUnits (theUnits);
+}
+
+// =======================================================================
+// function : SetDimAngleDisplayUnits
+// purpose  :
+// =======================================================================
+void Prs3d_Drawer::SetDimAngleDisplayUnits (const TCollection_AsciiString& theUnits)
+{
+  myDimensionDisplayUnits.SetAngleUnits (theUnits);
+}
+
+// =======================================================================
+// function : DimLengthDisplayUnits
+// purpose  :
+// =======================================================================
+const TCollection_AsciiString& Prs3d_Drawer::DimLengthDisplayUnits() const
+{
+  return myDimensionDisplayUnits.GetLengthUnits();
+}
+
+// =======================================================================
+// function : DimAngleDisplayUnits
+// purpose  :
+// =======================================================================
+const TCollection_AsciiString& Prs3d_Drawer::DimAngleDisplayUnits() const
+{
+  return myDimensionDisplayUnits.GetAngleUnits();
+}
+
+// =======================================================================
+// function : SectionAspect
+// purpose  :
+// =======================================================================
+Handle (Prs3d_LineAspect) Prs3d_Drawer::SectionAspect()
+{
   if (mySectionAspect.IsNull())
-    mySectionAspect = new Prs3d_LineAspect
-      (Quantity_NOC_ORANGE,Aspect_TOL_SOLID,1.);
+  {
+    mySectionAspect = new Prs3d_LineAspect (Quantity_NOC_ORANGE, Aspect_TOL_SOLID, 1.0);
+  }
 
   return mySectionAspect;
 }
 
-void Prs3d_Drawer::SetSectionAspect ( const Handle(Prs3d_LineAspect)& anAspect) {
- mySectionAspect = anAspect;
+// =======================================================================
+// function : SetSectionAspect
+// purpose  :
+// =======================================================================
+void Prs3d_Drawer::SetSectionAspect (const Handle(Prs3d_LineAspect)& theAspect)
+{
+  mySectionAspect = theAspect;
 }
 
 // =======================================================================
@@ -469,7 +567,6 @@ Handle_Prs3d_LineAspect Prs3d_Drawer::FaceBoundaryAspect ()
 // function : SetTypeOfHLR
 // purpose  : set type of HLR algorithm
 // =======================================================================
-
 void Prs3d_Drawer::SetTypeOfHLR ( const Prs3d_TypeOfHLR theTypeOfHLR) 
 {
   myTypeOfHLR = theTypeOfHLR;
@@ -479,7 +576,6 @@ void Prs3d_Drawer::SetTypeOfHLR ( const Prs3d_TypeOfHLR theTypeOfHLR)
 // function : TypeOfHLR
 // purpose  : gets type of HLR algorithm
 // =======================================================================
-
 Prs3d_TypeOfHLR Prs3d_Drawer::TypeOfHLR ( ) const
 {
   return myTypeOfHLR;

@@ -1,5 +1,6 @@
-// Copyright (c) 1998-1999 Matra Datavision
-// Copyright (c) 1999-2013 OPEN CASCADE SAS
+// Created on: 2013-11-11
+// Created by: Anastasia BORISOVA
+// Copyright (c) 2013 OPEN CASCADE SAS
 //
 // The content of this file is subject to the Open CASCADE Technology Public
 // License Version 6.5 (the "License"). You may not use the content of this file
@@ -16,8 +17,8 @@
 // purpose or non-infringement. Please see the License for the specific terms
 // and conditions governing the rights and limitations under the License.
 
-#ifndef _AIS_Dimension_Headerfile
-#define _AIS_Dimension_Headerfile
+#ifndef _AIS_Dimension_HeaderFile
+#define _AIS_Dimension_HeaderFile
 
 #include <AIS_DimensionSelectionMode.hxx>
 #include <AIS_DimensionOwner.hxx>
@@ -26,11 +27,12 @@
 #include <AIS_KindOfInteractive.hxx>
 #include <AIS_KindOfDimension.hxx>
 #include <AIS_KindOfSurface.hxx>
-#include <Bnd_Box.hxx>
+#include <AIS_Drawer.hxx>
 #include <Geom_Curve.hxx>
 #include <gp_Pln.hxx>
 #include <Prs3d_ArrowAspect.hxx>
 #include <Prs3d_DimensionAspect.hxx>
+#include <Prs3d_DimensionUnits.hxx>
 #include <Prs3d_LineAspect.hxx>
 #include <Prs3d_Presentation.hxx>
 #include <Prs3d_TextAspect.hxx>
@@ -46,12 +48,121 @@
 
 DEFINE_STANDARD_HANDLE(AIS_Dimension, AIS_InteractiveObject)
 
+//! AIS_Dimension is a base class for 2D presentations of linear (length, diameter, radius)
+//! and angular dimensions.
+//!
+//! The dimensions provide measurement of quantities, such as lengths or plane angles.
+//! The measurement of dimension "value" is done in model space "as is".
+//! These "value" are said to be represented in "model units", which can be specified by user.
+//! During the display the measured value converted from "model units" to "display units".
+//! The display and model units are stored in common Prs3d_Drawer (drawer of the context)
+//! to share it between all dimensions.
+//! The specified by user units are stored in the dimension's drawer.
+//!
+//! As a drawing, the dimension is composed from the following components:
+//! - Attachement (binding) points. The points where the dimension lines attaches to, for
+//!   length dimensions the distances are measured between these points.
+//! - Main dimension line. The which extends from the attachement points in "up" direction,
+//!   and which contains text label on it with value string.
+//! - Flyouts. The lines connecting the attachement points with main dimension line.
+//! - Extension. The lines used to extend the main dimension line in the cases when text
+//!   or arrows do not fit into the main dimension line due to their size.
+//! - Arrows.
+//!
+//! <pre>
+//!  Linear dimensions:
+//!
+//!  extension
+//!   line                                     arrow
+//!       -->|------- main dimension line -------|<--
+//!          |                                   |
+//!          |flyout                       flyout|
+//!          |                                   |
+//!          +-----------------------------------+
+//! attachement                                attachement
+//!  point                                       point
+//!
+//!  Angular dimensions:
+//!
+//!                  extension
+//!                     line
+//!                        -->|+++++
+//!                     arrow |     +++
+//!                           |        90(deg) - main dimension line
+//!                    flyout |         +++
+//!                           |           +
+//!                           o---flyout---
+//!                         center         ^ 
+//!                         point          | extension
+//!                                          line
+//! </pre>
+//!
+//! Being a 2D drawings, the dimensions are created on imaginary plane, called "dimension plane",
+//! which can be thought of as reference system of axes (X,Y,N) for constructing the presentation.
+//!
+//! The role of axes of the dimension plane is to guide you through the encapsualted automations
+//! of presentation building to help you understand how is the presentation will look and how it
+//! will be oriented in model space during construction.
+//! 
+//! Orientation of dimension line in model space relatively to the base shapes is defined 
+//! with the flyouts. Flyouts specify length of flyout lines and their orientation relatively
+//! to the attachment points on the working plane.
+//! For linear dimensions: 
+//!   Direction of flyouts is specified with direction of main dimension line
+//!   (vector from the first attachment to the second attachment) and the normal of the dimension plane.
+//!   Positive direction of flyouts is defined by vector multiplication: AttachVector * PlaneNormal.
+//! For angular dimensions:
+//!   Flyouts are defined by vectors from the center point to the attachment points.
+//!   These vectors directions are supposed to be the positive directions of flyouts.
+//!   Negative flyouts directions means that these vectors should be reversed
+//!   (and dimension will be built out of the angle constructed with center and two attach points).
+//!
+//! The dimension plane can be constructed automatically by application (where possible,
+//! it depends on the measured geometry).
+//! It can be also set by user. However, if the user-defined plane does not fit the
+//! geometry of the dimension (attach points do not belong to it), the dimension could not
+//! be built.
+//! If it is not possible to compute automatic plane (for example, in case of length between 
+//! two points) the user is supposed to specify the custom plane.
+//!
+//! Since the dimensions feature automated construction procedures from an arbitrary shapes,
+//! the interfaces to check the validness are also implemented. Once the measured geometry is
+//! specified, the one can inquire the validness status by calling "IsValid()" method. If the result
+//! is TRUE, then all of public parameters should be pre-computed and ready. The presentation
+//! should be also computable. Otherwise, the parameters may return invalid values. In this case,
+//! the presentation will not be computed and displayed.
+//! 
+//! The dimension support two local selection modes: main dimension line selection and text label
+//! selection. These modes can be used to develop interactive modification of dimension presentations.
+//! The component hilighting in these selection modes is provided by AIS_DimensionOwner class.
+//! Please note that selection is unavailable until the presentation is computed.
+//! 
+//! The specific drawing attributes are controlled through Prs3d_DimensionAspect. The one can change
+//! color, arrows, text and arrow style and specify positioning of value label by setting corresponding
+//! values to the aspect.
+//!
 class AIS_Dimension : public AIS_InteractiveObject
 {
 protected:
 
-  // Specifies supported at base level horizontal and vertical
-  // label positions for drawing extension lines and centered text.
+  //! Geometry type defines type of shapes on which the dimension is to be built.
+  //! Some type of geometry allows automatical plane computing and
+  //! can be built without user-defined plane
+  //! Another types can't be built without user-defined plane.
+  enum GeometryType
+  {
+    GeometryType_UndefShapes,
+    GeometryType_Edge,
+    GeometryType_Face,
+    GeometryType_Points,
+    GeometryType_Edges,
+    GeometryType_Faces,
+    GeometryType_EdgeFace,
+    GeometryType_EdgeVertex
+  };
+
+  //! Specifies supported at base level horizontal and vertical
+  //! label positions for drawing extension lines and centered text.
   enum LabelPosition
   {
     LabelPosition_None    = 0x00,
@@ -59,12 +170,12 @@ protected:
     LabelPosition_Left    = 0x01,
     LabelPosition_Right   = 0x02,
     LabelPosition_HCenter = 0x04,
-    LabelPosition_HMask  = LabelPosition_Left | LabelPosition_Right | LabelPosition_HCenter,
+    LabelPosition_HMask   = LabelPosition_Left | LabelPosition_Right | LabelPosition_HCenter,
 
     LabelPosition_Above   = 0x10,
     LabelPosition_Below   = 0x20,
     LabelPosition_VCenter = 0x40,
-    LabelPosition_VMask  = LabelPosition_Above | LabelPosition_Below | LabelPosition_VCenter
+    LabelPosition_VMask   = LabelPosition_Above | LabelPosition_Below | LabelPosition_VCenter
   };
 
 public:
@@ -81,128 +192,144 @@ public:
 
 public:
 
-  //! Constructor with default parameters values
-  Standard_EXPORT  AIS_Dimension();
+  //! Constructor with default parameters values.
+  //! @param theType [in] the type of dimension.
+  Standard_EXPORT AIS_Dimension (const AIS_KindOfDimension theType);
 
-  //! Gets dimension value
-  Standard_EXPORT  Standard_Real GetValue() const;
+  //! Gets dimension measurement value. If the value to display is not
+  //! specified by user, then the dimension object is responsible to
+  //! compute it on its own in model space coordinates.
+  //! @return the dimension value (in model units) which is used
+  //! during display of the presentation.
+  Standard_Real GetValue() const
+  {
+    return myIsValueCustom ? myCustomValue : ComputeValue();
+  }
 
-  //! Sets dimension value
-  //! Attention! This method is used ONLY to set custom value.
-  //! To set value internally, use <myValue>.
-  Standard_EXPORT  void SetCustomValue (const Standard_Real theValue);
+  //! Sets user-defined dimension value.
+  //! The user-defined dimension value is specified in model space,
+  //! and affect by unit conversion during the display.
+  //! @param theValue [in] the user-defined value to display.
+  Standard_EXPORT void SetCustomValue (const Standard_Real theValue);
 
-  //! Gets working plane.
-  Standard_EXPORT  const gp_Pln& GetWorkingPlane() const;
+  //! Get the dimension plane in which the 2D dimension presentation is computed.
+  //! By default, if plane is not defined by user, it is computed automatically
+  //! after dimension geometry is computed.
+  //! If computed dimension geometry (points) can't be placed on the user-defined
+  //! plane, dimension geometry was set as unvalid (validity flag is set to false)
+  //! and dimension presentation wil not be computed.
+  //! If user-defined plane allow geometry placement on it, it will be used for
+  //! computing of the dimension presentation.
+  //! @return dimension plane used for presentation computing.
+  Standard_EXPORT const gp_Pln& GetPlane() const;
 
-  //! Sets working plane.
-  Standard_EXPORT  void SetWorkingPlane (const gp_Pln& thePlane);
+  //! Geometry type defines type of shapes on which the dimension is to be built. 
+  //! @return type of geometry on which the dimension will be built.
+  Standard_EXPORT const Standard_Integer GetGeometryType () const;
 
-  Standard_EXPORT  void SetFirstPoint (const gp_Pnt& thePoint);
+  //! Sets user-defined plane where the 2D dimension presentation will be placed.
+  //! Checks validity of this plane if geometry has been set already.
+  //! Validity of the plane is checked according to the geometry set
+  //! and has different criteria for different kinds of dimensions.
+  Standard_EXPORT virtual void SetCustomPlane (const gp_Pln& thePlane);
 
-  Standard_EXPORT  void SetSecondPoint (const gp_Pnt& thePoint);
+  //! Unsets user-defined plane. Therefore the plane for dimension will be
+  //! computed automatically.
+  Standard_EXPORT void UnsetCustomPlane() { myIsPlaneCustom = Standard_False; }
 
-  Standard_EXPORT  void SetFirstShape (const TopoDS_Shape& theFirstShape);
-
-  Standard_EXPORT  void SetSecondShape (const TopoDS_Shape& theSecondShape);
+public:
 
   //! Gets the dimension aspect from AIS object drawer.
   //! Dimension aspect contains aspects of line, text and arrows for dimension presentation.
-  Standard_EXPORT   Handle(Prs3d_DimensionAspect) DimensionAspect() const;
+  Handle(Prs3d_DimensionAspect) DimensionAspect() const
+  {
+    return myDrawer->DimensionAspect();
+  }
 
-  //! Sets new length aspect in the interactive object drawer.
-  Standard_EXPORT   void SetDimensionAspect (const Handle(Prs3d_DimensionAspect)& theDimensionAspect);
+  //! Sets new dimension aspect for the interactive object drawer.
+  //! The dimension aspect provides dynamic properties which are generally
+  //! used during computation of dimension presentations.
+  Standard_EXPORT void SetDimensionAspect (const Handle(Prs3d_DimensionAspect)& theDimensionAspect);
 
-  //! Returns the kind of dimension
-  Standard_EXPORT  AIS_KindOfDimension KindOfDimension() const;
+  //! @return the kind of dimension.
+  AIS_KindOfDimension KindOfDimension() const
+  {
+    return myKindOfDimension;
+  }
 
-  //! Returns the kind of interactive
-  Standard_EXPORT  virtual  AIS_KindOfInteractive Type() const;
-
-  //! Sets the kind of dimension
-  Standard_EXPORT  virtual void SetKindOfDimension (const AIS_KindOfDimension theKindOfDimension);
+  //! @return the kind of interactive.
+  virtual AIS_KindOfInteractive Type() const
+  {
+    return AIS_KOI_Relation;
+  }
 
   //! Returns true if the class of objects accepts the display mode theMode.
-  //! The interactive context can have a default mode of
-  //! representation for the set of Interactive Objects. This
-  //! mode may not be accepted by object
-  Standard_EXPORT   virtual  Standard_Boolean AcceptDisplayMode (const Standard_Integer theMode) const;
+  //! The interactive context can have a default mode of representation for
+  //! the set of Interactive Objects. This mode may not be accepted by object.
+  virtual Standard_Boolean AcceptDisplayMode (const Standard_Integer theMode) const
+  {
+    return theMode == ComputeMode_All;
+  }
 
-  // Selection computing if it is needed here
-  Standard_EXPORT   virtual  void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
-                                                    const Standard_Integer theMode);
+public:
 
-  //! Reset working plane to default.
-  Standard_EXPORT  void ResetWorkingPlane();
+  //! @return dimension special symbol display options.
+  AIS_DisplaySpecialSymbol DisplaySpecialSymbol() const
+  {
+    return myDisplaySpecialSymbol;
+  }
 
-  //! specifies dimension special symbol display options
-  Standard_EXPORT  void SetDisplaySpecialSymbol (const AIS_DisplaySpecialSymbol theDisplaySpecSymbol);
+  //! Specifies whether to display special symbol or not.
+  Standard_EXPORT void SetDisplaySpecialSymbol (const AIS_DisplaySpecialSymbol theDisplaySpecSymbol);
 
-  //! shows dimension special symbol display options
-  Standard_EXPORT  AIS_DisplaySpecialSymbol DisplaySpecialSymbol() const;
+  //! @return special symbol.
+  Standard_ExtCharacter SpecialSymbol() const
+  {
+    return mySpecialSymbol;
+  }
 
-  //! specifies special symbol
-  Standard_EXPORT  void SetSpecialSymbol (const Standard_ExtCharacter theSpecialSymbol);
+  //! Specifies special symbol.
+  Standard_EXPORT void SetSpecialSymbol (const Standard_ExtCharacter theSpecialSymbol);
 
-  //! returns special symbol
-  Standard_EXPORT  Standard_ExtCharacter SpecialSymbol() const;
+  Standard_EXPORT virtual const TCollection_AsciiString& GetDisplayUnits() const;
 
-  //! shows if Units are to be displayed along with dimension value
-  Standard_EXPORT  Standard_Boolean IsUnitsDisplayed() const;
+  Standard_EXPORT virtual const TCollection_AsciiString& GetModelUnits() const;
 
-  //! sets to display units along with the dimension value or no
-  Standard_EXPORT  void MakeUnitsDisplayed (const Standard_Boolean toDisplayUnits);
+  Standard_EXPORT virtual void SetDisplayUnits (const TCollection_AsciiString& /*theUnits*/) { }
 
-  //! returns the current type of units
-  Standard_EXPORT  TCollection_AsciiString UnitsQuantity() const;
+  Standard_EXPORT virtual void SetModelUnits (const TCollection_AsciiString& /*theUnits*/) { }
 
-  //! sets the current type of units
-  Standard_EXPORT  void SetUnitsQuantity (const TCollection_AsciiString& theUnitsQuantity);
+public:
 
-  //! returns the current model units
-  Standard_EXPORT  TCollection_AsciiString ModelUnits() const;
-
-  //! sets the current model units
-  Standard_EXPORT  void SetModelUnits (const TCollection_AsciiString& theUnits);
-
-  //! returns the current display units
-  Standard_EXPORT  TCollection_AsciiString DisplayUnits() const;
-
-  //! sets the current display units
-  Standard_EXPORT  void SetDisplayUnits (const TCollection_AsciiString& theUnits);
-
-  //! Important! Only for 3d text </br>
-  //! 3d text is oriented relative to the attachment points order </br>
-  //! By default, text direction vector is oriented from the first attachment point </br>
-  //! to the second one. This method checks if text direction is to be default or </br>
-  //! should be reversed.
-  Standard_EXPORT  Standard_Boolean IsTextReversed() const;
-
-  //! Important! Only for 3d text
-  //! 3d text is oriented relative to the attachment points order </br>
-  //! By default, text direction vector is oriented from the first attachment point </br>
-  //! to the second one. This method sets value that shows if text direction </br>
-  //! should be reversed or not.
-  Standard_EXPORT  void MakeTextReversed (const Standard_Boolean isTextReversed);
+  //! Returns selection tolerance for text2d:
+  //! For 2d text selection detection sensitive point with tolerance is used
+  //! Important! Only for 2d text.
+  Standard_Real SelToleranceForText2d() const
+  {
+    return mySelToleranceForText2d;
+  }
 
   //! Sets selection tolerance for text2d:
   //! For 2d text selection detection sensitive point with tolerance is used
   //! to change this tolerance use this method
-  //! Important! Only for 2d text
-  Standard_EXPORT  void SetSelToleranceForText2d (const Standard_Real theTol);
+  //! Important! Only for 2d text.
+  Standard_EXPORT void SetSelToleranceForText2d (const Standard_Real theTol);
 
-  //! Returns selection tolerance for text2d:
-  //! For 2d text selection detection sensitive point with tolerance is used
-  //! Important! Only for 2d text
-  Standard_EXPORT  Standard_Real SelToleranceForText2d() const;
-
-  //! Sets flyout size for dimension.
-  Standard_EXPORT void SetFlyout (const Standard_Real theFlyout);
-
-  //! @return flyout size for dimension.
+  //! @return flyout value for dimension.
   Standard_Real GetFlyout() const
   {
     return myFlyout;
+  }
+
+  //! Sets flyout value for dimension.
+  Standard_EXPORT void SetFlyout (const Standard_Real theFlyout);
+
+  //! Check that the input geometry for dimension is valid and the
+  //! presentation can be succesfully computed.
+  //! @return TRUE if dimension geometry is ok.
+  Standard_Boolean IsValid() const
+  {
+    return myIsValid;
   }
 
 public:
@@ -211,28 +338,28 @@ public:
 
 protected:
 
-  Standard_EXPORT void getTextWidthAndString (Quantity_Length& theWidth,
-                                              TCollection_ExtendedString& theString) const;
+  Standard_EXPORT Standard_Real ValueToDisplayUnits() const;
 
-  Standard_EXPORT Standard_Real valueToDisplayUnits();
-
-  //! Reset working plane to default.
-  Standard_EXPORT void resetWorkingPlane (const gp_Pln& theNewDefaultPlane);
-
-  //! Count default plane 
-  Standard_EXPORT virtual void countDefaultPlane();
-
-  //! Computes dimension value in display units
-  Standard_EXPORT virtual void computeValue();
+  //! Get formatted value string and its model space width.
+  //! @param theWidth [out] the model space with of the string.
+  //! @return formatted dimension value string.
+  Standard_EXPORT TCollection_ExtendedString GetValueString (Standard_Real& theWidth) const;
 
   //! Performs drawing of 2d or 3d arrows on the working plane
-  Standard_EXPORT void drawArrow (const Handle(Prs3d_Presentation)& thePresentation,
+  //! @param theLocation [in] the location of the arrow tip.
+  //! @param theDirection [in] the direction from the tip to the bottom of the arrow.
+  Standard_EXPORT void DrawArrow (const Handle(Prs3d_Presentation)& thePresentation,
                                   const gp_Pnt& theLocation,
                                   const gp_Dir& theDirection);
 
   //! Performs drawing of 2d or 3d text on the working plane
+  //! @param theTextPos [in] the position of the text label.
+  //! @param theTestDir [in] the direction of the text label.
+  //! @param theText [in] the text label string.
+  //! @param theLabelPosition [in] the text label vertical and horizontal positioning option
+  //! respectively to the main dimension line. 
   //! @return text width relative to the dimension working plane. For 2d text this value will be zero.
-  Standard_EXPORT void drawText (const Handle(Prs3d_Presentation)& thePresentation,
+  Standard_EXPORT void DrawText (const Handle(Prs3d_Presentation)& thePresentation,
                                  const gp_Pnt& theTextPos,
                                  const gp_Dir& theTextDir,
                                  const TCollection_ExtendedString& theText,
@@ -247,7 +374,7 @@ protected:
   //! @param theLabelWidth [in] the geometrical width computed for value string.
   //! @param theMode [in] the display mode.
   //! @param theLabelPosition [in] position flags for the text label.
-  Standard_EXPORT void drawExtension (const Handle(Prs3d_Presentation)& thePresentation,
+  Standard_EXPORT void DrawExtension (const Handle(Prs3d_Presentation)& thePresentation,
                                       const Standard_Real theExtensionSize,
                                       const gp_Pnt& theExtensionStart,
                                       const gp_Dir& theExtensionDir,
@@ -256,32 +383,81 @@ protected:
                                       const Standard_Integer theMode,
                                       const Standard_Integer theLabelPosition);
 
-  //! Performs computing of linear dimension (for length, diameter, radius and so on)
-  Standard_EXPORT void drawLinearDimension (const Handle(Prs3d_Presentation)& thePresentation,
+  //! Performs computing of linear dimension (for length, diameter, radius and so on).
+  //! Please note that this method uses base dimension properties, like working plane
+  //! flyout length, drawer attributes.
+  //! @param thePresentation [in] the presentation to fill with primitives.
+  //! @param theMode [in] the presentation compute mode.
+  //! @param theFirstPoint [in] the first attach point of linear dimension.
+  //! @param theSecondPoint [in] the second attach point of linear dimension.
+  //! @param theIsOneSide [in] specifies whether the dimension has only one flyout line.
+  Standard_EXPORT void DrawLinearDimension (const Handle(Prs3d_Presentation)& thePresentation,
                                             const Standard_Integer theMode,
-                                            const Standard_Boolean isOneSideDimension = Standard_False);
+                                            const gp_Pnt& theFirstPoint,
+                                            const gp_Pnt& theSecondPoint,
+                                            const Standard_Boolean theIsOneSide = Standard_False);
 
-  //! If it's possible computes circle from planar face
-  Standard_EXPORT  Standard_Boolean circleFromPlanarFace (const TopoDS_Face& theFace,
+  //! Compute selection sensitives for linear dimension flyout lines (length, diameter, radius).
+  //! Please note that this method uses base dimension properties: working plane and flyout length.
+  //! @param theSelection [in] the selection structure to fill with selection primitives.
+  //! @param theOwner [in] the selection entity owner.
+  //! @param theFirstPoint [in] the first attach point of linear dimension.
+  //! @param theSecondPoint [in] the second attach point of linear dimension.
+  Standard_EXPORT void ComputeLinearFlyouts (const Handle(SelectMgr_Selection)& theSelection,
+                                             const Handle(SelectMgr_EntityOwner)& theOwner,
+                                             const gp_Pnt& theFirstPoint,
+                                             const gp_Pnt& theSecondPoint);
+
+  //! If it is possible extracts circle from planar face.
+  //! @param theFace [in] the planar face.
+  //! @param theCurve [out] the circular curve.
+  //! @param theFirstPoint [out] the point of the first parameter of the circlular curve.
+  //! @param theSecondPoint [out] the point of the last parameter of the circlular curve.
+  //! @return TRUE in case of successful circle extraction.
+  Standard_EXPORT  Standard_Boolean CircleFromPlanarFace (const TopoDS_Face& theFace,
                                                           Handle(Geom_Curve)& theCurve,
-                                                          gp_Pnt & theFirstPoint,
-                                                          gp_Pnt & theLastPoint);
+                                                          gp_Pnt& theFirstPoint,
+                                                          gp_Pnt& theLastPoint);
 
-  //! Performs initialization of circle and points from given shape
-  //! (for radius, diameter and so on)
-  Standard_EXPORT  Standard_Boolean initCircularDimension (const TopoDS_Shape& theShape,
-                                                           gp_Circ& theCircle,
-                                                           gp_Pnt& theMiddleArcPoint,
-                                                           gp_Pnt& theOppositeDiameterPoint);
-  Standard_EXPORT Standard_Boolean isComputed() const;
+  //! Performs initialization of circle and middle arc point from the passed
+  //! shape which is assumed to contain circular geometry.
+  //! @param theShape [in] the shape to explore.
+  //! @param theCircle [out] the circle geometry.
+  //! @param theMiddleArcPoint [out] the middle point of the arc.
+  //! @param theIsClosed [out] returns TRUE if the geometry is closed circle.
+  //! @return TRUE if the the circle is successfully got from the input shape.
+  Standard_EXPORT Standard_Boolean InitCircularDimension (const TopoDS_Shape& theShape,
+                                                          gp_Circ& theCircle,
+                                                          gp_Pnt& theMiddleArcPoint,
+                                                          Standard_Boolean& theIsClosed);
 
-  Standard_EXPORT void setComputed (Standard_Boolean isComputed);
+protected: //! @name Behavior to implement
 
-  Standard_EXPORT void resetGeom();
+  //! Override this method to compute automatically dimension plane
+  //! in which the dimension presentation is built.
+  virtual void ComputePlane() { }
 
-  //! Fills sensitive entity for flyouts and adds it to the selection.
-  Standard_EXPORT virtual void computeFlyoutSelection (const Handle(SelectMgr_Selection)& theSelection,
-                                                       const Handle(SelectMgr_EntityOwner)& theOwner);
+  //! Override this method to check if user-defined plane
+  //! is valid for the dimension geometry.
+  //! @param thePlane [in] the working plane for positioning every
+  //! dimension in the application.
+  //! @return true is the plane is suitable for building dimension
+  //! with computed dimension geometry.
+  virtual Standard_Boolean CheckPlane (const gp_Pln& /*thePlane*/) const { return Standard_True; }
+
+  //! Override this method to computed value of dimension.
+  //! @return value from the measured geometry.
+  virtual Standard_Real ComputeValue() const 
+  {
+    return 0.0;
+  }
+
+  //! Override this method to compute selection primitives for
+  //! flyout lines (if the dimension provides it).
+  //! This callback is a only a part of base selection
+  //! computation routine.
+  virtual void ComputeFlyoutSelection (const Handle(SelectMgr_Selection)&,
+                                       const Handle(SelectMgr_EntityOwner)&) {}
 
   //! Produce points for triangular arrow face.
   //! @param thePeakPnt [in] the arrow peak position.
@@ -300,41 +476,11 @@ protected:
                                        gp_Pnt& theSidePnt1,
                                        gp_Pnt& theSidePnt2);
 
-protected: //! @name Working plane properties
-
-  //! Dimension default plane
-  gp_Pln myDefaultPlane;
-
-  //! Shows if working plane is set custom
-  Standard_Boolean myIsWorkingPlaneCustom;
-
-protected: //! @name Value properties
-
-  //! Dimension value which is displayed with dimension lines
-  Standard_Real myValue;
-
-  //! Shows if the value is set by user and is no need to count it automatically
-  Standard_Boolean myIsValueCustom;
-
-protected: // !@name Units properties
-
-  //! The quantity of units for the value computation
-  TCollection_AsciiString myUnitsQuantity;
-
-  //! Units of the model
-  TCollection_AsciiString myModelUnits;
-
-  //! Units in which the displayed value will be converted
-  TCollection_AsciiString myDisplayUnits;
-
-  //! Determines if units is to be displayed along with the value
-  Standard_Boolean myToDisplayUnits;
-
-  //! Special symbol for some kind of dimensions (for diameter, radius and so on)
-  Standard_ExtCharacter mySpecialSymbol;
-
-  //! Special symbol display options
-  AIS_DisplaySpecialSymbol myDisplaySpecialSymbol;
+  //! Base procedure of computing selection (based on selection geometry data).
+  //! @param theSelection [in] the selection structure to will with primitives.
+  //! @param theMode [in] the selection mode.
+  Standard_EXPORT virtual void ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
+                                                 const Standard_Integer theMode);
 
 protected: //! @name Selection geometry
 
@@ -403,43 +549,28 @@ protected: //! @name Selection geometry
   Standard_Real mySelToleranceForText2d; //!< Sensitive point tolerance for 2d text selection.
   Standard_Boolean myIsComputed;         //!< Shows if the presentation and selection was computed.
 
-protected:
+protected: //! @name Value properties
 
-  //! Shows if text is inverted
-  Standard_Boolean myIsTextReversed;
+  Standard_Real    myCustomValue;   //!< Value of the dimension (computed or user-defined).
+  Standard_Boolean myIsValueCustom; //!< Is user-defined value.
 
-  //! Points that are base for dimension.
-  //! My first point of dimension attach (belongs to shape for which dimension is computed)
-  gp_Pnt myFirstPoint;
+protected: //! @name Units properties
 
-  //! My second point of dimension attach (belongs to shape for which dimension is computed)
-  gp_Pnt mySecondPoint;
+  Standard_ExtCharacter    mySpecialSymbol;        //!< Special symbol.
+  AIS_DisplaySpecialSymbol myDisplaySpecialSymbol; //!< Special symbol display options.
 
-  //! Shows if attach points are initialized correctly
-  Standard_Boolean myIsInitialized;
+protected: //! @name Geometrical properties
 
-  //! First shape (can be vertex, edge or face)
-  TopoDS_Shape myFirstShape;
+  GeometryType myGeometryType;  //!< defines type of shapes on which the dimension is to be built. 
 
-  //! Second shape (can be vertex, edge or face)
-  TopoDS_Shape mySecondShape;
-
-  //! Number of shapes
-  Standard_Integer myShapesNumber;
-
-  //! Defines flyout lines and direction
-  //! Flyout direction in the working plane.
-  //! Can be negative, or positive and is defined by the sign of myFlyout value.
-  //! The direction vector is counting using the working plane.
-  //! myFlyout value defined the size of flyout.
-  Standard_Real myFlyout;
+  gp_Pln           myPlane;       //!< Plane where dimension will be built (computed or user defined).
+  Standard_Boolean myIsPlaneCustom; //!< Is plane defined by user (otherwise it will be computed automatically).
+  Standard_Real    myFlyout;      //!< Flyout distance.
+  Standard_Boolean myIsValid;     //!< Is dimension geometry properly defined.
 
 private:
 
-  //! Type of dimension
   AIS_KindOfDimension myKindOfDimension;
-
-  //! Dimension working plane, is equal to <myDefaultPlane> if it can be computed automatically.
-  gp_Pln myWorkingPlane;
 };
-#endif
+
+#endif // _AIS_Dimension_HeaderFile

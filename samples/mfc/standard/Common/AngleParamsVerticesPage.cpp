@@ -142,13 +142,13 @@ void CAngleParamsVerticesPage::OnBnClickedVertex3Btn()
   anAspect->TextAspect()->SetHeight (aDimDlg->GetFontHeight());
   anAspect->MakeTextShaded (aDimDlg->IsText3dShaded());
   anAspect->SetCommonColor (aDimDlg->GetDimensionColor());
-  anAngleDim->MakeUnitsDisplayed (aDimDlg->IsUnitsDisplayed());
-  if (anAngleDim->IsUnitsDisplayed())
+  anAngleDim->DimensionAspect()->MakeUnitsDisplayed (aDimDlg->IsUnitsDisplayed());
+  if (aDimDlg->IsUnitsDisplayed())
   {
     anAngleDim->SetDisplayUnits (aDimDlg->GetUnits());
-    if ((anAngleDim->DisplayUnits().IsEqual (TCollection_AsciiString ("deg"))))
+    if ((anAngleDim->GetDisplayUnits().IsEqual (TCollection_AsciiString ("deg"))))
     {
-      anAngleDim->MakeUnitsDisplayed (Standard_False);
+      anAngleDim->DimensionAspect()->MakeUnitsDisplayed (Standard_False);
     }
     else
     {
