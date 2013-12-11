@@ -19,6 +19,8 @@
 
 #include <Graphic3d_Group.jxx>
 #include <Graphic3d_Group.pxx>
+
+#include <Graphic3d_ArrayOfPoints.hxx>
 #include <gp_Pnt.hxx>
 
 // =======================================================================
@@ -63,6 +65,19 @@ void Graphic3d_Group :: AddPrimitiveArray ( const Handle(Graphic3d_ArrayOfPrimit
 	MyGraphicDriver->PrimitiveArray(MyCGroup, elem->Array());
 
 	Update ();
+}
+
+// =======================================================================
+// function : Marker
+// purpose  :
+// =======================================================================
+
+void Graphic3d_Group::Marker (const Graphic3d_Vertex& thePoint,
+                              const Standard_Boolean  theToEvalMinMax)
+{
+  Handle(Graphic3d_ArrayOfPoints) aPoints = new Graphic3d_ArrayOfPoints (1);
+  aPoints->AddVertex (thePoint.X(), thePoint.Y(), thePoint.Z());
+  AddPrimitiveArray (aPoints, theToEvalMinMax);
 }
 
 // =======================================================================

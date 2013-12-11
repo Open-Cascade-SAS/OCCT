@@ -359,6 +359,13 @@ class Group from Graphic3d inherits TShared
         ---Level: Public
     ---Purpose: Adds an array of primitives for display
 
+    Marker ( me              : mutable;
+             thePoint        : Vertex from Graphic3d;
+             theToEvalMinMax : Boolean from Standard = Standard_True )
+    is static;
+    ---Level: Public
+    ---Purpose: Creates a primitive array with single marker using AddPrimitiveArray().
+
     UserDraw ( me           : mutable;
                AnObject     : Address from Standard; 
                EvalMinMax   : Boolean from Standard = Standard_True; 
