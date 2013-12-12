@@ -91,52 +91,56 @@ static Standard_Integer transform(Draw_Interpretor& di,Standard_Integer n,const 
 
   gp_Trsf T;
   Standard_Integer last = n;
+  const char* aName = a[0];
 
-  if (!strcmp(a[0],"reset")) {
-  }
-  else if (!strcmp(a[0],"tmove")) {
-    if (n < 3) return 1;
-    TopoDS_Shape SL = DBRep::Get(a[n-1]);
-    if (SL.IsNull()) return 0;
-    T = SL.Location().Transformation();
-    last = n-1;
-  }
-  else if (!strcmp(a[0],"ttranslate")) {
-    if (n < 5) return 1;
-    T.SetTranslation(gp_Vec(Draw::Atof(a[n-3]),Draw::Atof(a[n-2]),Draw::Atof(a[n-1])));
-    last = n-3;
-  }
-  else if (!strcmp(a[0],"trotate")) {
-    if (n < 9) return 1;
-    T.SetRotation(gp_Ax1(gp_Pnt(Draw::Atof(a[n-7]),Draw::Atof(a[n-6]),Draw::Atof(a[n-5])),
-			 gp_Vec(Draw::Atof(a[n-4]),Draw::Atof(a[n-3]),Draw::Atof(a[n-2]))),
-		  Draw::Atof(a[n-1])* (M_PI / 180.0));
-    last = n-7;
-  }
-  else if (!strcmp(a[0],"tmirror")) {
-    if (n < 8) return 1;
-    T.SetMirror(gp_Ax2(gp_Pnt(Draw::Atof(a[n-6]),Draw::Atof(a[n-5]),Draw::Atof(a[n-4])),
-		       gp_Vec(Draw::Atof(a[n-3]),Draw::Atof(a[n-2]),Draw::Atof(a[n-1]))));
-    last = n-6;
-  }
-  else if (!strcmp(a[0],"tscale")) {
-    if (n < 6) return 1;
-    T.SetScale(gp_Pnt(Draw::Atof(a[n-4]),Draw::Atof(a[n-3]),Draw::Atof(a[n-2])),Draw::Atof(a[n-1]));
-    last = n-4;
+  Standard_Boolean isBasic = Standard_False;
 
+  if (!strcmp(aName,"reset")) {
+  }
+  else {
+    isBasic = (aName[0] == 'b');
+    aName++;
+
+    if (!strcmp(aName,"move")) {
+      if (n < 3) return 1;
+      TopoDS_Shape SL = DBRep::Get(a[n-1]);
+      if (SL.IsNull()) return 0;
+      T = SL.Location().Transformation();
+      last = n-1;
+    }
+    else if (!strcmp(aName,"translate")) {
+      if (n < 5) return 1;
+      T.SetTranslation(gp_Vec(Draw::Atof(a[n-3]),Draw::Atof(a[n-2]),Draw::Atof(a[n-1])));
+      last = n-3;
+    }
+    else if (!strcmp(aName,"rotate")) {
+      if (n < 9) return 1;
+      T.SetRotation(gp_Ax1(gp_Pnt(Draw::Atof(a[n-7]),Draw::Atof(a[n-6]),Draw::Atof(a[n-5])),
+                    gp_Vec(Draw::Atof(a[n-4]),Draw::Atof(a[n-3]),Draw::Atof(a[n-2]))),
+                    Draw::Atof(a[n-1])* (M_PI / 180.0));
+      last = n-7;
+    }
+    else if (!strcmp(aName,"mirror")) {
+      if (n < 8) return 1;
+      T.SetMirror(gp_Ax2(gp_Pnt(Draw::Atof(a[n-6]),Draw::Atof(a[n-5]),Draw::Atof(a[n-4])),
+                  gp_Vec(Draw::Atof(a[n-3]),Draw::Atof(a[n-2]),Draw::Atof(a[n-1]))));
+      last = n-6;
+    }
+    else if (!strcmp(aName,"scale")) {
+      if (n < 6) return 1;
+      T.SetScale(gp_Pnt(Draw::Atof(a[n-4]),Draw::Atof(a[n-3]),Draw::Atof(a[n-2])),Draw::Atof(a[n-1]));
+      last = n-4;
+    }
   }
 
-  if (T.Form() == gp_Identity) {
-    TopLoc_Location L;
+  if (T.Form() == gp_Identity || isBasic) {
+    TopLoc_Location L(T);
     for (Standard_Integer i = 1; i < last; i++) {
       TopoDS_Shape S = DBRep::Get(a[i]);
-      if (S.IsNull()) {
-	//cout << a[i] << " is not a valid shape" << endl;
-	di << a[i] << " is not a valid shape" << "\n";
-      }
-      else {
-	DBRep::Set(a[i],S.Located(L));
-      }
+      if (S.IsNull())
+        di << a[i] << " is not a valid shape\n";
+      else
+        DBRep::Set(a[i],S.Located(L));
     }
   }
   else {
@@ -144,23 +148,18 @@ static Standard_Integer transform(Draw_Interpretor& di,Standard_Integer n,const 
     for (Standard_Integer i = 1; i < last; i++) {
       TopoDS_Shape S = DBRep::Get(a[i]);
       if (S.IsNull()) {
-	//cout << a[i] << " is not a valid shape" << endl;
-	di << a[i] << " is not a valid shape" << "\n";
+        di << a[i] << " is not a valid shape\n";
       }
       else {
-	trf.Perform(S);
-	if (trf.IsDone()){
-	  DBRep::Set(a[i],trf.Shape());
-	}
-	else {
-	  return 1;
-	}
+        trf.Perform(S);
+        if (!trf.IsDone())
+          return 1;
+        DBRep::Set(a[i],trf.Shape());
       }
     }
   }
   return 0;
 }
-
 
 ///=======================================================================
 // gtransform
@@ -836,21 +835,22 @@ void  BRepTest::BasicCommands(Draw_Interpretor& theCommands)
 		  addpcurve,g);
 
   theCommands.Add("reset",
-		  "reset name1 name2..., remove location",
+		  "reset name1 name2 ..., remove location",
 		  __FILE__,
 		  transform,g);
 
   theCommands.Add("tmove",
-		  "tmove name1 name2 ...  name(location)",
+		  "tmove name1 name2 ... name, set location from name",
 		  __FILE__,
 		  transform,g);
 
   theCommands.Add("ttranslate",
-		  "tmove name1 name2 ...  dx dy dz",
+		  "ttranslate name1 name2 ... dx dy dz",
 		  __FILE__,
 		  transform,g);
 
-  theCommands.Add("trotate","trotate name1 name2 ... x y z dx dy dz angle",
+  theCommands.Add("trotate",
+		  "trotate name1 name2 ... x y z dx dy dz angle",
 		  __FILE__,
 		  transform,g);
 
@@ -860,14 +860,39 @@ void  BRepTest::BasicCommands(Draw_Interpretor& theCommands)
 		  transform,g);
 
   theCommands.Add("tscale",
-		  "tscale name  x y z scale",
+		  "tscale name x y z scale",
 		  __FILE__,
 		  transform,g);
 
   theCommands.Add("tcopy",
-    "tcopy [-n(ogeom)] name1 result1 [name2 result2 ...]",
+		  "tcopy [-n(ogeom)] name1 result1 [name2 result2 ...]",
 		  __FILE__,
 		  tcopy,g);
+
+  theCommands.Add("bmove",
+		  "bmove name1 name2 ... name, set location from name",
+		  __FILE__,
+		  transform,g);
+
+  theCommands.Add("btranslate",
+		  "btranslate name1 name2 ... dx dy dz",
+		  __FILE__,
+		  transform,g);
+
+  theCommands.Add("brotate",
+		  "brotate name1 name2 ... x y z dx dy dz angle",
+		  __FILE__,
+		  transform,g);
+
+  theCommands.Add("bmirror",
+		  "bmirror name x y z dx dy dz",
+		  __FILE__,
+		  transform,g);
+
+  theCommands.Add("bscale",
+		  "bscale name x y z scale",
+		  __FILE__,
+		  transform,g);
 
   theCommands.Add("precision",
 		  "precision [preci]",
