@@ -1,20 +1,28 @@
 Open CASCADE Technology
 =======================
 
-This directory contains sources of Open CASCADE Technology (OCCT), a collection
-of C++ libraries providing services for 3D surface and solid modeling, CAD data
-exchange, and visualization. OCCT can be best applied in development of
-software dealing with 3D modeling (CAD), manufacturing / measuring (CAM) or
-numerical simulation (CAE).
+This directory contains sources of Open CASCADE Technology (OCCT), a software
+development platform providing services for 3D surface and solid modeling, CAD 
+data exchange, and visualization. Most of OCCT functionality is available in 
+the form of C++ libraries. OCCT can be best applied in development of software 
+dealing with 3D modeling (CAD), manufacturing / measuring (CAM) or numerical 
+simulation (CAE).
 
 License
 -------
 
-The OCCT code is subject to the Open CASCADE Technology Public License 
-(the "License"). You may not use the content of the relevant files except
-in compliance with the License. Please see the LICENSE file or obtain a copy 
-of the License at http://www.opencascade.org and read it completely before 
-using this software.
+Open CASCADE Technology is free software; you can redistribute it and / or 
+modify it under the terms of the GNU Lesser General Public version 2.1 as 
+published by the Free Software Foundation, with special exception defined in 
+the file OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included
+in OCCT distribution for complete text of the license.
+
+Alternatively, Open CASCADE Technology may be used under the terms of Open 
+CASCADE commercial license or contractual agreement.
+
+Note that Open CASCADE Technology is provided on an "AS IS" basis, WITHOUT 
+WARRANTY OF ANY KIND. The entire risk related to any use of the OCCT code and 
+materials is on you. See the license text for formal disclaimer.
 
 Packaging
 ---------
@@ -30,7 +38,7 @@ You can receive certified version of OCCT code in different packages.
   building on all officially supported platforms.
 
 - Binary package (platform-specific): in addition to complete source archive, 
-  includes binaries of OCCT and third-party libraries built on one platform. 
+  it includes binaries of OCCT and third-party libraries built on one platform. 
   This package allows using OCCT immediately after installation.
 
 Certified versions of OCCT can be downloaded from http://www.opencascade.org
@@ -48,9 +56,11 @@ Open file doc/html/index.html to browse HTML documentation.
 If HTML documentation is not available in your package, you can:
 
 - Generate it from sources. 
-  You need to have Tcl and Doxygen 1.8.4 (or above) in PATH.
-  In Tcl prompt, cd to OCCT root folder and run "source dox/start.tcl".
-  On Windows you can also run shortcut batch file *gendoc.bat*.
+
+  You need to have Tcl and Doxygen 1.8.4 (or above) installed on your system.
+  and accessible in your environment (check environment variable PATH).
+  Run batch file *gendoc.bat* on Windows or Bash scriot *gendoc.sh* on Linux
+  or Mac OS X to (re)generate documentation.
 
 - Read documentation in source plain text (MarkDown) format found in 
   subfolder *dox*

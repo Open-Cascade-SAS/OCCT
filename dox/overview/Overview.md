@@ -5,11 +5,11 @@ Overview {#mainpage}
 
 @section OCCT_OVW_SECTION_1 Welcome
 
-Welcome to Open CASCADE Technology (OCCT), a collection
-of C++ libraries providing services for 3D surface and solid modeling, CAD data
-exchange, and visualization. OCCT can be best applied in development of
-software dealing with 3D modeling (CAD), manufacturing / measuring (CAM) or
-numerical simulation (CAE).
+Welcome to Open CASCADE Technology (OCCT), a software development platform 
+providing services for 3D surface and solid modeling, CAD data exchange, and 
+visualization. Most of OCCT functionality is available in the form of C++ 
+libraries. OCCT can be best applied in development of software dealing with 3D 
+modeling (CAD), manufacturing / measuring (CAM) or numerical simulation (CAE).
 
 @htmlonly<center>@endhtmlonly 
 http://www.opencascade.org
@@ -19,13 +19,30 @@ http://www.opencascade.org
 
 @section OCCT_OVW_SECTION_2 Copyrights
 
-Copyright(c) 2001-2013 by OPEN CASCADE S.A.S. All rights reserved.
+Open CASCADE Technology and all materials, including this documentation, is 
+Copyright (c) 1999-2013 by OPEN CASCADE S.A.S. All rights reserved.
 
 @htmlonly<center>@endhtmlonly
 http://www.opencascade.com
 @image html /resources/occ_logo.png
 @image latex /resources/occ_logo.png
 @htmlonly</center>@endhtmlonly
+
+ License
+--------
+
+Open CASCADE Technology is free software; you can redistribute it and / or 
+modify it under the terms of the 
+@ref license_lgpl_21 "GNU Lesser General Public License (LGPL) version 2.1", 
+with additional @ref occt_lgpl_exception "exception".
+
+Alternatively, Open CASCADE Technology may be used under the terms of Open 
+CASCADE commercial license or contractual agreement.
+
+Note that Open CASCADE Technology is provided on an "AS IS" basis, WITHOUT 
+WARRANTY OF ANY KIND. The entire risk related to any use of the OCCT code and 
+materials is on you. See the @ref occt_public_license "license" text for formal 
+disclaimer.
 
  Trademark information
 ----------------------
