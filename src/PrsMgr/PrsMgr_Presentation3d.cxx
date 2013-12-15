@@ -72,6 +72,7 @@ void PrsMgr_Presentation3d::Erase ()
 {
   // Erase structure from structure manager
   myStructure->Erase();
+  myStructure->Clear();
   // Disconnect other structures
   myStructure->DisconnectAll (Graphic3d_TOC_DESCENDANT);
   // Clear groups and remove graphic structure
