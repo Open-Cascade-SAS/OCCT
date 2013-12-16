@@ -2,7 +2,7 @@
 
 aScriptPath=${BASH_SOURCE%/*}; if [ -d "${aScriptPath}" ]; then cd "$aScriptPath"; fi; aScriptPath="$PWD";
 
-source "${aScriptPath}/env.sh" "$1" "$2"
+source "${aScriptPath}/env.sh"
 
 echo 'Hint: use "pload ALL" command to load standard commands'
 DRAWEXE
