@@ -216,7 +216,8 @@ void CSelectionDialog::OnGetSelectedShapes()
       OneOrMoreFound = Standard_True;
       TopoDS_Shape aShape = anAISShape->Shape();
       myDisplayableShape->Add (aShape);
-      myInteractiveContext->Display (anAISShape);
+      Handle(AIS_Shape) aSelectedShape = new AIS_Shape (aShape);
+      myInteractiveContext->Display (aSelectedShape);
     }
   }
 
