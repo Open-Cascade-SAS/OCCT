@@ -1126,6 +1126,107 @@ static Standard_Integer EllipsUniformAbscissa (Draw_Interpretor& di, Standard_In
 }
 
 //=======================================================================
+//function : discrCurve
+//purpose  :
+//=======================================================================
+static Standard_Integer discrCurve(Draw_Interpretor& di, Standard_Integer theArgNb, const char** theArgVec)
+{
+  if (theArgNb < 3)
+  {
+    di << "Invalid number of parameters.\n";
+    return 1;
+  }
+
+  Handle(Geom_Curve) aCurve = DrawTrSurf::GetCurve(theArgVec[2]);
+  if (aCurve.IsNull())
+  {
+    di << "Curve is NULL.\n";
+    return 1;
+  }
+
+  Standard_Integer aSrcNbPnts = 0;
+  Standard_Boolean isUniform = Standard_False;
+  for (Standard_Integer anArgIter = 3; anArgIter < theArgNb; ++anArgIter)
+  {
+    TCollection_AsciiString anArg     (theArgVec[anArgIter]);
+    TCollection_AsciiString anArgCase (anArg);
+    anArgCase.LowerCase();
+    if (anArgCase == "nbpnts")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        di << "Value for argument '" << anArg << "' is absent.\n";
+        return 1;
+      }
+
+      aSrcNbPnts = Draw::Atoi (theArgVec[anArgIter]);
+    }
+    else if (anArgCase == "uniform")
+    {
+      if (++anArgIter >= theArgNb)
+      {
+        di << "Value for argument '" << anArg << "' is absent.\n";
+        return 1;
+      }
+
+      isUniform = (Draw::Atoi (theArgVec[anArgIter]) == 1);
+    }
+    else
+    {
+      di << "Invalid argument '" << anArg << "'.\n";
+      return 1;
+    }
+  }
+
+  if (aSrcNbPnts < 2)
+  {
+    di << "Invalid count of points.\n";
+    return 1;
+  }
+
+  if (!isUniform)
+  {
+    di << "Invalid type of discretization.\n";
+    return 1;
+  }
+
+  GeomAdaptor_Curve aCurveAdaptor(aCurve);
+  GCPnts_UniformAbscissa aSplitter(aCurveAdaptor, aSrcNbPnts, Precision::Confusion());
+  if (!aSplitter.IsDone())
+  {
+    di << "Error: Invalid result.\n";
+    return 0;
+  }
+
+  const Standard_Integer aDstNbPnts = aSplitter.NbPoints();
+
+  if (aDstNbPnts < 2)
+  {
+    di << "Error: Invalid result.\n";
+    return 0;
+  }
+
+  TColgp_Array1OfPnt aPoles(1, aDstNbPnts);
+  TColStd_Array1OfReal aKnots(1, aDstNbPnts);
+  TColStd_Array1OfInteger aMultiplicities(1, aDstNbPnts);
+
+  for (Standard_Integer aPntIter = 1; aPntIter <= aDstNbPnts; ++aPntIter)
+  {
+    aPoles.ChangeValue(aPntIter) = aCurveAdaptor.Value(aSplitter.Parameter(aPntIter));
+    aKnots.ChangeValue(aPntIter) = (aPntIter - 1) / (aDstNbPnts - 1.0);
+    aMultiplicities.ChangeValue(aPntIter) = 1;
+  }
+  aMultiplicities.ChangeValue(1) = 2;
+  aMultiplicities.ChangeValue(aDstNbPnts) = 2;
+
+  Handle(Geom_BSplineCurve) aPolyline =
+    new Geom_BSplineCurve(aPoles, aKnots, aMultiplicities, 1);
+  DrawTrSurf::Set(theArgVec[1], aPolyline);
+
+  return 0;
+}
+
+//=======================================================================
 //function : mypoints
 //purpose  : 
 //=======================================================================
@@ -1621,6 +1722,13 @@ void  GeometryTest::CurveCommands(Draw_Interpretor& theCommands)
   theCommands.Add("uniformAbscissaEl",
 		  "uniformAbscissaEl maxR minR nbPnt",
 		  __FILE__,  EllipsUniformAbscissa,g);
+
+  theCommands.Add("discrCurve",
+    "discrCurve polyline curve params\n"
+    "Approximates a curve by a polyline (first degree B-spline).\n"
+    "nbPnts number - creates polylines with the number points\n"
+    "uniform 0 | 1 - creates polyline with equal length segments",
+    __FILE__,  discrCurve, g);
 
   theCommands.Add("mypoints",
 		  "mypoints result curv deflection",

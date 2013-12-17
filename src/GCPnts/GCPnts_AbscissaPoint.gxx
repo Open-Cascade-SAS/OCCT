@@ -167,12 +167,6 @@ static void AdvCompute(CPnts_AbscissaPoint& theComputer,
 		    Standard_Real& Ui,
 		    const Standard_Real EPSILON) 
 {
-  // test for easy solution
-  if (Abs(Abscis) <= EPSILON) {
-    theComputer.SetParameter(U0);
-    return;
-  }
-  
   Standard_Real Ratio;
   GCPnts_AbscissaType Type = computeType(C,Ratio);
 
@@ -230,7 +224,7 @@ static void AdvCompute(CPnts_AbscissaPoint& theComputer,
       while ((Index >= 1) && (Index <= NbIntervals)) {
 
 	L = CPnts_AbscissaPoint::Length(C, U0, TI(Index+Direction), EPSILON);
-	if (Abs(L - Abscis) <= /*Precision::Confusion()*/EPSILON) {
+	if (Abs(L - Abscis) <= Precision::PConfusion()) {
 	  theComputer.SetParameter(TI(Index+Direction));
 	  return;
 	}
