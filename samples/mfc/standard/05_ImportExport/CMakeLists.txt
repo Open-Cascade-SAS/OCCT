@@ -43,8 +43,8 @@ install (TARGETS ImportExport RUNTIME DESTINATION "${INSTALL_DIR}/bin"
                               LIBRARY DESTINATION "${INSTALL_DIR}/lib")
 
 include_directories (${OCCT_ROOT}/inc
-                     ${MFC_STANDARD_SAMPLES_DIR}/Common
                      ${MFC_STANDARD_SAMPLES_DIR}/05_ImportExport
-                     ${ImportExport_SRC_DIR})
+                     ${ImportExport_SRC_DIR}
+                     ${MFC_STANDARD_SAMPLES_DIR}/Common)
 
 target_link_libraries (ImportExport mfcsample)

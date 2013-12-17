@@ -45,8 +45,8 @@ install (TARGETS Triangulation RUNTIME DESTINATION "${INSTALL_DIR}/bin"
                                LIBRARY DESTINATION "${INSTALL_DIR}/lib")
 
 include_directories (${OCCT_ROOT}/inc
-                     ${MFC_STANDARD_SAMPLES_DIR}/Common
                      ${MFC_STANDARD_SAMPLES_DIR}/07_Triangulation
-                     ${Triangulation_SRC_DIR})
+                     ${Triangulation_SRC_DIR}
+                     ${MFC_STANDARD_SAMPLES_DIR}/Common)
 
 target_link_libraries (Triangulation mfcsample TKSTEP209 TKSTEPAttr TKBO)

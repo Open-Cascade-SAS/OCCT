@@ -67,8 +67,8 @@ install (TARGETS HLR RUNTIME DESTINATION "${INSTALL_DIR}/bin"
                      LIBRARY DESTINATION "${INSTALL_DIR}/lib")
 
 include_directories (${OCCT_ROOT}/inc
-                     ${MFC_STANDARD_SAMPLES_DIR}/Common
                      ${HLR_RESOURCE_DIR}
-                     ${HLR_SRC_DIR})
+                     ${HLR_SRC_DIR}
+                     ${MFC_STANDARD_SAMPLES_DIR}/Common)
 
 target_link_libraries (HLR mfcsample)

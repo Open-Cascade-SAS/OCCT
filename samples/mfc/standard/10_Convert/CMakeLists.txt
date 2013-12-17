@@ -67,9 +67,9 @@ install (TARGETS Convert RUNTIME DESTINATION "${INSTALL_DIR}/bin"
                          LIBRARY DESTINATION "${INSTALL_DIR}/lib")
 
 include_directories (${OCCT_ROOT}/inc
-                     ${MFC_STANDARD_SAMPLES_DIR}/Common
                      ${Convert_SRC_DIR}
                      ${ISESSION_SUBDIR}
-                     ${WNT_SUBDIR})
+                     ${WNT_SUBDIR}
+                     ${MFC_STANDARD_SAMPLES_DIR}/Common)
 
 target_link_libraries (Convert mfcsample)

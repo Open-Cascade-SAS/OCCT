@@ -39,8 +39,8 @@ install (TARGETS Viewer2d RUNTIME DESTINATION "${INSTALL_DIR}/bin"
                           LIBRARY DESTINATION "${INSTALL_DIR}/lib")
 
 include_directories (${OCCT_ROOT}/inc
-                     ${MFC_STANDARD_SAMPLES_DIR}/Common
                      ${MFC_STANDARD_SAMPLES_DIR}/03_Viewer2d
-                     ${Viewer2d_SOURCE_DIR})
+                     ${Viewer2d_SOURCE_DIR}
+                     ${MFC_STANDARD_SAMPLES_DIR}/Common)
 
 target_link_libraries (Viewer2d mfcsample)

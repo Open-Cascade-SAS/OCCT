@@ -67,7 +67,7 @@ install (TARGETS Viewer3d RUNTIME DESTINATION "${INSTALL_DIR}/bin"
                           LIBRARY DESTINATION "${INSTALL_DIR}/lib")
 
 include_directories (${OCCT_ROOT}/inc
-                     ${MFC_STANDARD_SAMPLES_DIR}/Common
-                     ${Viewer3d_SRC_DIR})
+                     ${Viewer3d_SRC_DIR}
+                     ${MFC_STANDARD_SAMPLES_DIR}/Common)
 
 target_link_libraries (Viewer3d mfcsample)
