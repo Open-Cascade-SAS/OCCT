@@ -15,6 +15,8 @@
 #include <Aspect_DisplayConnection.hxx>
 #include <Graphic3d.hxx>
 #include <OpenGl_GraphicDriver.hxx>
+#include <V3d_DirectionalLight.hxx>
+#include <V3d_AmbientLight.hxx>
 
 static Handle(Graphic3d_GraphicDriver) Viewer_aGraphicDriver;
 
@@ -72,6 +74,9 @@ Viewer::Viewer(QWidget* parent):QWidget(parent)
 	setFocusPolicy( Qt::StrongFocus );
 	setAttribute( Qt::WA_PaintOnScreen );
 	setAttribute( Qt::WA_NoSystemBackground );
+
+    aViewer->SetLightOn(new V3d_DirectionalLight(aViewer, V3d_XnegYnegZneg, Quantity_NOC_WHITE, Standard_True));
+    aViewer->SetLightOn(new V3d_AmbientLight(aViewer, Quantity_NOC_WHITE));
 }
 
 Viewer::~Viewer()
