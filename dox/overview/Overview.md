@@ -406,6 +406,7 @@ The scripts are located in the OCCT root folder.
   * **CSF_DEBUG** (optional, Windows only): if defined then a diagnostic message is displayed in case of an exception;
   * **CSF_DEBUG_BOP** (optional): if defined then it should specify directory where diagnostic data on problems occured in Boolean operations will be saved;
   * **CSF_MDTVTexturesDirectory** defines the directory for available textures when using texture mapping;
+  * **CSF_ShadersDirectory** defines the directory for GLSL programs (required for advanced rendering techniques and custom shaders);
   * **CSF_UnitsDefinition** and **CSF_UnitsLexicon** should define paths to resource files Lexi_Expr.dat and Units.dat, respectively, required for support of measurement units;
   * **CSF_SHMessage** is required in order to define the path to the messages file for *ShapeHealing*;
   * **CSF_XSMessage** is required in order to define the path to the messages file for **STEP** and **IGES** translators;
