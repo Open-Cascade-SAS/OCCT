@@ -106,33 +106,16 @@ is
 	--          the hilight-unhilight methods are empty and
 	--          must be redefined by each User...
 
+    ---Category: Shape Filters
 
-
-
-    ---Category: Some classes...
-
-
-    class BRepHilighter;    
-    	---Purpose: manages hilight of picked shapes in a ViewerSelector.
-    	--          to be called after each pick of the selection...
-
-
-
-
-
-
-    	    	---Category: Shape Filters
-    
     class EdgeFilter;
     class FaceFilter;
     class ShapeTypeFilter;
-    
-    
+
     ---Category: Private Classes
 
-
     private class Prs;
-    
+
     private class Shape;
 
     private class IndexedDataMapOfOwnerPrs instantiates IndexedDataMap from TCollection
