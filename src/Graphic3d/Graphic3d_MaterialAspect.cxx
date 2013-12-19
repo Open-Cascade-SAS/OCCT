@@ -63,7 +63,7 @@
 
 // for the class
 #include <Graphic3d_MaterialAspect.ixx>
-
+#include <Standard_Assert.hxx>
 //-Aliases
 
 //-Global data definitions
@@ -887,10 +887,8 @@ static Material theMaterials[] = {
 };
 
 Standard_Integer Graphic3d_MaterialAspect::NumberOfMaterials() {
-Standard_Integer n =sizeof(theMaterials)/sizeof(Material);
-  if( n > Graphic3d_NOM_DEFAULT ) {
-    cout << " *** Graphic3d_MaterialAspect::NumberOfMaterials() may return a badvalue due to incoherente size between material name array and enum" << endl;
-  }
+  Standard_STATIC_ASSERT(sizeof(theMaterials)/sizeof(Material) == Graphic3d_NOM_DEFAULT);
+
   return Graphic3d_NOM_DEFAULT;
 }
 
