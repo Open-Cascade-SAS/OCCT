@@ -13,7 +13,7 @@ proc OverviewDoc_DetectCasVersion {theCasRoot} {
     set fh_loaded [read $fh]
     close $fh
     regexp {[^/]\s*#\s*define\s+OCC_VERSION_COMPLETE\s+\"([^\s]*)\"} $fh_loaded dummy occt_ver
-    regexp {^\s*#\s*define\s+OCC_VERSION_DEVELOPMENT\s+\"([^\s]*)\"} $fh_loaded dummy occt_ver_add
+    regexp {[^/]\s*#\s*define\s+OCC_VERSION_DEVELOPMENT\s+\"([^\s]*)\"} $fh_loaded dummy occt_ver_add
     if { "$occt_ver_add" != "" } { set occt_ver ${occt_ver}.$occt_ver_add }
   }
   return $occt_ver
