@@ -1230,7 +1230,7 @@ static Standard_Integer wavefront(Draw_Interpretor&, Standard_Integer nbarg, con
   Standard_Real aDeflection = 
     MAX3( aXmax-aXmin , aYmax-aYmin , aZmax-aZmin) * 0.004;
 
-  BRepMesh_IncrementalMesh(S, aDeflection);
+  BRepMesh_IncrementalMesh aMesh (S, aDeflection);
 
 
   TopLoc_Location L;

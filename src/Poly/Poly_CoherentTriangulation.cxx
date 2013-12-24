@@ -585,8 +585,8 @@ void Poly_CoherentTriangulation::RemoveLink (Poly_CoherentLink& theLink)
         else if (iNode == pTri[i]->Node(2))
           const_cast<Poly_CoherentTriangle *>(pTri[i])->mypLink[2] = 0L;
         else
-          Standard_ProgramError("Poly_CoherentTriangulation::RemoveLink: "
-                                " wrong connectivity between triangles");
+          Standard_ProgramError::Raise("Poly_CoherentTriangulation::RemoveLink: "
+                                       " wrong connectivity between triangles");
       }
     }
   } 
@@ -660,8 +660,8 @@ Standard_Boolean Poly_CoherentTriangulation::FindTriangle
         else if (aTri.Node(1) == theLink.Node(1))
           pTri[1] = &aTri;
       } else
-        Standard_ProgramError("Poly_CoherentTriangulation::FindTriangle : "
-                              " Data incoherence detected");
+        Standard_ProgramError::Raise("Poly_CoherentTriangulation::FindTriangle : "
+                                     " Data incoherence detected");
       if (pTri[0] && pTri[1])
         break;
     }
