@@ -20,6 +20,7 @@ uses
     Shape from TopoDS,  
     BaseAllocator from BOPCol,  
     ListOfShape from BOPCol, 
+    ListOfShape from TopTools, 
     MapOfShape  from BOPCol,  
     IndexedDataMapOfShapeListOfShape from BOPCol,
     Operation from BOPAlgo, 
@@ -96,6 +97,14 @@ is
         theMEF:out IndexedDataMapOfShapeListOfShape from BOPCol)  
     returns Boolean from Standard
     is protected;
+
+    Generated (me:out;  
+        theS : Shape from TopoDS)
+    ---Purpose: Returns the  list of shapes generated from the
+    --          shape theS. 
+    returns ListOfShape from TopTools
+    is redefined;
+    ---C++: return const & 
 
 fields 
     myNbArgs    : Integer from Standard    is protected;

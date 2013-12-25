@@ -136,3 +136,45 @@
   //
   myShape=aRC;
 }
+
+//=======================================================================
+//function : Generated
+//purpose  : 
+//=======================================================================
+const TopTools_ListOfShape& BOPAlgo_BOP::Generated(const TopoDS_Shape& theS)
+{
+  myHistShapes.Clear();
+  if (theS.IsNull() || (myOperation != BOPAlgo_SECTION)) {
+    return myHistShapes;
+  }
+  //
+  TopAbs_ShapeEnum aType = theS.ShapeType();
+  if (aType != TopAbs_FACE) {
+    return myHistShapes;
+  }
+  //
+  Standard_Integer nS = myDS->Index(theS);
+  if (nS < 0) {
+    return myHistShapes;
+  }
+  //
+  if (!myDS->HasFaceInfo(nS)) {
+    return myHistShapes;
+  }
+  //
+  //collect section edges of the face theS
+  Standard_Integer i, aNb, nSp;
+  //
+  const BOPDS_FaceInfo& aFI = myDS->FaceInfo(nS);
+  const BOPDS_IndexedMapOfPaveBlock& aMPBSc = aFI.PaveBlocksSc();
+  aNb = aMPBSc.Extent();
+  for (i = 1; i <= aNb; ++i) {
+    const Handle(BOPDS_PaveBlock)& aPB = aMPBSc(i);
+    nSp = aPB->Edge();
+    const TopoDS_Shape& aSp = myDS->Shape(nSp);
+    myHistShapes.Append(aSp);
+  }
+  //
+  return myHistShapes;
+}
+
