@@ -17,7 +17,7 @@
 //function : InterfVV
 //purpose  : 
 //=======================================================================
-  inline BOPDS_VectorOfInterfVV& BOPDS_DS::InterfVV()
+inline BOPDS_VectorOfInterfVV& BOPDS_DS::InterfVV()
 {
   return myInterfVV;
 }
@@ -25,7 +25,7 @@
 //function : InterfVE
 //purpose  : 
 //=======================================================================
-  inline BOPDS_VectorOfInterfVE& BOPDS_DS::InterfVE()
+inline BOPDS_VectorOfInterfVE& BOPDS_DS::InterfVE()
 {
   return myInterfVE;
 }
@@ -33,14 +33,14 @@
 //function : InterfVF
 //purpose  : 
 //=======================================================================
-  inline BOPDS_VectorOfInterfVF& BOPDS_DS::InterfVF()
+inline BOPDS_VectorOfInterfVF& BOPDS_DS::InterfVF()
 {
   return myInterfVF;
 }//=======================================================================
 //function : InterfEE
 //purpose  : 
 //=======================================================================
-  inline BOPDS_VectorOfInterfEE& BOPDS_DS::InterfEE()
+inline BOPDS_VectorOfInterfEE& BOPDS_DS::InterfEE()
 {
   return myInterfEE;
 }
@@ -48,7 +48,7 @@
 //function : InterfEF
 //purpose  : 
 //=======================================================================
-  inline BOPDS_VectorOfInterfEF& BOPDS_DS::InterfEF()
+inline BOPDS_VectorOfInterfEF& BOPDS_DS::InterfEF()
 {
   return myInterfEF;
 }
@@ -56,16 +56,56 @@
 //function : InterfFF
 //purpose  : 
 //=======================================================================
-  inline BOPDS_VectorOfInterfFF& BOPDS_DS::InterfFF()
+inline BOPDS_VectorOfInterfFF& BOPDS_DS::InterfFF()
 {
   return myInterfFF;
+}
+//=======================================================================
+//function : InterfVZ
+//purpose  : 
+//=======================================================================
+inline BOPDS_VectorOfInterfVZ& BOPDS_DS::InterfVZ()
+{
+  return myInterfVZ;
+}
+//=======================================================================
+//function : InterfEZ
+//purpose  : 
+//=======================================================================
+inline BOPDS_VectorOfInterfEZ& BOPDS_DS::InterfEZ()
+{
+  return myInterfEZ;
+}
+//=======================================================================
+//function : InterfFZ
+//purpose  : 
+//=======================================================================
+inline BOPDS_VectorOfInterfFZ& BOPDS_DS::InterfFZ()
+{
+  return myInterfFZ;
+}
+//=======================================================================
+//function : InterfZZ
+//purpose  : 
+//=======================================================================
+inline BOPDS_VectorOfInterfZZ& BOPDS_DS::InterfZZ()
+{
+  return myInterfZZ;
+}
+//=======================================================================
+//function : NbInterfTypes
+//purpose  : 
+//=======================================================================
+inline Standard_Integer BOPDS_DS::NbInterfTypes()
+{
+  return 10;
 }
 //=======================================================================
 //function : AddInterf
 //purpose  : 
 //=======================================================================
-  inline void BOPDS_DS::AddInterf(const Standard_Integer theI1,
-				  const Standard_Integer theI2)
+inline void BOPDS_DS::AddInterf(const Standard_Integer theI1,
+				const Standard_Integer theI2)
 {
   BOPDS_PassKey aPK;
   //
@@ -76,8 +116,9 @@
 //function : HasInterf
 //purpose  : 
 //=======================================================================
-  inline Standard_Boolean BOPDS_DS::HasInterf(const Standard_Integer theI1,
-					      const Standard_Integer theI2)const
+inline Standard_Boolean BOPDS_DS::HasInterf
+  (const Standard_Integer theI1,
+   const Standard_Integer theI2)const
 {
   BOPDS_PassKey aPK;
   //
@@ -88,7 +129,7 @@
 //function : Interferences
 //purpose  : 
 //=======================================================================
-  inline const BOPDS_MapOfPassKey& BOPDS_DS::Interferences()const
+inline const BOPDS_MapOfPassKey& BOPDS_DS::Interferences()const
 {
   return myInterfTB;
 }

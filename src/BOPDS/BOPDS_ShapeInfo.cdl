@@ -143,7 +143,14 @@ is
     ---C++: inline 
     	---Purpose: 
 	--- Query
-        --- Returns true if the shape has boundary representation   
+        --- Returns true if the shape has boundary representation    
+     
+    IsInterfering(me) 
+	returns Boolean from Standard;   
+    ---C++: inline 
+    	---Purpose: 
+        --- Returns true if the shape can be participant of  
+        --- an interference 	  
     -- 
     ---  Flag 
     --  

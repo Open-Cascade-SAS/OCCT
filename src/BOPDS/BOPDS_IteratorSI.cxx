@@ -44,7 +44,7 @@
 //function : 
 //purpose  : 
 //=======================================================================
-  BOPDS_IteratorSI::BOPDS_IteratorSI()
+BOPDS_IteratorSI::BOPDS_IteratorSI()
 :
   BOPDS_Iterator()
 {
@@ -53,7 +53,8 @@
 //function : 
 //purpose  : 
 //=======================================================================
-  BOPDS_IteratorSI::BOPDS_IteratorSI(const Handle(NCollection_BaseAllocator)& theAllocator)
+BOPDS_IteratorSI::BOPDS_IteratorSI
+  (const Handle(NCollection_BaseAllocator)& theAllocator)
 :
   BOPDS_Iterator(theAllocator)
 {
@@ -62,17 +63,30 @@
 //function : ~
 //purpose  : 
 //=======================================================================
-  BOPDS_IteratorSI::~BOPDS_IteratorSI()
+BOPDS_IteratorSI::~BOPDS_IteratorSI()
 {
+}
+//=======================================================================
+// function: UpdateByLevelOfCheck
+// purpose: 
+//=======================================================================
+void BOPDS_IteratorSI::UpdateByLevelOfCheck(const Standard_Integer theLevel)
+{
+  Standard_Integer i, aNbInterfTypes;
+  //
+  aNbInterfTypes=BOPDS_DS::NbInterfTypes();
+  for (i=theLevel+1; i<aNbInterfTypes; ++i) {
+    myLists(i).Clear();
+  }
 }
 //=======================================================================
 // function: Intersect
 // purpose: 
 //=======================================================================
-  void BOPDS_IteratorSI::Intersect()
+void BOPDS_IteratorSI::Intersect()
 {
   Standard_Boolean bFlag;
-  Standard_Integer aNbS, i, aNbB;//, iFlag, aNbLV, aNbA
+  Standard_Integer aNbS, i, aNbB;
   Standard_Integer aNbSD, iX, j, iDS, jB, k;;
   TopAbs_ShapeEnum aTi, aTj;
   Handle(NCollection_IncAllocator) aAllocator;
@@ -98,29 +112,31 @@
   for (i=0; i<aNbS; ++i) {
     const BOPDS_ShapeInfo& aSI=myDS->ShapeInfo(i);
     //
-    if (aSI.HasBRep()) {
-      const TopoDS_Shape& aSi=aSI.Shape();
-      aTi=aSI.ShapeType();
-      if (aTi!=TopAbs_VERTEX) {
-        const BOPCol_ListOfInteger& aLA=aSI.SubShapes();
-        aIt.Initialize(aLA);
-        for (; aIt.More(); aIt.Next()) {
-          iX=aIt.Value();
-          aPKXB.Clear();
-          aPKXB.SetIds(i, iX);
-          aMPA.Add(aPKXB);
-        }
-      }
-      //
-      aPKXB.Clear();
-      aPKXB.SetIds(i, i);
-      aMPA.Add(aPKXB);
-      //
-      const Bnd_Box& aBoxEx=aSI.Box();
-      //
-      aMSI.Bind(aSi, i);
-      aMSB.Add(aSi, aBoxEx);
+    if (!aSI.IsInterfering()) { 
+      continue;
     }
+    //
+    const TopoDS_Shape& aSi=aSI.Shape();
+    aTi=aSI.ShapeType();
+    if (aTi!=TopAbs_VERTEX) {
+      const BOPCol_ListOfInteger& aLA=aSI.SubShapes();
+      aIt.Initialize(aLA);
+      for (; aIt.More(); aIt.Next()) {
+	iX=aIt.Value();
+	aPKXB.Clear();
+	aPKXB.SetIds(i, iX);
+	aMPA.Add(aPKXB);
+      }
+    }
+    //
+    aPKXB.Clear();
+    aPKXB.SetIds(i, i);
+    aMPA.Add(aPKXB);
+    //
+    const Bnd_Box& aBoxEx=aSI.Box();
+    //
+    aMSI.Bind(aSi, i);
+    aMSB.Add(aSi, aBoxEx);
   } // for (i=0; i<aNbS; ++i) {
   // 
   // aMII
@@ -140,7 +156,7 @@
   for (i=0; i<aNbS; ++i) {
     const BOPDS_ShapeInfo& aSI=myDS->ShapeInfo(i);
     aTi=aSI.ShapeType();
-    if (!aSI.HasBRep()){
+    if (!aSI.IsInterfering()){
       continue;
     }
     //
@@ -192,17 +208,4 @@
   //
   aAllocator.Nullify();
   //-----------------------------------------------------scope_1 t
-}
-
-//=======================================================================
-// function: UpdateByLevelOfCheck
-// purpose: 
-//=======================================================================
-  void BOPDS_IteratorSI::UpdateByLevelOfCheck(const Standard_Integer theLevel)
-{
-  Standard_Integer i;
-  //
-  for (i=theLevel+1; i<6; ++i) {
-    myLists(i).Clear();
-  }
 }

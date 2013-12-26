@@ -662,4 +662,137 @@ class BOPDS_InterfFF  : public BOPDS_Interf {
   BOPDS_VectorOfPoint myPoints;
 };
 
+/**
+ * The class BOPDS_InterfVZ is is to store the information about
+ * the interference of the type vertex/solid. 
+*/
+//=======================================================================
+//function : BOPDS_InterfVZ
+//purpose  : 
+//=======================================================================
+class BOPDS_InterfVZ  : public BOPDS_Interf {
+ public:
+  //
+  /**
+   *  Constructor
+   */
+  BOPDS_InterfVZ() : BOPDS_Interf() {
+  };
+  //
+  /**
+   *  Constructor
+   * @param theAllocator
+   *   allocator to manage the memory
+   */
+  BOPDS_InterfVZ(const Handle(NCollection_BaseAllocator)& theAllocator) 
+    : BOPDS_Interf(theAllocator) {
+  };
+  //
+  /**
+   *  Destructor
+   */
+  virtual ~BOPDS_InterfVZ() {
+  };
+  //
+};
+/**
+ * The class BOPDS_InterfEZ is is to store the information about
+ * the interference of the type edge/solid. 
+*/
+//=======================================================================
+//function : BOPDS_InterfEZ
+//purpose  : 
+//=======================================================================
+class BOPDS_InterfEZ  : public BOPDS_Interf {
+ public:
+  //
+  /**
+   *  Constructor
+   */
+  BOPDS_InterfEZ() : BOPDS_Interf() {
+  };
+  //
+  /**
+   *  Constructor
+   * @param theAllocator
+   *   allocator to manage the memory
+   */
+  BOPDS_InterfEZ(const Handle(NCollection_BaseAllocator)& theAllocator) 
+    : BOPDS_Interf(theAllocator) {
+  };
+  //
+  /**
+   *  Destructor
+   */
+  virtual ~BOPDS_InterfEZ() {
+  };
+  //
+};
+/**
+ * The class BOPDS_InterfFZ is is to store the information about
+ * the interference of the type face/solid. 
+*/
+//=======================================================================
+//function : BOPDS_InterfFZ
+//purpose  : 
+//=======================================================================
+class BOPDS_InterfFZ  : public BOPDS_Interf {
+ public:
+  //
+  /**
+   *  Constructor
+   */
+  BOPDS_InterfFZ() : BOPDS_Interf() {
+  };
+  //
+  /**
+   *  Constructor
+   * @param theAllocator
+   *   allocator to manage the memory
+   */
+  BOPDS_InterfFZ(const Handle(NCollection_BaseAllocator)& theAllocator) 
+    : BOPDS_Interf(theAllocator) {
+  };
+  //
+  /**
+   *  Destructor
+   */
+  virtual ~BOPDS_InterfFZ() {
+  };
+  //
+};
+/**
+ * The class BOPDS_InterfZZ is is to store the information about
+ * the interference of the type solid/solid. 
+*/
+//=======================================================================
+//function : BOPDS_InterfZZ
+//purpose  : 
+//=======================================================================
+class BOPDS_InterfZZ  : public BOPDS_Interf {
+ public:
+  //
+  /**
+   *  Constructor
+   */
+  BOPDS_InterfZZ() : BOPDS_Interf() {
+  };
+  //
+  /**
+   *  Constructor
+   * @param theAllocator
+   *   allocator to manage the memory
+   */
+  BOPDS_InterfZZ(const Handle(NCollection_BaseAllocator)& theAllocator) 
+    : BOPDS_Interf(theAllocator) {
+  };
+  //
+  /**
+   *  Destructor
+   */
+  virtual ~BOPDS_InterfZZ() {
+  };
+  //
+};
+
 #endif

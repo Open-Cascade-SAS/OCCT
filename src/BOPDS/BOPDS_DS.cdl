@@ -66,8 +66,12 @@ uses
     VectorOfInterfVF from BOPDS,
     VectorOfInterfEE from BOPDS,
     VectorOfInterfEF from BOPDS, 
-    VectorOfInterfFF from BOPDS
-    
+    VectorOfInterfFF from BOPDS,
+    VectorOfInterfVZ from BOPDS,
+    VectorOfInterfEZ from BOPDS,
+    VectorOfInterfFZ from BOPDS,
+    VectorOfInterfZZ from BOPDS
+ 
 --raises
 
 is
@@ -482,7 +486,46 @@ is
             ---Purpose:  
             --- Selector/Modifier
         --- Returns the collection of interferences Face/Face  
-    
+ 
+     InterfVZ(me:out) 
+            returns VectorOfInterfVZ from BOPDS; 
+    ---C++: return &  
+    ---C++: inline  
+            ---Purpose:  
+            --- Selector/Modifier
+        --- Returns the collection of interferences Vertex/Solid   
+     
+    InterfEZ(me:out) 
+            returns VectorOfInterfEZ from BOPDS; 
+    ---C++: return &  
+    ---C++: inline  
+            ---Purpose:  
+            --- Selector/Modifier
+        --- Returns the collection of interferences Edge/Solid 	 
+  
+    InterfFZ(me:out) 
+            returns VectorOfInterfFZ from BOPDS; 
+    ---C++: return &  
+    ---C++: inline  
+            ---Purpose:  
+            --- Selector/Modifier
+        --- Returns the collection of interferences Face/Solid 		 
+ 
+    InterfZZ(me:out) 
+            returns VectorOfInterfZZ from BOPDS; 
+    ---C++: return &  
+    ---C++: inline  
+            ---Purpose:  
+            --- Selector/Modifier
+        --- Returns the collection of interferences Solid/Solid 		 
+	    
+    NbInterfTypes(myclass)  
+    	returns Integer from Standard;  
+    	---C++: inline       
+	   ---Purpose: 
+           -- Returns the number of types of the interferences 
+           -- 
+ 
     AddInterf(me:out; 
                 theI1:Integer from Standard;
                 theI2:Integer from Standard); 
@@ -513,13 +556,16 @@ is
          
     HasInterfShapeSubShapes(me; 
             theI1:Integer from Standard;  
-            theI2:Integer from Standard) 
-        returns Boolean from Standard; 
+            theI2:Integer from Standard; 
+    	    theFlag: Boolean from Standard=Standard_True) 
+        returns Boolean from Standard;  
             ---Purpose: 
             --- Query
         --- Returns true if the shape with index theI1 is interfered 
-        --- with any of sub-shapes of the shapes with index theI2
- 
+        --- with  
+    	--    any sub-shape of the shape with index theI2  (theFlag=true)    
+    	--    all sub-shapes of the shape with index theI2 (theFlag=false)     
+  
     HasInterfSubShapes(me; 
             theI1:Integer from Standard;  
             theI2:Integer from Standard) 
@@ -588,7 +634,10 @@ is
     	is protected;  
 	    ---Purpose: 
             --- Computes bouding box <theBox> for the solid with DS-index <theIndex>
-            ---
+            ---  
+	    
+
+ 
 fields  
     myAllocator        : BaseAllocator from BOPCol is protected;
     myArguments        : ListOfShape from BOPCol is protected;   
@@ -614,5 +663,8 @@ fields
     myInterfEE         : VectorOfInterfEE from BOPDS is protected;
     myInterfEF         : VectorOfInterfEF from BOPDS is protected;
     myInterfFF         : VectorOfInterfFF from BOPDS is protected;
- 
+    myInterfVZ         : VectorOfInterfVZ from BOPDS is protected;
+    myInterfEZ         : VectorOfInterfEZ from BOPDS is protected;
+    myInterfFZ         : VectorOfInterfFZ from BOPDS is protected;
+    myInterfZZ         : VectorOfInterfZZ from BOPDS is protected;
 end DS;

@@ -19,7 +19,17 @@
 inline Standard_Boolean BOPDS_Tools::HasBRep(const TopAbs_ShapeEnum aTi)
 {
   return (aTi==TopAbs_VERTEX || aTi==TopAbs_EDGE || aTi==TopAbs_FACE);
-}//=======================================================================
+}
+//=======================================================================
+// function: IsInterfering
+// purpose: 
+//=======================================================================
+inline Standard_Boolean BOPDS_Tools::IsInterfering
+  (const TopAbs_ShapeEnum aTi)
+{
+  return (BOPDS_Tools::HasBRep(aTi) || aTi==TopAbs_SOLID);
+}
+//=======================================================================
 //function : TypeToInteger
 //purpose  : 
 //=======================================================================
@@ -54,6 +64,21 @@ inline Standard_Integer BOPDS_Tools::TypeToInteger(const TopAbs_ShapeEnum aType1
       break;
     case 44:
       iRet=5; // FF
+      break;
+    case 72:
+    case 27:
+      iRet=6; // VZ
+      break;
+    case 62:
+    case 26:
+      iRet=7; // EZ
+      break;
+    case 42:
+    case 24:
+      iRet=8; // FZ
+      break;
+    case 22:
+      iRet=9; // ZZ
       break;
     default:
       break;

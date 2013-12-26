@@ -43,21 +43,22 @@
 //function : 
 //purpose  : 
 //=======================================================================
-  BOPDS_Iterator::BOPDS_Iterator()
+BOPDS_Iterator::BOPDS_Iterator()
 :
   myAllocator(NCollection_BaseAllocator::CommonBaseAllocator())
 {
   myDS=NULL; 
   myLength=0;
   //
-  myLists.SetStartSize(6);
+  myLists.SetStartSize(BOPDS_DS::NbInterfTypes());
   myLists.Init();
 }
 //=======================================================================
 //function : 
 //purpose  : 
 //=======================================================================
-  BOPDS_Iterator::BOPDS_Iterator(const Handle(NCollection_BaseAllocator)& theAllocator)
+BOPDS_Iterator::BOPDS_Iterator
+  (const Handle(NCollection_BaseAllocator)& theAllocator)
 :
   myAllocator(theAllocator),
   myLists(theAllocator)
@@ -65,21 +66,21 @@
   myDS=NULL; 
   myLength=0;
   //
-  myLists.SetStartSize(6);
+  myLists.SetStartSize(BOPDS_DS::NbInterfTypes());
   myLists.Init();
 }
 //=======================================================================
 //function : ~
 //purpose  : 
 //=======================================================================
-  BOPDS_Iterator::~BOPDS_Iterator()
+BOPDS_Iterator::~BOPDS_Iterator()
 {
 }
 //=======================================================================
 // function: SetDS
 // purpose: 
 //=======================================================================
-  void BOPDS_Iterator::SetDS(const BOPDS_PDS& aDS)
+void BOPDS_Iterator::SetDS(const BOPDS_PDS& aDS)
 {
   myDS=aDS;
 }
@@ -87,7 +88,7 @@
 // function: DS
 // purpose: 
 //=======================================================================
-  const BOPDS_DS&  BOPDS_Iterator::DS()const
+const BOPDS_DS&  BOPDS_Iterator::DS()const
 {
   return *myDS;
 }
@@ -95,7 +96,7 @@
 // function: ExpectedLength
 // purpose: 
 //=======================================================================
-  Standard_Integer BOPDS_Iterator::ExpectedLength() const
+Standard_Integer BOPDS_Iterator::ExpectedLength() const
 {
   return myLength;
 }
@@ -103,7 +104,7 @@
 // function: BlockLength
 // purpose: 
 //=======================================================================
-  Standard_Integer BOPDS_Iterator::BlockLength() const
+Standard_Integer BOPDS_Iterator::BlockLength() const
 {
   Standard_Integer aNbIIs;
   Standard_Real aCfPredict=.5;
@@ -121,8 +122,8 @@
 // function: Initialize
 // purpose: 
 //=======================================================================
-  void BOPDS_Iterator::Initialize(const TopAbs_ShapeEnum aType1,
-				  const TopAbs_ShapeEnum aType2)
+void BOPDS_Iterator::Initialize(const TopAbs_ShapeEnum aType1,
+				const TopAbs_ShapeEnum aType2)
 {
   Standard_Integer iX;
   //
@@ -137,7 +138,7 @@
 // function: More
 // purpose: 
 //=======================================================================
-  Standard_Boolean BOPDS_Iterator::More()const
+Standard_Boolean BOPDS_Iterator::More()const
 {
   return myIterator.More();
 }
@@ -145,7 +146,7 @@
 // function: Next
 // purpose: 
 //=======================================================================
-  void BOPDS_Iterator::Next()
+void BOPDS_Iterator::Next()
 {
   myIterator.Next();
 }
@@ -153,9 +154,9 @@
 // function: Value
 // purpose: 
 //=======================================================================
-  void BOPDS_Iterator::Value(Standard_Integer& theI1,
-			     Standard_Integer& theI2,
-			     Standard_Boolean& theWithSubShape) const
+void BOPDS_Iterator::Value(Standard_Integer& theI1,
+			   Standard_Integer& theI2,
+			   Standard_Boolean& theWithSubShape) const
 {
   Standard_Integer iT1, iT2, n1, n2;
   //
@@ -179,12 +180,13 @@
 // function: Prepare
 // purpose: 
 //=======================================================================
-  void BOPDS_Iterator::Prepare()
+void BOPDS_Iterator::Prepare()
 {
-  Standard_Integer i;
+  Standard_Integer i, aNbInterfTypes;
   //
+  aNbInterfTypes=BOPDS_DS::NbInterfTypes();
   myLength=0;
-  for (i=0; i<6; ++i) {
+  for (i=0; i<aNbInterfTypes; ++i) {
     myLists(i).Clear();
   }
   //
@@ -197,7 +199,7 @@
 // function: Intersect
 // purpose: 
 //=======================================================================
-  void BOPDS_Iterator::Intersect()
+void BOPDS_Iterator::Intersect()
 {
   Standard_Boolean bFlag;
   Standard_Integer aNb, i, aNbB, aNbR, iTi, iTj;

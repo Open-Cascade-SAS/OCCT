@@ -85,7 +85,11 @@ BOPDS_DS::BOPDS_DS()
   myInterfVF(myAllocator),
   myInterfEE(myAllocator),
   myInterfEF(myAllocator),
-  myInterfFF(myAllocator)
+  myInterfFF(myAllocator),
+  myInterfVZ(myAllocator),
+  myInterfEZ(myAllocator),
+  myInterfFZ(myAllocator),
+  myInterfZZ(myAllocator)
 {
   myNbShapes=0;
   myNbSourceShapes=0;
@@ -111,7 +115,11 @@ BOPDS_DS::BOPDS_DS(const Handle(NCollection_BaseAllocator)& theAllocator)
   myInterfVF(myAllocator),
   myInterfEE(myAllocator),
   myInterfEF(myAllocator),
-  myInterfFF(myAllocator)
+  myInterfFF(myAllocator),
+  myInterfVZ(myAllocator),
+  myInterfEZ(myAllocator),
+  myInterfFZ(myAllocator),
+  myInterfZZ(myAllocator)
 {
   myNbShapes=0;
   myNbSourceShapes=0;
@@ -148,6 +156,10 @@ void BOPDS_DS::Clear()
   myInterfEE.Clear();
   myInterfEF.Clear();
   myInterfFF.Clear();
+  myInterfVZ.Clear();
+  myInterfEZ.Clear();
+  myInterfFZ.Clear();
+  myInterfZZ.Clear();
 }
 //=======================================================================
 //function : SetArguments
@@ -307,6 +319,7 @@ Standard_Integer BOPDS_DS::Index(const TopoDS_Shape& theS)const
 void BOPDS_DS::Init()
 {
   Standard_Integer i1, i2, j, aI, aNb, aNbS, aNbE, aNbSx, nV, nW, nE, aNbF;
+  Standard_Integer n1, n2, n3;
   Standard_Real aTol;
   TopAbs_ShapeEnum aTS;
   BOPCol_ListIteratorOfListOfInteger aIt1, aIt2, aIt3;
@@ -527,10 +540,52 @@ void BOPDS_DS::Init()
     BOPDS_ShapeInfo& aSI=ChangeShapeInfo(j);
     //
     aTS=aSI.ShapeType();
-    if (aTS==TopAbs_SOLID) {
-      Bnd_Box& aBox=aSI.ChangeBox();
-      BuildBndBoxSolid(j, aBox); 
+    if (aTS!=TopAbs_SOLID) {
+      continue;
     }
+    Bnd_Box& aBox=aSI.ChangeBox();
+    BuildBndBoxSolid(j, aBox); 
+    //
+    //
+    // update sub-shapes by BRep comprising ones
+    aMI.Clear();
+    BOPCol_ListOfInteger& aLI1=aSI.ChangeSubShapes();
+    //
+    aIt1.Initialize(aLI1);
+    for (; aIt1.More(); aIt1.Next()) {
+      n1=aIt1.Value();
+      BOPDS_ShapeInfo& aSI1=ChangeShapeInfo(n1);
+      if (aSI1.ShapeType()!=TopAbs_SHELL) {
+	continue;
+      }
+      //
+      const BOPCol_ListOfInteger& aLI2=aSI1.SubShapes(); 
+      aIt2.Initialize(aLI2);
+      for (; aIt2.More(); aIt2.Next()) {
+	n2=aIt2.Value();
+	BOPDS_ShapeInfo& aSI2=ChangeShapeInfo(n2);
+	if (aSI2.ShapeType()!=TopAbs_FACE) {
+	  continue;
+	}
+	//
+	aMI.Add(n2);
+	//
+	const BOPCol_ListOfInteger& aLI3=aSI2.SubShapes(); 
+	aIt3.Initialize(aLI3);
+	for (; aIt3.More(); aIt3.Next()) {
+	  n3=aIt3.Value();
+	  aMI.Add(n3);
+	}
+      }
+    }
+    //
+    aLI1.Clear();
+    aItMI.Initialize(aMI);
+    for (; aItMI.More(); aItMI.Next()) {
+      n1=aItMI.Value();
+      aLI1.Append(n1);
+    }
+    aMI.Clear();
   }//for (j=0; j<myNbSourceShapes; ++j) {
   //
   aMI.Clear();
@@ -615,13 +670,14 @@ Standard_Boolean BOPDS_DS::HasInterf(const Standard_Integer theI) const
   //
   return bRet;
 }
-
 //=======================================================================
 //function : HasInterfShapeSubShapes
 //purpose  : 
 //=======================================================================
-Standard_Boolean BOPDS_DS::HasInterfShapeSubShapes(const Standard_Integer theI1,
-						   const Standard_Integer theI2)const
+Standard_Boolean BOPDS_DS::HasInterfShapeSubShapes
+  (const Standard_Integer theI1,
+   const Standard_Integer theI2,
+   const Standard_Boolean theFlag)const
 {
   Standard_Boolean bRet;
   Standard_Integer n2;
@@ -634,13 +690,19 @@ Standard_Boolean BOPDS_DS::HasInterfShapeSubShapes(const Standard_Integer theI1,
   for (; aIt.More(); aIt.Next()) {
     n2=aIt.Value();
     bRet=HasInterf(theI1, n2);
-    if(bRet) {
-      break;
+    if (theFlag) {
+      if(bRet) {
+	break;
+      }
+    }
+    else {
+      if(!bRet) {
+	break;
+      }
     }
   }
   return bRet;
 }
-
 //=======================================================================
 //function : HasInterfSubShapes
 //purpose  : 

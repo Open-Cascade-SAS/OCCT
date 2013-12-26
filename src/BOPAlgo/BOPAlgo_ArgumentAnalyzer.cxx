@@ -296,21 +296,21 @@ void BOPAlgo_ArgumentAnalyzer::TestTypes()
     }
   }
 }
-
-// ================================================================================
-// function: TestSelfInterferences
-// purpose:
-// ================================================================================
+//=======================================================================
+//function : TestSelfInterferences
+//purpose  : 
+//=======================================================================
 void BOPAlgo_ArgumentAnalyzer::TestSelfInterferences()
 {
-  Standard_Integer ii = 0, j;
+  Standard_Integer ii=0, j;
   Standard_Boolean bSelfInt;
 
   for(ii = 0; ii < 2; ii++) {
     const TopoDS_Shape& aS = (ii == 0) ? myShape1 : myShape2;
 
-    if(aS.IsNull())
+    if(aS.IsNull()) {
       continue;
+    }
 
     Standard_Boolean bIsEmpty = (ii == 0) ? myEmpty1 : myEmpty2;
     if (bIsEmpty) {
@@ -319,6 +319,7 @@ void BOPAlgo_ArgumentAnalyzer::TestSelfInterferences()
 
     BOPAlgo_CheckerSI aChecker;
     BOPCol_ListOfShape anArgs;
+    //
     anArgs.Append(aS);
     aChecker.SetArguments(anArgs);
     //
@@ -332,20 +333,57 @@ void BOPAlgo_ArgumentAnalyzer::TestSelfInterferences()
     BOPDS_VectorOfInterfVF& aVFs=theDS->InterfVF();
     BOPDS_VectorOfInterfEF& aEFs=theDS->InterfEF();
     BOPDS_VectorOfInterfFF& aFFs=theDS->InterfFF();
+    BOPDS_VectorOfInterfVZ& aVZs=theDS->InterfVZ();
+    BOPDS_VectorOfInterfEZ& aEZs=theDS->InterfEZ();
+    BOPDS_VectorOfInterfFZ& aFZs=theDS->InterfFZ();
+    BOPDS_VectorOfInterfZZ& aZZs=theDS->InterfZZ();
     //
-    Standard_Integer aNb[6] = {aVVs.Extent(), aVEs.Extent(), aEEs.Extent(), 
-                               aVFs.Extent(), aEFs.Extent(), aFFs.Extent()};
+    const Standard_Integer aNbTypeInt=10;
+    Standard_Integer aTypeInt, i, nI1, nI2;
+    Standard_Integer aNb[aNbTypeInt] = {
+      aVVs.Extent(), aVEs.Extent(), aEEs.Extent(), 
+      aVFs.Extent(), aEFs.Extent(), aFFs.Extent(),
+      aVZs.Extent(), aEZs.Extent(), aFZs.Extent(), aZZs.Extent()};
+    BOPDS_Interf* aInt=NULL;
     //
-    for (Standard_Integer aTypeInt = 0; aTypeInt < 6; ++aTypeInt) {
-      for (Standard_Integer i = 0; i < aNb[aTypeInt]; ++i) {
-        BOPDS_Interf* aInt = (aTypeInt==0) ? (BOPDS_Interf*)(&aVVs(i)) : 
-          ((aTypeInt==1) ? (BOPDS_Interf*)(&aVEs(i)) :
-           ((aTypeInt==2) ? (BOPDS_Interf*)(&aEEs(i)) : 
-            ((aTypeInt==3) ? (BOPDS_Interf*)(&aVFs(i)) :
-             ((aTypeInt==4) ? (BOPDS_Interf*)(&aEFs(i)) : (BOPDS_Interf*)(&aFFs(i))))));
+    for (aTypeInt = 0; aTypeInt < aNbTypeInt; ++aTypeInt) {
+      for (i = 0; i < aNb[aTypeInt]; ++i) {
+	switch(aTypeInt) {
+	  case 0:
+	    aInt=(BOPDS_Interf*)(&aVVs(i));
+	    break;
+	  case 1:
+	    aInt=(BOPDS_Interf*)(&aVEs(i));
+	    break;
+	  case 2:
+	    aInt=(BOPDS_Interf*)(&aEEs(i));
+	    break;
+	  case 3:
+	    aInt=(BOPDS_Interf*)(&aVFs(i));
+	    break;
+	  case 4:
+	    aInt=(BOPDS_Interf*)(&aEFs(i));
+	    break;
+	  case 5:
+	    aInt=(BOPDS_Interf*)(&aFFs(i));
+	    break;
+	  case 6:
+	    aInt=(BOPDS_Interf*)(&aVZs(i));
+	    break;
+	  case 7:
+	    aInt=(BOPDS_Interf*)(&aEZs(i));
+	    break;
+	  case 8:
+	    aInt=(BOPDS_Interf*)(&aFZs(i));
+	    break;
+	  case 9:
+	    aInt=(BOPDS_Interf*)(&aZZs(i));
+	    break;
+	  default:
+	    aInt=NULL;
+	}
         //
-        Standard_Integer nI1 = aInt->Index1();
-        Standard_Integer nI2 = aInt->Index2();
+	aInt->Indices(nI1, nI2);
         if (nI1 == nI2) {
           continue;
         }
@@ -398,6 +436,7 @@ void BOPAlgo_ArgumentAnalyzer::TestSelfInterferences()
         myResult.Append(aResult);
       }
     }
+    //
     if (iErr) {
       BOPAlgo_CheckResult aResult;
       if(ii == 0) {
@@ -412,9 +451,7 @@ void BOPAlgo_ArgumentAnalyzer::TestSelfInterferences()
       myResult.Append(aResult);
     }
   }
-  
 }
-
 // ================================================================================
 // function: TestSmallEdge
 // purpose:
@@ -520,7 +557,6 @@ void BOPAlgo_ArgumentAnalyzer::TestSmallEdge()
     }
   }
 }
-
 // ================================================================================
 // function: TestRebuildFace
 // purpose:

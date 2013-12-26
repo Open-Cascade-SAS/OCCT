@@ -44,9 +44,9 @@
 //=======================================================================
 BOPAlgo_CheckerSI::BOPAlgo_CheckerSI()
 :
-  BOPAlgo_PaveFiller(),
-  myLevelOfCheck(5)
+  BOPAlgo_PaveFiller()
 {
+  myLevelOfCheck=BOPDS_DS::NbInterfTypes()-1;
 }
 //=======================================================================
 //function : ~
@@ -61,7 +61,10 @@ BOPAlgo_CheckerSI::~BOPAlgo_CheckerSI()
 //=======================================================================
 void BOPAlgo_CheckerSI::SetLevelOfCheck(const Standard_Integer theLevel)
 {
-  if (theLevel >= 0 && theLevel <= 5) {
+  Standard_Integer aNbLists;
+  //
+  aNbLists=BOPDS_DS::NbInterfTypes();
+  if (theLevel >= 0 && theLevel < aNbLists) {
     myLevelOfCheck = theLevel;
   }
 }
@@ -104,7 +107,7 @@ void BOPAlgo_CheckerSI::Init()
 //=======================================================================
 void BOPAlgo_CheckerSI::Perform()
 {
-  //modified by NIZNHY-PKV Thu Sep 19 08:14:52 2013f
+  
   try {
     OCC_CATCH_SIGNALS
     //
@@ -113,19 +116,31 @@ void BOPAlgo_CheckerSI::Perform()
       return; 
     }
     //
+    PerformVZ();
+    if (myErrorStatus) {
+      return; 
+    }
+    //
+    PerformEZ();
+    if (myErrorStatus) {
+      return; 
+    } 
+    //
+    PerformFZ();
+    if (myErrorStatus) {
+      return; 
+    }
+    //
+    PerformZZ();
+    if (myErrorStatus) {
+      return; 
+    }
+    //
     PostTreat();
   }
   catch (Standard_Failure) {
   }  
-  /*  
-  BOPAlgo_PaveFiller::Perform();
-  if (myErrorStatus) {
-   return; 
-  }
-  //  
-  PostTreat(); 
-  */
-  //modified by NIZNHY-PKV Thu Sep 19 08:14:56 2013t
+  
 }
 //=======================================================================
 //function : PostTreat
@@ -234,6 +249,51 @@ void BOPAlgo_CheckerSI::PostTreat()
       continue;
     }
     //
+    aPK.SetIds(n1, n2);
+    aMPK.Add(aPK);
+  }
+  //
+  //
+  // 6
+  BOPDS_VectorOfInterfVZ& aVZs=myDS->InterfVZ();
+  aNb=aVZs.Extent();
+  for (i=0; i!=aNb; ++i) {
+    //
+    const BOPDS_InterfVZ& aVZ=aVZs(i);
+    aVZ.Indices(n1, n2);
+    aPK.SetIds(n1, n2);
+    aMPK.Add(aPK);
+  }
+  //
+  // 7
+  BOPDS_VectorOfInterfEZ& aEZs=myDS->InterfEZ();
+  aNb=aEZs.Extent();
+  for (i=0; i!=aNb; ++i) {
+    //
+    const BOPDS_InterfEZ& aEZ=aEZs(i);
+    aEZ.Indices(n1, n2);
+    aPK.SetIds(n1, n2);
+    aMPK.Add(aPK);
+  }
+  //
+  // 8
+  BOPDS_VectorOfInterfFZ& aFZs=myDS->InterfFZ();
+  aNb=aFZs.Extent();
+  for (i=0; i!=aNb; ++i) {
+    //
+    const BOPDS_InterfFZ& aFZ=aFZs(i);
+    aFZ.Indices(n1, n2);
+    aPK.SetIds(n1, n2);
+    aMPK.Add(aPK);
+  }
+  //
+  // 9
+  BOPDS_VectorOfInterfZZ& aZZs=myDS->InterfZZ();
+  aNb=aZZs.Extent();
+  for (i=0; i!=aNb; ++i) {
+    //
+    const BOPDS_InterfZZ& aZZ=aZZs(i);
+    aZZ.Indices(n1, n2);
     aPK.SetIds(n1, n2);
     aMPK.Add(aPK);
   }

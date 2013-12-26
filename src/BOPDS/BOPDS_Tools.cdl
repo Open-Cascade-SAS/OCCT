@@ -50,5 +50,13 @@ is
     	---Purpose:   
 	--- Returns true if the type  <theT> correspond 
 	--- to a shape having boundary representation 
-	 
+  
+    IsInterfering(myclass; 
+    	    theT: ShapeEnum from TopAbs) 
+	returns Boolean from Standard;   
+    ---C++: inline 
+    	---Purpose: 
+        --- Returns true if the type <theT> can be participant of  
+        --- an interference 	  
+
 end Tools;

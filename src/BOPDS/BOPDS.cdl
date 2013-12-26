@@ -94,14 +94,22 @@ is
     imported InterfVF from BOPDS;   
     imported InterfEE from BOPDS;   
     imported InterfEF from BOPDS;   
-    imported InterfFF from BOPDS;   
+    imported InterfFF from BOPDS; 
+    imported InterfVZ from BOPDS;  
+    imported InterfEZ from BOPDS;  
+    imported InterfFZ from BOPDS;  
+    imported InterfZZ from BOPDS;  
     --
     imported VectorOfInterfVV from BOPDS; 
     imported VectorOfInterfVE from BOPDS; 
     imported VectorOfInterfVF from BOPDS; 
     imported VectorOfInterfEE from BOPDS; 
     imported VectorOfInterfEF from BOPDS; 
-    imported VectorOfInterfFF from BOPDS; 
+    imported VectorOfInterfFF from BOPDS;  
+    imported VectorOfInterfVZ from BOPDS; 
+    imported VectorOfInterfEZ from BOPDS; 
+    imported VectorOfInterfFZ from BOPDS; 
+    imported VectorOfInterfZZ from BOPDS; 
     --  
     imported VectorOfPoint   from BOPDS; 
     imported VectorOfCurve from BOPDS; 
