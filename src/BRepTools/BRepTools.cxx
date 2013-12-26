@@ -34,6 +34,7 @@
 #include <BRep_TEdge.hxx>
 #include <TColgp_SequenceOfPnt2d.hxx>
 #include <TColStd_SequenceOfReal.hxx>
+#include <TColStd_Array1OfReal.hxx>
 #include <TColGeom2d_SequenceOfCurve.hxx>
 #include <TopTools_SequenceOfShape.hxx>
 #include <Precision.hxx>
@@ -176,9 +177,23 @@ void  BRepTools::AddUVBounds(const TopoDS_Face& F,
     gp_Pnt2d Pa,Pb,Pc;
 
 
-    Standard_Real i, nbp = 20;
+    Standard_Integer i, j, k, nbp = 20;
     if (PC.GetType() == GeomAbs_Line) nbp = 2;
-    Standard_Real step = (pl - pf) / nbp;
+    Standard_Integer NbIntC1 = PC.NbIntervals(GeomAbs_C1);
+    if (NbIntC1 > 1)
+      nbp = 10;
+    TColStd_Array1OfReal SharpPoints(1, NbIntC1+1);
+    PC.Intervals(SharpPoints, GeomAbs_C1);
+    TColStd_Array1OfReal Parameters(1, nbp*NbIntC1+1);
+    k = 1;
+    for (i = 1; i <= NbIntC1; i++)
+    {
+      Standard_Real delta = (SharpPoints(i+1) - SharpPoints(i))/nbp;
+      for (j = 0; j < nbp; j++)
+        Parameters(k++) = SharpPoints(i) + j*delta;
+    }
+    Parameters(nbp*NbIntC1+1) = SharpPoints(NbIntC1+1);
+    
     gp_Pnt2d P;
     PC.D0(pf,P);
     Baux.Add(P);
@@ -187,11 +202,11 @@ void  BRepTools::AddUVBounds(const TopoDS_Face& F,
     Standard_Real dv=0.0;
 
     Pc=P;
-    for (i = 1; i < nbp; i++) {
-      pf += step;
+    for (i = 2; i < Parameters.Upper(); i++) {
+      pf = Parameters(i);
       PC.D0(pf,P);
       Baux.Add(P);
-      if(i==1) { Pb=Pc; Pc=P; } 
+      if(i==2) { Pb=Pc; Pc=P; } 
       else { 
         //-- Calcul de la fleche 
         Pa=Pb; Pb=Pc; Pc=P;     
