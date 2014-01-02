@@ -273,7 +273,7 @@ private:
   // we do not call BSplCLib here to avoid Cyclic dependency detection by WOK
   //static BinomAllocator THE_BINOM (BSplCLib::MaxDegree() + 1);
   static BinomAllocator THE_BINOM (25 + 1);
-};
+}
 
 //=======================================================================
 //function : Bin

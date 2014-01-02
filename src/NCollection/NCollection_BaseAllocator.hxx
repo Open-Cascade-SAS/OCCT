@@ -71,7 +71,7 @@ class NCollection_BaseAllocator : public MMgt_TShared
 
  protected:
   //! Constructor - prohibited
-  NCollection_BaseAllocator(void) {};
+  NCollection_BaseAllocator(void) {}
 
  private:
   //! Copy constructor - prohibited

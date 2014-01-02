@@ -105,12 +105,12 @@ public:
   Element_t b() const { return v[2]; }
 
   //! @return 2 components by their names in specified order (in GLSL-style)
-  NCOLLECTION_VEC_COMPONENTS_2D(x, y);
-  NCOLLECTION_VEC_COMPONENTS_2D(x, z);
-  NCOLLECTION_VEC_COMPONENTS_2D(y, z);
+  NCOLLECTION_VEC_COMPONENTS_2D(x, y)
+  NCOLLECTION_VEC_COMPONENTS_2D(x, z)
+  NCOLLECTION_VEC_COMPONENTS_2D(y, z)
 
   //! @return 3 components by their names in specified order (in GLSL-style)
-  NCOLLECTION_VEC_COMPONENTS_3D(x, y, z);
+  NCOLLECTION_VEC_COMPONENTS_3D(x, y, z)
 
   //! Alias to 1st component as X coordinate in XYZ.
   Element_t& x() { return v[0]; }

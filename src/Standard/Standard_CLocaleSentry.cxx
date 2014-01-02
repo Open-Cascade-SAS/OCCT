@@ -58,7 +58,7 @@ namespace
 
   static CLocalePtr theCLocale;
 
-};
+}
 
 // =======================================================================
 // function : GetCLocale

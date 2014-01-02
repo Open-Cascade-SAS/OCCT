@@ -38,7 +38,7 @@ static OSD_MAllocHook::Callback* MypCurrentCallback = NULL;
 namespace {
   // dummy function to call at place where break point might be needed
   inline void place_for_breakpoint () {}
-};
+}
 
 //=======================================================================
 //function : GetCallback

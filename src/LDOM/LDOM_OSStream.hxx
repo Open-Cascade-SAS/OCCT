@@ -54,7 +54,7 @@ class LDOM_SBuffer : public streambuf
   // Caller of this function is responsible
   // for memory release after the string usage.
 
-  Standard_Integer Length () const {return myLength;};
+  Standard_Integer Length () const {return myLength;}
   // Returns full length of data contained
 
   Standard_EXPORT void Clear ();
@@ -86,11 +86,11 @@ class LDOM_OSStream : public Standard_OStream
   Standard_EXPORT LDOM_OSStream (const Standard_Integer theMaxBuf);
   // Constructor
 
-  Standard_CString str () const {return myBuffer.str();};
+  Standard_CString str () const {return myBuffer.str();}
 
-  Standard_Integer Length () const {return myBuffer.Length();};
+  Standard_Integer Length () const {return myBuffer.Length();}
 
-  void Clear () { myBuffer.Clear(); };
+  void Clear () { myBuffer.Clear(); }
 
  private:
   LDOM_SBuffer myBuffer;

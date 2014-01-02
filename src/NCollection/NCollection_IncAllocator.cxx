@@ -44,7 +44,7 @@ namespace
   // auxiliary dummy function used to get a place where break point can be set
   inline void place_for_breakpoint() {}
 #endif
-};
+}
 
 #define MaxLookup 16
 

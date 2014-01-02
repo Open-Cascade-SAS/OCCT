@@ -36,7 +36,7 @@ class NCollection_HeapAllocator : public NCollection_BaseAllocator
 
  protected:
   //! Constructor - prohibited
-  NCollection_HeapAllocator(void) {};
+  NCollection_HeapAllocator(void) {}
 
  private:
   //! Copy constructor - prohibited

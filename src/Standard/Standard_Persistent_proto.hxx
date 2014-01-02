@@ -55,8 +55,8 @@ public:
   Standard_EXPORT virtual ~Standard_Persistent();
   
   Standard_EXPORT Standard_Persistent& operator= (const Standard_Persistent&);
-                  Standard_Persistent() : count(0),_typenum(0),_refnum(0) {};
-                  Standard_Persistent(const Standard_Persistent&) : count(0),_typenum(0),_refnum(0) {};
+                  Standard_Persistent() : count(0),_typenum(0),_refnum(0) {}
+                  Standard_Persistent(const Standard_Persistent&) : count(0),_typenum(0),_refnum(0) {}
                   Standard_Persistent(const Storage_stCONSTclCOM&) : count(0),_typenum(0),_refnum(0) {}
 
   Standard_EXPORT virtual const Handle_Standard_Type& DynamicType() const;

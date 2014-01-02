@@ -79,7 +79,7 @@ public:
   Element_t y() const { return v[1]; }
 
   //! @return 2 components by their names in specified order (in GLSL-style)
-  NCOLLECTION_VEC_COMPONENTS_2D(x, y);
+  NCOLLECTION_VEC_COMPONENTS_2D(x, y)
 
   //! Alias to 1st component as X coordinate in XY.
   Element_t& x() { return v[0]; }

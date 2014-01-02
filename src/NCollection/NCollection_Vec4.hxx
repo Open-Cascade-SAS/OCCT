@@ -118,21 +118,21 @@ public:
   Element_t a() const { return v[3]; }
 
   //! @return 2 of XYZW components in specified order as vector in GLSL-style
-  NCOLLECTION_VEC_COMPONENTS_2D(x, y);
-  NCOLLECTION_VEC_COMPONENTS_2D(x, z);
-  NCOLLECTION_VEC_COMPONENTS_2D(x, w);
-  NCOLLECTION_VEC_COMPONENTS_2D(y, z);
-  NCOLLECTION_VEC_COMPONENTS_2D(y, w);
-  NCOLLECTION_VEC_COMPONENTS_2D(z, w);
+  NCOLLECTION_VEC_COMPONENTS_2D(x, y)
+  NCOLLECTION_VEC_COMPONENTS_2D(x, z)
+  NCOLLECTION_VEC_COMPONENTS_2D(x, w)
+  NCOLLECTION_VEC_COMPONENTS_2D(y, z)
+  NCOLLECTION_VEC_COMPONENTS_2D(y, w)
+  NCOLLECTION_VEC_COMPONENTS_2D(z, w)
 
   //! @return 3 of XYZW components in specified order as vector in GLSL-style
-  NCOLLECTION_VEC_COMPONENTS_3D(x, y, z);
-  NCOLLECTION_VEC_COMPONENTS_3D(x, y, w);
-  NCOLLECTION_VEC_COMPONENTS_3D(x, z, w);
-  NCOLLECTION_VEC_COMPONENTS_3D(y, z, w);
+  NCOLLECTION_VEC_COMPONENTS_3D(x, y, z)
+  NCOLLECTION_VEC_COMPONENTS_3D(x, y, w)
+  NCOLLECTION_VEC_COMPONENTS_3D(x, z, w)
+  NCOLLECTION_VEC_COMPONENTS_3D(y, z, w)
 
   //! @return RGB components as vector
-  NCOLLECTION_VEC_COMPONENTS_3D(r, g, b);
+  NCOLLECTION_VEC_COMPONENTS_3D(r, g, b)
 
   //! Alias to 1st component as X coordinate in XYZW.
   Element_t& x() { return v[0]; }

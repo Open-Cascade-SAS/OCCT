@@ -35,7 +35,7 @@ class BOPDS_CoupleOfPaveBlocks {
   BOPDS_CoupleOfPaveBlocks() {
     myIndex=-1;
     myIndexInterf=-1;
-  };
+  }
   //
   /**
    * Constructor
@@ -49,13 +49,13 @@ class BOPDS_CoupleOfPaveBlocks {
     myIndex=-1;
     myIndexInterf=-1;
     SetPaveBlocks(thePB1, thePB2);
-  };
+  }
   //
   /**
    * Destructor
    */
   ~BOPDS_CoupleOfPaveBlocks() {
-  };
+  }
   //
   /**
    * Sets an index

@@ -53,31 +53,31 @@ class TDF_LabelNode {
 
   // Father access
   inline TDF_LabelNode* Father() const
-    { return myFather; };
+    { return myFather; }
 
   // Brother access
   inline TDF_LabelNode* Brother() const
-    { return myBrother; };
+    { return myBrother; }
 
   // Child access
   inline TDF_LabelNode* FirstChild() const
-    { return myFirstChild; };
+    { return myFirstChild; }
 
     // Attribute access
   inline const Handle(TDF_Attribute)& FirstAttribute() const
-    { return myFirstAttribute; };
+    { return myFirstAttribute; }
 
   // Tag access
   inline Standard_Integer Tag() const
-    { return myTag; };
+    { return myTag; }
 
   // Depth access
   inline Standard_Integer Depth() const
-    { return (myFlags & ~TDF_LabelNodeFlagsMsk); };
+    { return (myFlags & ~TDF_LabelNodeFlagsMsk); }
 
   // IsRoot
   inline Standard_Boolean IsRoot() const
-    { return myFather == NULL; };
+    { return myFather == NULL; }
 
   // Data
   Standard_EXPORT TDF_Data * Data() const;
@@ -89,19 +89,19 @@ class TDF_LabelNode {
         (myFlags | TDF_LabelNodeAttModMsk) :
           (myFlags & ~TDF_LabelNodeAttModMsk);
       if (aStatus) AllMayBeModified();
-    };
+    }
 
   inline Standard_Boolean AttributesModified() const
-    { return ((myFlags & TDF_LabelNodeAttModMsk) != 0); };
+    { return ((myFlags & TDF_LabelNodeAttModMsk) != 0); }
 
   // Flag MayBeModified access
   inline void MayBeModified(const Standard_Boolean aStatus)
     { myFlags = (aStatus) ?
         (myFlags | TDF_LabelNodeMayModMsk) :
-          (myFlags & ~TDF_LabelNodeMayModMsk); };
+          (myFlags & ~TDF_LabelNodeMayModMsk); }
 
   inline Standard_Boolean MayBeModified() const
-    { return ((myFlags & TDF_LabelNodeMayModMsk) != 0); };
+    { return ((myFlags & TDF_LabelNodeMayModMsk) != 0); }
 
   private :
 
@@ -143,20 +143,20 @@ class TDF_LabelNode {
 
   // Tag modification
   inline void Tag(const Standard_Integer aTag)
-    { myTag = aTag; };
+    { myTag = aTag; }
 
   // Depth modification
   inline void Depth(const Standard_Integer aDepth)
-    { myFlags = ((myFlags & TDF_LabelNodeFlagsMsk) | aDepth); };
+    { myFlags = ((myFlags & TDF_LabelNodeFlagsMsk) | aDepth); }
 
   // Flag Imported access
   inline void Imported(const Standard_Boolean aStatus)
     { myFlags = (aStatus) ?
         (myFlags | TDF_LabelNodeImportMsk) :
-          (myFlags & ~TDF_LabelNodeImportMsk); };
+          (myFlags & ~TDF_LabelNodeImportMsk); }
 
   inline Standard_Boolean IsImported() const
-    { return ((myFlags & TDF_LabelNodeImportMsk) != 0); };
+    { return ((myFlags & TDF_LabelNodeImportMsk) != 0); }
 
   // Private Fields
   // --------------------------------------------------------------------------
