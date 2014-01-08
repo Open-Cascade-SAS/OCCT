@@ -363,7 +363,7 @@ Standard_Boolean OpenGl_Context::CheckExtension (const char* theExtName) const
   const char* anExtString = (const char* )glGetString (GL_EXTENSIONS);
   if (anExtString == NULL)
   {
-    Messanger()->Send ("TKOpenGL: glGetString (GL_EXTENSIONS) has returned NULL! No GL context?", Message_Warning);
+    Messenger()->Send ("TKOpenGL: glGetString (GL_EXTENSIONS) has returned NULL! No GL context?", Message_Warning);
     return Standard_False;
   }
   return CheckExtension (anExtString, theExtName);
@@ -636,7 +636,7 @@ void OpenGl_Context::PushMessage (const unsigned int theSource,
   aMsg += " | Message:\n  ";
   aMsg += theMessage;
 
-  Messanger()->Send (aMsg, aGrav);
+  Messenger()->Send (aMsg, aGrav);
 }
 
 // =======================================================================

@@ -113,8 +113,8 @@ public:
   //! theShareCtx - handle to context to retrieve handles to shared resources.
   Standard_EXPORT void Share (const Handle(OpenGl_Context)& theShareCtx);
 
-  //! Initialize available extensions.
-  //! GL context should be active!
+  //! Initialize class from currently bound OpenGL context. Method should be called only once.
+  //! @return false if no GL context is bound to the current thread
   Standard_EXPORT Standard_Boolean Init();
 
   //! @return true if this context is valid (has been initialized)
@@ -124,15 +124,33 @@ public:
   }
 
 #if defined(_WIN32)
+  //! Initialize class from specified window and rendering context. Method should be called only once.
+  //! @return false if OpenGL context can not be bound to specified window
   Standard_EXPORT Standard_Boolean Init (const Aspect_Handle           theWindow,
                                          const Aspect_Handle           theWindowDC,
                                          const Aspect_RenderingContext theGContext);
+
+  //! @return the window handle (HWND) currently bound to this OpenGL context
+  inline Aspect_Handle Window() const
+  {
+    return myWindow;
+  }
+
 #elif defined(__APPLE__) && !defined(MACOSX_USE_GLX)
+  //! Initialize class from specified OpenGL context (NSOpenGLContext). Method should be called only once.
   Standard_EXPORT Standard_Boolean Init (const void*                   theGContext);
 #else
+  //! Initialize class from specified window and rendering context. Method should be called only once.
+  //! @return false if OpenGL context can not be bound to specified window
   Standard_EXPORT Standard_Boolean Init (const Aspect_Drawable         theWindow,
                                          const Aspect_Display          theDisplay,
                                          const Aspect_RenderingContext theGContext);
+
+  //! @return the window handle (GLXDrawable) currently bound to this OpenGL context
+  inline Aspect_Drawable Window() const
+  {
+    return myWindow;
+  }
 #endif
 
   //! Check if theExtName extension is supported by active GL context.
@@ -156,7 +174,7 @@ public:
 
   //! @return true if detected GL version is greater or equal to requested one.
   inline Standard_Boolean IsGlGreaterEqual (const Standard_Integer theVerMajor,
-                                            const Standard_Integer theVerMinor)
+                                            const Standard_Integer theVerMinor) const
   {
     return (myGlVerMajor >  theVerMajor)
         || (myGlVerMajor == theVerMajor && myGlVerMinor >= theVerMinor);
@@ -262,15 +280,15 @@ public:
   Standard_EXPORT Standard_Integer MaxTextureSize() const;
 
   //! Get maximum number of clip planes supported by OpenGl.
-  //! This value is implementation dependant. At least 6
+  //! This value is implementation dependent. At least 6
   //! planes should be supported by OpenGl (see specs).
   //! @return value for GL_MAX_CLIP_PLANES
   Standard_EXPORT Standard_Integer MaxClipPlanes() const;
 
 public:
 
-  //! @return messanger instance
-  inline const Handle_Message_Messenger& Messanger() const
+  //! @return messenger instance
+  inline const Handle_Message_Messenger& Messenger() const
   {
     return ::Message::DefaultMessenger();
   }
