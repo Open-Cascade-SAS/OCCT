@@ -1,7 +1,6 @@
-// Created on: 2014-02-02
+// Created on: 2012-02-02
 // Created by: Anton POLETAEV
-// Copyright (c) -1999 Matra Datavision
-// Copyright (c) 2014-2014 OPEN CASCADE SAS
+// Copyright (c) 2012-2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //

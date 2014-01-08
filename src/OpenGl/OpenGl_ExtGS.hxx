@@ -1,6 +1,6 @@
-// Created on: 2014-09-26
+// Created on: 2012-09-26
 // Created by: Olga SURYANINOVA
-// Copyright (c) 2014 OPEN CASCADE SAS
+// Copyright (c) 2012-2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //

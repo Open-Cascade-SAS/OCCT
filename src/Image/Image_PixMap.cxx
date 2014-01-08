@@ -1,6 +1,6 @@
-// Created on: 2014-07-18
+// Created on: 2010-07-18
 // Created by: Kirill GAVRILOV
-// Copyright (c) 2014 OPEN CASCADE SAS
+// Copyright (c) 2010-2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //

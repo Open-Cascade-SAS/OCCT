@@ -1,6 +1,6 @@
-// Created on: 2014-11-13
+// Created on: 2012-11-13
 // Created by: Peter KURNEV
-// Copyright (c) 2014 OPEN CASCADE SAS
+// Copyright (c) 2012-2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //

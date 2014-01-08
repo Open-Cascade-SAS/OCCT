@@ -1,5 +1,6 @@
+// Created on: 2013-05-23 
 // Created by: Eugeny MALTCHIKOV
-// Copyright (c) 2014-2014 OPEN CASCADE SAS
+// Copyright (c) 2013-2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //

@@ -1,6 +1,6 @@
-// Created on: 2014-07-10
+// Created on: 2012-07-10
 // Created by: VRO
-// Copyright (c) 2014 OPEN CASCADE SAS
+// Copyright (c) 2012-2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
