@@ -61,7 +61,7 @@
   }                                                                    \
   void  operator delete (void* theAddress)                             \
   {                                                                    \
-    Standard::Free ((Standard_Address&)theAddress);                    \
+    Standard::Free (theAddress);                                       \
   }                                                                    \
   DEFINE_STANDARD_ALLOC_ARRAY                                          \
   DEFINE_STANDARD_ALLOC_PLACEMENT

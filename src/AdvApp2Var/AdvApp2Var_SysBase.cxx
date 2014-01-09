@@ -107,12 +107,12 @@ int mcrcomm_(integer *kop,
 
 static
 int mcrfree_(integer *ibyte,
-	     void* *iadr,
+	     intptr_t iadr,
 	     integer *ier);
 
 static
 int mcrgetv_(integer *sz,
-	     void* *iad,
+	     intptr_t *iad,
 	     integer *ier);
 
 static
@@ -2351,7 +2351,7 @@ L1100:
 	}
     } else {
 /* DE-ALLOCATION SYSTEM */
-	mcrfree_(&ibyte, reinterpret_cast<void**> (&iaddr), &ier);
+	mcrfree_(&ibyte, iaddr, &ier);
 	if (ier != 0) {
 	    goto L9002;
 	}
@@ -2510,14 +2510,12 @@ int AdvApp2Var_SysBase::mcrfill_(integer *size,
 //purpose  : 
 //=======================================================================
 int mcrfree_(integer *,//ibyte,
-	     void* *iadr,
+	     intptr_t iadr,
 	     integer *ier)
 
 {
   *ier=0;
-  Standard::Free(*iadr);
-  //Standard::Free always nullifies address, so check becomes incorrect
-  //if ( !*iadr ) *ier = 1;
+  Standard::Free((void*)iadr);
   return 0;
 }
 
@@ -2553,13 +2551,13 @@ int mcrfree_(integer *,//ibyte,
 //purpose  : 
 //=======================================================================
 int mcrgetv_(integer *sz,
-	     void* *iad,
+	     intptr_t *iad,
 	     integer *ier)                                            
 
 {
   
   *ier = 0;
-  *iad = Standard::Allocate(*sz);
+  *iad = (intptr_t)Standard::Allocate(*sz);
   if ( !*iad ) *ier = 1;
   return 0;
 }
@@ -2963,7 +2961,7 @@ int AdvApp2Var_SysBase::mcrrqst_(integer *iunit,
 /*      ELSE */
 /*        ALLOCATION SYSTEME */
     ksys = heap_allocation;
-    mcrgetv_(&ibyte, reinterpret_cast<void**> (&iaddr), &ier);
+    mcrgetv_(&ibyte, &iaddr, &ier);
     if (ier != 0) {
 	goto L9003;
     }

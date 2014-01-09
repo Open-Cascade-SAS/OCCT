@@ -65,7 +65,7 @@ protected:
   void Deallocate()
   {
     if (myPtr != myBuffer)
-      Standard::Free (*(Standard_Address*)&myPtr);
+      Standard::Free (myPtr);
   }
 
 protected:

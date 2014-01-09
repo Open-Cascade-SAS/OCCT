@@ -232,9 +232,7 @@ private: //! @name low-level methods
   //! Release string buffer and nullify the pointer.
   static void strFree (Type*& thePtr)
   {
-    void* aPtr = thePtr;
-    Standard::Free (aPtr);
-    thePtr = NULL;
+    Standard::Free (thePtr);
   }
 
   //! Provides bytes interface to avoid incorrect pointer arithmetics.

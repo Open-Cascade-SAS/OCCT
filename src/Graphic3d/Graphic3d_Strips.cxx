@@ -245,10 +245,10 @@ to index it in the edges array */
     while(edges[ivert] != NULL) {
       cedge = edges[ivert];
       edges[ivert] = cedge->next;
-      Standard::Free((void*&)cedge);
+      Standard::Free(cedge);
     }
   }
-  Standard::Free((void*&)edges);
+  Standard::Free(edges);
 }
 
 
@@ -302,7 +302,7 @@ void Graphic3d_Strips :: STRIPT_GET_STRIP ( Standard_Integer& NBTRIANGLES,
   {
     NBTRIANGLES = 0;
     current_stript.t = 0;
-    Standard::Free((void*&)trianglesptr);
+    Standard::Free(trianglesptr);
     return;
   }
 
@@ -886,10 +886,10 @@ to index it in the edges array */
     {
       cedge = edges[ivert];
       edges[ivert] = cedge->next;
-      Standard::Free((void*&)cedge);
+      Standard::Free(cedge);
     }
   }
-  Standard::Free((void*&)edges);
+  Standard::Free(edges);
 }
 
 
@@ -943,7 +943,7 @@ void Graphic3d_Strips :: STRIPQ_GET_STRIP ( Standard_Integer& NBQUAD,Standard_In
   {
     NBQUAD = 0;
     current_stripq.q = 0;
-    Standard::Free((void*&)quadranglesptr);
+    Standard::Free(quadranglesptr);
     return;
   }
   /* Now search the best strip from this quadrangle 

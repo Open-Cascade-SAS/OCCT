@@ -98,46 +98,46 @@ void Graphic3d_ArrayOfPrimitives::Destroy ()
 {
   if( myPrimitiveArray ) {
     if( myPrimitiveArray->vertices ){
-      Standard::Free( (Standard_Address&)myPrimitiveArray->vertices );
+      Standard::Free (myPrimitiveArray->vertices);
       myPrimitiveArray->vertices = 0;
     }
 
     if( myPrimitiveArray->vnormals ){
-      Standard::Free( (Standard_Address&)myPrimitiveArray->vnormals );
+      Standard::Free (myPrimitiveArray->vnormals);
       myPrimitiveArray->vnormals = 0;
     }
 
     if( myPrimitiveArray->vcolours ){
-      Standard::Free( (Standard_Address&)myPrimitiveArray->vcolours );
+      Standard::Free (myPrimitiveArray->vcolours);
       myPrimitiveArray->vcolours = 0;
     }
 
     if( myPrimitiveArray->vtexels ){
-      Standard::Free( (Standard_Address&)myPrimitiveArray->vtexels );
+      Standard::Free (myPrimitiveArray->vtexels);
       myPrimitiveArray->vtexels = 0;
     }
 
     if( myPrimitiveArray->fcolours ){
-      Standard::Free( (Standard_Address&)myPrimitiveArray->fcolours );
+      Standard::Free (myPrimitiveArray->fcolours);
       myPrimitiveArray->fcolours = 0;
     } 
 
     if( myPrimitiveArray->bounds ){
-      Standard::Free( (Standard_Address&)myPrimitiveArray->bounds );
+      Standard::Free (myPrimitiveArray->bounds);
       myPrimitiveArray->bounds = 0;
     }
 
     if( myPrimitiveArray->edges ){
-      Standard::Free( (Standard_Address&)myPrimitiveArray->edges );
+      Standard::Free (myPrimitiveArray->edges);
       myPrimitiveArray->edges = 0;
     }
 
     if( myPrimitiveArray->edge_vis ){
-      Standard::Free( (Standard_Address&)myPrimitiveArray->edge_vis );
+      Standard::Free (myPrimitiveArray->edge_vis);
       myPrimitiveArray->edge_vis = 0;
     }
 
-    Standard::Free( (Standard_Address&)myPrimitiveArray );
+    Standard::Free (myPrimitiveArray);
 #if TRACE > 0
     cout << " Graphic3d_ArrayOfPrimitives::Destroy()" << endl;
 #endif

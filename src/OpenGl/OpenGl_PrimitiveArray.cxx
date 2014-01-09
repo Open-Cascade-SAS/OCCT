@@ -57,12 +57,12 @@ namespace
 // =======================================================================
 void OpenGl_PrimitiveArray::clearMemoryOwn() const
 {
-  Standard::Free ((Standard_Address& )myPArray->edges);
-  Standard::Free ((Standard_Address& )myPArray->vertices);
-  Standard::Free ((Standard_Address& )myPArray->vcolours);
-  Standard::Free ((Standard_Address& )myPArray->vnormals);
-  Standard::Free ((Standard_Address& )myPArray->vtexels);
-  Standard::Free ((Standard_Address& )myPArray->edge_vis); /// ???
+  Standard::Free (myPArray->edges);
+  Standard::Free (myPArray->vertices);
+  Standard::Free (myPArray->vcolours);
+  Standard::Free (myPArray->vnormals);
+  Standard::Free (myPArray->vtexels);
+  Standard::Free (myPArray->edge_vis); /// ???
 
   myPArray->edges    = NULL;
   myPArray->vertices = NULL;

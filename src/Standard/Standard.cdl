@@ -133,11 +133,13 @@ is
     ---Purpose:  Allocates memory blocks  
     --           aSize - bytes to  allocate 
     
-    Free  (aStorage:in out Address from Standard); 
-    ---Purpose:  Deallocates memory blocks 
-    --           aStorage - previously allocated memory block to be freed                
+    Free (aStorage: Address from Standard); 
+    ---Purpose:  Deallocates memory blocks
+    --           aStorage - previously allocated memory block to be freed
 
-    Reallocate(aStorage: in out Address from Standard;
+    ---C++: alias "template <typename T> static inline void Free (T*& thePtr) { Free ((void*)thePtr); thePtr = 0; }"
+
+    Reallocate(aStorage: Address from Standard;
                aNewSize: Size from Standard)  
     	returns Address from Standard; 
     ---Purpose:  Reallocates memory blocks 

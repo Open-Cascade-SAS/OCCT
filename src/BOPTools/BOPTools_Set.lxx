@@ -162,7 +162,7 @@ static
   for (i=0; i<aNb; ++i) {
     pShapes[i].~TopoDS_Shape();
   }
-  myAllocator->Free((Standard_Address&)pShapes); 
+  myAllocator->Free(pShapes);
 }
 //=======================================================================
 //function : AddEdges
@@ -220,7 +220,7 @@ static
   for (i=0; i<aNb; ++i) {
     pShapes[i].~TopoDS_Shape();
   }
-  myAllocator->Free((Standard_Address&)pShapes); 
+  myAllocator->Free(pShapes);
 }
 //=======================================================================
 //function : IsEqual

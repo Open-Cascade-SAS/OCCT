@@ -68,7 +68,7 @@ template <class Type> class BOPCol_MemBlock {
       for (i=0; i<mySize; ++i) {
         myData[i].~Type();
       }
-      myAllocator->Free((Standard_Address&)myData); 
+      myAllocator->Free(myData);
       //
       myData=NULL;
       mySize=0;
@@ -177,10 +177,8 @@ template <class Type> class BOPCol_Array1 {
     while(pBlock) {
       pNext=pBlock->Next();
       //
-      //pBlock->~BOPCol_MemBlock<Type> ();
       pBlock->~BOPCol_XMemBlock();
-      //pBlock->Clear();
-      myAllocator->Free((Standard_Address&)pBlock);
+      myAllocator->Free(pBlock);
       //
       pBlock=pNext;
     }

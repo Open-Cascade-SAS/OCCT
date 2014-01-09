@@ -120,7 +120,7 @@ void TCollection_Array2::Destroy ()
     delete [] &ChangeValue(myLowerRow,myLowerColumn);
 
   // delete the indirection table
-  Standard::Free((void*&)anItemPtr);
+  Standard::Free (anItemPtr);
 }
 
 //=======================================================================

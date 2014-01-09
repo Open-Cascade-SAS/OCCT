@@ -1077,7 +1077,7 @@ void FSD_BinaryFile::ReadString(TCollection_AsciiString& aString)
     if (!fread(c,size,1,myStream)) Storage_StreamWriteError::Raise();
     c[size] = '\0';
     aString = c;
-    Standard::Free((Standard_Address&)c);
+    Standard::Free(c);
   }
   else {
     aString.Clear();
@@ -1138,7 +1138,7 @@ void FSD_BinaryFile::ReadExtendedString(TCollection_ExtendedString& aString)
       c[i] = InverseExtChar (c[i]);
 #endif
     aString = c;
-    Standard::Free((Standard_Address&)c);
+    Standard::Free(c);
   }
   else {
     aString.Clear();

@@ -46,12 +46,12 @@ class Standard_MMgrRaw : public Standard_MMgrRoot
   Standard_EXPORT virtual Standard_Address Allocate(const Standard_Size aSize);
   
   //! Reallocate aPtr to the size aSize. 
-  //! The pointer aPtr is nullified; new pointer is returned.
-  Standard_EXPORT virtual Standard_Address Reallocate(Standard_Address& aPtr, 
-						      const Standard_Size aSize);
+  //! The new pointer is returned.
+  Standard_EXPORT virtual Standard_Address Reallocate(Standard_Address thePtr, 
+						      const Standard_Size theSize);
   
   //! Free allocated memory. The pointer is nullified.
-  Standard_EXPORT virtual void Free(Standard_Address&);
+  Standard_EXPORT virtual void Free (Standard_Address thePtr);
 
  protected:
   Standard_Boolean myClear; //! Option to nullify allocated memory

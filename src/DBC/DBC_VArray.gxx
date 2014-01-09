@@ -176,7 +176,7 @@ void DBC_VArray::Resize (const Standard_Integer NewSize)
 	ptrtmp->DBC_VArrayTNode::~DBC_VArrayTNode();
 	ptrtmp++;
       }
-      Standard::Free((Standard_Address&)myData);
+      Standard::Free(myData);
     } else {
       for(i = 0; i < NewSize; i++) {
 	ptrtmp = new((Standard_Address)ptrtmp) DBC_VArrayTNode();
@@ -291,7 +291,7 @@ void DBC_VArray::Destroy()
       ptrtmp->DBC_VArrayTNode::~DBC_VArrayTNode();
       ptrtmp++;
     }
-    Standard::Free((Standard_Address&)myData);
+    Standard::Free(myData);
     myData = 0L;
   }
 #endif	

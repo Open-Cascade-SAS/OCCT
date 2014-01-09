@@ -43,7 +43,7 @@ void* NCollection_BaseAllocator::Allocate(const size_t size)
 
 void  NCollection_BaseAllocator::Free(void *anAddress)
 { 
-  if (anAddress) Standard::Free((Standard_Address&)anAddress); 
+  if (anAddress) Standard::Free(anAddress); 
 }
 
 //=======================================================================

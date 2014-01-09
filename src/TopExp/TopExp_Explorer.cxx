@@ -174,7 +174,7 @@ void  TopExp_Explorer::Next()
 	  new (&newStack[i]) TopoDS_Iterator(myStack[i]);
 	  myStack[i].~TopoDS_Iterator();
 	}
-	Standard::Free((Standard_Address&)myStack);
+	Standard::Free(myStack);
 	mySizeOfStack = NewSize;
 	myStack = newStack;
       }
@@ -200,7 +200,7 @@ void  TopExp_Explorer::Next()
 	    new (&newStack[i]) TopoDS_Iterator(myStack[i]);
 	    myStack[i].~TopoDS_Iterator();
 	  }
-	  Standard::Free((Standard_Address&)myStack);
+	  Standard::Free(myStack);
 	  mySizeOfStack = NewSize;
 	  myStack = newStack;
 	}
@@ -239,7 +239,7 @@ void  TopExp_Explorer::Destroy()
   if (myStack) 
     {
       for(int i=0;i<= myTop; i++)myStack[i].~TopoDS_Iterator();
-      Standard::Free((Standard_Address&)myStack);
+      Standard::Free(myStack);
     }
   mySizeOfStack = 0;
   myStack = 0L;

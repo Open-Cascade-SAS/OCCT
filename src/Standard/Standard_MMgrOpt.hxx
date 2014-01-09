@@ -97,15 +97,15 @@ class Standard_MMgrOpt : public Standard_MMgrRoot
   //! Allocate aSize bytes; see class description above
   Standard_EXPORT virtual Standard_Address Allocate(const Standard_Size aSize);
   
-  //! Reallocate previously allocated aPtr to a new size; aPtr is nullified.
+  //! Reallocate previously allocated aPtr to a new size; new address is returned.
   //! In case that aPtr is null, the function behaves exactly as Allocate.
-  Standard_EXPORT virtual Standard_Address Reallocate(Standard_Address& aPtr, 
-                                                      const Standard_Size aSize);
+  Standard_EXPORT virtual Standard_Address Reallocate (Standard_Address thePtr, 
+                                                       const Standard_Size theSize);
   
-  //! Free previously allocated block; aPtr is nullified.
+  //! Free previously allocated block.
   //! Note that block can not all blocks are released to the OS by this 
   //! method (see class description)
-  Standard_EXPORT virtual void Free(Standard_Address& aPtr);
+  Standard_EXPORT virtual void Free (Standard_Address thePtr);
   
   //! Release medium-sized blocks of memory in free lists to the system.
   //! Returns number of actually freed blocks

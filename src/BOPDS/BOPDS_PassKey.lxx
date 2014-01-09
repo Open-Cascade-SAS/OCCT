@@ -116,7 +116,7 @@ static
   myNbIds=0;
   mySum=0;
   if (myPtr) {
-    myAllocator->Free((Standard_Address)myPtr);
+    myAllocator->Free(myPtr);
     myPtr=NULL;
   }
 }

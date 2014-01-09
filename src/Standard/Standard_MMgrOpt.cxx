@@ -475,7 +475,7 @@ Standard_Address Standard_MMgrOpt::Allocate(const Standard_Size aSize)
 //purpose  : 
 //=======================================================================
 
-void Standard_MMgrOpt::Free(Standard_Address& theStorage)
+void Standard_MMgrOpt::Free(Standard_Address theStorage)
 {
   // safely return if attempt to free null pointer
   if ( ! theStorage )
@@ -510,8 +510,6 @@ void Standard_MMgrOpt::Free(Standard_Address& theStorage)
   // otherwise, we have block of big size which shall be simply released
   else 
     FreeMemory (aBlock, RoundSize);
-
-  theStorage = NULL;
 }
 
 //=======================================================================
@@ -704,7 +702,7 @@ void Standard_MMgrOpt::FreePools()
 //purpose  : 
 //=======================================================================
 
-Standard_Address Standard_MMgrOpt::Reallocate(Standard_Address&   theStorage,
+Standard_Address Standard_MMgrOpt::Reallocate(Standard_Address theStorage,
                                               const Standard_Size theNewSize)
 {
   // if theStorage == NULL, just allocate new memory block
@@ -732,7 +730,6 @@ Standard_Address Standard_MMgrOpt::Reallocate(Standard_Address&   theStorage,
     if ( myClear )
       memset(((char*)newStorage) + OldSize, 0, theNewSize-OldSize);
   }
-  theStorage = NULL;
   return newStorage;
 }
 

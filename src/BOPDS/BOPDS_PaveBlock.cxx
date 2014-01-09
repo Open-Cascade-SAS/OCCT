@@ -317,7 +317,7 @@ static
   for (i=0; i<aNb; ++i) {
     pPaves[i].~BOPDS_Pave();
   }
-  myAllocator->Free((Standard_Address&)pPaves); 
+  myAllocator->Free(pPaves);
 }
 
 //=======================================================================

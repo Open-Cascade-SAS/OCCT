@@ -65,10 +65,9 @@ Standard_Address Standard_MMgrTBBalloc::Allocate(const Standard_Size aSize)
 //purpose  : 
 //=======================================================================
 
-void Standard_MMgrTBBalloc::Free(Standard_Address& aStorage)
+void Standard_MMgrTBBalloc::Free (Standard_Address theStorage)
 {
-  scalable_free(aStorage);
-  aStorage=NULL;
+  scalable_free (theStorage);
 }
 
 //=======================================================================
@@ -76,18 +75,17 @@ void Standard_MMgrTBBalloc::Free(Standard_Address& aStorage)
 //purpose  : 
 //=======================================================================
 
-Standard_Address Standard_MMgrTBBalloc::Reallocate(Standard_Address&   aStorage,
-					      const Standard_Size newSize)
+Standard_Address Standard_MMgrTBBalloc::Reallocate (Standard_Address theStorage,
+					            const Standard_Size theSize)
 {
   // the size is rounded up to 4 since some OCC classes
   // (e.g. TCollection_AsciiString) assume memory to be double word-aligned
-  const Standard_Size aRoundSize = (newSize + 3) & ~0x3;
-  Standard_Address newStorage = (Standard_Address)scalable_realloc(aStorage, aRoundSize);
+  const Standard_Size aRoundSize = (theSize + 3) & ~0x3;
+  Standard_Address newStorage = (Standard_Address)scalable_realloc(theStorage, aRoundSize);
   if ( ! newStorage )
     Standard_OutOfMemory::Raise("Standard_MMgrTBBalloc::Reallocate(): realloc failed");
   // Note that it is not possible to ensure that additional memory
   // allocated by realloc will be cleared (so as to satisfy myClear mode);
   // in order to do that we would need using memset...
-  aStorage = NULL;
   return newStorage;
 }
