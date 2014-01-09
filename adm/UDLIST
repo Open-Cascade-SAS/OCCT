@@ -474,13 +474,11 @@ t TKViewerTest
 t TKXDEDRAW
 t TKXSDRAW
 x DRAWEXE
-p DebugTools
 p QADraw
 p QANCollection
 p QANewBRepNaming
 p QANewDBRepNaming
 p QANewModTopOpe
-r QAResources
 t TKQADraw
 p QADNaming
 p QABugs

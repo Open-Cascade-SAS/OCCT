@@ -4,6 +4,7 @@ srcinc:::DrawTK.tcl
 srcinc:::Geometry.tcl
 srcinc:::InitEnvironment.tcl
 srcinc:::PROFIL.tcl
+srcinc:::SCAN.tcl
 srcinc:::StandardCommands.tcl
 srcinc:::StandardViews.tcl
 srcinc:::SURFACES.tcl
