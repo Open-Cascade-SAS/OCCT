@@ -134,12 +134,12 @@ static void Recadre(const Handle(Adaptor3d_HSurface)& myHS1,
 //=======================================================================
 
 static void Parameters(const Handle(Adaptor3d_HSurface)& myHS1,
-		       const Handle(Adaptor3d_HSurface)& myHS2,
-		       const gp_Pnt& Ptref,
-		       Standard_Real& U1,
-		       Standard_Real& V1,
-		       Standard_Real& U2,
-		       Standard_Real& V2)
+                       const Handle(Adaptor3d_HSurface)& myHS2,
+                       const gp_Pnt& Ptref,
+                       Standard_Real& U1,
+                       Standard_Real& V1,
+                       Standard_Real& U2,
+                       Standard_Real& V2)
 {
   IntSurf_Quadric quad1,quad2;
   GeomAbs_SurfaceType typs = myHS1->Surface().GetType();
@@ -155,6 +155,9 @@ static void Parameters(const Handle(Adaptor3d_HSurface)& myHS1,
     break;
   case GeomAbs_Sphere:
     quad1.SetValue(myHS1->Surface().Sphere());
+    break;
+  case GeomAbs_Torus:
+    quad1.SetValue(myHS1->Surface().Torus());
     break;
   default:
     Standard_ConstructionError::Raise("IntPatch_IntSS::MakeCurve");
@@ -173,6 +176,9 @@ static void Parameters(const Handle(Adaptor3d_HSurface)& myHS1,
     break;
   case GeomAbs_Sphere:
     quad2.SetValue(myHS2->Surface().Sphere());
+    break;
+  case GeomAbs_Torus:
+    quad2.SetValue(myHS2->Surface().Torus());
     break;
   default:
     Standard_ConstructionError::Raise("IntPatch_IntSS::MakeCurve");

@@ -856,6 +856,9 @@ static
   case GeomAbs_Sphere:
     pu1=M_PI+M_PI;
     break;
+  case GeomAbs_Torus:
+    pu1=pv1=M_PI+M_PI;
+    break;
   default:
     break;
   }
@@ -864,6 +867,9 @@ static
   case GeomAbs_Cone:
   case GeomAbs_Sphere:
     pu2=M_PI+M_PI;
+    break;
+  case GeomAbs_Torus:
+    pu2=pv2=M_PI+M_PI;
     break;
   default:
     break;

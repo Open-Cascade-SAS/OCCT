@@ -594,9 +594,9 @@ void Parameters(const Handle(GeomAdaptor_HSurface)& myHS1,
 //purpose  : 
 //=======================================================================
 void Parameters(const Handle(GeomAdaptor_HSurface)& myHS1,
-		const gp_Pnt& Ptref,
-		Standard_Real& U1,
-		Standard_Real& V1)
+                const gp_Pnt& Ptref,
+                Standard_Real& U1,
+                Standard_Real& V1)
 {
   IntSurf_Quadric quad1;
   //
@@ -612,6 +612,9 @@ void Parameters(const Handle(GeomAdaptor_HSurface)& myHS1,
       break;
     case GeomAbs_Sphere:   
       quad1.SetValue(myHS1->Surface().Sphere()); 
+      break;
+    case GeomAbs_Torus:
+      quad1.SetValue(myHS1->Surface().Torus()); 
       break;
     default: 
       Standard_ConstructionError::Raise("IntTools_LineConstructor::Parameters");

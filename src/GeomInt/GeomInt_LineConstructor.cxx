@@ -148,6 +148,7 @@ static void Parameters(const Handle(GeomAdaptor_HSurface)& myHS1,
     case GeomAbs_Cylinder: quad1.SetValue(myHS1->Surface().Cylinder()); break;
     case GeomAbs_Cone:     quad1.SetValue(myHS1->Surface().Cone()); break;
     case GeomAbs_Sphere:   quad1.SetValue(myHS1->Surface().Sphere()); break;
+    case GeomAbs_Torus:    quad1.SetValue(myHS1->Surface().Torus()); break;
     default: Standard_ConstructionError::Raise("GeomInt_LineConstructor::Parameters");
   }
   switch (myHS2->Surface().GetType())
@@ -156,6 +157,7 @@ static void Parameters(const Handle(GeomAdaptor_HSurface)& myHS1,
     case GeomAbs_Cylinder: quad2.SetValue(myHS2->Surface().Cylinder()); break;
     case GeomAbs_Cone:     quad2.SetValue(myHS2->Surface().Cone()); break;
     case GeomAbs_Sphere:   quad2.SetValue(myHS2->Surface().Sphere()); break;
+    case GeomAbs_Torus:    quad2.SetValue(myHS2->Surface().Torus()); break;
     default: Standard_ConstructionError::Raise("GeomInt_LineConstructor::Parameters");
   }
   quad1.Parameters(Ptref,U1,V1);

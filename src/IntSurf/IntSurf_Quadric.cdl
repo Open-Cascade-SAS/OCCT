@@ -27,7 +27,8 @@ uses Ax3         from gp,
      Pln         from gp,
      Cylinder    from gp,
      Sphere      from gp,
-     Cone        from gp,
+     Cone        from gp, 
+     Torus       from gp,
      SurfaceType from GeomAbs     
 
 is
@@ -55,6 +56,11 @@ is
     Create(C: Cone from gp)
     
     	returns Quadric from IntSurf;
+ 
+ 
+    Create(T: Torus from gp)
+    
+    	returns Quadric from IntSurf;
 
 
     SetValue(me: in out; P: Pln from gp)
@@ -73,6 +79,10 @@ is
 
 
     SetValue(me: in out; C: Cone from gp)
+    
+    	is static;
+ 
+    SetValue(me: in out; T: Torus from gp)
     
     	is static;
 
@@ -132,6 +142,14 @@ is
     Cone(me)
     
     	returns Cone from gp
+	---C++: inline
+	
+	is static;
+ 
+ 
+    Torus(me)
+    
+    	returns Torus from gp
 	---C++: inline
 	
 	is static;

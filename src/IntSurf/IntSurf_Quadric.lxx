@@ -58,4 +58,9 @@ inline gp_Cone IntSurf_Quadric::Cone () const {
   return gp_Cone(ax3,prm2,prm1);
 }
 
+inline gp_Torus IntSurf_Quadric::Torus () const {
+
+  return gp_Torus(ax3, prm1, prm2);
+}
+
 

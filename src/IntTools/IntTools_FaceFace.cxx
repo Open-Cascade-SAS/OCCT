@@ -1645,6 +1645,9 @@ reapprox:;
     case GeomAbs_Sphere:
       quad1.SetValue(myHS1->Surface().Sphere());
       break;
+    case GeomAbs_Torus:
+      quad1.SetValue(myHS1->Surface().Torus());
+      break;
     default:
       Standard_ConstructionError::Raise("GeomInt_IntSS::MakeCurve 1");
     }
@@ -1663,6 +1666,9 @@ reapprox:;
       break;
     case GeomAbs_Sphere:
       quad2.SetValue(myHS2->Surface().Sphere());
+      break;
+    case GeomAbs_Torus:
+      quad2.SetValue(myHS2->Surface().Torus());
       break;
     default:
       Standard_ConstructionError::Raise("GeomInt_IntSS::MakeCurve 2");
@@ -2437,6 +2443,9 @@ reapprox:;
   case GeomAbs_Sphere:
     quad1.SetValue(HS1->Surface().Sphere());
     break;
+  case GeomAbs_Torus:
+    quad1.SetValue(HS1->Surface().Torus());
+    break;
   default:
     Standard_ConstructionError::Raise("GeomInt_IntSS::MakeCurve");
   }
@@ -2454,6 +2463,9 @@ reapprox:;
     break;
   case GeomAbs_Sphere:
     quad2.SetValue(HS2->Surface().Sphere());
+    break;
+  case GeomAbs_Torus:
+    quad2.SetValue(HS2->Surface().Torus());
     break;
   default:
     Standard_ConstructionError::Raise("GeomInt_IntSS::MakeCurve");

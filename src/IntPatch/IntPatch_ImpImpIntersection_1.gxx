@@ -120,3 +120,39 @@ static Standard_Boolean IntCoCo(const IntSurf_Quadric&,
 				Standard_Boolean&,
 				IntPatch_SequenceOfLine&,
 				IntPatch_SequenceOfPoint&);
+
+//torus
+static Standard_Boolean IntPTo(const IntSurf_Quadric&,
+                               const IntSurf_Quadric&,
+                               const Standard_Real,
+                               const Standard_Boolean,
+                               Standard_Boolean&,
+                               IntPatch_SequenceOfLine&);
+
+static Standard_Boolean IntCyTo(const IntSurf_Quadric&,
+                                const IntSurf_Quadric&,
+                                const Standard_Real,
+                                const Standard_Boolean,
+                                Standard_Boolean&,
+                                IntPatch_SequenceOfLine&);
+
+static Standard_Boolean IntCoTo(const IntSurf_Quadric&,
+                                const IntSurf_Quadric&,
+                                const Standard_Real,
+                                const Standard_Boolean,
+                                Standard_Boolean&,
+                                IntPatch_SequenceOfLine&);
+
+static Standard_Boolean IntSpTo(const IntSurf_Quadric&,
+                                const IntSurf_Quadric&,
+                                const Standard_Real,
+                                const Standard_Boolean,
+                                Standard_Boolean&,
+                                IntPatch_SequenceOfLine&);
+
+static Standard_Boolean IntToTo(const IntSurf_Quadric&,
+                                const IntSurf_Quadric&,
+                                const Standard_Real,
+                                Standard_Boolean&,
+                                Standard_Boolean&,
+                                IntPatch_SequenceOfLine&);

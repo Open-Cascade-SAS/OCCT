@@ -14,6 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+static 
+  Standard_Integer SetQuad(const Handle(Adaptor3d_HSurface)& theS,
+                           GeomAbs_SurfaceType& theTS,
+                           IntSurf_Quadric& theQuad);
+
 //=======================================================================
 //function : IntPatch_ImpImpIntersection
 //purpose  : 
@@ -28,11 +33,11 @@ IntPatch_ImpImpIntersection::IntPatch_ImpImpIntersection ():
 //=======================================================================
 IntPatch_ImpImpIntersection::IntPatch_ImpImpIntersection
        (const Handle(Adaptor3d_HSurface)&  S1,
-	const Handle(Adaptor3d_TopolTool)& D1,
+        const Handle(Adaptor3d_TopolTool)& D1,
         const Handle(Adaptor3d_HSurface)&  S2,
-	const Handle(Adaptor3d_TopolTool)& D2,
-	const Standard_Real TolArc,
-	const Standard_Real TolTang)
+        const Handle(Adaptor3d_TopolTool)& D2,
+        const Standard_Real TolArc,
+        const Standard_Real TolTang)
 {
   Perform(S1,D1,S2,D2,TolArc,TolTang);
 }
@@ -41,11 +46,11 @@ IntPatch_ImpImpIntersection::IntPatch_ImpImpIntersection
 //purpose  : 
 //=======================================================================
 void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
-					  const Handle(Adaptor3d_TopolTool)& D1,
-					  const Handle(Adaptor3d_HSurface)&  S2,
-					  const Handle(Adaptor3d_TopolTool)& D2,
-					  const Standard_Real TolArc,
-					  const Standard_Real TolTang) {
+                                          const Handle(Adaptor3d_TopolTool)& D1,
+                                          const Handle(Adaptor3d_HSurface)&  S2,
+                                          const Handle(Adaptor3d_TopolTool)& D2,
+                                          const Standard_Real TolArc,
+                                          const Standard_Real TolTang) {
   done = Standard_False;
   spnt.Clear();
   slin.Clear();
@@ -68,312 +73,170 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
   IntPatch_SequenceOfPathPointOfTheSOnBounds pnt1,pnt2;
   //
   // On commence par intersecter les supports des surfaces
-  IntSurf_Quadric quad1;
-  IntSurf_Quadric quad2;
+  IntSurf_Quadric quad1, quad2;
   IntPatch_ArcFunction AFunc;
   const Standard_Real Tolang = 1.e-8;
-  GeomAbs_SurfaceType typs1 = S1->GetType();
-  GeomAbs_SurfaceType typs2 = S2->GetType();
+  GeomAbs_SurfaceType typs1, typs2;
+  Standard_Boolean bEmpty = Standard_False;
   //
-  switch (typs1) {
-
-  case GeomAbs_Plane :
-    {
-      quad1.SetValue(S1->Plane());
-
-      switch (typs2) {
-
-      case GeomAbs_Plane:
-	{
-	  quad2.SetValue(S2->Plane());
-	  if (!IntPP(quad1,quad2,Tolang,TolTang,SameSurf,slin)) {
-	    return;
-	  }
-	}
-	break;
-	
-	
-      case GeomAbs_Cylinder:
-	{
-	  quad2.SetValue(S2->Cylinder());
-          Standard_Real VMin, VMax, H;
-          //
-          VMin = S1->FirstVParameter();
-          VMax = S1->LastVParameter();
-          H = (Precision::IsNegativeInfinite(VMin) || 
-               Precision::IsPositiveInfinite(VMax)) ? 0 : (VMax - VMin);
-	  if (!IntPCy(quad1,quad2,Tolang,TolTang,Standard_False,empt,slin,H)) {
-	    return;
-	  }
-	  if (empt) {
-	    done = Standard_True;
-	    return;
-	  }
-	}
-	break;
-
-      case GeomAbs_Sphere:
-	{
-	  quad2.SetValue(S2->Sphere());
-	  //modified by NIZNHY-PKV Tue Sep 20 09:03:06 2011f
-	  if (!IntPSp(quad1,quad2,Tolang,TolTang,Standard_False,empt,slin,spnt)) {
-	  //if (!IntPSp(quad1,quad2,TolTang,Standard_False,empt,slin,spnt)) {
-	    //modified by NIZNHY-PKV Tue Sep 20 09:03:10 2011t
-	    return;
-	  }
-	  if (empt) {
-	    done = Standard_True;
-	    return;
-	  }
-	}
-	break;
-	
-      case GeomAbs_Cone:
-	{
-	  quad2.SetValue(S2->Cone());
-	  if (!IntPCo(quad1,quad2,Tolang,TolTang,Standard_False,
-		      empt,multpoint,slin,spnt)) {
-	    return;
-	  }
-	  if (empt) {
-	    done = Standard_True;
-	    return;
-	  }
-	}
-	break;
-      default: 
-	{
-	  Standard_ConstructionError::Raise();
-	  break;
-	}
+  const Standard_Integer iT1 = SetQuad(S1, typs1, quad1);
+  const Standard_Integer iT2 = SetQuad(S2, typs2, quad2);
+  //
+  if (!iT1 || !iT2) {
+    Standard_ConstructionError::Raise();
+    return;
+  }
+  //
+  const Standard_Boolean bReverse = iT1 > iT2;
+  const Standard_Integer iTT = iT1*10 + iT2;
+  //
+  switch (iTT) {
+    case 11: { // Plane/Plane
+      if (!IntPP(quad1, quad2, Tolang, TolTang, SameSurf, slin)) {
+        return;
       }
+      break;
     }
-    break;
-
-  case GeomAbs_Cylinder:
-    {
-      quad1.SetValue(S1->Cylinder());
-      switch (typs2){
-
-      case GeomAbs_Plane:
-	{
-	  quad2.SetValue(S2->Plane());
-          Standard_Real VMin, VMax, H;
-          //
-          VMin = S1->FirstVParameter();
-          VMax = S1->LastVParameter();
-          H = (Precision::IsNegativeInfinite(VMin) || 
-               Precision::IsPositiveInfinite(VMax)) ? 0 : (VMax - VMin);
-	  if (!IntPCy(quad1,quad2,Tolang,TolTang,Standard_True,empt,slin,H)) {
-	    return;
-	  }
-	  if (empt) {
-	    done = Standard_True;
-	    return;
-	  }
-	}
-	break;
-
-      case GeomAbs_Cylinder:
-	{
-	  quad2.SetValue(S2->Cylinder());
-	  if (!IntCyCy(quad1,quad2,TolTang,empt,SameSurf,multpoint,slin,spnt)) {
-	    return;
-	  }
-	  if (empt) {
-	    done = Standard_True;
-	    return;
-	  }
-	}
-	break;
-
-      case GeomAbs_Sphere:
-	{
-	  quad2.SetValue(S2->Sphere());
-	  if (!IntCySp(quad1,quad2,TolTang,Standard_False,empt,multpoint,
-		       slin,spnt)) {
-	    return;
-	  }
-	  if (empt) {
-	    done = Standard_True;
-
-	    return;
-	  }
-	}
-	break;
-
-      case GeomAbs_Cone:
-	{
-	  quad2.SetValue(S2->Cone());
-	  if (!IntCyCo(quad1,quad2,TolTang,Standard_False,empt,multpoint,
-		       slin,spnt)) {
-	    return;
-	  }
-	  if (empt) {
-	    done = Standard_True;
-	    return;
-	  }
-	}
-	break;
-      default: 
-	{
-	  Standard_ConstructionError::Raise();
-	  break;
-	}
+    //
+    case 12:
+    case 21: { // Plane/Cylinder
+      Standard_Real VMin, VMax, H;
+      //
+      const Handle(Adaptor3d_HSurface)& aSCyl = bReverse ? S2 : S1;
+      VMin = aSCyl->FirstVParameter();
+      VMax = aSCyl->LastVParameter();
+      H = (Precision::IsNegativeInfinite(VMin) || 
+           Precision::IsPositiveInfinite(VMax)) ? 0 : (VMax - VMin);
+      //
+      if (!IntPCy(quad1, quad2, Tolang, TolTang, bReverse, empt, slin, H)) {
+        return;
       }
-
+      bEmpty = empt;
+      break;
     }
-    break;
-
-  case GeomAbs_Sphere:
-    {
-      quad1.SetValue(S1->Sphere());
-
-      switch (typs2){
-
-      case GeomAbs_Plane:
-	{
-	  quad2.SetValue(S2->Plane());
-	  //modified by NIZNHY-PKV Tue Sep 20 09:03:35 2011f
-	  if (!IntPSp(quad1,quad2,Tolang,TolTang,Standard_True,empt,slin,spnt)) {
-	  //if (!IntPSp(quad1,quad2,TolTang,Standard_True,empt,slin,spnt)) {
-	    //modified by NIZNHY-PKV Tue Sep 20 09:03:38 2011t
-	    return;
-	  }
-	  if (empt) {
-	    done = Standard_True;
-	    return;
-	  }
-	}
-	break;
-
-      case GeomAbs_Cylinder:
-	{
-	  quad2.SetValue(S2->Cylinder());
-	  if (!IntCySp(quad1,quad2,TolTang,Standard_True,empt,multpoint,
-		       slin,spnt)) {
-	    return;
-	  }
-	  if (empt) {
-	    done = Standard_True;
-	    return;
-	  }
-	}
-	break;
-
-      case GeomAbs_Sphere:
-	{
-	  quad2.SetValue(S2->Sphere());
-	  if (!IntSpSp(quad1,quad2,TolTang,empt,SameSurf,slin,spnt)) {
-	    return;
-	  }
-	  if (empt) {
-	    done = Standard_True;
-	    return;
-	  }
-	}
-	break;
-
-      case GeomAbs_Cone:
-	{
-	  quad2.SetValue(S2->Cone());
-	  if (!IntCoSp(quad1,quad2,TolTang,Standard_True,empt,multpoint,
-		       slin,spnt)) {
-	    return;
-	  }
-	  if (empt) {
-	    done = Standard_True;
-	    return;
-	  }
-	}
-	break;
-      default: 
-	{
-	  Standard_ConstructionError::Raise();
-	  break;
-	}
+    //
+    case 13:
+    case 31: { // Plane/Cone
+      if (!IntPCo(quad1, quad2, Tolang, TolTang, bReverse, empt, multpoint, slin, spnt)) {
+        return;
       }
-
+      bEmpty = empt;
+      break;
     }
-    break;
-
-  case GeomAbs_Cone:
-    {
-      quad1.SetValue(S1->Cone());
-
-      switch (typs2){
-
-      case GeomAbs_Plane:
-	{
-	  quad2.SetValue(S2->Plane());
-	  if (!IntPCo(quad1,quad2,Tolang,TolTang,Standard_True,
-		      empt,multpoint,slin,spnt)) {
-	    return;
-	  }
-	  if (empt) {
-	    done = Standard_True;
-	    return;
-	  }
-	}
-	break;
-
-      case GeomAbs_Cylinder:
-	{
-	  quad2.SetValue(S2->Cylinder());
-	  if (!IntCyCo(quad1,quad2,TolTang,Standard_True,empt,multpoint,
-		       slin,spnt)) {
-	    return;
-	  }
-	  if (empt) {
-	    done = Standard_True;
-	    return;
-	  }
-	}
-	break;
-
-      case GeomAbs_Sphere:
-	{
-	  quad2.SetValue(S2->Sphere());
-	  if (!IntCoSp(quad1,quad2,TolTang,Standard_False,empt,multpoint,
-		       slin,spnt)) {
-	    return;
-	  }
-	  if (empt) {
-	    done = Standard_True;
-	    return;
-	  }
-	}
-	break;
-
-      case GeomAbs_Cone:
-	{
-	  quad2.SetValue(S2->Cone());
-	  if (!IntCoCo(quad1,quad2,TolTang,empt,SameSurf,multpoint,
-		       slin,spnt)) {
-	    return;
-	  }
-	  if (empt) {
-	    done = Standard_True;
-	    return;
-	  }
-	}
-	break;
-
-      default:
-	{
-	  Standard_ConstructionError::Raise();
-	  break;
-	}
+    //
+    case 14:
+    case 41: { // Plane/Sphere
+      if (!IntPSp(quad1, quad2, Tolang, TolTang, bReverse, empt, slin, spnt)) {
+        return;
       }
-
+      bEmpty = empt;
+      break;
     }
-    break;
-    default:
-    {
+    //
+    case 15:
+    case 51: { // Plane/Torus
+      if (!IntPTo(quad1, quad2, TolTang, bReverse, empt, slin)) {
+        return;
+      }
+      bEmpty = empt;
+      break;
+    }
+    //
+    case 22: { // Cylinder/Cylinder
+      if (!IntCyCy(quad1, quad2, TolTang, empt, SameSurf, multpoint, slin, spnt)) {
+        return;
+      }
+      bEmpty = empt;
+      break;
+    }
+    //
+    case 23:
+    case 32: { // Cylinder/Cone
+      if (!IntCyCo(quad1, quad2, TolTang, bReverse, empt, multpoint, slin, spnt)) {
+        return;
+      }
+      bEmpty = empt;
+      break;
+    }
+    //
+    case 24:
+    case 42: { // Cylinder/Sphere
+      if (!IntCySp(quad1, quad2, TolTang, bReverse, empt, multpoint, slin, spnt)) {
+        return;
+      }
+      bEmpty = empt;
+      break;
+    }
+    //
+    case 25:
+    case 52: { // Cylinder/Torus
+      if (!IntCyTo(quad1, quad2, TolTang, bReverse, empt, slin)) {
+        return;
+      }
+      bEmpty = empt;
+      break;
+    }
+    //
+    case 33: { // Cone/Cone
+      if (!IntCoCo(quad1, quad2, TolTang, empt, SameSurf, multpoint, slin, spnt)) {
+        return;
+      }
+      bEmpty = empt;
+      break;
+    }
+    //
+    case 34:
+    case 43: { // Cone/Sphere
+      if (!IntCoSp(quad1, quad2, TolTang, bReverse, empt, multpoint, slin, spnt)) {
+        return;
+      }
+      bEmpty = empt;
+      break;
+    }
+    //
+    case 35:
+    case 53: { // Cone/Torus
+      if (!IntCoTo(quad1, quad2, TolTang, bReverse, empt, slin)) {
+        return;
+      }
+      break;
+    }
+    //
+    case 44: { // Sphere/Sphere
+      if (!IntSpSp(quad1, quad2, TolTang, empt, SameSurf, slin, spnt)) {
+        return;
+      }
+      bEmpty = empt;
+      break;
+    }
+    //
+    case 45:
+    case 54: { // Sphere/Torus
+      if (!IntSpTo(quad1, quad2, TolTang, bReverse, empt, slin)) {
+        return;
+      }
+      bEmpty = empt;
+      break;
+    }
+    //
+    case 55: { // Torus/Torus
+      if (!IntToTo(quad1, quad2, TolTang, SameSurf, empt, slin)) {
+        return;
+      }
+      bEmpty = empt;
+      break;
+    }
+    //
+    default: {
       Standard_ConstructionError::Raise();
       break;
     }
-  } //switch (typs1) {
+  }
+  //
+  if (bEmpty) {
+    done = Standard_True;
+    return;
+  }
   //
   if (!SameSurf) {
     AFunc.SetQuadric(quad2);
@@ -462,6 +325,10 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
       Ptreference = ElSLib::Value(0.,10.,S1->Cone());
     }
       break;
+    case GeomAbs_Torus:      {
+      Ptreference = ElSLib::Value(0.,0.,S1->Torus());
+    }
+      break;
     default: 
       break;
     }
@@ -475,10 +342,10 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
     empt = Standard_False;
     // C est la qu il faut commencer a bosser...
     PutPointsOnLine(S1,S2,pnt1, slin, Standard_True, D1, quad1,quad2,
-		    multpoint,TolArc);
+                    multpoint,TolArc);
     
     PutPointsOnLine(S1,S2,pnt2, slin, Standard_False,D2, quad2,quad1,
-		    multpoint,TolArc);
+                    multpoint,TolArc);
 
     if (edg1.Length() != 0) {
       ProcessSegments(edg1,slin,quad1,quad2,Standard_True,TolArc);
@@ -519,7 +386,7 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
       aState2=D2->Classify(aP2D, TolArc);
       //
       if(aState1!=TopAbs_OUT && aState2!=TopAbs_OUT) {
-	aSIP.Append(aIP);
+        aSIP.Append(aIP);
       }
     }
     //
@@ -567,22 +434,22 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
       const Handle(IntPatch_GLine)& glin = *((Handle(IntPatch_GLine)*)&slin.Value(i));
       nbv = glin->NbVertex();
       if(glin->NbVertex() == 0) { 
-	gp_Circ Circ = glin->Circle();
-	P=ElCLib::Value(0.0,Circ);
-	quad1.Parameters(P,u1,v1);
-	quad2.Parameters(P,u2,v2);
-	point.SetValue(P,TolArc,Standard_False);
-	point.SetParameters(u1,v1,u2,v2);
-	point.SetParameter(0.0);
-	glin->AddVertex(point);
+        gp_Circ Circ = glin->Circle();
+        P=ElCLib::Value(0.0,Circ);
+        quad1.Parameters(P,u1,v1);
+        quad2.Parameters(P,u2,v2);
+        point.SetValue(P,TolArc,Standard_False);
+        point.SetParameters(u1,v1,u2,v2);
+        point.SetParameter(0.0);
+        glin->AddVertex(point);
 
-	P=ElCLib::Value(0.0,Circ);
-	quad1.Parameters(P,u1,v1);
-	quad2.Parameters(P,u2,v2);
-	point.SetValue(P,TolArc,Standard_False);
-	point.SetParameters(u1,v1,u2,v2);
-	point.SetParameter(M_PI+M_PI);
-	glin->AddVertex(point);
+        P=ElCLib::Value(0.0,Circ);
+        quad1.Parameters(P,u1,v1);
+        quad2.Parameters(P,u2,v2);
+        point.SetValue(P,TolArc,Standard_False);
+        point.SetParameters(u1,v1,u2,v2);
+        point.SetParameter(M_PI+M_PI);
+        glin->AddVertex(point);
       }
     }
     
@@ -590,25 +457,63 @@ void IntPatch_ImpImpIntersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
       const Handle(IntPatch_GLine)& glin = *((Handle(IntPatch_GLine)*)&slin.Value(i));
       nbv = glin->NbVertex();
       if(glin->NbVertex() == 0) { 
-	gp_Elips Elips = glin->Ellipse();
-	P=ElCLib::Value(0.0,Elips);
-	quad1.Parameters(P,u1,v1);
-	quad2.Parameters(P,u2,v2);
-	point.SetValue(P,TolArc,Standard_False);
-	point.SetParameters(u1,v1,u2,v2);
-	point.SetParameter(0.0);
-	glin->AddVertex(point);
+        gp_Elips Elips = glin->Ellipse();
+        P=ElCLib::Value(0.0,Elips);
+        quad1.Parameters(P,u1,v1);
+        quad2.Parameters(P,u2,v2);
+        point.SetValue(P,TolArc,Standard_False);
+        point.SetParameters(u1,v1,u2,v2);
+        point.SetParameter(0.0);
+        glin->AddVertex(point);
 
-	P=ElCLib::Value(0.0,Elips);
-	quad1.Parameters(P,u1,v1);
-	quad2.Parameters(P,u2,v2);
-	point.SetValue(P,TolArc,Standard_False);
-	point.SetParameters(u1,v1,u2,v2);
-	point.SetParameter(M_PI+M_PI);
-	glin->AddVertex(point);
+        P=ElCLib::Value(0.0,Elips);
+        quad1.Parameters(P,u1,v1);
+        quad2.Parameters(P,u2,v2);
+        point.SetValue(P,TolArc,Standard_False);
+        point.SetParameters(u1,v1,u2,v2);
+        point.SetParameter(M_PI+M_PI);
+        glin->AddVertex(point);
       }
     }
   }
   done = Standard_True;
+}
+
+//=======================================================================
+//function : SetQuad
+//purpose  : 
+//=======================================================================
+Standard_Integer SetQuad(const Handle(Adaptor3d_HSurface)& theS,
+                         GeomAbs_SurfaceType& theTS,
+                         IntSurf_Quadric& theQuad)
+{
+  theTS = theS->GetType();
+  Standard_Integer iRet = 0;
+  switch (theTS) {
+  case GeomAbs_Plane:
+    theQuad.SetValue(theS->Plane());
+    iRet = 1;
+    break;
+  case GeomAbs_Cylinder:
+    theQuad.SetValue(theS->Cylinder());
+    iRet = 2;
+    break;
+  case GeomAbs_Cone:
+    theQuad.SetValue(theS->Cone());
+    iRet = 3;
+    break;
+  case GeomAbs_Sphere:
+    theQuad.SetValue(theS->Sphere());
+    iRet = 4;
+    break;
+  case GeomAbs_Torus:
+    theQuad.SetValue(theS->Torus());
+    iRet = 5;
+    break;
+  default:
+    break;
+  }
+  //
+  return iRet;
 }
 

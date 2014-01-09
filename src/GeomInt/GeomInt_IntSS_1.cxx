@@ -1113,6 +1113,7 @@ Standard_Real ProjectPointOnSurf::LowerDistance() const
     case GeomAbs_Cylinder: quad1.SetValue(HS1->Surface().Cylinder()); break;
     case GeomAbs_Cone:     quad1.SetValue(HS1->Surface().Cone()); break;
     case GeomAbs_Sphere:   quad1.SetValue(HS1->Surface().Sphere()); break;
+    case GeomAbs_Torus:    quad1.SetValue(HS1->Surface().Torus()); break;
     default: Standard_ConstructionError::Raise("GeomInt_IntSS::MakeCurve");
   }
 }

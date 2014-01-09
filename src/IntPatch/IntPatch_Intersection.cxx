@@ -849,7 +849,79 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
     case GeomAbs_Cone: ts2 = 1; break;
     default: break;
   }
-
+  //
+  // treatment of the cases with torus and any other geom surface
+  if ((typs1 == GeomAbs_Torus && ts2) ||
+      (typs2 == GeomAbs_Torus && ts1) ||
+      (typs1 == GeomAbs_Torus && typs2 == GeomAbs_Torus)) {
+    // check if axes collinear
+    //
+    const Handle(Adaptor3d_HSurface)& aTorSurf = 
+      (typs1 == GeomAbs_Torus) ? theS1 : theS2;
+    const Handle(Adaptor3d_HSurface)& aGeomSurf = 
+      (typs1 == GeomAbs_Torus) ? theS2 : theS1;
+    //
+    Standard_Boolean bValid = 
+      aTorSurf->Torus().MajorRadius() > aTorSurf->Torus().MinorRadius();
+    if (bValid && (typs1 == typs2)) {
+      bValid = aGeomSurf->Torus().MajorRadius() > aGeomSurf->Torus().MinorRadius();
+    }
+    //
+    if (bValid) {
+      Standard_Boolean bCheck, bImpImp;
+      const gp_Ax1 aTorAx = aTorSurf->Torus().Axis();
+      const gp_Lin aL1(aTorAx);
+      //
+      bCheck = Standard_True;
+      bImpImp = Standard_False;
+      //
+      gp_Ax1 aGeomAx;
+      switch (aGeomSurf->GetType()) {
+      case GeomAbs_Plane: {
+        aGeomAx = aGeomSurf->Plane().Axis();
+        if (aTorAx.IsParallel(aGeomAx, Precision::Angular()) ||
+            (aTorAx.IsNormal(aGeomAx, Precision::Angular()) && 
+             (aGeomSurf->Plane().Distance(aTorAx.Location()) < Precision::Confusion()))) {
+          bImpImp = Standard_True;
+        }
+        bCheck = Standard_False;
+        break;
+      }
+      case GeomAbs_Sphere: {
+        if (aL1.Distance(aGeomSurf->Sphere().Location()) < Precision::Confusion()) {
+          bImpImp = Standard_True;
+        }
+        bCheck = Standard_False;
+        break;
+      }
+      case GeomAbs_Cylinder:
+        aGeomAx = aGeomSurf->Cylinder().Axis();
+        break;
+      case GeomAbs_Cone: 
+        aGeomAx = aGeomSurf->Cone().Axis();
+        break;
+      case GeomAbs_Torus: 
+        aGeomAx = aGeomSurf->Torus().Axis();
+        break;
+      default: 
+        bCheck = Standard_False;
+        break;
+      }
+      //
+      if (bCheck) {
+        if (aTorAx.IsParallel(aGeomAx, Precision::Angular()) &&
+            (aL1.Distance(aGeomAx.Location()) <= Precision::Confusion())) {
+          bImpImp = Standard_True;
+        }
+      }
+      //
+      if (bImpImp) {
+        ts1 = 1;
+        ts2 = 1;
+      }
+    }
+  }
+  //
   // Possible intersection types: 1. ts1 == ts2 == 1 <Geom-Geom>
   //                              2. ts1 != ts2      <Geom-Param>
   //                              3. ts1 == ts2 == 0 <Param-Param>
@@ -1028,7 +1100,79 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
     case GeomAbs_Cone: ts2 = 1; break;
     default: break;
   }
-
+  //
+  // treatment of the cases with torus and any other geom surface
+  if ((typs1 == GeomAbs_Torus && ts2) ||
+      (typs2 == GeomAbs_Torus && ts1) ||
+      (typs1 == GeomAbs_Torus && typs2 == GeomAbs_Torus)) {
+    // check if axes collinear
+    //
+    const Handle(Adaptor3d_HSurface)& aTorSurf = 
+      (typs1 == GeomAbs_Torus) ? theS1 : theS2;
+    const Handle(Adaptor3d_HSurface)& aGeomSurf = 
+      (typs1 == GeomAbs_Torus) ? theS2 : theS1;
+    //
+    Standard_Boolean bValid = 
+      aTorSurf->Torus().MajorRadius() > aTorSurf->Torus().MinorRadius();
+    if (bValid && (typs1 == typs2)) {
+      bValid = aGeomSurf->Torus().MajorRadius() > aGeomSurf->Torus().MinorRadius();
+    }
+    //
+    if (bValid) {
+      Standard_Boolean bCheck, bImpImp;
+      const gp_Ax1 aTorAx = aTorSurf->Torus().Axis();
+      const gp_Lin aL1(aTorAx);
+      //
+      bCheck = Standard_True;
+      bImpImp = Standard_False;
+      //
+      gp_Ax1 aGeomAx;
+      switch (aGeomSurf->GetType()) {
+      case GeomAbs_Plane: {
+        aGeomAx = aGeomSurf->Plane().Axis();
+        if (aTorAx.IsParallel(aGeomAx, Precision::Angular()) ||
+            (aTorAx.IsNormal(aGeomAx, Precision::Angular()) && 
+             (aGeomSurf->Plane().Distance(aTorAx.Location()) < Precision::Confusion()))) {
+          bImpImp = Standard_True;
+        }
+        bCheck = Standard_False;
+        break;
+      }
+      case GeomAbs_Sphere: {
+        if (aL1.Distance(aGeomSurf->Sphere().Location()) < Precision::Confusion()) {
+          bImpImp = Standard_True;
+        }
+        bCheck = Standard_False;
+        break;
+      }
+      case GeomAbs_Cylinder:
+        aGeomAx = aGeomSurf->Cylinder().Axis();
+        break;
+      case GeomAbs_Cone: 
+        aGeomAx = aGeomSurf->Cone().Axis();
+        break;
+      case GeomAbs_Torus: 
+        aGeomAx = aGeomSurf->Torus().Axis();
+        break;
+      default: 
+        bCheck = Standard_False;
+        break;
+      }
+      //
+      if (bCheck) {
+        if (aTorAx.IsParallel(aGeomAx, Precision::Angular()) &&
+            (aL1.Distance(aGeomAx.Location()) <= Precision::Confusion())) {
+          bImpImp = Standard_True;
+        }
+      }
+      //
+      if (bImpImp) {
+        ts1 = 1;
+        ts2 = 1;
+      }
+    }
+  }
+  //
   // Possible intersection types: 1. ts1 == ts2 == 1 <Geom-Geom>
   //                              2. ts1 != ts2      <Geom-Param>
   //                              3. ts1 == ts2 == 0 <Param-Param>
@@ -1215,6 +1359,10 @@ void IntPatch_Intersection::GeomGeomPerfom(const Handle(Adaptor3d_HSurface)& the
             Quad1.SetValue(theS1->Cone());
             break;
 
+          case GeomAbs_Torus:
+            Quad1.SetValue(theS1->Torus());
+            break;
+
           default:
             break;
           }
@@ -1234,6 +1382,10 @@ void IntPatch_Intersection::GeomGeomPerfom(const Handle(Adaptor3d_HSurface)& the
 
           case GeomAbs_Cone:
             Quad2.SetValue(theS2->Cone());
+            break;
+
+          case GeomAbs_Torus:
+            Quad2.SetValue(theS2->Torus());
             break;
 
           default:

@@ -328,14 +328,11 @@
             break;
             //
             case TopAbs_EDGE: {
-              Standard_Boolean bHasSameBounds;
-              Standard_Integer aNbComPrt2;
-              //
-              aNbComPrt2=aCPart.Ranges2().Length();
-              if (aNbComPrt2>1){
+              if (aNbCPrts > 1) {
                 break;
               }
-              //// <-LXBR   
+              //
+              Standard_Boolean bHasSameBounds;
               bHasSameBounds=aPB1->HasSameBounds(aPB2);
               if (!bHasSameBounds) {
                 break;

@@ -59,8 +59,8 @@ class AxeOperator {
   AxeOperator(const gp_Ax1& A1,const gp_Ax1& A2);
 
   void Distance(Standard_Real& dist,
-		Standard_Real& Param1,
-		Standard_Real& Param2);
+                Standard_Real& Param1,
+                Standard_Real& Param2);
   
   gp_Pnt PtIntersect()              { 
     return ptintersect;
@@ -86,14 +86,14 @@ class AxeOperator {
 
  protected:
   Standard_Real Det33(const Standard_Real a11,
-		      const Standard_Real a12,
-		      const Standard_Real a13,
-		      const Standard_Real a21,
-		      const Standard_Real a22,
-		      const Standard_Real a23,
-		      const Standard_Real a31,
-		      const Standard_Real a32,
-		      const Standard_Real a33) {
+                      const Standard_Real a12,
+                      const Standard_Real a13,
+                      const Standard_Real a21,
+                      const Standard_Real a22,
+                      const Standard_Real a23,
+                      const Standard_Real a31,
+                      const Standard_Real a32,
+                      const Standard_Real a33) {
     Standard_Real theReturn =  
       a11*(a22*a33-a32*a23) - a21*(a12*a33-a32*a13) + a31*(a12*a23-a22*a13) ;   
     return theReturn ;
@@ -143,14 +143,14 @@ class AxeOperator {
   }
   else {   
     thedistance = Abs(gp_Vec(perp.Normalized()).Dot(gp_Vec(Axe1.Location(),
-							   Axe2.Location())));
+                                                           Axe2.Location())));
   }
   //--- check if Axis are Coplanar
   Standard_Real D33;
   if(thedistance<myEPSILON_DISTANCE) {
     D33=Det33(V1.X(),V1.Y(),V1.Z()
-	      ,V2.X(),V2.Y(),V2.Z()
-	      ,P1.X()-P2.X(),P1.Y()-P2.Y(),P1.Z()-P2.Z());
+              ,V2.X(),V2.Y(),V2.Z()
+              ,P1.X()-P2.X(),P1.Y()-P2.Y(),P1.Z()-P2.Z());
     if(Abs(D33)<=myEPSILON_DISTANCE) { 
       thecoplanar=Standard_True;
     }
@@ -173,16 +173,16 @@ class AxeOperator {
       A=(smy * V2.X() - smx * V2.Y())/Det1;
     }
     else if((Det2!=0.0) 
-	    && ((Abs(Det2) >= Abs(Det1))
-		&&(Abs(Det2) >= Abs(Det3)))) {
+            && ((Abs(Det2) >= Abs(Det1))
+                &&(Abs(Det2) >= Abs(Det3)))) {
       A=(smz * V2.Y() - smy * V2.Z())/Det2;
     }
     else {
       A=(smz * V2.X() - smx * V2.Z())/Det3;
     }
     ptintersect.SetCoord( P1.X() + A * V1.X()
-			 ,P1.Y() + A * V1.Y()
-			 ,P1.Z() + A * V1.Z());
+                         ,P1.Y() + A * V1.Y()
+                         ,P1.Z() + A * V1.Z());
   }
   else { 
     ptintersect.SetCoord(0,0,0);  //-- Pour eviter des FPE
@@ -200,22 +200,22 @@ class AxeOperator {
   
   gp_Dir N  = U1.Crossed(U2);
   Standard_Real D = Det33(U1.X(),U2.X(),N.X(),
-			  U1.Y(),U2.Y(),N.Y(),
-			  U1.Z(),U2.Z(),N.Z());
+                          U1.Y(),U2.Y(),N.Y(),
+                          U1.Z(),U2.Z(),N.Z());
   if(D) { 
     dist = Det33(U1.X(),U2.X(),O1O2.X(),
-		 U1.Y(),U2.Y(),O1O2.Y(),
-		 U1.Z(),U2.Z(),O1O2.Z()) / D;
+                 U1.Y(),U2.Y(),O1O2.Y(),
+                 U1.Z(),U2.Z(),O1O2.Z()) / D;
     Param1 = Det33(O1O2.X(),U2.X(),N.X(),
-		   O1O2.Y(),U2.Y(),N.Y(),
-		   O1O2.Z(),U2.Z(),N.Z()) / (-D);
+                   O1O2.Y(),U2.Y(),N.Y(),
+                   O1O2.Z(),U2.Z(),N.Z()) / (-D);
     //------------------------------------------------------------
     //-- On resout P1 * Dir1 + P2 * Dir2 + d * N = O1O2
     //-- soit : Segment perpendiculaire : O1+P1 D1
     //--                                  O2-P2 D2
     Param2 = Det33(U1.X(),O1O2.X(),N.X(),
-		   U1.Y(),O1O2.Y(),N.Y(),
-		   U1.Z(),O1O2.Z(),N.Z()) / (D);
+                   U1.Y(),O1O2.Y(),N.Y(),
+                   U1.Z(),O1O2.Z(),N.Z()) / (D);
   }
 }
 //=======================================================================
@@ -247,8 +247,12 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
       typeres(IntAna_Empty),
       pt1(0,0,0),
       pt2(0,0,0),
+      pt3(0,0,0),
+      pt4(0,0,0),
       param1(0),
       param2(0),
+      param3(0),
+      param4(0),
       param1bis(0),
       param2bis(0),
       myCommonGen(Standard_False),
@@ -274,16 +278,20 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 //purpose  : Pln  Pln 
 //=======================================================================
   IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Pln& P1, 
-					 const gp_Pln& P2,
-					 const Standard_Real TolAng,
-					 const Standard_Real Tol)
+                                         const gp_Pln& P2,
+                                         const Standard_Real TolAng,
+                                         const Standard_Real Tol)
 : done(Standard_False),
   nbint(0),
   typeres(IntAna_Empty),
   pt1(0,0,0),
   pt2(0,0,0),
+  pt3(0,0,0),
+  pt4(0,0,0),
   param1(0),
   param2(0),
+  param3(0),
+  param4(0),
   param1bis(0),
   param2bis(0),
   myCommonGen(Standard_False),
@@ -297,9 +305,9 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 //purpose  : 
 //=======================================================================
   void IntAna_QuadQuadGeo::Perform (const gp_Pln& P1, 
-				    const gp_Pln& P2,
-				    const Standard_Real TolAng,
-				    const Standard_Real Tol)
+                                    const gp_Pln& P2,
+                                    const Standard_Real TolAng,
+                                    const Standard_Real Tol)
 {
   done=Standard_False;
   //
@@ -360,8 +368,12 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
       typeres(IntAna_Empty),
       pt1(0,0,0),
       pt2(0,0,0),
+      pt3(0,0,0),
+      pt4(0,0,0),
       param1(0),
       param2(0),
+      param3(0),
+      param4(0),
       param1bis(0),
       param2bis(0),
       myCommonGen(Standard_False),
@@ -409,15 +421,15 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
       Standard_Real dang = Abs( ldv.Angle( npv ) ) - M_PI/2.;
       Standard_Real dangle = Abs( dang );
       if( dangle > Tolang )
-	{
-	  Standard_Real sinda = Abs( Sin( dangle ) );
-	  Standard_Real dif = Abs( sinda - Tol );
-	  if( dif < Tol )
-	    {
-	      tolang = sinda * 2.;
-	      newparams = Standard_True;
-	    }
-	}
+        {
+          Standard_Real sinda = Abs( Sin( dangle ) );
+          Standard_Real dif = Abs( sinda - Tol );
+          if( dif < Tol )
+            {
+              tolang = sinda * 2.;
+              newparams = Standard_True;
+            }
+        }
     }
 
   nbint = 0;
@@ -432,62 +444,62 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 
     if (Abs(Abs(dist)-radius) < Tol)
       {
-	nbint = 1;
-	pt1.SetXYZ(omega);
+        nbint = 1;
+        pt1.SetXYZ(omega);
 
-	if( newparams )
-	  {
-	    gp_XYZ omegaXYZ(X,Y,Z);
-	    gp_XYZ omegaXYZtrnsl( omegaXYZ + 100.*axec.Direction().XYZ() );
-	    Standard_Real Xt,Yt,Zt,distt;
-	    omegaXYZtrnsl.Coord(Xt,Yt,Zt);
-	    distt = A*Xt + B*Yt + C*Zt + D;
-	    gp_XYZ omega1( omegaXYZtrnsl.X()-distt*A, omegaXYZtrnsl.Y()-distt*B, omegaXYZtrnsl.Z()-distt*C );
-	    gp_Pnt ppt1;
-	    ppt1.SetXYZ( omega1 );
-	    gp_Vec vv1(pt1,ppt1);
-	    gp_Dir dd1( vv1 );
-	    dir1 = dd1;
-	  }
-	else
-	  dir1 = axec.Direction();
+        if( newparams )
+          {
+            gp_XYZ omegaXYZ(X,Y,Z);
+            gp_XYZ omegaXYZtrnsl( omegaXYZ + 100.*axec.Direction().XYZ() );
+            Standard_Real Xt,Yt,Zt,distt;
+            omegaXYZtrnsl.Coord(Xt,Yt,Zt);
+            distt = A*Xt + B*Yt + C*Zt + D;
+            gp_XYZ omega1( omegaXYZtrnsl.X()-distt*A, omegaXYZtrnsl.Y()-distt*B, omegaXYZtrnsl.Z()-distt*C );
+            gp_Pnt ppt1;
+            ppt1.SetXYZ( omega1 );
+            gp_Vec vv1(pt1,ppt1);
+            gp_Dir dd1( vv1 );
+            dir1 = dd1;
+          }
+        else
+          dir1 = axec.Direction();
     }
     else if (Abs(dist) < radius)
       {
-	nbint = 2;
-	h = Sqrt(radius*radius - dist*dist);
-	axey = axec.Direction().XYZ().Crossed(normp); // axey est normalise
+        nbint = 2;
+        h = Sqrt(radius*radius - dist*dist);
+        axey = axec.Direction().XYZ().Crossed(normp); // axey est normalise
 
-	pt1.SetXYZ(omega - h*axey);
-	pt2.SetXYZ(omega + h*axey);
+        pt1.SetXYZ(omega - h*axey);
+        pt2.SetXYZ(omega + h*axey);
 
-	if( newparams )
-	  { 
-	    gp_XYZ omegaXYZ(X,Y,Z);
-	    gp_XYZ omegaXYZtrnsl( omegaXYZ + 100.*axec.Direction().XYZ() );
-	    Standard_Real Xt,Yt,Zt,distt,ht;
-	    omegaXYZtrnsl.Coord(Xt,Yt,Zt);
-	    distt = A*Xt + B*Yt + C*Zt + D;
-	    // 	    ht = Sqrt(radius*radius - distt*distt);
-	    Standard_Real anSqrtArg = radius*radius - distt*distt;
-	    ht = (anSqrtArg > 0.) ? Sqrt(anSqrtArg) : 0.;
+        if( newparams )
+          { 
+            gp_XYZ omegaXYZ(X,Y,Z);
+            gp_XYZ omegaXYZtrnsl( omegaXYZ + 100.*axec.Direction().XYZ() );
+            Standard_Real Xt,Yt,Zt,distt,ht;
+            omegaXYZtrnsl.Coord(Xt,Yt,Zt);
+            distt = A*Xt + B*Yt + C*Zt + D;
+            //             ht = Sqrt(radius*radius - distt*distt);
+            Standard_Real anSqrtArg = radius*radius - distt*distt;
+            ht = (anSqrtArg > 0.) ? Sqrt(anSqrtArg) : 0.;
 
-	    gp_XYZ omega1( omegaXYZtrnsl.X()-distt*A, omegaXYZtrnsl.Y()-distt*B, omegaXYZtrnsl.Z()-distt*C );
-	    gp_Pnt ppt1,ppt2;
-	    ppt1.SetXYZ( omega1 - ht*axey);
-	    ppt2.SetXYZ( omega1 + ht*axey);
-	    gp_Vec vv1(pt1,ppt1);
-	    gp_Vec vv2(pt2,ppt2);
-	    gp_Dir dd1( vv1 );
-	    gp_Dir dd2( vv2 );
-	    dir1 = dd1;
-	    dir2 = dd2;
-	  }
-	else
-	  {
-	    dir1 = axec.Direction();
-	    dir2 = axec.Direction();
-	  }
+            gp_XYZ omega1( omegaXYZtrnsl.X()-distt*A, omegaXYZtrnsl.Y()-distt*B, omegaXYZtrnsl.Z()-distt*C );
+            gp_Pnt ppt1,ppt2;
+            ppt1.SetXYZ( omega1 - ht*axey);
+            ppt2.SetXYZ( omega1 + ht*axey);
+            gp_Vec vv1(pt1,ppt1);
+            gp_Vec vv2(pt2,ppt2);
+            gp_Dir dd1( vv1 );
+            gp_Dir dd2( vv2 );
+            dir1 = dd1;
+            dir2 = dd2;
+          }
+        else
+          {
+            dir1 = axec.Direction();
+            dir2 = axec.Direction();
+          }
     }
     //  else nbint = 0
 
@@ -538,16 +550,20 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 //purpose  : Pln Cone
 //=======================================================================
   IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Pln& P,
-					 const gp_Cone& Co,
-					 const Standard_Real Tolang,
-					 const Standard_Real Tol) 
+                                         const gp_Cone& Co,
+                                         const Standard_Real Tolang,
+                                         const Standard_Real Tol) 
 : done(Standard_False),
   nbint(0),
   typeres(IntAna_Empty),
   pt1(0,0,0),
   pt2(0,0,0),
+  pt3(0,0,0),
+  pt4(0,0,0),
   param1(0),
   param2(0),
+  param3(0),
+  param4(0),
   param1bis(0),
   param2bis(0),
   myCommonGen(Standard_False),
@@ -561,9 +577,9 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 //purpose  : 
 //=======================================================================
   void IntAna_QuadQuadGeo::Perform(const gp_Pln& P,
-				   const gp_Cone& Co,
-				   const Standard_Real Tolang,
-				   const Standard_Real Tol) 
+                                   const gp_Cone& Co,
+                                   const Standard_Real Tolang,
+                                   const Standard_Real Tol) 
 {
 
   done = Standard_False;
@@ -669,53 +685,53 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
       distance = apex.Distance(center);
 
       if (inter.ParamOnConic(1) + Co.RefRadius()/Tan(angl) < 0.) {
-	axex.Reverse();
-	axey.Reverse();
+        axex.Reverse();
+        axey.Reverse();
       }
 
       if (Abs(costa) < Tolang) {  // plan parallele a une generatrice
-	typeres = IntAna_Parabola;
-	nbint = 1;
-	deltacenter = distance/2./cosa;
-	axex.Normalize();
-	pt1.SetXYZ(center.XYZ()-deltacenter*axex);
-	dir1 = normp;
-	dir2.SetXYZ(axex);
-	param1 = deltacenter*sina*sina;
+        typeres = IntAna_Parabola;
+        nbint = 1;
+        deltacenter = distance/2./cosa;
+        axex.Normalize();
+        pt1.SetXYZ(center.XYZ()-deltacenter*axex);
+        dir1 = normp;
+        dir2.SetXYZ(axex);
+        param1 = deltacenter*sina*sina;
       }
       else if (sint  < Tolang) {            // plan perpendiculaire a l axe
-	typeres = IntAna_Circle;
-	nbint = 1;
-	pt1 = center;
-	dir1 = Co.Position().Direction();
-	dir2 = Co.Position().XDirection();
-	param1 = apex.Distance(center)*Abs(Tan(angl));
+        typeres = IntAna_Circle;
+        nbint = 1;
+        pt1 = center;
+        dir1 = Co.Position().Direction();
+        dir2 = Co.Position().XDirection();
+        param1 = apex.Distance(center)*Abs(Tan(angl));
       }
       else if (cost < sina ) {
-	typeres = IntAna_Hyperbola;
-	nbint = 2;
-	axex.Normalize();
+        typeres = IntAna_Hyperbola;
+        nbint = 2;
+        axex.Normalize();
 
-	deltacenter = sint*sina*sina*distance/(sina*sina - cost*cost);
-	pt1.SetXYZ(center.XYZ() - deltacenter*axex);
-	pt2 = pt1;
-	dir1 = normp;
-	dir2.SetXYZ(axex);
-	param1    = param2 = cost*sina*cosa*distance /(sina*sina-cost*cost);
-	param1bis = param2bis = cost*sina*distance / Sqrt(sina*sina-cost*cost);
+        deltacenter = sint*sina*sina*distance/(sina*sina - cost*cost);
+        pt1.SetXYZ(center.XYZ() - deltacenter*axex);
+        pt2 = pt1;
+        dir1 = normp;
+        dir2.SetXYZ(axex);
+        param1    = param2 = cost*sina*cosa*distance /(sina*sina-cost*cost);
+        param1bis = param2bis = cost*sina*distance / Sqrt(sina*sina-cost*cost);
 
       }
       else {                    // on a alors cost > sina
-	typeres = IntAna_Ellipse;
-	nbint = 1;
-	Standard_Real radius = cost*sina*cosa*distance/(cost*cost-sina*sina);
-	deltacenter = sint*sina*sina*distance/(cost*cost-sina*sina);
-	axex.Normalize();
-	pt1.SetXYZ(center.XYZ() + deltacenter*axex);
-	dir1 = normp;
-	dir2.SetXYZ(axex);
-	param1    = radius;
-	param1bis = cost*sina*distance/ Sqrt(cost*cost - sina*sina);
+        typeres = IntAna_Ellipse;
+        nbint = 1;
+        Standard_Real radius = cost*sina*cosa*distance/(cost*cost-sina*sina);
+        deltacenter = sint*sina*sina*distance/(cost*cost-sina*sina);
+        axex.Normalize();
+        pt1.SetXYZ(center.XYZ() + deltacenter*axex);
+        dir1 = normp;
+        dir2.SetXYZ(axex);
+        param1    = radius;
+        param1bis = cost*sina*distance/ Sqrt(cost*cost - sina*sina);
       }
     }
   }
@@ -752,14 +768,18 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 //purpose  : Pln Sphere
 //=======================================================================
   IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Pln& P,
-					 const gp_Sphere& S)
+                                         const gp_Sphere& S)
 : done(Standard_False),
   nbint(0),
   typeres(IntAna_Empty),
   pt1(0,0,0),
   pt2(0,0,0),
+  pt3(0,0,0),
+  pt4(0,0,0),
   param1(0),
   param2(0),
+  param3(0),
+  param4(0),
   param1bis(0),
   param2bis(0),
   myCommonGen(Standard_False),
@@ -773,7 +793,7 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 //purpose  : 
 //=======================================================================
   void IntAna_QuadQuadGeo::Perform( const gp_Pln& P
-				   ,const gp_Sphere& S) 
+                                   ,const gp_Sphere& S) 
 {
   
   done = Standard_False;
@@ -816,15 +836,19 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 //purpose  : Cylinder - Cylinder
 //=======================================================================
   IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Cylinder& Cyl1,
-					 const gp_Cylinder& Cyl2,
-					 const Standard_Real Tol) 
+                                         const gp_Cylinder& Cyl2,
+                                         const Standard_Real Tol) 
 : done(Standard_False),
   nbint(0),
   typeres(IntAna_Empty),
   pt1(0,0,0),
   pt2(0,0,0),
+  pt3(0,0,0),
+  pt4(0,0,0),
   param1(0),
   param2(0),
+  param3(0),
+  param4(0),
   param1bis(0),
   param2bis(0),
   myCommonGen(Standard_False),
@@ -838,8 +862,8 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 //purpose  : 
 //=======================================================================
   void IntAna_QuadQuadGeo::Perform(const gp_Cylinder& Cyl1,
-		     const gp_Cylinder& Cyl2,
-		     const Standard_Real Tol) 
+                     const gp_Cylinder& Cyl2,
+                     const Standard_Real Tol) 
 {
   done=Standard_True;
   //---------------------------- Parallel axes -------------------------
@@ -860,10 +884,10 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
   if(A1A2.Parallel()) {
     if(DistA1A2<=Tol) {
       if(RmR<=Tol) {
-	typeres=IntAna_Same;
+        typeres=IntAna_Same;
       }
       else {
-	typeres=IntAna_Empty;
+        typeres=IntAna_Empty;
       }
     }
     else {  //-- DistA1A2 > Tol
@@ -875,73 +899,73 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
       Standard_Real ProjP2OnDirCyl1=gp_Vec(DirCyl).Dot(gp_Vec(P1,P2t));
       
       P2.SetCoord( P2t.X() - ProjP2OnDirCyl1*DirCyl.X()
-		  ,P2t.Y() - ProjP2OnDirCyl1*DirCyl.Y()
-		  ,P2t.Z() - ProjP2OnDirCyl1*DirCyl.Z());
+                  ,P2t.Y() - ProjP2OnDirCyl1*DirCyl.Y()
+                  ,P2t.Z() - ProjP2OnDirCyl1*DirCyl.Z());
       //-- 
       Standard_Real R1pR2=R1+R2;
       if(DistA1A2>(R1pR2+Tol)) { 
-	typeres=IntAna_Empty;
-	nbint=0;
+        typeres=IntAna_Empty;
+        nbint=0;
       }
       else if(DistA1A2>(R1pR2)) {
-	//-- 1 Tangent line -------------------------------------OK
-	typeres=IntAna_Line;
+        //-- 1 Tangent line -------------------------------------OK
+        typeres=IntAna_Line;
 
-	nbint=1;
-	dir1=DirCyl;
-	Standard_Real R1_R1pR2=R1/R1pR2;
-	pt1.SetCoord( P1.X() + R1_R1pR2 * (P2.X()-P1.X())
-		     ,P1.Y() + R1_R1pR2 * (P2.Y()-P1.Y())
-		     ,P1.Z() + R1_R1pR2 * (P2.Z()-P1.Z()));
-	
+        nbint=1;
+        dir1=DirCyl;
+        Standard_Real R1_R1pR2=R1/R1pR2;
+        pt1.SetCoord( P1.X() + R1_R1pR2 * (P2.X()-P1.X())
+                     ,P1.Y() + R1_R1pR2 * (P2.Y()-P1.Y())
+                     ,P1.Z() + R1_R1pR2 * (P2.Z()-P1.Z()));
+        
       }
       else if(DistA1A2>RmR) {
-	//-- 2 lines ---------------------------------------------OK
-	typeres=IntAna_Line;
-	nbint=2;
-	dir1=DirCyl;
-	gp_Vec P1P2(P1,P2);
-	gp_Dir DirA1A2=gp_Dir(P1P2);
-	gp_Dir Ortho_dir1_P1P2 = dir1.Crossed(DirA1A2);
-	dir2=dir1;
-	Standard_Real Alpha=0.5*(R1*R1-R2*R2+DistA1A2*DistA1A2)/(DistA1A2);       
+        //-- 2 lines ---------------------------------------------OK
+        typeres=IntAna_Line;
+        nbint=2;
+        dir1=DirCyl;
+        gp_Vec P1P2(P1,P2);
+        gp_Dir DirA1A2=gp_Dir(P1P2);
+        gp_Dir Ortho_dir1_P1P2 = dir1.Crossed(DirA1A2);
+        dir2=dir1;
+        Standard_Real Alpha=0.5*(R1*R1-R2*R2+DistA1A2*DistA1A2)/(DistA1A2);       
 
-// 	Standard_Real Beta = Sqrt(R1*R1-Alpha*Alpha);
-	Standard_Real anSqrtArg = R1*R1-Alpha*Alpha;
-	Standard_Real Beta = (anSqrtArg > 0.) ? Sqrt(anSqrtArg) : 0.;
-	
-	if((Beta+Beta)<Tol) { 
-	  nbint=1;
-	  pt1.SetCoord( P1.X() + Alpha*DirA1A2.X()
-		       ,P1.Y() + Alpha*DirA1A2.Y()
-		       ,P1.Z() + Alpha*DirA1A2.Z());
-	}
-	else { 
-	  pt1.SetCoord( P1.X() + Alpha*DirA1A2.X() + Beta*Ortho_dir1_P1P2.X()
-		       ,P1.Y() + Alpha*DirA1A2.Y() + Beta*Ortho_dir1_P1P2.Y()
-		       ,P1.Z() + Alpha*DirA1A2.Z() + Beta*Ortho_dir1_P1P2.Z() );
-	  
-	  pt2.SetCoord( P1.X() + Alpha*DirA1A2.X() - Beta*Ortho_dir1_P1P2.X()
-		       ,P1.Y() + Alpha*DirA1A2.Y() - Beta*Ortho_dir1_P1P2.Y()
-		       ,P1.Z() + Alpha*DirA1A2.Z() - Beta*Ortho_dir1_P1P2.Z());
-	}
+//         Standard_Real Beta = Sqrt(R1*R1-Alpha*Alpha);
+        Standard_Real anSqrtArg = R1*R1-Alpha*Alpha;
+        Standard_Real Beta = (anSqrtArg > 0.) ? Sqrt(anSqrtArg) : 0.;
+        
+        if((Beta+Beta)<Tol) { 
+          nbint=1;
+          pt1.SetCoord( P1.X() + Alpha*DirA1A2.X()
+                       ,P1.Y() + Alpha*DirA1A2.Y()
+                       ,P1.Z() + Alpha*DirA1A2.Z());
+        }
+        else { 
+          pt1.SetCoord( P1.X() + Alpha*DirA1A2.X() + Beta*Ortho_dir1_P1P2.X()
+                       ,P1.Y() + Alpha*DirA1A2.Y() + Beta*Ortho_dir1_P1P2.Y()
+                       ,P1.Z() + Alpha*DirA1A2.Z() + Beta*Ortho_dir1_P1P2.Z() );
+          
+          pt2.SetCoord( P1.X() + Alpha*DirA1A2.X() - Beta*Ortho_dir1_P1P2.X()
+                       ,P1.Y() + Alpha*DirA1A2.Y() - Beta*Ortho_dir1_P1P2.Y()
+                       ,P1.Z() + Alpha*DirA1A2.Z() - Beta*Ortho_dir1_P1P2.Z());
+        }
       }
       else if(DistA1A2>(RmR-Tol)) {
-	//-- 1 Tangent ------------------------------------------OK
-	typeres=IntAna_Line;
-	nbint=1;
-	dir1=DirCyl;
-	Standard_Real R1_RmR=R1/RmR;
+        //-- 1 Tangent ------------------------------------------OK
+        typeres=IntAna_Line;
+        nbint=1;
+        dir1=DirCyl;
+        Standard_Real R1_RmR=R1/RmR;
 
-	if(R1 < R2) R1_RmR = -R1_RmR;
+        if(R1 < R2) R1_RmR = -R1_RmR;
 
-	pt1.SetCoord( P1.X() + R1_RmR * (P2.X()-P1.X())
-		     ,P1.Y() + R1_RmR * (P2.Y()-P1.Y())
-		     ,P1.Z() + R1_RmR * (P2.Z()-P1.Z()));
+        pt1.SetCoord( P1.X() + R1_RmR * (P2.X()-P1.X())
+                     ,P1.Y() + R1_RmR * (P2.Y()-P1.Y())
+                     ,P1.Z() + R1_RmR * (P2.Z()-P1.Z()));
       }
       else {
-	nbint=0;
-	typeres=IntAna_Empty;
+        nbint=0;
+        typeres=IntAna_Empty;
       }
     }
   }
@@ -962,51 +986,51 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
       A=Abs(Sin(0.5*A));
       
       if(A==0.0 || B==0.0) {
-	typeres=IntAna_Same;
-	return;
+        typeres=IntAna_Same;
+        return;
       }
       
       
       gp_Vec dircyl1(DirCyl1);gp_Vec dircyl2(DirCyl2);
       dir1 = gp_Dir(dircyl1.Added(dircyl2));
       dir2 = gp_Dir(dircyl1.Subtracted(dircyl2));
-	
+        
       param2   = Cyl1.Radius() / A;
       param1   = Cyl1.Radius() / B;
       param2bis= param1bis = Cyl1.Radius();
       if(param1 < param1bis) {
-	A=param1; param1=param1bis; param1bis=A;
+        A=param1; param1=param1bis; param1bis=A;
       }
       if(param2 < param2bis) {
-	A=param2; param2=param2bis; param2bis=A;
+        A=param2; param2=param2bis; param2bis=A;
       }
     }
     else {
       if(Abs(DistA1A2-Cyl1.Radius()-Cyl2.Radius())<Tol) { 
-	typeres = IntAna_Point;
-	Standard_Real d,p1,p2;
+        typeres = IntAna_Point;
+        Standard_Real d,p1,p2;
 
-	gp_Dir D1 = Cyl1.Axis().Direction();
-	gp_Dir D2 = Cyl2.Axis().Direction();
-	A1A2.Distance(d,p1,p2);
-	gp_Pnt P = Cyl1.Axis().Location();
-	gp_Pnt P1(P.X() - p1*D1.X(),
-		  P.Y() - p1*D1.Y(),
-		  P.Z() - p1*D1.Z());
-	P = Cyl2.Axis().Location();
-	gp_Pnt P2(P.X() - p2*D2.X(),
-		  P.Y() - p2*D2.Y(),
-		  P.Z() - p2*D2.Z());
-	gp_Vec P1P2(P1,P2);
-	D1=gp_Dir(P1P2);
-	p1=Cyl1.Radius();
-	pt1.SetCoord(P1.X() + p1*D1.X(),
-		     P1.Y() + p1*D1.Y(),
-		     P1.Z() + p1*D1.Z());
-	nbint = 1;
+        gp_Dir D1 = Cyl1.Axis().Direction();
+        gp_Dir D2 = Cyl2.Axis().Direction();
+        A1A2.Distance(d,p1,p2);
+        gp_Pnt P = Cyl1.Axis().Location();
+        gp_Pnt P1(P.X() - p1*D1.X(),
+                  P.Y() - p1*D1.Y(),
+                  P.Z() - p1*D1.Z());
+        P = Cyl2.Axis().Location();
+        gp_Pnt P2(P.X() - p2*D2.X(),
+                  P.Y() - p2*D2.Y(),
+                  P.Z() - p2*D2.Z());
+        gp_Vec P1P2(P1,P2);
+        D1=gp_Dir(P1P2);
+        p1=Cyl1.Radius();
+        pt1.SetCoord(P1.X() + p1*D1.X(),
+                     P1.Y() + p1*D1.Y(),
+                     P1.Z() + p1*D1.Z());
+        nbint = 1;
       }
       else {
-	typeres=IntAna_NoGeometricSolution;
+        typeres=IntAna_NoGeometricSolution;
       }
     }
   }
@@ -1016,15 +1040,19 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 //purpose  : Cylinder - Cone
 //=======================================================================
   IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Cylinder& Cyl,
-					 const gp_Cone& Con,
-					 const Standard_Real Tol) 
+                                         const gp_Cone& Con,
+                                         const Standard_Real Tol) 
 : done(Standard_False),
   nbint(0),
   typeres(IntAna_Empty),
   pt1(0,0,0),
   pt2(0,0,0),
+  pt3(0,0,0),
+  pt4(0,0,0),
   param1(0),
   param2(0),
+  param3(0),
+  param4(0),
   param1bis(0),
   param2bis(0),
   myCommonGen(Standard_False),
@@ -1038,8 +1066,8 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 //purpose  : 
 //=======================================================================
   void IntAna_QuadQuadGeo::Perform(const gp_Cylinder& Cyl,
-				   const gp_Cone& Con,
-				   const Standard_Real ) 
+                                   const gp_Cone& Con,
+                                   const Standard_Real ) 
 {
   done=Standard_True;
   AxeOperator A1A2(Cyl.Axis(),Con.Axis());
@@ -1048,11 +1076,11 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
     Standard_Real dist=Cyl.Radius()/(Tan(Con.SemiAngle()));
     gp_Dir dir=Cyl.Position().Direction();
     pt1.SetCoord( Pt.X() + dist*dir.X()
-		 ,Pt.Y() + dist*dir.Y()
-		 ,Pt.Z() + dist*dir.Z());
+                 ,Pt.Y() + dist*dir.Y()
+                 ,Pt.Z() + dist*dir.Z());
     pt2.SetCoord( Pt.X() - dist*dir.X()
-		 ,Pt.Y() - dist*dir.Y()
-		 ,Pt.Z() - dist*dir.Z());
+                 ,Pt.Y() - dist*dir.Y()
+                 ,Pt.Z() - dist*dir.Z());
     dir1=dir2=dir;
     param1=param2=Cyl.Radius();
     nbint=2;
@@ -1068,15 +1096,19 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 //purpose  : Cylinder - Sphere
 //=======================================================================
   IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Cylinder& Cyl,
-					 const gp_Sphere& Sph,
-					 const Standard_Real Tol) 
+                                         const gp_Sphere& Sph,
+                                         const Standard_Real Tol) 
 : done(Standard_False),
   nbint(0),
   typeres(IntAna_Empty),
   pt1(0,0,0),
   pt2(0,0,0),
+  pt3(0,0,0),
+  pt4(0,0,0),
   param1(0),
   param2(0),
+  param3(0),
+  param4(0),
   param1bis(0),
   param2bis(0),
   myCommonGen(Standard_False),
@@ -1090,8 +1122,8 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 //purpose  : 
 //=======================================================================
   void IntAna_QuadQuadGeo::Perform( const gp_Cylinder& Cyl
-				   ,const gp_Sphere& Sph
-				   ,const Standard_Real)
+                                   ,const gp_Sphere& Sph
+                                   ,const Standard_Real)
 {
   done=Standard_True;
   gp_Pnt Pt=Sph.Location();
@@ -1107,16 +1139,16 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
       dir1 = dir2 = dir;
       typeres=IntAna_Circle;
       pt1.SetCoord( Pt.X() + dist*dir.X()
-		   ,Pt.Y() + dist*dir.Y()
-		   ,Pt.Z() + dist*dir.Z());
+                   ,Pt.Y() + dist*dir.Y()
+                   ,Pt.Z() + dist*dir.Z());
       nbint=1;
       param1 = Cyl.Radius();
       if(dist>RealEpsilon()) {
-	pt2.SetCoord( Pt.X() - dist*dir.X()
-		     ,Pt.Y() - dist*dir.Y()
-		     ,Pt.Z() - dist*dir.Z());
-	param2=Cyl.Radius();
-	nbint=2;
+        pt2.SetCoord( Pt.X() - dist*dir.X()
+                     ,Pt.Y() - dist*dir.Y()
+                     ,Pt.Z() - dist*dir.Z());
+        param2=Cyl.Radius();
+        nbint=2;
       }
     }
   }
@@ -1130,15 +1162,19 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 //purpose  : Cone - Cone
 //=======================================================================
   IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Cone& Con1,
-					 const gp_Cone& Con2,
-					 const Standard_Real Tol) 
+                                         const gp_Cone& Con2,
+                                         const Standard_Real Tol) 
 : done(Standard_False),
   nbint(0),
   typeres(IntAna_Empty),
   pt1(0,0,0),
   pt2(0,0,0),
+  pt3(0,0,0),
+  pt4(0,0,0),
   param1(0),
   param2(0),
+  param3(0),
+  param4(0),
   param1bis(0),
   param2bis(0),
   myCommonGen(Standard_False),
@@ -1153,8 +1189,8 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 //purpose  : 
 //=======================================================================
   void IntAna_QuadQuadGeo::Perform(const gp_Cone& Con1,
-				   const gp_Cone& Con2,
-				   const Standard_Real Tol) 
+                                   const gp_Cone& Con2,
+                                   const Standard_Real Tol) 
 {
   done=Standard_True;
   //
@@ -1188,21 +1224,21 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
     
     if(Abs(tg1-tg2)>myEPSILON_ANGLE_CONE) { 
       if (fabs(d) < TOL_APEX_CONF) {
-	typeres = IntAna_Point;
-	nbint = 1;
-	pt1 = P;
-	return;
+        typeres = IntAna_Point;
+        nbint = 1;
+        pt1 = P;
+        return;
       }
       x=(d*tg2)/(tg1+tg2);
       pt1.SetCoord( P.X() + x*D.X()
-		   ,P.Y() + x*D.Y()
-		   ,P.Z() + x*D.Z());
+                   ,P.Y() + x*D.Y()
+                   ,P.Z() + x*D.Z());
       param1=Abs(x*tg1);
 
       x=(d*tg2)/(tg2-tg1);
       pt2.SetCoord( P.X() + x*D.X()
-		   ,P.Y() + x*D.Y()
-		   ,P.Z() + x*D.Z());
+                   ,P.Y() + x*D.Y()
+                   ,P.Z() + x*D.Z());
       param2=Abs(x*tg1);
       dir1 = dir2 = D;
       nbint=2;
@@ -1210,17 +1246,17 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
     }
     else {
       if (fabs(d) < TOL_APEX_CONF) { 
-	typeres=IntAna_Same;
+        typeres=IntAna_Same;
       }
       else {
-	typeres=IntAna_Circle;
-	nbint=1;
-	x=d*0.5;
-	pt1.SetCoord( P.X() + x*D.X()
-		     ,P.Y() + x*D.Y()
-		     ,P.Z() + x*D.Z());
-	param1 = Abs(x * tg1);
-	dir1 = D;
+        typeres=IntAna_Circle;
+        nbint=1;
+        x=d*0.5;
+        pt1.SetCoord( P.X() + x*D.X()
+                     ,P.Y() + x*D.Y()
+                     ,P.Z() + x*D.Z());
+        param1 = Abs(x * tg1);
+        dir1 = D;
       }
     }
   } //-- fin A1A2.Same
@@ -1234,8 +1270,8 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
     Standard_Real O1O2_DA1=gp_Vec(DA1).Dot(gp_Vec(O1O2n));
 
     gp_Vec O1_Proj_A2(O1O2n.X()-O1O2_DA1*DA1.X(),
-		      O1O2n.Y()-O1O2_DA1*DA1.Y(),
-		      O1O2n.Z()-O1O2_DA1*DA1.Z());
+                      O1O2n.Y()-O1O2_DA1*DA1.Y(),
+                      O1O2n.Z()-O1O2_DA1*DA1.Z());
     gp_Dir DB1=gp_Dir(O1_Proj_A2);
 
     Standard_Real yO1O2=O1O2.Dot(gp_Vec(DA1));
@@ -1244,12 +1280,12 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
     Standard_Real X1 = X2+yO1O2;
     
     gp_Pnt P1(Con1.Apex().X() + X1*( DA1.X() + ABSTG1*DB1.X()),
-	      Con1.Apex().Y() + X1*( DA1.Y() + ABSTG1*DB1.Y()), 
-	      Con1.Apex().Z() + X1*( DA1.Z() + ABSTG1*DB1.Z()));
+              Con1.Apex().Y() + X1*( DA1.Y() + ABSTG1*DB1.Y()), 
+              Con1.Apex().Z() + X1*( DA1.Z() + ABSTG1*DB1.Z()));
 
     gp_Pnt MO1O2(0.5*(Con1.Apex().X()+Con2.Apex().X()),
-		 0.5*(Con1.Apex().Y()+Con2.Apex().Y()),
-		 0.5*(Con1.Apex().Z()+Con2.Apex().Z()));
+                 0.5*(Con1.Apex().Y()+Con2.Apex().Y()),
+                 0.5*(Con1.Apex().Z()+Con2.Apex().Z()));
     gp_Vec P1MO1O2(P1,MO1O2);
     
     gp_Dir DA1_X_DB1=DA1.Crossed(DB1);
@@ -1258,50 +1294,50 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
     IntAna_QuadQuadGeo INTER_QUAD_PLN(gp_Pln(P1,OrthoPln),Con1,Tol,Tol);
       if(INTER_QUAD_PLN.IsDone()) {
       switch(INTER_QUAD_PLN.TypeInter()) {
-      case IntAna_Ellipse: 	{
-	typeres=IntAna_Ellipse;
-	gp_Elips E=INTER_QUAD_PLN.Ellipse(1);
-	pt1 = E.Location();
-	dir1 = E.Position().Direction();
-	dir2 = E.Position().XDirection();
-	param1 = E.MajorRadius();
-	param1bis = E.MinorRadius();
-	nbint = 1;
-	break; 
+      case IntAna_Ellipse:         {
+        typeres=IntAna_Ellipse;
+        gp_Elips E=INTER_QUAD_PLN.Ellipse(1);
+        pt1 = E.Location();
+        dir1 = E.Position().Direction();
+        dir2 = E.Position().XDirection();
+        param1 = E.MajorRadius();
+        param1bis = E.MinorRadius();
+        nbint = 1;
+        break; 
       }
       case IntAna_Circle: {
-	typeres=IntAna_Circle;
-	gp_Circ C=INTER_QUAD_PLN.Circle(1);
-	pt1 = C.Location();
-	dir1 = C.Position().XDirection();
-	dir2 = C.Position().YDirection();
-	param1 = C.Radius();
-	nbint = 1;
-	break;
+        typeres=IntAna_Circle;
+        gp_Circ C=INTER_QUAD_PLN.Circle(1);
+        pt1 = C.Location();
+        dir1 = C.Position().XDirection();
+        dir2 = C.Position().YDirection();
+        param1 = C.Radius();
+        nbint = 1;
+        break;
       }
       case IntAna_Hyperbola: {
-	typeres=IntAna_Hyperbola;
-	gp_Hypr H=INTER_QUAD_PLN.Hyperbola(1);
-	pt1 = pt2 = H.Location();
-	dir1 = H.Position().Direction();
-	dir2 = H.Position().XDirection();
-	param1 = param2 = H.MajorRadius();
-	param1bis = param2bis = H.MinorRadius();
-	nbint = 2;
-	break;
+        typeres=IntAna_Hyperbola;
+        gp_Hypr H=INTER_QUAD_PLN.Hyperbola(1);
+        pt1 = pt2 = H.Location();
+        dir1 = H.Position().Direction();
+        dir2 = H.Position().XDirection();
+        param1 = param2 = H.MajorRadius();
+        param1bis = param2bis = H.MinorRadius();
+        nbint = 2;
+        break;
       }
       case IntAna_Line: {
-	typeres=IntAna_Line;
-	gp_Lin H=INTER_QUAD_PLN.Line(1);
-	pt1 = pt2 = H.Location();
-	dir1 = dir2 = H.Position().Direction();
-	param1 = param2 = 0.0;
-	param1bis = param2bis = 0.0;
-	nbint = 2;
-	break;
+        typeres=IntAna_Line;
+        gp_Lin H=INTER_QUAD_PLN.Line(1);
+        pt1 = pt2 = H.Location();
+        dir1 = dir2 = H.Position().Direction();
+        param1 = param2 = 0.0;
+        param1bis = param2bis = 0.0;
+        nbint = 2;
+        break;
       }
       default:
-	typeres=IntAna_NoGeometricSolution; 
+        typeres=IntAna_NoGeometricSolution; 
       }
     }
   }// else if((Abs(tg1-tg2)<EPSILON_ANGLE_CONE) && (A1A2.Parallel()))
@@ -1387,8 +1423,8 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
     aQApex1=Con1.Apex();
     aD3Ax1=aAx1.Direction(); 
     aQA1.SetCoord(aQApex1.X()+aD1*aD3Ax1.X(),
-		  aQApex1.Y()+aD1*aD3Ax1.Y(),
-		  aQApex1.Z()+aD1*aD3Ax1.Z());
+                  aQApex1.Y()+aD1*aD3Ax1.Y(),
+                  aQApex1.Z()+aD1*aD3Ax1.Z());
     //
     aDx=aD3Ax1.Dot(aAx2.Direction());
     if (aDx<0.) {
@@ -1399,8 +1435,8 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
     aD2=aD1*sqrt((1.+aTgBeta1*aTgBeta1)/(1.+aTgBeta2*aTgBeta2));
     //
     aQA2.SetCoord(aQApex1.X()+aD2*aD3Ax2.X(),
-		  aQApex1.Y()+aD2*aD3Ax2.Y(),
-		  aQApex1.Z()+aD2*aD3Ax2.Z());
+                  aQApex1.Y()+aD2*aD3Ax2.Y(),
+                  aQApex1.Z()+aD2*aD3Ax2.Z());
     //
     gp_Pln aPln1(aQA1, aD3Ax1);
     gp_Pln aPln2(aQA2, aD3Ax2);
@@ -1525,50 +1561,50 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 
       if(INTER_QUAD_PLN.IsDone()) {
       switch(INTER_QUAD_PLN.TypeInter()) {
-      case IntAna_Ellipse: 	{
-	typeres=IntAna_Ellipse;
-	gp_Elips E=INTER_QUAD_PLN.Ellipse(1);
-	pt1 = E.Location();
-	dir1 = E.Position().Direction();
-	dir2 = E.Position().XDirection();
-	param1 = E.MajorRadius();
-	param1bis = E.MinorRadius();
-	nbint = 1;
-	break; 
+      case IntAna_Ellipse:         {
+        typeres=IntAna_Ellipse;
+        gp_Elips E=INTER_QUAD_PLN.Ellipse(1);
+        pt1 = E.Location();
+        dir1 = E.Position().Direction();
+        dir2 = E.Position().XDirection();
+        param1 = E.MajorRadius();
+        param1bis = E.MinorRadius();
+        nbint = 1;
+        break; 
       }
       case IntAna_Circle: {
-	typeres=IntAna_Circle;
-	gp_Circ C=INTER_QUAD_PLN.Circle(1);
-	pt1 = C.Location();
-	dir1 = C.Position().XDirection();
-	dir2 = C.Position().YDirection();
-	param1 = C.Radius();
-	nbint = 1;
-	break;
+        typeres=IntAna_Circle;
+        gp_Circ C=INTER_QUAD_PLN.Circle(1);
+        pt1 = C.Location();
+        dir1 = C.Position().XDirection();
+        dir2 = C.Position().YDirection();
+        param1 = C.Radius();
+        nbint = 1;
+        break;
       }
       case IntAna_Parabola: {
-	typeres=IntAna_Parabola;
-	gp_Parab Prb=INTER_QUAD_PLN.Parabola(1);
-	pt1 = Prb.Location();
-	dir1 = Prb.Position().Direction();
-	dir2 = Prb.Position().XDirection();
-	param1 = Prb.Focal();
-	nbint = 1;
-	break;
+        typeres=IntAna_Parabola;
+        gp_Parab Prb=INTER_QUAD_PLN.Parabola(1);
+        pt1 = Prb.Location();
+        dir1 = Prb.Position().Direction();
+        dir2 = Prb.Position().XDirection();
+        param1 = Prb.Focal();
+        nbint = 1;
+        break;
       }
       case IntAna_Hyperbola: {
-	typeres=IntAna_Hyperbola;
-	gp_Hypr H=INTER_QUAD_PLN.Hyperbola(1);
-	pt1 = pt2 = H.Location();
-	dir1 = H.Position().Direction();
-	dir2 = H.Position().XDirection();
-	param1 = param2 = H.MajorRadius();
-	param1bis = param2bis = H.MinorRadius();
-	nbint = 2;
-	break;
+        typeres=IntAna_Hyperbola;
+        gp_Hypr H=INTER_QUAD_PLN.Hyperbola(1);
+        pt1 = pt2 = H.Location();
+        dir1 = H.Position().Direction();
+        dir2 = H.Position().XDirection();
+        param1 = param2 = H.MajorRadius();
+        param1bis = param2bis = H.MinorRadius();
+        nbint = 2;
+        break;
       }
       default:
-	typeres=IntAna_NoGeometricSolution; 
+        typeres=IntAna_NoGeometricSolution; 
       }
     }
   }
@@ -1582,15 +1618,19 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 //purpose  : Sphere - Cone
 //=======================================================================
   IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Sphere& Sph,
-					 const gp_Cone& Con,
-					 const Standard_Real Tol) 
+                                         const gp_Cone& Con,
+                                         const Standard_Real Tol) 
 : done(Standard_False),
   nbint(0),
   typeres(IntAna_Empty),
   pt1(0,0,0),
   pt2(0,0,0),
+  pt3(0,0,0),
+  pt4(0,0,0),
   param1(0),
   param2(0),
+  param3(0),
+  param4(0),
   param1bis(0),
   param2bis(0),
   myCommonGen(Standard_False),
@@ -1604,8 +1644,8 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 //purpose  : 
 //=======================================================================
   void IntAna_QuadQuadGeo::Perform(const gp_Sphere& Sph,
-				   const gp_Cone& Con,
-				   const Standard_Real)
+                                   const gp_Cone& Con,
+                                   const Standard_Real)
 {
   
   //
@@ -1635,45 +1675,45 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
     //--                tga = y / (x+dApexSphCenter)
     Standard_Real tgatga = tga * tga;
     math_DirectPolynomialRoots Eq( 1.0+tgatga
-				  ,2.0*tgatga*dApexSphCenter
-				  ,-Rad*Rad + dApexSphCenter*dApexSphCenter*tgatga);
+                                  ,2.0*tgatga*dApexSphCenter
+                                  ,-Rad*Rad + dApexSphCenter*dApexSphCenter*tgatga);
     if(Eq.IsDone()) {
       Standard_Integer nbsol=Eq.NbSolutions();
       if(nbsol==0) {
-	typeres=IntAna_Empty;
+        typeres=IntAna_Empty;
       }
       else { 
-	typeres=IntAna_Circle;
-	if(nbsol>=1) {
-	  Standard_Real x = Eq.Value(1);
-	  Standard_Real dApexSphCenterpx = dApexSphCenter+x;
-	  nbint=1;
-	  pt1.SetCoord( ConApex.X() + (dApexSphCenterpx) * ConDir.X()
-		       ,ConApex.Y() + (dApexSphCenterpx) * ConDir.Y()
-		       ,ConApex.Z() + (dApexSphCenterpx) * ConDir.Z());
-	  param1 = tga * dApexSphCenterpx;
-	  param1 = Abs(param1);
-	  dir1 = ConDir;
-	  if(param1<=myEPSILON_MINI_CIRCLE_RADIUS) {
-	    typeres=IntAna_PointAndCircle;
-	    param1=0.0;
-	  }
-	}
-	if(nbsol>=2) {
-	  Standard_Real x=Eq.Value(2);
-	  Standard_Real dApexSphCenterpx = dApexSphCenter+x;
-	  nbint=2;
-	  pt2.SetCoord( ConApex.X() + (dApexSphCenterpx) * ConDir.X()
-		       ,ConApex.Y() + (dApexSphCenterpx) * ConDir.Y()
-		       ,ConApex.Z() + (dApexSphCenterpx) * ConDir.Z());
-	  param2 = tga * dApexSphCenterpx;
-	  param2 = Abs(param2);
-	  dir2=ConDir;
-	  if(param2<=myEPSILON_MINI_CIRCLE_RADIUS) {
-	    typeres=IntAna_PointAndCircle;
-	    param2=0.0;
-	  }
-	}
+        typeres=IntAna_Circle;
+        if(nbsol>=1) {
+          Standard_Real x = Eq.Value(1);
+          Standard_Real dApexSphCenterpx = dApexSphCenter+x;
+          nbint=1;
+          pt1.SetCoord( ConApex.X() + (dApexSphCenterpx) * ConDir.X()
+                       ,ConApex.Y() + (dApexSphCenterpx) * ConDir.Y()
+                       ,ConApex.Z() + (dApexSphCenterpx) * ConDir.Z());
+          param1 = tga * dApexSphCenterpx;
+          param1 = Abs(param1);
+          dir1 = ConDir;
+          if(param1<=myEPSILON_MINI_CIRCLE_RADIUS) {
+            typeres=IntAna_PointAndCircle;
+            param1=0.0;
+          }
+        }
+        if(nbsol>=2) {
+          Standard_Real x=Eq.Value(2);
+          Standard_Real dApexSphCenterpx = dApexSphCenter+x;
+          nbint=2;
+          pt2.SetCoord( ConApex.X() + (dApexSphCenterpx) * ConDir.X()
+                       ,ConApex.Y() + (dApexSphCenterpx) * ConDir.Y()
+                       ,ConApex.Z() + (dApexSphCenterpx) * ConDir.Z());
+          param2 = tga * dApexSphCenterpx;
+          param2 = Abs(param2);
+          dir2=ConDir;
+          if(param2<=myEPSILON_MINI_CIRCLE_RADIUS) {
+            typeres=IntAna_PointAndCircle;
+            param2=0.0;
+          }
+        }
       }
     }
     else {
@@ -1690,15 +1730,19 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 //purpose  : Sphere - Sphere
 //=======================================================================
   IntAna_QuadQuadGeo::IntAna_QuadQuadGeo( const gp_Sphere& Sph1
-					 ,const gp_Sphere& Sph2
-					 ,const Standard_Real Tol) 
+                                         ,const gp_Sphere& Sph2
+                                         ,const Standard_Real Tol) 
 : done(Standard_False),
   nbint(0),
   typeres(IntAna_Empty),
   pt1(0,0,0),
   pt2(0,0,0),
+  pt3(0,0,0),
+  pt4(0,0,0),
   param1(0),
   param2(0),
+  param3(0),
+  param4(0),
   param1bis(0),
   param2bis(0),
   myCommonGen(Standard_False),
@@ -1712,8 +1756,8 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
 //purpose  : 
 //=======================================================================
   void IntAna_QuadQuadGeo::Perform(const gp_Sphere& Sph1,
-				   const gp_Sphere& Sph2,
-				   const Standard_Real Tol)   
+                                   const gp_Sphere& Sph2,
+                                   const Standard_Real Tol)   
 {
   done=Standard_True;
   gp_Pnt O1=Sph1.Location();
@@ -1750,10 +1794,10 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
       Standard_Real t2;
       if(R1==Rmax) t2=(R1 + (R2 + dO1O2)) * 0.5;
       else         t2=(-R1+(dO1O2-R2))*0.5;
-	
+        
       pt1.SetCoord( O1.X() + t2*Dir.X()
-		   ,O1.Y() + t2*Dir.Y()
-		   ,O1.Z() + t2*Dir.Z());
+                   ,O1.Y() + t2*Dir.Y()
+                   ,O1.Z() + t2*Dir.Z());
     }
     else  {
       //-----------------------------------------------------------------
@@ -1765,35 +1809,571 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
       //--                                            
       //-----------------------------------------------------------------
       if((dO1O2 > (R1+R2+Tol)) || (Rmax > (dO1O2+Rmin+Tol))) {
-	typeres=IntAna_Empty;
+        typeres=IntAna_Empty;
       }
       else {
-	//---------------------------------------------------------------
-	//--     
-	//--
-	//---------------------------------------------------------------
-	Standard_Real Alpha=0.5*(R1*R1-R2*R2+dO1O2*dO1O2)/(dO1O2);       
-	Standard_Real Beta = R1*R1-Alpha*Alpha;
-	Beta = (Beta>0.0)? Sqrt(Beta) : 0.0;
-	
-	if(Beta<= myEPSILON_MINI_CIRCLE_RADIUS) { 
-	  typeres = IntAna_Point;
-	  Alpha = (R1 + (dO1O2 - R2)) * 0.5;
-	}
-	else { 
-	  typeres = IntAna_Circle;
-	  dir1 = Dir;
-	  param1 = Beta;
-	}	  
-	pt1.SetCoord( O1.X() + Alpha*Dir.X()
-		     ,O1.Y() + Alpha*Dir.Y()
-		     ,O1.Z() + Alpha*Dir.Z());
-	
-	nbint=1;
+        //---------------------------------------------------------------
+        //--     
+        //--
+        //---------------------------------------------------------------
+        Standard_Real Alpha=0.5*(R1*R1-R2*R2+dO1O2*dO1O2)/(dO1O2);       
+        Standard_Real Beta = R1*R1-Alpha*Alpha;
+        Beta = (Beta>0.0)? Sqrt(Beta) : 0.0;
+        
+        if(Beta<= myEPSILON_MINI_CIRCLE_RADIUS) { 
+          typeres = IntAna_Point;
+          Alpha = (R1 + (dO1O2 - R2)) * 0.5;
+        }
+        else { 
+          typeres = IntAna_Circle;
+          dir1 = Dir;
+          param1 = Beta;
+        }          
+        pt1.SetCoord( O1.X() + Alpha*Dir.X()
+                     ,O1.Y() + Alpha*Dir.Y()
+                     ,O1.Z() + Alpha*Dir.Z());
+        
+        nbint=1;
       }
     }
   }
 }
+
+//=======================================================================
+//function : IntAna_QuadQuadGeo
+//purpose  : Plane - Torus
+//=======================================================================
+IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Pln& Pln,
+                                       const gp_Torus& Tor,
+                                       const Standard_Real Tol) 
+: done(Standard_False),
+  nbint(0),
+  typeres(IntAna_Empty),
+  pt1(0,0,0),
+  pt2(0,0,0),
+  pt3(0,0,0),
+  pt4(0,0,0),
+  param1(0),
+  param2(0),
+  param3(0),
+  param4(0),
+  param1bis(0),
+  param2bis(0),
+  myCommonGen(Standard_False),
+  myPChar(0,0,0)
+{
+  InitTolerances();
+  Perform(Pln,Tor,Tol);
+}
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+void IntAna_QuadQuadGeo::Perform(const gp_Pln& Pln,
+                                 const gp_Torus& Tor,
+                                 const Standard_Real Tol)
+{
+  done = Standard_True;
+  //
+  Standard_Real aRMin, aRMaj;
+  //
+  aRMin = Tor.MinorRadius();
+  aRMaj = Tor.MajorRadius();
+  if (aRMin >= aRMaj) {
+    typeres = IntAna_NoGeometricSolution; 
+    return;
+  }
+  //
+  const gp_Ax1 aPlnAx = Pln.Axis();
+  const gp_Ax1 aTorAx = Tor.Axis();
+  //
+  Standard_Boolean bParallel, bNormal;
+  //
+  bParallel = aTorAx.IsParallel(aPlnAx, myEPSILON_AXES_PARA);
+  bNormal = !bParallel ? aTorAx.IsNormal(aPlnAx, myEPSILON_AXES_PARA) : Standard_False;
+  if (!bNormal && !bParallel) {
+    typeres = IntAna_NoGeometricSolution; 
+    return;
+  }
+  //
+  Standard_Real aDist;
+  //
+  gp_Pnt aTorLoc = aTorAx.Location();
+  if (bParallel) {
+    Standard_Real aDt, X, Y, Z, A, B, C, D;
+    //
+    Pln.Coefficients(A,B,C,D);
+    aTorLoc.Coord(X,Y,Z);
+    aDist = A*X + B*Y + C*Z + D;
+    //
+    if ((Abs(aDist) - aRMin) > Tol) {
+      typeres=IntAna_Empty;
+      return;
+    }
+    //
+    typeres = IntAna_Circle;
+    //
+    pt1.SetCoord(X - aDist*A, Y - aDist*B, Z - aDist*C);
+    aDt = Sqrt(Abs(aRMin*aRMin - aDist*aDist));
+    param1 = aRMaj + aDt;
+    dir1 = aTorAx.Direction();
+    nbint = 1;
+    if ((Abs(aDist) < aRMin) && (aDt > Tol)) {
+      pt2 = pt1;
+      param2 = aRMaj - aDt;
+      dir2 = dir1;
+      nbint = 2;
+    }
+  }
+  //
+  else {
+    aDist = Pln.Distance(aTorLoc);
+    if (aDist > myEPSILON_DISTANCE) {
+      typeres = IntAna_NoGeometricSolution; 
+      return;
+    }
+    //
+    typeres = IntAna_Circle;
+    param2 = param1 = aRMin;
+    dir2 = dir1 = aPlnAx.Direction();
+    nbint = 2;
+    //
+    gp_Dir aDir = aTorAx.Direction()^dir1;
+    pt1.SetXYZ(aTorLoc.XYZ() + aRMaj*aDir.XYZ());
+    pt2.SetXYZ(aTorLoc.XYZ() - aRMaj*aDir.XYZ());
+  }
+}
+
+//=======================================================================
+//function : IntAna_QuadQuadGeo
+//purpose  : Cylinder - Torus
+//=======================================================================
+IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Cylinder& Cyl,
+                                       const gp_Torus& Tor,
+                                       const Standard_Real Tol) 
+: done(Standard_False),
+  nbint(0),
+  typeres(IntAna_Empty),
+  pt1(0,0,0),
+  pt2(0,0,0),
+  pt3(0,0,0),
+  pt4(0,0,0),
+  param1(0),
+  param2(0),
+  param3(0),
+  param4(0),
+  param1bis(0),
+  param2bis(0),
+  myCommonGen(Standard_False),
+  myPChar(0,0,0)
+{
+  InitTolerances();
+  Perform(Cyl,Tor,Tol);
+}
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+void IntAna_QuadQuadGeo::Perform(const gp_Cylinder& Cyl,
+                                 const gp_Torus& Tor,
+                                 const Standard_Real Tol) 
+{
+  done = Standard_True;
+  //
+  Standard_Real aRMin, aRMaj;
+  //
+  aRMin = Tor.MinorRadius();
+  aRMaj = Tor.MajorRadius();
+  if (aRMin >= aRMaj) {
+    typeres = IntAna_NoGeometricSolution; 
+    return;
+  }
+  //
+  const gp_Ax1 aCylAx = Cyl.Axis();
+  const gp_Ax1 aTorAx = Tor.Axis();
+  //
+  const gp_Lin aLin(aTorAx);
+  const gp_Pnt aLocCyl = Cyl.Location();
+  //
+  if (!aTorAx.IsParallel(aCylAx, myEPSILON_AXES_PARA) ||
+      (aLin.Distance(aLocCyl) > myEPSILON_DISTANCE)) {
+    typeres = IntAna_NoGeometricSolution; 
+    return;
+  }
+  //
+  Standard_Real aRCyl;
+  //
+  aRCyl = Cyl.Radius();
+  if (((aRCyl + Tol) < (aRMaj - aRMin)) || ((aRCyl - Tol) > (aRMaj + aRMin))) {
+    typeres = IntAna_Empty;
+    return;
+  }
+  //
+  typeres = IntAna_Circle;
+  //
+  Standard_Real aDist = Sqrt(Abs(aRMin*aRMin - (aRCyl-aRMaj)*(aRCyl-aRMaj)));
+  gp_XYZ aTorLoc = aTorAx.Location().XYZ();
+  //
+  dir1 = aTorAx.Direction();
+  pt1.SetXYZ(aTorLoc + aDist*dir1.XYZ());
+  param1 = aRCyl;
+  nbint = 1;
+  if ((aDist > Tol) && (aRCyl > (aRMaj - aRMin)) &&
+                       (aRCyl < (aRMaj + aRMin))) {
+    dir2 = dir1;
+    pt2.SetXYZ(aTorLoc - aDist*dir2.XYZ());
+    param2 = param1;
+    nbint = 2;
+  }
+}
+
+//=======================================================================
+//function : IntAna_QuadQuadGeo
+//purpose  : Cone - Torus
+//=======================================================================
+IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Cone& Con,
+                                       const gp_Torus& Tor,
+                                       const Standard_Real Tol) 
+: done(Standard_False),
+  nbint(0),
+  typeres(IntAna_Empty),
+  pt1(0,0,0),
+  pt2(0,0,0),
+  pt3(0,0,0),
+  pt4(0,0,0),
+  param1(0),
+  param2(0),
+  param3(0),
+  param4(0),
+  param1bis(0),
+  param2bis(0),
+  myCommonGen(Standard_False),
+  myPChar(0,0,0)
+{
+  InitTolerances();
+  Perform(Con,Tor,Tol);
+}
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+void IntAna_QuadQuadGeo::Perform(const gp_Cone& Con,
+                                 const gp_Torus& Tor,
+                                 const Standard_Real Tol) 
+{
+  done = Standard_True;
+  //
+  Standard_Real aRMin, aRMaj;
+  //
+  aRMin = Tor.MinorRadius();
+  aRMaj = Tor.MajorRadius();
+  if (aRMin >= aRMaj) {
+    typeres = IntAna_NoGeometricSolution; 
+    return;
+  }
+  //
+  const gp_Ax1 aConAx = Con.Axis();
+  const gp_Ax1 aTorAx = Tor.Axis();
+  //
+  const gp_Lin aLin(aTorAx);
+  const gp_Pnt aConApex = Con.Apex();
+  //
+  if (!aTorAx.IsParallel(aConAx, myEPSILON_AXES_PARA) ||
+      (aLin.Distance(aConApex) > myEPSILON_DISTANCE)) {
+    typeres = IntAna_NoGeometricSolution; 
+    return;
+  }
+  //
+  Standard_Real anAngle, aDist, aParam[4];
+  Standard_Integer i;
+  gp_Pnt aTorLoc, aPCT, aPN, aPt[4];
+  gp_Dir aDir[4];
+  //
+  anAngle = Con.SemiAngle();
+  aTorLoc = aTorAx.Location();
+  //
+  aPN.SetXYZ(aTorLoc.XYZ() + aRMaj*Tor.YAxis().Direction().XYZ());
+  gp_Dir aDN (gp_Vec(aTorLoc, aPN));
+  gp_Ax1 anAxCLRot(aConApex, aDN);
+  gp_Lin aConL = aLin.Rotated(anAxCLRot, anAngle);
+  gp_Dir aDL = aConL.Position().Direction();
+  gp_Dir aXDir = Tor.XAxis().Direction();
+  //
+  typeres = IntAna_Empty;
+  //
+  for (i = 0; i < 2; ++i) {
+    if (i) {
+      aXDir.Reverse();
+    }
+    aPCT.SetXYZ(aTorLoc.XYZ() + aRMaj*aXDir.XYZ());
+    //
+    aDist = aConL.Distance(aPCT);
+    if (aDist > aRMin+Tol) {
+      continue;
+    }
+    //
+    typeres = IntAna_Circle;
+    //
+    gp_XYZ aPh = aPCT.XYZ() - aDist*aConL.Normal(aPCT).Direction().XYZ();
+    aDist = Sqrt(Abs(aRMin*aRMin - aDist*aDist));
+    //
+    gp_Pnt aP;
+    gp_XYZ aDVal = aDist*aDL.XYZ();
+    aP.SetXYZ(aPh + aDVal);
+    aParam[nbint] = aLin.Distance(aP);
+    aPt[nbint].SetXYZ(aP.XYZ() - aParam[nbint]*aXDir.XYZ());
+    aDir[nbint] = aTorAx.Direction();
+    ++nbint;
+    if ((aDist < aRMin) && (aDVal.Modulus() > Tol)) {
+      aP.SetXYZ(aPh - aDVal);
+      aParam[nbint] = aLin.Distance(aP);
+      aPt[nbint].SetXYZ(aP.XYZ() - aParam[nbint]*aXDir.XYZ());
+      aDir[nbint] = aDir[nbint-1];
+      ++nbint;
+    }
+  }
+  //
+  for (i = 0; i < nbint; ++i) {
+    switch (i) {
+    case 0:{
+      pt1 = aPt[i];
+      param1 = aParam[i];
+      dir1 = aDir[i];
+      break;
+    }
+    case 1:{
+      pt2 = aPt[i];
+      param2 = aParam[i];
+      dir2 = aDir[i];
+      break;
+    }
+    case 2:{
+      pt3 = aPt[i];
+      param3 = aParam[i];
+      dir3 = aDir[i];
+      break;
+    }
+    case 3:{
+      pt4 = aPt[i];
+      param4 = aParam[i];
+      dir4 = aDir[i];
+      break;
+    }
+    default:
+      break;
+    }
+  }
+}
+
+//=======================================================================
+//function : IntAna_QuadQuadGeo
+//purpose  : Sphere - Torus
+//=======================================================================
+IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Sphere& Sph,
+                                       const gp_Torus& Tor,
+                                       const Standard_Real Tol) 
+: done(Standard_False),
+  nbint(0),
+  typeres(IntAna_Empty),
+  pt1(0,0,0),
+  pt2(0,0,0),
+  pt3(0,0,0),
+  pt4(0,0,0),
+  param1(0),
+  param2(0),
+  param3(0),
+  param4(0),
+  param1bis(0),
+  param2bis(0),
+  myCommonGen(Standard_False),
+  myPChar(0,0,0)
+{
+  InitTolerances();
+  Perform(Sph,Tor,Tol);
+}
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+void IntAna_QuadQuadGeo::Perform(const gp_Sphere& Sph,
+                                 const gp_Torus& Tor,
+                                 const Standard_Real Tol) 
+{
+  done = Standard_True;
+  //
+  Standard_Real aRMin, aRMaj;
+  //
+  aRMin = Tor.MinorRadius();
+  aRMaj = Tor.MajorRadius();
+  if (aRMin >= aRMaj) {
+    typeres = IntAna_NoGeometricSolution; 
+    return;
+  }
+  //
+  const gp_Ax1 aTorAx = Tor.Axis();
+  const gp_Lin aLin(aTorAx);
+  const gp_Pnt aSphLoc = Sph.Location();
+  //
+  if (aLin.Distance(aSphLoc) > myEPSILON_DISTANCE) {
+    typeres = IntAna_NoGeometricSolution;
+    return;
+  }
+  //
+  Standard_Real aRSph, aDist;
+  gp_Pnt aTorLoc;
+  //
+  gp_Dir aXDir = Tor.XAxis().Direction();
+  aTorLoc.SetXYZ(aTorAx.Location().XYZ() + aRMaj*aXDir.XYZ());
+  aRSph = Sph.Radius();
+  //
+  gp_Vec aVec12(aTorLoc, aSphLoc);
+  aDist = aVec12.Magnitude();
+  if (((aDist - Tol) > (aRMin + aRSph)) || 
+      ((aDist + Tol) < Abs(aRMin - aRSph))) {
+    typeres = IntAna_Empty;
+    return;
+  }
+  //
+  typeres = IntAna_Circle;
+  //
+  Standard_Real anAlpha, aBeta;
+  //
+  anAlpha = 0.5*(aRMin*aRMin - aRSph*aRSph + aDist*aDist ) / aDist;
+  aBeta = Sqrt(Abs(aRMin*aRMin - anAlpha*anAlpha));
+  //
+  gp_Dir aDir12(aVec12);
+  gp_XYZ aPh = aTorLoc.XYZ() + anAlpha*aDir12.XYZ();
+  gp_Dir aDC = Tor.YAxis().Direction()^aDir12;
+  //
+  gp_Pnt aP;
+  gp_XYZ aDVal = aBeta*aDC.XYZ();
+  aP.SetXYZ(aPh + aDVal);
+  param1 = aLin.Distance(aP);
+  pt1.SetXYZ(aP.XYZ() - param1*aXDir.XYZ());
+  dir1 = aTorAx.Direction();
+  nbint = 1;
+  if ((aDist < (aRSph + aRMin)) && (aDist > Abs(aRSph - aRMin)) && 
+      (aDVal.Modulus() > Tol)) {
+    aP.SetXYZ(aPh - aDVal);
+    param2 = aLin.Distance(aP);
+    pt2.SetXYZ(aP.XYZ() - param2*aXDir.XYZ());
+    dir2 = dir1;
+    nbint = 2;
+  }
+}
+
+//=======================================================================
+//function : IntAna_QuadQuadGeo
+//purpose  : Torus - Torus
+//=======================================================================
+IntAna_QuadQuadGeo::IntAna_QuadQuadGeo(const gp_Torus& Tor1,
+                                       const gp_Torus& Tor2,
+                                       const Standard_Real Tol) 
+: done(Standard_False),
+  nbint(0),
+  typeres(IntAna_Empty),
+  pt1(0,0,0),
+  pt2(0,0,0),
+  pt3(0,0,0),
+  pt4(0,0,0),
+  param1(0),
+  param2(0),
+  param3(0),
+  param4(0),
+  param1bis(0),
+  param2bis(0),
+  myCommonGen(Standard_False),
+  myPChar(0,0,0)
+{
+  InitTolerances();
+  Perform(Tor1,Tor2,Tol);
+}
+//=======================================================================
+//function : Perform
+//purpose  : 
+//=======================================================================
+void IntAna_QuadQuadGeo::Perform(const gp_Torus& Tor1,
+                                 const gp_Torus& Tor2,
+                                 const Standard_Real Tol) 
+{
+  done = Standard_True;
+  //
+  Standard_Real aRMin1, aRMin2, aRMaj1, aRMaj2;
+  //
+  aRMin1 = Tor1.MinorRadius();
+  aRMaj1 = Tor1.MajorRadius();
+  aRMin2 = Tor2.MinorRadius();
+  aRMaj2 = Tor2.MajorRadius();
+  if (aRMin1 >= aRMaj1 || aRMin2 >= aRMaj2) {
+    typeres = IntAna_NoGeometricSolution;
+    return;
+  }
+  //
+  const gp_Ax1 anAx1 = Tor1.Axis();
+  const gp_Ax1 anAx2 = Tor2.Axis();
+  //
+  gp_Lin aL1(anAx1);
+  if (!anAx1.IsParallel(anAx2, myEPSILON_AXES_PARA) ||
+      (aL1.Distance(anAx2.Location()) > myEPSILON_DISTANCE)) {
+    typeres = IntAna_NoGeometricSolution;
+    return;
+  }
+  //
+  gp_Pnt aLoc1, aLoc2;
+  //
+  aLoc1 = anAx1.Location();
+  aLoc2 = anAx2.Location();
+  //
+  if (aLoc1.IsEqual(aLoc2, Tol) &&
+      (Abs(aRMin1 - aRMin2) <= Tol) && 
+      (Abs(aRMaj1 - aRMaj2) <= Tol)) {
+    typeres = IntAna_Same;
+    return;
+  }
+  //
+  Standard_Real aDist;
+  gp_Pnt aP1, aP2;
+  //
+  gp_Dir aXDir1 = Tor1.XAxis().Direction();
+  aP1.SetXYZ(aLoc1.XYZ() + aRMaj1*aXDir1.XYZ());
+  aP2.SetXYZ(aLoc2.XYZ() + aRMaj2*aXDir1.XYZ());
+  //
+  gp_Vec aV12(aP1, aP2);
+  aDist = aV12.Magnitude();
+  if (((aDist - Tol) > (aRMin1 + aRMin2)) || 
+      ((aDist + Tol) < Abs(aRMin1 - aRMin2))) {
+    typeres = IntAna_Empty;
+    return;
+  }
+  //
+  typeres = IntAna_Circle;
+  //
+  Standard_Real anAlpha, aBeta;
+  //
+  anAlpha = 0.5*(aRMin1*aRMin1 - aRMin2*aRMin2 + aDist*aDist ) / aDist;
+  aBeta = Sqrt(Abs(aRMin1*aRMin1 - anAlpha*anAlpha));
+  //
+  gp_Dir aDir12(aV12);
+  gp_XYZ aPh = aP1.XYZ() + anAlpha*aDir12.XYZ();
+  gp_Dir aDC = Tor1.YAxis().Direction()^aDir12;
+  //
+  gp_Pnt aP;
+  gp_XYZ aDVal = aBeta*aDC.XYZ();
+  aP.SetXYZ(aPh + aDVal);
+  param1 = aL1.Distance(aP);
+  pt1.SetXYZ(aP.XYZ() - param1*aXDir1.XYZ());
+  dir1 = anAx1.Direction();
+  nbint = 1;
+  if ((aDist < (aRMin1 + aRMin2)) && (aDist > Abs(aRMin1 - aRMin2)) && 
+      aDVal.Modulus() > Tol) {
+    aP.SetXYZ(aPh - aDVal);
+    param2 = aL1.Distance(aP);
+    pt2.SetXYZ(aP.XYZ() - param2*aXDir1.XYZ());
+    dir2 = dir1;
+    nbint = 2;
+  }
+}
+
 //=======================================================================
 //function : Point
 //purpose  : Returns a Point
@@ -1843,8 +2423,10 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
   else if((n>nbint) || (n<1) || (typeres!=IntAna_Circle)) {
     Standard_DomainError::Raise();
     }
-  if(n==1) { return(gp_Circ(DirToAx2(pt1,dir1),param1));   }
-  else {     return(gp_Circ(DirToAx2(pt2,dir2),param2));   }
+  if      (n==1) { return(gp_Circ(DirToAx2(pt1,dir1),param1));}
+  else if (n==2) { return(gp_Circ(DirToAx2(pt2,dir2),param2));}
+  else if (n==3) { return(gp_Circ(DirToAx2(pt3,dir3),param3));}
+  else           { return(gp_Circ(DirToAx2(pt4,dir4),param4));}
 }
 
 //=======================================================================
@@ -1893,9 +2475,9 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
     Standard_OutOfRange::Raise();
   }
   return(gp_Parab(gp_Ax2( pt1
-			 ,dir1
-			 ,dir2)
-		  ,param1));
+                         ,dir1
+                         ,dir2)
+                  ,param1));
 }
 //=======================================================================
 //function : Hyperbola
@@ -1911,15 +2493,15 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
     }
   if(n==1) {
     return(gp_Hypr(gp_Ax2( pt1
-			  ,dir1
-			  ,dir2)
-		   ,param1,param1bis));
+                          ,dir1
+                          ,dir2)
+                   ,param1,param1bis));
   }
   else {
     return(gp_Hypr(gp_Ax2( pt2
-			  ,dir1
-			  ,dir2.Reversed())
-		   ,param2,param2bis));
+                          ,dir1
+                          ,dir2.Reversed())
+                   ,param2,param2bis));
   }
 }
 //=======================================================================
@@ -1971,16 +2553,16 @@ void RefineDir(gp_Dir& aDir)
       m=(aC[k]>0.);
       aNum=(m)? aC[k] : -aC[k];
       if (aNum>aR1 && aNum<aR2) {
-	if (m) {
-	  aC[k]=1.;
-	}	  
-	else {
-	  aC[k]=-1.;
-	}
-	//
-	aC[(k+1)%3]=0.;
-	aC[(k+2)%3]=0.;
-	break;
+        if (m) {
+          aC[k]=1.;
+        }          
+        else {
+          aC[k]=-1.;
+        }
+        //
+        aC[(k+1)%3]=0.;
+        aC[(k+2)%3]=0.;
+        break;
       }
     }
     aDir.SetCoord(aC[0], aC[1], aC[2]);

@@ -231,7 +231,7 @@
             }
             //
             const gp_Pnt& aPnew = BRep_Tool::Pnt(aVnew);
-            if (!myContext->IsValidPointForFace(aPnew, aF, aTolE)) {
+            if (!myContext->IsValidPointForFace(aPnew, aF, aTolE+aTolF)) {
               continue;
             }
             //

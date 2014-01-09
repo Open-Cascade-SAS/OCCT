@@ -52,3 +52,4 @@
 #include <IntPatch_ImpImpIntersection_3.gxx>
 #include <IntPatch_ImpImpIntersection_4.gxx>
 #include <IntPatch_ImpImpIntersection_5.gxx>
+#include <IntPatch_ImpImpIntersection_6.gxx>
