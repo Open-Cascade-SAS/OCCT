@@ -1147,9 +1147,8 @@ void  Geom2dConvert::ConcatG1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
        Standard_ConstructionError::Raise("Geom2dConvert Concatenation Error") ;
      Curve2=C.BSplineCurve();
    }
-   Standard_Boolean   rm;
    Curve2->SetPeriodic();      //1 seule courbe C1
-   rm=Curve2->RemoveKnot(Curve2->LastUKnotIndex(),
+   Curve2->RemoveKnot(Curve2->LastUKnotIndex(),
 			 Curve2->Multiplicity(Curve2->LastUKnotIndex())-1,
 			 Precision::Confusion());
    ArrayOfConcatenated->SetValue(0,Curve2);
@@ -1388,9 +1387,8 @@ void  Geom2dConvert::ConcatC1(TColGeom2d_Array1OfBSplineCurve&           ArrayOf
        Curve2=C.BSplineCurve();
      }
    }
-   Standard_Boolean   rm;
    Curve2->SetPeriodic();      //1 seule courbe C1
-   rm=Curve2->RemoveKnot(Curve2->LastUKnotIndex(),
+   Curve2->RemoveKnot(Curve2->LastUKnotIndex(),
 			 Curve2->Multiplicity(Curve2->LastUKnotIndex())-1,
 			 Precision::Confusion());
    ArrayOfConcatenated->SetValue(0,Curve2);

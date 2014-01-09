@@ -49,9 +49,8 @@ GeomFill_UniformSection::GeomFill_UniformSection(const Handle(Geom_Curve)& C,
  if (myCurve.IsNull()) {
    myCurve = GeomConvert::CurveToBSplineCurve(C, Convert_QuasiAngular);
    if (myCurve->IsPeriodic()) {
-     Standard_Boolean B;
      Standard_Integer M = myCurve->Degree()/2+1;
-     B = myCurve->RemoveKnot(1, M, Precision::Confusion());
+     myCurve->RemoveKnot(1, M, Precision::Confusion());
    }
  }
 

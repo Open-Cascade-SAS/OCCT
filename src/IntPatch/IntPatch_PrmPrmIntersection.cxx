@@ -2812,7 +2812,7 @@ void IntPatch_PrmPrmIntersection::PointDepart(Handle(IntSurf_LineOn2S)& LineOn2S
   //modified by NIZNHY-PKV Wed May 25 06:47:12 2011t
   Standard_Integer iC15, SU1, SV1, SU2, SV2;
   Standard_Real U0, U1, V0, V1, U, V;
-  Standard_Real resu0,resu1,resv0,resv1;
+  Standard_Real resu0,resv0;
   Standard_Real  du1,du2,dv1,dv2, dmaxOn1, dmaxOn2;
   Standard_Real x0,y0,z0, x1,y1,z1,d;
   Bnd_Box Box1, Box2;
@@ -2842,8 +2842,6 @@ void IntPatch_PrmPrmIntersection::PointDepart(Handle(IntSurf_LineOn2S)& LineOn2S
   V1 = S1->LastVParameter();
   //
   resu0=U0;
-  resu1=U1;
-  resv1=V1;
   resv0=V0;
   //
   dmaxOn1 = 0.0;

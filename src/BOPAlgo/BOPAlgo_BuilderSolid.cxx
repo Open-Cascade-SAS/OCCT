@@ -249,7 +249,7 @@ void BOPAlgo_BuilderSolid::PerformLoops()
   //
   myLoops.Clear();
   //
-  Standard_Integer aNbLF, aNbOff, aNbFP, aNbFA;
+  Standard_Integer aNbLF, aNbOff, aNbFP;
   Standard_Integer i;
   TopAbs_Orientation anOr;
   TopoDS_Edge aEL;
@@ -418,8 +418,6 @@ void BOPAlgo_BuilderSolid::PerformLoops()
   //
   aEFMap.Clear();
   AddedFacesMap.Clear();
-  //
-  aNbFA=myShapesToAvoid.Extent();
   //
   aItM.Initialize(myShapesToAvoid);
   for (; aItM.More(); aItM.Next()) {

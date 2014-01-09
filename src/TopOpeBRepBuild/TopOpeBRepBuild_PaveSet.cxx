@@ -390,12 +390,12 @@ Standard_Boolean  TopOpeBRepBuild_PaveSet::HasEqualParameters()
   }
 
   if ( !myHasEqualParameters ) {
-    Standard_Boolean rd; Standard_Real f=0,l;
+    Standard_Boolean rd; Standard_Real f=0;
     {
       TopLoc_Location loc; Standard_Real ff,ll;
       Handle(Geom_Curve) CmyEdge = BRep_Tool::Curve(myEdge,loc,ff,ll);
       if ( CmyEdge.IsNull() ) rd = Standard_False;
-      else { f = ff; l = ll; rd = Standard_True; }
+      else { f = ff; rd = Standard_True; }
     }
     if (rd) {
       for (it1.Initialize(myVertices); 

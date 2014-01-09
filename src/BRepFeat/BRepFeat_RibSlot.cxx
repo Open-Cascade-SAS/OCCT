@@ -136,12 +136,8 @@ void BRepFeat_RibSlot::LFPerform()
     theOpe = 1;
   }
 
-  Standard_Boolean ChangeOpe = Standard_False;
       // Hope that there is just a solid in the result
-  Standard_Boolean UntilInShape = Standard_False;
-
   if (!mySUntil.IsNull()) {
-    UntilInShape = Standard_True;
     for (exp2.Init(mySUntil,TopAbs_FACE); exp2.More(); exp2.Next()) {
       const TopoDS_Shape& funtil = exp2.Current();
       for (exp.Init(mySbase,TopAbs_FACE); exp.More(); exp.Next()) {
@@ -150,7 +146,6 @@ void BRepFeat_RibSlot::LFPerform()
         }
       }
       if (!exp.More()) {
-        UntilInShape = Standard_False;
         break;
       }
     }
@@ -182,7 +177,6 @@ void BRepFeat_RibSlot::LFPerform()
         Collage = BRepFeat::IsInside(glface, fac);
         if(!Collage) {
           theOpe = 2;
-          ChangeOpe = Standard_True;
           break;
         }
         else {
@@ -201,7 +195,6 @@ void BRepFeat_RibSlot::LFPerform()
         (!myFuse && ope != LocOpe_CUT) ||
         (!Collage)) {
       theOpe = 2;
-      ChangeOpe = Standard_True;
 #ifdef DEB
       cout << "Passage to topological operations" << endl;
 #endif
@@ -223,7 +216,6 @@ void BRepFeat_RibSlot::LFPerform()
     }
     else {
       theOpe = 2;
-      ChangeOpe = Standard_True;
 #ifdef DEB
       cout << "Passage to topologic operation" << endl;
 #endif

@@ -955,9 +955,8 @@ private:
        Standard_ConstructionError::Raise("GeomConvert Concatenation Error") ;
      Curve2=C.BSplineCurve();
    }
-   Standard_Boolean   rm;
    Curve2->SetPeriodic();      
-   rm=Curve2->RemoveKnot(Curve2->LastUKnotIndex(),
+   Curve2->RemoveKnot(Curve2->LastUKnotIndex(),
 			 Curve2->Multiplicity(Curve2->LastUKnotIndex())-1,
 			 Precision::Confusion());
    ArrayOfConcatenated->SetValue(0,Curve2);
@@ -1192,9 +1191,8 @@ void  GeomConvert::ConcatC1(TColGeom_Array1OfBSplineCurve&           ArrayOfCurv
        Curve2=C.BSplineCurve();
      }
    }
-   Standard_Boolean   rm;
    Curve2->SetPeriodic();                               //only one C1 curve
-   rm=Curve2->RemoveKnot(Curve2->LastUKnotIndex(),
+   Curve2->RemoveKnot(Curve2->LastUKnotIndex(),
 			 Curve2->Multiplicity(Curve2->LastUKnotIndex())-1,
 			 Precision::Confusion());
    ArrayOfConcatenated->SetValue(0,Curve2);

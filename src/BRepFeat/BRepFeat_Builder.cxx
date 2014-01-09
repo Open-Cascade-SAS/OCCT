@@ -742,8 +742,7 @@
   myErrorStatus=0;
   //
   Standard_Boolean bIsIN, bHasImage;
-  Standard_Integer aNbS, aNbSolids, i, j, aNbFaces, aNbFP, aNbFPx, aNbFIN, aNbLIF, aNbEFP;
-  Standard_Integer aNbRem;
+  Standard_Integer aNbS, i, j, aNbFP, aNbFPx, aNbFIN, aNbLIF, aNbEFP;
   TopAbs_ShapeEnum aType;  
   TopAbs_State aState;
   TopoDS_Iterator aIt, aItF;
@@ -762,8 +761,6 @@
   BOPCol_IndexedDataMapOfShapeListOfShape aMEF(100, theAllocator);
   //
   theDraftSolids.Clear();
-  //
-  aNbRem = myRemoved.Extent();
   //
   aNbS=myDS->NbSourceShapes();
   for (i=0; i<aNbS; ++i) {
@@ -801,9 +798,6 @@
         break;
     }
   }
-  //
-  aNbFaces=aMFaces.Extent();
-  aNbSolids=aMSolids.Extent();
   //
   aItMS.Initialize(aMSolids);
   for (; aItMS.More(); aItMS.Next()) {

@@ -1249,7 +1249,7 @@ void Transfer_TransferProcess::StartTrace(const Handle(Transfer_Binder)& binder,
 
   if (!binder.IsNull()) {   // old: if IsNull sout <<endl<< "  ---  Not Bound";
     Handle(Transfer_Binder) bnd = binder;
-    Standard_Boolean hasres = Standard_False, isused = Standard_False;
+    Standard_Boolean hasres = Standard_False;
     while (!bnd.IsNull()) {
       if (bnd->Status() != Transfer_StatusVoid) {
 // ---  Result Type: binder->ResultType()  ---  Binder : binder->DynamicType();
@@ -1263,7 +1263,6 @@ void Transfer_TransferProcess::StartTrace(const Handle(Transfer_Binder)& binder,
           Msg2075.AddString(bnd->ResultTypeName());
           Msg2075.TraceEver();  */
 	hasres = Standard_True;
-	if (bnd->Status() == Transfer_StatusUsed) isused = Standard_True;
       }
       bnd = bnd->NextResult();
     }

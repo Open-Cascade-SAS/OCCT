@@ -344,11 +344,6 @@ TopoDS_Shape  BRepSweep_Rotation::MakeEmptyFace
       break;
     case GeomAbs_Cylinder :
       {
-#ifdef DEB
-	gp_Cylinder c = AS.Cylinder();
-	gp_Ax3 b = AS.Axis();
-	gp_Ax3 a = c.Position();
-#endif
 	Handle(Geom_CylindricalSurface) Cy = 
 	  new Geom_CylindricalSurface(AS.Cylinder());
 	S = Cy;

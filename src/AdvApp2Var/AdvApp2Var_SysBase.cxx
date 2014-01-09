@@ -155,9 +155,6 @@ int AdvApp2Var_SysBase::macinit_(integer *imode,
 
 {
  
-  /* Fortran I/O blocks */
-  cilist io______1 = { 0, 0, 0, (char*) "(' --- Debug-mode : ',I10,' ---')", 0 };
-  
   /* ************************************************************************/
   /*     FUNCTION : */
   /*     ---------- */
@@ -217,14 +214,6 @@ int AdvApp2Var_SysBase::macinit_(integer *imode,
     mblank__.imp = *ival;
   } else if (*imode == 2) {
     mblank__.ibb = *ival;
-    io______1.ciunit = mblank__.imp;
-    /*
-    s__wsfe(&io______1);
-    */
-    /*
-    do__fio(&c____1, (char *)&mblank__.ibb, (ftnlen)sizeof(integer));
-    */
-    AdvApp2Var_SysBase::e__wsfe();
   } else if (*imode == 3) {
     mblank__.lec = *ival;
   }
@@ -670,7 +659,7 @@ int macrerr_(intptr_t *,//iad,
 {
   //integer c__1 = 1;
   /* Builtin functions */
-  //integer /*s__wsfe(),*/ /*do__fio(),*/ e__wsfe();
+  //integer /*do__fio(),*/;
   
   /* Fortran I/O blocks */
   //cilist io___1 = { 0, 6, 0, "(X,A,I9,A,I3)", 0 };
@@ -707,15 +696,11 @@ int macrerr_(intptr_t *,//iad,
 /* ***********************************************************************
  */
   /*
-  s__wsfe(&io___1);
-  */
-  /*
   do__fio(&c__1, "*** ERREUR : Ecrasement de la memoire d'adresse ", 48L);
   do__fio(&c__1, (char *)&(*iad), (ftnlen)sizeof(long int));
   do__fio(&c__1, " sur l'allocation ", 18L);
   do__fio(&c__1, (char *)&(*nalloc), (ftnlen)sizeof(integer));
   */
-  AdvApp2Var_SysBase::e__wsfe();
   
   return 0 ;
 } /* macrerr_ */
@@ -744,7 +729,7 @@ int macrgfl_(intptr_t *iadfld,
   integer ibid, ienr;
   doublereal* t = 0;
   integer novfl = 0;
-  intptr_t ioff,iadrfl, iadt;
+  intptr_t ioff,iadt;
   
   
   /* ***********************************************************************
@@ -855,7 +840,6 @@ int macrgfl_(intptr_t *iadfld,
   t[ioff] = -134744073.;
   
   /*  FAKE CALL TO STOP THE DEBUGGER : */
-  iadrfl = *iadfld;
   macrbrk_();
   
   /*  UPDATE THE START FLAG */
@@ -863,7 +847,6 @@ int macrgfl_(intptr_t *iadfld,
   t[ioff] = -134744073.;
     
   /*  FAKE CALL TO STOP THE DEBUGGER : */
-  iadrfl = *iadflf;
   macrbrk_();
   
   return 0 ;
@@ -884,15 +867,9 @@ int macrmsg_(const char *,//crout,
 {
   
   /* Local variables */
-  integer inum, iunite;
-  char cfm[80], cln[3];
+  integer inum;
+  char /*cfm[80],*/ cln[3];
   
-  /* Fortran I/O blocks */
-  cilist io___5 = { 0, 0, 0, cfm, 0 };
-  cilist io___6 = { 0, 0, 0, cfm, 0 };
-  cilist io___7 = { 0, 0, 0, cfm, 0 };
- 
-
 /* ***********************************************************************
  */
 
@@ -1127,33 +1104,17 @@ t !! ')", 80L, 54L);
    */
   /*  iMPLEMENTATION OF WRITE , WITH OR WITHOUT DATA : */
   
-  iunite = AdvApp2Var_SysBase::mnfnimp_();
   if (inum == 0) {
-    io___5.ciunit = iunite;
-    /*
-    s__wsfe(&io___5);
-    */
-    AdvApp2Var_SysBase::e__wsfe();
   } else if (inum == 1) {
-    io___6.ciunit = iunite;
-    /*
-    s__wsfe(&io___6);
-    */
     /*
     do__fio(&c__1, (char *)&it[1], (ftnlen)sizeof(integer));
     */
-    AdvApp2Var_SysBase::e__wsfe();
   } else {
     /*  MESSAGE DOES NOT EXIST ... */
-    io___7.ciunit = iunite;
-    /*
-    s__wsfe(&io___7);
-    */
     /*
     do__fio(&c__1, (char *)&(*num), (ftnlen)sizeof(integer));
     do__fio(&c__1, crout, crout_len);
     */
-    AdvApp2Var_SysBase::e__wsfe();
   }
   
   return 0;
@@ -2738,7 +2699,7 @@ int AdvApp2Var_SysBase::mcrrqst_(integer *iunit,
   doublereal dfmt;
   integer ifmt, iver;
   char subr[7];
-  integer ksys , ibyte, irest, isyst, ier;
+  integer ksys , ibyte, irest, ier;
   intptr_t iadfd, iadff, iaddr,lofset, loc;
   integer izu;
 
@@ -2910,15 +2871,11 @@ int AdvApp2Var_SysBase::mcrrqst_(integer *iunit,
     if (iver == 1) {
 
 	if (ibyte == 0) {
-	    //s__wsle(&io___3);
 	    //do__lio(&c__9, &c__1, "Require zero allocation", 26L);
-	    AdvApp2Var_SysBase::e__wsle();
 	    maostrb_();
 	} else if (ibyte >= 4096000) {
-	    //s__wsle(&io___4);
 	    //do__lio(&c__9, &c__1, "Require allocation above 4 Mega-Octets : ", 50L);
 	    //do__lio(&c__3, &c__1, (char *)&ibyte, (ftnlen)sizeof(integer));
-	    AdvApp2Var_SysBase::e__wsle();
 	    maostrb_();
 	}
 
@@ -2947,7 +2904,6 @@ int AdvApp2Var_SysBase::mcrrqst_(integer *iunit,
 
 /* DEMAND OF ALLOCATION */
 
-    isyst = 0;
 /* L1001: */
 /*      IF ( ISYST.EQ.0.AND.IBYTE .LE. 100 * 1024 ) THEN */
 /*        ALLOCATION SUR TABLE */
@@ -3129,8 +3085,6 @@ void AdvApp2Var_SysBase::miraz_(integer *taille,
 				void *adt)
 
 {
-  integer offset;
-  offset = *taille;
   memset(adt , '\0' , *taille) ;
 }
 //=======================================================================
@@ -3143,17 +3097,6 @@ integer AdvApp2Var_SysBase::mnfndeb_()
   ret_val = 0;
   return ret_val;
 } /* mnfndeb_ */
-
-//=======================================================================
-//function : AdvApp2Var_SysBase::mnfnimp_
-//purpose  : 
-//=======================================================================
-integer AdvApp2Var_SysBase::mnfnimp_()
-{
-  integer ret_val;
-  ret_val = 6;
-  return ret_val;
-} /* mnfnimp_ */
 
 //=======================================================================
 //function : AdvApp2Var_SysBase::msifill_
@@ -3275,9 +3218,6 @@ int AdvApp2Var_SysBase::mswrdbg_(const char *,//ctexte,
 
 {
 
-  cilist io___1 = { 0, 0, 0, 0, 0 };
-  
-
 /* ***********************************************************************
  */
 
@@ -3322,11 +3262,8 @@ int AdvApp2Var_SysBase::mswrdbg_(const char *,//ctexte,
  */
 
     if (AdvApp2Var_SysBase::mnfndeb_() >= 1) {
-	io___1.ciunit = AdvApp2Var_SysBase::mnfnimp_();
-	//s__wsle(&io___1);
 	//do__lio(&c__9, &c__1, "Dbg ", 4L);
 	//do__lio(&c__9, &c__1, ctexte, ctexte_len);
-	AdvApp2Var_SysBase::e__wsle();
     }
  return 0 ;
 } /* mswrdbg_ */
@@ -3359,39 +3296,6 @@ int AdvApp2Var_SysBase::do__lio ()
 {
   return 0;
 }
-//=======================================================================
-//function : e__wsfe
-//purpose  : 
-//=======================================================================
-int AdvApp2Var_SysBase::e__wsfe ()
-{
-  return 0;
-}
-//=======================================================================
-//function : e__wsle
-//purpose  : 
-//=======================================================================
-int AdvApp2Var_SysBase::e__wsle ()
-{
-  return 0;
-}
-//=======================================================================
-//function : s__wsfe
-//purpose  : 
-//=======================================================================
-int AdvApp2Var_SysBase::s__wsfe ()
-{
-  return 0;
-}
-//=======================================================================
-//function : s__wsle
-//purpose  : 
-//=======================================================================
-int AdvApp2Var_SysBase::s__wsle ()
-{
-  return 0;
-}
-
 
 /*
 C*****************************************************************************

@@ -720,7 +720,7 @@ Standard_Integer TreatLC (const TheArc& A,
     return anExitCode;
   }
   
-  Standard_Real f, l, U1f, U1l, U2f, U2l, U1, UEgde, TOL, aDist, aR, aRRel, Tol;
+  Standard_Real f, l, U1f, U1l, U2f, U2l, UEgde, TOL, aDist, aR, aRRel, Tol;
   Handle(Geom_Curve) aCEdge=BRep_Tool::Curve(*anE, f, l);
   
   gp_Cylinder aCyl=aQuadric.Cylinder();
@@ -758,7 +758,6 @@ Standard_Integer TreatLC (const TheArc& A,
   P1   =PC1.Value();
   PEdge=PC2.Value();
   
-  U1=PC1.Parameter();
   UEgde=PC2.Parameter();
   
   aDist=PEdge.Distance(P1);

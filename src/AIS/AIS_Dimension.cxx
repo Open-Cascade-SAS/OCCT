@@ -1142,7 +1142,6 @@ Standard_Boolean AIS_Dimension::InitCircularDimension (const TopoDS_Shape& theSh
         theCircle = aMkCirc.Value()->Circ();
       }
 
-      gp_Vec aVec = gp_Vec (theCircle.Location(), aCurPos).Normalized();
       aFirstPoint = ElCLib::Value (aFirstU, theCircle);
       aLastPoint = ElCLib::Value (aLastU,  theCircle);
     }

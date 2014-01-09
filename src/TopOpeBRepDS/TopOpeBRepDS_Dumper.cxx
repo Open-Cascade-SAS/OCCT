@@ -266,7 +266,7 @@ Standard_OStream& TopOpeBRepDS_Dumper::Print(const Handle(Geom2d_BSplineCurve)&
                                              )
 {
 #ifdef DEB
-  Standard_Integer i,l,lb,n;
+  Standard_Integer i,l,lb=-1,n;
   
   Standard_Integer degree   = B->Degree();
   Standard_Integer nbpoles  = B->NbPoles();

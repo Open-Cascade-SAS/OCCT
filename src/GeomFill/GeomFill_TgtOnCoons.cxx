@@ -119,11 +119,7 @@ gp_Vec GeomFill_TgtOnCoons::D1(const Standard_Real W) const
 
   Standard_Real scal = tgsc.Dot(n);
   gp_Vec scaln = n.Multiplied(-scal);
-#ifdef DEB
-  gp_Vec tpur = tgsc.Added(scaln);
-#else
   tgsc.Added(scaln);
-#endif
 
   gp_Vec scaldn = dn.Multiplied(-scal);
 

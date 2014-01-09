@@ -150,7 +150,7 @@ Standard_Integer bfillds(Draw_Interpretor& di, Standard_Integer n, const char** 
   }
   //
   char buf[32];
-  Standard_Integer aNbS, aNbT, iErr;
+  Standard_Integer aNbS, iErr;
   BOPCol_ListIteratorOfListOfShape aIt;
   BOPCol_ListOfShape aLC;
   
@@ -162,7 +162,6 @@ Standard_Integer bfillds(Draw_Interpretor& di, Standard_Integer n, const char** 
   }
   //
   BOPCol_ListOfShape& aLT=BOPTest_Objects::Tools();
-  aNbT=aLT.Extent();
   //
   aIt.Initialize(aLS);
   for (; aIt.More(); aIt.Next()) {

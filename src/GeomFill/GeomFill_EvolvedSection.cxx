@@ -42,7 +42,6 @@ static Standard_Boolean Affich = 0;
 GeomFill_EvolvedSection::GeomFill_EvolvedSection(const Handle(Geom_Curve)& C,
 						 const Handle(Law_Function)& L)
 {
-  Standard_Boolean Bof;
   L->Bounds(First, Last);
   mySection = Handle(Geom_Curve)::DownCast(C->Copy());
   myLaw =  L->Trim(First, Last, 1.e-20);
@@ -52,7 +51,7 @@ GeomFill_EvolvedSection::GeomFill_EvolvedSection(const Handle(Geom_Curve)& C,
     myCurve = GeomConvert::CurveToBSplineCurve(C, Convert_QuasiAngular);
     if (myCurve->IsPeriodic()) {
       Standard_Integer M = myCurve->Degree()/2+1;
-      Bof = myCurve->RemoveKnot(1, M, Precision::Confusion());
+      myCurve->RemoveKnot(1, M, Precision::Confusion());
     }
   }
 

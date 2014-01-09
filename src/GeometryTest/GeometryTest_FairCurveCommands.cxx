@@ -56,7 +56,6 @@ BattenCurve(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
   const char *cheigth = argv[5];
   const char *BattenName = argv[6];
 
-  Standard_Boolean Ok;
   FairCurve_AnalysisCode Iana;
   Standard_Real a1 = Draw::Atof(cangle1),
                 a2 = Draw::Atof(cangle2),
@@ -71,7 +70,7 @@ BattenCurve(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
   Bat->SetAngle1(a1*M_PI/180);
   Bat->SetAngle2(a2*M_PI/180);
   
-  Ok = Bat->Compute(Iana);
+  Bat->Compute(Iana);
   
   Handle(DrawFairCurve_Batten) aBatten = new DrawFairCurve_Batten(Bat);
 
@@ -100,7 +99,6 @@ MVCurve(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
   const char *cheigth = argv[5];
   const char *MVCName = argv[6];
 
-  Standard_Boolean Ok;
   FairCurve_AnalysisCode Iana;
   Standard_Real a1 = Draw::Atof(cangle1),
                 a2 = Draw::Atof(cangle2),
@@ -115,7 +113,7 @@ MVCurve(Draw_Interpretor& di, Standard_Integer argc, const char** argv)
   MVC->SetAngle1(a1*M_PI/180);
   MVC->SetAngle2(a2*M_PI/180);
   
-  Ok = MVC->Compute(Iana);
+  MVC->Compute(Iana);
   
   Handle(DrawFairCurve_MinimalVariation) aMVC = new DrawFairCurve_MinimalVariation(MVC);
 

@@ -618,7 +618,6 @@ void Approx_ComputeLine::Perform(const MultiLine& Line)
 	// ========================================
 	GoUp = Standard_False;
 	Ok = Standard_True;
-	Standard_Boolean FailOnPointsAdded = Standard_False;
 	if (MyStatus == Approx_PointsAdded) {
 	  // Appel recursif du decoupage:
 	  GoUp = Standard_True;
@@ -632,7 +631,6 @@ void Approx_ComputeLine::Perform(const MultiLine& Line)
 	  //-- Si MakeML a echoue   on retourne une ligne vide
 	  if ((nbpdsotherligne == 0) || myMultiLineNb >= 3)
 	  {
-	    FailOnPointsAdded = Standard_True; 
 	    //-- cout<<" ** ApproxComputeLine MakeML Echec ** LBR lbr "<<endl;
 	    if (myfirstpt == mylastpt) break;  // Pour etre sur de ne pas 
 	    // planter la station !!
@@ -828,11 +826,10 @@ void Approx_ComputeLine::Parameters(const MultiLine& Line,
 			       const Standard_Integer lastP,
 			       math_Vector& TheParameters) const
 {
-  Standard_Integer i, j, Nbp, nbP2d, nbP3d;
+  Standard_Integer i, j, nbP2d, nbP3d;
   Standard_Real dist;
   gp_Pnt P1, P2;
   gp_Pnt2d P12d, P22d;
-  Nbp = lastP-firstP+1;
 
   if (Par == Approx_ChordLength || Par == Approx_Centripetal) {
     nbP3d = LineTool::NbP3d(Line);
@@ -994,12 +991,12 @@ Standard_Boolean  Approx_ComputeLine::ComputeCurve(const MultiLine& Line,
   gp_Vec2d V12d, V22d;
   gp_Pnt P1, P2;
   gp_Pnt2d P12d, P22d;
-  Standard_Boolean Tangent1, Tangent2, Parallel, mydone= Standard_False;
+  Standard_Boolean Tangent1, Tangent2, mydone= Standard_False;
+#ifdef DEB
+  Standard_Boolean Parallel;
+#endif
   Standard_Integer myfirstpt = firstpt, mylastpt = lastpt;
   Standard_Integer nbp = lastpt-firstpt+1, Kopt = 0;
-  AppParCurves_Constraint FirstC, LastC;
-  FirstC = AppParCurves_PassPoint;
-  LastC = AppParCurves_PassPoint;
   math_Vector Para(firstpt, lastpt);
 
   Parameters(Line, firstpt, lastpt, Para);
@@ -1042,13 +1039,17 @@ Standard_Boolean  Approx_ComputeLine::ComputeCurve(const MultiLine& Line,
   if (nbp == 2) {
     // S il n y a que 2 points, on verifie quand meme que les tangentes sont 
     // alignees.
+#ifdef DEB
     Parallel = Standard_True;
+#endif
     if (Tangent1) {
       for (i = 1; i <= nbP3d; i++) {
 	gp_Vec PVec(tabP1(i), tabP2(i));
 	V13d = tabV1(i);
 	if (!PVec.IsParallel(V13d, Precision::Angular())) {
+#ifdef DEB
 	  Parallel = Standard_False;
+#endif
 	  break;
 	}
       }
@@ -1056,7 +1057,9 @@ Standard_Boolean  Approx_ComputeLine::ComputeCurve(const MultiLine& Line,
 	gp_Vec2d PVec2d(tabP12d(i), tabP22d(i));
 	V12d = tabV12d(i);
 	if (!PVec2d.IsParallel(V12d, Precision::Angular())) {
+#ifdef DEB
 	  Parallel = Standard_False;
+#endif
 	  break;
 	}
       }
@@ -1067,7 +1070,9 @@ Standard_Boolean  Approx_ComputeLine::ComputeCurve(const MultiLine& Line,
 	gp_Vec PVec(tabP1(i), tabP2(i));
 	V23d = tabV2(i);
 	if (!PVec.IsParallel(V23d, Precision::Angular())) {
+#ifdef DEB
 	  Parallel = Standard_False;
+#endif
 	  break;
 	}
       }
@@ -1075,7 +1080,9 @@ Standard_Boolean  Approx_ComputeLine::ComputeCurve(const MultiLine& Line,
 	gp_Vec2d PVec2d(tabP12d(i), tabP22d(i));
 	V22d = tabV22d(i);
 	if (!PVec2d.IsParallel(V22d, Precision::Angular())) {
+#ifdef DEB
 	  Parallel = Standard_False;
+#endif
 	  break;
 	}
       }

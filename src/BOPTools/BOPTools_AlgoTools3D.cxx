@@ -741,7 +741,7 @@ void Add(const TopoDS_Shape& aS,
   Standard_Boolean bIsDone, bHasFirstPoint, bHasSecondPoint;
   Standard_Integer iErr, aIx, aNbDomains;
   Standard_Real aUMin, aUMax, aVMin, aVMax;
-  Standard_Real aVx = 0., aUx, aV1, aV2, aEpsT;
+  Standard_Real aVx = 0., aUx, aV1, aV2;
   gp_Dir2d aD2D (0., 1.);
   gp_Pnt2d aP2D;
   gp_Pnt aPx;
@@ -753,7 +753,6 @@ void Add(const TopoDS_Shape& aS,
   Geom2dHatch_Hatcher& aHatcher = theContext->Hatcher(aF);
   //
   iErr=0;
-  aEpsT=1.e-12;
   //
   aFF=aF;
   aFF.Orientation (TopAbs_FORWARD);

@@ -220,8 +220,7 @@ ShapeAnalysis_FreeBounds::ShapeAnalysis_FreeBounds(const TopoDS_Shape& shape,
     aBox.SetGap(tolerance);
     aTreeFiller.Add(inbW, aBox);
   }
-  Standard_Integer nbFill;
-  nbFill = aTreeFiller.Fill();
+  aTreeFiller.Fill();
   Standard_Integer nsel;
   
   ShapeAnalysis_Edge sae; //szv#4:S4163:12Mar99 moved
@@ -363,7 +362,6 @@ static void SplitWire(const TopoDS_Wire& wire,
       Standard_Boolean SearchBackward = Standard_True;
 
       for(;;) {
-	Standard_Integer ei = ces.Last(); //ei-edge index, number of current edge analyzed for connection
 	Standard_Boolean found;
 	TopoDS_Edge edge;
 	TopoDS_Vertex lvertex;
@@ -403,7 +401,6 @@ static void SplitWire(const TopoDS_Wire& wire,
     
 	//searching for connection among free edges
 	found = Standard_False;
-	ei = ces.Last();
 	edge = sewd->Edge (ces.Last());
 	lvertex = sae.LastVertex (edge);
 	lpoint = BRep_Tool::Pnt (lvertex);

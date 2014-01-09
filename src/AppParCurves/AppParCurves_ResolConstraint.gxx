@@ -161,7 +161,7 @@ AppParCurves_ResolConstraint::
       for (i = 1; i <= IncTan; i++) {
 	Npt = ITan(i);
 	// choix du maximum de tangence pour exprimer la colinearite:
-	Ok = ToolLine::Tangency(SSP, Npt, tabV);
+	ToolLine::Tangency(SSP, Npt, tabV);
 	V = tabV(k);
 	V.Coord(T1, T2, T3);
 	Tmax = Abs(T1);
@@ -228,7 +228,7 @@ AppParCurves_ResolConstraint::
     else {
       for (i = 1; i <= IncTan; i++) {
 	Npt = ITan(i);
-	Ok = ToolLine::Tangency(SSP, Npt, tabV2d);
+	ToolLine::Tangency(SSP, Npt, tabV2d);
 	V2d = tabV2d(k-nb3d);
 	T1 = V2d.X();
 	T2 = V2d.Y();
@@ -730,7 +730,7 @@ const math_Matrix& AppParCurves_ResolConstraint::
 	  IncCol = IncCol + IP;
 	}
 	else if (Ibont(k+1,i) == 3) {    // Relations entre T1x et T2z:
-	  Ok = ToolLine::Tangency(SSP, Npt, tabV);
+	  ToolLine::Tangency(SSP, Npt, tabV);
 	  V = tabV(k+1);
 	  T2 = V.Z();
 	  for (j = 1; j <=  Npol; j++) {
@@ -793,7 +793,7 @@ const math_Matrix& AppParCurves_ResolConstraint::
 
 	}
 	else if (Ibont(k+1,i)== 3) {    // Relations entre T1y et T2z:
-	  Ok = ToolLine::Tangency(SSP, Npt, tabV);
+	  ToolLine::Tangency(SSP, Npt, tabV);
 	  V = tabV(k+1);
 	  T2 = V.Z();
 	  for (j = 1; j <=  Npol; j++) {
@@ -849,7 +849,7 @@ const math_Matrix& AppParCurves_ResolConstraint::
 	}
 
 	else if (Ibont(k+1,i)==3) {      // Relations entre T1z et T2z:
-	  Ok = ToolLine::Tangency(SSP, Npt, tabV);
+	  ToolLine::Tangency(SSP, Npt, tabV);
 	  V = tabV(k+1);
 	  T2 = V.Z();
 	  for (j = 1; j <=  Npol; j++) {

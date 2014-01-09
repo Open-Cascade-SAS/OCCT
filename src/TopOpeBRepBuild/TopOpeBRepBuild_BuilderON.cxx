@@ -255,25 +255,31 @@ Standard_Boolean FUN_keepEON(const TopOpeBRepBuild_Builder&,
   Standard_Boolean tFSEG=DEBTEFOR(B,iFS,iEG);if (tFSEG) debfillonfemess(iFS,iEG);
 #endif
   
+#ifdef DEB
   Standard_Boolean keep1=Standard_True;
   Standard_Boolean keep2=Standard_True;
+#endif
   Standard_Boolean keep3=Standard_True;
   Standard_Boolean isclosedFF=BRep_Tool::IsClosed(EG,FF);
   if (isclosedFF) {
+#ifdef DEB
     keep1=Standard_True;
     keep2=Standard_True;
+#endif
     keep3=Standard_True;
   }
   else {
     TopAbs_Orientation oEGFF=TopAbs_FORWARD;
     FUN_tool_orientEinF(EG,FF,oEGFF);
 
+#ifdef DEB
     TopAbs_Orientation omatFS1=TFE.Orientation(TB1);
     if (oEGFF == TopAbs_REVERSED) omatFS1=TopAbs::Complement(omatFS1);
     keep1=(omatFS1 == TopAbs_FORWARD);
 
     TopAbs_Orientation omatFS2=TFE.Orientation(TB1);
     keep2=(omatFS2 == oEGFF);
+#endif
 
     TopAbs_State tfeb=TFE.Before();
     TopAbs_State tfea=TFE.After();
@@ -1181,11 +1187,11 @@ void TopOpeBRepBuild_BuilderON::GFillONPartsWES2(const Handle(TopOpeBRepDS_Inter
     }
 
     TopOpeBRepDS_Transition TFEe3; TopAbs_State TFEe3bef = TFEe3.Before(); TopAbs_State TFEe3aft = TFEe3.After();
-    TopAbs_Orientation oe3FORF = TopAbs_FORWARD; Standard_Boolean e3BoundFOR = Standard_False;
+    TopAbs_Orientation oe3FORF = TopAbs_FORWARD;
     if (ssif) {
       TFEe3 = ssie3->Transition();
       TFEe3bef = TFEe3.Before();
-      e3BoundFOR = FUN_tool_orientEinFFORWARD(e3,FOR,oe3FORF);	
+      FUN_tool_orientEinFFORWARD(e3,FOR,oe3FORF);	
     }
 
     if (FFinSDSO) {

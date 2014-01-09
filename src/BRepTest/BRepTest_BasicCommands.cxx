@@ -270,8 +270,6 @@ static Standard_Integer nurbsconvert(Draw_Interpretor& di,Standard_Integer n,con
 static Standard_Integer mkedgecurve (Draw_Interpretor& ,Standard_Integer n,const char** a)
 {
 
-  Standard_Boolean CurveDone ;
-
   if (n < 3) return 1;
   Standard_Real Tolerance = Draw::Atof(a[2]) ;
 
@@ -279,7 +277,6 @@ static Standard_Integer mkedgecurve (Draw_Interpretor& ,Standard_Integer n,const
   
   if (S.IsNull()) return 1;
   
-   CurveDone = 
    BRepLib::BuildCurves3d(S,
 			  Tolerance) ;
    return 0 ;

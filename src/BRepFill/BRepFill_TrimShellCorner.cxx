@@ -526,16 +526,9 @@ Standard_Boolean MakeFacesNonSec(const Standard_Integer                     theI
     Standard_Integer aFaceIndex = (fit == 1) ? theFaceIndex1 : theFaceIndex2;
     TopoDS_Shape aFace          = theDS->Shape(aFaceIndex);
     TopAbs_Orientation aFaceOri = aFace.Orientation();
-    TopAbs_Orientation anEdgeOri = TopAbs_FORWARD;
     aFace.Orientation(TopAbs_FORWARD);
 
     TopExp_Explorer anExpE(aFace, TopAbs_EDGE);
-    const TopoDS_Shape& aCheckEdge = (fit == 1) ? aE1 : aE2;
-
-    for(; anExpE.More(); anExpE.Next()) {
-      if(aCheckEdge.IsSame(anExpE.Current()))
-        anEdgeOri = anExpE.Current().Orientation();
-    }
 
     if(bHasNewEdge) {
       aNewEdge.Orientation(TopAbs_FORWARD);

@@ -1439,13 +1439,12 @@ static Standard_Boolean IsPointOK(const gp_Pnt&            theTestPnt,
   Extrema_ExtPS extPS(theTestPnt,theTestSurface,ExtTol,ExtTol);
   if( extPS.IsDone() && extPS.NbExt() > 0 )
     {
-      Standard_Integer i = 0, minext = 1;
+      Standard_Integer i = 0;
       Standard_Real MinDist2 = 1.e+200;
       for(i = 1; i <= extPS.NbExt(); i++)
 	{
 	  if( extPS.SquareDistance(i) < MinDist2 )
 	    {
-	      minext = i;
 	      MinDist2 = extPS.SquareDistance(i);
 	    }
 	}

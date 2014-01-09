@@ -543,10 +543,8 @@ const Standard_Real PAR_T = 0.43213918;
 {
   TopoDS_Edge aEd=anEdgeObj;
   TopoDS_Face aFS=aFObj;
-  Standard_Real tolE = 0., f2 = 0., l2 = 0., tolpc = 0., tol = 0., f = 0., l = 0., par = 0.;
-  tolE=BRep_Tool::Tolerance(aEd);
+  Standard_Real f2 = 0., l2 = 0., tolpc = 0., f = 0., l = 0., par = 0.;
   Handle(Geom2d_Curve) C2D=FC2D_CurveOnSurface(aEd,aFS,f2,l2,tolpc, Standard_True);
-  tol = Max(tolE,tolpc);
 
   BRepAdaptor_Curve  aCA(aEd);
   f=aCA.FirstParameter();

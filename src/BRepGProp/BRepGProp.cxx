@@ -57,7 +57,10 @@ void  BRepGProp::LinearProperties(const TopoDS_Shape& S, GProp_GProps& SProps){
 }
 
 static Standard_Real surfaceProperties(const TopoDS_Shape& S, GProp_GProps& Props, const Standard_Real Eps){
-  Standard_Integer i, iErrorMax = 0;
+  Standard_Integer i;
+#ifdef DEB
+  Standard_Integer iErrorMax = 0;
+#endif
   Standard_Real ErrorMax = 0.0, Error;
   TopExp_Explorer ex; 
   gp_Pnt P(roughBaryCenter(S));
@@ -73,7 +76,12 @@ static Standard_Real surfaceProperties(const TopoDS_Shape& S, GProp_GProps& Prop
     if(Eps < 1.0) {
       G.Perform(BF, BD, Eps); 
       Error = G.GetEpsilon();
-      if(ErrorMax < Error){ ErrorMax = Error; iErrorMax = i;}
+      if(ErrorMax < Error) {
+        ErrorMax = Error;
+#ifdef DEB
+        iErrorMax = i;
+#endif
+      }
     } else {
       if(BF.NaturalRestriction()) G.Perform(BF);
       else G.Perform(BF, BD);
@@ -109,7 +117,10 @@ Standard_Real BRepGProp::SurfaceProperties(const TopoDS_Shape& S, GProp_GProps& 
 //=======================================================================
 
 static Standard_Real volumeProperties(const TopoDS_Shape& S, GProp_GProps& Props, const Standard_Real Eps){
-  Standard_Integer i, iErrorMax = 0;
+  Standard_Integer i;
+#ifdef DEB
+  Standard_Integer iErrorMax = 0;
+#endif
   Standard_Real ErrorMax = 0.0, Error = 0.0;
   TopExp_Explorer ex; 
   gp_Pnt P(roughBaryCenter(S)); 
@@ -126,7 +137,12 @@ static Standard_Real volumeProperties(const TopoDS_Shape& S, GProp_GProps& Props
       if(Eps < 1.0) {
 	G.Perform(BF, BD, Eps); 
 	Error = G.GetEpsilon();
-	if(ErrorMax < Error){ ErrorMax = Error; iErrorMax = i;}
+	if(ErrorMax < Error) {
+	  ErrorMax = Error;
+#ifdef DEB
+	  iErrorMax = i;
+#endif
+	}
       }
       else {
 	if(BF.NaturalRestriction()) G.Perform(BF);
@@ -147,14 +163,13 @@ void  BRepGProp::VolumeProperties(const TopoDS_Shape& S, GProp_GProps& Props, co
   // find the origin
   gp_Pnt P(0,0,0);  P.Transform(S.Location());
   Props = GProp_GProps(P);
-  Standard_Real Error = 0.0;
   if(OnlyClosed){
     TopExp_Explorer ex(S,TopAbs_SHELL);
     for (; ex.More(); ex.Next()) {
       const TopoDS_Shape& Sh = ex.Current();
-      if(BRep_Tool::IsClosed(Sh)) Error = volumeProperties(Sh,Props,1.0);
+      if(BRep_Tool::IsClosed(Sh)) volumeProperties(Sh,Props,1.0);
     }
-  } else Error = volumeProperties(S,Props,1.0);
+  } else volumeProperties(S,Props,1.0);
 }
 
 //=======================================================================
@@ -168,7 +183,10 @@ Standard_Real BRepGProp::VolumeProperties(const TopoDS_Shape& S, GProp_GProps& P
   // find the origin
   gp_Pnt P(0,0,0);  P.Transform(S.Location());
   Props = GProp_GProps(P);
-  Standard_Integer i, iErrorMax = 0;
+  Standard_Integer i;
+#ifdef DEB
+  Standard_Integer iErrorMax = 0;
+#endif
   Standard_Real ErrorMax = 0.0, Error = 0.0;
   if(OnlyClosed){
     TopExp_Explorer ex(S,TopAbs_SHELL);
@@ -176,7 +194,12 @@ Standard_Real BRepGProp::VolumeProperties(const TopoDS_Shape& S, GProp_GProps& P
       const TopoDS_Shape& Sh = ex.Current();
       if(BRep_Tool::IsClosed(Sh)) {
 	Error = volumeProperties(Sh,Props,Eps);
-	if(ErrorMax < Error){ ErrorMax = Error; iErrorMax = i;}
+	if(ErrorMax < Error) {
+	  ErrorMax = Error;
+#ifdef DEB
+	  iErrorMax = i;
+#endif
+	}
       }
     }
   } else ErrorMax = volumeProperties(S,Props,Eps);

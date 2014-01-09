@@ -72,7 +72,7 @@ static void UpdateVertices(const TopoDS_Edge& aE,
   }
   //
   Standard_Boolean bCB, bV1, bV2;
-  Standard_Integer i, nE, nV1, nV2, nSp, aNbPB, nOrE;
+  Standard_Integer i, nE, nV1, nV2, nSp, aNbPB;
   Standard_Real aT1, aT2;
   Handle(NCollection_IncAllocator) aAllocator;
   BOPDS_ListIteratorOfListOfPaveBlock aItPB, aItPBCB;
@@ -90,7 +90,6 @@ static void UpdateVertices(const TopoDS_Edge& aE,
     //DEBf
     if (aNbPB) {
       aPBx=aLPB.First();
-      nOrE=aPBx->OriginalEdge();
     }
     //DEBt
     if (aNbPB==1) {

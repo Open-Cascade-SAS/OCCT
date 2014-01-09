@@ -68,12 +68,6 @@ static Standard_Integer DISCRET    = 100;
 static Standard_Integer NBISOS     = 10;
 static Standard_Real    THESIZE       = 1000.;
 
-// Unused
-#ifdef DEB
-static Standard_Real    PLANETHESIZE  = 100.;
-static Standard_Real    DEFLECTION = 0.0;
-#endif
-
 static Handle(DDataStd_DrawDriver) DrawDriver;
 
 

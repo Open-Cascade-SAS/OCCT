@@ -1454,10 +1454,6 @@ static int VLenghtDimension(Draw_Interpretor& di, Standard_Integer argc, const c
       // On recupere les deux vertexes extremites de l'edge de face B
       TopoDS_Vertex  Vb,Vc;
       TopExp::Vertices(EdFromB,Vb,Vc);
-#ifdef DEB
-      gp_Pnt B=
-#endif
-               BRep_Tool::Pnt(Vb);
       gp_Pnt C=BRep_Tool::Pnt(Vc);
       
       // On projette le point B sur la Face car il 

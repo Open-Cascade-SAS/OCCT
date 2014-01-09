@@ -90,9 +90,7 @@ Handle(HLRTopoBRep_OutLiner) HLRTest::GetOutLiner (Standard_CString& Name)
 static Standard_Integer
 hprj (Draw_Interpretor& , Standard_Integer n, const char** a)
 {
-  Standard_Integer id = 1;
   if (n < 2) return 1;
-  if (n > 2) id = Draw::Atoi(a[2]);
   //
   gp_Ax2 anAx2 = gp::XOY();
   if (n == 11)

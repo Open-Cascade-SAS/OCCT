@@ -946,7 +946,6 @@ static Standard_Integer bsplineprof(Draw_Interpretor& di,
   Standard_Boolean face  = Standard_True;
   Standard_Boolean close = Standard_True;
 //  Standard_Boolean first = Standard_True;
-  Standard_Boolean stayfirst = Standard_False;
   Standard_Boolean isplanar  = Standard_True;
   Standard_Real  length ; 
   TopoDS_Shape S;
@@ -976,7 +975,6 @@ static Standard_Integer bsplineprof(Draw_Interpretor& di,
           else 
             P = Plane->Pln();
         }
-        stayfirst = Standard_True;
         i += 1 ;
         break;
 

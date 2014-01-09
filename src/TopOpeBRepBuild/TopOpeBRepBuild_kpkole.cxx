@@ -752,7 +752,6 @@ Standard_EXPORT Standard_Boolean FUNKP_KPiskolesh(const TopOpeBRepBuild_Builder&
   TopTools_ListOfShape lfhg; 
   Standard_Integer nfhg = BU.KPlhg(sol,TopAbs_FACE,lfhg);
   if ( nfhg != 0 ) {
-    Standard_Boolean hasgeominterf = Standard_False; // DEB
     TopTools_ListIteratorOfListOfShape its(lfhg);
     for(; its.More(); its.Next()) {
       TopOpeBRepDS_ListIteratorOfListOfInterference iti(BDS.ShapeInterferences(its.Value()));
@@ -760,7 +759,6 @@ Standard_EXPORT Standard_Boolean FUNKP_KPiskolesh(const TopOpeBRepBuild_Builder&
 	Handle(TopOpeBRepDS_ShapeShapeInterference) ssi;
 	ssi = Handle(TopOpeBRepDS_ShapeShapeInterference)::DownCast(iti.Value());
 	if (ssi.IsNull()) {
-	  hasgeominterf = Standard_True; // DEB
 	  return Standard_False;
 	}
       }

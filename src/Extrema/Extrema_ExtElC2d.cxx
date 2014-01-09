@@ -94,13 +94,7 @@ Method:
   Standard_Real Dy = D.Dot(y2);
   Standard_Real U1, teta[2];
   gp_Pnt2d O1=C1.Location();
-#ifdef DEB
-  gp_Pnt2d O2= C2.Location();
   gp_Pnt2d P1, P2;
-#else
-  C2.Location();
-  gp_Pnt2d P1, P2;
-#endif
   
   if (Abs(Dy) <= RealEpsilon()) {
     teta[0] = M_PI/2.0;
@@ -146,11 +140,7 @@ Extrema_ExtElC2d::Extrema_ExtElC2d (const gp_Lin2d& C1,
   Standard_Real Dx = D.Dot(x2);
   Standard_Real Dy = D.Dot(y2);
   Standard_Real U1, teta[2], r1 = C2.MajorRadius(), r2 = C2.MinorRadius();
-#ifdef DEB
-  gp_Pnt2d O1=C1.Location(), O2= C2.Location(), P1, P2;
-#else
   gp_Pnt2d O1=C1.Location(), P1, P2;
-#endif
   
   if (Abs(Dy) <= RealEpsilon()) {
     teta[0] = M_PI/2.0;

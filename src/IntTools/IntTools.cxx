@@ -234,14 +234,13 @@
 				 const Standard_Real myEpsNull)
 {
   Standard_Integer aType, j, aNbRoots;
-  Standard_Real t, t1, t2, f1, f2, absf1, absf2;
+  Standard_Real t1, t2, f1, f2, absf2;
 
   aNbRoots=mySequenceOfRoots.Length();
 
   for (j=1; j<=aNbRoots; j++) {
     IntTools_Root& aR=mySequenceOfRoots.ChangeValue(j);
     
-    t=aR.Root();
     aR.Interval (t1, t2, f1, f2);
 
     aType=aR.Type();
@@ -263,7 +262,6 @@
       break;
       
     case 2: // Smart;
-      absf1=fabs(f1);
       absf2=fabs(f2);
       if (absf2 < myEpsNull) {
 	aR.SetStateAfter (TopAbs_ON);

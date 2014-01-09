@@ -801,8 +801,7 @@ void Draw_Window::Wait (Standard_Boolean wait)
 
 void ProcessEvent(Draw_Window& win, XEvent& xev)
 {
-  Standard_Integer X,Y,button,lenk;
-  char c;
+  Standard_Integer X,Y,button;
   KeySym keysym;
   XComposeStatus stat;
   char chainekey[10];
@@ -829,17 +828,11 @@ void ProcessEvent(Draw_Window& win, XEvent& xev)
     break;
 
   case KeyPress :
-    lenk = XLookupString(&(xev.xkey),
+    XLookupString(&(xev.xkey),
                          chainekey,
                          10,
                          &keysym,
                          &stat);
-    if (lenk==1)
-      c = chainekey[0];
-    else
-      c = '\0';
-
-    //WKeyPress(c,keysym);
     break;
 
   case MotionNotify :

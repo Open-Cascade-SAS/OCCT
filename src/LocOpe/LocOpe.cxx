@@ -165,7 +165,6 @@ Standard_Boolean LocOpe::TgtFaces(const TopoDS_Edge& E,
   gp_Vec d1,d2;
 
   Standard_Real uu, vv;
-  Standard_Real angle[21];
 
   Standard_Integer i;
   for(i = 0; i <= 20; i++){
@@ -180,7 +179,6 @@ Standard_Boolean LocOpe::TgtFaces(const TopoDS_Edge& E,
     d2 = (du.Crossed(dv)).Normalized();
     if(rev2) d2.Reverse();
     ang = d1.Angle(d2);
-    angle[i] = ang;
     if(ang <= angmin) angmin = ang;
     if(ang >= angmax) angmax = ang;
   }

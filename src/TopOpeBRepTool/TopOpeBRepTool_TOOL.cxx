@@ -512,7 +512,6 @@ Standard_Boolean TopOpeBRepTool_TOOL::TggeomE(const Standard_Real par, const BRe
 
   if ((!inbounds) && (!onf) && (!onl)) return Standard_False;
   Standard_Real thepar = par;
-//  if (apoles && (onf || onl)) thepar = onf ? (thepar+tolp) : (thepar-tolp);
 
   gp_Pnt thepnt; BC.D1(thepar, thepnt, Tg);
   Tg.Normalize(); 

@@ -51,17 +51,13 @@ static
 			     const Handle_Adaptor2d_HCurve2d& C2);
 
 static 
-  void RecadreMemePeriode(const IntSurf_Quadric aQuad1,
-			  const IntSurf_Quadric aQuad2,
-			  Standard_Real& u1,
+  void RecadreMemePeriode(Standard_Real& u1,
 			  Standard_Real& u2,
 			  const Standard_Real anu1,
 			  const Standard_Real anu2);
 
 static
   void CorrectFirstPartOfLine(Handle(IntSurf_LineOn2S)& LinOn2S,
-			      const IntSurf_Quadric aQuad1,
-			      const IntSurf_Quadric aQuad2,
 			      const Standard_Real ref_u1,
 			      const Standard_Real ref_u2,
 			      Standard_Real& new_u1,
@@ -485,7 +481,7 @@ static
     //// Modified by jgv, 17.09.09 for OCC21255 ////
     if (!Corrected && U >= refpar)
       {
-	CorrectFirstPartOfLine(LinOn2S, quad1, quad2, ref_u1, ref_u2, anu1, anu2);
+	CorrectFirstPartOfLine(LinOn2S, ref_u1, ref_u2, anu1, anu2);
 	Corrected = Standard_True;
       }
     ////////////////////////////////////////////////
@@ -495,7 +491,7 @@ static
       Pnt3d = aline->Value(U);
       quad1.Parameters(Pnt3d,u1,v1);
       quad2.Parameters(Pnt3d,u2,v2);
-      RecadreMemePeriode(quad1, quad2, u1,u2,anu1,anu2);
+      RecadreMemePeriode(u1,u2,anu1,anu2);
       anu1 = u1;
       anu2 = u2;
       POn2S.SetValue(Pnt3d,u1,v1,u2,v2);
@@ -527,7 +523,7 @@ static
   //
   RefineParameters(aline, firstparam, lastparam, lastparam, -1, quad2, 10.*myTol3D, u2,v2);
   //
-  RecadreMemePeriode(quad1, quad2, u1,u2,anu1,anu2);
+  RecadreMemePeriode(u1,u2,anu1,anu2);
   POn2S.SetValue(Pnt3d,u1,v1,u2,v2);
   LinOn2S->Add(POn2S);
   nbpwline++;
@@ -535,7 +531,7 @@ static
   //// Modified by jgv, 17.09.09 for OCC21255 ////
   if (!Corrected && 
       (lastparam >= refpar || refpar-lastparam < Precision::Confusion()))
-    CorrectFirstPartOfLine(LinOn2S, quad1, quad2, ref_u1, ref_u2, anu1, anu2);
+    CorrectFirstPartOfLine(LinOn2S, ref_u1, ref_u2, anu1, anu2);
   ////////////////////////////////////////////////
 
   //
@@ -630,7 +626,7 @@ static
   do { 
     Standard_Boolean RemoveVtxo, RemoveVtx;
     Standard_Integer vo, voo;
-    Standard_Real ponl, ponlo, ponloo, aDist13, aDist23;
+    Standard_Real ponl, ponlo, aDist13, aDist23;
     //
     APointHasBeenRemoved = Standard_False;
     RemoveVtxo = Standard_False;
@@ -656,7 +652,6 @@ static
 		  if(voo!=v && voo!=vo) {
 		    if(newparamvertex(voo)>=0.) { 
 		      const IntPatch_Point& Vtxoo = aline->Vertex(voo);
-		      ponloo = Vtxoo.ParameterOnLine();
 		      const gp_Pnt& aPoo=Vtxoo.Value();
 		      //
 		      aDist13=aP.Distance(aPoo);
@@ -804,7 +799,7 @@ static
       //
       if(v==1) { 
 	ParamVtxPrecedent=refpointonwline;
-	RecadreMemePeriode(quad1, quad2, u1,u2,anu1,anu2);
+	RecadreMemePeriode(u1,u2,anu1,anu2);
 	NewPoint.SetParameter(refpointonwline);
 	//
 	NewPoint.SetParameters(u1,v1,u2,v2);
@@ -816,7 +811,7 @@ static
 	  //-- 2 vertex renseignent le meme point de la LineOn2S
 	  //-- On insere un nv point  =  vtx
 	  //-- On decale tous les vtx apres de 1 
-	  RecadreMemePeriode(quad1, quad2, u1,u2,anu1,anu2);
+	  RecadreMemePeriode(u1,u2,anu1,anu2);
 	  POn2S.SetValue(Pnt3d,u1,v1,u2,v2);
 	  LinOn2S->InsertBefore(refpointonwline+1, POn2S);
 	  nbpwline++;
@@ -834,7 +829,7 @@ static
 	}
 	//
 	else { 
-	  RecadreMemePeriode(quad1, quad2, u1,u2, anu1, anu2);
+	  RecadreMemePeriode(u1,u2, anu1, anu2);
 	  NewPoint.SetParameter(refpointonwline);
 	  //
 	  NewPoint.SetParameters(u1, v1, u2, v2);
@@ -928,19 +923,11 @@ Standard_Boolean SameCurve(const Handle_Adaptor2d_HCurve2d& C1,const Handle_Adap
 //function : RecadreMemePeriode
 //purpose  : 
 //=======================================================================
-void RecadreMemePeriode(const IntSurf_Quadric aQuad1,
-			const IntSurf_Quadric aQuad2,
-			Standard_Real& u1,
+void RecadreMemePeriode(Standard_Real& u1,
 			Standard_Real& u2,
 			const Standard_Real anu1,
 			const Standard_Real anu2) 
 { 
-  Standard_Boolean bBothCylinders;
-  GeomAbs_SurfaceType aType1, aType2;
-  //
-  aType1=aQuad1.TypeQuadric();
-  aType2=aQuad2.TypeQuadric();
-  bBothCylinders=(aType1==GeomAbs_Cylinder && aType2==GeomAbs_Cylinder);
   //
   while(anu1-u1 > 5.0) {
     u1+=M_PI+M_PI;
@@ -987,8 +974,6 @@ void RecadreMemePeriode(const IntSurf_Quadric aQuad1,
 //purpose  : 
 //=======================================================================
 void CorrectFirstPartOfLine(Handle(IntSurf_LineOn2S)& LinOn2S,
-			    const IntSurf_Quadric aQuad1,
-			    const IntSurf_Quadric aQuad2,
 			    const Standard_Real ref_u1,
 			    const Standard_Real ref_u2,
 			    Standard_Real& new_u1,
@@ -1002,7 +987,7 @@ void CorrectFirstPartOfLine(Handle(IntSurf_LineOn2S)& LinOn2S,
 
   new_u1 = u1;
   new_u2 = u2;
-  RecadreMemePeriode(aQuad1, aQuad2, new_u1, new_u2, ref_u1, ref_u2);
+  RecadreMemePeriode(new_u1, new_u2, ref_u1, ref_u2);
   OffsetOnS1 = new_u1 - u1;
   OffsetOnS2 = new_u2 - u2;
   if (Abs(OffsetOnS1) > 1. || Abs(OffsetOnS2) > 1.) //recadre on n*2*PI is done

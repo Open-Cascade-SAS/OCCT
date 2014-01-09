@@ -28,12 +28,11 @@ math_BracketedRoot::math_BracketedRoot (math_Function& F,
 
     Standard_Real Fa,Fc,a,c=0,d=0,e=0;
     Standard_Real min1,min2,p,q,r,s,tol1,xm;
-    Standard_Boolean Ok;
   
     a = Bound1;
     TheRoot = Bound2;
-    Ok = F.Value(a,Fa);
-    Ok = F.Value(TheRoot,TheError);
+    F.Value(a,Fa);
+    F.Value(TheRoot,TheError);
     if (Fa*TheError > 0.) { Done = Standard_False;}
     else {
       Fc = TheError ;
@@ -95,7 +94,7 @@ math_BracketedRoot::math_BracketedRoot (math_Function& F,
           else {
              TheRoot += (xm > 0. ? Abs(tol1) : -Abs(tol1));
           }
-          Ok = F.Value(TheRoot,TheError);
+          F.Value(TheRoot,TheError);
       }  
      Done = Standard_False;
     }  

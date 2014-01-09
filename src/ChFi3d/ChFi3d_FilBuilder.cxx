@@ -1400,8 +1400,6 @@ void  ChFi3d_FilBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData
     maybesingular = (func.GetMinimalDistance()<=100*tolapp3d); 
   }
   else {
-   Standard_Real SpFirst = HGuide->FirstParameter();
-  Standard_Real SpLast =  HGuide->LastParameter();
     BRepBlend_SurfRstEvolRad func(HS2,HS1,PC1,HGuide,fsp->Law(HGuide));
     func.Set(HSref1,PCref1);
     Handle(Adaptor3d_HCurveOnSurface) HC = new Adaptor3d_HCurveOnSurface();
@@ -1419,7 +1417,6 @@ void  ChFi3d_FilBuilder::PerformSurf(ChFiDS_SequenceOfSurfData&          SeqData
     finvp.Set(petitchoix);
     func.Set(petitchoix);
     func.Set(myShape);
-    SpFirst = HGuide->FirstParameter();SpLast =  HGuide->LastParameter();
     done = ComputeData(Data,HGuide,lin,HS2,I2,HS1,PC1,I1,Decroch1,
 		       func,finv,finvp,finvc,
 		       PFirst,MaxStep,Fleche,TolGuide,First,Last,
@@ -1881,7 +1878,6 @@ void ChFi3d_FilBuilder::ExtentTwoCorner(const TopoDS_Vertex& V,
   // to faces and tangents to the guideline.
   Standard_Integer Sens;
   Standard_Real    Coeff = 0.3, Eval=0.0, dU, rad;
-  Standard_Integer IE;
   ChFiDS_ListIteratorOfListOfStripe itel(LS);
   Standard_Boolean FF = Standard_True;
   Handle(ChFiDS_Stripe) Stripe;
@@ -1911,7 +1907,7 @@ void ChFi3d_FilBuilder::ExtentTwoCorner(const TopoDS_Vertex& V,
 
   // One applies
   for (itel.Initialize(LS) ; itel.More(); itel.Next()) {    
-    IE = ChFi3d_IndexOfSurfData(V,itel.Value(),Sens);
+    ChFi3d_IndexOfSurfData(V,itel.Value(),Sens);
     if (!FF && Stripe == itel.Value()) Sens = -Sens;
     Stripe = itel.Value();
     Spine = Stripe->Spine();

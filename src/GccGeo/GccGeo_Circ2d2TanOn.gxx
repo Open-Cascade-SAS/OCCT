@@ -152,7 +152,6 @@ GccGeo_Circ2d2TanOn::
 	    Standard_Real dist1 = Center.Distance(C1.Location());
 	    Standard_Real dist2 = Center.Distance(C2.Location());
 	    Standard_Integer nbsol = 0;
-	    Standard_Integer nsol = 0;
 	    Standard_Integer nnsol = 0;
 	    R1 = C1.Radius();
 	    R2 = C2.Radius();
@@ -179,22 +178,18 @@ GccGeo_Circ2d2TanOn::
 	    }
 	    if (Qualified2.IsEnclosed() && nbsol != 0) {
 	      if (dist2-R2 < Tol) {
-		nsol = 1;
 		RBid(1) = Abs(R2-dist2);
 	      }
 	    }
 	    else if (Qualified2.IsOutside() && nbsol != 0) {
 	      if (R2-dist2 < Tol) {
-		nsol = 1;
 		RBid(1) = Abs(R2-dist2);
 	      }
 	    }
 	    else if (Qualified2.IsEnclosing() && nbsol != 0) {
-	      nsol = 1;
 	      RBid(1) = dist2+R2;
 	    }
 	    else if (Qualified2.IsUnqualified() && nbsol != 0) {
-	      nsol = 1;
 	      RBid(1) = dist2+R2;
 	      RBid(2) = Abs(R2-dist2);
 	    }

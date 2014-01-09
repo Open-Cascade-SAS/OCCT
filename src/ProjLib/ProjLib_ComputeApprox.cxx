@@ -432,10 +432,8 @@ static void Function_SetUVBounds(Standard_Real& myU1,
       //       (1) (3) (4) : equation de la couture.
       Standard_Integer NbSolutions = 0;
       Standard_Real A, B, C, D, R, Tol = 1.e-10;
-      Standard_Real U1, U2, V1, V2, aTPC;
+      Standard_Real U1, U2, V1, V2;
       gp_Trsf Trsf;
-      //
-      aTPC=Precision::PConfusion();
       //
       gp_Circ Circle = myCurve->Circle();
       Trsf.SetTransformation(SP.Position());

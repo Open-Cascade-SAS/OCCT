@@ -88,7 +88,6 @@ void TopOpeBRepBuild_Builder::BuildEdges(const Handle(TopOpeBRepDS_HDataStructur
   TopOpeBRepDS_DataStructure& BDS = HDS->ChangeDS();
 
   myNewEdges.Clear();
-  Standard_Integer nc = BDS.NbCurves();
   TopOpeBRepDS_CurveExplorer cex;
 
   Standard_Integer ick = 0;
@@ -106,7 +105,6 @@ void TopOpeBRepBuild_Builder::BuildEdges(const Handle(TopOpeBRepDS_HDataStructur
     BDS.ChangeNbCurves(ick-1);
   }
 
-  nc = BDS.NbCurves();
   for (cex.Init(BDS,Standard_False); cex.More(); cex.Next()) {
     Standard_Integer ic = cex.Index();
     Standard_Integer im = cex.Curve(ic).Mother();

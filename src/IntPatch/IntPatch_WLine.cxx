@@ -247,9 +247,6 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol) {
   Standard_Integer indicevertexonline;
   Standard_Real    indicevertex;
 
-  Standard_Real ParamMinOnLine,ParamMaxOnLine;
-  if(fipt) { ParamMinOnLine = Vertex(indf).ParameterOnLine(); } else { ParamMinOnLine = -100000.0; } 
-  if(lapt) { ParamMaxOnLine = Vertex(indl).ParameterOnLine(); } else { ParamMaxOnLine =  100000.0; } 
   Standard_Boolean APointDeleted = Standard_False;
   //----------------------------------------------------------
   //--     F i l t r e   s u r   r e s t r i c t i o n s   --

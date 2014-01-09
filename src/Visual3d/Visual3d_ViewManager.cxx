@@ -661,13 +661,8 @@ TColStd_Array2OfReal TMap_Matrix_Inv (0,3,0,3);
 
 Standard_Real Dx, Dy, Ratio;
 Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
-Standard_Integer j;
 
 Standard_Integer stop = 0;
-
-Standard_Boolean BResult;
-
-		j = MyDefinedView.Extent ();
 
 		while ((! stop) && (MyIterator.More ())) {
 		    if (TheCView.ViewId ==
@@ -684,10 +679,10 @@ Standard_Boolean BResult;
 		}
 
 		// View Mapping Transformation and View Clip, inversion
-		BResult = Aspect::Inverse (TMap_Matrix, TMap_Matrix_Inv);
+		Aspect::Inverse (TMap_Matrix, TMap_Matrix_Inv);
 
 		// View Orientation Transformation, inversion
-		BResult = Aspect::Inverse (TOri_Matrix, TOri_Matrix_Inv);
+		Aspect::Inverse (TOri_Matrix, TOri_Matrix_Inv);
 
 		// (AU, AV) : Device Coordinate Space
 		// DCS -> NPCS Normalized Projection Coordinate Space
@@ -798,13 +793,8 @@ TColStd_Array2OfReal TMap_Matrix_Inv (0,3,0,3);
 
 Standard_Real Dx, Dy, Ratio;
 Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
-Standard_Integer j;
 
 Standard_Integer stop = 0;
-
-Standard_Boolean BResult;
-
-		j = MyDefinedView.Extent ();
 
 		while ((! stop) && (MyIterator.More ())) {
 		    if (TheCView.ViewId ==
@@ -821,10 +811,10 @@ Standard_Boolean BResult;
 		}
 
 		// View Mapping Transformation and View Clip, inversion
-		BResult = Aspect::Inverse (TMap_Matrix, TMap_Matrix_Inv);
+		Aspect::Inverse (TMap_Matrix, TMap_Matrix_Inv);
 
 		// View Orientation Transformation, inversion
-		BResult = Aspect::Inverse (TOri_Matrix, TOri_Matrix_Inv);
+		Aspect::Inverse (TOri_Matrix, TOri_Matrix_Inv);
 
 		// (AU, AV) : Device Coordinate Space
 		// DCS -> NPCS Normalized Projection Coordinate Space

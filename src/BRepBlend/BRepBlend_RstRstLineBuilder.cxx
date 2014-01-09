@@ -1421,11 +1421,10 @@ Blend_Status BRepBlend_RstRstLineBuilder::CheckDeflectionOnRst1(const Blend_Poin
   if(!prevpointistangent){
     prevTg = previousP.TangentOnC1();
   }
-  Standard_Real Norme, curNorme;
+  Standard_Real Norme;
   Standard_Real prevNorme = 0.;
   gp_Vec Corde(prevP, Psurf);
   Norme = Corde.SquareMagnitude();
-  if (!curpointistangent) curNorme = Tgsurf.SquareMagnitude();
   if (!prevpointistangent) prevNorme = prevTg.SquareMagnitude();
 
   if (Norme <= tolesp * tolesp) {
@@ -1499,11 +1498,10 @@ Blend_Status BRepBlend_RstRstLineBuilder::CheckDeflectionOnRst2(const Blend_Poin
   if (!prevpointistangent) {
     prevTg = previousP.TangentOnC2();
   }
-  Standard_Real Norme, curNorme;
+  Standard_Real Norme;
   Standard_Real prevNorme = 0.;
   gp_Vec Corde(prevP, Psurf);
   Norme = Corde.SquareMagnitude();
-  if (!curpointistangent) curNorme   = Tgsurf.SquareMagnitude();
   if (!prevpointistangent) prevNorme = prevTg.SquareMagnitude();
 
   if (Norme <= tolesp * tolesp){

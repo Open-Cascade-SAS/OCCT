@@ -243,7 +243,7 @@ static
                                      const BOPDS_ListOfPaveBlock& aLPBOut,
                                      const Handle(BOPDS_PaveBlock)& aPBD)
 {
-  Standard_Boolean bXDir, bIsDone, bReject;
+  Standard_Boolean bXDir, bIsDone;
   Standard_Integer nE, aNbPoints, j;
   Standard_Real aTD1, aTD2, aT1, aT2, aTolInter, aX, aDT;
   Standard_Real aTolCmp;
@@ -329,7 +329,6 @@ static
         continue; 
       }
       //
-      bReject=Standard_False;
       if (aPBD->ContainsParameter(aX, aDT)) {
         continue;
       }

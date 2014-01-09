@@ -2582,7 +2582,6 @@ Handle( Poly_Triangulation ) CalculationOfSphere( double X , double Y , double Z
 
   int i, j;
   int jStart, jEnd, numOffset;
-  int numPts, numPolys;
   double x[3], n[3], deltaPhi, deltaTheta, phi, theta, radius;
   double startTheta, endTheta, startPhi, endPhi;
   int base, numPoles=0, thetaResolution, phiResolution;
@@ -2611,9 +2610,6 @@ Handle( Poly_Triangulation ) CalculationOfSphere( double X , double Y , double Z
   localEndTheta = localStartTheta + (double)(end) * deltaTheta;
   localStartTheta = localStartTheta + (double)(start) * deltaTheta;
   localThetaResolution = end - start;
-
-  numPts =  mPhiResolution * localThetaResolution + 2;
-  numPolys =  mPhiResolution * 2 * localThetaResolution;
 
   // Create north pole if needed
   int number_point = 0;

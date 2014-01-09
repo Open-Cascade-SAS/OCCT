@@ -1753,7 +1753,6 @@ void TPrsStd_ConstraintTools::ComputeOffset (const Handle(TDataXtd_Constraint)& 
   TCollection_ExtendedString txt;
   Handle(AIS_LengthDimension) ais;
   //Handle(AIS_Drawer) aDrawer;
-  Standard_Boolean NotNull = Standard_False;
 
   if (nbgeom == 1)
   {
@@ -1761,7 +1760,6 @@ void TPrsStd_ConstraintTools::ComputeOffset (const Handle(TDataXtd_Constraint)& 
     if (!anAIS.IsNull())
     {
       ais = Handle(AIS_LengthDimension)::DownCast(anAIS);
-      NotNull = Standard_True; 
     }
 
     if (S1.ShapeType() == TopAbs_FACE && S2.ShapeType() == TopAbs_FACE)
@@ -1875,7 +1873,6 @@ void TPrsStd_ConstraintTools::ComputeOffset (const Handle(TDataXtd_Constraint)& 
       }
     }
     S2 = nearest;
-    if( !anAIS.IsNull() ) NotNull = Standard_True; 
     ais = Handle(AIS_LengthDimension)::DownCast(anAIS);
     if (ais.IsNull()) {
       ais = new AIS_LengthDimension (S1,S2,aplane->Pln());

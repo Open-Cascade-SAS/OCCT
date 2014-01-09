@@ -166,9 +166,8 @@ void TopOpeBRepBuild_Builder::GFillEdgePVS(const TopoDS_Shape& E,
                                            const TopOpeBRepBuild_GTopo& G,
                                            TopOpeBRepBuild_PaveSet& PVS)
 {
-  TopAbs_ShapeEnum t1,t2,ShapeInterf;
+  TopAbs_ShapeEnum t1,t2;
   G.Type(t1,t2);
-  ShapeInterf = t1;
   TopAbs_State TB1,TB2;
   G.StatesON(TB1,TB2);
   
@@ -356,7 +355,7 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
   // BUC60093 :  only 2 G : 1 point && 1 vertex  
   // deleting interfs on G = vertex sdm && closingE  
   TopoDS_Vertex vclo; Standard_Boolean closedE = TopOpeBRepTool_TOOL::ClosedE(TopoDS::Edge(E),vclo);
-  Standard_Integer kp1 = 0; Standard_Integer ikp1 = 0; 
+  Standard_Integer kp1 = 0;
   if (closedE) {
     tki.Init();
     Standard_Integer nG = 0;
@@ -369,7 +368,7 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
       TopoDS_Shape oov;
       FUN_ds_getoov(v,myDataStructure,oov);
       Standard_Boolean samev = v.IsSame(vclo), sameoov = oov.IsSame(vclo);
-      if (samev || sameoov) {ikp1 = Gcur; kp1 = Gcur;}
+      if (samev || sameoov) {kp1 = Gcur;}
       tki.Next();
     }
     if (nG == 1) kp1 = 0; // we have only one interf on vGclo -> keep the interf
@@ -413,8 +412,8 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
 	      aa += TCollection_AsciiString(Gcur); DSD.DumpLOI(LICur,cout,aa);}
 #endif
 
-    Standard_Boolean Ghsd = Standard_False; TopoDS_Shape vGsd; 
-    if (vertex) Ghsd = FUN_ds_getoov(BDS.Shape(Gcur), myDataStructure, vGsd); //xpu221098
+    TopoDS_Shape vGsd; 
+    if (vertex) FUN_ds_getoov(BDS.Shape(Gcur), myDataStructure, vGsd); //xpu221098
 
     // recall : I3d=(I3dF,I3dFE) : I3dF=(T(F),G,F), I3dFE=(T(F),G,E)
     //          I2d=I2dFE
@@ -507,8 +506,7 @@ void TopOpeBRepBuild_Builder::GFillPointTopologyPVS(const TopoDS_Shape& E,
     // - kp3 -
     // xpu200598 interference 2d at GPOINT
     Standard_Boolean kp3 = (n2d > 0) && point;
-    TopAbs_Orientation Okp3 = TopAbs_EXTERNAL; 
-    if (kp3) Okp3=l2dFEcur.First()->Transition().Orientation(TopAbs_IN);
+    if (kp3) l2dFEcur.First()->Transition().Orientation(TopAbs_IN);
 
 
     TopOpeBRepDS_PointIterator itCur(LICur); Standard_Integer iICur=0;

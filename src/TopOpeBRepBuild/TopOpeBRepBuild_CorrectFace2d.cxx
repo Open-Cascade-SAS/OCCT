@@ -344,7 +344,6 @@ TopOpeBRepBuild_CorrectFace2d::TopOpeBRepBuild_CorrectFace2d()
   //
   // 2. Define the First Edge on the Wire from aCopyAvoidMap
   Standard_Integer i, aNbEdges=0, aNbAvoidEdgesOnWire;
-  Standard_Boolean IsAllAvoidEdgesDegenerated=Standard_False;
   Standard_Real aDMax=0, aR;
 
   TopExp_Explorer aWExp; 
@@ -383,7 +382,6 @@ TopOpeBRepBuild_CorrectFace2d::TopOpeBRepBuild_CorrectFace2d()
     // All of anAvoidMap edges are degenerated
     // So take the edge with max dist. between 
     //First and Last 2d points as the First edge
-    IsAllAvoidEdgesDegenerated=Standard_True;
     //if(aNbAvoidEdgesOnWire != 1)
      // return 1; //in case of several degenerated edges we cannot connect wire by right way
     for (i=1; i<=aNbAvoidEdgesOnWire; i++) {
@@ -686,7 +684,7 @@ TopOpeBRepBuild_CorrectFace2d::TopOpeBRepBuild_CorrectFace2d()
   void TopOpeBRepBuild_CorrectFace2d::CheckList (const TopoDS_Face& aFace,
 						 TopTools_ListOfShape&  HeadList)
 {
-  TopAbs_Orientation r1, r2;
+  TopAbs_Orientation r1;
   Standard_Real aDTolerance=Precision::Confusion();
   TopTools_SequenceOfShape aSeq;
   TopTools_ListIteratorOfListOfShape anIt(HeadList);
@@ -695,7 +693,6 @@ TopOpeBRepBuild_CorrectFace2d::TopOpeBRepBuild_CorrectFace2d()
   }
 
   r1=aSeq(1).Orientation();
-  r2=aSeq(2).Orientation();
   Standard_Integer i, aNb=aSeq.Length();
 //modified by NIZNHY-PKV Mon Apr 24 14:43:57 2000f
   Standard_Boolean aFirstCheck=Standard_False;
@@ -729,7 +726,6 @@ TopOpeBRepBuild_CorrectFace2d::TopOpeBRepBuild_CorrectFace2d()
 //modified by NIZNHY-PKV Mon Apr 24 14:43:59 2000t
 
   r1=aSeq(1).Orientation();
-  r2=aSeq(2).Orientation();
 
   TopoDS_Vertex aV1R, aV2F;
   

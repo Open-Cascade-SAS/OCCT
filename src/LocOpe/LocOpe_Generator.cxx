@@ -240,7 +240,7 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
   TopTools_ListOfShape RebuildFace;
   TopTools_MapOfShape mapTreated;
   TopTools_DataMapOfShapeShape DontFuse;
-  TopAbs_Orientation orient,orface,orsav;
+  TopAbs_Orientation orient,orface;
 
   for (itf.Reset(); itf.More(); itf.Next()) {
     const TopoDS_Face& fac = TopoDS::Face(itf.Key());
@@ -456,7 +456,6 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
   for (itf.Reset();itf.More(); itf.Next()) {
     const TopoDS_Face& fac = TopoDS::Face(itf.Key());
     Standard_Boolean ModFace = Standard_False;
-    Standard_Boolean HasWire = Standard_False;
     TopTools_ListOfShape listofedg;
 
     EdgAdded.Clear();
@@ -491,7 +490,6 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
 	for (exp2.Init(wir,TopAbs_EDGE); exp2.More(); exp2.Next()) {
 	  listofedg.Append(exp2.Current());
 	}
-	HasWire = Standard_True;
       }
       else {
 	if (!ModFace) { 
@@ -583,19 +581,16 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
 		  }
 		}
 //		B.Add(newface,theNew);
-		HasWire = Standard_True;
 	      }
 	    }
 	  }
 	  ModFace = Standard_True;
 	}
 	
-	orsav = wir.Orientation();
 	// reconstruction du wire
 	//B.MakeWire(newwire);
 
 	Handle(Geom2d_Curve) C2d,C2d1;
-	Standard_Boolean EmptyWire = Standard_True;
     
 //	for (exp2.Init(wir.Oriented(TopAbs_FORWARD),TopAbs_EDGE); 
 	for (exp2.Init(wir,TopAbs_EDGE); exp2.More(); exp2.Next()) {
@@ -605,7 +600,6 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
 //	    B.Add(newwire,edg.Oriented(or));
 //            listofedg.Append(edg.Oriented(or));
             listofedg.Append(edg);
-	    EmptyWire = Standard_False;
 	  }
 	  else if (myModShapes.IsBound(edg) || theEEMap.IsBound(edg)) {
 	    if (myModShapes.IsBound(edg)) {
@@ -616,7 +610,6 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
 	    }
 //	    B.Add(newwire,newedg.Oriented(or));
 	    listofedg.Append(newedg.Oriented(orient));
-	    EmptyWire = Standard_False;
 	    C = BRep_Tool::Curve(newedg,loc,f,l);
 	    if (!loc.IsIdentity()) {
 	      Handle(Geom_Geometry) GG = C->Transformed(loc.Transformation());
@@ -863,7 +856,6 @@ void LocOpe_Generator::Perform(const Handle(LocOpe_GeneratedShape)& G)
 		orient = TopAbs::Compose(orface,edg.Orientation());
 		//		B.Add(newwire,edg.Oriented(or));
 		listofedg.Append(edg.Oriented(orient));
-		EmptyWire = Standard_False;
 		EdgAdded.Add(edg);
 		if (P.IsNull()) {  
 		  // on met les courbes 2d si on n`est pas sur un plan

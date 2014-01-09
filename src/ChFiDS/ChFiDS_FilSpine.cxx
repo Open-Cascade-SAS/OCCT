@@ -181,9 +181,6 @@ void  ChFiDS_FilSpine::SetRadius(const gp_XY&           UandR,
     Handle(ChFiDS_HElSpine) Els = It.Value();
     if (Els->IsPeriodic()) Itl.Value() = ComputeLaw(Els);
     else{
-      Standard_Real nW = W;
-      if(IsPeriodic())
-	nW = ElCLib::InPeriod(W,FirstParameter(),LastParameter());
       for (; It.More(); It.Next(), Itl.Next()) {
 	Els = It.Value();
 	Standard_Real uf = Els->FirstParameter();

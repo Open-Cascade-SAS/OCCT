@@ -982,9 +982,6 @@ void TopOpeBRep_FacesFiller::ProcessVPonR
     }
   }//myLineINL
 
-  TopOpeBRepDS_Kind SKEPI; if(EPIfound) SKEPI=IEPI->SupportType();
-  TopOpeBRepDS_Kind SKCPI; if(CPIfound) SKCPI=ICPI->SupportType();
-
   // Gfound = VP corresponds with an existing geometry of ShapeIndex
   Standard_Boolean Gfound = ( EPIfound || CPIfound );  
 #ifdef DEB

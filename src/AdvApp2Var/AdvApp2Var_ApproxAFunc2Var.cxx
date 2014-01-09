@@ -435,7 +435,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting& UChoice
 					 const AdvApp2Var_EvaluatorFunc2Var& Func,
 					 const AdvApp2Var_Criterion& Crit)
 {
-  Standard_Real Udec, Vdec, CritValue, m0=0., m1=0.;
+  Standard_Real Udec, Vdec, CritValue, m1=0.;
   Standard_Boolean Umore, Vmore, CritAbs = (Crit.Type() == AdvApp2Var_Absolute);
   Standard_Integer NbPatch, NbU, NbV, NbInt, NumDec;
   Standard_Integer FirstNA, decision=0;
@@ -445,7 +445,6 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting& UChoice
 // complete the set of constraints 
     ComputeConstraints(UChoice, VChoice, Func, Crit);
     if (decision>0) {
-      m0 = m1;
       m1 = 0.;
     }
 

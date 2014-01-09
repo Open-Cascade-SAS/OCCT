@@ -204,7 +204,7 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
 
   Standard_Boolean ok;
   Standard_Real    distanceptsol,parameter,firstparameter =0.;
-  Standard_Boolean thesense = Standard_False,sense,theSense;
+  Standard_Boolean thesense = Standard_False,sense;
   Standard_Real    distancemini;
   Standard_Integer nbsolution;
   Standard_Real    PreConf = Precision::Confusion();
@@ -407,7 +407,6 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
 	}
 	else {ok = Standard_True;}
 
-	theSense = sense;
 	if (ok) {
 	  sense = Standard_False;
 //  Modified by skv - Tue Feb 15 17:51:29 2005 Integration Begin
@@ -560,7 +559,6 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve   ,
 	sense = Standard_True;
 	distanceptsol = Distance(apoint,solution,tan1,tan2,
 				 adirection,parameter,sense,ok);
-	theSense = sense;
 	if (ok || !oncurve) {
 	  sense = Standard_False;
 //  Modified by skv - Tue Feb 15 17:51:29 2005 Integration Begin
@@ -764,7 +762,7 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve  ,
 				const Standard_Boolean      oncurve       )
 {
   Standard_Boolean ok;
-  Standard_Boolean thesense = Standard_False,sense,theSense;
+  Standard_Boolean thesense = Standard_False,sense;
   Standard_Real    distanceptsol,parameter,firstparameter =0.,secondparameter;
   Handle(Geom2d_Curve) curve;
   Handle(GccInt_Bisec) TheSol;
@@ -917,7 +915,6 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve  ,
     case 2 : {
       GccAna_LinPnt2dBisec Bisector(line,asecondpoint->Pnt2d());
       
-      theSense = Standard_True;
 #ifdef DEB
       gp_Vec2d V(line.Direction());
 #else
@@ -1022,14 +1019,14 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Point)& afirstpoint  ,
 				const Standard_Boolean      oncurve       )
 {
   Standard_Boolean sense,ok;
-  Standard_Real distanceptsol,parameter;
+  Standard_Real parameter;
 
   GccAna_Pnt2dBisec bisector(afirstpoint->Pnt2d(),asecondpoint->Pnt2d());
   gp_Lin2d line = bisector.ThisSolution();
   Handle(GccInt_Bisec) solution = new GccInt_BLine(line);
 
   sense = Standard_False;
-  distanceptsol = Distance(apoint,solution,
+  Distance(apoint,solution,
 			   afirstvector,asecondvector,
 			   adirection,parameter,sense,ok);
   if (ok || !oncurve) {

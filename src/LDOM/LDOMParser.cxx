@@ -159,7 +159,6 @@ Standard_Boolean LDOMParser::ParseDocument ()
 {
   Standard_Boolean      isError   = Standard_False;
   Standard_Boolean      isElement = Standard_False;
-  Standard_Boolean      isHeader  = Standard_False;
   Standard_Boolean      isDoctype = Standard_False;
 
   for(;;) {
@@ -171,7 +170,6 @@ Standard_Boolean LDOMParser::ParseDocument ()
         isError = Standard_True;
         break;
       }
-      isHeader = Standard_True;
       continue;
     case LDOM_XmlReader::XML_DOCTYPE:
       if (isElement) {

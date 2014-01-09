@@ -430,7 +430,7 @@ void AppParCurves_LeastSquare::Perform(const math_Vector& Parameters) {
   if (!isready) {
     return;
   }
-  Standard_Integer i, j, k, Ci, Nincx, Neq, i2, k1, k2;
+  Standard_Integer i, j, k, Ci, Nincx, i2, k1, k2;
   Standard_Integer nbpol1 = nbpoles-1, Ninc1 = Ninc-1;
   Standard_Real AD1, A0;
 //  gp_Pnt Pt;
@@ -499,7 +499,7 @@ void AppParCurves_LeastSquare::Perform(const math_Vector& Parameters) {
     math_Vector myTABB(1, Nincx, 0.0);
     
     MakeTAA(TheAA, mytab);
-    Standard_Integer Error = DACTCL_Decompose(TheAA, Index);
+    DACTCL_Decompose(TheAA, Index);
     
     Standard_Integer kk2;
     for (j = 1; j <= B2.ColNumber(); j++) {
@@ -508,7 +508,7 @@ void AppParCurves_LeastSquare::Perform(const math_Vector& Parameters) {
 	myTABB(kk2) = mytab(i, j);
 	kk2++;
       }
-      Error = DACTCL_Solve(TheAA, myTABB, Index);
+      DACTCL_Solve(TheAA, myTABB, Index);
       
       i2 = 1;
       for (k = resinit; k <= resfin; k++) {
@@ -524,7 +524,6 @@ void AppParCurves_LeastSquare::Perform(const math_Vector& Parameters) {
   // ===========================================================
 
   Nincx = resfin-resinit+1;
-  Neq = LastP-FirstP+1;
   Standard_Integer deport = 0, Nincx2 = 2*Nincx;
   
   math_IntegerVector InternalIndex(1, Nincx);
@@ -868,7 +867,7 @@ void AppParCurves_LeastSquare::Perform(const math_Vector&  Parameters,
 
   math_Vector myTABB(1, Nincx, 0.0);
 
-  Standard_Integer Error = DACTCL_Decompose(AA, Index);
+  DACTCL_Decompose(AA, Index);
   
   Standard_Integer kk2;
   for (j = 1; j <= B2.ColNumber(); j++) {
@@ -878,7 +877,7 @@ void AppParCurves_LeastSquare::Perform(const math_Vector&  Parameters,
       kk2++;
     }
     
-    Error = DACTCL_Solve(AA, myTABB, Index);
+    DACTCL_Solve(AA, myTABB, Index);
     
     i2 = 1;
     for (k = resinit; k <= resfin; k++) {
@@ -992,7 +991,6 @@ void AppParCurves_LeastSquare::Error(Standard_Real& F,
   F = 0.0;
   i2 = 1;
   math_Vector Px(1, nbpoles), Py(1, nbpoles), Pz(1, nbpoles);
-  Standard_Integer l;
 
   for (k = 1 ; k <= nbP+nbP2d; k++) {
     i21 = i2+1; i22 = i2+2;
@@ -1005,7 +1003,6 @@ void AppParCurves_LeastSquare::Error(Standard_Real& F,
       AA = 0.0; BB = 0.0; CC = 0.0;
       indexdeb = myindex(i) + 1;
       indexfin = indexdeb + deg;
-      l = (i-1)*(deg+1)-indexdeb+1;
       for (j = indexdeb; j <= indexfin; j++) {
 	AIJ = A(i, j);
 	AA += AIJ*Px(j);

@@ -564,8 +564,7 @@
                                                        const Standard_Real aTol) 
 {
   Standard_Boolean bFlag;
-  Standard_Real Umin, myEpsT, U, V;
-  myEpsT=1.e-12;
+  Standard_Real Umin, U, V;
 
   GeomAPI_ProjectPointOnSurf& aProjector=ProjPS(aF);
   aProjector.Perform(aP);
@@ -614,14 +613,12 @@
                                                         const Standard_Real aTol) 
 {
   Standard_Boolean bFlag;
-  Standard_Real aTInterm, aFirst, aLast;
+  Standard_Real aTInterm;
   gp_Pnt aPInterm;
 
   aTInterm=IntTools_Tools::IntermediatePoint(aT1, aT2);
 
   Handle(Geom_Curve) aC3D=aC.Curve();
-  aFirst=aC3D->FirstParameter();
-  aLast =aC3D->LastParameter();
   // point 3D
   aC3D->D0(aTInterm, aPInterm);
   //

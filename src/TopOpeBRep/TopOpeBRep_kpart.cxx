@@ -352,7 +352,6 @@ Standard_Boolean FUNBREP_topowalki
     lastinin = lastinin && (lasttransLine.After() == TopAbs_IN);
   }
   
-  Standard_Boolean LIdefinie = Standard_False;
   Standard_Boolean LITdefinie = Standard_False;
   Standard_Boolean LITonsort = Standard_False;
   TopOpeBRepDS_Transition LIT;
@@ -360,7 +359,6 @@ Standard_Boolean FUNBREP_topowalki
   Standard_Boolean nointerf = DSCIL.IsEmpty();
   if (!nointerf) {
     I = DSCIL.Last();
-    LIdefinie = Standard_True;
     LIT = I->Transition();
     LITdefinie = ! LIT.IsUnknown();
     if (LITdefinie) LITonsort = (LIT.Orientation(TopAbs_OUT) == TopAbs_FORWARD);
@@ -587,9 +585,9 @@ Standard_Boolean FUNBREP_topogline_new
 } // FUNBREP_topogline_new
 
 //----------------------------------------------------------------------
-Standard_Boolean FUNBREP_topogline
+static Standard_Boolean FUNBREP_topogline
 (const Handle(TopOpeBRepDS_Interference)& Ifound,const TopOpeBRepDS_ListOfInterference& DSCIL,const TopOpeBRep_LineInter& L,
- const TopOpeBRep_VPointInter& VP,const TopOpeBRepDS_Transition& lasttransLine,
+ const TopOpeBRep_VPointInter& VP,
  const TopOpeBRepDS_DataStructure& BDS,const TopoDS_Shape& E,
 // const TopoDS_Shape& F,
  const TopoDS_Shape& ,
@@ -624,9 +622,6 @@ Standard_Boolean FUNBREP_topogline
     if (iVP == iINONn) transLine = TopOpeBRepDS_Transition(TopAbs_IN,TopAbs_OUT);    
   }
   Standard_Boolean onsort = (transLine.Orientation(TopAbs_OUT) == TopAbs_FORWARD);
-  Standard_Boolean lastdefinie = ! lasttransLine.IsUnknown();
-  Standard_Boolean lastonsort = Standard_False;
-  if (lastdefinie) lastonsort = (lasttransLine.Orientation(TopAbs_OUT) == TopAbs_FORWARD);
 
   Standard_Boolean LITdefinie = Standard_False;
   Standard_Boolean LITonsort = Standard_False;
@@ -764,7 +759,8 @@ Standard_EXPORT Standard_Boolean FUNBREP_topokpart
   if (!CPIfound) samepar = Standard_False;
   else           samepar = CPIfound ? TopoParameter(L,Ifound,parline,couture) : Standard_False;
 
-  TopOpeBRepDS_Transition lasttransLine; if (!DSCIL.IsEmpty()) lasttransLine = DSCIL.Last()->Transition(); // xpu12-12-97
+  TopOpeBRepDS_Transition lasttransLine;
+  if (!DSCIL.IsEmpty()) lasttransLine = DSCIL.Last()->Transition(); // xpu12-12-97
 #ifdef DEB
   if (TopOpeBRepDS_GettraceDSF()) {
     FUNBREP_topokpartDEB(Ifound,DSCIL,L,VP,lasttransLine,BDS,E,F,toluv,
@@ -784,7 +780,7 @@ Standard_EXPORT Standard_Boolean FUNBREP_topokpart
 			     CPIfound,samepar,couture,parline,transLine);
   }
   else {
-    keep = FUNBREP_topogline(Ifound,DSCIL,L,VP,lasttransLine,BDS,E,F,toluv,
+    keep = FUNBREP_topogline(Ifound,DSCIL,L,VP,BDS,E,F,toluv,
 			     CPIfound,samepar,couture,parline,transLine);
   }
   return keep;  

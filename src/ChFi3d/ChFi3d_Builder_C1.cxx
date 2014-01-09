@@ -3631,7 +3631,7 @@ Standard_Boolean ChFi3d_Builder::FindFace(const TopoDS_Vertex& V,
     return Standard_False;
   }
   TopTools_ListIteratorOfListOfShape It,Jt;
-  Standard_Boolean Found = Standard_False, ContainsV = Standard_False;
+  Standard_Boolean Found = Standard_False;
   for(It.Initialize(myEFMap(P1.Arc()));It.More() && !Found;It.Next()) {
     Fv = TopoDS::Face(It.Value());
     if(!Fv.IsSame(Favoid)){
@@ -3640,6 +3640,8 @@ Standard_Boolean ChFi3d_Builder::FindFace(const TopoDS_Vertex& V,
       }
     }
   }
+#ifdef DEB
+  Standard_Boolean ContainsV = Standard_False;
   if (Found) {
     for(It.Initialize(myVFMap(V));It.More();It.Next()) {
       if (TopoDS::Face(It.Value()).IsSame(Fv)) {
@@ -3648,10 +3650,11 @@ Standard_Boolean ChFi3d_Builder::FindFace(const TopoDS_Vertex& V,
       }
     }
   }
-#ifdef DEB
   if(!ContainsV){
     cout<<"FindFace : the extremity of the spine is not in the end face"<<endl;
   }
+#else
+  (void)V; // avoid compiler warning on unused variable
 #endif
   return Found;
 }
@@ -3823,10 +3826,9 @@ void ChFi3d_Builder::IntersectMoreCorner(const Standard_Integer Index)
     if(!CV1.IsOnArc() && !CV2.IsOnArc())
       Standard_Failure::Raise("Corner intersmore : no point on arc");
     else if(CV1.IsOnArc() && CV2.IsOnArc()){
-      Standard_Boolean sur1 = 0, sur2 = 0;
+      Standard_Boolean sur2 = 0;
       for(ex.Init(CV1.Arc(),TopAbs_VERTEX); ex.More(); ex.Next()){
 	if(Vtx.IsSame(ex.Current())) {
-	  sur1 = 1;
 	  break;
 	}
       }

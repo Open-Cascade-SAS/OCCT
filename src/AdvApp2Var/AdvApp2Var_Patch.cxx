@@ -109,11 +109,9 @@ void AdvApp2Var_Patch::Discretise(const AdvApp2Var_Context& Conditions,
 {
 
 // data stored in the Context
-  Standard_Integer NDIMEN, NBSESP, NDIMSE, ISOFAV;
+  Standard_Integer NDIMEN, ISOFAV;
   NDIMEN = Conditions.TotalDimension();
-  NBSESP = Conditions.TotalNumberSSP();
 // Attention : works only for 3D
-  NDIMSE = 3;
   ISOFAV = Conditions.FavorIso();
 
 // data related to the patch to be discretized
@@ -404,12 +402,10 @@ void AdvApp2Var_Patch::AddConstraints(const AdvApp2Var_Context& Conditions,
 				      const AdvApp2Var_Framework& Constraints)
 {
 // data stored in the  Context
-  Standard_Integer NDIMEN, NBSESP, NDIMSE;
+  Standard_Integer NDIMEN;
   Standard_Integer IERCOD, NCFLMU, NCFLMV, NDegU, NDegV;
   NDIMEN = Conditions.TotalDimension();
-  NBSESP = Conditions.TotalNumberSSP();
 // Attention : works only for 3D
-  NDIMSE = 3;
   NCFLMU = Conditions.ULimit();
   NCFLMV = Conditions.VLimit();
   NDegU = NCFLMU - 1;

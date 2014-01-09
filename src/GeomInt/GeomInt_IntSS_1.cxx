@@ -407,10 +407,9 @@ Standard_Real ProjectPointOnSurf::LowerDistance() const
 	(Handle(IntPatch_GLine)::DownCast(L)->Ellipse());
     }
     //
-    Standard_Real aPeriod, aNul, aRealEpsilon;
+    Standard_Real aPeriod, aRealEpsilon;
     //
     aRealEpsilon=RealEpsilon();
-    aNul=0.;
     aPeriod=M_PI+M_PI;
     //
     aNbParts=myLConstruct.NbParts();

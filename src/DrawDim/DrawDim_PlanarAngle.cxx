@@ -49,14 +49,6 @@
 #include <DBRep_DrawableShape.hxx>
 #include <TopoDS.hxx>
 
-#ifdef DEB
-static Standard_Integer DISCRET    = 100;
-static Standard_Integer NBISOS     = 2;
-static Standard_Real    SIZE       = 100.;
-static Standard_Real    DEFLECTION = 0.0;
-static Standard_Real    RAP        = 0.4;
-#endif
-
 //=======================================================================
 //function : DrawDim_PlanarAngle
 //purpose  : 

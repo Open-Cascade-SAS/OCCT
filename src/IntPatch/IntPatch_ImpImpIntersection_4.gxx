@@ -906,7 +906,6 @@ Standard_Boolean IntCyCo(const IntSurf_Quadric& Quad1,
       IntAna_Curve aC;
       IntAna_ListOfCurve aLC;
       IntAna_ListIteratorOfListOfCurve aIt;
-      Standard_Boolean bToSplit;
       
       //
       NbSol = anaint.NbCurve();
@@ -915,7 +914,7 @@ Standard_Boolean IntCyCo(const IntSurf_Quadric& Quad1,
 	//curvsol = anaint.Curve(i);
 	aC=anaint.Curve(i);
 	aLC.Clear();
-	bToSplit=ExploreCurve(Cy, Co, aC, 10.*Tol, aLC);
+	ExploreCurve(Cy, Co, aC, 10.*Tol, aLC);
 	//
 	aIt.Initialize(aLC);
 	for (; aIt.More(); aIt.Next()) {

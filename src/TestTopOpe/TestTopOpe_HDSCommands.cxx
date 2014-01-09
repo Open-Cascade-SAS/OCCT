@@ -247,13 +247,6 @@ static void SetCurve
   const Handle(Geom_Curve) GC = DSC.Curve();
   if ( GC.IsNull() ) { cout<<"Curve() nulle"<<endl; return; }
   
-#ifdef DEB
-  static Standard_Integer Cdiscret = 16;
-  static Standard_Real Cdeflect = 0.01;
-  static Standard_Integer Cdrawmod = 1;
-  static Standard_Boolean Cdisplayorigin = Standard_True;
-#endif
-  
   Standard_Real f = GC->FirstParameter();
   Standard_Real l = GC->LastParameter();
   
@@ -823,11 +816,10 @@ void AddShapeKI
 (TColStd_ListOfInteger& LOK,TColStd_ListOfInteger& LOI,
  const TopOpeBRepDS_Kind K,const Standard_Integer I)
 {
-  TopAbs_ShapeEnum TS;
   Standard_Boolean isshape,isgeome; isshape = isgeome = Standard_False;
   isshape = TopOpeBRepDS::IsTopology(K);
-  if (isshape) TS = TopOpeBRepDS::KindToShape(K);
-  else isgeome = TopOpeBRepDS::IsGeometry(K);
+  if (!isshape)
+    isgeome = TopOpeBRepDS::IsGeometry(K);
   
   if (LOK.IsEmpty() && LOI.IsEmpty()) { 
     LOK.Append((Standard_Integer)K); LOI.Append(I); 
@@ -1314,7 +1306,7 @@ Standard_Integer tdsri(Draw_Interpretor& di,Standard_Integer na_in,const char** 
   if ( strcasecmp(a[i1arg + 2],"i") ) return 0;
   Standard_Integer ii = Draw::Atoi(a[i1arg + 3]);  
 //  Standard_Integer ia,is,ig;
-  Standard_Integer is,ig;
+  Standard_Integer is;
   if ( Tpar.isshap() ) {
     is = Draw::Atoi(a[i1arg + 1]);
     const TopoDS_Shape& s = GetShape(is,Tpar.TS()); if (s.IsNull()) return 0;
@@ -1327,9 +1319,6 @@ Standard_Integer tdsri(Draw_Interpretor& di,Standard_Integer na_in,const char** 
       }
       else it.Next();
     }
-  }
-  else if ( Tpar.isgeom() ) { 
-    ig = Draw::Atoi(a[i1arg + 1]);
   }
   return 0;
 } // tdsri

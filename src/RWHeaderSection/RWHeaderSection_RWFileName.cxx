@@ -32,14 +32,12 @@ void RWHeaderSection_RWFileName::ReadStep
 	// --- own field : name ---
 
 	Handle(TCollection_HAsciiString) aName;
-	Standard_Boolean stat1;
-	stat1 = data->ReadString (num,1,"name",ach,aName);
+	data->ReadString (num,1,"name",ach,aName);
 
 	// --- own field : timeStamp ---
 
 	Handle(TCollection_HAsciiString) aTimeStamp;
-	Standard_Boolean stat2;
-	stat2 = data->ReadString (num,2,"time_stamp",ach,aTimeStamp);
+	data->ReadString (num,2,"time_stamp",ach,aTimeStamp);
 
 	// --- own field : author ---
 
@@ -82,20 +80,17 @@ void RWHeaderSection_RWFileName::ReadStep
 	// --- own field : preprocessorVersion ---
 
 	Handle(TCollection_HAsciiString) aPreprocessorVersion;
-	Standard_Boolean stat5;
-	stat5 = data->ReadString (num,5,"preprocessor_version",ach,aPreprocessorVersion);
+	data->ReadString (num,5,"preprocessor_version",ach,aPreprocessorVersion);
 
 	// --- own field : originatingSystem ---
 
 	Handle(TCollection_HAsciiString) aOriginatingSystem;
-	Standard_Boolean stat6;
-	stat6 = data->ReadString (num,6,"originating_system",ach,aOriginatingSystem);
+	data->ReadString (num,6,"originating_system",ach,aOriginatingSystem);
 
 	// --- own field : authorisation ---
 
 	Handle(TCollection_HAsciiString) aAuthorisation;
-	Standard_Boolean stat7;
-	stat7 = data->ReadString (num,7,"authorisation",ach,aAuthorisation);
+	data->ReadString (num,7,"authorisation",ach,aAuthorisation);
 
 	//--- Initialisation of the read entity ---
 

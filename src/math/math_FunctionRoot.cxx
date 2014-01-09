@@ -72,7 +72,6 @@ class math_MyFunctionSetWithDerivatives : public math_FunctionSetWithDerivatives
                                         const Standard_Real Guess, 
                                         const Standard_Real Tolerance, 
                                         const Standard_Integer NbIterations ){
-     Standard_Boolean Ok;
      math_Vector V(1,1), Tol(1,1);
      math_MyFunctionSetWithDerivatives Ff(F);
      V(1)=Guess;
@@ -83,7 +82,7 @@ class math_MyFunctionSetWithDerivatives : public math_FunctionSetWithDerivatives
        F.GetStateNumber();
        TheRoot = Sol.Root()(1);
        TheDerivative = Sol.Derivative()(1,1);
-       Ok = F.Value(TheRoot,TheError);
+       F.Value(TheRoot,TheError);
        NbIter = Sol.NbIterations();
      }       
    }
@@ -93,7 +92,6 @@ class math_MyFunctionSetWithDerivatives : public math_FunctionSetWithDerivatives
                                         const Standard_Real A,
                                         const Standard_Real B,
                                         const Standard_Integer NbIterations ){
-     Standard_Boolean Ok;
      math_Vector V(1,1),Aa(1,1),Bb(1,1), Tol(1,1);
      math_MyFunctionSetWithDerivatives Ff(F);
      V(1)=Guess;
@@ -106,7 +104,7 @@ class math_MyFunctionSetWithDerivatives : public math_FunctionSetWithDerivatives
        F.GetStateNumber();
        TheRoot = Sol.Root()(1);
        TheDerivative = Sol.Derivative()(1,1);
-       Ok = F.Value(TheRoot,TheError);
+       F.Value(TheRoot,TheError);
        NbIter = Sol.NbIterations();
      }
    }

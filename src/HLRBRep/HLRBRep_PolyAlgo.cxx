@@ -441,7 +441,6 @@
 #ifdef DEB
 static Standard_Integer DoTrace = Standard_False; 
 static Standard_Integer DoError = Standard_False; 
-static Standard_Integer IndexPlusOnePerCentThree [] = { 1 , 2 , 0 };
 #endif
 //=======================================================================
 //function : HLRBRep_PolyAlgo
@@ -2521,20 +2520,17 @@ HLRBRep_PolyAlgo::InsertOnOutLine (TColStd_Array1OfTransient& PID)
       TTMa[2][0] = ttma.Value(3,1);
       TTMa[2][1] = ttma.Value(3,2);
       TTMa[2][2] = ttma.Value(3,3);
-      Standard_Integer iseg,nbT,nbS,nbN;
-
-      nbT = (*pid)->NbTData();
-      nbN = (*pid)->NbPINod();
-      nbS = (*pid)->NbPISeg();
 
 #ifdef DEB
       if (DoTrace) {
-	cout << " InsertOnOutLine : NbTData " << nbT << endl;
-	cout << " InsertOnOutLine : NbPISeg " << nbS << endl;
-	cout << " InsertOnOutLine : NbPINod " << nbN << endl;
+	cout << " InsertOnOutLine : NbTData " << (*pid)->NbTData() << endl;
+	cout << " InsertOnOutLine : NbPISeg " << (*pid)->NbPISeg() << endl;
+	cout << " InsertOnOutLine : NbPINod " << (*pid)->NbPINod() << endl;
       }
 #endif
 
+      Standard_Integer iseg,nbS;
+      nbS = (*pid)->NbPISeg();
       for (iseg = 1; iseg <= nbS; iseg++) {
 	Seg1Indices =
 	  ((HLRAlgo_Array1OfPISeg*)PISeg1)->ChangeValue(iseg).Indices();
@@ -2610,15 +2606,13 @@ HLRBRep_PolyAlgo::InsertOnOutLine (TColStd_Array1OfTransient& PID)
       if (IntOutL)
 	(*pid)->IntOutL(Standard_True);
 
-      nbT = (*pid)->NbTData();
-      nbN = (*pid)->NbPINod();
       nbS = (*pid)->NbPISeg();
 
 #ifdef DEB
       if (DoTrace) {
-	cout << " InsertOnOutLine : NbTData " << nbT << endl;
-	cout << " InsertOnOutLine : NbPISeg " << nbS << endl;
-	cout << " InsertOnOutLine : NbPINod " << nbN << endl;
+	cout << " InsertOnOutLine : NbTData " << (*pid)->NbTData() << endl;
+	cout << " InsertOnOutLine : NbPISeg " << (*pid)->NbPISeg() << endl;
+	cout << " InsertOnOutLine : NbPINod " << (*pid)->NbPINod() << endl;
       }
 #endif
     }
@@ -3538,7 +3532,6 @@ UpdateEdgesBiPoints (HLRAlgo_ListOfBPoint& List,
 		     const Standard_Boolean closed)
 {
   Standard_Integer itri1,itri2,tbid;
-  Standard_Boolean OK;
   HLRAlgo_ListIteratorOfListOfBPoint it;
   
   for (it.Initialize(List); it.More(); it.Next()) {      
@@ -3556,8 +3549,8 @@ UpdateEdgesBiPoints (HLRAlgo_ListOfBPoint& List,
 	pid1->PINod().ChangeValue(F1Pt1Index)->Indices();
       Standard_Address Nod21Indices = 
 	pid2->PINod().ChangeValue(F2Pt1Index)->Indices();
-      OK = Triangles(F1Pt1Index,F1Pt2Index,Nod11Indices,PISeg1,itri1,tbid);
-      OK = Triangles(F2Pt1Index,F2Pt2Index,Nod21Indices,PISeg2,itri2,tbid);
+      Triangles(F1Pt1Index,F1Pt2Index,Nod11Indices,PISeg1,itri1,tbid);
+      Triangles(F2Pt1Index,F2Pt2Index,Nod21Indices,PISeg2,itri2,tbid);
 
       if (itri1 != 0 && itri2 != 0) {
 	if (F1Index != F2Index || itri1 != itri2) {

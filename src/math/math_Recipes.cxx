@@ -662,11 +662,9 @@ Standard_Integer DACTCL_Solve(const math_Vector& a,
      Standard_Integer jr, jd, jh, is, k, id;
      Standard_Integer jh1, idot, idot1, idot2;
      Standard_Real aa, d, dot;
-     Standard_Boolean diag;
 
      jr = 0;
      for (j = 1; j <= Neq; j++) {
-       diag = Standard_False;
        jd = indx(j);
        jh = jd-jr;
        is = j-jh+2;

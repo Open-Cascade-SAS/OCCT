@@ -98,10 +98,6 @@ void TopOpeBRep_FaceEdgeIntersector::Perform(const TopoDS_Shape& SF,
   TopLoc_Location loc;
   const Handle(Geom_Curve) C = BRep_Tool::Curve(myEdge,loc,f,l);
   
-#ifdef DEB
-  gp_Trsf Tao1 =
-#endif
-                 loc.Transformation();
   Handle(Geom_Geometry) GGao1 = C->Transformed(loc.Transformation());
   Handle(Geom_Curve)* PGCao1 = (Handle(Geom_Curve)*)&GGao1;
   myCurve.Load(*PGCao1,f,l);

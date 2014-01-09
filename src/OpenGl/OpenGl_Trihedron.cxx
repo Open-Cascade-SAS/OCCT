@@ -440,10 +440,8 @@ void OpenGl_Trihedron::redrawZBuffer (const Handle(OpenGl_Workspace)& theWorkspa
   /* Position des Axes */
   GLdouble TriedronAxeX[3] = { 1.0, 0.0, 0.0 };
   GLdouble TriedronAxeY[3] = { 0.0, 1.0, 0.0 };
-  GLdouble TriedronAxeZ[3] = { 0.0, 0.0, 1.0 };
   TriedronAxeX[0] = L;
   TriedronAxeY[1] = L;
-  TriedronAxeZ[2] = L;
 
   glMatrixMode(GL_MODELVIEW);
 

@@ -47,26 +47,6 @@ void TopOpeBRepBuild_Builder::SplitEdge1(const TopoDS_Shape& Eoriented,
 {
   // work on a FORWARD edge <Eforward>
 
-#ifdef DEB
-  TopAbs_Orientation Eori =
-#endif
-                            Eoriented.Orientation();
-#ifdef DEB
-  Standard_Integer io = 0;
-  if      ( Eori == TopAbs_FORWARD  ) {
-    io = 1;
-  }
-  else if ( Eori == TopAbs_REVERSED ) {
-    io = 2;
-  }
-  else if ( Eori == TopAbs_INTERNAL ) {
-    io = 3;
-  }
-  else if ( Eori == TopAbs_EXTERNAL ) {
-    io = 4;
-  }
-#endif
-
   TopoDS_Shape Eforward = Eoriented; 
   Eforward.Orientation(TopAbs_FORWARD);
 
@@ -83,8 +63,8 @@ void TopOpeBRepBuild_Builder::SplitEdge1(const TopoDS_Shape& Eoriented,
   
   if ( ! tosplit ) return;
 
-  Standard_Boolean RevOri1 = Reverse(ToBuild1,ToBuild2);
-  Standard_Boolean RevOri2 = Reverse(ToBuild2,ToBuild1);
+  Reverse(ToBuild1,ToBuild2);
+  Reverse(ToBuild2,ToBuild1);
   Standard_Boolean ConnectTo1 = Standard_True;
   Standard_Boolean ConnectTo2 = Standard_False;
   
@@ -92,8 +72,6 @@ void TopOpeBRepBuild_Builder::SplitEdge1(const TopoDS_Shape& Eoriented,
   TopTools_ListOfShape LE1,LE2;
   LE1.Append(Eforward);
   FindSameDomain(LE1,LE2);
-  Standard_Integer n1 = LE1.Extent();
-  Standard_Integer n2 = LE2.Extent();
 
 #ifdef DEB
   if(tSPS){GdumpSAMDOM(LE1, (char *) "1 : ");}
@@ -106,8 +84,6 @@ void TopOpeBRepBuild_Builder::SplitEdge1(const TopoDS_Shape& Eoriented,
   
   // SplitEdge on a edge having other same domained edges on the
   // other shape : do not reverse orientation of edges in FillEdge
-  if (!n2) RevOri1 = Standard_False;
-  if (!n1) RevOri2 = Standard_False;
     
   // Make a PaveSet <PVS> on edge <Eforward>
   TopOpeBRepBuild_PaveSet PVS(Eforward);

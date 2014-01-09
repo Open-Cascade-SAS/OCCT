@@ -497,9 +497,6 @@ void BRepFill_TrimSurfaceTool::Project
        Handle(Geom2d_Curve)& PCurve2,
        GeomAbs_Shape&        Cont) const 
 {
-  Standard_Integer Deg1, Deg2;
-  Deg1 = Deg2 = 8;
-
   Handle(Geom2d_TrimmedCurve) CT = 
     new Geom2d_TrimmedCurve(myBis,U1,U2);
   BRepFill_MultiLine ML(myFace1,myFace2,

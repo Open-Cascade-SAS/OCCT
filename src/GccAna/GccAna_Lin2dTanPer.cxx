@@ -208,7 +208,6 @@ GccAna_Lin2dTanPer::
 
    WellDone = Standard_False;
    NbrSol = 0;
-   Standard_Integer nbsol = 0;
    Standard_Integer signe = 0;
    gp_Circ2d C1 = Qualified1.Qualified();
 
@@ -218,19 +217,16 @@ GccAna_Lin2dTanPer::
    }
    else if (Qualified1.IsEnclosing()) {
 // ==================================
-     nbsol = 1;
      signe = -1;
      qualifier1(1) = GccEnt_enclosing;
    }
    else if (Qualified1.IsOutside()) {
 // ================================
-     nbsol = 1;
      signe = 1;
      qualifier1(1) = GccEnt_outside;
    }
    else if (Qualified1.IsUnqualified()) {
 // ====================================
-     nbsol = 2;
      signe = -1;
      qualifier1(1) = GccEnt_enclosing;
      qualifier1(2) = GccEnt_outside;

@@ -112,7 +112,6 @@ void math_Powell::Perform(math_MultipleVarFunction& F,
 
 
   Done = Standard_False;
-  Standard_Boolean Ok;
   Standard_Integer i, ibig, j;
   Standard_Real t, fptt, del;
   Standard_Integer n = TheLocation.Length();
@@ -130,12 +129,12 @@ void math_Powell::Perform(math_MultipleVarFunction& F,
 
 
   for(Iter = 1; Iter<= Itermax; Iter++) {
-    Ok = F.Value(TheLocation, PreviousMinimum);
+    F.Value(TheLocation, PreviousMinimum);
     ibig = 0;
     del = 0.0;
     for (i = 1; i <= n; i++){
       for(j =1; j<= n; j++) xit(j) = TheDirections(j,i);
-      Ok = F.Value(TheLocation, fptt); 
+      F.Value(TheLocation, fptt); 
       Standard_Boolean IsGood = MinimizeDirection(TheLocation, xit, 
 					 TheMinimum, F_Dir);
 
@@ -171,7 +170,7 @@ void math_Powell::Perform(math_MultipleVarFunction& F,
     
     // Valeur de la fonction au point extrapole:
 
-    Ok = F.Value(ptt, fptt);
+    F.Value(ptt, fptt);
 
     if (fptt < PreviousMinimum) {
       t = 2.0 *(PreviousMinimum -2.0*TheMinimum +fptt)*

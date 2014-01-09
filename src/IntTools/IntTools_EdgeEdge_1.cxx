@@ -765,11 +765,9 @@ void IntTools_DistCC::FindMaxLocal(const Standard_Real aT11,
 				   Standard_Real& aDx,
 				   Standard_Real& aTx)
 {
-  Standard_Integer iErr;
   Standard_Real aA, aB, aCf, aX1, aX2, aF1, aF2, aX, aF;
   //
   myErrorStatus=0;
-  iErr=0;
   aDx=0.;
   aTx=0.;
   //

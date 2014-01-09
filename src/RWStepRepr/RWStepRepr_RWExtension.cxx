@@ -45,12 +45,8 @@ void RWStepRepr_RWExtension::ReadStep (const Handle(StepData_StepReaderData)& da
   data->ReadString (num, 1, "shape_aspect.name", ach, aShapeAspect_Name);
 
   Handle(TCollection_HAsciiString) aShapeAspect_Description;
-  Standard_Boolean hasShapeAspect_Description = Standard_True;
   if ( data->IsParamDefined (num,2) ) {
     data->ReadString (num, 2, "shape_aspect.description", ach, aShapeAspect_Description);
-  }
-  else {
-    hasShapeAspect_Description = Standard_False;
   }
 
   Handle(StepRepr_ProductDefinitionShape) aShapeAspect_OfShape;

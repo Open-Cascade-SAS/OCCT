@@ -612,13 +612,11 @@ void GeomFill_Pipe::Init(const Handle(Geom2d_Curve)& Path,
     new Adaptor3d_HCurveOnSurface(Adaptor3d_CurveOnSurface(
 		       new Geom2dAdaptor_HCurve(Path), 
 		       new GeomAdaptor_HSurface(Support)));
-  Standard_Real param =  Path->FirstParameter();
  
   myLoc = new (GeomFill_CurveAndTrihedron) (TLaw);
   myLoc->SetCurve(myAdpPath);
   GeomFill_SectionPlacement Place(myLoc, FirstSect);
   Place.Perform(myAdpPath, Precision::Confusion());
-  param =  Place.ParameterOnPath();
   Sect = Place.Section(Standard_False);
   
 #ifdef DRAW
@@ -648,7 +646,6 @@ void GeomFill_Pipe::Init(const Handle(Geom_Curve)& Path,
   Handle(Geom_Curve) Sect;
   myAdpPath = new (GeomAdaptor_HCurve) 
     (Handle(Geom_Curve)::DownCast(Path->Copy()));
-  Standard_Real param =  Path->FirstParameter();
   gp_Vec V;
   V.SetXYZ(Direction.XYZ());
   Handle (GeomFill_ConstantBiNormal) TLaw = 
@@ -658,7 +655,6 @@ void GeomFill_Pipe::Init(const Handle(Geom_Curve)& Path,
   myLoc->SetCurve(myAdpPath);
   GeomFill_SectionPlacement Place(myLoc, FirstSect);
   Place.Perform(Precision::Confusion());
-  param =  Place.ParameterOnPath();
   Sect = Place.Section(Standard_False);
 
 #ifdef DRAW

@@ -166,7 +166,7 @@ Blend_Status Blend_CSWalking::CheckDeflectionOnSurf
 
   Standard_Real Norme, prevNorme, Cosi, Cosi2; // JAG MODIF 25.04.94
   Standard_Real FlecheCourante;
-  Standard_Real Du,Dv,Duv,SqrtDuv;
+  Standard_Real Du,Dv,Duv;
   Standard_Real paramu,paramv,tolu,tolv;
 //  TColgp_Array1OfPnt Poles(1,4);
 //  gp_Pnt POnCurv,Milieu;
@@ -204,7 +204,6 @@ Blend_Status Blend_CSWalking::CheckDeflectionOnSurf
   Du = Ponsurf.X() - paramu;
   Dv = Ponsurf.Y() - paramv;
   Duv = Du * Du + Dv * Dv;
-  SqrtDuv = Sqrt(Duv);
   if ((Abs(Du) < tolu && Abs(Dv) < tolv) ||  // JAG MODIF 25.04.94
       (Abs(previousd2d.X()) < tolu && Abs(previousd2d.Y()) < tolv)){
     // il faudra peut etre  forcer meme point   JAG MODIF 25.04.94

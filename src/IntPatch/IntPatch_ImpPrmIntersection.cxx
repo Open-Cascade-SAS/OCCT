@@ -1802,7 +1802,6 @@ static void ToSmooth(Handle(IntSurf_LineOn2S)& Line,
   Standard_Integer Index3 = (IsFirst) ? 3 : (Line->NbPoints()-2);
 
   Standard_Boolean doU = Standard_False;
-  Standard_Boolean doV = Standard_False;
 
   Standard_Real U1 = 0., U2 = 0., V1 = 0., V2 = 0., U3 = 0., V3 = 0.;
 
@@ -1841,8 +1840,6 @@ static void ToSmooth(Handle(IntSurf_LineOn2S)& Line,
       }
     }
   }
-
-  if(fabs(fabs(V1)-fabs(V2)) > DDV) doV = Standard_True;
 
   if(doU) {
     Standard_Real dU = Min((DDU/10.),5.e-8);
@@ -2327,7 +2324,7 @@ void DecomposeResult(Handle(IntPatch_Line)&   Line,
   Standard_Real BAPEX = M_PI/16.;  // delta U crossing apex
   
   Standard_Integer k = 0;
-  Standard_Real U1 = 0., U2 = 0., V1 = 0., V2 = 0., AnU1 = 0., AnV1 = 0., DU1 = 0., DV1 = 0.;
+  Standard_Real U1 = 0., U2 = 0., V1 = 0., V2 = 0., AnU1 = 0.;
   Standard_Integer Findex = 1, Lindex = NbPnts, Bindex = 0;
 
   gp_Pnt aPnt, aSPnt;
@@ -2346,8 +2343,7 @@ void DecomposeResult(Handle(IntPatch_Line)&   Line,
 
   // reset variables
   Standard_Boolean isDecomposited = Standard_False;
-  Standard_Boolean is2PIDecomposed = Standard_False;
-  U1 = 0.; V1 = 0.; U2 = 0.; V2 = 0.; AnU1 = 0.; AnV1 = 0.; DU1 = 0.; DV1 = 0.;
+  U1 = 0.; V1 = 0.; U2 = 0.; V2 = 0.; AnU1 = 0.;
 
   // analyze other points
   for(k = Findex; k <= Lindex; k++) {
@@ -2361,7 +2357,6 @@ void DecomposeResult(Handle(IntPatch_Line)&   Line,
 	SSLine->Value(k).ParametersOnS1(AnU1,V1);    // S1 - quadric, set U,V by Pnt3D
       }
       sline->Add(SSLine->Value(k));
-      AnV1 = V1;
       continue;
     }
 
@@ -2376,7 +2371,6 @@ void DecomposeResult(Handle(IntPatch_Line)&   Line,
     if(DeltaU > BSEAM) {
       Bindex = k;
       isDecomposited = Standard_True;
-      is2PIDecomposed = Standard_True;
       break;
     }
     else if((DeltaU > BAPEX) && (k >= (Findex+10) && k <= (Lindex-10))) {
@@ -2388,7 +2382,6 @@ void DecomposeResult(Handle(IntPatch_Line)&   Line,
 
     sline->Add(SSLine->Value(k));
     AnU1=U1;
-    AnV1=V1;
   }
  
   IntSurf_PntOn2S aVF,aVL;

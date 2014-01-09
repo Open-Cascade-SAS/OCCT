@@ -873,9 +873,8 @@ gp_Ax2 DirToAx2(const gp_Pnt& P,const gp_Dir& D)
   Standard_Real RmR, RmR_Relative;
   RmR=(R1>R2)? (R1-R2) : (R2-R1);
   {
-    Standard_Real Rmax, Rmin;
+    Standard_Real Rmax;
     Rmax=(R1>R2)? R1 : R2;
-    Rmin=(R1>R2)? R2 : R1;
     RmR_Relative=RmR/Rmax;
   }
 

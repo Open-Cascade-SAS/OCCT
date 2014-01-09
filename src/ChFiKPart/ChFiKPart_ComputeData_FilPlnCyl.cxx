@@ -77,13 +77,12 @@ Standard_Boolean ChFiKPart_MakeFillet(TopOpeBRepDS_DataStructure& DStr,
 
   // Parallel cylinder
   Standard_Real    ROff = Cyl.Radius();
-  Standard_Boolean dedans = Standard_False;
 
   if ((Or2 == TopAbs_FORWARD  &&  Cyl.Direct()) ||
       (Or2 == TopAbs_REVERSED && !Cyl.Direct()))
       ROff+=Radius;
   else if (Radius < ROff)  {
-    ROff-=Radius;dedans = Standard_True;
+    ROff-=Radius;
   }
   else {
 #ifdef DEB

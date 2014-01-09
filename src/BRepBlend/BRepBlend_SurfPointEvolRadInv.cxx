@@ -95,7 +95,7 @@ const Handle(Adaptor3d_HCurve)& C,
 {
   gp_Pnt ptcur,pts;
   gp_Vec d1cur,d2cur,nplan,dnplan,d1u,d1v,d2u,d2v,duv;
-  Standard_Real theD, dtheD, normd1cur, unsurnormd1cur,dray;
+  Standard_Real dtheD, normd1cur, unsurnormd1cur,dray;
 
   curv->D2(X(1),ptcur,d1cur,d2cur);
   tevol->D1(X(1),ray,dray);
@@ -104,7 +104,6 @@ const Handle(Adaptor3d_HCurve)& C,
   normd1cur = d1cur.Magnitude();
   unsurnormd1cur = 1./normd1cur;
   nplan = unsurnormd1cur * d1cur;
-  theD = -(nplan.XYZ().Dot(ptcur.XYZ()));
   dnplan.SetLinearForm(-nplan.Dot(d2cur),nplan,d2cur);
   dnplan.Multiply(unsurnormd1cur);
   dtheD = - nplan.XYZ().Dot(d1cur.XYZ()) - dnplan.XYZ().Dot(ptcur.XYZ());

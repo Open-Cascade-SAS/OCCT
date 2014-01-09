@@ -2283,7 +2283,7 @@ void ChFi3d_Builder::PerformSetOfKPart(Handle(ChFiDS_Stripe)& Stripe,
   Handle(ChFiDS_Spine)&        Spine = Stripe->ChangeSpine();
   Handle(BRepAdaptor_HSurface) HS1,HS2;
   TopAbs_Orientation           Or1,Or2,RefOr1,RefOr2;
-  Standard_Integer             Choix,RefChoix;
+  Standard_Integer             RefChoix;
   
   // initialization of the stripe.
   Stripe->Reset();
@@ -2327,7 +2327,7 @@ void ChFi3d_Builder::PerformSetOfKPart(Handle(ChFiDS_Stripe)& Stripe,
       intl = ((iedge == Spine->NbEdges()) && !Spine->IsPeriodic());
       Or1   = HS1->ChangeSurface().Face().Orientation();
       Or2   = HS2->ChangeSurface().Face().Orientation();
-      Choix = ChFi3d::NextSide(Or1,Or2,RefOr1,RefOr2,RefChoix);      
+      ChFi3d::NextSide(Or1,Or2,RefOr1,RefOr2,RefChoix);      
       It1->Initialize(HS1);
       It2->Initialize(HS2);
       

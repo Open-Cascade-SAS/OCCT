@@ -229,8 +229,6 @@ static void KPartCurve3d(TopoDS_Edge           Edge,
   TopLoc_Location Loc;
   Standard_Real Tol = Precision::Confusion();
 
-  Standard_Boolean IsComputed = Standard_False;
-
   // Seach only isos on analytical surfaces.
   Geom2dAdaptor_Curve C(Curve);
   GeomAdaptor_Surface S(Surf);
@@ -261,7 +259,6 @@ static void KPartCurve3d(TopoDS_Edge           Edge,
 	      Circle->Reverse();
 	    TheBuilder.UpdateEdge(Edge, Circle, Loc, Tol);
 	  }
-	  IsComputed = Standard_True;
 	}
 	else if ( STy == GeomAbs_Cylinder) {
 	  gp_Cylinder Cyl  = S.Cylinder();
@@ -277,7 +274,6 @@ static void KPartCurve3d(TopoDS_Edge           Edge,
 	  if ( D.IsOpposite(gp::DX2d(),Precision::Angular())) 
 	    Circle->Reverse();
 	  TheBuilder.UpdateEdge(Edge, Circle, Loc, Tol);
-	  IsComputed = Standard_True;
 	}
 	else if ( STy == GeomAbs_Cone) {
 	  gp_Cone  Cone = S.Cone();
@@ -294,7 +290,6 @@ static void KPartCurve3d(TopoDS_Edge           Edge,
 	  if ( D.IsOpposite(gp::DX2d(),Precision::Angular())) 
 	    Circle->Reverse();
 	  TheBuilder.UpdateEdge(Edge, Circle, Loc, Tol);
-	  IsComputed = Standard_True;
 	}
 	else if ( STy == GeomAbs_Torus) {
 	  gp_Torus Tore = S.Torus();
@@ -311,7 +306,6 @@ static void KPartCurve3d(TopoDS_Edge           Edge,
 	  if ( D.IsOpposite(gp::DX2d(),Precision::Angular())) 
 	    Circle->Reverse();
 	  TheBuilder.UpdateEdge(Edge, Circle, Loc, Tol);
-	  IsComputed = Standard_True;
 	}
       }
       else if ( D.IsParallel(gp::DY2d(),Precision::Angular())) { // Iso U.
@@ -336,7 +330,6 @@ static void KPartCurve3d(TopoDS_Edge           Edge,
 	  if ( D.IsOpposite(gp::DY2d(),Precision::Angular())) 
 	    Circle->Reverse();
 	  TheBuilder.UpdateEdge(Edge, Circle, Loc, Tol);
-	  IsComputed = Standard_True;
 	}
 	else if ( STy == GeomAbs_Cylinder) {
 	  gp_Cylinder Cyl = S.Cylinder();
@@ -351,7 +344,6 @@ static void KPartCurve3d(TopoDS_Edge           Edge,
 	  if ( D.IsOpposite(gp::DY2d(),Precision::Angular()))
 	    Line->Reverse();
 	  TheBuilder.UpdateEdge(Edge, Line, Loc, Tol);
-	  IsComputed = Standard_True;
 	}
 	else if ( STy == GeomAbs_Cone) {
 	  gp_Cone  Cone = S.Cone();
@@ -366,7 +358,6 @@ static void KPartCurve3d(TopoDS_Edge           Edge,
 	  if ( D.IsOpposite(gp::DY2d(),Precision::Angular()))
 	    Line->Reverse();
 	  TheBuilder.UpdateEdge(Edge, Line, Loc, Tol);
-	  IsComputed = Standard_True;
 	}
 	else if ( STy == GeomAbs_Torus) {
 	}
@@ -376,7 +367,6 @@ static void KPartCurve3d(TopoDS_Edge           Edge,
   else { // Case Plane
     Handle(Geom_Curve) C3d = GeomAPI::To3d(Curve,S.Plane());
     TheBuilder.UpdateEdge(Edge, C3d, Loc, Tol);
-    IsComputed = Standard_True;
   }
 }
 
@@ -1897,8 +1887,6 @@ void BiTgte_Blend::ComputeSurfaces()
   // Iteration on the edges lines of center
   // and their valid valid part is taken after cut and tube construction.
   // --------------------------------------------------------------------
-  BRepOffset_Type    OT = BRepOffset_Concave;
-  if (myRadius < 0.) OT = BRepOffset_Convex; 
 
   //TopTools_MapIteratorOfMapOfShape ic(myEdges);
   Standard_Integer i;

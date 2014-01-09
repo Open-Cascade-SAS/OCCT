@@ -765,10 +765,8 @@ Handle(BSplineSurface) GeomConvert::SplitBSplineSurface
       Weights.Init(1.);
       if ( C->IsRational()) C->Weights(Weights);
 
-      Standard_Integer nbUSpans;
       Standard_Real AlfaU;
       NbUKnots = 4;
-      nbUSpans = 3;
       AlfaU    = M_PI / 3.;
       NbUPoles = 6;
 

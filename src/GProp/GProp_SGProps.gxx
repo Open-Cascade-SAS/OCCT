@@ -691,7 +691,7 @@ static void Compute(Face& S, Domain& D, const gp_Pnt& loc, Standard_Real& dim, g
   Standard_Integer NbCGaussgp_Pnts = 0;
 
   Standard_Real l1, l2, lm, lr, l;   //boundary curve parametrization
-  Standard_Real v1, v2, vm, vr, v;   //Face parametrization in v direction
+  Standard_Real v1, v2,         v;   //Face parametrization in v direction
   Standard_Real u1, u2, um, ur, u;
   Standard_Real ds;                  //Jacobien (x, y, z) -> (u, v) = ||n||
 
@@ -751,11 +751,6 @@ static void Compute(Face& S, Domain& D, const gp_Pnt& loc, Standard_Real& dim, g
     l2 = S.LastParameter  ();
     lm = 0.5 * (l2 + l1);         
     lr = 0.5 * (l2 - l1);
-
-    Puv = S.Value2d (lm);
-    vm  = Puv.Y();
-    Puv = S.Value2d (lr);
-    vr  = Puv.Y();
 
     for (Standard_Integer i = 1; i <= NbCGaussgp_Pnts; i++) {
       l = lm + lr * GaussCP (i);

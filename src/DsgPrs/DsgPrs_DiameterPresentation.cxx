@@ -157,7 +157,6 @@ void DsgPrs_DiameterPresentation::Add (const Handle(Prs3d_Presentation)& aPresen
   Standard_Real parEndOfArrow = ElCLib::Parameter(aCircle,AttachmentPoint);
   gp_Pnt EndOfArrow;
   gp_Pnt DrawPosition = AttachmentPoint;// point of attachment
-  Standard_Boolean otherside = Standard_False;
 
   gp_Pnt Center = aCircle.Location();
   gp_Pnt FirstPoint = ElCLib::Value(uFirst, aCircle);
@@ -169,7 +168,6 @@ void DsgPrs_DiameterPresentation::Add (const Handle(Prs3d_Presentation)& aPresen
     if (DsgPrs_InDomain(fpara,lpara,otherpar)) {
       parEndOfArrow = otherpar; // parameter on circle
       EndOfArrow = ElCLib::Value(parEndOfArrow, aCircle);
-      otherside = Standard_True;
     }
     else {
       gp_Dir dir1(gp_Vec(Center, FirstPoint));

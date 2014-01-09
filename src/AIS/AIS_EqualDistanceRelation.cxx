@@ -612,8 +612,6 @@ void AIS_EqualDistanceRelation::ComputeTwoVerticesLength( const Handle( Prs3d_Pr
   AIS::ComputeGeometry( FirstVertex, FirstAttach, Plane, isOnPlane1);
   AIS::ComputeGeometry( SecondVertex, SecondAttach, Plane, isOnPlane2);
 
-  //Computation of Val
-  Standard_Real Val = FirstAttach.Distance( SecondAttach );
   Standard_Real confusion(Precision::Confusion());
   Standard_Boolean samePoint(FirstAttach.IsEqual(SecondAttach,confusion));
 
@@ -627,9 +625,6 @@ void AIS_EqualDistanceRelation::ComputeTwoVerticesLength( const Handle( Prs3d_Pr
   }
   
   // size
-  Standard_Real arrsize = ArrowSize;
-  if (Abs(Val) <= confusion) arrsize =0.;
-
   if (AutomaticPos) {
    if (!samePoint) {
      gp_Pnt curpos((FirstAttach.XYZ()+SecondAttach.XYZ())*0.5);

@@ -1198,20 +1198,6 @@ static Standard_Integer rempole (Draw_Interpretor& di, Standard_Integer n, const
     BSpline = Standard_True;
   }
   
-  Standard_Integer Index;
-  if ( !strcasecmp(a[0],"remrowpole")) {
-    if (BSpline)
-      Index = GBs->UDegree();
-    else 
-      Index = GBz->UDegree();
-  }  
-  else if ( !strcasecmp(a[0],"remcolpole")) {
-    if (BSpline) 
-      Index = GBs->VDegree();
-    else
-      Index = GBz->VDegree();
-  }
-  
   if ( !strcasecmp(a[0],"remrowpole")) {
     if ( BSpline) {
       di << " Error : Cannot remove a polerow on a BSplineSurface " << "\n";

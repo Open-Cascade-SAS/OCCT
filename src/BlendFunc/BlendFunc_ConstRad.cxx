@@ -1159,9 +1159,8 @@ void BlendFunc_ConstRad::Section(const Standard_Real Param,
   math_Vector X(1,4);
   X(1) = U1; X(2) = V1; X(3) = U2; X(4) = V2; 
   Standard_Real prm = Param;
-  Standard_Boolean Ok;
 
-  Ok = ComputeValues(X, 0, Standard_True, prm);
+  ComputeValues(X, 0, Standard_True, prm);
 
   ns1 = nsurf1;
   np = nplan;
@@ -1318,7 +1317,6 @@ void BlendFunc_ConstRad::Section(const Blend_Point& P,
 
   math_Vector X(1,4);
   Standard_Real prm = P.Parameter();
-  Standard_Boolean Ok;
 
   Standard_Integer low = Poles.Lower();
   Standard_Integer upp = Poles.Upper();
@@ -1326,7 +1324,7 @@ void BlendFunc_ConstRad::Section(const Blend_Point& P,
   P.ParametersOnS1(X(1), X(2));
   P.ParametersOnS2(X(3), X(4));
 
-  Ok = ComputeValues(X, 0, Standard_True, prm);
+  ComputeValues(X, 0, Standard_True, prm);
   distmin = Min (distmin, pts1.Distance(pts2));
 
   // ns1, ns2, np are copied locally to avoid crushing the fields !

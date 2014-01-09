@@ -424,7 +424,8 @@ Standard_Boolean IntTools_EdgeFace::IsProjectable(const Standard_Real aT) const
 //=======================================================================
 Standard_Real IntTools_EdgeFace::DistanceFunction(const Standard_Real t)
 {
-  Standard_Real Umin, Usup, Vmin, Vsup, aD;
+  Standard_Real aD;
+
   //
   gp_Pnt P;
   myC.D0(t, P);
@@ -436,11 +437,6 @@ Standard_Real IntTools_EdgeFace::DistanceFunction(const Standard_Real t)
     aD=aD-myCriteria;
     return aD; 
   }
-  
-  Umin=myS.FirstUParameter();
-  Usup=myS.LastUParameter();
-  Vmin=myS.FirstVParameter();
-  Vsup=myS.LastVParameter ();
   
   //
   Standard_Boolean bFlag = Standard_False;
@@ -610,9 +606,6 @@ Standard_Real IntTools_EdgeFace::DistanceFunction(const Standard_Real t)
 
   k=n-1;
   for (i=1; i<k; i++) {
-    Standard_Real ti, ti1;
-    ti=t(i);
-    ti1=t(i-1);
     fd(i)=.5*(f(i+1)-f(i-1))/(t(i)-t(i-1));
     if (fabs(fd(i)) < dEpsNull){
       fd(i)=0.;
@@ -916,13 +909,13 @@ Standard_Real IntTools_EdgeFace::DistanceFunction(const Standard_Real t)
 					  const Standard_Real tb) 
 {
   IntTools_CArray1OfReal anArgs, aFunc;
-  Standard_Integer i, aNb, pri, aCnt=0;
+  Standard_Integer i, aNb, aCnt=0;
   //
   Standard_Integer aCntIncreasing=1, aCntDecreasing=1;
   Standard_Real t, f, f1;
   //
   // Prepare values of arguments for the interval [ta, tb]
-  pri=IntTools::PrepareArgs (myC, tb, ta, myDiscret, myDeflection, anArgs);
+  IntTools::PrepareArgs (myC, tb, ta, myDiscret, myDeflection, anArgs);
   aNb=anArgs.Length();
   
   aFunc.Resize(aNb);
@@ -983,7 +976,7 @@ Standard_Real IntTools_EdgeFace::DistanceFunction(const Standard_Real t)
 					     const IntTools_CArray1OfReal& f)  
 {
   Standard_Integer i, n, k;
-  Standard_Real fr, tr;
+  Standard_Real tr;
   IntTools_CArray1OfReal fd;
   TColStd_SequenceOfReal aTSeq, aFSeq;  
   
@@ -1030,7 +1023,7 @@ Standard_Real IntTools_EdgeFace::DistanceFunction(const Standard_Real t)
     //
     if (fd1*fd2 < 0.) {
       tr=FindSimpleRoot(2, t1, t2, fd1);
-      fr=DistanceFunction(tr);
+      DistanceFunction(tr);
       myPar1=tr;
       myParallel=Standard_False;
       break;
@@ -1038,7 +1031,6 @@ Standard_Real IntTools_EdgeFace::DistanceFunction(const Standard_Real t)
     
     if (!bF1 && bF2) {
       tr=t2;
-      fr=fd2;
       myPar1=tr;
       myParallel=Standard_False;
       break;
@@ -1046,7 +1038,6 @@ Standard_Real IntTools_EdgeFace::DistanceFunction(const Standard_Real t)
     
     if (bF1 && !bF2) {
       tr=t1;
-      fr=fd1;
       myPar1=tr;
       myParallel=Standard_False;
       break;
@@ -1524,17 +1515,14 @@ Standard_Integer AdaptiveDiscret (const Standard_Integer iDiscret,
 
   iDiscretNew=iDiscret;
 
-  GeomAbs_CurveType   aCType;
   GeomAbs_SurfaceType aSType;
 
-  aCType=aCurve.GetType();
   aSType=aSurface.GetType();
     
   if (aSType==GeomAbs_Cylinder) {
-   Standard_Real aELength, aRadius, dL, dLR;
+   Standard_Real aELength, aRadius, dLR;
 
    aELength=IntTools::Length(aCurve.Edge());
-   dL=aELength/iDiscret;
    
    gp_Cylinder aCylinder=aSurface.Cylinder();
    aRadius=aCylinder.Radius();

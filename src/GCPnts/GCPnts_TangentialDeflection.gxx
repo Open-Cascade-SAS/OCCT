@@ -366,8 +366,6 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
     TooSmall   = Standard_False;
     Correction = Standard_True;
 
-    Standard_Real lastCoef = 0;
-     
     while (Correction) {                     //Ajustement Du
       MiddleU = (U1+U2)*0.5;                 //Verif / au point milieu
       D0 (C, MiddleU, MiddlePoint);
@@ -412,7 +410,6 @@ void GCPnts_TangentialDeflection::PerformCurve (const TheCurve& C)
           }
           else {
             TooSmall = Standard_True;
-            lastCoef = Coef;
             //Standard_Real UUU2 = U2;
             Du += Min((U2-U1)*(1.-Coef), Du*Us3);
 

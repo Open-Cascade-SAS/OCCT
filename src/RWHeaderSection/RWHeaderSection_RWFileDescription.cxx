@@ -51,8 +51,7 @@ void RWHeaderSection_RWFileDescription::ReadStep
 	// --- own field : implementationLevel ---
 
 	Handle(TCollection_HAsciiString) aImplementationLevel;
-	Standard_Boolean stat2;
-	stat2 = data->ReadString (num,2,"implementation_level",ach,aImplementationLevel);
+	data->ReadString (num,2,"implementation_level",ach,aImplementationLevel);
 
 	//--- Initialisation of the read entity ---
 

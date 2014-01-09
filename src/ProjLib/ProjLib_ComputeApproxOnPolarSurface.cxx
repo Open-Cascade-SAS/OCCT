@@ -1544,16 +1544,16 @@ Handle(Geom2d_BSplineCurve)
   }
   Handle(Geom2d_BSplineCurve) DummyC2d =
     new Geom2d_BSplineCurve(DummyPoles, DummyKnots, DummyMults, 1);
-  Standard_CString Temp = "bs2d";
 #ifdef DRAW
+  Standard_CString Temp = "bs2d";
   DrawTrSurf::Set(Temp,DummyC2d);
 #endif
 //  DrawTrSurf::Set((Standard_CString ) "bs2d",DummyC2d);
   Handle(Geom2dAdaptor_HCurve) DDD = 
     Handle(Geom2dAdaptor_HCurve)::DownCast(InitCurve2d);
   
-  Temp = "initc2d";
 #ifdef DRAW
+  Temp = "initc2d";
   DrawTrSurf::Set(Temp,DDD->ChangeCurve2d().Curve());
 #endif
 //  DrawTrSurf::Set((Standard_CString ) "initc2d",DDD->ChangeCurve2d().Curve());

@@ -260,16 +260,8 @@ void TopOpeBRepBuild_Builder::GFindSamDomSODO(TopTools_ListOfShape& LSO,TopTools
     else if ( o != oref && !GContains(s,LLDO) ) LLDO.Append(s);
   }
   
-  Standard_Integer nso,ndo;
-  
-  nso = LLSO.Extent();
-  ndo = LLDO.Extent();
-  
   LSO = LLSO;
   LDO = LLDO;
-  
-  nso = LSO.Extent();
-  ndo = LDO.Extent();
 }
 
 //=======================================================================

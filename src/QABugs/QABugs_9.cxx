@@ -33,9 +33,8 @@
 static Standard_Integer BUC60857 (Draw_Interpretor& di, Standard_Integer /*argc*/,const char ** argv)
 {
   gp_Ax2  Cone_Ax;
-  double R1=8, R2=16, angle;
+  double R1=8, R2=16;
   gp_Pnt P0(0,0,0), P1(0,0,20), P2(0,0,45);
-  angle = 2*M_PI;
 
   Handle(AIS_InteractiveContext) aContext = ViewerTest::GetAISContext();
   if(aContext.IsNull()) {

@@ -3434,8 +3434,6 @@ void IFSelect_WorkSession::DumpModel
     if (level == 5 || level ==  8) mode = IFSelect_CountByItem;
     if (level == 6 || level ==  9) mode = IFSelect_ListByItem;
     if (level == 7 || level == 10) mode = IFSelect_EntitiesByItem;
-    Standard_Boolean failsonly = Standard_False;
-    if (level < 8 && level != 4) failsonly = Standard_True;
     PrintCheckList (ModelCheckList(),Standard_False, mode);
   } else {
     if (level == 3) S << "        ********  Check Model (Fails)  ********"<<endl;

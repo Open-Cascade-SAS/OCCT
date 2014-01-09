@@ -39,9 +39,7 @@ Transfer_TransferInput::Transfer_TransferInput ()    {  }
 // Vrai resultat : doit etre transient (simple ou liste)
     DeclareAndCast(Transfer_SimpleBinderOfTransient,transb,binder);
     DeclareAndCast(Transfer_MultipleBinder,multi,binder);
-    Standard_Boolean OK = Standard_False;
     if (!transb.IsNull()) {
-      OK = Standard_True;
       if (transb->HasResult()) iter.AddItem(transb->Result());
     }
     else if (!multi.IsNull()) {

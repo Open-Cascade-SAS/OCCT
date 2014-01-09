@@ -49,15 +49,15 @@ class BOPAlgo_BuilderFaceFunctor {
     : myPVBF(&aVBF) {
   }
   //
-  void operator()( const flexible_range<Standard_Size>& aBR ) const{
-    Standard_Size i, iBeg, iEnd;
+  void operator()( const flexible_range<Standard_Integer>& aBR ) const{
+    Standard_Integer i, iBeg, iEnd;
     //
     BOPAlgo_VectorOfBuilderFace& aVBF=*myPVBF;
     //
     iBeg=aBR.begin();
     iEnd=aBR.end();
     for(i=iBeg; i!=iEnd; ++i) {
-      BOPAlgo_BuilderFace& aBF=aVBF((Standard_Integer)i);
+      BOPAlgo_BuilderFace& aBF=aVBF(i);
       //
       aBF.Perform();
     }
@@ -76,13 +76,13 @@ class BOPAlgo_BuilderFaceCnt {
 				      BOPAlgo_VectorOfBuilderFace& aVBF) {
     //
     BOPAlgo_BuilderFaceFunctor aBFF(aVBF);
-    Standard_Size aNbBF=aVBF.Extent();
+    Standard_Integer aNbBF=aVBF.Extent();
     //
     if (bRunParallel) {
-      flexible_for(flexible_range<Standard_Size>(0,aNbBF), aBFF);
+      flexible_for(flexible_range<Standard_Integer>(0,aNbBF), aBFF);
     }
     else {
-      aBFF.operator()(flexible_range<Standard_Size>(0,aNbBF));
+      aBFF.operator()(flexible_range<Standard_Integer>(0,aNbBF));
     }
   }
   //
@@ -236,7 +236,7 @@ class BOPAlgo_BuilderSolidCnt {
   Standard_EXPORT static void Perform(const Standard_Boolean bRunParallel,
 				      BOPAlgo_VectorOfBuilderSolid& aVBS) {
     
-    Standard_Size aNbBS=aVBS.Extent();
+    Standard_Integer aNbBS=aVBS.Extent();
     BOPAlgo_BuilderSolidFunctor aBSF(aVBS);
     //
     if (bRunParallel) {

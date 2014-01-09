@@ -271,7 +271,7 @@ void BOPAlgo_PaveFiller::MakeBlocks()
   Standard_Boolean bExist, bValid2D;
   Standard_Integer i, nF1, nF2, aNbC, aNbP, j;
   Standard_Integer nV1, nV2;
-  Standard_Real aTolR3D, aTolR2D, aT1, aT2, aTol;
+  Standard_Real aTolR3D, aT1, aT2, aTol;
   Handle(NCollection_IncAllocator) aAllocator;
   BOPDS_ListIteratorOfListOfPaveBlock aItLPB;
   TopoDS_Edge aES;
@@ -310,7 +310,6 @@ void BOPAlgo_PaveFiller::MakeBlocks()
     const TopoDS_Face& aF2=(*(TopoDS_Face *)(&myDS->Shape(nF2)));
     //
     aTolR3D=aFF.TolR3D();
-    aTolR2D=aFF.TolR2D();
     //
     // Update face info
     if (aMF.Add(nF1)) {

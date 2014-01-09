@@ -267,7 +267,7 @@ Standard_Boolean QANewModTopOpe_Tools::IsSplit(const BOPAlgo_PPaveFiller& theDSF
   if(theEdge.IsNull() || (theEdge.ShapeType() != TopAbs_EDGE))
     return Standard_False;
 
-  Standard_Integer index, nSp;
+  Standard_Integer index;
   //
   const BOPDS_PDS& pDS = theDSFiller->PDS();
   index = pDS->Index(theEdge);
@@ -280,7 +280,6 @@ Standard_Boolean QANewModTopOpe_Tools::IsSplit(const BOPAlgo_PPaveFiller& theDSF
   aPBIt.Initialize(aLPB);
   for (; aPBIt.More(); aPBIt.Next()) {
     const Handle(BOPDS_PaveBlock)& aPB = aPBIt.Value();
-    nSp = aPB->Edge();
 
     TopAbs_State aSplitState = GetEdgeState(pDS, aPB);
 

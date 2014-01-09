@@ -372,7 +372,7 @@ void IntPolyh_MaillageAffinage::FillArrayOfPnt
   Standard_Boolean bDegI, bDeg;
   Standard_Integer aNbU, aNbV, iCnt, i, j;
   Standard_Integer aID1, aID2, aJD1, aJD2;
-  Standard_Real Tol, resol, u0, v0, u1, v1, aU, aV, aMag;
+  Standard_Real Tol, resol, aU, aV, aMag;
   Standard_Real aX, aY, aZ;
   gp_Pnt aP;
   gp_Vec aDU, aDV, aNorm;
@@ -384,10 +384,6 @@ void IntPolyh_MaillageAffinage::FillArrayOfPnt
   IntPolyh_ArrayOfPoints &TPoints=(SurfID==1)? TPoints1:TPoints2;
   //
   resol = gp::Resolution();
-  u0 = Upars(1);
-  v0 = Vpars(1);
-  u1 = Upars(aNbU);
-  v1 = Vpars(aNbV);
   //
   IntCurveSurface_ThePolyhedronOfHInter polyhedron(aS, Upars, Vpars);
   Tol=polyhedron.DeflectionOverEstimation();

@@ -172,7 +172,7 @@ static
 void CorrectWires(const TopoDS_Face& aFx)
 {
   Standard_Integer i, aNbV;
-  Standard_Real aTol, aTol2, aD2, aD2max, aT1, aT2, aT, aTol2d; 
+  Standard_Real aTol, aTol2, aD2, aD2max, aT1, aT2, aT;
   gp_Pnt aP, aPV;
   gp_Pnt2d aP2D;
   TopoDS_Face aF;
@@ -182,7 +182,6 @@ void CorrectWires(const TopoDS_Face& aFx)
   //
   aF=aFx;
   aF.Orientation(TopAbs_FORWARD);
-  aTol2d = Precision::Confusion();
   const Handle(Geom_Surface)& aS=BRep_Tool::Surface(aFx);
   //
   TopExp::MapShapesAndAncestors(aF, TopAbs_VERTEX, TopAbs_EDGE, aMVE);

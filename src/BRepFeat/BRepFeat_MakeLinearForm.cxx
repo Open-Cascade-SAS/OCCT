@@ -1026,18 +1026,16 @@ void BRepFeat_MakeLinearForm::Perform()
 
   TopoDS_Vertex Vprevious;
   gp_Pnt ptprev;
-  Standard_Real tvp, dp;
+  Standard_Real dp;
 
   while (!(LastOK && FirstOK)) {
     if (v1OK) {
       Vprevious=v2;
       ptprev=p2;
-      tvp=t2;
     }
     else {
       Vprevious=v1;
       ptprev=p1;
-      tvp=t1;
     }
     
     // find edge connected to v1 or v2:

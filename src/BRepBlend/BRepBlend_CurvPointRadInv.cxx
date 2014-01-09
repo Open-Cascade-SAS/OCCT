@@ -78,14 +78,13 @@ Standard_Boolean BRepBlend_CurvPointRadInv::Derivatives(const math_Vector& X,
 {
   gp_Pnt ptcur1, ptcur2;
   gp_Vec d1cur1,d2cur1, d1cur2, nplan, dnplan;
-  Standard_Real theD, dtheD, normd1cur1, unsurnormd1cur1;
+  Standard_Real dtheD, normd1cur1, unsurnormd1cur1;
 
   curv1->D2(X(1), ptcur1, d1cur1, d2cur1);
 
   normd1cur1      = d1cur1.Magnitude();
   unsurnormd1cur1 = 1. / normd1cur1;
   nplan           = unsurnormd1cur1 * d1cur1;
-  theD            = -(nplan.XYZ().Dot(ptcur1.XYZ()));
   dnplan.SetLinearForm(-nplan.Dot(d2cur1), nplan, d2cur1);
   dnplan.Multiply(unsurnormd1cur1);
   dtheD  = - nplan.XYZ().Dot(d1cur1.XYZ()) - dnplan.XYZ().Dot(ptcur1.XYZ());
@@ -107,10 +106,8 @@ Standard_Boolean BRepBlend_CurvPointRadInv::Values(const math_Vector& X,
 						   math_Vector& F,
 						   math_Matrix& D) 
 {
-  Standard_Boolean Retour;
-
-  Retour = Value(X, F);
-  Retour = Derivatives(X, D);
+  Value(X, F);
+  Derivatives(X, D);
 
   return Standard_True;
 }

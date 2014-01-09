@@ -581,13 +581,11 @@ void IntAna_IntQuadQuad::Perform(const gp_Cone& Cone,
 				 const Standard_Real)  
 { 
   //
-  Standard_Boolean UN_SEUL_Z_PAR_THETA, DEUX_Z_PAR_THETA, 
-                   Z_POSITIF, Z_INDIFFERENT, Z_NEGATIF;
+  Standard_Boolean UN_SEUL_Z_PAR_THETA,
+                   Z_POSITIF, Z_NEGATIF;
   //
   UN_SEUL_Z_PAR_THETA=Standard_False;
-  DEUX_Z_PAR_THETA=Standard_True;
   Z_POSITIF=Standard_True;
-  Z_INDIFFERENT=Standard_True;
   Z_NEGATIF=Standard_False;
   //
   Standard_Integer i;

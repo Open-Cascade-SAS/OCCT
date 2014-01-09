@@ -770,7 +770,6 @@ void TopOpeBRepBuild_Builder1::GFillEdgeSameDomWES(const TopoDS_Shape& EOR,
   //1) Get split parts of edge with state TB
   const TopTools_ListOfShape& LSE = myDataStructure -> DS().GetShapeWithState(EOR).Part(TB);
   TopTools_ListIteratorOfListOfShape  it (LSE);
-  Standard_Boolean first = Standard_True;
   for(; it.More(); it.Next()) {
 
     TopoDS_Edge newE = TopoDS::Edge(it.Value());
@@ -795,7 +794,6 @@ void TopOpeBRepBuild_Builder1::GFillEdgeSameDomWES(const TopoDS_Shape& EOR,
   
   //2) Get ON parts of the edge and define to keep it or not
   const TopTools_ListOfShape& LSEOn = myDataStructure -> DS().GetShapeWithState(EOR).Part(TopAbs_ON);
-  first = Standard_True;
   it.Initialize(LSEOn);
   for(; it.More(); it.Next()) {
     
@@ -1023,14 +1021,10 @@ void TopOpeBRepBuild_Builder1::PerformONParts(const TopoDS_Shape& FOR1,
 
   Standard_Integer iref = myDataStructure -> DS().AncestorRank(FOR1);
     
-  Standard_Boolean RevOri;
-
   if(iref == 1) {//object
     FTB = FTB1;
-    RevOri = G1.IsToReverse1();
   }
   else {//tool
-    RevOri = G1.IsToReverse2();
     FTB = FTB2;
   }
 

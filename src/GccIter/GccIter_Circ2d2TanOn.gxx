@@ -100,17 +100,11 @@ GccIter_Circ2d2TanOn::
      Standard_Real dist2 = point3.Distance(point2);
      if ( Abs(dist1-dist2)/2. <= Tol) {
        cirsol = gp_Circ2d(gp_Ax2d(point3,dirx),(dist1+dist2)/2.);
-       Standard_Real normetan1 = Tan1.Magnitude();
        Standard_Real normetan2 = Tan2.Magnitude();
        gp_Vec2d Vec1(point1,point3);
        gp_Vec2d Vec2(point2,point3);
-       Standard_Real normevec1 = Vec1.Magnitude();
        Standard_Real normevec2 = Vec2.Magnitude();
-       Standard_Real angle1,angle2;
-       if (normevec1 >= gp::Resolution() && normetan1 >= gp::Resolution()) {
-	 angle1 = Vec1.Angle(Tan1);
-       }
-       else { angle1 = 0.; }
+       Standard_Real angle2;
        if (normevec2 >= gp::Resolution() && normetan2 >= gp::Resolution()) {
 	 angle2 = Vec2.Angle(Tan2);
        }
@@ -400,17 +394,11 @@ GccIter_Circ2d2TanOn::
      Standard_Real dist2 = point3.Distance(point2);
      if ( Abs(dist1-dist2)/2. <= Tol) {
        cirsol = gp_Circ2d(gp_Ax2d(point3,dirx),(dist1+dist2)/2.);
-       Standard_Real normetan1 = Tan1.Magnitude();
        Standard_Real normetan2 = Tan2.Magnitude();
        gp_Vec2d Vec1(point1,point3);
        gp_Vec2d Vec2(point2,point3);
-       Standard_Real normevec1 = Vec1.Magnitude();
        Standard_Real normevec2 = Vec2.Magnitude();
-       Standard_Real angle1,angle2;
-       if (normevec1 >= gp::Resolution() && normetan1 >= gp::Resolution()) {
-	 angle1 = Vec1.Angle(Tan1);
-       }
-       else { angle1 = 0.; }
+       Standard_Real angle2;
        if (normevec2 >= gp::Resolution() && normetan2 >= gp::Resolution()) {
 	 angle2 = Vec2.Angle(Tan2);
        }
@@ -511,17 +499,11 @@ GccIter_Circ2d2TanOn::
      Standard_Real dist2 = point3.Distance(point2);
      if ( Abs(dist1-dist2)/2. <= Tol) {
        cirsol = gp_Circ2d(gp_Ax2d(point3,dirx),(dist1+dist2)/2.);
-       Standard_Real normetan1 = Tan1.Magnitude();
        Standard_Real normetan2 = Tan2.Magnitude();
        gp_Vec2d Vec1(point1,point3);
        gp_Vec2d Vec2(point2,point3);
-       Standard_Real normevec1 = Vec1.Magnitude();
        Standard_Real normevec2 = Vec2.Magnitude();
-       Standard_Real angle1,angle2;
-       if (normevec1 >= gp::Resolution() && normetan1 >= gp::Resolution()) {
-	 angle1 = Vec1.Angle(Tan1);
-       }
-       else { angle1 = 0.; }
+       Standard_Real angle2;
        if (normevec2 >= gp::Resolution() && normetan2 >= gp::Resolution()) {
 	 angle2 = Vec2.Angle(Tan2);
        }
@@ -621,17 +603,11 @@ GccIter_Circ2d2TanOn::
      Standard_Real dist2 = point3.Distance(point2);
      if ( Abs(dist1-dist2)/2. <= Tol) {
        cirsol = gp_Circ2d(gp_Ax2d(point3,dirx),(dist1+dist2)/2.);
-       Standard_Real normetan1 = Tan1.Magnitude();
        Standard_Real normetan2 = Tan2.Magnitude();
        gp_Vec2d Vec1(point1,point3);
        gp_Vec2d Vec2(point2,point3);
-       Standard_Real normevec1 = Vec1.Magnitude();
        Standard_Real normevec2 = Vec2.Magnitude();
-       Standard_Real angle1,angle2;
-       if (normevec1 >= gp::Resolution() && normetan1 >= gp::Resolution()) {
-	 angle1 = Vec1.Angle(Tan1);
-       }
-       else { angle1 = 0.; }
+       Standard_Real angle2;
        if (normevec2 >= gp::Resolution() && normetan2 >= gp::Resolution()) {
 	 angle2 = Vec2.Angle(Tan2);
        }
@@ -1026,17 +1002,11 @@ GccIter_Circ2d2TanOn::
      if ( Abs(dist1-dist2)/2. <= Tol) {
        gp_Dir2d dirx(1.,0.);
        cirsol = gp_Circ2d(gp_Ax2d(point3,dirx),(dist1+dist2)/2.);
-       Standard_Real normetan1 = Tan1.Magnitude();
        Standard_Real normetan2 = Tan2.Magnitude();
        gp_Vec2d Vec1(point1.XY(),point3.XY());
        gp_Vec2d Vec2(point2.XY(),point3.XY());
-       Standard_Real normevec1 = Vec1.Magnitude();
        Standard_Real normevec2 = Vec2.Magnitude();
-       Standard_Real angle1,angle2;
-       if (normevec1 >= gp::Resolution() && normetan1 >= gp::Resolution()) {
-	 angle1 = Vec1.Angle(Tan1);
-       }
-       else { angle1 = 0.; }
+       Standard_Real angle2;
        if (normevec2 >= gp::Resolution() && normetan2 >= gp::Resolution()) {
 	 angle2 = Vec2.Angle(Tan2);
        }
@@ -1132,17 +1102,11 @@ GccIter_Circ2d2TanOn::
      Standard_Real dist2 = point3.Distance(point2);
      if ( Abs(dist1-dist2)/2. <= Tol) {
        cirsol = gp_Circ2d(gp_Ax2d(point3,dirx),(dist1+dist2)/2.);
-       Standard_Real normetan1 = Tan1.Magnitude();
        Standard_Real normetan2 = Tan2.Magnitude();
        gp_Vec2d Vec1(point1,point3);
        gp_Vec2d Vec2(point2,point3);
-       Standard_Real normevec1 = Vec1.Magnitude();
        Standard_Real normevec2 = Vec2.Magnitude();
-       Standard_Real angle1,angle2;
-       if (normevec1 >= gp::Resolution() && normetan1 >= gp::Resolution()) {
-	 angle1 = Vec1.Angle(Tan1);
-       }
-       else { angle1 = 0.; }
+       Standard_Real angle2;
        if (normevec2 >= gp::Resolution() && normetan2 >= gp::Resolution()) {
 	 angle2 = Vec2.Angle(Tan2);
        }

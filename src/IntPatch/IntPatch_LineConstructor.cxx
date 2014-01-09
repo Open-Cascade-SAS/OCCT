@@ -1074,7 +1074,7 @@ static void TestWLineToRLine(const IntPatch_SequenceOfLine& slinref,
 	// check that the middle point is on arc
 	(WLine->Point(midInd).*piParOnS)(utst,vtst);
 	if (midInd == ParamMinOnLine) {
-	  Standard_Real utst1,vtst1;
+	  Standard_Real utst1=0.0,vtst1=0.0;
 	  (WLine->Point(midInd+1).*piParOnS)(utst1,vtst1);
 	  utst = (utst+utst1)*0.5;
 	  vtst = (vtst+vtst1)*0.5;

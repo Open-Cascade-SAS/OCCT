@@ -572,16 +572,12 @@ Standard_Integer IGESConvGeom::IncreaseSurfaceContinuity  (const Handle(Geom_BSp
 {
   if (continuity < 1) return continuity;
   Standard_Boolean isC1 = Standard_True, isC2 = Standard_True;
-  Standard_Integer i,j;
-
-  i = res->LastUKnotIndex();   //knots.Upper();
-  j = res->FirstUKnotIndex();  //knots.Lower();
   Standard_Integer DegreeU = res->UDegree();
   
   Standard_Boolean isModified;
   do {
     isModified = Standard_False;
-    for (i = res->FirstUKnotIndex()+1; i < res->LastUKnotIndex(); i++) 
+    for (Standard_Integer i = res->FirstUKnotIndex()+1; i < res->LastUKnotIndex(); i++) 
       if(DegreeU - res->UMultiplicity(i) < continuity) {
         if (continuity >= 2) {
           if (!res->RemoveUKnot(i, DegreeU-2, epsgeom)) {
@@ -605,7 +601,7 @@ Standard_Integer IGESConvGeom::IncreaseSurfaceContinuity  (const Handle(Geom_BSp
   Standard_Integer DegreeV = res->VDegree();
   do {
     isModified = Standard_False;
-    for (i = res->FirstVKnotIndex()+1; i < res->LastVKnotIndex(); i++) 
+    for (Standard_Integer i = res->FirstVKnotIndex()+1; i < res->LastVKnotIndex(); i++) 
       if(DegreeV - res->VMultiplicity(i) < continuity) {
         if (continuity >= 2) {
           if (!res->RemoveVKnot(i, DegreeV-2, epsgeom)) {

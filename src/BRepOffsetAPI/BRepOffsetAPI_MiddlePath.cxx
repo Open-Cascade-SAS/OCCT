@@ -609,17 +609,17 @@ void BRepOffsetAPI_MiddlePath::Build()
           if (E2.IsNull())
             E2 = TopoDS::Edge(myPaths((j<=NbPaths)? j : 1)(i-1));
           Standard_Real fpar1, lpar1, fpar2, lpar2;
-          Standard_Real FirstPar1, LastPar1, FirstPar2, LastPar2;
+          Standard_Real LastPar1, LastPar2;
           Handle(Geom2d_Curve) PCurve1 = BRep_Tool::CurveOnSurface(E1, theFace, fpar1, lpar1);
           Handle(Geom2d_Curve) PCurve2 = BRep_Tool::CurveOnSurface(E2, theFace, fpar2, lpar2);
           if (E1.Orientation() == TopAbs_FORWARD)
-          { FirstPar1 = fpar1; LastPar1 = lpar1; }
+          { LastPar1 = lpar1; }
           else
-          { FirstPar1 = lpar1; LastPar1 = fpar1; }
+          { LastPar1 = fpar1; }
           if (E2.Orientation() == TopAbs_FORWARD)
-          { FirstPar2 = fpar2; LastPar2 = lpar2; }
+          { LastPar2 = lpar2; }
           else
-          { FirstPar2 = lpar2; LastPar2 = fpar2; }
+          { LastPar2 = fpar2; }
           gp_Pnt2d FirstPnt2d = PCurve1->Value(LastPar1);
           gp_Pnt2d LastPnt2d  = PCurve2->Value(LastPar2);
           Handle(Geom_Surface) theSurf = BRep_Tool::Surface(theFace);

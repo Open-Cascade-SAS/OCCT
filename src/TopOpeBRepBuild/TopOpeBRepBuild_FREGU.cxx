@@ -291,8 +291,6 @@ void TopOpeBRepBuild_Builder::RegularizeFace
 //	Standard_Integer nlspfsdFFe = lspfsdFFe.Extent();
 #endif    
 	  
-        Standard_Integer nDEB2=0 ;
-	
 	for (TopTools_ListIteratorOfListOfShape it(lspfsdFFe);it.More();it.Next()) {
 	  
 	  // fsdFFe (Cf supra E) a ete splittee, espfdsFFe = arete splittee de fsdFFe
@@ -313,7 +311,6 @@ void TopOpeBRepBuild_Builder::RegularizeFace
 	    
 	    // son decoupage lresplit est stocke dans la DS du Builder
 	    const TopTools_ListOfShape& lresplit = myESplits.Find(espfsdFFe); //Cf supra E''
-	    nDEB2 = lresplit.Extent();
 	    
 	    // on memorise que espfsdFFe est redecoupee ...
 	    myMemoSplit.Add(espfsdFFe);
@@ -321,7 +318,6 @@ void TopOpeBRepBuild_Builder::RegularizeFace
 	    // on stocke le nouveau decoupage de espfsdFFe dans la DS du builder ...
 	    TopTools_ListOfShape& lsp = ChangeSplit(espfsdFFe,stafsdFFe);  
 	    GCopyList(lresplit,lsp);
-	    nDEB2 = lsp.Extent();
 	  }
 	} // it.More
       } // iiista

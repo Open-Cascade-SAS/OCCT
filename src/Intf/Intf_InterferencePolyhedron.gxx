@@ -743,8 +743,6 @@ Standard_Boolean Intf_InterferencePolyhedron::TangentZoneValue
     tOP[nou]= Intf_EXTERNAL;
     tTP[nou]= Intf_EXTERNAL;
   }
-  Standard_Integer iOP[4];
-  Standard_Integer iTP[4];
 
   Standard_Integer nbpInt=0;
   Intf_SeqOfSectionPoint Tpi;
@@ -759,8 +757,8 @@ Standard_Boolean Intf_InterferencePolyhedron::TangentZoneValue
 				     Intf_VERTEX, OI[nob], 0, 0., 
 				     Intf_VERTEX, TI[nou], 0, 0.,
 				     1.));
-	tOP[nob]=Intf_VERTEX; iOP[nob]=nbpInt;
-	tTP[nou]=Intf_VERTEX; iTP[nou]=nbpInt;
+	tOP[nob]=Intf_VERTEX;
+	tTP[nou]=Intf_VERTEX;
 	nbpInt++;
 	break;
       }
@@ -773,7 +771,7 @@ Standard_Boolean Intf_InterferencePolyhedron::TangentZoneValue
 					Intf_EDGE, Min(TI[nou], TI[nou2]),
 					Max(TI[nou], TI[nou2]), par,
 					1.));
-	  tOP[nob]=Intf_EDGE; iOP[nob]=nbpInt;
+	  tOP[nob]=Intf_EDGE;
 	  nbpInt++;
 	  break;
 	}
@@ -788,7 +786,7 @@ Standard_Boolean Intf_InterferencePolyhedron::TangentZoneValue
 				     Intf_VERTEX, OI[nob],  0, 0., 
 				     Intf_FACE,   Tri2, 0, 0.,
 				     1.));
-	tOP[nob]=Intf_FACE; iOP[nob]=nbpInt;
+	tOP[nob]=Intf_FACE;
 	nbpInt++;
       }
     }
@@ -811,7 +809,7 @@ Standard_Boolean Intf_InterferencePolyhedron::TangentZoneValue
 					   Intf_EDGE, Min(OI[nob], OI[nob2]),
 					   Max(OI[nob], OI[nob2]), par, 
 					   Intf_VERTEX, TI[nou], 0, 0., 1.));
-	      tTP[nou]=Intf_EDGE;iTP[nou]=nbpInt;
+	      tTP[nou]=Intf_EDGE;
 	      nbpInt++;
 	      break;
 	    }
@@ -826,7 +824,7 @@ Standard_Boolean Intf_InterferencePolyhedron::TangentZoneValue
 					 Intf_FACE,   Tri1, 0, 0.,
 					 Intf_VERTEX, TI[nou], 0, 0., 
 					 1.));
-	    tTP[nou]=Intf_FACE; iTP[nou]=nbpInt;
+	    tTP[nou]=Intf_FACE;
 	    nbpInt++;
 	  }
 	}

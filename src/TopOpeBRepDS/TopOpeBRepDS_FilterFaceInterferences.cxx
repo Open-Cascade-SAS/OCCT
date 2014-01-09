@@ -112,13 +112,20 @@ void TopOpeBRepDS_Filter::ProcessFaceInterferences
   lw.Append(lall);
   lw.Append(lUU);
 
-  Standard_Integer nF = ::FUN_selectTRASHAinterference(lw,TopAbs_FACE,lF);
-  Standard_Integer nFE = ::FUN_selectGKinterference(lF,TopOpeBRepDS_EDGE,lFE);
-  Standard_Integer nFEF = ::FUN_selectSKinterference(lFE,TopOpeBRepDS_FACE,lFEF);
-  Standard_Integer nE = ::FUN_selectTRASHAinterference(lw,TopAbs_EDGE,lE);
+#ifdef DEB
+  Standard_Integer nF, nFE, nFEF, nE;
+#endif
 
+  ::FUN_selectTRASHAinterference(lw,TopAbs_FACE,lF);
+  ::FUN_selectGKinterference(lF,TopOpeBRepDS_EDGE,lFE);
+  ::FUN_selectSKinterference(lFE,TopOpeBRepDS_FACE,lFEF);
+  ::FUN_selectTRASHAinterference(lw,TopAbs_EDGE,lE);
 
 #ifdef DEB
+  nF = lF.Extent();
+  nFE = lFE.Extent();
+  nFEF = lFEF.Extent();
+  nE = lE.Extent();
   if(TRC){
     if(nF||nFE||nFEF||nE){cout<<endl;cout<<"-----------------------"<<endl;}
     if(nUU) {cout<<"FACE "<<SIX<<" UNKNOWN : "<<nUU<<endl;FDS_dumpLI(lUU,"  ");}
@@ -131,11 +138,11 @@ void TopOpeBRepDS_Filter::ProcessFaceInterferences
 
   ::FUN_FilterFace(lFEF,BDS,SIX);
 
+#ifdef DEB
   nF = lF.Extent();
   nFE = lFE.Extent();
   nFEF = lFEF.Extent();
   nE = lE.Extent();
-#ifdef DEB
   if(TRC){
     if(nF||nFE||nFEF||nE)cout<<endl;
     if(nF) {cout<<"FACE "<<SIX<<" (FACE) : "<<nF<<endl;FDS_dumpLI(lF,"  ");}

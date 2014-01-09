@@ -176,12 +176,10 @@ Standard_Real BRepFeat::ParametricBarycenter(const TopoDS_Shape& S,
       extpc.Perform(pone);
       if (extpc.IsDone() && extpc.NbExt() >= 1) {
 	    Standard_Real Dist2Min = extpc.SquareDistance(1);
-	    Standard_Integer kmin = 1;
 	    for (Standard_Integer k=2; k<=extpc.NbExt(); k++) {
 	      Standard_Real Dist2 = extpc.SquareDistance(k);
 	      if (Dist2 < Dist2Min) {
 	        Dist2Min = Dist2;
-	        kmin = k;
 	      }
 	    }
 	    nbp++;

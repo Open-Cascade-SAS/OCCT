@@ -399,7 +399,7 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape& FOR,const TopTool
       GLOBAL_SplitAnc->Clear(); // xpu280598
 
       // FuseFace
-      Standard_Integer nlsfs = SFS.ChangeStartShapes().Extent();
+      SFS.ChangeStartShapes().Extent();
       if (performfufa) {	
 #ifdef DEB
 	if(tSPS) debffflo(iF);
@@ -438,7 +438,6 @@ void TopOpeBRepBuild_Builder::GFillFaceSFS(const TopoDS_Shape& FOR,const TopTool
 #endif
 	  SFS.AddStartElement(flfr2);
 	}
-	nlsfs = SFS.ChangeStartShapes().Extent();
       } // performfufa (context)
       
     } // makemerge

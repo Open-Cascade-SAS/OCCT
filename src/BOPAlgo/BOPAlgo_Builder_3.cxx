@@ -470,7 +470,7 @@ void BOPAlgo_Builder::BuildSplitSolids(BOPCol_DataMapOfShapeListOfShape& theInPa
   myErrorStatus=0;
   //
   Standard_Boolean bFlagSD;
-  Standard_Integer i, aNbS, aNbSFS;//, iErr
+  Standard_Integer i, aNbS;
   TopExp_Explorer aExp;
   BOPCol_ListIteratorOfListOfShape aIt;
   BOPCol_DataMapIteratorOfDataMapOfShapeShape aIt1;
@@ -542,8 +542,6 @@ void BOPAlgo_Builder::BuildSplitSolids(BOPCol_DataMapOfShapeListOfShape& theInPa
       aSFS.Append(aF);
     }
     //
-    aNbSFS=aSFS.Extent();
-    //
     // 1.3 Build new solids   
     Handle(NCollection_IncAllocator) aAlr1;
     aAlr1=new NCollection_IncAllocator();  
@@ -600,7 +598,7 @@ void BOPAlgo_Builder::FillInternalShapes()
 {
   myErrorStatus=0;
   //
-  Standard_Integer i, j,  aNbS, aNbSI, aNbSx, aNbSd;
+  Standard_Integer i, j,  aNbS, aNbSI, aNbSx;
   TopAbs_ShapeEnum aType;
   TopAbs_State aState; 
   TopoDS_Iterator aItS;
@@ -730,8 +728,6 @@ void BOPAlgo_Builder::FillInternalShapes()
       }
     }
   }// for (i=0; i<aNbS; ++i) {
-  //
-  aNbSd=aLSd.Extent();
   //
   // 3. Some shapes of aMSI can be already tied with faces of 
   //    split solids

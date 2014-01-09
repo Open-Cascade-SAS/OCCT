@@ -23,9 +23,6 @@
 #include <ElCLib.hxx>
 #include <Precision.hxx>
 #include <Standard_NotImplemented.hxx>
-#ifdef DEB
-static Standard_Boolean putsderivatives = 0;
-#endif
 
 //=======================================================================
 //function : BlendFunc_Chamfer

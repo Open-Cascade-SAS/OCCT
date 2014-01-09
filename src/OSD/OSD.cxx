@@ -116,13 +116,12 @@ void OSD::MilliSecSleep(const Standard_Integer aDelay)
 
 void OSD::MilliSecSleep(const Standard_Integer aDelay)
 {
-  int fdn ;
   struct timeval timeout ;
 
   timeout.tv_sec = aDelay / 1000 ;
   timeout.tv_usec = (aDelay % 1000) * 1000 ;
 
-  fdn = select(0,NULL,NULL,NULL,&timeout) ;
+  select(0,NULL,NULL,NULL,&timeout) ;
 }
 
 #endif

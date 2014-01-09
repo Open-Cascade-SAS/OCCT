@@ -710,9 +710,6 @@ Standard_Boolean TopOpeBRepTool_REGUS::NearestF(const TopoDS_Edge& e, const TopT
   Standard_Real tola = Precision::Angular()*1.e3; //gp_Dir xapp,yapp; Standard_Boolean refapp = Standard_False;
   gp_Dir x,y; Standard_Boolean ok = ::FUN_vectors(fref,e,pare,y,x,tola,Standard_False);
   if (!ok) {FUN_Raise(); return Standard_False;}
-#ifdef DEB
-  gp_Dir z = x^y;    
-#endif
   
   // initializing
   // ------------

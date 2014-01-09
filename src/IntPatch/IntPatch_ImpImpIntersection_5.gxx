@@ -203,7 +203,6 @@ Standard_Boolean IntCoCo(const IntSurf_Quadric& Quad1,
 
   case IntAna_Circle:
     {
-      Standard_Real para;
       IntPatch_Point aPtsol;
       gp_Vec Tgt;
       gp_Pnt ptref;
@@ -229,7 +228,6 @@ Standard_Boolean IntCoCo(const IntSurf_Quadric& Quad1,
 	  Quad2.Parameters(aPChar, U2, V2);
 	  aPtsol.SetValue(aPChar, Tol, Standard_False);
 	  aPtsol.SetParameters(U1, V1, U2, V2);
-	  para = ElCLib::Parameter(cirsol, aPChar);
 	  aPtsol.SetParameter(0.);
 	  glig->AddVertex(aPtsol);
 	}
@@ -241,7 +239,6 @@ Standard_Boolean IntCoCo(const IntSurf_Quadric& Quad1,
 
   case IntAna_Ellipse:
     {
-      Standard_Real para;
       IntPatch_Point aPtsol;
       gp_Elips elipsol = inter.Ellipse(1);
       
@@ -268,7 +265,6 @@ Standard_Boolean IntCoCo(const IntSurf_Quadric& Quad1,
 	Quad2.Parameters(aPChar, U2, V2);
 	aPtsol.SetValue(aPChar, Tol, Standard_False);
 	aPtsol.SetParameters(U1, V1, U2, V2);
-	para = ElCLib::Parameter(elipsol, aPChar);
 	aPtsol.SetParameter(0.);
 	glig->AddVertex(aPtsol);
       }
@@ -280,7 +276,6 @@ Standard_Boolean IntCoCo(const IntSurf_Quadric& Quad1,
 
   case IntAna_Hyperbola:
     {
-      Standard_Real para;
       IntPatch_Point aPtsol;
       gp_Vec Tgt;
       gp_Pnt ptref;
@@ -306,7 +301,6 @@ Standard_Boolean IntCoCo(const IntSurf_Quadric& Quad1,
 	  Quad2.Parameters(aPChar, U2, V2);
 	  aPtsol.SetValue(aPChar, Tol, Standard_False);
 	  aPtsol.SetParameters(U1, V1, U2, V2);
-	  para = ElCLib::Parameter(hyprsol, aPChar);
 	  aPtsol.SetParameter(0.);
 	  glig->AddVertex(aPtsol);
 	}
@@ -317,7 +311,6 @@ Standard_Boolean IntCoCo(const IntSurf_Quadric& Quad1,
     
   case IntAna_Parabola:
     {
-      Standard_Real para;
       IntPatch_Point aPtsol;
       gp_Parab parabsol = inter.Parabola(1);
       
@@ -343,7 +336,6 @@ Standard_Boolean IntCoCo(const IntSurf_Quadric& Quad1,
 	Quad2.Parameters(aPChar, U2, V2);
 	aPtsol.SetValue(aPChar, Tol, Standard_False);
 	aPtsol.SetParameters(U1, V1, U2, V2);
-	para = ElCLib::Parameter(parabsol, aPChar);
 	aPtsol.SetParameter(0.);
 	glig->AddVertex(aPtsol);
       }

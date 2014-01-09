@@ -73,11 +73,9 @@ Standard_Boolean  IFSelect_ListEditor::LoadEdited
   if (list.IsNull()) return Standard_False;
   Standard_Integer i, nb = list->Length();
   if (nb > themax) return Standard_False;
-  Interface_ParamType pty = Interface_ParamText;
 
 //   check values
   if (!thedef.IsNull()) {
-    pty = thedef->Type();
     for (i = 1; i <= nb; i ++) {
       Handle(TCollection_HAsciiString) newval = list->Value(i);
       if (!CheckValue (newval,themodl,thedef)) return Standard_False;

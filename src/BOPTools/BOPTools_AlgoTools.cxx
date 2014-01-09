@@ -1189,7 +1189,7 @@ Standard_Boolean BOPTools_AlgoTools::IsHole(const TopoDS_Shape& aW,
   Standard_Boolean bIsHole;
   Standard_Integer i, aNbS;
   Standard_Real aT1, aT2, aS;
-  Standard_Real aU1, aU2, aU, dU;
+  Standard_Real aU1, aU, dU;
   Standard_Real aX1, aY1, aX0, aY0;
   TopAbs_Orientation aOr;
   
@@ -1228,11 +1228,9 @@ Standard_Boolean BOPTools_AlgoTools::IsHole(const TopoDS_Shape& aW,
     dU=(aT2-aT1)/(Standard_Real)(aNbS-1);
     aU =aT1;
     aU1=aT1;
-    aU2=aT2;
     if (aOr==TopAbs_REVERSED) {
       aU =aT2;
       aU1=aT2;
-      aU2=aT1;
       dU=-dU;
     }
     //

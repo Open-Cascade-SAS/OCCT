@@ -231,9 +231,8 @@ Standard_Integer CSLib_Class2d::InternalSiDansOuOn(const Standard_Real Px,
   Standard_Integer nbc, i, ip1, SH, NH, iRet;
   Standard_Real *Pnts2dX, *Pnts2dY;
   Standard_Real x, y, nx, ny, aX;
-  Standard_Real aYmin, aTol;
+  Standard_Real aYmin;
   //
-  aTol=(Tolu>Tolv)? Tolu : Tolv;
   nbc = 0;
   i   = 0;
   ip1 = 1;

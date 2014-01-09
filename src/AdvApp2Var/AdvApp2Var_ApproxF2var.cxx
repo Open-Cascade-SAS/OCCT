@@ -1326,7 +1326,7 @@ int mma1jak_(integer *ndimen,
 {
   /* System generated locals */
   integer somtab_dim1, somtab_offset, diftab_dim1, diftab_offset, 
-  crvjac_dim1, crvjac_offset, cgauss_dim1;
+  crvjac_dim1, crvjac_offset;
 
   /* Local variables */
   integer ibb;
@@ -1389,7 +1389,6 @@ int mma1jak_(integer *ndimen,
     crvjac_dim1 = *ndgjac + 1;
     crvjac_offset = crvjac_dim1;
     crvjac -= crvjac_offset;
-    cgauss_dim1 = *nbroot / 2 + 1;
 
     /* Function Body */
     ibb = AdvApp2Var_SysBase::mnfndeb_();

@@ -80,7 +80,6 @@ void TDF_CopyLabel::ExternalReferences(const TDF_Label& aRefLabel, const TDF_Lab
 				       Handle(TDF_DataSet)& ds)
 {
 //  TCollection_AsciiString entr1,entr2; //d
-  Standard_Boolean extRefFound = Standard_False;
   for (TDF_AttributeIterator itr(aLabel); itr.More(); itr.Next()) {
     itr.Value()->References(ds);
     const TDF_AttributeMap& attMap = ds->Attributes(); //attMap
@@ -96,7 +95,6 @@ void TDF_CopyLabel::ExternalReferences(const TDF_Label& aRefLabel, const TDF_Lab
         if (aFilter.IsKept(att) && att->Label().IsDifferent(aRefLabel) &&
 	    !att->Label().IsDescendant(aRefLabel)) {
           aExternals.Add(att);
-	  extRefFound = Standard_True;
         }
       }
     }
@@ -117,7 +115,6 @@ void TDF_CopyLabel::ExternalReferences(const TDF_Label& aRefLabel, const TDF_Lab
 //       }
 //     }
 
-    extRefFound = Standard_False;
     ds->Clear();
   }
 }

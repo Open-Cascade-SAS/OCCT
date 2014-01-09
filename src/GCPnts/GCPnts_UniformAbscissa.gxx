@@ -170,7 +170,6 @@ PerformLengthParametrized( Handle(TColStd_HArray1OfReal)& HParameters,
 {
   Standard_Boolean NotDone = Standard_True;
 //  Standard_Boolean LocalDone = Standard_True;
-  Standard_Boolean Forward = Standard_True  ;
   Standard_Real UU1 = Min(U1, U2);
 //  Standard_Real UCurrent;
   Standard_Real Delta, Ui;
@@ -184,7 +183,6 @@ PerformLengthParametrized( Handle(TColStd_HArray1OfReal)& HParameters,
 
 
   if (Abscissa < 0.0e0)    {
-    Forward = Standard_False ;
     UU2 = Min(U1, U2);
     UU1 = Max(U1, U2);
   }

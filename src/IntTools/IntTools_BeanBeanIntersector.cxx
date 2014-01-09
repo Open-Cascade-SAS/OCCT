@@ -1277,10 +1277,9 @@ Standard_Integer FindMaxDistPC(const Standard_Real aT1A,
 			       Standard_Real& aDmax, 
 			       Standard_Real& aT1max) 
 {
-  Standard_Integer iErr, iCnt;
-  Standard_Real aGS, aXP, aA, aB, aXL, aYP, aYL, aT2P, aT2L, aX0;
+  Standard_Integer iErr;
+  Standard_Real aGS, aXP, aA, aB, aXL, aYP, aYL, aT2P, aT2L;
   //
-  iCnt=0;
   iErr=0;
   aDmax=0.;
   //
@@ -1324,7 +1323,6 @@ Standard_Integer FindMaxDistPC(const Standard_Real aT1A,
     }
     //
     if ((aB-aA)<aEps1) {
-      aX0=0.5*(aA+aB);
       break;
     }
   }// while(1) {

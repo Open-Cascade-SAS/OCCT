@@ -672,15 +672,12 @@ void TopOpeBRepBuild_Builder::MergeKPartisdisj()
   TopTools_ListOfShape& lmergesha1 = ChangeMerged(myShape1,myState1);
 /*  TopTools_ListOfShape& lmergesha2 =*/ ChangeMerged(myShape2,myState2);
   
-  Standard_Boolean traite = Standard_True;
-
   Standard_Boolean soldisj = Standard_False;
   TopOpeBRepTool_ShapeExplorer exsol1(myShape1,TopAbs_SOLID);
   Standard_Boolean hassol1 = exsol1.More();
   TopOpeBRepTool_ShapeExplorer exsol2(myShape2,TopAbs_SOLID);
   Standard_Boolean hassol2 = exsol2.More();
   soldisj = (hassol1 && hassol2);
-  traite = soldisj;
 
 //modified by NIZHNY-MKK  Fri May 19 16:18:12 2000.BEGIN  
   Standard_Boolean hasnotsol1=Standard_False;
@@ -695,7 +692,6 @@ void TopOpeBRepBuild_Builder::MergeKPartisdisj()
       hasnotsol2 = Standard_True;
   }
   soldisj = !(hasnotsol1 || hasnotsol2);
-  traite = soldisj;
 //modified by NIZHNY-MKK  Fri May 19 16:18:16 2000.END
   
   TopoDS_Solid sol1; TopoDS_Shell outsha1;

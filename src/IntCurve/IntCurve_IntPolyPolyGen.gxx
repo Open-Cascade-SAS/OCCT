@@ -216,13 +216,6 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
   Standard_Real Tl=(TheTol < TOL_MINI)? TOL_MINI : TheTol;
   Standard_Real TlConf=(TheTolConf < TOL_CONF_MINI)? TOL_CONF_MINI : TheTolConf;
   Perform(C1,D1,TlConf,Tl,0,DU,DU);
-  //----------------------------------------------------------------------
-  //-- Traitement des points en bouts 
-  //----------------------------------------------------------------------
-  Standard_Boolean HeadOn1 = Standard_False;
-  Standard_Boolean HeadOn2 = Standard_False;
-  Standard_Boolean EndOn1  = Standard_False;
-  Standard_Boolean EndOn2  = Standard_False;
   Standard_Integer i;
   Standard_Integer n=this->NbPoints();
 
@@ -240,12 +233,7 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
 
   for(i=1;i<=n;i++) { 
     IntRes2d_Position Pos1 = this->Point(i).TransitionOfFirst().PositionOnCurve();
-    if(Pos1 == IntRes2d_Head) HeadOn1 = Standard_True;
-    else if(Pos1 == IntRes2d_End) EndOn1 = Standard_True;
-
     IntRes2d_Position Pos2 =  this->Point(i).TransitionOfSecond().PositionOnCurve();
-    if(Pos2 == IntRes2d_Head) HeadOn2 = Standard_True;
-    else if(Pos2 == IntRes2d_End) EndOn2 = Standard_True;
 
     if(Pos1 == IntRes2d_Head) { 
       if(Pos2 == IntRes2d_Head)     PosSegment|=1;
@@ -260,12 +248,7 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
   n=this->NbSegments();
   for(i=1;i<=n;i++) { 
     IntRes2d_Position Pos1 = this->Segment(i).FirstPoint().TransitionOfFirst().PositionOnCurve();
-    if(Pos1 == IntRes2d_Head)     HeadOn1 = Standard_True;
-    else if(Pos1 == IntRes2d_End) EndOn1  = Standard_True;
-    
     IntRes2d_Position Pos2 =  this->Segment(i).FirstPoint().TransitionOfSecond().PositionOnCurve();
-    if(Pos2 == IntRes2d_Head)      HeadOn2 = Standard_True;
-    else if(Pos2 == IntRes2d_End)  EndOn2  = Standard_True;
 
     if(Pos1 == IntRes2d_Head) { 
       if(Pos2 == IntRes2d_Head)     PosSegment|=1;
@@ -277,12 +260,7 @@ void IntCurve_IntPolyPolyGen::Perform( const TheCurve& C1
     }
 
     Pos1 = this->Segment(i).LastPoint().TransitionOfFirst().PositionOnCurve();
-    if(Pos1 == IntRes2d_Head)     HeadOn1 = Standard_True;
-    else if(Pos1 == IntRes2d_End) EndOn1  = Standard_True;
-    
     Pos2 =  this->Segment(i).LastPoint().TransitionOfSecond().PositionOnCurve();
-    if(Pos2 == IntRes2d_Head)     HeadOn2 = Standard_True;
-    else if(Pos2 == IntRes2d_End) EndOn2  = Standard_True;
 
     if(Pos1 == IntRes2d_Head) { 
       if(Pos2 == IntRes2d_Head)     PosSegment|=1;

@@ -392,8 +392,6 @@ static Standard_Integer draw (Draw_Interpretor& di, Standard_Integer n, const ch
   if (n <= 2) {
 	if (!strcmp(a[0],"dmode")) {
 	  if (n == 2) {
-	    Standard_Integer mod = 0;
-	    if ((*a[n-1] == 'U')||(*a[n-1] == 'u')) mod = 1;
 	    DrawMode = 1;
 	  }
 	  if (DrawMode)

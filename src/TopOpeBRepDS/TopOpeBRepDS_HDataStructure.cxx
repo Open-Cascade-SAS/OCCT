@@ -763,7 +763,9 @@ void TopOpeBRepDS_HDataStructure::StoreInterference
   // append I to list LI
   LI.Append(I);
 
+#ifdef DEB
   Standard_Boolean appendtoG = Standard_False;
+#endif
   Standard_Integer G = I->Geometry();
 
   // append I to list of interference connected to G = I->Geometry()
@@ -776,12 +778,16 @@ void TopOpeBRepDS_HDataStructure::StoreInterference
     break;
     
   case TopOpeBRepDS_SURFACE :
+#ifdef DEB
     appendtoG = Standard_True;
+#endif
     myDS.ChangeSurfaceInterferences(G).Append(I);
     break;
     
   case TopOpeBRepDS_CURVE :
+#ifdef DEB
     appendtoG = Standard_True;
+#endif
     myDS.ChangeCurveInterferences(G).Append(I);
     break;
     

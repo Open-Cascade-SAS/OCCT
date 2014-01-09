@@ -87,7 +87,7 @@ void BOPDS_IteratorSI::Intersect()
 {
   Standard_Boolean bFlag;
   Standard_Integer aNbS, i, aNbB;
-  Standard_Integer aNbSD, iX, j, iDS, jB, k;;
+  Standard_Integer aNbSD, iX, j, iDS, jB;
   TopAbs_ShapeEnum aTi, aTj;
   Handle(NCollection_IncAllocator) aAllocator;
   BOPCol_ListIteratorOfListOfInteger aIt;
@@ -172,8 +172,6 @@ void BOPDS_IteratorSI::Intersect()
     }
     //
     const BOPCol_ListOfInteger& aLI=aSelector.Indices();
-    //
-    k=0;
     //
     aIt.Initialize(aLI);
     for (; aIt.More(); aIt.Next()) {

@@ -79,11 +79,10 @@ static void TraceRevol(const Standard_Real t,
 {
   gp_Vec T, N, B;
   gp_Pnt P;
-  Standard_Boolean Ok;
   gp_Ax3 Rep(gp::Origin(), gp::DZ(), gp::DX());
 
   Curve->D0(t, P);
-  Ok = Law->D0(t, T, N, B);
+  Law->D0(t, T, N, B);
 
   gp_Mat M(N.XYZ(), B.XYZ(), T.XYZ());
   M *= Trans;
@@ -223,7 +222,7 @@ static void InGoodPeriod(const Standard_Real Prec,
   gp_Vec T,N,B;
   Standard_Integer ii, Deg;
   Standard_Boolean isconst, israt=Standard_False;
-  Standard_Real t, v,w, OldAngle=0, Angle, DeltaG, DeltaU, Diff;
+  Standard_Real t, v,w, OldAngle=0, Angle, DeltaG, Diff;
   Standard_Real CurAngle =  PrecAngle, a1/*, a2*/;
   gp_Pnt2d p1,p2;
   Handle(Geom_SurfaceOfRevolution) Revol; // surface de revolution
@@ -283,7 +282,6 @@ static void InGoodPeriod(const Standard_Real Prec,
   Sup(3) = Ul + Delta/10;
 
   // JALONNEMENT
-  DeltaU = (Ul-Uf)/(2+NbKnots);
   if (uperiodic) UPeriod = Ul-Uf;
 
   for (ii=1; ii<=myNbPts; ii++) {
@@ -454,7 +452,7 @@ static void InGoodPeriod(const Standard_Real Prec,
       }
       Diff = v -  myPoles2d->Value(2, ii-1).Y();
 #if DEB
-      if (Abs(Diff) > DeltaU) {
+      if (Abs(Diff) > (Ul-Uf)/(2+NbKnots)) {
 	cout << "Diff sur section trop grand !!" << endl;
       } 
 #endif

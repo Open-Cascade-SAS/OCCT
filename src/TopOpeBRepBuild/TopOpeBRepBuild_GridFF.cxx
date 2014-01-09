@@ -1055,8 +1055,8 @@ void debmergee(const Standard_Integer /*i*/) {}
 					   const TopOpeBRepBuild_GTopo& G1,
 					   const TopTools_ListOfShape& LSclass)
 {
-  TopAbs_ShapeEnum t1,t2,ShapeInterf;
-  G1.Type(t1,t2); ShapeInterf = t1;
+  TopAbs_ShapeEnum t1,t2;
+  G1.Type(t1,t2);
   TopAbs_State TB1,TB2; G1.StatesON(TB1,TB2);
   // work on a FORWARD edge <EF>
   TopoDS_Shape EF = EOR; EF.Orientation(TopAbs_FORWARD);

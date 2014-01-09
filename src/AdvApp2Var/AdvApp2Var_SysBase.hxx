@@ -51,13 +51,8 @@ class AdvApp2Var_SysBase {
 				      integer *iercod);
   Standard_EXPORT static integer mnfndeb_();
 
-  Standard_EXPORT static integer mnfnimp_();
   Standard_EXPORT static int do__fio(); 
   Standard_EXPORT static int do__lio ();
-  Standard_EXPORT static int e__wsfe ();
-  Standard_EXPORT static int e__wsle ();
-  Standard_EXPORT static int s__wsfe ();
-  Standard_EXPORT static int s__wsle ();
   Standard_EXPORT int macrai4_(integer *nbelem, 
 				      integer *maxelm, 
 				      integer *itablo,

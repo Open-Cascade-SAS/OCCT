@@ -299,10 +299,6 @@ Standard_EXPORT Standard_Boolean FDS_EdgeIsConnexToSameDomainFaces
 (const TopoDS_Shape& E,const Handle(TopOpeBRepDS_HDataStructure)& HDS)  // not used
 //----------------------------------------------------
 {
-#ifdef DEB
-  Standard_Integer if1 = 0, if2 = 0;
-#endif
-
   const TopOpeBRepDS_DataStructure& BDS = HDS->DS();
   const TopTools_ListOfShape& lf = FDSCNX_EdgeConnexitySameShape(E,HDS);
   Standard_Integer nlf = lf.Extent();
@@ -315,9 +311,6 @@ Standard_EXPORT Standard_Boolean FDS_EdgeIsConnexToSameDomainFaces
     TopTools_ListIteratorOfListOfShape i2(i1);
     for(;i2.More();i2.Next()) {
       const TopoDS_Shape& f2 = i2.Value();
-#ifdef DEB
-      if1 = BDS.Shape(f1);if2 = BDS.Shape(f2);
-#endif
       samdom = FDS_aresamdom(BDS,E,f1,f2);
       if (samdom) break;
     }
@@ -1741,8 +1734,8 @@ Standard_EXPORT void FUN_ds_completeforSE6(const Handle(TopOpeBRepDS_HDataStruct
 	    else if (M_EXTERNAL(O))                 {newT.Set(O);}
 	    else if (M_INTERNAL(O))                 {
 	      Standard_Real parEsd   = BRep_Tool::Parameter(vG,Esd);
-	      gp_Vec tgEsd; Standard_Boolean ok = TopOpeBRepTool_TOOL::TggeomE(parEsd,Esd,tgEsd); // dir
-	      gp_Vec tgE  ;     ok = TopOpeBRepTool_TOOL::TggeomE(parE,SE,tgE);      // dir
+	      gp_Vec tgEsd; TopOpeBRepTool_TOOL::TggeomE(parEsd,Esd,tgEsd); // dir
+	      gp_Vec tgE  ; TopOpeBRepTool_TOOL::TggeomE(parE,SE,tgE);      // dir
 	      Standard_Real dot = tgEsd.Dot(tgE);
 #ifdef DEB
 	      Standard_Real tola = Precision::Angular();

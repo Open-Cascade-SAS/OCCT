@@ -118,7 +118,6 @@ pararg3(1,8)
 	       Standard_Real dist2 = L2.Distance(Center);
 	       Standard_Real dist3 = L3.Distance(Center);
 	       Standard_Integer nbsol1 = 0;
-	       Standard_Integer nbsol2 = 0;
 	       Standard_Integer nbsol3 = 0;
 	       Standard_Boolean ok = Standard_False;
 	       if (Qualified1.IsEnclosed()) {
@@ -152,7 +151,6 @@ pararg3(1,8)
 		   for (Standard_Integer ii = 1 ; ii <= nbsol1 ; ii++) {
 		     if (Abs(dist2-Radius(ii)) < Tol) { 
 		       ok = Standard_True;
-		       nbsol2 = 1;
 		       Radius(1) = Radius(ii);
 		     }
 		   }
@@ -164,7 +162,6 @@ pararg3(1,8)
 		   for (Standard_Integer ii = 1 ; ii <= nbsol1 ; ii++) {
 		     if (Abs(dist2-Radius(ii)) < Tol) { 
 		       ok = Standard_True;
-		       nbsol2 = 1;
 		       Radius(1) = Radius(ii);
 		     }
 		   }
@@ -174,7 +171,6 @@ pararg3(1,8)
 		 for (Standard_Integer ii = 1 ; ii <= nbsol1 ; ii++) {
 		   if (Abs(dist2-Radius(ii)) < Tol) { 
 		     ok = Standard_True;
-		     nbsol2 = 1;
 		     Radius(1) = Radius(ii);
 		   }
 		 }

@@ -190,14 +190,10 @@ static
 //=======================================================================
   void TopOpeBRepBuild_Tools2d::DumpMapOfShapeVertexInfo(const TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo& M)
 {
-  Standard_Integer i, aNb, aNbEdgesIn, aNbEdgesOut;
+  Standard_Integer i, aNb;
   aNb=M.Extent();
   for (i=1; i<=aNb; i++) {
     const TopOpeBRepBuild_VertexInfo& aVInfo=M(i);
-    const TopTools_IndexedMapOfOrientedShape& EdgesIn   =aVInfo.EdgesIn();
-    const TopTools_IndexedMapOfOrientedShape& EdgesOut  =aVInfo.EdgesOut();
-    aNbEdgesIn   =EdgesIn.Extent();
-    aNbEdgesOut  =EdgesOut.Extent();
     
     printf(" Vert.#%d, ", i);
     const TopTools_ListOfShape& aList=aVInfo.ListPassed();

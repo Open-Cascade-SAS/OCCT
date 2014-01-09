@@ -279,18 +279,17 @@ void TNaming::Update(const TDF_Label& L,
   L.Root().FindAttribute(TNaming_UsedShapes::GetID(),US);
   TNaming_DataMapOfShapePtrRefShape& amap = US->Map();
 
-  Standard_Boolean Change = Standard_False;
   for (TNaming_Iterator it(L); it.More(); it.Next()) {
     if (!it.OldShape().IsNull()) {
       const TopoDS_Shape& S = it.OldShape();
       if (!M.IsBound(S))
-	if (Rebuild (S,M)) Change = Standard_True;
+	Rebuild (S,M);
       SubstituteShape(S,M(S),amap);
     }
     if (!it.NewShape().IsNull()) {
       const TopoDS_Shape& S = it.NewShape();
       if (!M.IsBound(S)) 
-	if (Rebuild (S,M)) Change = Standard_True;
+	Rebuild (S,M);
       SubstituteShape(S,M(S),amap);
     }
   }

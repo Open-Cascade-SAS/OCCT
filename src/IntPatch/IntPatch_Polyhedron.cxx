@@ -508,11 +508,10 @@ Standard_Integer IntPatch_Polyhedron::TriConnex (const Standard_Integer Triang,
 #if MSG_DEBUG
     cout<<" Probleme ds IntCurveSurface_Polyhedron : OtherP et PEdge Confondus "<<endl;
 #endif
-    Standard_Integer TempTri,TempOtherP;
-    TempTri = TriCon;
-    TempOtherP = OtherP;
-
     return(0); //-- BUG NON CORRIGE ( a revoir le role de nbdeltaU et nbdeltaV)
+//    Standard_Integer TempTri,TempOtherP;
+//    TempTri = TriCon;
+//    TempOtherP = OtherP;
 //    return(TriConnex(TempTri,Pivot,TempOtherP,TriCon,OtherP));
   }
   return TriCon;

@@ -549,7 +549,6 @@ static void Locate2Coord(const Standard_Integer Index,
 {
   Standard_Real Tol=Precision::PConfusion()/10;
   Standard_Real Comp1=0,DComp1=0;
-  Standard_Boolean DIsNull = Standard_False;
   if(Index==1)   {   Comp1=UV.X();
 		     DComp1=DUV.X();} 
   else
@@ -576,10 +575,9 @@ static void Locate2Coord(const Standard_Integer Index,
 		 if(Index==2) { LeftBot.SetY(I1);
 				RightTop.SetY(I2);}
 	       }
-	   DIsNull=Standard_False;
 	 }
     else 
-      if(Abs(DComp1)<=Tol) {  DIsNull = Standard_True;
+      if(Abs(DComp1)<=Tol) {
 			      if(Index==1) { LeftBot.SetX(I1) ;
 					     RightTop.SetX(I2);}
 			      if(Index==2) { LeftBot.SetY(I1) ;

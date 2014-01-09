@@ -1603,10 +1603,9 @@ static TopoDS_Edge  NewEdge(const TopoDS_Edge& edg,
   Standard_Real prmf=0,prml=0;
   GeomAdaptor_Curve TheCurve;
 	
-  Standard_Integer i,imin,k;
+  Standard_Integer i,k;
   gp_Pnt pvf = BRep_Tool::Pnt(V1);
   gp_Pnt pvl = BRep_Tool::Pnt(V2);
-  imin = 0;
   for (i=1; i<= i2s.NbLines(); i++) {
     TheCurve.Load(i2s.Line(i));
     Extrema_ExtPC myExtPC(pvf,TheCurve);

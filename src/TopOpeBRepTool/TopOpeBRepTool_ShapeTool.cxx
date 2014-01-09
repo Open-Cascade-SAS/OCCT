@@ -312,9 +312,6 @@ Standard_Real TopOpeBRepTool_ShapeTool::PeriodizeParameter
 
   Standard_Real Ufirst,Ulast,Vfirst,Vlast;
   Surf->Bounds(Ufirst,Ulast,Vfirst,Vlast);
-  Standard_Real Uperiod = 0., Vperiod = 0.;
-  if (isUperio) Uperiod = Ulast - Ufirst;
-  if (isVperio) Vperiod = Vlast - Vfirst;
 
   Standard_Real first,last,tolpc;
   const Handle(Geom2d_Curve) PC = FC2D_CurveOnSurface(E,F,first,last,tolpc);

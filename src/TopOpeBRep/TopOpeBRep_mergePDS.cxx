@@ -83,23 +83,21 @@ void BREP_mergePDS(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
       //**!
       const TopOpeBRepDS_Point& PDS = BDS.Point(GI);
 
-      Standard_Integer ivp1; TopoDS_Shape v1; Standard_Boolean newv1 = Standard_False; TopOpeBRepDS_Kind k1=TopOpeBRepDS_UNKNOWN; Standard_Integer iv1 = 0;
+      Standard_Integer ivp1; TopoDS_Shape v1; TopOpeBRepDS_Kind k1=TopOpeBRepDS_UNKNOWN; Standard_Integer iv1 = 0;
 
       ivp1 = BREP_findPDSamongIDMOVP(PDS,Mvp1);
       if (ivp1) {
 	v1 = Mvp1.FindKey(ivp1);
-	newv1 = !BDS.HasShape(v1);
 	iv1 = BDS.AddShape(v1);
 	k1 = TopOpeBRepDS_VERTEX;
       }
       
 
-      Standard_Integer ivp2; TopoDS_Shape v2; Standard_Boolean newv2 = Standard_False; TopOpeBRepDS_Kind k2=TopOpeBRepDS_UNKNOWN; Standard_Integer iv2 = 0;
+      Standard_Integer ivp2; TopoDS_Shape v2; TopOpeBRepDS_Kind k2=TopOpeBRepDS_UNKNOWN; Standard_Integer iv2 = 0;
 
       ivp2 = BREP_findPDSamongIDMOVP(PDS,Mvp2);
       if (ivp2) {
 	v2 = Mvp2.FindKey(ivp2);
-	newv2 = !BDS.HasShape(v2);
 	iv2 = BDS.AddShape(v2);
 	k2 = TopOpeBRepDS_VERTEX;
       }
@@ -117,14 +115,14 @@ void BREP_mergePDS(const Handle(TopOpeBRepDS_HDataStructure)& HDS)
 	if (ivp1 != 0) {
 	  cout<<TopOpeBRepDS::SPrint(TopOpeBRepDS_CURVE,ic,"# BREP_mergePDS "," : ");
 	  cout<<TopOpeBRepDS::SPrint(GK,GI,""," = ");
-	  TCollection_AsciiString str; if (newv1) str = "new "; else str = "old ";
+	  TCollection_AsciiString str (BDS.HasShape(v1) ? "old" : "new ");
 	  cout<<TopOpeBRepDS::SPrint(k1,iv1,str);
 	  cout<<TopOpeBRepDS::SPrint(TopOpeBRepDS::ShapeToKind(f1.ShapeType()),if1," de ")<<endl;
 	}
 	if (ivp2 != 0) {
 	  cout<<TopOpeBRepDS::SPrint(TopOpeBRepDS_CURVE,ic,"# BREP_mergePDS "," : ");
 	  cout<<TopOpeBRepDS::SPrint(GK,GI,""," = ");
-	  TCollection_AsciiString str; if (newv2) str = "new "; else str = "old ";
+	  TCollection_AsciiString str (BDS.HasShape(v2) ? "old" : "new ");
 	  cout<<TopOpeBRepDS::SPrint(k2,iv2,str);
 	  cout<<TopOpeBRepDS::SPrint(TopOpeBRepDS::ShapeToKind(f2.ShapeType()),if2," de ")<<endl;
 	}

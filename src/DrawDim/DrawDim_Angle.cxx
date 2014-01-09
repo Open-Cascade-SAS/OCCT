@@ -101,9 +101,6 @@ void DrawDim_Angle::DrawOn(Draw_Display& ) const
 
 
   // output
-#ifdef DEB
-  gp_Dir myDirAttach;
-#endif
   gp_Pnt myFAttach;
   gp_Pnt mySAttach;
   gp_Pnt myPosition(0.,0.,0.);
@@ -111,8 +108,6 @@ void DrawDim_Angle::DrawOn(Draw_Display& ) const
   gp_Dir myFDir;
   gp_Dir mySDir;
   Standard_Boolean myAutomaticPosition = Standard_True;
-  
-
 
   // calculation of myAxis
   gp_Pln pln1, pln2;
@@ -120,24 +115,6 @@ void DrawDim_Angle::DrawOn(Draw_Display& ) const
   if (!DrawDim::Pln(myPlane2,pln2)) return; 
   IntAna_QuadQuadGeo ip (pln1,pln2,Precision::Confusion(), Precision::Angular());
   if (!ip.IsDone()) return;
-#ifdef DEB
-  gp_Lin linter =
-#endif
-                  ip.Line(1);
-  
-  //Handle(Geom_Surface) curve1 = BRep_Tool::Surface(myPlane1);
-  //Handle(Geom_PlaneLine) line1 = Handle(Geom_Line)::DownCast(curve1);    
-  
-
-
-//=======================================================================
-//function : ComputeTwoFacesAngle
-//purpose  : 
-//=======================================================================
-
-// void AIS_AngleDimension::ComputeTwoFacesAngle(const Handle(Prs3d_Presentation)& aPresentation)
-// {
-  // Return planes
  
   gp_Pnt curpos;
   gp_Ax1 AxePos = myAxis;      

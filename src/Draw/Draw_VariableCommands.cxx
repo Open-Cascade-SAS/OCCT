@@ -842,9 +842,10 @@ void Draw::Set(const Standard_CString Name, const Standard_Real val)
 Handle(Draw_Drawable3D) Draw::Get(Standard_CString& name, 
 			          const Standard_Boolean )
 {
+#if !((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) || defined(USE_NON_CONST)
   Standard_PCharacter pName;
-  //
   pName=(Standard_PCharacter)name;
+#endif
   //
   Standard_Boolean pick = ((name[0] == '.') && (name[1] == '\0'));
   Handle(Draw_Drawable3D) D;

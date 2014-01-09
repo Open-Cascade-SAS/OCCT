@@ -95,7 +95,6 @@ GccAna_Circ2dTanOnRad::
      gp_Pnt2d center1(C1.Location());
      Standard_Real x1 = center1.X();
      Standard_Real y1 = center1.Y();
-     Standard_Real xbid = 0.;
      if (Qualified1.IsEnclosed()) {
 //   ============================
        if (Tol < Radius-R1+dist) { WellDone = Standard_True; }
@@ -195,7 +194,6 @@ GccAna_Circ2dTanOnRad::
 	 if ( Abs(D) <= Tol ) {
 	   A = B;
 	   B = D;
-	   xbid = x1;
 	   x0 = y1;
 	   y0 = x1;
 	 }

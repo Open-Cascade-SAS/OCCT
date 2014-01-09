@@ -107,12 +107,16 @@ void TopOpeBRepDS_EdgeInterferenceTool::Add
   }
 
   // V est un sommet de E ?
+#ifdef DEB
   Standard_Boolean VofE = Standard_False;
+#endif
   TopoDS_Iterator it(E,Standard_False);
   for ( ; it.More(); it.Next() ) {
     const TopoDS_Shape& S = it.Value();
     if ( S.IsSame(V) ) {
+#ifdef DEB
       VofE = Standard_True; 
+#endif
       break;
     }
   }

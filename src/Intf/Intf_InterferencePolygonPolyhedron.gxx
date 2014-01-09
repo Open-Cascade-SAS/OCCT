@@ -779,7 +779,6 @@ void Intf_InterferencePolygonPolyhedron::Intersect
   gp_XYZ segO=EndO.XYZ()-BegO.XYZ();
   segO.Normalize();
   Standard_Boolean NoIntersectionWithTriangle = Standard_False;
-  Standard_Boolean PolygonCutsPlane           = Standard_True;
 
   Standard_Real param;
   t = dBegTri-dEndTri;
@@ -799,7 +798,6 @@ void Intf_InterferencePolygonPolyhedron::Intersect
       NoIntersectionWithTriangle = Standard_False;
     }
     if (param<0. || param>1.) {
-      PolygonCutsPlane = Standard_False;
       NoIntersectionWithTriangle = Standard_True;
     }
   }
@@ -1061,7 +1059,6 @@ void Intf_InterferencePolygonPolyhedron::Intersect (const gp_Pnt& BegO,
 //   Standard_Real dEndTri=(triNor*EndO.XYZ())-triDp; // Distance <EndO> plan
 
   Standard_Boolean NoIntersectionWithTriangle = Standard_False;
-  Standard_Boolean PolygonCutsPlane           = Standard_True;
 
   Standard_Real param;
   t = dBegTri-dEndTri;
@@ -1081,7 +1078,6 @@ void Intf_InterferencePolygonPolyhedron::Intersect (const gp_Pnt& BegO,
       NoIntersectionWithTriangle = Standard_False;
     }
     if (param<0. || param>1.) {
-      PolygonCutsPlane = Standard_False;
       NoIntersectionWithTriangle = Standard_True;
     }
   }

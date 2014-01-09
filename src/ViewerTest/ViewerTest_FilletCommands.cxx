@@ -74,10 +74,6 @@ static Standard_Real tapp_angle = 1.e-2;
 static GeomAbs_Shape blend_cont = GeomAbs_C1;
 
 static BRepFilletAPI_MakeFillet* Rakk = 0;
-#ifdef DEB
-static BRepFilletAPI_MakeFillet* Rake = 0;
-static char name[100];
-#endif
 
 
 static void printtolblend(Draw_Interpretor& di)

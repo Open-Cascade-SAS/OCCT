@@ -534,16 +534,20 @@ void TopOpeBRepDS_FIR::ProcessFaceInterferences
   TopOpeBRepDS_ListOfInterference& LI = BDS.ChangeShapeInterferences(SIX);
   TopOpeBRepDS_ListOfInterference lw, lE, lFE, lFEF, lF; lw.Assign(LI);
 
-  Standard_Integer nF = ::FUN_selectTRASHAinterference(lw,TopAbs_FACE,lF);
-  Standard_Integer nFE = ::FUN_selectGKinterference(lF,MDSke,lFE);
-  Standard_Integer nFEF = ::FUN_selectSKinterference(lFE,MDSkf,lFEF);
-  Standard_Integer nE = ::FUN_selectTRASHAinterference(lw,TopAbs_EDGE,lE);
+#ifdef DEB
+  Standard_Integer nF, nFE, nFEF, nE;
+#endif
 
+  ::FUN_selectTRASHAinterference(lw,TopAbs_FACE,lF);
+  ::FUN_selectGKinterference(lF,MDSke,lFE);
+  ::FUN_selectSKinterference(lFE,MDSkf,lFEF);
+  ::FUN_selectTRASHAinterference(lw,TopAbs_EDGE,lE);
+
+#ifdef DEB
   nF = lF.Extent();
   nFE = lFE.Extent();
   nFEF = lFEF.Extent();
   nE = lE.Extent();
-#ifdef DEB
   if(TRC){
     if(nF||nFE||nFEF||nE){cout<<endl;cout<<"-----------------------"<<endl;}
     if(nF) {cout<<"FACE "<<SIX<<" (FACE) : "<<nF<<endl;FDS_dumpLI(lF,"  ");}
@@ -555,11 +559,11 @@ void TopOpeBRepDS_FIR::ProcessFaceInterferences
 
   FUN_reduceEDGEgeometry(lFEF,BDS,SIX,MEsp);
 
+#ifdef DEB
   nF = lF.Extent();
   nFE = lFE.Extent();
   nFEF = lFEF.Extent();
   nE = lE.Extent();
-#ifdef DEB
   if(TRC){
     if(nF||nFE||nFEF||nE)cout<<endl;
     if(nF) {cout<<"FACE "<<SIX<<" (FACE) : "<<nF<<endl;FDS_dumpLI(lF,"  ");}
