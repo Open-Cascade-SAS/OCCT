@@ -38,7 +38,7 @@
 
 static Standard_Integer setColor (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc <6) {
+  if (argc < 6) {
     di<<"Use: "<<argv[0]<<" Doc {Label|Shape} R G B [curve|surf]"<<"\n";
     return 1;
   }
@@ -51,8 +51,7 @@ static Standard_Integer setColor (Draw_Interpretor& di, Standard_Integer argc, c
   Quantity_Color Col ( Draw::Atof(argv[3]), Draw::Atof(argv[4]), Draw::Atof(argv[5]), Quantity_TOC_RGB );
   
   Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
-  XCAFDoc_ColorType ctype = ( argc <=6 ? XCAFDoc_ColorGen : 
-			      argv[6][0] == 's' ? XCAFDoc_ColorSurf : XCAFDoc_ColorCurv );
+  const XCAFDoc_ColorType ctype = ( argc <= 6 ? XCAFDoc_ColorGen : ( argv[6][0] == 's' ? XCAFDoc_ColorSurf : XCAFDoc_ColorCurv ) );
   if ( !aLabel.IsNull() ) {
     myColors->SetColor ( aLabel, Col, ctype );
   }
@@ -88,8 +87,8 @@ static Standard_Integer getColor (Draw_Interpretor& di, Standard_Integer argc, c
 
 static Standard_Integer getShapeColor (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
 {
-  if (argc!=4) {
-    di<<"Use: "<<argv[0]<<" Doc Label ColorType(s/c)"<<"\n";
+  if (argc < 3) {
+    di<<"Use: "<<argv[0]<<" Doc Label [curve|surf]"<<"\n";
     return 1;
   }
   Handle(TDocStd_Document) Doc;   
@@ -98,15 +97,21 @@ static Standard_Integer getShapeColor (Draw_Interpretor& di, Standard_Integer ar
 
   TDF_Label aLabel;
   TDF_Tool::Label(Doc->GetData(), argv[2], aLabel);
+  if ( aLabel.IsNull() ) {
+    di << " no such label in document\n";
+    return 1;
+  }
+
   Handle(XCAFDoc_ColorTool) myColors = XCAFDoc_DocumentTool::ColorTool(Doc->Main());
+  const XCAFDoc_ColorType ctype = ( argc <= 3 ? XCAFDoc_ColorGen : ( argv[3][0] == 's' ? XCAFDoc_ColorSurf : XCAFDoc_ColorCurv ) );
+
   Quantity_Color col;
-  
-  if ( !myColors->GetColor(aLabel, argv[3][0] == 's' ? XCAFDoc_ColorSurf : XCAFDoc_ColorCurv, col) ) return 0;
-  
+  if ( !myColors->GetColor(aLabel, ctype, col) ) return 0;
+
   TCollection_AsciiString Entry;
   Entry = col.StringName ( col.Name() );
   di << Entry.ToCString();
-   
+
   return 0;
 }
 
