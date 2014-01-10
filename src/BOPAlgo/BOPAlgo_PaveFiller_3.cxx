@@ -23,6 +23,8 @@
 
 #include <Bnd_Box.hxx>
 
+#include <GeomAPI_ProjectPointOnCurve.hxx>
+
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Compound.hxx>
@@ -42,6 +44,7 @@
 #include <BOPCol_DataMapOfShapeInteger.hxx>
 #include <BOPCol_DataMapOfIntegerShape.hxx>
 #include <BOPCol_IndexedDataMapOfShapeBox.hxx>
+#include <BOPCol_BoxBndTree.hxx>
 //
 #include <BOPInt_Context.hxx>
 #include <BOPInt_ShrunkRange.hxx>
@@ -56,16 +59,15 @@
 #include <BOPDS_VectorOfInterfEE.hxx>
 #include <BOPDS_Interf.hxx>
 #include <BOPDS_Pave.hxx>
-#include <BOPDS_BoxBndTree.hxx>
-
+//
 #include <BOPAlgo_Tools.hxx>
-#include <GeomAPI_ProjectPointOnCurve.hxx>
+
 
 //=======================================================================
 // function: PerformEE
 // purpose: 
 //=======================================================================
-  void BOPAlgo_PaveFiller::PerformEE()
+void BOPAlgo_PaveFiller::PerformEE()
 {
   Standard_Boolean bJustAdd, bOrder;
   Standard_Integer i, iX, iSize, nE1, nE2, aDiscretize;
@@ -385,9 +387,9 @@
 //function : PerformVertices
 //purpose  : 
 //=======================================================================
-  Standard_Integer BOPAlgo_PaveFiller::PerformVerticesEE
-    (BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMVCPB,
-     Handle(NCollection_BaseAllocator)& theAllocator)
+Standard_Integer BOPAlgo_PaveFiller::PerformVerticesEE
+  (BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMVCPB,
+   Handle(NCollection_BaseAllocator)& theAllocator)
 {
   Standard_Integer aNbV, iRet;
   //
@@ -520,9 +522,9 @@
 //function : TreatNewVertices
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_PaveFiller::TreatNewVertices(
-       const BOPCol_IndexedDataMapOfShapeInteger& aMapVI,
-       BOPCol_IndexedDataMapOfShapeListOfShape& myImages)
+void BOPAlgo_PaveFiller::TreatNewVertices
+  (const BOPCol_IndexedDataMapOfShapeInteger& aMapVI,
+   BOPCol_IndexedDataMapOfShapeListOfShape& myImages)
 {
   Standard_Integer j, i, aNbV, aNbVSD;
   Standard_Real aTol;
@@ -535,8 +537,8 @@
   BOPCol_DataMapOfIntegerShape aMIS;
   BOPCol_IndexedDataMapOfShapeBox aMSB;
   //
-  BOPDS_BoxBndTreeSelector aSelector;
-  BOPDS_BoxBndTree aBBTree;
+  BOPCol_BoxBndTreeSelector aSelector;
+  BOPCol_BoxBndTree aBBTree;
   NCollection_UBTreeFiller <Standard_Integer, Bnd_Box> aTreeFiller(aBBTree);
   //
   aNbV = aMapVI.Extent();
@@ -658,7 +660,7 @@
 //function : FillShrunkData
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_PaveFiller::FillShrunkData(Handle(BOPDS_PaveBlock)& thePB)
+void BOPAlgo_PaveFiller::FillShrunkData(Handle(BOPDS_PaveBlock)& thePB)
 {
   Standard_Integer nE, nV1, nV2, iErr;
   Standard_Real aT1, aT2, aTS1, aTS2;

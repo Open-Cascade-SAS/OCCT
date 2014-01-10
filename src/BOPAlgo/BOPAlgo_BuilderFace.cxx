@@ -1,19 +1,23 @@
 // Created by: Peter KURNEV
-// Copyright (c) 2010-2014 OPEN CASCADE SAS
+// Copyright (c) 2010-2012 OPEN CASCADE SAS
 // Copyright (c) 2007-2010 CEA/DEN, EDF R&D, OPEN CASCADE
 // Copyright (c) 2003-2007 OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN, CEDRAT,
 //                         EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
 //
-// This file is part of Open CASCADE Technology software library.
+// The content of this file is subject to the Open CASCADE Technology Public
+// License Version 6.5 (the "License"). You may not use the content of this file
+// except in compliance with the License. Please obtain a copy of the License
+// at http://www.opencascade.org and read it completely before using this file.
 //
-// This library is free software; you can redistribute it and / or modify it
-// under the terms of the GNU Lesser General Public version 2.1 as published
-// by the Free Software Foundation, with special exception defined in the file
-// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
-// distribution for complete text of the license and disclaimer of any warranty.
+// The Initial Developer of the Original Code is Open CASCADE S.A.S., having its
+// main offices at: 1, place des Freres Montgolfier, 78280 Guyancourt, France.
 //
-// Alternatively, this file may be used under the terms of Open CASCADE
-// commercial license or contractual agreement.
+// The Original Code and all software distributed under the License is
+// distributed on an "AS IS" basis, without warranty of any kind, and the
+// Initial Developer hereby disclaims all such warranties, including without
+// limitation, any warranties of merchantability, fitness for a particular
+// purpose or non-infringement. Please see the License for the specific terms
+// and conditions governing the rights and limitations under the License.
 
 #include <BOPAlgo_BuilderFace.ixx>
 
@@ -70,12 +74,72 @@ static
 static
   void MakeInternalWires(const BOPCol_MapOfShape& ,
                          BOPCol_ListOfShape& );
-
+static 
+  void GetWire(const TopoDS_Shape& , 
+	       TopoDS_Shape& ); 
+//
+#include <NCollection_UBTreeFiller.hxx>
+#include <BOPCol_Box2DBndTree.hxx>
+#include <BRepTools.hxx>
+#include <TColStd_MapIntegerHasher.hxx>
+#include <NCollection_DataMap.hxx>
+//
+//=======================================================================
+//class     : BOPAlgo_ShapeBox2D
+//purpose   : Auxiliary class
+//=======================================================================
+class BOPAlgo_ShapeBox2D {
+ public:
+  BOPAlgo_ShapeBox2D() {
+    myIsHole=Standard_False;
+  };
+  //
+  ~BOPAlgo_ShapeBox2D() {
+  };
+  //
+  void SetShape(const TopoDS_Shape& aS) {
+    myShape=aS;
+  };
+  //
+  const TopoDS_Shape& Shape()const {
+    return myShape;
+  };
+  //
+  void SetBox2D(const Bnd_Box2d& aBox2D) {
+    myBox2D=aBox2D;
+  };
+  //
+  const Bnd_Box2d& Box2D()const {
+    return myBox2D;
+  };
+  //
+  void SetIsHole(const Standard_Boolean bFlag) {
+    myIsHole=bFlag;
+  };
+  //
+  Standard_Boolean IsHole()const {
+    return myIsHole;
+  };
+  //
+ protected:
+  Standard_Boolean myIsHole;
+  TopoDS_Shape myShape;
+  Bnd_Box2d myBox2D;
+};
+//
+typedef NCollection_DataMap\
+  <Standard_Integer, BOPAlgo_ShapeBox2D, TColStd_MapIntegerHasher> \
+  BOPAlgo_DataMapOfIntegerShapeBox2D; 
+//
+typedef BOPAlgo_DataMapOfIntegerShapeBox2D::Iterator \
+  BOPAlgo_DataMapIteratorOfDataMapOfIntegerShapeBox2D; 
+//
+//
 //=======================================================================
 //function : 
 //purpose  : 
 //=======================================================================
-  BOPAlgo_BuilderFace::BOPAlgo_BuilderFace()
+BOPAlgo_BuilderFace::BOPAlgo_BuilderFace()
 :
   BOPAlgo_BuilderArea()
 {
@@ -85,7 +149,8 @@ static
 //function : 
 //purpose  : 
 //=======================================================================
-  BOPAlgo_BuilderFace::BOPAlgo_BuilderFace(const Handle(NCollection_BaseAllocator)& theAllocator)
+BOPAlgo_BuilderFace::BOPAlgo_BuilderFace
+  (const Handle(NCollection_BaseAllocator)& theAllocator)
 :
   BOPAlgo_BuilderArea(theAllocator)
 { 
@@ -102,7 +167,7 @@ static
 //function : SetFace
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_BuilderFace::SetFace(const TopoDS_Face& theFace)
+void BOPAlgo_BuilderFace::SetFace(const TopoDS_Face& theFace)
 {
   myOrientation=theFace.Orientation();
   myFace=theFace;
@@ -120,7 +185,7 @@ TopAbs_Orientation BOPAlgo_BuilderFace::Orientation()const
 //function : Face
 //purpose  : 
 //=======================================================================
-  const TopoDS_Face& BOPAlgo_BuilderFace::Face()const
+const TopoDS_Face& BOPAlgo_BuilderFace::Face()const
 {
   return myFace;
 }
@@ -128,26 +193,23 @@ TopAbs_Orientation BOPAlgo_BuilderFace::Orientation()const
 //function : CheckData
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_BuilderFace::CheckData()
+void BOPAlgo_BuilderFace::CheckData()
 {
   myErrorStatus=0;
-  //
-  if (myContext.IsNull()) {
-    //myErrorStatus=11;// Null Context
-    //return;
-    myContext = new BOPInt_Context;
-  }
   //
   if (myFace.IsNull()) {
     myErrorStatus=12;// Null face generix
     return;
+  }
+  if (myContext.IsNull()) {
+    myContext = new BOPInt_Context;
   }
 }
 //=======================================================================
 //function : Perform
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_BuilderFace::Perform()
+void BOPAlgo_BuilderFace::Perform()
 {
   myErrorStatus=0;
   //
@@ -180,7 +242,7 @@ TopAbs_Orientation BOPAlgo_BuilderFace::Orientation()const
 //function :PerformShapesToAvoid
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_BuilderFace::PerformShapesToAvoid()
+void BOPAlgo_BuilderFace::PerformShapesToAvoid()
 {
   Standard_Boolean bFound;
   Standard_Integer i, iCnt, aNbV, aNbE;
@@ -256,7 +318,7 @@ TopAbs_Orientation BOPAlgo_BuilderFace::Orientation()const
 //function : PerformLoops
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_BuilderFace::PerformLoops()
+void BOPAlgo_BuilderFace::PerformLoops()
 {
   myErrorStatus=0;
   //
@@ -284,6 +346,7 @@ TopAbs_Orientation BOPAlgo_BuilderFace::Orientation()const
   }
   //
   aWSp.SetWES(aWES);
+  aWSp.SetRunParallel(myRunParallel);
   aWSp.Perform();
   iErr=aWSp.ErrorStatus();
   if (iErr) {
@@ -372,127 +435,173 @@ TopAbs_Orientation BOPAlgo_BuilderFace::Orientation()const
     myLoopsInternal.Append(aW);
   }//for (; aItM.More(); aItM.Next()) {
 }
+//
+
 //=======================================================================
 //function : PerformAreas
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_BuilderFace::PerformAreas()
+void BOPAlgo_BuilderFace::PerformAreas()
 {
-  myErrorStatus=0;
-  //
   Standard_Boolean bIsGrowth, bIsHole;
+  Standard_Integer k,aNbHoles;
   Standard_Real aTol;
-  TopoDS_Shape anInfinitePointShape;
-  //
-  BOPCol_ListOfShape aNewFaces, aHoleWires; 
-  BOPCol_DataMapOfShapeShape aInOutMap;
-  BOPCol_DataMapOfShapeListOfShape aMSH;
-  BOPCol_IndexedMapOfShape aMHE;
-
-  BOPCol_DataMapIteratorOfDataMapOfShapeListOfShape aItMSH;
-  BOPCol_ListIteratorOfListOfShape aIt1, aIt2;
-  BRep_Builder aBB;
-  Handle(Geom_Surface) aS;
   TopLoc_Location aLoc;
+  Handle(Geom_Surface) aS;
+  BRep_Builder aBB;
+  TopoDS_Face aFace;
+  //
+  BOPCol_ListIteratorOfListOfInteger aItLI;
+  BOPCol_IndexedMapOfShape aMHE;
+  BOPCol_DataMapOfShapeShape aInOutMap;
+  BOPCol_DataMapIteratorOfDataMapOfShapeShape aItDMSS;
+  BOPCol_DataMapOfShapeListOfShape aMSH;
+  BOPCol_DataMapIteratorOfDataMapOfShapeListOfShape aItMSH;
+  BOPCol_ListIteratorOfListOfShape aIt1;
+  BOPAlgo_DataMapOfIntegerShapeBox2D aDMISB(100);
+  BOPAlgo_DataMapIteratorOfDataMapOfIntegerShapeBox2D aItDMISB;
+  //
+  BOPCol_Box2DBndTreeSelector aSelector;
+  BOPCol_Box2DBndTree aBBTree;
+  NCollection_UBTreeFiller <Standard_Integer, Bnd_Box2d> aTreeFiller(aBBTree);
+  //
+  myErrorStatus=0;
   //
   aTol=BRep_Tool::Tolerance(myFace);
   aS=BRep_Tool::Surface(myFace, aLoc);
   //
   myAreas.Clear();
   //
-  //  Draft faces [aNewFaces]
+  // 1. Growthes and Holes -> aDMISB: [Index/ShapeBox2D]
   aIt1.Initialize(myLoops);
-  for ( ; aIt1.More(); aIt1.Next()) {
+  for (k=0 ; aIt1.More(); aIt1.Next(), ++k) {
+    Bnd_Box2d aBox2D;
+    //
     const TopoDS_Shape& aWire=aIt1.Value();
+    //
+    aBB.MakeFace(aFace, aS, aLoc, aTol);
+    aBB.Add (aFace, aWire);
+    BRepTools::AddUVBounds(aFace, aBox2D);
     //
     bIsGrowth=IsGrowthWire(aWire, aMHE);
     if (bIsGrowth) {
-      // make a growth face from a wire
-      TopoDS_Face aFace;
-      aBB.MakeFace(aFace, aS, aLoc, aTol);
-      aBB.Add (aFace, aWire);
-      //
-      aNewFaces.Append (aFace);
+      bIsHole=Standard_False;
     }
     else{
       // check if a wire is a hole 
-      //XX
-      TopoDS_Face aFace;
-      aBB.MakeFace(aFace, aS, aLoc, aTol);
-      aBB.Add (aFace, aWire);
-      //
       IntTools_FClass2d& aClsf=myContext->FClass2d(aFace);
       aClsf.Init(aFace, aTol);
       //
       bIsHole=aClsf.IsHole();
-      //
-      //bIsHole=BOPTools_AlgoTools::IsHole(aWire, myFace); 
-      //XX
       if (bIsHole) {
-        aHoleWires.Append(aWire);
         BOPTools::MapShapes(aWire, TopAbs_EDGE, aMHE);
+	//
+	bIsHole=Standard_True;
       }
       else {
-        // make a growth face from a wire
-        TopoDS_Face aFace;
-        aBB.MakeFace(aFace, aS, aLoc, aTol);
-        aBB.Add (aFace, aWire);
-        //
-        aNewFaces.Append (aFace);
+	bIsHole=Standard_False;
       }
+    }
+    //
+    BOPAlgo_ShapeBox2D aSB2D;
+    //
+    aSB2D.SetShape(aFace);
+    aSB2D.SetBox2D(aBox2D);
+    aSB2D.SetIsHole(bIsHole);
+    //
+    aDMISB.Bind(k, aSB2D);
+  }
+  //
+  // 2. Prepare TreeFiller
+  aItDMISB.Initialize(aDMISB);
+  for (; aItDMISB.More(); aItDMISB.Next()) {
+    k=aItDMISB.Key();
+    const BOPAlgo_ShapeBox2D& aSB2D=aItDMISB.Value();
+    //
+    bIsHole=aSB2D.IsHole();
+    if (bIsHole) {
+      const Bnd_Box2d& aBox2D=aSB2D.Box2D();
+      aTreeFiller.Add(k, aBox2D);
     }
   }
   //
-  // 2. Find outer growth shell that is most close to each hole shell
-  aIt2.Initialize(aHoleWires);
-  for (; aIt2.More(); aIt2.Next()) {
-    const TopoDS_Shape& aHole = aIt2.Value();
+  // 3. Shake TreeFiller
+  aTreeFiller.Fill();
+  //
+  // 4. Find outer growth shell that is most close 
+  //    to each hole shell
+  aItDMISB.Initialize(aDMISB);
+  for (; aItDMISB.More(); aItDMISB.Next()) {
+    k=aItDMISB.Key();
+    const BOPAlgo_ShapeBox2D& aSB2D=aItDMISB.Value();
+    bIsHole=aSB2D.IsHole();
+    if (bIsHole) {
+      continue;
+    }
     //
-    aIt1.Initialize(aNewFaces);
-    for ( ; aIt1.More(); aIt1.Next()) {
-      const TopoDS_Shape& aF=aIt1.Value();
+    const Bnd_Box2d& aBox2DF=aSB2D.Box2D();
+    const TopoDS_Shape aF=aSB2D.Shape();
+    //
+    aSelector.Clear();
+    aSelector.SetBox(aBox2DF);
+    //
+    aNbHoles=aBBTree.Select(aSelector);
+    //
+    const BOPCol_ListOfInteger& aLI=aSelector.Indices();
+    //
+    aItLI.Initialize(aLI);
+    for (; aItLI.More(); aItLI.Next()) {
+      k=aItLI.Value();
+      const BOPAlgo_ShapeBox2D& aSB2Dk=aDMISB.Find(k);
+      const TopoDS_Shape& aHole=aSB2Dk.Shape();
       //
       if (!IsInside(aHole, aF, myContext)){
         continue;
       }
       //
-      if ( aInOutMap.IsBound (aHole)){
-        const TopoDS_Shape& aF2=aInOutMap(aHole);
-        if (IsInside(aF, aF2, myContext)) {
+      if (aInOutMap.IsBound (aHole)){
+	const TopoDS_Shape& aF2=aInOutMap(aHole);
+	if (IsInside(aF, aF2, myContext)) {
           aInOutMap.UnBind(aHole);
           aInOutMap.Bind (aHole, aF);
         }
       }
       else{
-        aInOutMap.Bind (aHole, aF);
+        aInOutMap.Bind(aHole, aF);
       }
     }
-    //
-    // Add aHole to a map Face/ListOfHoles [aMSH]
-    if (aInOutMap.IsBound(aHole)){
-      const TopoDS_Shape& aF=aInOutMap(aHole);
-      if (aMSH.IsBound(aF)) {
-        BOPCol_ListOfShape& aLH=aMSH.ChangeFind(aF);
-        aLH.Append(aHole);
-      }
-      else {
-        BOPCol_ListOfShape aLH;
-        aLH.Append(aHole);
-        aMSH.Bind(aF, aLH);
-      }
-    }
-  }// for (; aIt2.More(); aIt2.Next())
+  }
   //
-  // 3. Add aHoles to Faces
+  // 5. Map [Face/Holes] -> aMSH 
+  aItDMSS.Initialize(aInOutMap);
+  for (; aItDMSS.More(); aItDMSS.Next()) {
+    const TopoDS_Shape& aHole=aItDMSS.Key();
+    const TopoDS_Shape& aF=aItDMSS.Value();
+    //
+    if (aMSH.IsBound(aF)) {
+      BOPCol_ListOfShape& aLH=aMSH.ChangeFind(aF);
+      aLH.Append(aHole);
+    }
+    else {
+      BOPCol_ListOfShape aLH;
+      aLH.Append(aHole);
+      aMSH.Bind(aF, aLH);
+    }
+  }
+  //
+  // 6. Add aHoles to Faces, 
   aItMSH.Initialize(aMSH);
   for (; aItMSH.More(); aItMSH.Next()) {
     TopoDS_Face aF=(*(TopoDS_Face *)(&aItMSH.Key()));
     //
     const BOPCol_ListOfShape& aLH=aItMSH.Value();
-    aIt2.Initialize(aLH);
-    for (; aIt2.More(); aIt2.Next()) {
-      const TopoDS_Shape& aHole = aIt2.Value();
-      aBB.Add (aF, aHole);
+    aIt1.Initialize(aLH);
+    for (; aIt1.More(); aIt1.Next()) {
+      TopoDS_Shape aWHole;
+      //
+      const TopoDS_Shape& aFHole=aIt1.Value();
+      GetWire(aFHole, aWHole);
+      aBB.Add (aF, aWHole);
     }
     //
     // update classifier 
@@ -501,20 +610,38 @@ TopAbs_Orientation BOPAlgo_BuilderFace::Orientation()const
     aClsf.Init(aF, aTol);
   }
   //
-  // These aNewFaces are draft faces that 
-  // do not contain any internal shapes
+  // 7. Fill myAreas
+  //    NB:These aNewFaces are draft faces that 
+  //    do not contain any internal shapes
+  aItDMISB.Initialize(aDMISB);
+  for (; aItDMISB.More(); aItDMISB.Next()) {
+    const BOPAlgo_ShapeBox2D& aSB2D=aItDMISB.Value();
+    bIsHole=aSB2D.IsHole();
+    if (!bIsHole) {
+      const TopoDS_Shape aF=aSB2D.Shape();
+      myAreas.Append(aF);
+    }
+  }
+}
+//=======================================================================
+//function : GetWire
+//purpose  : 
+//=======================================================================
+void GetWire(const TopoDS_Shape& aF, TopoDS_Shape& aW) 
+{
+  TopoDS_Shape aWx;
+  TopoDS_Iterator aIt;
   //
-  aIt1.Initialize(aNewFaces);
-  for ( ; aIt1.More(); aIt1.Next()) {
-    const TopoDS_Shape& aF=aIt1.Value();
-    myAreas.Append(aF);
+  aIt.Initialize(aF);
+  for (; aIt.More(); aIt.Next()) {
+    aW=aIt.Value();
   }
 }
 //=======================================================================
 //function : PerformInternalShapes
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_BuilderFace::PerformInternalShapes()
+void BOPAlgo_BuilderFace::PerformInternalShapes()
 {
   myErrorStatus=0;
   //

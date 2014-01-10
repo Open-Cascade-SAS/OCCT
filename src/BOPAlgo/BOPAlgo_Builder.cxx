@@ -36,13 +36,11 @@ BOPAlgo_Builder::BOPAlgo_Builder()
   myMapFence(100, myAllocator),
   myPaveFiller(NULL),
   myDS(NULL),
-  //myContext(NULL),
   myEntryPoint(0),
   myImages(100, myAllocator),
   myShapesSD(100, myAllocator),
   mySplits(100, myAllocator),
-  myOrigins(100, myAllocator),
-  myRunParallel(Standard_False)
+  myOrigins(100, myAllocator)
 {
 }
 //=======================================================================
@@ -57,13 +55,11 @@ BOPAlgo_Builder::BOPAlgo_Builder
   myMapFence(100, myAllocator),
   myPaveFiller(NULL),
   myDS(NULL),
-  //myContext(NULL),
   myEntryPoint(0),
   myImages(100, myAllocator), 
   myShapesSD(100, myAllocator),
   mySplits(100, myAllocator),
-  myOrigins(100, myAllocator),
-  myRunParallel(Standard_False)
+  myOrigins(100, myAllocator)
 {
 }
 //=======================================================================
@@ -91,22 +87,6 @@ void BOPAlgo_Builder::Clear()
   myShapesSD.Clear();
   mySplits.Clear();
   myOrigins.Clear();
-}
-//=======================================================================
-//function : SetRunParallel
-//purpose  : 
-//=======================================================================
-void BOPAlgo_Builder::SetRunParallel(const Standard_Boolean theFlag)
-{
-  myRunParallel=theFlag;
-}
-//=======================================================================
-//function : RunParallel
-//purpose  : 
-//=======================================================================
-Standard_Boolean BOPAlgo_Builder::RunParallel()const
-{
-  return myRunParallel;
 }
 //=======================================================================
 //function : AddArgument

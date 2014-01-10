@@ -1,8 +1,6 @@
 BOPDS_VectorOfShapeInfo.hxx
 BOPDS_VectorOfIndexRange.hxx
 BOPDS_ListOfPassKeyBoolean.hxx
-BOPDS_BoxBndTree.cxx
-BOPDS_BoxBndTree.hxx
 BOPDS_MapOfPassKeyBoolean.hxx
 BOPDS_MapOfPassKey.hxx
 BOPDS_ListIteratorOfListOfPassKeyBoolean.hxx
@@ -16,6 +14,10 @@ BOPDS_VectorOfInterfVF.hxx
 BOPDS_VectorOfInterfEE.hxx
 BOPDS_VectorOfInterfEF.hxx
 BOPDS_VectorOfInterfFF.hxx
+BOPDS_VectorOfInterfVZ.hxx
+BOPDS_VectorOfInterfEZ.hxx
+BOPDS_VectorOfInterfFZ.hxx
+BOPDS_VectorOfInterfZZ.hxx
 BOPDS_Interf.hxx
 BOPDS_DataMapOfPaveBlockListOfPaveBlock.hxx
 BOPDS_MapOfPaveBlock.hxx
@@ -35,7 +37,3 @@ BOPDS_IndexedDataMapOfPaveBlockListOfInteger.hxx
 BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks.hxx
 BOPDS_DataMapOfPaveBlockCommonBlock.hxx
 
-BOPDS_VectorOfInterfVZ.hxx
-BOPDS_VectorOfInterfEZ.hxx
-BOPDS_VectorOfInterfFZ.hxx
-BOPDS_VectorOfInterfZZ.hxx

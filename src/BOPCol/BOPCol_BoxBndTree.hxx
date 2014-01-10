@@ -26,14 +26,14 @@
  * of overlapped bounding boxes.
  *
 */
-typedef NCollection_UBTree <Standard_Integer , Bnd_Box> BOPDS_BoxBndTree;
+typedef NCollection_UBTree <Standard_Integer , Bnd_Box> BOPCol_BoxBndTree;
 
-  class BOPDS_BoxBndTreeSelector : public BOPDS_BoxBndTree::Selector {
+  class BOPCol_BoxBndTreeSelector : public BOPCol_BoxBndTree::Selector {
     public:
-      Standard_EXPORT BOPDS_BoxBndTreeSelector();
+      Standard_EXPORT BOPCol_BoxBndTreeSelector();
       Standard_EXPORT virtual Standard_Boolean Reject(const Bnd_Box&) const;
       Standard_EXPORT virtual Standard_Boolean Accept(const Standard_Integer &);
-      Standard_EXPORT virtual ~BOPDS_BoxBndTreeSelector();
+      Standard_EXPORT virtual ~BOPCol_BoxBndTreeSelector();
       
       Standard_EXPORT void Clear();
       Standard_EXPORT void SetBox(const Bnd_Box&);

@@ -252,6 +252,7 @@ void BOPAlgo_Builder::BuildSplitFaces()
     BOPAlgo_BuilderFace& aBF=aVBF.Append1();
     aBF.SetFace(aF);
     aBF.SetShapes(aLE);
+    aBF.SetRunParallel(myRunParallel);
     //
   }// for (i=0; i<aNbS; ++i) {
   //

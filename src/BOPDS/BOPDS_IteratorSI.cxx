@@ -24,7 +24,7 @@
 #include <BRep_Tool.hxx>
 
 #include <NCollection_UBTreeFiller.hxx>
-#include <BOPDS_BoxBndTree.hxx>
+#include <BOPCol_BoxBndTree.hxx>
 #include <BOPDS_IndexRange.hxx>
 #include <BOPDS_PassKeyBoolean.hxx>
 #include <BOPDS_MapOfPassKeyBoolean.hxx>
@@ -103,8 +103,8 @@ void BOPDS_IteratorSI::Intersect()
   BOPCol_IndexedDataMapOfShapeBox aMSB(100, aAllocator);
   BOPDS_PassKeyBoolean aPKXB; 
   //
-  BOPDS_BoxBndTreeSelector aSelector;
-  BOPDS_BoxBndTree aBBTree;
+  BOPCol_BoxBndTreeSelector aSelector;
+  BOPCol_BoxBndTree aBBTree;
   NCollection_UBTreeFiller <Standard_Integer, Bnd_Box> aTreeFiller(aBBTree);
   //
   // myPairsAvoid, aMSI, aMSB

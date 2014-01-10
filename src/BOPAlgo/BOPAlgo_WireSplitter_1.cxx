@@ -133,7 +133,8 @@ static
 //function : SplitBlock
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_WireSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
+void BOPAlgo_WireSplitter::SplitBlock(const TopoDS_Face& myFace,
+				      BOPTools_ConnexityBlock& aCB)
 {
   Standard_Boolean bNothingToDo;
   Standard_Integer aIx, aNb, i, aCntIn, aCntOut;
@@ -144,9 +145,8 @@ static
   BOPCol_ListIteratorOfListOfShape aIt;
   BOPAlgo_ListIteratorOfListOfEdgeInfo aItLEI;
   //
-  BOPAlgo_IndexedDataMapOfShapeListOfEdgeInfo mySmartMap(100, myAllocator);
+  BOPAlgo_IndexedDataMapOfShapeListOfEdgeInfo mySmartMap(100);
   //
-  const TopoDS_Face& myFace=myWES->Face();
   const BOPCol_ListOfShape& myEdges=aCB.Shapes();
   //
   // 1.Filling mySmartMap
@@ -164,7 +164,7 @@ static
       const TopoDS_Shape& aV=aItS.Value();
       aIx=mySmartMap.FindIndex(aV);
       if (!aIx) {
-        BOPAlgo_ListOfEdgeInfo aLEIx(myAllocator);
+        BOPAlgo_ListOfEdgeInfo aLEIx;
         aIx=mySmartMap.Add(aV, aLEIx);
       }
       //
@@ -214,14 +214,14 @@ static
     Standard_Integer aNbE, aNbMapEE;
     Standard_Boolean bFlag;
     //
-    BOPCol_IndexedDataMapOfShapeListOfShape aMapEE(100, myAllocator);
+    BOPCol_IndexedDataMapOfShapeListOfShape aMapEE(100);
     aNbE=myEdges.Extent();
     //
     aIt.Initialize(myEdges);
     for (; aIt.More(); aIt.Next()) {
       const TopoDS_Shape& aE = aIt.Value();
       if (!aMapEE.Contains(aE)) {
-        BOPCol_ListOfShape aLEx(myAllocator);
+        BOPCol_ListOfShape aLEx;
         aLEx.Append(aE);
         aMapEE.Add(aE, aLEx);
       }
@@ -262,7 +262,6 @@ static
     BOPCol_ListOfShape& aLoops=aCB.ChangeLoops();
     aLoops.Append(aW);
     //
-    myErrorStatus=0;
     return;
   }
   //

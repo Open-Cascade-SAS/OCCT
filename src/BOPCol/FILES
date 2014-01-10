@@ -29,6 +29,10 @@ BOPCol_SequenceOfReal.hxx
 BOPCol_DataMapOfIntegerShape.hxx
 BOPCol_IndexedDataMapOfIntegerListOfInteger.hxx
 BOPCol_IndexedDataMapOfShapeInteger.hxx
-
 BOPCol_TBB.hxx
 BOPCol_NCVector.hxx
+
+BOPCol_BoxBndTree.hxx
+BOPCol_BoxBndTree.cxx
+BOPCol_Box2DBndTree.hxx
+BOPCol_Box2DBndTree.cxx

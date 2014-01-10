@@ -102,16 +102,6 @@ is
     ---Purpose: Returns true if the shape theS has been deleted.
     returns Boolean from Standard  
     is redefined;  
-      
-    SetRunParallel(me:out; 
-    	    theFlag:Boolean from Standard); 
-    ---Purpose: Set the flag of parallel processing 
-    -- if <theFlag> is true  the parallel processing is switched on   
-    -- if <theFlag> is false the parallel processing is switched off   
-    --      
-    RunParallel(me) 
-    	returns Boolean from Standard; 
-    ---Purpose: Returns the flag of parallel processing  
     -- 
     --  Debug 
     -- 
@@ -241,8 +231,6 @@ fields
     --
     mySplits     : DataMapOfShapeListOfShape from BOPCol is protected; 
     myOrigins    : DataMapOfShapeShape from BOPCol is protected; 
-    -- 
-    myRunParallel : Boolean from Standard is protected; 
-    --     
+ 
 end Builder;
 

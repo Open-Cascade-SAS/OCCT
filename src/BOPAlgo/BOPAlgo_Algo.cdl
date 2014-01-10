@@ -49,10 +49,20 @@ is
     Allocator(me) 
     	returns BaseAllocator from BOPCol; 
     ---C++: return const &	
-
+ 
+    SetRunParallel(me:out; 
+    	    theFlag:Boolean from Standard); 
+    ---Purpose: Set the flag of parallel processing 
+    -- if <theFlag> is true  the parallel processing is switched on   
+    -- if <theFlag> is false the parallel processing is switched off   
+    --      
+    RunParallel(me) 
+    	returns Boolean from Standard; 
+    ---Purpose: Returns the flag of parallel processing  
+ 
 fields 
     myAllocator     : BaseAllocator from BOPCol is protected;
     myErrorStatus   : Integer from Standard is protected;	 
     myWarningStatus : Integer from Standard is protected;	 
-    
+    myRunParallel : Boolean from Standard is protected; 
 end Algo;

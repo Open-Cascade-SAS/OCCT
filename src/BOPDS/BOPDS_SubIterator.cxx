@@ -27,8 +27,8 @@
 #include <BOPCol_DataMapOfIntegerInteger.hxx>
 #include <BOPCol_DataMapOfIntegerMapOfInteger.hxx>
 #include <BOPCol_MapOfInteger.hxx>
+#include <BOPCol_BoxBndTree.hxx>
 //
-#include <BOPDS_BoxBndTree.hxx>
 #include <BOPDS_IndexRange.hxx>
 #include <BOPDS_PassKeyBoolean.hxx>
 #include <BOPDS_MapOfPassKeyBoolean.hxx>
@@ -193,8 +193,8 @@
   BOPDS_MapOfPassKeyBoolean aMPKXB(100, aAllocator);
   BOPCol_IndexedDataMapOfShapeBox aMSB(100, aAllocator);
   //
-  BOPDS_BoxBndTreeSelector aSelector;
-  BOPDS_BoxBndTree aBBTree;
+  BOPCol_BoxBndTreeSelector aSelector;
+  BOPCol_BoxBndTree aBBTree;
   NCollection_UBTreeFiller <Standard_Integer, Bnd_Box> aTreeFiller(aBBTree);
   //
   aIt1.Initialize(*mySubSet1);

@@ -23,35 +23,38 @@
 // function: 
 // purpose: 
 //=======================================================================
-  BOPAlgo_Algo::BOPAlgo_Algo()
+BOPAlgo_Algo::BOPAlgo_Algo()
 :
   myAllocator(NCollection_BaseAllocator::CommonBaseAllocator()),
   myErrorStatus(1),
-  myWarningStatus(0)
+  myWarningStatus(0),
+  myRunParallel(Standard_False)
 {}
 //=======================================================================
 // function: 
 // purpose: 
 //=======================================================================
-  BOPAlgo_Algo::BOPAlgo_Algo(const Handle(NCollection_BaseAllocator)& theAllocator)
+BOPAlgo_Algo::BOPAlgo_Algo
+  (const Handle(NCollection_BaseAllocator)& theAllocator)
 :
   myAllocator(theAllocator),
   myErrorStatus(1),
-  myWarningStatus(0)
+  myWarningStatus(0),
+  myRunParallel(Standard_False)
 {}
 
 //=======================================================================
 // function: ~
 // purpose: 
 //=======================================================================
-  BOPAlgo_Algo::~BOPAlgo_Algo()
+BOPAlgo_Algo::~BOPAlgo_Algo()
 {
 }
 //=======================================================================
 //function : Allocator
 //purpose  : 
 //=======================================================================
-  const Handle(NCollection_BaseAllocator)& BOPAlgo_Algo::Allocator()const
+const Handle(NCollection_BaseAllocator)& BOPAlgo_Algo::Allocator()const
 {
   return myAllocator;
 }
@@ -59,7 +62,7 @@
 // function: CheckData
 // purpose: 
 //=======================================================================
-  void BOPAlgo_Algo::CheckData()
+void BOPAlgo_Algo::CheckData()
 {
   myErrorStatus=0;
 }
@@ -67,7 +70,7 @@
 // function: CheckResult
 // purpose: 
 //=======================================================================
-  void BOPAlgo_Algo::CheckResult()
+void BOPAlgo_Algo::CheckResult()
 {
   myErrorStatus=0;
 }
@@ -75,7 +78,7 @@
 // function: ErrorStatus
 // purpose: 
 //=======================================================================
-  Standard_Integer BOPAlgo_Algo::ErrorStatus()const
+Standard_Integer BOPAlgo_Algo::ErrorStatus()const
 {
   return myErrorStatus;
 }
@@ -83,9 +86,25 @@
 // function: WarningStatus
 // purpose: 
 //=======================================================================
-  Standard_Integer BOPAlgo_Algo::WarningStatus()const
+Standard_Integer BOPAlgo_Algo::WarningStatus()const
 {
   return myWarningStatus;
+}
+//=======================================================================
+//function : SetRunParallel
+//purpose  : 
+//=======================================================================
+void BOPAlgo_Algo::SetRunParallel(const Standard_Boolean theFlag)
+{
+  myRunParallel=theFlag;
+}
+//=======================================================================
+//function : RunParallel
+//purpose  : 
+//=======================================================================
+Standard_Boolean BOPAlgo_Algo::RunParallel()const
+{
+  return myRunParallel;
 }
 //  myErrorStatus
 //

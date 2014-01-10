@@ -18,7 +18,9 @@
 #include <BOPAlgo_Builder.hxx>
 
 #include <NCollection_IncAllocator.hxx>
+#include <NCollection_UBTreeFiller.hxx>
 
+#include <Bnd_Box.hxx>
 #include <TopAbs_State.hxx>
 
 #include <TopoDS.hxx>
@@ -38,31 +40,27 @@
 #include <BRep_Builder.hxx>
 #include <BRepTools.hxx>
 #include <BRepClass3d_SolidClassifier.hxx>
+#include <BRepBndLib.hxx>
 //
 #include <BOPCol_IndexedMapOfShape.hxx>
 #include <BOPCol_MapOfShape.hxx>
 #include <BOPCol_IndexedDataMapOfShapeListOfShape.hxx>
 #include <BOPCol_ListOfShape.hxx>
+#include <BOPCol_BoxBndTree.hxx>
+#include <BOPCol_ListOfInteger.hxx>
+#include <BOPCol_DataMapOfIntegerShape.hxx>
+//
+#include <BOPInt_Context.hxx>
 //
 #include <BOPDS_DS.hxx>
 #include <BOPDS_ShapeInfo.hxx>
 //
 #include <BOPTools.hxx>
 #include <BOPTools_AlgoTools.hxx>
-//
 #include <BOPTools_MapOfSet.hxx>
 #include <BOPTools_Set.hxx>
 //
 #include <BOPAlgo_BuilderSolid.hxx>
-
-#include <BOPCol_DataMapOfIntegerShape.hxx>
-#include <Bnd_Box.hxx>
-#include <BRepBndLib.hxx>
-
-#include <NCollection_UBTreeFiller.hxx>
-#include <BOPDS_BoxBndTree.hxx>
-#include <BOPCol_ListOfInteger.hxx>
-#include <BOPInt_Context.hxx>
 #include <BOPAlgo_Builder_2Cnt.hxx>
 
 
@@ -218,7 +216,7 @@ void BOPAlgo_Builder::FillIn3DParts(BOPCol_DataMapOfShapeListOfShape& theInParts
   }//for (i=0; i<aNbS; ++i) {
   //
   // 1.2. Prepare TreeFiller
-  BOPDS_BoxBndTree aBBTree;
+  BOPCol_BoxBndTree aBBTree;
   NCollection_UBTreeFiller <Standard_Integer, Bnd_Box> aTreeFiller(aBBTree);
   //
   aItDMISB.Initialize(aDMISB);
@@ -250,7 +248,7 @@ void BOPAlgo_Builder::FillIn3DParts(BOPCol_DataMapOfShapeListOfShape& theInParts
     BOPCol_ListOfShape aLIF(aAlr1);
     BOPCol_IndexedMapOfShape aMF(100, aAlr1);
     BOPCol_IndexedDataMapOfShapeListOfShape aMEF(100, aAlr1);
-    BOPDS_BoxBndTreeSelector aSelector;
+    BOPCol_BoxBndTreeSelector aSelector;
     Bnd_Box aBoxS;
     //
     const TopoDS_Shape& aS=aSI.Shape();
