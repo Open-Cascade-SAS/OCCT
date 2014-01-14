@@ -333,7 +333,7 @@ protected: //! @name methods related to ray-tracing
 
   //! Redraws the window using OpenCL ray tracing.
   Standard_Boolean Raytrace (const Graphic3d_CView& theCView,
-              const int theSizeX, int theSizeY, const Tint theToSwap);
+              const int theSizeX, const int theSizeY, const Tint theToSwap);
 
 protected: //! @name fields related to ray-tracing
 
@@ -373,10 +373,12 @@ protected: //! @name fields related to ray-tracing
   //! OpenCL image to store rendering result.
   cl_mem myRaytraceOutputImage;
   //! OpenCL image to store anti-aliasing result.
-  cl_mem myRaytraceOutputImageSmooth;
+  cl_mem myRaytraceOutputImageAA;
 
-  //! OpenGL output texture handle.
-  GLuint myRaytraceOutputTexture[2];
+  //! OpenGL texture to store rendering result.
+  Handle(OpenGl_Texture) myRaytraceOutputTexture;
+  //! OpenGL texture to store anti-aliasing result.
+  Handle(OpenGl_Texture) myRaytraceOutputTextureAA;
 
   //! OpenCL buffer of vertex normals.
   cl_mem myRaytraceNormalBuffer;

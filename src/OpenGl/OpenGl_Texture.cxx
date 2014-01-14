@@ -292,7 +292,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
 
   // Notice that formally general NPOT textures are required by OpenGL 2.0 specifications
   // however some hardware (NV30 - GeForce FX, RadeOn 9xxx and Xxxx) supports GLSL but not NPOT!
-  // Trying to create NPOT rextures on such hardware will not fail
+  // Trying to create NPOT textures on such hardware will not fail
   // but driver will fall back into software rendering,
   const bool    toForceP2  = !theCtx->IsGlGreaterEqual (3, 0) && !theCtx->arbNPTW;
   const GLsizei aWidthOut  = toForceP2 ? OpenGl_Context::GetPowerOfTwo (aWidth,  aMaxSize) : Min (aWidth,  aMaxSize);
@@ -485,4 +485,85 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       return false;
     }
   }
+}
+
+// =======================================================================
+// function : InitRectangle
+// purpose  :
+// =======================================================================
+bool OpenGl_Texture::InitRectangle (const Handle(OpenGl_Context)& theCtx,
+                                    const Standard_Integer        theSizeX,
+                                    const Standard_Integer        theSizeY,
+                                    const OpenGl_TextureFormat&   theFormat)
+{
+  if (!Create (theCtx) || !theCtx->IsGlGreaterEqual (3, 0))
+  {
+    return false;
+  }
+  
+  myTarget = GL_TEXTURE_RECTANGLE;
+
+  const GLsizei aSizeX = Min (theCtx->MaxTextureSize(), theSizeX);
+  const GLsizei aSizeY = Min (theCtx->MaxTextureSize(), theSizeY);
+  
+  Bind (theCtx);
+
+  if (myParams->Filter() == Graphic3d_TOTF_NEAREST)
+  {
+    glTexParameteri (myTarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri (myTarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  }
+  else
+  {
+    glTexParameteri (myTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri (myTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  }
+
+  myTextFormat = theFormat.Internal();
+
+  glTexImage2D (GL_PROXY_TEXTURE_RECTANGLE,
+                0,
+                myTextFormat,
+                aSizeX,
+                aSizeY,
+                0,
+                theFormat.Format(),
+                GL_FLOAT,
+                NULL);
+
+  GLint aTestSizeX = 0;
+  GLint aTestSizeY = 0;
+
+  glGetTexLevelParameteriv (
+    GL_PROXY_TEXTURE_RECTANGLE, 0, GL_TEXTURE_WIDTH,  &aTestSizeX);
+  glGetTexLevelParameteriv (
+    GL_PROXY_TEXTURE_RECTANGLE, 0, GL_TEXTURE_HEIGHT, &aTestSizeY);
+
+  if (aTestSizeX == 0 || aTestSizeY == 0)
+  {
+    Unbind (theCtx);
+    return false;
+  }
+
+  glTexImage2D (myTarget,
+                0,
+                myTextFormat,
+                aSizeX,
+                aSizeY,
+                0,
+                theFormat.Format(),
+                GL_FLOAT,
+                NULL);
+
+  if (glGetError() != GL_NO_ERROR)
+  {
+    Unbind (theCtx);
+    return false;
+  }
+
+  mySizeX = aSizeX;
+  mySizeY = aSizeY;
+
+  Unbind (theCtx);
+  return true;
 }

@@ -194,9 +194,6 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_Display)& theDisplay,
   myViewModificationStatus = 0;
   myLayersModificationStatus = 0;
 
-  myRaytraceOutputTexture[0] = 0;
-  myRaytraceOutputTexture[1] = 0;
-
   myIsRaytraceDataValid = Standard_False;
   myToUpdateRaytraceData = Standard_False;
 

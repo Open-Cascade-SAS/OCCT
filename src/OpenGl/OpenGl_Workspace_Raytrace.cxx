@@ -87,8 +87,8 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceEnvironmentMap()
   if (myRaytraceEnvironment != NULL)
     clReleaseMemObject (myRaytraceEnvironment);
 
-  int aSizeX = 1;
-  int aSizeY = 1;
+  Standard_Integer aSizeX = 1;
+  Standard_Integer aSizeY = 1;
 
   if (!myView->TextureEnv().IsNull() && myView->SurfaceDetail() != Visual3d_TOD_NONE)
   {
@@ -124,7 +124,7 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceEnvironmentMap()
   }
   else
   {
-    for (int aPixel = 0; aPixel < aSizeX * aSizeY * 4; ++aPixel)
+    for (Standard_Integer aPixel = 0; aPixel < aSizeX * aSizeY * 4; ++aPixel)
       aPixelData[aPixel] = 0.f;
   }
 
@@ -195,7 +195,7 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceGeometry (Standard_Boolean theC
 
     const OpenGl_ArrayOfStructure& aStructArray = aPriorityList.ArrayOfStructures();
 
-    for (int anIndex = 0; anIndex < aStructArray.Length(); ++anIndex)
+    for (Standard_Integer anIndex = 0; anIndex < aStructArray.Length(); ++anIndex)
     {
       OpenGl_SequenceOfStructure::Iterator aStructIt;
 
@@ -220,8 +220,8 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceGeometry (Standard_Boolean theC
             if (aTransform == NULL)
               aTransform = new float[16];
 
-            for (int i = 0; i < 4; ++i)
-              for (int j = 0; j < 4; ++j)
+            for (Standard_Integer i = 0; i < 4; ++i)
+              for (Standard_Integer j = 0; j < 4; ++j)
               {
                 aTransform[j * 4 + i] = aStructure->Transformation()->mat[i][j];
               }
@@ -385,11 +385,11 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceStructure (const OpenGl_Structure*
   }
 
   // Get structure material
-  int aStructMatID = -1;
+  Standard_Integer aStructMatID = -1;
 
   if (theStructure->AspectFace() != NULL)
   {
-    aStructMatID = static_cast<int> (myRaytraceSceneData.Materials.size());
+    aStructMatID = static_cast<Standard_Integer> (myRaytraceSceneData.Materials.size());
 
     OpenGl_RaytraceMaterial aStructMaterial;
     CreateMaterial (theStructure->AspectFace()->IntFront(), aStructMaterial);
@@ -402,11 +402,11 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceStructure (const OpenGl_Structure*
   while (anItg.More())
   {
     // Get group material
-    int aGroupMatID = -1;
+    Standard_Integer aGroupMatID = -1;
 
     if (anItg.Value()->AspectFace() != NULL)
     {
-      aGroupMatID = static_cast<int> (myRaytraceSceneData.Materials.size());
+      aGroupMatID = static_cast<Standard_Integer> (myRaytraceSceneData.Materials.size());
 
       OpenGl_RaytraceMaterial aGroupMaterial;
       CreateMaterial (anItg.Value()->AspectFace()->IntFront(), aGroupMaterial);
@@ -414,11 +414,11 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceStructure (const OpenGl_Structure*
       myRaytraceSceneData.Materials.push_back (aGroupMaterial);
     }
 
-    int aMatID = aGroupMatID < 0 ? aStructMatID : aGroupMatID;
+    Standard_Integer aMatID = aGroupMatID < 0 ? aStructMatID : aGroupMatID;
 
     if (aStructMatID < 0 && aGroupMatID < 0)
     {
-      aMatID = static_cast<int> (myRaytraceSceneData.Materials.size());
+      aMatID = static_cast<Standard_Integer> (myRaytraceSceneData.Materials.size());
 
       myRaytraceSceneData.Materials.push_back (OpenGl_RaytraceMaterial());
     }
@@ -432,7 +432,7 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceStructure (const OpenGl_Structure*
 
         if (anAspect != NULL)
         {
-          aMatID = static_cast<int> (myRaytraceSceneData.Materials.size());
+          aMatID = static_cast<Standard_Integer> (myRaytraceSceneData.Materials.size());
 
           OpenGl_RaytraceMaterial aMaterial;
           CreateMaterial (anAspect->IntFront(), aMaterial);
@@ -465,8 +465,8 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceStructure (const OpenGl_Structure*
     {
       float* aTransform = new float[16];
 
-      for (int i = 0; i < 4; ++i)
-        for (int j = 0; j < 4; ++j)
+      for (Standard_Integer i = 0; i < 4; ++i)
+        for (Standard_Integer j = 0; j < 4; ++j)
         {
           aTransform[j * 4 + i] =
             anIts.Value()->Transformation()->mat[i][j];
@@ -491,7 +491,7 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceStructure (const OpenGl_Structure*
 // purpose  : Adds OpenGL primitive array to ray-traced scene geometry
 // =======================================================================
 Standard_Boolean OpenGl_Workspace::AddRaytracePrimitiveArray (const CALL_DEF_PARRAY* theArray,
-                                                              int                    theMatID,
+                                                              Standard_Integer       theMatID,
                                                               const float*           theTransform)
 {
   if (theArray->type != TelPolygonsArrayType &&
@@ -530,9 +530,9 @@ Standard_Boolean OpenGl_Workspace::AddRaytracePrimitiveArray (const CALL_DEF_PAR
   myRaytraceSceneData.Vertices.reserve (
     myRaytraceSceneData.Vertices.size() + theArray->num_vertexs);
 
-  const int aFirstVert = static_cast<int> (myRaytraceSceneData.Vertices.size());
+  const Standard_Integer aFirstVert = static_cast<Standard_Integer> (myRaytraceSceneData.Vertices.size());
 
-  for (int aVert = 0; aVert < theArray->num_vertexs; ++aVert)
+  for (Standard_Integer aVert = 0; aVert < theArray->num_vertexs; ++aVert)
   {
     OpenGl_RTVec4f aVertex (theArray->vertices[aVert].xyz[0],
                             theArray->vertices[aVert].xyz[1],
@@ -550,7 +550,7 @@ Standard_Boolean OpenGl_Workspace::AddRaytracePrimitiveArray (const CALL_DEF_PAR
   myRaytraceSceneData.Normals.reserve (
     myRaytraceSceneData.Normals.size() + theArray->num_vertexs);
 
-  for (int aNorm = 0; aNorm < theArray->num_vertexs; ++aNorm)
+  for (Standard_Integer aNorm = 0; aNorm < theArray->num_vertexs; ++aNorm)
   {
     OpenGl_RTVec4f aNormal;
 
@@ -577,11 +577,11 @@ Standard_Boolean OpenGl_Workspace::AddRaytracePrimitiveArray (const CALL_DEF_PAR
     std::cout << "\tNumber of bounds = " << theArray->num_bounds << std::endl;
 #endif
 
-    int aVertOffset = 0;
+    Standard_Integer aVertOffset = 0;
 
-    for (int aBound = 0; aBound < theArray->num_bounds; ++aBound)
+    for (Standard_Integer aBound = 0; aBound < theArray->num_bounds; ++aBound)
     {
-      const int aVertNum = theArray->bounds[aBound];
+      const Standard_Integer aVertNum = theArray->bounds[aBound];
 
 #ifdef RAY_TRACE_PRINT_INFO
       std::cout << "\tAdd indices from bound " << aBound << ": " <<
@@ -598,7 +598,7 @@ Standard_Boolean OpenGl_Workspace::AddRaytracePrimitiveArray (const CALL_DEF_PAR
   }
   else
   {
-    const int aVertNum = theArray->num_edges > 0 ? theArray->num_edges : theArray->num_vertexs;
+    const Standard_Integer aVertNum = theArray->num_edges > 0 ? theArray->num_edges : theArray->num_vertexs;
 
 #ifdef RAY_TRACE_PRINT_INFO
       std::cout << "\tAdd indices: " << aVertNum << std::endl;
@@ -615,10 +615,10 @@ Standard_Boolean OpenGl_Workspace::AddRaytracePrimitiveArray (const CALL_DEF_PAR
 // purpose  : Adds vertex indices to ray-traced scene geometry
 // =======================================================================
 Standard_Boolean OpenGl_Workspace::AddRaytraceVertexIndices (const CALL_DEF_PARRAY* theArray,
-                                                             int                    theFirstVert,
-                                                             int                    theVertOffset,
-                                                             int                    theVertNum,
-                                                             int                    theMatID)
+                                                             Standard_Integer       theFirstVert,
+                                                             Standard_Integer       theVertOffset,
+                                                             Standard_Integer       theVertNum,
+                                                             Standard_Integer       theMatID)
 {
   myRaytraceSceneData.Triangles.reserve (myRaytraceSceneData.Triangles.size() + theVertNum);
   switch (theArray->type)
@@ -638,17 +638,17 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceVertexIndices (const CALL_DEF_PARR
 // purpose  : Adds OpenGL triangle array to ray-traced scene geometry
 // =======================================================================
 Standard_Boolean OpenGl_Workspace::AddRaytraceTriangleArray (const CALL_DEF_PARRAY* theArray,
-                                                             int                    theFirstVert,
-                                                             int                    theVertOffset,
-                                                             int                    theVertNum,
-                                                             int                    theMatID)
+                                                             Standard_Integer       theFirstVert,
+                                                             Standard_Integer       theVertOffset,
+                                                             Standard_Integer       theVertNum,
+                                                             Standard_Integer       theMatID)
 {
   if (theVertNum < 3)
     return Standard_True;
 
   if (theArray->num_edges > 0)
   {
-    for (int aVert = theVertOffset; aVert < theVertOffset + theVertNum - 2; aVert += 3)
+    for (Standard_Integer aVert = theVertOffset; aVert < theVertOffset + theVertNum - 2; aVert += 3)
     {
       myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (theFirstVert + theArray->edges[aVert + 0],
                                                                theFirstVert + theArray->edges[aVert + 1],
@@ -658,7 +658,7 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceTriangleArray (const CALL_DEF_PARR
   }
   else
   {
-    for (int aVert = theVertOffset; aVert < theVertOffset + theVertNum - 2; aVert += 3)
+    for (Standard_Integer aVert = theVertOffset; aVert < theVertOffset + theVertNum - 2; aVert += 3)
     {
       myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (theFirstVert + aVert + 0,
                                                                theFirstVert + aVert + 1,
@@ -675,17 +675,17 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceTriangleArray (const CALL_DEF_PARR
 // purpose  : Adds OpenGL triangle fan array to ray-traced scene geometry
 // =======================================================================
 Standard_Boolean OpenGl_Workspace::AddRaytraceTriangleFanArray (const CALL_DEF_PARRAY* theArray,
-                                                                int                     theFirstVert,
-                                                                int                     theVertOffset,
-                                                                int                     theVertNum,
-                                                                int                     theMatID)
+                                                                Standard_Integer       theFirstVert,
+                                                                Standard_Integer       theVertOffset,
+                                                                Standard_Integer       theVertNum,
+                                                                Standard_Integer       theMatID)
 {
   if (theVertNum < 3)
     return Standard_True;
 
   if (theArray->num_edges > 0)
   {
-    for (int aVert = theVertOffset; aVert < theVertOffset + theVertNum - 2; ++aVert)
+    for (Standard_Integer aVert = theVertOffset; aVert < theVertOffset + theVertNum - 2; ++aVert)
     {
       myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (theFirstVert + theArray->edges[theVertOffset],
                                                                theFirstVert + theArray->edges[aVert + 1],
@@ -695,7 +695,7 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceTriangleFanArray (const CALL_DEF_P
   }
   else
   {
-    for (int aVert = theVertOffset; aVert < theVertOffset + theVertNum - 2; ++aVert)
+    for (Standard_Integer aVert = theVertOffset; aVert < theVertOffset + theVertNum - 2; ++aVert)
     {
       myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (theFirstVert + theVertOffset,
                                                                theFirstVert + aVert + 1,
@@ -712,10 +712,10 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceTriangleFanArray (const CALL_DEF_P
 // purpose  : Adds OpenGL triangle strip array to ray-traced scene geometry
 // =======================================================================
 Standard_Boolean OpenGl_Workspace::AddRaytraceTriangleStripArray (const CALL_DEF_PARRAY* theArray,
-                                                                  int                    theFirstVert,
-                                                                  int                    theVertOffset,
-                                                                  int                    theVertNum,
-                                                                  int                    theMatID)
+                                                                  Standard_Integer       theFirstVert,
+                                                                  Standard_Integer       theVertOffset,
+                                                                  Standard_Integer       theVertNum,
+                                                                  Standard_Integer       theMatID)
 {
   if (theVertNum < 3)
     return Standard_True;
@@ -728,7 +728,7 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceTriangleStripArray (const CALL_DEF
                                       theFirstVert + theArray->edges[theVertOffset + 2],
                                       theMatID));
 
-    for (int aVert = theVertOffset + 1, aTriNum = 1; aVert < theVertOffset + theVertNum - 2; ++aVert, ++aTriNum)
+    for (Standard_Integer aVert = theVertOffset + 1, aTriNum = 1; aVert < theVertOffset + theVertNum - 2; ++aVert, ++aTriNum)
     {
       myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (
                                       theFirstVert + theArray->edges[aVert + (aTriNum % 2) ? 1 : 0],
@@ -744,7 +744,7 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceTriangleStripArray (const CALL_DEF
                                                              theFirstVert + theVertOffset + 2,
                                                              theMatID));
 
-    for (int aVert = theVertOffset + 1, aTriNum = 1; aVert < theVertOffset + theVertNum - 2; ++aVert, ++aTriNum)
+    for (Standard_Integer aVert = theVertOffset + 1, aTriNum = 1; aVert < theVertOffset + theVertNum - 2; ++aVert, ++aTriNum)
     {
       myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (theFirstVert + aVert + ( aTriNum % 2 ) ? 1 : 0,
                                                                theFirstVert + aVert + ( aTriNum % 2 ) ? 0 : 1,
@@ -761,17 +761,17 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceTriangleStripArray (const CALL_DEF
 // purpose  : Adds OpenGL quad array to ray-traced scene geometry
 // =======================================================================
 Standard_Boolean OpenGl_Workspace::AddRaytraceQuadrangleArray (const CALL_DEF_PARRAY* theArray,
-                                                               int                    theFirstVert,
-                                                               int                    theVertOffset,
-                                                               int                    theVertNum,
-                                                               int                    theMatID)
+                                                               Standard_Integer       theFirstVert,
+                                                               Standard_Integer       theVertOffset,
+                                                               Standard_Integer       theVertNum,
+                                                               Standard_Integer       theMatID)
 {
   if (theVertNum < 4)
     return Standard_True;
 
   if (theArray->num_edges > 0)
   {
-    for (int aVert = theVertOffset; aVert < theVertOffset + theVertNum - 3; aVert += 4)
+    for (Standard_Integer aVert = theVertOffset; aVert < theVertOffset + theVertNum - 3; aVert += 4)
     {
       myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (theFirstVert + theArray->edges[aVert + 0],
                                                                theFirstVert + theArray->edges[aVert + 1],
@@ -786,7 +786,7 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceQuadrangleArray (const CALL_DEF_PA
   }
   else
   {
-    for (int aVert = theVertOffset; aVert < theVertOffset + theVertNum - 3; aVert += 4)
+    for (Standard_Integer aVert = theVertOffset; aVert < theVertOffset + theVertNum - 3; aVert += 4)
     {
       myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (theFirstVert + aVert + 0,
                                                                theFirstVert + aVert + 1,
@@ -808,10 +808,10 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceQuadrangleArray (const CALL_DEF_PA
 // purpose  : Adds OpenGL quad strip array to ray-traced scene geometry
 // =======================================================================
 Standard_Boolean OpenGl_Workspace::AddRaytraceQuadrangleStripArray (const CALL_DEF_PARRAY* theArray,
-                                                                    int                    theFirstVert,
-                                                                    int                    theVertOffset,
-                                                                    int                    theVertNum,
-                                                                    int                    theMatID)
+                                                                    Standard_Integer       theFirstVert,
+                                                                    Standard_Integer       theVertOffset,
+                                                                    Standard_Integer       theVertNum,
+                                                                    Standard_Integer       theMatID)
 {
   if (theVertNum < 4)
     return Standard_True;
@@ -830,7 +830,7 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceQuadrangleStripArray (const CALL_D
                                 theFirstVert + theArray->edges[theVertOffset + 2],
                                 theMatID));
 
-    for (int aVert = theVertOffset + 2; aVert < theVertOffset + theVertNum - 3; aVert += 2)
+    for (Standard_Integer aVert = theVertOffset + 2; aVert < theVertOffset + theVertNum - 3; aVert += 2)
     {
       myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (
                                   theFirstVert + theArray->edges[aVert + 0],
@@ -857,7 +857,7 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceQuadrangleStripArray (const CALL_D
                                                              theFirstVert + 2,
                                                              theMatID));
 
-    for (int aVert = theVertOffset + 2; aVert < theVertOffset + theVertNum - 3; aVert += 2)
+    for (Standard_Integer aVert = theVertOffset + 2; aVert < theVertOffset + theVertNum - 3; aVert += 2)
     {
       myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (theFirstVert + aVert + 0,
                                                                theFirstVert + aVert + 1,
@@ -879,17 +879,17 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceQuadrangleStripArray (const CALL_D
 // purpose  : Adds OpenGL polygon array to ray-traced scene geometry
 // =======================================================================
 Standard_Boolean OpenGl_Workspace::AddRaytracePolygonArray (const CALL_DEF_PARRAY* theArray,
-                                                            int                    theFirstVert,
-                                                            int                    theVertOffset,
-                                                            int                    theVertNum,
-                                                            int                    theMatID)
+                                                            Standard_Integer       theFirstVert,
+                                                            Standard_Integer       theVertOffset,
+                                                            Standard_Integer       theVertNum,
+                                                            Standard_Integer       theMatID)
 {
   if (theArray->num_vertexs < 3)
     return Standard_True;
 
   if (theArray->edges != NULL)
   {
-    for (int aVert = theVertOffset; aVert < theVertOffset + theVertNum - 2; ++aVert)
+    for (Standard_Integer aVert = theVertOffset; aVert < theVertOffset + theVertNum - 2; ++aVert)
     {
       myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (theFirstVert + theArray->edges[theVertOffset],
                                                                theFirstVert + theArray->edges[aVert + 1],
@@ -899,7 +899,7 @@ Standard_Boolean OpenGl_Workspace::AddRaytracePolygonArray (const CALL_DEF_PARRA
   }
   else
   {
-    for (int aVert = theVertOffset; aVert < theVertOffset + theVertNum - 2; ++aVert)
+    for (Standard_Integer aVert = theVertOffset; aVert < theVertOffset + theVertNum - 2; ++aVert)
     {
       myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (theFirstVert + theVertOffset,
                                                                theFirstVert + aVert + 1,
@@ -1298,7 +1298,7 @@ void OpenGl_Workspace::ReleaseOpenCL()
 
   clReleaseMemObject (myRaytraceOutputImage);
   clReleaseMemObject (myRaytraceEnvironment);
-  clReleaseMemObject (myRaytraceOutputImageSmooth);
+  clReleaseMemObject (myRaytraceOutputImageAA);
 
   clReleaseMemObject (myRaytraceVertexBuffer);
   clReleaseMemObject (myRaytraceNormalBuffer);
@@ -1313,8 +1313,16 @@ void OpenGl_Workspace::ReleaseOpenCL()
 
   clReleaseContext (myComputeContext);
 
-  if (glIsTexture (*myRaytraceOutputTexture))
-    glDeleteTextures (2, myRaytraceOutputTexture);
+  if (!myGlContext.IsNull())
+  {
+    if (!myRaytraceOutputTexture.IsNull())
+      myGlContext->DelayedRelease (myRaytraceOutputTexture);
+    myRaytraceOutputTexture.Nullify();
+
+    if (!myRaytraceOutputTextureAA.IsNull())
+      myGlContext->DelayedRelease (myRaytraceOutputTextureAA);
+    myRaytraceOutputTextureAA.Nullify();
+  }
 }
 
 // =======================================================================
@@ -1329,63 +1337,46 @@ Standard_Boolean OpenGl_Workspace::ResizeRaytraceOutputBuffer (const cl_int theS
     return Standard_False;
   }
 
-  bool toResize = true;
-  GLint aSizeX = -1;
-  GLint aSizeY = -1;
-  if (*myRaytraceOutputTexture != 0)
+  if (!myRaytraceOutputTexture.IsNull())
   {
-    if (!myGlContext->IsGlGreaterEqual (2, 1))
+    Standard_Boolean toResize = myRaytraceOutputTexture->SizeX() != theSizeX ||
+                                myRaytraceOutputTexture->SizeY() != theSizeY;
+
+    if (!toResize)
+      return Standard_True;
+
+    if (!myGlContext.IsNull())
     {
-      return Standard_False;
-    }
-
-    glBindTexture (GL_TEXTURE_RECTANGLE, *myRaytraceOutputTexture);
-
-    glGetTexLevelParameteriv (GL_TEXTURE_RECTANGLE, 0, GL_TEXTURE_WIDTH,  &aSizeX);
-    glGetTexLevelParameteriv (GL_TEXTURE_RECTANGLE, 0, GL_TEXTURE_HEIGHT, &aSizeY);
-
-    toResize = (aSizeX != theSizeX) || (aSizeY != theSizeY);
-    if (toResize)
-    {
-      glDeleteTextures (2, myRaytraceOutputTexture);
+      if (!myRaytraceOutputTexture.IsNull())
+        myGlContext->DelayedRelease (myRaytraceOutputTexture);
+      if (!myRaytraceOutputTextureAA.IsNull())
+        myGlContext->DelayedRelease (myRaytraceOutputTextureAA);
     }
   }
-  if (!toResize)
-  {
-    return Standard_True;
-  }
+  
+  myRaytraceOutputTexture = new OpenGl_Texture();
+  
+  myRaytraceOutputTexture->Create (myGlContext);
+  myRaytraceOutputTexture->InitRectangle (myGlContext,
+    theSizeX, theSizeY, OpenGl_TextureFormat::Create<GLfloat, 4>());
+  
+  myRaytraceOutputTextureAA = new OpenGl_Texture();
+  
+  myRaytraceOutputTextureAA->Create (myGlContext);
+  myRaytraceOutputTextureAA->InitRectangle (myGlContext,
+    theSizeX, theSizeY, OpenGl_TextureFormat::Create<GLfloat, 4>());
 
-  glGenTextures (2, myRaytraceOutputTexture);
-  for (int aTexIter = 0; aTexIter < 2; ++aTexIter)
-  {
-    glBindTexture (GL_TEXTURE_RECTANGLE, myRaytraceOutputTexture[aTexIter]);
+  if (myRaytraceOutputImage != NULL)
+    clReleaseMemObject (myRaytraceOutputImage);
 
-    glTexParameteri (GL_TEXTURE_RECTANGLE, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameteri (GL_TEXTURE_RECTANGLE, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    glTexParameteri (GL_TEXTURE_RECTANGLE, GL_TEXTURE_WRAP_R, GL_CLAMP);
-
-    glTexParameteri (GL_TEXTURE_RECTANGLE, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri (GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-    glTexImage2D (GL_TEXTURE_RECTANGLE, 0, GL_RGBA32F,
-                  theSizeX, theSizeY, 0,
-                  GL_RGBA, GL_FLOAT, NULL);
-  }
+  if (myRaytraceOutputImageAA != NULL)
+    clReleaseMemObject (myRaytraceOutputImageAA);
 
   cl_int anError = CL_SUCCESS;
 
-  if (myRaytraceOutputImage != NULL)
-  {
-    clReleaseMemObject (myRaytraceOutputImage);
-  }
-  if (myRaytraceOutputImageSmooth != NULL)
-  {
-    clReleaseMemObject (myRaytraceOutputImageSmooth);
-  }
+  myRaytraceOutputImage = clCreateFromGLTexture2D (myComputeContext,
+    CL_MEM_READ_WRITE, GL_TEXTURE_RECTANGLE, 0, myRaytraceOutputTexture->TextureId(), &anError);
 
-  myRaytraceOutputImage = clCreateFromGLTexture2D (myComputeContext, CL_MEM_READ_WRITE,
-                                                   GL_TEXTURE_RECTANGLE, 0,
-                                                   myRaytraceOutputTexture[0], &anError);
   if (anError != CL_SUCCESS)
   {
 #ifdef RAY_TRACE_PRINT_INFO
@@ -1394,9 +1385,9 @@ Standard_Boolean OpenGl_Workspace::ResizeRaytraceOutputBuffer (const cl_int theS
     return Standard_False;
   }
 
-  myRaytraceOutputImageSmooth = clCreateFromGLTexture2D (myComputeContext, CL_MEM_READ_WRITE,
-                                                         GL_TEXTURE_RECTANGLE, 0,
-                                                         myRaytraceOutputTexture[1], &anError);
+  myRaytraceOutputImageAA = clCreateFromGLTexture2D (myComputeContext,
+    CL_MEM_READ_WRITE, GL_TEXTURE_RECTANGLE, 0, myRaytraceOutputTextureAA->TextureId(), &anError);
+
   if (anError != CL_SUCCESS)
   {
 #ifdef RAY_TRACE_PRINT_INFO
@@ -1630,8 +1621,8 @@ Standard_Boolean OpenGl_Workspace::WriteRaytraceSceneToDevice()
 Standard_Boolean OpenGl_Workspace::RunRaytraceOpenCLKernels (const Graphic3d_CView& theCView,
                                                              const GLfloat          theOrigins[16],
                                                              const GLfloat          theDirects[16],
-                                                             const int              theSizeX,
-                                                             const int              theSizeY)
+                                                             const Standard_Integer theSizeX,
+                                                             const Standard_Integer theSizeY)
 {
   if (myRaytraceRenderKernel == NULL || myRaytraceQueue == NULL)
     return Standard_False;
@@ -1702,7 +1693,7 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceOpenCLKernels (const Graphic3d_CVi
     anError  = clSetKernelArg (myRaytraceSmoothKernel, anIndex++,
                                sizeof(cl_mem), &myRaytraceOutputImage);
     anError |= clSetKernelArg (myRaytraceSmoothKernel, anIndex++,
-                               sizeof(cl_mem), &myRaytraceOutputImageSmooth);
+                               sizeof(cl_mem), &myRaytraceOutputImageAA);
     anError |= clSetKernelArg (myRaytraceSmoothKernel, anIndex++,
                                sizeof(cl_mem), &myRaytraceEnvironment);
     anError |= clSetKernelArg (myRaytraceSmoothKernel, anIndex++,
@@ -1941,7 +1932,7 @@ void ComputeInverseMatrix (const T m[16], T inv[16])
 
   det = T (1.0) / det;
 
-  for (int i = 0; i < 16; ++i)
+  for (Standard_Integer i = 0; i < 16; ++i)
     inv[i] *= det;
 }
 
@@ -1950,15 +1941,15 @@ void ComputeInverseMatrix (const T m[16], T inv[16])
 // purpose  : Generates primary rays for corners of screen quad
 // =======================================================================
 void GenerateCornerRays (const GLdouble theInvModelProj[16],
-                         float          theOrigins[16],
-                         float          theDirects[16])
+                         cl_float       theOrigins[16],
+                         cl_float       theDirects[16])
 {
-  int aOriginIndex = 0;
-  int aDirectIndex = 0;
+  Standard_Integer aOriginIndex = 0;
+  Standard_Integer aDirectIndex = 0;
 
-  for (int y = -1; y <= 1; y += 2)
+  for (Standard_Integer y = -1; y <= 1; y += 2)
   {
-    for (int x = -1; x <= 1; x += 2)
+    for (Standard_Integer x = -1; x <= 1; x += 2)
     {
       OpenGl_RTVec4f aOrigin (float(x),
                               float(y),
@@ -1996,8 +1987,8 @@ void GenerateCornerRays (const GLdouble theInvModelProj[16],
 // purpose  : Redraws the window using OpenCL ray tracing
 // =======================================================================
 Standard_Boolean OpenGl_Workspace::Raytrace (const Graphic3d_CView& theCView,
-                                             const int              theSizeX,
-                                             int                    theSizeY,
+                                             const Standard_Integer theSizeX,
+                                             const Standard_Integer theSizeY,
                                              const Tint             theToSwap)
 {
   if (!InitOpenCL())
@@ -2022,8 +2013,8 @@ Standard_Boolean OpenGl_Workspace::Raytrace (const Graphic3d_CView& theCView,
   GLdouble aViewMappingMatrix[16];
   GLdouble aOrientationInvers[16];
 
-  for (int j = 0; j < 4; ++j)
-    for (int i = 0; i < 4; ++i)
+  for (Standard_Integer j = 0; j < 4; ++j)
+    for (Standard_Integer i = 0; i < 4; ++i)
     {
       aOrientationMatrix [4 * j + i] = theOrientation (i, j);
       aViewMappingMatrix [4 * j + i] = theViewMapping (i, j);
@@ -2055,7 +2046,7 @@ Standard_Boolean OpenGl_Workspace::Raytrace (const Graphic3d_CView& theCView,
                       aDirects);
 
   // Compute ray-traced image using OpenCL kernel
-  cl_mem anImages[] = { myRaytraceOutputImage, myRaytraceOutputImageSmooth };
+  cl_mem anImages[] = { myRaytraceOutputImage, myRaytraceOutputImageAA };
   cl_int anError = clEnqueueAcquireGLObjects (myRaytraceQueue,
                                               2, anImages,
                                               0, NULL, NULL);
@@ -2118,7 +2109,10 @@ Standard_Boolean OpenGl_Workspace::Raytrace (const Graphic3d_CView& theCView,
 
   glColor3f (1.0f, 1.0f, 1.0f);
 
-  glBindTexture (GL_TEXTURE_RECTANGLE, myRaytraceOutputTexture[theCView.IsAntialiasingEnabled ? 1 : 0]);
+  if (!theCView.IsAntialiasingEnabled)
+    myRaytraceOutputTexture->Bind (myGlContext);
+  else
+    myRaytraceOutputTextureAA->Bind (myGlContext);
 
   if (myIsRaytraceDataValid)
   {
