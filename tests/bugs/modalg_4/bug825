@@ -17,19 +17,60 @@ if { [ catch { set info_result [OCC825 a1 a2 a3 res1 res2 0] } ] } {
     puts "Faulty OCC825"
 } else {
     if { [regexp {FAILED} $info_result] } {
-	puts "Faulty OCC825"
+        puts "Faulty OCC825"
     }
 
     set ExplodeList [explode res1]
     if {[llength ${ExplodeList}] < 1} {
-	puts "Faulty OCC825"
+        puts "Faulty OCC825"
     }
 
     set ExplodeList [explode res2]
     if {[llength ${ExplodeList}] < 1} {
-	puts "Faulty OCC825"
+        puts "Faulty OCC825"
     }
     checkshape res1
+
+    set nbFace_exp 0
+    set nbShell_exp 0
+    set nbSolid_exp 0
+    set nbCompSolid_exp 0
+    set nbCompound_exp 1
+    set nbShape_exp 1
+        
+    set nb_info [nbshapes res1]
+    regexp {FACE +: +([-0-9.+eE]+)} $nb_info full nb_face
+    regexp {SHELL +: +([-0-9.+eE]+)} $nb_info full nb_shell
+    regexp {SOLID +: +([-0-9.+eE]+)} $nb_info full nb_solid
+    regexp {COMPSOLID +: +([-0-9.+eE]+)} $nb_info full nbCompSolid
+    regexp {COMPOUND +: +([-0-9.+eE]+)} $nb_info full nb_compound
+    regexp {SHAPE +: +([-0-9.+eE]+)} $nb_info full nb_Shape
+        
+    if { $nb_face != $nbFace_exp } {
+      puts [format "Faulty : result must contain %s FACE(S), but it contains %s only." $nbFace_exp $nb_face]
+    }
+
+    if { $nb_shell != $nbShell_exp } {
+      puts [format "Faulty : result must contain %s SHELL(S), but it contains %s only." $nbShell_exp $nb_shell]
+    }
+    
+    if { $nb_solid != $nbSolid_exp } {
+      puts [format "Faulty : result must contain %s SOLID(S), but it contains %s only." $nbSolid_exp $nb_solid]
+    }
+
+    if { $nbCompSolid != $nbCompSolid_exp } {
+      puts [format "Faulty : result must contain %s COMPSOLID(S), but it contains %s only." $nbCompSolid_exp $nbCompSolid]
+    }
+
+    if { $nb_compound != $nbCompound_exp } {
+      puts [format "Faulty : result must contain %s COMPOUND(S), but it contains %s only." $nbCompound_exp $nb_compound]
+    }
+
+    if { $nb_Shape != $nbShape_exp } {
+      puts [format "Faulty : result must contain %s SHAPE(S), but it contains %s only." $nbShape_exp $nb_Shape]
+    }
+
+
     renamevar res2 result
 }
 

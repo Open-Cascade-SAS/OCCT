@@ -1,0 +1,79 @@
+puts "========="
+puts "CR24427"
+puts "========="
+puts ""
+###############################
+## Wrong section curves
+###############################
+
+restore [locate_data_file bug24427_b1.brep] b1
+restore [locate_data_file bug24427_b2.brep] b2
+
+mksurface s1 b1
+mksurface s2 b2
+
+trim s1t s1 0 3.1415926535897931 3.3684854563490672 3.9269908169872507
+trim s2t s2 0 3.1415926535897931 -1.0598124096115453e-015 0.013271150216666670
+
+intersect i s1t s2t
+don s1t s2t i
+
+puts "First test"
+dlog reset
+dlog on
+xdistcs i s1 0 1 10
+
+set Log1 [dlog get]
+
+set List1 [split ${Log1} {TD= \t\n}]
+
+set L1 [llength ${List1}]
+set L2 10
+set L3 5
+set N [expr (${L1} - ${L2})/${L3} + 1]
+set Tolerance 1.0e-7
+set D_good 0.
+
+for {set i 1} {${i} <= ${N}} {incr i} {
+   set j1 [expr ${L2} + (${i}-1)*${L3}]
+   set j2 [expr ${j1} + 2]
+   set T [lindex ${List1} ${j1}]
+   set D [lindex ${List1} ${j2}]
+   puts "i=${i} j1=${j1} j2=${j2} T=${T} D=${D}"
+   if { [expr abs(${D} - ${D_good})] > ${Tolerance} } {
+      puts "Error: i=${i} T=${T} D=${D}"
+   }
+}
+
+
+puts "Second test"
+dlog reset
+dlog on
+xdistcs i s2 0 1 10
+set Log2 [dlog get]
+
+set List2 [split ${Log2} {TD= \t\n}]
+
+set L1 [llength ${List2}]
+set L2 10
+set L3 5
+set N [expr (${L1} - ${L2})/${L3} + 1]
+set Tolerance 1.0e-7
+set D_good 0.
+
+for {set i 1} {${i} <= ${N}} {incr i} {
+   set j1 [expr ${L2} + (${i}-1)*${L3}]
+   set j2 [expr ${j1} + 2]
+   set T [lindex ${List2} ${j1}]
+   set D [lindex ${List2} ${j2}]
+   puts "i=${i} j1=${j1} j2=${j2} T=${T} D=${D}"
+   if { [expr abs(${D} - ${D_good})] > ${Tolerance} } {
+      puts "Error: i=${i} T=${T} D=${D}"
+   }
+}
+
+donly i s1t s2t
+
+smallview
+fit
+set only_screen_axo 1

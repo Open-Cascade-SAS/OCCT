@@ -475,7 +475,9 @@ void BoundedArc (const TheArc& A,
     }
 
     if (Nbi==1) {
-      if (pardeb == Pdeb && parfin == Pfin) {
+      if (  (Abs(pardeb - Pdeb) < Precision::PConfusion()) &&
+            (Abs(parfin - Pfin) < Precision::PConfusion()))
+      {
         Arcsol=Standard_True;
       }
     }
