@@ -161,6 +161,20 @@ public:
                              v[1] * theFactor);
   }
 
+  //! Compute component-wise minimum of two vectors.
+  NCollection_Vec2 cwiseMin (const NCollection_Vec2& theVec) const
+  {
+    return NCollection_Vec2 (Min (v[0], theVec.v[0]),
+                             Min (v[1], theVec.v[1]));
+  }
+
+  //! Compute component-wise maximum of two vectors.
+  NCollection_Vec2 cwiseMax (const NCollection_Vec2& theVec) const
+  {
+    return NCollection_Vec2 (Max (v[0], theVec.v[0]),
+                             Max (v[1], theVec.v[1]));
+  }
+
   //! Compute per-component multiplication by scale factor.
   NCollection_Vec2& operator*= (const Element_t theFactor)
   {

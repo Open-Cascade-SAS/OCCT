@@ -1,0 +1,263 @@
+// Created on: 2013-12-20
+// Created by: Denis BOGOLEPOV
+// Copyright (c) 2013 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and / or modify it
+// under the terms of the GNU Lesser General Public version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <Standard_ShortReal.hxx>
+
+namespace BVHTools
+{
+  template<class T, int N>
+  struct CenterAxis {
+    // Not implemented
+  };
+
+  template<class T>
+  struct CenterAxis<T, 2>
+  {
+    static T Center (const BVH_Box<T, 2>&   theBox,
+                     const Standard_Integer theAxis)
+    {
+      if (theAxis == 0)
+      {
+        return (theBox.CornerMin().x() + theBox.CornerMax().x()) * static_cast<T> (0.5);
+      }
+      else if (theAxis == 1)
+      {
+        return (theBox.CornerMin().y() + theBox.CornerMax().y()) * static_cast<T> (0.5);
+      }
+      return static_cast<T> (0.0);
+    }
+  };
+
+  template<class T>
+  struct CenterAxis<T, 3>
+  {
+    static T Center (const BVH_Box<T, 3>&   theBox,
+                     const Standard_Integer theAxis)
+    {
+      if (theAxis == 0)
+      {
+        return (theBox.CornerMin().x() + theBox.CornerMax().x()) * static_cast<T> (0.5);
+      }
+      else if (theAxis == 1)
+      {
+        return (theBox.CornerMin().y() + theBox.CornerMax().y()) * static_cast<T> (0.5);
+      }
+      else if (theAxis == 2)
+      {
+        return (theBox.CornerMin().z() + theBox.CornerMax().z()) * static_cast<T> (0.5);
+      }
+      return static_cast<T> (0.0);
+    }
+  };
+
+  template<class T>
+  struct CenterAxis<T, 4>
+  {
+    static T Center (const BVH_Box<T, 4>&   theBox,
+                     const Standard_Integer theAxis)
+    {
+      if (theAxis == 0)
+      {
+        return (theBox.CornerMin().x() + theBox.CornerMax().x()) * static_cast<T> (0.5);
+      }
+      else if (theAxis == 1)
+      {
+        return (theBox.CornerMin().y() + theBox.CornerMax().y()) * static_cast<T> (0.5);
+      }
+      else if (theAxis == 2)
+      {
+        return (theBox.CornerMin().z() + theBox.CornerMax().z()) * static_cast<T> (0.5);
+      }
+      return static_cast<T> (0.0);
+    }
+  };
+}
+
+// =======================================================================
+// function : Clear
+// purpose  :
+// =======================================================================
+template<class T, int N>
+void BVH_Box<T, N>::Clear()
+{
+  myInitialized = Standard_False;
+}
+
+// =======================================================================
+// function : Clear
+// purpose  :
+// =======================================================================
+template<class T, int N>
+Standard_Boolean BVH_Box<T, N>::IsValid() const
+{
+  return myInitialized;
+}
+
+// =======================================================================
+// function : Add
+// purpose  :
+// =======================================================================
+template<class T, int N>
+void BVH_Box<T, N>::Add (const BVH_VecNt& thePoint)
+{
+  if (!myInitialized)
+  {
+    myMinPoint = thePoint;
+    myMaxPoint = thePoint;
+
+    myInitialized = Standard_True;
+  }
+  else
+  {
+    myMinPoint = myMinPoint.cwiseMin (thePoint);
+    myMaxPoint = myMaxPoint.cwiseMax (thePoint);
+  }
+}
+
+// =======================================================================
+// function : Combine
+// purpose  :
+// =======================================================================
+template<class T, int N>
+void BVH_Box<T, N>::Combine (const BVH_Box& theBox)
+{
+  if (!theBox.myInitialized)
+  {
+    return;
+  }
+
+  if (!myInitialized)
+  {
+    myMinPoint = theBox.myMinPoint;
+    myMaxPoint = theBox.myMaxPoint;
+
+    myInitialized = Standard_True;
+  }
+  else
+  {
+    myMinPoint = myMinPoint.cwiseMin (theBox.myMinPoint);
+    myMaxPoint = myMaxPoint.cwiseMax (theBox.myMaxPoint);
+  }
+}
+
+namespace BVHTools
+{
+  template<class T, int N>
+  struct SurfaceCalculator
+  {
+    // Not implemented
+  };
+
+  template<class T>
+  struct SurfaceCalculator<T, 2>
+  {
+    static T Area (const typename BVH_Box<T, 2>::BVH_VecNt& theSize)
+    {
+      return theSize.x() * theSize.y();
+    }
+  };
+
+  template<class T>
+  struct SurfaceCalculator<T, 3>
+  {
+    static T Area (const typename BVH_Box<T, 3>::BVH_VecNt& theSize)
+    {
+      return ( theSize.x() * theSize.y() +
+               theSize.x() * theSize.z() +
+               theSize.z() * theSize.y() ) * static_cast<T> (2.0);
+    }
+  };
+
+  template<class T>
+  struct SurfaceCalculator<T, 4>
+  {
+    static T Area (const typename BVH_Box<T, 4>::BVH_VecNt& theSize)
+    {
+      return ( theSize.x() * theSize.y() +
+               theSize.x() * theSize.z() +
+               theSize.z() * theSize.y() ) * static_cast<T> (2.0);
+    }
+  };
+}
+
+// =======================================================================
+// function : Area
+// purpose  :
+// =======================================================================
+template<class T, int N>
+T BVH_Box<T, N>::Area() const
+{
+  return BVHTools::SurfaceCalculator<T, N>::Area (myMaxPoint - myMinPoint);
+}
+
+// =======================================================================
+// function : CornerMin
+// purpose  :
+// =======================================================================
+template<class T, int N>
+const typename BVH_Box<T, N>::BVH_VecNt& BVH_Box<T, N>::CornerMin() const
+{
+  return myMinPoint;
+}
+
+// =======================================================================
+// function : CornerMax
+// purpose  :
+// =======================================================================
+template<class T, int N>
+const typename BVH_Box<T, N>::BVH_VecNt& BVH_Box<T, N>::CornerMax() const
+{
+  return myMaxPoint;
+}
+
+// =======================================================================
+// function : CornerMin
+// purpose  :
+// =======================================================================
+template<class T, int N>
+typename BVH_Box<T, N>::BVH_VecNt& BVH_Box<T, N>::CornerMin()
+{
+  return myMinPoint;
+}
+
+// =======================================================================
+// function : CornerMax
+// purpose  :
+// =======================================================================
+template<class T, int N>
+typename BVH_Box<T, N>::BVH_VecNt& BVH_Box<T, N>::CornerMax()
+{
+  return myMaxPoint;
+}
+
+// =======================================================================
+// function : Size
+// purpose  :
+// =======================================================================
+template<class T, int N>
+typename BVH_Box<T, N>::BVH_VecNt BVH_Box<T, N>::Size() const
+{
+  return myMaxPoint - myMinPoint;
+}
+
+// =======================================================================
+// function : Center
+// purpose  :
+// =======================================================================
+template<class T, int N>
+typename BVH_Box<T, N>::BVH_VecNt BVH_Box<T, N>::Center() const
+{
+  return (myMinPoint + myMaxPoint) * static_cast<T> (0.5);
+}

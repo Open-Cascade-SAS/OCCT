@@ -1,0 +1,75 @@
+// Created on: 2014-01-10
+// Created by: Denis BOGOLEPOV
+// Copyright (c) 2013 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and / or modify it
+// under the terms of the GNU Lesser General Public version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+// =======================================================================
+// function : Perform
+// purpose  :
+// =======================================================================
+template<class T, int N>
+void BVH_Sorter<T, N>::Perform (BVH_Set<T, N>*         theSet,
+                                const Standard_Integer theAxis)
+{
+  Perform (theSet, theAxis, 0, theSet->Size() - 1);
+}
+
+// =======================================================================
+// function : Perform
+// purpose  :
+// =======================================================================
+template<class T, int N>
+void BVH_Sorter<T, N>::Perform (BVH_Set<T, N>*         theSet,
+                                const Standard_Integer theAxis,
+                                const Standard_Integer theBegElement,
+                                const Standard_Integer theEndElement)
+{
+  Standard_Integer aLft = theBegElement;
+  Standard_Integer aRgh = theEndElement;
+
+  T aPivot = theSet->Center ((aRgh + aLft) / 2, theAxis);
+
+  while (aLft < aRgh)
+  {
+    while (theSet->Center (aLft, theAxis) < aPivot && aLft < theEndElement)
+    {
+      ++aLft;
+    }
+
+    while (theSet->Center (aRgh, theAxis) > aPivot && aRgh > theBegElement)
+    {
+      --aRgh;
+    }
+
+    if (aLft <= aRgh)
+    {
+      if (aLft != aRgh)
+      {
+        theSet->Swap (aLft, aRgh);
+      }
+
+      ++aLft;
+      --aRgh;
+    }
+  }
+
+  if (aRgh > theBegElement)
+  {
+    Perform (theSet, theAxis, theBegElement, aRgh);
+  }
+
+  if (aLft < theEndElement)
+  {
+    Perform (theSet, theAxis, aLft, theEndElement);
+  }
+}

@@ -3,6 +3,7 @@ n NCollection
 p BSplCLib
 p BSplSLib
 p Bnd
+p BVH
 p CSLib
 p Convert
 p Dico

@@ -1,0 +1,183 @@
+// Created on: 2014-01-09
+// Created by: Denis BOGOLEPOV
+// Copyright (c) 2013 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and / or modify it
+// under the terms of the GNU Lesser General Public version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <BVH_Sorter.hxx>
+
+// =======================================================================
+// function : BVH_SweepPlaneBuilder
+// purpose  :
+// =======================================================================
+template<class T, int N>
+BVH_SweepPlaneBuilder<T, N>::BVH_SweepPlaneBuilder (const Standard_Integer theLeafNodeSize,
+                                                    const Standard_Integer theMaxTreeDepth)
+: BVH_Builder<T, N> (theLeafNodeSize,
+                     theMaxTreeDepth)
+{
+  //
+}
+
+// =======================================================================
+// function : ~BVH_SweepPlaneBuilder
+// purpose  :
+// =======================================================================
+template<class T, int N>
+BVH_SweepPlaneBuilder<T, N>::~BVH_SweepPlaneBuilder()
+{
+  //
+}
+
+// =======================================================================
+// function : BuildNode
+// purpose  :
+// =======================================================================
+template<class T, int N>
+void BVH_SweepPlaneBuilder<T, N>::BuildNode (BVH_Set<T, N>*         theSet,
+                                             BVH_Tree<T, N>*        theBVH,
+                                             const Standard_Integer theNode)
+{
+  const Standard_Integer aNodeBegPrimitive = theBVH->BegPrimitive (theNode);
+  const Standard_Integer aNodeEndPrimitive = theBVH->EndPrimitive (theNode);
+  const Standard_Integer aNodeNbPrimitives = theBVH->NbPrimitives (theNode);
+
+  // Parameters for storing best split
+  Standard_Integer aMinSplitAxis = -1;
+  Standard_Integer aMinSplitIndex = 0;
+
+  Standard_Real* aLftSet = new Standard_Real[aNodeNbPrimitives];
+  Standard_Real* aRghSet = new Standard_Real[aNodeNbPrimitives];
+
+  Standard_Real aMinSplitCost = std::numeric_limits<Standard_Real>::max();
+
+  // Find best split
+  for (Standard_Integer anAxis = 0; anAxis < (N < 4 ? N : 3); ++anAxis)
+  {
+    const T aNodeSize = BVHTools::VecComp<T, N>::Get (theBVH->MaxPoint (theNode), anAxis) -
+                        BVHTools::VecComp<T, N>::Get (theBVH->MinPoint (theNode), anAxis);
+    if (aNodeSize <= THE_NODE_MIN_SIZE)
+    {
+      continue;
+    }
+
+    BVH_Sorter<T, N>::Perform (theSet, anAxis, aNodeBegPrimitive, aNodeEndPrimitive);
+
+    BVH_Box<T, N> aLftBox;
+    BVH_Box<T, N> aRghBox;
+
+    *aLftSet = std::numeric_limits<T>::max();
+    *aRghSet = std::numeric_limits<T>::max();
+
+    // Sweep from left
+    for (Standard_Integer anIndex = 1; anIndex < aNodeNbPrimitives; ++anIndex)
+    {
+      aLftBox.Combine (theSet->Box (anIndex + aNodeBegPrimitive - 1));
+
+      aLftSet[anIndex] = static_cast<Standard_Real> (aLftBox.Area());
+    }
+
+    // Sweep from right
+    for (Standard_Integer anIndex = 1; anIndex < aNodeNbPrimitives; ++anIndex)
+    {
+      aRghBox.Combine (theSet->Box (aNodeEndPrimitive - anIndex + 1));
+
+      aRghSet[anIndex] = static_cast<Standard_Real> (aRghBox.Area());
+    }
+
+    // Find best split using simplified SAH
+    for (Standard_Integer aNbLft = 1, aNbRgh = aNodeNbPrimitives - 1; aNbLft < aNodeNbPrimitives; ++aNbLft, --aNbRgh)
+    {
+      Standard_Real aCost = (aLftSet[aNbLft] /* / aNodeArea */) * aNbLft +
+                            (aRghSet[aNbRgh] /* / aNodeArea */) * aNbRgh;
+
+      if (aCost < aMinSplitCost)
+      {
+        aMinSplitCost = aCost;
+        aMinSplitAxis = anAxis;
+        aMinSplitIndex = aNbLft;
+      }
+    }
+  }
+
+  if (aMinSplitAxis == -1)
+  {
+    return;
+  }
+
+  theBVH->SetInner (theNode);
+
+  if (aMinSplitAxis != (N < 4 ? N - 1 : 2))
+  {
+    BVH_Sorter<T, N>::Perform (theSet, aMinSplitAxis, aNodeBegPrimitive, aNodeEndPrimitive);
+  }
+
+  BVH_Box<T, N> aMinSplitBoxLft;
+  BVH_Box<T, N> aMinSplitBoxRgh;
+
+  // Compute bounding boxes for selected split plane
+  for (Standard_Integer anIndex = aNodeBegPrimitive; anIndex < aMinSplitIndex + aNodeBegPrimitive; ++anIndex)
+  {
+    aMinSplitBoxLft.Combine (theSet->Box (anIndex));
+  }
+
+  for (Standard_Integer anIndex = aNodeEndPrimitive; anIndex >= aMinSplitIndex + aNodeBegPrimitive; --anIndex)
+  {
+    aMinSplitBoxRgh.Combine (theSet->Box (anIndex));
+  }
+
+  const Standard_Integer aMiddle = aNodeBegPrimitive + aMinSplitIndex;
+
+  static const Standard_Integer aLftNode = 1;
+  static const Standard_Integer aRghNode = 2;
+
+  // Setting up tasks for child nodes
+  for (Standard_Integer aSide = aLftNode; aSide <= aRghNode; ++aSide)
+  {
+    typename BVH_Box<T, N>::BVH_VecNt aChildMinPoint = (aSide == aLftNode)
+                                                     ? aMinSplitBoxLft.CornerMin()
+                                                     : aMinSplitBoxRgh.CornerMin();
+    typename BVH_Box<T, N>::BVH_VecNt aChildMaxPoint = (aSide == aLftNode)
+                                                     ? aMinSplitBoxLft.CornerMax()
+                                                     : aMinSplitBoxRgh.CornerMax();
+
+    Standard_Integer aChildBegPrimitive = (aSide == aLftNode)
+                                        ? aNodeBegPrimitive
+                                        : aMiddle;
+    Standard_Integer aChildEndPrimitive = (aSide == aLftNode)
+                                        ? aMiddle - 1
+                                        : aNodeEndPrimitive;
+
+    Standard_Integer aChildIndex = theBVH->AddLeafNode (aChildMinPoint, aChildMaxPoint,
+                                                        aChildBegPrimitive, aChildEndPrimitive);
+
+    theBVH->Level (aChildIndex) = theBVH->Level (theNode) + 1;
+
+    // Check to see if child node must be split
+    const Standard_Integer aChildNbPimitives = (aSide == aLftNode)
+                                             ? aMiddle - aNodeBegPrimitive
+                                             : aNodeEndPrimitive - aMiddle + 1;
+
+    if (aSide == aLftNode)
+      theBVH->LeftChild (theNode) = aChildIndex;
+    else
+      theBVH->RightChild (theNode) = aChildIndex;
+
+    const Standard_Boolean isLeaf = aChildNbPimitives <= BVH_Builder<T, N>::myLeafNodeSize
+                                 || theBVH->Level (aChildIndex) >= BVH_Builder<T, N>::myMaxTreeDepth;
+
+    if (!isLeaf)
+    {
+      BVH_Builder<T, N>::myTasksQueue.Append (aChildIndex);
+    }
+  }
+}
