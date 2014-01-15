@@ -21,6 +21,7 @@
 #include <OpenGl_Text.hxx>
 #include <Graphic3d_CGraduatedTrihedron.hxx>
 
+class Visual3d_View;
 class OpenGl_View;
 
 class OpenGl_GraduatedTrihedron : public OpenGl_Element
@@ -73,8 +74,8 @@ protected:
   TEL_COLOUR myXColor;
   TEL_COLOUR myYColor;
   TEL_COLOUR myZColor;
-  minMaxValuesCallback myCbCubicAxes;
-  void* myPtrVisual3dView;
+  Graphic3d_CGraduatedTrihedron::minMaxValuesCallback myCbCubicAxes;
+  Visual3d_View* myPtrVisual3dView;
 
 public:
 

@@ -148,61 +148,26 @@ void IntPatch_Point::Dump() const {
   cout<<"----------- IntPatch_Point : "<<endl;
   Standard_Real u1,v1,u2,v2;
   pt.Parameters(u1,v1,u2,v2);
-#if 0 
-  cout<<"IntSurf_PntOn2S :   Pnt ("<<pt.Value().X()
-    <<","<<pt.Value().Y()<<","<<pt.Value().Z()<<")"<<endl;
-  cout<<" u1:"<<u1;  cout<<" u2:"<<u2;
-  cout<<" v1:"<<v1;
-  cout<<" v2:"<<v2<<endl;
-  cout<<"  para("<<para<<")";
-  cout<<"  mult("<<mult<<")";
-  cout<<"  OnS1("<<onS1<<")";
-  cout<<"  VtxOnS1("<<vtxonS1<<")"<<endl;
-  cout<<"  OnS2("<<onS2<<")";
-  cout<<"  VtxOnS2("<<vtxonS2<<")";
-  cout<<"  prm1("<<prm1<<")";
-  cout<<"  prm2("<<prm2<<")";
-#else
 
-#ifndef DEB //  for porting on linux
   printf("P(%15.10f,%15.10f,%15.10f) UV1(%15.10f,%15.10f)  UV2(%15.10f,%15.10f) (Para:%15.10f)\n",
 	 (double)(pt.Value().X()),
 	 (double)(pt.Value().Y()),
 	 (double)(pt.Value().Z()),
 	 (double)u1,(double)v1,(double)u2,(double)v2,(double)para);
-  if(onS1)    { printf("*OnS1*  par=%15.10f arc1=%10lu",(double)prm1,
-		       *((long unsigned *)(((Handle_Standard_Transient *)(&arcS1))))
-		       );  }
-  if(vtxonS1) { printf(" *Vtx1*  vtx1=%10lu",
-		       *((long unsigned *)(((Handle_Standard_Transient *)(&vS1))))); } 
+  if(onS1)
+    printf("*OnS1*  par=%15.10f arc1=%10p", (double)prm1, (void*)arcS1.operator->());
+  if(vtxonS1)
+    printf(" *Vtx1*  vtx1=%10p", (void*)vS1.operator->());
   if(onS1 || vtxonS1) printf("\n");
-  if(onS2)    { printf("*OnS2*  par=%15.10f arc2=%10lu",(double)prm2,
-		       *((long unsigned *)(((Handle_Standard_Transient *)(&arcS2))))); } 
-  if(vtxonS2) { printf(" *Vtx2*  vtx2=%10lu",
-		       *((long unsigned *)(((Handle_Standard_Transient *)(&vS2))))); } 
-  
-#else // debug mode
-  printf("P(%15.10lf,%15.10lf,%15.10lf) UV1(%15.10lf,%15.10lf)  UV2(%15.10lf,%15.10lf) (Para:%15.10lf)\n",
-	 (double)(pt.Value().X()),
-	 (double)(pt.Value().Y()),
-	 (double)(pt.Value().Z()),
-	 (double)u1,(double)v1,(double)u2,(double)v2,(double)para);
-  if(onS1)    { printf("*OnS1*  par=%15.10lf arc1=%10lu",(double)prm1,
-		       *((long unsigned *)(((Handle_Standard_Transient *)(&arcS1))))
-		       );  }
-  if(vtxonS1) { printf(" *Vtx1*  vtx1=%10lu",
-		       *((long unsigned *)(((Handle_Standard_Transient *)(&vS1))))); } 
-  if(onS1 || vtxonS1) printf("\n");
-  if(onS2)    { printf("*OnS2*  par=%15.10lf arc2=%10lu",(double)prm2,
-		       *((long unsigned *)(((Handle_Standard_Transient *)(&arcS2))))); } 
-  if(vtxonS2) { printf(" *Vtx2*  vtx2=%10lu",
-		       *((long unsigned *)(((Handle_Standard_Transient *)(&vS2))))); } 
-  
-#endif
-  if(onS2 || vtxonS2) printf("\n");
+  if(onS2)
+    printf("*OnS2*  par=%15.10f arc2=%10p", (double)prm2, (void*)arcS2.operator->());
+  if(vtxonS2)
+    printf(" *Vtx2*  vtx2=%10lu", (void*)vS2.operator->());
+
+  if(onS2 || vtxonS2)
+    printf("\n");
   fflush(stdout);
-  
-#endif  
+
   if(onS1 || onS2) { 
     cout<<" tgt:"<<((tgt)? 1 : 0) <<"   mult:"<<((mult)? 1 :0);
     if(onS1) { 

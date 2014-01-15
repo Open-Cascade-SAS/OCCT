@@ -193,13 +193,10 @@ template < class TheKey1Type,
   //! ReSize
   void ReSize (const Standard_Integer N)
   {
-    DoubleMapNode** ppNewData1 = NULL;
-    DoubleMapNode** ppNewData2 = NULL;
+    NCollection_ListNode** ppNewData1 = NULL;
+    NCollection_ListNode** ppNewData2 = NULL;
     Standard_Integer newBuck;
-    if (BeginResize (N, newBuck, 
-                     (NCollection_ListNode**&)ppNewData1, 
-                     (NCollection_ListNode**&)ppNewData2,
-                     this->myAllocator)) 
+    if (BeginResize (N, newBuck, ppNewData1, ppNewData2, this->myAllocator)) 
     {
       if (myData1) 
       {
@@ -216,7 +213,7 @@ template < class TheKey1Type,
               iK2 = Hasher2::HashCode (p->Key2(), newBuck);
               q = (DoubleMapNode*) p->Next();
               p->Next()  = ppNewData1[iK1];
-              p->Next2() = ppNewData2[iK2];
+              p->Next2() = (DoubleMapNode*)ppNewData2[iK2];
               ppNewData1[iK1] = p;
               ppNewData2[iK2] = p;
               p = q;
@@ -224,10 +221,7 @@ template < class TheKey1Type,
           }
         }
       }
-      EndResize(N,newBuck,
-                (NCollection_ListNode**&)ppNewData1,
-                (NCollection_ListNode**&)ppNewData2,
-                this->myAllocator);
+      EndResize (N, newBuck, ppNewData1, ppNewData2, this->myAllocator);
     }
   }
 

@@ -344,8 +344,7 @@ void XmlMNaming_NamedShapeDriver::ReadShapeSection
          aNode = anElement.getNextSibling())
     {
       if (aNode.getNodeType() == LDOM_Node::TEXT_NODE) {
-        LDOM_Text aText = (LDOM_Text&) aNode;
-        LDOMString aData = aText.getData();
+        LDOMString aData = aNode.getNodeValue();
 	#ifdef USE_STL_STREAM
         std::stringstream aStream (std::string(aData.GetString()));
 	#else
