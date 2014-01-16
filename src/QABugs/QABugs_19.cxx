@@ -1428,6 +1428,70 @@ static Standard_Integer OCC24271 (Draw_Interpretor& di,
   return 0;
 }
 
+#include <ShapeFix_EdgeProjAux.hxx>
+static Standard_Integer OCC24370 (Draw_Interpretor& di, Standard_Integer argc,const char ** argv)
+{
+  if (argc < 5) {
+    di<<"Usage: " << argv[0] << " invalid number of arguments"<<"\n";
+    return 1;
+  }
+
+  TopoDS_Shape aSh = DBRep::Get(argv[1]);
+  if (aSh.IsNull()) {
+    di << argv[0] << " Error: Null input edge\n";
+    return 1;
+  }
+  const TopoDS_Edge& anEdge = TopoDS::Edge (aSh);
+
+  Handle(Geom2d_Curve) aC = DrawTrSurf::GetCurve2d(argv[2]);
+  if (aC.IsNull()) {
+    di << argv[0] << " Error: Null input curve\n";
+    return 1;
+  }
+
+  Handle(Geom_Surface) aS = DrawTrSurf::GetSurface(argv[3]);
+  if (aS.IsNull()) {
+    di << argv[0] << " Error: Null input surface\n";
+    return 1;
+  }
+
+  Standard_Real prec = Draw::Atof(argv[4]);
+  
+  //prepare data
+  TopoDS_Face aFace;
+  BRep_Builder aB;
+  aB.MakeFace (aFace, aS, Precision::Confusion());
+  aB.UpdateEdge (anEdge, aC, aFace, Precision::Confusion());
+  aB.Range (anEdge, aFace, aC->FirstParameter(), aC->LastParameter());
+
+  //call algorithm
+  ShapeFix_EdgeProjAux aProj (aFace, anEdge);
+  aProj.Compute (prec);
+  
+  Standard_Boolean isfirstdone = aProj.IsFirstDone();
+  Standard_Boolean islastdone = aProj.IsLastDone();
+
+  Standard_Real first = 0.;
+  Standard_Real last = 0.;
+  Standard_Integer isfirstdoneInteger = 0;
+  Standard_Integer islastdoneInteger = 0;
+
+
+  if (isfirstdone) {
+    first = aProj.FirstParam();
+    isfirstdoneInteger = 1;
+  }
+ 
+  if (islastdone) {
+    last= aProj.LastParam();
+    islastdoneInteger = 1;
+  }
+
+  di << isfirstdoneInteger << " "<< islastdoneInteger << " "<< first << " "<< last << " \n";
+
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -1451,5 +1515,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC24005", "OCC24005 result", __FILE__, OCC24005, group);
   theCommands.Add ("OCC24137", "OCC24137 face vertex U V [N]", __FILE__, OCC24137, group);
   theCommands.Add ("OCC24271", "Boolean operations on NCollection_Map", __FILE__, OCC24271, group);
+  theCommands.Add ("OCC24370", "OCC24370 edge pcurve surface prec", __FILE__, OCC24370, group);
   return;
 }

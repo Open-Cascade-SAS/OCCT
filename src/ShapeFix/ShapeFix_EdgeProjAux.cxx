@@ -92,7 +92,8 @@ void ShapeFix_EdgeProjAux::Compute (const Standard_Real preci)
     
   // Project Point3d on Surface
   // TEMPORARY Call ShapeFix_EdgeProjAux
-
+  myFirstParam = 0.;
+  myLastParam = 0.;
   Init2d(preci);
   if (IsFirstDone() && IsLastDone()) {
     Standard_Real U1 = FirstParam();
@@ -223,14 +224,14 @@ static Standard_Boolean FindParameterWithExt (const gp_Pnt& Pt1,
 
 void ShapeFix_EdgeProjAux::Init2d (const Standard_Real preci) 
 {
-  Standard_Real cl, cf;
-
-  // Extract Geometries
+  Standard_Real cl = 0., cf = 0.;
+    // Extract Geometries
+  myFirstDone = myLastDone = Standard_False;
   Handle(Geom_Surface) theSurface = BRep_Tool::Surface(myFace);
   Handle(Geom2d_Curve) theCurve2d = BRep_Tool::CurveOnSurface(myEdge, myFace, cf, cl);
   if ( theCurve2d.IsNull() ) return; //:r5 abv 6 Apr 99:  ec_turbine-A.stp, #4313
-  myFirstParam = cf;
-  myLastParam  = cl;
+  myFirstParam = 0.;
+  myLastParam  = 0.;
   TopoDS_Vertex V1,V2;
   TopExp::Vertices(myEdge, V1, V2);
   gp_Pnt Pt1,Pt2;
@@ -348,8 +349,7 @@ void ShapeFix_EdgeProjAux::Init2d (const Standard_Real preci)
 #endif 
     }
   }
-  myFirstParam = cf;
-  myLastParam  = cl;
+
   Geom2dAdaptor_Curve          CA     = Geom2dAdaptor_Curve(theCurve2d,cf,cl);
   Handle(Geom2dAdaptor_HCurve) myHCur = new Geom2dAdaptor_HCurve(CA);
 
@@ -360,37 +360,32 @@ void ShapeFix_EdgeProjAux::Init2d (const Standard_Real preci)
   // ----------------------------------------------
   Standard_Real Uinf = COnS.FirstParameter();
   Standard_Real Usup = COnS.LastParameter();
-  myFirstDone = myLastDone = Standard_True;
+ 
   Standard_Real w1 = 0., w2 = 0.;
   ShapeAnalysis_Curve sac;
   gp_Pnt pnt;
   Standard_Real dist = sac.Project(COnS,Pt1,preci,pnt,w1,Standard_False);
   //if distance is infinite then projection is not performed
   if( Precision::IsInfinite(dist))
-  {
-    myFirstDone = Standard_False;
-    myLastDone = Standard_False;
     return;
-  }
-
-  if (dist > preci) 
-    return;
+  
+  myFirstDone = Standard_True;
+  myFirstParam = w1;
+ 
   dist = sac.Project(COnS,Pt2,preci,pnt,w2,Standard_False);
+  
   if( Precision::IsInfinite(dist))
-  {
-    myLastDone = Standard_False;
     return;
-  }
-  if (dist > preci) 
-    return;
+  
+  myLastDone = Standard_True;
+  myLastParam  = w2;
+    
   if(fabs(w1 - w2) < Precision::PConfusion())
   {
     if(!theSurface->IsUPeriodic() && !theSurface->IsVPeriodic())
       return;
   }
-  myFirstParam = w1;
-  myLastParam  = w2;
-  myFirstDone = myLastDone = Standard_True;
+    
   if ( myFirstParam == Uinf && myLastParam == Usup ) return;
   if ( myFirstParam == Usup && myLastParam == Uinf ) {
     myFirstParam = theCurve2d->ReversedParameter(Usup);

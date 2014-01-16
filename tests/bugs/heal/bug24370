@@ -1,0 +1,31 @@
+puts "============"
+puts "OCC24370"
+puts "============"
+puts ""
+###################################################
+## [Regression] 6.7.0beta ShapeFix_EdgeProjAux breaks conventions on using IsDone flag
+###################################################
+
+pload QAcommands
+
+restore [locate_data_file bug24370_edge.brep] edge
+restore [locate_data_file bug24370_pcurve_draw] pcurve
+restore [locate_data_file bug24370_surface_draw] surface
+set precision 0.001
+
+set info [OCC24370 edge pcurve surface ${precision}]
+
+set IsFirstDone [lindex ${info} 0]
+set IsLastDone [lindex ${info} 1]
+set First [lindex ${info} 2]
+set Last [lindex ${info} 3]
+
+set expected_First 0
+set tol_abs_First 1.0e-03
+set tol_rel_First 0.01
+checkreal "First" ${First} ${expected_First} ${tol_abs_First} ${tol_rel_First}
+
+set expected_Last 1
+set tol_abs_Last 1.0e-03
+set tol_rel_Last 0.01
+checkreal "Last" ${Last} ${expected_Last} ${tol_abs_Last} ${tol_rel_Last}
