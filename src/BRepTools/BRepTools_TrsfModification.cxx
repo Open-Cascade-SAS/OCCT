@@ -30,6 +30,7 @@
 
 #include <TopoDS.hxx>
 #include <Precision.hxx>
+#include <GeomAdaptor_Surface.hxx>
 
 //=======================================================================
 //function : BRepTools_TrsfModification
@@ -147,6 +148,9 @@ Standard_Boolean BRepTools_TrsfModification::NewCurve2d
   Standard_Real scale = myTrsf.ScaleFactor();
   Tol *= Abs(scale);
   const Handle(Geom_Surface)& S = BRep_Tool::Surface(F,loc);
+  GeomAdaptor_Surface GAsurf(S);
+  if (GAsurf.GetType() == GeomAbs_Plane)
+    return Standard_False;
 
   Standard_Real f,l;
   Handle(Geom2d_Curve) NewC = BRep_Tool::CurveOnSurface(E,F,f,l);

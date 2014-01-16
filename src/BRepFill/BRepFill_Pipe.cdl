@@ -14,6 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
+
 class Pipe from BRepFill 
 
 	---Purpose: Create a  shape by sweeping a shape  (the profile)
@@ -26,6 +27,8 @@ class Pipe from BRepFill
 uses
 
     HArray2OfShape from TopTools,
+    MapOfShape     from TopTools,
+    DataMapOfShapeHArray2OfShape from BRepFill,
     LocationLaw  from BRepFill,
     Shape  from TopoDS,
     Face   from TopoDS,
@@ -108,7 +111,7 @@ is
     is static; 
      
      
-    PipeLine(me;  Point :  Pnt  from  gp)  
+    PipeLine(me : in out;  Point :  Pnt  from  gp)  
 	---Purpose: Create a Wire by sweeping the Point along the <spine>
     returns  Wire  from  TopoDS 
     raises
@@ -145,6 +148,10 @@ is
     DefineRealSegmax(me : in out)
     is static private; 
     
+    RebuildTopOrBottomFace(me; aFace: Shape from TopoDS;
+    	    	    	       IsTop: Boolean from Standard)
+    is static private; 
+    
     ShareFaces(me: in out; theShape: Shape from TopoDS;
                            theInitialFacesLen: Integer;
                            theInitialEdgesLen: Integer;
@@ -164,7 +171,10 @@ fields
     myLoc     : LocationLaw  from BRepFill;
     mySections: HArray2OfShape from TopTools; 
     myFaces   : HArray2OfShape from TopTools;  
-    myEdges   : HArray2OfShape from TopTools;     
+    myEdges   : HArray2OfShape from TopTools;  
+    myReversedEdges : MapOfShape from TopTools;  
+    myTapes   : DataMapOfShapeHArray2OfShape from BRepFill;
+    myCurIndexOfSectionEdge : Integer from Standard;
     myFirst   :  Shape  from  TopoDS; 
     myLast    :  Shape  from  TopoDS; 
      

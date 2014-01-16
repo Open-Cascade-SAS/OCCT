@@ -21,14 +21,14 @@ pipe result spine profile 2 approx
 
 set square 516.633
 
-set nb_v_good 4
-set nb_e_good 7
+set nb_v_good 8
+set nb_e_good 10
 set nb_w_good 3
 set nb_f_good 3
 set nb_sh_good 1
 set nb_sol_good 0
 set nb_compsol_good 0
 set nb_compound_good 0
-set nb_shape_good 18
+set nb_shape_good 25
 
 set 2dviewer 1

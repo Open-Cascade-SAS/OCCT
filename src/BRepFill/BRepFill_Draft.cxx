@@ -14,11 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+
 #include <BRepFill_Draft.ixx>
 
 #include <BRepFill_DraftLaw.hxx>
 #include <BRepFill_ShapeLaw.hxx>
 #include <BRepFill_Sweep.hxx>
+#include <BRepFill_DataMapOfShapeHArray2OfShape.hxx>
 
 #include <BndLib_Add3dCurve.hxx>
 #include <BndLib_AddSurface.hxx>
@@ -519,7 +521,9 @@ static Standard_Boolean GoodOrientation(const Bnd_Box& B,
   BRepFill_Sweep Sweep(mySec, myLoc, Standard_True);
   Sweep.SetTolerance(myTol);
   Sweep.SetAngularControl(angmin, angmax);
-  Sweep.Build(myStyle, myCont);
+  TopTools_MapOfShape Dummy;
+  BRepFill_DataMapOfShapeHArray2OfShape Dummy2;
+  Sweep.Build(Dummy, Dummy2, myStyle, myCont);
   if (Sweep.IsDone()) {
     myShape = Sweep.Shape();
     myShell = TopoDS::Shell(myShape);

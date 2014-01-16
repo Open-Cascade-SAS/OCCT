@@ -1,0 +1,57 @@
+puts "============"
+puts "CR24204"
+puts "============"
+puts ""
+################################################################################################################################
+# The algorithm BRepOffsetAPI_MakePipeShell produces resulting shape with unwarrantably big tolerance
+################################################################################################################################
+
+restore [locate_data_file bug24204_outerWire1.brep] w1
+restore [locate_data_file bug24204_outerWire2.brep] w2
+restore [locate_data_file bug24204_path.brep] sp
+
+wire w1 w1
+wire w2 w2
+wire sp sp
+
+mksweep sp
+addsweep w1
+addsweep w2
+
+buildsweep result
+
+set log_result [tolmax result]
+regexp {max tol = ([-0-9.+eE]+)} ${log_result} full tolmax_result
+
+set log_w1 [tolmax w1]
+regexp {max tol = ([-0-9.+eE]+)} ${log_w1} full tolmax_w1
+set log_w2 [tolmax w2]
+regexp {max tol = ([-0-9.+eE]+)} ${log_w2} full tolmax_w2
+set log_sp [tolmax sp]
+regexp {max tol = ([-0-9.+eE]+)} ${log_sp} full tolmax_sp
+
+set tolmax_s ${tolmax_w1}
+if { ${tolmax_w2} > ${tolmax_s} } {
+   set tolmax_s ${tolmax_w2}
+}
+if { ${tolmax_sp} > ${tolmax_s} } {
+   set tolmax_s ${tolmax_sp}
+}
+
+if { ${tolmax_result} > [expr 2 * ${tolmax_s}] } {
+   puts "Error : big tolerance of result"
+}
+
+set square 3.44584
+
+set nb_v_good 2
+set nb_e_good 3
+set nb_w_good 1
+set nb_f_good 1
+set nb_sh_good 1
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 8
+
+set 3dviewer 1

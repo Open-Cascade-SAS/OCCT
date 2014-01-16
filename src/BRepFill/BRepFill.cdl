@@ -189,6 +189,12 @@ is
 		    	    	      	     ListOfShape            from TopTools,  
     	    	    	    	      	     OrientedShapeMapHasher from TopTools); 
 
+    class DataMapOfShapeHArray2OfShape	instantiates
+        	DataMap from TCollection (Shape          from TopoDS,
+    	    	    	    	          HArray2OfShape from TopTools,
+    	    	    	    	          ShapeMapHasher from TopTools); 
+
+
     class CurveConstraint ;
 	---Purpose: same as CurveConstraint from GeomPlate
 	--          with BRepAdaptor_Surface instead of 

@@ -6,8 +6,10 @@ puts ""
 ##############################
 ## No any faces in result of pipe command.
 ##############################
+pload ALL
 
 restore [locate_data_file OCC605a.brep] w1 
+settolerance w1 1.e-7
 checkshape w1
 restore [locate_data_file OCC605b.brep] w2 
 checkshape w2

@@ -91,6 +91,7 @@
 #include <TColStd_Array2OfReal.hxx>
 #include <TColGeom_Array2OfSurface.hxx>
 #include <TColgp_Array1OfPnt.hxx>
+#include <TColStd_Array1OfBoolean.hxx>
 
 #include <TopTools_Array1OfShape.hxx>
 #include <TopTools_Array2OfShape.hxx>
@@ -99,6 +100,7 @@
 #include <TopTools_ListIteratorOfListOfShape.hxx> 
 #include <TopTools_ListOfShape.hxx> 
 #include <TopTools_IndexedDataMapOfShapeListOfShape.hxx>
+#include <TopTools_SequenceOfShape.hxx> 
 #include <BRepTools_WireExplorer.hxx>
 
 #include <Standard_ConstructionError.hxx>
@@ -1935,6 +1937,8 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
  BuildShell(const BRepFill_TransitionStyle /*Transition*/,
 	    const Standard_Integer IFirst,
 	    const Standard_Integer ILast,
+            TopTools_MapOfShape& ReversedEdges,
+            BRepFill_DataMapOfShapeHArray2OfShape& Tapes,
 	    const Standard_Real ExtendFirst,
 	    const Standard_Real ExtendLast) 
 {
@@ -2062,8 +2066,31 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
   Standard_Boolean exuv, singu, singv;
   Handle(Geom_Surface) S;
 
+  // Preprocessing: correct <FirstShape> if the profile is shell
+  if (!ReversedEdges.IsEmpty())
+  {
+    TopTools_SequenceOfShape EdgesToReverse;
+    TopoDS_Iterator itw(FirstShape);
+    for (; itw.More(); itw.Next())
+    {
+      const TopoDS_Shape& anEdge = itw.Value();
+      if (ReversedEdges.Contains(anEdge))
+        EdgesToReverse.Append(anEdge);
+    }
+    FirstShape.Free(Standard_True);
+    for (Standard_Integer i = 1; i <= EdgesToReverse.Length(); i++)
+    {
+      B.Remove(FirstShape, EdgesToReverse(i));
+      EdgesToReverse(i).Reverse();
+      B.Add(FirstShape, EdgesToReverse(i));
+    }
+  }
+
   // (2.0) return preexisting Edges and vertices
   TopoDS_Edge E;
+  TColStd_Array1OfBoolean IsBuilt(1, NbLaw);
+  IsBuilt.Init(Standard_False);
+  TopTools_Array1OfShape StartEdges(1, NbLaw);
   if (! FirstShape.IsNull() && (IFirst==1)) {
     mySec->Init(FirstShape);
     for (isec=1; isec<=NbLaw; isec++) {
@@ -2075,7 +2102,53 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
         Vertex(isec+1, 1) =  TopExp::LastVertex(E);
       UpdateVertex(IFirst-1, isec+1, 
                    TabErr(isec, 1), Vi(1),  Vertex(isec+1, 1));
+
+      StartEdges(isec) = E;
+      if (Tapes.IsBound(E))
+      {
+        IsBuilt(isec) = Standard_True;
+        
+        //Initialize VEdge, UEdge, Vertex and myFaces
+        Standard_Integer j;
+        for (j = 1; j <= NbPath+1; j++)
+        {
+          VEdge(isec, j) = Tapes(E)->Value(1, j);
+          VEdge(isec, j).Reverse(); //direction of round is reversed
+        }
+        Standard_Integer ifirst = isec+1, ilast = isec; //direction of round is reversed
+        for (j = 1; j <= NbPath; j++)
+          UEdge(ifirst, j) = Tapes(E)->Value(2, j);
+        for (j = 1; j <= NbPath; j++)
+          UEdge(ilast, j) = Tapes(E)->Value(3, j);
+        for (j = 1; j <= NbPath+1; j++)
+          Vertex(ifirst, j) = Tapes(E)->Value(4, j);
+        for (j = 1; j <= NbPath+1; j++)
+          Vertex(ilast, j) = Tapes(E)->Value(5, j);
+        for (j = 1; j <= NbPath; j++)
+          myFaces->SetValue(isec, j, Tapes(E)->Value(6, j));
+
+        if (uclose && isec == 1)
+        {
+          for (j = 1; j <= NbPath; j++)
+            UEdge(NbLaw+1, j) = UEdge(1, j);
+          for (j = 1; j <= NbPath+1; j++)
+            Vertex(NbLaw+1, j) = Vertex(1, j);
+        }
+        if (uclose && isec == NbLaw)
+        {
+          for (j = 1; j <= NbPath; j++)
+            UEdge(1, j) = UEdge(NbLaw+1, j);
+          for (j = 1; j <= NbPath+1; j++)
+            Vertex(1, j) = Vertex(NbLaw+1, j);
+        }
+      }
+      else
+      {
+        Handle(TopTools_HArray2OfShape) EmptyArray = new TopTools_HArray2OfShape(1, 6, 1, NbPath+1);
+        Tapes.Bind(E, EmptyArray);
+      }
     }
+    
     if (VEdge(1, 1).Orientation() == TopAbs_REVERSED)
       Vertex(1, 1) =  TopExp::LastVertex(TopoDS::Edge(VEdge(1, 1)));
     else
@@ -2083,128 +2156,152 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
     UpdateVertex(IFirst-1, 1, 
                  TabErr(1, 1), Vi(1),  Vertex(1, 1));
   }
-  else { // Otherwise construct vertices
-    Standard_Real u, v, aux;
-    Standard_Boolean ureverse;
-    for (isec=1; isec<=NbLaw+1; isec++) {
-      // Return data
-      if (isec >NbLaw) {
-        S = TabS(NbLaw, 1);
-        ureverse = UReverse(NbLaw, 1);
-        exuv = ExchUV(NbLaw, 1);
+  
+  Standard_Real u, v, aux;
+  Standard_Boolean ureverse;
+  for (isec=1; isec<=NbLaw+1; isec++) {
+    // Return data
+    if (isec >NbLaw) {
+      S = TabS(NbLaw, 1);
+      ureverse = UReverse(NbLaw, 1);
+      exuv = ExchUV(NbLaw, 1);
+    }
+    else {
+      S = TabS(isec, 1);
+      ureverse = UReverse(isec, 1);
+      exuv = ExchUV(isec, 1);
+    }
+    S->Bounds(UFirst, ULast, VFirst, VLast);
+    
+    // Choice of parameters
+    if (ureverse) {
+      if (exuv) {
+        aux = VFirst; VFirst = VLast; VLast = aux;	  
       }
       else {
-        S = TabS(isec, 1);
-        ureverse = UReverse(isec, 1);
-        exuv = ExchUV(isec, 1);
+        aux = UFirst; UFirst = ULast; ULast = aux;
       }
-      S->Bounds(UFirst, ULast, VFirst, VLast);
-
-      // Choice of parameters
-      if (ureverse) {
-        if (exuv) {
-          aux = VFirst; VFirst = VLast; VLast = aux;	  
-        }
-        else {
-          aux = UFirst; UFirst = ULast; ULast = aux;
-        }
-      }
-      if (isec!= NbLaw+1) {
+    }
+    if (isec!= NbLaw+1) {
+      u = UFirst;
+      v = VFirst;
+    }
+    else {
+      if (exuv) {
         u = UFirst;
+          v = VLast;
+      }
+      else {
+        u = ULast;
         v = VFirst;
       }
-      else {
-        if (exuv) {
-          u = UFirst;
-          v = VLast;
-        }
-        else {
-          u = ULast;
-          v = VFirst;
-        }
-      }
-
-      // construction of vertices
+    }
+    
+    // construction of vertices
+    if (Vertex(isec, 1).IsNull())
       B.MakeVertex(TopoDS::Vertex(Vertex(isec, 1)), 
                    S->Value(u,v), 
                    mySec->VertexTol(isec-1,Vi(1)));
+    else
+    {
+      TopLoc_Location Identity;
+      Vertex(isec, 1).Location(Identity);
+      B.UpdateVertex(TopoDS::Vertex(Vertex(isec, 1)),
+                     S->Value(u,v), 
+                       mySec->VertexTol(isec-1,Vi(1)));
     }
-  }
-
+  } //end of for (isec=1; isec<=NbLaw+1; isec++)
+  
   if (! LastShape.IsNull() && (ILast==myLoc->NbLaw()+1) ) {
     mySec->Init(LastShape);
     for (isec=1; isec<=NbLaw; isec++) {
       E = mySec->CurrentEdge();
-      VEdge(isec, NbPath+1) = E;
-      if (E.Orientation() == TopAbs_REVERSED)
-        Vertex(isec+1, NbPath+1) = TopExp::FirstVertex(E);
-      else 
-        Vertex(isec+1, NbPath+1) = TopExp::LastVertex(E);
+      if (VEdge(isec, NbPath+1).IsNull())
+        VEdge(isec, NbPath+1) = E;
+
+      if (Vertex(isec+1, NbPath+1).IsNull())
+      {
+        if (VEdge(isec, NbPath+1).Orientation() == TopAbs_REVERSED)
+          Vertex(isec+1, NbPath+1) = TopExp::FirstVertex(TopoDS::Edge(VEdge(isec, NbPath+1)));
+        else 
+          Vertex(isec+1, NbPath+1) = TopExp::LastVertex(TopoDS::Edge(VEdge(isec, NbPath+1)));
+      }
       UpdateVertex(ILast-1, isec+1, TabErr(isec, NbPath), 
                    Vi(NbPath+1),  Vertex(isec+1, NbPath+1));
     }
-    if (VEdge(1,  NbPath+1).Orientation() == TopAbs_REVERSED)
-      Vertex(1,  NbPath+1) =  
-        TopExp::LastVertex(TopoDS::Edge(VEdge(1,  NbPath+1)));
-    else
-      Vertex(1,  NbPath+1) = 
-        TopExp::FirstVertex(TopoDS::Edge(VEdge(1, NbPath+1)));
+
+    if (Vertex(1,  NbPath+1).IsNull())
+    {
+      if (VEdge(1,  NbPath+1).Orientation() == TopAbs_REVERSED)
+        Vertex(1,  NbPath+1) = TopExp::LastVertex(TopoDS::Edge(VEdge(1,  NbPath+1)));
+      else
+        Vertex(1,  NbPath+1) = TopExp::FirstVertex(TopoDS::Edge(VEdge(1, NbPath+1)));
+    }
     UpdateVertex(ILast-1, 1, 
                  TabErr(1, NbPath), Vi(NbPath+1),  Vertex(1, NbPath+1 ));
-  }    
-  else {
-    Standard_Real u, v, aux;
-    Standard_Boolean ureverse;
-    for (isec=1; isec<=NbLaw+1; isec++) {
-      // Return data
-      if (isec >NbLaw) {
+  }
+  
+  for (isec=1; isec<=NbLaw+1; isec++) {
+    // Return data
+    if (isec >NbLaw) {
         S = TabS(NbLaw, NbPath);
         ureverse = UReverse(NbLaw, NbPath);
         exuv = ExchUV(NbLaw, NbPath);
+    }
+    else {
+      S = TabS(isec, NbPath);
+      ureverse = UReverse(isec, NbPath);
+      exuv = ExchUV(isec, NbPath);
+    }
+    S->Bounds(UFirst, ULast, VFirst, VLast);
+    
+    // Choice of parametres
+    if (ureverse) {
+      if (exuv) {
+        aux = VFirst; VFirst = VLast; VLast = aux;	  
       }
       else {
-        S = TabS(isec, NbPath);
-        ureverse = UReverse(isec, NbPath);
-        exuv = ExchUV(isec, NbPath);
+        aux = UFirst; UFirst = ULast; ULast = aux;
       }
-      S->Bounds(UFirst, ULast, VFirst, VLast);
-
-      // Choice of parametres
-      if (ureverse) {
-        if (exuv) {
-          aux = VFirst; VFirst = VLast; VLast = aux;	  
-        }
-        else {
-          aux = UFirst; UFirst = ULast; ULast = aux;
-        }
-      }
-      if (isec == NbLaw+1) {
+    }
+    if (isec == NbLaw+1) {
+      u = ULast;
+      v = VLast;
+    }
+    else {
+      if (exuv) {
         u = ULast;
+        v = VFirst;
+      }
+      else {
+        u = UFirst;
         v = VLast;
       }
-      else {
-        if (exuv) {
-          u = ULast;
-          v = VFirst;
-        }
-        else {
-          u = UFirst;
-          v = VLast;
-        }
-      }
-
-      // construction of vertex
+    }
+    
+    // construction of vertex
+    if (Vertex(isec, NbPath+1).IsNull())
       B.MakeVertex(TopoDS::Vertex(Vertex(isec, NbPath+1)), 
                    S->Value(u,v), 
                    mySec->VertexTol(isec-1, Vi(NbPath+1)));
-    }
-  }
+      else
+      {
+        TopLoc_Location Identity;
+        Vertex(isec, NbPath+1).Location(Identity);
+        B.UpdateVertex(TopoDS::Vertex(Vertex(isec, NbPath+1)), 
+                       S->Value(u,v), 
+                       mySec->VertexTol(isec-1, Vi(NbPath+1)));
+      }
+  } //end of for (isec=1; isec<=NbLaw+1; isec++)
 
  
   // ---------- Creation of Vertex and edge ------------
   for (ipath=1, IPath=IFirst; ipath<=NbPath; 
        ipath++, IPath++) {
     for (isec=1; isec <=NbLaw; isec++) {
+      if (IsBuilt(isec))
+        continue;
+      
       S = TabS(isec, ipath);
       exuv = ExchUV(isec, ipath);
       S->Bounds(UFirst, ULast, VFirst, VLast);
@@ -2272,6 +2369,7 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
                TabErr(isec,1) +
                mySec->VertexTol(isec,Vi(1)),
                TopoDS::Vertex(Vertex(isec+1, 1)) );
+                                            
           if (MergeVertex(Vertex(isec,1), Vertex(isec+1,1))) {
             VEdge(isec, 1) = NullEdge(Vertex(isec, 1)); 
           }
@@ -2341,7 +2439,7 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
 	}
   
 	// (2.2) Iso-u
-	if (isec == 1) {
+	if (isec == 1 && UEdge(1, ipath).IsNull()) {
 	  if (!Vertex(1,ipath).IsSame(Vertex(1,ipath+1))) {
 	    gp_Pnt P1 = BRep_Tool::Pnt(TopoDS::Vertex(Vertex(1,ipath)));
 	    gp_Pnt P2 = BRep_Tool::Pnt(TopoDS::Vertex(Vertex(1,ipath+1)));
@@ -2362,18 +2460,29 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
 	  UEdge(isec+1, ipath) = UEdge(1, ipath);
 	}
 	else {
-	  UEdge(isec+1, ipath) = BuildEdge(S, !exuv, ULast, 
-					   Vertex(isec+1, ipath), 
-					   Vertex(isec+1, ipath+1),
-					   myTol3d);
+          if (UEdge(isec+1, ipath).IsNull())
+            UEdge(isec+1, ipath) = BuildEdge(S, !exuv, ULast, 
+                                             Vertex(isec+1, ipath), 
+                                             Vertex(isec+1, ipath+1),
+                                             myTol3d);
+          else
+            UpdateEdge(TopoDS::Edge(UEdge(isec+1, ipath)), S, !exuv, ULast);
 	}
 
 	// (2.3) Iso-v 
-	if (ipath == 1 && VEdge(isec, ipath).IsNull())
-	  VEdge(isec, ipath) = BuildEdge(S, exuv, VFirst, 
-					 Vertex(isec  , 1), 
-					 Vertex(isec+1, 1),
-					 myTol3d);
+	if (ipath == 1)
+        {
+          TopoDS_Edge aNewFirstEdge = BuildEdge(S, exuv, VFirst, 
+                                                Vertex(isec  , 1), 
+                                                Vertex(isec+1, 1),
+                                                myTol3d);
+          if (VEdge(isec, ipath).IsNull())
+            VEdge(isec, ipath) = aNewFirstEdge;
+          else //rebuild first edge
+            RebuildTopOrBottomEdge(aNewFirstEdge,
+                                   TopoDS::Edge(VEdge(isec, ipath)),
+                                   ReversedEdges);
+        }
 	
 	else UpdateEdge(TopoDS::Edge(VEdge(isec, ipath)), 
 			S, exuv, VFirst);
@@ -2388,9 +2497,22 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
 					   Vertex(isec  , ipath+1), 
 					   Vertex(isec+1, ipath+1),
 					   myTol3d);
-	else UpdateEdge(TopoDS::Edge(VEdge(isec, ipath+1)), 
-			S, exuv, VLast);
-	  
+	else
+        {
+          if (ipath != NbPath || vclose)
+            UpdateEdge(TopoDS::Edge(VEdge(isec, ipath+1)), 
+                       S, exuv, VLast);
+          else //ipath == NbPath && !vclose => rebuild last edge
+          {
+            TopoDS_Edge aNewLastEdge = BuildEdge(S, exuv, VLast, 
+                                                 Vertex(isec  , ipath+1), 
+                                                 Vertex(isec+1, ipath+1),
+                                                 myTol3d);
+            RebuildTopOrBottomEdge(aNewLastEdge,
+                                   TopoDS::Edge(VEdge(isec, ipath+1)),
+                                   ReversedEdges);
+          }
+        }
       }
     }// End of construction of edges
   }
@@ -2429,7 +2551,7 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
 	else  
 	  myFaces->SetValue(isec, IPath, VEdge(isec, ipath));
       }
-      else {
+      else if (myFaces->Value(isec, IPath).IsNull()) {
 	BuildFace(TabS(isec,ipath), 
 		  TopoDS::Edge(UEdge(isec, ipath)),
 		  TopoDS::Edge(VEdge(isec, ipath)),
@@ -2444,6 +2566,12 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
     }
   }
 
+  // (3.1) Reverse the faces that have been built ealier
+  for (ipath = 1; ipath <= NbPath; ipath++)
+    for (isec = 1; isec <= NbLaw; isec++)
+      if (IsBuilt(isec))
+        myFaces->ChangeValue(isec, ipath).Reverse();
+  
 
   // (4) History and Continuity 
 
@@ -2502,6 +2630,28 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
       } 
     }
   }
+
+  // (5) Update Tapes
+  Standard_Integer j;
+  if (IFirst == 1 && !Tapes.IsEmpty()) //works only in case of single shell
+  {
+    for (isec = 1; isec <= NbLaw; isec++)
+    {
+      for (j = 1; j <= NbPath+1; j++)
+        Tapes(StartEdges(isec))->SetValue(1, j, myVEdges->Value(isec, j));
+      for (j = 1; j <= NbPath; j++)
+        Tapes(StartEdges(isec))->SetValue(2, j, myUEdges->Value(isec, j));
+      for (j = 1; j <= NbPath; j++)
+        Tapes(StartEdges(isec))->SetValue(3, j, myUEdges->Value(isec+1, j));
+      for (j = 1; j <= NbPath+1; j++)
+        Tapes(StartEdges(isec))->SetValue(4, j, Vertex(isec, j));
+      for (j = 1; j <= NbPath+1; j++)
+        Tapes(StartEdges(isec))->SetValue(5, j, Vertex(isec+1, j));
+      for (j = 1; j <= NbPath; j++)
+        Tapes(StartEdges(isec))->SetValue(6, j, myFaces->Value(isec, j));
+    }
+  }
+  
   return Standard_True;
 }
 
@@ -2509,11 +2659,13 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
 //function : Build
 //purpose  : Construt the result of sweeping
 //======================================================================
- void BRepFill_Sweep::Build(const BRepFill_TransitionStyle Transition,
-			    const GeomAbs_Shape Continuity,
-			    const GeomFill_ApproxStyle Approx,
-			    const Standard_Integer Degmax,
-			    const Standard_Integer Segmax) 
+void BRepFill_Sweep::Build(TopTools_MapOfShape& ReversedEdges,
+                           BRepFill_DataMapOfShapeHArray2OfShape& Tapes,
+                           const BRepFill_TransitionStyle Transition,
+                           const GeomAbs_Shape Continuity,
+                           const GeomFill_ApproxStyle Approx,
+                           const Standard_Integer Degmax,
+                           const Standard_Integer Segmax) 
 {
   myContinuity  = Continuity;
   myApproxStyle = Approx;
@@ -2550,6 +2702,8 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
       if (NbTrous==1)  Extend = EvalExtrapol(1, Transition);
       isDone = BuildShell(Transition, 
 			  1, NbPath+1,
+                          ReversedEdges,
+                          Tapes,
 			  Extend, Extend);
     }
     else { //  This is done piece by piece
@@ -2560,6 +2714,8 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
 	else ILast = Trous->Value(ii);
 	isDone = BuildShell(Transition, 
 			    IFirst, ILast,
+                            ReversedEdges,
+                            Tapes,
 			    EvalExtrapol(IFirst, Transition),
 			    EvalExtrapol(ILast,  Transition));
 	if (IFirst>1) {
@@ -3101,4 +3257,106 @@ void BRepFill_Sweep::UpdateVertex(const Standard_Integer ipath,
     BRep_Builder B;
     B.UpdateVertex(TheV, Tol);
   }
+}
+
+//=======================================================================
+//function : RebuildTopOrBottomEdge
+//purpose  : Rebuild v-iso edge of top or bottom section
+//           inserting new 3d and 2d curves taken from swept surfaces
+//======================================================================
+void BRepFill_Sweep::RebuildTopOrBottomEdge(const TopoDS_Edge& aNewEdge,
+                                            TopoDS_Edge& anEdge,
+                                            TopTools_MapOfShape& ReversedEdges) const
+{
+  Standard_Real fpar, lpar;
+  Handle(Geom_Curve) aNewCurve = BRep_Tool::Curve(aNewEdge, fpar, lpar);
+  TopLoc_Location Identity;
+  
+  Standard_Boolean ToReverse = Standard_False;
+  Standard_Boolean IsDegen = BRep_Tool::Degenerated(aNewEdge);
+  if (IsDegen)
+    BRep_Tool::Range(aNewEdge, fpar, lpar);
+  else
+  {
+    TopoDS_Vertex V1, V2, NewV1, NewV2;
+    TopExp::Vertices(anEdge, V1, V2);
+    if (!V1.IsSame(V2))
+    {
+      TopExp::Vertices(aNewEdge, NewV1, NewV2);
+      V1.Location(Identity);
+      if (!V1.IsSame(NewV1))
+      {
+        if (V1.IsSame(NewV2))
+          ToReverse = Standard_True;
+        else
+        {
+          gp_Pnt Pnt1 = BRep_Tool::Pnt(V1);
+          gp_Pnt NewPnt1 = BRep_Tool::Pnt(NewV1);
+          Standard_Real TolSum = BRep_Tool::Tolerance(V1) + BRep_Tool::Tolerance(NewV1);
+          if (!Pnt1.IsEqual(NewPnt1, TolSum))
+            ToReverse = Standard_True;
+        }
+      }
+    }
+    else
+    {
+      Standard_Real OldFirst, OldLast;
+      Handle(Geom_Curve) OldCurve = BRep_Tool::Curve(anEdge, OldFirst, OldLast);
+      gp_Vec OldD1, NewD1;
+      gp_Pnt MidPnt;
+      OldCurve->D1(0.5*(OldFirst + OldLast), MidPnt, OldD1);
+      aNewCurve->D1(0.5*(fpar + lpar), MidPnt, NewD1);
+      if (OldD1 * NewD1 < 0.)
+        ToReverse = Standard_True;
+    }
+  }
+  
+  anEdge.Location(Identity);
+  const Handle(BRep_TEdge)& TEdge = *((Handle(BRep_TEdge)*) &anEdge.TShape());
+  TEdge->Tolerance(BRep_Tool::Tolerance(aNewEdge));
+  BRep_Builder BB;
+  BB.Range(anEdge, fpar, lpar);
+  BB.UpdateEdge(anEdge, aNewCurve, Precision::Confusion());
+  const Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*) &aNewEdge.TShape());
+  const BRep_ListOfCurveRepresentation& lcr = TE->Curves();
+  BRep_ListIteratorOfListOfCurveRepresentation itrep(lcr);
+  for (; itrep.More(); itrep.Next())
+  {
+    const Handle(BRep_CurveRepresentation)& CurveRep = itrep.Value();
+    if (CurveRep->IsCurveOnSurface())
+    {
+      const Handle(BRep_GCurve)& GC = *((Handle(BRep_GCurve)*)&CurveRep);
+      Handle(Geom2d_Curve) aPCurve = GC->PCurve();
+      Handle(Geom_Surface) aSurf = GC->Surface();
+      TopLoc_Location aLoc = aNewEdge.Location() * GC->Location();
+      BB.UpdateEdge(anEdge, aPCurve, aSurf, aLoc, Precision::Confusion());
+    }
+  }
+  
+  anEdge.Free(Standard_True);
+  TopoDS_Vertex V1, V2;
+  TopExp::Vertices(anEdge, V1, V2);
+
+  TopoDS_Shape anEdgeFORWARD = anEdge.Oriented(TopAbs_FORWARD);
+  
+  BB.Remove(anEdgeFORWARD, V1);
+  BB.Remove(anEdgeFORWARD, V2);
+ 
+  V1.Location(Identity);
+  V2.Location(Identity);
+  if (ToReverse)
+  {
+    V2.Orientation(TopAbs_FORWARD);
+    V1.Orientation(TopAbs_REVERSED);
+  }
+  BB.Add(anEdgeFORWARD, V1);
+  BB.Add(anEdgeFORWARD, V2);
+  
+  if (ToReverse)
+  {
+    anEdge.Reverse();
+    ReversedEdges.Add(anEdge);
+  }
+
+  BB.Degenerated(anEdge, IsDegen);
 }

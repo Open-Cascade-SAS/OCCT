@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+
 #include <BRepFill_LocationLaw.ixx>
 
 #include <BRepTools_WireExplorer.hxx>
@@ -36,6 +37,7 @@
 #include <TColgp_Array1OfVec2d.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <Precision.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
 
 
 //=======================================================================
@@ -608,8 +610,10 @@ void BRepFill_LocationLaw::CurvilinearBounds(const Standard_Integer Index,
 		   M(2,1), M(2,2), M(2,3), V.Y(),
 		   M(3,1), M(3,2), M(3,3), V.Z(),
 		   1.e-12, 1.e-14);
-    TopLoc_Location Loc(fila);
-    W.Location(Loc.Multiplied(W.Location()));
+    //TopLoc_Location Loc(fila);
+    //W.Location(Loc.Multiplied(W.Location()));
+    W = BRepBuilderAPI_Transform(W, fila, Standard_True); //copy
+    ///////////////////////////////////////////
   }
   else {
     W.Nullify();

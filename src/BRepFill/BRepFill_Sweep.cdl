@@ -14,6 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
+
 class Sweep from BRepFill 
 
 	---Purpose: Topological Sweep Algorithm
@@ -28,8 +29,11 @@ uses
    Shape        from  GeomAbs, 
    HArray2OfShape      from  TopTools, 
    ListOfShape         from  TopTools, 
-   DataMapOfShapeShape from TopTools,
+   DataMapOfShapeShape from  TopTools,
+   MapOfShape          from  TopTools,
+   DataMapOfShapeHArray2OfShape from BRepFill,
    Wire         from  TopoDS, 
+   Edge         from  TopoDS, 
    Shape        from  TopoDS,  
    Trsf         from  gp
    
@@ -81,7 +85,9 @@ is
 	--          to be C0.
 
 		     
-   Build(me : in  out; 
+   Build(me : in  out;
+         ReversedEdges : in out MapOfShape from TopTools;
+	 Tapes : in out DataMapOfShapeHArray2OfShape from BRepFill;
          Transition : TransitionStyle  =  BRepFill_Modified;    
          Continuity : Shape  from  GeomAbs   = GeomAbs_C2;
          Approx     : ApproxStyle = GeomFill_Location; 
@@ -112,7 +118,9 @@ is
 	  
    BuildShell(me : in  out;   
             Transition : TransitionStyle;              
-            Vf,  Vl    : Integer;    
+            Vf,  Vl    : Integer;
+	    ReversedEdges : in out MapOfShape from TopTools;
+	    Tapes : in out DataMapOfShapeHArray2OfShape from BRepFill;
             ExtendFirst :  Real  =  0.0; 
             ExtendLast  :  Real  =  0.0)  
    returns Boolean is  private;
@@ -156,6 +164,11 @@ is
    UpdateVertex(me; Ipath,  Isec  :  Integer; 
                 Error,  Param  :  Real; 
 		V  :  in  out Shape  from  TopoDS) 
+   is  private; 
+   
+   RebuildTopOrBottomEdge(me; aNewEdge: Edge from TopoDS;
+    	    	    	      anEdge: in out Edge from TopoDS;
+			      ReversedEdges: in out MapOfShape from TopTools)
    is  private; 
    
 fields

@@ -317,8 +317,8 @@ GeomFill_SectionPlacement(const Handle(GeomFill_LocationLaw)& L,
 		  delta = (BC->Knot(i+1) - t) / NbLocalPnts;
 		  for (j = 0; j < NbLocalPnts; j++)
 		    {
-		      t += delta;
 		      Pnts->SetValue( nb++, myAdpSection.Value(t) );
+		      t += delta;
 		    }
 		}
 	      if (I3 != I4 && first < BC->Knot(I3))
@@ -327,8 +327,8 @@ GeomFill_SectionPlacement(const Handle(GeomFill_LocationLaw)& L,
 		  delta = (last - t) / NbLocalPnts;
 		  for (j = 0; j < NbLocalPnts; j++)
 		    {
-		      t += delta;
 		      Pnts->SetValue( nb++, myAdpSection.Value(t) );
+		      t += delta;
 		    }
 		}
 	      if (!myAdpSection.IsClosed())

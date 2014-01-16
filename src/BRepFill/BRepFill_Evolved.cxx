@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+
 #include <BRepFill_Evolved.ixx>
 
 
@@ -2220,8 +2221,8 @@ void BRepFill_Evolved::MakePipe(const TopoDS_Edge& SE,
   }
 #endif
 
-//  BRepFill_Pipe Pipe(BRepLib_MakeWire(SE),GenProf);	
-  BRepFill_Pipe Pipe = BRepFill_Pipe(BRepLib_MakeWire(SE),GenProf);	
+  BRepFill_Pipe Pipe(BRepLib_MakeWire(SE), GenProf);	
+  //BRepFill_Pipe Pipe = BRepFill_Pipe(BRepLib_MakeWire(SE),GenProf);	
   
 #ifdef DRAW
   if (AffichGeom) {

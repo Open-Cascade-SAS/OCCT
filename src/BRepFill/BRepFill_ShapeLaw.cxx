@@ -37,8 +37,8 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray1OfInteger.hxx>
 
-
 #include <Precision.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
 
 
 //=======================================================================
@@ -264,8 +264,9 @@ void BRepFill_ShapeLaw::Init(const Standard_Boolean Build)
   if (!TheLaw.IsNull()) {    
     gp_Trsf T;
     T.SetScale(gp_Pnt(0, 0, 0), TheLaw->Value(Param));
-    TopLoc_Location L(T);
-    V.Move(L);
+    //TopLoc_Location L(T);
+    //V.Move(L);
+    V = TopoDS::Vertex(BRepBuilderAPI_Transform(V, T));
   }
   return V;
 }
@@ -396,10 +397,10 @@ void BRepFill_ShapeLaw::Init(const Standard_Boolean Build)
 					       const Standard_Real TolAngular) const
 {
  
- TopoDS_Edge Edge1, Edge2;
+  TopoDS_Edge Edge1, Edge2;
   if ( (Index==0) || (Index==myEdges->Length()) ) {
     if (!uclosed) return GeomAbs_C0; //The least possible error
-
+    
     Edge1 = TopoDS::Edge (myEdges->Value(myEdges->Length()));
     Edge2 = TopoDS::Edge (myEdges->Value(1));
   }
@@ -407,20 +408,19 @@ void BRepFill_ShapeLaw::Init(const Standard_Boolean Build)
     Edge1 = TopoDS::Edge (myEdges->Value(Index));
     Edge2 = TopoDS::Edge (myEdges->Value(Index+1));
   } 
- 
- TopoDS_Vertex V1,V2;
- if ( Edge1.Orientation() == TopAbs_REVERSED) {
-   V1 = TopExp::FirstVertex(Edge1);
- }
- else {
-   V1 = TopExp::LastVertex(Edge1);
- }
- if ( Edge2.Orientation() == TopAbs_REVERSED) {
-   V2 = TopExp::LastVertex(Edge2);
- }
- else {
-   V2 = TopExp::FirstVertex(Edge2);
- }
+  
+  TopoDS_Vertex V1,V2; //common vertex
+  TopoDS_Vertex vv1, vv2, vv3, vv4;
+  TopExp::Vertices(Edge1, vv1, vv2);
+  TopExp::Vertices(Edge2, vv3, vv4);
+  if (vv1.IsSame(vv3))
+  { V1 = vv1; V2 = vv3; }
+  else if (vv1.IsSame(vv4))
+  { V1 = vv1; V2 = vv4; }
+  else if (vv2.IsSame(vv3))
+  { V1 = vv2; V2 = vv3; }
+  else
+  { V1 = vv2; V2 = vv4; }
 
  Standard_Real U1 = BRep_Tool::Parameter(V1,Edge1);
  Standard_Real U2 = BRep_Tool::Parameter(V2,Edge2);
@@ -444,7 +444,8 @@ void BRepFill_ShapeLaw::Init(const Standard_Boolean Build)
   if (!TheLaw.IsNull()) {
     gp_Trsf T;
     T.SetScale(gp_Pnt(0, 0, 0), TheLaw->Value(U));
-    TopLoc_Location L(T);
-    S.Move(L);
+    //TopLoc_Location L(T);
+    //S.Move(L);
+    S = BRepBuilderAPI_Transform(S, T);
   }
 } 
