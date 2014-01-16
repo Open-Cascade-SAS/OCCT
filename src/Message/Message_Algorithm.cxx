@@ -133,38 +133,81 @@ void Message_Algorithm::SetStatus (const Message_Status& theStat,
 }
 
 //=======================================================================
+//function : SetStatus
+//purpose  :
+//=======================================================================
+
+void Message_Algorithm::SetStatus (const Message_Status& theStat,
+                                   const Message_Msg&    theMsg)
+{
+  // Set status flag
+  SetStatus (theStat);
+
+  // Find index of bit corresponding to that flag
+  Standard_Integer aFlagIndex = Message_ExecStatus::StatusIndex (theStat);
+  if (aFlagIndex == 0)
+  {
+    return;
+  }
+
+  // Create sequence of messages for a given flag, if not yet done
+  if (myReportMessages.IsNull())
+  {
+    myReportMessages = new Message_ArrayOfMsg (Message_ExecStatus::FirstStatus, Message_ExecStatus::LastStatus);
+  }
+
+  myReportMessages->ChangeValue (aFlagIndex) = new Message_Msg (theMsg);
+}
+
+//=======================================================================
 //function : ClearStatus
 //purpose  :
 //=======================================================================
 
-void Message_Algorithm::ClearStatus() 
-{ 
+void Message_Algorithm::ClearStatus()
+{
   myStatus.Clear(); 
   myReportIntegers.Nullify();
   myReportStrings.Nullify();
+  myReportMessages.Nullify();
 }
 
 //=======================================================================
 //function : SendStatusMessages
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void Message_Algorithm::SendStatusMessages (const Message_ExecStatus& theStatus,
-					    const Message_Gravity theTraceLevel,
-					    const Standard_Integer theMaxCount) const
+                                            const Message_Gravity     theTraceLevel,
+                                            const Standard_Integer    theMaxCount) const
 {
   Handle(Message_Messenger) aMsgr = GetMessenger();
-  if (aMsgr.IsNull()) return;
+  if (aMsgr.IsNull())
+  {
+    return;
+  }
 
-  TCollection_AsciiString aClassName ( DynamicType()->Name() );
+  const TCollection_AsciiString aClassName (DynamicType()->Name());
 
   // Iterate on all set flags in the specified range
   for ( Standard_Integer i  = Message_ExecStatus::FirstStatus; 
                          i <= Message_ExecStatus::LastStatus; i++ )
   {
     Message_Status stat = Message_ExecStatus::StatusByIndex( i );
-    if ( !theStatus.IsSet( stat ) || !myStatus.IsSet( stat ) )
+    if (!theStatus.IsSet (stat) || !myStatus.IsSet (stat))
+    {
       continue;
+    }
+
+    Handle(Message_Msg) aMsgCustom = !myReportMessages.IsNull()
+                                    ? myReportMessages->Value (i)
+                                    : Handle(Message_Msg)();
+    if (!aMsgCustom.IsNull())
+    {
+      // print custom message
+      aMsgr->Send (*aMsgCustom, theTraceLevel);
+      continue;
+    }
 
     // construct message suffix
     TCollection_AsciiString aSuffix;
@@ -203,19 +246,24 @@ void Message_Algorithm::SendStatusMessages (const Message_ExecStatus& theStatus,
 
     // if additional parameters are defined for a given status flag,
     // try to feed them into the message
-    if ( ! myReportIntegers.IsNull() ) 
+    if (!myReportIntegers.IsNull())
     {
       Handle(TColStd_HPackedMapOfInteger) aMapErrors =
-	Handle(TColStd_HPackedMapOfInteger)::DownCast(myReportIntegers->Value(i));
-      if (!aMapErrors.IsNull() ) 
-        aMsg << PrepareReport ( aMapErrors, theMaxCount );
+        Handle(TColStd_HPackedMapOfInteger)::DownCast(myReportIntegers->Value(i));
+      if (!aMapErrors.IsNull())
+      {
+        aMsg << PrepareReport (aMapErrors, theMaxCount);
+      }
     }
-    if ( ! myReportStrings.IsNull() && ! myReportStrings->Value(i).IsNull() ) 
+    if (!myReportStrings.IsNull()
+     && !myReportStrings->Value (i).IsNull())
     {
-      Handle(TColStd_HSequenceOfHExtendedString) aReportSeq = 
-        Handle(TColStd_HSequenceOfHExtendedString)::DownCast ( myReportStrings->Value(i) );
-      if ( ! aReportSeq.IsNull() ) 
-        aMsg << PrepareReport ( aReportSeq->Sequence(), theMaxCount );
+      Handle(TColStd_HSequenceOfHExtendedString) aReportSeq =
+        Handle(TColStd_HSequenceOfHExtendedString)::DownCast (myReportStrings->Value(i));
+      if (!aReportSeq.IsNull())
+      {
+        aMsg << PrepareReport (aReportSeq->Sequence(), theMaxCount);
+      }
     }
 
     // output the message

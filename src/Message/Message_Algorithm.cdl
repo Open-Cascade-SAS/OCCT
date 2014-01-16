@@ -52,6 +52,9 @@ class Algorithm from Message inherits TShared from MMgt
     --          the current class type, the same message is searched for the base
     --          class(es) recursively.
     --
+    --          Message can be set explicitly for the status; in this case the 
+    --          above procedure is not used and supplied message is used as is.
+    --
     --          The messages are output to the messenger, stored in the field;
     --          though messenger can be changed, it is guaranteed to be non-null.
     --          By default, Message::DefaultMessenger() is used.
@@ -59,6 +62,8 @@ class Algorithm from Message inherits TShared from MMgt
 uses
 
     TShared                    from MMgt,
+    HArrayOfMsg                from Message,
+    Msg                        from Message,
     Messenger                  from Message,
     Gravity                    from Message,
     Status                     from Message,
@@ -124,6 +129,12 @@ is
     	---Purpose: Sets status with string parameter
     	--          If noRepetitions is True, the parameter will be added only
     	--          if it has not been yet recorded for the same status flag
+
+    SetStatus(me: mutable; theStat : Status from Message;
+                           theMsg  : Msg    from Message);
+    ---Purpose: Sets status with preformatted message. This message will be 
+    --          used directly to report the status; automatic generation of
+    --          status messages will be disabled for it.
 
     GetStatus(me) returns ExecStatus from Message;
     	---Purpose: Returns copy of exec status of algorithm
@@ -216,5 +227,6 @@ fields
     myMessenger      : Messenger          from Message is protected;
     myReportIntegers : HArray1OfTransient from TColStd;
     myReportStrings  : HArray1OfTransient from TColStd;
+    myReportMessages : HArrayOfMsg        from Message;
 
 end Algorithm;

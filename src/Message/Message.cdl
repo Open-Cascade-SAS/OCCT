@@ -46,6 +46,7 @@ is
     imported Status;
     imported StatusType;
     imported ExecStatus;
+    imported HArrayOfMsg;
 
     class Msg;
     	---Purpose: Defines message.
