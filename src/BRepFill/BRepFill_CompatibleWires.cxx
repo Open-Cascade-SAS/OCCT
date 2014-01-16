@@ -157,11 +157,7 @@ static Standard_Boolean PlaneOfWire (const TopoDS_Wire& W, gp_Pln& P)
   }
   TopoDS_Edge Edge = TopoDS::Edge(anExp.Current());
   Standard_Real first, last;
-  TopLoc_Location loc;
-  Handle(Geom_Curve) curv;
-  curv = BRep_Tool::Curve(Edge, loc, first, last);
-  curv = 
-      Handle(Geom_Curve)::DownCast(curv->Transformed(loc.Transformation()));
+  Handle(Geom_Curve) curv = BRep_Tool::Curve(Edge, first, last);
   if (wClosed) {
     GeomAdaptor_Curve AdC;
     AdC.Load(curv);

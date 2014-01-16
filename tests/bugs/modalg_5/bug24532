@@ -1,0 +1,38 @@
+puts "============"
+puts "OCC24532"
+puts "============"
+puts ""
+#######################################################################
+# BRepOffsetAPI_MakePipeShell raises an exception in a case with auxiliary guide
+#######################################################################
+
+polyline w1 -4 -3 0 4 -3 0 4 3 0 -4 3 0 -4 -3 0
+polyline w2 4 3 80 -4 3 80 -4 -3 80 4 -3 80 4 3 80
+polyline sp 0 0 0 0 0 80
+
+cylinder cc 0 0 0 0 0 1 -4 -3 0 5
+line ll 0 0 pi 80
+trim ll ll 0 sqrt(pi*pi+80*80)
+explode w1 v
+explode w2 v
+mkedge ee ll cc w1_1 w2_1
+wire gg ee
+
+mksweep sp
+setsweep -G gg 0 0
+addsweep w1
+buildsweep result -S
+
+set square 2343.46
+
+set nb_v_good 8
+set nb_e_good 12
+set nb_w_good 6
+set nb_f_good 6
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 34
+
+set 2dviewer 1
