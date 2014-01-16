@@ -1,19 +1,19 @@
 puts "============"
 puts "OCC23227"
+puts "New Draw Harness command to estimate current geometry complexity of OpenGL scene"
 puts "============"
 puts ""
-#######################################################################
-# New Draw Harness command to estimate current geometry complexity of OpenGL scene
-#######################################################################
 
 set BugNumber OCC23227
 
 box b 1 2 3
-vinit
+vinit View1
+vclear
 vdisplay b
 vsetdispmode 1
 vfit
 set vfeedback1 [vfeedback]
+vdump $imagedir/${casename}_box.png
 
 vclear
 set vfeedback2 [vfeedback]
@@ -24,17 +24,16 @@ set IndexTriangles1 [lsearch ${vfeedback1} Triangles:]
 set IndexTriangles2 [lsearch ${vfeedback2} Triangles:]
 
 if { ${llength_vfeedback1} < 36 || ${llength_vfeedback2} < 36 || ${IndexTriangles1} < 0 || ${IndexTriangles2} < 0 } {
-   puts "Bad format of vfeedback command"
-   puts "Faulty ${BugNumber}"
+  puts "Bad format of vfeedback command"
+  puts "Faulty ${BugNumber}"
 } else {
-   set Triangles1 [lindex ${vfeedback1} ${IndexTriangles1}+1]
-   set Triangles2 [lindex ${vfeedback2} ${IndexTriangles1}+1]
-   if { ${Triangles1} == 12 && ${Triangles2} == 0 } {
-      puts "OK ${BugNumber}"
-   } else {
-      puts "Faulty ${BugNumber}"
-   }
+  set Triangles1 [lindex ${vfeedback1} ${IndexTriangles1}+1]
+  set Triangles2 [lindex ${vfeedback2} ${IndexTriangles1}+1]
+  if { ${Triangles1} == 6 && ${Triangles2} == 0 } {
+    puts "OK ${BugNumber}"
+  } else {
+    puts "Faulty ${BugNumber}"
+  }
 }
 
 set only_screen 1
-

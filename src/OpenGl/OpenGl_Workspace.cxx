@@ -166,6 +166,7 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_Display)& theDisplay,
   TextParam_applied (NULL),
   ViewMatrix_applied (&myDefaultMatrix),
   StructureMatrix_applied (&myDefaultMatrix),
+  myCullingMode (TelCullUndefined),
   myModelViewMatrix (myDefaultMatrix),
   PolygonOffset_applied (NULL)
 {
@@ -269,6 +270,7 @@ void OpenGl_Workspace::ResetAppliedAspect()
   TextParam_set         = &myDefaultTextParam;
   TextParam_applied     = NULL;
   PolygonOffset_applied = NULL;
+  myCullingMode         = TelCullUndefined;
 
   AspectLine(Standard_True);
   AspectFace(Standard_True);

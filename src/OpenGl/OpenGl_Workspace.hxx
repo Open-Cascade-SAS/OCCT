@@ -439,9 +439,10 @@ protected: //! @name fields related to status
   const OpenGl_Matrix* ViewMatrix_applied;
   const OpenGl_Matrix* StructureMatrix_applied;
 
-  OpenGl_Material myMatFront; //!< current front material state (cached to reduce GL context updates)
-  OpenGl_Material myMatBack;  //!< current back  material state
-  OpenGl_Material myMatTmp;   //!< temporary variable
+  OpenGl_Material myMatFront;    //!< current front material state (cached to reduce GL context updates)
+  OpenGl_Material myMatBack;     //!< current back  material state
+  OpenGl_Material myMatTmp;      //!< temporary variable
+  TelCullMode     myCullingMode; //!< back face culling mode, applied from face aspect
 
   //! Model matrix with applied structure transformations
   OpenGl_Matrix myModelViewMatrix;

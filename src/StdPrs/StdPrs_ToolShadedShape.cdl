@@ -25,14 +25,16 @@ uses
     Location      from TopLoc
 is
 
-    IsClosed(myclass; aShape: Shape from TopoDS) returns Boolean from Standard; 
-    
+    IsClosed (myclass; theShape : Shape from TopoDS) returns Boolean from Standard;
+    ---Purpose: Checks back faces visibility for specified shape (to activate back-face culling).
+    --          @return true if shape is closed Solid or compound of closed Solids.
+
     Triangulation(myclass; aFace: Face from TopoDS;
     	    	    	   loc  : out Location from TopLoc) 
     returns Triangulation from Poly;
-    
+
     Normal(myclass; aFace: Face            from TopoDS;
     	    	    PC   : in out Connect  from Poly;
 		    Nor  : out Array1OfDir from TColgp);
-    
+
 end ToolShadedShape from StdPrs;

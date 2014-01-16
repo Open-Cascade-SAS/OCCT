@@ -319,7 +319,55 @@ const OpenGl_AspectLine * OpenGl_Workspace::AspectLine(const Standard_Boolean Wi
 
 const OpenGl_AspectFace* OpenGl_Workspace::AspectFace (const Standard_Boolean theToApply)
 {
-  if (!theToApply || (AspectFace_set == AspectFace_applied))
+  if (!theToApply)
+  {
+    return AspectFace_set;
+  }
+
+  if (!ActiveView()->Backfacing())
+  {
+    // manage back face culling mode, disable culling when clipping is enabled
+    TelCullMode aCullingMode = (myGlContext->Clipping().IsClippingOrCappingOn()
+                             || AspectFace_set->InteriorStyle() == Aspect_IS_HATCH)
+                             ? TelCullNone
+                             : (TelCullMode )AspectFace_set->CullingMode();
+    if (aCullingMode != TelCullNone
+     && myUseTransparency && !(NamedStatus & OPENGL_NS_2NDPASSDO))
+    {
+      // disable culling in case of translucent shading aspect
+      if (AspectFace_set->IntFront().trans != 1.0f)
+      {
+        aCullingMode = TelCullNone;
+      }
+    }
+    if (myCullingMode != aCullingMode)
+    {
+      myCullingMode = aCullingMode;
+      switch (myCullingMode)
+      {
+        case TelCullNone:
+        case TelCullUndefined:
+        {
+          glDisable (GL_CULL_FACE);
+          break;
+        }
+        case TelCullFront:
+        {
+          glCullFace (GL_FRONT);
+          glEnable (GL_CULL_FACE);
+          break;
+        }
+        case TelCullBack:
+        {
+          glCullFace (GL_BACK);
+          glEnable (GL_CULL_FACE);
+          break;
+        }
+      }
+    }
+  }
+
+  if (AspectFace_set == AspectFace_applied)
   {
     return AspectFace_set;
   }
@@ -362,34 +410,6 @@ const OpenGl_AspectFace* OpenGl_Workspace::AspectFace (const Standard_Boolean th
     if (AspectFace_applied == NULL || AspectFace_applied->Hatch() != hatchstyle)
     {
       myDisplay->SetTypeOfHatch(hatchstyle);
-    }
-  }
-
-  if (!ActiveView()->Backfacing())
-  {
-    const Tint aCullingMode = AspectFace_set->CullingMode();
-    if (AspectFace_applied == NULL || AspectFace_applied->CullingMode() != aCullingMode)
-    {
-      switch ((TelCullMode )aCullingMode)
-      {
-        case TelCullNone:
-        {
-          glDisable (GL_CULL_FACE);
-          break;
-        }
-        case TelCullFront:
-        {
-          glCullFace (GL_FRONT);
-          glEnable (GL_CULL_FACE);
-          break;
-        }
-        case TelCullBack:
-        {
-          glCullFace (GL_BACK);
-          glEnable (GL_CULL_FACE);
-          break;
-        }
-      }
     }
   }
 

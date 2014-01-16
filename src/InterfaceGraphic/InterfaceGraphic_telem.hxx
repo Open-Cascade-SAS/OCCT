@@ -44,10 +44,11 @@ struct TEL_COLOUR
 };
 typedef TEL_COLOUR* tel_colour;
 
-typedef  enum
+typedef enum
 {
-  TelCullNone, 
-  TelCullFront, 
+  TelCullUndefined = -1,
+  TelCullNone = 0,
+  TelCullFront,
   TelCullBack
 } TelCullMode;
 

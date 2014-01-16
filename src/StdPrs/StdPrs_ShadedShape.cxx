@@ -100,7 +100,7 @@ namespace
     Standard_Real    aUmin (0.0), aUmax (0.0), aVmin (0.0), aVmax (0.0), dUmax (0.0), dVmax (0.0);
 
     // precision for compare square distances
-    const double aPreci = Precision::SquareConfusion();
+    const Standard_Real aPreci = Precision::SquareConfusion();
 
     if (!theDrawer->ShadingAspectGlobal())
     {
@@ -126,99 +126,102 @@ namespace
         nbVertices  += T->NbNodes();
       }
     }
-
-    if (nbVertices > 2 && nbTriangles > 0)
+    if (nbVertices  <  3
+     || nbTriangles <= 0)
     {
-      Handle(Graphic3d_ArrayOfTriangles) aPArray
-        = new Graphic3d_ArrayOfTriangles (nbVertices, 3 * nbTriangles,
-                                          Standard_True, Standard_False, theHasTexels, Standard_True);
-      for (SST.Init (theShape); SST.MoreFace(); SST.NextFace())
+      return Standard_False;
+    }
+
+    Handle(Graphic3d_ArrayOfTriangles) aPArray
+      = new Graphic3d_ArrayOfTriangles (nbVertices, 3 * nbTriangles,
+                                        Standard_True, Standard_False, theHasTexels, Standard_True);
+    for (SST.Init (theShape); SST.MoreFace(); SST.NextFace())
+    {
+      const TopoDS_Face& aFace = SST.CurrentFace();
+      T = SST.Triangulation (aFace, aLoc);
+      if (T.IsNull())
       {
-        const TopoDS_Face& aFace = SST.CurrentFace();
-        T = SST.Triangulation (aFace, aLoc);
-        if (T.IsNull())
+        continue;
+      }
+      const gp_Trsf& aTrsf = aLoc.Transformation();
+      Poly_Connect pc (T);
+      // Extracts vertices & normals from nodes
+      const TColgp_Array1OfPnt&   aNodes   = T->Nodes();
+      const TColgp_Array1OfPnt2d& aUVNodes = T->UVNodes();
+      TColgp_Array1OfDir aNormals (aNodes.Lower(), aNodes.Upper());
+      SST.Normal (aFace, pc, aNormals);
+
+      if (theHasTexels)
+      {
+        BRepTools::UVBounds (aFace, aUmin, aUmax, aVmin, aVmax);
+        dUmax = (aUmax - aUmin);
+        dVmax = (aVmax - aVmin);
+      }
+
+      decal = aPArray->VertexNumber();
+      for (Standard_Integer aNodeIter = aNodes.Lower(); aNodeIter <= aNodes.Upper(); ++aNodeIter)
+      {
+        p = aNodes (aNodeIter);
+        if (!aLoc.IsIdentity())
+        {
+          p.Transform (aTrsf);
+          aNormals (aNodeIter).Transform (aTrsf);
+        }
+
+        if (theHasTexels && aUVNodes.Upper() == aNodes.Upper())
+        {
+          const gp_Pnt2d aTexel = gp_Pnt2d ((-theUVOrigin.X() + (theUVRepeat.X() * (aUVNodes (aNodeIter).X() - aUmin)) / dUmax) / theUVScale.X(),
+                                            (-theUVOrigin.Y() + (theUVRepeat.Y() * (aUVNodes (aNodeIter).Y() - aVmin)) / dVmax) / theUVScale.Y());
+          aPArray->AddVertex (p, aNormals (aNodeIter), aTexel);
+        }
+        else
+        {
+          aPArray->AddVertex (p, aNormals (aNodeIter));
+        }
+      }
+
+      // Fill array with vertex and edge visibility info
+      const Poly_Array1OfTriangle& aTriangles = T->Triangles();
+      for (Standard_Integer aTriIter = 1; aTriIter <= T->NbTriangles(); ++aTriIter)
+      {
+        pc.Triangles (aTriIter, t[0], t[1], t[2]);
+        if (SST.Orientation (aFace) == TopAbs_REVERSED)
+          aTriangles (aTriIter).Get (n[0], n[2], n[1]);
+        else
+          aTriangles (aTriIter).Get (n[0], n[1], n[2]);
+
+        gp_Pnt P1 = aNodes (n[0]);
+        gp_Pnt P2 = aNodes (n[1]);
+        gp_Pnt P3 = aNodes (n[2]);
+
+        gp_Vec V1 (P1, P2);
+        if (V1.SquareMagnitude() <= aPreci)
         {
           continue;
         }
-        const gp_Trsf& aTrsf = aLoc.Transformation();
-        Poly_Connect pc (T);
-        // Extracts vertices & normals from nodes
-        const TColgp_Array1OfPnt&   aNodes   = T->Nodes();
-        const TColgp_Array1OfPnt2d& aUVNodes = T->UVNodes();
-        TColgp_Array1OfDir aNormals (aNodes.Lower(), aNodes.Upper());
-        SST.Normal (aFace, pc, aNormals);
-
-        if (theHasTexels)
+        gp_Vec V2 (P2, P3);
+        if (V2.SquareMagnitude() <= aPreci)
         {
-          BRepTools::UVBounds (aFace, aUmin, aUmax, aVmin, aVmax);
-          dUmax = (aUmax - aUmin);
-          dVmax = (aVmax - aVmin);
+          continue;
         }
-
-        decal = aPArray->VertexNumber();
-        for (Standard_Integer aNodeIter = aNodes.Lower(); aNodeIter <= aNodes.Upper(); ++aNodeIter)
+        gp_Vec V3 (P3, P1);
+        if (V3.SquareMagnitude() <= aPreci)
         {
-          p = aNodes (aNodeIter);
-          if (!aLoc.IsIdentity())
-          {
-            p.Transform (aTrsf);
-            aNormals (aNodeIter).Transform (aTrsf);
-          }
-
-          if (theHasTexels && aUVNodes.Upper() == aNodes.Upper())
-          {
-            const gp_Pnt2d aTexel = gp_Pnt2d ((-theUVOrigin.X() + (theUVRepeat.X() * (aUVNodes (aNodeIter).X() - aUmin)) / dUmax) / theUVScale.X(),
-                                              (-theUVOrigin.Y() + (theUVRepeat.Y() * (aUVNodes (aNodeIter).Y() - aVmin)) / dVmax) / theUVScale.Y());
-            aPArray->AddVertex (p, aNormals (aNodeIter), aTexel);
-          }
-          else
-          {
-            aPArray->AddVertex (p, aNormals (aNodeIter));
-          }
+          continue;
         }
-
-        // Fill parray with vertex and edge visibillity info
-        const Poly_Array1OfTriangle& aTriangles = T->Triangles();
-        for (Standard_Integer aTriIter = 1; aTriIter <= T->NbTriangles(); ++aTriIter)
+        V1.Normalize();
+        V2.Normalize();
+        V1.Cross (V2);
+        if (V1.SquareMagnitude() > aPreci)
         {
-          pc.Triangles (aTriIter, t[0], t[1], t[2]);
-          if (SST.Orientation (aFace) == TopAbs_REVERSED)
-            aTriangles (aTriIter).Get (n[0], n[2], n[1]);
-          else
-            aTriangles (aTriIter).Get (n[0], n[1], n[2]);
-
-          gp_Pnt P1 = aNodes (n[0]);
-          gp_Pnt P2 = aNodes (n[1]);
-          gp_Pnt P3 = aNodes (n[2]);
-
-          gp_Vec V1 (P1, P2);
-          if (V1.SquareMagnitude() <= aPreci)
-          {
-            continue;
-          }
-          gp_Vec V2 (P2, P3);
-          if (V2.SquareMagnitude() <= aPreci)
-          {
-            continue;
-          }
-          gp_Vec V3 (P3, P1);
-          if (V3.SquareMagnitude() <= aPreci)
-          {
-            continue;
-          }
-          V1.Normalize();
-          V2.Normalize();
-          V1.Cross (V2);
-          if (V1.SquareMagnitude() > aPreci)
-          {
-            aPArray->AddEdge (n[0] + decal, t[0] == 0);
-            aPArray->AddEdge (n[1] + decal, t[1] == 0);
-            aPArray->AddEdge (n[2] + decal, t[2] == 0);
-          }
+          aPArray->AddEdge (n[0] + decal, t[0] == 0);
+          aPArray->AddEdge (n[1] + decal, t[1] == 0);
+          aPArray->AddEdge (n[2] + decal, t[2] == 0);
         }
       }
-      Prs3d_Root::CurrentGroup (thePresentation)->AddPrimitiveArray (aPArray);
     }
+    Prs3d_Root::CurrentGroup (thePresentation)->AddPrimitiveArray (aPArray);
+
     return Standard_True;
   }
 

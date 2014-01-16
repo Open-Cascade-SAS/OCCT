@@ -81,6 +81,24 @@ public: //! @name non-modifying getters
     return myPlaneStates.Find (thePlane).IsEnabled;
   }
 
+  //! @return true if there are enabled clipping planes (NOT capping)
+  inline Standard_Boolean IsClippingOn() const
+  {
+    return myNbClipping > 0;
+  }
+
+  //! @return true if there are enabled capping planes
+  inline Standard_Boolean IsCappingOn() const
+  {
+    return myNbCapping > 0;
+  }
+
+  //! @return true if there are enabled clipping or capping planes
+  inline Standard_Boolean IsClippingOrCappingOn() const
+  {
+    return (myNbClipping + myNbCapping) > 0;
+  }
+
 public: //! @name clipping state modification commands
 
   //! Add planes to the context clipping at the specified system of coordinates.
@@ -198,9 +216,11 @@ private:
   typedef NCollection_DataMap<Handle(Graphic3d_ClipPlane), PlaneProps> OpenGl_MapOfPlaneStates;
   typedef NCollection_Handle<Aspect_GenId> OpenGl_EmptyPlaneIds;
 
-  Graphic3d_SequenceOfHClipPlane myPlanes;        //!< defined clipping planes.
-  OpenGl_MapOfPlaneStates        myPlaneStates;   //!< map of clip planes bound for the props.
-  OpenGl_EmptyPlaneIds           myEmptyPlaneIds; //!< generator of empty ids.
+  Graphic3d_SequenceOfHClipPlane myPlanes;        //!< defined clipping planes
+  OpenGl_MapOfPlaneStates        myPlaneStates;   //!< map of clip planes bound for the props
+  OpenGl_EmptyPlaneIds           myEmptyPlaneIds; //!< generator of empty ids
+  Standard_Boolean               myNbClipping;    //!< number of enabled clipping-only planes (NOT capping)
+  Standard_Boolean               myNbCapping;     //!< number of enabled capping  planes
 
 private:
 

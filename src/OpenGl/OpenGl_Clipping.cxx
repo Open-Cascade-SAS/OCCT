@@ -27,9 +27,9 @@ namespace
 // purpose  :
 // =======================================================================
 OpenGl_Clipping::OpenGl_Clipping ()
-: myPlanes(),
-  myPlaneStates(),
-  myEmptyPlaneIds (new Aspect_GenId (GL_CLIP_PLANE0, GL_CLIP_PLANE5))
+: myEmptyPlaneIds (new Aspect_GenId (GL_CLIP_PLANE0, GL_CLIP_PLANE5)),
+  myNbClipping (0),
+  myNbCapping  (0)
 {}
 
 // =======================================================================
@@ -40,6 +40,8 @@ void OpenGl_Clipping::Init (const Standard_Integer theMaxPlanes)
 {
   myPlanes.Clear();
   myPlaneStates.Clear();
+  myNbClipping = 0;
+  myNbCapping  = 0;
   Standard_Integer aLowerId = GL_CLIP_PLANE0;
   Standard_Integer aUpperId = GL_CLIP_PLANE0 + theMaxPlanes - 1;
   myEmptyPlaneIds = new Aspect_GenId (aLowerId, aUpperId);
@@ -104,6 +106,15 @@ void OpenGl_Clipping::Add (Graphic3d_SequenceOfHClipPlane& thePlanes, const Equa
 
     glEnable ((GLenum)anID);
     glClipPlane ((GLenum)anID, aPlane->GetEquation());
+    if (aPlane->IsCapping())
+    {
+      ++myNbCapping;
+    }
+    else
+    {
+      ++myNbClipping;
+    }
+
     aPlaneIt.Next();
   }
 
@@ -129,10 +140,22 @@ void OpenGl_Clipping::Remove (const Graphic3d_SequenceOfHClipPlane& thePlanes)
     }
 
     Standard_Integer anID = myPlaneStates.Find (aPlane).ContextID;
+    PlaneProps& aProps = myPlaneStates.ChangeFind (aPlane);
+    if (aProps.IsEnabled)
+    {
+      glDisable ((GLenum)anID);
+      if (aPlane->IsCapping())
+      {
+        --myNbCapping;
+      }
+      else
+      {
+        --myNbClipping;
+      }
+    }
+
     myEmptyPlaneIds->Free (anID);
     myPlaneStates.UnBind (aPlane);
-
-    glDisable ((GLenum)anID);
   }
 
   // renew collection of planes
@@ -173,10 +196,26 @@ void OpenGl_Clipping::SetEnabled (const Handle(Graphic3d_ClipPlane)& thePlane,
   if (theIsEnabled)
   {
     glEnable (anID);
+    if (thePlane->IsCapping())
+    {
+      ++myNbCapping;
+    }
+    else
+    {
+      ++myNbClipping;
+    }
   }
   else
   {
     glDisable (anID);
+    if (thePlane->IsCapping())
+    {
+      --myNbCapping;
+    }
+    else
+    {
+      --myNbClipping;
+    }
   }
 
   aProps.IsEnabled = theIsEnabled;

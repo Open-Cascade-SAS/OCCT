@@ -32,13 +32,99 @@
 #include <TShort_HArray1OfShortReal.hxx>
 #include <TShort_Array1OfShortReal.hxx>
 
+namespace
+{
+  //=======================================================================
+  //function : isTriangulated
+  //purpose  : Returns true if all faces within shape are triangulated.
+  //           Same as BRepTools::Triangulation() but without extra checks.
+  //=======================================================================
+  static Standard_Boolean isTriangulated (const TopoDS_Shape& theShape)
+  {
+    TopLoc_Location aLocDummy;
+    for (TopExp_Explorer aFaceIter (theShape, TopAbs_FACE); aFaceIter.More(); aFaceIter.Next())
+    {
+      const TopoDS_Face&                aFace = TopoDS::Face (aFaceIter.Current());
+      const Handle(Poly_Triangulation)& aTri  = BRep_Tool::Triangulation (aFace, aLocDummy);
+      if (aTri.IsNull())
+      {
+        return Standard_False;
+      }
+    }
+    return Standard_True;
+  }
+}
+
 //=======================================================================
 //function : IsClosed
 //purpose  :
 //=======================================================================
 Standard_Boolean StdPrs_ToolShadedShape::IsClosed (const TopoDS_Shape& theShape)
 {
-  return theShape.Closed();
+  if (theShape.IsNull())
+  {
+    return Standard_True;
+  }
+
+  switch (theShape.ShapeType())
+  {
+    case TopAbs_COMPOUND:
+    case TopAbs_COMPSOLID:
+    default:
+    {
+      // check that compound consists of closed solids
+      for (TopoDS_Iterator anIter (theShape); anIter.More(); anIter.Next())
+      {
+        const TopoDS_Shape& aShape = anIter.Value();
+        if (!IsClosed (aShape))
+        {
+          return Standard_False;
+        }
+      }
+      return Standard_True;
+    }
+    case TopAbs_SOLID:
+    {
+      for (TopoDS_Iterator anIter (theShape); anIter.More(); anIter.Next())
+      {
+        const TopoDS_Shape& aShape = anIter.Value();
+        if (aShape.IsNull())
+        {
+          continue;
+        }
+
+        if (aShape.ShapeType() == TopAbs_SHELL
+        && !aShape.Closed())
+        {
+          return Standard_False;
+        }
+        else if (aShape.ShapeType() == TopAbs_FACE)
+        {
+          // invalid solid
+          return Standard_False;
+        }
+        else if (!isTriangulated (aShape))
+        {
+          // mesh contains holes
+          return Standard_False;
+        }
+      }
+      return Standard_True;
+    }
+    case TopAbs_SHELL:
+    case TopAbs_FACE:
+    {
+      // free faces / shell are not allowed
+      return Standard_False;
+    }
+    case TopAbs_WIRE:
+    case TopAbs_EDGE:
+    case TopAbs_VERTEX:
+    {
+      // ignore
+      return Standard_True;
+    }
+  }
 }
 
 //=======================================================================
