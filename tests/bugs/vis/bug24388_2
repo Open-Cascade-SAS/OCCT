@@ -1,0 +1,44 @@
+puts "==========="
+puts "OCC24388"
+puts "==========="
+puts ""
+##################################################################
+# 0024388: Option to enable visualization of hidden lines in DRAW
+# Checks if dotted hidden lines are displayed properly in HLR mode.
+##################################################################
+
+set m_pi2 1,57
+pcone a 5 0 10
+vinit
+vdisplay a
+vrotate 35 0 0
+vfit
+vhlr on 0
+vhlrtype algo a
+vrotate -$m_pi2 -$m_pi2 0
+vfit
+
+set x_coord 131
+set y_coord 240
+
+checkcolor $x_coord $y_coord 0 0 0
+
+if { $stat != 1 } {
+  puts "Error : Drawing hidden lines as dotted lines produces wrong result."
+}
+
+vdump $imagedir/${casename}_without_lines.png
+
+vhlr on 1
+
+set x_coord 131
+set y_coord 240
+
+# Check display of dotted hidden lines
+checkcolor $x_coord $y_coord 0.2 0.2 0.2
+
+if { $stat != 1 } {
+  puts "Error : Drawing hidden lines as dotted lines produces wrong result."
+}
+
+vdump $imagedir/${casename}_with_lines.png

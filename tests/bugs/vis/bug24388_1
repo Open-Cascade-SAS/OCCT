@@ -1,0 +1,37 @@
+puts "==========="
+puts "OCC24388"
+puts "==========="
+puts ""
+##################################################################
+# 0024388: Option to enable visualization of hidden lines in DRAW
+# Checks if dotted hidden lines are highlighted properly. 
+##################################################################
+
+box b 15 0 0 10 10 10
+vinit
+vdisplay b
+vrotate 35 0 0
+vfit
+vhlr on 1
+vhlrtype algo a
+
+vmoveto 76 304
+
+set x_coord 115
+set y_coord 203
+checkcolor $x_coord $y_coord 0 1 1
+
+if { $stat != 1 } {
+  puts "Error : Highlighting of dotted hidden lines in the box is wrong."
+}
+
+set x_coord 122
+set y_coord 200
+
+checkcolor $x_coord $y_coord 0 0 0
+
+if { $stat != 1 } {
+  puts "Error : Highlighting of dotted hidden lines in the box is wrong."
+}
+
+set only_screen 1

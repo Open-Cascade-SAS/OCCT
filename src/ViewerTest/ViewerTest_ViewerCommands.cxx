@@ -812,6 +812,7 @@ static int VInit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const cha
 //==============================================================================
 //function : VHLR
 //purpose  : hidden lines removal algorithm
+//draw args: vhlr is_enabled={on|off} [show_hidden={1|0}]
 //==============================================================================
 
 static int VHLR (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
@@ -822,24 +823,62 @@ static int VHLR (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
     return 1;
   }
 
-  if (argc != 2)
+  if (argc < 2)
   {
     di << argv[0] << ": Wrong number of command arguments.\n"
       << "Type help " << argv[0] << " for more information.\n";
     return 1;
   }
 
+  // Enable or disable HLR mode.
   Standard_Boolean isHLROn =
     (!strcasecmp (argv[1], "on")) ? Standard_True : Standard_False;
 
-  if (isHLROn == MyHLRIsOn)
+  if (isHLROn != MyHLRIsOn)
   {
-    return 0;
+    MyHLRIsOn = isHLROn;
+    ViewerTest::CurrentView()->SetComputedMode (MyHLRIsOn);
   }
 
-  MyHLRIsOn = isHLROn;
-  ViewerTest::CurrentView()->SetComputedMode (MyHLRIsOn);
+  // Show or hide hidden lines in HLR mode.
+  Standard_Boolean isCurrentShowHidden
+    = ViewerTest::GetAISContext()->DefaultDrawer()->DrawHiddenLine();
 
+  Standard_Boolean isShowHidden =
+    (argc == 3) ? (atoi(argv[2]) == 1 ? Standard_True : Standard_False)
+                : isCurrentShowHidden;
+
+
+  if (isShowHidden != isCurrentShowHidden)
+  {
+    if (isShowHidden)
+    {
+      ViewerTest::GetAISContext()->DefaultDrawer()->EnableDrawHiddenLine();
+    }
+    else
+    {
+      ViewerTest::GetAISContext()->DefaultDrawer()->DisableDrawHiddenLine();
+    }
+
+    // Redisplay shapes.
+    if (MyHLRIsOn)
+    {
+      AIS_ListOfInteractive aListOfShapes;
+      ViewerTest::GetAISContext()->DisplayedObjects (aListOfShapes);
+
+      for (AIS_ListIteratorOfListOfInteractive anIter(aListOfShapes); anIter.More(); anIter.Next())
+      {
+        Handle(AIS_Shape) aShape = Handle(AIS_Shape)::DownCast (anIter.Value());
+        if (aShape.IsNull())
+        {
+          continue;
+        }
+        aShape->Redisplay();
+      }
+    }
+  }
+
+  ViewerTest::CurrentView()->Update();
   return 0;
 }
 
@@ -6183,9 +6222,10 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "                              rot         - texture rotation angle in degrees",
     __FILE__, VTextureEnv, group);
   theCommands.Add("vhlr" ,
-    "is_enabled={on|off}"
+    "is_enabled={on|off} [show_hidden={1|0}]"
     " - Hidden line removal algorithm:"
-    " - is_enabled: if is on HLR algorithm is applied\n",
+    " - is_enabled: if is on HLR algorithm is applied\n"
+    " - show_hidden: if equals to 1, hidden lines are drawn as dotted ones.\n",
     __FILE__,VHLR,group);
   theCommands.Add("vhlrtype" ,
     "algo_type={algo|polyalgo} [shape_1 ... shape_n]"
