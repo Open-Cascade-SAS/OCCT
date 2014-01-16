@@ -730,84 +730,115 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
   GeomAbs_SurfaceType typs1 = theS1->GetType();
   GeomAbs_SurfaceType typs2 = theS2->GetType();
   
+  //treatment of the cases with cone or torus
   Standard_Boolean TreatAsBiParametric = Standard_False;
-  if(typs1 == GeomAbs_Cone)
-  {
-    const gp_Cone Con1 = theS1->Cone();
-    const Standard_Real a1 = Abs(Con1.SemiAngle());
-    if((a1 < 0.02) || (a1 > 1.55))
-    {
-      if(typs2==GeomAbs_Plane)
-      {
-        if(a1 < 0.02)
-        {
-          const gp_Pln Plan2 = theS2->Plane();
-          const gp_Dir axec = Con1.Axis().Direction();
-          const gp_Dir axep = Plan2.Axis().Direction();
-          const Standard_Real ps = Abs(axec.Dot(axep));
-          if(ps < 0.015)
-          {
-            TreatAsBiParametric = Standard_True;
+  Standard_Integer bImp = 0;
+  //
+  if (typs1 == GeomAbs_Cone  || typs2 == GeomAbs_Cone ||
+      typs1 == GeomAbs_Torus || typs2 == GeomAbs_Torus) {
+    gp_Ax1 aCTAx, aGeomAx;
+    GeomAbs_SurfaceType aCTType;
+    Standard_Boolean bToCheck;
+    //
+    const Handle(Adaptor3d_HSurface)& aCTSurf = 
+      (typs1 == GeomAbs_Cone || typs1 == GeomAbs_Torus) ? theS1 : theS2;
+    const Handle(Adaptor3d_HSurface)& aGeomSurf = 
+      (typs1 == GeomAbs_Cone || typs1 == GeomAbs_Torus) ? theS2 : theS1;
+    //
+    aCTType = aCTSurf->GetType();
+    bToCheck = Standard_False;
+    //
+    if (aCTType == GeomAbs_Cone) {
+      Standard_Real a1 = Abs(aCTSurf->Cone().SemiAngle());
+      bToCheck = (a1 < 0.02) || (a1 > 1.55);
+      if (typs1 == typs2) {
+        Standard_Real a2 = Abs(aGeomSurf->Cone().SemiAngle());
+        bToCheck = bToCheck || (a2 < 0.02) || (a2 > 1.55);
+        //
+        if (a1 > 1.55 && a2 > 1.55) {//quasi-planes: if same domain, treat as canonic
+          const gp_Cone aCon1 = aCTSurf->Cone();
+          const gp_Cone aCon2 = aGeomSurf->Cone();
+          const gp_Ax1 A1 = aCon1.Axis(), A2 = aCon2.Axis();
+          if (A1.IsParallel(A2,Precision::Angular())) {
+            const gp_Pnt Apex1 = aCon1.Apex(), Apex2 = aCon2.Apex();
+            const gp_Pln Plan1( Apex1, A1.Direction() );
+            if (Plan1.Distance( Apex2 ) <= Precision::Confusion()) {
+              bToCheck = Standard_False;
+              bImp = 1;
+            }
           }
         }
       }
-      else
-        TreatAsBiParametric = Standard_True;
+      //
+      aCTAx = aCTSurf->Cone().Axis();
+    }
+    else {
+      bToCheck = aCTSurf->Torus().MajorRadius() > aCTSurf->Torus().MinorRadius();
+      if (bToCheck && (typs1 == typs2)) {
+        bToCheck = aGeomSurf->Torus().MajorRadius() > aGeomSurf->Torus().MinorRadius();
+      }
+      aCTAx = aCTSurf->Torus().Axis();
+    }
+    //
+    if (bToCheck) {
+      const gp_Lin aL1(aCTAx);
+      //
+      switch (aGeomSurf->GetType()) {
+      case GeomAbs_Plane: {
+        aGeomAx = aGeomSurf->Plane().Axis();
+        if (aCTType == GeomAbs_Cone) {
+          bImp = 1;
+          if (Abs(aCTSurf->Cone().SemiAngle()) < 0.02) {
+            Standard_Real ps = Abs(aCTAx.Direction().Dot(aGeomAx.Direction()));
+            if(ps < 0.015) {
+              bImp = 0;
+            }
+          }
+        }
+        else {
+          if (aCTAx.IsParallel(aGeomAx, Precision::Angular()) ||
+              (aCTAx.IsNormal(aGeomAx, Precision::Angular()) && 
+               (aGeomSurf->Plane().Distance(aCTAx.Location()) < Precision::Confusion()))) {
+            bImp = 1;
+          }
+        }
+        bToCheck = Standard_False;
+        break;
+      }
+      case GeomAbs_Sphere: {
+        if (aL1.Distance(aGeomSurf->Sphere().Location()) < Precision::Confusion()) {
+          bImp = 1;
+        }
+        bToCheck = Standard_False;
+        break;
+      }
+      case GeomAbs_Cylinder:
+        aGeomAx = aGeomSurf->Cylinder().Axis();
+        break;
+      case GeomAbs_Cone: 
+        aGeomAx = aGeomSurf->Cone().Axis();
+        break;
+      case GeomAbs_Torus: 
+        aGeomAx = aGeomSurf->Torus().Axis();
+        break;
+      default: 
+        bToCheck = Standard_False;
+        break;
+      }
+      //
+      if (bToCheck) {
+        if (aCTAx.IsParallel(aGeomAx, Precision::Angular()) &&
+            (aL1.Distance(aGeomAx.Location()) <= Precision::Confusion())) {
+          bImp = 1;
+        }
+      }
+      //
+      if (aCTType == GeomAbs_Cone) {
+        TreatAsBiParametric = (bImp == 0);
+      }
     }
   }
-
-  if(typs2 == GeomAbs_Cone)
-  {
-    const gp_Cone Con2 = theS2->Cone();
-    const Standard_Real a2 = Abs(Con2.SemiAngle());
-    if((a2 < 0.02) || (a2 > 1.55))
-    {
-      if(typs1 == GeomAbs_Plane)
-      {
-        if(a2 < 0.02)
-        {
-          const gp_Pln Plan1 = theS1->Plane();
-          const gp_Dir axec = Con2.Axis().Direction();
-          const gp_Dir axep = Plan1.Axis().Direction();
-          const Standard_Real ps = Abs(axec.Dot(axep));
-          if(ps<0.015)
-          {
-            TreatAsBiParametric = Standard_True;
-          }
-        }
-      }
-      else
-        TreatAsBiParametric = Standard_True;
-    }
-
-    //// modified by jgv, 15.12.02 for OCC565 ////
-    if (typs1 == GeomAbs_Cone && TreatAsBiParametric)
-    {
-      const gp_Cone Con1 = theS1->Cone();
-      const Standard_Real a1 = Abs(Con1.SemiAngle());
-      //if collinear, treat as canonical
-      const gp_Ax1 A1 = Con1.Axis(), A2 = Con2.Axis();
-      const gp_Lin L1(A1);
-      if (A1.IsParallel(A2,Precision::Angular()) && 
-         (L1.Distance(A2.Location()) <= Precision::Confusion()))
-      {
-        TreatAsBiParametric = Standard_False;
-      }
-      else if (a1 > 1.55 && a2 > 1.55) //quasi-planes: if same domain, treat as canonic
-      {
-        const gp_Ax1 A1 = Con1.Axis(), A2 = Con2.Axis();
-        if (A1.IsParallel(A2,Precision::Angular()))
-        {
-          const gp_Pnt Apex1 = Con1.Apex(), Apex2 = Con2.Apex();
-          const gp_Pln Plan1( Apex1, A1.Direction() );
-          if (Plan1.Distance( Apex2 ) <= Precision::Confusion())
-          {
-            TreatAsBiParametric = Standard_False;
-          }
-        }
-      }
-    }// if (typs1 == GeomAbs_Cone)    {
-  }// if(typs2 == GeomAbs_Cone)  {
+  //
 
   if(theD1->DomainIsInfinite() || theD2->DomainIsInfinite()) {
     TreatAsBiParametric= Standard_False;
@@ -837,6 +868,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
     case GeomAbs_Cylinder:
     case GeomAbs_Sphere:
     case GeomAbs_Cone: ts1 = 1; break;
+    case GeomAbs_Torus: ts1 = bImp; break;
     default: break;
   }
 
@@ -847,80 +879,11 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
     case GeomAbs_Cylinder:
     case GeomAbs_Sphere:
     case GeomAbs_Cone: ts2 = 1; break;
+    case GeomAbs_Torus: ts2 = bImp; break;
     default: break;
   }
   //
   // treatment of the cases with torus and any other geom surface
-  if ((typs1 == GeomAbs_Torus && ts2) ||
-      (typs2 == GeomAbs_Torus && ts1) ||
-      (typs1 == GeomAbs_Torus && typs2 == GeomAbs_Torus)) {
-    // check if axes collinear
-    //
-    const Handle(Adaptor3d_HSurface)& aTorSurf = 
-      (typs1 == GeomAbs_Torus) ? theS1 : theS2;
-    const Handle(Adaptor3d_HSurface)& aGeomSurf = 
-      (typs1 == GeomAbs_Torus) ? theS2 : theS1;
-    //
-    Standard_Boolean bValid = 
-      aTorSurf->Torus().MajorRadius() > aTorSurf->Torus().MinorRadius();
-    if (bValid && (typs1 == typs2)) {
-      bValid = aGeomSurf->Torus().MajorRadius() > aGeomSurf->Torus().MinorRadius();
-    }
-    //
-    if (bValid) {
-      Standard_Boolean bCheck, bImpImp;
-      const gp_Ax1 aTorAx = aTorSurf->Torus().Axis();
-      const gp_Lin aL1(aTorAx);
-      //
-      bCheck = Standard_True;
-      bImpImp = Standard_False;
-      //
-      gp_Ax1 aGeomAx;
-      switch (aGeomSurf->GetType()) {
-      case GeomAbs_Plane: {
-        aGeomAx = aGeomSurf->Plane().Axis();
-        if (aTorAx.IsParallel(aGeomAx, Precision::Angular()) ||
-            (aTorAx.IsNormal(aGeomAx, Precision::Angular()) && 
-             (aGeomSurf->Plane().Distance(aTorAx.Location()) < Precision::Confusion()))) {
-          bImpImp = Standard_True;
-        }
-        bCheck = Standard_False;
-        break;
-      }
-      case GeomAbs_Sphere: {
-        if (aL1.Distance(aGeomSurf->Sphere().Location()) < Precision::Confusion()) {
-          bImpImp = Standard_True;
-        }
-        bCheck = Standard_False;
-        break;
-      }
-      case GeomAbs_Cylinder:
-        aGeomAx = aGeomSurf->Cylinder().Axis();
-        break;
-      case GeomAbs_Cone: 
-        aGeomAx = aGeomSurf->Cone().Axis();
-        break;
-      case GeomAbs_Torus: 
-        aGeomAx = aGeomSurf->Torus().Axis();
-        break;
-      default: 
-        bCheck = Standard_False;
-        break;
-      }
-      //
-      if (bCheck) {
-        if (aTorAx.IsParallel(aGeomAx, Precision::Angular()) &&
-            (aL1.Distance(aGeomAx.Location()) <= Precision::Confusion())) {
-          bImpImp = Standard_True;
-        }
-      }
-      //
-      if (bImpImp) {
-        ts1 = 1;
-        ts2 = 1;
-      }
-    }
-  }
   //
   // Possible intersection types: 1. ts1 == ts2 == 1 <Geom-Geom>
   //                              2. ts1 != ts2      <Geom-Param>
@@ -958,7 +921,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
     ParamParamPerfom(theS1, theD1, theS2, theD2, TolArc, TolTang, ListOfPnts, RestrictLine, typs1, typs2);
   }
 }
-		      
+
 //=======================================================================
 //function : Perform
 //purpose  : 
@@ -989,85 +952,116 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
 
   GeomAbs_SurfaceType typs1 = theS1->GetType();
   GeomAbs_SurfaceType typs2 = theS2->GetType();
-  
+  //
+  //treatment of the cases with cone or torus
   Standard_Boolean TreatAsBiParametric = Standard_False;
-  if(typs1 == GeomAbs_Cone)
-  {
-    const gp_Cone Con1 = theS1->Cone();
-    const Standard_Real a1 = Abs(Con1.SemiAngle());
-    if((a1 < 0.02) || (a1 > 1.55))
-    {
-      if(typs2==GeomAbs_Plane)
-      {
-        if(a1 < 0.02)
-        {
-          const gp_Pln Plan2 = theS2->Plane();
-          const gp_Dir axec = Con1.Axis().Direction();
-          const gp_Dir axep = Plan2.Axis().Direction();
-          const Standard_Real ps = Abs(axec.Dot(axep));
-          if(ps < 0.015)
-          {
-            TreatAsBiParametric = Standard_True;
+  Standard_Integer bImp = 0;
+  //
+  if (typs1 == GeomAbs_Cone  || typs2 == GeomAbs_Cone ||
+      typs1 == GeomAbs_Torus || typs2 == GeomAbs_Torus) {
+    gp_Ax1 aCTAx, aGeomAx;
+    GeomAbs_SurfaceType aCTType;
+    Standard_Boolean bToCheck;
+    //
+    const Handle(Adaptor3d_HSurface)& aCTSurf = 
+      (typs1 == GeomAbs_Cone || typs1 == GeomAbs_Torus) ? theS1 : theS2;
+    const Handle(Adaptor3d_HSurface)& aGeomSurf = 
+      (typs1 == GeomAbs_Cone || typs1 == GeomAbs_Torus) ? theS2 : theS1;
+    //
+    aCTType = aCTSurf->GetType();
+    bToCheck = Standard_False;
+    //
+    if (aCTType == GeomAbs_Cone) {
+      Standard_Real a1 = Abs(aCTSurf->Cone().SemiAngle());
+      bToCheck = (a1 < 0.02) || (a1 > 1.55);
+      if (typs1 == typs2) {
+        Standard_Real a2 = Abs(aGeomSurf->Cone().SemiAngle());
+        bToCheck = bToCheck || (a2 < 0.02) || (a2 > 1.55);
+        //
+        if (a1 > 1.55 && a2 > 1.55) {//quasi-planes: if same domain, treat as canonic
+          const gp_Cone aCon1 = aCTSurf->Cone();
+          const gp_Cone aCon2 = aGeomSurf->Cone();
+          const gp_Ax1 A1 = aCon1.Axis(), A2 = aCon2.Axis();
+          if (A1.IsParallel(A2,Precision::Angular())) {
+            const gp_Pnt Apex1 = aCon1.Apex(), Apex2 = aCon2.Apex();
+            const gp_Pln Plan1( Apex1, A1.Direction() );
+            if (Plan1.Distance( Apex2 ) <= Precision::Confusion()) {
+              bToCheck = Standard_False;
+              bImp = 1;
+            }
           }
         }
       }
-      else
-        TreatAsBiParametric = Standard_True;
+      //
+      aCTAx = aCTSurf->Cone().Axis();
+    }
+    else {
+      bToCheck = aCTSurf->Torus().MajorRadius() > aCTSurf->Torus().MinorRadius();
+      if (bToCheck && (typs1 == typs2)) {
+        bToCheck = aGeomSurf->Torus().MajorRadius() > aGeomSurf->Torus().MinorRadius();
+      }
+      aCTAx = aCTSurf->Torus().Axis();
+    }
+    //
+    if (bToCheck) {
+      const gp_Lin aL1(aCTAx);
+      //
+      switch (aGeomSurf->GetType()) {
+      case GeomAbs_Plane: {
+        aGeomAx = aGeomSurf->Plane().Axis();
+        if (aCTType == GeomAbs_Cone) {
+          bImp = 1;
+          if (Abs(aCTSurf->Cone().SemiAngle()) < 0.02) {
+            Standard_Real ps = Abs(aCTAx.Direction().Dot(aGeomAx.Direction()));
+            if(ps < 0.015) {
+              bImp = 0;
+            }
+          }
+        }
+        else {
+          if (aCTAx.IsParallel(aGeomAx, Precision::Angular()) ||
+              (aCTAx.IsNormal(aGeomAx, Precision::Angular()) && 
+               (aGeomSurf->Plane().Distance(aCTAx.Location()) < Precision::Confusion()))) {
+            bImp = 1;
+          }
+        }
+        bToCheck = Standard_False;
+        break;
+      }
+      case GeomAbs_Sphere: {
+        if (aL1.Distance(aGeomSurf->Sphere().Location()) < Precision::Confusion()) {
+          bImp = 1;
+        }
+        bToCheck = Standard_False;
+        break;
+      }
+      case GeomAbs_Cylinder:
+        aGeomAx = aGeomSurf->Cylinder().Axis();
+        break;
+      case GeomAbs_Cone: 
+        aGeomAx = aGeomSurf->Cone().Axis();
+        break;
+      case GeomAbs_Torus: 
+        aGeomAx = aGeomSurf->Torus().Axis();
+        break;
+      default: 
+        bToCheck = Standard_False;
+        break;
+      }
+      //
+      if (bToCheck) {
+        if (aCTAx.IsParallel(aGeomAx, Precision::Angular()) &&
+            (aL1.Distance(aGeomAx.Location()) <= Precision::Confusion())) {
+          bImp = 1;
+        }
+      }
+      //
+      if (aCTType == GeomAbs_Cone) {
+        TreatAsBiParametric = (bImp == 0);
+      }
     }
   }
-
-  if(typs2 == GeomAbs_Cone)
-  {
-    const gp_Cone Con2 = theS2->Cone();
-    const Standard_Real a2 = Abs(Con2.SemiAngle());
-    if((a2 < 0.02) || (a2 > 1.55))
-    {
-      if(typs1 == GeomAbs_Plane)
-      {
-        if(a2 < 0.02)
-        {
-          const gp_Pln Plan1 = theS1->Plane();
-          const gp_Dir axec = Con2.Axis().Direction();
-          const gp_Dir axep = Plan1.Axis().Direction();
-          const Standard_Real ps = Abs(axec.Dot(axep));
-          if(ps<0.015)
-          {
-            TreatAsBiParametric = Standard_True;
-          }
-        }
-      }
-      else
-        TreatAsBiParametric = Standard_True;
-    }
-
-    //// modified by jgv, 15.12.02 for OCC565 ////
-    if (typs1 == GeomAbs_Cone && TreatAsBiParametric)
-    {
-      const gp_Cone Con1 = theS1->Cone();
-      const Standard_Real a1 = Abs(Con1.SemiAngle());
-      //if collinear, treat as canonical
-      const gp_Ax1 A1 = Con1.Axis(), A2 = Con2.Axis();
-      const gp_Lin L1(A1);
-      if (A1.IsParallel(A2,Precision::Angular()) &&
-         (L1.Distance(A2.Location()) <= Precision::Confusion()))
-      {
-        TreatAsBiParametric = Standard_False;
-      }
-      else if (a1 > 1.55 && a2 > 1.55) //quasi-planes: if same domain, treat as canonic
-      {
-        const gp_Ax1 A1 = Con1.Axis(), A2 = Con2.Axis();
-        if (A1.IsParallel(A2,Precision::Angular()))
-        {
-          const gp_Pnt Apex1 = Con1.Apex(), Apex2 = Con2.Apex();
-          const gp_Pln Plan1( Apex1, A1.Direction() );
-          if (Plan1.Distance( Apex2 ) <= Precision::Confusion())
-          {
-            TreatAsBiParametric = Standard_False;
-          }
-        }
-      }
-    }// if (typs1 == GeomAbs_Cone)    {
-  }// if(typs2 == GeomAbs_Cone)  {
+  //
 
   if(theD1->DomainIsInfinite() || theD2->DomainIsInfinite()) {
     TreatAsBiParametric= Standard_False;
@@ -1088,6 +1082,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
     case GeomAbs_Cylinder:
     case GeomAbs_Sphere:
     case GeomAbs_Cone: ts1 = 1; break;
+    case GeomAbs_Torus: ts1 = bImp; break;
     default: break;
   }
 
@@ -1098,79 +1093,8 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  theS1,
     case GeomAbs_Cylinder:
     case GeomAbs_Sphere:
     case GeomAbs_Cone: ts2 = 1; break;
+    case GeomAbs_Torus: ts2 = bImp; break;
     default: break;
-  }
-  //
-  // treatment of the cases with torus and any other geom surface
-  if ((typs1 == GeomAbs_Torus && ts2) ||
-      (typs2 == GeomAbs_Torus && ts1) ||
-      (typs1 == GeomAbs_Torus && typs2 == GeomAbs_Torus)) {
-    // check if axes collinear
-    //
-    const Handle(Adaptor3d_HSurface)& aTorSurf = 
-      (typs1 == GeomAbs_Torus) ? theS1 : theS2;
-    const Handle(Adaptor3d_HSurface)& aGeomSurf = 
-      (typs1 == GeomAbs_Torus) ? theS2 : theS1;
-    //
-    Standard_Boolean bValid = 
-      aTorSurf->Torus().MajorRadius() > aTorSurf->Torus().MinorRadius();
-    if (bValid && (typs1 == typs2)) {
-      bValid = aGeomSurf->Torus().MajorRadius() > aGeomSurf->Torus().MinorRadius();
-    }
-    //
-    if (bValid) {
-      Standard_Boolean bCheck, bImpImp;
-      const gp_Ax1 aTorAx = aTorSurf->Torus().Axis();
-      const gp_Lin aL1(aTorAx);
-      //
-      bCheck = Standard_True;
-      bImpImp = Standard_False;
-      //
-      gp_Ax1 aGeomAx;
-      switch (aGeomSurf->GetType()) {
-      case GeomAbs_Plane: {
-        aGeomAx = aGeomSurf->Plane().Axis();
-        if (aTorAx.IsParallel(aGeomAx, Precision::Angular()) ||
-            (aTorAx.IsNormal(aGeomAx, Precision::Angular()) && 
-             (aGeomSurf->Plane().Distance(aTorAx.Location()) < Precision::Confusion()))) {
-          bImpImp = Standard_True;
-        }
-        bCheck = Standard_False;
-        break;
-      }
-      case GeomAbs_Sphere: {
-        if (aL1.Distance(aGeomSurf->Sphere().Location()) < Precision::Confusion()) {
-          bImpImp = Standard_True;
-        }
-        bCheck = Standard_False;
-        break;
-      }
-      case GeomAbs_Cylinder:
-        aGeomAx = aGeomSurf->Cylinder().Axis();
-        break;
-      case GeomAbs_Cone: 
-        aGeomAx = aGeomSurf->Cone().Axis();
-        break;
-      case GeomAbs_Torus: 
-        aGeomAx = aGeomSurf->Torus().Axis();
-        break;
-      default: 
-        bCheck = Standard_False;
-        break;
-      }
-      //
-      if (bCheck) {
-        if (aTorAx.IsParallel(aGeomAx, Precision::Angular()) &&
-            (aL1.Distance(aGeomAx.Location()) <= Precision::Confusion())) {
-          bImpImp = Standard_True;
-        }
-      }
-      //
-      if (bImpImp) {
-        ts1 = 1;
-        ts2 = 1;
-      }
-    }
   }
   //
   // Possible intersection types: 1. ts1 == ts2 == 1 <Geom-Geom>

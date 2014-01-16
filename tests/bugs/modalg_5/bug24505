@@ -1,0 +1,20 @@
+puts "==========="
+puts "OCC24505"
+puts "==========="
+puts ""
+##############################################################
+# Wrong section curves between Cone and Cylinder with collinear axes
+##############################################################
+
+restore [locate_data_file bug24505_f1.brep] f1
+restore [locate_data_file bug24505_f2.brep] f2
+
+bopcurves f1 f2
+
+set info [dump c_1]
+
+if { [regexp "Circle" $info] != 1 } {
+    puts "Error : Wrong section curves"
+} else {
+    puts "OK : Good section curves"
+}
