@@ -53,12 +53,8 @@
 HWND CreateCommandWindow(HWND hWnd, int /*nitem*/)
 {
   HINSTANCE       hInstance;
-  
-#ifndef _WIN64
-  hInstance = (HINSTANCE)GetWindowLong(hWnd,GWL_HINSTANCE);
-#else
-  hInstance = (HINSTANCE)GetWindowLong(hWnd,GWLP_HINSTANCE);
-#endif
+  hInstance = (HINSTANCE)GetWindowLongPtr(hWnd,GWLP_HINSTANCE);
+
 	HWND hWndCommand = (CreateWindow(COMMANDCLASS, COMMANDTITLE,
 			    												WS_CLIPCHILDREN | WS_OVERLAPPED |
 			    												WS_THICKFRAME | WS_CAPTION	,
@@ -83,7 +79,7 @@ LRESULT APIENTRY CommandProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam 
   {
     case WM_CREATE :
 					CommandCreateProc(hWnd);
-					hWndEdit = (HWND)GetWindowLong(hWnd, CLIENTWND);
+					hWndEdit = (HWND)GetWindowLongPtr(hWnd, CLIENTWND);
 					SendMessage(hWndEdit,EM_REPLACESEL, 0,(LPARAM)PROMPT);
 					break;
 
@@ -95,7 +91,7 @@ LRESULT APIENTRY CommandProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam 
 
     case WM_SIZE :
     {
-    			hWndEdit = (HWND)GetWindowLong(hWnd, CLIENTWND);          
+    			hWndEdit = (HWND)GetWindowLongPtr(hWnd, CLIENTWND);          
     			MoveWindow(hWndEdit, 0, 0, LOWORD(lParam), HIWORD(lParam), TRUE);
           // Place the cursor at the end of the buffer
           // Nb of characters in the buffer of hWndEdit
@@ -105,7 +101,7 @@ LRESULT APIENTRY CommandProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam 
     }
 
     case WM_SETFOCUS :
-    			hWndEdit = (HWND)GetWindowLong(hWnd, CLIENTWND);
+    			hWndEdit = (HWND)GetWindowLongPtr(hWnd, CLIENTWND);
           SetFocus(hWndEdit);
           break;
 
@@ -124,11 +120,8 @@ LRESULT APIENTRY EditProc(HWND, UINT, WPARAM, LPARAM);
 BOOL CommandCreateProc(HWND hWnd)
 {
 
-#ifndef _WIN64
-  HINSTANCE hInstance = (HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE);
-#else
-  HINSTANCE hInstance = (HINSTANCE)GetWindowLong(hWnd, GWLP_HINSTANCE);
-#endif
+  HINSTANCE hInstance = (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE);
+
   HWND hWndEdit = CreateWindow("EDIT",NULL,
   			  WS_CHILD | WS_VISIBLE | WS_VSCROLL |
   			  ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL,
@@ -138,26 +131,19 @@ BOOL CommandCreateProc(HWND hWnd)
 
     // Save hWndEdit in the extra memory in 0 of CommandWindow
   if (hWndEdit)
-    SetWindowLong(hWnd, CLIENTWND, (LONG)hWndEdit);
+    SetWindowLongPtr(hWnd, CLIENTWND, (LONG_PTR)hWndEdit);
 
     // Sub-Class of the window
     //-------
     // Save the pointer on the existing procedure
   #ifdef STRICT
-   #ifndef _WIN64
-    OldEditProc = (WNDPROC)GetWindowLong(hWndEdit, GWL_WNDPROC);
-   #else
-    OldEditProc = (WNDPROC)GetWindowLong(hWndEdit, GWLP_WNDPROC);
-   #endif // _WIN64
+    OldEditProc = (WNDPROC)GetWindowLongPtr(hWndEdit, GWLP_WNDPROC);
   #else
-    OldEditProc = (FARPROC)GetWindowLong(hWndEdit, GWL_WNDPROC);
+    OldEditProc = (FARPROC)GetWindowLongPtr(hWndEdit, GWLP_WNDPROC);
   #endif
     // Implement the new function
-#ifndef _WIN64
-  SetWindowLong(hWndEdit, GWL_WNDPROC, (LONG) EditProc);
-#else
-  SetWindowLong(hWndEdit, GWLP_WNDPROC, (LONG) EditProc);
-#endif
+  SetWindowLongPtr(hWndEdit, GWLP_WNDPROC, (LONG_PTR) EditProc);
+
   return(TRUE);
 }
 

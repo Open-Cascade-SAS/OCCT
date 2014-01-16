@@ -1353,11 +1353,7 @@ HWND DrawWindow::CreateDrawWindow(HWND hWndClient, int nitem)
   }
   else {
     HANDLE hInstance;
-#ifndef _WIN64
-    hInstance = (HANDLE)GetWindowLong(hWndClient,GWL_HINSTANCE);
-#else
-    hInstance = (HANDLE)GetWindowLong(hWndClient,GWLP_HINSTANCE);
-#endif
+    hInstance = (HANDLE)GetWindowLongPtr(hWndClient,GWLP_HINSTANCE);
 
     return CreateMDIWindow(DRAWCLASS, DRAWTITLE,
                            WS_CAPTION | WS_CHILD | WS_THICKFRAME,
@@ -1372,7 +1368,7 @@ HWND DrawWindow::CreateDrawWindow(HWND hWndClient, int nitem)
 \*--------------------------------------------------------*/
 LRESULT APIENTRY DrawWindow::DrawProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam )
 {
-  DrawWindow* localObjet = (DrawWindow*)GetWindowLong(hWnd, CLIENTWND);
+  DrawWindow* localObjet = (DrawWindow*)GetWindowLongPtr(hWnd, CLIENTWND);
   if (!localObjet)
     {
       if (Draw_IsConsoleSubsystem)
@@ -1514,7 +1510,7 @@ void DrawWindow::Init(Standard_Integer theXLeft, Standard_Integer theYTop,
   SetPosition  (aRect.left, aRect.top);
   SetDimension (aRect.right - aRect.left, aRect.bottom - aRect.top);
   // Save the pointer at the instance associated to the window
-  SetWindowLong(win, CLIENTWND, (LONG)this);
+  SetWindowLongPtr(win, CLIENTWND, (LONG_PTR)this);
   HDC hDC = GetDC(win);
   SetBkColor(hDC, RGB(0, 0, 0));
   myCurrPen  = 3;

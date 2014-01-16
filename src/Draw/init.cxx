@@ -136,11 +136,7 @@ HWND CreateMDIClientWindow(HWND hWndFrame)
   ccs.hWindowMenu = NULL;
   ccs.idFirstChild = 0;
 
-#ifndef _WIN64
-  hInstance = (HANDLE)GetWindowLong(hWndFrame, GWL_HINSTANCE);
-#else
-  hInstance = (HANDLE)GetWindowLong(hWndFrame, GWLP_HINSTANCE);
-#endif
+  hInstance = (HANDLE)GetWindowLongPtr(hWndFrame, GWLP_HINSTANCE);
 
   hWndClient = CreateWindow("MDICLIENT",NULL,
 			     									WS_CHILD | WS_CLIPSIBLINGS | 
