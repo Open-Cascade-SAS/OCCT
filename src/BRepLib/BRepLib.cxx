@@ -134,14 +134,14 @@ const Handle(Geom_Plane)&  BRepLib::Plane()
 //=======================================================================
 
 Standard_Boolean  BRepLib::CheckSameRange(const TopoDS_Edge& AnEdge,
-					  const Standard_Real Tolerance) 
+  const Standard_Real Tolerance) 
 {
   Standard_Boolean  IsSameRange = Standard_True,
-  first_time_in = Standard_True ;
+    first_time_in = Standard_True ;
 
   BRep_ListIteratorOfListOfCurveRepresentation an_Iterator
     ((*((Handle(BRep_TEdge)*)&AnEdge.TShape()))->ChangeCurves());
-  
+
   Standard_Real first, last;
   Standard_Real current_first =0., current_last =0. ;
   Handle(BRep_GCurve) geometric_representation_ptr ;
@@ -150,115 +150,115 @@ Standard_Boolean  BRepLib::CheckSameRange(const TopoDS_Edge& AnEdge,
     geometric_representation_ptr =
       Handle(BRep_GCurve)::DownCast(an_Iterator.Value());
     if (!geometric_representation_ptr.IsNull()) {
-      
-        first = geometric_representation_ptr->First();
-        last =  geometric_representation_ptr->Last();
-        if (first_time_in ) {
-	  current_first = first ;
-	  current_last = last   ;
-	  first_time_in = Standard_False ;
-	}
-        else {
-	  IsSameRange = (Abs(current_first - first) <= Tolerance) 
-	    && (Abs(current_last -last) <= Tolerance ) ;
-	}
+
+      first = geometric_representation_ptr->First();
+      last =  geometric_representation_ptr->Last();
+      if (first_time_in ) {
+        current_first = first ;
+        current_last = last   ;
+        first_time_in = Standard_False ;
       }
+      else {
+        IsSameRange = (Abs(current_first - first) <= Tolerance) 
+          && (Abs(current_last -last) <= Tolerance ) ;
+      }
+    }
     an_Iterator.Next() ;
   }
   return IsSameRange ;
 }
-  
+
 //=======================================================================
 //function : SameRange
 //purpose  : 
 //=======================================================================
 
 void BRepLib::SameRange(const TopoDS_Edge& AnEdge,
-			const Standard_Real Tolerance) 
+  const Standard_Real Tolerance) 
 {
   BRep_ListIteratorOfListOfCurveRepresentation an_Iterator
     ((*((Handle(BRep_TEdge)*)&AnEdge.TShape()))->ChangeCurves());
-  
+
   Handle(Geom2d_Curve) Curve2dPtr, Curve2dPtr2, NewCurve2dPtr, NewCurve2dPtr2;
   TopLoc_Location LocalLoc ;
 
   Standard_Boolean first_time_in = Standard_True,
-  has_curve,
-  has_closed_curve ;
+    has_curve,
+    has_closed_curve ;
   Handle(BRep_GCurve) geometric_representation_ptr ;
   Standard_Real first,
-  current_first,
-  last,
-  current_last ;
+    current_first,
+    last,
+    current_last ;
 
   const Handle(Geom_Curve) C = BRep_Tool::Curve(AnEdge,
-						LocalLoc,
-						current_first,
-						current_last);
+    LocalLoc,
+    current_first,
+    current_last);
   if (!C.IsNull()) {
     first_time_in = Standard_False ;
   }
-  
+
   while (an_Iterator.More()) {
     geometric_representation_ptr =
       Handle(BRep_GCurve)::DownCast(an_Iterator.Value());
     if (! geometric_representation_ptr.IsNull()) {
       has_closed_curve =
-	has_curve = Standard_False ;
+        has_curve = Standard_False ;
       first = geometric_representation_ptr->First();
       last =  geometric_representation_ptr->Last();
       if (geometric_representation_ptr->IsCurveOnSurface()) {
-	Curve2dPtr = geometric_representation_ptr->PCurve() ; 
-	has_curve = Standard_True ;
+        Curve2dPtr = geometric_representation_ptr->PCurve() ; 
+        has_curve = Standard_True ;
       }
       if (geometric_representation_ptr->IsCurveOnClosedSurface()) {
-	Curve2dPtr2 = geometric_representation_ptr->PCurve2() ;
-	has_closed_curve = Standard_True ;
+        Curve2dPtr2 = geometric_representation_ptr->PCurve2() ;
+        has_closed_curve = Standard_True ;
       }
       if (has_curve || has_closed_curve) {
-	if (first_time_in) {
-	  current_first = first ;
-	  current_last = last ;
-	  first_time_in = Standard_False ;
+        if (first_time_in) {
+          current_first = first ;
+          current_last = last ;
+          first_time_in = Standard_False ;
         }
-	
+
         if (Abs(first - current_first) > Precision::Confusion() ||
-	    Abs(last - current_last) > Precision::Confusion() )
-	  {
-	    if (has_curve)
-	      {
-		GeomLib::SameRange(Tolerance,
-				   Curve2dPtr,
-				   geometric_representation_ptr->First(),
-				   geometric_representation_ptr->Last(),
-				   current_first,
-				   current_last,
-				   NewCurve2dPtr);
-		geometric_representation_ptr->PCurve(NewCurve2dPtr) ;
-	      }
-	    if (has_closed_curve)
-	      {
-		GeomLib::SameRange(Tolerance,
-				   Curve2dPtr2,
-				   geometric_representation_ptr->First(),
-				   geometric_representation_ptr->Last(),
-				   current_first,
-				   current_last,
-				   NewCurve2dPtr2);
-	        geometric_representation_ptr->PCurve2(NewCurve2dPtr2) ;
-	      }
-	  }
+          Abs(last - current_last) > Precision::Confusion() )
+        {
+          if (has_curve)
+          {
+            GeomLib::SameRange(Tolerance,
+              Curve2dPtr,
+              geometric_representation_ptr->First(),
+              geometric_representation_ptr->Last(),
+              current_first,
+              current_last,
+              NewCurve2dPtr);
+            geometric_representation_ptr->PCurve(NewCurve2dPtr) ;
+          }
+          if (has_closed_curve)
+          {
+            GeomLib::SameRange(Tolerance,
+              Curve2dPtr2,
+              geometric_representation_ptr->First(),
+              geometric_representation_ptr->Last(),
+              current_first,
+              current_last,
+              NewCurve2dPtr2);
+            geometric_representation_ptr->PCurve2(NewCurve2dPtr2) ;
+          }
+        }
       }
     }
     an_Iterator.Next() ;
   }
   BRep_Builder B;
   B.Range(TopoDS::Edge(AnEdge),
-	  current_first,
-	  current_last) ;
+    current_first,
+    current_last) ;
 
   B.SameRange(AnEdge,
-	      Standard_True) ;
+    Standard_True) ;
 }
 
 //=======================================================================
@@ -267,7 +267,7 @@ void BRepLib::SameRange(const TopoDS_Edge& AnEdge,
 //=======================================================================
 
 static Standard_Integer evaluateMaxSegment(const Standard_Integer aMaxSegment,
-					   const Adaptor3d_CurveOnSurface& aCurveOnSurface)
+  const Adaptor3d_CurveOnSurface& aCurveOnSurface)
 {
   if (aMaxSegment != 0) return aMaxSegment;
 
@@ -275,7 +275,7 @@ static Standard_Integer evaluateMaxSegment(const Standard_Integer aMaxSegment,
   Handle(Adaptor2d_HCurve2d) aCurv2d = aCurveOnSurface.GetCurve();
 
   Standard_Real aNbSKnots = 0, aNbC2dKnots = 0;
-  
+
   if (aSurf->GetType() == GeomAbs_BSplineSurface) {
     Handle(Geom_BSplineSurface) aBSpline = aSurf->BSpline();
     aNbSKnots = Max(aBSpline->NbUKnots(), aBSpline->NbVKnots());
@@ -293,22 +293,22 @@ static Standard_Integer evaluateMaxSegment(const Standard_Integer aMaxSegment,
 //=======================================================================
 
 Standard_Boolean  BRepLib::BuildCurve3d(const TopoDS_Edge& AnEdge,
-					const Standard_Real Tolerance,
-					const GeomAbs_Shape Continuity,
-					const Standard_Integer MaxDegree,
-					const Standard_Integer MaxSegment)
+  const Standard_Real Tolerance,
+  const GeomAbs_Shape Continuity,
+  const Standard_Integer MaxDegree,
+  const Standard_Integer MaxSegment)
 {
   Standard_Integer //ErrorCode,
-//                   ReturnCode = 0,
-                   ii,
-//                   num_knots,
-                   jj;
+    //                   ReturnCode = 0,
+    ii,
+    //                   num_knots,
+    jj;
 
   TopLoc_Location LocalLoc,L[2],LC;
   Standard_Real f,l,fc,lc, first[2], last[2],
-  tolerance,
-  max_deviation,
-  average_deviation ;
+    tolerance,
+    max_deviation,
+    average_deviation ;
   Handle(Geom2d_Curve) Curve2dPtr, Curve2dArray[2]  ;
   Handle(Geom_Surface) SurfacePtr, SurfaceArray[2]  ;
 
@@ -319,17 +319,17 @@ Standard_Boolean  BRepLib::BuildCurve3d(const TopoDS_Edge& AnEdge,
   const Handle(Geom_Curve) C = BRep_Tool::Curve(AnEdge,LocalLoc,f,l);
   if (!C.IsNull()) 
     return Standard_True;
-//
-// this should not exists but UpdateEdge makes funny things 
-// if the edge is not same range 
-//
+  //
+  // this should not exists but UpdateEdge makes funny things 
+  // if the edge is not same range 
+  //
   if (! CheckSameRange(AnEdge,
-		       Precision::Confusion())) {
-    SameRange(AnEdge,
-	      Tolerance) ;
+    Precision::Confusion())) {
+      SameRange(AnEdge,
+        Tolerance) ;
   }
 
-    
+
 
   // search a curve on a plane
   Handle(Geom_Surface) S;
@@ -362,8 +362,8 @@ Standard_Boolean  BRepLib::BuildCurve3d(const TopoDS_Edge& AnEdge,
 
     BRep_Builder B;
     Standard_Boolean is_closed ;
-     is_closed = AnEdge.Closed() ;
-    
+    is_closed = AnEdge.Closed() ;
+
     B.UpdateEdge(AnEdge,C3d,LocalLoc,0.0e0);
     BRep_Tool::Range(AnEdge, S, LC, First, Last);
     B.Range(AnEdge, First, Last); //Do not forget 3D range.(PRO6412)
@@ -380,49 +380,49 @@ Standard_Boolean  BRepLib::BuildCurve3d(const TopoDS_Edge& AnEdge,
     if (!BRep_Tool::Degenerated(AnEdge)) {
       jj = 0 ;
       for (ii = 0 ; ii < 3 ; ii++ ) {
-	BRep_Tool::CurveOnSurface(TopoDS::Edge(AnEdge),
-				  Curve2dPtr,
-				  SurfacePtr,
-				  LocalLoc,
-				  fc,
-				  lc,
-                                  ii) ;
-	
-	if (!Curve2dPtr.IsNull() && jj < 2){
-	  Curve2dArray[jj] = Curve2dPtr ;
-	  SurfaceArray[jj] = SurfacePtr ;
-	  L[jj] = LocalLoc ;
-	  first[jj] = fc ;
-	  last[jj] = lc ;
-	  jj += 1 ;
-	}
+        BRep_Tool::CurveOnSurface(TopoDS::Edge(AnEdge),
+          Curve2dPtr,
+          SurfacePtr,
+          LocalLoc,
+          fc,
+          lc,
+          ii) ;
+
+        if (!Curve2dPtr.IsNull() && jj < 2){
+          Curve2dArray[jj] = Curve2dPtr ;
+          SurfaceArray[jj] = SurfacePtr ;
+          L[jj] = LocalLoc ;
+          first[jj] = fc ;
+          last[jj] = lc ;
+          jj += 1 ;
+        }
       }
       f = first[0] ;
       l = last[0] ;
       Curve2dPtr = Curve2dArray[0] ;
       SurfacePtr = SurfaceArray[0] ;
-      
+
       Geom2dAdaptor_Curve     AnAdaptor3dCurve2d (Curve2dPtr, f, l) ;
       GeomAdaptor_Surface     AnAdaptor3dSurface (SurfacePtr) ;
       Handle(Geom2dAdaptor_HCurve) AnAdaptor3dCurve2dPtr =
-	new Geom2dAdaptor_HCurve(AnAdaptor3dCurve2d) ;
+        new Geom2dAdaptor_HCurve(AnAdaptor3dCurve2d) ;
       Handle(GeomAdaptor_HSurface) AnAdaptor3dSurfacePtr =
-	new GeomAdaptor_HSurface (AnAdaptor3dSurface) ;
+        new GeomAdaptor_HSurface (AnAdaptor3dSurface) ;
       Adaptor3d_CurveOnSurface  CurveOnSurface( AnAdaptor3dCurve2dPtr,
-					     AnAdaptor3dSurfacePtr) ;
-      
+        AnAdaptor3dSurfacePtr) ;
+
       Handle(Geom_Curve) NewCurvePtr ;
 
       GeomLib::BuildCurve3d(Tolerance,
-			    CurveOnSurface,
-			    f,
-			    l,
-			    NewCurvePtr,
-			    max_deviation,
-			    average_deviation,
-			    Continuity,
-			    MaxDegree,
-			    evaluateMaxSegment(MaxSegment,CurveOnSurface)) ;
+        CurveOnSurface,
+        f,
+        l,
+        NewCurvePtr,
+        max_deviation,
+        average_deviation,
+        Continuity,
+        MaxDegree,
+        evaluateMaxSegment(MaxSegment,CurveOnSurface)) ;
       BRep_Builder B;	
       tolerance = BRep_Tool::Tolerance(AnEdge) ;
       //Patch
@@ -433,24 +433,24 @@ Standard_Boolean  BRepLib::BuildCurve3d(const TopoDS_Edge& AnEdge,
       Standard_Boolean is_closed ;
       is_closed = AnEdge.Closed() ;
       B.UpdateEdge(TopoDS::Edge(AnEdge),
-		   NewCurvePtr,
-		   L[0],
-		   max_deviation) ;
+        NewCurvePtr,
+        L[0],
+        max_deviation) ;
       TopoDS_Edge  E = AnEdge ;
       E.Closed(is_closed) ;
       if (jj == 1 ) {
-//
-// if there is only one curve on surface attached to the edge
-// than it can be qualified sameparameter
-//
-	B.SameParameter(TopoDS::Edge(AnEdge),
-			Standard_True) ;
+        //
+        // if there is only one curve on surface attached to the edge
+        // than it can be qualified sameparameter
+        //
+        B.SameParameter(TopoDS::Edge(AnEdge),
+          Standard_True) ;
       }
     }
     else {
       return Standard_False ;
     }
-	
+
   }         
   return Standard_True;
 }
@@ -463,7 +463,7 @@ Standard_Boolean  BRepLib::BuildCurves3d(const TopoDS_Shape& S)
 
 {
   return BRepLib::BuildCurves3d(S,
-				1.0e-5) ;
+    1.0e-5) ;
 }
 
 //=======================================================================
@@ -472,22 +472,22 @@ Standard_Boolean  BRepLib::BuildCurves3d(const TopoDS_Shape& S)
 //=======================================================================
 
 Standard_Boolean  BRepLib::BuildCurves3d(const TopoDS_Shape& S,
-					 const Standard_Real Tolerance,
-					 const GeomAbs_Shape Continuity,
-					 const Standard_Integer MaxDegree,
-					 const Standard_Integer MaxSegment)
+  const Standard_Real Tolerance,
+  const GeomAbs_Shape Continuity,
+  const Standard_Integer MaxDegree,
+  const Standard_Integer MaxSegment)
 {
   Standard_Boolean boolean_value,
-  ok = Standard_True;
+    ok = Standard_True;
   TopTools_MapOfShape a_counter ;
   TopExp_Explorer ex(S,TopAbs_EDGE);
 
   while (ex.More()) {
     if (a_counter.Add(ex.Current())) {
       boolean_value = 
-	BuildCurve3d(TopoDS::Edge(ex.Current()),
-		     Tolerance, Continuity,
-		     MaxDegree, MaxSegment);
+        BuildCurve3d(TopoDS::Edge(ex.Current()),
+        Tolerance, Continuity,
+        MaxDegree, MaxSegment);
       ok = ok && boolean_value ;
     }
     ex.Next();
@@ -500,216 +500,216 @@ Standard_Boolean  BRepLib::BuildCurves3d(const TopoDS_Shape& S,
 //=======================================================================
 
 Standard_Boolean  BRepLib::UpdateEdgeTol(const TopoDS_Edge& AnEdge,
-					 const Standard_Real MinToleranceRequested,
-					 const Standard_Real MaxToleranceToCheck)
-  {
-    
-    Standard_Integer curve_on_surface_index,
-      curve_index,
-      not_done,
-      has_closed_curve,
-      has_curve,
-      jj,
-      ii,
-      geom_reference_curve_flag = 0,
-      max_sampling_points = 90,
-      min_sampling_points = 30 ;
-    
-    Standard_Real factor = 100.0e0,
- //     sampling_array[2],
-      safe_factor = 1.4e0,
-      current_last,
+  const Standard_Real MinToleranceRequested,
+  const Standard_Real MaxToleranceToCheck)
+{
+
+  Standard_Integer curve_on_surface_index,
+    curve_index,
+    not_done,
+    has_closed_curve,
+    has_curve,
+    jj,
+    ii,
+    geom_reference_curve_flag = 0,
+    max_sampling_points = 90,
+    min_sampling_points = 30 ;
+
+  Standard_Real factor = 100.0e0,
+    //     sampling_array[2],
+    safe_factor = 1.4e0,
+    current_last,
+    current_first,
+    max_distance,
+    coded_edge_tolerance,
+    edge_tolerance = 0.0e0 ;
+  Handle(TColStd_HArray1OfReal) parameters_ptr ;
+  Handle(BRep_GCurve) geometric_representation_ptr ;
+
+  if (BRep_Tool::Degenerated(AnEdge)) return Standard_False ;
+  coded_edge_tolerance = BRep_Tool::Tolerance(AnEdge) ;
+  if (coded_edge_tolerance > MaxToleranceToCheck) return Standard_False ;
+
+  const Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*)&AnEdge.TShape());
+  BRep_ListOfCurveRepresentation& list_curve_rep = TE->ChangeCurves() ;
+  BRep_ListIteratorOfListOfCurveRepresentation an_iterator(list_curve_rep),
+    second_iterator(list_curve_rep) ;
+  Handle(Geom2d_Curve) curve2d_ptr, new_curve2d_ptr;
+  Handle(Geom_Surface) surface_ptr ;
+  TopLoc_Location local_location ;
+  GCPnts_QuasiUniformDeflection  a_sampler ;
+  GeomAdaptor_Curve  geom_reference_curve ;
+  Adaptor3d_CurveOnSurface  curve_on_surface_reference ; 
+  Handle(Geom_Curve) C = BRep_Tool::Curve(AnEdge,
+    local_location,
+    current_first,
+    current_last);
+  curve_on_surface_index = -1 ;
+  if (!C.IsNull()) {
+    if (! local_location.IsIdentity()) {
+      C = Handle(Geom_Curve)::
+        DownCast(C-> Transformed(local_location.Transformation()) ) ;
+    }
+    geom_reference_curve.Load(C) ;
+    geom_reference_curve_flag = 1 ;
+    a_sampler.Initialize(geom_reference_curve,
+      MinToleranceRequested * factor,
       current_first,
-      max_distance,
-      coded_edge_tolerance,
-      edge_tolerance = 0.0e0 ;
-    Handle(TColStd_HArray1OfReal) parameters_ptr ;
-    Handle(BRep_GCurve) geometric_representation_ptr ;
-
-    if (BRep_Tool::Degenerated(AnEdge)) return Standard_False ;
-    coded_edge_tolerance = BRep_Tool::Tolerance(AnEdge) ;
-    if (coded_edge_tolerance > MaxToleranceToCheck) return Standard_False ;
-
-    const Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*)&AnEdge.TShape());
-    BRep_ListOfCurveRepresentation& list_curve_rep = TE->ChangeCurves() ;
-    BRep_ListIteratorOfListOfCurveRepresentation an_iterator(list_curve_rep),
-      second_iterator(list_curve_rep) ;
-    Handle(Geom2d_Curve) curve2d_ptr, new_curve2d_ptr;
-    Handle(Geom_Surface) surface_ptr ;
-    TopLoc_Location local_location ;
-    GCPnts_QuasiUniformDeflection  a_sampler ;
-    GeomAdaptor_Curve  geom_reference_curve ;
-    Adaptor3d_CurveOnSurface  curve_on_surface_reference ; 
-    Handle(Geom_Curve) C = BRep_Tool::Curve(AnEdge,
-					    local_location,
-					    current_first,
-					    current_last);
-    curve_on_surface_index = -1 ;
-    if (!C.IsNull()) {
-      if (! local_location.IsIdentity()) {
-	C = Handle(Geom_Curve)::
-	  DownCast(C-> Transformed(local_location.Transformation()) ) ;
-      }
-      geom_reference_curve.Load(C) ;
-      geom_reference_curve_flag = 1 ;
-            a_sampler.Initialize(geom_reference_curve,
-      		   MinToleranceRequested * factor,
-      		   current_first,
-      		   current_last) ;
-    }
-    else {
-      not_done = 1 ;
-      curve_on_surface_index = 0 ;  
-
-      while (not_done && an_iterator.More()) {
-	geometric_representation_ptr =
-	  Handle(BRep_GCurve)::DownCast(second_iterator.Value());
-	if (!geometric_representation_ptr.IsNull() 
-	    && geometric_representation_ptr->IsCurveOnSurface()) {
-	  curve2d_ptr = geometric_representation_ptr->PCurve() ;
-	  local_location = geometric_representation_ptr->Location() ;
-	  current_first = geometric_representation_ptr->First();
-	  //first = geometric_representation_ptr->First();
-	  current_last =  geometric_representation_ptr->Last();
-	  // must be inverted 
-	  //
-	  if (! local_location.IsIdentity() ) {
-	    surface_ptr = Handle(Geom_Surface)::
-	      DownCast( geometric_representation_ptr->Surface()->
-			Transformed(local_location.Transformation()) ) ;
-	  }
-	  else {
-	    surface_ptr = 
-	      geometric_representation_ptr->Surface() ;
-	  }
-	  not_done = 0 ;
-	}
-	curve_on_surface_index += 1 ;
-      }
-      Geom2dAdaptor_Curve     AnAdaptor3dCurve2d (curve2d_ptr) ;
-      GeomAdaptor_Surface     AnAdaptor3dSurface (surface_ptr) ;
-      Handle(Geom2dAdaptor_HCurve) AnAdaptor3dCurve2dPtr =
-	new Geom2dAdaptor_HCurve(AnAdaptor3dCurve2d) ;
-      Handle(GeomAdaptor_HSurface) AnAdaptor3dSurfacePtr =
-	new GeomAdaptor_HSurface (AnAdaptor3dSurface) ;
-      curve_on_surface_reference.Load( AnAdaptor3dCurve2dPtr) ;
-      curve_on_surface_reference.Load( AnAdaptor3dSurfacePtr) ;
-            a_sampler.Initialize(curve_on_surface_reference,
-      		   MinToleranceRequested * factor,
-      		   current_first,
-      		   current_last) ;
-    }
-    TColStd_Array1OfReal   sampling_parameters(1,a_sampler.NbPoints()) ;
-    for (ii = 1 ; ii <= a_sampler.NbPoints() ; ii++) {
-      sampling_parameters(ii) = a_sampler.Parameter(ii) ;
-    }
-    if (a_sampler.NbPoints() < min_sampling_points) {
-      GeomLib::DensifyArray1OfReal(min_sampling_points,
-				  sampling_parameters,
-				  parameters_ptr) ;
-    }
-    else if (a_sampler.NbPoints() > max_sampling_points) {
-      GeomLib::RemovePointsFromArray(max_sampling_points,
-				    sampling_parameters,
-				    parameters_ptr) ; 
-    }
-    else {
-      jj = 1 ;
-      parameters_ptr =
-	new TColStd_HArray1OfReal(1,sampling_parameters.Length()) ;
-      for (ii = sampling_parameters.Lower() ; ii <= sampling_parameters.Upper() ; ii++) {
-	parameters_ptr->ChangeArray1()(jj) =
-	  sampling_parameters(ii) ;
-	jj +=1 ;
-      }
-    }
-	 
-    curve_index = 0 ;
-
-    while (second_iterator.More()) {
-      geometric_representation_ptr =
-	Handle(BRep_GCurve)::DownCast(second_iterator.Value());
-      if (! geometric_representation_ptr.IsNull() && 
-	  curve_index != curve_on_surface_index) {
-	has_closed_curve =
-	  has_curve = Standard_False ;
-//	first = geometric_representation_ptr->First();
-//	last =  geometric_representation_ptr->Last();
-	local_location = geometric_representation_ptr->Location() ;
-	if (geometric_representation_ptr->IsCurveOnSurface()) {
-	  curve2d_ptr = geometric_representation_ptr->PCurve() ; 
-	  has_curve = Standard_True ;
-	}
-	if (geometric_representation_ptr->IsCurveOnClosedSurface()) {
-	  curve2d_ptr = geometric_representation_ptr->PCurve2() ;
-	  has_closed_curve = Standard_True ;
-	}
-	
-	if (has_curve ||
-	    has_closed_curve) {
-	  if (! local_location.IsIdentity() ) {
-	    surface_ptr = Handle(Geom_Surface)::
-	      DownCast( geometric_representation_ptr->Surface()->
-		      Transformed(local_location.Transformation()) ) ;
-	  }
-	  else {
-	    surface_ptr = 
-	      geometric_representation_ptr->Surface() ;
-	  }
-	  Geom2dAdaptor_Curve     an_adaptor_curve2d (curve2d_ptr) ;
-	  GeomAdaptor_Surface     an_adaptor_surface(surface_ptr) ;
-	  Handle(Geom2dAdaptor_HCurve) an_adaptor_curve2d_ptr =
-	    new Geom2dAdaptor_HCurve(an_adaptor_curve2d) ;
-	  Handle(GeomAdaptor_HSurface) an_adaptor_surface_ptr =
-	    new GeomAdaptor_HSurface (an_adaptor_surface) ;
-	  Adaptor3d_CurveOnSurface a_curve_on_surface(an_adaptor_curve2d_ptr,
-						    an_adaptor_surface_ptr) ;
-	
-	  if (BRep_Tool::SameParameter(AnEdge)) {
-	    
-	    GeomLib::EvalMaxParametricDistance(a_curve_on_surface,
-					       geom_reference_curve,
-					       MinToleranceRequested,
-					       parameters_ptr->Array1(),
-					       max_distance) ;
-	  }
-	  else if (geom_reference_curve_flag) {
-	    GeomLib::EvalMaxDistanceAlongParameter(a_curve_on_surface,
-						   geom_reference_curve,
-						   MinToleranceRequested,
-						   parameters_ptr->Array1(),
-						   max_distance) ;
-	  }
-	  else {
-	    
-	    GeomLib::EvalMaxDistanceAlongParameter(a_curve_on_surface,
-						   curve_on_surface_reference,
-						   MinToleranceRequested,
-						   parameters_ptr->Array1(),
-						   max_distance) ;
-	  }
-	  max_distance *= safe_factor ;
-	  edge_tolerance = Max(max_distance, edge_tolerance) ;
-	}
-	
-
-      }
-      curve_index += 1 ;
-      second_iterator.Next() ; 
-    }
-    
-    TE->Tolerance(edge_tolerance);
-    return Standard_True ;
-    
+      current_last) ;
   }
+  else {
+    not_done = 1 ;
+    curve_on_surface_index = 0 ;  
+
+    while (not_done && an_iterator.More()) {
+      geometric_representation_ptr =
+        Handle(BRep_GCurve)::DownCast(second_iterator.Value());
+      if (!geometric_representation_ptr.IsNull() 
+        && geometric_representation_ptr->IsCurveOnSurface()) {
+          curve2d_ptr = geometric_representation_ptr->PCurve() ;
+          local_location = geometric_representation_ptr->Location() ;
+          current_first = geometric_representation_ptr->First();
+          //first = geometric_representation_ptr->First();
+          current_last =  geometric_representation_ptr->Last();
+          // must be inverted 
+          //
+          if (! local_location.IsIdentity() ) {
+            surface_ptr = Handle(Geom_Surface)::
+              DownCast( geometric_representation_ptr->Surface()->
+              Transformed(local_location.Transformation()) ) ;
+          }
+          else {
+            surface_ptr = 
+              geometric_representation_ptr->Surface() ;
+          }
+          not_done = 0 ;
+      }
+      curve_on_surface_index += 1 ;
+    }
+    Geom2dAdaptor_Curve     AnAdaptor3dCurve2d (curve2d_ptr) ;
+    GeomAdaptor_Surface     AnAdaptor3dSurface (surface_ptr) ;
+    Handle(Geom2dAdaptor_HCurve) AnAdaptor3dCurve2dPtr =
+      new Geom2dAdaptor_HCurve(AnAdaptor3dCurve2d) ;
+    Handle(GeomAdaptor_HSurface) AnAdaptor3dSurfacePtr =
+      new GeomAdaptor_HSurface (AnAdaptor3dSurface) ;
+    curve_on_surface_reference.Load( AnAdaptor3dCurve2dPtr) ;
+    curve_on_surface_reference.Load( AnAdaptor3dSurfacePtr) ;
+    a_sampler.Initialize(curve_on_surface_reference,
+      MinToleranceRequested * factor,
+      current_first,
+      current_last) ;
+  }
+  TColStd_Array1OfReal   sampling_parameters(1,a_sampler.NbPoints()) ;
+  for (ii = 1 ; ii <= a_sampler.NbPoints() ; ii++) {
+    sampling_parameters(ii) = a_sampler.Parameter(ii) ;
+  }
+  if (a_sampler.NbPoints() < min_sampling_points) {
+    GeomLib::DensifyArray1OfReal(min_sampling_points,
+      sampling_parameters,
+      parameters_ptr) ;
+  }
+  else if (a_sampler.NbPoints() > max_sampling_points) {
+    GeomLib::RemovePointsFromArray(max_sampling_points,
+      sampling_parameters,
+      parameters_ptr) ; 
+  }
+  else {
+    jj = 1 ;
+    parameters_ptr =
+      new TColStd_HArray1OfReal(1,sampling_parameters.Length()) ;
+    for (ii = sampling_parameters.Lower() ; ii <= sampling_parameters.Upper() ; ii++) {
+      parameters_ptr->ChangeArray1()(jj) =
+        sampling_parameters(ii) ;
+      jj +=1 ;
+    }
+  }
+
+  curve_index = 0 ;
+
+  while (second_iterator.More()) {
+    geometric_representation_ptr =
+      Handle(BRep_GCurve)::DownCast(second_iterator.Value());
+    if (! geometric_representation_ptr.IsNull() && 
+      curve_index != curve_on_surface_index) {
+        has_closed_curve =
+          has_curve = Standard_False ;
+        //	first = geometric_representation_ptr->First();
+        //	last =  geometric_representation_ptr->Last();
+        local_location = geometric_representation_ptr->Location() ;
+        if (geometric_representation_ptr->IsCurveOnSurface()) {
+          curve2d_ptr = geometric_representation_ptr->PCurve() ; 
+          has_curve = Standard_True ;
+        }
+        if (geometric_representation_ptr->IsCurveOnClosedSurface()) {
+          curve2d_ptr = geometric_representation_ptr->PCurve2() ;
+          has_closed_curve = Standard_True ;
+        }
+
+        if (has_curve ||
+          has_closed_curve) {
+            if (! local_location.IsIdentity() ) {
+              surface_ptr = Handle(Geom_Surface)::
+                DownCast( geometric_representation_ptr->Surface()->
+                Transformed(local_location.Transformation()) ) ;
+            }
+            else {
+              surface_ptr = 
+                geometric_representation_ptr->Surface() ;
+            }
+            Geom2dAdaptor_Curve     an_adaptor_curve2d (curve2d_ptr) ;
+            GeomAdaptor_Surface     an_adaptor_surface(surface_ptr) ;
+            Handle(Geom2dAdaptor_HCurve) an_adaptor_curve2d_ptr =
+              new Geom2dAdaptor_HCurve(an_adaptor_curve2d) ;
+            Handle(GeomAdaptor_HSurface) an_adaptor_surface_ptr =
+              new GeomAdaptor_HSurface (an_adaptor_surface) ;
+            Adaptor3d_CurveOnSurface a_curve_on_surface(an_adaptor_curve2d_ptr,
+              an_adaptor_surface_ptr) ;
+
+            if (BRep_Tool::SameParameter(AnEdge)) {
+
+              GeomLib::EvalMaxParametricDistance(a_curve_on_surface,
+                geom_reference_curve,
+                MinToleranceRequested,
+                parameters_ptr->Array1(),
+                max_distance) ;
+            }
+            else if (geom_reference_curve_flag) {
+              GeomLib::EvalMaxDistanceAlongParameter(a_curve_on_surface,
+                geom_reference_curve,
+                MinToleranceRequested,
+                parameters_ptr->Array1(),
+                max_distance) ;
+            }
+            else {
+
+              GeomLib::EvalMaxDistanceAlongParameter(a_curve_on_surface,
+                curve_on_surface_reference,
+                MinToleranceRequested,
+                parameters_ptr->Array1(),
+                max_distance) ;
+            }
+            max_distance *= safe_factor ;
+            edge_tolerance = Max(max_distance, edge_tolerance) ;
+        }
+
+
+    }
+    curve_index += 1 ;
+    second_iterator.Next() ; 
+  }
+
+  TE->Tolerance(edge_tolerance);
+  return Standard_True ;
+
+}
 //=======================================================================
 //function : UpdateEdgeTolerance
 //purpose  : 
 //=======================================================================
 
 Standard_Boolean BRepLib::UpdateEdgeTolerance(const TopoDS_Shape& S,
-					      const Standard_Real MinToleranceRequested,
-					      const Standard_Real MaxToleranceToCheck) 
+  const Standard_Real MinToleranceRequested,
+  const Standard_Real MaxToleranceToCheck) 
 {
   TopExp_Explorer ex(S,TopAbs_EDGE);
   TopTools_MapOfShape  a_counter ;
@@ -720,11 +720,11 @@ Standard_Boolean BRepLib::UpdateEdgeTolerance(const TopoDS_Shape& S,
   while (ex.More()) {
     if (a_counter.Add(ex.Current())) {
       local_flag =
-	BRepLib::UpdateEdgeTol(TopoDS::Edge(ex.Current()),
-			       MinToleranceRequested,
-			       MaxToleranceToCheck) ;
+        BRepLib::UpdateEdgeTol(TopoDS::Edge(ex.Current()),
+        MinToleranceRequested,
+        MaxToleranceToCheck) ;
       if (local_flag && ! return_status) {
-	return_status = Standard_True ;
+        return_status = Standard_True ;
       }
     }
     ex.Next();
@@ -738,7 +738,7 @@ Standard_Boolean BRepLib::UpdateEdgeTolerance(const TopoDS_Shape& S,
 //=======================================================================
 
 static void SetEdgeTol(const TopoDS_Edge& E,
-		       const TopoDS_Face& F)
+  const TopoDS_Face& F)
 {
   TopLoc_Location L;
   const Handle(Geom_Surface)& S = BRep_Tool::Surface(F,L);
@@ -763,7 +763,7 @@ static void SetEdgeTol(const TopoDS_Edge& E,
 
   Handle(GeomAdaptor_HCurve) HC = new GeomAdaptor_HCurve();
   Handle(GeomAdaptor_HSurface) HS = new GeomAdaptor_HSurface();
-  
+
   TopLoc_Location LC;
   Standard_Real First, Last;
   GeomAdaptor_Curve& GAC = HC->ChangeCurve();
@@ -772,11 +772,11 @@ static void SetEdgeTol(const TopoDS_Edge& E,
 
   if (!LC.IsIdentity()) {
     GP = Handle(Geom_Plane)::DownCast(
-	 GP->Transformed(LC.Transformation()));
+      GP->Transformed(LC.Transformation()));
   }
   GeomAdaptor_Surface& GAS = HS->ChangeSurface();
   GAS.Load(GP);
-    
+
   ProjLib_ProjectedCurve Proj(HS,HC);
   Handle(Geom2d_Curve) pc = Geom2dAdaptor::MakeCurve(Proj);
 
@@ -802,8 +802,8 @@ static void SetEdgeTol(const TopoDS_Edge& E,
 //purpose  : 
 //=======================================================================
 void  BRepLib::SameParameter(const TopoDS_Shape& S,
-			     const Standard_Real Tolerance,
-			     const Standard_Boolean forced) 
+  const Standard_Real Tolerance,
+  const Standard_Boolean forced) 
 {
   TopExp_Explorer ex(S,TopAbs_EDGE);
   TopTools_MapOfShape  Done;
@@ -812,8 +812,8 @@ void  BRepLib::SameParameter(const TopoDS_Shape& S,
   while (ex.More()) {
     if (Done.Add(ex.Current())) {
       if (forced) {
-	brB.SameRange(TopoDS::Edge(ex.Current()), Standard_False);
-	brB.SameParameter(TopoDS::Edge(ex.Current()), Standard_False);
+        brB.SameRange(TopoDS::Edge(ex.Current()), Standard_False);
+        brB.SameParameter(TopoDS::Edge(ex.Current()), Standard_False);
       }
       BRepLib::SameParameter(TopoDS::Edge(ex.Current()),Tolerance);
     }
@@ -843,10 +843,10 @@ void  BRepLib::SameParameter(const TopoDS_Shape& S,
 //  for vertex extremities it is required to find something else
 //================================================================
 static Standard_Boolean EvalTol(const Handle(Geom2d_Curve)& pc,
-				const Handle(Geom_Surface)& s,
-				const GeomAdaptor_Curve&    gac,
-				const Standard_Real         tol,
-				Standard_Real&              tolbail)
+  const Handle(Geom_Surface)& s,
+  const GeomAdaptor_Curve&    gac,
+  const Standard_Real         tol,
+  Standard_Real&              tolbail)
 {
   Standard_Integer ok = 0;
   Standard_Real f = gac.FirstParameter();
@@ -872,33 +872,30 @@ static Standard_Boolean EvalTol(const Handle(Geom2d_Curve)& pc,
 }
 
 static Standard_Real ComputeTol(const Handle(Adaptor3d_HCurve)& c3d,
-				const Handle(Adaptor2d_HCurve2d)& c2d,
-				const Handle(Adaptor3d_HSurface)& surf,
-				const Standard_Integer        nbp)
+  const Handle(Adaptor2d_HCurve2d)& c2d,
+  const Handle(Adaptor3d_HSurface)& surf,
+  const Standard_Integer        nbp)
 
 {
 
   TColStd_Array1OfReal dist(1,nbp+10);
   dist.Init(-1.);
 
-
   Adaptor3d_CurveOnSurface  cons(c2d,surf);
   Standard_Real d2 = 0.;
-  Standard_Integer nn = nbp;
-  Standard_Real unsurnn = 1./nn;
   Standard_Real first = c3d->FirstParameter();
   Standard_Real last  = c3d->LastParameter();
   Standard_Integer i = 0;
-  for(i = 0; i <= nn; i++){
-    Standard_Real t = unsurnn*i;
-    Standard_Real u = first*(1.-t) + last*t;
+  for(i = 0; i <= nbp; i++){
+    const Standard_Real t = IntToReal(i)/IntToReal(nbp);
+    const Standard_Real u = first*(1.-t) + last*t;
     gp_Pnt Pc3d = c3d->Value(u);
     gp_Pnt Pcons = cons.Value(u);
     if (Precision::IsInfinite(Pcons.X()) ||
-	Precision::IsInfinite(Pcons.Y()) ||
-	Precision::IsInfinite(Pcons.Z())) {
-      d2=Precision::Infinite();
-      break;
+      Precision::IsInfinite(Pcons.Y()) ||
+      Precision::IsInfinite(Pcons.Z())) {
+        d2=Precision::Infinite();
+        break;
     }
     Standard_Real temp = Pc3d.SquareDistance(Pcons);
 
@@ -922,25 +919,23 @@ static Standard_Real ComputeTol(const Handle(Adaptor3d_HCurve)& c3d,
       else N2++;
     }
 
-  if( N1 > N2 && N2 != 0 ) N3 = 100*N2/(N1+N2);
-  if( N3 < 10 && N3 != 0 ) {
-    ana = Standard_True;
-    for( i = 1; i<= nbp+10; i++)
-      if( dist(i) > 0 && dist(i) < 1.0 )
-	if( dist(i) > D2 ) D2 = dist(i);
-  }
+    if( N1 > N2 && N2 != 0 ) N3 = 100*N2/(N1+N2);
+    if( N3 < 10 && N3 != 0 ) {
+      ana = Standard_True;
+      for( i = 1; i<= nbp+10; i++)
+        if( dist(i) > 0 && dist(i) < 1.0 )
+          if( dist(i) > D2 ) D2 = dist(i);
+    }
 
-  //d2 = 1.5*sqrt(d2);
-  d2 = (!ana) ? 1.5*sqrt(d2) : 1.5*sqrt(D2);
-  if(d2<1.e-7) d2 = 1.e-7;
+    //d2 = 1.5*sqrt(d2);
+    d2 = (!ana) ? 1.5*sqrt(d2) : 1.5*sqrt(D2);
+    if(d2<1.e-7) d2 = 1.e-7;
 
-  return d2;
+    return d2;
 }
 
-
-
 void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
-			    const Standard_Real Tolerance)
+  const Standard_Real Tolerance)
 {
   if (BRep_Tool::SameParameter(AnEdge)) return;
 
@@ -959,7 +954,7 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
   const Handle(BRep_TEdge)& TE = *((Handle(BRep_TEdge)*) &AnEdge.TShape());
   BRep_ListOfCurveRepresentation& CList = TE->ChangeCurves();
   BRep_ListIteratorOfListOfCurveRepresentation It(CList);
-  
+
   Standard_Boolean NotDone = Standard_True;
 
   while (NotDone && It.More()) {
@@ -980,10 +975,10 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
   Standard_Boolean m_TrimmedPeriodical = Standard_False;
   Handle(Standard_Type) TheType = C3d->DynamicType();
   if( TheType == STANDARD_TYPE(Geom_TrimmedCurve))
-    {
-      const Handle(Geom_Curve)& gtC = (*((Handle(Geom_TrimmedCurve)*)&C3d))->BasisCurve();
-      m_TrimmedPeriodical = gtC->IsPeriodic();
-    }
+  {
+    const Handle(Geom_Curve)& gtC = (*((Handle(Geom_TrimmedCurve)*)&C3d))->BasisCurve();
+    m_TrimmedPeriodical = gtC->IsPeriodic();
+  }
   // modified by NIZHNY-OCC486  Tue Aug 27 17:15:17 2002 .
 
   BRep_Builder B;
@@ -994,10 +989,10 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
     //if (Udeb > f3d) f3d = Udeb;
     //if (l3d > Ufin) l3d = Ufin;
     if(!m_TrimmedPeriodical)
-      {
-	if (Udeb > f3d) f3d = Udeb;
-	if (l3d > Ufin) l3d = Ufin;
-      }
+    {
+      if (Udeb > f3d) f3d = Udeb;
+      if (l3d > Ufin) l3d = Ufin;
+    }
     // modified by NIZHNY-OCC486  Tue Aug 27 17:17:55 2002 .
   }
   if(!L3d.IsIdentity()){
@@ -1008,9 +1003,9 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
   Standard_Boolean IsSameP = 1;
   Standard_Real maxdist = 0.;
 
-//  Modified by skv - Thu Jun  3 12:39:19 2004 OCC5898 Begin
+  //  Modified by skv - Thu Jun  3 12:39:19 2004 OCC5898 Begin
   Standard_Real anEdgeTol = BRep_Tool::Tolerance(AnEdge);
-//  Modified by skv - Thu Jun  3 12:39:20 2004 OCC5898 End
+  //  Modified by skv - Thu Jun  3 12:39:20 2004 OCC5898 End
   Standard_Boolean SameRange = BRep_Tool::SameRange(AnEdge);
   Standard_Boolean YaPCu = Standard_False;
   It.Initialize(CList);
@@ -1027,252 +1022,253 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
       TopLoc_Location PCLoc = GCurve->Location();
       S = GCurve->Surface();
       if (!PCLoc.IsIdentity() ) {
-	S = Handle(Geom_Surface)::DownCast(S->Transformed(PCLoc.Transformation()));
+        S = Handle(Geom_Surface)::DownCast(S->Transformed(PCLoc.Transformation()));
       }
+
       GAS.Load(S);
       if (GCurve->IsCurveOnClosedSurface()) {
-	PC[1] = GCurve->PCurve2();
+        PC[1] = GCurve->PCurve2();
       }
-      
+
       // Eval tol2d to compute SameRange
       Standard_Real UResol = Max(GAS.UResolution(Tolerance), Precision::PConfusion());
       Standard_Real VResol = Max(GAS.VResolution(Tolerance), Precision::PConfusion());
       Standard_Real Tol2d  = Min(UResol, VResol);
       for(Standard_Integer i = 0; i < 2; i++){
-	Handle(Geom2d_Curve) curPC = PC[i];
-	Standard_Boolean updatepc = 0;
-	if(curPC.IsNull()) break;
-	if(!SameRange){
-	  GeomLib::SameRange(Tol2d,
-			     PC[i],GCurve->First(),GCurve->Last(),
-			     f3d,l3d,curPC);
+        Handle(Geom2d_Curve) curPC = PC[i];
+        Standard_Boolean updatepc = 0;
+        if(curPC.IsNull()) break;
+        if(!SameRange){
+          GeomLib::SameRange(Tol2d,
+            PC[i],GCurve->First(),GCurve->Last(),
+            f3d,l3d,curPC);
 
-	  updatepc = (curPC != PC[i]);
+          updatepc = (curPC != PC[i]);
 
-	}
-	Standard_Boolean goodpc = 1;
-	GAC2d.Load(curPC,f3d,l3d);
+        }
+        Standard_Boolean goodpc = 1;
+        GAC2d.Load(curPC,f3d,l3d);
 
-	Standard_Real error = ComputeTol(HC, HC2d, HS, NCONTROL);
+        Standard_Real error = ComputeTol(HC, HC2d, HS, NCONTROL);
 
-	if(GAC2d.GetType() == GeomAbs_BSplineCurve && 
-	   GAC2d.Continuity() == GeomAbs_C0) {
-	  Handle(Geom2d_BSplineCurve) bs2d = GAC2d.BSpline();
-	  Handle(Geom2d_BSplineCurve) bs2dsov = bs2d;
-	  Standard_Real fC0 = bs2d->FirstParameter(), lC0 = bs2d->LastParameter();
-	  Standard_Boolean repar = Standard_True;
-	  gp_Pnt2d OriginPoint;
-	  bs2d->D0(fC0, OriginPoint);
-	  Geom2dConvert::C0BSplineToC1BSplineCurve(bs2d, Tol2d);
-	  isBSP = Standard_True; 
+        if(GAC2d.GetType() == GeomAbs_BSplineCurve && 
+          GAC2d.Continuity() == GeomAbs_C0) {
+            Handle(Geom2d_BSplineCurve) bs2d = GAC2d.BSpline();
+            Handle(Geom2d_BSplineCurve) bs2dsov = bs2d;
+            Standard_Real fC0 = bs2d->FirstParameter(), lC0 = bs2d->LastParameter();
+            Standard_Boolean repar = Standard_True;
+            gp_Pnt2d OriginPoint;
+            bs2d->D0(fC0, OriginPoint);
+            Geom2dConvert::C0BSplineToC1BSplineCurve(bs2d, Tol2d);
+            isBSP = Standard_True; 
 
-	  if(bs2d->IsPeriodic()) { // -------- IFV, Jan 2000
-	    gp_Pnt2d NewOriginPoint;
-	    bs2d->D0(bs2d->FirstParameter(), NewOriginPoint);
-	    if(Abs(OriginPoint.X() - NewOriginPoint.X()) > Precision::PConfusion() ||
-	       Abs(OriginPoint.Y() - NewOriginPoint.Y()) > Precision::PConfusion()    ) {
+            if(bs2d->IsPeriodic()) { // -------- IFV, Jan 2000
+              gp_Pnt2d NewOriginPoint;
+              bs2d->D0(bs2d->FirstParameter(), NewOriginPoint);
+              if(Abs(OriginPoint.X() - NewOriginPoint.X()) > Precision::PConfusion() ||
+                Abs(OriginPoint.Y() - NewOriginPoint.Y()) > Precision::PConfusion()    ) {
 
-	      TColStd_Array1OfReal Knotbs2d (1, bs2d->NbKnots());
-	      bs2d->Knots(Knotbs2d);
+                  TColStd_Array1OfReal Knotbs2d (1, bs2d->NbKnots());
+                  bs2d->Knots(Knotbs2d);
 
-	      for(Standard_Integer Index = 1; Index <= bs2d->NbKnots(); Index++) {
-		bs2d->D0(Knotbs2d(Index), NewOriginPoint);
-		if(Abs(OriginPoint.X() - NewOriginPoint.X()) > Precision::PConfusion() ||
-		   Abs(OriginPoint.Y() - NewOriginPoint.Y()) > Precision::PConfusion()    ) continue;
-		
-		bs2d->SetOrigin(Index);
-		break;
-	      }
-	    }
-	  }
+                  for(Standard_Integer Index = 1; Index <= bs2d->NbKnots(); Index++) {
+                    bs2d->D0(Knotbs2d(Index), NewOriginPoint);
+                    if(Abs(OriginPoint.X() - NewOriginPoint.X()) > Precision::PConfusion() ||
+                      Abs(OriginPoint.Y() - NewOriginPoint.Y()) > Precision::PConfusion()    ) continue;
 
-	  if(bs2d->Continuity() == GeomAbs_C0) {
-	    Standard_Real tolbail;
-	    if(EvalTol(curPC,S,GAC,Tolerance,tolbail)){
-	      bs2d = bs2dsov;
-	      Standard_Real UResbail = GAS.UResolution(tolbail);
-	      Standard_Real VResbail = GAS.VResolution(tolbail);
-	      Standard_Real Tol2dbail  = Min(UResbail,VResbail);
-	      bs2d->D0(bs2d->FirstParameter(), OriginPoint); 
+                    bs2d->SetOrigin(Index);
+                    break;
+                  }
+              }
+            }
 
-	      Standard_Integer nbp = bs2d->NbPoles();
-	      TColgp_Array1OfPnt2d poles(1,nbp);
-	      bs2d->Poles(poles);
-	      gp_Pnt2d p = poles(1), p1;
-	      Standard_Real d = Precision::Infinite();
-	      for(Standard_Integer ip = 2; ip <= nbp; ip++) {
-		p1 = poles(ip);
-		d = Min(d,p.SquareDistance(p1));
-		p = p1;
-	      }
-	      d = sqrt(d)*.1;
+            if(bs2d->Continuity() == GeomAbs_C0) {
+              Standard_Real tolbail;
+              if(EvalTol(curPC,S,GAC,Tolerance,tolbail)){
+                bs2d = bs2dsov;
+                Standard_Real UResbail = GAS.UResolution(tolbail);
+                Standard_Real VResbail = GAS.VResolution(tolbail);
+                Standard_Real Tol2dbail  = Min(UResbail,VResbail);
+                bs2d->D0(bs2d->FirstParameter(), OriginPoint); 
 
-	      Tol2dbail = Max(Min(Tol2dbail,d),Tol2d);
+                Standard_Integer nbp = bs2d->NbPoles();
+                TColgp_Array1OfPnt2d poles(1,nbp);
+                bs2d->Poles(poles);
+                gp_Pnt2d p = poles(1), p1;
+                Standard_Real d = Precision::Infinite();
+                for(Standard_Integer ip = 2; ip <= nbp; ip++) {
+                  p1 = poles(ip);
+                  d = Min(d,p.SquareDistance(p1));
+                  p = p1;
+                }
+                d = sqrt(d)*.1;
 
-	      Geom2dConvert::C0BSplineToC1BSplineCurve(bs2d,Tol2dbail);
+                Tol2dbail = Max(Min(Tol2dbail,d),Tol2d);
 
-	      if(bs2d->IsPeriodic()) { // -------- IFV, Jan 2000
-		gp_Pnt2d NewOriginPoint;
-		bs2d->D0(bs2d->FirstParameter(), NewOriginPoint);
-		if(Abs(OriginPoint.X() - NewOriginPoint.X()) > Precision::PConfusion() ||
-		   Abs(OriginPoint.Y() - NewOriginPoint.Y()) > Precision::PConfusion()    ) {
+                Geom2dConvert::C0BSplineToC1BSplineCurve(bs2d,Tol2dbail);
 
-		  TColStd_Array1OfReal Knotbs2d (1, bs2d->NbKnots());
-		  bs2d->Knots(Knotbs2d);
+                if(bs2d->IsPeriodic()) { // -------- IFV, Jan 2000
+                  gp_Pnt2d NewOriginPoint;
+                  bs2d->D0(bs2d->FirstParameter(), NewOriginPoint);
+                  if(Abs(OriginPoint.X() - NewOriginPoint.X()) > Precision::PConfusion() ||
+                    Abs(OriginPoint.Y() - NewOriginPoint.Y()) > Precision::PConfusion()    ) {
 
-		  for(Standard_Integer Index = 1; Index <= bs2d->NbKnots(); Index++) {
-		    bs2d->D0(Knotbs2d(Index), NewOriginPoint);
-		    if(Abs(OriginPoint.X() - NewOriginPoint.X()) > Precision::PConfusion() ||
-		       Abs(OriginPoint.Y() - NewOriginPoint.Y()) > Precision::PConfusion()    ) continue;
-		    
-		    bs2d->SetOrigin(Index);
-		    break;
-		  }
-		}
-	      }
-	      
-	      
-	      if(bs2d->Continuity() == GeomAbs_C0) {
-		goodpc = 1;
-		bs2d = bs2dsov;
-		repar = Standard_False;
-	      }
-	    }
-	    else goodpc = 0;
-	  }
+                      TColStd_Array1OfReal Knotbs2d (1, bs2d->NbKnots());
+                      bs2d->Knots(Knotbs2d);
 
-	  if(goodpc){
-	    if(repar) {
-	      Standard_Integer NbKnots = bs2d->NbKnots();
-	      TColStd_Array1OfReal Knots(1,NbKnots);
-	      bs2d->Knots(Knots);
-	      //	    BSplCLib::Reparametrize(f3d,l3d,Knots);
-	      BSplCLib::Reparametrize(fC0,lC0,Knots);
-	      bs2d->SetKnots(Knots);
-	      GAC2d.Load(bs2d,f3d,l3d);
-	      curPC = bs2d;
-	      Standard_Boolean updatepcsov = updatepc;
-	      updatepc = Standard_True;
+                      for(Standard_Integer Index = 1; Index <= bs2d->NbKnots(); Index++) {
+                        bs2d->D0(Knotbs2d(Index), NewOriginPoint);
+                        if(Abs(OriginPoint.X() - NewOriginPoint.X()) > Precision::PConfusion() ||
+                          Abs(OriginPoint.Y() - NewOriginPoint.Y()) > Precision::PConfusion()    ) continue;
 
-	      Standard_Real error1 = ComputeTol(HC, HC2d, HS, NCONTROL);
-	      if(error1 > error) {
-		bs2d = bs2dsov;
-		GAC2d.Load(bs2d,f3d,l3d);
-		curPC = bs2d;
-		updatepc = updatepcsov;
-		isANA = Standard_True;
-	      }
-	      else {
-		error = error1;
-	      }
-	    }
-
-	    //check, if new BSpline "good" or not --------- IFV, Jan of 2000
-	    GeomAbs_Shape cont = bs2d->Continuity();
-	    Standard_Boolean IsBad = Standard_False;
-
-	    if(cont > GeomAbs_C0 && error > Max(1.e-3,Tolerance)) {
-	      Standard_Integer NbKnots = bs2d->NbKnots();
-	      TColStd_Array1OfReal Knots(1,NbKnots);
-	      bs2d->Knots(Knots);
-	      Standard_Real critratio = 10.; 
-	      Standard_Real dtprev = Knots(2) - Knots(1), dtratio = 1.;
-	      Standard_Real dtmin = dtprev;
-	      Standard_Real dtcur;
-	      for(Standard_Integer j = 2; j < NbKnots; j++) {
-		dtcur = Knots(j+1) - Knots(j);
-		dtmin = Min(dtmin, dtcur);
-
-		if(IsBad) continue;
-
-		if(dtcur > dtprev) dtratio = dtcur/dtprev;
-		else dtratio = dtprev/dtcur;
-		if(dtratio > critratio) {IsBad = Standard_True;}
-		dtprev = dtcur;
-		
-	      }
-	      if(IsBad) {
-		// To avoid failures in Approx_CurvilinearParameter 
-		bs2d->Resolution(Max(1.e-3,Tolerance), dtcur);
-		if(dtmin < dtcur) IsBad = Standard_False;
-	      }
-	    }
+                        bs2d->SetOrigin(Index);
+                        break;
+                      }
+                  }
+                }
 
 
-	    if(IsBad ) { //if BSpline "bad", try to reparametrize it
-	                                  // by its curve length
+                if(bs2d->Continuity() == GeomAbs_C0) {
+                  goodpc = 1;
+                  bs2d = bs2dsov;
+                  repar = Standard_False;
+                }
+              }
+              else goodpc = 0;
+            }
 
-//	      GeomAbs_Shape cont = bs2d->Continuity();
-	      if(cont > GeomAbs_C2) cont = GeomAbs_C2;
-	      Standard_Integer maxdeg = bs2d->Degree();
-	      if(maxdeg == 1) maxdeg = 14;
-	      Approx_CurvilinearParameter AppCurPar(HC2d, HS, Max(1.e-3,Tolerance),
-						    cont, maxdeg, 10);
-	      if(AppCurPar.IsDone() || AppCurPar.HasResult()) {
-		bs2d = AppCurPar.Curve2d1();
-		GAC2d.Load(bs2d,f3d,l3d);
-		curPC = bs2d;
+            if(goodpc){
+              if(repar) {
+                Standard_Integer NbKnots = bs2d->NbKnots();
+                TColStd_Array1OfReal Knots(1,NbKnots);
+                bs2d->Knots(Knots);
+                //	    BSplCLib::Reparametrize(f3d,l3d,Knots);
+                BSplCLib::Reparametrize(fC0,lC0,Knots);
+                bs2d->SetKnots(Knots);
+                GAC2d.Load(bs2d,f3d,l3d);
+                curPC = bs2d;
+                Standard_Boolean updatepcsov = updatepc;
+                updatepc = Standard_True;
 
-		if(Abs(bs2d->FirstParameter() - fC0) > Tol2d ||
-		   Abs(bs2d->LastParameter() - lC0) > Tol2d    ) {
-		  Standard_Integer NbKnots = bs2d->NbKnots();
-		  TColStd_Array1OfReal Knots(1,NbKnots);
-		  bs2d->Knots(Knots);
-//		  BSplCLib::Reparametrize(f3d,l3d,Knots);
-		  BSplCLib::Reparametrize(fC0,lC0,Knots);
-		  bs2d->SetKnots(Knots);
-		  GAC2d.Load(bs2d,f3d,l3d);
-		  curPC = bs2d;
+                Standard_Real error1 = ComputeTol(HC, HC2d, HS, NCONTROL);
+                if(error1 > error) {
+                  bs2d = bs2dsov;
+                  GAC2d.Load(bs2d,f3d,l3d);
+                  curPC = bs2d;
+                  updatepc = updatepcsov;
+                  isANA = Standard_True;
+                }
+                else {
+                  error = error1;
+                }
+              }
 
-		}
-	      }
-	    }
+              //check, if new BSpline "good" or not --------- IFV, Jan of 2000
+              GeomAbs_Shape cont = bs2d->Continuity();
+              Standard_Boolean IsBad = Standard_False;
 
-    
-	  }
-	}
+              if(cont > GeomAbs_C0 && error > Max(1.e-3,Tolerance)) {
+                Standard_Integer NbKnots = bs2d->NbKnots();
+                TColStd_Array1OfReal Knots(1,NbKnots);
+                bs2d->Knots(Knots);
+                Standard_Real critratio = 10.; 
+                Standard_Real dtprev = Knots(2) - Knots(1), dtratio = 1.;
+                Standard_Real dtmin = dtprev;
+                Standard_Real dtcur;
+                for(Standard_Integer j = 2; j < NbKnots; j++) {
+                  dtcur = Knots(j+1) - Knots(j);
+                  dtmin = Min(dtmin, dtcur);
+
+                  if(IsBad) continue;
+
+                  if(dtcur > dtprev) dtratio = dtcur/dtprev;
+                  else dtratio = dtprev/dtcur;
+                  if(dtratio > critratio) {IsBad = Standard_True;}
+                  dtprev = dtcur;
+
+                }
+                if(IsBad) {
+                  // To avoid failures in Approx_CurvilinearParameter 
+                  bs2d->Resolution(Max(1.e-3,Tolerance), dtcur);
+                  if(dtmin < dtcur) IsBad = Standard_False;
+                }
+              }
 
 
-	if(goodpc){
-//	  Approx_SameParameter SameP(HC,HC2d,HS,Tolerance);
-	  Standard_Real aTol = (isANA && isBSP) ? 1.e-7 : Tolerance;
-	  Approx_SameParameter SameP(HC,HC2d,HS,aTol);
-	  
-	  if (SameP.IsSameParameter()) {
-	    maxdist = Max(maxdist,SameP.TolReached());
-	    if(updatepc){
-	      if (i == 0) GCurve->PCurve(curPC);
-	      else GCurve->PCurve2(curPC);
-	    }
-	  }
-	  else if (SameP.IsDone()) {
-	    Standard_Real tolreached = SameP.TolReached();
-	    if(tolreached < error) {
-	      curPC = SameP.Curve2d();
-	      updatepc = Standard_True;
-	      maxdist = Max(maxdist,tolreached);
-	    }
-	    else {
-	      maxdist = Max(maxdist, error);
-	    }
-	    if(updatepc){
-	      if (i == 0) GCurve->PCurve(curPC);
-	      else GCurve->PCurve2(curPC);
-	    }
-	  }
-	  else IsSameP = 0;
-	
-	}
-	else IsSameP = 0;
+              if(IsBad ) { //if BSpline "bad", try to reparametrize it
+                // by its curve length
 
-//  Modified by skv - Thu Jun  3 12:39:19 2004 OCC5898 Begin
-	if (!IsSameP) {
-	  if (anEdgeTol > error) {
-	    maxdist = Max(maxdist, anEdgeTol);
-	    IsSameP = Standard_True;
-	  }
-	}
-//  Modified by skv - Thu Jun  3 12:39:20 2004 OCC5898 End
+                //	      GeomAbs_Shape cont = bs2d->Continuity();
+                if(cont > GeomAbs_C2) cont = GeomAbs_C2;
+                Standard_Integer maxdeg = bs2d->Degree();
+                if(maxdeg == 1) maxdeg = 14;
+                Approx_CurvilinearParameter AppCurPar(HC2d, HS, Max(1.e-3,Tolerance),
+                  cont, maxdeg, 10);
+                if(AppCurPar.IsDone() || AppCurPar.HasResult()) {
+                  bs2d = AppCurPar.Curve2d1();
+                  GAC2d.Load(bs2d,f3d,l3d);
+                  curPC = bs2d;
+
+                  if(Abs(bs2d->FirstParameter() - fC0) > Tol2d ||
+                    Abs(bs2d->LastParameter() - lC0) > Tol2d    ) {
+                      Standard_Integer NbKnots = bs2d->NbKnots();
+                      TColStd_Array1OfReal Knots(1,NbKnots);
+                      bs2d->Knots(Knots);
+                      //		  BSplCLib::Reparametrize(f3d,l3d,Knots);
+                      BSplCLib::Reparametrize(fC0,lC0,Knots);
+                      bs2d->SetKnots(Knots);
+                      GAC2d.Load(bs2d,f3d,l3d);
+                      curPC = bs2d;
+
+                  }
+                }
+              }
+
+
+            }
+        }
+
+
+        if(goodpc){
+          //	  Approx_SameParameter SameP(HC,HC2d,HS,Tolerance);
+          Standard_Real aTol = (isANA && isBSP) ? 1.e-7 : Tolerance;
+          Approx_SameParameter SameP(HC,HC2d,HS,aTol);
+
+          if (SameP.IsSameParameter()) {
+            maxdist = Max(maxdist,SameP.TolReached());
+            if(updatepc){
+              if (i == 0) GCurve->PCurve(curPC);
+              else GCurve->PCurve2(curPC);
+            }
+          }
+          else if (SameP.IsDone()) {
+            Standard_Real tolreached = SameP.TolReached();
+            if(tolreached < error) {
+              curPC = SameP.Curve2d();
+              updatepc = Standard_True;
+              maxdist = Max(maxdist,tolreached);
+            }
+            else {
+              maxdist = Max(maxdist, error);
+            }
+            if(updatepc){
+              if (i == 0) GCurve->PCurve(curPC);
+              else GCurve->PCurve2(curPC);
+            }
+          }
+          else IsSameP = 0;
+
+        }
+        else IsSameP = 0;
+
+        //  Modified by skv - Thu Jun  3 12:39:19 2004 OCC5898 Begin
+        if (!IsSameP) {
+          if (anEdgeTol > error) {
+            maxdist = Max(maxdist, anEdgeTol);
+            IsSameP = Standard_True;
+          }
+        }
+        //  Modified by skv - Thu Jun  3 12:39:20 2004 OCC5898 End
       }
     }
     It.Next() ;
@@ -1291,9 +1287,9 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
       TopoDS_Vertex V1,V2;
       TopExp::Vertices(AnEdge,V1,V2);
       if (!V1.IsNull())
-	B.UpdateVertex(V1,maxdist);
+        B.UpdateVertex(V1,maxdist);
       if (!V2.IsNull())
-	B.UpdateVertex(V2,maxdist);
+        B.UpdateVertex(V2,maxdist);
       TE->Modified(Standard_True);
       TE->Tolerance(maxdist);
     }
@@ -1306,11 +1302,11 @@ void BRepLib::SameParameter(const TopoDS_Edge&  AnEdge,
 //purpose  : 
 //=======================================================================
 void  BRepLib::UpdateTolerances(const TopoDS_Shape& aShape,
-				const Standard_Boolean verifyTolerance) 
+  const Standard_Boolean verifyTolerance) 
 {
 
-// Harmonize tolerances
-// with rule Tolerance(VERTEX)>=Tolerance(EDGE)>=Tolerance(FACE)
+  // Harmonize tolerances
+  // with rule Tolerance(VERTEX)>=Tolerance(EDGE)>=Tolerance(FACE)
   BRep_Builder B;
   Standard_Real tol=0;
   if (verifyTolerance) {
@@ -1324,47 +1320,47 @@ void  BRepLib::UpdateTolerances(const TopoDS_Shape& aShape,
       const TopoDS_Face& curf=TopoDS::Face(ex.Current());
       S = BRep_Tool::Surface(curf, l);
       if (!S.IsNull()) {
-	aB.SetVoid();
-	BRepBndLib::Add(curf,aB);
-	if (S->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
-	  S = (*((Handle(Geom_RectangularTrimmedSurface)*)&S))->BasisSurface();
-	}
-	GeomAdaptor_Surface AS(S);
-	switch (AS.GetType()) {
-	case GeomAbs_Plane: 
-	case GeomAbs_Cylinder: 
-	case GeomAbs_Cone: 
-	  {
-	    tol=Precision::Confusion();
-	    break;
-	  }
-	case GeomAbs_Sphere: 
-	case GeomAbs_Torus: 
-	  {
-	    tol=Precision::Confusion()*2;
-	    break;
-	  }
-	default:
-	  tol=Precision::Confusion()*4;
-	}
-	if (!aB.IsWhole()) {
-	  aB.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
-	  dMax=1.;
-	  if (!aB.IsOpenXmin() && !aB.IsOpenXmax()) dMax=aXmax-aXmin;
-	  if (!aB.IsOpenYmin() && !aB.IsOpenYmax()) aYmin=aYmax-aYmin;
-	  if (!aB.IsOpenZmin() && !aB.IsOpenZmax()) aZmin=aZmax-aZmin;
-	  if (aYmin>dMax) dMax=aYmin;
-	  if (aZmin>dMax) dMax=aZmin;
-	  tol=tol*dMax;
-	  // Do not process tolerances > 1.
-	  if (tol>1.) tol=0.99;
-	}
-	const Handle(BRep_TFace)& Tf = *((Handle(BRep_TFace)*)&curf.TShape());
-	Tf->Tolerance(tol);
+        aB.SetVoid();
+        BRepBndLib::Add(curf,aB);
+        if (S->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
+          S = (*((Handle(Geom_RectangularTrimmedSurface)*)&S))->BasisSurface();
+        }
+        GeomAdaptor_Surface AS(S);
+        switch (AS.GetType()) {
+        case GeomAbs_Plane: 
+        case GeomAbs_Cylinder: 
+        case GeomAbs_Cone: 
+          {
+            tol=Precision::Confusion();
+            break;
+          }
+        case GeomAbs_Sphere: 
+        case GeomAbs_Torus: 
+          {
+            tol=Precision::Confusion()*2;
+            break;
+          }
+        default:
+          tol=Precision::Confusion()*4;
+        }
+        if (!aB.IsWhole()) {
+          aB.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
+          dMax=1.;
+          if (!aB.IsOpenXmin() && !aB.IsOpenXmax()) dMax=aXmax-aXmin;
+          if (!aB.IsOpenYmin() && !aB.IsOpenYmax()) aYmin=aYmax-aYmin;
+          if (!aB.IsOpenZmin() && !aB.IsOpenZmax()) aZmin=aZmax-aZmin;
+          if (aYmin>dMax) dMax=aYmin;
+          if (aZmin>dMax) dMax=aZmin;
+          tol=tol*dMax;
+          // Do not process tolerances > 1.
+          if (tol>1.) tol=0.99;
+        }
+        const Handle(BRep_TFace)& Tf = *((Handle(BRep_TFace)*)&curf.TShape());
+        Tf->Tolerance(tol);
       }
     }
   }
-  
+
   //Process edges
   TopTools_IndexedDataMapOfShapeListOfShape parents;
   TopExp::MapShapesAndAncestors(aShape, TopAbs_EDGE, TopAbs_FACE, parents);
@@ -1403,37 +1399,37 @@ void  BRepLib::UpdateTolerances(const TopoDS_Shape& aShape,
       BRep_ListIteratorOfListOfCurveRepresentation itcr(TE->Curves());
       const TopLoc_Location& Eloc = E.Location();
       while (itcr.More()) {
-	// For each CurveRepresentation, check the provided parameter
-	const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
-	const TopLoc_Location& loc = cr->Location();
-	TopLoc_Location L = (Eloc * loc);
-	if (cr->IsCurve3D()) {
-	  const Handle(Geom_Curve)& C = cr->Curve3D();
-	  if (!C.IsNull()) { // edge non degenerated
-	    p3d = C->Value(par);
-	    p3d.Transform(L.Transformation());
-	    box.Add(p3d);
-	  }
-	}
-	else if (cr->IsCurveOnSurface()) {
-	  const Handle(Geom_Surface)& Su = cr->Surface();
-	  const Handle(Geom2d_Curve)& PC = cr->PCurve();
-	  Handle(Geom2d_Curve) PC2;
-	  if (cr->IsCurveOnClosedSurface()) {
-	    PC2 = cr->PCurve2();
-	  }
-	  gp_Pnt2d p2d = PC->Value(par);
-	  p3d = Su->Value(p2d.X(),p2d.Y());
-	  p3d.Transform(L.Transformation());
-	  box.Add(p3d);
-	  if (!PC2.IsNull()) {
-	    p2d = PC2->Value(par);
-	    p3d = Su->Value(p2d.X(),p2d.Y());
-	    p3d.Transform(L.Transformation());
-	    box.Add(p3d);
-	  }
-	}
-	itcr.Next();
+        // For each CurveRepresentation, check the provided parameter
+        const Handle(BRep_CurveRepresentation)& cr = itcr.Value();
+        const TopLoc_Location& loc = cr->Location();
+        TopLoc_Location L = (Eloc * loc);
+        if (cr->IsCurve3D()) {
+          const Handle(Geom_Curve)& C = cr->Curve3D();
+          if (!C.IsNull()) { // edge non degenerated
+            p3d = C->Value(par);
+            p3d.Transform(L.Transformation());
+            box.Add(p3d);
+          }
+        }
+        else if (cr->IsCurveOnSurface()) {
+          const Handle(Geom_Surface)& Su = cr->Surface();
+          const Handle(Geom2d_Curve)& PC = cr->PCurve();
+          Handle(Geom2d_Curve) PC2;
+          if (cr->IsCurveOnClosedSurface()) {
+            PC2 = cr->PCurve2();
+          }
+          gp_Pnt2d p2d = PC->Value(par);
+          p3d = Su->Value(p2d.X(),p2d.Y());
+          p3d.Transform(L.Transformation());
+          box.Add(p3d);
+          if (!PC2.IsNull()) {
+            p2d = PC2->Value(par);
+            p3d = Su->Value(p2d.X(),p2d.Y());
+            p3d.Transform(L.Transformation());
+            box.Add(p3d);
+          }
+        }
+        itcr.Next();
       }
     }
     Standard_Real aXmin, aYmin, aZmin, aXmax, aYmax, aZmax;
@@ -1446,13 +1442,13 @@ void  BRepLib::UpdateTolerances(const TopoDS_Shape& aShape,
       // Attention to sharing of the vertex by other shapes
       const Handle(BRep_TVertex)& TV = *((Handle(BRep_TVertex)*)&V.TShape());
       if (Initialized.Add(TV)) 
-	TV->Tolerance(tol);
+        TV->Tolerance(tol);
       else 
-	B.UpdateVertex(V, tol);
+        B.UpdateVertex(V, tol);
     }
     else {
-    // Update can only increase tolerance, so if the edge has a greater
-    //  tolerance than its faces it is not concerned
+      // Update can only increase tolerance, so if the edge has a greater
+      //  tolerance than its faces it is not concerned
       B.UpdateVertex(V, tol);
     }
   }
@@ -1464,7 +1460,7 @@ void  BRepLib::UpdateTolerances(const TopoDS_Shape& aShape,
 //=======================================================================
 Standard_Boolean BRepLib::OrientClosedSolid(TopoDS_Solid& solid) 
 {
-// Set material inside the solid
+  // Set material inside the solid
   BRepClass3d_SolidClassifier where(solid);
   where.PerformInfinitePoint(Precision::Confusion());
   if (where.State()==TopAbs_IN) {
@@ -1483,10 +1479,10 @@ Standard_Boolean BRepLib::OrientClosedSolid(TopoDS_Solid& solid)
 //=======================================================================
 
 static Standard_Boolean tgtfaces(const TopoDS_Edge& Ed,
-				 const TopoDS_Face& F1,
-				 const TopoDS_Face& F2,
-				 const Standard_Real ta,
-				 const Standard_Boolean couture)
+  const TopoDS_Face& F1,
+  const TopoDS_Face& F2,
+  const Standard_Real ta,
+  const Standard_Boolean couture)
 {
   Standard_Real u;
   TopoDS_Edge E = Ed;
@@ -1513,7 +1509,7 @@ static Standard_Boolean tgtfaces(const TopoDS_Edge& Ed,
   BRep_Tool::Range(E,f,l);
   Extrema_LocateExtPC ext;
   Standard_Boolean IsInitialized = Standard_False;
-  
+
   eps = (l - f)/100.;
   f += eps; // to avoid calculations on  
   l -= eps; // points of pointed squares.
@@ -1548,28 +1544,28 @@ static Standard_Boolean tgtfaces(const TopoDS_Edge& Ed,
 
     if (Nok &&(ang > ta)) { // Refine by projection
       if (! IsInitialized ) {
-	ext.Initialize(C2,f,l,Precision::PConfusion());
-	IsInitialized = Standard_True;
+        ext.Initialize(C2,f,l,Precision::PConfusion());
+        IsInitialized = Standard_True;
       }      
       ext.Perform(pp1,u);
       if(ext.IsDone() && ext.IsMin()){
-	Extrema_POnCurv poc = ext.Point();
-	Standard_Real v = poc.Parameter();
+        Extrema_POnCurv poc = ext.Point();
+        Standard_Real v = poc.Parameter();
 
-	HC2d2->D0(v,p);
-	p.Coord(uu,vv);
-	HS2->D1(p.X(), p.Y(), pp2, du, dv);
-	d2 = (du.Crossed(dv));
-	norm = d2.Magnitude();
-	if (norm> 1.e-12) d2 /= norm;
-	else Nok = Standard_False;
-	if(rev2) d2.Reverse();
-	if (Nok) ang = d1.Angle(d2);
+        HC2d2->D0(v,p);
+        p.Coord(uu,vv);
+        HS2->D1(p.X(), p.Y(), pp2, du, dv);
+        d2 = (du.Crossed(dv));
+        norm = d2.Magnitude();
+        if (norm> 1.e-12) d2 /= norm;
+        else Nok = Standard_False;
+        if(rev2) d2.Reverse();
+        if (Nok) ang = d1.Angle(d2);
       }
     }
     if(ang >= angmax) angmax = ang;
   }     
- 
+
   return (angmax<=ta);
 
 }
@@ -1582,7 +1578,7 @@ static Standard_Boolean tgtfaces(const TopoDS_Edge& Ed,
 //=======================================================================
 
 void BRepLib::EncodeRegularity(const TopoDS_Shape& S,
-			       const Standard_Real TolAng)
+  const Standard_Real TolAng)
 {
   BRep_Builder B;
   TopTools_IndexedDataMapOfShapeListOfShape M;
@@ -1598,30 +1594,30 @@ void BRepLib::EncodeRegularity(const TopoDS_Shape& S,
     for(It.Initialize(M.FindFromIndex(i));It.More() && !found;It.Next()){
       if(F1.IsNull()) { F1 = TopoDS::Face(It.Value()); }
       else {
-	if(!F1.IsSame(TopoDS::Face(It.Value()))){
-	  found = Standard_True;
-	  F2 = TopoDS::Face(It.Value());
-	}
+        if(!F1.IsSame(TopoDS::Face(It.Value()))){
+          found = Standard_True;
+          F2 = TopoDS::Face(It.Value());
+        }
       }
     }
     if (!found && !F1.IsNull()){//is it a sewing edge?
       TopAbs_Orientation orE = E.Orientation();
       TopoDS_Edge curE;
       for(Ex.Init(F1,TopAbs_EDGE);Ex.More() && !found;Ex.Next()){
-	curE= TopoDS::Edge(Ex.Current());
-	if(E.IsSame(curE) && orE != curE.Orientation()) {
-	  found = Standard_True;
-	  couture = Standard_True;
-	  F2 = F1;
-	}
+        curE= TopoDS::Edge(Ex.Current());
+        if(E.IsSame(curE) && orE != curE.Orientation()) {
+          found = Standard_True;
+          couture = Standard_True;
+          F2 = F1;
+        }
       }
     }
     if(found){
       if(BRep_Tool::Continuity(E,F1,F2)<=GeomAbs_C0){
 
         try {
-	        if(tgtfaces(E, F1, F2, TolAng, couture)){
-	          B.Continuity(E,F1,F2,GeomAbs_G1);
+          if(tgtfaces(E, F1, F2, TolAng, couture)){
+            B.Continuity(E,F1,F2,GeomAbs_G1);
           }
         }
         catch(Standard_Failure)
@@ -1638,9 +1634,9 @@ void BRepLib::EncodeRegularity(const TopoDS_Shape& S,
 //=======================================================================
 
 void BRepLib::EncodeRegularity(TopoDS_Edge& E,
-			       const TopoDS_Face& F1,
-			       const TopoDS_Face& F2,
-			       const Standard_Real TolAng)
+  const TopoDS_Face& F1,
+  const TopoDS_Face& F2,
+  const Standard_Real TolAng)
 {
   BRep_Builder B;
   if(BRep_Tool::Continuity(E,F1,F2)<=GeomAbs_C0){
@@ -1652,7 +1648,7 @@ void BRepLib::EncodeRegularity(TopoDS_Edge& E,
     catch(Standard_Failure)
     {
     }
- }
+  }
 }
 
 //=======================================================================
@@ -1661,7 +1657,7 @@ void BRepLib::EncodeRegularity(TopoDS_Edge& E,
 //=======================================================================
 
 void  BRepLib::SortFaces (const TopoDS_Shape& Sh,
-			  TopTools_ListOfShape& LF)
+  TopTools_ListOfShape& LF)
 {
   LF.Clear();
   TopTools_ListOfShape LTri,LPlan,LCyl,LCon,LSphere,LTor,LOther;
@@ -1674,37 +1670,37 @@ void  BRepLib::SortFaces (const TopoDS_Shape& Sh,
     S = BRep_Tool::Surface(F, l);
     if (!S.IsNull()) {
       if (S->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
-	S = (*((Handle(Geom_RectangularTrimmedSurface)*)&S))->BasisSurface();
+        S = (*((Handle(Geom_RectangularTrimmedSurface)*)&S))->BasisSurface();
       }
       GeomAdaptor_Surface AS(S);
       switch (AS.GetType()) {
       case GeomAbs_Plane: 
-	{
-	  LPlan.Append(F);
-	  break;
-	}
+        {
+          LPlan.Append(F);
+          break;
+        }
       case GeomAbs_Cylinder: 
-	{
-	  LCyl.Append(F);
-	  break;
-	}
+        {
+          LCyl.Append(F);
+          break;
+        }
       case GeomAbs_Cone: 
-	{
-	  LCon.Append(F);
-	  break;
-	}
+        {
+          LCon.Append(F);
+          break;
+        }
       case GeomAbs_Sphere: 
-	{
-	  LSphere.Append(F);
-	  break;
-	}
+        {
+          LSphere.Append(F);
+          break;
+        }
       case GeomAbs_Torus: 
-	{
-	  LTor.Append(F);
-	  break;
-	}
+        {
+          LTor.Append(F);
+          break;
+        }
       default:
-	LOther.Append(F);
+        LOther.Append(F);
       }
     }
     else LTri.Append(F);
@@ -1719,57 +1715,56 @@ void  BRepLib::SortFaces (const TopoDS_Shape& Sh,
 //=======================================================================
 
 void  BRepLib::ReverseSortFaces (const TopoDS_Shape& Sh,
-				 TopTools_ListOfShape& LF)
+  TopTools_ListOfShape& LF)
 {
   LF.Clear();
   TopTools_ListOfShape LTri,LPlan,LCyl,LCon,LSphere,LTor,LOther;
   TopExp_Explorer exp(Sh,TopAbs_FACE);
   TopLoc_Location l;
   Handle(Geom_Surface) S;
-  
+
   for (; exp.More(); exp.Next()) {
     const TopoDS_Face&   F = TopoDS::Face(exp.Current());
     S = BRep_Tool::Surface(F, l);
     if (!S.IsNull()) {
       if (S->DynamicType() == STANDARD_TYPE(Geom_RectangularTrimmedSurface)) {
-	S = (*((Handle(Geom_RectangularTrimmedSurface)*)&S))->BasisSurface();
+        S = (*((Handle(Geom_RectangularTrimmedSurface)*)&S))->BasisSurface();
       }
       GeomAdaptor_Surface AS(S);
       switch (AS.GetType()) {
       case GeomAbs_Plane: 
-	{
-	  LPlan.Append(F);
-	  break;
-	}
+        {
+          LPlan.Append(F);
+          break;
+        }
       case GeomAbs_Cylinder: 
-	{
-	  LCyl.Append(F);
-	  break;
-	}
+        {
+          LCyl.Append(F);
+          break;
+        }
       case GeomAbs_Cone: 
-	{
-	  LCon.Append(F);
-	  break;
-	}
+        {
+          LCon.Append(F);
+          break;
+        }
       case GeomAbs_Sphere: 
-	{
-	  LSphere.Append(F);
-	  break;
-	}
+        {
+          LSphere.Append(F);
+          break;
+        }
       case GeomAbs_Torus: 
-	{
-	  LTor.Append(F);
-	  break;
-	}
+        {
+          LTor.Append(F);
+          break;
+        }
       default:
-	LOther.Append(F);
+        LOther.Append(F);
       }
     }
     else LTri.Append(F);
   }
   LF.Append(LTri); LF.Append(LOther); LF.Append(LTor ); LF.Append(LSphere);
   LF.Append(LCon); LF.Append(LCyl  ); LF.Append(LPlan);
-   
-}
 
+}
 

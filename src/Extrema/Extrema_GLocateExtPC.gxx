@@ -45,9 +45,9 @@ Extrema_GLocateExtPC::Extrema_GLocateExtPC() { }
 //=======================================================================
 
 Extrema_GLocateExtPC::Extrema_GLocateExtPC (const ThePoint&     P,
-					    const TheCurve&     C,
-					    const Standard_Real U0,
-					    const Standard_Real TolF)
+  const TheCurve&     C,
+  const Standard_Real U0,
+  const Standard_Real TolF)
 {
   Initialize(C, TheCurveTool::FirstParameter(C), TheCurveTool::LastParameter(C), TolF);
   Perform(P, U0);
@@ -59,11 +59,11 @@ Extrema_GLocateExtPC::Extrema_GLocateExtPC (const ThePoint&     P,
 //=======================================================================
 
 Extrema_GLocateExtPC::Extrema_GLocateExtPC (const ThePoint&     P,
-					    const TheCurve&     C,
-					    const Standard_Real U0, 
-					    const Standard_Real Umin,
-					    const Standard_Real Usup,
-					    const Standard_Real TolF)
+  const TheCurve&     C,
+  const Standard_Real U0, 
+  const Standard_Real Umin,
+  const Standard_Real Usup,
+  const Standard_Real TolF)
 {
   Initialize(C, Umin, Usup, TolF);
   Perform(P, U0);
@@ -77,9 +77,9 @@ Extrema_GLocateExtPC::Extrema_GLocateExtPC (const ThePoint&     P,
 //=======================================================================
 
 void Extrema_GLocateExtPC::Initialize(const TheCurve&     C, 
-				      const Standard_Real Umin,
-				      const Standard_Real Usup,
-				      const Standard_Real TolF)
+  const Standard_Real Umin,
+  const Standard_Real Usup,
+  const Standard_Real TolF)
 {
   myC = (Standard_Address)&C;
   mytol = TolF;
@@ -88,9 +88,9 @@ void Extrema_GLocateExtPC::Initialize(const TheCurve&     C,
   type = TheCurveTool::GetType(C);
   Standard_Real tolu = TheCurveTool::Resolution(C, Precision::Confusion());
   if ((type == GeomAbs_BSplineCurve) || 
-      (type == GeomAbs_BezierCurve)  || 
-      (type == GeomAbs_OtherCurve)) {
-    myLocExtPC.Initialize(C, Umin, Usup, tolu);
+    (type == GeomAbs_BezierCurve)  || 
+    (type == GeomAbs_OtherCurve)) {
+      myLocExtPC.Initialize(C, Umin, Usup, tolu);
   }
   else {
     myExtremPC.Initialize(C, Umin, Usup, tolu);
@@ -106,29 +106,31 @@ void Extrema_GLocateExtPC::Initialize(const TheCurve&     C,
 //=======================================================================
 
 void Extrema_GLocateExtPC::Perform(const ThePoint&     P,
-				   const Standard_Real U0)
+  const Standard_Real U0)
 {
   Standard_Integer i, i1, i2, inter;
   Standard_Real Par, valU, valU2 = RealLast(),
-  local_u0 ;
+    local_u0 ;
   Standard_Real myintuinf=0, myintusup=0;
   local_u0 = U0 ;
-  switch(type) {
-    case GeomAbs_OtherCurve:
-    case GeomAbs_BSplineCurve: {
+  switch(type)
+  {
+  case GeomAbs_OtherCurve:
+  case GeomAbs_BSplineCurve:
+    {
       // La recherche de l extremum est faite intervalle continu C2 par
       // intervalle continu C2 de la courbe
       Standard_Integer n = TheCurveTool::NbIntervals(*((TheCurve*)myC), GeomAbs_C2);
       TColStd_Array1OfReal theInter(1, n+1);
       TheCurveTool::Intervals(*((TheCurve*)myC), theInter, GeomAbs_C2);
-//
-//  be gentle with the caller 
-//
+      //
+      //  be gentle with the caller 
+      //
       if (local_u0 < myumin) {
-	local_u0 = myumin ; 
+        local_u0 = myumin ; 
       }
       else if (local_u0 > myusup) {
-	local_u0  = myusup ;
+        local_u0  = myusup ;
       }
       // Recherche de l intervalle ou se trouve U0
       Standard_Boolean found = Standard_False;
@@ -140,120 +142,144 @@ void Extrema_GLocateExtPC::Perform(const ThePoint&     P,
         // pas, mais il n'y avait aucune raison de sortir en "return")
         myintuinf = Max(theInter(inter), myumin);
         myintusup = Min(theInter(inter+1), myusup);
-	if ((local_u0 >= myintuinf) && (local_u0 < myintusup)) found = Standard_True;
-	inter++;
+        if ((local_u0 >= myintuinf) && (local_u0 < myintusup)) found = Standard_True;
+        inter++;
       }
 
       if( found ) inter--; //IFV 16.06.00 - inter is increased after found!
 
       // Essai sur l intervalle trouve
       myLocExtPC.Initialize((*((TheCurve*)myC)), myintuinf, 
-			    myintusup, mytol);
+        myintusup, mytol);
       myLocExtPC.Perform(P, local_u0);
       myDone = myLocExtPC.IsDone();
       if (myDone) {
-	mypp = myLocExtPC.Point();
-	myismin = myLocExtPC.IsMin();
-	mydist2 = myLocExtPC.SquareDistance();
+        mypp = myLocExtPC.Point();
+        myismin = myLocExtPC.IsMin();
+        mydist2 = myLocExtPC.SquareDistance();
       }
       else {
-	Standard_Integer k = 1;
-	// Essai sur les intervalles alentours:
-	i1 = inter;
-	i2 = inter;
-	Standard_Real s1inf, s2inf, s1sup, s2sup;
-	ThePoint P1;
-	TheVector V1;
-	TheCurveTool::D1(*((TheCurve*)myC), myintuinf, P1, V1);
-	s2inf = (TheVector(P, P1)*V1);
-	TheCurveTool::D1(*((TheCurve*)myC), myintusup, P1, V1);
-	s1sup = (TheVector(P, P1)*V1);
-	
+        Standard_Integer k = 1;
+        // Essai sur les intervalles alentours:
+        i1 = inter;
+        i2 = inter;
+        Standard_Real s1inf, s2inf, s1sup, s2sup;
+        ThePoint P1;
+        TheVector V1;
+        TheCurveTool::D1(*((TheCurve*)myC), myintuinf, P1, V1);
+        s2inf = (TheVector(P, P1)*V1);
+        TheCurveTool::D1(*((TheCurve*)myC), myintusup, P1, V1);
+        s1sup = (TheVector(P, P1)*V1);
 
-	while (!myDone && (i2 > 0) && (i1 <= n)) {
-	  i1 = inter + k;
-	  i2 = inter - k;
-	  if (i1 <= n) {
-	    myintuinf = Max(theInter(i1), myumin);
-	    myintusup = Min(theInter(i1+1), myusup);
-	    if (myintuinf < myintusup) {
-	      TheCurveTool::D1(*((TheCurve*)myC), myintuinf, P1, V1);
-	      s2sup = (TheVector(P, P1)*V1);
-	      if (s1sup*s2sup <= RealEpsilon()) {
-		// extremum:
-		myDone = Standard_True;
-		mypp.SetValues(myintuinf, P1);
-		myismin = (s1sup <= 0.0);
-		mydist2 = P.SquareDistance(P1);
-		break;
-	      }
-	      TheCurveTool::D1(*((TheCurve*)myC), myintusup, P1, V1);
-	      s1sup = (TheVector(P, P1)*V1);
-	      myLocExtPC.Initialize((*((TheCurve*)myC)), myintuinf, 
-				    myintusup, mytol);
-	      myLocExtPC.Perform(P, (myintuinf + myintusup)*0.5);
-	      myDone = myLocExtPC.IsDone();
-	      if (myDone) {
-		mypp = myLocExtPC.Point();
-		myismin = myLocExtPC.IsMin();
-		mydist2 = myLocExtPC.SquareDistance();
-		break;
-	      }
-	    }
-	  }
-	  if (i2 > 0) {
-	    myintuinf = Max(theInter(i2), myumin);
-	    myintusup = Min(theInter(i2+1), myusup);
-	    if (myintuinf < myintusup) {
-	      TheCurveTool::D1(*((TheCurve*)myC), myintusup, P1, V1);
-	      s1inf = (TheVector(P, P1)*V1);
-	      if (s1inf*s2inf <= RealEpsilon()) {
-		// extremum:
-		myDone = Standard_True;
-		mypp.SetValues(myintusup, P1);
-		myismin = (s1inf <= 0.0);
-		mydist2 = P.SquareDistance(P1);
-		break;
-	      }
-	      TheCurveTool::D1(*((TheCurve*)myC), myintuinf, P1, V1);
-	      s2inf = (TheVector(P, P1)*V1);
-	      myLocExtPC.Initialize((*((TheCurve*)myC)), myintuinf, 
-				    myintusup, mytol);
-	      myLocExtPC.Perform(P, (myintuinf+myintusup)*0.5 );
-	      myDone = myLocExtPC.IsDone();
-	      if (myDone) {
-		mypp = myLocExtPC.Point();
-		myismin = myLocExtPC.IsMin();
-		mydist2 = myLocExtPC.SquareDistance();
-		break;
-	      }
-	    }
-	  }
-	  k++;
-	}
+
+        while (!myDone && (i2 > 0) && (i1 <= n))
+        {
+          i1 = inter + k;
+          i2 = inter - k;
+          if (i1 <= n)
+          {
+            myintuinf = Max(theInter(i1), myumin);
+            myintusup = Min(theInter(i1+1), myusup);
+            if (myintuinf < myintusup)
+            {
+              TheCurveTool::D1(*((TheCurve*)myC), myintuinf, P1, V1);
+              s2sup = (TheVector(P, P1)*V1);
+              if (s1sup*s2sup <= RealEpsilon())
+              {
+                // extremum:
+                myDone = Standard_True;
+                mypp.SetValues(myintuinf, P1);
+                myismin = (s1sup <= 0.0);
+                mydist2 = P.SquareDistance(P1);
+                break;
+              }
+
+              TheCurveTool::D1(*((TheCurve*)myC), myintusup, P1, V1);
+              s1sup = (TheVector(P, P1)*V1);
+              myLocExtPC.Initialize((*((TheCurve*)myC)), myintuinf, 
+                myintusup, mytol);
+              myLocExtPC.Perform(P, (myintuinf + myintusup)*0.5);
+              myDone = myLocExtPC.IsDone();
+              if (myDone) {
+                mypp = myLocExtPC.Point();
+                myismin = myLocExtPC.IsMin();
+                mydist2 = myLocExtPC.SquareDistance();
+                break;
+              }
+            }
+          }
+
+          if (i2 > 0)
+          {
+            myintuinf = Max(theInter(i2), myumin);
+            myintusup = Min(theInter(i2+1), myusup);
+            if (myintuinf < myintusup)
+            {
+              TheCurveTool::D1(*((TheCurve*)myC), myintusup, P1, V1);
+              s1inf = (TheVector(P, P1)*V1);
+              if (s1inf*s2inf <= RealEpsilon())
+              {
+                // extremum:
+                myDone = Standard_True;
+                mypp.SetValues(myintusup, P1);
+                myismin = (s1inf <= 0.0);
+                mydist2 = P.SquareDistance(P1);
+                break;
+              }
+
+              TheCurveTool::D1(*((TheCurve*)myC), myintuinf, P1, V1);
+              s2inf = (TheVector(P, P1)*V1);
+              myLocExtPC.Initialize((*((TheCurve*)myC)), myintuinf, 
+                myintusup, mytol);
+              myLocExtPC.Perform(P, (myintuinf+myintusup)*0.5 );
+              myDone = myLocExtPC.IsDone();
+            
+              if (myDone)
+              {
+                mypp = myLocExtPC.Point();
+                myismin = myLocExtPC.IsMin();
+                mydist2 = myLocExtPC.SquareDistance();
+                break;
+              }
+            }
+          }
+
+          k++;
+        }
       }
     }
-      break;
-    case GeomAbs_BezierCurve: {
+
+    break;
+
+  case GeomAbs_BezierCurve:
+    {
       myLocExtPC.Perform(P, U0);
       myDone = myLocExtPC.IsDone();
     }
-      break;
-    default:{
+
+    break;
+  default:
+    {
       myExtremPC.Perform(P);
       numberext = 0;
-      if (myExtremPC.IsDone()) {
-	for (i = 1; i <= myExtremPC.NbExt(); i++) {
-	  Par = myExtremPC.Point(i).Parameter();
-	  valU = Abs(Par - U0);
-	  if (valU <= valU2) {
-	    valU2 = valU;
-	    numberext = i;
-	    myDone = Standard_True;
-	  }
-	}
+      if (myExtremPC.IsDone())
+      {
+        for (i = 1; i <= myExtremPC.NbExt(); i++)
+        {
+          Par = myExtremPC.Point(i).Parameter();
+          valU = Abs(Par - U0);
+          if (valU <= valU2)
+          {
+            valU2 = valU;
+            numberext = i;
+            myDone = Standard_True;
+          }
+        }
       }
-      if (numberext == 0) myDone = Standard_False;
+
+      if (numberext == 0)
+        myDone = Standard_False;
+
       break;
     }
   }
