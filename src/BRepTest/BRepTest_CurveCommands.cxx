@@ -379,7 +379,10 @@ static Standard_Integer mk2dcurve(Draw_Interpretor& di,
   if (na < 3) return 1;
 
   TopoDS_Shape S;
-  S = DBRep::Get(a[2],TopAbs_EDGE); if (S.IsNull()) return 1;
+  S = DBRep::Get(a[2],TopAbs_EDGE);
+  if (S.IsNull())
+    return 1;
+
   TopoDS_Edge E = TopoDS::Edge(S);
 
   TopLoc_Location L;
@@ -387,20 +390,38 @@ static Standard_Integer mk2dcurve(Draw_Interpretor& di,
   Handle(Geom2d_Curve) C;
   Handle(Geom_Surface) Surf;
 
+  Standard_Boolean hasFace = Standard_False;
+
   if ( na == 3 ) {
     // get the first PCurve connected to edge E
     BRep_Tool::CurveOnSurface(E,C,Surf,L,f,l);
   }
-  else if ( na == 4 ) {
-    S = DBRep::Get(a[3],TopAbs_FACE); if (S.IsNull()) return 1;
-    TopoDS_Face F = TopoDS::Face(S);
-    C = BRep_Tool::CurveOnSurface(E,F,f,l);
+  else if ( na == 4 )
+  {
+    S = DBRep::Get(a[3],TopAbs_FACE);
+    if (S.IsNull())
+    {
+      Standard_Integer ind = Draw::Atoi(a[3]);
+      BRep_Tool::CurveOnSurface(E,C,Surf,L,f,l,ind);
+    }
+    else
+    {
+      hasFace = Standard_True;
+      TopoDS_Face F = TopoDS::Face(S);
+      C = BRep_Tool::CurveOnSurface(E,F,f,l);
+    }
   }
 
   if (C.IsNull()) {
     //cout << a[2] << " has no 2d curve"; if (na == 4) cout << " on " << a[3];
     //cout << endl;
-    di << a[2] << " has no 2d curve"; if (na == 4) di << " on " << a[3];
+    di << a[2] << " has no 2d curve";
+    
+    if (hasFace)
+    {
+      di << " on " << a[3];
+    }
+
     di << "\n";
     return 1;
   }
@@ -1805,7 +1826,7 @@ void  BRepTest::CurveCommands(Draw_Interpretor& theCommands)
     mkcurve,g);
 
   theCommands.Add("mk2dcurve",
-    "mk2dcurve curve edge [face]",__FILE__,
+    "mk2dcurve curve edge [face OR index]",__FILE__,
     mk2dcurve,g);
 
   theCommands.Add("mkpoint",
