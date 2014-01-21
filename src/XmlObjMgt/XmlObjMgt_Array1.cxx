@@ -14,9 +14,11 @@
 // commercial license or contractual agreement.
 
 //AGV 130202: Changed prototype LDOM_Node::getOwnerDocument()
+#include <XmlObjMgt_Array1.ixx>
 
 #include <XmlObjMgt.hxx>
 #include <XmlObjMgt_DOMString.hxx>
+#include <XmlObjMgt_Document.hxx>
 #include <TCollection_AsciiString.hxx>
 
 IMPLEMENT_DOMSTRING (LowerString, "lower")

@@ -41,7 +41,7 @@ is
     -- Retrieval Relocation Table
     alias RRelocationTable is DataMapOfIntegerTransient from TColStd;
 
-    generic class Array1; 
+    class Array1; 
 
     -- Package methods
     IdString returns DOMString from XmlObjMgt;

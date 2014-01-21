@@ -33,9 +33,6 @@ is
     class NamingDriver;
 
     class Shape1;
-    
-    class Array1OfShape1 instantiates Array1 from XmlObjMgt
-                (Shape1 from XmlMNaming);
 
     AddDrivers (aDriverTable  : ADriverTable  from XmlMDF;
                 aMessageDriver: MessageDriver from CDM);

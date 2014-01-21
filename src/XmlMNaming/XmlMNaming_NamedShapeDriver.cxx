@@ -18,7 +18,7 @@
 #include <XmlMNaming_NamedShapeDriver.ixx>
 
 #include <XmlObjMgt.hxx>
-#include <XmlMNaming_Array1OfShape1.hxx>
+#include <XmlObjMgt_Array1.hxx>
 #include <XmlMNaming_Shape1.hxx>
 
 #include <TDF_Label.hxx>
@@ -103,8 +103,8 @@ Standard_Boolean XmlMNaming_NamedShapeDriver::Paste
   // apres creation Builder qui a mis la version a 1 :
   aTarget -> SetVersion (aVersion);
 
-  const XmlMNaming_Array1OfShape1 OldPShapes (anElement, ::OldsString());
-  const XmlMNaming_Array1OfShape1 NewPShapes (anElement, ::NewsString());
+  const XmlObjMgt_Array1 OldPShapes (anElement, ::OldsString());
+  const XmlObjMgt_Array1 NewPShapes (anElement, ::NewsString());
   if (NewPShapes.Length() == 0 && OldPShapes.Length() == 0)
     return Standard_True;
 
@@ -198,7 +198,7 @@ void XmlMNaming_NamedShapeDriver::Paste (const Handle(TDF_Attribute)& theSource,
   }
 
   BRepTools_ShapeSet& aShapeSet = (BRepTools_ShapeSet&) myShapeSet;
-  XmlMNaming_Array1OfShape1 OldPShapes (1,NbShapes), NewPShapes (1,NbShapes);
+  XmlObjMgt_Array1 OldPShapes (1,NbShapes), NewPShapes (1,NbShapes);
 
   OldPShapes.CreateArrayElement (theTarget, ::OldsString());
   NewPShapes.CreateArrayElement (theTarget, ::NewsString());
