@@ -51,7 +51,7 @@ class Matrix from math
 
 
 uses Vector from math,
-     DoubleTabOfReal from math,
+     DoubleTab from math,
      OStream from Standard
 
 raises DimensionError from Standard, RangeError from Standard, 
@@ -562,7 +562,7 @@ LowerRowIndex:      Integer;
 UpperRowIndex:      Integer;
 LowerColIndex:      Integer;
 UpperColIndex:      Integer;
-Array:              DoubleTabOfReal;
+Array:              DoubleTab;
 
 friends
 class Vector from math

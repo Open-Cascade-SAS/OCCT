@@ -13,7 +13,7 @@
 // commercial license or contractual agreement.
 
 // Lpa, le 7/02/92
-
+#include <math_DoubleTab.ixx>
 
 #include <math_Memory.hxx>
 #include <Standard_OutOfRange.hxx>
@@ -28,13 +28,13 @@ void math_DoubleTab::Allocate()
   Standard_Integer RowNumber = UppR - LowR + 1;
   Standard_Integer ColNumber = UppC - LowC + 1;
 
-  Item** TheAddr = !isAddrAllocated? (Item**)&AddrBuf : 
-    (Item**) Standard::Allocate(RowNumber * sizeof(Item*));
-  Item* Address;
+  Standard_Real** TheAddr = !isAddrAllocated? (Standard_Real**)&AddrBuf : 
+    (Standard_Real**) Standard::Allocate(RowNumber * sizeof(Standard_Real*));
+  Standard_Real* Address;
   if(isAllocated) 
-    Address = (Item*) Standard::Allocate(RowNumber * ColNumber * sizeof(Item));
+    Address = (Standard_Real*) Standard::Allocate(RowNumber * ColNumber * sizeof(Standard_Real));
   else
-    Address = (Item*) Addr;
+    Address = (Standard_Real*) Addr;
   Address -= LowC;
   
   for (Standard_Integer Index = 0; Index < RowNumber; Index++) {
@@ -61,13 +61,12 @@ math_DoubleTab::math_DoubleTab(const Standard_Integer LowerRow,
   Allocate();
 }
 
-
-math_DoubleTab::math_DoubleTab(const Item& Tab,
+math_DoubleTab::math_DoubleTab(const Standard_Address Tab,
 			       const Standard_Integer LowerRow,
 			       const Standard_Integer UpperRow,
 			       const Standard_Integer LowerCol,
 			       const Standard_Integer UpperCol) :
-  Addr((void *) &Tab),
+  Addr(Tab),
   isAddrAllocated(UpperRow - LowerRow + 1 > CARRAY_LENGTH(AddrBuf)),
   isAllocated(Standard_False),
   LowR(LowerRow),
@@ -78,16 +77,14 @@ math_DoubleTab::math_DoubleTab(const Item& Tab,
   Allocate();
 }
 
-void math_DoubleTab::Init(const Item& InitValue) 
+void math_DoubleTab::Init(const Standard_Real InitValue) 
 {
   for (Standard_Integer i = LowR; i <= UppR; i++) {
     for (Standard_Integer j = LowC; j <= UppC; j++) {
-      ((Item**) Addr)[i][j] = InitValue;
+      ((Standard_Real**) Addr)[i][j] = InitValue;
     }
   }
 }
-
-
 
 math_DoubleTab::math_DoubleTab(const math_DoubleTab& Other) :
   Addr(Buf),
@@ -105,10 +102,9 @@ math_DoubleTab::math_DoubleTab(const math_DoubleTab& Other) :
   Standard_Address source = (Standard_Address) &Other.Value(LowR,LowC);
 
   memmove(target,source,
-	  (int)((UppR - LowR + 1) * (UppC - LowC + 1) * sizeof(Item)));
+	  (int)((UppR - LowR + 1) * (UppC - LowC + 1) * sizeof(Standard_Real)));
 
 }
-
 
 void math_DoubleTab::Free()
 {
@@ -119,26 +115,23 @@ void math_DoubleTab::Free()
   }
   // free the pointers
   if(isAddrAllocated) {
-    Standard_Address it = (Standard_Address)(((Item**)Addr) + LowR);
+    Standard_Address it = (Standard_Address)(((Standard_Real**)Addr) + LowR);
     Standard::Free (it);
   }
   Addr = 0;
 }
 
-
-
 void math_DoubleTab::SetLowerRow(const Standard_Integer LowerRow)
 {
-  Item** TheAddr = (Item**)Addr;
+  Standard_Real** TheAddr = (Standard_Real**)Addr;
   Addr = (Standard_Address) (TheAddr + LowR - LowerRow);
   UppR = UppR - LowR + LowerRow;
   LowR = LowerRow;
 }
 
-
 void math_DoubleTab::SetLowerCol(const Standard_Integer LowerCol)
 {
-  Item** TheAddr = (Item**) Addr;
+  Standard_Real** TheAddr = (Standard_Real**) Addr;
   for (Standard_Integer Index = LowR; Index <= UppR; Index++) {
     TheAddr[Index] = TheAddr[Index] + LowC - LowerCol;
   }

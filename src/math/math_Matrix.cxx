@@ -85,9 +85,7 @@ math_Matrix::math_Matrix (const Standard_Address Tab,
 			  UpperRowIndex(UpperRow),
 			  LowerColIndex(LowerCol),
 			  UpperColIndex(UpperCol),
-			  Array(*((const Standard_Real *)Tab), 
-				LowerRow, UpperRow,
-				LowerCol, UpperCol) 
+			  Array(Tab, LowerRow, UpperRow, LowerCol, UpperCol) 
 { 
   
   Standard_RangeError_Raise_if((LowerRow > UpperRow) ||

@@ -14,7 +14,7 @@
 
 #include <stdio.h>
 
-#include <math_Vector.ixx>
+#include <math_Vector.hxx>
 #include <math_Matrix.hxx>
 
 #include <Standard_DimensionError.hxx>
@@ -22,84 +22,85 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_NullValue.hxx>
 
-
-math_Vector::math_Vector(const Standard_Integer Lower,
-			 const Standard_Integer Upper):
-			 
-			 LowerIndex(Lower),
-			 UpperIndex(Upper),
-			 Array(Lower,Upper) {
-			   Standard_RangeError_Raise_if(Lower > Upper, "");		       
-			 }
-
-math_Vector::math_Vector(const Standard_Integer Lower,
-			 const Standard_Integer Upper,
-			 const Standard_Real    InitialValue):
-			 
-			 LowerIndex(Lower),
-			 UpperIndex(Upper),
-			 Array(Lower,Upper) 
+math_Vector::math_Vector(const Standard_Integer theLower, const Standard_Integer theUpper) :
+  LowerIndex(theLower),
+  UpperIndex(theUpper),
+  Array(theLower,theUpper)
 {
-  Standard_RangeError_Raise_if(Lower > Upper, "");		       
-  Array.Init(InitialValue);
+  Standard_RangeError_Raise_if(theLower > theUpper, "");
 }
 
-math_Vector::math_Vector(const Standard_Address Tab,
-			 const Standard_Integer Lower,
-			 const Standard_Integer Upper) :
-			 
-			 LowerIndex(Lower),
-			 UpperIndex(Upper),
-			 Array(*((const Standard_Real *)Tab), Lower,Upper) 
+math_Vector::math_Vector(const Standard_Integer theLower,
+                         const Standard_Integer theUpper,
+                         const Standard_Real    theInitialValue):
+  LowerIndex(theLower),
+  UpperIndex(theUpper),
+  Array(theLower,theUpper)
 {
-  Standard_RangeError_Raise_if((Lower > Upper) , "");		       
+  Standard_RangeError_Raise_if(theLower > theUpper, "");
+  Array.Init(theInitialValue);
 }
 
-void math_Vector::Init(const Standard_Real InitialValue) {
-  Array.Init(InitialValue);
+math_Vector::math_Vector(const Standard_Address theTab,
+                         const Standard_Integer theLower,
+                         const Standard_Integer theUpper) :
+  LowerIndex(theLower),
+  UpperIndex(theUpper),
+  Array(theTab, theLower,theUpper)
+{
+  Standard_RangeError_Raise_if((theLower > theUpper) , "");
 }
 
-math_Vector::math_Vector(const math_Vector& Other): 
-
-LowerIndex(Other.LowerIndex),
-UpperIndex(Other.UpperIndex),
-Array(Other.Array) {}
-
-
-void math_Vector::SetLower(const Standard_Integer Lower) {
-
-  Array.SetLower(Lower);
-  UpperIndex = UpperIndex - LowerIndex + Lower;
-  LowerIndex = Lower;
+void math_Vector::Init(const Standard_Real theInitialValue)
+{
+  Array.Init(theInitialValue);
 }
 
-Standard_Real math_Vector::Norm() const {
+math_Vector::math_Vector(const math_Vector& theOther) :
+  LowerIndex(theOther.LowerIndex),
+  UpperIndex(theOther.UpperIndex),
+  Array(theOther.Array)
+{
+}
 
+void math_Vector::SetLower(const Standard_Integer theLower)
+{
+  Array.SetLower(theLower);
+  UpperIndex = UpperIndex - LowerIndex + theLower;
+  LowerIndex = theLower;
+}
+
+Standard_Real math_Vector::Norm() const
+{
   Standard_Real Result = 0;
 
-  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++) {
+  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++)
+  {
     Result = Result + Array(Index) * Array(Index);
   }
   return Sqrt(Result);
 }
 
-Standard_Real math_Vector::Norm2() const {
-
+Standard_Real math_Vector::Norm2() const
+{
   Standard_Real Result = 0;
 
-  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++) {
+  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++)
+  {
     Result = Result + Array(Index) * Array(Index);
   }
   return Result;
 }
 
-Standard_Integer math_Vector::Max() const {
-
+Standard_Integer math_Vector::Max() const
+{
   Standard_Integer I=0;
   Standard_Real X = RealFirst();
 
-  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++) {
-    if(Array(Index) > X) {
+  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++)
+  {
+    if(Array(Index) > X)
+    {
       X = Array(Index);
       I = Index;
     }
@@ -107,13 +108,15 @@ Standard_Integer math_Vector::Max() const {
   return I;
 }
 
-Standard_Integer math_Vector::Min() const {
-
+Standard_Integer math_Vector::Min() const
+{
   Standard_Integer I=0;
   Standard_Real X = RealLast();
 
-  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++) {
-    if(Array(Index) < X) {
+  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++)
+  {
+    if(Array(Index) < X)
+    {
       X = Array(Index);
       I = Index;
     }
@@ -121,45 +124,45 @@ Standard_Integer math_Vector::Min() const {
   return I;
 }
 
-void math_Vector::Set(const Standard_Integer I1, 
-		      const Standard_Integer I2, 
-		      const math_Vector &V) {
+void math_Vector::Set(const Standard_Integer theI1,
+                      const Standard_Integer theI2,
+                      const math_Vector &theV)
+{
+  Standard_RangeError_Raise_if((theI1 < LowerIndex) || (theI2 > UpperIndex) ||
+    (theI1 > theI2) || (theI2 - theI1 + 1 != theV.Length()), "");
 
-  Standard_RangeError_Raise_if((I1 < LowerIndex) || 
-			       (I2 > UpperIndex) || 
-			       (I1 > I2)         ||
-			       (I2 - I1 + 1 != V.Length()), "");
-  
-  Standard_Integer I = V.Lower();
-  for(Standard_Integer Index = I1; Index <= I2; Index++) {
-    Array(Index) = V.Array(I);
+  Standard_Integer I = theV.Lower();
+  for(Standard_Integer Index = theI1; Index <= theI2; Index++)
+  {
+    Array(Index) = theV.Array(I);
     I++;
   }
 }
 
-void math_Vector::Normalize() {
-
+void math_Vector::Normalize()
+{
   Standard_Real Result = Norm();
   Standard_NullValue_Raise_if((Result <= RealEpsilon()), "");
-  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++) {
+  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++)
+  {
     Array(Index) = Array(Index) / Result;
   }
 }
 
-math_Vector math_Vector::Normalized() const {
-
+math_Vector math_Vector::Normalized() const
+{
   math_Vector Result = *this;
 
   Result.Normalize();
   return Result;
 }
 
-void math_Vector::Invert() {
+void math_Vector::Invert()
+{
   Standard_Integer J;
   Standard_Real Temp;
-  for(Standard_Integer Index = LowerIndex; 
-//      Index <= LowerIndex + (Length()) >> 1 ; Index++) {
-      Index <= (LowerIndex + Length()) >> 1 ; Index++) {
+  for(Standard_Integer Index = LowerIndex; Index <= (LowerIndex + Length()) >> 1 ; Index++)
+  {
     J = UpperIndex + LowerIndex - Index;
     Temp = Array(Index);
     Array(Index) = Array(J);
@@ -167,316 +170,310 @@ void math_Vector::Invert() {
   }
 }
 
-math_Vector math_Vector::Inverse() const {
+math_Vector math_Vector::Inverse() const
+{
   math_Vector Result = *this;
   Result.Invert();
   return Result;
 }
 
-math_Vector math_Vector::Multiplied(const Standard_Real Right) const{
-
+math_Vector math_Vector::Multiplied(const Standard_Real theRight) const
+{
   math_Vector Result (LowerIndex, UpperIndex);
 
-  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++) {
-    Result.Array(Index) = Array(Index) * Right;
+  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++)
+  {
+    Result.Array(Index) = Array(Index) * theRight;
   }
   return Result;
 }
 
-math_Vector math_Vector::TMultiplied(const Standard_Real Right) const{
-
+math_Vector math_Vector::TMultiplied(const Standard_Real theRight) const
+{
   math_Vector Result (LowerIndex, UpperIndex);
 
-  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++) {
-    Result.Array(Index) = Array(Index) * Right;
+  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++)
+  {
+    Result.Array(Index) = Array(Index) * theRight;
   }
   return Result;
 }
 
-
-void math_Vector::Multiply(const Standard_Real Right) {
-
-  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++) {
-    Array(Index) = Array(Index) * Right;
+void math_Vector::Multiply(const Standard_Real theRight)
+{
+  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++)
+  {
+    Array(Index) = Array(Index) * theRight;
   }
 }
 
+void math_Vector::Divide(const Standard_Real theRight)
+{
+  Standard_DivideByZero_Raise_if(Abs(theRight) <= RealEpsilon(), "");
 
-void math_Vector::Divide(const Standard_Real Right) {
-
-  Standard_DivideByZero_Raise_if(Abs(Right) <= RealEpsilon(), "");
-
-  for(Standard_Integer Index =LowerIndex; Index <=UpperIndex; Index++) {
-    Array(Index) = Array(Index) / Right;
+  for(Standard_Integer Index =LowerIndex; Index <=UpperIndex; Index++)
+  {
+    Array(Index) = Array(Index) / theRight;
   }
 }
 
-
-math_Vector math_Vector::Divided (const Standard_Real Right) const {
-  
-  Standard_DivideByZero_Raise_if(Abs(Right) <= RealEpsilon(), "");
-  math_Vector temp = Multiplied(1./Right);
+math_Vector math_Vector::Divided (const Standard_Real theRight) const
+{
+  Standard_DivideByZero_Raise_if(Abs(theRight) <= RealEpsilon(), "");
+  math_Vector temp = Multiplied(1./theRight);
   return temp;
 }
 
-
-void math_Vector::Add(const math_Vector& Right) {
-
-  Standard_DimensionError_Raise_if(Length() != Right.Length(), "");
-
-  Standard_Integer I = Right.LowerIndex;
-  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++) {
-    Array(Index) = Array(Index) + Right.Array(I);
-    I++;
-  }
-}    
-
-math_Vector math_Vector::Added(const math_Vector& Right) const{
-
-  Standard_DimensionError_Raise_if(Length() != Right.Length(), "");
-
-  math_Vector Result(LowerIndex, UpperIndex);
-  
-  Standard_Integer I = Right.LowerIndex;
-  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++) {
-    Result.Array(Index) = Array(Index) + Right.Array(I);
-    I++;
-  }
-  return Result;
-}    
-
-
-
-void math_Vector::Subtract(const math_Vector& Right) {
-
-  Standard_DimensionError_Raise_if(Length() != Right.Length(), "");
-
-  Standard_Integer I = Right.LowerIndex;
-  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++) {
-    Array(Index) = Array(Index) - Right.Array(I);
-    I++;
-  }
-}    
-
-
-math_Vector math_Vector::Subtracted (const math_Vector& Right) const {
-
-  Standard_DimensionError_Raise_if(Length() != Right.Length(), "");
-  
-  math_Vector Result(LowerIndex, UpperIndex);
-  
-  Standard_Integer I = Right.LowerIndex;
-  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++) {
-    Result.Array(Index) = Array(Index) - Right.Array(I);
-    I++;
-  }
-  return Result;
-}    
-
-
-math_Vector math_Vector::Slice(const Standard_Integer I1, 
-			       const Standard_Integer I2) const 
+void math_Vector::Add(const math_Vector& theRight)
 {
-  
-  Standard_RangeError_Raise_if((I1 < LowerIndex) ||
-			       (I1 > UpperIndex) ||
-			       (I2 < LowerIndex) ||
-			       (I2 > UpperIndex) , "");
-  
+  Standard_DimensionError_Raise_if(Length() != theRight.Length(), "");
 
-  if(I2 >= I1) {
-    math_Vector Result(I1, I2);
-    for(Standard_Integer Index = I1; Index <= I2; Index++) {
-      Result.Array(Index) = Array(Index);
-    }        
-    return Result;  
+  Standard_Integer I = theRight.LowerIndex;
+  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++)
+  {
+    Array(Index) = Array(Index) + theRight.Array(I);
+    I++;
   }
-  else {
-    math_Vector Result(I2, I1);
-    for(Standard_Integer Index = I1; Index >= I2; Index--) {
+}
+
+math_Vector math_Vector::Added(const math_Vector& theRight) const
+{
+  Standard_DimensionError_Raise_if(Length() != theRight.Length(), "");
+
+  math_Vector Result(LowerIndex, UpperIndex);
+
+  Standard_Integer I = theRight.LowerIndex;
+  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++)
+  {
+    Result.Array(Index) = Array(Index) + theRight.Array(I);
+    I++;
+  }
+  return Result;
+}
+
+void math_Vector::Subtract(const math_Vector& theRight)
+{
+  Standard_DimensionError_Raise_if(Length() != theRight.Length(), "");
+
+  Standard_Integer I = theRight.LowerIndex;
+  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++)
+  {
+    Array(Index) = Array(Index) - theRight.Array(I);
+    I++;
+  }
+}
+
+math_Vector math_Vector::Subtracted (const math_Vector& theRight) const
+{
+  Standard_DimensionError_Raise_if(Length() != theRight.Length(), "");
+
+  math_Vector Result(LowerIndex, UpperIndex);
+
+  Standard_Integer I = theRight.LowerIndex;
+  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++)
+  {
+    Result.Array(Index) = Array(Index) - theRight.Array(I);
+    I++;
+  }
+  return Result;
+}
+
+math_Vector math_Vector::Slice(const Standard_Integer theI1, const Standard_Integer theI2) const
+{
+  Standard_RangeError_Raise_if((theI1 < LowerIndex) || (theI1 > UpperIndex) || (theI2 < LowerIndex) || (theI2 > UpperIndex) , "");
+
+  if(theI2 >= theI1)
+  {
+    math_Vector Result(theI1, theI2);
+    for(Standard_Integer Index = theI1; Index <= theI2; Index++)
+    {
       Result.Array(Index) = Array(Index);
     }
     return Result;
-  }   
+  }
+  else
+  {
+    math_Vector Result(theI2, theI1);
+    for(Standard_Integer Index = theI1; Index >= theI2; Index--)
+    {
+      Result.Array(Index) = Array(Index);
+    }
+    return Result;
+  }
 }
 
+void math_Vector::Add (const math_Vector& theLeft, const math_Vector& theRight)
+{
+  Standard_DimensionError_Raise_if((Length() != theRight.Length()) || (theRight.Length() != theLeft.Length()), "");
 
-void math_Vector::Add (const math_Vector& Left, const math_Vector& Right) {
-
-  Standard_DimensionError_Raise_if((Length() != Right.Length()) ||
-				   (Right.Length() != Left.Length()), "");
-
-  
-  Standard_Integer I = Left.LowerIndex;
-  Standard_Integer J = Right.LowerIndex;
-  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++) {
-    Array(Index) = Left.Array(I) + Right.Array(J);
+  Standard_Integer I = theLeft.LowerIndex;
+  Standard_Integer J = theRight.LowerIndex;
+  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++)
+  {
+    Array(Index) = theLeft.Array(I) + theRight.Array(J);
     I++;
     J++;
   }
-}    
+}
 
-void math_Vector::Subtract (const math_Vector& Left, 
-			    const math_Vector& Right) {
+void math_Vector::Subtract (const math_Vector& theLeft, const math_Vector& theRight)
+{
+  Standard_DimensionError_Raise_if((Length() != theRight.Length()) || (theRight.Length() != theLeft.Length()), "");
 
-  Standard_DimensionError_Raise_if((Length() != Right.Length()) ||
-				   (Right.Length() != Left.Length()), "");
-  
-  Standard_Integer I = Left.LowerIndex;
-  Standard_Integer J = Right.LowerIndex;
-  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++) {
-    Array(Index) = Left.Array(I) - Right.Array(J);
+  Standard_Integer I = theLeft.LowerIndex;
+  Standard_Integer J = theRight.LowerIndex;
+  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++)
+  {
+    Array(Index) = theLeft.Array(I) - theRight.Array(J);
     I++;
     J++;
   }
-}    
+}
 
-void math_Vector::Multiply(const math_Matrix& Left, 
-			   const math_Vector& Right) {
-
-  Standard_DimensionError_Raise_if((Length() != Left.RowNumber()) ||
-				   (Left.ColNumber() != Right.Length()),
-				   "");
+void math_Vector::Multiply(const math_Matrix& theLeft, const math_Vector& theRight)
+{
+  Standard_DimensionError_Raise_if((Length() != theLeft.RowNumber()) ||
+    (theLeft.ColNumber() != theRight.Length()), "");
 
   Standard_Integer Index = LowerIndex;
-  for(Standard_Integer I = Left.LowerRowIndex; I <= Left.UpperRowIndex; I++) {
+  for(Standard_Integer I = theLeft.LowerRowIndex; I <= theLeft.UpperRowIndex; I++)
+  {
     Array(Index) = 0.0;
-    Standard_Integer K = Right.LowerIndex;
-    for(Standard_Integer J = Left.LowerColIndex; J <= Left.UpperColIndex; J++) {
-      Array(Index) = Array(Index) + Left.Array(I, J) * Right.Array(K);
+    Standard_Integer K = theRight.LowerIndex;
+    for(Standard_Integer J = theLeft.LowerColIndex; J <= theLeft.UpperColIndex; J++)
+    {
+      Array(Index) = Array(Index) + theLeft.Array(I, J) * theRight.Array(K);
       K++;
     }
     Index++;
   }
-}    
+}
 
-void math_Vector::Multiply(const math_Vector& Left,
-			   const math_Matrix& Right) {
-
-  Standard_DimensionError_Raise_if((Length() != Right.ColNumber()) ||
-				   (Left.Length() != Right.RowNumber()),
-				   "");
+void math_Vector::Multiply(const math_Vector& theLeft, const math_Matrix& theRight)
+{
+  Standard_DimensionError_Raise_if((Length() != theRight.ColNumber()) ||
+    (theLeft.Length() != theRight.RowNumber()), "");
 
   Standard_Integer Index = LowerIndex;
-  for(Standard_Integer J = Right.LowerColIndex; J <= Right.UpperColIndex; J++) {
+  for(Standard_Integer J = theRight.LowerColIndex; J <= theRight.UpperColIndex; J++)
+  {
     Array(Index) = 0.0;
-    Standard_Integer K = Left.LowerIndex;
-    for(Standard_Integer I = Right.LowerRowIndex; I <= Right.UpperRowIndex; I++) {
-      Array(Index) = Array(Index) + Left.Array(K) * Right.Array(I, J);
+    Standard_Integer K = theLeft.LowerIndex;
+    for(Standard_Integer I = theRight.LowerRowIndex; I <= theRight.UpperRowIndex; I++)
+    {
+      Array(Index) = Array(Index) + theLeft.Array(K) * theRight.Array(I, J);
       K++;
     }
     Index++;
   }
-}    
+}
 
-void math_Vector::TMultiply(const math_Matrix& TLeft,
-			    const math_Vector&  Right) {
-
-  Standard_DimensionError_Raise_if((Length() != TLeft.ColNumber()) ||
-				   (TLeft.RowNumber() != Right.Length()),
-				   "");
+void math_Vector::TMultiply(const math_Matrix& theTLeft, const math_Vector&  theRight)
+{
+  Standard_DimensionError_Raise_if((Length() != theTLeft.ColNumber()) ||
+    (theTLeft.RowNumber() != theRight.Length()), "");
 
   Standard_Integer Index = LowerIndex;
-  for(Standard_Integer I = TLeft.LowerColIndex; I <= TLeft.UpperColIndex; I++) {
+  for(Standard_Integer I = theTLeft.LowerColIndex; I <= theTLeft.UpperColIndex; I++)
+  {
     Array(Index) = 0.0;
-    Standard_Integer K = Right.LowerIndex;
-    for(Standard_Integer J = TLeft.LowerRowIndex; J <= TLeft.UpperRowIndex; J++) {
-      Array(Index) = Array(Index) + TLeft.Array(J, I) * Right.Array(K);
+    Standard_Integer K = theRight.LowerIndex;
+    for(Standard_Integer J = theTLeft.LowerRowIndex; J <= theTLeft.UpperRowIndex; J++)
+    {
+      Array(Index) = Array(Index) + theTLeft.Array(J, I) * theRight.Array(K);
       K++;
     }
     Index++;
   }
-}    
+}
 
-void math_Vector::TMultiply(const math_Vector&  Left,
-			    const math_Matrix& TRight) {
-
-  Standard_DimensionError_Raise_if((Length() != TRight.RowNumber()) ||
-				   (Left.Length() != TRight.ColNumber()),
-				   "");
+void math_Vector::TMultiply(const math_Vector&  theLeft, const math_Matrix& theTRight)
+{
+  Standard_DimensionError_Raise_if((Length() != theTRight.RowNumber()) ||
+    (theLeft.Length() != theTRight.ColNumber()), "");
 
   Standard_Integer Index = LowerIndex;
-  for(Standard_Integer J = TRight.LowerRowIndex; J <= TRight.UpperRowIndex; J++) {
+  for(Standard_Integer J = theTRight.LowerRowIndex; J <= theTRight.UpperRowIndex; J++)
+  {
     Array(Index) = 0.0;
-    Standard_Integer K = Left.LowerIndex;
-    for(Standard_Integer I = TRight.LowerColIndex; 
-	I <= TRight.UpperColIndex; I++) {
-      Array(Index) = Array(Index) + Left.Array(K) * TRight.Array(J, I);
-      K++;
+    Standard_Integer K = theLeft.LowerIndex;
+    for(Standard_Integer I = theTRight.LowerColIndex;
+      I <= theTRight.UpperColIndex; I++)
+    {
+        Array(Index) = Array(Index) + theLeft.Array(K) * theTRight.Array(J, I);
+        K++;
     }
     Index++;
   }
-}    
+}
 
-
-
-
-Standard_Real math_Vector::Multiplied(const math_Vector& Right) const{
+Standard_Real math_Vector::Multiplied(const math_Vector& theRight) const
+{
   Standard_Real Result = 0;
 
-  Standard_DimensionError_Raise_if(Length() != Right.Length(), "");
+  Standard_DimensionError_Raise_if(Length() != theRight.Length(), "");
 
-  Standard_Integer I = Right.LowerIndex;
-  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++) {
-    Result = Result + Array(Index) * Right.Array(I);
+  Standard_Integer I = theRight.LowerIndex;
+  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++)
+  {
+    Result = Result + Array(Index) * theRight.Array(I);
     I++;
   }
   return Result;
-}    
+}
 
-math_Vector math_Vector::Opposite() {
+math_Vector math_Vector::Opposite()
+{
   math_Vector Result(LowerIndex, UpperIndex);
 
-  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++) {
+  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++)
+  {
     Result.Array(Index) = - Array(Index);
   }
   return Result;
-}    
+}
 
-math_Vector math_Vector::Multiplied(const math_Matrix& Right)const {    
-  Standard_DimensionError_Raise_if(Length() != Right.RowNumber(), "");
+math_Vector math_Vector::Multiplied(const math_Matrix& theRight)const
+{
+  Standard_DimensionError_Raise_if(Length() != theRight.RowNumber(), "");
 
-  math_Vector Result(Right.LowerColIndex, Right.UpperColIndex);
-  for(Standard_Integer J2 = Right.LowerColIndex; 
-      J2 <= Right.UpperColIndex; J2++) {
-    Array(J2) = 0.0;
-    Standard_Integer I2 = Right.LowerRowIndex;
-    for(Standard_Integer I = LowerIndex; I <= UpperIndex; I++) {
-      Result.Array(J2) = Result.Array(J2) + Array(I) * 
-	Right.Array(I2, J2);
-      I2++;
-    }
+  math_Vector Result(theRight.LowerColIndex, theRight.UpperColIndex);
+  for(Standard_Integer J2 = theRight.LowerColIndex; J2 <= theRight.UpperColIndex; J2++)
+  {
+      Array(J2) = 0.0;
+      Standard_Integer theI2 = theRight.LowerRowIndex;
+      for(Standard_Integer I = LowerIndex; I <= UpperIndex; I++)
+      {
+        Result.Array(J2) = Result.Array(J2) + Array(I) * theRight.Array(theI2, J2);
+        theI2++;
+      }
   }
   return Result;
-}    
+}
 
-
-void math_Vector::Multiply(const Standard_Real Left,
-			   const math_Vector& Right) 
+void math_Vector::Multiply(const Standard_Real theLeft, const math_Vector& theRight)
 {
-  Standard_DimensionError_Raise_if((Length() != Right.Length()),
-				   "");
-  for(Standard_Integer I = LowerIndex; I <= UpperIndex; I++) {
-    Array(I) = Left * Right.Array(I);
+  Standard_DimensionError_Raise_if((Length() != theRight.Length()), "");
+  for(Standard_Integer I = LowerIndex; I <= UpperIndex; I++)
+  {
+    Array(I) = theLeft * theRight.Array(I);
   }
 }
 
+math_Vector& math_Vector::Initialized(const math_Vector& theOther)
+{
+  Standard_DimensionError_Raise_if(Length() != theOther.Length(), "");
 
-math_Vector& math_Vector::Initialized(const math_Vector& Other) {
-
-  Standard_DimensionError_Raise_if(Length() != Other.Length(), "");
-  
-  (Other.Array).Copy(Array);
+  (theOther.Array).Copy(Array);
   return *this;
 }
 
-
-
-void math_Vector::Dump(Standard_OStream& o) const
+void math_Vector::Dump(Standard_OStream& theO) const
 {
-  o << "math_Vector of Length = " << Length() << "\n";
-  for(Standard_Integer Index = LowerIndex; 
-      Index <= UpperIndex; Index++) {
-    o << "math_Vector(" << Index << ") = " << Array(Index) << "\n";
+  theO << "math_Vector of Length = " << Length() << "\n";
+  for(Standard_Integer Index = LowerIndex; Index <= UpperIndex; Index++)
+  {
+    theO << "math_Vector(" << Index << ") = " << Array(Index) << "\n";
   }
 }
+

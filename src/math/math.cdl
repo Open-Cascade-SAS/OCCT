@@ -41,8 +41,8 @@ is
     exception SingularMatrix inherits Failure;
     
 
-    class Vector;
-    class IntegerVector;
+    imported Vector;
+    imported IntegerVector;
     class Matrix;
     deferred class Function;
     deferred class FunctionWithDerivative;
@@ -93,13 +93,7 @@ is
 	    	    	    	    	       Array1OfValueAndWeight from math,
 	    	    	    	    	       CompareOfValueAndWeight from math);
 
-  generic class SingleTab;
-  generic class DoubleTab;
-
-    --- Instantiate classes:
-    class SingleTabOfReal instantiates SingleTab(Real);
-    class SingleTabOfInteger instantiates SingleTab(Integer);
-    class DoubleTabOfReal instantiates DoubleTab(Real);
+	class DoubleTab;
 
     --- Gauss Points
 

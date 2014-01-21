@@ -17,10 +17,10 @@
 #include <math_Memory.hxx>
 #include <Standard_OutOfRange.hxx>
 
-inline Item& math_DoubleTab::Value (const Standard_Integer RowIndex,
+inline Standard_Real& math_DoubleTab::Value (const Standard_Integer RowIndex,
 				    const Standard_Integer ColIndex) const
 {
-  return ((Item**)Addr)[RowIndex][ColIndex];
+  return ((Standard_Real**)Addr)[RowIndex][ColIndex];
 }
 
 
@@ -29,7 +29,7 @@ inline void math_DoubleTab::Copy(math_DoubleTab& Other)const
 {
   memmove((void*)(& Other.Value(Other.LowR,Other.LowC)),
 	  (void*) (& Value(LowR,LowC)),
-	  (int)((UppR - LowR + 1) * (UppC - LowC + 1) * sizeof(Item)));
+	  (int)((UppR - LowR + 1) * (UppC - LowC + 1) * sizeof(Standard_Real)));
 }
 
 
