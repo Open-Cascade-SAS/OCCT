@@ -28,7 +28,7 @@ public:
 	void                           fitAll();
 	
 protected:
-  virtual MDIWindow*                   createNewMDIWindow( bool theRT = false );
+  virtual MDIWindow*                   createNewMDIWindow();
 
 signals:
   void                           selectionChanged();
@@ -36,16 +36,10 @@ signals:
 
 public slots:
 	virtual void                   onCloseView( MDIWindow* );
-	virtual void                   onCreateNewView( bool theRT = false );
+	virtual void                   onCreateNewView();
 	virtual void                   onMaterial();
   virtual void                   onMaterial( int );
 	virtual void                   onDelete();
-
-#ifdef HAVE_OPENCL
-  virtual void                   onShadows( int state );
-  virtual void                   onReflections( int state );
-  virtual void                   onAntialiasing( int state );
-#endif
 
 	void                           onWireframe();
 	void                           onShading();

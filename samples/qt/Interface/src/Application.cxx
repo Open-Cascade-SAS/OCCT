@@ -4,6 +4,7 @@
 
 #include <QMessageBox>
 #include <stdlib.h>
+#include <QMdiSubWindow>
 
 ApplicationWindow::ApplicationWindow()
     : ApplicationCommonWindow( ),
@@ -96,7 +97,7 @@ void ApplicationWindow::createTranslatePopups()
 
 void ApplicationWindow::updateFileActions()
 {
-  if ( getWorkspace()->windowList().isEmpty() )
+  if ( myDocuments.isEmpty() )
   {
     if ( !isDocument() )
     {
@@ -124,7 +125,7 @@ void ApplicationWindow::onImport()
     bool stat = translate( type, true );
     if ( stat )
     {
-        DocumentCommon* doc = ((MDIWindow*) getWorkspace()->activeWindow())->getDocument();
+        DocumentCommon* doc = qobject_cast<MDIWindow*>( getWorkspace()->activeSubWindow()->widget() )->getDocument();
         doc->fitAll();
     }
 }
@@ -136,7 +137,7 @@ void ApplicationWindow::onExport()
     if ( type < 0 )
         return;
 
-    bool stat = translate( type, false );
+    translate( type, false );
 }
 
 int ApplicationWindow::translationFormat( const QAction* a )
@@ -181,7 +182,7 @@ int ApplicationWindow::translationFormat( const QAction* a )
 bool ApplicationWindow::translate( const int format, const bool import )
 {
     static Translate* anTrans = createTranslator();
-    DocumentCommon* doc = ((MDIWindow*) getWorkspace()->activeWindow())->getDocument();
+    DocumentCommon* doc = qobject_cast<MDIWindow*>( getWorkspace()->activeSubWindow()->widget() )->getDocument();
     Handle(AIS_InteractiveContext) context = doc->getContext();
     bool status;
     if ( import )
@@ -210,8 +211,8 @@ void ApplicationWindow::onSelectionChanged()
 {
   ApplicationCommonWindow::onSelectionChanged();
 
-  QWorkspace* ws = getWorkspace();
-  DocumentCommon* doc = ((MDIWindow*)ws->activeWindow())->getDocument();
+  QMdiArea* ws = getWorkspace();
+  DocumentCommon* doc = qobject_cast<MDIWindow*>( ws->activeSubWindow()->widget() )->getDocument();
   Handle(AIS_InteractiveContext) context = doc->getContext();
   int numSel = context->NbSelected();
 
@@ -225,13 +226,15 @@ void ApplicationWindow::onSelectionChanged()
 
 QString ApplicationWindow::getIEResourceDir()
 {
-    static QString resDir( ::getenv( "CSF_IEResourcesDefaults" ) );
-    return resDir;
+  static QString aResourceDir =
+    QString::fromUtf8 (qgetenv ("CSF_IEResourcesDefaults").constData());
+  
+  return aResourceDir;
 }
 
 void ApplicationWindow::onExportImage()
 {
-    MDIWindow* w = (MDIWindow*)getWorkspace()->activeWindow();
+    MDIWindow* w = qobject_cast<MDIWindow*>( getWorkspace()->activeSubWindow()->widget() );
     if ( w )
         w->dump();
 }

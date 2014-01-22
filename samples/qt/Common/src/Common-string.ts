@@ -143,12 +143,16 @@
         <translation>&amp;Shadows</translation>
     </message>
     <message>
+        <source>MNU_TOOL_RAYTRACING</source>
+        <translation>&amp;Ray-tracing</translation>
+    </message>
+    <message>
         <source>MNU_TOOL_REFLECTIONS</source>
         <translation>&amp;Reflections</translation>
     </message>
     <message>
         <source>MNU_TOOL_ANTIALIASING</source>
-        <translation>&amp;Antialiasing</translation>
+        <translation>&amp;Anti-aliasing</translation>
     </message>
     <message>
         <source>BTN_BRASS</source>
@@ -271,6 +275,22 @@
         <translation>Material</translation>
     </message>
     <message>
+        <source>TBR_TOOL_RAYTRACING</source>
+        <translation>Enable Ray-tracing</translation>
+    </message>
+    <message>
+        <source>TBR_TOOL_SHADOWS</source>
+        <translation>Enable Shadows</translation>
+    </message>
+    <message>
+        <source>TBR_TOOL_REFLECTIONS</source>
+        <translation>Enable Reflections</translation>
+    </message>
+    <message>
+        <source>TBR_TOOL_ANTIALIASING</source>
+        <translation>Enable Anti-aliasing</translation>
+    </message>
+    <message>
         <source>TBR_TOOL_BAR</source>
         <translation>Toolbar</translation>
     </message>
@@ -343,20 +363,8 @@
         <translation>New 3D View</translation>
     </message>
     <message>
-        <source>TBR_WINDOW_NEW3D_GL</source>
-        <translation>New GL 3D View</translation>
-    </message>
-    <message>
-        <source>MNU_WINDOW_NEW3D_GL</source>
-        <translation>New GL 3D View</translation>
-    </message>
-    <message>
-        <source>TBR_WINDOW_NEW3D_RT</source>
-        <translation>&amp;New RT 3D View</translation>
-    </message>
-    <message>
-        <source>MNU_WINDOW_NEW3D_RT</source>
-        <translation>&amp;New RT 3D View</translation>
+        <source>MNU_WINDOW_NEW3D</source>
+        <translation>New 3D View</translation>
     </message>
     <message>
         <source>MNU_STATUS_BAR</source>

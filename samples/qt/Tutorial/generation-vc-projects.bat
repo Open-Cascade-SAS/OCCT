@@ -7,6 +7,8 @@ REM third argument specifies Debug or Release mode
 
 call "%~dp0env.bat" %1 %2 %3
 
+set EXT=vcproj
+
 if not "%1" == "" (
     if /I "%1" == "vc8" (
         set VCVER=vc8
@@ -16,9 +18,11 @@ if not "%1" == "" (
         set "VCVARS=%VS90COMNTOOLS%..\..\VC\vcvarsall.bat"
     ) else if /I "%1" == "vc10" (
         set VCVER=vc10
+        set EXT=vcxproj
         set "VCVARS=%VS100COMNTOOLS%..\..\VC\vcvarsall.bat"
     ) else if /I "%1" == "vc11" (
         set VCVER=vc11
+        set EXT=vcxproj
         set "VCVARS=%VS110COMNTOOLS%..\..\VC\vcvarsall.bat"
     ) else (
         echo Error: first argument ^(%1^) should specify supported version of Visual C++,
@@ -32,4 +36,4 @@ if ["%ARCH%"] == ["64"] set VCARCH=amd64
 
 call "%VCVARS%" %VCARCH%
 
-qmake -tp vc -r Tutorial.pro
+qmake -tp vc -o Tutorial.%EXT% Tutorial.pro

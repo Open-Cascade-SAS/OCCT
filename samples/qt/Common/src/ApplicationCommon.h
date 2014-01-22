@@ -7,7 +7,7 @@
 #include <QAction>
 #include <QToolBar>
 #include <QMenu>
-#include <QWorkspace>
+#include <QMdiArea>
 #include <QList>
 
 
@@ -18,12 +18,11 @@ class COMMONSAMPLE_EXPORT ApplicationCommonWindow: public QMainWindow
 public:
 	enum { FileNewId, FilePrefUseVBOId, FileCloseId, FilePreferencesId, FileQuitId, ViewToolId, ViewStatusId, HelpAboutId };
   enum { ToolWireframeId, ToolShadingId, ToolColorId, ToolMaterialId, ToolTransparencyId, ToolDeleteId };
-  enum { ToolShadowsId, ToolReflectionsId, ToolAntialiasingId };
 
   ApplicationCommonWindow();
   ~ApplicationCommonWindow();
 
-	static QWorkspace*              getWorkspace();
+	static QMdiArea*              getWorkspace();
 	static ApplicationCommonWindow* getApplication();
 	static QString                  getResourceDir();
 
@@ -38,7 +37,6 @@ protected:
 public slots:
 	
   DocumentCommon*                 onNewDoc();
-  DocumentCommon*                 onNewDocRT();
   void                            onCloseWindow();
   void                            onUseVBO();
 	virtual void                    onCloseDocument( DocumentCommon* theDoc );
@@ -47,13 +45,7 @@ public slots:
   void                            onViewToolBar();
 	void                            onViewStatusBar();
   void                            onToolAction();
-#ifdef HAVE_OPENCL
-  void                            onRaytraceAction();
-#endif
 	void                            onCreateNewView();
-#ifdef HAVE_OPENCL
-  void                            onCreateNewViewRT();
-#endif
   void                            onWindowActivated ( QWidget * w );
 	void                            windowsMenuAboutToShow();
   void                            windowsMenuActivated( bool checked/*int id*/ );
@@ -77,16 +69,17 @@ private:
 
 	QList<QAction*>                 myStdActions;
   QList<QAction*>                 myToolActions;
-  QList<QAction*>                 myRaytraceActions;
   QList<QAction*>                 myMaterialActions;
-  QList<DocumentCommon*>          myDocuments;
+  //QList<DocumentCommon*>          myDocuments;
 
 	QToolBar*                       myStdToolBar;
 	QToolBar*                       myCasCadeBar;
-  QToolBar*                       myRaytraceBar;
 	QMenu*                          myFilePopup;
 	QMenu*                          myWindowPopup;
   QAction*                        myFileSeparator;
+
+protected:
+  QList<DocumentCommon*>          myDocuments;
 };
 
 #endif
