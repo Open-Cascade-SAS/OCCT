@@ -3,10 +3,9 @@ CONFIG += debug_and_release qt
 
 TARGET = IESample
 
-SAMPLESROOT = $$(CASROOT)/samples/qt
+SAMPLESROOT = $$(SAMPLESROOT)
 
-HEADERS   = src/*.h \
-            $${SAMPLESROOT}/Common/src/*.h \
+HEADERS   = $${SAMPLESROOT}/Common/src/*.h \
             $${SAMPLESROOT}/Interface/src/*.h
 
 SOURCES   = src/*.cxx \
@@ -24,7 +23,9 @@ RES_DIR   = $$quote($$(RES_DIR))
 INCLUDEPATH += $$quote($${SAMPLESROOT}/Common/src)
 INCLUDEPATH += $$quote($${SAMPLESROOT}/Interface/src)
 
-DEFINES = CSFDB
+OCCT_DEFINES = $$(CSF_DEFINES)
+
+DEFINES = CSFDB $$split(OCCT_DEFINES, ;)
 
 unix {
     UNAME = $$system(uname -s)
@@ -38,11 +39,11 @@ unix {
     CONFIG(debug, debug|release) {
 	DESTDIR = ./$$UNAME/bind
 	OBJECTS_DIR = ./$$UNAME/objd
-	MOC_DIR = ./$$UNAME/srcd
+	MOC_DIR = ./$$UNAME/mocd
     } else {
 	DESTDIR = ./$$UNAME/bin
 	OBJECTS_DIR = ./$$UNAME/obj
-	MOC_DIR = ./$$UNAME/src
+	MOC_DIR = ./$$UNAME/moc
     }
 
     MACOSX_USE_GLX = $$(MACOSX_USE_GLX)
@@ -63,107 +64,23 @@ win32 {
 
     CONFIG(debug, debug|release) {
 	DEFINES += _DEBUG
+	DESTDIR = ./win$(ARCH)/$(VCVER)/bind
+	OBJECTS_DIR = ./win$(ARCH)/$(VCVER)/objd
+	MOC_DIR = ./win$(ARCH)/$(VCVER)/mocd
 	!contains(QMAKE_HOST.arch, x86_64) {
-		LIBS = -L$(CSF_OPT_LIB32D)
-		contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1310) {
-		DESTDIR = ./win32/vc7/bind
-		OBJECTS_DIR = ./win32/vc7/objd
-		MOC_DIR = ./win32/vc7/srcd
-	    }
-	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1400) {
-		DESTDIR = ./win32/vc8/bind
-		OBJECTS_DIR = ./win32/vc8/objd
-		MOC_DIR = ./win32/vc8/srcd
-	    }
-	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1500) {
-		DESTDIR = ./win32/vc9/bind
-		OBJECTS_DIR = ./win32/vc9/objd
-		MOC_DIR = ./win32/vc9/srcd
-	    }
-	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1600) {
-		DESTDIR = ./win32/vc10/bind
-		OBJECTS_DIR = ./win32/vc10/objd
-		MOC_DIR = ./win32/vc10/srcd
-	    }
-	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1700) {
-		DESTDIR = ./win32/vc11/bind
-		OBJECTS_DIR = ./win32/vc11/objd
-		MOC_DIR = ./win32/vc11/srcd
-	    }
+	    LIBS = -L$(CSF_OPT_LIB32D)
 	} else {
-		LIBS = -L$(CSF_OPT_LIB64D)
-		contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1400) {
-		DESTDIR = ./win64/vc8/bind
-		OBJECTS_DIR = ./win64/vc8/objd
-		MOC_DIR = ./win64/vc8/srcd
-	    }
-	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1500) {
-		DESTDIR = ./win64/vc9/bind
-		OBJECTS_DIR = ./win64/vc9/objd
-		MOC_DIR = ./win64/vc9/srcd
-	    }
-	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1600) {
-		DESTDIR = ./win64/vc10/bind
-		OBJECTS_DIR = ./win64/vc10/objd
-		MOC_DIR = ./win64/vc10/srcd
-	    }
-	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1700) {
-		DESTDIR = ./win64/vc11/bind
-		OBJECTS_DIR = ./win64/vc11/objd
-		MOC_DIR = ./win64/vc11/srcd
-	    }
+	    LIBS = -L$(CSF_OPT_LIB64D)
 	}
     } else {
 	DEFINES += NDEBUG
+	DESTDIR = ./win$(ARCH)/$(VCVER)/bin
+	OBJECTS_DIR = ./win$(ARCH)/$(VCVER)/obj
+	MOC_DIR = ./win$(ARCH)/$(VCVER)/moc
 	!contains(QMAKE_HOST.arch, x86_64) {
-		LIBS = -L$(CSF_OPT_LIB32)
-		contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1310) {
-		DESTDIR = ./win32/vc7/bin
-		OBJECTS_DIR = ./win32/vc7/obj
-		MOC_DIR = ./win32/vc7/src
-	    }
-	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1400) {
-		DESTDIR = ./win32/vc8/bin
-		OBJECTS_DIR = ./win32/vc8/obj
-		MOC_DIR = ./win32/vc8/src
-	    }
-	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1500) {
-		DESTDIR = ./win32/vc9/bin
-		OBJECTS_DIR = ./win32/vc9/obj
-		MOC_DIR = ./win32/vc9/src
-	    }
-	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1600) {
-		DESTDIR = ./win32/vc10/bin
-		OBJECTS_DIR = ./win32/vc10/obj
-		MOC_DIR = ./win32/vc10/src
-	    }
-	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1700) {
-		DESTDIR = ./win32/vc11/bin
-		OBJECTS_DIR = ./win32/vc11/obj
-		MOC_DIR = ./win32/vc11/src
-	    }
+	    LIBS = -L$(CSF_OPT_LIB32)
 	} else {
-		LIBS = -L$(CSF_OPT_LIB64)
-		contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1400) {
-		DESTDIR = ./win64/vc8/bin
-		OBJECTS_DIR = ./win64/vc8/obj
-		MOC_DIR = ./win64/vc8/src
-	    }
-	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1500) {
-		DESTDIR = ./win64/vc9/bin
-		OBJECTS_DIR = ./win64/vc9/obj
-		MOC_DIR = ./win64/vc9/src
-	    }
-	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1600) {
-		DESTDIR = ./win64/vc10/bin
-		OBJECTS_DIR = ./win64/vc10/obj
-		MOC_DIR = ./win64/vc10/src
-	    }
-	    contains(QMAKE_COMPILER_DEFINES, _MSC_VER=1700) {
-		DESTDIR = ./win64/vc11/bin
-		OBJECTS_DIR = ./win64/vc11/obj
-		MOC_DIR = ./win64/vc11/src
-	    }
+	    LIBS = -L$(CSF_OPT_LIB64)
 	}
     }
     DEFINES +=WNT WIN32 NO_COMMONSAMPLE_EXPORTS NO_IESAMPLE_EXPORTS
@@ -199,3 +116,8 @@ copy_res.CONFIG += no_link target_predeps
 win32: copy_res.commands = type ${QMAKE_FILE_IN} > $${RES_DIR}/${QMAKE_FILE_BASE}${QMAKE_FILE_EXT}
 unix:  copy_res.commands = cp -f ${QMAKE_FILE_IN} $${RES_DIR}
 QMAKE_EXTRA_COMPILERS += copy_res
+#QMAKE_CXXFLAGS += /wd4996
+
+greaterThan(QT_MAJOR_VERSION, 4) {
+    QT += widgets
+}

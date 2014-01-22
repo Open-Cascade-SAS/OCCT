@@ -14,12 +14,13 @@
 #include <QFileDialog>
 #include <QMouseEvent>
 #include <QRubberBand>
+#include <QMdiSubWindow>
+#include <QStyleFactory>
 
 #include <Visual3d_View.hxx>
 #include <Graphic3d_ExportFormat.hxx>
 #include <Graphic3d_GraphicDriver.hxx>
 #include <Graphic3d_TextureEnv.hxx>
-#include <QWindowsStyle>
   
 #if defined(_WIN32) || defined(__WIN32__)
 #include <WNT_Window.hxx>
@@ -54,10 +55,14 @@ static QCursor* globPanCursor = NULL;
 static QCursor* zoomCursor    = NULL;
 static QCursor* rotCursor     = NULL;
 
-View::View( Handle(AIS_InteractiveContext) theContext, QWidget* parent, bool theRT )
+View::View( Handle(AIS_InteractiveContext) theContext, QWidget* parent )
 : QWidget( parent ),
-myIsRT( theRT ),
+myIsRaytracing( false ),
+myIsShadowsEnabled (true),
+myIsReflectionsEnabled (true),
+myIsAntialiasingEnabled (false),
 myViewActions( 0 ),
+myRaytraceActions( 0 ),
 myBackMenu( NULL )
 {
 #if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
@@ -77,7 +82,7 @@ myBackMenu( NULL )
     myCurZoom = 0;
     myRectBand = 0;
 
-	setAttribute(Qt::WA_PaintOnScreen);
+  	setAttribute(Qt::WA_PaintOnScreen);
     setAttribute(Qt::WA_NoSystemBackground);
 
 #if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
@@ -153,7 +158,12 @@ myBackMenu( NULL )
     myCurrentMode = CurAction3d_Nothing;
     myHlrModeIsOn = Standard_False;
     setMouseTracking( true );
-
+    
+    if( myFirst )
+    {
+        init();
+        myFirst = false;
+    }
     initViewActions();
     initCursors();
 
@@ -172,8 +182,9 @@ View::~View()
 
 void View::init()
 {
-  if (myView.IsNull())
-  myView = myContext->CurrentViewer()->CreateView();
+  if ( myView.IsNull() )
+    myView = myContext->CurrentViewer()->CreateView();
+  
 #if defined(_WIN32) || defined(__WIN32__)
   Aspect_Handle aWindowHandle = (Aspect_Handle )winId();
   Handle(WNT_Window) hWnd = new WNT_Window (aWindowHandle);
@@ -185,15 +196,16 @@ void View::init()
   Handle(Aspect_DisplayConnection) aDispConnection = myContext->CurrentViewer()->Driver()->GetDisplayConnection();
   Handle(Xw_Window) hWnd = new Xw_Window (aDispConnection, aWindowHandle);
 #endif // WNT
+
   myView->SetWindow (hWnd);
-  if (!hWnd->IsMapped())
+  if ( !hWnd->IsMapped() )
   {
     hWnd->Map();
   }
   myView->SetBackgroundColor (Quantity_NOC_BLACK);
   myView->MustBeResized();
 
-  if (myIsRT)
+  if (myIsRaytracing)
     myView->SetRaytracingMode();
 }
 
@@ -310,28 +322,95 @@ void View::hlrOn()
     QApplication::restoreOverrideCursor();
 }
 
-void View::setRaytracedShadows( int state )
+void View::SetRaytracedShadows (bool theState)
 {
-  if ( state )
+  if (theState)
     myView->EnableRaytracedShadows();
   else
     myView->DisableRaytracedShadows();
+
+  myIsShadowsEnabled = theState;
+
+  myContext->UpdateCurrentViewer();
 }
 
-void View::setRaytracedReflections( int state )
+void View::SetRaytracedReflections (bool theState)
 {
-  if ( state )
+  if (theState)
     myView->EnableRaytracedReflections();
   else
     myView->DisableRaytracedReflections();
+
+  myIsReflectionsEnabled = theState;
+
+  myContext->UpdateCurrentViewer();
 }
 
-void View::setRaytracedAntialiasing( int state )
+void View::onRaytraceAction()
 {
-  if ( state )
+  QAction* aSentBy = (QAction*)sender();
+  
+  if (aSentBy == myRaytraceActions->at (ToolRaytracingId))
+  {
+    bool aState = myRaytraceActions->at (ToolRaytracingId)->isChecked(); 
+
+    QApplication::setOverrideCursor (Qt::WaitCursor);
+    if (aState)
+      EnableRaytracing();
+    else
+      DisableRaytracing();
+    QApplication::restoreOverrideCursor();
+  }
+
+  if (aSentBy == myRaytraceActions->at (ToolShadowsId))
+  {
+    bool aState = myRaytraceActions->at (ToolShadowsId)->isChecked(); 
+    SetRaytracedShadows (aState);
+  }
+
+  if (aSentBy == myRaytraceActions->at (ToolReflectionsId))
+  {
+    bool aState = myRaytraceActions->at (ToolReflectionsId)->isChecked();
+    SetRaytracedReflections (aState);
+  }
+
+  if (aSentBy == myRaytraceActions->at (ToolAntialiasingId))
+  {
+    bool aState = myRaytraceActions->at (ToolAntialiasingId)->isChecked();
+    SetRaytracedAntialiasing (aState);
+  }
+}
+
+void View::SetRaytracedAntialiasing (bool theState)
+{
+  if (theState)
     myView->EnableRaytracedAntialiasing();
   else
     myView->DisableRaytracedAntialiasing();
+
+  myIsAntialiasingEnabled = theState;
+
+  myContext->UpdateCurrentViewer();
+}
+
+void View::EnableRaytracing()
+{
+  if (!myIsRaytracing)
+    myView->SetRaytracingMode();
+
+  myIsRaytracing = true;
+
+  myContext->UpdateCurrentViewer();
+}
+
+void View::DisableRaytracing()
+{
+  if (myIsRaytracing)
+    myView->SetRasterizationMode();
+
+  myIsRaytracing = false;
+
+  myContext->UpdateCurrentViewer();
 }
 
 void View::updateToggled( bool isOn )
@@ -396,6 +475,12 @@ QList<QAction*>* View::getViewActions()
 {
     initViewActions();
     return myViewActions;
+}
+
+QList<QAction*>* View::getRaytraceActions()
+{
+    initRaytraceActions();
+    return myRaytraceActions;
 }
 
 /*!
@@ -531,6 +616,48 @@ void View::initViewActions()
   a->setCheckable( true );
   ag->addAction(a);
   myViewActions->insert( ViewHlrOnId, a );
+}
+
+void View::initRaytraceActions()
+{
+  if ( myRaytraceActions )
+    return;
+
+  myRaytraceActions = new QList<QAction*>();
+  QString dir = ApplicationCommonWindow::getResourceDir() + QString( "/" );
+  QAction* a;
+
+  a = new QAction( QPixmap( dir+QObject::tr("ICON_TOOL_RAYTRACING") ), QObject::tr("MNU_TOOL_RAYTRACING"), this );
+  a->setToolTip( QObject::tr("TBR_TOOL_RAYTRACING") );
+  a->setStatusTip( QObject::tr("TBR_TOOL_RAYTRACING") );
+  a->setCheckable( true );
+  a->setChecked( false );
+  connect( a, SIGNAL( activated() ) , this, SLOT( onRaytraceAction() ) );
+  myRaytraceActions->insert( ToolRaytracingId, a );
+
+  a = new QAction( QPixmap( dir+QObject::tr("ICON_TOOL_SHADOWS") ), QObject::tr("MNU_TOOL_SHADOWS"), this );
+  a->setToolTip( QObject::tr("TBR_TOOL_SHADOWS") );
+  a->setStatusTip( QObject::tr("TBR_TOOL_SHADOWS") );
+  a->setCheckable( true );
+  a->setChecked( true );
+  connect( a, SIGNAL( activated() ) , this, SLOT( onRaytraceAction() ) );
+  myRaytraceActions->insert( ToolShadowsId, a );
+
+  a = new QAction( QPixmap( dir+QObject::tr("ICON_TOOL_REFLECTIONS") ), QObject::tr("MNU_TOOL_REFLECTIONS"), this );
+  a->setToolTip( QObject::tr("TBR_TOOL_REFLECTIONS") );
+  a->setStatusTip( QObject::tr("TBR_TOOL_REFLECTIONS") );
+  a->setCheckable( true );
+  a->setChecked( true );
+  connect( a, SIGNAL( activated() ) , this, SLOT( onRaytraceAction() ) );
+  myRaytraceActions->insert( ToolReflectionsId, a );
+
+  a = new QAction( QPixmap( dir+QObject::tr("ICON_TOOL_ANTIALIASING") ), QObject::tr("MNU_TOOL_ANTIALIASING"), this );
+  a->setToolTip( QObject::tr("TBR_TOOL_ANTIALIASING") );
+  a->setStatusTip( QObject::tr("TBR_TOOL_ANTIALIASING") );
+  a->setCheckable( true );
+  a->setChecked( false );
+  connect( a, SIGNAL( activated() ) , this, SLOT( onRaytraceAction() ) );
+  myRaytraceActions->insert( ToolAntialiasingId, a );
 }
 
 void View::mousePressEvent( QMouseEvent* e )
@@ -855,8 +982,8 @@ void View::MultiInputEvent( const int /*x*/, const int /*y*/ )
 void View::Popup( const int /*x*/, const int /*y*/ )
 {
   ApplicationCommonWindow* stApp = ApplicationCommonWindow::getApplication();
-  QWorkspace* ws = ApplicationCommonWindow::getWorkspace();
-  QWidget* w = ws->activeWindow();
+  QMdiArea* ws = ApplicationCommonWindow::getWorkspace();
+  QMdiSubWindow* w = ws->activeSubWindow();
   if ( myContext->NbSelected() )
   {
     QList<QAction*>* aList = stApp->getToolActions();
@@ -928,7 +1055,7 @@ void View::DrawRectangle(const int MinX, const int MinY,
   if ( !myRectBand ) 
   {
     myRectBand = new QRubberBand( QRubberBand::Rectangle, this );
-    myRectBand->setStyle(new QWindowsStyle);
+    myRectBand->setStyle( QStyleFactory::create("windows") );
     myRectBand->setGeometry( aRect );
     myRectBand->show();
 
@@ -1000,7 +1127,7 @@ void View::onEnvironmentMap()
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "",
                            tr("All Image Files (*.bmp *.gif *.jpg *.jpeg *.png *.tga)"));
 
-    Handle(Graphic3d_TextureEnv) aTexture = new Graphic3d_TextureEnv( fileName.toAscii().data() );
+    Handle(Graphic3d_TextureEnv) aTexture = new Graphic3d_TextureEnv( fileName.toLatin1().data() );
 
     myView->SetTextureEnv (aTexture);
     myView->SetSurfaceDetail (V3d_TEX_ENVIRONMENT);

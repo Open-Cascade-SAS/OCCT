@@ -16,7 +16,7 @@
 #include <OpenGl_GraphicDriver.hxx>
 #include <TCollection_AsciiString.hxx>
 
-Handle(V3d_Viewer) DocumentCommon::Viewer( const Standard_CString aDisplay,
+Handle(V3d_Viewer) DocumentCommon::Viewer( const Standard_CString /*aDisplay*/,
 				                     const Standard_ExtString aName,
 				                     const Standard_CString aDomain,
 				                     const Standard_Real ViewSize,
@@ -46,14 +46,14 @@ myApp( app ),
 myIndex( theIndex ),
 myNbViews( 0 )
 {
-  TCollection_ExtendedString a3DName("Visu3D");
-  myViewer = Viewer( getenv("DISPLAY"), a3DName.ToExtString(), "", 1000.0,
-		               V3d_XposYnegZpos, Standard_True, Standard_True );
+  TCollection_ExtendedString a3DName ("Visu3D");
+  myViewer = Viewer (qgetenv ("DISPLAY").constData(),
+    a3DName.ToExtString(), "", 1000.0, V3d_XposYnegZpos, Standard_True, Standard_True);
 
 	myViewer->SetDefaultLights();
 	myViewer->SetLightOn();
 
-	myContext =new AIS_InteractiveContext(myViewer);
+	myContext = new AIS_InteractiveContext (myViewer);
 }
 
 DocumentCommon::~DocumentCommon()
@@ -65,22 +65,22 @@ ApplicationCommonWindow* DocumentCommon::getApplication()
 	return myApp;
 }
 
-MDIWindow* DocumentCommon::createNewMDIWindow( bool theRT )
+MDIWindow* DocumentCommon::createNewMDIWindow()
 {
-  QWorkspace* ws = myApp->getWorkspace();
-  return new MDIWindow( this, ws, 0, theRT );
+  QMdiArea* ws = myApp->getWorkspace();
+  return new MDIWindow (this, ws, 0);
 }
 
-void DocumentCommon::onCreateNewView( bool theRT ) 
+void DocumentCommon::onCreateNewView()
 {
-	QWorkspace* ws = myApp->getWorkspace();
-  MDIWindow* w = createNewMDIWindow( theRT );
+  QMdiArea* ws = myApp->getWorkspace();
+  MDIWindow* w = createNewMDIWindow();
 	
-	if( !w )
+	if (!w)
 	  return;
 
-	ws->addWindow( w );
-	myViews.append(w);
+  ws->addSubWindow (w);
+  myViews.append (w);
 
   connect( w,    SIGNAL( selectionChanged() ),
            this, SIGNAL( selectionChanged() ) );
@@ -95,7 +95,7 @@ void DocumentCommon::onCreateNewView( bool theRT )
 	
   w->setWindowIcon( QPixmap( dir + QObject::tr("ICON_DOC") ) );
 
-  if ( ws->windowList().isEmpty() )
+  if ( ws->subWindowList().isEmpty() )
   {
     // Due to strange Qt4.2.3 feature the child window icon is not drawn
     // in the main menu if showMaximized() is called for a non-visible child window
@@ -129,7 +129,9 @@ void DocumentCommon::removeView(MDIWindow* theView)
 void DocumentCommon::removeViews()
 {
   while( myViews.count() )
-    removeView( (MDIWindow*)myViews.first() );
+  {
+    removeView( myViews.first() );
+  }
 }
 
 int DocumentCommon::countOfWindow()
@@ -226,49 +228,3 @@ void DocumentCommon::onDelete()
     myContext->ClearSelected();
     getApplication()->onSelectionChanged();
 }
-
-#ifdef HAVE_OPENCL
-
-void DocumentCommon::onShadows( int state )
-{
-  QWorkspace* ws = ApplicationCommonWindow::getWorkspace();
-
-  MDIWindow* window = qobject_cast< MDIWindow* >( ws->activeWindow() );
-
-  if( window == NULL )
-    return;
-
-  window->setRaytracedShadows( state );
-
-  myContext->UpdateCurrentViewer();
-}
-
-void DocumentCommon::onReflections( int state )
-{
-  QWorkspace* ws = ApplicationCommonWindow::getWorkspace();
-
-  MDIWindow* window = qobject_cast< MDIWindow* >( ws->activeWindow() );
-
-  if( window == NULL )
-    return;
-
-  window->setRaytracedReflections( state );
-
-  myContext->UpdateCurrentViewer();
-}
-
-void DocumentCommon::onAntialiasing( int state )
-{
-  QWorkspace* ws = ApplicationCommonWindow::getWorkspace();
-
-  MDIWindow* window = qobject_cast< MDIWindow* >( ws->activeWindow() );
-
-  if( window == NULL )
-    return;
-
-  window->setRaytracedAntialiasing( state );
-
-  myContext->UpdateCurrentViewer();
-}
-
-#endif

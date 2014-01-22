@@ -3,6 +3,7 @@
 
 #include <QFileDialog>
 #include <QStatusBar>
+#include <QMdiSubWindow>
 
 ApplicationTut::ApplicationTut()
     : ApplicationCommonWindow( )
@@ -33,7 +34,7 @@ void ApplicationTut::createMakeBottleOperation(){
 
 void ApplicationTut::updateFileActions()
 {
-  if ( getWorkspace()->windowList().isEmpty() )
+  if ( getWorkspace()->subWindowList().isEmpty() )
   {
 	  if ( !isDocument() )
 		{
@@ -49,8 +50,8 @@ void ApplicationTut::updateFileActions()
 
 void ApplicationTut::onMakeBottleAction()
 {
-	QWorkspace* ws = ApplicationCommonWindow::getWorkspace();
-  DocumentTut* doc = (DocumentTut*)((MDIWindow*)ws->activeWindow())->getDocument();
+	QMdiArea* ws = ApplicationCommonWindow::getWorkspace();
+  DocumentTut* doc = (DocumentTut*)( qobject_cast<MDIWindow*>( ws->activeSubWindow()->widget() )->getDocument() );
 	statusBar()->showMessage( QObject::tr("INF_MAKE_BOTTLE"), 5000 );
 	doc->onMakeBottle();
 	statusBar()->showMessage(QObject::tr("INF_DONE"));
@@ -58,7 +59,7 @@ void ApplicationTut::onMakeBottleAction()
 
 QString ApplicationTut::getTutResourceDir()
 {
-    static QString resDir( ::getenv( "CSF_TutorialResourcesDefaults" ) );
-    return resDir;
+  static QString resDir (qgetenv ("CSF_TutorialResourcesDefaults").constData());
+  return resDir;
 }
 

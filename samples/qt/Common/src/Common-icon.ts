@@ -87,14 +87,6 @@
         <translation>new.png</translation>
     </message>
     <message>
-        <source>ICON_NEW_GL</source>
-        <translation>newGL.png</translation>
-    </message>
-    <message>
-        <source>ICON_NEW_RT</source>
-        <translation>newRT.png</translation>
-    </message>
-    <message>
         <source>ICON_VIEW_RIGHT</source>
         <translation>view_right.png</translation>
     </message>
@@ -135,7 +127,15 @@
         <translation>lamp.png</translation>
     </message>
     <message>
+        <source>ICON_TOOL_RAYTRACING</source>
+        <translation>raytracing.png</translation>
+    </message>
+    <message>
         <source>ICON_TOOL_SHADOWS</source>
+        <translation>shadows.png</translation>
+    </message>
+    <message>
+        <source>ICON_TOOL_RAYTRACING</source>
         <translation>shadows.png</translation>
     </message>
     <message>

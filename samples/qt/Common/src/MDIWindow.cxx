@@ -21,20 +21,11 @@ MDIWindow::MDIWindow(View* aView,
                      Qt::WindowFlags wflags )
 : QMainWindow( parent, wflags )
 {
-
   myView = aView;
 	myDocument = aDocument;
-
-#ifdef HAVE_OPENCL
-
-  myShadowsEnabled = true;
-  myReflectionsEnabled = true;
-  myAntialiasingEnabled = false;
-
-#endif
 }  
   
-MDIWindow::MDIWindow( DocumentCommon* aDocument, QWidget* parent, Qt::WindowFlags wflags, bool theRT )
+MDIWindow::MDIWindow( DocumentCommon* aDocument, QWidget* parent, Qt::WindowFlags wflags)
 : QMainWindow( parent, wflags )
 {
 	QFrame *vb = new QFrame( this );
@@ -47,24 +38,18 @@ MDIWindow::MDIWindow( DocumentCommon* aDocument, QWidget* parent, Qt::WindowFlag
 	setCentralWidget( vb );
 
 	myDocument = aDocument;
-	myView = new View( myDocument->getContext(), vb, theRT );
-	layout->addWidget( myView );
+	myView = new View (myDocument->getContext(), vb);
+	layout->addWidget (myView);
 
   connect( myView, SIGNAL( selectionChanged() ),
            this,   SIGNAL( selectionChanged() ) );
-	createViewActions();
+  
+  createViewActions();
+  createRaytraceActions();
 
   resize( sizeHint() );
 
   setFocusPolicy( Qt::StrongFocus );
-
-#ifdef HAVE_OPENCL
-
-  myShadowsEnabled = true;
-  myReflectionsEnabled = true;
-  myAntialiasingEnabled = false;
-
-#endif
 }
 
 MDIWindow::~MDIWindow()
@@ -98,21 +83,34 @@ void MDIWindow::createViewActions()
   aList->at(View::ViewHlrOffId)->setChecked( true );
 }
 
+void MDIWindow::createRaytraceActions()
+{
+  // populate a tool bar with some actions
+	QToolBar* aToolBar = addToolBar( tr( "Ray-tracing Options" ) );
+	
+  QList<QAction*>* aList = myView->getRaytraceActions();
+	aToolBar->addActions( *aList );
+
+  aToolBar->toggleViewAction()->setVisible (true);
+  aList->at (View::ToolRaytracingId)->setChecked (false);
+  aList->at (View::ToolShadowsId)->setChecked (true);
+  aList->at (View::ToolReflectionsId)->setChecked (true);
+  aList->at (View::ToolAntialiasingId)->setChecked (false);
+}
+
 void MDIWindow::onWindowActivated ()
 {
   getDocument()->getApplication()->onSelectionChanged();
 }
 
-
 void MDIWindow::dump()
 {
-
-	QString datadir = (QString(getenv("CASROOT")) + "/../data/images");
+  QString datadir = (QString(qgetenv ("CASROOT").constData()) + "/../data/images");
 	static QString filter;
   filter = "Images Files (*.bmp *.ppm *.png *.jpg *.tiff *.tga *.gif *.exr *.ps *.eps *.tex *.pdf *.svg *.pgf)";
 	QFileDialog fd ( 0 );
 	fd.setModal( true );
-	fd.setFilter( filter );
+	fd.setNameFilter ( filter );
 	fd.setWindowTitle( QObject::tr("INF_APP_EXPORT") );
 	fd.setFileMode( QFileDialog::AnyFile );
 	int ret = fd.exec(); 
@@ -129,6 +127,7 @@ void MDIWindow::dump()
 	  QApplication::setOverrideCursor( Qt::WaitCursor );
 		if ( !QFileInfo( file ).completeSuffix().length() )
       file += QString( ".bmp" );
+
     bool res = myView->dump( (Standard_CString)file.toLatin1().constData() );
     QApplication::restoreOverrideCursor();                
     if ( !res )
@@ -152,27 +151,3 @@ QSize MDIWindow::sizeHint() const
 {
     return QSize( 450, 300 );
 }
-
-#ifdef HAVE_OPENCL
-
-void MDIWindow::setRaytracedShadows( int state )
-{
-  myView->setRaytracedShadows( state );
-  myShadowsEnabled = state;
-}
-
-void MDIWindow::setRaytracedReflections( int state )
-{
-  myView->setRaytracedReflections( state );
-  myReflectionsEnabled = state;
-}
-
-void MDIWindow::setRaytracedAntialiasing( int state )
-{
-  myView->setRaytracedAntialiasing( state );
-  myAntialiasingEnabled = state;
-}
-
-#endif
-
-

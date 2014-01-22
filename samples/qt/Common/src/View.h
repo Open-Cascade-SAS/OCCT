@@ -24,22 +24,30 @@ public:
     enum ViewAction { ViewFitAllId, ViewFitAreaId, ViewZoomId, ViewPanId, ViewGlobalPanId,
                       ViewFrontId, ViewBackId, ViewTopId, ViewBottomId, ViewLeftId, ViewRightId,
                       ViewAxoId, ViewRotationId, ViewResetId, ViewHlrOffId, ViewHlrOnId };
+    enum RaytraceAction { ToolRaytracingId, ToolShadowsId, ToolReflectionsId, ToolAntialiasingId };
 
-    View( Handle(AIS_InteractiveContext) theContext,
-          QWidget* parent,
-          bool theRT = false );
+    View( Handle(AIS_InteractiveContext) theContext, QWidget* parent );
 
     ~View();
 
     virtual void                  init();
     bool                          dump( Standard_CString theFile );
     QList<QAction*>*              getViewActions();
+    QList<QAction*>*              getRaytraceActions();
     void                          noActiveActions();
     bool                          isShadingMode();
 
-    void                          setRaytracedShadows( int state );
-    void                          setRaytracedReflections( int state );
-    void                          setRaytracedAntialiasing( int state );
+    void                          EnableRaytracing();
+    void                          DisableRaytracing();
+
+    void                          SetRaytracedShadows (bool theState);
+    void                          SetRaytracedReflections (bool theState);
+    void                          SetRaytracedAntialiasing (bool theState);
+
+    bool                          IsRaytracingMode() const { return myIsRaytracing; }
+    bool                          IsShadowsEnabled() const { return myIsShadowsEnabled; }
+    bool                          IsReflectionsEnabled() const { return myIsReflectionsEnabled; }
+    bool                          IsAntialiasingEnabled() const { return myIsAntialiasingEnabled; }
 
     static QString                GetMessages( int type,TopAbs_ShapeEnum aSubShapeType,
                                                TopAbs_ShapeEnum aShapeType );
@@ -77,6 +85,7 @@ public slots:
     void                          updateToggled( bool );
     void                          onBackground();
     void                          onEnvironmentMap();
+    void                          onRaytraceAction();
 
 protected:
     virtual void                  paintEvent( QPaintEvent* );
@@ -104,6 +113,7 @@ protected:
 private:
     void                          initCursors();
     void                          initViewActions();
+    void                          initRaytraceActions();
     void                          DragEvent( const int x, const int y, const int TheState );
     void                          InputEvent( const int x, const int y );
     void                          MoveEvent( const int x, const int y );
@@ -114,7 +124,11 @@ private:
                                                  const int MaxX, const int MaxY, const bool Draw );
 
 private:
-    bool                            myIsRT;
+    bool                            myIsRaytracing;
+    bool                            myIsShadowsEnabled;
+    bool                            myIsReflectionsEnabled;
+    bool                            myIsAntialiasingEnabled;
+
     bool                            myFirst;
     bool		                        myDrawRect;           // set when a rect is used for selection or magnify 
     Handle(V3d_View)                myView;
@@ -127,6 +141,7 @@ private:
     Quantity_Factor                 myCurZoom;
     Standard_Boolean                myHlrModeIsOn;
     QList<QAction*>*                myViewActions;
+    QList<QAction*>*                myRaytraceActions;
     QMenu*                          myBackMenu;
     QRubberBand*                    myRectBand; //!< selection rectangle rubber band
 };

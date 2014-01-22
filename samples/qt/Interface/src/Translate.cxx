@@ -15,6 +15,7 @@
 #include <QFileDialog>
 #include <QApplication>
 #include <QWidget>
+#include <QStyleFactory>
 
 #include <AIS_Shape.hxx>
 #include <AIS_InteractiveObject.hxx>
@@ -89,7 +90,9 @@ private:
 TranslateDlg::TranslateDlg( QWidget* parent, Qt::WindowFlags flags, bool modal )
 : QFileDialog( parent, flags )
 {
+  setOption( QFileDialog::DontUseNativeDialog );
   setModal( modal );
+
   QGridLayout* grid = ::qobject_cast<QGridLayout*>( layout() );
 
   if( grid )
@@ -331,7 +334,7 @@ QString Translate::selectFileName( const int format, const bool import )
 
   if ( !QFileInfo( file ).completeSuffix().length() )
   {
-    QString selFilter = theDlg->selectedFilter();
+    QString selFilter = theDlg->selectedNameFilter();
 		int idx = selFilter.indexOf( "(*." );
     if ( idx != -1 )
     {
@@ -371,7 +374,7 @@ TranslateDlg* Translate::getDialog( const int format, const bool import )
 
   cout << filter.toLatin1().constData() << endl;
   QStringList filters = filter.split( "\t" );
-  myDlg->setFilters( filters );
+  myDlg->setNameFilters ( filters );
 
 	if ( import )
   {
@@ -384,7 +387,7 @@ TranslateDlg* Translate::getDialog( const int format, const bool import )
     ((QFileDialog*)myDlg)->setFileMode( QFileDialog::AnyFile );
   }
 
-	QString datadir = (QString(getenv("CASROOT")) + QObject::tr( QString("INF_PATH_%1").arg( format ).toLatin1().constData() ) );
+  QString datadir = (QString (qgetenv ("CASROOT").constData()) + QObject::tr( QString("INF_PATH_%1").arg( format ).toLatin1().constData() ) );
 
   myDlg->clear();
 
@@ -459,7 +462,7 @@ Handle(TopTools_HSequenceOfShape) Translate::importSTEP( const QString& file )
 	    {
 	        bool ok = aReader.TransferRoot( n );
 	        int nbs = aReader.NbShapes();
-	        if ( nbs > 0 )
+	        if ( ok == true && nbs > 0 )
             {
 	            aSequence = new TopTools_HSequenceOfShape();
 	            for ( int i = 1; i <= nbs; i++ )
