@@ -100,8 +100,10 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myMaxClipPlanes (6),
   myGlVerMajor (0),
   myGlVerMinor (0),
-  myIsFeedback (Standard_False),
-  myIsInitialized (Standard_False)
+  myRenderMode (GL_RENDER),
+  myIsInitialized (Standard_False),
+  myIsStereoBuffers (Standard_False),
+  myDrawBuffer (0)
 {
 #if defined(MAC_OS_X_VERSION_10_3) && !defined(MACOSX_USE_GLX)
   // Vendors can not extend functionality on this system
@@ -191,6 +193,103 @@ Standard_Integer OpenGl_Context::MaxTextureSize() const
 Standard_Integer OpenGl_Context::MaxClipPlanes() const
 {
   return myMaxClipPlanes;
+}
+
+// =======================================================================
+// function : SetDrawBufferLeft
+// purpose  :
+// =======================================================================
+void OpenGl_Context::SetDrawBufferLeft()
+{
+  switch (myDrawBuffer)
+  {
+    case GL_BACK_RIGHT :
+    case GL_BACK :
+      glDrawBuffer (GL_BACK_LEFT);
+      myDrawBuffer = GL_BACK_LEFT;
+      break;
+
+    case GL_FRONT_RIGHT :
+    case GL_FRONT :
+      glDrawBuffer (GL_FRONT_LEFT);
+      myDrawBuffer = GL_FRONT_LEFT;
+      break;
+
+    case GL_FRONT_AND_BACK :
+    case GL_RIGHT :
+      glDrawBuffer (GL_LEFT);
+      myDrawBuffer = GL_LEFT;
+      break;
+  }
+}
+
+// =======================================================================
+// function : SetDrawBufferRight
+// purpose  :
+// =======================================================================
+void OpenGl_Context::SetDrawBufferRight()
+{
+  switch (myDrawBuffer)
+  {
+    case GL_BACK_LEFT :
+    case GL_BACK :
+      glDrawBuffer (GL_BACK_RIGHT);
+      myDrawBuffer = GL_BACK_RIGHT;
+      break;
+
+    case GL_FRONT_LEFT :
+    case GL_FRONT :
+      glDrawBuffer (GL_FRONT_RIGHT);
+      myDrawBuffer = GL_FRONT_RIGHT;
+      break;
+
+    case GL_FRONT_AND_BACK :
+    case GL_LEFT :
+      glDrawBuffer (GL_RIGHT);
+      myDrawBuffer = GL_RIGHT;
+      break;
+  }
+}
+
+// =======================================================================
+// function : SetDrawBufferMono
+// purpose  :
+// =======================================================================
+void OpenGl_Context::SetDrawBufferMono()
+{
+  switch (myDrawBuffer)
+  {
+    case GL_BACK_LEFT :
+    case GL_BACK_RIGHT :
+      glDrawBuffer (GL_BACK);
+      myDrawBuffer = GL_BACK;
+      break;
+
+    case GL_FRONT_LEFT :
+    case GL_FRONT_RIGHT :
+      glDrawBuffer (GL_FRONT);
+      myDrawBuffer = GL_FRONT;
+      break;
+
+    case GL_LEFT :
+    case GL_RIGHT :
+      glDrawBuffer (GL_FRONT_AND_BACK);
+      myDrawBuffer = GL_FRONT_AND_BACK;
+      break;
+  }
+}
+
+// =======================================================================
+// function : FetchState
+// purpose  :
+// =======================================================================
+void OpenGl_Context::FetchState()
+{
+  // cache feedback mode state
+  glGetIntegerv (GL_RENDER_MODE, &myRenderMode);
+
+  // cache draw buffer state
+  glGetIntegerv (GL_DRAW_BUFFER, &myDrawBuffer);
 }
 
 // =======================================================================
@@ -658,6 +757,11 @@ void OpenGl_Context::init()
   // get number of maximum clipping planes
   glGetIntegerv (GL_MAX_CLIP_PLANES, &myMaxClipPlanes);
   glGetIntegerv (GL_MAX_TEXTURE_SIZE, &myMaxTexDim);
+
+  GLint aStereo;
+  glGetIntegerv (GL_STEREO, &aStereo);
+  myIsStereoBuffers = aStereo == 1;
+
   if (extAnis)
   {
     glGetIntegerv (GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &myAnisoMax);
@@ -1002,23 +1106,6 @@ void OpenGl_Context::init()
   {
     core20 = myGlCore20;
   }
-}
-// =======================================================================
-// function : IsFeedback
-// purpose  :
-// =======================================================================
-Standard_Boolean OpenGl_Context::IsFeedback() const
-{
-  return myIsFeedback;
-}
-
-// =======================================================================
-// function : SetFeedback
-// purpose  :
-// =======================================================================
-void OpenGl_Context::SetFeedback (const Standard_Boolean theFeedbackOn)
-{
-  myIsFeedback = theFeedbackOn;
 }
 
 // =======================================================================

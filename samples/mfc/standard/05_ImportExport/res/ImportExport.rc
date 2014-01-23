@@ -90,6 +90,8 @@ BEGIN
     SEPARATOR
     BUTTON      ID_FILE_EXPORT_IMAGE
     SEPARATOR
+    BUTTON      ID_BUTTON_STEREO
+    SEPARATOR
     BUTTON      ID_APP_ABOUT
 END
 
@@ -262,6 +264,11 @@ END
 STRINGTABLE 
 BEGIN
     ID_FILE_MRU_FILE1       "Open recent file\nRecent file"
+END
+
+STRINGTABLE
+BEGIN
+    ID_BUTTON_STEREO        "Toggle stereographic mode on / off"
 END
 
 #endif    // English (U.S.) resources

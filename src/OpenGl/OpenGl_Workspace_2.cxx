@@ -215,23 +215,7 @@ static void getMaxFrameSize(Standard_Integer& theWidth,
   theWidth  = (Standard_Integer)aMaxX;
   theHeight = (Standard_Integer)aMaxY;
 }
-// ---------------------------------------------------------------
-// Function: getDimensionsTiling
-// Purpose:  calculate maximum possible dimensions for framebuffer
-//           in tiling mode according to the view size
-// ---------------------------------------------------------------
-static void getDimensionsTiling (Standard_Integer& theFrameWidth,
-                                 Standard_Integer& theFrameHeight,
-                                 const int theViewWidth,
-                                 const int theViewHeight)
-{
-  // fit the maximum dimensions into the printing area
-  if (theFrameWidth > theViewWidth)
-      theFrameWidth = theViewWidth;
 
-  if (theFrameHeight > theViewHeight)
-      theFrameHeight = theViewHeight;
-}
 // ---------------------------------------------------------------
 // Function: initBufferStretch
 // Purpose:  calculate initialization sizes for frame buffer
@@ -389,9 +373,10 @@ Standard_Boolean OpenGl_Workspace::Print
     }
     else if (IsTiling)
     {
-      getDimensionsTiling (aFrameWidth, aFrameHeight, width, height);
-      if (aPrevWidth >= aFrameWidth && aPrevHeight >= aFrameHeight)
-        isUsable = true;
+      // use previous frame buffer with its dimensions
+      aFrameWidth  = aPrevWidth;
+      aFrameHeight = aPrevHeight;
+      isUsable = true;
     }
 
     // if it is enough memory for image paste dc operation

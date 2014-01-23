@@ -17,7 +17,7 @@
 #define NIS_View_HeaderFile
 
 #include <Handle_NIS_InteractiveObject.hxx>
-#include <V3d_OrthographicView.hxx>
+#include <V3d_View.hxx>
 #include <Standard_DefineHandle.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_Vector.hxx>
@@ -31,7 +31,7 @@ class gp_Ax1;
 /**
  * Manager of a single window with OpenGL context, used by one or more
  * NIS_InteractiveContext instances.
- * This class inherits V3d_OrthograpicView therefore its instances can be used
+ * This class inherits V3d_View therefore its instances can be used
  * to display any object that is normally handled by Graphic3d/V3d/AIS classes.
  * Also the standard view operations: Pan, Rotate, Zoom, mouse API, etc. are
  * supported due to this inheritance.<p>
@@ -53,7 +53,7 @@ class gp_Ax1;
  * AddContext and RemoveContext.
  */
 
-class NIS_View : public V3d_OrthographicView
+class NIS_View : public V3d_View
 {
  public:
   // ---------- PUBLIC METHODS ----------

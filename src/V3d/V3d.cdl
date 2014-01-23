@@ -30,17 +30,6 @@ package V3d
         --          of the 3D Viewer. It provides a set of high level commands
         --          to control the views and viewing modes. This package is
         --          complementary to the Visual3D graphic package.
-        --    Warning
-        -- The CSF_WALKTHROUGH variable enables you to
-        -- manage the perspective of the view in the viewer by
-        -- defining setenv CSF_WALKTHROUGH "Yes".
-        -- If you use the syntax unsetenv
-        -- CSF_WALKTHROUGH, you undefine the variable
-        -- (you make sure that the variable is deactivated). In
-        -- this case, the eye is located outside the 3D bounding
-        -- box of the view. This is the default behavior for
-        -- managing the view perspective.
-
 
 uses
         TColStd,
@@ -170,6 +159,17 @@ is
         --            TOBM_ALWAYS_DISPLAYED     force display of back faces
         --            TOBM_NEVER_DISPLAYED      disable display of back faces
 
+        enumeration StereoDumpOptions is
+            SDO_MONO,
+            SDO_LEFT_EYE,
+            SDO_RIGHT_EYE
+        end StereoDumpOptions;
+        ---Purpose : Options to be used with image dumping.
+        --
+        --            SDO_MONO dump monographic projection for stereo camera
+        --            SDO_LEFT_EYE dump left eye projection for stereo camera
+        --            SDO_RIGHT_EYE dump right eye projection for stereo camera
+
         ------------------------
         ---Category: The classes
         ------------------------
@@ -179,12 +179,6 @@ is
 
         class View;
         ---Purpose: Provides a set of services common to all types of view.
-
-        class OrthographicView;
-        ---Purpose: Services of an orthogonal view.
-
-        class PerspectiveView;
-        ---Purpose: Services of a perspective view.
 
         class LayerMgr;
         ---Purpose: Services of layer management.

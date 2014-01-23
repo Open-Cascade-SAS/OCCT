@@ -35,7 +35,7 @@ OCC137_z
 vselmode 4 1
 
 set x_coord 105
-set y_coord 350
+set y_coord 348
 
 vmoveto $x_coord $y_coord
 

@@ -43,8 +43,6 @@
 #include <V3d_Viewer.ixx>
 #include <V3d_View.hxx>
 #include <V3d_BadValue.hxx>
-#include <V3d_OrthographicView.hxx>
-#include <V3d_PerspectiveView.hxx>
 
 /*----------------------------------------------------------------------*/
 
@@ -108,11 +106,9 @@ myDisplayPlaneLength (theViewSize)
 //-Methods, in order
 
 
-Handle(V3d_View) V3d_Viewer::CreateView () {
-  if (MyDefaultTypeOfView == V3d_ORTHOGRAPHIC) 
-    return new V3d_OrthographicView(this);
-  else
-    return new V3d_PerspectiveView(this);
+Handle(V3d_View) V3d_Viewer::CreateView ()
+{
+  return new V3d_View(this, MyDefaultTypeOfView);
 }
 
 void V3d_Viewer::SetViewOn( ) {

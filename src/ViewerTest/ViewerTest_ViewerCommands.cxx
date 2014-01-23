@@ -3179,7 +3179,7 @@ static int VPrintView (Draw_Interpretor& di, Standard_Integer argc,
 {
 #ifndef WNT
   di << "Printing implemented only for wnt!\n";
-  return 1;
+  return 0;
 #else
 
   Handle(AIS_InteractiveContext) aContextAIS = NULL;
@@ -3202,12 +3202,13 @@ static int VPrintView (Draw_Interpretor& di, Standard_Integer argc,
   else if (argc < 4)
   {
     di << "Use: " << argv[0];
-    di << " width height filename [print algo=0]\n";
+    di << " width height filename [print algo=0] [tile_width tile_height]\n";
     di << "width, height of the intermediate buffer for operation\n";
     di << "algo : {0|1}\n";
     di << "        0 - stretch algorithm\n";
     di << "        1 - tile algorithm\n";
     di << "test printing algorithms into an intermediate buffer\n";
+    di << "using specific tile size if provided\n";
     di << "with saving output to an image file\n";
     return 1;
   }
@@ -3217,8 +3218,18 @@ static int VPrintView (Draw_Interpretor& di, Standard_Integer argc,
   Standard_Integer aHeight = Draw::Atoi (argv[2]);
   Standard_Integer aMode   = 0;
   TCollection_AsciiString aFileName = TCollection_AsciiString (argv[3]);
-  if (argc==5)
+  if (argc >= 5)
     aMode = Draw::Atoi (argv[4]);
+
+  Standard_Integer aTileWidth  = 0;
+  Standard_Integer aTileHeight = 0;
+  Standard_Boolean isTileSizeProvided = Standard_False;
+  if (argc == 7)
+  {
+    isTileSizeProvided = Standard_True;
+    aTileWidth  = Draw::Atoi (argv[5]);
+    aTileHeight = Draw::Atoi (argv[6]);
+  }
 
   // check the input parameters
   if (aWidth <= 0 || aHeight <= 0)
@@ -3257,7 +3268,24 @@ static int VPrintView (Draw_Interpretor& di, Standard_Integer argc,
     if (aMode == 0)
       isPrinted = aView->Print(anDC,1,1,0,Aspect_PA_STRETCH);
     else
-      isPrinted = aView->Print(anDC,1,1,0,Aspect_PA_TILE);
+    {
+      if (isTileSizeProvided)
+      {
+        Graphic3d_CView* aCView = static_cast<Graphic3d_CView*> (ViewerTest::CurrentView()->View()->CView());
+        Graphic3d_PtrFrameBuffer anOldBuffer = static_cast<Graphic3d_PtrFrameBuffer> (aCView->ptrFBO);
+        aCView->ptrFBO = aView->View()->FBOCreate (aTileWidth, aTileHeight);
+
+        isPrinted = aView->Print (anDC, 1, 1, 0, Aspect_PA_TILE);
+
+        Graphic3d_PtrFrameBuffer aNewBuffer = static_cast<Graphic3d_PtrFrameBuffer> (aCView->ptrFBO);
+        aView->View()->FBORelease (aNewBuffer);
+        aCView->ptrFBO = anOldBuffer;
+      }
+      else
+      {
+        isPrinted = aView->Print (anDC, 1, 1, 0, Aspect_PA_TILE);
+      }
+    }
 
     // succesfully printed into an intermediate buffer
     if (isPrinted)
@@ -4370,11 +4398,13 @@ static Standard_Integer VViewParams (Draw_Interpretor& di,
     Standard_Real anAISViewAtX = atof (argv [10]);
     Standard_Real anAISViewAtY = atof (argv [11]);
     Standard_Real anAISViewAtZ = atof (argv [12]);
-    anAISView -> V3d_View::SetScale (anAISViewScale);
+    anAISView -> V3d_View::Camera()->BeginUpdate();
     anAISView -> V3d_View::SetCenter (anAISViewCenterCoordinateX, anAISViewCenterCoordinateY);
     anAISView -> V3d_View::SetAt (anAISViewAtX, anAISViewAtY, anAISViewAtZ);
+    anAISView -> V3d_View::SetScale (anAISViewScale);
     anAISView -> V3d_View::SetProj (anAISViewProjX, anAISViewProjY, anAISViewProjZ);
     anAISView -> V3d_View::SetUp (anAISViewUpX, anAISViewUpY, anAISViewUpZ);
+    anAISView -> V3d_View::Camera()->EndUpdate();
   }
   return 0;
 }
@@ -5313,6 +5343,223 @@ static int VSetTextureMode (Draw_Interpretor& theDi, Standard_Integer theArgsNb,
 }
 
 //===============================================================================================
+//function : VZRange
+//purpose  :
+//===============================================================================================
+static int VZRange (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const char** theArgVec)
+{
+  if (ViewerTest::CurrentView().IsNull())
+  {
+    theDi << theArgVec[0] << ": Call vinit before this command, please.\n";
+    return 1;
+  }
+
+  Handle(Graphic3d_Camera) aCamera = ViewerTest::CurrentView()->Camera();
+
+  if (theArgsNb < 2)
+  {
+    theDi << "ZNear: " << aCamera->ZNear() << "\n";
+    theDi << "ZFar: " << aCamera->ZFar() << "\n";
+    return 0;
+  }
+
+  if (theArgsNb == 3)
+  {
+    Standard_Real aNewZNear = atof (theArgVec[1]);
+    Standard_Real aNewZFar = atof (theArgVec[2]);
+    
+    aCamera->BeginUpdate();
+    aCamera->SetZFar (aNewZFar);
+    aCamera->SetZNear (aNewZNear);
+    aCamera->EndUpdate();
+  }
+  else
+  {
+    theDi << theArgVec[0] << ": wrong command arguments. Type help for more information.\n";
+    return 1;
+  }
+
+  return 0;
+}
+
+//===============================================================================================
+//function : VAutoZFit
+//purpose  :
+//===============================================================================================
+static int VAutoZFit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const char** theArgVec)
+{
+  if (ViewerTest::CurrentView().IsNull())
+  {
+    theDi << theArgVec[0] << ": Call vinit before this command, please.\n";
+    return 1;
+  }
+
+  if (theArgsNb < 2)
+  {
+    theDi << "Auto z-fit mode: " << (ViewerTest::CurrentView()->AutoZFitMode() ? "enabled" : "disabled");
+    return 0;
+  }
+
+  if (theArgsNb == 2)
+  {
+    Standard_Real aNewMode = atoi (theArgVec[1]);
+    
+    ViewerTest::CurrentView()->SetAutoZFitMode (aNewMode != 0);
+  }
+  else
+  {
+    theDi << theArgVec[0] << ": wrong command arguments. Type help for more information.\n";
+    return 1;
+  }
+
+  return 0;
+}
+
+//===============================================================================================
+//function : VChangeCamera
+//purpose  :
+//===============================================================================================
+static int VChangeCamera (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const char** theArgVec)
+{
+  if (ViewerTest::CurrentView().IsNull())
+  {
+    theDi << theArgVec[0] << ": Call vinit before this command, please.\n";
+    return 1;
+  }
+
+  const char anErrorMessage[] = ": wrong command arguments. Type help for more information.\n";
+  if (theArgsNb < 3)
+  {
+    theDi << theArgVec[0] << anErrorMessage;
+    return 1;
+  }
+
+  Handle(Graphic3d_Camera) aCamera = ViewerTest::CurrentView()->Camera();
+
+  TCollection_AsciiString aCommand (theArgVec[1]);
+  TCollection_AsciiString aValue (theArgVec[2]);
+
+  aCommand.LowerCase();
+  aValue.LowerCase();
+
+  if (aCommand == "proj")
+  {
+    if (aValue == "ortho")
+    {
+      aCamera->SetProjectionType (Graphic3d_Camera::Projection_Orthographic);
+    } 
+    else if (aValue == "persp")
+    {
+      aCamera->SetProjectionType (Graphic3d_Camera::Projection_Perspective);
+    }
+    else if (aValue == "left")
+    {
+      aCamera->SetProjectionType (Graphic3d_Camera::Projection_MonoLeftEye);
+    }
+    else if (aValue == "right")
+    {
+      aCamera->SetProjectionType (Graphic3d_Camera::Projection_MonoRightEye);
+    }
+    else if (aValue == "stereo")
+    {
+      aCamera->SetProjectionType (Graphic3d_Camera::Projection_Stereo);
+    }
+    else
+    {
+      theDi << theArgVec[0] << anErrorMessage;
+      return 1;
+    }
+
+    ViewerTest::CurrentView()->ZFitAll();
+  }
+  else if (aCommand == "dist")
+  {
+    aCamera->SetDistance (aValue.RealValue());
+    ViewerTest::CurrentView()->ZFitAll();
+  }
+  else if (aCommand == "iod")
+  {
+    aCamera->SetIOD (aCamera->GetIODType(), aValue.RealValue());
+  }
+  else if (aCommand == "zfocus")
+  {
+    aCamera->SetZFocus (aCamera->ZFocusType(), aValue.RealValue());
+  }
+  else if (aCommand == "fov")
+  {
+    aCamera->SetFOVy (aValue.RealValue());
+  }
+  else if (aCommand == "zfocustype")
+  {
+    if (aValue == "absolute")
+    {
+      aCamera->SetZFocus (Graphic3d_Camera::FocusType_Absolute, aCamera->ZFocus());
+    } 
+    else if (aValue == "relative")
+    {
+      aCamera->SetZFocus (Graphic3d_Camera::FocusType_Relative, aCamera->ZFocus());
+    }
+    else
+    {
+      theDi << theArgVec[0] << anErrorMessage;
+      return 1;
+    }
+  }
+  else if (aCommand == "iodtype")
+  {
+    if (aValue == "absolute")
+    {
+      aCamera->SetIOD (Graphic3d_Camera::IODType_Absolute, aCamera->IOD());
+    } 
+    else if (aValue == "relative")
+    {
+      aCamera->SetIOD (Graphic3d_Camera::IODType_Relative, aCamera->IOD());
+    }
+    else
+    {
+      theDi << theArgVec[0] << anErrorMessage;
+      return 1;
+    }
+  }
+  else
+  {
+    theDi << theArgVec[0] << anErrorMessage;
+    return 1;
+  }
+
+  ViewerTest::CurrentView()->Redraw();
+
+  return 0;
+}
+
+//==============================================================================
+//function : VStereo
+//purpose  :
+//==============================================================================
+
+static int VStereo (Draw_Interpretor& theDI,
+                    Standard_Integer  theArgNb,
+                    const char**      theArgVec)
+{
+  if (theArgNb < 2)
+  {
+    Handle(V3d_View) aView = ViewerTest::CurrentView();
+    if (aView.IsNull())
+    {
+      std::cerr << "No active view. Please call vinit.\n";
+      return 0;
+    }
+
+    Standard_Boolean isActive = ViewerTest_myDefaultCaps.contextStereo;
+    theDI << "Stereo " << (isActive ? "ON" : "OFF") << "\n";
+    return 0;
+  }
+
+  ViewerTest_myDefaultCaps.contextStereo = Draw::Atoi (theArgVec[1]) != 0;
+  return 0;
+}
+
+//===============================================================================================
 //function : VDefaults
 //purpose  :
 //===============================================================================================
@@ -6115,7 +6362,7 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "vgraduatedtrihedron : 1/0 (display/erase) [Xname Yname Zname [Font [isMultibyte]]]",
     __FILE__,VGraduatedTrihedron,group);
   theCommands.Add("vprintview" ,
-    "vprintview : width height filename [algo=0] : Test print algorithm: algo = 0 - stretch, algo = 1 - tile",
+    "vprintview : width height filename [algo=0] [tile_width tile_height] : Test print algorithm: algo = 0 - stretch, algo = 1 - tile",
     __FILE__,VPrintView,group);
   theCommands.Add("vzlayer",
     "vzlayer : add/del/get [id] : Z layer operations in v3d viewer: add new z layer, delete z layer, get z layer ids",
@@ -6147,6 +6394,9 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add ("vvbo",
     "vvbo [{0|1}] : turn VBO usage On/Off; affects only newly displayed objects",
     __FILE__, VVbo, group);
+  theCommands.Add ("vstereo",
+    "\nvstereo [{0|1}] : turn stereo usage On/Off; affects only newly displayed objects",
+    __FILE__, VStereo, group);
   theCommands.Add ("vcaps",
     "vcaps [vbo={0|1}] [sprites={0|1}] [soft={0|1}] : modify particular graphic driver options",
     __FILE__, VCaps, group);
@@ -6188,6 +6438,31 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     __FILE__,VZClipping,group);
   theCommands.Add ("vnbselected",
     "vnbselected", __FILE__, VNbSelected, group);
+  theCommands.Add ("vchangecamera",
+    " changes camera parameters \n"
+    "- vchangecamera [param_type] [value]\n"
+    "- vchangecamera proj {ortho/persp/left/right/stereo}\n"
+    "     Projection type including left and right stereo parts.\n"
+    "- vchangecamera dist [real]\n"
+    "     Sets distance from target point to camera eye (moving eye).\n"
+    "- vchangecamera iod [real]\n"
+    "     Intraocular distance value.\n"
+    "- vchangecamera zfocus [real]\n"
+    "     Stereographic focus value.\n"
+    "- vchangecamera fov [real]\n"
+    "     Field Of View value (in degrees).\n"
+    "- vchangecamera zfocustype {absolute/relative}\n"
+    "     Stereographic focus definition type (absolute value or coefficient).\n"
+    "- vchangecamera iodtype {absolute/relative}\n"
+    "     Intraocular distance definition type (absolute value or coefficient).\n", 
+    __FILE__, VChangeCamera, group);
+  theCommands.Add ("vautozfit", "command to enable or disable automatic z-range adjusting\n"
+    "   vautozfit [1|0]",
+    __FILE__,VAutoZFit, group);
+  theCommands.Add ("vzrange", "command to manually access znear and zfar values\n"
+    "   vzrange                - without parameters shows current values\n"
+    "   vzrange [znear] [zfar] - applies provided values to view",
+    __FILE__,VZRange, group);
   theCommands.Add("vantialiasing",
     "vantialiasing 1|0",
     __FILE__,VAntialiasing,group);

@@ -1,6 +1,6 @@
-// Created on: 2007-07-06
-// Created by: Alexander GRIGORIEV
-// Copyright (c) 2007-2014 OPEN CASCADE SAS
+// Created on: 2013-05-31
+// Created by: Anton POLETAEV
+// Copyright (c) 1999-2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -13,15 +13,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef Handle_NIS_View_HeaderFile
-#define Handle_NIS_View_HeaderFile
+#ifndef _Graphic3d_Camera_Handle_H__
+#define _Graphic3d_Camera_Handle_H__
 
-#include <Standard_DefineHandle.hxx>
-#include <Handle_V3d_View.hxx>
-
-class NIS_View;
-
-// Definition of HANDLE object using Standard_DefineHandle.hxx
-DEFINE_STANDARD_HANDLE (NIS_View, V3d_View)
+#include <Graphic3d_Camera.hxx>
+typedef Handle(Graphic3d_Camera) Graphic3d_Camera_Handle;
 
 #endif

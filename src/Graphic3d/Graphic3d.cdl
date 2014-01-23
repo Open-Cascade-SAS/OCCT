@@ -411,6 +411,7 @@ is
     
     imported MarkerImage;
     imported MarkerImage_Handle;
+    imported Camera_Handle;
 
     primitive PtrFrameBuffer;
     primitive Vec2;

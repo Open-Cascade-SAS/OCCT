@@ -13,7 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <OpenGl_GlCore11.hxx>
+#include <OpenGl_GlCore12.hxx>
 
 #include <InterfaceGraphic.hxx>
 
@@ -24,6 +24,7 @@
 
 #include <Aspect_GraphicDeviceDefinitionError.hxx>
 #include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
 
 IMPLEMENT_STANDARD_HANDLE(OpenGl_Window,MMgt_TShared)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Window,MMgt_TShared)
@@ -168,6 +169,21 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
   }
 
   int aPixelFrmtId = ChoosePixelFormat (aWindowDC, &aPixelFrmt);
+
+  // in case of failure try without stereo if any
+  if (aPixelFrmtId == 0 && theCaps->contextStereo)
+  {
+    TCollection_ExtendedString aMsg ("OpenGl_Window::CreateWindow: "
+                                     "ChoosePixelFormat is unable to find stereo supported pixel format. "
+                                     "Choosing similar non stereo format.");
+    myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
+                              GL_DEBUG_TYPE_OTHER_ARB,
+                              0, GL_DEBUG_SEVERITY_HIGH_ARB, aMsg);
+
+    aPixelFrmt.dwFlags &= ~PFD_STEREO;
+    aPixelFrmtId = ChoosePixelFormat (aWindowDC, &aPixelFrmt);
+  }
+
   if (aPixelFrmtId == 0)
   {
     ReleaseDC (aWindow, aWindowDC);
@@ -395,7 +411,8 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
     if (aVis != NULL)
     {
       // check Visual for OpenGl context's parameters compability
-      int isGl = 0, isDoubleBuffer = 0, isRGBA = 0, aDepthSize = 0, aStencilSize = 0;
+      int isGl = 0, isDoubleBuffer = 0, isRGBA = 0, isStereo = 0;
+      int aDepthSize = 0, aStencilSize = 0;
 
       if (glXGetConfig (aDisp, aVis, GLX_USE_GL, &isGl) != 0)
         isGl = 0;
@@ -406,13 +423,18 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
       if (glXGetConfig (aDisp, aVis, GLX_DOUBLEBUFFER, &isDoubleBuffer) != 0)
         isDoubleBuffer = 0;
 
+      if (glXGetConfig (aDisp, aVis, GLX_STEREO, &isStereo) != 0)
+        isStereo = 0;
+
       if (glXGetConfig (aDisp, aVis, GLX_DEPTH_SIZE, &aDepthSize) != 0)
         aDepthSize = 0;
 
       if (glXGetConfig (aDisp, aVis, GLX_STENCIL_SIZE, &aStencilSize) != 0)
         aStencilSize = 0;
 
-      if (!isGl || !aDepthSize || !aStencilSize || !isRGBA  || (isDoubleBuffer ? 1 : 0) != (myDisplay->DBuffer()? 1 : 0))
+      if (!isGl || !aDepthSize || !isRGBA  || !aStencilSize ||
+          (isDoubleBuffer ? 1 : 0) != (myDisplay->DBuffer()   ? 1 : 0) ||
+          (isStereo       ? 1 : 0) != (theCaps->contextStereo ? 1 : 0))
       {
         XFree (aVis);
         aVis = NULL;
@@ -444,9 +466,29 @@ OpenGl_Window::OpenGl_Window (const Handle(OpenGl_Display)& theDisplay,
       if (myDisplay->DBuffer())
         anAttribs[anIter++] = GLX_DOUBLEBUFFER;
 
+      // warning: this flag may be set to None, so it need to be last in anAttribs
+      Standard_Integer aStereoFlagPos = anIter;
+      if (theCaps->contextStereo)
+        anAttribs[anIter++] = GLX_STEREO;
+
       anAttribs[anIter++] = None;
 
       aVis = glXChooseVisual (aDisp, scr, anAttribs);
+
+      // in case of failure try without stereo if any
+      if (aVis == NULL && theCaps->contextStereo)
+      {
+        TCollection_ExtendedString aMsg ("OpenGl_Window::CreateWindow: "
+                                         "glXChooseVisual is unable to find stereo supported pixel format. "
+                                         "Choosing similar non stereo format.");
+        myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
+                                  GL_DEBUG_TYPE_OTHER_ARB,
+                                  0, GL_DEBUG_SEVERITY_HIGH_ARB, aMsg);
+
+        anAttribs[aStereoFlagPos] = None;
+        aVis = glXChooseVisual (aDisp, scr, anAttribs);
+      }
+
       if (aVis == NULL)
       {
         Aspect_GraphicDeviceDefinitionError::Raise ("OpenGl_Window::CreateWindow: glXChooseVisual failed.");
@@ -773,20 +815,32 @@ void OpenGl_Window::DisableFeatures() const
   * code for simplicity.)
   */
 
+  if ((myGlContext->myGlVerMajor >= 1) && (myGlContext->myGlVerMinor >= 2))
+  {
 #ifdef GL_EXT_convolution
-  glDisable(GL_CONVOLUTION_1D_EXT);
-  glDisable(GL_CONVOLUTION_2D_EXT);
-  glDisable(GL_SEPARABLE_2D_EXT);
+    if (myGlContext->CheckExtension ("GL_CONVOLUTION_1D_EXT"))
+      glDisable(GL_CONVOLUTION_1D_EXT);
+
+    if (myGlContext->CheckExtension ("GL_CONVOLUTION_2D_EXT"))
+      glDisable(GL_CONVOLUTION_2D_EXT);
+
+    if (myGlContext->CheckExtension ("GL_SEPARABLE_2D_EXT"))
+      glDisable(GL_SEPARABLE_2D_EXT);
 #endif
 
 #ifdef GL_EXT_histogram
-  glDisable(GL_HISTOGRAM_EXT);
-  glDisable(GL_MINMAX_EXT);
+    if (myGlContext->CheckExtension ("GL_SEPARABLE_2D_EXT"))
+      glDisable(GL_HISTOGRAM_EXT);
+
+    if (myGlContext->CheckExtension ("GL_MINMAX_EXT"))
+      glDisable(GL_MINMAX_EXT);
 #endif
 
 #ifdef GL_EXT_texture3D
-  glDisable(GL_TEXTURE_3D_EXT);
+    if (myGlContext->CheckExtension ("GL_TEXTURE_3D_EXT"))
+      glDisable(GL_TEXTURE_3D_EXT);
 #endif
+  }
 }
 
 // =======================================================================

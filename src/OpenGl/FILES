@@ -43,7 +43,6 @@ OpenGl_Workspace_5.cxx
 Handle_OpenGl_View.hxx
 OpenGl_View.hxx
 OpenGl_View.cxx
-OpenGl_View_1.cxx
 OpenGl_View_2.cxx
 OpenGl_Light.hxx
 OpenGl_Trihedron.hxx
@@ -70,8 +69,6 @@ OpenGl_PriorityList.cxx
 OpenGl_AVIWriter.hxx
 OpenGl_AVIWriter.cxx
 OpenGl_tsm.hxx
-OpenGl_telem_view.cxx
-OpenGl_telem_view.hxx
 OpenGl_FrameBuffer.hxx
 OpenGl_FrameBuffer.cxx
 OpenGl_Texture.cxx

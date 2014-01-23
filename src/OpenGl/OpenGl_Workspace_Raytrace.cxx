@@ -1957,13 +1957,23 @@ void GenerateCornerRays (const GLdouble theInvModelProj[16],
                               1.f);
 
       aOrigin = MatVecMult (theInvModelProj, aOrigin);
+      aOrigin.x() = aOrigin.x() / aOrigin.w();
+      aOrigin.y() = aOrigin.y() / aOrigin.w();
+      aOrigin.z() = aOrigin.z() / aOrigin.w();
+      aOrigin.w() = 1.f;
 
       OpenGl_RTVec4f aDirect (float(x),
                               float(y),
                               1.f,
                               1.f);
 
-      aDirect = MatVecMult (theInvModelProj, aDirect) - aOrigin;
+      aDirect = MatVecMult (theInvModelProj, aDirect);
+      aDirect.x() = aDirect.x() / aDirect.w();
+      aDirect.y() = aDirect.y() / aDirect.w();
+      aDirect.z() = aDirect.z() / aDirect.w();
+      aDirect.w() = 1.f;
+
+      aDirect = aDirect - aOrigin;
 
       GLdouble aInvLen = 1.f / sqrt (aDirect.x() * aDirect.x() +
                                      aDirect.y() * aDirect.y() +
@@ -2007,7 +2017,7 @@ Standard_Boolean OpenGl_Workspace::Raytrace (const Graphic3d_CView& theCView,
   TColStd_Array2OfReal theOrientation (0, 3, 0, 3);
   TColStd_Array2OfReal theViewMapping (0, 3, 0, 3);
 
-  myView->GetMatrices (theOrientation, theViewMapping, Standard_True);
+  myView->GetMatrices (theOrientation, theViewMapping);
 
   GLdouble aOrientationMatrix[16];
   GLdouble aViewMappingMatrix[16];

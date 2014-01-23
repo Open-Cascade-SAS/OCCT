@@ -25,7 +25,6 @@
 #include <gp_Ax3.hxx>
 #include <gp_GTrsf.hxx>
 #include <gp_Pln.hxx>
-#include <V3d_PerspectiveView.hxx>
 #include <Select3D_SensitiveEntity.hxx>
 #include <Graphic3d_ArrayOfPolylines.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
@@ -436,29 +435,8 @@ Standard_Boolean StdSelect_ViewerSelector3d::UpdateProj(const Handle(V3d_View)& 
       mycenter[jmod] = myprevcenter[jmod];
     }
 
-    gp_Dir Zpers (mycoeff[6], mycoeff[7], mycoeff[8]);
-    gp_Dir Ypers (mycoeff[3], mycoeff[4], mycoeff[5]);
-    gp_Dir Xpers = Ypers.Crossed (Zpers);
-    gp_XYZ loc (mycoeff[0], mycoeff[1], mycoeff[2]);
-    gp_Mat matrix;
-    matrix.SetCols (Xpers.XYZ(), Ypers.XYZ(), Zpers.XYZ());
-    gp_Mat matScale (mycoeff[11], 0, 0, 0, mycoeff[12], 0, 0, 0, mycoeff[13]);
-    matrix.Transpose();
-    loc.Multiply (matrix);
-    loc.Reverse ();
-    matrix.Multiply (matScale);
-    gp_GTrsf GT;
-    GT.SetTranslationPart (loc);
-    GT.SetVectorialPart (matrix);
+    myprj = new Select3D_Projector (aView);
 
-    myprj = new Select3D_Projector (GT, Pers, mycoeff[9]);
-
-    // SAV 08/05/02 : fix for detection problem in a perspective view
-    if (aView->Type() == V3d_PERSPECTIVE)
-      myprj->SetView (aView);
-    // NKV 31/07/07 : fix for detection problem in case of custom matrix
-    else if (aView->ViewOrientation().IsCustomMatrix())
-      myprj->SetView (aView);
   }
 
   if (Abs (aView->Scale() - mylastzoom) > 1.e-3)

@@ -84,14 +84,13 @@ uses
     Structure               from Graphic3d,
     SequenceOfStructure     from Graphic3d,
     MapOfStructure          from Graphic3d,
+    Camera_Handle           from Graphic3d,
 
     ContextView             from Visual3d,
     Layer                   from Visual3d,
     Light                   from Visual3d,
     SetOfLight              from Visual3d,
     TypeOfAnswer            from Visual3d,
-    ViewMapping             from Visual3d,
-    ViewOrientation         from Visual3d,
     ViewManager             from Visual3d,
     ViewManagerPtr          from Visual3d,
 
@@ -135,15 +134,6 @@ is
 	---Level: Public
 	---Purpose: Creates a view in the viewer <AManager> with a default
 	--	    orientation and a default mapping.
-
-	Create ( AManager	: mutable ViewManager from Visual3d;
-		 VO		: ViewOrientation from Visual3d;
-		 VM		: ViewMapping from Visual3d;
-		 CTX		: ContextView from Visual3d )
-		returns mutable View from Visual3d;
-	---Level: Public
-	---Purpose: Creates a view in the viewer <AManager> with the orientation
-	--	    <VO>, the mapping <VM>, and the context<CTX>.
 
 	---------------------------------------------------
 	-- Category: Methods to modify the class definition
@@ -308,26 +298,12 @@ is
 	--  Warning: Raises TransformError if the matrix isn't a 4x4 matrix.
 	raises TransformError from Visual3d is static;
 
-	SetViewMapping ( me	: mutable;
-			 VM	: ViewMapping from Visual3d )
-		is static;
-	---Level: Public
-	---Purpose: Modifies the mapping of the view <me>.
-	---Category: Methods to modify the class definition
-
 	SetViewMappingDefault ( me	: mutable )
 		is static;
 	---Level: Public
 	---Purpose: Saves the current mapping which will be the
 	--	    reference value for the reset of the mapping
 	--	    done by the ViewmappingReset method.
-	---Category: Methods to modify the class definition
-
-	SetViewOrientation ( me	: mutable;
-			     VO	: ViewOrientation from Visual3d )
-		is static;
-	---Level: Public
-	---Purpose: Modifies the orientation of <me>.
 	---Category: Methods to modify the class definition
 
 	SetViewOrientationDefault ( me	: mutable )
@@ -710,36 +686,24 @@ is
 	---Purpose: Returns the coordinates of the projection of the
 	--	    3d coordinates <AX>, <AY>, <AZ>.
 
-	Transform ( me )
-		returns Array2OfReal from TColStd
-		is static;
-	---Level: Public
-	---Purpose: Returns the transformation associated to the view <me>
-	---C++: return const &
+    DefaultCamera (me)
+        returns Camera_Handle from Graphic3d
+        is static;
+    ---Level: Public
+    ---Purpose: @return the default camera of <me>.
+    ---C++: return const &
 
-	ViewMapping ( me )
-		returns ViewMapping from Visual3d
-		is static;
-	---Level: Public
-	---Purpose: Returns the current mapping of the view <me>.
+    Camera (me)
+        returns Camera_Handle from Graphic3d
+        is static;
+    ---Level: Public
+    ---Purpose: @return the camera of <me>.
+    ---C++: return const &
 
-	ViewMappingDefault ( me )
-		returns ViewMapping from Visual3d
-		is static;
-	---Level: Public
-	---Purpose: Returns the current reset mapping of the view <me>.
-
-	ViewOrientation ( me )
-		returns ViewOrientation from Visual3d
-		is static;
-	---Level: Public
-	---Purpose: Returns the current orientation of the view <me>.
-
-	ViewOrientationDefault ( me )
-		returns ViewOrientation from Visual3d
-		is static;
-	---Level: Public
-	---Purpose: Returns the current reset orientation of the view <me>.
+    SetCamera (me : mutable; theCamera : Camera_Handle from Graphic3d) is static;
+    ---Level: Public
+    ---Purpose: Set camera object to provide orientation and projection matrices
+    -- for graphic driver.
 
 	Window ( me )
 		returns Window from Aspect
@@ -922,22 +886,6 @@ is
 	---Purpose: Returns true if the structure <AStructure> is
 	--	    displayed in the view <me>.
 	---Category: Private methods
-
-	MatrixOfMapping ( me	: mutable )
-		returns Array2OfReal from TColStd
-		is static; -- private;
-	---C++: return const &
-	---Level: Internal
-	---Purpose: Returns the current matrix of mapping of the view <me>.
-	--  Warning: Stores the current matrix of mapping.
-
-	MatrixOfOrientation ( me	: mutable )
-		returns Array2OfReal from TColStd
-		is static; -- private;
-	---C++: return const &
-	---Level: Internal
-	---Purpose: Returns the current matrix of orientation of the view <me>.
-	--  Warning: Stores the current matrix of orientation.
 
 	SetRatio ( me	: mutable )
 		is static private;
@@ -1181,9 +1129,6 @@ fields
 -- Reminder	:	A view is defined by:
 --			- a ViewManager
 --			- a ContextView
---			- a ViewMapping
---			- a ViewOrientation
---
 
 	-- the associated C structure
 	MyCView			:	CView from Graphic3d;
@@ -1191,27 +1136,8 @@ fields
 	-- the context of the view : Aliasing, Depth-Cueing, Lights ...
 	MyContext		:	ContextView from Visual3d;
 
-	-- the current mapping of the view
-	MyViewMapping		:	ViewMapping from Visual3d;
-
-	-- the reset mapping of the view
-	MyViewMappingReset	:	ViewMapping from Visual3d;
-
-	-- the current orientation of the view
-	MyViewOrientation	:	ViewOrientation from Visual3d;
-
-	-- the reset orientation of the view
-	MyViewOrientationReset	:	ViewOrientation from Visual3d;
-
 	-- the associated window
 	MyWindow		:	Window from Aspect;
-
-	-- the transformation
-	MyTransformation	:	Array2OfReal from TColStd;
-
-	-- the matrix management
-	MyMatrixOfMapping	:	Array2OfReal from TColStd;
-	MyMatrixOfOrientation	:	Array2OfReal from TColStd;
 
 	-- association Structure_COMPUTE and Structure_Computed
 	MyTOCOMPUTESequence	:	SequenceOfStructure from Graphic3d;
@@ -1237,6 +1163,8 @@ fields
 	MyCBitFields		:	CBitFields8 from Graphic3d;
 
 	MyGTrihedron        :   CGraduatedTrihedron from Graphic3d;
+
+    myDefaultCamera     :   Camera_Handle from Graphic3d;
 
 friends
 

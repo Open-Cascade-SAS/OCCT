@@ -90,10 +90,10 @@ public:
   Standard_EXPORT const OpenGl_ProjectionState& ProjectionState() const;
 
   //! Updates state of OCCT projection transform.
-  Standard_EXPORT void UpdateProjectionStateTo (const Tmatrix3& theProjectionMatrix);
+  Standard_EXPORT void UpdateProjectionStateTo (const Tmatrix3* theProjectionMatrix);
 
   //! Reverts state of OCCT projection transform.
-  Standard_EXPORT void RevertProjectionStateTo (const Tmatrix3& theProjectionMatrix);
+  Standard_EXPORT void RevertProjectionStateTo (const Tmatrix3* theProjectionMatrix);
 
   //! Pushes current state of OCCT projection transform to specified program.
   Standard_EXPORT void PushProjectionState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
@@ -104,10 +104,10 @@ public:
   Standard_EXPORT const OpenGl_ModelWorldState& ModelWorldState() const;
 
   //! Updates state of OCCT model-world transform.
-  Standard_EXPORT void UpdateModelWorldStateTo (const Tmatrix3& theModelWorldMatrix);
+  Standard_EXPORT void UpdateModelWorldStateTo (const Tmatrix3* theModelWorldMatrix);
 
   //! Reverts state of OCCT model-world transform.
-  Standard_EXPORT void RevertModelWorldStateTo (const Tmatrix3& theModelWorldMatrix);
+  Standard_EXPORT void RevertModelWorldStateTo (const Tmatrix3* theModelWorldMatrix);
 
   //! Pushes current state of OCCT model-world transform to specified program.
   Standard_EXPORT void PushModelWorldState (const Handle(OpenGl_ShaderProgram)& theProgram) const;
@@ -118,10 +118,10 @@ public:
   Standard_EXPORT const OpenGl_WorldViewState& WorldViewState() const;
 
   //! Updates state of OCCT world-view transform.
-  Standard_EXPORT void UpdateWorldViewStateTo (const Tmatrix3& theWorldViewMatrix);
+  Standard_EXPORT void UpdateWorldViewStateTo (const Tmatrix3* theWorldViewMatrix);
 
   //! Reverts state of OCCT world-view transform.
-  Standard_EXPORT void RevertWorldViewStateTo (const Tmatrix3& theWorldViewMatrix);
+  Standard_EXPORT void RevertWorldViewStateTo (const Tmatrix3* theWorldViewMatrix);
 
   //! Pushes current state of OCCT world-view transform to specified program.
   Standard_EXPORT void PushWorldViewState (const Handle(OpenGl_ShaderProgram)& theProgram) const;

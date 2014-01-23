@@ -1169,6 +1169,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\..\..\Common\OCC_StereoConfigDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\Common\RadiusParamsPage.cpp"
 				>
 			</File>
@@ -1837,6 +1841,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\..\Common\res\OCC_Resource.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Common\OCC_StereoConfigDlg.h"
 				>
 			</File>
 			<File

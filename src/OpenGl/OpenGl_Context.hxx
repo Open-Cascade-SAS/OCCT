@@ -33,6 +33,7 @@
 #include <TCollection_AsciiString.hxx>
 #include <Handle_OpenGl_Context.hxx>
 #include <OpenGl_Clipping.hxx>
+#include <OpenGl_GlCore11.hxx>
 
 //! Forward declarations
 struct OpenGl_GlCore12;
@@ -195,11 +196,17 @@ public:
   //! Swap front/back buffers for this GL context (should be activated before!).
   Standard_EXPORT void SwapBuffers();
 
-  //! Return true if active mode is GL_FEEDBACK (cached state)
-  Standard_EXPORT Standard_Boolean IsFeedback() const;
+  //! Return true if active mode is GL_RENDER (cached state)
+  Standard_Boolean IsRender() const
+  {
+    return myRenderMode == GL_RENDER;
+  }
 
-  //! Setup feedback mode cached state
-  Standard_EXPORT void SetFeedback (const Standard_Boolean theFeedbackOn);
+  //! Return true if active mode is GL_FEEDBACK (cached state)
+  Standard_Boolean IsFeedback() const
+  {
+    return myRenderMode == GL_FEEDBACK;
+  }
 
   //! This function retrieves information from GL about free GPU memory that is:
   //!  - OS-dependent. On some OS it is per-process and on others - for entire system.
@@ -305,6 +312,36 @@ public:
                                     const unsigned int theSeverity,
                                     const TCollection_ExtendedString& theMessage);
 
+
+
+  //! @return true if OpenGl context supports left and
+  //! right rendering buffers.
+  Standard_Boolean HasStereoBuffers() const
+  {
+    return myIsStereoBuffers;
+  }
+
+  //! Switch to left stereographic rendering buffer.
+  //! This method can be used to keep unchanged choise
+  //! of front/back/both buffer rendering.
+  Standard_EXPORT void SetDrawBufferLeft();
+
+  //! Switch to right stereographic rendering buffer.
+  //! This method can be used to keep unchanged choise
+  //! of front/back/both buffer rendering.
+  Standard_EXPORT void SetDrawBufferRight();
+
+  //! Switch to non-stereographic rendering buffer.
+  //! This method can be used to keep unchanged choise
+  //! of front/back/both buffer rendering.
+  Standard_EXPORT void SetDrawBufferMono();
+
+  //! Fetch OpenGl context state. This class tracks value of several OpenGl
+  //! state variables. Consulting the cached values is quicker than
+  //! doing the same via OpenGl API. Call this method if any of the controlled
+  //! OpenGl state variables has a possibility of being out-of-date.
+  Standard_EXPORT void FetchState();
+
 private:
 
   //! Wrapper to system function to retrieve GL function pointer by name.
@@ -370,15 +407,17 @@ private: // context info
 
   OpenGl_Clipping myClippingState; //!< state of clip planes
 
-  void*            myGlLibHandle;   //!< optional handle to GL library
-  OpenGl_GlCore20* myGlCore20;      //!< common structure for GL core functions upto 2.0
-  Standard_Integer myAnisoMax;      //!< maximum level of anisotropy texture filter
-  Standard_Integer myMaxTexDim;     //!< value for GL_MAX_TEXTURE_SIZE
-  Standard_Integer myMaxClipPlanes; //!< value for GL_MAX_CLIP_PLANES
-  Standard_Integer myGlVerMajor;    //!< cached GL version major number
-  Standard_Integer myGlVerMinor;    //!< cached GL version minor number
-  Standard_Boolean myIsFeedback;    //!< flag indicates GL_FEEDBACK mode
-  Standard_Boolean myIsInitialized; //!< flag indicates initialization state
+  void*            myGlLibHandle;     //!< optional handle to GL library
+  OpenGl_GlCore20* myGlCore20;        //!< common structure for GL core functions upto 2.0
+  Standard_Integer myAnisoMax;        //!< maximum level of anisotropy texture filter
+  Standard_Integer myMaxTexDim;       //!< value for GL_MAX_TEXTURE_SIZE
+  Standard_Integer myMaxClipPlanes;   //!< value for GL_MAX_CLIP_PLANES
+  Standard_Integer myGlVerMajor;      //!< cached GL version major number
+  Standard_Integer myGlVerMinor;      //!< cached GL version minor number
+  Standard_Integer myRenderMode;      //!< value for active rendering mode
+  Standard_Boolean myIsInitialized;   //!< flag indicates initialization state
+  Standard_Boolean myIsStereoBuffers; //!< context supports stereo buffering
+  Standard_Integer myDrawBuffer;      //!< current draw buffer.
 
   Handle(OpenGl_ShaderManager) myShaderManager; //! support object for managing shader programs
 

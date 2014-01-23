@@ -25,7 +25,6 @@
 #include <PrsMgr_Prs.hxx>
 #include <PrsMgr_ModedPresentation.hxx>
 #include <Visual3d_View.hxx>
-#include <Visual3d_ViewOrientation.hxx>
 #include <Graphic3d_Structure.hxx>
 #include <Precision.hxx>
 
@@ -343,25 +342,26 @@ void PrsMgr_Presentation3d::Compute(const Handle(Graphic3d_DataStructureManager)
 //purpose  : 
 //=======================================================================
 
-Handle(Prs3d_Projector) PrsMgr_Presentation3d::Projector(const Handle(Graphic3d_DataStructureManager)& aProjector) {
-  Visual3d_ViewOrientation VO = Handle(Visual3d_View)::DownCast(aProjector)->ViewOrientation();
+Handle(Prs3d_Projector) PrsMgr_Presentation3d::Projector(const Handle(Graphic3d_DataStructureManager)& aProjector)
+{
+  const Handle(Graphic3d_Camera)& aCamera = Handle(Visual3d_View)::DownCast (aProjector)->Camera();
+
   Standard_Real DX, DY, DZ,XAt, YAt , ZAt,XUp, YUp, ZUp;
-  VO.ViewReferencePlane().Coord(DX, DY, DZ);
-  VO.ViewReferencePoint().Coord(XAt,YAt,ZAt);
-  VO.ViewReferenceUp().Coord(XUp, YUp, ZUp);
-  Visual3d_ViewMapping VM =  Handle(Visual3d_View)::DownCast(aProjector)->ViewMapping();
-  Standard_Boolean pers = (VM.Projection() == Visual3d_TOP_PERSPECTIVE);
-    Standard_Real focale = 0.0 ;
-  if (pers) {
-    Standard_Real Xrp,Yrp,Zrp,ViewPlane,FrontPlane ;
-    Graphic3d_Vertex Prp = VM.ProjectionReferencePoint() ;
-    Prp.Coord(Xrp,Yrp,Zrp);
-    FrontPlane = VM.FrontPlaneDistance() ;
-    ViewPlane = VM.ViewPlaneDistance() ;
-    focale = FrontPlane + Zrp - ViewPlane ;
-  }
-  Handle(Prs3d_Projector) Proj = new Prs3d_Projector(pers,focale,DX, DY, DZ,XAt, YAt , ZAt,XUp, YUp, ZUp);
-  return Proj;
+  gp_Dir aDir = aCamera->Direction().Reversed();
+  DX = aDir.X(); DY = aDir.Y(); DZ = aDir.Z();
+
+  gp_Pnt anAt = aCamera->Center();
+  XAt = anAt.X(); YAt = anAt.Y(); ZAt = anAt.Z();
+
+  gp_Dir anUp = aCamera->Up();
+  XUp = anUp.X(); YUp = anUp.Y(); ZUp = anUp.Z();
+
+  Standard_Boolean pers = !aCamera->IsOrthographic();
+  Standard_Real focale  =  aCamera->Scale();
+
+  Handle(Prs3d_Projector) aProj = 
+    new Prs3d_Projector(pers, focale, DX, DY, DZ, XAt, YAt, ZAt, XUp, YUp, ZUp);
+  return aProj;
 
 }
 

@@ -27,11 +27,13 @@ public:
   }
 
 // Implementation
-	//{{AFX_MSG(OCC_BaseApp)
-	afx_msg void OnAppAbout();
-		// NOTE - the ClassWizard will add and remove member functions here.
-		//    DO NOT EDIT what you see in these blocks of generated code !
-	//}}AFX_MSG
+  //{{AFX_MSG(OCC_BaseApp)
+  afx_msg void OnAppAbout();
+  afx_msg void OnStereo();
+  afx_msg void OnUpdateStereo (CCmdUI* theCmdUI);
+    // NOTE - the ClassWizard will add and remove member functions here.
+    //    DO NOT EDIT what you see in these blocks of generated code !
+   //}}AFX_MSG
    DECLARE_MESSAGE_MAP()
 protected:
   Handle_Graphic3d_GraphicDriver myGraphicDriver;

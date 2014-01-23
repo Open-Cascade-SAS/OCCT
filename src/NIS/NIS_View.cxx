@@ -23,8 +23,8 @@
 
 #include <OpenGl_GlCore11.hxx>
 
-IMPLEMENT_STANDARD_HANDLE  (NIS_View, V3d_OrthographicView)
-IMPLEMENT_STANDARD_RTTIEXT (NIS_View, V3d_OrthographicView)
+IMPLEMENT_STANDARD_HANDLE  (NIS_View, V3d_View)
+IMPLEMENT_STANDARD_RTTIEXT (NIS_View, V3d_View)
 
 //=======================================================================
 //function : NIS_View()
@@ -33,7 +33,7 @@ IMPLEMENT_STANDARD_RTTIEXT (NIS_View, V3d_OrthographicView)
 
 NIS_View::NIS_View (const Handle(V3d_Viewer)&    theViewer,
                     const Handle(Aspect_Window)& theWindow)
-  : V3d_OrthographicView (theViewer),
+  : V3d_View (theViewer),
     myIsTopHilight(Standard_False),
     myDoHilightSelected(Standard_True)
 {
@@ -107,78 +107,109 @@ void NIS_View::RemoveContext (NIS_InteractiveContext * theCtx)
 Standard_Boolean NIS_View::FitAll3d (const Quantity_Coefficient theCoef)
 {
   Standard_Boolean aResult(Standard_False);
-  /*
-  Standard_Integer aLimp[4] = { 1000000, -1000000, 1000000, -1000000 };
-  GetBndBox( aLimp[0], aLimp[1], aLimp[2], aLimp[3] );
-  if (aLimp[1] > -1000000 && aLimp[3] > -1000000 &&
-      aLimp[0] < aLimp[1] && aLimp[2] < aLimp[3])
-  {
-    // Scale the view
-    WindowFit (aLimp[0], aLimp[2], aLimp[1], aLimp[3]);
-    aResult = Standard_True;
-  }
-  */
 
   Bnd_B3f aBox = GetBndBox();
 
   // Check that the box is not empty
-  if (aBox.IsVoid() == Standard_False && MyView->IsDefined() == Standard_True) {
+  if (aBox.IsVoid() == Standard_False && MyView->IsDefined() == Standard_True)
+  {
     // Convert the 3D box to 2D representation in view coordinates
-    Standard_Real Umin = 0.,Umax = 0.,Vmin = 0.,Vmax = 0.,U,V,W;
     gp_XYZ aCoord;
 
     const gp_XYZ aCorner[2] = { aBox.CornerMin(), aBox.CornerMax() };
 
+    // Fit depth
+    const gp_XYZ& aBMin = aCorner[0];
+    const gp_XYZ& aBMax = aCorner[1];
+
+    gp_Pnt anAABBCenter ((aBMin.X() + aBMax.X()) * 0.5,
+                         (aBMin.Y() + aBMax.Y()) * 0.5,
+                         (aBMin.Z() + aBMax.Z()) * 0.5);
+
+    gp_Vec aCenter2AABB (myCamera->Center(), anAABBCenter);
+    gp_Dir aDir = myCamera->Direction();
+
+    // distance projection onto camera direction
+    Standard_Real aDistToBox = -aCenter2AABB.Dot (aDir);
+    gp_Vec aZShift = gp_Vec (aDir).Reversed().Scaled (aDistToBox);
+
+    gp_Pnt anEyeBefore   = myCamera->Eye();
+    gp_Pnt aCenterBefore = myCamera->Center();
+
+    myCamera->BeginUpdate();
+    myCamera->SetEye (myCamera->Eye().Translated (aZShift));
+    myCamera->SetCenter (myCamera->Center().Translated (aZShift));
+    myCamera->EndUpdate();
+
+    Standard_Real Umin = RealLast();
+    Standard_Real Umax = RealFirst();
+    Standard_Real Vmin = RealLast();
+    Standard_Real Vmax = RealFirst();
+    Standard_Real U, V, W;
+
     Standard_Boolean doFit = Standard_True;
-    while (doFit) {
+    while (doFit) 
+    {
+      for (Standard_Integer i = 0; i < 8; i++) {
+        if (i & 0x1) aCoord.SetX (aCorner[0].X());
+        else         aCoord.SetX (aCorner[1].X());
+        if (i & 0x2) aCoord.SetY (aCorner[0].Y());
+        else         aCoord.SetY (aCorner[1].Y());
+        if (i & 0x4) aCoord.SetZ (aCorner[0].Z());
+        else         aCoord.SetZ (aCorner[1].Z());
 
-    for (Standard_Integer i = 0; i < 8; i++) {
-      if (i & 0x1) aCoord.SetX (aCorner[0].X());
-      else         aCoord.SetX (aCorner[1].X());
-      if (i & 0x2) aCoord.SetY (aCorner[0].Y());
-      else         aCoord.SetY (aCorner[1].Y());
-      if (i & 0x4) aCoord.SetZ (aCorner[0].Z());
-      else         aCoord.SetZ (aCorner[1].Z());
-
-      MyView->Projects(aCoord.X(), aCoord.Y(), aCoord.Z(), U, V, W);
-      if (i) {
-        Umin = Min(Umin, U); Umax = Max(Umax, U);
-        Vmin = Min(Vmin, V); Vmax = Max(Vmax, V);
+        MyView->Projects(aCoord.X(), aCoord.Y(), aCoord.Z(), U, V, W);
+        if (i) {
+          Umin = Min(Umin, U); Umax = Max(Umax, U);
+          Vmin = Min(Vmin, V); Vmax = Max(Vmax, V);
+        }
+        else {
+          Umin = Umax = U;
+          Vmin = Vmax = V;
+        }
       }
-      else {
-        Umin = Umax = U;
-        Vmin = Vmax = V;
+
+      if ( (Umax > Umin) && (Vmax > Vmin) )
+      {
+        gp_Pnt ViewDims = myCamera->ViewDimensions();
+        Standard_Real DxvOld = ViewDims.X();
+
+        Standard_Real Xrp, Yrp, DxvNew, DyvNew;
+
+        DxvNew = Abs(Umax - Umin); DyvNew = Abs(Vmax - Vmin);
+        DxvNew *= (1. + theCoef);
+        DyvNew *= (1. + theCoef);
+
+        Standard_Real aRatio = DxvNew / DxvOld;
+
+        Xrp = (Umin + Umax)/2. ; Yrp = (Vmin + Vmax)/2. ;
+        Umin = Xrp - DxvNew/2. ; Umax = Xrp + DxvNew/2. ;
+        Vmin = Yrp - DyvNew/2. ; Vmax = Yrp + DyvNew/2. ;
+
+        // fit view
+        FitAll (Umin, Vmin, Umax, Vmax);
+
+        // ratio 1e+6 often gives calculation error(s), reduce it
+        // if (aRatio < 1e+6) doFit = Standard_False;
+        if (aRatio < 100)
+        {
+          doFit = Standard_False;
+        }
+
+        aResult = Standard_True;
+      }
+      else
+      {
+        doFit = Standard_False;
       }
     }
 
-    if ( (Umax > Umin) && (Vmax > Vmin) ) {
-      Standard_Real OldUmin,OldUmax,OldVmin,OldVmax;
-      MyViewMapping.WindowLimit(OldUmin, OldVmin, OldUmax, OldVmax);
-      Standard_Real DxvOld = Abs(OldUmax - OldUmin);
-
-      // make a margin
-      Standard_Real Xrp, Yrp, DxvNew, DyvNew;
-
-      DxvNew = Abs(Umax - Umin); DyvNew = Abs(Vmax - Vmin);
-      DxvNew *= (1. + theCoef);
-      DyvNew *= (1. + theCoef);
-
-      Standard_Real aRatio = DxvNew / DxvOld;
-
-      Xrp = (Umin + Umax)/2. ; Yrp = (Vmin + Vmax)/2. ;
-      Umin = Xrp - DxvNew/2. ; Umax = Xrp + DxvNew/2. ;
-      Vmin = Yrp - DyvNew/2. ; Vmax = Yrp + DyvNew/2. ;
-
-      // fit view
-      FitAll(Umin, Vmin, Umax, Vmax);
-
-      // ratio 1e+6 often gives calculation error(s), reduce it
-      // if (aRatio < 1e+6) doFit = Standard_False;
-      if (aRatio < 100) doFit = Standard_False;
-      aResult = Standard_True;
-    }
-    else doFit = Standard_False;
-
+    if (!aResult)
+    {
+      myCamera->BeginUpdate();
+      myCamera->SetCenter (aCenterBefore);
+      myCamera->SetEye (anEyeBefore);
+      myCamera->EndUpdate();
     }
   }
 

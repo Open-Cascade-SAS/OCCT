@@ -6,13 +6,14 @@ puts "========"
 vinit
 box b 100 900 300
 vdisplay b
-vfit
 
 OCC280 0 0
 
 # selected point
-set x_coord 218
-set y_coord 196
+set x_coord 22
+set y_coord 230
+
+vfit
 
 # There is not selection
 puts "There is not selection"

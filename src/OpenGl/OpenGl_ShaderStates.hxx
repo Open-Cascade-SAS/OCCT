@@ -53,7 +53,7 @@ public:
   OpenGl_ProjectionState();
 
   //! Sets new projection matrix.
-  void Set (const Tmatrix3& theProjectionMatrix);
+  void Set (const Tmatrix3* theProjectionMatrix);
 
   //! Returns current projection matrix.
   const Tmatrix3& ProjectionMatrix() const;
@@ -78,7 +78,7 @@ public:
   OpenGl_ModelWorldState();
 
   //! Sets new model-world matrix.
-  void Set (const Tmatrix3& theModelWorldMatrix);
+  void Set (const Tmatrix3* theModelWorldMatrix);
 
   //! Returns current model-world matrix.
   const Tmatrix3& ModelWorldMatrix() const;
@@ -103,7 +103,7 @@ public:
   OpenGl_WorldViewState();
   
   //! Sets new world-view matrix.
-  void Set (const Tmatrix3& theWorldViewMatrix);
+  void Set (const Tmatrix3* theWorldViewMatrix);
 
   //! Returns current world-view matrix.
   const Tmatrix3& WorldViewMatrix() const;

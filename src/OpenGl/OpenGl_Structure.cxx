@@ -617,9 +617,9 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
         Tmatrix3 aProjection;
         glGetFloatv (GL_PROJECTION_MATRIX, *aProjection);
 
-        aCtx->ShaderManager()->UpdateModelWorldStateTo (aModelWorld);
-        aCtx->ShaderManager()->UpdateWorldViewStateTo (aWorldView);
-        aCtx->ShaderManager()->UpdateProjectionStateTo (aProjection);
+        aCtx->ShaderManager()->UpdateModelWorldStateTo (&aModelWorld);
+        aCtx->ShaderManager()->UpdateWorldViewStateTo (&aWorldView);
+        aCtx->ShaderManager()->UpdateProjectionStateTo (&aProjection);
       }
 
       glMatrixMode (GL_MODELVIEW);
@@ -767,7 +767,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
                                     { 0.f, 0.f, 1.f, 0.f },
                                     { 0.f, 0.f, 0.f, 1.f } };
 
-      aContext->ShaderManager()->RevertModelWorldStateTo (aModelWorldState);
+      aContext->ShaderManager()->RevertModelWorldStateTo (&aModelWorldState);
     }
     else
     {

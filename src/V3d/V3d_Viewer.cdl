@@ -61,8 +61,6 @@ uses
         Background from Aspect,
         GradientBackground from Aspect,
         Parameter from Quantity,
-        OrthographicView from V3d,
-        PerspectiveView from V3d,
         AsciiString,ExtendedString from TCollection,
         Ax3 from gp,Structure from Graphic3d,
         Vertex from Graphic3d,

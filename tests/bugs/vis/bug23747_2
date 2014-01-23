@@ -7,7 +7,7 @@ puts ""
 vinit
 vclear
 vaxo
-box b 10 20 30
+psphere b 20
 vdisplay b
 vsetdispmode b 1
 vfit

@@ -36,7 +36,6 @@
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <Visual3d_TypeOfSurfaceDetail.hxx>
 
-#include <OpenGl_telem_view.hxx>
 #include <OpenGl_LayerList.hxx>
 #include <OpenGl_Light.hxx>
 
@@ -62,15 +61,6 @@ struct OPENGL_BG_GRADIENT
   Aspect_GradientFillMethod type;
 };
 
-struct OPENGL_EXTRA_REP
-{
-  Tfloat  vrp[3];
-  Tfloat  vpn[3];
-  Tfloat  vup[3];
-  TEL_VIEW_MAPPING map;
-  Tfloat  scaleFactors[3];
-};
-
 struct OPENGL_ZCLIP
 {
   struct {
@@ -91,6 +81,7 @@ struct OPENGL_FOG
   TEL_COLOUR         Color;
 };
 
+struct OpenGl_Matrix;
 class OpenGl_GraduatedTrihedron;
 class OpenGl_Structure;
 class OpenGl_Trihedron;
@@ -114,9 +105,9 @@ class OpenGl_View : public MMgt_TShared
   void SetClipPlanes (const Graphic3d_SequenceOfHClipPlane &thePlanes) { myClipPlanes = thePlanes; }
   void SetVisualisation (const CALL_DEF_VIEWCONTEXT &AContext);
 
+  void SetCamera (const Handle(Graphic3d_Camera)& theCamera) { myCamera = theCamera; }
+
   void SetClipLimit (const Graphic3d_CView& theCView);
-  void SetMapping (const Handle(OpenGl_Display)& theGlDisplay, const Graphic3d_CView& theCView);
-  void SetOrientation (const Graphic3d_CView& theCView);
 
   void SetFog (const Graphic3d_CView& theCView, const Standard_Boolean theFlag);
 
@@ -131,22 +122,8 @@ class OpenGl_View : public MMgt_TShared
                                   const Graphic3d_CGraduatedTrihedron& theCubic);
   void GraduatedTrihedronErase (const Handle(OpenGl_Context)& theCtx);
 
-  Standard_Boolean ProjectObjectToRaster (const Standard_Integer w, const Standard_Integer h,
-                                          const Standard_ShortReal x, const Standard_ShortReal y, const Standard_ShortReal z,
-                                          Standard_ShortReal &xr, Standard_ShortReal &yr);
-  Standard_Boolean ProjectRasterToObject (const Standard_Integer w, const Standard_Integer h,
-                                          const Standard_Integer xr, const Standard_Integer yr,
-                                          Standard_ShortReal &x, Standard_ShortReal &y, Standard_ShortReal &z);
-  Standard_Boolean ProjectRasterToObjectWithRay (const Standard_Integer w, const Standard_Integer h,
-                                                 const Standard_Integer xr, const Standard_Integer yr,
-                                                 Standard_ShortReal &x, Standard_ShortReal &y, Standard_ShortReal &z,
-                                                 Standard_ShortReal &dx, Standard_ShortReal &dy, Standard_ShortReal &dz);
-  void GetMatrices (TColStd_Array2OfReal&  theMatOrient,
-                    TColStd_Array2OfReal&  theMatMapping,
-                    const Standard_Boolean theIsCustom) const;
-
-  Standard_Real Height () const { return (myExtra.map.window.xmax - myExtra.map.window.xmin); }
-  Standard_Real Width () const { return (myExtra.map.window.ymax - myExtra.map.window.ymin); }
+  Standard_Real Height () const { return myCamera->ViewDimensions().X(); }
+  Standard_Real Width () const { return myCamera->ViewDimensions().Y(); }
 
   Standard_Integer Backfacing () const { return myBackfacing; }
 
@@ -202,6 +179,9 @@ class OpenGl_View : public MMgt_TShared
   //! Returns visualization mode for objects in the view.
   Visual3d_TypeOfSurfaceDetail SurfaceDetail() const { return mySurfaceDetail; }
 
+  void GetMatrices (TColStd_Array2OfReal&  theMatOrient,
+                    TColStd_Array2OfReal&  theMatMapping) const;
+
 #ifdef HAVE_OPENCL
   //! Returns modification state for ray-tracing.
   Standard_Size ModificationState() const { return myModificationState; }
@@ -218,6 +198,20 @@ public:
                       const Graphic3d_CView&               theCView,
                       const Aspect_CLayer2d&               theCLayer);
 
+  //! Redraw contents of model scene: clipping planes,
+  //! lights, structures. The peculiar properties of "scene" is that
+  //! it requires empty Z-Buffer and uses projection and orientation
+  //! matrices supplied by 3d view.
+  //! @param thePrintCtx [in] printer context which facilitates tiled printing.
+  //! @param theWorkspace [in] rendering workspace.
+  //! @param theCView [in] view data.
+  //! @param theProjection [in] view projection matrix.
+  //! @param theOrientation [in] view orientation matrix.
+  void RedrawScene (const Handle(OpenGl_PrinterContext)& thePrintContext,
+                    const Handle(OpenGl_Workspace)& theWorkspace,
+                    const OpenGl_Matrix* theProjection,
+                    const OpenGl_Matrix* theOrientation);
+
   Handle(OpenGl_Texture) myTextureEnv;
   Visual3d_TypeOfSurfaceDetail mySurfaceDetail; //WSSurfaceDetail
   Standard_Integer myBackfacing; //WSBackfacing
@@ -225,22 +219,12 @@ public:
   OPENGL_BG_TEXTURE myBgTexture; //WSBgTexture
   OPENGL_BG_GRADIENT myBgGradient; //WSBgGradient
 
-  //{ myViewRep
-  Tmatrix3    myOrientationMatrix;
-  Tmatrix3    myMappingMatrix;
-
-  //Tint        shield_indicator;
-  //TEL_COLOUR  shield_colour;
-  //Tint        border_indicator;
-  //TEL_COLOUR  border_colour;
-  //Tint        active_status;
-
   OPENGL_ZCLIP   myZClip;
-  OPENGL_EXTRA_REP myExtra;
-  //}
 
   Graphic3d_SequenceOfHClipPlane myClipPlanes;
   
+  Handle(Graphic3d_Camera) myCamera;
+
   OPENGL_FOG myFog;
   OpenGl_Trihedron*          myTrihedron;
   OpenGl_GraduatedTrihedron* myGraduatedTrihedron;
@@ -263,10 +247,11 @@ public:
   const TEL_TRANSFORM_PERSISTENCE *myTransPers;
   Standard_Boolean myIsTransPers;
 
+  //! Modification state
+  Standard_Size myProjectionState;
+  Standard_Size myModelViewState;
   OpenGl_StateCounter* myStateCounter;
 
-  Standard_Size myCurrOrientationState; // <-- delete it after merge with new camera
-  Standard_Size myCurrViewMappingState; // <-- delete it after merge with new camera
   Standard_Size myCurrLightSourceState;
 
   typedef std::pair<Standard_Size, Standard_Size> StateInfo;

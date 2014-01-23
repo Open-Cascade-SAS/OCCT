@@ -259,18 +259,6 @@ is
     ---Purpose: 3D Visualiser
     ---Category: The classes
 
-    class ViewMapping;
-    ---Purpose: This class describes a projection and a system of
-    --      coordinates called NPC.(Normalized Projection Coordinates)
-    ---Category: The classes
-
-    class ViewOrientation;
-    ---Purpose: This class describes the manner in which the
-    --      observer looks at the visualised scene.
-    --      It defines a coordinates system called VRC
-    --      (View Reference Coordinates) with 3 axes U,V,N
-    ---Category: The classes
-
     class TransientManager;
     ---Purpose: 3D Transient Visualiser
     ---Category: The classes

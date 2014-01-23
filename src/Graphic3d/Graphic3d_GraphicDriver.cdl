@@ -123,13 +123,6 @@ is
         is deferred;
     ---Purpose: call_togl_inquirelight
 
-    InquireMat ( me     : mutable;
-                 ACView : CView from Graphic3d;
-                 AMatO  : out Array2OfReal from TColStd;
-                 AMatM  : out Array2OfReal from TColStd )
-        is deferred;
-    ---Purpose: call_togl_inquiremat
-
     InquirePlaneLimit ( me  : mutable )
         returns Integer from Standard
         is deferred;
@@ -325,50 +318,6 @@ is
         is deferred;
     ---Purpose: call_togl_cliplimit
 
-    ProjectRaster ( me      : mutable;
-                    ACView  : CView from Graphic3d;
-                    AX      : ShortReal from Standard;
-                    AY      : ShortReal from Standard;
-                    AZ      : ShortReal from Standard;
-                    AU      : out Integer from Standard;
-                    AV      : out Integer from Standard )
-        returns Boolean from Standard
-        is deferred;
-    ---Purpose: call_togl_unproject_raster
-
-    UnProjectRaster ( me        : mutable;
-                      ACView    : CView from Graphic3d;
-                      Axm       : Integer from Standard;
-                      Aym       : Integer from Standard;
-                      AXM       : Integer from Standard;
-                      AYM       : Integer from Standard;
-                      AU        : Integer from Standard;
-                      AV        : Integer from Standard;
-                      AX        : out ShortReal from Standard;
-                      AY        : out ShortReal from Standard;
-                      AZ        : out ShortReal from Standard )
-        returns Boolean from Standard
-        is deferred;
-    ---Purpose: call_togl_unproject_raster
-
-    UnProjectRasterWithRay ( me        : mutable;
-                             ACView    : CView from Graphic3d;
-                             Axm       : Integer from Standard;
-                             Aym       : Integer from Standard;
-                             AXM       : Integer from Standard;
-                             AYM       : Integer from Standard;
-                             AU        : Integer from Standard;
-                             AV        : Integer from Standard;
-                             AX        : out ShortReal from Standard;
-                             AY        : out ShortReal from Standard;
-                             AZ        : out ShortReal from Standard;
-                             DX        : out ShortReal from Standard;
-                             DY        : out ShortReal from Standard;
-                             DZ        : out ShortReal from Standard )
-        returns Boolean from Standard
-        is deferred;
-    ---Purpose: call_togl_unproject_raster_with_ray
-
     RatioWindow ( me        : mutable;
                   ACView    : CView from Graphic3d )
         is deferred;
@@ -402,6 +351,10 @@ is
     SetClipPlanes (me : mutable; theCStructure : CStructure from Graphic3d) is deferred;
     ---Purpose: Pass clip planes to the associated graphic driver structure.
 
+    SetCamera (me : mutable; theCView : CView from Graphic3d)
+         is deferred;
+    ---Purpose: Inform graphic driver if camera assigned to view changes.
+
     SetVisualisation ( me       : mutable;
                        ACView   : CView from Graphic3d )
         is deferred;
@@ -430,18 +383,6 @@ is
         returns Boolean from Standard
         is deferred;
     ---Purpose: call_togl_view
-
-    ViewMapping ( me        : mutable;
-                  ACView    : CView from Graphic3d;
-                  AWait : Boolean from Standard )
-        is deferred;
-    ---Purpose: call_togl_viewmapping
-
-    ViewOrientation ( me        : mutable;
-                      ACView    : CView from Graphic3d;
-                      AWait     : Boolean from Standard )
-        is deferred;
-    ---Purpose: call_togl_vieworientation
 
         Environment ( me        : mutable;
                       ACView    : CView from Graphic3d )

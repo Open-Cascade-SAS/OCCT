@@ -120,6 +120,9 @@
     <ClCompile Include="..\..\..\..\Common\ISession2D\ISession2D_Shape.cpp">
       <Filter>Source Files\ISession2D-src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Common\OCC_StereoConfigDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Common\DimensionDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -231,6 +234,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\Common\ISession2D\ISession2D_Shape.h">
       <Filter>Header Files\ISession2D-headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Common\OCC_StereoConfigDlg.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Common\DimensionDlg.h">
       <Filter>Header Files</Filter>

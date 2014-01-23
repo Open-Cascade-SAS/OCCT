@@ -29,7 +29,6 @@
 #include <gp_Pnt.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Ax3.hxx>
-#include <V3d_PerspectiveView.hxx>
 #include <StdSelect_BRepOwner.hxx>
 
 Handle(Select3D_Projector) StdSelect::GetProjector(const Handle(V3d_View)& aViou)

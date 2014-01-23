@@ -553,12 +553,10 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
   Handle(OpenGl_Context) aGlCtx = GetGlContext();
   aGlCtx->ReleaseDelayed();
 
-  // cache render mode state
-  GLint aRendMode = GL_RENDER;
-  glGetIntegerv (GL_RENDER_MODE,  &aRendMode);
-  aGlCtx->SetFeedback (aRendMode == GL_FEEDBACK);
+  // fetch OpenGl context state
+  aGlCtx->FetchState();
 
-  Tint toSwap = (aRendMode == GL_RENDER); // swap buffers
+  Tint toSwap = (aGlCtx->IsRender()); // swap buffers
   GLint aViewPortBack[4];
   OpenGl_FrameBuffer* aFrameBuffer = (OpenGl_FrameBuffer* )theCView.ptrFBO;
   if (aFrameBuffer != NULL)
@@ -619,5 +617,5 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
 #endif
 
   // reset render mode state
-  aGlCtx->SetFeedback (Standard_False);
+  aGlCtx->FetchState();
 }

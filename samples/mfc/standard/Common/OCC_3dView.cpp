@@ -9,7 +9,11 @@
 #include <res\OCC_Resource.h>
 
 #include <Visual3d_View.hxx>
+
 #include <Graphic3d_ExportFormat.hxx>
+#include <Graphic3d_Camera.hxx>
+
+#include <OpenGl_GraphicDriver.hxx>
 
 #define ValZWMin 1
 
@@ -31,6 +35,7 @@ BEGIN_MESSAGE_MAP(OCC_3dView, CView)
 	ON_COMMAND(ID_BUTTONRot, OnBUTTONRot)
 	ON_COMMAND(ID_BUTTONTop, OnBUTTONTop)
 	ON_COMMAND(ID_BUTTONZoomAll, OnBUTTONZoomAll)
+  ON_COMMAND(ID_BUTTON_STEREOCONFIG, OnStereoConfigButton)
 	ON_WM_SIZE()
     ON_COMMAND(ID_FILE_EXPORT_IMAGE, OnFileExportImage)
 	ON_COMMAND(ID_BUTTONZoomProg, OnBUTTONZoomProg)
@@ -49,6 +54,7 @@ BEGIN_MESSAGE_MAP(OCC_3dView, CView)
 	ON_UPDATE_COMMAND_UI(ID_BUTTONZoomProg, OnUpdateBUTTONZoomProg)
 	ON_UPDATE_COMMAND_UI(ID_BUTTONZoomWin, OnUpdateBUTTONZoomWin)
 	ON_UPDATE_COMMAND_UI(ID_BUTTONRot, OnUpdateBUTTONRot)
+  ON_UPDATE_COMMAND_UI(ID_BUTTON_STEREOCONFIG, OnUpdateStereoConfigButton)
 	ON_COMMAND(ID_Modify_ChangeBackground     , OnModifyChangeBackground)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
@@ -73,9 +79,13 @@ OCC_3dView::OCC_3dView()
 
 OCC_3dView::~OCC_3dView()
 {
-  if ( myView )
+  if (myView)
+  {
     myView->Remove();
-  if (m_Pen) delete m_Pen;
+  }
+
+  delete m_pStereoDlg;
+  delete m_Pen;
 }
 
 BOOL OCC_3dView::PreCreateWindow(CREATESTRUCT& cs)
@@ -97,15 +107,27 @@ void OCC_3dView::OnInitialUpdate()
   myHlrModeIsOn = Standard_False;
   myView->SetComputedMode (myHlrModeIsOn);
 
-  Handle(Graphic3d_GraphicDriver) aGraphicDriver = 
-    ((OCC_App*)AfxGetApp())->GetGraphicDriver();
+  Handle(OpenGl_GraphicDriver) aDriver = 
+    Handle(OpenGl_GraphicDriver)::DownCast (((OCC_App*)AfxGetApp())->GetGraphicDriver());
 
   Handle(WNT_Window) aWNTWindow = new WNT_Window(GetSafeHwnd());
+
   myView->SetWindow(aWNTWindow);
-  if (!aWNTWindow->IsMapped()) aWNTWindow->Map();
+  myView->Camera()->SetProjectionType (aDriver->Options().contextStereo
+    ? Graphic3d_Camera::Projection_Stereo
+    : Graphic3d_Camera::Projection_Orthographic);
+
+  if (!aWNTWindow->IsMapped())
+  {
+    aWNTWindow->Map();
+  }
 
   // store the mode ( nothing , dynamic zooming, dynamic ... )
   myCurrentMode = CurAction3d_Nothing;
+
+  m_pStereoDlg = new OCC_StereoConfigDlg (this);
+  m_pStereoDlg->SetView (myView);
+  m_pStereoDlg->Create (IDD_DIALOG_STEREO, this);
 }
 
 void OCC_3dView::OnDraw(CDC* /*pDC*/)
@@ -599,4 +621,34 @@ void OCC_3dView::OnModifyChangeBackground()
         myView->SetBackgroundColor(Quantity_TOC_RGB,R1,G1,B1);
 	}
     myView->Redraw();
+}
+
+//=============================================================================
+// function: OnStereoConfigButton
+// purpose: Open stereographic configuration dialog
+//=============================================================================
+void OCC_3dView::OnStereoConfigButton()
+{
+  m_pStereoDlg->ShowWindow (SW_SHOW);
+}
+
+//=============================================================================
+// function: OnUpdateStereoConfigButton
+// purpose: Enable / disable state of stereo configuration button
+//=============================================================================
+void OCC_3dView::OnUpdateStereoConfigButton (CCmdUI* theCmdUI)
+{
+  // get camera
+  Handle(Graphic3d_Camera) aCamera = myView->Camera();
+
+  // check that button is enabled
+  Standard_Boolean isEnabled = !aCamera.IsNull() && aCamera->IsStereo();
+
+  // update toggle state
+  theCmdUI->Enable (isEnabled);
+
+  if (!isEnabled)
+  {
+    m_pStereoDlg->ShowWindow (SW_HIDE);
+  }
 }

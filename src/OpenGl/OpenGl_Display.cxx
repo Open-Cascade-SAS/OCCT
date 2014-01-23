@@ -50,7 +50,6 @@ OpenGl_Display::OpenGl_Display (const Handle(Aspect_DisplayConnection)& theDispl
   myDBuffer(Standard_True),
   myDither(Standard_True),
   myBackDither(Standard_False),
-  myWalkthrough(Standard_False),
   mySymPerspective(Standard_False),
   myOffsetFactor(1.F),
   myOffsetUnits(0.F),
@@ -137,9 +136,6 @@ void OpenGl_Display::Init()
 
   if (getenv("CALL_OPENGL_NO_BACKDITHER") != NULL)
     myBackDither = Standard_False;
-
-  if (getenv("CSF_WALKTHROUGH") != NULL)
-    myWalkthrough = Standard_True;
 
   /* OCC18942: Test if symmetric perspective projection should be turned on */
   if (getenv("CSF_SYM_PERSPECTIVE") != NULL)

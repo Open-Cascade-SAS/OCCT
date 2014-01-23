@@ -135,6 +135,7 @@ void CAnimationView3D::OnInitialUpdate()
 
   aViewer = GetDocument()->GetViewer();
   aViewer->SetDefaultTypeOfView (V3d_PERSPECTIVE);
+
   myView = aViewer->CreateView();
 
   // store for restore state after rotation (witch is in Degenerated mode)
@@ -155,8 +156,6 @@ void CAnimationView3D::OnInitialUpdate()
                                    /* Matrox                               */
                                    /* I suspect another problem elsewhere  */
   ::PostMessage ( GetSafeHwnd () , WM_SIZE , SIZE_RESTORED , w + h*65536 ) ;
-
-  myPView = Handle(V3d_PerspectiveView)::DownCast (myView);
 
   m_Tune.Create ( IDD_TUNE , NULL ) ;
 
@@ -892,37 +891,37 @@ void CAnimationView3D::Twist (int x , int /*y*/)
 	myView->SetTwist (a) ;
 }
 
-void CAnimationView3D::SetFocal(double dFocus,double dAngle)
+//=============================================================================
+// function: SetFocal
+// purpose:
+//=============================================================================
+void CAnimationView3D::SetFocal (double theFocus, double theAngle)
 {
-	double v [3] ;
-	double l ;
-	int    i     ;
 
-	v [0] = m_Atx - m_Eyex ;
-	v [1] = m_Aty - m_Eyey ;
-	v [2] = m_Atz - m_Eyez ;
+  Handle(Graphic3d_Camera) aCamera = myView->Camera();
 
-	l = sqrt ( v[0]*v[0] + v[1]*v[1] + v[2]*v[2] ) ;
-	if ( l > 1.e-3 ) {
-		for ( i=0 ; i<3 ; i++ )
-          v [i] = v [i] / l * dFocus ;
+  gp_Pnt anAt  = aCamera->Center();
+  gp_Pnt anEye = aCamera->Eye();
 
-		m_Focus = dFocus ;
+  gp_Vec aLook (anAt, anEye);
 
-		m_Atx = v [0] + m_Eyex ;
-		m_Aty = v [1] + m_Eyey ;
-		m_Atz = v [2] + m_Eyez ;
+  if (aCamera->Distance() > 1.e-3)
+  {
+    aLook = aLook / aCamera->Distance() * theFocus;
 
-        myView->SetImmediateUpdate ( Standard_False ) ;
- 		myView->SetAt  ( m_Atx  , m_Aty  , m_Atz  ) ;
-		m_dAngle = dAngle ;
-		dAngle = dAngle * M_PI / 180. ;
-        myPView->SetAngle ( dAngle ) ;
-		dAngle = myPView->Angle () ;
+    m_Focus = theFocus;
 
-        myView->SetImmediateUpdate ( Standard_True ) ;
-        myView->Update ();
-	}
+    anAt.SetX (aLook.X() + anEye.X());
+    anAt.SetY (aLook.Y() + anEye.Y());
+    anAt.SetZ (aLook.Z() + anEye.Z());
+
+    m_dAngle = theAngle;
+
+    aCamera->SetCenter (anAt);
+    aCamera->SetFOVy (theAngle);
+
+    myView->Update();
+  }
 }
 
 void CAnimationView3D::ReloadData()
@@ -958,9 +957,9 @@ void CAnimationView3D::ReloadData()
 	dy = m_Aty - m_Eyey ;
 	dz = m_Atz - m_Eyez ;
 
-    m_Focus = sqrt ( dx * dx + dy * dy + dz * dz ) ;
-	m_dAngle = myPView->Angle () ;
-	m_dAngle = m_dAngle * 180. / M_PI ;
+  m_Focus = sqrt (dx * dx + dy * dy + dz * dz);
+
+  m_dAngle = myView->Camera()->FOVy();
 
 	m_Tune.m_dAngle = m_dAngle ;
 	m_Tune.m_dFocus = m_Focus  ;

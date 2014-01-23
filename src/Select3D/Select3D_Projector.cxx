@@ -37,25 +37,8 @@
 //=======================================================================
 
 Select3D_Projector::Select3D_Projector(const Handle(V3d_View)& aViou)
-: myPersp(aViou->Type()==V3d_PERSPECTIVE),
-  myFocus(aViou->Focale()),
-  myView(aViou)
+  : myView (aViou)
 {
-  Standard_Real Xat,Yat,Zat,XUp,YUp,ZUp,DX,DY,DZ;
-  //Standard_Boolean Pers=Standard_False;
-
-  aViou->At(Xat,Yat,Zat);
-  aViou->Up(XUp,YUp,ZUp);
-  aViou->Proj(DX,DY,DZ);
-  gp_Pnt At (Xat,Yat,Zat);
-  gp_Dir Zpers (DX,DY,DZ);
-  gp_Dir Ypers (XUp,YUp,ZUp);
-  gp_Dir Xpers = Ypers.Crossed(Zpers);
-  gp_Ax3 Axe (At, Zpers, Xpers);
-  myScaledTrsf.SetTransformation(Axe);
-  myGTrsf.SetTrsf(myScaledTrsf);
-  Scaled();
-
 }
 
 //=======================================================================
@@ -413,15 +396,46 @@ gp_Lin Select3D_Projector::Shoot
 {
   gp_Lin L;
 
-  if (myPersp) {
-    L = gp_Lin(gp_Pnt(0,0, myFocus),
-	       gp_Dir(X,Y,-myFocus));
+  if (!myView.IsNull())
+  {
+    Handle(Graphic3d_Camera) aCamera = myView->Camera();
+
+    Standard_Real aUMin, aVMin, aUMax, aVMax;  
+    aCamera->WindowLimit (aUMin, aVMin, aUMax, aVMax);
+
+    gp_Pnt aPos = aCamera->ConvertView2World (gp_Pnt (X, Y, 1.0));
+    gp_Pnt aEyePos = aCamera->Eye();
+
+    gp_Dir aDir;
+
+    if (aCamera->IsOrthographic())
+    {
+      aDir = aCamera->Direction();
+    }
+    else
+    {
+      aDir = gp_Dir (aPos.X() - aEyePos.X(),
+                     aPos.Y() - aEyePos.Y(), 
+                     aPos.Z() - aEyePos.Z());
+    }
+
+    L = gp_Lin (aPos, aDir);
   }
-  else {
-    L = gp_Lin(gp_Pnt(X,Y,0),
-	       gp_Dir(0,0,-1));
+  else
+  {
+     if (myPersp) {
+       L = gp_Lin(gp_Pnt(0,0, myFocus),
+                  gp_Dir(X,Y,-myFocus));
+     }
+     else {
+       L = gp_Lin(gp_Pnt(X,Y,0),
+                  gp_Dir(0,0,-1));
+     }
+
+     Transform(L, myInvTrsf);
   }
-  Transform(L, myInvTrsf);
+
+
   return L;
 }
 

@@ -59,7 +59,7 @@ public:
 	void SetDimensions ();
 	void ReloadData();
 	CTune m_Tune;
-	void SetFocal ( double dFocus , double dAngle );
+  void SetFocal (double theFocus, double theAngle);
 	void Fly (int x , int y);
 	void Turn (int x , int y);
 	void Roll (int x , int y);
@@ -137,8 +137,6 @@ private:
   Standard_Integer     myYmax;
   Quantity_Factor      myCurZoom;
   Standard_Boolean     myHlrModeIsOn;
-
-  Handle_V3d_PerspectiveView myPView;
 
   View3D_CurrentAction myCurrentMode;
   double               m_Atx  , m_Aty  , m_Atz  ;

@@ -110,9 +110,26 @@ void OpenGl_Trihedron::redraw (const Handle(OpenGl_Workspace)& theWorkspace) con
   modelMatrix[3][0] = 0.;
   modelMatrix[3][1] = 0.;
   modelMatrix[3][2] = 0.;
-  projMatrix[3][0] = 0.;
-  projMatrix[3][1] = 0.;
-  projMatrix[3][2] = 0.;
+
+  projMatrix[0][0] = 2.0 / U;
+  projMatrix[0][1] = 0.0;
+  projMatrix[0][2] = 0.0;
+  projMatrix[0][3] = 0.0;
+
+  projMatrix[1][0] = 0.0;
+  projMatrix[1][1] = 2.0 / V;
+  projMatrix[1][2] = 0.0;
+  projMatrix[1][3] = 0.0;
+
+  projMatrix[2][0] = 0.0;
+  projMatrix[2][1] = 0.0;
+  projMatrix[2][2] = -2.0 * 1e-7;
+  projMatrix[2][3] = 0.0;
+
+  projMatrix[3][0] = 0.0;
+  projMatrix[3][1] = 0.0;
+  projMatrix[3][2] = 0.0;
+  projMatrix[3][3] = 1.0;
 
   /* sauvegarde du contexte des matrices avant chargement */
   glMatrixMode (GL_MODELVIEW);
@@ -303,9 +320,26 @@ void OpenGl_Trihedron::redrawZBuffer (const Handle(OpenGl_Workspace)& theWorkspa
     modelMatrix[3][0] = 0.;
     modelMatrix[3][1] = 0.;
     modelMatrix[3][2] = 0.;
-    projMatrix[3][0] = 0.;
-    projMatrix[3][1] = 0.;
-    projMatrix[3][2] = 0.;
+
+    projMatrix[0][0] = 2.0 / U;
+    projMatrix[0][1] = 0.0;
+    projMatrix[0][2] = 0.0;
+    projMatrix[0][3] = 0.0;
+
+    projMatrix[1][0] = 0.0;
+    projMatrix[1][1] = 2.0 / V;
+    projMatrix[1][2] = 0.0;
+    projMatrix[1][3] = 0.0;
+
+    projMatrix[2][0] = 0.0;
+    projMatrix[2][1] = 0.0;
+    projMatrix[2][2] = -2.0 * 1e-7;
+    projMatrix[2][3] = 0.0;
+
+    projMatrix[3][0] = 0.0;
+    projMatrix[3][1] = 0.0;
+    projMatrix[3][2] = 0.0;
+    projMatrix[3][3] = 1.0;
 
     /* save matrix */
     glMatrixMode (GL_MODELVIEW);

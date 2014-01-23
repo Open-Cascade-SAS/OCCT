@@ -135,54 +135,6 @@ void OpenGl_GraphicDriver::DepthCueing (const Graphic3d_CView& ACView, const Sta
     aCView->View->SetFog(ACView, AFlag);
 }
 
-Standard_Boolean OpenGl_GraphicDriver::ProjectRaster (const Graphic3d_CView& ACView, const Standard_ShortReal AX, const Standard_ShortReal AY, const Standard_ShortReal AZ, Standard_Integer& AU, Standard_Integer& AV)
-{
-  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
-  if (!aCView)
-    return Standard_False;
-
-  Standard_Integer aWidth = aCView->WS->Width();
-  Standard_Integer aHeight = aCView->WS->Height();
-  Standard_ShortReal xr, yr;
-  if (aCView->View->ProjectObjectToRaster(aWidth, aHeight, AX, AY, AZ, xr, yr))
-  {
-    AU = (Standard_Integer) xr;
-    AV = aHeight - (Standard_Integer) yr;
-    return Standard_True;
-  }
-
-  return Standard_False;
-}
-
-Standard_Boolean OpenGl_GraphicDriver::UnProjectRaster (const Graphic3d_CView& ACView, const Standard_Integer /*Axm*/, const Standard_Integer Aym, const Standard_Integer /*AXM*/, const Standard_Integer AYM, const Standard_Integer AU, const Standard_Integer AV, Standard_ShortReal& Ax, Standard_ShortReal& Ay, Standard_ShortReal& Az)
-{
-  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
-  if (!aCView)
-    return Standard_False;
-
-  const Standard_Integer aWidth = aCView->WS->Width();
-  const Standard_Integer aHeight = aCView->WS->Height();
-
-  /*
-  Patched by P.Dolbey: the window pixel height decreased by one
-  in order for yr to remain within valid coordinate range [0; Ym -1]
-  where Ym means window pixel height.
-  */
-  return aCView->View->ProjectRasterToObject( aWidth, aHeight, AU, (AYM-1)-Aym-AV, Ax, Ay, Az );
-}
-
-Standard_Boolean OpenGl_GraphicDriver::UnProjectRasterWithRay (const Graphic3d_CView& ACView, const Standard_Integer /*Axm*/, const Standard_Integer Aym, const Standard_Integer /*AXM*/, const Standard_Integer AYM, const Standard_Integer AU, const Standard_Integer AV, Standard_ShortReal& Ax, Standard_ShortReal& Ay, Standard_ShortReal& Az, Standard_ShortReal& Dx, Standard_ShortReal& Dy, Standard_ShortReal& Dz)
-{
-  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
-  if (!aCView)
-    return Standard_False;
-
-  const Standard_Integer aWidth = aCView->WS->Width();
-  const Standard_Integer aHeight = aCView->WS->Height();
-
-  return aCView->View->ProjectRasterToObjectWithRay( aWidth, aHeight, AU, AYM-Aym-AV, Ax, Ay, Az, Dx, Dy, Dz );
-}
-
 void OpenGl_GraphicDriver::RatioWindow (const Graphic3d_CView& theCView)
 {
   const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
@@ -514,6 +466,19 @@ void OpenGl_GraphicDriver::SetClipPlanes (const Graphic3d_CStructure& theCStruct
   }
 }
 
+//=======================================================================
+//function : SetCamera
+//purpose  :
+//=======================================================================
+void OpenGl_GraphicDriver::SetCamera (const Graphic3d_CView& theCView)
+{
+  const OpenGl_CView *aCView = (const OpenGl_CView *)theCView.ptrView;
+  if (aCView)
+  {
+    aCView->View->SetCamera (theCView.Context.Camera);
+  }
+}
+
 void OpenGl_GraphicDriver::SetVisualisation (const Graphic3d_CView& ACView)
 {
   const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
@@ -566,32 +531,6 @@ Standard_Boolean OpenGl_GraphicDriver::View (Graphic3d_CView& theCView)
   theCView.ptrView = aCView;
 
   return Standard_True;
-}
-
-void OpenGl_GraphicDriver::ViewMapping (const Graphic3d_CView& ACView, const Standard_Boolean AWait)
-{
-  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
-  if (aCView)
-  {
-    aCView->View->SetMapping (myGlDisplay, ACView);
-    if (!AWait)
-    {
-      aCView->WS->Resize(ACView.DefWindow);
-    }
-  }
-}
-
-void OpenGl_GraphicDriver::ViewOrientation (const Graphic3d_CView& ACView, const Standard_Boolean AWait)
-{
-  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
-  if (aCView)
-  {
-    aCView->View->SetOrientation(ACView);
-    if (!AWait)
-    {
-      aCView->WS->Resize(ACView.DefWindow);
-    }
-  }
 }
 
 void OpenGl_GraphicDriver::SetBackFacingModel (const Graphic3d_CView& ACView)

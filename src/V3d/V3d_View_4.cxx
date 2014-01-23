@@ -63,243 +63,236 @@
 
 void V3d_View::SetGrid (const gp_Ax3& aPlane, const Handle(Aspect_Grid)& aGrid)
 {
-	MyPlane	= aPlane;
-	MyGrid	= aGrid;
+  MyPlane	= aPlane;
+  MyGrid	= aGrid;
 
-	Standard_Real xl, yl, zl;
-	Standard_Real xdx, xdy, xdz;
-	Standard_Real ydx, ydy, ydz;
-	Standard_Real dx, dy, dz;
-	aPlane.Location ().Coord (xl, yl, zl);
-	aPlane.XDirection ().Coord (xdx, xdy, xdz);
-	aPlane.YDirection ().Coord (ydx, ydy, ydz);
-	aPlane.Direction ().Coord (dx, dy, dz);
+  Standard_Real xl, yl, zl;
+  Standard_Real xdx, xdy, xdz;
+  Standard_Real ydx, ydy, ydz;
+  Standard_Real dx, dy, dz;
+  aPlane.Location ().Coord (xl, yl, zl);
+  aPlane.XDirection ().Coord (xdx, xdy, xdz);
+  aPlane.YDirection ().Coord (ydx, ydy, ydz);
+  aPlane.Direction ().Coord (dx, dy, dz);
 
-	Standard_Real CosAlpha = Cos (MyGrid->RotationAngle ());
-	Standard_Real SinAlpha = Sin (MyGrid->RotationAngle ());
+  Standard_Real CosAlpha = Cos (MyGrid->RotationAngle ());
+  Standard_Real SinAlpha = Sin (MyGrid->RotationAngle ());
 
-	TColStd_Array2OfReal Trsf1 (1, 4, 1, 4);
-	Trsf1 (4, 4) = 1.0;
-	Trsf1 (4, 1) = Trsf1 (4, 2) = Trsf1 (4, 3) = 0.0;
-	// Translation
-	Trsf1 (1, 4) = xl,
-	Trsf1 (2, 4) = yl,
-	Trsf1 (3, 4) = zl;
-	// Transformation change of marker
-	Trsf1 (1, 1) = xdx,
-	Trsf1 (2, 1) = xdy,
-	Trsf1 (3, 1) = xdz,
-	Trsf1 (1, 2) = ydx,
-	Trsf1 (2, 2) = ydy,
-	Trsf1 (3, 2) = ydz,
-	Trsf1 (1, 3) = dx,
-	Trsf1 (2, 3) = dy,
-	Trsf1 (3, 3) = dz;
+  TColStd_Array2OfReal Trsf1 (1, 4, 1, 4);
+  Trsf1 (4, 4) = 1.0;
+  Trsf1 (4, 1) = Trsf1 (4, 2) = Trsf1 (4, 3) = 0.0;
+  // Translation
+  Trsf1 (1, 4) = xl,
+  Trsf1 (2, 4) = yl,
+  Trsf1 (3, 4) = zl;
+  // Transformation change of marker
+  Trsf1 (1, 1) = xdx,
+  Trsf1 (2, 1) = xdy,
+  Trsf1 (3, 1) = xdz,
+  Trsf1 (1, 2) = ydx,
+  Trsf1 (2, 2) = ydy,
+  Trsf1 (3, 2) = ydz,
+  Trsf1 (1, 3) = dx,
+  Trsf1 (2, 3) = dy,
+  Trsf1 (3, 3) = dz;
 
-	TColStd_Array2OfReal Trsf2 (1, 4, 1, 4);
-	Trsf2 (4, 4) = 1.0;
-	Trsf2 (4, 1) = Trsf2 (4, 2) = Trsf2 (4, 3) = 0.0;
-	// Translation of the origin
-	Trsf2 (1, 4) = -MyGrid->XOrigin (),
-	Trsf2 (2, 4) = -MyGrid->YOrigin (),
-	Trsf2 (3, 4) = 0.0;
-	// Rotation Alpha around axis -Z
-	Trsf2 (1, 1) = CosAlpha,
-	Trsf2 (2, 1) = -SinAlpha,
-	Trsf2 (3, 1) = 0.0,
-	Trsf2 (1, 2) = SinAlpha,
-	Trsf2 (2, 2) = CosAlpha,
-	Trsf2 (3, 2) = 0.0,
-	Trsf2 (1, 3) = 0.0,
-	Trsf2 (2, 3) = 0.0,
-	Trsf2 (3, 3) = 1.0;
+  TColStd_Array2OfReal Trsf2 (1, 4, 1, 4);
+  Trsf2 (4, 4) = 1.0;
+  Trsf2 (4, 1) = Trsf2 (4, 2) = Trsf2 (4, 3) = 0.0;
+  // Translation of the origin
+  Trsf2 (1, 4) = -MyGrid->XOrigin (),
+  Trsf2 (2, 4) = -MyGrid->YOrigin (),
+  Trsf2 (3, 4) = 0.0;
+  // Rotation Alpha around axis -Z
+  Trsf2 (1, 1) = CosAlpha,
+  Trsf2 (2, 1) = -SinAlpha,
+  Trsf2 (3, 1) = 0.0,
+  Trsf2 (1, 2) = SinAlpha,
+  Trsf2 (2, 2) = CosAlpha,
+  Trsf2 (3, 2) = 0.0,
+  Trsf2 (1, 3) = 0.0,
+  Trsf2 (2, 3) = 0.0,
+  Trsf2 (3, 3) = 1.0;
 
-	Standard_Real valuetrsf;
-	Standard_Real valueoldtrsf;
-	Standard_Real valuenewtrsf;
-	Standard_Integer i, j, k;
-	// Calculation of the product of matrices
-	for (i=1; i<=4; i++)
-	    for (j=1; j<=4; j++) {
-		MyTrsf (i, j) = 0.0;
-		for (k=1; k<=4; k++) {
-		    valueoldtrsf = Trsf1 (i, k);
-		    valuetrsf	 = Trsf2 (k, j);
-		    valuenewtrsf = MyTrsf (i, j) + valueoldtrsf * valuetrsf;
-		    MyTrsf (i, j) = valuenewtrsf;
-		}
-	   }
+  Standard_Real valuetrsf;
+  Standard_Real valueoldtrsf;
+  Standard_Real valuenewtrsf;
+  Standard_Integer i, j, k;
+  // Calculation of the product of matrices
+  for (i=1; i<=4; i++)
+      for (j=1; j<=4; j++) {
+    MyTrsf (i, j) = 0.0;
+    for (k=1; k<=4; k++) {
+        valueoldtrsf = Trsf1 (i, k);
+        valuetrsf	 = Trsf2 (k, j);
+        valuenewtrsf = MyTrsf (i, j) + valueoldtrsf * valuetrsf;
+        MyTrsf (i, j) = valuenewtrsf;
+    }
+     }
 }
 
 void V3d_View::SetGridActivity (const Standard_Boolean AFlag)
 {
-	if (AFlag) MyGrid->Activate ();
-	else MyGrid->Deactivate ();
+  if (AFlag) MyGrid->Activate ();
+  else MyGrid->Deactivate ();
 }
 
 void V3d_View::SetGridGraphicValues (const Handle(Aspect_Grid)& )
 {
 }
 
+
+void toPolarCoords (const Standard_Real theX, const Standard_Real theY, 
+                          Standard_Real& theR, Standard_Real& thePhi)
+{
+  theR = Sqrt (theX * theX + theY * theY);
+  thePhi = ATan2 (theY, theX);  
+}
+
+void toCartesianCoords (const Standard_Real theR, const Standard_Real thePhi, 
+                              Standard_Real& theX, Standard_Real& theY)
+{
+  theX = theR * Cos (thePhi);
+  theY = theR * Sin (thePhi);
+}
+
 Graphic3d_Vertex V3d_View::Compute (const Graphic3d_Vertex & AVertex) const
 {
-	Graphic3d_Vertex CurPoint, NewPoint;
-	Standard_Real X1, Y1, Z1, X2, Y2, Z2;
-	Standard_Real XPp, YPp;
+  Graphic3d_Vertex CurPoint, NewPoint;
+  Standard_Real X1, Y1, Z1, X2, Y2, Z2;
+  Standard_Real XPp, YPp;
 
-	MyView->ViewOrientation ().ViewReferencePlane ().Coord (X1, Y1, Z1);
-	MyPlane.Direction ().Coord (X2, Y2, Z2);
+  gp_Dir aRefPlane = myCamera->Direction().Reversed();
+  X1 = aRefPlane.X(); Y1 = aRefPlane.Y(); Z1 = aRefPlane.Z();
+  MyPlane.Direction ().Coord (X2, Y2, Z2);
 
-	gp_Dir VPN (X1, Y1, Z1);
-	gp_Dir GPN (X2, Y2, Z2);
+  gp_Dir VPN (X1, Y1, Z1);
+  gp_Dir GPN (X2, Y2, Z2);
 
-	AVertex.Coord (X1, Y1, Z1);
-	Project (X1, Y1, Z1, XPp, YPp);
+  AVertex.Coord (X1, Y1, Z1);
+  Project (X1, Y1, Z1, XPp, YPp);
 
-	// Casw when the plane of the grid and the plane of the view
-	// are perpendicular to MYEPSILON2 close radians
-	if (Abs (VPN.Angle (GPN) - M_PI / 2.) < MYEPSILON2) {
-		NewPoint.SetCoord (X1, Y1, Z1);
+  // Casw when the plane of the grid and the plane of the view
+  // are perpendicular to MYEPSILON2 close radians
+  if (Abs (VPN.Angle (GPN) - M_PI / 2.) < MYEPSILON2) {
+    NewPoint.SetCoord (X1, Y1, Z1);
 #ifdef IMP240100
-		MyViewer->ShowGridEcho(this,NewPoint);
+    MyViewer->ShowGridEcho(this,NewPoint);
 #endif	//IMP240100
-		return NewPoint;
-	}
+    return NewPoint;
+  }
 
-	Standard_Boolean IsRectangular = 
-		MyGrid->IsKind (STANDARD_TYPE (Aspect_RectangularGrid));
+  Standard_Boolean IsRectangular = 
+    MyGrid->IsKind (STANDARD_TYPE (Aspect_RectangularGrid));
 
-	Graphic3d_Vertex P1;
+  Graphic3d_Vertex P1;
 
-	Standard_Real XO = 0.0, YO = 0.0;
-	Standard_Real XOp, YOp;
-	Standard_Real XAp, YAp;
-	Standard_Real XBp, YBp;
+  Standard_Real x0, y0, z0, x1, y1, z1, x2, y2, z2;
+    
+  P1.SetCoord (0.0, 0.0, 0.0);
+  CurPoint = V3d_View::TrsPoint (P1, MyTrsf);
+  CurPoint.Coord (x0, y0, z0);
+    
+  // get grid axes in world space
+  P1.SetCoord (1.0, 0.0, 0.0);
+  CurPoint = V3d_View::TrsPoint (P1, MyTrsf);
+  CurPoint.Coord (x1, y1, z1);
+  gp_Vec aGridX (gp_Pnt (x0, y0, z0), gp_Pnt (x1, y1, z1));
+  aGridX.Normalize();
 
-	X1 = XO, Y1 = YO, Z1 = 0.0;
-	// MyTrsf * Point to return to the plane of 3D grid
-	P1.SetCoord (X1, Y1, Z1);
-	CurPoint = V3d_View::TrsPoint (P1, MyTrsf);
-	CurPoint.Coord (X2, Y2, Z2);
-	Project (X2, Y2, Z2, XOp, YOp);
-	XPp = XPp - XOp, YPp = YPp - YOp;
+  P1.SetCoord (0.0, 1.0, 0.0);
+  CurPoint = V3d_View::TrsPoint (P1, MyTrsf);
+  CurPoint.Coord (x2, y2, z2);
+  gp_Vec aGridY (gp_Pnt (x0, y0, z0), gp_Pnt (x2, y2, z2));
+  aGridY.Normalize();
 
-    if (IsRectangular) {
-		Standard_Real XS, YS;
-		Handle(Aspect_RectangularGrid) theGrid =
-			*(Handle(Aspect_RectangularGrid) *) &MyGrid;
-		XS = theGrid->XStep (), YS = theGrid->YStep ();
+  // get grid normal
+  MyPlane.Direction().Coord (x2, y2, z2);
+  gp_Vec aPlaneNormal (x2, y2, z2);
 
-		X1 = XO + XS, Y1 = YO, Z1 = 0.0;
-		// MyTrsf *  Point to return to the plane of 3D grid
-		P1.SetCoord (X1, Y1, Z1);
-		CurPoint = V3d_View::TrsPoint (P1, MyTrsf);
-		CurPoint.Coord (X2, Y2, Z2);
-		Project (X2, Y2, Z2, XAp, YAp);
-		XAp = XAp - XOp, YAp = YAp - YOp;
+  gp_Vec aPointOnPlane = gp_Vec (0.0, 0.0, 0.0);
 
-		X1 = XO, Y1 = YO + YS, Z1 = 0.0;
-		// MyTrsf *  Point to return to the plane of 3D grid
-		P1.SetCoord (X1, Y1, Z1);
-		CurPoint = V3d_View::TrsPoint (P1, MyTrsf);
-		CurPoint.Coord (X2, Y2, Z2);
-		Project (X2, Y2, Z2, XBp, YBp);
-		XBp = XBp - XOp, YBp = YBp - YOp;
+  AVertex.Coord (x1, y1, z1);
+    
+  // project ray from camera onto grid plane
+  if (!myCamera->IsOrthographic())
+  {
+    gp_Vec aPointFromCamera = gp_Vec (myCamera->Eye(), gp_Pnt (x1, y1, z1));
+    aPointFromCamera.Normalize();
 
-		Standard_Real Determin = XAp*YBp - XBp*YAp;
+    Standard_Real aT = - gp_Vec (myCamera->Eye().XYZ()).Dot (aPlaneNormal) / 
+                                  aPointFromCamera.Dot (aPlaneNormal);
+    aPointOnPlane = gp_Vec (myCamera->Eye().XYZ()) + aPointFromCamera * aT;
+  } else
+  {
+    gp_Vec aPointFromCamera (myCamera->Direction());
+    gp_Vec aPointOnCamera (gp_Vec (x1, y1, z1) - aPointFromCamera);
 
-		Z1 = 0.0;
-		if (Abs (Determin) > MYEPSILON1) {
-			X1 = (YBp*XPp - XBp*YPp) / Determin;
-			Y1 = (XAp*YPp - YAp*XPp) / Determin;
-			X1 = (X1 > 0. ?
-			Standard_Real (Standard_Integer (Abs (X1)+0.5)) * XS :
-			- Standard_Real (Standard_Integer (Abs (X1)+0.5)) * XS);
-			Y1 = (Y1 > 0. ?
-			Standard_Real (Standard_Integer (Abs (Y1)+0.5)) * YS :
-			- Standard_Real (Standard_Integer (Abs (Y1)+0.5)) * YS);
-			// MyTrsf *  Point to return to the plane of 3D grid
-			P1.SetCoord (X1, Y1, Z1);
-			CurPoint = V3d_View::TrsPoint (P1, MyTrsf);
-			CurPoint.Coord (X2, Y2, Z2);
-		}
-		else {
-			//cout << "*****************" << endl;
-			//cout << "Zero Determinant!" << endl;
-			//cout << "*****************" << endl;
-			AVertex.Coord (X2, Y2, Z2);
-			CurPoint.SetCoord (X2, Y2, Z2);
-		}
-	} // IsRectangular
-    else {
-		Standard_Real RS;
-		Standard_Integer DN;
-		Standard_Real Alpha;
-		Handle(Aspect_CircularGrid) theGrid =
-			*(Handle(Aspect_CircularGrid) *) &MyGrid;
-		RS = theGrid->RadiusStep ();
-		DN = theGrid->DivisionNumber ();
-		Alpha = M_PI / Standard_Real (DN);
+    Standard_Real aT = - aPointOnCamera.Dot (aPlaneNormal) / 
+                          aPointFromCamera.Dot (aPlaneNormal);
+    aPointOnPlane = aPointOnCamera + aPointFromCamera * aT;
+  }
 
-		Standard_Real DistOP = Sqrt (XPp*XPp + YPp*YPp);
+  if (IsRectangular) {
+    Standard_Real XS, YS;
+    Handle(Aspect_RectangularGrid) theGrid =
+      *(Handle(Aspect_RectangularGrid) *) &MyGrid;
+    XS = theGrid->XStep (), YS = theGrid->YStep ();
 
-		Standard_Integer i, ICur=0;
-		Standard_Real Angle, AngleCur;
-		Standard_Real XCurp=0, YCurp=0;
-		gp_Dir2d OP (XPp, YPp);
-		AngleCur = 2 * M_PI;
-		for (i=1; i<=DN*2; i++) {
-			X1 = XO + Cos (Alpha * i) * RS,
-			Y1 = YO + Sin (Alpha * i) * RS,
-			Z1 = 0.0;
-			// MyTrsf * Point to return to the plane of 3D grid
-			P1.SetCoord (X1, Y1, Z1);
-			CurPoint = V3d_View::TrsPoint (P1, MyTrsf);
-			CurPoint.Coord (X2, Y2, Z2);
-			Project (X2, Y2, Z2, XAp, YAp);
-			XAp = XAp - XOp, YAp = YAp - YOp;
-			gp_Dir2d OA (XAp, YAp);
-			Angle = OP.Angle (OA);
-			if (Abs (AngleCur) > Abs (Angle)) {
-				ICur = i;
-				AngleCur = Angle;
-				XCurp = XAp, YCurp = YAp;
-			}
+    // project point on plane to grid local space
+    gp_Vec aToPoint (gp_Pnt (x0, y0, z0), 
+                     gp_Pnt (aPointOnPlane.X(), aPointOnPlane.Y(), aPointOnPlane.Z()));
+    Standard_Real anXSteps = Round (aGridX.Dot (aToPoint) / XS);
+    Standard_Real anYSteps = Round (aGridY.Dot (aToPoint) / YS);
 
-		} // for (i=1; i<=DN*2; i++)
+    // clamp point to grid
+    gp_Vec aResult = aGridX * anXSteps * XS + aGridY * anYSteps * YS + gp_Vec (x0, y0, z0);
+    NewPoint.SetCoord (aResult.X(), aResult.Y(), aResult.Z());
 
-		Standard_Real DistOCur = Sqrt (XCurp*XCurp + YCurp*YCurp);
+  } 
+  else // IsCircular
+  {
+    Standard_Real RS;
+    Standard_Integer DN;
+    Standard_Real Alpha;
+    Handle(Aspect_CircularGrid) theGrid =
+      *(Handle(Aspect_CircularGrid) *) &MyGrid;
+    RS = theGrid->RadiusStep ();
+    DN = theGrid->DivisionNumber ();
+    Alpha = M_PI / Standard_Real (DN);
 
-		// Determination of the circle of the grid closest to P
-		Standard_Integer N = Standard_Integer (DistOP / DistOCur + 0.5);
-		Standard_Real Radius = N * RS;
+    // project point on plane to grid local space
+    gp_Vec aToPoint (gp_Pnt (x0, y0, z0), 
+                     gp_Pnt (aPointOnPlane.X(), aPointOnPlane.Y(), aPointOnPlane.Z()));
 
-		X1 = Cos (Alpha * ICur) * Radius,
-		Y1 = Sin (Alpha * ICur) * Radius,
-		Z1 = 0.0;
+    Standard_Real anR = 0.0, aPhi = 0.0;
+    Standard_Real aLocalX = aGridX.Dot (aToPoint);
+    Standard_Real aLocalY = aGridY.Dot (aToPoint);
+    toPolarCoords (aLocalX, aLocalY, anR, aPhi);
 
-		// MyTrsf * Point to return to the plane of 3D grid
-		P1.SetCoord (X1, Y1, Z1);
-		CurPoint = V3d_View::TrsPoint (P1, MyTrsf);
-		CurPoint.Coord (X2, Y2, Z2);
-	} // IsCircular
+    // clamp point to grid
+    Standard_Real anRSteps  = Round (anR / RS);
+    Standard_Real aPhiSteps = Round (aPhi / Alpha);
+    toCartesianCoords (anRSteps * RS, aPhiSteps * Alpha, aLocalX, aLocalY);
 
-	NewPoint.SetCoord (CurPoint.X (), CurPoint.Y (), CurPoint.Z ());
+    gp_Vec aResult = aGridX * aLocalX + aGridY * aLocalY + gp_Vec (x0, y0, z0);
+    NewPoint.SetCoord (aResult.X(), aResult.Y(), aResult.Z());
+  }
 
 #ifdef IMP240100
-	MyViewer->ShowGridEcho(this,NewPoint);
+  MyViewer->ShowGridEcho(this,NewPoint);
 #endif	//IMP240100
-	return NewPoint;
+  return NewPoint;
 }
 
 // Triedron methods : the Triedron is a non-zoomable object.
 
 void V3d_View::ZBufferTriedronSetup(const Quantity_NameOfColor XColor,
-				    const Quantity_NameOfColor YColor,
-				    const Quantity_NameOfColor ZColor,
-				    const Standard_Real        SizeRatio,
-				    const Standard_Real        AxisDiametr,
-				    const Standard_Integer     NbFacettes)
+                                    const Quantity_NameOfColor YColor,
+                                    const Quantity_NameOfColor ZColor,
+                                    const Standard_Real        SizeRatio,
+                                    const Standard_Real        AxisDiametr,
+                                    const Standard_Integer     NbFacettes)
 {
   MyView->ZBufferTriedronSetup(XColor, YColor, ZColor, SizeRatio, AxisDiametr, NbFacettes);
 }
@@ -307,17 +300,17 @@ void V3d_View::ZBufferTriedronSetup(const Quantity_NameOfColor XColor,
 void V3d_View::TriedronDisplay (const Aspect_TypeOfTriedronPosition APosition,
  const Quantity_NameOfColor AColor, const Standard_Real AScale, const V3d_TypeOfVisualization AMode )
 {
-	MyView->TriedronDisplay (APosition, AColor, AScale, (AMode == V3d_WIREFRAME));
+  MyView->TriedronDisplay (APosition, AColor, AScale, (AMode == V3d_WIREFRAME));
 }
 
 void V3d_View::TriedronErase ( )
 {
-	MyView->TriedronErase ( );
+  MyView->TriedronErase ( );
 }
 
 void V3d_View::TriedronEcho (const Aspect_TypeOfTriedronEcho AType )
 {
-	MyView->TriedronEcho (AType);
+  MyView->TriedronEcho (AType);
 }
 
 void V3d_View::GetGraduatedTrihedron(/* Names of axes */

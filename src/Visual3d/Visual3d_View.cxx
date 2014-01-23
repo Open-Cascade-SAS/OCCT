@@ -24,8 +24,6 @@
         A view is defined by :
                 -  ViewManager
                 -  ContextView
-                -  ViewMapping
-                -  ViewOrientation
 
      HISTORIQUE DES MODIFICATIONS   :
      --------------------------------
@@ -164,18 +162,10 @@
 
 Visual3d_View::Visual3d_View (const Handle(Visual3d_ViewManager)& AManager):
 MyContext (),
-MyViewMapping (),
-MyViewMappingReset (),
-MyViewOrientation (),
-MyViewOrientationReset (),
-MyTransformation (0, 3, 0, 3),
-MyMatrixOfMapping (0, 3, 0, 3),
-MyMatrixOfOrientation (0, 3, 0, 3),
 MyTOCOMPUTESequence (),
 MyCOMPUTEDSequence (),
 MyDisplayedStructure ()
 {
-Standard_Integer i, j;
 
         MyPtrViewManager        = AManager.operator->();
         MyCView.ViewId          = int (AManager->Identification (this));
@@ -187,74 +177,7 @@ Standard_Integer i, j;
 
         MyCView.Context.NbActiveLight = 0;
 
-        for (i=0; i<=3; i++)
-                for (j=0; j<=3; j++)
-                        if (i == j)     MyTransformation (i, j) = 1.0;
-                        else            MyTransformation (i, j) = 0.0;
-
-Standard_Real X, Y, Z;
-
-        (MyViewOrientation.ViewReferencePoint ()).Coord (X, Y, Z);
-        MyCView.Orientation.ViewReferencePoint.x        = float (X);
-        MyCView.Orientation.ViewReferencePoint.y        = float (Y);
-        MyCView.Orientation.ViewReferencePoint.z        = float (Z);
-        (MyViewOrientation.ViewReferencePlane ()).Coord (X, Y, Z);
-        MyCView.Orientation.ViewReferencePlane.x        = float (X);
-        MyCView.Orientation.ViewReferencePlane.y        = float (Y);
-        MyCView.Orientation.ViewReferencePlane.z        = float (Z);
-        (MyViewOrientation.ViewReferenceUp ()).Coord (X, Y, Z);
-        MyCView.Orientation.ViewReferenceUp.x           = float (X);
-        MyCView.Orientation.ViewReferenceUp.y           = float (Y);
-        MyCView.Orientation.ViewReferenceUp.z           = float (Z);
-
-Standard_Real Sx, Sy, Sz;
-
-        MyViewOrientation.AxialScale(Sx, Sy, Sz);
-        MyCView.Orientation.ViewScaleX                  = float (Sx);
-        MyCView.Orientation.ViewScaleY                  = float (Sy);
-        MyCView.Orientation.ViewScaleZ                  = float (Sz);
-
-        // NKV : 23/07/07 - Define custom MODELVIEW matrix
-        MyCView.Orientation.IsCustomMatrix = 0;
-        memset( (float*)MyCView.Orientation.ModelViewMatrix, 0, 16*sizeof( float ) );
-        MyCView.Orientation.ModelViewMatrix[0][0] =
-        MyCView.Orientation.ModelViewMatrix[1][1] =
-        MyCView.Orientation.ModelViewMatrix[2][2] =
-        MyCView.Orientation.ModelViewMatrix[3][3] = 1.;
-        //
-
-Standard_Real um, vm, uM, vM;
-
-        MyCView.Mapping.Projection      = int (MyViewMapping.Projection ());
-        (MyViewMapping.ProjectionReferencePoint ()).Coord (X, Y, Z);
-        MyCView.Mapping.ProjectionReferencePoint.x      = float (X);
-        MyCView.Mapping.ProjectionReferencePoint.y      = float (Y);
-        MyCView.Mapping.ProjectionReferencePoint.z      = float (Z);
-        MyCView.Mapping.ViewPlaneDistance       =
-                        float (MyViewMapping.ViewPlaneDistance ());
-        MyCView.Mapping.BackPlaneDistance       =
-                        float (MyViewMapping.BackPlaneDistance ());
-        MyCView.Mapping.FrontPlaneDistance      =
-                        float (MyViewMapping.FrontPlaneDistance ());
-        MyViewMapping.WindowLimit (um, vm, uM, vM);
-        MyCView.Mapping.WindowLimit.um  = float (um);
-        MyCView.Mapping.WindowLimit.vm  = float (vm);
-        MyCView.Mapping.WindowLimit.uM  = float (uM);
-        MyCView.Mapping.WindowLimit.vM  = float (vM);
-
-        // NKV : 23/07/07 - Define custom MODELVIEW matrix
-        MyCView.Mapping.IsCustomMatrix = 0;
-        memset( (float*)MyCView.Mapping.ProjectionMatrix, 0, 16*sizeof( float ) );
-        MyCView.Mapping.ProjectionMatrix[0][0] =
-        MyCView.Mapping.ProjectionMatrix[1][1] =
-        MyCView.Mapping.ProjectionMatrix[2][2] =
-        MyCView.Mapping.ProjectionMatrix[3][3] = 1.;
-        //
-
         MyCView.Context.ZBufferActivity = -1;
-
-        MyMatOfMapIsEvaluated   = Standard_False;
-        MyMatOfOriIsEvaluated   = Standard_False;
 
         IsInitialized = Standard_False;
         ComputedModeIsActive      = Standard_False;
@@ -269,134 +192,6 @@ Standard_Real um, vm, uM, vM;
         MyGraphicDriver = MyViewManager->GraphicDriver();
 
 }
-
-Visual3d_View::Visual3d_View (const Handle(Visual3d_ViewManager)& AManager, const Visual3d_ViewOrientation& VO, const Visual3d_ViewMapping& VM, const Visual3d_ContextView& CTX):
-MyTransformation (0, 3, 0, 3),
-MyMatrixOfMapping (0, 3, 0, 3),
-MyMatrixOfOrientation (0, 3, 0, 3),
-MyTOCOMPUTESequence (),
-MyCOMPUTEDSequence (),
-MyDisplayedStructure ()
-{
-Standard_Integer i, j;
-
-        MyPtrViewManager        = AManager.operator->();
-        MyViewOrientation       = VO;
-        MyViewMapping           = VM;
-        MyContext               = CTX;
-        MyViewOrientationReset  = VO;
-        MyViewMappingReset      = VM;
-
-        MyCView.ViewId          = int (AManager->Identification (this));
-        MyCView.Active          = 0;
-        MyCView.IsDeleted       = 0;
-
-        MyCView.WsId                  = -1;
-        MyCView.DefWindow.IsDefined   = 0;
-
-        MyCView.Context.NbActiveLight = 0;
-
-        for (i=0; i<=3; i++)
-                for (j=0; j<=3; j++)
-                        if (i == j)     MyTransformation (i, j) = 1.0;
-                        else            MyTransformation (i, j) = 0.0;
-
-Standard_Real X, Y, Z;
-
-        (MyViewOrientation.ViewReferencePoint ()).Coord (X, Y, Z);
-        MyCView.Orientation.ViewReferencePoint.x        = float (X);
-        MyCView.Orientation.ViewReferencePoint.y        = float (Y);
-        MyCView.Orientation.ViewReferencePoint.z        = float (Z);
-        (MyViewOrientation.ViewReferencePlane ()).Coord (X, Y, Z);
-        MyCView.Orientation.ViewReferencePlane.x        = float (X);
-        MyCView.Orientation.ViewReferencePlane.y        = float (Y);
-        MyCView.Orientation.ViewReferencePlane.z        = float (Z);
-        (MyViewOrientation.ViewReferenceUp ()).Coord (X, Y, Z);
-        MyCView.Orientation.ViewReferenceUp.x           = float (X);
-        MyCView.Orientation.ViewReferenceUp.y           = float (Y);
-        MyCView.Orientation.ViewReferenceUp.z           = float (Z);
-
-Standard_Real Sx, Sy, Sz;
-
-        MyViewOrientation.AxialScale(Sx, Sy, Sz);
-        MyCView.Orientation.ViewScaleX                  = float (Sx);
-        MyCView.Orientation.ViewScaleY                  = float (Sy);
-        MyCView.Orientation.ViewScaleZ                  = float (Sz);
-
-        // NKV : 23/07/07 - Define custom MODELVIEW matrix
-        if (MyViewOrientation.IsCustomMatrix()) {
-          MyCView.Orientation.IsCustomMatrix = 1;
-          for ( i = 0; i < 4; i++)
-            for ( j = 0; j < 4; j++)
-              MyCView.Orientation.ModelViewMatrix[i][j] =
-                (Standard_ShortReal)MyViewOrientation.MyModelViewMatrix->Value(i,j);
-        }
-        else {
-          MyCView.Orientation.IsCustomMatrix = 0;
-          memset( (float*)MyCView.Orientation.ModelViewMatrix, 0, 16*sizeof( float ) );
-          MyCView.Orientation.ModelViewMatrix[0][0] =
-          MyCView.Orientation.ModelViewMatrix[1][1] =
-          MyCView.Orientation.ModelViewMatrix[2][2] =
-          MyCView.Orientation.ModelViewMatrix[3][3] = 1.;
-        }
-        //
-
-Standard_Real um, vm, uM, vM;
-
-        MyCView.Mapping.Projection      = int (MyViewMapping.Projection ());
-        (MyViewMapping.ProjectionReferencePoint ()).Coord (X, Y, Z);
-        MyCView.Mapping.ProjectionReferencePoint.x      = float (X);
-        MyCView.Mapping.ProjectionReferencePoint.y      = float (Y);
-        MyCView.Mapping.ProjectionReferencePoint.z      = float (Z);
-        MyCView.Mapping.ViewPlaneDistance       =
-                        float (MyViewMapping.ViewPlaneDistance ());
-        MyCView.Mapping.BackPlaneDistance       =
-                        float (MyViewMapping.BackPlaneDistance ());
-        MyCView.Mapping.FrontPlaneDistance      =
-                        float (MyViewMapping.FrontPlaneDistance ());
-        MyViewMapping.WindowLimit (um, vm, uM, vM);
-        MyCView.Mapping.WindowLimit.um  = float (um);
-        MyCView.Mapping.WindowLimit.vm  = float (vm);
-        MyCView.Mapping.WindowLimit.uM  = float (uM);
-        MyCView.Mapping.WindowLimit.vM  = float (vM);
-
-        // NKV : 23/07/07 - Define custom MODELVIEW matrix
-        if (MyViewMapping.IsCustomMatrix()) {
-          MyCView.Mapping.IsCustomMatrix = 1;
-          for ( i = 0; i < 4; i++)
-            for ( j = 0; j < 4; j++)
-              MyCView.Mapping.ProjectionMatrix[i][j] =
-                (Standard_ShortReal)MyViewMapping.MyProjectionMatrix->Value(i,j);
-        }
-        else {
-          MyCView.Mapping.IsCustomMatrix = 0;
-          memset( (float*)MyCView.Mapping.ProjectionMatrix, 0, 16*sizeof( float ) );
-          MyCView.Mapping.ProjectionMatrix[0][0] =
-          MyCView.Mapping.ProjectionMatrix[1][1] =
-          MyCView.Mapping.ProjectionMatrix[2][2] =
-          MyCView.Mapping.ProjectionMatrix[3][3] = 1.;
-        }
-        //
-
-        MyCView.Context.ZBufferActivity = -1;
-
-        MyMatOfMapIsEvaluated   = Standard_False;
-        MyMatOfOriIsEvaluated   = Standard_False;
-
-        IsInitialized = Standard_False;
-        ComputedModeIsActive      = Standard_False;
-
-        MyCView.ptrUnderLayer = 0;
-        MyCView.ptrOverLayer = 0;
-        MyCView.GContext = 0;
-        MyCView.GDisplayCB = 0;
-        MyCView.GClientData = 0;
-
-        MyGraphicDriver = MyViewManager->GraphicDriver();
-
-}
-
-//-Destructors
 
 //-Methods, in order
 // RIC120302
@@ -419,16 +214,16 @@ void Visual3d_View::SetWindow (const Handle(Aspect_Window)&      AWindow,
 
 void Visual3d_View::SetWindow (const Handle(Aspect_Window)& theWindow)
 {
+  if (IsDeleted ()) return;
 
-        if (IsDeleted ()) return;
+  if (IsDefined ())
+  {
+    Visual3d_ViewDefinitionError::Raise ("Window already defined");
+  }
 
-        if (IsDefined ())
-                Visual3d_ViewDefinitionError::Raise ("Window already defined");
-
-        MyWindow        = theWindow;
-        MyCView.WsId                    = MyCView.ViewId;
-        MyCView.DefWindow.IsDefined     = 1;
-
+  MyWindow = theWindow;
+  MyCView.WsId = MyCView.ViewId;
+  MyCView.DefWindow.IsDefined = 1;
 #if (defined(_WIN32) || defined(__WIN32__))
   const Handle(WNT_Window) aWin   = Handle(WNT_Window)::DownCast (theWindow);
   MyCView.DefWindow.XWindow       = (HWND )(aWin->HWindow());
@@ -563,9 +358,6 @@ void Visual3d_View::Remove () {
         MyCView.IsDeleted       = 1;
         MyCView.DefWindow.IsDefined     = 0;
 
-        MyMatOfMapIsEvaluated   = Standard_False;
-        MyMatOfOriIsEvaluated   = Standard_False;
-
         IsInitialized = Standard_False;
 
         MyWindow.Nullify ();
@@ -583,120 +375,47 @@ void Visual3d_View::Resized () {
 
 }
 
-void Visual3d_View::SetRatio () {
+void Visual3d_View::SetRatio()
+{
+  if (IsDeleted())
+  {
+    return;
+  }
 
-        if (IsDeleted ()) return;
+  Aspect_TypeOfUpdate UpdateMode = MyViewManager->UpdateMode();
 
-Aspect_TypeOfUpdate UpdateMode = MyViewManager->UpdateMode ();
-        MyViewManager->SetUpdateMode (Aspect_TOU_WAIT);
+  MyViewManager->SetUpdateMode (Aspect_TOU_WAIT);
 
-Standard_Real Umin, Vmin, Umax, Vmax;
-Standard_Integer Dxw, Dyw;
-Standard_Real Dxv, Dyv;
-Standard_Real Xc, Yc;
-Standard_Real Rap;
+  Standard_Integer aWidth, aHeight;
 
-        Rap     = 0. ;
-        MyWindow->Size (Dxw, Dyw);
-        MyViewMapping.WindowLimit(Umin,Vmin,Umax,Vmax) ;
-        Xc      = (Umin + Umax)/2. ; Yc = (Vmin + Vmax)/2. ;
-        Dxv     = Umax - Umin ; Dyv     = Vmax - Vmin ;
-        if( Dxw > 0 && Dyw > 0 ) Rap = (Standard_Real)Dyw/(Standard_Real)Dxw ;
-        if( Rap > 0.0 ) {
+  MyWindow->Size (aWidth, aHeight);
 
-            if( Dxv <= Dyv )
-            {
-                if (Rap <= 1.0)
-                {
-                    Dyv = Dxv;
-                    Dxv = Dxv/Rap;
-                }
-                else
-                {
-                    Dxv = Dxv;
-                    Dyv = Dxv*Rap;
-                }
-            }
-            else
-            {
-                if (Rap <= 1.0)
-                {
-                    Dxv = Dyv/Rap;
-                    Dyv = Dyv;
-                }
-                else
-                {
-                    Dxv = Dyv;
-                    Dyv = Dyv*Rap;
-                }
-            }
+  if( aWidth > 0 && aHeight > 0 )
+  {
+    Standard_Real aRatio = (Standard_Real)aWidth / (Standard_Real)aHeight; 
 
-            Umin        = Xc - Dxv/2. ; Vmin    = Yc - Dyv/2. ;
-            Umax        = Xc + Dxv/2. ; Vmax    = Yc + Dyv/2. ;
+    MyCView.DefWindow.dx = Standard_ShortReal (aWidth);
+    MyCView.DefWindow.dy = Standard_ShortReal (aHeight);
 
-            MyViewMapping.SetWindowLimit(Umin,Vmin,Umax,Vmax) ;
+    MyGraphicDriver->RatioWindow (MyCView);
 
-            // Update before SetViewMapping.
+    // Update camera aspect
+    Handle(Graphic3d_Camera) aCamera = MyCView.Context.Camera;
 
-            MyCView.DefWindow.dx        = float( Dxw );
-            MyCView.DefWindow.dy        = float( Dyw );
+    if (!aCamera.IsNull())
+    {
+      aCamera->SetAspect (aRatio);
+    }
 
-            SetViewMapping (MyViewMapping);
-//          SetViewMappingDefault ();
-            // FMN+ Update Ratio for MyViewMappingReset
+    if (!myDefaultCamera.IsNull())
+    {
+      myDefaultCamera->SetAspect (aRatio);
+    }
+  }
 
-            MyViewMappingReset.WindowLimit(Umin,Vmin,Umax,Vmax) ;
-            Xc  = (Umin + Umax)/2. ; Yc = (Vmin + Vmax)/2. ;
-            Dxv = Umax - Umin ; Dyv     = Vmax - Vmin ;
-
-            if( Dxv <= Dyv )
-            {
-                if (Rap <= 1.0)
-                {
-                    Dyv = Dxv;
-                    Dxv = Dxv/Rap;
-                }
-                else
-                {
-                    Dxv = Dxv;
-                    Dyv = Dxv*Rap;
-                }
-            }
-            else
-            {
-                if (Rap <= 1.0)
-                {
-                    Dxv = Dyv/Rap;
-                    Dyv = Dyv;
-                }
-                else
-                {
-                    Dxv = Dyv;
-                    Dyv = Dyv*Rap;
-                }
-            }
-
-            Umin        = Xc - Dxv/2. ; Vmin    = Yc - Dyv/2. ;
-            Umax        = Xc + Dxv/2. ; Vmax    = Yc + Dyv/2. ;
-
-            MyViewMappingReset.SetWindowLimit(Umin,Vmin,Umax,Vmax) ;
-
-            // FMN- Update Ratio for MyViewMappingReset
-
-            MyGraphicDriver->RatioWindow (MyCView);
-        }
-
-        // Force recalculation of 2 matrices.
-        //
-        // The current view can help to reconstruct a copied view
-        // that is itself. Owing to SetWindow and SetRatio the
-        // recalculation of matrices of this new view is imposed.
-        MyMatOfMapIsEvaluated   = Standard_False;
-        MyMatOfOriIsEvaluated   = Standard_False;
-
-        MyViewManager->SetUpdateMode (UpdateMode);
-        if (UpdateMode == Aspect_TOU_ASAP) Update ();
-
+  MyViewManager->SetUpdateMode (UpdateMode);
+  if (UpdateMode == Aspect_TOU_ASAP)
+    Update();
 }
 
 void Visual3d_View::UpdateLights()
@@ -859,382 +578,106 @@ Aspect_GradientBackground Visual3d_View::GradientBackground () const {
 
 }
 
-void Visual3d_View::SetTransform (const TColStd_Array2OfReal& AMatrix) {
-
-        if (IsDeleted ()) return;
-
-Standard_Integer lr, ur, lc, uc;
-Standard_Integer i, j;
-
-        // Assign the new transformation in an array [0..3][0..3]
-        // Avoid problems if the has defined a matrice [1..4][1..4]
-        //                                                 ou [3..6][-1..2] !!
-        lr      = AMatrix.LowerRow ();
-        ur      = AMatrix.UpperRow ();
-        lc      = AMatrix.LowerCol ();
-        uc      = AMatrix.UpperCol ();
-
-        if ( (ur - lr + 1 != 4) || (uc - lc + 1 != 4) )
-                Visual3d_TransformError::Raise ("Transform : not a 4x4 matrix");
-
-        for (i=0; i<=3; i++)
-        for (j=0; j<=3; j++)
-                MyTransformation (i, j) = AMatrix (lr + i, lc + j);
-
-Graphic3d_Vector VPN;
-Graphic3d_Vertex VRP;
-Graphic3d_Vector VUP;
-Standard_Real Sx, Sy, Sz;
-
-Visual3d_ViewOrientation NewViewOrientation;
-
-        VPN     = MyViewOrientation.ViewReferencePlane ();
-        VRP     = MyViewOrientation.ViewReferencePoint ();
-        VUP     = MyViewOrientation.ViewReferenceUp ();
-	MyViewOrientation.AxialScale(Sx, Sy, Sz);
-
-        NewViewOrientation.SetViewReferencePlane
-                (Graphic3d_Structure::Transforms (Transform (), VPN));
-
-        NewViewOrientation.SetViewReferencePoint
-                (Graphic3d_Structure::Transforms (Transform (), VRP));
-
-        NewViewOrientation.SetViewReferenceUp
-                (Graphic3d_Structure::Transforms (Transform (), VUP));
-	NewViewOrientation.SetAxialScale(Sx, Sy, Sz);
-
-        SetViewOrientation (NewViewOrientation);
-
-        MyMatOfOriIsEvaluated   = Standard_False;
-
+// =======================================================================
+// function : DefaultCamera
+// purpose  :
+// =======================================================================
+const Handle(Graphic3d_Camera)& Visual3d_View::DefaultCamera() const
+{
+  return myDefaultCamera;
 }
 
-const TColStd_Array2OfReal& Visual3d_View::Transform () const {
+// =======================================================================
+// function : Camera
+// purpose  :
+// =======================================================================
+const Handle(Graphic3d_Camera)& Visual3d_View::Camera() const{  return MyCView.Context.Camera;}
 
-        return (MyTransformation);
+// =======================================================================
+// function : SetCamera
+// purpose  :
+// =======================================================================
+void Visual3d_View::SetCamera (const Handle(Graphic3d_Camera)& theCamera)
+{
+  MyCView.Context.Camera = theCamera;
 
+  MyGraphicDriver->SetCamera (MyCView);
+
+  if (MyViewManager->UpdateMode() == Aspect_TOU_ASAP)
+  {
+    Update();
+  }
 }
 
-void Visual3d_View::SetViewOrientation (const Visual3d_ViewOrientation& VO) {
+// =======================================================================
+// function : SetViewOrientationDefault
+// purpose  :
+// =======================================================================
+void Visual3d_View::SetViewOrientationDefault ()
+{
+  if (myDefaultCamera.IsNull())
+  {
+    myDefaultCamera = new Graphic3d_Camera();
+  }
 
-        if (IsDeleted ()) return;
-
-        MyViewOrientation       = VO;
-
-        Standard_Real X, Y, Z;
-        // Tests on modification of parameters.
-        Standard_Boolean VUPIsModified  = Standard_False;
-        Standard_Boolean VRPIsModified  = Standard_False;
-        Standard_Boolean VRUIsModified  = Standard_False;
-        Standard_Boolean ScaleIsModified  = Standard_False;
-        Standard_Boolean CustomIsModified = Standard_False;
-
-        (MyViewOrientation.ViewReferencePoint ()).Coord (X, Y, Z);
-        VUPIsModified =
-           MyCView.Orientation.ViewReferencePoint.x != float (X)
-        || MyCView.Orientation.ViewReferencePoint.y != float (Y)
-        || MyCView.Orientation.ViewReferencePoint.z != float (Z);
-        MyCView.Orientation.ViewReferencePoint.x        = float (X);
-        MyCView.Orientation.ViewReferencePoint.y        = float (Y);
-        MyCView.Orientation.ViewReferencePoint.z        = float (Z);
-
-        (MyViewOrientation.ViewReferencePlane ()).Coord (X, Y, Z);
-        VRPIsModified =
-           MyCView.Orientation.ViewReferencePlane.x != float (X)
-        || MyCView.Orientation.ViewReferencePlane.y != float (Y)
-        || MyCView.Orientation.ViewReferencePlane.z != float (Z);
-        MyCView.Orientation.ViewReferencePlane.x        = float (X);
-        MyCView.Orientation.ViewReferencePlane.y        = float (Y);
-        MyCView.Orientation.ViewReferencePlane.z        = float (Z);
-
-        (MyViewOrientation.ViewReferenceUp ()).Coord (X, Y, Z);
-        VRUIsModified =
-           MyCView.Orientation.ViewReferenceUp.x != float (X)
-        || MyCView.Orientation.ViewReferenceUp.y != float (Y)
-        || MyCView.Orientation.ViewReferenceUp.z != float (Z);
-        MyCView.Orientation.ViewReferenceUp.x           = float (X);
-        MyCView.Orientation.ViewReferenceUp.y           = float (Y);
-        MyCView.Orientation.ViewReferenceUp.z           = float (Z);
-
-        MyViewOrientation.AxialScale(X, Y, Z);
-        ScaleIsModified =
-           MyCView.Orientation.ViewScaleX != float (X)
-        || MyCView.Orientation.ViewScaleY != float (Y)
-        || MyCView.Orientation.ViewScaleZ != float (Z);
-        MyCView.Orientation.ViewScaleX                  = float (X);
-        MyCView.Orientation.ViewScaleY                  = float (Y);
-        MyCView.Orientation.ViewScaleZ                  = float (Z);
-
-        CustomIsModified =
-          (MyCView.Orientation.IsCustomMatrix != MyViewOrientation.IsCustomMatrix());
-        MyCView.Orientation.IsCustomMatrix = MyViewOrientation.IsCustomMatrix();
-        if ( MyViewOrientation.IsCustomMatrix() ) {
-          Standard_Integer i, j;
-          for (i = 0; i < 4; i++)
-            for (j = 0; j < 4; j++) {
-             if (!CustomIsModified) CustomIsModified =
-               MyCView.Orientation.ModelViewMatrix[i][j] != MyViewOrientation.MyModelViewMatrix->Value(i,j);
-            }
-        }
-
-#ifdef TRACE_TRSF
-        cout << "Visual3d_View::SetViewOrientation\n";
-        if (VUPIsModified || VRPIsModified || VRUIsModified || ScaleIsModified || CustomIsModified)
-          cout <<   "VUPIsModified : " << VUPIsModified
-          << ", VRPIsModified : " << VRPIsModified
-          << ", VRUIsModified : " << VRUIsModified
-          << ", CustomIsModified : " << CustomIsModified
-          << ", ScaleIsModified : " << ScaleIsModified << "\n" << flush;
-        else
-          cout << "no modification\n" << flush;
-#endif
-
-        // restart if one of parameters is modified
-        if (!IsInitialized || VUPIsModified || VRPIsModified
-            || VRUIsModified || ScaleIsModified || CustomIsModified) {
-
-        MyMatOfOriIsEvaluated = !VUPIsModified && !VRPIsModified
-                              && !VRUIsModified && !ScaleIsModified;
-
-        if (! IsDefined ()) return;
-
-        Standard_Boolean AWait = Standard_False;        // => immediate update
-        MyGraphicDriver->ViewOrientation (MyCView, AWait);
-        IsInitialized = Standard_True;
-        Compute ();
-
-        if (MyViewManager->UpdateMode () == Aspect_TOU_ASAP) Update ();
-        }
-
+  myDefaultCamera->CopyOrientationData (MyCView.Context.Camera);
 }
 
-Visual3d_ViewOrientation Visual3d_View::ViewOrientation () const {
+// =======================================================================
+// function : ViewOrientationReset
+// purpose  :
+// =======================================================================
+void Visual3d_View::ViewOrientationReset ()
+{
+  if (IsDeleted())
+  {
+    return;
+  }
 
-        return (MyViewOrientation);
+  if (!myDefaultCamera.IsNull())
+  {
+    MyCView.Context.Camera->CopyOrientationData (myDefaultCamera);
+  }
 
+  if (MyViewManager->UpdateMode() == Aspect_TOU_ASAP)
+  {
+    Update();
+  }
 }
 
-Visual3d_ViewOrientation Visual3d_View::ViewOrientationDefault () const {
-
-        return (MyViewOrientationReset);
-
+// =======================================================================
+// function : SetViewMappingDefault
+// purpose  :
+// =======================================================================
+void Visual3d_View::SetViewMappingDefault()
+{
+  if (myDefaultCamera.IsNull())
+  {
+    myDefaultCamera = new Graphic3d_Camera();
+  }
+  myDefaultCamera->CopyMappingData (MyCView.Context.Camera);
 }
 
-void Visual3d_View::SetViewOrientationDefault () {
+// =======================================================================
+// function : ViewMappingReset
+// purpose  :
+// =======================================================================
+void Visual3d_View::ViewMappingReset ()
+{
+  if (IsDeleted ())
+  {
+    return;
+  }
 
-        MyViewOrientationReset.Assign (MyViewOrientation);
+  if (!myDefaultCamera.IsNull())
+  {
+    MyCView.Context.Camera->CopyMappingData (myDefaultCamera);
+  }
 
-}
-
-void Visual3d_View::ViewOrientationReset () {
-
-        if (IsDeleted ()) return;
-
-        MyViewOrientation       = MyViewOrientationReset;
-
-        Standard_Real X, Y, Z;
-
-        // Tests on modification of parameters.
-        Standard_Boolean VUPIsModified  = Standard_False;
-        Standard_Boolean VRPIsModified  = Standard_False;
-        Standard_Boolean VRUIsModified  = Standard_False;
-        Standard_Boolean ScaleIsModified  = Standard_False;
-        Standard_Boolean CustomIsModified = Standard_False;
-
-        (MyViewOrientation.ViewReferencePoint ()).Coord (X, Y, Z);
-        VUPIsModified =
-           MyCView.Orientation.ViewReferencePoint.x != float (X)
-        || MyCView.Orientation.ViewReferencePoint.y != float (Y)
-        || MyCView.Orientation.ViewReferencePoint.z != float (Z);
-        MyCView.Orientation.ViewReferencePoint.x        = float (X);
-        MyCView.Orientation.ViewReferencePoint.y        = float (Y);
-        MyCView.Orientation.ViewReferencePoint.z        = float (Z);
-
-        (MyViewOrientation.ViewReferencePlane ()).Coord (X, Y, Z);
-        VRPIsModified =
-           MyCView.Orientation.ViewReferencePlane.x != float (X)
-        || MyCView.Orientation.ViewReferencePlane.y != float (Y)
-        || MyCView.Orientation.ViewReferencePlane.z != float (Z);
-        MyCView.Orientation.ViewReferencePlane.x        = float (X);
-        MyCView.Orientation.ViewReferencePlane.y        = float (Y);
-        MyCView.Orientation.ViewReferencePlane.z        = float (Z);
-
-        (MyViewOrientation.ViewReferenceUp ()).Coord (X, Y, Z);
-        VRUIsModified =
-           MyCView.Orientation.ViewReferenceUp.x != float (X)
-        || MyCView.Orientation.ViewReferenceUp.y != float (Y)
-        || MyCView.Orientation.ViewReferenceUp.z != float (Z);
-        MyCView.Orientation.ViewReferenceUp.x           = float (X);
-        MyCView.Orientation.ViewReferenceUp.y           = float (Y);
-        MyCView.Orientation.ViewReferenceUp.z           = float (Z);
-
-        MyViewOrientation.AxialScale(X, Y, Z);
-        ScaleIsModified =
-           MyCView.Orientation.ViewScaleX != float (X)
-        || MyCView.Orientation.ViewScaleY != float (Y)
-        || MyCView.Orientation.ViewScaleZ != float (Z);
-        MyCView.Orientation.ViewScaleX                  = float (X);
-        MyCView.Orientation.ViewScaleY                  = float (Y);
-        MyCView.Orientation.ViewScaleZ                  = float (Z);
-
-        CustomIsModified =
-        MyCView.Orientation.IsCustomMatrix != MyViewOrientation.IsCustomMatrix();
-        MyCView.Orientation.IsCustomMatrix = MyViewOrientation.IsCustomMatrix();
-        if ( MyViewOrientation.IsCustomMatrix() ) {
-          Standard_Integer i, j;
-          for (i = 0; i < 4; i++)
-            for (j = 0; j < 4; j++) {
-             if (!CustomIsModified) CustomIsModified =
-               MyCView.Orientation.ModelViewMatrix[i][j] != MyViewOrientation.MyModelViewMatrix->Value(i,j);
-            }
-        }
-
-
-#ifdef TRACE_TRSF
-        cout << "Visual3d_View::ViewOrientationReset\n";
-        if (VUPIsModified || VRPIsModified || VRUIsModified || ScaleIsModified || CustomIsModified)
-          cout <<   "VUPIsModified : " << VUPIsModified
-          << ", VRPIsModified : " << VRPIsModified
-          << ", VRUIsModified : " << VRUIsModified
-          << ", CustomIsModified : " << CustomIsModified
-          << ", ScaleIsModified : " << ScaleIsModified << "\n" << flush;
-        else
-          cout << "no modification\n" << flush;
-#endif
-
-        // Restart if one of parameters is modified
-        if (!IsInitialized || VUPIsModified || VRPIsModified
-            || VRUIsModified || ScaleIsModified || CustomIsModified) {
-
-        MyMatOfOriIsEvaluated = !VUPIsModified && !VRPIsModified
-                              && !VRUIsModified && !ScaleIsModified;
-
-        if (! IsDefined ()) return;
-
-        Standard_Boolean AWait = Standard_False;        // => immediate update
-        MyGraphicDriver->ViewOrientation (MyCView, AWait);
-        IsInitialized = Standard_True;
-        Compute ();
-
-        if (MyViewManager->UpdateMode () == Aspect_TOU_ASAP) Update ();
-        }
-}
-
-void Visual3d_View::SetViewMapping (const Visual3d_ViewMapping& VM) {
-
-        if (IsDeleted ()) return;
-
-Visual3d_TypeOfProjection OldType = MyViewMapping.Projection ();
-Visual3d_TypeOfProjection NewType = VM.Projection ();
-
-        MyViewMapping   = VM;
-
-Standard_Real X, Y, Z;
-Standard_Real um, vm, uM, vM;
-
-        MyCView.Mapping.Projection      = int (MyViewMapping.Projection ());
-        (MyViewMapping.ProjectionReferencePoint ()).Coord (X, Y, Z);
-        MyCView.Mapping.ProjectionReferencePoint.x      = float (X);
-        MyCView.Mapping.ProjectionReferencePoint.y      = float (Y);
-        MyCView.Mapping.ProjectionReferencePoint.z      = float (Z);
-        MyCView.Mapping.ViewPlaneDistance       =
-                        float (MyViewMapping.ViewPlaneDistance ());
-        MyCView.Mapping.BackPlaneDistance       =
-                        float (MyViewMapping.BackPlaneDistance ());
-        MyCView.Mapping.FrontPlaneDistance      =
-                        float (MyViewMapping.FrontPlaneDistance ());
-        MyViewMapping.WindowLimit (um, vm, uM, vM);
-        MyCView.Mapping.WindowLimit.um  = float (um);
-        MyCView.Mapping.WindowLimit.vm  = float (vm);
-        MyCView.Mapping.WindowLimit.uM  = float (uM);
-        MyCView.Mapping.WindowLimit.vM  = float (vM);
-
-        MyCView.Mapping.IsCustomMatrix = MyViewMapping.IsCustomMatrix();
-        if (MyViewMapping.IsCustomMatrix()) {
-          Standard_Integer i, j;
-          for (i = 0; i < 4; i++)
-            for (j = 0; j < 4; j++)
-              MyCView.Mapping.ProjectionMatrix[i][j] =
-                (Standard_ShortReal)MyViewMapping.MyProjectionMatrix->Value(i,j);
-        }
-
-        MyMatOfMapIsEvaluated   = Standard_False;
-
-        if (! IsDefined ()) return;
-
-Standard_Boolean AWait = Standard_False;        // => immediate update
-        MyGraphicDriver->ViewMapping (MyCView, AWait);
-
-        // Passage Parallele/Perspective
-        if (OldType != NewType)
-                Compute ();
-
-        if (MyViewManager->UpdateMode () == Aspect_TOU_ASAP) Update ();
-
-}
-
-Visual3d_ViewMapping Visual3d_View::ViewMapping () const {
-
-        return (MyViewMapping);
-
-}
-
-Visual3d_ViewMapping Visual3d_View::ViewMappingDefault () const {
-
-        return (MyViewMappingReset);
-
-}
-
-void Visual3d_View::SetViewMappingDefault () {
-
-        MyViewMappingReset.Assign (MyViewMapping);
-
-}
-
-void Visual3d_View::ViewMappingReset () {
-
-        if (IsDeleted ()) return;
-
-        MyViewMapping   = MyViewMappingReset;
-
-Standard_Real X, Y, Z;
-Standard_Real um, vm, uM, vM;
-
-        MyCView.Mapping.Projection      = int (MyViewMapping.Projection ());
-        (MyViewMapping.ProjectionReferencePoint ()).Coord (X, Y, Z);
-        MyCView.Mapping.ProjectionReferencePoint.x      = float (X);
-        MyCView.Mapping.ProjectionReferencePoint.y      = float (Y);
-        MyCView.Mapping.ProjectionReferencePoint.z      = float (Z);
-        MyCView.Mapping.ViewPlaneDistance       =
-                        float (MyViewMapping.ViewPlaneDistance ());
-        MyCView.Mapping.BackPlaneDistance       =
-                        float (MyViewMapping.BackPlaneDistance ());
-        MyCView.Mapping.FrontPlaneDistance      =
-                        float (MyViewMapping.FrontPlaneDistance ());
-        MyViewMapping.WindowLimit (um, vm, uM, vM);
-        MyCView.Mapping.WindowLimit.um  = float (um);
-        MyCView.Mapping.WindowLimit.vm  = float (vm);
-        MyCView.Mapping.WindowLimit.uM  = float (uM);
-        MyCView.Mapping.WindowLimit.vM  = float (vM);
-
-        MyCView.Mapping.IsCustomMatrix = MyViewMapping.IsCustomMatrix();
-        if (MyViewMapping.IsCustomMatrix()) {
-          Standard_Integer i, j;
-          for (i = 0; i < 4; i++)
-            for (j = 0; j < 4; j++)
-              MyCView.Mapping.ProjectionMatrix[i][j] =
-                (Standard_ShortReal)MyViewMapping.MyProjectionMatrix->Value(i,j);
-        }
-
-        MyMatOfMapIsEvaluated   = Standard_False;
-
-        if (! IsDefined ()) return;
-
-Standard_Boolean AWait = Standard_False;        // => immediate update
-        MyGraphicDriver->ViewMapping (MyCView, AWait);
-
-        if (MyViewManager->UpdateMode () == Aspect_TOU_ASAP) Update ();
-
+  if (MyViewManager->UpdateMode() == Aspect_TOU_ASAP)
+  {
+    Update();
+  }
 }
 
 void Visual3d_View::SetContext (const Visual3d_ContextView& CTX) {
@@ -1655,10 +1098,13 @@ void Visual3d_View::Redraw (const Handle(Visual3d_Layer)& AnUnderLayer, const Ha
 
 }
 
-void Visual3d_View::Update () {
+void Visual3d_View::Update () 
+{
+  IsInitialized = Standard_True;
 
-        Update (MyViewManager->UnderLayer (), MyViewManager->OverLayer ());
+  Compute ();
 
+  Update (MyViewManager->UnderLayer (), MyViewManager->OverLayer ());
 }
 
 void Visual3d_View::Update (const Handle(Visual3d_Layer)& AnUnderLayer, const Handle(Visual3d_Layer)& AnOverLayer) {
@@ -2343,12 +1789,7 @@ void Visual3d_View::MinMaxValues (const Graphic3d_MapOfStructure& ASet, Standard
         Iterator.More ();
         Iterator.Next ()) {
 
-          if (!Iterator.Key()->IsVisible())
-          {
-            continue;
-          }
-
-      if ( (Iterator.Key ())->IsInfinite ()){
+      if ((Iterator.Key ())->IsInfinite ()){
         //XMin, YMin .... ZMax are initialized by means of infinite line data
         (Iterator.Key ())->MinMaxValues (Xm, Ym, Zm, XM, YM, ZM);
         if ( Xm != RealFirst() && Xm < XMin )
@@ -2389,14 +1830,6 @@ void Visual3d_View::MinMaxValues (const Graphic3d_MapOfStructure& ASet, Standard
     if (YMax < YMin) { Ym = YMin; YMin = YMax; YMax = Ym; }
     if (ZMax < ZMin) { Zm = ZMin; ZMin = ZMax; ZMax = Zm; }
   }
-  Standard_Real Sx, Sy, Sz;
-  MyViewOrientation.AxialScale(Sx, Sy, Sz);
-  XMin = (Sx > 1. && XMin < RealFirst ()/Sx)?RealFirst (): XMin*Sx;
-  XMax = (Sx > 1. && XMax > RealLast  ()/Sx)?RealLast  (): XMax*Sx;
-  YMin = (Sy > 1. && YMin < RealFirst ()/Sy)?RealFirst (): YMin*Sy;
-  YMax = (Sy > 1. && YMax > RealLast  ()/Sy)?RealLast  (): YMax*Sy;
-  ZMin = (Sz > 1. && ZMin < RealFirst ()/Sz)?RealFirst (): ZMin*Sz;
-  ZMax = (Sz > 1. && ZMax > RealLast  ()/Sz)?RealLast  (): ZMax*Sz;
 }
 
 void Visual3d_View::MinMaxValues (Standard_Real& XMin, Standard_Real& YMin, Standard_Real& XMax, Standard_Real& YMax) {
@@ -2424,31 +1857,6 @@ Standard_Real Xp, Yp, Zp;
         if (YMax < YMin) { Yp = YMax; YMax = YMin; YMin = Yp; }
 }
 
-const TColStd_Array2OfReal& Visual3d_View::MatrixOfOrientation () {
-
-        if (! MyMatOfOriIsEvaluated) {
-                MyGraphicDriver->InquireMat
-                    (MyCView, MyMatrixOfOrientation, MyMatrixOfMapping);
-                MyMatOfMapIsEvaluated   = Standard_True;
-                MyMatOfOriIsEvaluated   = Standard_True;
-        }
-
-        return (MyMatrixOfOrientation);
-
-}
-
-const TColStd_Array2OfReal& Visual3d_View::MatrixOfMapping () {
-
-        if (! MyMatOfMapIsEvaluated) {
-                MyGraphicDriver->InquireMat
-                    (MyCView, MyMatrixOfOrientation, MyMatrixOfMapping);
-                MyMatOfMapIsEvaluated   = Standard_True;
-                MyMatOfOriIsEvaluated   = Standard_True;
-        }
-
-        return (MyMatrixOfMapping);
-
-}
 
 Standard_Integer Visual3d_View::NumberOfDisplayedStructures () const {
 
@@ -2458,202 +1866,28 @@ Standard_Integer Result = MyDisplayedStructure.Extent ();
 
 }
 
-#ifdef OLD_METHOD
-void Visual3d_View::Projects (const Standard_Real AX, const Standard_Real AY, const Standard_Real AZ, Standard_Real& APX, Standard_Real& APY, Standard_Real& APZ) const {
+void Visual3d_View::Projects (const Standard_Real AX,
+                              const Standard_Real AY,
+                              const Standard_Real AZ,
+                              Standard_Real& APX,
+                              Standard_Real& APY,
+                              Standard_Real& APZ)
+{
+  Handle(Graphic3d_Camera) aCamera = MyCView.Context.Camera;
 
-math_Vector PtDC (0,3), PtWC (0,3);
+  Standard_Real aUmin, aVMin, aUMax, aVMax;  
+  Standard_Real aNear, aFar;
+  aCamera->WindowLimit (aUmin, aVMin, aUMax, aVMax);
 
-// RLE method:
-// Otherwise use new on Visual3d_View (constructor+destructor)
-// as Projects is a const method or MatrixOfOrientation and
-// MatrixOfMapping is not.
-Visual3d_View * const newthis = (Visual3d_View * const) this;
-        newthis->MatrixOfOrientation ();
-        newthis->MatrixOfMapping ();
+  aNear = aCamera->ZNear();
+  aFar = aCamera->ZFar();
 
-// World Coordinate Space
-        PtWC (0) = AX;
-        PtWC (1) = AY;
-        PtWC (2) = AZ;
-        PtWC (3) = 1.0;
+  gp_Pnt aPoint (AX, AY, AZ);
+  aPoint = aCamera->Project (aPoint);
 
-        // WCS -> View Reference Coordinate Space
-        math_Vector PtVRC(0,3);
-        PtVRC = MyMatrixOfOrientation.Multiplied (PtWC);
-
-        // VRCS -> Normalized Projection Coordinate Space
-        math_Vector PtNPC(0,3);
-        PtNPC = MyMatrixOfMapping.Multiplied (PtVRC);
-        for (Standard_Integer i=0; i<3; i++) PtNPC (i) = PtNPC (i) / PtNPC (3);
-
-#ifdef DEBUG
-        printf("Display coordinates PtNPC: %f,%f,%f,%f\n",
-                        PtNPC(0),PtNPC(1),PtNPC(2),PtNPC(3));
-#endif // DEBUG
-
-        Standard_Real Ratio;
-#ifdef DEBUG
-        // NPCS -> Device Coordinate Space
-        Standard_Real Dx        = Standard_Real (MyCView.DefWindow.dx);
-        Standard_Real Dy        = Standard_Real (MyCView.DefWindow.dy);
-
-        Ratio           = Dx / Dy;
-        PtDC (0)        = PtNPC (0) * Dx;
-        PtDC (1)        = Dy - PtNPC (1) * Dy * Ratio;
-
-        printf("Display coordinates : %f,%f,%f,%f\n",
-                        PtDC(0),PtDC(1),PtDC(2),PtDC(3));
-#endif // DEBUG
-
-        // NPCS -> Window Space
-Standard_Real um, vm, uM, vM;
-        MyViewMapping.WindowLimit (um, vm, uM, vM);
-
-        Ratio   = (uM - um) / (vM - vm);
-        if (Ratio >= 1.0)
-            PtNPC (1)   = PtNPC (1) * Ratio;
-        else
-            PtNPC (0)   = PtNPC (0) / Ratio;
-
-#ifdef DEBUG
-        printf("Display coordinates PtNPC: %f,%f,%f,%f\n",
-                        PtNPC(0),PtNPC(1),PtNPC(2),PtNPC(3));
-#endif // DEBUG
-
-        Standard_Real fpd       = MyViewMapping.FrontPlaneDistance ();
-        Standard_Real bpd       = MyViewMapping.BackPlaneDistance ();
-
-        /*
-         * Coordinates of PtNPC are described in the space
-         * [0-1]x[0-1]x[0-1].
-         * It is necessary to transform x and y in the window space.
-         * It is necessary to transform z in the space of back and front
-         * plane, taking into account clipping planes.
-         * Z clipping planes are defined between 0 and 1.
-        */
-
-        APX     = PtNPC (0) * (uM - um) + um;
-        APY     = PtNPC (1) * (vM - vm) + vm;
-        APZ     = PtNPC (2) * (fpd - bpd) + bpd;
-
-#ifdef DEBUG
-        Standard_Integer l,c;
-        printf("OrientationMatrix :");
-        for( l=0 ; l<4 ; l++ ) {
-          printf("\n    %d->",l);
-          for( c=0 ; c<4 ; c++ ) {
-            printf(" %f ,",MyMatrixOfOrientation(c,l));
-          }
-        }
-        printf("\n\n");
-        printf("MappingMatrix :");
-        for( l=0 ; l<4 ; l++ ) {
-          printf("\n    %d->",l);
-          for( c=0 ; c<4 ; c++ ) {
-            printf(" %f ,",MyMatrixOfMapping(c,l));
-          }
-        }
-        printf("\n\n");
-        printf("World coordinates : %f,%f,%f,%f\n",
-                        PtWC(0),PtWC(1),PtWC(2),PtWC(3));
-        printf("View coordinates : %f,%f,%f,%f\n",
-                        PtVRC(0),PtVRC(1),PtVRC(2),PtVRC(3));
-        printf("Display coordinates : %f,%f,%f,%f\n",
-                        PtNPC(0),PtNPC(1),PtNPC(2),PtNPC(3));
-        printf("Window limit : %f,%f,%f,%f\n",um,vm,uM,vM);
-        printf("Ratio : %f\n",Ratio);
-        printf("Front-plane : %f back-plane : %f\n",fpd,bpd);
-        printf("Projection : %f,%f,%f\n \n",APX,APY,APZ);
-#endif
-
-}
-#endif /* OLD_METHOD */
-
-// OCC18942: This method is likely to duplicate Visual3d_ViewManager::ConvertCoord() one,
-// therefore it is necessary to consider merging the two methods or making them call the same
-// graphic driver's method after OCCT 6.3.
-void Visual3d_View::Projects (const Standard_Real AX, const Standard_Real AY, const Standard_Real AZ, Standard_Real& APX, Standard_Real& APY, Standard_Real& APZ) {
-
-Standard_Real PtX, PtY, PtZ, PtT;
-Standard_Real APT;
-static Standard_Real Ratio, um, vm, uM, vM;
-static Standard_Real fpd, bpd;
-
-        if (! MyMatOfOriIsEvaluated || ! MyMatOfMapIsEvaluated) {
-                MyGraphicDriver->InquireMat
-                    (MyCView, MyMatrixOfOrientation, MyMatrixOfMapping);
-                MyMatOfOriIsEvaluated = MyMatOfMapIsEvaluated = Standard_True;
-        }
-
-        // WCS -> View Reference Coordinate Space
-        PtX     = MyMatrixOfOrientation (0, 0) * AX
-                + MyMatrixOfOrientation (0, 1) * AY
-                + MyMatrixOfOrientation (0, 2) * AZ
-                + MyMatrixOfOrientation (0, 3);
-        PtY     = MyMatrixOfOrientation (1, 0) * AX
-                + MyMatrixOfOrientation (1, 1) * AY
-                + MyMatrixOfOrientation (1, 2) * AZ
-                + MyMatrixOfOrientation (1, 3);
-        PtZ     = MyMatrixOfOrientation (2, 0) * AX
-                + MyMatrixOfOrientation (2, 1) * AY
-                + MyMatrixOfOrientation (2, 2) * AZ
-                + MyMatrixOfOrientation (2, 3);
-        PtT     = MyMatrixOfOrientation (3, 0) * AX
-                + MyMatrixOfOrientation (3, 1) * AY
-                + MyMatrixOfOrientation (3, 2) * AZ
-                + MyMatrixOfOrientation (3, 3);
-
-        // VRCS -> Normalized Projection Coordinate Space
-        APX     = MyMatrixOfMapping (0, 0) * PtX
-                + MyMatrixOfMapping (0, 1) * PtY
-                + MyMatrixOfMapping (0, 2) * PtZ
-                + MyMatrixOfMapping (0, 3) * PtT;
-        APY     = MyMatrixOfMapping (1, 0) * PtX
-                + MyMatrixOfMapping (1, 1) * PtY
-                + MyMatrixOfMapping (1, 2) * PtZ
-                + MyMatrixOfMapping (1, 3) * PtT;
-        APZ     = MyMatrixOfMapping (2, 0) * PtX
-                + MyMatrixOfMapping (2, 1) * PtY
-                + MyMatrixOfMapping (2, 2) * PtZ
-                + MyMatrixOfMapping (2, 3) * PtT;
-        APT     = MyMatrixOfMapping (3, 0) * PtX
-                + MyMatrixOfMapping (3, 1) * PtY
-                + MyMatrixOfMapping (3, 2) * PtZ
-                + MyMatrixOfMapping (3, 3) * PtT;
-
-        APX /= APT;
-        APY /= APT;
-        APZ /= APT;
-
-        // NPCS -> Window Space
-        MyViewMapping.WindowLimit (um, vm, uM, vM);
-        fpd     = MyViewMapping.FrontPlaneDistance ();
-        bpd     = MyViewMapping.BackPlaneDistance ();
-
-        if(MyCView.Mapping.IsCustomMatrix) {
-        	// OCC18942: SAN - If orientation and mapping matrices are those used by OpenGL
-        	// visualization, then X, Y and Z coordinates normally vary between -1 and 1
-        	APX     = ( APX + 1 ) * 0.5 * (uM - um) + um;
-        	APY     = ( APY + 1 ) * 0.5 * (vM - vm) + vm;
-        } else {
-        	Ratio   = (uM - um) / (vM - vm);
-        	if (Ratio >= 1.0)
-        		APY *= Ratio;
-        	else
-        		APX /= Ratio;
-
-        	/*
-         * Coordinates of APX, APY, APZ are described in the space
-         * [0-1]x[0-1]x[0-1].
-         * It is necessary to transform x and y in the window space.
-         * It is necessary to transform z in the space of back and front
-         * plane, taking into account clipping planes.
-         * Z clipping planes are defined between 0 and 1.
-         	*/
-            APX     = APX * (uM - um) + um;
-            APY     = APY * (vM - vm) + vm;
-        }
-        APZ     = APZ * (fpd - bpd) + bpd;
+  APX = (aPoint.X() + 1) * 0.5 * (aUMax - aUmin) + aUmin;
+  APY = (aPoint.Y() + 1) * 0.5 * (aVMax - aVMin) + aVMin;
+  APZ = aPoint.Z() * (aFar - aNear) + aNear;
 }
 
 Standard_Integer Visual3d_View::Identification () const {

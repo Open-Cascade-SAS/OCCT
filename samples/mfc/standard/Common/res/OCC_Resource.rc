@@ -280,6 +280,25 @@ BEGIN
     PUSHBUTTON      "Change dimension color",IDC_DimensionColor,105,156,63,24,BS_MULTILINE
     CONTROL         "",IDC_Flyout,"msctls_trackbar32",TBS_TOP | TBS_TOOLTIPS | WS_TABSTOP,73,112,100,20
 END
+IDD_DIALOG_STEREO DIALOGEX 0, 0, 166, 177
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Configure stereo"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_EDIT_IOD,88,42,41,12,ES_AUTOHSCROLL | WS_GROUP
+    CONTROL         "",IDC_SPIN_IOD,"msctls_updown32",UDS_AUTOBUDDY | UDS_ARROWKEYS | WS_GROUP,130,42,11,12
+    GROUPBOX        "Stereo focus properties:",IDC_STATIC,7,72,149,96
+    GROUPBOX        "Eye separation properties:",IDC_STATIC,6,6,150,60
+    LTEXT           "Intraocular distance:",IDC_STATIC,18,43,68,8
+    CONTROL         "",IDC_CHECK_IOD_RELATIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,102,24,16,10
+    LTEXT           "Relative to focal length:",IDC_STATIC,18,24,78,8
+    CONTROL         "",IDC_CHECK_FOCUS_RELATIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,102,90,16,10
+    LTEXT           "Relative to focal length:",IDC_STATIC,18,90,78,8
+    CONTROL         "",IDC_SLIDER_FOCUS,"msctls_trackbar32",TBS_TOP | WS_TABSTOP,18,108,126,24
+    LTEXT           "Fixed value:",IDC_STATIC,18,146,40,8
+    EDITTEXT        IDC_EDIT_FOCUS,67,144,41,12,ES_AUTOHSCROLL | WS_GROUP
+    CONTROL         "",IDC_SPIN_FOCUS,"msctls_updown32",UDS_AUTOBUDDY | UDS_ARROWKEYS | WS_GROUP,108,144,11,12
+END
 
 IDD_ParamsFacesPage DIALOGEX 0, 0, 134, 73
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
@@ -344,6 +363,8 @@ BEGIN
     SEPARATOR
     BUTTON      ID_BUTTONRot
     BUTTON      ID_BUTTONReset
+    SEPARATOR
+    BUTTON      ID_BUTTON_STEREOCONFIG
     SEPARATOR
     BUTTON      ID_BUTTONHlrOff
     BUTTON      ID_BUTTONHlrOn
@@ -484,6 +505,14 @@ BEGIN
         RIGHTMARGIN, 235
         BOTTOMMARGIN, 336
         HORZGUIDE, 336
+    END
+
+    IDD_DIALOG_STEREO, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 159
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 170
     END
 
     IDD_ParamsFacesPage, DIALOG
@@ -655,6 +684,12 @@ STRINGTABLE
 BEGIN
     ID_OBJECT_DIMENSIONS    "Add dimensions"
     ID_LOCALCONTEXT_ADDDIMENSION "Add new dimension for selected objetcs"
+END
+
+STRINGTABLE 
+BEGIN
+    ID_BUTTON_STEREOSETTINGS "Configure stereo properties"
+    ID_BUTTON_STEREO        "Toggle stereographic mode on / off"
 END
 
 #endif    // English (U.S.) resources

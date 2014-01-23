@@ -1,0 +1,43 @@
+puts "========"
+puts "OCC24001"
+puts "Camera dump test"
+puts "========"
+
+box b 1 2 3
+vinit
+vdisplay b
+
+# initialize camera parameters 
+vchangecamera fov 45
+vchangecamera iodtype relative
+vchangecamera iod 0.05
+vchangecamera zfocustype relative
+vchangecamera zfocus 1.0
+
+# test vdump work
+# make sure that neither of 4 produced images match each other
+vchangecamera proj ortho
+vfit
+set aTitle "ortho"
+vdump $imagedir/${casename}_${aTitle}.png rgb 512 512
+vchangecamera proj persp
+vfit
+set aTitle "persp"
+vdump $imagedir/${casename}_${aTitle}.png rgb 512 512
+vchangecamera proj stereo
+set aTitle "stereoR"
+vdump $imagedir/${casename}_${aTitle}.png rgb 512 512 R
+set aTitle "stereoL"
+vdump $imagedir/${casename}_${aTitle}.png rgb 512 512 L
+
+# test context stereo mode swicthing
+# if not supported by hardware it must not crash
+vstereo 1
+vclose all
+vinit
+vdisplay b
+vchangecamera proj stereo
+vfit
+set aTitle "afterSwitch"
+vdump $imagedir/${casename}_${aTitle}.png rgb 512 512 R
+

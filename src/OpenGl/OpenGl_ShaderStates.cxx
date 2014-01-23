@@ -71,7 +71,7 @@ OpenGl_ProjectionState::OpenGl_ProjectionState()
 // function : Set
 // purpose  : Sets new OCCT projection state
 // =======================================================================
-void OpenGl_ProjectionState::Set (const Tmatrix3& theProjectionMatrix)
+void OpenGl_ProjectionState::Set (const Tmatrix3* theProjectionMatrix)
 {
   memcpy (myProjectionMatrix, theProjectionMatrix, sizeof (Tmatrix3));
   myInverseNeedUpdate = true;
@@ -116,7 +116,7 @@ OpenGl_ModelWorldState::OpenGl_ModelWorldState()
 // function : Set
 // purpose  : Sets new model-world matrix
 // =======================================================================
-void OpenGl_ModelWorldState::Set (const Tmatrix3& theModelWorldMatrix)
+void OpenGl_ModelWorldState::Set (const Tmatrix3* theModelWorldMatrix)
 {
   memcpy (myModelWorldMatrix, theModelWorldMatrix, sizeof (Tmatrix3));
   myInverseNeedUpdate = true;
@@ -161,7 +161,7 @@ OpenGl_WorldViewState::OpenGl_WorldViewState()
 // function : Set
 // purpose  : Sets new world-view matrix
 // =======================================================================
-void OpenGl_WorldViewState::Set (const Tmatrix3& theWorldViewMatrix)
+void OpenGl_WorldViewState::Set (const Tmatrix3* theWorldViewMatrix)
 {
   memcpy (myWorldViewMatrix, theWorldViewMatrix, sizeof (Tmatrix3));
   myInverseNeedUpdate = true;

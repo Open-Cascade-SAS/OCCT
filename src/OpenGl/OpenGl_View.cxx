@@ -42,34 +42,6 @@ static const OPENGL_BG_TEXTURE myDefaultBgTexture = { 0, 0, 0, Aspect_FM_CENTERE
 static const OPENGL_BG_GRADIENT myDefaultBgGradient = { {{ 0.F, 0.F, 0.F, 1.F }}, {{ 0.F, 0.F, 0.F, 1.F }}, Aspect_GFM_NONE };
 static const Tmatrix3 myDefaultMatrix = { { 1.F, 0.F, 0.F, 0.F }, { 0.F, 1.F, 0.F, 0.F }, { 0.F, 0.F, 1.F, 0.F }, { 0.F, 0.F, 0.F, 1.F } };
 static const OPENGL_ZCLIP myDefaultZClip = { { Standard_True, 0.F }, { Standard_True, 1.F } };
-static const OPENGL_EXTRA_REP myDefaultExtra =
-{
-  //vrp
-  { 0.F, 0.F, 0.F },
-  //vpn
-  { 0.F, 0.F, 1.F },
-  //vup
-  { 0.F, 1.F, 0.F },
-  //map
-  {
-    //window
-    { 0.F, 0.F, 1.F, 1.F },
-    //viewport
-    { 0.F, 0.F, 0.F, 1.F, 1.F, 1.F },
-    //proj
-    TelParallel,
-    //prp
-    { 0.F, 0.F, 0.F },
-    //vpd
-    0.F,
-    //fpd
-    0.F,
-    //bpd
-    -1.F
-  },
-  //scaleFactors
-  { 1.F, 1.F, 1.F }
-};
 
 static const OPENGL_FOG myDefaultFog = { Standard_False, 0.F, 1.F, { { 0.F, 0.F, 0.F, 1.F } } };
 static const TEL_TRANSFORM_PERSISTENCE myDefaultTransPers = { 0, 0.F, 0.F, 0.F };
@@ -89,15 +61,13 @@ OpenGl_View::OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext,
   myBackfacing(0),
   myBgTexture(myDefaultBgTexture),
   myBgGradient(myDefaultBgGradient),
-  //myOrientationMatrix(myDefaultMatrix),
-  //myMappingMatrix(myDefaultMatrix),
   //shield_indicator = TOn,
   //shield_colour = { { 0.F, 0.F, 0.F, 1.F } },
   //border_indicator = TOff,
   //border_colour = { { 0.F, 0.F, 0.F, 1.F } },
   //active_status = TOn,
   myZClip(myDefaultZClip),
-  myExtra(myDefaultExtra),
+  myCamera(AContext.Camera),
   myFog(myDefaultFog),
   myTrihedron(NULL),
   myGraduatedTrihedron(NULL),
@@ -106,14 +76,11 @@ OpenGl_View::OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext,
   myAntiAliasing(Standard_False),
   myTransPers(&myDefaultTransPers),
   myIsTransPers(Standard_False),
+  myProjectionState (0),
+  myModelViewState (0),
   myStateCounter (theCounter),
-  myLastOrientationState (0, 0),
-  myLastViewMappingState (0, 0),
   myLastLightSourceState (0, 0)
 {
-  // Initialize matrices
-  memcpy(myOrientationMatrix,myDefaultMatrix,sizeof(Tmatrix3));
-  memcpy(myMappingMatrix,myDefaultMatrix,sizeof(Tmatrix3));
 
   // Shading method
   switch (AContext.Model)
@@ -127,8 +94,6 @@ OpenGl_View::OpenGl_View (const CALL_DEF_VIEWCONTEXT &AContext,
       break;
   }
 
-  myCurrOrientationState = myStateCounter->Increment(); // <-- delete after merge with camera
-  myCurrViewMappingState = myStateCounter->Increment(); // <-- delete after merge with camera
   myCurrLightSourceState = myStateCounter->Increment();
 
 #ifdef HAVE_OPENCL
@@ -240,156 +205,11 @@ void OpenGl_View::SetVisualisation (const CALL_DEF_VIEWCONTEXT &AContext)
 //call_togl_cliplimit
 void OpenGl_View::SetClipLimit (const Graphic3d_CView& theCView)
 {
-  myZClip.Back.Limit =
-    (theCView.Context.ZClipBackPlane     - theCView.Mapping.BackPlaneDistance) /
-    (theCView.Mapping.FrontPlaneDistance - theCView.Mapping.BackPlaneDistance);
-  myZClip.Front.Limit =
-    (theCView.Context.ZClipFrontPlane    - theCView.Mapping.BackPlaneDistance) /
-    (theCView.Mapping.FrontPlaneDistance - theCView.Mapping.BackPlaneDistance);
-  if (myZClip.Back.Limit < 0.0f)
-    myZClip.Back.Limit = 0.0f;
-  if (myZClip.Front.Limit > 1.0f)
-    myZClip.Front.Limit = 1.0f;
-  if (myZClip.Back.Limit > myZClip.Front.Limit)
-  {
-    myZClip.Back.Limit  = 0.0f;
-    myZClip.Front.Limit = 1.0f;
-  }
+  myZClip.Back.Limit = theCView.Context.ZClipBackPlane;
+  myZClip.Front.Limit = theCView.Context.ZClipFrontPlane;
 
   myZClip.Back.IsOn  = (theCView.Context.BackZClipping  != 0);
   myZClip.Front.IsOn = (theCView.Context.FrontZClipping != 0);
-}
-
-/*----------------------------------------------------------------------*/
-
-//call_togl_viewmapping
-void OpenGl_View::SetMapping (const Handle(OpenGl_Display)& theGlDisplay,
-                              const Graphic3d_CView&        theCView)
-{
-  const float ratio   = theCView.DefWindow.dy / theCView.DefWindow.dx;
-  const float r_ratio = theCView.DefWindow.dx / theCView.DefWindow.dy;
-
-  TEL_VIEW_MAPPING Map;
-
-  Map.window.xmin = theCView.Mapping.WindowLimit.um;
-  Map.window.ymin = theCView.Mapping.WindowLimit.vm;
-  Map.window.xmax = theCView.Mapping.WindowLimit.uM;
-  Map.window.ymax = theCView.Mapping.WindowLimit.vM;
-
-  Map.viewport.xmin = 0.F;
-  Map.viewport.xmax = ( 1.F < r_ratio ? 1.F : r_ratio );
-  Map.viewport.ymin = 0.F;
-  Map.viewport.ymax = ( 1.F < ratio ? 1.F : ratio );
-  Map.viewport.zmin = 0.F;
-  Map.viewport.zmax = 1.F;
-
-  // projection type
-  switch (theCView.Mapping.Projection)
-  {
-    case 0 :
-      Map.proj = TelPerspective;
-      break;
-    case 1 :
-      Map.proj = TelParallel;
-      break;
-  }
-
-  // projection reference point
-  Map.prp[0] = theCView.Mapping.ProjectionReferencePoint.x;
-  Map.prp[1] = theCView.Mapping.ProjectionReferencePoint.y;
-  Map.prp[2] = theCView.Mapping.ProjectionReferencePoint.z;
-  if (!theGlDisplay.IsNull() && !theGlDisplay->Walkthrough())
-    Map.prp[2] += theCView.Mapping.FrontPlaneDistance;
-
-  // view plane distance
-  Map.vpd = theCView.Mapping.ViewPlaneDistance;
-
-  // back plane distance
-  Map.bpd = theCView.Mapping.BackPlaneDistance;
-
-  // front plane distance
-  Map.fpd = theCView.Mapping.FrontPlaneDistance;
-
-  Tint err_ind = 0;
-
-  // use user-defined matrix
-  if (theCView.Mapping.IsCustomMatrix)
-  {
-    int i, j;
-    for( i = 0; i < 4; i++ )
-      for( j = 0; j < 4; j++ )
-        myMappingMatrix[i][j] = theCView.Mapping.ProjectionMatrix[i][j];
-  }
-  else
-    TelEvalViewMappingMatrix (theGlDisplay, &Map, &err_ind, myMappingMatrix);
-
-  if (!err_ind)
-    myExtra.map = Map;
-
-  myCurrViewMappingState = myStateCounter->Increment();
-}
-
-/*----------------------------------------------------------------------*/
-
-//call_togl_vieworientation
-void OpenGl_View::SetOrientation (const Graphic3d_CView& theCView)
-{
-  Tfloat Vrp[3];
-  Tfloat Vpn[3];
-  Tfloat Vup[3];
-  Tfloat ScaleFactors[3];
-
-  Vrp[0] = theCView.Orientation.ViewReferencePoint.x;
-  Vrp[1] = theCView.Orientation.ViewReferencePoint.y;
-  Vrp[2] = theCView.Orientation.ViewReferencePoint.z;
-
-  Vpn[0] = theCView.Orientation.ViewReferencePlane.x;
-  Vpn[1] = theCView.Orientation.ViewReferencePlane.y;
-  Vpn[2] = theCView.Orientation.ViewReferencePlane.z;
-
-  Vup[0] = theCView.Orientation.ViewReferenceUp.x;
-  Vup[1] = theCView.Orientation.ViewReferenceUp.y;
-  Vup[2] = theCView.Orientation.ViewReferenceUp.z;
-
-  ScaleFactors[0] = theCView.Orientation.ViewScaleX;
-  ScaleFactors[1] = theCView.Orientation.ViewScaleY;
-  ScaleFactors[2] = theCView.Orientation.ViewScaleZ;
-
-  Tint err_ind = 0;
-
-  // use user-defined matrix
-  if (theCView.Orientation.IsCustomMatrix)
-  {
-    int i, j;
-    for( i = 0; i < 4; i++ )
-      for( j = 0; j < 4; j++ )
-        myOrientationMatrix[i][j] = theCView.Orientation.ModelViewMatrix[i][j];
-  }
-  else
-  {
-    TelEvalViewOrientationMatrix (Vrp, Vpn, Vup, ScaleFactors, &err_ind, myOrientationMatrix);
-  }
-
-  if (!err_ind)
-  {
-    myExtra.vrp[0] = Vrp[0];
-    myExtra.vrp[1] = Vrp[1];
-    myExtra.vrp[2] = Vrp[2];
-
-    myExtra.vpn[0] = Vpn[0];
-    myExtra.vpn[1] = Vpn[1];
-    myExtra.vpn[2] = Vpn[2];
-
-    myExtra.vup[0] = Vup[0];
-    myExtra.vup[1] = Vup[1];
-    myExtra.vup[2] = Vup[2];
-
-    myExtra.scaleFactors[0] = ScaleFactors[0],
-    myExtra.scaleFactors[1] = ScaleFactors[1],
-    myExtra.scaleFactors[2] = ScaleFactors[2];
-  }
-
-  myCurrOrientationState = myStateCounter->Increment();
 }
 
 /*----------------------------------------------------------------------*/
@@ -405,29 +225,8 @@ void OpenGl_View::SetFog (const Graphic3d_CView& theCView,
   {
     myFog.IsOn = Standard_True;
 
-    myFog.Front =
-      (theCView.Context.DepthFrontPlane    - theCView.Mapping.BackPlaneDistance) /
-      (theCView.Mapping.FrontPlaneDistance - theCView.Mapping.BackPlaneDistance);
-
-    myFog.Back =
-      (theCView.Context.DepthBackPlane     - theCView.Mapping.BackPlaneDistance) /
-      (theCView.Mapping.FrontPlaneDistance - theCView.Mapping.BackPlaneDistance);
-
-    if (myFog.Front < 0.F)
-      myFog.Front = 0.F;
-    else if (myFog.Front > 1.F)
-      myFog.Front = 1.F;
-
-    if (myFog.Back < 0.F)
-      myFog.Back = 0.F;
-    else if (myFog.Back > 1.F)
-      myFog.Back = 1.F;
-
-    if (myFog.Back > myFog.Front)
-    {
-      myFog.Front = 1.F;
-      myFog.Back = 0.F;
-    }
+    myFog.Front = theCView.Context.DepthFrontPlane;
+    myFog.Back = theCView.Context.DepthBackPlane;
 
     myFog.Color.rgb[0] = theCView.DefWindow.Background.r;
     myFog.Color.rgb[1] = theCView.DefWindow.Background.g;
@@ -495,8 +294,8 @@ void OpenGl_View::EndTransformPersistence(const Handle(OpenGl_Context)& theCtx)
     glGetFloatv (GL_PROJECTION_MATRIX, *aResultProjection);
 
     // Set OCCT state uniform variables
-    theCtx->ShaderManager()->RevertWorldViewStateTo (aResultWorldView);
-    theCtx->ShaderManager()->RevertProjectionStateTo (aResultProjection);
+    theCtx->ShaderManager()->RevertWorldViewStateTo (&aResultWorldView);
+    theCtx->ShaderManager()->RevertProjectionStateTo (&aResultProjection);
   }
 }
 
@@ -581,9 +380,10 @@ const TEL_TRANSFORM_PERSISTENCE* OpenGl_View::BeginTransformPersistence (const H
   // prevent scaling-on-axis
   if (theTransPers->mode & TPF_ZOOM)
   {
-    const double aScaleX = myExtra.scaleFactors[0];
-    const double aScaleY = myExtra.scaleFactors[1];
-    const double aScaleZ = myExtra.scaleFactors[2];
+    const gp_Pnt anAxialScale = myCamera->AxialScale();
+    const double aScaleX = anAxialScale.X();
+    const double aScaleY = anAxialScale.Y();
+    const double aScaleZ = anAxialScale.Z();
     for (int i = 0; i < 3; ++i)
     {
       aModelMatrix[0][i] /= aScaleX;
@@ -659,8 +459,28 @@ const TEL_TRANSFORM_PERSISTENCE* OpenGl_View::BeginTransformPersistence (const H
   glGetFloatv (GL_PROJECTION_MATRIX, *aResultProjection);
 
   // Set OCCT state uniform variables
-  theCtx->ShaderManager()->UpdateWorldViewStateTo (aResultWorldView);
-  theCtx->ShaderManager()->UpdateProjectionStateTo (aResultProjection);
+  theCtx->ShaderManager()->UpdateWorldViewStateTo (&aResultWorldView);
+  theCtx->ShaderManager()->UpdateProjectionStateTo (&aResultProjection);
 
   return aTransPersPrev;
 }
+
+/*----------------------------------------------------------------------*/
+
+void OpenGl_View::GetMatrices (TColStd_Array2OfReal&  theMatOrient,
+                               TColStd_Array2OfReal&  theMatMapping) const
+{
+  const OpenGl_Matrix* aProj =   (const OpenGl_Matrix*) &myCamera->ProjectionMatrix();
+  const OpenGl_Matrix* aOrient = (const OpenGl_Matrix*) &myCamera->OrientationMatrix();
+
+  int i, j;
+  for (i = 0; i < 4; ++i)
+  {
+    for (j = 0; j < 4; ++j)
+    {
+      theMatOrient  (i, j) = aOrient->mat[j][i];
+      theMatMapping (i, j) = aProj->  mat[j][i];
+    }
+  }
+}
+/*----------------------------------------------------------------------*/

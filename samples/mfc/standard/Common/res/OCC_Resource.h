@@ -5,6 +5,7 @@
 #define IDD_ParamsFacesPage             101
 #define IDR_POPUP                       116
 #define IDD_Dimension                   119
+#define IDD_DIALOG_STEREO               120
 #define IDD_LengthParamsEdgePage        122
 #define IDD_LengthParamsVerticesPage    123
 #define IDD_LengthParamsEdgesPage       125
@@ -62,10 +63,17 @@
 #define IDC_TextDisplayMode             1047
 #define IDC_TextDisplayModeStatic       1048
 #define IDC_DimensionColor              1049
-#define IDC_FacesSt1                    1052
-#define IDC_FacesSt2                    1053
-#define IDC_FacesBtn1                   1054
-#define IDC_FacesBtn2                   1055
+#define IDC_EDIT_IOD                    1050
+#define IDC_SPIN_IOD                    1051
+#define IDC_CHECK_IOD_RELATIVE          1052
+#define IDC_CHECK_FOCUS_RELATIVE        1053
+#define IDC_SLIDER_FOCUS                1054
+#define IDC_EDIT_FOCUS                  1055
+#define IDC_SPIN_FOCUS                  1056
+#define IDC_FacesSt1                    1057
+#define IDC_FacesSt2                    1058
+#define IDC_FacesBtn1                   1059
+#define IDC_FacesBtn2                   1060
 #define ID_WINDOW_NEW3D                 1151
 #define ID_OBJECT_DISPLAYALL            1201
 #define ID_OBJECT_MATERIAL              1205
@@ -140,6 +148,9 @@
 #define ID_OBJECT_DIMENSIONS            40035
 #define ID_OBJECT_DIM                   40036
 #define ID_LOCALCONTEXT_ADDDIMENSION    40037
+#define ID_BUTTON_STEREOSETTINGS        40038
+#define ID_BUTTON_STEREO                40039
+#define ID_BUTTON_STEREOCONFIG          40040
 #define ID_FILE_IMPORT_CSFDB            40100
 #define ID_FILE_IMPORT_BREP             40101
 #define ID_FILE_IMPORT_STEP             40102
@@ -180,8 +191,8 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        131
-#define _APS_NEXT_COMMAND_VALUE         40038
-#define _APS_NEXT_CONTROL_VALUE         1055
+#define _APS_NEXT_COMMAND_VALUE         40041
+#define _APS_NEXT_CONTROL_VALUE         1061
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

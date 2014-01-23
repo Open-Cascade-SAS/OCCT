@@ -67,3 +67,39 @@ OCC_BaseDoc::~OCC_BaseDoc()
 {
 
 }
+
+//=============================================================================
+// function: ResetDocumentViews
+// purpose:
+//=============================================================================
+void OCC_BaseDoc::ResetDocumentViews (CDocTemplate* theTemplate)
+{
+  // do not delete document if no views
+  BOOL isAutoDelete = m_bAutoDelete;
+  m_bAutoDelete = FALSE;
+
+  // close all opened views
+  POSITION aViewIt = GetFirstViewPosition();
+  while (aViewIt)
+  {
+    CView* aView = GetNextView (aViewIt);
+    if (aView == NULL)
+    {
+      continue;
+    }
+
+    RemoveView (aView);
+
+    aView->GetParentFrame()->SendMessage (WM_CLOSE);
+  }
+
+  // create new view frame
+  CFrameWnd* aNewFrame = theTemplate->CreateNewFrame (this, NULL);
+  m_bAutoDelete = isAutoDelete;
+
+  // init frame
+  theTemplate->InitialUpdateFrame(aNewFrame, this);
+
+
+
+}

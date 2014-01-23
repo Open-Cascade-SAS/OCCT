@@ -5,11 +5,13 @@
 #include <stdafx.h>
 
 #include "OCC_App.h"
-
+#include "OCC_BaseDoc.h"
 #include <res\OCC_Resource.h>
 
 #include <Standard_Version.hxx>
+#include <OpenGl_GraphicDriver.hxx>
 #include <OSD.hxx>
+
 #include "afxwin.h"
 
 /////////////////////////////////////////////////////////////////////////////
@@ -24,6 +26,8 @@ BEGIN_MESSAGE_MAP(OCC_App, CWinApp)
 	// Standard file based document commands
 	ON_COMMAND(ID_FILE_NEW, CWinApp::OnFileNew)
 	ON_COMMAND(ID_FILE_OPEN, CWinApp::OnFileOpen)
+  ON_COMMAND(ID_BUTTON_STEREO, &OCC_App::OnStereo)
+  ON_UPDATE_COMMAND_UI(ID_BUTTON_STEREO, &OCC_App::OnUpdateStereo)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -173,4 +177,58 @@ LPCTSTR OCC_App::GetInitDataDir()
 void OCC_App::SetSampleName(LPCTSTR Name)
 {
   SampleName = Name;
+}
+
+//=============================================================================
+// function: OnStereo
+// purpose:
+//=============================================================================
+void OCC_App::OnStereo()
+{
+  Handle(OpenGl_GraphicDriver) aDriver = Handle(OpenGl_GraphicDriver)::DownCast (myGraphicDriver);
+
+  int anAnswer = MessageBox(NULL,
+    "It is required to switch OpenGl context to turn on / off hardware stereo support. "
+    "The document views need to be re-created to change \"GL\" context pixel format. "
+    "This will close all current views and open new one (the model will be kept).\n"
+    "Do you want to continue?", "Enable/disable hardware stereo support", MB_OKCANCEL | MB_ICONQUESTION);
+  if (anAnswer != IDOK)
+  {
+    return;
+  }
+
+  Standard_Boolean& aStereoMode = aDriver->ChangeOptions().contextStereo;
+
+  aStereoMode = !aStereoMode;
+
+  // reset document views
+  POSITION aTemplateIt = GetFirstDocTemplatePosition();
+
+  while (aTemplateIt != NULL)
+  {
+    CDocTemplate* aTemplate = (CDocTemplate*)GetNextDocTemplate (aTemplateIt);
+
+    POSITION aDocumentIt = aTemplate->GetFirstDocPosition();
+
+    while (aDocumentIt != NULL)
+    {
+      OCC_BaseDoc* aDocument = dynamic_cast<OCC_BaseDoc*> (aTemplate->GetNextDoc (aDocumentIt));
+      if (aDocument == NULL)
+        continue;
+
+      aDocument->ResetDocumentViews (aTemplate);
+    }
+  }
+}
+
+//=============================================================================
+// function: OnUpdateStereo
+// purpose:
+//=============================================================================
+void OCC_App::OnUpdateStereo (CCmdUI* theCmdUI)
+{
+  Handle(OpenGl_GraphicDriver) aDriver =
+    Handle(OpenGl_GraphicDriver)::DownCast (myGraphicDriver);
+
+  theCmdUI->SetCheck (!aDriver.IsNull() && aDriver->Options().contextStereo);
 }

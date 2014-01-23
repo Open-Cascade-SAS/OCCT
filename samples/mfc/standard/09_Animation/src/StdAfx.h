@@ -210,7 +210,6 @@ enum CurrentAction3d {
 #include "HLRAlgo_Projector.hxx"
 #include "Aspect_MarkMap.hxx"
 
-#include <V3d_PerspectiveView.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Solid.hxx>

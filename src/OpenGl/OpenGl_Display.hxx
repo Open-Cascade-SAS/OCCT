@@ -56,7 +56,6 @@ public:
   Standard_Boolean DBuffer () const { return myDBuffer; }
   Standard_Boolean Dither () const { return myDither; }
   Standard_Boolean BackDither () const { return myBackDither; }
-  Standard_Boolean Walkthrough () const { return myWalkthrough; }
   Standard_Boolean SymPerspective() const { return mySymPerspective; }
   Standard_Boolean PolygonOffset (Standard_ShortReal &AFactor, Standard_ShortReal &AUnits) const
   {
@@ -91,7 +90,6 @@ public:
   Standard_Boolean myDBuffer;
   Standard_Boolean myDither;
   Standard_Boolean myBackDither;
-  Standard_Boolean myWalkthrough;
   Standard_Boolean mySymPerspective;
   Standard_ShortReal myOffsetFactor;
   Standard_ShortReal myOffsetUnits;

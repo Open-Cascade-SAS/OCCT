@@ -17,6 +17,9 @@
 #include <InterfaceGraphic_Graphic3d.hxx>
 #include <InterfaceGraphic_Visual3d.hxx>
 #include <Handle_Graphic3d_TextureEnv.hxx>
+#include <Graphic3d_Camera.hxx>
+
+#include <Standard_Type.hxx>
 #include <Graphic3d_CLight.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 
@@ -71,6 +74,8 @@ public:
   int   SurfaceDetail;
 
   Graphic3d_SequenceOfHClipPlane ClipPlanes;
+
+  Handle(Graphic3d_Camera) Camera;
 };
 
 class Graphic3d_CView
@@ -88,7 +93,7 @@ public:
     ptrUnderLayer (NULL),
     ptrOverLayer  (NULL),
     Backfacing  (0),
-	GContext (NULL),
+	  GContext (NULL),
     GDisplayCB  (NULL),
     GClientData (NULL),
     ptrFBO (NULL),
@@ -98,11 +103,7 @@ public:
     IsReflectionsEnabled (1),
     IsAntialiasingEnabled (0)
   {
-    memset(&Orientation,0,sizeof(Orientation));
-	memset(&Mapping,0,sizeof(Mapping));
-	memset(&OrientationReset,0,sizeof(OrientationReset));
-	memset(&MappingReset,0,sizeof(MappingReset));
-	memset(&DefWindow,0,sizeof(DefWindow));
+	  memset(&DefWindow,0,sizeof(DefWindow));
   }
 
 public:
@@ -115,12 +116,6 @@ public:
   int   IsOpen;
 
   int   Active;
-
-  CALL_DEF_VIEWORIENTATION Orientation;
-  CALL_DEF_VIEWMAPPING     Mapping;
-
-  CALL_DEF_VIEWORIENTATION OrientationReset;
-  CALL_DEF_VIEWMAPPING     MappingReset;
 
   CALL_DEF_VIEWCONTEXT     Context;
 

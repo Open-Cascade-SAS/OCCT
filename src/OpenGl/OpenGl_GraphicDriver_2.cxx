@@ -25,13 +25,6 @@ Standard_Integer OpenGl_GraphicDriver::InquireLightLimit ()
   return (myGlDisplay.IsNull() ? 0 : myGlDisplay->Facilities().MaxLights);
 }
 
-void OpenGl_GraphicDriver::InquireMat (const Graphic3d_CView& ACView, TColStd_Array2OfReal& AMatO, TColStd_Array2OfReal& AMatM)
-{
-  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
-  if (aCView)
-    aCView->View->GetMatrices(AMatO,AMatM,ACView.Orientation.IsCustomMatrix);
-}
-
 Standard_Integer OpenGl_GraphicDriver::InquireViewLimit ()
 {
   return (myGlDisplay.IsNull() ? 0 : myGlDisplay->Facilities().MaxViews);

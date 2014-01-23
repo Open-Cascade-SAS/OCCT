@@ -11,6 +11,7 @@
 
 #include "OCC_BaseView.h"
 #include "OCC_3dDoc.h"
+#include "OCC_StereoConfigDlg.h"
 #include <Standard_Macro.hxx>
 
 enum CurAction3d { 
@@ -81,6 +82,8 @@ protected:
 	afx_msg void OnUpdateBUTTONZoomWin(CCmdUI* pCmdUI);
 	afx_msg void OnUpdateBUTTONRot(CCmdUI* pCmdUI);
 	afx_msg void OnModifyChangeBackground();
+  afx_msg void OnStereoConfigButton();
+  afx_msg void OnUpdateStereoConfigButton (CCmdUI* theCmdUI);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 
@@ -111,6 +114,11 @@ protected:
 				    	        const Standard_Integer  MaxY  ,
 					            const Standard_Boolean  Draw  ,
                                 const LineStyle aLineStyle = Default  );
+
+private:
+
+  //! Persistent non blocking stereo configuration dialog
+  OCC_StereoConfigDlg* m_pStereoDlg;
 };
 
 #ifndef _DEBUG  // debug version in OCC_3dView.cpp

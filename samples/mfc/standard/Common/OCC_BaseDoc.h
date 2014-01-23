@@ -68,6 +68,11 @@ public:
   virtual void Popup (const Standard_Integer /*theMouseX*/,
                       const Standard_Integer /*theMouseY*/,
                       const Handle(V3d_View)& /*theView*/) {}
+
+public:
+
+  void ResetDocumentViews (CDocTemplate* theTemplate);
+
 protected:
 
   Handle(V3d_Viewer) myViewer;

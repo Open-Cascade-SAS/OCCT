@@ -106,7 +106,6 @@ public:
   Standard_EXPORT void End ();
 
   Standard_EXPORT Standard_Integer InquireLightLimit ();
-  Standard_EXPORT void InquireMat (const Graphic3d_CView& ACView, TColStd_Array2OfReal& AMatO, TColStd_Array2OfReal& AMatM);
   Standard_EXPORT Standard_Integer InquireViewLimit ();
   Standard_EXPORT void Blink (const Graphic3d_CStructure& ACStructure,const Standard_Boolean Create);
   Standard_EXPORT void BoundaryBox (const Graphic3d_CStructure& ACStructure, const Standard_Boolean Create);
@@ -155,22 +154,18 @@ public:
   Standard_EXPORT void ClipLimit (const Graphic3d_CView& ACView, const Standard_Boolean AWait);
   Standard_EXPORT void DeactivateView (const Graphic3d_CView& ACView);
   Standard_EXPORT void DepthCueing (const Graphic3d_CView& ACView, const Standard_Boolean AFlag);
-  Standard_EXPORT Standard_Boolean ProjectRaster (const Graphic3d_CView& ACView, const Standard_ShortReal AX, const Standard_ShortReal AY, const Standard_ShortReal AZ, Standard_Integer& AU, Standard_Integer& AV);
-  Standard_EXPORT Standard_Boolean UnProjectRaster (const Graphic3d_CView& ACView, const Standard_Integer Axm, const Standard_Integer Aym, const Standard_Integer AXM, const Standard_Integer AYM, const Standard_Integer AU, const Standard_Integer AV, Standard_ShortReal& AX, Standard_ShortReal& AY, Standard_ShortReal& AZ);
-  Standard_EXPORT Standard_Boolean UnProjectRasterWithRay (const Graphic3d_CView& ACView, const Standard_Integer Axm, const Standard_Integer Aym, const Standard_Integer AXM, const Standard_Integer AYM, const Standard_Integer AU, const Standard_Integer AV, Standard_ShortReal& AX, Standard_ShortReal& AY, Standard_ShortReal& AZ, Standard_ShortReal& DX, Standard_ShortReal& DY, Standard_ShortReal& DZ);
   Standard_EXPORT void RatioWindow (const Graphic3d_CView& ACView);
   Standard_EXPORT void Redraw (const Graphic3d_CView& ACView, const Aspect_CLayer2d& ACUnderLayer, const Aspect_CLayer2d& ACOverLayer, const Standard_Integer x = 0, const Standard_Integer y = 0, const Standard_Integer width = 0, const Standard_Integer height = 0);
   Standard_EXPORT void RemoveView (const Graphic3d_CView& ACView);
   Standard_EXPORT void SetLight (const Graphic3d_CView& ACView);
   Standard_EXPORT void SetClipPlanes (const Graphic3d_CView& theCView);
   Standard_EXPORT void SetClipPlanes (const Graphic3d_CStructure& theCStructure);
+  Standard_EXPORT void SetCamera (const Graphic3d_CView& theCView);
   Standard_EXPORT void SetVisualisation (const Graphic3d_CView& ACView);
   Standard_EXPORT void TransformStructure (const Graphic3d_CStructure& ACStructure);
   Standard_EXPORT void Transparency (const Graphic3d_CView& ACView, const Standard_Boolean AFlag);
   Standard_EXPORT void Update (const Graphic3d_CView& ACView, const Aspect_CLayer2d& ACUnderLayer, const Aspect_CLayer2d& ACOverLayer);
   Standard_EXPORT Standard_Boolean View (Graphic3d_CView& ACView);
-  Standard_EXPORT void ViewMapping (const Graphic3d_CView& ACView, const Standard_Boolean AWait);
-  Standard_EXPORT void ViewOrientation (const Graphic3d_CView& ACView,const Standard_Boolean AWait);
   Standard_EXPORT void Environment (const Graphic3d_CView& ACView);
   Standard_EXPORT void SetStencilTestOptions (const Graphic3d_CGroup& theCGroup, const Standard_Boolean theIsEnabled);
   Standard_EXPORT void Text (const Graphic3d_CGroup& ACGroup, const Standard_CString AText, const Graphic3d_Vertex& APoint, const Standard_Real AHeight, const Quantity_PlaneAngle AAngle, const Graphic3d_TextPath ATp, const Graphic3d_HorizontalTextAlignment AHta, const Graphic3d_VerticalTextAlignment AVta, const Standard_Boolean EvalMinMax = Standard_True);

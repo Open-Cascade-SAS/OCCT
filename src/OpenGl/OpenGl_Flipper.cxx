@@ -92,7 +92,7 @@ void OpenGl_Flipper::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
                                     { 0.f, 0.f, 1.f, 0.f },
                                     { 0.f, 0.f, 0.f, 1.f } };
 
-      aContext->ShaderManager()->RevertModelWorldStateTo (aModelWorldState);
+      aContext->ShaderManager()->RevertModelWorldStateTo (&aModelWorldState);
     }
     else
     {
@@ -114,8 +114,8 @@ void OpenGl_Flipper::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
       Tmatrix3 aProjection;
       glGetFloatv (GL_PROJECTION_MATRIX, *aProjection);
 
-      aContext->ShaderManager()->UpdateWorldViewStateTo (aWorldView);
-      aContext->ShaderManager()->UpdateProjectionStateTo (aProjection);
+      aContext->ShaderManager()->UpdateWorldViewStateTo (&aWorldView);
+      aContext->ShaderManager()->UpdateProjectionStateTo (&aProjection);
     }
 
     if (aCurrMode != GL_MODELVIEW)

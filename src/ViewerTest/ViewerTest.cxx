@@ -785,7 +785,7 @@ static Standard_Integer VDump (Draw_Interpretor& di, Standard_Integer argc, cons
 {
   if (argc < 2)
   {
-    di<<"Use: "<<argv[0]<<" <filename>.{png|bmp|jpg|gif} [buffer={rgb|rgba|depth}] [width height]\n";
+    di<<"Use: "<<argv[0]<<" <filename>.{png|bmp|jpg|gif} [buffer={rgb|rgba|depth}] [width height] [stereoproj={L|R}]\n";
     return 1;
   }
 
@@ -810,6 +810,8 @@ static Standard_Integer VDump (Draw_Interpretor& di, Standard_Integer argc, cons
   Standard_Integer aWidth  = (argc > 3) ? Draw::Atoi (argv[3]) : 0;
   Standard_Integer aHeight = (argc > 4) ? Draw::Atoi (argv[4]) : 0;
 
+  TCollection_AsciiString aStereoProj ((argc > 5) ? argv[5] : "");
+
   Handle(AIS_InteractiveContext) IC;
   Handle(V3d_View) view;
   GetCtxAndView (IC, view);
@@ -829,8 +831,24 @@ static Standard_Integer VDump (Draw_Interpretor& di, Standard_Integer argc, cons
     return 0;
   }
 
+  V3d_StereoDumpOptions aStereoOpts = V3d_SDO_MONO;
+
+  if (!aStereoProj.IsEmpty())
+  {
+    aStereoProj.UpperCase();
+    if (aStereoProj == "L")
+    {
+      aStereoOpts = V3d_SDO_LEFT_EYE;
+    }
+
+    if (aStereoProj == "R")
+    {
+      aStereoOpts = V3d_SDO_RIGHT_EYE;
+    }
+  }
+
   Image_AlienPixMap aPixMap;
-  if (!view->ToPixMap (aPixMap, aWidth, aHeight, aBufferType))
+  if (!view->ToPixMap (aPixMap, aWidth, aHeight, aBufferType, Standard_True, aStereoOpts))
   {
     di << "Dumping failed!\n";
     return 1;
@@ -3412,10 +3430,10 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 
   theCommands.Add("vdump",
     #ifdef HAVE_FREEIMAGE
-      "<filename>.{png|bmp|jpg|gif} [buffer={rgb|rgba|depth}] [width height]"
+      "<filename>.{png|bmp|jpg|gif} [buffer={rgb|rgba|depth}] [width height] [stereoproj={L|R}]"
       "\n\t\t: Dumps contents of viewer window to PNG, BMP, JPEG or GIF file",
     #else
-      "<filename>.{ppm} [buffer={rgb|rgba|depth}] [width height]"
+      "<filename>.{ppm} [buffer={rgb|rgba|depth}] [width height] [stereoproj={L|R}]"
       "\n\t\t: Dumps contents of viewer window to PPM image file",
     #endif
 		  __FILE__,VDump,group);
