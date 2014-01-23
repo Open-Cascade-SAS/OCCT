@@ -69,10 +69,6 @@ else()
   SET(COMPILER ${CMAKE_GENERATOR})
 endif()
 
-if (${COMPILER_BITNESS} STREQUAL 64)
-  add_definitions(-D_OCC64)
-endif()
-
 add_definitions(-DCSFDB)
 if(WIN32)
   add_definitions(/DWNT -wd4996)

@@ -39,14 +39,6 @@
 #pragma warning (disable:4312)
 #endif
 
-#ifndef PUndefinedAddress 
-#ifdef _OCC64
-#define PUndefinedAddress ((Standard_Persistent *)0xfefdfefdfefd0000)
-#else
-#define PUndefinedAddress ((Standard_Persistent *)0xfefd0000)
-#endif
-#endif
-
 class Standard_Persistent;
 class Handle_Standard_Type;
 class Handle_Standard_Persistent;
@@ -64,17 +56,17 @@ class Handle(Standard_Persistent)
 
     void BeginScope() const
       {
-       if (entity != PUndefinedAddress) entity->count++;
+       if (entity != 0) entity->count++;
       }    
 
     void EndScope()
       {
-       if (entity != PUndefinedAddress) 
+       if (entity != 0) 
          {
           entity->count--;
           if (entity->count == 0) {
 	    entity->Delete();
-	    entity = PUndefinedAddress ;
+	    entity = 0 ;
 	  }
 	}
       }
@@ -86,7 +78,7 @@ class Handle(Standard_Persistent)
 
     Handle(Standard_Persistent)()
       {
-       entity = PUndefinedAddress ;
+       entity = 0 ;
       }
 
     Handle(Standard_Persistent)(const Handle(Standard_Persistent)& aTid) 
@@ -98,7 +90,7 @@ class Handle(Standard_Persistent)
     Handle(Standard_Persistent)(const Standard_Persistent *anItem)
       {
        if (!anItem)
-           entity = PUndefinedAddress ;
+           entity = 0 ;
        else {
 	 entity = (Standard_Persistent *)anItem;
 	 BeginScope();
@@ -111,32 +103,32 @@ class Handle(Standard_Persistent)
 
      Standard_EXPORT void  ShallowDump(Standard_OStream&) const;
      
-    int operator==(const Handle(Standard_Persistent)& right) const
+    bool operator==(const Handle(Standard_Persistent)& right) const
       {
        return entity == right.entity;
       }
 
-    int operator==(const Standard_Persistent *right) const
+    bool operator==(const Standard_Persistent *right) const
       {
        return entity == right;
       }
 
-    friend int operator==(const Standard_Persistent *left, const Handle(Standard_Persistent)& right)
+    friend bool operator==(const Standard_Persistent *left, const Handle(Standard_Persistent)& right)
       {
        return left == right.entity;
       }
 
-    int operator!=(const Handle(Standard_Persistent)& right) const
+    bool operator!=(const Handle(Standard_Persistent)& right) const
       {
        return entity != right.entity;
       }
 
-    int operator!=(const Standard_Persistent *right) const
+    bool operator!=(const Standard_Persistent *right) const
       {
        return entity != right;
       }
 
-    friend int operator!=(const Standard_Persistent *left, const Handle(Standard_Persistent)& right)
+    friend bool operator!=(const Standard_Persistent *left, const Handle(Standard_Persistent)& right)
       {
        return left != right.entity;
       }
@@ -144,12 +136,12 @@ class Handle(Standard_Persistent)
     void Nullify()
       {
        EndScope();
-       entity =  PUndefinedAddress ;
+       entity =  0 ;
       }
 
     Standard_Boolean IsNull() const
       {
-       return entity == PUndefinedAddress ;
+       return entity == 0 ;
       } 
 
     Standard_Persistent* Access() const
@@ -168,7 +160,7 @@ class Handle(Standard_Persistent)
       {
        EndScope();
        if (!anItem)
-           entity = PUndefinedAddress ;
+           entity = 0 ;
        else {
 	 entity = (Standard_Persistent *)anItem;
 	 BeginScope();

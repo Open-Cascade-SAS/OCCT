@@ -36,14 +36,6 @@
 #pragma warning (disable:4312)
 #endif
 
-#ifndef UndefinedHandleAddress 
-#ifdef _OCC64
-#define UndefinedHandleAddress ((Standard_Transient *)0xfefdfefdfefd0000)
-#else
-#define UndefinedHandleAddress ((Standard_Transient *)0xfefd0000)
-#endif
-#endif
-
 class Handle_Standard_Transient;
 
 Standard_EXPORT Standard_Integer HashCode(const Handle(Standard_Transient)& ,const Standard_Integer);
@@ -60,17 +52,18 @@ Standard_EXPORT Standard_Integer HashCode(const Handle(Standard_Transient)& ,con
 class Handle(Standard_Transient)
 {
 public:
+  
   // Public methods
   
   //! Empty constructor
   Handle(Standard_Transient) () 
-    : entity(UndefinedHandleAddress) 
+    : entity(0) 
   {
   }
 
   //! Constructor from pointer to new object
   Handle(Standard_Transient) (const Standard_Transient *anItem)
-    : entity ( anItem ? (Standard_Transient*)anItem : UndefinedHandleAddress )
+    : entity ( (Standard_Transient*)anItem )
   {
     BeginScope();
   }
@@ -83,7 +76,7 @@ public:
   } 
 
   //! Destructor
-  Standard_EXPORT ~Handle(Standard_Transient)()
+  ~Handle(Standard_Transient)()
   {
     EndScope();
   }
@@ -111,7 +104,7 @@ public:
   //! Check for being null
   Standard_Boolean IsNull() const
   {
-    return entity == UndefinedHandleAddress;
+    return entity == 0;
   } 
 
   //! Returns pointer to referred object
@@ -169,25 +162,25 @@ public:
   }
 
   //! Check for equality
-  friend int operator==(const Standard_Transient *left, const Handle(Standard_Transient)& right)
+  friend bool operator==(const Standard_Transient *left, const Handle(Standard_Transient)& right)
   {
     return left == right.entity;
   }
 
   //! Check for inequality
-  int operator!=(const Handle(Standard_Transient)& right) const
+  bool operator!=(const Handle(Standard_Transient)& right) const
   {
     return entity != right.entity;
   }
 
   //! Check for inequality
-  int operator!=(const Standard_Transient *right) const
+  bool operator!=(const Standard_Transient *right) const
   {
     return entity != right;
   }
 
   //! Check for inequality
-  friend int operator!=(const Standard_Transient *left, const Handle(Standard_Transient)& right)
+  friend bool operator!=(const Standard_Transient *left, const Handle(Standard_Transient)& right)
   {
     return left != right.entity;
   }

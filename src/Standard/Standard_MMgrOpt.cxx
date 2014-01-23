@@ -134,24 +134,6 @@ extern "C" int getpagesize() ;
 #define ROUNDDOWN_CELL(size)           ROUNDDOWN8(size)
 #define INDEX_CELL(rsize)              ((rsize) >> 3)
 
-// Minimal granularity: 4 bytes (32-bit systems only)
-#ifndef _OCC64
-//#define ROUNDUP_CELL(size)             ROUNDUP4(size)
-//#define INDEX_CELL(rsize)              ((rsize) >> 2)
-#endif
-
-// Adaptive granularity, less for little blocks and greater for bigger ones: 
-/*
-#if _OCC64
-#define ROUNDUP_CELL(size) ((size)  <= 0x40 ? ROUNDUP8(size) : ROUNDUP16(size))
-#define INDEX_CELL(rsize)  ((rsize) <= 0x40 ? ((rsize) >> 3) : (4 + ((rsize) >> 4)))
-#else
-#define ROUNDUP_CELL(size) ((size)  <= 0x40 ? ROUNDUP4(size) : ROUNDUP8(size))
-#define INDEX_CELL(rsize)  ((rsize) <= 0x40 ? ((rsize) >> 2) : (8 + ((rsize) >> 3)))
-#endif
-*/
-
-
 /* In the allocated block, first bytes are used for storing of memory manager's data.
    (size of block). The minimal size of these data is sizeof(int).
    The memory allocated in system usually alligned by 16 bytes.Tthe aligment of the 

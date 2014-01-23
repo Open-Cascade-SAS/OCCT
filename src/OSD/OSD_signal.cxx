@@ -34,7 +34,6 @@
 #include <OSD_SIGSYS.hxx>
 #include <OSD_Exception_CTRL_BREAK.hxx>
 #include <Standard_NumericError.hxx>
-#include <Standard_NullObject.hxx>
 #include <Standard_DivideByZero.hxx>
 #include <Standard_Overflow.hxx>
 
@@ -391,10 +390,7 @@ static void SegvHandler(const int theSignal,
      sigaddset(&set, SIGSEGV);
      sigprocmask (SIG_UNBLOCK, &set, NULL) ;
      void *address = ip->si_addr ;
-     if ( (((long) address )& ~0xffff) == (long) UndefinedHandleAddress ) {
-       Standard_NullObject::NewInstance("Attempt to access to null object")->Jump();
-     }
-     else {
+     {
        char Msg[100];
        sprintf(Msg,"SIGSEGV 'segmentation violation' detected. Address %lx",
          (long ) address ) ;
@@ -423,10 +419,7 @@ static void SegvHandler(const int theSignal,
     Space = ((struct sigcontext *)theContext)->sc_sl.sl_ss.ss_cr20 ;
     Offset = ((struct sigcontext *)theContext)->sc_sl.sl_ss.ss_cr21 ;
 //    cout << "Wrong address = " << hex(Offset) << endl ;
-    if ((Offset & ~0xffff) == (long)UndefinedHandleAddress) {
-      Standard_NullObject::Jump("Attempt to access to null object") ;
-    }
-    else {
+    {
       sprintf(Msg,"SIGSEGV 'segmentation violation' detected. Address %lx",Offset) ;
       OSD_SIGSEGV::Jump(Msg);
 //    scp->sc_pcoq_head = scp->sc_pcoq_tail ;       Permettrait de continuer a

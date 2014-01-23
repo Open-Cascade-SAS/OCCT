@@ -141,11 +141,4 @@
 //#  endif  // WNT
 # endif  // __Standard_API
 
-// Define _OCC64 variable (unless already defined) if platform is known to be 64-bit
-#ifndef _OCC64
-#if defined (__alpha) || defined(DECOSF1) || defined(_WIN64) || defined(__amd64) || defined(__x86_64)
-#define _OCC64 1
-#endif
-#endif
-
 #endif  
