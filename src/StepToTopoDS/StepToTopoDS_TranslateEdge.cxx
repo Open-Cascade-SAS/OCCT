@@ -258,6 +258,13 @@ void StepToTopoDS_TranslateEdge::Init(const Handle(StepShape_Edge)& aEdge,
 //  Standard_Real precision = BRepAPI::Precision();
 
   Handle(StepGeom_Curve) C = EC->EdgeGeometry();
+  if( C.IsNull())
+  {
+    TP->AddFail(EC," Geom Curve in EdgeCurve is equal to 0");
+    myError = StepToTopoDS_TranslateEdgeOther;
+    done = Standard_False;
+    return;
+  }
   TopoDS_Edge E;
   Handle(StepShape_Vertex) Vstart, Vend;
 
