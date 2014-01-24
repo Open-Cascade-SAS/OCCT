@@ -54,8 +54,10 @@
 #include <Select3D_SensitiveGroup.hxx>
 #include <Select3D_SensitiveCurve.hxx>
 #include <Select3D_SensitiveSegment.hxx>
-#include <Select3D_SensitiveFace.hxx>
 #include <Select3D_SensitiveTriangle.hxx>
+#include <Select3D_SensitiveTriangulation.hxx>
+#include <Poly_Array1OfTriangle.hxx>
+#include <Poly_Triangulation.hxx>
 #include <Standard_CString.hxx>
 #include <StdPrs_ShadedShape.hxx>
 #include <StdPrs_WFShape.hxx>
@@ -1307,13 +1309,21 @@ void AIS_Dimension::ComputeSelection (const Handle(SelectMgr_Selection)& theSele
       gp_Trsf aLabelPlane;
       aLabelPlane.SetTransformation (aTextAxes, gp::XOY());
 
-      TColgp_Array1OfPnt aRectanglePoints (1, 4);
-      aRectanglePoints.ChangeValue (1) = gp_Pnt (-aDx, -aDy, 0.0).Transformed (aLabelPlane);
-      aRectanglePoints.ChangeValue (2) = gp_Pnt (-aDx,  aDy, 0.0).Transformed (aLabelPlane);
-      aRectanglePoints.ChangeValue (3) = gp_Pnt ( aDx,  aDy, 0.0).Transformed (aLabelPlane);
-      aRectanglePoints.ChangeValue (4) = gp_Pnt ( aDx, -aDy, 0.0).Transformed (aLabelPlane);
+      TColgp_Array1OfPnt aRectanglePoints(1, 4);
+      aRectanglePoints.ChangeValue(1) = gp_Pnt (-aDx, -aDy, 0.0).Transformed (aLabelPlane);
+      aRectanglePoints.ChangeValue(2) = gp_Pnt (-aDx,  aDy, 0.0).Transformed (aLabelPlane);
+      aRectanglePoints.ChangeValue(3) = gp_Pnt ( aDx,  aDy, 0.0).Transformed (aLabelPlane);
+      aRectanglePoints.ChangeValue(4) = gp_Pnt ( aDx, -aDy, 0.0).Transformed (aLabelPlane);
 
-      aTextSensitive = new Select3D_SensitiveFace (aSensitiveOwner, aRectanglePoints);
+      Poly_Array1OfTriangle aTriangles(1, 2);
+      aTriangles.ChangeValue(1) = Poly_Triangle(1, 2, 3);
+      aTriangles.ChangeValue(2) = Poly_Triangle(1, 3, 4);
+
+      Handle(Poly_Triangulation) aRectanglePoly = 
+        new Poly_Triangulation(aRectanglePoints, aTriangles);
+
+      aTextSensitive =
+        new Select3D_SensitiveTriangulation (aSensitiveOwner, aRectanglePoly, TopLoc_Location(), Standard_True);
     }
     else
     {

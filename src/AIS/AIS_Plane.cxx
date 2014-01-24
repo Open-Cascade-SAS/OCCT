@@ -49,10 +49,12 @@
 #include <DsgPrs_ShadedPlanePresentation.hxx>
 #include <UnitsAPI.hxx>
 
+#include <Select3D_SensitiveTriangulation.hxx>
 #include <SelectBasics_EntityOwner.hxx>
 #include <SelectMgr_EntityOwner.hxx>
-#include <Select3D_SensitiveFace.hxx>
 #include <StdPrs_ShadedShape.hxx>
+
+#include <Poly_Triangulation.hxx>
 
 #include <AIS_Drawer.hxx>
 
@@ -303,46 +305,56 @@ void AIS_Plane::Compute(const Handle_Prs3d_Projector& aProjector, const Handle_G
 //function : ComputeSelection
 //purpose  : 
 //=======================================================================
-void AIS_Plane::ComputeSelection(const Handle(SelectMgr_Selection)& aSelection,
-				    const Standard_Integer)
+void AIS_Plane::ComputeSelection (const Handle(SelectMgr_Selection)& theSelection, const Standard_Integer /*theMode*/)
 {
-  aSelection->Clear();
-  Handle(SelectMgr_EntityOwner) eown = new SelectMgr_EntityOwner(this,10);
-  Handle(Select3D_SensitiveFace) sfac;
+  theSelection->Clear();
+  Handle(SelectMgr_EntityOwner) aSensitiveOwner = new SelectMgr_EntityOwner (this, 10);
+  Handle(Poly_Triangulation) aSensitivePoly;
 
-  if (!myIsXYZPlane){
+  if (!myIsXYZPlane)
+  {
+    // plane representing rectangle
+    Standard_Real aLengthX = myDrawer->PlaneAspect()->PlaneXLength() / 2.0;
+    Standard_Real aLengthY = myDrawer->PlaneAspect()->PlaneYLength() / 2.0;
+    Handle(Geom_Plane) aPlane = 
+      Handle(Geom_Plane)::DownCast (myComponent->Translated (myComponent->Location(), myCenter));
 
-    Handle(TColgp_HArray1OfPnt) harr = new TColgp_HArray1OfPnt(1,5);
-    TColgp_Array1OfPnt& arr = harr->ChangeArray1();
-    Standard_Real lx = myDrawer->PlaneAspect()->PlaneXLength()/2.;
-    Standard_Real ly = myDrawer->PlaneAspect()->PlaneYLength()/2.;
-    const Handle(Geom_Plane)& pl = myComponent;
-    const Handle(Geom_Plane)& thegoodpl = Handle(Geom_Plane)::DownCast(pl->Translated(pl->Location(),myCenter));
-    
-    thegoodpl->D0(lx,ly,arr(1));
-    thegoodpl->D0(lx,-ly,arr(2));
-    thegoodpl->D0(-lx,-ly,arr(3));
-    thegoodpl->D0(-lx,ly,arr(4));
-    arr(5) = arr(1);
-    sfac = new Select3D_SensitiveFace(eown,harr,myTypeOfSensitivity);
+    TColgp_Array1OfPnt aRectanglePoints (1, 4);
+    aPlane->D0 ( aLengthX,  aLengthY, aRectanglePoints.ChangeValue (1));
+    aPlane->D0 ( aLengthX, -aLengthY, aRectanglePoints.ChangeValue (2));
+    aPlane->D0 (-aLengthX, -aLengthY, aRectanglePoints.ChangeValue (3));
+    aPlane->D0 (-aLengthX,  aLengthY, aRectanglePoints.ChangeValue (4));
 
+    Poly_Array1OfTriangle aTriangles (1, 2);
+    aTriangles.ChangeValue (1) = Poly_Triangle (1, 2, 3);
+    aTriangles.ChangeValue (2) = Poly_Triangle (1, 3, 4);
+
+    aSensitivePoly = new Poly_Triangulation (aRectanglePoints, aTriangles);
   }
-  else {
-    Handle(TColgp_HArray1OfPnt) harr1 = new TColgp_HArray1OfPnt(1,4);
-    TColgp_Array1OfPnt& arr1 = harr1->ChangeArray1();
-    
-    arr1(1) = myCenter;
-    arr1(2) = myPmin;
-    arr1(3) = myPmax;
-    arr1(4) = myCenter;
-    sfac = new Select3D_SensitiveFace(eown,harr1,myTypeOfSensitivity);
+  else
+  {
+    // plane representing triangle
+    TColgp_Array1OfPnt aTrianglePoints (1, 3);
+    aTrianglePoints.ChangeValue (1) = myCenter;
+    aTrianglePoints.ChangeValue (2) = myPmin;
+    aTrianglePoints.ChangeValue (3) = myPmax;
 
+    Poly_Array1OfTriangle aTriangles (1, 1);
+    aTriangles.ChangeValue (1) = Poly_Triangle(1, 2, 3);
+
+    aSensitivePoly = new Poly_Triangulation (aTrianglePoints, aTriangles);
   }
-    aSelection->Add(sfac);
+
+  Standard_Boolean isSensitiveInterior = myTypeOfSensitivity == Select3D_TOS_INTERIOR;
+
+  Handle(Select3D_SensitiveTriangulation) aSensitive =
+    new Select3D_SensitiveTriangulation (aSensitiveOwner,
+                                         aSensitivePoly,
+                                         TopLoc_Location(),
+                                         isSensitiveInterior);
+
+  theSelection->Add(aSensitive);
 }
-
-
-
 
 //=======================================================================
 //function : SetSize
