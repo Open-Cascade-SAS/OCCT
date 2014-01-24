@@ -1,5 +1,3 @@
-puts "TODO DEBUG_OCC24121 Windows: Error : Colors are not equal"
-
 puts "============"
 puts "OCC22879"
 puts "============"
