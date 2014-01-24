@@ -221,9 +221,9 @@ is
 
 -- Methods from SelectableObject
 
-    ComputeSelection(me         : mutable;
-    	    	     aSelection : mutable Selection from SelectMgr;
-    	    	     aMode      : Integer from Standard) is redefined virtual;
+    ComputeSelection (me           : mutable;
+                      theSelection : mutable Selection from SelectMgr;
+                      theMode      : Integer from Standard) is redefined virtual;
 
 -- Methods from InteractiveObject
 
