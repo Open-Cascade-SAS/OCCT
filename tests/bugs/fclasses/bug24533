@@ -1,0 +1,11 @@
+puts "========"
+puts "OCC24533"
+puts "========"
+puts ""
+####################################################
+## Use 0 to check null handle instead of UndefinedHandleAccess
+####################################################
+
+pload QAcommands
+
+OCC24533

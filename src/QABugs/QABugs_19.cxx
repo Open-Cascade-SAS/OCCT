@@ -44,6 +44,8 @@
 #include <NCollection_Map.hxx>
 #include <TCollection_HAsciiString.hxx>
 
+#include <Standard_Version.hxx>
+
 #define QCOMPARE(val1, val2) \
   di << "Checking " #val1 " == " #val2 << \
         ((val1) == (val2) ? ": OK\n" : ": Error\n")
@@ -1492,6 +1494,44 @@ static Standard_Integer OCC24370 (Draw_Interpretor& di, Standard_Integer argc,co
   return 0;
 }
 
+template<typename T, typename HT>
+static void DoIsNull(Draw_Interpretor& di)
+{
+  HT aHandle;
+  //    QVERIFY (aHandle.IsNull());
+  QCOMPARE (aHandle.IsNull(), Standard_True);
+  const T* p = aHandle.Access();
+#if OCC_VERSION_HEX > 0x060700
+  //QVERIFY (!p);
+  //QVERIFY (p == 0);
+  QCOMPARE (!p, Standard_True);
+  QCOMPARE (p == 0, Standard_True);
+#endif
+
+  aHandle = new T;
+  //QVERIFY (!aHandle.IsNull());
+  QCOMPARE (!aHandle.IsNull(), Standard_True);
+  p = aHandle.Access();
+  //QVERIFY (p);
+  //QVERIFY (p != 0);
+  QCOMPARE (p != NULL, Standard_True);
+  QCOMPARE (p != 0, Standard_True);
+}
+
+//=======================================================================
+//function : OCC24533
+//purpose  : 
+//=======================================================================
+static Standard_Integer OCC24533 (Draw_Interpretor& di, Standard_Integer n, const char**)
+{
+  if (n != 1) return 1;
+
+  DoIsNull<Standard_Transient, Handle_Standard_Transient>(di);
+  DoIsNull<Standard_Persistent, Handle_Standard_Persistent>(di);
+
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -1508,7 +1548,7 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC23952sweep", "OCC23952sweep nbupoles shape", __FILE__, OCC23952sweep, group);
   theCommands.Add ("OCC23952intersect", "OCC23952intersect nbsol shape1 shape2", __FILE__, OCC23952intersect, group);
   theCommands.Add ("test_offset", "test_offset", __FILE__, test_offset, group);
-  theCommands.Add("OCC23945", "OCC23945 surfname U V X Y Z [DUX DUY DUZ DVX DVY DVZ [D2UX D2UY D2UZ D2VX D2VY D2VZ D2UVX D2UVY D2UVZ]]", __FILE__, OCC23945,group);
+  theCommands.Add ("OCC23945", "OCC23945 surfname U V X Y Z [DUX DUY DUZ DVX DVY DVZ [D2UX D2UY D2UZ D2VX D2VY D2VZ D2UVX D2UVY D2UVZ]]", __FILE__, OCC23945,group);
   theCommands.Add ("OCC24008", "OCC24008 curve surface", __FILE__, OCC24008, group);
   theCommands.Add ("OCC24019", "OCC24019 aShape", __FILE__, OCC24019, group);
   theCommands.Add ("OCC11758", "OCC11758", __FILE__, OCC11758, group);
@@ -1516,5 +1556,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC24137", "OCC24137 face vertex U V [N]", __FILE__, OCC24137, group);
   theCommands.Add ("OCC24271", "Boolean operations on NCollection_Map", __FILE__, OCC24271, group);
   theCommands.Add ("OCC24370", "OCC24370 edge pcurve surface prec", __FILE__, OCC24370, group);
+  theCommands.Add ("OCC24533", "OCC24533", __FILE__, OCC24533, group);
   return;
 }
