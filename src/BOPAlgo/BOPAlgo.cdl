@@ -67,7 +67,8 @@ is
     deferred class BuilderArea;
     class BuilderFace;
     class WireEdgeSet;
-    class WireSplitter; 
+    class WireSplitter;  
+    class ShellSplitter;  
     class BuilderSolid; 
     class Tools; 
     class SectionAttribute; 
