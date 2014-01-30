@@ -46,6 +46,18 @@ Create(Circle1  : Circ2d from gp;
 
     	---Purpose: Constructs bisecting curves between the circle Circle1 and the point Point2.
     
+Create(Circle1  : Circ2d from gp;
+       Point2   : Pnt2d  from gp;
+       Tolerance : Real from Standard) returns CircPnt2dBisec;
+
+    	---Purpose: Constructs bisecting curves between the circle Circle1 and the point Point2.
+    	--          Tolerance is used.
+    
+DefineSolutions(me: in out)
+is private;
+    	---Purpose: Defines the number and the type of solutions
+    	--          depending on input data
+    
 IsDone(me) returns Boolean from Standard
 is static;
     	---Purpose: Returns true (this construction algorithm never fails).
@@ -83,5 +95,7 @@ fields
     	---Purpose: theposition = 1 when the point is outside the circle.
     	--          theposition = 0 when the point is on the circle.
     	--          theposition = -1 when the point is inside the circle.
+
+    myTolerance : Real from Standard;
 
 end CircPnt2dBisec;

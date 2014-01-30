@@ -808,7 +808,7 @@ void Bisector_BisecAna::Perform(const Handle(Geom2d_Curve)& afirstcurve  ,
 //                       Bissectrice point - circle.                          +
 //=============================================================================
     case 1 : {
-      GccAna_CircPnt2dBisec Bisector(circle,asecondpoint->Pnt2d());
+      GccAna_CircPnt2dBisec Bisector(circle, asecondpoint->Pnt2d(), tolerance);
       Standard_Real distancemini = Precision::Infinite();
       if (Bisector.IsDone()) {
 	Standard_Integer nbsolution = Bisector.NbSolutions();
