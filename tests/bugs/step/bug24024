@@ -1,0 +1,25 @@
+puts "=========="
+puts "OCC24024"
+puts "=========="
+puts ""
+######################################
+# Slow import of specific STEP data
+######################################
+
+dchrono h reset
+dchrono h start
+stepread [locate_data_file bug24024_slow_import.stp] a *
+dchrono h stop
+
+tpcompound result
+
+set info [dchrono h show]
+regexp {CPU user time: ([-0-9.+eE]+) seconds} $info full cpu_time
+if { $cpu_time > 300 } {
+    puts "Error: performance of import of data is low"
+} else {
+    puts "OK: performance of import of data is high"
+}
+
+set 2dviewer 1
+
