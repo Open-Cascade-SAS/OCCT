@@ -205,6 +205,7 @@ protected:
   FT_Face                myFTFace;      //!< FT face object
   NCollection_String     myFontPath;    //!< font path
   unsigned int           myPointSize;   //!< point size set by FT_Set_Char_Size
+  FT_Int32               myLoadFlags;   //!< default load flags
 
   Image_PixMap           myGlyphImg;    //!< cached glyph plane
   FT_Vector              myKernAdvance; //!< buffer variable
