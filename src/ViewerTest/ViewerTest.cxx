@@ -2100,6 +2100,59 @@ static int VDisplay2 (Draw_Interpretor& di, Standard_Integer argc, const char** 
   return 0;
 }
 
+//===============================================================================================
+//function : VUpdate
+//purpose  :
+//===============================================================================================
+static int VUpdate (Draw_Interpretor& /*theDi*/, Standard_Integer theArgsNb, const char** theArgVec)
+{
+  Handle(AIS_InteractiveContext) aContextAIS = ViewerTest::GetAISContext();
+  if (aContextAIS.IsNull())
+  {
+    std::cout << theArgVec[0] << "AIS context is not available.\n";
+    return 1;
+  }
+
+  if (theArgsNb < 2)
+  {
+    std::cout << theArgVec[0] << ": insufficient arguments. Type help for more information.\n";
+    return 1;
+  }
+
+  const ViewerTest_DoubleMapOfInteractiveAndName& anAISMap = GetMapOfAIS();
+
+  AIS_ListOfInteractive aListOfIO;
+
+  for (int anArgIt = 1; anArgIt < theArgsNb; ++anArgIt)
+  {
+    TCollection_AsciiString aName = TCollection_AsciiString (theArgVec[anArgIt]);
+
+    Handle(AIS_InteractiveObject) anAISObj;
+    if (anAISMap.IsBound2 (aName))
+    {
+      anAISObj = Handle(AIS_InteractiveObject)::DownCast (anAISMap.Find2 (aName));
+    }
+
+    if (anAISObj.IsNull())
+    {
+      std::cout << theArgVec[0] << ": no AIS interactive object named \"" << aName << "\".\n";
+      return 1;
+    }
+
+    aListOfIO.Append (anAISObj);
+  }
+
+  AIS_ListIteratorOfListOfInteractive anIOIt (aListOfIO);
+  for (; anIOIt.More(); anIOIt.Next())
+  {
+    aContextAIS->Update (anIOIt.Value(), Standard_False);
+  }
+
+  aContextAIS->UpdateCurrentViewer();
+
+  return 0;
+}
+
 //==============================================================================
 //function : VPerf
 //purpose  : Test the annimation of an object along a
@@ -3262,6 +3315,11 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 		  "vdisplay name1 [name2] ... [name n]"
       "\n\t\t: Displays named objects",
 		  __FILE__,VDisplay2,group);
+
+  theCommands.Add ("vupdate",
+      "vupdate name1 [name2] ... [name n]"
+      "\n\t\t: Updates named objects in interactive context",
+      __FILE__, VUpdate, group);
 
   theCommands.Add("verase",
       "verase [name1] ...  [name n]"
