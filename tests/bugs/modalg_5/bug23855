@@ -1,0 +1,11 @@
+puts "========="
+puts "OCC23855"
+puts "========="
+puts ""
+###########################################################
+# Old BOPs fail on Win7 64bit when using TBB
+###########################################################
+
+psphere s1 10
+psphere s2 10
+common result s1 s2
