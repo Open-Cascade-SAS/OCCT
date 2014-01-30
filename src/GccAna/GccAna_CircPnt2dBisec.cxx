@@ -36,39 +36,49 @@
 
 GccAna_CircPnt2dBisec::
    GccAna_CircPnt2dBisec (const gp_Circ2d& Circle ,
-		          const gp_Pnt2d&  Point  ):
+		          const gp_Pnt2d&  Point  )
+{
+  circle = Circle;
+  point = Point;
+  myTolerance = 1.e-10;
+  DefineSolutions();
+}
 
-   circle(Circle),
-   point(Point)  {
+GccAna_CircPnt2dBisec::
+   GccAna_CircPnt2dBisec (const gp_Circ2d& Circle ,
+		          const gp_Pnt2d&  Point,
+                          const Standard_Real Tolerance)
+{
+  circle = Circle;
+  point = Point;
+  myTolerance = 1.e-10;
+  if (myTolerance < Tolerance)
+    myTolerance = Tolerance;
+  
+  DefineSolutions();
+}
 
-//=========================================================================
-//  Initialization of fields :                                            +
-//            - circle   ( first argument.)                               +
-//            - line     ( second argument.)                              +
-//            - theposition (Integer showing the position of Point        +
-//                           correspondingly to Circle.)                  +
-//            - NbrSol   (Integer showing the number of solutions.)       +
-//            - WellDone (Booleen showing the success or failure of the algorithm). +
-//=========================================================================
-
-   Standard_Real dist = Circle.Radius()-Point.Distance(Circle.Location());
-//   if (Abs(dist) < gp::Resolution())
-   if (Abs(dist) < 1.E-10)
-     {
-       theposition = 0;
-       NbrSol = 1;
-     }
-   else if (dist > 0.0)
-     {
-       theposition = -1;
-       NbrSol = 1;
-     }
-   else {
-     theposition = 1;
-     NbrSol = 2;
-   }
-   WellDone = Standard_True;
- }
+void GccAna_CircPnt2dBisec::DefineSolutions()
+{
+  Standard_Real dist = circle.Radius() - point.Distance(circle.Location());
+  
+  if (Abs(dist) < myTolerance)
+  {
+    theposition = 0;
+    NbrSol = 1;
+  }
+  else if (dist > 0.0)
+  {
+    theposition = -1;
+    NbrSol = 1;
+  }
+  else {
+    theposition = 1;
+    NbrSol = 2;
+  }
+  
+  WellDone = Standard_True;
+}
 
 //=========================================================================
 //  Processing.                                                           +
@@ -99,8 +109,8 @@ Handle(GccInt_Bisec) GccAna_CircPnt2dBisec::
   Standard_Real ycencir = circle.Location().Y();
   Standard_Real R1 = circle.Radius();
   Standard_Real dist = point.Distance(circle.Location());
-  //       if (dist < gp::Resolution())
-  if (dist < 1.E-10)
+
+  if (dist < myTolerance)
     {
       gp_Circ2d biscirpnt1(gp_Ax2d(point,gp_Dir2d(1.0,0.0)),R1/2.);
       bissol = new GccInt_BCirc(biscirpnt1);

@@ -1,5 +1,9 @@
-puts "TODO OCC23068 ALL: Error : big tolerance of shape result"
-puts "TODO OCC23068 ALL: Faulty shapes in variables faulty_1 to faulty_3"
+puts "TODO ?OCC23068 ALL: Error : big tolerance of shape result"
+puts "TODO OCC23068 ALL: Faulty shapes in variables faulty_1 to faulty_"
+puts "TODO OCC23068 ALL: Error : result_1 is NOT a closed wire"
+puts "TODO OCC23068 ALL: Error : The length of the resulting shape is"
+puts "TODO OCC23068 ALL: Error : The resulting shape is WRONG because it must contain"
+
 restore [locate_data_file offset_wire_018.brep] s
 
 set length 23.8673
