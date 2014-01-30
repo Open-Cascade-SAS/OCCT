@@ -92,13 +92,8 @@ void BVH_Geometry<T, N>::Update()
     return;
   }
 
-  BVH_Box<T, N> aBox;
-  for (Standard_Integer anIndex = 0; anIndex < BVH_ObjectSet<T, N>::myObjects.Size(); ++anIndex)
-  {
-    aBox.Combine (BVH_ObjectSet<T, N>::myObjects.Value (anIndex)->Box());
-  }
+  myBuilder->Build (this, myBVH.operator->(), Box());
 
-  myBuilder->Build (this, myBVH.operator->(), aBox);
   myIsDirty = Standard_False;
 }
 

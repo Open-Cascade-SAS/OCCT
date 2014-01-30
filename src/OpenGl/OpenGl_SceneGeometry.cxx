@@ -19,25 +19,25 @@
 
 #ifdef HAVE_OPENCL
 
-#include <limits>
+#include <Standard_Assert.hxx>
+
+#ifdef HAVE_TBB
+  #include <tbb/tbb.h>
+#endif
 
 #include <OpenGl_SceneGeometry.hxx>
 
+//! Use this macro to output BVH profiling info
+//#define BVH_PRINT_INFO
+
+#ifdef BVH_PRINT_INFO
+  #include <OSD_Timer.hxx>
+#endif
+
 namespace
 {
-
-  //! Number of node bins per axis.
-  static const int THE_NUMBER_OF_BINS = 32;
-
-  //! Max number of triangles per leaf node.
-  static const int THE_MAX_LEAF_TRIANGLES = 4;
-
-  //! Useful constant for null integer 4D vector.
-  static const OpenGl_RTVec4i THE_ZERO_VEC_4I;
-
   //! Useful constant for null floating-point 4D vector.
-  static const OpenGl_RTVec4f THE_ZERO_VEC_4F;
-
+  static const BVH_Vec4f ZERO_VEC_4F;
 };
 
 // =======================================================================
@@ -45,29 +45,29 @@ namespace
 // purpose  : Creates new default material
 // =======================================================================
 OpenGl_RaytraceMaterial::OpenGl_RaytraceMaterial()
-: Ambient      (THE_ZERO_VEC_4F),
-  Diffuse      (THE_ZERO_VEC_4F),
-  Specular     (THE_ZERO_VEC_4F),
-  Emission     (THE_ZERO_VEC_4F),
-  Reflection   (THE_ZERO_VEC_4F),
-  Refraction   (THE_ZERO_VEC_4F),
-  Transparency (THE_ZERO_VEC_4F)
+: Ambient      (ZERO_VEC_4F),
+  Diffuse      (ZERO_VEC_4F),
+  Specular     (ZERO_VEC_4F),
+  Emission     (ZERO_VEC_4F),
+  Reflection   (ZERO_VEC_4F),
+  Refraction   (ZERO_VEC_4F),
+  Transparency (ZERO_VEC_4F)
 { }
 
 // =======================================================================
 // function : OpenGl_RaytraceMaterial
 // purpose  : Creates new material with specified properties
 // =======================================================================
-OpenGl_RaytraceMaterial::OpenGl_RaytraceMaterial (const OpenGl_RTVec4f& theAmbient,
-                                                  const OpenGl_RTVec4f& theDiffuse,
-                                                  const OpenGl_RTVec4f& theSpecular)
+OpenGl_RaytraceMaterial::OpenGl_RaytraceMaterial (const BVH_Vec4f& theAmbient,
+                                                  const BVH_Vec4f& theDiffuse,
+                                                  const BVH_Vec4f& theSpecular)
 : Ambient      (theAmbient),
   Diffuse      (theDiffuse),
   Specular     (theSpecular),
-  Emission     (THE_ZERO_VEC_4F),
-  Reflection   (THE_ZERO_VEC_4F),
-  Refraction   (THE_ZERO_VEC_4F),
-  Transparency (THE_ZERO_VEC_4F)
+  Emission     (ZERO_VEC_4F),
+  Reflection   (ZERO_VEC_4F),
+  Refraction   (ZERO_VEC_4F),
+  Transparency (ZERO_VEC_4F)
 {
   //
 }
@@ -76,17 +76,17 @@ OpenGl_RaytraceMaterial::OpenGl_RaytraceMaterial (const OpenGl_RTVec4f& theAmbie
 // function : OpenGl_RaytraceMaterial
 // purpose  : Creates new material with specified properties
 // =======================================================================
-OpenGl_RaytraceMaterial::OpenGl_RaytraceMaterial (const OpenGl_RTVec4f& theAmbient,
-                                                  const OpenGl_RTVec4f& theDiffuse,
-                                                  const OpenGl_RTVec4f& theSpecular,
-                                                  const OpenGl_RTVec4f& theEmission,
-                                                  const OpenGl_RTVec4f& theTranspar)
+OpenGl_RaytraceMaterial::OpenGl_RaytraceMaterial (const BVH_Vec4f& theAmbient,
+                                                  const BVH_Vec4f& theDiffuse,
+                                                  const BVH_Vec4f& theSpecular,
+                                                  const BVH_Vec4f& theEmission,
+                                                  const BVH_Vec4f& theTranspar)
 : Ambient      (theAmbient),
   Diffuse      (theDiffuse),
   Specular     (theSpecular),
   Emission     (theEmission),
-  Reflection   (THE_ZERO_VEC_4F),
-  Refraction   (THE_ZERO_VEC_4F),
+  Reflection   (ZERO_VEC_4F),
+  Refraction   (ZERO_VEC_4F),
   Transparency (theTranspar)
 {
   //
@@ -96,13 +96,13 @@ OpenGl_RaytraceMaterial::OpenGl_RaytraceMaterial (const OpenGl_RTVec4f& theAmbie
 // function : OpenGl_RaytraceMaterial
 // purpose  : Creates new material with specified properties
 // =======================================================================
-OpenGl_RaytraceMaterial::OpenGl_RaytraceMaterial (const OpenGl_RTVec4f& theAmbient,
-                                                  const OpenGl_RTVec4f& theDiffuse,
-                                                  const OpenGl_RTVec4f& theSpecular,
-                                                  const OpenGl_RTVec4f& theEmission,
-                                                  const OpenGl_RTVec4f& theTranspar,
-                                                  const OpenGl_RTVec4f& theReflection,
-                                                  const OpenGl_RTVec4f& theRefraction)
+OpenGl_RaytraceMaterial::OpenGl_RaytraceMaterial (const BVH_Vec4f& theAmbient,
+                                                  const BVH_Vec4f& theDiffuse,
+                                                  const BVH_Vec4f& theSpecular,
+                                                  const BVH_Vec4f& theEmission,
+                                                  const BVH_Vec4f& theTranspar,
+                                                  const BVH_Vec4f& theReflection,
+                                                  const BVH_Vec4f& theRefraction)
 : Ambient      (theAmbient),
   Diffuse      (theDiffuse),
   Specular     (theSpecular),
@@ -118,18 +118,8 @@ OpenGl_RaytraceMaterial::OpenGl_RaytraceMaterial (const OpenGl_RTVec4f& theAmbie
 // function : OpenGl_LightSource
 // purpose  : Creates new light source
 // =======================================================================
-OpenGl_RaytraceLight::OpenGl_RaytraceLight (const OpenGl_RTVec4f& theAmbient)
-: Ambient (theAmbient)
-{
-  //
-}
-
-// =======================================================================
-// function : OpenGl_LightSource
-// purpose  : Creates new light source
-// =======================================================================
-OpenGl_RaytraceLight::OpenGl_RaytraceLight (const OpenGl_RTVec4f& theDiffuse,
-                                            const OpenGl_RTVec4f& thePosition)
+OpenGl_RaytraceLight::OpenGl_RaytraceLight (const BVH_Vec4f& theDiffuse,
+                                            const BVH_Vec4f& thePosition)
 : Diffuse (theDiffuse),
   Position (thePosition)
 {
@@ -137,568 +127,205 @@ OpenGl_RaytraceLight::OpenGl_RaytraceLight (const OpenGl_RTVec4f& theDiffuse,
 }
 
 // =======================================================================
-// function : Center
-// purpose  : Returns centroid of specified triangle
-// =======================================================================
-OpenGl_RTVec4f OpenGl_RaytraceScene::Center (const int theTriangle) const
-{
-  const OpenGl_RTVec4i& anIndex = Triangles [theTriangle];
-
-  return ( Vertices[anIndex.x()] +
-           Vertices[anIndex.y()] +
-           Vertices[anIndex.z()] ) * ( 1.f / 3.f );
-}
-
-// =======================================================================
-// function : CenterAxis
-// purpose  : Returns centroid of specified triangle
-// =======================================================================
-float OpenGl_RaytraceScene::CenterAxis (const int theTriangle,
-                                        const int theAxis) const
-{
-  const OpenGl_RTVec4i& anIndex = Triangles [theTriangle];
-
-  return ( Vertices[anIndex.x()][theAxis] +
-           Vertices[anIndex.y()][theAxis] +
-           Vertices[anIndex.z()][theAxis] ) * ( 1.f / 3.f );
-}
-
-// =======================================================================
-// function : Box
-// purpose  : Returns AABB of specified triangle
-// =======================================================================
-OpenGl_AABB OpenGl_RaytraceScene::Box (const int theTriangle) const
-{
-  const OpenGl_RTVec4i& anIndex = Triangles[theTriangle];
-
-  const OpenGl_RTVec4f& pA = Vertices[anIndex.x()];
-  const OpenGl_RTVec4f& pB = Vertices[anIndex.y()];
-  const OpenGl_RTVec4f& pC = Vertices[anIndex.z()];
-
-  OpenGl_AABB aBox (pA);
-
-  aBox.Add (pB);
-  aBox.Add (pC);
-
-  return aBox;
-}
-
-// =======================================================================
 // function : Clear
-// purpose  : Clears all scene geometry data
+// purpose  : Clears ray-tracing geometry
 // =======================================================================
-void OpenGl_RaytraceScene::Clear()
+void OpenGl_RaytraceGeometry::Clear()
 {
-  AABB.Clear();
+  BVH_Geometry<Standard_ShortReal, 4>::BVH_Geometry::Clear();
 
-  OpenGl_RTArray4f anEmptyNormals;
-  Normals.swap (anEmptyNormals);
+  std::vector<OpenGl_RaytraceLight,
+    NCollection_StdAllocator<OpenGl_RaytraceLight> > anEmptySources;
 
-  OpenGl_RTArray4f anEmptyVertices;
-  Vertices.swap (anEmptyVertices);
-
-  OpenGl_RTArray4i anEmptyTriangles;
-  Triangles.swap (anEmptyTriangles);
+  Sources.swap (anEmptySources);
 
   std::vector<OpenGl_RaytraceMaterial,
-              NCollection_StdAllocator<OpenGl_RaytraceMaterial> > anEmptyMaterials;
+    NCollection_StdAllocator<OpenGl_RaytraceMaterial> > anEmptyMaterials;
 
   Materials.swap (anEmptyMaterials);
 }
 
-// =======================================================================
-// function : OpenGl_Node
-// purpose  : Creates new empty BVH node
-// =======================================================================
-OpenGl_BVHNode::OpenGl_BVHNode()
-: myMinPoint (THE_ZERO_VEC_4F),
-  myMaxPoint (THE_ZERO_VEC_4F),
-  myDataRcrd (THE_ZERO_VEC_4I)
+#ifdef HAVE_TBB
+
+struct OpenGL_BVHParallelBuilder
 {
-  //
-}
+  BVH_ObjectSet<Standard_ShortReal, 4>* Set;
 
-// =======================================================================
-// function : OpenGl_Node
-// purpose  : Creates new BVH node with specified data
-// =======================================================================
-OpenGl_BVHNode::OpenGl_BVHNode (const OpenGl_RTVec4f& theMinPoint,
-                                const OpenGl_RTVec4f& theMaxPoint,
-                                const OpenGl_RTVec4i& theDataRcrd)
-: myMinPoint (theMinPoint),
-  myMaxPoint (theMaxPoint),
-  myDataRcrd (theDataRcrd)
-{
-  //
-}
-
-// =======================================================================
-// function : OpenGl_Node
-// purpose  : Creates new leaf BVH node with specified data
-// =======================================================================
-OpenGl_BVHNode::OpenGl_BVHNode (const OpenGl_AABB& theAABB,
-                                const int          theBegTriangle,
-                                const int          theEndTriangle)
-: myMinPoint (theAABB.CornerMin()),
-  myMaxPoint (theAABB.CornerMax()),
-  myDataRcrd (1,
-              theBegTriangle,
-              theEndTriangle,
-              0)
-{
-  //
-}
-
-// =======================================================================
-// function : OpenGl_Node
-// purpose  : Creates new leaf BVH node with specified data
-// =======================================================================
-OpenGl_BVHNode::OpenGl_BVHNode (const OpenGl_RTVec4f& theMinPoint,
-                                const OpenGl_RTVec4f& theMaxPoint,
-                                const int             theBegTriangle,
-                                const int             theEndTriangle)
-: myMinPoint (theMinPoint),
-  myMaxPoint (theMaxPoint),
-  myDataRcrd (1,
-              theBegTriangle,
-              theEndTriangle,
-              0)
-{
-  //
-}
-
-// =======================================================================
-// function : CleanUp
-// purpose  : Removes all tree nodes
-// =======================================================================
-void OpenGl_BVH::CleanUp()
-{
-  OpenGl_RTArray4f anEmptyMinPointBuffer;
-  myMinPointBuffer.swap (anEmptyMinPointBuffer);
-
-  OpenGl_RTArray4f anEmptyMaxPointBuffer;
-  myMaxPointBuffer.swap (anEmptyMaxPointBuffer);
-
-  OpenGl_RTArray4i anEmptyDataRcrdBuffer;
-  myDataRcrdBuffer.swap (anEmptyDataRcrdBuffer);
-}
-
-// =======================================================================
-// function : Node
-// purpose  : Returns node with specified index
-// =======================================================================
-OpenGl_BVHNode OpenGl_BVH::Node (const int theIndex) const
-{
-  return OpenGl_BVHNode (myMinPointBuffer[theIndex],
-                         myMaxPointBuffer[theIndex],
-                         myDataRcrdBuffer[theIndex]);
-}
-
-// =======================================================================
-// function : SetNode
-// purpose  : Replaces node with specified index
-// =======================================================================
-void OpenGl_BVH::SetNode (const int             theIndex,
-                          const OpenGl_BVHNode& theNode)
-{
-  if (theIndex < static_cast<int> (myMinPointBuffer.size()))
+  OpenGL_BVHParallelBuilder (BVH_ObjectSet<Standard_ShortReal, 4>* theSet)
+    : Set (theSet)
   {
-    myMinPointBuffer[theIndex] = theNode.myMinPoint;
-    myMaxPointBuffer[theIndex] = theNode.myMaxPoint;
-    myDataRcrdBuffer[theIndex] = theNode.myDataRcrd;
+    //
   }
-}
 
-// =======================================================================
-// function : PushNode
-// purpose  : Adds new node to the tree
-// =======================================================================
-int OpenGl_BVH::PushNode (const OpenGl_BVHNode& theNode)
-{
-  myMinPointBuffer.push_back (theNode.myMinPoint);
-  myMaxPointBuffer.push_back (theNode.myMaxPoint);
-  myDataRcrdBuffer.push_back (theNode.myDataRcrd);
-  return static_cast<int> (myDataRcrdBuffer.size() - 1);
-}
+  void operator() (const tbb::blocked_range<size_t>& theRange) const
+  {
+    for (size_t anObjectIdx = theRange.begin(); anObjectIdx != theRange.end(); ++anObjectIdx)
+    {
+      OpenGl_TriangleSet* aTriangleSet = dynamic_cast<OpenGl_TriangleSet*> (
+        Set->Objects().ChangeValue (static_cast<Standard_Integer> (anObjectIdx)).operator->());
+      
+      if (aTriangleSet != NULL)
+      {
+        aTriangleSet->BVH();
+      }
+    }
+  }
+};
 
-// =======================================================================
-// function : OpenGl_NodeBuildTask
-// purpose  : Creates new node building task
-// =======================================================================
-OpenGl_BVHNodeTask::OpenGl_BVHNodeTask()
-: NodeToBuild (0),
-  BegTriangle (0),
-  EndTriangle (0)
-{
-  //
-}
-
-// =======================================================================
-// function : OpenGl_NodeBuildTask
-// purpose  : Creates new node building task
-// =======================================================================
-OpenGl_BVHNodeTask::OpenGl_BVHNodeTask (const int theNodeToBuild,
-                                        const int theBegTriangle,
-                                        const int theEndTriangle)
-: NodeToBuild (theNodeToBuild),
-  BegTriangle (theBegTriangle),
-  EndTriangle (theEndTriangle)
-{
-  //
-}
-
-// =======================================================================
-// function : OpenGl_BinnedBVHBuilder
-// purpose  : Creates new binned BVH builder
-// =======================================================================
-OpenGl_BinnedBVHBuilder::OpenGl_BinnedBVHBuilder()
-: myMaxDepth (30)
-{
-  //
-}
-
-// =======================================================================
-// function : ~OpenGl_BinnedBVHBuilder
-// purpose  : Releases binned BVH builder
-// =======================================================================
-OpenGl_BinnedBVHBuilder::~OpenGl_BinnedBVHBuilder()
-{
-  //
-}
-
-#define BVH_DEBUG_OUTPUT_
-
-#if defined( BVH_DEBUG_OUTPUT )
-  #include <iostream>
 #endif
 
 // =======================================================================
-// function : ReinterpretIntAsFloat
-// purpose  : Reinterprets bits of integer value as floating-point value
+// function : ProcessAcceleration
+// purpose  : Performs post-processing of high-level BVH
 // =======================================================================
-inline float ReinterpretIntAsFloat (int theValue)
+Standard_Boolean OpenGl_RaytraceGeometry::ProcessAcceleration()
 {
-  return *reinterpret_cast< float* > (&theValue);
-}
+#ifdef BVH_PRINT_INFO
+    OSD_Timer aTimer;
+#endif
+    
+  MarkDirty(); // force BVH rebuilding
 
-// =======================================================================
-// function : Build
-// purpose  : Builds BVH tree using binned SAH algorithm
-// =======================================================================
-void OpenGl_BinnedBVHBuilder::Build (OpenGl_RaytraceScene& theGeometry,
-                                     const float           theEpsilon)
-{
-  CleanUp();
-
-#ifdef BVH_DEBUG_OUTPUT
-  std::cout << "Start building BVH..." << std::endl;
-
-  std::cout << "Triangles: " << theGeometry.Triangles.size() << std::endl;
+#ifdef BVH_PRINT_INFO
+  aTimer.Reset();
+  aTimer.Start();
 #endif
 
-  if (theGeometry.Triangles.size() == 0)
-    return;
+#ifdef HAVE_TBB
+  // If Intel TBB is available, perform the preliminary
+  // construction of bottom-level scene BVHs
+  tbb::parallel_for (tbb::blocked_range<size_t> (0, Size()),
+    OpenGL_BVHParallelBuilder (this));
+#endif
+  
+  for (Standard_Integer anObjectIdx = 0; anObjectIdx < Size(); ++anObjectIdx)
+  {
+    OpenGl_TriangleSet* aTriangleSet = dynamic_cast<OpenGl_TriangleSet*> (
+      myObjects.ChangeValue (anObjectIdx).operator->());
 
-  // Create root node with all scene triangles
-  OpenGl_AABB anAABB = theGeometry.AABB;
-  anAABB.CornerMin() = OpenGl_RTVec4f (anAABB.CornerMin().x() - theEpsilon,
-                                       anAABB.CornerMin().y() - theEpsilon,
-                                       anAABB.CornerMin().z() - theEpsilon,
-                                       1.0f);
-  anAABB.CornerMax() = OpenGl_RTVec4f (anAABB.CornerMax().x() + theEpsilon,
-                                       anAABB.CornerMax().y() + theEpsilon,
-                                       anAABB.CornerMax().z() + theEpsilon,
-                                       1.0f);
-  myTree.PushNode (OpenGl_BVHNode (anAABB, 0, static_cast<int> (theGeometry.Triangles.size() - 1)));
+    Standard_ASSERT_RETURN (aTriangleSet != NULL,
+      "Error! Failed to get triangulation of OpenGL element", Standard_False);
+    
+    Standard_ASSERT_RETURN (!aTriangleSet->BVH().IsNull(),
+      "Error! Failed to update bottom-level BVH of OpenGL element", Standard_False);
+  }
 
-#ifdef BVH_DEBUG_OUTPUT
-  std::cout << "Push root node: [" << 0 << ", " <<
-                      theGeometry.Triangles.size() - 1 << "]" << std::endl;
+#ifdef BVH_PRINT_INFO
+  aTimer.Stop();
+
+  std::cout << "Updating bottom-level BVHs (sec): " <<
+    aTimer.ElapsedTime() << std::endl;
 #endif
 
-  // Setup splitting task for the root node
-  myNodeTasksQueue.push_back (OpenGl_BVHNodeTask (0, 0, static_cast<int> (theGeometry.Triangles.size() - 1)));
-
-  // Building nodes while tasks queue is not empty
-  for (int aTaskId = 0; aTaskId < static_cast<int> (myNodeTasksQueue.size()); ++aTaskId)
-  {
-    BuildNode (theGeometry, aTaskId);
-  }
-
-  // Write support data to optimize traverse
-  for (int aNode = 0; aNode < static_cast<int> (myTree.DataRcrdBuffer().size()); ++aNode)
-  {
-    OpenGl_RTVec4i aData = myTree.DataRcrdBuffer()[aNode];
-    myTree.MinPointBuffer()[aNode].w() = ReinterpretIntAsFloat (aData[0] ? aData[1] : -aData[1]);
-    myTree.MaxPointBuffer()[aNode].w() = ReinterpretIntAsFloat (aData[0] ? aData[2] : -aData[2]);
-  }
-}
-
-// =======================================================================
-// function : CleanUp
-// purpose  : Clears previously built tree
-// =======================================================================
-void OpenGl_BinnedBVHBuilder::CleanUp()
-{
-  myTree.CleanUp();
-  myNodeTasksQueue.clear();
-}
-
-// =======================================================================
-// function : SetMaxDepth
-// purpose  : Sets maximum tree depth
-// =======================================================================
-void OpenGl_BinnedBVHBuilder::SetMaxDepth (const int theMaxDepth)
-{
-  if (theMaxDepth > 1 && theMaxDepth < 30)
-  {
-    myMaxDepth = theMaxDepth - 1;
-  }
-}
-
-//! Minimum node size to split.
-static const float THE_NODE_MIN_SIZE = 1e-4f;
-
-// =======================================================================
-// function : BuildNode
-// purpose  : Builds node using task info
-// =======================================================================
-void OpenGl_BinnedBVHBuilder::BuildNode (OpenGl_RaytraceScene& theGeometry,
-                                         const int             theTask)
-{
-  OpenGl_BVHNodeTask aTask = myNodeTasksQueue[theTask];
-  OpenGl_BVHNode     aNode = myTree.Node (aTask.NodeToBuild);
-
-#ifdef BVH_DEBUG_OUTPUT
-  std::cout << "Build node " << aTask.NodeToBuild << ": [" <<
-                  aTask.BegTriangle << ", " << aTask.EndTriangle << "]" << std::endl;
+#ifdef BVH_PRINT_INFO
+  aTimer.Reset();
+  aTimer.Start();
 #endif
 
-  OpenGl_AABB anAABB (aNode.MinPoint(), aNode.MaxPoint());
-  const OpenGl_RTVec4f aNodeSize = anAABB.Size();
-  const float aNodeArea = anAABB.Area();
+  NCollection_Handle<BVH_Tree<Standard_ShortReal, 4> > aBVH = BVH();
 
-  // Parameters for storing best split
-  float aMinSplitCost = std::numeric_limits<float>::max();
+#ifdef BVH_PRINT_INFO
+  aTimer.Stop();
 
-  int aMinSplitAxis     = -1;
-  int aMinSplitIndex    =  0;
-  int aMinSplitLftCount =  0;
-  int aMinSplitRghCount =  0;
+  std::cout << "Updating high-level BVH (sec): " <<
+    aTimer.ElapsedTime() << std::endl;
+#endif
 
-  OpenGl_AABB aMinSplitLftAABB;
-  OpenGl_AABB aMinSplitRghAABB;
+  Standard_ASSERT_RETURN (!aBVH.IsNull(),
+    "Error! Failed to update high-level BVH of ray-tracing scene", Standard_False);
 
-  // Find best split
-  for (int anAxis = 0; anAxis < 3; ++anAxis)
+  Standard_Integer aVerticesOffset = 0;
+  Standard_Integer aElementsOffset = 0;
+  Standard_Integer aBVHNodesOffset = 0;
+
+  for (Standard_Integer aNodeIdx = 0; aNodeIdx < aBVH->Length(); ++aNodeIdx)
   {
-    if (aNodeSize[anAxis] <= THE_NODE_MIN_SIZE)
+    if (!aBVH->IsOuter (aNodeIdx))
       continue;
 
-    OpenGl_BinVector aBins (THE_NUMBER_OF_BINS);
-    GetSubVolumes (theGeometry, aNode, aBins, anAxis);
+    Standard_ASSERT_RETURN (aBVH->BegPrimitive (aNodeIdx) == aBVH->EndPrimitive (aNodeIdx),
+      "Error! Invalid leaf node in high-level BVH (contains several objects)", Standard_False);
 
-    // Choose the best split (with minimum SAH cost)
-    for (int aSplit = 1; aSplit < THE_NUMBER_OF_BINS; ++aSplit)
-    {
-      int aLftCount = 0;
-      int aRghCount = 0;
-      OpenGl_AABB aLftAABB;
-      OpenGl_AABB aRghAABB;
-      for (int anIndex = 0; anIndex < aSplit; ++anIndex)
-      {
-        aLftCount += aBins[anIndex].Count;
-        aLftAABB.Combine (aBins[anIndex].Volume);
-      }
+    Standard_Integer anObjectIdx = aBVH->BegPrimitive (aNodeIdx);
 
-      for (int anIndex = aSplit; anIndex < THE_NUMBER_OF_BINS; ++anIndex)
-      {
-        aRghCount += aBins[anIndex].Count;
-        aRghAABB.Combine (aBins[anIndex].Volume);
-      }
+    Standard_ASSERT_RETURN (anObjectIdx < myObjects.Size(),
+      "Error! Invalid leaf node in high-level BVH (contains out-of-range object)", Standard_False);
 
-      // Simple SAH evaluation
-      float aCost = ( aLftAABB.Area() / aNodeArea ) * aLftCount +
-                    ( aRghAABB.Area() / aNodeArea ) * aRghCount;
+    OpenGl_TriangleSet* aTriangleSet = dynamic_cast<OpenGl_TriangleSet*> (
+      myObjects.ChangeValue (anObjectIdx).operator->());
 
-#ifdef BVH_DEBUG_OUTPUT
-      std::cout << "\t\tBin " << aSplit << ", Cost = " << aCost << std::endl;
-#endif
+    // Note: We overwrite node info record to store parameters
+    // of bottom-level BVH and triangulation of OpenGL element
 
-      if (aCost <= aMinSplitCost)
-      {
-        aMinSplitCost     = aCost;
-        aMinSplitAxis     = anAxis;
-        aMinSplitIndex    = aSplit;
-        aMinSplitLftAABB  = aLftAABB;
-        aMinSplitRghAABB  = aRghAABB;
-        aMinSplitLftCount = aLftCount;
-        aMinSplitRghCount = aRghCount;
-      }
-    }
+    aBVH->NodeInfoBuffer().at (aNodeIdx) = BVH_Vec4i (
+      anObjectIdx + 1 /* to keep leaf flag */, aBVHNodesOffset, aVerticesOffset, aElementsOffset);
+
+    aVerticesOffset += aTriangleSet->Vertices.size();
+    aElementsOffset += aTriangleSet->Elements.size();
+    aBVHNodesOffset += aTriangleSet->BVH()->Length();
   }
 
-  if (aMinSplitAxis == -1)
-  {
-    // make outer (leaf) node
-    myTree.DataRcrdBuffer()[aTask.NodeToBuild].x() = 1;
-    return;
-  }
-
-#ifdef BVH_DEBUG_OUTPUT
-  switch (aMinSplitAxis)
-  {
-  case 0:
-    std::cout << "\tSplit axis: X = " << aMinSplitIndex << std::endl;
-    break;
-  case 1:
-    std::cout << "\tSplit axis: Y = " << aMinSplitIndex << std::endl;
-    break;
-  case 2:
-    std::cout << "\tSplit axis: Z = " << aMinSplitIndex << std::endl;
-    break;
-  }
-#endif
-
-  int aMiddle = SplitTriangles (theGeometry, aTask.BegTriangle, aTask.EndTriangle,
-                                aNode, aMinSplitIndex - 1, aMinSplitAxis);
-
-#ifdef BVH_DEBUG_OUTPUT
-  std::cout << "\tLeft child: [" << aTask.BegTriangle << ", "
-                      << aMiddle - 1 << "]" << std::endl;
-
-  std::cout << "\tRight child: [" << aMiddle << ", "
-                      << aTask.EndTriangle << "]" << std::endl;
-#endif
-
-#define BVH_SIDE_LFT 1
-#define BVH_SIDE_RGH 2
-
-  // Setting up tasks for child nodes
-  for (int aSide = BVH_SIDE_LFT; aSide <= BVH_SIDE_RGH; ++aSide)
-  {
-    OpenGl_RTVec4f aMinPoint = (aSide == BVH_SIDE_LFT)
-                             ? aMinSplitLftAABB.CornerMin()
-                             : aMinSplitRghAABB.CornerMin();
-    OpenGl_RTVec4f aMaxPoint = (aSide == BVH_SIDE_LFT)
-                             ? aMinSplitLftAABB.CornerMax()
-                             : aMinSplitRghAABB.CornerMax();
-
-    int aBegTriangle = (aSide == BVH_SIDE_LFT)
-                     ? aTask.BegTriangle
-                     : aMiddle;
-    int aEndTriangle = (aSide == BVH_SIDE_LFT)
-                     ? aMiddle - 1
-                     : aTask.EndTriangle;
-
-    OpenGl_BVHNode aChild (aMinPoint, aMaxPoint, aBegTriangle, aEndTriangle);
-    aChild.SetLevel (aNode.Level() + 1);
-
-    // Check to see if child node must be split
-    const int aNbTriangles = (aSide == BVH_SIDE_LFT)
-                           ? aMinSplitLftCount
-                           : aMinSplitRghCount;
-
-    const int isChildALeaf = (aNbTriangles <= THE_MAX_LEAF_TRIANGLES) || (aNode.Level() >= myMaxDepth);
-    if (isChildALeaf)
-      aChild.SetOuter();
-    else
-      aChild.SetInner();
-
-    const int aChildIndex = myTree.PushNode (aChild);
-
-    // Modify parent node
-    myTree.DataRcrdBuffer()[aTask.NodeToBuild].x() = 0; // inner node flag
-    if (aSide == BVH_SIDE_LFT)
-      myTree.DataRcrdBuffer()[aTask.NodeToBuild].y() = aChildIndex; // left child
-    else
-      myTree.DataRcrdBuffer()[aTask.NodeToBuild].z() = aChildIndex; // right child
-
-    // Make new building task
-    if (!isChildALeaf)
-      myNodeTasksQueue.push_back (OpenGl_BVHNodeTask (aChildIndex, aBegTriangle, aEndTriangle));
-  }
+  return Standard_True;
 }
 
 // =======================================================================
-// function : SplitTriangles
-// purpose  : Splits node triangles into two intervals for child nodes
+// function : AccelerationOffset
+// purpose  : Returns offset of bottom-level BVH for given leaf node
 // =======================================================================
-int OpenGl_BinnedBVHBuilder::SplitTriangles (OpenGl_RaytraceScene& theGeometry,
-                                             const int             theBegTriangle,
-                                             const int             theEndTriangle,
-                                             OpenGl_BVHNode&       theNode,
-                                             int                   theBin,
-                                             const int             theAxis)
+Standard_Integer OpenGl_RaytraceGeometry::AccelerationOffset (Standard_Integer theNodeIdx)
 {
-  int aLftIndex (theBegTriangle);
-  int aRghIndex (theEndTriangle);
+  const NCollection_Handle<BVH_Tree<Standard_ShortReal, 4> >& aBVH = BVH();
 
-  const float aMin = theNode.MinPoint()[theAxis];
-  const float aMax = theNode.MaxPoint()[theAxis];
+  if (theNodeIdx >= aBVH->Length() || !aBVH->IsOuter (theNodeIdx))
+    return INVALID_OFFSET;
 
-  const float aStep = (aMax - aMin) / THE_NUMBER_OF_BINS;
-
-  do
-  {
-    while ((int )floorf ((theGeometry.CenterAxis (aLftIndex, theAxis) - aMin) / aStep) <= theBin
-              && aLftIndex < theEndTriangle)
-    {
-      ++aLftIndex;
-    }
-    while ((int )floorf ((theGeometry.CenterAxis (aRghIndex, theAxis) - aMin) / aStep) >  theBin
-              && aRghIndex > theBegTriangle)
-    {
-      --aRghIndex;
-    }
-
-    if (aLftIndex <= aRghIndex)
-    {
-      if (aLftIndex != aRghIndex)
-      {
-        OpenGl_RTVec4i aLftTrg = theGeometry.Triangles[aLftIndex];
-        OpenGl_RTVec4i aRghTrg = theGeometry.Triangles[aRghIndex];
-        theGeometry.Triangles[aLftIndex] = aRghTrg;
-        theGeometry.Triangles[aRghIndex] = aLftTrg;
-      }
-
-      aLftIndex++; aRghIndex--;
-    }
-  } while (aLftIndex <= aRghIndex);
-
-  return aLftIndex;
+  return aBVH->NodeInfoBuffer().at (theNodeIdx).y();
 }
 
 // =======================================================================
-// function : GetSubVolumes
-// purpose  : Arranges node triangles into bins
+// function : VerticesOffset
+// purpose  : Returns offset of triangulation vertices for given leaf node
 // =======================================================================
-void OpenGl_BinnedBVHBuilder::GetSubVolumes (OpenGl_RaytraceScene& theGeometry,
-                                             const OpenGl_BVHNode& theNode,
-                                             OpenGl_BinVector&     theBins,
-                                             const int             theAxis)
+Standard_Integer OpenGl_RaytraceGeometry::VerticesOffset (Standard_Integer theNodeIdx)
 {
-  const float aMin = theNode.MinPoint()[theAxis];
-  const float aMax = theNode.MaxPoint()[theAxis];
+  const NCollection_Handle<BVH_Tree<Standard_ShortReal, 4> >& aBVH = BVH();
 
-  const float aStep = (aMax - aMin) / THE_NUMBER_OF_BINS;
+  if (theNodeIdx >= aBVH->Length() || !aBVH->IsOuter (theNodeIdx))
+    return INVALID_OFFSET;
 
-  for (int aTri = theNode.BegTriangle(); aTri <= theNode.EndTriangle(); ++aTri)
-  {
-    float aCenter = theGeometry.CenterAxis (aTri, theAxis);
-    int aBinIndex = (int )floorf ((aCenter - aMin) * ( 1.0f / aStep));
-    if (aBinIndex < 0)
-    {
-      aBinIndex = 0;
-    }
-    else if (aBinIndex >= THE_NUMBER_OF_BINS)
-    {
-      aBinIndex = THE_NUMBER_OF_BINS - 1;
-    }
+  return aBVH->NodeInfoBuffer().at (theNodeIdx).z();
+}
 
-    theBins[aBinIndex].Count++;
-    theBins[aBinIndex].Volume.Combine (theGeometry.Box (aTri));
-  }
+// =======================================================================
+// function : ElementsOffset
+// purpose  : Returns offset of triangulation elements for given leaf node
+// =======================================================================
+Standard_Integer OpenGl_RaytraceGeometry::ElementsOffset (Standard_Integer theNodeIdx)
+{
+  const NCollection_Handle<BVH_Tree<Standard_ShortReal, 4> >& aBVH = BVH();
+
+  if (theNodeIdx >= aBVH->Length() || !aBVH->IsOuter (theNodeIdx))
+    return INVALID_OFFSET;
+
+  return aBVH->NodeInfoBuffer().at (theNodeIdx).w();
+}
+
+// =======================================================================
+// function : TriangleSet
+// purpose  : Returns triangulation data for given leaf node
+// =======================================================================
+OpenGl_TriangleSet* OpenGl_RaytraceGeometry::TriangleSet (Standard_Integer theNodeIdx)
+{
+  const NCollection_Handle<BVH_Tree<Standard_ShortReal, 4> >& aBVH = BVH();
+
+  if (theNodeIdx >= aBVH->Length() || !aBVH->IsOuter (theNodeIdx))
+    return NULL;
+
+  if (aBVH->NodeInfoBuffer().at (theNodeIdx).x() > myObjects.Size())
+    return NULL;
+  
+  return dynamic_cast<OpenGl_TriangleSet*> (myObjects.ChangeValue (
+    aBVH->NodeInfoBuffer().at (theNodeIdx).x() - 1).operator->());
 }
 
 namespace OpenGl_Raytrace

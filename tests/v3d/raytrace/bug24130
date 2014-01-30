@@ -18,6 +18,7 @@ restore $aShape2 s2
 vdisplay s1 s2
 vsetmaterial s1 Silver
 vsetmaterial s2 Pewter
+vlight change 0 pos -1 1 1
 vfit
 
 # activate ray-tracing

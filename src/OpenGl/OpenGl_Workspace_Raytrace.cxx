@@ -39,6 +39,7 @@
 #include <OpenGl_Texture.hxx>
 #include <OpenGl_View.hxx>
 #include <OpenGl_Workspace.hxx>
+#include <Standard_Assert.hxx>
 
 using namespace OpenGl_Raytrace;
 
@@ -56,10 +57,10 @@ extern const char THE_RAY_TRACE_OPENCL_SOURCE[];
 // function : MatVecMult
 // purpose  : Multiples 4x4 matrix by 4D vector
 // =======================================================================
-template< typename T >
-OpenGl_RTVec4f MatVecMult (const T m[16], const OpenGl_RTVec4f& v)
+template<typename T>
+BVH_Vec4f MatVecMult (const T m[16], const BVH_Vec4f& v)
 {
-  return OpenGl_RTVec4f (
+  return BVH_Vec4f (
     static_cast<float> (m[ 0] * v.x() + m[ 4] * v.y() +
                         m[ 8] * v.z() + m[12] * v.w()),
     static_cast<float> (m[ 1] * v.x() + m[ 5] * v.y() +
@@ -96,14 +97,13 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceEnvironmentMap()
     aSizeY = (myView->TextureEnv()->SizeY() <= 0) ? 1 : myView->TextureEnv()->SizeY();
   }
 
-  cl_image_format aImageFormat;
+  cl_image_format anImageFormat;
 
-  aImageFormat.image_channel_order = CL_RGBA;
-  aImageFormat.image_channel_data_type = CL_FLOAT;
+  anImageFormat.image_channel_order = CL_RGBA;
+  anImageFormat.image_channel_data_type = CL_FLOAT;
 
-  myRaytraceEnvironment = clCreateImage2D (myComputeContext, CL_MEM_READ_ONLY,
-                                           &aImageFormat, aSizeX, aSizeY, 0,
-                                           NULL, &anError);
+  myRaytraceEnvironment = clCreateImage2D (myComputeContext,
+    CL_MEM_READ_ONLY, &anImageFormat, aSizeX, aSizeY, 0, NULL, &anError);
 
   cl_float* aPixelData = new cl_float[aSizeX * aSizeY * 4];
 
@@ -136,9 +136,9 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceEnvironmentMap()
                              aSizeY,
                              1 };
 
-  anError |= clEnqueueWriteImage (myRaytraceQueue, myRaytraceEnvironment, CL_TRUE,
-                                  anImageOffset, anImageRegion, 0, 0, aPixelData,
-                                  0, NULL, NULL);
+  anError |= clEnqueueWriteImage (myComputeQueue, myRaytraceEnvironment,
+    CL_TRUE, anImageOffset, anImageRegion, 0, 0, aPixelData, 0, NULL, NULL);
+
 #ifdef RAY_TRACE_PRINT_INFO
   if (anError != CL_SUCCESS)
     std::cout << "Error! Failed to write environment map image!" << std::endl;
@@ -165,7 +165,7 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceGeometry (Standard_Boolean theC
 
   if (!theCheck)
   {
-    myRaytraceSceneData.Clear();
+    myRaytraceGeometry.Clear();
 
     myIsRaytraceDataValid = Standard_False;
   }
@@ -177,7 +177,7 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceGeometry (Standard_Boolean theC
     }
   }
 
-  float* aTransform (NULL);
+  Standard_ShortReal* aTransform (NULL);
 
   // The set of processed structures (reflected to ray-tracing)
   // This set is used to remove out-of-date records from the
@@ -218,7 +218,7 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceGeometry (Standard_Boolean theC
           if (aStructure->Transformation()->mat != NULL)
           {
             if (aTransform == NULL)
-              aTransform = new float[16];
+              aTransform = new Standard_ShortReal[16];
 
             for (Standard_Integer i = 0; i < 4; ++i)
               for (Standard_Integer j = 0; j < 4; ++j)
@@ -253,30 +253,18 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceGeometry (Standard_Boolean theC
     // Actualize OpenGL layer list state
     myLayersModificationStatus = myView->LayerList().ModificationState();
 
+    // Rebuild bottom-level and high-level BVHs
+    myRaytraceGeometry.ProcessAcceleration();
 
-#ifdef RAY_TRACE_PRINT_INFO
-    OSD_Timer aTimer;
-    aTimer.Start();
-#endif
+    const Standard_ShortReal aMinRadius = Max (fabs (myRaytraceGeometry.Box().CornerMin().x()), Max (
+      fabs (myRaytraceGeometry.Box().CornerMin().y()), fabs (myRaytraceGeometry.Box().CornerMin().z())));
+    const Standard_ShortReal aMaxRadius = Max (fabs (myRaytraceGeometry.Box().CornerMax().x()), Max (
+      fabs (myRaytraceGeometry.Box().CornerMax().y()), fabs (myRaytraceGeometry.Box().CornerMax().z())));
 
-    myBVHBuilder.Build (myRaytraceSceneData);
+    myRaytraceSceneRadius = 2.f /* scale factor */ * Max (aMinRadius, aMaxRadius);
 
-#ifdef RAY_TRACE_PRINT_INFO
-    std::cout << " Build time: " << aTimer.ElapsedTime() << " for "
-                        << myRaytraceSceneData.Triangles.size() / 1000 << "K triangles" << std::endl;
-#endif
-
-    const float aScaleFactor = 1.5f;
-
-    myRaytraceSceneRadius = aScaleFactor *
-      Max ( Max (fabsf (myRaytraceSceneData.AABB.CornerMin().x()),
-            Max (fabsf (myRaytraceSceneData.AABB.CornerMin().y()),
-                 fabsf (myRaytraceSceneData.AABB.CornerMin().z()))),
-            Max (fabsf (myRaytraceSceneData.AABB.CornerMax().x()),
-            Max (fabsf (myRaytraceSceneData.AABB.CornerMax().y()),
-                 fabsf (myRaytraceSceneData.AABB.CornerMax().z()))) );
-
-    myRaytraceSceneEpsilon = Max (1e-4f, myRaytraceSceneRadius * 1e-4f);
+    myRaytraceSceneEpsilon = Max (1e-4f,
+      myRaytraceGeometry.Box().Size().Length() * 1e-4f);
 
     return WriteRaytraceSceneToDevice();
   }
@@ -288,7 +276,7 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceGeometry (Standard_Boolean theC
 
 // =======================================================================
 // function : CheckRaytraceStructure
-// purpose  : Adds OpenGL structure to ray-traced scene geometry
+// purpose  :  Checks to see if the structure is modified
 // =======================================================================
 Standard_Boolean OpenGl_Workspace::CheckRaytraceStructure (const OpenGl_Structure* theStructure)
 {
@@ -317,40 +305,39 @@ Standard_Boolean OpenGl_Workspace::CheckRaytraceStructure (const OpenGl_Structur
 // function : CreateMaterial
 // purpose  : Creates ray-tracing material properties
 // =======================================================================
-void CreateMaterial (const OPENGL_SURF_PROP&  theProp,
-                     OpenGl_RaytraceMaterial& theMaterial)
+void CreateMaterial (const OPENGL_SURF_PROP& theProp, OpenGl_RaytraceMaterial& theMaterial)
 {
   const float* aSrcAmb = theProp.isphysic ? theProp.ambcol.rgb : theProp.matcol.rgb;
-  theMaterial.Ambient = OpenGl_RTVec4f (aSrcAmb[0] * theProp.amb,
-                                        aSrcAmb[1] * theProp.amb,
-                                        aSrcAmb[2] * theProp.amb,
-                                        1.0f);
+  theMaterial.Ambient = BVH_Vec4f (aSrcAmb[0] * theProp.amb,
+                                   aSrcAmb[1] * theProp.amb,
+                                   aSrcAmb[2] * theProp.amb,
+                                   1.0f);
 
   const float* aSrcDif = theProp.isphysic ? theProp.difcol.rgb : theProp.matcol.rgb;
-  theMaterial.Diffuse = OpenGl_RTVec4f (aSrcDif[0] * theProp.diff,
-                                        aSrcDif[1] * theProp.diff,
-                                        aSrcDif[2] * theProp.diff,
-                                        1.0f);
+  theMaterial.Diffuse = BVH_Vec4f (aSrcDif[0] * theProp.diff,
+                                   aSrcDif[1] * theProp.diff,
+                                   aSrcDif[2] * theProp.diff,
+                                   1.0f);
 
   const float aDefSpecCol[4] = {1.0f, 1.0f, 1.0f, 1.0f};
   const float* aSrcSpe = theProp.isphysic ? theProp.speccol.rgb : aDefSpecCol;
-  theMaterial.Specular = OpenGl_RTVec4f (aSrcSpe[0] * theProp.spec,
-                                         aSrcSpe[1] * theProp.spec,
-                                         aSrcSpe[2] * theProp.spec,
-                                         theProp.shine);
+  theMaterial.Specular = BVH_Vec4f (aSrcSpe[0] * theProp.spec,
+                                    aSrcSpe[1] * theProp.spec,
+                                    aSrcSpe[2] * theProp.spec,
+                                    theProp.shine);
 
   const float* aSrcEms = theProp.isphysic ? theProp.emscol.rgb : theProp.matcol.rgb;
-  theMaterial.Emission = OpenGl_RTVec4f (aSrcEms[0] * theProp.emsv,
-                                         aSrcEms[1] * theProp.emsv,
-                                         aSrcEms[2] * theProp.emsv,
-                                         1.0f);
+  theMaterial.Emission = BVH_Vec4f (aSrcEms[0] * theProp.emsv,
+                                    aSrcEms[1] * theProp.emsv,
+                                    aSrcEms[2] * theProp.emsv,
+                                    1.0f);
 
   // Note: Here we use sub-linear transparency function
   // to produce realistic-looking transparency effect
-  theMaterial.Transparency = OpenGl_RTVec4f (powf (theProp.trans, 0.75f),
-                                             1.f - theProp.trans,
-                                             1.f,
-                                             1.f);
+  theMaterial.Transparency = BVH_Vec4f (powf (theProp.trans, 0.75f),
+                                        1.f - theProp.trans,
+                                        1.f,
+                                        1.f);
 
   const float aMaxRefl = Max (theMaterial.Diffuse.x() + theMaterial.Specular.x(),
                          Max (theMaterial.Diffuse.y() + theMaterial.Specular.y(),
@@ -358,24 +345,19 @@ void CreateMaterial (const OPENGL_SURF_PROP&  theProp,
 
   const float aReflectionScale = 0.75f / aMaxRefl;
 
-  theMaterial.Reflection = OpenGl_RTVec4f (theProp.speccol.rgb[0] * theProp.spec,
-                                           theProp.speccol.rgb[1] * theProp.spec,
-                                           theProp.speccol.rgb[2] * theProp.spec,
-                                           0.f) * aReflectionScale;
+  theMaterial.Reflection = BVH_Vec4f (theProp.speccol.rgb[0] * theProp.spec,
+                                      theProp.speccol.rgb[1] * theProp.spec,
+                                      theProp.speccol.rgb[2] * theProp.spec,
+                                      0.f) * aReflectionScale;
 }
 
 // =======================================================================
 // function : AddRaytraceStructure
 // purpose  : Adds OpenGL structure to ray-traced scene geometry
 // =======================================================================
-Standard_Boolean OpenGl_Workspace::AddRaytraceStructure (const OpenGl_Structure*            theStructure,
-                                                         const float*                       theTransform,
-                                                         std::set<const OpenGl_Structure*>& theElements)
+Standard_Boolean OpenGl_Workspace::AddRaytraceStructure (const OpenGl_Structure* theStructure,
+  const Standard_ShortReal* theTransform, std::set<const OpenGl_Structure*>& theElements)
 {
-#ifdef RAY_TRACE_PRINT_INFO
-  std::cout << "Add Structure" << std::endl;
-#endif
-
   theElements.insert (theStructure);
 
   if (!theStructure->IsVisible())
@@ -389,41 +371,39 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceStructure (const OpenGl_Structure*
 
   if (theStructure->AspectFace() != NULL)
   {
-    aStructMatID = static_cast<Standard_Integer> (myRaytraceSceneData.Materials.size());
+    aStructMatID = static_cast<Standard_Integer> (myRaytraceGeometry.Materials.size());
 
     OpenGl_RaytraceMaterial aStructMaterial;
     CreateMaterial (theStructure->AspectFace()->IntFront(), aStructMaterial);
 
-    myRaytraceSceneData.Materials.push_back (aStructMaterial);
+    myRaytraceGeometry.Materials.push_back (aStructMaterial);
   }
 
-  OpenGl_ListOfGroup::Iterator anItg (theStructure->Groups());
-
-  while (anItg.More())
+  for (OpenGl_ListOfGroup::Iterator anItg (theStructure->Groups()); anItg.More(); anItg.Next())
   {
     // Get group material
     Standard_Integer aGroupMatID = -1;
 
     if (anItg.Value()->AspectFace() != NULL)
     {
-      aGroupMatID = static_cast<Standard_Integer> (myRaytraceSceneData.Materials.size());
+      aGroupMatID = static_cast<Standard_Integer> (myRaytraceGeometry.Materials.size());
 
       OpenGl_RaytraceMaterial aGroupMaterial;
       CreateMaterial (anItg.Value()->AspectFace()->IntFront(), aGroupMaterial);
 
-      myRaytraceSceneData.Materials.push_back (aGroupMaterial);
+      myRaytraceGeometry.Materials.push_back (aGroupMaterial);
     }
 
     Standard_Integer aMatID = aGroupMatID < 0 ? aStructMatID : aGroupMatID;
 
-    if (aStructMatID < 0 && aGroupMatID < 0)
+    if (aMatID < 0)
     {
-      aMatID = static_cast<Standard_Integer> (myRaytraceSceneData.Materials.size());
+      aMatID = static_cast<Standard_Integer> (myRaytraceGeometry.Materials.size());
 
-      myRaytraceSceneData.Materials.push_back (OpenGl_RaytraceMaterial());
+      myRaytraceGeometry.Materials.push_back (OpenGl_RaytraceMaterial());
     }
 
-    // Add OpenGL elements from group (only arrays of primitives)
+    // Add OpenGL elements from group (extract primitives arrays and aspects)
     for (const OpenGl_ElementNode* aNode = anItg.Value()->FirstNode(); aNode != NULL; aNode = aNode->next)
     {
       if (TelNil == aNode->type)
@@ -432,12 +412,12 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceStructure (const OpenGl_Structure*
 
         if (anAspect != NULL)
         {
-          aMatID = static_cast<Standard_Integer> (myRaytraceSceneData.Materials.size());
+          aMatID = static_cast<Standard_Integer> (myRaytraceGeometry.Materials.size());
 
           OpenGl_RaytraceMaterial aMaterial;
           CreateMaterial (anAspect->IntFront(), aMaterial);
 
-          myRaytraceSceneData.Materials.push_back (aMaterial);
+          myRaytraceGeometry.Materials.push_back (aMaterial);
         }
       }
       else if (TelParray == aNode->type)
@@ -446,24 +426,24 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceStructure (const OpenGl_Structure*
 
         if (aPrimArray != NULL)
         {
-          AddRaytracePrimitiveArray (aPrimArray->PArray(), aMatID, theTransform);
+          NCollection_Handle<BVH_Object<Standard_ShortReal, 4> > aSet =
+            AddRaytracePrimitiveArray (aPrimArray->PArray(), aMatID, theTransform);
+
+          if (!aSet.IsNull())
+            myRaytraceGeometry.Objects().Append (aSet);
         }
       }
     }
-
-    anItg.Next();
   }
 
-  float* aTransform (NULL);
+  Standard_ShortReal* aTransform (NULL);
 
   // Process all connected OpenGL structures
-  OpenGl_ListOfStructure::Iterator anIts (theStructure->ConnectedStructures());
-
-  while (anIts.More())
+  for (OpenGl_ListOfStructure::Iterator anIts (theStructure->ConnectedStructures()); anIts.More(); anIts.Next())
   {
     if (anIts.Value()->Transformation()->mat != NULL)
     {
-      float* aTransform = new float[16];
+      Standard_ShortReal* aTransform = new Standard_ShortReal[16];
 
       for (Standard_Integer i = 0; i < 4; ++i)
         for (Standard_Integer j = 0; j < 4; ++j)
@@ -475,8 +455,6 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceStructure (const OpenGl_Structure*
 
     if (anIts.Value()->IsRaytracable())
       AddRaytraceStructure (anIts.Value(), aTransform != NULL ? aTransform : theTransform, theElements);
-
-    anIts.Next();
   }
 
   delete[] aTransform;
@@ -490,9 +468,8 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceStructure (const OpenGl_Structure*
 // function : AddRaytracePrimitiveArray
 // purpose  : Adds OpenGL primitive array to ray-traced scene geometry
 // =======================================================================
-Standard_Boolean OpenGl_Workspace::AddRaytracePrimitiveArray (const CALL_DEF_PARRAY* theArray,
-                                                              Standard_Integer       theMatID,
-                                                              const float*           theTransform)
+OpenGl_TriangleSet* OpenGl_Workspace::AddRaytracePrimitiveArray (
+  const CALL_DEF_PARRAY* theArray, Standard_Integer theMatID, const Standard_ShortReal* theTransform)
 {
   if (theArray->type != TelPolygonsArrayType &&
       theArray->type != TelTrianglesArrayType &&
@@ -501,135 +478,144 @@ Standard_Boolean OpenGl_Workspace::AddRaytracePrimitiveArray (const CALL_DEF_PAR
       theArray->type != TelTriangleStripsArrayType &&
       theArray->type != TelQuadrangleStripsArrayType)
   {
-    return Standard_True;
+    return NULL;
   }
 
   if (theArray->vertices == NULL)
-    return Standard_False;
+    return NULL;
 
 #ifdef RAY_TRACE_PRINT_INFO
   switch (theArray->type)
   {
     case TelPolygonsArrayType:
-      std::cout << "\tTelPolygonsArrayType" << std::endl; break;
+      std::cout << "\tAdding TelPolygonsArrayType" << std::endl; break;
     case TelTrianglesArrayType:
-      std::cout << "\tTelTrianglesArrayType" << std::endl; break;
+      std::cout << "\tAdding TelTrianglesArrayType" << std::endl; break;
     case TelQuadranglesArrayType:
-      std::cout << "\tTelQuadranglesArrayType" << std::endl; break;
+      std::cout << "\tAdding TelQuadranglesArrayType" << std::endl; break;
     case TelTriangleFansArrayType:
-      std::cout << "\tTelTriangleFansArrayType" << std::endl; break;
+      std::cout << "\tAdding TelTriangleFansArrayType" << std::endl; break;
     case TelTriangleStripsArrayType:
-      std::cout << "\tTelTriangleStripsArrayType" << std::endl; break;
+      std::cout << "\tAdding TelTriangleStripsArrayType" << std::endl; break;
     case TelQuadrangleStripsArrayType:
-      std::cout << "\tTelQuadrangleStripsArrayType" << std::endl; break;
+      std::cout << "\tAdding TelQuadrangleStripsArrayType" << std::endl; break;
   }
 #endif
 
-  // Simple optimization to eliminate possible memory allocations
-  // during processing of the primitive array vertices
-  myRaytraceSceneData.Vertices.reserve (
-    myRaytraceSceneData.Vertices.size() + theArray->num_vertexs);
+  OpenGl_TriangleSet* aSet = new OpenGl_TriangleSet;
 
-  const Standard_Integer aFirstVert = static_cast<Standard_Integer> (myRaytraceSceneData.Vertices.size());
-
-  for (Standard_Integer aVert = 0; aVert < theArray->num_vertexs; ++aVert)
   {
-    OpenGl_RTVec4f aVertex (theArray->vertices[aVert].xyz[0],
-                            theArray->vertices[aVert].xyz[1],
-                            theArray->vertices[aVert].xyz[2],
-                            1.f);
+    aSet->Vertices.reserve (theArray->num_vertexs);
 
-    if (theTransform)
-      aVertex = MatVecMult (theTransform, aVertex);
-
-    myRaytraceSceneData.Vertices.push_back (aVertex);
-
-    myRaytraceSceneData.AABB.Add (aVertex);
-  }
-
-  myRaytraceSceneData.Normals.reserve (
-    myRaytraceSceneData.Normals.size() + theArray->num_vertexs);
-
-  for (Standard_Integer aNorm = 0; aNorm < theArray->num_vertexs; ++aNorm)
-  {
-    OpenGl_RTVec4f aNormal;
-
-    // Note: In case of absence of normals, the visualizer
-    // will use generated geometric normals
-
-    if (theArray->vnormals != NULL)
+    for (Standard_Integer aVert = 0; aVert < theArray->num_vertexs; ++aVert)
     {
-      aNormal = OpenGl_RTVec4f (theArray->vnormals[aNorm].xyz[0],
-                                theArray->vnormals[aNorm].xyz[1],
-                                theArray->vnormals[aNorm].xyz[2],
-                                0.f);
-
+      BVH_Vec4f aVertex (theArray->vertices[aVert].xyz[0],
+                         theArray->vertices[aVert].xyz[1],
+                         theArray->vertices[aVert].xyz[2],
+                         1.f);
       if (theTransform)
-        aNormal = MatVecMult (theTransform, aNormal);
+        aVertex = MatVecMult (theTransform, aVertex);
+
+      aSet->Vertices.push_back (aVertex);
     }
 
-    myRaytraceSceneData.Normals.push_back (aNormal);
-  }
+    aSet->Normals.reserve (theArray->num_vertexs);
 
-  if (theArray->num_bounds > 0)
-  {
-#ifdef RAY_TRACE_PRINT_INFO
-    std::cout << "\tNumber of bounds = " << theArray->num_bounds << std::endl;
-#endif
-
-    Standard_Integer aVertOffset = 0;
-
-    for (Standard_Integer aBound = 0; aBound < theArray->num_bounds; ++aBound)
+    for (Standard_Integer aNorm = 0; aNorm < theArray->num_vertexs; ++aNorm)
     {
-      const Standard_Integer aVertNum = theArray->bounds[aBound];
+      BVH_Vec4f aNormal;
 
-#ifdef RAY_TRACE_PRINT_INFO
-      std::cout << "\tAdd indices from bound " << aBound << ": " <<
-                                    aVertOffset << ", " << aVertNum << std::endl;
-#endif
+      // Note: In case of absence of normals, the
+      // renderer uses generated geometric normals
 
-      if (!AddRaytraceVertexIndices (theArray, aFirstVert, aVertOffset, aVertNum, theMatID))
+      if (theArray->vnormals != NULL)
       {
-        return Standard_False;
+        aNormal = BVH_Vec4f (theArray->vnormals[aNorm].xyz[0],
+                             theArray->vnormals[aNorm].xyz[1],
+                             theArray->vnormals[aNorm].xyz[2],
+                             0.f);
+
+        if (theTransform)
+          aNormal = MatVecMult (theTransform, aNormal);
       }
 
-      aVertOffset += aVertNum;
+      aSet->Normals.push_back (aNormal);
+    }
+
+    if (theArray->num_bounds > 0)
+    {
+  #ifdef RAY_TRACE_PRINT_INFO
+      std::cout << "\tNumber of bounds = " << theArray->num_bounds << std::endl;
+  #endif
+
+      Standard_Integer aBoundStart = 0;
+
+      for (Standard_Integer aBound = 0; aBound < theArray->num_bounds; ++aBound)
+      {
+        const Standard_Integer aVertNum = theArray->bounds[aBound];
+
+  #ifdef RAY_TRACE_PRINT_INFO
+        std::cout << "\tAdding indices from bound " << aBound << ": " <<
+                                      aBoundStart << " .. " << aVertNum << std::endl;
+  #endif
+
+        if (!AddRaytraceVertexIndices (aSet, theArray, aBoundStart, aVertNum, theMatID))
+        {
+          delete aSet;
+          return NULL;
+        }
+
+        aBoundStart += aVertNum;
+      }
+    }
+    else
+    {
+      const Standard_Integer aVertNum = theArray->num_edges > 0 ? theArray->num_edges : theArray->num_vertexs;
+
+  #ifdef RAY_TRACE_PRINT_INFO
+        std::cout << "\tAdding indices from array: " << aVertNum << std::endl;
+  #endif
+
+      if (!AddRaytraceVertexIndices (aSet, theArray, 0, aVertNum, theMatID))
+      {
+        delete aSet;
+        return NULL;
+      }
     }
   }
-  else
-  {
-    const Standard_Integer aVertNum = theArray->num_edges > 0 ? theArray->num_edges : theArray->num_vertexs;
 
-#ifdef RAY_TRACE_PRINT_INFO
-      std::cout << "\tAdd indices: " << aVertNum << std::endl;
-#endif
+  if (aSet->Size() != 0)
+    aSet->MarkDirty();
 
-    return AddRaytraceVertexIndices (theArray, aFirstVert, 0, aVertNum, theMatID);
-  }
-
-  return Standard_True;
+  return aSet;
 }
 
 // =======================================================================
 // function : AddRaytraceVertexIndices
 // purpose  : Adds vertex indices to ray-traced scene geometry
 // =======================================================================
-Standard_Boolean OpenGl_Workspace::AddRaytraceVertexIndices (const CALL_DEF_PARRAY* theArray,
-                                                             Standard_Integer       theFirstVert,
-                                                             Standard_Integer       theVertOffset,
-                                                             Standard_Integer       theVertNum,
-                                                             Standard_Integer       theMatID)
+Standard_Boolean OpenGl_Workspace::AddRaytraceVertexIndices (OpenGl_TriangleSet* theSet,
+  const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID)
 {
-  myRaytraceSceneData.Triangles.reserve (myRaytraceSceneData.Triangles.size() + theVertNum);
   switch (theArray->type)
   {
-    case TelTrianglesArrayType:        return AddRaytraceTriangleArray        (theArray, theFirstVert, theVertOffset, theVertNum, theMatID);
-    case TelQuadranglesArrayType:      return AddRaytraceQuadrangleArray      (theArray, theFirstVert, theVertOffset, theVertNum, theMatID);
-    case TelTriangleFansArrayType:     return AddRaytraceTriangleFanArray     (theArray, theFirstVert, theVertOffset, theVertNum, theMatID);
-    case TelTriangleStripsArrayType:   return AddRaytraceTriangleStripArray   (theArray, theFirstVert, theVertOffset, theVertNum, theMatID);
-    case TelQuadrangleStripsArrayType: return AddRaytraceQuadrangleStripArray (theArray, theFirstVert, theVertOffset, theVertNum, theMatID);
-    case TelPolygonsArrayType:         return AddRaytracePolygonArray         (theArray, theFirstVert, theVertOffset, theVertNum, theMatID);
-    default:                           return Standard_False;
+    case TelTrianglesArrayType:
+      return AddRaytraceTriangleArray (theSet, theArray, theOffset, theCount, theMatID);
+
+    case TelQuadranglesArrayType:
+      return AddRaytraceQuadrangleArray (theSet, theArray, theOffset, theCount, theMatID);
+
+    case TelTriangleFansArrayType:
+      return AddRaytraceTriangleFanArray (theSet, theArray, theOffset, theCount, theMatID);
+
+    case TelTriangleStripsArrayType:  
+      return AddRaytraceTriangleStripArray (theSet, theArray, theOffset, theCount, theMatID);
+
+    case TelQuadrangleStripsArrayType:
+      return AddRaytraceQuadrangleStripArray (theSet, theArray, theOffset, theCount, theMatID);
+
+    default:
+      return AddRaytracePolygonArray (theSet, theArray, theOffset, theCount, theMatID);
   }
 }
 
@@ -637,33 +623,32 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceVertexIndices (const CALL_DEF_PARR
 // function : AddRaytraceTriangleArray
 // purpose  : Adds OpenGL triangle array to ray-traced scene geometry
 // =======================================================================
-Standard_Boolean OpenGl_Workspace::AddRaytraceTriangleArray (const CALL_DEF_PARRAY* theArray,
-                                                             Standard_Integer       theFirstVert,
-                                                             Standard_Integer       theVertOffset,
-                                                             Standard_Integer       theVertNum,
-                                                             Standard_Integer       theMatID)
+Standard_Boolean OpenGl_Workspace::AddRaytraceTriangleArray (OpenGl_TriangleSet* theSet,
+  const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID)
 {
-  if (theVertNum < 3)
+  if (theCount < 3)
     return Standard_True;
+
+  theSet->Elements.reserve (theSet->Elements.size() + theCount / 3);
 
   if (theArray->num_edges > 0)
   {
-    for (Standard_Integer aVert = theVertOffset; aVert < theVertOffset + theVertNum - 2; aVert += 3)
+    for (Standard_Integer aVert = theOffset; aVert < theOffset + theCount - 2; aVert += 3)
     {
-      myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (theFirstVert + theArray->edges[aVert + 0],
-                                                               theFirstVert + theArray->edges[aVert + 1],
-                                                               theFirstVert + theArray->edges[aVert + 2],
-                                                               theMatID));
+      theSet->Elements.push_back (BVH_Vec4i (theArray->edges[aVert + 0],
+                                             theArray->edges[aVert + 1],
+                                             theArray->edges[aVert + 2],
+                                             theMatID));
     }
   }
   else
   {
-    for (Standard_Integer aVert = theVertOffset; aVert < theVertOffset + theVertNum - 2; aVert += 3)
+    for (Standard_Integer aVert = theOffset; aVert < theOffset + theCount - 2; aVert += 3)
     {
-      myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (theFirstVert + aVert + 0,
-                                                               theFirstVert + aVert + 1,
-                                                               theFirstVert + aVert + 2,
-                                                               theMatID));
+      theSet->Elements.push_back (BVH_Vec4i (aVert + 0,
+                                             aVert + 1,
+                                             aVert + 2,
+                                             theMatID));
     }
   }
 
@@ -674,33 +659,32 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceTriangleArray (const CALL_DEF_PARR
 // function : AddRaytraceTriangleFanArray
 // purpose  : Adds OpenGL triangle fan array to ray-traced scene geometry
 // =======================================================================
-Standard_Boolean OpenGl_Workspace::AddRaytraceTriangleFanArray (const CALL_DEF_PARRAY* theArray,
-                                                                Standard_Integer       theFirstVert,
-                                                                Standard_Integer       theVertOffset,
-                                                                Standard_Integer       theVertNum,
-                                                                Standard_Integer       theMatID)
+Standard_Boolean OpenGl_Workspace::AddRaytraceTriangleFanArray (OpenGl_TriangleSet* theSet,
+  const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID)
 {
-  if (theVertNum < 3)
+  if (theCount < 3)
     return Standard_True;
+
+  theSet->Elements.reserve (theSet->Elements.size() + theCount - 2);
 
   if (theArray->num_edges > 0)
   {
-    for (Standard_Integer aVert = theVertOffset; aVert < theVertOffset + theVertNum - 2; ++aVert)
+    for (Standard_Integer aVert = theOffset; aVert < theOffset + theCount - 2; ++aVert)
     {
-      myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (theFirstVert + theArray->edges[theVertOffset],
-                                                               theFirstVert + theArray->edges[aVert + 1],
-                                                               theFirstVert + theArray->edges[aVert + 2],
-                                                               theMatID));
+      theSet->Elements.push_back (BVH_Vec4i (theArray->edges[theOffset],
+                                             theArray->edges[aVert + 1],
+                                             theArray->edges[aVert + 2],
+                                             theMatID));
     }
   }
   else
   {
-    for (Standard_Integer aVert = theVertOffset; aVert < theVertOffset + theVertNum - 2; ++aVert)
+    for (Standard_Integer aVert = theOffset; aVert < theOffset + theCount - 2; ++aVert)
     {
-      myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (theFirstVert + theVertOffset,
-                                                               theFirstVert + aVert + 1,
-                                                               theFirstVert + aVert + 2,
-                                                               theMatID));
+      theSet->Elements.push_back (BVH_Vec4i (theOffset,
+                                             aVert + 1,
+                                             aVert + 2,
+                                             theMatID));
     }
   }
 
@@ -711,45 +695,32 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceTriangleFanArray (const CALL_DEF_P
 // function : AddRaytraceTriangleStripArray
 // purpose  : Adds OpenGL triangle strip array to ray-traced scene geometry
 // =======================================================================
-Standard_Boolean OpenGl_Workspace::AddRaytraceTriangleStripArray (const CALL_DEF_PARRAY* theArray,
-                                                                  Standard_Integer       theFirstVert,
-                                                                  Standard_Integer       theVertOffset,
-                                                                  Standard_Integer       theVertNum,
-                                                                  Standard_Integer       theMatID)
+Standard_Boolean OpenGl_Workspace::AddRaytraceTriangleStripArray (OpenGl_TriangleSet* theSet,
+  const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID)
 {
-  if (theVertNum < 3)
+  if (theCount < 3)
     return Standard_True;
+
+  theSet->Elements.reserve (theSet->Elements.size() + theCount - 2);
 
   if (theArray->num_edges > 0)
   {
-    myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (
-                                      theFirstVert + theArray->edges[theVertOffset + 0],
-                                      theFirstVert + theArray->edges[theVertOffset + 1],
-                                      theFirstVert + theArray->edges[theVertOffset + 2],
-                                      theMatID));
-
-    for (Standard_Integer aVert = theVertOffset + 1, aTriNum = 1; aVert < theVertOffset + theVertNum - 2; ++aVert, ++aTriNum)
+    for (Standard_Integer aVert = theOffset, aCW = 0; aVert < theOffset + theCount - 2; ++aVert, aCW = (aCW + 1) % 2)
     {
-      myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (
-                                      theFirstVert + theArray->edges[aVert + (aTriNum % 2) ? 1 : 0],
-                                      theFirstVert + theArray->edges[aVert + (aTriNum % 2) ? 0 : 1],
-                                      theFirstVert + theArray->edges[aVert + 2],
-                                      theMatID));
+      theSet->Elements.push_back (BVH_Vec4i (theArray->edges[aVert + aCW ? 1 : 0],
+                                             theArray->edges[aVert + aCW ? 0 : 1],
+                                             theArray->edges[aVert + 2],
+                                             theMatID));
     }
   }
   else
   {
-    myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (theFirstVert + theVertOffset + 0,
-                                                             theFirstVert + theVertOffset + 1,
-                                                             theFirstVert + theVertOffset + 2,
-                                                             theMatID));
-
-    for (Standard_Integer aVert = theVertOffset + 1, aTriNum = 1; aVert < theVertOffset + theVertNum - 2; ++aVert, ++aTriNum)
+    for (Standard_Integer aVert = theOffset, aCW = 0; aVert < theOffset + theCount - 2; ++aVert, aCW = (aCW + 1) % 2)
     {
-      myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (theFirstVert + aVert + ( aTriNum % 2 ) ? 1 : 0,
-                                                               theFirstVert + aVert + ( aTriNum % 2 ) ? 0 : 1,
-                                                               theFirstVert + aVert + 2,
-                                                               theMatID));
+      theSet->Elements.push_back (BVH_Vec4i (aVert + aCW ? 1 : 0,
+                                             aVert + aCW ? 0 : 1,
+                                             aVert + 2,
+                                             theMatID));
     }
   }
 
@@ -760,43 +731,42 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceTriangleStripArray (const CALL_DEF
 // function : AddRaytraceQuadrangleArray
 // purpose  : Adds OpenGL quad array to ray-traced scene geometry
 // =======================================================================
-Standard_Boolean OpenGl_Workspace::AddRaytraceQuadrangleArray (const CALL_DEF_PARRAY* theArray,
-                                                               Standard_Integer       theFirstVert,
-                                                               Standard_Integer       theVertOffset,
-                                                               Standard_Integer       theVertNum,
-                                                               Standard_Integer       theMatID)
+Standard_Boolean OpenGl_Workspace::AddRaytraceQuadrangleArray (OpenGl_TriangleSet* theSet,
+  const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID)
 {
-  if (theVertNum < 4)
+  if (theCount < 4)
     return Standard_True;
+
+  theSet->Elements.reserve (theSet->Elements.size() + theCount / 2);
 
   if (theArray->num_edges > 0)
   {
-    for (Standard_Integer aVert = theVertOffset; aVert < theVertOffset + theVertNum - 3; aVert += 4)
+    for (Standard_Integer aVert = theOffset; aVert < theOffset + theCount - 3; aVert += 4)
     {
-      myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (theFirstVert + theArray->edges[aVert + 0],
-                                                               theFirstVert + theArray->edges[aVert + 1],
-                                                               theFirstVert + theArray->edges[aVert + 2],
-                                                               theMatID));
+      theSet->Elements.push_back (BVH_Vec4i (theArray->edges[aVert + 0],
+                                             theArray->edges[aVert + 1],
+                                             theArray->edges[aVert + 2],
+                                             theMatID));
 
-      myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (theFirstVert + theArray->edges[aVert + 0],
-                                                               theFirstVert + theArray->edges[aVert + 2],
-                                                               theFirstVert + theArray->edges[aVert + 3],
-                                                               theMatID));
+      theSet->Elements.push_back (BVH_Vec4i (theArray->edges[aVert + 0],
+                                             theArray->edges[aVert + 2],
+                                             theArray->edges[aVert + 3],
+                                             theMatID));
     }
   }
   else
   {
-    for (Standard_Integer aVert = theVertOffset; aVert < theVertOffset + theVertNum - 3; aVert += 4)
+    for (Standard_Integer aVert = theOffset; aVert < theOffset + theCount - 3; aVert += 4)
     {
-      myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (theFirstVert + aVert + 0,
-                                                               theFirstVert + aVert + 1,
-                                                               theFirstVert + aVert + 2,
-                                                               theMatID));
+      theSet->Elements.push_back (BVH_Vec4i (aVert + 0,
+                                             aVert + 1,
+                                             aVert + 2,
+                                             theMatID));
 
-      myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (theFirstVert + aVert + 0,
-                                                               theFirstVert + aVert + 2,
-                                                               theFirstVert + aVert + 3,
-                                                               theMatID));
+      theSet->Elements.push_back (BVH_Vec4i (aVert + 0,
+                                             aVert + 2,
+                                             aVert + 3,
+                                             theMatID));
     }
   }
 
@@ -807,67 +777,42 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceQuadrangleArray (const CALL_DEF_PA
 // function : AddRaytraceQuadrangleStripArray
 // purpose  : Adds OpenGL quad strip array to ray-traced scene geometry
 // =======================================================================
-Standard_Boolean OpenGl_Workspace::AddRaytraceQuadrangleStripArray (const CALL_DEF_PARRAY* theArray,
-                                                                    Standard_Integer       theFirstVert,
-                                                                    Standard_Integer       theVertOffset,
-                                                                    Standard_Integer       theVertNum,
-                                                                    Standard_Integer       theMatID)
+Standard_Boolean OpenGl_Workspace::AddRaytraceQuadrangleStripArray (OpenGl_TriangleSet* theSet,
+  const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID)
 {
-  if (theVertNum < 4)
+  if (theCount < 4)
     return Standard_True;
+
+  theSet->Elements.reserve (theSet->Elements.size() + 2 * theCount - 6);
 
   if (theArray->num_edges > 0)
   {
-    myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (
-                                theFirstVert + theArray->edges[theVertOffset + 0],
-                                theFirstVert + theArray->edges[theVertOffset + 1],
-                                theFirstVert + theArray->edges[theVertOffset + 2],
-                                theMatID));
-
-    myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (
-                                theFirstVert + theArray->edges[theVertOffset + 1],
-                                theFirstVert + theArray->edges[theVertOffset + 3],
-                                theFirstVert + theArray->edges[theVertOffset + 2],
-                                theMatID));
-
-    for (Standard_Integer aVert = theVertOffset + 2; aVert < theVertOffset + theVertNum - 3; aVert += 2)
+    for (Standard_Integer aVert = theOffset; aVert < theOffset + theCount - 3; aVert += 2)
     {
-      myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (
-                                  theFirstVert + theArray->edges[aVert + 0],
-                                  theFirstVert + theArray->edges[aVert + 1],
-                                  theFirstVert + theArray->edges[aVert + 2],
-                                  theMatID));
+      theSet->Elements.push_back (BVH_Vec4i (theArray->edges[aVert + 0],
+                                             theArray->edges[aVert + 1],
+                                             theArray->edges[aVert + 2],
+                                             theMatID));
 
-      myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (
-                                  theFirstVert + theArray->edges[aVert + 1],
-                                  theFirstVert + theArray->edges[aVert + 3],
-                                  theFirstVert + theArray->edges[aVert + 2],
-                                  theMatID));
+      theSet->Elements.push_back (BVH_Vec4i (theArray->edges[aVert + 1],
+                                             theArray->edges[aVert + 3],
+                                             theArray->edges[aVert + 2],
+                                             theMatID));
     }
   }
   else
   {
-    myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (theFirstVert + 0,
-                                                             theFirstVert + 1,
-                                                             theFirstVert + 2,
-                                                             theMatID));
-
-    myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (theFirstVert + 1,
-                                                             theFirstVert + 3,
-                                                             theFirstVert + 2,
-                                                             theMatID));
-
-    for (Standard_Integer aVert = theVertOffset + 2; aVert < theVertOffset + theVertNum - 3; aVert += 2)
+    for (Standard_Integer aVert = theOffset; aVert < theOffset + theCount - 3; aVert += 2)
     {
-      myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (theFirstVert + aVert + 0,
-                                                               theFirstVert + aVert + 1,
-                                                               theFirstVert + aVert + 2,
-                                                               theMatID));
+      theSet->Elements.push_back (BVH_Vec4i (aVert + 0,
+                                             aVert + 1,
+                                             aVert + 2,
+                                             theMatID));
 
-      myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (theFirstVert + aVert + 1,
-                                                               theFirstVert + aVert + 3,
-                                                               theFirstVert + aVert + 2,
-                                                               theMatID));
+      theSet->Elements.push_back (BVH_Vec4i (aVert + 1,
+                                             aVert + 3,
+                                             aVert + 2,
+                                             theMatID));
     }
   }
 
@@ -878,33 +823,32 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceQuadrangleStripArray (const CALL_D
 // function : AddRaytracePolygonArray
 // purpose  : Adds OpenGL polygon array to ray-traced scene geometry
 // =======================================================================
-Standard_Boolean OpenGl_Workspace::AddRaytracePolygonArray (const CALL_DEF_PARRAY* theArray,
-                                                            Standard_Integer       theFirstVert,
-                                                            Standard_Integer       theVertOffset,
-                                                            Standard_Integer       theVertNum,
-                                                            Standard_Integer       theMatID)
+Standard_Boolean OpenGl_Workspace::AddRaytracePolygonArray (OpenGl_TriangleSet* theSet,
+  const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID)
 {
-  if (theArray->num_vertexs < 3)
+  if (theCount < 3)
     return Standard_True;
 
-  if (theArray->edges != NULL)
+  theSet->Elements.reserve (theSet->Elements.size() + theCount - 2);
+
+  if (theArray->num_edges > 0)
   {
-    for (Standard_Integer aVert = theVertOffset; aVert < theVertOffset + theVertNum - 2; ++aVert)
+    for (Standard_Integer aVert = theOffset; aVert < theOffset + theCount - 2; ++aVert)
     {
-      myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (theFirstVert + theArray->edges[theVertOffset],
-                                                               theFirstVert + theArray->edges[aVert + 1],
-                                                               theFirstVert + theArray->edges[aVert + 2],
-                                                               theMatID));
+      theSet->Elements.push_back (BVH_Vec4i (theArray->edges[theOffset],
+                                             theArray->edges[aVert + 1],
+                                             theArray->edges[aVert + 2],
+                                             theMatID));
     }
   }
   else
   {
-    for (Standard_Integer aVert = theVertOffset; aVert < theVertOffset + theVertNum - 2; ++aVert)
+    for (Standard_Integer aVert = theOffset; aVert < theOffset + theCount - 2; ++aVert)
     {
-      myRaytraceSceneData.Triangles.push_back (OpenGl_RTVec4i (theFirstVert + theVertOffset,
-                                                               theFirstVert + aVert + 1,
-                                                               theFirstVert + aVert + 2,
-                                                               theMatID));
+      theSet->Elements.push_back (BVH_Vec4i (theOffset,
+                                             aVert + 1,
+                                             aVert + 2,
+                                             theMatID));
     }
   }
 
@@ -917,40 +861,45 @@ Standard_Boolean OpenGl_Workspace::AddRaytracePolygonArray (const CALL_DEF_PARRA
 // =======================================================================
 Standard_Boolean OpenGl_Workspace::UpdateRaytraceLightSources (const GLdouble theInvModelView[16])
 {
-  myRaytraceSceneData.LightSources.clear();
+  myRaytraceGeometry.Sources.clear();
 
-  OpenGl_RTVec4f anAmbient (0.0f, 0.0f, 0.0f, 0.0f);
-  for (OpenGl_ListOfLight::Iterator anItl (myView->LightList());
-       anItl.More(); anItl.Next())
+  myRaytraceGeometry.GlobalAmbient = BVH_Vec4f (0.0f, 0.0f, 0.0f, 0.0f);
+
+  for (OpenGl_ListOfLight::Iterator anItl (myView->LightList()); anItl.More(); anItl.Next())
   {
     const OpenGl_Light& aLight = anItl.Value();
+
     if (aLight.Type == Visual3d_TOLS_AMBIENT)
     {
-      anAmbient += OpenGl_RTVec4f (aLight.Color.r(), aLight.Color.g(), aLight.Color.b(), 0.0f);
+      myRaytraceGeometry.GlobalAmbient += BVH_Vec4f (aLight.Color.r(),
+                                                     aLight.Color.g(),
+                                                     aLight.Color.b(),
+                                                     0.0f);
       continue;
     }
 
-    OpenGl_RTVec4f aDiffuse  (aLight.Color.r(), aLight.Color.g(), aLight.Color.b(), 1.0f);
-    OpenGl_RTVec4f aPosition (-aLight.Direction.x(), -aLight.Direction.y(), -aLight.Direction.z(), 0.0f);
+    BVH_Vec4f aDiffuse  (aLight.Color.r(),
+                         aLight.Color.g(),
+                         aLight.Color.b(),
+                         1.0f);
+
+    BVH_Vec4f aPosition (-aLight.Direction.x(),
+                         -aLight.Direction.y(),
+                         -aLight.Direction.z(),
+                         0.0f);
+
     if (aLight.Type != Visual3d_TOLS_DIRECTIONAL)
     {
-      aPosition = OpenGl_RTVec4f (aLight.Position.x(), aLight.Position.y(), aLight.Position.z(), 1.0f);
+      aPosition = BVH_Vec4f (aLight.Position.x(),
+                             aLight.Position.y(),
+                             aLight.Position.z(),
+                             1.0f);
     }
+
     if (aLight.IsHeadlight)
-    {
       aPosition = MatVecMult (theInvModelView, aPosition);
-    }
 
-    myRaytraceSceneData.LightSources.push_back (OpenGl_RaytraceLight (aDiffuse, aPosition));
-  }
-
-  if (myRaytraceSceneData.LightSources.size() > 0)
-  {
-    myRaytraceSceneData.LightSources.front().Ambient += anAmbient;
-  }
-  else
-  {
-    myRaytraceSceneData.LightSources.push_back (OpenGl_RaytraceLight (OpenGl_RTVec4f (anAmbient.rgb(), -1.0f)));
+    myRaytraceGeometry.Sources.push_back (OpenGl_RaytraceLight (aDiffuse, aPosition));
   }
 
   cl_int anError = CL_SUCCESS;
@@ -958,26 +907,24 @@ Standard_Boolean OpenGl_Workspace::UpdateRaytraceLightSources (const GLdouble th
   if (myRaytraceLightSourceBuffer != NULL)
     clReleaseMemObject (myRaytraceLightSourceBuffer);
 
-  const size_t myLightBufferSize = myRaytraceSceneData.LightSources.size() > 0
-                                 ? myRaytraceSceneData.LightSources.size()
-                                 : 1;
+  Standard_Integer aLightBufferSize = myRaytraceGeometry.Sources.size() != 0 ?
+    static_cast<Standard_Integer> (myRaytraceGeometry.Sources.size()) : 1;
 
   myRaytraceLightSourceBuffer = clCreateBuffer (myComputeContext, CL_MEM_READ_ONLY,
-                                                myLightBufferSize * sizeof(OpenGl_RaytraceLight),
-                                                NULL, &anError);
+    aLightBufferSize * sizeof(OpenGl_RaytraceLight), NULL, &anError);
 
-  if (myRaytraceSceneData.LightSources.size() > 0)
+  if (myRaytraceGeometry.Sources.size() != 0)
   {
-    const void* aDataPtr = myRaytraceSceneData.LightSources.front().Packed();
-    anError |= clEnqueueWriteBuffer (myRaytraceQueue, myRaytraceLightSourceBuffer, CL_TRUE, 0,
-                                     myLightBufferSize * sizeof(OpenGl_RaytraceLight), aDataPtr,
-                                     0, NULL, NULL);
+    const void* aDataPtr = myRaytraceGeometry.Sources.front().Packed();
+
+    anError |= clEnqueueWriteBuffer (myComputeQueue, myRaytraceLightSourceBuffer, CL_TRUE, 0,
+      aLightBufferSize * sizeof(OpenGl_RaytraceLight), aDataPtr, 0, NULL, NULL);
   }
 
 #ifdef RAY_TRACE_PRINT_INFO
   if (anError != CL_SUCCESS)
   {
-    std::cout << "Error! Failed to set light sources!";
+    std::cout << "Error! Failed to set light sources";
 
     return Standard_False;
   }
@@ -1203,7 +1150,7 @@ Standard_Boolean OpenGl_Workspace::InitOpenCL()
   }
 
   // Create OpenCL ray tracing kernels
-  myRaytraceRenderKernel = clCreateKernel (myRaytraceProgram, "Main",            &anError);
+  myRaytraceRenderKernel = clCreateKernel (myRaytraceProgram, "RaytraceRender", &anError);
   if (anError != CL_SUCCESS)
   {
     myComputeInitStatus = OpenGl_CLIS_FAIL;
@@ -1215,7 +1162,7 @@ Standard_Boolean OpenGl_Workspace::InitOpenCL()
     return Standard_False;
   }
 
-  myRaytraceSmoothKernel = clCreateKernel (myRaytraceProgram, "MainAntialiased", &anError);
+  myRaytraceSmoothKernel = clCreateKernel (myRaytraceProgram, "RaytraceSmooth", &anError);
   if (anError != CL_SUCCESS)
   {
     myComputeInitStatus = OpenGl_CLIS_FAIL;
@@ -1231,7 +1178,7 @@ Standard_Boolean OpenGl_Workspace::InitOpenCL()
   // Note: For profiling set CL_QUEUE_PROFILING_ENABLE
   cl_command_queue_properties aProps = CL_QUEUE_PROFILING_ENABLE;
 
-  myRaytraceQueue = clCreateCommandQueue (myComputeContext, aDevice, aProps, &anError);
+  myComputeQueue = clCreateCommandQueue (myComputeContext, aDevice, aProps, &anError);
   if (anError != CL_SUCCESS)
   {
     myComputeInitStatus = OpenGl_CLIS_FAIL;
@@ -1294,22 +1241,26 @@ void OpenGl_Workspace::ReleaseOpenCL()
   clReleaseKernel (myRaytraceSmoothKernel);
 
   clReleaseProgram (myRaytraceProgram);
-  clReleaseCommandQueue (myRaytraceQueue);
-
+  clReleaseCommandQueue (myComputeQueue);
+  
   clReleaseMemObject (myRaytraceOutputImage);
   clReleaseMemObject (myRaytraceEnvironment);
   clReleaseMemObject (myRaytraceOutputImageAA);
 
-  clReleaseMemObject (myRaytraceVertexBuffer);
-  clReleaseMemObject (myRaytraceNormalBuffer);
-  clReleaseMemObject (myRaytraceTriangleBuffer);
-
   clReleaseMemObject (myRaytraceMaterialBuffer);
   clReleaseMemObject (myRaytraceLightSourceBuffer);
 
-  clReleaseMemObject (myRaytraceNodeMinPointBuffer);
-  clReleaseMemObject (myRaytraceNodeMaxPointBuffer);
-  clReleaseMemObject (myRaytraceNodeDataRcrdBuffer);
+  clReleaseMemObject (mySceneNodeInfoBuffer);
+  clReleaseMemObject (mySceneMinPointBuffer);
+  clReleaseMemObject (mySceneMaxPointBuffer);
+
+  clReleaseMemObject (myObjectNodeInfoBuffer);
+  clReleaseMemObject (myObjectMinPointBuffer);
+  clReleaseMemObject (myObjectMaxPointBuffer);
+
+  clReleaseMemObject (myGeometryVertexBuffer);
+  clReleaseMemObject (myGeometryNormalBuffer);
+  clReleaseMemObject (myGeometryTriangBuffer);
 
   clReleaseContext (myComputeContext);
 
@@ -1401,445 +1352,589 @@ Standard_Boolean OpenGl_Workspace::ResizeRaytraceOutputBuffer (const cl_int theS
 
 // =======================================================================
 // function : WriteRaytraceSceneToDevice
-// purpose  : Writes scene geometry to OpenCl device
+// purpose  : Writes scene geometry to OpenCL device
 // =======================================================================
 Standard_Boolean OpenGl_Workspace::WriteRaytraceSceneToDevice()
 {
   if (myComputeContext == NULL)
     return Standard_False;
 
-  cl_int anError = CL_SUCCESS;
+  cl_int anErrorRes = CL_SUCCESS;
 
-  if (myRaytraceNormalBuffer != NULL)
-    anError |= clReleaseMemObject (myRaytraceNormalBuffer);
+  if (mySceneNodeInfoBuffer != NULL)
+    anErrorRes |= clReleaseMemObject (mySceneNodeInfoBuffer);
 
-  if (myRaytraceVertexBuffer != NULL)
-    anError |= clReleaseMemObject (myRaytraceVertexBuffer);
+  if (mySceneMinPointBuffer != NULL)
+    anErrorRes |= clReleaseMemObject (mySceneMinPointBuffer);
 
-  if (myRaytraceTriangleBuffer != NULL)
-    anError |= clReleaseMemObject (myRaytraceTriangleBuffer);
+  if (mySceneMaxPointBuffer != NULL)
+    anErrorRes |= clReleaseMemObject (mySceneMaxPointBuffer);
 
-  if (myRaytraceNodeMinPointBuffer != NULL)
-    anError |= clReleaseMemObject (myRaytraceNodeMinPointBuffer);
+  if (myObjectNodeInfoBuffer != NULL)
+    anErrorRes |= clReleaseMemObject (myObjectNodeInfoBuffer);
 
-  if (myRaytraceNodeMaxPointBuffer != NULL)
-    anError |= clReleaseMemObject (myRaytraceNodeMaxPointBuffer);
+  if (myObjectMinPointBuffer != NULL)
+    anErrorRes |= clReleaseMemObject (myObjectMinPointBuffer);
 
-  if (myRaytraceNodeDataRcrdBuffer != NULL)
-    anError |= clReleaseMemObject (myRaytraceNodeDataRcrdBuffer);
+  if (myObjectMaxPointBuffer != NULL)
+    anErrorRes |= clReleaseMemObject (myObjectMaxPointBuffer);
+
+  if (myGeometryVertexBuffer != NULL)
+    anErrorRes |= clReleaseMemObject (myGeometryVertexBuffer);
+
+  if (myGeometryNormalBuffer != NULL)
+    anErrorRes |= clReleaseMemObject (myGeometryNormalBuffer);
+
+  if (myGeometryTriangBuffer != NULL)
+    anErrorRes |= clReleaseMemObject (myGeometryTriangBuffer);
 
   if (myRaytraceMaterialBuffer != NULL)
-    anError |= clReleaseMemObject (myRaytraceMaterialBuffer);
+    anErrorRes |= clReleaseMemObject (myRaytraceMaterialBuffer);
 
-  if (anError != CL_SUCCESS)
+  if (anErrorRes != CL_SUCCESS)
   {
 #ifdef RAY_TRACE_PRINT_INFO
-    std::cout << "Error! Failed to release OpenCL scene buffers!" << std::endl;
+    std::cout << "Error! Failed to release OpenCL buffers" << std::endl;
 #endif
     return Standard_False;
   }
 
-  // Create geometry buffers
-  cl_int anErrorTemp = CL_SUCCESS;
-  const size_t myVertexBufferSize = myRaytraceSceneData.Vertices.size() > 0
-                                  ? myRaytraceSceneData.Vertices.size() : 1;
-
-  myRaytraceVertexBuffer = clCreateBuffer (myComputeContext, CL_MEM_READ_ONLY,
-                                           myVertexBufferSize * sizeof(cl_float4), NULL, &anErrorTemp);
-  anError |= anErrorTemp;
-
-  const size_t myNormalBufferSize = myRaytraceSceneData.Normals.size() > 0
-                                  ? myRaytraceSceneData.Normals.size() : 1;
-  myRaytraceNormalBuffer = clCreateBuffer (myComputeContext, CL_MEM_READ_ONLY,
-                                           myNormalBufferSize * sizeof(cl_float4), NULL, &anErrorTemp);
-  anError |= anErrorTemp;
-
-  const size_t myTriangleBufferSize = myRaytraceSceneData.Triangles.size() > 0
-                                    ? myRaytraceSceneData.Triangles.size() : 1;
-  myRaytraceTriangleBuffer = clCreateBuffer (myComputeContext, CL_MEM_READ_ONLY,
-                                             myTriangleBufferSize * sizeof(cl_int4), NULL, &anErrorTemp);
-  anError |= anErrorTemp;
-  if (anError != CL_SUCCESS)
-  {
-#ifdef RAY_TRACE_PRINT_INFO
-    std::cout << "Error! Failed to create OpenCL geometry buffers!" << std::endl;
-#endif
-    return Standard_False;
-  }
-
+  /////////////////////////////////////////////////////////////////////////////
   // Create material buffer
-  const size_t myMaterialBufferSize = myRaytraceSceneData.Materials.size() > 0
-                                    ? myRaytraceSceneData.Materials.size() : 1;
-  myRaytraceMaterialBuffer = clCreateBuffer (myComputeContext, CL_MEM_READ_ONLY,
-                                             myMaterialBufferSize * sizeof(OpenGl_RaytraceMaterial), NULL,
-                                             &anErrorTemp);
-  if (anErrorTemp != CL_SUCCESS)
+
+  const size_t aMaterialBufferSize =
+    myRaytraceGeometry.Materials.size() != 0 ? myRaytraceGeometry.Materials.size() : 1;
+
+  myRaytraceMaterialBuffer = clCreateBuffer (myComputeContext,
+    CL_MEM_READ_ONLY, aMaterialBufferSize * sizeof(OpenGl_RaytraceMaterial), NULL, &anErrorRes);
+
+  if (anErrorRes != CL_SUCCESS)
   {
 #ifdef RAY_TRACE_PRINT_INFO
-    std::cout << "Error! Failed to create OpenCL material buffer!" << std::endl;
+    std::cout << "Error! Failed to create OpenCL material buffer" << std::endl;
 #endif
     return Standard_False;
   }
 
-  // Create BVH buffers
-  OpenGl_BVH aTree = myBVHBuilder.Tree();
-  const size_t myNodeMinPointBufferSize = aTree.MinPointBuffer().size() > 0
-                                        ? aTree.MinPointBuffer().size() : 1;
-  myRaytraceNodeMinPointBuffer = clCreateBuffer (myComputeContext, CL_MEM_READ_ONLY,
-                                                 myNodeMinPointBufferSize * sizeof(cl_float4), NULL,
-                                                 &anErrorTemp);
-  anError |= anErrorTemp;
+  /////////////////////////////////////////////////////////////////////////////
+  // Create BVHs buffers
 
-  const size_t myNodeMaxPointBufferSize = aTree.MaxPointBuffer().size() > 0
-                                        ? aTree.MaxPointBuffer().size() : 1;
-  myRaytraceNodeMaxPointBuffer = clCreateBuffer (myComputeContext, CL_MEM_READ_ONLY,
-                                                 myNodeMaxPointBufferSize * sizeof(cl_float4), NULL,
-                                                 &anError);
-  anError |= anErrorTemp;
+  cl_int anErrorTmp = CL_SUCCESS;
 
-  const size_t myNodeDataRecordBufferSize = aTree.DataRcrdBuffer().size() > 0
-                                          ? aTree.DataRcrdBuffer().size() : 1;
-  myRaytraceNodeDataRcrdBuffer = clCreateBuffer (myComputeContext, CL_MEM_READ_ONLY,
-                                                 myNodeDataRecordBufferSize * sizeof(cl_int4), NULL,
-                                                 &anError);
-  anError |= anErrorTemp;
-  if (anError != CL_SUCCESS)
+  const NCollection_Handle<BVH_Tree<Standard_ShortReal, 4> >& aBVH = myRaytraceGeometry.BVH();
+  
+  const size_t aSceneMinPointBufferSize =
+    aBVH->MinPointBuffer().size() != 0 ? aBVH->MinPointBuffer().size() : 1;
+
+  mySceneMinPointBuffer = clCreateBuffer (myComputeContext,
+    CL_MEM_READ_ONLY, aSceneMinPointBufferSize * sizeof(cl_float4), NULL, &anErrorTmp);
+  anErrorRes |= anErrorTmp;
+
+  const size_t aSceneMaxPointBufferSize =
+    aBVH->MaxPointBuffer().size() != 0 ? aBVH->MaxPointBuffer().size() : 1;
+
+  mySceneMaxPointBuffer = clCreateBuffer (myComputeContext,
+    CL_MEM_READ_ONLY, aSceneMaxPointBufferSize * sizeof(cl_float4), NULL, &anErrorTmp);
+  anErrorRes |= anErrorTmp;
+
+  const size_t aSceneNodeInfoBufferSize =
+    aBVH->NodeInfoBuffer().size() != 0 ? aBVH->NodeInfoBuffer().size() : 1;
+
+  mySceneNodeInfoBuffer = clCreateBuffer (myComputeContext,
+    CL_MEM_READ_ONLY, aSceneNodeInfoBufferSize * sizeof(cl_int4), NULL, &anErrorTmp);
+  anErrorRes |= anErrorTmp;
+
+  if (anErrorRes != CL_SUCCESS)
   {
 #ifdef RAY_TRACE_PRINT_INFO
-    std::cout << "Error! Failed to create OpenCL BVH buffers!" << std::endl;
+    std::cout << "Error! Failed to create OpenCL buffers for high-level scene BVH" << std::endl;
 #endif
     return Standard_False;
   }
 
-  // Write scene geometry buffers
-  if (myRaytraceSceneData.Triangles.size() > 0)
+  Standard_Integer aTotalVerticesNb = 0;
+  Standard_Integer aTotalElementsNb = 0;
+  Standard_Integer aTotalBVHNodesNb = 0;
+
+  for (Standard_Integer anElemIndex = 0; anElemIndex < myRaytraceGeometry.Size(); ++anElemIndex)
   {
-    anError |= clEnqueueWriteBuffer (myRaytraceQueue, myRaytraceVertexBuffer, CL_FALSE,
-                                     0, myRaytraceSceneData.Vertices.size() * sizeof(cl_float4),
-                                     &myRaytraceSceneData.Vertices.front(),
-                                     0, NULL, NULL);
-    anError |= clEnqueueWriteBuffer (myRaytraceQueue, myRaytraceNormalBuffer, CL_FALSE,
-                                     0, myRaytraceSceneData.Normals.size() * sizeof(cl_float4),
-                                     &myRaytraceSceneData.Normals.front(),
-                                     0, NULL, NULL);
-    anError |= clEnqueueWriteBuffer (myRaytraceQueue, myRaytraceTriangleBuffer, CL_FALSE,
-                                     0, myRaytraceSceneData.Triangles.size() * sizeof(cl_int4),
-                                     &myRaytraceSceneData.Triangles.front(),
-                                     0, NULL, NULL);
-    if (anError != CL_SUCCESS)
-    {
-  #ifdef RAY_TRACE_PRINT_INFO
-      std::cout << "Error! Failed to write OpenCL geometry buffers!" << std::endl;
-  #endif
-      return Standard_False;
-    }
-  }
+    OpenGl_TriangleSet* aTriangleSet = dynamic_cast<OpenGl_TriangleSet*> (
+      myRaytraceGeometry.Objects().ChangeValue (anElemIndex).operator->());
 
-  // Write BVH buffers
-  if (aTree.DataRcrdBuffer().size() > 0)
+    Standard_ASSERT_RETURN (aTriangleSet != NULL,
+      "Error! Failed to get triangulation of OpenGL element", Standard_False);
+
+    aTotalVerticesNb += aTriangleSet->Vertices.size();
+    aTotalElementsNb += aTriangleSet->Elements.size();
+
+    Standard_ASSERT_RETURN (!aTriangleSet->BVH().IsNull(),
+      "Error! Failed to get bottom-level BVH of OpenGL element", Standard_False);
+
+    aTotalBVHNodesNb += aTriangleSet->BVH()->NodeInfoBuffer().size();
+  }
+  
+  aTotalBVHNodesNb = aTotalBVHNodesNb > 0 ? aTotalBVHNodesNb : 1;
+
+  myObjectNodeInfoBuffer = clCreateBuffer (myComputeContext,
+    CL_MEM_READ_ONLY, aTotalBVHNodesNb * sizeof(cl_int4), NULL, &anErrorTmp);
+  anErrorRes |= anErrorTmp;
+
+  myObjectMinPointBuffer = clCreateBuffer (myComputeContext,
+    CL_MEM_READ_ONLY, aTotalBVHNodesNb * sizeof(cl_float4), NULL, &anErrorTmp);
+  anErrorRes |= anErrorTmp;
+
+  myObjectMaxPointBuffer = clCreateBuffer (myComputeContext,
+    CL_MEM_READ_ONLY, aTotalBVHNodesNb * sizeof(cl_float4), NULL, &anErrorTmp);
+  anErrorRes |= anErrorTmp;
+
+  if (anErrorRes != CL_SUCCESS)
   {
-    anError |= clEnqueueWriteBuffer (myRaytraceQueue, myRaytraceNodeMinPointBuffer, CL_FALSE,
-                                     0, aTree.MinPointBuffer().size() * sizeof(cl_float4),
-                                     &aTree.MinPointBuffer().front(),
-                                     0, NULL, NULL);
-    anError |= clEnqueueWriteBuffer (myRaytraceQueue, myRaytraceNodeMaxPointBuffer, CL_FALSE,
-                                     0, aTree.MaxPointBuffer().size() * sizeof(cl_float4),
-                                     &aTree.MaxPointBuffer().front(),
-                                     0, NULL, NULL);
-    anError |= clEnqueueWriteBuffer (myRaytraceQueue, myRaytraceNodeDataRcrdBuffer, CL_FALSE,
-                                     0, aTree.DataRcrdBuffer().size() * sizeof(cl_int4),
-                                     &aTree.DataRcrdBuffer().front(),
-                                     0, NULL, NULL);
-    if (anError != CL_SUCCESS)
-    {
-  #ifdef RAY_TRACE_PRINT_INFO
-      std::cout << "Error! Failed to write OpenCL BVH buffers!" << std::endl;
-  #endif
-      return Standard_False;
-    }
-  }
-
-  // Write material buffers
-  if (myRaytraceSceneData.Materials.size() > 0)
-  {
-    const size_t aSize    = myRaytraceSceneData.Materials.size();
-    const void*  aDataPtr = myRaytraceSceneData.Materials.front().Packed();
-
-    anError |= clEnqueueWriteBuffer (myRaytraceQueue, myRaytraceMaterialBuffer, CL_FALSE,
-                                     0, aSize * sizeof(OpenGl_RaytraceMaterial), aDataPtr,
-                                     0, NULL, NULL);
-    if (anError != CL_SUCCESS)
-    {
-  #ifdef RAY_TRACE_PRINT_INFO
-      std::cout << "Error! Failed to write OpenCL material buffer!" << std::endl;
-  #endif
-      return Standard_False;
-    }
-  }
-
-  anError |= clFinish (myRaytraceQueue);
 #ifdef RAY_TRACE_PRINT_INFO
-  if (anError != CL_SUCCESS)
-    std::cout << "Error! Failed to set scene data buffers!" << std::endl;
+    std::cout << "Error! Failed to create OpenCL buffers for bottom-level scene BVHs" << std::endl;
+#endif
+    return Standard_False;
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Create geometry buffers
+
+  aTotalVerticesNb = aTotalVerticesNb > 0 ? aTotalVerticesNb : 1;
+
+  myGeometryVertexBuffer = clCreateBuffer (myComputeContext,
+    CL_MEM_READ_ONLY, aTotalVerticesNb * sizeof(cl_float4), NULL, &anErrorTmp);
+  anErrorRes |= anErrorTmp;
+
+  myGeometryNormalBuffer = clCreateBuffer (myComputeContext,
+    CL_MEM_READ_ONLY, aTotalVerticesNb * sizeof(cl_float4), NULL, &anErrorTmp);
+  anErrorRes |= anErrorTmp;
+
+  aTotalElementsNb = aTotalElementsNb > 0 ? aTotalElementsNb : 1;
+
+  myGeometryTriangBuffer = clCreateBuffer (myComputeContext,
+    CL_MEM_READ_ONLY, aTotalElementsNb * sizeof(cl_int4), NULL, &anErrorTmp);
+  anErrorRes |= anErrorTmp;
+
+  if (anErrorRes != CL_SUCCESS)
+  {
+#ifdef RAY_TRACE_PRINT_INFO
+    std::cout << "Error! Failed to create OpenCL geometry buffers" << std::endl;
+#endif
+    return Standard_False;
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Write BVH and geometry buffers
+
+  if (aBVH->NodeInfoBuffer().size() != 0)
+  {
+    anErrorRes |= clEnqueueWriteBuffer (myComputeQueue, mySceneNodeInfoBuffer, CL_FALSE, 0,
+      aSceneNodeInfoBufferSize * sizeof(cl_int4), &aBVH->NodeInfoBuffer().front(), 0, NULL, NULL);
+
+    anErrorRes |= clEnqueueWriteBuffer (myComputeQueue, mySceneMinPointBuffer, CL_FALSE, 0,
+      aSceneMinPointBufferSize * sizeof(cl_float4), &aBVH->MinPointBuffer().front(), 0, NULL, NULL);
+
+    anErrorRes |= clEnqueueWriteBuffer (myComputeQueue, mySceneMaxPointBuffer, CL_FALSE, 0,
+      aSceneMaxPointBufferSize * sizeof(cl_float4), &aBVH->MaxPointBuffer().front(), 0, NULL, NULL);
+
+    anErrorRes |= clFinish (myComputeQueue);
+
+    if (anErrorRes != CL_SUCCESS)
+    {
+#ifdef RAY_TRACE_PRINT_INFO
+      std::cout << "Error! Failed to write OpenCL buffers for high-level scene BVH" << std::endl;
+#endif
+      return Standard_False;
+    }
+
+    for (Standard_Integer aNodeIdx = 0; aNodeIdx < aBVH->Length(); ++aNodeIdx)
+    {
+      if (!aBVH->IsOuter (aNodeIdx))
+        continue;
+
+      OpenGl_TriangleSet* aTriangleSet = myRaytraceGeometry.TriangleSet (aNodeIdx);
+
+      Standard_ASSERT_RETURN (aTriangleSet != NULL,
+        "Error! Failed to get triangulation of OpenGL element", Standard_False);
+
+      const size_t aBVHBuffserSize =
+        aTriangleSet->BVH()->NodeInfoBuffer().size() != 0 ? aTriangleSet->BVH()->NodeInfoBuffer().size() : 1;
+
+      const Standard_Integer aBVHOffset = myRaytraceGeometry.AccelerationOffset (aNodeIdx);
+
+      Standard_ASSERT_RETURN (aBVHOffset != OpenGl_RaytraceGeometry::INVALID_OFFSET,
+        "Error! Failed to get offset for bottom-level BVH", Standard_False);
+
+      anErrorRes |= clEnqueueWriteBuffer (myComputeQueue, myObjectNodeInfoBuffer, CL_FALSE, aBVHOffset * sizeof(cl_int4),
+        aBVHBuffserSize * sizeof(cl_int4), &aTriangleSet->BVH()->NodeInfoBuffer().front(), 0, NULL, NULL);
+
+      anErrorRes |= clEnqueueWriteBuffer (myComputeQueue, myObjectMinPointBuffer, CL_FALSE, aBVHOffset * sizeof(cl_float4),
+        aBVHBuffserSize * sizeof(cl_float4), &aTriangleSet->BVH()->MinPointBuffer().front(), 0, NULL, NULL);
+
+      anErrorRes |= clEnqueueWriteBuffer (myComputeQueue, myObjectMaxPointBuffer, CL_FALSE, aBVHOffset * sizeof(cl_float4),
+        aBVHBuffserSize * sizeof(cl_float4), &aTriangleSet->BVH()->MaxPointBuffer().front(), 0, NULL, NULL);
+
+      anErrorRes |= clFinish (myComputeQueue);
+
+      if (anErrorRes != CL_SUCCESS)
+      {
+#ifdef RAY_TRACE_PRINT_INFO
+        std::cout << "Error! Failed to write OpenCL buffers for bottom-level scene BVHs" << std::endl;
+#endif
+        return Standard_False;
+      }
+
+      const Standard_Integer aVerticesOffset = myRaytraceGeometry.VerticesOffset (aNodeIdx);
+
+      Standard_ASSERT_RETURN (aVerticesOffset != OpenGl_RaytraceGeometry::INVALID_OFFSET,
+        "Error! Failed to get offset for triangulation vertices of OpenGL element", Standard_False);
+
+      anErrorRes |= clEnqueueWriteBuffer (myComputeQueue, myGeometryVertexBuffer, CL_FALSE, aVerticesOffset * sizeof(cl_float4),
+        aTriangleSet->Vertices.size() * sizeof(cl_float4), &aTriangleSet->Vertices.front(), 0, NULL, NULL);
+
+      anErrorRes |= clEnqueueWriteBuffer (myComputeQueue, myGeometryNormalBuffer, CL_FALSE, aVerticesOffset * sizeof(cl_float4),
+        aTriangleSet->Normals.size() * sizeof(cl_float4), &aTriangleSet->Normals.front(), 0, NULL, NULL);
+
+      const Standard_Integer anElementsOffset = myRaytraceGeometry.ElementsOffset (aNodeIdx);
+
+      Standard_ASSERT_RETURN (anElementsOffset != OpenGl_RaytraceGeometry::INVALID_OFFSET,
+        "Error! Failed to get offset for triangulation elements of OpenGL element", Standard_False);
+
+      anErrorRes |= clEnqueueWriteBuffer (myComputeQueue, myGeometryTriangBuffer, CL_FALSE, anElementsOffset * sizeof(cl_int4),
+        aTriangleSet->Elements.size() * sizeof(cl_int4), &aTriangleSet->Elements.front(), 0, NULL, NULL);
+
+      anErrorRes |= clFinish (myComputeQueue);
+
+      if (anErrorRes != CL_SUCCESS)
+      {
+#ifdef RAY_TRACE_PRINT_INFO
+        std::cout << "Error! Failed to write OpenCL triangulation buffers for OpenGL element" << std::endl;
+#endif
+        return Standard_False;
+      }
+    }
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Write material buffer
+
+  if (myRaytraceGeometry.Materials.size() != 0)
+  {
+    const void* aDataPtr = myRaytraceGeometry.Materials.front().Packed();
+
+    anErrorRes |= clEnqueueWriteBuffer (myComputeQueue, myRaytraceMaterialBuffer,
+      CL_FALSE, 0, aMaterialBufferSize * sizeof(OpenGl_RaytraceMaterial), aDataPtr, 0, NULL, NULL);
+
+    if (anErrorRes != CL_SUCCESS)
+    {
+  #ifdef RAY_TRACE_PRINT_INFO
+      std::cout << "Error! Failed to write OpenCL material buffer" << std::endl;
+  #endif
+      return Standard_False;
+    }
+  }
+
+  anErrorRes |= clFinish (myComputeQueue);
+
+  if (anErrorRes == CL_SUCCESS)
+  {
+    myIsRaytraceDataValid = myRaytraceGeometry.Objects().Size() != 0;
+  }
+#ifdef RAY_TRACE_PRINT_INFO
+  else
+  {
+    std::cout << "Error! Failed to set scene data buffers" << std::endl;
+  }
 #endif
 
-  if (anError == CL_SUCCESS)
-    myIsRaytraceDataValid = myRaytraceSceneData.Triangles.size() > 0;
-
 #ifdef RAY_TRACE_PRINT_INFO
+  
+  Standard_ShortReal aMemUsed = 0.f;
+  
+  for (Standard_Integer anElemIdx = 0; anElemIdx < myRaytraceGeometry.Size(); ++anElemIdx)
+  {
+    OpenGl_TriangleSet* aTriangleSet = dynamic_cast<OpenGl_TriangleSet*> (
+      myRaytraceGeometry.Objects().ChangeValue (anElemIdx).operator->());
 
-  float aMemUsed = static_cast<float> (
-    myRaytraceSceneData.Materials.size()) * sizeof (OpenGl_RaytraceMaterial);
+    aMemUsed += static_cast<Standard_ShortReal> (
+      aTriangleSet->Vertices.size() * sizeof (BVH_Vec4f));
+    aMemUsed += static_cast<Standard_ShortReal> (
+      aTriangleSet->Normals.size() * sizeof (BVH_Vec4f));
+    aMemUsed += static_cast<Standard_ShortReal> (
+      aTriangleSet->Elements.size() * sizeof (BVH_Vec4i));
 
-  aMemUsed += static_cast<float> (
-    myRaytraceSceneData.Triangles.size() * sizeof (OpenGl_RTVec4i) +
-    myRaytraceSceneData.Vertices.size()  * sizeof (OpenGl_RTVec4f) +
-    myRaytraceSceneData.Normals.size()   * sizeof (OpenGl_RTVec4f));
+    aMemUsed += static_cast<Standard_ShortReal> (
+      aTriangleSet->BVH()->NodeInfoBuffer().size() * sizeof (BVH_Vec4i));
+    aMemUsed += static_cast<Standard_ShortReal> (
+      aTriangleSet->BVH()->MinPointBuffer().size() * sizeof (BVH_Vec4f));
+    aMemUsed += static_cast<Standard_ShortReal> (
+      aTriangleSet->BVH()->MaxPointBuffer().size() * sizeof (BVH_Vec4f));
+  }
+  
+  aMemUsed += static_cast<Standard_ShortReal> (
+    myRaytraceGeometry.BVH()->NodeInfoBuffer().size() * sizeof (BVH_Vec4i));
+  aMemUsed += static_cast<Standard_ShortReal> (
+    myRaytraceGeometry.BVH()->MinPointBuffer().size() * sizeof (BVH_Vec4f));
+  aMemUsed += static_cast<Standard_ShortReal> (
+    myRaytraceGeometry.BVH()->MaxPointBuffer().size() * sizeof (BVH_Vec4f));
 
-  aMemUsed += static_cast<float> (
-    aTree.MinPointBuffer().size() * sizeof (OpenGl_RTVec4f) +
-    aTree.MaxPointBuffer().size() * sizeof (OpenGl_RTVec4f) +
-    aTree.DataRcrdBuffer().size() * sizeof (OpenGl_RTVec4i));
-
-  std::cout << "GPU memory used (Mb): " << aMemUsed / 1e6f << std::endl;
+  std::cout << "GPU Memory Used (MB): ~" << aMemUsed / 1048576 << std::endl;
 
 #endif
 
-  myRaytraceSceneData.Clear();
-
-  myBVHBuilder.CleanUp();
-
-  return (CL_SUCCESS == anError);
+  return (CL_SUCCESS == anErrorRes);
 }
 
-#define OPENCL_GROUP_SIZE_TEST_
+// Use it to estimate the optimal size of OpenCL work group
+// #define OPENCL_GROUP_SIZE_TEST
 
 // =======================================================================
 // function : RunRaytraceOpenCLKernels
 // purpose  : Runs OpenCL ray-tracing kernels
 // =======================================================================
-Standard_Boolean OpenGl_Workspace::RunRaytraceOpenCLKernels (const Graphic3d_CView& theCView,
-                                                             const GLfloat          theOrigins[16],
-                                                             const GLfloat          theDirects[16],
-                                                             const Standard_Integer theSizeX,
-                                                             const Standard_Integer theSizeY)
+Standard_Boolean OpenGl_Workspace::RunRaytraceOpenCLKernels (const Graphic3d_CView&   theCView,
+                                                             const Standard_ShortReal theOrigins[16],
+                                                             const Standard_ShortReal theDirects[16],
+                                                             const Standard_Integer   theSizeX,
+                                                             const Standard_Integer   theSizeY)
 {
-  if (myRaytraceRenderKernel == NULL || myRaytraceQueue == NULL)
+  if (myRaytraceRenderKernel == NULL || myComputeQueue == NULL)
     return Standard_False;
 
-  ////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////
   // Set kernel arguments
 
   cl_uint anIndex = 0;
   cl_int  anError = 0;
 
-  anError  = clSetKernelArg (myRaytraceRenderKernel, anIndex++,
-                             sizeof(cl_mem), &myRaytraceOutputImage);
-  anError |= clSetKernelArg (myRaytraceRenderKernel, anIndex++,
-                             sizeof(cl_mem), &myRaytraceEnvironment);
-  anError |= clSetKernelArg (myRaytraceRenderKernel, anIndex++,
-                             sizeof(cl_mem), &myRaytraceNodeMinPointBuffer);
-  anError |= clSetKernelArg (myRaytraceRenderKernel, anIndex++,
-                             sizeof(cl_mem), &myRaytraceNodeMaxPointBuffer);
-  anError |= clSetKernelArg (myRaytraceRenderKernel, anIndex++,
-                             sizeof(cl_mem), &myRaytraceNodeDataRcrdBuffer);
-  anError |= clSetKernelArg (myRaytraceRenderKernel, anIndex++,
-                             sizeof(cl_mem), &myRaytraceLightSourceBuffer);
-  anError |= clSetKernelArg (myRaytraceRenderKernel, anIndex++,
-                             sizeof(cl_mem), &myRaytraceMaterialBuffer);
-  anError |= clSetKernelArg (myRaytraceRenderKernel, anIndex++,
-                             sizeof(cl_mem), &myRaytraceVertexBuffer);
-  anError |= clSetKernelArg (myRaytraceRenderKernel, anIndex++,
-                             sizeof(cl_mem), &myRaytraceNormalBuffer);
-  anError |= clSetKernelArg (myRaytraceRenderKernel, anIndex++,
-                             sizeof(cl_mem), &myRaytraceTriangleBuffer);
+  cl_int aLightSourceBufferSize = myRaytraceGeometry.Sources.size();
 
-  anError |= clSetKernelArg (myRaytraceRenderKernel, anIndex++,
-                             sizeof(cl_float16), theOrigins);
-  anError |= clSetKernelArg (myRaytraceRenderKernel, anIndex++,
-                             sizeof(cl_float16), theDirects);
+  anError |= clSetKernelArg (
+    myRaytraceRenderKernel, anIndex++, sizeof(cl_int), &theSizeX);
+  anError |= clSetKernelArg (
+    myRaytraceRenderKernel, anIndex++, sizeof(cl_int), &theSizeY);
+  anError |= clSetKernelArg (
+    myRaytraceRenderKernel, anIndex++, sizeof(cl_float16), theOrigins);
+  anError |= clSetKernelArg (
+    myRaytraceRenderKernel, anIndex++, sizeof(cl_float16), theDirects);
+  anError |= clSetKernelArg (
+    myRaytraceRenderKernel, anIndex++, sizeof(cl_mem), &myRaytraceEnvironment);
+  anError |= clSetKernelArg (
+    myRaytraceRenderKernel, anIndex++, sizeof(cl_mem), &myRaytraceOutputImage);
+  anError |= clSetKernelArg (
+    myRaytraceRenderKernel, anIndex++, sizeof(cl_mem), &mySceneNodeInfoBuffer);
+  anError |= clSetKernelArg (
+    myRaytraceRenderKernel, anIndex++, sizeof(cl_mem), &mySceneMinPointBuffer);
+  anError |= clSetKernelArg (
+    myRaytraceRenderKernel, anIndex++, sizeof(cl_mem), &mySceneMaxPointBuffer);
+  anError |= clSetKernelArg (
+    myRaytraceRenderKernel, anIndex++, sizeof(cl_mem), &myObjectNodeInfoBuffer);
+  anError |= clSetKernelArg (
+    myRaytraceRenderKernel, anIndex++, sizeof(cl_mem), &myObjectMinPointBuffer);
+  anError |= clSetKernelArg (
+    myRaytraceRenderKernel, anIndex++, sizeof(cl_mem), &myObjectMaxPointBuffer);
+  anError |= clSetKernelArg (
+    myRaytraceRenderKernel, anIndex++, sizeof(cl_mem), &myGeometryTriangBuffer);
+  anError |= clSetKernelArg (
+    myRaytraceRenderKernel, anIndex++, sizeof(cl_mem), &myGeometryVertexBuffer);
+  anError |= clSetKernelArg (
+    myRaytraceRenderKernel, anIndex++, sizeof(cl_mem), &myGeometryNormalBuffer);
+  anError |= clSetKernelArg (
+    myRaytraceRenderKernel, anIndex++, sizeof(cl_mem), &myRaytraceLightSourceBuffer);
+  anError |= clSetKernelArg (
+    myRaytraceRenderKernel, anIndex++, sizeof(cl_mem), &myRaytraceMaterialBuffer);
+  anError |= clSetKernelArg (
+    myRaytraceRenderKernel, anIndex++, sizeof(cl_float4), &myRaytraceGeometry.GlobalAmbient);
+  anError |= clSetKernelArg (
+    myRaytraceRenderKernel, anIndex++, sizeof(cl_int), &aLightSourceBufferSize);
+  anError |= clSetKernelArg (
+    myRaytraceRenderKernel, anIndex++, sizeof(cl_int), &theCView.IsShadowsEnabled);
+  anError |= clSetKernelArg (
+    myRaytraceRenderKernel, anIndex++, sizeof(cl_int), &theCView.IsReflectionsEnabled);
+  anError |= clSetKernelArg (
+    myRaytraceRenderKernel, anIndex++, sizeof(cl_float), &myRaytraceSceneEpsilon);
+  anError |= clSetKernelArg (
+    myRaytraceRenderKernel, anIndex++, sizeof(cl_float), &myRaytraceSceneRadius);
 
-  cl_int aLightCount =  static_cast<cl_int> (myRaytraceSceneData.LightSources.size());
-
-  anError |= clSetKernelArg (myRaytraceRenderKernel, anIndex++,
-                             sizeof(cl_int),   &aLightCount);
-  anError |= clSetKernelArg (myRaytraceRenderKernel, anIndex++,
-                             sizeof(cl_float), &myRaytraceSceneEpsilon);
-  anError |= clSetKernelArg (myRaytraceRenderKernel, anIndex++,
-                             sizeof(cl_float), &myRaytraceSceneRadius);
-  anError |= clSetKernelArg (myRaytraceRenderKernel, anIndex++,
-                             sizeof(cl_int),   &theCView.IsShadowsEnabled);
-  anError |= clSetKernelArg (myRaytraceRenderKernel, anIndex++,
-                             sizeof(cl_int),   &theCView.IsReflectionsEnabled);
-  anError |= clSetKernelArg (myRaytraceRenderKernel, anIndex++,
-                             sizeof(cl_int),   &theSizeX);
-  anError |= clSetKernelArg (myRaytraceRenderKernel, anIndex++,
-                             sizeof(cl_int),   &theSizeY);
   if (anError != CL_SUCCESS)
   {
-    const TCollection_ExtendedString aMsg = "Error! Failed to set arguments of ray-tracing kernel!";
+    const TCollection_ExtendedString aMessage = "Error! Failed to set arguments of ray-tracing kernel!";
+    
     myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                              GL_DEBUG_TYPE_ERROR_ARB,
-                              0,
-                              GL_DEBUG_SEVERITY_HIGH_ARB,
-                              aMsg);
+      GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB, aMessage);
+
     return Standard_False;
   }
 
-  // Note: second-pass 'smoothing' kernel runs only if anti-aliasing is enabled
+  // Second-pass 'smoothing' kernel runs only if anti-aliasing is enabled
   if (theCView.IsAntialiasingEnabled)
   {
     anIndex = 0;
-    anError  = clSetKernelArg (myRaytraceSmoothKernel, anIndex++,
-                               sizeof(cl_mem), &myRaytraceOutputImage);
-    anError |= clSetKernelArg (myRaytraceSmoothKernel, anIndex++,
-                               sizeof(cl_mem), &myRaytraceOutputImageAA);
-    anError |= clSetKernelArg (myRaytraceSmoothKernel, anIndex++,
-                               sizeof(cl_mem), &myRaytraceEnvironment);
-    anError |= clSetKernelArg (myRaytraceSmoothKernel, anIndex++,
-                               sizeof(cl_mem), &myRaytraceNodeMinPointBuffer);
-    anError |= clSetKernelArg (myRaytraceSmoothKernel, anIndex++,
-                               sizeof(cl_mem), &myRaytraceNodeMaxPointBuffer);
-    anError |= clSetKernelArg (myRaytraceSmoothKernel, anIndex++,
-                               sizeof(cl_mem), &myRaytraceNodeDataRcrdBuffer);
-    anError |= clSetKernelArg (myRaytraceSmoothKernel, anIndex++,
-                               sizeof(cl_mem), &myRaytraceLightSourceBuffer);
-    anError |= clSetKernelArg (myRaytraceSmoothKernel, anIndex++,
-                               sizeof(cl_mem), &myRaytraceMaterialBuffer);
-    anError |= clSetKernelArg (myRaytraceSmoothKernel, anIndex++,
-                               sizeof(cl_mem), &myRaytraceVertexBuffer);
-    anError |= clSetKernelArg (myRaytraceSmoothKernel, anIndex++,
-                               sizeof(cl_mem), &myRaytraceNormalBuffer);
-    anError |= clSetKernelArg (myRaytraceSmoothKernel, anIndex++,
-                               sizeof(cl_mem), &myRaytraceTriangleBuffer);
 
-    anError |= clSetKernelArg (myRaytraceSmoothKernel, anIndex++,
-                               sizeof(cl_float16), theOrigins);
-    anError |= clSetKernelArg (myRaytraceSmoothKernel, anIndex++,
-                                sizeof(cl_float16), theDirects);
+    anError |= clSetKernelArg (
+      myRaytraceSmoothKernel, anIndex++, sizeof(cl_int), &theSizeX);
+    anError |= clSetKernelArg (
+      myRaytraceSmoothKernel, anIndex++, sizeof(cl_int), &theSizeY);
+    anError |= clSetKernelArg (
+      myRaytraceSmoothKernel, anIndex++, sizeof(cl_float16), theOrigins);
+    anError |= clSetKernelArg (
+      myRaytraceSmoothKernel, anIndex++, sizeof(cl_float16), theDirects);
+    anError |= clSetKernelArg (
+      myRaytraceSmoothKernel, anIndex++, sizeof(cl_mem), &myRaytraceOutputImage);
+    anError |= clSetKernelArg (
+      myRaytraceSmoothKernel, anIndex++, sizeof(cl_mem), &myRaytraceEnvironment);
+    anError |= clSetKernelArg (
+      myRaytraceSmoothKernel, anIndex++, sizeof(cl_mem), &myRaytraceOutputImageAA);
+    anError |= clSetKernelArg (
+      myRaytraceSmoothKernel, anIndex++, sizeof(cl_mem), &mySceneNodeInfoBuffer);
+    anError |= clSetKernelArg (
+      myRaytraceSmoothKernel, anIndex++, sizeof(cl_mem), &mySceneMinPointBuffer);
+    anError |= clSetKernelArg (
+      myRaytraceSmoothKernel, anIndex++, sizeof(cl_mem), &mySceneMaxPointBuffer);
+    anError |= clSetKernelArg (
+      myRaytraceSmoothKernel, anIndex++, sizeof(cl_mem), &myObjectNodeInfoBuffer);
+    anError |= clSetKernelArg (
+      myRaytraceSmoothKernel, anIndex++, sizeof(cl_mem), &myObjectMinPointBuffer);
+    anError |= clSetKernelArg (
+      myRaytraceSmoothKernel, anIndex++, sizeof(cl_mem), &myObjectMaxPointBuffer);
+    anError |= clSetKernelArg (
+      myRaytraceSmoothKernel, anIndex++, sizeof(cl_mem), &myGeometryTriangBuffer);
+    anError |= clSetKernelArg (
+      myRaytraceSmoothKernel, anIndex++, sizeof(cl_mem), &myGeometryVertexBuffer);
+    anError |= clSetKernelArg (
+      myRaytraceSmoothKernel, anIndex++, sizeof(cl_mem), &myGeometryNormalBuffer);
+    anError |= clSetKernelArg (
+      myRaytraceSmoothKernel, anIndex++, sizeof(cl_mem), &myRaytraceLightSourceBuffer);
+    anError |= clSetKernelArg (
+      myRaytraceSmoothKernel, anIndex++, sizeof(cl_mem), &myRaytraceMaterialBuffer);
+    anError |= clSetKernelArg (
+      myRaytraceSmoothKernel, anIndex++, sizeof(cl_float4), &myRaytraceGeometry.GlobalAmbient);
+    anError |= clSetKernelArg (
+      myRaytraceSmoothKernel, anIndex++, sizeof(cl_int), &aLightSourceBufferSize);
+    anError |= clSetKernelArg (
+      myRaytraceSmoothKernel, anIndex++, sizeof(cl_int), &theCView.IsShadowsEnabled);
+    anError |= clSetKernelArg (
+      myRaytraceSmoothKernel, anIndex++, sizeof(cl_int), &theCView.IsReflectionsEnabled);
+    anError |= clSetKernelArg (
+      myRaytraceSmoothKernel, anIndex++, sizeof(cl_float), &myRaytraceSceneEpsilon);
+    anError |= clSetKernelArg (
+      myRaytraceSmoothKernel, anIndex++, sizeof(cl_float), &myRaytraceSceneRadius);
 
-    anError |= clSetKernelArg (myRaytraceSmoothKernel, anIndex++,
-                               sizeof(cl_int),   &aLightCount);
-    anError |= clSetKernelArg (myRaytraceSmoothKernel, anIndex++,
-                               sizeof(cl_float), &myRaytraceSceneEpsilon);
-    anError |= clSetKernelArg (myRaytraceSmoothKernel, anIndex++,
-                               sizeof(cl_float), &myRaytraceSceneRadius);
-    anError |= clSetKernelArg (myRaytraceSmoothKernel, anIndex++,
-                               sizeof(cl_int),   &theCView.IsShadowsEnabled);
-    anError |= clSetKernelArg (myRaytraceSmoothKernel, anIndex++,
-                               sizeof(cl_int),   &theCView.IsReflectionsEnabled);
-    anError |= clSetKernelArg (myRaytraceSmoothKernel, anIndex++,
-                               sizeof(cl_int),   &theSizeX);
-    anError |= clSetKernelArg (myRaytraceSmoothKernel, anIndex++,
-                               sizeof(cl_int),   &theSizeY);
     if (anError != CL_SUCCESS)
     {
-      const TCollection_ExtendedString aMsg = "Error! Failed to set arguments of 'smoothing' kernel!";
+      const TCollection_ExtendedString aMessage = "Error! Failed to set arguments of smoothing kernel!";
+
       myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                                GL_DEBUG_TYPE_ERROR_ARB,
-                                0,
-                                GL_DEBUG_SEVERITY_HIGH_ARB,
-                                aMsg);
+        GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB, aMessage);
+
       return Standard_False;
     }
   }
 
+  ////////////////////////////////////////////////////////////////////////
   // Set work size
-  size_t aLocSizeRender[] = { myIsAmdComputePlatform ? 2 : 4, 32 };
+
+  size_t aLocWorkSize[] = { myIsAmdComputePlatform ? 2 : 4, 32 };
 
 #ifdef OPENCL_GROUP_SIZE_TEST
-  for (size_t aLocX = 2; aLocX <= 32; aLocX <<= 1 )
-  for (size_t aLocY = 2; aLocY <= 32; aLocY <<= 1 )
-#endif
+  for (size_t aLocX = 2; aLocX <= 32; aLocX <<= 1)
+  for (size_t aLocY = 2; aLocY <= 32; aLocY <<= 1)
   {
-#ifdef OPENCL_GROUP_SIZE_TEST
-    aLocSizeRender[0] = aLocX;
-    aLocSizeRender[1] = aLocY;
+    aLocWorkSize[0] = aLocX;
+    aLocWorkSize[1] = aLocY;
 #endif
 
     size_t aWorkSizeX = theSizeX;
-    if (aWorkSizeX % aLocSizeRender[0] != 0)
-      aWorkSizeX += aLocSizeRender[0] - aWorkSizeX % aLocSizeRender[0];
+    if (aWorkSizeX % aLocWorkSize[0] != 0)
+      aWorkSizeX += aLocWorkSize[0] - aWorkSizeX % aLocWorkSize[0];
 
     size_t aWokrSizeY = theSizeY;
-    if (aWokrSizeY % aLocSizeRender[1] != 0 )
-      aWokrSizeY += aLocSizeRender[1] - aWokrSizeY % aLocSizeRender[1];
+    if (aWokrSizeY % aLocWorkSize[1] != 0 )
+      aWokrSizeY += aLocWorkSize[1] - aWokrSizeY % aLocWorkSize[1];
 
-    size_t aGlbSizeRender[] = { aWorkSizeX, aWokrSizeY };
+    size_t aTotWorkSize[] = { aWorkSizeX, aWokrSizeY };
 
-    // Run kernel
-    cl_event anEvent (NULL), anEventSmooth (NULL);
-    anError = clEnqueueNDRangeKernel (myRaytraceQueue, myRaytraceRenderKernel,
-                                      2, NULL, aGlbSizeRender, aLocSizeRender,
-                                      0, NULL, &anEvent);
+    cl_event anEvent = NULL, anEventSmooth = NULL;
+
+    anError = clEnqueueNDRangeKernel (myComputeQueue,
+      myRaytraceRenderKernel, 2, NULL, aTotWorkSize, aLocWorkSize, 0, NULL, &anEvent);
+
     if (anError != CL_SUCCESS)
     {
-      const TCollection_ExtendedString aMsg = "Error! Failed to execute the ray-tracing kernel!";
+      const TCollection_ExtendedString aMessage = "Error! Failed to execute the ray-tracing kernel!";
+
       myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                                GL_DEBUG_TYPE_ERROR_ARB,
-                                0,
-                                GL_DEBUG_SEVERITY_HIGH_ARB,
-                                aMsg);
+        GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB, aMessage);
+
       return Standard_False;
     }
+
     clWaitForEvents (1, &anEvent);
 
     if (theCView.IsAntialiasingEnabled)
     {
-      size_t aLocSizeSmooth[] = { myIsAmdComputePlatform ? 8 : 4,
-                                  myIsAmdComputePlatform ? 8 : 32 };
+      size_t aLocWorkSizeSmooth[] = { myIsAmdComputePlatform ? 8 : 4,
+                                      myIsAmdComputePlatform ? 8 : 32 };
 
 #ifdef OPENCL_GROUP_SIZE_TEST
-      aLocSizeSmooth[0] = aLocX;
-      aLocSizeSmooth[1] = aLocY;
+      aLocWorkSizeSmooth[0] = aLocX;
+      aLocWorkSizeSmooth[1] = aLocY;
 #endif
 
       aWorkSizeX = theSizeX;
-      if (aWorkSizeX % aLocSizeSmooth[0] != 0)
-        aWorkSizeX += aLocSizeSmooth[0] - aWorkSizeX % aLocSizeSmooth[0];
+      if (aWorkSizeX % aLocWorkSizeSmooth[0] != 0)
+        aWorkSizeX += aLocWorkSizeSmooth[0] - aWorkSizeX % aLocWorkSizeSmooth[0];
 
       size_t aWokrSizeY = theSizeY;
-      if (aWokrSizeY % aLocSizeSmooth[1] != 0 )
-        aWokrSizeY += aLocSizeSmooth[1] - aWokrSizeY % aLocSizeSmooth[1];
+      if (aWokrSizeY % aLocWorkSizeSmooth[1] != 0 )
+        aWokrSizeY += aLocWorkSizeSmooth[1] - aWokrSizeY % aLocWorkSizeSmooth[1];
 
-      size_t aGlbSizeSmooth [] = { aWorkSizeX, aWokrSizeY };
-      anError = clEnqueueNDRangeKernel (myRaytraceQueue, myRaytraceSmoothKernel,
-                                        2, NULL, aGlbSizeSmooth, aLocSizeSmooth,
-                                        0, NULL, &anEventSmooth);
+      size_t aTotWorkSizeSmooth [] = { aWorkSizeX, aWokrSizeY };
+
+      anError = clEnqueueNDRangeKernel (myComputeQueue, myRaytraceSmoothKernel,
+        2, NULL, aTotWorkSizeSmooth, aLocWorkSizeSmooth, 0, NULL, &anEventSmooth);
+
       clWaitForEvents (1, &anEventSmooth);
 
       if (anError != CL_SUCCESS)
       {
-        const TCollection_ExtendedString aMsg = "Error! Failed to execute the 'smoothing' kernel!";
+        const TCollection_ExtendedString aMessage = "Error! Failed to execute the smoothing kernel";
+
         myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
-                                  GL_DEBUG_TYPE_ERROR_ARB,
-                                  0,
-                                  GL_DEBUG_SEVERITY_HIGH_ARB,
-                                  aMsg);
+          GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB, aMessage);
+
         return Standard_False;
       }
     }
 
-    // Get the profiling data
-#if defined (RAY_TRACE_PRINT_INFO) || defined(OPENCL_GROUP_SIZE_TEST)
+#if defined (RAY_TRACE_PRINT_INFO) || defined (OPENCL_GROUP_SIZE_TEST)
 
-    cl_ulong aTimeStart,
-             aTimeFinal;
+    static cl_ulong ttt1 = 10000000000;
+    static cl_ulong ttt2 = 10000000000;
 
-    clGetEventProfilingInfo (anEvent, CL_PROFILING_COMMAND_START,
-                             sizeof(aTimeStart), &aTimeStart, NULL);
-    clGetEventProfilingInfo (anEvent, CL_PROFILING_COMMAND_END,
-                             sizeof(aTimeFinal), &aTimeFinal, NULL);
-    std::cout << "\tRender time (ms): " << ( aTimeFinal - aTimeStart ) / 1e6f << std::endl;
+    cl_ulong aBegTime = 0;
+    cl_ulong aEndTime = 0;
+
+    clGetEventProfilingInfo (anEvent,
+      CL_PROFILING_COMMAND_START, sizeof(aBegTime), &aBegTime, NULL);
+    clGetEventProfilingInfo (anEvent,
+      CL_PROFILING_COMMAND_END, sizeof(aEndTime), &aEndTime, NULL);
+
+    ttt1 = aEndTime - aBegTime < ttt1 ? aEndTime - aBegTime : ttt1;
+
+    std::cout << "\tRender time (ms): " << ttt1 / 1e6f << std::endl;
 
     if (theCView.IsAntialiasingEnabled)
     {
-      clGetEventProfilingInfo (anEventSmooth, CL_PROFILING_COMMAND_START,
-                               sizeof(aTimeStart), &aTimeStart, NULL);
-      clGetEventProfilingInfo (anEventSmooth, CL_PROFILING_COMMAND_END,
-                               sizeof(aTimeFinal), &aTimeFinal, NULL);
-      std::cout << "\tSmoothing time (ms): " << ( aTimeFinal - aTimeStart ) / 1e6f << std::endl;
+      clGetEventProfilingInfo (anEventSmooth,
+        CL_PROFILING_COMMAND_START, sizeof(aBegTime), &aBegTime, NULL);
+      clGetEventProfilingInfo (anEventSmooth,
+        CL_PROFILING_COMMAND_END, sizeof(aEndTime), &aEndTime, NULL);
+
+      ttt2 = aEndTime - aBegTime < ttt2 ? aEndTime - aBegTime : ttt2;
+
+      std::cout << "\tSmooth time (ms): " << ttt2 / 1e6f << std::endl;
     }
+
 #endif
 
     if (anEvent != NULL)
@@ -1847,7 +1942,10 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceOpenCLKernels (const Graphic3d_CVi
 
     if (anEventSmooth != NULL)
       clReleaseEvent (anEventSmooth);
+
+#ifdef OPENCL_GROUP_SIZE_TEST
   }
+#endif
 
   return Standard_True;
 }
@@ -1951,10 +2049,10 @@ void GenerateCornerRays (const GLdouble theInvModelProj[16],
   {
     for (Standard_Integer x = -1; x <= 1; x += 2)
     {
-      OpenGl_RTVec4f aOrigin (float(x),
-                              float(y),
-                              -1.f,
-                              1.f);
+      BVH_Vec4f aOrigin (float(x),
+                         float(y),
+                         -1.f,
+                         1.f);
 
       aOrigin = MatVecMult (theInvModelProj, aOrigin);
       aOrigin.x() = aOrigin.x() / aOrigin.w();
@@ -1962,10 +2060,10 @@ void GenerateCornerRays (const GLdouble theInvModelProj[16],
       aOrigin.z() = aOrigin.z() / aOrigin.w();
       aOrigin.w() = 1.f;
 
-      OpenGl_RTVec4f aDirect (float(x),
-                              float(y),
-                              1.f,
-                              1.f);
+      BVH_Vec4f aDirect (float(x),
+                         float(y),
+                         1.f,
+                         1.f);
 
       aDirect = MatVecMult (theInvModelProj, aDirect);
       aDirect.x() = aDirect.x() / aDirect.w();
@@ -2057,10 +2155,10 @@ Standard_Boolean OpenGl_Workspace::Raytrace (const Graphic3d_CView& theCView,
 
   // Compute ray-traced image using OpenCL kernel
   cl_mem anImages[] = { myRaytraceOutputImage, myRaytraceOutputImageAA };
-  cl_int anError = clEnqueueAcquireGLObjects (myRaytraceQueue,
+  cl_int anError = clEnqueueAcquireGLObjects (myComputeQueue,
                                               2, anImages,
                                               0, NULL, NULL);
-  clFinish (myRaytraceQueue);
+  clFinish (myComputeQueue);
 
   if (myIsRaytraceDataValid)
   {
@@ -2071,10 +2169,10 @@ Standard_Boolean OpenGl_Workspace::Raytrace (const Graphic3d_CView& theCView,
                               theSizeY);
   }
 
-  anError |= clEnqueueReleaseGLObjects (myRaytraceQueue,
+  anError |= clEnqueueReleaseGLObjects (myComputeQueue,
                                         2, anImages,
                                         0, NULL, NULL);
-  clFinish (myRaytraceQueue);
+  clFinish (myComputeQueue);
 
   // Draw background
   glPushAttrib (GL_ENABLE_BIT |

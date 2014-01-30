@@ -55,7 +55,6 @@ extern const char THE_RAY_TRACE_OPENCL_SOURCE[] =
   EOL"  #define AXIS_Y ( float4 )( 0.f, 1.f, 0.f, 0.f )"
   EOL"  #define AXIS_Z ( float4 )( 0.f, 0.f, 1.f, 0.f )"
   EOL
-  EOL
   /////////////////////////////////////////////////////////////////////////////////////////
   // Support functions
   EOL
@@ -89,13 +88,13 @@ extern const char THE_RAY_TRACE_OPENCL_SOURCE[] =
   /////////////////////////////////////////////////////////////////////////////////////////
   // Functions for compute ray-object intersection
   EOL
-  EOL"  #define _OOEPS_ exp2( -80.0f )"
+  EOL"  #define _OOEPS_ exp2 (-80.0f)"
   EOL
   // =======================================================================
   // function : IntersectSphere
   // purpose  : Computes ray-sphere intersection
   // =======================================================================
-  EOL"  bool IntersectSphere (const SRay* theRay, float theRadius, float* theTime)"
+  EOL"  float IntersectSphere (const SRay* theRay, float theRadius)"
   EOL"  {"
   EOL"    float aDdotD = dot (theRay->Direct.xyz, theRay->Direct.xyz);"
   EOL"    float aDdotO = dot (theRay->Direct.xyz, theRay->Origin.xyz);"
@@ -105,23 +104,21 @@ extern const char THE_RAY_TRACE_OPENCL_SOURCE[] =
   EOL
   EOL"    if (aD > 0.f)"
   EOL"    {"
-  EOL"      *theTime = (-aDdotO + native_sqrt (aD)) * (1.f / aDdotD);"
+  EOL"      float aTime = (-aDdotO + native_sqrt (aD)) * (1.f / aDdotD);"
   EOL
-  EOL"      return *theTime > 0.f;"
+  EOL"      return aTime > 0.f ? aTime : MAXFLOAT;"
   EOL"    }"
   EOL
-  EOL"    return false;"
+  EOL"    return MAXFLOAT;"
   EOL"  }"
   EOL
   // =======================================================================
   // function : IntersectBox
   // purpose  : Computes ray-box intersection (slab test)
   // =======================================================================
-  EOL"  bool IntersectBox (const SRay* theRay,"
-  EOL"                     float4 theMinPoint,"
-  EOL"                     float4 theMaxPoint,"
-  EOL"                     float* theTimeStart,"
-  EOL"                     float* theTimeFinal)"
+  EOL"  float IntersectBox (const SRay* theRay,"
+  EOL"                      float4 theMinPoint,"
+  EOL"                      float4 theMaxPoint)"
   EOL"  {"
   EOL"    const float4 aInvDirect = (float4)("
   EOL"                    1.f / (fabs (theRay->Direct.x) > _OOEPS_ ?"
@@ -138,10 +135,10 @@ extern const char THE_RAY_TRACE_OPENCL_SOURCE[] =
   EOL"    const float4 aTimeMax = max (aTime0, aTime1);"
   EOL"    const float4 aTimeMin = min (aTime0, aTime1);"
   EOL
-  EOL"    *theTimeFinal = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));"
-  EOL"    *theTimeStart = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));"
+  EOL"    const float theTimeFinal = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));"
+  EOL"    const float theTimeStart = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));"
   EOL
-  EOL"    return (*theTimeStart <= *theTimeFinal) & (*theTimeFinal >= 0.f);"
+  EOL"    return (theTimeStart <= theTimeFinal) && (theTimeFinal >= 0.f) ? theTimeStart : MAXFLOAT;"
   EOL"  }"
   EOL
   // =======================================================================
@@ -195,14 +192,13 @@ extern const char THE_RAY_TRACE_OPENCL_SOURCE[] =
   // function : IntersectTriangle
   // purpose  : Computes ray-triangle intersection (branchless version)
   // =======================================================================
-  EOL"  bool IntersectTriangle (const SRay* theRay,"
-  EOL"                          const float4 thePoint0,"
-  EOL"                          const float4 thePoint1,"
-  EOL"                          const float4 thePoint2,"
-  EOL"                          float4* theNormal,"
-  EOL"                          float* theTime,"
-  EOL"                          float* theU,"
-  EOL"                          float* theV)"
+  EOL"   float IntersectTriangle (const SRay* theRay,"
+  EOL"                            const float4 thePoint0,"
+  EOL"                            const float4 thePoint1,"
+  EOL"                            const float4 thePoint2,"
+  EOL"                            float4* theNormal,"
+  EOL"                            float* theU,"
+  EOL"                            float* theV)"
   EOL"  {"
   EOL"    const float4 aEdge0 = thePoint1 - thePoint0;"
   EOL"    const float4 aEdge1 = thePoint0 - thePoint2;"
@@ -211,14 +207,14 @@ extern const char THE_RAY_TRACE_OPENCL_SOURCE[] =
   EOL
   EOL"    const float4 aEdge2 = (1.f / dot (*theNormal, theRay->Direct)) * (thePoint0 - theRay->Origin);"
   EOL
-  EOL"    *theTime = dot (*theNormal, aEdge2);"
+  EOL"    const float aTime = dot (*theNormal, aEdge2);"
   EOL
-  EOL"    const float4 theInc = cross (theRay->Direct, aEdge2);"
+  EOL"    const float4 theVec = cross (theRay->Direct, aEdge2);"
   EOL
-  EOL"    *theU = dot (theInc, aEdge1);"
-  EOL"    *theV = dot (theInc, aEdge0);"
+  EOL"    *theU = dot (theVec, aEdge1);"
+  EOL"    *theV = dot (theVec, aEdge0);"
   EOL
-  EOL"    return (*theTime > 0) & (*theU >= 0.f) & (*theV >= 0.f) & (*theU + *theV <= 1.f);"
+  EOL"    return (aTime >= 0.f) & (*theU >= 0.f) & (*theV >= 0.f) & (*theU + *theV <= 1.f) ? aTime : MAXFLOAT;"
   EOL"  }"
   EOL
   /////////////////////////////////////////////////////////////////////////////////////////
@@ -248,13 +244,13 @@ extern const char THE_RAY_TRACE_OPENCL_SOURCE[] =
   // function : Shade
   // purpose  : Computes Phong-based illumination
   // =======================================================================
-  EOL"  float4 Shade (__global float4* theMaterials,"
+  EOL"  float4 Shade (const float4 theMatDiff,"
+  EOL"                const float4 theMatSpec,"
   EOL"                const float4 theLight,"
   EOL"                const float4 theView,"
   EOL"                const float4 theNormal,"
   EOL"                const float4 theIntens,"
-  EOL"                const float theTranspr,"
-  EOL"                const int theMatIndex)"
+  EOL"                const float theTranspr)"
   EOL"  {"
   EOL"    float aLambert = dot (theNormal, theLight);"
   EOL
@@ -262,31 +258,28 @@ extern const char THE_RAY_TRACE_OPENCL_SOURCE[] =
   EOL
   EOL"    if (aLambert > 0.f)"
   EOL"    {"
-  EOL"      const float4 aMatDiff = theMaterials[7 * theMatIndex + 1];"
-  EOL"      const float4 aMatSpec = theMaterials[7 * theMatIndex + 2];"
-  EOL
   EOL"      const float4 aReflect = 2.f * dot (theLight, theNormal) * theNormal - theLight;"
   EOL
-  EOL"      const float aSpecular = pow (max (dot (aReflect.xyz, theView.xyz), 0.f), aMatSpec.w);"
+  EOL"      const float aSpecular = pow (max (dot (aReflect.xyz, theView.xyz), 0.f), theMatSpec.w);"
   EOL
-  EOL"      return theIntens * (aMatDiff * aLambert + aMatSpec * aSpecular);"
+  EOL"      return theIntens * (theMatDiff * aLambert + theMatSpec * aSpecular);"
   EOL"    }"
   EOL
   EOL"    return ZERO;"
   EOL"  }"
   EOL
   // =======================================================================
-  // function : Lat-long
+  // function : Latlong
   // purpose  : Converts world direction to environment texture coordinates
   // =======================================================================
-  EOL"  float2 Latlong (const float4 theDirect)"
+  EOL"  float2 Latlong (const float4 thePoint, const float theRadius)"
   EOL"  {"
-  EOL"    float aPsi = acos( -theDirect.y );"
-  EOL"    float aPhi = atan2( theDirect.z, theDirect.x );"
+  EOL"    float aPsi = acospi (-thePoint.y / theRadius);"
+  EOL"    float aPhi = atan2pi (thePoint.z, thePoint.x);"
   EOL
-  EOL"    aPhi = (aPhi < 0) ? (aPhi + 2.f * M_PI_F) : aPhi;"
+  EOL"    aPhi = (aPhi < 0.f) ? aPhi + 2.f : aPhi;"
   EOL
-  EOL"    return (float2) (aPhi / (2.f * M_PI_F), aPsi / M_PI_F);"
+  EOL"    return (float2) (aPhi * 0.5f, aPsi);"
   EOL"  }"
   EOL
   /////////////////////////////////////////////////////////////////////////////////////////
@@ -312,62 +305,318 @@ extern const char THE_RAY_TRACE_OPENCL_SOURCE[] =
   EOL"    (*thePos)--;"
   EOL"  }"
   EOL
-  // #define BVH_MINIMIZE_MEM_LOADS
-  EOL
   // =======================================================================
-  // function : Traverse
-  // purpose  : Finds intersection with nearest triangle
+  // function : ObjectNearestHit
+  // purpose  : Finds intersection with nearest object triangle
   // =======================================================================
-  EOL"  int4 Traverse (const SRay* theRay,"
-  EOL"                 __global int4* theIndices,"
-  EOL"                 __global float4* theVertices,"
-  EOL"                 __global float4* theNodeMinPoints,"
-  EOL"                 __global float4* theNodeMaxPoints,"
-  EOL"                 __global int4* theNodeDataRecords,"
-  EOL"                 SIntersect* theHit)"
+  EOL"  int4 ObjectNearestHit (const SRay* theRay,"
+  EOL"                         SIntersect* theIntersect,"
+  EOL"                         __global int4* theObjectNodeInfoBuffer,"
+  EOL"                         __global float4* theObjectMinPointBuffer,"
+  EOL"                         __global float4* theObjectMaxPointBuffer,"
+  EOL"                         __global int4* theGeometryTriangBuffer,"
+  EOL"                         __global float4* theGeometryVertexBuffer)"
   EOL"  {"
   EOL"    uint aStack [32];"
-  EOL"    char aHead = -1;"
   EOL
-  EOL"    uint aNode = 0;" // root node
+  EOL"    char aHead = -1;" // stack pointer
+  EOL"    uint aNode =  0;" // node to visit
   EOL
-  EOL"    float aTimeMin1;"
-  EOL"    float aTimeMin2;"
-  EOL
-  EOL"    float4 aNodeMinLft;"
-  EOL"    float4 aNodeMaxLft;"
-  EOL"    float4 aNodeMinRgh;"
-  EOL"    float4 aNodeMaxRgh;"
-  EOL
-  EOL"  #ifdef BVH_MINIMIZE_MEM_LOADS"
-  EOL"    aNodeMinLft = theNodeMinPoints[aNode];"
-  EOL"    aNodeMaxLft = theNodeMaxPoints[aNode];"
-  EOL"  #endif"
+  EOL"    const float4 aInvDirect = (float4) ("
+  EOL"      1.f / (fabs (theRay->Direct.x) > _OOEPS_ ?"
+  EOL"             theRay->Direct.x : copysign (_OOEPS_, theRay->Direct.x)),"
+  EOL"      1.f / (fabs (theRay->Direct.y) > _OOEPS_ ?"
+  EOL"             theRay->Direct.y : copysign (_OOEPS_, theRay->Direct.y)),"
+  EOL"      1.f / (fabs (theRay->Direct.z) > _OOEPS_ ?"
+  EOL"             theRay->Direct.z : copysign (_OOEPS_, theRay->Direct.z)),"
+  EOL"      0.f);"
   EOL
   EOL"    int4 aTriangleIndex = (int4) (-1);"
   EOL
-  EOL"    theHit->Time = MAXFLOAT;"
-  EOL
-  EOL"  #ifdef BVH_MINIMIZE_MEM_LOADS"
-  EOL"    int3 aData = (int3) (1,"
-  EOL"                         as_int (aNodeMinLft.w),"
-  EOL"                         as_int (aNodeMaxLft.w));"
-  EOL
-  EOL"    aData = aData.y < 0 ? -aData : aData;"
-  EOL"  #endif"
+  EOL"    float aTimeExit;"
+  EOL"    float aTimeMin1;"
+  EOL"    float aTimeMin2;"
   EOL
   EOL"    while (true)"
   EOL"    {"
-  EOL"  #ifndef BVH_MINIMIZE_MEM_LOADS"
-  EOL"      int3 aData = theNodeDataRecords[aNode].xyz;"
-  EOL"  #endif"
+  EOL"      const int3 aData = theObjectNodeInfoBuffer[aNode].xyz;"
   EOL
-  EOL"      if (aData.x != 1)" // if inner node
+  EOL"      if (aData.x == 0)" // if inner node
   EOL"      {"
-  EOL"        aNodeMinLft = theNodeMinPoints[aData.y];"
-  EOL"        aNodeMinRgh = theNodeMinPoints[aData.z];"
-  EOL"        aNodeMaxLft = theNodeMaxPoints[aData.y];"
-  EOL"        aNodeMaxRgh = theNodeMaxPoints[aData.z];"
+  EOL"        float4 aNodeMin = theObjectMinPointBuffer[aData.y];"
+  EOL"        float4 aNodeMax = theObjectMaxPointBuffer[aData.y];"
+  EOL
+  EOL"        float4 aTime0 = (aNodeMin - theRay->Origin) * aInvDirect;"
+  EOL"        float4 aTime1 = (aNodeMax - theRay->Origin) * aInvDirect;"
+  EOL
+  EOL"        float4 aTimeMax = max (aTime0, aTime1);"
+  EOL"        float4 aTimeMin = min (aTime0, aTime1);"
+  EOL
+  EOL"        aTimeExit = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));"
+  EOL"        aTimeMin1 = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));"
+  EOL
+  EOL"        const bool aHitLft = (aTimeMin1 <= aTimeExit) & (aTimeExit >= 0.f) & (aTimeMin1 <= theIntersect->Time);"
+  EOL
+  EOL"        aNodeMin = theObjectMinPointBuffer[aData.z];"
+  EOL"        aNodeMax = theObjectMaxPointBuffer[aData.z];"
+  EOL
+  EOL"        aTime0 = (aNodeMin - theRay->Origin) * aInvDirect;"
+  EOL"        aTime1 = (aNodeMax - theRay->Origin) * aInvDirect;"
+  EOL
+  EOL"        aTimeMax = max (aTime0, aTime1);"
+  EOL"        aTimeMin = min (aTime0, aTime1);"
+  EOL
+  EOL"        aTimeExit = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));"
+  EOL"        aTimeMin2 = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));"
+  EOL
+  EOL"        const bool aHitRgh = (aTimeMin2 <= aTimeExit) & (aTimeExit >= 0.f) & (aTimeMin2 <= theIntersect->Time);"
+  EOL
+  EOL"        if (aHitLft & aHitRgh)"
+  EOL"        {"
+  EOL"          aNode = (aTimeMin1 < aTimeMin2) ? aData.y : aData.z;"
+  EOL
+  EOL"          push (aStack, &aHead, (aTimeMin1 < aTimeMin2) ? aData.z : aData.y);"
+  EOL"        }"
+  EOL"        else"
+  EOL"        {"
+  EOL"          if (aHitLft | aHitRgh)"
+  EOL"          {"
+  EOL"            aNode = aHitLft ? aData.y : aData.z;"
+  EOL"          }"
+  EOL"          else"
+  EOL"          {"
+  EOL"            if (aHead < 0)"
+  EOL"              return aTriangleIndex;"
+  EOL
+  EOL"            pop (aStack, &aHead, &aNode);"
+  EOL"          }"
+  EOL"        }"
+  EOL"      }"
+  EOL"      else " // if leaf node
+  EOL"      {"
+  EOL"        for (int aTriIdx = aData.y; aTriIdx <= aData.z; ++aTriIdx)"
+  EOL"        {"
+  EOL"          const int4 aTestTriangle = theGeometryTriangBuffer[aTriIdx];"
+  EOL
+  EOL"          const float4 aPoint0 = theGeometryVertexBuffer[aTestTriangle.x];"
+  EOL"          const float4 aPoint1 = theGeometryVertexBuffer[aTestTriangle.y];"
+  EOL"          const float4 aPoint2 = theGeometryVertexBuffer[aTestTriangle.z];"
+  EOL
+  EOL"          float4 aNormal; float aU, aV;"
+  EOL
+  EOL"          float aTime = IntersectTriangle (theRay,"
+  EOL"                                           aPoint0,"
+  EOL"                                           aPoint1,"
+  EOL"                                           aPoint2,"
+  EOL"                                           &aNormal,"
+  EOL"                                           &aU,"
+  EOL"                                           &aV);"
+  EOL
+  EOL"          if (aTime < theIntersect->Time)"
+  EOL"          {"
+  EOL"            aTriangleIndex = aTestTriangle;"
+  EOL"            theIntersect->Normal = aNormal;"
+  EOL"            theIntersect->Time = aTime;"
+  EOL"            theIntersect->U = aU;"
+  EOL"            theIntersect->V = aV;"
+  EOL"          }"
+  EOL"        }"
+  EOL
+  EOL"        if (aHead < 0)"
+  EOL"          return aTriangleIndex;"
+  EOL
+  EOL"        pop (aStack, &aHead, &aNode);"
+  EOL"      }"
+  EOL"    }"
+  EOL
+  EOL"    return aTriangleIndex;"
+  EOL"  }"
+  EOL
+  // =======================================================================
+  // function : ObjectAnyHit
+  // purpose  : Finds intersection with any object triangle
+  // =======================================================================
+  EOL"  float ObjectAnyHit (const SRay* theRay,"
+  EOL"                      __global int4* theObjectNodeInfoBuffer,"
+  EOL"                      __global float4* theObjectMinPointBuffer,"
+  EOL"                      __global float4* theObjectMaxPointBuffer,"
+  EOL"                      __global int4* theGeometryTriangBuffer,"
+  EOL"                      __global float4* theGeometryVertexBuffer,"
+  EOL"                      const float theDistance)"
+  EOL"  {"
+  EOL"    uint aStack [32];"
+  EOL
+  EOL"    char aHead = -1;" // stack pointer
+  EOL"    uint aNode =  0;" // node to visit
+  EOL
+  EOL"    const float4 aInvDirect = (float4) ("
+  EOL"      1.f / (fabs (theRay->Direct.x) > _OOEPS_ ?"
+  EOL"             theRay->Direct.x : copysign (_OOEPS_, theRay->Direct.x)),"
+  EOL"      1.f / (fabs (theRay->Direct.y) > _OOEPS_ ?"
+  EOL"             theRay->Direct.y : copysign (_OOEPS_, theRay->Direct.y)),"
+  EOL"      1.f / (fabs (theRay->Direct.z) > _OOEPS_ ?"
+  EOL"             theRay->Direct.z : copysign (_OOEPS_, theRay->Direct.z)),"
+  EOL"      0.f);"
+  EOL
+  EOL"    float aTimeExit;"
+  EOL"    float aTimeMin1;"
+  EOL"    float aTimeMin2;"
+  EOL
+  EOL"    while (true)"
+  EOL"    {"
+  EOL"      const int3 aData = theObjectNodeInfoBuffer[aNode].xyz;"
+  EOL
+  EOL"      if (aData.x == 0)" // if inner node
+  EOL"      {"
+  EOL"        float4 aNodeMin = theObjectMinPointBuffer[aData.y];"
+  EOL"        float4 aNodeMax = theObjectMaxPointBuffer[aData.y];"
+  EOL
+  EOL"        float4 aTime0 = (aNodeMin - theRay->Origin) * aInvDirect;"
+  EOL"        float4 aTime1 = (aNodeMax - theRay->Origin) * aInvDirect;"
+  EOL
+  EOL"        float4 aTimeMax = max (aTime0, aTime1);"
+  EOL"        float4 aTimeMin = min (aTime0, aTime1);"
+  EOL
+  EOL"        aTimeExit = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));"
+  EOL"        aTimeMin1 = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));"
+  EOL
+  EOL"        const bool aHitLft = (aTimeMin1 <= aTimeExit) & (aTimeExit >= 0.f) & (aTimeMin1 <= theDistance);"
+  EOL
+  EOL"        aNodeMin = theObjectMinPointBuffer[aData.z];"
+  EOL"        aNodeMax = theObjectMaxPointBuffer[aData.z];"
+  EOL
+  EOL"        aTime0 = (aNodeMin - theRay->Origin) * aInvDirect;"
+  EOL"        aTime1 = (aNodeMax - theRay->Origin) * aInvDirect;"
+  EOL
+  EOL"        aTimeMax = max (aTime0, aTime1);"
+  EOL"        aTimeMin = min (aTime0, aTime1);"
+  EOL
+  EOL"        aTimeExit = min (aTimeMax.x, min (aTimeMax.y, aTimeMax.z));"
+  EOL"        aTimeMin2 = max (aTimeMin.x, max (aTimeMin.y, aTimeMin.z));"
+  EOL
+  EOL"        const bool aHitRgh = (aTimeMin2 <= aTimeExit) & (aTimeExit >= 0.f) & (aTimeMin2 <= theDistance);"
+  EOL
+  EOL"        if (aHitLft & aHitRgh)"
+  EOL"        {"
+  EOL"          aNode = (aTimeMin1 < aTimeMin2) ? aData.y : aData.z;"
+  EOL
+  EOL"          push (aStack, &aHead, (aTimeMin1 < aTimeMin2) ? aData.z : aData.y);"
+  EOL"        }"
+  EOL"        else"
+  EOL"        {"
+  EOL"          if (aHitLft | aHitRgh)"
+  EOL"          {"
+  EOL"            aNode = aHitLft ? aData.y : aData.z;"
+  EOL"          }"
+  EOL"          else"
+  EOL"          {"
+  EOL"            if (aHead < 0)"
+  EOL"              return 1.f;"
+  EOL
+  EOL"            pop (aStack, &aHead, &aNode);"
+  EOL"          }"
+  EOL"        }"
+  EOL"      }"
+  EOL"      else " // if leaf node
+  EOL"      {"
+  EOL"        for (int aTriIdx = aData.y; aTriIdx <= aData.z; ++aTriIdx)"
+  EOL"        {"
+  EOL"          const int4 aTestTriangle = theGeometryTriangBuffer[aTriIdx];"
+  EOL
+  EOL"          const float4 aPoint0 = theGeometryVertexBuffer[aTestTriangle.x];"
+  EOL"          const float4 aPoint1 = theGeometryVertexBuffer[aTestTriangle.y];"
+  EOL"          const float4 aPoint2 = theGeometryVertexBuffer[aTestTriangle.z];"
+  EOL
+  EOL"          float4 aNormal; float aU, aV;"
+  EOL
+  EOL"          float aTime = IntersectTriangle (theRay,"
+  EOL"                                           aPoint0,"
+  EOL"                                           aPoint1,"
+  EOL"                                           aPoint2,"
+  EOL"                                           &aNormal,"
+  EOL"                                           &aU,"
+  EOL"                                           &aV);"
+  EOL
+  EOL"          if (aTime < theDistance)"
+  EOL"          {"
+  EOL"            return 0.f;"
+  EOL"          }"
+  EOL"        }"
+  EOL
+  EOL"        if (aHead < 0)"
+  EOL"          return 1.f;"
+  EOL
+  EOL"        pop (aStack, &aHead, &aNode);"
+  EOL"      }"
+  EOL"    }"
+  EOL
+  EOL"    return 1.f;"
+  EOL"  }"
+  EOL
+  // =======================================================================
+  // function : NearestHit
+  // purpose  : Finds intersection with nearest scene triangle
+  // =======================================================================
+  EOL"  int4 NearestHit (const SRay* theRay,"
+  EOL"                   SIntersect* theIntersect,"
+  EOL"                   __global int4* theSceneNodeInfoBuffer,"
+  EOL"                   __global float4* theSceneMinPointBuffer,"
+  EOL"                   __global float4* theSceneMaxPointBuffer,"
+  EOL"                   __global int4* theObjectNodeInfoBuffer,"
+  EOL"                   __global float4* theObjectMinPointBuffer,"
+  EOL"                   __global float4* theObjectMaxPointBuffer,"
+  EOL"                   __global int4* theGeometryTriangBuffer,"
+  EOL"                   __global float4* theGeometryVertexBuffer)"
+  EOL"  {"
+  EOL"    theIntersect->Time = MAXFLOAT;"
+  EOL
+  EOL"    uint aStack [16];"
+  EOL
+  EOL"    char aHead = -1;" // stack pointer
+  EOL"    uint aNode =  0;" // node to visit
+  EOL
+  EOL"    int4 aNearestTriangle = (int4) (-1);"
+  EOL
+  EOL"    while (true)"
+  EOL"    {"
+  EOL"      const int4 aData = theSceneNodeInfoBuffer[aNode];"
+  EOL
+  EOL"      if (aData.x != 0)" // if leaf node
+  EOL"      {"
+  EOL"        const float4 aNodeMin = theSceneMinPointBuffer[aNode];"
+  EOL"        const float4 aNodeMax = theSceneMaxPointBuffer[aNode];"
+  EOL
+  EOL"        if (IntersectBox (theRay, aNodeMin, aNodeMax) <= theIntersect->Time)"
+  EOL"        {"
+  EOL"          int4 anIndex = ObjectNearestHit (theRay,"
+  EOL"                                           theIntersect,"
+  EOL"                                           theObjectNodeInfoBuffer + aData.y,"
+  EOL"                                           theObjectMinPointBuffer + aData.y,"
+  EOL"                                           theObjectMaxPointBuffer + aData.y,"
+  EOL"                                           theGeometryTriangBuffer + aData.w,"
+  EOL"                                           theGeometryVertexBuffer + aData.z);"
+  EOL
+  EOL"          if (anIndex.x != -1)"
+  EOL"            aNearestTriangle = (int4) (anIndex.x + aData.z,"
+  EOL"                                       anIndex.y + aData.z,"
+  EOL"                                       anIndex.z + aData.z,"
+  EOL"                                       anIndex.w);"
+  EOL"        }"
+  EOL
+  EOL"        if (aHead < 0)"
+  EOL"          return aNearestTriangle;"
+  EOL
+  EOL"        pop (aStack, &aHead, &aNode);"
+  EOL"      }"
+  EOL"      else " // if inner node
+  EOL"      {"
+  EOL"        float4 aNodeMinLft = theSceneMinPointBuffer[aData.y];"
+  EOL"        float4 aNodeMinRgh = theSceneMinPointBuffer[aData.z];"
+  EOL"        float4 aNodeMaxLft = theSceneMaxPointBuffer[aData.y];"
+  EOL"        float4 aNodeMaxRgh = theSceneMaxPointBuffer[aData.z];"
+  EOL
+  EOL"        float aTimeMin1;"
+  EOL"        float aTimeMin2;"
   EOL
   EOL"        IntersectNodes (theRay,"
   EOL"                        aNodeMinLft,"
@@ -376,7 +625,7 @@ extern const char THE_RAY_TRACE_OPENCL_SOURCE[] =
   EOL"                        aNodeMaxRgh,"
   EOL"                        &aTimeMin1,"
   EOL"                        &aTimeMin2,"
-  EOL"                        theHit->Time);"
+  EOL"                        theIntersect->Time);"
   EOL
   EOL"        const bool aHitLft = (aTimeMin1 != -MAXFLOAT);"
   EOL"        const bool aHitRgh = (aTimeMin2 != -MAXFLOAT);"
@@ -386,116 +635,90 @@ extern const char THE_RAY_TRACE_OPENCL_SOURCE[] =
   EOL"          aNode = (aTimeMin1 < aTimeMin2) ? aData.y : aData.z;"
   EOL
   EOL"          push (aStack, &aHead, (aTimeMin1 < aTimeMin2) ? aData.z : aData.y);"
-  EOL
-  EOL"  #ifdef BVH_MINIMIZE_MEM_LOADS"
-  EOL"          aData = (int3) (1,"
-  EOL"                          as_int (aTimeMin1 < aTimeMin2 ? aNodeMinLft.w : aNodeMinRgh.w),"
-  EOL"                          as_int (aTimeMin1 < aTimeMin2 ? aNodeMaxLft.w : aNodeMaxRgh.w));"
-  EOL
-  EOL"          aData = aData.y < 0 ? -aData : aData;"
-  EOL"  #endif"
   EOL"        }"
   EOL"        else"
   EOL"        {"
   EOL"          if (aHitLft | aHitRgh)"
   EOL"          {"
   EOL"            aNode = aHitLft ? aData.y : aData.z;"
-  EOL
-  EOL"  #ifdef BVH_MINIMIZE_MEM_LOADS"
-  EOL"            aData = (int3) (1,"
-  EOL"                            as_int (aHitLft ? aNodeMinLft.w : aNodeMinRgh.w),"
-  EOL"                            as_int (aHitLft ? aNodeMaxLft.w : aNodeMaxRgh.w));"
-  EOL
-  EOL"            aData = aData.y < 0 ? -aData : aData;"
-  EOL"  #endif"
   EOL"          }"
   EOL"          else"
   EOL"          {"
   EOL"            if (aHead < 0)"
-  EOL"              return aTriangleIndex;"
+  EOL"              return aNearestTriangle;"
   EOL
   EOL"            pop (aStack, &aHead, &aNode);"
-  EOL
-  EOL"  #ifdef BVH_MINIMIZE_MEM_LOADS"
-  EOL"            aData = theNodeDataRecords[aNode].xyz;"
-  EOL"  #endif"
   EOL"          }"
   EOL"        }"
   EOL"      }"
-  EOL"      else " // if leaf node
+  EOL"    }"
+  EOL
+  EOL"    return aNearestTriangle;"
+  EOL"  }"
+  EOL
+  // =======================================================================
+  // function : AnyHit
+  // purpose  : Finds intersection with any scene triangle
+  // =======================================================================
+  EOL"  float AnyHit (const SRay* theRay,"
+  EOL"                __global int4* theSceneNodeInfoBuffer,"
+  EOL"                __global float4* theSceneMinPointBuffer,"
+  EOL"                __global float4* theSceneMaxPointBuffer,"
+  EOL"                __global int4* theObjectNodeInfoBuffer,"
+  EOL"                __global float4* theObjectMinPointBuffer,"
+  EOL"                __global float4* theObjectMaxPointBuffer,"
+  EOL"                __global int4* theGeometryTriangBuffer,"
+  EOL"                __global float4* theGeometryVertexBuffer,"
+  EOL"                const float theDistance)"
+  EOL"  {"
+  EOL"    uint aStack [16];"
+  EOL
+  EOL"    char aHead = -1;" // stack pointer
+  EOL"    uint aNode =  0;" // node to visit
+  EOL
+  EOL"    while (true)"
+  EOL"    {"
+  EOL"      const int4 aData = theSceneNodeInfoBuffer[aNode];"
+  EOL
+  EOL"      if (aData.x != 0)" // if leaf node
   EOL"      {"
-  EOL"        for (int nTri = aData.y; nTri <= aData.z; ++nTri)"
+  EOL"        const float4 aNodeMin = theSceneMinPointBuffer[aNode];"
+  EOL"        const float4 aNodeMax = theSceneMaxPointBuffer[aNode];"
+  EOL
+  EOL"        if (IntersectBox (theRay, aNodeMin, aNodeMax) <= theDistance)"
   EOL"        {"
-  EOL"          int4 anIndex = theIndices[nTri];"
-  EOL
-  EOL"          const float4 aP0 = theVertices[anIndex.x];"
-  EOL"          const float4 aP1 = theVertices[anIndex.y];"
-  EOL"          const float4 aP2 = theVertices[anIndex.z];"
-  EOL
-  EOL"          float4 aNormal;"
-  EOL
-  EOL"          float aTime, aU, aV;"
-  EOL
-  EOL"          if (IntersectTriangle (theRay, aP0, aP1, aP2, &aNormal, &aTime, &aU, &aV) & (aTime < theHit->Time))"
+  EOL"          if (0.f == ObjectAnyHit (theRay,"
+  EOL"                                   theObjectNodeInfoBuffer + aData.y,"
+  EOL"                                   theObjectMinPointBuffer + aData.y,"
+  EOL"                                   theObjectMaxPointBuffer + aData.y,"
+  EOL"                                   theGeometryTriangBuffer + aData.w,"
+  EOL"                                   theGeometryVertexBuffer + aData.z,"
+  EOL"                                   theDistance))"
   EOL"          {"
-  EOL"            aTriangleIndex = anIndex;"
-  EOL"            theHit->Normal = aNormal;"
-  EOL"            theHit->Time = aTime;"
-  EOL"            theHit->U = aU;"
-  EOL"            theHit->V = aV;"
+  EOL"            return 0.f;"
   EOL"          }"
   EOL"        }"
   EOL
   EOL"        if (aHead < 0)"
-  EOL"          return aTriangleIndex;"
+  EOL"          return 1.f;"
   EOL
   EOL"        pop (aStack, &aHead, &aNode);"
-  EOL
-  EOL"  #ifdef BVH_MINIMIZE_MEM_LOADS"
-  EOL"        aData = theNodeDataRecords[aNode].xyz;"
-  EOL"  #endif"
   EOL"      }"
-  EOL"    }"
-  EOL
-  EOL"    return aTriangleIndex;"
-  EOL"   }"
-  EOL
-  EOL"  #define TRANSPARENT_SHADOW_"
-  EOL
-  // =======================================================================
-  // function : TraverseShadow
-  // purpose  : Finds intersection with any triangle
-  // =======================================================================
-  EOL"  float TraverseShadow (const SRay* theRay,"
-  EOL"                        __global int4* theIndices,"
-  EOL"                        __global float4* theVertices,"
-  EOL"                        __global float4* materials,"
-  EOL"                        __global float4* theNodeMinPoints,"
-  EOL"                        __global float4* theNodeMaxPoints,"
-  EOL"                        __global int4* theNodeDataRecords,"
-  EOL"                        float theDistance)"
-  EOL"  {"
-  EOL"    uint aStack [32];"
-  EOL"    char aHead = -1;"
-  EOL
-  EOL"    uint aNode = 0;" // root node
-  EOL
-  EOL"    float aFactor = 1.f;" // light attenuation factor
-  EOL
-  EOL"    float aTimeMin1;"
-  EOL"    float aTimeMin2;"
-  EOL
-  EOL"    while (true)"
-  EOL"    {"
-  EOL"      int3 aData = theNodeDataRecords[aNode].xyz;"
-  EOL
-  EOL"      if (aData.x != 1)" // if inner node
+  EOL"      else" // if inner node
   EOL"      {"
+  EOL"        float4 aNodeMinLft = theSceneMinPointBuffer[aData.y];"
+  EOL"        float4 aNodeMinRgh = theSceneMinPointBuffer[aData.z];"
+  EOL"        float4 aNodeMaxLft = theSceneMaxPointBuffer[aData.y];"
+  EOL"        float4 aNodeMaxRgh = theSceneMaxPointBuffer[aData.z];"
+  EOL
+  EOL"        float aTimeMin1;"
+  EOL"        float aTimeMin2;"
+  EOL
   EOL"        IntersectNodes (theRay,"
-  EOL"                        theNodeMinPoints[aData.y],"
-  EOL"                        theNodeMaxPoints[aData.y],"
-  EOL"                        theNodeMinPoints[aData.z],"
-  EOL"                        theNodeMaxPoints[aData.z],"
+  EOL"                        aNodeMinLft,"
+  EOL"                        aNodeMaxLft,"
+  EOL"                        aNodeMinRgh,"
+  EOL"                        aNodeMaxRgh,"
   EOL"                        &aTimeMin1,"
   EOL"                        &aTimeMin2,"
   EOL"                        theDistance);"
@@ -518,74 +741,53 @@ extern const char THE_RAY_TRACE_OPENCL_SOURCE[] =
   EOL"          else"
   EOL"          {"
   EOL"            if (aHead < 0)"
-  EOL"              return aFactor;"
+  EOL"              return 1.f;"
   EOL
   EOL"            pop (aStack, &aHead, &aNode);"
   EOL"          }"
   EOL"        }"
   EOL"      }"
-  EOL"      else " // if leaf node
-  EOL"      {"
-  EOL"        for (int nTri = aData.y; nTri <= aData.z; ++nTri)"
-  EOL"        {"
-  EOL"          int4 anIndex = theIndices[nTri];"
-  EOL
-  EOL"          const float4 aP0 = theVertices[anIndex.x];"
-  EOL"          const float4 aP1 = theVertices[anIndex.y];"
-  EOL"          const float4 aP2 = theVertices[anIndex.z];"
-  EOL
-  EOL"          float4 aNormal;"
-  EOL
-  EOL"          float aTime, aU, aV;"
-  EOL
-  EOL"          if (IntersectTriangle (theRay, aP0, aP1, aP2, &aNormal, &aTime, &aU, &aV) & (aTime < theDistance))"
-  EOL"          {"
-  EOL"  #ifdef TRANSPARENT_SHADOW"
-  EOL"            aFactor *= materials[7 * index.w + 6].x;"
-  EOL
-  EOL"            if (aFactor < 0.1f)"
-  EOL"              return aFactor;"
-  EOL"  #else"
-  EOL"            return 0.f;"
-  EOL"  #endif"
-  EOL"          }"
-  EOL"        }"
-  EOL
-  EOL"        if (aHead < 0)"
-  EOL"          return aFactor;"
-  EOL
-  EOL"        pop (aStack, &aHead, &aNode);"
-  EOL"      }"
   EOL"    }"
-  EOL
-  EOL"    return aFactor;"
   EOL"  }"
   EOL
   EOL"  #define _MAX_DEPTH_ 5"
   EOL
-  EOL"  #define _MAT_SIZE_ 7"
+  EOL"  #define THRESHOLD (float4) (0.1f, 0.1f, 0.1f, 1.f)"
   EOL
-  EOL"  #define _LGH_SIZE_ 3"
+  EOL"  #define LIGHT_POS(Buffer, LightID) Buffer[2 * LightID + 1]"
+  EOL"  #define LIGHT_RAD(Buffer, LightID) Buffer[2 * LightID + 0]"
+  EOL
+  EOL"  #define MATERIAL_AMBN(Buffer, TriangleID) Buffer[7 * TriangleID.w + 0]"
+  EOL"  #define MATERIAL_DIFF(Buffer, TriangleID) Buffer[7 * TriangleID.w + 1]"
+  EOL"  #define MATERIAL_SPEC(Buffer, TriangleID) Buffer[7 * TriangleID.w + 2]"
+  EOL"  #define MATERIAL_EMIS(Buffer, TriangleID) Buffer[7 * TriangleID.w + 3]"
+  EOL"  #define MATERIAL_REFL(Buffer, TriangleID) Buffer[7 * TriangleID.w + 4]"
+  EOL"  #define MATERIAL_REFR(Buffer, TriangleID) Buffer[7 * TriangleID.w + 5]"
+  EOL"  #define MATERIAL_TRAN(Buffer, TriangleID) Buffer[7 * TriangleID.w + 6]"
   EOL
   // =======================================================================
-  // function : Raytrace
+  // function : Radiance
   // purpose  : Computes color of specified ray
   // =======================================================================
-  EOL"  float4 Raytrace (SRay* theRay,"
+  EOL"  float4 Radiance (SRay* theRay,"
   EOL"                   __read_only image2d_t theEnvMap,"
-  EOL"                   __global float4* theNodeMinPoints,"
-  EOL"                   __global float4* theNodeMaxPoints,"
-  EOL"                   __global int4* theNodeDataRecords,"
-  EOL"                   __global float4* theLightSources,"
-  EOL"                   __global float4* theMaterials,"
-  EOL"                   __global float4* theVertices,"
-  EOL"                   __global float4* theNormals,"
-  EOL"                   __global int4* theIndices,"
-  EOL"                   const int theLightCount,"
-  EOL"                   const float theEpsilon,"
-  EOL"                   const float theRadius,"
-  EOL"                   const int isShadows,"
-  EOL"                   const int isReflect)"
+  EOL"                   __global int4* theSceneNodeInfoBuffer,"
+  EOL"                   __global float4* theSceneMinPointBuffer,"
+  EOL"                   __global float4* theSceneMaxPointBuffer,"
+  EOL"                   __global int4* theObjectNodeInfoBuffer,"
+  EOL"                   __global float4* theObjectMinPointBuffer,"
+  EOL"                   __global float4* theObjectMaxPointBuffer,"
+  EOL"                   __global int4* theGeometryTriangBuffer,"
+  EOL"                   __global float4* theGeometryVertexBuffer,"
+  EOL"                   __global float4* theGeometryNormalBuffer,"
+  EOL"                   __global float4* theLightSourceBuffer,"
+  EOL"                   __global float4* theMaterialBuffer,"
+  EOL"                   const float4 theGlobalAmbient,"
+  EOL"                   const int theLightBufferSize,"
+  EOL"                   const int theShadowsEnabled,"
+  EOL"                   const int theReflectEnabled,"
+  EOL"                   const float theSceneEpsilon,"
+  EOL"                   const float theSceneRadius)"
   EOL"  {"
   EOL"    float4 aResult = (float4) (0.f, 0.f, 0.f, 0.f);"
   EOL"    float4 aWeight = (float4) (1.f, 1.f, 1.f, 1.f);"
@@ -594,24 +796,29 @@ extern const char THE_RAY_TRACE_OPENCL_SOURCE[] =
   EOL
   EOL"    for (int aDepth = 0; aDepth < _MAX_DEPTH_; ++aDepth)"
   EOL"    {"
-  EOL"      int4 aTriangle = Traverse (theRay,"
-  EOL"                                 theIndices,"
-  EOL"                                 theVertices,"
-  EOL"                                 theNodeMinPoints,"
-  EOL"                                 theNodeMaxPoints,"
-  EOL"                                 theNodeDataRecords,"
-  EOL"                                 &aHit);"
+  EOL"      int4 aTriangle = NearestHit (theRay,"
+  EOL"                                   &aHit,"
+  EOL"                                   theSceneNodeInfoBuffer,"
+  EOL"                                   theSceneMinPointBuffer,"
+  EOL"                                   theSceneMaxPointBuffer,"
+  EOL"                                   theObjectNodeInfoBuffer,"
+  EOL"                                   theObjectMinPointBuffer,"
+  EOL"                                   theObjectMaxPointBuffer,"
+  EOL"                                   theGeometryTriangBuffer,"
+  EOL"                                   theGeometryVertexBuffer);"
   EOL
   EOL"      if (aTriangle.x < 0.f)"
   EOL"      {"
-  EOL"        float aTime;"
-  EOL
-  EOL"        if (aWeight.w != 0.f || !IntersectSphere (theRay, theRadius, &aTime))"
+  EOL"        if (aWeight.w != 0.f)"
   EOL"          break;"
   EOL
-  EOL"        float2 aTexCoord = Latlong (fma (theRay->Direct, (float4) (aTime), theRay->Origin) * (1.f / theRadius));"
+  EOL"        float aTime = IntersectSphere (theRay, theSceneRadius);"
   EOL
-  EOL"        aResult += aWeight * read_imagef (theEnvMap, EnvironmentSampler, aTexCoord);"
+  EOL"        if (aTime != MAXFLOAT)"
+  EOL"        {"
+  EOL"          aResult += aWeight * read_imagef (theEnvMap, EnvironmentSampler,"
+  EOL"            Latlong (theRay->Origin + theRay->Direct * aTime, theSceneRadius));"
+  EOL"        }"
   EOL
   EOL"        return (float4) (aResult.x,"
   EOL"                         aResult.y,"
@@ -619,31 +826,24 @@ extern const char THE_RAY_TRACE_OPENCL_SOURCE[] =
   EOL"                         aWeight.w);"
   EOL"      }"
   EOL
-  EOL"     " // Compute geometric normal
+  EOL       // Compute geometric normal
   EOL"      float4 aGeomNormal = aHit.Normal; aGeomNormal = fast_normalize (aGeomNormal);"
   EOL
-  EOL"     " // Compute interpolated normal
-  EOL"      float4 aNormal = SmoothNormal (theNormals, &aHit, aTriangle);"
+  EOL       // Compute interpolated normal
+  EOL"      float4 aNormal = SmoothNormal (theGeometryNormalBuffer, &aHit, aTriangle);"
   EOL
-  EOL"     " // Compute intersection point
+  EOL       // Compute intersection point
   EOL"      float4 aPoint = theRay->Direct * aHit.Time + theRay->Origin;"
   EOL
-  EOL"      float4 aMaterAmb = theMaterials [_MAT_SIZE_ * aTriangle.w + 0];"
-  EOL"      float4 aMaterTrn = theMaterials [_MAT_SIZE_ * aTriangle.w + 6];"
+  EOL"      float4 aMaterAmb = MATERIAL_AMBN (theMaterialBuffer, aTriangle);"
+  EOL"      float4 aMaterTrn = MATERIAL_TRAN (theMaterialBuffer, aTriangle);"
   EOL
-  EOL"      for (int nLight = 0; nLight < theLightCount; ++nLight)"
-  EOL"      {"
-  EOL"        float4 aLightAmbient = theLightSources [_LGH_SIZE_ * nLight];"
-  EOL
-  EOL"        aResult += aWeight * aLightAmbient * aMaterAmb *"
+  EOL"      aResult += aWeight * theGlobalAmbient * aMaterAmb *"
   EOL"            (aMaterTrn.x * max (fabs (dot (theRay->Direct, aNormal)), 0.5f));"
   EOL
-  EOL"        if (aLightAmbient.w < 0.f)" // 'ambient' light
-  EOL"        {"
-  EOL"          continue;" // 'ambient' light has no another luminances
-  EOL"        }"
-  EOL
-  EOL"        float4 aLightPosition = theLightSources [_LGH_SIZE_ * nLight + 2];"
+  EOL"      for (int nLight = 0; nLight < theLightBufferSize; ++nLight)"
+  EOL"      {"
+  EOL"        float4 aLightPosition = LIGHT_POS (theLightSourceBuffer, nLight);"
   EOL
   EOL"        SRay aShadow;"
   EOL"        aShadow.Direct = aLightPosition;"
@@ -655,30 +855,35 @@ extern const char THE_RAY_TRACE_OPENCL_SOURCE[] =
   EOL"          aShadow.Direct = (aLightPosition - aPoint) * (1.f / aLightDistance);"
   EOL"        }"
   EOL
-  EOL"        aShadow.Origin = aPoint + aShadow.Direct * theEpsilon +"
-  EOL"                    aGeomNormal * copysign (theEpsilon, dot (aGeomNormal, aShadow.Direct));"
+  EOL"        aShadow.Origin = aPoint + aShadow.Direct * theSceneEpsilon +"
+  EOL"                    aGeomNormal * copysign (theSceneEpsilon, dot (aGeomNormal, aShadow.Direct));"
   EOL
-  EOL"        float aFactor = 1.f;"
+  EOL"        float aVisibility = 1.f;"
   EOL
-  EOL"        if (isShadows)"
+  EOL"        if (theShadowsEnabled)"
   EOL"        {"
-  EOL"          aFactor = TraverseShadow (&aShadow,"
-  EOL"                                    theIndices,"
-  EOL"                                    theVertices,"
-  EOL"                                    theMaterials,"
-  EOL"                                    theNodeMinPoints,"
-  EOL"                                    theNodeMaxPoints,"
-  EOL"                                    theNodeDataRecords,"
-  EOL"                                    aLightDistance);"
+  EOL"          aVisibility = AnyHit (&aShadow,"
+  EOL"                                theSceneNodeInfoBuffer,"
+  EOL"                                theSceneMinPointBuffer,"
+  EOL"                                theSceneMaxPointBuffer,"
+  EOL"                                theObjectNodeInfoBuffer,"
+  EOL"                                theObjectMinPointBuffer,"
+  EOL"                                theObjectMaxPointBuffer,"
+  EOL"                                theGeometryTriangBuffer,"
+  EOL"                                theGeometryVertexBuffer,"
+  EOL"                                aLightDistance);"
   EOL"        }"
   EOL
-  EOL"        aResult += (aMaterTrn.x * aFactor) * aWeight * Shade (theMaterials,"
-  EOL"                                                              aShadow.Direct,"
-  EOL"                                                              -theRay->Direct,"
-  EOL"                                                              aNormal,"
-  EOL"                                                              UNIT,"
-  EOL"                                                              aMaterTrn.y,"
-  EOL"                                                              aTriangle.w);"
+  EOL"        if (aVisibility > 0.f)"
+  EOL"        {"
+  EOL"          aResult += aMaterTrn.x * aWeight * Shade (MATERIAL_DIFF (theMaterialBuffer, aTriangle),"
+  EOL"                                                    MATERIAL_SPEC (theMaterialBuffer, aTriangle),"
+  EOL"                                                    aShadow.Direct,"
+  EOL"                                                    -theRay->Direct,"
+  EOL"                                                    aNormal,"
+  EOL"                                                    LIGHT_RAD (theLightSourceBuffer, nLight),"
+  EOL"                                                    aMaterTrn.y);"
+  EOL"        }"
   EOL"      }"
   EOL
   EOL"      if (aMaterTrn.y > 0.f)"
@@ -687,17 +892,18 @@ extern const char THE_RAY_TRACE_OPENCL_SOURCE[] =
   EOL"      }"
   EOL"      else"
   EOL"      {"
-  EOL"        float4 aMaterRef = theMaterials [_MAT_SIZE_ * aTriangle.w + 4];"
-  EOL"        aWeight *= isReflect ? aMaterRef : ZERO;"
+  EOL"        aWeight *= theReflectEnabled ? MATERIAL_REFL (theMaterialBuffer, aTriangle) : ZERO;"
   EOL
-  EOL"        theRay->Direct -= 2.f * dot (theRay->Direct, aNormal) * aNormal;"
+  EOL"        float4 aDirect = theRay->Direct - 2.f * dot (theRay->Direct, aNormal) * aNormal;"
   EOL
-  EOL"        float aDdotN = dot (theRay->Direct, aGeomNormal);"
+  EOL"        float aDdotN = dot (aDirect, aGeomNormal);"
   EOL"        if (aDdotN < 0.f)"
-  EOL"          theRay->Direct -= aDdotN * aGeomNormal;"
+  EOL"          theRay->Direct -= 2.f * dot (theRay->Direct, aGeomNormal) * aGeomNormal;"
+  EOL"        else"
+  EOL"          theRay->Direct = aDirect;"
   EOL"      }"
   EOL
-  EOL"      if (aWeight.x < 0.1f && aWeight.y < 0.1f && aWeight.z < 0.1f)"
+  EOL"      if (all (islessequal (aWeight, THRESHOLD)))"
   EOL"      {"
   EOL"        return (float4) (aResult.x,"
   EOL"                         aResult.y,"
@@ -705,7 +911,7 @@ extern const char THE_RAY_TRACE_OPENCL_SOURCE[] =
   EOL"                         aWeight.w);"
   EOL"      }"
   EOL
-  EOL"      theRay->Origin = theRay->Direct * theEpsilon + aPoint;"
+  EOL"      theRay->Origin = theRay->Direct * theSceneEpsilon + aPoint;"
   EOL"    }"
   EOL
   EOL"    return (float4) (aResult.x,"
@@ -714,166 +920,184 @@ extern const char THE_RAY_TRACE_OPENCL_SOURCE[] =
   EOL"                     aWeight.w);"
   EOL"  }"
   EOL
-  EOL
   ///////////////////////////////////////////////////////////////////////////////
   // Ray tracing kernel functions
   EOL
   // =======================================================================
-  // function : Main
+  // function : RaytraceRender
   // purpose  : Computes pixel color using ray-tracing
   // =======================================================================
-  EOL"  __kernel void Main (__write_only image2d_t theOutput,"
-  EOL"                      __read_only  image2d_t theEnvMap,"
-  EOL"                      __global float4* theNodeMinPoints,"
-  EOL"                      __global float4* theNodeMaxPoints,"
-  EOL"                      __global int4* theNodeDataRecords,"
-  EOL"                      __global float4* theLightSources,"
-  EOL"                      __global float4* theMaterials,"
-  EOL"                      __global float4* theVertices,"
-  EOL"                      __global float4* theNormals,"
-  EOL"                      __global int4* theIndices,"
-  EOL"                      const float16 theOrigins,"
-  EOL"                      const float16 theDirects,"
-  EOL"                      const int theLightCount,"
-  EOL"                      const float theEpsilon,"
-  EOL"                      const float theRadius,"
-  EOL"                      const int isShadows,"
-  EOL"                      const int isReflect,"
-  EOL"                      const int theSizeX,"
-  EOL"                      const int theSizeY)"
+  EOL"  __kernel void RaytraceRender (const int theSizeX,"
+  EOL"                                const int theSizeY,"
+  EOL"                                const float16 theOrigins,"
+  EOL"                                const float16 theDirects,"
+  EOL"                                __read_only image2d_t theEnvMap,"
+  EOL"                                __write_only image2d_t theOutput,"
+  EOL"                                __global int4* theSceneNodeInfoBuffer,"
+  EOL"                                __global float4* theSceneMinPointBuffer,"
+  EOL"                                __global float4* theSceneMaxPointBuffer,"
+  EOL"                                __global int4* theObjectNodeInfoBuffer,"
+  EOL"                                __global float4* theObjectMinPointBuffer,"
+  EOL"                                __global float4* theObjectMaxPointBuffer,"
+  EOL"                                __global int4* theGeometryTriangBuffer,"
+  EOL"                                __global float4* theGeometryVertexBuffer,"
+  EOL"                                __global float4* theGeometryNormalBuffer,"
+  EOL"                                __global float4* theLightSourceBuffer,"
+  EOL"                                __global float4* theMaterialBuffer,"
+  EOL"                                const float4 theGlobalAmbient,"
+  EOL"                                const int theLightBufferSize,"
+  EOL"                                const int theShadowsEnabled,"
+  EOL"                                const int theReflectEnabled,"
+  EOL"                                const float theSceneEpsilon,"
+  EOL"                                const float theSceneRadius)"
   EOL"  {"
-  EOL"    const int aX = get_global_id (0);"
-  EOL"    const int aY = get_global_id (1);"
+  EOL"    const int aPixelX = get_global_id (0);"
+  EOL"    const int aPixelY = get_global_id (1);"
   EOL
-  EOL"    if (aX >= theSizeX || aY >= theSizeY)"
+  EOL"    if (aPixelX >= theSizeX || aPixelY >= theSizeY)"
   EOL"      return;"
   EOL
   EOL"    private SRay aRay;"
   EOL
   EOL"    GenerateRay (&aRay,"
-  EOL"                 aX,"
-  EOL"                 aY,"
+  EOL"                 aPixelX,"
+  EOL"                 aPixelY,"
   EOL"                 theSizeX,"
   EOL"                 theSizeY,"
   EOL"                 theOrigins,"
   EOL"                 theDirects);"
   EOL
-  EOL"    float4 aBoxMin = theNodeMinPoints[0] - (float4) (theEpsilon, theEpsilon, theEpsilon, 0.f);"
-  EOL"    float4 aBoxMax = theNodeMaxPoints[0] + (float4) (theEpsilon, theEpsilon, theEpsilon, 0.f);"
-  EOL
-  EOL"    float aTimeStart;"
-  EOL"    float aTimeFinal;"
-  EOL
   EOL"    float4 aColor = (float4) (0.f, 0.f, 0.f, 1.f);"
   EOL
-  EOL"    if (IntersectBox (&aRay, aBoxMin, aBoxMax, &aTimeStart, &aTimeFinal))"
-  EOL"    {"
-  EOL"      aRay.Origin = fma (aRay.Direct, (float4) (aTimeStart), aRay.Origin);"
+  EOL"    float aTimeStart = IntersectBox (&aRay, theSceneMinPointBuffer[0], theSceneMaxPointBuffer[0]);"
   EOL
-  EOL"      aColor = Raytrace (&aRay,"
-  EOL"                         theEnvMap,"
-  EOL"                         theNodeMinPoints,"
-  EOL"                         theNodeMaxPoints,"
-  EOL"                         theNodeDataRecords,"
-  EOL"                         theLightSources,"
-  EOL"                         theMaterials,"
-  EOL"                         theVertices,"
-  EOL"                         theNormals,"
-  EOL"                         theIndices,"
-  EOL"                         theLightCount,"
-  EOL"                         theEpsilon,"
-  EOL"                         theRadius,"
-  EOL"                         isShadows,"
-  EOL"                         isReflect);"
+  EOL"    if (aTimeStart != MAXFLOAT)"
+  EOL"    {"
+  EOL"      aRay.Origin += aRay.Direct * max (aTimeStart - theSceneEpsilon, 0.f);"
+  EOL
+  EOL"      aColor = clamp (Radiance (&aRay,"
+  EOL"                                theEnvMap,"
+  EOL"                                theSceneNodeInfoBuffer,"
+  EOL"                                theSceneMinPointBuffer,"
+  EOL"                                theSceneMaxPointBuffer,"
+  EOL"                                theObjectNodeInfoBuffer,"
+  EOL"                                theObjectMinPointBuffer,"
+  EOL"                                theObjectMaxPointBuffer,"
+  EOL"                                theGeometryTriangBuffer,"
+  EOL"                                theGeometryVertexBuffer,"
+  EOL"                                theGeometryNormalBuffer,"
+  EOL"                                theLightSourceBuffer,"
+  EOL"                                theMaterialBuffer,"
+  EOL"                                theGlobalAmbient,"
+  EOL"                                theLightBufferSize,"
+  EOL"                                theShadowsEnabled,"
+  EOL"                                theReflectEnabled,"
+  EOL"                                theSceneEpsilon,"
+  EOL"                                theSceneRadius), 0.f, 1.f);"
   EOL"    }"
   EOL
-  EOL"    write_imagef (theOutput, (int2) (aX, aY), aColor);"
+  EOL"    write_imagef (theOutput, (int2) (aPixelX, aPixelY), aColor);"
   EOL"  }"
   EOL
   EOL"  const sampler_t OutputSampler ="
   EOL"            CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_CLAMP | CLK_FILTER_NEAREST;"
   EOL
-  EOL"  #define _LUM_DELTA_ 0.075f"
+  EOL"  #define _LUM_DELTA_ 0.085f"
   EOL
   EOL"  #define AA_MAX 0.559017f"
   EOL"  #define AA_MIN 0.186339f"
   EOL
   // =======================================================================
-  // function : MainAntialiased
+  // function : RaytraceSmooth
   // purpose  : Performs adaptive sub-pixel rendering
   // =======================================================================
-  EOL"  __kernel void MainAntialiased ( __read_only image2d_t theInput,"
-  EOL"                                  __write_only image2d_t theOutput,"
-  EOL"                                  __read_only  image2d_t theEnvMap,"
-  EOL"                                  __global float4* theNodeMinPoints,"
-  EOL"                                  __global float4* theNodeMaxPoints,"
-  EOL"                                  __global int4* theNodeDataRecords,"
-  EOL"                                  __global float4* theLightSources,"
-  EOL"                                  __global float4* theMaterials,"
-  EOL"                                  __global float4* theVertices,"
-  EOL"                                  __global float4* theNormals,"
-  EOL"                                  __global int4* theIndices,"
-  EOL"                                  const float16 theOrigins,"
-  EOL"                                  const float16 theDirects,"
-  EOL"                                  const int theLightCount,"
-  EOL"                                  const float theEpsilon,"
-  EOL"                                  const float theRadius,"
-  EOL"                                  const int isShadows,"
-  EOL"                                  const int isReflect,"
-  EOL"                                  const int theSizeX,"
-  EOL"                                  const int theSizeY )"
+  EOL"  __kernel void RaytraceSmooth (const int theSizeX,"
+  EOL"                                const int theSizeY,"
+  EOL"                                const float16 theOrigins,"
+  EOL"                                const float16 theDirects,"
+  EOL"                                __read_only image2d_t theInput,"
+  EOL"                                __read_only image2d_t theEnvMap,"
+  EOL"                                __write_only image2d_t theOutput,"
+  EOL"                                __global int4* theSceneNodeInfoBuffer,"
+  EOL"                                __global float4* theSceneMinPointBuffer,"
+  EOL"                                __global float4* theSceneMaxPointBuffer,"
+  EOL"                                __global int4* theObjectNodeInfoBuffer,"
+  EOL"                                __global float4* theObjectMinPointBuffer,"
+  EOL"                                __global float4* theObjectMaxPointBuffer,"
+  EOL"                                __global int4* theGeometryTriangBuffer,"
+  EOL"                                __global float4* theGeometryVertexBuffer,"
+  EOL"                                __global float4* theGeometryNormalBuffer,"
+  EOL"                                __global float4* theLightSourceBuffer,"
+  EOL"                                __global float4* theMaterialBuffer,"
+  EOL"                                const float4 theGlobalAmbient,"
+  EOL"                                const int theLightBufferSize,"
+  EOL"                                const int theShadowsEnabled,"
+  EOL"                                const int theReflectEnabled,"
+  EOL"                                const float theSceneEpsilon,"
+  EOL"                                const float theSceneRadius)"
   EOL"  {"
-  EOL"    const int aX = get_global_id (0);"
-  EOL"    const int aY = get_global_id (1);"
+  EOL"    const int aPixelX = get_global_id (0);"
+  EOL"    const int aPixelY = get_global_id (1);"
   EOL
-  EOL"    if (aX >= theSizeX || aY >= theSizeY)"
+  EOL"    if (aPixelX >= theSizeX || aPixelY >= theSizeY)"
   EOL"      return;"
   EOL
-  EOL"    float4 aClr0 = read_imagef (theInput, OutputSampler, (float2) (aX + 0, aY + 0));"
-  EOL"    float4 aClr1 = read_imagef (theInput, OutputSampler, (float2) (aX + 0, aY - 1));"
-  EOL"    float4 aClr2 = read_imagef (theInput, OutputSampler, (float2) (aX + 0, aY + 1));"
+  EOL"    float4 aClr0 = read_imagef (theInput, OutputSampler, (float2) (aPixelX + 0, aPixelY + 0));"
+  EOL"    float4 aClr1 = read_imagef (theInput, OutputSampler, (float2) (aPixelX + 0, aPixelY - 1));"
+  EOL"    float4 aClr2 = read_imagef (theInput, OutputSampler, (float2) (aPixelX + 0, aPixelY + 1));"
   EOL
-  EOL"    float4 aClr3 = read_imagef (theInput, OutputSampler, (float2) (aX + 1, aY + 0));"
-  EOL"    float4 aClr4 = read_imagef (theInput, OutputSampler, (float2) (aX + 1, aY - 1));"
-  EOL"    float4 aClr5 = read_imagef (theInput, OutputSampler, (float2) (aX + 1, aY + 1));"
+  EOL"    float4 aClr3 = read_imagef (theInput, OutputSampler, (float2) (aPixelX + 1, aPixelY + 0));"
+  EOL"    float4 aClr4 = read_imagef (theInput, OutputSampler, (float2) (aPixelX + 1, aPixelY - 1));"
+  EOL"    float4 aClr5 = read_imagef (theInput, OutputSampler, (float2) (aPixelX + 1, aPixelY + 1));"
   EOL
-  EOL"    float4 aClr6 = read_imagef (theInput, OutputSampler, (float2) (aX - 1, aY + 0));"
-  EOL"    float4 aClr7 = read_imagef (theInput, OutputSampler, (float2) (aX - 1, aY - 1));"
-  EOL"    float4 aClr8 = read_imagef (theInput, OutputSampler, (float2) (aX - 1, aY + 1));"
+  EOL"    float4 aClr6 = read_imagef (theInput, OutputSampler, (float2) (aPixelX - 1, aPixelY + 0));"
+  EOL"    float4 aClr7 = read_imagef (theInput, OutputSampler, (float2) (aPixelX - 1, aPixelY - 1));"
+  EOL"    float4 aClr8 = read_imagef (theInput, OutputSampler, (float2) (aPixelX - 1, aPixelY + 1));"
   EOL
-  EOL"    aClr1 = (aClr1.w == 1.f) ? -UNIT : aClr1;"
-  EOL"    aClr2 = (aClr2.w == 1.f) ? -UNIT : aClr2;"
-  EOL"    aClr3 = (aClr3.w == 1.f) ? -UNIT : aClr3;"
-  EOL"    aClr4 = (aClr4.w == 1.f) ? -UNIT : aClr4;"
-  EOL"    aClr5 = (aClr5.w == 1.f) ? -UNIT : aClr5;"
-  EOL"    aClr6 = (aClr6.w == 1.f) ? -UNIT : aClr6;"
-  EOL"    aClr7 = (aClr7.w == 1.f) ? -UNIT : aClr7;"
-  EOL"    aClr8 = (aClr8.w == 1.f) ? -UNIT : aClr8;"
+  EOL"    bool render = fabs (aClr1.w - aClr0.w) > _LUM_DELTA_ ||"
+  EOL"                  fabs (aClr2.w - aClr0.w) > _LUM_DELTA_ ||"
+  EOL"                  fabs (aClr3.w - aClr0.w) > _LUM_DELTA_ ||"
+  EOL"                  fabs (aClr4.w - aClr0.w) > _LUM_DELTA_ ||"
+  EOL"                  fabs (aClr5.w - aClr0.w) > _LUM_DELTA_ ||"
+  EOL"                  fabs (aClr6.w - aClr0.w) > _LUM_DELTA_ ||"
+  EOL"                  fabs (aClr7.w - aClr0.w) > _LUM_DELTA_ ||"
+  EOL"                  fabs (aClr8.w - aClr0.w) > _LUM_DELTA_;"
   EOL
-  EOL"    float aLum = (aClr0.w == 1.f) ? -1.f : (0.2126f * aClr0.x + 0.7152f * aClr0.y + 0.0722f * aClr0.z);"
+  EOL"    if (!render)"
+  EOL"    {"
+  EOL"      aClr1 = (aClr1.w == 1.f) ? -UNIT : aClr1;"
+  EOL"      aClr2 = (aClr2.w == 1.f) ? -UNIT : aClr2;"
+  EOL"      aClr3 = (aClr3.w == 1.f) ? -UNIT : aClr3;"
+  EOL"      aClr4 = (aClr4.w == 1.f) ? -UNIT : aClr4;"
+  EOL"      aClr5 = (aClr5.w == 1.f) ? -UNIT : aClr5;"
+  EOL"      aClr6 = (aClr6.w == 1.f) ? -UNIT : aClr6;"
+  EOL"      aClr7 = (aClr7.w == 1.f) ? -UNIT : aClr7;"
+  EOL"      aClr8 = (aClr8.w == 1.f) ? -UNIT : aClr8;"
   EOL
+  EOL"      float aLum = (aClr0.w == 1.f) ? -1.f : (0.2126f * aClr0.x + 0.7152f * aClr0.y + 0.0722f * aClr0.z);"
   EOL
-  EOL"    bool render = fabs (0.2126f * aClr1.x + 0.7152f * aClr1.y + 0.0722f * aClr1.z - aLum) > _LUM_DELTA_ ||"
-  EOL"                  fabs (0.2126f * aClr2.x + 0.7152f * aClr2.y + 0.0722f * aClr2.z - aLum) > _LUM_DELTA_ ||"
-  EOL"                  fabs (0.2126f * aClr3.x + 0.7152f * aClr3.y + 0.0722f * aClr3.z - aLum) > _LUM_DELTA_ ||"
-  EOL"                  fabs (0.2126f * aClr4.x + 0.7152f * aClr4.y + 0.0722f * aClr4.z - aLum) > _LUM_DELTA_ ||"
-  EOL"                  fabs (0.2126f * aClr5.x + 0.7152f * aClr5.y + 0.0722f * aClr5.z - aLum) > _LUM_DELTA_ ||"
-  EOL"                  fabs (0.2126f * aClr6.x + 0.7152f * aClr6.y + 0.0722f * aClr6.z - aLum) > _LUM_DELTA_ ||"
-  EOL"                  fabs (0.2126f * aClr7.x + 0.7152f * aClr7.y + 0.0722f * aClr7.z - aLum) > _LUM_DELTA_ ||"
-  EOL"                  fabs (0.2126f * aClr8.x + 0.7152f * aClr8.y + 0.0722f * aClr8.z - aLum) > _LUM_DELTA_;"
+  EOL"      render = fabs (0.2126f * aClr1.x + 0.7152f * aClr1.y + 0.0722f * aClr1.z - aLum) > _LUM_DELTA_ ||"
+  EOL"               fabs (0.2126f * aClr2.x + 0.7152f * aClr2.y + 0.0722f * aClr2.z - aLum) > _LUM_DELTA_ ||"
+  EOL"               fabs (0.2126f * aClr3.x + 0.7152f * aClr3.y + 0.0722f * aClr3.z - aLum) > _LUM_DELTA_ ||"
+  EOL"               fabs (0.2126f * aClr4.x + 0.7152f * aClr4.y + 0.0722f * aClr4.z - aLum) > _LUM_DELTA_ ||"
+  EOL"               fabs (0.2126f * aClr5.x + 0.7152f * aClr5.y + 0.0722f * aClr5.z - aLum) > _LUM_DELTA_ ||"
+  EOL"               fabs (0.2126f * aClr6.x + 0.7152f * aClr6.y + 0.0722f * aClr6.z - aLum) > _LUM_DELTA_ ||"
+  EOL"               fabs (0.2126f * aClr7.x + 0.7152f * aClr7.y + 0.0722f * aClr7.z - aLum) > _LUM_DELTA_ ||"
+  EOL"               fabs (0.2126f * aClr8.x + 0.7152f * aClr8.y + 0.0722f * aClr8.z - aLum) > _LUM_DELTA_;"
+  EOL"    }"
   EOL
-  EOL"    float4 aColor = aClr0;"
+  EOL"    float4 aColor = clamp (aClr0, 0.f, 1.f);"
   EOL
   EOL"    private SRay aRay;"
   EOL
-  EOL"    const float4 aBoxMin = theNodeMinPoints[0] - (float4) (theEpsilon, theEpsilon, theEpsilon, 0.f);"
-  EOL"    const float4 aBoxMax = theNodeMaxPoints[0] + (float4) (theEpsilon, theEpsilon, theEpsilon, 0.f);"
+  EOL"    const float4 aBoxMin = theSceneMinPointBuffer[0];"
+  EOL"    const float4 aBoxMax = theSceneMaxPointBuffer[0];"
   EOL
   EOL"    if (render)"
   EOL"    {"
   EOL"      for (int aSample = 0; aSample <= 3; ++aSample)"
   EOL"      {"
-  EOL"          float fX = aX, fY = aY;"
+  EOL"          float fX = aPixelX, fY = aPixelY;"
   EOL
   EOL"          if (aSample == 0)"
   EOL"          {"
@@ -900,28 +1124,31 @@ extern const char THE_RAY_TRACE_OPENCL_SOURCE[] =
   EOL"                       theOrigins,"
   EOL"                       theDirects);"
   EOL
-  EOL"          float aTimeStart;"
-  EOL"          float aTimeFinal;"
+  EOL"          float aTimeStart = IntersectBox (&aRay, aBoxMin, aBoxMax);"
   EOL
-  EOL"          if (IntersectBox (&aRay, aBoxMin, aBoxMax, &aTimeStart, &aTimeFinal))"
+  EOL"          if (aTimeStart != MAXFLOAT)"
   EOL"          {"
-  EOL"            aRay.Origin = fma (aRay.Direct, (float4) (aTimeStart), aRay.Origin);"
+  EOL"            aRay.Origin += aRay.Direct * max (aTimeStart - theSceneEpsilon, 0.f);"
   EOL
-  EOL"            aColor += Raytrace (&aRay,"
-  EOL"                                theEnvMap,"
-  EOL"                                theNodeMinPoints,"
-  EOL"                                theNodeMaxPoints,"
-  EOL"                                theNodeDataRecords,"
-  EOL"                                theLightSources,"
-  EOL"                                theMaterials,"
-  EOL"                                theVertices,"
-  EOL"                                theNormals,"
-  EOL"                                theIndices,"
-  EOL"                                theLightCount,"
-  EOL"                                theEpsilon,"
-  EOL"                                theRadius,"
-  EOL"                                isShadows,"
-  EOL"                                isReflect);"
+  EOL"            aColor += clamp (Radiance (&aRay,"
+  EOL"                                       theEnvMap,"
+  EOL"                                       theSceneNodeInfoBuffer,"
+  EOL"                                       theSceneMinPointBuffer,"
+  EOL"                                       theSceneMaxPointBuffer,"
+  EOL"                                       theObjectNodeInfoBuffer,"
+  EOL"                                       theObjectMinPointBuffer,"
+  EOL"                                       theObjectMaxPointBuffer,"
+  EOL"                                       theGeometryTriangBuffer,"
+  EOL"                                       theGeometryVertexBuffer,"
+  EOL"                                       theGeometryNormalBuffer,"
+  EOL"                                       theLightSourceBuffer,"
+  EOL"                                       theMaterialBuffer,"
+  EOL"                                       theGlobalAmbient,"
+  EOL"                                       theLightBufferSize,"
+  EOL"                                       theShadowsEnabled,"
+  EOL"                                       theReflectEnabled,"
+  EOL"                                       theSceneEpsilon,"
+  EOL"                                       theSceneRadius), 0.f, 1.f);"
   EOL"          }"
   EOL"          else"
   EOL"            aColor += (float4) (0.f, 0.f, 0.f, 1.f);"
@@ -930,7 +1157,7 @@ extern const char THE_RAY_TRACE_OPENCL_SOURCE[] =
   EOL"        aColor *= 1.f / 5.f;"
   EOL"    }"
   EOL
-  EOL"    write_imagef (theOutput, (int2) (aX, aY), aColor);"
+  EOL"    write_imagef (theOutput, (int2) (aPixelX, aPixelY), aColor);"
   EOL"  }";
 
 #endif

@@ -133,11 +133,8 @@ Handle_OpenGl_ShaderObject.hxx
 Handle_OpenGl_ShaderProgram.hxx
 Handle_OpenGl_ShaderManager.hxx
 OpenGl_Cl.hxx
-OpenGl_AABB.hxx
-OpenGl_AABB.cxx
 OpenGl_SceneGeometry.hxx
 OpenGl_SceneGeometry.cxx
-OpenGl_RaytraceTypes.hxx
 OpenGl_RaytraceSource.cxx
 OpenGl_Workspace_Raytrace.cxx
 OpenGl_Flipper.hxx

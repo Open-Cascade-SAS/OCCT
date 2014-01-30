@@ -275,42 +275,42 @@ protected: //! @name methods related to ray-tracing
 
   //! Updates environment map for ray-tracing.
   Standard_Boolean UpdateRaytraceEnvironmentMap();
-
+  
   //! Adds OpenGL structure to ray-traced scene geometry.
-  Standard_Boolean AddRaytraceStructure (const OpenGl_Structure* theStruct,
-                       const float* theTrans, std::set<const OpenGl_Structure*>& theElements);
+  Standard_Boolean AddRaytraceStructure (const OpenGl_Structure* theStructure,
+    const Standard_ShortReal* theTransform, std::set<const OpenGl_Structure*>& theElements);
 
   //! Adds OpenGL primitive array to ray-traced scene geometry.
-  Standard_Boolean AddRaytracePrimitiveArray (
-                       const CALL_DEF_PARRAY* theArray, int theMatID, const float* theTrans);
+  OpenGl_TriangleSet* AddRaytracePrimitiveArray (
+    const CALL_DEF_PARRAY* theArray, int theMatID, const Standard_ShortReal* theTrans);
 
   //! Adds vertex indices from OpenGL primitive array to ray-traced scene geometry.
-  Standard_Boolean AddRaytraceVertexIndices (const CALL_DEF_PARRAY* theArray,
-   int theFirstVert, int theVertOffset, int theVertNum, int theMatID);
+  Standard_Boolean AddRaytraceVertexIndices (OpenGl_TriangleSet* theSet,
+    const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID);
 
   //! Adds OpenGL triangle array to ray-traced scene geometry.
-  Standard_Boolean AddRaytraceTriangleArray (const CALL_DEF_PARRAY* theArray,
-                              int theFirstVert, int theVertOffset, int theVertNum, int theMatID);
+  Standard_Boolean AddRaytraceTriangleArray (OpenGl_TriangleSet* theSet,
+    const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID);
 
   //! Adds OpenGL triangle fan array to ray-traced scene geometry.
-  Standard_Boolean AddRaytraceTriangleFanArray (const CALL_DEF_PARRAY* theArray,
-                              int theFirstVert, int theVertOffset, int theVertNum, int theMatID);
+  Standard_Boolean AddRaytraceTriangleFanArray (OpenGl_TriangleSet* theSet,
+    const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID);
 
-  //! Adds OpenGL triangle fan array to ray-traced scene geometry.
-  Standard_Boolean AddRaytraceTriangleStripArray (const CALL_DEF_PARRAY* theArray,
-                              int theFirstVert, int theVertOffset, int theVertNum, int theMatID);
+  //! Adds OpenGL triangle strip array to ray-traced scene geometry.
+  Standard_Boolean AddRaytraceTriangleStripArray (OpenGl_TriangleSet* theSet,
+    const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID);
 
   //! Adds OpenGL quadrangle array to ray-traced scene geometry.
-  Standard_Boolean AddRaytraceQuadrangleArray (const CALL_DEF_PARRAY* theArray,
-                              int theFirstVert, int theVertOffset, int theVertNum, int theMatID);
+  Standard_Boolean AddRaytraceQuadrangleArray (OpenGl_TriangleSet* theSet,
+    const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID);
 
   //! Adds OpenGL quadrangle strip array to ray-traced scene geometry.
-  Standard_Boolean AddRaytraceQuadrangleStripArray (const CALL_DEF_PARRAY* theArray,
-                              int theFirstVert, int theVertOffset, int theVertNum, int theMatID);
+  Standard_Boolean AddRaytraceQuadrangleStripArray (OpenGl_TriangleSet* theSet,
+    const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID);
 
   //! Adds OpenGL polygon array to ray-traced scene geometry.
-  Standard_Boolean AddRaytracePolygonArray (const CALL_DEF_PARRAY* theArray,
-                              int theFirstVert, int theVertOffset, int theVertNum, int theMatID);
+  Standard_Boolean AddRaytracePolygonArray (OpenGl_TriangleSet* theSet,
+    const CALL_DEF_PARRAY* theArray, Standard_Integer theOffset, Standard_Integer theCount, Standard_Integer theMatID);
 
   //! Initializes OpenCL resources.
   Standard_Boolean InitOpenCL();
@@ -325,11 +325,18 @@ protected: //! @name methods related to ray-tracing
   Standard_Boolean WriteRaytraceSceneToDevice();
 
   //! Runs OpenCL ray-tracing kernels.
-  Standard_Boolean RunRaytraceOpenCLKernels (const Graphic3d_CView& theCView,
+  Standard_Boolean RunRaytraceOpenCLKernelsOld (const Graphic3d_CView& theCView,
                                              const GLfloat theOrigins[16],
                                              const GLfloat theDirects[16],
                                              const int theSizeX,
                                              const int theSizeY);
+
+  //! Launches OpenCL ray-tracing kernels.
+  Standard_Boolean RunRaytraceOpenCLKernels (const Graphic3d_CView&   theCView,
+                                             const Standard_ShortReal theOrigins[16],
+                                             const Standard_ShortReal theDirects[16],
+                                             const Standard_Integer   theSizeX,
+                                             const Standard_Integer   theSizeY);
 
   //! Redraws the window using OpenCL ray tracing.
   Standard_Boolean Raytrace (const Graphic3d_CView& theCView,
@@ -346,21 +353,19 @@ protected: //! @name fields related to ray-tracing
   Standard_Boolean myIsRaytraceDataValid;
   //! Is geometry data musty be updated?
   Standard_Boolean myToUpdateRaytraceData;
+  
   //! 3D scene geometry data for ray-tracing.
-  OpenGl_RaytraceScene myRaytraceSceneData;
+  OpenGl_RaytraceGeometry myRaytraceGeometry;
 
   //! Radius of bounding sphere of the scene.
-  float myRaytraceSceneRadius;
+  Standard_ShortReal myRaytraceSceneRadius;
   //! Scene epsilon to prevent self-intersections.
-  float myRaytraceSceneEpsilon;
-
-  //! Binned SAH-based BVH builder.
-  OpenGl_BinnedBVHBuilder myBVHBuilder;
+  Standard_ShortReal myRaytraceSceneEpsilon;
 
   //! OpenCL context.
   cl_context myComputeContext;
   //! OpenCL command queue.
-  cl_command_queue myRaytraceQueue;
+  cl_command_queue myComputeQueue;
   //! OpenCL computing program.
   cl_program myRaytraceProgram;
   //! OpenCL ray-tracing render kernel.
@@ -380,33 +385,38 @@ protected: //! @name fields related to ray-tracing
   //! OpenGL texture to store anti-aliasing result.
   Handle(OpenGl_Texture) myRaytraceOutputTextureAA;
 
-  //! OpenCL buffer of vertex normals.
-  cl_mem myRaytraceNormalBuffer;
-  //! OpenCL buffer of vertex coordinates.
-  cl_mem myRaytraceVertexBuffer;
-  //! OpenCL buffer of indices of triangle vertices.
-  cl_mem myRaytraceTriangleBuffer;
-
-  //! OpenCL buffer of minimum points of BVH nodes.
-  cl_mem myRaytraceNodeMinPointBuffer;
-  //! OpenCL buffer of maximum points of BVH nodes.
-  cl_mem myRaytraceNodeMaxPointBuffer;
-  //! OpenCL buffer of data records of BVH nodes.
-  cl_mem myRaytraceNodeDataRcrdBuffer;
-
   //! OpenCL buffer of material properties.
   cl_mem myRaytraceMaterialBuffer;
-  
   //! OpenCL buffer of light source properties.
   cl_mem myRaytraceLightSourceBuffer;
 
+  //! OpenCL buffer of vertex coords.
+  cl_mem myGeometryVertexBuffer;
+  //! OpenCL buffer of vertex normals.
+  cl_mem myGeometryNormalBuffer;
+  //! OpenCL buffer of triangle indices.
+  cl_mem myGeometryTriangBuffer;
+
+  //! OpenCL buffer of data records of high-level BVH nodes.
+  cl_mem mySceneNodeInfoBuffer;
+  //! OpenCL buffer of minimum points of high-level BVH nodes.
+  cl_mem mySceneMinPointBuffer;
+  //! OpenCL buffer of maximum points of high-level BVH nodes.
+  cl_mem mySceneMaxPointBuffer;
+
+  //! OpenCL buffer of data records of bottom-level BVH nodes.
+  cl_mem myObjectNodeInfoBuffer;
+  //! OpenCL buffer of minimum points of bottom-level BVH nodes.
+  cl_mem myObjectMinPointBuffer;
+  //! OpenCL buffer of maximum points of bottom-level BVH nodes.
+  cl_mem myObjectMaxPointBuffer;
+
   //! State of OpenGL view.
   Standard_Size myViewModificationStatus;
-
   //! State of OpenGL layer list.
   Standard_Size myLayersModificationStatus;
 
-  //! State of OpenGL elements reflected to ray-tracing.
+  //! State of OpenGL structures reflected to ray-tracing.
   std::map<const OpenGl_Structure*, Standard_Size> myStructureStates;
 
 #endif // HAVE_OPENCL

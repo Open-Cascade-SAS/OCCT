@@ -1257,7 +1257,7 @@ void OpenGl_Context::ReleaseDelayed()
     myReleaseQueue->Pop();
   }
 
-  // release delayed shared resoruces
+  // release delayed shared resources
   NCollection_Vector<TCollection_AsciiString> aDeadList;
   for (NCollection_DataMap<TCollection_AsciiString, Standard_Integer>::Iterator anIter (*myDelayed);
        anIter.More(); anIter.Next())
