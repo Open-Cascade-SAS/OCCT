@@ -1,0 +1,36 @@
+puts "============"
+puts "OCC24555"
+puts "============"
+puts ""
+#######################################################################
+# Visualization - the same text is rendered with shift at second time
+#######################################################################
+
+vinit
+vclear
+vaxo
+vdrawtext "This program" 0 0 0 0 255 0 0 0 0 0 50 1 Arial
+
+vdrawtext "This program" 0 0 0 255 0 0 0 0 0 0 50 1 Arial
+
+set x 346
+set y 190
+
+set R 0
+set G 0.9843137264251709
+set B 0
+
+decho off
+set catch_status 0
+if { [catch {QAGetPixelColor $x $y $R $G $B} catch_result] } {
+   set catch_status 1
+}
+decho on
+
+if {${catch_status} == 0} {
+   puts "Error : color is bad"
+} else {
+   puts "OK : color is good"
+}
+
+set only_screen 1

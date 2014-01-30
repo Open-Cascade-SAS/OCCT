@@ -29,6 +29,7 @@ Font_FTFont::Font_FTFont (const Handle(Font_FTLibrary)& theFTLib)
 : myFTLib (theFTLib),
   myFTFace (NULL),
   myPointSize (0),
+  myLoadFlags (FT_LOAD_NO_HINTING | FT_LOAD_TARGET_NORMAL),
   myUChar (0)
 {
   if (myFTLib.IsNull())
@@ -131,7 +132,7 @@ bool Font_FTFont::loadGlyph (const Standard_Utf32Char theUChar)
   myGlyphImg.Clear();
   myUChar = 0;
   if (theUChar == 0
-   || FT_Load_Char (myFTFace, theUChar, FT_LOAD_TARGET_NORMAL) != 0
+   || FT_Load_Char (myFTFace, theUChar, myLoadFlags) != 0
    || myFTFace->glyph == NULL)
   {
     return false;
@@ -150,7 +151,7 @@ bool Font_FTFont::RenderGlyph (const Standard_Utf32Char theUChar)
   myGlyphImg.Clear();
   myUChar = 0;
   if (theUChar == 0
-   || FT_Load_Char (myFTFace, theUChar, FT_LOAD_RENDER | FT_LOAD_NO_HINTING | FT_LOAD_TARGET_NORMAL) != 0
+   || FT_Load_Char (myFTFace, theUChar, myLoadFlags | FT_LOAD_RENDER) != 0
    || myFTFace->glyph == NULL
    || myFTFace->glyph->format != FT_GLYPH_FORMAT_BITMAP)
   {
