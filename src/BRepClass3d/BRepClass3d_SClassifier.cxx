@@ -30,12 +30,14 @@
 #include <ElCLib.hxx>
 #include <Geom_Surface.hxx>
 #include <BRep_Tool.hxx>
+#include <math_RealRandom.hxx>
+#include <BRepTopAdaptor_FClass2d.hxx>
 
 static
-  void FaceNormal (const TopoDS_Face& aF,
-		   const Standard_Real U,
-		   const Standard_Real V,
-		   gp_Dir& aDN);
+  Standard_Boolean FaceNormal (const TopoDS_Face& aF,
+                               const Standard_Real U,
+                               const Standard_Real V,
+                               gp_Dir& aDN);
 
 static 
   Standard_Real GetAddToParam(const gp_Lin& L,const Standard_Real P,const Bnd_Box& B);
@@ -73,13 +75,17 @@ BRepClass3d_SClassifier::BRepClass3d_SClassifier(BRepClass3d_SolidExplorer& S,
 //=======================================================================
 void BRepClass3d_SClassifier::PerformInfinitePoint(BRepClass3d_SolidExplorer& aSE,
 						   const Standard_Real /*Tol*/) {
-  //-- Idea : Take point A in face1 and point B in face B 
-  //-- (if there is only one face, take 2 points in the same face.)
-  //-- 
-  //-- Intersect straight line AB with the solid and produce transition of the 
-  //-- first point. If the solid has only one face and the straight line AB does not cut it 
-  //-- it is not possible to decide.
 
+  //Take a normal to the first extracted face in its random inner point
+  //and intersect this reversed normal with the faces of the solid.
+  //If the min.par.-intersection point is
+  // a) inner point of a face
+  // b) transition is not TANGENT
+  //    (the line does not touch the face but pierces it)
+  //then set <myState> to IN or OUT according to transition
+  //else take the next random point inside the min.par.-intersected face
+  //and continue
+  
   if(aSE.Reject(gp_Pnt(0,0,0))) { 
     myState=3; //-- in ds solid case without face 
     return;
@@ -87,150 +93,83 @@ void BRepClass3d_SClassifier::PerformInfinitePoint(BRepClass3d_SolidExplorer& aS
   //
   //------------------------------------------------------------
   // 1
-  Standard_Boolean bFound, bFlag;
-  Standard_Integer nump;
-  Standard_Real aParam, aU1 = 0., aV1 = 0., aU2 = 0., aV2 = 0.;
-  gp_Pnt A,B;
-  gp_Dir aDN1, aDN2;
-  TopoDS_Face aF1, aF2;
-  //
-  nump = 0;
-  aParam = 0.5;
-  myFace.Nullify();
-  myState=2; 
-  for(aSE.InitShell(); aSE.MoreShell() && nump<2;  aSE.NextShell()) { 
-    for(aSE.InitFace();	aSE.MoreFace()  && nump<2; ) {
-      TopoDS_Face aF = aSE.CurrentFace();
-      aSE.NextFace();
-      if(!nump) { 
-	nump++;
-	bFound=aSE.FindAPointInTheFace(aF, A, aU1, aV1, aParam);
-	if (!bFound) {
-	  return;
-	}
-	aF1=aF;
-	if(!aSE.MoreFace()) { 
-	  nump++;
-	  bFound=aSE.FindAPointInTheFace(aF, B, aU2, aV2, aParam);
-	  if (!bFound) {
-	    return;
-	  }
-	  aF2=aF;
-	}
-      }// if(nump==0) {    
-      else if(nump==1) { 
-	bFound=aSE.FindAPointInTheFace(aF, B, aU2, aV2, aParam);
-	if(!bFound) { 
-	  return;
-	} 
-	aF2=aF;
-	nump++;
-      }
-    }// for(aSE.InitFace();	aSE.MoreFace()  && nump<2; ) {
-  }// for(aSE.InitShell(); aSE.MoreShell() && nump<2;  aSE.NextShell()) { 
-  //
-  //------------------------------------------------------------
-  // 2
-  Standard_Integer cpasbon;
-  Standard_Real parmin, aD2, aSP;
-  IntCurveSurface_TransitionOnCurve aTC;    
-  TopAbs_State aState;
-  //
-  parmin = RealLast();
-  //
-  bFlag=Standard_False;
-  if (aF1!=aF2) {
-    FaceNormal(aF1, aU1, aV1, aDN1);
-    FaceNormal(aF2, aU2, aV2, aDN2);
-    aSP=1.-aDN1*aDN2;
-    if (aSP < 1.e-5) {
-      bFlag=!bFlag;
-    }
-  }
-  //
-  aD2=A.SquareDistance(B);
-  if(aD2<0.000001 || bFlag) { 
-    B.SetCoord(A.X()+1,A.Y()+1,A.Z()+1);
-  }
-  //
-  cpasbon = 0;
-  gp_Vec AB(A,B);
-  //
-  do { 
-    switch (cpasbon) 
-      {
-      case 1 : AB.SetX(-AB.X());break;
-      case 2 : AB.SetY(-AB.Y());break;
-      case 3 : AB.SetZ(-AB.Z());break;
-      case 4 : AB.SetY(-AB.Y());break;
-      case 5 : AB.SetX(-AB.X());break;
-      }
-    gp_Lin L(A,gp_Dir(AB));    
-    //-- cout<<"\npoint A "<<A.X()<<" "<<A.Y()<<" "<<A.Z()<<endl;
-    //-- cout<<"\npoint B "<<B.X()<<" "<<B.Y()<<" "<<B.Z()<<endl;
-    for(aSE.InitShell();aSE.MoreShell();aSE.NextShell()) { 
-      if(aSE.RejectShell(L) == Standard_False) { 
-	for(aSE.InitFace();aSE.MoreFace(); aSE.NextFace()) {
-	  if(aSE.RejectFace(L) == Standard_False) { 
-	    TopoDS_Shape aLocalShape = aSE.CurrentFace();
-	    TopoDS_Face f = TopoDS::Face(aLocalShape);
-	    IntCurvesFace_Intersector& Intersector3d = aSE.Intersector(f);
-	    Intersector3d.Perform(L,-RealLast(),parmin); 
+  Standard_Boolean bFound;
+  Standard_Real aParam, aU = 0., aV = 0.;
+  gp_Pnt aPoint;
+  gp_Dir aDN;
 
-	    if(Intersector3d.IsDone()) { 
-	      if(Intersector3d.NbPnt()) { 
-		if(Intersector3d.WParameter(1) < parmin) {
-		  aState=Intersector3d.State(1);
-		  parmin = Intersector3d.WParameter(1);
-		  if(aState==TopAbs_IN || aState==TopAbs_ON) { 
-		    aTC=Intersector3d.Transition(1);
-		    //-- The intersection point between the line and a face F 
-		    // -- of the solid is in the face F 
-		    if(aTC == IntCurveSurface_Out) { 
-		      //-- The line is going from inside the solid to outside 
-		      //-- the solid.
-		      myState = 3; //-- IN --
-		    }
-		    else if(aTC == IntCurveSurface_In) { 
-		      myState = 4; //-- OUT --
-		    }
-		    myFace  = f;
-		  }
-		  /*
-		  else if(Intersector3d.State(1)==TopAbs_ON)  {
-		    //-- The intersection point between the line and a face F 
-		    //-- of the solid is in the face F 
-		    if(Intersector3d.Transition(1) == IntCurveSurface_Out) { 
-		      //-- The line is going from inside the solid to outside 
-		      //-- the solid.
-		      myState = 3; //-- IN --
-		    }
-		    else if(Intersector3d.Transition(1) == IntCurveSurface_In) { 
-		      myState = 4; //-- OUT --
-		    }
-		    //-- myState = 2;
-		    myFace  = f;
-		  }
-		  */
-		}
-		
-		else { 
-		  //-- No point has been found by the Intersector3d.
-		  //-- Or a Point has been found with a greater parameter.
-		}
-	      }
-	    }
-	  }
-	} //-- Exploration of the faces
-      } //-- Shell has not been rejected
-      else { 
-	myState=1; 
+  math_RealRandom RandomGenerator(0.1, 0.9);
+  myFace.Nullify();
+  myState=2;
+
+  aSE.InitShell();
+  if (aSE.MoreShell())
+  {
+    aSE.InitFace();
+    if (aSE.MoreFace())
+    {
+      TopoDS_Face aF = aSE.CurrentFace();
+      TopAbs_State aState = TopAbs_OUT;
+      IntCurveSurface_TransitionOnCurve aTransition = IntCurveSurface_Tangent;
+      TopoDS_Face MinFace = aF;
+      for (;;)
+      {
+        aParam = RandomGenerator.Next();
+	bFound = aSE.FindAPointInTheFace(aF, aPoint, aU, aV, aParam);
+	if (!bFound)
+	  return;
+
+        if (!FaceNormal(aF, aU, aV, aDN))
+          continue;
+        gp_Lin aLin(aPoint, -aDN);
+        Standard_Real parmin = RealLast();
+        for (aSE.InitShell();aSE.MoreShell();aSE.NextShell()) { 
+          if (aSE.RejectShell(aLin) == Standard_False) { 
+            for (aSE.InitFace();aSE.MoreFace(); aSE.NextFace()) {
+              if (aSE.RejectFace(aLin) == Standard_False) { 
+                TopoDS_Shape aLocalShape = aSE.CurrentFace();
+                TopoDS_Face CurFace = TopoDS::Face(aLocalShape);
+                IntCurvesFace_Intersector& Intersector3d = aSE.Intersector(CurFace);
+                Intersector3d.Perform(aLin,-RealLast(),parmin); 
+                
+                if(Intersector3d.IsDone()) {
+                  if(Intersector3d.NbPnt()) { 
+                    Standard_Integer imin = 1;
+                    for (Standard_Integer i = 2; i <= Intersector3d.NbPnt(); i++)
+                      if (Intersector3d.WParameter(i) < Intersector3d.WParameter(imin))
+                        imin = i;
+                    parmin = Intersector3d.WParameter(imin);
+                    aState = Intersector3d.State(imin);
+                    aTransition = Intersector3d.Transition(imin);
+                    MinFace = CurFace;
+                  }
+                }
+              }
+            }
+          }
+          else
+            myState = 1;
+        } //end of loop on the whole solid
+        
+        if (aState == TopAbs_IN)
+        {
+          if (aTransition == IntCurveSurface_Out) { 
+            //-- The line is going from inside the solid to outside 
+            //-- the solid.
+            myState = 3; //-- IN --
+            return;
+          }
+          else if (aTransition == IntCurveSurface_In) { 
+            myState = 4; //-- OUT --
+            return;
+          }
+        }
+        aF = MinFace;
       }
-    } //-- Exploration of the shells
-    cpasbon++;
-  }
-  while(cpasbon!=0 && cpasbon<5);
+    } //if (aSE.MoreFace())
+  } //if (aSE.MoreShell())
 }
+
 //=======================================================================
 //function : Perform
 //purpose  : 
@@ -516,10 +455,10 @@ Standard_Real GetAddToParam(const gp_Lin&       L,
 //function : FaceNormal
 //purpose  : 
 //=======================================================================
-void FaceNormal (const TopoDS_Face& aF,
-		 const Standard_Real U,
-		 const Standard_Real V,
-		 gp_Dir& aDN)
+Standard_Boolean FaceNormal (const TopoDS_Face& aF,
+                             const Standard_Real U,
+                             const Standard_Real V,
+                             gp_Dir& aDN)
 {
   gp_Pnt aPnt ;
   gp_Vec aD1U, aD1V, aN;
@@ -528,10 +467,13 @@ void FaceNormal (const TopoDS_Face& aF,
   aS=BRep_Tool::Surface(aF);
   aS->D1 (U, V, aPnt, aD1U, aD1V);
   aN=aD1U.Crossed(aD1V);
+  if (aN.Magnitude() <= gp::Resolution())
+    return Standard_False;
+  
   aN.Normalize();  
   aDN.SetXYZ(aN.XYZ());
   if (aF.Orientation() == TopAbs_REVERSED){
     aDN.Reverse();
   }
-  return;
+  return Standard_True;
 }
