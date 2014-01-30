@@ -54,6 +54,8 @@
 #include <BRep_Tool.hxx> 
 #include <BRepClass_FaceClassifier.hxx>
 //<-OCC454(apo)
+#include <BRepTopAdaptor_FClass2d.hxx> 
+
 
 //=======================================================================
 //function : FindAPointInTheFace
@@ -177,6 +179,14 @@ Standard_Boolean BRepClass3d_SolidExplorer::FindAPointInTheFace
       ParamInit *= 0.41234;
       u_ = P.X() + ParamInit* T.X();
       v_ = P.Y() + ParamInit* T.Y();
+
+      //Additional check
+      BRepTopAdaptor_FClass2d Classifier(face, Precision::Confusion());
+      gp_Pnt2d aPnt2d(u_, v_);
+      TopAbs_State StateOfResultingPoint = Classifier.Perform(aPnt2d);
+      if (StateOfResultingPoint != TopAbs_IN)
+        return Standard_False;
+      
       BRepAdaptor_Surface s;
       s.Initialize (face, Standard_False);
       s.D1 (u_, v_, APoint_, theVecD1U, theVecD1V);
