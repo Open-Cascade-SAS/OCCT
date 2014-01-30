@@ -407,16 +407,14 @@ is
     ---Purpose: Recomputes the active selections, flags the others
     --          Doesn't update presentations
 
-    Update(me       : mutable;
-    	   anIobj   : InteractiveObject from AIS;
-	   updateviewer : Boolean from Standard = Standard_True);
-    ---Purpose: Checks which presentations are flagged "to be recomputed"
-    --          and recomputes them if they are displayed.
-    --          This method doesn't force any Computation.
-    --          Recomputes Flagged selections if they are activated.
-
-
-			
+    Update (me              : mutable;
+            theIObj         : InteractiveObject from AIS;
+            theUpdateViewer : Boolean from Standard = Standard_True);
+    ---Purpose: Updates displayed interactive object by checking and
+    --          recomputing its flagged as "to be recomputed" presentation
+    --          and selection structures. This method does not force any
+    --          recomputation on its own. The method recomputes selections
+    --          even if they are loaded without activation in particular selector.
 
     SetDisplayMode(me     : mutable;
     	           aniobj : InteractiveObject from AIS;

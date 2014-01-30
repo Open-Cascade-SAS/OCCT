@@ -1649,6 +1649,115 @@ static Standard_Integer VPlaneBuilder (Draw_Interpretor& /*di*/,
   return 0;
 }
 
+//===============================================================================================
+//function : VChangePlane
+//purpose  :
+//===============================================================================================
+static int VChangePlane (Draw_Interpretor& /*theDi*/, Standard_Integer theArgsNb, const char** theArgVec)
+{
+  Handle(AIS_InteractiveContext) aContextAIS = ViewerTest::GetAISContext();
+  if (aContextAIS.IsNull())
+  {
+    std::cout << theArgVec[0] << "AIS context is not available.\n";
+    return 1;
+  }
+
+  if (theArgsNb < 3 || theArgsNb > 11)
+  {
+    std::cerr << theArgVec[0] 
+              << ": incorrect number of command arguments.\n"
+              << "Type help for more information.\n";
+    return 1;
+  }
+
+  TCollection_AsciiString aName (theArgVec[1]);
+
+  Handle(AIS_Plane) aPlane = GetMapOfAIS().IsBound2(aName)
+    ? Handle(AIS_Plane)::DownCast (GetMapOfAIS().Find2 (aName))
+    : NULL;
+
+  if ( aPlane.IsNull() )
+  {
+    std::cout << theArgVec[0] 
+              << ": there is no interactive plane with the given name."
+              << "Type help for more information.\n";
+    return 1;
+  }
+
+  Standard_Real aCenterX = aPlane->Center().X();
+  Standard_Real aCenterY = aPlane->Center().Y();
+  Standard_Real aCenterZ = aPlane->Center().Z();
+
+  Standard_Real aDirX = aPlane->Component()->Axis().Direction().X();
+  Standard_Real aDirY = aPlane->Component()->Axis().Direction().Y();
+  Standard_Real aDirZ = aPlane->Component()->Axis().Direction().Z();
+
+  Standard_Real aSizeX = 0.0;
+  Standard_Real aSizeY = 0.0;
+  aPlane->Size (aSizeX, aSizeY);
+  Standard_Boolean isUpdate = Standard_True;
+
+  TCollection_AsciiString aPName, aPValue;
+  for (Standard_Integer anArgIt = 1; anArgIt < theArgsNb; ++anArgIt)
+  {
+    const TCollection_AsciiString anArg = theArgVec[anArgIt];
+    TCollection_AsciiString anArgCase = anArg;
+    anArgCase.UpperCase();
+    if (ViewerTest::SplitParameter (anArg, aPName, aPValue))
+    {
+      aPName.UpperCase();
+      if (aPName.IsEqual ("X"))
+      {
+        aCenterX = aPValue.RealValue();
+      }
+      else if (aPName.IsEqual ("Y"))
+      {
+        aCenterY = aPValue.RealValue();
+      }
+      else if (aPName.IsEqual ("Z"))
+      {
+        aCenterZ = aPValue.RealValue();
+      }
+      else if (aPName.IsEqual ("DX"))
+      {
+        aDirX = aPValue.RealValue();
+      }
+      else if (aPName.IsEqual ("DY"))
+      {
+        aDirY = aPValue.RealValue();
+      }
+      else if (aPName.IsEqual ("DZ"))
+      {
+        aDirZ = aPValue.RealValue();
+      }
+      else if (aPName.IsEqual ("SX"))
+      {
+        aSizeX = aPValue.RealValue();
+      }
+      else if (aPName.IsEqual ("SY"))
+      {
+        aSizeY = aPValue.RealValue();
+      }
+    }
+    else if (anArg.IsEqual ("NOUPDATE"))
+    {
+      isUpdate = Standard_False;
+    }
+  }
+
+  gp_Dir aDirection (aDirX, aDirY, aDirZ);
+  gp_Pnt aCenterPnt (aCenterX, aCenterY, aCenterZ);
+  aPlane->SetCenter (aCenterPnt);
+  aPlane->SetComponent (new Geom_Plane (aCenterPnt, aDirection));
+  aPlane->SetSize (aSizeX, aSizeY);
+
+  if (isUpdate)
+  {
+    aContextAIS->Update (aPlane, Standard_True);
+  }
+
+  return 0;
+}
 
 //==============================================================================
 // Fonction  vline
@@ -4962,6 +5071,20 @@ void ViewerTest::ObjectCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vplane",
     "vplane  PlaneName [AxisName/PlaneName/PointName] [PointName/PointName/PointName] [Nothing/Nothing/PointName] [TypeOfSensitivity]",
     __FILE__,VPlaneBuilder,group);
+
+  theCommands.Add ("vchangeplane", "vchangeplane usage: \n"
+    "   vchangeplane <plane_name>"
+    " [x=center_x y=center_y z=center_z]"
+    " [dx=dir_x dy=dir_y dz=dir_z]"
+    " [sx=size_x sy=size_y]"
+    " [noupdate]\n"
+    "   - changes parameters of the plane:\n"
+    "   - x y z     - center\n"
+    "   - dx dy dz  - normal\n"
+    "   - sx sy     - plane sizes\n"
+    "   - noupdate  - do not update/redisplay the plane in context\n"
+    "   Please enter coordinates in format \"param=value\" in arbitrary order.",
+    __FILE__, VChangePlane, group);
 
   theCommands.Add("vplanepara",
     "vplanepara  PlaneName  ",

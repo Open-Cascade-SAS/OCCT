@@ -1270,41 +1270,43 @@ void AIS_InteractiveContext::RecomputeSelectionOnly(const Handle(AIS_Interactive
 //function : Update
 //purpose  : 
 //=======================================================================
-
-void AIS_InteractiveContext::Update(const Handle(AIS_InteractiveObject)& anIObj,
-                                    const Standard_Boolean updateviewer)
+void AIS_InteractiveContext::Update (const Handle(AIS_InteractiveObject)& theIObj,
+                                     const Standard_Boolean theUpdateViewer)
 {
-  if(anIObj.IsNull()) return;
-
-  
-
-  TColStd_ListOfInteger LL;
-  anIObj->ToBeUpdated(LL);
-  TColStd_ListIteratorOfListOfInteger ITI(LL);
-  Standard_Boolean wasupdated(Standard_False);
-  
-  for (;ITI.More();ITI.Next()){
-    anIObj->Update(ITI.Value(),Standard_False);
-    wasupdated = Standard_True;
+  if (theIObj.IsNull())
+  {
+    return;
   }
-  
-  if(wasupdated)
-    mgrSelector->Update(anIObj);
-  
-  if(updateviewer){
-    if(!myObjects.IsBound(anIObj)) return;
-    switch(myObjects(anIObj)->GraphicStatus()){
-    case AIS_DS_Displayed:
-    case AIS_DS_Temporary:
-      myMainVwr->Update();
-      break;
-    default:
-      break;
+
+  TColStd_ListOfInteger aListOfFlaggedPrsModes;
+  theIObj->ToBeUpdated (aListOfFlaggedPrsModes);
+
+  TColStd_ListIteratorOfListOfInteger aPrsModesIt (aListOfFlaggedPrsModes);
+  for ( ; aPrsModesIt.More(); aPrsModesIt.Next())
+  {
+    theIObj->Update (aPrsModesIt.Value(), Standard_False);
+  }
+
+  mgrSelector->Update(theIObj);
+
+  if (theUpdateViewer)
+  {
+    if (!myObjects.IsBound (theIObj))
+    {
+      return;
+    }
+
+    switch (myObjects (theIObj)->GraphicStatus())
+    {
+      case AIS_DS_Displayed:
+      case AIS_DS_Temporary:
+        myMainVwr->Update();
+        break;
+      default:
+        break;
     }
   }
 }
-
-
 
 //=======================================================================
 //function : SetLocation
