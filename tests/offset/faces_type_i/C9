@@ -3,7 +3,7 @@ puts "TODO ?OCC23748 ALL: Tcl Exception: ERROR. offsetperform operation not done
 puts "TODO ?OCC23748 ALL: Faulty shapes in variables faulty_1 to faulty_"
 puts "TODO ?OCC23748 ALL: Error : The volume of the resulting shape is"
 puts "TODO ?OCC23748 ALL: TEST INCOMPLETE"
-puts "TODO ?DEBUG_OCC24121 Windows: Error : The area of face"
+puts "TODO ?DEBUG_OCC24121 : Error : The area of face"
 puts "TODO ?OCC24156 MacOS: Error : The area of face"
 
 psphere s 15 270
