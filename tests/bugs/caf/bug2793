@@ -49,7 +49,7 @@ Close D
 # Check
 set info [dchrono h show]
 regexp {CPU user time: ([-0-9.+eE]+) seconds} $info full cpu_time
-if { $cpu_time > 50 } {
+if { $cpu_time > 100 } {
     puts "Error: performance saving document D is too low"
 } else {
     puts "OK: performance saving document D is high"
