@@ -1,2 +1,3 @@
 restore [locate_data_file CIN902_intcqhmp.rle] a
 set nb_f 4
+set nbFreeEdges 19

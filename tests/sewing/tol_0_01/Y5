@@ -1,1 +1,2 @@
 restore [locate_data_file CFI_13_h1ffp.rle] a
+set nbFreeEdges 12

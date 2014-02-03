@@ -1,2 +1,4 @@
 restore [locate_data_file CNP002_projoiep.rle] a
 puts "TODO ?#23150 ALL: Error : Number of faults is"
+puts "TODO #24592 ALL: Error : Number of free edges is"
+set nbFreeEdges ""

@@ -1,1 +1,2 @@
 restore [locate_data_file CFI_pro11907.rle] a
+set nbFreeEdges 5

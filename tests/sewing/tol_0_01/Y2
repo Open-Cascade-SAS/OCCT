@@ -1,1 +1,2 @@
 restore [locate_data_file CFI_11_f1ffg.rle] a
+set nbFreeEdges 8
