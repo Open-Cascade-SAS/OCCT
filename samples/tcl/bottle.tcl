@@ -112,12 +112,3 @@ puts "Showing result..."
 vdisplay bottle
 vfit
 vsetdispmode 1
-
-# set ray tracing
-if { [regexp {HAVE_OPENCL} [dversion]] } {
-    puts "Trying raytrace mode..."
-    if { ! [catch {vraytrace 1}] } {
-        vtextureenv on 1
-        vfit
-    }
-}
