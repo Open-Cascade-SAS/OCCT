@@ -1,2 +1,4 @@
 restore [locate_data_file CIN902_intcqhms.rle] a
+puts "TODO #24592 ALL: Error : Number of free edges is"
 set nb_f ""
+set nbFreeEdges ""

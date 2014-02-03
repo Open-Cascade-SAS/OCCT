@@ -1,1 +1,2 @@
 restore [locate_data_file CFI901_congefjx.rle] a
+set nbFreeEdges 6

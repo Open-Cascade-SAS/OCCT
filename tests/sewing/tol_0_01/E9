@@ -1,1 +1,2 @@
 restore [locate_data_file CCH_indushei.rle] a
+set nbFreeEdges 15

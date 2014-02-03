@@ -1,1 +1,2 @@
 restore [locate_data_file CIN900_buc60204.rle] a
+set nbFreeEdges 24

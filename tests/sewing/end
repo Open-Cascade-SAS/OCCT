@@ -34,11 +34,12 @@ if { [isdraw result] } {
   puts $t
   set w [lindex $t 1]
   if {"$w" == "SHELL"} {
-    catch {freebounds $result -0.01}
+    freebounds $result -0.01
     set s [explode result_c e]
     puts $s
     set index [ llength $s ]
-    if { $index != 0 } {
+    #nbFreeEdges is set to empty only in cases of unstable work of sewing (see #24591).
+    if { [string compare "$nbFreeEdges" ""] == 0 || $index != $nbFreeEdges } {
       puts "Error : Number of free edges is $index"
     }
 
