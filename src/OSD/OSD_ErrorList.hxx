@@ -80,25 +80,6 @@
 #define ERR_FNNOTEMPTY  37
 #define ERR_FNXDEV      38
 
-// Class MailBox
-
-#define ERR_MBADF       40
-#define ERR_MINVAL      41
-#define ERR_MMFILE      42
-#define ERR_MPERM       43
-#define ERR_MSRCH       44
-
-// Class Semaphore
-
-#define ERR_SIDRM       45
-#define ERR_SFBIG       46
-
-// Class SharedMemory
-
-#define ERR_SMMFILE     47
-#define ERR_SMNOSPC     48
-#define ERR_SNOENT      49
-
 // Package
 #define ERR_PPERM       50
 

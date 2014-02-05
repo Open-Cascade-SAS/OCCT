@@ -18,29 +18,6 @@ class Error from OSD
 
    ---Purpose: Management of OSD errors
 
---  Error handling style example:
---
---
---  try{
---  .
---  .
---  .
---  OSD_Semaphore mysem("KeyName"); 
---  if (mysem.Failed()) 
---   switch (mysem.Error()){
---    case 201: mysem.Perror();
---    case 202: cout << "Just a warning";
---   }
---  .
---  .
---  .
---  }
---  catch(Standard_Failure){
---   Handle(Standard_Failure) Occur = Standard_Failure::Caught();
---   .
---   .  // Programmer's decision
---   .
---
 --  Each method can be error tested with object.Failed().
 --  To manage an occuring error, just use object.Perror(); 
 --

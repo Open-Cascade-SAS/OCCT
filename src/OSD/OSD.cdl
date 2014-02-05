@@ -91,9 +91,9 @@ is
    ---Purpose: Specifies the type of files.
 
  private enumeration WhoAmI is  WDirectory, WDirectoryIterator,
-             WEnvironment, WFile, WFileNode, WFileIterator, WMailBox,
-             WPath, WProcess, WProtection, WSemaphore, WHost, WDisk,
-             WChronometer, WSharedMemory, WTimer, WPackage, WPrinter,
+             WEnvironment, WFile, WFileNode, WFileIterator,
+             WPath, WProcess, WProtection, WHost, WDisk,
+             WChronometer, WTimer, WPackage, WPrinter,
              WEnvironmentIterator;
    ---Purpose: Allows great accuracy for error management.
    --          This is private.
@@ -150,17 +150,8 @@ is
          class Process;
              ---Purpose: Process specific oriented tools
 
-         class SharedMemory;
-             ---Purpose: Manages shared memory.
-
-         class Semaphore;
-             ---Purpose: Manages semaphores.
-
 --         class Mutex is alias Mutex from Standard;
              ---Purpose: Mutex object to synchronize threads within one process
-
-         class MailBox;
-             ---Purpose: Manages asynchronous mail boxes.
 
          class SharedLibrary;
              ---Purpose: Provides tools to load a shared library

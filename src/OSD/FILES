@@ -1,10 +1,6 @@
 EXTERNLIB
-OSD_Cmailbox.c
-OSD_Csemaphore.c
-OSD_Csharedmemory.c
 OSD_CMPLRS.edl
 OSD_Function.cxx
-OSD_Getkey.c
 OSD_Function.hxx
 OSD_ErrorList.hxx
 OSD_WNT.cxx
