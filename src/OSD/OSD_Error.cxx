@@ -66,10 +66,6 @@ void OSD_Error::Perror() {
       buffer += "Invalid file descriptor or bad mode";
       extCode = ERR_FBADF;
       break;
-     case OSD_WMailBox:
-      buffer += "Invalid mail box identification";
-      extCode = ERR_MBADF;
-      break;
     default:
       break;
     }
@@ -99,10 +95,6 @@ void OSD_Error::Perror() {
     case OSD_WFile:
       buffer += "Invalid file descriptor";
       extCode = ERR_FINVAL;
-      break;
-    case OSD_WMailBox :
-      buffer += "Internal error : invalid arguments";
-      extCode = ERR_MINVAL;
       break;
     default :
       buffer += "User error : Bad parameter";
@@ -178,12 +170,6 @@ void OSD_Error::Perror() {
      buffer += "Not enough or too many bytes written";
      extCode = ERR_FRANGE;
      break;
-    case OSD_WSemaphore:
-    case OSD_WSharedMemory:
-     buffer += "system overflow value.\n";
-     buffer += "Try to reconfigure Kernel with greater values";
-     extCode = ERR_RANGE;
-     break;
     default:
       break;
    }
@@ -197,11 +183,6 @@ void OSD_Error::Perror() {
     case OSD_WFileNode:
      buffer += "Permission denied or can't unlink directory";
      extCode = ERR_FPERM;
-     break;
-    case OSD_WMailBox :
-     buffer += "User error : processes using mail boxes must ";
-     buffer += "be\nused by the same user";
-     extCode = ERR_MPERM;
      break;
     default : 
      buffer += "abnormal error : you modified OSD library";
@@ -327,10 +308,6 @@ void OSD_Error::Perror() {
      buffer += "Exceed process's file size limit or the maximum file size";
      extCode = ERR_FFBIG; 
      break;
-    case OSD_WSemaphore:
-     buffer += "Internal error : wrong number for this semaphore";
-     extCode = ERR_SFBIG;
-     break;
     default:
      break;
    }
@@ -338,10 +315,6 @@ void OSD_Error::Perror() {
   case EINTR:
    buffer += "operation breaked by a signal";
    extCode = ERR_INTR;
-   break;
-  case EIDRM: 
-   buffer += "Semaphore externaly removed from system";
-   extCode = ERR_SIDRM;
    break;
   case ENOMEM: 
    buffer += "Not enough memory";
@@ -352,15 +325,6 @@ void OSD_Error::Perror() {
     case OSD_WFile :
        buffer += "Too many file descriptors are currently in use by this process";
        extCode = ERR_FMFILE;
-       break;
-    case OSD_WMailBox :
-       buffer += "Too many mail boxes opened";
-       extCode = ERR_MMFILE;
-       break;
-    case OSD_WSharedMemory :
-       buffer += "The number of shared memory segments attached to the calling process \nwould exceed the system imposed limit.\n";
-       buffer += "Try to reconfigure Kernel with greater values";
-       extCode = ERR_SMMFILE;
        break;
     default:
      break;
@@ -403,11 +367,6 @@ void OSD_Error::Perror() {
      buffer += "A component of the path prefix of path does not exist";
      extCode = ERR_DNOENT;
      break;
-    case OSD_WSemaphore:
-    case OSD_WSharedMemory:
-     buffer += "User error : Has not been created";
-     extCode = ERR_SNOENT;
-     break;
     default:
      break;
     }
@@ -419,12 +378,6 @@ void OSD_Error::Perror() {
      buffer += "No more free space on file system";
      extCode = ERR_FNOSPC;
      break;
-    case OSD_WSharedMemory: {
-     buffer += "You exceed number of shared memory allowed.\n";
-     buffer += "Try to reconfigure Kernel with greater values";
-     extCode = ERR_SMNOSPC;
-     break;
-   }
     default:
      break;
    }
@@ -469,17 +422,6 @@ void OSD_Error::Perror() {
    buffer += "Reconfigure Kernel with greater values";
    extCode = ERR_TOOBIG;
    break;
-  case ESRCH  : 
-   switch (myCode){
-    case OSD_WMailBox :
-     buffer += "Server process is dead.\n";
-     buffer += "There is no more process to communicate with";
-     extCode = ERR_MSRCH;
-     break;
-    default:
-     break;
-    }
-    break;
    default: {
      Standard_Character buf[255];
      //
@@ -691,12 +633,6 @@ void OSD_Error :: Perror () {
    case OSD_WEnvironment:
 
     ptr = TEXT( "OSD_Environment" );
-
-   break;
-
-   case OSD_WSharedMemory:
-
-    ptr = TEXT( "OSD_SharedMemory" );
 
    break;
 
