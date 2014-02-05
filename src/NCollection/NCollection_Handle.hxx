@@ -76,7 +76,9 @@ class NCollection_Handle : public Handle_Standard_Transient
     : Handle_Standard_Transient (thePtr) {}
   
  public:
-  
+
+  typedef T element_type;
+
   //! Default constructor; creates null handle
   NCollection_Handle () {}
   

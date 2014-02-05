@@ -8,13 +8,14 @@ Draw_VariableCommands.cxx
 Draw_GraphicCommands.cxx
 Draw_UnitCommands.cxx
 Draw_Appli.hxx
+Draw_Interpretor.hxx
+Draw_Interpretor.cxx
 Draw_Viewer.cxx
 Draw_Viewer.hxx
 Draw_Viewer.hxx
 Draw_Window.cxx
 Draw_Window.hxx
 Draw_PInterp.hxx
-Draw_CommandFunction.hxx
 DrawRessource.h
 init.h
 MAINWINDOW.h

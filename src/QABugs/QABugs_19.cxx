@@ -42,6 +42,7 @@
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRepAlgo_Cut.hxx>
 #include <NCollection_Map.hxx>
+#include <NCollection_Handle.hxx>
 #include <TCollection_HAsciiString.hxx>
 
 #include <Standard_Version.hxx>
@@ -1532,8 +1533,40 @@ static Standard_Integer OCC24533 (Draw_Interpretor& di, Standard_Integer n, cons
   return 0;
 }
 
+// Dummy class to test interface for compilation issues
+class QABugs_HandleClass : public Standard_Transient
+{
+public:
+  Standard_Integer HandleProc (Draw_Interpretor& , Standard_Integer  , const char** theArgVec)
+  {
+    std::cerr << "QABugs_HandleClass[" << this << "] " << theArgVec[0] << "\n";
+    return 0;
+  }
+  DEFINE_STANDARD_RTTI(QABugs_HandleClass) // Type definition
+};
+DEFINE_STANDARD_HANDLE    (QABugs_HandleClass, Standard_Transient)
+IMPLEMENT_STANDARD_HANDLE (QABugs_HandleClass, Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(QABugs_HandleClass, Standard_Transient)
+
+// Dummy class to test interface for compilation issues
+struct QABugs_NHandleClass
+{
+  Standard_Integer NHandleProc (Draw_Interpretor& , Standard_Integer  , const char** theArgVec)
+  {
+    std::cerr << "QABugs_NHandleClass[" << this << "] " << "" << theArgVec[0] << "\n";
+    return 0;
+  }
+};
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
+
+  Handle(QABugs_HandleClass) aClassPtr = new QABugs_HandleClass();
+  theCommands.Add ("OCC24202_1", "Test Handle-based procedure",
+                   __FILE__, aClassPtr, &QABugs_HandleClass::HandleProc, group);
+  NCollection_Handle<QABugs_NHandleClass> aNClassPtr = new QABugs_NHandleClass();
+  theCommands.Add ("OCC24202_2", "Test NCollection_Handle-based procedure",
+                   __FILE__, aNClassPtr, &QABugs_NHandleClass::NHandleProc, group);
 
   theCommands.Add ("OCC230", "OCC230 TrimmedCurve Pnt2d Pnt2d", __FILE__, OCC230, group);
   theCommands.Add ("OCC142", "OCC142", __FILE__, OCC142, group);

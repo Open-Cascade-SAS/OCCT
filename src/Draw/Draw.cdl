@@ -110,9 +110,9 @@ is
     primitive CommandFunction;
 	---Purpose: typedef Standard_Integer (*Draw_CommandFunction)
 	--          (Draw_Interpretor&, Standard_Integer, char**)
-    
-    class Interpretor;
-	---Purpose: Encapsulate the Tcl interpretor to add commands.
+
+    imported Interpretor;
+    ---Purpose: Encapsulate the Tcl interpretor to add commands.
 
     class Printer;
 	---Purpose: Implements a printer class to connect Message_Messenger 

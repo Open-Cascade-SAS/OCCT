@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Draw_Interpretor.ixx>
+#include <Draw_Interpretor.hxx>
 #include <Draw_Appli.hxx>
 #include <Standard_SStream.hxx>
 #include <Standard_RangeError.hxx>
@@ -89,17 +89,6 @@ class TclUTFToLocalStringSentry {
   int nb;
   Tcl_DString *TclArgv;
   char **Argv;
-};
-
-
-//
-// Call backs for TCL
-//
-
-struct CData {
-  CData(Draw_CommandFunction ff, Draw_Interpretor* ii) : f(ff), i(ii) {}
-  Draw_CommandFunction f;
-  Draw_Interpretor*    i;
 };
 
 // logging helpers
@@ -183,18 +172,18 @@ namespace {
 // MKV 29.03.05
 #if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4))) && !defined(USE_NON_CONST)
 static Standard_Integer CommandCmd 
-(ClientData clientData, Tcl_Interp *interp,
+(ClientData theClientData, Tcl_Interp *interp,
  Standard_Integer argc, const char* argv[])
 #else
 static Standard_Integer CommandCmd 
-(ClientData clientData, Tcl_Interp *interp,
+(ClientData theClientData, Tcl_Interp *interp,
  Standard_Integer argc, char* argv[])
 #endif
 {
   static Standard_Integer code;
   code = TCL_OK;
-  CData* C = (CData*) clientData;
-  Draw_Interpretor& di = *(C->i);
+  Draw_Interpretor::CallBackData* aCallback = (Draw_Interpretor::CallBackData* )theClientData;
+  Draw_Interpretor& di = *(aCallback->myDI);
 
   // log command execution, except commands manipulating log itself and echo
   Standard_Boolean isLogManipulation = (strcmp (argv[0], "dlog") == 0 || 
@@ -231,7 +220,7 @@ static Standard_Integer CommandCmd
     // OCC63: Convert strings from UTF-8 to local encoding, normally expected by OCC commands
     TclUTFToLocalStringSentry anArgs ( argc, (const char**)argv );
       
-    Standard_Integer fres = C->f ( di, argc, anArgs.GetArgv() );
+    Standard_Integer fres = aCallback->Invoke ( di, argc, anArgs.GetArgv() );
     if (fres != 0) 
       code = TCL_ERROR;
   }
@@ -299,11 +288,10 @@ static Standard_Integer CommandCmd
   return code;
 }
 
-
-static void CommandDelete (ClientData clientData)
+static void CommandDelete (ClientData theClientData)
 {
-  CData *C = (CData*) clientData;
-  delete C;
+  Draw_Interpretor::CallBackData* aCallback = (Draw_Interpretor::CallBackData* )theClientData;
+  delete aCallback;
 }
 
 //=======================================================================
@@ -346,77 +334,49 @@ Draw_Interpretor::Draw_Interpretor(const Draw_PInterp& p) :
 }
 
 //=======================================================================
-//function : Add
-//purpose  : 
+//function : add
+//purpose  :
 //=======================================================================
-//#ifdef WNT
-void Draw_Interpretor::Add(const Standard_CString n,
-			   const Standard_CString help,
-			   const Draw_CommandFunction f,
-			   const Standard_CString group)
-//#else
-//void Draw_Interpretor::Add(const Standard_CString n,
-//			   const Standard_CString help,
-//			   const Draw_CommandFunction& f,
-//			   const Standard_CString group)
-//#endif
+void Draw_Interpretor::add (const Standard_CString          theCommandName,
+                            const Standard_CString          theHelp,
+                            const Standard_CString          theFileName,
+                            Draw_Interpretor::CallBackData* theCallback,
+                            const Standard_CString          theGroup)
 {
-  Standard_PCharacter pN, pHelp, pGroup;
-  //
-  pN=(Standard_PCharacter)n;
-  pHelp=(Standard_PCharacter)help;
-  pGroup=(Standard_PCharacter)group;
-  //
-  if (myInterp==NULL) Init();
+  if (myInterp == NULL)
+  {
+    Init();
+  }
 
-  CData* C = new CData(f,this);
-  
-  Tcl_CreateCommand(myInterp, pN ,CommandCmd, (ClientData) C, CommandDelete);
+  Standard_PCharacter aName  = (Standard_PCharacter )theCommandName;
+  Standard_PCharacter aHelp  = (Standard_PCharacter )theHelp;
+  Standard_PCharacter aGroup = (Standard_PCharacter )theGroup;
+  Tcl_CreateCommand (myInterp, aName, CommandCmd, (ClientData )theCallback, CommandDelete);
 
   // add the help
-  Tcl_SetVar2(myInterp,"Draw_Helps", pN, pHelp, TCL_GLOBAL_ONLY);
-  Tcl_SetVar2(myInterp,"Draw_Groups",pGroup,pN,
-	      TCL_GLOBAL_ONLY|TCL_APPEND_VALUE|TCL_LIST_ELEMENT);
-}
-//=======================================================================
-//function : Add
-//purpose  : 
-//=======================================================================
-void Draw_Interpretor::Add(const Standard_CString n,
-			   const Standard_CString help,
-			   const Standard_CString file_name,
-			   const Draw_CommandFunction f,
-			   const Standard_CString group)
-{
-  Standard_PCharacter pN, pHelp, pGroup, pFileName;
-  //
-  pN=(Standard_PCharacter)n;
-  pHelp=(Standard_PCharacter)help;
-  pGroup=(Standard_PCharacter)group;
-  pFileName=(Standard_PCharacter)file_name;
-  //
-  if (myInterp==NULL) Init();
-
-  CData* C = new CData(f,this);
-  Tcl_CreateCommand(myInterp,pN,CommandCmd, (ClientData) C, CommandDelete);
-
-  // add the help
-  Tcl_SetVar2(myInterp,"Draw_Helps",pN,pHelp,TCL_GLOBAL_ONLY);
-  Tcl_SetVar2(myInterp,"Draw_Groups",pGroup,pN,
-	      TCL_GLOBAL_ONLY|TCL_APPEND_VALUE|TCL_LIST_ELEMENT);
+  Tcl_SetVar2 (myInterp, "Draw_Helps",  aName,  aHelp, TCL_GLOBAL_ONLY);
+  Tcl_SetVar2 (myInterp, "Draw_Groups", aGroup, aName,
+	             TCL_GLOBAL_ONLY | TCL_APPEND_VALUE | TCL_LIST_ELEMENT);
 
   // add path to source file (keep not more than two last subdirectories)
-  OSD_Path aPath (pFileName);
+  if (theFileName  == NULL
+   || *theFileName == '\0')
+  {
+    return;
+  }
+
+  OSD_Path aPath (theFileName);
   Standard_Integer nbTrek = aPath.TrekLength();
-  for (Standard_Integer i = 2; i < nbTrek; i++)
+  for (Standard_Integer i = 2; i < nbTrek; ++i)
+  {
     aPath.RemoveATrek (1);
-  aPath.SetDisk("");
-  aPath.SetNode("");
+  }
+  aPath.SetDisk ("");
+  aPath.SetNode ("");
   TCollection_AsciiString aSrcPath;
   aPath.SystemName (aSrcPath);
-  Tcl_SetVar2(myInterp,"Draw_Files",pN,aSrcPath.ToCString(),TCL_GLOBAL_ONLY);
+  Tcl_SetVar2 (myInterp, "Draw_Files", aName, aSrcPath.ToCString(), TCL_GLOBAL_ONLY);
 }
-
 
 //=======================================================================
 //function : Remove
@@ -634,7 +594,7 @@ Standard_Boolean Draw_Interpretor::Complete(const Standard_CString line)
 //purpose  : 
 //=======================================================================
 
-void Draw_Interpretor::Destroy()
+Draw_Interpretor::~Draw_Interpretor()
 {
   // MKV 01.02.05
 #if ((TCL_MAJOR_VERSION > 8) || ((TCL_MAJOR_VERSION == 8) && (TCL_MINOR_VERSION >= 4)))
