@@ -87,10 +87,6 @@ is
     	---Purpose: class provides computing ranges of parameters
 	---         of edge/face intersection.
 
-    class BeanBeanIntersector;
-    	---Purpose: class provides computing ranges of parameters
-	---         of edge/edge intersection.
-
     -----
     class  Curve;
     	---Purpose: class is a container of
