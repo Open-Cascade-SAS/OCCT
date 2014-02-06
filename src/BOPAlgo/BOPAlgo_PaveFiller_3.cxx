@@ -69,17 +69,14 @@
 //=======================================================================
 void BOPAlgo_PaveFiller::PerformEE()
 {
-  Standard_Boolean bJustAdd, bOrder;
-  Standard_Integer i, iX, iSize, nE1, nE2, aDiscretize;
-  Standard_Integer aNbCPrts, nWhat, nWith;
+  Standard_Boolean bJustAdd;
+  Standard_Integer i, iX, iSize, nE1, nE2;
+  Standard_Integer aNbCPrts;
   Standard_Real aTS11, aTS12, aTS21, aTS22,
                 aT11, aT12, aT21, aT22;
-  Standard_Real aTolE1, aTolE2, aDeflection;
   TopAbs_ShapeEnum aType;
-  TopoDS_Edge aEWhat, aEWith; 
   BOPDS_ListIteratorOfListOfPaveBlock aIt1, aIt2;
   Handle(NCollection_IncAllocator) aAllocator;
-  Handle(BOPDS_PaveBlock) aPBn1, aPBn2;
   BOPDS_MapOfPaveBlock aMPBToUpdate;
   BOPDS_MapIteratorOfMapOfPaveBlock aItPB;
   //
@@ -95,9 +92,6 @@ void BOPAlgo_PaveFiller::PerformEE()
   aAllocator=new NCollection_IncAllocator();
   BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock aMPBLPB(100, aAllocator);
   BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks aMVCPB(100, aAllocator);
-  //
-  aDiscretize=30;
-  aDeflection=0.01;
   //
   BOPDS_VectorOfInterfEE& aEEs=myDS->InterfEE();
   aEEs.SetStartSize(iSize);
@@ -121,9 +115,6 @@ void BOPAlgo_PaveFiller::PerformEE()
     //
     const TopoDS_Edge& aE1=(*(TopoDS_Edge *)(&aSIE1.Shape()));
     const TopoDS_Edge& aE2=(*(TopoDS_Edge *)(&aSIE2.Shape()));  
-    //
-    aTolE1=BRep_Tool::Tolerance(aE1);
-    aTolE2=BRep_Tool::Tolerance(aE2);
     //
     BOPDS_ListOfPaveBlock& aLPB1=myDS->ChangePaveBlocks(nE1);
     BOPDS_ListOfPaveBlock& aLPB2=myDS->ChangePaveBlocks(nE2);
@@ -158,75 +149,23 @@ void BOPAlgo_PaveFiller::PerformEE()
           continue;
         }
         //
-        // -----------f
-        //DEBft
-        //printf(" nE1=%d nE2=%d\n", nE1, nE2);
-        //
-        IntTools_EdgeEdge aEdgeEdge;
-        //
-        aEdgeEdge.SetEdge1 (aE1);
-        aEdgeEdge.SetEdge2 (aE2);
-        aEdgeEdge.SetTolerance1 (aTolE1);
-        aEdgeEdge.SetTolerance2 (aTolE2);
-        aEdgeEdge.SetDiscretize (aDiscretize);
-        aEdgeEdge.SetDeflection (aDeflection);
-        //
-        IntTools_Range aSR1(aTS11, aTS12);
-        IntTools_Range aSR2(aTS21, aTS22);
-        IntTools_Range anewSR1 = aSR1;
-        IntTools_Range anewSR2 = aSR2;
-        //
-        BOPTools_AlgoTools::CorrectRange (aE1, aE2, aSR1, anewSR1);
-        BOPTools_AlgoTools::CorrectRange (aE2, aE1, aSR2, anewSR2);
+        IntTools_EdgeEdge anEdgeEdge;
         //
         aPB1->Range(aT11, aT12);
         aPB2->Range(aT21, aT22);
-        IntTools_Range aPBRange1(aT11, aT12), aPBRange2(aT21, aT22);
         //
-        IntTools_Range aPBR1 = aPBRange1;
-        IntTools_Range aPBR2 = aPBRange2;
-        BOPTools_AlgoTools::CorrectRange (aE1, aE2, aPBR1, aPBRange1);
-        BOPTools_AlgoTools::CorrectRange (aE2, aE1, aPBR2, aPBRange2);
+        anEdgeEdge.SetEdge1(aE1, aT11, aT12);
+        anEdgeEdge.SetEdge2(aE2, aT21, aT22);
         //
-        aEdgeEdge.SetRange1(aPBRange1);
-        aEdgeEdge.SetRange2(aPBRange2);
-        //
-        aEdgeEdge.Perform();
-        if (!aEdgeEdge.IsDone()) {
+        anEdgeEdge.Perform();
+        if (!anEdgeEdge.IsDone()) {
           continue;
         }
         //
-        bOrder=aEdgeEdge.Order();
-        if (!bOrder) {
-          aEWhat=aE1;
-          aEWith=aE2;
-          nWhat=nE1;
-          nWith=nE2;
-          aSR1=anewSR1;
-          aSR2=anewSR2;
-          aPBR1=aPBRange1;
-          aPBR2=aPBRange2;
-          aPBn1=aPB1;
-          aPBn2=aPB2;
-        }
-        else {
-          nWhat=nE2;
-          nWith=nE1;
-          aEWhat=aE2;
-          aEWith=aE1;
-          aSR1=anewSR2;
-          aSR2=anewSR1;
-          aPBR1=aPBRange2;
-          aPBR2=aPBRange1;
-          aPBn1=aPB2;
-          aPBn2=aPB1;
-        }
+        IntTools_Range aR11(aT11, aTS11), aR12(aTS12, aT12),
+                       aR21(aT21, aTS21), aR22(aTS22, aT22);
         //
-        IntTools_Range aR11(aPBR1.First(), aSR1.First()), aR12(aSR1.Last(), aPBR1.Last()),
-                       aR21(aPBR2.First(), aSR2.First()), aR22(aSR2.Last(), aPBR2.Last());
-        //
-        const IntTools_SequenceOfCommonPrts& aCPrts=aEdgeEdge.CommonParts();
-        //
+        const IntTools_SequenceOfCommonPrts& aCPrts = anEdgeEdge.CommonParts();
         aNbCPrts=aCPrts.Length();
         for (i=1; i<=aNbCPrts; ++i) {
           const IntTools_CommonPrt& aCPart=aCPrts(i);
@@ -237,18 +176,25 @@ void BOPAlgo_PaveFiller::PerformEE()
               Standard_Integer nV[4], j;
               Standard_Real aT1, aT2, aTol;
               TopoDS_Vertex aVnew;
+              IntTools_Range aCR1, aCR2;
               //
               BOPInt_Tools::VertexParameters(aCPart, aT1, aT2);
-              aTol=Precision::Confusion();
+              aTol = Precision::Confusion();
+              aCR1 = aCPart.Range1();
+              aCR2 = aCPart.Ranges2()(1);
               // 
               //decide to keep the pave or not
-              bIsOnPave[0] = BOPInt_Tools::IsOnPave1(aT1, aR11, aTol);
-              bIsOnPave[1] = BOPInt_Tools::IsOnPave1(aT1, aR12, aTol);
-              bIsOnPave[2] = BOPInt_Tools::IsOnPave1(aT2, aR21, aTol);
-              bIsOnPave[3] = BOPInt_Tools::IsOnPave1(aT2, aR22, aTol);
+              bIsOnPave[0] = BOPInt_Tools::IsOnPave1(aT1, aR11, aTol) ||
+                BOPInt_Tools::IsOnPave1(aR11.First(), aCR1, aTol);
+              bIsOnPave[1] = BOPInt_Tools::IsOnPave1(aT1, aR12, aTol) || 
+                BOPInt_Tools::IsOnPave1(aR12.Last(), aCR1, aTol);
+              bIsOnPave[2] = BOPInt_Tools::IsOnPave1(aT2, aR21, aTol) ||
+                BOPInt_Tools::IsOnPave1(aR21.First(), aCR2, aTol);
+              bIsOnPave[3] = BOPInt_Tools::IsOnPave1(aT2, aR22, aTol) ||
+                BOPInt_Tools::IsOnPave1(aR22.Last(), aCR2, aTol);
               //
-              aPBn1->Indices(nV[0], nV[1]);
-              aPBn2->Indices(nV[2], nV[3]);
+              aPB1->Indices(nV[0], nV[1]);
+              aPB2->Indices(nV[2], nV[3]);
               //
               if((bIsOnPave[0] && bIsOnPave[2]) || (bIsOnPave[0] && bIsOnPave[3]) ||
                  (bIsOnPave[1] && bIsOnPave[2]) || (bIsOnPave[1] && bIsOnPave[3])) {
@@ -259,7 +205,7 @@ void BOPAlgo_PaveFiller::PerformEE()
               for (j = 0; j < 4; ++j) {
                 if (bIsOnPave[j]) {
                   //add interf VE(nV[j], nE)
-                  Handle(BOPDS_PaveBlock)& aPB = (j < 2) ? aPBn2 : aPBn1;
+                  Handle(BOPDS_PaveBlock)& aPB = (j < 2) ? aPB2 : aPB1;
                   ForceInterfVE(nV[j], aPB, aMPBToUpdate);
                   bFlag = Standard_True;
                   break;
@@ -269,7 +215,7 @@ void BOPAlgo_PaveFiller::PerformEE()
                 continue;
               }
               //
-              BOPTools_AlgoTools::MakeNewVertex(aEWhat, aT1, aEWith, aT2, aVnew);
+              BOPTools_AlgoTools::MakeNewVertex(aE1, aT1, aE2, aT2, aVnew);
               // <-LXBR
               {
                 Standard_Integer nVS[2], iFound, k;
@@ -312,14 +258,14 @@ void BOPAlgo_PaveFiller::PerformEE()
                   continue;
                 }
               }
-                            
+              
               // 1
               iX=aEEs.Append()-1;
               BOPDS_InterfEE& aEE=aEEs(iX);
-              aEE.SetIndices(nWhat, nWith);
+              aEE.SetIndices(nE1, nE2);
               aEE.SetCommonPart(aCPart);
               // 2
-              myDS->AddInterf(nWhat, nWith);
+              myDS->AddInterf(nE1, nE2);
               //
               BOPDS_CoupleOfPaveBlocks aCPB;
               //
@@ -342,10 +288,10 @@ void BOPAlgo_PaveFiller::PerformEE()
               // 1
               iX=aEEs.Append()-1;
               BOPDS_InterfEE& aEE=aEEs(iX);
-              aEE.SetIndices(nWhat, nWith);
+              aEE.SetIndices(nE1, nE2);
               aEE.SetCommonPart(aCPart);
               // 2
-              myDS->AddInterf(nWhat, nWith);
+              myDS->AddInterf(nE1, nE2);
               //
               BOPAlgo_Tools::FillMap(aPB1, aPB2, aMPBLPB, aAllocator);
             }//case TopAbs_EDGE

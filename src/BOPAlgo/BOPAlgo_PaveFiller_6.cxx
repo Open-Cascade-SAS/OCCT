@@ -1399,66 +1399,66 @@ Standard_Boolean BOPAlgo_PaveFiller::ExtendedTolerance(const Standard_Integer nV
   aType1=aGAS1.GetType();
   aType2=aGAS2.GetType();
   //
-  if (aType1==GeomAbs_Torus  || aType2==GeomAbs_Torus) {
-    GeomAbs_CurveType aTypeC;
+  //if (aType1==GeomAbs_Torus  || aType2==GeomAbs_Torus) {
+  GeomAbs_CurveType aTypeC;
+  //
+  const IntTools_Curve& aIC=aNC.Curve();
+  aTypeC=aIC.Type();
+  //if (aTypeC==GeomAbs_BezierCurve || aTypeC==GeomAbs_BSplineCurve) {
+  Handle(Geom2d_Curve) aC2D[2];
+  //
+  aC2D[0]=aIC.FirstCurve2d();
+  aC2D[1]=aIC.SecondCurve2d();
+  if (!aC2D[0].IsNull() && !aC2D[1].IsNull()) {
+    Standard_Integer nV, m, n;
+    Standard_Real aTC[2], aD, aD2, u, v, aDT2, aScPr, aDScPr;
+    gp_Pnt aPC[2], aPV;
+    gp_Dir aDN[2];
+    gp_Pnt2d aP2D;
+    BOPCol_MapIteratorOfMapOfInteger aItMI, aItMI1;
     //
-    const IntTools_Curve& aIC=aNC.Curve();
-    aTypeC=aIC.Type();
-    if (aTypeC==GeomAbs_BezierCurve || aTypeC==GeomAbs_BSplineCurve) {
-      Handle(Geom2d_Curve) aC2D[2];
+    aDT2=2e-7;     // the rich criteria
+    aDScPr=5.e-9;  // the creasing criteria
+    aIC.Bounds(aTC[0], aTC[1], aPC[0], aPC[1]);
+    //
+    aItMI.Initialize(aMV);
+    for (; aItMI.More(); aItMI.Next()) {
+      nV = aItMI.Value();
+      const TopoDS_Vertex& aV=*((TopoDS_Vertex*)&myDS->Shape(nV));
+      aPV=BRep_Tool::Pnt(aV);
       //
-      aC2D[0]=aIC.FirstCurve2d();
-      aC2D[1]=aIC.SecondCurve2d();
-      if (!aC2D[0].IsNull() && !aC2D[1].IsNull()) {
-        Standard_Integer nV, m, n;
-        Standard_Real aTC[2], aD, aD2, u, v, aDT2, aScPr, aDScPr;
-        gp_Pnt aPC[2], aPV;
-        gp_Dir aDN[2];
-        gp_Pnt2d aP2D;
-        BOPCol_MapIteratorOfMapOfInteger aItMI, aItMI1;
+      for (m=0; m<2; ++m) {
+        aD2=aPC[m].SquareDistance(aPV);
+        if (aD2>aDT2) {// no rich
+          continue; 
+        }
         //
-        aDT2=2e-7;     // the rich criteria
-        aDScPr=5.e-9;  // the creasing criteria
-        aIC.Bounds(aTC[0], aTC[1], aPC[0], aPC[1]);
+        for (n=0; n<2; ++n) {
+          Handle(Geom_Surface)& aS=(!n)? aS1 : aS2;
+          aC2D[n]->D0(aTC[m], aP2D);
+          aP2D.Coord(u, v);
+          BOPTools_AlgoTools3D::GetNormalToSurface(aS, u, v, aDN[n]);
+        }
+        // 
+        aScPr=aDN[0]*aDN[1];
+        if (aScPr<0.) {
+          aScPr=-aScPr;
+        }
+        aScPr=1.-aScPr;
         //
-        aItMI.Initialize(aMV);
-        for (; aItMI.More(); aItMI.Next()) {
-          nV = aItMI.Value();
-          const TopoDS_Vertex& aV=*((TopoDS_Vertex*)&myDS->Shape(nV));
-          aPV=BRep_Tool::Pnt(aV);
-          //
-          for (m=0; m<2; ++m) {
-            aD2=aPC[m].SquareDistance(aPV);
-            if (aD2>aDT2) {// no rich
-              continue; 
-            }
-            //
-            for (n=0; n<2; ++n) {
-              Handle(Geom_Surface)& aS=(!n)? aS1 : aS2;
-              aC2D[n]->D0(aTC[m], aP2D);
-              aP2D.Coord(u, v);
-              BOPTools_AlgoTools3D::GetNormalToSurface(aS, u, v, aDN[n]);
-            }
-            // 
-            aScPr=aDN[0]*aDN[1];
-            if (aScPr<0.) {
-              aScPr=-aScPr;
-            }
-            aScPr=1.-aScPr;
-            //
-            if (aScPr>aDScPr) {
-              continue;
-            }
-            //
-            // The intersection curve aIC is vanishing curve (the crease)
-            aD=sqrt(aD2);
-            //
-            PutPaveOnCurve(nV, aD, aNC, aMI, aMVTol);
-          }
-        }//for (jVU=1; jVU=aNbVU; ++jVU) {
+        if (aScPr>aDScPr) {
+          continue;
+        }
+        //
+        // The intersection curve aIC is vanishing curve (the crease)
+        aD=sqrt(aD2);
+        //
+        PutPaveOnCurve(nV, aD, aNC, aMI, aMVTol);
       }
-    }//if (aTypeC==GeomAbs_BezierCurve || aTypeC==GeomAbs_BSplineCurve) {
-  }//if(aType1==GeomAbs_Torus  || aType2==GeomAbs_Torus) {
+    }//for (jVU=1; jVU=aNbVU; ++jVU) {
+  }
+  //}//if (aTypeC==GeomAbs_BezierCurve || aTypeC==GeomAbs_BSplineCurve) {
+  //}//if(aType1==GeomAbs_Torus  || aType2==GeomAbs_Torus) {
 }
 
 //=======================================================================

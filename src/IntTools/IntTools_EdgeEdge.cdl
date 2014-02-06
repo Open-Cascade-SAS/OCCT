@@ -1,6 +1,5 @@
--- Created on: 2000-10-26
--- Created by: Peter KURNEV
--- Copyright (c) 2000-2014 OPEN CASCADE SAS
+-- Created by: Eugeny MALTCHIKOV
+-- Copyright (c) 2014 OPEN CASCADE SAS
 --
 -- This file is part of Open CASCADE Technology software library.
 --
@@ -14,298 +13,221 @@
 -- commercial license or contractual agreement.
 
 class EdgeEdge from IntTools 
+    ---Purpose:   
+    -- The class provides Edge/Edge intersection algorithm 
+    -- based on the intersection between edges bounding boxes.
 
-	---Purpose: The  class  provides  Edge/Edge  algorithm  to  determine 
-	--          common  parts  between two edges in  3-d space. 
-	--          Common  parts can be :  Vertices  or Edges. 
-	---    	 
-uses
-    Edge  from TopoDS, 
-    Curve from BRepAdaptor, 
-    SequenceOfRoots   from IntTools,  
-    SequenceOfRanges  from IntTools, 
-    CArray1OfReal     from IntTools, 
-    CommonPrt         from IntTools,
-    SequenceOfCommonPrts from IntTools,  
-    Range from IntTools
---raises
-
-is 
-    Create   
-    	returns EdgeEdge from IntTools;   
-    	---Purpose:  
-    	--- Empty constructor
-	---
-	
-    SetEdge1         (me:out;  
-    	    anEdge:Edge from TopoDS); 
-   	---Purpose: 
-    	--- Sets the first edge
-	---
-     
-    SetTolerance1    (me:out;  
-    	    aTolEdge1:Real from Standard);  
-    	---Purpose: 
-    	--- Sets  the  value of tolerance pipe for the first edge
-	---
+uses  
+    Real  from Standard, 
+    Box   from Bnd, 
+    Range from IntTools, 
+    Edge  from TopoDS,
+    Curve from Geom,
+    Curve from BRepAdaptor,
+    ShapeEnum from TopAbs,  
+    SequenceOfRanges from IntTools,
+    SequenceOfCommonPrts from IntTools 
     
-    SetEdge2         (me:out;  
-    	    anEdge:Edge from TopoDS);
-    	---Purpose: 
-    	--- Sets the second edge
-	---
+is  
+
+    Create 
+    returns EdgeEdge from IntTools; 
+    ---C++: alias "~IntTools_EdgeEdge();"
+    ---C++: inline 
+    ---Purpose:  
+    -- Empty contructor  
     
-    SetTolerance2    (me:out;  
-    	    aTolEdge2:Real from Standard);  
-    	---Purpose: 
-    	--- Sets  the  value of tolerance pipe for the first edge
-	---
-        
-    SetDiscretize    (me:out;  
-    	    aDiscret:Integer from Standard);	 
-    	---Purpose: 
-    	--- Sets  the  number of division for the shortest 
-	--- edge among the two.  The  deflection is not taken 
-    	--- into  account
-	---
-                      
-    SetDeflection    (me:out;  
-    	    aDeflection:Real from Standard);     
-    	---Purpose: 
-    	--- Sets the value of maximum reative deflection between 
-    	--- the two nearest points on a curve.
-	---
-     
-    SetEpsilonT      (me:out;  
-    	    anEpsT:Real from Standard); 
-    	---Purpose: 
-    	--- Sets the criteria of equality of two arguments, 
-    	--- i.e.  |t2-t1|<anEpsT will mean that t2=t1
-	---
-
-    SetEpsilonNull   (me:out;  
-    	    anEpsNull:Real from Standard);  
-    	---Purpose: 
-    	--- Sets the criteria of equality of two functions' values
-    	--- i.e.  |f(t2)-f(t1)|<anEpsNull will mean that f(t2)=f(t1)
-	---
-     
-    SetRange1 (me:out;  
-    	    aRange:Range from IntTools);
-
-    SetRange2 (me:out;  
-    	    aRange:Range from IntTools);	
-
-    SetRange1 (me:out;  
-    	    aFirst, aLast:Real from Standard);	
-
-    SetRange2 (me:out;  
-    	    aFirst, aLast:Real from Standard);	
-     
-    Perform(me:out); 
-    	---Purpose: 
-    	--- The main method of the algorithm to determine 
-    	--- common  parts  between two edges in  3-d space
-	---
-     
-    IsDone     (me)   
-    	returns Boolean from Standard; 
-    	---Purpose: 
-    	--- True if the common  parts are found
-	---
-     
-    Order     (me)   
-    	returns Boolean from Standard; 
-    	---Purpose: 
-    	--- False if the common parts are coherented  with Edge1, Edge2
-	---
-    
-    ErrorStatus(me) 
-    	returns Integer from Standard;  
-    	---Purpose: Returns the number that corresponds to the error. 
-    	--- The  list of error-codes is in  ...cxx file
-	---
-     
-    CommonParts(me) 
-    	returns SequenceOfCommonPrts from IntTools;   
-    	---C++:  return  const&  	    	  
-    	---Purpose: 
-    	--- Returns the common parts (Output)
-	---
-      
-    Range1       (me) 
-    	returns Range from IntTools; 
-    	---C++:  return  const&  
-
-    Range2       (me) 
-    	returns Range from IntTools; 
-    	---C++:  return  const&  	 
-
-    -----------------------------------------------------
-    --  Block of  protected   methods of  the  algorithm  --
-    -----------------------------------------------------     
-
-    CheckData  (me:out)    	     
-    	is protected; 
-    	---Purpose: 
-    	--- Fool-proof chechking the input data.  
-    	--- The  following  data is not  available
-    	---    *  Degenerated edges is  not  available; 
-    	---    *  Egdes,  that don't contain 3d-curve. 
-	---
-     
-    Prepare    (me:out)  
-    	is protected; 
-    	---Purpose: 
-    	--- Preparing the main  fields  for  the  algorithm 
-    	---    *  From-Curve  (myCFrom,myTminFrom,myTmaxFrom),  	     
-    	---    *  To  -Curve  (myCTo  ,myTminTo  ,myTmaxTo  ), 
-    	---    *  myCreiteria=myTol1+myTol2  , 
-    	---    *  myProjectableRanges.
-	---
-
-    IsProjectable (me;  
-    	    t:Real from Standard)   
-    	returns  Integer from Standard  
-    	is protected; 
-    	---Purpose: 
-    	--- Returns the flag 1 if it is possible to project 
-    	--- the point from the From-Curve at the  parameter t  
-    	--- to the To-Curve.  
-    	--- Othrwise it returns  0.
-	---
-    FindRangeOnCurve2 (me:out; 
-    	    aCP:out CommonPrt from IntTools)  
-    	returns  Integer from Standard  
-    	is protected;  	  
-    	---Purpose: 
-    	--- Find the range on the curve Curve-To that  corresponds 
-    	--- to  the  given  range on the curve Curve-From. 
-	---
-     
-    GetParameterOnCurve2  (me; 
-    	    aT1:Real from Standard;   
-    	    aT2:out  Real from Standard)  
-    	returns  Integer from Standard  
-    	is protected ;     
-    	---Purpose: 
-    	--- Find the  value  of  the  parameter  on  the curve Curve-To 
-    	--- that corresponds  to  the  given  parameter  on the curve  
-    	--- Curve-From.
-	---
-    
-    TreatVertexType(me:out;   
-    	    am1,  am2:Real from Standard; 
-    	    aCP:out CommonPrt from IntTools)   
-    	returns  Integer from Standard  
-    	is protected; 
-
-    IsIntersection (me:out; 
-    	    t1 : Real from Standard;   
-    	    t2 : Real from Standard)   
-    	is  protected ;      
-		    
-	 
-    FindDerivativeRoot (me:out;   
-    	    t,f:CArray1OfReal from IntTools)   
-    	is protected;   
-     
-    FindSimpleRoot (me:out;  
-    	    IP:Integer  from  Standard; 
-    	    ta, tb, fA:Real from Standard) 
-	returns  Real from Standard   
-    	is  protected;   
-    	---Purpose: 
-    	--- Find the Root of the function on given interval  
-    	--- of the argument [ta,tb] using  bisection  method .          	 
-    	--- IP  - a  flag; 
-    	--- =1  -  use DistanceFunction; 
-    	--- =2  -  use DerivativeFunction; 
-	---  
-	
-    DistanceFunction (me:out; 
-    	    t:Real from Standard)   
-    	returns  Real from Standard   
-    	is protected; 
-    	---Purpose: 
-    	--- Calculates the DistanceFunction D(t). 
-    	--- D(t)=D1(t) - myCriteria; 
-    	--- where  
-    	--- D1(t) -  the lower distance between a point from 
-    	--- the  From-Curve at  parameter t  and  
-    	--- projection point of  this point on To-Curve; 
-    	--- myCriteria=myTol1+myTol2. 
-	---
-
-    DerivativeFunction  (me:out; 
-    	    t:Real from Standard)   
-    	returns  Real from Standard   
-    	is protected; 
-    	---Purpose: 
-    	--- Calculates the first derivative of   
-    	--- the DistanceFunction D(t). 
-	---
-    
-    CheckTouch(me: out; 
-    	    aCP: CommonPrt from IntTools; 
-    	    t1 : out Real from Standard;   
-    	    t2 : out Real from Standard) 
-	returns Boolean from Standard 
-    	is protected;   
-	 
-    CheckTouchVertex(me;  
-    	    aCP: CommonPrt from IntTools;
-    	    t1 : out Real from Standard;   
-    	    t2 : out Real from Standard) 
-	returns Boolean from Standard 
-    	is protected;   
-
+    Create ( 
+        theEdge1 : Edge from TopoDS;  
+        theEdge2 : Edge from TopoDS)  
+    returns EdgeEdge from IntTools; 
+    ---C++: inline 
+    ---Purpose:  
+    -- Contructor    
  
-    ComputeLineLine(me:out) 
-    	is protected;    
-	
---modified by NIZNHY-PKV Mon Oct 31 12:16:55 2011f     
-    IsSameCurves(me:out) 
-    	returns Boolean from Standard 
-    	is protected;   
---modified by NIZNHY-PKV Mon Oct 31 12:16:59 2011t	 
-   
-fields 
---        Data
-    myEdge1           :  Edge  from  TopoDS;
-    myEdge2           :  Edge  from  TopoDS;
-    myTol1            :  Real  from  Standard; 
-    myTol2            :  Real  from  Standard;   
-	    
-    myDiscret         :  Integer from Standard;  
-         	     
-    myEpsT            :  Real from Standard;     	     
-    myEpsNull         :  Real from Standard;  
-    myDeflection      :  Real from Standard;   
-
---   data  curves
-    myCFrom           :  Curve from BRepAdaptor;  
-    myTminFrom        :  Real from Standard; 	
-    myTmaxFrom        :  Real from Standard; 	
-    myTolFrom         :  Real from Standard; 	
+    Create ( 
+        theEdge1   : Edge from TopoDS;  
+        aT11, aT12 : Real from Standard;
+        theEdge2   : Edge from TopoDS;  
+        aT21, aT22 : Real from Standard)
+    returns EdgeEdge from IntTools; 
+    ---C++: inline
+    ---Purpose:  
+    -- Contructor    
+    
+    SetEdge1(me:out;  
+        theEdge : Edge from TopoDS);
+    ---C++: inline
+    ---Purpose:  
+    -- Sets the first edge
+ 
+    SetEdge1(me:out;  
+        theEdge : Edge from TopoDS; 
+        aT1, aT2 : Real from Standard);
+    ---C++: inline
+    ---Purpose:  
+    -- Sets the first edge and its range
+    
+    SetRange1(me:out;
+        theRange1 : Range from IntTools);
+    ---C++: inline
+    ---Purpose:  
+    -- Sets the range for the first edge
+    
+    SetRange1(me:out;
+        aT1, aT2 : Real from Standard);
+    ---C++: inline
+    ---Purpose:  
+    -- Sets the range for the first edge
+    
+    SetEdge2(me:out;  
+        theEdge : Edge from TopoDS);
+    ---C++: inline
+    ---Purpose:  
+    -- Sets the second edge 
      
-    myCTo             :  Curve from BRepAdaptor; 
-    myTminTo          :  Real from Standard; 	
-    myTmaxTo          :  Real from Standard; 
-    myTolTo           :  Real from Standard; 
-  
-    myCriteria        :  Real from Standard; 	   
+    SetEdge2(me:out;  
+        theEdge : Edge from TopoDS; 
+        aT1, aT2 : Real from Standard);
+    ---C++: inline
+    ---Purpose:  
+    -- Sets the first edge and its range
+    
+    SetRange2(me:out;
+        theRange : Range from IntTools);
+    ---C++: inline
+    ---Purpose:  
+    -- Sets the range for the second edge
+    
+    SetRange2(me:out;
+        aT1, aT2 : Real from Standard);
+    ---C++: inline
+    ---Purpose:  
+    -- Sets the range for the second edge  
 
-    myIsDone          :  Boolean from Standard; 
-    myErrorStatus     :  Integer from Standard;  
+    CheckData(me:out) 
+    is protected; 
+    ---C++: inline
+    ---Purpose:  
+    -- Checks the data
 
----  internal  members      
-    mySeqOfCommonPrts :  SequenceOfCommonPrts from IntTools;  
-    myOrder           :  Boolean  from  Standard;  -- 0-strait; 1-reversed 
-    myPar1            :  Real     from  Standard; 
-    myParallel        :  Boolean  from  Standard;   
-    myRange1          :  Range from IntTools; 
-    myRange2          :  Range from IntTools; 
+    Prepare(me:out) 
+    is protected; 
+    ---Purpose:  
+    -- Prepares the data
+
+    Perform(me:out); 
+    ---Purpose:  
+    -- Performs the intersection between edges
+    
+    ComputeLineLine(me:out)
+    is protected;
+    ---Purpose:
+    -- Computes Line/Line intersection.  
+ 
+    FindRoughRanges(me:out;
+        theR1, theR2 : Range from IntTools; 
+        theSegments1 : out SequenceOfRanges from IntTools)
+    returns Integer from Standard 
+    is protected; 
+    ---Purpose: 
+    -- Looking for the rough intersection ranges
+
+    FindSolutions(me:out;  
+        theR1, theR2 : Range from IntTools;
+        theRanges1   : out SequenceOfRanges from IntTools;
+        theRanges2   : out SequenceOfRanges from IntTools)
+    is protected; 
+    ---Purpose:
+    -- Looking fot the exact intersection ranges
+    
+    MergeSolutions(me:out; 
+        theRanges1, theRanges2 : SequenceOfRanges from IntTools)
+    is protected; 
+    ---Purpose:
+    -- Merges found solutions
+
+    FindParameters(myclass; 
+        theBAC  : Curve from BRepAdaptor;  
+        aT1,aT2 : Real from Standard;  
+        theRes  : Real from Standard;
+        theCBox : Box from Bnd; 
+        aTB1,aTB2 : out Real from Standard)
+    returns Boolean from Standard 
+    is protected; 
+    ---Purpose:
+    -- Looking for the range of the edge whick is in the box
+     
+    CheckCoincidence(me:out; 
+        aT11, aT12  : Real from Standard; 
+        aT21, aT22  : Real from Standard;  
+        theCriteria : Real from Standard; 
+        theCurveRes1: Real from Standard)
+    returns Integer from Standard
+    is protected;
+    ---Purpose:  
+    -- Checks if edges coincide on the ranges
+     
+    AddSolution(me:out; 
+        aT11, aT12, aT21, aT22 : Real from Standard; 
+        theType : ShapeEnum from TopAbs)
+    is protected;
+    ---Purpose:
+    -- Adds common part of the given type to myCommonParts
+     
+    FindBestSolution(me:out; 
+        aT11, aT12, aT21, aT22 : Real from Standard;  
+        aT1, aT2 : out Real from Standard) 
+    is protected;
+    ---Purpose:
+    -- Looking for the minimal distance between edges on the ranges
+      
+    IsIntersection(me:out; 
+        aT11, aT12 : Real from Standard; 
+        aT21, aT22 : Real from Standard)
+    returns Boolean from Standard
+    is protected;
+    ---Purpose:  
+    -- Checks is there an intersection between edges on the given ranges  
+    -- (for nearly conicident edges)
+    
+    IsDone(me) 
+    returns Boolean from Standard;
+    ---C++: inline 
+    ---Purpose: 
+    -- Returns TRUE if common part(s) is(are) found
+    
+    CommonParts(me) 
+    returns SequenceOfCommonPrts from IntTools;
+    ---C++: inline 
+    ---C++: return  const&   
+    ---Purpose: 
+    -- Returns common parts
+    
+fields  
+    -- source data
+    myEdge1  : Edge  from TopoDS is protected; 
+    myEdge2  : Edge  from TopoDS is protected;  
+    
+    myGeom1  : Curve from Geom   is protected; 
+    myGeom2  : Curve from Geom   is protected;  
+    
+    myCurve1 : Curve from BRepAdaptor is protected; 
+    myCurve2 : Curve from BRepAdaptor is protected;  
+    
+    myTol1   : Real  from Standard is protected; 
+    myTol2   : Real  from Standard is protected; 
+    myTol    : Real  from Standard is protected;   
+    
+    myRes1   : Real  from Standard is protected;  
+    myRes2   : Real  from Standard is protected; 
+    
+    myRange1 : Range from IntTools is protected; 
+    myRange2 : Range from IntTools is protected;  
+    
+    -- results
+    mySwap        : Boolean from Standard is protected; 
+    myErrorStatus : Integer from Standard is protected; 
+    myCommonParts : SequenceOfCommonPrts from IntTools is protected;
     
 end EdgeEdge;
-

@@ -735,28 +735,12 @@ void BOPAlgo_ArgumentAnalyzer::TestTangent()
         }
       }
       else if(theType == TopAbs_EDGE) {
-        Standard_Integer aDiscretize = 30;
-        Standard_Real    aDeflection = 0.01;
         const TopoDS_Edge& aE1 = *(TopoDS_Edge*)&(aS1);
         const TopoDS_Edge& aE2 = *(TopoDS_Edge*)&(aS2);
-        
-        IntTools_EdgeEdge aEE;
-        aEE.SetEdge1 (aE1);
-        aEE.SetEdge2 (aE2);
-        aEE.SetTolerance1 (BRep_Tool::Tolerance(aE1));
-        aEE.SetTolerance2 (BRep_Tool::Tolerance(aE2));
-        aEE.SetDiscretize (aDiscretize);
-        aEE.SetDeflection (aDeflection);
-        
-        Standard_Real f = 0., l = 0.;
-        BRep_Tool::Range(aE1, f, l);
-        aEE.SetRange1(f, l);
-        
-        BRep_Tool::Range(aE2, f, l);
-        aEE.SetRange2(f, l);
-        
+        //
+        IntTools_EdgeEdge aEE(aE1, aE2);
+        //
         aEE.Perform();
-        
         if (aEE.IsDone()) {
           const IntTools_SequenceOfCommonPrts& aCPrts = aEE.CommonParts();
           Standard_Integer ii = 0;
