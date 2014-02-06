@@ -157,13 +157,7 @@ void WNT_Window :: Destroy ()
 //**************************** SetCursor *********************************//
 //***//
 void WNT_Window :: SetCursor ( const Aspect_Handle aCursor ) const {
-
-#ifndef _WIN64
- SetClassLong (  ( HWND )myHWindow, GCL_HCURSOR, ( LONG )aCursor  );
-#else
- SetClassLong (  ( HWND )myHWindow, GCLP_HCURSOR, ( LONG )aCursor  );
-#endif
-
+ SetClassLongPtr ((HWND)myHWindow, GCLP_HCURSOR, (LONG_PTR)aCursor);
 }  // end WNT_Window :: SetCursor
 
 //***//
