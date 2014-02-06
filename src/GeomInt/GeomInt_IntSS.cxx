@@ -104,7 +104,8 @@ void GeomInt_IntSS::Perform(const Handle(Geom_Surface)& S1,
   // ============================================================
   if (myIntersector.IsDone()) {
     const Standard_Integer nblin = myIntersector.NbLines();
-    for (Standard_Integer i=1; i<= nblin; i++) {
+    for (Standard_Integer i=1; i<= nblin; i++)
+    {
       MakeCurve(i,dom1,dom2,Tol,Approx,ApproxS1,ApproxS2);
     }
   }

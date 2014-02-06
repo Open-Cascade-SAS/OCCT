@@ -25,5 +25,5 @@ if { $ll_1 != $ll_2 } {
     puts "PRO19653 OK : BREPALGO_BOOLEANOPERATION returns result"
 }
 
-set length 0
+set length 228.265
 set 2dviewer 0

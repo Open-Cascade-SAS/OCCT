@@ -7,6 +7,8 @@ puts ""
 ## It is impossible to intersect two surfaces
 ##################################################
 
+puts "TODO OCC24472 ALL: Error : Intersection was made WRONGLY"
+
 restore [locate_data_file OCC13-1.draw] su1 
 ############### checkshape su1 # is not a topological shape
 restore [locate_data_file OCC13-2.draw] su2

@@ -1,5 +1,5 @@
-puts "TODO ?OCC23753 ALL: Process killed by CPU limit"
-puts "TODO ?OCC23753 ALL: TEST INCOMPLETE"
+puts "TODO ?OCC24472 ALL: Error : Result shape is WRONG because it must contains 70 edges instead of 71"
+puts "TODO ?OCC24472 ALL: Error : Result shape is WRONG because it must contains 139 shapes instead of 140"
 
 puts "============"
 puts "OCC19793"
@@ -9,8 +9,7 @@ puts ""
 # Fuse problem of symetrical shapes. Appendix for NPAL19789
 #######################################################################
 
-cpulimit 1000
-#cpulimit 4500
+cpulimit 400
 set BugNumber OCC19793
 
 puts "Load first shape ..."
