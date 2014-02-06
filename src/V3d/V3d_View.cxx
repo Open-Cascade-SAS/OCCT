@@ -1600,11 +1600,6 @@ void V3d_View::WindowFit(const Standard_Integer Xmin, const Standard_Integer Ymi
     gp_Pnt aPanFrom = myCamera->ConvertProj2View (aScreenCenter);
     gp_Vec aPanVec (aPanFrom, aPanTo);
 
-    gp_Pnt a1 (aUMin, aVMin, 0.0);
-    gp_Pnt a2 (aUMax, aVMax, 0.0);
-    gp_Pnt ap1 = myCamera->ConvertProj2View (a1);
-    gp_Pnt ap2 = myCamera->ConvertProj2View (a2);
-
     // compute section size
     gp_Pnt aFitTopRight (aUMax, aVMax, aDepth);
     gp_Pnt aFitBotLeft (aUMin, aVMin, aDepth);

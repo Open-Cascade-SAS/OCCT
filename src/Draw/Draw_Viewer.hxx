@@ -130,7 +130,6 @@ class Draw_Viewer {
   __Draw_API void   RepaintAll  () const;
   __Draw_API void   Repaint2D  () const;
   __Draw_API void   Repaint3D  () const;
-  __Draw_API unsigned long GetWindow   (const Standard_Integer id) const; 
   __Draw_API void   DeleteView  (const Standard_Integer id);
   __Draw_API void   Clear       ();
   __Draw_API void   Clear2D     ();

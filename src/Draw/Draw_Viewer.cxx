@@ -1054,23 +1054,6 @@ void Draw_Viewer::Repaint3D () const
 }
 
 //=======================================================================
-//function : GetWindow
-//purpose  :
-//=======================================================================
-unsigned long Draw_Viewer::GetWindow (const Standard_Integer id) const
-{
-  if (Draw_Batch) return 0;
-  if (myViews[id]) {
-  #if defined(_WIN32) || defined(__WIN32__)
-    return (unsigned long)(myViews[id]->win);
-	#elif !defined(__APPLE__) || defined(MACOSX_USE_GLX)
-    return myViews[id]->win;
-	#endif
-  }
-  return 0;
-}
-
-//=======================================================================
 //function : DeleteView
 //purpose  :
 //=======================================================================

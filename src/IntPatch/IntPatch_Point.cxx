@@ -162,7 +162,7 @@ void IntPatch_Point::Dump() const {
   if(onS2)
     printf("*OnS2*  par=%15.10f arc2=%10p", (double)prm2, (void*)arcS2.operator->());
   if(vtxonS2)
-    printf(" *Vtx2*  vtx2=%10lu", (void*)vS2.operator->());
+    printf(" *Vtx2*  vtx2=%10p", (void*)vS2.operator->());
 
   if(onS2 || vtxonS2)
     printf("\n");
