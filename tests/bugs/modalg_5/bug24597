@@ -1,0 +1,40 @@
+puts "========="
+puts "OCC24597"
+puts "========="
+puts ""
+###########################################################
+# Missing internal vertex in the result of General Fuse Operation
+###########################################################
+
+cylinder c1 20
+trimv c1 c1 0 50
+mkface b1 c1
+vertex v1 0 20 25
+orientation v1 I
+add v1 b1
+box b2 -30 -30 5 60 60 40
+
+# add the arguments
+bclearobjects
+bcleartools
+baddobjects b1 b2
+
+# intersection step 
+bfillds
+
+# building step
+bbuild result
+
+set square 33136.3
+
+set nb_v_good 13
+set nb_e_good 19
+set nb_w_good 13
+set nb_f_good 11
+set nb_sh_good 2
+set nb_sol_good 2
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 61
+
+set 2dviewer 1

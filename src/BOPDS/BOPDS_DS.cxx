@@ -322,6 +322,7 @@ void BOPDS_DS::Init()
   Standard_Integer n1, n2, n3;
   Standard_Real aTol;
   TopAbs_ShapeEnum aTS;
+  TopoDS_Iterator aItS;
   BOPCol_ListIteratorOfListOfInteger aIt1, aIt2, aIt3;
   BOPCol_ListIteratorOfListOfShape aIt;
   BOPDS_IndexRange aR;
@@ -521,6 +522,16 @@ void BOPDS_DS::Init()
           }
         }
       }//for (; aIt1.More(); aIt1.Next()) {
+      //
+      // pure internal vertices on the face
+      aItS.Initialize(aS);
+      for (; aItS.More(); aItS.Next()) {
+	const TopoDS_Shape& aSx=aItS.Value();
+	if (aSx.ShapeType()==TopAbs_VERTEX){
+	  nV=Index(aSx);
+	  aMI.Add(nV);
+	}
+      }
       //
       //
       // For a Face: change wires for BRep sub-shapes
@@ -1272,9 +1283,25 @@ void BOPDS_DS::FaceInfoIn(const Standard_Integer theF,
 			  BOPDS_IndexedMapOfPaveBlock& theMPB,
 			  BOPCol_MapOfInteger& theMI)
 {
-  Standard_Integer i, aNbVF, aNbEF, nV, nE;
+  Standard_Integer i, aNbVF, aNbEF, nV, nE, nVSD;
+  TopoDS_Iterator aItS;
   BOPDS_ListIteratorOfListOfPaveBlock aItPB;
   //
+  // 1. Pure internal vertices on the face
+  const TopoDS_Shape& aF=Shape(theF);
+  aItS.Initialize(aF);
+  for (; aItS.More(); aItS.Next()) {
+    const TopoDS_Shape& aSx=aItS.Value();
+    if (aSx.ShapeType()==TopAbs_VERTEX){
+      nV=Index(aSx);
+      if (HasShapeSD(nV, nVSD)) {
+	nV=nVSD;
+      }
+      theMI.Add(nV);
+    }
+  }
+  //
+  // 2. aVFs
   BOPDS_VectorOfInterfVF& aVFs=InterfVF();
   aNbVF=aVFs.Extent();
   for (i=0; i<aNbVF; ++i) {
@@ -1285,6 +1312,7 @@ void BOPDS_DS::FaceInfoIn(const Standard_Integer theF,
     }
   }
   //
+  // 3. aEFs
   BOPDS_VectorOfInterfEF& aEFs=InterfEF();
   aNbEF=aEFs.Extent();
   for (i=0; i<aNbEF; ++i) {
