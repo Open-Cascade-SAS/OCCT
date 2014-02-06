@@ -32,7 +32,8 @@ uses XY                  from gp,
      PntOn2S             from IntSurf,
      LineOn2S            from IntSurf,
      Dir                 from gp,
-     Dir2d               from gp
+     Dir2d               from gp,
+     Pnt                 from gp
      
      
 raises OutOfRange from Standard,
@@ -248,14 +249,36 @@ is
 	is static;
 
     AddAPoint ( me    : in out  ; 
-    	    	line  : in  out  LineOn2S  from  IntSurf  ;     
-		POn2S :          PntOn2S   from  IntSurf  ) ;
-	---C++: inline
-		
+    line  : in  out  LineOn2S  from  IntSurf  ;     
+    POn2S :          PntOn2S   from  IntSurf  ) ;
+    ---C++: inline
+    
     ExtendLineInCommonZone(me: in out; theChoixIso: ConstIsoparametric  from IntImp;
-    	    	    	    	       theDirectionFlag: Boolean from Standard)
-    	returns Boolean from Standard
-	is private;
+theDirectionFlag: Boolean from Standard)
+    returns Boolean from Standard
+    is private;
+  
+  DistanceMinimizeByGradient( me    : in out;
+                              theASurf1 , theASurf2  : ThePSurface ;
+                              theU1, theV1, theU2, theV2: out Real from Standard;
+                              theStep0U1V1: Real from Standard = 1.0e-6;
+                              theStep0U2V2: Real from Standard = 1.0e-6)
+    returns Boolean from Standard
+    is private;
+  
+  DistanceMinimizeByExtrema(me          : in out;
+                            theASurf1   : ThePSurface ;
+                            theP0       : Pnt from gp;
+                            theU0, theV0: out Real from Standard;
+                            theStep0U: Real from Standard = 1.0;
+                            theStep0V: Real from Standard = 1.0)
+    returns Boolean from Standard
+    is private;
+  
+  SeekAdditionalPoints( me    : in out;
+                        theASurf1 , theASurf2  : ThePSurface;
+                        theMinNbPoints : Integer from Standard)
+    returns Boolean from Standard;
 
 fields
 

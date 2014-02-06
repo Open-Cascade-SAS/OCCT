@@ -186,10 +186,22 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
     {
       firstp = GeomInt_LineTool::Vertex(L,i).ParameterOnLine();
       lastp =  GeomInt_LineTool::Vertex(L,i+1).ParameterOnLine();
-      if(firstp!=lastp)
-	  { 
-        const Standard_Real pmid = (firstp+lastp)*0.5;
-        const gp_Pnt Pmid = ALine->Value(pmid);
+      const Standard_Real pmid = (firstp+lastp)*0.5;
+      const gp_Pnt Pmid = ALine->Value(pmid);
+
+      //Checking, if it is an "micro-curve" (can it be collapsed in one point?).
+      //If "yes" then first-, last- and midpoints are same point.
+      gp_Pnt  aP1 = ALine->Value(RealToInt(firstp)),
+              aP2 = ALine->Value(RealToInt(lastp));
+
+      Standard_Real aSQDist = aP1.SquareDistance(aP2);
+      aSQDist = Max(aSQDist, aP1.SquareDistance(Pmid));
+      aSQDist = Max(aSQDist, aP2.SquareDistance(Pmid));
+      
+      Standard_Boolean isMicro = aSQDist*100.0 < Tol;
+
+      if((Abs(firstp-lastp)>Precision::PConfusion()) && !isMicro)
+      { 
         Parameters(myHS1,myHS2,Pmid,u1,v1,u2,v2);
         Recadre(myHS1,myHS2,u1,v1,u2,v2);
         const TopAbs_State in1 = myDom1->Classify(gp_Pnt2d(u1,v1),Tol);
@@ -206,29 +218,86 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
     return;
   }
   else if(typl == IntPatch_Walking)
-  { 
+  {
     Standard_Real u1,v1,u2,v2;
     Handle(IntPatch_WLine)& WLine =  *((Handle(IntPatch_WLine) *)&L);
     seqp.Clear();
+
+    i = 1;
+    
+    {
+      firstp = GeomInt_LineTool::Vertex(L,1).ParameterOnLine();
+      const IntSurf_PntOn2S& Pf = WLine->Point(RealToInt(firstp));
+
+      Pf.Parameters(u1,v1,u2,v2);
+
+//Inscribe parameters into main period for periodic surfaces
+      Recadre(myHS1,myHS2,u1,v1,u2,v2);
+
+      const TopAbs_State in1 = myDom1->Classify(gp_Pnt2d(u1,v1),Tol);
+      const TopAbs_State in2 = myDom2->Classify(gp_Pnt2d(u2,v2),Tol);
+      if((in1 ==  TopAbs_OUT) || (in2 == TopAbs_OUT))
+      {
+        i = 2;
+      }
+    }
+    
     nbvtx = GeomInt_LineTool::NbVertex(L);
-    for(i=1;i<nbvtx;i++)
-	{
+    for(;i<nbvtx;i++)
+    {
       firstp = GeomInt_LineTool::Vertex(L,i).ParameterOnLine();
       lastp =  GeomInt_LineTool::Vertex(L,i+1).ParameterOnLine();
-      if(firstp!=lastp)
-      {  
-        const Standard_Integer pmid = (Standard_Integer )( (firstp+lastp)/2);
-        const IntSurf_PntOn2S& Pmid = WLine->Point(pmid);
+      const Standard_Integer pmid = RealToInt((firstp+lastp)*0.5);
+      const IntSurf_PntOn2S& Pmid = WLine->Point(pmid);
+
+      //Checking, if it is an "micro-curve" (can it be collapsed in one point?).
+      //If "yes" then first-, last- and midpoints are same point.
+      gp_Pnt  aP1 = WLine->Point(RealToInt(firstp)).Value(),
+              aP2 = WLine->Point(RealToInt(lastp)).Value();
+
+      Standard_Real aSQDist = aP1.SquareDistance(aP2);
+      aSQDist = Max(aSQDist, aP1.SquareDistance(Pmid.Value()));
+      aSQDist = Max(aSQDist, aP2.SquareDistance(Pmid.Value()));
+
+      Standard_Boolean isMicro = aSQDist*100.0 < Tol;
+
+      if((Abs(firstp-lastp)>Precision::PConfusion()) && !isMicro)
+      {
         Pmid.Parameters(u1,v1,u2,v2);
+//Inscribe parameters into main period for periodic surfaces
         Recadre(myHS1,myHS2,u1,v1,u2,v2);
-        const TopAbs_State in1 = myDom1->Classify(gp_Pnt2d(u1,v1),Tol);
-        if(in1 !=  TopAbs_OUT) {  //-- !=ON donne Pb 
-          const TopAbs_State in2 = myDom2->Classify(gp_Pnt2d(u2,v2),Tol);
-          if(in2 != TopAbs_OUT) { //-- !=ON  
-            seqp.Append(firstp);
-            seqp.Append(lastp);
-          }
+
+        const TopAbs_State in1m = myDom1->Classify(gp_Pnt2d(u1,v1),Tol);
+        if(in1m ==  TopAbs_OUT)
+        {
+          continue;
         }
+
+        const TopAbs_State in2m = myDom2->Classify(gp_Pnt2d(u2,v2),Tol);
+        if(in2m == TopAbs_OUT)
+        {
+          continue;
+        }
+
+        const IntSurf_PntOn2S& Plast = WLine->Point(RealToInt(lastp));
+        Plast.Parameters(u1,v1,u2,v2);
+//Inscribe parameters into main period for periodic surfaces
+        Recadre(myHS1,myHS2,u1,v1,u2,v2);
+
+        const TopAbs_State in1l = myDom1->Classify(gp_Pnt2d(u1,v1),Tol);
+        if(in1l ==  TopAbs_OUT)
+        {
+          continue;
+        }
+
+        const TopAbs_State in2l = myDom2->Classify(gp_Pnt2d(u2,v2),Tol);
+        if(in2l == TopAbs_OUT)
+        {
+          continue;
+        }
+
+        seqp.Append(firstp);
+        seqp.Append(lastp);
       }
     }
     done = Standard_True;
@@ -245,54 +314,51 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
     {
       firstp = GeomInt_LineTool::Vertex(L,i).ParameterOnLine();
       lastp =  GeomInt_LineTool::Vertex(L,i+1).ParameterOnLine();
-      if(Abs(firstp-lastp)>Precision::PConfusion())
+
+      if((Abs(firstp-lastp)>Precision::PConfusion()))
       {
         intrvtested = Standard_True;
         const Standard_Real pmid = (firstp+lastp)*0.5;
-        gp_Pnt Pmid;
+        gp_Pnt Pmid, aP1, aP2;
         switch (typl)
         {
-          case IntPatch_Lin:       Pmid = ElCLib::Value(pmid,GLine->Line()); break;
-          case IntPatch_Circle:    Pmid = ElCLib::Value(pmid,GLine->Circle()); break;
-          case IntPatch_Ellipse:   Pmid = ElCLib::Value(pmid,GLine->Ellipse()); break;
-          case IntPatch_Hyperbola: Pmid = ElCLib::Value(pmid,GLine->Hyperbola()); break;
-          case IntPatch_Parabola:  Pmid = ElCLib::Value(pmid,GLine->Parabola()); break;
+          case IntPatch_Lin:
+            Pmid = ElCLib::Value(pmid,GLine->Line());
+            aP1 = ElCLib::Value(firstp,GLine->Line());
+            aP2 = ElCLib::Value(lastp,GLine->Line());
+            break;
+          case IntPatch_Circle:
+            Pmid = ElCLib::Value(pmid,GLine->Circle());
+            aP1 = ElCLib::Value(firstp,GLine->Circle());
+            aP2 = ElCLib::Value(lastp,GLine->Circle());
+            break;
+          case IntPatch_Ellipse:
+            Pmid = ElCLib::Value(pmid,GLine->Ellipse());
+            aP1 = ElCLib::Value(firstp,GLine->Ellipse());
+            aP2 = ElCLib::Value(lastp,GLine->Ellipse());
+            break;
+          case IntPatch_Hyperbola:
+            Pmid = ElCLib::Value(pmid,GLine->Hyperbola());
+            aP1 = ElCLib::Value(firstp,GLine->Hyperbola());
+            aP2 = ElCLib::Value(lastp,GLine->Hyperbola());
+            break;
+          case IntPatch_Parabola:
+            Pmid = ElCLib::Value(pmid,GLine->Parabola());
+            aP1 = ElCLib::Value(firstp,GLine->Parabola());
+            aP2 = ElCLib::Value(lastp,GLine->Parabola());
+            break;
           case IntPatch_Analytic:
           case IntPatch_Walking:
           case IntPatch_Restriction: break; // cases Analytic, Walking and Restriction are handled above
         }
-        Parameters(myHS1,myHS2,Pmid,u1,v1,u2,v2);
-        Recadre(myHS1,myHS2,u1,v1,u2,v2);
-        const TopAbs_State in1 = myDom1->Classify(gp_Pnt2d(u1,v1),Tol);
-        if(in1 !=  TopAbs_OUT) { 
-          const TopAbs_State in2 = myDom2->Classify(gp_Pnt2d(u2,v2),Tol);
-          if(in2 != TopAbs_OUT) { 
-            seqp.Append(firstp);
-            seqp.Append(lastp);
-          }
-        }
-      }
-    }
-    if(typl == IntPatch_Circle || typl == IntPatch_Ellipse)
-    { 
-      firstp = GeomInt_LineTool::Vertex(L,nbvtx).ParameterOnLine();
-      lastp  = M_PI + M_PI + GeomInt_LineTool::Vertex(L,1).ParameterOnLine();
-      const Standard_Real cadrinf = GeomInt_LineTool::FirstParameter(L);
-      const Standard_Real cadrsup = GeomInt_LineTool::LastParameter(L);
-      Standard_Real acadr = (firstp+lastp)*0.5;
-      while(acadr < cadrinf) { acadr+=M_PI+M_PI; }
-      while(acadr > cadrsup) { acadr-=M_PI+M_PI; } 
-      if(acadr>=cadrinf && acadr<=cadrsup)
-      { 
-        if(Abs(firstp-lastp)>Precision::PConfusion())
-        {
-          intrvtested = Standard_True;
-          const Standard_Real pmid = (firstp+lastp)*0.5;
-          gp_Pnt Pmid;
-          if (typl == IntPatch_Circle)
-            Pmid = ElCLib::Value(pmid,GLine->Circle());
-          else
-            Pmid = ElCLib::Value(pmid,GLine->Ellipse());
+
+        Standard_Real aSQDist = aP1.SquareDistance(aP2);
+        aSQDist = Max(aSQDist, aP1.SquareDistance(Pmid));
+        aSQDist = Max(aSQDist, aP2.SquareDistance(Pmid));
+
+        if(aSQDist*100.0 > Tol)
+        {       //if it is not an "micro-curve" (can it be collapsed in one point?).
+                //If "yes" then first-, last- and midpoints are same point.
           Parameters(myHS1,myHS2,Pmid,u1,v1,u2,v2);
           Recadre(myHS1,myHS2,u1,v1,u2,v2);
           const TopAbs_State in1 = myDom1->Classify(gp_Pnt2d(u1,v1),Tol);
@@ -305,7 +371,52 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
           }
         }
       }
-    }      
+    }
+    if(typl == IntPatch_Circle || typl == IntPatch_Ellipse)
+    {
+      const Standard_Real aT = M_PI + M_PI;
+      firstp = GeomInt_LineTool::Vertex(L,nbvtx).ParameterOnLine();
+      lastp  = aT + GeomInt_LineTool::Vertex(L,1).ParameterOnLine();
+      const Standard_Real cadrinf = GeomInt_LineTool::FirstParameter(L);
+      const Standard_Real cadrsup = GeomInt_LineTool::LastParameter(L);
+      Standard_Real acadr = (firstp+lastp)*0.5;
+      while(acadr < cadrinf)
+      {
+        acadr+=aT;
+      }
+      
+      while(acadr > cadrsup)
+      {
+        acadr-=aT;
+      } 
+      
+      if(acadr>=cadrinf && acadr<=cadrsup)
+      { 
+        if(Abs(firstp-lastp) > Precision::PConfusion())
+        {
+          intrvtested = Standard_True;
+          const Standard_Real pmid = (firstp+lastp)*0.5;
+          gp_Pnt Pmid;
+          if (typl == IntPatch_Circle)
+            Pmid = ElCLib::Value(pmid,GLine->Circle());
+          else
+            Pmid = ElCLib::Value(pmid,GLine->Ellipse());
+          Parameters(myHS1,myHS2,Pmid,u1,v1,u2,v2);
+          Recadre(myHS1,myHS2,u1,v1,u2,v2);
+          const TopAbs_State in1 = myDom1->Classify(gp_Pnt2d(u1,v1),Tol);
+          if(in1 !=  TopAbs_OUT)
+          {
+            const TopAbs_State in2 = myDom2->Classify(gp_Pnt2d(u2,v2),Tol);
+            if(in2 != TopAbs_OUT)
+            { 
+              seqp.Append(firstp);
+              seqp.Append(lastp);
+            }
+          }
+        }
+      }
+    }
+
     if (!intrvtested) {
       // on garde a priori. Il faudrait un point 2d sur chaque
       // surface pour prendre la decision. Sera fait dans 
@@ -370,28 +481,36 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
       {
         // on cumule
         GeomInt_ParameterAndOrientation& valj = seqpss.ChangeValue(j);
-        if (or1 != TopAbs_INTERNAL) {
-          if (valj.Orientation1() != TopAbs_INTERNAL) {
-            if (or1 != valj.Orientation1()) {
+        if (or1 != TopAbs_INTERNAL)
+        {
+          if (valj.Orientation1() != TopAbs_INTERNAL)
+          {
+            if (or1 != valj.Orientation1())
+            {
               valj.SetOrientation1(TopAbs_INTERNAL);
             }
           }
-          else {
+          else
+          {
             valj.SetOrientation1(or1);
           }
         }
 	
-        if (or2 != TopAbs_INTERNAL) {
-          if (valj.Orientation2() != TopAbs_INTERNAL) {
-            if (or2 != valj.Orientation2()) {
+        if (or2 != TopAbs_INTERNAL)
+        {
+          if (valj.Orientation2() != TopAbs_INTERNAL)
+          {
+            if (or2 != valj.Orientation2())
+            {
               valj.SetOrientation2(TopAbs_INTERNAL);
             }
           }
-          else {
+          else
+          {
             valj.SetOrientation2(or2);
           }
-		}
-
+        }
+        
         inserted = Standard_True;
         break;
       }
@@ -403,7 +522,9 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
         break;
       }
     }
-    if (!inserted) {
+
+    if (!inserted)
+    {
       seqpss.Append(GeomInt_ParameterAndOrientation(prm,or1,or2));
     }
   }
@@ -505,10 +626,12 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
         lastp = seqpss(i).Parameter();
         Standard_Real stofirst = Max(firstp, thefirst);
         Standard_Real stolast  = Min(lastp,  thelast) ;
-        if (stolast > stofirst) {
+        if (stolast > stofirst)
+        {
           seqp.Append(stofirst);
           seqp.Append(stolast);
         }
+        
         if (lastp > thelast)
           break;
       }

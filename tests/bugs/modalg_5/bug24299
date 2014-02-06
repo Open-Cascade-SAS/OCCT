@@ -1,0 +1,45 @@
+puts "========="
+puts "CR24299"
+puts "========="
+puts ""
+###############################
+## Wrong section curve
+###############################
+
+restore [locate_data_file pro19653a.brep] b1
+restore [locate_data_file pro19653b.brep] b2
+
+explode b1 f
+explode b2 f
+mksurface s1 b1_1
+mksurface s2 b2_1
+intersect i s1 s2
+
+dlog reset
+dlog on
+xdistcs i_2 s1 0 1 10
+set Log1 [dlog get]
+
+set List1 [split ${Log1} {TD= \t\n}]
+
+set L1 [llength ${List1}]
+set L2 10
+set L3 5
+set N [expr (${L1} - ${L2})/${L3} + 1]
+set Tolerance 1.0e-5
+set D_good 0.
+
+for {set i 1} {${i} <= ${N}} {incr i} {
+   set j1 [expr ${L2} + (${i}-1)*${L3}]
+   set j2 [expr ${j1} + 2]
+   set T [lindex ${List1} ${j1}]
+   set D [lindex ${List1} ${j2}]
+   #puts "i=${i} j1=${j1} j2=${j2} T=${T} D=${D}"
+   if { [expr abs(${D} - ${D_good})] > ${Tolerance} } {
+      puts "Error: i=${i} T=${T} D=${D}"
+   }
+}
+
+smallview
+fit
+set only_screen_axo 1
