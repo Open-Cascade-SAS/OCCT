@@ -1,5 +1,3 @@
-puts "TODO OCC23884 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO OCC23884 ALL: Error : The square of result shape is"
 puts "============"
 puts "OCC23884"
 puts "============"
@@ -14,7 +12,7 @@ restore [locate_data_file bug23884_fz124] b2
 bop b1 b2
 bopfuse result
 
-set square 2333.14
+set square 2415.65
 set 2dviewer 0
 
 
