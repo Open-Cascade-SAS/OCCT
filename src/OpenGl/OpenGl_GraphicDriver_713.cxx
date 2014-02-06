@@ -69,7 +69,7 @@ void OpenGl_GraphicDriver::PrimitiveArray( const Graphic3d_CGroup& ACGroup,
   if ( ACGroup.ptrGroup && parray )
   {
     OpenGl_PrimitiveArray *aparray = new OpenGl_PrimitiveArray( (CALL_DEF_PARRAY *) parray );
-    ((OpenGl_Group *)ACGroup.ptrGroup)->AddElement( TelParray, aparray );
+    ((OpenGl_Group *)ACGroup.ptrGroup)->AddElement (aparray);
   }
 }
 
@@ -82,7 +82,7 @@ void OpenGl_GraphicDriver::UserDraw (const Graphic3d_CGroup&    theCGroup,
     OpenGl_Element* aUserDraw = myUserDrawCallback(&theUserDraw);
     if (aUserDraw != NULL)
     {
-      ((OpenGl_Group* )theCGroup.ptrGroup)->AddElement (TelUserdraw, aUserDraw);
+      ((OpenGl_Group* )theCGroup.ptrGroup)->AddElement (aUserDraw);
     }
   }
 }

@@ -44,8 +44,6 @@
 
 #include <NCollection_Sequence.hxx>
 
-#include <OpenGl_tsm.hxx>
-
 #include <OpenGl_AspectFace.hxx>
 #include <OpenGl_Display.hxx>
 #include <OpenGl_Matrix.hxx>
@@ -211,14 +209,14 @@ public:
   //! @param theFilter [in] the filter instance.
   inline void SetRenderFilter (const Handle(OpenGl_RenderFilter)& theFilter)
   {
-    myRenderFilter = theFilter; 
+    myRenderFilter = theFilter;
   }
 
   //! Get rendering filter.
   //! @return filter instance.
-  inline const Handle(OpenGl_RenderFilter)& GetRenderFilter() const 
-  { 
-    return myRenderFilter; 
+  inline const Handle(OpenGl_RenderFilter)& GetRenderFilter() const
+  {
+    return myRenderFilter;
   }
 
   //! @return applied view matrix.
@@ -275,7 +273,7 @@ protected: //! @name methods related to ray-tracing
 
   //! Updates environment map for ray-tracing.
   Standard_Boolean UpdateRaytraceEnvironmentMap();
-  
+
   //! Adds OpenGL structure to ray-traced scene geometry.
   Standard_Boolean AddRaytraceStructure (const OpenGl_Structure* theStructure,
     const Standard_ShortReal* theTransform, std::set<const OpenGl_Structure*>& theElements);
@@ -314,7 +312,7 @@ protected: //! @name methods related to ray-tracing
 
   //! Initializes OpenCL resources.
   Standard_Boolean InitOpenCL();
-  
+
   //! Releases OpenCL resources.
   void ReleaseOpenCL();
 
@@ -353,7 +351,7 @@ protected: //! @name fields related to ray-tracing
   Standard_Boolean myIsRaytraceDataValid;
   //! Is geometry data musty be updated?
   Standard_Boolean myToUpdateRaytraceData;
-  
+
   //! 3D scene geometry data for ray-tracing.
   OpenGl_RaytraceGeometry myRaytraceGeometry;
 

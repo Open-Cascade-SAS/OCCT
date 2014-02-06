@@ -193,7 +193,7 @@ Standard_Boolean OpenGl_GraphicDriver::GetOpenClDeviceInfo (const Graphic3d_CVie
   {
     return Standard_False;
   }
-  
+
   return reinterpret_cast<const OpenGl_CView*> (theCView.ptrView)->WS->GetOpenClDeviceInfo (theInfo);
 }
 
@@ -347,7 +347,7 @@ void OpenGl_GraphicDriver::SetStencilTestOptions (const Graphic3d_CGroup& theCGr
 {
   OpenGl_StencilTest* aStencilTest = new OpenGl_StencilTest();
   aStencilTest->SetOptions (theIsEnabled);
-  ((OpenGl_Group* )theCGroup.ptrGroup)->AddElement (TelNil, aStencilTest);
+  ((OpenGl_Group* )theCGroup.ptrGroup)->AddElement (aStencilTest);
 }
 
 // =======================================================================
@@ -375,7 +375,7 @@ void OpenGl_GraphicDriver::Text (const Graphic3d_CGroup&                 theCGro
   aParams.VAlign = theVta;
   const OpenGl_Vec3 aPoint (thePoint.X(), thePoint.Y(), thePoint.Z());
   OpenGl_Text* aText = new OpenGl_Text (theText, aPoint, aParams);
-  ((OpenGl_Group* )theCGroup.ptrGroup)->AddElement (TelText, aText);
+  ((OpenGl_Group* )theCGroup.ptrGroup)->AddElement (aText);
 }
 
 // =======================================================================
@@ -589,5 +589,5 @@ void OpenGl_GraphicDriver::SetFlippingOptions (const Graphic3d_CGroup& theCGroup
 {
   OpenGl_Flipper* aFlipper = new OpenGl_Flipper (theRefPlane);
   aFlipper->SetOptions (theIsEnabled);
-  ((OpenGl_Group* )theCGroup.ptrGroup)->AddElement (TelNil, aFlipper);
+  ((OpenGl_Group* )theCGroup.ptrGroup)->AddElement (aFlipper);
 }

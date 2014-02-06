@@ -283,7 +283,7 @@ void OpenGl_Structure::SetHighlightBox (const Handle(OpenGl_Context)& theGlCtx,
   myHighlightBox->SetAspectLine (aContextLine);
 
   OpenGl_BndBoxPrs* aBndBoxPrs = new OpenGl_BndBoxPrs (theBoundBox);
-  myHighlightBox->AddElement (TelParray, aBndBoxPrs);
+  myHighlightBox->AddElement (aBndBoxPrs);
 }
 
 // =======================================================================
@@ -359,7 +359,7 @@ void OpenGl_Structure::RegisterAncestorStructure (const OpenGl_Structure* theStr
     if (anIt.Value() == theStructure)
     {
       return;
-    }    
+    }
   }
 
   myAncestorStructures.Append (theStructure);
@@ -377,7 +377,7 @@ void OpenGl_Structure::UnregisterAncestorStructure (const OpenGl_Structure* theS
     {
       myAncestorStructures.Remove (anIt);
       return;
-    }    
+    }
   }
 }
 
@@ -397,7 +397,7 @@ void OpenGl_Structure::UnregisterFromAncestorStructure() const
       {
         anAncestor->myConnected.Remove (anIts);
         return;
-      }      
+      }
     }
   }
 }
@@ -564,7 +564,7 @@ void OpenGl_Structure::Clear (const Handle(OpenGl_Context)& theGlCtx)
 #ifdef HAVE_OPENCL
     aRaytracableGroupDeleted |= anIter.Value()->IsRaytracable();
 #endif
-    
+
     // Delete objects
     OpenGl_Element::Destroy (theGlCtx, const_cast<OpenGl_Group*& > (anIter.ChangeValue()));
   }

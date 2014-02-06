@@ -406,24 +406,19 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceStructure (const OpenGl_Structure*
     // Add OpenGL elements from group (extract primitives arrays and aspects)
     for (const OpenGl_ElementNode* aNode = anItg.Value()->FirstNode(); aNode != NULL; aNode = aNode->next)
     {
-      if (TelNil == aNode->type)
+      OpenGl_AspectFace* anAspect = dynamic_cast<OpenGl_AspectFace*> (aNode->elem);
+      if (anAspect != NULL)
       {
-        OpenGl_AspectFace* anAspect = dynamic_cast<OpenGl_AspectFace*> (aNode->elem);
+        aMatID = static_cast<Standard_Integer> (myRaytraceGeometry.Materials.size());
 
-        if (anAspect != NULL)
-        {
-          aMatID = static_cast<Standard_Integer> (myRaytraceGeometry.Materials.size());
+        OpenGl_RaytraceMaterial aMaterial;
+        CreateMaterial (anAspect->IntFront(), aMaterial);
 
-          OpenGl_RaytraceMaterial aMaterial;
-          CreateMaterial (anAspect->IntFront(), aMaterial);
-
-          myRaytraceGeometry.Materials.push_back (aMaterial);
-        }
+        myRaytraceGeometry.Materials.push_back (aMaterial);
       }
-      else if (TelParray == aNode->type)
+      else
       {
         OpenGl_PrimitiveArray* aPrimArray = dynamic_cast<OpenGl_PrimitiveArray*> (aNode->elem);
-
         if (aPrimArray != NULL)
         {
           NCollection_Handle<BVH_Object<Standard_ShortReal, 4> > aSet =
@@ -608,7 +603,7 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceVertexIndices (OpenGl_TriangleSet*
     case TelTriangleFansArrayType:
       return AddRaytraceTriangleFanArray (theSet, theArray, theOffset, theCount, theMatID);
 
-    case TelTriangleStripsArrayType:  
+    case TelTriangleStripsArrayType:
       return AddRaytraceTriangleStripArray (theSet, theArray, theOffset, theCount, theMatID);
 
     case TelQuadrangleStripsArrayType:
@@ -1242,7 +1237,7 @@ void OpenGl_Workspace::ReleaseOpenCL()
 
   clReleaseProgram (myRaytraceProgram);
   clReleaseCommandQueue (myComputeQueue);
-  
+
   clReleaseMemObject (myRaytraceOutputImage);
   clReleaseMemObject (myRaytraceEnvironment);
   clReleaseMemObject (myRaytraceOutputImageAA);
@@ -1304,15 +1299,15 @@ Standard_Boolean OpenGl_Workspace::ResizeRaytraceOutputBuffer (const cl_int theS
         myGlContext->DelayedRelease (myRaytraceOutputTextureAA);
     }
   }
-  
+
   myRaytraceOutputTexture = new OpenGl_Texture();
-  
+
   myRaytraceOutputTexture->Create (myGlContext);
   myRaytraceOutputTexture->InitRectangle (myGlContext,
     theSizeX, theSizeY, OpenGl_TextureFormat::Create<GLfloat, 4>());
-  
+
   myRaytraceOutputTextureAA = new OpenGl_Texture();
-  
+
   myRaytraceOutputTextureAA->Create (myGlContext);
   myRaytraceOutputTextureAA->InitRectangle (myGlContext,
     theSizeX, theSizeY, OpenGl_TextureFormat::Create<GLfloat, 4>());
@@ -1422,7 +1417,7 @@ Standard_Boolean OpenGl_Workspace::WriteRaytraceSceneToDevice()
   cl_int anErrorTmp = CL_SUCCESS;
 
   const NCollection_Handle<BVH_Tree<Standard_ShortReal, 4> >& aBVH = myRaytraceGeometry.BVH();
-  
+
   const size_t aSceneMinPointBufferSize =
     aBVH->MinPointBuffer().size() != 0 ? aBVH->MinPointBuffer().size() : 1;
 
@@ -1472,7 +1467,7 @@ Standard_Boolean OpenGl_Workspace::WriteRaytraceSceneToDevice()
 
     aTotalBVHNodesNb += aTriangleSet->BVH()->NodeInfoBuffer().size();
   }
-  
+
   aTotalBVHNodesNb = aTotalBVHNodesNb > 0 ? aTotalBVHNodesNb : 1;
 
   myObjectNodeInfoBuffer = clCreateBuffer (myComputeContext,
@@ -1647,9 +1642,9 @@ Standard_Boolean OpenGl_Workspace::WriteRaytraceSceneToDevice()
 #endif
 
 #ifdef RAY_TRACE_PRINT_INFO
-  
+
   Standard_ShortReal aMemUsed = 0.f;
-  
+
   for (Standard_Integer anElemIdx = 0; anElemIdx < myRaytraceGeometry.Size(); ++anElemIdx)
   {
     OpenGl_TriangleSet* aTriangleSet = dynamic_cast<OpenGl_TriangleSet*> (
@@ -1669,7 +1664,7 @@ Standard_Boolean OpenGl_Workspace::WriteRaytraceSceneToDevice()
     aMemUsed += static_cast<Standard_ShortReal> (
       aTriangleSet->BVH()->MaxPointBuffer().size() * sizeof (BVH_Vec4f));
   }
-  
+
   aMemUsed += static_cast<Standard_ShortReal> (
     myRaytraceGeometry.BVH()->NodeInfoBuffer().size() * sizeof (BVH_Vec4i));
   aMemUsed += static_cast<Standard_ShortReal> (
@@ -1758,7 +1753,7 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceOpenCLKernels (const Graphic3d_CVi
   if (anError != CL_SUCCESS)
   {
     const TCollection_ExtendedString aMessage = "Error! Failed to set arguments of ray-tracing kernel!";
-    
+
     myGlContext->PushMessage (GL_DEBUG_SOURCE_APPLICATION_ARB,
       GL_DEBUG_TYPE_ERROR_ARB, 0, GL_DEBUG_SEVERITY_HIGH_ARB, aMessage);
 

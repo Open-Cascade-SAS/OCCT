@@ -26,18 +26,15 @@
 #include <OpenGl_AspectMarker.hxx>
 #include <OpenGl_AspectText.hxx>
 
-#include <OpenGl_tsm.hxx>
-
 class OpenGl_Group;
 class OpenGl_Structure;
 
-typedef NCollection_List<const OpenGl_Group*     > OpenGl_ListOfGroup;
+typedef NCollection_List<const OpenGl_Group* > OpenGl_ListOfGroup;
 
 struct OpenGl_ElementNode
 {
-  TelType type;
-  OpenGl_Element *elem;
-  OpenGl_ElementNode *next;
+  OpenGl_Element*     elem;
+  OpenGl_ElementNode* next;
   DEFINE_STANDARD_ALLOC
 };
 
@@ -56,7 +53,7 @@ public:
   void SetAspectMarker (const CALL_DEF_CONTEXTMARKER&   theAspect, const Standard_Boolean IsGlobal = Standard_True);
   void SetAspectText   (const CALL_DEF_CONTEXTTEXT&     theAspect, const Standard_Boolean IsGlobal = Standard_True);
 
-  void AddElement (const TelType, OpenGl_Element * );
+  void AddElement (OpenGl_Element* theElem);
 
   virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
   virtual void Release (const Handle(OpenGl_Context)&   theGlCtx);
@@ -90,7 +87,7 @@ protected:
 
   OpenGl_ElementNode*    myFirst;
   OpenGl_ElementNode*    myLast;
-  
+
 #ifdef HAVE_OPENCL
   const OpenGl_Structure*  myAncestorStructure;
   Standard_Boolean         myIsRaytracable;

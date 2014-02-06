@@ -394,10 +394,10 @@ void OpenGl_Text::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
       aProgram->BindWithVariables (aCtx);
 
       const OpenGl_MaterialState* aMaterialState = aCtx->ShaderManager()->MaterialState (aProgram);
-      
+
       if (aMaterialState == NULL || aMaterialState->Aspect() != aTextAspect)
         aCtx->ShaderManager()->UpdateMaterialStateTo (aProgram, aTextAspect);
-      
+
       aCtx->ShaderManager()->PushState (aProgram);
     }
     else
@@ -709,6 +709,7 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
 
   // push enabled flags to the stack
   glPushAttrib (GL_ENABLE_BIT);
+  glDisable (GL_LIGHTING);
 
   // setup depth test
   if (!myIs2d

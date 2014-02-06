@@ -163,7 +163,7 @@ struct OpenGL_BVHParallelBuilder
     {
       OpenGl_TriangleSet* aTriangleSet = dynamic_cast<OpenGl_TriangleSet*> (
         Set->Objects().ChangeValue (static_cast<Standard_Integer> (anObjectIdx)).operator->());
-      
+
       if (aTriangleSet != NULL)
       {
         aTriangleSet->BVH();
@@ -183,7 +183,7 @@ Standard_Boolean OpenGl_RaytraceGeometry::ProcessAcceleration()
 #ifdef BVH_PRINT_INFO
     OSD_Timer aTimer;
 #endif
-    
+
   MarkDirty(); // force BVH rebuilding
 
 #ifdef BVH_PRINT_INFO
@@ -197,7 +197,7 @@ Standard_Boolean OpenGl_RaytraceGeometry::ProcessAcceleration()
   tbb::parallel_for (tbb::blocked_range<size_t> (0, Size()),
     OpenGL_BVHParallelBuilder (this));
 #endif
-  
+
   for (Standard_Integer anObjectIdx = 0; anObjectIdx < Size(); ++anObjectIdx)
   {
     OpenGl_TriangleSet* aTriangleSet = dynamic_cast<OpenGl_TriangleSet*> (
@@ -205,7 +205,7 @@ Standard_Boolean OpenGl_RaytraceGeometry::ProcessAcceleration()
 
     Standard_ASSERT_RETURN (aTriangleSet != NULL,
       "Error! Failed to get triangulation of OpenGL element", Standard_False);
-    
+
     Standard_ASSERT_RETURN (!aTriangleSet->BVH().IsNull(),
       "Error! Failed to update bottom-level BVH of OpenGL element", Standard_False);
   }
@@ -323,7 +323,7 @@ OpenGl_TriangleSet* OpenGl_RaytraceGeometry::TriangleSet (Standard_Integer theNo
 
   if (aBVH->NodeInfoBuffer().at (theNodeIdx).x() > myObjects.Size())
     return NULL;
-  
+
   return dynamic_cast<OpenGl_TriangleSet*> (myObjects.ChangeValue (
     aBVH->NodeInfoBuffer().at (theNodeIdx).x() - 1).operator->());
 }
@@ -336,12 +336,9 @@ namespace OpenGl_Raytrace
   // =======================================================================
   Standard_Boolean IsRaytracedElement (const OpenGl_ElementNode* theNode)
   {
-    if (TelParray == theNode->type)
-    {
-      OpenGl_PrimitiveArray* anArray = dynamic_cast< OpenGl_PrimitiveArray* > (theNode->elem);
-      return anArray->PArray()->type >= TelPolygonsArrayType;
-    }
-    return Standard_False;
+    OpenGl_PrimitiveArray* anArray = dynamic_cast< OpenGl_PrimitiveArray* > (theNode->elem);
+    return anArray != NULL
+        && anArray->PArray()->type >= TelPolygonsArrayType;
   }
 
   // =======================================================================

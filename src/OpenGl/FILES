@@ -68,7 +68,6 @@ OpenGl_PriorityList.hxx
 OpenGl_PriorityList.cxx
 OpenGl_AVIWriter.hxx
 OpenGl_AVIWriter.cxx
-OpenGl_tsm.hxx
 OpenGl_FrameBuffer.hxx
 OpenGl_FrameBuffer.cxx
 OpenGl_Texture.cxx

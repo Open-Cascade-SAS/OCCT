@@ -73,7 +73,7 @@ void OpenGl_Group::SetAspectLine (const CALL_DEF_CONTEXTLINE& theAspect,
   {
     OpenGl_AspectLine* anAspectLine = new OpenGl_AspectLine();
     anAspectLine->SetAspect (theAspect);
-    AddElement (TelNil/*TelAspectLine*/, anAspectLine);
+    AddElement (anAspectLine);
   }
 }
 
@@ -96,7 +96,7 @@ void OpenGl_Group::SetAspectFace (const CALL_DEF_CONTEXTFILLAREA& theAspect,
   {
     OpenGl_AspectFace* anAspectFace = new OpenGl_AspectFace();
     anAspectFace->SetAspect (theAspect);
-    AddElement (TelNil/*TelAspectFace*/, anAspectFace);
+    AddElement (anAspectFace);
   }
 
 #ifdef HAVE_OPENCL
@@ -131,7 +131,7 @@ void OpenGl_Group::SetAspectMarker (const CALL_DEF_CONTEXTMARKER& theAspect,
   {
     OpenGl_AspectMarker* anAspectMarker = new OpenGl_AspectMarker();
     anAspectMarker->SetAspect (theAspect);
-    AddElement (TelNil/*TelAspectMarker*/, anAspectMarker);
+    AddElement (anAspectMarker);
   }
 }
 
@@ -154,7 +154,7 @@ void OpenGl_Group::SetAspectText (const CALL_DEF_CONTEXTTEXT& theAspect,
   {
     OpenGl_AspectText* anAspectText = new OpenGl_AspectText();
     anAspectText->SetAspect (theAspect);
-    AddElement ( TelNil/*TelAspectText*/, anAspectText);
+    AddElement (anAspectText);
   }
 }
 
@@ -162,11 +162,10 @@ void OpenGl_Group::SetAspectText (const CALL_DEF_CONTEXTTEXT& theAspect,
 // function : AddElement
 // purpose  :
 // =======================================================================
-void OpenGl_Group::AddElement (const TelType theType, OpenGl_Element *theElem)
+void OpenGl_Group::AddElement (OpenGl_Element* theElem)
 {
   OpenGl_ElementNode *aNode = new OpenGl_ElementNode();
 
-  aNode->type = theType;
   aNode->elem = theElem;
   aNode->next = NULL;
   (myLast? myLast->next : myFirst) = aNode;
@@ -194,7 +193,6 @@ void OpenGl_Group::AddElement (const TelType theType, OpenGl_Element *theElem)
 void OpenGl_Group::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
 {
   // Is rendering in ADD or IMMEDIATE mode?
-  const Standard_Boolean isImmediate = (theWorkspace->NamedStatus & (OPENGL_NS_ADD | OPENGL_NS_IMMEDIATE)) != 0;
   const Handle(OpenGl_RenderFilter)& aFilter = theWorkspace->GetRenderFilter();
 
   // Setup aspects
@@ -210,27 +208,7 @@ void OpenGl_Group::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
   // Render group elements
   for (OpenGl_ElementNode* aNodeIter = myFirst; aNodeIter != NULL; aNodeIter = aNodeIter->next)
   {
-    switch (aNodeIter->type)
-    {
-      case TelMarker:
-      case TelMarkerSet:
-      case TelText:
-      {
-        glDisable (GL_LIGHTING);
-        if (isImmediate)
-        {
-          glDepthMask (GL_FALSE);
-        }
-
-        aNodeIter->elem->RenderFiltered (theWorkspace, aFilter);
-        break;
-      }
-      default:
-      {
-        aNodeIter->elem->RenderFiltered (theWorkspace, aFilter);
-        break;
-      }
-    }
+    aNodeIter->elem->RenderFiltered (theWorkspace, aFilter);
   }
 
   // Restore aspects

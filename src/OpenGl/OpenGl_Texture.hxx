@@ -136,20 +136,16 @@ public:
 private:
 
   //! Creates new texture format.
-  OpenGl_TextureFormat (const GLint theChannels, const GLint theInternal)
-    : myChannels (theChannels),
-      myInternal (theInternal)
-  {
-    //
-  }
+  OpenGl_TextureFormat (const GLint theChannels,
+                        const GLint theInternal)
+  : myInternal (theInternal),
+    myChannels (theChannels) {}
 
 private:
 
-  //! OpenGL internal format of the pixel data. 
-  GLint myInternal;
+  GLint myInternal; //!< OpenGL internal format of the pixel data
+  GLint myChannels; //!< Number of channels for each pixel (from 1 to 4)
 
-  //! Number of channels for each pixel (from 1 to 4).
-  GLint myChannels;
 };
 
 //! Texture resource.
