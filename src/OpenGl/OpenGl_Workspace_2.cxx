@@ -41,40 +41,14 @@
 //10-05-96 : CAL ; Ajout d'un nouveau delta dans les copies de pixels (voir CALL_DEF_DELTA)
 #define CALL_DEF_DELTA 10
 
-// ---------------------------------------------------------------
-// Function: getNearestPowOfTwo
-// Purpose:  get the nearest power of two for theNumber
-// ---------------------------------------------------------------
-static GLsizei getNearestPowOfTwo (const GLsizei theNumber)
-{
-  GLsizei aLast = 1;
-  for (GLsizei p2 = 1; p2 <= theNumber; aLast = p2, p2 <<= 1);
-  return aLast;
-}
+#ifdef _WIN32
 
-// ---------------------------------------------------------------
-// Function: fitDimensionsRatio
-// Purpose:  calculate correct width/height ratio for theWidth and
-//           theHeight parameters
-// ---------------------------------------------------------------
-static void fitDimensionsRatio (Standard_Integer& theWidth,
-                                Standard_Integer& theHeight,
-                                const Standard_Real theViewRatio)
-{
-  // set dimensions in accordance with the viewratio
-  if (theHeight <  theWidth/theViewRatio)
-      theWidth  = (Standard_Integer)(theHeight*theViewRatio);
-
-  if (theWidth  <  theHeight*theViewRatio)
-      theHeight = (Standard_Integer)(theWidth/theViewRatio);
-}
+#ifndef HAVE_FREEIMAGE
 
 // ---------------------------------------------------------------
 // Function: initBitmapBuffer
 // Purpose:  init device independent bitmap to hold printing data
 // ---------------------------------------------------------------
-#ifdef _WIN32
-#ifndef HAVE_FREEIMAGE
 static void initBitmapBuffer (const HDC theMemoryDC,
                               HBITMAP &theMemoryBmp,
                               const   Standard_Integer theBmpWidth,
@@ -100,7 +74,9 @@ static void initBitmapBuffer (const HDC theMemoryDC,
   theMemoryBmp = CreateDIBSection (theMemoryDC, &aBitmapData, DIB_RGB_COLORS,
                                    &theBufferPtr, NULL, 0);
 }
-#else
+
+#else /* HAVE_FREEIMAGE */
+
 // ---------------------------------------------------------------
 // Function: imagePasteDC
 // Purpose:  copy the data from image buffer to the device context
@@ -193,7 +169,19 @@ static bool imageStretchDC(HDC theDstDC,   FipHandle theImage, int theOffsetX,
 
   return true;
 }
-#endif
+
+#endif /* HAVE_FREEIMAGE */
+
+// ---------------------------------------------------------------
+// Function: getNearestPowOfTwo
+// Purpose:  get the nearest power of two for theNumber
+// ---------------------------------------------------------------
+static GLsizei getNearestPowOfTwo (const GLsizei theNumber)
+{
+  GLsizei aLast = 1;
+  for (GLsizei p2 = 1; p2 <= theNumber; aLast = p2, p2 <<= 1);
+  return aLast;
+}
 
 // ---------------------------------------------------------------
 // Function: getMaxFrameSize
@@ -214,6 +202,23 @@ static void getMaxFrameSize(Standard_Integer& theWidth,
 
   theWidth  = (Standard_Integer)aMaxX;
   theHeight = (Standard_Integer)aMaxY;
+}
+
+// ---------------------------------------------------------------
+// Function: fitDimensionsRatio
+// Purpose:  calculate correct width/height ratio for theWidth and
+//           theHeight parameters
+// ---------------------------------------------------------------
+static void fitDimensionsRatio (Standard_Integer& theWidth,
+                                Standard_Integer& theHeight,
+                                const Standard_Real theViewRatio)
+{
+  // set dimensions in accordance with the viewratio
+  if (theHeight <  theWidth/theViewRatio)
+      theWidth  = (Standard_Integer)(theHeight*theViewRatio);
+
+  if (theWidth  <  theHeight*theViewRatio)
+      theHeight = (Standard_Integer)(theWidth/theViewRatio);
 }
 
 // ---------------------------------------------------------------
@@ -265,7 +270,8 @@ static void initBufferTiling (Standard_Integer& theFrameWidth,
   if (theFrameHeight > theViewHeight)
       theFrameHeight = theViewHeight;
 }
-#endif
+
+#endif /* _WIN32 */
 
 // ---------------------------------------------------------------
 // ---------------------------------------------------------------

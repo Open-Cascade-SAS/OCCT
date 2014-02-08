@@ -508,6 +508,9 @@ void Aspect_ColorScale::DrawScale( const Quantity_Color& aBgColor,
     Standard_Integer last1( i1 ), last2( i2 );
     x = X + spacer;
     switch ( labPos ) {
+    case Aspect_TOCSP_NONE:
+    case Aspect_TOCSP_LEFT:
+      break;
     case Aspect_TOCSP_CENTER:
       x += ( colorWidth - textWidth ) / 2;
       break;

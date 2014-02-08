@@ -76,6 +76,7 @@ static void LoadNamedShape (TNaming_Builder& B,
       B.Generated(NS);
       break;
     }
+  case TNaming_REPLACE: // for compatibility
   case TNaming_GENERATED :
     {
       B.Generated(OS,NS);

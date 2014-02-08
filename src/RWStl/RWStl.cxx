@@ -30,13 +30,13 @@
 #include <stdio.h>
 #include <gp_Vec.hxx>
 
-
 // constants
-static const int HEADER_SIZE           =  84;
-static const int SIZEOF_STL_FACET      =  50;
-static const int STL_MIN_FILE_SIZE     = 284;
-static const int ASCII_LINES_PER_FACET =   7;
-static const int IND_THRESHOLD         = 1000; // increment the indicator every 1k triangles
+static const size_t HEADER_SIZE           =  84;
+static const size_t SIZEOF_STL_FACET      =  50;
+static const size_t STL_MIN_FILE_SIZE     = 284;
+static const size_t ASCII_LINES_PER_FACET =   7;
+
+static const int IND_THRESHOLD = 1000; // increment the indicator every 1k triangles
 
 //=======================================================================
 //function : WriteInteger

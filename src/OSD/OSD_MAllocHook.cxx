@@ -488,7 +488,7 @@ OSD_MAllocHook::CollectBySize::~CollectBySize()
 //purpose  :
 //=======================================================================
 
-#define MAX_ALLOC_SIZE 2000000u
+#define MAX_ALLOC_SIZE 2000000
 const size_t OSD_MAllocHook::CollectBySize::myMaxAllocSize = MAX_ALLOC_SIZE;
 
 void OSD_MAllocHook::CollectBySize::Reset()
