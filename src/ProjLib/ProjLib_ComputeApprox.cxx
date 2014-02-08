@@ -52,15 +52,6 @@
 static Standard_Boolean AffichValue = Standard_False;
 #endif    
 
-static 
-  void Parameters(const Handle(Adaptor3d_HCurve)&   myCurve,
-		  const Handle(Adaptor3d_HSurface)& mySurface,
-		  const gp_Pnt& aP1, 
-		  const Standard_Integer iFirst,
-		  const Standard_Real aTolU, 
-		  Standard_Real& aU, 
-		  Standard_Real& aV);
-
 //=======================================================================
 //function : IsEqual
 //purpose  : 
