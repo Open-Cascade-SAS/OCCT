@@ -135,10 +135,14 @@ void IntTools_EdgeEdge::Prepare()
         aDt = (aT2 - aT1) / 10.;
         aT = aT1;
         aBAC.D1(aT, aP, aV1);
-        while (aT <= aT2) {
+        while (aT < aT2) {
           aT += aDt;
           aBAC.D1(aT, aP, aV2);
-          aC += aV1.Angle(aV2);
+          if (aV1.Magnitude() > gp::Resolution() &&
+              aV2.Magnitude() > gp::Resolution()) {
+            gp_Dir aD1(aV1), aD2(aV2);
+            aC += aD1.Angle(aD2);
+          }
           aV1 = aV2;
         }
       }
