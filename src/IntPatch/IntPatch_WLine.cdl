@@ -236,7 +236,9 @@ is
 	is static;
 
 
-    ComputeVertexParameters(me: mutable; Tol: Real from Standard)
+    ComputeVertexParameters(me: mutable;
+                            Tol: Real from Standard;
+                            hasBeenAdded: Boolean from Standard = Standard_False)
     
     	---Purpose: Set the parameters of all the vertex on the line.
     	--          if a vertex is already in the line, 
