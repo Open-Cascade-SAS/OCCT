@@ -134,7 +134,7 @@ static
 //purpose  : 
 //=======================================================================
 void BOPAlgo_WireSplitter::SplitBlock(const TopoDS_Face& myFace,
-				      BOPTools_ConnexityBlock& aCB)
+                                      BOPTools_ConnexityBlock& aCB)
 {
   Standard_Boolean bNothingToDo;
   Standard_Integer aIx, aNb, i, aCntIn, aCntOut;
@@ -336,20 +336,20 @@ void Path (const GeomAdaptor_Surface& aGAS,
      
 {
   Standard_Integer i, j, aNb, aNbj;
-  Standard_Real aTol, anAngleIn, anAngleOut, anAngle, aMinAngle;
-  Standard_Real aTol2D, aTol2D2;
-  Standard_Real aTol2, aD2, aTwoPI;
+  Standard_Real anAngleIn, anAngleOut, anAngle, aMinAngle;
+  Standard_Real aTol2D, aTol2D2, aD2, aTwoPI;
   Standard_Boolean anIsSameV2d, anIsSameV, anIsFound, anIsOut, anIsNotPassed;
+  Standard_Boolean bIsClosed, bRecomputeAngle;
   TopoDS_Vertex aVa, aVb;
   TopoDS_Edge aEOuta;
   BOPAlgo_ListIteratorOfListOfEdgeInfo anIt;
+  BOPCol_SequenceOfReal aRecomputedAngles;
   //
   aVa = aVFirst;
   aEOuta = aEFirst;
   BOPAlgo_EdgeInfo* anEdgeInfo = &aEIFirst;
   //
   aTwoPI = M_PI + M_PI;
-  aTol=1.e-7;
   //
   // append block
   //
@@ -376,27 +376,27 @@ void Path (const GeomAdaptor_Surface& aGAS,
     
     gp_Pnt2d aPb=Coord2d(aVb, aEOuta, myFace);
     
-    const BOPAlgo_ListOfEdgeInfo& aLEInfoVb=mySmartMap.FindFromKey(aVb);
+    const BOPAlgo_ListOfEdgeInfo& aLEInfo=mySmartMap.FindFromKey(aVb);
     //
-    aTol=2.*Tolerance2D(aVb, aGAS);
-    aTol2=10.*aTol*aTol;
-    
-    TopoDS_Vertex aV1, aV2;
-    TopExp::Vertices(aEOuta, aV1, aV2);
-    Standard_Boolean bIsClosedEdge = aV1.IsNull() || aV2.IsNull() || aV1.IsSame(aV2);
-    Standard_Boolean bIsDegenerated = BRep_Tool::Degenerated(aEOuta);
-    Standard_Boolean bIsSeam = BRep_Tool::IsClosed(aEOuta, myFace);
-    
-    anIt.Initialize(aLEInfoVb);
-    for (; anIt.More(); anIt.Next()) {
-      const BOPAlgo_EdgeInfo& anEI = anIt.Value();
-      const TopoDS_Edge& aE = anEI.Edge();
-      bIsDegenerated = bIsDegenerated || BRep_Tool::Degenerated(aE);
-      bIsSeam = bIsSeam || BRep_Tool::IsClosed(aE, myFace);
-      aV1.Nullify();
-      aV2.Nullify();
-      TopExp::Vertices(aE, aV1, aV2);
-      bIsClosedEdge = bIsClosedEdge || aV1.IsNull() || aV2.IsNull() || aV1.IsSame(aV2);
+    aTol2D = 2.*Tolerance2D(aVb, aGAS);
+    aTol2D2 = aTol2D * aTol2D;
+    //
+    bIsClosed = BRep_Tool::Degenerated(aEOuta) || 
+      BRep_Tool::IsClosed(aEOuta, myFace) || aVa.IsSame(aVb);
+    if (!bIsClosed) {
+      TopoDS_Vertex aV1, aV2;
+      //
+      anIt.Initialize(aLEInfo);
+      for (; anIt.More() && !bIsClosed; anIt.Next()) {
+        const BOPAlgo_EdgeInfo& anEI = anIt.Value();
+        const TopoDS_Edge& aE = anEI.Edge();
+        //
+        bIsClosed = BRep_Tool::Degenerated(aE) || BRep_Tool::IsClosed(aE, myFace);
+        if (!bIsClosed) {
+          TopExp::Vertices(aE, aV1, aV2);
+          bIsClosed = aV1.IsNull() || aV2.IsNull() || aV1.IsSame(aV2);
+        }
+      }
     }
     //
     aNb=aLS.Length();
@@ -411,24 +411,21 @@ void Path (const GeomAdaptor_Surface& aGAS,
         
         aBuf.Append(aEPrev);
         
-        anIsSameV=aVPrev.IsSame(aVb);
-        anIsSameV2d=Standard_False;
-        
+        anIsSameV = aVPrev.IsSame(aVb);
+        anIsSameV2d = anIsSameV;
         if (anIsSameV) {
-          anIsSameV2d = Standard_True;
-          //
-          aD2=aPaPrev.SquareDistance(aPb);
-          anIsSameV2d =aD2<aTol2;
-          if(anIsSameV2d && 
-             (bIsDegenerated || bIsSeam || bIsClosedEdge)) {
-            Standard_Real udist = fabs(aPaPrev.X() - aPb.X());
-            Standard_Real vdist = fabs(aPaPrev.Y() - aPb.Y());
-            Standard_Real aTolU = 2. * UTolerance2D(aVb, aGAS);
-            Standard_Real aTolV = 2. * VTolerance2D(aVb, aGAS);
-            //
-            if((udist > aTolU) ||
-               (vdist > aTolV)) {
-              anIsSameV2d = Standard_False;
+          if(bIsClosed) {
+            aD2 = aPaPrev.SquareDistance(aPb);
+            anIsSameV2d = aD2 < aTol2D2;
+            if (anIsSameV2d) {
+              Standard_Real udist = fabs(aPaPrev.X() - aPb.X());
+              Standard_Real vdist = fabs(aPaPrev.Y() - aPb.Y());
+              Standard_Real aTolU = 2.*UTolerance2D(aVb, aGAS);
+              Standard_Real aTolV = 2.*VTolerance2D(aVb, aGAS);
+              //
+              if((udist > aTolU) || (vdist > aTolV)) {
+                anIsSameV2d = Standard_False;
+              }
             }
           }
         }//if (anIsSameV) {
@@ -481,26 +478,17 @@ void Path (const GeomAdaptor_Surface& aGAS,
       }
     }
     //
-    aTol2D=2.*Tolerance2D(aVb, aGAS);
-    aTol2D2=1000.*aTol2D*aTol2D;//100.*aTol2D*aTol2D;
-    //
-    // anAngleIn in Vb from edge aEOuta
-    const BOPAlgo_ListOfEdgeInfo& aLEInfo=mySmartMap.FindFromKey(aVb);
-    //
-    anAngleIn=AngleIn(aEOuta, aLEInfo);
-    BOPCol_SequenceOfReal aRecomputedAngles;
-    
-    Standard_Boolean bRecomputeAngle = 
+    aRecomputedAngles.Clear();
+    bRecomputeAngle = 
       RecomputeAngles(aLEInfo, myFace, aPb, aVb, aGAS, aEOuta, 
-                      (bIsDegenerated || bIsSeam || bIsClosedEdge),
-                      aTol2D, aRecomputedAngles);
-
+                      bIsClosed, aTol2D, aRecomputedAngles);
     //
     // aEOutb
     BOPAlgo_EdgeInfo *pEdgeInfo=NULL;
     //
-    aMinAngle=100.;
-    anIsFound=Standard_False;
+    anAngleIn = AngleIn(aEOuta, aLEInfo);
+    aMinAngle = 100.;
+    anIsFound = Standard_False;
     Standard_Integer aCurIndexE = 0;
     anIt.Initialize(aLEInfo);
     for (; anIt.More(); anIt.Next()) {
@@ -532,17 +520,19 @@ void Path (const GeomAdaptor_Surface& aGAS,
         if (aE.IsSame(aEOuta)) {
           anAngle = aTwoPI;
         } else {
-          // Look for minimal angle and make the choice.
-          gp_Pnt2d aP2Dx;
-          //
-          aP2Dx=Coord2dVf(aE, myFace);
-          //
-          aD2=aP2Dx.SquareDistance(aPb);
-          if (aD2 > aTol2D2){
-            continue;
+          //check 2d distance
+          if (bIsClosed) {
+            gp_Pnt2d aP2Dx;
+            //
+            aP2Dx = Coord2dVf(aE, myFace);
+            //
+            aD2 = aP2Dx.SquareDistance(aPb);
+            if (aD2 > aTol2D2){
+              continue;
+            }
           }
           //
-          //
+          // Look for minimal angle and make the choice.
           anAngleOut=anEI.Angle();
           //
           if(bRecomputeAngle) {

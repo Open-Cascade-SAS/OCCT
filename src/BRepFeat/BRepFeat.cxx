@@ -68,7 +68,7 @@
 //=======================================================================
 
 void BRepFeat::SampleEdges(const TopoDS_Shape& theShape,
-			   TColgp_SequenceOfPnt& theSeq)
+                           TColgp_SequenceOfPnt& theSeq)
 {
   LocOpe::SampleEdges(theShape,theSeq);
 }
@@ -81,7 +81,7 @@ void BRepFeat::SampleEdges(const TopoDS_Shape& theShape,
 //=======================================================================
 
 void BRepFeat::Barycenter(const TopoDS_Shape& S, 
-			  gp_Pnt& B)
+                          gp_Pnt& B)
 {
   TopTools_MapOfShape theMap;
   TopExp_Explorer exp(S,TopAbs_EDGE);
@@ -100,9 +100,9 @@ void BRepFeat::Barycenter(const TopoDS_Shape& S,
       C = BRep_Tool::Curve(edg,Loc,f,l);
       C = Handle(Geom_Curve)::DownCast(C->Transformed(Loc.Transformation()));
       for (i=1;i<NECHANTBARYC; i++) {
-	prm = ((NECHANTBARYC-i)*f + i*l)/NECHANTBARYC;
-	Bar += C->Value(prm).XYZ();
-	nbp++;
+        prm = ((NECHANTBARYC-i)*f + i*l)/NECHANTBARYC;
+        Bar += C->Value(prm).XYZ();
+        nbp++;
       }
     }
   }
@@ -125,7 +125,7 @@ void BRepFeat::Barycenter(const TopoDS_Shape& S,
 //=======================================================================
 
 Standard_Real BRepFeat::ParametricBarycenter(const TopoDS_Shape& S, 
-					     const Handle(Geom_Curve)& CC)
+                                             const Handle(Geom_Curve)& CC)
 {
   TopTools_MapOfShape theMap;
   TopExp_Explorer exp(S,TopAbs_EDGE);
@@ -147,24 +147,24 @@ Standard_Real BRepFeat::ParametricBarycenter(const TopoDS_Shape& S,
       C = BRep_Tool::Curve(edg,Loc,f,l);
       C = Handle(Geom_Curve)::DownCast(C->Transformed(Loc.Transformation()));
       for (i=1;i<NECHANTBARYC; i++) {
-	prm = ((NECHANTBARYC-i)*f + i*l)/NECHANTBARYC;
-	gp_Pnt pone = C->Value(prm);
-	// On projette sur CC
-	extpc.Perform(pone);
-	if (extpc.IsDone() && extpc.NbExt() >= 1) {
-	  Standard_Real Dist2Min = extpc.SquareDistance(1);
-	  Standard_Integer kmin = 1;
-	  for (Standard_Integer k=2; k<=extpc.NbExt(); k++) {
-	    Standard_Real Dist2 = extpc.SquareDistance(k);
-	    if (Dist2 < Dist2Min) {
-	      Dist2Min = Dist2;
-	      kmin = k;
-	    }
-	  }
-	  nbp++;
-	  Standard_Real prmp = extpc.Point(kmin).Parameter();
-	  parbar += prmp;
-	}	  
+        prm = ((NECHANTBARYC-i)*f + i*l)/NECHANTBARYC;
+        gp_Pnt pone = C->Value(prm);
+        // On projette sur CC
+        extpc.Perform(pone);
+        if (extpc.IsDone() && extpc.NbExt() >= 1) {
+          Standard_Real Dist2Min = extpc.SquareDistance(1);
+          Standard_Integer kmin = 1;
+          for (Standard_Integer k=2; k<=extpc.NbExt(); k++) {
+            Standard_Real Dist2 = extpc.SquareDistance(k);
+            if (Dist2 < Dist2Min) {
+              Dist2Min = Dist2;
+              kmin = k;
+            }
+          }
+          nbp++;
+          Standard_Real prmp = extpc.Point(kmin).Parameter();
+          parbar += prmp;
+        }
       }
     }
   }
@@ -175,15 +175,15 @@ Standard_Real BRepFeat::ParametricBarycenter(const TopoDS_Shape& S,
       // On projette sur CC
       extpc.Perform(pone);
       if (extpc.IsDone() && extpc.NbExt() >= 1) {
-	    Standard_Real Dist2Min = extpc.SquareDistance(1);
-	    for (Standard_Integer k=2; k<=extpc.NbExt(); k++) {
-	      Standard_Real Dist2 = extpc.SquareDistance(k);
-	      if (Dist2 < Dist2Min) {
-	        Dist2Min = Dist2;
-	      }
-	    }
-	    nbp++;
-      }	  
+        Standard_Real Dist2Min = extpc.SquareDistance(1);
+        for (Standard_Integer k=2; k<=extpc.NbExt(); k++) {
+          Standard_Real Dist2 = extpc.SquareDistance(k);
+          if (Dist2 < Dist2Min) {
+            Dist2Min = Dist2;
+          }
+        }
+        nbp++;
+      }          
     }
   }
 
@@ -198,13 +198,13 @@ Standard_Real BRepFeat::ParametricBarycenter(const TopoDS_Shape& S,
 //=======================================================================
 
 void BRepFeat::ParametricMinMax(const TopoDS_Shape& S, 
-				const Handle(Geom_Curve)& CC,
-				Standard_Real& prmin,
-				Standard_Real& prmax,
-				Standard_Real& prbmin,
-				Standard_Real& prbmax,
-				Standard_Boolean& flag,
-				const Standard_Boolean Ori)
+                                const Handle(Geom_Curve)& CC,
+                                Standard_Real& prmin,
+                                Standard_Real& prmax,
+                                Standard_Real& prbmin,
+                                Standard_Real& prbmax,
+                                Standard_Boolean& flag,
+                                const Standard_Boolean Ori)
 {
   LocOpe_CSIntersector ASI(S);
   TColGeom_SequenceOfCurve scur;
@@ -213,19 +213,19 @@ void BRepFeat::ParametricMinMax(const TopoDS_Shape& S,
   if(ASI.IsDone() && ASI.NbPoints(1) >=1) {
     if (!Ori) {
       prmin = Min(ASI.Point(1,1).Parameter(), 
-		  ASI.Point(1, ASI.NbPoints(1)).Parameter());
+                  ASI.Point(1, ASI.NbPoints(1)).Parameter());
       prmax = Max(ASI.Point(1,1).Parameter(), 
-		  ASI.Point(1, ASI.NbPoints(1)).Parameter());
+                  ASI.Point(1, ASI.NbPoints(1)).Parameter());
     }
     else {
       TopAbs_Orientation Ori = ASI.Point(1,1).Orientation();
       if (Ori ==  TopAbs_FORWARD) {
-	prmin = ASI.Point(1,1).Parameter();
-	prmax = ASI.Point(1, ASI.NbPoints(1)).Parameter();
+        prmin = ASI.Point(1,1).Parameter();
+        prmax = ASI.Point(1, ASI.NbPoints(1)).Parameter();
       }
       else {
-	prmax = ASI.Point(1,1).Parameter();
-	prmin = ASI.Point(1, ASI.NbPoints(1)).Parameter();
+        prmax = ASI.Point(1,1).Parameter();
+        prmin = ASI.Point(1, ASI.NbPoints(1)).Parameter();
       }
     }
     flag = Standard_True;
@@ -257,28 +257,28 @@ void BRepFeat::ParametricMinMax(const TopoDS_Shape& S,
       C = BRep_Tool::Curve(edg,Loc,f,l);
       C = Handle(Geom_Curve)::DownCast(C->Transformed(Loc.Transformation()));
       for (i=1;i<NECHANTBARYC; i++) {
-	prm = ((NECHANTBARYC-i)*f + i*l)/NECHANTBARYC;
-	gp_Pnt pone = C->Value(prm);
-	// On projette sur CC
-	extpc.Perform(pone);
-	if (extpc.IsDone() && extpc.NbExt() >= 1) {
-	  Standard_Real Dist2Min = extpc.SquareDistance(1);
-	  Standard_Integer kmin = 1;
-	  for (Standard_Integer k=2; k<=extpc.NbExt(); k++) {
-	    Standard_Real Dist2 = extpc.SquareDistance(k);
-	    if (Dist2 < Dist2Min) {
-	      Dist2Min = Dist2;
-	      kmin = k;
-	    }
-	  }
-	  Standard_Real prmp = extpc.Point(kmin).Parameter();
-	  if (prmp <= prbmin) {
-	    prbmin = prmp;
-	  }
-	  if (prmp >= prbmax) {
-	    prbmax = prmp;
-	  }
-	}	  
+        prm = ((NECHANTBARYC-i)*f + i*l)/NECHANTBARYC;
+        gp_Pnt pone = C->Value(prm);
+        // On projette sur CC
+        extpc.Perform(pone);
+        if (extpc.IsDone() && extpc.NbExt() >= 1) {
+          Standard_Real Dist2Min = extpc.SquareDistance(1);
+          Standard_Integer kmin = 1;
+          for (Standard_Integer k=2; k<=extpc.NbExt(); k++) {
+            Standard_Real Dist2 = extpc.SquareDistance(k);
+            if (Dist2 < Dist2Min) {
+              Dist2Min = Dist2;
+              kmin = k;
+            }
+          }
+          Standard_Real prmp = extpc.Point(kmin).Parameter();
+          if (prmp <= prbmin) {
+            prbmin = prmp;
+          }
+          if (prmp >= prbmax) {
+            prbmax = prmp;
+          }
+        }          
       }
     }
   }
@@ -289,23 +289,23 @@ void BRepFeat::ParametricMinMax(const TopoDS_Shape& S,
       // On projette sur CC
       extpc.Perform(pone);
       if (extpc.IsDone() && extpc.NbExt() >= 1) {
-	Standard_Real Dist2Min = extpc.SquareDistance(1);
-	Standard_Integer kmin = 1;
-	for (Standard_Integer k=2; k<=extpc.NbExt(); k++) {
-	  Standard_Real Dist2 = extpc.SquareDistance(k);
-	  if (Dist2 < Dist2Min) {
-	    Dist2Min = Dist2;
-	    kmin = k;
-	  }
-	}
-	Standard_Real prmp = extpc.Point(kmin).Parameter();
-	if (prmp <= prbmin) {
-	  prbmin = prmp;
-	}
-	if (prmp >= prbmax) {
-	  prbmax = prmp;
-	}
-      }	  
+        Standard_Real Dist2Min = extpc.SquareDistance(1);
+        Standard_Integer kmin = 1;
+        for (Standard_Integer k=2; k<=extpc.NbExt(); k++) {
+          Standard_Real Dist2 = extpc.SquareDistance(k);
+          if (Dist2 < Dist2Min) {
+            Dist2Min = Dist2;
+            kmin = k;
+          }
+        }
+        Standard_Real prmp = extpc.Point(kmin).Parameter();
+        if (prmp <= prbmin) {
+          prbmin = prmp;
+        }
+        if (prmp >= prbmax) {
+          prbmax = prmp;
+        }
+      }          
     }
   }
 }
@@ -319,7 +319,7 @@ void BRepFeat::ParametricMinMax(const TopoDS_Shape& S,
 //=======================================================================
 
 static Standard_Boolean IsIn (BRepTopAdaptor_FClass2d& FC,
-				 Geom2dAdaptor_Curve      AC)
+                              Geom2dAdaptor_Curve      AC)
 {
  Standard_Real Def = 100*Precision::Confusion();
  GCPnts_QuasiUniformDeflection QU(AC,Def);
@@ -343,12 +343,12 @@ static Standard_Boolean IsIn (BRepTopAdaptor_FClass2d& FC,
   //---------------
 
 static void PutInBoundsU (Standard_Real      umin,
-			 Standard_Real      umax,
-			 Standard_Real      eps,
-			 Standard_Real      period,
-			 Standard_Real      f,
-			 Standard_Real      l,
-			 Handle(Geom2d_Curve)&       C2d)
+                          Standard_Real      umax,
+                          Standard_Real      eps,
+                          Standard_Real      period,
+                          Standard_Real      f,
+                          Standard_Real      l,
+                          Handle(Geom2d_Curve)&       C2d)
 {
   gp_Pnt2d      Pf      = C2d->Value(f);
   gp_Pnt2d      Pl      = C2d->Value(l);
@@ -389,12 +389,12 @@ static void PutInBoundsU (Standard_Real      umin,
   //---------------
 
 static void PutInBoundsV (Standard_Real     vmin,
-			 Standard_Real      vmax,
-			 Standard_Real      eps,
-			 Standard_Real      period,
-			 Standard_Real      f,
-			 Standard_Real      l,
-			 Handle(Geom2d_Curve)&       C2d)
+                          Standard_Real      vmax,
+                          Standard_Real      eps,
+                          Standard_Real      period,
+                          Standard_Real      f,
+                          Standard_Real      l,
+                          Handle(Geom2d_Curve)&       C2d)
 {
   gp_Pnt2d      Pf      = C2d->Value(f);
   gp_Pnt2d      Pl      = C2d->Value(l);
@@ -433,7 +433,7 @@ static void PutInBoundsV (Standard_Real     vmin,
 
 
 Standard_Boolean BRepFeat::IsInside(const TopoDS_Face& F1,
-				  const TopoDS_Face& F2)
+                                    const TopoDS_Face& F2)
 {
   TopExp_Explorer exp;
   exp.Init(F1, TopAbs_EDGE);
@@ -457,7 +457,7 @@ Standard_Boolean BRepFeat::IsInside(const TopoDS_Face& F1,
   TopoDS_Shape aLocalShape = F2.Oriented(TopAbs_FORWARD);
   BRepTopAdaptor_FClass2d FC (TopoDS::Face(aLocalShape),Precision::Confusion());
 //  BRepTopAdaptor_FClass2d FC (TopoDS::Face(F2.Oriented(TopAbs_FORWARD)),
-//				Precision::Confusion());
+//                                Precision::Confusion());
   for(; exp.More(); exp.Next()) {
     Standard_Real   f1,l1;
     Handle(Geom_Curve) C0 = BRep_Tool::Curve(TopoDS::Edge(exp.Current()),f1,l1);
@@ -486,7 +486,7 @@ Standard_Boolean BRepFeat::IsInside(const TopoDS_Face& F1,
 
 
 void BRepFeat::FaceUntil(const TopoDS_Shape& Sbase,
-			 TopoDS_Face& FUntil)
+                         TopoDS_Face& FUntil)
 {
   Bnd_Box B;
   BRepBndLib::Add(Sbase,B);
@@ -512,11 +512,11 @@ void BRepFeat::FaceUntil(const TopoDS_Shape& Sbase,
   }
   else if (styp == STANDARD_TYPE(Geom_CylindricalSurface)) {
     str = new Geom_RectangularTrimmedSurface
-      (s, 0., 2.*M_PI, bnd, -bnd, Standard_True, Standard_True);
+      (s, bnd, -bnd, Standard_False, Standard_True);
   }
   else if (styp == STANDARD_TYPE(Geom_ConicalSurface)) {
     str = new Geom_RectangularTrimmedSurface
-      (s, 0., 2.*M_PI, bnd, -bnd, Standard_True, Standard_True);
+      (s, bnd, -bnd, Standard_False, Standard_True);
   }
   else {
     FUntil.Nullify();
@@ -534,8 +534,8 @@ void BRepFeat::FaceUntil(const TopoDS_Shape& Sbase,
 //=======================================================================
 
 TopoDS_Solid BRepFeat::Tool(const TopoDS_Shape& SRef,
-			    const TopoDS_Face& Fac,
-			    const TopAbs_Orientation Orf)
+                            const TopoDS_Face& Fac,
+                            const TopAbs_Orientation Orf)
 {
   TopTools_ListOfShape lfaces;
 //  for (TopExp_Explorer exp(SRef,TopAbs_FACE); exp.More(); exp.Next()) {
@@ -601,9 +601,9 @@ TopoDS_Solid BRepFeat::Tool(const TopoDS_Shape& SRef,
 //function : Print
 //purpose  : Print the error Description of a StatusError on a stream.
 //=======================================================================
-    	
+            
 Standard_OStream& BRepFeat::Print(const BRepFeat_StatusError se, 
-				  Standard_OStream& s)
+                                  Standard_OStream& s)
 {
   switch(se) {
   case BRepFeat_OK :
