@@ -6539,12 +6539,25 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "vdefaults [absDefl=value] [devCoeff=value] [angDefl=value]",
     __FILE__, VDefaults, group);
   theCommands.Add("vlight",
-            "vlight [add|new {amb}ient|directional|{spot}light|positional]"
-    "\n\t\t:        [{def}aults] [clear]"
-    "\n\t\t:        [{del}ete|change lightId] [local|global]"
-    "\n\t\t:        [{pos}ition X Y Z] [color colorName] [{head}light 0|1]"
-    "\n\t\t:        [{constAtten}uation value] [{linearAtten}uation value]"
-    "\n\t\t:        [angle angleDeg] [{spotexp}onent value]",
+    "tool to manage light sources, without arguments shows list of lights."
+    "\n    Main commands: "
+    "\n      'clear' to clear lights"
+    "\n      '{def}aults' to load deafault lights"
+    "\n      'add' (or 'new') <type> to add any light source"
+    "\n          where <type> is one of {amb}ient|directional|{spot}light|positional"
+    "\n      'change' <lightId> to edit light source with specified lightId"
+    "\n\n      In addition to 'add' and 'change' commands you can use light parameters:"
+    "\n        {pos}ition X Y Z"
+    "\n        {dir}ection X Y Z (for directional light or for spotlight)"
+    "\n        color colorName"
+    "\n        {head}light 0|1"
+    "\n        {constAtten}uation value"
+    "\n        {linearAtten}uation value"
+    "\n        angle angleDeg"
+    "\n        {spotexp}onent value"
+    "\n        local|global"
+    "\n\n        example: vlight add positional head 1 pos 0 1 1 color red"
+    "\n        example: vlight change 0 direction 0 -1 0 linearAttenuation 0.2",
     __FILE__, VLight, group);
   theCommands.Add("vraytrace",
     "vraytrace 0|1",

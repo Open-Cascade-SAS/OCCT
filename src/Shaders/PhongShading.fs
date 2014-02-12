@@ -56,6 +56,57 @@ void pointLight (in int  theId,
   Specular += occLight_Specular (theId).rgb * aSpecl * anAtten;
 }
 
+//! Computes contribution of spotlight source
+void spotLight (in int  theId,
+                in vec3 theNormal,
+                in vec3 theView,
+                in vec3 thePoint)
+{
+  vec3 aLight   = occLight_Position      (theId).xyz;
+  vec3 aSpotDir = occLight_SpotDirection (theId).xyz;
+  if (occLight_IsHeadlight (theId) == 0)
+  {
+    aLight   = vec3 (occWorldViewMatrix * occModelWorldMatrix * vec4 (aLight,   1.0));
+    aSpotDir = vec3 (occWorldViewMatrix * occModelWorldMatrix * vec4 (aSpotDir, 0.0));
+  }
+  aLight -= thePoint;
+
+  float aDist = length (aLight);
+  aLight = aLight * (1.0 / aDist);
+
+  aSpotDir = normalize (aSpotDir);
+
+  // light cone
+  float aCosA = dot (aSpotDir, -aLight);
+  if (aCosA >= 1.0 || aCosA < cos (occLight_SpotCutOff (theId)))
+  {
+    return;
+  }
+
+  float anExponent = occLight_SpotExponent (theId);
+  float anAtten    = 1.0 / (occLight_ConstAttenuation  (theId)
+                          + occLight_LinearAttenuation (theId) * aDist);
+  if (anExponent > 0.0)
+  {
+    anAtten *= pow (aCosA, anExponent * 128.0);
+  }
+
+  vec3 aHalf = normalize (aLight + theView);
+
+  vec3  aFaceSideNormal = gl_FrontFacing ? theNormal : -theNormal;
+  float aNdotL = max (0.0, dot (aFaceSideNormal, aLight));
+  float aNdotH = max (0.0, dot (aFaceSideNormal, aHalf ));
+
+  float aSpecl = 0.0;
+  if (aNdotL > 0.0)
+  {
+    aSpecl = pow (aNdotH, gl_FrontFacing ? occFrontMaterial_Shininess() : occBackMaterial_Shininess());
+  }
+
+  Diffuse  += occLight_Diffuse  (theId).rgb * aNdotL * anAtten;
+  Specular += occLight_Specular (theId).rgb * aSpecl * anAtten;
+}
+
 //! Computes contribution of directional light source
 void directionalLight (in int  theId,
                        in vec3 theNormal,
@@ -93,7 +144,7 @@ vec4 computeLighting (in vec3 theNormal,
   Diffuse  = vec3 (0.0);
   Specular = vec3 (0.0);
   vec3 aPoint = thePoint.xyz / thePoint.w;
-  for (int anIndex = 0; anIndex < THE_MAX_LIGHTS; ++anIndex)
+  for (int anIndex = 0; anIndex < occLightSourcesCount; ++anIndex)
   {
     int aType = occLight_Type (anIndex);
     if (aType == OccLightType_Direct)
@@ -106,7 +157,7 @@ vec4 computeLighting (in vec3 theNormal,
     }
     else if (aType == OccLightType_Spot)
     {
-      // Not implemented
+      spotLight (anIndex, theNormal, theView, aPoint);
     }
   }
 
