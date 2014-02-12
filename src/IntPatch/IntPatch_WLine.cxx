@@ -238,8 +238,9 @@ inline Standard_Boolean CompareVerticesOnS2(const IntPatch_Point& vtx1, const In
 {return CompareVerticesOnSurf (vtx1, vtx2, Standard_False);}
 
 
-void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol) { 
-
+void IntPatch_WLine::ComputeVertexParameters( const Standard_Real RTol,
+                                              const Standard_Boolean hasBeenAdded)
+{
   // MSV Oct 15, 2001: use tolerance of vertex instead of RTol where 
   //                   it is possible
 
@@ -463,9 +464,9 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol) {
   Standard_Real dmini = Precision::Confusion();
   dmini*=dmini;
   for(i=2; i<=nbponline; i++) { 
-    //const IntSurf_PntOn2S& aPntOn2S1=curv->Value(i-1);
-    //const IntSurf_PntOn2S& aPntOn2S2=curv->Value(i);
-    Standard_Real d = (curv->Value(i-1).Value()).SquareDistance((curv->Value(i).Value()));
+    const IntSurf_PntOn2S& aPnt1=curv->Value(i-1);
+    const IntSurf_PntOn2S& aPnt2=curv->Value(i);
+    Standard_Real d = (aPnt1.Value()).SquareDistance((aPnt2.Value()));
     if(d < dmini) { 
       curv->RemovePoint(i);
       nbponline--;
@@ -473,10 +474,10 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol) {
       //-- On recadre les Vertex si besoin 
       //-- 
       for(j=1; j<=nbvtx; j++) { 
-	indicevertex = svtx.Value(j).ParameterOnLine();
-	if(indicevertex >= i) {
-	  svtx.ChangeValue(j).SetParameter(indicevertex-1.0);
-	}
+        indicevertex = svtx.Value(j).ParameterOnLine();
+        if(indicevertex >= i) {
+          svtx.ChangeValue(j).SetParameter(indicevertex-1.0);
+        }
       }
       //modified by NIZNHY-PKV Mon Feb 11 09:28:02 2002 f
       i--;
@@ -487,7 +488,30 @@ void IntPatch_WLine::ComputeVertexParameters(const Standard_Real RTol) {
   for(i=1; i<=nbvtx; i++) {
     const gp_Pnt& P    = svtx.Value(i).Value();
     Standard_Real vTol = svtx.Value(i).Tolerance();
-    indicevertex = svtx.Value(i).ParameterOnLine();
+    
+    if(hasBeenAdded)
+    {
+      if(nbvtx == 2)
+      {
+        if(i == nbvtx)
+        {
+          indicevertex = curv->NbPoints();
+        }
+        else
+        {
+          indicevertex = svtx.Value(i).ParameterOnLine();
+        }
+      }
+      else
+      {
+        indicevertex = svtx.Value(i).ParameterOnLine();
+      }
+    }
+    else
+    {
+      indicevertex = svtx.Value(i).ParameterOnLine();
+    }
+    
     indicevertexonline = (Standard_Integer)indicevertex;
     //--------------------------------------------------
     //-- On Compare le vertex avec les points de la ligne

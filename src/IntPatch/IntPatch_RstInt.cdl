@@ -34,7 +34,8 @@ is
                     Domain    : TopolTool from Adaptor3d; 
                     OtherSurf : HSurface from Adaptor3d; 
                     OnFirst   : Boolean from Standard ;
-                    Tol       : Real from Standard)
+                    Tol       : Real from Standard;
+                    hasBeenAdded: Boolean from Standard = Standard_False)
 
     	raises DomainError from Standard;
     	--- The exception is raised if the Line from is neither

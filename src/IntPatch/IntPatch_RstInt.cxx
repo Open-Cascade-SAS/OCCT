@@ -445,7 +445,8 @@ void IntPatch_RstInt::PutVertexOnLine (Handle(IntPatch_Line)& L,
 				       const Handle(Adaptor3d_TopolTool)& Domain,
 				       const Handle(Adaptor3d_HSurface)& OtherSurf,
 				       const Standard_Boolean OnFirst,
-				       const Standard_Real Tol )
+				       const Standard_Real Tol,
+               const Standard_Boolean hasBeenAdded)
  {
 
 // Domain est le domaine de restriction de la surface Surf.
@@ -1229,7 +1230,7 @@ void IntPatch_RstInt::PutVertexOnLine (Handle(IntPatch_Line)& L,
 */
 
     wlin->SetPeriod(pu1,pv1,pu2,pv2);
-    wlin->ComputeVertexParameters(Tol);
+    wlin->ComputeVertexParameters(Tol, hasBeenAdded);
   }
   else {
 #ifdef DEB

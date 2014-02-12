@@ -265,6 +265,8 @@ theDirectionFlag: Boolean from Standard)
                               theStep0U2V2: Real from Standard = 1.0e-6)
     returns Boolean from Standard
     is private;
+    -- Finds one intersection point of two given surfaces with given 
+    --  initial point.
   
   DistanceMinimizeByExtrema(me          : in out;
                             theASurf1   : ThePSurface ;
@@ -274,11 +276,36 @@ theDirectionFlag: Boolean from Standard)
                             theStep0V: Real from Standard = 1.0)
     returns Boolean from Standard
     is private;
+    -- Finds one intersection point of two given surfaces with given 
+    --  initial point.
   
+  SeekPointOnBoundary(me    : in out;
+                      theASurf1 , theASurf2  : ThePSurface ;
+                      theU1, theV1, theU2, theV2: Real from Standard;
+                      isTheFirst : Boolean from Standard)
+    returns Boolean from Standard
+    is private;
+    -- Unites and correctly coordinates of work of
+    -- "DistanceMinimizeByGradient" and "DistanceMinimizeByExtrema" functions.
+  
+  
+  PutToBoundary( me    : in out;
+                 theASurf1 , theASurf2  : ThePSurface)
+    -- Tries to extend existing intersection line 
+    --  (as set of points) to surface's boundaries,
+    --  if it is possibly.
+    --  If line is scienter far from boundaries
+    --  or is (almost) parralel with some boundary,
+    --  extending is not required.
+    returns Boolean from Standard;
+
+
   SeekAdditionalPoints( me    : in out;
                         theASurf1 , theASurf2  : ThePSurface;
                         theMinNbPoints : Integer from Standard)
     returns Boolean from Standard;
+    -- Unites and correctly coordinates of work of
+    -- "DistanceMinimizeByGradient" and "DistanceMinimizeByExtrema" functions.
 
 fields
 

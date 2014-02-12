@@ -23,8 +23,6 @@ proc checkList {List Tolerance D_good} {
       }
    }
 }
-smallview
-
 restore [locate_data_file bug24472_Pipe_1.brep] b1
 
 explode b1 f
