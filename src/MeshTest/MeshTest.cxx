@@ -51,8 +51,6 @@
 #include <Bnd_Box.hxx>
 #include <Precision.hxx>
 #include <Draw_Interpretor.hxx>
-#include <IntPoly_PlaneSection.hxx>
-#include <IntPoly_ShapeSection.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_Surface.hxx>
 #include <Draw_Marker3D.hxx>
@@ -116,66 +114,6 @@ OSD_Chronometer chEdges, chMaillEdges, chEtuInter, chLastControl, chStock;
 OSD_Chronometer chAdd11, chAdd12, chAdd2, chUpdate, chPointValid;
 OSD_Chronometer chIsos, chPointsOnIsos;
 #endif
-
-
-
-//=======================================================================
-//function : shapesection
-//purpose  : 
-//=======================================================================
-
-static Standard_Integer shapesection(Draw_Interpretor&, Standard_Integer nbarg, const char** argv)
-{
-  if (nbarg < 4) return 1;
-
-  TopoDS_Shape S1 = DBRep::Get(argv[2]);
-  TopoDS_Shape S2 = DBRep::Get(argv[3]);
-  if (S1.IsNull() || S2.IsNull()) return 1;
-
-  IntPoly_ShapeSection SECTION(S1,S2);
-  //  char name[100];
-  BRep_Builder B;
-  TopoDS_Compound C;
-  B.MakeCompound(C);
-  for (Standard_Integer i = 1 ; i <= SECTION.NbEdges() ; i++) {
-    TopoDS_Shape E = SECTION.Edge(i);
-    if (!E.IsNull()) B.Add(C,E);
-  }
-
-  DBRep::Set(argv[1],C);
-  return 0;
-}
-
-//=======================================================================
-//function : planesection
-//purpose  : 
-//=======================================================================
-
-static Standard_Integer planesection(Draw_Interpretor&, Standard_Integer nbarg, const char** argv)
-{
-  if (nbarg < 4) return 1;
-
-  TopoDS_Shape S = DBRep::Get(argv[2]);
-  if (S.IsNull()) return 1;
-  Handle(Geom_Surface) Surf = DrawTrSurf::GetSurface(argv[3]);
-
-  Handle(Geom_Plane) pl = Handle(Geom_Plane)::DownCast(Surf);
-  if (!pl.IsNull()) {
-    IntPoly_PlaneSection SECTION(S,pl->Pln());
-    //    char name[100];
-    BRep_Builder B;
-    TopoDS_Compound C;
-    B.MakeCompound(C);
-    for (Standard_Integer i = 1 ; i <= SECTION.NbEdges() ; i++) {
-      TopoDS_Shape E = SECTION.Edge(i);
-      if (!E.IsNull()) B.Add(C,E);
-    }
-
-    DBRep::Set(argv[1],C);
-    return 0;
-  }
-  else return  1;
-}
 
 //=======================================================================
 //function : incrementalmesh
@@ -1564,8 +1502,6 @@ void  MeshTest::Commands(Draw_Interpretor& theCommands)
 
   g = "Mesh Commands";
 
-  theCommands.Add("shpsec","shpsec result shape shape",__FILE__, shapesection, g);
-  theCommands.Add("plnsec","plnsec result shape plane",__FILE__, planesection, g);
   theCommands.Add("incmesh","incmesh shape deflection [inParallel (0/1) : 0 by default]",__FILE__, incrementalmesh, g);
   theCommands.Add("MemLeakTest","MemLeakTest",__FILE__, MemLeakTest, g);
   theCommands.Add("fastdiscret","fastdiscret shape deflection [shared [nbiter]]",__FILE__, fastdiscret, g);
