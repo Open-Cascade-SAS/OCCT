@@ -369,13 +369,26 @@ const Handle(Graphic3d_GraphicDriver)& Graphic3d_StructureManager::GraphicDriver
 
 }
 
-void Graphic3d_StructureManager::ReComputeStructures()
+void Graphic3d_StructureManager::RecomputeStructures()
 {
+  // Go through all unique structures including child (connected) ones and ensure that they are computed.
+  Graphic3d_MapOfStructure aStructNetwork;
+
   for (Graphic3d_MapIteratorOfMapOfStructure anIter(MyDisplayedStructure); anIter.More(); anIter.Next())
   {
     Handle(Graphic3d_Structure) aStructure = anIter.Key();
+    anIter.Key()->Network (anIter.Key(), Graphic3d_TOC_DESCENDANT, aStructNetwork);
+  }
 
-    aStructure->Clear();
-    aStructure->Compute();
+  RecomputeStructures (aStructNetwork);
+}
+
+void Graphic3d_StructureManager::RecomputeStructures (const Graphic3d_MapOfStructure& theStructures)
+{
+  for (Graphic3d_MapIteratorOfMapOfStructure anIter (theStructures); anIter.More(); anIter.Next())
+  {
+    Handle(Graphic3d_Structure) aStruct = anIter.Key();
+    aStruct->Clear();
+    aStruct->Compute();
   }
 }
