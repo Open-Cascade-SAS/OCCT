@@ -1,0 +1,35 @@
+puts "TODO OCC24086 Debian60-64 Windows: Error: result shape is invalid"
+
+puts "============"
+puts "OCC24086"
+puts "============"
+puts ""
+#########################################################################
+# IsValid of result-Shape of BRepFeat_SplitShape returns False
+#########################################################################
+
+pload QAcommands
+
+restore [locate_data_file bug24086_face.brep] face
+restore [locate_data_file bug24086_wire.brep] wire
+
+vinit
+set info [OCC24086 face wire]
+if { [regexp "INVALID" $info] == 1 } {
+    puts "Error: result shape is invalid"
+} else {
+    puts "OK: result shape is valid"
+}
+
+vfit
+vdisplay face
+vdisplay wire
+
+set only_screen 1
+
+
+
+
+
+
+

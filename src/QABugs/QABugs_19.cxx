@@ -1336,6 +1336,46 @@ static Standard_Integer OCC24051 (Draw_Interpretor& di, Standard_Integer argc, c
 	return 0;
 }
 
+#include <BRepFeat_SplitShape.hxx>
+#include <ShapeAnalysis_ShapeContents.hxx>
+#include <BRepAlgo.hxx>
+static Standard_Integer OCC24086 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv) 
+{
+	if (argc != 3) {
+		di << "Usage : " << argv[0] << " should be 2 arguments (face and wire)";
+		return 1;
+	}
+	
+	Handle(AIS_InteractiveContext) myAISContext = ViewerTest::GetAISContext();
+	if(myAISContext.IsNull()) {
+		di << "use 'vinit' command before " << argv[0] << "\n";
+		return 1;
+	}
+	
+	TopoDS_Shape result;
+	TopoDS_Face face = TopoDS::Face(DBRep::Get(argv[1]));
+	TopoDS_Wire wire = TopoDS::Wire(DBRep::Get(argv[2]));
+    
+	BRepFeat_SplitShape asplit(face);
+	asplit.Add(wire, face);
+	asplit.Build();
+    result = asplit.Shape();
+    ShapeAnalysis_ShapeContents ana;
+    ana.Perform(result);
+    ana.NbFaces();
+
+	if (!(BRepAlgo::IsValid(result))) {
+		di << "Result was checked and it is INVALID" << "\n";
+	} else {
+		di << "Result was checked and it is VALID" << "\n";
+	}
+	
+	Handle(AIS_InteractiveObject) myShape = new AIS_Shape (result);
+	myAISContext->Display(myShape, Standard_True);
+
+	return 0;
+}
+
 #include <Extrema_FuncExtPS.hxx>
 #include <math_FunctionSetRoot.hxx>
 #include <math_Vector.hxx>
@@ -1657,5 +1697,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC24533", "OCC24533", __FILE__, OCC24533, group);
   theCommands.Add ("OCC24012", "OCC24012 face edge", __FILE__, OCC24012, group);
   theCommands.Add ("OCC24051", "OCC24051", __FILE__, OCC24051, group);
+  theCommands.Add ("OCC24086", "OCC24086 face wire", __FILE__, OCC24086, group);
   return;
 }
