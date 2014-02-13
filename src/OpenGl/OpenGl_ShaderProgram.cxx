@@ -47,6 +47,7 @@ Standard_CString OpenGl_ShaderProgram::PredefinedKeywords[] =
 
   "occClipPlaneEquations", // OpenGl_OCC_CLIP_PLANE_EQUATIONS
   "occClipPlaneSpaces",    // OpenGl_OCC_CLIP_PLANE_SPACES
+  "occClipPlaneCount",     // OpenGl_OCC_CLIP_PLANE_COUNT
 
   "occLightSourcesCount",  // OpenGl_OCC_LIGHT_SOURCE_COUNT
   "occLightSourcesTypes",  // OpenGl_OCC_LIGHT_SOURCE_TYPES

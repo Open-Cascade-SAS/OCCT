@@ -509,7 +509,7 @@ void OpenGl_ShaderManager::PushClippingState (const Handle(OpenGl_ShaderProgram)
     return;
   }
 
-  GLuint aPlanesNb = 0;
+  GLint aPlanesNb = 0;
   for (Graphic3d_SequenceOfHClipPlane::Iterator anIter (myContext->Clipping().Planes());
        anIter.More(); anIter.Next())
   {
@@ -526,8 +526,9 @@ void OpenGl_ShaderManager::PushClippingState (const Handle(OpenGl_ShaderProgram)
     return;
   }
 
-  OpenGl_Vec4* anEquations = new OpenGl_Vec4[aPlanesNb];
-  GLint*       aSpaces     = new GLint      [aPlanesNb];
+  const Standard_Size MAX_CLIP_PLANES = 8;
+  OpenGl_Vec4* anEquations = new OpenGl_Vec4[MAX_CLIP_PLANES];
+  GLint*       aSpaces     = new GLint      [MAX_CLIP_PLANES];
   GLuint aPlaneId = 0;
   for (Graphic3d_SequenceOfHClipPlane::Iterator anIter (myContext->Clipping().Planes());
        anIter.More(); anIter.Next())
@@ -546,8 +547,12 @@ void OpenGl_ShaderManager::PushClippingState (const Handle(OpenGl_ShaderProgram)
     aSpaces[aPlaneId] = myContext->Clipping().GetEquationSpace (aPlane);
     ++aPlaneId;
   }
-  theProgram->SetUniform (myContext, aLocEquations, aPlanesNb, anEquations[0].GetData());
-  theProgram->SetUniform (myContext, aLocSpaces,    aPlanesNb, aSpaces);
+
+  theProgram->SetUniform (myContext,
+                          theProgram->GetStateLocation (OpenGl_OCC_CLIP_PLANE_COUNT),
+                          aPlanesNb);
+  theProgram->SetUniform (myContext, aLocEquations, MAX_CLIP_PLANES, anEquations);
+  theProgram->SetUniform (myContext, aLocSpaces,    MAX_CLIP_PLANES, aSpaces);
 
   delete[] anEquations;
   delete[] aSpaces;

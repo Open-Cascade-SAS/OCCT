@@ -13,9 +13,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-varying vec3 View;     //!< Direction to the viewer
-varying vec3 Normal;   //!< Vertex normal   in view space
-varying vec4 Position; //!< Vertex position in view space
+varying vec3 View;          //!< Direction to the viewer
+varying vec3 Normal;        //!< Vertex normal in view space
+varying vec4 Position;      //!< Vertex position in view space
+varying vec4 PositionWorld; //!< Vertex position in world space
 
 //! Computes the normal in view space
 vec3 TransformNormal (in vec3 theNormal)
@@ -29,8 +30,9 @@ vec3 TransformNormal (in vec3 theNormal)
 //! Entry point to the Vertex Shader
 void main()
 {
-  Position = occWorldViewMatrix * occModelWorldMatrix * occVertex; // position in the view space
-  Normal   = TransformNormal (occNormal);                          // normal   in the view space
+  PositionWorld = occModelWorldMatrix * occVertex;
+  Position      = occWorldViewMatrix * PositionWorld;
+  Normal        = TransformNormal (occNormal);
 
   // Note: The specified view vector is absolutely correct only for the orthogonal projection.
   // For perspective projection it will be approximate, but it is in good agreement with the OpenGL calculations.

@@ -13,9 +13,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-varying vec3 View;     //!< Direction to the viewer
-varying vec3 Normal;   //!< Vertex normal in view space
-varying vec4 Position; //!< Vertex position in view space.
+varying vec3 View;          //!< Direction to the viewer
+varying vec3 Normal;        //!< Vertex normal in view space
+varying vec4 Position;      //!< Vertex position in view space.
+varying vec4 PositionWorld; //!< Vertex position in world space
 
 vec3 Ambient;  //!< Ambient  contribution of light sources
 vec3 Diffuse;  //!< Diffuse  contribution of light sources
@@ -172,6 +173,27 @@ vec4 computeLighting (in vec3 theNormal,
 //! Entry point to the Fragment Shader
 void main()
 {
+  // process clipping planes
+  for (int anIndex = 0; anIndex < occClipPlaneCount; ++anIndex)
+  {
+    vec4 aClipEquation = occClipPlaneEquations[anIndex];
+    int  aClipSpace    = occClipPlaneSpaces[anIndex];
+    if (aClipSpace == OccEquationCoords_World)
+    {
+      if (dot (aClipEquation.xyz, PositionWorld.xyz) + aClipEquation.w < 0.0)
+      {
+        discard;
+      }
+    }
+    else if (aClipSpace == OccEquationCoords_View)
+    {
+      if (dot (aClipEquation.xyz, Position.xyz) + aClipEquation.w < 0.0)
+      {
+        discard;
+      }
+    }
+  }
+
   gl_FragColor = computeLighting (normalize (Normal),
                                   normalize (View),
                                   Position);

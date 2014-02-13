@@ -77,3 +77,4 @@ const int OccEquationCoords_World = 1; //!< world-space clipping plane
 //! Parameters of clipping planes
 uniform vec4 occClipPlaneEquations[THE_MAX_CLIP_PLANES];
 uniform int  occClipPlaneSpaces   [THE_MAX_CLIP_PLANES];
+uniform int  occClipPlaneCount;   //!< Total number of clip planes
