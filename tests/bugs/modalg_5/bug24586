@@ -1,0 +1,24 @@
+puts "============"
+puts "OCC24586"
+puts "============"
+puts ""
+#######################################################################
+# Pipe construction is failed
+#######################################################################
+
+restore [locate_data_file bug24586_base.brep] base 
+restore [locate_data_file bug24586_path.brep] path 
+
+pipe result path base
+
+set nb_v_good 164
+set nb_e_good 379
+set nb_w_good 240
+set nb_f_good 240
+set nb_sh_good 24
+set nb_sol_good 24
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 1072
+
+set 2dviewer 1

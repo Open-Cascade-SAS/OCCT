@@ -2066,26 +2066,6 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
   Standard_Boolean exuv, singu, singv;
   Handle(Geom_Surface) S;
 
-  // Preprocessing: correct <FirstShape> if the profile is shell
-  if (!ReversedEdges.IsEmpty())
-  {
-    TopTools_SequenceOfShape EdgesToReverse;
-    TopoDS_Iterator itw(FirstShape);
-    for (; itw.More(); itw.Next())
-    {
-      const TopoDS_Shape& anEdge = itw.Value();
-      if (ReversedEdges.Contains(anEdge))
-        EdgesToReverse.Append(anEdge);
-    }
-    FirstShape.Free(Standard_True);
-    for (Standard_Integer i = 1; i <= EdgesToReverse.Length(); i++)
-    {
-      B.Remove(FirstShape, EdgesToReverse(i));
-      EdgesToReverse(i).Reverse();
-      B.Add(FirstShape, EdgesToReverse(i));
-    }
-  }
-
   // (2.0) return preexisting Edges and vertices
   TopoDS_Edge E;
   TColStd_Array1OfBoolean IsBuilt(1, NbLaw);
@@ -2296,6 +2276,7 @@ BRepFill_Sweep::BRepFill_Sweep(const Handle(BRepFill_SectionLaw)& Section,
 
  
   // ---------- Creation of Vertex and edge ------------
+  ReversedEdges.Clear();
   for (ipath=1, IPath=IFirst; ipath<=NbPath; 
        ipath++, IPath++) {
     for (isec=1; isec <=NbLaw; isec++) {
