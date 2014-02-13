@@ -1308,6 +1308,34 @@ static Standard_Integer OCC24012 (Draw_Interpretor& di, Standard_Integer argc, c
 	return 0;
 }
 
+#include <Voxel_FastConverter.hxx>
+static Standard_Integer OCC24051 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv) 
+{
+	if (argc != 1) {
+		di << "Usage : " << argv[0] << " should be one argument (command name only)";
+		return 1;
+	}
+
+	TopoDS_Shape shape = BRepPrimAPI_MakeBox(gp_Pnt(5, 10, 10), 10, 20, 30).Shape();
+	Standard_Integer progress = 0;
+	Standard_Real deflection = 0.005;
+	Standard_Integer nbx = 200, nby = 200, nbz = 200;
+	Voxel_BoolDS theVoxels(-50,-50,-30, 100, 100, 100, nbx, nby, nbz);
+	Voxel_BoolDS theVoxels1(-50,-50,-30, 100, 100, 100, nbx, nby, nbz);
+	Standard_Integer nbThreads = 5;
+	Voxel_FastConverter fcp(shape, theVoxels, deflection, nbx, nby, nbz, nbThreads, Standard_True);
+	
+	#ifdef WNT
+	#pragma omp parallel for
+        for(int i = 0; i < nbThreads; i++)
+			fcp.ConvertUsingSAT(progress, i+1);
+	#endif
+	
+	fcp.ConvertUsingSAT(progress);
+
+	return 0;
+}
+
 #include <Extrema_FuncExtPS.hxx>
 #include <math_FunctionSetRoot.hxx>
 #include <math_Vector.hxx>
@@ -1628,5 +1656,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC24370", "OCC24370 edge pcurve surface prec", __FILE__, OCC24370, group);
   theCommands.Add ("OCC24533", "OCC24533", __FILE__, OCC24533, group);
   theCommands.Add ("OCC24012", "OCC24012 face edge", __FILE__, OCC24012, group);
+  theCommands.Add ("OCC24051", "OCC24051", __FILE__, OCC24051, group);
   return;
 }
