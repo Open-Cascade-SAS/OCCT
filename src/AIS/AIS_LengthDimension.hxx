@@ -187,14 +187,18 @@ public:
                                           const TopoDS_Shape& theSecondShape);
 
   //! @return the display units string.
-  Standard_EXPORT virtual const TCollection_AsciiString& GetDisplayUnits () const;
-  
+  Standard_EXPORT virtual const TCollection_AsciiString& GetDisplayUnits() const;
+
   //! @return the model units string.
-  Standard_EXPORT virtual const TCollection_AsciiString& GetModelUnits () const;
+  Standard_EXPORT virtual const TCollection_AsciiString& GetModelUnits() const;
 
   Standard_EXPORT virtual void SetDisplayUnits (const TCollection_AsciiString& theUnits);
 
   Standard_EXPORT virtual void SetModelUnits (const TCollection_AsciiString& theUnits);
+
+  Standard_EXPORT virtual void SetTextPosition (const gp_Pnt& theTextPos);
+
+  Standard_EXPORT virtual const gp_Pnt GetTextPosition() const;
 
 public:
 

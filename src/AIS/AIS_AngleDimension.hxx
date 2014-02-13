@@ -47,8 +47,8 @@ DEFINE_STANDARD_HANDLE (AIS_AngleDimension, AIS_Dimension)
 //! as through three defined points can be built only one plane.
 //! Therefore, if user-defined plane differs from this one, the dimension can't be built.
 //!
-//! In cases of two planes automatical plane by default is built on point of the
-//! origin of parametrical space of the first face (the basis surface) so, that
+//! In cases of two planes automatic plane by default is built on point of the
+//! origin of parametric space of the first face (the basis surface) so, that
 //! the working plane and two faces intersection forms minimal angle between the faces.
 //! User can define the other point which the dimension plane should pass through
 //! using the appropriate constructor. This point can lay on the one of the faces or not.
@@ -188,14 +188,24 @@ public:
                                             const gp_Pnt& thePoint);
 
   //! @return the display units string.
-  Standard_EXPORT virtual const TCollection_AsciiString& GetDisplayUnits () const;
+  Standard_EXPORT virtual const TCollection_AsciiString& GetDisplayUnits() const;
   
   //! @return the model units string.
-  Standard_EXPORT virtual const TCollection_AsciiString& GetModelUnits () const;
+  Standard_EXPORT virtual const TCollection_AsciiString& GetModelUnits() const;
 
   Standard_EXPORT virtual void SetDisplayUnits (const TCollection_AsciiString& theUnits);
 
   Standard_EXPORT virtual void SetModelUnits (const TCollection_AsciiString& theUnits);
+
+  //! Principle of horizontal text alignment settings:
+  //! - divide circle into two halves according to attachment points
+  //! - if aTextPos is between attach points -> Center + positive flyout
+  //! - if aTextPos is not between attach points but in this half -> Left or Right + positive flyout
+  //! - if aTextPos is between reflections of attach points -> Center + negative flyout
+  //! - if aTextPos is not between reflections of attach points -> Left or Right + negative flyout
+  Standard_EXPORT virtual void SetTextPosition (const gp_Pnt& theTextPos);
+
+  Standard_EXPORT virtual const gp_Pnt GetTextPosition () const;
 
 public:
 
@@ -212,7 +222,7 @@ protected:
   //! @return the center of the dimension arc (the main dimension line in case of angle). 
   Standard_EXPORT gp_Pnt GetCenterOnArc (const gp_Pnt& theFirstAttach,
                                          const gp_Pnt& theSecondAttach,
-                                         const gp_Pnt& theCenter);
+                                         const gp_Pnt& theCenter) const;
 
   //! Draws main dimension line (arc).
   //! @param thePresentation [in] the dimension presentation.
@@ -246,6 +256,29 @@ protected:
                                         const Standard_Real theTextWidth,
                                         const Standard_Integer theMode,
                                         const Standard_Integer theLabelPosition);
+
+  //! Fits text alignment relatively to the dimension line;
+  //! it computes the value of label position and arrow orientation
+  //! according set in the aspect and dimension properties.
+  //! @param theHorizontalTextPos [in] the horizontal alignment for text position.
+  //! @param theLabelPosition [out] the label position, contains bits that defines
+  //! vertical and horizontal alignment. (for internal usage in count text position).
+  //! @param theIsArrowExternal [out] is the arrows external,
+  //! if arrow orientation in the dimension aspect is Prs3d_DAO_Fit, it fits arrow
+  //! orientation automatically.
+  Standard_EXPORT void FitTextAlignment (const Prs3d_DimensionTextHorizontalPosition& theHorizontalTextPos,
+                                         Standard_Integer& theLabelPosition,
+                                         Standard_Boolean& theIsArrowsExternal) const;
+
+  //! Adjusts aspect parameters according the text position:
+  //! extension size, vertical text alignment and flyout.
+  //! It changes flyout of the dimension.
+  //! @param theTextPos [in] the user defined 3d point of text position.
+  //! @param theExtensionSize [out] the adjusted extension size.
+  //! @param theAlignment [out] the horizontal label alignment.
+  Standard_EXPORT void AdjustParameters (const gp_Pnt& theTextPos,
+                                         Standard_Real& theExtensionSize,
+                                         Prs3d_DimensionTextHorizontalPosition& theAlignment);
 
 protected:
 

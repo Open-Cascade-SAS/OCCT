@@ -45,7 +45,11 @@
 #include <GC_MakePlane.hxx>
 #include <Geom_CartesianPoint.hxx>
 #include <Geom_Circle.hxx>
+#include <Geom_Line.hxx>
 #include <Geom_Plane.hxx>
+#include <GeomAPI_IntCS.hxx>
+#include <gce_MakeLin.hxx>
+#include <gce_MakePln.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Pln.hxx>
 #include <IntAna_IntConicQuad.hxx>
@@ -71,6 +75,9 @@
 #include <ViewerTest_DoubleMapIteratorOfDoubleMapOfInteractiveAndName.hxx>
 #include <ViewerTest_EventManager.hxx>
 
+extern Standard_Boolean VDisplayAISObject (const TCollection_AsciiString& theName,
+                                           const Handle(AIS_InteractiveObject)& theAISObj,
+                                           Standard_Boolean theReplaceIfExists = Standard_True);
 extern ViewerTest_DoubleMapOfInteractiveAndName& GetMapOfAIS();
 extern int ViewerMainLoop(Standard_Integer argc, const char** argv);
 extern Handle(AIS_InteractiveContext)& TheAISContext ();
@@ -83,104 +90,87 @@ extern Handle(AIS_InteractiveContext)& TheAISContext ();
 #define EdgeMask 0x02
 #define FaceMask 0x04
 
-static Standard_Boolean ComputeIntersection(const gp_Lin& L,const gp_Pln& ThePl, gp_Pnt& TheInter)
+//=======================================================================
+//function : Get3DPointAtMousePosition
+//purpose  : Calculates the 3D points corresponding to the mouse position
+//           in the plane of the view
+//=======================================================================
+static gp_Pnt Get3DPointAtMousePosition()
 {
-  static IntAna_Quadric TheQuad;
-  TheQuad.SetQuadric(ThePl);
-  static IntAna_IntConicQuad QQ;
-   QQ.Perform(L,TheQuad);
-  if(QQ.IsDone()){
-    if(QQ.NbPoints()>0){
-      TheInter = QQ.Point(1);
-      return Standard_True;
-    }
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  static Select3D_Projector aProjector;
+  aProjector.SetView (aView);
+
+  Standard_Real xv,yv,zv;
+  aView->Proj (xv,yv,zv);
+  Standard_Real xat,yat,zat;
+  aView->At(xat,yat,zat);
+  gp_Pln aPlane (gp_Pnt(xat,yat,zat), gp_Dir(xv,yv,zv));
+  
+  Standard_Integer aPixX, aPixY;
+  Standard_Real aX, aY, aZ, aDX, aDY, aDZ;
+
+  ViewerTest::GetMousePosition (aPixX, aPixY);
+  aView->ConvertWithProj (aPixX, aPixY, aX, aY, aZ, aDX, aDY, aDZ);
+  gp_Lin aLine( gp_Pnt(aX, aY, aZ), gp_Dir(aDX, aDY, aDZ) );
+
+  // Compute intersection
+  Handle(Geom_Line) aGeomLine = new Geom_Line (aLine);
+  Handle(Geom_Plane) aGeomPlane = new Geom_Plane (aPlane);
+  GeomAPI_IntCS anIntersector (aGeomLine, aGeomPlane);
+  if (!anIntersector.IsDone() || anIntersector.NbPoints() == 0)
+  {
+    return gp::Origin();
   }
-  return Standard_False;
+  return anIntersector.Point (1);
 }
 
 //=======================================================================
 //function : Get3DPointAtMousePosition
-//purpose  : calcul du point 3D correspondant a la position souris dans le plan de 
-// la vue...
+//purpose  : Calculates the 3D points corresponding to the mouse position
+//           in the plane of the view
 //=======================================================================
-
-static gp_Pnt Get3DPointAtMousePosition ()
+static Standard_Boolean Get3DPointAtMousePosition (const gp_Pnt& theFirstPoint,
+                                                   const gp_Pnt& theSecondPoint,
+                                                   gp_Pnt& theOutputPoint)
 {
-  Handle(V3d_View) aview = ViewerTest::CurrentView();
-  static Select3D_Projector prj;
-  prj.SetView(aview);
-  
-  // le plan de la vue...
-  Standard_Real xv,yv,zv;
-  aview->Proj(xv,yv,zv);
-  Standard_Real xat,yat,zat;
-  aview->At(xat,yat,zat);
-  gp_Pln ThePl(gp_Pnt(xat,yat,zat),gp_Dir(xv,yv,zv));
-  Standard_Integer xpix,ypix;
-  Standard_Real x,y;
-  ViewerTest::GetMousePosition(xpix,ypix);
-  aview->Convert(xpix,ypix,x,y); // espace reel 2D de la vue...
-  gp_Lin L = prj.Shoot(x,y);
-  gp_Pnt P(0.,0.,0.);
+  theOutputPoint = gp::Origin();
 
-  ComputeIntersection(L,ThePl,P);
-  return P;
-}
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
 
-//=======================================================================
-//function : ComputeNewPlaneForDim
-//purpose  : 
-//=======================================================================
+  Standard_Integer aPixX, aPixY;
+  Standard_Real aX, aY, aZ, aDx, aDy, aDz, aUx, aUy, aUz;
 
-static void ComputeNewPlaneForDim (const Handle(AIS_Relation)& R,
-                                   gp_Pln& ,
-                                   gp_Pnt&)
-{
-// 0	COMPOUND,
-// 1	COMPSOLID,
-// 2	SOLID,
-// 3	SHELL,
-// 4	FACE,
-// 5   	WIRE,
-// 6	EDGE,
-// 7	VERTEX,
-// 8	SHAPE
-  TopoDS_Shape S1 = R->FirstShape();
-  TopoDS_Shape S2 = R->SecondShape();
-  TopAbs_ShapeEnum Typ1 = S1.ShapeType();
-  TopAbs_ShapeEnum Typ2 = S2.ShapeType();
-  
-  gp_Pnt thepoint [3];
-  thepoint[0] = Get3DPointAtMousePosition();
-  
-  // on met l'objet le plus petit en 1...
-  if((Standard_Integer)Typ2>(Standard_Integer)Typ1){
-    
-    TopoDS_Shape tmpS = S1;
-    TopAbs_ShapeEnum tmpT = Typ1;
-    S1= S2;
-    Typ1 = Typ2;
-    S2= tmpS;
-    Typ2 = tmpT;
+  // Get 3D point in view coordinates and projection vector from the pixel point.
+  ViewerTest::GetMousePosition (aPixX, aPixY);
+  aView->ConvertWithProj (aPixX, aPixY, aX, aY, aZ, aDx, aDy, aDz);
+  gp_Lin aProjLin (gp_Pnt(aX, aY, aZ), gp_Dir(aDx, aDy, aDz));
+
+  // Get plane
+  gp_Vec aDimVec (theFirstPoint, theSecondPoint);
+  aView->Up (aUx, aUy, aUz);
+  gp_Vec aViewUp (aUx, aUy, aUz);
+
+  if (aDimVec.IsParallel (aViewUp, Precision::Angular()))
+  {
+    theOutputPoint = Get3DPointAtMousePosition();
+    return Standard_True;
   }
-/*  
-  switch (Typ1){
-  case TopAbs_VERTEX:{
-    thepoint[0]  = BRep_Tool::Pnt(S1);
-    if(Typ2==TopAbs_VERTEX)
-      thepoint[1] = BRep_Tool::Pnt(S2);
-    else if(Typ2==TopAbs_EDGE){
-      TopoDS_Vertex  Va,Vb;
-      TopExp::Vertices(S2,Va,Vb);
-      thepoint[1] = BRep_Tool::Pnt(Va);
-    }
-    else if(Typ2==TopAbs_FACE){
-    }
-    break;
+
+  gp_Vec aDimNormal = aDimVec ^ aViewUp;
+  gp_Pln aViewPlane= gce_MakePln (theFirstPoint, aDimNormal);
+
+  // Get intersection of view plane and projection line
+  Handle(Geom_Plane) aPlane = new Geom_Plane (aViewPlane);
+  Handle(Geom_Line) aProjLine = new Geom_Line (aProjLin);
+  GeomAPI_IntCS anIntersector (aProjLine, aPlane);
+  if (!anIntersector.IsDone() || anIntersector.NbPoints() == 0)
+  {
+    return Standard_False;
   }
-  case TopAbs_EDGE:
-  }
-*/
+
+  theOutputPoint = anIntersector.Point (1);
+  return Standard_True;
 }
 
 //=======================================================================
@@ -555,71 +545,70 @@ static int VDimBuilder(Draw_Interpretor& theDi, Standard_Integer theArgsNb, cons
 
 static int VAngleDimBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
 {
-  Standard_Integer myCurrentIndex;
-  if (argc!=2) {di<<" vangledim error."<<"\n";return 1;}
+  Standard_Integer aCurrentIndex;
+  if (argc!=2)
+  {
+    di << argv[0] << " error : wrong number of parameters.\n";
+    return 1;
+  }
+
   TheAISContext()->CloseAllContexts();
-  TheAISContext()->OpenLocalContext();
-  myCurrentIndex=TheAISContext()->IndexOfCurrentLocal();
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(2) );
-  di<<" Select two  edges coplanar or not."<<"\n";
-  Standard_Integer argcc = 5;
-  const char *buff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-  const char **argvv = (const char **) buff;
-  while (ViewerMainLoop( argcc, argvv) ) { }
-  
-  TopoDS_Shape ShapeA;
-  for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-    ShapeA = TheAISContext()->SelectedShape();
-  }
-  // Si ShapeA est un Edge.
-  if (ShapeA.ShapeType()== TopAbs_EDGE ) {
-    
-    // Boucle d'attente waitpick.
-    Standard_Integer argccc = 5;
-    const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-    const char **argvvv = (const char **) bufff;
-    while (ViewerMainLoop( argccc, argvvv) ) { }
-    // fin de la boucle
-    
-    TopoDS_Shape ShapeB;
-    for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-      ShapeB = TheAISContext()->SelectedShape();
-    }
-    // ShapeB doit etre un Edge
-    if (ShapeB.ShapeType()!= TopAbs_EDGE ) {
-      di<<" vangledim error: you shoud have selected an edge."<<"\n";return 1;
-    }
-    
-    // on recupere les vertexes de edgeA
-    TopoDS_Vertex Va,Vb;
-    TopExp::Vertices(TopoDS::Edge(ShapeA),Va ,Vb );
-    // Recuperation des points.
-    gp_Pnt A=BRep_Tool::Pnt(Va);
-    gp_Pnt B=BRep_Tool::Pnt(Vb);
-    gp_Pnt C(A.X()+5 ,A.Y()+5 ,A.Z()+5 );
+  aCurrentIndex =  TheAISContext()->OpenLocalContext();
+  // Set selection mode for edges.
+  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(2));
+  di << "Select two edges coplanar or not.\n";
 
+  Standard_Integer anArgsNum = 5;
+  const char *aBuffer[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
+  const char **anArgsVec = (const char **) aBuffer;
+  while (ViewerMainLoop (anArgsNum, anArgsVec)) { }
 
-    // Construction du plane. Methode pas orthodoxe!
-    GC_MakePlane MkPlane(A ,B ,C );
-    Handle(Geom_Plane) theGeomPlane=MkPlane.Value();
-    
-    // Construction du texte.
-    TCollection_ExtendedString TheMessage_Str(TCollection_ExtendedString("d=")+TCollection_ExtendedString( 90 ) );
-    
-    // Fermeture du context local.
-    TheAISContext()->CloseLocalContext(myCurrentIndex);
-    
-    // Construction de l'AIS dimension
-    Handle (AIS_AngleDimension) myAISDim= new AIS_AngleDimension (TopoDS::Edge(ShapeA) ,TopoDS::Edge(ShapeB));
-    GetMapOfAIS().Bind (myAISDim,argv[1]);
-    TheAISContext()->Display(myAISDim );
-    
+  TopoDS_Shape aFirstShape;
+  for (TheAISContext()->InitSelected(); TheAISContext()->MoreSelected(); TheAISContext()->NextSelected())
+  {
+    aFirstShape = TheAISContext()->SelectedShape();
   }
-else {
-  di<<" vangledim error: you must select 2 edges."<<"\n";return 1;
-}
-  
-  
+
+  if (aFirstShape.IsNull())
+  {
+    di << argv[0] << " error : no picked shape.\n";
+    return 1;
+  }
+
+  if (aFirstShape.ShapeType()== TopAbs_EDGE)
+  {
+    while (ViewerMainLoop (anArgsNum, anArgsVec)) { }
+
+    TopoDS_Shape aSecondShape;
+    for (TheAISContext()->InitSelected(); TheAISContext()->MoreSelected(); TheAISContext()->NextSelected())
+    {
+      aSecondShape = TheAISContext()->SelectedShape();
+    }
+
+    if (aSecondShape.IsNull())
+    {
+      di << argv[0] << " error : no picked shape.\n";
+      return 1;
+    }
+
+    if (aSecondShape.ShapeType() != TopAbs_EDGE)
+    {
+      di << argv[0] <<" error: you should have selected an edge.\n"; return 1;
+    }
+
+    // Close local context to draw dimension in the neutral point.
+    TheAISContext()->CloseLocalContext (aCurrentIndex);
+
+    // Construct the dimension.
+    Handle (AIS_AngleDimension) aDim= new AIS_AngleDimension (TopoDS::Edge(aFirstShape) ,TopoDS::Edge(aSecondShape));
+    VDisplayAISObject (argv[1], aDim);
+  }
+  else
+  {
+    di << argv[0] << " error: you must select 2 edges.\n";
+    return 1;
+  }
+
   return 0;
 }
 
@@ -632,59 +621,69 @@ else {
 static int VDiameterDimBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
 {
   // Declarations
-  Standard_Integer myCurrentIndex;
-  Standard_Real theRadius;
-    
+  Standard_Integer aCurrentIndex;
+  Standard_Real aRadius;
+
   // Verification
-  if (argc!=2) {di<<" vdiameterdim error"<<"\n";return 1;}
-  // Fermeture des contextes locaux
+  if (argc != 2)
+  {
+    di<<" vdiameterdim error"<<"\n";
+    return 1;
+  }
+
+  // Close all local contexts
   TheAISContext()->CloseAllContexts();
-  // Ouverture d'un contexte local et recuperation de son index.
+  // Open local context and get its index for recovery
   TheAISContext()->OpenLocalContext();
-  myCurrentIndex=TheAISContext()->IndexOfCurrentLocal();
+  aCurrentIndex = TheAISContext()->IndexOfCurrentLocal();
   
-  // On active les modes de selections Edges et Faces.
+  // Activate 'edge' selection mode
   TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(2) );
   di<<" Select an circled edge."<<"\n";
   
-  // Boucle d'attente waitpick.
+  // Loop that will handle the picking.
   Standard_Integer argcc = 5;
   const char *buff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
   const char **argvv = (const char **) buff;
   while (ViewerMainLoop( argcc, argvv) ) { }
-  // fin de la boucle
+  // end of the loop.
   
-  TopoDS_Shape ShapeA;
-  for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-    ShapeA = TheAISContext()->SelectedShape();
+  TopoDS_Shape aShape;
+  for(TheAISContext()->InitSelected(); TheAISContext()->MoreSelected(); TheAISContext()->NextSelected())
+  {
+    aShape = TheAISContext()->SelectedShape();
   }
-  if (ShapeA.ShapeType()==TopAbs_EDGE  ) {
-    
-    // Recuperation du rayon 
-    BRepAdaptor_Curve theCurve(TopoDS::Edge(ShapeA));
-    if (theCurve.GetType()!=GeomAbs_Circle ) {di<<"vdiameterdim error: the edge is not a circular one."<<"\n";return 1;}
-    else {
-      gp_Circ theGpCircle=theCurve.Circle();
-      theRadius=2.*theGpCircle.Radius();
-    }
-    
-    // Construction du texte.
-    TCollection_ExtendedString TheMessage_Str(TCollection_ExtendedString("d=")+TCollection_ExtendedString(theRadius  ) );
-    // Construction de L'AIS_AngleDimension.
-    TheAISContext()->CloseLocalContext(myCurrentIndex);
-    
-    Handle (AIS_DiameterDimension) myDiamDim= new AIS_DiameterDimension(ShapeA);
-    GetMapOfAIS().Bind (myDiamDim,argv[1]);
-    TheAISContext()->Display(myDiamDim );
-    
+
+  if (aShape.IsNull())
+  {
+    di << argv[0] << ": no shape is selected." << "\n";
+    return 1;
   }
-  
-  else {
-    di<<" vdiameterdim error: the selection of a face or an edge was expected."<<"\n";return 1;
+
+  if (aShape.ShapeType() != TopAbs_EDGE)
+  {
+    di << " vdiameterdim error: the selection of a face or an edge was expected." << "\n";
+    return 1;
   }
-  
+
+  // Compute the radius
+  BRepAdaptor_Curve aCurve (TopoDS::Edge (aShape));
+
+  if (aCurve.GetType() != GeomAbs_Circle)
+  {
+    di << "vdiameterdim error: the edge is not a circular one." << "\n";
+    return 1;
+  }
+
+  gp_Circ aCircle = aCurve.Circle();
+  aRadius = 2.0 * aCircle.Radius();
+
+  // Construction of the diameter dimension.
+  TheAISContext()->CloseLocalContext (aCurrentIndex);
+  Handle (AIS_DiameterDimension) aDiamDim= new AIS_DiameterDimension (aShape);
+  VDisplayAISObject (argv[1], aDiamDim);
+
   return 0;
-  
 }
 
 
@@ -1246,339 +1245,292 @@ static int VIdenticRelation(Draw_Interpretor& di, Standard_Integer argc, const c
 #include <BRepExtrema_ExtFF.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
-#include <GC_MakePlane.hxx>
+#include <gce_MakePln.hxx>
 #include <TopExp_Explorer.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
+
 static int VLenghtDimension(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
 {
   // Declarations
-  Standard_Integer myCurrentIndex;
-  Standard_Real theDist;
-  
+  Standard_Integer aCurrentIndex;
   // Verification
-  if (argc!=2) {di<<" videntity error: no arguments allowed."<<"\n";return 1;}
-  
-  // Fermeture des contextes locaux
+  if (argc != 2)
+  {
+    di << argv[0] << " error: wrong number of arguments.\n";
+    return 1;
+  }
+
+  // Close all local contexts
   TheAISContext()->CloseAllContexts();
-  
-  // Ouverture d'un contexte local et recuperation de son index.
-  myCurrentIndex = TheAISContext()->OpenLocalContext();
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(2) );
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(1) );
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(4) );
-  di<<" Select an edge, a face or a vertex. "<<"\n";
-  
-  // Boucle d'attente waitpick.
+
+  // Open local context
+  aCurrentIndex = TheAISContext()->OpenLocalContext();
+  // Activate 'edge', 'face' and 'vertex' selection modes.
+  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(2));
+  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(1));
+  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(4));
+
+  // First shape picking
+  di << " Select an edge, a face or a vertex. " << "\n";
+  // Loop that will handle the picking.
   Standard_Integer argc1 = 5;
   const char *buf1[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
   const char **argv1 = (const char **) buf1;
   while (ViewerMainLoop( argc1, argv1) ) { }
+  // end of the loop.
 
-  // fin de la boucle
-  TopoDS_Shape ShapeA;
-  for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-    ShapeA = TheAISContext()->SelectedShape();
+  TopoDS_Shape aFirstShape;
+  for(TheAISContext()->InitSelected(); TheAISContext()->MoreSelected(); TheAISContext()->NextSelected())
+  {
+    aFirstShape = TheAISContext()->SelectedShape();
   }
-  di<<" Select an edge, a face or a vertex. "<<"\n";
-  // Boucle d'attente waitpick.
+
+  if (aFirstShape.IsNull())
+  {
+    di << argv[0] << "error: no first picked shape.\n";
+    return 1;
+  }
+
+  // Second shape picking
+  di << " Select an edge, a face or a vertex. " << "\n";
+  // Loop that will handle the picking.
   Standard_Integer argc2 = 5;
   const char *buf2[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
   const char **argv2 = (const char **) buf2;
   while (ViewerMainLoop( argc2, argv2) ) { }
-  // fin de la boucle
-  
-  TopoDS_Shape ShapeB;
-  for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-    ShapeB = TheAISContext()->SelectedShape();
+
+  TopoDS_Shape aSecondShape;
+  for(TheAISContext()->InitSelected(); TheAISContext()->MoreSelected(); TheAISContext()->NextSelected())
+  {
+    aSecondShape = TheAISContext()->SelectedShape();
   }
-  // ShapeA est un edge.
-  // ===================
-  if (ShapeA.ShapeType()==TopAbs_EDGE ) {
-    TopoDS_Edge  EdgeA=TopoDS::Edge(ShapeA);
-    
-    // Si ShapeB est un edge
-    if (ShapeB.ShapeType()==TopAbs_EDGE ) {
-      TopoDS_Edge  EdgeB=TopoDS::Edge(ShapeB);
-      BRepExtrema_ExtCC myDeltaEdge (EdgeA ,EdgeB );
-      // on verifie qu'ils ne sont pas paralleles.
-      if (!myDeltaEdge.IsParallel() ) {di<<"vlenghtdim error: non parallel edges."<<"\n";return 1; }
-      
-      // On saisit la distance et on l'arrondit!
-      theDist=Round (sqrt(myDeltaEdge.SquareDistance(1))*10. )/10.;
-      
-      // On recupere 3 Points des edges pour construire un plane.
-      TopoDS_Vertex  Va,Vb,Vc,Vd;
-      TopExp::Vertices(EdgeA,Va,Vb);
-      TopExp::Vertices(EdgeB,Vc,Vd);
-      gp_Pnt A=BRep_Tool::Pnt(Va);
-      gp_Pnt B=BRep_Tool::Pnt(Vb);
-      gp_Pnt C=BRep_Tool::Pnt(Vc);
-      
-      // Creation du Plane contenant la relation.
-      GC_MakePlane MkPlane(A,B,C);
-      Handle(Geom_Plane) theGeomPlane=MkPlane.Value();
-      
-      TCollection_ExtendedString TheMessage_Str(TCollection_ExtendedString("d=")+TCollection_ExtendedString(theDist ) );
-      
-      // On ferme le contexte local.
-      TheAISContext()->CloseLocalContext(myCurrentIndex);
-      
-      // on construit l'AISLenghtDimension.
-      Handle(AIS_LengthDimension ) myLenghtDim=new AIS_LengthDimension (EdgeA,EdgeB,theGeomPlane->Pln());
-      TheAISContext()->Display(myLenghtDim );
-      GetMapOfAIS().Bind (myLenghtDim ,argv[1]);
+
+  if (aSecondShape.IsNull())
+  {
+    di << argv[0] << "error: no second picked shape.\n";
+    return 1;
+  }
+
+  if (aFirstShape.ShapeType() == TopAbs_EDGE)
+  {
+    TopoDS_Edge EdgeA = TopoDS::Edge (aFirstShape);
+
+    if (aSecondShape.ShapeType() == TopAbs_EDGE)
+    {
+      TopoDS_Edge EdgeB = TopoDS::Edge (aSecondShape);
+      BRepExtrema_ExtCC myDeltaEdge (EdgeA ,EdgeB);
+
+      if (!myDeltaEdge.IsParallel())
+      {
+        di << argv[0] << " error: non parallel edges." << "\n";
+        return 1;
+      }
+
+      // 3 points of edges is recovered to build a plane
+      TopoDS_Vertex aVertex1, aVertex2, aVertex3, aVertex4;
+      TopExp::Vertices (EdgeA, aVertex1, aVertex2);
+      TopExp::Vertices (EdgeB, aVertex3, aVertex4);
+      gp_Pnt A = BRep_Tool::Pnt (aVertex1);
+      gp_Pnt B = BRep_Tool::Pnt (aVertex2);
+      gp_Pnt C = BRep_Tool::Pnt (aVertex3);
+
+      gce_MakePln aMakePlane (A,B,C);
+      gp_Pln aPlane= aMakePlane.Value();
+
+      // Close local context
+      TheAISContext()->CloseLocalContext (aCurrentIndex);
+
+      // Construct the dimension
+      Handle(AIS_LengthDimension ) aLenghtDim = new AIS_LengthDimension (EdgeA, EdgeB, aPlane);
+      TheAISContext()->Display (aLenghtDim);
+      GetMapOfAIS().Bind (aLenghtDim, argv[1]);
     }
-    
-    // Si ShapeB est un vertex.
-    else if (ShapeB.ShapeType()==TopAbs_VERTEX ) {
-      
-      TopoDS_Vertex  VertexB=TopoDS::Vertex(ShapeB);
-      BRepExtrema_ExtPC myDeltaEdgeVertex  (VertexB ,EdgeA );
-      
-      // On saisit la distance et on l'arrondit!
-      theDist=Round (sqrt (myDeltaEdgeVertex.SquareDistance(1))*10. )/10.;
-      
-      // On recupere 2 Points de EdgeA pour construire un plane.
-      TopoDS_Vertex  Va,Vb;
-      TopExp::Vertices(EdgeA,Va,Vb);
-      gp_Pnt A=BRep_Tool::Pnt(Va);
-      gp_Pnt B=BRep_Tool::Pnt(Vb);
-      gp_Pnt C=BRep_Tool::Pnt(VertexB);
-      
-      GC_MakePlane MkPlane(A,B,C);
-      Handle(Geom_Plane) theGeomPlane=MkPlane.Value();
-      
-      TCollection_ExtendedString TheMessage_Str(TCollection_ExtendedString("d=")+TCollection_ExtendedString(theDist ) );
-      TheAISContext()->CloseLocalContext(myCurrentIndex);
-      Handle(AIS_LengthDimension ) myLenghtDim=new AIS_LengthDimension (EdgeA,VertexB,theGeomPlane->Pln());
-      TheAISContext()->Display(myLenghtDim );
-      GetMapOfAIS().Bind (myLenghtDim ,argv[1]);
-      
-      
+
+    else if (aSecondShape.ShapeType() == TopAbs_VERTEX)
+    {
+      TopoDS_Vertex aVertex = TopoDS::Vertex (aSecondShape);
+      BRepExtrema_ExtPC myDeltaEdgeVertex  (aVertex ,EdgeA);
+
+      TopoDS_Vertex aVertex1, aVertex2;
+      TopExp::Vertices (EdgeA, aVertex1, aVertex2);
+      gp_Pnt A=BRep_Tool::Pnt (aVertex1);
+      gp_Pnt B=BRep_Tool::Pnt (aVertex2);
+      gp_Pnt C=BRep_Tool::Pnt (aVertex);
+
+      gce_MakePln aMakePlane (A,B,C);
+      gp_Pln aPlane= aMakePlane.Value();
+
+      TheAISContext()->CloseLocalContext (aCurrentIndex);
+      Handle(AIS_LengthDimension) aLenghtDim=new AIS_LengthDimension (EdgeA, aVertex, aPlane);
+      TheAISContext()->Display (aLenghtDim);
+      GetMapOfAIS().Bind (aLenghtDim, argv[1]);
     }
-    
-    // Si ShapeB est une Face
+
+    // Second shape is a face
     else
     {
-      TopoDS_Face FaceB=TopoDS::Face(ShapeB);
-      BRepExtrema_ExtCF myDeltaEdgeFace  (EdgeA,FaceB );
-      // On verifie que l'edge est bien parallele a la face.
-      if (!myDeltaEdgeFace.IsParallel() ) {di<<"vdistdim error: the edge isn't parallel to the face;can't compute the distance. "<<"\n";return 1; }
+      TopoDS_Face FaceB = TopoDS::Face (aSecondShape);
+      BRepExtrema_ExtCF aDeltaEdgeFace (EdgeA,FaceB);
 
-      // on construit l'AISLenghtDimension.
-      Handle(AIS_LengthDimension ) myLenghtDim=new AIS_LengthDimension (FaceB,EdgeA);
-      TheAISContext()->Display(myLenghtDim );
-      GetMapOfAIS().Bind (myLenghtDim ,argv[1]);
+      if (!aDeltaEdgeFace.IsParallel())
+      {
+        di << argv[0] << "error: the edge isn't parallel to the face;can't compute the distance." << "\n";
+        return 1;
+      }
+
+      Handle(AIS_LengthDimension) aLenghtDim = new AIS_LengthDimension (FaceB, EdgeA);
+      TheAISContext()->Display (aLenghtDim);
+      GetMapOfAIS().Bind (aLenghtDim, argv[1]);
+    }
+  }
+  else if (aFirstShape.ShapeType() == TopAbs_VERTEX)
+  {
+    TopoDS_Vertex  VertexA = TopoDS::Vertex (aFirstShape);
+    if (aSecondShape.ShapeType() == TopAbs_EDGE )
+    {
+      TopoDS_Edge  EdgeB=TopoDS::Edge (aSecondShape);
+      BRepExtrema_ExtPC aDeltaEdgeVertex (VertexA, EdgeB);
+
+      TopoDS_Vertex aVertex1, aVertex2;
+      TopExp::Vertices(EdgeB, aVertex1, aVertex2);
+      gp_Pnt A = BRep_Tool::Pnt (aVertex1);
+      gp_Pnt B = BRep_Tool::Pnt (aVertex2);
+      gp_Pnt C = BRep_Tool::Pnt (VertexA);
+
+      gce_MakePln aMakePlane (A,B,C);
+      gp_Pln aPlane = aMakePlane.Value();
+
+      // Close local contex by its index.
+      TheAISContext()->CloseLocalContext (aCurrentIndex);
+
+      // Construct the dimension.
+      Handle(AIS_LengthDimension) aLenghtDim = new AIS_LengthDimension (EdgeB,VertexA, aPlane);
+      TheAISContext()->Display (aLenghtDim);
+      GetMapOfAIS().Bind (aLenghtDim, argv[1]);
+    }
+
+    else if (aSecondShape.ShapeType() == TopAbs_VERTEX)
+    {
+      TopoDS_Vertex  VertexB = TopoDS::Vertex (aSecondShape);
+
+      gp_Pnt A = BRep_Tool::Pnt (VertexA);
+      gp_Pnt B = BRep_Tool::Pnt (VertexB);
+      gp_Pnt C(B.X() + 10.0, B.Y() + 10.0, B.Z() + 10.0);
+
+      gce_MakePln aMakePlane (A,B,C);
+      gp_Pln aPlane= aMakePlane.Value();
+
+      TheAISContext()->CloseLocalContext (aCurrentIndex);
+
+      Handle(AIS_LengthDimension ) aLenghtDim = new AIS_LengthDimension (VertexA, VertexB, aPlane);
+      TheAISContext()->Display (aLenghtDim);
+      GetMapOfAIS().Bind (aLenghtDim, argv[1]);
+    }
+    // The second shape is face
+    else
+    {
+      TopoDS_Face  FaceB = TopoDS::Face (aSecondShape);
+
+      BRepExtrema_ExtPF aDeltaVertexFace (VertexA, FaceB);
+
+      gp_Pnt A = BRep_Tool::Pnt (VertexA);
+
+      // Recover edge from face.
+      TopExp_Explorer aFaceExp (FaceB,TopAbs_EDGE);
+      TopoDS_Edge aSecondEdge = TopoDS::Edge (aFaceExp.Current());
+
+      TopoDS_Vertex aVertex1, aVertex2;
+      TopExp::Vertices (aSecondEdge, aVertex1, aVertex2);
+      gp_Pnt C = BRep_Tool::Pnt (aVertex2);
+
+      gp_Pnt aProjA = aDeltaVertexFace.Point(1);
+      BRepBuilderAPI_MakeVertex aVertexMaker (aProjA);
+      TopoDS_Vertex aVertexAProj = aVertexMaker.Vertex();
+
+      // Create working plane for the dimension.
+      gce_MakePln aMakePlane (A, aProjA, C);
+      gp_Pln aPlane = aMakePlane.Value();
+
+      TheAISContext()->CloseLocalContext (aCurrentIndex);
+
+      // Construct the dimension.
+      Handle(AIS_LengthDimension ) aLenghtDim = new AIS_LengthDimension (VertexA, aVertexAProj, aPlane);
+      TheAISContext()->Display (aLenghtDim);
+      GetMapOfAIS().Bind (aLenghtDim, argv[1]);
     }
   }
 
-  // ShapeA est un vertex
-  // ====================
-  if (ShapeA.ShapeType()==TopAbs_VERTEX ) {
-    TopoDS_Vertex  VertexA=TopoDS::Vertex(ShapeA);
-    
-    // Si ShapeB est un edge.
-    if (ShapeB.ShapeType()==TopAbs_EDGE ) {
-      TopoDS_Edge  EdgeB=TopoDS::Edge(ShapeB);
-      BRepExtrema_ExtPC myDeltaEdgeVertex  (VertexA ,EdgeB );
-      // On saisit la distance et on l'arrondit!
-      theDist=Round (sqrt (myDeltaEdgeVertex.SquareDistance(1))*10. )/10.;
-      
-      // On recupere 2 Points de EdgeB pour construire un plane.
-      TopoDS_Vertex  Va,Vb;
-      TopExp::Vertices(EdgeB,Va,Vb);
-      gp_Pnt A=BRep_Tool::Pnt(Va);
-      gp_Pnt B=BRep_Tool::Pnt(Vb);
-      gp_Pnt C=BRep_Tool::Pnt(VertexA);
-      
-      // Creation du Plane contenant la relation.
-      GC_MakePlane MkPlane(A,B,C);
-      Handle(Geom_Plane) theGeomPlane=MkPlane.Value();
-      
-      // Fermeture du contexte local.
-      TheAISContext()->CloseLocalContext(myCurrentIndex);
-      // Construction du texte.
-      TCollection_ExtendedString TheMessage_Str(TCollection_ExtendedString("d=")+TCollection_ExtendedString(theDist ) );
-      
-      // on construit l'AISLenghtDimension.
-      Handle(AIS_LengthDimension ) myLenghtDim=new AIS_LengthDimension (EdgeB,VertexA,theGeomPlane->Pln());
-      TheAISContext()->Display(myLenghtDim );
-      GetMapOfAIS().Bind (myLenghtDim ,argv[1]);
-      
-    }
-    
-    // Si ShapeB est un vertex.
-    else if (ShapeB.ShapeType()==TopAbs_VERTEX ) {
-      TopoDS_Vertex  VertexB=TopoDS::Vertex(ShapeB);
-      BRepExtrema_DistShapeShape myDeltaVertexVertex  (VertexA ,VertexB );
-      // On saisit la distance et on l'arrondit!
-      theDist=Round (myDeltaVertexVertex.Value()*10. )/10.;
-      
-      // Les deux premiers points.
-      gp_Pnt A=BRep_Tool::Pnt(VertexA);
-      gp_Pnt B=BRep_Tool::Pnt(VertexB);
-      gp_Pnt C(B.X()+10,B.Y()+10,B.Z()+10);
+  // The first shape is a face.
+  else
+  {
+    TopoDS_Face FaceA = TopoDS::Face (aFirstShape);
 
-      GC_MakePlane MkPlane(A,B,C);
-      Handle(Geom_Plane) theGeomPlane=MkPlane.Value();
-      
-      // Fermeture du contexte local.
-      TheAISContext()->CloseLocalContext(myCurrentIndex);
-      // Construction du texte.
-      TCollection_ExtendedString TheMessage_Str(TCollection_ExtendedString("d=")+TCollection_ExtendedString(theDist ) );
-      
-      // on construit l'AISLenghtDimension.
-      Handle(AIS_LengthDimension ) myLenghtDim=new AIS_LengthDimension (VertexA,VertexB,theGeomPlane->Pln());
-      TheAISContext()->Display(myLenghtDim );
-      GetMapOfAIS().Bind (myLenghtDim ,argv[1]);
-      
-      
-      
-      
+    if (aSecondShape.ShapeType() == TopAbs_EDGE)
+    {
+      TopoDS_Edge EdgeB = TopoDS::Edge (aSecondShape);
+      BRepExtrema_ExtCF aDeltaEdgeFace (EdgeB,FaceA );
+
+      if (!aDeltaEdgeFace.IsParallel())
+      {
+        di << argv[0] << " error: the edge isn't parallel to the face;can't compute the distance. " << "\n";
+        return 1;
+      }
+
+      Handle(AIS_LengthDimension) aLenghtDim = new AIS_LengthDimension (FaceA, EdgeB);
+      TheAISContext()->Display (aLenghtDim);
+      GetMapOfAIS().Bind (aLenghtDim, argv[1]);
     }
-    
-    // Si ShapeB est une Face
-    else {
-      
-      TopoDS_Face  FaceB=TopoDS::Face(ShapeB);
-      BRepExtrema_ExtPF myDeltaVertexFace  (VertexA ,FaceB );
-      // On saisit la distance et on l'arrondit!
-      theDist=Round (sqrt (myDeltaVertexFace.SquareDistance(1))*10. )/10.;
-      
-      // Premier point.
-      gp_Pnt A=BRep_Tool::Pnt(VertexA);
-      
-      // On recupere 1 edge de FaceB.
-      TopExp_Explorer FaceExp(FaceB,TopAbs_EDGE);
-      TopoDS_Edge EdFromB=TopoDS::Edge(FaceExp.Current() );
-      // On recupere les deux vertexes extremites de l'edge de face B
-      TopoDS_Vertex  Vb,Vc;
-      TopExp::Vertices(EdFromB,Vb,Vc);
-      gp_Pnt C=BRep_Tool::Pnt(Vc);
-      
-      // On projette le point B sur la Face car il 
-      // n'existe pas de constructeurs AIS_LD PointFace
-      // on est donc oblige de creer un nouveau TopoDS_Vertex.
-      gp_Pnt theProjA=myDeltaVertexFace.Point(1);
-      BRepBuilderAPI_MakeVertex theVertexMaker(theProjA);
-      TopoDS_Vertex VertexAproj=theVertexMaker.Vertex();
-      // Creation du Plane contenant la relation.
-      GC_MakePlane MkPlane(A,theProjA,C);
-      Handle(Geom_Plane) theGeomPlane=MkPlane.Value();
-      
-      // Fermeture du contexte local.
-      TheAISContext()->CloseLocalContext(myCurrentIndex);
-      // Construction du texte.
-      TCollection_ExtendedString TheMessage_Str(TCollection_ExtendedString("d=")+TCollection_ExtendedString(theDist ) );
-      
-      // on construit l'AISLenghtDimension.
-      Handle(AIS_LengthDimension ) myLenghtDim=new AIS_LengthDimension (VertexA,VertexAproj,theGeomPlane->Pln());
-      TheAISContext()->Display(myLenghtDim );
-      GetMapOfAIS().Bind (myLenghtDim ,argv[1]);
-      
-    }
-    
-    
-    
-  }
-  
-  // ShapeA est une Face
-  // ===================
-  else {
-    TopoDS_Face  FaceA=TopoDS::Face(ShapeA);
-    // Si ShapeB est un edge.
-    if (ShapeB.ShapeType()==TopAbs_EDGE ) {
-      TopoDS_Edge EdgeB=TopoDS::Edge(ShapeB);
-      BRepExtrema_ExtCF myDeltaEdgeFace  (EdgeB,FaceA );
-      // On verifie que l'edge est bien parallele a la face.
-      if (!myDeltaEdgeFace.IsParallel() ) {di<<"vdistdim error: the edge isn't parallel to the face;can't compute the distance. "<<"\n";return 1; }
-      
-      // On saisit la distance et on l'arrondit!
-      theDist=Round (sqrt (myDeltaEdgeFace.SquareDistance(1))*10. )/10.;
-      
-      // Construction du texte.
-      TCollection_ExtendedString TheMessage_Str(TCollection_ExtendedString("d=")+TCollection_ExtendedString(theDist ) );
-      
-      // on construit l'AISLenghtDimension.
-      Handle(AIS_LengthDimension ) myLenghtDim=new AIS_LengthDimension (FaceA,EdgeB);
-      TheAISContext()->Display(myLenghtDim );
-      GetMapOfAIS().Bind (myLenghtDim ,argv[1]);
-      
-    }
-    
-    // Si ShapeB est un vertex.
-    else if (ShapeB.ShapeType()==TopAbs_VERTEX ) {
-      
-      TopoDS_Vertex  VertexB=TopoDS::Vertex(ShapeB);
-      BRepExtrema_ExtPF myDeltaVertexFace  (VertexB ,FaceA );
-      // On saisit la distance et on l'arrondit!
-      theDist=Round (sqrt (myDeltaVertexFace.SquareDistance(1))*10. )/10.;
-      
-      // Premier point.
-      gp_Pnt B=BRep_Tool::Pnt(VertexB);
-      
-      // On recupere 1 edge de FaceA.
-      TopExp_Explorer FaceExp(FaceA,TopAbs_EDGE);
-      TopoDS_Edge EdFromA=TopoDS::Edge(FaceExp.Current() );
-      // On recupere les deux vertexes extremites de l'edge de face A
-      TopoDS_Vertex  Va,Vc;
-      TopExp::Vertices(EdFromA,Va,Vc);
-      gp_Pnt A=BRep_Tool::Pnt(Va);
+
+    else if (aSecondShape.ShapeType() == TopAbs_VERTEX)
+    {
+      TopoDS_Vertex  VertexB = TopoDS::Vertex (aSecondShape);
+      BRepExtrema_ExtPF aDeltaVertexFace (VertexB, FaceA);
+
+      gp_Pnt B = BRep_Tool::Pnt (VertexB);
+
+      TopExp_Explorer aFaceExp (FaceA, TopAbs_EDGE);
+      TopoDS_Edge anEdgeFromA = TopoDS::Edge (aFaceExp.Current());
+      TopoDS_Vertex  aVertex1, aVertex2;
+      TopExp::Vertices(anEdgeFromA, aVertex1, aVertex2);
+      gp_Pnt A=BRep_Tool::Pnt(aVertex1);
 
 #ifdef DEB
-      gp_Pnt C = BRep_Tool::Pnt(Vc);
+      gp_Pnt C = BRep_Tool::Pnt(aVertex2);
 #endif
 
-      // On projette le point B sur la Face car il 
-      // n'existe pas de constructeurs AIS_LD PointFace
-      // on est donc oblige de creer un nouveau TopoDS_Vertex.
-      gp_Pnt theProjB=myDeltaVertexFace.Point(1);
-      BRepBuilderAPI_MakeVertex theVertexMaker(theProjB);
-      TopoDS_Vertex VertexBproj=theVertexMaker.Vertex();
-      // Creation du Plane contenant la relation.
-      GC_MakePlane MkPlane(A,B,theProjB);
-      Handle(Geom_Plane) theGeomPlane=MkPlane.Value();
-      
-      // Fermeture du contexte local.
-      TheAISContext()->CloseLocalContext(myCurrentIndex);
-      // Construction du texte.
-      TCollection_ExtendedString TheMessage_Str(TCollection_ExtendedString("d=")+TCollection_ExtendedString(theDist ) );
-      
-      // on construit l'AISLenghtDimension mais en utilisant le constructeur Vertex Vertex.
-      Handle(AIS_LengthDimension ) myLenghtDim=new AIS_LengthDimension (VertexB,VertexBproj,theGeomPlane->Pln());
-      TheAISContext()->Display(myLenghtDim );
-      GetMapOfAIS().Bind (myLenghtDim ,argv[1]);
-      
+      gp_Pnt aProjB = aDeltaVertexFace.Point(1);
+      BRepBuilderAPI_MakeVertex aVertexMaker (aProjB);
+      TopoDS_Vertex aVertexBProj = aVertexMaker.Vertex();
+      gce_MakePln aMakePlane (A, B, aProjB);
+      gp_Pln aPlane= aMakePlane.Value();
+
+      TheAISContext()->CloseLocalContext(aCurrentIndex);
+
+      Handle(AIS_LengthDimension) aLenghtDim  =new AIS_LengthDimension (VertexB, aVertexBProj, aPlane);
+      TheAISContext()->Display (aLenghtDim);
+      GetMapOfAIS().Bind (aLenghtDim, argv[1]);
     }
-    
-    // Si ShapeB est une Face
-    else {
-      
-      TopoDS_Face  FaceB=TopoDS::Face(ShapeB);
-      BRepExtrema_ExtFF myDeltaFaceFace  (FaceA ,FaceB );
-      // On verifie que les deux faces sont bien parelles.
-      if (!myDeltaFaceFace.IsParallel() ) {di<<"vdistdim error: the faces are not parallel. "<<"\n";return 1; }
-      
-      // On saisit la distance et on l'arrondit!
-      theDist=Round (sqrt (myDeltaFaceFace.SquareDistance(1))*10. )/10.;
-      // Fermeture du contexte local.
-      TheAISContext()->CloseLocalContext(myCurrentIndex);
-      // Construction du texte.
-      TCollection_ExtendedString TheMessage_Str(TCollection_ExtendedString("d=")+TCollection_ExtendedString(theDist ) );
-      
-      // on construit l'AISLenghtDimension.
-      Handle(AIS_LengthDimension ) myLenghtDim=new AIS_LengthDimension (FaceA,FaceB);
-      TheAISContext()->Display(myLenghtDim );
-      GetMapOfAIS().Bind (myLenghtDim ,argv[1]);
-      
+    // the second shape is face.
+    else
+    {
+      TopoDS_Face FaceB = TopoDS::Face (aSecondShape);
+      BRepExtrema_ExtFF aDeltaFaceFace (FaceA, FaceB);
+
+      if (!aDeltaFaceFace.IsParallel())
+      {
+        di << argv[0] << " error: the faces are not parallel. "<<"\n";
+        return 1;
+      }
+
+      TheAISContext()->CloseLocalContext (aCurrentIndex);
+
+      Handle(AIS_LengthDimension) aLenghtDim = new AIS_LengthDimension (FaceA,FaceB);
+      TheAISContext()->Display (aLenghtDim);
+      GetMapOfAIS().Bind (aLenghtDim, argv[1]);
     }
-    
   }
-  
-  
-  
+
   return 0;
-  
 }
 
 
@@ -1596,103 +1548,88 @@ static int VLenghtDimension(Draw_Interpretor& di, Standard_Integer argc, const c
 static int VRadiusDimBuilder(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
 {
   // Declarations
-  Standard_Integer myCurrentIndex;
-  Standard_Real theRadius;
-    
+  Standard_Integer aCurrentIndex;
+  Standard_Real aRadius;
+  TopoDS_Edge anEdge;
   // Verification
-  if (argc!=2) {di<<" vradiusdim error"<<"\n";return 1;}
-  
-  // Fermeture des contextes locaux
+  if (argc != 2)
+  {
+    di << argv[0] << " error: wrong number of parameters." << "\n";
+    return 1;
+  }
+
+  // Close all local contexts
   TheAISContext()->CloseAllContexts();
-  
-  // Ouverture d'un contexte local et recuperation de son index.
+
+  // Open local context and get its index for recovery.
   TheAISContext()->OpenLocalContext();
-  myCurrentIndex=TheAISContext()->IndexOfCurrentLocal();
-  
-  // On active les modes de selections Edges et Faces.
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(2) );
-  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(4) );
-  di<<" Select an circled edge or face."<<"\n";
-  
-  // Boucle d'attente waitpick.
+  aCurrentIndex = TheAISContext()->IndexOfCurrentLocal();
+
+  // Current selection modes - faces and edges
+  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(2));
+  TheAISContext()->ActivateStandardMode (AIS_Shape::SelectionType(4));
+  di << " Select a circled edge or face." << "\n";
+
+  // Loop that will be handle picking.
   Standard_Integer argcc = 5;
   const char *buff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
   const char **argvv = (const char **) buff;
-  while (ViewerMainLoop( argcc, argvv) ) { }
-  // fin de la boucle
-  
-  TopoDS_Shape ShapeA;
-  for(TheAISContext()->InitSelected() ;TheAISContext()->MoreSelected() ;TheAISContext()->NextSelected() ) {
-    ShapeA = TheAISContext()->SelectedShape();
+  while (ViewerMainLoop (argcc, argvv)) { }
+  // end of the loop
+
+  TopoDS_Shape aShape;
+
+  for (TheAISContext()->InitSelected(); TheAISContext()->MoreSelected(); TheAISContext()->NextSelected() )
+  {
+    aShape = TheAISContext()->SelectedShape();
   }
-  
-  // Shape A est un edge.
-  if (ShapeA.ShapeType()==TopAbs_EDGE  ) {
-    
-    TopoDS_Edge  EdgeA=TopoDS::Edge(ShapeA);
-    // Recuperation du rayon
-    BRepAdaptor_Curve theCurve(TopoDS::Edge(ShapeA));
-    if (theCurve.GetType()!=GeomAbs_Circle ) {di<<"vradiusdim error: the edge is not a circular one."<<"\n";return 1;}
-    else {
-      gp_Circ theGpCircle=theCurve.Circle();
-      theRadius=theGpCircle.Radius();
-      // On arrondit le rayon
-      theRadius=Round (theRadius*10. )/10.;
-    }
-    
-    // Construction du texte.
-    TCollection_ExtendedString TheMessage_Str(TCollection_ExtendedString("r=")+TCollection_ExtendedString(theRadius  ) );
-    
-    // Fermeture du contexte.
-    TheAISContext()->CloseLocalContext(myCurrentIndex);
-    
-    // Construction de L'AIS_RadiusDimension.
-    Handle (AIS_RadiusDimension) myRadDim= new AIS_RadiusDimension(ShapeA);
-    GetMapOfAIS().Bind (myRadDim,argv[1]);
-    TheAISContext()->Display(myRadDim );
-    
-    
+
+  if (aShape.IsNull())
+  {
+    di << argv[0] << ": no shape is selected." << "\n";
+    return 1;
   }
-  
-  // Shape A est une face
-  else if (ShapeA.ShapeType()==TopAbs_FACE ) {
-    
-    // on recupere un edge de la face.
-    TopoDS_Face  FaceA=TopoDS::Face(ShapeA);
-    // on explore.
-    TopExp_Explorer FaceExp(FaceA,TopAbs_EDGE);
-    TopoDS_Edge EdgeFromA=TopoDS::Edge(FaceExp.Current() );
-    
-    // Recuperation du rayon
-    BRepAdaptor_Curve theCurve(EdgeFromA );
-    if (theCurve.GetType()!=GeomAbs_Circle ) {di<<"vradiusdim error: the face is not a circular one."<<"\n";return 1;}
-    else {
-      gp_Circ theGpCircle=theCurve.Circle();
-      theRadius=theGpCircle.Radius();
-      // On arrondit le rayon
-      theRadius=Round (theRadius*10. )/10.;
-    }
-    
-    // Construction du texte.
-    TCollection_ExtendedString TheMessage_Str(TCollection_ExtendedString("r=")+TCollection_ExtendedString(theRadius  ) );
-    
-    // Fermeture du contexte.
-    TheAISContext()->CloseLocalContext(myCurrentIndex);
-    
-    // Construction de L'AIS_RadiusDimension.
-    Handle (AIS_RadiusDimension) myRadDim= new AIS_RadiusDimension(ShapeA);
-    GetMapOfAIS().Bind (myRadDim,argv[1]);
-    TheAISContext()->Display(myRadDim );
-    
-    
+
+  if (aShape.ShapeType() != TopAbs_EDGE && aShape.ShapeType() != TopAbs_FACE)
+  {
+    di << argv[0] << " error: the selection of a face or an edge was expected." << "\n";
+    return 1;
   }
-  
-  else {
-    di<<" vradiusdim error: the selection of a face or an edge was expected."<<"\n";return 1;
+
+  if (aShape.ShapeType() == TopAbs_EDGE)
+  {
+    anEdge = TopoDS::Edge (aShape);
   }
-  
+  else // Face
+  {
+    // Recover an edge of the face.
+    TopoDS_Face aFace = TopoDS::Face (aShape);
+
+    TopExp_Explorer aFaceExp (aFace,TopAbs_EDGE);
+    anEdge = TopoDS::Edge (aFaceExp.Current());
+  }
+
+  // Compute the radius
+  BRepAdaptor_Curve aCurve (anEdge);
+  if (aCurve.GetType() != GeomAbs_Circle)
+  {
+    di << argv[0] << " error: the edge is not a circular one." << "\n";
+    return 1;
+  }
+  else
+  {
+    gp_Circ aCircle = aCurve.Circle();
+    aRadius = aCircle.Radius();
+    aRadius = Round (aRadius * 10.0) / 10.0;
+  }
+  // Close the context
+  TheAISContext()->CloseLocalContext (aCurrentIndex);
+
+  // Construct radius dimension
+  Handle (AIS_RadiusDimension) aRadDim= new AIS_RadiusDimension (aShape);
+  VDisplayAISObject (argv[1], aRadDim);
+
   return 0;
-  
 }
 
 
@@ -2398,94 +2335,346 @@ static int VSymmetricBuilder(Draw_Interpretor& di, Standard_Integer argc, const 
   return 0;
   
 }
+
+//=======================================================================
+//function : VDimParam
+//purpose  : Moves dimension or relation text label to defined or picked
+//           position and updates the object.
+//=======================================================================
+static int VDimParam (Draw_Interpretor& theDi, Standard_Integer theArgNum, const char** theArgVec) 
+{
+  if (theArgNum < 3)
+  {
+    theDi << theArgVec[0] << " error: the wrong number of input parameters.\n";
+    return 1;
+  }
+
+  // Get dimension name
+  TCollection_AsciiString aName (theArgVec[1]);
+  if (!GetMapOfAIS().IsBound2 (aName))
+  {
+    theDi << theArgVec[0] << "error: no object with this name.\n";
+    return 1;
+  }
+
+  Handle(AIS_InteractiveObject) anObject = Handle(AIS_InteractiveObject)::DownCast(GetMapOfAIS().Find2 (aName));
+  if (anObject->Type() != AIS_KOI_Dimension)
+  {
+    theDi << theArgVec[0] << "error: no dimension with this name.\n";
+    return 1;
+  }
+  Handle(AIS_Dimension) aDim = Handle(AIS_Dimension)::DownCast (anObject);
+  Handle(Prs3d_DimensionAspect) anAspect = aDim->DimensionAspect();
+
+  // Parse parameters
+  gp_Pln aWorkingPlane;
+  Standard_Real aCustomFlyout = 0.0;
+
+  for (Standard_Integer anIt = 2; anIt < theArgNum; ++anIt)
+  {
+    TCollection_AsciiString anArgString = theArgVec[anIt];
+    TCollection_AsciiString aParamName;
+    TCollection_AsciiString aParamValue;
+    if (ViewerTest::SplitParameter (anArgString, aParamName, aParamValue))
+    {
+      aParamName.LowerCase();
+      aParamValue.LowerCase();
+
+      if (aParamName == "text")
+      {
+        anAspect->MakeText3d (aParamValue == "3d");
+      }
+      else if (aParamName == "name")
+      {
+        if (aParamValue.IsEmpty())
+        {
+          std::cerr << theArgVec[0] << ": no name for dimension.\n";
+          return 1;
+        }
+
+        aName = aParamValue;
+      }
+      else if (aParamName == "plane")
+      {
+        if (aParamValue == "xoy")
+        {
+          aWorkingPlane = gp_Pln (gp_Ax3 (gp::XOY()));
+        }
+        else if (aParamValue == "zox")
+        {
+          aWorkingPlane = gp_Pln (gp_Ax3 (gp::ZOX()));
+        }
+        else if (aParamValue == "yoz")
+        {
+          aWorkingPlane = gp_Pln (gp_Ax3 (gp::YOZ()));
+        }
+        else
+        {
+          std::cerr << theArgVec[0] << ": wrong plane.\n";
+          return 1;
+        }
+      }
+      else if (aParamName == "label")
+      {
+        NCollection_List<TCollection_AsciiString> aListOfLabelVals;
+        while (aParamValue.Length() > 0)
+        {
+          TCollection_AsciiString aValue = aParamValue;
+
+          Standard_Integer aSeparatorPos = aParamValue.Search (",");
+          if (aSeparatorPos >= 0)
+          {
+            aValue.Trunc (aSeparatorPos - 1);
+            aParamValue.Remove (aSeparatorPos, 1);
+          }
+
+          aListOfLabelVals.Append (aValue);
+
+          aParamValue.Remove (1, aValue.Length());
+        }
+
+        NCollection_List<TCollection_AsciiString>::Iterator aLabelValueIt (aListOfLabelVals);
+        for ( ; aLabelValueIt.More(); aLabelValueIt.Next())
+        {
+          aParamValue = aLabelValueIt.Value();
+
+          if (aParamValue == "left")
+          {
+            anAspect->SetTextHorizontalPosition (Prs3d_DTHP_Left);
+          }
+          else if (aParamValue == "right")
+          {
+            anAspect->SetTextHorizontalPosition (Prs3d_DTHP_Right);
+          }
+          else if (aParamValue == "hcenter")
+          {
+            anAspect->SetTextHorizontalPosition (Prs3d_DTHP_Center);
+          }
+          else if (aParamValue == "hfit")
+          {
+            anAspect->SetTextHorizontalPosition (Prs3d_DTHP_Fit);
+          }
+          else if (aParamValue == "above")
+          {
+            anAspect->SetTextVerticalPosition (Prs3d_DTVP_Above);
+          }
+          else if (aParamValue == "below")
+          {
+            anAspect->SetTextVerticalPosition (Prs3d_DTVP_Below);
+          }
+          else if (aParamValue == "vcenter")
+          {
+            anAspect->SetTextVerticalPosition (Prs3d_DTVP_Center);
+          }
+          else
+          {
+            std::cerr << theArgVec[0] << ": invalid label position: \"" << aParamValue << "\".\n";
+            return 1;
+          }
+        }
+      }
+      else if (aParamName == "flyout")
+      {
+        if (!aParamValue.IsRealValue())
+        {
+          std::cerr << theArgVec[0] << ": numeric value expected for flyout.\n";
+          return 1;
+        }
+
+        aCustomFlyout = aParamValue.RealValue();
+        aDim->SetFlyout (aCustomFlyout);
+      }
+      else if (aParamName == "arrows")
+      {
+        if (aParamValue == "external")
+        {
+          anAspect->SetArrowOrientation (Prs3d_DAO_External);
+        }
+        else if (aParamValue == "internal")
+        {
+          anAspect->SetArrowOrientation (Prs3d_DAO_Internal);
+        }
+        else if (aParamValue == "fit")
+        {
+          anAspect->SetArrowOrientation (Prs3d_DAO_Fit);
+        }
+      }
+      else
+      {
+        std::cerr << theArgVec[0] << ": unknow parameter: \"" << aParamName << "\".\n";
+        return 1;
+      }
+    }
+  }
+
+  // Redisplay a dimension after parameter changing.
+  ViewerTest::GetAISContext()->Redisplay (aDim);
+  return 0;
+}
+
 //=======================================================================
 //function : VMoveDim
-//purpose  : 
+//purpose  : Moves dimension or relation text label to defined or picked
+//           position and updates the object.
+//draw args: vmovedim [name] [x y z]
 //=======================================================================
-static int VMoveDim(Draw_Interpretor& di, Standard_Integer argc, const char** argv) 
+static int VMoveDim (Draw_Interpretor& theDi, Standard_Integer theArgNum, const char** theArgVec) 
 {
-  if(argc>2) return 1;
-  
-  const Handle(V3d_View) aview = ViewerTest::CurrentView();
-  Handle(AIS_InteractiveObject) pickedobj;
-  if(argc==1){
-    pickedobj = TheAISContext()->FirstCurrentObject();
-    if(pickedobj.IsNull() || pickedobj->Type()!=AIS_KOI_Relation)
-      pickedobj = ViewerTest::PickObject(AIS_KOI_Relation);
-  }
-  else{
-    // reperage dans le viewer...
-    if(!strcasecmp(argv[1],".")){
-      pickedobj = ViewerTest::PickObject(AIS_KOI_Relation);
-      
-    }
-    else if(GetMapOfAIS().IsBound2(argv[1]))
-      pickedobj = Handle(AIS_InteractiveObject)::DownCast
-        (GetMapOfAIS().Find2(argv[1]));
-  }
-  
-  if(pickedobj.IsNull()){
-    di<<"Bad Type Object"<<"\n";
-    return 1 ;}
-  
-  if(pickedobj->Type() != AIS_KOI_Relation)
+  if (theArgNum > 5)
+  {
+    theDi << theArgVec[0] << " error: the wrong number of parameters.\n";
     return 1;
-  Standard_Integer argccc = 5;
-  
-  const char *bufff[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
-  const char **argvvv = (const char **) bufff;
+  }
 
-  Handle(AIS_Relation) R = *((Handle(AIS_Relation)*)&pickedobj);
-  Handle(Geom_Plane) ThePl;
-//  Standard_Real x,y,z,xv,yv,zv;
-  Standard_Real x,y,xv,yv,zv;
-  static Standard_Real last_xv(0),last_yv(0),last_zv(0);
-  Standard_Integer xpix,ypix;
-//  Standard_Boolean SameAsLast(Standard_False);
-  Select3D_Projector prj(aview);
-  
-  
-  while (ViewerMainLoop( argccc, argvvv) ) {
-    //....... la ligne de tir
-    ViewerTest::GetMousePosition(xpix,ypix);
-    aview->Convert(xpix,ypix,x,y); // espace reel 2D de la vue...
-    gp_Lin L = prj.Shoot(x,y);
+  // Parameters parsing
+  Standard_Boolean isNameSet = (theArgNum ==2 || theArgNum == 5);
+  Standard_Boolean isPointSet = (theArgNum == 4 || theArgNum == 5);
 
-    
-    
-    // ....... le plan de la vue...
-    aview->Proj(xv,yv,zv);
-    static Standard_Boolean haschanged(Standard_False);
-    if(Abs(last_xv-xv)>Precision::Confusion() ||
-       Abs(last_yv-yv)>Precision::Confusion() ||
-       Abs(last_zv-zv)>Precision::Confusion() ){
-      last_xv = xv;
-      last_yv = yv;
-      last_zv = zv;
-      Standard_Real xat,yat,zat;
-      aview->At(xat,yat,zat);
-      ThePl = new Geom_Plane(gp_Pnt(xat,yat,zat),gp_Dir(xv,yv,zv));
-      haschanged = Standard_True;
-      di <<"changement de plan"<<"\n";
-    }
-    
-    //  
-//    Standard_Integer xpix,ypix;
-//    Standard_Real x,y;
-    gp_Pnt GoodPoint;
-    if(haschanged){
-      gp_Pln NewPlane;;
-      ComputeNewPlaneForDim(R,NewPlane,GoodPoint);
-      haschanged = Standard_False;
-    }
-    else{
-      if(ComputeIntersection(L,ThePl->Pln(),GoodPoint)){
-	R->SetPosition(GoodPoint);
+  Handle(AIS_InteractiveObject) aPickedObj;
+  gp_Pnt aPoint (gp::Origin());
+  Standard_Integer aCurrentIndex = 0;
+  Standard_Integer aMaxPickNum = 5;
+
+  // Find object
+  if (isNameSet)
+  {
+     TCollection_AsciiString aName (theArgVec[1]);
+     if (!GetMapOfAIS().IsBound2 (aName))
+     {
+       theDi << theArgVec[0] << " error: no object with this name.\n";
+       return 1;
+     }
+
+     aPickedObj = Handle(AIS_InteractiveObject)::DownCast (GetMapOfAIS().Find2 (aName));
+     
+     if (aPickedObj.IsNull())
+     {
+       theDi << theArgVec[0] << " error: the object with this name is not valid.\n";
+       return 1;
+     }
+
+     if (aPickedObj->Type() != AIS_KOI_Dimension && aPickedObj->Type() != AIS_KOI_Relation)
+     {
+       theDi << theArgVec[0] << " error: no dimension or relation with this name.\n";
+       return 1;
+     }
+  }
+  else // Pick dimension or relation
+  {
+    // Close all local contexts
+    TheAISContext()->CloseAllContexts();
+
+    // Open local context and get its index for recovery.
+    TheAISContext()->OpenLocalContext();
+    aCurrentIndex = TheAISContext()->IndexOfCurrentLocal();
+
+    // Loop that will be handle picking.
+    Standard_Integer anArgNum = 5;
+    const char *aBuffer[] = { "VPick", "X", "VPickY","VPickZ", "VPickShape" };
+    const char **anArgVec = (const char **) aBuffer;
+
+    Standard_Boolean isPicked = Standard_False;
+    Standard_Integer aPickNum = 0;
+    while (!isPicked && aPickNum < aMaxPickNum)
+    {
+      while (ViewerMainLoop (anArgNum, anArgVec)) { }
+
+      for (TheAISContext()->InitSelected(); TheAISContext()->MoreSelected(); TheAISContext()->NextSelected())
+      {
+        aPickedObj = TheAISContext()->SelectedInteractive();
       }
-      TheAISContext()->Redisplay(R);
+
+      isPicked = (!aPickedObj.IsNull() && (aPickedObj->Type() == AIS_KOI_Dimension || aPickedObj->Type() == AIS_KOI_Relation));
+
+      if (isPicked)
+      {
+        break;
+      }
+      aPickNum++;
+    }
+    if (!isPicked)
+    {
+      theDi << theArgVec[0] << ": no dimension or relation is selected." << "\n";
+      return 1;
     }
   }
-  
+
+  // Find point
+  if (isPointSet)
+  {
+    aPoint = theArgNum == 4 ? gp_Pnt (atoi (theArgVec[1]), atoi (theArgVec[2]), atoi (theArgVec[3]))
+                            : gp_Pnt (atoi (theArgVec[2]), atoi (theArgVec[3]), atoi (theArgVec[4]));
+  }
+  else // Pick the point
+  {
+    Standard_Integer aPickArgNum = 5;
+    const char *aPickBuff[] = {"VPick", "X", "VPickY", "VPickZ", "VPickShape"};
+    const char **aPickArgVec = (const char **) aPickBuff;
+
+    while (ViewerMainLoop (aPickArgNum, aPickArgVec)) { }
+
+    // Set text position, update relation or dimension.
+    if (aPickedObj->Type() == AIS_KOI_Relation)
+    {
+      Handle(AIS_Relation) aRelation = Handle(AIS_Relation)::DownCast (aPickedObj);
+      aPoint = Get3DPointAtMousePosition();
+      aRelation->SetPosition (aPoint);
+      TheAISContext()->Redisplay (aRelation);
+    }
+    else
+    {
+      Handle(AIS_Dimension) aDim = Handle(AIS_Dimension)::DownCast (aPickedObj);
+      gp_Pnt aFirstPoint, aSecondPoint;
+      if (aDim->KindOfDimension() == AIS_KOD_PLANEANGLE)
+      {
+        Handle(AIS_AngleDimension) anAngleDim = Handle(AIS_AngleDimension)::DownCast (aDim);
+        aFirstPoint = anAngleDim->FirstPoint();
+        aSecondPoint = anAngleDim->SecondPoint();
+      }
+      else if (aDim->KindOfDimension() == AIS_KOD_LENGTH)
+      {
+        Handle(AIS_LengthDimension) aLengthDim = Handle(AIS_LengthDimension)::DownCast (aDim);
+        aFirstPoint = aLengthDim->FirstPoint();
+        aSecondPoint = aLengthDim->SecondPoint();
+      }
+      else if (aDim->KindOfDimension() == AIS_KOD_RADIUS)
+      {
+        Handle(AIS_RadiusDimension) aRadiusDim = Handle(AIS_RadiusDimension)::DownCast (aDim);
+        aFirstPoint = aRadiusDim->AnchorPoint();
+        aSecondPoint = aRadiusDim->Circle().Location();
+      }
+      else if (aDim->KindOfDimension() == AIS_KOD_DIAMETER)
+      {
+        Handle(AIS_DiameterDimension) aDiameterDim = Handle(AIS_DiameterDimension)::DownCast (aDim);
+        aFirstPoint = aDiameterDim->AnchorPoint();
+        aSecondPoint = aDiameterDim->Circle().Location();
+      }
+
+      if (!Get3DPointAtMousePosition (aFirstPoint, aSecondPoint, aPoint))
+      {
+        return 1;
+      }
+
+      aDim->SetTextPosition (aPoint);
+      TheAISContext()->Redisplay (aDim);
+    }
+
+  }
+
+  // Set text position, update relation or dimension.
+  if (aPickedObj->Type() == AIS_KOI_Relation)
+  {
+    Handle(AIS_Relation) aRelation = Handle(AIS_Relation)::DownCast (aPickedObj);
+    aRelation->SetPosition (aPoint);
+    TheAISContext()->Redisplay (aRelation);
+  }
+  else
+  {
+    Handle(AIS_Dimension) aDim = Handle(AIS_Dimension)::DownCast (aPickedObj);
+    aDim->SetTextPosition (aPoint);
+    TheAISContext()->Redisplay (aDim);
+  }
+
   return 0;
 }
 
@@ -2504,8 +2693,16 @@ void ViewerTest::RelationCommands(Draw_Interpretor& theCommands)
       " [text={2d|3d}] [plane={xoy|yoz|zox}]\n"
       " [label={left|right|hcenter|hfit},{above|below|vcenter}]\n"
       " [flyout=value] [arrows={external|internal|fit}]\n"
-      " -Builds angle, length, radius and diameter dimensions.\n"
+      " -Builds angle, length, radius and diameter dimensions.\n",
       __FILE__,VDimBuilder,group);
+
+  theCommands.Add("vdimparam",
+    "vdimparam Dim_Name"
+    " [text={2d|3d}] [plane={xoy|yoz|zox}]\n"
+    " [label={left|right|hcenter|hfit},{above|below|vcenter}]\n"
+    " [flyout=value] [arrows={external|internal|fit}]\n"
+    " -Sets parameters for angle, length, radius and diameter dimensions.\n",
+    __FILE__,VDimParam,group);
 
   theCommands.Add("vangledim",
 		  "vangledim Name:Selection in the viewer only ",

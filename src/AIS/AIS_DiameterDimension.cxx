@@ -296,7 +296,7 @@ void AIS_DiameterDimension::Compute (const Handle(PrsMgr_PresentationManager3d)&
 
   gp_Pnt aFirstPnt (gp::Origin());
   gp_Pnt aSecondPnt (gp::Origin());
-  ComputeSidePoints (myCircle, GetPlane(), aFirstPnt, aSecondPnt);
+  ComputeSidePoints (myCircle, aFirstPnt, aSecondPnt);
 
   DrawLinearDimension (thePresentation, theMode, aFirstPnt, aSecondPnt);
 }
@@ -315,7 +315,7 @@ void AIS_DiameterDimension::ComputeFlyoutSelection (const Handle(SelectMgr_Selec
 
   gp_Pnt aFirstPnt (gp::Origin());
   gp_Pnt aSecondPnt (gp::Origin());
-  ComputeSidePoints (myCircle, GetPlane(), aFirstPnt, aSecondPnt);
+  ComputeSidePoints (myCircle, aFirstPnt, aSecondPnt);
 
   ComputeLinearFlyouts (theSelection, theEntityOwner, aFirstPnt, aSecondPnt);
 }
@@ -324,15 +324,14 @@ void AIS_DiameterDimension::ComputeFlyoutSelection (const Handle(SelectMgr_Selec
 //function : ComputeSidePoints
 //purpose  : 
 //=======================================================================
-void AIS_DiameterDimension::ComputeSidePoints (const gp_Circ& /*theCircle*/,
-                                               const gp_Pln& /*thePlane*/,
+void AIS_DiameterDimension::ComputeSidePoints (const gp_Circ& theCircle,
                                                gp_Pnt& theFirstPnt,
                                                gp_Pnt& theSecondPnt)
 {
   theFirstPnt = AnchorPoint();
 
-  gp_Vec aRadiusVector (myCircle.Location(), theFirstPnt);
-  theSecondPnt = myCircle.Location().Translated (-aRadiusVector);
+  gp_Vec aRadiusVector (theCircle.Location(), theFirstPnt);
+  theSecondPnt = theCircle.Location().Translated (-aRadiusVector);
 }
 
 //=======================================================================
@@ -357,4 +356,36 @@ Standard_Boolean AIS_DiameterDimension::IsValidAnchor (const gp_Circ& theCircle,
 
   return Abs (anAnchorDist - aRadius) > Precision::Confusion()
       && aCirclePlane.Contains (theAnchor, Precision::Confusion());
+}
+
+//=======================================================================
+//function : GetTextPosition
+//purpose  : 
+//=======================================================================
+const gp_Pnt AIS_DiameterDimension::GetTextPosition() const
+{
+  if (IsTextPositionCustom())
+  {
+    return myFixedTextPosition;
+  }
+  
+  // Counts text position according to the dimension parameters
+  return GetTextPositionForLinear (myAnchorPoint, myCircle.Location());
+}
+
+//=======================================================================
+//function : GetTextPosition
+//purpose  : 
+//=======================================================================
+void AIS_DiameterDimension::SetTextPosition (const gp_Pnt& theTextPos)
+{
+  if (!myIsValid)
+  {
+    return;
+  }
+
+  myIsTextPositionFixed = Standard_True;
+  myFixedTextPosition = theTextPos;
+
+  SetToUpdate();
 }

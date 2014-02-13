@@ -241,19 +241,23 @@ is
     KOI_Datum,
     KOI_Shape,
     KOI_Object,
-    KOI_Relation;
-    	 --- Purpose: Declares the type of Interactive Object. 
-    	 -- This is one of the following:
-    	 -- -   the Datum
-    	 -- -   the Object
-    	 -- -   the Relation
-    	 -- -   the None type.
-    	 --  The Datum is the construction element. These include
-    	 -- points, lines, axes and planes. The object brings
-    	 -- together topological shapes. The Relation includes
-    	 -- dimensions and constraints. When the object is of an
-    	 -- unknown type, the None type is declared.
-    
+    KOI_Relation,
+    KOI_Dimension;
+    --- Purpose: Declares the type of Interactive Object. 
+    -- This is one of the following:
+    -- -   the Datum
+    -- -   the Object
+    -- -   the Relation
+    -- -   the Dimension
+    -- -   the None type.
+    -- The Datum is the construction element. These include
+    -- points, lines, axes and planes. The object brings
+    -- together topological shapes. The Relation includes
+    -- dimensions and constraints. The Dimension includes
+    -- length, radius, diameter and angle dimensions.
+    -- When the object is of an unknown type, the None
+    -- type is declared.
+
     enumeration ClearMode is
     CM_All,
     CM_Interactive,
