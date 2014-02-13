@@ -459,9 +459,14 @@ is
 	---Purpose: Suppress the highlighting on the structure <AStructure>.
 	---Category: Private methods
 
-  ReComputeStructures (me: mutable);
+  RecomputeStructures (me: mutable);
   -- Purpose: Recomputes all displayed structures. Used to recompute GL
   -- resources after the last view has been closed without removing objects.
+
+  RecomputeStructures (me: mutable;
+                       theStructures : MapOfStructure from Graphic3d)
+  is private;
+  ---Purpose: Recomputes all structures from theStructures.
 
 --
 

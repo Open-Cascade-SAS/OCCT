@@ -1671,7 +1671,7 @@ void Visual3d_View::Update (const Handle(Visual3d_Layer)& AnUnderLayer, const Ha
 
         if (MyGraphicDriver->IsDeviceLost())
         {
-          MyViewManager->ReComputeStructures();
+          MyViewManager->RecomputeStructures();
           MyGraphicDriver->ResetDeviceLostFlag();
         }
 
