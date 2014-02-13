@@ -1,0 +1,19 @@
+puts "============"
+puts "CR23984"
+puts "============"
+puts ""
+########################################################
+# Incorrect visualization of wires in wireframe mode
+########################################################
+
+vinit View1
+restore [locate_data_file bug23984_bug.brep] result
+vdisplay result
+vsetdispmode 0
+vfit
+set only_screen 1
+
+axo
+fit
+set only_screen_axo 1
+
