@@ -155,7 +155,6 @@ p IntCurvesFace
 p IntImp
 p IntImpParGen
 p IntPatch
-p IntPoly
 p IntPolyh
 p IntRes2d
 p IntStart
