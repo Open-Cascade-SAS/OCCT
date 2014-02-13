@@ -708,3 +708,35 @@ Standard_Boolean AIS_LengthDimension::InitOneShapePoints (const TopoDS_Shape& th
 
   return IsValidPoints (myFirstPoint, mySecondPoint);
 }
+
+//=======================================================================
+//function : GetTextPosition
+//purpose  : 
+//=======================================================================
+const gp_Pnt AIS_LengthDimension::GetTextPosition() const
+{
+  if (IsTextPositionCustom())
+  {
+    return myFixedTextPosition;
+  }
+
+  // Counts text position according to the dimension parameters
+  return GetTextPositionForLinear (myFirstPoint, mySecondPoint);
+}
+
+//=======================================================================
+//function : SetTextPosition
+//purpose  : 
+//=======================================================================
+void AIS_LengthDimension::SetTextPosition (const gp_Pnt& theTextPos)
+{
+  if (!myIsValid)
+  {
+    return;
+  }
+
+  myIsTextPositionFixed = Standard_True;
+  myFixedTextPosition = theTextPos;
+
+  SetToUpdate();
+}

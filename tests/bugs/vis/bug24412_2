@@ -1,0 +1,46 @@
+puts "============"
+puts "CR24412"
+puts "============"
+puts ""
+#######################################################################
+#  TKV3d, Dimensions - Possibility to customize text position was lost
+#  Test position setting for angular dimension
+#######################################################################
+pload ALL
+
+set anImage1 $imagedir/${casename}_1.png
+set anImage2 $imagedir/${casename}_2.png
+
+vinit Viewer1/View1
+vpoint  ang_p1 0  0 30
+vpoint  ang_p2 30 0  0
+vpoint  ang_p3 60 0 30
+vdimension angle name=ang ang_p1 ang_p2 ang_p3
+vdisplay ang
+vmovedim ang 5 0 5
+vfit
+
+# Check that text position was changed and the text is not aligned
+set x_coord 60
+set y_coord 189
+checkcolor $x_coord $y_coord 0.46 0.9 0
+if { $stat != 1 } {
+  puts "Error : Text position of dimension is incorrect."
+}
+
+vdump $anImage1
+
+
+# Update dimension parameters and set automatic text positioning
+vdimparam ang flyout=-5
+vfit
+
+# Check that text position was changed according to flyout
+set x_coord 206
+set y_coord 312
+checkcolor $x_coord $y_coord 0.46 0.9 0
+if { $stat != 1 } {
+  puts "Error : Text position of dimension after layout changing is incorrect."
+}
+
+vdump $anImage2

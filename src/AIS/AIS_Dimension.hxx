@@ -56,11 +56,11 @@ DEFINE_STANDARD_HANDLE(AIS_Dimension, AIS_InteractiveObject)
 //! The specified by user units are stored in the dimension's drawer.
 //!
 //! As a drawing, the dimension is composed from the following components:
-//! - Attachement (binding) points. The points where the dimension lines attaches to, for
+//! - Attachment (binding) points. The points where the dimension lines attaches to, for
 //!   length dimensions the distances are measured between these points.
-//! - Main dimension line. The which extends from the attachement points in "up" direction,
+//! - Main dimension line. The which extends from the attachment points in "up" direction,
 //!   and which contains text label on it with value string.
-//! - Flyouts. The lines connecting the attachement points with main dimension line.
+//! - Flyouts. The lines connecting the attachment points with main dimension line.
 //! - Extension. The lines used to extend the main dimension line in the cases when text
 //!   or arrows do not fit into the main dimension line due to their size.
 //! - Arrows.
@@ -75,7 +75,7 @@ DEFINE_STANDARD_HANDLE(AIS_Dimension, AIS_InteractiveObject)
 //!          |flyout                       flyout|
 //!          |                                   |
 //!          +-----------------------------------+
-//! attachement                                attachement
+//! attachment                                attachment
 //!  point                                       point
 //!
 //!  Angular dimensions:
@@ -130,19 +130,46 @@ DEFINE_STANDARD_HANDLE(AIS_Dimension, AIS_InteractiveObject)
 //! 
 //! The dimension support two local selection modes: main dimension line selection and text label
 //! selection. These modes can be used to develop interactive modification of dimension presentations.
-//! The component hilighting in these selection modes is provided by AIS_DimensionOwner class.
+//! The component highlighting in these selection modes is provided by AIS_DimensionOwner class.
 //! Please note that selection is unavailable until the presentation is computed.
 //! 
 //! The specific drawing attributes are controlled through Prs3d_DimensionAspect. The one can change
 //! color, arrows, text and arrow style and specify positioning of value label by setting corresponding
 //! values to the aspect.
 //!
+//! Such set of parameters that consists of:
+//! - flyout size and direction,
+//! - user-defined  dimension plane,
+//! - horizontal and vertical text alignment
+//! can be uniquely replaced with text position in 3d space. Therefore, there are methods to convert
+//! this set of parameters to the text position and vice versa:
+//!
+//! - If the fixed text position is defined by user, called SetTextPosition (theTextPos) method converts
+//! this 3d point to the set of parameters including adjusting of the dimension plane (this plane will be
+//! automatic plane, NOT user-defined one).
+//! If the fixed text position is set, the flag myIsFixedTextPosition is set to TRUE.
+//! ATTENSION! myIsFixedTextPosition fixes all parameters of the set from recomputing inside
+//! SetMeasureGeometry() methods. Parameters in dimension aspect (they are horizontal text position
+//! and extension size) are adjusted on presentation computing step, user-defined values in
+//! dimension aspect are not changed.
+//! But plane and flyout as dimension position parameters are changed by SetTextPosition() method
+//! according with user-defined text position.
+//! If parameters from the set are changed by user with calls of setters, it leads to disabling of
+//! fixed text position (myIsFixedTextPosition is set to FALSE).
+//! If the fixed text position is set and geometry is changed by user (SetMeasureGeometry() method
+//! is called) and the geometry doesn't satisfy computed dimension plane, the dimension is not valid.
+//!
+//! - If the set of parameters was set by user (may be without the user-defined plane or with it),
+//! it can be converted to the text position by calling the method GetTextPosition(). In this case
+//! the text position is NOT fixed, and SetMeasureGeometry() without user-defined plane adjusts
+//! the automatic plane according input geometry (if it is possible).
+//!
 class AIS_Dimension : public AIS_InteractiveObject
 {
 protected:
 
   //! Geometry type defines type of shapes on which the dimension is to be built.
-  //! Some type of geometry allows automatical plane computing and
+  //! Some type of geometry allows automatic plane computing and
   //! can be built without user-defined plane
   //! Another types can't be built without user-defined plane.
   enum GeometryType
@@ -212,8 +239,8 @@ public:
   //! By default, if plane is not defined by user, it is computed automatically
   //! after dimension geometry is computed.
   //! If computed dimension geometry (points) can't be placed on the user-defined
-  //! plane, dimension geometry was set as unvalid (validity flag is set to false)
-  //! and dimension presentation wil not be computed.
+  //! plane, dimension geometry was set as invalid (validity flag is set to false)
+  //! and dimension presentation will not be computed.
   //! If user-defined plane allow geometry placement on it, it will be used for
   //! computing of the dimension presentation.
   //! @return dimension plane used for presentation computing.
@@ -232,6 +259,22 @@ public:
   //! Unsets user-defined plane. Therefore the plane for dimension will be
   //! computed automatically.
   Standard_EXPORT void UnsetCustomPlane() { myIsPlaneCustom = Standard_False; }
+
+  //! @return TRUE if text position is set by user with method SetTextPosition().
+  Standard_Boolean IsTextPositionCustom() const
+  {
+    return myIsTextPositionFixed;
+  }
+
+  //! Fixes the absolute text position and adjusts flyout, plane and text alignment
+  //! according to it. Updates presentation if the text position is valid.
+  //! ATTENTION! It does not change vertical text alignment.
+  //! @param theTextPos [in] the point of text position.
+  virtual void SetTextPosition (const gp_Pnt& /*theTextPos*/) { }
+
+  //! Computes absolute text position from dimension parameters
+  //! (flyout, plane and text alignment).
+  virtual const gp_Pnt GetTextPosition () const { return gp_Pnt(); }
 
 public:
 
@@ -256,7 +299,7 @@ public:
   //! @return the kind of interactive.
   virtual AIS_KindOfInteractive Type() const
   {
-    return AIS_KOI_Relation;
+    return AIS_KOI_Dimension;
   }
 
   //! Returns true if the class of objects accepts the display mode theMode.
@@ -295,6 +338,10 @@ public:
 
   Standard_EXPORT virtual void SetModelUnits (const TCollection_AsciiString& /*theUnits*/) { }
 
+  //! Unsets user defined text positioning and enables text positioning
+  //!  by other parameters: text alignment, extension size, flyout and custom plane.
+  Standard_EXPORT void UnsetFixedTextPosition();
+
 public:
 
   //! Returns selection tolerance for text2d:
@@ -321,7 +368,7 @@ public:
   Standard_EXPORT void SetFlyout (const Standard_Real theFlyout);
 
   //! Check that the input geometry for dimension is valid and the
-  //! presentation can be succesfully computed.
+  //! presentation can be successfully computed.
   //! @return TRUE if dimension geometry is ok.
   Standard_Boolean IsValid() const
   {
@@ -426,6 +473,59 @@ protected:
                                                           gp_Circ& theCircle,
                                                           gp_Pnt& theMiddleArcPoint,
                                                           Standard_Boolean& theIsClosed);
+ 
+  //! Produce points for triangular arrow face.
+  //! @param thePeakPnt [in] the arrow peak position.
+  //! @param theDirection [in] the arrow direction.
+  //! @param thePlane [in] the face plane.
+  //! @param theArrowLength [in] the length of arrow.
+  //! @param theArrowAngle [in] the angle of arrow.
+  //! @param theSidePnt1 [out] the first side point.
+  //! @param theSidePnt2 [out] the second side point.
+  Standard_EXPORT void PointsForArrow (const gp_Pnt& thePeakPnt,
+                                       const gp_Dir& theDirection,
+                                       const gp_Dir& thePlane,
+                                       const Standard_Real theArrowLength,
+                                       const Standard_Real theArrowAngle,
+                                       gp_Pnt& theSidePnt1,
+                                       gp_Pnt& theSidePnt2);
+
+  //! Compute point of text position for dimension parameters
+  //! for linear kinds of dimensions (length, radius, diameter).
+  Standard_EXPORT gp_Pnt GetTextPositionForLinear (const gp_Pnt& theFirstPoint,
+                                                   const gp_Pnt& theSecondPoint,
+                                                   const Standard_Boolean theIsOneSide = Standard_False) const;
+
+  //! Fits text alignment relatively to the dimension line.
+  //! @param theFirstPoint [in] the first attachment point.
+  //! @param theSecondPoint [in] the second attachment point.
+  //! @param theIsOneSide [in] is the arrow displayed only on the one side of the dimension.
+  //! @param theHorizontalTextPos [in] the text horizontal position (alignment).
+  //! @param theLabelPosition [out] the label position, contains bits that defines
+  //! vertical and horizontal alignment. (for internal usage in count text position)
+  //! @param theIsArrowExternal [out] is the arrows external,
+  //! if arrow orientation in the dimension aspect is Prs3d_DAO_Fit, it fits arrow
+  //! orientation automatically.
+  void FitTextAlignmentForLinear (const gp_Pnt& theFirstPoint,
+                                  const gp_Pnt& theSecondPoint,
+                                  const Standard_Boolean theIsOneSide,
+                                  const Prs3d_DimensionTextHorizontalPosition& theHorizontalTextPos,
+                                  Standard_Integer& theLabelPosition,
+                                  Standard_Boolean& theIsArrowsExternal) const;
+
+  //! Adjusts aspect parameters according the text position:
+  //! extension size, vertical text alignment and flyout.
+  //! It changes working plane and flyout of linear dimension.
+  //! @param theTextPos [in] the user defined 3d point of text position
+  //! @param theFirstPoint [in] the first point of linear measurement.
+  //! @param theSecondPoint [in] the second point of linear measurement.
+  //! @param theExtensionSize [out] the adjusted extension size
+  //! @param theAlignment [out] the horizontal label alignment.
+  void AdjustParametersForLinear (const gp_Pnt& theTextPos,
+                                  const gp_Pnt& theFirstPoint,
+                                  const gp_Pnt& theSecondPoint,
+                                  Standard_Real& theExtensionSize,
+                                  Prs3d_DimensionTextHorizontalPosition& theAlignment);
 
 protected: //! @name Behavior to implement
 
@@ -455,22 +555,6 @@ protected: //! @name Behavior to implement
   virtual void ComputeFlyoutSelection (const Handle(SelectMgr_Selection)&,
                                        const Handle(SelectMgr_EntityOwner)&) {}
 
-  //! Produce points for triangular arrow face.
-  //! @param thePeakPnt [in] the arrow peak position.
-  //! @param theDirection [in] the arrow direction.
-  //! @param thePlane [in] the face plane.
-  //! @param theArrowLength [in] the length of arrow.
-  //! @param theArrowAngle [in] the angle of arrow.
-  //! @param thePeakPnt [in] the arrow peak point.
-  //! @param theSidePnt1 [in] the first side point.
-  //! @param theSidePnt2 [in] the second side point.
-  Standard_EXPORT void PointsForArrow (const gp_Pnt& thePeakPnt,
-                                       const gp_Dir& theDirection,
-                                       const gp_Dir& thePlane,
-                                       const Standard_Real theArrowLength,
-                                       const Standard_Real theArrowAngle,
-                                       gp_Pnt& theSidePnt1,
-                                       gp_Pnt& theSidePnt2);
 
   //! Base procedure of computing selection (based on selection geometry data).
   //! @param theSelection [in] the selection structure to will with primitives.
@@ -525,7 +609,7 @@ protected: //! @name Selection geometry
       }
     }
 
-    //! Add new curve entry and return the referenece to populate it.
+    //! Add new curve entry and return the reference to populate it.
     Curve& NewCurve()
     {
       DimensionLine.Append( new Curve );
@@ -533,7 +617,7 @@ protected: //! @name Selection geometry
       return *aLastCurve;
     }
 
-    //! Add new arrow entry and return the referenece to populate it.
+    //! Add new arrow entry and return the reference to populate it.
     Arrow& NewArrow()
     {
       Arrows.Append( new Arrow );
@@ -550,6 +634,11 @@ protected: //! @name Value properties
   Standard_Real    myCustomValue;   //!< Value of the dimension (computed or user-defined).
   Standard_Boolean myIsValueCustom; //!< Is user-defined value.
 
+protected: //! @name Fixed text position properties
+
+  gp_Pnt                  myFixedTextPosition;   //!< Stores text position fixed by user.
+  Standard_Boolean        myIsTextPositionFixed; //!< Is the text label position fixed by user.
+
 protected: //! @name Units properties
 
   Standard_ExtCharacter    mySpecialSymbol;        //!< Special symbol.
@@ -559,10 +648,10 @@ protected: //! @name Geometrical properties
 
   GeometryType myGeometryType;  //!< defines type of shapes on which the dimension is to be built. 
 
-  gp_Pln           myPlane;       //!< Plane where dimension will be built (computed or user defined).
+  gp_Pln           myPlane;         //!< Plane where dimension will be built (computed or user defined).
   Standard_Boolean myIsPlaneCustom; //!< Is plane defined by user (otherwise it will be computed automatically).
-  Standard_Real    myFlyout;      //!< Flyout distance.
-  Standard_Boolean myIsValid;     //!< Is dimension geometry properly defined.
+  Standard_Real    myFlyout;        //!< Flyout distance.
+  Standard_Boolean myIsValid;       //!< Is dimension geometry properly defined.
 
 private:
 

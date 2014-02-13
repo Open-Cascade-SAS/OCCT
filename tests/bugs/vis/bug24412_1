@@ -1,0 +1,48 @@
+puts "============"
+puts "CR24412"
+puts "============"
+puts ""
+#######################################################################
+#  TKV3d, Dimensions - Possibility to customize text position was lost
+#  Test position setting for linear dimension
+#######################################################################
+pload ALL
+
+set anImage1 $imagedir/${casename}_1.png
+set anImage2 $imagedir/${casename}_2.png
+
+vinit Viewer1/View1
+vpoint  circ_p1 0  10 30
+vpoint  circ_p2 30 10  0
+vpoint  circ_p3 60 10 30
+vcircle circ circ_p1 circ_p2 circ_p3 0
+vdisplay circ
+vdimension diameter name=diam circ
+vdisplay diam
+# Change text position
+vmovedim diam 15 15 15
+vfit
+
+# Check that text position was changed and the text is not aligned
+set x_coord 166
+set y_coord 226
+checkcolor $x_coord $y_coord 0.46 0.9 0
+if { $stat != 1 } {
+  puts "Error : Text position of dimension is incorrect."
+}
+
+vdump $anImage1
+
+# Update dimension parameters and set automatic text positioning
+vdimparam diam flyout=-5
+vfit
+
+# Check that text position was changed according to flyout
+set x_coord 213
+set y_coord 179
+checkcolor $x_coord $y_coord 0.46 0.9 0
+if { $stat != 1 } {
+  puts "Error : Text position of dimension after layout changing is incorrect."
+}
+
+vdump $anImage2

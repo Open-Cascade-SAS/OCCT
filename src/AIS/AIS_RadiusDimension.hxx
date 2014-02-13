@@ -50,7 +50,7 @@ public:
   //! orientation by location of the first point on that circle.
   //! @param theCircle [in] the circle to measure.
   //! @param theAnchorPoint [in] the point to define the position
-  //!        of the dimension attachement on the circle.
+  //!        of the dimension attachment on the circle.
   Standard_EXPORT AIS_RadiusDimension (const gp_Circ& theCircle,
                                        const gp_Pnt& theAnchorPoint);
 
@@ -88,7 +88,7 @@ public:
 
   //! Measure radius of the circle and orient the dimension so
   //! the dimension lines attaches to anchor point on the circle.
-  //! The dimension will become invalid if the radiuss of the circle
+  //! The dimension will become invalid if the radius of the circle
   //! is less than Precision::Confusion().
   //! @param theCircle [in] the circle to measure.
   //! @param theAnchorPoint [in] the point to attach the dimension lines.
@@ -102,14 +102,18 @@ public:
   Standard_EXPORT void SetMeasuredGeometry (const TopoDS_Shape& theShape);
 
   //! @return the display units string.
-  Standard_EXPORT virtual const TCollection_AsciiString& GetDisplayUnits () const;
+  Standard_EXPORT virtual const TCollection_AsciiString& GetDisplayUnits() const;
   
   //! @return the model units string.
-  Standard_EXPORT virtual const TCollection_AsciiString& GetModelUnits () const;
+  Standard_EXPORT virtual const TCollection_AsciiString& GetModelUnits() const;
 
   Standard_EXPORT virtual void SetDisplayUnits (const TCollection_AsciiString& theUnits);
 
   Standard_EXPORT virtual void SetModelUnits (const TCollection_AsciiString& theUnits);
+
+  Standard_EXPORT virtual void SetTextPosition (const gp_Pnt& theTextPos);
+
+  Standard_EXPORT virtual const gp_Pnt GetTextPosition() const;
 
 public:
 
