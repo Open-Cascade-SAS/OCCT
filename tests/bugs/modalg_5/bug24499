@@ -6,6 +6,8 @@ puts ""
 # fixshape produces inverted solid
 ############################################################################
 
+pload XSDRAW
+
 restore [locate_data_file bug24499_solid.brep] a
 point p 0 0 0
 
