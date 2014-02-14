@@ -47,12 +47,10 @@
 
 #ifdef DRAW
 #include <DrawTrSurf.hxx>
-#endif
-
-#ifdef DEB
 static Standard_Boolean AffichCurve = Standard_False;
 static Standard_Integer NbProj = 1;
 #endif
+
 //POP pour NT
 #include <stdio.h>
 
@@ -506,9 +504,7 @@ void BRepFill_MultiLine::Curves(Handle(Geom_Curve)& Curve,
 
 #ifdef DRAW
     if ( AffichCurve) {
-//POP pour NT
-      //      char name[100];
-      char* name = new char[100];
+      char name[100];
       sprintf(name,"C2_%d",NbProj);
       DrawTrSurf::Set(name,TLine);
       sprintf(name,"C3_%d",NbProj);

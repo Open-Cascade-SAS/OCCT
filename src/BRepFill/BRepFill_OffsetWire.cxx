@@ -105,9 +105,6 @@
 #include <DrawTrSurf.hxx>
 #include <DrawTrSurf_Curve2d.hxx>
 #include <DBRep.hxx>
-#endif
-
-#ifdef DEB
 static Standard_Boolean AffichGeom  = Standard_False;
 static Standard_Boolean Affich2d    = Standard_False;
 static Standard_Boolean AffichEdge  = Standard_False;
@@ -115,10 +112,6 @@ static Standard_Integer NbTRIMEDGES = 0;
 static Standard_Integer NbOFFSET    = 0;
 static Standard_Integer NbEDGES     = 0;
 static Standard_Integer NbBISSEC    = 0;
-#ifndef WNT
-static char tname[100];
-static Standard_CString name = tname ;
-#endif
 #endif
 
 //  Modified by Sergey KHROMOV - Thu Nov 16 17:24:39 2000 Begin
@@ -602,8 +595,6 @@ void BRepFill_OffsetWire::Perform (const Standard_Real Offset,
       
       if(aSubst.IsCopied(myWorkSpine)) {
         myWorkSpine = TopoDS::Face(aSubst.Copy(myWorkSpine).First());
-        //sprintf(name,"WS1");
-        //DBRep::Set(name,myWorkSpine);
 
         BRepMAT2d_Explorer newExp;
         newExp.Perform(myWorkSpine);
@@ -788,7 +779,7 @@ void BRepFill_OffsetWire::PerformWithBiLo
   }
 
 
-#ifdef DEB
+#ifdef DRAW
   if (AffichEdge) {
     cout << " End Construction of geometric primitives "<<endl;
   }
@@ -816,6 +807,7 @@ void BRepFill_OffsetWire::PerformWithBiLo
     
 #ifdef DRAW
   if ( AffichGeom) {
+    char name[256];
     sprintf(name,"BISSEC_%d",NbBISSEC++);
     DrawTrSurf::Set(name,Bisec.Value());
   }
@@ -967,7 +959,7 @@ void BRepFill_OffsetWire::PerformWithBiLo
     }
   }
   
-#ifdef DEB 
+#ifdef DRAW
   if (AffichEdge) {
     cout << " End Construction of vertices on offsets"<<endl;
   }
@@ -1192,8 +1184,7 @@ void BRepFill_OffsetWire::PrepareSpine()
 
 #ifdef DRAW
   if ( AffichEdge) {
-    sprintf(name,"WS");
-    DBRep::Set(name,myWorkSpine);
+    DBRep::Set("WS",myWorkSpine);
   }
 #endif
 
@@ -1825,6 +1816,7 @@ void MakeCircle (const TopoDS_Edge&          E,
 
 #ifdef DRAW
   if ( AffichGeom && !OE.IsNull()) {
+    char name[256];
     sprintf(name,"OFFSET_%d",++NbOFFSET);
     DBRep::Set(name,OE);
   }
@@ -1901,6 +1893,7 @@ void MakeOffset (const TopoDS_Edge&        E,
 
 #ifdef DRAW  
     if (AffichGeom && !OE.IsNull()) {
+      char name[256];
       sprintf(name,"OFFSET_%d",++NbOFFSET);
       DBRep::Set(name,OE);
       Standard_Real ii = 0;
@@ -2143,6 +2136,7 @@ void TrimEdge (const TopoDS_Edge&              E,
 
 #ifdef DRAW
     if ( AffichEdge) {
+      char name[256];
       sprintf(name,"TRIMEDGE_%d",NbTRIMEDGES);
       DBRep::Set(name,NewEdge);  
     }
@@ -2152,6 +2146,7 @@ void TrimEdge (const TopoDS_Edge&              E,
       Handle(Geom_Surface) Surf;  
       Handle(Geom2d_Curve) C;
       BRep_Tool::CurveOnSurface(NewEdge,C,Surf,L,f,l);
+      char name[256];
       sprintf(name,"OFFSET2d_%d",NbTRIMEDGES++);
       Handle(Geom2d_TrimmedCurve) C2d = new Geom2d_TrimmedCurve(C,f,l);
       Handle(DrawTrSurf_Curve2d) dr =

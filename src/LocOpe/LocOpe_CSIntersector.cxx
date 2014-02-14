@@ -51,20 +51,9 @@ static Standard_Boolean LocAfter (const LocOpe_SequenceOfPntFace&,
 				  Standard_Integer&,
 				  Standard_Integer&);
 
-#ifdef DEB				  
-static Standard_Boolean LocBefore (const LocOpe_SequenceOfPntFace&,
-				   const Standard_Integer,
-				   Standard_Integer&,
-				   Standard_Integer&);
-#endif
-
-
 static void AddPoints(IntCurvesFace_Intersector&,
                       LocOpe_SequenceOfPntFace&,
 		      const TopoDS_Face&);
-
-
-
 
 //=======================================================================
 //function : Init

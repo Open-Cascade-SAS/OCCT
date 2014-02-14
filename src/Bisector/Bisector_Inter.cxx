@@ -38,8 +38,6 @@
 #include <Draw_Appli.hxx>
 #include <DrawTrSurf_Curve2d.hxx>
 #include <Draw_Marker2D.hxx>
-#endif
-#ifdef DEB
 static Standard_Boolean Affich = Standard_False;
 #endif
 

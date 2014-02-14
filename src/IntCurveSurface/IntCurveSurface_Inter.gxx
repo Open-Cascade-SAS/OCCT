@@ -1610,9 +1610,8 @@ void IntCurveSurface_ComputeParamsOnQuadric(const TheSurface& surface,
       ElSLib::Parameters(TheSurfaceTool::Sphere(surface),P,u,v);
 	break;
       }
-#ifndef DEB
-  default: 	break;      
-#endif
+  default:
+    break;
   }
 }
 //=======================================================================

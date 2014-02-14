@@ -59,8 +59,6 @@
 
 #ifdef DRAW
 #include <DrawTrSurf.hxx>
-#endif
-#ifdef DEB
 static Standard_Boolean Affich = Standard_False;
 static Standard_Integer NBPROJ = 1;
 #endif
@@ -83,9 +81,7 @@ Handle(Geom2d_Curve) GeomProjLib::Curve2d(const Handle(Geom_Curve)& C,
 {
 #ifdef DRAW
   if ( Affich) {
-//POP pour NT
-//    char name[100];
-    char* name = new char[100];
+    char name[256];
     Sprintf(name,"PROJCURV_%d",NBPROJ);
     DrawTrSurf::Set(name,C);
     Sprintf(name,"PROJSURF_%d",NBPROJ);
