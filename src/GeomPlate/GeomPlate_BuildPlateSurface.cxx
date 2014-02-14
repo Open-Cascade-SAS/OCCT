@@ -69,10 +69,23 @@
 #include <Geom2d_BezierCurve.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 
-// pour mes tests
-#ifdef DEB
-#include <OSD_Chronometer.hxx>
+#include <TColStd_SequenceOfInteger.hxx>
+#include <TColgp_SequenceOfVec.hxx>
+#include <TColgp_HArray2OfPnt.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <GeomPlate_SequenceOfAij.hxx>
+#include <GeomPlate_MakeApprox.hxx>
 
+// pour mes tests
+#ifdef PLATE_DEB
+#include <OSD_Chronometer.hxx>
+#endif
+
+#ifdef DRAW
+#include <DrawTrSurf.hxx>
+#include <Draw_Marker3D.hxx>
+#include <Draw_Marker2D.hxx>
+#include <Draw.hxx>
 static Standard_Integer Affich=0;
 // 0 : Pas de display
 // 1 : Display des Geometries et controle intermediaire
@@ -83,21 +96,6 @@ static Standard_Integer NbPlan = 0;
 static Standard_Integer NbMark = 0;
 static Standard_Integer NbProj = 0;
 #endif
-
-#ifdef DRAW
-#include <DrawTrSurf.hxx>
-#include <Draw_Marker3D.hxx>
-#include <Draw_Marker2D.hxx>
-#include <Draw.hxx>
-#endif
-
-#include <TColStd_SequenceOfInteger.hxx>
-#include <TColgp_SequenceOfVec.hxx>
-#include <TColgp_HArray2OfPnt.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <GeomPlate_SequenceOfAij.hxx>
-#include <GeomPlate_MakeApprox.hxx>
-
 
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
 //      =========================================================
@@ -315,7 +313,7 @@ Handle(Geom2d_Curve)  GeomPlate_BuildPlateSurface::ProjectCurve(const Handle(Ada
  }
 #if DRAW
  if (Affich) {
-   char* name = new char[100];
+   char name[256];
    sprintf(name,"proj_%d",++NbProj);
    DrawTrSurf::Set(name, Curve2d);
  }
@@ -457,7 +455,7 @@ void GeomPlate_BuildPlateSurface::
 //---------------------------------------------------------
 void GeomPlate_BuildPlateSurface::Perform()
 { 
-#ifdef DEB
+#ifdef PLATE_DEB
   // Chronmetrage
   OSD_Chronometer Chrono;
   Chrono.Reset();
@@ -1628,7 +1626,7 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit()
       myPlanarSurfInit = mySurfInit;
 #if DRAW
       if (Affich) {
-	char* name = new char[100];
+	char name[256];
 	sprintf(name,"planinit_%d",NbPlan+1);
 	DrawTrSurf::Set(name, mySurfInit);
       }
@@ -1715,7 +1713,7 @@ void GeomPlate_BuildPlateSurface::ComputeSurfInit()
 
 #if DRAW
   if (Affich) {
-    char* name = new char[100];
+    char name[256];
     sprintf(name,"surfinit_%d",++NbPlan);
     DrawTrSurf::Set(name, mySurfInit);
   }
@@ -1934,7 +1932,7 @@ Intersect(Handle(GeomPlate_HArray1OfSequenceOfReal)& PntInter,
 		    if (Affich > 1)
 		      {
 			Handle(Draw_Marker3D) mark = new (Draw_Marker3D)(P1, Draw_X, Draw_vert);
-			char* name = new char[100];
+                        char name[256];
 			sprintf(name,"mark_%d",++NbMark);
 			Draw::Set(name, mark); 
 		      }
@@ -2419,8 +2417,7 @@ VerifSurface(const Standard_Integer NbBoucle)
 	      LinCont->D0(U,P);
 	      Handle(Draw_Marker3D) mark = 
 		new (Draw_Marker3D)(P, Draw_X, Draw_orange);
-	      char* name = new char[100];
-
+              char name[256];
 	      sprintf(name,"mark_%d",++NbMark);
 	      Draw::Set(name, mark);
 	      if (!LinCont->ProjectedCurve().IsNull())
@@ -2451,7 +2448,7 @@ VerifSurface(const Standard_Integer NbBoucle)
 		LinCont->D0(U,P);	
 		Handle(Draw_Marker3D) mark = 
 		  new Draw_Marker3D(P, Draw_X, Draw_or);
-		char* name = new char[100];
+                char name[256];
 		sprintf(name,"mark_%d",++NbMark);
 		Draw::Set(name, mark);
 	      }

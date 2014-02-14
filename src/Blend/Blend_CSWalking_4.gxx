@@ -265,10 +265,9 @@ void Blend_CSWalking::InternalPerform(Blend_CSFunction& Func,
 	Arrive = Standard_True;
       }
       break;
-#ifndef DEB
+
     default:
       break;
-#endif
     }
     if (Arrive) {
       if (sens > 0.) {

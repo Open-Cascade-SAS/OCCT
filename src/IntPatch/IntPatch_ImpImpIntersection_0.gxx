@@ -73,17 +73,9 @@ static void ProcessSegments (const IntPatch_SequenceOfSegmentOfTheSOnBounds&,
 			     const Standard_Real);
 
 static void ProcessRLine (IntPatch_SequenceOfLine&,
-#ifndef DEB
 			  const IntSurf_Quadric&,
 			  const IntSurf_Quadric&,
-#else
-			  const Handle(Adaptor3d_HSurface)&,
-			  const Handle(Adaptor3d_HSurface)&,
-#endif
 			  const Standard_Real);
-
-
-
 
 //-- le calcul de dist est completement faux ds la routine ci dessous a revoir (lbr le 18 nov 97)
 Standard_Boolean IntersectionWithAnArc(gp_Pnt& PSurf,

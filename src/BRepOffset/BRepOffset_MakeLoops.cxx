@@ -35,14 +35,9 @@
 
 #ifdef DRAW
 #include <DBRep.hxx>
-#endif
-#ifdef DEB
 Standard_Integer NbF = 1;
 static Standard_Boolean Affich = Standard_False;
-//POP pour NT
-//char name[100];
 #endif
-
 
 BRepOffset_MakeLoops::BRepOffset_MakeLoops()
 {
@@ -444,9 +439,8 @@ void BRepOffset_MakeLoops::BuildFaces(const TopTools_ListOfShape&   LF,
       }
       if (ToRebuild) {
 #ifdef DRAW
-//POP for NT
 	if ( Affich) {
-	  char* name = new char[100];
+	  char name[256];
 	  sprintf(name,"CF_%d",NbF++);
 	  DBRep::Set(name,F);
 	}
