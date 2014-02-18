@@ -52,13 +52,7 @@ enumeration Status is
     PointsAdded,
     NoPointsAdded,
     NoApproximation
-end;    
-
-    deferred generic class TheLineTool;    ---Template
-	---Purpose: This template is different from the one of AppParCurves.
-	--          In this case, it is possible to insert new points 
-	--          during the approximation with ComputeLine.
-    
+end;
     
     
 ---------------------------------------------
@@ -72,14 +66,6 @@ end;
    generic class ComputeCLine, MyLeastSquare;
     ---Purpose: Approximate a continous MultiLine with a cutting.
     --          The Tool of the line is the tool from AppCont.
-
-
-   generic class ComputeCSurface, MySLeastSquare;
-    ---Purpose: Approximate a continous Surface with or without cutting.
-    --          The tool is the tool of AppCont.   
-
-
-
 
 ----------------------------------------------
 ---Algorithms for BSpline curves construction:

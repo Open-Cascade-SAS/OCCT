@@ -17,8 +17,8 @@
 generic class ArcFunction from Contap 
     (TheArc          as any;
      TheSurface      as any;
-     TheArcTool      as any; -- as ArcTool from Contap()
-     TheSurfaceTool  as any; -- as SurfaceTool from Contap()
+     TheArcTool      as any;
+     TheSurfaceTool  as any;
      TheSurfProps    as any; -- as SurfProps from Contap(TheSurface,
                              --                          TheSurfaceTool)
      TheContTool     as any) -- as ContTool from Contap()

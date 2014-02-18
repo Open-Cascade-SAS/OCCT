@@ -16,7 +16,7 @@
 
 generic class ComputeCLine from Approx 
     	    	    (MultiLine as any;
-    	    	     LineTool  as any) --as TheLineTool from AppCont(MultiLine)
+    	    	     LineTool  as any)
 
 
 uses ParametrizationType       from Approx,

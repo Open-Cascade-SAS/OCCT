@@ -23,12 +23,6 @@ uses Standard,StdFail,MMgt, GeomAbs, TopAbs, TCollection, gp, TColgp,
      Geom2d, TColStd, Geom, Adaptor3d,  Adaptor2d
 
 is
-
-    deferred generic class ArcTool;        -- template class
-    
-    deferred generic class SurfaceTool;    -- template class
-    
-    deferred generic class TopolTool;      -- template class
     
     generic class Point;
 

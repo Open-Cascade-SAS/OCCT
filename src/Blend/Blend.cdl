@@ -31,8 +31,7 @@ uses IntSurf,
 is
 
 --    deferred generic class SurfaceTool;
-    
-    generic class Iterator;          -- template class
+
 
     deferred class AppFunction;      -- inherits FunctionSetWithDerivatives from math
 

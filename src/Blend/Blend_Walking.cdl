@@ -26,7 +26,7 @@ generic class Walking from Blend
      TheTopolTool     as Transient;
      TheBlendTool     as any;
      ThePointOnRst    as any; -- as PointOnRst from Blend(TheArc)
-     TheSeqPointOnRst as any; -- as Iterator from Blend(ThePointOnRst)
+     TheSeqPointOnRst as any;
      TheExtremity     as any; -- as Extremity from Blend(TheVertex,TheArc,
                               --    ThePointOnRst,TheSeqPointOnRst)
      TheLine          as Transient) -- as Line from Blend(TheVertex,TheArc,

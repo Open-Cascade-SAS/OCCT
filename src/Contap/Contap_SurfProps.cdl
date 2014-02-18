@@ -16,7 +16,7 @@
 
 generic class SurfProps from Contap 
     (TheSurface     as any;
-     TheSurfaceTool as any) -- as SurfaceTool from Contap
+     TheSurfaceTool as any)
 
 	---Purpose: Internal tool used  to compute the  normal and its
 	--          derivatives. 

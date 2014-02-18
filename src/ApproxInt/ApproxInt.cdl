@@ -23,8 +23,6 @@ uses
      
 is
 
-
-    generic class WLine; -- Only on curves with ->NbPoles, ->IsNull and  ->Pole  Methods
     deferred class SvSurfaces;     
     generic class PrmPrmSvSurfaces,TheInt2S;
     generic class ImpPrmSvSurfaces,TheZerImpFunc;

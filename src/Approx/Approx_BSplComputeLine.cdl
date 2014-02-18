@@ -16,7 +16,7 @@
 
 generic class BSplComputeLine from Approx 
     	    	    (MultiLine as any;
-    	    	     LineTool  as any) --as TheLineTool(MultiLine)
+    	    	     LineTool  as any)
 
 
 

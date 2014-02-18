@@ -19,8 +19,7 @@
 
 
 generic class CGProps  from GProp (Curve     as any;
-    	    	    	    	   Tool      as any -- as CurveTool(Curve)
-    	    	    	    	  )
+    	    	    	    	   Tool      as any)
 
 inherits GProps from GProp
 

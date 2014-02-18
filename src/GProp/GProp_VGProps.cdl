@@ -18,9 +18,8 @@
 
 
 generic class VGProps from GProp (Arc as any;
-                                  Face as any;  -- as FaceTool(Arc)
-    	    	    	    	  Domain as any -- as DomainTool(Arc)
-    	    	    	    	 )
+                                  Face as any;
+    	    	    	    	  Domain as any)
 inherits GProps
 
         --- Purpose :

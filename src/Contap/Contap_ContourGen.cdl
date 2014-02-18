@@ -18,14 +18,11 @@ generic class ContourGen from Contap
     (TheVertex      as any;
      TheArc         as any;
      TheSurface     as any;
-     TheArcTool     as any;  -- as ArcTool     from Contap(TheArc)
-     TheSurfaceTool as any;  -- as SurfaceTool from Contap(TheSurface)
+     TheArcTool     as any;
+     TheSurfaceTool as any;
      TheContTool    as any;  -- as ContTool    from Contap(TheVertex,TheArc,
                              --                            TheSurface)
-     TheTopolTool   as Transient)-- as TopolTool from IntStart(TheVertex,
-                                 --                            TheArc)
-
-	---Purpose: 
+     TheTopolTool   as Transient)
 
 
 uses PathPoint               from IntSurf,

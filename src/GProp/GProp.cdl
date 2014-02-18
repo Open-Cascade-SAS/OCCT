@@ -136,13 +136,7 @@ enumeration ValueType
         --  with the minimum of methods required to implement 
         --  the computation of the global properties for a curve
         --  or a surface.
-
-
-  deferred generic class CurveTool;
-
-  deferred generic class FaceTool;
   
-  deferred generic class DomainTool;  
   
   --
   --   Class to compute the average plane or line of a set of points.

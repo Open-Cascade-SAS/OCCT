@@ -19,10 +19,6 @@ package AppBlend
 uses StdFail, MMgt, TCollection, TColStd, TColgp, GeomAbs
 
 is
-
-    deferred generic class Line;
-    
-    deferred generic class SectionGenerator;
     
     deferred class Approx;
 

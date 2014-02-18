@@ -212,8 +212,6 @@ end ModeEnum;
     
       class BooleanParameter;
       
-      generic class EnumerationParameter;
-      
       class IntegerParameter;
       
       class RealParameter;
@@ -247,8 +245,6 @@ end ModeEnum;
         class InterpretedMethod;
 	
 	class CompositMethod;
-      
-      generic class MethodInstance;
 
      deferred class MethodDefinitionsDictionary;
     

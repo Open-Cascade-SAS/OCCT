@@ -39,11 +39,6 @@ is
 -- -   CurvaturePoint: this point has a curvature constraint.
 
 
-
-
-    deferred generic class MLineTool;    --- Template
-
-
     class MultiPoint;
 
     class MultiCurve;
@@ -87,11 +82,6 @@ is
     	--          sum||C(ui)-Qi||2 with a gradient method.
     	--          The Result is a Bspline set.
 
-
-    generic class Projection, ProLeastSquare, ProConstraint, ProFunction;
-     	---Purpose: computes the approximation of a Multiline by
-     	--          searching for a new parameter with a projection
-     	--          method.
       
     deferred  class  SmoothCriterion;
     generic  class  LinearCriteria; 

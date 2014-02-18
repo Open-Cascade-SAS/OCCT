@@ -36,18 +36,7 @@ uses AppParCurves, Geom, math, StdFail, TCollection, TColStd, gp,
      TColgp, Standard
 
 
-is
-
-
-    deferred generic class TheLineTool; --- Template
-    	---Purpose: Tool describing a continous MultiLine.
-   	 --          The MultiLine is described by a parameter.
-
-    deferred generic class TheSurfTool; --- Template
-    	---Purpose: Tool describing a continous Surface.
-	    --          The Surface is described by a couple of parameters.
-
-
+is                                                                         
 
     -------------------------------
     --- Algorithms:
@@ -61,12 +50,6 @@ is
     generic class LeastSquare;
 	    ---Purpose: makes an approximation of a continous Line described by
 	    --          the tool TheLineTool.
-
-    generic class SurfLeastSquare;
-	    ---Purpose: makes an approximation of a continous Surface 
-	    --          described by the tool TheSurfaceTool.
-
-
 
     ------------------------------------------------------
     --- Necessary class for approximation a function f(t):
