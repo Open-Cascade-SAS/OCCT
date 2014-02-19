@@ -32,11 +32,11 @@ class OpenGl_AspectText : public OpenGl_Element
 
 public:
 
-  OpenGl_AspectText();
-  virtual ~OpenGl_AspectText();
+  Standard_EXPORT OpenGl_AspectText();
+  Standard_EXPORT virtual ~OpenGl_AspectText();
 
   //! Copy parameters
-  void SetAspect (const CALL_DEF_CONTEXTTEXT& theAspect);
+  Standard_EXPORT void SetAspect (const CALL_DEF_CONTEXTTEXT& theAspect);
 
   //! @return font family name
   const TCollection_AsciiString& FontName() const
@@ -128,8 +128,8 @@ public:
     return myResources.ShaderProgram;
   }
 
-  virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
-  virtual void Release (const Handle(OpenGl_Context)&   theContext);
+  Standard_EXPORT virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
+  Standard_EXPORT virtual void Release (const Handle(OpenGl_Context)&   theContext);
 
 protected:
 
