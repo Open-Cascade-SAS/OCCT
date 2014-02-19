@@ -52,9 +52,6 @@ is
 	
     end ErrorStatus from HatchGen ;
 
-
-    deferred generic class Intersector ;
-
     deferred class IntersectionPoint ;
 
     class PointOnHatching ;

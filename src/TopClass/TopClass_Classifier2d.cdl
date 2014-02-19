@@ -19,7 +19,7 @@
 
 generic class Classifier2d from TopClass 
     	(TheEdge as any;
-    	 TheIntersector as any)  -- as Intersection2d from TopClass
+    	 TheIntersector as any)
 
 	---Purpose: 
 

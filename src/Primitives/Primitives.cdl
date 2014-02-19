@@ -42,9 +42,6 @@ is
 	---Purpose: 
     	XMin, XMax, YMin, YMax, ZMin, ZMax
     end Direction;
-
-
-    deferred generic class Builder;
     
     deferred generic class OneAxis;
     	

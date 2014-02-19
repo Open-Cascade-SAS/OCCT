@@ -25,22 +25,10 @@ is
     enumeration ConstIsoparametric is
                 UIsoparametricOnCaro1, VIsoparametricOnCaro1,
                 UIsoparametricOnCaro2, VIsoparametricOnCaro2;
-		
-    deferred generic class PSurfaceTool;
-
-    deferred generic class ISurfaceTool;
-
-    deferred generic class CurveTool;
-
-    deferred generic class CSCurveTool;
-
-    deferred generic class COnSCurveTool;
 
     generic class ZerImpFunc; -- inherits FunctionSetWithDerivatives
     
     generic class ZerParFunc; -- inherits FunctionSetWithDerivatives
-
-    deferred generic class CSFunction; -- inherits FunctionSetWithDerivatives
 
     generic class ZerCSParFunc; -- inherits FunctionSetWithDerivatives
     

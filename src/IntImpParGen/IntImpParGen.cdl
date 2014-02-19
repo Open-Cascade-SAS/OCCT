@@ -32,9 +32,6 @@ is
     deferred class ImpTool;
     ---Purpose: Template class for an implicit  curve.
     
-    deferred generic class ParTool;
-    ---Purpose: Template class for a tool on a parameterised curve.
-    
     generic class ImpParTool;
     ---Purpose: Math function, instantiated inside the Intersector.
 

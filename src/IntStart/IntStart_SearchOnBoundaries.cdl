@@ -17,11 +17,10 @@
 generic class SearchOnBoundaries from IntStart (
   TheVertex            as any;
   TheArc               as any;
-  TheArcTool           as any;  -- as ArcTool   from IntStart(TheArc)
-  TheSOBTool           as any;  -- as SOBTool   from IntStart(TheVertex,TheArc)
-  TheTopolTool         as Transient;  -- as TopolTool from IntStart
-                                      -- (TheVertex,TheArc)
-  TheFunction          as any)  -- as SOBFunction from IntStart(TheArc)
+  TheArcTool           as any;
+  TheSOBTool           as any;
+  TheTopolTool         as Transient;
+  TheFunction          as any)
 
 
 	---Purpose: This class implements algorithmes to find the intersection

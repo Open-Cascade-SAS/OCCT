@@ -16,7 +16,7 @@
 
 generic class PWalking from IntWalk (
     ThePSurface           as any;
-    ThePSurfaceTool       as any) -- as PSurfaceTool from IntWalk(ThePSurface)
+    ThePSurfaceTool       as any)
 
     
     ---Purpose: This class implements an algorithm to determine the

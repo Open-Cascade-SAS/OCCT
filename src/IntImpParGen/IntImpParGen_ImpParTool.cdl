@@ -17,7 +17,7 @@
 generic class ImpParTool from IntImpParGen (
         ImpTool      as any; -- as ImpTool from IntImpParGen
 	ParCurve     as any;
-	ParTool      as any) -- as ParTool from IntImpParGen(ParCurve) 
+	ParTool      as any)
 
 inherits FunctionWithDerivative from math
 

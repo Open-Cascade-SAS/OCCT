@@ -38,23 +38,6 @@ is
                 ArretSurPoint, OK;
 
 -- StepTooGreat, ConfusedPoint, StopOnPreviousPoint, StopOnPoint, OK
-		
--- class for definition of ressources on a biparametric surface
-
-    deferred generic class PSurfaceTool;    
-
-
--- classes for definition of marching algorithm on a
--- biparametric surface
-
-    deferred generic class PathPointTool;  
-
-    deferred generic class LoopPointTool;  
-    
-    deferred generic class IWFunction;
-
-    generic class Iterator;
-    
     
 --class of result objects marching on a biparametric surface
 

@@ -75,7 +75,6 @@ is
 	    class SelectSharing;           -- directly sharing entities
 	    deferred class SelectAnyList;  -- from a list in an entity
 	    deferred class SelectInList;   -- from a list of single entities
-	    generic class SelectList;      -- from an entity as a list
 	    class SelectSuite;             -- macro-select-deduct
 
 	deferred class SelectExtract;   -- sorted lists (can be inverted) :
@@ -94,7 +93,6 @@ is
 	    --  (in particular, instantiations of SelectType)
 
 	    --  Other classes can be added for a specific Interface
-	    --  (in particular, instantiations of SelectList)
 	deferred class SelectExplore;
 	    class SelectSignedShared;       -- shared entities  + signature
 	    class SelectSignedSharing;      -- sharing entities + signature

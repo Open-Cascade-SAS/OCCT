@@ -27,17 +27,6 @@ uses
     TopAbs
 
 is
-
-    deferred generic class Tool;
-    -- signature  class. Required by  the LinearRegularSweep, defining
-    -- the indexation type analysis services uppon shapes.
-    
-    deferred generic class Iterator;
-    -- signature  class. Required by  the LinearRegularSweep, defining
-    -- the iteration services uppon shapes.
-    
-    deferred generic class Builder;
-    -- signature class. Required by the LinearRegularSweep.
     
     deferred generic class LinearRegularSweep,
     	Array2OfShapes,

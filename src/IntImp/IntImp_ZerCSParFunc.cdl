@@ -16,10 +16,9 @@
 
 generic class ZerCSParFunc from IntImp 
     (ThePSurface as any;
-     ThePSurfaceTool as any; --as PSurfaceTool from IntImp(ThePSurface)
+     ThePSurfaceTool as any;
      TheCurve as any;
-     TheCurveTool as any     --as CSCurveTool from IntImp(TheCurve)
-    )
+     TheCurveTool as any)
     
 inherits FunctionSetWithDerivatives from math
 

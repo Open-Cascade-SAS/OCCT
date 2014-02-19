@@ -22,9 +22,6 @@ uses
     TColStd
 
 is
-
-    generic class Tool;
-  	--- Purpose: The template class used in Mat.
    
     generic class Mat;
         --- Purpose: The Algorithm of Computation of the Map of 

@@ -16,14 +16,14 @@
 
 generic class IWalking from  IntWalk (
       ThePointOfPath     as any;
-      ThePointOfPathTool as any;   -- as PathPointTool(ThePointOfPath)
-      ThePOPIterator     as any;   -- as Iterator from IntWalk(ThePointOfPath)
+      ThePointOfPathTool as any;
+      ThePOPIterator     as any;
       ThePointOfLoop     as any;
-      ThePointOfLoopTool as any;   -- as LoopPointTool(ThePointOfLoop)
-      ThePOLIterator     as any;   -- as Iterator from IntWalk(ThePointOfLoop)
+      ThePointOfLoopTool as any;
+      ThePOLIterator     as any;
       ThePSurface        as any;
-      ThePSurfaceTool    as any;   -- as PSurfaceTool(ThePSurface)
-      TheIWFunction      as any)   -- as IWFunction from IntWalk(ThePSurface)
+      ThePSurfaceTool    as any;
+      TheIWFunction      as any)
 
 
     ---Purpose: This class implements an algorithm to find all the points

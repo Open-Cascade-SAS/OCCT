@@ -16,9 +16,9 @@
 
 generic class ZerImpFunc from IntImp
     (ThePSurface     as any;
-     ThePSurfaceTool as any;  -- as PSurfaceTool from IntImp(ThePSurface)
+     ThePSurfaceTool as any;
      TheISurface     as any;
-     TheISurfaceTool as any)  -- as ISurfaceTool from IntImp(TheISurface)
+     TheISurfaceTool as any)
 
 
 inherits FunctionSetWithDerivatives from math			       

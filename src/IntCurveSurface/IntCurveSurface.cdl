@@ -77,8 +77,6 @@ is
     class SequenceOfSeg instantiates 
     	Sequence from TCollection(
 	    IntersectionSegment from IntCurveSurface);
-    --------------------------------------------------
-    generic class CurveTool;
     --------------------------------------------------    
     generic class HCurveTool;
     --------------------------------------------------

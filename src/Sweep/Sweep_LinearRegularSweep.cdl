@@ -18,12 +18,12 @@ deferred generic class LinearRegularSweep from Sweep (
     TheShape            as any;   -- resulting topological objects.
     TheGenShape         as any;   -- Generating topological objects.
     TheDirShape         as any;   -- Directing topological objects.
-    TheBuilder          as any;   -- as Builder from Sweep.
-    TheGenShapeTool     as any;   -- as Tool from Sweep.
-    TheDirShapeTool     as any;   -- as Tool from Sweep.
-    TheShapeIterator    as any;   -- as Iterator from Sweep.
-    TheGenShapeIterator as any;   -- as Iterator from Sweep.
-    TheDirShapeIterator as any)   -- as Iterator from Sweep.
+    TheBuilder          as any;
+    TheGenShapeTool     as any;
+    TheDirShapeTool     as any;
+    TheShapeIterator    as any;
+    TheGenShapeIterator as any;
+    TheDirShapeIterator as any)
 
 
 	---Purpose: This  a generic  class  is  used   to build Sweept

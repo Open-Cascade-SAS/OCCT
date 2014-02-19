@@ -59,11 +59,6 @@ is
     exception BadContinuity inherits Failure;
     exception NotDefined    inherits Failure;
     
-    deferred generic class CurveTool;
-        ---Purpose: The template class used in CLProps.
-    deferred generic class SurfaceTool;
-        ---Purpose: The template class used in SLProps.
-    
     generic class CLProps;
     	---Purpose: Computation of local properties of a curve.
     generic class SLProps;

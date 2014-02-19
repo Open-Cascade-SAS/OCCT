@@ -40,10 +40,6 @@ is
     ---Purpose: Describes the necessary polygon information to compute
     --          the interferences.
 
-    generic  class ToolPolyhedron;     -- Signature
-    ---Purpose: Describes the  necessary polyhedron information to compute
-    --          the interferences.
-
 
     class Array1OfLin instantiates Array1 from TCollection
      	    	    (Lin from gp);

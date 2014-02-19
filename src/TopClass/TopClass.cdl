@@ -30,18 +30,11 @@ uses
     IntCurveSurface
 ---    TopExp   ------------- Pas Utilise mais sinon ca plante !!! 
 
-is
-
-    deferred generic class Intersection2d; 
-	---Purpose: Describes   the  intersection algorithm     for 2d
-	--          classifications. 
+is 
 	
     generic class Classifier2d;
 	---Purpose: Basic algorithm for 2d classifications.
-
-    deferred generic class FaceExplorer;
-	---Purpose: Defines  the   description  of   a  face  for  the
-	--          FaceClassifier.
+                                     
 
     generic class  FaceClassifier, FClass2d;
 	---Purpose: Algorithm for classification in a Face.

@@ -14,7 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-class NumShapeTool from Sweep  -- as Tool from Sweep
+class NumShapeTool from Sweep
 
     ---Purpose: This class provides  the indexation and  type analysis
     --          services required by  the NumShape Directing Shapes of

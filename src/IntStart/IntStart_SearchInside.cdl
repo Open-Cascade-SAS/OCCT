@@ -16,10 +16,10 @@
 
 generic class SearchInside from IntStart (
        ThePSurface     as any;
-       ThePSurfaceTool as any;  -- as PSurfaceTool from IntStart (ThePSurface)
+       ThePSurfaceTool as any;
        TheTopolTool    as Transient; -- as SITopolTool from IntStart
-       TheSITool       as any;  -- as SITool       from IntStart (ThePSurface)
-       TheFunction     as any)  -- as SIFunction from IntStart(ThePSurface)
+       TheSITool       as any;
+       TheFunction     as any)
 
 
 	---Purpose: 

@@ -80,6 +80,5 @@ uses MMgt, Standard
 is
 
     generic class Library,GlobalNode,Node;
-    deferred generic class ProtocolTemplate;    -- take it as a Template
 
 end LibCtl;

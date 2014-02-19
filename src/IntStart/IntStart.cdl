@@ -30,14 +30,6 @@ uses Standard, MMgt, TCollection, StdFail, TopAbs, GeomAbs, gp, IntSurf, math
 
 is
 
-    deferred generic class ArcTool;
-
-    deferred generic class SOBTool;
-
-    deferred generic class TopolTool;
-
-    deferred generic class SOBFunction;
-
     generic class Segment;
     
     generic class PathPoint;
@@ -45,13 +37,7 @@ is
     generic class SearchOnBoundaries, ThePathPoint, SequenceOfPathPoint, 
                                       TheSegment, SequenceOfSegment;
 
-    deferred generic class PSurfaceTool;
-
-    deferred generic class SITool;
-
     deferred class SITopolTool;
-
-    deferred generic class SIFunction;
 
     generic class SearchInside;
 

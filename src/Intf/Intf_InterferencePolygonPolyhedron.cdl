@@ -18,7 +18,7 @@ generic class InterferencePolygonPolyhedron from Intf
     (Polygon3d as any;
      ToolPolygon3d as any;      -- as ToolPolygon(Pnt,Polygon3d,Box)
      Polyhedron as any;
-     ToolPolyh as any)          -- as ToolPolyhedron(Polyhedron)
+     ToolPolyh as any)
     inherits Interference from Intf
 
 	---Purpose: Computes the  interference between a polygon and a

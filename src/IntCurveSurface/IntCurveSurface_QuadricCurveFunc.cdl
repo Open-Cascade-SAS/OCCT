@@ -17,7 +17,7 @@
 generic class QuadricCurveFunc from IntCurveSurface ( 
     	TheQuadric       as any;    -- as Quadric   from IntCurveSurface
 	TheCurve         as any;    
-        TheCurveTool     as any)    -- as CurveTool from Adaptor3d
+        TheCurveTool     as any)
  
 inherits  FunctionWithDerivative   from math
 

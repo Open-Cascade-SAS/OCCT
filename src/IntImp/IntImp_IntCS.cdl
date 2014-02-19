@@ -16,11 +16,10 @@
 
 generic class IntCS from IntImp 
     (ThePSurface     as any;
-     ThePSurfaceTool as any; --as PSurfaceTool from IntImp(ThePSurface)
+     ThePSurfaceTool as any;
      TheCurve        as any;
-     TheCurveTool    as any; --as CurveTool from IntImp(TheCurve)
-     TheFunction     as any  --as CSFunction from IntImp
-    )
+     TheCurveTool    as any;
+     TheFunction     as any)
 
     	---Purpose: intersection between a curve and a surface with a close
     	--          point

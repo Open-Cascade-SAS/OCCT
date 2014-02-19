@@ -20,7 +20,7 @@ deferred generic class OneAxis from Primitives(
     TheWire            as any;
     TheEdge            as any;
     TheVertex          as any;
-    TheBuilder         as any)  -- as Builder          from Primitives;
+    TheBuilder         as any)
     
 	---Purpose: Algorithm to  build  primitives with  one  axis of
 	--          revolution. 
