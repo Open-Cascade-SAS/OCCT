@@ -95,7 +95,7 @@ IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face& Face,
     Standard_Boolean bFlag;
     //
     {
-      Standard_Real dU, dV, dA, dB, aR, aTresh; 
+      Standard_Real dU, dV, dA, dB, aTresh; 
       bFlag=Standard_True;
       //
       aTresh=100.;
@@ -108,14 +108,8 @@ IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face& Face,
 	dB=dU;
       }
       //
-      aR=dA/dB;
-      if (dB<Precision::PConfusion()) {
+      if (dB < Precision::PConfusion() || dA > dB * aTresh) {
 	bFlag=!bFlag;
-      }
-      else {
-	if (aR>aTresh) {
-	  bFlag=!bFlag;
-	}
       }
     }
     //
