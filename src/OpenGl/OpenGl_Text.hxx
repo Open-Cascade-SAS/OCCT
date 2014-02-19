@@ -64,37 +64,37 @@ public:
 public: //! @name methods for compatibility with layers
 
   //! Empty constructor
-  OpenGl_Text();
+  Standard_EXPORT OpenGl_Text();
 
   //! Create key for shared resource
-  static TCollection_AsciiString FontKey (const OpenGl_AspectText& theAspect,
-                                          const Standard_Integer   theHeight);
+  Standard_EXPORT static TCollection_AsciiString FontKey (const OpenGl_AspectText& theAspect,
+                                                          const Standard_Integer   theHeight);
 
   //! Find shared resource for specified font or initialize new one
-  static Handle(OpenGl_Font) FindFont (const Handle(OpenGl_Context)& theCtx,
-                                       const OpenGl_AspectText&      theAspect,
-                                       const Standard_Integer        theHeight,
-                                       const TCollection_AsciiString theKey);
+  Standard_EXPORT static Handle(OpenGl_Font) FindFont (const Handle(OpenGl_Context)& theCtx,
+                                                       const OpenGl_AspectText&      theAspect,
+                                                       const Standard_Integer        theHeight,
+                                                       const TCollection_AsciiString theKey);
 
   //! Compute text width
-  static void StringSize (const Handle(OpenGl_Context)& theCtx,
-                          const NCollection_String&     theText,
-                          const OpenGl_AspectText&      theTextAspect,
-                          const OpenGl_TextParam&       theParams,
-                          Standard_ShortReal&           theWidth,
-                          Standard_ShortReal&           theAscent,
-                          Standard_ShortReal&           theDescent);
+  Standard_EXPORT static void StringSize (const Handle(OpenGl_Context)& theCtx,
+                                          const NCollection_String&     theText,
+                                          const OpenGl_AspectText&      theTextAspect,
+                                          const OpenGl_TextParam&       theParams,
+                                          Standard_ShortReal&           theWidth,
+                                          Standard_ShortReal&           theAscent,
+                                          Standard_ShortReal&           theDescent);
 
   //! Setup new string and parameters
-  void Init (const Handle(OpenGl_Context)&     theCtx,
-             const TCollection_ExtendedString& theText,
-             const OpenGl_Vec2&                thePoint,
-             const OpenGl_TextParam&           theParams);
+  Standard_EXPORT void Init (const Handle(OpenGl_Context)&     theCtx,
+                             const TCollection_ExtendedString& theText,
+                             const OpenGl_Vec2&                thePoint,
+                             const OpenGl_TextParam&           theParams);
 
   //! Perform rendering
-  void Render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
-               const Handle(OpenGl_Context)&        theCtx,
-               const OpenGl_AspectText&             theTextAspect) const;
+  Standard_EXPORT void Render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
+                               const Handle(OpenGl_Context)&        theCtx,
+                               const OpenGl_AspectText&             theTextAspect) const;
 
 protected:
 
