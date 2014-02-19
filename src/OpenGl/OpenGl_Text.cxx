@@ -456,7 +456,8 @@ void OpenGl_Text::setupMatrix (const Handle(OpenGl_PrinterContext)& thePrintCtx,
   {
     glLoadIdentity();
     glTranslatef (myPoint.x() + theDVec.x(), myPoint.y() + theDVec.y(), 0.0f);
-    glRotatef (180.0f, 1.0f, 0.0f, 0.0f);
+    glScalef (1.0f, -1.0f, 1.0f);
+    glRotatef (theTextAspect.Angle(), 0.0, 0.0, 1.0);
   }
   else
   {
