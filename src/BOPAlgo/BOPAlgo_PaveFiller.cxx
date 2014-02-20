@@ -17,17 +17,21 @@
 
 #include <BOPAlgo_PaveFiller.ixx>
 
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
+
 #include <NCollection_BaseAllocator.hxx>
 
 #include <BOPInt_Context.hxx>
 #include <BOPDS_DS.hxx>
 #include <BOPDS_Iterator.hxx>
 
+
 //=======================================================================
 //function : 
 //purpose  : 
 //=======================================================================
-  BOPAlgo_PaveFiller::BOPAlgo_PaveFiller()
+BOPAlgo_PaveFiller::BOPAlgo_PaveFiller()
 :
   BOPAlgo_Algo()
 {
@@ -38,7 +42,8 @@
 //function : 
 //purpose  : 
 //=======================================================================
-  BOPAlgo_PaveFiller::BOPAlgo_PaveFiller(const Handle(NCollection_BaseAllocator)& theAllocator)
+BOPAlgo_PaveFiller::BOPAlgo_PaveFiller
+  (const Handle(NCollection_BaseAllocator)& theAllocator)
 :
   BOPAlgo_Algo(theAllocator)
 {
@@ -49,7 +54,7 @@
 //function : ~
 //purpose  : 
 //=======================================================================
-  BOPAlgo_PaveFiller::~BOPAlgo_PaveFiller()
+BOPAlgo_PaveFiller::~BOPAlgo_PaveFiller()
 {
   Clear();
 }
@@ -57,7 +62,7 @@
 //function : Clear
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_PaveFiller::Clear()
+void BOPAlgo_PaveFiller::Clear()
 {
   if (myIterator) {
     delete myIterator;
@@ -67,13 +72,12 @@
     delete myDS;
     myDS=NULL;
   }
-  myErrorStatus=2;
 }
 //=======================================================================
 //function : DS
 //purpose  : 
 //=======================================================================
-  const BOPDS_DS& BOPAlgo_PaveFiller::DS()
+const BOPDS_DS& BOPAlgo_PaveFiller::DS()
 {
   return *myDS;
 }
@@ -81,7 +85,7 @@
 //function : PDS
 //purpose  : 
 //=======================================================================
-  BOPDS_PDS BOPAlgo_PaveFiller::PDS()
+BOPDS_PDS BOPAlgo_PaveFiller::PDS()
 {
   return myDS;
 }
@@ -89,7 +93,7 @@
 //function : Context
 //purpose  : 
 //=======================================================================
-  Handle(BOPInt_Context) BOPAlgo_PaveFiller::Context()
+Handle(BOPInt_Context) BOPAlgo_PaveFiller::Context()
 {
   return myContext;
 }
@@ -97,7 +101,8 @@
 //function : SectionAttribute
 //purpose  : 
 //=======================================================================
-  void  BOPAlgo_PaveFiller::SetSectionAttribute(const BOPAlgo_SectionAttribute& theSecAttr)
+void BOPAlgo_PaveFiller::SetSectionAttribute
+  (const BOPAlgo_SectionAttribute& theSecAttr)
 {
   mySectionAttribute = theSecAttr;
 }
@@ -105,7 +110,7 @@
 //function : SetArguments
 //purpose  : 
 //=======================================================================
-  void BOPAlgo_PaveFiller::SetArguments(const BOPCol_ListOfShape& theLS)
+void BOPAlgo_PaveFiller::SetArguments(const BOPCol_ListOfShape& theLS)
 {
   myArguments=theLS;
 }
@@ -113,7 +118,7 @@
 //function : Arguments
 //purpose  : 
 //=======================================================================
-  const BOPCol_ListOfShape& BOPAlgo_PaveFiller::Arguments()const
+const BOPCol_ListOfShape& BOPAlgo_PaveFiller::Arguments()const
 {
   return myArguments;
 }
@@ -121,7 +126,7 @@
 // function: Init
 // purpose: 
 //=======================================================================
-  void BOPAlgo_PaveFiller::Init()
+void BOPAlgo_PaveFiller::Init()
 {
   myErrorStatus=0;
   //
@@ -152,68 +157,73 @@
 // function: Perform
 // purpose: 
 //=======================================================================
-  void BOPAlgo_PaveFiller::Perform()
+void BOPAlgo_PaveFiller::Perform()
 {
   myErrorStatus=0;
-  //
-  Init();
-  if (myErrorStatus) {
-   return; 
-  }
-  // 00
-  PerformVV();
-  if (myErrorStatus) {
-    return; 
-  }
-  // 01
-  PerformVE();
-  if (myErrorStatus) {
-    return; 
-  }
-  //
-  myDS->UpdatePaveBlocks();
-  // 11
-  PerformEE();
-  if (myErrorStatus) {
-    return; 
-  }
-  // 02
-  PerformVF();
-  if (myErrorStatus) {
-    return; 
-  }
-  // 12
-  PerformEF();
-  if (myErrorStatus) {
-    return; 
-  }
-  //
-  MakeSplitEdges();
-  if (myErrorStatus) {
-    return; 
-  }
-  //
-  // 22
-  PerformFF();
-  if (myErrorStatus) {
-    return; 
-  }
-  //
-  MakeBlocks();
-  if (myErrorStatus) {
-    return; 
-  }
-  //
-  RefineFaceInfoOn();
-  //
-  MakePCurves();
-  if (myErrorStatus) {
-    return; 
-  }
-  //
-  ProcessDE();
-  if (myErrorStatus) {
-    return; 
-  }
-  //
+  try { 
+    OCC_CATCH_SIGNALS
+    //
+    Init();
+    if (myErrorStatus) {
+      return; 
+    }
+    // 00
+    PerformVV();
+    if (myErrorStatus) {
+      return; 
+    }
+    // 01
+    PerformVE();
+    if (myErrorStatus) {
+      return; 
+    }
+    //
+    myDS->UpdatePaveBlocks();
+    // 11
+    PerformEE();
+    if (myErrorStatus) {
+      return; 
+    }
+    // 02
+    PerformVF();
+    if (myErrorStatus) {
+      return; 
+    }
+    // 12
+    PerformEF();
+    if (myErrorStatus) {
+      return; 
+    }
+    //
+    MakeSplitEdges();
+    if (myErrorStatus) {
+      return; 
+    }
+    //
+    // 22
+    PerformFF();
+    if (myErrorStatus) {
+      return; 
+    }
+    //
+    MakeBlocks();
+    if (myErrorStatus) {
+      return; 
+    }
+    //
+    RefineFaceInfoOn();
+    //
+    MakePCurves();
+    if (myErrorStatus) {
+      return; 
+    }
+    //
+    ProcessDE();
+    if (myErrorStatus) {
+      return; 
+    }
+  } // try {
+  catch (Standard_Failure) {
+    myErrorStatus=11;
+  }  
 }

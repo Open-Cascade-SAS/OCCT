@@ -63,20 +63,25 @@ static
   // Chapter's name
   const char* g = "CCR commands";
   //
-  theCommands.Add("bopcheck" ,  "Use >bopcheck Shape [level of check: 0(V/V) - 5(all)]",  __FILE__, bopcheck, g);
-  theCommands.Add("bopargcheck" ,  "Use bopargcheck without parameters to get ",  __FILE__, bopargcheck, g);
+  theCommands.Add("bopcheck",  
+                  "Use >bopcheck Shape [level of check: 0(V/V) - 5(all)]",
+                  __FILE__, bopcheck, g);
+  theCommands.Add("bopargcheck" , 
+                  "Use bopargcheck without parameters to get ",  
+                  __FILE__, bopargcheck, g);
 }
 
 //=======================================================================
 //function : bopcheck
 //purpose  : 
 //=======================================================================
-Standard_Integer bopcheck (Draw_Interpretor& di, Standard_Integer n,  const char** a )
+Standard_Integer bopcheck 
+  (Draw_Interpretor& di, Standard_Integer n,  const char** a )
 {
-  
   if (n<2) {
     di << " Use >bopcheck Shape [level of check: 0 - 5" << "\n";
-    di << " The level of check defines which interferferences will be checked:\n"; 
+    di << " The level of check defines "; 
+    di << " which interferferences will be checked:\n"; 
     di << " 0 - only V/V;\n"; 
     di << " 1 - V/V and V/E;\n";
     di << " 2 - V/V, V/E and E/E;\n"; 
@@ -91,7 +96,7 @@ Standard_Integer bopcheck (Draw_Interpretor& di, Standard_Integer n,  const char
     di << "null shapes are not allowed here!";
     return 1;
   }
-  TopoDS_Shape aS = BRepBuilderAPI_Copy(aS1).Shape();
+  TopoDS_Shape aS = aS1;
   //
   Standard_Integer iErr, aTypeInt, i, ind, j;
   Standard_Integer nI1, nI2, theLevelOfCheck;
@@ -101,8 +106,8 @@ Standard_Integer bopcheck (Draw_Interpretor& di, Standard_Integer n,  const char
 
   theLevelOfCheck = (n==3) ? Draw::Atoi(a[2]) : 5;
   if (theLevelOfCheck >= 0 && theLevelOfCheck < 5) {
-    di << "Info:\nThe level of check is set to " << type[theLevelOfCheck] 
-       << ", i.e. intersection(s)\n";
+    di << "Info:\nThe level of check is set to " 
+      << type[theLevelOfCheck] << ", i.e. intersection(s)\n";
     for (i=theLevelOfCheck+1; i<=5; ++i) {
       di << type[i];
       if (i<5) {
@@ -129,18 +134,22 @@ Standard_Integer bopcheck (Draw_Interpretor& di, Standard_Integer n,  const char
   BOPDS_VectorOfInterfEF& aEFs=theDS->InterfEF();
   BOPDS_VectorOfInterfFF& aFFs=theDS->InterfFF();
   //
-  Standard_Integer aNb[6] = {aVVs.Extent(), aVEs.Extent(), aEEs.Extent(), 
-                             aVFs.Extent(), aEFs.Extent(), aFFs.Extent()};
+  Standard_Integer aNb[6] ={
+    aVVs.Extent(), aVEs.Extent(), aEEs.Extent(), 
+    aVFs.Extent(), aEFs.Extent(), aFFs.Extent()
+  };
   //
   bSelfInt = Standard_False;
   ind = 0;
   for (aTypeInt = 0; aTypeInt < 6; ++aTypeInt) {
     for (i = 0; i < aNb[aTypeInt]; ++i) {
-      BOPDS_Interf* aInt = (aTypeInt==0) ? (BOPDS_Interf*)(&aVVs(i)) : 
-                          ((aTypeInt==1) ? (BOPDS_Interf*)(&aVEs(i)) :
-                          ((aTypeInt==2) ? (BOPDS_Interf*)(&aEEs(i)) : 
-                          ((aTypeInt==3) ? (BOPDS_Interf*)(&aVFs(i)) :
-                          ((aTypeInt==4) ? (BOPDS_Interf*)(&aEFs(i)) : (BOPDS_Interf*)(&aFFs(i))))));
+      BOPDS_Interf* aInt = 
+        (aTypeInt==0) ? (BOPDS_Interf*)(&aVVs(i)) : 
+          ((aTypeInt==1) ? (BOPDS_Interf*)(&aVEs(i)) :
+           ((aTypeInt==2) ? (BOPDS_Interf*)(&aEEs(i)) : 
+            ((aTypeInt==3) ? (BOPDS_Interf*)(&aVFs(i)) :
+             ((aTypeInt==4) ? (BOPDS_Interf*)(&aEFs(i)) : 
+              (BOPDS_Interf*)(&aFFs(i))))));
       //
       nI1 = aInt->Index1();
       nI2 = aInt->Index2();
@@ -200,23 +209,28 @@ Standard_Integer bopcheck (Draw_Interpretor& di, Standard_Integer n,  const char
       bSelfInt = Standard_True;
     }
   }
-  
+  //
   if (iErr) {
-    di << "There were errors during the operation, so the list may be incomplete." << "\n";
+    di << "There were errors during the operation, ";
+    di << "so the list may be incomplete." << "\n";
   }
-  
+  //
   if (!bSelfInt) {
     di << " This shape seems to be OK." << "\n";
   }
-  
   return 0;
 }
 
-static void MakeShapeForFullOutput(const TCollection_AsciiString & aBaseName,
-                                   const Standard_Integer          aIndex,
-                                   const BOPCol_ListOfShape &    aList,
-                                   Standard_Integer&               aCount,
-                                   Draw_Interpretor&               di)
+//=======================================================================
+//function : MakeShapeForFullOutput
+//purpose  : 
+//=======================================================================
+static void MakeShapeForFullOutput
+  (const TCollection_AsciiString & aBaseName,
+   const Standard_Integer          aIndex,
+   const BOPCol_ListOfShape &    aList,
+   Standard_Integer&               aCount,
+   Draw_Interpretor&               di)
 {
   TCollection_AsciiString aNum(aIndex);
   TCollection_AsciiString aName = aBaseName + aNum;
@@ -237,11 +251,17 @@ static void MakeShapeForFullOutput(const TCollection_AsciiString & aBaseName,
 }
 
 
-Standard_Integer bopargcheck (Draw_Interpretor& di, Standard_Integer n,  const char** a )
+//=======================================================================
+//function : bopargcheck
+//purpose  : 
+//=======================================================================
+Standard_Integer bopargcheck 
+  (Draw_Interpretor& di, Standard_Integer n,  const char** a )
 {
   if (n<2) {
     di << "\n";
-    di << " Use >bopargcheck Shape1 [[Shape2] [-F/O/C/T/S/U] [/R|F|T|V|E|I|P]] [#BF]" << "\n" << "\n";
+    di << " Use >bopargcheck Shape1 [[Shape2] ";
+    di << "[-F/O/C/T/S/U] [/R|F|T|V|E|I|P]] [#BF]" << "\n" << "\n";
     di << " -<Boolean Operation>" << "\n";
     di << " F (fuse)" << "\n";
     di << " O (common)" << "\n";
@@ -249,7 +269,8 @@ Standard_Integer bopargcheck (Draw_Interpretor& di, Standard_Integer n,  const c
     di << " T (cut21)" << "\n";
     di << " S (section)" << "\n";
     di << " U (unknown)" << "\n";
-    di << " For example: \"bopargcheck s1 s2 -F\" enables checking for Fuse operation" << "\n";
+    di << " For example: \"bopargcheck s1 s2 -F\" enables" ;
+    di << "checking for Fuse operation" << "\n";
     di << " default - section" << "\n" << "\n";
     di << " /<Test Options>" << "\n";
     di << " R (disable small edges (shrank range) test)" << "\n";
@@ -260,26 +281,30 @@ Standard_Integer bopargcheck (Draw_Interpretor& di, Standard_Integer n,  const c
     di << " I (disable self-interference test)" << "\n";
     di << " P (disable shape type test)" << "\n";
     di << " C (disable test for shape continuity)" << "\n";
-    di << " For example: \"bopargcheck s1 s2 /RI\" disables small edge detection and self-intersection detection" << "\n";
+    di << " For example: \"bopargcheck s1 s2 /RI\" disables ";
+    di << "small edge detection and self-intersection detection" << "\n";
     di << " default - all options are enabled" << "\n" << "\n";
     di << " #<Additional Test Options>" << "\n";
     di << " B (stop test on first faulty found); default OFF" << "\n";
-    di << " F (full output for faulty shapes); default - output in a short format" << "\n" << "\n";
-    di << " NOTE: <Boolean Operation> and <Test Options> are used only for couple" << "\n";
-    di << "       of argument shapes, except I and P options that are always used for" << "\n";
-    di << "       couple of shapes as well as for single shape test." << "\n";
+    di << " F (full output for faulty shapes); default - output ";
+    di << "in a short format" << "\n" << "\n";
+    di << " NOTE: <Boolean Operation> and <Test Options> are ";
+    di <<  "used only for couple" << "\n";
+    di << "       of argument shapes, except I and P options ";
+    di << "that are always used for" << "\n";
+    di << "       couple of shapes as well as for ";
+    di <<"single shape test." << "\n";
     return 1;
   }
 
-  TopoDS_Shape aS11 = DBRep::Get(a[1]);
+  TopoDS_Shape aS1 = DBRep::Get(a[1]);
 
-  if(aS11.IsNull()) {
+  if(aS1.IsNull()) {
     di << "Error: null shape not allowed!" << "\n";
-    di << "Type bopargcheck without arguments for more information" << "\n";
+    di << "Type bopargcheck without arguments for more ";
+    di <<"information" << "\n";
     return 1;
   }
-  TopoDS_Shape aS1 = BRepBuilderAPI_Copy(aS11).Shape();
-  
 
   Standard_Boolean isBO = Standard_False;
   Standard_Integer indxBO = 0;

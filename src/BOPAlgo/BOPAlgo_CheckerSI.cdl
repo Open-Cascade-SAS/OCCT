@@ -20,19 +20,22 @@ class CheckerSI from BOPAlgo
     inherits PaveFiller from BOPAlgo  
     
     ---Purpose: Checks shape on self-interference.
-
+ 
+uses   
+    DataMapOfShapeShape from BOPCol  
+    
 is
     Create 
-    	returns CheckerSI from BOPAlgo;  
+     returns CheckerSI from BOPAlgo;  
     ---C++: alias "Standard_EXPORT virtual ~BOPAlgo_CheckerSI();"  
     
 
     Perform(me:out) 
-    	is redefined;   
+     is redefined;   
   
 
     Init  (me:out) 
-    	is redefined protected;
+     is redefined protected;
 
     SetLevelOfCheck(me:out; 
       theLevel: Integer from Standard); 
@@ -45,10 +48,23 @@ is
     --           4 - V/V, V/E, E/E, V/F and E/F; 
     --           5 - all interferences, default value. 
  
-
+    SetNonDestructive(me:out; 
+      theFlag: Boolean from Standard);  
+    ---Purpose: Sets the flag <theFlag> that defines 
+    --  the mode of the treatment: 
+    --  the copy of the argument when theFlag is true             
+    --  the argument itself  when theFlag is false 
+     
+    NonDestructive(me) 
+        returns Boolean from Standard; 
+    ---Purpose: Returns the flag that defines the 
+    --  mode of the treatment: 
+    --  true when the copy of the argument is used            
+    --  false when the argument itself  is used
+ 
     PostTreat  (me:out)  
-    	is protected;       
-    ---Purpose: Provides post-tratment actions 	 
+     is protected;       
+    ---Purpose: Provides post-treatment actions   
     
     PerformVZ(me:out) 
       is virtual protected; 
@@ -64,9 +80,17 @@ is
     PerformZZ(me:out) 
       is virtual protected;  
       --Purpose: Computes Solid/Solid interferences 
- 
+  
+    PrepareCopy(me:out) 
+      is virtual protected;  
+     
+    PostTreatCopy (me:out)  
+     is protected;       
+    ---Purpose: Provides post-treatment actions for the copy  
  
 fields
     myLevelOfCheck: Integer from Standard is protected;
+    myNonDestructive: Boolean from Standard is protected; 
+    myNewOldMap   : DataMapOfShapeShape from BOPCol is protected;   
     
 end CheckerSI;

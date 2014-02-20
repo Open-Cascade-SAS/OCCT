@@ -21,11 +21,14 @@
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 
+#include <BRepBuilderAPI_Copy.hxx>
+#include <TopTools_ListOfShape.hxx>
+
+#include <BOPCol_MapOfShape.hxx>
+
 #include <BOPDS_DS.hxx>
 #include <BOPDS_IteratorSI.hxx>
 #include <BOPDS_PIteratorSI.hxx>
-#include <BOPInt_Context.hxx>
-
 #include <BOPDS_Interf.hxx>
 #include <BOPDS_MapOfPassKey.hxx>
 #include <BOPDS_PassKey.hxx>
@@ -35,7 +38,10 @@
 #include <BOPDS_VectorOfInterfVF.hxx>
 #include <BOPDS_VectorOfInterfEF.hxx>
 #include <BOPDS_VectorOfInterfFF.hxx>
-#include <BOPDS_VectorOfPoint.hxx>
+
+#include <BOPInt_Context.hxx>
+
+#include <BOPTools.hxx>
 #include <BOPTools_AlgoTools.hxx>
 
 //=======================================================================
@@ -47,6 +53,7 @@ BOPAlgo_CheckerSI::BOPAlgo_CheckerSI()
   BOPAlgo_PaveFiller()
 {
   myLevelOfCheck=BOPDS_DS::NbInterfTypes()-1;
+  myNonDestructive=Standard_True;
 }
 //=======================================================================
 //function : ~
@@ -69,17 +76,28 @@ void BOPAlgo_CheckerSI::SetLevelOfCheck(const Standard_Integer theLevel)
   }
 }
 //=======================================================================
+//function : SetNonDestructive
+//purpose  : 
+//=======================================================================
+void BOPAlgo_CheckerSI::SetNonDestructive(const Standard_Boolean theFlag)
+{
+  myNonDestructive=theFlag;
+}
+//=======================================================================
+//function : NonDestructive
+//purpose  : 
+//=======================================================================
+Standard_Boolean BOPAlgo_CheckerSI::NonDestructive() const 
+{
+  return myNonDestructive;
+}
+//=======================================================================
 //function : Init
 //purpose  : 
 //=======================================================================
 void BOPAlgo_CheckerSI::Init()
 {
-  myErrorStatus = 0;
-  //
-  if (!myArguments.Extent()) {
-    myErrorStatus=10;
-    return;
-  }
+  myErrorStatus=0;
   //
   Clear();
   //
@@ -111,6 +129,19 @@ void BOPAlgo_CheckerSI::Perform()
   try {
     OCC_CATCH_SIGNALS
     //
+    myErrorStatus=0;
+    if (myArguments.Extent()!=1) {
+      myErrorStatus=10;
+      return;
+    }
+    //
+    if (myNonDestructive) {
+      PrepareCopy();
+      if (myErrorStatus) {
+        return; 
+      }
+    }
+    //
     BOPAlgo_PaveFiller::Perform();
     if (myErrorStatus) {
       return; 
@@ -137,11 +168,19 @@ void BOPAlgo_CheckerSI::Perform()
     }
     //
     PostTreat();
+    if (myErrorStatus) {
+      return; 
+    }
+    //
+    if (myNonDestructive) { 
+      PostTreatCopy();
+    }
   }
   catch (Standard_Failure) {
+    myErrorStatus=11;
   }  
-  
 }
+
 //=======================================================================
 //function : PostTreat
 //purpose  : 
@@ -151,7 +190,10 @@ void BOPAlgo_CheckerSI::PostTreat()
   Standard_Integer i, aNb, n1, n2; 
   BOPDS_PassKey aPK;
   //
-  BOPDS_MapOfPassKey& aMPK=*((BOPDS_MapOfPassKey*)&myDS->Interferences());
+  myErrorStatus=0;
+  //
+  BOPDS_MapOfPassKey& aMPK=
+    *((BOPDS_MapOfPassKey*)&myDS->Interferences());
   aMPK.Clear();
   //
   // 0
@@ -227,21 +269,22 @@ void BOPAlgo_CheckerSI::PostTreat()
     //
     iFound=0;
     if (bTangentFaces) {
-      const TopoDS_Face& aF1 = *((TopoDS_Face*)&myDS->Shape(n1));
-      const TopoDS_Face& aF2 = *((TopoDS_Face*)&myDS->Shape(n2));
-      bFlag=BOPTools_AlgoTools::AreFacesSameDomain(aF1, aF2, myContext);
+      const TopoDS_Face& aF1=*((TopoDS_Face*)&myDS->Shape(n1));
+      const TopoDS_Face& aF2=*((TopoDS_Face*)&myDS->Shape(n2));
+      bFlag=BOPTools_AlgoTools::AreFacesSameDomain
+        (aF1, aF2, myContext);
       if (bFlag) {
-	++iFound;
+        ++iFound;
       }
     }
     else {
       for (j=0; j!=aNbC; ++j) {
-	const BOPDS_Curve& aNC=aVC(j);
-	const BOPDS_ListOfPaveBlock& aLPBC=aNC.PaveBlocks();
-	if (aLPBC.Extent()) {
-	  ++iFound;
-	  break;
-	}
+        const BOPDS_Curve& aNC=aVC(j);
+        const BOPDS_ListOfPaveBlock& aLPBC=aNC.PaveBlocks();
+        if (aLPBC.Extent()) {
+          ++iFound;
+          break;
+        }
       }
     }
     //
@@ -298,3 +341,72 @@ void BOPAlgo_CheckerSI::PostTreat()
     aMPK.Add(aPK);
   }
 }
+//=======================================================================
+//function : PrepareCopy
+//purpose  : 
+//=======================================================================
+void BOPAlgo_CheckerSI::PrepareCopy()
+{
+  Standard_Boolean bIsDone;
+  BRepBuilderAPI_Copy aCopier;
+  BOPCol_MapOfShape aMSA;
+  BOPCol_MapIteratorOfMapOfShape aItMS;
+  //
+  myErrorStatus=0;
+  //
+  myNewOldMap.Clear();
+  //
+  const TopoDS_Shape& aSA=myArguments.First();
+  //
+  BOPTools::MapShapes(aSA, aMSA);
+  //
+  aCopier.Perform(aSA, Standard_False);
+  bIsDone=aCopier.IsDone();
+  if (!bIsDone) {
+    myErrorStatus=12; 
+    return;
+  }
+  //
+  const TopoDS_Shape& aSC=aCopier.Shape();
+  //
+  aItMS.Initialize(aMSA);
+  for(; aItMS.More(); aItMS.Next()) {
+    const TopoDS_Shape& aSAx=aItMS.Value();
+    const TopoDS_Shape& aSCx=aCopier.Modified(aSAx).First();
+    myNewOldMap.Bind(aSCx, aSAx);
+  }
+  //
+  myArguments.Clear();
+  myArguments.Append(aSC);
+}
+//=======================================================================
+//function : PostTreatCopy
+//purpose  : 
+//=======================================================================
+void BOPAlgo_CheckerSI::PostTreatCopy() 
+{
+  Standard_Integer i, aNb;
+  //
+  myErrorStatus=0;
+  //
+  aNb=myDS->NbSourceShapes();
+  for (i=0; i!=aNb; ++i) {
+    BOPDS_ShapeInfo& aSI=myDS->ChangeShapeInfo(i);
+    const TopoDS_Shape& aSCi=aSI.Shape();
+    if (!myNewOldMap.IsBound(aSCi)) {
+      myErrorStatus=13;
+      return;
+    }
+    //
+    const TopoDS_Shape& aSAi=myNewOldMap.Find(aSCi);
+    aSI.SetShape(aSAi);
+  }
+}
+//
+// myErrorStatus:
+//
+// 10 - The number of the arguments is not 1
+// 11 - Exception is caught
+// 12 - BRepBuilderAPI_Copy is not done
+// 13 - myNewOldMap doe not contain DS shape 
+
