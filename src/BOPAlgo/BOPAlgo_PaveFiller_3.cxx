@@ -691,6 +691,10 @@ void BOPAlgo_PaveFiller::ForceInterfVE(const Standard_Integer nV,
     aT=aProjector.LowerDistanceParameter();
     //
     BOPDS_VectorOfInterfVE& aVEs=myDS->InterfVE();
+    if (aVEs.Extent() == 0) {
+      aVEs.Init();
+    }
+    //
     i=aVEs.Append()-1;
     BOPDS_InterfVE& aVE=aVEs(i);
     aVE.SetIndices(nV, nE);
