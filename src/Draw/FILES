@@ -1,4 +1,3 @@
-umake.ini
 EXTERNLIB
 Draw_CMPLRS.edl
 Draw_Replace.tcl

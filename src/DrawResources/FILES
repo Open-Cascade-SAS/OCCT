@@ -1,5 +1,4 @@
 srcinc:::CURVES.tcl
-srcinc:::Documentation.tcl
 srcinc:::DrawTK.tcl
 srcinc:::Geometry.tcl
 srcinc:::InitEnvironment.tcl
@@ -9,11 +8,6 @@ srcinc:::StandardCommands.tcl
 srcinc:::StandardViews.tcl
 srcinc:::SURFACES.tcl
 srcinc:::Move.tcl
-srcinc:::idoc
-srcinc:::mkdoc
-srcinc:::tdoc
-srcinc:::DRAW.doc
-srcinc:::DRAW.info
 srcinc:::DrawDefault
 srcinc:::lamp.ico
 srcinc:::DrawPlugin
