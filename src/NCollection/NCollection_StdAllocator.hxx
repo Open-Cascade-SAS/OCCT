@@ -1,5 +1,5 @@
 // Author: Roman Lygin, 2012.
-// This file is put into Public Domain and thus can freely be used for any purpose.
+// This file is in the Public Domain and thus can freely be used for any purpose.
 // The author disclaims any rights and liabilities.
 
 #ifndef _NCollection_StdAllocator_HeaderFile

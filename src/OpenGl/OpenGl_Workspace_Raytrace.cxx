@@ -4,8 +4,8 @@
 //
 // This file is part of Open CASCADE Technology software library.
 //
-// This library is free software; you can redistribute it and / or modify it
-// under the terms of the GNU Lesser General Public version 2.1 as published
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
 // by the Free Software Foundation, with special exception defined in the file
 // OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
 // distribution for complete text of the license and disclaimer of any warranty.
@@ -1459,13 +1459,13 @@ Standard_Boolean OpenGl_Workspace::WriteRaytraceSceneToDevice()
     Standard_ASSERT_RETURN (aTriangleSet != NULL,
       "Error! Failed to get triangulation of OpenGL element", Standard_False);
 
-    aTotalVerticesNb += aTriangleSet->Vertices.size();
-    aTotalElementsNb += aTriangleSet->Elements.size();
+    aTotalVerticesNb += (int)aTriangleSet->Vertices.size();
+    aTotalElementsNb += (int)aTriangleSet->Elements.size();
 
     Standard_ASSERT_RETURN (!aTriangleSet->BVH().IsNull(),
       "Error! Failed to get bottom-level BVH of OpenGL element", Standard_False);
 
-    aTotalBVHNodesNb += aTriangleSet->BVH()->NodeInfoBuffer().size();
+    aTotalBVHNodesNb += (int)aTriangleSet->BVH()->NodeInfoBuffer().size();
   }
 
   aTotalBVHNodesNb = aTotalBVHNodesNb > 0 ? aTotalBVHNodesNb : 1;
@@ -1701,7 +1701,7 @@ Standard_Boolean OpenGl_Workspace::RunRaytraceOpenCLKernels (const Graphic3d_CVi
   cl_uint anIndex = 0;
   cl_int  anError = 0;
 
-  cl_int aLightSourceBufferSize = myRaytraceGeometry.Sources.size();
+  cl_int aLightSourceBufferSize = (cl_int)myRaytraceGeometry.Sources.size();
 
   anError |= clSetKernelArg (
     myRaytraceRenderKernel, anIndex++, sizeof(cl_int), &theSizeX);
