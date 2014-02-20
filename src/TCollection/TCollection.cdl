@@ -130,10 +130,6 @@ is
 	
     class CompareOfReal;
     
-    class AVLBaseNode;
-    pointer AVLBaseNodePtr to AVLBaseNode from TCollection;
-    generic class AVLSearchTree,AVLNode,AVLList,AVLIterator;
-    
 
     NextPrimeForMap(I : Integer) returns Integer;
 	---Purpose: Returns a  prime number greater than  <I> suitable
