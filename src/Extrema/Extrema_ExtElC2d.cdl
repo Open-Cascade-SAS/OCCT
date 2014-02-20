@@ -137,7 +137,7 @@ fields
     myDone : Boolean;
     myIsPar: Boolean;
     myNbExt: Integer;
-    mySqDist: Real [4];
-    myPoint: POnCurv2d from Extrema [4,2];
+    mySqDist: Real [8];
+    myPoint: POnCurv2d from Extrema [8,2];
 
 end ExtElC2d;
