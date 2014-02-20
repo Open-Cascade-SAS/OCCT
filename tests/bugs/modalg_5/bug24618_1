@@ -1,0 +1,42 @@
+puts "========="
+puts "OCC24618"
+puts "========="
+puts ""
+###########################################################
+# Embedding vertex in BOP depends on the order of arguments
+###########################################################
+
+# Create a cylindrical face
+cylinder c1 20
+trimv c1 c1 0 50
+mkface c1 c1
+
+# Create a vertex
+vertex v1 0 20 25
+
+# Build partition
+bclearobjects
+bcleartools
+#---------------#
+baddobjects c1 v1
+#---------------#
+bfillds
+bbuild r
+
+# Explode the result compound
+explode r
+
+# Check number of shapes
+renamevar r_1 result
+
+set nb_v_good 1
+set nb_e_good 0
+set nb_w_good 0
+set nb_f_good 0
+set nb_sh_good 0
+set nb_sol_good 0
+set nb_compsol_good 0
+set nb_compound_good 0
+set nb_shape_good 1
+
+set 2dviewer 1
