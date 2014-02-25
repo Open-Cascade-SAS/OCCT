@@ -1252,7 +1252,7 @@ clear
 foreach var [directory c_*] {erase $var} 
 
 # clear 2d views 
-2d clear 
+2dclear 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 @subsubsection occt_draw_4_1_15 repaint, dflush
@@ -2258,7 +2258,7 @@ Syntax:
 meshshadcolor meshname red green blue
 ~~~~~ 
 
-Changes the face interior color of object **meshname**. The *red*, *green** and *blue* are real values between *0* and *1*.
+Changes the face interior color of object **meshname**. The *red*, *green* and *blue* are real values between *0* and *1*.
  
 **Example:** 
 ~~~~~
@@ -3993,7 +3993,7 @@ parabola p2 0 0 0 1 50
 parabola p3 0 0 0 1 0 0 0 0 1 50 
 ~~~~~
 
-@subsubsection occt_draw_6_2_7  beziercurve, dbeziercurve
+@subsubsection occt_draw_6_2_7  beziercurve, 2dbeziercurve
 
 Syntax:      
 ~~~~~
@@ -4012,13 +4012,15 @@ Creates a 3d rational or non-rational Bezier curve. Give the number of poles (co
 beziercurve cc 4 0 0 0 10 0 0 10 0 10 10 10 10 
 ~~~~~
 
-@subsubsection occt_draw_6_2_8  bsplinecurve, dbsplinecurve, pbsplinecurve, dpbsplinecurve
+@subsubsection occt_draw_6_2_8  bsplinecurve, 2dbsplinecurve, pbsplinecurve, 2dpbsplinecurve
 
 Syntax:      
 ~~~~~
-bsplinecurve name degree nbknots knot, umult pole, weight 2dbsplinecurve name degree nbknots knot, umult pole, weight pbsplinecurve name degree nbknots knot, umult pole, weight(periodic) 
+bsplinecurve   name degree nbknots knot, umult pole, weight
+2dbsplinecurve name degree nbknots knot, umult pole, weight
 
-2dpbsplinecurve name degree nbknots knot, umult pole, weight (periodic) 
+pbsplinecurve   name degree nbknots knot, umult pole, weight (periodic)
+2dpbsplinecurve name degree nbknots knot, umult pole, weight (periodic)
 ~~~~~
 
 Creates 2d or 3d bspline curves; the **pbsplinecurve** and **2dpbsplinecurve** commands create periodic bspline curves. 
@@ -4076,7 +4078,7 @@ viso c2 c
 **Note** that this cannot be done from offset surfaces.
 
 
-@subsubsection occt_draw_6_2_10  tod, tod
+@subsubsection occt_draw_6_2_10  to3d, to2d
 
 Syntax:      
 ~~~~~
