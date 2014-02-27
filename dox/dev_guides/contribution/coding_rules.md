@@ -3,46 +3,47 @@ Coding Rules {#dev_guides__coding_rules}
 
 @tableofcontents
 
-@section OCCT_RULES_SECTION_1 Introduction
+@section occt_coding_rules_1 Introduction
 
-The purpose of this document is to define and formalize one style of programming for developers working on Open CASCADE Technology.
-The establishment of a common style facilitates understanding and maintaining code developed by more than one programmer as well as making it easier for several people to co-operate in the development of the same framework.
-In addition, following a common programming style enables the construction of tools that incorporate knowledge of these standards to help in the programming task.
-Using a consistent coding style throughout a particular module, package, or project is important because it allows people other than the author, and the author himself, to easily understand and (hopefully) maintain the code.
-Most programming styles are somewhat arbitrary, and this one is no exception. Some guidelines have been excerpted from the public domain of widely accepted practices.
-This suggests that the guide will continue to evolve over time as new ideas and enhancements are added.
+The purpose of this document is to define a common programming style for Open CASCADE Technology.
 
-@subsection OCCT_RULES_SECTION_1_1 Scope of the rules in this document
+The common style facilitates understanding and maintaining a code developed cooperatively by several programmers. In addition, it enables construction of tools that incorporate knowledge of these standards to help in the programming.
 
-Rules in this document was written for C++ code.
-However, with minor exceptions due to language restrictions, them should be applied to any sources in Open CASCADE Technology framework, including:
+OCCT programming style follows common and appropriate best practices, so some guidelines have been excerpted from the public domain.
+
+The guide can be improved in the future as new ideas and enhancements are added.
+
+@subsection occt_coding_rules_1_1 Scope of the document
+
+Rules in this document refer to C++ code. However, with minor exceptions due to language restrictions, they are applicable to any sources in Open CASCADE Technology framework, including:
 - C/C++
 - GLSL programs
 - OpenCL kernels
 - TCL scripts and test cases
 
-@section OCCT_RULES_SECTION_2 Naming Conventions
+@section occt_coding_rules_2 Naming Conventions
 
-@subsection OCCT_RULES_SECTION_2_1 General naming rules
+@subsection occt_coding_rules_2_1 General naming rules
 
-The names considered in this section are mainly those which compound the interface to Open CASCADE Technology libraries as well as source code itself.
+The names considered in this section mainly refer to the interface of Open CASCADE Technology libraries or source code itself.
 
 ### International language [MANDATORY]
-All names are composed of English words and their abbreviations.
-Open CASCADE Technology is an open source available for international community.
 
-### Suggestive names
-Names should be suggestive or, at least, contain a suggestive part.
-Currently, there is no exact rule that would define how to generate suggestive names. However, usually names given to toolkits, packages, classes and methods are suggestive. Here are several examples:
-- Packages containing words Geom or Geom2d in their names are related to geometrical data and operations.
-- Packages containing words TopoDS or BRep in their names are related to topological data and operations.
-- In OCAF, packages that define transient, persistent data classes and drivers to map between them, have similar names prefixed by 'T', 'P', and 'M' correspondingly (e.g. TDocStd, PDocStd, MDocStd).
-- Packages ending with ...Test define Draw Harness plugins.
-- Methods starting with Get... and Set... are usually responsible for (accordingly) retrieving/storing some data.
+Open CASCADE Technology is an open source platform available for an international community, thus all names need to be composed of English words or their abbreviations.
+
+### Meaningful names
+
+Names should be meaningful or, at least, contain a meaningful part. To better understand this requirement, let us examine the existing names of toolkits, packages, classes and methods:
+- Packages containing words *Geom* or *Geom2d* in their names are related to geometrical data and operations.
+- Packages containing words *TopoDS* or *BRep* in their names are related to topological data and operations.
+- In OCAF, packages that define transient, persistent data classes and drivers to map between them, have similar names prefixed by *T*, *P*, and *M* correspondingly (e.g. *TDocStd*, *PDocStd*, *MDocStd*).
+- Packages ending with <i>...Test</i> define Draw Harness plugins.
+- Methods starting with *Get...* and *Set...* are usually responsible for correspondingly retrieving and storing data.
 
 ### Related names
-Names that define logically connected functionality should have the same prefix (start with the same letters) or, at least, have any other common part in them.
-As an example the method GetCoord can be given. It returns a triple of real values and is defined for directions, vectors and points. The logical connection is obvious.
+
+Names related to a logically connected functionality should have the same prefix (start with the same letters) or, at least, have any other common part.
+For example, method *GetCoord* returns a triple of real values and is defined for directions, vectors and points. The logical connection is obvious.
 
 ### Camel Case style
 Camel Case style is preferred for names.
@@ -54,46 +55,50 @@ Standard_Integer width_of_box; // this is bad
 Standard_Integer aWidthOfBox;  // this is OK
 ~~~~~
 
-@subsection OCCT_RULES_SECTION_2_2 Names of development units
-Usually unit (e.g. package) is a set of classes, methods, enumerations or any other sources implementing certain common functionality which, to the certain extent, is self contained and independent from other parts of library.
+@subsection occt_coding_rules_2_2 Names of development units
 
-### Underscores in units names [MANDATORY]
-Names of units should not contain underscores, except cases where usage of underscores is allowed explicitly.
-Usually names of files consisting Open CASCADE Technology are constructed according to the rules defined in the appropriate sections of this document.
+Usually a unit (e.g. a package) is a set of classes, methods, enumerations or any other sources implementing a common functionality, which is self-contained and independent from other parts of the library.
 
-### File names extensions [MANDATORY]
+### No underscores in unit names [MANDATORY]
+
+Names of units should not contain underscores, unless the use of underscores is allowed explicitly.
+
+### File name extensions [MANDATORY]
+
 The following extensions should be used for source files, depending on their type:
 
-    .cdl - CDL declaration files
-    .cxx - C++ source files
-    .hxx - C++ header files
-    .lxx - headers with definitions of inline methods (CDL packages)
+* <i>.cdl</i> - CDL declaration files
+* <i>.cxx</i> - C++ source files
+* <i>.hxx</i> - C++ header files
+* <i>.lxx</i> - headers with definitions of inline methods (CDL packages)
 
-@subsection OCCT_RULES_SECTION_2_3 Names of toolkits
+### Prefix for toolkit names [MANDATORY]
 
-The following rules are usually used in naming of toolkits:
-
-### Prefix for toolkits names [MANDATORY]
-Toolkits names are prefixed by TK, followed by suggestive part of name explaining the domain of functionality covered by the toolkit (e.g. TKOpenGl).
+Toolkit names are prefixed by *TK*, followed by a meaningful part of the name explaining the domain of functionality covered by the toolkit (e.g. *TKOpenGl*).
 
 ### Names of classes
-Usually source files located in the unit have names that start from the name of the unit, separated from remaining part of file name (if any) by underscore "_".
-For instance, names of files containing sources of C++ classes are constructed according to the following template.
 
-### Naming of C++ class files
-The following template should be used for names of files containing sources of C++ classes:
+Usually the names of source files located in a unit start from the unit name separated from the other part of the file name by underscore "_".
 
-    <unit-name>_<class-name>.cxx (.hxx, .cdl etc.)
+Thus, the names of files containing sources of C++ classes that belong to a package are constructed according to the following template:
 
-Files that contain sources related to whole unit are called by the name of unit with appropriate extension.
+~~~~~
+    <package-name>_<class-name>.cxx (or .hxx, or .cdl)
+~~~~~
+
+For example, file *Adaptor2d_Curve2d.cxx* belongs to the package *Adaptor2d*
+
+Files that contain sources related to the whole unit are called by the unit name with appropriate extension.
 
 ### Names of functions
-The term 'function' here is defined as:
+
+The term **function** here is defined as:
 - Any class method
 - Any package method
 - Any non-member procedure or function
 
-It is preferred to name public methods from upper case, while protected and private methods from low case.
+It is preferred to start names of public methods from an upper case character and to start names of protected and private methods from a lower case character.
+
 
 ~~~~~{.cpp}
 class MyPackage_MyClass
@@ -111,12 +116,15 @@ private:
 };
 ~~~~~
 
-@subsection OCCT_RULES_SECTION_2_4 Names of variables
-There are several rules that describe currently accepted practice used for naming variables.
+@subsection occt_coding_rules_2_3 Names of variables
+
+There are several rules that describe currently accepted practices for naming variables.
 
 ### Naming of variables
-Name of variable should not conflict with the global names (packages, macros, functions, global variables etc.), either existing or possible.
-The name of variable should not start with underscore(s).
+
+Name of a variable should not conflict with the existing or possible global names (for packages, macros, functions, global variables, etc.).
+
+The name of a variable should not start with an underscore.
 
 See the following examples:
 
@@ -129,7 +137,8 @@ Standard_Integer THE_KERNEL = 0;   // this is OK
 ~~~~~
 
 ### Names of function parameters
-The name of a function (procedure, class method) parameter should start with 'the' followed by the rest of the name starting with capital letter.
+
+The name of a function (procedure, class method) parameter should start with prefix *the* followed by the meaningful part of the name starting with a capital letter.
 
 See the following examples:
 
@@ -140,7 +149,8 @@ void Package_MyClass::MyFunction (const gp_Pnt& thePoint); // this is preferred
 ~~~~~
 
 ### Names of class member variables
-The name of a class member variable should start with 'my' followed by the rest of the name (rule for suggestive names applies) starting with capital letter.
+
+The name of a class member variable should start with prefix *my* followed by the meaningful of the name starting with a capital letter.
 
 See the following examples:
 
@@ -151,9 +161,9 @@ Standard_Integer myCounter; // This is preferred
 ~~~~~
 
 ### Names of global variables
+
 It is strongly recommended to avoid defining any global variables.
-However, as soon as global variable is necessary, the following rule applies.
-Global variable name should be prefixed by the name of a class or a package where it is defined followed with '_my'.
+However, as soon as a global variable is necessary, its name should be prefixed by the name of a class or a package where it is defined followed with *_my*.
 
 See the following examples:
 
@@ -162,7 +172,7 @@ Standard_Integer MyPackage_myGlobalVariable = 0;
 Standard_Integer MyPackage_MyClass_myGlobalVariable = 0;
 ~~~~~
 
-Static constants within the file should be spelled upper-case and started with 'THE_' prefix:
+Static constants within the file should be written in upper-case and begin with prefix *THE_*:
 ~~~~~{.cpp}
 namespace
 {
@@ -171,10 +181,12 @@ namespace
 ~~~~~
 
 ### Names of local variables
-Local variable name should be constructed in such way that it can be distinguished from the name of a function parameter, a class member variable and a global variable.
-It is preferred to prefix local variable names with 'a' and 'an' (also 'is', 'to' and 'has' for Boolean variables).
 
-See the following examples:
+The name of a local variable should be distinguishable from the name of a function parameter, a class member variable and a global variable.
+
+It is preferred to prefix local variable names with *a* and *an* (or *is*, *to* and *has* for Boolean variables).
+
+See the following example:
 
 ~~~~~{.cpp}
 Standard_Integer theI;    // this is bad
@@ -184,8 +196,9 @@ Standard_Integer anIndex; // this is OK
 ~~~~~
 
 ### Avoid dummy names
-Avoid dummy names like I, j, k. Such names are meaningless and easy to mix up.
-Code becomes more and more complicated when such dummy names used multiple times in code with different meaning, in cycles with different iteration ranges and so on.
+Avoid dummy names, such as <i>i, j, k</i>. Such names are meaningless and easy to mix up.
+
+The code becomes more and more complicated when such dummy names are used there multiple times with different meanings, or in cycles with different iteration ranges, etc.
 
 See the following examples for preferred style:
 
@@ -207,31 +220,37 @@ void Average (const Standard_Real** theArray,
 }
 ~~~~~
 
-@section OCCT_RULES_SECTION_3 Formatting rules
+@section occt_coding_rules_3 Formatting rules
 
-In order to improve the open source readability and, consequently, maintainability, the following set of rules is applied.
+To improve the open source readability and, consequently, maintainability, the following set of rules is applied.
 
 ### International language [MANDATORY]
+
 All comments in all sources must be in English.
 
 ### Line length
-In all sources try not to exceed 120 characters limit of line length.
+
+Try to stay within the limit of 120 characters per line in all sources.
 
 ### C++ style comments
+
 Prefer C++ style comments in C++ sources.
 
 ### Commenting out unused code
+
 Delete unused code instead of commenting it or using #define.
 
 ### Indentation in sources [MANDATORY]
+
 Indentation in all sources should be set to two space characters.
 Use of tabulation characters for indentation is disallowed.
 
 ### Separating spaces
-Punctuation rules follow the rules of English.
-C/C++ reserved words, commas, colons and semicolons should be followed by a space character if they are not at the end of line.
-There should be no space characters after '(' and before ')'. Closing and opening brackets should be separated by a space character.
-For better readability it is also recommended to surround conventional operators by a space character. See the following examples:
+
+Punctuation rules follow the rules of the English language.
+* C/C++ reserved words, commas, colons and semicolons should be followed by a space character if they are not at the end of a line.
+* There should be no space characters after '(' and before ')'. Closing and opening brackets should be separated by a space character.
+* For better readability it is also recommended to surround conventional operators by a space character. See the following examples:
 
 ~~~~~{.cpp}
 while (true)                            // NOT: while( true ) ...
@@ -245,7 +264,9 @@ for (anIter = 0; anIter < 10; ++anIter) // NOT: for (anIter=0;anIter<10;++anIter
 ~~~~~
 
 ### Separate logical blocks
+
 Separate logical blocks of code with one blank line and comments.
+
 See the following example:
 
 ~~~~~{.cpp}
@@ -268,8 +289,10 @@ if (anArgsNb < 3 || isSmthInvalid)
 Notice that multiple blank lines should be avoided.
 
 ### Separate function bodies [MANDATORY]
+
 Use function descriptive blocks to separate function bodies from each other.
-Each descriptive block should contain at least a function name and description of purpose.
+Each descriptive block should contain at least a function name and purpose description.
+
 See the following example:
 
 ~~~~~{.cpp}
@@ -293,8 +316,9 @@ void TellMeSmthBad()
 ~~~~~
 
 ### Block layout [MANDATORY]
-Figure brackets '{', '}' and each operator (for, if, else, try, catch) should be on dedicated line.
-General block should have layout similarly to the following:
+Figure brackets <i>{ }</i> and each operator <i>(for, if, else, try, catch)</i> should be written on a dedicated line.
+
+In general, the layout should be as follows:
 
 ~~~~~{.cpp}
 while (expression)
@@ -303,10 +327,11 @@ while (expression)
 }
 ~~~~~
 
-Entering block increases and leaving block decreases indentation to one tabulation.
+Entering a block increases and leaving a block decreases the indentation by one tabulation.
 
 ### Single-line operators
-Single-line conditional operator (if, while, for etc.) can be written without brackets on the following line.
+
+Single-line conditional operators <i>(if, while, for,</i> etc.) can be written without brackets on the following line.
 
 ~~~~~{.cpp}
 if (!myIsInit) return Standard_False; // bad
@@ -320,10 +345,11 @@ if (!theAlgo.IsNull())                // preferred
 }
 ~~~~~
 
-Code on the same line is less convenient for debugging.
+Having all code in the same line is less convenient for debugging.
 
-### Use alignment
-Use alignment wherever it enhances readability. See the following example:
+### Alignment
+
+Use alignment wherever it enhances the readability. See the following example:
 
 ~~~~~{.cpp}
 MyPackage_MyClass anObject;
@@ -339,8 +365,11 @@ switch (aVal)
 ~~~~~
 
 ### Indentation of comments
-Comments should be indented similar to the code which they refer to or can be on the same line if they are short.
-Text should be delimited with single space character from slash.
+
+Comments should be indented in the same way as the code to which they refer or they can be in the same line if they are short.
+
+The text of the comment should be separated from the slash character by a single space character.
+
 See the following example:
 
 ~~~~~{.cpp}
@@ -354,8 +383,10 @@ while (expression)   //bad comment
 ~~~~~
 
 ### Early return statement
-Prefer early return condition rather than collecting indentations.
-Better write like this:
+
+Use an early return condition rather than collect indentations.
+
+Write like this:
 
 ~~~~~{.cpp}
 Standard_Integer ComputeSumm (const Standard_Integer* theArray,
@@ -372,7 +403,7 @@ Standard_Integer ComputeSumm (const Standard_Integer* theArray,
 }
 ~~~~~
 
-rather than:
+Rather than:
 
 ~~~~~{.cpp}
 Standard_Integer ComputeSumm (const Standard_Integer* theArray,
@@ -387,15 +418,18 @@ Standard_Integer ComputeSumm (const Standard_Integer* theArray,
 }
 ~~~~~
 
-to improve readability and reduce unnecessary indentation depth.
+This helps to improve readability and reduce the unnecessary indentation depth.
 
 ### Trailing spaces
-Trailing spaces should be removed when possible.
-Spaces at end of line are useless and do not affect functionality.
+
+Trailing spaces should be removed whenever possible.
+Spaces at the end of a line are useless and do not affect functionality.
 
 ### Headers order
-Split into groups: system headers, per framework headers, project headers; sort includes list alphabetically.
-This rule can improve readability, allows detection of useless header's multiple inclusions and makes 3rd-party dependencies clearly visible.
+
+Split headers into groups: system headers, headers per each framework, project headers; sort the list of includes alphabetically.
+
+This rule improves readability, allows detecting useless multiple header inclusions and makes 3rd-party dependencies clearly visible.
 
 ~~~~~{.cpp}
 // system headers
@@ -412,25 +446,28 @@ This rule can improve readability, allows detection of useless header's multiple
 #include <NCollection_List.hxx>
 ~~~~~
 
-@section OCCT_RULES_SECTION_4 Documentation rules
+@section occt_coding_rules_4 Documentation rules
 
 The source code is one of the most important references for documentation.
-The comments in the source code should be complete enough to allow understanding of that code, and to serve as basis for other documents.
-The main reasons why comments are regarded as documentation and should be maintained are:
+The comments in the source code should be complete enough to allow understanding the corresponding code and to serve as basis for other documents.
 
-- The comments are easy to reach - they are always together with source code
-- It's easy to update description in the comment when source is modified
-- The source itself represents a good context to describe various details that would require much more explanations in separate document
-- As a summary, this is the most cost-effective documentation
+The main reasons why the comments are regarded as documentation and should be maintained are:
+- The comments are easy to reach - they are always together with the source code;
+- It is easy to update a description in the comment when the source is modified;
+- The source by itself is a good context to describe various details that would require much more explanations in a separate document;
+- As a summary, this is the most cost-effective documentation.
 
 The comments should be compatible with Doxygen tool for automatic documentation generation (thus should use compatible tags).
 
 ### Documenting classes [MANDATORY]
+
 Each class should be documented in its header file (.hxx or .cdl).
-The comment should give enough details for the reader to understand the purpose of the class and main way of work with it.
+The comment should give enough details for the reader to understand the purpose of the class and the main way of work with it.
 
 ### Documenting class methods [MANDATORY]
+
 Each class or package method should be documented in the header file (.hxx or .cdl).
+
 The comment should explain the purpose of the method, its parameters, and returned value(s).
 Accepted style is:
 
@@ -442,77 +479,97 @@ Standard_Export Standard_Real Square (Standard_Real theValue);
 @endverbatim
 
 ### Documenting C/C++ sources
+
 It is very desirable to put comments in the C/C++ sources of the package/class.
-They should be detailed enough to allow any person to understand what does each part of code, and get familiar with it.
-It is recommended to comment all static functions (like methods in headers), and at least each 10-100 lines of the function bodies.
-There are also some rules that define how comments should be formatted, see section "Formatting Rules".
-Following these rules is important for good comprehension of the comments;
-moreover it makes possible to automatically generate user-oriented documentation directly from commented sources.
 
-@section OCCT_RULES_SECTION_5 Application design
+They should be detailed enough to allow any person to understand what each part of code does.
 
-The following set of rules defines the common style which should be applied by any developer contributing to the open source.
+It is recommended to comment all static functions (like methods in headers), and to insert at least one comment per each 10-100 lines in the function body.
 
-### Allow for possible inheritance
+There are also some rules that define how comments should be formatted, see <a href="#occt_coding_rules_3">Formatting Rules</a>.
+
+Following these rules is important for good comprehension of the comments. Moreover, this approach  allows automatically generating user-oriented documentation directly from the commented sources.
+
+@section occt_coding_rules_5 Application design
+
+The following rules define the common style, which should be applied by any developer contributing to the open source.
+
+### Allow possible inheritance
+
 Try to design general classes (objects) keeping possible inheritance in mind.
-This rule means that making possible extensions of your class the user should not encounter with problems of private implementations.
+This rule means that the user who makes possible extensions of your class should not encounter problems of private implementation.
 Try to use protected members and virtual methods wherever you expect extensions in the future.
 
 ### Avoid friend declarations
-Avoid using 'friend' classes or functions except some specific cases (ex., iteration) 'Friend' declarations increase coupling.
+
+Avoid using 'friend' classes or functions except for some specific cases (for example, iteration) 'Friend' declarations increase coupling.
 
 ### Set/get methods
+
 Avoid providing set/get methods for all fields of the class.
 Intensive set/get functions break down encapsulation.
 
 ### Hiding virtual functions [MANDATORY]
+
 Avoid hiding a base class virtual function by a redefined function with a different signature.
 Most of the compilers issue warning on this.
 
 ### Avoid mixing error reporting strategies
-Try not to mix different error indication/handling strategies (exceptions or returned values) on the same level of an application.
+
+Try not to mix different error indication/handling strategies (exceptions or returned values) on the same application level.
 
 ### Minimize compiler warnings [MANDATORY]
+
 When compiling the source pay attention to and try to minimize compiler warnings.
 
-### Avoid unnecessary inclusion
-Try to minimize compilation dependencies by removing unnecessary inclusion.
+### Avoid unnecessary inclusions
 
-@section OCCT_RULES_SECTION_6 General C/C++ rules
+Try to minimize compilation dependencies by removing unnecessary inclusions.
 
-This section defines rules for writing portable and maintainable C/C++ source code.
+@section occt_coding_rules_6 General C/C++ rules
+
+This section defines the rules for writing a portable and maintainable C/C++ source code.
 
 ### Wrapping of global variables [MANDATORY]
-Use package or class methods returning reference to wrap global variables to reduces possible name space conflicts.
+
+Use package or class methods returning reference to wrap global variables to reduce possible name space conflicts.
 
 ### Avoid private members
-Use 'protected' members instead of 'private' wherever reasonable to enable future extensions.
-Use 'private' fields if future extensions should be disabled.
+
+Use *protected* members instead of *private* wherever reasonable to enable future extensions.
+Use *private* fields if future extensions should be disabled.
 
 ### Constants and inlines over defines [MANDATORY]
+
 Use constant variables (const) and inline functions instead of defines (#define).
 
 ### Avoid explicit numerical values [MANDATORY]
+
 Avoid usage of explicit numeric values. Use named constants and enumerations instead.
-Magic numbers are badly to read and maintain.
+Numbers produce difficulties for reading and maintenance.
 
 ### Three mandatory methods
-A class with any of (destructor, assignment operator, copy constructor) usually needs all of them.
+
+If a class has a destructor, an assignment operator or a copy constructor, it usually needs the other two methods.
 
 ### Virtual destructor
+
 A class with virtual function(s) ought to have a virtual destructor.
 
 ### Default parameter value
+
 Do not redefine a default parameter value in an inherited function.
 
 ### Use const modifier
-Use const modifier wherever possible (functions parameters, return values etc.)
+
+Use *const* modifier wherever possible (functions parameters, return values, etc.)
 
 ### Usage of goto [MANDATORY]
-Avoid goto statement except the cases where it is really needed.
+Avoid *goto* statement unless it is really needed.
 
 ### Declaring variable in for() header
-Declaring cycle variable in the header of the for() statement if not used out of cycle.
+
+Declare a cycle variable in the header of the *for()* statement if not used out of cycle.
 
 ~~~~~{.cpp}
 Standard_Real aMinDist = Precision::Infinite();
@@ -524,6 +581,7 @@ for (NCollection_Sequence<gp_Pnt>::Iterator aPntIter (theSequence);
 ~~~~~
 
 ### Condition statements within zero
+
 Avoid usage of C-style comparison for non-boolean variables:
 
 ~~~~~{.cpp}
@@ -547,57 +605,70 @@ void Function (Standard_Integer theValue,
 }
 ~~~~~
 
-@section OCCT_RULES_SECTION_7 Portability issues
+@section occt_coding_rules_7 Portability issues
 
 This chapter contains rules that are critical for cross-platform portability.
 
-### Ensure code portability [MANDATORY]
-It is required that source code must be portable to all platforms listed in the official 'Technical Requirements'.
+### Provide code portability [MANDATORY]
+
+The source code must be portable to all platforms listed in the official 'Technical Requirements'.
 The term 'portable' here means 'able to be built from source'.
 
 The C++ source code should meet C++03 standard.
-Any usage of compiler-specific features or further language versions (C++11, until all major compliers on all supported platforms do not implement all it features)
-should be optional (escaped with appropriate preprocessor checks) and non-exclusive (alternative implementation should be provided, compatible with other compilers).
+Any usage of compiler-specific features or further language versions (for example, C++11, until all major compilers on all supported platforms implement all its features) should be optional (used only with appropriate preprocessor checks) and non-exclusive (an alternative implementation compatible with other compilers should be provided).
 
 ### Avoid usage of global variables [MANDATORY]
-Avoid usage of global variables. Usage of global variables may cause problems of accessing them from another shared library.
-Instead of global variables, use global (package or class) functions that return reference to static variable local to this function.
+
+Avoid usage of global variables. Usage of global variables may cause problems when accessed from another shared library.
+
+Use global (package or class) functions that return reference to static variable local to this function instead of global variables.
+
 Another possible problem is the order of initialization of global variables defined in various libraries that may differ depending on platform, compiler and environment.
 
 ### Avoid explicit basic types
-Avoid explicit usage of basic types (int, float, double etc.), use Open CASCADE Technology types (from package Standard - see Standard_Integer, Standard_Real, Standard_ShortReal, Standard_Boolean, Standard_CString and others) or specific typedef instead.
 
-### Use sizeof() to calculate sizes [MANDATORY]
-Do not assume sizes of types. Use sizeof() instead to calculate sizes.
+Avoid explicit usage of basic types (*int*, *float*, *double*, etc.), use Open CASCADE Technology types from package *Standard: Standard_Integer, Standard_Real, Standard_ShortReal, Standard_Boolean, Standard_CString* and others or a specific *typedef* instead.
 
-### Empty line at end of file [MANDATORY]
-In accordance with C++03 standard source files should be trailed by empty line.
+### Use *sizeof()* to calculate sizes [MANDATORY]
+
+Do not assume sizes of types. Use *sizeof()* instead to calculate sizes.
+
+### Empty line at the end of file [MANDATORY]
+
+In accordance with C++03 standard source files should be trailed by an empty line.
 It is recommended to follow this rule for any plain text files for consistency and for correct work of git difference tools.
 
-@section OCCT_RULES_SECTION_8 Stability issues
+@section occt_coding_rules_8 Stability issues
 
 The rules listed in this chapter are important for stability of the programs that use Open CASCADE Technology libraries.
 
-### OSD::SetSignal() to catch exceptions
-When using Open CASCADE Technology in an application, make sure to call OSD::SetSignal() function when the application is initialized.
-This will install C handlers for run-time interrupt signals and exceptions,
-so that low-level exceptions (such as access violation, division by zero etc.) will be redirected to C++ exceptions
-(that use try {...} catch (Standard_Failure) {...} blocks).
+### Use *OSD::SetSignal()* to catch exceptions
+
+When using Open CASCADE Technology in an application, call *OSD::SetSignal()* function when the application is initialized.
+
+This will install C handlers for run-time interrupt signals and exceptions, so that low-level exceptions (such as access violation, division by zero, etc.) will be redirected to C++ exceptions
+that use *try {...} catch (Standard_Failure) {...}* blocks.
+
 The above rule is especially important for robustness of modeling algorithms.
 
 ### Cross-referenced handles
-Take care about cycling of handled references to avoid chains which will never be freed.
-For that purpose, use a pointer at one (subordinate) side. See the following example:
 
-In MyPackage.cdl:
+Take care about cycling of handled references to avoid chains, which will never be freed. For this purpose, use a pointer at one (subordinate) side. 
 
+See the following example:
+
+In *MyPackage.cdl* :
+
+~~~~
     class MyFirstHandle;
     class MySecondHandle;
     pointer MySecondPointer to MySecondHandle;
     ...
+~~~~
 
-In MyPackage_MyFirstHandle.cdl:
+In *MyPackage_MyFirstHandle.cdl* :
 
+~~~~
     class MyFirstHandle from MyPackage
     ...
     is
@@ -611,9 +682,11 @@ In MyPackage_MyFirstHandle.cdl:
       mySecondPointer : MySecondPointer from MyPackage;
     ...
     end MyFirstHandle from MyPackage;
+~~~~
 
-In MyPackage_MySecondHandle.cdl:
+In *MyPackage_MySecondHandle.cdl* :
 
+~~~~
     class MySecondHandle from MyPackage
     ...
     is
@@ -625,6 +698,7 @@ In MyPackage_MySecondHandle.cdl:
       myFirstHandle : MyFirstHandle from MyPackage;
     ...
     end MySecondHandle from MyPackage;
+~~~~
 
 In C++ code:
 
@@ -650,10 +724,11 @@ void MyFunction()
 ~~~~~
 
 ### C++ memory allocation
-In C++ use new and delete operators instead of malloc() and free().
-Try not to mix different memory allocation techniques.
 
-### Match new and delete [MANDATORY]
+In C++ use *new* and *delete* operators instead of *malloc()* and *free()*. Try not to mix different memory allocation techniques.
+
+### Match *new* and *delete* [MANDATORY]
+
 Use the same form of new and delete.
 
 ~~~~~{.cpp}
@@ -663,9 +738,11 @@ aPtr3 = Standard::Allocate (4096); ... ; Standard::Free (aPtr3);
 ~~~~~
 
 ### Methods managing dynamical allocation [MANDATORY]
+
 Define a destructor, a copy constructor and an assignment operator for classes with dynamically allocated memory.
 
 ### Uninitialized variables [MANDATORY]
+
 Every variable should be initialized.
 
 ~~~~~{.cpp}
@@ -673,15 +750,18 @@ Standard_Integer aTmpVar1;     // bad
 Standard_Integer aTmpVar2 = 0; // OK
 ~~~~~
 
-Uninitialized variables might be kept only within performance-sensitive code blocks and only when their initialization is *guarantied* by following code.
+Uninitialized variables might be kept only within performance-sensitive code blocks and only when their initialization is guaranteed by subsequent code.
 
-### Do not hide global new
-Avoid hiding the global new operator.
+### Do not hide global *new*
+
+Avoid hiding the global *new* operator.
 
 ### Assignment operator
-In operator=() assign to all data members and check for assignment to self.
+
+In *operator=()* assign to all data members and check for assignment to self.
 
 ### Float comparison
+
 Don't check floats for equality or non-equality; check for GT, GE, LT or LE.
 
 ~~~~~{.cpp}
@@ -691,42 +771,45 @@ if (Abs (theFloat1 - theFloat2) < theTolerance)
 }
 ~~~~~
 
-Package 'Precision' provides standard values for SI units and widely adopted by existing modeling algorithms:
-- Precision::Confusion() for lengths in meters
-- Precision::Angular() for angles in radians
+Package *Precision* provides standard values for SI units and widely adopted by existing modeling algorithms:
 
-as well as definition of infinity values within sanity range of double precision:
-- Precision::Infinite()
-- Precision::IsInfinite()
-- Precision::IsPositiveInfinite()
-- Precision::IsNegativeInfinite()
+- *Precision::Confusion()* for lengths in meters;
+- *Precision::Angular()* for angles in radians.
+
+as well as definition of infinite values within normal range of double precision:
+- *Precision::Infinite()*
+- *Precision::IsInfinite()*
+- *Precision::IsPositiveInfinite()*
+- *Precision::IsNegativeInfinite()*
 
 ### Non-indexed iteration
-Avoid usage of iteration over non-indexed collections of objects.
-If such iteration is used, make sure that the result of the algorithm does not depend on order.
 
-Since the order of iteration is unpredictable in this case, it frequently leads to different behavior of the application from one run to another,
-thus embarrassing the debugging process.
-It mostly concerns mapped objects for which pointers are involved in calculating the hash function.
-For example, the hash function of TopoDS_Shape involves the address of TopoDS_TShape object.
-Thus the order of the same shape in the TopTools_MapOfShape will vary in different sessions of the application.
+Avoid usage of iteration over non-indexed collections of objects.
+If such iteration is used, make sure that the result of the algorithm does not depend on the order of iterated items.
+
+Since the order of iteration is unpredictable in case of a non-indexed collection of objects, it frequently leads to different behavior of the application from one run to another, thus embarrassing the debugging process.
+
+It mostly concerns mapped objects for which pointers are involved in calculating the hash function. For example, the hash function of *TopoDS_Shape* involves the address of *TopoDS_TShape* object. Thus the order of the same shape in the *TopTools_MapOfShape* will vary in different sessions of the application. 
 
 ### Do not throw in destructors
-Do not throw from within destructor.
+
+Do not throw from within a destructor.
 
 ### Assigning to reference [MANDATORY]
-Avoid possible assignments of the temporary object to a reference.
-Different behavior for different compiler of different platforms.
 
-@section OCCT_RULES_SECTION_9 Performance issues
+Avoid the assignment of a temporary object to a reference. This results in a different behavior for different compilers on different platforms.
+
+@section occt_coding_rules_9 Performance issues
 
 These rules define the ways of avoiding possible loss of performance caused by ineffective programming.
 
 ### Class fields alignment
-In a class, declare its fields in the decreasing order of their size for better alignment.
+
+Declare fields of a class in the decreasing order of their size for better alignment.
 Generally, try to reduce misaligned accesses since they impact the performance (for example, on Intel machines).
 
 ### Fields initialization order [MANDATORY]
+
 List class data members in the constructor's initialization list in the order they are declared.
 
 ~~~~~{.cpp}
@@ -752,7 +835,8 @@ private:
 ~~~~~
 
 ### Initialization over assignment
-In class constructors prefer initialization over assignment.
+
+Prefer initialization over assignment in class constructors.
 
 ~~~~~{.cpp}
 MyPackage_MyClass()
@@ -763,8 +847,9 @@ MyPackage_MyClass()
 ~~~~~
 
 ### Optimize caching
-When programming procedures with extensive memory access, try to optimize them in terms of cache behavior.
-Here is an example of how cache behavior can be impact:
+
+When programming procedures with extensive memory access, try to optimize them in terms of cache behavior. Here is an example of how the cache behavior can be impacted:
+
 On x86 this code
 
 ~~~~~{.cpp}
@@ -775,7 +860,7 @@ for (Standard_Integer anIter = 0; anIter < 4096; ++anIter)
 }
 ~~~~~
 
-is more efficient than
+is more efficient then
 
 ~~~~~{.cpp}
 Standard_Real anArray[2][4096];
@@ -785,14 +870,103 @@ for (Standard_Integer anIter = 0; anIter < 4096; ++anIter)
 }
 ~~~~~
 
-since linear access (above) does not invalidate cache too often.
+since linear access does not invalidate cache too often.
 
-@section OCCT_RULES_SECTION_10 Examples
+@section occt_coding_rules_10 Draw Harness command
 
-Here is C++ source file sample:
+Draw Harness provides TCL interface for OCCT algorithms.
+
+There is no TCL wrapper over OCCT C++ classes, instead interface is provided through the set of TCL commands implemented in C++.
+
+There is a list of common rules which should be followed to implement well-formed Draw Harness command.
+
+### Return value
+
+Command should return 0 in most cases even if the executed algorithm has failed. Returning 1 would lead to a TCL exception, thus should be used in case of a command line syntax error and similar issues.
+
+### Validate input parameters
+
+Command arguments should be validated before usage. The user should see a human-readable error description instead of a runtime exception from the executed algorithm.
+
+### Validate the number of input parameters
+
+Command should warn the user about unknown arguments, including cases when extra parameters have been pushed for the command with a fixed number of arguments.
+
+~~~~~{.cpp}
+  if (theArgsNb != 3)
+  {
+    std::cout << "Syntax error - wrong number of arguments!\n";
+    return 1;
+  }
+
+  Standard_Integer anArgIter  = 1;
+  Standard_CString aResName   = theArgVec[anArgIter++];
+  Standard_CString aFaceName  = theArgVec[anArgIter++];
+  TopoDS_Shape     aFaceShape = DBRep::Get (aFaceName);
+  if (aFaceShape.IsNull()
+   || aFaceShape.ShapeType() != TopAbs_FACE)
+  {
+    std::cout << "Shape " << aFaceName << " is empty or not a Face!\n";
+    return 1;
+  }
+  DBRep::Set (aResName, aFaceShape);
+  return 0;
+~~~~~
+
+### Message printing
+
+Informative messages should be printed into standard output *std::cout*, whilst command results (if any) - into Draw Interpreter.
+
+Information printed into Draw Interpreter should be well-structured to allow usage in TCL script.
+
+### Long list of arguments
+
+Any command with a long list of obligatory parameters should be considered as ill-formed by design.
+Optional parameters should start with flag name (with '-' prefix) and followed by its values:
+
+~~~~~{.tcl}
+myCommand -flag1 value1 value2 -flag2 value3
+~~~~~
+
+### Arguments parser
+
+- Integer values should be read using *Draw:Atoi()* function.
+- Real values should be read using *Draw:Atof()* function.
+- Flags names should be checked in case insensitive manner.
+
+Functions *Draw:Atof()* and *Draw:Atoi()* support expressions and read values in C-locale.
+
+~~~~~{.cpp}
+  Standard_Real aPosition[3] = {0.0, 0.0, 0.0};
+  for (Standard_Integer anArgIter = 1; anArgIter < theArgsNb; ++anArgIter)
+  {
+    Standard_CString anArg = theArgVec[anArgIter];
+    TCollection_AsciiString aFlag (anArg);
+    aFlag.LowerCase(); //!< for case insensitive comparison
+    if (aFlag == "position")
+    {
+      if ((anArgIt + 3) >= theArgsNb)
+      {
+        std::cerr << "Wrong syntax at argument '" << anArg << "'!\n";
+        return 1;
+      }
+      aPosition[0] = Draw::Atof (theArgVec[++anArgIt]);
+      aPosition[1] = Draw::Atof (theArgVec[++anArgIt]);
+      aPosition[2] = Draw::Atof (theArgVec[++anArgIt]);
+    }
+    else
+    {
+      std::cout << "Syntax error! Unknown flag '" << anArg << "'\n";
+      return 1;
+    }
+  }
+~~~~~
+
+@section occt_coding_rules_11 Examples
+
+### Sample documented class
 
 @verbatim
-//! Sample documented class
 class Package_Class
 {
 
@@ -803,21 +977,22 @@ public: //! @name public methods
   //! @return squared value
   Standard_Export Standard_Real Square (const Standard_Real theValue);
 
-private: //! @name private methods
+private: //! \@name private methods
 
   //! Auxiliary method
   void increment();
 
-private: //! @name private fields
+private: //! \@name private fields
 
   Standard_Integer myCounter; //!< usage counter
 
 };
+
+
 @endverbatim
 
-~~~~~{.cpp}
+~~~~~
 #include <Package_Class.hxx>
-
 // ==========================================================
 // function : Square
 // purpose  : Method computes the square value
@@ -838,7 +1013,8 @@ void Package_Class::increment()
 }
 ~~~~~
 
-TCL script for Draw Harness:
+### TCL script for Draw Harness
+
 ~~~~~{.tcl}
 # show fragments (solids) in shading with different colors
 proc DisplayColored {theShape} {
@@ -872,7 +1048,7 @@ vfit
 vdump $imagedir/${casename}.png 512 512
 ~~~~~
 
-GLSL program:
+### GLSL program:
 ~~~~~{.fs}
 vec3 Ambient;  //!< Ambient  contribution of light sources
 vec3 Diffuse;  //!< Diffuse  contribution of light sources
