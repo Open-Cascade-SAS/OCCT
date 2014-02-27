@@ -9,19 +9,15 @@ This document provides practical guidenes for generation and editing of OCCT use
 
 @section  OCCT_DM_SECTION_2 Prerequisites
 
+In order to generate documentation, you need to have the following software installed.
+
 <b>Tcl/Tk</b>
 Version 8.5 or 8.6: http://www.tcl.tk/software/tcltk/download.html
 
 <b>Doxygen</b> 
 Version 1.8.4 or above: http://www.stack.nl/~dimitri/doxygen/download.html
 
-<b>MathJax</b> (used for rendering math formulas in browser). 
-See \ref OCCT_DM_SECTION_A_9 paragraph for more detailed description. 
-The latest version: http://www.mathjax.org/download/
-
-<b>MiKTeX</b> or equivalent tool (used for PDF document creation)
-
-Latest version: http://miktex.org/download
+<b>MiKTeX</b> or equivalent tool (only needed for PDF document creation): http://miktex.org/download
 
 **Note**: to generate pdf documentation with MiKTeX you should execute gendoc.bat within MiKTeX environment 
 (run gendoc.bat in MiKTeX command promt or update PATH for MiKTeX bin folder). Also in process of pdf generation
@@ -31,6 +27,12 @@ MiKTeX can request you to download missing packages if MiKTeX was installed with
 @image latex /dev_guides/documentation/images/documentation_image002.png
 
 If this option is set to "Yes", MiKTeX will download missing packages automatically.
+
+<b>MathJax</b> is used for rendering math formulas in browser (HTML and CHM outputs): http://www.mathjax.org.
+
+By default MathJAX scripts and fonts are taken from http://cdn.mathjax.org/mathjax/latest and no instalation of MathJAX is necessary if Internet is accessible.
+If you need to use OCCT documentation while offline, you can install local copy of MatJAX, see http://www.mathjax.org/download/.
+See \ref OCCT_DM_SECTION_A_9 paragraph for more details on inserting math. 
 
 @section OCCT_DM_SECTION_2_1 Documentation Generation
 
@@ -42,42 +44,26 @@ gendoc.bat options:
   * -pdf                 : To generate PDF files (cannot be used with -html);
   * -m=\<modules_list\>    : Specifies list of articles to generate. If it is not specified, all files, mentioned in FILES.txt are processed;
   * -l=\<document_name\>   : Specifies the article caption for a single document;
+  * -mathjax=\<path\>      : Specifies path to non-default MathJAX installation
   * -h                   : Prints help message;
   * -v                   : Specifies the Verbose mode (info on all script actions is shown).
 
-If you run the command without arguments (like example above) it will generate HTML documentation 
-for all articles are defined into FILES.txt.
+If you run the command without arguments (like example above) it will generate HTML documentation for all articles defined in FILES.txt.
 
 **Note**: the generation process generates PDF files for each article, 
 but in html case it generates common Html page with references to the ones.
 
-For generation of specific article you need:
-  * have it's name with relative path (from \%OCCDIR\%/dox/ to the file) contained in FILES.txt 
-  (is located into \%OCCDIR\%/dox/ directory).
+For generation of specific article specify path to corresponding MarkDown file (paths relative to *dox* subfolder can be given), for instance:
 
-@verbatim
-devs_guid/documentation/documentation.md
-@endverbatim
+    % gendoc.bat -html -m=dev_guides/documentation/documentation.md
 
-where documentation .md is name of article and devs_guid/documentation/ is relative path of it
+Multiple files can be separated with comma:
 
-  * use this name with -m option in the generation process:
+    % gendoc.bat -html -m=MD_FILE_1,MD_FILE_2
 
-@verbatim
-% gendoc.bat -html -m=devs_guid/documentation/documentation.md
-@endverbatim
+To specify an article name with -l option, use quotes to prevent incorrect interpretation of whitespaces:
 
-Multiple files are separated with comma:
-
-@verbatim
-% gendoc.bat -html -m=MD_FILE_1,MD_FILE_2
-@endverbatim
-
-To sepcify a article name with -l option, use quotes to prevent incorrect interpretation of whitespaces:
-
-@verbatim
-% gendoc.bat -pdf -m=MD_FILE_1 -l="Label of MD_FILE_1 document"
-@endverbatim
+    % gendoc.bat -pdf -m=MD_FILE_1 -l="Label of MD_FILE_1 document"
 
 @section  OCCT_DM_SECTION_3 Documentation Conventions
 
@@ -426,33 +412,7 @@ The TOC in the PDF document will be generated automatically.
 
 @subsection  OCCT_DM_SECTION_A_9 Formulas
 
-Formulas within documents will be generated using MathJax tool.
-
-A developer has to specify these parameters in Doxyfile to enable support of MathJax in Doxygen:
-
-    USE_MATHJAX         = YES
-    MATHJAX_FORMAT      = HTML-CSS
-    MATHJAX_RELPATH     = http://cdn.mathjax.org/mathjax/latest
-    MATHJAX_EXTENSIONS  = TeX/AMSmath TeX/AMSsymbols
-
-To use MathJax tool with the HTML page, it's \<head\> block has to contain 
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.html}
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-        tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]},
-        displayAlign: "left"
-      });
-    </script>
-
-    <script type="text/javascript"
-      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-    </script>
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-First script configures MathJax to understand separator types and to left allign formulas. 
-The second script inserts reference to MathJax tool. 
-This tool will always be used when the HTML output will be shown.
+Formulas within MarkDown documents can be defined using LaTeX syntax.
 
 Equations can be written by several ways:
 

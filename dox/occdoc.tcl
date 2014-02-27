@@ -20,7 +20,7 @@ proc OverviewDoc_DetectCasVersion {theCasRoot} {
 }
 
 # Generates Doxygen configuration file for Overview documentation
-proc OverviewDoc_MakeDoxyfile {casDir outDir tagFileDir {doxyFileName} {generatorMode ""} DocFilesList verboseMode searchMode hhcPath} {
+proc OverviewDoc_MakeDoxyfile {casDir outDir tagFileDir {doxyFileName} {generatorMode ""} DocFilesList verboseMode searchMode hhcPath mathjaxLocation} {
 
     set doxyFile [open $doxyFileName "w"]
     set casroot  $casDir
@@ -150,7 +150,7 @@ proc OverviewDoc_MakeDoxyfile {casDir outDir tagFileDir {doxyFileName} {generato
         puts $doxyFile "FORMULA_TRANSPARENT    = YES"
         puts $doxyFile "USE_MATHJAX            = YES"
         puts $doxyFile "MATHJAX_FORMAT         = HTML-CSS"
-        puts $doxyFile "MATHJAX_RELPATH        = http://cdn.mathjax.org/mathjax/latest"
+        puts $doxyFile "MATHJAX_RELPATH        = ${mathjaxLocation}"
         
     } elseif { $generatorMode == "CHM_ONLY"} {
         puts $doxyFile "GENERATE_HTMLHELP      = YES"
@@ -162,7 +162,7 @@ proc OverviewDoc_MakeDoxyfile {casDir outDir tagFileDir {doxyFileName} {generato
         puts $doxyFile "FORMULA_TRANSPARENT    = YES"
         puts $doxyFile "USE_MATHJAX            = YES"
         puts $doxyFile "MATHJAX_FORMAT         = HTML-CSS"
-        puts $doxyFile "MATHJAX_RELPATH        = http://cdn.mathjax.org/mathjax/latest"
+        puts $doxyFile "MATHJAX_RELPATH        = ${mathjaxLocation}"
 
     } elseif { $generatorMode == "PDF_ONLY"} {
         puts $doxyFile "GENERATE_HTMLHELP      = NO"
@@ -215,25 +215,26 @@ proc OverviewDoc_PrintHelpMessage {} {
     puts "\nUsage : occdoc \[-h\] \[-html\] \[-pdf\] \[-m=<list of files>\] \[-l=<document name>\] \[-v\] \[-s\]"
     puts ""
     puts " Options are : "
-    puts "    -html                : To generate HTML files"
-    puts "                           (cannot be used with -pdf or -chm)"
-    puts "    -pdf                 : To generate PDF files"
-    puts "                           (cannot be used with -html or chm)"
-    puts "    -chm                 : To generate CHM files"
-    puts "                           (cannot be used with -html or pdf)"
-    puts "    -hhc                 : To define path to hhc - chm generator"
-    puts "                         : is used with just -chm option"
-    puts "    -m=<modules_list>    : Specifies list of documents to generate."
-    puts "                           If it is not specified, all files, "
-    puts "                           mentioned in FILES.txt are processed."
-    puts "    -l=<document_name>   : Specifies the document caption "
-    puts "                           for a single document"
-    puts "    -h                   : Prints help message"
-    puts "    -v                   : Specifies the Verbose mode"
-    puts "                           (info on all script actions is shown)"
-    puts "    -s=<search_mode>     : Specifies the Search mode of HTML documents."
-    puts "                           Can be: none | local | server | external | "
-    puts "                         : Can be used only with -html option"
+    puts "    -html                  : To generate HTML files"
+    puts "                             (cannot be used with -pdf or -chm)"
+    puts "    -pdf                   : To generate PDF files"
+    puts "                             (cannot be used with -html or chm)"
+    puts "    -chm                   : To generate CHM files"
+    puts "                             (cannot be used with -html or pdf)"
+    puts "    -hhc                   : To define path to hhc - chm generator"
+    puts "                           : is used with just -chm option"
+    puts "    -m=<modules_list>      : Specifies list of documents to generate."
+    puts "                             If it is not specified, all files "
+    puts "                             mentioned in FILES.txt are processed."
+    puts "    -l=<document_name>     : Specifies the document caption "
+    puts "                             for a single document"
+    puts "    -h                     : Prints help message"
+    puts "    -v                     : Specifies the Verbose mode"
+    puts "                             (info on all script actions is shown)"
+    puts "    -s=<search_mode>       : Specifies the Search mode of HTML documents."
+    puts "                             Can be: none | local | server | external"
+    puts "                           : Can be used only with -html option"
+    puts "    -mathjax=<path>        : To use local or alternative copy of MathJax"
 }
 
 # Parses command line arguments
@@ -509,7 +510,7 @@ proc OverviewDoc_ProcessTex {{texFiles {}} {latexDir} verboseMode} {
 }
 
 # Main procedure for documents compilation
-proc OverviewDoc_Main { {docfiles {}} generatorMode docLabel verboseMode searchMode hhcPath} {
+proc OverviewDoc_Main { {docfiles {}} generatorMode docLabel verboseMode searchMode hhcPath mathjaxLocation} {
 
     set INDIR      [file normalize [file dirname [info script]]]
     set CASROOT    [file normalize [file dirname "$INDIR/../../"]]
@@ -536,11 +537,23 @@ proc OverviewDoc_Main { {docfiles {}} generatorMode docLabel verboseMode searchM
       file delete -force $LATEXDIR
     }
     file mkdir $LATEXDIR
+    
+    # is MathJax HLink?
+    set mathjax_relative_location $mathjaxLocation
+    if { [file isdirectory "$mathjaxLocation"] == 1 } {
+      if { $generatorMode == "HTML_ONLY"} {
+        # related path
+        set mathjax_relative_location [relativePath $HTMLDIR $mathjaxLocation]
+      } elseif { $generatorMode == "CHM_ONLY"} {
+        # absolute path
+        set mathjax_relative_location [file normalize $mathjaxLocation]
+      }
+    }
 
     # Run tools to compile documents
     puts "[clock format [clock seconds] -format {%Y-%m-%d %H:%M}] Generating Doxyfile..."
     
-    OverviewDoc_MakeDoxyfile $CASROOT "$OUTDIR/overview" $TAGFILEDIR $DOXYFILE $generatorMode $docfiles $verboseMode $searchMode $hhcPath
+    OverviewDoc_MakeDoxyfile $CASROOT "$OUTDIR/overview" $TAGFILEDIR $DOXYFILE $generatorMode $docfiles $verboseMode $searchMode $hhcPath $mathjax_relative_location
 
     # Run doxygen tool
     if { $generatorMode == "HTML_ONLY"} {
@@ -648,6 +661,38 @@ proc OverviewDoc_Main { {docfiles {}} generatorMode docLabel verboseMode searchM
     }
 }
 
+proc relativePath {thePathFrom thePathTo} {
+  if { [file isdirectory "$thePathFrom"] == 0 } {
+    return ""
+  }
+
+  set aPathFrom [file normalize "$thePathFrom"]
+  set aPathTo   [file normalize "$thePathTo"]
+
+  set aCutedPathFrom "${aPathFrom}/dummy"
+  set aRelatedDeepPath ""
+
+  while { "$aCutedPathFrom" != [file normalize "$aCutedPathFrom/.."] } {
+    set aCutedPathFrom [file normalize "$aCutedPathFrom/.."]
+    # does aPathTo contain aCutedPathFrom?
+    regsub -all $aCutedPathFrom $aPathTo "" aPathFromAfterCut
+    if { "$aPathFromAfterCut" != "$aPathTo" } { # if so
+      if { "$aCutedPathFrom" == "$aPathFrom" } { # just go higher, for example, ./somefolder/someotherfolder
+        set aPathTo ".${aPathTo}"
+      } elseif { "$aCutedPathFrom" == "$aPathTo" } { # remove the last "/"
+        set aRelatedDeepPath [string replace $aRelatedDeepPath end end ""]
+      }
+      regsub -all $aCutedPathFrom $aPathTo $aRelatedDeepPath aPathToAfterCut
+      regsub -all "//" $aPathToAfterCut "/" aPathToAfterCut
+      return $aPathToAfterCut
+    }
+    set aRelatedDeepPath "$aRelatedDeepPath../"
+
+  }
+
+  return $thePathTo
+}
+
 # A command for User Documentation compilation
 proc occdoc {args} {
     # Programm options
@@ -658,6 +703,9 @@ proc occdoc {args} {
     set VERB_MODE   "NO"
     set SEARCH_MODE "none"
     set hhcPath ""
+
+    set mathjax_location "http://cdn.mathjax.org/mathjax/latest"
+    set mathjax_js_name "MathJax.js"
 
     global available_docfiles
     global tcl_platform
@@ -758,6 +806,19 @@ proc occdoc {args} {
         puts "Error in argument s"
         return
       }
+    } elseif {$arg_n == "mathjax"} {
+      if {![info exists args_values(pdf)]} {
+        set possible_mathjax_loc $args_values(mathjax)
+        if {[file exist [file join $possible_mathjax_loc $mathjax_js_name]]} {
+          set mathjax_location $args_values(mathjax)
+          puts "$mathjax_location"
+        } else {
+          puts "Warning: $mathjax_js_name isn't found in $possible_mathjax_loc."
+          puts "         MathJax will be used from $mathjax_location"
+        }
+      } else {
+        puts "Info: MathJax is not used with pdf and will be ignored"
+      }
     } else {
       puts "\nWrong argument: $arg_n"
       OverviewDoc_PrintHelpMessage
@@ -777,5 +838,5 @@ proc occdoc {args} {
   }
 
   # Start main activities
-  OverviewDoc_Main $DOCFILES $GEN_MODE $DOCLABEL $VERB_MODE $SEARCH_MODE $hhcPath
+  OverviewDoc_Main $DOCFILES $GEN_MODE $DOCLABEL $VERB_MODE $SEARCH_MODE $hhcPath $mathjax_location
 }
