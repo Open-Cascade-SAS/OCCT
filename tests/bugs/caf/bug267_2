@@ -9,7 +9,7 @@ puts "========"
 pload QAcommands
 
 NewDocument D MDTV-Standard
-file delete ${imagedir}/OCC267.std
+file delete -force ${imagedir}/OCC267.std
 catch { OCC267 D ${imagedir}/OCC267.std } status
 
 set list [split ${status}]
