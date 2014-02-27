@@ -38,7 +38,94 @@
 #include <TopTools_DataMapIteratorOfDataMapOfShapeInteger.hxx>
 #include <TopTools_DataMapOfShapeInteger.hxx>
 
+//=======================================================================
+//function : PropagateRecurs
+//purpose  : 
+//=======================================================================
+static void PropagateRecurs(const TopTools_IndexedDataMapOfShapeListOfShape& mapEF,
+		      const TopoDS_Shape& fac,
+		      TopTools_MapOfShape& mapF)
+{
+  if (mapF.Contains(fac))
+  {
+    return;
+  }
+  
+  mapF.Add(fac);  // attention, if oriented == Standard_True, fac should
+                  // be FORWARD or REVERSED. It is not checked.
 
+  TopExp_Explorer ex;
+  for (ex.Init(fac,TopAbs_EDGE); ex.More(); ex.Next())
+  {
+    const TopoDS_Edge& edg = TopoDS::Edge(ex.Current());
+    // test if the edge is in the map (only orienteed edges are present)
+    if (mapEF.Contains(edg))
+    {
+      for (TopTools_ListIteratorOfListOfShape itl(mapEF.FindFromKey(edg)); itl.More(); itl.Next())
+      {
+        if (!itl.Value().IsSame(fac) && !mapF.Contains(itl.Value()))
+        {
+          PropagateRecurs(mapEF,itl.Value(),mapF);
+        }
+      }
+    }
+  }
+}
+
+//=======================================================================
+//function : Propagate
+//purpose  : 
+//=======================================================================
+static void Propagate(const TopTools_IndexedDataMapOfShapeListOfShape& mapEF,
+		      const TopoDS_Shape& fac,
+		      TopTools_MapOfShape& mapF)
+{
+  if (mapF.Contains(fac))
+  {
+    return;
+  }
+  mapF.Add(fac);  // attention, if oriented == Standard_True, fac should
+                  // be FORWARD or REVERSED. It is not checked.
+
+  TopTools_MapIteratorOfMapOfShape itf(mapF);
+  while(itf.More())
+  {
+    Standard_Boolean hasBeenAdded = Standard_False;
+    const TopoDS_Shape& fac = itf.Key();
+    TopExp_Explorer ex;
+    for (ex.Init(fac,TopAbs_EDGE); ex.More(); ex.Next())
+    {
+      const TopoDS_Edge& edg = TopoDS::Edge(ex.Current());
+      // test if the edge is in the map (only orienteed edges are present)
+      if (mapEF.Contains(edg))
+      {
+        for (TopTools_ListIteratorOfListOfShape itl(mapEF.FindFromKey(edg)); itl.More(); itl.Next())
+        {
+          if (!itl.Value().IsSame(fac) && !mapF.Contains(itl.Value()))
+          {
+            mapF.Add(itl.Value());
+            hasBeenAdded = Standard_True;
+          }
+        }
+      }
+    }//for (ex.Init(fac,TopAbs_EDGE); ex.More();)
+
+    if(hasBeenAdded)
+    {
+      itf.Initialize(mapF);
+    }
+    else
+    {
+      itf.Next();
+    }
+  }
+}
+
+
+//=======================================================================
+//function : BRepCheck_Trace
+//purpose  : 
+//=======================================================================
 Standard_EXPORT Standard_Integer BRepCheck_Trace(const Standard_Integer phase) {
   static int BRC_Trace = 0;
   if (phase < 0) BRC_Trace =0;
@@ -98,10 +185,10 @@ void PrintShape(const TopoDS_Shape& theShape, const Standard_Integer upper) {
   }
 }
     
-static void Propagate(const TopTools_IndexedDataMapOfShapeListOfShape&,
-		      const TopoDS_Shape&,   // Face
-		      TopTools_MapOfShape&);  // mapofface
-
+//=======================================================================
+//function : IsOriented
+//purpose  : 
+//=======================================================================
 inline Standard_Boolean IsOriented(const TopoDS_Shape& S)
 {
   return (S.Orientation() == TopAbs_FORWARD ||
@@ -124,13 +211,13 @@ BRepCheck_Shell::BRepCheck_Shell(const TopoDS_Shell& S)
 //function : Minimum
 //purpose  : 
 //=======================================================================
-
 void BRepCheck_Shell::Minimum()
 {
   myCdone = Standard_False;
   myOdone = Standard_False;
 
-  if (!myMin) {
+  if (!myMin)
+  {
     BRepCheck_ListOfStatus thelist;
     myMap.Bind(myShape, thelist);
     BRepCheck_ListOfStatus& lst = myMap(myShape);
@@ -139,41 +226,51 @@ void BRepCheck_Shell::Minimum()
     TopExp_Explorer exp(myShape,TopAbs_FACE);
     Standard_Integer nbface = 0;
     myMapEF.Clear();
-    for (; exp.More(); exp.Next()) {
+    for (; exp.More(); exp.Next())
+    {
       nbface++;
       TopExp_Explorer expe;
-      for (expe.Init(exp.Current(),TopAbs_EDGE); 
-	   expe.More(); expe.Next()) {
-	const TopoDS_Shape& edg = expe.Current();
-	Standard_Integer index = myMapEF.FindIndex(edg);
-	if (index == 0) {
-	  TopTools_ListOfShape thelist1;
-	  index = myMapEF.Add(edg, thelist1);
-	}
-	myMapEF(index).Append(exp.Current());
-      }
-    }
+      for (expe.Init(exp.Current(),TopAbs_EDGE);
+                        expe.More(); expe.Next())
+      {
+        const TopoDS_Shape& edg = expe.Current();
+        Standard_Integer index = myMapEF.FindIndex(edg);
+        if (index == 0)
+        {
+          TopTools_ListOfShape thelist1;
+          index = myMapEF.Add(edg, thelist1);
+        }
 
-    if (nbface == 0) {
+        myMapEF(index).Append(exp.Current());
+      }
+    }//for (; exp.More(); exp.Next())
+
+    if (nbface == 0)
+    {
       BRepCheck::Add(lst,BRepCheck_EmptyShell);
     }
-    else if (nbface >= 2) {
+    else if (nbface >= 2)
+    {
       TopTools_MapOfShape mapF;
       exp.ReInit();
+
       Propagate(myMapEF,exp.Current(),mapF);
-      if (mapF.Extent() != nbface)  {
-	BRepCheck::Add(lst,BRepCheck_NotConnected);
+
+      if (mapF.Extent() != nbface)
+      {
+        BRepCheck::Add(lst,BRepCheck_NotConnected);
       }
-    }
-    if (lst.IsEmpty()) {
+    }//else if (nbface >= 2)
+
+    if (lst.IsEmpty())
+    {
       lst.Append(BRepCheck_NoError);
     }
+    
     myMapEF.Clear();
     myMin = Standard_True;
   }
 }
-
-
 
 //=======================================================================
 //function : InContext
@@ -249,21 +346,23 @@ void BRepCheck_Shell::Blind()
 //function : Closed
 //purpose  : 
 //=======================================================================
-
 BRepCheck_Status BRepCheck_Shell::Closed(const Standard_Boolean Update)
 {
-
-  if (myCdone) {
-    if (Update) {
+  if (myCdone)
+  {
+    if (Update)
+    {
       BRepCheck::Add(myMap(myShape), myCstat);
     }
+
     return myCstat;
   }
 
   myCdone = Standard_True; // it will be done...
 
   BRepCheck_ListIteratorOfListOfStatus itl(myMap(myShape));
-  if (itl.Value() != BRepCheck_NoError) {
+  if (itl.Value() != BRepCheck_NoError)
+  {
     myCstat = itl.Value();
     return myCstat; // already saved
   }
@@ -281,71 +380,94 @@ BRepCheck_Status BRepCheck_Shell::Closed(const Standard_Boolean Update)
   //
   //modified by NIZNHY-PKV Mon Jun  4 13:59:21 2007f
   exp.Init(myShape,TopAbs_FACE);
-  for (; exp.More(); exp.Next()) {
+  for (; exp.More(); exp.Next())
+  {
     const TopoDS_Shape& aF=exp.Current();
-    if (IsOriented(aF)) {
+    if (IsOriented(aF))
+    {
       ede.Init(exp.Current(),TopAbs_EDGE);
-      for (; ede.More(); ede.Next()) {
-	const TopoDS_Shape& aE=ede.Current();
-	if (!IsOriented(aE)) {
-	  aMEToAvoid.Add(aE);
-	}
+      for (; ede.More(); ede.Next())
+      {
+        const TopoDS_Shape& aE=ede.Current();
+        if (!IsOriented(aE))
+        {
+          aMEToAvoid.Add(aE);
+        }
       }
     }
   }
   //modified by NIZNHY-PKV Mon Jun  4 13:59:23 2007t
   //
   exp.Init(myShape,TopAbs_FACE);
-  for (; exp.More(); exp.Next()) {
+  for (; exp.More(); exp.Next())
+  {
     const TopoDS_Shape& aF=exp.Current();
-    if (IsOriented(aF)) {
-      if (!mapS.Add(aF)) {
-	myCstat = BRepCheck_RedundantFace;
-	if (Update) {
-	  BRepCheck::Add(myMap(myShape),myCstat);
-	}
-	return myCstat;
+    if (IsOriented(aF))
+    {
+      if (!mapS.Add(aF))
+      {
+        myCstat = BRepCheck_RedundantFace;
+        
+        if (Update)
+        {
+          BRepCheck::Add(myMap(myShape),myCstat);
+        }
+
+        return myCstat;
       }
+
       //
       ede.Init(exp.Current(),TopAbs_EDGE);
-      for (; ede.More(); ede.Next()) {
-	const TopoDS_Shape& aE=ede.Current();
-	//modified by NIZNHY-PKV Mon Jun  4 14:07:57 2007f
-	//if (IsOriented(aE)) {
-	if (!aMEToAvoid.Contains(aE)) {
-	  //modified by NIZNHY-PKV Mon Jun  4 14:08:01 2007
-	  index = myMapEF.FindIndex(aE);
-	  if (!index) {
-	    TopTools_ListOfShape thelist;
-	    index = myMapEF.Add(aE, thelist);
-	  }
-	  myMapEF(index).Append(aF);
-	}
+      for (; ede.More(); ede.Next())
+      {
+        const TopoDS_Shape& aE=ede.Current();
+        //modified by NIZNHY-PKV Mon Jun  4 14:07:57 2007f
+        //if (IsOriented(aE)) {
+        if (!aMEToAvoid.Contains(aE))
+        {
+          //modified by NIZNHY-PKV Mon Jun  4 14:08:01 2007
+          index = myMapEF.FindIndex(aE);
+          
+          if (!index)
+          {
+            TopTools_ListOfShape thelist;
+            index = myMapEF.Add(aE, thelist);
+          }
+
+          myMapEF(index).Append(aF);
+        }
       }
     }
   }
+
   //
   myNbori = mapS.Extent();
-  if (myNbori >= 2) {
+  if (myNbori >= 2)
+  {
     mapS.Clear();
     // Search for the first oriented face
     TopoDS_Shape aF;
     exp.Init(myShape, TopAbs_FACE);
-    for (;exp.More(); exp.Next()) {
+    for (;exp.More(); exp.Next())
+    {
       aF=exp.Current();
-      if (IsOriented(aF)) {
-	break;
+      if (IsOriented(aF))
+      {
+        break;
       }
     }
-    //
+
     Propagate(myMapEF, aF, mapS);
   }
   //
+
   //
   aNbF=mapS.Extent();
-  if (myNbori != aNbF) {
+  if (myNbori != aNbF)
+  {
     myCstat = BRepCheck_NotConnected;
-    if (Update) {
+    if (Update)
+    {
       BRepCheck::Add(myMap(myShape),myCstat);
     }
     return myCstat;
@@ -355,28 +477,37 @@ BRepCheck_Status BRepCheck_Shell::Closed(const Standard_Boolean Update)
   Standard_Integer i, Nbedges, nboc, nbSet;
   //
   Nbedges = myMapEF.Extent();
-  for (i = 1; i<=Nbedges; ++i) {
+  for (i = 1; i<=Nbedges; ++i)
+  {
     nboc = myMapEF(i).Extent();
-    if (nboc == 0 || nboc >= 3) {
+    if (nboc == 0 || nboc >= 3)
+    {
       TopTools_ListOfShape theSet;
       nbSet=NbConnectedSet(theSet);
       // If there is more than one closed cavity the shell is considered invalid
       // this corresponds to the criteria of a solid (not those of a shell)
-      if (nbSet>1) {
-	myCstat = BRepCheck_InvalidMultiConnexity;
-	if (Update) {
-	  BRepCheck::Add(myMap(myShape),myCstat);
-	}
-	return myCstat;
+      if (nbSet>1)
+      {
+        myCstat = BRepCheck_InvalidMultiConnexity;
+        if (Update)
+        {
+          BRepCheck::Add(myMap(myShape),myCstat);
+        }
+
+        return myCstat;
       }
     }
-    else if (nboc == 1) {
-      if (!BRep_Tool::Degenerated(TopoDS::Edge(myMapEF.FindKey(i)))) {
-	myCstat=BRepCheck_NotClosed;
-	if (Update) {
-	  BRepCheck::Add(myMap(myShape),myCstat);
-	}
-	return myCstat;
+    else if (nboc == 1)
+    {
+      if (!BRep_Tool::Degenerated(TopoDS::Edge(myMapEF.FindKey(i))))
+      {
+        myCstat=BRepCheck_NotClosed;
+        if (Update)
+        {
+          BRepCheck::Add(myMap(myShape),myCstat);
+        }
+
+        return myCstat;
       }
     }
   }
@@ -834,35 +965,4 @@ Standard_Integer BRepCheck_Shell::NbConnectedSet(TopTools_ListOfShape& theSets)
     if (theFaces.IsEmpty()) break;
   }
   return theSets.Extent();
-}
-
-//=======================================================================
-//function : Propagate
-//purpose  : 
-//=======================================================================
-
-static void Propagate(const TopTools_IndexedDataMapOfShapeListOfShape& mapEF,
-		      const TopoDS_Shape& fac,
-		      TopTools_MapOfShape& mapF)
-{
-  if (mapF.Contains(fac)) {
-    return;
-  }
-  mapF.Add(fac); // attention, if oriented == Standard_True, fac should
-                 // be FORWARD or REVERSED. It is not checked.
-
-  TopExp_Explorer ex;
-  for (ex.Init(fac,TopAbs_EDGE); ex.More(); ex.Next()) {
-    const TopoDS_Edge& edg = TopoDS::Edge(ex.Current());
-// test if the edge is in the map (only orienteed edges are present)
-    if (mapEF.Contains(edg)) {
-      for (TopTools_ListIteratorOfListOfShape itl(mapEF.FindFromKey(edg));
-	   itl.More(); itl.Next()) {
-	if (!itl.Value().IsSame(fac) &&
-	    !mapF.Contains(itl.Value())) {
-	  Propagate(mapEF,itl.Value(),mapF);
-	}
-      }
-    }
-  }
 }
