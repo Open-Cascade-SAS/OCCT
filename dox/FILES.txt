@@ -38,6 +38,7 @@ dev_guides/contribution/coding_rules.md
 dev_guides/contribution_workflow/contribution_workflow.md
 dev_guides/git_guide/git_guide.md
 dev_guides/tests/tests.md
+dev_guides/debug/debug.md
 dev_guides/cdl/cdl.md
 dev_guides/wok/wok.md
 

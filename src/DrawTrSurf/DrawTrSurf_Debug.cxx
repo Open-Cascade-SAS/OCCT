@@ -22,25 +22,104 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 
-// method to call with dbx
+// This file defines global functions not declared in any public header,
+// intended for use from debugger prompt (Command Window in Visual Studio)
 
-
-void DrawTrSurf_Set(char* name, const Handle(Standard_Transient)& G)
+//! Save geometric object identified by pointer to handle
+const char* DrawTrSurf_Set (const char* theNameStr, void* theHandlePtr)
 {
-  Handle(Geom_Geometry) GG = Handle(Geom_Geometry)::DownCast(G);
-  if (!GG.IsNull()) {
-    DrawTrSurf::Set(name,GG);
-      return;
+  if (theNameStr == 0 || theHandlePtr == 0)
+  {
+    return "Error: argument is null";
+  }
+  try {
+    const Handle(Standard_Transient)& aHandle = *(Handle(Standard_Transient)*)theHandlePtr;
+    Handle(Geom_Geometry) aGeom3d = Handle(Geom_Geometry)::DownCast(aHandle);
+    if (!aGeom3d.IsNull())
+    {
+      DrawTrSurf::Set (theNameStr, aGeom3d);
+      return theNameStr;
     }
-  Handle(Geom2d_Curve) GC = Handle(Geom2d_Curve)::DownCast(G);
-  if (!GC.IsNull()) {
-    DrawTrSurf::Set(name,GC);
-      return;
+    Handle(Geom2d_Curve) aGeom2d = Handle(Geom2d_Curve)::DownCast(aHandle);
+    if (!aGeom2d.IsNull())
+    {
+      DrawTrSurf::Set (theNameStr, aGeom2d);
+      return theNameStr;
     }
 
-  cout << "*** Not a geometric object ***" << endl;
+    return "Error: Not a geometric object";
+  }
+  catch (Standard_Failure)
+  {
+    return Standard_Failure::Caught()->GetMessageString();
+  }
 }
 
+//! Set point to DRAW variable
+const char* DrawTrSurf_SetPnt (const char* theNameStr, void* thePntPtr)
+{
+  if (theNameStr == 0 || thePntPtr == 0)
+  {
+    return "Error: argument is null";
+  }
+  try {
+    const gp_Pnt& aP = *(gp_Pnt*)thePntPtr;
+    static char buff[256];
+    sprintf (buff, "Point (%.16g, %.16g, %.16g) set to DRAW variable %.80s", aP.X(), aP.Y(), aP.Z(), theNameStr);
+    DrawTrSurf::Set (theNameStr, aP);
+    return buff;
+  }
+  catch (Standard_Failure)
+  {
+    return Standard_Failure::Caught()->GetMessageString();
+  }
+}
+
+//! Set 2d point to DRAW variable
+const char* DrawTrSurf_SetPnt2d (const char* theNameStr, void* thePnt2dPtr)
+{
+  if (theNameStr == 0 || thePnt2dPtr == 0)
+  {
+    return "Error: argument is null";
+  }
+  try {
+    const gp_Pnt2d& aP = *(gp_Pnt2d*)thePnt2dPtr;
+    static char buff[256];
+    sprintf (buff, "Point (%.16g, %.16g) set to DRAW variable %.80s", aP.X(), aP.Y(), theNameStr);
+    DrawTrSurf::Set (theNameStr, aP);
+    return buff;
+  }
+  catch (Standard_Failure)
+  {
+    return Standard_Failure::Caught()->GetMessageString();
+  }
+}
+
+// MSVC debugger cannot deal correctly with functions whose argunments 
+// have non-standard types. Here we define alternative to the above functions
+// with good types with the hope that GDB on Linux or other debugger could
+// work with them (DBX could, on SUN Solaris).
+#ifndef _MSC_VER
+
+const char* DrawTrSurf_Set (const char* name, const Handle(Standard_Transient)& G)
+{
+  return DrawTrSurf_Set (name, (void*)&G);
+}
+
+const char* DrawTrSurf_Set (const char* theName, const gp_Pnt& thePnt)
+{
+  return DrawTrSurf_SetPnt (theName, (void*)&thePnt);
+}
+
+const char* DrawTrSurf_Set (const char* theName, const gp_Pnt2d& thePnt2d)
+{
+  return DrawTrSurf_SetPnt2d (theName, (void*)&thePnt2d);
+}
+
+#endif /* _MSC_VER */
+
+// old function, looks too dangerous to be used
+/*
 void DrawTrSurf_Get(const char* name, Handle(Standard_Transient)& G)
 {
   Handle(Geom_Geometry) GG = DrawTrSurf::Get(name);
@@ -58,41 +137,4 @@ void DrawTrSurf_Get(const char* name, Handle(Standard_Transient)& G)
 
   cout << "*** Not a geometric object ***" << endl;
 }
-
-void DrawTrSurf_Dump(const Handle(Standard_Transient)& G)
-{
-  cout << "\n\n";
-
-  Handle(Geom_Surface) GS = Handle(Geom_Surface)::DownCast(G);
-  if (!GS.IsNull()) {
-    GeomTools_SurfaceSet::PrintSurface(GS,cout);
-    cout << endl;
-      return;
-    }
-
-  Handle(Geom_Curve) GC = Handle(Geom_Curve)::DownCast(G);
-  if (!GC.IsNull()) {
-    GeomTools_CurveSet::PrintCurve(GC,cout);
-    cout << endl;
-      return;
-    }
-
-  Handle(Geom2d_Curve) GC2d = Handle(Geom2d_Curve)::DownCast(G);
-  if (!GC2d.IsNull()) {
-    GeomTools_Curve2dSet::PrintCurve2d(GC2d,cout);
-    cout << endl;
-      return;
-    }
-}
-
-void DrawTrSurf_Set(char* name, const gp_Pnt& P)
-{
-  cout<<"point "<<name<<" "<<P.X()<<" "<<P.Y()<<" "<<P.Z()<<endl;
-  DrawTrSurf::Set(name,P);
-}
-
-void DrawTrSurf_Set(char* name, const gp_Pnt2d& P)
-{
-  cout<<"point "<<name<<" "<<P.X()<<" "<<P.Y()<<endl;
-  DrawTrSurf::Set(name,P);
-}
+*/

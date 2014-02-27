@@ -14,19 +14,45 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// command that can be called within the debugger
-
 #include <DBRep.hxx>
-#include <BRepTools.hxx>
-#include <TopTools_LocationSet.hxx>
-#include <TopoDS_Shape.hxx>
+#include <Standard_ErrorHandler.hxx>
+#include <Standard_Failure.hxx>
 
+// This file defines global functions not declared in any public header,
+// intended for use from debugger prompt (Command Window in Visual Studio)
 
-void DBRep_Set(char* name, const TopoDS_Shape& S)
+//! Save shape identified by pointer
+Standard_EXPORT const char* DBRep_Set (const char* theNameStr, void* theShapePtr)
 {
- DBRep::Set(name,S);
+  if (theNameStr == 0 || theShapePtr == 0)
+  {
+    return "Error: name or shape is null";
+  }
+  try {
+    DBRep::Set (theNameStr, *(TopoDS_Shape*)theShapePtr);
+    return theNameStr;
+  }
+  catch (Standard_Failure)
+  {
+    return Standard_Failure::Caught()->GetMessageString();
+  }
 }
 
+// MSVC debugger cannot deal correctly with functions whose argunments 
+// have non-standard types. Here we define alternative to the above functions
+// with good types with the hope that GDB on Linux or other debugger could
+// work with them (DBX could, on SUN Solaris).
+#ifndef _MSC_VER
+
+const char* DBRep_Set (char* theName, const TopoDS_Shape& theShape)
+{
+ return DBRep_Set (theName, (void*)&theShape);
+}
+
+#endif /* _MSC_VER */
+
+// old function, perhaps too dangerous to be used
+/*
 void DBRep_Get(char* name, TopoDS_Shape& S)
 {
   char n[255];
@@ -36,21 +62,4 @@ void DBRep_Get(char* name, TopoDS_Shape& S)
   if (*name == '.')
     cout << "Name : " << n << endl;
 }
-
-void DBRep_Dump(const TopoDS_Shape& S)
-{
-  cout <<"\n\n";
-  BRepTools::Dump(S,cout);
-  cout <<endl;
-}
-
-
-void DBRep_DumpLoc(const TopLoc_Location& L)
-{
-  cout <<"\n\n";
-  TopTools_LocationSet LS;
-  LS.Add(L);
-  LS.Dump(cout);
-  cout <<endl;
-}
-
+*/
