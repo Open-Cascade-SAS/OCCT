@@ -624,18 +624,6 @@ void  BRepTools::Dump(const TopoDS_Shape& Sh, Standard_OStream& S)
   SS.Dump(S);
 }
 
-#ifdef DEB
-//=======================================================================
-//function : BRepTools_Write 
-//purpose  : 
-//=======================================================================
-void BRepTools_Write (const TopoDS_Shape& S,
-                      const Standard_CString File)
-{
-  BRepTools::Write (S,File);  
-}
-#endif
-
 //=======================================================================
 //function : Write
 //purpose  : 
