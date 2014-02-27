@@ -24,6 +24,12 @@
 #include <Standard_Failure.hxx>
 
 
+static 
+  Standard_Integer ComputeBox(const gp_Hypr& aHypr, 
+                              const Standard_Real aT1, 
+                              const Standard_Real aT2, 
+                              Bnd_Box& aBox);
+
 static void OpenMin(const gp_Dir& V,Bnd_Box& B) {
   gp_Dir OX(1.,0.,0.);
   gp_Dir OY(0.,1.,0.);
@@ -382,10 +388,16 @@ void BndLib::Add( const gp_Parab2d& P,const Standard_Real P1,
   B.Enlarge(Tol);
 }
 
-void BndLib::Add( const gp_Hypr& H,const Standard_Real P1,
+//=======================================================================
+//function : Add
+//purpose  : 
+//=======================================================================
+void BndLib::Add(const gp_Hypr& H,
+                 const Standard_Real P1,
 		 const Standard_Real P2,
-		 const Standard_Real Tol, Bnd_Box& B) {
-
+                 const Standard_Real Tol, 
+                 Bnd_Box& B) 
+{
   if (Precision::IsNegativeInfinite(P1)) {
     if (Precision::IsNegativeInfinite(P2)) {
       Standard_Failure::Raise("BndLib::bad parameter");
@@ -419,8 +431,7 @@ void BndLib::Add( const gp_Hypr& H,const Standard_Real P1,
       B.OpenXmax();B.OpenYmax();B.OpenZmax();
     }
     else {
-      B.Add(ElCLib::Value(P2,H));
-      if (P1*P2<0) B.Add(ElCLib::Value(0.,H));
+      ComputeBox(H, P1, P2, B);
     }
   }
   B.Enlarge(Tol);
@@ -828,6 +839,71 @@ void BndLib::Add( const gp_Torus& S,const Standard_Real Tol, Bnd_Box& B) {
   B.Add(gp_Pnt(O +(RMa+Rmi)*Xd +(RMa+Rmi)*Yd- Rmi*Zd)); 
   B.Enlarge(Tol);
 }
-
-
-
+//=======================================================================
+//function : ComputeBox
+//purpose  : 
+//=======================================================================
+Standard_Integer ComputeBox(const gp_Hypr& aHypr, 
+                            const Standard_Real aT1, 
+                            const Standard_Real aT2, 
+                            Bnd_Box& aBox)
+{
+  Standard_Integer i, iErr;
+  Standard_Real aRmaj, aRmin, aA, aB, aABP, aBAM, aT3, aCf, aEps;
+  gp_Pnt aP1, aP2, aP3, aP0;
+  //
+  //
+  aP1=ElCLib::Value(aT1, aHypr);
+  aP2=ElCLib::Value(aT2, aHypr);
+  //
+  aBox.Add(aP1);
+  aBox.Add(aP2);
+  //
+  if (aT1*aT2<0.) {
+    aP0=ElCLib::Value(0., aHypr);
+    aBox.Add(aP0);
+  }
+  //
+  aEps=Epsilon(1.);
+  iErr=1;
+  //
+  const gp_Ax2& aPos=aHypr.Position();
+  const gp_XYZ& aXDir = aPos.XDirection().XYZ();
+  const gp_XYZ& aYDir = aPos.YDirection().XYZ();
+  aRmaj=aHypr.MajorRadius();
+  aRmin=aHypr.MinorRadius();
+  //
+  aT3=0;
+  for (i=1; i<=3; ++i) {
+    aA=aRmin*aYDir.Coord(i);
+    aB=aRmaj*aXDir.Coord(i);
+    //
+    aABP=aA+aB;
+    aBAM=aB-aA;
+    //
+    aABP=fabs(aABP);
+    aBAM=fabs(aBAM);
+    //
+    if (aABP<aEps || aBAM<aEps) {
+      continue;
+    }
+    //
+    aCf=aBAM/aABP;
+    aT3=log(sqrt(aCf));
+    //
+    if (aT3<aT1 || aT3>aT2) {
+      continue;
+    }
+    iErr=0;
+    break;
+  }
+  //
+  if (iErr) {
+    return iErr;
+  }
+  //
+  aP3=ElCLib::Value(aT3, aHypr);
+  aBox.Add(aP3);
+  //
+  return iErr;
+}
