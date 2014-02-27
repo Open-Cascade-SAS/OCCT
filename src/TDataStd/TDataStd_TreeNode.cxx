@@ -235,12 +235,7 @@ Standard_Boolean TDataStd_TreeNode::Remove ()
   }
   
   if(Father()->HasLast()) {
-    if (Handle(TDataStd_TreeNode)::DownCast(this) == Father()->Last()) {
-      if(HasPrevious()) {
-        Father()->SetLast(Previous());
-      }
-      else Father()->SetLast(bid);
-    }
+    Father()->SetLast(bid);
   }
 
   SetFather(bid);
@@ -697,6 +692,10 @@ Standard_OStream& TDataStd_TreeNode::Dump (Standard_OStream& anOS) const
   if (myFirst) {
     anOS<<"  First=";
     if (!myFirst->Label().IsNull()) myFirst->Label().EntryDump(anOS);
+  }
+  if (myLast) {
+    anOS<<"  Last=";
+    if (!myLast->Label().IsNull()) myLast->Label().EntryDump(anOS);
   }
   anOS<<endl;
   return anOS;
