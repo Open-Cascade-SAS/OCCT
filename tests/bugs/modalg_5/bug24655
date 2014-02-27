@@ -1,0 +1,28 @@
+puts "============"
+puts "OCC24655"
+puts "============"
+puts ""
+###############################################################################################
+# Boolean common produces incorrect result
+###############################################################################################
+
+restore [locate_data_file bug24655_Tool_Flaw_1.brep] b1
+restore [locate_data_file bug24655_TubeVolume_Init_1.brep] b2
+
+bop b1 b2
+bopcommon result
+
+set square 11.9246
+
+# Analysis of "nbshapes result"
+set nb_v_good 23
+set nb_e_good 34
+set nb_w_good 13
+set nb_f_good 13
+set nb_sh_good 1
+set nb_sol_good 1
+set nb_compsol_good 0
+set nb_compound_good 1
+set nb_shape_good 86
+
+set 2dviewer 1
