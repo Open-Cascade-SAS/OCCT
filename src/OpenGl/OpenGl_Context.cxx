@@ -148,7 +148,8 @@ OpenGl_Context::~OpenGl_Context()
   myDelayed.Nullify();
 
   if (arbDbg != NULL
-   && caps->contextDebug)
+   && caps->contextDebug
+   && IsValid())
   {
     // reset callback
     void* aPtr = NULL;
