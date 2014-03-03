@@ -43,8 +43,8 @@ const char* DBRep_Set (const char* theNameStr, void* theShapePtr)
 ~~~~~
 
 Sets the specified shape as a value of DRAW interpreter variable with the given name.
-- *theNameStr* – the DRAW interpreter variable name to set.
-- *theShapePtr* – a pointer to *TopoDS_Shape* variable.
+- *theNameStr* - the DRAW interpreter variable name to set.
+- *theShapePtr* - a pointer to *TopoDS_Shape* variable.
 
 ~~~~~
 const char* DrawTrSurf_Set (const char* theNameStr, void* theHandlePtr)
@@ -53,10 +53,10 @@ const char* DrawTrSurf_SetPnt2d (const char* theNameStr, void* thePnt2dPtr)
 ~~~~~
 
 Sets the specified geometric object as a value of DRAW interpreter variable with the given name.
-- *theNameStr* – the DRAW interpreter variable name to set.
-- *theHandlePtr* – a pointer to the geometric variable (Handle to *Geom_Geometry* or *Geom2d_Curve* or descendant) to be set.
-- *thePntPtr* – a pointer to the variable of type *gp_Pnt* to be set.
-- *thePnt2dPtr* – a pointer to the variable of type *gp_Pnt2d* to be set.
+- *theNameStr* - the DRAW interpreter variable name to set.
+- *theHandlePtr* - a pointer to the geometric variable (Handle to *Geom_Geometry* or *Geom2d_Curve* or descendant) to be set.
+- *thePntPtr* - a pointer to the variable of type *gp_Pnt* to be set.
+- *thePnt2dPtr* - a pointer to the variable of type *gp_Pnt2d* to be set.
 
 All these functions are defined in *TKDraw* toolkit and return a string indicating the result of execution.
 
@@ -69,8 +69,8 @@ const char* BRepTools_Write (const char* theFileNameStr, void* theShapePtr)
 ~~~~~
 
 Saves the specified shape to a file with the given name.
-- *theFileNameStr* – the DRAW interpreter variable name to set.
-- *theShapePtr* – a pointer to *TopoDS_Shape* variable.
+- *theFileNameStr* - the DRAW interpreter variable name to set.
+- *theShapePtr* - a pointer to *TopoDS_Shape* variable.
 
 ~~~~~
 const char* BRepTools_Dump (void* theShapePtr)
@@ -78,7 +78,7 @@ const char* BRepTools_DumpLoc (void* theShapePtr)
 ~~~~~
 
 Dumps shape or its location to cout.
-- *theShapePtr* – a pointer to *TopoDS_Shape* variable.
+- *theShapePtr* - a pointer to *TopoDS_Shape* variable.
 
 The following additional function is provided by *TKGeomBase* toolkit:
 
@@ -87,7 +87,7 @@ const char* GeomTools_Dump (void* theHandlePtr)
 ~~~~~
 
 Dump geometric object to cout.
-- *theHandlePtr* – a pointer to the geometric variable (<i>Handle</i> to *Geom_Geometry* or *Geom2d_Curve* or descendant) to be set.
+- *theHandlePtr* - a pointer to the geometric variable (<i>Handle</i> to *Geom_Geometry* or *Geom2d_Curve* or descendant) to be set.
 
 @section occt_debug_vstudio Using Visual Studio debugger 
 
