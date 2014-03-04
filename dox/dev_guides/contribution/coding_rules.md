@@ -930,11 +930,11 @@ myCommand -flag1 value1 value2 -flag2 value3
 
 ### Arguments parser
 
-- Integer values should be read using *Draw:Atoi()* function.
-- Real values should be read using *Draw:Atof()* function.
+- Integer values should be read using *Draw::Atoi()* function.
+- Real values should be read using *Draw::Atof()* function.
 - Flags names should be checked in case insensitive manner.
 
-Functions *Draw:Atof()* and *Draw:Atoi()* support expressions and read values in C-locale.
+Functions *Draw::Atof()* and *Draw::Atoi()* support expressions and read values in C-locale.
 
 ~~~~~{.cpp}
   Standard_Real aPosition[3] = {0.0, 0.0, 0.0};
