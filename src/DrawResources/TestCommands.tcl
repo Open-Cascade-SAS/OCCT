@@ -913,7 +913,7 @@ proc _run_test {scriptsdir group gridname casefile echo} {
                 set imagedir $rootlogdir
             }
 
-            uplevel set imagedir $imagedir
+            uplevel set imagedir \"$imagedir\"
 	}
 
 	# execute test scripts 
