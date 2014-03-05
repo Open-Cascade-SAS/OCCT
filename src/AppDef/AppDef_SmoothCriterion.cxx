@@ -14,4 +14,4 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AppParCurves_SmoothCriterion.ixx>
+#include <AppDef_SmoothCriterion.ixx>

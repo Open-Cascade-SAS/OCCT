@@ -14,14 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class ZerCOnSSParFunc from IntImp 
-    (ThePSurface     as any;
-     ThePSurfaceTool as any;
-     TheCurveOnSurf  as any;
-     TheCurveTool    as any
-    )
-    
-inherits FunctionSetWithDerivatives from math
+class CSFunction from IntPatch inherits FunctionSetWithDerivatives from math
 
       	---Purpose: this function is associated to the intersection between 
       	--          a curve on surface and a surface  .
@@ -29,17 +22,21 @@ inherits FunctionSetWithDerivatives from math
 
 uses Vector from math,
      Matrix from math,
-     Pnt from gp
+     Pnt from gp,
+     HSurface from Adaptor3d,
+     HSurfaceTool from Adaptor3d,
+     HCurve2d from Adaptor2d,
+     HCurve2dTool from IntPatch
 
 is
-    Create( S1 : ThePSurface;
-    	    C  : TheCurveOnSurf;
-            S2 : ThePSurface )
+    Create( S1 : HSurface from Adaptor3d;
+    	    C  : HCurve2d from Adaptor2d;
+            S2 : HSurface from Adaptor3d )
 
 	---Purpose: S1 is the surface on which the intersection is searched.
 	--          C is a curve on the surface S2.
 
-    	returns ZerCOnSSParFunc from IntImp;
+    	returns CSFunction from IntPatch;
 	    
 
     NbVariables(me) returns Integer from Standard
@@ -74,19 +71,19 @@ is
     
     AuxillarSurface(me)
     	---C++: return const&
-    	returns ThePSurface
+    	returns HSurface from Adaptor3d
     	is static;
 
     AuxillarCurve(me)
     	---C++: return const&
-    	returns TheCurveOnSurf
+    	returns HCurve2d from Adaptor2d
     	is static;
     
 fields
-     curve    : Address from Standard; --- TheCurveOnSurf;
-     surface1 : Address from Standard; --- ThePSurface;
-     surface2 : Address from Standard; --- ThePSurface;
+     curve    : Address from Standard; --- HCurve2d from Adaptor2d;
+     surface1 : Address from Standard; --- HSurface from Adaptor3d;
+     surface2 : Address from Standard; --- HSurface from Adaptor3d;
      p	      : Pnt from gp;
      f        : Real from Standard;
      
-end ZerCOnSSParFunc;
+end CSFunction;

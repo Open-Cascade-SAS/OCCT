@@ -14,7 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-deferred class SmoothCriterion from AppParCurves
+deferred class SmoothCriterion from AppDef
 inherits  TShared  from MMgt
 
 	---Purpose: defined criterion to smooth  points in  curve
@@ -105,15 +105,5 @@ is
     is  deferred;
           
 end SmoothCriterion;
-
-
-
-
-
-
-
-
-
-
 
 

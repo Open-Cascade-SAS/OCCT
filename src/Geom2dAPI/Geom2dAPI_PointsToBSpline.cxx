@@ -26,7 +26,7 @@
 #include <math_Vector.hxx>
 #include <AppDef_MultiPointConstraint.hxx>
 #include <AppParCurves_HArray1OfConstraintCouple.hxx>
-#include <AppDef_TheVariational.hxx>
+#include <AppDef_Variational.hxx>
 
 
 //=======================================================================
@@ -408,7 +408,7 @@ void Geom2dAPI_PointsToBSpline::Init
   }
   
 
-  AppDef_TheVariational Variation(multL, 1, NbPoint, TABofCC);
+  AppDef_Variational Variation(multL, 1, NbPoint, TABofCC);
 
 //===================================
   Standard_Integer theMaxSegments = 1000;

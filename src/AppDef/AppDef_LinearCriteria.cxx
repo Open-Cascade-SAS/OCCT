@@ -14,6 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <AppDef_LinearCriteria.ixx>
+
 #include <PLib_Base.hxx>
 #include <PLib_JacobiPolynomial.hxx>
 #include <PLib_HermitJacobi.hxx>
@@ -28,6 +30,7 @@
 #include <gp_Pnt.hxx>
 #include <math_Matrix.hxx>
 #include <math_Gauss.hxx>
+#include <AppDef_MyLineTool.hxx>
 
 static Standard_Integer order(const Handle(PLib_Base)& B)
 {
@@ -39,7 +42,7 @@ static Standard_Integer order(const Handle(PLib_Base)& B)
 //function : 
 //purpose  : 
 //=======================================================================
-AppParCurves_LinearCriteria::AppParCurves_LinearCriteria(const MultiLine& SSP,
+AppDef_LinearCriteria::AppDef_LinearCriteria(const AppDef_MultiLine& SSP,
 							 const Standard_Integer FirstPoint,
 							 const Standard_Integer LastPoint):
        mySSP(SSP),
@@ -55,7 +58,7 @@ AppParCurves_LinearCriteria::AppParCurves_LinearCriteria(const MultiLine& SSP,
 //purpose  : 
 //=======================================================================
 
-void AppParCurves_LinearCriteria::SetParameters(const Handle(TColStd_HArray1OfReal)& Parameters) 
+void AppDef_LinearCriteria::SetParameters(const Handle(TColStd_HArray1OfReal)& Parameters) 
 {
   myParameters = Parameters;
   myE = 0; // Cache become invalid.
@@ -68,7 +71,7 @@ void AppParCurves_LinearCriteria::SetParameters(const Handle(TColStd_HArray1OfRe
 //purpose  : 
 //=======================================================================
 
-void AppParCurves_LinearCriteria::SetCurve(const Handle(FEmTool_Curve)& C) 
+void AppDef_LinearCriteria::SetCurve(const Handle(FEmTool_Curve)& C) 
 {
 
   if(myCurve.IsNull()) {
@@ -147,7 +150,7 @@ void AppParCurves_LinearCriteria::SetCurve(const Handle(FEmTool_Curve)& C)
 //function : GetCurve
 //purpose  : 
 //=======================================================================
-void AppParCurves_LinearCriteria::GetCurve(Handle(FEmTool_Curve)& C) const
+void AppDef_LinearCriteria::GetCurve(Handle(FEmTool_Curve)& C) const
 {
   C = myCurve;
 }
@@ -157,7 +160,7 @@ void AppParCurves_LinearCriteria::GetCurve(Handle(FEmTool_Curve)& C) const
 //function : SetEstimation
 //purpose  : 
 //=======================================================================
-void AppParCurves_LinearCriteria::SetEstimation(const Standard_Real E1,
+void AppDef_LinearCriteria::SetEstimation(const Standard_Real E1,
 						const Standard_Real E2,
 						const Standard_Real E3) 
 {
@@ -166,7 +169,7 @@ void AppParCurves_LinearCriteria::SetEstimation(const Standard_Real E1,
   myEstimation[2] = E3;
 }
 
-Standard_Real& AppParCurves_LinearCriteria::EstLength() 
+Standard_Real& AppDef_LinearCriteria::EstLength() 
 {
   return myLength;
 }
@@ -176,7 +179,7 @@ Standard_Real& AppParCurves_LinearCriteria::EstLength()
 //function : GetEstimation
 //purpose  : 
 //=======================================================================
-void AppParCurves_LinearCriteria::GetEstimation(Standard_Real& E1,
+void AppDef_LinearCriteria::GetEstimation(Standard_Real& E1,
 						Standard_Real& E2,
 						Standard_Real& E3) const
 {
@@ -191,9 +194,9 @@ void AppParCurves_LinearCriteria::GetEstimation(Standard_Real& E1,
 //function : AssemblyTable
 //purpose  : 
 //=======================================================================
-Handle(FEmTool_HAssemblyTable) AppParCurves_LinearCriteria::AssemblyTable() const
+Handle(FEmTool_HAssemblyTable) AppDef_LinearCriteria::AssemblyTable() const
 {
-  if(myCurve.IsNull()) Standard_DomainError::Raise("AppParCurves_LinearCriteria::AssemblyTable");
+  if(myCurve.IsNull()) Standard_DomainError::Raise("AppDef_LinearCriteria::AssemblyTable");
 
   Standard_Integer NbDim = myCurve->Dimension(),
                    NbElm = myCurve->NbElements(),
@@ -266,9 +269,9 @@ Handle(FEmTool_HAssemblyTable) AppParCurves_LinearCriteria::AssemblyTable() cons
 //function : 
 //purpose  : 
 //=======================================================================
-Handle(TColStd_HArray2OfInteger) AppParCurves_LinearCriteria::DependenceTable() const
+Handle(TColStd_HArray2OfInteger) AppDef_LinearCriteria::DependenceTable() const
 {
-  if(myCurve.IsNull()) Standard_DomainError::Raise("AppParCurves_LinearCriteria::DependenceTable");
+  if(myCurve.IsNull()) Standard_DomainError::Raise("AppDef_LinearCriteria::DependenceTable");
 
   Standard_Integer Dim = myCurve->Dimension();
 
@@ -286,14 +289,14 @@ Handle(TColStd_HArray2OfInteger) AppParCurves_LinearCriteria::DependenceTable() 
 //purpose  : 
 //=======================================================================
 
-Standard_Integer AppParCurves_LinearCriteria::QualityValues(const Standard_Real J1min,
+Standard_Integer AppDef_LinearCriteria::QualityValues(const Standard_Real J1min,
 							    const Standard_Real J2min,
 							    const Standard_Real J3min,
 							    Standard_Real& J1,
 							    Standard_Real& J2,
 							    Standard_Real& J3) 
 {
-  if(myCurve.IsNull()) Standard_DomainError::Raise("AppParCurves_LinearCriteria::QualityValues");
+  if(myCurve.IsNull()) Standard_DomainError::Raise("AppDef_LinearCriteria::QualityValues");
 
   Standard_Integer NbDim = myCurve->Dimension(),
                    NbElm = myCurve->NbElements();
@@ -399,17 +402,17 @@ Standard_Integer AppParCurves_LinearCriteria::QualityValues(const Standard_Real 
 //purpose  : 
 //=======================================================================
 
-void AppParCurves_LinearCriteria::ErrorValues(Standard_Real& MaxError,
+void AppDef_LinearCriteria::ErrorValues(Standard_Real& MaxError,
 					      Standard_Real& QuadraticError,
 					      Standard_Real& AverageError) 
 {
-  if(myCurve.IsNull()) Standard_DomainError::Raise("AppParCurves_LinearCriteria::ErrorValues");
+  if(myCurve.IsNull()) Standard_DomainError::Raise("AppDef_LinearCriteria::ErrorValues");
 
   Standard_Integer NbDim = myCurve->Dimension();
 
-  Standard_Integer myNbP2d = ToolLine::NbP2d(mySSP), myNbP3d = ToolLine::NbP3d(mySSP);
+  Standard_Integer myNbP2d = AppDef_MyLineTool::NbP2d(mySSP), myNbP3d = AppDef_MyLineTool::NbP3d(mySSP);
 
-  if(NbDim != (2*myNbP2d + 3*myNbP3d)) Standard_DomainError::Raise("AppParCurves_LinearCriteria::ErrorValues");
+  if(NbDim != (2*myNbP2d + 3*myNbP3d)) Standard_DomainError::Raise("AppDef_LinearCriteria::ErrorValues");
 
   TColgp_Array1OfPnt TabP3d(1, Max(1,myNbP3d));
   TColgp_Array1OfPnt2d TabP2d(1, Max(1,myNbP2d));    
@@ -428,7 +431,7 @@ void AppParCurves_LinearCriteria::ErrorValues(Standard_Real& MaxError,
 
 
     c0 = 0;
-    ToolLine::Value(mySSP, i, TabP3d);
+    AppDef_MyLineTool::Value(mySSP, i, TabP3d);
     for(ipnt = 1; ipnt <= myNbP3d; ipnt++) {
       P3d.SetCoord(BasePoint(c0+1), BasePoint(c0+2), BasePoint(c0+3));
       SqrDist = P3d.SquareDistance(TabP3d(ipnt)); Dist = Sqrt(SqrDist);
@@ -438,8 +441,8 @@ void AppParCurves_LinearCriteria::ErrorValues(Standard_Real& MaxError,
       c0 += 3;
     }
 
-    if(myNbP3d == 0) ToolLine::Value(mySSP, i, TabP2d);
-    else ToolLine::Value(mySSP, i, TabP3d, TabP2d);
+    if(myNbP3d == 0) AppDef_MyLineTool::Value(mySSP, i, TabP2d);
+    else AppDef_MyLineTool::Value(mySSP, i, TabP3d, TabP2d);
     for(ipnt = 1; ipnt <= myNbP2d; ipnt++) {
       P2d.SetCoord(BasePoint(c0+1), BasePoint(c0+2));
       SqrDist = P2d.SquareDistance(TabP2d(ipnt)); Dist = Sqrt(SqrDist);
@@ -457,15 +460,15 @@ void AppParCurves_LinearCriteria::ErrorValues(Standard_Real& MaxError,
 //purpose  : 
 //=======================================================================
 
-void AppParCurves_LinearCriteria::Hessian(const Standard_Integer Element,
+void AppDef_LinearCriteria::Hessian(const Standard_Integer Element,
 					  const Standard_Integer Dimension1,
 					  const Standard_Integer Dimension2,
 					  math_Matrix& H) 
 {
-  if(myCurve.IsNull()) Standard_DomainError::Raise("AppParCurves_LinearCriteria::Hessian");
+  if(myCurve.IsNull()) Standard_DomainError::Raise("AppDef_LinearCriteria::Hessian");
 
   if(DependenceTable()->Value(Dimension1, Dimension2) == 0) 
-    Standard_DomainError::Raise("AppParCurves_LinearCriteria::Hessian");
+    Standard_DomainError::Raise("AppDef_LinearCriteria::Hessian");
 
   Standard_Integer //NbDim = myCurve->Dimension(),
                    MxDeg = myCurve->Base()->WorkDegree(),
@@ -554,17 +557,17 @@ void AppParCurves_LinearCriteria::Hessian(const Standard_Integer Element,
 //function : Gradient
 //purpose  : 
 //=======================================================================
-void AppParCurves_LinearCriteria::Gradient(const Standard_Integer Element,
+void AppDef_LinearCriteria::Gradient(const Standard_Integer Element,
 					   const Standard_Integer Dimension,
 					   math_Vector& G) 
 {
   if(myCurve.IsNull()) 
-    Standard_DomainError::Raise("AppParCurves_LinearCriteria::ErrorValues");
+    Standard_DomainError::Raise("AppDef_LinearCriteria::ErrorValues");
 
-  Standard_Integer myNbP2d = ToolLine::NbP2d(mySSP), myNbP3d = ToolLine::NbP3d(mySSP);
+  Standard_Integer myNbP2d = AppDef_MyLineTool::NbP2d(mySSP), myNbP3d = AppDef_MyLineTool::NbP3d(mySSP);
 
   if(Dimension > (2*myNbP2d + 3*myNbP3d)) 
-    Standard_DomainError::Raise("AppParCurves_LinearCriteria::ErrorValues");
+    Standard_DomainError::Raise("AppDef_LinearCriteria::ErrorValues");
 
   TColgp_Array1OfPnt TabP3d(1, Max(1,myNbP3d));
   TColgp_Array1OfPnt2d TabP2d(1, Max(1,myNbP2d));    
@@ -611,12 +614,12 @@ void AppParCurves_LinearCriteria::Gradient(const Standard_Integer Element,
 
   for(ii=1,ipnt = IF; ipnt <= IL; ipnt++) {
     if(In3d) {
-      ToolLine::Value(mySSP, ipnt, TabP3d);
+      AppDef_MyLineTool::Value(mySSP, ipnt, TabP3d);
       Pnt = TabP3d(IndPnt).Coord(IndCrd);
     }
     else {
-      if(myNbP3d == 0) ToolLine::Value(mySSP, ipnt, TabP2d);
-      else ToolLine::Value(mySSP, ipnt, TabP3d, TabP2d);
+      if(myNbP3d == 0) AppDef_MyLineTool::Value(mySSP, ipnt, TabP2d);
+      else AppDef_MyLineTool::Value(mySSP, ipnt, TabP3d, TabP2d);
       Pnt = TabP2d(IndPnt).Coord(IndCrd);
     }
     
@@ -640,7 +643,7 @@ void AppParCurves_LinearCriteria::Gradient(const Standard_Integer Element,
 //function : InputVector
 //purpose  : 
 //=======================================================================
-void AppParCurves_LinearCriteria::InputVector(const math_Vector& X, 
+void AppDef_LinearCriteria::InputVector(const math_Vector& X, 
 					      const Handle(FEmTool_HAssemblyTable)& AssTable) 
 {
   Standard_Integer NbDim = myCurve->Dimension(),
@@ -669,16 +672,16 @@ void AppParCurves_LinearCriteria::InputVector(const math_Vector& X,
 //function : SetWeight
 //purpose  : 
 //=======================================================================
-void AppParCurves_LinearCriteria::SetWeight(const Standard_Real QuadraticWeight,
+void AppDef_LinearCriteria::SetWeight(const Standard_Real QuadraticWeight,
 					    const Standard_Real QualityWeight,
 					    const Standard_Real percentJ1,
 					    const Standard_Real percentJ2,
 					    const Standard_Real percentJ3) 
 {
   if (QuadraticWeight < 0. || QualityWeight < 0.) 
-    Standard_DomainError::Raise("AppParCurves_LinearCriteria::SetWeight");
+    Standard_DomainError::Raise("AppDef_LinearCriteria::SetWeight");
   if (percentJ1 < 0. || percentJ2 < 0. || percentJ3 < 0.) 
-    Standard_DomainError::Raise("AppParCurves_LinearCriteria::SetWeight");
+    Standard_DomainError::Raise("AppDef_LinearCriteria::SetWeight");
 
   myQuadraticWeight = QuadraticWeight; myQualityWeight = QualityWeight;
 
@@ -693,7 +696,7 @@ void AppParCurves_LinearCriteria::SetWeight(const Standard_Real QuadraticWeight,
 //function : GetWeight
 //purpose  : 
 //=======================================================================
-void AppParCurves_LinearCriteria::GetWeight(Standard_Real& QuadraticWeight,
+void AppDef_LinearCriteria::GetWeight(Standard_Real& QuadraticWeight,
 					    Standard_Real& QualityWeight) const
 {
 
@@ -705,7 +708,7 @@ void AppParCurves_LinearCriteria::GetWeight(Standard_Real& QuadraticWeight,
 //function : SetWeight
 //purpose  : 
 //=======================================================================
-void AppParCurves_LinearCriteria::SetWeight(const TColStd_Array1OfReal& Weight) 
+void AppDef_LinearCriteria::SetWeight(const TColStd_Array1OfReal& Weight) 
 {
   myPntWeight = Weight;
 }
@@ -715,7 +718,7 @@ void AppParCurves_LinearCriteria::SetWeight(const TColStd_Array1OfReal& Weight)
 //function : BuildCache
 //purpose  : 
 //=======================================================================
-void AppParCurves_LinearCriteria::BuildCache(const Standard_Integer Element)
+void AppDef_LinearCriteria::BuildCache(const Standard_Integer Element)
 {
   Standard_Real t; 
   Standard_Real UFirst, ULast;

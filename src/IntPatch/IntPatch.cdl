@@ -57,6 +57,8 @@ is
 -- implicite/implicite
 
     class ImpImpIntersection;
+	
+	class CSFunction; -- inherits FunctionSetWithDerivatives
 
 
 -- commun implicite/parametree et parametree/parametree
@@ -148,11 +150,6 @@ is
 
     alias SearchPnt is InterferencePolygon2d from Intf;
 
-    class CSFunction instantiates ZerCOnSSParFunc from IntImp
-    	(HSurface from Adaptor3d,
-         HSurfaceTool from Adaptor3d,
-         HCurve2d from Adaptor2d,
-         HCurve2dTool from IntPatch);
 
     class CurvIntSurf instantiates IntCS from IntImp
     	(HSurface from Adaptor3d,

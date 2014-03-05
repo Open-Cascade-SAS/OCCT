@@ -32,8 +32,6 @@ is
 
     generic class ZerCSParFunc; -- inherits FunctionSetWithDerivatives
     
-    generic class ZerCOnSSParFunc; -- inherits FunctionSetWithDerivatives
-    
     generic class Int2S,TheFunction;
     
     generic class IntCS;

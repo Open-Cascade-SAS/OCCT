@@ -31,7 +31,7 @@
 #include <math_Vector.hxx>
 #include <AppParCurves_HArray1OfConstraintCouple.hxx>
 #include <AppParCurves_ConstraintCouple.hxx>
-#include <AppDef_TheVariational.hxx>
+#include <AppDef_Variational.hxx>
 
 
 //=======================================================================
@@ -325,7 +325,7 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColgp_Array2OfPnt& Points,
   }
   
 
-  AppDef_TheVariational Variation(Line, 1, NbPointJ, TABofCC);
+  AppDef_Variational Variation(Line, 1, NbPointJ, TABofCC);
 
 //===================================
   Standard_Integer theMaxSegments = 1000;
@@ -390,7 +390,7 @@ void GeomAPI_PointsToBSplineSurface::Init(const TColgp_Array2OfPnt& Points,
   }
   
 
-  AppDef_TheVariational Variation2(Line2, 1, NbPointI, TABofCC2);
+  AppDef_Variational Variation2(Line2, 1, NbPointI, TABofCC2);
 
   Variation2.SetMaxDegree(DegMax);
   Variation2.SetContinuity(Continuity);

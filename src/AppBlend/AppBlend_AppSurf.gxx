@@ -33,7 +33,7 @@
 
 #include <StdFail_NotDone.hxx>
 #include <AppParCurves_HArray1OfConstraintCouple.hxx>
-#include <AppDef_TheVariational.hxx>
+#include <AppDef_Variational.hxx>
 
 static   Standard_Boolean scal = 1;
 #ifdef DEB
@@ -466,7 +466,7 @@ void AppBlend_AppSurf::InternalPerform(const Handle(TheLine)& Lin,
       TABofCC->ChangeValue(1).SetConstraint(Cfirst);
       TABofCC->ChangeValue(NbPoint).SetConstraint(Clast);
 
-      AppDef_TheVariational Variation(multL, 1, NbPoint, TABofCC);
+      AppDef_Variational Variation(multL, 1, NbPoint, TABofCC);
 
 //===================================
       Standard_Integer theMaxSegments = 1000;

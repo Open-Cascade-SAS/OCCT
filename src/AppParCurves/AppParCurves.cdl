@@ -21,8 +21,7 @@ package AppParCurves
     -- described by the tool MLineTool. 
     -- The result of the approximation will be a MultiCurve. 
     
-uses  math, FEmTool,  gp, TColgp, StdFail, TColStd, TCollection, Standard, MMgt, GeomAbs, 
-      PLib
+uses  math, FEmTool,  gp, TColgp, StdFail, TColStd, TCollection, Standard, MMgt, GeomAbs, PLib
 
 is
 
@@ -82,18 +81,6 @@ is
     	--          sum||C(ui)-Qi||2 with a gradient method.
     	--          The Result is a Bspline set.
 
-      
-    deferred  class  SmoothCriterion;
-    generic  class  LinearCriteria; 
-
-    class  MyCriterion;
-         ---Level: Internal
-                 
-    generic class Variational;
-     	---Purpose: computes the approximation of a Multiline by
-     	--          Variational optimization.
-
-
 
     --- instantiate classes:
     --  
@@ -103,7 +90,6 @@ is
 
     class HArray1OfConstraintCouple instantiates HArray1 from TCollection
     	    (ConstraintCouple,Array1OfConstraintCouple);
-
 
 
     class Array1OfMultiPoint instantiates Array1 from TCollection

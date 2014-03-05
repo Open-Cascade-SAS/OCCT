@@ -12,6 +12,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <IntPatch_CSFunction.ixx>
+
+#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_HSurfaceTool.hxx>
+#include <Adaptor2d_HCurve2d.hxx>
+#include <IntPatch_HCurve2dTool.hxx>
+
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Pnt2d.hxx>
@@ -23,29 +30,29 @@
 #endif
 
 
-#define SURFACE1 (*((ThePSurface *)(surface1)))
-#define SURFACE2 (*((ThePSurface *)(surface2)))
-#define CURVE    (*((TheCurveOnSurf *)(curve)))
+#define SURFACE1 (*((Handle(Adaptor3d_HSurface) *)(surface1)))
+#define SURFACE2 (*((Handle(Adaptor3d_HSurface) *)(surface2)))
+#define CURVE    (*((Handle(Adaptor2d_HCurve2d) *)(curve)))
 
-IntImp_ZerCOnSSParFunc::IntImp_ZerCOnSSParFunc(const ThePSurface& S1,
-					       const TheCurveOnSurf& C,
-					       const ThePSurface& S2)
+IntPatch_CSFunction::IntPatch_CSFunction(const Handle(Adaptor3d_HSurface)& S1,
+					       const Handle(Adaptor2d_HCurve2d)& C,
+					       const Handle(Adaptor3d_HSurface)& S2)
 {
   surface1 = (Standard_Address)(&S1);
   surface2 = (Standard_Address)(&S2);
   curve    = (Standard_Address)(&C);
 }
 
-Standard_Integer IntImp_ZerCOnSSParFunc::NbVariables()const { return 3;}
+Standard_Integer IntPatch_CSFunction::NbVariables()const { return 3;}
 
-Standard_Integer IntImp_ZerCOnSSParFunc::NbEquations()const { return 3;}
+Standard_Integer IntPatch_CSFunction::NbEquations()const { return 3;}
 
-Standard_Boolean IntImp_ZerCOnSSParFunc::Value(const math_Vector& X,
+Standard_Boolean IntPatch_CSFunction::Value(const math_Vector& X,
 			                    math_Vector& F){
 
-  gp_Pnt Psurf(ThePSurfaceTool::Value(SURFACE1,X(1),X(2)));
-  gp_Pnt2d p2d(TheCurveTool::Value(CURVE,X(3)));
-  gp_Pnt Pcurv(ThePSurfaceTool::Value(SURFACE2,p2d.X(),p2d.Y()));
+  gp_Pnt Psurf(Adaptor3d_HSurfaceTool::Value(SURFACE1,X(1),X(2)));
+  gp_Pnt2d p2d(IntPatch_HCurve2dTool::Value(CURVE,X(3)));
+  gp_Pnt Pcurv(Adaptor3d_HSurfaceTool::Value(SURFACE2,p2d.X(),p2d.Y()));
 
   F(1) = Psurf.X()-Pcurv.X();
   F(2) = Psurf.Y()-Pcurv.Y();
@@ -55,7 +62,7 @@ Standard_Boolean IntImp_ZerCOnSSParFunc::Value(const math_Vector& X,
   return Standard_True;
 }
 
-Standard_Boolean IntImp_ZerCOnSSParFunc::Derivatives ( const math_Vector& X,
+Standard_Boolean IntPatch_CSFunction::Derivatives ( const math_Vector& X,
 						    math_Matrix& D) {
   gp_Pnt Psurf,Pcurv;
   gp_Vec D1u,D1v,D1w;
@@ -63,9 +70,9 @@ Standard_Boolean IntImp_ZerCOnSSParFunc::Derivatives ( const math_Vector& X,
   gp_Vec2d d2d;
   gp_Vec d1u,d1v;
 
-  ThePSurfaceTool::D1(SURFACE1,X(1),X(2),Psurf,D1u,D1v);
-  TheCurveTool::D1(CURVE,X(3),p2d,d2d);
-  ThePSurfaceTool::D1(SURFACE2,p2d.X(),p2d.Y(),Pcurv,d1u,d1v);
+  Adaptor3d_HSurfaceTool::D1(SURFACE1,X(1),X(2),Psurf,D1u,D1v);
+  IntPatch_HCurve2dTool::D1(CURVE,X(3),p2d,d2d);
+  Adaptor3d_HSurfaceTool::D1(SURFACE2,p2d.X(),p2d.Y(),Pcurv,d1u,d1v);
   D1w.SetLinearForm(d2d.X(),d1u,d2d.Y(),d1v);
 
   D(1,1) = D1u.X();
@@ -80,7 +87,7 @@ Standard_Boolean IntImp_ZerCOnSSParFunc::Derivatives ( const math_Vector& X,
   return Standard_True;
 } 
 
-Standard_Boolean IntImp_ZerCOnSSParFunc::Values( const math_Vector& X,
+Standard_Boolean IntPatch_CSFunction::Values( const math_Vector& X,
 					      math_Vector& F,
 					      math_Matrix& D) {
   gp_Pnt Psurf,Pcurv;
@@ -90,9 +97,9 @@ Standard_Boolean IntImp_ZerCOnSSParFunc::Values( const math_Vector& X,
   gp_Vec2d d2d;
   gp_Vec d1u,d1v;
 
-  ThePSurfaceTool::D1(SURFACE1,X(1),X(2),Psurf,D1u,D1v);
-  TheCurveTool::D1(CURVE,X(3),p2d,d2d);
-  ThePSurfaceTool::D1(SURFACE2,p2d.X(),p2d.Y(),Pcurv,d1u,d1v);
+  Adaptor3d_HSurfaceTool::D1(SURFACE1,X(1),X(2),Psurf,D1u,D1v);
+  IntPatch_HCurve2dTool::D1(CURVE,X(3),p2d,d2d);
+  Adaptor3d_HSurfaceTool::D1(SURFACE2,p2d.X(),p2d.Y(),Pcurv,d1u,d1v);
   D1w.SetLinearForm(d2d.X(),d1u,d2d.Y(),d1v);
 
   D(1,1) = D1u.X();
@@ -112,14 +119,14 @@ Standard_Boolean IntImp_ZerCOnSSParFunc::Values( const math_Vector& X,
   return Standard_True;
 }
 
-const gp_Pnt& IntImp_ZerCOnSSParFunc::Point() const { return p;}
+const gp_Pnt& IntPatch_CSFunction::Point() const { return p;}
 
-Standard_Real IntImp_ZerCOnSSParFunc::Root() const { return f;}
+Standard_Real IntPatch_CSFunction::Root() const { return f;}
 
-const ThePSurface& IntImp_ZerCOnSSParFunc::AuxillarSurface() const { 
+const Handle_Adaptor3d_HSurface& IntPatch_CSFunction::AuxillarSurface() const { 
   return SURFACE1;}
 
-const TheCurveOnSurf& IntImp_ZerCOnSSParFunc::AuxillarCurve() const { 
+const Handle_Adaptor2d_HCurve2d& IntPatch_CSFunction::AuxillarCurve() const { 
   return CURVE;}
 
 #undef SURFACE1

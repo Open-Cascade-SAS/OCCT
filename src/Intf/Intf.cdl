@@ -92,10 +92,6 @@ is
     ---Purpose: Computes   the  interference between   two polygons in  2d.
     --          Result : points of intersections and zones of tangence.
 
-    generic class InterferencePolygon3d;
-    ---Purpose: Computes  the   interference  between  two  polygon  in 3d.
-    --          Section points, common perpendicular and projections.
-
     generic class InterferencePolygonPolyhedron;
     ---Purpose: Computes the interference  between a polygon or  a straight
     --          line and a polyhedron.   Points of intersection  and zones

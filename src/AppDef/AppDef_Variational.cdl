@@ -17,9 +17,7 @@
 --              Igor  FEOKTISTOV  -  correction  14/12/98
 
 
-generic class Variational from AppParCurves    	    	    
-    	    	    (MultiLine   as any;
-    	    	     ToolLine    as any)   -- as ToolLine(MultiLine)
+class Variational from AppDef
 
 
     ---Purpose: This class is used to smooth N points with constraints
@@ -35,11 +33,13 @@ uses Matrix                    from math,
      Shape                     from GeomAbs,       
      HArray1OfConstraintCouple from AppParCurves,
      MultiBSpCurve             from AppParCurves,  
-     SmoothCriterion           from AppParCurves, 
+     SmoothCriterion           from AppDef, 
      Curve                     from FEmTool,
      Assembly                  from FEmTool, 
      Base                      from PLib,
-     Constraint                from AppParCurves
+     Constraint                from AppParCurves,
+     MultiLine                 from AppDef,
+     MyLineTool                from AppDef
 
 raises OutOfRange from Standard,
        DimensionError from Standard,
@@ -48,12 +48,9 @@ raises OutOfRange from Standard,
        NotDone    from StdFail,
        VectorWithNullMagnitude from gp
 
-    class MyCriterion instantiates LinearCriteria from AppParCurves 
-    	    	(MultiLine, ToolLine); 
-    
 
 is
-    Create(SSP: MultiLine; 
+    Create(SSP: MultiLine from AppDef; 
     	   FirstPoint, LastPoint: Integer;
     	   TheConstraints: HArray1OfConstraintCouple;
     	   MaxDegree: Integer = 14;
@@ -74,10 +71,10 @@ is
 	--            is  negative 
 	--            The problem is over-constrained.
 	--            
-	--            Limitation : The MultiLine has to be composed by
+	--            Limitation : The MultiLine from AppDef has to be composed by
 	--            only one Line ( Dimension 2 or 3).
            
-    returns Variational from AppParCurves;
+    returns Variational from AppDef;
     
 
     Approximate(me : in out)
@@ -110,7 +107,7 @@ is
     
     Value(me)
     	---Purpose: returns all the BSpline curves approximating the
-    	--          MultiLine SSP after minimization of the parameter.
+    	--          MultiLine from AppDef SSP after minimization of the parameter.
 
     returns MultiBSpCurve from AppParCurves
     raises NotDone from StdFail
@@ -149,7 +146,7 @@ is
     
     AverageError(me)
        ---Purpose: returns the average error between          
-       --          the MultiLine and the approximation.
+       --          the MultiLine from AppDef and the approximation.
 
     returns Real
     raises NotDone from StdFail
@@ -314,19 +311,19 @@ is
 --   ====================== The Private methods ======================   
        
     TheMotor(me  :  in  out; 
-    	     J  :  in  out SmoothCriterion from AppParCurves; 
+    	     J  :  in  out SmoothCriterion from AppDef; 
              WQuadratic,  WQuality  :  Real;  	      
              TheCurve : in  out  Curve from  FEmTool; 
              Ecarts : out  Array1OfReal  from  TColStd)  is  private; 
 
     Adjusting(me  :  in  out; 
-    	      J  :  in  out SmoothCriterion from AppParCurves; 
+    	      J  :  in  out SmoothCriterion from AppDef; 
               WQuadratic,  WQuality  :  in  out  Real;  	      
               TheCurve : in  out  Curve from  FEmTool; 
               Ecarts : out  Array1OfReal  from  TColStd)  is  private; 
       
     Optimization(me;   
-                 J  :  in  out SmoothCriterion from AppParCurves; 
+                 J  :  in  out SmoothCriterion from AppDef; 
                  A  :  in  out Assembly  from  FEmTool; 
 		 ToAssemble  : in  Boolean;	 
 		 EpsDeg  :  Real; 
@@ -395,7 +392,7 @@ is
 
 fields
      -- Description of the points to smooth and the constraints
-mySSP  :  MultiLine;
+mySSP  :  MultiLine from AppDef;
 myNbP3d  : Integer;
 myNbP2d : Integer;
 myDimension : Integer;
@@ -426,7 +423,7 @@ myWithMinMax : Boolean;
 myWithCutting: Boolean;
 myPercent    : Real[3];
 myCriterium  : Real[4]; 
-mySmoothCriterion  :  SmoothCriterion  from  AppParCurves; 
+mySmoothCriterion  :  SmoothCriterion  from  AppDef; 
 
      -- output
 myParameters  : HArray1OfReal;
