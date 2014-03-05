@@ -16,5 +16,5 @@ repeat 100 {
     compound s_$i result result
     incr i
 }
-set length 3961.04
+set length 3854.34
 set 2dviewer 0

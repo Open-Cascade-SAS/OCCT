@@ -31,9 +31,7 @@ IntWalk_IWalking::IntWalk_IWalking (const Standard_Real Epsilon,
       epsilon(Epsilon*Epsilon),
       wd1 (IntWalk_VectorOfWalkingData::allocator_type (new NCollection_IncAllocator)),
       wd2 (wd1.get_allocator()),
-      nbMultiplicities (wd1.get_allocator()),
-      NbPointsConfondusConsecutifs(0),
-      EpsilonSembleTropGrand(0)
+      nbMultiplicities (wd1.get_allocator())
 {
 }
 
@@ -161,9 +159,13 @@ void IntWalk_IWalking::Perform(const ThePOPIterator& Pnts1,
   Func.Set(Caro);
 
   // calculation of all open lines   
-  if (nbPnts1 != 0) ComputeOpenLine(Umult,Vmult,Pnts1,Func,Rajout); 
+  if (nbPnts1 != 0)
+    ComputeOpenLine(Umult,Vmult,Pnts1,Func,Rajout); 
+
   // calculation of all closed lines 
-  if (nbPnts2 != 0) ComputeCloseLine(Umult,Vmult,Pnts1,Pnts2,Func,Rajout); 
+  if (nbPnts2 != 0)
+    ComputeCloseLine(Umult,Vmult,Pnts1,Pnts2,Func,Rajout); 
+  
   for (I = 1; I <= nbPnts1; I++) { 
     if (wd1[I].etat >0) seqSingle.Append(Pnts1(I));
   }

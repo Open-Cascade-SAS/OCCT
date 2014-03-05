@@ -1420,13 +1420,14 @@ void IntPatch_Intersection::GeomParamPerfom(const Handle(Adaptor3d_HSurface)&  t
 
     if (!empt)
     {
-      for(Standard_Integer i = 1; i <= interip.NbLines(); i++)
+      const Standard_Integer aNbLines = interip.NbLines();
+      for(Standard_Integer i = 1; i <= aNbLines; i++)
       {
         if(interip.Line(i)->ArcType() != IntPatch_Walking)
           slin.Append(interip.Line(i));
       }
 
-      for(Standard_Integer i = 1; i <= interip.NbLines(); i++)
+      for(Standard_Integer i = 1; i <= aNbLines; i++)
       {
         if(interip.Line(i)->ArcType() == IntPatch_Walking)
           slin.Append(interip.Line(i));

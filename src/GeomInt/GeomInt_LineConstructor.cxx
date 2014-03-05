@@ -197,7 +197,7 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
       Standard_Real aSQDist = aP1.SquareDistance(aP2);
       aSQDist = Max(aSQDist, aP1.SquareDistance(Pmid));
       aSQDist = Max(aSQDist, aP2.SquareDistance(Pmid));
-      
+
       Standard_Boolean isMicro = aSQDist*100.0 < Tol;
 
       if((Abs(firstp-lastp)>Precision::PConfusion()) && !isMicro)
@@ -260,6 +260,38 @@ void GeomInt_LineConstructor::Perform(const Handle(IntPatch_Line)& L)
       aSQDist = Max(aSQDist, aP2.SquareDistance(Pmid.Value()));
 
       Standard_Boolean isMicro = aSQDist*100.0 < Tol;
+
+      if(isMicro)
+      {//3D-dimension is small. Checking 2D-dimension
+        aSQDist = 0.0;
+        Standard_Real u1f, v1f, u2f, v2f;
+        Standard_Real u1l, v1l, u2l, v2l;
+        Standard_Real u1m, v1m, u2m, v2m;
+
+        WLine->Point(RealToInt(firstp)).Parameters(u1f, v1f, u2f, v2f);
+        WLine->Point(RealToInt(lastp)).Parameters(u1l, v1l, u2l, v2l);
+        WLine->Point(pmid).Parameters(u1m, v1m, u2m, v2m);
+
+        Standard_Real aDelta = u1m - u1f;
+        aSQDist += aDelta*aDelta;
+        aDelta = v1m - v1f;
+        aSQDist += aDelta*aDelta;
+        aDelta = u2m - u2f;
+        aSQDist += aDelta*aDelta;
+        aDelta = v2m - v2f;
+        aSQDist += aDelta*aDelta;
+
+        aDelta = u1m - u1l;
+        aSQDist += aDelta*aDelta;
+        aDelta = v1m - v1l;
+        aSQDist += aDelta*aDelta;
+        aDelta = u2m - u2l;
+        aSQDist += aDelta*aDelta;
+        aDelta = v2m - v2l;
+        aSQDist += aDelta*aDelta;
+
+        isMicro = aSQDist*100.0 < Tol;
+      }
 
       if((Abs(firstp-lastp)>Precision::PConfusion()) && !isMicro)
       {

@@ -1,8 +1,6 @@
-puts "TODO #22911 ALL: Error : The area of the resulting shape is"
-
 restore [locate_data_file CTO908_topo106-p.brep] poche
 restore [locate_data_file CTO908_topo106-n.brep] nervure
 
 bfuse result poche nervure
 
-set square 0
+set square 108943

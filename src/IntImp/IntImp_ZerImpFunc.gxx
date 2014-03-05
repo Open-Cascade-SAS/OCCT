@@ -122,7 +122,7 @@ Standard_Boolean IntImp_ZerImpFunc::IsTangent()
       d3d.SetLinearForm(tgdu,d1u,tgdv,d1v);
       d2d = gp_Dir2d(tgdu, tgdv);
       if (d3d.Magnitude() <= Tolpetit) {    // jag
-	tangent = Standard_True;
+        tangent = Standard_True;
       }
     }    
   }
