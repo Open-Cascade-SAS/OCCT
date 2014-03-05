@@ -1,6 +1,4 @@
 # cts17861
-#puts "TODO #22911 ALL: Faulty shapes in variables faulty_1 to faulty_"
-puts "TODO #22911 ALL: Error : The area of the resulting shape is"
 
 restore [locate_data_file CTO900_cts17861a.rle] a
 restore [locate_data_file cts17861b.rle] b
@@ -10,4 +8,4 @@ fsameparameter b
 
 bfuse result a b
 
-set square 0
+set square 406803

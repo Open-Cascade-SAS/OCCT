@@ -501,7 +501,7 @@ STATIC_PRECEDENT_INFLEXION(0)
   }
   else { 
     Standard_Real t = VM2-Vm2; 
-    if(t<ThePSurfaceTool::UPeriod(Caro2)) { 
+    if(t<ThePSurfaceTool::VPeriod(Caro2)) { 
       t=0.5*(ThePSurfaceTool::VPeriod(Caro2)-t);
       t=(t>KELARG*pasuv[3])? KELARG*pasuv[3] : t;
       VM2+=t;  

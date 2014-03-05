@@ -7,8 +7,6 @@ puts ""
 ## It is impossible to intersect two surfaces
 ##################################################
 
-puts "TODO OCC24472 ALL: Error : Intersection was made WRONGLY"
-
 restore [locate_data_file OCC13-1.draw] su1 
 ############### checkshape su1 # is not a topological shape
 restore [locate_data_file OCC13-2.draw] su2
@@ -27,9 +25,9 @@ set nom 0
        set err1 [lindex $che1 [expr [llength $che1] - 2]]
 
           if { $err != "curve" && $err1 != "3d"} {
-          	break
+            break
               } else {
-              set nom [expr $nom + 1]
+                set nom [expr $nom + 1]
               }
     incr j}
 if { $nom == 0} {

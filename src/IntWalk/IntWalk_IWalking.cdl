@@ -294,7 +294,5 @@ fields
     previousd2d         : Dir2d             from gp;
     seqAjout            : SequenceOfInteger from TColStd; 
     lines               : SequenceOfIWLine;
-    NbPointsConfondusConsecutifs: Integer   from Standard;
-    EpsilonSembleTropGrand      : Integer   from Standard;
 end IWalking;
 

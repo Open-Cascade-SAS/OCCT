@@ -2,10 +2,6 @@ restore [locate_data_file cylindre.rle] cyl
 restore [locate_data_file contour.rle] cont
 mkplane cont cont
 nexplode cyl F
-
-puts "*"
-#puts "TODO OCC22810 All:Faulty .*"
-puts "TODO OCC22810 ALL:Error : The area of the resulting shape is"
 ttranslate cont 0 0 -100
 
 #
@@ -18,4 +14,4 @@ if { [catch { featperform prism result face face } ] != 0 } {
   puts "Error in featperform"
 }
 
-set square 0
+set square 82351.1

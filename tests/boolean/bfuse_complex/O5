@@ -1,8 +1,6 @@
-puts "TODO #22911 ALL: Error : The area of the resulting shape is"
-
 restore [locate_data_file CTO908_topo104-o1.brep] wheel
 restore [locate_data_file CTO908_topo104-o2.brep] jante
 
 bfuse result wheel jante
 
-set square 0
+set square 40059.9

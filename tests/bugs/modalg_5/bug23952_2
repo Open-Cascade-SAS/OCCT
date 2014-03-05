@@ -10,7 +10,7 @@ pload QAcommands
 restore [locate_data_file bug23952_s1.draw] a
 restore [locate_data_file bug23952_s2.draw] b
 
-set NbLines 5
+set NbLines 6
 set info [OCC23952intersect $NbLines a b]
 
 if { [regexp "theNbSol: OK" $info] != 1 } {
