@@ -6,12 +6,11 @@ puts ""
 # VRML reader fails on attempt to read an attached WRL file
 #######################################################################
 
-set BugNumber OCC23023
-pload XDE
-
 set filepath [locate_data_file OCC23023-2056132060_2_tutnicht.wrl]
 if [catch { set list [loadvrml result $filepath] } res] {
     puts "Faulty: VRML reader fails"
 } else {
     puts "OK: VRML reader work properly"
 }
+
+set 3dviewer 1

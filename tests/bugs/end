@@ -163,6 +163,10 @@ if { [isdraw result] } {
   if { [info exists 3dviewer] } {
     #for multiview support: dump result from all opened views
     set view_str [vviewlist long]
+    if { [llength ${view_str}] == 0 } {
+       vinit
+       set view_str [vviewlist long]
+    }
     set view_list [regexp -all -inline {\S+} $view_str]
     foreach {view_name} $view_list {
       vactivate $view_name

@@ -193,7 +193,7 @@ const Handle(TopoDS_TShape)& VrmlData_IndexedFaceSet::TShape ()
               if (IndiceNormals(i, arrIndice) == 3) {
                 for (Standard_Integer j = 0; j < 3; j++) {
                   const gp_XYZ& aNormal = myNormals->Normal (arrIndice[j]);
-                  Standard_Integer anInd = arrNodes[j] * 3 + 1;
+                  Standard_Integer anInd = (mapNodeId(arrNodes[j]) - 1) * 3 + 1;
                   Normals->SetValue (anInd + 0, Standard_ShortReal (aNormal.X()));
                   Normals->SetValue (anInd + 1, Standard_ShortReal (aNormal.Y()));
                   Normals->SetValue (anInd + 2, Standard_ShortReal (aNormal.Z()));
