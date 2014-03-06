@@ -37,6 +37,12 @@ is
   --  Warning: Note that if <FileName> is NULL the texture must be realized
   -- using LoadTexture(image) method.
 
+  Initialize (thePixmap : PixMap_Handle from Image;
+              theType   : TypeOfTexture from Graphic3d);
+  ---Purpose: Creates a texture from pixmap.
+  -- Please note that the implementation expects the image data
+  -- to be in Bottom-Up order (see Image_PixMap::IsTopDown()).
+
   Destroy (me);
   ---C++ : alias ~
 
@@ -85,9 +91,10 @@ is
   ---Level   : Public
   ---Purpose :
   -- This method will be called by graphic driver each time when texture resource should be created.
-  -- Default implementation will dynamically load image from specified path within this method
+  -- Default constructors allow defining the texture source as path to texture image or directly as pixmap.
+  -- If the source is defined as path, then the image will be dynamically loaded when this method is called
   -- (and no copy will be preserved in this class instance).
-  -- Inheritors may dynamically generate the image or return cached instance.
+  -- Inheritors may dynamically generate the image.
   -- Notice, image data should be in Bottom-Up order (see Image_PixMap::IsTopDown())!
   -- @return the image for texture.
 
@@ -106,6 +113,7 @@ fields
 
   myParams : TextureParams from Graphic3d is protected;
   myTexId  : AsciiString from TCollection is protected;
+  myPixMap : PixMap_Handle from Image is protected;
   myPath   : Path from OSD is protected;
   myType   : TypeOfTexture from Graphic3d;
 

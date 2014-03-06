@@ -68,6 +68,17 @@ Graphic3d_Texture2D::Graphic3d_Texture2D (const Graphic3d_NameOfTexture2D theNOT
 }
 
 // =======================================================================
+// function : Graphic3d_Texture2D
+// purpose  :
+// =======================================================================
+Graphic3d_Texture2D::Graphic3d_Texture2D (const Handle(Image_PixMap)&    thePixMap,
+                                          const Graphic3d_TypeOfTexture  theType)
+: Graphic3d_TextureMap (thePixMap, theType),
+  myName (Graphic3d_NOT_2D_UNKNOWN)
+{
+}
+
+// =======================================================================
 // function : NumberOfTextures
 // purpose  :
 // =======================================================================

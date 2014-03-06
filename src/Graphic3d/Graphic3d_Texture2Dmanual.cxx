@@ -41,3 +41,15 @@ Graphic3d_Texture2Dmanual::Graphic3d_Texture2Dmanual (const Graphic3d_NameOfText
   myParams->SetRepeat   (Standard_True);
   myParams->SetFilter   (Graphic3d_TOTF_TRILINEAR);
 }
+
+// =======================================================================
+// function : Graphic3d_Texture2Dmanual
+// purpose  :
+// =======================================================================
+Graphic3d_Texture2Dmanual::Graphic3d_Texture2Dmanual (const Handle(Image_PixMap)& thePixMap)
+: Graphic3d_Texture2D (thePixMap, Graphic3d_TOT_2D_MIPMAP)
+{
+  myParams->SetModulate (Standard_True);
+  myParams->SetRepeat   (Standard_True);
+  myParams->SetFilter   (Graphic3d_TOTF_TRILINEAR);
+}

@@ -25,7 +25,8 @@ inherits Texture2D from Graphic3d
 uses
 
   NameOfTexture2D from Graphic3d,
-  AsciiString     from TCollection
+  AsciiString     from TCollection,
+  PixMap_Handle   from Image
 
 is
 
@@ -34,5 +35,8 @@ is
 
   Create (theNOT : NameOfTexture2D from Graphic3d) returns mutable Texture2Dmanual from Graphic3d;
   ---Purpose: Creates a texture from a predefined texture name set.
+
+  Create (thePixMap : PixMap_Handle from Image) returns mutable Texture2Dmanual from Graphic3d;
+  ---Purpose: Creates a texture from the pixmap.
 
 end Texture2Dmanual;

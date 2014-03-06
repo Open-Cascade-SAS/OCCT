@@ -26,7 +26,8 @@ inherits Texture1D from Graphic3d
 uses
 
   NameOfTexture1D from Graphic3d,
-  AsciiString     from TCollection
+  AsciiString     from TCollection,
+  PixMap_Handle   from Image
 
 is
 
@@ -35,6 +36,9 @@ is
 
   Create (theNOT : NameOfTexture1D from Graphic3d) returns mutable Texture1Dsegment from Graphic3d;
   ---Purpose: Creates a texture from a predefined texture name set.
+
+  Create (thePixMap : PixMap_Handle from Image) returns mutable Texture1Dsegment from Graphic3d;
+  ---Purpose: Creates a texture from the pixmap.
 
   SetSegment (me : mutable;
               theX1, theY1, theZ1 : ShortReal from Standard;

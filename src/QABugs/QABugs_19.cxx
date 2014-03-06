@@ -18,10 +18,12 @@
 #include <Draw_Interpretor.hxx>
 #include <DBRep.hxx>
 #include <DrawTrSurf.hxx>
-#include <AIS_InteractiveContext.hxx>
 #include <ViewerTest.hxx>
-#include <AIS_Shape.hxx>
 #include <TopoDS_Shape.hxx>
+#include <AIS_InteractiveContext.hxx>
+#include <AIS_TexturedShape.hxx>
+#include <Image_PixMap.hxx>
+#include <Image_Color.hxx>
 
 #include <gp_Pnt2d.hxx>
 #include <gp_Ax1.hxx>
@@ -1492,6 +1494,65 @@ static Standard_Integer OCC24370 (Draw_Interpretor& di, Standard_Integer argc,co
   return 0;
 }
 
+//=======================================================================
+//function : OCC24622
+//purpose  : The command tests sourcing Image_PixMap to AIS_TexturedShape
+//=======================================================================
+static Standard_Integer OCC24622 (Draw_Interpretor& /*theDi*/, Standard_Integer theArgNb, const char** theArgVec)
+{
+  if (theArgNb != 2)
+  {
+    std::cout << "Usage : " << theArgVec[0] << " texture={1D|2D}";
+    return 1;
+  }
+
+  const Handle(AIS_InteractiveContext)& anAISContext = ViewerTest::GetAISContext();
+  if (anAISContext.IsNull())
+  {
+    std::cout << "Please initialize view with \"vinit\".\n";
+    return 1;
+  }
+
+  Handle(Image_PixMap) anImage = new Image_PixMap();
+
+  static const Image_ColorRGB aBitmap[8] = {
+    {255, 0, 0},  {0, 148, 255}, {0, 148, 255}, {255, 94, 0},
+    {255, 121, 0}, {76, 255, 0},  {76, 255, 0}, {255, 202, 0}
+  };
+
+  TCollection_AsciiString aTextureTypeArg (theArgVec[1]);
+  aTextureTypeArg.UpperCase();
+  if (aTextureTypeArg == "1D")
+  {
+    anImage->InitWrapper (Image_PixMap::ImgRGB, (Standard_Byte*)aBitmap, 8, 1);
+  }
+  else if (aTextureTypeArg == "2D")
+  {
+    anImage->InitTrash (Image_PixMap::ImgRGB, 8, 8);
+    Image_PixMapData<Image_ColorRGB>& anImageData = anImage->EditData<Image_ColorRGB>();
+    for (Standard_Integer aRow = 0; aRow < 8; ++aRow)
+    {
+      for (Standard_Integer aCol = 0; aCol < 8; ++aCol)
+      {
+        anImageData.ChangeValue (aRow, aCol) = aBitmap[aRow];
+      }
+    }
+  }
+  else
+  {
+    std::cout << "Please specify type of texture to test {1D|2D}.\n";
+    return 1;
+  }
+
+  TopoDS_Shape aBlankShape = BRepPrimAPI_MakeBox (10.0, 10.0, 10.0).Shape();
+
+  Handle(AIS_TexturedShape) aTexturedShape = new AIS_TexturedShape (aBlankShape);
+  aTexturedShape->SetTexturePixMap (anImage);
+  anAISContext->Display (aTexturedShape, 3, 0);
+
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -1516,5 +1577,9 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC24137", "OCC24137 face vertex U V [N]", __FILE__, OCC24137, group);
   theCommands.Add ("OCC24271", "Boolean operations on NCollection_Map", __FILE__, OCC24271, group);
   theCommands.Add ("OCC24370", "OCC24370 edge pcurve surface prec", __FILE__, OCC24370, group);
+  theCommands.Add ("OCC24622", 
+                   "OCC24622 texture={1D|2D}\n"
+                   " Tests sourcing of 1D/2D pixmaps for AIS_TexturedShape.\n",
+                   __FILE__, OCC24622, group);
   return;
 }

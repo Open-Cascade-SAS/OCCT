@@ -25,7 +25,8 @@ uses
 
   NameOfTexture2D    from Graphic3d,
   NameOfTexturePlane from Graphic3d,
-  AsciiString        from TCollection
+  AsciiString        from TCollection,
+  PixMap_Handle      from Image
 
 is
 
@@ -34,6 +35,9 @@ is
 
   Create (theNOT : NameOfTexture2D from Graphic3d) returns mutable Texture2Dplane from Graphic3d;
   ---Purpose: Creates a texture from a predefined texture name set.
+
+  Create (thePixMap : PixMap_Handle from Image) returns mutable Texture2Dplane from Graphic3d;
+  ---Purpose: Creates a texture from the pixmap.
 
   SetPlaneS (me : mutable; A, B, C, D : ShortReal from Standard);
   ---Purpose:  Defines the texture projection plane for texture coordinate S

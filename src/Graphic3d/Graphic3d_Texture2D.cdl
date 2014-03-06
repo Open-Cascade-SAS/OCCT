@@ -24,7 +24,8 @@ uses
 
   TypeOfTexture   from Graphic3d,
   NameOfTexture2D from Graphic3d,
-  AsciiString     from TCollection
+  AsciiString     from TCollection,
+  PixMap_Handle   from Image
 
 raises
 
@@ -37,6 +38,9 @@ is
 
   Initialize (theName : NameOfTexture2D from Graphic3d;
               theType : TypeOfTexture   from Graphic3d);
+
+  Initialize (thePixMap : PixMap_Handle from Image;
+              theType   : TypeOfTexture from Graphic3d);
 
   Name (me) returns NameOfTexture2D from Graphic3d;
   ---Purpose:
