@@ -1,0 +1,34 @@
+puts "==========="
+puts "OCC24650"
+puts "==========="
+puts ""
+##############################################################
+# Wrong intersection curves obtained for a surface of revolution and a plane.
+##############################################################
+
+restore [locate_data_file bug24650_fz1365.brep] b1
+restore [locate_data_file bug24650_fz2495.brep] b2
+
+mksurface sb1 b1
+mksurface sb2 b2
+trimu sb1tu sb1 0.242 0.291
+
+set N [intersect i sb1tu sb2]
+
+if { [llength ${N}] != 1} {
+   puts "Error : Wrong intersection curves"
+} else {
+   set info1 [dump i]
+   set type_of_curve "BSplineCurve"
+   if { [regexp ${type_of_curve} ${info1}] != 1 } {
+      puts "Error : Wrong type of intersection curve"
+   } else {
+      puts "OK : Good type of intersection curve"
+   }
+}
+
+smallview
+donly i
+fit
+set only_screen_axo 1
+
