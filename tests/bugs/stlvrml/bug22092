@@ -6,8 +6,6 @@ puts ""
 # Crash of application on attempt to load a VRML file with all degenerated triangles
 ######################################################################################
 
-set BugNumber OCC22092
-
 loadvrml result [locate_data_file OCC22092-sk97.wrl]
 
 set nb_v_good 16
