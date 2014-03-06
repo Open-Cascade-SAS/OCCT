@@ -171,6 +171,8 @@ protected: //! @name overridden methods
                                         const Handle(Prs3d_Presentation)&           thePrs,
                                         const Standard_Integer                      theMode);
 
+  Standard_EXPORT void updateAttributes (const Handle(Prs3d_Presentation)& thePrs);
+
 protected: //! @name presentation fields
 
   Handle(Graphic3d_Texture2Dmanual)  myTexture;

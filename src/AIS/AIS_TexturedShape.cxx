@@ -30,6 +30,7 @@
 #include <PrsMgr_PresentationManager3d.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <StdPrs_ShadedShape.hxx>
+#include <StdPrs_ToolShadedShape.hxx>
 #include <StdPrs_WFDeflectionShape.hxx>
 #include <StdPrs_WFShape.hxx>
 #include <TopExp_Explorer.hxx>
@@ -194,9 +195,27 @@ void AIS_TexturedShape::DisableTextureModulate()
 
 void AIS_TexturedShape::UpdateAttributes()
 {
+  updateAttributes (Presentation());
+}
+
+//=======================================================================
+//function : updateAttributes
+//purpose  :
+//=======================================================================
+
+void AIS_TexturedShape::updateAttributes (const Handle(Prs3d_Presentation)& thePrs)
+{
   Prs3d_ShadingAspect aDummy;
   myAspect = aDummy.Aspect();
-  Handle(Prs3d_Presentation) aPrs = Presentation();
+  if (HasPolygonOffsets())
+  {
+    // Issue 23115: copy polygon offset settings passed through myDrawer
+    Standard_Integer aMode;
+    Standard_ShortReal aFactor, aUnits;
+    PolygonOffsets (aMode, aFactor, aUnits);
+    myAspect->SetPolygonOffsets (aMode, aFactor, aUnits);
+  }
+
   if (!myToMapTexture)
   {
     myAspect->SetTextureMapOff();
@@ -217,11 +236,11 @@ void AIS_TexturedShape::UpdateAttributes()
   }
 
   myAspect->SetTextureMapOn();
-
   myAspect->SetTextureMap (myTexture);
   if (!myTexture->IsDone())
   {
-    std::cout << "An error occurred while building texture \n";
+    std::cout << "An error occurred while building texture\n";
+    myAspect->SetTextureMapOff();
     return;
   }
 
@@ -230,7 +249,20 @@ void AIS_TexturedShape::UpdateAttributes()
   else
     myAspect->SetEdgeOff();
 
-  Prs3d_Root::CurrentGroup (aPrs)->SetGroupPrimitivesAspect (myAspect);
+  // manage back face culling in consistent way (as in StdPrs_ShadedShape::Add())
+  if (StdPrs_ToolShadedShape::IsClosed (myshape))
+  {
+    myAspect->SuppressBackFace();
+  }
+  else
+  {
+    myAspect->AllowBackFace();
+  }
+
+  if (!thePrs.IsNull())
+  {
+    Prs3d_Root::CurrentGroup (thePrs)->SetGroupPrimitivesAspect (myAspect);
+  }
 }
 
 //=======================================================================
@@ -328,62 +360,6 @@ void AIS_TexturedShape::Compute (const Handle(PrsMgr_PresentationManager3d)& /*t
     {
       BRepTools::Clean  (myshape);
       BRepTools::Update (myshape);
-
-      {
-        Handle(Prs3d_ShadingAspect) aPrs3d_ShadingAspect = new Prs3d_ShadingAspect();
-        myAspect = aPrs3d_ShadingAspect->Aspect();
-
-        // Issue 23115: copy polygon offset settings passed through myDrawer
-        if (HasPolygonOffsets())
-        {
-          Standard_Integer aMode;
-          Standard_ShortReal aFactor, aUnits;
-          PolygonOffsets(aMode, aFactor, aUnits);
-          myAspect->SetPolygonOffsets(aMode, aFactor, aUnits);
-        }
-      }
-      if (!myToMapTexture)
-      {
-        myAspect->SetTextureMapOff();
-        return;
-      }
-      myAspect->SetTextureMapOn();
-
-      if (!myTexturePixMap.IsNull())
-      {
-        myTexture = new Graphic3d_Texture2Dmanual (myTexturePixMap);
-      }
-      else if (myPredefTexture != Graphic3d_NOT_2D_UNKNOWN)
-      {
-        myTexture = new Graphic3d_Texture2Dmanual (myPredefTexture);
-      }
-      else
-      {
-        myTexture = new Graphic3d_Texture2Dmanual (myTextureFile.ToCString());
-      }
-
-      if (!myTexture->IsDone())
-      {
-        std::cout << "An error occurred while building texture \n";
-        return;
-      }
-
-      if (myModulate)
-        myTexture->EnableModulate();
-      else
-        myTexture->DisableModulate();
-
-      myAspect->SetTextureMap (myTexture);
-      if (myToShowTriangles)
-        myAspect->SetEdgeOn();
-      else
-        myAspect->SetEdgeOff();
-
-      if (myToRepeat)
-        myTexture->EnableRepeat();
-      else
-        myTexture->DisableRepeat();
-
       try
       {
         OCC_CATCH_SIGNALS
@@ -392,12 +368,12 @@ void AIS_TexturedShape::Compute (const Handle(PrsMgr_PresentationManager3d)& /*t
                                  myIsCustomOrigin ? myUVOrigin : gp_Pnt2d (0.0, 0.0),
                                  myUVRepeat,
                                  myToScale        ? myUVScale  : gp_Pnt2d (1.0, 1.0));
-        // within primitive arrays - object should be in one group of primitives
-        Prs3d_Root::CurrentGroup (thePrs)->SetGroupPrimitivesAspect (myAspect);
+
+        updateAttributes (thePrs);
       }
       catch (Standard_Failure)
       {
-        std::cout << "AIS_TexturedShape::Compute() in ShadingMode failed \n";
+        std::cout << "AIS_TexturedShape::Compute() in ShadingMode failed\n";
         StdPrs_WFShape::Add (thePrs, myshape, myDrawer);
       }
       break;
