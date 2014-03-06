@@ -396,7 +396,7 @@ is
                 theF1:Integer from Standard; 
                 theF2:Integer from Standard; 
                 theMI:out MapOfInteger from BOPCol; 
-                aMPB: out MapOfPaveBlock from BOPDS); 
+                aMPB: out IndexedMapOfPaveBlock from BOPDS);
         ---Purpose:   
         --- Returns the indices of vertices and pave blocks 
         --- that  are On/In for the faces with indices theF1, theF2  

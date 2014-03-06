@@ -49,6 +49,7 @@ uses
     Curve from BOPDS,  
     IndexedDataMapOfShapeCoupleOfPaveBlocks from BOPDS,
     MapOfPaveBlock from BOPDS,  
+    IndexedMapOfPaveBlock from BOPDS,  
     ListOfPaveBlock from BOPDS, 
     ListOfPave from BOPDS, 
     ListOfPntOn2S from IntSurf, 
@@ -214,7 +215,7 @@ is
         thePB:PaveBlock from BOPDS;  
         theNC:Curve from BOPDS;
         theTolR3D:Real from Standard; 
-        theMPB:MapOfPaveBlock from BOPDS; 
+        theMPB:IndexedMapOfPaveBlock from BOPDS; 
         thePBOut:out PaveBlock from BOPDS)
       returns Boolean from Standard 
       is protected;  
@@ -333,7 +334,7 @@ is
  
     ProcessExistingPaveBlocks(me:out; 
         theInt     : Integer from Standard; 
-        theMPBOnIn : MapOfPaveBlock from BOPDS; 
+        theMPBOnIn : IndexedMapOfPaveBlock from BOPDS; 
         theMSCPB   : out IndexedDataMapOfShapeCoupleOfPaveBlocks from BOPDS; 
         theMVI     : out DataMapOfShapeInteger from BOPCol; 
         theMVB     : MapOfInteger from BOPCol; 

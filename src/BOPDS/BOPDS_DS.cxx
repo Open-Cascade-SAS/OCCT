@@ -38,6 +38,8 @@
 #include <BOPDS_PassKey.hxx>
 #include <BOPDS_DataMapOfPassKeyListOfPaveBlock.hxx>
 #include <BOPDS_PassKey.hxx>
+#include <BOPDS_MapOfPave.hxx>
+#include <BOPDS_MapOfPaveBlock.hxx>
 
 #include <Geom_Curve.hxx>
 #include <BRep_Builder.hxx>
@@ -45,7 +47,6 @@
 #include <IntTools_Tools.hxx>
 #include <BOPTools_AlgoTools.hxx>
 #include <GeomAPI_ProjectPointOnCurve.hxx>
-#include <BOPDS_MapOfPave.hxx>
 
 //
 static
@@ -1426,25 +1427,24 @@ void BOPDS_DS::VerticesOnIn
   (const Standard_Integer nF1,
    const Standard_Integer nF2,
    BOPCol_MapOfInteger& aMI,
-   BOPDS_MapOfPaveBlock& aMPB)const
+   BOPDS_IndexedMapOfPaveBlock& aMPB)const
 {
-  Standard_Integer i, nV, nV1, nV2;
+  Standard_Integer i, j, nV, nV1, nV2, aNbPB;
   BOPCol_MapIteratorOfMapOfInteger aIt;
-  BOPDS_IndexedMapOfPaveBlock* pMPB[4];
-  BOPDS_MapIteratorOfMapOfPaveBlock aItMPB;
+  BOPDS_IndexedMapOfPaveBlock pMPB[4];
   //
   const BOPDS_FaceInfo& aFI1=FaceInfo(nF1);
   const BOPDS_FaceInfo& aFI2=FaceInfo(nF2);
   //
-  pMPB[0]=(BOPDS_IndexedMapOfPaveBlock*)&aFI1.PaveBlocksOn();
-  pMPB[1]=(BOPDS_IndexedMapOfPaveBlock*)&aFI1.PaveBlocksIn();
-  pMPB[2]=(BOPDS_IndexedMapOfPaveBlock*)&aFI2.PaveBlocksOn();
-  pMPB[3]=(BOPDS_IndexedMapOfPaveBlock*)&aFI2.PaveBlocksIn();
+  pMPB[0]=aFI1.PaveBlocksOn();
+  pMPB[1]=aFI1.PaveBlocksIn();
+  pMPB[2]=aFI2.PaveBlocksOn();
+  pMPB[3]=aFI2.PaveBlocksIn();
   //
   for (i=0; i<4; ++i) {
-    aItMPB.Initialize(*pMPB[i]);
-    for (; aItMPB.More(); aItMPB.Next()) {
-      const Handle(BOPDS_PaveBlock)& aPB=aItMPB.Value();
+    aNbPB = pMPB[i].Extent();
+    for (j = 1; j <= aNbPB; ++j) {
+      const Handle(BOPDS_PaveBlock)& aPB = pMPB[i](j);
       aMPB.Add(aPB);
       aPB->Indices(nV1, nV2);
       aMI.Add(nV1);
@@ -1463,7 +1463,7 @@ void BOPDS_DS::VerticesOnIn
     for (; aIt.More(); aIt.Next()) {
       nV=aIt.Value();
       if (aMVOn2.Contains(nV) || aMVIn2.Contains(nV)) {
- aMI.Add(nV);
+        aMI.Add(nV);
       }
     }
   }
