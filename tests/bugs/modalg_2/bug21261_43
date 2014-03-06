@@ -32,22 +32,17 @@ vsetdispmode 0
 vfit
 
 set scale    5.7979972910353759
-set center_X 134.00320461480183
-set center_Y 57.36536300752401
 set proj_X   0.40099617838859558
 set proj_Y   -0.39083370566368103
 set proj_Z   0.82852339744567871
 set up_X     -0.58777821063995361
 set up_Y     0.58394128084182739
 set up_Z     0.55993682146072388
-set at_X     14.468252182006836
-set at_Y     -14.975484848022461
-set at_Z     -8.813446044921875
+set at_X     74.9076600209737
+set at_Y     113.868559295313
+set at_Z     22.713272605878
 
-vviewparams ${scale} ${center_X} ${center_Y} \
-		${proj_X} ${proj_Y} ${proj_Z} \
-		${up_X} ${up_Y} ${up_Z} \
-		${at_X} ${at_Y} ${at_Z}
+vviewparams -scale ${scale} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up_Y} ${up_Z} -at ${at_X} ${at_Y} ${at_Z}
 
 
 set only_screen 0

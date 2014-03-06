@@ -11,17 +11,15 @@ set BugNumber OCC22701
 # Data
 
 set scale 276.45658048904141
-set center_X 0.41566799352988693
-set center_Y -1.4232027731292387
 set proj_X -0.8895147442817688
 set proj_Y -0.37965071201324463
 set proj_Z 0.25422060489654541
 set up_X -0.055201318114995956
 set up_Y 0.64161688089370728
 set up_Z 0.76503568887710571
-set at_X -0.018965641036629677
-set at_Y 1.2994236946105957
-set at_Z -0.41784921288490295
+set at_X 0.248127012715387
+set at_Y 0.109238834542233
+set at_Z -1.2607059785715
 
 set x1 105
 set y1 275
@@ -47,10 +45,7 @@ vsetdispmode 1
 vfit
 
 
-vviewparams ${scale} ${center_X} ${center_Y} \
-		${proj_X} ${proj_Y} ${proj_Z} \
-		${up_X} ${up_Y} ${up_Z} \
-		${at_X} ${at_Y} ${at_Z}
+vviewparams -scale ${scale} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up_Y} ${up_Z} -at ${at_X} ${at_Y} ${at_Z}
 
 checkcolor ${x1} ${y1} ${Hole1_R} ${Hole1_G} ${Hole1_B}
 checkcolor ${x2} ${y2} ${Hole2_R} ${Hole2_G} ${Hole2_B}

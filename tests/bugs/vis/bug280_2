@@ -11,7 +11,7 @@ OCC280 0 0
 
 # selected point
 set x_coord 22
-set y_coord 230
+set y_coord 241
 
 vfit
 

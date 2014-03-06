@@ -401,13 +401,13 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
     if (myProjectionState != myCamera->ProjectionState())
     {
       myProjectionState = myCamera->ProjectionState();
-      aManager->UpdateProjectionStateTo ((const Tmatrix3*)myCamera->ProjectionMatrix().GetData());
+      aManager->UpdateProjectionStateTo ((const Tmatrix3*)myCamera->ProjectionMatrixF().GetData());
     }
 
     if (myModelViewState != myCamera->ModelViewState())
     {
       myModelViewState = myCamera->ModelViewState();
-      aManager->UpdateWorldViewStateTo ((const Tmatrix3*)myCamera->OrientationMatrix().GetData());
+      aManager->UpdateWorldViewStateTo ((const Tmatrix3*)myCamera->OrientationMatrixF().GetData());
     }
 
     if (aManager->ModelWorldState().Index() == 0)
@@ -515,9 +515,9 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
   if (!myCamera->IsStereo() || !aContext->HasStereoBuffers())
   {
     // single-pass monographic rendering
-    const OpenGl_Matrix* aProj = (const OpenGl_Matrix*) &myCamera->ProjectionMatrix();
+    const OpenGl_Matrix* aProj = (const OpenGl_Matrix*) &myCamera->ProjectionMatrixF();
 
-    const OpenGl_Matrix* aOrient = (const OpenGl_Matrix*) &myCamera->OrientationMatrix();
+    const OpenGl_Matrix* aOrient = (const OpenGl_Matrix*) &myCamera->OrientationMatrixF();
 
     // redraw scene with normal orientation and projection
     RedrawScene (thePrintContext, theWorkspace, aProj, aOrient);
@@ -525,9 +525,9 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
   else
   {
     // two stereographic passes
-    const OpenGl_Matrix* aLProj  = (const OpenGl_Matrix*) &myCamera->ProjectionStereoLeft();
-    const OpenGl_Matrix* aRProj  = (const OpenGl_Matrix*) &myCamera->ProjectionStereoRight();
-    const OpenGl_Matrix* aOrient = (const OpenGl_Matrix*) &myCamera->OrientationMatrix();
+    const OpenGl_Matrix* aLProj  = (const OpenGl_Matrix*) &myCamera->ProjectionStereoLeftF();
+    const OpenGl_Matrix* aRProj  = (const OpenGl_Matrix*) &myCamera->ProjectionStereoRightF();
+    const OpenGl_Matrix* aOrient = (const OpenGl_Matrix*) &myCamera->OrientationMatrixF();
 
     // safely switch to left Eye buffer
     aContext->SetDrawBufferLeft();

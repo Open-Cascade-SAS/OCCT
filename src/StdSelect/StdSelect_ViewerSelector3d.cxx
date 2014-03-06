@@ -79,491 +79,596 @@ static Standard_Integer StdSel_NumberOfFreeEdges (const Handle(Poly_Triangulatio
   return nFree;
 }
 
-static Standard_Boolean ReadIsDebugMode()
+//=======================================================================
+// Function : Constructor
+// Purpose  :
+//=======================================================================
+StdSelect_ViewerSelector3d::StdSelect_ViewerSelector3d()
+: myProjector (new Select3D_Projector()),
+  myPrevFOV (0.0),
+  myPrevScale (0.0),
+  myPrevOrthographic (Standard_True),
+  mySensMode (StdSelect_SM_WINDOW),
+  myPixelTolerance (2),
+  myToUpdateTolerance (Standard_True)
 {
-  OSD_Environment StdSelectdb ("SELDEBUGMODE");
-  return !StdSelectdb.Value().IsEmpty();
+  myPrevAt[0]         = 0.0;
+  myPrevAt[1]         = 0.0;
+  myPrevAt[2]         = 0.0;
+  myPrevUp[0]         = 0.0;
+  myPrevUp[1]         = 0.0;
+  myPrevUp[2]         = 0.0;
+  myPrevProj[0]       = 0.0;
+  myPrevProj[1]       = 0.0;
+  myPrevProj[2]       = 0.0;
+  myPrevAxialScale[0] = 0.0;
+  myPrevAxialScale[1] = 0.0;
+  myPrevAxialScale[2] = 0.0;
 }
 
-static Standard_Boolean StdSelectDebugModeOn()
+//=======================================================================
+// Function : Constructor
+// Purpose  :
+//=======================================================================
+StdSelect_ViewerSelector3d::StdSelect_ViewerSelector3d (const Handle(Select3D_Projector)& theProj)
+: myProjector (theProj),
+  myPrevFOV (0.0),
+  myPrevScale (0.0),
+  myPrevOrthographic (Standard_True),
+  mySensMode (StdSelect_SM_WINDOW),
+  myPixelTolerance (2),
+  myToUpdateTolerance (Standard_True)
 {
-  static const Standard_Boolean isDebugMode = ReadIsDebugMode();
-  return isDebugMode;
+  myPrevAt[0]         = 0.0;
+  myPrevAt[1]         = 0.0;
+  myPrevAt[2]         = 0.0;
+  myPrevUp[0]         = 0.0;
+  myPrevUp[1]         = 0.0;
+  myPrevUp[2]         = 0.0;
+  myPrevProj[0]       = 0.0;
+  myPrevProj[1]       = 0.0;
+  myPrevProj[2]       = 0.0;
+  myPrevAxialScale[0] = 0.0;
+  myPrevAxialScale[1] = 0.0;
+  myPrevAxialScale[2] = 0.0;
 }
 
-//==================================================
-// Function:
-// Purpose :
-//==================================================
-
-StdSelect_ViewerSelector3d
-::StdSelect_ViewerSelector3d():
-myprj(new Select3D_Projector()),
-mylastzoom(0.0),
-mysensmode(StdSelect_SM_WINDOW),
-mypixtol(2),
-myupdatetol(Standard_True)
-{
-  for (Standard_Integer i=0;i<=13;i++) {mycoeff [i] = 0.;myprevcoeff[i]=0.0;}
-  for (Standard_Integer j=0;j<2;j++) {mycenter [j] = 0.;myprevcenter[j]=0.0;}
-}
-
-
-//==================================================
-// Function:
-// Purpose :
-//==================================================
-
-StdSelect_ViewerSelector3d
-::StdSelect_ViewerSelector3d(const Handle(Select3D_Projector)& aProj):
-myprj(aProj),
-mylastzoom(0.0),
-mysensmode(StdSelect_SM_WINDOW),
-mypixtol(2),
-myupdatetol(Standard_True)
-{
-  for (Standard_Integer i=0;i<=13;i++) {mycoeff [i] = 0.;myprevcoeff[i]=0.0;}
-  for (Standard_Integer j=0;j<2;j++) {mycenter [j] = 0.;myprevcenter[j]=0.0;}
-}
-
-//==================================================
+//=======================================================================
 // Function: Convert
 // Purpose :
-//==================================================
-
-void StdSelect_ViewerSelector3d::Convert(const Handle(SelectMgr_Selection)& aSel)
+//=======================================================================
+void StdSelect_ViewerSelector3d::Convert (const Handle(SelectMgr_Selection)& theSel)
 {
-  for(aSel->Init();aSel->More();aSel->Next())
+  for (theSel->Init(); theSel->More(); theSel->Next())
   {
-    if(aSel->Sensitive()->NeedsConversion())
+    if (theSel->Sensitive()->NeedsConversion())
     {
-      Handle(Select3D_SensitiveEntity) SE = *((Handle(Select3D_SensitiveEntity)*) &(aSel->Sensitive()));
-      SE->Project(myprj);
-      if(!tosort) tosort=Standard_True;
+      Handle(Select3D_SensitiveEntity) aSE = *((Handle(Select3D_SensitiveEntity)*) &(theSel->Sensitive()));
+      aSE->Project (myProjector);
+      if (!tosort)
+      {
+        tosort = Standard_True;
+      }
     }
   }
 }
 
-//==================================================
+//=======================================================================
 // Function: Set
 // Purpose :
-//==================================================
-
-void StdSelect_ViewerSelector3d
-::Set(const Handle(Select3D_Projector)& aProj)
+//=======================================================================
+void StdSelect_ViewerSelector3d::Set (const Handle(Select3D_Projector)& theProj)
 {
-  myprj = aProj;
-  toupdate=Standard_True;
-}
-
-//==================================================
-// Function: SetSensitivityMode
-// Purpose :
-//==================================================
-
-void StdSelect_ViewerSelector3d
-::SetSensitivityMode(const StdSelect_SensitivityMode aMode)
-{
-  mysensmode = aMode;
+  myProjector = theProj;
   toupdate = Standard_True;
 }
 
-//==================================================
+//=======================================================================
+// Function: SetSensitivityMode
+// Purpose :
+//=======================================================================
+void StdSelect_ViewerSelector3d::SetSensitivityMode (const StdSelect_SensitivityMode theMode)
+{
+  mySensMode = theMode;
+  toupdate = Standard_True;
+}
+
+//=======================================================================
 // Function: SetPixelTolerance
 // Purpose :
-//==================================================
-
-void StdSelect_ViewerSelector3d
-::SetPixelTolerance(const Standard_Integer aTolerance)
+//=======================================================================
+void StdSelect_ViewerSelector3d::SetPixelTolerance (const Standard_Integer theTolerance)
 {
-  if(mypixtol!=aTolerance)
+  if (myPixelTolerance != theTolerance)
   {
-    mypixtol    = aTolerance;
-    myupdatetol = Standard_True;
+    myPixelTolerance = theTolerance;
+    myToUpdateTolerance = Standard_True;
   }
 }
 
-//==================================================
-// Function: SelectPix
+//=======================================================================
+// Function: Pick
 // Purpose :
-//==================================================
-
-void StdSelect_ViewerSelector3d
-::Pick(const Standard_Integer XPix,
-       const Standard_Integer YPix,
-       const Handle(V3d_View)& aView)
+//=======================================================================
+void StdSelect_ViewerSelector3d::Pick (const Standard_Integer theXPix,
+                                       const Standard_Integer theYPix,
+                                       const Handle(V3d_View)& theView)
 {
-  SetClipping (aView->GetClipPlanes());
-  UpdateProj(aView);
-  Standard_Real Xr3d,Yr3d,Zr3d;
-  gp_Pnt2d P2d;
-  aView->Convert(XPix,YPix,Xr3d,Yr3d,Zr3d);
-  myprj->Project(gp_Pnt(Xr3d,Yr3d,Zr3d),P2d);
+  SetClipping (theView->GetClipPlanes());
+  UpdateProj (theView);
 
-  InitSelect(P2d.X(),P2d.Y());
+  Standard_Real aXr3d = 0.0;
+  Standard_Real aYr3d = 0.0;
+  Standard_Real aZr3d = 0.0;
+  gp_Pnt2d aP2d;
+  theView->Convert (theXPix, theYPix, aXr3d, aYr3d, aZr3d);
+  myProjector->Project (gp_Pnt (aXr3d, aYr3d, aZr3d), aP2d);
+
+  InitSelect (aP2d.X(), aP2d.Y());
 }
 
-
-//==================================================
-// Function: InitSelect
+//=======================================================================
+// Function: Pick
 // Purpose :
-//==================================================
-
-void StdSelect_ViewerSelector3d
-::Pick(const Standard_Integer XPMin,
-       const Standard_Integer YPMin,
-       const Standard_Integer XPMax,
-       const Standard_Integer YPMax,
-       const Handle(V3d_View)& aView)
+//=======================================================================
+void StdSelect_ViewerSelector3d::Pick (const Standard_Integer theXPMin,
+                                       const Standard_Integer theYPMin,
+                                       const Standard_Integer theXPMax,
+                                       const Standard_Integer theYPMax,
+                                       const Handle(V3d_View)& theView)
 {
-  if (myupdatetol && SensitivityMode() == StdSelect_SM_WINDOW)
+  if (myToUpdateTolerance && SensitivityMode() == StdSelect_SM_WINDOW)
   {
-    SetSensitivity (aView->Convert (mypixtol));
-    myupdatetol = Standard_False;
+    SetSensitivity (theView->Convert (myPixelTolerance));
+    myToUpdateTolerance = Standard_False;
   }
-  UpdateProj (aView);
 
-  Standard_Real x1,y1,z1,x2,y2,z2;
-  gp_Pnt2d P2d_1,P2d_2;
-  aView->Convert(XPMin,YPMin,x1,y1,z1);
-  aView->Convert(XPMax,YPMax,x2,y2,z2);
-  myprj->Project(gp_Pnt(x1,y1,z1),P2d_1);
-  myprj->Project(gp_Pnt(x2,y2,z2),P2d_2);
+  UpdateProj (theView);
 
-  InitSelect (Min(P2d_1.X(),P2d_2.X()),
-              Min(P2d_1.Y(),P2d_2.Y()),
-              Max(P2d_1.X(),P2d_2.X()),
-              Max(P2d_1.Y(),P2d_2.Y()));
+  Standard_Real aX1 = 0.0;
+  Standard_Real aY1 = 0.0;
+  Standard_Real aZ1 = 0.0;
+  Standard_Real aX2 = 0.0;
+  Standard_Real aY2 = 0.0;
+  Standard_Real aZ2 = 0.0;
+  gp_Pnt2d aP2d1;
+  gp_Pnt2d aP2d2;
+
+  theView->Convert (theXPMin, theYPMin, aX1, aY1, aZ1);
+  theView->Convert (theXPMax, theYPMax, aX2, aY2, aZ2);
+  myProjector->Project (gp_Pnt (aX1, aY1, aZ1), aP2d1);
+  myProjector->Project (gp_Pnt (aX2, aY2, aZ2), aP2d2);
+
+  InitSelect (Min (aP2d1.X(), aP2d2.X()),
+              Min (aP2d1.Y(), aP2d2.Y()),
+              Max (aP2d1.X(), aP2d2.X()),
+              Max (aP2d1.Y(), aP2d2.Y()));
 }
 
-//==================================================
+//=======================================================================
 // Function: Pick
 // Purpose : Selection using a polyline
-//==================================================
-
-void StdSelect_ViewerSelector3d::Pick(const TColgp_Array1OfPnt2d& aPolyline, const Handle(V3d_View)& aView)
+//=======================================================================
+void StdSelect_ViewerSelector3d::Pick (const TColgp_Array1OfPnt2d& thePolyline,
+                                       const Handle(V3d_View)& theView)
 {
-  if (myupdatetol && SensitivityMode() == StdSelect_SM_WINDOW)
+  if (myToUpdateTolerance && SensitivityMode() == StdSelect_SM_WINDOW)
   {
-    SetSensitivity (aView->Convert (mypixtol));
-    myupdatetol = Standard_False;
+    SetSensitivity (theView->Convert (myPixelTolerance));
+    myToUpdateTolerance = Standard_False;
   }
 
-  UpdateProj (aView);
+  UpdateProj (theView);
 
-  Standard_Integer NbPix = aPolyline.Length();
-  Standard_Integer i;
+  Standard_Integer aNbPix = thePolyline.Length();
 
   // Convert pixel
-  Handle(TColgp_HArray1OfPnt2d) P2d = new TColgp_HArray1OfPnt2d(1,NbPix);
+  Handle(TColgp_HArray1OfPnt2d) aP2d = new TColgp_HArray1OfPnt2d (1, aNbPix);
 
-  for (i = 1; i <= NbPix; ++i)
+  for (Standard_Integer aPntIt = 1; aPntIt <= aNbPix; ++aPntIt)
   {
-    Standard_Real x,y,z;
-    Standard_Integer XP = (Standard_Integer)(aPolyline(i).X());
-    Standard_Integer YP = (Standard_Integer)(aPolyline(i).Y());
-    gp_Pnt2d Pnt2d;
+    Standard_Integer aXP = (Standard_Integer)(thePolyline (aPntIt).X());
+    Standard_Integer aYP = (Standard_Integer)(thePolyline (aPntIt).Y());
 
-    aView->Convert (XP, YP, x, y, z);
-    myprj->Project (gp_Pnt (x, y, z), Pnt2d);
+    Standard_Real aX = 0.0;
+    Standard_Real aY = 0.0;
+    Standard_Real aZ = 0.0;
+    gp_Pnt2d aPnt2d;
 
-    P2d->SetValue (i, Pnt2d);
+    theView->Convert (aXP, aYP, aX, aY, aZ);
+    myProjector->Project (gp_Pnt (aX, aY, aZ), aPnt2d);
+
+    aP2d->SetValue (aPntIt, aPnt2d);
   }
 
-  const TColgp_Array1OfPnt2d& aPolyConvert = P2d->Array1();
+  const TColgp_Array1OfPnt2d& aPolyConvert = aP2d->Array1();
 
-  InitSelect(aPolyConvert);
+  InitSelect (aPolyConvert);
 }
 
-//==================================================
+//=======================================================================
 // Function: DisplayAreas
 // Purpose : display the activated areas...
-//==================================================
-
-void StdSelect_ViewerSelector3d::DisplayAreas(const Handle(V3d_View)& aView)
+//=======================================================================
+void StdSelect_ViewerSelector3d::DisplayAreas (const Handle(V3d_View)& theView)
 {
-  if (myupdatetol && SensitivityMode() == StdSelect_SM_WINDOW)
+  if (myToUpdateTolerance && SensitivityMode() == StdSelect_SM_WINDOW)
   {
-    SetSensitivity (aView->Convert (mypixtol));
-    myupdatetol = Standard_False;
+    SetSensitivity (theView->Convert (myPixelTolerance));
+    myToUpdateTolerance = Standard_False;
   }
-  UpdateProj(aView);
+
+  UpdateProj (theView);
   UpdateSort(); // Updates the activated areas
 
-  if(mystruct.IsNull())
-    mystruct = new Graphic3d_Structure(aView->Viewer()->Viewer());
+  if (mystruct.IsNull())
+  {
+    mystruct = new Graphic3d_Structure (theView->Viewer()->Viewer());
+  }
 
-  if(myareagroup.IsNull())
-    myareagroup  = new Graphic3d_Group(mystruct);
+  if (myareagroup.IsNull())
+  {
+    myareagroup  = new Graphic3d_Group (mystruct);
+  }
 
-  SelectMgr_DataMapIteratorOfDataMapOfIntegerSensitive It(myentities);
-  Handle(Select3D_Projector) prj = StdSelect::GetProjector(aView);
-  prj->SetView(aView);
+  SelectMgr_DataMapIteratorOfDataMapOfIntegerSensitive anIt (myentities);
+  Handle(Select3D_Projector) aProjector = StdSelect::GetProjector (theView);
+  aProjector->SetView (theView);
 
-  Standard_Real xmin,ymin,xmax,ymax;
-  gp_Pnt Pbid;
-  SelectBasics_ListOfBox2d BoxList;
+  Standard_Real aXmin = 0.0;
+  Standard_Real aYmin = 0.0;
+  Standard_Real aXmax = 0.0;
+  Standard_Real aYmax = 0.0;
+  gp_Pnt aPbid;
+  SelectBasics_ListOfBox2d aBoxList;
 
   TColgp_SequenceOfPnt aSeqLines;
-  for (; It.More(); It.Next())
+  for (; anIt.More(); anIt.Next())
   {
-    It.Value()->Areas(BoxList);
-    for (SelectBasics_ListIteratorOfListOfBox2d itb (BoxList); itb.More(); itb.Next())
+    anIt.Value()->Areas (aBoxList);
+
+    for (SelectBasics_ListIteratorOfListOfBox2d aBoxIt (aBoxList); aBoxIt.More(); aBoxIt.Next())
     {
-      itb.Value().Get (xmin, ymin, xmax, ymax);
+      aBoxIt.Value().Get (aXmin, aYmin, aXmax, aYmax);
 
-      Pbid.SetCoord (xmin - mytolerance, ymin - mytolerance, 0.0);
-      prj->Transform (Pbid, prj->InvertedTransformation());
-	  aSeqLines.Append(Pbid);
+      aPbid.SetCoord (aXmin - mytolerance, aYmin - mytolerance, 0.0);
+      aProjector->Transform (aPbid, aProjector->InvertedTransformation());
+      aSeqLines.Append (aPbid);
 
-      Pbid.SetCoord (xmax + mytolerance, ymin - mytolerance, 0.0);
-      prj->Transform (Pbid, prj->InvertedTransformation());
-	  aSeqLines.Append(Pbid);
+      aPbid.SetCoord (aXmax + mytolerance, aYmin - mytolerance, 0.0);
+      aProjector->Transform (aPbid, aProjector->InvertedTransformation());
+      aSeqLines.Append (aPbid);
 
-      Pbid.SetCoord (xmax + mytolerance, ymax + mytolerance, 0.0);
-      prj->Transform (Pbid, prj->InvertedTransformation());
-	  aSeqLines.Append(Pbid);
+      aPbid.SetCoord (aXmax + mytolerance, aYmax + mytolerance, 0.0);
+      aProjector->Transform (aPbid, aProjector->InvertedTransformation());
+      aSeqLines.Append (aPbid);
 
-      Pbid.SetCoord (xmin - mytolerance, ymax + mytolerance, 0.0);
-      prj->Transform (Pbid, prj->InvertedTransformation());
-	  aSeqLines.Append(Pbid);
+      aPbid.SetCoord (aXmin - mytolerance, aYmax + mytolerance, 0.0);
+      aProjector->Transform (aPbid, aProjector->InvertedTransformation());
+      aSeqLines.Append (aPbid);
     }
   }
 
   if (aSeqLines.Length())
   {
-    Standard_Integer n, np;
-    const Standard_Integer nbl = aSeqLines.Length() / 4;
-    Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(5*nbl,nbl);
-    for (np = 1, n=0; n<nbl; n++) {
-      aPrims->AddBound(5);
-      const gp_Pnt &p1 = aSeqLines(np++);
-      aPrims->AddVertex(p1);
-      aPrims->AddVertex(aSeqLines(np++));
-      aPrims->AddVertex(aSeqLines(np++));
-      aPrims->AddVertex(aSeqLines(np++));
-      aPrims->AddVertex(p1);
+    Standard_Integer aN = 0;
+    Standard_Integer aNp = 0;
+    const Standard_Integer aNbl = aSeqLines.Length() / 4;
+
+    Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines (5 * aNbl, aNbl);
+    for (aNp = 1, aN = 0; aN < aNbl; aN++)
+    {
+      aPrims->AddBound (5);
+      const gp_Pnt &aPnt1 = aSeqLines (aNp++);
+      aPrims->AddVertex (aPnt1);
+      aPrims->AddVertex (aSeqLines (aNp++));
+      aPrims->AddVertex (aSeqLines (aNp++));
+      aPrims->AddVertex (aSeqLines (aNp++));
+      aPrims->AddVertex (aPnt1);
     }
-    myareagroup->AddPrimitiveArray(aPrims);
+    myareagroup->AddPrimitiveArray (aPrims);
   }
 
   myareagroup->SetGroupPrimitivesAspect (new Graphic3d_AspectLine3d (Quantity_NOC_AQUAMARINE1, Aspect_TOL_DASH, 1.0));
-  myareagroup->Structure()->SetDisplayPriority(10);
+  myareagroup->Structure()->SetDisplayPriority (10);
   myareagroup->Structure()->Display();
 
-  if(aView->TransientManagerBeginDraw())
+  if (theView->TransientManagerBeginDraw())
   {
-    Visual3d_TransientManager::DrawStructure(mystruct);
+    Visual3d_TransientManager::DrawStructure (mystruct);
     Visual3d_TransientManager::EndDraw();
   }
   else
   {
-    aView->Update();
+    theView->Update();
   }
 }
 
-//==================================================
+//=======================================================================
 // Function: ClearAreas
 // Purpose :
-//==================================================
-
-void StdSelect_ViewerSelector3d::ClearAreas(const Handle(V3d_View)& aView)
+//=======================================================================
+void StdSelect_ViewerSelector3d::ClearAreas (const Handle(V3d_View)& theView)
 {
-  if(myareagroup.IsNull()) return;
+  if (myareagroup.IsNull())
+  {
+    return;
+  }
+
   myareagroup->Clear();
-  if(aView.IsNull()) return;
-  if(aView->TransientManagerBeginDraw())
+
+  if (theView.IsNull())
+  {
+    return;
+  }
+
+  if (theView->TransientManagerBeginDraw())
+  {
     Visual3d_TransientManager::EndDraw();
+  }
   else
-    aView->Update();
+  {
+    theView->Update();
+  }
 }
 
-//==================================================
-// Function: updateproj
-// Purpose : at any time verifies that
-//           the view coefficients did not change :
-// store current view coeffts
-//        in static array cf [ 0->2 At coordinates XAT YAT ZAT
-//                            3->5 Up coordinates XUP YUP ZUP
-//                            6->8 ProjVect coordinates DX DY DZ
-//                             9   focale
-//                            10   1. if pers 0. else
-//==================================================
-
-Standard_Boolean StdSelect_ViewerSelector3d::UpdateProj(const Handle(V3d_View)& aView)
+//=======================================================================
+// Function: UpdateProj
+// Purpose :
+//=======================================================================
+Standard_Boolean StdSelect_ViewerSelector3d::UpdateProj (const Handle(V3d_View)& theView)
 {
-  myprevcoeff[ 9] = 0.0;
-  myprevcoeff[10] = 0.0;
-  Standard_Boolean Pers = Standard_False;
-  if (aView->Type() == V3d_PERSPECTIVE)
-  {
-    Pers = Standard_True;
-    myprevcoeff[10] = 1.0;
-    myprevcoeff[ 9] = aView->Focale();
-  }
-  aView->At (myprevcoeff[0], myprevcoeff[1], myprevcoeff[2]);
-  aView->Up (myprevcoeff[3], myprevcoeff[4], myprevcoeff[5]);
-  aView->Proj (myprevcoeff[6], myprevcoeff[7], myprevcoeff[8]);
-  aView->AxialScale (myprevcoeff[11], myprevcoeff[12], myprevcoeff[13]);
-  aView->Center (myprevcenter[0], myprevcenter[1]);
-  Standard_Integer ii;
+  // Check common properties of camera
+  Standard_Real anUp[3];
+  Standard_Real aProj[3];
+  Standard_Real anAxialScale[3];
+  theView->Up (anUp[0], anUp[1], anUp[2]);
+  theView->Proj (aProj[0], aProj[1], aProj[2]);
+  theView->AxialScale (anAxialScale[0], anAxialScale[1], anAxialScale[2]);
 
-  for (ii = 0; ii <= 13 && (myprevcoeff[ii] == mycoeff[ii]); ++ii) {}
-  if (ii <= 13 || (myprevcenter[0] != mycenter[0]) || (myprevcenter[1] != mycenter[1]))
+  Standard_Boolean isOrthographic = theView->Type() == V3d_ORTHOGRAPHIC;
+  Standard_Boolean toUpdateProjector = myPrevOrthographic  != isOrthographic
+                                    || myPrevUp[0]         != anUp[0]
+                                    || myPrevUp[1]         != anUp[1]
+                                    || myPrevUp[2]         != anUp[2]
+                                    || myPrevProj[0]       != aProj[0]
+                                    || myPrevProj[1]       != aProj[1]
+                                    || myPrevProj[2]       != aProj[2]
+                                    || myPrevAxialScale[0] != anAxialScale[0]
+                                    || myPrevAxialScale[1] != anAxialScale[1]
+                                    || myPrevAxialScale[2] != anAxialScale[2];
+
+  // Check properties of perspective camera
+  Standard_Real anAt[3];
+  Standard_Real aScale = theView->Scale();
+  Standard_Real aFOV   = theView->Camera()->FOVy();
+  theView->At (anAt[0], anAt[1], anAt[2]);
+  if (!isOrthographic && !toUpdateProjector)
   {
-    if (StdSelectDebugModeOn())
-    {
-      cout<<"\t\t\t\t\t VS3d::UpdateProj====> coefficients changes on reprojette"<<endl;
-      cout<<"\t\t\t\t\t";
-      for (Standard_Integer i = 1; i <= 9; ++i)
-      {
-        cout<<mycoeff[i-1]<<"  ";
-        if (i%3==0)
-          cout<<"\n\t\t\t\t\t";
-      }
-      cout<<"focale :"<<mycoeff[9]<<" persp :"<<mycoeff[10]<<endl;
-      cout<<"center :"<<mycenter[0]<<"  "<<mycenter[1]<<endl;
-    }
+    toUpdateProjector = myPrevAt[0] != anAt[0]
+                     || myPrevAt[1] != anAt[1]
+                     || myPrevAt[2] != anAt[2]
+                     || myPrevScale != aScale
+                     || myPrevFOV   != aFOV;
+  }
+
+  myToUpdateTolerance = aScale != myPrevScale;
+
+  // Update projector if anything changed
+  if (toUpdateProjector)
+  {
     toupdate = Standard_True;
-    myupdatetol = Standard_True;
-    for (Standard_Integer imod = ii; imod <= 13; ++imod)
+
+    myToUpdateTolerance = Standard_True;
+
+    if (isOrthographic)
     {
-      mycoeff[imod] = myprevcoeff[imod];
+      // For orthographic view use only direction of projection and up vector
+      // Panning, and zooming has no effect on 2D selection sensitives.
+      Handle (Graphic3d_Camera) aCamera = new Graphic3d_Camera();
+
+      aCamera->SetProjectionType (Graphic3d_Camera::Projection_Orthographic);
+      aCamera->SetCenter (gp::Origin());
+      aCamera->SetDirection (gp_Dir (-aProj[0], -aProj[1], -aProj[2]));
+      aCamera->SetUp (gp_Dir (anUp[0], anUp[1], anUp[2]));
+      aCamera->SetDistance (1.0);
+      aCamera->SetAxialScale (gp_XYZ (anAxialScale[0], anAxialScale[1], anAxialScale[2]));
+
+      myProjector = new Select3D_Projector (aCamera->OrientationMatrix(), Graphic3d_Mat4d());
     }
-    for (Standard_Integer jmod = 0; jmod < 2; ++jmod)
+    else
     {
-      mycenter[jmod] = myprevcenter[jmod];
+      // For perspective projection panning, zooming and location of view
+      // has effect. Thus, use current view and projection matrices from
+      // view camera. Exception is that the projection transformation
+      // is scaled from NDC to size of displaying frame of view space in order
+      // to maintain consistence with pixel tolerance conversion.
+      const Graphic3d_Mat4d& aMVMatrix   = theView->Camera()->OrientationMatrix();
+      const Graphic3d_Mat4d& aProjMatrix = theView->Camera()->ProjectionMatrix();
+      gp_XYZ aViewDimensions = theView->Camera()->ViewDimensions();
+
+      Graphic3d_Mat4d aScaledProj;
+      aScaledProj.ChangeValue (0, 0) = aViewDimensions.X();
+      aScaledProj.ChangeValue (1, 1) = aViewDimensions.Y();
+      aScaledProj.ChangeValue (2, 2) = aViewDimensions.Z();
+      Graphic3d_Mat4d aScaledProjMatrix = aScaledProj * aProjMatrix;
+
+      myProjector = new Select3D_Projector (aMVMatrix, aScaledProjMatrix);
     }
-
-    myprj = new Select3D_Projector (aView);
-
   }
 
-  if (Abs (aView->Scale() - mylastzoom) > 1.e-3)
+  myPrevAt[0] = anAt[0];
+  myPrevAt[1] = anAt[1];
+  myPrevAt[2] = anAt[2];
+  myPrevUp[0] = anUp[0];
+  myPrevUp[1] = anUp[1];
+  myPrevUp[2] = anUp[2];
+  myPrevProj[0] = aProj[0];
+  myPrevProj[1] = aProj[1];
+  myPrevProj[2] = aProj[2];
+  myPrevAxialScale[0] = anAxialScale[0];
+  myPrevAxialScale[1] = anAxialScale[1];
+  myPrevAxialScale[2] = anAxialScale[2];
+  myPrevFOV = aFOV;
+  myPrevScale = aScale;
+  myPrevOrthographic = isOrthographic;
+
+  if (myToUpdateTolerance && SensitivityMode() == StdSelect_SM_WINDOW)
   {
-    myupdatetol = Standard_True;
-    mylastzoom = aView->Scale();
+    SetSensitivity (theView->Convert (myPixelTolerance));
+    myToUpdateTolerance = Standard_False;
   }
 
-  if (myupdatetol && SensitivityMode() == StdSelect_SM_WINDOW)
+  if (toupdate)
   {
-    SetSensitivity (aView->Convert (mypixtol));
-    myupdatetol = Standard_False;
+    UpdateConversion();
   }
 
-  if (toupdate) UpdateConversion();
-  if (tosort) UpdateSort();
+  if (tosort)
+  {
+    UpdateSort();
+  }
 
   return Standard_True;
 }
 
 
-//=============================
+//=======================================================================
 // Function: DisplaySensitive.
 // Purpose : Display active primitives.
-//=============================
-void StdSelect_ViewerSelector3d::DisplaySensitive(const Handle(V3d_View)& aViou)
+//=======================================================================
+void StdSelect_ViewerSelector3d::DisplaySensitive (const Handle(V3d_View)& theView)
 {
-  if (myupdatetol && SensitivityMode() == StdSelect_SM_WINDOW)
+  if (myToUpdateTolerance && SensitivityMode() == StdSelect_SM_WINDOW)
   {
-    SetSensitivity (aViou->Convert (mypixtol));
-		myupdatetol = Standard_False;
+    SetSensitivity (theView->Convert (myPixelTolerance));
+    myToUpdateTolerance = Standard_False;
   }
-  if(toupdate) UpdateProj(aViou);
-  if(tosort) UpdateSort(); // Updates the activated areas
+
+  if (toupdate)
+  {
+    UpdateProj (theView);
+  }
+
+  if (tosort)
+  {
+    UpdateSort(); // Updates the activated areas
+  }
 
   // Preparation des structures
-  if(mystruct.IsNull())
-    mystruct = new Graphic3d_Structure(aViou->Viewer()->Viewer());
+  if (mystruct.IsNull())
+  {
+    mystruct = new Graphic3d_Structure (theView->Viewer()->Viewer());
+  }
 
-  if(mysensgroup.IsNull())
-    mysensgroup = new Graphic3d_Group(mystruct);
+  if (mysensgroup.IsNull())
+  {
+    mysensgroup = new Graphic3d_Group (mystruct);
+  }
 
-  Quantity_Color Col(Quantity_NOC_INDIANRED3);
-  Handle(Graphic3d_AspectMarker3d) AM =
-    new Graphic3d_AspectMarker3d(Aspect_TOM_O_PLUS,Col,2.);
-  mysensgroup-> SetPrimitivesAspect (AM);
+  Quantity_Color aColor (Quantity_NOC_INDIANRED3);
+  Handle(Graphic3d_AspectMarker3d) aMarkerAspect =
+    new Graphic3d_AspectMarker3d (Aspect_TOM_O_PLUS, aColor, 2.0);
+
+  mysensgroup->SetPrimitivesAspect (aMarkerAspect);
   mysensgroup->SetPrimitivesAspect (
     new Graphic3d_AspectLine3d (Quantity_NOC_GRAY40, Aspect_TOL_SOLID, 2.0));
 
-  // Remplissage de la structure...
+  SelectMgr_DataMapIteratorOfDataMapOfSelectionActivation anIt (myselections);
 
-  SelectMgr_DataMapIteratorOfDataMapOfSelectionActivation It(myselections);
-
-  for (; It.More(); It.Next())
+  for (; anIt.More(); anIt.Next())
   {
-    if (It.Value()==0)
+    if (anIt.Value()==0)
     {
-      const Handle(SelectMgr_Selection)& Sel = It.Key();
-      ComputeSensitivePrs(Sel);
+      const Handle(SelectMgr_Selection)& aSel = anIt.Key();
+      ComputeSensitivePrs (aSel);
     }
   }
 
-  mysensgroup->Structure()->SetDisplayPriority(10);
+  mysensgroup->Structure()->SetDisplayPriority (10);
   mystruct->Display();
-  if (aViou->TransientManagerBeginDraw())
+
+  if (theView->TransientManagerBeginDraw())
   {
-    Visual3d_TransientManager::DrawStructure(mystruct);
+    Visual3d_TransientManager::DrawStructure (mystruct);
     Visual3d_TransientManager::EndDraw();
   }
-  else if (!aViou.IsNull())
+  else if (!theView.IsNull())
   {
-    aViou->Update();
+    theView->Update();
   }
 }
 
-//=============================
+//=======================================================================
 // Function: ClearSensitive
 // Purpose :
-//=============================
-void StdSelect_ViewerSelector3d::ClearSensitive(const Handle(V3d_View)& aViou)
+//=======================================================================
+void StdSelect_ViewerSelector3d::ClearSensitive (const Handle(V3d_View)& theView)
 {
-  if(mysensgroup.IsNull()) return;
-  mysensgroup->Clear();
-  if(aViou.IsNull()) return;
+  if (mysensgroup.IsNull())
+  {
+    return;
+  }
 
-  if(aViou->TransientManagerBeginDraw())
+  mysensgroup->Clear();
+
+  if (theView.IsNull())
+  {
+    return;
+  }
+
+  if (theView->TransientManagerBeginDraw())
+  {
     Visual3d_TransientManager::EndDraw();
+  }
   else
-    aViou->Update();
+  {
+    theView->Update();
+  }
 }
 
 //=======================================================================
 //function : DisplaySenstive
 //purpose  :
 //=======================================================================
-void StdSelect_ViewerSelector3d::
-DisplaySensitive (const Handle(SelectMgr_Selection)& Sel,
-                  const Handle(V3d_View)& aViou,
-                  const Standard_Boolean ClearOthers)
+void StdSelect_ViewerSelector3d::DisplaySensitive (const Handle(SelectMgr_Selection)& theSel,
+                                                   const Handle(V3d_View)& theView,
+                                                   const Standard_Boolean theToClearOthers)
 {
   if (mystruct.IsNull())
-    mystruct = new Graphic3d_Structure (aViou->Viewer()->Viewer());
+  {
+    mystruct = new Graphic3d_Structure (theView->Viewer()->Viewer());
+  }
+
   if (mysensgroup.IsNull())
   {
     mysensgroup = new Graphic3d_Group (mystruct);
-    Quantity_Color Col (Quantity_NOC_INDIANRED3);
-    Handle(Graphic3d_AspectMarker3d) AM =
-      new Graphic3d_AspectMarker3d (Aspect_TOM_O_PLUS, Col, 2.0);
-    mysensgroup-> SetPrimitivesAspect (AM);
+    Quantity_Color aColor (Quantity_NOC_INDIANRED3);
+    Handle(Graphic3d_AspectMarker3d) aMarkerAspect =
+      new Graphic3d_AspectMarker3d (Aspect_TOM_O_PLUS, aColor, 2.0);
+
+    mysensgroup-> SetPrimitivesAspect (aMarkerAspect);
     mysensgroup->SetPrimitivesAspect (
       new Graphic3d_AspectLine3d (Quantity_NOC_GRAY40, Aspect_TOL_SOLID, 2.0));
   }
 
-  if(ClearOthers) mysensgroup->Clear();
-
-  ComputeSensitivePrs(Sel);
-
-  mystruct->SetDisplayPriority(10);
-  mystruct->Display();
-  if(aViou->TransientManagerBeginDraw())
+  if (theToClearOthers)
   {
-    Visual3d_TransientManager::DrawStructure(mystruct);
+    mysensgroup->Clear();
+  }
+
+  ComputeSensitivePrs (theSel);
+
+  mystruct->SetDisplayPriority (10);
+  mystruct->Display();
+  if (theView->TransientManagerBeginDraw())
+  {
+    Visual3d_TransientManager::DrawStructure (mystruct);
     Visual3d_TransientManager::EndDraw();
   }
-  else if(!aViou.IsNull())
+  else if(!theView.IsNull())
   {
-    aViou->Update();
+    theView->Update();
   }
 }
 
@@ -571,36 +676,40 @@ DisplaySensitive (const Handle(SelectMgr_Selection)& Sel,
 //function : DisplayAreas
 //purpose  :
 //=======================================================================
-
-void StdSelect_ViewerSelector3d::
-DisplayAreas (const Handle(SelectMgr_Selection)& Sel,
-              const Handle(V3d_View)& aViou,
-              const Standard_Boolean ClearOthers)
+void StdSelect_ViewerSelector3d::DisplayAreas (const Handle(SelectMgr_Selection)& theSel,
+                                               const Handle(V3d_View)& theView,
+                                               const Standard_Boolean theToClearOthers)
 {
   if (mystruct.IsNull())
-    mystruct = new Graphic3d_Structure (aViou->Viewer()->Viewer());
+  {
+    mystruct = new Graphic3d_Structure (theView->Viewer()->Viewer());
+  }
 
   if (mysensgroup.IsNull())
   {
     myareagroup = new Graphic3d_Group (mystruct);
-    myareagroup->SetGroupPrimitivesAspect(new Graphic3d_AspectLine3d (Quantity_NOC_AQUAMARINE1, Aspect_TOL_DASH, 1.0));
+    myareagroup->SetGroupPrimitivesAspect (
+      new Graphic3d_AspectLine3d (Quantity_NOC_AQUAMARINE1, Aspect_TOL_DASH, 1.0));
   }
 
-  if(ClearOthers) myareagroup->Clear();
+  if (theToClearOthers)
+  {
+    myareagroup->Clear();
+  }
 
-  ComputeAreasPrs(Sel);
+  ComputeAreasPrs (theSel);
 
-  mystruct->SetDisplayPriority(10);
+  mystruct->SetDisplayPriority (10);
   mystruct->Display();
 
-  if(aViou->TransientManagerBeginDraw())
+  if(theView->TransientManagerBeginDraw())
   {
-    Visual3d_TransientManager::DrawStructure(mystruct);
+    Visual3d_TransientManager::DrawStructure (mystruct);
     Visual3d_TransientManager::EndDraw();
   }
   else
   {
-    aViou->Update();
+    theView->Update();
   }
 }
 
@@ -608,15 +717,14 @@ DisplayAreas (const Handle(SelectMgr_Selection)& Sel,
 //function : ComputeSensitivePrs
 //purpose  :
 //=======================================================================
-
-void StdSelect_ViewerSelector3d::ComputeSensitivePrs(const Handle(SelectMgr_Selection)& Sel)
+void StdSelect_ViewerSelector3d::ComputeSensitivePrs (const Handle(SelectMgr_Selection)& theSel)
 {
   TColgp_SequenceOfPnt aSeqLines, aSeqFree;
   TColStd_SequenceOfInteger aSeqBnds;
 
-  for(Sel->Init();Sel->More();Sel->Next())
+  for (theSel->Init(); theSel->More(); theSel->Next())
   {
-    Handle(Select3D_SensitiveEntity) Ent = Handle(Select3D_SensitiveEntity)::DownCast(Sel->Sensitive());
+    Handle(Select3D_SensitiveEntity) Ent = Handle(Select3D_SensitiveEntity)::DownCast(theSel->Sensitive());
     const Standard_Boolean hasloc = (Ent.IsNull()? Standard_False : Ent->HasLocation());
 
     TopLoc_Location theloc;
@@ -952,11 +1060,11 @@ void StdSelect_ViewerSelector3d::ComputeSensitivePrs(const Handle(SelectMgr_Sele
     mysensgroup->SetPrimitivesAspect (new Graphic3d_AspectLine3d (Quantity_NOC_GREEN, Aspect_TOL_SOLID, 2.0));
     Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(aSeqFree.Length(),aSeqFree.Length()/2);
     for (i = 1; i <= aSeqFree.Length(); i++)
-	{
+    {
       aPrims->AddBound(2);
       aPrims->AddVertex(aSeqLines(i++));
       aPrims->AddVertex(aSeqLines(i));
-	}
+    }
     mysensgroup->AddPrimitiveArray(aPrims);
     mysensgroup->SetPrimitivesAspect (new Graphic3d_AspectLine3d (Quantity_NOC_GRAY40, Aspect_TOL_SOLID, 2.0));
   }
@@ -966,54 +1074,59 @@ void StdSelect_ViewerSelector3d::ComputeSensitivePrs(const Handle(SelectMgr_Sele
 //function : ComputeAreaPrs
 //purpose  :
 //=======================================================================
-
-void StdSelect_ViewerSelector3d::ComputeAreasPrs (const Handle(SelectMgr_Selection)& Sel)
+void StdSelect_ViewerSelector3d::ComputeAreasPrs (const Handle(SelectMgr_Selection)& theSel)
 {
-  Standard_Real xmin, ymin, xmax, ymax;
-  gp_Pnt Pbid;
-  SelectBasics_ListOfBox2d BoxList;
+  Standard_Real aXmin = 0.0;
+  Standard_Real aYmin = 0.0;
+  Standard_Real aXmax = 0.0;
+  Standard_Real aYmax = 0.0;
+
+  gp_Pnt aPbid;
+  SelectBasics_ListOfBox2d aBoxList;
 
   TColgp_SequenceOfPnt aSeqLines;
-  for (Sel->Init(); Sel->More(); Sel->Next())
+  for (theSel->Init(); theSel->More(); theSel->Next())
   {
-    Sel->Sensitive()->Areas (BoxList);
-    for (SelectBasics_ListIteratorOfListOfBox2d itb (BoxList); itb.More(); itb.Next())
+    theSel->Sensitive()->Areas (aBoxList);
+    for (SelectBasics_ListIteratorOfListOfBox2d aBoxIt (aBoxList); aBoxIt.More(); aBoxIt.Next())
     {
-      itb.Value().Get (xmin, ymin, xmax, ymax);
+      aBoxIt.Value().Get (aXmin, aYmin, aXmax, aYmax);
 
-      Pbid.SetCoord (xmin - mytolerance, ymin - mytolerance, 0.0);
-      myprj->Transform (Pbid, myprj->InvertedTransformation());
-      aSeqLines.Append(Pbid);
+      aPbid.SetCoord (aXmin - mytolerance, aYmin - mytolerance, 0.0);
+      myProjector->Transform (aPbid, myProjector->InvertedTransformation());
+      aSeqLines.Append (aPbid);
 
-      Pbid.SetCoord (xmax + mytolerance, ymin - mytolerance, 0.0);
-      myprj->Transform (Pbid, myprj->InvertedTransformation());
-      aSeqLines.Append(Pbid);
+      aPbid.SetCoord (aXmax + mytolerance, aYmin - mytolerance, 0.0);
+      myProjector->Transform (aPbid, myProjector->InvertedTransformation());
+      aSeqLines.Append (aPbid);
 
-      Pbid.SetCoord (xmax + mytolerance, ymax + mytolerance, 0.0);
-      myprj->Transform (Pbid, myprj->InvertedTransformation());
-      aSeqLines.Append(Pbid);
+      aPbid.SetCoord (aXmax + mytolerance, aYmax + mytolerance, 0.0);
+      myProjector->Transform (aPbid, myProjector->InvertedTransformation());
+      aSeqLines.Append (aPbid);
 
-      Pbid.SetCoord (xmin - mytolerance, ymax + mytolerance, 0.0);
-      myprj->Transform (Pbid, myprj->InvertedTransformation());
-      aSeqLines.Append(Pbid);
+      aPbid.SetCoord (aXmin - mytolerance, aYmax + mytolerance, 0.0);
+      myProjector->Transform (aPbid, myProjector->InvertedTransformation());
+      aSeqLines.Append (aPbid);
     }
   }
 
   if (aSeqLines.Length())
   {
-    Standard_Integer n, np;
-    const Standard_Integer nbl = aSeqLines.Length() / 4;
-    Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines(5*nbl,nbl);
-    for (np = 1, n=0; n<nbl; n++) {
-      aPrims->AddBound(5);
-      const gp_Pnt &p1 = aSeqLines(np++);
-      aPrims->AddVertex(p1);
-      aPrims->AddVertex(aSeqLines(np++));
-      aPrims->AddVertex(aSeqLines(np++));
-      aPrims->AddVertex(aSeqLines(np++));
-      aPrims->AddVertex(p1);
+    Standard_Integer aN = 0;
+    Standard_Integer aNP = 0;
+    const Standard_Integer aNBL = aSeqLines.Length() / 4;
+    Handle(Graphic3d_ArrayOfPolylines) aPrims = new Graphic3d_ArrayOfPolylines (5 * aNBL, aNBL);
+    for (aNP = 1, aN = 0; aN < aNBL; aN++)
+    {
+      aPrims->AddBound (5);
+      const gp_Pnt &aP1 = aSeqLines (aNP++);
+      aPrims->AddVertex (aP1);
+      aPrims->AddVertex (aSeqLines (aNP++));
+      aPrims->AddVertex (aSeqLines (aNP++));
+      aPrims->AddVertex (aSeqLines (aNP++));
+      aPrims->AddVertex (aP1);
     }
-    myareagroup->AddPrimitiveArray(aPrims);
+    myareagroup->AddPrimitiveArray (aPrims);
   }
 }
 
@@ -1094,7 +1207,7 @@ void StdSelect_ViewerSelector3d::ComputeClipRange (const Graphic3d_SequenceOfHCl
 //=======================================================================
 gp_Lin StdSelect_ViewerSelector3d::PickingLine(const Standard_Real theX, const Standard_Real theY) const
 {
-  return myprj->Shoot (theX, theY);
+  return myProjector->Shoot (theX, theY);
 }
 
 //=======================================================================

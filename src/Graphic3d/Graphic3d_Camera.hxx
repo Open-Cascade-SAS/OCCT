@@ -16,8 +16,11 @@
 #ifndef _Graphic3d_Camera_HeaderFile
 #define _Graphic3d_Camera_HeaderFile
 
+#include <Graphic3d_Mat4d.hxx>
 #include <Graphic3d_Mat4.hxx>
 #include <Graphic3d_Vec3.hxx>
+
+#include <NCollection_Handle.hxx>
 
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
@@ -31,6 +34,53 @@ DEFINE_STANDARD_HANDLE (Graphic3d_Camera, Standard_Transient)
 //! and orientation properties of 3D view.
 class Graphic3d_Camera : public Standard_Transient
 {
+private:
+
+  //! Template container for cached matrices or Real/ShortReal types.
+  template<typename Elem_t>
+  struct TransformMatrices
+  {
+    void InitOrientation()
+    {
+      Orientation = new NCollection_Mat4<Elem_t>();
+    }
+
+    void InitProjection()
+    {
+      MProjection = new NCollection_Mat4<Elem_t>();
+      LProjection = new NCollection_Mat4<Elem_t>();
+      RProjection = new NCollection_Mat4<Elem_t>();
+    }
+
+    void ResetOrientation()
+    {
+      Orientation.Nullify();
+    }
+
+    void ResetProjection()
+    {
+      MProjection.Nullify();
+      LProjection.Nullify();
+      RProjection.Nullify();
+    }
+
+    Standard_Boolean IsOrientationValid()
+    {
+      return !Orientation.IsNull();
+    }
+
+    Standard_Boolean IsProjectionValid()
+    {
+      return !MProjection.IsNull() &&
+             !LProjection.IsNull() &&
+             !RProjection.IsNull();
+    }
+
+    NCollection_Handle< NCollection_Mat4<Elem_t> > Orientation;
+    NCollection_Handle< NCollection_Mat4<Elem_t> > MProjection;
+    NCollection_Handle< NCollection_Mat4<Elem_t> > LProjection;
+    NCollection_Handle< NCollection_Mat4<Elem_t> > RProjection;
+  };
 
 public:
 
@@ -75,7 +125,7 @@ public:
   //! Initializes camera with the following properties:
   //! Eye (0, 0, -2); Center (0, 0, 0); Up (0, 1, 0);
   //! Type (Orthographic); FOVy (45); Scale (1000); IsStereo(false);
-  //! ZNear (0.1); ZFar (100); Aspect(1);
+  //! ZNear (0.001); ZFar (3000.0); Aspect(1);
   //! ZFocus(1.0); ZFocusType(Relative); IOD(0.05); IODType(Relative)
   Standard_EXPORT Graphic3d_Camera();
 
@@ -93,17 +143,8 @@ public:
   //! @param theOther [in] the camera to copy from.
   Standard_EXPORT void Copy (const Handle(Graphic3d_Camera)& theOther);
 
-  //! Returns modification state of camera projection matrix
-  Standard_Size ProjectionState() const
-  {
-    return myProjectionState;
-  }
-
-  //! Returns modification state of camera model-view matrix
-  Standard_Size ModelViewState() const
-  {
-    return myOrientationState;
-  }
+//! @name Public camera properties
+public:
 
   //! Sets camera Eye position.
   //! @param theEye [in] the location of camera's Eye.
@@ -127,9 +168,15 @@ public:
     return myCenter;
   }
 
-  //! Sets camera Up direction vector.
+  //! Sets camera Up direction vector, orthogonal to camera direction.
   //! @param theUp [in] the Up direction vector.
   Standard_EXPORT void SetUp (const gp_Dir& theUp);
+
+  //! Orthogonalize up direction vector.
+  Standard_EXPORT void OrthogonalizeUp();
+
+  //! Return a copy of orthogonalized up direction vector.
+  Standard_EXPORT gp_Dir OrthogonalizedUp() const;
 
   //! Get camera Up direction vector.
   //! @return Camera's Up direction vector.
@@ -138,26 +185,13 @@ public:
     return myUp;
   }
 
-  //! Set camera projection shift vector.<br>
-  //! Used for compatibility with older view mechanics. Applied after
-  //! view transform and before projection step (P * Shift * V).
-  //! @param theProjShift [in] the projection shift vector.
-  Standard_EXPORT void SetProjectionShift (const gp_Pnt& theProjShift);
-
-  //! Get camera projection shift vector.
-  //! @return Camera's projection shift vector.
-  const gp_Pnt& ProjectionShift() const
-  {
-    return myProjectionShift;
-  }
-
   //! Set camera axial scale.<br>
   //! @param theAxialScale [in] the axial scale vector.
-  Standard_EXPORT void SetAxialScale (const gp_Pnt& theAxialScale);
+  Standard_EXPORT void SetAxialScale (const gp_XYZ& theAxialScale);
 
   //! Get camera axial scale.
   //! @return Camera's axial scale.
-  const gp_Pnt& AxialScale() const
+  const gp_XYZ& AxialScale() const
   {
     return myAxialScale;
   }
@@ -190,9 +224,9 @@ public:
   Standard_EXPORT Standard_Real Scale() const;
 
   //! Change camera projection type.
-  //! While switching between perspective and ortho projection types
-  //! ZNear and ZFar value conversion is performed due to different 
-  //! coordinate systems (made for compatibility, to be improved..)
+  //! When switching to perspective projection from orthographic one,
+  //! the ZNear and ZFar are reset to default values (0.001, 3000.0)
+  //! if less than 0.0.
   //! @param theProjectionType [in] the camera projection type.
   Standard_EXPORT void SetProjectionType (const Projection theProjection);
 
@@ -231,9 +265,14 @@ public:
     return myFOVy;
   }
 
-  //! Change the Near Z-clipping plane position.
+  //! Change the Near and Far Z-clipping plane positions.
+  //! For orthographic projection, theZNear, theZFar can be negative or positive.
+  //! For perspective projection, only positive values are allowed.
+  //! Program error exception is raised if non-positive values are
+  //! specified for perspective projection or theZNear >= theZFar.
   //! @param theZNear [in] the distance of the plane from the Eye.
-  Standard_EXPORT void SetZNear (const Standard_Real theZNear);
+  //! @param theZFar [in] the distance of the plane from the Eye.
+  Standard_EXPORT void SetZRange (const Standard_Real theZNear, const Standard_Real theZFar);
 
   //! Get the Near Z-clipping plane position.
   //! @return the distance of the plane from the Eye.
@@ -241,10 +280,6 @@ public:
   {
     return myZNear;
   }
-
-  //! Change the Far Z-clipping plane position.
-  //! @param theZFar [in] the distance of the plane from the Eye.
-  Standard_EXPORT void SetZFar (const Standard_Real theZFar);
 
   //! Get the Far Z-clipping plane position.
   //! @return the distance of the plane from the Eye.
@@ -307,52 +342,7 @@ public:
     return myIODType;
   }
 
-  //! Get orientation matrix.
-  //! @return camera orientation matrix.
-  const Graphic3d_Mat4& OrientationMatrix() const
-  {
-    return myOrientation;
-  }
-
-  //! Get monographic or middle point projection matrix used for monographic
-  //! rendering and for point projection / unprojection.
-  //! @return monographic projection matrix.
-  const Graphic3d_Mat4& ProjectionMatrix() const
-  {
-    return myMProjection;
-  }
-
-  //! @return stereographic matrix computed for left eye. Please note
-  //! that this method is used for rendering for <i>Projection_Stereo</i>.
-  const Graphic3d_Mat4& ProjectionStereoLeft() const
-  {
-    return myLProjection;
-  }
-
-  //! @return stereographic matrix computed for right eye. Please note
-  //! that this method is used for rendering for <i>Projection_Stereo</i>.
-  const Graphic3d_Mat4& ProjectionStereoRight() const
-  {
-    return myRProjection;
-  }
-
-public:
-
-  //! Orthogonalize up direction vector.
-  Standard_EXPORT void OrthogonalizeUp();
-
-  //! Suspend internal data recalculation when changing set of camera
-  //! properties. This method is optional and can be used for pieces
-  //! of code which are critical to performance. Note that the method
-  //! supports stacked calls (carried out by internal counter).
-  Standard_EXPORT void BeginUpdate();
-
-  //! Unset lock set by <i>BeginUpdate</i> and invoke data recalculation when
-  //! there are no more locks left. This method is optional and can be used
-  //! for pieces of code which are critical to performance.
-  Standard_EXPORT void EndUpdate();
-
-  // Basic camera operations
+//! @name Basic camera operations
 public:
 
   //! Transform orientation components of the camera:
@@ -363,20 +353,28 @@ public:
   //! Calculate view plane size at center (target) point
   //! and distance between ZFar and ZNear planes.
   //! @return values in form of gp_Pnt (Width, Height, Depth).
-  Standard_EXPORT gp_Pnt ViewDimensions () const;
+  Standard_EXPORT gp_XYZ ViewDimensions() const;
 
-  //! Calculate view plane dimensions with projection shift applied.
-  //! Analog to old ViewMapping.WindowLimit() function.
-  //! @param theUMin [out] the u component of min corner of the rect.
-  //! @param theVMin [out] the v component of min corner of the rect.
-  //! @param theUMax [out] the u component of max corner of the rect.
-  //! @param theVMax [out] the v component of max corner of the rect.
-  Standard_EXPORT void WindowLimit (Standard_Real& theUMin,
-                                    Standard_Real& theVMin,
-                                    Standard_Real& theUMax,
-                                    Standard_Real& theVMax) const;
+  //! Calculate WCS frustum planes for the camera projection volume.
+  //! Frustum is a convex volume determined by six planes directing
+  //! inwards.
+  //! The frustum planes are usually used as inputs for camera algorithms.
+  //! Thus, if any changes to projection matrix calculation are necessary,
+  //! the frustum planes calculation should be also touched.
+  //! @param theLeft [out] the frustum plane for left side of view.
+  //! @param theRight [out] the frustum plane for right side of view.
+  //! @param theBottom [out] the frustum plane for bottom side of view.
+  //! @param theTop [out] the frustum plane for top side of view.
+  //! @param theNear [out] the frustum plane for near side of view.
+  //! @param theFar [out] the frustum plane for far side of view.
+  Standard_EXPORT void Frustum (gp_Pln& theLeft,
+                                gp_Pln& theRight,
+                                gp_Pln& theBottom,
+                                gp_Pln& theTop,
+                                gp_Pln& theNear,
+                                gp_Pln& theFar) const;
 
-  // Projection methods
+//! @name Projection methods
 public:
 
   //! Project point from world coordinate space to
@@ -415,14 +413,80 @@ public:
   //! @return point in WCS.
   Standard_EXPORT gp_Pnt ConvertView2World (const gp_Pnt& thePnt) const;
 
-  // managing projection and orientation cache:
+//! @name Camera modification state
 public:
 
-  //! Compute and cache projection matrices.
-  void UpdateProjection();
+  //! Returns modification state of camera projection matrix
+  Standard_Size ProjectionState() const
+  {
+    return myProjectionState;
+  }
 
-  //! Compute and cache orientation matrix.
-  void UpdateOrientation();
+  //! Returns modification state of camera model-view matrix
+  Standard_Size ModelViewState() const
+  {
+    return myOrientationState;
+  }
+
+//! @name Lazily-computed orientation and projection matrices derived from camera parameters
+public:
+
+  //! Get orientation matrix.
+  //! @return camera orientation matrix.
+  Standard_EXPORT const Graphic3d_Mat4d& OrientationMatrix() const;
+
+  //! Get orientation matrix of Standard_ShortReal precision.
+  //! @return camera orientation matrix.
+  Standard_EXPORT const Graphic3d_Mat4& OrientationMatrixF() const;
+
+  //! Get monographic or middle point projection matrix used for monographic
+  //! rendering and for point projection / unprojection.
+  //! @return monographic projection matrix.
+  Standard_EXPORT const Graphic3d_Mat4d& ProjectionMatrix() const;
+
+  //! Get monographic or middle point projection matrix of Standard_ShortReal precision used for monographic
+  //! rendering and for point projection / unprojection.
+  //! @return monographic projection matrix.
+  Standard_EXPORT const Graphic3d_Mat4& ProjectionMatrixF() const;
+
+  //! @return stereographic matrix computed for left eye. Please note
+  //! that this method is used for rendering for <i>Projection_Stereo</i>.
+  Standard_EXPORT const Graphic3d_Mat4d& ProjectionStereoLeft() const;
+
+  //! @return stereographic matrix of Standard_ShortReal precision computed for left eye.
+  //! Please note that this method is used for rendering for <i>Projection_Stereo</i>.
+  Standard_EXPORT const Graphic3d_Mat4& ProjectionStereoLeftF() const;
+
+  //! @return stereographic matrix computed for right eye. Please note
+  //! that this method is used for rendering for <i>Projection_Stereo</i>.
+  Standard_EXPORT const Graphic3d_Mat4d& ProjectionStereoRight() const;
+
+  //! @return stereographic matrix of Standard_ShortReal precision computed for right eye.
+  //! Please note that this method is used for rendering for <i>Projection_Stereo</i>.
+  Standard_EXPORT const Graphic3d_Mat4& ProjectionStereoRightF() const;
+
+//! @name Managing projection and orientation cache
+private:
+
+  //! Compute projection matrices.
+  //! @param theMatrices [in] the matrices data container.
+  template <typename Elem_t>
+  Standard_EXPORT
+    TransformMatrices<Elem_t>& UpdateProjection (TransformMatrices<Elem_t>& theMatrices) const;
+
+  //! Compute orientation matrix.
+  //! @param theMatrices [in] the matrices data container.
+  template <typename Elem_t>
+  Standard_EXPORT
+    TransformMatrices<Elem_t>& UpdateOrientation (TransformMatrices<Elem_t>& theMatrices) const;
+
+  //! Invalidate state of projection matrix.
+  //! The matrix will be updated on request.
+  void InvalidateProjection();
+
+  //! Invalidate orientation matrix.
+  //! The matrix will be updated on request.
+  void InvalidateOrientation();
 
 private:
 
@@ -434,19 +498,16 @@ private:
   //! @param theTop [in] the top mapping (clipping) coordinate.
   //! @param theNear [in] the near mapping (clipping) coordinate.
   //! @param theFar [in] the far mapping (clipping) coordinate.
-  //! @param theShiftX [in] the shift x coordinate.
-  //! @param theShiftY [in] the shift y coordinate.
   //! @param theOutMx [out] the projection matrix.
+  template <typename Elem_t>
   static void 
-    OrthoProj (const Standard_ShortReal theLeft,
-               const Standard_ShortReal theRight,
-               const Standard_ShortReal theBottom,
-               const Standard_ShortReal theTop,
-               const Standard_ShortReal theNear,
-               const Standard_ShortReal theFar,
-               const Standard_ShortReal theShiftX,
-               const Standard_ShortReal theShiftY,
-               Graphic3d_Mat4&          theOutMx);
+    OrthoProj (const Elem_t              theLeft,
+               const Elem_t              theRight,
+               const Elem_t              theBottom,
+               const Elem_t              theTop,
+               const Elem_t              theNear,
+               const Elem_t              theFar,
+               NCollection_Mat4<Elem_t>& theOutMx);
 
   //! Compose perspective projection matrix for
   //! the passed camera volume mapping.
@@ -456,19 +517,16 @@ private:
   //! @param theTop [in] the top mapping (clipping) coordinate.
   //! @param theNear [in] the near mapping (clipping) coordinate.
   //! @param theFar [in] the far mapping (clipping) coordinate.
-  //! @param theShiftX [in] the shift x coordinate.
-  //! @param theShiftY [in] the shift y coordinate.
   //! @param theOutMx [out] the projection matrix.
+  template <typename Elem_t>
   static void
-    PerspectiveProj (const Standard_ShortReal theLeft,
-                     const Standard_ShortReal theRight,
-                     const Standard_ShortReal theBottom,
-                     const Standard_ShortReal theTop,
-                     const Standard_ShortReal theNear,
-                     const Standard_ShortReal theFar,
-                     const Standard_ShortReal theShiftX,
-                     const Standard_ShortReal theShiftY,
-                     Graphic3d_Mat4&          theOutMx);
+    PerspectiveProj (const Elem_t              theLeft,
+                     const Elem_t              theRight,
+                     const Elem_t              theBottom,
+                     const Elem_t              theTop,
+                     const Elem_t              theNear,
+                     const Elem_t              theFar,
+                     NCollection_Mat4<Elem_t>& theOutMx);
 
   //! Compose projection matrix for L/R stereo eyes.
   //! @param theLeft [in] the left mapping (clipping) coordinate.
@@ -480,23 +538,20 @@ private:
   //! @param theIOD [in] the Intraocular distance.
   //! @param theZFocus [in] the z coordinate of off-axis
   //! projection plane with zero parallax.
-  //! @param theShiftX [in] the shift x coordinate.
-  //! @param theShiftY [in] the shift y coordinate.
   //! @param theIsLeft [in] boolean flag to choose between L/R eyes.
   //! @param theOutMx [out] the projection matrix.
+  template <typename Elem_t>
   static void
-    StereoEyeProj (const Standard_ShortReal theLeft,
-                   const Standard_ShortReal theRight,
-                   const Standard_ShortReal theBottom,
-                   const Standard_ShortReal theTop,
-                   const Standard_ShortReal theNear,
-                   const Standard_ShortReal theFar,
-                   const Standard_ShortReal theIOD,
-                   const Standard_ShortReal theZFocus,
-                   const Standard_ShortReal theShiftX,
-                   const Standard_ShortReal theShiftY,
-                   const Standard_Boolean   theIsLeft,
-                   Graphic3d_Mat4&          theOutMx);
+    StereoEyeProj (const Elem_t              theLeft,
+                   const Elem_t              theRight,
+                   const Elem_t              theBottom,
+                   const Elem_t              theTop,
+                   const Elem_t              theNear,
+                   const Elem_t              theFar,
+                   const Elem_t              theIOD,
+                   const Elem_t              theZFocus,
+                   const Standard_Boolean    theIsLeft,
+                   NCollection_Mat4<Elem_t>& theOutMx);
 
   //! Construct "look at" orientation transformation.
   //! Reference point differs for perspective and ortho modes 
@@ -506,12 +561,13 @@ private:
   //! @param theUpDir [in] the up direction vector.
   //! @param theAxialScale [in] the axial scale vector.
   //! @param theOutMx [in/out] the orientation matrix.
+  template <typename Elem_t>
   static void
-    LookOrientation (const Graphic3d_Vec3& theEye,
-                     const Graphic3d_Vec3& theLookAt,
-                     Graphic3d_Vec3& theUpDir,
-                     const Graphic3d_Vec3& theAxialScale,
-                     Graphic3d_Mat4& theOutMx);
+    LookOrientation (const NCollection_Vec3<Elem_t>& theEye,
+                     const NCollection_Vec3<Elem_t>& theLookAt,
+                     const NCollection_Vec3<Elem_t>& theUpDir,
+                     const NCollection_Vec3<Elem_t>& theAxialScale,
+                     NCollection_Mat4<Elem_t>&       theOutMx);
 
 private:
 
@@ -519,14 +575,13 @@ private:
   gp_Pnt myEye;    //!< Camera eye position.
   gp_Pnt myCenter; //!< Camera center.
 
-  gp_Pnt myProjectionShift; //!< Camera projection shift for compatibility.
-  gp_Pnt myAxialScale;      //!< Camera axial scale.
+  gp_XYZ myAxialScale; //!< World axial scale.
 
-  Projection myProjType;  //!< Projection type used for rendering.
-  Standard_Real myFOVy;   //!< Field Of View in y axis.
-  Standard_Real myZNear;  //!< Distance to near clipping plane.
-  Standard_Real myZFar;   //!< Distance to far clipping plane.
-  Standard_Real myAspect; //!< Width to height display ratio.
+  Projection    myProjType; //!< Projection type used for rendering.
+  Standard_Real myFOVy;     //!< Field Of View in y axis.
+  Standard_Real myZNear;    //!< Distance to near clipping plane.
+  Standard_Real myZFar;     //!< Distance to far clipping plane.
+  Standard_Real myAspect;   //!< Width to height display ratio.
 
   Standard_Real myScale;      //!< Specifies parallel scale for orthographic projection.
   Standard_Real myZFocus;     //!< Stereographic focus value.
@@ -535,19 +590,11 @@ private:
   Standard_Real myIOD;     //!< Intraocular distance value.
   IODType       myIODType; //!< Intraocular distance definition type.
 
-  //! Number of locks set up on internal data recalculation by
-  //! <i>(BeginUpdate, EndUpdate)</i> pairs. The counter provides effective
-  //! use of the mentioned methods when camera properties are modified
-  //! in stacked functions.
-  Standard_Integer myNbUpdateLocks;
+  mutable TransformMatrices<Standard_Real>      myMatricesD;
+  mutable TransformMatrices<Standard_ShortReal> myMatricesF;
 
-  Graphic3d_Mat4 myOrientation; //!< Camera orientation matrix.
-  Graphic3d_Mat4 myMProjection; //!< Monographic projection matrix.
-  Graphic3d_Mat4 myLProjection; //!< Projection matrix for left eye.
-  Graphic3d_Mat4 myRProjection; //!< Projection matrix for right eye.
-
-  Standard_Size myProjectionState;
-  Standard_Size myOrientationState;
+  mutable Standard_Size myProjectionState;
+  mutable Standard_Size myOrientationState;
 
 public:
 

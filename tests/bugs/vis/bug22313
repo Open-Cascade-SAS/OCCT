@@ -11,17 +11,15 @@ set BugNumber OCC22313
 # Data
 
 set scale    2.9701073117025172
-set center_X -1339.0679502864409
-set center_Y -2077.3454643258542
 set proj_X   0.4096425473690033
 set proj_Y   0.77340573072433472
 set proj_Z   0.48377299308776855
 set up_X     -0.83569550514221191
 set up_Y     0.1055084615945816
 set up_Z     0.538962721824646
-set at_X     -2857.961669921875
-set at_Y     -1655.37939453125
-set at_Z     -1782.80908203125
+set at_X     -632.109173226325
+set at_Y     -2711.56694941045
+set at_Z     -1979.06316609577
 
 
 set x1 300
@@ -42,10 +40,7 @@ vsetdispmode 1
 vfit
 
 
-vviewparams ${scale} ${center_X} ${center_Y} \
-		${proj_X} ${proj_Y} ${proj_Z} \
-		${up_X} ${up_Y} ${up_Z} \
-		${at_X} ${at_Y} ${at_Z}
+vviewparams -scale ${scale} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up_Y} ${up_Z} -at ${at_X} ${at_Y} ${at_Z}
 
 checkcolor ${x1} ${y1} ${Artifact_R} ${Artifact_G} ${Artifact_B}
 

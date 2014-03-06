@@ -135,7 +135,8 @@ uses
         ExtendedString                    from TCollection,
         PrintAlgo                         from Aspect,
         ClipPlane_Handle                  from Graphic3d,
-        SequenceOfHClipPlane              from Graphic3d
+        SequenceOfHClipPlane              from Graphic3d,
+        XYZ                               from gp
 raises
 
         BadValue from V3d, TypeMismatch from Standard,
@@ -403,14 +404,27 @@ is
         returns Boolean from Standard;
     	  ---Purpose: sets the immediate update mode and returns the previous one.
 
-        SetAutoZFitMode( me : mutable; theMode : Boolean );
+        SetAutoZFitMode (me : mutable;
+                         theIsOn : Boolean;
+                         theScaleFactor : Real from Standard = 1.0);
           ---Level: public
-          ---Purpose: sets the auto z-fit mode
+          ---Purpose: Sets the automatic z-fit mode and its parameters.
+          --          The auto z-fit has extra parameters which can controlled from application level
+          --          to ensure that the size of viewing volume will be sufficiently large to cover
+          --          the depth of unmanaged objects, for example, transformation persistent ones.
+          --          @param theScaleFactor [in] the scale factor for Z-range.
+          --          The range between Z-min, Z-max projection volume planes
+          --          evaluated by z fitting method will be scaled using this coefficient.
+          --          Program error exception is thrown if negative or zero value
+          --          is passed.
 
-        AutoZFitMode( me ) returns Boolean;
+        AutoZFitMode (me) returns Boolean;
           ---Level: public
-          ---Purpose: returns current auto z-fit mode
+          ---Purpose: returns TRUE if automatic z-fit mode is turned on.
 
+        AutoZFitScaleFactor (me) returns Real from Standard;
+        ---Level: public
+        ---Purpose: returns scale factor parameter of automatic z-fit mode.
 
         ---------------------------------------------------
         --           Triedron methods
@@ -704,13 +718,15 @@ is
         --          the current axis a distance relative to the initial
         --          position expressed by Start = Standard_True
 
-         Place (me: mutable; x,y: Integer from Standard;
-                      aZoomFactor: Factor from Quantity = 1)
+        Place (me            : mutable;
+               theXp         : Integer from Standard;
+               theYp         : Integer from Standard;
+               theZoomFactor : Factor from Quantity = 1)
         ---Level: Public
-         ---Purpose: places the point of the view corresponding
-         --          at the pixel position x,y at the center of the window
-         --          and updates the view.
-         is static;
+        ---Purpose: places the point of the view corresponding
+        --          at the pixel position x,y at the center of the window
+        --          and updates the view.
+        is static;
 
         Turn ( me : mutable ; Ax,Ay,Az : PlaneAngle ;
                               Start    : Boolean = Standard_True )
@@ -807,27 +823,34 @@ is
         ---Category: Methods to modify the Mapping of the view
         --------------------------------------------------------
 
-        Panning ( me : mutable ; Dx , Dy      : Length ;
-                                 aZoomFactor  : Factor from Quantity = 1;
-                                 Start        : Boolean = Standard_True )
+        Panning (me            : mutable;
+                 theDXv        : Real from Standard;
+                 theDYv        : Real from Standard;
+                 theZoomFactor : Factor from Quantity = 1;
+                 theToStart    : Boolean = Standard_True);
         ---Level: Public
-        ---Purpose:       translates the center of the view and zooms the view.
-        --       Updates the view.
-        raises BadValue from V3d ;
+        ---Purpose: Translates the center of the view along "x" and "y" axes of
+        -- view projection. Can be used to perform interactive panning operation.
+        -- In that case the DXv, DXy parameters specify panning relative to the
+        -- point where the operation is started.
+        -- @param theDXv [in] the relative panning on "x" axis of view projection, in view space coordinates.
+        -- @param theDYv [in] the relative panning on "y" axis of view projection, in view space coordinates.
+        -- @param theZoomFactor [in] the zooming factor.
+        -- @param theToStart [in] pass TRUE when starting panning to remember view
+        -- state prior to panning for relative arguments. If panning is started,
+        -- passing {0, 0} for {theDXv, theDYv} will return view to initial state.
+        -- Performs update of view.
 
-        SetCenter ( me : mutable ; Xc , Yc : Coordinate )
+        SetCenter (me : mutable; theXp, theYp : Integer from Standard)
         ---Level: Public
-        ---Purpose: Defines the centre of the view.
-        --          Updates the view.
-                raises BadValue from V3d ;
-        --      If one of the dimensions of the projection is NULL.
-
-        SetCenter ( me : mutable ; X,Y: Integer from Standard)
-        ---Level: Public
-        ---Purpose: Defines the centre of the view from a pixel position.
-        --          Updates the view.
-                raises BadValue from V3d ;
-        --      If one of the dimensions of the projection is NULL.
+        ---Purpose: Relocates center of screen to the point, determined by
+        -- {Xp, Yp} pixel coordinates relative to the bottom-left corner of
+        -- screen. To calculate pixel coordinates for any point from world
+        -- coordinate space, it can be projected using "Project".
+        -- @param theXp [in] the x coordinate.
+        -- @param theYp [in] the y coordinate.
+        raises BadValue from V3d;
+        -- If one of the dimensions of the projection is NULL.
 
         SetSize ( me : mutable ; Size : Length )
         ---Level: Public
@@ -878,29 +901,34 @@ is
                 raises BadValue from V3d ;
         --      If the one of factors <= 0
 
-        FitAll ( me : mutable ; Coef : Coefficient = 0.01; update : Boolean from Standard = Standard_True )
+        FitAll (me : mutable;
+                theMargin : Coefficient = 0.01;
+                theToUpdate : Boolean from Standard = Standard_True);
         ---Level: Public
-        ---Purpose: Automatic zoom/panning. Objects in the view are visualised
-        --          so as to occupy the maximum space while respecting the
-        --          margin coefficient and the initial height /width ratio.
-        --          Fits Z depending on AutoZFit option.
-                raises BadValue from V3d ;
-        --      If the margin coefficient is <0 ou >= 1 or
-        --      Updates the view
+        ---Purpose: Adjust view parameters to fit the displayed scene, respecting height / width ratio.
+        --          The Z clipping range (depth range) is fitted if AutoZFit flag is TRUE.
+        --          Throws program error exception if margin coefficient is < 0 or >= 1.
+        --          Updates the view.
+        --          @param theMargin [in] the margin coefficient for view borders.
+        --          @param theToUpdate [in] flag to perform view update.
 
-        ZFitAll ( me : mutable ;  Coef : Coefficient = 1.0 )
+        ZFitAll (me : mutable; theScaleFactor : Real from Standard = 1.0);
         ---Level: Public
-        ---Purpose: Automatic Depth Panning. Objects visible in the view are
-        --          visualised so as to occupy the maximum Z amount of space
-        --          while respecting the margin coefficient .
-        --          NOTE than the original XY size of the view is NOT modified .
-                raises BadValue from V3d ;
-        --      If the margin coefficient is <0 ou or
-        --      If No Objects are displayed in the view
+        ---Purpose: Change Z-min and Z-max planes of projection volume to match the
+        --          displayed objects. The methods ensures that view volume will
+        --          be close by depth range to the displayed objects. Fitting assumes that
+        --          for orthogonal projection the view volume contains the displayed objects
+        --          completely. For zoomed perspective view, the view volume is adjusted such
+        --          that it contains the objects or their parts, located in front of the camera.
+        --          @param theScaleFactor [in] the scale factor for Z-range.
+        --                                     The range between Z-min, Z-max projection volume planes
+        --                                     evaluated by z fitting method will be scaled using this coefficient.
+        --                                     Program error exception is thrown if negative or zero value is passed.
 
-        AutoZFit ( me : mutable );
+        AutoZFit (me : mutable);
         ---Level: Public
-        ---Purpose: Automatic z-range fitting with ZFitAll. Works only if myAutoZFit enabled.
+        ---Purpose: If automatic z-range fitting is turned on, adjusts Z-min and Z-max
+        --          projection volume planes with call to ZFitAll.
 
         DepthFitAll( me : mutable ;   Aspect : Coefficient = 0.01;
                                       Margin : Coefficient = 0.01 );
@@ -910,36 +938,29 @@ is
         --          calculated Z size and Aspect parameter.
         --          NOTE than the original XY size of the view is NOT modified .
 
-        FitAll ( me : mutable ; Umin, Vmin, Umax, Vmax : Coordinate )
+        FitAll (me : mutable;
+                theMinXv : Real from Standard;
+                theMinYv : Real from Standard;
+                theMaxXv : Real from Standard;
+                theMaxYv : Real from Standard)
         ---Level: Public
-        ---Purpose: Centres the defined projection window so that it occupies
+        ---Purpose: Centers the defined projection window so that it occupies
         --          the maximum space while respecting the initial
         --          height/width ratio.
         --          NOTE than the original Z size of the view is NOT modified .
                 raises BadValue from V3d;
         --              If the defined projection window has zero size.
 
-
-        WindowFit ( me : mutable ; Xmin, Ymin, Xmax, Ymax : Integer)
+        WindowFit (me : mutable; theMinXp, theMinYp, theMaxXp, theMaxYp : Integer)
         ---Level: Public
-        ---Purpose: Centres the defined PIXEL window so that it occupies
-        --          the maximum space while respecting the initial
-        --          height/width ratio.
-        --          NOTE than the original Z size of the view is NOT modified .
-                raises BadValue from V3d
-        --              If the defined projection window has zero size.
+        ---Purpose: Centers the defined PIXEL window so that it occupies
+        -- the maximum space while respecting the initial height/width ratio.
+        -- NOTE than the original Z size of the view is NOT modified.
+        -- @param theMinXp [in] pixel coordinates of minimal corner on x screen axis.
+        -- @param theMinYp [in] pixel coordinates of minimal corner on y screen axis.
+        -- @param theMaxXp [in] pixel coordinates of maximal corner on x screen axis.
+        -- @param theMaxYp [in] pixel coordinates of maximal corner on y screen axis.
         is static;
-
-    SetViewingVolume ( me : mutable ; Left, Right, Bottom, Top, ZNear, ZFar : Real from Standard)
-        ---Level: Public
-        ---Purpose: Sets Z and XY size of the view according to given values
-        --          with respecting the initial view depth (eye position).
-        --          Width/heigth aspect ratio should be preserved by the caller
-        --          of this method similarly to SetSize() to avoid unexpected
-        --          visual results like non-uniform scaling of objects in the view. 
-                raises BadValue from V3d;
-        --              If the ZNear<0, ZFar<0 or ZNear>=Zfar.
-
         SetViewMappingDefault( me : mutable );
         ---Level: Public
         ---Purpose: Saves the current view mapping. This will be the
@@ -947,12 +968,12 @@ is
 
         ResetViewMapping ( me : mutable );
         ---Level: Public
-        ---Purpose: Resets the centring of the view.
+        ---Purpose: Resets the centering of the view.
         --          Updates the view
 
         Reset ( me : mutable; update : Boolean from Standard = Standard_True );
         ---Level: Public
-        ---Purpose: Resets the centring and the orientation of the view
+        ---Purpose: Resets the centering and the orientation of the view
         --          Updates the view
         ---------------------------------------------------
         ---Category: Inquire methods
@@ -1085,10 +1106,6 @@ is
         ---Level: Public
         ---Purpose: Returns the current values of the anisotropic (axial) scale factors.
 
-        Center ( me; Xc,Yc : out Coordinate );
-        ---Level: Public
-        ---Purpose: Returns the centre of the view.
-
         Size ( me; Width, Height : out Length );
         ---Level: Public
         ---Purpose: Returns the height and width of the view.
@@ -1214,31 +1231,51 @@ is
         ---Level: Public
         ---Purpose: Returns the Type of the View
 
-        Pan ( me : mutable; Dx, Dy: Integer from Standard;
-                             aZoomFactor: Factor from Quantity = 1);
+        Pan (me            : mutable;
+             theDXp        : Integer from Standard;
+             theDYp        : Integer from Standard;
+             theZoomFactor : Factor from Quantity = 1;
+             theToStart    : Boolean = Standard_True);
         ---Level: Public
-        ---Purpose: translates the center of the view and zooms the view.
-        --       and updates the view.
+        ---Purpose: Translates the center of the view along "x" and "y" axes of
+        -- view projection. Can be used to perform interactive panning operation.
+        -- In that case the DXp, DXp parameters specify panning relative to the
+        -- point where the operation is started.
+        -- @param theDXp [in] the relative panning on "x" axis of view projection, in pixels.
+        -- @param theDYp [in] the relative panning on "y" axis of view projection, in pixels.
+        -- @param theZoomFactor [in] the zooming factor.
+        -- @param theToStart [in] pass TRUE when starting panning to remember view
+        -- state prior to panning for relative arguments. Passing 0 for relative
+        -- panning parameter should return view panning to initial state.
+        -- Performs update of view.
 
-        Zoom ( me : mutable; X1 , Y1 , X2 , Y2 : Integer from Standard)
+        Zoom (me     : mutable;
+              theXp1 : Integer from Standard;
+              theYp1 : Integer from Standard;
+              theXp2 : Integer from Standard;
+              theYp2 : Integer from Standard)
         is static;
         ---Level: Public
         ---Purpose: Zoom the view according to a zoom factor computed
-        -- from the distance between the 2 mouse position <X1,Y1>,<X2,Y2>
+        -- from the distance between the 2 mouse position.
+        -- @param theXp1 [in] the x coordinate of first mouse position, in pixels.
+        -- @param theYp1 [in] the y coordinate of first mouse position, in pixels.
+        -- @param theXp2 [in] the x coordinate of second mouse position, in pixels.
+        -- @param theYp2 [in] the y coordinate of second mouse position, in pixels.
 
-        Zoom ( me: mutable; X,Y: Integer from Standard)
-        is static;
+        StartZoomAtPoint (me    : mutable;
+                          theXp : Integer from Standard;
+                          theYp : Integer from Standard);
         ---Level: Public
-        ---Purpose: Zoom the view according to a zoom factor computed
-        -- from the distance between the last and new mouse position <X,Y>
-
-        StartZoomAtPoint(me : mutable;
-                         xpix, ypix : Integer from Standard);
-        ---Level: Public
-        ---Purpose: Defines the point (pixel) of zooming (for the method ZoomAtPoint()).
+        ---Purpose: Defines starting point for ZoomAtPoint view operation.
+        -- @param theXp [in] the x mouse coordinate, in pixels.
+        -- @param theYp [in] the y mouse coordinate, in pixels.
 
         ZoomAtPoint(me : mutable;
-                    mouseStartX, mouseStartY, mouseEndX, mouseEndY : Integer from Standard);
+                    theMouseStartX : Integer from Standard;
+                    theMouseStartY : Integer from Standard;
+                    theMouseEndX   : Integer from Standard;
+                    theMouseEndY   : Integer from Standard);
         ---Level: Public
         ---Purpose: Zooms the model at a pixel defined by the method StartZoomAtPoint().
 
@@ -1252,13 +1289,13 @@ is
         StartRotation(me : mutable ; X,Y :Integer from Standard;
                zRotationThreshold: Ratio from Quantity = 0.0);
         ---Level: Public
-    ---Purpose: Begin the rotation of the view arround the screen axis
+    ---Purpose: Begin the rotation of the view around the screen axis
     -- according to the mouse position <X,Y>.
     --  Warning: Enable rotation around the Z screen axis when <zRotationThreshold>
     -- factor is > 0 soon the distance from the start point and the center
     -- of the view is > (medium viewSize * <zRotationThreshold> ).
     -- Generally a value of 0.4 is usable to rotate around XY screen axis
-    -- inside the circular treshold area and to rotate around Z screen axis
+    -- inside the circular threshold area and to rotate around Z screen axis
     -- outside this area.
 
         Rotation(me:mutable;  X,Y :Integer from Standard);
@@ -1464,23 +1501,25 @@ is
     --  you use it for your purposes;
     --  Warning: Works only under Windows.
 
-        ToPixMap ( me : mutable;
-                   theImage  : in out PixMap from Image;
-                   theWidth  : Integer from Standard;
-                   theHeight : Integer from Standard;
-                   theBufferType : BufferType from Graphic3d = Graphic3d_BT_RGB;
-                   theForceCentered : Boolean from Standard = Standard_True;
-                   theStereoOptions : StereoDumpOptions from V3d = V3d_SDO_MONO )
+        ToPixMap (me : mutable;
+                  theImage  : in out PixMap from Image;
+                  theWidth  : Integer from Standard;
+                  theHeight : Integer from Standard;
+                  theBufferType : BufferType from Graphic3d = Graphic3d_BT_RGB;
+                  theToKeepAspect : Boolean from Standard = Standard_True;
+                  theStereoOptions : StereoDumpOptions from V3d = V3d_SDO_MONO)
         returns Boolean from Standard;
         ---Level   : Public
-        ---Purpose : dump the full contents of the view
-        --        to a pixmap of pixel size <theWidth>*<theHeight> and
-        --        buffer type <theBufferType>. If <theForceCentered> is true
-        --        view scene will be centered.
-        --       Pixmap will be automatically (re)allocated when needed.
-        --       For stereographic camera by default the monographic projection
-        --       is used during dumping. <theStereoOptions> flag can be used to
-        --       dump projection for left right eye.
+        ---Purpose : Dumps the full contents of the view
+        --           to a pixmap of pixel size <theWidth> * <theHeight> and
+        --           buffer type <theBufferType>. If <theToKeepAspect> is true
+        --           the aspect ratio of view will be kept if <theWidth> and <theHeight>
+        --           define another ratio.
+        --           Pixmap will be automatically (re)allocated when needed.
+        --           When dumping stereographic camera - the corresponding
+        --           middle-point monographic projection will be used for dumping by default.
+        --           <theStereoOptions> flags are to be used for dumping then left or
+        --           right eye projections.
 
     SetProjModel( me : mutable;
         amOdel: TypeOfProjectionModel from V3d = V3d_TPM_SCREEN )
@@ -1539,7 +1578,7 @@ is
      ---Purpose: Adds clip plane to the view. The composition of clip planes truncates the
      -- rendering space to convex volume. Number of supported clip planes can be consulted
      -- by PlaneLimit method of associated Visual3d_View. Please be aware that the planes
-     -- which exceed the limit are igonred during rendering. 
+     -- which exceed the limit are ignored during rendering. 
      -- @param thePlane [in] the clip plane to be added to view.
 
      RemoveClipPlane (me : mutable; thePlane : ClipPlane_Handle from Graphic3d) is virtual;
@@ -1552,7 +1591,7 @@ is
      -- truncates the rendering space to convex volume. Number of supported
      -- clip planes can be consulted by PlaneLimit method of associated
      -- Visual3d_View. Please be aware that the planes which exceed the limit
-     -- are igonred during rendering. 
+     -- are ignored during rendering. 
      -- @param thePlanes [in] the clip planes to set.
 
      GetClipPlanes (me) returns SequenceOfHClipPlane from Graphic3d;
@@ -1566,48 +1605,57 @@ is
 
     Camera (me) returns Camera_Handle from Graphic3d is static;
     ---Level: Public
+    ---C++: return const&
     ---Purpose: Returns camera object of the view.
     -- @return: handle to camera object, or NULL if 3D view does not use
     -- the camera approach.
 
-    FitCamera (me : mutable;
-               theXmin : Real from Standard;
-               theYmin : Real from Standard;
-               theZmin : Real from Standard;
-               theXmax : Real from Standard;
-               theYmax : Real from Standard;
-               theZmax : Real from Standard) is protected;
+    FitMinMax (me;
+               theCamera          : Camera_Handle from Graphic3d;
+               theMinCorner       : XYZ from gp;
+               theMaxCorner       : XYZ from gp;
+               theMargin          : Real from Standard;
+               theResolution      : Real from Standard = 0.0;
+               theToEnlargeIfLine : Boolean from Standard = Standard_True)
+               returns Boolean from Standard is protected;
     ---Level: Protected
-    ---Purpose: Transform camera to fit in the passed bounding box
-    -- specified in world coordinate space.
-    -- @param theXmin [in] x min bounding.
-    -- @param theYmin [in] y min bounding.
-    -- @param theZmin [in] z min bounding.
-    -- @param theXmax [in] x max bounding.
-    -- @param theYmax [in] y max bounding.
-    -- @param theZmax [in] z max bounding.
+    ---Purpose: Transform camera eye, center and scale to fit in the
+    -- passed bounding box specified in WCS.
+    -- @param theCamera [in] the camera.
+    -- @param theMinCorner [in] the minimal corner of bounding box.
+    -- @param theMaxCorner [in] the maximal corner of bounding box.
+    -- @param theMargin [in] the margin coefficient for view borders.
+    -- @param theResolution [in] the minimum size of projection of
+    --        bounding box in Xv or Yv direction when it considered to
+    --        be a thin plane or point (without a volume).
+    --        In this case only the center of camera is adjusted.
+    -- @param theToEnlargeIfLine [in] if passed TRUE - in cases when the
+    -- whole bounding box projected into thin line going along
+    -- Z-axis of screen, the view plane is enlarged such that
+    -- we see the whole line on rotation, otherwise only the
+    -- center of camera is adjusted.
+    -- @return TRUE if the fit all operation can be done.
 
-    ZoomCamera (me : mutable;
-                theUSize : Real from Standard;
-                theVSize : Real from Standard;
-                theZDepth : Real from Standard = 0.0) is protected;
+    Scale (me;
+           theCamera : Camera_Handle from Graphic3d;
+           theSizeXv : Real from Standard;
+           theSizeYv : Real from Standard) is protected;
     ---Level: Protected
-    ---Purpose: Zoom camera to fit the section defined in view coordinate space
-    -- lying on the view direction ray. For orthogonal camera the method
-    -- changes scale, for perspective adjusts Eye location about the Center point.
-    -- Depth by Z defines distance of the zoomed section from camera Center. 
-    -- It is optional and for orthographic camera has no effect.
-    -- @param theUSize [in] size of view section on U axis (horizontal to the screen).
-    -- @param theVSize [in] size of view section on V axis (vertical to the screen).
-    -- @param theZDepth [in] distance from camera center to the specified section.
+    ---Purpose: Scales camera to fit the view frame of defined width and height
+    -- keeping the aspect. For orthogonal camera the method changes scale,
+    -- for perspective adjusts Eye location about the Center point.
+    -- @param theSizeXv [in] size of viewport frame on "x" axis.
+    -- @param theSizeYv [in] size of viewport frame on "y" axis.
 
-    PanCamera (me : mutable;
-               theU : Real from Standard;
-               theV : Real from Standard) is protected;
+    Translate (me;
+         theCamera : Camera_Handle from Graphic3d;
+         theDXv    : Real from Standard;
+         theDYv    : Real from Standard) is protected;
     ---Level: Protected
-    ---Purpose: Pan camera along the view plane on the passed U, V distances.
-    -- @param theU [in] the horizontal panning.
-    -- @param theV [in] the vertical panning.
+    -- Purpose: Translates camera eye and center along the view plane.
+    -- @param theCamera [in] the camera to translate.
+    -- @param theDXv [in] the translation in "x" direction.
+    -- @param theDYv [in] the translation in "y" direction.
 
         SetRaytracingMode (me : mutable) is static;
      ---Level: Public
@@ -1693,13 +1741,14 @@ fields
         MyTransparencyFlag      : Boolean from Standard;
         myImmediateUpdate: Boolean from Standard is protected;
 
-        myXscreenAxis: Vector from Graphic3d;
-        myYscreenAxis: Vector from Graphic3d;
-        myZscreenAxis: Vector from Graphic3d;
-        myViewAxis: Vector from Graphic3d;
-        myGravityReferencePoint: Vertex from Graphic3d;
-        myCamProjectionShift: Pnt from gp;
-        myAutoZFitMode: Boolean from Standard;
+        myXscreenAxis           : Vector from Graphic3d;
+        myYscreenAxis           : Vector from Graphic3d;
+        myZscreenAxis           : Vector from Graphic3d;
+        myViewAxis              : Vector from Graphic3d;
+        myGravityReferencePoint : Vertex from Graphic3d;
+        myCamProjectionShift    : Pnt from gp;
+        myAutoZFitIsOn          : Boolean from Standard;
+        myAutoZFitScaleFactor   : Real from Standard;
 
 friends
 

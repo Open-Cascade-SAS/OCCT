@@ -10,22 +10,20 @@ vdisplay b_1
 vfit
 
 set scale    7674.87317785833
-set center_X -2.16918246707847
-set center_Y 9.87290703657064
 set proj_X   0.966540098190308
 set proj_Y   -0.24304473400116
 set proj_Z   0.0820330902934074
 set up_X     -0.0460147373378277
 set up_Y     0.150333747267723
 set up_Z     0.987563848495483
-set at_X     1.04834496974945
-set at_Y     0.741619229316711
-set at_Z     -0.0881031528115273
+set at_X     0.0466426680664981
+set at_Y     0.147133996816294
+set at_Z     9.95295385008357
 
 set x_coord 388
 set y_coord 28
 
-vviewparams ${scale} ${center_X} ${center_Y} ${proj_X} ${proj_Y} ${proj_Z} ${up_X} ${up_Y} ${up_Z} ${at_X} ${at_Y} ${at_Z}
+vviewparams -scale ${scale} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up_Y} ${up_Z} -at ${at_X} ${at_Y} ${at_Z}
 
 OCC218 trihedron1 b_1 X Y
 

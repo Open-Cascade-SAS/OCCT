@@ -683,10 +683,13 @@ void Graphic3d_Structure::ReCompute (const Handle(Graphic3d_DataStructureManager
 
 }
 
-void Graphic3d_Structure::SetInfiniteState (const Standard_Boolean AValue) {
-
-  MyCStructure.IsInfinite = AValue ? 1:0;
-
+//=============================================================================
+//function : SetInfiniteState
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::SetInfiniteState (const Standard_Boolean theToSet)
+{
+  MyCStructure.IsInfinite = theToSet ? 1 : 0;
 }
 
 Standard_Boolean Graphic3d_Structure::IsInfinite () const {
@@ -1645,70 +1648,120 @@ void Graphic3d_Structure::Transform (TColStd_Array2OfReal& AMatrix) const {
 
 }
 
-void Graphic3d_Structure::MinMaxValues (Standard_Real& XMin, Standard_Real& YMin, Standard_Real& ZMin, Standard_Real& XMax, Standard_Real& YMax, Standard_Real& ZMax) const {
-
-  Standard_Real RL = RealLast ();
-  Standard_Real RF = RealFirst ();
-
-  Standard_Real XTMin, YTMin, ZTMin, XTMax, YTMax, ZTMax, U, V, W;
-
-  MinMaxCoord (XTMin, YTMin, ZTMin, XTMax, YTMax, ZTMax);
-  if ((XTMin == RF) && (YTMin == RF) &&
-      (ZTMin == RF) && (XTMax == RL) &&
-      (YTMax == RL) && (ZTMax == RL)) {
-      // Case impossible as it would mean that
-      // the structure is empty
-      XMin = RF;
-      YMin = RF;
-      ZMin = RF;
-
-      XMax = RL;
-      YMax = RL;
-      ZMax = RL;
-    }
-  else {
-    Standard_Integer i, j;
-    TColStd_Array2OfReal TheTrsf (0, 3, 0, 3);
-
-    for (i=0; i<=3; i++)
-      for (j=0; j<=3; j++)
-        TheTrsf (i, j) = MyCStructure.Transformation[i][j];
-
-    Graphic3d_Structure::Transforms
-      (TheTrsf, XTMin, YTMin, ZTMin, XMin, YMin, ZMin);
-    Graphic3d_Structure::Transforms
-      (TheTrsf, XTMax, YTMax, ZTMax, XMax, YMax, ZMax);
-    Graphic3d_Structure::Transforms
-      (TheTrsf, XTMin, YTMin, ZTMax, U, V, W);
-    XMin = Min(U,XMin) ; XMax = Max(U,XMax) ;
-    YMin = Min(V,YMin) ; YMax = Max(V,YMax) ;
-    ZMin = Min(W,ZMin) ; ZMax = Max(W,ZMax) ;
-    Graphic3d_Structure::Transforms
-      (TheTrsf, XTMax, YTMin, ZTMax, U, V, W);
-    XMin = Min(U,XMin) ; XMax = Max(U,XMax) ;
-    YMin = Min(V,YMin) ; YMax = Max(V,YMax) ;
-    ZMin = Min(W,ZMin) ; ZMax = Max(W,ZMax) ;
-    Graphic3d_Structure::Transforms
-      (TheTrsf, XTMax, YTMin, ZTMin, U, V, W);
-    XMin = Min(U,XMin) ; XMax = Max(U,XMax) ;
-    YMin = Min(V,YMin) ; YMax = Max(V,YMax) ;
-    ZMin = Min(W,ZMin) ; ZMax = Max(W,ZMax) ;
-    Graphic3d_Structure::Transforms
-      (TheTrsf, XTMax, YTMax, ZTMin, U, V, W);
-    XMin = Min(U,XMin) ; XMax = Max(U,XMax) ;
-    YMin = Min(V,YMin) ; YMax = Max(V,YMax) ;
-    ZMin = Min(W,ZMin) ; ZMax = Max(W,ZMax) ;
-    Graphic3d_Structure::Transforms
-      (TheTrsf, XTMin, YTMax, ZTMax, U, V, W);
-    XMin = Min(U,XMin) ; XMax = Max(U,XMax) ;
-    YMin = Min(V,YMin) ; YMax = Max(V,YMax) ;
-    ZMin = Min(W,ZMin) ; ZMax = Max(W,ZMax) ;
-    Graphic3d_Structure::Transforms
-      (TheTrsf, XTMin, YTMax, ZTMin, U, V, W);
-    XMin = Min(U,XMin) ; XMax = Max(U,XMax) ;
-    YMin = Min(V,YMin) ; YMax = Max(V,YMax) ;
-    ZMin = Min(W,ZMin) ; ZMax = Max(W,ZMax) ;
+//=============================================================================
+//function : MinMaxValues
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::MinMaxValues (Standard_Real& theXMin,
+                                        Standard_Real& theYMin,
+                                        Standard_Real& theZMin,
+                                        Standard_Real& theXMax,
+                                        Standard_Real& theYMax,
+                                        Standard_Real& theZMax,
+                                        const Standard_Boolean theToIgnoreInfiniteFlag) const
+{
+  if (IsEmpty())
+  {
+    return;
   }
+
+  Standard_Real aXMin, aYMin, aZMin, aXMax, aYMax, aZMax;
+  MinMaxCoord (aXMin, aYMin, aZMin, aXMax, aYMax, aZMax);
+
+  // Infinite boundaries corresponding to empty structure or
+  // non-empty structure, without any primitives specified
+  if (aXMin == RealFirst() && aYMin == RealFirst() && aZMin == RealFirst() &&
+      aXMax == RealLast()  && aYMax == RealLast()  && aZMax == RealLast())
+  {
+    theXMin = RealFirst();
+    theYMin = RealFirst();
+    theZMin = RealFirst();
+    theXMax = RealLast();
+    theYMax = RealLast();
+    theZMax = RealLast();
+    return;
+  }
+
+  // Handle flag, which specifies that structure should be considered as infinite
+  if (IsInfinite() && !theToIgnoreInfiniteFlag)
+  {
+    Graphic3d_Vertex aVertexMin (aXMin, aYMin, aZMin);
+    Graphic3d_Vertex aVertexMax (aXMax, aYMax, aZMax);
+    const Standard_Real aDistance = aVertexMin.Distance (aVertexMax);
+
+    // Special case for infinite line:
+    // Bounding borders of infinite line has been
+    // calculated as own point in center of this line
+    if (aDistance >= 500000.0)
+    {
+      theXMin = theXMax = 0.5 * (aXMin + aXMax);
+      theYMin = theYMax = 0.5 * (aYMin + aYMax);
+      theZMin = theZMax = 0.5 * (aZMin + aZMax);
+      return;
+    }
+
+    theXMin = RealFirst();
+    theYMin = RealFirst();
+    theZMin = RealFirst();
+    theXMax = RealLast();
+    theYMax = RealLast();
+    theZMax = RealLast();
+    return;
+  }
+
+  // Min-Max values of the descendant structures
+  Standard_Real aDescXMin = RealLast();
+  Standard_Real aDescYMin = RealLast();
+  Standard_Real aDescZMin = RealLast();
+  Standard_Real aDescXMax = RealFirst();
+  Standard_Real aDescYMax = RealFirst();
+  Standard_Real aDescZMax = RealFirst();
+  for (Standard_Integer aStructIt = 1; aStructIt <= MyDescendants.Length(); aStructIt++)
+  {
+    Graphic3d_Structure* aStructure = (Graphic3d_Structure*) MyDescendants.Value (aStructIt);
+    aStructure->MinMaxValues (aXMin, aYMin, aZMin, aXMax, aYMax, aZMax);
+    aDescXMin = Min (aXMin, aDescXMin);
+    aDescYMin = Min (aYMin, aDescYMin);
+    aDescZMin = Min (aZMin, aDescZMin);
+    aDescXMax = Max (aXMax, aDescXMax);
+    aDescYMax = Max (aYMax, aDescYMax);
+    aDescZMax = Max (aZMax, aDescZMax);
+  }
+
+  if (aDescXMin != RealLast()  || aDescYMin != RealLast()  ||
+      aDescZMin != RealLast()  || aDescXMax != RealFirst() ||
+      aDescYMax != RealFirst() || aDescZMax != RealFirst())
+  {
+    aXMin = Min (aDescXMin, aXMin);
+    aYMin = Min (aDescYMin, aYMin);
+    aZMin = Min (aDescZMin, aZMin);
+    aXMax = Max (aDescXMax, aXMax);
+    aYMax = Max (aDescYMax, aYMax);
+    aZMax = Max (aDescZMax, aZMax);
+  }
+
+  // Case impossible as it would mean that the structure is empty or infinite
+  if (aXMin == RealFirst() && aYMin == RealFirst() && aZMin == RealFirst() &&
+      aXMax == RealLast()  && aYMax == RealLast()  && aZMax == RealLast())
+  {
+    theXMin = RealFirst();
+    theYMin = RealFirst();
+    theZMin = RealFirst();
+    theXMax = RealLast();
+    theYMax = RealLast();
+    theZMax = RealLast();
+    return;
+  }
+
+  TColStd_Array2OfReal aTrsf(0, 3, 0, 3);
+  Transform (aTrsf);
+  TransformBoundaries (aTrsf, aXMin, aYMin, aZMin, aXMax, aYMax, aZMax);
+  theXMin = aXMin;
+  theYMin = aYMin;
+  theZMin = aZMin;
+  theXMax = aXMax;
+  theYMax = aYMax;
+  theZMax = aZMax;
 }
 
 Standard_Integer Graphic3d_Structure::Identification () const {
@@ -1825,93 +1878,156 @@ Handle(Graphic3d_StructureManager) Graphic3d_Structure::StructureManager () cons
 
 }
 
+//=============================================================================
+//function : MinMaxCoord
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::MinMaxCoord (Standard_Real& theXMin,
+                                       Standard_Real& theYMin,
+                                       Standard_Real& theZMin,
+                                       Standard_Real& theXMax,
+                                       Standard_Real& theYMax,
+                                       Standard_Real& theZMax) const
+{
+  if (IsEmpty())
+  {
+    theXMin = RealFirst();
+    theYMin = RealFirst();
+    theZMin = RealFirst();
+    theXMax = RealLast();
+    theYMax = RealLast();
+    theZMax = RealLast();
+    return;
+  }
 
-void Graphic3d_Structure::MinMaxCoord (Standard_Real& XMin, Standard_Real& YMin, Standard_Real& ZMin, Standard_Real& XMax, Standard_Real& YMax, Standard_Real& ZMax) const {
+  Standard_Real aXMin = RealLast();
+  Standard_Real aYMin = RealLast();
+  Standard_Real aZMin = RealLast();
+  Standard_Real aXMax = RealFirst();
+  Standard_Real aYMax = RealFirst();
+  Standard_Real aZMax = RealFirst();
+  Standard_Real aGroupXMin, aGroupYMin, aGroupZMin, aGroupXMax, aGroupYMax, aGroupZMax;
+  for (Standard_Integer aGroupIt = 1; aGroupIt <= MyGroups.Length(); aGroupIt++)
+  {
+    const Handle(Graphic3d_Group)& aGroup = MyGroups.Value (aGroupIt);
 
-  Standard_Real RL = RealLast ();
-  Standard_Real RF = RealFirst ();
-
-  Standard_Real Xm, Ym, Zm, XM, YM, ZM;
-
-  //Bounding borders of infinite line has been calculated as own point
-  //in center of this line
-  if (IsEmpty () || IsInfinite ()) {
-    if( IsInfinite ()){
-      for (int i=1; i<=MyGroups.Length (); i++)
-        if (! (MyGroups.Value (i))->IsEmpty () ) {
-          (MyGroups.Value (i))->MinMaxValues(Xm, Ym, Zm, XM, YM, ZM);
-          Graphic3d_Vertex vertex1(Xm, Ym, Zm);
-          Graphic3d_Vertex vertex2(XM, YM, ZM);
-          const Standard_Real distance = vertex1.Distance( vertex2 );
-          if( distance >= 500000.0){
-            XMin = XMax = 0.5*(Xm+ XM);
-            YMin = YMax = 0.5*(Ym+ YM);
-            ZMin = ZMax = 0.5*(Zm+ ZM);
-            return;
-          }
-        }
+    if (aGroup->IsEmpty())
+    {
+      continue;
     }
-    XMin = RF;
-    YMin = RF;
-    ZMin = RF;
 
-    XMax = RL;
-    YMax = RL;
-    ZMax = RL;
-  }
-  else {
-    XMin = RL;
-    YMin = RL;
-    ZMin = RL;
-
-    XMax = RF;
-    YMax = RF;
-    ZMax = RF;
-    Standard_Integer i, Length;
-
-    Length  = MyGroups.Length ();
-    for (i=1; i<=Length; i++)
-      if (! (MyGroups.Value (i))->IsEmpty () ) {
-        (MyGroups.Value (i))->MinMaxValues(Xm, Ym, Zm, XM, YM, ZM);
-        if (Xm < XMin) XMin = Xm;
-        if (Ym < YMin) YMin = Ym;
-        if (Zm < ZMin) ZMin = Zm;
-        if (XM > XMax) XMax = XM;
-        if (YM > YMax) YMax = YM;
-        if (ZM > ZMax) ZMax = ZM;
-      }
-
-      Length  = MyDescendants.Length ();
-      for (i=1; i<=Length; i++)
-        if (! ((Graphic3d_Structure *)
-          (MyDescendants.Value (i)))->IsEmpty () ) {
-            ((Graphic3d_Structure *)
-              (MyDescendants.Value (i)))->MinMaxValues (Xm, Ym, Zm, XM, YM, ZM);
-
-            if (Xm < XMin) XMin = Xm;
-            if (Ym < YMin) YMin = Ym;
-            if (Zm < ZMin) ZMin = Zm;
-            if (XM > XMax) XMax = XM;
-            if (YM > YMax) YMax = YM;
-            if (ZM > ZMax) ZMax = ZM;
-          }
-
-          if ((XMin == RL) && (YMin == RL) &&
-              (ZMin == RL) && (XMax == RF) &&
-              (YMax == RF) && (ZMax == RF)) {
-              // Case impossible as it would mean
-              // that the structure is empty
-              XMin    = RF;
-              YMin    = RF;
-              ZMin    = RF;
-
-              XMax    = RL;
-              YMax    = RL;
-              ZMax    = RL;
-            }
-
+    aGroup->MinMaxValues (aGroupXMin, aGroupYMin, aGroupZMin, aGroupXMax, aGroupYMax, aGroupZMax);
+    aXMin = Min (aXMin, aGroupXMin);
+    aYMin = Min (aYMin, aGroupYMin);
+    aZMin = Min (aZMin, aGroupZMin);
+    aXMax = Max (aXMax, aGroupXMax);
+    aYMax = Max (aYMax, aGroupYMax);
+    aZMax = Max (aZMax, aGroupZMax);
   }
 
+  // Case impossible as it would mean that the structure is empty
+  if (aXMin == RealLast()  && aYMin == RealLast()  && aZMin == RealLast() &&
+      aXMax == RealFirst() && aYMax == RealFirst() && aZMax == RealFirst())
+  {
+    theXMin = RealFirst();
+    theYMin = RealFirst();
+    theZMin = RealFirst();
+    theXMax = RealLast();
+    theYMax = RealLast();
+    theZMax = RealLast();
+  }
+
+  theXMin = aXMin;
+  theYMin = aYMin;
+  theZMin = aZMin;
+  theXMax = aXMax;
+  theYMax = aYMax;
+  theZMax = aZMax;
+}
+
+//=============================================================================
+//function : MinMaxCoordWithDescendants
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::MinMaxCoordWithDescendants (Standard_Real& theXMin,
+                                                      Standard_Real& theYMin,
+                                                      Standard_Real& theZMin,
+                                                      Standard_Real& theXMax,
+                                                      Standard_Real& theYMax,
+                                                      Standard_Real& theZMax) const
+{
+  if (IsEmpty())
+  {
+    theXMin = RealFirst();
+    theYMin = RealFirst();
+    theZMin = RealFirst();
+    theXMax = RealLast();
+    theYMax = RealLast();
+    theZMax = RealLast();
+    return;
+  }
+
+  Standard_Real aXMin, aYMin, aZMin, aXMax, aYMax, aZMax;
+  MinMaxCoord (aXMin, aYMin, aZMin, aXMax, aYMax, aZMax);
+
+  // Min-Max of the descendant structures
+  Standard_Real aDescXMin = RealLast();
+  Standard_Real aDescYMin = RealLast();
+  Standard_Real aDescZMin = RealLast();
+  Standard_Real aDescXMax = RealFirst();
+  Standard_Real aDescYMax = RealFirst();
+  Standard_Real aDescZMax = RealFirst();
+  for (Standard_Integer aStructIt = 1; aStructIt <= MyDescendants.Length(); aStructIt++)
+  {
+    Graphic3d_Structure* aStructure = (Graphic3d_Structure*) MyDescendants.Value (aStructIt);
+    if (aStructure->IsEmpty())
+    {
+      continue;
+    }
+
+    aStructure->MinMaxCoordWithDescendants (aXMin, aYMin, aZMin, aXMax, aYMax, aZMax);
+    aDescXMin = Min (aXMin, aDescXMin);
+    aDescYMin = Min (aYMin, aDescYMin);
+    aDescZMin = Min (aZMin, aDescZMin);
+    aDescXMax = Max (aXMax, aDescXMax);
+    aDescYMax = Max (aYMax, aDescYMax);
+    aDescZMax = Max (aZMax, aDescZMax);
+  }
+
+  if (aDescXMin != RealLast()  || aDescYMin != RealLast()  ||
+      aDescZMin != RealLast()  || aDescXMax != RealFirst() ||
+      aDescYMax != RealFirst() || aDescZMax != RealFirst())
+  {
+    TColStd_Array2OfReal aTrsf(0, 3, 0, 3);
+    Transform (aTrsf);
+    TransformBoundaries (aTrsf, aDescXMin, aDescYMin, aDescZMin, aDescXMax, aDescYMax, aDescZMax);
+
+    aXMin = Min (aDescXMin, aXMin);
+    aYMin = Min (aDescYMin, aYMin);
+    aZMin = Min (aDescZMin, aZMin);
+    aXMax = Max (aDescXMax, aXMax);
+    aYMax = Max (aDescYMax, aYMax);
+    aZMax = Max (aDescZMax, aZMax);
+  }
+
+  // Case impossible as it would mean that the structure is empty
+  if (aXMin == RealLast()  && aYMin == RealLast()  && aZMin == RealLast() &&
+      aXMax == RealFirst() && aYMax == RealFirst() && aZMax == RealFirst())
+  {
+    theXMin = RealFirst();
+    theYMin = RealFirst();
+    theZMin = RealFirst();
+    theXMax = RealLast();
+    theYMax = RealLast();
+    theZMax = RealLast();
+  }
+
+  theXMin = aXMin;
+  theYMin = aYMin;
+  theZMin = aZMin;
+  theXMax = aXMax;
+  theYMax = aYMax;
+  theZMax = aZMax;
 }
 
 void Graphic3d_Structure::Transforms (const TColStd_Array2OfReal& ATrsf, const Standard_Real X, const Standard_Real Y, const Standard_Real Z, Standard_Real& NewX, Standard_Real& NewY, Standard_Real& NewZ) {
@@ -1971,6 +2087,61 @@ Graphic3d_Vertex Graphic3d_Structure::Transforms (const TColStd_Array2OfReal& AT
 
   return (Result);
 
+}
+
+//=============================================================================
+//function : Transforms
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::TransformBoundaries (const TColStd_Array2OfReal& theTrsf,
+                                               Standard_Real& theXMin,
+                                               Standard_Real& theYMin,
+                                               Standard_Real& theZMin,
+                                               Standard_Real& theXMax,
+                                               Standard_Real& theYMax,
+                                               Standard_Real& theZMax)
+{
+  Standard_Real aXMin, aYMin, aZMin, aXMax, aYMax, aZMax, anU, aV, aW;
+
+  Graphic3d_Structure::Transforms (theTrsf, theXMin, theYMin, theZMin, aXMin, aYMin, aZMin);
+  Graphic3d_Structure::Transforms (theTrsf, theXMax, theYMax, theZMax, aXMax, aYMax, aZMax);
+
+  Graphic3d_Structure::Transforms (theTrsf, theXMin, theYMin, theZMax, anU, aV, aW);
+  aXMin = Min (anU, aXMin); aXMax = Max (anU, aXMax);
+  aYMin = Min (aV,  aYMin); aYMax = Max (aV,  aYMax);
+  aZMin = Min (aW,  aZMin); aZMax = Max (aW,  aZMax);
+
+  Graphic3d_Structure::Transforms (theTrsf, theXMax, theYMin, theZMax, anU, aV, aW);
+  aXMin = Min (anU, aXMin); aXMax = Max (anU, aXMax);
+  aYMin = Min (aV,  aYMin); aYMax = Max (aV,  aYMax);
+  aZMin = Min (aW,  aZMin); aZMax = Max (aW,  aZMax);
+
+  Graphic3d_Structure::Transforms (theTrsf, theXMax, theYMin, theZMin, anU, aV, aW);
+  aXMin = Min (anU, aXMin); aXMax = Max (anU, aXMax);
+  aYMin = Min (aV,  aYMin); aYMax = Max (aV,  aYMax);
+  aZMin = Min (aW,  aZMin); aZMax = Max (aW,  aZMax);
+
+  Graphic3d_Structure::Transforms (theTrsf, theXMax, theYMax, theZMin, anU, aV, aW);
+  aXMin = Min (anU, aXMin); aXMax = Max (anU, aXMax);
+  aYMin = Min (aV,  aYMin); aYMax = Max (aV,  aYMax);
+  aZMin = Min (aW,  aZMin); aZMax = Max (aW,  aZMax);
+
+  Graphic3d_Structure::Transforms (theTrsf, theXMin, theYMax, theZMax, anU, aV, aW);
+  aXMin = Min (anU, aXMin); aXMax = Max (anU, aXMax);
+  aYMin = Min (aV,  aYMin); aYMax = Max (aV,  aYMax);
+  aZMin = Min (aW,  aZMin); aZMax = Max (aW,  aZMax);
+
+  Graphic3d_Structure::Transforms (theTrsf, theXMin, theYMax, theZMin, anU, aV, aW);
+  aXMin = Min (anU, aXMin); aXMax = Max (anU, aXMax);
+  aYMin = Min (aV,  aYMin); aYMax = Max (aV,  aYMax);
+  aZMin = Min (aW,  aZMin); aZMax = Max (aW,  aZMax);
+
+  theXMin = aXMin;
+  theYMin = aYMin;
+  theZMin = aZMin;
+  theXMax = aXMax;
+  theYMax = aYMax;
+  theZMax = aZMax;
 }
 
 void Graphic3d_Structure::Network (const Handle(Graphic3d_Structure)& AStructure, const Graphic3d_TypeOfConnection AType, Graphic3d_MapOfStructure& ASet) {
@@ -2308,7 +2479,7 @@ void Graphic3d_Structure::GraphicHighlight (const Aspect_TypeOfHighlightMethod A
       XMax = YMax = ZMax = 0.;
     }
     else {
-      MinMaxCoord
+      MinMaxCoordWithDescendants
         (XMin, YMin, ZMin, XMax, YMax, ZMax);
     }
     MyCStructure.BoundBox.Pmin.x    = float (XMin);

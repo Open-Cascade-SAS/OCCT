@@ -45,169 +45,205 @@ uses
     Vec2d   from gp,
     Pnt2d   from gp,
     Box     from Bnd,
-    View    from V3d
+    View    from V3d,
+    Mat4    from Graphic3d,
+    Mat4d   from Graphic3d
 
 raises
     NoSuchObject from Standard
 
 is
 
-    Create(aView:View from V3d) returns Projector from Select3D;
-    --- Purpose: Constructs the 3D projector object defined by the 3D view aView.
-    Create returns Projector from Select3D;
+    Create (theView : View from V3d) returns Projector from Select3D;
+    --- Purpose: Constructs the 3D projector object from the passed view.
+    -- The projector captures current model-view and projection transformation
+    -- of the passed view.
 
-    Create(CS : Ax2 from gp)
-    ---Purpose: Creates an axonometric projector. <CS> represents viewing coordinate 
-    -- system and could be constructed from x direction, view plane normal direction, 
-    -- and view point location in world-coordinate space.
+    Create returns Projector from Select3D;
+    --- Purpose: Constructs identity projector.
+
+    Create (theCS : Ax2 from gp)
+    ---Purpose: Builds the Projector from the model-view transformation specified
+    -- by the passed viewing coordinate system <theCS>. The Projector has
+    -- identity projection transformation, is orthogonal.
+    -- The viewing coordinate system could be constructed from x direction,
+    -- view plane normal direction, and view point location in
+    -- world-coordinate space.
     returns Projector from Select3D;
 
-    Create(CS    : Ax2  from gp;
-           Focus : Real from Standard)
-    ---Purpose: Creates  a  perspective  projector. <CS> represents viewing
-    -- coordinate system and could be constructed from x direction, 
+    Create (theCS    : Ax2  from gp;
+            theFocus : Real from Standard)
+    ---Purpose: Builds the Projector from the model-view transformation specified
+    -- by the passed view coordinate system <theCS> and simplified perspective
+    -- projection transformation defined by <theFocus> parameter.
+    -- The viewing coordinate system could be constructed from x direction,
     -- view plane normal direction, and focal point location in world-coordinate
-    -- space. <Focus> should represent distance of an eye from view plane
+    -- space. <theFocus> should represent distance of an eye from view plane
     -- in world-coordinate space (focal distance).
     returns Projector from Select3D;
 
-    Create(T         : Trsf    from gp;
-           Persp     : Boolean from Standard;
-           Focus     : Real    from Standard)
-    ---Purpose: build a Projector from the given transformation.
-    -- In case, when <T> transformation should represent custom view projection,
-    -- it could be constructed from two separate components: transposed view
-    -- orientation matrix and translation of focal point in view-coordiante
-    -- system. <T> could be built up from x direction, up direction,
+    Create (theViewTrsf : Trsf    from gp;
+            theIsPersp  : Boolean from Standard;
+            theFocus    : Real    from Standard)
+    ---Purpose: Build the Projector from the model-view transformation passed
+    -- as <theViewTrsf> and simplified perspective projection transformation
+    -- parameters passed as <theIsPersp> and <theFocus>.
+    -- In case, when <theViewTrsf> transformation should represent custom view
+    -- projection, it could be constructed from two separate components:
+    -- transposed view orientation matrix and translation of focal point
+    -- in view-coordinate system.
+    -- <theViewTrsf> could be built up from x direction, up direction,
     -- view plane normal direction vectors and translation with SetValues(...)
     -- method, where first row arguments (a11, a12, a13, a14)  are x, y, z
     -- component of x direction vector, and x value of reversed translation
     -- vector. Second row arguments, are x y z for up direction and y value of
     -- reversed translation, and the third row defined in the same manner.
-    -- This also suits for simple perspective view, where <Focus> is the focale
-    -- distance of an eye from view plane in world-space coordiantes.
+    -- This also suits for simple perspective view, where <theFocus> is the focale
+    -- distance of an eye from view plane in world-space coordinates.
     -- Note, that in that case amount of perspective distortion (perspective
     -- angle) should be defined through focal distance.
     returns Projector from Select3D;
 
-    Create(GT        : GTrsf   from gp;
-           Persp     : Boolean from Standard;
-           Focus     : Real    from Standard)
-    ---Purpose: build a Projector from the given transformation.
-    -- In case, when <GT> transformation should represent custom view
+    Create (theViewTrsf : GTrsf   from gp;
+            theIsPersp  : Boolean from Standard;
+            theFocus    : Real    from Standard)
+    ---Purpose: Builds the Projector from the model-view transformation passed
+    -- as <theViewTrsf> and projection transformation for <theIsPersp> and
+    -- <theFocus> parameters.
+    -- In case, when <theViewTrsf> transformation should represent custom view
     -- projection, it could be constructed from two separate components:
     -- transposed view orientation matrix and translation of a focal point
     -- in view-coordinate system.
-    -- This also suits for perspective view, with <Focus> that could be
+    -- This also suits for perspective view, with <theFocus> that could be
     -- equal to distance from an eye to a view plane in 
     -- world-coordinates (focal distance).
     -- The 3x3 transformation matrix is built up from three vectors:
     -- x direction, up direction and view plane normal vectors, where each
-    -- vector is a matrix row. Then <GT> is constructed from matrix and
+    -- vector is a matrix row. Then <theViewTrsf> is constructed from matrix and
     -- reversed translation with methods SetTranslationPart(..) and
     -- SetVectorialPart(..).
     -- Note, that in that case amount of perspective distortion (perspective
     -- angle) should be defined through focal distance.
     returns Projector from Select3D;
 
+    Create (theViewTrsf : Mat4d from Graphic3d;
+            theProjTrsf : Mat4d from Graphic3d)
+    ---Purpose: Builds the Projector from the passed model-view <theViewTrsf>
+    -- and projection <theProjTrsf> transformation matrices.
+    returns Projector from Select3D;
+
     Set (me : mutable;
-         T         : Trsf    from gp;
-         Persp     : Boolean from Standard;
-         Focus     : Real    from Standard)
+         theViewTrsf : Trsf    from gp;
+         theIsPersp  : Boolean from Standard;
+         theFocus    : Real    from Standard);
+    ---Purpose: Sets new parameters for the Projector.
+
+    Set (me : mutable;
+         theViewTrsf : Mat4d from Graphic3d;
+         theProjTrsf : Mat4d from Graphic3d);
+    ---Purpose: Sets new parameters for the Projector.
+
+    SetView (me : mutable;
+             theView : View from V3d);
+    ---Purpose: Sets new parameters for the Projector
+    -- captured from the passed view.
+
+    Scaled (me : mutable; theToCheckOptimized : Boolean from Standard = Standard_False)
+    ---Purpose: Pre-compute inverse transformation and ensure whether it is possible
+    -- to use optimized transformation for the common view-orientation type or not
+    -- if <theToCheckOptimized> is TRUE.
+    is virtual;
+
+    Perspective (me) returns Boolean
+    ---Purpose: Returns True if there is simplified perspective
+    -- projection approach is used. Distortion defined by Focus.
+    ---C++: inline
+    is virtual;
+
+    Focus (me) returns Real from Standard
+    ---Purpose: Returns the focal length of simplified perspective
+    -- projection approach. Raises program error exception if the
+    -- the projection transformation is not specified as simplified
+    -- Perspective (for example, custom projection transformation is defined
+    -- or the orthogonal Projector is defined).
+    ---C++: inline
+    is virtual;
+
+    Projection (me) returns Mat4d from Graphic3d;
+    ---Purpose: Returns projection transformation. Please note that for
+    -- simplified perspective projection approach, defined by Focus, the
+    -- returned transformation is identity.
+    ---C++: inline
+    ---C++: return const &
+
+    Transformation (me) returns GTrsf from gp
+    ---Purpose: Returns the view transformation.
+    ---C++: inline
+    ---C++: return const &
+    is virtual;
+
+    InvertedTransformation (me) returns GTrsf from gp
+    ---Purpose: Returns the inverted view transformation.
+    ---C++: inline
+    ---C++: return const &
+    is virtual;
+
+    FullTransformation (me) returns Trsf from gp
+    ---Purpose: Returns the uniform-scaled view transformation.
+    ---C++: inline
+    ---C++: return const &
+    is virtual;
+
+    Transform (me; theD : in out Vec from gp)
+    ---Purpose: Transforms the vector into view-coordinate space.
+    ---C++: inline
+    is virtual;
+
+    Transform (me; thePnt : in out Pnt from gp)
+    ---Purpose: Transforms the point into view-coordinate space.
+    ---C++: inline
+    is virtual;
+
+    Project (me; theP : Pnt from gp; thePout : out Pnt2d from gp)
+    ---Purpose: Transforms the point into view-coordinate space
+    -- and applies projection transformation.
+    is virtual;
+
+    Project (me; theP : Pnt  from gp; theX, theY, theZ : out Real from Standard)
+    ---Purpose: Transforms the point into view-coordinate space
+    -- and applies projection transformation.
     is static;
 
-    SetView(me : mutable; V : View from V3d);
-    ---Purpose: Sets the 3D view V used at the time of construction.
-
-    View(me) returns any View from V3d;
-    ---Purpose: Returns the 3D view used at the time of construction.
-    ---C++: return const&
-    ---C++: inline
-
-    Scaled(me : mutable; On : Boolean from Standard = Standard_False)
-    ---Purpose: to compute with the given scale and translation.
+    Project (me; theP     : Pnt   from gp;
+                 theD1    : Vec from gp;
+                 thePout  : out Pnt2d from gp;
+                 theD1out : out Vec2d from gp)
+    ---Purpose: Transforms the point and vector passed from its location
+    -- into view-coordinate space and applies projection transformation.
     is virtual;
 
-    Perspective(me) returns Boolean
-    ---Purpose: Returns True if there is a perspective transformation.
-    ---C++: inline
+    Shoot (me; theX, theY : Real from Standard) returns Lin from gp
+    ---Purpose: Return projection line going through the 2d point <theX, theY>
     is virtual;
 
-    Transformation(me) returns GTrsf from gp
-    ---Purpose: Returns the active transformation.
-    ---C++: inline
-    ---C++: return const &
-    is virtual;
-
-    InvertedTransformation(me) returns GTrsf from gp
-    ---Purpose: Returns the active inverted transformation.
-    ---C++: inline
-    ---C++: return const &
-    is virtual;
-
-    FullTransformation(me) returns Trsf from gp
-    ---Purpose: Returns the original transformation.
-    ---C++: inline
-    ---C++: return const &
-    is virtual;
-
-    Focus(me) returns Real from Standard
-    ---Purpose: Returns the focal length.
-    ---C++: inline
-    raises
-        NoSuchObject from Standard -- if there is no perspective
-    is virtual;
-
-    Transform(me; D : in out Vec from gp)
+    Transform(me; thePnt  : in out Pnt from gp;
+                  theTrsf : GTrsf from gp)
     ---C++: inline
     is virtual;
 
-    Transform(me; Pnt : in out Pnt from gp)
-        ---C++: inline
-    is virtual;
-
-    Project(me; P    :     Pnt   from gp;
-                Pout : out Pnt2d from gp)
-    ---Purpose: Transform and apply perspective if needed.
-    is virtual;
-
-    Project(me; P     :     Pnt  from gp;
-                X,Y,Z : out Real from Standard)
-    ---Purpose: Transform and apply perspective if needed.
-    is static;
-
-    Project(me; P     :     Pnt   from gp;
-                D1    :     Vec   from gp;
-                Pout  : out Pnt2d from gp;
-        D1out : out Vec2d from gp)
-    ---Purpose: Transform and apply perspective if needed.
-    is virtual;
-
-    Shoot(me; X , Y : Real from Standard)
-    returns Lin from gp
-    ---Purpose: return a line going through the eye towards the
-    --          2d point <X,Y>.
-    is virtual;
-
-    Transform(me; P : in out Pnt from gp;
-                  T : GTrsf from gp)
-    ---C++: inline
-    is virtual;
-
-    Transform(me; D : in out Lin from gp;
-                  T : GTrsf from gp)
+    Transform(me; theLin : in out Lin from gp;
+                  theTrsf : GTrsf from gp)
     ---C++: inline
     is virtual;
 
 fields
-    myType       : Integer from Standard;
 
+    myType       : Integer from Standard;
     myPersp      : Boolean from Standard is protected;
     myFocus      : Real    from Standard is protected;
-    myScaledTrsf : Trsf    from gp is protected;
     myGTrsf      : GTrsf   from gp is protected;
     myInvTrsf    : GTrsf   from gp is protected;
-
-    myView       : View    from V3d;
+    myScaledTrsf : Trsf    from gp is protected;
+    myProjTrsf   : Mat4d   from Graphic3d is protected;
 
 end Projector;

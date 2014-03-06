@@ -197,5 +197,4 @@ is
     ---Purpose: Splits "parameter=value" string into separate
     -- parameter and value strings.
     -- @return TRUE if the string matches pattern "<string>=<empty or string>"
-
 end;

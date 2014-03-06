@@ -58,9 +58,11 @@
 #include <Image_AlienPixMap.hxx>
 #include <OpenGl_GraphicDriver.hxx>
 #include <OSD_Timer.hxx>
+#include <TColStd_SequenceOfAsciiString.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
+#include <TColStd_MapOfAsciiString.hxx>
 #include <Visual3d_LayerItem.hxx>
 #include <Aspect_TypeOfLine.hxx>
 #include <Image_Diff.hxx>
@@ -1670,12 +1672,12 @@ static void ProcessControlButton1Motion()
 //==============================================================================
 void VT_ProcessControlButton2Motion()
 {
-  Quantity_Length dx = ViewerTest::CurrentView()->Convert(X_Motion - X_ButtonPress);
-  Quantity_Length dy = ViewerTest::CurrentView()->Convert(Y_Motion - Y_ButtonPress);
+  Standard_Integer aDx = X_Motion - X_ButtonPress;
+  Standard_Integer aDy = Y_Motion - Y_ButtonPress;
 
-  dy = -dy; // Xwindow Y axis is from top to Bottom
+  aDy = -aDy; // Xwindow Y axis is from top to Bottom
 
-  ViewerTest::CurrentView()->Panning( dx, dy );
+  ViewerTest::CurrentView()->Pan (aDx, aDy);
 
   X_ButtonPress = X_Motion;
   Y_ButtonPress = Y_Motion;
@@ -2457,19 +2459,45 @@ static int VFit(Draw_Interpretor& , Standard_Integer , const char** )
 //purpose  : ZFitall, no DRAW arguments
 //Draw arg : No args
 //==============================================================================
-
-static int VZFit(Draw_Interpretor& , Standard_Integer , const char** )
+static int VZFit (Draw_Interpretor& /*theDi*/, Standard_Integer theArgsNb, const char** theArgVec)
 {
-  Handle(V3d_View) V = ViewerTest::CurrentView();
-  if ( !V.IsNull() ) V->ZFitAll(); return 0; }
+  const Handle(V3d_View)& aCurrentView = ViewerTest::CurrentView();
 
+  if (aCurrentView.IsNull())
+  {
+    std::cout << theArgVec[0] << ": Call vinit before this command, please.\n";
+    return 1;
+  }
 
-static int VRepaint(Draw_Interpretor& , Standard_Integer , const char** )
+  if (theArgsNb == 1)
+  {
+    aCurrentView->ZFitAll();
+    aCurrentView->Redraw();
+    return 0;
+  }
+
+  Standard_Real aScale = 1.0;
+
+  if (theArgsNb >= 2)
+  {
+    aScale = Draw::Atoi (theArgVec[1]);
+  }
+
+  aCurrentView->ZFitAll (aScale);
+  aCurrentView->Redraw();
+
+  return 0;
+}
+
+//==============================================================================
+//function : VRepaint
+//purpose  :
+//==============================================================================
+static int VRepaint (Draw_Interpretor& , Standard_Integer , const char** )
 {
   Handle(V3d_View) V = ViewerTest::CurrentView();
   if ( !V.IsNull() ) V->Redraw(); return 0;
 }
-
 
 //==============================================================================
 //function : VClear
@@ -4342,70 +4370,181 @@ static Standard_Integer VMoveTo (Draw_Interpretor& di,
   return 0;
 }
 
-//=======================================================================
+//=================================================================================================
 //function : VViewParams
 //purpose  : Gets or sets AIS View characteristics
-//=======================================================================
-static Standard_Integer VViewParams (Draw_Interpretor& di,
-                                Standard_Integer argc,
-                                const char ** argv)
+//=================================================================================================
+static int VViewParams (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const char** theArgVec)
 {
-  if ( argc != 1 && argc != 13)
+  Handle(V3d_View) anAISView = ViewerTest::CurrentView();
+  if (anAISView.IsNull())
   {
-    di << "Usage : " << argv[0] << "\n";
+    std::cout << theArgVec[0] << ": please initialize or activate view.\n";
     return 1;
   }
-  Handle (V3d_View) anAISView = ViewerTest::CurrentView ();
-  if ( anAISView.IsNull () )
+
+  if (theArgsNb == 1)
   {
-    di << "use 'vinit' command before " << argv[0] << "\n";
-    return 1;
-  }
-  if(argc==1){
-    Quantity_Factor anAISViewScale = anAISView -> V3d_View::Scale ();
-    Standard_Real anAISViewCenterCoordinateX = 0.0;
-    Standard_Real anAISViewCenterCoordinateY = 0.0;
-    anAISView -> V3d_View::Center (anAISViewCenterCoordinateX, anAISViewCenterCoordinateY);
+    // print all of the available view parameters
+    Quantity_Factor anAISViewScale = anAISView->Scale();
+
     Standard_Real anAISViewProjX = 0.0;
     Standard_Real anAISViewProjY = 0.0;
     Standard_Real anAISViewProjZ = 0.0;
-    anAISView -> V3d_View::Proj (anAISViewProjX, anAISViewProjY, anAISViewProjZ);
+    anAISView->Proj (anAISViewProjX, anAISViewProjY, anAISViewProjZ);
+
     Standard_Real anAISViewUpX = 0.0;
     Standard_Real anAISViewUpY = 0.0;
     Standard_Real anAISViewUpZ = 0.0;
-    anAISView -> V3d_View::Up (anAISViewUpX, anAISViewUpY, anAISViewUpZ);
+    anAISView->Up (anAISViewUpX, anAISViewUpY, anAISViewUpZ);
+
     Standard_Real anAISViewAtX = 0.0;
     Standard_Real anAISViewAtY = 0.0;
     Standard_Real anAISViewAtZ = 0.0;
-    anAISView -> V3d_View::At (anAISViewAtX, anAISViewAtY, anAISViewAtZ);
-    di << "Scale of current view: " << anAISViewScale << "\n";
-    di << "Center on X : "<< anAISViewCenterCoordinateX << "; on Y: " << anAISViewCenterCoordinateY << "\n";
-    di << "Proj on X : " << anAISViewProjX << "; on Y: " << anAISViewProjY << "; on Z: " << anAISViewProjZ << "\n";
-    di << "Up on X : " << anAISViewUpX << "; on Y: " << anAISViewUpY << "; on Z: " << anAISViewUpZ << "\n";
-    di << "At on X : " << anAISViewAtX << "; on Y: " << anAISViewAtY << "; on Z: " << anAISViewAtZ << "\n";
+    anAISView->At (anAISViewAtX, anAISViewAtY, anAISViewAtZ);
+
+    Standard_Real anAISViewEyeX = 0.0;
+    Standard_Real anAISViewEyeY = 0.0;
+    Standard_Real anAISViewEyeZ = 0.0;
+    anAISView->Eye (anAISViewEyeX, anAISViewEyeY, anAISViewEyeZ);
+
+    theDi << "Scale of current view: " << anAISViewScale << "\n";
+    theDi << "Proj on X : " << anAISViewProjX << "; on Y: " << anAISViewProjY << "; on Z: " << anAISViewProjZ << "\n";
+    theDi << "Up on X : " << anAISViewUpX << "; on Y: " << anAISViewUpY << "; on Z: " << anAISViewUpZ << "\n";
+    theDi << "At on X : " << anAISViewAtX << "; on Y: " << anAISViewAtY << "; on Z: " << anAISViewAtZ << "\n";
+    theDi << "Eye on X : " << anAISViewEyeX << "; on Y: " << anAISViewEyeY << "; on Z: " << anAISViewEyeZ << "\n";
+    return 0;
   }
-  else
+
+  // -------------------------
+  //  Parse options and values
+  // -------------------------
+
+  NCollection_DataMap<TCollection_AsciiString, TColStd_SequenceOfAsciiString> aMapOfKeysByValues;
+  TCollection_AsciiString aParseKey;
+  for (Standard_Integer anArgIt = 1; anArgIt < theArgsNb; ++anArgIt)
   {
-    Quantity_Factor anAISViewScale = atof (argv [1]);
-    Standard_Real anAISViewCenterCoordinateX = atof (argv [2]);
-    Standard_Real anAISViewCenterCoordinateY = atof (argv [3]);
-    Standard_Real anAISViewProjX = atof (argv [4]);
-    Standard_Real anAISViewProjY = atof (argv [5]);
-    Standard_Real anAISViewProjZ = atof (argv [6]);
-    Standard_Real anAISViewUpX = atof (argv [7]);
-    Standard_Real anAISViewUpY = atof (argv [8]);
-    Standard_Real anAISViewUpZ = atof (argv [9]);
-    Standard_Real anAISViewAtX = atof (argv [10]);
-    Standard_Real anAISViewAtY = atof (argv [11]);
-    Standard_Real anAISViewAtZ = atof (argv [12]);
-    anAISView -> V3d_View::Camera()->BeginUpdate();
-    anAISView -> V3d_View::SetCenter (anAISViewCenterCoordinateX, anAISViewCenterCoordinateY);
-    anAISView -> V3d_View::SetAt (anAISViewAtX, anAISViewAtY, anAISViewAtZ);
-    anAISView -> V3d_View::SetScale (anAISViewScale);
-    anAISView -> V3d_View::SetProj (anAISViewProjX, anAISViewProjY, anAISViewProjZ);
-    anAISView -> V3d_View::SetUp (anAISViewUpX, anAISViewUpY, anAISViewUpZ);
-    anAISView -> V3d_View::Camera()->EndUpdate();
+    TCollection_AsciiString anArg (theArgVec [anArgIt]);
+
+    if (anArg.Value (1) == '-' && !anArg.IsRealValue())
+    {
+      aParseKey = anArg;
+      aParseKey.Remove (1);
+      aParseKey.UpperCase();
+      aMapOfKeysByValues.Bind (aParseKey, TColStd_SequenceOfAsciiString());
+      continue;
+    }
+
+    aMapOfKeysByValues.ChangeFind (aParseKey).Append (anArg);
   }
+
+  // ---------------------------------------------
+  //  Change or print parameters, order plays role
+  // ---------------------------------------------
+
+  // Check arguments for validity
+  NCollection_DataMap<TCollection_AsciiString, TColStd_SequenceOfAsciiString>::Iterator aMapIt (aMapOfKeysByValues);
+  for (; aMapIt.More(); aMapIt.Next())
+  {
+    const TCollection_AsciiString& aKey = aMapIt.Key();
+    const TColStd_SequenceOfAsciiString& aValues = aMapIt.Value();
+
+    if (!(aKey.IsEqual ("SCALE")  && (aValues.Length() == 1 || aValues.IsEmpty()))
+     && !(aKey.IsEqual ("EYE")    && (aValues.Length() == 3 || aValues.IsEmpty()))
+     && !(aKey.IsEqual ("AT")     && (aValues.Length() == 3 || aValues.IsEmpty()))
+     && !(aKey.IsEqual ("UP")     && (aValues.Length() == 3 || aValues.IsEmpty()))
+     && !(aKey.IsEqual ("PROJ")   && (aValues.Length() == 3 || aValues.IsEmpty()))
+     && !(aKey.IsEqual ("CENTER") &&  aValues.Length() == 2))
+    {
+      TCollection_AsciiString aLowerKey;
+      aLowerKey  = "-";
+      aLowerKey += aKey;
+      aLowerKey.LowerCase();
+      std::cout << theArgVec[0] << ": " << aLowerKey << " is unknown option, or number of arguments is invalid.\n";
+      std::cout << "Type help for more information.\n";
+      return 1;
+    }
+  }
+
+  TColStd_SequenceOfAsciiString aValues;
+
+  // Change view parameters in proper order
+  if (aMapOfKeysByValues.Find ("SCALE", aValues))
+  {
+    if (aValues.IsEmpty())
+    {
+      theDi << "Scale: " << anAISView->Scale() << "\n";
+    }
+    else
+    {
+      anAISView->SetScale (aValues (1).RealValue());
+    }
+  }
+  if (aMapOfKeysByValues.Find ("EYE", aValues))
+  {
+    if (aValues.IsEmpty())
+    {
+      Standard_Real anEyeX = 0.0;
+      Standard_Real anEyeY = 0.0;
+      Standard_Real anEyeZ = 0.0;
+      anAISView->Eye (anEyeX, anEyeY, anEyeZ);
+      theDi << "Eye X: " << anEyeX << " Y: " << anEyeY << " Z: " << anEyeZ << "\n";
+    }
+    else
+    {
+      anAISView->SetEye (aValues (1).RealValue(), aValues (2).RealValue(), aValues (3).RealValue());
+    }
+  }
+  if (aMapOfKeysByValues.Find ("AT", aValues))
+  {
+    if (aValues.IsEmpty())
+    {
+      Standard_Real anAtX = 0.0;
+      Standard_Real anAtY = 0.0;
+      Standard_Real anAtZ = 0.0;
+      anAISView->At (anAtX, anAtY, anAtZ);
+      theDi << "At X: " << anAtX << " Y: " << anAtY << " Z: " << anAtZ << "\n";
+    }
+    else
+    {
+      anAISView->SetAt (aValues (1).RealValue(), aValues (2).RealValue(), aValues (3).RealValue());
+    }
+  }
+  if (aMapOfKeysByValues.Find ("PROJ", aValues))
+  {
+    if (aValues.IsEmpty())
+    {
+      Standard_Real aProjX = 0.0;
+      Standard_Real aProjY = 0.0;
+      Standard_Real aProjZ = 0.0;
+      anAISView->Proj (aProjX, aProjY, aProjZ);
+      theDi << "Proj X: " << aProjX << " Y: " << aProjY << " Z: " << aProjZ << "\n";
+    }
+    else
+    {
+      anAISView->SetProj (aValues (1).RealValue(), aValues (2).RealValue(), aValues (3).RealValue());
+    }
+  }
+  if (aMapOfKeysByValues.Find ("UP", aValues))
+  {
+    if (aValues.IsEmpty())
+    {
+      Standard_Real anUpX = 0.0;
+      Standard_Real anUpY = 0.0;
+      Standard_Real anUpZ = 0.0;
+      anAISView->Up (anUpX, anUpY, anUpZ);
+      theDi << "Up X: " << anUpX << " Y: " << anUpY << " Z: " << anUpZ << "\n";
+    }
+    else
+    {
+      anAISView->SetUp (aValues (1).RealValue(), aValues (2).RealValue(), aValues (3).RealValue());
+    }
+  }
+  if (aMapOfKeysByValues.Find ("CENTER", aValues))
+  {
+    anAISView->SetCenter (aValues (1).IntegerValue(), aValues (2).IntegerValue());
+  }
+
   return 0;
 }
 
@@ -5348,13 +5487,15 @@ static int VSetTextureMode (Draw_Interpretor& theDi, Standard_Integer theArgsNb,
 //===============================================================================================
 static int VZRange (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const char** theArgVec)
 {
-  if (ViewerTest::CurrentView().IsNull())
+  const Handle(V3d_View)& aCurrentView = ViewerTest::CurrentView();
+
+  if (aCurrentView.IsNull())
   {
-    theDi << theArgVec[0] << ": Call vinit before this command, please.\n";
+    std::cout << theArgVec[0] << ": Call vinit before this command, please.\n";
     return 1;
   }
 
-  Handle(Graphic3d_Camera) aCamera = ViewerTest::CurrentView()->Camera();
+  Handle(Graphic3d_Camera) aCamera = aCurrentView->Camera();
 
   if (theArgsNb < 2)
   {
@@ -5367,17 +5508,29 @@ static int VZRange (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const c
   {
     Standard_Real aNewZNear = atof (theArgVec[1]);
     Standard_Real aNewZFar = atof (theArgVec[2]);
-    
-    aCamera->BeginUpdate();
-    aCamera->SetZFar (aNewZFar);
-    aCamera->SetZNear (aNewZNear);
-    aCamera->EndUpdate();
+
+    if (aNewZNear >= aNewZFar)
+    {
+      std::cout << theArgVec[0] << ": invalid arguments: znear should be less than zfar.\n";
+      return 1;
+    }
+
+    if (!aCamera->IsOrthographic() && (aNewZNear <= 0.0 || aNewZFar <= 0.0))
+    {
+      std::cout << theArgVec[0] << ": invalid arguments: ";
+      std::cout << "znear, zfar should be positive for perspective camera.\n";
+      return 1;
+    }
+
+    aCamera->SetZRange (aNewZNear, aNewZFar);
   }
   else
   {
-    theDi << theArgVec[0] << ": wrong command arguments. Type help for more information.\n";
+    std::cout << theArgVec[0] << ": wrong command arguments. Type help for more information.\n";
     return 1;
   }
+
+  aCurrentView->Redraw();
 
   return 0;
 }
@@ -5388,29 +5541,40 @@ static int VZRange (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const c
 //===============================================================================================
 static int VAutoZFit (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const char** theArgVec)
 {
-  if (ViewerTest::CurrentView().IsNull())
+  const Handle(V3d_View)& aCurrentView = ViewerTest::CurrentView();
+
+  if (aCurrentView.IsNull())
   {
-    theDi << theArgVec[0] << ": Call vinit before this command, please.\n";
+    std::cout << theArgVec[0] << ": Call vinit before this command, please.\n";
+    return 1;
+  }
+
+  Standard_Real aScale = aCurrentView->AutoZFitScaleFactor();
+
+  if (theArgsNb > 3)
+  {
+    std::cout << theArgVec[0] << ": wrong command arguments. Type help for more information.\n";
     return 1;
   }
 
   if (theArgsNb < 2)
   {
-    theDi << "Auto z-fit mode: " << (ViewerTest::CurrentView()->AutoZFitMode() ? "enabled" : "disabled");
+    theDi << "Auto z-fit mode: " << "\n"
+          << "On: " << (aCurrentView->AutoZFitMode() ? "enabled" : "disabled") << "\n"
+          << "Scale: " << aScale << "\n";
     return 0;
   }
 
-  if (theArgsNb == 2)
+  Standard_Boolean isOn = Draw::Atoi (theArgVec[1]) == 1;
+
+  if (theArgsNb >= 3)
   {
-    Standard_Real aNewMode = atoi (theArgVec[1]);
-    
-    ViewerTest::CurrentView()->SetAutoZFitMode (aNewMode != 0);
+    aScale = Draw::Atoi (theArgVec[2]);
   }
-  else
-  {
-    theDi << theArgVec[0] << ": wrong command arguments. Type help for more information.\n";
-    return 1;
-  }
+
+  aCurrentView->SetAutoZFitMode (isOn, aScale);
+  aCurrentView->AutoZFit();
+  aCurrentView->Redraw();
 
   return 0;
 }
@@ -5469,13 +5633,10 @@ static int VChangeCamera (Draw_Interpretor& theDi, Standard_Integer theArgsNb, c
       theDi << theArgVec[0] << anErrorMessage;
       return 1;
     }
-
-    ViewerTest::CurrentView()->ZFitAll();
   }
   else if (aCommand == "dist")
   {
     aCamera->SetDistance (aValue.RealValue());
-    ViewerTest::CurrentView()->ZFitAll();
   }
   else if (aCommand == "iod")
   {
@@ -5527,6 +5688,7 @@ static int VChangeCamera (Draw_Interpretor& theDi, Standard_Integer theArgsNb, c
     return 1;
   }
 
+  ViewerTest::CurrentView()->AutoZFit();
   ViewerTest::CurrentView()->Redraw();
 
   return 0;
@@ -6309,9 +6471,10 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add("vfit"    ,
     "vfit or <F>         : vfit",
     __FILE__,VFit,group);
-  theCommands.Add("vzfit"    ,
-    "vzfit",
-    __FILE__,VZFit,group);
+  theCommands.Add ("vzfit", "vzfit [scale]\n"
+    "   Matches Z near, Z far view volume planes to the displayed objects.\n"
+    "   \"scale\" - specifies factor to scale computed z range.\n",
+    __FILE__, VZFit, group);
   theCommands.Add("vrepaint",
     "vrepaint        : vrepaint, force redraw",
     __FILE__,VRepaint,group);
@@ -6423,10 +6586,20 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "vmoveto x y"
     "- emulates cursor movement to pixel postion (x,y)",
     __FILE__, VMoveTo, group);
-  theCommands.Add("vviewparams",
-    "vviewparams [scale center_X center_Y proj_X proj_Y proj_Z up_X up_Y up_Z at_X at_Y at_Z]"
-    "- gets or sets current view characteristics",
-    __FILE__,VViewParams, group);
+  theCommands.Add ("vviewparams", "vviewparams usage:\n"
+    "- vviewparams\n"
+    "- vviewparams [-scale [s]] [-eye [x y z]] [-at [x y z]] [-up [x y z]]\n"
+    "              [-proj [x y z]] [-center x y]\n"
+    "-   Gets or sets current view parameters.\n"
+    "-   If called without arguments, all view parameters are printed.\n"
+    "-   The options are:\n"
+    "      -scale [s]    : prints or sets viewport scale.\n"
+    "      -eye [x y z]  : prints or sets eye location.\n"
+    "      -at [x y z]   : prints or sets center of look.\n"
+    "      -up [x y z]   : prints or sets direction of up vector.\n"
+    "      -proj [x y z] : prints or sets direction of look.\n"
+    "      -center x y   : sets location of center of the screen in pixels.\n",
+    __FILE__, VViewParams, group);
   theCommands.Add("vchangeselected",
     "vchangeselected shape"
     "- adds to shape to selection or remove one from it",
@@ -6457,8 +6630,11 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
     "     Intraocular distance definition type (absolute value or coefficient).\n", 
     __FILE__, VChangeCamera, group);
   theCommands.Add ("vautozfit", "command to enable or disable automatic z-range adjusting\n"
-    "   vautozfit [1|0]",
-    __FILE__,VAutoZFit, group);
+    "- vautozfit [on={1|0}] [scale]\n"
+    "    Prints or changes parameters of automatic z-fit mode:\n"
+    "   \"on\" - turns automatic z-fit on or off\n"
+    "   \"scale\" - specifies factor to scale computed z range.\n",
+    __FILE__, VAutoZFit, group);
   theCommands.Add ("vzrange", "command to manually access znear and zfar values\n"
     "   vzrange                - without parameters shows current values\n"
     "   vzrange [znear] [zfar] - applies provided values to view",

@@ -20,19 +20,17 @@ vdisplay a
 vfit
 
 set scale    2.50501
-set center_X 191.285
-set center_Y 76.6556
 set proj_X   0.672033
 set proj_Y   -0.721033
 set proj_Z   0.168771
 set up_X     -0.131494
 set up_Y     0.108095
 set up_Z     0.985406
-set at_X     -27.258
-set at_Y     30.2321
-set at_Z     -9.0201
+set at_X     102.061817325836
+set at_Y     169.436979868935
+set at_Z     70.7572056943368
 
-vviewparams ${scale} ${center_X} ${center_Y} ${proj_X} ${proj_Y} ${proj_Z} ${up_X} ${up_Y} ${up_Z} ${at_X} ${at_Y} ${at_Z}
+vviewparams -scale ${scale} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up_Y} ${up_Z} -at ${at_X} ${at_Y} ${at_Z}
 
 set x_GREEN 300
 set y_GREEN 180

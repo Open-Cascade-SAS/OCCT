@@ -25,19 +25,17 @@ vsetdispmode result 1
 vfit
 
 set scale    16.5593321780929
-set center_X -0.0688543427812931
-set center_Y 11.6346916159369
 set proj_X   0.207536488771439
 set proj_Y   -0.233648166060448
 set proj_Z   0.949914216995239
 set up_X     -0.857990384101868
 set up_Y     0.422952175140381
 set up_Z     0.291485607624054
-set at_X     8.22575855255127
-set at_Y     -2.95449280738831
-set at_Z     3.08669567108154
+set at_X     -1.78904829452738
+set at_Y     1.90614280957802
+set at_Z     6.47028180612483
 
-vviewparams ${scale} ${center_X} ${center_Y} ${proj_X} ${proj_Y} ${proj_Z} ${up_X} ${up_Y} ${up_Z} ${at_X} ${at_Y} ${at_Z}
+vviewparams -scale ${scale} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up_Y} ${up_Z} -at ${at_X} ${at_Y} ${at_Z}
 
 set info [trinfo result]
 regexp { +([-0-9.+eE]+) +triangles} $info full tri

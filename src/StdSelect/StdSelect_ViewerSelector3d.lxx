@@ -14,15 +14,15 @@
 
 inline StdSelect_SensitivityMode StdSelect_ViewerSelector3d::SensitivityMode() const
 {
-  return mysensmode;
+  return mySensMode;
 }
 
 inline Standard_Integer StdSelect_ViewerSelector3d::PixelTolerance() const
 {
-  return mypixtol;
+  return myPixelTolerance;
 }
 
 inline const Handle(Select3D_Projector)& StdSelect_ViewerSelector3d::Projector() const
 {
-  return myprj;
+  return myProjector;
 }

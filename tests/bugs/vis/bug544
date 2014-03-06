@@ -17,19 +17,17 @@ vsetdispmode 1
 vfit
 
 set scale    2.05374
-set center_X 169.854
-set center_Y -49.5549
 set proj_X   0.135192
 set proj_Y   -0.978297
 set proj_Z   -0.157031
 set up_X     -0.399854
 set up_Y     -0.198875
 set up_Z     0.894743
-set at_X     241.985
-set at_Y     329.911
-set at_Z     390.356
+set at_X     415.781529476262
+set at_Y     349.647084890243
+set at_Z     417.026634136105
 
-vviewparams ${scale} ${center_X} ${center_Y} ${proj_X} ${proj_Y} ${proj_Z} ${up_X} ${up_Y} ${up_Z} ${at_X} ${at_Y} ${at_Z}
+vviewparams -scale ${scale} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up_Y} ${up_Z} -at ${at_X} ${at_Y} ${at_Z}
 
 set x1 300
 set y1 70

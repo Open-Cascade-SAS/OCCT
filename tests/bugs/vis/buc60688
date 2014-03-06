@@ -18,7 +18,7 @@ wire w_1 e_1 e_2 e_3 e_4
 mkplane r w_1
 vdisplay r
 vfit
-vselect 120 21
+vselect 120 22
 
 puts "WARNING : The rectangular MUST be highlighted !"
 puts ""

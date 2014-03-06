@@ -14,54 +14,64 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_NoSuchObject.hxx>
+#include <Graphic3d_Mat4d.hxx>
+#include <Standard_Assert.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Lin.hxx>
-#include <V3d_View.hxx>
-#include <V3d.hxx>
 
 //=======================================================================
 //function : Perspective
 //purpose  :
 //=======================================================================
-
 inline Standard_Boolean Select3D_Projector::Perspective() const
-{ return myPersp; }
+{
+  return myPersp;
+}
+
+//=======================================================================
+//function : ProjectionTransformation
+//purpose  :
+//=======================================================================
+inline const Graphic3d_Mat4d& Select3D_Projector::Projection() const
+{
+  return myProjTrsf;
+}
 
 //=======================================================================
 //function : Transformation
 //purpose  :
 //=======================================================================
-
 inline const gp_GTrsf& Select3D_Projector::Transformation() const
-{ return myGTrsf; }
+{
+  return myGTrsf;
+}
 
 //=======================================================================
 //function : InvertedTransformation
 //purpose  :
 //=======================================================================
-
 inline const gp_GTrsf& Select3D_Projector::InvertedTransformation() const
-{ return myInvTrsf; }
+{
+  return myInvTrsf;
+}
 
 //=======================================================================
 //function : FullTransformation
 //purpose  :
 //=======================================================================
-
 inline const gp_Trsf& Select3D_Projector::FullTransformation() const
-{ return myScaledTrsf; }
+{
+  return myScaledTrsf;
+}
 
 //=======================================================================
 //function : Focus
 //purpose  :
 //=======================================================================
-
 inline Standard_Real Select3D_Projector::Focus() const
 {
-  Standard_NoSuchObject_Raise_if(!myPersp,
-				 "Select3D_Projector::Not a Perpective");
+  Standard_ASSERT_RAISE (myPersp, "Not a simplified Perspective.");
   return myFocus;
 }
 
@@ -69,55 +79,67 @@ inline Standard_Real Select3D_Projector::Focus() const
 //function : Transform
 //purpose  :
 //=======================================================================
-
-inline void Select3D_Projector::Transform (gp_Vec& D) const
+inline void Select3D_Projector::Transform (gp_Vec& theD) const
 {
-  gp_XYZ coord = D.XYZ();
-  if (myGTrsf.Form() == gp_Identity || myGTrsf.Form() == gp_Translation) { }
-  else if (myGTrsf.Form() == gp_PntMirror) { coord.Reverse(); }
-  else { coord.Multiply (myGTrsf.VectorialPart()); }
-  D.SetXYZ(coord);
+  gp_XYZ aXYZ = theD.XYZ();
+
+  if (myGTrsf.Form() == gp_PntMirror)
+  {
+    aXYZ.Reverse();
+  }
+  else if (myGTrsf.Form() != gp_Identity && myGTrsf.Form() != gp_Translation)
+  {
+    aXYZ.Multiply (myGTrsf.VectorialPart());
+  }
+
+  theD.SetXYZ (aXYZ);
 }
 
 //=======================================================================
 //function : Transform
 //purpose  :
 //=======================================================================
-
-inline void Select3D_Projector::Transform (gp_Pnt& Pnt) const
+inline void Select3D_Projector::Transform (gp_Pnt& thePnt) const
 {
-  gp_XYZ xyz = Pnt.XYZ();
-  myGTrsf.Transforms(xyz);
-  Pnt = gp_Pnt(xyz);
+  Transform (thePnt, myGTrsf);
 }
 
-
-inline const Handle(V3d_View)& Select3D_Projector::View() const
-{return myView;}
-
-inline void Select3D_Projector::Transform (gp_Lin& Lin, const gp_GTrsf& T) const
+//=======================================================================
+//function : Transform
+//purpose  :
+//=======================================================================
+inline void Select3D_Projector::Transform (gp_Lin& theLin, const gp_GTrsf& theTrsf) const
 {
-  gp_Ax1 ax1 = Lin.Position();
-  gp_XYZ xyz = ax1.Location().XYZ();
-  T.Transforms(xyz);
-  ax1.SetLocation(gp_Pnt(xyz));
-  gp_Dir dir = ax1.Direction();
-  gp_XYZ coord = dir.XYZ();
-  if (T.Form() == gp_Identity ||  T.Form() == gp_Translation)    { }
-  else if (T.Form() == gp_PntMirror) { coord.Reverse(); }
-  else {
-    coord.Multiply (T.VectorialPart());
-    Standard_Real D = coord.Modulus();
-    coord.Divide(D);
+  gp_Ax1 anAx1 = theLin.Position();
+  gp_XYZ aXYZ = anAx1.Location().XYZ();
+  theTrsf.Transforms (aXYZ);
+  anAx1.SetLocation (gp_Pnt (aXYZ));
+  gp_Dir aDir = anAx1.Direction();
+  gp_XYZ aDirXYZ = aDir.XYZ();
+
+  if (theTrsf.Form() == gp_PntMirror) 
+  {
+    aDirXYZ.Reverse();
   }
-  dir.SetXYZ(coord);
-  ax1.SetDirection(dir);
-  Lin.SetPosition(ax1);
+  else if (theTrsf.Form() != gp_Identity && theTrsf.Form() != gp_Translation)
+  {
+    aDirXYZ.Multiply (theTrsf.VectorialPart());
+    Standard_Real aModulus = aDirXYZ.Modulus();
+    aDirXYZ.Divide (aModulus);
+  }
+
+  aDir.SetXYZ (aDirXYZ);
+  anAx1.SetDirection (aDir);
+  theLin.SetPosition (anAx1);
 }
 
-inline void Select3D_Projector::Transform (gp_Pnt& Pnt, const gp_GTrsf& T) const
+//=======================================================================
+//function : Transform
+//purpose  :
+//=======================================================================
+inline void Select3D_Projector::Transform (gp_Pnt& thePnt, const gp_GTrsf& theTrsf) const
 {
-  gp_XYZ xyz = Pnt.XYZ();
-  T.Transforms(xyz);
-  Pnt = gp_Pnt(xyz);
+  gp_XYZ aXYZ = thePnt.XYZ();
+  theTrsf.Transforms (aXYZ);
+  thePnt = gp_Pnt (aXYZ);
 }

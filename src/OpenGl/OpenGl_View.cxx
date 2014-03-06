@@ -32,6 +32,7 @@
 #include <OpenGl_Workspace.hxx>
 
 #include <Graphic3d_TextureEnv.hxx>
+#include <Graphic3d_Mat4d.hxx>
 
 IMPLEMENT_STANDARD_HANDLE(OpenGl_View,MMgt_TShared)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_View,MMgt_TShared)
@@ -470,16 +471,15 @@ const TEL_TRANSFORM_PERSISTENCE* OpenGl_View::BeginTransformPersistence (const H
 void OpenGl_View::GetMatrices (TColStd_Array2OfReal&  theMatOrient,
                                TColStd_Array2OfReal&  theMatMapping) const
 {
-  const OpenGl_Matrix* aProj =   (const OpenGl_Matrix*) &myCamera->ProjectionMatrix();
-  const OpenGl_Matrix* aOrient = (const OpenGl_Matrix*) &myCamera->OrientationMatrix();
+  const Graphic3d_Mat4d& aProj   = myCamera->ProjectionMatrix();
+  const Graphic3d_Mat4d& aOrient = myCamera->OrientationMatrix();
 
-  int i, j;
-  for (i = 0; i < 4; ++i)
+  for (Standard_Integer aRow = 0; aRow < 4; ++aRow)
   {
-    for (j = 0; j < 4; ++j)
+    for (Standard_Integer aCol = 0; aCol < 4; ++aCol)
     {
-      theMatOrient  (i, j) = aOrient->mat[j][i];
-      theMatMapping (i, j) = aProj->  mat[j][i];
+      theMatOrient  (aRow, aCol) = aOrient.GetValue (aRow, aCol);
+      theMatMapping (aRow, aCol) = aProj  .GetValue (aRow, aCol);
     }
   }
 }

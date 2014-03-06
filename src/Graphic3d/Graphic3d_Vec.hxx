@@ -20,5 +20,6 @@
 #include <Graphic3d_Vec3.hxx>
 #include <Graphic3d_Vec4.hxx>
 #include <Graphic3d_Mat4.hxx>
+#include <Graphic3d_Mat4d.hxx>
 
 #endif // _Graphic3d_Vec_H__

@@ -11,7 +11,7 @@ vsetdispmode b 1
 OCC280 0 1
 
 set x_coord 22
-set y_coord 230
+set y_coord 241
 
 puts "Before View->FitAll()"
 

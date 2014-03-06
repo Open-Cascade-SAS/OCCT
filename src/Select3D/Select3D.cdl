@@ -37,7 +37,8 @@ uses
     TopLoc,
     Geom,
     SelectBasics,
-    V3d
+    V3d,
+    Graphic3d
 
 is
     

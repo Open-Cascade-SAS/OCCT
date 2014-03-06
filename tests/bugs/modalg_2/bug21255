@@ -34,22 +34,17 @@ set nb_shape_good 58
   vfit
 
   set scale    5.8955238204183011
-  set center_X -43.928617104386774
-  set center_Y 295.47887425975171
-  set proj_X   0.62061613798141479
+      set proj_X   0.62061613798141479
   set proj_Y   -0.6891753077507019
   set proj_Z   -0.37399500608444214
   set up_X     -0.12894462049007416
   set up_Y     -0.56017255783081055
   set up_Z     0.81827831268310547
-  set at_X     15.248310089111328
-  set at_Y     165.90042114257812
-  set at_Z     225.19309997558594
+  set at_X     -56.828238528324
+  set at_Y     -19.8089213662065
+  set at_Z     447.801500039167
 
-  vviewparams ${scale} ${center_X} ${center_Y} \
- 		${proj_X} ${proj_Y} ${proj_Z} \
- 		${up_X} ${up_Y} ${up_Z} \
-		${at_X} ${at_Y} ${at_Z}
+  vviewparams -scale ${scale} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up_Y} ${up_Z} -at ${at_X} ${at_Y} ${at_Z}
 
 }
 

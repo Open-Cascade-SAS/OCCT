@@ -28,6 +28,7 @@
 #include <TopLoc_Location.hxx>
 #include <TopTools_HArray1OfShape.hxx>
 #include <TColStd_HArray1OfTransient.hxx>
+#include <TColStd_SequenceOfAsciiString.hxx>
 #include <OSD_Timer.hxx>
 #include <Geom_Axis2Placement.hxx>
 #include <Geom_Axis1Placement.hxx>
@@ -86,7 +87,6 @@ extern int ViewerMainLoop(Standard_Integer argc, const char** argv);
 
 #define DEFAULT_COLOR    Quantity_NOC_GOLDENROD
 #define DEFAULT_MATERIAL Graphic3d_NOM_BRASS
-
 
 //=======================================================================
 //function : GetColorFromName
@@ -3784,7 +3784,7 @@ static Standard_Integer TDraft(Draw_Interpretor& di, Standard_Integer argc, cons
 
 //==============================================================================
 //function : splitParameter
-//purpose  : Split parameter string to parameter name an parameter value
+//purpose  : Split parameter string to parameter name and parameter value
 //==============================================================================
 Standard_Boolean ViewerTest::SplitParameter (const TCollection_AsciiString& theString,
                                              TCollection_AsciiString&       theName,

@@ -214,18 +214,14 @@ is
 	--	    with the highlight method TOHM_COLOR or TOHM_BOUNDBOX.
 	---Category: Methods to modify the class definition
 
-	SetInfiniteState ( me		: mutable;
-			   AFlag	: Boolean from Standard )
-		is static;
-	---Level: Internal
-	---Purpose: Modifies the coordinates of the boundary box
-	--	    of the structure <me>.
-	--	    if <AFlag> is Standard_True then <me> is infinite and
-	--	    the MinMaxValues method or the MinMaxCoord method return :
-	--	    XMin = YMin = ZMin = RealFirst ().
-	--	    XMax = YMax = ZMax = RealLast ().
-	--	    By default, <me> is not infinite but empty.
-	---Category: Methods to modify the class definition
+    SetInfiniteState (me : mutable; theToSet : Boolean from Standard) is static;
+    ---Level: Internal
+    ---Purpose: If <theToSet> is Standard_True then <me> is infinite and
+    --          the MinMaxValues method method return :
+    --          theXMin = theYMin = theZMin = RealFirst().
+    --          theXMax = theYMax = theZMax = RealLast().
+    --          By default, <me> is not infinite but empty.
+    ---Category: Methods to modify the class definition
 
 	SetDisplayPriority ( me		: mutable;
 			     Priority	: Integer from Standard )
@@ -555,17 +551,23 @@ is
 	---Purpose: Returns the current group of graphic attributes used
     	-- for 3d marker primitives.
 
-	MinMaxValues ( me;
-		       XMin, YMin, ZMin	: out Real from Standard;
-		       XMax, YMax, ZMax	: out Real from Standard )
-		is static;
-	---Level: Public
-	---Purpose: Returns the coordinates of the boundary box
-	--	    of the structure <me>.
-	--  Warning: If the structure <me> is empty or infinite then :
-	--	    XMin = YMin = ZMin = RealFirst ().
-	--	    XMax = YMax = ZMax = RealLast ().
-	---Category: Inquire methods
+    MinMaxValues (me;
+                  theXMin, theYMin, theZMin : out Real from Standard;
+                  theXMax, theYMax, theZMax : out Real from Standard;
+                  theToIgnoreInfiniteFlag   : Boolean from Standard = Standard_False)
+    is static;
+    ---Level: Public
+    ---Purpose: Returns the coordinates of the boundary box of the structure <me>.
+    --          If <theToIgnoreInfiniteFlag> is TRUE, the method returns actual graphical
+    --          boundaries of the Graphic3d_Group components. Otherwise, the
+    --          method returns boundaries taking into account infinite state
+    --          of the structure. This approach generally used for application
+    --          specific fit operation (e.g. fitting the model into screen,
+    --          not taking into accout infinite helper elements).
+    --          Warning: If the structure <me> is empty or infinite then :
+    --            theXMin = theYMin = theZMin = RealFirst ().
+    --            theXMax = theYMax = theZMax = RealLast ().
+    ---Category: Inquire methods
 
 	PrimitivesAspect ( me;
 			   CTXL	: out AspectLine3d from Graphic3d;
@@ -877,17 +879,28 @@ is
 	---Purpose: Returns the identification number of the structure <me>.
 	---Category: Private methods
 
-	MinMaxCoord ( me;
-		      XMin, YMin, ZMin	: out Real from Standard;
-		      XMax, YMax, ZMax	: out Real from Standard )
-		is static private;
-	---Level: Internal
-	---Purpose: Returns the extreme coordinates found in the
-	--	    structure <me>.
-	--  Warning: If the structure <me> is empty or infinite then :
-	--	    XMin = YMin = ZMin = RealFirst ().
-	--	    XMax = YMax = ZMax = RealLast ().
-	---Category: Private methods
+    MinMaxCoord (me;
+                 theXMin, theYMin, theZMin : out Real from Standard;
+                 theXMax, theYMax, theZMax : out Real from Standard)
+    is static private;
+    ---Level: Internal
+    ---Purpose: Returns the extreme coordinates found in the structure <me>.
+    --  Warning: If the structure <me> is empty or infinite then :
+    --    theXMin = theYMin = theZMin = RealFirst().
+    --    theXMax = theYMax = theZMax = RealLast().
+    ---Category: Private methods
+
+    MinMaxCoordWithDescendants (me;
+                                theXMin, theYMin, theZMin : out Real from Standard;
+                                theXMax, theYMax, theZMax : out Real from Standard)
+    is static private;
+    ---Level: Internal
+    ---Purpose: Returns the extreme coordinates found in the structure <me>
+    -- and its descendants with transformation applied.
+    --  Warning: If the structure <me> is empty or infinite then :
+    --    theXMin = theYMin = theZMin = RealFirst().
+    --    theXMax = theYMax = theZMax = RealLast().
+    ---Category: Private methods
 
 	Plot ( me	: mutable;
 	       aPlotter	: Plotter from Graphic3d )
@@ -956,6 +969,15 @@ is
 	---Level: Internal
 	---Purpose: Transforms <Coord> with the transformation <ATrsf>.
 	---Category: Private methods
+
+    TransformBoundaries (myclass;
+                         theTrsf : Array2OfReal from TColStd;
+                         theXMin, theYMin, theZMin : in out Real from Standard;
+                         theXMax, theYMax, theZMax : in out Real from Standard)
+    is protected;
+    ---Level: Internal
+    ---Purpose: Transforms boundaries with <theTrsf> transformation.
+    ---Category: Private methods
 
 	Update ( me )
 		is static private;

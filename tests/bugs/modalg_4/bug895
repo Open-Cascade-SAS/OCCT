@@ -10,17 +10,15 @@ puts ""
 pload QAcommands
 
 set scale    73.609
-set center_X 7.93702
-set center_Y 0.264503
 set proj_X   0.523995
 set proj_Y   0.359655
 set proj_Z   0.77206
 set up_X     -0.739036
 set up_Y     -0.258607
 set up_Z     0.622051
-set at_X     9.06773
-set at_Y     -1.93771
-set at_Z     1.45124
+set at_X     5.51184366274157
+set at_Y     5.10968389884332
+set at_Z     0.581665443993578
 
 set x_coord 210
 set y_coord 210
@@ -40,10 +38,7 @@ if { ${status} == 0} {
   vsetdispmode 1
   vdisplay result
 
-  vviewparams ${scale} ${center_X} ${center_Y} \
-  		  ${proj_X} ${proj_Y} ${proj_Z} \
-    		  ${up_X} ${up_Y} ${up_Z} \
-  		  ${at_X} ${at_Y} ${at_Z}
+  vviewparams -scale ${scale} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up_Y} ${up_Z} -at ${at_X} ${at_Y} ${at_Z}
 
   checkcolor $x_coord $y_coord 0.98 0.72 0.13
   

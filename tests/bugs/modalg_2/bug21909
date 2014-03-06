@@ -13,17 +13,15 @@ set BugNumber OCC21909
 # Data
 
 set scale    57.547428234801195
-set center_X -29.161882474505589
-set center_Y -27.085456554411167
 set proj_X   -0.25567048788070679
 set proj_Y   -0.92769843339920044
 set proj_Z   0.27204453945159912
 set up_X     0.43156850337982178
 set up_Y     0.14228194952011108
 set up_Z     0.89078855514526367
-set at_X     53.189125061035156
-set at_Y     -25.674787521362305
-set at_Z     -2.9377093315124512
+set at_X     16.2722331487924
+set at_Y     -19.463212261103
+set at_Z     -16.4505465814645
 
 set x1 190
 
@@ -40,10 +38,7 @@ vfit
 vsetdispmode 1
 vfit
 
-vviewparams ${scale} ${center_X} ${center_Y} \
-		${proj_X} ${proj_Y} ${proj_Z} \
-		${up_X} ${up_Y} ${up_Z} \
-		${at_X} ${at_Y} ${at_Z}
+vviewparams -scale ${scale} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up_Y} ${up_Z} -at ${at_X} ${at_Y} ${at_Z}
 
 vmoveto ${x1} ${y1}
 vmoveto ${x1} ${y1}

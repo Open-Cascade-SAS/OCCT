@@ -33,11 +33,13 @@
 #include <gp_Ax2.hxx>
 #include <Geom_Circle.hxx>
 #include <AIS_Circle.hxx>
-#include <V3d_View.hxx>
 #include <TopoDS.hxx>
 #include <Geom_Plane.hxx>
 #include <gp_Pln.hxx>
 #include <AIS_AngleDimension.hxx>
+
+#include <Aspect_Window.hxx>
+#include <V3d_View.hxx>
 
 #include <TopExp_Explorer.hxx>
 #include <BRepAdaptor_Curve.hxx>
@@ -163,66 +165,64 @@ static Standard_Integer  BUC60814(Draw_Interpretor& di, Standard_Integer argc, c
   return 0;
 }
 
-static Standard_Integer  BUC60774(Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
+//=======================================================================
+//function : BUC60774
+//purpose  : 
+//=======================================================================
+static Standard_Integer BUC60774 (Draw_Interpretor& theDi,
+                                  Standard_Integer theArgNb,
+                                  const char** theArgv)
 {
-  if(argc!=1)
+  if (theArgNb != 1)
   {
-    di << "Usage : " << argv[0] << "\n";
+    std::cout << "Usage : " << theArgv[0] << "\n";
     return -1;
   }
 
-  Handle(AIS_InteractiveContext) myAISContext = ViewerTest::GetAISContext();
-  if(myAISContext.IsNull()) 
+  const Handle(AIS_InteractiveContext)& anAISContext = ViewerTest::GetAISContext();
+  if (anAISContext.IsNull())
   {
-    di << "use 'vinit' command before " << argv[0] << "\n";
+    std::cout << "use 'vinit' command before " << theArgv[0] << "\n";
     return -1;
   }
 
-  Handle(V3d_View) myV3dView = ViewerTest::CurrentView();
-  
-  double Xc,Yc,Width, Height;
-  myV3dView->Center(Xc,Yc);
-  myV3dView-> Size (Width, Height);
-  
-  double Xmin,Ymin;
-  Xmin=Xc-Width/2;
-  Ymin=Yc-Height/2;
-  double Xmax,Ymax;
-  Xmax=Xc+Width/2;
-  Ymax=Yc+Height/2;
-    
-  Standard_Integer XPmin,YPmin;
-  myV3dView->Convert(Xmin,Ymin,XPmin,YPmin);
-//  cout<<Xmin<<"\t"<<Ymin<<endl;
-//  cout<<XPmin<<"\t"<<YPmin<<endl;
+  const Handle(V3d_View)& aV3dView = ViewerTest::CurrentView();
 
-  Standard_Integer XPmax,YPmax;
-  myV3dView->Convert(Xmax,Ymax,XPmax,YPmax);
-//  cout<<Xmax<<"\t"<<Ymax<<endl;
-//  cout<<XPmax<<"\t"<<YPmax<<endl;
-  
-  AIS_StatusOfPick status;
-  if ((status=myAISContext->Select(XPmin,YPmin,XPmax,YPmax,myV3dView))==AIS_SOP_NothingSelected)
-             di << "status = AIS_SOP_NothingSelected : OK"   << "\n";
-  else       di << "status = AIS_SOP_NothingSelected : bugged - Faulty "   << "\n";
-  
-  di.Eval("box b 10 10 10");
-  di.Eval(" vdisplay b");
+  Standard_Integer aWinWidth  = 0;
+  Standard_Integer aWinHeight = 0;
+  aV3dView->Window()->Size (aWinWidth, aWinHeight);
 
-  if ((status=myAISContext->Select(XPmin,YPmin,XPmax,YPmax,myV3dView))==AIS_SOP_OneSelected)
-             di << "status = AIS_SOP_OneSelected : OK"   << "\n";
-  else       di << "status = AIS_SOP_OneSelected : bugged - Faulty "   << "\n";
+  Standard_Integer aXPixMin = 0;
+  Standard_Integer aYPixMin = 0;
+  Standard_Integer aXPixMax = aWinWidth;
+  Standard_Integer aYPixMax = aWinHeight;
 
-  di.Eval("box w 20 20 20 20 20 20");
-  di.Eval(" vdisplay w");
+  AIS_StatusOfPick aPickStatus = anAISContext->Select (aXPixMin, aYPixMin, aXPixMax, aYPixMax, aV3dView);
+  theDi << (aPickStatus == AIS_SOP_NothingSelected
+    ? "status = AIS_SOP_NothingSelected : OK"
+    : "status = AIS_SOP_NothingSelected : bugged - Faulty ");
+  theDi << "\n";
 
-  if ((status=myAISContext->Select(XPmin,YPmin,XPmax,YPmax,myV3dView))==AIS_SOP_SeveralSelected)
-             di << "status = AIS_SOP_SeveralSelected : OK"   << "\n";
-  else       di << "status = AIS_SOP_SeveralSelected : bugged - Faulty "   << "\n";
-  
+  theDi.Eval ("box b 10 10 10");
+  theDi.Eval (" vdisplay b");
+
+  aPickStatus = anAISContext->Select (aXPixMin, aYPixMin, aXPixMax, aYPixMax, aV3dView);
+  theDi << (aPickStatus == AIS_SOP_OneSelected
+    ? "status = AIS_SOP_OneSelected : OK"
+    : "status = AIS_SOP_OneSelected : bugged - Faulty ");
+  theDi << "\n";
+
+  theDi.Eval ("box w 20 20 20 20 20 20");
+  theDi.Eval (" vdisplay w");
+
+  aPickStatus = anAISContext->Select (aXPixMin, aYPixMin, aXPixMax, aYPixMax, aV3dView);
+  theDi << (aPickStatus == AIS_SOP_SeveralSelected
+    ? "status = AIS_SOP_SeveralSelected : OK"
+    : "status = AIS_SOP_SeveralSelected : bugged - Faulty ");
+  theDi << "\n";
+
   return 0;
-
-}  
+}
 
 static Standard_Integer BUC60972 (Draw_Interpretor& di, Standard_Integer argc, const char ** argv)
 {

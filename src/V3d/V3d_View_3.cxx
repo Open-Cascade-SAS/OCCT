@@ -161,13 +161,22 @@ void V3d_View::Translate(const V3d_TypeOfAxe Axe, const Standard_Real Length,con
     break ;
   }
 }
-void V3d_View::Place (const Standard_Integer ix, const Standard_Integer iy,
-		      const Quantity_Factor aZoomFactor) {
-  Standard_Real xpos, ypos;
-  Standard_Integer xc, yc;
-  Center (xpos, ypos);
-  Convert (xpos, ypos, xc, yc);
-  Pan (xc - ix, iy - yc, aZoomFactor / Scale());
+
+//=======================================================================
+//function : Place
+//purpose  :
+//=======================================================================
+void V3d_View::Place (const Standard_Integer theXp,
+                      const Standard_Integer theYp,
+                      const Quantity_Factor theZoomFactor)
+{
+  Standard_Integer aWinWidth  = 0;
+  Standard_Integer aWinHeight = 0;
+  View()->Window()->Size (aWinWidth, aWinHeight);
+
+  Standard_Integer aWinCXp = aWinWidth  / 2;
+  Standard_Integer aWinCYp = aWinHeight / 2;
+  Pan (aWinCXp - theXp, aWinCYp - theYp, theZoomFactor / Scale());
 }
 
 void V3d_View::Translate(const Standard_Real theLength, const Standard_Boolean theStart) {

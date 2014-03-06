@@ -33,21 +33,17 @@ vfit
 
 set scale    6.3723487126883533
 set center_X -4.2632564145606011e-14
-set center_Y -22.430308400362279
 set proj_X   0.57735025882720947
 set proj_Y   -0.57735025882720947
 set proj_Z   0.57735025882720947
 set up_X     -0.40824827551841736
 set up_Y     0.40824827551841736
 set up_Z     0.81649655103683472
-set at_X     0
-set at_Y     0
-set at_Z     0
+set at_X     6.14255753835228
+set at_Y     -12.171712579698
+set at_Z     -18.3142701180503
 
-vviewparams ${scale} ${center_X} ${center_Y} \
-		${proj_X} ${proj_Y} ${proj_Z} \
-		${up_X} ${up_Y} ${up_Z} \
-		${at_X} ${at_Y} ${at_Z}
+vviewparams -scale ${scale} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up_Y} ${up_Z} -at ${at_X} ${at_Y} ${at_Z}
 
 
 set only_screen 0

@@ -31,21 +31,17 @@ set only_screen 0
 
 set scale    2.7840527693872859
 set center_X 3.7559505017270567e-07
-set center_Y -71.035163389154491
 set proj_X   -0.89892524480819702
 set proj_Y   -0.37323716282844543
 set proj_Z   -0.22940616309642792
 set up_X     -0.41990724205970764
 set up_Y     0.58468854427337646
 set up_Z     0.69413024187088013
-set at_X     -74.980735778808594
-set at_Y     22.785961151123047
-set at_Z     -49.215263366699219
+set at_X     -44.6832661344329
+set at_Y     -21.4529078187916
+set at_Z     -95.9601818852522
 
-vviewparams ${scale} ${center_X} ${center_Y} \
-		${proj_X} ${proj_Y} ${proj_Z} \
-		${up_X} ${up_Y} ${up_Z} \
-		${at_X} ${at_Y} ${at_Z}
+vviewparams -scale ${scale} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up_Y} ${up_Z} -at ${at_X} ${at_Y} ${at_Z}
 
 set only_screen 0
 

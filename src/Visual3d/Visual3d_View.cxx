@@ -1754,109 +1754,165 @@ Graphic3d_MapIteratorOfMapOfStructure Iterator (ASet);
 
 }
 
-void Visual3d_View::MinMaxValues (Standard_Real& XMin, Standard_Real& YMin, Standard_Real& ZMin, Standard_Real& XMax, Standard_Real& YMax, Standard_Real& ZMax) const {
-
-        MinMaxValues
-        (MyDisplayedStructure, XMin, YMin, ZMin, XMax, YMax, ZMax);
-
+//=============================================================================
+//function : MinMaxValues
+//purpose  :
+//=============================================================================
+void Visual3d_View::MinMaxValues (Standard_Real& theXMin,
+                                  Standard_Real& theYMin,
+                                  Standard_Real& theZMin,
+                                  Standard_Real& theXMax,
+                                  Standard_Real& theYMax,
+                                  Standard_Real& theZMax,
+                                  const Standard_Boolean theToIgnoreInfiniteFlag) const
+{
+  MinMaxValues (MyDisplayedStructure,
+                theXMin, theYMin, theZMin,
+                theXMax, theYMax, theZMax,
+                theToIgnoreInfiniteFlag);
 }
 
-void Visual3d_View::MinMaxValues (const Graphic3d_MapOfStructure& ASet, Standard_Real& XMin, Standard_Real& YMin, Standard_Real& ZMin, Standard_Real& XMax, Standard_Real& YMax, Standard_Real& ZMax) const {
+//=============================================================================
+//function : MinMaxValues
+//purpose  :
+//=============================================================================
+void Visual3d_View::MinMaxValues (const Graphic3d_MapOfStructure& theSet,
+                                  Standard_Real& theXMin,
+                                  Standard_Real& theYMin,
+                                  Standard_Real& theZMin,
+                                  Standard_Real& theXMax,
+                                  Standard_Real& theYMax,
+                                  Standard_Real& theZMax,
+                                  const Standard_Boolean theToIgnoreInfiniteFlag) const
+{
+  if (theSet.IsEmpty ())
+  {
+    theXMin = RealFirst();
+    theYMin = RealFirst();
+    theZMin = RealFirst();
 
-  if (ASet.IsEmpty ()) {
-    XMin = RealFirst ();
-    YMin = RealFirst ();
-    ZMin = RealFirst ();
-
-    XMax = RealLast ();
-    YMax = RealLast ();
-    ZMax = RealLast ();
+    theXMax = RealLast();
+    theYMax = RealLast();
+    theZMax = RealLast();
   }
-  else {
+  else
+  {
+    Standard_Real aXm, aYm, aZm, aXM, aYM, aZM;
+    Graphic3d_MapIteratorOfMapOfStructure anIterator (theSet);
 
-  Standard_Real Xm, Ym, Zm, XM, YM, ZM;
-  Graphic3d_MapIteratorOfMapOfStructure Iterator (ASet);
+    theXMin = RealLast();
+    theYMin = RealLast();
+    theZMin = RealLast();
 
-  XMin = RealLast ();
-  YMin = RealLast ();
-  ZMin = RealLast ();
+    theXMax = RealFirst ();
+    theYMax = RealFirst ();
+    theZMax = RealFirst ();
 
-  XMax = RealFirst ();
-  YMax = RealFirst ();
-  ZMax = RealFirst ();
+    for (anIterator.Initialize (theSet); anIterator.More(); anIterator.Next())
+    {
+      const Handle(Graphic3d_Structure)& aStructure = anIterator.Key();
 
-  for ( Iterator.Initialize (ASet);
-        Iterator.More ();
-        Iterator.Next ()) {
-
-      if ((Iterator.Key ())->IsInfinite ()){
+      if (aStructure->IsInfinite() && !theToIgnoreInfiniteFlag)
+      {
         //XMin, YMin .... ZMax are initialized by means of infinite line data
-        (Iterator.Key ())->MinMaxValues (Xm, Ym, Zm, XM, YM, ZM);
-        if ( Xm != RealFirst() && Xm < XMin )
-          XMin = Xm ;
-        if ( Ym != RealFirst() && Ym < YMin )
-          YMin = Ym ;
-        if ( Zm != RealFirst() && Zm < ZMin )
-          ZMin = Zm ;
-        if ( XM != RealLast()  && XM > XMax )
-          XMax = XM ;
-        if ( YM != RealLast()  && YM > YMax )
-          YMax = YM ;
-        if ( ZM != RealLast()  && ZM > ZMax )
-          ZMax = ZM ;
+        aStructure->MinMaxValues (aXm, aYm, aZm, aXM, aYM, aZM, Standard_False);
+        if (aXm != RealFirst() && aXm < theXMin)
+        {
+          theXMin = aXm;
+        }
+        if (aYm != RealFirst() && aYm < theYMin)
+        {
+          theYMin = aYm;
+        }
+        if (aZm != RealFirst() && aZm < theZMin)
+        {
+          theZMin = aZm;
+        }
+        if (aXM != RealLast() && aXM > theXMax)
+        {
+          theXMax = aXM;
+        }
+        if (aYM != RealLast() && aYM > theYMax)
+        {
+          theYMax = aYM;
+        }
+        if (aZM != RealLast() && aZM > theZMax)
+        {
+          theZMax = aZM;
+        }
       }
+
       // Only non-empty and non-infinite structures
       // are taken into account for calculation of MinMax
-      if (! (Iterator.Key ())->IsInfinite () &&
-          ! (Iterator.Key ())->IsEmpty ()) {
-            (Iterator.Key ())->MinMaxValues(Xm, Ym, Zm, XM, YM, ZM);
-          /* ABD 29/10/04  Transform Persistence of Presentation( pan, zoom, rotate ) */
-          //"FitAll" operation ignores object with transform persitence parameter
-          if( (Iterator.Key ())->TransformPersistenceMode() == Graphic3d_TMF_None )
-          {
-            if (Xm < XMin) XMin = Xm;
-            if (Ym < YMin) YMin = Ym;
-            if (Zm < ZMin) ZMin = Zm;
-            if (XM > XMax) XMax = XM;
-            if (YM > YMax) YMax = YM;
-            if (ZM > ZMax) ZMax = ZM;
-          }
+      if ((!aStructure->IsInfinite() || theToIgnoreInfiniteFlag) && !aStructure->IsEmpty())
+      {
+        aStructure->MinMaxValues (aXm, aYm, aZm, aXM, aYM, aZM, theToIgnoreInfiniteFlag);
+
+        /* ABD 29/10/04  Transform Persistence of Presentation( pan, zoom, rotate ) */
+        //"FitAll" operation ignores object with transform persitence parameter
+        if(aStructure->TransformPersistenceMode() == Graphic3d_TMF_None )
+        {
+          theXMin = Min (aXm, theXMin);
+          theYMin = Min (aYm, theYMin);
+          theZMin = Min (aZm, theZMin);
+          theXMax = Max (aXM, theXMax);
+          theYMax = Max (aYM, theYMax);
+          theZMax = Max (aZM, theZMax);
         }
+      }
     }
 
     // The following cases are relevant
     // For exemple if all structures are empty or infinite
-    if (XMax < XMin) { Xm = XMin; XMin = XMax; XMax = Xm; }
-    if (YMax < YMin) { Ym = YMin; YMin = YMax; YMax = Ym; }
-    if (ZMax < ZMin) { Zm = ZMin; ZMin = ZMax; ZMax = Zm; }
+    if (theXMax < theXMin) { aXm = theXMin; theXMin = theXMax; theXMax = aXm; }
+    if (theYMax < theYMin) { aYm = theYMin; theYMin = theYMax; theYMax = aYm; }
+    if (theZMax < theZMin) { aZm = theZMin; theZMin = theZMax; theZMax = aZm; }
   }
 }
 
-void Visual3d_View::MinMaxValues (Standard_Real& XMin, Standard_Real& YMin, Standard_Real& XMax, Standard_Real& YMax) {
-
-        MinMaxValues (MyDisplayedStructure, XMin, YMin, XMax, YMax);
-
+//=============================================================================
+//function : MinMaxValues
+//purpose  :
+//=============================================================================
+void Visual3d_View::MinMaxValues (Standard_Real& theXMin,
+                                  Standard_Real& theYMin,
+                                  Standard_Real& theXMax,
+                                  Standard_Real& theYMax,
+                                  const Standard_Boolean theToIgnoreInfiniteFlag) const
+{
+  MinMaxValues (MyDisplayedStructure,
+                theXMin, theYMin,
+                theXMax, theYMax,
+                theToIgnoreInfiniteFlag);
 }
 
-void Visual3d_View::MinMaxValues (const Graphic3d_MapOfStructure& ASet, Standard_Real& XMin, Standard_Real& YMin, Standard_Real& XMax, Standard_Real& YMax) {
+//=============================================================================
+//function : MinMaxValues
+//purpose  :
+//=============================================================================
+void Visual3d_View::MinMaxValues (const Graphic3d_MapOfStructure& theSet,
+                                  Standard_Real& theXMin,
+                                  Standard_Real& theYMin,
+                                  Standard_Real& theXMax,
+                                  Standard_Real& theYMax,
+                                  const Standard_Boolean theToIgnoreInfiniteFlag) const
+{
+  Standard_Real aXm, aYm, aZm, aXM, aYM, aZM;
+  Standard_Real aXp, aYp, aZp;
 
-Standard_Real Xm, Ym, Zm, XM, YM, ZM;
-Standard_Real Xp, Yp, Zp;
+  MinMaxValues (theSet, aXm, aYm, aZm, aXM, aYM, aZM, theToIgnoreInfiniteFlag);
 
-        MinMaxValues (ASet, Xm, Ym, Zm, XM, YM, ZM);
+  Projects (aXm, aYm, aZm, aXp, aYp, aZp);
+  theXMin = aXp;
+  theYMin = aYp;
 
-        Projects (Xm, Ym, Zm, Xp, Yp, Zp);
-        XMin    = Xp;
-        YMin    = Yp;
+  Projects (aXM, aYM, aZM, aXp, aYp, aZp);
+  theXMax = aXp;
+  theYMax = aYp;
 
-        Projects (XM, YM, ZM, Xp, Yp, Zp);
-        XMax    = Xp;
-        YMax    = Yp;
-
-        if (XMax < XMin) { Xp = XMax; XMax = XMin; XMin = Xp; }
-        if (YMax < YMin) { Yp = YMax; YMax = YMin; YMin = Yp; }
+  if (theXMax < theXMin) { aXp = theXMax; theXMax = theXMin; theXMin = aXp; }
+  if (theYMax < theYMin) { aYp = theYMax; theYMax = theYMin; theYMin = aYp; }
 }
-
 
 Standard_Integer Visual3d_View::NumberOfDisplayedStructures () const {
 
@@ -1866,28 +1922,30 @@ Standard_Integer Result = MyDisplayedStructure.Extent ();
 
 }
 
-void Visual3d_View::Projects (const Standard_Real AX,
-                              const Standard_Real AY,
-                              const Standard_Real AZ,
-                              Standard_Real& APX,
-                              Standard_Real& APY,
-                              Standard_Real& APZ)
+//=======================================================================
+//function : Projects
+//purpose  :
+//=======================================================================
+void Visual3d_View::Projects (const Standard_Real theX,
+                              const Standard_Real theY,
+                              const Standard_Real theZ,
+                              Standard_Real& thePX,
+                              Standard_Real& thePY,
+                              Standard_Real& thePZ) const
 {
-  Handle(Graphic3d_Camera) aCamera = MyCView.Context.Camera;
+  const Handle(Graphic3d_Camera)& aCamera = MyCView.Context.Camera;
 
-  Standard_Real aUmin, aVMin, aUMax, aVMax;  
-  Standard_Real aNear, aFar;
-  aCamera->WindowLimit (aUmin, aVMin, aUMax, aVMax);
+  gp_XYZ aViewSpaceDimensions = aCamera->ViewDimensions();
+  Standard_Real aXSize = aViewSpaceDimensions.X();
+  Standard_Real aYSize = aViewSpaceDimensions.Y();
+  Standard_Real aZSize = aViewSpaceDimensions.Z();
 
-  aNear = aCamera->ZNear();
-  aFar = aCamera->ZFar();
+  gp_Pnt aPoint = aCamera->Project (gp_Pnt (theX, theY, theZ));
 
-  gp_Pnt aPoint (AX, AY, AZ);
-  aPoint = aCamera->Project (aPoint);
-
-  APX = (aPoint.X() + 1) * 0.5 * (aUMax - aUmin) + aUmin;
-  APY = (aPoint.Y() + 1) * 0.5 * (aVMax - aVMin) + aVMin;
-  APZ = aPoint.Z() * (aFar - aNear) + aNear;
+  // NDC [-1, 1] --> PROJ [ -size / 2, +size / 2 ]
+  thePX = aPoint.X() * aXSize * 0.5;
+  thePY = aPoint.Y() * aYSize * 0.5;
+  thePZ = aPoint.Z() * aZSize * 0.5;
 }
 
 Standard_Integer Visual3d_View::Identification () const {

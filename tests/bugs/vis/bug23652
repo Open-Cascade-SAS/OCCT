@@ -12,8 +12,6 @@ vdrawtext Default 0.0 0.0 0.0 255 255 255 0 0 0 1 20 0
 vdrawtext Right_Align 0.0 0.0 0.0 255 255 255 2 0 0 1 20 0
 
 set scale    3.1783114563761763
-set center_X 0
-set center_Y 0
 set proj_X   0.57735025882720947
 set proj_Y   -0.57735025882720947
 set proj_Z   0.57735025882720947
@@ -24,7 +22,7 @@ set at_X     0
 set at_Y     0
 set at_Z     0
 
-vviewparams ${scale} ${center_X} ${center_Y} ${proj_X} ${proj_Y} ${proj_Z} ${up_X} ${up_Y} ${up_Z} ${at_X} ${at_Y} ${at_Z}
+vviewparams -scale ${scale} -proj ${proj_X} ${proj_Y} ${proj_Z} -up ${up_X} ${up_Y} ${up_Z} -at ${at_X} ${at_Y} ${at_Z}
 
 set x_coord 210
 set y_coord 204

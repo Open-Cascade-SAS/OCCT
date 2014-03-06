@@ -191,13 +191,13 @@ public:
   //! Initialize the identity matrix.
   void InitIdentity()
   {
-    static const Element_t anIdentity[] =
-      {1, 0, 0, 0,
-       0, 1, 0, 0,
-       0, 0, 1, 0,
-       0, 0, 0, 1};
+    std::memcpy (this, myIdentityArray, sizeof (NCollection_Mat4));
+  }
 
-    std::memcpy (this, anIdentity, sizeof (NCollection_Mat4));
+  //! Checks the matrix for identity.
+  bool IsIdentity() const
+  {
+    return std::memcmp (this, myIdentityArray, sizeof (NCollection_Mat4)) == 0;
   }
 
   //! Raw access to the data (for OpenGL exchange).
@@ -429,6 +429,16 @@ private:
 
   Element_t myMat[16];
 
+private:
+
+  static Element_t myIdentityArray[16];
 };
+
+template<typename Element_t>
+Element_t NCollection_Mat4<Element_t>::myIdentityArray[] =
+  {1, 0, 0, 0,
+   0, 1, 0, 0,
+   0, 0, 1, 0,
+   0, 0, 0, 1};
 
 #endif // _NCollection_Mat4_HeaderFile

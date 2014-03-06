@@ -13,40 +13,40 @@ OCC280 1 0
 vfit
 
 set x1 135
-set y1 170
+set y1 119
 
-set x2 314
-set y2 97
+set x2 387
+set y2 33
 
 set x3 172
-set y3 184
+set y3 144
 
-set x4 32
-set y4 241
+set x4 28
+set y4 190
 
-set x5 156
-set y5 263
+set x5 160
+set y5 257
 
-set x6 305
-set y6 186
+set x6 365
+set y6 150
 
-set x7 186
-set y7 280
+set x7 212
+set y7 272
 
-set x8 54
-set y8 342
+set x8 60
+set y8 343
 
-set x9 32
-set y9 286
+set x9 26
+set y9 255
 
-set x10 295
-set y10 142
+set x10 353
+set y10 99
 
-set x11 322
-set y11 153
+set x11 389
+set y11 113
 
-set x12 56
-set y12 305
+set x12 60
+set y12 276
 
 #
 #              ___________2________________
