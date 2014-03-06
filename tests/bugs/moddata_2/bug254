@@ -1,4 +1,3 @@
-
 puts "================"
 puts "OCC254"
 puts "================"
@@ -13,5 +12,5 @@ checkshape shape3
 common result shape1 shape3
 checkshape result
 
-set length 1231.07
+set length 1194.29
 set 2dviewer 0

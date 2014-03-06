@@ -22,6 +22,7 @@
 #include <IntSurf_PntOn2S.hxx>
 #include <IntSurf_LineOn2S.hxx>
 #include <IntSurf.hxx>
+#include <IntSurf_InteriorPoint.hxx>
 
 #include <Adaptor2d_HCurve2d.hxx>
 #include <IntSurf_PathPoint.hxx>
@@ -529,24 +530,67 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
     }
   }
   //
-  // Recherche des points interieurs
-  if (!reversed) {
-    if (myIsStartPnt)
-      solins.Perform(Func,Surf2,myUStart,myVStart);
+  Standard_Boolean SearchIns = Standard_True;
+  if(Quad.TypeQuadric() == GeomAbs_Plane && solrst.NbSegments() > 0)
+  {
+    //For such kind of cases it is possible that whole surface is on one side of plane,
+    //plane only touches surface and does not cross it,
+    //so no inner points exist.
+    SearchIns = Standard_False;
+    Handle(Adaptor3d_TopolTool) T;
+    if(reversed)
+    {
+      T = D1;
+    }
     else
-      solins.Perform(Func,Surf2,D2,TolTang);
+    {
+      T = D2;
+    }
+    Standard_Integer aNbSamples = 0;
+    aNbSamples = T->NbSamples();
+    gp_Pnt2d s2d;
+    gp_Pnt s3d;
+    Standard_Real aValf[1], aUVap[2];
+    math_Vector Valf(aValf,1,1), UVap(aUVap,1,2);
+    T->SamplePoint(1,s2d, s3d);
+    UVap(1)=s2d.X(); 
+    UVap(2)=s2d.Y();
+    Func.Value(UVap,Valf);
+    Standard_Real rvalf = Sign(1.,Valf(1));
+    for(i = 2; i <= aNbSamples; ++i)
+    {
+      D1->SamplePoint(i,s2d, s3d);
+      UVap(1)=s2d.X(); 
+      UVap(2)=s2d.Y();
+      Func.Value(UVap,Valf);
+      if(rvalf * Valf(1) < 0.)
+      {
+        SearchIns = Standard_True;
+        break;
+      }   
+    }
   }
-  else {
-    if (myIsStartPnt)
-      solins.Perform(Func,Surf1,myUStart,myVStart);
-    else
-      solins.Perform(Func,Surf1,D1,TolTang);
+  // Recherche des points interieurs
+  NbPointIns = 0;
+  if(SearchIns) {
+    if (!reversed) {
+      if (myIsStartPnt)
+        solins.Perform(Func,Surf2,myUStart,myVStart);
+      else
+        solins.Perform(Func,Surf2,D2,TolTang);
+    }
+    else {
+      if (myIsStartPnt)
+        solins.Perform(Func,Surf1,myUStart,myVStart);
+      else
+        solins.Perform(Func,Surf1,D1,TolTang);
+    }
+    NbPointIns = solins.NbPoints();
+    for (i=1; i <= NbPointIns; i++) {
+      seqpins.Append(solins.Value(i));
+    }
   }
   //
-  NbPointIns = solins.NbPoints();
-  for (i=1; i <= NbPointIns; i++) {
-    seqpins.Append(solins.Value(i));
-  }
   NbPointDep=seqpdep.Length();
   //
   if (NbPointDep || NbPointIns) {
@@ -722,69 +766,71 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
         wline = new IntPatch_WLine(thelin,Standard_False,trans1,trans2);
 
         if (   iwline->HasFirstPoint() 
-          && iwline->IsTangentAtBegining() == Standard_False) {
-            indfirst = iwline->FirstPointIndex();
-            PPoint = seqpdep(indfirst);
-            tgline = PPoint.Direction3d();
-            Standard_Integer themult = PPoint.Multiplicity();
-            for (i=NbPointRst; i>=1; i--) {
-              if (Destination(i) == indfirst) {
-                if (!reversed) { //-- typeS1 = Pln || Cyl || Sph || Cone
-                  Quad.Parameters(PPoint.Value(),U1,V1);
+          && iwline->IsTangentAtBegining() == Standard_False) 
+        {
+          indfirst = iwline->FirstPointIndex();
+          PPoint = seqpdep(indfirst);
+          tgline = PPoint.Direction3d();
+          Standard_Integer themult = PPoint.Multiplicity();
+          for (i=NbPointRst; i>=1; i--) {
+            if (Destination(i) == indfirst) {
+              if (!reversed) { //-- typeS1 = Pln || Cyl || Sph || Cone
+                Quad.Parameters(PPoint.Value(),U1,V1);
 
-                  if((V1 < Vmin) && (Vmin-V1 < TolV)) V1 = Vmin;
-                  if((V1 > Vmax) && (V1-Vmax < TolV)) V1 = Vmax;
+                if((V1 < Vmin) && (Vmin-V1 < TolV)) V1 = Vmin;
+                if((V1 > Vmax) && (V1-Vmax < TolV)) V1 = Vmax;
 
-                  PPoint.Parameters(themult,U2,V2);
-                  Surf2->D1(U2,V2,ptbid,d1u,d1v); //-- @@@@
-                }
-                else {  //-- typeS1 != Pln && Cyl && Sph && Cone
-                  Quad.Parameters(PPoint.Value(),U2,V2);
-
-                  if((V2 < Vmin) && (Vmin-V2 < TolV)) V2 = Vmin;
-                  if((V2 > Vmax) && (V2-Vmax < TolV)) V2 = Vmax;
-
-                  PPoint.Parameters(themult,U1,V1);
-                  Surf1->D1(U1,V1,ptbid,d1u,d1v); //-- @@@@
-                }
-
-                VecNormale = d1u.Crossed(d1v);                      
-                //-- Modif du 27 Septembre 94 (Recadrage des pts U,V) 
-                ptdeb.SetValue(PPoint.Value(),TolArc,Standard_False);
-                ptdeb.SetParameters(U1,V1,U2,V2);
-                ptdeb.SetParameter(1.);
-
-                Recadre(reversed,typeS1,typeS2,ptdeb,iwline,1,U1,V1,U2,V2);
-
-                currentarc = solrst.Point(i).Arc();
-                currentparam = solrst.Point(i).Parameter();
-                currentarc->D1(currentparam,p2d,d2d);
-                tgrst.SetLinearForm(d2d.X(),d1u,d2d.Y(),d1v);
-
-                Standard_Real squaremagnitudeVecNormale = VecNormale.SquareMagnitude();
-                if(squaremagnitudeVecNormale > 1e-13) { 
-                  DirNormale=VecNormale;
-                  IntSurf::MakeTransition(tgline,tgrst,DirNormale,TLine,TArc);
-                }
-                else { 
-                  TLine.SetValue(Standard_True,IntSurf_Undecided);
-                  TArc.SetValue(Standard_True,IntSurf_Undecided);
-                }
-
-                ptdeb.SetArc(reversed,currentarc,currentparam,TLine,TArc);
-                if (!solrst.Point(i).IsNew()) {
-                  ptdeb.SetVertex(reversed,solrst.Point(i).Vertex());
-                }
-                wline->AddVertex(ptdeb);
-                if (themult == 0) {
-                  wline->SetFirstPoint(wline->NbVertex());
-                }
-
-                themult--;
+                PPoint.Parameters(themult,U2,V2);
+                Surf2->D1(U2,V2,ptbid,d1u,d1v); //-- @@@@
               }
+              else {  //-- typeS1 != Pln && Cyl && Sph && Cone
+                Quad.Parameters(PPoint.Value(),U2,V2);
+
+                if((V2 < Vmin) && (Vmin-V2 < TolV)) V2 = Vmin;
+                if((V2 > Vmax) && (V2-Vmax < TolV)) V2 = Vmax;
+
+                PPoint.Parameters(themult,U1,V1);
+                Surf1->D1(U1,V1,ptbid,d1u,d1v); //-- @@@@
+              }
+
+              VecNormale = d1u.Crossed(d1v);                      
+              //-- Modif du 27 Septembre 94 (Recadrage des pts U,V) 
+              ptdeb.SetValue(PPoint.Value(),TolArc,Standard_False);
+              ptdeb.SetParameters(U1,V1,U2,V2);
+              ptdeb.SetParameter(1.);
+
+              Recadre(reversed,typeS1,typeS2,ptdeb,iwline,1,U1,V1,U2,V2);
+
+              currentarc = solrst.Point(i).Arc();
+              currentparam = solrst.Point(i).Parameter();
+              currentarc->D1(currentparam,p2d,d2d);
+              tgrst.SetLinearForm(d2d.X(),d1u,d2d.Y(),d1v);
+
+              Standard_Real squaremagnitudeVecNormale = VecNormale.SquareMagnitude();
+              if(squaremagnitudeVecNormale > 1e-13) { 
+                DirNormale=VecNormale;
+                IntSurf::MakeTransition(tgline,tgrst,DirNormale,TLine,TArc);
+              }
+              else { 
+                TLine.SetValue(Standard_True,IntSurf_Undecided);
+                TArc.SetValue(Standard_True,IntSurf_Undecided);
+              }
+
+              ptdeb.SetArc(reversed,currentarc,currentparam,TLine,TArc);
+              if (!solrst.Point(i).IsNew()) {
+                ptdeb.SetVertex(reversed,solrst.Point(i).Vertex());
+              }
+              wline->AddVertex(ptdeb);
+              if (themult == 0) {
+                wline->SetFirstPoint(wline->NbVertex());
+              }
+
+              themult--;
             }
+          }
         }
-        else if (iwline->IsTangentAtBegining()) {
+        else if (iwline->IsTangentAtBegining()) 
+        {
           gp_Pnt psol = thelin->Value(1).Value();
           thelin->Value(1).ParametersOnS1(U1,V1);
           thelin->Value(1).ParametersOnS2(U2,V2);
@@ -794,7 +840,8 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
           wline->AddVertex(ptdeb);
           wline->SetFirstPoint(wline->NbVertex());
         }
-        else { 
+        else 
+        { 
           gp_Pnt psol = thelin->Value(1).Value();
           thelin->Value(1).ParametersOnS1(U1,V1);
           thelin->Value(1).ParametersOnS2(U2,V2);
@@ -807,71 +854,73 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
 
 
         if (   iwline->HasLastPoint() 
-          && iwline->IsTangentAtEnd() == Standard_False) {
-            indlast = iwline->LastPointIndex();
-            PPoint = seqpdep(indlast);
-            tgline = PPoint.Direction3d().Reversed();
-            Standard_Integer themult = PPoint.Multiplicity();
-            for (i=NbPointRst; i >=1; i--) {
-              if (Destination(i) == indlast) {
-                if (!reversed) {
-                  Quad.Parameters(PPoint.Value(),U1,V1);
+          && iwline->IsTangentAtEnd() == Standard_False) 
+        {
+          indlast = iwline->LastPointIndex();
+          PPoint = seqpdep(indlast);
+          tgline = PPoint.Direction3d().Reversed();
+          Standard_Integer themult = PPoint.Multiplicity();
+          for (i=NbPointRst; i >=1; i--) {
+            if (Destination(i) == indlast) {
+              if (!reversed) {
+                Quad.Parameters(PPoint.Value(),U1,V1);
 
-                  if((V1 < Vmin) && (Vmin-V1 < TolV)) V1 = Vmin;
-                  if((V1 > Vmax) && (V1-Vmax < TolV)) V1 = Vmax;
+                if((V1 < Vmin) && (Vmin-V1 < TolV)) V1 = Vmin;
+                if((V1 > Vmax) && (V1-Vmax < TolV)) V1 = Vmax;
 
-                  PPoint.Parameters(themult,U2,V2);
-                  Surf2->D1(U2,V2,ptbid,d1u,d1v); //-- @@@@
-                  VecNormale = d1u.Crossed(d1v);                    //-- @@@@
-                }
-                else {
-                  Quad.Parameters(PPoint.Value(),U2,V2);
-
-                  if((V2 < Vmin) && (Vmin-V2 < TolV)) V2 = Vmin;
-                  if((V2 > Vmax) && (V2-Vmax < TolV)) V2 = Vmax;
-
-                  PPoint.Parameters(themult,U1,V1);
-                  Surf1->D1(U1,V1,ptbid,d1u,d1v); //-- @@@@
-                  VecNormale = d1u.Crossed(d1v);                    //-- @@@@
-                }
-
-                ptfin.SetValue(PPoint.Value(),TolArc,Standard_False);
-                ptfin.SetParameters(U1,V1,U2,V2);
-                ptfin.SetParameter(Nbpts);
-
-                Recadre(reversed,typeS1,typeS2,ptfin,iwline,Nbpts-1,U1,V1,U2,V2);
-
-                currentarc = solrst.Point(i).Arc();
-                currentparam = solrst.Point(i).Parameter();
-                currentarc->D1(currentparam,p2d,d2d);
-                tgrst.SetLinearForm(d2d.X(),d1u,d2d.Y(),d1v);
-
-
-                Standard_Real squaremagnitudeVecNormale = VecNormale.SquareMagnitude();
-                if(squaremagnitudeVecNormale > 1e-13) { 
-                  DirNormale=VecNormale;
-                  IntSurf::MakeTransition(tgline,tgrst,DirNormale,TLine,TArc);
-                }
-                else { 
-                  TLine.SetValue(Standard_True,IntSurf_Undecided);
-                  TArc.SetValue(Standard_True,IntSurf_Undecided);
-                }
-
-
-                ptfin.SetArc(reversed,currentarc,currentparam,TLine,TArc);
-                if (!solrst.Point(i).IsNew()) {
-                  ptfin.SetVertex(reversed,solrst.Point(i).Vertex());
-                }
-                wline->AddVertex(ptfin);
-                if (themult == 0) {
-                  wline->SetLastPoint(wline->NbVertex());
-                }
-
-                themult--;
+                PPoint.Parameters(themult,U2,V2);
+                Surf2->D1(U2,V2,ptbid,d1u,d1v); //-- @@@@
+                VecNormale = d1u.Crossed(d1v);                    //-- @@@@
               }
+              else {
+                Quad.Parameters(PPoint.Value(),U2,V2);
+
+                if((V2 < Vmin) && (Vmin-V2 < TolV)) V2 = Vmin;
+                if((V2 > Vmax) && (V2-Vmax < TolV)) V2 = Vmax;
+
+                PPoint.Parameters(themult,U1,V1);
+                Surf1->D1(U1,V1,ptbid,d1u,d1v); //-- @@@@
+                VecNormale = d1u.Crossed(d1v);                    //-- @@@@
+              }
+
+              ptfin.SetValue(PPoint.Value(),TolArc,Standard_False);
+              ptfin.SetParameters(U1,V1,U2,V2);
+              ptfin.SetParameter(Nbpts);
+
+              Recadre(reversed,typeS1,typeS2,ptfin,iwline,Nbpts-1,U1,V1,U2,V2);
+
+              currentarc = solrst.Point(i).Arc();
+              currentparam = solrst.Point(i).Parameter();
+              currentarc->D1(currentparam,p2d,d2d);
+              tgrst.SetLinearForm(d2d.X(),d1u,d2d.Y(),d1v);
+
+
+              Standard_Real squaremagnitudeVecNormale = VecNormale.SquareMagnitude();
+              if(squaremagnitudeVecNormale > 1e-13) { 
+                DirNormale=VecNormale;
+                IntSurf::MakeTransition(tgline,tgrst,DirNormale,TLine,TArc);
+              }
+              else { 
+                TLine.SetValue(Standard_True,IntSurf_Undecided);
+                TArc.SetValue(Standard_True,IntSurf_Undecided);
+              }
+
+
+              ptfin.SetArc(reversed,currentarc,currentparam,TLine,TArc);
+              if (!solrst.Point(i).IsNew()) {
+                ptfin.SetVertex(reversed,solrst.Point(i).Vertex());
+              }
+              wline->AddVertex(ptfin);
+              if (themult == 0) {
+                wline->SetLastPoint(wline->NbVertex());
+              }
+
+              themult--;
             }
+          }
         }
-        else if (iwline->IsTangentAtEnd()) {
+        else if (iwline->IsTangentAtEnd()) 
+        {
           gp_Pnt psol = thelin->Value(Nbpts).Value();
           thelin->Value(Nbpts).ParametersOnS1(U1,V1);
           thelin->Value(Nbpts).ParametersOnS2(U2,V2);
@@ -881,7 +930,8 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
           wline->AddVertex(ptfin);
           wline->SetLastPoint(wline->NbVertex());
         }
-        else { 
+        else 
+        { 
           gp_Pnt psol = thelin->Value(Nbpts).Value();
           thelin->Value(Nbpts).ParametersOnS1(U1,V1);
           thelin->Value(Nbpts).ParametersOnS2(U2,V2);
@@ -983,6 +1033,38 @@ void IntPatch_ImpPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
   if (NbSegm) {
     for(i=1; i<=NbSegm; i++) {
       thesegm = solrst.Segment(i);  
+      //Check if segment is degenerated
+      if(thesegm.HasFirstPoint() && thesegm.HasLastPoint())
+      {
+        Standard_Real tol2 = Precision::Confusion();
+        tol2 *= tol2;
+        const gp_Pnt& aPf = thesegm.FirstPoint().Value();
+        const gp_Pnt& aPl = thesegm.LastPoint().Value();
+        if(aPf.SquareDistance(aPl) <= tol2)
+        {
+          //segment can be degenerated - check inner point
+          paramf = thesegm.FirstPoint().Parameter();
+          paraml = thesegm.LastPoint().Parameter();
+          gp_Pnt2d _p2d = 
+            thesegm.Curve()->Value(.57735 * paramf + 0.42265 * paraml);
+          gp_Pnt aPm;
+          if(reversed)
+          {
+            Surf1->D0(_p2d.X(), _p2d.Y(), aPm);
+          }
+          else
+          {
+            Surf2->D0(_p2d.X(), _p2d.Y(), aPm);
+          }
+          if(aPm.SquareDistance(aPf) <= tol2)
+          {
+            //Degenerated
+            continue;
+          }
+        }
+      }
+
+
       //----------------------------------------------------------------------      
       // on cree une ligne d intersection contenant uniquement le segment.
       // VOIR POUR LA TRANSITION DE LA LIGNE
