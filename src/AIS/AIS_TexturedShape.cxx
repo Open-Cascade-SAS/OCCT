@@ -13,12 +13,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Modified:
-////////////////////////////////////////////////////////////////////////
-
-
-#include <AIS_TexturedShape.ixx>
-#include <Standard_ErrorHandler.hxx>
+#include <AIS_TexturedShape.hxx>
 
 #include <AIS_Drawer.hxx>
 #include <AIS_InteractiveContext.hxx>
@@ -33,31 +28,31 @@
 #include <Prs3d_Root.hxx>
 #include <Prs3d_ShadingAspect.hxx>
 #include <PrsMgr_PresentationManager3d.hxx>
+#include <Standard_ErrorHandler.hxx>
 #include <StdPrs_ShadedShape.hxx>
 #include <StdPrs_WFDeflectionShape.hxx>
 #include <StdPrs_WFShape.hxx>
 #include <TopExp_Explorer.hxx>
+
+IMPLEMENT_STANDARD_HANDLE (AIS_TexturedShape, AIS_Shape)
+IMPLEMENT_STANDARD_RTTIEXT(AIS_TexturedShape, AIS_Shape)
 
 //=======================================================================
 //function : AIS_TexturedShape
 //purpose  :
 //=======================================================================
 AIS_TexturedShape::AIS_TexturedShape (const TopoDS_Shape& theShape)
-: AIS_Shape (theShape),
-  myPredefTexture (Graphic3d_NameOfTexture2D(0)),
-  myTextureFile (""),
-  DoRepeat (Standard_True),
-  myURepeat (1.0),
-  myVRepeat (1.0),
-  DoMapTexture (Standard_True),
-  DoSetTextureOrigin (Standard_True),
-  myUOrigin (0.0),
-  myVOrigin (0.0),
-  DoSetTextureScale (Standard_True),
-  myScaleU (1.0),
-  myScaleV (1.0),
-  DoShowTriangles (Standard_False),
-  myModulate (Standard_True)
+: AIS_Shape         (theShape),
+  myPredefTexture   (Graphic3d_NameOfTexture2D(0)),
+  myToMapTexture    (Standard_True),
+  myModulate        (Standard_True),
+  myUVOrigin        (0.0, 0.0),
+  myIsCustomOrigin  (Standard_True),
+  myUVRepeat        (1.0, 1.0),
+  myToRepeat        (Standard_True),
+  myUVScale         (1.0, 1.0),
+  myToScale         (Standard_True),
+  myToShowTriangles (Standard_False)
 {
 }
 
@@ -67,16 +62,19 @@ AIS_TexturedShape::AIS_TexturedShape (const TopoDS_Shape& theShape)
 //=======================================================================
 void AIS_TexturedShape::SetTextureFileName (const TCollection_AsciiString& theTextureFileName)
 {
+  myTexturePixMap.Nullify();
+
   if (theTextureFileName.IsIntegerValue())
   {
-    if (theTextureFileName.IntegerValue() < Graphic3d_Texture2D::NumberOfTextures()
-     && theTextureFileName.IntegerValue() >= 0)
+    const Standard_Integer aValue = theTextureFileName.IntegerValue();
+    if (aValue < Graphic3d_Texture2D::NumberOfTextures()
+     && aValue >= 0)
     {
-      myPredefTexture = Graphic3d_NameOfTexture2D (theTextureFileName.IntegerValue());
+      myPredefTexture = Graphic3d_NameOfTexture2D (aValue);
     }
     else
     {
-      std::cout << "Texture " << theTextureFileName << " doesn't exist \n";
+      std::cout << "Texture " << theTextureFileName << " doesn't exist\n";
       std::cout << "Using Texture 0 instead ...\n";
       myPredefTexture = Graphic3d_NameOfTexture2D (0);
     }
@@ -85,8 +83,19 @@ void AIS_TexturedShape::SetTextureFileName (const TCollection_AsciiString& theTe
   else
   {
     myTextureFile   = theTextureFileName;
-    myPredefTexture = Graphic3d_NameOfTexture2D (-1);
+    myPredefTexture = Graphic3d_NOT_2D_UNKNOWN;
   }
+}
+
+//=======================================================================
+//function : SetTexturePixMap
+//purpose  :
+//=======================================================================
+void AIS_TexturedShape::SetTexturePixMap (const Handle(Image_PixMap)& theTexturePixMap)
+{
+  myTextureFile = "";
+  myPredefTexture = Graphic3d_NOT_2D_UNKNOWN;
+  myTexturePixMap = theTexturePixMap;
 }
 
 //=======================================================================
@@ -94,13 +103,12 @@ void AIS_TexturedShape::SetTextureFileName (const TCollection_AsciiString& theTe
 //purpose  :
 //=======================================================================
 
-void AIS_TexturedShape::SetTextureRepeat (const Standard_Boolean theRepeatYN,
+void AIS_TexturedShape::SetTextureRepeat (const Standard_Boolean theToRepeat,
                                           const Standard_Real    theURepeat,
                                           const Standard_Real    theVRepeat)
 {
-  DoRepeat  = theRepeatYN;
-  myURepeat = theURepeat;
-  myVRepeat = theVRepeat;
+  myToRepeat = theToRepeat;
+  myUVRepeat.SetCoord (theURepeat, theVRepeat);
 }
 
 //=======================================================================
@@ -110,7 +118,7 @@ void AIS_TexturedShape::SetTextureRepeat (const Standard_Boolean theRepeatYN,
 
 void AIS_TexturedShape::SetTextureMapOn()
 {
-  DoMapTexture = Standard_True;
+  myToMapTexture = Standard_True;
 }
 
 //=======================================================================
@@ -120,7 +128,7 @@ void AIS_TexturedShape::SetTextureMapOn()
 
 void AIS_TexturedShape::SetTextureMapOff()
 {
-  DoMapTexture = Standard_False;
+  myToMapTexture = Standard_False;
 }
 
 //=======================================================================
@@ -128,13 +136,12 @@ void AIS_TexturedShape::SetTextureMapOff()
 //purpose  :
 //=======================================================================
 
-void AIS_TexturedShape::SetTextureOrigin (const Standard_Boolean toSetTextureOriginYN,
+void AIS_TexturedShape::SetTextureOrigin (const Standard_Boolean theToSetTextureOrigin,
                                           const Standard_Real    theUOrigin,
                                           const Standard_Real    theVOrigin)
 {
-  DoSetTextureOrigin = toSetTextureOriginYN;
-  myUOrigin = theUOrigin;
-  myVOrigin = theVOrigin;
+  myIsCustomOrigin = theToSetTextureOrigin;
+  myUVOrigin.SetCoord (theUOrigin, theVOrigin);
 }
 
 //=======================================================================
@@ -142,13 +149,12 @@ void AIS_TexturedShape::SetTextureOrigin (const Standard_Boolean toSetTextureOri
 //purpose  :
 //=======================================================================
 
-void AIS_TexturedShape::SetTextureScale (const Standard_Boolean toSetTextureScaleYN,
+void AIS_TexturedShape::SetTextureScale (const Standard_Boolean theToSetTextureScale,
                                          const Standard_Real    theScaleU,
                                          const Standard_Real    theScaleV)
 {
-  DoSetTextureScale = toSetTextureScaleYN;
-  myScaleU = theScaleU;
-  myScaleV = theScaleV;
+  myToScale = theToSetTextureScale;
+  myUVScale.SetCoord (theScaleU, theScaleV);
 }
 
 //=======================================================================
@@ -156,9 +162,9 @@ void AIS_TexturedShape::SetTextureScale (const Standard_Boolean toSetTextureScal
 //purpose  :
 //=======================================================================
 
-void AIS_TexturedShape::ShowTriangles (const Standard_Boolean toShowTrianglesYN)
+void AIS_TexturedShape::ShowTriangles (const Standard_Boolean theToShowTriangles)
 {
-  DoShowTriangles = toShowTrianglesYN;
+  myToShowTriangles = theToShowTriangles;
 }
 
 //=======================================================================
@@ -191,27 +197,35 @@ void AIS_TexturedShape::UpdateAttributes()
   Prs3d_ShadingAspect aDummy;
   myAspect = aDummy.Aspect();
   Handle(Prs3d_Presentation) aPrs = Presentation();
-  if (!DoMapTexture)
+  if (!myToMapTexture)
   {
     myAspect->SetTextureMapOff();
     return;
   }
 
-  if (myPredefTexture != -1)
-    mytexture = new Graphic3d_Texture2Dmanual (myPredefTexture);
+  if (!myTexturePixMap.IsNull())
+  {
+    myTexture = new Graphic3d_Texture2Dmanual (myTexturePixMap);
+  }
+  else if (myPredefTexture != Graphic3d_NOT_2D_UNKNOWN)
+  {
+    myTexture = new Graphic3d_Texture2Dmanual (myPredefTexture);
+  }
   else
-    mytexture = new Graphic3d_Texture2Dmanual (myTextureFile.ToCString());
+  {
+    myTexture = new Graphic3d_Texture2Dmanual (myTextureFile.ToCString());
+  }
 
   myAspect->SetTextureMapOn();
 
-  myAspect->SetTextureMap (mytexture);
-  if (!mytexture->IsDone())
+  myAspect->SetTextureMap (myTexture);
+  if (!myTexture->IsDone())
   {
-    std::cout << "An error occured while building texture \n";
+    std::cout << "An error occurred while building texture \n";
     return;
   }
 
-  if (DoShowTriangles)
+  if (myToShowTriangles)
     myAspect->SetEdgeOn();
   else
     myAspect->SetEdgeOff();
@@ -224,7 +238,7 @@ void AIS_TexturedShape::UpdateAttributes()
 //purpose  :
 //=======================================================================
 
-void AIS_TexturedShape::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePresManager*/,
+void AIS_TexturedShape::Compute (const Handle(PrsMgr_PresentationManager3d)& /*thePrsMgr*/,
                                  const Handle(Prs3d_Presentation)&           thePrs,
                                  const Standard_Integer                      theMode)
 {
@@ -257,12 +271,12 @@ void AIS_TexturedShape::Compute (const Handle(PrsMgr_PresentationManager3d)& /*t
 
   switch (theMode)
   {
-    case 0: // Wireframe
+    case AIS_WireFrame:
     {
       StdPrs_WFDeflectionShape::Add (thePrs, myshape, myDrawer);
       break;
     }
-    case 1: // Shading
+    case AIS_Shaded:
     {
       Standard_Real prevangle;
       Standard_Real newangle;
@@ -298,7 +312,6 @@ void AIS_TexturedShape::Compute (const Handle(PrsMgr_PresentationManager3d)& /*t
       }
       break;
     }
-
     case 2: // Bounding box
     {
       if (IsInfinite())
@@ -311,10 +324,9 @@ void AIS_TexturedShape::Compute (const Handle(PrsMgr_PresentationManager3d)& /*t
       }
       break;
     }
-
     case 3: // texture mapping on triangulation
     {
-      BRepTools::Clean (myshape);
+      BRepTools::Clean  (myshape);
       BRepTools::Update (myshape);
 
       {
@@ -330,48 +342,56 @@ void AIS_TexturedShape::Compute (const Handle(PrsMgr_PresentationManager3d)& /*t
           myAspect->SetPolygonOffsets(aMode, aFactor, aUnits);
         }
       }
-      if (!DoMapTexture)
+      if (!myToMapTexture)
       {
         myAspect->SetTextureMapOff();
         return;
       }
       myAspect->SetTextureMapOn();
 
-      if (myPredefTexture != -1)
-        mytexture = new Graphic3d_Texture2Dmanual (myPredefTexture);
-      else
-        mytexture = new Graphic3d_Texture2Dmanual (myTextureFile.ToCString());
-
-      if (!mytexture->IsDone())
+      if (!myTexturePixMap.IsNull())
       {
-        std::cout << "An error occured while building texture \n";
+        myTexture = new Graphic3d_Texture2Dmanual (myTexturePixMap);
+      }
+      else if (myPredefTexture != Graphic3d_NOT_2D_UNKNOWN)
+      {
+        myTexture = new Graphic3d_Texture2Dmanual (myPredefTexture);
+      }
+      else
+      {
+        myTexture = new Graphic3d_Texture2Dmanual (myTextureFile.ToCString());
+      }
+
+      if (!myTexture->IsDone())
+      {
+        std::cout << "An error occurred while building texture \n";
         return;
       }
 
       if (myModulate)
-        mytexture->EnableModulate();
+        myTexture->EnableModulate();
       else
-        mytexture->DisableModulate();
+        myTexture->DisableModulate();
 
-      myAspect->SetTextureMap (mytexture);
-      if (DoShowTriangles)
+      myAspect->SetTextureMap (myTexture);
+      if (myToShowTriangles)
         myAspect->SetEdgeOn();
       else
         myAspect->SetEdgeOff();
 
-      if (DoRepeat)
-        mytexture->EnableRepeat();
+      if (myToRepeat)
+        myTexture->EnableRepeat();
       else
-        mytexture->DisableRepeat();
+        myTexture->DisableRepeat();
 
-      const gp_Pnt2d aUVOrigin (myUOrigin, myVOrigin);
-      const gp_Pnt2d aUVRepeat (myURepeat, myVRepeat);
-      const gp_Pnt2d aUVScale  (myScaleU,  myScaleV);
       try
       {
         OCC_CATCH_SIGNALS
         StdPrs_ShadedShape::Add (thePrs, myshape, myDrawer,
-                                 Standard_True, aUVOrigin, aUVRepeat, aUVScale);
+                                 Standard_True,
+                                 myIsCustomOrigin ? myUVOrigin : gp_Pnt2d (0.0, 0.0),
+                                 myUVRepeat,
+                                 myToScale        ? myUVScale  : gp_Pnt2d (1.0, 1.0));
         // within primitive arrays - object should be in one group of primitives
         Prs3d_Root::CurrentGroup (thePrs)->SetGroupPrimitivesAspect (myAspect);
       }
@@ -383,74 +403,4 @@ void AIS_TexturedShape::Compute (const Handle(PrsMgr_PresentationManager3d)& /*t
       break;
     }
   }
-}
-
-Standard_Boolean AIS_TexturedShape::TextureMapState() const
-{
-  return DoMapTexture;
-}
-
-Standard_Real AIS_TexturedShape::URepeat() const
-{
-  return myURepeat;
-}
-
-Standard_Boolean AIS_TexturedShape::TextureRepeat() const
-{
-  return DoRepeat;
-}
-
-Standard_Real AIS_TexturedShape::Deflection() const
-{
-  return myDeflection;
-}
-
-Standard_CString AIS_TexturedShape::TextureFile() const
-{
-  return myTextureFile.ToCString();
-}
-
-Standard_Real AIS_TexturedShape::VRepeat() const
-{
-  return myVRepeat;
-}
-
-Standard_Boolean AIS_TexturedShape::ShowTriangles() const
-{
-  return DoShowTriangles;
-}
-
-Standard_Real AIS_TexturedShape::TextureUOrigin() const
-{
-  return myUOrigin;
-}
-
-Standard_Real AIS_TexturedShape::TextureVOrigin() const
-{
-  return myVOrigin;
-}
-
-Standard_Real AIS_TexturedShape::TextureScaleU() const
-{
-  return myScaleU;
-}
-
-Standard_Real AIS_TexturedShape::TextureScaleV() const
-{
-  return myScaleV;
-}
-
-Standard_Boolean AIS_TexturedShape::TextureScale() const
-{
-  return DoSetTextureScale;
-}
-
-Standard_Boolean AIS_TexturedShape::TextureOrigin() const
-{
-  return DoSetTextureOrigin;
-}
-
-Standard_Boolean AIS_TexturedShape::TextureModulate() const
-{
-  return myModulate;
 }

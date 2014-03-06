@@ -36,3 +36,13 @@ Graphic3d_Texture1Dmanual::Graphic3d_Texture1Dmanual (const Graphic3d_NameOfText
 {
   //
 }
+
+// =======================================================================
+// function : Graphic3d_Texture1Dmanual
+// purpose  :
+// =======================================================================
+Graphic3d_Texture1Dmanual::Graphic3d_Texture1Dmanual (const Handle(Image_PixMap)& thePixMap)
+: Graphic3d_Texture1D (thePixMap, Graphic3d_TOT_1D)
+{
+  //
+}

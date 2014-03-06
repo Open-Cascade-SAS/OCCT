@@ -5,6 +5,8 @@ AIS_LocalContext_1.cxx
 AIS_NListTransient.hxx
 AIS_NListIteratorOfListTransient.hxx
 AIS_NDataMapOfTransientIteratorOfListTransient.hxx
+AIS_TexturedShape.hxx
+AIS_TexturedShape.cxx
 AIS_Triangulation.cdl
 AIS_Triangulation.cxx
 AIS_Dimension.hxx

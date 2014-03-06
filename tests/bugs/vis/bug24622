@@ -1,0 +1,54 @@
+puts "============"
+puts "CR24622"
+puts "============"
+puts ""
+
+##############################################################################
+#  Test for mapping Image_PixMap on AIS_TexturedShape / Graphic3d_TextureRoot
+##############################################################################
+
+set aV1 "Driver1/Viewer1/View1"
+set aV2 "Driver1/Viewer2/View1"
+vinit name=$aV1 l=32 t=32 w=400 h=400
+vinit name=$aV2 l=32 t=32 w=400 h=400
+vactivate $aV1
+vsettexturemode $aV1 2
+vclear
+
+OCC24622 1D
+vtop
+vfit
+
+checkcolor 100 200 0 0.5804 0.949
+
+if { $stat != 1 } {
+  puts "Error : the 1D texture color does not match at px (100, 200)!"
+}
+
+checkcolor 300 200 0.298 1.0 0.0
+
+if { $stat != 1 } {
+  puts "Error : the 1D texture color does not match at px (300, 200)!"
+}
+
+vactivate $aV2
+vsettexturemode $aV2 2
+vclear
+
+OCC24622 2D
+vtop
+vfit
+
+checkcolor 200 100 0 0.5804 0.949
+
+if { $stat != 1 } {
+  puts "Error : the 2D texture color does not match at px (200, 100)!"
+}
+
+checkcolor 200 300 0.298 1.0 0.0
+
+if { $stat != 1 } {
+  puts "Error : the 2D texture color does not match at px (200, 300)!"
+}
+
+set only_screen 1

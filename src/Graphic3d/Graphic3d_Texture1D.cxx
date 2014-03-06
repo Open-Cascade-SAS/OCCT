@@ -48,6 +48,17 @@ Graphic3d_Texture1D::Graphic3d_Texture1D (const Graphic3d_NameOfTexture1D theNOT
 }
 
 // =======================================================================
+// function : Graphic3d_Texture1D
+// purpose  :
+// =======================================================================
+Graphic3d_Texture1D::Graphic3d_Texture1D (const Handle(Image_PixMap)&   thePixMap,
+                                          const Graphic3d_TypeOfTexture theType)
+: Graphic3d_TextureMap (thePixMap, theType),
+  myName (Graphic3d_NOT_1D_UNKNOWN)
+{
+}
+
+// =======================================================================
 // function : Name
 // purpose  :
 // =======================================================================

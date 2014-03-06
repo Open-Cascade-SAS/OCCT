@@ -25,12 +25,16 @@ uses
   TypeOfTexture from Graphic3d,
   TextureParams from Graphic3d,
   LevelOfTextureAnisotropy from Graphic3d,
-  AsciiString   from TCollection
+  AsciiString   from TCollection,
+  PixMap_Handle from Image
 
 is
 
   Initialize (theFileName : AsciiString from TCollection;
               theType     : TypeOfTexture from Graphic3d);
+
+  Initialize (thePixMap : PixMap_Handle from Image;
+              theType   : TypeOfTexture from Graphic3d);
 
   EnableSmooth (me : mutable);
   ---Level: public
