@@ -226,7 +226,7 @@ Standard_Boolean TDataStd_TreeNode::Remove ()
   }
 
   if (Father()->HasFirst()) {
-    if (Handle(TDataStd_TreeNode)::DownCast(this) == Father()->First()) {
+    if (this == Father()->First().operator->()) {
       if (HasNext()) {
 	    Father()->SetFirst(Next());
       }
