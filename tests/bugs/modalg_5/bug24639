@@ -1,0 +1,76 @@
+puts "========="
+puts "OCC24639"
+puts "========="
+puts ""
+###########################################################
+# Parallelization FillDS part of BO
+###########################################################
+
+set N 5
+set dC 1.
+set aC [expr $N + $dC]
+
+#------------------------------------------
+# z
+vertex v1 0 0 0 
+vertex v2 0 0 $aC 
+edge ez v1 v2
+
+set qz {}
+for {set i 0} {$i < $N} {incr i} {
+ for {set j 0} {$j < $N} {incr j} {
+  tcopy ez ez_${i}_{$j}
+  ttranslate ez_${i}_{$j} [expr $i + ${dC}] [expr $j + $dC] 0.
+  lappend qz ez_${i}_{$j}
+ }
+}
+eval compound $qz bz
+
+#------------------------------------------
+# x
+vertex v1 0. 0. 0. 
+vertex v2 $aC  0. 0. 
+edge ex v1 v2
+
+set qx {}
+for {set i 0} {$i < $N} {incr i} {
+ for {set j 0} {$j < $N} {incr j} {
+  tcopy ex ex_${i}_{$j}
+  ttranslate ex_${i}_{$j} 0. [expr $i + $dC] [expr $j + $dC]
+  lappend qx ex_${i}_{$j}
+ }
+}
+eval compound $qx bx
+
+#------------------------------------------
+# y
+vertex v1 0. 0. 0. 
+vertex v2 0. $aC 0.  
+edge ey v1 v2
+
+set qy {}
+for {set i 0} {$i < $N} {incr i} {
+ for {set j 0} {$j < $N} {incr j} {
+  tcopy ey ey_${i}_{$j}
+  ttranslate ey_${i}_{$j} [expr $i + $dC] 0. [expr $j + $dC]
+  lappend qy ey_${i}_{$j}
+ }
+}
+eval compound $qy by
+
+nurbsconvert bx bx
+nurbsconvert by by
+nurbsconvert bz bz
+
+# add the arguments
+bclearobjects
+bcleartools
+baddcompound bx
+baddcompound by
+baddcompound bz
+
+# intersection step 
+bfillds -t
+
+# intersection step 
+bfillds -t -s

@@ -508,7 +508,7 @@ void BOPAlgo_PaveFiller::MakeBlocks()
 //function : PostTreatFF
 //purpose  : 
 //=======================================================================
-  Standard_Integer BOPAlgo_PaveFiller::PostTreatFF
+Standard_Integer BOPAlgo_PaveFiller::PostTreatFF
     (BOPDS_IndexedDataMapOfShapeCoupleOfPaveBlocks& theMSCPB,
      BOPCol_DataMapOfShapeInteger& aMVI,
      BOPDS_DataMapOfPaveBlockListOfPaveBlock& aDMExEdges,
@@ -587,6 +587,7 @@ void BOPAlgo_PaveFiller::MakeBlocks()
   }
   //
   // 2 Fuse shapes
+  aPF.SetRunParallel(myRunParallel);
   aPF.SetArguments(aLS);
   aPF.Perform();
   iErr=aPF.ErrorStatus();

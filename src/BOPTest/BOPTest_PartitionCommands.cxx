@@ -3,8 +3,8 @@
 //
 // This file is part of Open CASCADE Technology software library.
 //
-// This library is free software; you can redistribute it and/or modify it under
-// the terms of the GNU Lesser General Public License version 2.1 as published
+// This library is free software; you can redistribute it and / or modify it
+// under the terms of the GNU Lesser General Public version 2.1 as published
 // by the Free Software Foundation, with special exception defined in the file
 // OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
 // distribution for complete text of the license and disclaimer of any warranty.
@@ -100,17 +100,16 @@ class BOPTime_Chronometer {
 };
 #endif
 
-
-
 static Standard_Integer bfillds  (Draw_Interpretor&, Standard_Integer, const char**); 
 static Standard_Integer bbuild   (Draw_Interpretor&, Standard_Integer, const char**);
 static Standard_Integer bbop     (Draw_Interpretor&, Standard_Integer, const char**);
 static Standard_Integer bclear   (Draw_Interpretor&, Standard_Integer, const char**);
+
 //=======================================================================
 //function : PartitionCommands
 //purpose  : 
 //=======================================================================
-  void BOPTest::PartitionCommands(Draw_Interpretor& theCommands)
+void BOPTest::PartitionCommands(Draw_Interpretor& theCommands)
 {
   static Standard_Boolean done = Standard_False;
   if (done) return;
@@ -118,17 +117,19 @@ static Standard_Integer bclear   (Draw_Interpretor&, Standard_Integer, const cha
   // Chapter's name
   const char* g = "Partition commands";
   // Commands  
-  theCommands.Add("bfillds"  , "use bfillds"           , __FILE__, bfillds  , g);
-  theCommands.Add("bbuild"   , " use bbuild r [-s -t]" , __FILE__, bbuild, g);
-  theCommands.Add("bbop"     , "use bbop r op"         , __FILE__, bbop, g);
-  theCommands.Add("bclear"   , "use bclear"            , __FILE__, bclear, g);
+  theCommands.Add("bfillds"  , "use bfillds [-s -t]" , __FILE__, bfillds, g);
+  theCommands.Add("bbuild"   , "use bbuild r [-s -t]", __FILE__, bbuild, g);
+  theCommands.Add("bbop"     , "use bbop r op"       , __FILE__, bbop, g);
+  theCommands.Add("bclear"   , "use bclear"          , __FILE__, bclear, g);
 }
 
 //=======================================================================
 //function : bclear
 //purpose  : 
 //=======================================================================
-Standard_Integer bclear(Draw_Interpretor& di, Standard_Integer n, const char** ) 
+Standard_Integer bclear(Draw_Interpretor& di, 
+                        Standard_Integer n, 
+                        const char** ) 
 {
   if (n!=1) {
     di << " use bclear\n";
@@ -142,23 +143,38 @@ Standard_Integer bclear(Draw_Interpretor& di, Standard_Integer n, const char** )
 //function : bfillds
 //purpose  : 
 //=======================================================================
-Standard_Integer bfillds(Draw_Interpretor& di, Standard_Integer n, const char** ) 
+Standard_Integer bfillds(Draw_Interpretor& di, 
+                         Standard_Integer n, 
+                         const char** a) 
 { 
-  if (n!=1) {
-    di << " Use bfillds\n";
+  if (n>3) {
+    di << " use bfillds [-s -t]\n";
     return 0;
   }
   //
   char buf[32];
-  Standard_Integer aNbS, iErr;
+  Standard_Boolean bRunParallel, bShowTime;
+  Standard_Integer i, aNbS, iErr;
   BOPCol_ListIteratorOfListOfShape aIt;
   BOPCol_ListOfShape aLC;
+  BOPTime_Chronometer aChrono;
   
   BOPCol_ListOfShape& aLS=BOPTest_Objects::Shapes();
   aNbS=aLS.Extent();
   if (!aNbS) {
     di << " no objects to process\n";
     return 0;
+  }
+  //
+  bShowTime=Standard_False;
+  bRunParallel=Standard_True;
+  for (i=1; i<n; ++i) {
+    if (!strcmp(a[i], "-s")) {
+      bRunParallel=Standard_False;
+    }
+    else if (!strcmp(a[i], "-t")) {
+      bShowTime=Standard_True;
+    }
   }
   //
   BOPCol_ListOfShape& aLT=BOPTest_Objects::Tools();
@@ -178,6 +194,9 @@ Standard_Integer bfillds(Draw_Interpretor& di, Standard_Integer n, const char** 
   BOPAlgo_PaveFiller& aPF=BOPTest_Objects::PaveFiller();
   //
   aPF.SetArguments(aLC);
+  aPF.SetRunParallel(bRunParallel);
+  //
+  aChrono.Start();
   //
   aPF.Perform();
   iErr=aPF.ErrorStatus();
@@ -187,13 +206,25 @@ Standard_Integer bfillds(Draw_Interpretor& di, Standard_Integer n, const char** 
     return 0;
   }
   //
+  aChrono.Stop();
+  //
+  if (bShowTime) {
+    Standard_Real aTime;
+    //
+    aTime=aChrono.Time();
+    Sprintf(buf, "  Tps: %7.2lf\n", aTime);
+    di << buf;
+  }
+  //
   return 0;
 }
 //=======================================================================
 //function : bbuild
 //purpose  : 
 //=======================================================================
-Standard_Integer bbuild(Draw_Interpretor& di, Standard_Integer n, const char** a) 
+Standard_Integer bbuild(Draw_Interpretor& di,
+                        Standard_Integer n, 
+                        const char** a) 
 { 
   if (n<2) {
     di << " use bbuild r [-s -t]\n";
@@ -212,8 +243,6 @@ Standard_Integer bbuild(Draw_Interpretor& di, Standard_Integer n, const char** a
   
   BOPTime_Chronometer aChrono;
   BOPCol_ListIteratorOfListOfShape aIt;
-  //
-  
   //
   BOPAlgo_PaveFiller& aPF=BOPTest_Objects::PaveFiller();
   //
@@ -281,7 +310,9 @@ Standard_Integer bbuild(Draw_Interpretor& di, Standard_Integer n, const char** a
 //function : bbop
 //purpose  : 
 //=======================================================================
-Standard_Integer bbop(Draw_Interpretor& di, Standard_Integer n, const char** a) 
+Standard_Integer bbop(Draw_Interpretor& di, 
+                      Standard_Integer n, 
+                      const char** a) 
 { 
   if (n!=3) {
     di << " use bbop r op\n";
