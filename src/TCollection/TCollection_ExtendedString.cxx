@@ -12,17 +12,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//#if defined(WNT) || defined(LIN)
-#include <stdio.h>
-//#endif
-
 #include <TCollection_ExtendedString.ixx>
 #include <Standard.hxx>
 #include <Standard_ExtString.hxx>
 #include <Standard_NullObject.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <Standard_ctype.hxx>
 #include <TCollection_AsciiString.hxx>
+
+#include <cstdio>
+#include <cctype>
 
 static
   Standard_PExtCharacter Allocate(const Standard_Size aLength);
