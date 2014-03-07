@@ -55,8 +55,6 @@ Standard_Time.hxx
 Standard_Transient.hxx
 Standard_Transient_proto.hxx
 Standard_TypeDef.hxx
-Standard_ctype.hxx
-Standard_inverse.h
 Standard_math.cxx
 Standard_math.hxx
 Standard_osd_ffi.c

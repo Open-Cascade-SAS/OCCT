@@ -24,19 +24,10 @@
 #ifndef _Standard_ExtCharacter_HeaderFile
 #define _Standard_ExtCharacter_HeaderFile
 
-#ifndef _Standard_ctype_HeaderFile
-#include <Standard_ctype.hxx>
-#endif
+#include <Standard_TypeDef.hxx>
+#include <Standard_OStream.hxx>
 
 #include <string.h>
-
-#ifndef _Standard_TypeDef_HeaderFile
-#include <Standard_TypeDef.hxx>
-#endif
-
-#ifndef _Standard_OStream_HeaderFile
-#include <Standard_OStream.hxx>
-#endif
 
 class Handle_Standard_Type;
 
