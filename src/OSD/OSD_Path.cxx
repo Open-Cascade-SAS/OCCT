@@ -12,14 +12,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef WNT
-
-#include <Standard_NumericError.hxx>
-#include <Standard_NullObject.hxx>
-#include <Standard_ProgramError.hxx>
-#include <Standard_ConstructionError.hxx>
 #include <OSD_Path.ixx>
-#include <OSD_WhoAmI.hxx>
 
 static OSD_SysType whereAmI(){
 #if defined(__digital__) || defined(__FreeBSD__) || defined(SUNOS) || defined(__APPLE__)
@@ -34,7 +27,7 @@ static OSD_SysType whereAmI(){
 #elif defined(OS2)
   return OSD_WindowsNT;
 }
-#elif defined(WIN32)
+#elif defined(_WIN32) || defined(__WIN32__)
   return OSD_WindowsNT;
 }
 #elif defined(__CYGWIN32_) || defined(__MINGW32__)
@@ -61,10 +54,16 @@ static OSD_SysType whereAmI(){
 }
 #endif
 
+#if !(defined(_WIN32) || defined(__WIN32__))
 
+#include <Standard_NumericError.hxx>
+#include <Standard_NullObject.hxx>
+#include <Standard_ProgramError.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <OSD_WhoAmI.hxx>
 
 OSD_Path::OSD_Path(){
- SysDep = whereAmI();
+ mySysDep = whereAmI();
 }
 
 static void VmsExtract(const TCollection_AsciiString& what,
@@ -331,16 +330,13 @@ static void MacExtract(const TCollection_AsciiString& what,
 OSD_Path::OSD_Path(const TCollection_AsciiString& aDependentName,
 		   const OSD_SysType aSysType){
 
- SysDep = whereAmI();
-
- if (!IsValid(aDependentName,aSysType))
-  Standard_ProgramError::Raise("OSD_Path::OSD_Path : Invalid dependent name");
+ mySysDep = whereAmI();
 
  OSD_SysType todo;
 //  Standard_Integer i,l;
 
   if (aSysType == OSD_Default) {
-    todo = SysDep;
+    todo = mySysDep;
   } else {
     todo = aSysType;
   }
@@ -381,7 +377,7 @@ OSD_Path::OSD_Path(const TCollection_AsciiString& Nod,
                    const TCollection_AsciiString& Nam,
 		   const TCollection_AsciiString& ext){
 
- SysDep = whereAmI();
+ mySysDep = whereAmI();
 
  SetValues ( Nod, UsrNm, Passwd, Dsk, Trk, Nam, ext);
 
@@ -436,111 +432,6 @@ void OSD_Path::SetValues(const TCollection_AsciiString& Nod,
  myName = Nam;
  myExtension = ext;
 }
-
-
-static Standard_Boolean Analyse_VMS(const TCollection_AsciiString& name){
- if (name.Search("/") != -1)
-  return(Standard_False);
- if (name.Search("@") != -1)
-  return(Standard_False);
- if (name.Search("\\") != -1)
-  return(Standard_False);
-
-
- return Standard_True;
-}
-
-static Standard_Boolean Analyse_DOS(const TCollection_AsciiString& name){
-
-// if (name.Search("$") != -1)
-//  return(Standard_False);
-// if (name.Search(" ") != -1)
-//  return(Standard_False);
-
- if (name.Search("/") != -1)
-  return(Standard_False);
- if (name.Search(":") != -1)
-  return(Standard_False);
-  if (name.Search("*") != -1)
-  return(Standard_False);
- if (name.Search("?") != -1)
-  return(Standard_False);
- if (name.Search(".") != name.SearchFromEnd("."))
-  return(Standard_False);
- if (name.Search("\"") != -1)
-  return(Standard_False);
- if (name.Search("<") != -1)
-  return(Standard_False);
- if (name.Search(">") != -1)
-  return(Standard_False);
- if (name.Search("|") != -1)
-  return(Standard_False);
-   
- return Standard_True;
- // Rajouter les tests sur les noms de 8 caracteres au maximum et
- // l'extension de 3 caracteres.
-}
-
-static Standard_Boolean Analyse_MACOS(const TCollection_AsciiString& name){
- Standard_Integer i = name.Search(":");
- Standard_Integer l = name.Length();
-
- if (i == -1)
-  if (l > 31)
-    return(Standard_False);
-  else 
-    return(Standard_True);
- else
-   return(Standard_True);
-}
-
-static Standard_Boolean Analyse_UNIX(const TCollection_AsciiString& /*name*/)
-{
-// if (name.Search("$") != -1)  Unix filename can have a "$" (LD)
-//  return(Standard_False);
-
-// all characters are allowed in UNIX file name, except null '\0' and slash '/'
-
-// if (name.Search("[") != -1)
-//  return(Standard_False);
-// if (name.Search("]") != -1)
-//  return(Standard_False);
-// if (name.Search("\\") != -1)
-//  return(Standard_False);
-// if (name.Search(" ") != -1) 
-//  return(Standard_False);
-
-  return(Standard_True);
-
-}
-
-
-
-
-
-Standard_Boolean OSD_Path::IsValid(const TCollection_AsciiString& aDependentName,
-                                   const OSD_SysType aSysType)const{
- if (aDependentName.Length()==0) return(Standard_True);
- if (!aDependentName.IsAscii()) return(Standard_False);
-
- OSD_SysType provSys;
- if (aSysType == OSD_Default) provSys = SysDep;
-                      else provSys = aSysType; 
-
- switch (provSys){
-  case OSD_VMS:
-            return(Analyse_VMS(aDependentName));
-  case OSD_OS2:
-  case OSD_WindowsNT:
-            return(Analyse_DOS(aDependentName));
-  case OSD_MacOs:
-            return(Analyse_MACOS(aDependentName));
-  default:
-            return(Analyse_UNIX(aDependentName));
-
- }
-}
-
 
 void OSD_Path::UpTrek(){
  Standard_Integer length=TrekLength();
@@ -747,7 +638,7 @@ TCollection_AsciiString pDisk;
 OSD_SysType pType;
 
  if (aType == OSD_Default) {
-   pType = SysDep;
+   pType = mySysDep;
  } else {
    pType = aType;
  }
@@ -1008,10 +899,9 @@ void OSD_Path::SetExtension(const TCollection_AsciiString& aName){
 #else
 
 //------------------------------------------------------------------------
-//-------------------  Windows NT sources for OSD_Path -------------------
+//-------------------  Windows sources for OSD_Path -------------------
 //------------------------------------------------------------------------
 
-#include <OSD_Path.hxx>
 #include <Standard_ProgramError.hxx>
 
 #include <windows.h>
@@ -1031,7 +921,7 @@ OSD_Path ::  OSD_Path (
               const OSD_SysType aSysType
 			  ) :
   myUNCFlag(Standard_False),
-  SysDep(OSD_WindowsNT)
+  mySysDep(OSD_WindowsNT)
 {
 
  Standard_Integer        i, j, len;
@@ -1098,7 +988,7 @@ OSD_Path :: OSD_Path (
              const TCollection_AsciiString& anExtension
 			 ) :
   myUNCFlag(Standard_False),
-  SysDep(OSD_WindowsNT)
+  mySysDep(OSD_WindowsNT)
 {
 
  SetValues ( aNode, aUsername, aPassword, aDisk, aTrek, aName, anExtension );
@@ -1200,17 +1090,6 @@ void OSD_Path :: SystemName (
   FullName.Clear ();
 
 }  // end OSD_Path :: SystemName
-
-Standard_Boolean OSD_Path :: IsValid (
-                              const TCollection_AsciiString& /*aDependentName*/,
-                              const OSD_SysType aSysType
-                             ) const {
-
- TEST_RAISE(  aSysType, "IsValid"  );
-
- return Standard_True;
-
-}  // end OSD_Path :: IsValid
 
 void OSD_Path :: UpTrek () {
 
@@ -1566,7 +1445,79 @@ static void __fastcall _remove_dup ( TCollection_AsciiString& str ) {
 
 }  // end _remove_dup
 
-#endif
+#endif // Windows sources for OSD_Path
+
+// =======================================================================
+// function : Analyse_VMS
+// purpose  :
+// =======================================================================
+static Standard_Boolean Analyse_VMS (const TCollection_AsciiString& theName)
+{
+  if (theName.Search ("/")  != -1
+   || theName.Search ("@")  != -1
+   || theName.Search ("\\") != -1)
+  {
+    return Standard_False;
+  }
+
+  return Standard_True;
+}
+
+// =======================================================================
+// function : Analyse_DOS
+// purpose  :
+// =======================================================================
+static Standard_Boolean Analyse_DOS(const TCollection_AsciiString& theName)
+{
+  if (theName.Search ("/")  != -1
+   || theName.Search (":")  != -1
+   || theName.Search ("*")  != -1
+   || theName.Search ("?")  != -1
+   || theName.Search ("\"") != -1
+   || theName.Search ("<")  != -1
+   || theName.Search (">")  != -1
+   || theName.Search ("|")  != -1)
+  {
+    return Standard_False;
+  }
+
+ return Standard_True;
+}
+
+// =======================================================================
+// function : Analyse_MACOS
+// purpose  :
+// =======================================================================
+static Standard_Boolean Analyse_MACOS (const TCollection_AsciiString& theName)
+{
+  return theName.Search(":") == -1 ? theName.Length() <= 31 : Standard_True;
+}
+
+// =======================================================================
+// function : IsValid
+// purpose  :
+// =======================================================================
+Standard_Boolean OSD_Path::IsValid (const TCollection_AsciiString& theDependentName,
+                                    const OSD_SysType theSysType)
+{
+  if (theDependentName.Length() == 0)
+  {
+    return Standard_True;
+  }
+
+  switch (theSysType == OSD_Default ? whereAmI() : theSysType)
+  {
+    case OSD_VMS:
+      return Analyse_VMS (theDependentName);
+    case OSD_OS2:
+    case OSD_WindowsNT:
+      return Analyse_DOS (theDependentName);
+    case OSD_MacOs:
+      return Analyse_MACOS (theDependentName);
+    default:
+      return Standard_True;
+  }
+}
 
 // ---------------------------------------------------------------------------
 

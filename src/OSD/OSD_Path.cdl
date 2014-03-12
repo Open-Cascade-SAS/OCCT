@@ -128,11 +128,10 @@ raises ConstructionError, NullObject, OSDError, NumericError, ProgramError
     is static;
     ---Purpose: Returns system dependent path resolving logical symbols.
 
-  IsValid (me ; aDependentName : AsciiString; aSysType : SysType=OSD_Default) 
-    returns Boolean is static;
-    ---Purpose: Returns TRUE if <aDependentName> is valid for this SysType.
+  IsValid (myclass ; theDependentName : AsciiString; theSysType : SysType = OSD_Default)
+    returns Boolean;
+    ---Purpose: Returns TRUE if <theDependentName> is valid for this SysType.
     ---Level: Public
-
 
   UpTrek (me : in out) is static;
    ---Purpose: This removes the last directory name in <aTrek>
@@ -281,5 +280,5 @@ raises ConstructionError, NullObject, OSDError, NumericError, ProgramError
   myName      : AsciiString;
   myExtension : AsciiString;
   myUNCFlag   : Boolean ;
-  SysDep      : SysType;  -- To allow system specific use
+  mySysDep    : SysType;  -- To allow system specific use
 end Path from OSD;
