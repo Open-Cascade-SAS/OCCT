@@ -852,14 +852,12 @@ is
         raises BadValue from V3d;
         -- If one of the dimensions of the projection is NULL.
 
-        SetSize ( me : mutable ; Size : Length )
+        SetSize ( me : mutable; theSize : Length )
         ---Level: Public
-        ---Purpose: Defines the size of the view while preserving the
-        --          center and height/width ratio of the window supporting
-        --          the view.
-        --          NOTE than the Depth of the View is NOT modified .
-                raises BadValue from V3d ;
-        --      If the size of the view is <= 0
+        ---Purpose: Defines the view projection size in its maximum dimension,
+        --          keeping the inital height/width ratio unchanged.
+                raises BadValue from V3d;
+        --      If <theSize> is <= 0.0
 
         SetZSize ( me : mutable ; Size : Length )
         ---Level: Public

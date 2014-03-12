@@ -1345,12 +1345,11 @@ void V3d_View::SetCenter (const Standard_Integer theXp,
 //function : SetSize
 //purpose  :
 //=============================================================================
-void V3d_View::SetSize(const Standard_Real Size)
+void V3d_View::SetSize (const Standard_Real theSize)
 {
-  V3d_BadValue_Raise_if(  Size  <= 0.,
-    "V3d_View::SetSize, Window Size is NULL");
+  V3d_BadValue_Raise_if (theSize <= 0.0, "V3d_View::SetSize, Window Size is NULL");
 
-  myCamera->SetScale (Size);
+  myCamera->SetScale (myCamera->Aspect() >= 1.0 ? theSize / myCamera->Aspect() : theSize);
 
   AutoZFit();
 

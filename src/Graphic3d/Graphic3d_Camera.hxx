@@ -215,7 +215,10 @@ public:
   //! Sets camera scale. For orthographic projection the scale factor
   //! corresponds to parallel scale of view mapping  (i.e. size
   //! of viewport). For perspective camera scale is converted to
-  //! distance.
+  //! distance. The scale specifies equal size of the view projection in
+  //! both dimensions assuming that the aspect is 1.0. The projection height
+  //! and width are specified with the scale and correspondingly multiplied
+  //! by the aspect.
   //! @param theScale [in] the scale factor.
   Standard_EXPORT void SetScale (const Standard_Real theScale);
 
@@ -288,7 +291,7 @@ public:
     return myZFar;
   }
 
-  //! Change display ratio.
+  //! Changes width / height display ratio.
   //! @param theAspect [in] the display ratio.
   Standard_EXPORT void SetAspect (const Standard_Real theAspect);
 

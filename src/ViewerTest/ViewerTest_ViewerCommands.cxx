@@ -4435,6 +4435,13 @@ static int VViewParams (Draw_Interpretor& theDi, Standard_Integer theArgsNb, con
       continue;
     }
 
+    if (aParseKey.IsEmpty())
+    {
+      std::cout << theArgVec[0] << ": values should be passed with key.\n";
+      std::cout << "Type help for more information.\n";
+      return 1;
+    }
+
     aMapOfKeysByValues.ChangeFind (aParseKey).Append (anArg);
   }
 
@@ -4450,6 +4457,7 @@ static int VViewParams (Draw_Interpretor& theDi, Standard_Integer theArgsNb, con
     const TColStd_SequenceOfAsciiString& aValues = aMapIt.Value();
 
     if (!(aKey.IsEqual ("SCALE")  && (aValues.Length() == 1 || aValues.IsEmpty()))
+     && !(aKey.IsEqual ("SIZE")   && (aValues.Length() == 1 || aValues.IsEmpty()))
      && !(aKey.IsEqual ("EYE")    && (aValues.Length() == 3 || aValues.IsEmpty()))
      && !(aKey.IsEqual ("AT")     && (aValues.Length() == 3 || aValues.IsEmpty()))
      && !(aKey.IsEqual ("UP")     && (aValues.Length() == 3 || aValues.IsEmpty()))
@@ -4478,6 +4486,20 @@ static int VViewParams (Draw_Interpretor& theDi, Standard_Integer theArgsNb, con
     else
     {
       anAISView->SetScale (aValues (1).RealValue());
+    }
+  }
+  if (aMapOfKeysByValues.Find ("SIZE", aValues))
+  {
+    if (aValues.IsEmpty())
+    {
+      Standard_Real aSizeX = 0.0;
+      Standard_Real aSizeY = 0.0;
+      anAISView->Size (aSizeX, aSizeY);
+      theDi << "Size X: " << aSizeX << " Y: " << aSizeY << "\n";
+    }
+    else
+    {
+      anAISView->SetSize (aValues (1).RealValue());
     }
   }
   if (aMapOfKeysByValues.Find ("EYE", aValues))
@@ -6589,16 +6611,18 @@ void ViewerTest::ViewerCommands(Draw_Interpretor& theCommands)
   theCommands.Add ("vviewparams", "vviewparams usage:\n"
     "- vviewparams\n"
     "- vviewparams [-scale [s]] [-eye [x y z]] [-at [x y z]] [-up [x y z]]\n"
-    "              [-proj [x y z]] [-center x y]\n"
+    "              [-proj [x y z]] [-center x y] [-size sx]\n"
     "-   Gets or sets current view parameters.\n"
     "-   If called without arguments, all view parameters are printed.\n"
     "-   The options are:\n"
-    "      -scale [s]    : prints or sets viewport scale.\n"
+    "      -scale [s]    : prints or sets viewport relative scale.\n"
     "      -eye [x y z]  : prints or sets eye location.\n"
     "      -at [x y z]   : prints or sets center of look.\n"
     "      -up [x y z]   : prints or sets direction of up vector.\n"
     "      -proj [x y z] : prints or sets direction of look.\n"
-    "      -center x y   : sets location of center of the screen in pixels.\n",
+    "      -center x y   : sets location of center of the screen in pixels.\n"
+    "      -size [sx]    : prints viewport projection width and height sizes\n"
+    "                    : or changes the size of its maximum dimension.\n",
     __FILE__, VViewParams, group);
   theCommands.Add("vchangeselected",
     "vchangeselected shape"
