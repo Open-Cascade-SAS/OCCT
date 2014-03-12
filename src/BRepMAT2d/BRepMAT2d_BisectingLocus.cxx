@@ -14,6 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+# include <BRepMAT2d_BisectingLocus.ixx>
+
 # include <MAT2d_Mat2d.hxx>
 # include <MAT2d_Tool2d.hxx>
 # include <MAT2d_Circuit.hxx>
@@ -40,10 +42,10 @@ static void CutSketch (MAT2d_SequenceOfSequenceOfGeometry&    Figure,
 
 
 //=============================================================================
-//function : MAT2d_BisectingLocus
+//function : BRepMAT2d_BisectingLocus
 //purpose  : Constructeur vide.
 //=============================================================================
-MAT2d_BisectingLocus::MAT2d_BisectingLocus()
+BRepMAT2d_BisectingLocus::BRepMAT2d_BisectingLocus()
 {
 }
 
@@ -53,7 +55,7 @@ MAT2d_BisectingLocus::MAT2d_BisectingLocus()
 //purpose  : Calcul de la carte des lieux bisecteurs sur le contour defini par
 //           <anExplo>.
 //=============================================================================
-void MAT2d_BisectingLocus::Compute(      Explorer&        anExplo,
+void BRepMAT2d_BisectingLocus::Compute(      BRepMAT2d_Explorer&        anExplo,
 				   const Standard_Integer IndexLine,
 				   const MAT_Side         aSide    ) 
 {
@@ -150,7 +152,7 @@ void MAT2d_BisectingLocus::Compute(      Explorer&        anExplo,
 //function : RenumerationAndFusion
 //purpose  :
 //=============================================================================
-void MAT2d_BisectingLocus::RenumerationAndFusion
+void BRepMAT2d_BisectingLocus::RenumerationAndFusion
   (const Standard_Integer              ILine,
    const Standard_Integer              LengthLine,
          Standard_Integer&             IndexLast,
@@ -191,7 +193,7 @@ void MAT2d_BisectingLocus::RenumerationAndFusion
 //function : IsDone
 //Purpose  : 
 //=============================================================================
-Standard_Boolean MAT2d_BisectingLocus::IsDone() const
+Standard_Boolean BRepMAT2d_BisectingLocus::IsDone() const
 {
   return isDone;
 }
@@ -200,7 +202,7 @@ Standard_Boolean MAT2d_BisectingLocus::IsDone() const
 //function : Graph
 //
 //=============================================================================
-Handle(MAT_Graph) MAT2d_BisectingLocus::Graph() const
+Handle(MAT_Graph) BRepMAT2d_BisectingLocus::Graph() const
 {
   return theGraph;
 }
@@ -209,7 +211,7 @@ Handle(MAT_Graph) MAT2d_BisectingLocus::Graph() const
 //function : NumberOfContours
 //
 //=============================================================================
-Standard_Integer MAT2d_BisectingLocus::NumberOfContours () const
+Standard_Integer BRepMAT2d_BisectingLocus::NumberOfContours () const
 {
   return nbContours;
 }
@@ -218,7 +220,7 @@ Standard_Integer MAT2d_BisectingLocus::NumberOfContours () const
 //function : NumberOfElts
 //
 //=============================================================================
-Standard_Integer MAT2d_BisectingLocus::NumberOfElts 
+Standard_Integer BRepMAT2d_BisectingLocus::NumberOfElts 
  (const Standard_Integer IndLine) const
 {
   return theTool.Circuit()->LineLength(IndLine);
@@ -228,7 +230,7 @@ Standard_Integer MAT2d_BisectingLocus::NumberOfElts
 //function : NumberOfSect
 //
 //=============================================================================
-Standard_Integer MAT2d_BisectingLocus::NumberOfSections
+Standard_Integer BRepMAT2d_BisectingLocus::NumberOfSections
 (const Standard_Integer IndLine,
  const Standard_Integer Index  ) 
      const
@@ -241,7 +243,7 @@ Standard_Integer MAT2d_BisectingLocus::NumberOfSections
 //function : BasicElt
 //
 //=============================================================================
-Handle(MAT_BasicElt) MAT2d_BisectingLocus::BasicElt 
+Handle(MAT_BasicElt) BRepMAT2d_BisectingLocus::BasicElt 
        (const Standard_Integer IndLine,
 	const Standard_Integer Index  ) 
      const
@@ -260,7 +262,7 @@ Handle(MAT_BasicElt) MAT2d_BisectingLocus::BasicElt
 //function : GeomBis
 //
 //=============================================================================
-Bisector_Bisec  MAT2d_BisectingLocus::GeomBis (const Handle(MAT_Arc)&  anArc,
+Bisector_Bisec  BRepMAT2d_BisectingLocus::GeomBis (const Handle(MAT_Arc)&  anArc,
 					             Standard_Boolean& Reverse) 
 const 
 {
@@ -285,7 +287,7 @@ const
 //function : GeomElt
 //
 //=============================================================================
-Handle(Geom2d_Geometry)  MAT2d_BisectingLocus::GeomElt
+Handle(Geom2d_Geometry)  BRepMAT2d_BisectingLocus::GeomElt
                            (const Handle(MAT_BasicElt)& aBasicElt) const
 {
   return  theTool.GeomElt(aBasicElt->GeomIndex());
@@ -296,7 +298,7 @@ Handle(Geom2d_Geometry)  MAT2d_BisectingLocus::GeomElt
 //function : GeomElt
 //
 //=============================================================================
-gp_Pnt2d  MAT2d_BisectingLocus::GeomElt(const Handle(MAT_Node)& aNode) const
+gp_Pnt2d  BRepMAT2d_BisectingLocus::GeomElt(const Handle(MAT_Node)& aNode) const
 {
   return theTool.GeomPnt(aNode->GeomIndex());
 }

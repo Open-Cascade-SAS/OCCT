@@ -27,7 +27,8 @@ uses
     Geom2d,
     gp,	
     TopoDS,
-    TopTools
+    TopTools,
+	Bisector
     
 is
     class Explorer;
@@ -35,8 +36,10 @@ is
     	--          bisecting locus  from a Wire, a  Face, or a set of 
     	--          curves from Geom2d.
 
-    class BisectingLocus instantiates BisectingLocus from MAT2d 
-    	    	    	    	    	  (Explorer  from BRepMAT2d);
+    class BisectingLocus;
+	---Purpose: Constuction of the map of the bisector locus on a
+    	--          set of geometrys from Geom2d.
+	
 	---Purpose: the map of bisecting locus.
 					  
     class LinkTopoBilo;

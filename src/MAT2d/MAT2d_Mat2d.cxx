@@ -14,6 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <MAT2d_Mat2d.ixx>
+
 #include <MAT_Edge.hxx>
 #include <MAT_ListOfEdge.hxx>
 #include <MAT_Bisector.hxx>
@@ -22,13 +24,14 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <MAT_DataMapOfIntegerBisector.hxx>
 #include <Precision.hxx>
+#include <MAT2d_Tool2d.hxx>
 
 //========================================================================
-//  function : MAT_Mat
+//  function : MAT2d_Mat2d
 //  purpose  :
 //========================================================================
 
-MAT_Mat::MAT_Mat()
+MAT2d_Mat2d::MAT2d_Mat2d()
 {
   thenumberofbisectors = 0;
   thenumberofedges     = 0;
@@ -117,7 +120,7 @@ MAT_Mat::MAT_Mat()
 //            dans la boucle.
 //
 //========================================================================
-void MAT_Mat::CreateMat(Tool& atool)
+void MAT2d_Mat2d::CreateMat(MAT2d_Tool2d& atool)
 {
 
 #ifdef ICONTINUE
@@ -775,7 +778,7 @@ void MAT_Mat::CreateMat(Tool& atool)
 //  function : LoadBisectorsToRemove
 //  purpose  : Chargement des bisectrices a effacer.
 //========================================================================
-void MAT_Mat::LoadBisectorsToRemove
+void MAT2d_Mat2d::LoadBisectorsToRemove
   (      Standard_Integer&     noofbisectorstoremove,
    const Standard_Real         distance1,
    const Standard_Real         distance2,
@@ -842,7 +845,7 @@ void MAT_Mat::LoadBisectorsToRemove
 //             Si <aside=2> Intersection de <secondbisector> avec ses 
 //                descendants les plus a gauche et les plus a droite.
 //========================================================================v
-void MAT_Mat::Intersect(      Tool&                 atool,
+void MAT2d_Mat2d::Intersect(      MAT2d_Tool2d&                 atool,
 			const Standard_Integer      aside,
 			      Standard_Integer&     noofbisectortoremove,
 			const Handle(MAT_Bisector)& firstbisector,
@@ -933,7 +936,7 @@ void MAT_Mat::Intersect(      Tool&                 atool,
 //  function : Init
 //  purpose  :
 //========================================================================
-void MAT_Mat::Init()
+void MAT2d_Mat2d::Init()
 {
   roots->First();
 }
@@ -942,7 +945,7 @@ void MAT_Mat::Init()
 //  function : More
 //  purpose  :
 //========================================================================
-Standard_Boolean MAT_Mat::More() const
+Standard_Boolean MAT2d_Mat2d::More() const
 {
   return roots->More();
 }
@@ -951,7 +954,7 @@ Standard_Boolean MAT_Mat::More() const
 //  function : Next
 //  purpose  :
 //========================================================================
-void MAT_Mat::Next()
+void MAT2d_Mat2d::Next()
 {
   roots->Next();
 }
@@ -960,7 +963,7 @@ void MAT_Mat::Next()
 //  function : Bisector 
 //  purpose  :
 //========================================================================
-Handle(MAT_Bisector) MAT_Mat::Bisector() const
+Handle(MAT_Bisector) MAT2d_Mat2d::Bisector() const
 {
   return roots->Current();
 }
@@ -969,7 +972,7 @@ Handle(MAT_Bisector) MAT_Mat::Bisector() const
 //  function : NumberOfBisectors
 //  purpose  :
 //========================================================================
-Standard_Integer MAT_Mat::NumberOfBisectors() const
+Standard_Integer MAT2d_Mat2d::NumberOfBisectors() const
 {
   return thenumberofbisectors;
 }
@@ -978,7 +981,7 @@ Standard_Integer MAT_Mat::NumberOfBisectors() const
 //  function : SemiInfinite
 //  purpose  :
 //========================================================================
-Standard_Boolean MAT_Mat::SemiInfinite() const
+Standard_Boolean MAT2d_Mat2d::SemiInfinite() const
 {
   return semiInfinite;
 }
@@ -987,7 +990,7 @@ Standard_Boolean MAT_Mat::SemiInfinite() const
 //  function : IsDone
 //  purpose  :
 //========================================================================
-Standard_Boolean MAT_Mat::IsDone() const
+Standard_Boolean MAT2d_Mat2d::IsDone() const
 {
   return isDone;
 }

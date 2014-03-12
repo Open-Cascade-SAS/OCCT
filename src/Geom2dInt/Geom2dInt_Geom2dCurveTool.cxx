@@ -14,14 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Geom2dInt_Geom2dCurveTool.ixx>
+
 #include <GeomAbs_CurveType.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 
+#include <Adaptor2d_Curve2d.hxx>
+
 //============================================================
-Standard_Integer Geom2dInt_CurveTool::NbSamples (const IntCurveCurve& C,
+Standard_Integer Geom2dInt_Geom2dCurveTool::NbSamples (const Adaptor2d_Curve2d& C,
 						 const Standard_Real U0,
 						 const Standard_Real U1) {
   GeomAbs_CurveType typC = C.GetType();
@@ -51,7 +55,7 @@ Standard_Integer Geom2dInt_CurveTool::NbSamples (const IntCurveCurve& C,
   return((Standard_Integer)nbs);
 }
 //============================================================
-Standard_Integer Geom2dInt_CurveTool::NbSamples (const IntCurveCurve& C) { 
+Standard_Integer Geom2dInt_Geom2dCurveTool::NbSamples (const Adaptor2d_Curve2d& C) { 
   GeomAbs_CurveType typC = C.GetType();
   static Standard_Real nbsOther = 10.0;
   Standard_Real nbs = nbsOther;

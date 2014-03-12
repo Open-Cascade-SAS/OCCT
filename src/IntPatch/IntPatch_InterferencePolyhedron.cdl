@@ -14,12 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class InterferencePolyhedron from Intf
-    (Polyhedron1  as any;
-     ToolPolyhe1  as any;
-     Polyhedron2  as any;
-     ToolPolyhe2  as any)
-    inherits Interference from Intf
+class InterferencePolyhedron from IntPatch inherits Interference from Intf
 
 	---Purpose: Computes the  interference between two polyhedra or the
 	--          self interference of a polyhedron.
@@ -32,43 +27,45 @@ uses    Pnt               from gp,
     	SectionLine       from Intf,
     	SeqOfSectionLine  from Intf,
     	TangentZone       from Intf,
-    	SeqOfTangentZone  from Intf
+    	SeqOfTangentZone  from Intf,
+        Polyhedron        from IntPatch,
+        PolyhedronTool    from IntPatch
 
 is
 
 -- Interface :
 
-    Create          returns InterferencePolyhedron from Intf;
+    Create          returns InterferencePolyhedron from IntPatch;
     ---Purpose: Constructs an empty interference of Polyhedron.
 
-    Create         (Obje1  : in Polyhedron1;
-    	    	    Obje2  : in Polyhedron2) 
-    	            returns InterferencePolyhedron from Intf;
+    Create         (Obje1  : in Polyhedron from IntPatch;
+    	    	    Obje2  : in Polyhedron from IntPatch) 
+    	            returns InterferencePolyhedron from IntPatch;
     ---Purpose: Constructs  and computes  an  interference between  the two
     --          Polyhedra.
 
-    Create         (Obje   : in Polyhedron1) 
-    	            returns InterferencePolyhedron from Intf;
+    Create         (Obje   : in Polyhedron from IntPatch) 
+    	            returns InterferencePolyhedron from IntPatch;
     ---Purpose: Constructs  and  computes   the self   interference  of   a
     --          Polyhedron.
 
     Perform        (me     : in out;
-    	    	    Obje1  : in Polyhedron1;
-    	    	    Obje2  : in Polyhedron2);
+    	    	    Obje1  : in Polyhedron from IntPatch;
+    	    	    Obje2  : in Polyhedron from IntPatch);
     ---Purpose: Computes the interference between the two Polyhedra.
 
     Perform        (me     : in out;
-    	    	    Obje   : in Polyhedron1);
+    	    	    Obje   : in Polyhedron from IntPatch);
     ---Purpose: Computes the self interference of a Polyhedron.
 
 -- Implementation :
 
     Interference   (me     : in out;
-    	    	    Obje1  : in Polyhedron1)
+    	    	    Obje1  : in Polyhedron from IntPatch)
     	    	    is private;
     Interference   (me     : in out;
-    	    	    Obje1  : in Polyhedron1;
-     	    	    Obje2  : in Polyhedron2)
+    	    	    Obje1  : in Polyhedron from IntPatch;
+     	    	    Obje2  : in Polyhedron from IntPatch)
     	    	    is private;
     ---Purpose: Compares the bounding volumes between the facets of <Obje1>
     --          and the facets of <Obje2> and intersects the facets when the
@@ -76,9 +73,9 @@ is
 
     Intersect      (me     : in out;
 		    TriF   : in Integer from Standard;
-    	    	    Obje1  : in Polyhedron1;
+    	    	    Obje1  : in Polyhedron from IntPatch;
 		    TriS   : in Integer from Standard;
-    	    	    Obje2  : in Polyhedron2)
+    	    	    Obje2  : in Polyhedron from IntPatch)
     	    	    is private;
     ---Purpose: Computes  the intersection between    the  facet <Tri1>  of
     --          <FirstPol> and the facet <Tri2> of <SecondPol>.
@@ -86,9 +83,9 @@ is
     TangentZoneValue
     	    	   (me;
     	    	    TheTZ  : in out TangentZone from Intf;
-		    Obje1  : Polyhedron1;
+		    Obje1  : Polyhedron from IntPatch;
 		    Tri1   : Integer from Standard;
-    	    	    Obje2  : Polyhedron2;
+    	    	    Obje2  : Polyhedron from IntPatch;
     	    	    Tri2   : Integer from Standard)
 		    returns Boolean from Standard
     	    	    is private;
@@ -96,8 +93,8 @@ is
     --          <FirstPol> and the facet <Tri2> of <SecondPol>.
 
     CoupleCharacteristics (me: in out;
-            FirstPol: Polyhedron1;
-            SeconPol: Polyhedron2) is private;
+            FirstPol: Polyhedron from IntPatch;
+            SeconPol: Polyhedron from IntPatch) is private;
 fields
     OI       : Integer from Standard[3]; -- index des sommets de l objet
     TI       : Integer from Standard[3]; -- index des sommets du tool

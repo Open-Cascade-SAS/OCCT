@@ -14,8 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class BisectingLocus from MAT2d (Explorer as any) 
-    -- as SketchExplorer from MAT2d   
+class BisectingLocus from BRepMAT2d 
 
 	---Purpose  : BisectingLocus generates and contains the Bisecting_Locus
 	--            of a set of lines from Geom2d, defined by <ExploSet>.
@@ -48,7 +47,7 @@ generic class BisectingLocus from MAT2d (Explorer as any)
 	--         
     	--         The map of bisecting  locus is described by a graph.
     	--         - The  BasicsElements  correspond  to elements on
-    	--           the figure described by the Explorer.
+    	--           the figure described by the Explorer from BRepMAT2d.
     	--         - The Arcs correspond to the bisectors.
     	--         - The Nodes are the extremities of the arcs.
 
@@ -63,15 +62,16 @@ uses
     Bisec                    from Bisector,
     Geometry                 from Geom2d,
     Pnt2d                    from gp,
-    Tool2d                   from MAT2d
+    Tool2d                   from MAT2d,
+	Explorer                 from BRepMAT2d
     
 is
-    Create returns BisectingLocus from MAT2d;
+    Create returns BisectingLocus from BRepMAT2d;
     
 ---Category: Construction.
 
     Compute (me        : in out ; 
-    	     anExplo   : in out Explorer;
+    	     anExplo   : in out Explorer from BRepMAT2d;
              LineIndex :        Integer       = 1;
              aSide     :        Side from MAT = MAT_Left )
 	--- Purpose : Computation of the Bisector_Locus in a set of Lines 
@@ -159,11 +159,5 @@ fields
     nbContours  : Integer               from Standard;	
     
 end BisectingLocus;
-
-
-
-
-
-
 
 

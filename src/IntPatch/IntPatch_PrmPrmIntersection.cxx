@@ -19,8 +19,8 @@
 
 #include <IntPatch_PrmPrmIntersection.ixx>
 
-#include <IntPatch_TheInterfPolyhedron.hxx>
-#include <IntPatch_ThePWalkingInter.hxx>
+#include <IntPatch_InterferencePolyhedron.hxx>
+#include <IntWalk_PWalking.hxx>
 #include <IntPatch_WLine.hxx>
 #include <IntPatch_RstInt.hxx>
 
@@ -143,7 +143,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
                                            const Standard_Real   Deflection,
                                            const Standard_Real   Increment)
 { 
-  IntPatch_TheInterfPolyhedron Interference(Poly1,Poly2);
+  IntPatch_InterferencePolyhedron Interference(Poly1,Poly2);
   empt = Standard_True;
   done = Standard_True;
   SLin.Clear();  
@@ -158,7 +158,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
 
   TColStd_Array1OfReal StartParams(1,4);
 
-  IntPatch_ThePWalkingInter PW( Surf1, Surf2, TolTangency, Epsilon, Deflection, Increment );
+  IntWalk_PWalking PW( Surf1, Surf2, TolTangency, Epsilon, Deflection, Increment );
 
   Standard_Real    SeuildPointLigne = 15.0 * Increment * Increment; //-- 10 est insuffisant
   Standard_Real    incidence;
@@ -538,7 +538,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
                                            const Standard_Real   Deflection,
                                            const Standard_Real   Increment)
 { 
-  IntPatch_TheInterfPolyhedron Interference(Poly1);
+  IntPatch_InterferencePolyhedron Interference(Poly1);
   empt = Standard_True;
   done = Standard_True;
   SLin.Clear();  
@@ -553,7 +553,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
   Standard_Real pu1,pu2,pv1,pv2;
 
   TColStd_Array1OfReal StartParams(1,4);
-  IntPatch_ThePWalkingInter PW(Surf1,Surf1,TolTangency,Epsilon,Deflection,Increment);
+  IntWalk_PWalking PW(Surf1,Surf1,TolTangency,Epsilon,Deflection,Increment);
 
   Standard_Real    SeuildPointLigne = 15.0 * Increment * Increment; //-- 10 est insuffisant
   Standard_Real    incidence;
@@ -995,7 +995,7 @@ Handle_IntPatch_Line IntPatch_PrmPrmIntersection::NewLine (const Handle(Adaptor3
   V2(Low) = v2;
   AC(Low) =0.0;
 
-  IntPatch_ThePWalkingInter PW(Surf1,Surf2,0.000001,0.000001,0.001,0.001);
+  IntWalk_PWalking PW(Surf1,Surf2,0.000001,0.000001,0.001,0.001);
 
   Standard_Integer i;
   for(i=Low+1; i<=High; i++)
@@ -1340,7 +1340,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)&    
   gp_Pnt Point3dDebut,Point3dFin;
 
   TColStd_Array1OfReal StartParams(1,4);
-  IntPatch_ThePWalkingInter PW(Surf1,Surf2,TolTangency,Epsilon,Deflection,Increment);  
+  IntWalk_PWalking PW(Surf1,Surf2,TolTangency,Epsilon,Deflection,Increment);  
 
   IntSurf_ListIteratorOfListOfPntOn2S IterLOP2(LOfPnts);
   for(; IterLOP2.More(); IterLOP2.Next() ){
@@ -1639,7 +1639,7 @@ void IntPatch_PrmPrmIntersection::Perform(const Handle(Adaptor3d_HSurface)&    S
   //      nIncrement/=0.5*MaxOscill;
   //    }
 
-  IntPatch_ThePWalkingInter PW(Surf1,Surf2,
+  IntWalk_PWalking PW(Surf1,Surf2,
     TolTangency,
     Epsilon,
     Deflection,
@@ -1964,7 +1964,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
     gp_Pnt Point3dDebut,Point3dFin;
 
     TColStd_Array1OfReal StartParams(1,4);
-    IntPatch_ThePWalkingInter PW(Surf1,Surf2,TolTangency,Epsilon,Deflection,Increment);
+    IntWalk_PWalking PW(Surf1,Surf2,TolTangency,Epsilon,Deflection,Increment);
 
     if(nbLigSec>=1)
     {
@@ -2663,7 +2663,7 @@ void IntPatch_PrmPrmIntersection::Perform (const Handle(Adaptor3d_HSurface)& Sur
   //if(MaxOscill>10)
   //nIncrement/=0.5*MaxOscill;
 
-  IntPatch_ThePWalkingInter PW(Surf1,Surf2,TolTangency,Epsilon,Deflection,nIncrement);
+  IntWalk_PWalking PW(Surf1,Surf2,TolTangency,Epsilon,Deflection,nIncrement);
   Standard_Real    SeuildPointLigne = 15.0 * Increment * Increment; //-- 10 est insuffisant
   Standard_Real    dminiPointLigne;
   Standard_Boolean HasStartPoint,RejetLigne;

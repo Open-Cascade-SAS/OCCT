@@ -14,10 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class PWalking from IntWalk (
-    ThePSurface           as any;
-    ThePSurfaceTool       as any)
-
+class PWalking from IntWalk
     
     ---Purpose: This class implements an algorithm to determine the
     --          intersection between 2 parametrized surfaces, marching from
@@ -33,21 +30,21 @@ uses XY                  from gp,
      LineOn2S            from IntSurf,
      Dir                 from gp,
      Dir2d               from gp,
-     Pnt                 from gp
+     Pnt                 from gp,
+	 TheInt2S            from IntWalk,
+     HSurface            from Adaptor3d,
+     HSurfaceTool        from Adaptor3d
      
      
 raises OutOfRange from Standard,
        NotDone    from StdFail
        
 
-    class TheInt2S instantiates Int2S from IntImp
-             (ThePSurface, ThePSurfaceTool);
-
 is
 
 
     Create ( Caro1 , 
-             Caro2       : ThePSurface ; 
+             Caro2       : HSurface from Adaptor3d ; 
              TolTangency,
              Epsilon,
              Deflection,
@@ -73,7 +70,7 @@ is
 	
 
     Create ( Caro1 , 
-             Caro2       : ThePSurface ; 
+             Caro2       : HSurface from Adaptor3d ; 
              TolTangency,
              Epsilon,
              Deflection,
@@ -259,7 +256,7 @@ theDirectionFlag: Boolean from Standard)
     is private;
   
   DistanceMinimizeByGradient( me    : in out;
-                              theASurf1 , theASurf2  : ThePSurface ;
+                              theASurf1 , theASurf2  : HSurface from Adaptor3d ;
                               theU1, theV1, theU2, theV2: out Real from Standard;
                               theStep0U1V1: Real from Standard = 1.0e-6;
                               theStep0U2V2: Real from Standard = 1.0e-6)
@@ -269,7 +266,7 @@ theDirectionFlag: Boolean from Standard)
     --  initial point.
   
   DistanceMinimizeByExtrema(me          : in out;
-                            theASurf1   : ThePSurface ;
+                            theASurf1   : HSurface from Adaptor3d ;
                             theP0       : Pnt from gp;
                             theU0, theV0: out Real from Standard;
                             theStep0U: Real from Standard = 1.0;
@@ -280,7 +277,7 @@ theDirectionFlag: Boolean from Standard)
     --  initial point.
   
   SeekPointOnBoundary(me    : in out;
-                      theASurf1 , theASurf2  : ThePSurface ;
+                      theASurf1 , theASurf2  : HSurface from Adaptor3d ;
                       theU1, theV1, theU2, theV2: Real from Standard;
                       isTheFirst : Boolean from Standard)
     returns Boolean from Standard
@@ -290,7 +287,7 @@ theDirectionFlag: Boolean from Standard)
   
   
   PutToBoundary( me    : in out;
-                 theASurf1 , theASurf2  : ThePSurface)
+                 theASurf1 , theASurf2  : HSurface from Adaptor3d)
     -- Tries to extend existing intersection line 
     --  (as set of points) to surface's boundaries,
     --  if it is possibly.
@@ -301,7 +298,7 @@ theDirectionFlag: Boolean from Standard)
 
 
   SeekAdditionalPoints( me    : in out;
-                        theASurf1 , theASurf2  : ThePSurface;
+                        theASurf1 , theASurf2  : HSurface from Adaptor3d;
                         theMinNbPoints : Integer from Standard)
     returns Boolean from Standard;
     -- Unites and correctly coordinates of work of
@@ -351,7 +348,7 @@ fields
     firstd1            : Dir2d    from gp;
     firstd2            : Dir2d    from gp;
 
-    myIntersectionOn2S : TheInt2S ;
+    myIntersectionOn2S : TheInt2S from IntWalk;
     STATIC_BLOCAGE_SUR_PAS_TROP_GRAND : Integer from Standard;
     STATIC_PRECEDENT_INFLEXION        : Integer from Standard;
 end PWalking;

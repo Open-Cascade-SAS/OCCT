@@ -12,16 +12,25 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//-----------------------------
-//--  IntWalk_PWalking_1.gxx
-//-- 
+#include <IntWalk_PWalking.ixx>
+
+#include <IntWalk_StatusDeflection.hxx>
+
+#include <TColgp_Array1OfPnt.hxx>
+#include <TColStd_Array1OfReal.hxx>
+
+#include <IntImp_ComputeTangence.hxx>
+
+#include <Adaptor3d_HSurface.hxx>
+#include <Adaptor3d_HSurfaceTool.hxx>
 
 #include <Precision.hxx>
-#include <math_FunctionSetRoot.hxx>
 
+#include <math_FunctionSetRoot.hxx>
 #include <Geom_Surface.hxx>
 
-//#define KELARG 20.0
+#include <Standard_Failure.hxx>
+#include <gp_Pnt2d.hxx>
 
 //==================================================================================
 // function : IntWalk_PWalking::IntWalk_PWalking
@@ -38,8 +47,8 @@ void ComputePasInit(Standard_Real *pasuv,
                     Standard_Real _Vm1,Standard_Real _VM1,
                     Standard_Real _Um2,Standard_Real _UM2,
                     Standard_Real _Vm2,Standard_Real _VM2,
-                    const ThePSurface& ,
-                    const ThePSurface& ,
+                    const Handle(Adaptor3d_HSurface)& ,
+                    const Handle(Adaptor3d_HSurface)& ,
                     const Standard_Real Increment) 
 { 
   Standard_Real du1=Abs(UM1-Um1);
@@ -77,10 +86,10 @@ void ComputePasInit(Standard_Real *pasuv,
 //            any point can be considered as parallel of any line).
 //=======================================================================
 static void IsParallel(const Handle(IntSurf_LineOn2S)& theLine,
-                  const Standard_Boolean theCheckSurf1,
-                  const Standard_Real theToler,
-                  Standard_Boolean& theIsUparallel,
-                  Standard_Boolean& theIsVparallel)
+                       const Standard_Boolean theCheckSurf1,
+                       const Standard_Real theToler,
+                       Standard_Boolean& theIsUparallel,
+                       Standard_Boolean& theIsVparallel)
 {
   const Standard_Integer aNbPointsMAX = 23;
 
@@ -139,12 +148,12 @@ static void IsParallel(const Handle(IntSurf_LineOn2S)& theLine,
 //            equal maximal deviation.
 //=======================================================================
 static Standard_Boolean Checking( const Handle(Adaptor3d_HSurface)& theASurf1,
-                                  const Handle(Adaptor3d_HSurface)& theASurf2,
-                                  Standard_Real& theU1,
-                                  Standard_Real& theV1,
-                                  Standard_Real& theU2,
-                                  Standard_Real& theV2,
-                                  Standard_Real& theFactTol)
+                                 const Handle(Adaptor3d_HSurface)& theASurf2,
+                                 Standard_Real& theU1,
+                                 Standard_Real& theV1,
+                                 Standard_Real& theU2,
+                                 Standard_Real& theV2,
+                                 Standard_Real& theFactTol)
 {
   const Standard_Real aTol = Precision::PConfusion();
   const Standard_Real aU1bFirst = theASurf1->FirstUParameter();
@@ -166,7 +175,7 @@ static Standard_Boolean Checking( const Handle(Adaptor3d_HSurface)& theASurf1,
     theFactTol = Max(theFactTol, aDelta);
     isOnOrIn = Standard_False;
   }
-  
+
   aDelta = theU1 - aU1bLast;
   if(aDelta > aTol)
   {
@@ -182,7 +191,7 @@ static Standard_Boolean Checking( const Handle(Adaptor3d_HSurface)& theASurf1,
     theFactTol = Max(theFactTol, aDelta);
     isOnOrIn = Standard_False;
   }
-  
+
   aDelta = theV1 - aV1bLast;
   if(aDelta > aTol)
   {
@@ -198,7 +207,7 @@ static Standard_Boolean Checking( const Handle(Adaptor3d_HSurface)& theASurf1,
     theFactTol = Max(theFactTol, aDelta);
     isOnOrIn = Standard_False;
   }
-  
+
   aDelta = theU2 - aU2bLast;
   if(aDelta > aTol)
   {
@@ -214,7 +223,7 @@ static Standard_Boolean Checking( const Handle(Adaptor3d_HSurface)& theASurf1,
     theFactTol = Max(theFactTol, aDelta);
     isOnOrIn = Standard_False;
   }
-  
+
   aDelta = theV2 - aV2bLast;
   if(aDelta > aTol)
   {
@@ -230,8 +239,8 @@ static Standard_Boolean Checking( const Handle(Adaptor3d_HSurface)& theASurf1,
 // function : IntWalk_PWalking::IntWalk_PWalking
 // purpose  : 
 //==================================================================================
-IntWalk_PWalking::IntWalk_PWalking(const ThePSurface& Caro1,
-                                   const ThePSurface& Caro2,
+IntWalk_PWalking::IntWalk_PWalking(const Handle(Adaptor3d_HSurface)& Caro1,
+                                   const Handle(Adaptor3d_HSurface)& Caro2,
                                    const Standard_Real TolTangency,
                                    const Standard_Real Epsilon,
                                    const Standard_Real Deflection,
@@ -250,21 +259,21 @@ STATIC_PRECEDENT_INFLEXION(0)
   Standard_Real KELARG=20.;
   //
   pasMax=Increment*0.2; //-- June 25 99 after problems with precision 
-  Um1 = ThePSurfaceTool::FirstUParameter(Caro1);
-  Vm1 = ThePSurfaceTool::FirstVParameter(Caro1);
-  UM1 = ThePSurfaceTool::LastUParameter(Caro1);
-  VM1 = ThePSurfaceTool::LastVParameter(Caro1);
+  Um1 = Adaptor3d_HSurfaceTool::FirstUParameter(Caro1);
+  Vm1 = Adaptor3d_HSurfaceTool::FirstVParameter(Caro1);
+  UM1 = Adaptor3d_HSurfaceTool::LastUParameter(Caro1);
+  VM1 = Adaptor3d_HSurfaceTool::LastVParameter(Caro1);
 
-  Um2 = ThePSurfaceTool::FirstUParameter(Caro2);
-  Vm2 = ThePSurfaceTool::FirstVParameter(Caro2);
-  UM2 = ThePSurfaceTool::LastUParameter(Caro2);
-  VM2 = ThePSurfaceTool::LastVParameter(Caro2);
+  Um2 = Adaptor3d_HSurfaceTool::FirstUParameter(Caro2);
+  Vm2 = Adaptor3d_HSurfaceTool::FirstVParameter(Caro2);
+  UM2 = Adaptor3d_HSurfaceTool::LastUParameter(Caro2);
+  VM2 = Adaptor3d_HSurfaceTool::LastVParameter(Caro2);
 
-  ResoU1 = ThePSurfaceTool::UResolution(Caro1,Precision::Confusion());
-  ResoV1 = ThePSurfaceTool::VResolution(Caro1,Precision::Confusion());
+  ResoU1 = Adaptor3d_HSurfaceTool::UResolution(Caro1,Precision::Confusion());
+  ResoV1 = Adaptor3d_HSurfaceTool::VResolution(Caro1,Precision::Confusion());
 
-  ResoU2 = ThePSurfaceTool::UResolution(Caro2,Precision::Confusion());
-  ResoV2 = ThePSurfaceTool::VResolution(Caro2,Precision::Confusion());
+  ResoU2 = Adaptor3d_HSurfaceTool::UResolution(Caro2,Precision::Confusion());
+  ResoV2 = Adaptor3d_HSurfaceTool::VResolution(Caro2,Precision::Confusion());
 
   Standard_Real NEWRESO;
   Standard_Real MAXVAL;
@@ -304,49 +313,49 @@ STATIC_PRECEDENT_INFLEXION(0)
   if(ResoV2>0.0001*pasuv[3]) ResoV2=0.00001*pasuv[3];
 
 
-  if(ThePSurfaceTool::IsUPeriodic(Caro1)==Standard_False) { 
+  if(Adaptor3d_HSurfaceTool::IsUPeriodic(Caro1)==Standard_False) { 
     //UM1+=KELARG*pasuv[0];  Um1-=KELARG*pasuv[0];
   }
   else { 
     Standard_Real t = UM1-Um1; 
-    if(t<ThePSurfaceTool::UPeriod(Caro1)) { 
-      t=0.5*(ThePSurfaceTool::UPeriod(Caro1)-t);
+    if(t<Adaptor3d_HSurfaceTool::UPeriod(Caro1)) { 
+      t=0.5*(Adaptor3d_HSurfaceTool::UPeriod(Caro1)-t);
       t=(t>KELARG*pasuv[0])? KELARG*pasuv[0] : t;
       UM1+=t;  Um1-=t;
     }
   }
 
-  if(ThePSurfaceTool::IsVPeriodic(Caro1)==Standard_False) { 
+  if(Adaptor3d_HSurfaceTool::IsVPeriodic(Caro1)==Standard_False) { 
     //VM1+=KELARG*pasuv[1];  Vm1-=KELARG*pasuv[1];
   }
   else { 
     Standard_Real t = VM1-Vm1; 
-    if(t<ThePSurfaceTool::VPeriod(Caro1)) { 
-      t=0.5*(ThePSurfaceTool::VPeriod(Caro1)-t);
+    if(t<Adaptor3d_HSurfaceTool::VPeriod(Caro1)) { 
+      t=0.5*(Adaptor3d_HSurfaceTool::VPeriod(Caro1)-t);
       t=(t>KELARG*pasuv[1])? KELARG*pasuv[1] : t;
       VM1+=t;  Vm1-=t;
     }
   }
 
-  if(ThePSurfaceTool::IsUPeriodic(Caro2)==Standard_False) { 
+  if(Adaptor3d_HSurfaceTool::IsUPeriodic(Caro2)==Standard_False) { 
     //UM2+=KELARG*pasuv[2];  Um2-=KELARG*pasuv[2];
   }
   else { 
     Standard_Real t = UM2-Um2; 
-    if(t<ThePSurfaceTool::UPeriod(Caro2)) { 
-      t=0.5*(ThePSurfaceTool::UPeriod(Caro2)-t);
+    if(t<Adaptor3d_HSurfaceTool::UPeriod(Caro2)) { 
+      t=0.5*(Adaptor3d_HSurfaceTool::UPeriod(Caro2)-t);
       t=(t>KELARG*pasuv[2])? KELARG*pasuv[2] : t;
       UM2+=t;  Um2-=t;
     }
   }
 
-  if(ThePSurfaceTool::IsVPeriodic(Caro2)==Standard_False) {   
+  if(Adaptor3d_HSurfaceTool::IsVPeriodic(Caro2)==Standard_False) {   
     //VM2+=KELARG*pasuv[3];  Vm2-=KELARG*pasuv[3];
   }
   else { 
     Standard_Real t = VM2-Vm2; 
-    if(t<ThePSurfaceTool::VPeriod(Caro2)) { 
-      t=0.5*(ThePSurfaceTool::VPeriod(Caro2)-t);
+    if(t<Adaptor3d_HSurfaceTool::VPeriod(Caro2)) { 
+      t=0.5*(Adaptor3d_HSurfaceTool::VPeriod(Caro2)-t);
       t=(t>KELARG*pasuv[3])? KELARG*pasuv[3] : t;
       VM2+=t;  Vm2-=t;
     }
@@ -366,8 +375,8 @@ STATIC_PRECEDENT_INFLEXION(0)
 // function : IntWalk_PWalking
 // purpose  : 
 //==================================================================================
-IntWalk_PWalking::IntWalk_PWalking(const ThePSurface& Caro1,
-                                   const ThePSurface& Caro2,
+IntWalk_PWalking::IntWalk_PWalking(const Handle(Adaptor3d_HSurface)& Caro1,
+                                   const Handle(Adaptor3d_HSurface)& Caro2,
                                    const Standard_Real TolTangency,
                                    const Standard_Real Epsilon,
                                    const Standard_Real Deflection,
@@ -391,21 +400,21 @@ STATIC_PRECEDENT_INFLEXION(0)
   //
   pasMax=Increment*0.2; //-- June 25 99 after problems with precision 
   //
-  Um1 = ThePSurfaceTool::FirstUParameter(Caro1);
-  Vm1 = ThePSurfaceTool::FirstVParameter(Caro1);
-  UM1 = ThePSurfaceTool::LastUParameter(Caro1);
-  VM1 = ThePSurfaceTool::LastVParameter(Caro1);
+  Um1 = Adaptor3d_HSurfaceTool::FirstUParameter(Caro1);
+  Vm1 = Adaptor3d_HSurfaceTool::FirstVParameter(Caro1);
+  UM1 = Adaptor3d_HSurfaceTool::LastUParameter(Caro1);
+  VM1 = Adaptor3d_HSurfaceTool::LastVParameter(Caro1);
 
-  Um2 = ThePSurfaceTool::FirstUParameter(Caro2);
-  Vm2 = ThePSurfaceTool::FirstVParameter(Caro2);
-  UM2 = ThePSurfaceTool::LastUParameter(Caro2);
-  VM2 = ThePSurfaceTool::LastVParameter(Caro2);
+  Um2 = Adaptor3d_HSurfaceTool::FirstUParameter(Caro2);
+  Vm2 = Adaptor3d_HSurfaceTool::FirstVParameter(Caro2);
+  UM2 = Adaptor3d_HSurfaceTool::LastUParameter(Caro2);
+  VM2 = Adaptor3d_HSurfaceTool::LastVParameter(Caro2);
 
-  ResoU1 = ThePSurfaceTool::UResolution(Caro1,Precision::Confusion());
-  ResoV1 = ThePSurfaceTool::VResolution(Caro1,Precision::Confusion());
+  ResoU1 = Adaptor3d_HSurfaceTool::UResolution(Caro1,Precision::Confusion());
+  ResoV1 = Adaptor3d_HSurfaceTool::VResolution(Caro1,Precision::Confusion());
 
-  ResoU2 = ThePSurfaceTool::UResolution(Caro2,Precision::Confusion());
-  ResoV2 = ThePSurfaceTool::VResolution(Caro2,Precision::Confusion());
+  ResoU2 = Adaptor3d_HSurfaceTool::UResolution(Caro2,Precision::Confusion());
+  ResoV2 = Adaptor3d_HSurfaceTool::VResolution(Caro2,Precision::Confusion());
   //
   Standard_Real NEWRESO, MAXVAL, MAXVAL2;
   //
@@ -454,55 +463,55 @@ STATIC_PRECEDENT_INFLEXION(0)
   pasuv[2]=pasMax*Abs(UM2-Um2);
   pasuv[3]=pasMax*Abs(VM2-Vm2);
   //
-  if(ThePSurfaceTool::IsUPeriodic(Caro1)==Standard_False) { 
+  if(Adaptor3d_HSurfaceTool::IsUPeriodic(Caro1)==Standard_False) { 
     UM1+=KELARG*pasuv[0];  
     Um1-=KELARG*pasuv[0];
   }
   else { 
     Standard_Real t = UM1-Um1; 
-    if(t<ThePSurfaceTool::UPeriod(Caro1)) { 
-      t=0.5*(ThePSurfaceTool::UPeriod(Caro1)-t);
+    if(t<Adaptor3d_HSurfaceTool::UPeriod(Caro1)) { 
+      t=0.5*(Adaptor3d_HSurfaceTool::UPeriod(Caro1)-t);
       t=(t>KELARG*pasuv[0])? KELARG*pasuv[0] : t;
       UM1+=t;  
       Um1-=t;
     }
   }
   //
-  if(ThePSurfaceTool::IsVPeriodic(Caro1)==Standard_False) { 
+  if(Adaptor3d_HSurfaceTool::IsVPeriodic(Caro1)==Standard_False) { 
     VM1+=KELARG*pasuv[1];
     Vm1-=KELARG*pasuv[1];
   }
   else { 
     Standard_Real t = VM1-Vm1; 
-    if(t<ThePSurfaceTool::VPeriod(Caro1)) { 
-      t=0.5*(ThePSurfaceTool::VPeriod(Caro1)-t);
+    if(t<Adaptor3d_HSurfaceTool::VPeriod(Caro1)) { 
+      t=0.5*(Adaptor3d_HSurfaceTool::VPeriod(Caro1)-t);
       t=(t>KELARG*pasuv[1])? KELARG*pasuv[1] : t;
       VM1+=t;  Vm1-=t;
     }
   }
   //
-  if(ThePSurfaceTool::IsUPeriodic(Caro2)==Standard_False) { 
+  if(Adaptor3d_HSurfaceTool::IsUPeriodic(Caro2)==Standard_False) { 
     UM2+=KELARG*pasuv[2];  
     Um2-=KELARG*pasuv[2];
   }
   else { 
     Standard_Real t = UM2-Um2; 
-    if(t<ThePSurfaceTool::UPeriod(Caro2)) { 
-      t=0.5*(ThePSurfaceTool::UPeriod(Caro2)-t);
+    if(t<Adaptor3d_HSurfaceTool::UPeriod(Caro2)) { 
+      t=0.5*(Adaptor3d_HSurfaceTool::UPeriod(Caro2)-t);
       t=(t>KELARG*pasuv[2])? KELARG*pasuv[2] : t;
       UM2+=t;  
       Um2-=t;
     }
   }
 
-  if(ThePSurfaceTool::IsVPeriodic(Caro2)==Standard_False) {   
+  if(Adaptor3d_HSurfaceTool::IsVPeriodic(Caro2)==Standard_False) {   
     VM2+=KELARG*pasuv[3];  
     Vm2-=KELARG*pasuv[3];
   }
   else { 
     Standard_Real t = VM2-Vm2; 
-    if(t<ThePSurfaceTool::VPeriod(Caro2)) { 
-      t=0.5*(ThePSurfaceTool::VPeriod(Caro2)-t);
+    if(t<Adaptor3d_HSurfaceTool::VPeriod(Caro2)) { 
+      t=0.5*(Adaptor3d_HSurfaceTool::VPeriod(Caro2)-t);
       t=(t>KELARG*pasuv[3])? KELARG*pasuv[3] : t;
       VM2+=t;  
       Vm2-=t;
@@ -592,18 +601,18 @@ void IntWalk_PWalking::Perform(const TColStd_Array1OfReal& ParDep,
   done = Standard_False;
   //
   // Caro1 and Caro2
-  const ThePSurface& Caro1 =myIntersectionOn2S.Function().AuxillarSurface1();
-  const ThePSurface& Caro2 =myIntersectionOn2S.Function().AuxillarSurface2();
+  const Handle(Adaptor3d_HSurface)& Caro1 =myIntersectionOn2S.Function().AuxillarSurface1();
+  const Handle(Adaptor3d_HSurface)& Caro2 =myIntersectionOn2S.Function().AuxillarSurface2();
   //
-  const Standard_Real UFirst1 = ThePSurfaceTool::FirstUParameter(Caro1);
-  const Standard_Real VFirst1 = ThePSurfaceTool::FirstVParameter(Caro1);
-  const Standard_Real ULast1  = ThePSurfaceTool::LastUParameter (Caro1);
-  const Standard_Real VLast1  = ThePSurfaceTool::LastVParameter (Caro1);
+  const Standard_Real UFirst1 = Adaptor3d_HSurfaceTool::FirstUParameter(Caro1);
+  const Standard_Real VFirst1 = Adaptor3d_HSurfaceTool::FirstVParameter(Caro1);
+  const Standard_Real ULast1  = Adaptor3d_HSurfaceTool::LastUParameter (Caro1);
+  const Standard_Real VLast1  = Adaptor3d_HSurfaceTool::LastVParameter (Caro1);
 
-  const Standard_Real UFirst2 = ThePSurfaceTool::FirstUParameter(Caro2);
-  const Standard_Real VFirst2 = ThePSurfaceTool::FirstVParameter(Caro2);
-  const Standard_Real ULast2  = ThePSurfaceTool::LastUParameter (Caro2);
-  const Standard_Real VLast2  = ThePSurfaceTool::LastVParameter (Caro2);
+  const Standard_Real UFirst2 = Adaptor3d_HSurfaceTool::FirstUParameter(Caro2);
+  const Standard_Real VFirst2 = Adaptor3d_HSurfaceTool::FirstVParameter(Caro2);
+  const Standard_Real ULast2  = Adaptor3d_HSurfaceTool::LastUParameter (Caro2);
+  const Standard_Real VLast2  = Adaptor3d_HSurfaceTool::LastVParameter (Caro2);
   //
   ComputePasInit(pasuv,u1min,u1max,v1min,v1max,u2min,u2max,v2min,v2max,
     Um1,UM1,Vm1,VM1,Um2,UM2,Vm2,VM2,Caro1,Caro2,pasMax+pasMax);
@@ -1802,14 +1811,14 @@ Standard_Boolean IntWalk_PWalking::ExtendLineInCommonZone(const IntImp_ConstIsop
 //purpose  : 
 //=======================================================================
 Standard_Boolean IntWalk_PWalking::
-  DistanceMinimizeByGradient( const Handle(Adaptor3d_HSurface)& theASurf1,
-                              const Handle(Adaptor3d_HSurface)& theASurf2,
-                              Standard_Real& theU1,
-                              Standard_Real& theV1,
-                              Standard_Real& theU2,
-                              Standard_Real& theV2,
-                              const Standard_Real theStep0U1V1,
-                              const Standard_Real theStep0U2V2)
+DistanceMinimizeByGradient( const Handle(Adaptor3d_HSurface)& theASurf1,
+                           const Handle(Adaptor3d_HSurface)& theASurf2,
+                           Standard_Real& theU1,
+                           Standard_Real& theV1,
+                           Standard_Real& theU2,
+                           Standard_Real& theV2,
+                           const Standard_Real theStep0U1V1,
+                           const Standard_Real theStep0U2V2)
 {
   const Standard_Integer aNbIterMAX = 60;
   const Standard_Real aTol = 1.0e-14;
@@ -1865,20 +1874,20 @@ Standard_Boolean IntWalk_PWalking::
   {
     Standard_Real anAdd = aGradFu*aSTEPuv;
     Standard_Real aPARu = (anAdd >= 0.0)?
-            (theU1 - Max(anAdd, Epsilon(theU1))) :
-            (theU1 + Max(-anAdd, Epsilon(theU1)));
+      (theU1 - Max(anAdd, Epsilon(theU1))) :
+    (theU1 + Max(-anAdd, Epsilon(theU1)));
     anAdd = aGradFv*aSTEPuv;
     Standard_Real aPARv = (anAdd >= 0.0)?
-            (theV1 - Max(anAdd, Epsilon(theV1))) :
-            (theV1 + Max(-anAdd, Epsilon(theV1)));
+      (theV1 - Max(anAdd, Epsilon(theV1))) :
+    (theV1 + Max(-anAdd, Epsilon(theV1)));
     anAdd = aGradFU*aStepUV;
     Standard_Real aParU = (anAdd >= 0.0)?
-            (theU2 - Max(anAdd, Epsilon(theU2))) :
-            (theU2 + Max(-anAdd, Epsilon(theU2)));
+      (theU2 - Max(anAdd, Epsilon(theU2))) :
+    (theU2 + Max(-anAdd, Epsilon(theU2)));
     anAdd = aGradFV*aStepUV;
     Standard_Real aParV = (anAdd >= 0.0)?
-            (theV2 - Max(anAdd, Epsilon(theV2))) :
-            (theV2 + Max(-anAdd, Epsilon(theV2)));
+      (theV2 - Max(anAdd, Epsilon(theV2))) :
+    (theV2 + Max(-anAdd, Epsilon(theV2)));
 
     gp_Pnt aPt1, aPt2;
 
@@ -1929,26 +1938,26 @@ Standard_Boolean IntWalk_PWalking::
 //purpose  : 
 //=======================================================================
 Standard_Boolean IntWalk_PWalking::
-  DistanceMinimizeByExtrema(const Handle(Adaptor3d_HSurface)& theASurf, 
-                            const gp_Pnt& theP0,
-                            Standard_Real& theU0,
-                            Standard_Real& theV0,
-                            const Standard_Real theStep0U,
-                            const Standard_Real theStep0V)
+DistanceMinimizeByExtrema(const Handle(Adaptor3d_HSurface)& theASurf, 
+                          const gp_Pnt& theP0,
+                          Standard_Real& theU0,
+                          Standard_Real& theV0,
+                          const Standard_Real theStep0U,
+                          const Standard_Real theStep0V)
 {
   const Standard_Real aTol = 1.0e-14;
   gp_Pnt aPS;
   gp_Vec aD1Su, aD1Sv, aD2Su, aD2Sv, aD2SuvTemp;
   Standard_Real aSQDistPrev = RealLast();
   Standard_Real aU = theU0, aV = theV0;
-  
+
   Standard_Integer aNbIter = 10;
   do
   {
     theASurf->D2(aU, aV, aPS, aD1Su, aD1Sv, aD2Su, aD2Sv, aD2SuvTemp);
-    
+
     gp_Vec aVec(theP0, aPS);
-    
+
     Standard_Real aSQDist = aVec.SquareMagnitude();
 
     if(aSQDist >= aSQDistPrev)
@@ -1967,9 +1976,9 @@ Standard_Boolean IntWalk_PWalking::
 
     //Derivatives
     const Standard_Real aDf1u = aD2Su.Dot(aVec) + aD1Su.Dot(aD1Su),
-                        aDf1v = aD2Su.Dot(aD1Sv),
-                        aDf2u = aDf1v,
-                        aDf2v = aD2Sv.Dot(aVec) + aD1Sv.Dot(aD1Sv);
+      aDf1v = aD2Su.Dot(aD1Sv),
+      aDf2u = aDf1v,
+      aDf2v = aD2Sv.Dot(aVec) + aD1Sv.Dot(aD1Sv);
 
     const Standard_Real aDet = aDf1u*aDf2v - aDf1v*aDf2u;
     aU -= theStep0U*(aDf2v*aF1 - aDf1v*aF2)/aDet;
@@ -1985,13 +1994,13 @@ Standard_Boolean IntWalk_PWalking::
 //purpose  : 
 //=======================================================================
 Standard_Boolean IntWalk_PWalking::
-  SeekPointOnBoundary(const Handle(Adaptor3d_HSurface)& theASurf1,
-                      const Handle(Adaptor3d_HSurface)& theASurf2,
-                      const Standard_Real theU1,
-                      const Standard_Real theV1,
-                      const Standard_Real theU2,
-                      const Standard_Real theV2,
-                      const Standard_Boolean isTheFirst)
+SeekPointOnBoundary(const Handle(Adaptor3d_HSurface)& theASurf1,
+                    const Handle(Adaptor3d_HSurface)& theASurf2,
+                    const Standard_Real theU1,
+                    const Standard_Real theV1,
+                    const Standard_Real theU2,
+                    const Standard_Real theV2,
+                    const Standard_Boolean isTheFirst)
 {
   const Standard_Real aTol = 1.0e-14;
   Standard_Boolean isOK = Standard_False;
@@ -2036,20 +2045,20 @@ Standard_Boolean IntWalk_PWalking::
       Standard_Real u1 = U1prec, v1 = V1prec, u2 = U2prec, v2 = V2prec;
 
       flFinish = Checking(theASurf1, theASurf2, U1prec, V1prec, U2prec, V2prec, aTolF);
-      
+
       if(aTolF <= aTolMax)
       {
         gp_Pnt  aP1 = theASurf1->Value(u1, v1),
-                aP2 = theASurf2->Value(u2, v2);
+          aP2 = theASurf2->Value(u2, v2);
         gp_Pnt aPInt(0.5*(aP1.XYZ() + aP2.XYZ()));
 
         const Standard_Real aSQDist1 = aPInt.SquareDistance(aP1),
-                            aSQDist2 = aPInt.SquareDistance(aP2);
+          aSQDist2 = aPInt.SquareDistance(aP2);
         if((aSQDist1 < aTol) && (aSQDist2 < aTol))
         {
           IntSurf_PntOn2S anIP;
           anIP.SetValue(aPInt, u1, v1, u2, v2);
-          
+
           if(isTheFirst)
             line->InsertBefore(1,anIP);
           else
@@ -2076,8 +2085,8 @@ Standard_Boolean IntWalk_PWalking::
 //purpose  : 
 //=======================================================================
 Standard_Boolean IntWalk_PWalking::
-  PutToBoundary(const Handle(Adaptor3d_HSurface)& theASurf1,
-                const Handle(Adaptor3d_HSurface)& theASurf2)
+PutToBoundary(const Handle(Adaptor3d_HSurface)& theASurf1,
+              const Handle(Adaptor3d_HSurface)& theASurf2)
 {
   const Standard_Real aTolMin = Precision::Confusion();
 
@@ -2111,7 +2120,7 @@ Standard_Boolean IntWalk_PWalking::
   Standard_Real u1, v1, u2, v2;
   line->Value(1).Parameters(u1, v1, u2, v2);
   Standard_Real aDelta = 0.0;
-  
+
   if(!isV1parallel)
   {
     aDelta = u1 - aU1bFirst;
@@ -2192,7 +2201,7 @@ Standard_Boolean IntWalk_PWalking::
   {
     hasBeenAdded = 
       SeekPointOnBoundary(theASurf1, theASurf2, u1, 
-                            v1, u2, v2, Standard_True);
+      v1, u2, v2, Standard_True);
   }
 
   isNeedAdding = Standard_False;
@@ -2278,7 +2287,7 @@ Standard_Boolean IntWalk_PWalking::
   {
     hasBeenAdded = 
       SeekPointOnBoundary(theASurf1, theASurf2, u1, 
-                            v1, u2, v2, Standard_False);
+      v1, u2, v2, Standard_False);
   }
 
   return hasBeenAdded;
@@ -2289,9 +2298,9 @@ Standard_Boolean IntWalk_PWalking::
 //purpose  : 
 //=======================================================================
 Standard_Boolean IntWalk_PWalking::
-  SeekAdditionalPoints( const Handle(Adaptor3d_HSurface)& theASurf1,
-                        const Handle(Adaptor3d_HSurface)& theASurf2,
-                        const Standard_Integer theMinNbPoints)
+SeekAdditionalPoints( const Handle(Adaptor3d_HSurface)& theASurf1,
+                     const Handle(Adaptor3d_HSurface)& theASurf2,
+                     const Standard_Integer theMinNbPoints)
 {
   const Standard_Real aTol = 1.0e-14;
   Standard_Integer aNbPoints = line->NbPoints();
@@ -2307,7 +2316,7 @@ Standard_Boolean IntWalk_PWalking::
   const Standard_Real aV2bFirst = theASurf2->FirstVParameter();
   const Standard_Real aV2bLast = theASurf2->LastVParameter();
 
-  
+
   Standard_Boolean isPrecise = Standard_False;
 
   Standard_Real U1prec = 0.0, V1prec = 0.0, U2prec = 0.0, V2prec = 0.0;
@@ -2376,18 +2385,18 @@ Standard_Boolean IntWalk_PWalking::
       if(aStatus)
       {
         gp_Pnt  aP1 = theASurf1->Value(U1prec, V1prec),
-                aP2 = theASurf2->Value(U2prec, V2prec);
+          aP2 = theASurf2->Value(U2prec, V2prec);
         gp_Pnt aPInt(0.5*(aP1.XYZ() + aP2.XYZ()));
 
         const Standard_Real aSQDist1 = aPInt.SquareDistance(aP1),
-                            aSQDist2 = aPInt.SquareDistance(aP2);
+          aSQDist2 = aPInt.SquareDistance(aP2);
 
         if((aSQDist1 < aTol) && (aSQDist2 < aTol))
         {
           IntSurf_PntOn2S anIP;
           anIP.SetValue(aPInt, U1prec, V1prec, U2prec, V2prec);
           line->InsertBefore(lp, anIP);
-          
+
           isPrecise = Standard_True;
 
           if(++aNbPoints >= theMinNbPoints)
@@ -2404,4 +2413,534 @@ Standard_Boolean IntWalk_PWalking::
   return isPrecise;
 }
 
+void IntWalk_PWalking::
+RepartirOuDiviser(Standard_Boolean& DejaReparti,
+                  IntImp_ConstIsoparametric& ChoixIso,
+                  Standard_Boolean& Arrive) 
+
+                  // at the neighborhood of a point, there is a fail of marching 
+                  // it is required to divide the steps to try to continue
+                  // if the step is too small if we are on border
+                  // restart in another direction if it was not done, otherwise stop
+
+{
+  //  Standard_Integer i;
+  if (Arrive) {    //restart in the other direction
+    if (!DejaReparti ) {
+      Arrive        = Standard_False; 
+      DejaReparti   = Standard_True;
+      previousPoint = line->Value(1);
+      previoustg    = Standard_False;
+      previousd1    = firstd1;
+      previousd2    = firstd2;
+      previousd     = tgdir;
+      indextg       = line->NbPoints();
+      tgdir.Reverse();
+      line->Reverse();
+
+      //-- printf("\nIntWalk_PWalking_2.gxx Reverse %3d\n",indextg);
+      sensCheminement = -1;
+      tgfirst      = tglast;
+      tglast       = Standard_False;
+      ChoixIso     = choixIsoSav;
+#if 0
+      pasuv[0]=pasSav[0];
+      pasuv[1]=pasSav[1];
+      pasuv[2]=pasSav[2];
+      pasuv[3]=pasSav[3];
+#else 
+      Standard_Real u1,v1,u2,v2;
+      Standard_Real U1,V1,U2,V2;
+      Standard_Integer nn=line->NbPoints();
+      if(nn>2) { 
+        line->Value(nn).Parameters(u1,v1,u2,v2);
+        line->Value(nn-1).Parameters(U1,V1,U2,V2);
+        pasuv[0]=Abs(u1-U1);
+        pasuv[1]=Abs(v1-V1);
+        pasuv[2]=Abs(u2-U2);
+        pasuv[3]=Abs(v2-V2);
+      }
+#endif
+
+    }
+  }  
+  else  {
+    if (    pasuv[0]*0.5 < ResoU1
+      &&  pasuv[1]*0.5 < ResoV1
+      &&  pasuv[2]*0.5 < ResoU2
+      &&  pasuv[3]*0.5 < ResoV2
+      ) {
+        if (!previoustg) {
+          tglast = Standard_True;      // IS IT ENOUGH ????
+        }
+
+        if (!DejaReparti) {  //restart in the other direction
+          DejaReparti       = Standard_True;
+          previousPoint     = line->Value(1);
+          previoustg        = Standard_False;
+          previousd1        = firstd1;
+          previousd2        = firstd2;
+          previousd         = tgdir;
+          indextg           = line->NbPoints();
+          tgdir.Reverse();
+          line->Reverse();
+
+          //-- printf("\nIntWalk_PWalking_2.gxx Reverse %3d\n",indextg);
+
+          sensCheminement   = -1;
+          tgfirst           = tglast;
+          tglast            = Standard_False;
+          ChoixIso          = choixIsoSav;
+
+#if 0 
+          pasuv[0]=pasSav[0];
+          pasuv[1]=pasSav[1];
+          pasuv[2]=pasSav[2];
+          pasuv[3]=pasSav[3];
+#else 
+          Standard_Real u1,v1,u2,v2;
+          Standard_Real U1,V1,U2,V2;
+          Standard_Integer nn=line->NbPoints();
+          if(nn>2) { 
+            line->Value(nn).Parameters(u1,v1,u2,v2);
+            line->Value(nn-1).Parameters(U1,V1,U2,V2);
+            pasuv[0]=Abs(u1-U1);
+            pasuv[1]=Abs(v1-V1);
+            pasuv[2]=Abs(u2-U2);
+            pasuv[3]=Abs(v2-V2);
+          }
+#endif
+        }
+        else Arrive = Standard_True;
+    }
+    else {
+      pasuv[0]*=0.5;
+      pasuv[1]*=0.5;
+      pasuv[2]*=0.5;
+      pasuv[3]*=0.5; 
+    }
+  }
+}
+
+namespace {
+  //OCC431(apo): modified ->
+  static const Standard_Real CosRef2D =  Cos(M_PI/9.0),  AngRef2D = M_PI/2.0; 
+
+  static const Standard_Real d = 7.0;
+}
+
+IntWalk_StatusDeflection  IntWalk_PWalking::TestDeflection()
+
+// test if vector is observed by calculating an increase of vector 
+//     or the previous point and its tangent, the new calculated point and its  
+//     tangent; it is possible to find a cube passing by the 2 points and having as a 
+//     derivative the tangents of the intersection
+//     calculate the point with parameter 0.5 on cube=p1 
+//     calculate the medium point of 2 points of intersection=p2
+//   if arrow/2<=||p1p2||<= arrow consider that the vector is observed
+//   otherwise adjust the step depending on the ratio ||p1p2||/vector
+//   and the previous step 
+// test if in  2 tangent planes of surfaces there is no too great angle2d 
+// grand : if yes divide the step
+// test if there is no change of side
+//  
+{
+  if(line->NbPoints() ==1 ) { 
+    STATIC_BLOCAGE_SUR_PAS_TROP_GRAND=STATIC_PRECEDENT_INFLEXION=0;
+  }
+
+  IntWalk_StatusDeflection Status = IntWalk_OK;
+  Standard_Real FlecheCourante ,Ratio;
+
+
+  const IntSurf_PntOn2S& CurrentPoint = myIntersectionOn2S.Point(); 
+  //==================================================================================
+  //=========               S t o p   o n   p o i n t                 ============
+  //================================================================================== 
+  if (myIntersectionOn2S.IsTangent())  { 
+    return IntWalk_ArretSurPoint;  
+  }
+
+  const gp_Dir& TgCourante = myIntersectionOn2S.Direction();
+
+  //==================================================================================
+  //=========   R i s k   o f    i n f l e x i o n   p o i n t  ============
+  //==================================================================================  
+  if (TgCourante.Dot(previousd)<0) {
+    //------------------------------------------------------------
+    //-- Risk of inflexion point : Divide the step by 2
+    //-- Initialize STATIC_PRECEDENT_INFLEXION so that 
+    //-- at the next call to return Pas_OK if there is no 
+    //-- more risk of the point of inflexion
+    //------------------------------------------------------------
+
+    pasuv[0]*=0.5;
+    pasuv[1]*=0.5;
+    pasuv[2]*=0.5;
+    pasuv[3]*=0.5;
+    STATIC_PRECEDENT_INFLEXION+=3; 
+    if (pasuv[0] < ResoU1 && pasuv[1] <ResoV1 && pasuv[2] <ResoU2 && pasuv[3] < ResoV2)
+      return IntWalk_ArretSurPointPrecedent;
+    else 
+      return IntWalk_PasTropGrand;
+  }
+
+  else {
+    if(STATIC_PRECEDENT_INFLEXION  > 0) { 
+      STATIC_PRECEDENT_INFLEXION -- ;
+      return IntWalk_OK;
+    }
+  }
+
+  //==================================================================================
+  //=========  D e t e c t    c o n f u s e d    P o in t s       ===========
+  //==================================================================================
+
+  Standard_Real Dist = previousPoint.Value().
+    SquareDistance(CurrentPoint.Value());
+
+
+  if (Dist < tolconf*tolconf ) { 
+    pasuv[0] = Max(5.*ResoU1,Min(1.5*pasuv[0],pasInit[0]));
+    pasuv[1] = Max(5.*ResoV1,Min(1.5*pasuv[1],pasInit[1]));
+    pasuv[2] = Max(5.*ResoU2,Min(1.5*pasuv[2],pasInit[2]));
+    pasuv[3] = Max(5.*ResoV2,Min(1.5*pasuv[3],pasInit[3]));
+    Status = IntWalk_PointConfondu;
+  }
+
+  //==================================================================================
+  Standard_Real Up1,Vp1,Uc1,Vc1,Du1,Dv1,AbsDu1,AbsDu2,AbsDv1,AbsDv2;
+  Standard_Real Up2,Vp2,Uc2,Vc2,Du2,Dv2;
+
+  previousPoint.Parameters(Up1,Vp1,Up2,Vp2);
+  CurrentPoint.Parameters(Uc1,Vc1,Uc2,Vc2);               
+
+  Du1 = Uc1 - Up1;   Dv1 = Vc1 - Vp1;
+  Du2 = Uc2 - Up2;   Dv2 = Vc2 - Vp2;
+
+  AbsDu1 = Abs(Du1);
+  AbsDu2 = Abs(Du2);
+  AbsDv1 = Abs(Dv1);
+  AbsDv2 = Abs(Dv2);
+  //=================================================================================
+  //====   S t e p   o f   p  r o g r e s s i o n (between previous and Current)   =======
+  //=================================================================================
+  if (   AbsDu1 < ResoU1 && AbsDv1 < ResoV1 
+    && AbsDu2 < ResoU2 && AbsDv2 < ResoV2) {
+      pasuv[0] = ResoU1; pasuv[1] = ResoV1; pasuv[2] = ResoU2; pasuv[3] = ResoV2;
+      return(IntWalk_ArretSurPointPrecedent);
+  }
+  //==================================================================================
+
+  Standard_Real tolArea = 100.0;
+  if (ResoU1 < Precision::PConfusion() ||
+    ResoV1 < Precision::PConfusion() ||
+    ResoU2 < Precision::PConfusion() ||
+    ResoV2 < Precision::PConfusion() )
+    tolArea =  tolArea*2.0;
+
+  Standard_Real Cosi1, CosRef1, Ang1, AngRef1, ResoUV1, Duv1, d1, tolCoeff1;   
+  Standard_Real Cosi2, CosRef2, Ang2, AngRef2, ResoUV2, Duv2, d2, tolCoeff2;   
+  Cosi1 = Du1*previousd1.X() + Dv1*previousd1.Y();
+  Cosi2 = Du2*previousd2.X() + Dv2*previousd2.Y();
+  Duv1 = Du1*Du1 + Dv1*Dv1;
+  Duv2 = Du2*Du2 + Dv2*Dv2;
+  ResoUV1 = ResoU1*ResoU1 + ResoV1*ResoV1;
+  ResoUV2 = ResoU2*ResoU2 + ResoV2*ResoV2;
+  //
+  //modified by NIZNHY-PKV Wed Nov 13 12:25:44 2002 f
+  //
+  Standard_Real aMinDiv2=Precision::Confusion();
+  aMinDiv2=aMinDiv2*aMinDiv2;
+  //
+  d1=d;
+  if (Duv1>aMinDiv2)  {
+    d1 = Abs(ResoUV1/Duv1);
+    d1 = Min(Sqrt(d1)*tolArea, d);  
+  } 
+  //d1 = Abs(ResoUV1/Duv1); 
+  //d1 = Min(Sqrt(d1)*tolArea,d);  
+  //modified by NIZNHY-PKV Wed Nov 13 12:34:30 2002 t
+  tolCoeff1 = Exp(d1);
+  //
+  //modified by NIZNHY-PKV Wed Nov 13 12:34:43 2002 f
+  d2=d;
+  if (Duv2>aMinDiv2) {
+    d2 = Abs(ResoUV2/Duv2); 
+    d2 = Min(Sqrt(d2)*tolArea,d); 
+  }
+  //d2 = Abs(ResoUV2/Duv2); 
+  //d2 = Min(Sqrt(d2)*tolArea,d);  
+  //modified by NIZNHY-PKV Wed Nov 13 12:34:53 2002 t
+  tolCoeff2 = Exp(d2);
+  CosRef1 = CosRef2D/tolCoeff1;
+  CosRef2 = CosRef2D/tolCoeff2;
+  //
+  //==================================================================================
+  //== The points are not confused :                                           ==
+  //== D e t e c t    t h e   S t o p   a  t   p r e v i o u s  p o i n t ==
+  //==                           N o t    T o o    G r e a t (angle in space UV)    ==
+  //==                           C h a n g e    o f    s i d e                ==
+  //==================================================================================
+  if (Status != IntWalk_PointConfondu) { 
+    if(Cosi1*Cosi1 < CosRef1*Duv1 || Cosi2*Cosi2 < CosRef2*Duv2) {
+      pasuv[0]*=0.5;  pasuv[1]*=0.5;  pasuv[2]*=0.5;  pasuv[3]*=0.5;
+      if (pasuv[0]<ResoU1 && pasuv[1]<ResoV1 && pasuv[2]<ResoU2 && pasuv[3]<ResoV2) { 
+        return(IntWalk_ArretSurPointPrecedent);
+      }
+      else {
+        pasuv[0]*=0.5; pasuv[1]*=0.5; pasuv[2]*=0.5; pasuv[3]*=0.5;
+        return(IntWalk_PasTropGrand);
+      }
+    }
+    const gp_Dir2d& Tg2dcourante1 = myIntersectionOn2S.DirectionOnS1();
+    const gp_Dir2d& Tg2dcourante2 = myIntersectionOn2S.DirectionOnS2();
+    Cosi1 = Du1*Tg2dcourante1.X() + Dv1*Tg2dcourante1.Y();
+    Cosi2 = Du2*Tg2dcourante2.X() + Dv2*Tg2dcourante2.Y();
+    Ang1 = Abs(previousd1.Angle(Tg2dcourante1));  
+    Ang2 = Abs(previousd2.Angle(Tg2dcourante2));  
+    AngRef1 = AngRef2D*tolCoeff1;
+    AngRef2 = AngRef2D*tolCoeff2;
+    //-------------------------------------------------------
+    //-- Test : Angle too great in space UV       -----
+    //--        Change of  side                      -----
+    //-------------------------------------------------------
+    if(Cosi1*Cosi1 < CosRef1*Duv1 || Cosi2*Cosi2 < CosRef2*Duv2 || Ang1 > AngRef1 || Ang2 > AngRef2) {
+      pasuv[0]*=0.5;  pasuv[1]*=0.5;  pasuv[2]*=0.5;  pasuv[3]*=0.5;
+      if (pasuv[0]<ResoU1 && pasuv[1]<ResoV1 && pasuv[2]<ResoU2 && pasuv[3]<ResoV2) 
+        return(IntWalk_ArretSurPoint);
+      else 
+        return(IntWalk_PasTropGrand);
+    }
+  }
+  //<-OCC431(apo)
+  //==================================================================================
+  //== D e t e c t i o n   o f    :  Step Too Small 
+  //==                               STEP TOO Great 
+  //==================================================================================
+
+  //---------------------------------------
+  //-- Estimate of the vector           --
+  //---------------------------------------
+  FlecheCourante =
+    Sqrt(Abs((previousd.XYZ()-TgCourante.XYZ()).SquareModulus()*Dist))/8.;
+
+  if ( FlecheCourante<= fleche*0.5) {     //-- Current step too small
+    if(FlecheCourante>1e-16) { 
+      Ratio = 0.5*(fleche/FlecheCourante);
+    }
+    else { 
+      Ratio = 10.0;
+    }
+    Standard_Real pasSu1 = pasuv[0];
+    Standard_Real pasSv1 = pasuv[1];
+    Standard_Real pasSu2 = pasuv[2];
+    Standard_Real pasSv2 = pasuv[3];
+
+    //-- In  case if 
+    //-- a point at U+DeltaU is required, ....
+    //-- return a point at U + Epsilon
+    //-- Epsilon << DeltaU.
+
+    if(pasuv[0]< AbsDu1) pasuv[0] = AbsDu1;
+    if(pasuv[1]< AbsDv1) pasuv[1] = AbsDv1;
+    if(pasuv[2]< AbsDu2) pasuv[2] = AbsDu2;
+    if(pasuv[3]< AbsDv2) pasuv[3] = AbsDv2;
+
+    if(pasuv[0]<ResoU1) pasuv[0]=ResoU1;
+    if(pasuv[1]<ResoV1) pasuv[1]=ResoV1;
+    if(pasuv[2]<ResoU2) pasuv[2]=ResoU2;
+    if(pasuv[3]<ResoV2) pasuv[3]=ResoV2;
+    //-- if(Ratio>10.0 ) { Ratio=10.0; } 
+    Standard_Real R1,R = pasInit[0]/pasuv[0];
+    R1= pasInit[1]/pasuv[1];     if(R1<R) R=R1;
+    R1= pasInit[2]/pasuv[2];     if(R1<R) R=R1;
+    R1= pasInit[3]/pasuv[3];     if(R1<R) R=R1;
+    if(Ratio > R) Ratio=R;
+    pasuv[0] = Min(Ratio*pasuv[0],pasInit[0]);
+    pasuv[1] = Min(Ratio*pasuv[1],pasInit[1]);
+    pasuv[2] = Min(Ratio*pasuv[2],pasInit[2]);
+    pasuv[3] = Min(Ratio*pasuv[3],pasInit[3]);
+    if (pasuv[0] != pasSu1 || pasuv[2] != pasSu2|| 
+      pasuv[1] != pasSv1 || pasuv[3] != pasSv2) {
+        if(++STATIC_BLOCAGE_SUR_PAS_TROP_GRAND > 5) {
+          STATIC_BLOCAGE_SUR_PAS_TROP_GRAND = 0;
+          return IntWalk_PasTropGrand; 
+        }
+    }
+    if(Status == IntWalk_OK) { 
+      STATIC_BLOCAGE_SUR_PAS_TROP_GRAND=0;
+      //-- Try to increase the step
+    }
+    return Status;
+  }
+  else {                                //-- CurrentVector > vector*0.5 
+    if (FlecheCourante > fleche) {      //-- Current step too Great
+      Ratio = fleche/FlecheCourante; 
+      pasuv[0] = Ratio*pasuv[0];
+      pasuv[1] = Ratio*pasuv[1];
+      pasuv[2] = Ratio*pasuv[2];
+      pasuv[3] = Ratio*pasuv[3];
+      //if(++STATIC_BLOCAGE_SUR_PAS_TROP_GRAND > 5) {
+      //	STATIC_BLOCAGE_SUR_PAS_TROP_GRAND = 0;
+      return IntWalk_PasTropGrand; 
+      //}
+    }
+    else {                             //-- vector/2  <  CurrentVector <= vector   
+      Ratio = 0.75 * (fleche / FlecheCourante);
+    }
+  }
+  pasuv[0] = Max(5.*ResoU1,Min(Min(Ratio*AbsDu1,pasuv[0]),pasInit[0]));
+  pasuv[1] = Max(5.*ResoV1,Min(Min(Ratio*AbsDv1,pasuv[1]),pasInit[1]));
+  pasuv[2] = Max(5.*ResoU2,Min(Min(Ratio*AbsDu2,pasuv[2]),pasInit[2]));
+  pasuv[3] = Max(5.*ResoV2,Min(Min(Ratio*AbsDv2,pasuv[3]),pasInit[3]));
+  if(Status == IntWalk_OK) STATIC_BLOCAGE_SUR_PAS_TROP_GRAND=0;
+  return Status;
+}
+
+Standard_Boolean IntWalk_PWalking::
+TestArret(const Standard_Boolean DejaReparti,
+          TColStd_Array1OfReal& Param,
+          IntImp_ConstIsoparametric&  ChoixIso)
+
+          //
+          // test if the point of intersection set by these parameters remains in the 
+          // natural domain of each square.
+          // if the point outpasses reframe to find the best iso (border)
+          // that intersects easiest the other square
+          // otherwise test if closed line is present  
+          // 
+{
+  Standard_Real Uvd[4],Uvf[4],Epsuv[4],Duv[4],Uvp[4],dv,dv2,ParC[4];
+  Standard_Real DPc,DPb;
+  Standard_Integer i = 0, k = 0;
+  Epsuv[0] = ResoU1;
+  Epsuv[1] = ResoV1;
+  Epsuv[2] = ResoU2;
+  Epsuv[3] = ResoV2;
+  previousPoint.Parameters(Uvp[0],Uvp[1],Uvp[2],Uvp[3]);
+
+  Standard_Real SolParam[4];
+  myIntersectionOn2S.Point().Parameters(SolParam[0],SolParam[1],SolParam[2],SolParam[3]);
+
+  Standard_Boolean Trouve = Standard_False;
+
+  Uvd[0]=Um1;   Uvf[0]=UM1;   Uvd[1]=Vm1;   Uvf[1]=VM1;
+  Uvd[2]=Um2;   Uvf[2]=UM2;   Uvd[3]=Vm2;   Uvf[3]=VM2;
+
+  Standard_Integer im1;
+  for ( i = 1,im1 = 0;i<=4;i++,im1++) {
+    switch(i) { 
+    case 1: k=2; break;
+    case 2: k=1; break;
+    case 3: k=4; break;
+    case 4: k=3; break;
+    }
+    if (Param(i) < (Uvd[im1]-Epsuv[im1]) ||
+      SolParam[im1] < (Uvd[im1]-Epsuv[im1]))     //--     Current -----  Bound Inf -----  Previous
+    {
+      Trouve    = Standard_True;                   //-- 
+      DPc       = Uvp[im1]-Param(i);               //--     Previous  - Current
+      DPb       = Uvp[im1]-Uvd[im1];               //--     Previous  - Bound Inf
+      ParC[im1] = Uvd[im1];                        //--     ParamCorrige
+      dv        = Param(k)-Uvp[k-1];               //--     Current   - Previous (other Direction)
+      dv2       = dv*dv;         
+      if(dv2>RealEpsilon()) {                       //--    Progress at the other Direction ?
+        Duv[im1]  = DPc*DPb + dv2;
+        Duv[im1]  = Duv[im1]*Duv[im1]/(DPc*DPc+dv2)/(DPb*DPb+dv2);
+      }
+      else {
+        Duv[im1]=-1.0;                              //--    If no progress, do not change  
+      }                                             //--    the choice of iso 
+    }   
+    else if (Param(i) > (Uvf[im1] + Epsuv[im1]) ||
+      SolParam[im1] > (Uvf[im1] + Epsuv[im1]))//--    Previous -----  Bound Sup -----  Current
+    {
+      Trouve    = Standard_True;                    //-- 
+      DPc       = Param(i)-Uvp[im1];                //--     Current   - Previous
+      DPb       = Uvf[im1]-Uvp[im1];                //--     Bound Sup - Previous 
+      ParC[im1] = Uvf[im1];                         //--     Param Corrige
+      dv        = Param(k)-Uvp[k-1];                //--     Current   - Previous (other Direction)
+      dv2       = dv*dv;
+      if(dv2>RealEpsilon()) {                       //--     Progress in other Direction ?
+        Duv[im1]  =  DPc*DPb + dv2;
+        Duv[im1]  = Duv[im1]*Duv[im1]/(DPc*DPc+dv2)/(DPb*DPb+dv2);
+      }
+      else {
+        Duv[im1]=-1.0;                              //--    If no progress, do not change 
+      }                                             //--    the choice of iso 
+    }
+    else { 
+      Duv[im1]= -1.;
+      ParC[im1]=Param(i);
+    }
+  }
+
+  if (Trouve) {
+    //--------------------------------------------------
+    //-- One of Parameters u1,v1,u2,v2 is outside of  --
+    //-- the natural limits.                          -- 
+    //-- Find the best direction of                   -- 
+    //-- progress and reframe the parameters.        --
+    //--------------------------------------------------
+    Standard_Real ddv = -1.0;
+    k=-1;
+    for (i=0;i<=3;i++) {
+      Param(i+1) = ParC[i];
+      if(Duv[i]>ddv) { 
+        ddv = Duv[i];
+        k=i;
+      }
+    }
+    if(k!=-1) { 
+      ChoixIso   = ChoixRef[k];
+    }
+    else { 
+      if((ParC[0]<=Uvd[0]+Epsuv[0]) || (ParC[0]>=Uvf[0]-Epsuv[0])) {
+        ChoixIso = IntImp_UIsoparametricOnCaro1;
+      }
+      else if((ParC[1]<=Uvd[1]+Epsuv[1]) || (ParC[1]>=Uvf[1]-Epsuv[1])) {
+        ChoixIso = IntImp_VIsoparametricOnCaro1;
+      }
+      else if((ParC[2]<=Uvd[2]+Epsuv[2]) || (ParC[2]>=Uvf[2]-Epsuv[2])) {
+        ChoixIso = IntImp_UIsoparametricOnCaro2;
+      }
+      else if((ParC[3]<=Uvd[3]+Epsuv[3]) || (ParC[3]>=Uvf[3]-Epsuv[3])) {
+        ChoixIso = IntImp_VIsoparametricOnCaro2;
+      }
+    }
+    close = Standard_False;
+    return Standard_True;
+  }
+  else 
+  {  
+    if (!DejaReparti) { // find if line closed
+
+      Standard_Real u,v;
+      const IntSurf_PntOn2S& POn2S1=line->Value(1);
+      //On S1
+      POn2S1.ParametersOnS1(u,v);
+      gp_Pnt2d P1uvS1(u,v);
+      previousPoint.ParametersOnS1(u,v);
+      gp_Pnt2d PrevuvS1(u,v);
+      myIntersectionOn2S.Point().ParametersOnS1(u,v);
+      gp_Pnt2d myIntersuvS1(u,v);
+      Standard_Boolean close2dS1 = (P1uvS1.XY()-PrevuvS1.XY())*
+        (P1uvS1.XY()-myIntersuvS1.XY()) < 0.0;
+      //On S2
+      POn2S1.ParametersOnS2(u,v);
+      gp_Pnt2d P1uvS2(u,v);
+      previousPoint.ParametersOnS2(u,v);
+      gp_Pnt2d PrevuvS2(u,v);
+      myIntersectionOn2S.Point().ParametersOnS2(u,v);
+      gp_Pnt2d myIntersuvS2(u,v);
+      Standard_Boolean close2dS2 = (P1uvS2.XY()-PrevuvS2.XY())*
+        (P1uvS2.XY()-myIntersuvS2.XY()) < 0.0;
+
+      close = close2dS1 && close2dS2;
+      return close;
+    }
+    else return Standard_False;
+  }
+}
 

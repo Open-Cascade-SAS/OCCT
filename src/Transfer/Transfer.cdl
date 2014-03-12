@@ -35,7 +35,6 @@ is
 
     deferred class Binder;
     	class VoidBinder;
-    	generic class SimpleBinder;
     	class SimpleBinderOfTransient;
 	class BinderOfTransientInteger;
         class TransientListBinder;

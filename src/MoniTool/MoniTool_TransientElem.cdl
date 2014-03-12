@@ -14,31 +14,30 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class Elem from MoniTool
-    (TheKey    as  any;
-     TheHasher as  any;
-     TheInfo   as  any)
-        inherits Element
+class TransientElem from MoniTool inherits Element
 
-    ---Purpose : an Elem defines an Element for a specific input class
+    ---Purpose : an TransientElem defines an Element for a specific input class
     --           its definition includes the value of the Key to be mapped,
     --           and the HashCoder associated to the class of the Key
     --           
-    --           TheKey defines the class to be keyed
-    --           TheHasher is the associated Hasher
-    --           TheInfo   is an additionnal class which helps to provide
+    --           Transient from Standard defines the class to be keyed
+    --           MapTransientHasher from TColStd is the associated Hasher
+    --           DataInfo from MoniTool   is an additionnal class which helps to provide
     --             informations on the value (template : see DataInfo)
 
-uses CString
+uses CString,
+     Transient          from Standard,
+     MapTransientHasher from TColStd,
+     DataInfo           from MoniTool
 
 is
 
-    Create (akey : any TheKey) returns mutable Elem;
-    ---Purpose : Creates a Elem with a Value. This Value can then not be
+    Create (akey : any Transient from Standard) returns mutable TransientElem;
+    ---Purpose : Creates a TransientElem with a Value. This Value can then not be
     --           changed. It is used by the Hasher to compute the HashCode,
     --           which will then be stored for an immediate reading.
 
-    Value (me) returns any TheKey  is static;
+    Value (me) returns any Transient from Standard  is static;
     ---Purpose : Returns the contained value
     ---C++ : return const &
 
@@ -57,6 +56,6 @@ is
 
 fields
 
-    theval  : TheKey;
+    theval  : Transient from Standard;
 
-end Elem;
+end TransientElem;

@@ -11,31 +11,35 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-//#include <MoniTool_Elem.ixx>
+#include <MoniTool_TransientElem.ixx>
+
 #include <Standard_Integer.hxx>
+#include <Standard_Transient.hxx>
+#include <TColStd_MapTransientHasher.hxx>
+#include <MoniTool_DataInfo.hxx>
 
 
-MoniTool_Elem::MoniTool_Elem (const TheKey& akey)
+MoniTool_TransientElem::MoniTool_TransientElem (const Handle(Standard_Transient)& akey)
     : theval (akey)
-{  SetHashCode ( TheHasher::HashCode (akey, IntegerLast() ) );  }
+{  SetHashCode ( TColStd_MapTransientHasher::HashCode (akey, IntegerLast() ) );  }
 
 
-    const TheKey&  MoniTool_Elem::Value () const
+    const Handle_Standard_Transient&  MoniTool_TransientElem::Value () const
       {  return theval;  }
 
-    Standard_Boolean  MoniTool_Elem::Equates
+    Standard_Boolean  MoniTool_TransientElem::Equates
   (const Handle(MoniTool_Element)& other) const
 {
   if (other.IsNull()) return Standard_False;
   if (GetHashCode() != other->GetHashCode()) return Standard_False;
   if (other->DynamicType() != DynamicType()) return Standard_False;
-  Handle(MoniTool_Elem) another = Handle(MoniTool_Elem)::DownCast(other);
+  Handle(MoniTool_TransientElem) another = Handle(MoniTool_TransientElem)::DownCast(other);
 //  return (theval == another->Value());
-  return  TheHasher::IsEqual (theval,another->Value());
+  return  TColStd_MapTransientHasher::IsEqual (theval,another->Value());
 }
 
-    Handle(Standard_Type)  MoniTool_Elem::ValueType () const
-      {  return TheInfo::Type(theval);  }
+    Handle(Standard_Type)  MoniTool_TransientElem::ValueType () const
+      {  return MoniTool_DataInfo::Type(theval);  }
 
-    Standard_CString  MoniTool_Elem::ValueTypeName () const
-      {  return TheInfo::TypeName(theval);  }
+    Standard_CString  MoniTool_TransientElem::ValueTypeName () const
+      {  return MoniTool_DataInfo::TypeName(theval);  }

@@ -119,7 +119,7 @@
 #include <IntAna_QuadQuadGeo.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
 #include <IntRes2d_IntersectionPoint.hxx>
-#include <IntPatch_ThePWalkingInter.hxx>
+#include <IntWalk_PWalking.hxx>
 #include <IntPatch_WLine.hxx>
 #include <Geom2dInt_GInter.hxx>
 #include <GeomInt_WLApprox.hxx>
@@ -3314,7 +3314,7 @@ Standard_Boolean ChFi3d_ComputeCurves(Handle(Adaptor3d_HSurface)&   S1,
     //Builder, so they are reestimated as much as possible.
     Standard_Real fleche = 1.e-3 * pdeb.Distance(pfin);
     Standard_Real tolap = 1.e-7;
-    IntPatch_ThePWalkingInter
+    IntWalk_PWalking
       IntKK(S1,S2,tol3d,tol3d,fleche,Step);
     
     //The extremities of the intersection (Pardeb,Parfin) are known,

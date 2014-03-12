@@ -24,14 +24,11 @@ package Geom2dInt
         --
 
 
-uses Standard, gp, TColStd, GeomAbs, Geom2d, Adaptor3d,Adaptor2d, IntCurve
+uses Standard, gp, TColStd, GeomAbs, Geom2d, Adaptor3d, Adaptor2d, IntCurve
 
 is
 
-   generic class CurveTool;
-
-   class Geom2dCurveTool instantiates CurveTool from Geom2dInt
-            (Curve2d      from Adaptor2d);
+   class Geom2dCurveTool;
     	 
    class GInter instantiates IntCurveCurveGen from IntCurve
             (Curve2d         from Adaptor2d,

@@ -36,17 +36,16 @@ is
     deferred class SketchExplorer;
     	---Purpose: SletchExplorer contains an iterator on a set of geometrys 
 	--          from Geom2d. It's use by BisectingLocus.
-     
-    generic class BisectingLocus;
-     	---Purpose: Constuction of the map of the bisector locus on a
-    	--          set of geometrys from Geom2d.
+	
     
     class Tool2d;
     	---Purpose: Tool2d contains  the geometrys of  the map. Tool2d
    	--          contains the set  of the geometric's methode  used for 
         --          the map's  computation.
 
-    class Mat2d instantiates Mat from MAT (Tool2d);
+    class Mat2d;
+        --- Purpose: The Algorithm of Computation of the Map of 
+        --           bisecting locus.
 
     class Connexion;
     	---Purpose: a Connexion links two lines.  

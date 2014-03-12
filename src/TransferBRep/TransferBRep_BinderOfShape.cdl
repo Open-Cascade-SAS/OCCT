@@ -14,34 +14,32 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class SimpleBinder  from Transfer
-
-    	  (TheResult as any;  -- any : avoid Transient classes
-	   TheInfo   as any)  -- template : DataInfo
-
-        inherits Binder
+class BinderOfShape from TransferBRep inherits Binder from Transfer
 
     ---Purpose : Allows direct binding between a starting Object and the Result
     --           of its transfer when it is Unique.
-    --           The Result itself is defined as a formal parameter <TheResult>           
-    --  Warning : While it is possible to instantiate SimpleBinder with any Type
+    --           The Result itself is defined as a formal parameter <Shape from TopoDS>           
+    --  Warning : While it is possible to instantiate BinderOfShape with any Type
     --           for the Result, it is not advisable to instantiate it with
     --           Transient Classes, because such Results are directly known and
     --           managed by TransferProcess & Co, through
     --           SimpleBinderOfTransient : this class looks like instantiation
-    --           of SimpleBinder, but its method ResultType
+    --           of BinderOfShape, but its method ResultType
     --           is adapted (reads DynamicType of the Result)
 
-uses CString, Type
+uses CString,
+     Type,
+     Shape     from TopoDS,
+     ShapeInfo from TransferBRep
 
 raises TransferFailure
 
 is
 
-    Create returns mutable SimpleBinder;
-    ---Purpose : normal standard constructor, creates an empty SimpleBinder
+    Create returns mutable BinderOfShape;
+    ---Purpose : normal standard constructor, creates an empty BinderOfShape
 
-    Create (res : any TheResult) returns mutable SimpleBinder;
+    Create (res : any Shape from TopoDS) returns mutable BinderOfShape;
     ---Purpose : constructor which in the same time defines the result
 
 --    IsMultiple (me) returns Boolean;
@@ -51,23 +49,23 @@ is
 
     ResultType (me) returns Type;
     ---Purpose : Returns the Type permitted for the Result, i.e. the Type
-    --           of the Parameter Class <TheResult> (statically defined)
+    --           of the Parameter Class <Shape from TopoDS> (statically defined)
 
     ResultTypeName (me) returns CString;
     ---Purpose : Returns the Type Name computed for the Result (dynamic)
 
-    SetResult (me : mutable; res : any TheResult)
+    SetResult (me : mutable; res : any Shape from TopoDS)
     ---Purpose : Defines the Result
     	raises TransferFailure;
     --           Error if the Result is already used (see class Binder)
 
-    Result (me) returns any TheResult
+    Result (me) returns any Shape from TopoDS
     ---Purpose : Returns the defined Result, if there is one
     	raises TransferFailure;
     --           Error if the Result is not defined (see class Binder)
     ---C++ : return const &
 
-    CResult (me : mutable) returns any TheResult;
+    CResult (me : mutable) returns any Shape from TopoDS;
     ---Purpose : Returns the defined Result, if there is one, and allows to
     --           change it (avoids Result + SetResult).
     --           Admits that Result can be not yet defined
@@ -76,6 +74,6 @@ is
 
 fields
 
-    theres : TheResult;
+    theres : Shape from TopoDS;
 
-end SimpleBinder;
+end BinderOfShape;

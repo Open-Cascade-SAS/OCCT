@@ -101,11 +101,6 @@ is
     --          line and a polyhedron.   Points of intersection  and zones
     --          of tangence.
 
-    generic class InterferencePolyhedron;
-    ---Purpose: Compute the  interference  between two polyhedron.  Points
-    --          of intersection ,  polylines  of intersection and zones of
-    --          tangence.
-
 
     --- Package Methods :
     --  

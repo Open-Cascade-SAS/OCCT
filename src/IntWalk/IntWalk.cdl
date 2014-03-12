@@ -29,7 +29,7 @@ package IntWalk
         -- All the methods of the classes of this package are Internal.
 	-- 
 uses   
-     Standard, MMgt, TCollection, TColStd, gp, math, StdFail, IntSurf, IntImp
+     Standard, MMgt, TCollection, TColStd, gp, math, StdFail, IntSurf, IntImp, Adaptor3d
 
 is
 
@@ -58,7 +58,11 @@ is
 --algorithm/solution for a marching on intersection between
 -- 2 biparametric surfaces
 
-    generic class PWalking, TheInt2S;
+    class PWalking;
+	
+	--internal of PWalking
+    class TheInt2S instantiates Int2S from IntImp
+             (HSurface from Adaptor3d, HSurfaceTool from Adaptor3d);
 
 
 end IntWalk;

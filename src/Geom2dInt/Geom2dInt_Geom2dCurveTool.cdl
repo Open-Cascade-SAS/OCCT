@@ -14,12 +14,11 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class CurveTool from Geom2dInt  (
-    IntCurveCurve       as any)
-    
+class Geom2dCurveTool from Geom2dInt
 
-	---Purpose: This class provides a CurveTool as < CurveTool from IntCurve >
-	--          from a Tool as < CurveTool from Adaptor3d > .
+
+	---Purpose: This class provides a Geom2dCurveTool as < Geom2dCurveTool from IntCurve >
+	--          from a Tool as < Geom2dCurveTool from Adaptor3d > .
 
 uses 
 
@@ -31,21 +30,22 @@ uses
      Parab2d      from gp,
      Hypr2d       from gp,
      Array1OfReal from TColStd,
-     CurveType    from GeomAbs
+     CurveType    from GeomAbs,
+     Curve2d      from Adaptor2d
 
 
 is
 
 
-    GetType(myclass; C: IntCurveCurve)
+    GetType(myclass; C: Curve2d from Adaptor2d)
     	---C++: inline
     	returns CurveType from GeomAbs;
 
-    IsComposite(myclass; C:  IntCurveCurve)
+    IsComposite(myclass; C:  Curve2d from Adaptor2d)
         ---C++: inline
     	returns Boolean from Standard;
 
-    Line(myclass; C: IntCurveCurve)
+    Line(myclass; C: Curve2d from Adaptor2d)
     
 	---Purpose: Returns the Lin2d from gp corresponding to the curve C.
 	--          This method is called only when TheType returns
@@ -54,7 +54,7 @@ is
     	returns Lin2d from gp;
 
  
-    Circle(myclass; C: IntCurveCurve)
+    Circle(myclass; C: Curve2d from Adaptor2d)
     
 	---Purpose: Returns the Circ2d from gp corresponding to the curve C.
 	--          This method is called only when TheType returns
@@ -63,7 +63,7 @@ is
     	returns Circ2d from gp;
 
 
-    Ellipse(myclass; C: IntCurveCurve)
+    Ellipse(myclass; C: Curve2d from Adaptor2d)
     
 	---Purpose: Returns the Elips2d from gp corresponding to the curve C.
 	--          This method is called only when TheType returns
@@ -72,7 +72,7 @@ is
     	returns Elips2d from gp;
 
 
-    Parabola(myclass; C: IntCurveCurve)
+    Parabola(myclass; C: Curve2d from Adaptor2d)
     
 	---Purpose: Returns the Parab2d from gp corresponding to the curve C.
 	--          This method is called only when TheType returns
@@ -81,7 +81,7 @@ is
     	returns Parab2d from gp;
 
 
-    Hyperbola(myclass; C: IntCurveCurve)
+    Hyperbola(myclass; C: Curve2d from Adaptor2d)
     
 	---Purpose: Returns the Hypr2d from gp corresponding to the curve C.
 	--          This method is called only when TheType returns
@@ -93,73 +93,73 @@ is
 -- The following method are used only when TheType returns  IntCurve_Other.
 
 
-    EpsX (myclass; C: IntCurveCurve)
+    EpsX (myclass; C: Curve2d from Adaptor2d)
         ---C++: inline
     	returns Real;
 
-    EpsX (myclass; C: IntCurveCurve;
+    EpsX (myclass; C: Curve2d from Adaptor2d;
                    Eps_XYZ : Real from Standard)
         ---C++: inline
     	returns Real;
 
 
-    NbSamples(myclass; C: IntCurveCurve)
+    NbSamples(myclass; C: Curve2d from Adaptor2d)
 
     	returns Integer;
 
-    NbSamples(myclass; C: IntCurveCurve; U0,U1: Real from Standard)
+    NbSamples(myclass; C: Curve2d from Adaptor2d; U0,U1: Real from Standard)
 
     	returns Integer;
 
 
-    FirstParameter(myclass; C:IntCurveCurve)
+    FirstParameter(myclass; C:Curve2d from Adaptor2d)
         ---C++: inline
     	returns Real;
 
 
-    LastParameter(myclass; C:IntCurveCurve)
+    LastParameter(myclass; C:Curve2d from Adaptor2d)
         ---C++: inline
     	returns Real;
 	
 
-    Value (myclass; C: IntCurveCurve; X: Real)
+    Value (myclass; C: Curve2d from Adaptor2d; X: Real)
         ---C++: inline
     	returns Pnt2d from gp;
 
 
-    D0 (myclass; C: IntCurveCurve; U: Real ; 
+    D0 (myclass; C: Curve2d from Adaptor2d; U: Real ; 
                  P: out Pnt2d);
         ---C++: inline
 
-    D1 (myclass; C: IntCurveCurve; U: Real ; 
+    D1 (myclass; C: Curve2d from Adaptor2d; U: Real ; 
                  P: out Pnt2d; T: out Vec2d);
          ---C++: inline
 
-    D2 (myclass; C: IntCurveCurve; U: Real ; 
+    D2 (myclass; C: Curve2d from Adaptor2d; U: Real ; 
                  P: out Pnt2d; T,N: out Vec2d);
          ---C++: inline
     
-    D3 (myclass; C: IntCurveCurve; U: Real ; 
+    D3 (myclass; C: Curve2d from Adaptor2d; U: Real ; 
                  P: out Pnt2d; T,N,V: out Vec2d);
          ---C++: inline
     
-    DN(myclass; C: IntCurveCurve; U: Real ; 
+    DN(myclass; C: Curve2d from Adaptor2d; U: Real ; 
                  N: Integer from Standard)
          returns Vec2d;
          ---C++: inline
 
-   NbIntervals(myclass ; C:  IntCurveCurve) 
+   NbIntervals(myclass ; C:  Curve2d from Adaptor2d) 
         ---Purpose : output the number of interval of continuity C2 of 
         --           the curve
         ---C++: inline
         returns Integer from Standard;
         
-   Intervals         (myclass; C:  IntCurveCurve
+   Intervals         (myclass; C:  Curve2d from Adaptor2d
 		       ; Tab    : out    Array1OfReal from TColStd);
 	---Purpose: compute Tab. 
         ---C++: inline
 
-   GetInterval (myclass; C:  IntCurveCurve
+   GetInterval (myclass; C:  Curve2d from Adaptor2d
                        ; Index  : Integer from Standard
 		       ; Tab    : Array1OfReal from TColStd
     	    	       ; U1, U2 : out Real from Standard);
@@ -167,11 +167,11 @@ is
         --           used if Type == Composite.
         ---C++: inline
 
-   Degree(myclass; C : IntCurveCurve) returns Integer from Standard;
+   Degree(myclass; C : Curve2d from Adaptor2d) returns Integer from Standard;
      	---C++: inline
 
 
-end CurveTool;
+end Geom2dCurveTool;
 
 
 

@@ -48,6 +48,11 @@ is
     	class RLine;      -- inherits Line from IntPatch
 
     class ArcFunction;
+	
+	class InterferencePolyhedron;
+    ---Purpose: Compute the  interference  between two polyhedron.  Points
+    --          of intersection ,  polylines  of intersection and zones of
+    --          tangence.
 
 -- implicite/implicite
 
@@ -140,16 +145,6 @@ is
          HInterTool from IntPatch,
          TopolTool from Adaptor3d,
          ArcFunction from IntPatch);
-
-    class TheInterfPolyhedron instantiates InterferencePolyhedron from Intf(
-              Polyhedron from IntPatch,
-              PolyhedronTool from IntPatch,
-              Polyhedron from IntPatch,
-              PolyhedronTool from IntPatch);
-
-    class ThePWalkingInter instantiates PWalking from IntWalk(
-              HSurface     from Adaptor3d,
-              HSurfaceTool from Adaptor3d);
 
     alias SearchPnt is InterferencePolygon2d from Intf;
 

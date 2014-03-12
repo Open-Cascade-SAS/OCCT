@@ -29,8 +29,7 @@ is
 --    class Analyzer;
 
     class ShapeInfo;
-    class BinderOfShape  instantiates  SimpleBinder from Transfer
-    	(Shape from TopoDS, ShapeInfo);
+    class BinderOfShape;
 
     class ShapeBinder;
     class ShapeListBinder;
