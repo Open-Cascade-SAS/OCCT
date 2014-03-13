@@ -19,102 +19,47 @@
 #include <OpenGl_Structure.hxx>
 #include <OpenGl_CView.hxx>
 
-void OpenGl_GraphicDriver::ClearStructure (const Graphic3d_CStructure& theCStructure)
+void OpenGl_GraphicDriver::DisplayStructure (const Graphic3d_CView& theCView,
+                                             Graphic3d_CStructure&  theCStructure,
+                                             const Standard_Integer thePriority)
 {
-  OpenGl_Structure* aStructure = (OpenGl_Structure* )theCStructure.ptrStructure;
-  if (aStructure == NULL)
-    return;
-
-  aStructure->Clear (GetSharedContext());
-}
-
-void OpenGl_GraphicDriver::ContextStructure (const Graphic3d_CStructure& theCStructure)
-{
-  OpenGl_Structure* aStructure = (OpenGl_Structure* )theCStructure.ptrStructure;
-  if (aStructure == NULL)
-    return;
-
-  aStructure->SetTransformPersistence (theCStructure.TransformPersistence);
-
-  if (theCStructure.ContextLine.IsDef)
-    aStructure->SetAspectLine (theCStructure.ContextLine);
-
-  if (theCStructure.ContextFillArea.IsDef)
-    aStructure->SetAspectFace (theCStructure.ContextFillArea);
-
-  if (theCStructure.ContextMarker.IsDef)
-    aStructure->SetAspectMarker (theCStructure.ContextMarker);
-
-  if (theCStructure.ContextText.IsDef)
-    aStructure->SetAspectText (theCStructure.ContextText);
-}
-
-void OpenGl_GraphicDriver::Connect (const Graphic3d_CStructure& theFather,
-                                    const Graphic3d_CStructure& theSon)
-{
-  OpenGl_Structure* aFather = (OpenGl_Structure* )theFather.ptrStructure;
-  OpenGl_Structure* aSon = (OpenGl_Structure* )theSon.ptrStructure;
-  if (aFather && aSon)
-    aFather->Connect(aSon);
-}
-
-void OpenGl_GraphicDriver::Disconnect (const Graphic3d_CStructure& theFather,
-                                       const Graphic3d_CStructure& theSon)
-{
-  OpenGl_Structure* aFather = (OpenGl_Structure* )theFather.ptrStructure;
-  OpenGl_Structure* aSon = (OpenGl_Structure* )theSon.ptrStructure;
-  if (aFather && aSon)
-    aFather->Disconnect(aSon);
-}
-
-void OpenGl_GraphicDriver::DisplayStructure (const Graphic3d_CView&      theCView,
-                                             const Graphic3d_CStructure& theCStructure,
-                                             const Standard_Integer      thePriority)
-{
-  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
-  OpenGl_Structure* aStructure = (OpenGl_Structure* )theCStructure.ptrStructure;
-  if (aCView == NULL || aStructure == NULL)
+  const OpenGl_CView* aCView     = (const OpenGl_CView* )theCView.ptrView;
+  OpenGl_Structure*   aStructure = (OpenGl_Structure* )&theCStructure;
+  if (aCView == NULL)
     return;
 
   aCView->View->DisplayStructure (aStructure, thePriority);
 }
 
-void OpenGl_GraphicDriver::EraseStructure (const Graphic3d_CView&      theCView,
-                                           const Graphic3d_CStructure& theCStructure)
+void OpenGl_GraphicDriver::EraseStructure (const Graphic3d_CView& theCView,
+                                           Graphic3d_CStructure&  theCStructure)
 {
-  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
-  OpenGl_Structure* aStructure = (OpenGl_Structure* )theCStructure.ptrStructure;
+  const OpenGl_CView* aCView     = (const OpenGl_CView* )theCView.ptrView;
+  OpenGl_Structure*   aStructure = (OpenGl_Structure* )&theCStructure;
   if (aCView == NULL || aStructure == NULL)
     return;
 
   aCView->View->EraseStructure (aStructure);
 }
 
-void OpenGl_GraphicDriver::RemoveStructure (const Graphic3d_CStructure& theCStructure)
+void OpenGl_GraphicDriver::RemoveStructure (Handle(Graphic3d_CStructure)& theCStructure)
 {
-  if (!myMapOfStructure.IsBound (theCStructure.Id))
+  OpenGl_Structure* aStructure = NULL;
+  if (!myMapOfStructure.Find (theCStructure->Id, aStructure))
+  {
     return;
+  }
 
-  OpenGl_Structure* aStructure = myMapOfStructure.Find (theCStructure.Id);
-  myMapOfStructure.UnBind (theCStructure.Id);
-  Graphic3d_CStructure& aCStruct = const_cast<Graphic3d_CStructure&>(theCStructure);
-  aCStruct.ptrStructure = 0;
-  OpenGl_Element::Destroy (GetSharedContext(), aStructure);
+  myMapOfStructure.UnBind (theCStructure->Id);
+  aStructure->Release (GetSharedContext());
+  theCStructure.Nullify();
 }
 
-void OpenGl_GraphicDriver::Structure (Graphic3d_CStructure& theCStructure)
+Handle(Graphic3d_CStructure) OpenGl_GraphicDriver::Structure (const Handle(Graphic3d_StructureManager)& theManager)
 {
-  RemoveStructure (theCStructure);
-
-  OpenGl_Structure* aStructure = new OpenGl_Structure();
-
-  Standard_Integer aStatus = 0;
-  if (theCStructure.highlight) aStatus |= OPENGL_NS_HIGHLIGHT;
-  if (!theCStructure.visible)  aStatus |= OPENGL_NS_HIDE;
-  aStructure->SetNamedStatus (aStatus);
-
-  theCStructure.ptrStructure = aStructure;
-  myMapOfStructure.Bind (theCStructure.Id, aStructure);
+  Handle(OpenGl_Structure) aStructure = new OpenGl_Structure (theManager);
+  myMapOfStructure.Bind (aStructure->Id, aStructure.operator->());
+  return aStructure;
 }
 
 //=======================================================================

@@ -107,10 +107,6 @@ public:
 
   Standard_EXPORT Standard_Integer InquireLightLimit ();
   Standard_EXPORT Standard_Integer InquireViewLimit ();
-  Standard_EXPORT void Blink (const Graphic3d_CStructure& ACStructure,const Standard_Boolean Create);
-  Standard_EXPORT void BoundaryBox (const Graphic3d_CStructure& ACStructure, const Standard_Boolean Create);
-  Standard_EXPORT void HighlightColor (const Graphic3d_CStructure& ACStructure, const Standard_ShortReal R, const Standard_ShortReal G, const Standard_ShortReal B, const Standard_Boolean Create);
-  Standard_EXPORT void NameSetStructure (const Graphic3d_CStructure& ACStructure);
 
 public: // Methods for graphical groups
 
@@ -128,19 +124,13 @@ public: // Methods for graphical groups
 
 public: // Methods for graphical structures
 
-  Standard_EXPORT void ClearStructure (const Graphic3d_CStructure& theCStructure);
-  Standard_EXPORT void ContextStructure (const Graphic3d_CStructure& theCStructure);
-  Standard_EXPORT void Connect (const Graphic3d_CStructure& theFather,
-                                const Graphic3d_CStructure& theSon);
-  Standard_EXPORT void Disconnect (const Graphic3d_CStructure& theFather,
-                                   const Graphic3d_CStructure& theSon);
-  Standard_EXPORT void DisplayStructure (const Graphic3d_CView&      theCView,
-                                         const Graphic3d_CStructure& theCStructure,
-                                         const Standard_Integer      thePriority);
-  Standard_EXPORT void EraseStructure (const Graphic3d_CView&      theCView,
-                                       const Graphic3d_CStructure& theCStructure);
-  Standard_EXPORT void RemoveStructure (const Graphic3d_CStructure& theCStructure);
-  Standard_EXPORT void Structure (Graphic3d_CStructure& theCStructure);
+  Standard_EXPORT void DisplayStructure (const Graphic3d_CView& theCView,
+                                         Graphic3d_CStructure&  theCStructure,
+                                         const Standard_Integer thePriority);
+  Standard_EXPORT void EraseStructure (const Graphic3d_CView& theCView,
+                                       Graphic3d_CStructure&  theCStructure);
+  Standard_EXPORT void RemoveStructure (Handle(Graphic3d_CStructure)& theCStructure);
+  Standard_EXPORT Handle(Graphic3d_CStructure) Structure (const Handle(Graphic3d_StructureManager)& theManager);
 
 public:
 
@@ -159,10 +149,8 @@ public:
   Standard_EXPORT void RemoveView (const Graphic3d_CView& ACView);
   Standard_EXPORT void SetLight (const Graphic3d_CView& ACView);
   Standard_EXPORT void SetClipPlanes (const Graphic3d_CView& theCView);
-  Standard_EXPORT void SetClipPlanes (const Graphic3d_CStructure& theCStructure);
   Standard_EXPORT void SetCamera (const Graphic3d_CView& theCView);
   Standard_EXPORT void SetVisualisation (const Graphic3d_CView& ACView);
-  Standard_EXPORT void TransformStructure (const Graphic3d_CStructure& ACStructure);
   Standard_EXPORT void Transparency (const Graphic3d_CView& ACView, const Standard_Boolean AFlag);
   Standard_EXPORT void Update (const Graphic3d_CView& ACView, const Aspect_CLayer2d& ACUnderLayer, const Aspect_CLayer2d& ACOverLayer);
   Standard_EXPORT Standard_Boolean View (Graphic3d_CView& ACView);
@@ -335,8 +323,6 @@ public:
   //! Returns information about OpenCL device used for computations.
   Standard_EXPORT Standard_Boolean GetOpenClDeviceInfo (const Graphic3d_CView& theCView,
                       NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>& theInfo);
-
-private:
 
   //! Method to retrieve valid GL context.
   //! Could return NULL-handle if no window created by this driver.

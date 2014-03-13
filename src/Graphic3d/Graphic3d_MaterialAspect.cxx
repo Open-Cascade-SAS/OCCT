@@ -690,32 +690,29 @@ void Graphic3d_MaterialAspect::SetTransparency (const Standard_Real AValue) {
 	MyTransparencyCoef	= Standard_ShortReal (AValue);
 }
 
-Quantity_Color Graphic3d_MaterialAspect::Color () const {
-	return (MyAmbientColor);
+const Quantity_Color& Graphic3d_MaterialAspect::Color() const
+{
+  return MyAmbientColor;
 }
 
-/* Access to the color of the ambient lighting */
-Quantity_Color Graphic3d_MaterialAspect::AmbientColor () const {
-
-	return (MyAmbientColor);
+const Quantity_Color& Graphic3d_MaterialAspect::AmbientColor() const
+{
+  return MyAmbientColor;
 }
 
-/* Access to the color of the dispersed lighting */
-Quantity_Color Graphic3d_MaterialAspect::DiffuseColor () const {
-
-	return (MyDiffuseColor);
+const Quantity_Color& Graphic3d_MaterialAspect::DiffuseColor() const
+{
+  return MyDiffuseColor;
 }
 
-/* Access to the color of the specular lighting */
-Quantity_Color Graphic3d_MaterialAspect::SpecularColor () const {
-
-	return (MySpecularColor);
+const Quantity_Color& Graphic3d_MaterialAspect::SpecularColor() const
+{
+  return MySpecularColor;
 }
 
-/* Access to the color of emission */
-Quantity_Color Graphic3d_MaterialAspect::EmissiveColor () const {
-
-	return (MyEmissiveColor);
+const Quantity_Color& Graphic3d_MaterialAspect::EmissiveColor() const
+{
+  return MyEmissiveColor;
 }
 
 /* Access to the type of material */

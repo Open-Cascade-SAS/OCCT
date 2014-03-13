@@ -426,11 +426,9 @@ is
 
 	NewIdentification ( me	: mutable )
 		returns Integer from Standard
-		is static private;
+		is static;
 	---Level: Internal
-	---Purpose: Returns a new identification number for a new structure
-	--	    in the manager.
-	---Category: Private methods
+	---Purpose: Returns a new identification number for a new structure in the manager.
 
 	Remove ( me	: mutable;
 	 	 AnId	: Integer from Standard )

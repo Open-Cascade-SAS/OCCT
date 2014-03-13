@@ -13,74 +13,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Modified      1/08/97 ; PCT : ajout texture mapping
-//              20/08/97 ; PCT : ajout transparence pour texture
-//              11/97 ; CAL : gestion du GraphicClear
-//              11/97 ; CAL : ajout pointer StructPtr
-//              11/97 ; CAL : amelioration de l'effacement SetManager
-//      CAL : 15 janvier 1998
-//              Ajout de la methode IsTransformed dans une Structure.
-//                      (Permet la transmission de cette Trsf vers
-//                      la structure COMPUTED si necessaire)
-//              Ajout de la methode IsRotated dans une Structure.
-//                      (Permet de connaitre le type de transformation
-//                      pour declencher le calcul des parties cachees
-//                      de maniere plus sioux)
-//              Ajout de 3 nouvelles methodes Compute virtual dans Structure.
-//                      (Permet des Compute un peu plus specialises)
-//              Ajout des 2 methodes sur Owner dans Structure.
-//                      (evite de calculer 2 fois les parties cachees
-//                      pour 2 representations differentes affichees
-//                      d'un meme Presentable Object (Owner))
-//              Ajout des 2 methodes sur HLRValidation dans Structure.
-//                      (permet de valider ou d'invalider le calcul des
-//                      parties cachees sur certaines representations)
-//              Ajout de la transmission de la transformation d'une structure
-//              vers sa COMPUTED.
-//              24/2/98 ; CAL : Modification de la gestion des champs
-//      CAL : 26 mars 1998
-//              Patch, erreur dans la gestion du nombre de Group avec
-//              facettes dans Graphic3d_Structure avec une operation
-//              de Clear. (PRO12795)
-//      FGU : 30 Avril 1998
-//              Ajout emission
-//      CAL : 20 mai 1998
-//              Perfs. Connection entre structures COMPUTED.
-//      30/11/98 ; FMN : S4069. Textes always visible.
-//      22/03/04 ; SAN : OCC4895 High-level interface for controlling polygon offsets
-
-#define BUC60918        //GG 31/05/01 A transparente structure priority must have the
-//                      MAX_PRIORITY value so, the highlighted structure must have
-//                      MAX_PRIORITY-1 value.
-//                      Add ResetDisplayPriority() method.
-
-#define OCC1174 // SAV 08/01/03 Added back face interior color controling
-
-
-
-//-Version
-
-//-Design       Declaration of variables specific to graphic structures
-
-//-Warning      A structure is defined in a manager
-//              This is a sequence of groups of primitives
-
-//-References
-
-//-Language     C++ 2.0
-
-//-Declarations
-
-// for the class
-
-#define XDOWNCAST
-#define XDESTROY
-#define XDEBUG
-#define XTRACE
-#define XTRACE_ISTRSF
-
-#include <stdio.h>
-
 #include <Graphic3d_Structure.ixx>
 #include <Graphic3d_Structure.pxx>
 
@@ -94,166 +26,87 @@
 #include <TColStd_Array2OfReal.hxx>
 #include <Graphic3d_TextureMap.hxx>
 
-// OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
 #include <Aspect_PolygonOffsetMode.hxx>
-// OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
 
-//-Aliases
+#include <stdio.h>
 
-//-Global data definitions
-
-//-Constructors
-
-Graphic3d_Structure::Graphic3d_Structure (const Handle(Graphic3d_StructureManager)& AManager):
-MyAncestors (),
-MyDescendants (),
-MyGroups (),
-MyHighlightColor (Quantity_NOC_WHITE)
+//=============================================================================
+//function : Graphic3d_Structure
+//purpose  :
+//=============================================================================
+Graphic3d_Structure::Graphic3d_Structure (const Handle(Graphic3d_StructureManager)& theManager)
+: myStructureManager      (theManager.operator->()),
+  myFirstStructureManager (theManager.operator->()),
+  myComputeVisual         (Graphic3d_TOS_ALL),
+  myHighlightColor        (Quantity_NOC_WHITE),
+  myHighlightMethod       (Aspect_TOHM_COLOR),
+  myOwner                 (NULL),
+  myVisual                (Graphic3d_TOS_ALL)
 {
+  myCStructure = theManager->GraphicDriver()->Structure (theManager);
 
-  Standard_Integer i, j;
+  // default aspects
+  Handle(Graphic3d_AspectLine3d)     aAspectLine3d     = new Graphic3d_AspectLine3d();
+  Handle(Graphic3d_AspectText3d)     aAspectText3d     = new Graphic3d_AspectText3d();
+  Handle(Graphic3d_AspectMarker3d)   aAspectMarker3d   = new Graphic3d_AspectMarker3d();
+  Handle(Graphic3d_AspectFillArea3d) aAspectFillArea3d = new Graphic3d_AspectFillArea3d();
+  theManager->PrimitivesAspect (aAspectLine3d, aAspectText3d, aAspectMarker3d, aAspectFillArea3d);
+  aAspectFillArea3d->SetPolygonOffsets (Aspect_POM_Fill, 1.0, 0.0);
 
-  MyOwner = NULL;
-
-  Handle(Graphic3d_AspectLine3d) aAspectLine3d =
-    new Graphic3d_AspectLine3d ();
-  Handle(Graphic3d_AspectText3d) aAspectText3d =
-    new Graphic3d_AspectText3d ();
-  Handle(Graphic3d_AspectMarker3d) aAspectMarker3d =
-    new Graphic3d_AspectMarker3d ();
-  Handle(Graphic3d_AspectFillArea3d) aAspectFillArea3d =
-    new Graphic3d_AspectFillArea3d ();
-
-  // Return default values
-  AManager->PrimitivesAspect (aAspectLine3d, aAspectText3d,
-    aAspectMarker3d, aAspectFillArea3d);
-
-  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
-  // It is necessary to set default polygon offsets for a new presentation
-  aAspectFillArea3d->SetPolygonOffsets( Aspect_POM_Fill, 1., 0. );
-  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
-
-  // Update the associated CStructure
-  UpdateStructure (aAspectLine3d, aAspectText3d,
-    aAspectMarker3d, aAspectFillArea3d);
-
-  MyFirstPtrStructureManager = MyPtrStructureManager =
-    (void *) AManager.operator->();
-  MyCStructure.Id         = int (AManager->NewIdentification ());
-
-  MyCStructure.IsOpen     = 0;
-  MyCStructure.IsDeleted  = 0;
-
-  MyCStructure.Composition        = 0; /* Graphic3d_TOC_REPLACE */
-
-  for (i=0; i<=3; i++)
-    for (j=0; j<=3; j++)
-      if (i == j)
-        MyCStructure.Transformation[i][j] = float (1.0);
-      else
-        MyCStructure.Transformation[i][j] = float (0.0);
-
-  MyCStructure.Priority           = int (Structure_MAX_PRIORITY / 2);
-  MyCStructure.PreviousPriority   = MyCStructure.Priority;
-  MyCStructure.stick              = 0,
-  MyCStructure.highlight          = 0,
-  MyCStructure.visible            = 1,
-  MyCStructure.pick               = 1;
-  MyCStructure.ContainsFacet      = 0,
-  MyCStructure.IsInfinite         = 0,
-  MyCStructure.HLRValidation      = 0;
-
-  MyCStructure.ContextLine.IsDef         = 1,
-  MyCStructure.ContextFillArea.IsDef     = 1,
-  MyCStructure.ContextMarker.IsDef       = 1,
-  MyCStructure.ContextText.IsDef         = 1;
-
-  MyCStructure.ContextLine.IsSet         = 0,
-  MyCStructure.ContextFillArea.IsSet     = 0,
-  MyCStructure.ContextMarker.IsSet       = 0,
-  MyCStructure.ContextText.IsSet         = 0;
-
-  MyVisual        = Graphic3d_TOS_ALL;
-  MyComputeVisual = Graphic3d_TOS_ALL;
-
-  /* ABD 29/10/04  Transform Persistence of Presentation( pan, zoom, rotate ) */
-  /*MyCStructure.TransformPersistence.IsDef = 1;*/
-  MyCStructure.TransformPersistence.IsSet = 0;
-  MyCStructure.TransformPersistence.Flag = Graphic3d_TMF_None;
-  MyCStructure.TransformPersistence.Point.x = 0.0;
-  MyCStructure.TransformPersistence.Point.y = 0.0;
-  MyCStructure.TransformPersistence.Point.z = 0.0;
-  /* ABD 29/10/04  Transform Persistence of Presentation( pan, zoom, rotate ) */
-
-  MyGraphicDriver = AManager->GraphicDriver();
-  MyGraphicDriver->Structure (MyCStructure);
-
-#ifdef TRACE
-  cout << "Graphic3d_Structure::Create (" << MyCStructure.Id << ")\n";
-#endif
-
+  // update the associated CStructure
+  UpdateStructure (aAspectLine3d, aAspectText3d, aAspectMarker3d, aAspectFillArea3d);
 }
 
-//-Destructors
-
-void Graphic3d_Structure::Destroy () {
-
-#ifdef DESTROY
-  cout << "Graphic3d_Structure::Destroy (" << MyCStructure.Id << ")\n";
-#endif
-
-  // as MyFirstPtrStructureManager can be already destroyed,
+//=============================================================================
+//function : Destroy
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::Destroy()
+{
+  // as myFirstStructureManager can be already destroyed,
   // avoid attempts to access it
-  MyFirstPtrStructureManager = 0;
-  Remove ();
-
+  myFirstStructureManager = NULL;
+  Remove();
 }
 
-//-Methods, in order
-
-void Graphic3d_Structure::Clear (const Standard_Boolean WithDestruction)
+//=============================================================================
+//function : Clear
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::Clear (const Standard_Boolean theWithDestruction)
 {
   if (IsDeleted()) return;
 
-  MyCStructure.ContainsFacet = 0;
+  myCStructure->ContainsFacet = 0;
 
   // clean groups in graphics driver at first
-  GraphicClear (WithDestruction);
+  GraphicClear (theWithDestruction);
 
   // only then remove group references
-  if (WithDestruction)
-    MyGroups.Clear();
+  if (theWithDestruction)
+    myGroups.Clear();
 
-  MyStructureManager->Clear (this, WithDestruction);
+  myStructureManager->Clear (this, theWithDestruction);
 
   Update();
 }
 
-void Graphic3d_Structure::Remove () {
-
-  if (IsDeleted ()) return;
-
-#ifdef DESTROY
-  if (MyDescendants.Length () != 0) {
-    cout << "The structure " << MyCStructure.Id << " have "
-      << MyDescendants.Length () << " descendants.\n" << flush;
-  }
-  if (MyAncestors.Length () != 0) {
-    cout << "The structure " << MyCStructure.Id << " have "
-      << MyAncestors.Length () << " ancestors.\n" << flush;
-  }
-#endif
-
-  Standard_Integer i, Length;
+//=============================================================================
+//function : Remove
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::Remove()
+{
+  if (IsDeleted()) return;
 
   // clean groups in graphics driver at first; this is also should be done
   // to avoid unwanted group cleaning in group's destructor
   // Pass Standard_False to Clear(..) method to avoid updating in
   // structure manager, it isn't necessary, besides of it structure manager
   // could be already destroyed and invalid pointers used in structure;
-  Length = MyGroups.Length();
+  Standard_Integer Length = myGroups.Length();
   for (Standard_Integer aGrId = 1; aGrId <= Length; ++aGrId)
-    MyGroups.ChangeValue (aGrId)->Clear (Standard_False);
+    myGroups.ChangeValue (aGrId)->Clear (Standard_False);
 
   //        Standard_Address APtr = (void *) This ().operator->();
   Standard_Address APtr = (void *) this;
@@ -262,425 +115,518 @@ void Graphic3d_Structure::Remove () {
   // of ancesters of this structure and in the list of ancesters
   // of descendants of the same structure.
 
-  Length  = MyDescendants.Length ();
-  for (i=1; i<=Length; i++)
-    ((Graphic3d_Structure *)
-    (MyDescendants.Value (i)))->Remove (APtr, Graphic3d_TOC_ANCESTOR);
+  Length = myDescendants.Length();
+  for (Standard_Integer i = 1; i <= Length; ++i)
+  {
+    ((Graphic3d_Structure *)(myDescendants.Value (i)))->Remove (APtr, Graphic3d_TOC_ANCESTOR);
+  }
 
-  Length  = MyAncestors.Length ();
-  for (i=1; i<=Length; i++)
-    ((Graphic3d_Structure *)
-    (MyAncestors.Value (i)))->Remove (APtr, Graphic3d_TOC_DESCENDANT);
+  Length = myAncestors.Length();
+  for (Standard_Integer i = 1; i <= Length; ++i)
+  {
+    ((Graphic3d_Structure *)(myAncestors.Value (i)))->Remove (APtr, Graphic3d_TOC_DESCENDANT);
+  }
 
-  MyCStructure.ContainsFacet      = 0;
-  MyCStructure.IsDeleted  = 1;
+  myCStructure->ContainsFacet = 0;
 
   // Destruction of me in the graphic library
-  MyGraphicDriver->RemoveStructure (MyCStructure);
+  const Standard_Integer aStructId = myCStructure->Id;
+  myCStructure->GraphicDriver()->RemoveStructure (myCStructure);
+  myCStructure.Nullify();
 
   // Liberation of the identification if the destroyed structure
   // in the first manager that performs creation of the structure.
-  if ( MyFirstPtrStructureManager )
-    MyFirstStructureManager->Remove (Standard_Integer (MyCStructure.Id));
-
+  if (myFirstStructureManager != NULL)
+  {
+    myFirstStructureManager->Remove (aStructId);
+  }
 }
 
-void Graphic3d_Structure::Display () {
+//=============================================================================
+//function : Display
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::Display()
+{
+  if (IsDeleted()) return;
 
-  if (IsDeleted ()) return;
-
-  if (! MyCStructure.stick) {
-    MyCStructure.stick      = 1;
-    MyStructureManager->Display (this);
+  if (!myCStructure->stick)
+  {
+    myCStructure->stick = 1;
+    myStructureManager->Display (this);
   }
 
-  MyCStructure.visible = 1;
+  myCStructure->visible = 1;
 }
 
-void Graphic3d_Structure::Display (const Standard_Integer Priority) {
+//=============================================================================
+//function : Display
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::Display (const Standard_Integer thePriority)
+{
+  if (IsDeleted()) return;
 
-  if (IsDeleted ()) return;
+  SetDisplayPriority (thePriority);
 
-  SetDisplayPriority (Priority);
-
-  if (! MyCStructure.stick) {
-    MyCStructure.stick      = 1;
-    MyStructureManager->Display (this);
+  if (!myCStructure->stick)
+  {
+    myCStructure->stick = 1;
+    myStructureManager->Display (this);
   }
 
-  MyCStructure.visible = 1;
+  myCStructure->visible = 1;
 }
 
-void Graphic3d_Structure::SetDisplayPriority (const Standard_Integer Priority) {
-
-  if (IsDeleted ()) return;
-
-#ifdef BUC60918
-  if( Priority == MyCStructure.Priority ) return;
-#endif
-
-  MyCStructure.PreviousPriority   = MyCStructure.Priority;
-  MyCStructure.Priority   = int (Priority);
-
-  if (MyCStructure.Priority != MyCStructure.PreviousPriority) {
-    if ( (MyCStructure.Priority > Structure_MAX_PRIORITY) ||
-      (MyCStructure.Priority < Structure_MIN_PRIORITY) )
-      Graphic3d_PriorityDefinitionError::Raise
-      ("Bad value for StructurePriority");
-
-    if (MyCStructure.stick)
-      MyStructureManager->ChangeDisplayPriority (this,
-      Standard_Integer (MyCStructure.PreviousPriority),
-      Standard_Integer (MyCStructure.Priority));
+//=============================================================================
+//function : SetDisplayPriority
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::SetDisplayPriority (const Standard_Integer thePriority)
+{
+  if (IsDeleted()
+   || thePriority == myCStructure->Priority)
+  {
+    return;
   }
 
+  myCStructure->PreviousPriority = myCStructure->Priority;
+  myCStructure->Priority         = thePriority;
+
+  if (myCStructure->Priority != myCStructure->PreviousPriority)
+  {
+    Graphic3d_PriorityDefinitionError_Raise_if ((myCStructure->Priority > Structure_MAX_PRIORITY)
+                                             || (myCStructure->Priority < Structure_MIN_PRIORITY),
+                                                "Bad value for StructurePriority");
+    if (myCStructure->stick)
+    {
+      myStructureManager->ChangeDisplayPriority (this, myCStructure->PreviousPriority, myCStructure->Priority);
+    }
+  }
 }
 
-#ifdef BUC60918
-void Graphic3d_Structure::ResetDisplayPriority () {
-
-  if (IsDeleted ()) return;
-
-  if (MyCStructure.Priority != MyCStructure.PreviousPriority) {
-    Standard_Integer priority = MyCStructure.Priority;
-    MyCStructure.Priority = MyCStructure.PreviousPriority;
-
-    if (MyCStructure.stick)
-      MyStructureManager->ChangeDisplayPriority (this,
-      priority,
-      Standard_Integer (MyCStructure.Priority));
+//=============================================================================
+//function : ResetDisplayPriority
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::ResetDisplayPriority()
+{
+  if (IsDeleted()
+   || myCStructure->Priority == myCStructure->PreviousPriority)
+  {
+    return;
   }
 
+  const Standard_Integer aPriority = myCStructure->Priority;
+  myCStructure->Priority = myCStructure->PreviousPriority;
+  if (myCStructure->stick)
+  {
+    myStructureManager->ChangeDisplayPriority (this, aPriority, myCStructure->Priority);
+  }
 }
-#endif
 
-Standard_Integer Graphic3d_Structure::DisplayPriority () const {
-
-  return Standard_Integer (MyCStructure.Priority);
-
+//=============================================================================
+//function : DisplayPriority
+//purpose  :
+//=============================================================================
+Standard_Integer Graphic3d_Structure::DisplayPriority() const
+{
+  return myCStructure->Priority;
 }
 
-void Graphic3d_Structure::Erase () {
-
-  if (IsDeleted ()) return;
-
-  if (MyCStructure.stick) {
-    MyCStructure.stick = 0;
-    MyStructureManager->Erase (this);
+//=============================================================================
+//function : Erase
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::Erase()
+{
+  if (IsDeleted())
+  {
+    return;
   }
 
+  if (myCStructure->stick)
+  {
+    myCStructure->stick = 0;
+    myStructureManager->Erase (this);
+  }
 }
 
-void Graphic3d_Structure::Highlight (const Aspect_TypeOfHighlightMethod AMethod) {
-
-  if (IsDeleted ()) return;
+//=============================================================================
+//function : Highlight
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::Highlight (const Aspect_TypeOfHighlightMethod theMethod)
+{
+  if (IsDeleted())
+  {
+    return;
+  }
 
   // Highlight on already Highlighted structure.
-  if (MyCStructure.highlight) {
-
-    Aspect_TypeOfUpdate UpdateMode = MyStructureManager->UpdateMode ();
-    if (UpdateMode == Aspect_TOU_WAIT)
-      UnHighlight ();
-    else {
-      // To avoid call of method : Update ()
+  if (myCStructure->highlight)
+  {
+    Aspect_TypeOfUpdate anUpdateMode = myStructureManager->UpdateMode();
+    if (anUpdateMode == Aspect_TOU_WAIT)
+    {
+      UnHighlight();
+    }
+    else
+    {
+      // To avoid call of method : Update()
       // Not useful and can be costly.
-      MyStructureManager->SetUpdateMode (Aspect_TOU_WAIT);
-      UnHighlight ();
-      MyStructureManager->SetUpdateMode (UpdateMode);
+      myStructureManager->SetUpdateMode (Aspect_TOU_WAIT);
+      UnHighlight();
+      myStructureManager->SetUpdateMode (anUpdateMode);
     }
   }
 
-#ifdef BUC60918
-  SetDisplayPriority (Standard_Integer (Structure_MAX_PRIORITY)-1);
-#else
-  SetDisplayPriority (Standard_Integer (Structure_MAX_PRIORITY));
-#endif
+  SetDisplayPriority (Structure_MAX_PRIORITY - 1);
 
-  GraphicHighlight (AMethod);
-  MyStructureManager->Highlight (this, AMethod);
+  GraphicHighlight (theMethod);
+  myStructureManager->Highlight (this, theMethod);
 
-  Update ();
-
+  Update();
 }
 
-void Graphic3d_Structure::SetHighlightColor (const Quantity_Color& AColor) {
-
-  if (IsDeleted ()) return;
-
-  if (! MyCStructure.highlight)
-    MyHighlightColor = AColor;
-  else {
-    // Change highlight color on already Highlighted structure.
-
-    Aspect_TypeOfUpdate UpdateMode  = MyStructureManager->UpdateMode ();
-    if (UpdateMode == Aspect_TOU_WAIT)
-      UnHighlight ();
-    else {
-      // To avoid call of method : Update ()
-      // Not useful and can be costly.
-      MyStructureManager->SetUpdateMode (Aspect_TOU_WAIT);
-      UnHighlight ();
-      MyStructureManager->SetUpdateMode (UpdateMode);
-    }
-    MyHighlightColor = AColor;
-    Highlight (MyHighlightMethod);
+//=============================================================================
+//function : SetHighlightColor
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::SetHighlightColor (const Quantity_Color& theColor)
+{
+  if (IsDeleted())
+  {
+    return;
   }
 
-}
+  if (!myCStructure->highlight)
+  {
+    myHighlightColor = theColor;
+    return;
+  }
 
-void Graphic3d_Structure::SetVisible (const Standard_Boolean AValue) {
-
-  if (IsDeleted ()) return;
-
-  MyCStructure.visible = AValue ? 1:0;
-
-  MyGraphicDriver->NameSetStructure (MyCStructure);
-
-  Update ();
-
-}
-
-void Graphic3d_Structure::SetPick (const Standard_Boolean AValue) {
-
-  if (IsDeleted ()) return;
-
-  MyCStructure.pick = AValue ? 1:0;
-
-  MyGraphicDriver->NameSetStructure (MyCStructure);
-
-  if (AValue)
-    MyStructureManager->Detectable (this);
+  // Change highlight color on already Highlighted structure.
+  Aspect_TypeOfUpdate anUpdateMode  = myStructureManager->UpdateMode();
+  if (anUpdateMode == Aspect_TOU_WAIT)
+  {
+    UnHighlight();
+  }
   else
-    MyStructureManager->Undetectable (this);
-
-  Update ();
-
+  {
+    // To avoid call of method : Update()
+    // Not useful and can be costly.
+    myStructureManager->SetUpdateMode (Aspect_TOU_WAIT);
+    UnHighlight();
+    myStructureManager->SetUpdateMode (anUpdateMode);
+  }
+  myHighlightColor = theColor;
+  Highlight (myHighlightMethod);
 }
 
-void Graphic3d_Structure::UnHighlight () {
+//=============================================================================
+//function : SetVisible
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::SetVisible (const Standard_Boolean theValue)
+{
+  if (IsDeleted()) return;
 
+  myCStructure->visible = theValue ? 1 : 0;
+  myCStructure->UpdateNamedStatus();
+  Update();
+}
+
+//=============================================================================
+//function : SetPick
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::SetPick (const Standard_Boolean theValue)
+{
   if (IsDeleted ()) return;
 
-  if (MyCStructure.highlight) {
-    MyCStructure.highlight = 0;
+  myCStructure->pick = theValue ? 1 : 0;
+  myCStructure->UpdateNamedStatus();
 
-    GraphicUnHighlight ();
-    MyStructureManager->UnHighlight (this);
-#ifdef BUC60918
+  if (theValue)
+  {
+    myStructureManager->Detectable (this);
+  }
+  else
+  {
+    myStructureManager->Undetectable (this);
+  }
+  Update();
+}
+
+//=============================================================================
+//function : UnHighlight
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::UnHighlight()
+{
+  if (IsDeleted()) return;
+
+  if (myCStructure->highlight)
+  {
+    myCStructure->highlight = 0;
+
+    GraphicUnHighlight();
+    myStructureManager->UnHighlight (this);
+
     ResetDisplayPriority();
-#else
-    SetDisplayPriority
-      (Standard_Integer (MyCStructure.PreviousPriority));
-#endif
-    Update ();
+    Update();
+  }
+}
+
+//=============================================================================
+//function : HighlightColor
+//purpose  :
+//=============================================================================
+const Quantity_Color& Graphic3d_Structure::HighlightColor() const
+{
+  return myHighlightColor;
+}
+
+//=============================================================================
+//function : IsDisplayed
+//purpose  :
+//=============================================================================
+Standard_Boolean Graphic3d_Structure::IsDisplayed() const
+{
+  return myCStructure->stick ? Standard_True : Standard_False;
+}
+
+//=============================================================================
+//function : IsDeleted
+//purpose  :
+//=============================================================================
+Standard_Boolean Graphic3d_Structure::IsDeleted() const
+{
+  return myCStructure.IsNull();
+}
+
+//=============================================================================
+//function : IsHighlighted
+//purpose  :
+//=============================================================================
+Standard_Boolean Graphic3d_Structure::IsHighlighted() const
+{
+  return myCStructure->highlight ? Standard_True : Standard_False;
+}
+
+//=============================================================================
+//function : IsSelectable
+//purpose  :
+//=============================================================================
+Standard_Boolean Graphic3d_Structure::IsSelectable() const
+{
+  return myCStructure->pick ? Standard_True : Standard_False;
+}
+
+//=============================================================================
+//function : IsVisible
+//purpose  :
+//=============================================================================
+Standard_Boolean Graphic3d_Structure::IsVisible() const
+{
+  return myCStructure->visible ? Standard_True : Standard_False;
+}
+
+//=============================================================================
+//function : IsRotated
+//purpose  :
+//=============================================================================
+Standard_Boolean Graphic3d_Structure::IsRotated() const
+{
+  // A somewhat light test !
+  return myCStructure->Transformation[0][1] != 0.0
+      || myCStructure->Transformation[0][2] != 0.0
+      || myCStructure->Transformation[1][0] != 0.0
+      || myCStructure->Transformation[1][2] != 0.0
+      || myCStructure->Transformation[2][0] != 0.0
+      || myCStructure->Transformation[2][1] != 0.0;
+}
+
+//=============================================================================
+//function : IsTransformed
+//purpose  :
+//=============================================================================
+Standard_Boolean Graphic3d_Structure::IsTransformed() const
+{
+  Standard_Boolean aResult = Standard_False;
+  for (Standard_Integer i = 0; i <= 3 && !aResult; ++i)
+  {
+    for (Standard_Integer j = 0; j <= 3 && !aResult; ++j)
+    {
+      if (i == j)
+        aResult = myCStructure->Transformation[i][j] != 1.0;
+      else
+        aResult = myCStructure->Transformation[i][j] != 0.0;
+    }
+  }
+  return aResult;
+}
+
+//=============================================================================
+//function : ContainsFacet
+//purpose  :
+//=============================================================================
+Standard_Boolean Graphic3d_Structure::ContainsFacet() const
+{
+  if (IsDeleted())
+  {
+    return Standard_False;
+  }
+  else if (myCStructure->ContainsFacet > 0)
+  {
+    // if one of groups contains at least one facet, the structure contains it too
+    return Standard_True;
   }
 
+  // stop at the first descendant containing at least one facet
+  const Standard_Integer aNbDesc = myDescendants.Length();
+  for (Standard_Integer aStructIter = 1; aStructIter <= aNbDesc; ++aStructIter)
+  {
+    if (((Graphic3d_Structure *)(myDescendants.Value (aStructIter)))->ContainsFacet())
+    {
+      return Standard_True;
+    }
+  }
+  return Standard_False;
 }
 
-Quantity_Color Graphic3d_Structure::HighlightColor () const {
+//=============================================================================
+//function : IsEmpty
+//purpose  :
+//=============================================================================
+Standard_Boolean Graphic3d_Structure::IsEmpty() const
+{
+  if (IsDeleted())
+  {
+    return Standard_True;
+  }
 
-  return (MyHighlightColor);
+  // structure is empty:
+  // - if all these groups are empty
+  // - or if all groups are empty and all their descendants are empty
+  // - or if all its descendants are empty
+  const Standard_Integer aNbGroups = myGroups.Length();
+  for (Standard_Integer aGrpIter = 1; aGrpIter <= aNbGroups; ++aGrpIter)
+  {
+    if (!myGroups.Value (aGrpIter)->IsEmpty())
+    {
+      return Standard_False;
+    }
+  }
 
+  // stop at the first non-empty descendant
+  const Standard_Integer aNbDesc = myDescendants.Length();
+  for (Standard_Integer aDescIter = 1; aDescIter <= aNbDesc; ++aDescIter)
+  {
+    if (!((Graphic3d_Structure* )(myDescendants.Value (aDescIter)))->IsEmpty())
+    {
+      return Standard_False;
+    }
+  }
+  return Standard_True;
 }
 
-Standard_Boolean Graphic3d_Structure::IsDisplayed () const {
-
-  if (MyCStructure.stick)
-    return (Standard_True);
-  else
-    return (Standard_False);
-
+//=============================================================================
+//function : PrimitivesAspect
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::PrimitivesAspect (Handle(Graphic3d_AspectLine3d)&     theAspLine,
+                                            Handle(Graphic3d_AspectText3d)&     theAspText,
+                                            Handle(Graphic3d_AspectMarker3d)&   theAspMarker,
+                                            Handle(Graphic3d_AspectFillArea3d)& theAspFill) const
+{
+  theAspLine   = Line3dAspect();
+  theAspText   = Text3dAspect();
+  theAspMarker = Marker3dAspect();
+  theAspFill   = FillArea3dAspect();
 }
 
-Standard_Boolean Graphic3d_Structure::IsDeleted () const {
-
-  if (MyCStructure.IsDeleted)
-    return (Standard_True);
-  else
-    return (Standard_False);
-
+//=============================================================================
+//function : GroupsWithFacet
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::GroupsWithFacet (const Standard_Integer theDelta)
+{
+  myCStructure->ContainsFacet = myCStructure->ContainsFacet + theDelta;
+  if (myCStructure->ContainsFacet < 0)
+  {
+    myCStructure->ContainsFacet = 0;
+  }
 }
 
-Standard_Boolean Graphic3d_Structure::IsHighlighted () const {
-
-  if (MyCStructure.highlight)
-    return (Standard_True);
-  else
-    return (Standard_False);
-
-}
-
-Standard_Boolean Graphic3d_Structure::IsSelectable () const {
-
-  if (MyCStructure.pick)
-    return (Standard_True);
-  else
-    return (Standard_False);
-
-}
-
-Standard_Boolean Graphic3d_Structure::IsVisible () const {
-
-  if (MyCStructure.visible)
-    return (Standard_True);
-  else
-    return (Standard_False);
-
-}
-
-Standard_Boolean Graphic3d_Structure::IsRotated () const {
-
-  // A somewhat light test !
-  return   ( MyCStructure.Transformation[0][1] != 0.
-    || MyCStructure.Transformation[0][2] != 0.
-    || MyCStructure.Transformation[1][0] != 0.
-    || MyCStructure.Transformation[1][2] != 0.
-    || MyCStructure.Transformation[2][0] != 0.
-    || MyCStructure.Transformation[2][1] != 0. );
-
-}
-
-Standard_Boolean Graphic3d_Structure::IsTransformed () const {
-
-  Standard_Boolean Result = Standard_False;
-  Standard_Integer i, j;
-
-  for (i=0; i<=3 && ! Result; i++)
-    for (j=0; j<=3 && ! Result; j++)
-      if (i == j)
-        Result = MyCStructure.Transformation[i][j] != 1.;
-      else
-        Result = MyCStructure.Transformation[i][j] != 0.;
-
-#ifdef TRACE_ISTRSF
-  cout << "Structure " << Identification ();
-  if (Result)
-    cout << " is transformed\n" << flush;
-  else
-    cout << " is not transformed\n" << flush;
-#endif
-
-  return Result;
-
-}
-
-Standard_Boolean Graphic3d_Structure::ContainsFacet () const {
-
-  if (IsDeleted ()) return (Standard_False);
-
-  // A structure contains at least one facet :
-  // if one of these groups contains at least one facet.
-
-  Standard_Boolean Result1 = Standard_False;
-  Standard_Boolean Result2 = Standard_False;
-  Standard_Integer i, Length;
-
-  Result1 = (MyCStructure.ContainsFacet > 0);
-
-  // If one of groups contains at least one facet, the structure contains it too.
-  if (Result1) return (Result1);
-
-  Length  = MyDescendants.Length ();
-
-  // Stop at the first descendant  containing at least one facet.
-  for (i=1; i<=Length && ! Result2; i++)
-    Result2 = ((Graphic3d_Structure *)
-    (MyDescendants.Value (i)))->ContainsFacet ();
-
-  return (Result2);
-
-}
-
-Standard_Boolean Graphic3d_Structure::IsEmpty () const {
-
-  if (IsDeleted ()) return (Standard_True);
-
-  // A structure is empty :
-  // if all these groups are empty or if all
-  // groups are empty and all their descendants
-  // are empty or if all its descendants are empty.
-
-  Standard_Boolean Result1   = Standard_True;
-  Standard_Integer i, Length = MyGroups.Length ();
-
-  // Stop at the first non-empty group
-  for (i=1; i<=Length && Result1; i++)
-    Result1 = (MyGroups.Value (i))->IsEmpty ();
-
-  // If a group is non-empty the structure is also non-empty.
-  if (! Result1) return (Standard_False);
-
-  Standard_Boolean Result2 = Standard_True;
-
-  Length  = MyDescendants.Length ();
-
-  // Stop at the first non-empty descendant
-  for (i=1; i<=Length && Result2; i++)
-    Result2 = ((Graphic3d_Structure *)
-    (MyDescendants.Value (i)))->IsEmpty ();
-
-  return (Result2);
-
-}
-
-void Graphic3d_Structure::PrimitivesAspect (Handle(Graphic3d_AspectLine3d)& CTXL, Handle(Graphic3d_AspectText3d)& CTXT, Handle(Graphic3d_AspectMarker3d)& CTXM, Handle(Graphic3d_AspectFillArea3d)& CTXF) const {
-
-  CTXL     = Line3dAspect ();
-  CTXT     = Text3dAspect ();
-  CTXM     = Marker3dAspect ();
-  CTXF     = FillArea3dAspect ();
-
-}
-
-void Graphic3d_Structure::GroupsWithFacet (const Standard_Integer ADelta) {
-
-  MyCStructure.ContainsFacet = MyCStructure.ContainsFacet + ADelta;
-  if (MyCStructure.ContainsFacet < 0) MyCStructure.ContainsFacet = 0;
-
-#ifdef DEBUG
-  cout << "MyCStructure.ContainsFacet " << MyCStructure.ContainsFacet;
-  cout << endl << flush;
-#endif
-
-}
-
+//=============================================================================
+//function : Compute
+//purpose  :
+//=============================================================================
 void Graphic3d_Structure::Compute()
 {
   // Implemented by Presentation
 }
 
-Handle(Graphic3d_Structure) Graphic3d_Structure::Compute (const Handle(Graphic3d_DataStructureManager)& ) {
-
+//=============================================================================
+//function : Compute
+//purpose  :
+//=============================================================================
+Handle(Graphic3d_Structure) Graphic3d_Structure::Compute (const Handle(Graphic3d_DataStructureManager)& )
+{
   // Implemented by Presentation
   return this;
 }
 
-Handle(Graphic3d_Structure) Graphic3d_Structure::Compute (const Handle(Graphic3d_DataStructureManager)& , const TColStd_Array2OfReal& ) {
-
+//=============================================================================
+//function : Compute
+//purpose  :
+//=============================================================================
+Handle(Graphic3d_Structure) Graphic3d_Structure::Compute (const Handle(Graphic3d_DataStructureManager)& ,
+                                                          const TColStd_Array2OfReal& )
+{
   // Implemented by Presentation
   return this;
 }
 
-void Graphic3d_Structure::Compute (const Handle(Graphic3d_DataStructureManager)& , Handle(Graphic3d_Structure)& ) {
-
+//=============================================================================
+//function : Compute
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::Compute (const Handle(Graphic3d_DataStructureManager)& ,
+                                   Handle(Graphic3d_Structure)& )
+{
   // Implemented by Presentation
 }
 
-void Graphic3d_Structure::Compute (const Handle(Graphic3d_DataStructureManager)& , const TColStd_Array2OfReal& , Handle(Graphic3d_Structure)& ) {
-
+//=============================================================================
+//function : Compute
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::Compute (const Handle(Graphic3d_DataStructureManager)& ,
+                                   const TColStd_Array2OfReal& ,
+                                   Handle(Graphic3d_Structure)& )
+{
   // Implemented by Presentation
 }
 
-void Graphic3d_Structure::ReCompute () {
-
-  MyStructureManager->ReCompute (this);
-
+//=============================================================================
+//function : ReCompute
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::ReCompute()
+{
+  myStructureManager->ReCompute (this);
 }
 
-void Graphic3d_Structure::ReCompute (const Handle(Graphic3d_DataStructureManager)& aProjector) {
-
-  MyStructureManager->ReCompute (this, aProjector);
-
+//=============================================================================
+//function : ReCompute
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::ReCompute (const Handle(Graphic3d_DataStructureManager)& theProjector)
+{
+  myStructureManager->ReCompute (this, theProjector);
 }
 
 //=============================================================================
@@ -689,963 +635,946 @@ void Graphic3d_Structure::ReCompute (const Handle(Graphic3d_DataStructureManager
 //=============================================================================
 void Graphic3d_Structure::SetInfiniteState (const Standard_Boolean theToSet)
 {
-  MyCStructure.IsInfinite = theToSet ? 1 : 0;
+  myCStructure->IsInfinite = theToSet ? 1 : 0;
 }
 
-Standard_Boolean Graphic3d_Structure::IsInfinite () const {
-
-  if (IsDeleted ()) return (Standard_True);
-
-  if (MyCStructure.IsInfinite)
-    return (Standard_True);
-  else
-    return (Standard_False);
-
+//=============================================================================
+//function : IsInfinite
+//purpose  :
+//=============================================================================
+Standard_Boolean Graphic3d_Structure::IsInfinite() const
+{
+  return IsDeleted()
+       || myCStructure->IsInfinite;
 }
 
-void Graphic3d_Structure::GraphicClear (const Standard_Boolean WithDestruction)
+//=============================================================================
+//function : GraphicClear
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::GraphicClear (const Standard_Boolean theWithDestruction)
 {
   // clean and empty each group
-  Standard_Integer Length = MyGroups.Length();
-  for (Standard_Integer aGrId = 1; aGrId <= Length; ++aGrId)
+  const Standard_Integer aLength = myGroups.Length();
+  for (Standard_Integer aGrId = 1; aGrId <= aLength; ++aGrId)
   {
-    MyGroups.ChangeValue (aGrId)->Clear();
+    myGroups.ChangeValue (aGrId)->Clear();
   }
 
-  if (WithDestruction)
+  if (theWithDestruction)
   {
-    while (!MyGroups.IsEmpty())
+    while (!myGroups.IsEmpty())
     {
-      Handle(Graphic3d_Group) aGroup = MyGroups.First();
+      Handle(Graphic3d_Group) aGroup = myGroups.First();
       aGroup->Remove();
     }
 
-    MyGraphicDriver->ClearStructure (MyCStructure);
+    myCStructure->Clear();
   }
 }
 
+//=============================================================================
+//function : GraphicConnect
+//purpose  :
+//=============================================================================
 void Graphic3d_Structure::GraphicConnect (const Handle(Graphic3d_Structure)& theDaughter)
 {
-  MyGraphicDriver->Connect (MyCStructure, theDaughter->MyCStructure);
+  myCStructure->Connect (*theDaughter->myCStructure);
 }
 
+//=============================================================================
+//function : GraphicDisconnect
+//purpose  :
+//=============================================================================
 void Graphic3d_Structure::GraphicDisconnect (const Handle(Graphic3d_Structure)& theDaughter)
 {
-  MyGraphicDriver->Disconnect (MyCStructure, theDaughter->MyCStructure);
+  myCStructure->Disconnect (*theDaughter->myCStructure);
 }
 
-Handle(Graphic3d_AspectLine3d) Graphic3d_Structure::Line3dAspect () const {
+//=============================================================================
+//function : Line3dAspect
+//purpose  :
+//=============================================================================
+Handle(Graphic3d_AspectLine3d) Graphic3d_Structure::Line3dAspect() const
+{
+  const Standard_Real anRGB[3] =
+  {
+    Standard_Real (myCStructure->ContextLine.Color.r),
+    Standard_Real (myCStructure->ContextLine.Color.g),
+    Standard_Real (myCStructure->ContextLine.Color.b)
+  };
+  Quantity_Color aColor;
+  aColor.SetValues (anRGB[0], anRGB[1], anRGB[2], Quantity_TOC_RGB);
+  Aspect_TypeOfLine aLType = Aspect_TypeOfLine (myCStructure->ContextLine.LineType);
+  Standard_Real     aWidth = Standard_Real     (myCStructure->ContextLine.Width);
 
-  Standard_Real           R, G, B;
-  Standard_Real           AWidth;
-  Quantity_Color          AColor;
-  Aspect_TypeOfLine       ALType;
-
-  // ContextLine
-  R       = Standard_Real (MyCStructure.ContextLine.Color.r);
-  G       = Standard_Real (MyCStructure.ContextLine.Color.g);
-  B       = Standard_Real (MyCStructure.ContextLine.Color.b);
-  AColor.SetValues (R, G, B, Quantity_TOC_RGB);
-  ALType  = Aspect_TypeOfLine (MyCStructure.ContextLine.LineType);
-  AWidth  = Standard_Real (MyCStructure.ContextLine.Width);
-
-  Handle(Graphic3d_AspectLine3d) CTXL = new Graphic3d_AspectLine3d (AColor, ALType, AWidth);
-  CTXL->SetShaderProgram (MyCStructure.ContextLine.ShaderProgram);
-
-  return CTXL;
-
+  Handle(Graphic3d_AspectLine3d) anAspLine = new Graphic3d_AspectLine3d (aColor, aLType, aWidth);
+  anAspLine->SetShaderProgram (myCStructure->ContextLine.ShaderProgram);
+  return anAspLine;
 }
 
-Handle(Graphic3d_AspectText3d) Graphic3d_Structure::Text3dAspect () const {
+//=============================================================================
+//function : Text3dAspect
+//purpose  :
+//=============================================================================
+Handle(Graphic3d_AspectText3d) Graphic3d_Structure::Text3dAspect() const
+{
+  const Standard_Real anRGB[3] =
+  {
+    Standard_Real (myCStructure->ContextText.Color.r),
+    Standard_Real (myCStructure->ContextText.Color.g),
+    Standard_Real (myCStructure->ContextText.Color.b)
+  };
+  Quantity_Color aColor;
+  aColor.SetValues (anRGB[0], anRGB[1], anRGB[2], Quantity_TOC_RGB);
+  Standard_CString         aFont       = Standard_CString         (myCStructure->ContextText.Font);
+  Standard_Real            anExpansion = Standard_Real            (myCStructure->ContextText.Expan);
+  Standard_Real            aSpace      = Standard_Real            (myCStructure->ContextText.Space);
+  Aspect_TypeOfStyleText   aStyle      = Aspect_TypeOfStyleText   (myCStructure->ContextText.Style);
+  Aspect_TypeOfDisplayText aDispType   = Aspect_TypeOfDisplayText (myCStructure->ContextText.DisplayType);
 
-  Standard_Real             R, G, B;
-  Standard_CString          AFont;
-  Standard_Real             ASpace;
-  Standard_Real             AnExpansion;
-  Quantity_Color            AColor;
-  Aspect_TypeOfStyleText    AStyle;
-  Aspect_TypeOfDisplayText  ADisplayType;
-
-  // ContextText
-  R       = Standard_Real (MyCStructure.ContextText.Color.r);
-  G       = Standard_Real (MyCStructure.ContextText.Color.g);
-  B       = Standard_Real (MyCStructure.ContextText.Color.b);
-  AColor.SetValues (R, G, B, Quantity_TOC_RGB);
-  AFont   = Standard_CString (MyCStructure.ContextText.Font);
-  AnExpansion     = Standard_Real (MyCStructure.ContextText.Expan);
-  ASpace  = Standard_Real (MyCStructure.ContextText.Space);
-  AStyle  = Aspect_TypeOfStyleText (MyCStructure.ContextText.Style);
-  ADisplayType = Aspect_TypeOfDisplayText (MyCStructure.ContextText.DisplayType);
-
-  Handle(Graphic3d_AspectText3d) CTXT = new Graphic3d_AspectText3d (AColor, AFont, AnExpansion, ASpace,AStyle,ADisplayType);
-  CTXT->SetShaderProgram (MyCStructure.ContextText.ShaderProgram);
-
-  return CTXT;
-
+  Handle(Graphic3d_AspectText3d) anAspText = new Graphic3d_AspectText3d (aColor, aFont, anExpansion, aSpace, aStyle, aDispType);
+  anAspText->SetShaderProgram (myCStructure->ContextText.ShaderProgram);
+  return anAspText;
 }
 
-Handle(Graphic3d_AspectMarker3d) Graphic3d_Structure::Marker3dAspect () const {
+//=============================================================================
+//function : Marker3dAspect
+//purpose  :
+//=============================================================================
+Handle(Graphic3d_AspectMarker3d) Graphic3d_Structure::Marker3dAspect() const
+{
+  const Standard_Real anRGB[3] =
+  {
+    Standard_Real (myCStructure->ContextMarker.Color.r),
+    Standard_Real (myCStructure->ContextMarker.Color.g),
+    Standard_Real (myCStructure->ContextMarker.Color.b)
+  };
+  Quantity_Color aColor;
+  aColor.SetValues (anRGB[0], anRGB[1], anRGB[2], Quantity_TOC_RGB);
+  Aspect_TypeOfMarker aMType = myCStructure->ContextMarker.MarkerType;
+  Standard_Real       aScale = Standard_Real (myCStructure->ContextMarker.Scale);
 
-  Standard_Real           R, G, B;
-  Standard_Real           AScale;
-  Quantity_Color          AColor;
-  Aspect_TypeOfMarker     AMType;
-
-  // ContextMarker
-  R       = Standard_Real (MyCStructure.ContextMarker.Color.r);
-  G       = Standard_Real (MyCStructure.ContextMarker.Color.g);
-  B       = Standard_Real (MyCStructure.ContextMarker.Color.b);
-  AColor.SetValues (R, G, B, Quantity_TOC_RGB);
-  AMType  = MyCStructure.ContextMarker.MarkerType;
-  AScale  = Standard_Real (MyCStructure.ContextMarker.Scale);
-
-  Handle(Graphic3d_AspectMarker3d) CTXM = new Graphic3d_AspectMarker3d (AMType, AColor, AScale);
-  CTXM->SetShaderProgram (MyCStructure.ContextMarker.ShaderProgram);
-
-  return CTXM;
-
+  Handle(Graphic3d_AspectMarker3d) anAspMarker = new Graphic3d_AspectMarker3d (aMType, aColor, aScale);
+  anAspMarker->SetShaderProgram (myCStructure->ContextMarker.ShaderProgram);
+  return anAspMarker;
 }
 
-Handle(Graphic3d_AspectFillArea3d) Graphic3d_Structure::FillArea3dAspect () const {
-
-  Standard_Real             R, G, B;
-  Standard_Real             AWidth;
-  Quantity_Color            AColor;
-  Quantity_Color            AnIntColor;
-  Quantity_Color            AnEdgeColor;
-  Aspect_TypeOfLine         ALType;
-  Aspect_InteriorStyle      AStyle;
-  Standard_Boolean          EdgeOn = Standard_False;
-  Graphic3d_MaterialAspect  Front;
-  Graphic3d_MaterialAspect  Back;
-
-  // ContextFillArea
-  AStyle  = Aspect_InteriorStyle (MyCStructure.ContextFillArea.Style);
-  R       = Standard_Real (MyCStructure.ContextFillArea.IntColor.r);
-  G       = Standard_Real (MyCStructure.ContextFillArea.IntColor.g);
-  B       = Standard_Real (MyCStructure.ContextFillArea.IntColor.b);
-  AnIntColor.SetValues (R, G, B, Quantity_TOC_RGB);
-  // Edges
-  if (MyCStructure.ContextFillArea.Edge == 1) EdgeOn = Standard_True;
-  R       = Standard_Real (MyCStructure.ContextFillArea.EdgeColor.r);
-  G       = Standard_Real (MyCStructure.ContextFillArea.EdgeColor.g);
-  B       = Standard_Real (MyCStructure.ContextFillArea.EdgeColor.b);
-  AnEdgeColor.SetValues (R, G, B, Quantity_TOC_RGB);
-  ALType  = Aspect_TypeOfLine (MyCStructure.ContextFillArea.LineType);
-  AWidth  = Standard_Real (MyCStructure.ContextFillArea.Width);
+//=============================================================================
+//function : FillArea3dAspect
+//purpose  :
+//=============================================================================
+Handle(Graphic3d_AspectFillArea3d) Graphic3d_Structure::FillArea3dAspect() const
+{
   // Back Material
-  Back.SetShininess (
-    Standard_Real (MyCStructure.ContextFillArea.Back.Shininess));
-  Back.SetAmbient (
-    Standard_Real (MyCStructure.ContextFillArea.Back.Ambient));
-  Back.SetDiffuse (
-    Standard_Real (MyCStructure.ContextFillArea.Back.Diffuse));
-  Back.SetSpecular (
-    Standard_Real (MyCStructure.ContextFillArea.Back.Specular));
-  Back.SetTransparency (
-    Standard_Real (MyCStructure.ContextFillArea.Back.Transparency));
-  Back.SetEmissive (
-    Standard_Real (MyCStructure.ContextFillArea.Back.Emission));
-  if (MyCStructure.ContextFillArea.Back.IsAmbient == 1)
-    Back.SetReflectionModeOn (Graphic3d_TOR_AMBIENT);
+  Graphic3d_MaterialAspect aBack;
+  aBack.SetShininess    (Standard_Real (myCStructure->ContextFillArea.Back.Shininess));
+  aBack.SetAmbient      (Standard_Real (myCStructure->ContextFillArea.Back.Ambient));
+  aBack.SetDiffuse      (Standard_Real (myCStructure->ContextFillArea.Back.Diffuse));
+  aBack.SetSpecular     (Standard_Real (myCStructure->ContextFillArea.Back.Specular));
+  aBack.SetTransparency (Standard_Real (myCStructure->ContextFillArea.Back.Transparency));
+  aBack.SetEmissive     (Standard_Real (myCStructure->ContextFillArea.Back.Emission));
+  if (myCStructure->ContextFillArea.Back.IsAmbient == 1)
+    aBack.SetReflectionModeOn  (Graphic3d_TOR_AMBIENT);
   else
-    Back.SetReflectionModeOff (Graphic3d_TOR_AMBIENT);
-  if (MyCStructure.ContextFillArea.Back.IsDiffuse == 1)
-    Back.SetReflectionModeOn (Graphic3d_TOR_DIFFUSE);
+    aBack.SetReflectionModeOff (Graphic3d_TOR_AMBIENT);
+  if (myCStructure->ContextFillArea.Back.IsDiffuse == 1)
+    aBack.SetReflectionModeOn  (Graphic3d_TOR_DIFFUSE);
   else
-    Back.SetReflectionModeOff (Graphic3d_TOR_DIFFUSE);
-  if (MyCStructure.ContextFillArea.Back.IsSpecular == 1)
-    Back.SetReflectionModeOn (Graphic3d_TOR_SPECULAR);
+    aBack.SetReflectionModeOff (Graphic3d_TOR_DIFFUSE);
+  if (myCStructure->ContextFillArea.Back.IsSpecular == 1)
+    aBack.SetReflectionModeOn  (Graphic3d_TOR_SPECULAR);
   else
-    Back.SetReflectionModeOff (Graphic3d_TOR_SPECULAR);
-  if (MyCStructure.ContextFillArea.Back.IsEmission == 1)
-    Back.SetReflectionModeOn (Graphic3d_TOR_EMISSION);
+    aBack.SetReflectionModeOff (Graphic3d_TOR_SPECULAR);
+  if (myCStructure->ContextFillArea.Back.IsEmission == 1)
+    aBack.SetReflectionModeOn  (Graphic3d_TOR_EMISSION);
   else
-    Back.SetReflectionModeOff (Graphic3d_TOR_EMISSION);
+    aBack.SetReflectionModeOff (Graphic3d_TOR_EMISSION);
 
-  R       = Standard_Real (MyCStructure.ContextFillArea.Back.ColorSpec.r);
-  G       = Standard_Real (MyCStructure.ContextFillArea.Back.ColorSpec.g);
-  B       = Standard_Real (MyCStructure.ContextFillArea.Back.ColorSpec.b);
-  AColor.SetValues (R, G, B, Quantity_TOC_RGB);
-  Back.SetSpecularColor (AColor);
+  Quantity_Color aColor (Standard_Real (myCStructure->ContextFillArea.Back.ColorSpec.r),
+                         Standard_Real (myCStructure->ContextFillArea.Back.ColorSpec.g),
+                         Standard_Real (myCStructure->ContextFillArea.Back.ColorSpec.b), Quantity_TOC_RGB);
+  aBack.SetSpecularColor (aColor);
 
-  R       = Standard_Real (MyCStructure.ContextFillArea.Back.ColorAmb.r);
-  G       = Standard_Real (MyCStructure.ContextFillArea.Back.ColorAmb.g);
-  B       = Standard_Real (MyCStructure.ContextFillArea.Back.ColorAmb.b);
-  AColor.SetValues (R, G, B, Quantity_TOC_RGB);
-  Back.SetAmbientColor (AColor);
+  aColor.SetValues (Standard_Real (myCStructure->ContextFillArea.Back.ColorAmb.r),
+                    Standard_Real (myCStructure->ContextFillArea.Back.ColorAmb.g),
+                    Standard_Real (myCStructure->ContextFillArea.Back.ColorAmb.b), Quantity_TOC_RGB);
+  aBack.SetAmbientColor (aColor);
 
-  R       = Standard_Real (MyCStructure.ContextFillArea.Back.ColorDif.r);
-  G       = Standard_Real (MyCStructure.ContextFillArea.Back.ColorDif.g);
-  B       = Standard_Real (MyCStructure.ContextFillArea.Back.ColorDif.b);
-  AColor.SetValues (R, G, B, Quantity_TOC_RGB);
-  Back.SetDiffuseColor (AColor);
+  aColor.SetValues (Standard_Real (myCStructure->ContextFillArea.Back.ColorDif.r),
+                    Standard_Real (myCStructure->ContextFillArea.Back.ColorDif.g),
+                    Standard_Real (myCStructure->ContextFillArea.Back.ColorDif.b), Quantity_TOC_RGB);
+  aBack.SetDiffuseColor (aColor);
 
-  R       = Standard_Real (MyCStructure.ContextFillArea.Back.ColorEms.r);
-  G       = Standard_Real (MyCStructure.ContextFillArea.Back.ColorEms.g);
-  B       = Standard_Real (MyCStructure.ContextFillArea.Back.ColorEms.b);
-  AColor.SetValues (R, G, B, Quantity_TOC_RGB);
-  Back.SetEmissiveColor (AColor);
+  aColor.SetValues (Standard_Real (myCStructure->ContextFillArea.Back.ColorEms.r),
+                    Standard_Real (myCStructure->ContextFillArea.Back.ColorEms.g),
+                    Standard_Real (myCStructure->ContextFillArea.Back.ColorEms.b), Quantity_TOC_RGB);
+  aBack.SetEmissiveColor (aColor);
 
-  Back.SetEnvReflexion (MyCStructure.ContextFillArea.Back.EnvReflexion);
-
-  Graphic3d_TypeOfMaterial mType =
-    MyCStructure.ContextFillArea.Back.IsPhysic ?
-Graphic3d_MATERIAL_PHYSIC : Graphic3d_MATERIAL_ASPECT;
-  Back.SetMaterialType(mType);
+  aBack.SetEnvReflexion (myCStructure->ContextFillArea.Back.EnvReflexion);
+  aBack.SetMaterialType (myCStructure->ContextFillArea.Back.IsPhysic ? Graphic3d_MATERIAL_PHYSIC : Graphic3d_MATERIAL_ASPECT);
 
   // Front Material
-  Front.SetShininess (
-    Standard_Real (MyCStructure.ContextFillArea.Front.Shininess));
-  Front.SetAmbient (
-    Standard_Real (MyCStructure.ContextFillArea.Front.Ambient));
-  Front.SetDiffuse (
-    Standard_Real (MyCStructure.ContextFillArea.Front.Diffuse));
-  Front.SetSpecular (
-    Standard_Real (MyCStructure.ContextFillArea.Front.Specular));
-  Front.SetTransparency (
-    Standard_Real (MyCStructure.ContextFillArea.Front.Transparency));
-  Front.SetEmissive (
-    Standard_Real (MyCStructure.ContextFillArea.Front.Emission));
-  if (MyCStructure.ContextFillArea.Front.IsAmbient == 1)
-    Front.SetReflectionModeOn (Graphic3d_TOR_AMBIENT);
+  Graphic3d_MaterialAspect aFront;
+  aFront.SetShininess    (Standard_Real (myCStructure->ContextFillArea.Front.Shininess));
+  aFront.SetAmbient      (Standard_Real (myCStructure->ContextFillArea.Front.Ambient));
+  aFront.SetDiffuse      (Standard_Real (myCStructure->ContextFillArea.Front.Diffuse));
+  aFront.SetSpecular     (Standard_Real (myCStructure->ContextFillArea.Front.Specular));
+  aFront.SetTransparency (Standard_Real (myCStructure->ContextFillArea.Front.Transparency));
+  aFront.SetEmissive     (Standard_Real (myCStructure->ContextFillArea.Front.Emission));
+  if (myCStructure->ContextFillArea.Front.IsAmbient == 1)
+    aFront.SetReflectionModeOn  (Graphic3d_TOR_AMBIENT);
   else
-    Front.SetReflectionModeOff (Graphic3d_TOR_AMBIENT);
-  if (MyCStructure.ContextFillArea.Front.IsDiffuse == 1)
-    Front.SetReflectionModeOn (Graphic3d_TOR_DIFFUSE);
+    aFront.SetReflectionModeOff (Graphic3d_TOR_AMBIENT);
+  if (myCStructure->ContextFillArea.Front.IsDiffuse == 1)
+    aFront.SetReflectionModeOn  (Graphic3d_TOR_DIFFUSE);
   else
-    Front.SetReflectionModeOff (Graphic3d_TOR_DIFFUSE);
-  if (MyCStructure.ContextFillArea.Front.IsSpecular == 1)
-    Front.SetReflectionModeOn (Graphic3d_TOR_SPECULAR);
+    aFront.SetReflectionModeOff (Graphic3d_TOR_DIFFUSE);
+  if (myCStructure->ContextFillArea.Front.IsSpecular == 1)
+    aFront.SetReflectionModeOn  (Graphic3d_TOR_SPECULAR);
   else
-    Front.SetReflectionModeOff (Graphic3d_TOR_SPECULAR);
-  if (MyCStructure.ContextFillArea.Front.Emission == 1)
-    Front.SetReflectionModeOn (Graphic3d_TOR_EMISSION);
+    aFront.SetReflectionModeOff (Graphic3d_TOR_SPECULAR);
+  if (myCStructure->ContextFillArea.Front.Emission == 1)
+    aFront.SetReflectionModeOn  (Graphic3d_TOR_EMISSION);
   else
-    Front.SetReflectionModeOff (Graphic3d_TOR_EMISSION);
+    aFront.SetReflectionModeOff (Graphic3d_TOR_EMISSION);
 
-  R       = Standard_Real (MyCStructure.ContextFillArea.Front.ColorSpec.r);
-  G       = Standard_Real (MyCStructure.ContextFillArea.Front.ColorSpec.g);
-  B       = Standard_Real (MyCStructure.ContextFillArea.Front.ColorSpec.b);
-  AColor.SetValues (R, G, B, Quantity_TOC_RGB);
-  Front.SetSpecularColor (AColor);
+  aColor.SetValues (Standard_Real (myCStructure->ContextFillArea.Front.ColorSpec.r),
+                    Standard_Real (myCStructure->ContextFillArea.Front.ColorSpec.g),
+                    Standard_Real (myCStructure->ContextFillArea.Front.ColorSpec.b), Quantity_TOC_RGB);
+  aFront.SetSpecularColor (aColor);
 
-  R       = Standard_Real (MyCStructure.ContextFillArea.Front.ColorAmb.r);
-  G       = Standard_Real (MyCStructure.ContextFillArea.Front.ColorAmb.g);
-  B       = Standard_Real (MyCStructure.ContextFillArea.Front.ColorAmb.b);
-  AColor.SetValues (R, G, B, Quantity_TOC_RGB);
-  Front.SetAmbientColor (AColor);
+  aColor.SetValues (Standard_Real (myCStructure->ContextFillArea.Front.ColorAmb.r),
+                    Standard_Real (myCStructure->ContextFillArea.Front.ColorAmb.g),
+                    Standard_Real (myCStructure->ContextFillArea.Front.ColorAmb.b), Quantity_TOC_RGB);
+  aFront.SetAmbientColor (aColor);
 
-  R       = Standard_Real (MyCStructure.ContextFillArea.Front.ColorDif.r);
-  G       = Standard_Real (MyCStructure.ContextFillArea.Front.ColorDif.g);
-  B       = Standard_Real (MyCStructure.ContextFillArea.Front.ColorDif.b);
-  AColor.SetValues (R, G, B, Quantity_TOC_RGB);
-  Front.SetDiffuseColor (AColor);
+  aColor.SetValues (Standard_Real (myCStructure->ContextFillArea.Front.ColorDif.r),
+                    Standard_Real (myCStructure->ContextFillArea.Front.ColorDif.g),
+                    Standard_Real (myCStructure->ContextFillArea.Front.ColorDif.b), Quantity_TOC_RGB);
+  aFront.SetDiffuseColor (aColor);
 
-  R       = Standard_Real (MyCStructure.ContextFillArea.Front.ColorEms.r);
-  G       = Standard_Real (MyCStructure.ContextFillArea.Front.ColorEms.g);
-  B       = Standard_Real (MyCStructure.ContextFillArea.Front.ColorEms.b);
-  AColor.SetValues (R, G, B, Quantity_TOC_RGB);
-  Front.SetEmissiveColor (AColor);
+  aColor.SetValues (Standard_Real (myCStructure->ContextFillArea.Front.ColorEms.r),
+                    Standard_Real (myCStructure->ContextFillArea.Front.ColorEms.g),
+                    Standard_Real (myCStructure->ContextFillArea.Front.ColorEms.b), Quantity_TOC_RGB);
+  aFront.SetEmissiveColor (aColor);
 
-  Front.SetEnvReflexion (MyCStructure.ContextFillArea.Front.EnvReflexion);
+  aFront.SetEnvReflexion (myCStructure->ContextFillArea.Front.EnvReflexion);
+  aFront.SetMaterialType (myCStructure->ContextFillArea.Front.IsPhysic ? Graphic3d_MATERIAL_PHYSIC : Graphic3d_MATERIAL_ASPECT);
 
-  mType = MyCStructure.ContextFillArea.Front.IsPhysic ? Graphic3d_MATERIAL_PHYSIC : Graphic3d_MATERIAL_ASPECT;
-  Front.SetMaterialType(mType);
-
-  Handle(Graphic3d_AspectFillArea3d) CTXF =
-    new Graphic3d_AspectFillArea3d (AStyle, AnIntColor, AnEdgeColor, ALType, AWidth, Front, Back);
+  Quantity_Color anIntColor  (Standard_Real (myCStructure->ContextFillArea.IntColor.r),
+                              Standard_Real (myCStructure->ContextFillArea.IntColor.g),
+                              Standard_Real (myCStructure->ContextFillArea.IntColor.b), Quantity_TOC_RGB);
+  Quantity_Color anEdgeColor (Standard_Real (myCStructure->ContextFillArea.EdgeColor.r),
+                              Standard_Real (myCStructure->ContextFillArea.EdgeColor.g),
+                              Standard_Real (myCStructure->ContextFillArea.EdgeColor.b), Quantity_TOC_RGB);
+  Handle(Graphic3d_AspectFillArea3d) anAspFill = new Graphic3d_AspectFillArea3d (Aspect_InteriorStyle (myCStructure->ContextFillArea.Style),
+                                                                                 anIntColor, anEdgeColor,
+                                                                                 Aspect_TypeOfLine    (myCStructure->ContextFillArea.LineType),
+                                                                                 Standard_Real        (myCStructure->ContextFillArea.Width),
+                                                                                 aFront, aBack);
 
   // Edges
-  if (EdgeOn)
-    CTXF->SetEdgeOn ();
+  if (myCStructure->ContextFillArea.Edge == 1)
+    anAspFill->SetEdgeOn();
   else
-    CTXF->SetEdgeOff ();
+    anAspFill->SetEdgeOff();
   // Hatch
-  CTXF->SetHatchStyle(Aspect_HatchStyle (MyCStructure.ContextFillArea.Hatch));
+  anAspFill->SetHatchStyle (Aspect_HatchStyle (myCStructure->ContextFillArea.Hatch));
   // Materials
   // Front and Back face
-  if (MyCStructure.ContextFillArea.Distinguish == 1)
-    CTXF->SetDistinguishOn ();
+  if (myCStructure->ContextFillArea.Distinguish == 1)
+    anAspFill->SetDistinguishOn();
   else
-    CTXF->SetDistinguishOff ();
-  if (MyCStructure.ContextFillArea.BackFace == 1)
-    CTXF->SuppressBackFace ();
+    anAspFill->SetDistinguishOff();
+  if (myCStructure->ContextFillArea.BackFace == 1)
+    anAspFill->SuppressBackFace();
   else
-    CTXF->AllowBackFace ();
+    anAspFill->AllowBackFace();
   // Texture
-  CTXF->SetTextureMap (MyCStructure.ContextFillArea.Texture.TextureMap);
-  if (MyCStructure.ContextFillArea.Texture.doTextureMap == 1)
+  anAspFill->SetTextureMap (myCStructure->ContextFillArea.Texture.TextureMap);
+  if (myCStructure->ContextFillArea.Texture.doTextureMap == 1)
   {
-    CTXF->SetTextureMapOn();
+    anAspFill->SetTextureMapOn();
   }
   else
   {
-    CTXF->SetTextureMapOff();
+    anAspFill->SetTextureMapOff();
   }
-  CTXF->SetShaderProgram (MyCStructure.ContextFillArea.ShaderProgram);
-
-  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
-  CTXF->SetPolygonOffsets(MyCStructure.ContextFillArea.PolygonOffsetMode,
-    MyCStructure.ContextFillArea.PolygonOffsetFactor,
-    MyCStructure.ContextFillArea.PolygonOffsetUnits);
-  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
-
-  return CTXF;
-
+  anAspFill->SetShaderProgram  (myCStructure->ContextFillArea.ShaderProgram);
+  anAspFill->SetPolygonOffsets (myCStructure->ContextFillArea.PolygonOffsetMode,
+                                myCStructure->ContextFillArea.PolygonOffsetFactor,
+                                myCStructure->ContextFillArea.PolygonOffsetUnits);
+  return anAspFill;
 }
 
-const Graphic3d_SequenceOfGroup& Graphic3d_Structure::Groups() const {
-  return MyGroups;
+//=============================================================================
+//function : Groups
+//purpose  :
+//=============================================================================
+const Graphic3d_SequenceOfGroup& Graphic3d_Structure::Groups() const
+{
+  return myGroups;
 }
 
-Standard_Integer Graphic3d_Structure::NumberOfGroups () const {
-  return (MyGroups.Length ());
+//=============================================================================
+//function : NumberOfGroups
+//purpose  :
+//=============================================================================
+Standard_Integer Graphic3d_Structure::NumberOfGroups() const
+{
+  return myGroups.Length();
 }
 
-void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectLine3d)& CTX) {
+//=============================================================================
+//function : SetPrimitivesAspect
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectLine3d)& theAspLine)
+{
+  if (IsDeleted()) return;
 
-  if (IsDeleted ()) return;
+  Standard_Real     aWidth;
+  Quantity_Color    aColor;
+  Aspect_TypeOfLine aLType;
+  theAspLine->Values (aColor, aLType, aWidth);
 
-  Standard_Real           R, G, B;
-  Standard_Real           AWidth;
-  Quantity_Color          AColor;
-  Aspect_TypeOfLine       ALType;
+  myCStructure->ContextLine.Color.r        = float (aColor.Red());
+  myCStructure->ContextLine.Color.g        = float (aColor.Green());
+  myCStructure->ContextLine.Color.b        = float (aColor.Blue());
+  myCStructure->ContextLine.LineType       = int   (aLType);
+  myCStructure->ContextLine.Width          = float (aWidth);
+  myCStructure->ContextLine.ShaderProgram  = theAspLine->ShaderProgram();
+  myCStructure->ContextLine.IsDef          = 1;
 
-  CTX->Values (AColor, ALType, AWidth);
-  AColor.Values (R, G, B, Quantity_TOC_RGB);
+  myCStructure->UpdateAspects();
 
-  MyCStructure.ContextLine.Color.r        = float (R);
-  MyCStructure.ContextLine.Color.g        = float (G);
-  MyCStructure.ContextLine.Color.b        = float (B);
-  MyCStructure.ContextLine.LineType       = int (ALType);
-  MyCStructure.ContextLine.Width          = float (AWidth);
-  MyCStructure.ContextLine.ShaderProgram  = CTX->ShaderProgram();
-  MyCStructure.ContextLine.IsDef          = 1;
+  // Attributes are "IsSet" during the first update of context (line, marker...)
+  myCStructure->ContextLine.IsSet     = 1;
+  myCStructure->ContextFillArea.IsSet = 1;
+  myCStructure->ContextMarker.IsSet   = 1;
+  myCStructure->ContextText.IsSet     = 1;
 
-  MyGraphicDriver->ContextStructure (MyCStructure);
-
-  // CAL 14/04/95
-  // Attributes are "IsSet" during the first update
-  // of context (line, marker...)
-  MyCStructure.ContextLine.IsSet          = 1;
-  MyCStructure.ContextFillArea.IsSet      = 1;
-  MyCStructure.ContextMarker.IsSet        = 1;
-  MyCStructure.ContextText.IsSet          = 1;
-
-  Update ();
-
+  Update();
 }
 
-void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectFillArea3d)& CTX) {
+//=============================================================================
+//function : SetPrimitivesAspect
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectFillArea3d)& theAspFill)
+{
+  if (IsDeleted()) return;
 
-  if (IsDeleted ()) return;
+  Standard_Real        anRGB[3];
+  Standard_Real        aWidth;
+  Quantity_Color       anIntColor;
+  Quantity_Color       aBackIntColor;
+  Quantity_Color       anEdgeColor;
+  Aspect_TypeOfLine    aLType;
+  Aspect_InteriorStyle aStyle;
+  theAspFill->Values (aStyle, anIntColor, aBackIntColor, anEdgeColor, aLType, aWidth);
 
-  Standard_Real           R, G, B;
-  Standard_Real           AWidth;
-  Quantity_Color          AnIntColor;
-  Quantity_Color          BackIntColor;
-  Quantity_Color          AnEdgeColor;
-  Aspect_TypeOfLine       ALType;
-  Aspect_InteriorStyle    AStyle;
+  anIntColor.Values (anRGB[0], anRGB[1], anRGB[2], Quantity_TOC_RGB);
+  myCStructure->ContextFillArea.Style      = aStyle;
+  myCStructure->ContextFillArea.IntColor.r = float (anRGB[0]);
+  myCStructure->ContextFillArea.IntColor.g = float (anRGB[1]);
+  myCStructure->ContextFillArea.IntColor.b = float (anRGB[2]);
 
-  CTX->Values (AStyle, AnIntColor, BackIntColor, AnEdgeColor, ALType, AWidth);
-  AnIntColor.Values (R, G, B, Quantity_TOC_RGB);
-
-  MyCStructure.ContextFillArea.Style      = int (AStyle);
-  MyCStructure.ContextFillArea.IntColor.r = float (R);
-  MyCStructure.ContextFillArea.IntColor.g = float (G);
-  MyCStructure.ContextFillArea.IntColor.b = float (B);
-
-#ifdef OCC1174
-  if ( CTX->Distinguish() )
-    BackIntColor.Values( R, G, B, Quantity_TOC_RGB );
-#endif
-  MyCStructure.ContextFillArea.BackIntColor.r     = float( R );
-  MyCStructure.ContextFillArea.BackIntColor.g     = float( G );
-  MyCStructure.ContextFillArea.BackIntColor.b     = float( B );
-
+  if (theAspFill->Distinguish())
+  {
+    aBackIntColor.Values (anRGB[0], anRGB[1], anRGB[2], Quantity_TOC_RGB);
+  }
+  myCStructure->ContextFillArea.BackIntColor.r = float(anRGB[0]);
+  myCStructure->ContextFillArea.BackIntColor.g = float(anRGB[1]);
+  myCStructure->ContextFillArea.BackIntColor.b = float(anRGB[2]);
 
   // Edges
-  MyCStructure.ContextFillArea.Edge       = CTX->Edge () ? 1:0;
-  AnEdgeColor.Values (R, G, B, Quantity_TOC_RGB);
-  MyCStructure.ContextFillArea.EdgeColor.r        = float (R);
-  MyCStructure.ContextFillArea.EdgeColor.g        = float (G);
-  MyCStructure.ContextFillArea.EdgeColor.b        = float (B);
-  MyCStructure.ContextFillArea.LineType           = int (ALType);
-  MyCStructure.ContextFillArea.Width              = float (AWidth);
-  MyCStructure.ContextFillArea.Hatch              = int (CTX->HatchStyle ());
+  myCStructure->ContextFillArea.Edge        = theAspFill->Edge () ? 1 : 0;
+  myCStructure->ContextFillArea.EdgeColor.r = float (anEdgeColor.Red());
+  myCStructure->ContextFillArea.EdgeColor.g = float (anEdgeColor.Green());
+  myCStructure->ContextFillArea.EdgeColor.b = float (anEdgeColor.Blue());
+  myCStructure->ContextFillArea.LineType    = aLType;
+  myCStructure->ContextFillArea.Width       = float (aWidth);
+  myCStructure->ContextFillArea.Hatch       = theAspFill->HatchStyle();
 
-  /*** Front and Back face ***/
-  MyCStructure.ContextFillArea.Distinguish        = CTX->Distinguish () ? 1:0;
-  MyCStructure.ContextFillArea.BackFace           = CTX->BackFace () ? 1:0;
+  // Front and Back face
+  myCStructure->ContextFillArea.Distinguish = theAspFill->Distinguish() ? 1 : 0;
+  myCStructure->ContextFillArea.BackFace    = theAspFill->BackFace()    ? 1 : 0;
 
-  /*** Back Material ***/
+  // Back Material
+  const Graphic3d_MaterialAspect& aBack = theAspFill->BackMaterial();
   // Light specificity
-  MyCStructure.ContextFillArea.Back.Shininess     =
-    float ((CTX->BackMaterial ()).Shininess ());
-  MyCStructure.ContextFillArea.Back.Ambient       =
-    float ((CTX->BackMaterial ()).Ambient ());
-  MyCStructure.ContextFillArea.Back.Diffuse       =
-    float ((CTX->BackMaterial ()).Diffuse ());
-  MyCStructure.ContextFillArea.Back.Specular      =
-    float ((CTX->BackMaterial ()).Specular ());
-  MyCStructure.ContextFillArea.Back.Transparency  =
-    float ((CTX->BackMaterial ()).Transparency ());
-  MyCStructure.ContextFillArea.Back.Emission      =
-    float ((CTX->BackMaterial ()).Emissive ());
+  myCStructure->ContextFillArea.Back.Shininess    = float (aBack.Shininess());
+  myCStructure->ContextFillArea.Back.Ambient      = float (aBack.Ambient());
+  myCStructure->ContextFillArea.Back.Diffuse      = float (aBack.Diffuse());
+  myCStructure->ContextFillArea.Back.Specular     = float (aBack.Specular());
+  myCStructure->ContextFillArea.Back.Transparency = float (aBack.Transparency());
+  myCStructure->ContextFillArea.Back.Emission     = float (aBack.Emissive());
 
   // Reflection mode
-  MyCStructure.ContextFillArea.Back.IsAmbient     =
-    ( (CTX->BackMaterial ()).ReflectionMode (Graphic3d_TOR_AMBIENT) ? 1 : 0 );
-  MyCStructure.ContextFillArea.Back.IsDiffuse     =
-    ( (CTX->BackMaterial ()).ReflectionMode (Graphic3d_TOR_DIFFUSE) ? 1 : 0 );
-  MyCStructure.ContextFillArea.Back.IsSpecular    =
-    ( (CTX->BackMaterial ()).ReflectionMode (Graphic3d_TOR_SPECULAR) ? 1 : 0 );
-  MyCStructure.ContextFillArea.Back.IsEmission    =
-    ( (CTX->BackMaterial ()).ReflectionMode (Graphic3d_TOR_EMISSION) ? 1 : 0 );
+  myCStructure->ContextFillArea.Back.IsAmbient    = (aBack.ReflectionMode (Graphic3d_TOR_AMBIENT)  ? 1 : 0);
+  myCStructure->ContextFillArea.Back.IsDiffuse    = (aBack.ReflectionMode (Graphic3d_TOR_DIFFUSE)  ? 1 : 0);
+  myCStructure->ContextFillArea.Back.IsSpecular   = (aBack.ReflectionMode (Graphic3d_TOR_SPECULAR) ? 1 : 0);
+  myCStructure->ContextFillArea.Back.IsEmission   = (aBack.ReflectionMode (Graphic3d_TOR_EMISSION) ? 1 : 0);
 
   // Material type
   //JR/Hp
-  const Graphic3d_MaterialAspect ama = CTX->BackMaterial () ;
-  Standard_Boolean amt = ama.MaterialType(Graphic3d_MATERIAL_PHYSIC) ;
-  MyCStructure.ContextFillArea.Back.IsPhysic = ( amt ? 1 : 0 );
+  myCStructure->ContextFillArea.Back.IsPhysic = (aBack.MaterialType (Graphic3d_MATERIAL_PHYSIC) ? 1 : 0 );
 
   // Specular Color
-  MyCStructure.ContextFillArea.Back.ColorSpec.r   =
-    float (((CTX->BackMaterial ()).SpecularColor ()).Red ());
-  MyCStructure.ContextFillArea.Back.ColorSpec.g   =
-    float (((CTX->BackMaterial ()).SpecularColor ()).Green ());
-  MyCStructure.ContextFillArea.Back.ColorSpec.b   =
-    float (((CTX->BackMaterial ()).SpecularColor ()).Blue ());
+  myCStructure->ContextFillArea.Back.ColorSpec.r  = float (aBack.SpecularColor().Red());
+  myCStructure->ContextFillArea.Back.ColorSpec.g  = float (aBack.SpecularColor().Green());
+  myCStructure->ContextFillArea.Back.ColorSpec.b  = float (aBack.SpecularColor().Blue());
 
   // Ambient color
-  MyCStructure.ContextFillArea.Back.ColorAmb.r    =
-    float (((CTX->BackMaterial ()).AmbientColor ()).Red ());
-  MyCStructure.ContextFillArea.Back.ColorAmb.g    =
-    float (((CTX->BackMaterial ()).AmbientColor ()).Green ());
-  MyCStructure.ContextFillArea.Back.ColorAmb.b    =
-    float (((CTX->BackMaterial ()).AmbientColor ()).Blue ());
+  myCStructure->ContextFillArea.Back.ColorAmb.r   = float (aBack.AmbientColor().Red());
+  myCStructure->ContextFillArea.Back.ColorAmb.g   = float (aBack.AmbientColor().Green());
+  myCStructure->ContextFillArea.Back.ColorAmb.b   = float (aBack.AmbientColor().Blue());
 
   // Diffuse color
-  MyCStructure.ContextFillArea.Back.ColorDif.r    =
-    float (((CTX->BackMaterial ()).DiffuseColor ()).Red ());
-  MyCStructure.ContextFillArea.Back.ColorDif.g    =
-    float (((CTX->BackMaterial ()).DiffuseColor ()).Green ());
-  MyCStructure.ContextFillArea.Back.ColorDif.b    =
-    float (((CTX->BackMaterial ()).DiffuseColor ()).Blue ());
+  myCStructure->ContextFillArea.Back.ColorDif.r   = float (aBack.DiffuseColor().Red());
+  myCStructure->ContextFillArea.Back.ColorDif.g   = float (aBack.DiffuseColor().Green());
+  myCStructure->ContextFillArea.Back.ColorDif.b   = float (aBack.DiffuseColor().Blue());
 
   // Emissive color
-  MyCStructure.ContextFillArea.Back.ColorEms.r    =
-    float (((CTX->BackMaterial ()).EmissiveColor ()).Red ());
-  MyCStructure.ContextFillArea.Back.ColorEms.g    =
-    float (((CTX->BackMaterial ()).EmissiveColor ()).Green ());
-  MyCStructure.ContextFillArea.Back.ColorEms.b    =
-    float (((CTX->BackMaterial ()).EmissiveColor ()).Blue ());
+  myCStructure->ContextFillArea.Back.ColorEms.r   = float (aBack.EmissiveColor().Red());
+  myCStructure->ContextFillArea.Back.ColorEms.g   = float (aBack.EmissiveColor().Green());
+  myCStructure->ContextFillArea.Back.ColorEms.b   = float (aBack.EmissiveColor().Blue());
 
-  MyCStructure.ContextFillArea.Back.EnvReflexion =
-    float ((CTX->BackMaterial ()).EnvReflexion());
+  myCStructure->ContextFillArea.Back.EnvReflexion =
+    float ((theAspFill->BackMaterial ()).EnvReflexion());
 
-  /*** Front Material ***/
+  // Front Material
+  const Graphic3d_MaterialAspect& aFront = theAspFill->FrontMaterial();
   // Light specificity
-  MyCStructure.ContextFillArea.Front.Shininess    =
-    float ((CTX->FrontMaterial ()).Shininess ());
-  MyCStructure.ContextFillArea.Front.Ambient      =
-    float ((CTX->FrontMaterial ()).Ambient ());
-  MyCStructure.ContextFillArea.Front.Diffuse      =
-    float ((CTX->FrontMaterial ()).Diffuse ());
-  MyCStructure.ContextFillArea.Front.Specular     =
-    float ((CTX->FrontMaterial ()).Specular ());
-  MyCStructure.ContextFillArea.Front.Transparency =
-    float ((CTX->FrontMaterial ()).Transparency ());
-  MyCStructure.ContextFillArea.Front.Emission     =
-    float ((CTX->FrontMaterial ()).Emissive ());
+  myCStructure->ContextFillArea.Front.Shininess    = float (aFront.Shininess());
+  myCStructure->ContextFillArea.Front.Ambient      = float (aFront.Ambient());
+  myCStructure->ContextFillArea.Front.Diffuse      = float (aFront.Diffuse());
+  myCStructure->ContextFillArea.Front.Specular     = float (aFront.Specular());
+  myCStructure->ContextFillArea.Front.Transparency = float (aFront.Transparency());
+  myCStructure->ContextFillArea.Front.Emission     = float (aFront.Emissive());
 
   // Reflection mode
-  MyCStructure.ContextFillArea.Front.IsAmbient    =
-    ( (CTX->FrontMaterial ()).ReflectionMode (Graphic3d_TOR_AMBIENT) ? 1 : 0 );
-  MyCStructure.ContextFillArea.Front.IsDiffuse    =
-    ( (CTX->FrontMaterial ()).ReflectionMode (Graphic3d_TOR_DIFFUSE) ? 1 : 0 );
-  MyCStructure.ContextFillArea.Front.IsSpecular   =
-    ( (CTX->FrontMaterial ()).ReflectionMode (Graphic3d_TOR_SPECULAR) ? 1 : 0 );
-  MyCStructure.ContextFillArea.Front.IsEmission   =
-    ( (CTX->FrontMaterial ()).ReflectionMode (Graphic3d_TOR_EMISSION) ? 1 : 0 );
+  myCStructure->ContextFillArea.Front.IsAmbient    = (aFront.ReflectionMode (Graphic3d_TOR_AMBIENT)  ? 1 : 0);
+  myCStructure->ContextFillArea.Front.IsDiffuse    = (aFront.ReflectionMode (Graphic3d_TOR_DIFFUSE)  ? 1 : 0);
+  myCStructure->ContextFillArea.Front.IsSpecular   = (aFront.ReflectionMode (Graphic3d_TOR_SPECULAR) ? 1 : 0);
+  myCStructure->ContextFillArea.Front.IsEmission   = (aFront.ReflectionMode (Graphic3d_TOR_EMISSION) ? 1 : 0);
 
   // Materail type
   //JR/Hp
-  const Graphic3d_MaterialAspect amas = CTX->FrontMaterial () ;
-  Standard_Boolean amty = amas.MaterialType(Graphic3d_MATERIAL_PHYSIC) ;
-  MyCStructure.ContextFillArea.Front.IsPhysic = ( amty ? 1 : 0 );
+  myCStructure->ContextFillArea.Front.IsPhysic     = (aFront.MaterialType (Graphic3d_MATERIAL_PHYSIC) ? 1 : 0);
 
   // Specular Color
-  MyCStructure.ContextFillArea.Front.ColorSpec.r  =
-    float (((CTX->FrontMaterial ()).SpecularColor ()).Red ());
-  MyCStructure.ContextFillArea.Front.ColorSpec.g  =
-    float (((CTX->FrontMaterial ()).SpecularColor ()).Green ());
-  MyCStructure.ContextFillArea.Front.ColorSpec.b  =
-    float (((CTX->FrontMaterial ()).SpecularColor ()).Blue ());
+  myCStructure->ContextFillArea.Front.ColorSpec.r  = float (aFront.SpecularColor().Red());
+  myCStructure->ContextFillArea.Front.ColorSpec.g  = float (aFront.SpecularColor().Green());
+  myCStructure->ContextFillArea.Front.ColorSpec.b  = float (aFront.SpecularColor().Blue());
 
   // Ambient color
-  MyCStructure.ContextFillArea.Front.ColorAmb.r   =
-    float (((CTX->FrontMaterial ()).AmbientColor ()).Red ());
-  MyCStructure.ContextFillArea.Front.ColorAmb.g   =
-    float (((CTX->FrontMaterial ()).AmbientColor ()).Green ());
-  MyCStructure.ContextFillArea.Front.ColorAmb.b   =
-    float (((CTX->FrontMaterial ()).AmbientColor ()).Blue ());
+  myCStructure->ContextFillArea.Front.ColorAmb.r   = float (aFront.AmbientColor().Red());
+  myCStructure->ContextFillArea.Front.ColorAmb.g   = float (aFront.AmbientColor().Green());
+  myCStructure->ContextFillArea.Front.ColorAmb.b   = float (aFront.AmbientColor().Blue());
 
   // Diffuse color
-  MyCStructure.ContextFillArea.Front.ColorDif.r   =
-    float (((CTX->FrontMaterial ()).DiffuseColor ()).Red ());
-  MyCStructure.ContextFillArea.Front.ColorDif.g   =
-    float (((CTX->FrontMaterial ()).DiffuseColor ()).Green ());
-  MyCStructure.ContextFillArea.Front.ColorDif.b   =
-    float (((CTX->FrontMaterial ()).DiffuseColor ()).Blue ());
+  myCStructure->ContextFillArea.Front.ColorDif.r   = float (aFront.DiffuseColor().Red());
+  myCStructure->ContextFillArea.Front.ColorDif.g   = float (aFront.DiffuseColor().Green());
+  myCStructure->ContextFillArea.Front.ColorDif.b   = float (aFront.DiffuseColor().Blue());
 
   // Emissive color
-  MyCStructure.ContextFillArea.Front.ColorEms.r   =
-    float (((CTX->FrontMaterial ()).EmissiveColor ()).Red ());
-  MyCStructure.ContextFillArea.Front.ColorEms.g   =
-    float (((CTX->FrontMaterial ()).EmissiveColor ()).Green ());
-  MyCStructure.ContextFillArea.Front.ColorEms.b   =
-    float (((CTX->FrontMaterial ()).EmissiveColor ()).Blue ());
+  myCStructure->ContextFillArea.Front.ColorEms.r   = float (aFront.EmissiveColor().Red());
+  myCStructure->ContextFillArea.Front.ColorEms.g   = float (aFront.EmissiveColor().Green());
+  myCStructure->ContextFillArea.Front.ColorEms.b   = float (aFront.EmissiveColor().Blue());
 
-  MyCStructure.ContextFillArea.Front.EnvReflexion =
-    float ((CTX->FrontMaterial ()).EnvReflexion());
+  myCStructure->ContextFillArea.Front.EnvReflexion = float (aFront.EnvReflexion());
 
-  MyCStructure.ContextFillArea.IsDef      = 1; // Definition material ok
+  myCStructure->ContextFillArea.IsDef = 1; // Definition material ok
 
-  MyCStructure.ContextFillArea.Texture.TextureMap   = CTX->TextureMap();
-  MyCStructure.ContextFillArea.Texture.doTextureMap = CTX->TextureMapState() ? 1 : 0;
-  MyCStructure.ContextFillArea.ShaderProgram        = CTX->ShaderProgram();
+  myCStructure->ContextFillArea.Texture.TextureMap   = theAspFill->TextureMap();
+  myCStructure->ContextFillArea.Texture.doTextureMap = theAspFill->TextureMapState() ? 1 : 0;
+  myCStructure->ContextFillArea.ShaderProgram        = theAspFill->ShaderProgram();
 
-  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
-  Standard_Integer aPolyMode;
-  Standard_ShortReal    aPolyFactor, aPolyUnits;
-  CTX->PolygonOffsets(aPolyMode, aPolyFactor, aPolyUnits);
-  MyCStructure.ContextFillArea.PolygonOffsetMode   = aPolyMode;
-  MyCStructure.ContextFillArea.PolygonOffsetFactor = (Standard_ShortReal)aPolyFactor;
-  MyCStructure.ContextFillArea.PolygonOffsetUnits  = (Standard_ShortReal)aPolyUnits;
-  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
+  Standard_Integer   aPolyMode;
+  Standard_ShortReal aPolyFactor, aPolyUnits;
+  theAspFill->PolygonOffsets (aPolyMode, aPolyFactor, aPolyUnits);
+  myCStructure->ContextFillArea.PolygonOffsetMode   = aPolyMode;
+  myCStructure->ContextFillArea.PolygonOffsetFactor = aPolyFactor;
+  myCStructure->ContextFillArea.PolygonOffsetUnits  = aPolyUnits;
 
-  MyGraphicDriver->ContextStructure (MyCStructure);
+  myCStructure->UpdateAspects();
 
-  // CAL 14/04/95
-  // Attributes are "IsSet" during the first update
-  // of context (line, marker...)
-  MyCStructure.ContextLine.IsSet          = 1;
-  MyCStructure.ContextFillArea.IsSet      = 1;
-  MyCStructure.ContextMarker.IsSet        = 1;
-  MyCStructure.ContextText.IsSet          = 1;
+  // Attributes are "IsSet" during the first update of context (line, marker...)
+  myCStructure->ContextLine.IsSet     = 1;
+  myCStructure->ContextFillArea.IsSet = 1;
+  myCStructure->ContextMarker.IsSet   = 1;
+  myCStructure->ContextText.IsSet     = 1;
 
-  Update ();
-
+  Update();
 }
 
-void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectText3d)& CTX) {
+//=============================================================================
+//function : SetPrimitivesAspect
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectText3d)& theAspText)
+{
+  if (IsDeleted()) return;
 
-  if (IsDeleted ()) return;
+  Standard_CString         aFont;
+  Standard_Real            aSpace, anExpansion, aTextAngle;
+  Quantity_Color           aColor, aColorSub;
+  Aspect_TypeOfStyleText   aStyle;
+  Aspect_TypeOfDisplayText aDispType;
+  Standard_Boolean         isTextZoomable;
+  Font_FontAspect          aTextFontAspect;
+  theAspText->Values (aColor, aFont, anExpansion, aSpace, aStyle, aDispType, aColorSub, isTextZoomable, aTextAngle, aTextFontAspect);
 
-  Standard_Real             R, G, B;
-  Standard_Real             Rs, Gs, Bs;
-  Standard_CString          AFont;
-  Standard_Real             ASpace;
-  Standard_Real             AnExpansion;
-  Quantity_Color            AColor;
-  Aspect_TypeOfStyleText    AStyle;
-  Aspect_TypeOfDisplayText  ADisplayType;
-  Quantity_Color            AColorSubTitle;
-  Standard_Boolean          ATextZoomable;
-  Standard_Real             ATextAngle;
-  Font_FontAspect            ATextFontAspect;
+  myCStructure->ContextText.Color.r         = float (aColor.Red());
+  myCStructure->ContextText.Color.g         = float (aColor.Green());
+  myCStructure->ContextText.Color.b         = float (aColor.Blue());
+  myCStructure->ContextText.Font            = aFont;
+  myCStructure->ContextText.Expan           = float (anExpansion);
+  myCStructure->ContextText.Space           = float (aSpace);
+  myCStructure->ContextText.Style           = aStyle;
+  myCStructure->ContextText.DisplayType     = aDispType;
+  myCStructure->ContextText.ColorSubTitle.r = float (aColorSub.Red());
+  myCStructure->ContextText.ColorSubTitle.g = float (aColorSub.Green());
+  myCStructure->ContextText.ColorSubTitle.b = float (aColorSub.Blue());
+  myCStructure->ContextText.TextZoomable    = isTextZoomable;
+  myCStructure->ContextText.TextAngle       = float (aTextAngle);
+  myCStructure->ContextText.TextFontAspect  = aTextFontAspect;
+  myCStructure->ContextText.ShaderProgram   = theAspText->ShaderProgram();
 
-  CTX->Values (AColor, AFont, AnExpansion, ASpace, AStyle, ADisplayType,AColorSubTitle,ATextZoomable,ATextAngle,ATextFontAspect);
-  AColor.Values (R, G, B, Quantity_TOC_RGB);
-  AColorSubTitle.Values (Rs, Gs, Bs, Quantity_TOC_RGB);
+  myCStructure->ContextText.IsDef = 1;
 
-  MyCStructure.ContextText.Color.r          = float (R);
-  MyCStructure.ContextText.Color.g          = float (G);
-  MyCStructure.ContextText.Color.b          = float (B);
-  MyCStructure.ContextText.Font             = (char*) (AFont);
-  MyCStructure.ContextText.Expan            = float (AnExpansion);
-  MyCStructure.ContextText.Space            = float (ASpace);
-  MyCStructure.ContextText.Style            = int (AStyle);
-  MyCStructure.ContextText.DisplayType      = int (ADisplayType);
-  MyCStructure.ContextText.ColorSubTitle.r  = float (Rs);
-  MyCStructure.ContextText.ColorSubTitle.g  = float (Gs);
-  MyCStructure.ContextText.ColorSubTitle.b  = float (Bs);
-  MyCStructure.ContextText.TextZoomable     = ATextZoomable;
-  MyCStructure.ContextText.TextAngle        = float (ATextAngle);
-  MyCStructure.ContextText.TextFontAspect   = int (ATextFontAspect);
-  MyCStructure.ContextText.ShaderProgram    = CTX->ShaderProgram();
-
-  MyCStructure.ContextText.IsDef          = 1;
-
-  MyGraphicDriver->ContextStructure (MyCStructure);
-
-  // CAL 14/04/95
-  // Attributes are "IsSet" during the first update of a context (line, marker...)
-  MyCStructure.ContextLine.IsSet          = 1;
-  MyCStructure.ContextFillArea.IsSet      = 1;
-  MyCStructure.ContextMarker.IsSet        = 1;
-  MyCStructure.ContextText.IsSet          = 1;
-
-  Update ();
-
-}
-
-void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectMarker3d)& CTX) {
-
-  if (IsDeleted ()) return;
-
-  Standard_Real           R, G, B;
-  Standard_Real           AScale;
-  Quantity_Color          AColor;
-  Aspect_TypeOfMarker     AMType;
-
-  CTX->Values (AColor, AMType, AScale);
-  AColor.Values (R, G, B, Quantity_TOC_RGB);
-
-  MyCStructure.ContextMarker.Color.r      = float (R);
-  MyCStructure.ContextMarker.Color.g      = float (G);
-  MyCStructure.ContextMarker.Color.b      = float (B);
-  MyCStructure.ContextMarker.MarkerType   = AMType;
-  MyCStructure.ContextMarker.Scale        = float (AScale);
-  MyCStructure.ContextMarker.ShaderProgram = CTX->ShaderProgram();
-  MyCStructure.ContextMarker.IsDef        = 1;
-
-  MyGraphicDriver->ContextStructure (MyCStructure);
+  myCStructure->UpdateAspects();
 
   // Attributes are "IsSet" during the first update of a context (line, marker...)
-  MyCStructure.ContextLine.IsSet          = 1;
-  MyCStructure.ContextFillArea.IsSet      = 1;
-  MyCStructure.ContextMarker.IsSet        = 1;
-  MyCStructure.ContextText.IsSet          = 1;
+  myCStructure->ContextLine.IsSet     = 1;
+  myCStructure->ContextFillArea.IsSet = 1;
+  myCStructure->ContextMarker.IsSet   = 1;
+  myCStructure->ContextText.IsSet     = 1;
 
-  Update ();
-
+  Update();
 }
 
-void Graphic3d_Structure::SetVisual (const Graphic3d_TypeOfStructure AVisual) {
+//=============================================================================
+//function : SetPrimitivesAspect
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::SetPrimitivesAspect (const Handle(Graphic3d_AspectMarker3d)& theAspMarker)
+{
+  if (IsDeleted()) return;
 
-  if (IsDeleted ()) return;
-  if (MyVisual == AVisual) return;
+  Standard_Real       aScale;
+  Quantity_Color      aColor;
+  Aspect_TypeOfMarker aMType;
+  theAspMarker->Values (aColor, aMType, aScale);
 
-  if (! MyCStructure.stick) {
-    MyVisual        = AVisual;
-    SetComputeVisual (AVisual);
+  myCStructure->ContextMarker.Color.r       = float (aColor.Red());
+  myCStructure->ContextMarker.Color.g       = float (aColor.Green());
+  myCStructure->ContextMarker.Color.b       = float (aColor.Blue());
+  myCStructure->ContextMarker.MarkerType    = aMType;
+  myCStructure->ContextMarker.Scale         = float (aScale);
+  myCStructure->ContextMarker.ShaderProgram = theAspMarker->ShaderProgram();
+  myCStructure->ContextMarker.IsDef         = 1;
+
+  myCStructure->UpdateAspects();
+
+  // Attributes are "IsSet" during the first update of a context (line, marker...)
+  myCStructure->ContextLine.IsSet     = 1;
+  myCStructure->ContextFillArea.IsSet = 1;
+  myCStructure->ContextMarker.IsSet   = 1;
+  myCStructure->ContextText.IsSet     = 1;
+
+  Update();
+}
+
+//=============================================================================
+//function : SetVisual
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::SetVisual (const Graphic3d_TypeOfStructure theVisual)
+{
+  if (IsDeleted()
+   || myVisual == theVisual)
+  {
+    return;
   }
-  else {
 
-    Aspect_TypeOfUpdate UpdateMode  = MyStructureManager->UpdateMode ();
-    if (UpdateMode == Aspect_TOU_WAIT) {
-      Erase ();
-      MyVisual        = AVisual;
-      SetComputeVisual (AVisual);
-      Display ();
+  if (!myCStructure->stick)
+  {
+    myVisual = theVisual;
+    SetComputeVisual (theVisual);
+  }
+  else
+  {
+    Aspect_TypeOfUpdate anUpdateMode  = myStructureManager->UpdateMode();
+    if (anUpdateMode == Aspect_TOU_WAIT)
+    {
+      Erase();
+      myVisual = theVisual;
+      SetComputeVisual (theVisual);
+      Display();
     }
     else {
       // To avoid calling method : Update ()
       // Not useful and can be costly.
-      MyStructureManager->SetUpdateMode (Aspect_TOU_WAIT);
-      Erase ();
-      MyVisual        = AVisual;
-      SetComputeVisual (AVisual);
-      MyStructureManager->SetUpdateMode (UpdateMode);
-      Display ();
+      myStructureManager->SetUpdateMode (Aspect_TOU_WAIT);
+      Erase();
+      myVisual = theVisual;
+      SetComputeVisual (theVisual);
+      myStructureManager->SetUpdateMode (anUpdateMode);
+      Display();
     }
   }
-
 }
 
-void Graphic3d_Structure::SetZoomLimit (const Standard_Real LimitInf, const Standard_Real LimitSup) {
-
-  if (LimitInf <= 0.0)
-    Graphic3d_StructureDefinitionError::Raise
-    ("Bad value for ZoomLimit inf");
-
-  if (LimitSup <= 0.0)
-    Graphic3d_StructureDefinitionError::Raise
-    ("Bad value for ZoomLimit sup");
-
-  if (LimitSup < LimitInf)
-    Graphic3d_StructureDefinitionError::Raise
-    ("ZoomLimit sup < ZoomLimit inf");
-
+//=============================================================================
+//function : SetZoomLimit
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::SetZoomLimit (const Standard_Real theLimitInf,
+                                        const Standard_Real theLimitSup)
+{
+  (void )theLimitInf;
+  (void )theLimitSup;
+  Graphic3d_StructureDefinitionError_Raise_if (theLimitInf <= 0.0,
+                                               "Bad value for ZoomLimit inf");
+  Graphic3d_StructureDefinitionError_Raise_if (theLimitSup <= 0.0,
+                                               "Bad value for ZoomLimit sup");
+  Graphic3d_StructureDefinitionError_Raise_if (theLimitSup < theLimitInf,
+                                               "ZoomLimit sup < ZoomLimit inf");
 }
 
-Graphic3d_TypeOfStructure Graphic3d_Structure::Visual () const {
-
-  return (MyVisual);
-
+//=============================================================================
+//function : Visual
+//purpose  :
+//=============================================================================
+Graphic3d_TypeOfStructure Graphic3d_Structure::Visual() const
+{
+  return myVisual;
 }
 
-Standard_Boolean Graphic3d_Structure::AcceptConnection (const Handle(Graphic3d_Structure)& AStructure1, const Handle(Graphic3d_Structure)& AStructure2, const Graphic3d_TypeOfConnection AType) {
+//=============================================================================
+//function : AcceptConnection
+//purpose  :
+//=============================================================================
+Standard_Boolean Graphic3d_Structure::AcceptConnection (const Handle(Graphic3d_Structure)& theStructure1,
+                                                        const Handle(Graphic3d_Structure)& theStructure2,
+                                                        const Graphic3d_TypeOfConnection   theType)
+{
+  // cycle detection
+  Graphic3d_MapOfStructure aSet;
+  Graphic3d_Structure::Network (theStructure2, theType, aSet);
+  return !aSet.Contains (theStructure1);
+}
 
-  Graphic3d_MapOfStructure ASet;
+//=============================================================================
+//function : Ancestors
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::Ancestors (Graphic3d_MapOfStructure& theSet) const
+{
+  const Standard_Integer aNbAnces = myAncestors.Length ();
+  for (Standard_Integer anIter = 1; anIter <= aNbAnces; ++anIter)
+  {
+    theSet.Add ((Graphic3d_Structure* )(myAncestors.Value (anIter)));
+  }
+}
+
+//=============================================================================
+//function : SetOwner
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::SetOwner (const Standard_Address theOwner)
+{
+  myOwner = theOwner;
+}
+
+//=============================================================================
+//function : Owner
+//purpose  :
+//=============================================================================
+Standard_Address Graphic3d_Structure::Owner() const
+{
+  return myOwner;
+}
+
+//=============================================================================
+//function : Descendants
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::Descendants (Graphic3d_MapOfStructure& theSet) const
+{
+  const Standard_Integer aNbDesc = myDescendants.Length ();
+  for (Standard_Integer anIter = 1; anIter <= aNbDesc; ++anIter)
+  {
+    theSet.Add ((Graphic3d_Structure* )(myDescendants.Value (anIter)));
+  }
+}
+
+//=============================================================================
+//function : Connect
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::Connect (const Handle(Graphic3d_Structure)& theStructure,
+                                   const Graphic3d_TypeOfConnection   theType,
+                                   const Standard_Boolean             theWithCheck)
+{
+  if (IsDeleted()) return;
 
   // cycle detection
-  Graphic3d_Structure::Network (AStructure2, AType, ASet);
+  if (theWithCheck
+   && !Graphic3d_Structure::AcceptConnection (this, theStructure, theType))
+  {
+    return;
+  }
 
-  return (! ASet.Contains (AStructure1));
+  switch (theType)
+  {
+    case Graphic3d_TOC_DESCENDANT:
+    {
+      const Standard_Integer aNbDesc = myDescendants.Length();
+      for (Standard_Integer anIter = 1; anIter <= aNbDesc; ++anIter)
+      {
+        if (myDescendants.Value (anIter) == theStructure.operator->())
+        {
+          return;
+        }
+      }
 
-}
+      myDescendants.Append (theStructure.operator->());
+      theStructure->Connect (this, Graphic3d_TOC_ANCESTOR);
 
-void Graphic3d_Structure::Ancestors (Graphic3d_MapOfStructure &SG) const {
+      GraphicConnect (theStructure);
+      myStructureManager->Connect (this, theStructure);
 
-  Standard_Integer i, Length = MyAncestors.Length ();
-
-  for (i=1; i<=Length; i++)
-    SG.Add ((Graphic3d_Structure *) (MyAncestors.Value (i)));
-
-
-}
-
-void Graphic3d_Structure::SetOwner (const Standard_Address Owner) {
-
-  MyOwner = Owner;
-
-}
-
-Standard_Address Graphic3d_Structure::Owner () const {
-
-  return MyOwner;
-
-}
-
-void Graphic3d_Structure::Descendants (Graphic3d_MapOfStructure& SG) const {
-
-  Standard_Integer i, Length = MyDescendants.Length ();
-
-  for (i=1; i<=Length; i++)
-    SG.Add ((Graphic3d_Structure *) (MyDescendants.Value (i)));
-
-}
-
-void Graphic3d_Structure::Connect (const Handle(Graphic3d_Structure)& AStructure, const Graphic3d_TypeOfConnection AType, const Standard_Boolean WithCheck) {
-
-  if (IsDeleted ()) return;
-
-  if (WithCheck)
-    // cycle detection
-    if (! Graphic3d_Structure::AcceptConnection
-      (this, AStructure, AType))
+      Update();
       return;
-
-  // connection
-  Standard_Integer i;
-  switch (AType)
-  {
-
-  case Graphic3d_TOC_DESCENDANT :
+    }
+    case Graphic3d_TOC_ANCESTOR:
     {
-      Standard_Integer indexD = 0;
-      Standard_Integer LengthD = MyDescendants.Length ();
-      for (i=1; i<=LengthD && indexD==0; i++)
-        if ((void *) (MyDescendants.Value (i)) ==
-          (void *) (AStructure.operator->())) indexD  = i;
-
-      if (indexD == 0) {
-        MyDescendants.Append ((void *) AStructure.operator->());
-        AStructure->Connect (this, Graphic3d_TOC_ANCESTOR);
-
-        GraphicConnect (AStructure);
-        MyStructureManager->Connect (this, AStructure);
-
-        Update ();
+      const Standard_Integer aNbAnces = myAncestors.Length();
+      for (Standard_Integer anIter = 1; anIter <= aNbAnces; ++anIter)
+      {
+        if (myAncestors.Value (anIter) == theStructure.operator->())
+        {
+          return;
+        }
       }
+
+      myAncestors.Append (theStructure.operator->());
+      theStructure->Connect (this, Graphic3d_TOC_DESCENDANT);
+
+      // myGraphicDriver->Connect is called in case if connection between parent and child
+      return;
     }
-    break;
-
-  case Graphic3d_TOC_ANCESTOR :
-    {
-      Standard_Integer indexA = 0;
-      Standard_Integer LengthA        = MyAncestors.Length ();
-      for (i=1; i<=LengthA && indexA==0; i++)
-        if ((void *) (MyAncestors.Value (i)) ==
-          (void *) (AStructure.operator->())) indexA  = i;
-
-      if (indexA == 0) {
-        MyAncestors.Append ((void *) AStructure.operator->());
-        AStructure->Connect (this, Graphic3d_TOC_DESCENDANT);
-
-        // MyGraphicDriver->Connect is called in case
-        // if connection between parent and child
-      }
-    }
-    break;
   }
-
 }
 
-void Graphic3d_Structure::Disconnect (const Handle(Graphic3d_Structure)& AStructure) {
+//=============================================================================
+//function : Disconnect
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::Disconnect (const Handle(Graphic3d_Structure)& theStructure)
+{
+  if (IsDeleted()) return;
 
-  if (IsDeleted ()) return;
-
-  Standard_Integer i;
-
-  Standard_Integer indexD = 0;
-  Standard_Integer LengthD        = MyDescendants.Length ();
-  for (i=1; i<=LengthD && indexD==0; i++)
-    if ((void *) (MyDescendants.Value (i)) ==
-      (void *) (AStructure.operator->())) indexD  = i;
-
-  // Search in the Descendants
-  if (indexD != 0) {
-    MyDescendants.Remove (indexD);
-    AStructure->Disconnect (this);
-
-    GraphicDisconnect (AStructure);
-    MyStructureManager->Disconnect (this, AStructure);
-
-    Update ();
-  }
-  else {
-    Standard_Integer indexA = 0;
-    Standard_Integer LengthA        = MyAncestors.Length ();
-    for (i=1; i<=LengthA && indexA==0; i++)
-      if ((void *) (MyAncestors.Value (i)) ==
-        (void *) (AStructure.operator->())) indexA  = i;
-
-    // Search in the Ancestors
-    if (indexA != 0) {
-      MyAncestors.Remove (indexA);
-      AStructure->Disconnect (this);
-
-      // No call of MyGraphicDriver->Disconnect
-      // in case of an ancestor
-    }
-  }
-
-}
-
-void Graphic3d_Structure::DisconnectAll (const Graphic3d_TypeOfConnection AType) {
-
-  if (IsDeleted ()) return;
-
-  Standard_Integer i, Length;
-
-  // disconnection
-  switch (AType)
+  const Standard_Integer aNbDesc = myDescendants.Length();
+  for (Standard_Integer anIter = 1; anIter <= aNbDesc; ++anIter)
   {
-  case Graphic3d_TOC_DESCENDANT :
-    Length      = MyDescendants.Length ();
-    for (i=1; i<=Length; i++)
-      // Value (1) instead of Value (i) as MyDescendants
-      // is modified by :
-      // Graphic3d_Structure::Disconnect (AStructure)
-      // that takes AStructure from MyDescendants
-      ((Graphic3d_Structure *)
-      (MyDescendants.Value (1)))->Disconnect (this);
-    break;
-  case Graphic3d_TOC_ANCESTOR :
-    Length      = MyAncestors.Length ();
-    for (i=1; i<=Length; i++)
-      // Value (1) instead of Value (i) as MyAncestors
-      // is modified by :
-      // Graphic3d_Structure::Disconnect (AStructure)
-      // that takes AStructure from MyAncestors
-      ((Graphic3d_Structure *)
-      (MyAncestors.Value (1)))->Disconnect (this);
-    break;
+    if (myDescendants.Value (anIter) == theStructure.operator->())
+    {
+      myDescendants.Remove (anIter);
+      theStructure->Disconnect (this);
+
+      GraphicDisconnect (theStructure);
+      myStructureManager->Disconnect (this, theStructure);
+
+      Update();
+      return;
+    }
   }
 
+  const Standard_Integer aNbAnces = myAncestors.Length();
+  for (Standard_Integer anIter = 1; anIter <= aNbAnces; ++anIter)
+  {
+    if (myAncestors.Value (anIter) == theStructure.operator->())
+    {
+      myAncestors.Remove (anIter);
+      theStructure->Disconnect (this);
+      // no call of myGraphicDriver->Disconnect in case of an ancestor
+      return;
+    }
+  }
 }
 
-Graphic3d_TypeOfComposition Graphic3d_Structure::Composition () const {
+//=============================================================================
+//function : DisconnectAll
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::DisconnectAll (const Graphic3d_TypeOfConnection theType)
+{
+  if (IsDeleted()) return;
 
-  if (MyCStructure.Composition)
-    return (Graphic3d_TOC_POSTCONCATENATE);
-  else
-    return (Graphic3d_TOC_REPLACE);
-
+  switch (theType)
+  {
+    case Graphic3d_TOC_DESCENDANT:
+    {
+      const Standard_Integer aLength = myDescendants.Length();
+      for (Standard_Integer anIter = 1; anIter <= aLength; ++anIter)
+      {
+        // Value (1) instead of Value (i) as myDescendants
+        // is modified by :
+        // Graphic3d_Structure::Disconnect (AStructure)
+        // that takes AStructure from myDescendants
+        ((Graphic3d_Structure* )(myDescendants.Value (1)))->Disconnect (this);
+      }
+      break;
+    }
+    case Graphic3d_TOC_ANCESTOR:
+    {
+      const Standard_Integer aLength = myAncestors.Length();
+      for (Standard_Integer anIter = 1; anIter <= aLength; ++anIter)
+      {
+        // Value (1) instead of Value (i) as myAncestors
+        // is modified by :
+        // Graphic3d_Structure::Disconnect (AStructure)
+        // that takes AStructure from myAncestors
+        ((Graphic3d_Structure* )(myAncestors.Value (1)))->Disconnect (this);
+      }
+      break;
+    }
+  }
 }
 
-void Graphic3d_Structure::SetTransform (const TColStd_Array2OfReal& AMatrix, const Graphic3d_TypeOfComposition AType) {
+//=============================================================================
+//function : Composition
+//purpose  :
+//=============================================================================
+Graphic3d_TypeOfComposition Graphic3d_Structure::Composition() const
+{
+  return myCStructure->Composition;
+}
 
-  if (IsDeleted ()) return;
+//=============================================================================
+//function : SetTransform
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::SetTransform (const TColStd_Array2OfReal&       theMatrix,
+                                        const Graphic3d_TypeOfComposition theType)
+{
+  if (IsDeleted()) return;
 
-  Standard_Integer lr, ur, lc, uc;
   Standard_Real valuetrsf;
   Standard_Real valueoldtrsf;
   Standard_Real valuenewtrsf;
-  Standard_Integer i, j, k;
-  TColStd_Array2OfReal TheTrsf (0, 3, 0, 3);
-  TColStd_Array2OfReal NewTrsf (0, 3, 0, 3);
-  TColStd_Array2OfReal AMatrix44 (0, 3, 0, 3);
+  TColStd_Array2OfReal aNewTrsf  (0, 3, 0, 3);
+  TColStd_Array2OfReal aMatrix44 (0, 3, 0, 3);
 
   // Assign the new transformation in an array [0..3][0..3]
   // Avoid problemes if the user has defined matrice [1..4][1..4]
   //                                              or [3..6][-1..2] !!
-  lr      = AMatrix.LowerRow ();
-  ur      = AMatrix.UpperRow ();
-  lc      = AMatrix.LowerCol ();
-  uc      = AMatrix.UpperCol ();
+  Standard_Integer lr = theMatrix.LowerRow();
+  Standard_Integer ur = theMatrix.UpperRow();
+  Standard_Integer lc = theMatrix.LowerCol();
+  Standard_Integer uc = theMatrix.UpperCol();
 
-  if ( (ur - lr + 1 != 4) || (uc - lc + 1 != 4) )
-    Graphic3d_TransformError::Raise
-    ("Transform : not a 4x4 matrix");
-
-  if (AType == Graphic3d_TOC_REPLACE) {
-    MyCStructure.Composition = 0;
-    // Update of CStructure
-    for (i=0; i<=3; i++)
-      for (j=0; j<=3; j++) {
-        MyCStructure.Transformation[i][j] =
-          float (AMatrix (lr + i, lc + j));
-        NewTrsf (i, j) = AMatrix (lr + i, lc + j);
-      }
+  if ((ur - lr + 1 != 4) || (uc - lc + 1 != 4))
+  {
+    Graphic3d_TransformError::Raise ("Transform : not a 4x4 matrix");
   }
 
-  if (AType == Graphic3d_TOC_POSTCONCATENATE) {
-    MyCStructure.Composition = 1;
-    // To simplify management of indices
-    for (i=0; i<=3; i++)
-      for (j=0; j<=3; j++)
-        AMatrix44 (i, j) = AMatrix (lr + i, lc + j);
-    // Calculation of the product of matrices
-    for (i=0; i<=3; i++)
-      for (j=0; j<=3; j++) {
-        NewTrsf (i, j) = 0.0;
-        for (k=0; k<=3; k++) {
-          valueoldtrsf = MyCStructure.Transformation[i][k];
-          valuetrsf    = AMatrix44 (k, j);
-          valuenewtrsf = NewTrsf (i, j) +
-            valueoldtrsf * valuetrsf;
-          NewTrsf (i, j) = valuenewtrsf;
+  switch (theType)
+  {
+    case Graphic3d_TOC_REPLACE:
+    {
+      myCStructure->Composition = Graphic3d_TOC_REPLACE;
+      // Update of CStructure
+      for (Standard_Integer i = 0; i <= 3; ++i)
+      {
+        for (Standard_Integer j = 0; j <= 3; ++j)
+        {
+          myCStructure->Transformation[i][j] = float (theMatrix (lr + i, lc + j));
+          aNewTrsf (i, j) = theMatrix (lr + i, lc + j);
         }
       }
+      break;
+    }
+    case Graphic3d_TOC_POSTCONCATENATE:
+    {
+      myCStructure->Composition = Graphic3d_TOC_POSTCONCATENATE;
+      // To simplify management of indices
+      for (Standard_Integer i = 0; i <= 3; ++i)
+      {
+        for (Standard_Integer j = 0; j <= 3; ++j)
+        {
+          aMatrix44 (i, j) = theMatrix (lr + i, lc + j);
+        }
+      }
+
+      // Calculation of the product of matrices
+      for (Standard_Integer i = 0; i <= 3; ++i)
+      {
+        for (Standard_Integer j = 0; j <= 3; ++j)
+        {
+          aNewTrsf (i, j) = 0.0;
+          for (Standard_Integer k = 0; k <= 3; ++k)
+          {
+            valueoldtrsf = myCStructure->Transformation[i][k];
+            valuetrsf    = aMatrix44 (k, j);
+            valuenewtrsf = aNewTrsf (i, j) + valueoldtrsf * valuetrsf;
+            aNewTrsf (i, j) = valuenewtrsf;
+          }
+        }
+      }
+
       // Update of CStructure
-      for (i=0; i<=3; i++)
-        for (j=0; j<=3; j++)
-          MyCStructure.Transformation[i][j] = float (NewTrsf (i, j));
+      for (Standard_Integer i = 0; i <= 3; ++i)
+      {
+        for (Standard_Integer j = 0; j <= 3; ++j)
+        {
+          myCStructure->Transformation[i][j] = float (aNewTrsf (i, j));
+        }
+      }
+      break;
+    }
   }
 
-  // If transformation, no validation of hidden already calculated parts.
-  if (IsRotated ())
-    ReCompute ();
+  // If transformation, no validation of hidden already calculated parts
+  if (IsRotated())
+  {
+    ReCompute();
+  }
 
-  GraphicTransform (NewTrsf);
-  MyStructureManager->SetTransform (this, NewTrsf);
+  GraphicTransform (aNewTrsf);
+  myStructureManager->SetTransform (this, aNewTrsf);
 
-  Update ();
-
+  Update();
 }
 
-void Graphic3d_Structure::Transform (TColStd_Array2OfReal& AMatrix) const {
+//=============================================================================
+//function : Transform
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::Transform (TColStd_Array2OfReal& theMatrix) const
+{
 
-  Standard_Integer lr     = AMatrix.LowerRow ();
-  Standard_Integer ur     = AMatrix.UpperRow ();
-  Standard_Integer lc     = AMatrix.LowerCol ();
-  Standard_Integer uc     = AMatrix.UpperCol ();
+  Standard_Integer lr = theMatrix.LowerRow ();
+  Standard_Integer ur = theMatrix.UpperRow ();
+  Standard_Integer lc = theMatrix.LowerCol ();
+  Standard_Integer uc = theMatrix.UpperCol ();
 
-  if ( (ur - lr + 1 != 4) || (uc - lc + 1 != 4) )
-    Graphic3d_TransformError::Raise
-    ("Transform : not a 4x4 matrix");
+  if ((ur - lr + 1 != 4) || (uc - lc + 1 != 4))
+    Graphic3d_TransformError::Raise ("Transform : not a 4x4 matrix");
 
-  for (Standard_Integer i=0; i<=3; i++)
-    for (Standard_Integer j=0; j<=3; j++)
-      AMatrix (lr + i, lc + j) = MyCStructure.Transformation[i][j];
-
+  for (Standard_Integer i = 0; i <= 3; ++i)
+  {
+    for (Standard_Integer j = 0; j <= 3; ++j)
+    {
+      theMatrix (lr + i, lc + j) = myCStructure->Transformation[i][j];
+    }
+  }
 }
 
 //=============================================================================
@@ -1716,9 +1645,9 @@ void Graphic3d_Structure::MinMaxValues (Standard_Real& theXMin,
   Standard_Real aDescXMax = RealFirst();
   Standard_Real aDescYMax = RealFirst();
   Standard_Real aDescZMax = RealFirst();
-  for (Standard_Integer aStructIt = 1; aStructIt <= MyDescendants.Length(); aStructIt++)
+  for (Standard_Integer aStructIt = 1; aStructIt <= myDescendants.Length(); aStructIt++)
   {
-    Graphic3d_Structure* aStructure = (Graphic3d_Structure*) MyDescendants.Value (aStructIt);
+    Graphic3d_Structure* aStructure = (Graphic3d_Structure*) myDescendants.Value (aStructIt);
     aStructure->MinMaxValues (aXMin, aYMin, aZMin, aXMax, aYMax, aZMax);
     aDescXMin = Min (aXMin, aDescXMin);
     aDescYMin = Min (aYMin, aDescYMin);
@@ -1764,118 +1693,137 @@ void Graphic3d_Structure::MinMaxValues (Standard_Real& theXMin,
   theZMax = aZMax;
 }
 
-Standard_Integer Graphic3d_Structure::Identification () const {
-
-  Standard_Integer Result = MyCStructure.Id;
-
-  return Result;
-
-}
-
-void Graphic3d_Structure::SetTransformPersistence( const Graphic3d_TransModeFlags& AFlag )
+//=============================================================================
+//function : Identification
+//purpose  :
+//=============================================================================
+Standard_Integer Graphic3d_Structure::Identification() const
 {
-  SetTransformPersistence( AFlag, gp_Pnt( 0, 0, 0 ) );
+  return myCStructure->Id;
 }
 
-void Graphic3d_Structure::SetTransformPersistence( const Graphic3d_TransModeFlags& AFlag,
-                                                  const gp_Pnt& APoint )
+//=============================================================================
+//function : SetTransformPersistence
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::SetTransformPersistence (const Graphic3d_TransModeFlags& theFlag)
 {
-  if (IsDeleted ()) return;
-
-  MyCStructure.TransformPersistence.Flag = AFlag;
-  MyCStructure.TransformPersistence.Point.x = float (APoint.X());
-  MyCStructure.TransformPersistence.Point.y = float (APoint.Y());
-  MyCStructure.TransformPersistence.Point.z = float (APoint.Z());
-  //MyStructureManager->Update ();
-  //Update();
-  MyGraphicDriver->ContextStructure( MyCStructure );
-
-  MyCStructure.TransformPersistence.IsSet = 1;
+  SetTransformPersistence (theFlag, gp_Pnt (0.0, 0.0, 0.0));
 }
 
+//=============================================================================
+//function : SetTransformPersistence
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::SetTransformPersistence (const Graphic3d_TransModeFlags& theFlag,
+                                                   const gp_Pnt&                   thePoint)
+{
+  if (IsDeleted()) return;
+
+  myCStructure->TransformPersistence.Flag    = theFlag;
+  myCStructure->TransformPersistence.Point.x = float (thePoint.X());
+  myCStructure->TransformPersistence.Point.y = float (thePoint.Y());
+  myCStructure->TransformPersistence.Point.z = float (thePoint.Z());
+  myCStructure->UpdateAspects();
+
+  myCStructure->TransformPersistence.IsSet = 1;
+}
+
+//=============================================================================
+//function : TransformPersistenceMode
+//purpose  :
+//=============================================================================
 Graphic3d_TransModeFlags Graphic3d_Structure::TransformPersistenceMode() const
 {
-  return MyCStructure.TransformPersistence.Flag;
+  return myCStructure->TransformPersistence.Flag;
 }
 
+//=============================================================================
+//function : TransformPersistencePoint
+//purpose  :
+//=============================================================================
 gp_Pnt Graphic3d_Structure::TransformPersistencePoint() const
 {
-  gp_Pnt aPnt( 0., 0., 0. );
-  aPnt.SetX( MyCStructure.TransformPersistence.Point.x );
-  aPnt.SetY( MyCStructure.TransformPersistence.Point.y );
-  aPnt.SetZ( MyCStructure.TransformPersistence.Point.z );
-
+  gp_Pnt aPnt (0.0, 0.0, 0.0);
+  aPnt.SetX (myCStructure->TransformPersistence.Point.x);
+  aPnt.SetY (myCStructure->TransformPersistence.Point.y);
+  aPnt.SetZ (myCStructure->TransformPersistence.Point.z);
   return aPnt;
 }
 
-void Graphic3d_Structure::Add (const Handle(Graphic3d_Group)& AGroup) {
-
+//=============================================================================
+//function : Add
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::Add (const Handle(Graphic3d_Group)& theGroup)
+{
   // Method called only by the constructor of Graphic3d_Group
-  // It is easy to check presence of <AGroup>
-  // in sequence MyGroups.
-  MyGroups.Append (AGroup);
-
+  // It is easy to check presence of <theGroup> in sequence myGroups.
+  myGroups.Append (theGroup);
 }
 
-void Graphic3d_Structure::Remove (const Standard_Address APtr, const Graphic3d_TypeOfConnection AType) {
-
-  Standard_Integer i, index, length;
-
-  switch (AType)
+//=============================================================================
+//function : Remove
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::Remove (const Standard_Address           thePtr,
+                                  const Graphic3d_TypeOfConnection theType)
+{
+  switch (theType)
   {
-  case Graphic3d_TOC_DESCENDANT :
-    index   = 0;
-    length  = MyDescendants.Length ();
-    for (i=1; i<=length && index==0; i++)
-      if ((void *) (MyDescendants.Value (i)) == APtr)
-        index   = i;
-    if (index != 0)
-      MyDescendants.Remove (index);
-#ifdef TRACE
-    else
-      cout << "Error, Graphic3d_Structure::Remove\n";
-#endif
-    break;
-
-  case Graphic3d_TOC_ANCESTOR :
-    index   = 0;
-    length  = MyAncestors.Length ();
-    for (i=1; i<=length && index==0; i++)
-      if ((void *) (MyAncestors.Value (i)) == APtr)
-        index   = i;
-    if (index != 0)
-      MyAncestors.Remove (index);
-#ifdef TRACE
-    else
-      cout << "Error, Graphic3d_Structure::Remove\n";
-#endif
-    break;
+    case Graphic3d_TOC_DESCENDANT:
+    {
+      const Standard_Integer aNbDesc = myDescendants.Length();
+      for (Standard_Integer anIter = 1; anIter <= aNbDesc; ++anIter)
+      {
+        if (myDescendants.Value (anIter) == thePtr)
+        {
+          myDescendants.Remove (anIter);
+          return;
+        }
+      }
+      break;
+    }
+    case Graphic3d_TOC_ANCESTOR:
+    {
+      const Standard_Integer aNbAncestors = myAncestors.Length();
+      for (Standard_Integer anIter = 1; anIter <= aNbAncestors; ++anIter)
+      {
+        if (myAncestors.Value (anIter) == thePtr)
+        {
+          myAncestors.Remove (anIter);
+          return;
+        }
+      }
+      break;
+    }
   }
-
 }
 
-void Graphic3d_Structure::Remove (const Handle(Graphic3d_Group)& AGroup) {
-
-  const Standard_Integer Length = MyGroups.Length ();
-  // Search in Groups
-  for (Standard_Integer i=1; i<=Length; i++)
-    if (MyGroups.Value (i) == AGroup)
+//=============================================================================
+//function : Remove
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::Remove (const Handle(Graphic3d_Group)& theGroup)
+{
+  const Standard_Integer aNbGroups = myGroups.Length();
+  for (Standard_Integer aGrpIter = 1; aGrpIter <= aNbGroups; ++aGrpIter)
+  {
+    if (myGroups.Value (aGrpIter) == theGroup)
     {
-      MyGroups.Remove (i);
+      myGroups.Remove (aGrpIter);
       return;
     }
+  }
 }
 
-Handle(Graphic3d_StructureManager) Graphic3d_Structure::StructureManager () const {
-
-#ifdef DOWNCAST
-  return
-    (Handle(Graphic3d_StructureManager)::DownCast(Handle(Standard_Transient)
-    ((Standard_Transient*) MyPtrStructureManager)));
-#else
-  return MyStructureManager;
-#endif
-
+//=============================================================================
+//function : StructureManager
+//purpose  :
+//=============================================================================
+Handle(Graphic3d_StructureManager) Graphic3d_Structure::StructureManager() const
+{
+  return myStructureManager;
 }
 
 //=============================================================================
@@ -1907,9 +1855,9 @@ void Graphic3d_Structure::MinMaxCoord (Standard_Real& theXMin,
   Standard_Real aYMax = RealFirst();
   Standard_Real aZMax = RealFirst();
   Standard_Real aGroupXMin, aGroupYMin, aGroupZMin, aGroupXMax, aGroupYMax, aGroupZMax;
-  for (Standard_Integer aGroupIt = 1; aGroupIt <= MyGroups.Length(); aGroupIt++)
+  for (Standard_Integer aGroupIt = 1; aGroupIt <= myGroups.Length(); aGroupIt++)
   {
-    const Handle(Graphic3d_Group)& aGroup = MyGroups.Value (aGroupIt);
+    const Handle(Graphic3d_Group)& aGroup = myGroups.Value (aGroupIt);
 
     if (aGroup->IsEmpty())
     {
@@ -1977,9 +1925,9 @@ void Graphic3d_Structure::MinMaxCoordWithDescendants (Standard_Real& theXMin,
   Standard_Real aDescXMax = RealFirst();
   Standard_Real aDescYMax = RealFirst();
   Standard_Real aDescZMax = RealFirst();
-  for (Standard_Integer aStructIt = 1; aStructIt <= MyDescendants.Length(); aStructIt++)
+  for (Standard_Integer aStructIt = 1; aStructIt <= myDescendants.Length(); aStructIt++)
   {
-    Graphic3d_Structure* aStructure = (Graphic3d_Structure*) MyDescendants.Value (aStructIt);
+    Graphic3d_Structure* aStructure = (Graphic3d_Structure*) myDescendants.Value (aStructIt);
     if (aStructure->IsEmpty())
     {
       continue;
@@ -2030,63 +1978,70 @@ void Graphic3d_Structure::MinMaxCoordWithDescendants (Standard_Real& theXMin,
   theZMax = aZMax;
 }
 
-void Graphic3d_Structure::Transforms (const TColStd_Array2OfReal& ATrsf, const Standard_Real X, const Standard_Real Y, const Standard_Real Z, Standard_Real& NewX, Standard_Real& NewY, Standard_Real& NewZ) {
-
-  Standard_Real A, B, C, D;
-
-  Standard_Real RL        = RealLast ();
-  Standard_Real RF        = RealFirst ();
-
-  if ((X == RF) || (Y == RF) || (Z == RF) ||
-    (X == RL) || (Y == RL) || (Z == RL)) {
-      NewX    = X;
-      NewY    = Y;
-      NewZ    = Z;
-    }
-  else {
-    A       = ATrsf (0, 0);
-    B       = ATrsf (0, 1);
-    C       = ATrsf (0, 2);
-    D       = ATrsf (0, 3);
-    NewX    = A * X + B * Y + C * Z + D;
-    A       = ATrsf (1, 0);
-    B       = ATrsf (1, 1);
-    C       = ATrsf (1, 2);
-    D       = ATrsf (1, 3);
-    NewY    = A * X + B * Y + C * Z + D;
-    A       = ATrsf (2, 0);
-    B       = ATrsf (2, 1);
-    C       = ATrsf (2, 2);
-    D       = ATrsf (2, 3);
-    NewZ    = A * X + B * Y + C * Z + D;
+//=============================================================================
+//function : Transforms
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::Transforms (const TColStd_Array2OfReal& theTrsf,
+                                      const Standard_Real theX,    const Standard_Real theY,    const Standard_Real theZ,
+                                      Standard_Real&      theNewX, Standard_Real&      theNewY, Standard_Real&      theNewZ)
+{
+  const Standard_Real aRL = RealLast();
+  const Standard_Real aRF = RealFirst();
+  if ((theX == aRF) || (theY == aRF) || (theZ == aRF)
+   || (theX == aRL) || (theY == aRL) || (theZ == aRL))
+  {
+    theNewX = theX;
+    theNewY = theY;
+    theNewZ = theZ;
   }
-
+  else
+  {
+    Standard_Real A, B, C, D;
+    A       = theTrsf (0, 0);
+    B       = theTrsf (0, 1);
+    C       = theTrsf (0, 2);
+    D       = theTrsf (0, 3);
+    theNewX = A * theX + B * theY + C * theZ + D;
+    A       = theTrsf (1, 0);
+    B       = theTrsf (1, 1);
+    C       = theTrsf (1, 2);
+    D       = theTrsf (1, 3);
+    theNewY = A * theX + B * theY + C * theZ + D;
+    A       = theTrsf (2, 0);
+    B       = theTrsf (2, 1);
+    C       = theTrsf (2, 2);
+    D       = theTrsf (2, 3);
+    theNewZ = A * theX + B * theY + C * theZ + D;
+  }
 }
 
-Graphic3d_Vector Graphic3d_Structure::Transforms (const TColStd_Array2OfReal& ATrsf, const Graphic3d_Vector& Coord) {
-
-  Standard_Real NewX, NewY, NewZ;
-  Graphic3d_Vector Result;
-
-  Graphic3d_Structure::Transforms
-    (ATrsf, Coord.X (), Coord.Y (), Coord.Z (), NewX, NewY, NewZ);
-  Result.SetCoord (NewX, NewY, NewZ);
-
-  return (Result);
-
+//=============================================================================
+//function : Transforms
+//purpose  :
+//=============================================================================
+Graphic3d_Vector Graphic3d_Structure::Transforms (const TColStd_Array2OfReal& theTrsf,
+                                                  const Graphic3d_Vector&     theCoord)
+{
+  Standard_Real anXYZ[3];
+  Graphic3d_Structure::Transforms (theTrsf,
+                                   theCoord.X(), theCoord.Y(), theCoord.Z(),
+                                   anXYZ[0], anXYZ[1], anXYZ[2]);
+  return Graphic3d_Vector (anXYZ[0], anXYZ[1], anXYZ[2]);
 }
 
-Graphic3d_Vertex Graphic3d_Structure::Transforms (const TColStd_Array2OfReal& ATrsf, const Graphic3d_Vertex& Coord) {
-
-  Standard_Real NewX, NewY, NewZ;
-  Graphic3d_Vertex Result;
-
-  Graphic3d_Structure::Transforms
-    (ATrsf, Coord.X (), Coord.Y (), Coord.Z (), NewX, NewY, NewZ);
-  Result.SetCoord (NewX, NewY, NewZ);
-
-  return (Result);
-
+//=============================================================================
+//function : Transforms
+//purpose  :
+//=============================================================================
+Graphic3d_Vertex Graphic3d_Structure::Transforms (const TColStd_Array2OfReal& theTrsf,
+                                                  const Graphic3d_Vertex&     theCoord)
+{
+  Standard_Real anXYZ[3];
+  Graphic3d_Structure::Transforms (theTrsf,
+                                   theCoord.X(), theCoord.Y(), theCoord.Z(),
+                                   anXYZ[0], anXYZ[1], anXYZ[2]);
+  return Graphic3d_Vertex (anXYZ[0], anXYZ[1], anXYZ[2]);
 }
 
 //=============================================================================
@@ -2144,498 +2099,388 @@ void Graphic3d_Structure::TransformBoundaries (const TColStd_Array2OfReal& theTr
   theZMax = aZMax;
 }
 
-void Graphic3d_Structure::Network (const Handle(Graphic3d_Structure)& AStructure, const Graphic3d_TypeOfConnection AType, Graphic3d_MapOfStructure& ASet) {
-
-
-  Graphic3d_MapOfStructure h1;
-  Graphic3d_MapOfStructure h2;
-  AStructure->Descendants (h1);
-  AStructure->Ancestors (h2);
-
-  Graphic3d_MapIteratorOfMapOfStructure IteratorD (h1);
-  Graphic3d_MapIteratorOfMapOfStructure IteratorA (h2);
-
-  ASet.Add (AStructure);
-
-  // exploration
-  switch (AType)
+//=============================================================================
+//function : Network
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::Network (const Handle(Graphic3d_Structure)& theStructure,
+                                   const Graphic3d_TypeOfConnection   theType,
+                                   Graphic3d_MapOfStructure&          theSet)
+{
+  Graphic3d_MapOfStructure aSetD, aSetA;
+  theStructure->Descendants (aSetD);
+  theStructure->Ancestors   (aSetA);
+  theSet.Add (theStructure);
+  switch (theType)
   {
+    case Graphic3d_TOC_DESCENDANT:
+      for (Graphic3d_MapIteratorOfMapOfStructure anIter (aSetD); anIter.More(); anIter.Next())
+      {
+        Graphic3d_Structure::Network (anIter.Key(), theType, theSet);
+      }
+      break;
+    case Graphic3d_TOC_ANCESTOR:
+      for (Graphic3d_MapIteratorOfMapOfStructure anIter (aSetA); anIter.More(); anIter.Next())
+      {
+        Graphic3d_Structure::Network (anIter.Key (), theType, theSet);
+      }
+      break;
+  }
+}
 
-  case Graphic3d_TOC_DESCENDANT :
-    while (IteratorD.More ()) {
-      Graphic3d_Structure::Network
-        (IteratorD.Key (), AType, ASet);
-      // IteratorD.Next () is located on the next structure
-      IteratorD.Next ();
-    }
-    break;
+//=============================================================================
+//function : PrintNetwork
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::PrintNetwork (const Handle(Graphic3d_Structure)& theStructure,
+                                        const Graphic3d_TypeOfConnection   theType)
+{
+  Graphic3d_MapOfStructure aSet;
+  Graphic3d_Structure::Network (theStructure, theType, aSet);
+  for (Graphic3d_MapIteratorOfMapOfStructure anIter (aSet); anIter.More(); anIter.Next())
+  {
+    std::cout << "\tIdent " << (anIter.Key())->Identification () << "\n";
+  }
+  std::cout << std::flush;
+}
 
-  case Graphic3d_TOC_ANCESTOR :
-    while (IteratorA.More ()) {
-      Graphic3d_Structure::Network
-        (IteratorA.Key (), AType, ASet);
-      // IteratorA.Next () is located on the next structure
-      IteratorA.Next ();
-    }
-    break;
+//=============================================================================
+//function : Update
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::Update() const
+{
+  if (IsDeleted())
+  {
+    return;
   }
 
-}
-
-void Graphic3d_Structure::PrintNetwork (const Handle(Graphic3d_Structure)& AStructure, const Graphic3d_TypeOfConnection AType)
-{
-
-  Graphic3d_MapOfStructure ASet;
-
-  Graphic3d_MapIteratorOfMapOfStructure IteratorASet (ASet);
-
-  Graphic3d_Structure::Network (AStructure, AType, ASet);
-
-  while (IteratorASet.More ()) {
-    cout << "\tIdent "
-      << (IteratorASet.Key ())->Identification () << "\n";
-    IteratorASet.Next ();
+  if (myStructureManager->UpdateMode() == Aspect_TOU_ASAP)
+  {
+    myStructureManager->Update();
   }
-  cout << flush;
-
 }
 
-void Graphic3d_Structure::Update () const
+//=============================================================================
+//function : UpdateStructure
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::UpdateStructure (const Handle(Graphic3d_AspectLine3d)&     theAspLine,
+                                           const Handle(Graphic3d_AspectText3d)&     theAspText,
+                                           const Handle(Graphic3d_AspectMarker3d)&   theAspMarker,
+                                           const Handle(Graphic3d_AspectFillArea3d)& theAspFill)
 {
+  Standard_CString          aFont;
+  Standard_Real             aSpace, anExpansion, aWidth, aScale;
+  Quantity_Color            aColor, anIntColor, aBackIntColor, anEdgeColor, aColorSub;
+  Aspect_TypeOfLine         aLType;
+  Aspect_TypeOfMarker       aMType;
+  Aspect_InteriorStyle      aStyle;
+  Aspect_TypeOfStyleText    aStyleT;
+  Aspect_TypeOfDisplayText  aDisplayType;
+  Standard_Boolean          aTextZoomable;
+  Standard_Real             aTextAngle;
+  Font_FontAspect           aTextFontAspect;
 
-  if (IsDeleted ()) return;
+  theAspLine->Values (aColor, aLType, aWidth);
+  myCStructure->ContextLine.Color.r        = float (aColor.Red());
+  myCStructure->ContextLine.Color.g        = float (aColor.Green());
+  myCStructure->ContextLine.Color.b        = float (aColor.Blue());
+  myCStructure->ContextLine.LineType       = aLType;
+  myCStructure->ContextLine.Width          = float (aWidth);
+  myCStructure->ContextLine.ShaderProgram  = theAspLine->ShaderProgram();
 
-  if (MyStructureManager->UpdateMode () == Aspect_TOU_ASAP)
-    MyStructureManager->Update ();
+  theAspMarker->Values (aColor, aMType, aScale);
+  myCStructure->ContextMarker.Color.r      = float (aColor.Red());
+  myCStructure->ContextMarker.Color.g      = float (aColor.Green());
+  myCStructure->ContextMarker.Color.b      = float (aColor.Blue());
+  myCStructure->ContextMarker.MarkerType   = aMType;
+  myCStructure->ContextMarker.Scale        = float (aScale);
+  myCStructure->ContextMarker.ShaderProgram = theAspMarker->ShaderProgram();
 
-}
+  theAspText->Values (aColor, aFont, anExpansion, aSpace, aStyleT, aDisplayType, aColorSub, aTextZoomable, aTextAngle, aTextFontAspect);
+  myCStructure->ContextText.Color.r          = float (aColor.Red());
+  myCStructure->ContextText.Color.g          = float (aColor.Green());
+  myCStructure->ContextText.Color.b          = float (aColor.Blue());
+  myCStructure->ContextText.Font             = aFont;
+  myCStructure->ContextText.Expan            = float (anExpansion);
+  myCStructure->ContextText.Style            = aStyleT;
+  myCStructure->ContextText.DisplayType      = aDisplayType;
+  myCStructure->ContextText.Space            = float (aSpace);
+  myCStructure->ContextText.ColorSubTitle.r  = float (aColorSub.Red());
+  myCStructure->ContextText.ColorSubTitle.g  = float (aColorSub.Green());
+  myCStructure->ContextText.ColorSubTitle.b  = float (aColorSub.Blue());
+  myCStructure->ContextText.TextZoomable     = aTextZoomable;
+  myCStructure->ContextText.TextAngle        = float (aTextAngle);
+  myCStructure->ContextText.TextFontAspect   = aTextFontAspect;
+  myCStructure->ContextText.ShaderProgram    = theAspText->ShaderProgram();
 
-void Graphic3d_Structure::UpdateStructure (const Handle(Graphic3d_AspectLine3d)& CTXL, const Handle(Graphic3d_AspectText3d)& CTXT, const Handle(Graphic3d_AspectMarker3d)& CTXM, const Handle(Graphic3d_AspectFillArea3d)& CTXF)
-{
+  Standard_Real anRGB[3];
+  theAspFill->Values (aStyle, anIntColor, aBackIntColor, anEdgeColor, aLType, aWidth);
+  anIntColor.Values (anRGB[0], anRGB[1], anRGB[2], Quantity_TOC_RGB);
+  myCStructure->ContextFillArea.Style      = aStyle;
+  myCStructure->ContextFillArea.IntColor.r = float (anRGB[0]);
+  myCStructure->ContextFillArea.IntColor.g = float (anRGB[1]);
+  myCStructure->ContextFillArea.IntColor.b = float (anRGB[2]);
 
-  Standard_Real             R, G, B;
-  Standard_Real             Rs, Gs, Bs;
-  Standard_CString          AFont;
-  Standard_Real             ASpace;
-  Standard_Real             AnExpansion;
-  Standard_Real             AWidth;
-  Standard_Real             AScale;
-  Quantity_Color            AColor;
-  Quantity_Color            AnIntColor;
-  Quantity_Color            BackIntColor;
-  Quantity_Color            AnEdgeColor;
-  Aspect_TypeOfLine         ALType;
-  Aspect_TypeOfMarker       AMType;
-  Aspect_InteriorStyle      AStyle;
-  Aspect_TypeOfStyleText    AStyleT;
-  Aspect_TypeOfDisplayText  ADisplayType;
-  Quantity_Color            AColorSubTitle;
-  Standard_Boolean          ATextZoomable;
-  Standard_Real             ATextAngle;
-  Font_FontAspect            ATextFontAspect;
-
-
-  CTXL->Values (AColor, ALType, AWidth);
-  AColor.Values (R, G, B, Quantity_TOC_RGB);
-
-  MyCStructure.ContextLine.Color.r        = float (R);
-  MyCStructure.ContextLine.Color.g        = float (G);
-  MyCStructure.ContextLine.Color.b        = float (B);
-  MyCStructure.ContextLine.LineType       = int (ALType);
-  MyCStructure.ContextLine.Width          = float (AWidth);
-  MyCStructure.ContextLine.ShaderProgram  = CTXL->ShaderProgram();
-
-  CTXM->Values (AColor, AMType, AScale);
-  AColor.Values (R, G, B, Quantity_TOC_RGB);
-
-  MyCStructure.ContextMarker.Color.r      = float (R);
-  MyCStructure.ContextMarker.Color.g      = float (G);
-  MyCStructure.ContextMarker.Color.b      = float (B);
-  MyCStructure.ContextMarker.MarkerType   = AMType;
-  MyCStructure.ContextMarker.Scale        = float (AScale);
-  MyCStructure.ContextMarker.ShaderProgram = CTXM->ShaderProgram();
-
-  CTXT->Values (AColor, AFont, AnExpansion, ASpace,AStyleT,ADisplayType,AColorSubTitle,ATextZoomable,ATextAngle,ATextFontAspect);
-  AColor.Values (R, G, B, Quantity_TOC_RGB);
-  AColorSubTitle.Values (Rs, Gs, Bs, Quantity_TOC_RGB);
-
-  MyCStructure.ContextText.Color.r          = float (R);
-  MyCStructure.ContextText.Color.g          = float (G);
-  MyCStructure.ContextText.Color.b          = float (B);
-  MyCStructure.ContextText.Font             = (char*) (AFont);
-  MyCStructure.ContextText.Expan            = float (AnExpansion);
-  MyCStructure.ContextText.Style            = int (AStyleT);
-  MyCStructure.ContextText.DisplayType      = int (ADisplayType);
-  MyCStructure.ContextText.Space            = float (ASpace);
-  MyCStructure.ContextText.ColorSubTitle.r  = float (Rs);
-  MyCStructure.ContextText.ColorSubTitle.g  = float (Gs);
-  MyCStructure.ContextText.ColorSubTitle.b  = float (Bs);
-  MyCStructure.ContextText.TextZoomable     = ATextZoomable;
-  MyCStructure.ContextText.TextAngle        = float (ATextAngle);
-  MyCStructure.ContextText.TextFontAspect   = int (ATextFontAspect);
-  MyCStructure.ContextText.ShaderProgram    = CTXT->ShaderProgram();
-
-
-
-  CTXF->Values (AStyle, AnIntColor, BackIntColor, AnEdgeColor, ALType, AWidth);
-  AnIntColor.Values (R, G, B, Quantity_TOC_RGB);
-
-  MyCStructure.ContextFillArea.Style      = int (AStyle);
-  MyCStructure.ContextFillArea.IntColor.r = float (R);
-  MyCStructure.ContextFillArea.IntColor.g = float (G);
-  MyCStructure.ContextFillArea.IntColor.b = float (B);
-#ifdef OCC1174
-  if ( CTXF->Distinguish() )
-    BackIntColor.Values( R, G, B, Quantity_TOC_RGB );
-#endif
-  MyCStructure.ContextFillArea.BackIntColor.r     = float( R );
-  MyCStructure.ContextFillArea.BackIntColor.g     = float( G );
-  MyCStructure.ContextFillArea.BackIntColor.b     = float( B );
+  if (theAspFill->Distinguish())
+  {
+    aBackIntColor.Values (anRGB[0], anRGB[1], anRGB[2], Quantity_TOC_RGB);
+  }
+  myCStructure->ContextFillArea.BackIntColor.r = float (anRGB[0]);
+  myCStructure->ContextFillArea.BackIntColor.g = float (anRGB[1]);
+  myCStructure->ContextFillArea.BackIntColor.b = float (anRGB[2]);
 
   // Edges
-  MyCStructure.ContextFillArea.Edge       = CTXF->Edge () ? 1:0;
-  AnEdgeColor.Values (R, G, B, Quantity_TOC_RGB);
-  MyCStructure.ContextFillArea.EdgeColor.r        = float (R);
-  MyCStructure.ContextFillArea.EdgeColor.g        = float (G);
-  MyCStructure.ContextFillArea.EdgeColor.b        = float (B);
-  MyCStructure.ContextFillArea.LineType           = int (ALType);
-  MyCStructure.ContextFillArea.Width              = float (AWidth);
-  MyCStructure.ContextFillArea.Hatch              = int (CTXF->HatchStyle ());
+  myCStructure->ContextFillArea.Edge               = theAspFill->Edge () ? 1:0;
+  myCStructure->ContextFillArea.EdgeColor.r        = float (anEdgeColor.Red());
+  myCStructure->ContextFillArea.EdgeColor.g        = float (anEdgeColor.Green());
+  myCStructure->ContextFillArea.EdgeColor.b        = float (anEdgeColor.Blue());
+  myCStructure->ContextFillArea.LineType           = aLType;
+  myCStructure->ContextFillArea.Width              = float (aWidth);
+  myCStructure->ContextFillArea.Hatch              = theAspFill->HatchStyle();
 
-  /*** Front and Back face ***/
-  MyCStructure.ContextFillArea.Distinguish = CTXF->Distinguish () ? 1:0;
-  MyCStructure.ContextFillArea.BackFace    = CTXF->BackFace () ? 1:0;
-  /*** Back Material ***/
+  // Front and Back face
+  myCStructure->ContextFillArea.Distinguish        = theAspFill->Distinguish() ? 1 : 0;
+  myCStructure->ContextFillArea.BackFace           = theAspFill->BackFace()    ? 1 : 0;
+  // Back Material
+  const Graphic3d_MaterialAspect& aBack = theAspFill->BackMaterial();
   // Light specificity
-  MyCStructure.ContextFillArea.Back.Shininess     =
-    float ((CTXF->BackMaterial ()).Shininess ());
-  MyCStructure.ContextFillArea.Back.Ambient       =
-    float ((CTXF->BackMaterial ()).Ambient ());
-  MyCStructure.ContextFillArea.Back.Diffuse       =
-    float ((CTXF->BackMaterial ()).Diffuse ());
-  MyCStructure.ContextFillArea.Back.Specular      =
-    float ((CTXF->BackMaterial ()).Specular ());
-  MyCStructure.ContextFillArea.Back.Transparency  =
-    float ((CTXF->BackMaterial ()).Transparency ());
-  MyCStructure.ContextFillArea.Back.Emission      =
-    float ((CTXF->BackMaterial ()).Emissive ());
+  myCStructure->ContextFillArea.Back.Shininess     = float (aBack.Shininess());
+  myCStructure->ContextFillArea.Back.Ambient       = float (aBack.Ambient());
+  myCStructure->ContextFillArea.Back.Diffuse       = float (aBack.Diffuse());
+  myCStructure->ContextFillArea.Back.Specular      = float (aBack.Specular());
+  myCStructure->ContextFillArea.Back.Transparency  = float (aBack.Transparency());
+  myCStructure->ContextFillArea.Back.Emission      = float (aBack.Emissive());
 
   // Reflection mode
-  MyCStructure.ContextFillArea.Back.IsAmbient     =
-    ( (CTXF->BackMaterial ()).ReflectionMode (Graphic3d_TOR_AMBIENT) ? 1 : 0 );
-  MyCStructure.ContextFillArea.Back.IsDiffuse     =
-    ( (CTXF->BackMaterial ()).ReflectionMode (Graphic3d_TOR_DIFFUSE) ? 1 : 0 );
-  MyCStructure.ContextFillArea.Back.IsSpecular    =
-    ( (CTXF->BackMaterial ()).ReflectionMode (Graphic3d_TOR_SPECULAR) ? 1 : 0 );
-  MyCStructure.ContextFillArea.Back.IsEmission    =
-    ( (CTXF->BackMaterial ()).ReflectionMode (Graphic3d_TOR_EMISSION) ? 1 : 0 );
+  myCStructure->ContextFillArea.Back.IsAmbient     = (aBack.ReflectionMode (Graphic3d_TOR_AMBIENT)  ? 1 : 0);
+  myCStructure->ContextFillArea.Back.IsDiffuse     = (aBack.ReflectionMode (Graphic3d_TOR_DIFFUSE)  ? 1 : 0);
+  myCStructure->ContextFillArea.Back.IsSpecular    = (aBack.ReflectionMode (Graphic3d_TOR_SPECULAR) ? 1 : 0);
+  myCStructure->ContextFillArea.Back.IsEmission    = (aBack.ReflectionMode (Graphic3d_TOR_EMISSION) ? 1 : 0);
 
   // Material type
-  //JR/Hp
-  const Graphic3d_MaterialAspect ama = CTXF->BackMaterial () ;
-  Standard_Boolean amt = ama.MaterialType(Graphic3d_MATERIAL_PHYSIC) ;
-  MyCStructure.ContextFillArea.Back.IsPhysic = ( amt ? 1 : 0 );
+  myCStructure->ContextFillArea.Back.IsPhysic      = (aBack.MaterialType (Graphic3d_MATERIAL_PHYSIC) ? 1 : 0);
 
   // Specular color
-  MyCStructure.ContextFillArea.Back.ColorSpec.r   =
-    float (((CTXF->BackMaterial ()).SpecularColor ()).Red ());
-  MyCStructure.ContextFillArea.Back.ColorSpec.g   =
-    float (((CTXF->BackMaterial ()).SpecularColor ()).Green ());
-  MyCStructure.ContextFillArea.Back.ColorSpec.b   =
-    float (((CTXF->BackMaterial ()).SpecularColor ()).Blue ());
+  myCStructure->ContextFillArea.Back.ColorSpec.r   = float (aBack.SpecularColor().Red());
+  myCStructure->ContextFillArea.Back.ColorSpec.g   = float (aBack.SpecularColor().Green());
+  myCStructure->ContextFillArea.Back.ColorSpec.b   = float (aBack.SpecularColor().Blue());
 
   // Ambient color
-  MyCStructure.ContextFillArea.Back.ColorAmb.r    =
-    float (((CTXF->BackMaterial ()).AmbientColor ()).Red ());
-  MyCStructure.ContextFillArea.Back.ColorAmb.g    =
-    float (((CTXF->BackMaterial ()).AmbientColor ()).Green ());
-  MyCStructure.ContextFillArea.Back.ColorAmb.b    =
-    float (((CTXF->BackMaterial ()).AmbientColor ()).Blue ());
+  myCStructure->ContextFillArea.Back.ColorAmb.r    = float (aBack.AmbientColor().Red());
+  myCStructure->ContextFillArea.Back.ColorAmb.g    = float (aBack.AmbientColor().Green());
+  myCStructure->ContextFillArea.Back.ColorAmb.b    = float (aBack.AmbientColor().Blue());
 
   // Diffuse color
-  MyCStructure.ContextFillArea.Back.ColorDif.r    =
-    float (((CTXF->BackMaterial ()).DiffuseColor ()).Red ());
-  MyCStructure.ContextFillArea.Back.ColorDif.g    =
-    float (((CTXF->BackMaterial ()).DiffuseColor ()).Green ());
-  MyCStructure.ContextFillArea.Back.ColorDif.b    =
-    float (((CTXF->BackMaterial ()).DiffuseColor ()).Blue ());
+  myCStructure->ContextFillArea.Back.ColorDif.r    = float (aBack.DiffuseColor().Red());
+  myCStructure->ContextFillArea.Back.ColorDif.g    = float (aBack.DiffuseColor().Green());
+  myCStructure->ContextFillArea.Back.ColorDif.b    = float (aBack.DiffuseColor().Blue());
 
   // Emissive color
-  MyCStructure.ContextFillArea.Back.ColorEms.r    =
-    float (((CTXF->BackMaterial ()).EmissiveColor ()).Red ());
-  MyCStructure.ContextFillArea.Back.ColorEms.g    =
-    float (((CTXF->BackMaterial ()).EmissiveColor ()).Green ());
-  MyCStructure.ContextFillArea.Back.ColorEms.b    =
-    float (((CTXF->BackMaterial ()).EmissiveColor ()).Blue ());
+  myCStructure->ContextFillArea.Back.ColorEms.r    = float (aBack.EmissiveColor().Red());
+  myCStructure->ContextFillArea.Back.ColorEms.g    = float (aBack.EmissiveColor().Green());
+  myCStructure->ContextFillArea.Back.ColorEms.b    = float (aBack.EmissiveColor().Blue());
 
-  MyCStructure.ContextFillArea.Back.EnvReflexion =
-    float ((CTXF->BackMaterial ()).EnvReflexion());
+  myCStructure->ContextFillArea.Back.EnvReflexion  = float (aBack.EnvReflexion());
 
-  /*** Front Material ***/
+  // Front Material
+  const Graphic3d_MaterialAspect& aFront = theAspFill->FrontMaterial();
   // Light specificity
-  MyCStructure.ContextFillArea.Front.Shininess    =
-    float ((CTXF->FrontMaterial ()).Shininess ());
-  MyCStructure.ContextFillArea.Front.Ambient      =
-    float ((CTXF->FrontMaterial ()).Ambient ());
-  MyCStructure.ContextFillArea.Front.Diffuse      =
-    float ((CTXF->FrontMaterial ()).Diffuse ());
-  MyCStructure.ContextFillArea.Front.Specular     =
-    float ((CTXF->FrontMaterial ()).Specular ());
-  MyCStructure.ContextFillArea.Front.Transparency =
-    float ((CTXF->FrontMaterial ()).Transparency ());
-  MyCStructure.ContextFillArea.Front.Emission     =
-    float ((CTXF->FrontMaterial ()).Emissive ());
+  myCStructure->ContextFillArea.Front.Shininess    = float (aFront.Shininess());
+  myCStructure->ContextFillArea.Front.Ambient      = float (aFront.Ambient());
+  myCStructure->ContextFillArea.Front.Diffuse      = float (aFront.Diffuse());
+  myCStructure->ContextFillArea.Front.Specular     = float (aFront.Specular());
+  myCStructure->ContextFillArea.Front.Transparency = float (aFront.Transparency());
+  myCStructure->ContextFillArea.Front.Emission     = float (aFront.Emissive());
 
   // Reflection mode
-  MyCStructure.ContextFillArea.Front.IsAmbient    =
-    ( (CTXF->FrontMaterial ()).ReflectionMode (Graphic3d_TOR_AMBIENT) ? 1 : 0 );
-  MyCStructure.ContextFillArea.Front.IsDiffuse    =
-    ( (CTXF->FrontMaterial ()).ReflectionMode (Graphic3d_TOR_DIFFUSE) ? 1 : 0 );
-  MyCStructure.ContextFillArea.Front.IsSpecular   =
-    ( (CTXF->FrontMaterial ()).ReflectionMode (Graphic3d_TOR_SPECULAR) ? 1 : 0 );
-  MyCStructure.ContextFillArea.Front.IsEmission   =
-    ( (CTXF->FrontMaterial ()).ReflectionMode (Graphic3d_TOR_EMISSION) ? 1 : 0 );
+  myCStructure->ContextFillArea.Front.IsAmbient    = (aFront.ReflectionMode (Graphic3d_TOR_AMBIENT)  ? 1 : 0);
+  myCStructure->ContextFillArea.Front.IsDiffuse    = (aFront.ReflectionMode (Graphic3d_TOR_DIFFUSE)  ? 1 : 0);
+  myCStructure->ContextFillArea.Front.IsSpecular   = (aFront.ReflectionMode (Graphic3d_TOR_SPECULAR) ? 1 : 0);
+  myCStructure->ContextFillArea.Front.IsEmission   = (aFront.ReflectionMode (Graphic3d_TOR_EMISSION) ? 1 : 0);
 
   // Material type
-  //JR/Hp
-  const Graphic3d_MaterialAspect amas = CTXF->FrontMaterial () ;
-  Standard_Boolean amty = amas.MaterialType(Graphic3d_MATERIAL_PHYSIC) ;
-  MyCStructure.ContextFillArea.Front.IsPhysic = ( amty ? 1 : 0 );
+  myCStructure->ContextFillArea.Front.IsPhysic     = (aFront.MaterialType (Graphic3d_MATERIAL_PHYSIC) ? 1 : 0);
 
   // Specular color
-  MyCStructure.ContextFillArea.Front.ColorSpec.r  =
-    float (((CTXF->FrontMaterial ()).SpecularColor ()).Red ());
-  MyCStructure.ContextFillArea.Front.ColorSpec.g  =
-    float (((CTXF->FrontMaterial ()).SpecularColor ()).Green ());
-  MyCStructure.ContextFillArea.Front.ColorSpec.b  =
-    float (((CTXF->FrontMaterial ()).SpecularColor ()).Blue ());
+  myCStructure->ContextFillArea.Front.ColorSpec.r  = float (aFront.SpecularColor().Red());
+  myCStructure->ContextFillArea.Front.ColorSpec.g  = float (aFront.SpecularColor().Green());
+  myCStructure->ContextFillArea.Front.ColorSpec.b  = float (aFront.SpecularColor().Blue());
 
   // Ambient color
-  MyCStructure.ContextFillArea.Front.ColorAmb.r   =
-    float (((CTXF->FrontMaterial ()).AmbientColor ()).Red ());
-  MyCStructure.ContextFillArea.Front.ColorAmb.g   =
-    float (((CTXF->FrontMaterial ()).AmbientColor ()).Green ());
-  MyCStructure.ContextFillArea.Front.ColorAmb.b   =
-    float (((CTXF->FrontMaterial ()).AmbientColor ()).Blue ());
+  myCStructure->ContextFillArea.Front.ColorAmb.r   = float (aFront.AmbientColor().Red());
+  myCStructure->ContextFillArea.Front.ColorAmb.g   = float (aFront.AmbientColor().Green());
+  myCStructure->ContextFillArea.Front.ColorAmb.b   = float (aFront.AmbientColor().Blue());
 
   // Diffuse color
-  MyCStructure.ContextFillArea.Front.ColorDif.r   =
-    float (((CTXF->FrontMaterial ()).DiffuseColor ()).Red ());
-  MyCStructure.ContextFillArea.Front.ColorDif.g   =
-    float (((CTXF->FrontMaterial ()).DiffuseColor ()).Green ());
-  MyCStructure.ContextFillArea.Front.ColorDif.b   =
-    float (((CTXF->FrontMaterial ()).DiffuseColor ()).Blue ());
+  myCStructure->ContextFillArea.Front.ColorDif.r   = float (aFront.DiffuseColor().Red());
+  myCStructure->ContextFillArea.Front.ColorDif.g   = float (aFront.DiffuseColor().Green());
+  myCStructure->ContextFillArea.Front.ColorDif.b   = float (aFront.DiffuseColor().Blue());
 
   // Emissive color
-  MyCStructure.ContextFillArea.Front.ColorEms.r   =
-    float (((CTXF->FrontMaterial ()).EmissiveColor ()).Red ());
-  MyCStructure.ContextFillArea.Front.ColorEms.g   =
-    float (((CTXF->FrontMaterial ()).EmissiveColor ()).Green ());
-  MyCStructure.ContextFillArea.Front.ColorEms.b   =
-    float (((CTXF->FrontMaterial ()).EmissiveColor ()).Blue ());
+  myCStructure->ContextFillArea.Front.ColorEms.r   = float (aFront.EmissiveColor().Red());
+  myCStructure->ContextFillArea.Front.ColorEms.g   = float (aFront.EmissiveColor().Green());
+  myCStructure->ContextFillArea.Front.ColorEms.b   = float (aFront.EmissiveColor().Blue());
 
-  MyCStructure.ContextFillArea.Front.EnvReflexion =
-    float ((CTXF->FrontMaterial ()).EnvReflexion());
+  myCStructure->ContextFillArea.Front.EnvReflexion = float (aFront.EnvReflexion());
 
-  MyCStructure.ContextFillArea.Texture.TextureMap   = CTXF->TextureMap();
-  MyCStructure.ContextFillArea.Texture.doTextureMap = CTXF->TextureMapState() ? 1 : 0;
-  MyCStructure.ContextFillArea.ShaderProgram        = CTXF->ShaderProgram();
+  myCStructure->ContextFillArea.Texture.TextureMap   = theAspFill->TextureMap();
+  myCStructure->ContextFillArea.Texture.doTextureMap = theAspFill->TextureMapState() ? 1 : 0;
+  myCStructure->ContextFillArea.ShaderProgram        = theAspFill->ShaderProgram();
 
-  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
-  Standard_Integer aPolyMode;
-  Standard_ShortReal    aPolyFactor, aPolyUnits;
-  CTXF->PolygonOffsets(aPolyMode, aPolyFactor, aPolyUnits);
-  MyCStructure.ContextFillArea.PolygonOffsetMode   = aPolyMode;
-  MyCStructure.ContextFillArea.PolygonOffsetFactor = (Standard_ShortReal)aPolyFactor;
-  MyCStructure.ContextFillArea.PolygonOffsetUnits  = (Standard_ShortReal)aPolyUnits;
-  // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets
+  Standard_Integer   aPolyMode;
+  Standard_ShortReal aPolyFactor, aPolyUnits;
+  theAspFill->PolygonOffsets (aPolyMode, aPolyFactor, aPolyUnits);
+  myCStructure->ContextFillArea.PolygonOffsetMode   = aPolyMode;
+  myCStructure->ContextFillArea.PolygonOffsetFactor = aPolyFactor;
+  myCStructure->ContextFillArea.PolygonOffsetUnits  = aPolyUnits;
 }
 
-void Graphic3d_Structure::GraphicHighlight (const Aspect_TypeOfHighlightMethod AMethod) {
-
-  Standard_Real XMin, YMin, ZMin, XMax, YMax, ZMax;
-  Standard_Real R, G, B;
-
-  MyCStructure.highlight  = 1;
-  MyHighlightMethod       = AMethod;
-
-  switch (AMethod)
-  {
-  case Aspect_TOHM_COLOR :
-    MyHighlightColor.Values (R, G, B, Quantity_TOC_RGB);
-    MyGraphicDriver->HighlightColor
-      (MyCStructure, float (R), float (G),
-      float (B) , Standard_True);
-    MyGraphicDriver->NameSetStructure (MyCStructure);
-    break;
-  case Aspect_TOHM_BLINK :
-    MyGraphicDriver->Blink (MyCStructure, Standard_True);
-    MyGraphicDriver->NameSetStructure (MyCStructure);
-    break;
-  case Aspect_TOHM_BOUNDBOX :
-    if (IsEmpty () || IsInfinite ()) {
-      // Empty or infinite structure
-      XMin = YMin = ZMin = 0.;
-      XMax = YMax = ZMax = 0.;
-    }
-    else {
-      MinMaxCoordWithDescendants
-        (XMin, YMin, ZMin, XMax, YMax, ZMax);
-    }
-    MyCStructure.BoundBox.Pmin.x    = float (XMin);
-    MyCStructure.BoundBox.Pmin.y    = float (YMin);
-    MyCStructure.BoundBox.Pmin.z    = float (ZMin);
-    MyCStructure.BoundBox.Pmax.x    = float (XMax);
-    MyCStructure.BoundBox.Pmax.y    = float (YMax);
-    MyCStructure.BoundBox.Pmax.z    = float (ZMax);
-    MyHighlightColor.Values (R, G, B, Quantity_TOC_RGB);
-    MyCStructure.BoundBox.Color.r   = float (R);
-    MyCStructure.BoundBox.Color.g   = float (G);
-    MyCStructure.BoundBox.Color.b   = float (B);
-    MyGraphicDriver->BoundaryBox (MyCStructure, Standard_True);
-    break;
-  }
-
-}
-
-void Graphic3d_Structure::GraphicTransform (const TColStd_Array2OfReal& AMatrix) {
-
-  Standard_Integer i, j;
-
-  for (i=0; i<=3; i++)
-    for (j=0; j<=3; j++)
-      MyCStructure.Transformation[i][j] = float (AMatrix (i, j));
-
-  MyGraphicDriver->TransformStructure (MyCStructure);
-
-}
-
-void Graphic3d_Structure::GraphicUnHighlight () {
-
-  MyCStructure.highlight  = 0;
-
-  switch (MyHighlightMethod)
-  {
-  case Aspect_TOHM_COLOR :
-    MyGraphicDriver->HighlightColor
-      (MyCStructure, 0.0, 0.0, 0.0 , Standard_False);
-    MyGraphicDriver->NameSetStructure (MyCStructure);
-    break;
-  case Aspect_TOHM_BLINK :
-    MyGraphicDriver->Blink (MyCStructure, Standard_False);
-    MyGraphicDriver->NameSetStructure (MyCStructure);
-    break;
-  case Aspect_TOHM_BOUNDBOX :
-    MyGraphicDriver->BoundaryBox
-      (MyCStructure, Standard_False);
-    MyGraphicDriver->NameSetStructure (MyCStructure);
-    break;
-  }
-
-}
-
-Graphic3d_TypeOfStructure Graphic3d_Structure::ComputeVisual () const {
-
-  return (MyComputeVisual);
-
-}
-
-void Graphic3d_Structure::SetComputeVisual (const Graphic3d_TypeOfStructure AVisual) {
-
-  // The ComputeVisual is saved only if the structure is
-  // declared TOS_ALL, TOS_WIREFRAME or TOS_SHADING.
-  // This declaration permits to calculate
-  // proper representation of the structure calculated by Compute
-  // instead of passage to TOS_COMPUTED.
-  if (AVisual != Graphic3d_TOS_COMPUTED)
-    MyComputeVisual = AVisual;
-
-}
-
-void Graphic3d_Structure::Plot (const Handle(Graphic3d_Plotter)& ) {
-
-}
-
-void Graphic3d_Structure::SetManager (const Handle(Graphic3d_StructureManager)& AManager, 
-                                      const Standard_Boolean 
-                                      #ifdef IMPLEMENTED
-                                        WithPropagation
-                                      #endif
-                                      )
-
+//=============================================================================
+//function : GraphicHighlight
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::GraphicHighlight (const Aspect_TypeOfHighlightMethod theMethod)
 {
-  // All connected structures should follow ?
-#ifdef IMPLEMENTED
-  if (WithPropagation) {
-    Standard_Integer i, Length;
-    Length  = MyDescendants.Length ();
-    for (i=1; i<=Length; i++)
-      ((Graphic3d_Structure *)
-      (MyDescendants.Value (i)))->SetStructureManager (AManager);
-
-    Length  = MyAncestors.Length ();
-    for (i=1; i<=Length; i++)
-      ((Graphic3d_Structure *)
-      (MyAncestors.Value (i)))->SetStructureManager (AManager);
+  Standard_Real anRGB[3];
+  myCStructure->highlight = 1;
+  myHighlightMethod = theMethod;
+  switch (theMethod)
+  {
+    case Aspect_TOHM_COLOR:
+    {
+      myHighlightColor.Values (anRGB[0], anRGB[1], anRGB[2], Quantity_TOC_RGB);
+      myCStructure->HighlightWithColor (Graphic3d_Vec3 (float (anRGB[0]), float (anRGB[1]), float (anRGB[2])), Standard_True);
+      myCStructure->UpdateNamedStatus();
+      break;
+    }
+    case Aspect_TOHM_BOUNDBOX:
+    {
+      Standard_Real XMin, YMin, ZMin, XMax, YMax, ZMax;
+      if (IsEmpty() || IsInfinite())
+      {
+        // Empty or infinite structure
+        XMin = YMin = ZMin = 0.0;
+        XMax = YMax = ZMax = 0.0;
+      }
+      else
+      {
+        MinMaxCoordWithDescendants (XMin, YMin, ZMin, XMax, YMax, ZMax);
+      }
+      myCStructure->BoundBox.Pmin.x  = float (XMin);
+      myCStructure->BoundBox.Pmin.y  = float (YMin);
+      myCStructure->BoundBox.Pmin.z  = float (ZMin);
+      myCStructure->BoundBox.Pmax.x  = float (XMax);
+      myCStructure->BoundBox.Pmax.y  = float (YMax);
+      myCStructure->BoundBox.Pmax.z  = float (ZMax);
+      myHighlightColor.Values (anRGB[0], anRGB[1], anRGB[2], Quantity_TOC_RGB);
+      myCStructure->BoundBox.Color.r = float (anRGB[0]);
+      myCStructure->BoundBox.Color.g = float (anRGB[1]);
+      myCStructure->BoundBox.Color.b = float (anRGB[2]);
+      myCStructure->HighlightWithBndBox (Standard_True);
+      break;
+    }
   }
-#endif
-
-  // change of identification ?
-  // MyStructureManager->Remove (Standard_Integer (MyCStructure.Id));
-  // AManager->NewIdentification ();
-  // MyCStructure.Id      = int (AManager->NewIdentification ());
-
-  Aspect_TypeOfUpdate UpdateMode = MyStructureManager->UpdateMode ();
-  Aspect_TypeOfUpdate NewUpdateMode = AManager->UpdateMode ();
-  MyStructureManager->SetUpdateMode (Aspect_TOU_WAIT);
-  AManager->SetUpdateMode (Aspect_TOU_WAIT);
-
-  if (MyCStructure.stick) {
-    MyStructureManager->Erase (this);
-    AManager->Display (this);
-  }
-
-  if (MyCStructure.highlight) {
-  }
-
-  if (MyCStructure.pick) {
-    MyStructureManager->Undetectable (this);
-    AManager->Detectable (this);
-  }
-
-  MyStructureManager->SetUpdateMode (UpdateMode);
-  AManager->SetUpdateMode (NewUpdateMode);
-
-  // New manager
-  MyPtrStructureManager   = (void *) AManager.operator->();
-
 }
 
-void Graphic3d_Structure::SetHLRValidation (const Standard_Boolean AFlag) {
-
-  MyCStructure.HLRValidation      = AFlag ? 1:0;
-
+//=============================================================================
+//function : GraphicTransform
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::GraphicTransform (const TColStd_Array2OfReal& theMatrix)
+{
+  for (Standard_Integer i = 0; i <= 3; ++i)
+  {
+    for (Standard_Integer j = 0; j <= 3; ++j)
+    {
+      myCStructure->Transformation[i][j] = float (theMatrix (i, j));
+    }
+  }
+  myCStructure->UpdateTransformation();
 }
 
-Standard_Boolean Graphic3d_Structure::HLRValidation () const {
+//=============================================================================
+//function : GraphicUnHighlight
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::GraphicUnHighlight()
+{
+  myCStructure->highlight = 0;
+  switch (myHighlightMethod)
+  {
+    case Aspect_TOHM_COLOR:
+      myCStructure->HighlightWithColor (Graphic3d_Vec3 (0.0f, 0.0f, 0.0f), Standard_False);
+      myCStructure->UpdateNamedStatus();
+      break;
+    case Aspect_TOHM_BOUNDBOX:
+      myCStructure->HighlightWithBndBox (Standard_False);
+      myCStructure->UpdateNamedStatus();
+      break;
+  }
+}
 
+//=============================================================================
+//function : ComputeVisual
+//purpose  :
+//=============================================================================
+Graphic3d_TypeOfStructure Graphic3d_Structure::ComputeVisual() const
+{
+  return myComputeVisual;
+}
+
+//=============================================================================
+//function : SetComputeVisual
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::SetComputeVisual (const Graphic3d_TypeOfStructure theVisual)
+{
+  // The ComputeVisual is saved only if the structure is declared TOS_ALL, TOS_WIREFRAME or TOS_SHADING.
+  // This declaration permits to calculate proper representation of the structure calculated by Compute instead of passage to TOS_COMPUTED.
+  if (theVisual != Graphic3d_TOS_COMPUTED)
+  {
+    myComputeVisual = theVisual;
+  }
+}
+
+//=============================================================================
+//function : Plot
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::Plot (const Handle(Graphic3d_Plotter)& )
+{
+  //
+}
+
+//=============================================================================
+//function : SetHLRValidation
+//purpose  :
+//=============================================================================
+void Graphic3d_Structure::SetHLRValidation (const Standard_Boolean theFlag)
+{
+  myCStructure->HLRValidation = theFlag ? 1 : 0;
+}
+
+//=============================================================================
+//function : HLRValidation
+//purpose  :
+//=============================================================================
+Standard_Boolean Graphic3d_Structure::HLRValidation() const
+{
   // Hidden parts stored in <me> are valid if :
   // 1/ the owner is defined.
   // 2/ they are not invalid.
-
-  Standard_Boolean Result = MyOwner != NULL && MyCStructure.HLRValidation != 0;
-
-  return Result;
-
+  return myOwner != NULL
+      && myCStructure->HLRValidation != 0;
 }
 
 //=======================================================================
 //function : CStructure
 //purpose  :
 //=======================================================================
-Graphic3d_CStructure* Graphic3d_Structure::CStructure()
+const Handle(Graphic3d_CStructure)& Graphic3d_Structure::CStructure() const
 {
-  return &MyCStructure;
+  return myCStructure;
 }
 
 //=======================================================================
@@ -2648,7 +2493,7 @@ void Graphic3d_Structure::SetZLayer (const Standard_Integer theLayerId)
   if (IsDeleted ())
     return;
 
-  MyStructureManager->ChangeZLayer (this, theLayerId);
+  myStructureManager->ChangeZLayer (this, theLayerId);
 }
 
 //=======================================================================
@@ -2657,7 +2502,7 @@ void Graphic3d_Structure::SetZLayer (const Standard_Integer theLayerId)
 //=======================================================================
 Standard_Integer Graphic3d_Structure::GetZLayer () const
 {
-  return MyStructureManager->GetZLayer (this);
+  return myStructureManager->GetZLayer (this);
 }
 
 //=======================================================================
@@ -2666,8 +2511,7 @@ Standard_Integer Graphic3d_Structure::GetZLayer () const
 //=======================================================================
 void Graphic3d_Structure::SetClipPlanes (const Graphic3d_SequenceOfHClipPlane& thePlanes)
 {
-  MyCStructure.ClipPlanes = thePlanes;
-  MyGraphicDriver->SetClipPlanes (MyCStructure);
+  myCStructure->SetClipPlanes (thePlanes);
 }
 
 //=======================================================================
@@ -2676,5 +2520,5 @@ void Graphic3d_Structure::SetClipPlanes (const Graphic3d_SequenceOfHClipPlane& t
 //=======================================================================
 const Graphic3d_SequenceOfHClipPlane& Graphic3d_Structure::GetClipPlanes() const
 {
-  return MyCStructure.ClipPlanes;
+  return myCStructure->ClipPlanes();
 }

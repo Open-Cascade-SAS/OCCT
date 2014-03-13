@@ -1209,17 +1209,11 @@ Standard_Integer Index = IsComputed (AStructure);
              << ", " << OldPriority << ", " << NewPriority << ")\n";
         cout << flush;
 #endif
-                MyGraphicDriver->EraseStructure
-                        (MyCView,
-                         *(Graphic3d_CStructure *)
-                            MyCOMPUTEDSequence.Value (Index)->CStructure ());
-                MyGraphicDriver->DisplayStructure
-                        (MyCView,
-                         *(Graphic3d_CStructure *)
-                            MyCOMPUTEDSequence.Value (Index)->CStructure (),
-                         int (NewPriority));
+                MyGraphicDriver->EraseStructure   (MyCView, *(MyCOMPUTEDSequence.Value (Index)->CStructure()));
+                MyGraphicDriver->DisplayStructure (MyCView, *(MyCOMPUTEDSequence.Value (Index)->CStructure()), NewPriority);
         }
-        else {
+        else
+        {
 #ifdef TRACE
         Standard_Integer StructId = AStructure->Identification ();
         cout << "Visual3d_View" << MyCView.ViewId << "::ChangeDisplayPriority ("
@@ -1227,13 +1221,8 @@ Standard_Integer Index = IsComputed (AStructure);
              << ", " << OldPriority << ", " << NewPriority << ")\n";
         cout << flush;
 #endif
-                MyGraphicDriver->EraseStructure
-                        (MyCView,
-                         *(Graphic3d_CStructure *)AStructure->CStructure ());
-                MyGraphicDriver->DisplayStructure
-                        (MyCView,
-                         *(Graphic3d_CStructure *)AStructure->CStructure (),
-                         int (NewPriority));
+                MyGraphicDriver->EraseStructure   (MyCView, *(AStructure->CStructure()));
+                MyGraphicDriver->DisplayStructure (MyCView, *(AStructure->CStructure()), NewPriority);
         }
 
 }
@@ -1361,11 +1350,7 @@ Standard_Integer Index = IsComputed (AStructure);
 
         if (Answer == Visual3d_TOA_YES ) {
                 if (IsDisplayed (AStructure)) return;
-                MyGraphicDriver->DisplayStructure (
-                        MyCView,
-                        *(Graphic3d_CStructure *)AStructure->CStructure (),
-                        int (AStructure->DisplayPriority ())
-                );
+                MyGraphicDriver->DisplayStructure (MyCView, *(AStructure->CStructure()), AStructure->DisplayPriority());
                 MyDisplayedStructure.Add (AStructure);
                 if (AnUpdateMode == Aspect_TOU_ASAP) Update ();
         }
@@ -1381,11 +1366,7 @@ Standard_Integer OldStructId =
                     // to be displayed
                     if (! IsDisplayed (AStructure)) {
                         MyDisplayedStructure.Add (AStructure);
-                        MyGraphicDriver->DisplayStructure (
-                            MyCView,
-                            *(Graphic3d_CStructure *)MyCOMPUTEDSequence.Value (Index)->CStructure (),
-                            int (AStructure->DisplayPriority ())
-                        );
+                        MyGraphicDriver->DisplayStructure (MyCView, *(MyCOMPUTEDSequence.Value (Index)->CStructure()), AStructure->DisplayPriority ());
                         if (AnUpdateMode == Aspect_TOU_ASAP) Update ();
                     }
                     return;
@@ -1409,11 +1390,7 @@ Standard_Integer OldStructId =
                             OldStructId = MyCOMPUTEDSequence.Value (NewIndex)->
                                                         Identification ();
                             MyDisplayedStructure.Add (AStructure);
-                            MyGraphicDriver->DisplayStructure (
-                                MyCView,
-                                *(Graphic3d_CStructure *)MyCOMPUTEDSequence.Value (NewIndex)->CStructure (),
-                                int (AStructure->DisplayPriority ())
-                            );
+                            MyGraphicDriver->DisplayStructure (MyCView, *(MyCOMPUTEDSequence.Value (NewIndex)->CStructure()), AStructure->DisplayPriority ());
                             if (AnUpdateMode == Aspect_TOU_ASAP) Update ();
                         }
                         return;
@@ -1423,10 +1400,7 @@ Standard_Integer OldStructId =
                     else {
                         // COMPUTED is removed if displayed
                         if (IsDisplayed (AStructure))
-                            MyGraphicDriver->EraseStructure (
-                                MyCView,
-                                *(Graphic3d_CStructure *)MyCOMPUTEDSequence.Value (Index)->CStructure ()
-                            );
+                            MyGraphicDriver->EraseStructure (MyCView, *(MyCOMPUTEDSequence.Value (Index)->CStructure()));
                     }
                 }
             } // if (Index != 0)
@@ -1504,11 +1478,7 @@ Standard_Boolean ComputeShading = ((ViewType == Visual3d_TOV_SHADING) &&
             if (Answer != Visual3d_TOA_NO) {
                 if (! IsDisplayed (AStructure))
                         MyDisplayedStructure.Add (AStructure);
-                MyGraphicDriver->DisplayStructure (
-                        MyCView,
-                        *(Graphic3d_CStructure *)TheStructure->CStructure (),
-                        int (AStructure->DisplayPriority ())
-                );
+                MyGraphicDriver->DisplayStructure (MyCView, *(TheStructure->CStructure()), AStructure->DisplayPriority ());
                 if (AnUpdateMode == Aspect_TOU_ASAP) Update ();
             }
         } // Visual3d_TOA_COMPUTE
@@ -1539,10 +1509,7 @@ Visual3d_TypeOfAnswer Answer = AcceptDisplay (AStructure);
                 }
 
                 if (Answer != Visual3d_TOA_COMPUTE) {
-                        MyGraphicDriver->EraseStructure (
-                                MyCView,
-                                *(Graphic3d_CStructure *)AStructure->CStructure ()
-                        );
+                        MyGraphicDriver->EraseStructure (MyCView, *(AStructure->CStructure()));
                 }
 
                 if (Answer == Visual3d_TOA_COMPUTE) {
@@ -1565,8 +1532,7 @@ Standard_Integer Index = IsComputed (AStructure);
              << StructId << " is removed. \n";
         cout << flush;
 #endif
-                        MyGraphicDriver->EraseStructure
-                                (MyCView, *(Graphic3d_CStructure *)MyCOMPUTEDSequence.Value (Index)->CStructure ());
+                        MyGraphicDriver->EraseStructure (MyCView, *(MyCOMPUTEDSequence.Value (Index)->CStructure()));
                     }
                     // else is impossible
                 }
@@ -2189,14 +2155,8 @@ Standard_Boolean ComputeShading = ((ViewType == Visual3d_TOV_SHADING) &&
                         NewStructId = TheStructure->Identification ();
 
                         // The previous calculation is removed and the new one is dislayed
-                        MyGraphicDriver->EraseStructure (
-                                MyCView,
-                                *(Graphic3d_CStructure *)MyCOMPUTEDSequence.Value (Index)->CStructure ());
-                        MyGraphicDriver->DisplayStructure (
-                                MyCView,
-                                *(Graphic3d_CStructure *)TheStructure->CStructure (),
-                                int (AStructure->DisplayPriority ())
-                        );
+                        MyGraphicDriver->EraseStructure   (MyCView, *(MyCOMPUTEDSequence.Value (Index)->CStructure()));
+                        MyGraphicDriver->DisplayStructure (MyCView, *(TheStructure->CStructure()), AStructure->DisplayPriority());
 
 #ifdef TRACE_LENGTH
         if (MyTOCOMPUTESequence.Length () != MyCOMPUTEDSequence.Length ()) {
@@ -2645,17 +2605,8 @@ void Visual3d_View :: SetComputedMode ( const Standard_Boolean aMode )
 
      StructId = MyCOMPUTEDSequence.Value ( Index ) -> Identification ();
 
-     MyGraphicDriver -> EraseStructure (
-                         MyCView,
-                         *( Graphic3d_CStructure* )
-                          MyCOMPUTEDSequence.Value ( Index ) -> CStructure ()
-                        );
-     MyGraphicDriver -> DisplayStructure (
-                         MyCView,
-                                         *( Graphic3d_CStructure* )
-                          S1Iterator.Key () -> CStructure (),
-                         int (  S1Iterator.Key () -> DisplayPriority ()  )
-                                    );
+     MyGraphicDriver->EraseStructure   (MyCView, *(MyCOMPUTEDSequence.Value (Index)->CStructure()));
+     MyGraphicDriver->DisplayStructure (MyCView, *(S1Iterator.Key()->CStructure()), S1Iterator.Key()->DisplayPriority());
     }  // end if ( Index != 0 ) . . .
 
    }  // end if ( Answer . . . )
@@ -2678,17 +2629,8 @@ void Visual3d_View :: SetComputedMode ( const Standard_Boolean aMode )
 
      StructId = MyCOMPUTEDSequence.Value ( Index ) -> Identification ();
 
-     MyGraphicDriver -> EraseStructure (
-                         MyCView,
-                         *( Graphic3d_CStructure* )
-                          S1Iterator.Key () -> CStructure ()
-                        );
-     MyGraphicDriver -> DisplayStructure (
-                         MyCView,
-                                         *( Graphic3d_CStructure* )
-                          MyCOMPUTEDSequence.Value ( Index ) -> CStructure (),
-                                         int (  S1Iterator.Key () -> DisplayPriority ()  )
-                        );
+     MyGraphicDriver->EraseStructure   (MyCView, *(S1Iterator.Key()->CStructure()));
+     MyGraphicDriver->DisplayStructure (MyCView, *(MyCOMPUTEDSequence.Value (Index)->CStructure()), S1Iterator.Key()->DisplayPriority());
 
      Display (  S1Iterator.Key (), Aspect_TOU_WAIT  );
 
@@ -2800,16 +2742,8 @@ void Visual3d_View :: SetComputedMode ( const Standard_Boolean aMode )
 
      }  // end else
 
-     MyGraphicDriver -> EraseStructure (
-                         MyCView,
-                         *( Graphic3d_CStructure* )
-                          S1Iterator.Key () -> CStructure ()
-                        );
-     MyGraphicDriver -> DisplayStructure (
-                         MyCView,
-                         *( Graphic3d_CStructure* )TheStructure -> CStructure (),
-                         int (  S1Iterator.Key () -> DisplayPriority ()  )
-                        );
+     MyGraphicDriver->EraseStructure   (MyCView, *(S1Iterator.Key()->CStructure()));
+     MyGraphicDriver->DisplayStructure (MyCView, *(TheStructure->CStructure()), S1Iterator.Key()->DisplayPriority());
     }  // end else
 
    }  // end if
@@ -2988,6 +2922,5 @@ void Visual3d_View::RemoveZLayer (const Standard_Integer theLayerId)
 void Visual3d_View::ChangeZLayer (const Handle(Graphic3d_Structure)& theStructure,
                                   const Standard_Integer theLayerId)
 {
-  MyGraphicDriver->ChangeZLayer (
-    (*(Graphic3d_CStructure*)theStructure->CStructure()), MyCView, theLayerId);
+  MyGraphicDriver->ChangeZLayer (*(theStructure->CStructure()), MyCView, theLayerId);
 }

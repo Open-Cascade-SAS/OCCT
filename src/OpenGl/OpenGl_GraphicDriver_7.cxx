@@ -59,52 +59,6 @@ void OpenGl_GraphicDriver::GradientBackground (const Graphic3d_CView& ACView,
   }
 }
 
-void OpenGl_GraphicDriver::Blink (const Graphic3d_CStructure &, const Standard_Boolean)
-{
-  // Do nothing
-}
-
-void OpenGl_GraphicDriver::BoundaryBox (const Graphic3d_CStructure& theCStructure,
-                                        const Standard_Boolean      toCreate)
-{
-  OpenGl_Structure* aStructure = (OpenGl_Structure* )theCStructure.ptrStructure;
-  if (aStructure == NULL)
-    return;
-
-  if (toCreate)
-    aStructure->SetHighlightBox (GetSharedContext(), theCStructure.BoundBox);
-  else
-    aStructure->ClearHighlightBox (GetSharedContext());
-}
-
-void OpenGl_GraphicDriver::HighlightColor (const Graphic3d_CStructure& theCStructure,
-                                           const Standard_ShortReal R,
-                                           const Standard_ShortReal G,
-                                           const Standard_ShortReal B,
-                                           const Standard_Boolean   toCreate)
-{
-  OpenGl_Structure* aStructure = (OpenGl_Structure* )theCStructure.ptrStructure;
-  if (aStructure == NULL)
-    return;
-
-  if (toCreate)
-    aStructure->SetHighlightColor (GetSharedContext(), R, G, B);
-  else
-    aStructure->ClearHighlightColor (GetSharedContext());
-}
-
-void OpenGl_GraphicDriver::NameSetStructure (const Graphic3d_CStructure& ACStructure)
-{
-  OpenGl_Structure *astructure = (OpenGl_Structure *)ACStructure.ptrStructure;
-  if (astructure)
-  {
-    Standard_Integer aStatus = 0;
-    if (ACStructure.highlight) aStatus |= OPENGL_NS_HIGHLIGHT;
-    if (!ACStructure.visible) aStatus |= OPENGL_NS_HIDE;
-    astructure->SetNamedStatus( aStatus );
-  }
-}
-
 void OpenGl_GraphicDriver::ClipLimit (const Graphic3d_CView& ACView, const Standard_Boolean AWait)
 {
   const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
@@ -457,15 +411,6 @@ void OpenGl_GraphicDriver::SetClipPlanes (const Graphic3d_CView& theCView)
   }
 }
 
-void OpenGl_GraphicDriver::SetClipPlanes (const Graphic3d_CStructure& theCStructure)
-{
-  OpenGl_Structure* aStructure = (OpenGl_Structure *)theCStructure.ptrStructure;
-  if (aStructure)
-  {
-    aStructure->SetClipPlanes (theCStructure.ClipPlanes);
-  }
-}
-
 //=======================================================================
 //function : SetCamera
 //purpose  :
@@ -487,13 +432,6 @@ void OpenGl_GraphicDriver::SetVisualisation (const Graphic3d_CView& ACView)
     aCView->View->SetVisualisation(ACView.Context);
     aCView->WS->UseZBuffer() = ( ACView.Context.Visualization == 0? (ACView.Context.ZBufferActivity == 1) : (ACView.Context.ZBufferActivity != 0) );
   }
-}
-
-void OpenGl_GraphicDriver::TransformStructure (const Graphic3d_CStructure& ACStructure)
-{
-  OpenGl_Structure *astructure = (OpenGl_Structure *)ACStructure.ptrStructure;
-  if (astructure)
-    astructure->SetTransformation(&(ACStructure.Transformation[0][0]));
 }
 
 void OpenGl_GraphicDriver::Transparency (const Graphic3d_CView& ACView, const Standard_Boolean AFlag)

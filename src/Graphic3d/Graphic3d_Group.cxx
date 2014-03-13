@@ -77,7 +77,7 @@ MyListOfPArray()
   MyContainsFacet     = Standard_False,
   MyIsEmpty           = Standard_True;
 
-  MyCGroup.Struct     = MyStructure->CStructure();
+  MyCGroup.Struct     = MyStructure->CStructure().operator->();
   MyCGroup.Struct->Id = int (MyStructure->Identification ());
   MyCGroup.ptrGroup	= NULL;
 

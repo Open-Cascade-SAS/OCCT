@@ -248,6 +248,7 @@ is
 	Color ( me )
 		returns Color from Quantity
 		is static;
+  ---C++: return const&
 	---Level: Public
 	---Purpose: Returns the ambient colour of the surface.
 	---Category: Inquire methods
@@ -255,6 +256,7 @@ is
 	AmbientColor ( me )
 		returns Color from Quantity
 		is static;
+  ---C++: return const&
 	---Level: Public
 	---Purpose: Returns the ambient colour of the surface.
 	---Category: Inquire methods
@@ -262,6 +264,7 @@ is
 	DiffuseColor ( me )
 		returns Color from Quantity
 		is static;
+  ---C++: return const&
 	---Level: Public
 	---Purpose: Returns the diffuse colour of the surface.
 	---Category: Inquire methods
@@ -269,6 +272,7 @@ is
 	SpecularColor ( me )
 		returns Color from Quantity
 		is static;
+  ---C++: return const&
 	---Level: Public
 	---Purpose: Returns the specular colour of the surface.
 	---Category: Inquire methods
@@ -276,6 +280,7 @@ is
 	EmissiveColor ( me )
 		returns Color from Quantity
 		is static;
+  ---C++: return const&
 	---Level: Public
 	---Purpose: Returns the emissive colour of the surface.
 	---Category: Inquire methods

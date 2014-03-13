@@ -44,7 +44,4 @@
 
 #include <Graphic3d_Group.pxx>
 
-#define MyStructureManager ((Graphic3d_StructureManager*) MyPtrStructureManager)
-#define MyFirstStructureManager ((Graphic3d_StructureManager*) MyFirstPtrStructureManager)
-
 #endif

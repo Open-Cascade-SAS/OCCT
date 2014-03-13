@@ -223,6 +223,7 @@ is
         BackMaterial ( me )
                 returns MaterialAspect from Graphic3d
                 is static;
+        ---C++: return const&
         ---Level: Public
         ---Purpose: Returns the surface material of internal faces
         ---Category: Inquire methods
@@ -230,6 +231,7 @@ is
         FrontMaterial ( me )
                 returns MaterialAspect from Graphic3d
                 is static;
+        ---C++: return const&
         ---Level: Public
         ---Purpose: Returns the surface material of external faces
         ---Category: Inquire methods

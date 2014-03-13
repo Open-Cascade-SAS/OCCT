@@ -39,8 +39,8 @@ void OpenGl_GraphicDriver::FaceContextGroup (const Graphic3d_CGroup& theCGroup,
 
 void OpenGl_GraphicDriver::Group (Graphic3d_CGroup& theCGroup)
 {
-  OpenGl_Structure* aStructure = (OpenGl_Structure* )theCGroup.Struct->ptrStructure;
-  if (aStructure)
+  OpenGl_Structure* aStructure = (OpenGl_Structure* )theCGroup.Struct;
+  if (aStructure != NULL)
   {
     theCGroup.ptrGroup = aStructure->AddGroup();
   }
@@ -64,7 +64,7 @@ void OpenGl_GraphicDriver::MarkerContextGroup (const Graphic3d_CGroup& theCGroup
 
 void OpenGl_GraphicDriver::RemoveGroup (const Graphic3d_CGroup& theCGroup)
 {
-  OpenGl_Structure* aStructure = (OpenGl_Structure* )theCGroup.Struct->ptrStructure;
+  OpenGl_Structure* aStructure = (OpenGl_Structure* )theCGroup.Struct;
   if (aStructure == NULL)
     return;
 

@@ -14,9 +14,52 @@
 
 #include <Graphic3d_CStructure.hxx>
 
-const Handle(Standard_Type)& TYPE(Graphic3d_CStructure)
+#include <Graphic3d_Structure.pxx>
+#include <Graphic3d_StructureManager.hxx>
+#include <Graphic3d_TransModeFlags.hxx>
+
+IMPLEMENT_STANDARD_HANDLE (Graphic3d_CStructure, Standard_Transient)
+IMPLEMENT_STANDARD_RTTIEXT(Graphic3d_CStructure, Standard_Transient)
+
+//=============================================================================
+//function : Graphic3d_CStructure
+//purpose  :
+//=============================================================================
+Graphic3d_CStructure::Graphic3d_CStructure (const Handle(Graphic3d_StructureManager)& theManager)
+: Id               (theManager->NewIdentification()),
+  Priority         (Structure_MAX_PRIORITY / 2),
+  PreviousPriority (Structure_MAX_PRIORITY / 2),
+  Composition      (Graphic3d_TOC_REPLACE),
+  ContainsFacet    (0),
+  IsInfinite       (0),
+  stick            (0),
+  highlight        (0),
+  visible          (1),
+  pick             (1),
+  HLRValidation    (0),
+  myGraphicDriver  (theManager->GraphicDriver())
 {
-  static Handle(Standard_Type) _atype =
-    new Standard_Type ("Graphic3d_CStructure", sizeof (Graphic3d_CStructure));
-  return _atype;
+  for (Standard_Integer i = 0; i <= 3; ++i)
+  {
+    for (Standard_Integer j = 0; j <= 3; ++j)
+    {
+      Transformation[i][j] = (i == j) ? 1.0f : 0.0f;
+    }
+  }
+
+  ContextLine.IsDef     = 1,
+  ContextFillArea.IsDef = 1,
+  ContextMarker.IsDef   = 1,
+  ContextText.IsDef     = 1;
+
+  ContextLine.IsSet     = 0,
+  ContextFillArea.IsSet = 0,
+  ContextMarker.IsSet   = 0,
+  ContextText.IsSet     = 0;
+
+  TransformPersistence.IsSet   = 0;
+  TransformPersistence.Flag    = Graphic3d_TMF_None;
+  TransformPersistence.Point.x = 0.0;
+  TransformPersistence.Point.y = 0.0;
+  TransformPersistence.Point.z = 0.0;
 }

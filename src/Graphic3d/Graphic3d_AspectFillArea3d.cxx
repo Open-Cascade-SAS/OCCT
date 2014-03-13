@@ -64,16 +64,14 @@ void Graphic3d_AspectFillArea3d::SetFrontMaterial (const Graphic3d_MaterialAspec
 
 }
 
-Graphic3d_MaterialAspect Graphic3d_AspectFillArea3d::BackMaterial () const {
-
-	return (MyBackMaterial);
-
+const Graphic3d_MaterialAspect& Graphic3d_AspectFillArea3d::BackMaterial() const
+{
+  return MyBackMaterial;
 }
 
-Graphic3d_MaterialAspect Graphic3d_AspectFillArea3d::FrontMaterial () const {
-
-	return (MyFrontMaterial);
-
+const Graphic3d_MaterialAspect& Graphic3d_AspectFillArea3d::FrontMaterial() const
+{
+  return MyFrontMaterial;
 }
 
 void Graphic3d_AspectFillArea3d::AllowBackFace () {

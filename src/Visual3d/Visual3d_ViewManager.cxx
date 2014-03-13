@@ -747,8 +747,7 @@ void Visual3d_ViewManager::ChangeZLayer (const Handle(Graphic3d_Structure)& theS
   }
 
   // tell graphic driver to update the structure's display layer
-  MyGraphicDriver->ChangeZLayer (
-    (*(Graphic3d_CStructure*)theStructure->CStructure ()), theLayerId);
+  MyGraphicDriver->ChangeZLayer (*(theStructure->CStructure()), theLayerId);
 }
 
 //=======================================================================
@@ -758,10 +757,7 @@ void Visual3d_ViewManager::ChangeZLayer (const Handle(Graphic3d_Structure)& theS
 
 Standard_Integer Visual3d_ViewManager::GetZLayer (const Handle(Graphic3d_Structure)& theStructure) const
 {
-  Graphic3d_CStructure& aStructure =
-    (*(Graphic3d_CStructure*)theStructure->CStructure ());
-
-  return MyGraphicDriver->GetZLayer (aStructure);
+  return MyGraphicDriver->GetZLayer (*theStructure->CStructure ());
 }
 
 //=======================================================================

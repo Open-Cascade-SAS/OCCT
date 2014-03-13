@@ -16,8 +16,8 @@
 #ifndef OpenGl_Structure_Header
 #define OpenGl_Structure_Header
 
-#include <NCollection_List.hxx>
-#include <InterfaceGraphic_Graphic3d.hxx>
+#include <Graphic3d_CStructure.hxx>
+#include <Graphic3d_SequenceOfHClipPlane.hxx>
 
 #include <OpenGl_AspectLine.hxx>
 #include <OpenGl_AspectFace.hxx>
@@ -28,21 +28,55 @@
 #include <OpenGl_Matrix.hxx>
 #include <OpenGl_NamedStatus.hxx>
 
-#include <Graphic3d_SequenceOfHClipPlane.hxx>
+#include <NCollection_List.hxx>
+#include <InterfaceGraphic_Graphic3d.hxx>
 
 class OpenGl_Structure;
+class OpenGl_GraphicDriver;
 
 typedef NCollection_List<const OpenGl_Structure* > OpenGl_ListOfStructure;
 
-class OpenGl_Structure : public OpenGl_Element
+class OpenGl_Structure : public Graphic3d_CStructure
 {
   friend class OpenGl_Group;
 
 public:
 
-  OpenGl_Structure();
+  //! Create empty structure
+  OpenGl_Structure (const Handle(Graphic3d_StructureManager)& theManager);
 
-  void SetTransformation (const float *AMatrix);
+  //! Setup structure graphic state
+  virtual void UpdateNamedStatus();
+
+  //! Clear graphic data
+  virtual void Clear();
+
+  //! Connect other structure to this one
+  virtual void Connect    (Graphic3d_CStructure& theStructure);
+
+  //! Disconnect other structure to this one
+  virtual void Disconnect (Graphic3d_CStructure& theStructure);
+
+  //! Synchronize structure aspects
+  virtual void UpdateAspects();
+
+  //! Synchronize structure transformation
+  virtual void UpdateTransformation();
+
+  //! Highlight entire structure with color
+  virtual void HighlightWithColor  (const Graphic3d_Vec3&  theColor,
+                                    const Standard_Boolean theToCreate);
+
+  //! Highlight structure using boundary box
+  virtual void HighlightWithBndBox (const Standard_Boolean theToCreate);
+
+public:
+
+  //! Access graphic driver
+  OpenGl_GraphicDriver* GlDriver() const
+  {
+    return (OpenGl_GraphicDriver* )myGraphicDriver.operator->();
+  }
 
   void SetTransformPersistence (const CALL_DEF_TRANSFORM_PERSISTENCE &ATransPers);
 
@@ -57,20 +91,11 @@ public:
   void ClearHighlightBox (const Handle(OpenGl_Context)& theGlCtx);
 
   void SetHighlightColor (const Handle(OpenGl_Context)& theGlCtx,
-                          const Standard_ShortReal R,
-                          const Standard_ShortReal G,
-                          const Standard_ShortReal B);
+                          const Graphic3d_Vec3&         theColor);
 
   void ClearHighlightColor (const Handle(OpenGl_Context)& theGlCtx);
 
-  void SetNamedStatus (const Standard_Integer aStatus);
-
   Standard_Boolean IsVisible() const { return !(myNamedStatus & OPENGL_NS_HIDE); }
-
-  void SetClipPlanes (const Graphic3d_SequenceOfHClipPlane& thePlanes) { myClipPlanes = thePlanes; }
-
-  void Connect (const OpenGl_Structure *astructure);
-  void Disconnect (const OpenGl_Structure *astructure);
 
   OpenGl_Group* AddGroup();
   void RemoveGroup (const Handle(OpenGl_Context)& theGlCtx,
@@ -150,24 +175,21 @@ protected:
 
 protected:
 
-  //Structure_LABBegin
   OpenGl_Matrix*             myTransformation;
   TEL_TRANSFORM_PERSISTENCE* myTransPers;
   OpenGl_AspectLine*         myAspectLine;
   OpenGl_AspectFace*         myAspectFace;
   OpenGl_AspectMarker*       myAspectMarker;
   OpenGl_AspectText*         myAspectText;
-  //Structure_LABHighlight
+
   OpenGl_Group*              myHighlightBox;
   TEL_COLOUR*                myHighlightColor;
-  //Structure_LABVisibility
-  //Structure_LABPick
-  int                        myNamedStatus; //Structure_LABNameSet
+
+  int                        myNamedStatus;
   int                        myZLayer;
 
   OpenGl_ListOfStructure           myConnected;
   OpenGl_ListOfGroup               myGroups;
-  Graphic3d_SequenceOfHClipPlane   myClipPlanes;
 
 #ifdef HAVE_OPENCL
   mutable OpenGl_ListOfStructure   myAncestorStructures;
@@ -177,8 +199,10 @@ protected:
 
 public:
 
-  DEFINE_STANDARD_ALLOC
+  DEFINE_STANDARD_RTTI(OpenGl_Structure) // Type definition
 
 };
 
-#endif //OpenGl_Structure_Header
+DEFINE_STANDARD_HANDLE(OpenGl_Structure, Graphic3d_CStructure)
+
+#endif // OpenGl_Structure_Header

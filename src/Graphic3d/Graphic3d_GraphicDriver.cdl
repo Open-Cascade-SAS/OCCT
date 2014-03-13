@@ -64,9 +64,11 @@ uses
     CPick               from Graphic3d,
     CPlane              from Graphic3d,
     CStructure          from Graphic3d,
+    CStructure_Handle   from Graphic3d,
     CView               from Graphic3d,
     BufferType          from Graphic3d,
     Structure           from Graphic3d,
+    StructureManager    from Graphic3d,
     TextPath            from Graphic3d,
     TypeOfComposition   from Graphic3d,
     TypeOfPrimitive     from Graphic3d,
@@ -133,36 +135,6 @@ is
         is deferred;
     ---Purpose: call_togl_inquireview
 
-    ------------------------------
-    -- Category: Highlight methods
-    ------------------------------
-
-    Blink ( me          : mutable;
-            ACStructure : CStructure from Graphic3d;
-            Create      : Boolean from Standard )
-        is deferred;
-    ---Purpose: call_togl_blink
-
-    BoundaryBox ( me            : mutable;
-                  ACStructure   : CStructure from Graphic3d;
-                  Create        : Boolean from Standard )
-        is deferred;
-    ---Purpose: call_togl_boundarybox
-
-    HighlightColor ( me             : mutable;
-                     ACStructure    : CStructure from Graphic3d;
-                     R              : ShortReal from Standard;
-                     G              : ShortReal from Standard;
-                     B              : ShortReal from Standard;
-                     Create         : Boolean from Standard )
-        is deferred;
-    ---Purpose: call_togl_highlightcolor
-
-    NameSetStructure ( me       : mutable;
-               ACStructure  : CStructure from Graphic3d )
-        is deferred;
-    ---Purpose: call_togl_namesetstructure
-
     -------------------------------------
     -- Category: Group management methods
     -------------------------------------
@@ -210,50 +182,29 @@ is
     -- Category: Structure management methods
     -----------------------------------------
 
-    ClearStructure ( me             : mutable;
-                     ACStructure    : CStructure from Graphic3d )
-        is deferred;
-    ---Purpose: call_togl_clearstructure
-
-    Connect ( me        : mutable;
-              AFather   : CStructure from Graphic3d;
-              ASon      : CStructure from Graphic3d )
-        is deferred;
-    ---Purpose: call_togl_connect
-
-    ContextStructure ( me           : mutable;
-                       ACStructure  : CStructure from Graphic3d )
-        is deferred;
-    ---Purpose: call_togl_contextstructure
-
-    Disconnect ( me         : mutable;
-                 AFather    : CStructure from Graphic3d;
-                 ASon       : CStructure from Graphic3d )
-        is deferred;
-    ---Purpose: call_togl_disconnect
-
-    DisplayStructure ( me           : mutable;
-                       ACView       : CView from Graphic3d;
-                       ACStructure  : CStructure from Graphic3d;
-                       APriority    : Integer from Standard )
+    DisplayStructure ( me            : mutable;
+                       theCView      : CView from Graphic3d;
+                       theCStructure : in out CStructure from Graphic3d;
+                       thePriority   : Integer from Standard )
         is deferred;
     ---Purpose: call_togl_displaystructure
 
-    EraseStructure ( me             : mutable;
-                     ACView         : CView from Graphic3d;
-                     ACStructure    : CStructure from Graphic3d )
+    EraseStructure ( me            : mutable;
+                     theCView      : CView from Graphic3d;
+                     theCStructure : in out CStructure from Graphic3d )
         is deferred;
     ---Purpose: call_togl_erasestructure
 
     RemoveStructure ( me            : mutable;
-                      ACStructure   : CStructure from Graphic3d )
+                      theCStructure : in out CStructure_Handle from Graphic3d )
         is deferred;
     ---Purpose: call_togl_removestructure
 
-    Structure ( me          : mutable;
-                ACStructure : in out CStructure from Graphic3d )
+    Structure (me : mutable;
+               theManager : StructureManager from Graphic3d)
+        returns CStructure_Handle from Graphic3d
         is deferred;
-    ---Purpose: call_togl_structure
+    ---Purpose: Creates new empty graphic structure
 
     ------------------------------------
     -- Category: Structured mode methods
@@ -348,9 +299,6 @@ is
     SetClipPlanes (me : mutable; theCView : CView from Graphic3d) is deferred;
     ---Purpose: Pass clip planes to the associated graphic driver view.
 
-    SetClipPlanes (me : mutable; theCStructure : CStructure from Graphic3d) is deferred;
-    ---Purpose: Pass clip planes to the associated graphic driver structure.
-
     SetCamera (me : mutable; theCView : CView from Graphic3d)
          is deferred;
     ---Purpose: Inform graphic driver if camera assigned to view changes.
@@ -359,11 +307,6 @@ is
                        ACView   : CView from Graphic3d )
         is deferred;
     ---Purpose: call_togl_setvisualisation
-
-    TransformStructure ( me             : mutable;
-                         ACStructure    : CStructure from Graphic3d )
-        is deferred;
-    ---Purpose: call_togl_transformstructure
 
     Transparency ( me       : mutable;
                    ACView   : CView from Graphic3d;

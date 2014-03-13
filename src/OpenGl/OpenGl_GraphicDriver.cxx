@@ -278,12 +278,7 @@ void OpenGl_GraphicDriver::ClearImmediatMode (const Graphic3d_CView& theCView,
 // =======================================================================
 void OpenGl_GraphicDriver::DrawStructure (const Graphic3d_CStructure& theCStructure)
 {
-  OpenGl_Structure* aStructure = (OpenGl_Structure* )theCStructure.ptrStructure;
-  if (aStructure == NULL)
-  {
-    return;
-  }
-
+  OpenGl_Structure* aStructure = (OpenGl_Structure* )&theCStructure;
   if (!myImmediateWS.IsNull())
   {
     myImmediateWS->DrawStructure (aStructure);

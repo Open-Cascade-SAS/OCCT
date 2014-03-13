@@ -17,10 +17,10 @@
   #include <config.h>
 #endif
 
-
 #include <OpenGl_CappingAlgo.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_GlCore11.hxx>
+#include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_ShaderManager.hxx>
 #include <OpenGl_ShaderProgram.hxx>
 #include <OpenGl_Structure.hxx>
@@ -30,6 +30,9 @@
 #include <OpenGl_Workspace.hxx>
 
 #include <Graphic3d_SequenceOfHClipPlane_Handle.hxx>
+
+IMPLEMENT_STANDARD_HANDLE (OpenGl_Structure, Graphic3d_CStructure)
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Structure, Graphic3d_CStructure)
 
 //! Auxiliary class for bounding box presentation
 class OpenGl_BndBoxPrs : public OpenGl_Element
@@ -132,8 +135,9 @@ static void call_util_transpose_mat (float tmat[16], float mat[4][4])
 // function : OpenGl_Structure
 // purpose  :
 // =======================================================================
-OpenGl_Structure::OpenGl_Structure ()
-: myTransformation(NULL),
+OpenGl_Structure::OpenGl_Structure (const Handle(Graphic3d_StructureManager)& theManager)
+: Graphic3d_CStructure (theManager),
+  myTransformation(NULL),
   myTransPers(NULL),
   myAspectLine(NULL),
   myAspectFace(NULL),
@@ -144,6 +148,7 @@ OpenGl_Structure::OpenGl_Structure ()
   myNamedStatus(0),
   myZLayer(0)
 {
+  UpdateNamedStatus();
 #if HAVE_OPENCL
   myIsRaytracable = Standard_False;
   myModificationState = 0;
@@ -162,17 +167,38 @@ OpenGl_Structure::~OpenGl_Structure()
 }
 
 // =======================================================================
-// function : SetTransformation
+// function : UpdateAspects
 // purpose  :
 // =======================================================================
-void OpenGl_Structure::SetTransformation (const float *theMatrix)
+void OpenGl_Structure::UpdateAspects()
 {
-  if (!myTransformation)
+  SetTransformPersistence (TransformPersistence);
+
+  if (ContextLine.IsDef)
+    SetAspectLine (ContextLine);
+
+  if (ContextFillArea.IsDef)
+    SetAspectFace (ContextFillArea);
+
+  if (ContextMarker.IsDef)
+    SetAspectMarker (ContextMarker);
+
+  if (ContextText.IsDef)
+    SetAspectText (ContextText);
+}
+
+// =======================================================================
+// function : UpdateTransformation
+// purpose  :
+// =======================================================================
+void OpenGl_Structure::UpdateTransformation()
+{
+  if (myTransformation == NULL)
   {
     myTransformation = new OpenGl_Matrix();
   }
 
-  matcpy (myTransformation->mat, theMatrix);
+  matcpy (myTransformation->mat, &Graphic3d_CStructure::Transformation[0][0]);
 
 #ifdef HAVE_OPENCL
   if (myIsRaytracable)
@@ -299,13 +325,38 @@ void OpenGl_Structure::ClearHighlightBox (const Handle(OpenGl_Context)& theGlCtx
 }
 
 // =======================================================================
+// function : HighlightWithColor
+// purpose  :
+// =======================================================================
+void OpenGl_Structure::HighlightWithColor (const Graphic3d_Vec3&  theColor,
+                                           const Standard_Boolean theToCreate)
+{
+  const Handle(OpenGl_Context)& aCtx = GlDriver()->GetSharedContext();
+  if (theToCreate)
+    SetHighlightColor   (aCtx, theColor);
+  else
+    ClearHighlightColor (aCtx);
+}
+
+// =======================================================================
+// function : HighlightWithBndBox
+// purpose  :
+// =======================================================================
+void OpenGl_Structure::HighlightWithBndBox (const Standard_Boolean theToCreate)
+{
+  const Handle(OpenGl_Context)& aCtx = GlDriver()->GetSharedContext();
+  if (theToCreate)
+    SetHighlightBox   (aCtx, BoundBox);
+  else
+    ClearHighlightBox (aCtx);
+}
+
+// =======================================================================
 // function : SetHighlightColor
 // purpose  :
 // =======================================================================
 void OpenGl_Structure::SetHighlightColor (const Handle(OpenGl_Context)& theGlCtx,
-                                          const Standard_ShortReal R,
-                                          const Standard_ShortReal G,
-                                          const Standard_ShortReal B)
+                                          const Graphic3d_Vec3&         theColor)
 {
   ClearHighlightBox (theGlCtx);
   if (myHighlightColor == NULL)
@@ -313,9 +364,9 @@ void OpenGl_Structure::SetHighlightColor (const Handle(OpenGl_Context)& theGlCtx
     myHighlightColor = new TEL_COLOUR();
   }
 
-  myHighlightColor->rgb[0] = R;
-  myHighlightColor->rgb[1] = G;
-  myHighlightColor->rgb[2] = B;
+  myHighlightColor->rgb[0] = theColor.r();
+  myHighlightColor->rgb[1] = theColor.g();
+  myHighlightColor->rgb[2] = theColor.b();
   myHighlightColor->rgb[3] = 1.F;
 }
 
@@ -331,12 +382,14 @@ void OpenGl_Structure::ClearHighlightColor (const Handle(OpenGl_Context)& theGlC
 }
 
 // =======================================================================
-// function : SetNamedStatus
+// function : UpdateNamedStatus
 // purpose  :
 // =======================================================================
-void OpenGl_Structure::SetNamedStatus (const Standard_Integer aStatus)
+void OpenGl_Structure::UpdateNamedStatus()
 {
-  myNamedStatus = aStatus;
+  myNamedStatus = 0;
+  if (highlight) myNamedStatus |= OPENGL_NS_HIGHLIGHT;
+  if (!visible)  myNamedStatus |= OPENGL_NS_HIDE;
 
 #ifdef HAVE_OPENCL
   if (myIsRaytracable)
@@ -456,19 +509,20 @@ void OpenGl_Structure::SetRaytracableWithAncestorStructures() const
 // function : Connect
 // purpose  :
 // =======================================================================
-void OpenGl_Structure::Connect (const OpenGl_Structure *theStructure)
+void OpenGl_Structure::Connect (Graphic3d_CStructure& theStructure)
 {
+  OpenGl_Structure* aStruct = (OpenGl_Structure* )&theStructure;
   Disconnect (theStructure);
-  myConnected.Append (theStructure);
+  myConnected.Append (aStruct);
 
 #ifdef HAVE_OPENCL
-  if (theStructure->IsRaytracable())
+  if (aStruct->IsRaytracable())
   {
     UpdateStateWithAncestorStructures();
     SetRaytracableWithAncestorStructures();
   }
 
-  theStructure->RegisterAncestorStructure (this);
+  aStruct->RegisterAncestorStructure (this);
 #endif
 }
 
@@ -476,29 +530,27 @@ void OpenGl_Structure::Connect (const OpenGl_Structure *theStructure)
 // function : Disconnect
 // purpose  :
 // =======================================================================
-void OpenGl_Structure::Disconnect (const OpenGl_Structure *theStructure)
+void OpenGl_Structure::Disconnect (Graphic3d_CStructure& theStructure)
 {
-  OpenGl_ListOfStructure::Iterator its (myConnected);
-  while (its.More())
+  OpenGl_Structure* aStruct = (OpenGl_Structure* )&theStructure;
+  for (OpenGl_ListOfStructure::Iterator anIter (myConnected); anIter.More(); anIter.Next())
   {
     // Check for the given structure
-    if (its.Value() == theStructure)
+    if (anIter.Value() == aStruct)
     {
-      myConnected.Remove (its);
+      myConnected.Remove (anIter);
 
 #ifdef HAVE_OPENCL
-      if (theStructure->IsRaytracable())
+      if (aStruct->IsRaytracable())
       {
         UpdateStateWithAncestorStructures();
         UpdateRaytracableWithAncestorStructures();
       }
 
-      theStructure->UnregisterAncestorStructure (this);
+      aStruct->UnregisterAncestorStructure (this);
 #endif
-
       return;
     }
-    its.Next();
   }
 }
 
@@ -546,6 +598,15 @@ void OpenGl_Structure::RemoveGroup (const Handle(OpenGl_Context)& theGlCtx,
       return;
     }
   }
+}
+
+// =======================================================================
+// function : Clear
+// purpose  :
+// =======================================================================
+void OpenGl_Structure::Clear()
+{
+  Clear (GlDriver()->GetSharedContext());
 }
 
 // =======================================================================

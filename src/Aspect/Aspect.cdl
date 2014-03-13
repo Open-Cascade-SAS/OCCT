@@ -453,14 +453,12 @@ is
         ---Category: Enumerations
 
         enumeration TypeOfHighlightMethod is    TOHM_COLOR,
-                                                TOHM_BLINK,
                                                 TOHM_BOUNDBOX
         end TypeOfHighlightMethod;
         ---Purpose: Definition of a highlight method
         --
         --          TOHM_COLOR          drawn in the highlight color
         --                              (default white)
-        --          TOHM_BLINK          blinking
         --          TOHM_BOUNDBOX       enclosed by the boundary box
         --                              (default white)
         --

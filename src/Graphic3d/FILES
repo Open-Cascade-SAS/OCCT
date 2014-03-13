@@ -2,6 +2,7 @@ Graphic3d_CGroup.cxx
 Graphic3d_CGroup.hxx
 Graphic3d_CStructure.cxx
 Graphic3d_CStructure.hxx
+Graphic3d_CStructure_Handle.hxx
 Graphic3d_CBitFields16.cxx
 Graphic3d_CBitFields16.hxx
 Graphic3d_CBitFields20.cxx

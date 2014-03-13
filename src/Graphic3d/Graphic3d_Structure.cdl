@@ -53,7 +53,8 @@ uses
 	AspectLine3d		from Graphic3d,
 	AspectMarker3d		from Graphic3d,
 	AspectText3d		from Graphic3d,
-	CStructure		from Graphic3d,
+	CStructure          from Graphic3d,
+	CStructure_Handle   from Graphic3d,
 	GraphicDriver		from Graphic3d,
 	Group			from Graphic3d,
 	SequenceOfGroup		from Graphic3d,
@@ -63,6 +64,7 @@ uses
 	MapOfStructure		from Graphic3d,
 	Plotter			from Graphic3d,
 	StructureManager	from Graphic3d,
+	StructureManagerPtr from Graphic3d,
 	TypeOfComposition	from Graphic3d,
 	TypeOfConnection	from Graphic3d,
 	TypeOfPrimitive		from Graphic3d,
@@ -324,15 +326,6 @@ is
 	--	    Standard_True.
 	---Category: Methods to modify the class definition
 
-	SetManager ( me			: mutable;
-		     AManager		: StructureManager from Graphic3d;
-		     WithPropagation	: Boolean from Standard = Standard_False)
-		is static;
-	---Level: Public
-	---Purpose: Moves the graphic object <me> in the manager <AManager>.
-	--	    If <WithPropagation> is Standard_True then all the connected
-	--	    graphic objects to <me> are moved.
-
 	SetVisual ( me		: mutable;
 		    AVisual	: TypeOfStructure from Graphic3d )
 		is virtual;
@@ -463,6 +456,7 @@ is
 	HighlightColor ( me )
 		returns Color from Quantity
 		is static;
+	---C++: return const&
 	---Level: Public
 	---Purpose: Returns the highlight color for the Highlight method
 	--	    with the highlight method TOHM_COLOR or TOHM_BOUNDBOX.
@@ -996,13 +990,11 @@ is
 	---Purpose: Updates the c structure associated to <me>.
 	---Category: Private methods
 
-	CStructure ( me	: mutable )
-		returns CStructure from Graphic3d
-		is static;
-	---Level: Internal
-	---Purpose: Returns the c structure associated to <me>.
-	---Category: Private methods
-	---C++: return *
+    CStructure (me)
+    returns CStructure_Handle from Graphic3d
+    is static;
+    ---Purpose: Returns the c structure associated to <me>.
+	---C++: return const &
 
 fields
 
@@ -1015,33 +1007,30 @@ fields
 --			It is a sequence of groups of primitives.
 --
 
-	-- the associated C structure
-	MyCStructure		:	CStructure from Graphic3d;
+	-- the associated low-level structure
+    myCStructure : CStructure_Handle from Graphic3d;
 
 	-- the structures to which the structure is attached
-	MyAncestors		:	SequenceOfAddress from TColStd;
+	myAncestors		:	SequenceOfAddress from TColStd;
 
 	-- the structures attached to the structure
-	MyDescendants		:	SequenceOfAddress from TColStd;
+	myDescendants		:	SequenceOfAddress from TColStd;
 
 	-- the sequence of groups
-	MyGroups		:	SequenceOfGroup from Graphic3d;
-
-	-- the graphic driver used
-	MyGraphicDriver		:	GraphicDriver from Graphic3d;
+	myGroups		:	SequenceOfGroup from Graphic3d;
 
 	-- the highlight method of the structure
-	MyHighlightColor	:	Color from Quantity;
-	MyHighlightMethod	:	TypeOfHighlightMethod from Aspect;
+	myHighlightColor	:	Color from Quantity;
+	myHighlightMethod	:	TypeOfHighlightMethod from Aspect;
 
 	-- the manager accepting the structure
-	MyPtrStructureManager		:	Address from Standard is protected;
-	MyFirstPtrStructureManager	:	Address from Standard is protected;
-	MyOwner				:	Address from Standard;
+	myStructureManager		:	StructureManagerPtr from Graphic3d is protected;
+	myFirstStructureManager	:	StructureManagerPtr from Graphic3d is protected;
+	myOwner				:	Address from Standard;
 
 	-- the type of visualisation accepted by the structure
-	MyVisual		:	TypeOfStructure from Graphic3d;
-	MyComputeVisual		:	TypeOfStructure from Graphic3d is protected;
+	myVisual		:	TypeOfStructure from Graphic3d;
+	myComputeVisual		:	TypeOfStructure from Graphic3d is protected;
 
 friends
 

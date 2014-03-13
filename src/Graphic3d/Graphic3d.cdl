@@ -21,7 +21,6 @@
 --      1/08/97 ; PCT : Ajout texture mapping
 --      11/97 ; CAL : retrait de la dependance avec math
 --      11/97 ; CAL : retrait des DataStructure
---      11/97 ; CAL : ajout pointer StructPtr
 --              04/98 ; FGU : ajout champs 'TOR_EMISSION'
 --      16-09-98; BGN: (S3819) Ajout TypeOfTriedronEcho,
 --                             TypeOfTriedronPosition.
@@ -367,6 +366,8 @@ is
     ---Purpose: Defines the C structure <astructure>
     ---Category: Imported types
 
+    imported CStructure_Handle;
+
     imported CLight;
     ---Purpose: Defines the C structure <alight>
     ---Category: Imported types
@@ -492,6 +493,8 @@ is
     ---Purpose: Visualiser with which the graphic objects are associated.
     ---Category: Classes
 
+    pointer StructureManagerPtr to StructureManager from Graphic3d;
+
     deferred class DataStructureManager;
     ---Purpose: Visualiser with which the graphic objects are associated.
     ---Category: Classes
@@ -507,13 +510,6 @@ is
     imported Vertex;
     ---Purpose: 3d vertex
     ---Category: Classes
-
-    ---------------------
-    -- Category: Pointers
-    ---------------------
-
-    pointer StructPtr to Structure from Graphic3d;
-    ---Category: Pointers
 
     ---------------------------------
     -- Category: Instantiated classes
