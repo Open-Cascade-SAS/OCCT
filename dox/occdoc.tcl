@@ -83,6 +83,10 @@ proc OverviewDoc_MakeDoxyfile {casDir outDir tagFileDir {doxyFileName} {generato
     # Keep doxygen comments within code blocks
     puts $doxyFile "STRIP_CODE_COMMENTS    = NO"
 
+    # Define alias for inserting images to both HRML and PDF at once
+    puts $doxyFile "ALIASES += figure\{1\}=\"\\image html \\1 \\n \\image latex \\1\""
+    puts $doxyFile "ALIASES += figure\{2\}=\"\\image html \\1 \\2 \\n \\image latex \\1 \\2\""
+
     set PARAM_INPUT "INPUT                  ="
     set PARAM_IMAGEPATH "IMAGE_PATH             = $inputDir/resources/ "
 
@@ -311,6 +315,9 @@ proc OverviewDoc_MakeRefmanTex {fileName latexDir docLabel verboseMode} {
     if {[file exists $DOCNAME] == 1} {
         file delete -force $DOCNAME
     }
+
+    set year [clock format [clock seconds] -format {%Y}]
+
     set texfile [open $DOCNAME w]
 
     puts $texfile "\\batchmode"
@@ -385,8 +392,8 @@ proc OverviewDoc_MakeRefmanTex {fileName latexDir docLabel verboseMode} {
     puts $texfile "\\fancyhead\[RO\]{\\fancyplain{}{\\bfseries\\thepage}}"
     puts $texfile "\\fancyfoot\[LE\]{\\fancyplain{}{}}"
     puts $texfile "\\fancyfoot\[CE\]{\\fancyplain{}{}}"
-    puts $texfile "\\fancyfoot\[RE\]{\\fancyplain{}{\\bfseries\\scriptsize (c) Open CASCADE 2001\-2013}}"
-    puts $texfile "\\fancyfoot\[LO\]{\\fancyplain{}{\\bfseries\\scriptsize (c) Open CASCADE 2001\-2013}}"
+    puts $texfile "\\fancyfoot\[RE\]{\\fancyplain{}{\\bfseries\\scriptsize Copyright (c) Open CASCADE $year}}"
+    puts $texfile "\\fancyfoot\[LO\]{\\fancyplain{}{\\bfseries\\scriptsize Copyright (c) Open CASCADE $year}}"
     puts $texfile "\\fancyfoot\[CO\]{\\fancyplain{}{}}"
     puts $texfile "\\fancyfoot\[RO\]{\\fancyplain{}{}}"
     puts $texfile "\\renewcommand{\\footrulewidth}{0.4pt}"
@@ -484,6 +491,8 @@ proc OverviewDoc_ProcessTex {{texFiles {}} {latexDir} verboseMode} {
         while {1} {
             set line [gets $IN_F]
             if { [string first "\\includegraphics" $line] != -1 } {
+                # replace svg extension by pdf
+                set line [regsub {[.]svg} $line ".pdf"]
                 # Center images in TeX files
                 set line "\\begin{center}\n $line\n\\end{center}"
             } elseif { [string first "\\subsection" $line] != -1 } {
@@ -506,6 +515,25 @@ proc OverviewDoc_ProcessTex {{texFiles {}} {latexDir} verboseMode} {
         }
         file delete -force $TEX
         file rename $TMPFILENAME $TEX
+    }
+}
+
+# Convert SVG files to PDF format to allow including them to PDF
+# (requires InkScape to be in PATH)
+proc OverviewDoc_ProcessSvg {latexDir verboseMode} {
+
+    foreach file [glob -nocomplain $latexDir/*.svg] {
+        if {$verboseMode == "YES"} {
+            puts "INFO: Converting file $file"
+        }
+
+        set pdffile "[file rootname $file].pdf"
+        if { [catch {exec inkscape -z -D --file=$file --export-pdf=$pdffile} res] } {
+            puts "Error: $res"
+            puts "Conversion failed; check that Inkscape is in PATH!"
+            puts "SVG images will be lost in PDF documents"
+            return
+        }
     }
 }
 
@@ -556,16 +584,17 @@ proc OverviewDoc_Main { {docfiles {}} generatorMode docLabel verboseMode searchM
     OverviewDoc_MakeDoxyfile $CASROOT "$OUTDIR/overview" $TAGFILEDIR $DOXYFILE $generatorMode $docfiles $verboseMode $searchMode $hhcPath $mathjax_relative_location
 
     # Run doxygen tool
+    set starttimestamp [clock format [clock seconds] -format {%Y-%m-%d %H:%M}]
     if { $generatorMode == "HTML_ONLY"} {
-      puts "[clock format [clock seconds] -format {%Y-%m-%d %H:%M}] Generating HTML files..."
+      puts "$starttimestamp Generating HTML files..."
     } elseif { $generatorMode == "CHM_ONLY" } {
-      puts "[clock format [clock seconds] -format {%Y-%m-%d %H:%M}] Generating CHM file..."
+      puts "$starttimestamp Generating CHM file..."
     }
     set RESULT [catch {exec doxygen $DOXYFILE > $OUTDIR/doxygen_out.log} DOX_ERROR] 
     if {$RESULT != 0} {
         if {[llength [split $DOX_ERROR "\n"]] > 1} {
             if {$verboseMode == "YES"} {
-                puts "See Doxygen log in $OUTDIR/doxygen_warnings_and_errors.log"
+                puts "Error running Doxygen; see log in\n$OUTDIR/doxygen_warnings_and_errors.log"
             }
             set DOX_ERROR_FILE [open "$OUTDIR/doxygen_warnings_and_errors.log" "w"]
             puts $DOX_ERROR_FILE $DOX_ERROR
@@ -608,6 +637,11 @@ proc OverviewDoc_Main { {docfiles {}} generatorMode docLabel verboseMode searchM
         OverviewDoc_ProcessTex $TEXFILES $LATEXDIR $verboseMode
         
         if {$verboseMode == "YES"} {
+            puts "Converting SVG images to PNG format..."
+        }
+        OverviewDoc_ProcessSvg $LATEXDIR $verboseMode
+        
+        if {$verboseMode == "YES"} {
             puts "Generating PDF files from TeX files..."
         }
         foreach TEX $TEXFILES {
@@ -624,7 +658,7 @@ proc OverviewDoc_Main { {docfiles {}} generatorMode docLabel verboseMode searchM
             if {$RESULT != 0} {
                 if {[llength [split $LaTeX_ERROR "\n"]] > 1} {
                     if {$verboseMode == "YES"} {
-                        puts "See Latex log in $OUTDIR/pdflatex_warnings_and_errors.log"
+                        puts "Errors running Latex; see log in \n$OUTDIR/pdflatex_warnings_and_errors.log"
                     }
                     set LaTeX_ERROR_FILE [open "$OUTDIR/pdflatex_warnings_and_errors.log" "w"]
                     puts $LaTeX_ERROR_FILE $LaTeX_ERROR
@@ -640,7 +674,7 @@ proc OverviewDoc_Main { {docfiles {}} generatorMode docLabel verboseMode searchM
             }
             
             if {![file exists "$LATEXDIR/refman.pdf"]} {
-              puts "Error: file $LATEXDIR/refman.pdf does not exist"
+              puts "Error: Latex failed to create $LATEXDIR/refman.pdf"
               return
             }
             
@@ -651,13 +685,12 @@ proc OverviewDoc_Main { {docfiles {}} generatorMode docLabel verboseMode searchM
     cd $INDIR
     puts "[clock format [clock seconds] -format {%Y-%m-%d %H:%M}] Generation completed"
     if { $generatorMode == "HTML_ONLY" } {
-        puts "View generated HTML documentation by opening: "
-        set RESFILE $OUTDIR/overview/html/index.html
-        puts "$RESFILE"
+        puts "View generated HTML documentation by opening:"
+        puts "$OUTDIR/overview/html/index.html"
     }
     if { $generatorMode == "PDF_ONLY" } {
-        puts "PDF files are generated in: "
-        puts "$OUTDIR/overview/pdf folder"
+        puts "PDF files are generated in folder:"
+        puts "$OUTDIR/overview/pdf"
     }
 }
 

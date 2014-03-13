@@ -44,8 +44,7 @@ The table below contrasts the design of a modeling application using object libr
 
 The relationship between OCAF and the Open CASCADE Technology (**OCCT**) Object Libraries can be seen in the image below. 
 
-@image html /user_guides/ocaf/images/ocaf_image003.png "OCAF Architecture"
-@image latex /user_guides/ocaf/images/ocaf_image003.png "OCAF Architecture"
+@figure{/user_guides/ocaf/images/ocaf_image003.svg, "OCAF Architecture"}
 
 In the image, the OCAF (Open CASCADE Application Framework) is shown with black rectangles and OCCT Object Libraries required by OCAF are shown with white rectangles. 
 
@@ -80,7 +79,7 @@ OCAF documents are in turn managed by an OCAF application, which is in charge of
 
 Apart from their role as a container of application data, documents can refer to each other; Document A, for example, can refer to a specific label in Document B. This functionality is made possible by means of the reference key. 
 
-@subsection occt_ocaf_23 The document and the data framework
+@subsection occt_ocaf_2_3 The document and the data framework
 
 Inside a document, there is a data framework, a model, for example. This is a set of labels organized in a tree structure characterized by the following features: 
   * The first label in a framework is the root of the tree;
