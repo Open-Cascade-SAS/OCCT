@@ -5,119 +5,123 @@
 
 @section  OCCT_DM_SECTION_1 Introduction
 
-This document provides practical guidenes for generation and editing of OCCT user documentation.
+This document provides practical guidelines for generation and editing of OCCT user documentation.
 
 @section  OCCT_DM_SECTION_2 Prerequisites
 
-In order to generate documentation, you need to have the following software installed.
+You need to have the following software installed to generate the documentation.
 
-<b>Tcl/Tk</b>
+**Tcl/Tk**
 Version 8.5 or 8.6: http://www.tcl.tk/software/tcltk/download.html
 
-<b>Doxygen</b> 
+**Doxygen**
 Version 1.8.4 or above: http://www.stack.nl/~dimitri/doxygen/download.html
 
-<b>MiKTeX</b> or equivalent tool (only needed for PDF document creation): http://miktex.org/download
+**MiKTeX** or other package providing **pdflatex** command (only needed for generation of PDF documents): http://miktex.org/download
 
-**Note**: to generate pdf documentation with MiKTeX you should execute gendoc.bat within MiKTeX environment 
-(run gendoc.bat in MiKTeX command promt or update PATH for MiKTeX bin folder). Also in process of pdf generation
-MiKTeX can request you to download missing packages if MiKTeX was installed with option below:
+**Inkscape** (only needed for generation of PDF documents containing SVG images): http://www.inkscape.org/download
 
-@image html /dev_guides/documentation/images/documentation_image002.png
-@image latex /dev_guides/documentation/images/documentation_image002.png
+When generating PDF documentation, **pdflatex** and **inkscape** executables should be accessible by PATH variable.
+You can use *custom.bat* file to add necessary paths to the *PATH* variable. 
 
-If this option is set to "Yes", MiKTeX will download missing packages automatically.
+Note that in the process of PDF generation MiKTeX may need some packages not installed by default.
+We recommend setting option "Install missing packages on-the-fly" to "Ask me first" (default) during MiKTeX installation:
 
-<b>MathJax</b> is used for rendering math formulas in browser (HTML and CHM outputs): http://www.mathjax.org.
+@figure{/dev_guides/documentation/images/documentation_miktex.png}
 
-By default MathJAX scripts and fonts are taken from http://cdn.mathjax.org/mathjax/latest and no instalation of MathJAX is necessary if Internet is accessible.
-If you need to use OCCT documentation while offline, you can install local copy of MatJAX, see http://www.mathjax.org/download/.
-See \ref OCCT_DM_SECTION_A_9 paragraph for more details on inserting math. 
+On the first run of **pdflatex** it will open a dialog window prompting for installation of missing packages.
+Follow the instructions to proceed (define proxy settings if needed, select a mirror site to download from, etc.).
+
+**MathJax** is used for rendering math formulas in browser (HTML and CHM outputs): http://www.mathjax.org.
+
+By default MathJAX scripts and fonts are taken from http://cdn.mathjax.org/mathjax/latest and no installation of MathJAX is necessary if Internet is accessible.
+If you need to use OCCT documentation while off-line, you can install a local copy of MatJAX, see http://www.mathjax.org/download/.
+See \ref OCCT_DM_SECTION_A_9 for more details on inserting mathematical expressions. 
 
 @section OCCT_DM_SECTION_2_1 Documentation Generation
 
-Run gendoc.bat from OCCT directory to generate all articles are defined in FILES.txt:
+Run *gendoc.bat* from OCCT directory to generate all documents defined in *FILES.txt*:
 
-gendoc.bat options:
+*gendoc.bat* can be started with the following options:
 
-  * -html                : To generate HTML files (cannot be used with -pdf);
-  * -pdf                 : To generate PDF files (cannot be used with -html);
-  * -m=\<modules_list\>    : Specifies list of articles to generate. If it is not specified, all files, mentioned in FILES.txt are processed;
-  * -l=\<document_name\>   : Specifies the article caption for a single document;
-  * -mathjax=\<path\>      : Specifies path to non-default MathJAX installation
-  * -h                   : Prints help message;
-  * -v                   : Specifies the Verbose mode (info on all script actions is shown).
+  * <i>-html</i>                : Generates HTML files (cannot be used with -pdf);
+  * <i>-pdf</i>                 : Generates PDF files (cannot be used with -html);
+  * <i>-m=\<modules_list\></i>  : Specifies the list of documents to generate. If it is not specified, all files mentioned in *FILES.txt* are processed;
+  * <i>-l=\<document_name\></i> : Specifies the output document title;
+  * <i>-mathjax=\<path\></i>    : Specifies the path to a non-default location of MathJAX;
+  * <i>-h</i>                   : Prints a help message;
+  * <i>-v</i>                   : Toggles the Verbose mode (info on all script actions is shown).
 
-If you run the command without arguments (like example above) it will generate HTML documentation for all articles defined in FILES.txt.
+If you run the command without arguments (like in the example above) it will generate HTML documentation for all documents defined in *FILES.txt*.
 
-**Note**: the generation process generates PDF files for each article, 
-but in html case it generates common Html page with references to the ones.
+**Note**
 
-For generation of specific article specify path to corresponding MarkDown file (paths relative to *dox* subfolder can be given), for instance:
+* In case of a PDF output the utility generates a separate PDF file for each document;
+* In case of an HTML output the utility generates a common Table of contents containing references to all documents.
 
+To generate the output for a specific document specify the path to the corresponding MarkDown file (paths relative to *dox* sub-folder can be given), for instance:
+
+~~~~
     % gendoc.bat -html -m=dev_guides/documentation/documentation.md
+~~~~
 
-Multiple files can be separated with comma:
-
+Multiple files can be separated with commas:
+~~~~
     % gendoc.bat -html -m=MD_FILE_1,MD_FILE_2
+~~~~
 
-To specify an article name with -l option, use quotes to prevent incorrect interpretation of whitespaces:
+Use quotes to specify an article name with <i>-l</i> option, which helps to prevent incorrect interpretation of white spaces:
 
+~~~~
     % gendoc.bat -pdf -m=MD_FILE_1 -l="Label of MD_FILE_1 document"
+~~~~
 
 @section  OCCT_DM_SECTION_3 Documentation Conventions
 
-This section contains information about conventions in the field of OCCT documentation file format, 
-structure of documentation directories, etc.
+This section contains information about file format conventions, directories structure, etc.
 
 @subsection  OCCT_DM_SECTION_3_1 File Format
 
 The format used for documentation is MarkDown with Doxygen extensions. 
-The MarkDown files have a "*.md" extension and are based on rules desribed in 
-\ref OCCT_DM_SECTION_A section.
+The MarkDown files have a <i>*.md</i> extension and are based on rules described in \ref OCCT_DM_SECTION_A section.
 
 @subsection  OCCT_DM_SECTION_3_2 Directory Structure
 
-@image html /dev_guides/documentation/images/documentation_image001.png
-@image latex /dev_guides/documentation/images/documentation_image001.png
+@figure{/dev_guides/documentation/images/documentation_folders.png}
 
-Every separate article has own folder if images are used in it. These images 
-are stored into "images" subfolder.
+Each document has its own folder if there are any images used in it. These images are stored in *images* subfolder.
 
-If you want to use the same image for several articles, you can place the one into "dox/resources" folder.
+If you want to use the same image for several documents, you can place it in *dox/resources* folder.
 
-**Note**: Every article can use any image that is used by others articles. To avoid incorrect image
-displaying, use relative path to the image (starting from dox folder). For instance
+**Note**: To avoid incorrect image display, use a relative path to the image (starting from *dox* folder). For instance:
+
+
 @verbatim
-@image html /dev_guides/snv/images/snv_image001.svg
+@figure{/dev_guides/documentation/images/documentation_test_image.svg}
 @endverbatim
 
-Result of generation of the documentation is:
 
-%OCCT_DIR% / doc         - a folder for generated articles;
-            * html/             - a directory for generated HTML pages;
-            * pdf/              - a directory for generated PDF files.
+The documentation is generated in subfolder *doc* :
+* *html* - a directory for generated HTML pages;
+* *pdf* - a directory for generated PDF files.
 
-@section  OCCT_DM_SECTION_4 Adding a New Article
+@section  OCCT_DM_SECTION_4 Adding a New Document
 
- - Place a new article into folder that is chosen taking into account the place of the article 
-at the hierarchy of the documentation. For instance the article about "using SVN working with OCCT 
-source code" (svn.md - the file of the article) might be placed into /dox/dev_guides/ . If the article has images then you may create
-the own folder of the article and subfolder in it for images. For instance
-*/dox/dev_guides/svn/ - for svn.md file
-*/dox/dev_guides/svn/images/ - for images
+Place a new document in the folder taking into account its logical position in the documentation hierarchy. For instance, the document *svn.md* about the use of SVN to work with OCCT source code can be placed into <i>/dox/dev_guides/</i>. 
 
- - Update dox/FILES.txt to add relative path to svn.md. For instance
+If there are images in the document, it should be placed in its own folder containing a subfolder for images. For instance:
+* <i> /dox/dev_guides/svn/ </i> - for *svn.md* file;
+* <i> /dox/dev_guides/svn/images/ </i> - for images.
+
+Add a relative path to *svn.md* in file <i>dox/FILES.txt</i>. For instance
+
 @verbatim
-dev_guides/snv/svn.md
+dev_guides/svn/svn.md
 @endverbatim
 
-**Note**: the place of the relative path to an article is connected with the place
-into treeview of html version.
+**Note** that the order of paths to documents in *FILES.txt* is reproduced in the Table of Contents in the HTML output. Please, place them logically.
 
-
-Note, that you should specify a file tag, not the document name. 
-See <a href="#OCCT_DM_SECTION_A_1">Header section</a> for details.
+**Note** that you should specify a file tag, not the document name. See <a href="#OCCT_DM_SECTION_A_1">Header section</a> for details.
 
 @section  OCCT_DOC_SECTION_5 Additional Resources
 
@@ -131,69 +135,60 @@ http://www.stack.nl/~dimitri/doxygen/manual
 
 @section  OCCT_DM_SECTION_A Appendix 1: Document Syntax
 
-Each OCCT document file in *.md format has a simple structure.
-It can contain: 
-
-| Content type      | Obligation            |
-| :---------------- | :-------------------: |
-| Header            | M                     |
-| Footer            | M                     |
-| Plain text        | O                     |
-| List              | O                     |
-| Table             | O                     |
-| Code              | O                     |
-| Formula           | O                     |
-| Image             | O                     |
-| Page numbers      | M (auto generation)   |
-| Table of contents | M (auto generation)   |
-
-The legend:
-
-  * M is for Mandatory
-  * O is for Optional
-
-@subsection  OCCT_DM_SECTION_A_1 Text Caption (a header)
-
-headings of different levels can be specified with the following code:
+A document file in *.md format must start with a proper header defining a caption and a unique tag.
 
 @verbatim
-Header 1  {#header1}
-=======
+Documentation System {#dev_guides__documentation}
+=====================
 @endverbatim
 
-  to get
+The document structure is formed by sections that must be defined consistently.
 
- Header 1
-=========
+The document can contain plain text, lists, tables, code snippets, images, math, etc.
+Any specific text elements can be introduced by Markdown language tags or by usual HTML tags. 
 
-  and with the following code:
+The table of contents, page numbers (in PDF), and figure numbers (in PDF) are generated automatically.  
+
+@subsection  OCCT_DM_SECTION_A_1 Headers and hierarchic document structure
+
+Headers of different levels can be specified with the following tags:
+* <i>\@section</i> - for the first-level headers; 
+* <i>\@subsection</i> - for the second level headers;
+* <i>\@subsubsection</i> - for the third level headers.
+
+For example:
 
 @verbatim
-Header 2 {#header2}
---------
+  @section occt_ocaf_1 Basic Concepts
+  @subsection occt_ocaf_1_1 Applications and Documents
+  @subsubsection occt_ocaf_1_1_1 The document and the data framework
 @endverbatim
 
-to get 
+Please, note that section names can be used for references within the document and in other documents, so it is necessary to use the common prefix indicative of the document name for all section names in the given document. 
+For example,  *occt_ocaf* for sections in Open CASCADE Application Framework manual.
 
-Header 2
----------
+The remaining part of section names in most documents consists only of numbers, for example *1_1*. Actually, the hierarchical structure of the output table of contents is not based on these numbers and is generated automatically. 
 
-Where a word in curly braces is a MarkDown-style reference, which can be used in table of contents.
-If you would like to have the table of contents, it is recommended to use \@section, 
-\@subsection and \@subsubsection pages instead of MarkDown headers as follows:
+The numbers are only indicative of a section location in the body of the document. However, duplicate section names in a document inevitably cause errors during generation. 
 
-@verbatim
-  @section Section_Name Section Header
-  @subsection SubSection_Name SubSection Header
-  @subsubsection SubSubSection_Name SubSubSection Header
-@endverbatim
+If you insert a section in the middle of a big document, do not renumber the document to the end (which is inefficient and error prone), but choose an arbitrary number or letter, not yet used in the document section naming, and base the naming in this section on it.
+
+The section hierarchy is limited to three levels and further levels cannot be presented in the Table of Contents.
+
+However, the fourth and fifth level headers can be tagged with  <i>####</i> and <i>#####</i> correspondingly.
+
+It is also possible to use tags <i>##</i> and <i>###</i> for second and third level headers if you do not wish to show them in the table of contents or make references to them. 
 
 @subsection OCCT_DM_SECTION_A_2 Plain Text
 
-Plain text is a text in a notepad-like format. To insert special symbols, 
-like \< , \> or \\, prepend them with \\ character: \\\<, \\\>, \\\\ 
-To emphasize some words, write one pair of asterisks ( * ) or underscores ( _ ) across the word 
-to make it *italic* and two pairs of these symbols to make a word **Bold**.
+A plain text is organized in paragraphs, separated by empty lines in MarkDown source.
+The length of lines is not restricted; it is recommended to put each sentence on a separate line -- this is optimal for easier comparison of different versions of the same document.
+
+To insert special symbols, like \< , \> or \\, prepend them with \\ character: \\\<, \\\>, \\\\, etc. 
+To emphasize a word or a group of words, wrap the text with one pair of asterisks (*) or underscores (_) to make it *italic* and two pairs of these symbols to make it **Bold**.
+
+**Note** that if your emphasized text starts or ends with a special symbol, the asterisks may not work. Use explicit HTML tags \<i\>\</i\>  and \<b\>\</b\>  instead.
+
 
 @subsection OCCT_DM_SECTION_A_3 Lists
 
@@ -224,7 +219,7 @@ then a space. Numbered lists can also be nested. Thus this code
    1. Sub-item 1
    2. Sub-item 2
 2. List item 2
-3. List item 3
+4. List item 3
 @endverbatim
 
 produces this list:
@@ -235,6 +230,11 @@ produces this list:
 2. List item 2
 3. List item 3
 
+**Note** that numbers of list items in the output are generated so they do not necessarily  follow the numbering of source items.
+
+In some cases automatic generation adversely restarts the numbering, i.e. you get list items 1. 1. 1. instead of 1. 2. 3. in the output. 
+The use of explicit HTML tags \<ol\>\</ol\> and  \<li\>\</li\> can help in this case. 
+
 Each list item can contain several paragraphs of text; these paragraphs must 
 have the same indentation as text after bullet or number in the numbered list 
 item (otherwise numbering will be broken). 
@@ -244,29 +244,7 @@ Code blocks can be inserted as paragraphs with additional indentation
 and their use may cause numeration to be reset.
 
 
-Example of complex nested list:
-
-@verbatim
-1. ListItem_1
-
-   Additional paragraph
-
-       code fragment
-
-   One more paragraph
-
-   1. Sub-item 1
-
-          code fragment for sub-item 1
-
-   2. Sub-item 2
-
-      Paragraph for sub-item 2
-
-   Yet one more paragraph for list item 1
-
-2. ListItem_2
-@endverbatim
+Example of a complex nested list:
 
 1. List item 1
 
@@ -288,8 +266,6 @@ Example of complex nested list:
 
 2. List item 2
 
-Note that numbers of paragraphs are regenerated so they do not necessarily 
-follow numbering of source items.
 
 @subsection  OCCT_DM_SECTION_A_4 Tables
 
@@ -326,19 +302,19 @@ which will looks as follows:
 | 10    | 10     | 10    |
 | 1000  | 1000   | 1000  |
 
-Note that each table raw should be contained in one line of text; complex
-tables can be created using HTML tags.
+Note that each table row should be contained in one line of text; complex tables can be created using HTML tags.
 
 @subsection  OCCT_DM_SECTION_A_5 Code Blocks
 
-It is recommended to indent a code lines with 4 spaces.
+Paragraphs indented with 4 or more spaces are considered as code fragments and rendered using Courier font.
+Example:
+    
+    This line is indented by 4 spaces and rendered as a code block.
+
 A fenced code block does not require indentation, and is defined by a pair of "fence lines". 
 Such line consists of 3 or more tilde (~) characters on a line. 
-The end of the block should have the same number of tildes. Here is an example:
-
-~~~~~~~~~~~~~~~~~~~~~~~
-  a one-line code block
-~~~~~~~~~~~~~~~~~~~~~~~
+The end of the block should have the same number of tildes. 
+Thus it is strongly advised to use only three or four tildes. 
 
 By default the output is the same as for a normal code block.
 To highlight the code, the developer has to indicate the typical file extension, 
@@ -346,68 +322,79 @@ which corresponds to the programming language, after the opening fence.
 For highlighting according to the C++ language, for instance,  write the following code (the curly braces and dot are optional): 
 
 @verbatim
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+~~~{.cpp}
 int func(int a,int b) { return a*b; }
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~
 @endverbatim
 
 which will produce:
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp} 
+~~~{.cpp} 
 int func(int a,int b) { return a*b; }
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~
 
-Verbatim content can be written by using framing \@verbatim \@endverbatim . For instance
+Smaller code blocks can be inserted by wrapping with tags <i>\@code</i> and <i>\@endcode</i>.
 
-    verbatim text
-
+Verbatim content (same as code but without syntax highlighting) can be inserted by wrapping with tags <i>\@verbatim</i> and <i>\@endverbatim</i>.
 
 @subsection  OCCT_DM_SECTION_A_6 References
 
-To insert a reference to a website, it is proposed to write a URL. For example: http://en.wikipedia.org
-To insert a reference to another part of the same document, the developer can write:
+To insert a reference to a website, it is sufficient to write an URL.
+For example: http://en.wikipedia.org
 
-@verbatim
-  @htmlonly 
-    <a href="#OCCT_DOC_SECTION_5">Doxygen Configuration file</a>
-  @endhtmlonly 
-@endverbatim
+To insert a reference to a document or its subsection, use command <i>\@ref</i> followed by the document or section tag name.
+For instance, @code @ref OCCT_DM_SECTION_A @endcode will be rendered as @ref OCCT_DM_SECTION_A.
 
-to get a link to paragraph : @htmlonly <a href="#OCCT_DOC_SECTION_5">Doxygen configuration</a> @endhtmlonly 
+Note that links between documents will not work in PDF output if each document is generated independently.
+Hence it is recommended to add a name of the referenced section after the tag name in the <i>\@ref</i> command (in quotes): this will guarantee that the reference is recognizable for the reader even if the cross-link is not instantiated. 
+For instance: @code @ref occt_modat_1 "Geometry Utilities" @endcode will be rendered as @ref occt_modat_1 "Geometry Utilities".
 
 @subsection  OCCT_DM_SECTION_A_7 Images
 
-To insert image into document the developer can write the following code(in Doxygen-style):
+For inserting images into the document use the command <i>\@figure</i>, as follows:
 
-For HTML document:
 @verbatim
-  @image html /relative/path/to/image/image001.png "Image caption"
+  @figure{/relative/path/to/image/image_file_name.png,"Image caption"}
 @endverbatim
 
-For latex document:
+The first argument is a path to the image file, relative to the *dox* folder.
+The supported formats for images are PNG, JPG, and SVG.
+The file extension must be lowercase and correspond to the file format.
+The image file name should have no dots except for the one before extension (names with more than one dot confuse **pdflatex**).
+
+The second argument is optional, it defines the caption for the image to be inserted.
+The caption argument, if given, should be quoted, even if it is a single word.
+Captions are included below the image; in PDF output the images with caption are numbered automatically.
+
+Example:
+
 @verbatim
-  @image latex /relative/path/to/image/image001.png "Image caption"
+  @figure{/dev_guides/documentation/images/documentation_test_image.svg,"Test SVG image"}
 @endverbatim
 
-*Note*: When markdown document is used to generate html document the latex insertion is ignored (and vice versa) 
-due to this fact you can use image insertions in the pair, like example below:
+is rendered as:
+
+@figure{/dev_guides/documentation/images/documentation_test_image.svg,"Test SVG image"}
+
+We recommend using **Inkscape** for creation and edition of vector graphics.
+The graphics created in MS Word Draw and some other vector editors can be copy-pasted to Inkscape and saved as SVG images.
+
+Note that the image that will be included in documentation is the whole page of the Inkscape document; use option "Resize page to content" in menu **File -> Document properties** of Inkscape to fit page dimensions to the picture (adding margins as necessary).
+
+Note that the *figure* command is an alias to the standard Doxygen command *image* repeated twice: once for HTML and then for Latex output (used for PDF generation). Thus if HTML and PDF outputs should include different images or captions, command "image" can be used:
+
 @verbatim
-  @image html /relative/path/to/image/image001.png "Image caption"
-  @image latex /relative/path/to/image/image001.png "Image caption"
+  @image html /relative/path/to/image/occ_logo.png
+  @image latex /relative/path/to/image/occ_logo.png "OCC logo"
 @endverbatim
 
-The code below tells Doxygen to insert a picture right in the place this code was written:
-@verbatim
-  @image html /resources/occ_logo.png "OCCT logo"
-  @image latex /resources/occ_logo.png "OCCT logo"
-@endverbatim
-
-@image html /resources/occ_logo.png "OCCT logo"
-@image latex /resources/occ_logo.png "OCCT logo"
+@image html /resources/occ_logo.png
+@image latex /resources/occ_logo.png "OCC logo"
  
 @subsection  OCCT_DM_SECTION_A_8 Table Of Contents
 
-To get the table of contents at the beginning of the document, write \@tableofcontents tag. 
-But it is not needed now because TreeView option for HTML is used.
+Use \@tableofcontents tag to get the table of contents at the beginning of the document. 
+  
+Actually, it is not strictly necessary now because TreeView option for HTML is used.
 The TOC in the PDF document will be generated automatically.
 
 @subsection  OCCT_DM_SECTION_A_9 Formulas
@@ -445,8 +432,10 @@ gives the following result:
            \right|
    @f$
    
-2.Formulas can also be put between @verbatim \begin{align} @endverbatim and @verbatim \end{align} @endverbatim tags. An example: 
+2.Formulas can also be put between @verbatim \begin{align} @endverbatim and @verbatim \end{align} @endverbatim tags. 
 
+  For example: 
+  
 @verbatim
   \begin{align}
   \dot{x} & = \sigma(y-x) \\

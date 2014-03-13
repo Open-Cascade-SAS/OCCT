@@ -52,8 +52,7 @@ This modeling requires four steps:
 
 To create the bottle's profile, you first create characteristic points with their coordinates as shown below in the (XOY) plane. These points will be the supports that define the geometry of the profile.
 
-@image html /tutorial/images/tutorial_image003.png
-@image latex /tutorial/images/tutorial_image003.png
+@figure{/tutorial/images/tutorial_image003.svg}
 
 There are two classes to describe a 3D Cartesian point from its X, Y and Z coordinates in Open CASCADE Technology:
 
@@ -67,7 +66,7 @@ To choose the best class for this application, consider the following:
   * *Geom_CartesianPoint* is manipulated by handle and may have multiple references and a long lifetime.
     
 Since all the points you will define are only used to create the profile's curves, an object with a limited lifetime will do. Choose the *gp_Pnt* class.
-To instantiate a *gp_Pnt* object, just specify the X, Y, and Z coordinates of the points in the global cartesian coordinate system:
+To instantiate a *gp_Pnt* object, just specify the X, Y, and Z coordinates of the points in the global Cartesian coordinate system:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
     gp_Pnt aPnt1(-myWidth / 2., 0, 0);

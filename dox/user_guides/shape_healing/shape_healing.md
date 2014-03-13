@@ -14,8 +14,8 @@ The **Shape Healing** toolkit provides a set of tools to work on the geometry an
   *  upgrade shape characteristics for users needs, for example a C0 supporting surface can be upgraded so that it becomes C1 continuous. 
   
 The following diagram shows dependencies of API packages: 
-@image html /user_guides/shape_healing/images/shape_healing_image009.png "Shape Healing packages"
-@image latex /user_guides/shape_healing/images/shape_healing_image009.png "Shape Healing packages"
+
+@figure{/user_guides/shape_healing/images/shape_healing_image009.svg, "Shape Healing packages"}
 
 Each sub-domain has its own scope of functionality: 
 * analysis - exploring shape properties, computing shape features, detecting violation of OCCT requirements (shape itself is not modified);
