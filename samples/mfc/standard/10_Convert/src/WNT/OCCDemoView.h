@@ -27,13 +27,18 @@ protected: // create from serialization only
 // Attributes
 public:
   COCCDemoDoc* GetDocument();
-  void FitAll() {   myView->FitAll();  myView->ZFitAll();  };
-  void GetViewCenter(V3d_Coordinate& Xc, V3d_Coordinate& Yc);
-  void SetViewCenter(const V3d_Coordinate Xc, const V3d_Coordinate Yc);
-  void GetViewEye(V3d_Coordinate& X, V3d_Coordinate& Y, V3d_Coordinate& Z);
-  void SetViewEye(const V3d_Coordinate X,const V3d_Coordinate Y,const V3d_Coordinate Z);
+  void FitAll()
+  {
+    myView->FitAll();
+    myView->ZFitAll();
+  };
+  void GetViewAt (V3d_Coordinate& theX, V3d_Coordinate& theY, V3d_Coordinate& theZ) const;
+  void SetViewAt (const V3d_Coordinate theX, const V3d_Coordinate theY, const V3d_Coordinate theZ);
+  void GetViewEye (V3d_Coordinate& X, V3d_Coordinate& Y, V3d_Coordinate& Z);
+  void SetViewEye (const V3d_Coordinate X,const V3d_Coordinate Y,const V3d_Coordinate Z);
   Quantity_Factor GetViewScale();
   void SetViewScale(const Quantity_Factor Coef);
+  void Translate (const V3d_Coordinate theX, const V3d_Coordinate theY);
 
 
 // Operations

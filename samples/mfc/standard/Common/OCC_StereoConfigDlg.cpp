@@ -105,9 +105,11 @@ void OCC_StereoConfigDlg::OnHScroll(UINT theSBCode, UINT thePos, CScrollBar* the
 void OCC_StereoConfigDlg::UpdateCamera()
 {
   // update camera properties and redraw view
-  Handle(Graphic3d_Camera)& aCamera = myView->Camera();
+  const Handle(Graphic3d_Camera)& aCamera = myView->Camera();
   if (aCamera.IsNull())
+  {
     return;
+  }
 
   // change IOD
   Graphic3d_Camera::IODType aIODType = 

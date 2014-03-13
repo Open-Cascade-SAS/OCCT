@@ -39,17 +39,17 @@ protected: // create from serialization only
 	DECLARE_DYNCREATE(CViewer3dView)
 
 public:
-	CViewer3dDoc* GetDocument();
-	void Redraw() {   myView->Redraw(); };
-	void InitButtons();
-	void Reset();
-	void GetViewCenter(V3d_Coordinate& Xc, V3d_Coordinate& Yc);
-	void CViewer3dView::SetViewCenter(V3d_Coordinate Xc, V3d_Coordinate Yc);
-	void GetViewEye(V3d_Coordinate& X, V3d_Coordinate& Y, V3d_Coordinate& Z);
-	void SetViewEye(const V3d_Coordinate X,const V3d_Coordinate Y,const V3d_Coordinate Z);
-	Quantity_Factor GetViewScale();
-	void SetViewScale(const Quantity_Factor Coef);
-	void FitAll() {   myView->FitAll();  myView->ZFitAll();  };
+  CViewer3dDoc* GetDocument();
+  void Redraw() {   myView->Redraw(); };
+  void InitButtons();
+  void Reset();
+  void GetViewAt (V3d_Coordinate& theX, V3d_Coordinate& theY, V3d_Coordinate& theZ) const;
+  void SetViewAt (const V3d_Coordinate theX, const V3d_Coordinate theY, const V3d_Coordinate theZ);
+  void GetViewEye (V3d_Coordinate& X, V3d_Coordinate& Y, V3d_Coordinate& Z);
+  void SetViewEye (const V3d_Coordinate X,const V3d_Coordinate Y,const V3d_Coordinate Z);
+  Quantity_Factor GetViewScale();
+  void SetViewScale (const Quantity_Factor Coef);
+  void FitAll() {   myView->FitAll();  myView->ZFitAll();  };
 
 
 // Overrides

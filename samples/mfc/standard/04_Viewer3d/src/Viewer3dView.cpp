@@ -1183,14 +1183,14 @@ void CViewer3dView::Reset()
   }
 }
 
-void CViewer3dView::GetViewCenter(V3d_Coordinate& Xc, V3d_Coordinate& Yc)
+void CViewer3dView::GetViewAt (V3d_Coordinate& theX, V3d_Coordinate& theY, V3d_Coordinate& theZ) const
 {
-	myView->Center(Xc,Yc);
+  myView->At (theX, theY, theZ);
 }
 
-void CViewer3dView::SetViewCenter(V3d_Coordinate Xc, V3d_Coordinate Yc)
+void CViewer3dView::SetViewAt (const V3d_Coordinate theX, const V3d_Coordinate theY, const V3d_Coordinate theZ)
 {
-	myView->SetCenter(Xc,Yc);
+  myView->SetAt (theX, theY, theZ);
 }
 
 void CViewer3dView::GetViewEye(V3d_Coordinate& X, V3d_Coordinate& Y, V3d_Coordinate& Z)

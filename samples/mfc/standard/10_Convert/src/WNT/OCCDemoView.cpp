@@ -97,6 +97,8 @@ void COCCDemoView::OnInitialUpdate()
   CView::OnInitialUpdate();
   
   myView = GetDocument()->GetViewer()->CreateView();
+  myView->SetViewMappingDefault();
+  myView->SetViewOrientationDefault();
 
   Handle(WNT_Window) aWNTWindow = new WNT_Window(GetSafeHwnd ());
   myView->SetWindow(aWNTWindow);
@@ -543,14 +545,14 @@ void COCCDemoView::OnUpdateBUTTONHlrOn(CCmdUI* pCmdUI)
 	pCmdUI->Enable   (myVisMode != VIS_HLR);	
 }
 
-void COCCDemoView::GetViewCenter(V3d_Coordinate& Xc, V3d_Coordinate& Yc)
+void COCCDemoView::GetViewAt (V3d_Coordinate& theX, V3d_Coordinate& theY, V3d_Coordinate& theZ) const
 {
-	myView->Center(Xc,Yc);
+  myView->At (theX, theY, theZ);
 }
 
-void COCCDemoView::SetViewCenter(V3d_Coordinate Xc, V3d_Coordinate Yc)
+void COCCDemoView::SetViewAt (const V3d_Coordinate theX, const V3d_Coordinate theY, const V3d_Coordinate theZ)
 {
-	myView->SetCenter(Xc,Yc);
+  myView->SetAt (theX, theY, theZ);
 }
 
 void COCCDemoView::GetViewEye(V3d_Coordinate& X, V3d_Coordinate& Y, V3d_Coordinate& Z)
@@ -571,4 +573,9 @@ Quantity_Factor COCCDemoView::GetViewScale()
 void COCCDemoView::SetViewScale(Quantity_Factor Coef)
 {
 	myView->SetScale(Coef);
+}
+
+void COCCDemoView::Translate (const Standard_Real theX, const Standard_Real theY)
+{
+  myView->Panning (theX, theY);
 }

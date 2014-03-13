@@ -69,6 +69,7 @@ Convert_Presentation::Convert_Presentation()
   myIndex = 0;
   myNbFuncs = sizeof(SampleFuncs)/sizeof(PSampleFuncType);
   myNbSamples = myNbFuncs;
+  FitMode = true;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -83,7 +84,6 @@ void Convert_Presentation::DoSample()
 	if (myIndex >=0 && myIndex < myNbFuncs)
     (this->*SampleFuncs[myIndex])();
 }
-
 
 //================================================================
 // Function : Convert_Presentation::drawSurfaceAndItsBSpline
@@ -332,7 +332,7 @@ void Convert_Presentation::sampleRevolSurface()
 {
   FitMode=false;
   ResetView();
-  SetViewCenter(176.84682,102.12892);
+  TranslateView(-176.84682, -102.12892);
   SetViewScale(0.69326);
 
   getAISContext()->EraseAll();

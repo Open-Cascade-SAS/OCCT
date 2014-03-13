@@ -50,10 +50,10 @@ public:
   void NextSample() {myIndex++;}
   void PrevSample() {myIndex--;}
   virtual void DoSample() = 0;
-  static void GetViewCenter(V3d_Coordinate& Xc, V3d_Coordinate& Yc);
-  static void SetViewCenter(const V3d_Coordinate Xc, const V3d_Coordinate Yc);
-  static void GetViewEye(V3d_Coordinate& X, V3d_Coordinate& Y, V3d_Coordinate& Z);
-  static void SetViewEye(V3d_Coordinate X, V3d_Coordinate Y, V3d_Coordinate Z);
+  static void GetViewAt (V3d_Coordinate& theX, V3d_Coordinate& theY, V3d_Coordinate& theZ);
+  static void SetViewAt (const V3d_Coordinate theX, const V3d_Coordinate theY, const V3d_Coordinate theZ);
+  static void GetViewEye (V3d_Coordinate& X, V3d_Coordinate& Y, V3d_Coordinate& Z);
+  static void SetViewEye (V3d_Coordinate X, V3d_Coordinate Y, V3d_Coordinate Z);
   static Quantity_Factor GetViewScale();
   static void SetViewScale(Quantity_Factor Coef);
   static void ResetView();

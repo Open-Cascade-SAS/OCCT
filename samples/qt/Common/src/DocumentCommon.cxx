@@ -16,13 +16,16 @@
 #include <OpenGl_GraphicDriver.hxx>
 #include <TCollection_AsciiString.hxx>
 
-Handle(V3d_Viewer) DocumentCommon::Viewer( const Standard_CString /*aDisplay*/,
-				                     const Standard_ExtString aName,
-				                     const Standard_CString aDomain,
-				                     const Standard_Real ViewSize,
-				                     const V3d_TypeOfOrientation ViewProj,
-				                     const Standard_Boolean ComputedMode,
-				                     const Standard_Boolean aDefaultComputedMode )
+// =======================================================================
+// function : Viewer
+// purpose  :
+// =======================================================================
+Handle(V3d_Viewer) DocumentCommon::Viewer (const Standard_ExtString theName,
+                                           const Standard_CString theDomain,
+                                           const Standard_Real theViewSize,
+                                           const V3d_TypeOfOrientation theViewProj,
+                                           const Standard_Boolean theComputedMode,
+                                           const Standard_Boolean theDefaultComputedMode )
 {
   static Handle(OpenGl_GraphicDriver) aGraphicDriver;
 
@@ -30,14 +33,23 @@ Handle(V3d_Viewer) DocumentCommon::Viewer( const Standard_CString /*aDisplay*/,
   {
     Handle(Aspect_DisplayConnection) aDisplayConnection;
 #if !defined(_WIN32) && !defined(__WIN32__) && (!defined(__APPLE__) || defined(MACOSX_USE_GLX))
-    aDisplayConnection = new Aspect_DisplayConnection (aDisplay);
+    aDisplayConnection = new Aspect_DisplayConnection (qgetenv ("DISPLAY").constData());
 #endif
     aGraphicDriver = new OpenGl_GraphicDriver (aDisplayConnection);
   }
 
-  return new V3d_Viewer(aGraphicDriver,aName,aDomain,ViewSize,ViewProj,
-           Quantity_NOC_GRAY30,V3d_ZBUFFER,V3d_GOURAUD,V3d_WAIT,
-           ComputedMode,aDefaultComputedMode,V3d_TEX_NONE);
+  return new V3d_Viewer (aGraphicDriver,
+                         theName,
+                         theDomain,
+                         theViewSize,
+                         theViewProj,
+                         Quantity_NOC_GRAY30,
+                         V3d_ZBUFFER,
+                         V3d_GOURAUD,
+                         V3d_WAIT,
+                         theComputedMode,
+                         theDefaultComputedMode,
+                         V3d_TEX_NONE);
 }
 
 DocumentCommon::DocumentCommon( const int theIndex, ApplicationCommonWindow* app )
@@ -47,13 +59,13 @@ myIndex( theIndex ),
 myNbViews( 0 )
 {
   TCollection_ExtendedString a3DName ("Visu3D");
-  myViewer = Viewer (qgetenv ("DISPLAY").constData(),
-    a3DName.ToExtString(), "", 1000.0, V3d_XposYnegZpos, Standard_True, Standard_True);
 
-	myViewer->SetDefaultLights();
-	myViewer->SetLightOn();
+  myViewer = Viewer (a3DName.ToExtString(), "", 1000.0, V3d_XposYnegZpos, Standard_True, Standard_True);
 
-	myContext = new AIS_InteractiveContext (myViewer);
+  myViewer->SetDefaultLights();
+  myViewer->SetLightOn();
+
+  myContext = new AIS_InteractiveContext (myViewer);
 }
 
 DocumentCommon::~DocumentCommon()

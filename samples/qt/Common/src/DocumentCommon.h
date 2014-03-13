@@ -48,13 +48,12 @@ public slots:
 	void                           onTransparency( int );
 
 private:
-  Handle(V3d_Viewer)             Viewer( const Standard_CString aDisplay,
-			                               const Standard_ExtString aName,
-			                               const Standard_CString aDomain,
-			                               const Standard_Real ViewSize,
-			                               const V3d_TypeOfOrientation ViewProj,
-			                               const Standard_Boolean ComputedMode,
-			                               const Standard_Boolean aDefaultComputedMode );
+  Handle(V3d_Viewer)             Viewer (const Standard_ExtString theName,
+                                         const Standard_CString theDomain,
+                                         const Standard_Real theViewSize,
+                                         const V3d_TypeOfOrientation theViewProj,
+                                         const Standard_Boolean theComputedMode,
+                                         const Standard_Boolean theDefaultComputedMode );
 
 protected:
 	ApplicationCommonWindow*       myApp;

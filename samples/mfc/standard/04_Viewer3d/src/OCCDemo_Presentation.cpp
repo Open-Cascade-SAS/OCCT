@@ -257,20 +257,20 @@ Handle_AIS_Shape OCCDemo_Presentation::drawShape
   return aGraphicShape;
 }
 
-void OCCDemo_Presentation::GetViewCenter(V3d_Coordinate& Xc, V3d_Coordinate& Yc)
+void OCCDemo_Presentation::GetViewAt (V3d_Coordinate& theX, V3d_Coordinate& theY, V3d_Coordinate& theZ)
 {
-	CMDIFrameWnd *pFrame =  (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
-	CMDIChildWnd *pChild =  (CMDIChildWnd *) pFrame->GetActiveFrame();
-	CViewer3dView *pView = (CViewer3dView *) pChild->GetActiveView();
-	pView->GetViewCenter(Xc,Yc);
+  CMDIFrameWnd *pFrame =  (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
+  CMDIChildWnd *pChild =  (CMDIChildWnd *) pFrame->GetActiveFrame();
+  CViewer3dView *pView = (CViewer3dView *) pChild->GetActiveView();
+  pView->GetViewAt (theX, theY, theZ);
 }
 
-void OCCDemo_Presentation::SetViewCenter(V3d_Coordinate Xc, V3d_Coordinate Yc)
+void OCCDemo_Presentation::SetViewAt (const V3d_Coordinate theX, const V3d_Coordinate theY, const V3d_Coordinate theZ)
 {
-	CMDIFrameWnd *pFrame =  (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
-	CMDIChildWnd *pChild =  (CMDIChildWnd *) pFrame->GetActiveFrame();
-	CViewer3dView *pView = (CViewer3dView *) pChild->GetActiveView();
-	pView->SetViewCenter(Xc,Yc);
+  CMDIFrameWnd *pFrame =  (CMDIFrameWnd*)AfxGetApp()->m_pMainWnd;
+  CMDIChildWnd *pChild =  (CMDIChildWnd *) pFrame->GetActiveFrame();
+  CViewer3dView *pView = (CViewer3dView *) pChild->GetActiveView();
+  pView->SetViewAt (theX, theY, theZ);
 }
 
 void OCCDemo_Presentation::GetViewEye(V3d_Coordinate& X, V3d_Coordinate& Y, V3d_Coordinate& Z)
