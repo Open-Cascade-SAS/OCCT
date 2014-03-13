@@ -23,7 +23,7 @@ tcopy c4 c5
 ttranslate c5 40 0 0
 
 compound c1 c2 c3 c4 c5 co
-cut r b co
+bcut r b co
 
 vinit
 vsetdispmode 1
@@ -44,4 +44,3 @@ set GREEN_3 0.61176401376724243
 set BLUE_3 0.10196000337600708
 
 set only_screen 1
-
