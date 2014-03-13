@@ -25,7 +25,7 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_Array1OfBoolean.hxx>
 #include <TColStd_Array1OfInteger.hxx>
-#include <Handle_TColStd_HArray1OfBoolean.hxx>
+#include <TColStd_HArray1OfBoolean.hxx>
 
 //=======================================================================
 //function : GeomLib_Interpolate

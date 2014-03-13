@@ -15,9 +15,9 @@
 #define _StdPrs_HLRFace_H__
 
 #include <Prs3d_Root.hxx>
-#include <Handle_Prs3d_Presentation.hxx>
-#include <Handle_Prs3d_Drawer.hxx>
-#include <Handle_Prs3d_Projector.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <Prs3d_Drawer.hxx>
+#include <Prs3d_Projector.hxx>
 
 class StdPrs_HLRShape: public Prs3d_Root
 {

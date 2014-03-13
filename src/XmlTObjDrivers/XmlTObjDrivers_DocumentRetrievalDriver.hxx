@@ -20,7 +20,7 @@
 
 #include <TObj_Common.hxx>
 #include <XmlLDrivers_DocumentRetrievalDriver.hxx>
-#include <Handle_XmlMDF_ADriverTable.hxx>
+#include <XmlMDF_ADriverTable.hxx>
 
 class Handle(CDM_MessageDriver);
 

@@ -17,7 +17,7 @@
 #define _Graphic3d_TextureBitMap_Handle_H__
 
 #include <Standard_DefineHandle.hxx>
-#include <Handle_Standard_Transient.hxx>
+#include <Standard_Transient.hxx>
 
 class Graphic3d_TextureBitMap;
 DEFINE_STANDARD_HANDLE(Graphic3d_MarkerImage, Standard_Transient)

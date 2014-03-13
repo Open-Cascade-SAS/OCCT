@@ -16,7 +16,7 @@
 
 #include <InterfaceGraphic_Graphic3d.hxx>
 #include <InterfaceGraphic_Visual3d.hxx>
-#include <Handle_Graphic3d_TextureEnv.hxx>
+#include <Graphic3d_TextureEnv.hxx>
 #include <Graphic3d_Camera.hxx>
 
 #include <Standard_Type.hxx>

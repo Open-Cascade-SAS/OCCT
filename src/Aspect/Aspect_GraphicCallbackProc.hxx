@@ -17,7 +17,7 @@
 #include <Aspect_Display.hxx>
 #include <Aspect_Drawable.hxx>
 #include <Aspect_RenderingContext.hxx>
-#include <Handle_Standard_Transient.hxx>
+#include <Standard_Transient.hxx>
 
 // The flags below provide additional information to define the moment when
 // callback was invoked in redraw procedure. These flags are bitwise OR'ed

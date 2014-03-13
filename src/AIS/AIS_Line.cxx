@@ -31,10 +31,11 @@
 #include <GeomAdaptor_Curve.hxx>
 #include <AIS_Drawer.hxx>
 #include <GC_MakeSegment.hxx>
-#include <Handle_Geom_Line.hxx>
+#include <Geom_Line.hxx>
 #include <Quantity_Color.hxx>
 #include <AIS_GraphicTool.hxx>
 #include <UnitsAPI.hxx>
+
 //==================================================================
 // function: FindLimits
 // purpose:

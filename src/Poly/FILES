@@ -1,4 +1,3 @@
-Handle_Poly_CoherentTriangulation.hxx
 Poly_CoherentTriangulation.hxx
 Poly_CoherentTriangle.hxx
 Poly_CoherentTriPtr.hxx

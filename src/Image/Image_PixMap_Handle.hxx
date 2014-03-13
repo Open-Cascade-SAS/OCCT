@@ -15,7 +15,7 @@
 #define _Image_PixMap_Handle_H__
 
 #include <Standard_DefineHandle.hxx>
-#include <Handle_Standard_Transient.hxx>
+#include <Standard_Transient.hxx>
 
 class Image_PixMap;
 DEFINE_STANDARD_HANDLE(Image_PixMap, Standard_Transient)

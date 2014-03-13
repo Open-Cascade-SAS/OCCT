@@ -48,8 +48,6 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_HArray1OfBoolean.hxx>
-#include <Handle_TColStd_HArray1OfReal.hxx>
-#include <Handle_TColStd_HArray1OfBoolean.hxx>
 
 #include <AppParCurves_MultiBSpCurve.hxx>
 #include <AppParCurves_MultiCurve.hxx>

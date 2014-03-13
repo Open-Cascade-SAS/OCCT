@@ -17,8 +17,8 @@
 #include <HLRBRep_BCurveTool.ixx>
 #include <GeomAbs_CurveType.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <Handle_Geom_BezierCurve.hxx>
-#include <Handle_Geom_BSplineCurve.hxx>
+#include <Geom_BezierCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 

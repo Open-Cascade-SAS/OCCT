@@ -28,7 +28,6 @@
 #include <Standard.hxx>
 #endif
 
-class Handle_Standard_Persistent;
 class Standard_Type;
 class Handle_Standard_Type;
 class Standard_Type;

@@ -174,7 +174,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
 #include <GeomAdaptor_HCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <Handle_GeomAdaptor_HSurface.hxx>
+#include <GeomAdaptor_HSurface.hxx>
 #include <Geom_Plane.hxx>
 #include <ProjLib_ProjectOnPlane.hxx>
 #include <GeomProjLib.hxx>
@@ -1511,7 +1511,7 @@ void IntPatch_Intersection::Perform(const Handle(Adaptor3d_HSurface)&  S1,
 //======================================================================
 #include <IntPatch_IType.hxx>
 #include <IntPatch_LineConstructor.hxx>
-#include <Handle_Adaptor2d_HCurve2d.hxx>
+#include <Adaptor2d_HCurve2d.hxx>
 #define MAXR 200
 
 

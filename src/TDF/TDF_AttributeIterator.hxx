@@ -31,7 +31,7 @@
 #define TDF_AttributeIterator_HeaderFile
 
 #ifndef _Handle_TDF_Attribute_HeaderFile
-#include <Handle_TDF_Attribute.hxx>
+#include <TDF_Attribute.hxx>
 #endif
 #ifndef _Standard_Boolean_HeaderFile
 #include <Standard_Boolean.hxx>

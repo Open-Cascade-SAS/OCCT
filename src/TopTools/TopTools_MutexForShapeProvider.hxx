@@ -16,7 +16,7 @@
 #ifndef _TopTools_MutexForShapeProvider_HeaderFile
 #define _TopTools_MutexForShapeProvider_HeaderFile
 
-#include <Handle_TopoDS_TShape.hxx>
+#include <TopoDS_TShape.hxx>
 #include <NCollection_DataMap.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 

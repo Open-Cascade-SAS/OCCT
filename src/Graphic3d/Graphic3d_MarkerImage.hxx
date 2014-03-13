@@ -18,7 +18,7 @@
 
 #include <Graphic3d_MarkerImage_Handle.hxx>
 
-#include <Handle_TColStd_HArray1OfByte.hxx>
+#include <TColStd_HArray1OfByte.hxx>
 #include <Image_PixMap_Handle.hxx>
 #include <Quantity_Parameter.hxx>
 #include <TCollection_AsciiString.hxx>

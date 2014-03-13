@@ -28,7 +28,7 @@
 #include <Extrema_ExtPC.hxx>
 #endif
 #ifndef _Handle_BRepAdaptor_HCurve_HeaderFile
-#include <Handle_BRepAdaptor_HCurve.hxx>
+#include <BRepAdaptor_HCurve.hxx>
 #endif
 #ifndef _Standard_Boolean_HeaderFile
 #include <Standard_Boolean.hxx>

@@ -16,7 +16,7 @@
 #ifndef Poly_CoherentTriangulation_HeaderFile
 #define Poly_CoherentTriangulation_HeaderFile
 
-#include <Handle_Poly_Triangulation.hxx>
+#include <Poly_Triangulation.hxx>
 #include <Poly_CoherentNode.hxx>
 #include <Poly_CoherentTriangle.hxx>
 #include <Poly_CoherentLink.hxx>
@@ -32,6 +32,11 @@ typedef NCollection_Vector<Poly_CoherentNode>::Iterator
                                 Poly_BaseIteratorOfCoherentNode;
 typedef NCollection_Vector<Poly_CoherentLink>::Iterator
                                 Poly_BaseIteratorOfCoherentLink;
+
+//! Definition of HANDLE object using Standard_DefineHandle.hxx
+#include <Standard_DefineHandle.hxx>
+class Poly_CoherentTriangulation;
+DEFINE_STANDARD_HANDLE (Poly_CoherentTriangulation, Standard_Transient)
 
 /**
  * Triangulation structure that allows to:
@@ -409,6 +414,6 @@ DEFINE_STANDARD_RTTI (Poly_CoherentTriangulation)
   friend class IteratorOfLink;
 };
 
-#include <Handle_Poly_CoherentTriangulation.hxx>
+#include <Poly_CoherentTriangulation.hxx>
 
 #endif

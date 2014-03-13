@@ -37,7 +37,7 @@
 #include <Extrema_SequenceOfPOnSurf.hxx>
 #endif
 #ifndef _Handle_BRepAdaptor_HSurface_HeaderFile
-#include <Handle_BRepAdaptor_HSurface.hxx>
+#include <BRepAdaptor_HSurface.hxx>
 #endif
 #ifndef _Standard_Boolean_HeaderFile
 #include <Standard_Boolean.hxx>

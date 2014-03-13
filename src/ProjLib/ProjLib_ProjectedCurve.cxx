@@ -25,8 +25,6 @@
 #include <ProjLib_ComputeApproxOnPolarSurface.hxx>
 #include <ProjLib_ComputeApprox.hxx>
 #include <ProjLib_Projector.hxx>
-#include <Handle_Adaptor3d_HCurve.hxx>
-#include <Handle_Adaptor3d_HSurface.hxx>
 #include <Adaptor3d_HCurve.hxx>
 #include <Adaptor3d_HSurface.hxx>
 #include <Approx_CurveOnSurface.hxx>
@@ -36,12 +34,8 @@
 #include <ProjLib_Sphere.hxx>
 #include <ProjLib_Torus.hxx>
 #include <Precision.hxx>
-#include <Handle_Geom_BSplineCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
-#include <Handle_Geom2d_BSplineCurve.hxx>
 #include <Geom2d_BezierCurve.hxx>
-#include <Handle_Geom2d_BezierCurve.hxx>
-#include <Handle_Adaptor2d_HCurve2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <StdFail_NotDone.hxx>
 #include <gp_XY.hxx>

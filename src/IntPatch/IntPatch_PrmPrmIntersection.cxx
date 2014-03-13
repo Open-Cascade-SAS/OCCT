@@ -26,7 +26,6 @@
 
 #include <IntPatch_Line.hxx>
 
-#include <Handle_IntSurf_LineOn2S.hxx>
 #include <IntSurf_PntOn2S.hxx>
 #include <IntSurf_LineOn2S.hxx>
 #include <TColStd_Array1OfReal.hxx>

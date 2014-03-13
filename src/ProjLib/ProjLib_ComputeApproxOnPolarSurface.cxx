@@ -52,8 +52,6 @@
 
 #include <GeomAbs_SurfaceType.hxx>
 #include <GeomAbs_CurveType.hxx>
-#include <Handle_Adaptor3d_HCurve.hxx>
-#include <Handle_Adaptor3d_HSurface.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_HSurface.hxx>

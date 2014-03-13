@@ -25,9 +25,7 @@
 #include <BSplCLib.hxx>
 #include <PLib.hxx>
 #include <Adaptor3d_HCurve.hxx>
-#include <Handle_Adaptor3d_HCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include <Handle_Geom_BSplineCurve.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColStd_Array1OfInteger.hxx>

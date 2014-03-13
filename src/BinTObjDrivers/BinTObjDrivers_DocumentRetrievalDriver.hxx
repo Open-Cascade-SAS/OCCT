@@ -20,7 +20,7 @@
 
 #include <TObj_Common.hxx>
 #include <BinLDrivers_DocumentRetrievalDriver.hxx>
-#include <Handle_BinMDF_ADriverTable.hxx>
+#include <BinMDF_ADriverTable.hxx>
 
 class Handle(CDM_MessageDriver);
 

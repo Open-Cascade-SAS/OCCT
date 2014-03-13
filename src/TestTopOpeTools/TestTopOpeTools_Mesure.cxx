@@ -21,7 +21,6 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColgp_Array1OfPnt.hxx>
-#include <Handle_Geom_BSplineCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <gp_Pnt.hxx>
 

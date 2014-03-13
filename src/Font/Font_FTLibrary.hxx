@@ -18,7 +18,6 @@
 
 #include <Standard_DefineHandle.hxx>
 #include <Standard_Transient.hxx>
-#include <Handle_Standard_Transient.hxx>
 
 // inclusion template for FreeType
 #include <ft2build.h>

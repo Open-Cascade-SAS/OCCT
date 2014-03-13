@@ -22,11 +22,6 @@
 #include <GeomAbs_SurfaceType.hxx>
 #include <Standard_OutOfRange.hxx>
 
-#include <Handle_Geom_BezierSurface.hxx>
-#include <Handle_Geom_BSplineSurface.hxx>
-#include <Handle_Geom2d_BezierCurve.hxx>
-#include <Handle_Geom2d_BSplineCurve.hxx>
-
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom2d_BezierCurve.hxx>

@@ -26,7 +26,7 @@
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_HArray1OfReal.hxx>
 #include <TColStd_Array1OfBoolean.hxx>
-#include <Handle_TColStd_HArray1OfBoolean.hxx>
+
 //=======================================================================
 //function : CheckPoints
 //purpose  : 

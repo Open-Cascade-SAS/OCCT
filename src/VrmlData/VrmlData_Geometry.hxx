@@ -17,7 +17,7 @@
 #define VrmlData_Geometry_HeaderFile
 
 #include <VrmlData_Node.hxx>
-#include <Handle_TopoDS_TShape.hxx>
+#include <TopoDS_TShape.hxx>
 
 /**
  *  Implementation of the Geometry node.

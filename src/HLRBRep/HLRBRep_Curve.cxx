@@ -26,8 +26,6 @@
 #include <HLRBRep_CLProps.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BezierCurve.hxx>
-#include <Handle_Geom_BSplineCurve.hxx>
-#include <Handle_Geom_BezierCurve.hxx>
 
 //OCC155 // jfa 05.03.2002 // bad vectors projection
 

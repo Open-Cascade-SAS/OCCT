@@ -17,7 +17,6 @@
 #define VrmlData_DataMapOfShapeAppearance_HeaderFile
 
 #include <NCollection_DataMap.hxx>
-#include <Handle_TopoDS_TShape.hxx>
 #include <VrmlData_Appearance.hxx>
 #include <TopoDS_TShape.hxx>
 

@@ -32,9 +32,7 @@
 #include <Precision.hxx>
 #include <Approx_FitAndDivide2d.hxx>
 #include <AppParCurves_MultiCurve.hxx>
-#include <Handle_Adaptor3d_HCurve.hxx>
 #include <Adaptor3d_HCurve.hxx>
-#include <Handle_Adaptor3d_HSurface.hxx>
 #include <Adaptor3d_HSurface.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_Array1OfPnt.hxx>

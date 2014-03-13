@@ -14,7 +14,7 @@
 #ifndef _Graphic3d_CTexture_HeaderFile
 #define _Graphic3d_CTexture_HeaderFile
 
-#include <Handle_Graphic3d_TextureMap.hxx>
+#include <Graphic3d_TextureMap.hxx>
 #include <Standard_Type.hxx>
 
 class Graphic3d_CTexture

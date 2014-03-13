@@ -18,7 +18,7 @@
 #define _NCollection_MapHasher
 #include <NCollection_IndexedMap.hxx>   
 #include <TColStd_MapTransientHasher.hxx>
-#include <Handle_BOPDS_PaveBlock.hxx>   
+#include <BOPDS_PaveBlock.hxx>   
 
 typedef NCollection_IndexedMap<Handle(BOPDS_PaveBlock), TColStd_MapTransientHasher> BOPDS_IndexedMapOfPaveBlock; 
 

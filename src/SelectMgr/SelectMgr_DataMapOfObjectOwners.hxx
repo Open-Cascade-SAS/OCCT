@@ -17,7 +17,7 @@
 #define _SelectMgr_DataMapOfObjectOwners_HeaderFile
 
 #include <NCollection_DefineDataMap.hxx>
-#include <Handle_SelectMgr_SelectableObject.hxx>
+#include <SelectMgr_SelectableObject.hxx>
 #include <SelectMgr_SequenceOfOwner.hxx>
 
 inline Standard_Boolean IsEqual (const Handle_SelectMgr_SelectableObject& theH1,

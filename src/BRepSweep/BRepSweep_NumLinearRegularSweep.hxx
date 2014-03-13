@@ -36,7 +36,7 @@
 #include <TColStd_Array2OfBoolean.hxx>
 #endif
 #ifndef _Handle_BRepSweep_SequenceNodeOfSequenceOfShapesOfNumLinearRegularSweep_HeaderFile
-#include <Handle_BRepSweep_SequenceNodeOfSequenceOfShapesOfNumLinearRegularSweep.hxx>
+#include <BRepSweep_SequenceNodeOfSequenceOfShapesOfNumLinearRegularSweep.hxx>
 #endif
 #ifndef _TopAbs_Orientation_HeaderFile
 #include <TopAbs_Orientation.hxx>

@@ -18,8 +18,8 @@
 
 #include <GeomAbs_CurveType.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <Handle_Geom2d_BezierCurve.hxx>
-#include <Handle_Geom2d_BSplineCurve.hxx>
+#include <Geom2d_BezierCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 
 #include <TColStd_Array1OfReal.hxx>
 

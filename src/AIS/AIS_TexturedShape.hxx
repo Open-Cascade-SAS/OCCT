@@ -22,10 +22,10 @@
 #include <Image_PixMap.hxx>
 #include <Standard_DefineHandle.hxx>
 #include <TCollection_AsciiString.hxx>
-#include <Handle_Graphic3d_AspectFillArea3d.hxx>
-#include <Handle_Graphic3d_Texture2Dmanual.hxx>
-#include <Handle_Prs3d_Presentation.hxx>
-#include <Handle_PrsMgr_PresentationManager3d.hxx>
+#include <Graphic3d_AspectFillArea3d.hxx>
+#include <Graphic3d_Texture2Dmanual.hxx>
+#include <Prs3d_Presentation.hxx>
+#include <PrsMgr_PresentationManager3d.hxx>
 
 class Graphic3d_AspectFillArea3d;
 class Graphic3d_Texture2Dmanual;

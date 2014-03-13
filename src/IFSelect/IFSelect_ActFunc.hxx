@@ -17,7 +17,7 @@
 #define _IFSelect_ActFunc_HeaderFile
 
 #include <Standard_Type.hxx>
-#include <Handle_IFSelect_SessionPilot.hxx>
+#include <IFSelect_SessionPilot.hxx>
 #include <IFSelect_ReturnStatus.hxx>
 
 typedef IFSelect_ReturnStatus (*IFSelect_ActFunc) (const Handle(IFSelect_SessionPilot)&);
