@@ -639,6 +639,15 @@ TopoDS_Shape BRepFill_Pipe::MakeShape(const TopoDS_Shape& S,
       MkSw.Build( myReversedEdges, myTapes,
                   BRepFill_Modified, myContinuity, GeomFill_Location, myDegmax, mySegmax );
       result = MkSw.Shape();
+
+      Handle(TopTools_HArray2OfShape) aSections = MkSw.Sections();
+
+      if (aSections.IsNull() == Standard_False) {
+        const Standard_Integer aVLast = aSections->UpperCol();
+
+        myFirst = aSections->Value(1, 1);
+        myLast  = aSections->Value(1, aVLast);
+      }
     }
 
     if (TheS.ShapeType() == TopAbs_WIRE ) {
