@@ -48,6 +48,7 @@
 #include <AIS_ListOfInteractive.hxx>
 #include <AIS_ListIteratorOfListOfInteractive.hxx>
 #include <Aspect_InteriorStyle.hxx>
+#include <Aspect_Window.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
 #include <Graphic3d_AspectLine3d.hxx>
 #include <Graphic3d_TextureRoot.hxx>
@@ -414,24 +415,23 @@ Handle(ViewerTest_EventManager) ViewerTest::CurrentEventManager()
   return EM;
 }
 
-
 //=======================================================================
-//function : Get Context and active viou..
+//function : Get Context and active view
 //purpose  :
 //=======================================================================
-void GetCtxAndView(Handle(AIS_InteractiveContext)& Ctx,
-		   Handle(V3d_View)& Viou)
+static Standard_Boolean getCtxAndView (Handle(AIS_InteractiveContext)& theCtx,
+                                       Handle(V3d_View)&               theView)
 {
-  Ctx = ViewerTest::GetAISContext();
-  if (!Ctx.IsNull())
+  theCtx  = ViewerTest::GetAISContext();
+  theView = ViewerTest::CurrentView();
+  if (theCtx.IsNull()
+   || theView.IsNull())
   {
-    const Handle(V3d_Viewer)& Vwr = Ctx->CurrentViewer();
-    Vwr->InitActiveViews();
-    if(Vwr->MoreActiveViews())
-      Viou = Vwr->ActiveView();
+    std::cout << "Error: cannot find an active view!\n";
+    return Standard_False;
   }
+  return Standard_True;
 }
-
 
 //==============================================================================
 //function : GetShapeFromName
@@ -688,42 +688,88 @@ static int visos (Draw_Interpretor& di, Standard_Integer argc, const char** argv
 
 //==============================================================================
 //function : VDispAreas,VDispSensitive,...
-//purpose  : Redraw the view
-//Draw arg : No args
+//purpose  :
 //==============================================================================
-static int VDispAreas (Draw_Interpretor& ,Standard_Integer , const char** )
+static Standard_Integer VDispAreas (Draw_Interpretor& ,
+                                    Standard_Integer  theArgNb,
+                                    Standard_CString* )
 {
+  if (theArgNb > 1)
+  {
+    std::cout << "Error: wrong syntax!\n";
+    return 1;
+  }
 
-  Handle(AIS_InteractiveContext) Ctx;
-  Handle(V3d_View) Viou;
-  GetCtxAndView(Ctx,Viou);
-  Ctx->DisplayActiveAreas(Viou);
+  Handle(AIS_InteractiveContext) aCtx;
+  Handle(V3d_View)               aView;
+  if (!getCtxAndView (aCtx, aView))
+  {
+    return 1;
+  }
+
+  aCtx->DisplayActiveAreas (aView);
   return 0;
 }
-static  int VClearAreas (Draw_Interpretor& ,Standard_Integer , const char** )
+static Standard_Integer VClearAreas (Draw_Interpretor& ,
+                                     Standard_Integer  theArgNb,
+                                     Standard_CString* )
 {
-  Handle(AIS_InteractiveContext) Ctx;
-  Handle(V3d_View) Viou;
-  GetCtxAndView(Ctx,Viou);
-  Ctx->ClearActiveAreas(Viou);
+  if (theArgNb > 1)
+  {
+    std::cout << "Error: wrong syntax!\n";
+    return 1;
+  }
+
+  Handle(AIS_InteractiveContext) aCtx;
+  Handle(V3d_View)               aView;
+  if (!getCtxAndView (aCtx, aView))
+  {
+    return 1;
+  }
+
+  aCtx->ClearActiveAreas (aView);
   return 0;
 
 }
-static  int VDispSensi (Draw_Interpretor& ,Standard_Integer , const char** )
+static Standard_Integer VDispSensi (Draw_Interpretor& ,
+                                    Standard_Integer  theArgNb,
+                                    Standard_CString* )
 {
-  Handle(AIS_InteractiveContext) Ctx;
-  Handle(V3d_View) Viou;
-  GetCtxAndView(Ctx,Viou);
-  Ctx->DisplayActiveSensitive(Viou);
+  if (theArgNb > 1)
+  {
+    std::cout << "Error: wrong syntax!\n";
+    return 1;
+  }
+
+  Handle(AIS_InteractiveContext) aCtx;
+  Handle(V3d_View)               aView;
+  if (!getCtxAndView (aCtx, aView))
+  {
+    return 1;
+  }
+
+  aCtx->DisplayActiveSensitive (aView);
   return 0;
 
 }
-static  int VClearSensi (Draw_Interpretor& ,Standard_Integer , const char** )
+
+static Standard_Integer VClearSensi (Draw_Interpretor& ,
+                                     Standard_Integer  theArgNb,
+                                     Standard_CString* )
 {
-  Handle(AIS_InteractiveContext) Ctx;
-  Handle(V3d_View) Viou;
-  GetCtxAndView(Ctx,Viou);
-  Ctx->ClearActiveSensitive(Viou);
+  if (theArgNb > 1)
+  {
+    std::cout << "Error: wrong syntax!\n";
+    return 1;
+  }
+
+  Handle(AIS_InteractiveContext) aCtx;
+  Handle(V3d_View)               aView;
+  if (!getCtxAndView (aCtx, aView))
+  {
+    return 1;
+  }
+  aCtx->ClearActiveSensitive (aView);
   return 0;
 }
 
@@ -808,91 +854,152 @@ static int VSelPrecision(Draw_Interpretor& di, Standard_Integer argc, const char
 //==============================================================================
 //function : VDump
 //purpose  : To dump the active view snapshot to image file
-//Draw arg : Picture file name with extension corresponding to desired format
 //==============================================================================
-static Standard_Integer VDump (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+static Standard_Integer VDump (Draw_Interpretor& theDI,
+                               Standard_Integer  theArgNb,
+                               Standard_CString* theArgVec)
 {
-  if (argc < 2)
+  if (theArgNb < 2)
   {
-    di<<"Use: "<<argv[0]<<" <filename>.{png|bmp|jpg|gif} [buffer={rgb|rgba|depth}] [width height] [stereoproj={L|R}]\n";
+    std::cout << "Error: wrong number of arguments! Image file name should be specified at least.\n";
     return 1;
   }
 
-  Graphic3d_BufferType aBufferType = Graphic3d_BT_RGB;
-  if (argc > 2)
+  Standard_Integer      anArgIter   = 1;
+  Standard_CString      aFilePath   = theArgVec[anArgIter++];
+  Graphic3d_BufferType  aBufferType = Graphic3d_BT_RGB;
+  V3d_StereoDumpOptions aStereoOpts = V3d_SDO_MONO;
+  Standard_Integer      aWidth      = 0;
+  Standard_Integer      aHeight     = 0;
+  for (; anArgIter < theArgNb; ++anArgIter)
   {
-    const char* aBuffTypeStr = argv[2];
-    if ( strcasecmp( aBuffTypeStr, "rgb" ) == 0 ) // 4 is to compare '\0' as well
-    {
-      aBufferType = Graphic3d_BT_RGB;
-    }
-    else if ( strcasecmp( aBuffTypeStr, "rgba" ) == 0 )
+    TCollection_AsciiString anArg (theArgVec[anArgIter]);
+    anArg.LowerCase();
+    if (anArg == "rgba")
     {
       aBufferType = Graphic3d_BT_RGBA;
     }
-    else if ( strcasecmp( aBuffTypeStr, "depth" ) == 0 )
+    else if (anArg == "rgb")
+    {
+      aBufferType = Graphic3d_BT_RGB;
+    }
+    else if (anArg == "depth")
     {
       aBufferType = Graphic3d_BT_Depth;
     }
+    else if (anArg == "l"
+          || anArg == "left")
+    {
+      aStereoOpts = V3d_SDO_LEFT_EYE;
+    }
+    else if (anArg == "r"
+          || anArg == "right")
+    {
+      aStereoOpts = V3d_SDO_RIGHT_EYE;
+    }
+    else if (anArg == "mono")
+    {
+      aStereoOpts = V3d_SDO_MONO;
+    }
+    else if (anArg == "w"
+          || anArg == "width")
+    {
+      if (aWidth  != 0)
+      {
+        std::cout << "Error: wrong syntax at " << theArgVec[anArgIter] << "\n";
+        return 1;
+      }
+      else if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: integer value is expected right after 'width'\n";
+        return 1;
+      }
+      aWidth = Draw::Atoi (theArgVec[anArgIter]);
+    }
+    else if (anArg == "h"
+          || anArg == "height")
+    {
+      if (aHeight != 0)
+      {
+        std::cout << "Error: wrong syntax at " << theArgVec[anArgIter] << "\n";
+        return 1;
+      }
+      if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: integer value is expected right after 'height'\n";
+        return 1;
+      }
+      aHeight = Draw::Atoi (theArgVec[anArgIter]);
+    }
+    else if (anArg.IsIntegerValue())
+    {
+      // compatibility with old syntax
+      if (aWidth  != 0
+       || aHeight != 0)
+      {
+        std::cout << "Error: wrong syntax at " << theArgVec[anArgIter] << "\n";
+        return 1;
+      }
+      else if (++anArgIter >= theArgNb)
+      {
+        std::cout << "Error: height value is expected right after width\n";
+        return 1;
+      }
+      aWidth  = Draw::Atoi (theArgVec[anArgIter - 1]);
+      aHeight = Draw::Atoi (theArgVec[anArgIter]);
+    }
+    else
+    {
+      std::cout << "Error: unknown argument '" << theArgVec[anArgIter] << "'\n";
+      return 1;
+    }
+  }
+  if ((aWidth <= 0 && aHeight >  0)
+   || (aWidth >  0 && aHeight <= 0))
+  {
+    std::cout << "Error: dimensions " << aWidth << "x" << aHeight << " are incorrect\n";
+    return 1;
   }
 
-  Standard_Integer aWidth  = (argc > 3) ? Draw::Atoi (argv[3]) : 0;
-  Standard_Integer aHeight = (argc > 4) ? Draw::Atoi (argv[4]) : 0;
-
-  TCollection_AsciiString aStereoProj ((argc > 5) ? argv[5] : "");
-
-  Handle(AIS_InteractiveContext) IC;
-  Handle(V3d_View) view;
-  GetCtxAndView (IC, view);
-  if (view.IsNull())
+  Handle(V3d_View) aView = ViewerTest::CurrentView();
+  if (aView.IsNull())
   {
-    di << "Cannot find an active viewer/view\n";
+    std::cout << "Error: cannot find an active view!\n";
     return 1;
   }
 
   if (aWidth <= 0 || aHeight <= 0)
   {
-    if (!view->Dump (argv[1], aBufferType))
+    if (aStereoOpts != V3d_SDO_MONO)
     {
-      di << "Dumping failed!\n";
-      return 1;
+      aView->Window()->Size (aWidth, aHeight);
     }
-    return 0;
-  }
-
-  V3d_StereoDumpOptions aStereoOpts = V3d_SDO_MONO;
-
-  if (!aStereoProj.IsEmpty())
-  {
-    aStereoProj.UpperCase();
-    if (aStereoProj == "L")
+    else
     {
-      aStereoOpts = V3d_SDO_LEFT_EYE;
-    }
-
-    if (aStereoProj == "R")
-    {
-      aStereoOpts = V3d_SDO_RIGHT_EYE;
+      if (!aView->Dump (aFilePath, aBufferType))
+      {
+        theDI << "Fail: view dump failed!\n";
+      }
+      return 0;
     }
   }
 
   Image_AlienPixMap aPixMap;
-  if (!view->ToPixMap (aPixMap, aWidth, aHeight, aBufferType, Standard_True, aStereoOpts))
+  if (!aView->ToPixMap (aPixMap, aWidth, aHeight, aBufferType, Standard_True, aStereoOpts))
   {
-    di << "Dumping failed!\n";
-    return 1;
+    theDI << "Fail: view dump failed!\n";
+    return 0;
   }
 
   if (aPixMap.SizeX() != Standard_Size(aWidth)
    || aPixMap.SizeY() != Standard_Size(aHeight))
   {
-    std::cout << "Warning! Dumped dimensions " << aPixMap.SizeX() << "x" << aPixMap.SizeY()
-              << " are lesser than requested " << aWidth          << "x" << aHeight << "\n";
+    theDI << "Fail: dumped dimensions "    << (Standard_Integer )aPixMap.SizeX() << "x" << (Standard_Integer )aPixMap.SizeY()
+          << " are lesser than requested " << aWidth << "x" << aHeight << "\n";
   }
-  if (!aPixMap.Save (argv[1]))
+  if (!aPixMap.Save (aFilePath))
   {
-    di << "Saving image failed!\n";
-    return 1;
+    theDI << "Fail: image can not be saved!\n";
   }
   return 0;
 }
@@ -3635,11 +3742,13 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 
   theCommands.Add("vdump",
     #ifdef HAVE_FREEIMAGE
-      "<filename>.{png|bmp|jpg|gif} [buffer={rgb|rgba|depth}] [width height] [stereoproj={L|R}]"
-      "\n\t\t: Dumps contents of viewer window to PNG, BMP, JPEG or GIF file",
+              "vdump <filename>.{png|bmp|jpg|gif} [rgb|rgba|depth=rgb] [mono|left|right=mono]"
+      "\n\t\t:                                    [width Width=0 height Height=0]"
+      "\n\t\t: Dumps content of the active view into PNG, BMP, JPEG or GIF file",
     #else
-      "<filename>.{ppm} [buffer={rgb|rgba|depth}] [width height] [stereoproj={L|R}]"
-      "\n\t\t: Dumps contents of viewer window to PPM image file",
+              "vdump <filename>.{ppm} [rgb|rgba|depth=rgb] [mono|left|right=mono]"
+      "\n\t\t:                        [width Width=0 height Height=0]"
+      "\n\t\t: Dumps content of the active view into PPM image file",
     #endif
 		  __FILE__,VDump,group);
 
