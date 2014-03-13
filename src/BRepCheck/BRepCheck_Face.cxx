@@ -63,10 +63,15 @@
 #include <IntRes2d_IntersectionSegment.hxx>
 #include <BRepAdaptor_HSurface.hxx>
 
+#include <TopTools_OrientedShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
+
+typedef NCollection_DataMap<TopoDS_Shape, Bnd_Box2d, TopTools_OrientedShapeMapHasher> DataMapOfShapeBox2d;
 
 static Standard_Boolean Intersect(const TopoDS_Wire&,
 				  const TopoDS_Wire&,
-				  const TopoDS_Face&);
+				  const TopoDS_Face&,
+				  const DataMapOfShapeBox2d&);
 				  
 
 static Standard_Boolean IsInside(const TopoDS_Wire& wir,
@@ -201,7 +206,36 @@ BRepCheck_Status BRepCheck_Face::IntersectWires(const Standard_Boolean Update)
     }
     exp1.Next();
   }
-  
+
+  Geom2dAdaptor_Curve aC;
+  Standard_Real aFirst, aLast;
+  DataMapOfShapeBox2d aMapShapeBox2d;
+  for (exp1.Init (myShape, TopAbs_WIRE); exp1.More(); exp1.Next()) 
+  {
+    const TopoDS_Wire& aWire = TopoDS::Wire (exp1.Current());
+    // create 2d boxes for all edges from wire
+    Bnd_Box2d aBoxW;
+    for (exp2.Init (aWire, TopAbs_EDGE); exp2.More(); exp2.Next())
+    {
+      const TopoDS_Edge& anEdge = TopoDS::Edge (exp2.Current());
+      aC.Load (BRep_Tool::CurveOnSurface (anEdge, TopoDS::Face (myShape), aFirst, aLast));
+      // To avoid exeption in Segment if C1 is BSpline
+      if (aC.FirstParameter() > aFirst)
+      {
+        aFirst = aC.FirstParameter();
+      }
+      if (aC.LastParameter() < aLast)
+      {
+        aLast = aC.LastParameter();
+      }
+      Bnd_Box2d aBoxE;
+      BndLib_Add2dCurve::Add (aC, aFirst, aLast, 0., aBoxE);
+      aMapShapeBox2d.Bind (anEdge, aBoxE);
+      aBoxW.Add (aBoxE);
+    }
+    aMapShapeBox2d.Bind (aWire, aBoxW);
+  }
+
   Standard_Integer Nbwire, Index,Indexbis;
   Nbwire = myMapImb.Extent();
 
@@ -215,10 +249,24 @@ BRepCheck_Status BRepCheck_Face::IntersectWires(const Standard_Boolean Update)
       }
     }
     TopoDS_Wire wir1 = TopoDS::Wire(exp1.Current());
+    // to reduce the number of calls Intersect(wir1,wir2)
+    Bnd_Box2d aBox1, aBox2;
+    if (aMapShapeBox2d.IsBound (wir1))
+    {
+      aBox1 = aMapShapeBox2d (wir1);
+    }
     exp1.Next();
     for (; exp1.More(); exp1.Next()) {
       const TopoDS_Wire& wir2 = TopoDS::Wire(exp1.Current());
-      if (Intersect(wir1,wir2,TopoDS::Face(myShape))) {
+      if (aMapShapeBox2d.IsBound (wir2))
+      {
+        aBox2 = aMapShapeBox2d (wir2);
+      }
+      if (!aBox1.IsVoid() && !aBox2.IsVoid() && aBox1.IsOut (aBox2))
+      {
+        continue;
+      }
+      if (Intersect(wir1,wir2,TopoDS::Face(myShape), aMapShapeBox2d)) {
 	myIntres = BRepCheck_IntersectingWires;
 	if (Update) {
 	  BRepCheck::Add(myMap(myShape),myIntres);
@@ -503,7 +551,8 @@ Standard_Boolean BRepCheck_Face::GeometricControls() const
 
 static Standard_Boolean Intersect(const TopoDS_Wire& wir1,
 				  const TopoDS_Wire& wir2,
-				  const TopoDS_Face& F)
+				  const TopoDS_Face& F,
+				  const DataMapOfShapeBox2d& theMapEdgeBox)
 {
   Standard_Real Inter2dTol = 1.e-10;
   TopExp_Explorer exp1,exp2;
@@ -551,11 +600,15 @@ static Standard_Boolean Intersect(const TopoDS_Wire& wir1,
       if(C1.FirstParameter() > first1) first1 = C1.FirstParameter();
       if(C1.LastParameter()  < last1 ) last1  = C1.LastParameter();
 
-      BRep_Tool::UVPoints(edg1,F,pfirst1,plast1);
-      myDomain1.SetValues( pfirst1, first1, Inter2dTol, plast1, last1, Inter2dTol );
       Box1.SetVoid();
-      BndLib_Add2dCurve::Add( C1, first1, last1, 0., Box1 );
-      
+      if (theMapEdgeBox.IsBound (edg1))
+      {
+        Box1 = theMapEdgeBox (edg1);
+      }
+      if (Box1.IsVoid())
+      {
+        BndLib_Add2dCurve::Add( C1, first1, last1, 0., Box1 );
+      }
       for (exp2.Init(wir2,TopAbs_EDGE); exp2.More(); exp2.Next())
 	{
 	  const TopoDS_Edge& edg2 = TopoDS::Edge(exp2.Current());
@@ -567,10 +620,19 @@ static Standard_Boolean Intersect(const TopoDS_Wire& wir1,
 	      if(C2.FirstParameter() > first2) first2 = C2.FirstParameter();
 	      if(C2.LastParameter()  < last2 ) last2  = C2.LastParameter();
 
-              Box2.SetVoid();
-	      BndLib_Add2dCurve::Add( C2, first2, last2, 0., Box2 );
+	      Box2.SetVoid();
+	      if (theMapEdgeBox.IsBound (edg2))
+	      {
+          Box2 = theMapEdgeBox (edg2);
+	      }
+	      if (Box2.IsVoid())
+	      {
+          BndLib_Add2dCurve::Add( C2, first2, last2, 0., Box2 );
+	      }
 	      if (! Box1.IsOut( Box2 ))
 		{
+		  BRep_Tool::UVPoints(edg1,F,pfirst1,plast1);
+		  myDomain1.SetValues( pfirst1, first1, Inter2dTol, plast1, last1, Inter2dTol );
 		  BRep_Tool::UVPoints(edg2,F,pfirst2,plast2);
 		  myDomain2.SetValues( pfirst2, first2, Inter2dTol, plast2, last2, Inter2dTol );
 		  Inter.Perform( C1, myDomain1, C2, myDomain2, Inter2dTol, Inter2dTol );

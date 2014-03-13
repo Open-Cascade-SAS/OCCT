@@ -42,6 +42,7 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopTools_SequenceOfShape.hxx>
+#include <NCollection_Sequence.hxx>
 
 //gka 06.09.04 BUG 6555 shape is modified always independently either intersection was fixed or not 
 //=======================================================================
@@ -684,11 +685,12 @@ Standard_Boolean ShapeFix_IntersectionTool::UnionVertexes(const Handle(ShapeExte
 //function : CreateBoxes2d
 //purpose  : auxilary
 //=======================================================================
-static Standard_Boolean CreateBoxes2d(const Handle(ShapeExtend_WireData)& sewd, 
+static Bnd_Box2d CreateBoxes2d(const Handle(ShapeExtend_WireData)& sewd, 
                                       const TopoDS_Face& face,
                                       ShapeFix_DataMapOfShapeBox2d& boxes) 
 {
   // create box2d for edges from wire
+  Bnd_Box2d aTotalBox;
   TopLoc_Location L;
   const Handle(Geom_Surface)& S = BRep_Tool::Surface(face,L);
   Handle(Geom2d_Curve) c2d;
@@ -710,9 +712,10 @@ static Standard_Boolean CreateBoxes2d(const Handle(ShapeExtend_WireData)& sewd,
         gac.Load(c2d,cf,cl);
       BndLib_Add2dCurve::Add(gac,::Precision::Confusion(),box);
       boxes.Bind(E,box);
+      aTotalBox.Add (box);
     }
   }
-  return Standard_True;
+  return aTotalBox;
 }
 
 
@@ -832,7 +835,7 @@ Standard_Boolean ShapeFix_IntersectionTool::FixSelfIntersectWire
 
   // step 2 : intersection of non-adjacent edges
   ShapeFix_DataMapOfShapeBox2d boxes;
-  CreateBoxes2d(sewd,face,boxes);
+  Bnd_Box2d aTotalBox = CreateBoxes2d(sewd,face,boxes);
   Handle(ShapeAnalysis_Surface) sas = new ShapeAnalysis_Surface(BRep_Tool::Surface(face));
 
   NbSplit=0;
@@ -1469,19 +1472,36 @@ Standard_Boolean ShapeFix_IntersectionTool::FixIntersectingWires
   }
   Standard_Boolean isDone = Standard_False; //gka 06.09.04
   ShapeAnalysis_Edge sae;
+  Handle(ShapeAnalysis_Surface) sas = new ShapeAnalysis_Surface (BRep_Tool::Surface (face));
+
+  // precompute edge boxes for all wires
+  NCollection_Sequence<ShapeFix_DataMapOfShapeBox2d> aSeqWirEdgeBoxes;
+  NCollection_Sequence<Bnd_Box2d> aSeqWirBoxes;
+  for (Standard_Integer n = 1; n <= SeqWir.Length(); n++)
+  {
+    const TopoDS_Wire& aWire = TopoDS::Wire (SeqWir.Value (n));
+    Handle(ShapeExtend_WireData) aSewd = new ShapeExtend_WireData (aWire);
+    ShapeFix_DataMapOfShapeBox2d aBoxes;
+    Bnd_Box2d aTotalBox = CreateBoxes2d (aSewd, face, aBoxes);
+    aSeqWirEdgeBoxes.Append (aBoxes);
+    aSeqWirBoxes.Append (aTotalBox);
+  }
 
   for(Standard_Integer n1=1; n1<=SeqWir.Length()-1; n1++) { 
     TopoDS_Wire wire1 = TopoDS::Wire(SeqWir.Value(n1));
     Handle(ShapeExtend_WireData) sewd1 = new ShapeExtend_WireData(wire1);
+    ShapeFix_DataMapOfShapeBox2d& boxes1 = aSeqWirEdgeBoxes.ChangeValue (n1);
+    Bnd_Box2d aBox1 = aSeqWirBoxes (n1);
     for(Standard_Integer n2=n1+1; n2<=SeqWir.Length(); n2++) { 
       TopoDS_Wire wire2 = TopoDS::Wire(SeqWir.Value(n2));
       Handle(ShapeExtend_WireData) sewd2 = new ShapeExtend_WireData(wire2);
+      ShapeFix_DataMapOfShapeBox2d& boxes2 = aSeqWirEdgeBoxes.ChangeValue (n2);
+      Bnd_Box2d aBox2 = aSeqWirBoxes (n2);
+      if (!aBox1.IsVoid() && !aBox2.IsVoid() && aBox1.IsOut (aBox2))
+      {
+        continue;
+      }
       // detect possible intersections:
-      ShapeFix_DataMapOfShapeBox2d boxes1,boxes2;
-      CreateBoxes2d(sewd1,face,boxes1);
-      CreateBoxes2d(sewd2,face,boxes2);
-      Handle(ShapeAnalysis_Surface) sas = new ShapeAnalysis_Surface(BRep_Tool::Surface(face));
-
       Standard_Integer NbModif=0;
       Standard_Integer nbReplaced =0;//gka 06.09.04
       Standard_Boolean hasModifWire = Standard_False; //gka 06.09.04
@@ -1909,9 +1929,17 @@ Standard_Boolean ShapeFix_IntersectionTool::FixIntersectingWires
         SeqWir.SetValue(n1,sewd1->Wire());
         myContext->Replace( wire1, sewd1->Wire() );
         wire1 = sewd1->Wire();
+        //recompute boxes for wire1
+        boxes1.Clear();
+        Bnd_Box2d aNewBox1 = CreateBoxes2d (sewd1, face, boxes1);
+        aSeqWirBoxes.SetValue (n1, aNewBox1);
         SeqWir.SetValue(n2,sewd2->Wire());
         myContext->Replace( wire2, sewd2->Wire() );
         wire2 = sewd2->Wire();
+        //recompute boxes for wire2
+        boxes2.Clear();
+        Bnd_Box2d aNewBox2 = CreateBoxes2d (sewd2, face, boxes2);
+        aSeqWirBoxes.SetValue (n2, aNewBox2);
       }
 
     }
