@@ -45,6 +45,8 @@
 #include <BRepAlgo_Cut.hxx>
 #include <NCollection_Map.hxx>
 #include <TCollection_HAsciiString.hxx>
+#include <GeomFill_Trihedron.hxx>
+#include <BRepOffsetAPI_MakePipe.hxx>
 
 #define QCOMPARE(val1, val2) \
   di << "Checking " #val1 " == " #val2 << \
@@ -1553,6 +1555,64 @@ static Standard_Integer OCC24622 (Draw_Interpretor& /*theDi*/, Standard_Integer 
   return 0;
 }
 
+//=======================================================================
+//function : OCC24667
+//purpose  : 
+//=======================================================================
+static Standard_Integer OCC24667 (Draw_Interpretor& di, Standard_Integer n, const char** a)
+{
+  if (n == 1)
+  {
+    di << "OCC24667 result Wire_spine Profile [Mode [Approx]]" << "\n";
+    di << "Mode = 0 - CorrectedFrenet," << "\n";
+    di << "     = 1 - Frenet," << "\n";
+    di << "     = 2 - DiscreteTrihedron" << "\n";
+    di << "Approx - force C1-approximation if result is C0" << "\n";
+    return 0;
+  }
+
+  if (n > 1 && n < 4) return 1;
+
+  TopoDS_Shape Spine = DBRep::Get(a[2],TopAbs_WIRE);
+  if ( Spine.IsNull()) return 1;
+
+  TopoDS_Shape Profile = DBRep::Get(a[3]);
+  if ( Profile.IsNull()) return 1;
+
+  GeomFill_Trihedron Mode = GeomFill_IsCorrectedFrenet;
+  if (n >= 5)
+  {
+    Standard_Integer iMode = atoi(a[4]);
+    if (iMode == 1)
+      Mode = GeomFill_IsFrenet;
+    else if (iMode == 2)
+      Mode = GeomFill_IsDiscreteTrihedron;
+  }
+
+  Standard_Boolean ForceApproxC1 = Standard_False;
+  if (n >= 6)
+    ForceApproxC1 = Standard_True;
+
+  BRepOffsetAPI_MakePipe aPipe(TopoDS::Wire(Spine),
+                                          Profile,
+                                          Mode,
+                                          ForceApproxC1);
+
+  TopoDS_Shape S = aPipe.Shape();
+  TopoDS_Shape aSF = aPipe.FirstShape();
+  TopoDS_Shape aSL = aPipe.LastShape();
+
+  DBRep::Set(a[1],S);
+
+  TCollection_AsciiString aStrF(a[1], "_f");
+  TCollection_AsciiString aStrL(a[1], "_l");
+
+  DBRep::Set(aStrF.ToCString(), aSF);
+  DBRep::Set(aStrL.ToCString(), aSL);
+
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -1577,9 +1637,7 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC24137", "OCC24137 face vertex U V [N]", __FILE__, OCC24137, group);
   theCommands.Add ("OCC24271", "Boolean operations on NCollection_Map", __FILE__, OCC24271, group);
   theCommands.Add ("OCC24370", "OCC24370 edge pcurve surface prec", __FILE__, OCC24370, group);
-  theCommands.Add ("OCC24622", 
-                   "OCC24622 texture={1D|2D}\n"
-                   " Tests sourcing of 1D/2D pixmaps for AIS_TexturedShape.\n",
-                   __FILE__, OCC24622, group);
+  theCommands.Add ("OCC24622", "OCC24622 texture={1D|2D}\n Tests sourcing of 1D/2D pixmaps for AIS_TexturedShape", __FILE__, OCC24622, group);
+  theCommands.Add ("OCC24667", "OCC24667 result Wire_spine Profile [Mode [Approx]], no args to get help", __FILE__, OCC24667, group);
   return;
 }
