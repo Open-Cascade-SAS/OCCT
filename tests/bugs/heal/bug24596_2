@@ -1,0 +1,65 @@
+puts "============"
+puts "OCC24596"
+puts "============"
+puts ""
+###############################
+## Slow import of IGES data
+###############################
+
+pload QAcommands
+
+cpulimit 2000
+
+if { [regexp {Debug mode} [dversion]] } {
+  if { [regexp {Windows} [dversion]] } {
+    set max_time 900
+    set max_time2 500
+  } else {
+    set max_time 1200
+    set max_time2 800
+  }
+} else {
+  if { [regexp {Windows} [dversion]] } {
+    set max_time 900
+    set max_time2 500
+  } else {
+    set max_time 1200
+    set max_time2 800
+  }
+}
+
+# 1 - igesread
+dchrono h reset
+dchrono h start
+
+igesread [locate_data_file 100B_Nosecone_with_Triangular_FSS.igs] b 86884
+
+dchrono h stop
+set q [dchrono h show]
+
+regexp {CPU user time: ([-0-9.+eE]+) seconds} $q full z
+puts "$z"
+
+if { $z > ${max_time} } {                                         
+    puts "Elapsed time is more than ${max_time} seconds - Faulty"
+} else {
+    puts "Elapsed time is less than ${max_time} seconds - OK"
+}
+
+# 2 - checkshape
+dchrono h2 reset
+dchrono h2 start
+
+checkshape b_1
+
+dchrono h2 stop
+set q2 [dchrono h2 show]
+
+regexp {CPU user time: ([-0-9.+eE]+) seconds} $q2 full z2
+puts "$z2"
+
+if { $z2 > ${max_time2} } {                                         
+    puts "Elapsed time of checkshape is more than ${max_time2} seconds - Faulty"
+} else {
+    puts "Elapsed time of checkshape is less than ${max_time2} seconds - OK"
+}
