@@ -1,0 +1,17 @@
+puts "============"
+puts "CR24728"
+puts "============"
+puts ""
+
+############################################################
+#  Test image dumping with software accelerated GL context
+############################################################
+
+vcaps soft=1
+vinit View1
+
+box b 1 2 3
+vdisplay b
+vfit
+
+vdump $imagedir/${casename}.png

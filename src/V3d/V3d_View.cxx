@@ -3135,7 +3135,7 @@ Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
 
   if (theToKeepAspect)
   {
-    myCamera->SetAspect ((Standard_Real) aFBOVPSizeX / aFBOSizeYMax);
+    myCamera->SetAspect ((Standard_Real) aFBOVPSizeX / aFBOVPSizeY);
   }
 
   //workaround for rendering list of Over and Under Layers
