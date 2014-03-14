@@ -8,23 +8,23 @@ puts ""
 
 pload QAcommands
 
-cpulimit 2000
-
 if { [regexp {Debug mode} [dversion]] } {
+  cpulimit 7500
   if { [regexp {Windows} [dversion]] } {
-    set max_time 900
-    set max_time2 500
+    set max_time 2000
+    set max_time2 1300
   } else {
-    set max_time 1200
-    set max_time2 800
+    set max_time 4500
+    set max_time2 3000
   }
 } else {
+  cpulimit 2600
   if { [regexp {Windows} [dversion]] } {
-    set max_time 900
-    set max_time2 500
+    set max_time 1100
+    set max_time2 700
   } else {
-    set max_time 1200
-    set max_time2 800
+    set max_time 1600
+    set max_time2 1000
   }
 }
 
