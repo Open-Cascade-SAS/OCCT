@@ -6,6 +6,8 @@ puts ""
 # Exception is raised during 'checkshape' operation.
 #######################################################################
 
+cpulimit 1500\
+
 restore [locate_data_file bug24575_cx1.brep] b
 
 checkshape b
