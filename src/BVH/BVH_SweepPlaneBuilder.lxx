@@ -51,6 +51,11 @@ void BVH_SweepPlaneBuilder<T, N>::BuildNode (BVH_Set<T, N>*         theSet,
   const Standard_Integer aNodeEndPrimitive = theBVH->EndPrimitive (theNode);
   const Standard_Integer aNodeNbPrimitives = theBVH->NbPrimitives (theNode);
 
+  if (aNodeEndPrimitive - aNodeBegPrimitive < BVH_Builder<T, N>::myLeafNodeSize)
+  {
+    return; // node does not require partitioning
+  }
+
   // Parameters for storing best split
   Standard_Integer aMinSplitAxis = -1;
   Standard_Integer aMinSplitIndex = 0;

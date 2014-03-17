@@ -26,7 +26,7 @@ struct BVH_Bin
   BVH_Bin() : Count (0) {}
 
   Standard_Integer Count; //!< Number of primitives in the bin
-  BVH_Box<T, N>    Box;   //!< AABB of the bin
+  BVH_Box<T, N>    Box;   //!< AABB of primitives in the bin
 };
 
 //! Performs building of BVH tree using binned SAH algorithm.

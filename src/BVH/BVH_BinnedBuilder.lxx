@@ -136,10 +136,18 @@ void BVH_BinnedBuilder<T, N, Bins>::BuildNode (BVH_Set<T, N>*         theSet,
                                                BVH_Tree<T, N>*        theBVH,
                                                const Standard_Integer theNode)
 {
-  const BVH_Box<T, N> aBox (theBVH->MinPoint (theNode),
-                            theBVH->MaxPoint (theNode));
+  const Standard_Integer aNodeBegPrimitive = theBVH->BegPrimitive (theNode);
+  const Standard_Integer aNodeEndPrimitive = theBVH->EndPrimitive (theNode);
 
-  const typename BVH_Box<T, N>::BVH_VecNt aSize = aBox.Size();
+  if (aNodeEndPrimitive - aNodeBegPrimitive < BVH_Builder<T, N>::myLeafNodeSize)
+  {
+    return; // node does not require partitioning
+  }
+
+  const BVH_Box<T, N> anAABB (theBVH->MinPoint (theNode),
+                              theBVH->MaxPoint (theNode));
+
+  const typename BVH_Box<T, N>::BVH_VecNt aSize = anAABB.Size();
 
   // Parameters for storing best split
   Standard_Integer aMinSplitAxis   = -1;
@@ -206,12 +214,35 @@ void BVH_BinnedBuilder<T, N, Bins>::BuildNode (BVH_Set<T, N>*         theSet,
 
   theBVH->SetInner (theNode);
 
-  const Standard_Integer aMiddle = BVHTools::SplitPrimitives<T, N> (theSet, aBox,
-                                                                    theBVH->BegPrimitive (theNode),
-                                                                    theBVH->EndPrimitive (theNode),
-                                                                    aMinSplitIndex - 1,
-                                                                    aMinSplitAxis,
-                                                                    Bins);
+  Standard_Integer aMiddle = -1;
+
+  if (aMinSplitNumLft == 0 || aMinSplitNumRgh == 0) // case of objects with the same center
+  {
+    aMinSplitBoxLft.Clear();
+    aMinSplitBoxRgh.Clear();
+
+    aMiddle = std::max (aNodeBegPrimitive + 1,
+      static_cast<Standard_Integer> ((aNodeBegPrimitive + aNodeEndPrimitive) / 2.f));
+
+    aMinSplitNumLft = aMiddle - aNodeBegPrimitive;
+
+    for (Standard_Integer anIndex = aNodeBegPrimitive; anIndex < aMiddle; ++anIndex)
+    {
+      aMinSplitBoxLft.Combine (theSet->Box (anIndex));
+    }
+
+    aMinSplitNumRgh = aNodeEndPrimitive - aMiddle + 1;
+
+    for (Standard_Integer anIndex = aNodeEndPrimitive; anIndex >= aMiddle; --anIndex)
+    {
+      aMinSplitBoxRgh.Combine (theSet->Box (anIndex));
+    }
+  }
+  else
+  {
+    aMiddle = BVHTools::SplitPrimitives<T, N> (theSet, anAABB,
+      aNodeBegPrimitive, aNodeEndPrimitive, aMinSplitIndex - 1, aMinSplitAxis, Bins);
+  }
 
   static const Standard_Integer aLftNode = 1;
   static const Standard_Integer aRghNode = 2;
@@ -227,11 +258,11 @@ void BVH_BinnedBuilder<T, N, Bins>::BuildNode (BVH_Set<T, N>*         theSet,
                                                 : aMinSplitBoxRgh.CornerMax();
 
     Standard_Integer aBegPrimitive = (aSide == aLftNode)
-                                   ? theBVH->BegPrimitive (theNode)
+                                   ? aNodeBegPrimitive
                                    : aMiddle;
     Standard_Integer aEndPrimitive = (aSide == aLftNode)
                                    ? aMiddle - 1
-                                   : theBVH->EndPrimitive (theNode);
+                                   : aNodeEndPrimitive;
 
     Standard_Integer aChildIndex = theBVH->AddLeafNode (aMinPoint, aMaxPoint, aBegPrimitive, aEndPrimitive);
 
