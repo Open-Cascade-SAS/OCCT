@@ -21,6 +21,8 @@
 #include <OpenGl_Element.hxx>
 #include <OpenGl_Light.hxx>
 
+#include <NCollection_Stack.hxx>
+
 //! Defines interface for OpenGL state.
 class OpenGl_StateInterface
 {
@@ -40,7 +42,9 @@ public:
 
 protected:
 
-  Standard_Size myIndex; //!< Current state index
+  Standard_Size myIndex;      //!< Current state index
+  Standard_Size myNextIndex;  //!< Next state index
+  NCollection_Stack<Standard_Size> myStateStack; //!< Stack of previous states.
 
 };
 

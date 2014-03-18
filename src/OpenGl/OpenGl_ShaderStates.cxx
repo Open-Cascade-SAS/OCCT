@@ -22,7 +22,8 @@
 // purpose  : Creates new OCCT state
 // =======================================================================
 OpenGl_StateInterface::OpenGl_StateInterface()
-: myIndex (0)
+: myIndex (0),
+  myNextIndex (1)
 {
   //
 }
@@ -42,7 +43,9 @@ Standard_Size OpenGl_StateInterface::Index() const
 // =======================================================================
 void OpenGl_StateInterface::Update()
 {
-  ++myIndex;
+  myStateStack.Push (myIndex);
+  myIndex = myNextIndex;
+  ++myNextIndex;
 }
 
 // =======================================================================
@@ -51,9 +54,14 @@ void OpenGl_StateInterface::Update()
 // =======================================================================
 void OpenGl_StateInterface::Revert()
 {
-  if (myIndex > 0)
+  if (!myStateStack.IsEmpty())
   {
-    --myIndex;
+    myIndex = myStateStack.Top();
+    myStateStack.Pop();
+  }
+  else
+  {
+    myIndex = 0;
   }
 }
 
