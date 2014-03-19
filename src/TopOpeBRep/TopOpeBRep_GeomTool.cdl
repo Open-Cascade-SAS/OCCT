@@ -29,8 +29,6 @@ uses
     
 is
 
-    Create returns GeomTool from TopOpeBRep;
-    
     MakeCurves(myclass;
      	       min,max:Real;L:LineInter from TopOpeBRep;
     	       S1,S2:Shape from TopoDS;
