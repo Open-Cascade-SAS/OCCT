@@ -151,8 +151,6 @@ void BOPAlgo_Builder::BuildSplitFaces()
     aFF=aF;
     aFF.Orientation(TopAbs_FORWARD);
     //
-    
-    //
     // 1. Fill the egdes set for the face aFF -> LE
     aLE.Clear();
     //
@@ -300,7 +298,7 @@ void BOPAlgo_Builder::FillSameDomainFaces()
   BOPCol_MapOfShape aMFence;
   BOPAlgo_IndexedDataMapOfSetInteger aIDMSS;
   BOPAlgo_VectorOfVectorOfShape aVVS;
-//
+  //
   myErrorStatus=0;
   //
   const BOPDS_VectorOfInterfFF& aFFs=myDS->InterfFF();
@@ -353,63 +351,63 @@ void BOPAlgo_Builder::FillSameDomainFaces()
     //
     if (bFlag) {
       for (k=0; k<2; ++k) {
-	const TopoDS_Shape& aF=(!k) ? aF1 : aF2;
-	const BOPCol_ListOfShape& aLF=mySplits.Find(aF);
-	//
-	aItF.Initialize(aLF);
-	for (; aItF.More(); aItF.Next()) {
-	  const TopoDS_Shape& aFx=aItF.Value();
-	  //
-	  if (aMFence.Add(aFx)) {
-	    BOPTools_Set aSTx;
-	    //
-	    aSTx.AddEdges(aFx);
-	    //
-	    if (!aIDMSS.Contains(aSTx)) {
-	      BOPAlgo_VectorOfShape& aVS=aVVS.Append1(); 
-	      aVS.Append(aFx);
-	      //
-	      j=aVVS.Extent()-1;
-	      aIDMSS.Add (aSTx, j);
-	    }
-	    else {
-	      j=aIDMSS.ChangeFromKey(aSTx);
-	      BOPAlgo_VectorOfShape& aVS=aVVS(j);
-	      aVS.Append(aFx);
-	    }
-	  }
-	}
+        const TopoDS_Shape& aF=(!k) ? aF1 : aF2;
+        const BOPCol_ListOfShape& aLF=mySplits.Find(aF);
+        //
+        aItF.Initialize(aLF);
+        for (; aItF.More(); aItF.Next()) {
+          const TopoDS_Shape& aFx=aItF.Value();
+          //
+          if (aMFence.Add(aFx)) {
+            BOPTools_Set aSTx;
+            //
+            aSTx.Add(aFx, TopAbs_EDGE);
+            //
+            if (!aIDMSS.Contains(aSTx)) {
+              BOPAlgo_VectorOfShape& aVS=aVVS.Append1(); 
+              aVS.Append(aFx);
+              //
+              j=aVVS.Extent()-1;
+              aIDMSS.Add (aSTx, j);
+            }
+            else {
+              j=aIDMSS.ChangeFromKey(aSTx);
+              BOPAlgo_VectorOfShape& aVS=aVVS(j);
+              aVS.Append(aFx);
+            }
+          }
+        }
       }
     }// if (bFlag) {
     else {// if (!bFlag) 
       BOPTools_Set aST1, aST2;
       //
-      aST1.AddEdges(aF1);
-      aST2.AddEdges(aF2);
+      aST1.Add(aF1, TopAbs_EDGE);
+      aST2.Add(aF2, TopAbs_EDGE);
       //
       if (aST1.IsEqual(aST2)) {
-	if (!aIDMSS.Contains(aST1)) {
-	  BOPAlgo_VectorOfShape& aVS=aVVS.Append1(); 
-	  if (aMFence.Add(aF1)) {
-	    aVS.Append(aF1);
-	  }
-	  if (aMFence.Add(aF2)) {
-	    aVS.Append(aF2);
-	  }
-	  //
-	  k=aVVS.Extent()-1;
-	  aIDMSS.Add (aST1, k);
-	}
-	else {
-	  k=aIDMSS.ChangeFromKey(aST1);
-	  BOPAlgo_VectorOfShape& aVS=aVVS(k);
-	  if (aMFence.Add(aF1)) {
-	    aVS.Append(aF1);
-	  }
-	  if (aMFence.Add(aF2)) {
-	    aVS.Append(aF2);
-	  }
-	}
+        if (!aIDMSS.Contains(aST1)) {
+          BOPAlgo_VectorOfShape& aVS=aVVS.Append1(); 
+          if (aMFence.Add(aF1)) {
+            aVS.Append(aF1);
+          }
+          if (aMFence.Add(aF2)) {
+            aVS.Append(aF2);
+          }
+          //
+          k=aVVS.Extent()-1;
+          aIDMSS.Add (aST1, k);
+        }
+        else {
+          k=aIDMSS.ChangeFromKey(aST1);
+          BOPAlgo_VectorOfShape& aVS=aVVS(k);
+          if (aMFence.Add(aF1)) {
+            aVS.Append(aF1);
+          }
+          if (aMFence.Add(aF2)) {
+            aVS.Append(aF2);
+          }
+        }
       }//if (aST1.IsEqual(aST2)) {
     }// else {// if (!bFlag) 
     //
@@ -433,10 +431,10 @@ void BOPAlgo_Builder::FillSameDomainFaces()
     for (j=0; j<aNbF1; ++j) {
       const TopoDS_Shape& aFj=aVS(j);
       for (k=j+1; k<aNbF; ++k) {
-	const TopoDS_Shape& aFk=aVS(k);
-	BOPAlgo_PairOfShapeBoolean& aPSB=aVPSB.Append1();
-	aPSB.Shape1()=aFj;
-	aPSB.Shape2()=aFk;
+        const TopoDS_Shape& aFk=aVS(k);
+        BOPAlgo_PairOfShapeBoolean& aPSB=aVPSB.Append1();
+        aPSB.Shape1()=aFj;
+        aPSB.Shape2()=aFk;
       }
     }
   }
@@ -479,9 +477,9 @@ void BOPAlgo_Builder::FillSameDomainFaces()
       // If the face has no splits but are SD face,
       // it is considered as splitted face
       if (!mySplits.IsBound(aFSD)) {
-	BOPCol_ListOfShape aLS;
-	aLS.Append(aFSD);
-	mySplits.Bind(aFSD, aLS);
+        BOPCol_ListOfShape aLS;
+        aLS.Append(aFSD);
+        mySplits.Bind(aFSD, aLS);
       }
     }
   }
@@ -552,7 +550,7 @@ void BOPAlgo_Builder::FillImagesFaces1()
 // purpose: 
 //=======================================================================
 void BOPAlgo_Builder::FillInternalVertices(BOPCol_ListOfShape& aLFIm,
-					   BOPCol_ListOfInteger& aLIAV)
+                                           BOPCol_ListOfInteger& aLIAV)
 {
   Standard_Integer nV, iFlag;
   Standard_Real aU1, aU2;
