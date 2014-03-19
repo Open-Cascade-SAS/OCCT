@@ -14,7 +14,7 @@
 
 class Set from BOPTools 
 
-	---Purpose: 
+ ---Purpose: 
 
 uses  
     ShapeEnum from TopAbs,
@@ -26,52 +26,39 @@ uses
 
 is 
     Create 
-    	returns Set from BOPTools;  
-    ---C++: alias "virtual ~BOPTools_Set();"  
-    ---C++: inline 
+     returns Set from BOPTools;  
+    ---C++: alias "Standard_EXPORT virtual ~BOPTools_Set();"  
     
-    Create (theAllocator: BaseAllocator from BOPCol)
-    	returns Set from BOPTools; 
-    ---C++: inline
-     
+    Create (theAllocator: BaseAllocator from BOPCol) 
+        returns Set from BOPTools; 
+    
     Assign(me:out;  
-    	    Other : Set from BOPTools) 
-    	returns Set from BOPTools; 
+            Other : Set from BOPTools) 
+        returns Set from BOPTools; 
     ---C++: alias operator =
     ---C++: return &   
-    ---C++: inline 
     
     Clear(me:out) 
-    	is protected; 
-    ---C++: inline
-     
+        is protected; 
+    
     Shape(me) 
-    	 returns Shape from TopoDS; 
+        returns Shape from TopoDS; 
     ---C++: return const & 
-    ---C++: inline 
-     
+    
     Add(me:out; 
-    	    theS:Shape from TopoDS; 
-    	    theType: ShapeEnum from TopAbs);  
-    ---C++: inline 
-     
-    AddEdges(me:out; 
-    	    theS:Shape from TopoDS);  
-    ---C++: inline 
-     
+            theS:Shape from TopoDS; 
+            theType: ShapeEnum from TopAbs);  
+    
     NbShapes(me) 
-    	    returns Integer from Standard; 
-    ---C++: inline 
-     
+        returns Integer from Standard; 
+    
     IsEqual(me; 
-    	    aOther:Set from BOPTools) 
-	returns Boolean from Standard;   
-    ---C++: inline 
-     
+            aOther:Set from BOPTools) 
+        returns Boolean from Standard;   
+    
     HashCode(me; 
-	    Upper : Integer  from Standard)  
-    	returns Integer from Standard;   	 
-    ---C++: inline 
+            Upper : Integer  from Standard)  
+        returns Integer from Standard;     
     
 fields   
     myAllocator : BaseAllocator from BOPCol is protected; 
