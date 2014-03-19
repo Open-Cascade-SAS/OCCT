@@ -1585,9 +1585,10 @@ static Standard_Integer OCC24622 (Draw_Interpretor& /*theDi*/, Standard_Integer 
 
   Handle(Image_PixMap) anImage = new Image_PixMap();
 
-  static const Image_ColorRGB aBitmap[8] = {
-    {255, 0, 0},  {0, 148, 255}, {0, 148, 255}, {255, 94, 0},
-    {255, 121, 0}, {76, 255, 0},  {76, 255, 0}, {255, 202, 0}
+  static const Image_ColorRGB aBitmap[8] =
+  {
+    {{255,   0, 0}}, {{0,  148, 255}}, {{ 0, 148, 255}}, {{255,  94, 0}},
+    {{255, 121, 0}}, {{76, 255,   0}}, {{76, 255,   0}}, {{255, 202, 0}}
   };
 
   TCollection_AsciiString aTextureTypeArg (theArgVec[1]);
