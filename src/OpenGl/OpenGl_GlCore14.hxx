@@ -13,23 +13,32 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_GlCore14_H__
-#define _OpenGl_GlCore14_H__
+#ifndef _OpenGl_GlCore14_Header
+#define _OpenGl_GlCore14_Header
 
 #include <OpenGl_GlCore13.hxx>
 
-//! Function list for GL1.4 core functionality.
-struct OpenGl_GlCore14 : public OpenGl_GlCore13
+//! OpenGL 1.4 core based on 1.3 version.
+template<typename theBaseClass_t>
+struct OpenGl_TmplCore14 : public theBaseClass_t
 {
 
-  PFNGLBLENDFUNCSEPARATEPROC glBlendFuncSeparate;
-  PFNGLMULTIDRAWARRAYSPROC   glMultiDrawArrays;
-  PFNGLMULTIDRAWELEMENTSPROC glMultiDrawElements;
-  PFNGLPOINTPARAMETERFPROC   glPointParameterf;
-  PFNGLPOINTPARAMETERFVPROC  glPointParameterfv;
-  PFNGLPOINTPARAMETERIPROC   glPointParameteri;
-  PFNGLPOINTPARAMETERIVPROC  glPointParameteriv;
+public: //! @name OpenGL 1.4 additives to 1.3
+
+  using theBaseClass_t::glBlendFuncSeparate;
+  using theBaseClass_t::glMultiDrawArrays;
+  using theBaseClass_t::glMultiDrawElements;
+  using theBaseClass_t::glPointParameterf;
+  using theBaseClass_t::glPointParameterfv;
+  using theBaseClass_t::glPointParameteri;
+  using theBaseClass_t::glPointParameteriv;
 
 };
 
-#endif // _OpenGl_GlCore14_H__
+//! OpenGL 1.4 core based on 1.3 version.
+typedef OpenGl_TmplCore14<OpenGl_GlCore13>    OpenGl_GlCore14;
+
+//! OpenGL 1.4 without deprecated entry points.
+typedef OpenGl_TmplCore14<OpenGl_GlCore13Fwd> OpenGl_GlCore14Fwd;
+
+#endif // _OpenGl_GlCore14_Header

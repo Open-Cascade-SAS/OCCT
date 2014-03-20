@@ -19,11 +19,10 @@
 
 #include <OpenGl_Context.hxx>
 
-#include <OpenGl_ArbVBO.hxx>
 #include <OpenGl_ArbTBO.hxx>
 #include <OpenGl_ArbIns.hxx>
 #include <OpenGl_ArbDbg.hxx>
-#include <OpenGl_ExtFBO.hxx>
+#include <OpenGl_ArbFBO.hxx>
 #include <OpenGl_ExtGS.hxx>
 #include <OpenGl_GlCore20.hxx>
 #include <OpenGl_ShaderManager.hxx>
@@ -57,32 +56,39 @@
 IMPLEMENT_STANDARD_HANDLE (OpenGl_Context, Standard_Transient)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Context, Standard_Transient)
 
-//! Make record shorter to retrieve function pointer using variable with same name
-#define FindProcShort(theStruct, theFunc) FindProc(#theFunc, theStruct->theFunc)
-
 namespace
 {
   static const Handle(OpenGl_Resource) NULL_GL_RESOURCE;
   static const GLdouble OpenGl_DefaultPlaneEq[] = {0.0, 0.0, 0.0, 0.0};
-};
+}
 
 // =======================================================================
 // function : OpenGl_Context
 // purpose  :
 // =======================================================================
 OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
-: core12 (NULL),
-  core13 (NULL),
-  core14 (NULL),
-  core15 (NULL),
-  core20 (NULL),
+: core11     (NULL),
+  core11fwd  (NULL),
+  core15     (NULL),
+  core15fwd  (NULL),
+  core20     (NULL),
+  core20fwd  (NULL),
+  core32     (NULL),
+  core32back (NULL),
+  core41     (NULL),
+  core41back (NULL),
+  core42     (NULL),
+  core42back (NULL),
+  core43     (NULL),
+  core43back (NULL),
+  core44     (NULL),
+  core44back (NULL),
   caps   (!theCaps.IsNull() ? theCaps : new OpenGl_Caps()),
   arbNPTW(Standard_False),
-  arbVBO (NULL),
   arbTBO (NULL),
   arbIns (NULL),
   arbDbg (NULL),
-  extFBO (NULL),
+  arbFBO (NULL),
   extGS  (NULL),
   extBgra(Standard_False),
   extAnis(Standard_False),
@@ -94,7 +100,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   myReleaseQueue    (new OpenGl_ResourcesQueue()),
   myClippingState (),
   myGlLibHandle (NULL),
-  myGlCore20 (NULL),
+  myFuncs (new OpenGl_GlFunctions()),
   myAnisoMax   (1),
   myMaxTexDim  (1024),
   myMaxClipPlanes (6),
@@ -117,7 +123,7 @@ OpenGl_Context::OpenGl_Context (const Handle(OpenGl_Caps)& theCaps)
   // (depends on renderer).
   myGlLibHandle = dlopen ("/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL", RTLD_LAZY);
 #endif
-
+  memset (myFuncs.operator->(), 0, sizeof(OpenGl_GlFunctions));
   myShaderManager = new OpenGl_ShaderManager (this);
 }
 
@@ -159,14 +165,6 @@ OpenGl_Context::~OpenGl_Context()
       arbDbg->glDebugMessageCallbackARB (NULL, NULL);
     }
   }
-
-  delete myGlCore20;
-  delete arbVBO;
-  delete arbTBO;
-  delete arbIns;
-  delete arbDbg;
-  delete extFBO;
-  delete extGS;
 }
 
 // =======================================================================
@@ -710,11 +708,11 @@ void OpenGl_Context::PushMessage (const unsigned int theSource,
 {
   //OpenGl_Context* aCtx = (OpenGl_Context* )theUserParam;
   Standard_CString& aSrc = (theSource >= GL_DEBUG_SOURCE_API_ARB
-                         && theSource <= GL_DEBUG_SOURCE_OTHER_ARB)
+                        && theSource <= GL_DEBUG_SOURCE_OTHER_ARB)
                          ? THE_DBGMSG_SOURCES[theSource - GL_DEBUG_SOURCE_API_ARB]
                          : THE_DBGMSG_UNKNOWN;
   Standard_CString& aType = (theType >= GL_DEBUG_TYPE_ERROR_ARB
-                          && theType <= GL_DEBUG_TYPE_OTHER_ARB)
+                         && theType <= GL_DEBUG_TYPE_OTHER_ARB)
                           ? THE_DBGMSG_TYPES[theType - GL_DEBUG_TYPE_ERROR_ARB]
                           : THE_DBGMSG_UNKNOWN;
   Standard_CString& aSev = theSeverity == GL_DEBUG_SEVERITY_HIGH_ARB
@@ -748,6 +746,28 @@ void OpenGl_Context::init()
   // read version
   readGlVersion();
 
+  core11     = (OpenGl_GlCore11*    )(&(*myFuncs));
+  core11fwd  = (OpenGl_GlCore11Fwd* )(&(*myFuncs));
+  core15     = NULL;
+  core15fwd  = NULL;
+  core20     = NULL;
+  core20fwd  = NULL;
+  core32     = NULL;
+  core32back = NULL;
+  core41     = NULL;
+  core41back = NULL;
+  core42     = NULL;
+  core42back = NULL;
+  core43     = NULL;
+  core43back = NULL;
+  core44     = NULL;
+  core44back = NULL;
+  arbTBO     = NULL;
+  arbIns     = NULL;
+  arbDbg     = NULL;
+  arbFBO     = NULL;
+  extGS      = NULL;
+
   arbNPTW = CheckExtension ("GL_ARB_texture_non_power_of_two");
   extBgra = CheckExtension ("GL_EXT_bgra");
   extAnis = CheckExtension ("GL_EXT_texture_filter_anisotropic");
@@ -770,18 +790,66 @@ void OpenGl_Context::init()
 
   myClippingState.Init (myMaxClipPlanes);
 
+  bool has12 = false;
+  bool has13 = false;
+  bool has14 = false;
+  bool has15 = false;
+  bool has20 = false;
+  bool has21 = false;
+  bool has30 = false;
+  bool has31 = false;
+  bool has32 = false;
+  bool has33 = false;
+  bool has40 = false;
+  bool has41 = false;
+  bool has42 = false;
+  bool has43 = false;
+  bool has44 = false;
+
+  //! Make record shorter to retrieve function pointer using variable with same name
+  #define FindProcShort(theFunc) FindProc(#theFunc, myFuncs->theFunc)
+
+    // retrieve platform-dependent extensions
+#ifdef _WIN32
+  if (FindProcShort (wglGetExtensionsStringARB))
+  {
+    const char* aWglExts = myFuncs->wglGetExtensionsStringARB (wglGetCurrentDC());
+    if (CheckExtension (aWglExts, "WGL_EXT_swap_control"))
+    {
+      FindProcShort (wglSwapIntervalEXT);
+    }
+    if (CheckExtension (aWglExts, "WGL_ARB_pixel_format"))
+    {
+      FindProcShort (wglChoosePixelFormatARB);
+    }
+    if (CheckExtension (aWglExts, "WGL_ARB_create_context_profile"))
+    {
+      FindProcShort (wglCreateContextAttribsARB);
+    }
+    if (CheckExtension (aWglExts, "WGL_NV_DX_interop"))
+    {
+      FindProcShort (wglDXSetResourceShareHandleNV);
+      FindProcShort (wglDXOpenDeviceNV);
+      FindProcShort (wglDXCloseDeviceNV);
+      FindProcShort (wglDXRegisterObjectNV);
+      FindProcShort (wglDXUnregisterObjectNV);
+      FindProcShort (wglDXObjectAccessNV);
+      FindProcShort (wglDXLockObjectsNV);
+      FindProcShort (wglDXUnlockObjectsNV);
+    }
+  }
+#endif
+
   // initialize debug context extension
   if (CheckExtension ("GL_ARB_debug_output"))
   {
-    arbDbg = new OpenGl_ArbDbg();
-    memset (arbDbg, 0, sizeof(OpenGl_ArbDbg)); // nullify whole structure
-    if (!FindProcShort (arbDbg, glDebugMessageControlARB)
-     || !FindProcShort (arbDbg, glDebugMessageInsertARB)
-     || !FindProcShort (arbDbg, glDebugMessageCallbackARB)
-     || !FindProcShort (arbDbg, glGetDebugMessageLogARB))
+    arbDbg = NULL;
+    if (FindProcShort (glDebugMessageControlARB)
+     && FindProcShort (glDebugMessageInsertARB)
+     && FindProcShort (glDebugMessageCallbackARB)
+     && FindProcShort (glGetDebugMessageLogARB))
     {
-      delete arbDbg;
-      arbDbg = NULL;
+      arbDbg = (OpenGl_ArbDbg* )(&(*myFuncs));
     }
     if (arbDbg != NULL
      && caps->contextDebug)
@@ -794,319 +862,880 @@ void OpenGl_Context::init()
     }
   }
 
-  // initialize VBO extension (ARB)
-  if (CheckExtension ("GL_ARB_vertex_buffer_object"))
+  // load OpenGL 1.2 new functions
+  has12 = IsGlGreaterEqual (1, 2)
+       && FindProcShort (glBlendColor)
+       && FindProcShort (glBlendEquation)
+       && FindProcShort (glDrawRangeElements)
+       && FindProcShort (glTexImage3D)
+       && FindProcShort (glTexSubImage3D)
+       && FindProcShort (glCopyTexSubImage3D);
+
+  // load OpenGL 1.3 new functions
+  has13 = IsGlGreaterEqual (1, 3)
+       && FindProcShort (glActiveTexture)
+       && FindProcShort (glSampleCoverage)
+       && FindProcShort (glCompressedTexImage3D)
+       && FindProcShort (glCompressedTexImage2D)
+       && FindProcShort (glCompressedTexImage1D)
+       && FindProcShort (glCompressedTexSubImage3D)
+       && FindProcShort (glCompressedTexSubImage2D)
+       && FindProcShort (glCompressedTexSubImage1D)
+       && FindProcShort (glGetCompressedTexImage)
+       && FindProcShort (glClientActiveTexture)
+       && FindProcShort (glMultiTexCoord1d)
+       && FindProcShort (glMultiTexCoord1dv)
+       && FindProcShort (glMultiTexCoord1f)
+       && FindProcShort (glMultiTexCoord1fv)
+       && FindProcShort (glMultiTexCoord1i)
+       && FindProcShort (glMultiTexCoord1iv)
+       && FindProcShort (glMultiTexCoord1s)
+       && FindProcShort (glMultiTexCoord1sv)
+       && FindProcShort (glMultiTexCoord2d)
+       && FindProcShort (glMultiTexCoord2dv)
+       && FindProcShort (glMultiTexCoord2f)
+       && FindProcShort (glMultiTexCoord2fv)
+       && FindProcShort (glMultiTexCoord2i)
+       && FindProcShort (glMultiTexCoord2iv)
+       && FindProcShort (glMultiTexCoord2s)
+       && FindProcShort (glMultiTexCoord2sv)
+       && FindProcShort (glMultiTexCoord3d)
+       && FindProcShort (glMultiTexCoord3dv)
+       && FindProcShort (glMultiTexCoord3f)
+       && FindProcShort (glMultiTexCoord3fv)
+       && FindProcShort (glMultiTexCoord3i)
+       && FindProcShort (glMultiTexCoord3iv)
+       && FindProcShort (glMultiTexCoord3s)
+       && FindProcShort (glMultiTexCoord3sv)
+       && FindProcShort (glMultiTexCoord4d)
+       && FindProcShort (glMultiTexCoord4dv)
+       && FindProcShort (glMultiTexCoord4f)
+       && FindProcShort (glMultiTexCoord4fv)
+       && FindProcShort (glMultiTexCoord4i)
+       && FindProcShort (glMultiTexCoord4iv)
+       && FindProcShort (glMultiTexCoord4s)
+       && FindProcShort (glMultiTexCoord4sv)
+       && FindProcShort (glLoadTransposeMatrixf)
+       && FindProcShort (glLoadTransposeMatrixd)
+       && FindProcShort (glMultTransposeMatrixf)
+       && FindProcShort (glMultTransposeMatrixd);
+
+  // load OpenGL 1.4 new functions
+  has14 = IsGlGreaterEqual (1, 4)
+       && FindProcShort (glBlendFuncSeparate)
+       && FindProcShort (glMultiDrawArrays)
+       && FindProcShort (glMultiDrawElements)
+       && FindProcShort (glPointParameterf)
+       && FindProcShort (glPointParameterfv)
+       && FindProcShort (glPointParameteri)
+       && FindProcShort (glPointParameteriv);
+
+  // load OpenGL 1.5 new functions
+  has15 = IsGlGreaterEqual (1, 5)
+       && FindProcShort (glGenQueries)
+       && FindProcShort (glDeleteQueries)
+       && FindProcShort (glIsQuery)
+       && FindProcShort (glBeginQuery)
+       && FindProcShort (glEndQuery)
+       && FindProcShort (glGetQueryiv)
+       && FindProcShort (glGetQueryObjectiv)
+       && FindProcShort (glGetQueryObjectuiv)
+       && FindProcShort (glBindBuffer)
+       && FindProcShort (glDeleteBuffers)
+       && FindProcShort (glGenBuffers)
+       && FindProcShort (glIsBuffer)
+       && FindProcShort (glBufferData)
+       && FindProcShort (glBufferSubData)
+       && FindProcShort (glGetBufferSubData)
+       && FindProcShort (glMapBuffer)
+       && FindProcShort (glUnmapBuffer)
+       && FindProcShort (glGetBufferParameteriv)
+       && FindProcShort (glGetBufferPointerv);
+
+  // load OpenGL 2.0 new functions
+  has20 = IsGlGreaterEqual (2, 0)
+       && FindProcShort (glBlendEquationSeparate)
+       && FindProcShort (glDrawBuffers)
+       && FindProcShort (glStencilOpSeparate)
+       && FindProcShort (glStencilFuncSeparate)
+       && FindProcShort (glStencilMaskSeparate)
+       && FindProcShort (glAttachShader)
+       && FindProcShort (glBindAttribLocation)
+       && FindProcShort (glCompileShader)
+       && FindProcShort (glCreateProgram)
+       && FindProcShort (glCreateShader)
+       && FindProcShort (glDeleteProgram)
+       && FindProcShort (glDeleteShader)
+       && FindProcShort (glDetachShader)
+       && FindProcShort (glDisableVertexAttribArray)
+       && FindProcShort (glEnableVertexAttribArray)
+       && FindProcShort (glGetActiveAttrib)
+       && FindProcShort (glGetActiveUniform)
+       && FindProcShort (glGetAttachedShaders)
+       && FindProcShort (glGetAttribLocation)
+       && FindProcShort (glGetProgramiv)
+       && FindProcShort (glGetProgramInfoLog)
+       && FindProcShort (glGetShaderiv)
+       && FindProcShort (glGetShaderInfoLog)
+       && FindProcShort (glGetShaderSource)
+       && FindProcShort (glGetUniformLocation)
+       && FindProcShort (glGetUniformfv)
+       && FindProcShort (glGetUniformiv)
+       && FindProcShort (glGetVertexAttribdv)
+       && FindProcShort (glGetVertexAttribfv)
+       && FindProcShort (glGetVertexAttribiv)
+       && FindProcShort (glGetVertexAttribPointerv)
+       && FindProcShort (glIsProgram)
+       && FindProcShort (glIsShader)
+       && FindProcShort (glLinkProgram)
+       && FindProcShort (glShaderSource)
+       && FindProcShort (glUseProgram)
+       && FindProcShort (glUniform1f)
+       && FindProcShort (glUniform2f)
+       && FindProcShort (glUniform3f)
+       && FindProcShort (glUniform4f)
+       && FindProcShort (glUniform1i)
+       && FindProcShort (glUniform2i)
+       && FindProcShort (glUniform3i)
+       && FindProcShort (glUniform4i)
+       && FindProcShort (glUniform1fv)
+       && FindProcShort (glUniform2fv)
+       && FindProcShort (glUniform3fv)
+       && FindProcShort (glUniform4fv)
+       && FindProcShort (glUniform1iv)
+       && FindProcShort (glUniform2iv)
+       && FindProcShort (glUniform3iv)
+       && FindProcShort (glUniform4iv)
+       && FindProcShort (glUniformMatrix2fv)
+       && FindProcShort (glUniformMatrix3fv)
+       && FindProcShort (glUniformMatrix4fv)
+       && FindProcShort (glValidateProgram)
+       && FindProcShort (glVertexAttrib1d)
+       && FindProcShort (glVertexAttrib1dv)
+       && FindProcShort (glVertexAttrib1f)
+       && FindProcShort (glVertexAttrib1fv)
+       && FindProcShort (glVertexAttrib1s)
+       && FindProcShort (glVertexAttrib1sv)
+       && FindProcShort (glVertexAttrib2d)
+       && FindProcShort (glVertexAttrib2dv)
+       && FindProcShort (glVertexAttrib2f)
+       && FindProcShort (glVertexAttrib2fv)
+       && FindProcShort (glVertexAttrib2s)
+       && FindProcShort (glVertexAttrib2sv)
+       && FindProcShort (glVertexAttrib3d)
+       && FindProcShort (glVertexAttrib3dv)
+       && FindProcShort (glVertexAttrib3f)
+       && FindProcShort (glVertexAttrib3fv)
+       && FindProcShort (glVertexAttrib3s)
+       && FindProcShort (glVertexAttrib3sv)
+       && FindProcShort (glVertexAttrib4Nbv)
+       && FindProcShort (glVertexAttrib4Niv)
+       && FindProcShort (glVertexAttrib4Nsv)
+       && FindProcShort (glVertexAttrib4Nub)
+       && FindProcShort (glVertexAttrib4Nubv)
+       && FindProcShort (glVertexAttrib4Nuiv)
+       && FindProcShort (glVertexAttrib4Nusv)
+       && FindProcShort (glVertexAttrib4bv)
+       && FindProcShort (glVertexAttrib4d)
+       && FindProcShort (glVertexAttrib4dv)
+       && FindProcShort (glVertexAttrib4f)
+       && FindProcShort (glVertexAttrib4fv)
+       && FindProcShort (glVertexAttrib4iv)
+       && FindProcShort (glVertexAttrib4s)
+       && FindProcShort (glVertexAttrib4sv)
+       && FindProcShort (glVertexAttrib4ubv)
+       && FindProcShort (glVertexAttrib4uiv)
+       && FindProcShort (glVertexAttrib4usv)
+       && FindProcShort (glVertexAttribPointer);
+
+  // load OpenGL 2.1 new functions
+  has21 = IsGlGreaterEqual (2, 1)
+       && FindProcShort (glUniformMatrix2x3fv)
+       && FindProcShort (glUniformMatrix3x2fv)
+       && FindProcShort (glUniformMatrix2x4fv)
+       && FindProcShort (glUniformMatrix4x2fv)
+       && FindProcShort (glUniformMatrix3x4fv)
+       && FindProcShort (glUniformMatrix4x3fv);
+
+  // load GL_ARB_framebuffer_object (added to OpenGL 3.0 core)
+  const bool hasFBO = (IsGlGreaterEqual (3, 0) || CheckExtension ("GL_ARB_framebuffer_object"))
+       && FindProcShort (glIsRenderbuffer)
+       && FindProcShort (glBindRenderbuffer)
+       && FindProcShort (glDeleteRenderbuffers)
+       && FindProcShort (glGenRenderbuffers)
+       && FindProcShort (glRenderbufferStorage)
+       && FindProcShort (glGetRenderbufferParameteriv)
+       && FindProcShort (glIsFramebuffer)
+       && FindProcShort (glBindFramebuffer)
+       && FindProcShort (glDeleteFramebuffers)
+       && FindProcShort (glGenFramebuffers)
+       && FindProcShort (glCheckFramebufferStatus)
+       && FindProcShort (glFramebufferTexture1D)
+       && FindProcShort (glFramebufferTexture2D)
+       && FindProcShort (glFramebufferTexture3D)
+       && FindProcShort (glFramebufferRenderbuffer)
+       && FindProcShort (glGetFramebufferAttachmentParameteriv)
+       && FindProcShort (glGenerateMipmap)
+       && FindProcShort (glBlitFramebuffer)
+       && FindProcShort (glRenderbufferStorageMultisample)
+       && FindProcShort (glFramebufferTextureLayer);
+
+  // load GL_ARB_vertex_array_object (added to OpenGL 3.0 core)
+  const bool hasVAO = (IsGlGreaterEqual (3, 0) || CheckExtension ("GL_ARB_vertex_array_object"))
+       && FindProcShort (glBindVertexArray)
+       && FindProcShort (glDeleteVertexArrays)
+       && FindProcShort (glGenVertexArrays)
+       && FindProcShort (glIsVertexArray);
+
+  // load GL_ARB_map_buffer_range (added to OpenGL 3.0 core)
+  const bool hasMapBufferRange = (IsGlGreaterEqual (3, 0) || CheckExtension ("GL_ARB_map_buffer_range"))
+       && FindProcShort (glMapBufferRange)
+       && FindProcShort (glFlushMappedBufferRange);
+
+  // load OpenGL 3.0 new functions
+  has30 = IsGlGreaterEqual (3, 0)
+       && hasFBO
+       && hasVAO
+       && hasMapBufferRange
+       && FindProcShort (glColorMaski)
+       && FindProcShort (glGetBooleani_v)
+       && FindProcShort (glGetIntegeri_v)
+       && FindProcShort (glEnablei)
+       && FindProcShort (glDisablei)
+       && FindProcShort (glIsEnabledi)
+       && FindProcShort (glBeginTransformFeedback)
+       && FindProcShort (glEndTransformFeedback)
+       && FindProcShort (glBindBufferRange)
+       && FindProcShort (glBindBufferBase)
+       && FindProcShort (glTransformFeedbackVaryings)
+       && FindProcShort (glGetTransformFeedbackVarying)
+       && FindProcShort (glClampColor)
+       && FindProcShort (glBeginConditionalRender)
+       && FindProcShort (glEndConditionalRender)
+       && FindProcShort (glVertexAttribIPointer)
+       && FindProcShort (glGetVertexAttribIiv)
+       && FindProcShort (glGetVertexAttribIuiv)
+       && FindProcShort (glVertexAttribI1i)
+       && FindProcShort (glVertexAttribI2i)
+       && FindProcShort (glVertexAttribI3i)
+       && FindProcShort (glVertexAttribI4i)
+       && FindProcShort (glVertexAttribI1ui)
+       && FindProcShort (glVertexAttribI2ui)
+       && FindProcShort (glVertexAttribI3ui)
+       && FindProcShort (glVertexAttribI4ui)
+       && FindProcShort (glVertexAttribI1iv)
+       && FindProcShort (glVertexAttribI2iv)
+       && FindProcShort (glVertexAttribI3iv)
+       && FindProcShort (glVertexAttribI4iv)
+       && FindProcShort (glVertexAttribI1uiv)
+       && FindProcShort (glVertexAttribI2uiv)
+       && FindProcShort (glVertexAttribI3uiv)
+       && FindProcShort (glVertexAttribI4uiv)
+       && FindProcShort (glVertexAttribI4bv)
+       && FindProcShort (glVertexAttribI4sv)
+       && FindProcShort (glVertexAttribI4ubv)
+       && FindProcShort (glVertexAttribI4usv)
+       && FindProcShort (glGetUniformuiv)
+       && FindProcShort (glBindFragDataLocation)
+       && FindProcShort (glGetFragDataLocation)
+       && FindProcShort (glUniform1ui)
+       && FindProcShort (glUniform2ui)
+       && FindProcShort (glUniform3ui)
+       && FindProcShort (glUniform4ui)
+       && FindProcShort (glUniform1uiv)
+       && FindProcShort (glUniform2uiv)
+       && FindProcShort (glUniform3uiv)
+       && FindProcShort (glUniform4uiv)
+       && FindProcShort (glTexParameterIiv)
+       && FindProcShort (glTexParameterIuiv)
+       && FindProcShort (glGetTexParameterIiv)
+       && FindProcShort (glGetTexParameterIuiv)
+       && FindProcShort (glClearBufferiv)
+       && FindProcShort (glClearBufferuiv)
+       && FindProcShort (glClearBufferfv)
+       && FindProcShort (glClearBufferfi)
+       && FindProcShort (glGetStringi);
+
+  // load GL_ARB_uniform_buffer_object (added to OpenGL 3.1 core)
+  const bool hasUBO = (IsGlGreaterEqual (3, 1) || CheckExtension ("GL_ARB_uniform_buffer_object"))
+       && FindProcShort (glGetUniformIndices)
+       && FindProcShort (glGetActiveUniformsiv)
+       && FindProcShort (glGetActiveUniformName)
+       && FindProcShort (glGetUniformBlockIndex)
+       && FindProcShort (glGetActiveUniformBlockiv)
+       && FindProcShort (glGetActiveUniformBlockName)
+       && FindProcShort (glUniformBlockBinding);
+
+  // load GL_ARB_copy_buffer (added to OpenGL 3.1 core)
+  const bool hasCopyBufSubData = (IsGlGreaterEqual (3, 1) || CheckExtension ("GL_ARB_copy_buffer"))
+       && FindProcShort (glCopyBufferSubData);
+
+  if (has30)
   {
-    arbVBO = new OpenGl_ArbVBO();
-    memset (arbVBO, 0, sizeof(OpenGl_ArbVBO)); // nullify whole structure
-    if (!FindProcShort (arbVBO, glGenBuffersARB)
-     || !FindProcShort (arbVBO, glBindBufferARB)
-     || !FindProcShort (arbVBO, glBufferDataARB)
-     || !FindProcShort (arbVBO, glDeleteBuffersARB))
-    {
-      delete arbVBO;
-      arbVBO = NULL;
-    }
+    // NPOT textures are required by OpenGL 2.0 specifications
+    // but doesn't hardware accelerated by some ancient OpenGL 2.1 hardware (GeForce FX, RadeOn 9700 etc.)
+    arbNPTW  = Standard_True;
+    arbTexRG = Standard_True;
   }
 
+  // load OpenGL 3.1 new functions
+  has31 = IsGlGreaterEqual (3, 1)
+       && hasUBO
+       && hasCopyBufSubData
+       && FindProcShort (glDrawArraysInstanced)
+       && FindProcShort (glDrawElementsInstanced)
+       && FindProcShort (glTexBuffer)
+       && FindProcShort (glPrimitiveRestartIndex);
+
+  // load GL_ARB_draw_elements_base_vertex (added to OpenGL 3.2 core)
+  const bool hasDrawElemsBaseVert = (IsGlGreaterEqual (3, 2) || CheckExtension ("GL_ARB_draw_elements_base_vertex"))
+       && FindProcShort (glDrawElementsBaseVertex)
+       && FindProcShort (glDrawRangeElementsBaseVertex)
+       && FindProcShort (glDrawElementsInstancedBaseVertex)
+       && FindProcShort (glMultiDrawElementsBaseVertex);
+
+  // load GL_ARB_provoking_vertex (added to OpenGL 3.2 core)
+  const bool hasProvokingVert = (IsGlGreaterEqual (3, 2) || CheckExtension ("GL_ARB_provoking_vertex"))
+       && FindProcShort (glProvokingVertex);
+
+  // load GL_ARB_sync (added to OpenGL 3.2 core)
+  const bool hasSync = (IsGlGreaterEqual (3, 2) || CheckExtension ("GL_ARB_sync"))
+       && FindProcShort (glFenceSync)
+       && FindProcShort (glIsSync)
+       && FindProcShort (glDeleteSync)
+       && FindProcShort (glClientWaitSync)
+       && FindProcShort (glWaitSync)
+       && FindProcShort (glGetInteger64v)
+       && FindProcShort (glGetSynciv);
+
+  // load GL_ARB_texture_multisample (added to OpenGL 3.2 core)
+  const bool hasTextureMultisample = (IsGlGreaterEqual (3, 2) || CheckExtension ("GL_ARB_texture_multisample"))
+       && FindProcShort (glTexImage2DMultisample)
+       && FindProcShort (glTexImage3DMultisample)
+       && FindProcShort (glGetMultisamplefv)
+       && FindProcShort (glSampleMaski);
+
+  // load OpenGL 3.2 new functions
+  has32 = IsGlGreaterEqual (3, 2)
+       && hasDrawElemsBaseVert
+       && hasProvokingVert
+       && hasSync
+       && hasTextureMultisample
+       && FindProcShort (glGetInteger64i_v)
+       && FindProcShort (glGetBufferParameteri64v)
+       && FindProcShort (glFramebufferTexture);
+
+  // load GL_ARB_blend_func_extended (added to OpenGL 3.3 core)
+  const bool hasBlendFuncExtended = (IsGlGreaterEqual (3, 3) || CheckExtension ("GL_ARB_blend_func_extended"))
+       && FindProcShort (glBindFragDataLocationIndexed)
+       && FindProcShort (glGetFragDataIndex);
+
+  // load GL_ARB_sampler_objects (added to OpenGL 3.3 core)
+  const bool hasSamplerObjects = (IsGlGreaterEqual (3, 3) || CheckExtension ("GL_ARB_sampler_objects"))
+       && FindProcShort (glGenSamplers)
+       && FindProcShort (glDeleteSamplers)
+       && FindProcShort (glIsSampler)
+       && FindProcShort (glBindSampler)
+       && FindProcShort (glSamplerParameteri)
+       && FindProcShort (glSamplerParameteriv)
+       && FindProcShort (glSamplerParameterf)
+       && FindProcShort (glSamplerParameterfv)
+       && FindProcShort (glSamplerParameterIiv)
+       && FindProcShort (glSamplerParameterIuiv)
+       && FindProcShort (glGetSamplerParameteriv)
+       && FindProcShort (glGetSamplerParameterIiv)
+       && FindProcShort (glGetSamplerParameterfv)
+       && FindProcShort (glGetSamplerParameterIuiv);
+
+  // load GL_ARB_timer_query (added to OpenGL 3.3 core)
+  const bool hasTimerQuery = (IsGlGreaterEqual (3, 3) || CheckExtension ("GL_ARB_timer_query"))
+       && FindProcShort (glQueryCounter)
+       && FindProcShort (glGetQueryObjecti64v)
+       && FindProcShort (glGetQueryObjectui64v);
+
+  // load GL_ARB_vertex_type_2_10_10_10_rev (added to OpenGL 3.3 core)
+  const bool hasVertType21010101rev = (IsGlGreaterEqual (3, 3) || CheckExtension ("GL_ARB_vertex_type_2_10_10_10_rev"))
+       && FindProcShort (glVertexP2ui)
+       && FindProcShort (glVertexP2uiv)
+       && FindProcShort (glVertexP3ui)
+       && FindProcShort (glVertexP3uiv)
+       && FindProcShort (glVertexP4ui)
+       && FindProcShort (glVertexP4uiv)
+       && FindProcShort (glTexCoordP1ui)
+       && FindProcShort (glTexCoordP1uiv)
+       && FindProcShort (glTexCoordP2ui)
+       && FindProcShort (glTexCoordP2uiv)
+       && FindProcShort (glTexCoordP3ui)
+       && FindProcShort (glTexCoordP3uiv)
+       && FindProcShort (glTexCoordP4ui)
+       && FindProcShort (glTexCoordP4uiv)
+       && FindProcShort (glMultiTexCoordP1ui)
+       && FindProcShort (glMultiTexCoordP1uiv)
+       && FindProcShort (glMultiTexCoordP2ui)
+       && FindProcShort (glMultiTexCoordP2uiv)
+       && FindProcShort (glMultiTexCoordP3ui)
+       && FindProcShort (glMultiTexCoordP3uiv)
+       && FindProcShort (glMultiTexCoordP4ui)
+       && FindProcShort (glMultiTexCoordP4uiv)
+       && FindProcShort (glNormalP3ui)
+       && FindProcShort (glNormalP3uiv)
+       && FindProcShort (glColorP3ui)
+       && FindProcShort (glColorP3uiv)
+       && FindProcShort (glColorP4ui)
+       && FindProcShort (glColorP4uiv)
+       && FindProcShort (glSecondaryColorP3ui)
+       && FindProcShort (glSecondaryColorP3uiv)
+       && FindProcShort (glVertexAttribP1ui)
+       && FindProcShort (glVertexAttribP1uiv)
+       && FindProcShort (glVertexAttribP2ui)
+       && FindProcShort (glVertexAttribP2uiv)
+       && FindProcShort (glVertexAttribP3ui)
+       && FindProcShort (glVertexAttribP3uiv)
+       && FindProcShort (glVertexAttribP4ui)
+       && FindProcShort (glVertexAttribP4uiv);
+
+  // load OpenGL 3.3 extra functions
+  has33 = IsGlGreaterEqual (3, 3)
+       && hasBlendFuncExtended
+       && hasSamplerObjects
+       && hasTimerQuery
+       && hasVertType21010101rev
+       && FindProcShort (glVertexAttribDivisor);
+
+  // load GL_ARB_draw_indirect (added to OpenGL 4.0 core)
+  const bool hasDrawIndirect = (IsGlGreaterEqual (4, 0) || CheckExtension ("GL_ARB_draw_indirect"))
+       && FindProcShort (glDrawArraysIndirect)
+       && FindProcShort (glDrawElementsIndirect);
+
+  // load GL_ARB_gpu_shader_fp64 (added to OpenGL 4.0 core)
+  const bool hasShaderFP64 = (IsGlGreaterEqual (4, 0) || CheckExtension ("GL_ARB_gpu_shader_fp64"))
+       && FindProcShort (glUniform1d)
+       && FindProcShort (glUniform2d)
+       && FindProcShort (glUniform3d)
+       && FindProcShort (glUniform4d)
+       && FindProcShort (glUniform1dv)
+       && FindProcShort (glUniform2dv)
+       && FindProcShort (glUniform3dv)
+       && FindProcShort (glUniform4dv)
+       && FindProcShort (glUniformMatrix2dv)
+       && FindProcShort (glUniformMatrix3dv)
+       && FindProcShort (glUniformMatrix4dv)
+       && FindProcShort (glUniformMatrix2x3dv)
+       && FindProcShort (glUniformMatrix2x4dv)
+       && FindProcShort (glUniformMatrix3x2dv)
+       && FindProcShort (glUniformMatrix3x4dv)
+       && FindProcShort (glUniformMatrix4x2dv)
+       && FindProcShort (glUniformMatrix4x3dv)
+       && FindProcShort (glGetUniformdv);
+
+  // load GL_ARB_shader_subroutine (added to OpenGL 4.0 core)
+  const bool hasShaderSubroutine = (IsGlGreaterEqual (4, 0) || CheckExtension ("GL_ARB_shader_subroutine"))
+       && FindProcShort (glGetSubroutineUniformLocation)
+       && FindProcShort (glGetSubroutineIndex)
+       && FindProcShort (glGetActiveSubroutineUniformiv)
+       && FindProcShort (glGetActiveSubroutineUniformName)
+       && FindProcShort (glGetActiveSubroutineName)
+       && FindProcShort (glUniformSubroutinesuiv)
+       && FindProcShort (glGetUniformSubroutineuiv)
+       && FindProcShort (glGetProgramStageiv);
+
+  // load GL_ARB_tessellation_shader (added to OpenGL 4.0 core)
+  const bool hasTessellationShader = (IsGlGreaterEqual (4, 0) || CheckExtension ("GL_ARB_tessellation_shader"))
+       && FindProcShort (glPatchParameteri)
+       && FindProcShort (glPatchParameterfv);
+
+  // load GL_ARB_transform_feedback2 (added to OpenGL 4.0 core)
+  const bool hasTrsfFeedback2 = (IsGlGreaterEqual (4, 0) || CheckExtension ("GL_ARB_transform_feedback2"))
+       && FindProcShort (glBindTransformFeedback)
+       && FindProcShort (glDeleteTransformFeedbacks)
+       && FindProcShort (glGenTransformFeedbacks)
+       && FindProcShort (glIsTransformFeedback)
+       && FindProcShort (glPauseTransformFeedback)
+       && FindProcShort (glResumeTransformFeedback)
+       && FindProcShort (glDrawTransformFeedback);
+
+  // load GL_ARB_transform_feedback3 (added to OpenGL 4.0 core)
+  const bool hasTrsfFeedback3 = (IsGlGreaterEqual (4, 0) || CheckExtension ("GL_ARB_transform_feedback3"))
+       && FindProcShort (glDrawTransformFeedbackStream)
+       && FindProcShort (glBeginQueryIndexed)
+       && FindProcShort (glEndQueryIndexed)
+       && FindProcShort (glGetQueryIndexediv);
+
+  // load OpenGL 4.0 new functions
+  has40 = IsGlGreaterEqual (4, 0)
+      && hasDrawIndirect
+      && hasShaderFP64
+      && hasShaderSubroutine
+      && hasTessellationShader
+      && hasTrsfFeedback2
+      && hasTrsfFeedback3
+      && FindProcShort (glMinSampleShading)
+      && FindProcShort (glBlendEquationi)
+      && FindProcShort (glBlendEquationSeparatei)
+      && FindProcShort (glBlendFunci)
+      && FindProcShort (glBlendFuncSeparatei);
+
+  // load GL_ARB_ES2_compatibility (added to OpenGL 4.1 core)
+  const bool hasES2Compatibility = (IsGlGreaterEqual (4, 1) || CheckExtension ("GL_ARB_ES2_compatibility"))
+       && FindProcShort (glReleaseShaderCompiler)
+       && FindProcShort (glShaderBinary)
+       && FindProcShort (glGetShaderPrecisionFormat)
+       && FindProcShort (glDepthRangef)
+       && FindProcShort (glClearDepthf);
+
+  // load GL_ARB_get_program_binary (added to OpenGL 4.1 core)
+  const bool hasGetProgramBinary = (IsGlGreaterEqual (4, 1) || CheckExtension ("GL_ARB_get_program_binary"))
+       && FindProcShort (glGetProgramBinary)
+       && FindProcShort (glProgramBinary)
+       && FindProcShort (glProgramParameteri);
+
+
+  // load GL_ARB_separate_shader_objects (added to OpenGL 4.1 core)
+  const bool hasSeparateShaderObjects = (IsGlGreaterEqual (4, 1) || CheckExtension ("GL_ARB_separate_shader_objects"))
+       && FindProcShort (glUseProgramStages)
+       && FindProcShort (glActiveShaderProgram)
+       && FindProcShort (glCreateShaderProgramv)
+       && FindProcShort (glBindProgramPipeline)
+       && FindProcShort (glDeleteProgramPipelines)
+       && FindProcShort (glGenProgramPipelines)
+       && FindProcShort (glIsProgramPipeline)
+       && FindProcShort (glGetProgramPipelineiv)
+       && FindProcShort (glProgramUniform1i)
+       && FindProcShort (glProgramUniform1iv)
+       && FindProcShort (glProgramUniform1f)
+       && FindProcShort (glProgramUniform1fv)
+       && FindProcShort (glProgramUniform1d)
+       && FindProcShort (glProgramUniform1dv)
+       && FindProcShort (glProgramUniform1ui)
+       && FindProcShort (glProgramUniform1uiv)
+       && FindProcShort (glProgramUniform2i)
+       && FindProcShort (glProgramUniform2iv)
+       && FindProcShort (glProgramUniform2f)
+       && FindProcShort (glProgramUniform2fv)
+       && FindProcShort (glProgramUniform2d)
+       && FindProcShort (glProgramUniform2dv)
+       && FindProcShort (glProgramUniform2ui)
+       && FindProcShort (glProgramUniform2uiv)
+       && FindProcShort (glProgramUniform3i)
+       && FindProcShort (glProgramUniform3iv)
+       && FindProcShort (glProgramUniform3f)
+       && FindProcShort (glProgramUniform3fv)
+       && FindProcShort (glProgramUniform3d)
+       && FindProcShort (glProgramUniform3dv)
+       && FindProcShort (glProgramUniform3ui)
+       && FindProcShort (glProgramUniform3uiv)
+       && FindProcShort (glProgramUniform4i)
+       && FindProcShort (glProgramUniform4iv)
+       && FindProcShort (glProgramUniform4f)
+       && FindProcShort (glProgramUniform4fv)
+       && FindProcShort (glProgramUniform4d)
+       && FindProcShort (glProgramUniform4dv)
+       && FindProcShort (glProgramUniform4ui)
+       && FindProcShort (glProgramUniform4uiv)
+       && FindProcShort (glProgramUniformMatrix2fv)
+       && FindProcShort (glProgramUniformMatrix3fv)
+       && FindProcShort (glProgramUniformMatrix4fv)
+       && FindProcShort (glProgramUniformMatrix2dv)
+       && FindProcShort (glProgramUniformMatrix3dv)
+       && FindProcShort (glProgramUniformMatrix4dv)
+       && FindProcShort (glProgramUniformMatrix2x3fv)
+       && FindProcShort (glProgramUniformMatrix3x2fv)
+       && FindProcShort (glProgramUniformMatrix2x4fv)
+       && FindProcShort (glProgramUniformMatrix4x2fv)
+       && FindProcShort (glProgramUniformMatrix3x4fv)
+       && FindProcShort (glProgramUniformMatrix4x3fv)
+       && FindProcShort (glProgramUniformMatrix2x3dv)
+       && FindProcShort (glProgramUniformMatrix3x2dv)
+       && FindProcShort (glProgramUniformMatrix2x4dv)
+       && FindProcShort (glProgramUniformMatrix4x2dv)
+       && FindProcShort (glProgramUniformMatrix3x4dv)
+       && FindProcShort (glProgramUniformMatrix4x3dv)
+       && FindProcShort (glValidateProgramPipeline)
+       && FindProcShort (glGetProgramPipelineInfoLog);
+
+  // load GL_ARB_vertex_attrib_64bit (added to OpenGL 4.1 core)
+  const bool hasVertAttrib64bit = (IsGlGreaterEqual (4, 1) || CheckExtension ("GL_ARB_vertex_attrib_64bit"))
+       && FindProcShort (glVertexAttribL1d)
+       && FindProcShort (glVertexAttribL2d)
+       && FindProcShort (glVertexAttribL3d)
+       && FindProcShort (glVertexAttribL4d)
+       && FindProcShort (glVertexAttribL1dv)
+       && FindProcShort (glVertexAttribL2dv)
+       && FindProcShort (glVertexAttribL3dv)
+       && FindProcShort (glVertexAttribL4dv)
+       && FindProcShort (glVertexAttribLPointer)
+       && FindProcShort (glGetVertexAttribLdv);
+
+  // load GL_ARB_viewport_array (added to OpenGL 4.1 core)
+  const bool hasViewportArray = (IsGlGreaterEqual (4, 1) || CheckExtension ("GL_ARB_viewport_array"))
+       && FindProcShort (glViewportArrayv)
+       && FindProcShort (glViewportIndexedf)
+       && FindProcShort (glViewportIndexedfv)
+       && FindProcShort (glScissorArrayv)
+       && FindProcShort (glScissorIndexed)
+       && FindProcShort (glScissorIndexedv)
+       && FindProcShort (glDepthRangeArrayv)
+       && FindProcShort (glDepthRangeIndexed)
+       && FindProcShort (glGetFloati_v)
+       && FindProcShort (glGetDoublei_v);
+
+  has41 = IsGlGreaterEqual (4, 1)
+       && hasES2Compatibility
+       && hasGetProgramBinary
+       && hasSeparateShaderObjects
+       && hasVertAttrib64bit
+       && hasViewportArray;
+
+  // load GL_ARB_base_instance (added to OpenGL 4.2 core)
+  const bool hasBaseInstance = (IsGlGreaterEqual (4, 2) || CheckExtension ("GL_ARB_base_instance"))
+       && FindProcShort (glDrawArraysInstancedBaseInstance)
+       && FindProcShort (glDrawElementsInstancedBaseInstance)
+       && FindProcShort (glDrawElementsInstancedBaseVertexBaseInstance);
+
+  // load GL_ARB_transform_feedback_instanced (added to OpenGL 4.2 core)
+  const bool hasTrsfFeedbackInstanced = (IsGlGreaterEqual (4, 2) || CheckExtension ("GL_ARB_transform_feedback_instanced"))
+       && FindProcShort (glDrawTransformFeedbackInstanced)
+       && FindProcShort (glDrawTransformFeedbackStreamInstanced);
+
+  // load GL_ARB_internalformat_query (added to OpenGL 4.2 core)
+  const bool hasInternalFormatQuery = (IsGlGreaterEqual (4, 2) || CheckExtension ("GL_ARB_internalformat_query"))
+       && FindProcShort (glGetInternalformativ);
+
+  // load GL_ARB_shader_atomic_counters (added to OpenGL 4.2 core)
+  const bool hasShaderAtomicCounters = (IsGlGreaterEqual (4, 2) || CheckExtension ("GL_ARB_shader_atomic_counters"))
+       && FindProcShort (glGetActiveAtomicCounterBufferiv);
+
+  // load GL_ARB_shader_image_load_store (added to OpenGL 4.2 core)
+  const bool hasShaderImgLoadStore = (IsGlGreaterEqual (4, 2) || CheckExtension ("GL_ARB_shader_image_load_store"))
+       && FindProcShort (glBindImageTexture)
+       && FindProcShort (glMemoryBarrier);
+
+  // load GL_ARB_texture_storage (added to OpenGL 4.2 core)
+  const bool hasTextureStorage = (IsGlGreaterEqual (4, 2) || CheckExtension ("GL_ARB_texture_storage"))
+       && FindProcShort (glTexStorage1D)
+       && FindProcShort (glTexStorage2D)
+       && FindProcShort (glTexStorage3D)
+       && FindProcShort (glTextureStorage1DEXT)
+       && FindProcShort (glTextureStorage2DEXT)
+       && FindProcShort (glTextureStorage3DEXT);
+
+  has42 = IsGlGreaterEqual (4, 2)
+       && hasBaseInstance
+       && hasTrsfFeedbackInstanced
+       && hasInternalFormatQuery
+       && hasShaderAtomicCounters
+       && hasShaderImgLoadStore
+       && hasTextureStorage;
+
+  has43 = IsGlGreaterEqual (4, 3)
+       && FindProcShort (glClearBufferData)
+       && FindProcShort (glClearBufferSubData)
+       && FindProcShort (glDispatchCompute)
+       && FindProcShort (glDispatchComputeIndirect)
+       && FindProcShort (glCopyImageSubData)
+       && FindProcShort (glFramebufferParameteri)
+       && FindProcShort (glGetFramebufferParameteriv)
+       && FindProcShort (glGetInternalformati64v)
+       && FindProcShort (glInvalidateTexSubImage)
+       && FindProcShort (glInvalidateTexImage)
+       && FindProcShort (glInvalidateBufferSubData)
+       && FindProcShort (glInvalidateBufferData)
+       && FindProcShort (glInvalidateFramebuffer)
+       && FindProcShort (glInvalidateSubFramebuffer)
+       && FindProcShort (glMultiDrawArraysIndirect)
+       && FindProcShort (glMultiDrawElementsIndirect)
+       && FindProcShort (glGetProgramInterfaceiv)
+       && FindProcShort (glGetProgramResourceIndex)
+       && FindProcShort (glGetProgramResourceName)
+       && FindProcShort (glGetProgramResourceiv)
+       && FindProcShort (glGetProgramResourceLocation)
+       && FindProcShort (glGetProgramResourceLocationIndex)
+       && FindProcShort (glShaderStorageBlockBinding)
+       && FindProcShort (glTexBufferRange)
+       && FindProcShort (glTexStorage2DMultisample)
+       && FindProcShort (glTexStorage3DMultisample)
+       && FindProcShort (glTextureView)
+       && FindProcShort (glBindVertexBuffer)
+       && FindProcShort (glVertexAttribFormat)
+       && FindProcShort (glVertexAttribIFormat)
+       && FindProcShort (glVertexAttribLFormat)
+       && FindProcShort (glVertexAttribBinding)
+       && FindProcShort (glVertexBindingDivisor)
+       && FindProcShort (glDebugMessageControl)
+       && FindProcShort (glDebugMessageInsert)
+       && FindProcShort (glDebugMessageCallback)
+       && FindProcShort (glGetDebugMessageLog)
+       && FindProcShort (glPushDebugGroup)
+       && FindProcShort (glPopDebugGroup)
+       && FindProcShort (glObjectLabel)
+       && FindProcShort (glGetObjectLabel)
+       && FindProcShort (glObjectPtrLabel)
+       && FindProcShort (glGetObjectPtrLabel);
+
+  // load GL_ARB_clear_texture (added to OpenGL 4.4 core)
+  bool arbTexClear = (IsGlGreaterEqual (4, 4) || CheckExtension ("GL_ARB_clear_texture"))
+       && FindProcShort (glClearTexImage)
+       && FindProcShort (glClearTexSubImage);
+
+  has44 = IsGlGreaterEqual (4, 4)
+       && arbTexClear
+       && FindProcShort (glBufferStorage)
+       && FindProcShort (glBindBuffersBase)
+       && FindProcShort (glBindBuffersRange)
+       && FindProcShort (glBindTextures)
+       && FindProcShort (glBindSamplers)
+       && FindProcShort (glBindImageTextures)
+       && FindProcShort (glBindVertexBuffers);
+
   // initialize TBO extension (ARB)
-  if (CheckExtension ("GL_ARB_texture_buffer_object"))
+  if (!has31
+   && CheckExtension ("GL_ARB_texture_buffer_object")
+   && FindProc ("glTexBufferARB", myFuncs->glTexBuffer))
   {
-    arbTBO = new OpenGl_ArbTBO();
-    memset (arbTBO, 0, sizeof(OpenGl_ArbTBO)); // nullify whole structure
-    if (!FindProcShort (arbTBO, glTexBufferARB))
-    {
-      delete arbTBO;
-      arbTBO = NULL;
-    }
+    arbTBO = (OpenGl_ArbTBO* )(&(*myFuncs));
   }
 
   // initialize hardware instancing extension (ARB)
-  if (CheckExtension ("GL_ARB_draw_instanced"))
+  if (!has31
+   && CheckExtension ("GL_ARB_draw_instanced")
+   && FindProc ("glDrawArraysInstancedARB",   myFuncs->glDrawArraysInstanced)
+   && FindProc ("glDrawElementsInstancedARB", myFuncs->glDrawElementsInstanced))
   {
-    arbIns = new OpenGl_ArbIns();
-    memset (arbIns, 0, sizeof(OpenGl_ArbIns)); // nullify whole structure
-    if (!FindProcShort (arbIns, glDrawArraysInstancedARB)
-     || !FindProcShort (arbIns, glDrawElementsInstancedARB))
-    {
-      delete arbIns;
-      arbIns = NULL;
-    }
+    arbIns = (OpenGl_ArbIns* )(&(*myFuncs));
   }
 
-  // initialize FBO extension (EXT)
-  if (CheckExtension ("GL_EXT_framebuffer_object"))
+  // initialize FBO extension (ARB)
+  if (hasFBO)
   {
-    extFBO = new OpenGl_ExtFBO();
-    memset (extFBO, 0, sizeof(OpenGl_ExtFBO)); // nullify whole structure
-    if (!FindProcShort (extFBO, glGenFramebuffersEXT)
-     || !FindProcShort (extFBO, glDeleteFramebuffersEXT)
-     || !FindProcShort (extFBO, glBindFramebufferEXT)
-     || !FindProcShort (extFBO, glFramebufferTexture2DEXT)
-     || !FindProcShort (extFBO, glCheckFramebufferStatusEXT)
-     || !FindProcShort (extFBO, glGenRenderbuffersEXT)
-     || !FindProcShort (extFBO, glDeleteRenderbuffersEXT)
-     || !FindProcShort (extFBO, glBindRenderbufferEXT)
-     || !FindProcShort (extFBO, glRenderbufferStorageEXT)
-     || !FindProcShort (extFBO, glFramebufferRenderbufferEXT)
-     || !FindProcShort (extFBO, glGenerateMipmapEXT))
-    {
-      delete extFBO;
-      extFBO = NULL;
-    }
+    arbFBO = (OpenGl_ArbFBO* )(&(*myFuncs));
+    extPDS = Standard_True; // extension for EXT, but part of ARB
   }
 
   // initialize GS extension (EXT)
-  if (CheckExtension ("GL_EXT_geometry_shader4"))
+  if (CheckExtension ("GL_EXT_geometry_shader4")
+   && FindProcShort (glProgramParameteriEXT))
   {
-    extGS = new OpenGl_ExtGS();
-    memset (extGS, 0, sizeof(OpenGl_ExtGS)); // nullify whole structure
-    if (!FindProcShort (extGS, glProgramParameteriEXT))
-    {
-      delete extGS;
-      extGS = NULL;
-    }
+    extGS = (OpenGl_ExtGS* )(&(*myFuncs));
   }
 
-  myGlCore20 = new OpenGl_GlCore20();
-  memset (myGlCore20, 0, sizeof(OpenGl_GlCore20)); // nullify whole structure
-
-  // Check if OpenGL 1.2 core functionality is actually present
-  Standard_Boolean hasGlCore12 = IsGlGreaterEqual (1, 2)
-    && FindProcShort (myGlCore20, glBlendColor)
-    && FindProcShort (myGlCore20, glBlendEquation)
-    && FindProcShort (myGlCore20, glDrawRangeElements)
-    && FindProcShort (myGlCore20, glTexImage3D)
-    && FindProcShort (myGlCore20, glTexSubImage3D)
-    && FindProcShort (myGlCore20, glCopyTexSubImage3D);
-
-  // Check if OpenGL 1.3 core functionality is actually present
-  Standard_Boolean hasGlCore13 = IsGlGreaterEqual (1, 3)
-    && FindProcShort (myGlCore20, glActiveTexture)
-    && FindProcShort (myGlCore20, glSampleCoverage)
-    && FindProcShort (myGlCore20, glCompressedTexImage3D)
-    && FindProcShort (myGlCore20, glCompressedTexImage2D)
-    && FindProcShort (myGlCore20, glCompressedTexImage1D)
-    && FindProcShort (myGlCore20, glCompressedTexSubImage3D)
-    && FindProcShort (myGlCore20, glCompressedTexSubImage2D)
-    && FindProcShort (myGlCore20, glCompressedTexSubImage1D)
-    && FindProcShort (myGlCore20, glGetCompressedTexImage)
-     // deprecated
-    && FindProcShort (myGlCore20, glClientActiveTexture)
-    && FindProcShort (myGlCore20, glMultiTexCoord1d)
-    && FindProcShort (myGlCore20, glMultiTexCoord1dv)
-    && FindProcShort (myGlCore20, glMultiTexCoord1f)
-    && FindProcShort (myGlCore20, glMultiTexCoord1fv)
-    && FindProcShort (myGlCore20, glMultiTexCoord1i)
-    && FindProcShort (myGlCore20, glMultiTexCoord1iv)
-    && FindProcShort (myGlCore20, glMultiTexCoord1s)
-    && FindProcShort (myGlCore20, glMultiTexCoord1sv)
-    && FindProcShort (myGlCore20, glMultiTexCoord2d)
-    && FindProcShort (myGlCore20, glMultiTexCoord2dv)
-    && FindProcShort (myGlCore20, glMultiTexCoord2f)
-    && FindProcShort (myGlCore20, glMultiTexCoord2fv)
-    && FindProcShort (myGlCore20, glMultiTexCoord2i)
-    && FindProcShort (myGlCore20, glMultiTexCoord2iv)
-    && FindProcShort (myGlCore20, glMultiTexCoord2s)
-    && FindProcShort (myGlCore20, glMultiTexCoord2sv)
-    && FindProcShort (myGlCore20, glMultiTexCoord3d)
-    && FindProcShort (myGlCore20, glMultiTexCoord3dv)
-    && FindProcShort (myGlCore20, glMultiTexCoord3f)
-    && FindProcShort (myGlCore20, glMultiTexCoord3fv)
-    && FindProcShort (myGlCore20, glMultiTexCoord3i)
-    && FindProcShort (myGlCore20, glMultiTexCoord3iv)
-    && FindProcShort (myGlCore20, glMultiTexCoord3s)
-    && FindProcShort (myGlCore20, glMultiTexCoord3sv)
-    && FindProcShort (myGlCore20, glMultiTexCoord4d)
-    && FindProcShort (myGlCore20, glMultiTexCoord4dv)
-    && FindProcShort (myGlCore20, glMultiTexCoord4f)
-    && FindProcShort (myGlCore20, glMultiTexCoord4fv)
-    && FindProcShort (myGlCore20, glMultiTexCoord4i)
-    && FindProcShort (myGlCore20, glMultiTexCoord4iv)
-    && FindProcShort (myGlCore20, glMultiTexCoord4s)
-    && FindProcShort (myGlCore20, glMultiTexCoord4sv)
-    && FindProcShort (myGlCore20, glLoadTransposeMatrixf)
-    && FindProcShort (myGlCore20, glLoadTransposeMatrixd)
-    && FindProcShort (myGlCore20, glMultTransposeMatrixf)
-    && FindProcShort (myGlCore20, glMultTransposeMatrixd);
-
-  // Check if OpenGL 1.4 core functionality is actually present
-  Standard_Boolean hasGlCore14 = IsGlGreaterEqual (1, 4)
-    && FindProcShort (myGlCore20, glBlendFuncSeparate)
-    && FindProcShort (myGlCore20, glMultiDrawArrays)
-    && FindProcShort (myGlCore20, glMultiDrawElements)
-    && FindProcShort (myGlCore20, glPointParameterf)
-    && FindProcShort (myGlCore20, glPointParameterfv)
-    && FindProcShort (myGlCore20, glPointParameteri)
-    && FindProcShort (myGlCore20, glPointParameteriv);
-
-  // Check if OpenGL 1.5 core functionality is actually present
-  Standard_Boolean hasGlCore15 = IsGlGreaterEqual (1, 5)
-    && FindProcShort (myGlCore20, glGenQueries)
-    && FindProcShort (myGlCore20, glDeleteQueries)
-    && FindProcShort (myGlCore20, glIsQuery)
-    && FindProcShort (myGlCore20, glBeginQuery)
-    && FindProcShort (myGlCore20, glEndQuery)
-    && FindProcShort (myGlCore20, glGetQueryiv)
-    && FindProcShort (myGlCore20, glGetQueryObjectiv)
-    && FindProcShort (myGlCore20, glGetQueryObjectuiv)
-    && FindProcShort (myGlCore20, glBindBuffer)
-    && FindProcShort (myGlCore20, glDeleteBuffers)
-    && FindProcShort (myGlCore20, glGenBuffers)
-    && FindProcShort (myGlCore20, glIsBuffer)
-    && FindProcShort (myGlCore20, glBufferData)
-    && FindProcShort (myGlCore20, glBufferSubData)
-    && FindProcShort (myGlCore20, glGetBufferSubData)
-    && FindProcShort (myGlCore20, glMapBuffer)
-    && FindProcShort (myGlCore20, glUnmapBuffer)
-    && FindProcShort (myGlCore20, glGetBufferParameteriv)
-    && FindProcShort (myGlCore20, glGetBufferPointerv);
-
-  // Check if OpenGL 2.0 core functionality is actually present
-  Standard_Boolean hasGlCore20 = IsGlGreaterEqual (2, 0)
-    && FindProcShort (myGlCore20, glBlendEquationSeparate)
-    && FindProcShort (myGlCore20, glDrawBuffers)
-    && FindProcShort (myGlCore20, glStencilOpSeparate)
-    && FindProcShort (myGlCore20, glStencilFuncSeparate)
-    && FindProcShort (myGlCore20, glStencilMaskSeparate)
-    && FindProcShort (myGlCore20, glAttachShader)
-    && FindProcShort (myGlCore20, glBindAttribLocation)
-    && FindProcShort (myGlCore20, glCompileShader)
-    && FindProcShort (myGlCore20, glCreateProgram)
-    && FindProcShort (myGlCore20, glCreateShader)
-    && FindProcShort (myGlCore20, glDeleteProgram)
-    && FindProcShort (myGlCore20, glDeleteShader)
-    && FindProcShort (myGlCore20, glDetachShader)
-    && FindProcShort (myGlCore20, glDisableVertexAttribArray)
-    && FindProcShort (myGlCore20, glEnableVertexAttribArray)
-    && FindProcShort (myGlCore20, glGetActiveAttrib)
-    && FindProcShort (myGlCore20, glGetActiveUniform)
-    && FindProcShort (myGlCore20, glGetAttachedShaders)
-    && FindProcShort (myGlCore20, glGetAttribLocation)
-    && FindProcShort (myGlCore20, glGetProgramiv)
-    && FindProcShort (myGlCore20, glGetProgramInfoLog)
-    && FindProcShort (myGlCore20, glGetShaderiv)
-    && FindProcShort (myGlCore20, glGetShaderInfoLog)
-    && FindProcShort (myGlCore20, glGetShaderSource)
-    && FindProcShort (myGlCore20, glGetUniformLocation)
-    && FindProcShort (myGlCore20, glGetUniformfv)
-    && FindProcShort (myGlCore20, glGetUniformiv)
-    && FindProcShort (myGlCore20, glGetVertexAttribdv)
-    && FindProcShort (myGlCore20, glGetVertexAttribfv)
-    && FindProcShort (myGlCore20, glGetVertexAttribiv)
-    && FindProcShort (myGlCore20, glGetVertexAttribPointerv)
-    && FindProcShort (myGlCore20, glIsProgram)
-    && FindProcShort (myGlCore20, glIsShader)
-    && FindProcShort (myGlCore20, glLinkProgram)
-    && FindProcShort (myGlCore20, glShaderSource)
-    && FindProcShort (myGlCore20, glUseProgram)
-    && FindProcShort (myGlCore20, glUniform1f)
-    && FindProcShort (myGlCore20, glUniform2f)
-    && FindProcShort (myGlCore20, glUniform3f)
-    && FindProcShort (myGlCore20, glUniform4f)
-    && FindProcShort (myGlCore20, glUniform1i)
-    && FindProcShort (myGlCore20, glUniform2i)
-    && FindProcShort (myGlCore20, glUniform3i)
-    && FindProcShort (myGlCore20, glUniform4i)
-    && FindProcShort (myGlCore20, glUniform1fv)
-    && FindProcShort (myGlCore20, glUniform2fv)
-    && FindProcShort (myGlCore20, glUniform3fv)
-    && FindProcShort (myGlCore20, glUniform4fv)
-    && FindProcShort (myGlCore20, glUniform1iv)
-    && FindProcShort (myGlCore20, glUniform2iv)
-    && FindProcShort (myGlCore20, glUniform3iv)
-    && FindProcShort (myGlCore20, glUniform4iv)
-    && FindProcShort (myGlCore20, glUniformMatrix2fv)
-    && FindProcShort (myGlCore20, glUniformMatrix3fv)
-    && FindProcShort (myGlCore20, glUniformMatrix4fv)
-    && FindProcShort (myGlCore20, glValidateProgram)
-    && FindProcShort (myGlCore20, glVertexAttrib1d)
-    && FindProcShort (myGlCore20, glVertexAttrib1dv)
-    && FindProcShort (myGlCore20, glVertexAttrib1f)
-    && FindProcShort (myGlCore20, glVertexAttrib1fv)
-    && FindProcShort (myGlCore20, glVertexAttrib1s)
-    && FindProcShort (myGlCore20, glVertexAttrib1sv)
-    && FindProcShort (myGlCore20, glVertexAttrib2d)
-    && FindProcShort (myGlCore20, glVertexAttrib2dv)
-    && FindProcShort (myGlCore20, glVertexAttrib2f)
-    && FindProcShort (myGlCore20, glVertexAttrib2fv)
-    && FindProcShort (myGlCore20, glVertexAttrib2s)
-    && FindProcShort (myGlCore20, glVertexAttrib2sv)
-    && FindProcShort (myGlCore20, glVertexAttrib3d)
-    && FindProcShort (myGlCore20, glVertexAttrib3dv)
-    && FindProcShort (myGlCore20, glVertexAttrib3f)
-    && FindProcShort (myGlCore20, glVertexAttrib3fv)
-    && FindProcShort (myGlCore20, glVertexAttrib3s)
-    && FindProcShort (myGlCore20, glVertexAttrib3sv)
-    && FindProcShort (myGlCore20, glVertexAttrib4Nbv)
-    && FindProcShort (myGlCore20, glVertexAttrib4Niv)
-    && FindProcShort (myGlCore20, glVertexAttrib4Nsv)
-    && FindProcShort (myGlCore20, glVertexAttrib4Nub)
-    && FindProcShort (myGlCore20, glVertexAttrib4Nubv)
-    && FindProcShort (myGlCore20, glVertexAttrib4Nuiv)
-    && FindProcShort (myGlCore20, glVertexAttrib4Nusv)
-    && FindProcShort (myGlCore20, glVertexAttrib4bv)
-    && FindProcShort (myGlCore20, glVertexAttrib4d)
-    && FindProcShort (myGlCore20, glVertexAttrib4dv)
-    && FindProcShort (myGlCore20, glVertexAttrib4f)
-    && FindProcShort (myGlCore20, glVertexAttrib4fv)
-    && FindProcShort (myGlCore20, glVertexAttrib4iv)
-    && FindProcShort (myGlCore20, glVertexAttrib4s)
-    && FindProcShort (myGlCore20, glVertexAttrib4sv)
-    && FindProcShort (myGlCore20, glVertexAttrib4ubv)
-    && FindProcShort (myGlCore20, glVertexAttrib4uiv)
-    && FindProcShort (myGlCore20, glVertexAttrib4usv)
-    && FindProcShort (myGlCore20, glVertexAttribPointer);
-
-  if (!hasGlCore12)
+  if (!has12)
   {
     myGlVerMajor = 1;
     myGlVerMinor = 1;
     return;
   }
-  else
-  {
-    core12 = myGlCore20;
-  }
-  if (!hasGlCore13)
+  else if (!has13)
   {
     myGlVerMajor = 1;
     myGlVerMinor = 2;
     return;
   }
-  else
-  {
-    core13 = myGlCore20;
-  }
-  if(!hasGlCore14)
+  else if (!has14)
   {
     myGlVerMajor = 1;
     myGlVerMinor = 3;
     return;
   }
-  else
-  {
-    core14 = myGlCore20;
-  }
-  if(!hasGlCore15)
+  else if (!has15)
   {
     myGlVerMajor = 1;
     myGlVerMinor = 4;
     return;
   }
-  else
-  {
-    core15 = myGlCore20;
-  }
-  if(!hasGlCore20)
+  core15    = (OpenGl_GlCore15*    )(&(*myFuncs));
+  core15fwd = (OpenGl_GlCore15Fwd* )(&(*myFuncs));
+
+  if (!has20)
   {
     myGlVerMajor = 1;
     myGlVerMinor = 5;
+    return;
   }
-  else
+
+  core20    = (OpenGl_GlCore20*    )(&(*myFuncs));
+  core20fwd = (OpenGl_GlCore20Fwd* )(&(*myFuncs));
+
+  if (!has21)
   {
-    core20 = myGlCore20;
+    myGlVerMajor = 2;
+    myGlVerMinor = 0;
+    return;
   }
+
+  if (!has30)
+  {
+    myGlVerMajor = 2;
+    myGlVerMinor = 1;
+    return;
+  }
+
+  if (!has31)
+  {
+    myGlVerMajor = 3;
+    myGlVerMinor = 0;
+    return;
+  }
+  arbTBO = (OpenGl_ArbTBO* )(&(*myFuncs));
+  arbIns = (OpenGl_ArbIns* )(&(*myFuncs));
+
+  if (!has32)
+  {
+    myGlVerMajor = 3;
+    myGlVerMinor = 1;
+    return;
+  }
+  core32     = (OpenGl_GlCore32*     )(&(*myFuncs));
+  core32back = (OpenGl_GlCore32Back* )(&(*myFuncs));
+
+  if (!has33)
+  {
+    myGlVerMajor = 3;
+    myGlVerMinor = 2;
+    return;
+  }
+
+  if (!has40)
+  {
+    myGlVerMajor = 3;
+    myGlVerMinor = 3;
+    return;
+  }
+
+  if (!has41)
+  {
+    myGlVerMajor = 4;
+    myGlVerMinor = 0;
+    return;
+  }
+  core41     = (OpenGl_GlCore41*     )(&(*myFuncs));
+  core41back = (OpenGl_GlCore41Back* )(&(*myFuncs));
+
+  if(!has42)
+  {
+    myGlVerMajor = 4;
+    myGlVerMinor = 1;
+    return;
+  }
+  core42     = (OpenGl_GlCore42*     )(&(*myFuncs));
+  core42back = (OpenGl_GlCore42Back* )(&(*myFuncs));
+
+  if(!has43)
+  {
+    myGlVerMajor = 4;
+    myGlVerMinor = 2;
+    return;
+  }
+  core43     = (OpenGl_GlCore43*     )(&(*myFuncs));
+  core43back = (OpenGl_GlCore43Back* )(&(*myFuncs));
+
+  if (!has44)
+  {
+    myGlVerMajor = 4;
+    myGlVerMinor = 3;
+    return;
+  }
+  core44     = (OpenGl_GlCore44*     )(&(*myFuncs));
+  core44back = (OpenGl_GlCore44Back* )(&(*myFuncs));
 }
 
 // =======================================================================

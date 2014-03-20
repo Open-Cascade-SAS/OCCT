@@ -13,109 +13,118 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_GlCore20_H__
-#define _OpenGl_GlCore20_H__
+#ifndef _OpenGl_GlCore20_Header
+#define _OpenGl_GlCore20_Header
 
 #include <OpenGl_GlCore15.hxx>
 
-//! Function list for GL2.0 core functionality.
-struct OpenGl_GlCore20 : public OpenGl_GlCore15
+//! OpenGL 2.0 core based on 1.5 version.
+template<typename theBaseClass_t>
+struct OpenGl_TmplCore20 : public theBaseClass_t
 {
 
-  PFNGLBLENDEQUATIONSEPARATEPROC    glBlendEquationSeparate;
-  PFNGLDRAWBUFFERSPROC              glDrawBuffers;
-  PFNGLSTENCILOPSEPARATEPROC        glStencilOpSeparate;
-  PFNGLSTENCILFUNCSEPARATEPROC      glStencilFuncSeparate;
-  PFNGLSTENCILMASKSEPARATEPROC      glStencilMaskSeparate;
-  PFNGLATTACHSHADERPROC             glAttachShader;
-  PFNGLBINDATTRIBLOCATIONPROC       glBindAttribLocation;
-  PFNGLCOMPILESHADERPROC            glCompileShader;
-  PFNGLCREATEPROGRAMPROC            glCreateProgram;
-  PFNGLCREATESHADERPROC             glCreateShader;
-  PFNGLDELETEPROGRAMPROC            glDeleteProgram;
-  PFNGLDELETESHADERPROC             glDeleteShader;
-  PFNGLDETACHSHADERPROC             glDetachShader;
-  PFNGLDISABLEVERTEXATTRIBARRAYPROC glDisableVertexAttribArray;
-  PFNGLENABLEVERTEXATTRIBARRAYPROC  glEnableVertexAttribArray;
-  PFNGLGETACTIVEATTRIBPROC          glGetActiveAttrib;
-  PFNGLGETACTIVEUNIFORMPROC         glGetActiveUniform;
-  PFNGLGETATTACHEDSHADERSPROC       glGetAttachedShaders;
-  PFNGLGETATTRIBLOCATIONPROC        glGetAttribLocation;
-  PFNGLGETPROGRAMIVPROC             glGetProgramiv;
-  PFNGLGETPROGRAMINFOLOGPROC        glGetProgramInfoLog;
-  PFNGLGETSHADERIVPROC              glGetShaderiv;
-  PFNGLGETSHADERINFOLOGPROC         glGetShaderInfoLog;
-  PFNGLGETSHADERSOURCEPROC          glGetShaderSource;
-  PFNGLGETUNIFORMLOCATIONPROC       glGetUniformLocation;
-  PFNGLGETUNIFORMFVPROC             glGetUniformfv;
-  PFNGLGETUNIFORMIVPROC             glGetUniformiv;
-  PFNGLGETVERTEXATTRIBDVPROC        glGetVertexAttribdv;
-  PFNGLGETVERTEXATTRIBFVPROC        glGetVertexAttribfv;
-  PFNGLGETVERTEXATTRIBIVPROC        glGetVertexAttribiv;
-  PFNGLGETVERTEXATTRIBPOINTERVPROC  glGetVertexAttribPointerv;
-  PFNGLISPROGRAMPROC                glIsProgram;
-  PFNGLISSHADERPROC                 glIsShader;
-  PFNGLLINKPROGRAMPROC              glLinkProgram;
-  PFNGLSHADERSOURCEPROC             glShaderSource;
-  PFNGLUSEPROGRAMPROC               glUseProgram;
-  PFNGLUNIFORM1FPROC                glUniform1f;
-  PFNGLUNIFORM2FPROC                glUniform2f;
-  PFNGLUNIFORM3FPROC                glUniform3f;
-  PFNGLUNIFORM4FPROC                glUniform4f;
-  PFNGLUNIFORM1IPROC                glUniform1i;
-  PFNGLUNIFORM2IPROC                glUniform2i;
-  PFNGLUNIFORM3IPROC                glUniform3i;
-  PFNGLUNIFORM4IPROC                glUniform4i;
-  PFNGLUNIFORM1FVPROC               glUniform1fv;
-  PFNGLUNIFORM2FVPROC               glUniform2fv;
-  PFNGLUNIFORM3FVPROC               glUniform3fv;
-  PFNGLUNIFORM4FVPROC               glUniform4fv;
-  PFNGLUNIFORM1IVPROC               glUniform1iv;
-  PFNGLUNIFORM2IVPROC               glUniform2iv;
-  PFNGLUNIFORM3IVPROC               glUniform3iv;
-  PFNGLUNIFORM4IVPROC               glUniform4iv;
-  PFNGLUNIFORMMATRIX2FVPROC         glUniformMatrix2fv;
-  PFNGLUNIFORMMATRIX3FVPROC         glUniformMatrix3fv;
-  PFNGLUNIFORMMATRIX4FVPROC         glUniformMatrix4fv;
-  PFNGLVALIDATEPROGRAMPROC          glValidateProgram;
-  PFNGLVERTEXATTRIB1DPROC           glVertexAttrib1d;
-  PFNGLVERTEXATTRIB1DVPROC          glVertexAttrib1dv;
-  PFNGLVERTEXATTRIB1FPROC           glVertexAttrib1f;
-  PFNGLVERTEXATTRIB1FVPROC          glVertexAttrib1fv;
-  PFNGLVERTEXATTRIB1SPROC           glVertexAttrib1s;
-  PFNGLVERTEXATTRIB1SVPROC          glVertexAttrib1sv;
-  PFNGLVERTEXATTRIB2DPROC           glVertexAttrib2d;
-  PFNGLVERTEXATTRIB2DVPROC          glVertexAttrib2dv;
-  PFNGLVERTEXATTRIB2FPROC           glVertexAttrib2f;
-  PFNGLVERTEXATTRIB2FVPROC          glVertexAttrib2fv;
-  PFNGLVERTEXATTRIB2SPROC           glVertexAttrib2s;
-  PFNGLVERTEXATTRIB2SVPROC          glVertexAttrib2sv;
-  PFNGLVERTEXATTRIB3DPROC           glVertexAttrib3d;
-  PFNGLVERTEXATTRIB3DVPROC          glVertexAttrib3dv;
-  PFNGLVERTEXATTRIB3FPROC           glVertexAttrib3f;
-  PFNGLVERTEXATTRIB3FVPROC          glVertexAttrib3fv;
-  PFNGLVERTEXATTRIB3SPROC           glVertexAttrib3s;
-  PFNGLVERTEXATTRIB3SVPROC          glVertexAttrib3sv;
-  PFNGLVERTEXATTRIB4NBVPROC         glVertexAttrib4Nbv;
-  PFNGLVERTEXATTRIB4NIVPROC         glVertexAttrib4Niv;
-  PFNGLVERTEXATTRIB4NSVPROC         glVertexAttrib4Nsv;
-  PFNGLVERTEXATTRIB4NUBPROC         glVertexAttrib4Nub;
-  PFNGLVERTEXATTRIB4NUBVPROC        glVertexAttrib4Nubv;
-  PFNGLVERTEXATTRIB4NUIVPROC        glVertexAttrib4Nuiv;
-  PFNGLVERTEXATTRIB4NUSVPROC        glVertexAttrib4Nusv;
-  PFNGLVERTEXATTRIB4BVPROC          glVertexAttrib4bv;
-  PFNGLVERTEXATTRIB4DPROC           glVertexAttrib4d;
-  PFNGLVERTEXATTRIB4DVPROC          glVertexAttrib4dv;
-  PFNGLVERTEXATTRIB4FPROC           glVertexAttrib4f;
-  PFNGLVERTEXATTRIB4FVPROC          glVertexAttrib4fv;
-  PFNGLVERTEXATTRIB4IVPROC          glVertexAttrib4iv;
-  PFNGLVERTEXATTRIB4SPROC           glVertexAttrib4s;
-  PFNGLVERTEXATTRIB4SVPROC          glVertexAttrib4sv;
-  PFNGLVERTEXATTRIB4UBVPROC         glVertexAttrib4ubv;
-  PFNGLVERTEXATTRIB4UIVPROC         glVertexAttrib4uiv;
-  PFNGLVERTEXATTRIB4USVPROC         glVertexAttrib4usv;
-  PFNGLVERTEXATTRIBPOINTERPROC      glVertexAttribPointer;
+public: //! @name OpenGL 2.0 additives to 1.5
+
+  using theBaseClass_t::glBlendEquationSeparate;
+  using theBaseClass_t::glDrawBuffers;
+  using theBaseClass_t::glStencilOpSeparate;
+  using theBaseClass_t::glStencilFuncSeparate;
+  using theBaseClass_t::glStencilMaskSeparate;
+  using theBaseClass_t::glAttachShader;
+  using theBaseClass_t::glBindAttribLocation;
+  using theBaseClass_t::glCompileShader;
+  using theBaseClass_t::glCreateProgram;
+  using theBaseClass_t::glCreateShader;
+  using theBaseClass_t::glDeleteProgram;
+  using theBaseClass_t::glDeleteShader;
+  using theBaseClass_t::glDetachShader;
+  using theBaseClass_t::glDisableVertexAttribArray;
+  using theBaseClass_t::glEnableVertexAttribArray;
+  using theBaseClass_t::glGetActiveAttrib;
+  using theBaseClass_t::glGetActiveUniform;
+  using theBaseClass_t::glGetAttachedShaders;
+  using theBaseClass_t::glGetAttribLocation;
+  using theBaseClass_t::glGetProgramiv;
+  using theBaseClass_t::glGetProgramInfoLog;
+  using theBaseClass_t::glGetShaderiv;
+  using theBaseClass_t::glGetShaderInfoLog;
+  using theBaseClass_t::glGetShaderSource;
+  using theBaseClass_t::glGetUniformLocation;
+  using theBaseClass_t::glGetUniformfv;
+  using theBaseClass_t::glGetUniformiv;
+  using theBaseClass_t::glGetVertexAttribdv;
+  using theBaseClass_t::glGetVertexAttribfv;
+  using theBaseClass_t::glGetVertexAttribiv;
+  using theBaseClass_t::glGetVertexAttribPointerv;
+  using theBaseClass_t::glIsProgram;
+  using theBaseClass_t::glIsShader;
+  using theBaseClass_t::glLinkProgram;
+  using theBaseClass_t::glShaderSource;
+  using theBaseClass_t::glUseProgram;
+  using theBaseClass_t::glUniform1f;
+  using theBaseClass_t::glUniform2f;
+  using theBaseClass_t::glUniform3f;
+  using theBaseClass_t::glUniform4f;
+  using theBaseClass_t::glUniform1i;
+  using theBaseClass_t::glUniform2i;
+  using theBaseClass_t::glUniform3i;
+  using theBaseClass_t::glUniform4i;
+  using theBaseClass_t::glUniform1fv;
+  using theBaseClass_t::glUniform2fv;
+  using theBaseClass_t::glUniform3fv;
+  using theBaseClass_t::glUniform4fv;
+  using theBaseClass_t::glUniform1iv;
+  using theBaseClass_t::glUniform2iv;
+  using theBaseClass_t::glUniform3iv;
+  using theBaseClass_t::glUniform4iv;
+  using theBaseClass_t::glUniformMatrix2fv;
+  using theBaseClass_t::glUniformMatrix3fv;
+  using theBaseClass_t::glUniformMatrix4fv;
+  using theBaseClass_t::glValidateProgram;
+  using theBaseClass_t::glVertexAttrib1d;
+  using theBaseClass_t::glVertexAttrib1dv;
+  using theBaseClass_t::glVertexAttrib1f;
+  using theBaseClass_t::glVertexAttrib1fv;
+  using theBaseClass_t::glVertexAttrib1s;
+  using theBaseClass_t::glVertexAttrib1sv;
+  using theBaseClass_t::glVertexAttrib2d;
+  using theBaseClass_t::glVertexAttrib2dv;
+  using theBaseClass_t::glVertexAttrib2f;
+  using theBaseClass_t::glVertexAttrib2fv;
+  using theBaseClass_t::glVertexAttrib2s;
+  using theBaseClass_t::glVertexAttrib2sv;
+  using theBaseClass_t::glVertexAttrib3d;
+  using theBaseClass_t::glVertexAttrib3dv;
+  using theBaseClass_t::glVertexAttrib3f;
+  using theBaseClass_t::glVertexAttrib3fv;
+  using theBaseClass_t::glVertexAttrib3s;
+  using theBaseClass_t::glVertexAttrib3sv;
+  using theBaseClass_t::glVertexAttrib4Nbv;
+  using theBaseClass_t::glVertexAttrib4Niv;
+  using theBaseClass_t::glVertexAttrib4Nsv;
+  using theBaseClass_t::glVertexAttrib4Nub;
+  using theBaseClass_t::glVertexAttrib4Nubv;
+  using theBaseClass_t::glVertexAttrib4Nuiv;
+  using theBaseClass_t::glVertexAttrib4Nusv;
+  using theBaseClass_t::glVertexAttrib4bv;
+  using theBaseClass_t::glVertexAttrib4d;
+  using theBaseClass_t::glVertexAttrib4dv;
+  using theBaseClass_t::glVertexAttrib4f;
+  using theBaseClass_t::glVertexAttrib4fv;
+  using theBaseClass_t::glVertexAttrib4iv;
+  using theBaseClass_t::glVertexAttrib4s;
+  using theBaseClass_t::glVertexAttrib4sv;
+  using theBaseClass_t::glVertexAttrib4ubv;
+  using theBaseClass_t::glVertexAttrib4uiv;
+  using theBaseClass_t::glVertexAttrib4usv;
+  using theBaseClass_t::glVertexAttribPointer;
 
 };
 
-#endif // _OpenGl_GlCore20_H__
+//! OpenGL 2.0 core based on 1.5 version.
+typedef OpenGl_TmplCore20<OpenGl_GlCore15>    OpenGl_GlCore20;
+
+//! OpenGL 2.0 without deprecated entry points.
+typedef OpenGl_TmplCore20<OpenGl_GlCore15Fwd> OpenGl_GlCore20Fwd;
+
+#endif // _OpenGl_GlCore20_Header

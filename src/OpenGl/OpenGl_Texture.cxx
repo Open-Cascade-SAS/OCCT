@@ -14,8 +14,9 @@
 
 #include <OpenGl_Texture.hxx>
 
-#include <OpenGl_ExtFBO.hxx>
+#include <OpenGl_ArbFBO.hxx>
 #include <OpenGl_Context.hxx>
+#include <OpenGl_GlCore15.hxx>
 #include <Graphic3d_TextureParams.hxx>
 #include <Standard_Assert.hxx>
 #include <Image_PixMap.hxx>
@@ -140,9 +141,9 @@ void OpenGl_Texture::Release (const OpenGl_Context* theGlCtx)
 void OpenGl_Texture::Bind (const Handle(OpenGl_Context)& theCtx,
                            const GLenum theTextureUnit) const
 {
-  if (theCtx->IsGlGreaterEqual (1, 3))
+  if (theCtx->IsGlGreaterEqual (1, 5))
   {
-    theCtx->core13->glActiveTexture (theTextureUnit);
+    theCtx->core15fwd->glActiveTexture (theTextureUnit);
   }
   glBindTexture (myTarget, myTextureId);
 }
@@ -154,9 +155,9 @@ void OpenGl_Texture::Bind (const Handle(OpenGl_Context)& theCtx,
 void OpenGl_Texture::Unbind (const Handle(OpenGl_Context)& theCtx,
                              const GLenum theTextureUnit) const
 {
-  if (theCtx->IsGlGreaterEqual (1, 3))
+  if (theCtx->IsGlGreaterEqual (1, 5))
   {
-    theCtx->core13->glActiveTexture (theTextureUnit);
+    theCtx->core15fwd->glActiveTexture (theTextureUnit);
   }
   glBindTexture (myTarget, NO_TEXTURE);
 }
@@ -429,7 +430,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
       glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
       glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-      if (theCtx->extFBO != NULL
+      if (theCtx->arbFBO != NULL
        && aWidth == aWidthOut && aHeight == aHeightOut)
       {
         // use proxy to check texture could be created or not
@@ -460,7 +461,7 @@ bool OpenGl_Texture::Init (const Handle(OpenGl_Context)& theCtx,
 
         // generate mipmaps
         //glHint (GL_GENERATE_MIPMAP_HINT, GL_NICEST);
-        theCtx->extFBO->glGenerateMipmapEXT (GL_TEXTURE_2D);
+        theCtx->arbFBO->glGenerateMipmap (GL_TEXTURE_2D);
 
         Unbind (theCtx);
         return true;

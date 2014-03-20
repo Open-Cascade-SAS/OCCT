@@ -121,7 +121,7 @@ bool OpenGl_TextureBufferArb::Init (const Handle(OpenGl_Context)& theGlCtx,
 
   Bind (theGlCtx);
   BindTexture (theGlCtx);
-  theGlCtx->arbTBO->glTexBufferARB (GetTarget(), myTexFormat, myBufferId);
+  theGlCtx->arbTBO->glTexBuffer (GetTarget(), myTexFormat, myBufferId);
   UnbindTexture (theGlCtx);
   Unbind (theGlCtx);
   return true;

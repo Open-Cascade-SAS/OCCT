@@ -27,14 +27,12 @@
 #include <Graphic3d_Group.hxx>
 #include <Graphic3d_ShaderObject.hxx>
 #include <Graphic3d_ShaderProgram.hxx>
-#include <OpenGl_ArbVBO.hxx>
 #include <OpenGl_AspectFace.hxx>
 #include <OpenGl_AspectLine.hxx>
 #include <OpenGl_AspectMarker.hxx>
 #include <OpenGl_AspectText.hxx>
 #include <OpenGl_Context.hxx>
 #include <OpenGl_Element.hxx>
-#include <OpenGl_ExtFBO.hxx>
 #include <OpenGl_GlCore20.hxx>
 #include <OpenGl_GraphicDriver.hxx>
 #include <OpenGl_Workspace.hxx>

@@ -13,35 +13,46 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _OpenGl_GlCore15_H__
-#define _OpenGl_GlCore15_H__
+#ifndef _OpenGl_GlCore15_Header
+#define _OpenGl_GlCore15_Header
 
 #include <OpenGl_GlCore14.hxx>
 
-//! Function list for GL1.5 core functionality.
-struct OpenGl_GlCore15 : public OpenGl_GlCore14
+/**
+ * OpenGL 1.5 core based on 1.4 version.
+ */
+template<typename theBaseClass_t>
+struct OpenGl_TmplCore15 : public theBaseClass_t
 {
 
-  PFNGLGENQUERIESPROC           glGenQueries;
-  PFNGLDELETEQUERIESPROC        glDeleteQueries;
-  PFNGLISQUERYPROC              glIsQuery;
-  PFNGLBEGINQUERYPROC           glBeginQuery;
-  PFNGLENDQUERYPROC             glEndQuery;
-  PFNGLGETQUERYIVPROC           glGetQueryiv;
-  PFNGLGETQUERYOBJECTIVPROC     glGetQueryObjectiv;
-  PFNGLGETQUERYOBJECTUIVPROC    glGetQueryObjectuiv;
-  PFNGLBINDBUFFERPROC           glBindBuffer;
-  PFNGLDELETEBUFFERSPROC        glDeleteBuffers;
-  PFNGLGENBUFFERSPROC           glGenBuffers;
-  PFNGLISBUFFERPROC             glIsBuffer;
-  PFNGLBUFFERDATAPROC           glBufferData;
-  PFNGLBUFFERSUBDATAPROC        glBufferSubData;
-  PFNGLGETBUFFERSUBDATAPROC     glGetBufferSubData;
-  PFNGLMAPBUFFERPROC            glMapBuffer;
-  PFNGLUNMAPBUFFERPROC          glUnmapBuffer;
-  PFNGLGETBUFFERPARAMETERIVPROC glGetBufferParameteriv;
-  PFNGLGETBUFFERPOINTERVPROC    glGetBufferPointerv;
+public: //! @name OpenGL 1.5 additives to 1.4
+
+  using theBaseClass_t::glGenQueries;
+  using theBaseClass_t::glDeleteQueries;
+  using theBaseClass_t::glIsQuery;
+  using theBaseClass_t::glBeginQuery;
+  using theBaseClass_t::glEndQuery;
+  using theBaseClass_t::glGetQueryiv;
+  using theBaseClass_t::glGetQueryObjectiv;
+  using theBaseClass_t::glGetQueryObjectuiv;
+  using theBaseClass_t::glBindBuffer;
+  using theBaseClass_t::glDeleteBuffers;
+  using theBaseClass_t::glGenBuffers;
+  using theBaseClass_t::glIsBuffer;
+  using theBaseClass_t::glBufferData;
+  using theBaseClass_t::glBufferSubData;
+  using theBaseClass_t::glGetBufferSubData;
+  using theBaseClass_t::glMapBuffer;
+  using theBaseClass_t::glUnmapBuffer;
+  using theBaseClass_t::glGetBufferParameteriv;
+  using theBaseClass_t::glGetBufferPointerv;
 
 };
 
-#endif // _OpenGl_GlCore15_H__
+//! OpenGL 1.5 core based on 1.4 version.
+typedef OpenGl_TmplCore15<OpenGl_GlCore14>    OpenGl_GlCore15;
+
+//! OpenGL 1.5 without deprecated entry points.
+typedef OpenGl_TmplCore15<OpenGl_GlCore14Fwd> OpenGl_GlCore15Fwd;
+
+#endif // _OpenGl_GlCore15_Header

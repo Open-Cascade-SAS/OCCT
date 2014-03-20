@@ -16,14 +16,14 @@
 #ifndef _OpenGl_ArbIns_H__
 #define _OpenGl_ArbIns_H__
 
-#include <OpenGl_GlCore12.hxx>
+#include <OpenGl_GlFunctions.hxx>
 
-//! TBO is available on OpenGL 3.0+ hardware
-struct OpenGl_ArbIns
+//! Instancing is available on OpenGL 3.0+ hardware
+struct OpenGl_ArbIns : protected OpenGl_GlFunctions
 {
 
-  PFNGLDRAWARRAYSINSTANCEDARBPROC   glDrawArraysInstancedARB;
-  PFNGLDRAWELEMENTSINSTANCEDARBPROC glDrawElementsInstancedARB;
+  using OpenGl_GlFunctions::glDrawArraysInstanced;
+  using OpenGl_GlFunctions::glDrawElementsInstanced;
 
 };
 

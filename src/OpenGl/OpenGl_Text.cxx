@@ -740,9 +740,9 @@ void OpenGl_Text::render (const Handle(OpenGl_PrinterContext)& thePrintCtx,
   // activate texture unit
   glDisable (GL_TEXTURE_1D);
   glEnable  (GL_TEXTURE_2D);
-  if (theCtx->core13 != NULL)
+  if (theCtx->core15fwd != NULL)
   {
-    theCtx->core13->glActiveTexture (GL_TEXTURE0);
+    theCtx->core15fwd->glActiveTexture (GL_TEXTURE0);
   }
 
   // extra drawings

@@ -36,17 +36,71 @@
 #include <OpenGl_GlCore11.hxx>
 
 //! Forward declarations
-struct OpenGl_GlCore12;
-struct OpenGl_GlCore13;
-struct OpenGl_GlCore14;
-struct OpenGl_GlCore15;
-struct OpenGl_GlCore20;
-struct OpenGl_ArbVBO;
+struct OpenGl_GlFunctions;
 struct OpenGl_ArbTBO;
 struct OpenGl_ArbIns;
 struct OpenGl_ArbDbg;
-struct OpenGl_ExtFBO;
+struct OpenGl_ArbFBO;
 struct OpenGl_ExtGS;
+
+template<typename theBaseClass_t> struct OpenGl_TmplCore12;
+typedef OpenGl_TmplCore12<OpenGl_GlCore11>     OpenGl_GlCore12;
+typedef OpenGl_TmplCore12<OpenGl_GlCore11Fwd>  OpenGl_GlCore12Fwd;
+
+struct OpenGl_GlCore13;
+struct OpenGl_GlCore13Fwd;
+
+template<typename theBaseClass_t> struct OpenGl_TmplCore14;
+typedef OpenGl_TmplCore14<OpenGl_GlCore13>     OpenGl_GlCore14;
+typedef OpenGl_TmplCore14<OpenGl_GlCore13Fwd>  OpenGl_GlCore14Fwd;
+
+template<typename theBaseClass_t> struct OpenGl_TmplCore15;
+typedef OpenGl_TmplCore15<OpenGl_GlCore14>     OpenGl_GlCore15;
+typedef OpenGl_TmplCore15<OpenGl_GlCore14Fwd>  OpenGl_GlCore15Fwd;
+
+template<typename theBaseClass_t> struct OpenGl_TmplCore20;
+typedef OpenGl_TmplCore20<OpenGl_GlCore15>     OpenGl_GlCore20;
+typedef OpenGl_TmplCore20<OpenGl_GlCore15Fwd>  OpenGl_GlCore20Fwd;
+
+template<typename theBaseClass_t> struct OpenGl_TmplCore21;
+typedef OpenGl_TmplCore21<OpenGl_GlCore20>     OpenGl_GlCore21;
+typedef OpenGl_TmplCore21<OpenGl_GlCore20Fwd>  OpenGl_GlCore21Fwd;
+
+template<typename theBaseClass_t> struct OpenGl_TmplCore30;
+typedef OpenGl_TmplCore30<OpenGl_GlCore21>     OpenGl_GlCore30;
+typedef OpenGl_TmplCore30<OpenGl_GlCore21Fwd>  OpenGl_GlCore30Fwd;
+
+template<typename theBaseClass_t> struct OpenGl_TmplCore31;
+typedef OpenGl_TmplCore31<OpenGl_GlCore30>     OpenGl_GlCore31Back;
+typedef OpenGl_TmplCore31<OpenGl_GlCore30Fwd>  OpenGl_GlCore31;
+
+template<typename theBaseClass_t> struct OpenGl_TmplCore32;
+typedef OpenGl_TmplCore32<OpenGl_GlCore31Back> OpenGl_GlCore32Back;
+typedef OpenGl_TmplCore32<OpenGl_GlCore31>     OpenGl_GlCore32;
+
+template<typename theBaseClass_t> struct OpenGl_TmplCore33;
+typedef OpenGl_TmplCore33<OpenGl_GlCore32Back> OpenGl_GlCore33Back;
+typedef OpenGl_TmplCore33<OpenGl_GlCore32>     OpenGl_GlCore33;
+
+template<typename theBaseClass_t> struct OpenGl_TmplCore40;
+typedef OpenGl_TmplCore40<OpenGl_GlCore33Back> OpenGl_GlCore40Back;
+typedef OpenGl_TmplCore40<OpenGl_GlCore33>     OpenGl_GlCore40;
+
+template<typename theBaseClass_t> struct OpenGl_TmplCore41;
+typedef OpenGl_TmplCore41<OpenGl_GlCore40Back> OpenGl_GlCore41Back;
+typedef OpenGl_TmplCore41<OpenGl_GlCore40>     OpenGl_GlCore41;
+
+template<typename theBaseClass_t> struct OpenGl_TmplCore42;
+typedef OpenGl_TmplCore42<OpenGl_GlCore41Back> OpenGl_GlCore42Back;
+typedef OpenGl_TmplCore42<OpenGl_GlCore41>     OpenGl_GlCore42;
+
+template<typename theBaseClass_t> struct OpenGl_TmplCore43;
+typedef OpenGl_TmplCore43<OpenGl_GlCore42Back> OpenGl_GlCore43Back;
+typedef OpenGl_TmplCore43<OpenGl_GlCore42>     OpenGl_GlCore43;
+
+template<typename theBaseClass_t> struct OpenGl_TmplCore44;
+typedef OpenGl_TmplCore44<OpenGl_GlCore43Back> OpenGl_GlCore44Back;
+typedef OpenGl_TmplCore44<OpenGl_GlCore43>     OpenGl_GlCore44;
 
 //! This class generalize access to the GL context and available extensions.
 //!
@@ -67,7 +121,7 @@ struct OpenGl_ExtGS;
 //!
 //! Current implementation provide access to OpenGL core functionality up to 2.0 version
 //! (core12, core13, core14, core15, fields core20).
-//! within several extensions (arbVBO, extFBO, etc.).
+//! within several extensions (arbTBO, arbFBO, etc.).
 //!
 //! Simplified extensions classification:
 //!  - prefixed with NV, AMD, ATI are vendor-specific (however may be provided by other vendors in some cases);
@@ -353,24 +407,35 @@ private:
   //! Private initialization function that should be called only once.
   Standard_EXPORT void init();
 
-public: // core profiles
+public: //! @name core profiles
 
-  OpenGl_GlCore12* core12;
-  OpenGl_GlCore13* core13;
-  OpenGl_GlCore14* core14;
-  OpenGl_GlCore15* core15;
-  OpenGl_GlCore20* core20;
+  OpenGl_GlCore11*     core11;     //!< OpenGL 1.1 core functionality
+  OpenGl_GlCore11Fwd*  core11fwd;  //!< OpenGL 1.1 without deprecated entry points
+  OpenGl_GlCore15*     core15;     //!< OpenGL 1.5 core functionality
+  OpenGl_GlCore15Fwd*  core15fwd;  //!< OpenGL 1.5 without deprecated entry points
+  OpenGl_GlCore20*     core20;     //!< OpenGL 2.0 core functionality (includes 1.5)
+  OpenGl_GlCore20Fwd*  core20fwd;  //!< OpenGL 2.0 without deprecated entry points
+  OpenGl_GlCore32*     core32;     //!< OpenGL 3.2 core profile
+  OpenGl_GlCore32Back* core32back; //!< OpenGL 3.2 backward compatibility profile
+  OpenGl_GlCore41*     core41;     //!< OpenGL 4.1 core profile
+  OpenGl_GlCore41Back* core41back; //!< OpenGL 4.1 backward compatibility profile
+  OpenGl_GlCore42*     core42;     //!< OpenGL 4.2 core profile
+  OpenGl_GlCore42Back* core42back; //!< OpenGL 4.2 backward compatibility profile
+  OpenGl_GlCore43*     core43;     //!< OpenGL 4.3 core profile
+  OpenGl_GlCore43Back* core43back; //!< OpenGL 4.3 backward compatibility profile
+  OpenGl_GlCore44*     core44;     //!< OpenGL 4.4 core profile
+  OpenGl_GlCore44Back* core44back; //!< OpenGL 4.4 backward compatibility profile
 
   Handle(OpenGl_Caps) caps; //!< context options
 
-public: // extensions
+public: //! @name extensions
 
   Standard_Boolean arbNPTW; //!< GL_ARB_texture_non_power_of_two
-  OpenGl_ArbVBO*   arbVBO;  //!< GL_ARB_vertex_buffer_object
+  Standard_Boolean arbTexRG;//!< GL_ARB_texture_rg
   OpenGl_ArbTBO*   arbTBO;  //!< GL_ARB_texture_buffer_object
   OpenGl_ArbIns*   arbIns;  //!< GL_ARB_draw_instanced
   OpenGl_ArbDbg*   arbDbg;  //!< GL_ARB_debug_output
-  OpenGl_ExtFBO*   extFBO;  //!< GL_EXT_framebuffer_object
+  OpenGl_ArbFBO*   arbFBO;  //!< GL_ARB_framebuffer_object
   OpenGl_ExtGS*    extGS;   //!< GL_EXT_geometry_shader4
   Standard_Boolean extBgra; //!< GL_EXT_bgra
   Standard_Boolean extAnis; //!< GL_EXT_texture_filter_anisotropic
@@ -408,7 +473,8 @@ private: // context info
   OpenGl_Clipping myClippingState; //!< state of clip planes
 
   void*            myGlLibHandle;     //!< optional handle to GL library
-  OpenGl_GlCore20* myGlCore20;        //!< common structure for GL core functions upto 2.0
+  NCollection_Handle<OpenGl_GlFunctions>
+                   myFuncs;           //!< mega structure for all GL functions
   Standard_Integer myAnisoMax;        //!< maximum level of anisotropy texture filter
   Standard_Integer myMaxTexDim;       //!< value for GL_MAX_TEXTURE_SIZE
   Standard_Integer myMaxClipPlanes;   //!< value for GL_MAX_CLIP_PLANES

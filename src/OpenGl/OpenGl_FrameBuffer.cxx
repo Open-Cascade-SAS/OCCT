@@ -13,6 +13,7 @@
 // commercial license or contractual agreement.
 
 #include <OpenGl_FrameBuffer.hxx>
+#include <OpenGl_ArbFBO.hxx>
 
 #include <Standard_Assert.hxx>
 
@@ -71,7 +72,7 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
                                            const GLsizei   theViewportSizeY,
                                            const GLboolean toForcePowerOfTwo)
 {
-  if (theGlContext->extFBO == NULL)
+  if (theGlContext->arbFBO == NULL)
   {
     return Standard_False;
   }
@@ -109,33 +110,33 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
   if (!theGlContext->extPDS)
   {
     // Create RenderBuffer to be used as depth buffer
-    theGlContext->extFBO->glGenRenderbuffersEXT (1, &myGlDepthRBId);
-    theGlContext->extFBO->glBindRenderbufferEXT (GL_RENDERBUFFER_EXT, myGlDepthRBId);
-    theGlContext->extFBO->glRenderbufferStorageEXT (GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, mySizeX, mySizeY);
+    theGlContext->arbFBO->glGenRenderbuffers (1, &myGlDepthRBId);
+    theGlContext->arbFBO->glBindRenderbuffer (GL_RENDERBUFFER, myGlDepthRBId);
+    theGlContext->arbFBO->glRenderbufferStorage (GL_RENDERBUFFER, GL_DEPTH_COMPONENT, mySizeX, mySizeY);
 
     // Create RenderBuffer to be used as stencil buffer
-    theGlContext->extFBO->glGenRenderbuffersEXT (1, &myGlStencilRBId);
-    theGlContext->extFBO->glBindRenderbufferEXT (GL_RENDERBUFFER_EXT, myGlStencilRBId);
-    theGlContext->extFBO->glRenderbufferStorageEXT (GL_RENDERBUFFER_EXT, GL_STENCIL_INDEX, mySizeX, mySizeY);
+    theGlContext->arbFBO->glGenRenderbuffers (1, &myGlStencilRBId);
+    theGlContext->arbFBO->glBindRenderbuffer (GL_RENDERBUFFER, myGlStencilRBId);
+    theGlContext->arbFBO->glRenderbufferStorage (GL_RENDERBUFFER, GL_STENCIL_INDEX, mySizeX, mySizeY);
   }
   else
   {
     // Create combined depth stencil buffer
-    theGlContext->extFBO->glGenRenderbuffersEXT (1, &myGlDepthRBId);
-    theGlContext->extFBO->glBindRenderbufferEXT (GL_RENDERBUFFER_EXT, myGlDepthRBId);
-    theGlContext->extFBO->glRenderbufferStorageEXT (GL_RENDERBUFFER_EXT, GL_DEPTH24_STENCIL8_EXT, mySizeX, mySizeY);
+    theGlContext->arbFBO->glGenRenderbuffers (1, &myGlDepthRBId);
+    theGlContext->arbFBO->glBindRenderbuffer (GL_RENDERBUFFER, myGlDepthRBId);
+    theGlContext->arbFBO->glRenderbufferStorage (GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, mySizeX, mySizeY);
     myGlStencilRBId = myGlDepthRBId;
   }
 
   // Build FBO and setup it as texture
-  theGlContext->extFBO->glGenFramebuffersEXT (1, &myGlFBufferId);
-  theGlContext->extFBO->glBindFramebufferEXT (GL_FRAMEBUFFER_EXT, myGlFBufferId);
+  theGlContext->arbFBO->glGenFramebuffers (1, &myGlFBufferId);
+  theGlContext->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, myGlFBufferId);
   glEnable (GL_TEXTURE_2D);
   glBindTexture (GL_TEXTURE_2D, myGlTextureId);
-  theGlContext->extFBO->glFramebufferTexture2DEXT (GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, myGlTextureId, 0);
-  theGlContext->extFBO->glFramebufferRenderbufferEXT (GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, myGlDepthRBId);
-  theGlContext->extFBO->glFramebufferRenderbufferEXT (GL_FRAMEBUFFER_EXT, GL_STENCIL_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, myGlStencilRBId);
-  if (theGlContext->extFBO->glCheckFramebufferStatusEXT (GL_FRAMEBUFFER_EXT) != GL_FRAMEBUFFER_COMPLETE_EXT)
+  theGlContext->arbFBO->glFramebufferTexture2D    (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,  GL_TEXTURE_2D,   myGlTextureId, 0);
+  theGlContext->arbFBO->glFramebufferRenderbuffer (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,   GL_RENDERBUFFER, myGlDepthRBId);
+  theGlContext->arbFBO->glFramebufferRenderbuffer (GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, myGlStencilRBId);
+  if (theGlContext->arbFBO->glCheckFramebufferStatus (GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
   {
     if (!isPowerOfTwo (mySizeX) || !isPowerOfTwo (mySizeY))
     {
@@ -147,7 +148,7 @@ Standard_Boolean OpenGl_FrameBuffer::Init (const Handle(OpenGl_Context)& theGlCo
 
   UnbindBuffer  (theGlContext);
   UnbindTexture (theGlContext);
-  theGlContext->extFBO->glBindRenderbufferEXT (GL_RENDERBUFFER_EXT, NO_RENDERBUFFER);
+  theGlContext->arbFBO->glBindRenderbuffer (GL_RENDERBUFFER, NO_RENDERBUFFER);
   return Standard_True;
 }
 
@@ -171,7 +172,7 @@ void OpenGl_FrameBuffer::Release (const OpenGl_Context* theGlCtx)
     if (theGlCtx->IsValid()
      && myGlStencilRBId != myGlDepthRBId)
     {
-      theGlCtx->extFBO->glDeleteRenderbuffersEXT (1, &myGlStencilRBId);
+      theGlCtx->arbFBO->glDeleteRenderbuffers (1, &myGlStencilRBId);
     }
     myGlStencilRBId = NO_RENDERBUFFER;
   }
@@ -179,7 +180,7 @@ void OpenGl_FrameBuffer::Release (const OpenGl_Context* theGlCtx)
   {
     if (theGlCtx->IsValid())
     {
-      theGlCtx->extFBO->glDeleteRenderbuffersEXT (1, &myGlDepthRBId);
+      theGlCtx->arbFBO->glDeleteRenderbuffers (1, &myGlDepthRBId);
     }
     myGlDepthRBId = NO_RENDERBUFFER;
   }
@@ -196,7 +197,7 @@ void OpenGl_FrameBuffer::Release (const OpenGl_Context* theGlCtx)
   {
     if (theGlCtx->IsValid())
     {
-      theGlCtx->extFBO->glDeleteFramebuffersEXT (1, &myGlFBufferId);
+      theGlCtx->arbFBO->glDeleteFramebuffers (1, &myGlFBufferId);
     }
     myGlFBufferId = NO_FRAMEBUFFER;
   }
@@ -286,7 +287,7 @@ void OpenGl_FrameBuffer::ChangeViewport (const GLsizei theVPSizeX,
 // =======================================================================
 void OpenGl_FrameBuffer::BindBuffer (const Handle(OpenGl_Context)& theGlCtx)
 {
-  theGlCtx->extFBO->glBindFramebufferEXT (GL_FRAMEBUFFER_EXT, myGlFBufferId);
+  theGlCtx->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, myGlFBufferId);
 }
 
 // =======================================================================
@@ -295,7 +296,7 @@ void OpenGl_FrameBuffer::BindBuffer (const Handle(OpenGl_Context)& theGlCtx)
 // =======================================================================
 void OpenGl_FrameBuffer::UnbindBuffer (const Handle(OpenGl_Context)& theGlCtx)
 {
-  theGlCtx->extFBO->glBindFramebufferEXT (GL_FRAMEBUFFER_EXT, NO_FRAMEBUFFER);
+  theGlCtx->arbFBO->glBindFramebuffer (GL_FRAMEBUFFER, NO_FRAMEBUFFER);
 }
 
 // =======================================================================
