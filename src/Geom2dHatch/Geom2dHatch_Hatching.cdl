@@ -14,7 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class HatchingGen from HatchGen (TheHatchingCurve as any)
+class Hatching from Geom2dHatch
 
 uses
     ErrorStatus      from HatchGen ,
@@ -22,7 +22,8 @@ uses
     PointsOnHatching from HatchGen ,
     Domain           from HatchGen ,
     Domains          from HatchGen , 
-    Pnt2d            from gp
+    Pnt2d            from gp,
+    Curve            from Geom2dAdaptor
 
 raises
     OutOfRange   from Standard
@@ -31,14 +32,14 @@ is
 
      Create
        
-       returns HatchingGen from HatchGen;
+       returns Hatching from Geom2dHatch;
 
 
-    Create (Curve : TheHatchingCurve)
+    Create (Curve : Curve from Geom2dAdaptor)
     
     	---Purpose: Creates a hatching.
 
-	returns HatchingGen from HatchGen ;
+	returns Hatching from Geom2dHatch ;
 
 
     Curve (me)
@@ -47,7 +48,7 @@ is
 
     	---C++: return const &
 
-        returns TheHatchingCurve
+        returns Curve from Geom2dAdaptor
         is static ;
 
 
@@ -57,7 +58,7 @@ is
 
     	---C++: return &
 
-        returns TheHatchingCurve
+        returns Curve from Geom2dAdaptor
         is static ;
 
 
@@ -245,7 +246,7 @@ is
        
 fields
 
-    myCurve      : TheHatchingCurve ;
+    myCurve      : Curve from Geom2dAdaptor ;
     myTrimDone   : Boolean          from Standard ;
     myTrimFailed : Boolean          from Standard ;
     myPoints     : PointsOnHatching from HatchGen ;
@@ -253,4 +254,4 @@ fields
     myStatus     : ErrorStatus      from HatchGen ;
     myDomains    : Domains          from HatchGen ;
 
-end HatchingGen from HatchGen ;
+end Hatching from Geom2dHatch ;

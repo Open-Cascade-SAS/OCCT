@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <Geom2dGcc_Lin2d2Tan.ixx>
-#include <Geom2dGcc_MyQCurve.hxx>
+#include <Geom2dGcc_QCurve.hxx>
 #include <GccAna_Lin2d2Tan.hxx>
 #include <Geom2dGcc_MyL2d2Tan.hxx>
 #include <Geom2d_Circle.hxx>
@@ -74,13 +74,13 @@ Geom2dGcc_Lin2d2Tan::
     }
   }
   else {
-    Geom2dGcc_MyQCurve Qc1(C1,Qualified1.Qualifier());
+    Geom2dGcc_QCurve Qc1(C1,Qualified1.Qualifier());
     Standard_Real      a1FPar      = Geom2dGcc_CurveTool::FirstParameter(C1);
     Standard_Real      a1LPar      = Geom2dGcc_CurveTool::LastParameter(C1);
     Standard_Integer   aNbSamples1 = Geom2dGcc_CurveTool::NbSamples(C1);
     Standard_Real      aStep1      = (a1LPar - a1FPar)/aNbSamples1;
     Standard_Real      Param1      = a1FPar;
-    Geom2dGcc_MyQCurve Qc2(C2,Qualified2.Qualifier());
+    Geom2dGcc_QCurve Qc2(C2,Qualified2.Qualifier());
     Standard_Real      a2FPar      = Geom2dGcc_CurveTool::FirstParameter(C2);
     Standard_Real      a2LPar      = Geom2dGcc_CurveTool::LastParameter(C2);
     Standard_Integer   aNbSamples2 = Geom2dGcc_CurveTool::NbSamples(C2);
@@ -149,7 +149,7 @@ Geom2dGcc_Lin2d2Tan::
     }
   }
   else {
-    Geom2dGcc_MyQCurve Qc1(C1,Qualified1.Qualifier());
+    Geom2dGcc_QCurve Qc1(C1,Qualified1.Qualifier());
     Standard_Real      aFirstPar  = Geom2dGcc_CurveTool::FirstParameter(C1);
     Standard_Real      aLastPar   = Geom2dGcc_CurveTool::LastParameter(C1);
     Standard_Integer   aNbSamples = Geom2dGcc_CurveTool::NbSamples(C1);
@@ -224,8 +224,8 @@ Geom2dGcc_Lin2d2Tan::
     }
   }
   else {
-    Geom2dGcc_MyQCurve Qc1(C1,Qualified1.Qualifier());
-    Geom2dGcc_MyQCurve Qc2(C2,Qualified2.Qualifier());
+    Geom2dGcc_QCurve Qc1(C1,Qualified1.Qualifier());
+    Geom2dGcc_QCurve Qc2(C2,Qualified2.Qualifier());
     Geom2dGcc_MyL2d2Tan Lin(Qc1,Qc2,Param1,Param2,Tolang);
     WellDone = Lin.IsDone();
 //  Modified by Sergey KHROMOV - Thu Apr  5 17:51:59 2001 Begin
@@ -283,7 +283,7 @@ Geom2dGcc_Lin2d2Tan::
     }
   }
   else {
-    Geom2dGcc_MyQCurve Qc1(C1,Qualified1.Qualifier());
+    Geom2dGcc_QCurve Qc1(C1,Qualified1.Qualifier());
     Geom2dGcc_MyL2d2Tan Lin(Qc1,ThePoint,Param1,Tolang);
     WellDone = Lin.IsDone();
 //  Modified by Sergey KHROMOV - Thu Apr  5 17:53:01 2001 Begin

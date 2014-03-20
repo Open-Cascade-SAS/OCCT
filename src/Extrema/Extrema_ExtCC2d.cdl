@@ -14,61 +14,49 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class GExtCC2d from Extrema (Curve1    as any;
-    	    	    	    	     Tool1     as any;
-    	    	    	    	     Curve2    as any;
-    	    	    	    	     Tool2     as any)
+class ExtCC2d from Extrema
 
-	---Purpose: It calculates all the distance between two curves.
-	--          These distances can be maximum or minimum.
+    ---Purpose: It calculates all the distance between two curves.
+    --          These distances can be maximum or minimum.
 
 uses POnCurv2d           from Extrema,
      SequenceOfPOnCurv2d from Extrema,
      ExtElC2d            from Extrema,
      Pnt2d               from gp,
      HArray1OfPnt2d      from TColgp,
-     SequenceOfReal      from TColStd
+     SequenceOfReal      from TColStd,
+     Curve2d             from Adaptor2d,
+     Curve2dTool         from Extrema,
+     CCache2d            from Extrema,
+     ECC2d               from Extrema
 
 
 raises  InfiniteSolutions from StdFail,
-    	NotDone           from StdFail,
-    	OutOfRange        from Standard
-	
-    class CCache2d instantiates CurveCache from Extrema (Curve1, Pnt2d from gp, HArray1OfPnt2d from TColgp);
-
-    class ECC2d    instantiates GenExtCC      from Extrema
-        (Curve1,
-         Tool1,
-         Curve2,
-         Tool2,
-         CCache2d,
-         HArray1OfPnt2d from TColgp,
-         POnCurv2d,
-         Pnt2d,
-         Vec2d);
+        NotDone           from StdFail,
+        OutOfRange        from Standard
 
 is
 
-    Create returns GExtCC2d;
+    Create returns ExtCC2d;
     
 
-    Create (C1: Curve1;  C2: Curve2;
-            TolC1: Real = 1.0e-10; TolC2: Real = 1.0e-10) returns GExtCC2d;
+    Create (C1: Curve2d from Adaptor2d;  C2: Curve2d from Adaptor2d;
+            TolC1: Real = 1.0e-10; TolC2: Real = 1.0e-10) returns ExtCC2d;
       	---Purpose: It calculates all the distances.
 
 
-    Create (C1: Curve1;
-    	    C2: Curve2;
+    Create (C1: Curve2d from Adaptor2d;
+    	    C2: Curve2d from Adaptor2d;
 	    U1: Real  from Standard;
 	    U2: Real  from Standard;
 	    V1: Real  from Standard;
 	    V2: Real  from Standard;
             TolC1: Real = 1.0e-10;
-            TolC2: Real = 1.0e-10) returns GExtCC2d;
+            TolC2: Real = 1.0e-10) returns ExtCC2d;
       	---Purpose: It calculates all the distances.
 
 
-    Initialize(me: in out; C2: Curve2;
+    Initialize(me: in out; C2: Curve2d from Adaptor2d;
     	       V1, V2: Real  from Standard; 
     	       TolC1: Real = 1.0e-10;
     	       TolC2: Real = 1.0e-10)
@@ -76,7 +64,7 @@ is
     is static;
     
     
-    Perform(me: in out; C1: Curve1;
+    Perform(me: in out; C1: Curve2d from Adaptor2d;
     	    U1, U2: Real  from Standard)
     is static;
     
@@ -139,7 +127,7 @@ is
     is static protected;    	
 
 --  modified by NIZHNY-EAP Thu Jan 27 16:53:25 2000 ___BEGIN___
-    Results(me: in out;AlgExt: ECC2d; C : Curve1;
+    Results(me: in out;AlgExt: ECC2d from Extrema; C : Curve2d from Adaptor2d;
 --  modified by NIZHNY-EAP Thu Jan 27 16:53:26 2000 ___END___
     	    Ut11, Ut12, Ut21, Ut22: Real;
     	    Period1 : Real from Standard = 0.0;
@@ -171,4 +159,4 @@ fields
     
 
 
-end GExtCC2d;
+end ExtCC2d;

@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <Geom2dGcc_Lin2dTanObl.ixx>
-#include <Geom2dGcc_MyQCurve.hxx>
+#include <Geom2dGcc_QCurve.hxx>
 #include <GccAna_Lin2dTanObl.hxx>
 #include <Geom2dGcc_MyL2dTanObl.hxx>
 #include <Geom2d_Circle.hxx>
@@ -66,7 +66,7 @@ Geom2dGcc_Lin2dTanObl::
     }
   }
   else {
-    Geom2dGcc_MyQCurve Qc1(C1,Qualified1.Qualifier());
+    Geom2dGcc_QCurve Qc1(C1,Qualified1.Qualifier());
     Standard_Real      aFirstPar  = Geom2dGcc_CurveTool::FirstParameter(C1);
     Standard_Real      aLastPar   = Geom2dGcc_CurveTool::LastParameter(C1);
     Standard_Integer   aNbSamples = Geom2dGcc_CurveTool::NbSamples(C1);
@@ -131,7 +131,7 @@ Geom2dGcc_Lin2dTanObl::
     }
   }
   else {
-    Geom2dGcc_MyQCurve Qc1(C1,Qualified1.Qualifier());
+    Geom2dGcc_QCurve Qc1(C1,Qualified1.Qualifier());
     Geom2dGcc_MyL2dTanObl Lin(Qc1,TheLine,TolAng,Param1,Angle);
     WellDone = Lin.IsDone();
     if(WellDone) { 

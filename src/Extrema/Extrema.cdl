@@ -125,11 +125,96 @@ is
     
     --  Curve-Curve:                                  
     --  3d:
-    generic class GExtCC, CCache, ECC;
-    generic class GLocateExtCC, LCCache, ELCC, LocECC;
+    class ExtCC;
+    
+    class CCache instantiates CurveCache from Extrema
+        (Curve from Adaptor3d,
+         Pnt from gp,
+         HArray1OfPnt from TColgp);
+
+    class ECC instantiates GenExtCC from Extrema
+        (Curve from Adaptor3d,
+         CurveTool from Extrema,
+         Curve from Adaptor3d,
+         CurveTool from Extrema,
+         CCache from Extrema,
+         HArray1OfPnt from TColgp,
+         POnCurv from Extrema,
+         Pnt from gp,
+         Vec from gp);
+
+    class LocateExtCC;
+    
+    class LCCache instantiates CurveCache from Extrema 
+        (Curve from Adaptor3d,
+         Pnt from gp,
+         HArray1OfPnt from TColgp);
+
+    class ELCC    instantiates GenExtCC from Extrema
+        (Curve from Adaptor3d,
+         CurveTool from Extrema,
+         Curve from Adaptor3d,
+         CurveTool from Extrema,
+         LCCache from Extrema,
+         HArray1OfPnt from TColgp,
+         POnCurv from Extrema,
+         Pnt from gp,
+         Vec from gp);
+
+    class LocECC    instantiates GenLocateExtCC from Extrema
+        (Curve from Adaptor3d,
+         CurveTool from Extrema,
+         Curve from Adaptor3d,
+         CurveTool from Extrema,
+         POnCurv from Extrema,
+         Pnt from gp,
+         Vec from gp);
+
     -- 2d:
-    generic class GExtCC2d, CCache2d, ECC2d;
-    generic class GLocateExtCC2d, LCCache2d, ELCC2d, LocECC2d;
+    class ExtCC2d;
+
+    class CCache2d instantiates CurveCache from Extrema
+        (Curve2d from Adaptor2d,
+         Pnt2d from gp,
+         HArray1OfPnt2d from TColgp);
+
+    class ECC2d instantiates GenExtCC from Extrema
+        (Curve2d from Adaptor2d,
+         Curve2dTool from Extrema,
+         Curve2d from Adaptor2d,
+         Curve2dTool from Extrema,
+         CCache2d from Extrema,
+         HArray1OfPnt2d from TColgp,
+         POnCurv2d from Extrema,
+         Pnt2d from gp,
+         Vec2d from gp);
+    
+    class LocateExtCC2d;
+    
+    class LCCache2d instantiates CurveCache from Extrema
+        (Curve2d from Adaptor2d,
+         Pnt2d from gp,
+         HArray1OfPnt2d from TColgp);
+
+    class ELCC2d instantiates GenExtCC from Extrema
+        (Curve2d from Adaptor2d,
+         Curve2dTool from Extrema,
+         Curve2d from Adaptor2d,
+         Curve2dTool from Extrema,
+         LCCache2d from Extrema,
+         HArray1OfPnt2d from TColgp,
+         POnCurv2d from Extrema,
+         Pnt2d from gp,
+         Vec2d from gp);
+
+    class LocECC2d instantiates GenLocateExtCC from Extrema
+        (Curve2d from Adaptor2d,
+         Curve2dTool from Extrema,
+         Curve2d from Adaptor2d,
+         Curve2dTool from Extrema,
+         POnCurv2d from Extrema,
+         Pnt2d from gp,
+         Vec2d from gp);
     
     --  Curve-Surface:                                  
     class ExtCS;
@@ -226,20 +311,6 @@ is
     	 Vec               from gp,
     	 POnCurv           from Extrema,
     	 SequenceOfPOnCurv from Extrema);
-  
-
-    class ExtCC instantiates GExtCC from Extrema
-    	(Curve             from Adaptor3d, 
-    	 CurveTool         from Extrema,
-    	 Curve             from Adaptor3d, 
-    	 CurveTool         from Extrema);
-
-    class LocateExtCC instantiates GLocateExtCC from Extrema
-    	(Curve             from Adaptor3d, 
-    	 CurveTool         from Extrema,
-    	 Curve             from Adaptor3d, 
-    	 CurveTool         from Extrema);
-
 
          --- 2d instantiations:
     class ExtPC2d instantiates GExtPC from Extrema
@@ -260,21 +331,6 @@ is
     	 Vec2d               from gp,
     	 POnCurv2d           from Extrema,
     	 SequenceOfPOnCurv2d from Extrema);
-  
-
-    class ExtCC2d instantiates GExtCC2d from Extrema
-    	(Curve2d             from Adaptor2d, 
-    	 Curve2dTool         from Extrema,
-    	 Curve2d             from Adaptor2d, 
-    	 Curve2dTool         from Extrema);
-
-    class LocateExtCC2d instantiates GLocateExtCC2d from Extrema
-    	(Curve2d             from Adaptor2d, 
-    	 Curve2dTool         from Extrema,
-    	 Curve2d             from Adaptor2d, 
-    	 Curve2dTool         from Extrema);
-
-
 
 
 end Extrema;

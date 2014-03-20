@@ -14,50 +14,28 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class Hatcher from HatchGen
-    (TheCurveE      as any ; -- as Curve       from Geom2dAdaptor
-     TheCurveH      as any ; -- as Curve       from Geom2dAdaptor
-     TheIntersector as any ) -- as Intersector from HatchGen
+class Hatcher from Geom2dHatch
 
 uses
-    MapIntegerHasher from TColStd  ,
-    PointOnHatching  from HatchGen ,
-    Orientation      from TopAbs ,
-    State            from TopAbs ,
-    Domain           from HatchGen ,
-    ErrorStatus      from HatchGen
+    MapIntegerHasher from TColStd,
+    PointOnHatching  from HatchGen,
+    Orientation      from TopAbs,
+    State            from TopAbs,
+    Domain           from HatchGen,
+    ErrorStatus      from HatchGen,
+    Curve            from Geom2dAdaptor,
+    Intersector      from Geom2dHatch,
+    Element          from Geom2dHatch,
+    Elements         from Geom2dHatch,
+    Hatching         from Geom2dHatch,
+    Hatchings        from Geom2dHatch,
+    Classifier       from Geom2dHatch
 
 raises
     NoSuchObject      from Standard ,
     OutOfRange        from Standard ,
     NotDone           from StdFail
-
-----------------------------------------------------------------------
---  Nested classes descriptions.
-----------------------------------------------------------------------
-
-class Element from HatchGen instantiates ElementGen from HatchGen
-    (TheCurveE) ;
     
-class Elements from HatchGen instantiates ElementsGen from HatchGen
-    (Integer          from Standard,
-     Element          from HatchGen,
-     MapIntegerHasher from TColStd ,
-     TheCurveE                     ) ;
-     
-class Hatching from HatchGen instantiates HatchingGen from HatchGen
-    (TheCurveH) ;
-    
-class Hatchings from HatchGen instantiates DataMap from TCollection
-    (Integer          from Standard,
-     Hatching         from HatchGen,
-     MapIntegerHasher from TColStd) ;
-
-class Classifier from HatchGen instantiates FaceClassifier from  TopClass 
-    (Elements,
-     TheCurveE,
-     TheIntersector);
-
 ----------------------------------------------------------------------
 --  class Hatcher description.
 ----------------------------------------------------------------------
@@ -67,7 +45,7 @@ is
 ---Category: General use
 
 
-    Create (Intersector : TheIntersector ;
+    Create (Intersector : Intersector from Geom2dHatch ;
     	    Confusion2d : Real    from Standard ;
     	    Confusion3d : Real    from Standard ;
     	    KeepPnt     : Boolean from Standard = Standard_False ;
@@ -75,10 +53,10 @@ is
     	    
     	---Purpose: Returns an empty hatcher.
 
-    	returns Hatcher from HatchGen ;
+    	returns Hatcher from Geom2dHatch;
 
 
-    Intersector (me : in out ; Intersector : TheIntersector)
+    Intersector (me : in out ; Intersector : Intersector from Geom2dHatch)
     
     	---Purpose: Sets the associated intersector.
     	is static ;
@@ -91,7 +69,7 @@ is
     	---C++: inline
     	---C++: return const &
 
-    	returns TheIntersector
+    	returns Intersector from Geom2dHatch
 	is static ;
 	
 
@@ -102,7 +80,7 @@ is
     	---C++: inline
     	---C++: return &
 
-    	returns TheIntersector
+    	returns Intersector from Geom2dHatch
 	is static ;
 	
 
@@ -194,7 +172,7 @@ is
     	---C++: inline
     	---C++: return &
 
-    	returns Element from HatchGen
+    	returns Element from Geom2dHatch
         raises NoSuchObject from Standard
     	is static protected ;
 
@@ -208,12 +186,12 @@ is
     	---C++: inline
     	---C++: return const &
 
-    	returns TheCurveE
+    	returns Curve from Geom2dAdaptor
     	raises NoSuchObject from Standard
     	is static ;
 
 
-    AddElement (me : in out ; Curve       : TheCurveE ;
+    AddElement (me : in out ; Curve       : Curve from Geom2dAdaptor ;
     	    	    	      Orientation : Orientation from TopAbs = TopAbs_FORWARD)
     
     	---Purpose: Adds an element to the hatcher and returns its index.
@@ -255,7 +233,7 @@ is
     	---C++: inline
     	---C++: return &
 
-    	returns Hatching from HatchGen
+    	returns Hatching from Geom2dHatch
     	raises NoSuchObject from Standard
     	is static protected ;
 
@@ -269,12 +247,12 @@ is
     	---C++: inline
     	---C++: return const &
 
-    	returns TheCurveH
+    	returns Curve from Geom2dAdaptor
     	raises NoSuchObject from Standard
     	is static ;
 
 
-    AddHatching (me : in out ; Curve : TheCurveH)
+    AddHatching (me : in out ; Curve : Curve from Geom2dAdaptor)
     
     	---Purpose: Adds a hatching to the hatcher and returns its index.
 
@@ -342,7 +320,7 @@ is
     	is static ;
 
 
-    Trim (me : in out ; Curve : TheCurveH)
+    Trim (me : in out ; Curve : Curve from Geom2dAdaptor)
     
     	---Purpose: Adds a hatching to the hatcher and trims it by
     	--          the elements already given and returns its index.
@@ -500,14 +478,14 @@ is
 
 fields
 
-    myIntersector  : TheIntersector ;
+    myIntersector  : Intersector from Geom2dHatch;
     myConfusion2d  : Real      from Standard ;
     myConfusion3d  : Real      from Standard ;
     myKeepPoints   : Boolean   from Standard ;
     myKeepSegments : Boolean   from Standard ;
     myNbElements   : Integer   from Standard ;
-    myElements     : Elements  from HatchGen ;
+    myElements     : Elements  from Geom2dHatch ;
     myNbHatchings  : Integer   from Standard ;
-    myHatchings    : Hatchings from HatchGen ;
+    myHatchings    : Hatchings from Geom2dHatch;
 
-end Hatcher from HatchGen ;
+end Hatcher from Geom2dHatch;

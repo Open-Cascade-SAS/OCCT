@@ -18,7 +18,7 @@
 #include <Geom2dAdaptor_Curve.hxx>
 #include <GccAna_Circ2dTanOnRad.hxx>
 #include <Geom2dGcc_MyCirc2dTanOnRad.hxx>
-#include <Geom2dGcc_MyQCurve.hxx>
+#include <Geom2dGcc_QCurve.hxx>
 #include <GccEnt_BadQualifier.hxx>
 #include <Geom2d_Circle.hxx>
 #include <Geom2d_Line.hxx>
@@ -129,7 +129,7 @@ Geom2dGcc_Circ2dTanOnRad::
 	Results(CircGeo);
       }
       else {
-	Geom2dGcc_MyQCurve Qc1(C1,Qualified1.Qualifier());
+	Geom2dGcc_QCurve Qc1(C1,Qualified1.Qualifier());
 	Geom2dGcc_MyCirc2dTanOnRad CircGeo(Qc1,OnCurve,Radius,Tolerance);
 	WellDone = CircGeo.IsDone();
 	NbrSol = CircGeo.NbSolutions();

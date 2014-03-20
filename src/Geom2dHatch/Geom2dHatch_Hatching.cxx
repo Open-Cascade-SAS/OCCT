@@ -14,25 +14,28 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Geom2dHatch_Hatching.ixx>
+
 #include <HatchGen_PointOnElement.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 
 #define RAISE_IF_NOSUCHOBJECT 0
 
 #include <Precision.hxx>
 //=======================================================================
-// Function : HatchGen_HatchingGen
+// Function : Geom2dHatch_Hatching
 // Purpose  : Constructor.
 //=======================================================================
 
-HatchGen_HatchingGen::HatchGen_HatchingGen () {
+Geom2dHatch_Hatching::Geom2dHatch_Hatching () {
 }
 
 //=======================================================================
-// Function : HatchGen_HatchingGen
+// Function : Geom2dHatch_Hatching
 // Purpose  : Constructor.
 //=======================================================================
 
-HatchGen_HatchingGen::HatchGen_HatchingGen (const TheHatchingCurve& Curve) :
+Geom2dHatch_Hatching::Geom2dHatch_Hatching (const Geom2dAdaptor_Curve& Curve) :
        myCurve      (Curve),
        myTrimDone   (Standard_False),
        myTrimFailed (Standard_False),
@@ -46,7 +49,7 @@ HatchGen_HatchingGen::HatchGen_HatchingGen (const TheHatchingCurve& Curve) :
 // Purpose  : Returns the curve associated to the hatching.
 //=======================================================================
 
-const TheHatchingCurve& HatchGen_HatchingGen::Curve () const
+const Geom2dAdaptor_Curve& Geom2dHatch_Hatching::Curve () const
 {
   return myCurve ;
 }
@@ -56,7 +59,7 @@ const TheHatchingCurve& HatchGen_HatchingGen::Curve () const
 // Purpose  : Returns the curve associated to the hatching.
 //=======================================================================
 
-TheHatchingCurve& HatchGen_HatchingGen::ChangeCurve ()
+Geom2dAdaptor_Curve& Geom2dHatch_Hatching::ChangeCurve ()
 {
   return myCurve ;
 }
@@ -67,7 +70,7 @@ TheHatchingCurve& HatchGen_HatchingGen::ChangeCurve ()
 //            value.
 //=======================================================================
 
-void HatchGen_HatchingGen::TrimDone (const Standard_Boolean Flag)
+void Geom2dHatch_Hatching::TrimDone (const Standard_Boolean Flag)
 {
   myTrimDone = Flag ;
 }
@@ -77,7 +80,7 @@ void HatchGen_HatchingGen::TrimDone (const Standard_Boolean Flag)
 // Purpose  : Returns the flag about the trimmings computation.
 //=======================================================================
 
-Standard_Boolean HatchGen_HatchingGen::TrimDone () const
+Standard_Boolean Geom2dHatch_Hatching::TrimDone () const
 {
   return myTrimDone ;
 }
@@ -88,7 +91,7 @@ Standard_Boolean HatchGen_HatchingGen::TrimDone () const
 //            value.
 //=======================================================================
 
-void HatchGen_HatchingGen::TrimFailed (const Standard_Boolean Flag)
+void Geom2dHatch_Hatching::TrimFailed (const Standard_Boolean Flag)
 {
   myTrimFailed = Flag ;
   if (myTrimFailed) myStatus = HatchGen_TrimFailure ;
@@ -99,7 +102,7 @@ void HatchGen_HatchingGen::TrimFailed (const Standard_Boolean Flag)
 // Purpose  : Returns the flag about the trimmings failure.
 //=======================================================================
 
-Standard_Boolean HatchGen_HatchingGen::TrimFailed () const
+Standard_Boolean Geom2dHatch_Hatching::TrimFailed () const
 {
   return myTrimFailed ;
 }
@@ -110,7 +113,7 @@ Standard_Boolean HatchGen_HatchingGen::TrimFailed () const
 //            value.
 //=======================================================================
 
-void HatchGen_HatchingGen::IsDone (const Standard_Boolean Flag)
+void Geom2dHatch_Hatching::IsDone (const Standard_Boolean Flag)
 {
   myIsDone = Flag ;
 }
@@ -120,7 +123,7 @@ void HatchGen_HatchingGen::IsDone (const Standard_Boolean Flag)
 // Purpose  : Returns the flag about the domains computation.
 //=======================================================================
 
-Standard_Boolean HatchGen_HatchingGen::IsDone () const
+Standard_Boolean Geom2dHatch_Hatching::IsDone () const
 {
   return myIsDone ;
 }
@@ -130,7 +133,7 @@ Standard_Boolean HatchGen_HatchingGen::IsDone () const
 // Purpose  : Sets the error status.
 //=======================================================================
 
-void HatchGen_HatchingGen::Status (const HatchGen_ErrorStatus Status)
+void Geom2dHatch_Hatching::Status (const HatchGen_ErrorStatus Status)
 {
   myStatus = Status ;
 }
@@ -140,7 +143,7 @@ void HatchGen_HatchingGen::Status (const HatchGen_ErrorStatus Status)
 // Purpose  : Returns the error status.
 //=======================================================================
 
-HatchGen_ErrorStatus HatchGen_HatchingGen::Status () const
+HatchGen_ErrorStatus Geom2dHatch_Hatching::Status () const
 {
   return myStatus ;
 }
@@ -150,7 +153,7 @@ HatchGen_ErrorStatus HatchGen_HatchingGen::Status () const
 // Purpose  : Adds an intersection point to the hatching.
 //=======================================================================
 
-void HatchGen_HatchingGen::AddPoint (const HatchGen_PointOnHatching& Point,
+void Geom2dHatch_Hatching::AddPoint (const HatchGen_PointOnHatching& Point,
 				     const Standard_Real Confusion)
 {
   Standard_Integer NbPoints = myPoints.Length () ;
@@ -181,7 +184,7 @@ void HatchGen_HatchingGen::AddPoint (const HatchGen_PointOnHatching& Point,
 // Purpose  : Returns the number of intersection points on the hatching.
 //=======================================================================
 
-Standard_Integer HatchGen_HatchingGen::NbPoints () const
+Standard_Integer Geom2dHatch_Hatching::NbPoints () const
 {
   return myPoints.Length () ;
 }
@@ -191,7 +194,7 @@ Standard_Integer HatchGen_HatchingGen::NbPoints () const
 // Purpose  : Returns the Index-th intersection point on the hatching.
 //=======================================================================
 
-const HatchGen_PointOnHatching& HatchGen_HatchingGen::Point (const Standard_Integer Index) const
+const HatchGen_PointOnHatching& Geom2dHatch_Hatching::Point (const Standard_Integer Index) const
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_Integer NbPoints = myPoints.Length () ;
@@ -206,7 +209,7 @@ const HatchGen_PointOnHatching& HatchGen_HatchingGen::Point (const Standard_Inte
 // Purpose  : Returns the Index-th intersection point on the hatching.
 //=======================================================================
 
-HatchGen_PointOnHatching& HatchGen_HatchingGen::ChangePoint (const Standard_Integer Index) 
+HatchGen_PointOnHatching& Geom2dHatch_Hatching::ChangePoint (const Standard_Integer Index) 
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_Integer NbPoints = myPoints.Length () ;
@@ -221,7 +224,7 @@ HatchGen_PointOnHatching& HatchGen_HatchingGen::ChangePoint (const Standard_Inte
 // Purpose  : Removes the Index-th intersection point of the hatching.
 //=======================================================================
 
-void HatchGen_HatchingGen::RemPoint (const Standard_Integer Index)
+void Geom2dHatch_Hatching::RemPoint (const Standard_Integer Index)
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_Integer NbPoints = myPoints.Length () ;
@@ -236,7 +239,7 @@ void HatchGen_HatchingGen::RemPoint (const Standard_Integer Index)
 // Purpose  : Removes all the intersection points of the hatching.
 //=======================================================================
 
-void HatchGen_HatchingGen::ClrPoints ()
+void Geom2dHatch_Hatching::ClrPoints ()
 {
   if (myIsDone) ClrDomains() ;
   for (Standard_Integer IPntH = 1 ; IPntH <= myPoints.Length() ; IPntH++) {
@@ -253,7 +256,7 @@ void HatchGen_HatchingGen::ClrPoints ()
 // Purpose  : Adds a domain to the hatching.
 //=======================================================================
 
-void HatchGen_HatchingGen::AddDomain (const HatchGen_Domain& Domain)
+void Geom2dHatch_Hatching::AddDomain (const HatchGen_Domain& Domain)
 {
   myDomains.Append (Domain) ;
 }
@@ -263,7 +266,7 @@ void HatchGen_HatchingGen::AddDomain (const HatchGen_Domain& Domain)
 // Purpose  : Returns the number of domains on the hatching.
 //=======================================================================
 
-Standard_Integer HatchGen_HatchingGen::NbDomains () const
+Standard_Integer Geom2dHatch_Hatching::NbDomains () const
 {
   return myDomains.Length () ;
 }
@@ -273,7 +276,7 @@ Standard_Integer HatchGen_HatchingGen::NbDomains () const
 // Purpose  : Returns the Index-th domain on the hatching.
 //=======================================================================
 
-const HatchGen_Domain& HatchGen_HatchingGen::Domain (const Standard_Integer Index) const
+const HatchGen_Domain& Geom2dHatch_Hatching::Domain (const Standard_Integer Index) const
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_Integer NbDomains = myDomains.Length () ;
@@ -288,7 +291,7 @@ const HatchGen_Domain& HatchGen_HatchingGen::Domain (const Standard_Integer Inde
 // Purpose  : Removes the Index-th domain of the hatching.
 //=======================================================================
 
-void HatchGen_HatchingGen::RemDomain (const Standard_Integer Index)
+void Geom2dHatch_Hatching::RemDomain (const Standard_Integer Index)
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_Integer NbDomains = myDomains.Length () ;
@@ -302,7 +305,7 @@ void HatchGen_HatchingGen::RemDomain (const Standard_Integer Index)
 // Purpose  : Removes all the domains of the hatching.
 //=======================================================================
 
-void HatchGen_HatchingGen::ClrDomains ()
+void Geom2dHatch_Hatching::ClrDomains ()
 {
   myDomains.Clear () ;
   myIsDone = Standard_False ;
@@ -312,7 +315,7 @@ void HatchGen_HatchingGen::ClrDomains ()
 // Function : ClassificationPoint
 // Purpose  : returns a 2d point on the curve 
 //=======================================================================
-gp_Pnt2d HatchGen_HatchingGen::ClassificationPoint () const { 
+gp_Pnt2d Geom2dHatch_Hatching::ClassificationPoint () const { 
   Standard_Real t,a,b;
   a = myCurve.FirstParameter();
   b = myCurve.LastParameter();

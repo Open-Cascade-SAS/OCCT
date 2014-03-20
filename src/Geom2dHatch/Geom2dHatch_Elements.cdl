@@ -17,37 +17,32 @@
 -- Modified by skv - Fri Jul 14 16:46:18 2006 OCC12627
 
 
-generic class ElementsGen from HatchGen
-   (TheKey          as any;
-    TheItem         as any;
-    TheHasher       as any;
-    TheCurve        as any)
-    
+class Elements from Geom2dHatch
+
 
 uses 
     Orientation      from TopAbs,
     Lin2d            from gp,
-    Pnt2d            from gp
+    Pnt2d            from gp,
+    Integer          from Standard,
+    Element          from Geom2dHatch,
+    MapIntegerHasher from TColStd,
+    Curve            from Geom2dAdaptor,
+    MapOfElements    from Geom2dHatch,
+    DataMapIteratorOfMapOfElements from Geom2dHatch
 
 raises         
     DomainError  from Standard,
     NoSuchObject from Standard
 
 
-private class MapOfElements from HatchGen instantiates 
-    DataMap from TCollection
-    	    (TheKey,
-	     TheItem,
-	     TheHasher);
-
-
 is 
 
     Create
-    returns ElementsGen from HatchGen;
+    returns Elements from Geom2dHatch;
 
-    Create(Other : ElementsGen from HatchGen)
-    returns ElementsGen from HatchGen;
+    Create(Other : Elements from Geom2dHatch)
+    returns Elements from Geom2dHatch;
 
         
 
@@ -60,22 +55,22 @@ is
 	---C++: alias ~
     is static;
 
-    Bind(me : in out; K : TheKey; I : TheItem) returns Boolean
+    Bind(me : in out; K : Integer from Standard; I : Element from Geom2dHatch) returns Boolean
     is static;
 
-    IsBound(me; K : TheKey) returns Boolean
+    IsBound(me; K : Integer from Standard) returns Boolean
     is static;
     
-    UnBind(me : in out; K : TheKey) returns Boolean
+    UnBind(me : in out; K : Integer from Standard) returns Boolean
     is static;
     
-    Find(me; K : TheKey) returns any TheItem
+    Find(me; K : Integer from Standard) returns any Element from Geom2dHatch
     raises NoSuchObject from Standard  -- when <K> is not in the map.
 	---C++: alias operator()
 	---C++: return const &
     is static;
     
-    ChangeFind(me : in out; K : TheKey) returns any TheItem
+    ChangeFind(me : in out; K : Integer from Standard) returns any Element from Geom2dHatch
     raises NoSuchObject from Standard  -- when <K> is not in the map.
 	---C++: alias operator()
 	---C++: return &
@@ -136,17 +131,17 @@ is
     	returns Boolean from Standard
     is static;
     
-    CurrentEdge(me; E : out TheCurve;
+    CurrentEdge(me; E : out Curve  from Geom2dAdaptor;
     	           Or : out Orientation from TopAbs)
     is static;
     
 
 fields 
 
-    myMap    : MapOfElements; 
+    myMap    : MapOfElements from Geom2dHatch; 
     Iter     : DataMapIteratorOfMapOfElements;
     NumWire  : Integer from Standard;
     NumEdge  : Integer from Standard;
     myCurEdge: Integer from Standard;
     
-end ElementsGen from HatchGen; 
+end Elements from Geom2dHatch; 

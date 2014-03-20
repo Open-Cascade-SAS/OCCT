@@ -14,20 +14,21 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class QualifiedCurv from GccEnt (TheCurve as any)
+class QCurve from Geom2dGcc
 
 	---Purpose: Creates a qualified 2d line.
 
-uses Position from GccEnt
+uses Position from GccEnt,
+     Curve    from Geom2dAdaptor
 
 is
 
-Create(Curve     : TheCurve                ;
+Create(Curve     : Curve from Geom2dAdaptor;
        Qualifier : Position from GccEnt ) 
-returns QualifiedCurv from GccEnt;
+returns QCurve from Geom2dGcc;
 -- is private;
 
-Qualified(me) returns TheCurve
+Qualified(me) returns Curve from Geom2dAdaptor
 is static;
 
 Qualifier(me) returns Position from GccEnt
@@ -56,15 +57,8 @@ is static;
 fields
 
 TheQualifier : Position from GccEnt;
-TheQualified : TheCurve;
+TheQualified : Curve from Geom2dAdaptor;
 
--- friends
-
--- Unqualified(Obj : Curv2d) from GccEnt,
--- Enclosing  (Obj : Curv2d) from GccEnt,
--- Enclosed   (Obj : Curv2d) from GccEnt,
--- Outside    (Obj : Curv2d) from GccEnt
-
-end QualifiedCurv;
+end QCurve;
 
 

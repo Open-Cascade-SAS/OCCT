@@ -14,50 +14,24 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class GLocateExtCC from Extrema (Curve1    as any;
-    	    	    	    	    	 Tool1     as any;
-					 Curve2    as any;
-					 Tool2     as any)
-					
-    	---Purpose: It calculates the distance between two curves with
-    	--          a close point; these distances can be maximum or 
-    	--          minimum.
+class LocateExtCC from Extrema
 
-uses   POnCurv from Extrema,
-       Pnt from gp,
-       HArray1OfPnt from TColgp
+    ---Purpose: It calculates the distance between two curves with
+    --          a close point; these distances can be maximum or 
+    --          minimum.
+
+uses   POnCurv      from Extrema,
+       Pnt          from gp,
+       HArray1OfPnt from TColgp,
+       Curve        from Adaptor3d,
+       CurveTool    from Extrema
 
 raises  DomainError  from Standard,
-    	NotDone      from StdFail
-
-
-    class LCCache instantiates CurveCache from Extrema (Curve1, Pnt from gp, HArray1OfPnt from TColgp);
-
-    class ELCC    instantiates GenExtCC      from Extrema
-        (Curve1,
-         Tool1,
-         Curve2,
-         Tool2,
-         LCCache,
-         HArray1OfPnt from TColgp,
-         POnCurv,
-         Pnt,
-         Vec);
-
-
-    class LocECC    instantiates GenLocateExtCC      from Extrema
-    	(Curve1,
-	 Tool1,
-	 Curve2,
-	 Tool2,
-         POnCurv,
-         Pnt,
-         Vec);
-
+        NotDone      from StdFail
 
 is
-    Create (C1: Curve1; C2: Curve2; U0,V0: Real)
-    	returns GLocateExtCC
+    Create (C1: Curve from Adaptor3d; C2: Curve from Adaptor3d; U0,V0: Real)
+    	returns LocateExtCC
     	---Purpose: Calculates the distance with a close point. The
     	--          close point is defined by a parameter value on each 
     	--          curve.
@@ -91,4 +65,4 @@ fields
     myPoint1: POnCurv;
     myPoint2: POnCurv;
 
-end GLocateExtCC;
+end LocateExtCC;

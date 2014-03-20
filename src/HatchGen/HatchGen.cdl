@@ -17,13 +17,11 @@
 package HatchGen
 
 uses
-    IntRes2d ,
-    StdFail ,
-    TopAbs ,
-    TCollection ,
-    TColStd,
-    gp,
-    TopClass
+    IntRes2d,
+    StdFail,
+    TopAbs,
+    TCollection,
+    gp
 
 is
 
@@ -65,17 +63,6 @@ is
     class Domain ;
     class Domains instantiates Sequence from TCollection
     	(Domain from HatchGen) ;
-	
-    generic class HatchingGen ;
-    generic class ElementGen ;
-    generic class ElementsGen,MapOfElements;
-    
-    generic class Hatcher ,
-                  Hatching ,
-    	    	  Hatchings ,
-                  Element ,
-                  Elements,
-                  Classifier;
 
 
 end HatchGen ;

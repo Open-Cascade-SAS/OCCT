@@ -14,16 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include Extrema_ELCC_hxx
-#include Extrema_LocECC_hxx
+#include <Extrema_LocateExtCC.ixx>
+
 #include <StdFail_NotDone.hxx>
 #include <Extrema_POnCurv.hxx>
 #include <Precision.hxx>
 
-Extrema_GLocateExtCC::Extrema_GLocateExtCC (const Curve1&       C1,
-					    const Curve2&       C2,
-					    const Standard_Real U0,
-					    const Standard_Real V0)
+#include <Adaptor3d_Curve.hxx>
+#include <Extrema_LocECC.hxx>
+
+Extrema_LocateExtCC::Extrema_LocateExtCC (const Adaptor3d_Curve& C1,
+                                          const Adaptor3d_Curve& C2,
+                                          const Standard_Real U0,
+                                          const Standard_Real V0)
 {
   Standard_Real TolU = C1.Resolution(Precision::Confusion());
   Standard_Real TolV = C2.Resolution(Precision::Confusion());
@@ -31,9 +34,8 @@ Extrema_GLocateExtCC::Extrema_GLocateExtCC (const Curve1&       C1,
 
   // Non implemente pour l instant: l appel a Extrema_ELCC.
 
-
   Extrema_LocECC Xtrem(C1, C2,
-		       U0, V0, TolU, TolV);	
+    U0, V0, TolU, TolV);	
   // Exploitation
 
   myDone = Xtrem.IsDone();
@@ -43,27 +45,20 @@ Extrema_GLocateExtCC::Extrema_GLocateExtCC (const Curve1&       C1,
     myPoint1 = P1;
     myPoint2 = P2;
   }
-
 }
 
-
-
-
-Standard_Boolean Extrema_GLocateExtCC::IsDone () const {
+Standard_Boolean Extrema_LocateExtCC::IsDone () const {
 
   return myDone;
 }
 
-
-Standard_Real Extrema_GLocateExtCC::SquareDistance() const {
+Standard_Real Extrema_LocateExtCC::SquareDistance() const {
 
   if (!myDone) { StdFail_NotDone::Raise(); }
   return mySqDist;
 }
 
-
-
-void Extrema_GLocateExtCC::Point (Extrema_POnCurv& P1, Extrema_POnCurv& P2) const {
+void Extrema_LocateExtCC::Point (Extrema_POnCurv& P1, Extrema_POnCurv& P2) const {
 
   if (!myDone) { StdFail_NotDone::Raise(); }
   P1 = myPoint1;

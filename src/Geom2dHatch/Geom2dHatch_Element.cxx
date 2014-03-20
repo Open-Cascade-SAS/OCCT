@@ -15,28 +15,32 @@
 // commercial license or contractual agreement.
 
 //=======================================================================
-// Function : HatchGen_ElementGen
+// Function : Geom2dHatch_Element
 // Purpose  : Magic Constructor.
 //=======================================================================
 
-HatchGen_ElementGen::HatchGen_ElementGen (const HatchGen_ElementGen& Other) 
+#include <Geom2dHatch_Element.ixx>
+
+#include <Geom2dAdaptor_Curve.hxx>
+
+Geom2dHatch_Element::Geom2dHatch_Element (const Geom2dHatch_Element& Other) 
 : myCurve(Other.myCurve), myOrientation(Other.myOrientation) { 
 }
   
 //=======================================================================
-// Function : HatchGen_ElementGen
+// Function : Geom2dHatch_Element
 // Purpose  : Empty Constructor.
 //=======================================================================
 
-HatchGen_ElementGen::HatchGen_ElementGen () { 
+Geom2dHatch_Element::Geom2dHatch_Element () { 
 }
   
 //=======================================================================
-// Function : HatchGen_ElementGen
+// Function : Geom2dHatch_Element
 // Purpose  : Constructor.
 //=======================================================================
 
-HatchGen_ElementGen::HatchGen_ElementGen (const TheElementCurve& Curve,
+Geom2dHatch_Element::Geom2dHatch_Element (const Geom2dAdaptor_Curve& Curve,
 					  const TopAbs_Orientation Orientation) :
        myCurve       (Curve),
        myOrientation (Orientation)
@@ -48,7 +52,7 @@ HatchGen_ElementGen::HatchGen_ElementGen (const TheElementCurve& Curve,
 // Purpose  : Returns the curve associated to the hatching.
 //=======================================================================
 
-const TheElementCurve& HatchGen_ElementGen::Curve () const
+const Geom2dAdaptor_Curve& Geom2dHatch_Element::Curve () const
 {
   return myCurve ;
 }
@@ -58,7 +62,7 @@ const TheElementCurve& HatchGen_ElementGen::Curve () const
 // Purpose  : Returns the curve associated to the hatching.
 //=======================================================================
 
-TheElementCurve& HatchGen_ElementGen::ChangeCurve ()
+Geom2dAdaptor_Curve& Geom2dHatch_Element::ChangeCurve ()
 {
   return myCurve ;
 }
@@ -68,7 +72,7 @@ TheElementCurve& HatchGen_ElementGen::ChangeCurve ()
 // Purpose  : Sets the orientation of the element.
 //=======================================================================
 
-void HatchGen_ElementGen::Orientation (const TopAbs_Orientation Orientation)
+void Geom2dHatch_Element::Orientation (const TopAbs_Orientation Orientation)
 {
   myOrientation = Orientation ;
 }
@@ -78,7 +82,7 @@ void HatchGen_ElementGen::Orientation (const TopAbs_Orientation Orientation)
 // Purpose  : Returns the orientation of the element.
 //=======================================================================
 
-TopAbs_Orientation HatchGen_ElementGen::Orientation () const
+TopAbs_Orientation Geom2dHatch_Element::Orientation () const
 {
   return myOrientation ;
 }

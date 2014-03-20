@@ -67,68 +67,67 @@ class Lin2d2Tan;
 
 class Lin2dTanObl;
 
-class MyQCurve instantiates QualifiedCurv from GccEnt
-    	    (Curve  from Geom2dAdaptor);
+class QCurve;
 
 class MyCurveTool instantiates CurvePGTool from GccGeo
-    	    (Curve       from Geom2dAdaptor,
-    	     CurveTool   from Geom2dGcc    ,
-    	     OffsetCurve from Adaptor3d);
-	    
+        (Curve       from Geom2dAdaptor,
+         CurveTool   from Geom2dGcc,
+         OffsetCurve from Adaptor3d);
+
 class MyCirc2d2TanOn instantiates Circ2d2TanOn from GccGeo
-    	    (Curve                          from Geom2dAdaptor,
-	     CurveTool                      from Geom2dGcc,
-    	     MyQCurve                       from Geom2dGcc,
-             OffsetCurve                    from Adaptor3d,
-	     HCurve                         from Geom2dAdaptor,
-	     MyCurveTool                    from Geom2dGcc,
-	     TheIntConicCurveOfGInter from Geom2dInt);
-	     
+        (Curve                    from Geom2dAdaptor,
+         CurveTool                from Geom2dGcc,
+         QCurve                   from Geom2dGcc,
+         OffsetCurve              from Adaptor3d,
+         HCurve                   from Geom2dAdaptor,
+         MyCurveTool              from Geom2dGcc,
+         TheIntConicCurveOfGInter from Geom2dInt);
+
 class MyCirc2d2TanRad instantiates Circ2d2TanRad from GccGeo
-    	    (Curve                           from Geom2dAdaptor ,
-	     CurveTool                       from Geom2dGcc,
-    	     MyQCurve                        from Geom2dGcc,
-             OffsetCurve                     from Adaptor3d, 
-	     HCurve                         from Geom2dAdaptor,	     
-	     MyCurveTool                     from Geom2dGcc,
-	     TheIntConicCurveOfGInter  from Geom2dInt,
-	     GInter                    from Geom2dInt);
+        (Curve                    from Geom2dAdaptor,
+         CurveTool                from Geom2dGcc,
+         QCurve                   from Geom2dGcc,
+         OffsetCurve              from Adaptor3d, 
+         HCurve                   from Geom2dAdaptor,
+         MyCurveTool              from Geom2dGcc,
+         TheIntConicCurveOfGInter from Geom2dInt,
+         GInter                   from Geom2dInt);
 
 class MyCirc2dTanOnRad instantiates Circ2dTanOnRad from GccGeo
-    	    (Curve                           from Geom2dAdaptor ,
-	     CurveTool                       from Geom2dGcc,
-    	     MyQCurve                        from Geom2dGcc,
-	     OffsetCurve                     from Adaptor3d,
-	     HCurve                         from Geom2dAdaptor,	     
-	     MyCurveTool                     from Geom2dGcc,
-	     TheIntConicCurveOfGInter  from Geom2dInt,
-	     GInter                    from Geom2dInt);
+        (Curve                     from Geom2dAdaptor ,
+         CurveTool                 from Geom2dGcc,
+         QCurve                    from Geom2dGcc,
+         OffsetCurve               from Adaptor3d,
+         HCurve                    from Geom2dAdaptor,
+         MyCurveTool               from Geom2dGcc,
+         TheIntConicCurveOfGInter  from Geom2dInt,
+         GInter                    from Geom2dInt);
 
-class MyC2d3Tan instantiates Circ2d3Tan from GccIter	     
-    	    (Curve          from Geom2dAdaptor,
-	     CurveTool      from Geom2dGcc,
-	     MyQCurve       from Geom2dGcc);
-	     
-class MyCirc2dTanCen instantiates Circ2dTanCen from GccGeo	     
-    	    (Curve          from Geom2dAdaptor,
-	     CurveTool      from Geom2dGcc,
-	     ExtPC2d          from Extrema,
-             MyQCurve       from Geom2dGcc);
-	     
-class MyC2d2TanOn instantiates Circ2d2TanOn from GccIter	     
-    	    (Curve          from Geom2dAdaptor,
-	     CurveTool      from Geom2dGcc,
-	     MyQCurve       from Geom2dGcc);
+class MyC2d3Tan instantiates Circ2d3Tan from GccIter
+        (Curve          from Geom2dAdaptor,
+         CurveTool      from Geom2dGcc,
+         QCurve         from Geom2dGcc);
+        
+class MyCirc2dTanCen instantiates Circ2dTanCen from GccGeo
+        (Curve          from Geom2dAdaptor,
+         CurveTool      from Geom2dGcc,
+         ExtPC2d        from Extrema,
+         QCurve         from Geom2dGcc);
 
-class MyL2dTanObl instantiates Lin2dTanObl from GccIter	     
-    	    (Curve          from Geom2dAdaptor,
-	     CurveTool      from Geom2dGcc,
-	     MyQCurve       from Geom2dGcc);
-	     
+class MyC2d2TanOn instantiates Circ2d2TanOn from GccIter
+        (Curve          from Geom2dAdaptor,
+         CurveTool      from Geom2dGcc,
+         QCurve         from Geom2dGcc);
+
+class MyL2dTanObl instantiates Lin2dTanObl from GccIter
+        (Curve          from Geom2dAdaptor,
+         CurveTool      from Geom2dGcc,
+         QCurve         from Geom2dGcc);
+
 class MyL2d2Tan instantiates Lin2d2Tan from GccIter	     
-    	    (Curve          from Geom2dAdaptor,
-	     CurveTool      from Geom2dGcc,
-	     MyQCurve       from Geom2dGcc);
+        (Curve          from Geom2dAdaptor,
+         CurveTool      from Geom2dGcc,
+         QCurve         from Geom2dGcc);
 
 Unqualified(Obj : Curve from Geom2dAdaptor) returns QualifiedCurve;
     	---Purpose: Constructs such a qualified curve that the relative

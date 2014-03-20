@@ -18,7 +18,7 @@
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_Circle.hxx>
-#include <Geom2dGcc_MyQCurve.hxx>
+#include <Geom2dGcc_QCurve.hxx>
 #include <Geom2dGcc_MyC2d3Tan.hxx>
 #include <GccEnt_QualifiedCirc.hxx>
 #include <GccEnt_QualifiedLin.hxx>
@@ -212,9 +212,9 @@ Geom2dGcc_Circ2d3Tan::
     }
   }
   else {
-    Geom2dGcc_MyQCurve Qc1(C1,Qualified1.Qualifier());
-    Geom2dGcc_MyQCurve Qc2(C2,Qualified2.Qualifier());
-    Geom2dGcc_MyQCurve Qc3(C3,Qualified3.Qualifier());
+    Geom2dGcc_QCurve Qc1(C1,Qualified1.Qualifier());
+    Geom2dGcc_QCurve Qc2(C2,Qualified2.Qualifier());
+    Geom2dGcc_QCurve Qc3(C3,Qualified3.Qualifier());
     Geom2dGcc_MyC2d3Tan Circ(Qc1,Qc2,Qc3,Param1,Param2,Param3,Tolerance);
     WellDone = Circ.IsDone();
     NbrSol = 1;
@@ -332,8 +332,8 @@ Geom2dGcc_Circ2d3Tan::
     }
   }
   else {
-    Geom2dGcc_MyQCurve Qc1(C1,Qualified1.Qualifier());
-    Geom2dGcc_MyQCurve Qc2(C2,Qualified2.Qualifier());
+    Geom2dGcc_QCurve Qc1(C1,Qualified1.Qualifier());
+    Geom2dGcc_QCurve Qc2(C2,Qualified2.Qualifier());
     Geom2dGcc_MyC2d3Tan Circ(Qc1,Qc2,Point->Pnt2d(),Param1,Param2,Tolerance);
     WellDone = Circ.IsDone();
     NbrSol = 1;
@@ -412,7 +412,7 @@ Geom2dGcc_Circ2d3Tan::
     }
   }
   else {
-    Geom2dGcc_MyQCurve Qc1(C1,Qualified1.Qualifier());
+    Geom2dGcc_QCurve Qc1(C1,Qualified1.Qualifier());
     Geom2dGcc_MyC2d3Tan Circ(Qc1,Point1->Pnt2d(),Point2->Pnt2d(),
 			     Param1,Tolerance);
     WellDone = Circ.IsDone();

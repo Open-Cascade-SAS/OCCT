@@ -52,8 +52,6 @@ is
 
     class QualifiedCirc;
 
-    generic class QualifiedCurv;
-
     enumeration Position is 
     	unqualified, enclosing, enclosed, outside, noqualifier;
     	---Purpose:

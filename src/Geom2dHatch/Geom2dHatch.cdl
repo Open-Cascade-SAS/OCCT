@@ -17,18 +17,38 @@
 package Geom2dHatch
 
 uses
-    Geom2dAdaptor ,
-    Geom2dInt ,
-    gp ,
-    HatchGen
+    Geom2dAdaptor,
+    Geom2dInt,
+    gp,
+    HatchGen,
+    TCollection,
+    TColStd,
+    TopClass,
+    TopAbs
 
 is
     
     class Intersector ;
     
-    class Hatcher instantiates Hatcher from HatchGen
-    	(Curve       from Geom2dAdaptor,
-	 Curve       from Geom2dAdaptor,
-	 Intersector from Geom2dHatch) ;
+    class Hatcher;
+    
+    class Element;
+    class Elements;
+    class Hatching;
+    
+    class Hatchings instantiates DataMap from TCollection
+    (Integer          from Standard,
+     Hatching         from Geom2dHatch,
+     MapIntegerHasher from TColStd) ;
+
+    class Classifier instantiates FaceClassifier from  TopClass 
+    (Elements    from Geom2dHatch,
+     Curve       from Geom2dAdaptor,
+     Intersector from Geom2dHatch);
+
+    private class MapOfElements instantiates DataMap from TCollection
+    (Integer          from Standard,
+     Element          from Geom2dHatch,
+     MapIntegerHasher from TColStd);
 
 end Geom2dHatch ;

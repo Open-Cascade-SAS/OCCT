@@ -19,7 +19,7 @@
 #include <GccAna_Circ2d2TanOn.hxx>
 #include <Geom2dGcc_MyCirc2d2TanOn.hxx>
 #include <Geom2dGcc_MyC2d2TanOn.hxx>
-#include <Geom2dGcc_MyQCurve.hxx>
+#include <Geom2dGcc_QCurve.hxx>
 #include <GccEnt_BadQualifier.hxx>
 #include <Geom2d_Circle.hxx>
 #include <Geom2d_Line.hxx>
@@ -273,8 +273,8 @@ Geom2dGcc_Circ2d2TanOn::
 //=============================================================================
 
   else {
-    Geom2dGcc_MyQCurve Qc1(C1,Qualified1.Qualifier());
-    Geom2dGcc_MyQCurve Qc2(C2,Qualified2.Qualifier());
+    Geom2dGcc_QCurve Qc1(C1,Qualified1.Qualifier());
+    Geom2dGcc_QCurve Qc2(C2,Qualified2.Qualifier());
     if ((Type3 == GeomAbs_Circle || Type3 == GeomAbs_Line)) {
       if (Type3 == GeomAbs_Circle) {
 	Handle(Geom2d_Circle) CCon = Handle(Geom2d_Circle)::DownCast(Con);
@@ -445,7 +445,7 @@ Geom2dGcc_Circ2d2TanOn::
 //=============================================================================
 
   else {
-    Geom2dGcc_MyQCurve Qc1(C1,Qualified1.Qualifier());
+    Geom2dGcc_QCurve Qc1(C1,Qualified1.Qualifier());
     if ((Type3 == GeomAbs_Circle || Type3 == GeomAbs_Line)) {
       if (Type3 == GeomAbs_Circle) {
 	Handle(Geom2d_Circle) CCon = Handle(Geom2d_Circle)::DownCast(Con);

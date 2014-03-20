@@ -19,17 +19,17 @@
 
 #include <StdFail_NotDone.hxx>
 
-#include HatchGen_Element_hxx
-#include HatchGen_Elements_hxx
-#include TheIntersector_hxx
-#include TheCurveE_hxx
-#include HatchGen_Hatching_hxx
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dHatch_Intersector.hxx>
+#include <Geom2dHatch_Hatching.hxx>
+#include <Geom2dHatch_Element.hxx>
+
 //=======================================================================
 // Function : Intersector
 // Purpose  : Returns the associated intersector.
 //=======================================================================
 
-inline const TheIntersector& HatchGen_Hatcher::Intersector ()
+inline const Geom2dHatch_Intersector& Geom2dHatch_Hatcher::Intersector ()
 {
   return myIntersector ;
 }
@@ -39,7 +39,7 @@ inline const TheIntersector& HatchGen_Hatcher::Intersector ()
 // Purpose  : Returns the associated intersector.
 //=======================================================================
 
-inline TheIntersector& HatchGen_Hatcher::ChangeIntersector ()
+inline Geom2dHatch_Intersector& Geom2dHatch_Hatcher::ChangeIntersector ()
 {
   return myIntersector ;
 }
@@ -49,7 +49,7 @@ inline TheIntersector& HatchGen_Hatcher::ChangeIntersector ()
 // Purpose  : Returns the 2d confusion tolerance.
 //=======================================================================
 
-inline Standard_Real HatchGen_Hatcher::Confusion2d () const
+inline Standard_Real Geom2dHatch_Hatcher::Confusion2d () const
 {
   return myConfusion2d ;
 }
@@ -59,7 +59,7 @@ inline Standard_Real HatchGen_Hatcher::Confusion2d () const
 // Purpose  : Returns the 3d confusion tolerance.
 //=======================================================================
 
-inline Standard_Real HatchGen_Hatcher::Confusion3d () const
+inline Standard_Real Geom2dHatch_Hatcher::Confusion3d () const
 {
   return myConfusion3d ;
 }
@@ -69,7 +69,7 @@ inline Standard_Real HatchGen_Hatcher::Confusion3d () const
 // Purpose  : Returns the flag about the points consideration.
 //=======================================================================
 
-inline Standard_Boolean HatchGen_Hatcher::KeepPoints () const
+inline Standard_Boolean Geom2dHatch_Hatcher::KeepPoints () const
 {
   return myKeepPoints ;
 }
@@ -79,7 +79,7 @@ inline Standard_Boolean HatchGen_Hatcher::KeepPoints () const
 // Purpose  : Returns the flag about the segments consideration.
 //=======================================================================
 
-inline Standard_Boolean HatchGen_Hatcher::KeepSegments () const
+inline Standard_Boolean Geom2dHatch_Hatcher::KeepSegments () const
 {
   return myKeepSegments ;
 }
@@ -89,7 +89,7 @@ inline Standard_Boolean HatchGen_Hatcher::KeepSegments () const
 // Purpose  : Removes all the hatchings and all the elements.
 //=======================================================================
 
-inline void HatchGen_Hatcher::Clear ()
+inline void Geom2dHatch_Hatcher::Clear ()
 {
   if (myNbHatchings != 0) ClrHatchings () ;
   if (myNbElements  != 0) ClrElements  () ;
@@ -100,12 +100,12 @@ inline void HatchGen_Hatcher::Clear ()
 // Purpose  : Returns the IndE-th element.
 //=======================================================================
 
-inline HatchGen_Element& HatchGen_Hatcher::Element (const Standard_Integer IndE)
+inline Geom2dHatch_Element& Geom2dHatch_Hatcher::Element (const Standard_Integer IndE)
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if (!myElements.IsBound (IndE), "") ;
 #endif
-  HatchGen_Element& Element = myElements.ChangeFind (IndE) ;
+  Geom2dHatch_Element& Element = myElements.ChangeFind (IndE) ;
   return Element ;
 }
 
@@ -114,12 +114,12 @@ inline HatchGen_Element& HatchGen_Hatcher::Element (const Standard_Integer IndE)
 // Purpose  : Returns the curve associated to the IndE-th element.
 //=======================================================================
 
-inline const TheCurveE& HatchGen_Hatcher::ElementCurve (const Standard_Integer IndE) const
+inline const Geom2dAdaptor_Curve& Geom2dHatch_Hatcher::ElementCurve (const Standard_Integer IndE) const
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if (!myElements.IsBound (IndE), "") ;
 #endif
-  const HatchGen_Element& Element = myElements.Find (IndE) ;
+  const Geom2dHatch_Element& Element = myElements.Find (IndE) ;
   return Element.Curve() ;
 }
 
@@ -129,12 +129,12 @@ inline const TheCurveE& HatchGen_Hatcher::ElementCurve (const Standard_Integer I
 // Purpose  : Returns the IndH-th hatching.
 //=======================================================================
 
-inline HatchGen_Hatching& HatchGen_Hatcher::Hatching (const Standard_Integer IndH)
+inline Geom2dHatch_Hatching& Geom2dHatch_Hatcher::Hatching (const Standard_Integer IndH)
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if (!myHatchings.IsBound (IndH), "") ;
 #endif
-  HatchGen_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
+  Geom2dHatch_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
   return Hatching ;
 }
 
@@ -143,12 +143,12 @@ inline HatchGen_Hatching& HatchGen_Hatcher::Hatching (const Standard_Integer Ind
 // Purpose  : Returns the curve associated to the IndH-th hatching.
 //=======================================================================
 
-inline const TheCurveH& HatchGen_Hatcher::HatchingCurve (const Standard_Integer IndH) const
+inline const Geom2dAdaptor_Curve& Geom2dHatch_Hatcher::HatchingCurve (const Standard_Integer IndH) const
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if (!myHatchings.IsBound (IndH), "") ;
 #endif
-  const HatchGen_Hatching& Hatching = myHatchings.Find (IndH) ;
+  const Geom2dHatch_Hatching& Hatching = myHatchings.Find (IndH) ;
   return Hatching.Curve() ;
 }
 
@@ -158,12 +158,12 @@ inline const TheCurveH& HatchGen_Hatcher::HatchingCurve (const Standard_Integer 
 //            hatching.
 //=======================================================================
 
-inline Standard_Integer HatchGen_Hatcher::NbPoints (const Standard_Integer IndH) const
+inline Standard_Integer Geom2dHatch_Hatcher::NbPoints (const Standard_Integer IndH) const
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if (!myHatchings.IsBound (IndH), "") ;
 #endif
-  const HatchGen_Hatching& Hatching = myHatchings.Find (IndH) ;
+  const Geom2dHatch_Hatching& Hatching = myHatchings.Find (IndH) ;
   return Hatching.NbPoints() ;
 }
 
@@ -173,13 +173,13 @@ inline Standard_Integer HatchGen_Hatcher::NbPoints (const Standard_Integer IndH)
 //            hatching.
 //=======================================================================
 
-inline const HatchGen_PointOnHatching& HatchGen_Hatcher::Point (const Standard_Integer IndH,
+inline const HatchGen_PointOnHatching& Geom2dHatch_Hatcher::Point (const Standard_Integer IndH,
 							 const Standard_Integer IndP) const
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if (!myHatchings.IsBound (IndH), "") ;
 #endif
-  const HatchGen_Hatching& Hatching = myHatchings.Find (IndH) ;
+  const Geom2dHatch_Hatching& Hatching = myHatchings.Find (IndH) ;
 #if RAISE_IF_NOSUCHOBJECT
   Standard_OutOfRange_Raise_if (IndP < 0 || IndP > Hatching.NbPoints(), "") ;
 #endif
@@ -193,12 +193,12 @@ inline const HatchGen_PointOnHatching& HatchGen_Hatcher::Point (const Standard_I
 //            for the IndH-th hatching. 
 //=======================================================================
 
-inline Standard_Boolean HatchGen_Hatcher::TrimDone (const Standard_Integer IndH) const
+inline Standard_Boolean Geom2dHatch_Hatcher::TrimDone (const Standard_Integer IndH) const
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if (!myHatchings.IsBound (IndH), "") ;
 #endif
-  const HatchGen_Hatching& Hatching = myHatchings.Find (IndH) ;
+  const Geom2dHatch_Hatching& Hatching = myHatchings.Find (IndH) ;
   return Hatching.TrimDone() ;
 }
 //=======================================================================
@@ -207,12 +207,12 @@ inline Standard_Boolean HatchGen_Hatcher::TrimDone (const Standard_Integer IndH)
 //            for the IndH-th hatching. 
 //=======================================================================
 
-inline Standard_Boolean HatchGen_Hatcher::TrimFailed (const Standard_Integer IndH) const
+inline Standard_Boolean Geom2dHatch_Hatcher::TrimFailed (const Standard_Integer IndH) const
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if (!myHatchings.IsBound (IndH), "") ;
 #endif
-  const HatchGen_Hatching& Hatching = myHatchings.Find (IndH) ;
+  const Geom2dHatch_Hatching& Hatching = myHatchings.Find (IndH) ;
   return Hatching.TrimFailed() ;
 }
 
@@ -222,12 +222,12 @@ inline Standard_Boolean HatchGen_Hatcher::TrimFailed (const Standard_Integer Ind
 //            for the IndH-th hatching. 
 //=======================================================================
 
-inline Standard_Boolean HatchGen_Hatcher::IsDone (const Standard_Integer IndH) const
+inline Standard_Boolean Geom2dHatch_Hatcher::IsDone (const Standard_Integer IndH) const
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if (!myHatchings.IsBound (IndH), "") ;
 #endif
-  const HatchGen_Hatching& Hatching = myHatchings.Find (IndH) ;
+  const Geom2dHatch_Hatching& Hatching = myHatchings.Find (IndH) ;
   return Hatching.IsDone() ;
 }
 //=======================================================================
@@ -235,12 +235,12 @@ inline Standard_Boolean HatchGen_Hatcher::IsDone (const Standard_Integer IndH) c
 // Purpose  : Returns the status about the IndH-th hatching. 
 //=======================================================================
 
-inline HatchGen_ErrorStatus HatchGen_Hatcher::Status (const Standard_Integer IndH) const
+inline HatchGen_ErrorStatus Geom2dHatch_Hatcher::Status (const Standard_Integer IndH) const
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if (!myHatchings.IsBound (IndH), "") ;
 #endif
-  const HatchGen_Hatching& Hatching = myHatchings.Find (IndH) ;
+  const Geom2dHatch_Hatching& Hatching = myHatchings.Find (IndH) ;
   return Hatching.Status() ;
 }
 //=======================================================================
@@ -248,13 +248,13 @@ inline HatchGen_ErrorStatus HatchGen_Hatcher::Status (const Standard_Integer Ind
 // Purpose  : Returns the number of domains of the IndH-th hatching.
 //=======================================================================
 
-inline Standard_Integer HatchGen_Hatcher::NbDomains (const Standard_Integer IndH) const
+inline Standard_Integer Geom2dHatch_Hatcher::NbDomains (const Standard_Integer IndH) const
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if (!myHatchings.IsBound (IndH), "") ;
 #endif
-  const HatchGen_Hatching& Hatching = myHatchings.Find (IndH) ;
-  StdFail_NotDone_Raise_if (!Hatching.IsDone(), "HatchGen_Hatcher::NbDomains") ;
+  const Geom2dHatch_Hatching& Hatching = myHatchings.Find (IndH) ;
+  StdFail_NotDone_Raise_if (!Hatching.IsDone(), "Geom2dHatch_Hatcher::NbDomains") ;
   return Hatching.NbDomains() ;
 }
 

@@ -12,38 +12,42 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-TheCurve GccEnt_QualifiedCurv::
+#include <Geom2dGcc_QCurve.ixx>
+
+//#include <Geom2dAdaptor_Curve.hxx>
+
+Geom2dAdaptor_Curve Geom2dGcc_QCurve::
    Qualified () const { return TheQualified; }
 
-GccEnt_Position GccEnt_QualifiedCurv::
+GccEnt_Position Geom2dGcc_QCurve::
    Qualifier () const { return TheQualifier; }
 
-Standard_Boolean GccEnt_QualifiedCurv::
+Standard_Boolean Geom2dGcc_QCurve::
    IsUnqualified () const {
      if (TheQualifier == GccEnt_unqualified ) { return Standard_True; }
      else { return Standard_False; }
    }
 
-Standard_Boolean GccEnt_QualifiedCurv::
+Standard_Boolean Geom2dGcc_QCurve::
    IsEnclosing () const {
      if (TheQualifier == GccEnt_enclosing) { return Standard_True; }
      else { return Standard_False; }
    }
 
-Standard_Boolean GccEnt_QualifiedCurv::
+Standard_Boolean Geom2dGcc_QCurve::
    IsEnclosed () const {
      if (TheQualifier == GccEnt_enclosed) { return Standard_True; }
      else { return Standard_False; }
    }
 
-Standard_Boolean GccEnt_QualifiedCurv::
+Standard_Boolean Geom2dGcc_QCurve::
    IsOutside () const {
      if (TheQualifier == GccEnt_outside) { return Standard_True; }
      else { return Standard_False; }
    }
 
-GccEnt_QualifiedCurv::
-   GccEnt_QualifiedCurv (const TheCurve&          Curve,
+Geom2dGcc_QCurve::
+   Geom2dGcc_QCurve (const Geom2dAdaptor_Curve&          Curve,
 			 const GccEnt_Position Qualifier) {
    TheQualified = Curve;
    TheQualifier = Qualifier;

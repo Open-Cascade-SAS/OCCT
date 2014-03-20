@@ -14,6 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Geom2dHatch_Hatcher.ixx>
+
 #include <HatchGen_Domain.hxx>
 #include <HatchGen_Domains.hxx>
 #include <HatchGen_PointOnElement.hxx>
@@ -25,6 +27,10 @@
 #include <TopAbs.hxx>
 #include <TopTrans_CurveTransition.hxx>
 
+#include <Geom2dAdaptor_Curve.hxx>
+#include <Geom2dHatch_Intersector.hxx>
+#include <Geom2dHatch_Classifier.hxx>
+
 #define RAISE_IF_NOSUCHOBJECT 0
 #define TRACE_HATCHER 0
 
@@ -35,11 +41,11 @@
 //=======================================================================
 
 //=======================================================================
-// Function : HatchGen_Hatcher
+// Function : Geom2dHatch_Hatcher
 // Purpose  : Constructor.
 //=======================================================================
 
-HatchGen_Hatcher::HatchGen_Hatcher (const TheIntersector&  Intersector,
+Geom2dHatch_Hatcher::Geom2dHatch_Hatcher (const Geom2dHatch_Intersector&  Intersector,
 				    const Standard_Real    Confusion2d,
 				    const Standard_Real    Confusion3d,
 				    const Standard_Boolean KeepPnt,
@@ -59,12 +65,12 @@ HatchGen_Hatcher::HatchGen_Hatcher (const TheIntersector&  Intersector,
 // Purpose  : Sets the associated intersector.
 //=======================================================================
 
-void HatchGen_Hatcher::Intersector (const TheIntersector& Intersector)
+void Geom2dHatch_Hatcher::Intersector (const Geom2dHatch_Intersector& Intersector)
 {
   myIntersector = Intersector ;
   for (Standard_Integer IndH = 1 ; IndH <= myNbHatchings ; IndH++) {
     if (myHatchings.IsBound (IndH)) {
-      HatchGen_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
+      Geom2dHatch_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
       Hatching.ClrPoints() ;
     }
   }
@@ -76,12 +82,12 @@ void HatchGen_Hatcher::Intersector (const TheIntersector& Intersector)
 // Purpose  : Sets the 2dconfusion tolerance.
 //=======================================================================
 
-void HatchGen_Hatcher::Confusion2d (const Standard_Real Confusion)
+void Geom2dHatch_Hatcher::Confusion2d (const Standard_Real Confusion)
 {
   myConfusion2d = Confusion ;
   for (Standard_Integer IndH = 1 ; IndH <= myNbHatchings ; IndH++) {
     if (myHatchings.IsBound (IndH)) {
-      HatchGen_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
+      Geom2dHatch_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
       Hatching.ClrPoints() ;
     }
   }
@@ -93,12 +99,12 @@ void HatchGen_Hatcher::Confusion2d (const Standard_Real Confusion)
 // Purpose  : Sets the 3d confusion tolerance.
 //=======================================================================
 
-void HatchGen_Hatcher::Confusion3d (const Standard_Real Confusion)
+void Geom2dHatch_Hatcher::Confusion3d (const Standard_Real Confusion)
 {
   myConfusion3d = Confusion ;
   for (Standard_Integer IndH = 1 ; IndH <= myNbHatchings ; IndH++) {
     if (myHatchings.IsBound (IndH)) {
-      HatchGen_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
+      Geom2dHatch_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
       Hatching.ClrPoints() ;
     }
   }
@@ -109,12 +115,12 @@ void HatchGen_Hatcher::Confusion3d (const Standard_Real Confusion)
 // Purpose  : Sets the above flag.
 //=======================================================================
 
-void HatchGen_Hatcher::KeepPoints (const Standard_Boolean Keep)
+void Geom2dHatch_Hatcher::KeepPoints (const Standard_Boolean Keep)
 {
   myKeepPoints = Keep ;
   for (Standard_Integer IndH = 1 ; IndH <= myNbHatchings ; IndH++) {
     if (myHatchings.IsBound (IndH)) {
-      HatchGen_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
+      Geom2dHatch_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
       Hatching.ClrDomains() ;
     }
   }
@@ -126,12 +132,12 @@ void HatchGen_Hatcher::KeepPoints (const Standard_Boolean Keep)
 // Purpose  : Sets the above flag.
 //=======================================================================
 
-void HatchGen_Hatcher::KeepSegments (const Standard_Boolean Keep)
+void Geom2dHatch_Hatcher::KeepSegments (const Standard_Boolean Keep)
 {
   myKeepSegments = Keep ;
   for (Standard_Integer IndH = 1 ; IndH <= myNbHatchings ; IndH++) {
     if (myHatchings.IsBound (IndH)) {
-      HatchGen_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
+      Geom2dHatch_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
       Hatching.ClrDomains() ;
     }
   }
@@ -151,7 +157,7 @@ void HatchGen_Hatcher::KeepSegments (const Standard_Boolean Keep)
 // Purpose  : Adds an element to the Hatcher and returns its index.
 //=======================================================================
 
-Standard_Integer HatchGen_Hatcher::AddElement (const TheCurveE& Curve,
+Standard_Integer Geom2dHatch_Hatcher::AddElement (const Geom2dAdaptor_Curve& Curve,
 					       const TopAbs_Orientation Orientation)
 {
   Standard_Integer IndE ;
@@ -160,11 +166,11 @@ Standard_Integer HatchGen_Hatcher::AddElement (const TheCurveE& Curve,
     myNbElements++ ;
     IndE = myNbElements ;
   }
-  HatchGen_Element Element (Curve, Orientation) ;
+  Geom2dHatch_Element Element (Curve, Orientation) ;
   myElements.Bind (IndE, Element) ;
   for (Standard_Integer IndH = 1 ; IndH <= myNbHatchings; IndH++) {
     if (myHatchings.IsBound(IndH)) {
-      HatchGen_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
+      Geom2dHatch_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
       Hatching.ClrPoints () ;
     }
   }
@@ -176,14 +182,14 @@ Standard_Integer HatchGen_Hatcher::AddElement (const TheCurveE& Curve,
 // Purpose  : Removes the IndE-th element from the hatcher.
 //=======================================================================
 
-void HatchGen_Hatcher::RemElement (const Standard_Integer IndE)
+void Geom2dHatch_Hatcher::RemElement (const Standard_Integer IndE)
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if (!myElements.IsBound (IndE), "") ;
 #endif
   for (Standard_Integer IndH = 1 ; IndH <= myNbHatchings ; IndH++) {
     if (myHatchings.IsBound (IndH)) {
-      HatchGen_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
+      Geom2dHatch_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
       Standard_Boolean DomainsToClear = Standard_False ;
       for (Standard_Integer IPntH = Hatching.NbPoints() ; IPntH > 0 ; IPntH--) {
 	HatchGen_PointOnHatching PntH = Hatching.ChangePoint (IPntH) ;
@@ -207,13 +213,13 @@ void HatchGen_Hatcher::RemElement (const Standard_Integer IndE)
 // Purpose  : Removes all the elements from the hatcher.
 //=======================================================================
 
-void HatchGen_Hatcher::ClrElements ()
+void Geom2dHatch_Hatcher::ClrElements ()
 {
   if (myNbElements != 0) {
     if (myNbHatchings != 0) {
       for (Standard_Integer IndH = 1 ; IndH <= myNbHatchings ; IndH++) {
 	if (myHatchings.IsBound(IndH)) {
-	  HatchGen_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
+	  Geom2dHatch_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
 	  Hatching.ClrPoints() ;
 	}
       }
@@ -235,7 +241,7 @@ void HatchGen_Hatcher::ClrElements ()
 // Purpose  : Adds a hatching to the hatcher and returns its index.
 //=======================================================================
 
-Standard_Integer HatchGen_Hatcher::AddHatching (const TheCurveH& Curve)
+Standard_Integer Geom2dHatch_Hatcher::AddHatching (const Geom2dAdaptor_Curve& Curve)
 {
   Standard_Integer IndH ;
   for (IndH = 1 ; IndH <= myNbHatchings && myHatchings.IsBound(IndH) ; IndH++) ;
@@ -243,7 +249,7 @@ Standard_Integer HatchGen_Hatcher::AddHatching (const TheCurveH& Curve)
     myNbHatchings++ ;
     IndH = myNbHatchings ;
   }
-  HatchGen_Hatching Hatching (Curve) ;
+  Geom2dHatch_Hatching Hatching (Curve) ;
   myHatchings.Bind (IndH, Hatching) ;
   return IndH ;
 }
@@ -253,12 +259,12 @@ Standard_Integer HatchGen_Hatcher::AddHatching (const TheCurveH& Curve)
 // Purpose  : Removes the IndH-th hatching from the hatcher.
 //=======================================================================
 
-void HatchGen_Hatcher::RemHatching (const Standard_Integer IndH)
+void Geom2dHatch_Hatcher::RemHatching (const Standard_Integer IndH)
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if (!myHatchings.IsBound (IndH), "") ;
 #endif
-  HatchGen_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
+  Geom2dHatch_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
   Hatching.ClrPoints() ;
   myHatchings.UnBind (IndH) ;
   if (IndH == myNbHatchings) myNbHatchings-- ;
@@ -269,12 +275,12 @@ void HatchGen_Hatcher::RemHatching (const Standard_Integer IndH)
 // Purpose  : Removes all the hatchings from the hatcher.
 //=======================================================================
 
-void HatchGen_Hatcher::ClrHatchings ()
+void Geom2dHatch_Hatcher::ClrHatchings ()
 {
   if (myNbHatchings != 0) {
     for (Standard_Integer IndH = 1 ; IndH <= myNbHatchings ; IndH++) {
       if (myHatchings.IsBound(IndH)) {
-	HatchGen_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
+	Geom2dHatch_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
 	Hatching.ClrPoints() ;
       }
     }
@@ -297,7 +303,7 @@ void HatchGen_Hatcher::ClrHatchings ()
 //            of the hatcher.
 //=======================================================================
 
-void HatchGen_Hatcher::Trim ()
+void Geom2dHatch_Hatcher::Trim ()
 {
   for (Standard_Integer IndH = 1 ; IndH <= myNbHatchings ; IndH++)
     if (myHatchings.IsBound (IndH)) 
@@ -310,7 +316,7 @@ void HatchGen_Hatcher::Trim ()
 //            already given and returns its index.
 //=======================================================================
 
-Standard_Integer HatchGen_Hatcher::Trim (const TheCurveH& Curve)
+Standard_Integer Geom2dHatch_Hatcher::Trim (const Geom2dAdaptor_Curve& Curve)
 {
   Standard_Integer IndH = AddHatching (Curve) ;
   Trim (IndH) ;
@@ -322,13 +328,13 @@ Standard_Integer HatchGen_Hatcher::Trim (const TheCurveH& Curve)
 // Purpose  : Trims the IndH-th hatching by the elements already given.
 //=======================================================================
 
-void HatchGen_Hatcher::Trim (const Standard_Integer IndH)
+void Geom2dHatch_Hatcher::Trim (const Standard_Integer IndH)
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if (!myHatchings.IsBound (IndH), "") ;
 #endif
 
-  HatchGen_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
+  Geom2dHatch_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
 
   Hatching.ClrPoints() ;
 
@@ -431,7 +437,7 @@ static void IntersectionPointDump (const IntRes2d_IntersectionPoint& Pnt,
 //            element.
 //=======================================================================
 
-Standard_Boolean HatchGen_Hatcher::Trim (const Standard_Integer IndH,
+Standard_Boolean Geom2dHatch_Hatcher::Trim (const Standard_Integer IndH,
 					 const Standard_Integer IndE)
 {
 #if RAISE_IF_NOSUCHOBJECT
@@ -439,11 +445,11 @@ Standard_Boolean HatchGen_Hatcher::Trim (const Standard_Integer IndH,
   Standard_NoSuchObject_Raise_if (!myElements.IsBound (IndE), "") ;
 #endif
 
-  HatchGen_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
-  HatchGen_Element& Element   = myElements.ChangeFind  (IndE) ;
+  Geom2dHatch_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
+  Geom2dHatch_Element& Element   = myElements.ChangeFind  (IndE) ;
 
-  TheCurveH hatching = Hatching.ChangeCurve() ;
-  TheCurveE element  = Element.ChangeCurve() ;
+  Geom2dAdaptor_Curve hatching = Hatching.ChangeCurve() ;
+  Geom2dAdaptor_Curve element  = Element.ChangeCurve() ;
 
   myIntersector.Intersect (hatching, element) ;
   
@@ -728,7 +734,7 @@ Standard_Boolean HatchGen_Hatcher::Trim (const Standard_Integer IndH,
 //            IndH-th hatching.
 //=======================================================================
 
-Standard_Boolean HatchGen_Hatcher::GlobalTransition (HatchGen_PointOnHatching& Point)
+Standard_Boolean Geom2dHatch_Hatcher::GlobalTransition (HatchGen_PointOnHatching& Point)
 {
   TopAbs_State StateBefore = TopAbs_UNKNOWN ;
   TopAbs_State StateAfter  = TopAbs_UNKNOWN ;
@@ -739,7 +745,7 @@ Standard_Boolean HatchGen_Hatcher::GlobalTransition (HatchGen_PointOnHatching& P
   gp_Dir   Tangente,   Normale ;
   Standard_Real Courbure ;
 
-  const TheCurveH& CurveH = HatchingCurve (Point.Index()) ;
+  const Geom2dAdaptor_Curve& CurveH = HatchingCurve (Point.Index()) ;
 
   myIntersector.LocalGeometry(CurveH.Curve(), Point.Parameter(), Tangente2d, Normale2d, Courbure);
 
@@ -765,8 +771,8 @@ Standard_Boolean HatchGen_Hatcher::GlobalTransition (HatchGen_PointOnHatching& P
     SegmentBegin = SegmentBegin || PntE.SegmentBeginning() ;
     SegmentEnd   = SegmentEnd   || PntE.SegmentEnd() ;
     
-    const HatchGen_Element& Element = myElements.Find (PntE.Index()) ;
-    const TheCurveE& CurveE = Element.Curve() ;
+    const Geom2dHatch_Element& Element = myElements.Find (PntE.Index()) ;
+    const Geom2dAdaptor_Curve& CurveE = Element.Curve() ;
     
     TopAbs_Orientation ElementOrientation = Element.Orientation() ;
     Standard_Boolean ToReverse = (ElementOrientation == TopAbs_REVERSED);
@@ -923,7 +929,7 @@ Standard_Boolean HatchGen_Hatcher::GlobalTransition (HatchGen_PointOnHatching& P
 // Purpose  : Computes the domains of all the hatchings.
 //=======================================================================
 
-void HatchGen_Hatcher::ComputeDomains ()
+void Geom2dHatch_Hatcher::ComputeDomains ()
 {
   for (Standard_Integer IndH = 1 ; IndH <= myNbHatchings ; IndH++)
     if (myHatchings.IsBound (IndH)) ComputeDomains (IndH) ;
@@ -934,13 +940,13 @@ void HatchGen_Hatcher::ComputeDomains ()
 // Purpose  : Computes the domains of the IndH-th hatching.
 //=======================================================================
 
-void HatchGen_Hatcher::ComputeDomains (const Standard_Integer IndH)
+void Geom2dHatch_Hatcher::ComputeDomains (const Standard_Integer IndH)
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if (!myHatchings.IsBound (IndH), "") ;
 #endif
   
-  HatchGen_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
+  Geom2dHatch_Hatching& Hatching = myHatchings.ChangeFind (IndH) ;
   Hatching.ClrDomains() ;
 
   Hatching.IsDone (Standard_False) ;
@@ -958,7 +964,7 @@ void HatchGen_Hatcher::ComputeDomains (const Standard_Integer IndH)
 
   if (NbPnt == 0) {
     //-- cout << "The hatching # " << setw(3) << IndH << " has to be classified" << endl ;
-    HatchGen_Classifier Classifier(myElements,Hatching.ClassificationPoint(),0.0000001); 
+    Geom2dHatch_Classifier Classifier(myElements,Hatching.ClassificationPoint(),0.0000001); 
     if(Classifier.State() == TopAbs_IN) { 
       HatchGen_Domain domain ;
       Hatching.AddDomain (domain) ;
@@ -1396,14 +1402,14 @@ void HatchGen_Hatcher::ComputeDomains (const Standard_Integer IndH)
 // Purpose  : Returns the IDom-th domain of the IndH-th hatching.
 //=======================================================================
 
-const HatchGen_Domain& HatchGen_Hatcher::Domain (const Standard_Integer IndH,
+const HatchGen_Domain& Geom2dHatch_Hatcher::Domain (const Standard_Integer IndH,
 						 const Standard_Integer IDom) const
 {
 #if RAISE_IF_NOSUCHOBJECT
   Standard_NoSuchObject_Raise_if (!myHatchings.IsBound (IndH), "") ;
 #endif
-  const HatchGen_Hatching& Hatching = myHatchings.Find (IndH) ;
-  StdFail_NotDone_Raise_if (!Hatching.IsDone(), "HatchGen_Hatcher::Domain") ;
+  const Geom2dHatch_Hatching& Hatching = myHatchings.Find (IndH) ;
+  StdFail_NotDone_Raise_if (!Hatching.IsDone(), "Geom2dHatch_Hatcher::Domain") ;
 #if RAISE_IF_NOSUCHOBJECT
   Standard_OutOfRange_Raise_if (IDom < 1 || IDom > Hatching.NbDomains(), "") ;
 #endif
@@ -1422,7 +1428,7 @@ const HatchGen_Domain& HatchGen_Hatcher::Domain (const Standard_Integer IndH,
 // Purpose  : Dumps the hatcher.
 //=======================================================================
 
-void HatchGen_Hatcher::Dump () const
+void Geom2dHatch_Hatcher::Dump () const
 {
   cout << endl ;
   cout << "========================================================" << endl ;
@@ -1461,7 +1467,7 @@ void HatchGen_Hatcher::Dump () const
     if (!myHatchings.IsBound (IndH)) {
       cout << " is not bound" << endl ;
     } else {
-      const HatchGen_Hatching& Hatching = myHatchings.Find (IndH) ;
+      const Geom2dHatch_Hatching& Hatching = myHatchings.Find (IndH) ;
       Standard_Integer NbPnt = Hatching.NbPoints() ;
       cout << " contains " << NbPnt << " restriction points :"  << endl ;
       for (Standard_Integer IPnt = 1 ; IPnt <= NbPnt ; IPnt++) {
@@ -1483,7 +1489,7 @@ void HatchGen_Hatcher::Dump () const
     if (!myElements.IsBound (IndE)) {
       cout << " is not bound" << endl ;
     } else {
-      const HatchGen_Element& Element = myElements.Find (IndE) ;
+      const Geom2dHatch_Element& Element = myElements.Find (IndE) ;
       switch (Element.Orientation()) {
         case TopAbs_FORWARD  : cout << " is FORWARD"  << endl ; break ;
         case TopAbs_REVERSED : cout << " is REVERSED" << endl ; break ;

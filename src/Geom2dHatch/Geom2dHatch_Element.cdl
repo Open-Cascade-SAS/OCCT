@@ -14,31 +14,32 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class ElementGen from HatchGen (TheElementCurve as any)
+class Element from Geom2dHatch
 
 uses
-    Orientation from TopAbs
+    Orientation from TopAbs,
+    Curve from Geom2dAdaptor
 
 is
 
 
     Create
     
-    	returns ElementGen from HatchGen;
+    	returns Element from Geom2dHatch;
 
-    Create (Other : ElementGen  from HatchGen) 
+    Create (Other : Element from Geom2dHatch) 
     
     	---Purpose: Magic constructor.
 
-	returns ElementGen from HatchGen ;
+	returns Element from Geom2dHatch ;
      
 
-    Create (Curve       : TheElementCurve ;
+    Create (Curve       : Curve from Geom2dAdaptor ;
     	    Orientation : Orientation from TopAbs = TopAbs_FORWARD)
     
     	---Purpose: Creates an element.
 
-	returns ElementGen from HatchGen ;
+	returns Element from Geom2dHatch ;
 
 
     Curve (me)
@@ -47,7 +48,7 @@ is
 
     	---C++: return const &
 
-        returns TheElementCurve
+        returns Curve from Geom2dAdaptor
         is static ;
 
 
@@ -57,7 +58,7 @@ is
 
     	---C++: return &
 
-        returns TheElementCurve
+        returns Curve from Geom2dAdaptor
         is static ;
 
 
@@ -78,7 +79,7 @@ is
 
 fields
 
-    myCurve       : TheElementCurve ;
+    myCurve       : Curve from Geom2dAdaptor ;
     myOrientation : Orientation from TopAbs ;
 
-end ElementGen from HatchGen ;
+end Element from Geom2dHatch;

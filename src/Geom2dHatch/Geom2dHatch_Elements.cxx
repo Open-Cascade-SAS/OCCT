@@ -16,42 +16,56 @@
 
 //  Modified by skv - Fri Jul 14 17:03:47 2006 OCC12627
 
+#include <Geom2dHatch_Elements.ixx>
+
+#include <Standard_Integer.hxx>
+#include <Geom2dHatch_Element.hxx>
+#include <TColStd_MapIntegerHasher.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
+
 #include <TopAbs_Orientation.hxx>
 #include <gp.hxx>
 #include <gp_Vec2d.hxx>
 
-//HatchGen_ElementsGen::HatchGen_ElementsGen(const HatchGen_ElementsGen& Other) {
-HatchGen_ElementsGen::HatchGen_ElementsGen(const HatchGen_ElementsGen& ) {
-  cout<<" Magic Constructor in HatchGen_ElementsGen:: "<<endl;
-} 
+Geom2dHatch_Elements::Geom2dHatch_Elements(const Geom2dHatch_Elements& )
+{
+  cout<<" Magic Constructor in Geom2dHatch_Elements:: "<<endl;
+}
 
-HatchGen_ElementsGen::HatchGen_ElementsGen() { 
+Geom2dHatch_Elements::Geom2dHatch_Elements()
+{
   NumWire = 0;
   NumEdge = 0;
   myCurEdge = 1;
 }
 
-void HatchGen_ElementsGen::Clear() { 
+void Geom2dHatch_Elements::Clear()
+{
   myMap.Clear();
 }
 
-Standard_Boolean HatchGen_ElementsGen::IsBound(const TheKey& K) const  { 
+Standard_Boolean Geom2dHatch_Elements::IsBound(const Standard_Integer K) const
+{
   return(myMap.IsBound(K));
 }
 
-Standard_Boolean HatchGen_ElementsGen::UnBind(const TheKey& K) { 
+Standard_Boolean Geom2dHatch_Elements::UnBind(const Standard_Integer K)
+{
   return(myMap.UnBind(K));
 }
 
-Standard_Boolean HatchGen_ElementsGen::Bind(const TheKey& K,const TheItem& I) { 
+Standard_Boolean Geom2dHatch_Elements::Bind(const Standard_Integer K,const Geom2dHatch_Element& I)
+{
   return(myMap.Bind(K,I));
 }
 
-const TheItem& HatchGen_ElementsGen::Find(const TheKey& K) const { 
+const Geom2dHatch_Element& Geom2dHatch_Elements::Find(const Standard_Integer K) const
+{
   return(myMap.Find(K));
 }
 
-TheItem& HatchGen_ElementsGen::ChangeFind(const TheKey& K)  { 
+Geom2dHatch_Element& Geom2dHatch_Elements::ChangeFind(const Standard_Integer K)
+{
   return(myMap.ChangeFind(K));
 }
 
@@ -60,7 +74,7 @@ TheItem& HatchGen_ElementsGen::ChangeFind(const TheKey& K)  {
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean  HatchGen_ElementsGen::Reject(const gp_Pnt2d&) const  {
+Standard_Boolean  Geom2dHatch_Elements::Reject(const gp_Pnt2d&) const  {
   return Standard_False;
 }
 
@@ -69,7 +83,7 @@ Standard_Boolean  HatchGen_ElementsGen::Reject(const gp_Pnt2d&) const  {
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean HatchGen_ElementsGen::Segment(const gp_Pnt2d& P, 
+Standard_Boolean Geom2dHatch_Elements::Segment(const gp_Pnt2d& P, 
 					             gp_Lin2d& L, 
 					             Standard_Real& Par)
 {
@@ -83,11 +97,11 @@ Standard_Boolean HatchGen_ElementsGen::Segment(const gp_Pnt2d& P,
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean HatchGen_ElementsGen::OtherSegment(const gp_Pnt2d& P, 
+Standard_Boolean Geom2dHatch_Elements::OtherSegment(const gp_Pnt2d& P, 
 						          gp_Lin2d& L, 
 						          Standard_Real& Par)
 {
-  HatchGen_DataMapIteratorOfMapOfElements Itertemp;
+  Geom2dHatch_DataMapIteratorOfMapOfElements Itertemp;
   Standard_Integer                        i;
   
   for(  Itertemp.Initialize(myMap), i = 1; Itertemp.More(); Itertemp.Next(), i++) { 
@@ -95,8 +109,8 @@ Standard_Boolean HatchGen_ElementsGen::OtherSegment(const gp_Pnt2d& P,
       continue;
 
     void *ptrmyMap = (void *)(&myMap);
-    TheItem& Item=((HatchGen_MapOfElements*)ptrmyMap)->ChangeFind(Itertemp.Key());
-    TheCurve& E = Item.ChangeCurve();
+    Geom2dHatch_Element& Item=((Geom2dHatch_MapOfElements*)ptrmyMap)->ChangeFind(Itertemp.Key());
+    Geom2dAdaptor_Curve& E = Item.ChangeCurve();
     TopAbs_Orientation Or= Item.Orientation();
     gp_Pnt2d P2 = E.Value
       ((E.FirstParameter() + E.LastParameter()) *0.5);
@@ -128,7 +142,7 @@ Standard_Boolean HatchGen_ElementsGen::OtherSegment(const gp_Pnt2d& P,
 //purpose  : 
 //=======================================================================
 
-void  HatchGen_ElementsGen::InitWires()  {
+void  Geom2dHatch_Elements::InitWires()  {
   NumWire = 0;
 }
 
@@ -137,7 +151,7 @@ void  HatchGen_ElementsGen::InitWires()  {
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean HatchGen_ElementsGen::RejectWire(const gp_Lin2d& , 
+Standard_Boolean Geom2dHatch_Elements::RejectWire(const gp_Lin2d& , 
 						   const Standard_Real) const 
 {
   return Standard_False;
@@ -148,7 +162,7 @@ Standard_Boolean HatchGen_ElementsGen::RejectWire(const gp_Lin2d& ,
 //purpose  : 
 //=======================================================================
 
-void  HatchGen_ElementsGen::InitEdges()  {
+void  Geom2dHatch_Elements::InitEdges()  {
   NumEdge = 0;
   Iter.Initialize(myMap);
 }
@@ -158,7 +172,7 @@ void  HatchGen_ElementsGen::InitEdges()  {
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean HatchGen_ElementsGen::RejectEdge(const gp_Lin2d& , 
+Standard_Boolean Geom2dHatch_Elements::RejectEdge(const gp_Lin2d& , 
 						  const Standard_Real ) const 
 {
   return Standard_False;
@@ -170,11 +184,11 @@ Standard_Boolean HatchGen_ElementsGen::RejectEdge(const gp_Lin2d& ,
 //purpose  : 
 //=======================================================================
 
-void  HatchGen_ElementsGen::CurrentEdge(TheCurve& E, 
+void  Geom2dHatch_Elements::CurrentEdge(Geom2dAdaptor_Curve& E, 
 					TopAbs_Orientation& Or) const 
 {
   void *ptrmyMap = (void *)(&myMap);
-  TheItem& Item=((HatchGen_MapOfElements*)ptrmyMap)->ChangeFind(Iter.Key());
+  Geom2dHatch_Element& Item=((Geom2dHatch_MapOfElements*)ptrmyMap)->ChangeFind(Iter.Key());
 
   E = Item.ChangeCurve();
   Or= Item.Orientation();
@@ -191,7 +205,7 @@ void  HatchGen_ElementsGen::CurrentEdge(TheCurve& E,
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean  HatchGen_ElementsGen::MoreWires() const 
+Standard_Boolean  Geom2dHatch_Elements::MoreWires() const 
 {
   return (NumWire == 0);
 }
@@ -201,7 +215,7 @@ Standard_Boolean  HatchGen_ElementsGen::MoreWires() const
 //purpose  : 
 //=======================================================================
 
-void HatchGen_ElementsGen::NextWire()  {
+void Geom2dHatch_Elements::NextWire()  {
   NumWire++;
 }
 
@@ -210,7 +224,7 @@ void HatchGen_ElementsGen::NextWire()  {
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean  HatchGen_ElementsGen::MoreEdges() const  {
+Standard_Boolean  Geom2dHatch_Elements::MoreEdges() const  {
   return(Iter.More());
 }
 
@@ -219,7 +233,7 @@ Standard_Boolean  HatchGen_ElementsGen::MoreEdges() const  {
 //purpose  : 
 //=======================================================================
 
-void HatchGen_ElementsGen::NextEdge()  {
+void Geom2dHatch_Elements::NextEdge()  {
   Iter.Next();
 }
 
