@@ -7,11 +7,11 @@ set filename Radhaus.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 153  ( 2029 )  Summary  = 153  ( 2029 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 153  ( 2026 )  Summary  = 153  ( 2026 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 532  ( 532 )   Summary  = 12701  ( 12704 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 532  ( 532 )   FreeWire = 0  ( 0 )   FreeEdge  = 2 ( 2 )   SharedEdge = 5826  ( 5828 )
-TOLERANCE   : MaxTol   =    0.888818095  (   0.8888180952 )  AvgTol   =    0.0252029042  (   0.02519878222 )
+TOLERANCE   : MaxTol   =    0.888818095  (   0.8888180952 )  AvgTol   =   0.02520286235  (   0.02519878248 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 534  ( 4023 )  N2Labels = 0  ( 0 )   TotalLabels = 535  ( 4024 )   NameLabels = 535  ( 833 )   ColorLabels = 534  ( 4023 )   LayerLabels = 532  ( 4021 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 2  ( 2 )

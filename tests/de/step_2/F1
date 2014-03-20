@@ -1,20 +1,23 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
 puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
-puts "TODO CR23096 Mandriva2010: Error : 1 differences with reference data found :"
+
+
+puts "TODO CR23096 Mandriva2010: Error : 1 differences with reference data found :" 
 
 set LinuxDiff 1
 set filename bm4_sd_punch_c.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 41  ( 1 )  Summary  = 41  ( 1 )
-CHECKSHAPE  : Wires    = 2  ( 4 )  Faces    = 4  ( 5 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 3  ( 3 )  Shell    = 4  ( 4 )  Face     = 205  ( 204 )   Summary  = 1363  ( 1364 )
-STATSHAPE   : Solid    = 3  ( 3 )  Shell    = 4  ( 4 )  Face     = 205  ( 204 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 551  ( 552 )
-TOLERANCE   : MaxTol   =    1.533009737  (    1.627860152 )  AvgTol   =   0.06966649993  (   0.08213967963 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 43  ( 3 )  Summary  = 43  ( 3 )
+CHECKSHAPE  : Wires    = 2  ( 2 )  Faces    = 5  ( 4 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 3  ( 3 )  Shell    = 4  ( 4 )  Face     = 205  ( 204 )   Summary  = 1360  ( 1361 )
+STATSHAPE   : Solid    = 3  ( 3 )  Shell    = 4  ( 4 )  Face     = 205  ( 204 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 550  ( 551 )
+TOLERANCE   : MaxTol   =    1.533009737  (    1.627860152 )  AvgTol   =   0.07406624263  (   0.08379380903 )
 LABELS      : N0Labels = 5  ( 5 )  N1Labels = 42  ( 41 )  N2Labels = 0  ( 0 )   TotalLabels = 47  ( 46 )   NameLabels = 9  ( 9 )   ColorLabels = 42  ( 41 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 3  ( 3 )

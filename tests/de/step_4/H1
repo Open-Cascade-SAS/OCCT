@@ -6,11 +6,11 @@ set filename Inventor_Engine.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 448  ( 559 )  Summary  = 448  ( 559 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 448  ( 560 )  Summary  = 448  ( 560 )
 CHECKSHAPE  : Wires    = 3  ( 3 )  Faces    = 3  ( 3 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 47  ( 47 )  Shell    = 47  ( 47 )  Face     = 4455  ( 4455 )   Summary  = 27797  ( 27799 )
 STATSHAPE   : Solid    = 80  ( 80 )  Shell    = 80  ( 80 )  Face     = 5359  ( 5359 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 11462  ( 11464 )
-TOLERANCE   : MaxTol   =      0.8136128  (      0.8136128 )  AvgTol   =  0.0007561423047  (  0.0007592265679 )
+TOLERANCE   : MaxTol   =      0.8136128  (      0.8136128 )  AvgTol   =  0.0007561422842  (  0.0007592268611 )
 LABELS      : N0Labels = 52  ( 52 )  N1Labels = 86  ( 86 )  N2Labels = 0  ( 0 )   TotalLabels = 138  ( 138 )   NameLabels = 136  ( 136 )   ColorLabels = 47  ( 47 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 11  ( 11 )

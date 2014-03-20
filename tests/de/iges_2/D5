@@ -7,7 +7,7 @@ set filename UKI60997.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 36  ( 64 )  Summary  = 36  ( 64 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 44  ( 72 )  Summary  = 44  ( 72 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 25  ( 25 )   Summary  = 279  ( 278 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 25  ( 25 )   FreeWire = 1  ( 1 )   FreeEdge  = 3 ( 3 )   SharedEdge = 121  ( 121 )

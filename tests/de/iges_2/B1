@@ -5,15 +5,16 @@ puts "TODO CR23096 ALL: LABELS : Faulty"
 puts "TODO CR23096 ALL: LAYERS : Faulty" 
 puts "TODO DEBUG_OCC24442 Debian60-64 Windows: Warning: Exception in Segment()"
 
+
 set filename CATIA01.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 480 )  Warnings = 326  ( 4630 )  Summary  = 326  ( 5110 )
+TPSTAT      : Faulties = 0  ( 480 )  Warnings = 322  ( 4629 )  Summary  = 322  ( 5109 )
 CHECKSHAPE  : Wires    = 1  ( 0 )  Faces    = 1  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 732  ( 732 )   Summary  = 60875  ( 60890 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 732  ( 732 )   Summary  = 60881  ( 60890 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 732  ( 732 )   FreeWire = 1612  ( 1613 )   FreeEdge  = 16359 ( 16359 )   SharedEdge = 22931  ( 22935 )
-TOLERANCE   : MaxTol   =   0.6032674714  (     20.1302013 )  AvgTol   =  0.001486789868  (  0.007274283982 )
+TOLERANCE   : MaxTol   =   0.6032674714  (   0.6032674714 )  AvgTol   =  0.001483351096  (   0.00148733059 )
 LABELS      : N0Labels = 4  ( 7 )  N1Labels = 11017  ( 17868 )  N2Labels = 0  ( 0 )   TotalLabels = 11021  ( 17875 )   NameLabels = 10620  ( 13085 )   ColorLabels = 11018  ( 17867 )   LayerLabels = 10517  ( 17715 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 17  ( 17 )

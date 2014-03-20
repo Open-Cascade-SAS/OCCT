@@ -6,7 +6,7 @@ set filename CTS21137.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 156  ( 820 )  Summary  = 156  ( 820 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 156  ( 818 )  Summary  = 156  ( 818 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 282  ( 282 )   Summary  = 4898  ( 4898 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 282  ( 282 )   FreeWire = 0  ( 0 )   FreeEdge  = 7 ( 7 )   SharedEdge = 2170  ( 2170 )

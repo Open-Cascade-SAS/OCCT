@@ -6,11 +6,11 @@ set filename ct_turbine-A.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 18  ( 4 )  Summary  = 18  ( 4 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 19  ( 5 )  Summary  = 19  ( 5 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 40  ( 40 )  Face     = 40  ( 40 )   Summary  = 547  ( 527 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 40  ( 40 )  Face     = 40  ( 40 )   FreeWire = 0  ( 0 )   FreeEdge  = 20 ( 20 )   SharedEdge = 196  ( 196 )
-TOLERANCE   : MaxTol   =  0.02294330394  (  0.02294330394 )  AvgTol   =   0.00113506229  (  0.001134599269 )
+TOLERANCE   : MaxTol   =  0.02294330394  (  0.02294330394 )  AvgTol   =  0.001135014538  (    0.0011345786 )
 LABELS      : N0Labels = 3  ( 3 )  N1Labels = 84  ( 84 )  N2Labels = 0  ( 0 )   TotalLabels = 87  ( 87 )   NameLabels = 5  ( 5 )   ColorLabels = 82  ( 82 )   LayerLabels = 60  ( 60 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 1  ( 1 )

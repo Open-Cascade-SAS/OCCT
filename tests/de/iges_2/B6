@@ -6,11 +6,11 @@ set filename D44-11325-6a.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 130  ( 191 )  Summary  = 130  ( 191 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 89  ( 191 )  Summary  = 89  ( 191 )
 CHECKSHAPE  : Wires    = 2  ( 2 )  Faces    = 2  ( 2 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 570  ( 569 )   Summary  = 7841  ( 7830 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 570  ( 569 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 3350  ( 3346 )
-TOLERANCE   : MaxTol   =   0.7161069967  (   0.7585238415 )  AvgTol   =  0.006770154018  (  0.006912830833 )
+TOLERANCE   : MaxTol   =   0.7161069967  (   0.7585238415 )  AvgTol   =  0.006769962916  (  0.006912830833 )
 LABELS      : N0Labels = 568  ( 568 )  N1Labels = 2  ( 2 )  N2Labels = 0  ( 0 )   TotalLabels = 570  ( 570 )   NameLabels = 568  ( 568 )   ColorLabels = 569  ( 569 )   LayerLabels = 569  ( 569 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 1  ( 1 )

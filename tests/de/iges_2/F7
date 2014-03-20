@@ -3,7 +3,9 @@ puts "TODO CR23096 ALL: CHECKSHAPE : Faulty"
 puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
-puts "TODO CR23096 Mandriva2010: Error : 1 differences with reference data found :"
+
+
+puts "TODO CR23096 Mandriva2010: Error : 1 differences with reference data found :" 
 
 set LinuxDiff 1
 set filename CEA_cuve-V5.igs
@@ -14,7 +16,7 @@ TPSTAT      : Faulties = 0  ( 6 )  Warnings = 0  ( 6 )  Summary  = 0  ( 12 )
 CHECKSHAPE  : Wires    = 6  ( 3 )  Faces    = 6  ( 3 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 114  ( 114 )   Summary  = 1231  ( 1240 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 114  ( 114 )   FreeWire = 2  ( 2 )   FreeEdge  = 17 ( 17 )   SharedEdge = 493  ( 496 )
-TOLERANCE   : MaxTol   =    1380.000139  ( 0.0004988991066 )  AvgTol   =     2.598883867  (  1.625255099e-005 )
+TOLERANCE   : MaxTol   =    1380.000139  ( 0.0004988991066 )  AvgTol   =     2.598883884  (  1.625255099e-005 )
 LABELS      : N0Labels = 122  ( 122 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 122  ( 122 )   NameLabels = 122  ( 122 )   ColorLabels = 120  ( 122 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 4  ( 4 )

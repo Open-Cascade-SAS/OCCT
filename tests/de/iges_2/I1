@@ -10,11 +10,11 @@ set filename himm03.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 458  ( 1385 )  Summary  = 458  ( 1385 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 330  ( 1385 )  Summary  = 330  ( 1385 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 152  ( 152 )   Summary  = 11567  ( 11582 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 152  ( 152 )   FreeWire = 305  ( 441 )   FreeEdge  = 2665 ( 2588 )   SharedEdge = 5140  ( 5064 )
-TOLERANCE   : MaxTol   =   0.9892459055  (   0.9892459128 )  AvgTol   =   0.00474521408  (   0.01316570987 )
+TOLERANCE   : MaxTol   =   0.9892459055  (   0.9892459128 )  AvgTol   =  0.004744883571  (   0.01316570987 )
 LABELS      : N0Labels = 10  ( 10 )  N1Labels = 553  ( 1961 )  N2Labels = 0  ( 0 )   TotalLabels = 563  ( 1971 )   NameLabels = 563  ( 909 )   ColorLabels = 553  ( 1970 )   LayerLabels = 533  ( 1938 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 6  ( 8 )

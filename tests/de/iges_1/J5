@@ -6,11 +6,11 @@ set filename CTS19883.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 2 )  Summary  = 0  ( 2 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 396  ( 396 )   Summary  = 5044  ( 5060 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 396  ( 396 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 2133  ( 2133 )
-TOLERANCE   : MaxTol   =   0.9967131592  (   0.9967131592 )  AvgTol   =   0.05132244187  (   0.05132274204 )
+TOLERANCE   : MaxTol   =   0.9967131592  (   0.9967131592 )  AvgTol   =   0.05132244362  (   0.05132274204 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 396  ( 37 )  N2Labels = 0  ( 0 )   TotalLabels = 397  ( 38 )   NameLabels = 1  ( 1 )   ColorLabels = 396  ( 38 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 2  ( 2 )

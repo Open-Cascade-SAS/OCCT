@@ -1,19 +1,20 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 Windows: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
-puts "TODO ?CR23096 ALL: NBSHAPES : Faulty" 
-puts "TODO CR23096 Mandriva2010: Error : 4 differences with reference data found :"
+
+
+puts "TODO CR23096 Mandriva2010: Error : 4 differences with reference data found :" 
 
 set LinuxDiff 4
 set filename y306351fM.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 1 )  Warnings = 0  ( 0 )  Summary  = 0  ( 1 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 182  ( 951 )  Summary  = 182  ( 951 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 180  ( 951 )  Summary  = 180  ( 951 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 1  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 390  ( 390 )   Summary  = 11567  ( 11571 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 390  ( 390 )   FreeWire = 20  ( 20 )   FreeEdge  = 1157 ( 1157 )   SharedEdge = 4814  ( 4816 )
-TOLERANCE   : MaxTol   =         1e-005  ( 1.00030003e-005 )  AvgTol   =  1.867667948e-007  (  7.375389991e-006 )
+TOLERANCE   : MaxTol   =         1e-005  ( 1.00030003e-005 )  AvgTol   =  1.800924861e-007  (  7.375389991e-006 )
 LABELS      : N0Labels = 1528  ( 1528 )  N1Labels = 0  ( 1298 )  N2Labels = 0  ( 0 )   TotalLabels = 1528  ( 2826 )   NameLabels = 1528  ( 1528 )   ColorLabels = 1507  ( 2826 )   LayerLabels = 1504  ( 2822 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 3  ( 3 )

@@ -2,6 +2,7 @@
 puts "TODO CR23096 ALL: TPSTAT : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 
+
 set filename mat-bas.stp
 
 set ref_data {
@@ -10,7 +11,7 @@ TPSTAT      : Faulties = 0  ( 0 )  Warnings = 50  ( 20 )  Summary  = 50  ( 20 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 3  ( 3 )  Shell    = 3  ( 3 )  Face     = 127  ( 127 )   Summary  = 1022  ( 1008 )
 STATSHAPE   : Solid    = 3  ( 3 )  Shell    = 3  ( 3 )  Face     = 127  ( 127 )   FreeWire = 0  ( 0 )   FreeEdge  = 13 ( 13 )   SharedEdge = 403  ( 403 )
-TOLERANCE   : MaxTol   = 0.0009825722198  ( 0.0009825722195 )  AvgTol   =  0.0001005178369  (  9.932570124e-005 )
+TOLERANCE   : MaxTol   = 0.0009825722198  ( 0.0009825722195 )  AvgTol   =  0.0001005178352  (  9.932550373e-005 )
 LABELS      : N0Labels = 3  ( 3 )  N1Labels = 2  ( 3 )  N2Labels = 0  ( 1 )   TotalLabels = 5  ( 7 )   NameLabels = 5  ( 5 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

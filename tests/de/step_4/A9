@@ -3,11 +3,11 @@ set filename Inventor_TireRim.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 91  ( 154 )  Summary  = 91  ( 154 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 91  ( 169 )  Summary  = 91  ( 169 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 466  ( 466 )   Summary  = 2894  ( 2894 )
 STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 466  ( 466 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 1225  ( 1225 )
-TOLERANCE   : MaxTol   =  0.04984111402  (  0.04984111401 )  AvgTol   =   0.00250686678  (  0.002466953501 )
+TOLERANCE   : MaxTol   =  0.04984111402  (  0.04984111401 )  AvgTol   =  0.002492874968  (  0.002498774731 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

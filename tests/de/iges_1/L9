@@ -6,11 +6,11 @@ set filename PRO14665.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 347  ( 710 )  Summary  = 347  ( 710 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 347  ( 691 )  Summary  = 347  ( 691 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 2297  ( 2297 )   Summary  = 26114  ( 26114 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 2297  ( 2297 )   FreeWire = 0  ( 0 )   FreeEdge  = 22 ( 22 )   SharedEdge = 10774  ( 10774 )
-TOLERANCE   : MaxTol   =   0.2778575821  (   0.2778575802 )  AvgTol   =  0.0007983843435  (  0.0007904430748 )
+TOLERANCE   : MaxTol   =   0.2778575821  (   0.2778575802 )  AvgTol   =  0.0007983843446  (  0.0007904430744 )
 LABELS      : N0Labels = 2329  ( 2329 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 2329  ( 2329 )   NameLabels = 2329  ( 2329 )   ColorLabels = 2319  ( 2329 )   LayerLabels = 2319  ( 2329 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 8  ( 8 )

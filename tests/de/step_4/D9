@@ -6,11 +6,11 @@ set filename test-m020306-v1.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 309  ( 114 )  Summary  = 309  ( 114 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 308  ( 115 )  Summary  = 308  ( 115 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 742  ( 742 )   Summary  = 5060  ( 5060 )
 STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 742  ( 742 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 2108  ( 2108 )
-TOLERANCE   : MaxTol   = 0.008481946718  ( 0.008481946718 )  AvgTol   =  0.0001352333894  (  0.0001311532438 )
+TOLERANCE   : MaxTol   = 0.008481946718  ( 0.008481946718 )  AvgTol   =  0.0001352398423  (  0.0001311596967 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

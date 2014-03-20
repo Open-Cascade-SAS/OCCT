@@ -1,16 +1,13 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 ALL: TPSTAT : Faulty" 
-
-
 set filename bm4_ct_eye.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 25  ( 22 )  Summary  = 25  ( 22 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 25  ( 27 )  Summary  = 25  ( 27 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 5  ( 5 )  Face     = 87  ( 87 )   Summary  = 536  ( 536 )
 STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 5  ( 5 )  Face     = 87  ( 87 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 220  ( 220 )
-TOLERANCE   : MaxTol   = 0.001356543019  ( 0.001356543019 )  AvgTol   =  0.0002021687043  (  0.0001907522657 )
+TOLERANCE   : MaxTol   = 0.001356543019  ( 0.001356543019 )  AvgTol   =  0.000207749345  (  0.0001980041425 )
 LABELS      : N0Labels = 3  ( 3 )  N1Labels = 8  ( 8 )  N2Labels = 0  ( 0 )   TotalLabels = 11  ( 11 )   NameLabels = 5  ( 5 )   ColorLabels = 7  ( 7 )   LayerLabels = 5  ( 5 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 3  ( 3 )

@@ -1,4 +1,6 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
+puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 puts "TODO CR23096 ALL: COLORS : Faulty" 
 puts "TODO CR23096 ALL: LAYERS : Faulty" 
@@ -11,12 +13,12 @@ set filename UKI60094.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 4  ( 33 )  Warnings = 128  ( 321 )  Summary  = 132  ( 354 )
-CHECKSHAPE  : Wires    = 0  ( 4 )  Faces    = 0  ( 2 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 419  ( 159 )   Summary  = 7849  ( 4462 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 419  ( 419 )   FreeWire = 66  ( 114 )   FreeEdge  = 430 ( 430 )   SharedEdge = 3349  ( 1895 )
-TOLERANCE   : MaxTol   =    5.365866916  (    2716.882548 )  AvgTol   =   0.02543917817  (     5.140512589 )
-LABELS      : N0Labels = 3  ( 3 )  N1Labels = 325  ( 1838 )  N2Labels = 0  ( 0 )   TotalLabels = 328  ( 1841 )   NameLabels = 328  ( 424 )   ColorLabels = 325  ( 1838 )   LayerLabels = 193  ( 1573 )
+TPSTAT      : Faulties = 0  ( 33 )  Warnings = 128  ( 323 )  Summary  = 128  ( 356 )
+CHECKSHAPE  : Wires    = 1  ( 2 )  Faces    = 4  ( 2 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 424  ( 159 )   Summary  = 7865  ( 4458 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 424  ( 419 )   FreeWire = 66  ( 114 )   FreeEdge  = 430 ( 430 )   SharedEdge = 3353  ( 1895 )
+TOLERANCE   : MaxTol   =    3.181989255  (    2716.882548 )  AvgTol   =  0.008643189151  (     4.445642549 )
+LABELS      : N0Labels = 3  ( 3 )  N1Labels = 325  ( 1834 )  N2Labels = 0  ( 0 )   TotalLabels = 328  ( 1837 )   NameLabels = 328  ( 425 )   ColorLabels = 325  ( 1834 )   LayerLabels = 193  ( 1569 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 6  ( 7 )
 COLORS      : Colors   = GREEN MATRABLUE RED RED4 WHITE YELLOW  ( GREEN MAGENTA1 MATRABLUE RED RED4 WHITE YELLOW )

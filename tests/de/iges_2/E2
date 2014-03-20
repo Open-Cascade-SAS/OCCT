@@ -7,11 +7,11 @@ set filename ctadtrim.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 34  ( 2370 )  Summary  = 34  ( 2370 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 32  ( 2370 )  Summary  = 32  ( 2370 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 27  ( 27 )   Summary  = 3490  ( 3490 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 27  ( 27 )   FreeWire = 99  ( 99 )   FreeEdge  = 997 ( 997 )   SharedEdge = 1585  ( 1585 )
-TOLERANCE   : MaxTol   =   0.5378466765  (   0.5378466739 )  AvgTol   =  0.002037904956  (  0.002048016175 )
+TOLERANCE   : MaxTol   =   0.5378466765  (   0.5378466739 )  AvgTol   =  0.002037884253  (  0.002048016175 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 72  ( 171 )  N2Labels = 0  ( 0 )   TotalLabels = 73  ( 172 )   NameLabels = 73  ( 172 )   ColorLabels = 72  ( 171 )   LayerLabels = 72  ( 171 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 3  ( 3 )

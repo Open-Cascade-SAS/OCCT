@@ -6,11 +6,11 @@ set filename bm4_sd_seal_a.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 150  ( 7 )  Summary  = 150  ( 7 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 150  ( 13 )  Summary  = 150  ( 13 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 3  ( 3 )  Face     = 540  ( 540 )   Summary  = 2968  ( 2968 )
 STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 3  ( 3 )  Face     = 540  ( 540 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 1202  ( 1202 )
-TOLERANCE   : MaxTol   = 6.818588609e-006  ( 6.818587037e-006 )  AvgTol   =  8.112548803e-007  (  8.033958879e-007 )
+TOLERANCE   : MaxTol   = 6.818588609e-006  ( 6.818587037e-006 )  AvgTol   =  8.112277988e-007  (  8.079385019e-007 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 1  ( 1 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 1  ( 1 )

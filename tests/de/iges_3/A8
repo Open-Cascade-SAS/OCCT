@@ -2,12 +2,13 @@
 puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 
+
 set filename VERSEUSE.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 2  ( 19 )  Warnings = 91  ( 1127 )  Summary  = 93  ( 1146 )
-CHECKSHAPE  : Wires    = 1  ( 2 )  Faces    = 1  ( 2 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+TPSTAT      : Faulties = 0  ( 19 )  Warnings = 99  ( 1127 )  Summary  = 99  ( 1146 )
+CHECKSHAPE  : Wires    = 0  ( 1 )  Faces    = 0  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 436  ( 436 )   Summary  = 7823  ( 7826 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 436  ( 436 )   FreeWire = 15  ( 15 )   FreeEdge  = 208 ( 208 )   SharedEdge = 3430  ( 3431 )
 TOLERANCE   : MaxTol   =   0.8904045146  (   0.8904045345 )  AvgTol   =   0.01244629536  (   0.01247379594 )

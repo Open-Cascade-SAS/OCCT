@@ -1,24 +1,21 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 puts "TODO CR23096 ALL: TPSTAT : Faulty" 
-puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
 puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
 puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
 
 
 puts "TODO CR23096 Mandriva2010: Error : 3 differences with reference data found :" 
 
-puts "TODO DEBUG_CR24543 ALL: Error: ShapeFix_ComposeShell::MakeFacesOnPatch: can't dispatch wires"
-
 set LinuxDiff 3
 set filename Z8M6SAT.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 3  ( 0 )  Warnings = 961  ( 3138 )  Summary  = 964  ( 3138 )
-CHECKSHAPE  : Wires    = 51  ( 48 )  Faces    = 45  ( 47 )  Shells   = 0  ( 5 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 28  ( 28 )  Shell    = 773  ( 38 )  Face     = 3248  ( 3247 )   Summary  = 29514  ( 28710 )
-STATSHAPE   : Solid    = 28  ( 28 )  Shell    = 773  ( 38 )  Face     = 3248  ( 3247 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 12670  ( 12611 )
-TOLERANCE   : MaxTol   =    40.73070494  (    20.46526799 )  AvgTol   =    0.0357431243  (   0.03196816114 )
+TPSTAT      : Faulties = 3  ( 0 )  Warnings = 965  ( 3166 )  Summary  = 968  ( 3166 )
+CHECKSHAPE  : Wires    = 49  ( 50 )  Faces    = 47  ( 49 )  Shells   = 0  ( 7 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 28  ( 28 )  Shell    = 775  ( 40 )  Face     = 3250  ( 3249 )   Summary  = 29514  ( 28718 )
+STATSHAPE   : Solid    = 28  ( 28 )  Shell    = 775  ( 40 )  Face     = 3250  ( 3249 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 12663  ( 12613 )
+TOLERANCE   : MaxTol   =    40.73070494  (    20.46526799 )  AvgTol   =   0.03482256518  (   0.03252524959 )
 LABELS      : N0Labels = 3  ( 3 )  N1Labels = 2  ( 2 )  N2Labels = 0  ( 0 )   TotalLabels = 5  ( 5 )   NameLabels = 5  ( 5 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

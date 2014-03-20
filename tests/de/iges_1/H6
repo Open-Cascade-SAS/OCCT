@@ -8,7 +8,7 @@ set filename BUC60033.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 5 )  Warnings = 78  ( 815 )  Summary  = 78  ( 820 )
+TPSTAT      : Faulties = 0  ( 5 )  Warnings = 78  ( 831 )  Summary  = 78  ( 836 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 208  ( 208 )   Summary  = 7973  ( 8005 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 208  ( 208 )   FreeWire = 0  ( 32 )   FreeEdge  = 70 ( 70 )   SharedEdge = 3748  ( 3748 )

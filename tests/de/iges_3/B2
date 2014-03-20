@@ -1,20 +1,22 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
-puts "TODO ?CR23096 ALL: STATSHAPE : Faulty" 
+puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
 puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
-puts "TODO CR23096 Mandriva2010: Error : 3 differences with reference data found :"
+
+
+puts "TODO CR23096 Mandriva2010: Error : 3 differences with reference data found :" 
 
 set LinuxDiff 3
 set filename 1stpunch-mcsrfs.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 1199  ( 1951 )  Summary  = 1199  ( 1951 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 885  ( 1951 )  Summary  = 885  ( 1951 )
 CHECKSHAPE  : Wires    = 7  ( 5 )  Faces    = 4  ( 3 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1229  ( 1223 )   Summary  = 68993  ( 68973 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1229  ( 1223 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 33281  ( 33277 )
-TOLERANCE   : MaxTol   = 0.002714431471  ( 0.001436622896 )  AvgTol   =  1.786600839e-006  (  9.67254763e-006 )
+TOLERANCE   : MaxTol   = 0.002714431471  ( 0.001436622896 )  AvgTol   =  1.633540416e-006  (  9.67254763e-006 )
 LABELS      : N0Labels = 1215  ( 1215 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1215  ( 1215 )   NameLabels = 1215  ( 1215 )   ColorLabels = 0  ( 0 )   LayerLabels = 1207  ( 1215 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

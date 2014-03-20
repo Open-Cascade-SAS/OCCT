@@ -3,6 +3,7 @@ puts "TODO CR23096 ALL: TPSTAT : Faulty"
 puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 
+
 set filename PRO7978.igs
 
 set ref_data {
@@ -11,7 +12,7 @@ TPSTAT      : Faulties = 2  ( 0 )  Warnings = 165  ( 940 )  Summary  = 167  ( 94
 CHECKSHAPE  : Wires    = 8  ( 8 )  Faces    = 5  ( 5 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 346  ( 346 )   Summary  = 25259  ( 25254 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 346  ( 346 )   FreeWire = 84  ( 84 )   FreeEdge  = 1563 ( 1563 )   SharedEdge = 12104  ( 12103 )
-TOLERANCE   : MaxTol   =   0.4314224119  (   0.2157335194 )  AvgTol   =  0.001277614216  (  0.001254878337 )
+TOLERANCE   : MaxTol   =   0.4314224119  (   0.2157335194 )  AvgTol   =  0.001277614321  (  0.001254878337 )
 LABELS      : N0Labels = 560  ( 560 )  N1Labels = 94  ( 90 )  N2Labels = 0  ( 0 )   TotalLabels = 654  ( 650 )   NameLabels = 648  ( 650 )   ColorLabels = 554  ( 640 )   LayerLabels = 554  ( 640 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 3  ( 3 )

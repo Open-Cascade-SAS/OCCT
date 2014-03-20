@@ -2,15 +2,16 @@
 puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 
+
 set filename bmarkmdl.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 175  ( 4199 )  Summary  = 175  ( 4199 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 121  ( 4199 )  Summary  = 121  ( 4199 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 440  ( 440 )   Summary  = 9077  ( 9077 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 440  ( 440 )   FreeWire = 20  ( 20 )   FreeEdge  = 220 ( 220 )   SharedEdge = 4083  ( 4083 )
-TOLERANCE   : MaxTol   =  0.07954526757  (  0.04419037521 )  AvgTol   =  0.000843069143  (  0.0007103047948 )
+TOLERANCE   : MaxTol   =  0.07954526757  (  0.04419037521 )  AvgTol   =  0.0008428584881  (  0.0007103047948 )
 LABELS      : N0Labels = 47  ( 47 )  N1Labels = 426  ( 426 )  N2Labels = 0  ( 0 )   TotalLabels = 473  ( 473 )   NameLabels = 473  ( 473 )   ColorLabels = 439  ( 439 )   LayerLabels = 452  ( 472 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 5  ( 5 )

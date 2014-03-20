@@ -6,11 +6,11 @@ set filename trj7_pm5-hc-214.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 20 )  Warnings = 0  ( 0 )  Summary  = 0  ( 20 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 19  ( 558 )  Summary  = 19  ( 558 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 19  ( 555 )  Summary  = 19  ( 555 )
 CHECKSHAPE  : Wires    = 10  ( 0 )  Faces    = 10  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 98  ( 98 )  Shell    = 98  ( 98 )  Face     = 1504  ( 1504 )   Summary  = 9238  ( 9234 )
 STATSHAPE   : Solid    = 272  ( 272 )  Shell    = 272  ( 272 )  Face     = 3214  ( 3214 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 3303  ( 3299 )
-TOLERANCE   : MaxTol   =   0.9320948364  (    3.305876348 )  AvgTol   =  0.0006675087967  (  0.003690115363 )
+TOLERANCE   : MaxTol   =   0.9562231856  (      3.3196868 )  AvgTol   =  0.0007136577673  (  0.003701488928 )
 LABELS      : N0Labels = 230  ( 230 )  N1Labels = 403  ( 403 )  N2Labels = 0  ( 0 )   TotalLabels = 633  ( 633 )   NameLabels = 633  ( 633 )   ColorLabels = 98  ( 98 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 99  ( 99 )  Volume   = 99  ( 99 )  Area     = 99  ( 99 )
 NCOLORS     : NColors  = 6  ( 6 )

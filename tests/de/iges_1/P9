@@ -1,18 +1,20 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 puts "TODO CR23096 ALL: LABELS : Faulty" 
-puts "TODO CR23096 Mandriva2010: Error : 1 differences with reference data found :"
 puts "TODO DEBUG_OCC24121 Debian60-64 Windows: Warning: Exception in Segment()"
+
+
+puts "TODO CR23096 Mandriva2010: Error : 1 differences with reference data found :" 
 
 set LinuxDiff 1
 set filename ims003.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 40  ( 184 )  Summary  = 40  ( 184 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 38  ( 183 )  Summary  = 38  ( 183 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 114  ( 114 )   Summary  = 2511  ( 2510 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 114  ( 114 )   FreeWire = 23  ( 23 )   FreeEdge  = 331 ( 331 )   SharedEdge = 983  ( 983 )
-TOLERANCE   : MaxTol   =   0.1829958579  (    1.492625263 )  AvgTol   =  0.002970995479  (  0.007346439289 )
+TOLERANCE   : MaxTol   =   0.1829958579  (   0.1829958769 )  AvgTol   =  0.002970769325  (  0.003040791402 )
 LABELS      : N0Labels = 412  ( 412 )  N1Labels = 2  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 414  ( 412 )   NameLabels = 412  ( 412 )   ColorLabels = 389  ( 410 )   LayerLabels = 389  ( 410 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 5  ( 5 )

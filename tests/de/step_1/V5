@@ -1,5 +1,3 @@
-puts "TODO OCC24156 MacOS: Error : 2 differences with reference data found"
-
 # !!!! This file is generated automatically, do not edit manually! See end script
 set filename trj3_s1-tc-214.stp
 
@@ -9,7 +7,7 @@ TPSTAT      : Faulties = 0  ( 0 )  Warnings = 16  ( 21 )  Summary  = 16  ( 21 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 8  ( 8 )  Shell    = 8  ( 8 )  Face     = 145  ( 145 )   Summary  = 848  ( 848 )
 STATSHAPE   : Solid    = 11  ( 11 )  Shell    = 11  ( 11 )  Face     = 189  ( 189 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 332  ( 332 )
-TOLERANCE   : MaxTol   = 6.542651273e-005  ( 6.542651394e-005 )  AvgTol   =  1.217431732e-006  (  1.215829897e-006 )
+TOLERANCE   : MaxTol   = 6.105713512e-005  ( 6.105713512e-005 )  AvgTol   =  1.161749271e-006  (  1.160147409e-006 )
 LABELS      : N0Labels = 13  ( 13 )  N1Labels = 19  ( 19 )  N2Labels = 0  ( 0 )   TotalLabels = 32  ( 32 )   NameLabels = 27  ( 27 )   ColorLabels = 13  ( 13 )   LayerLabels = 8  ( 8 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 3  ( 3 )

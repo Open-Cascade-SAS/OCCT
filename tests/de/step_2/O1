@@ -6,11 +6,11 @@ set filename id_soapbox-B.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 19  ( 6 )  Summary  = 19  ( 6 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 20  ( 6 )  Summary  = 20  ( 6 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 104  ( 104 )   Summary  = 752  ( 748 )
 STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 104  ( 104 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 266  ( 262 )
-TOLERANCE   : MaxTol   = 0.006923751402  ( 0.006923751402 )  AvgTol   =  0.001385246445  (  0.001385552802 )
+TOLERANCE   : MaxTol   = 0.006923751402  ( 0.006923751402 )  AvgTol   =   0.00138492725  (  0.001385308686 )
 LABELS      : N0Labels = 3  ( 3 )  N1Labels = 2  ( 2 )  N2Labels = 0  ( 0 )   TotalLabels = 5  ( 5 )   NameLabels = 5  ( 5 )   ColorLabels = 1  ( 1 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 1  ( 1 )

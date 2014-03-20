@@ -1,17 +1,19 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO ?CR23096 ALL: CHECKSHAPE : Faulty" 
-puts "TODO ?CR23096 Mandriva2010: TOLERANCE : Faulty" 
+puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
+
+
+puts "TODO CR23096 Mandriva2010: TOLERANCE : Faulty " 
 
 set LinuxFaulties {TOLERANCE}
 set filename trj6_b1-ec-214.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 5  ( 9 )  Summary  = 5  ( 9 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 5  ( 11 )  Summary  = 5  ( 11 )
 CHECKSHAPE  : Wires    = 4  ( 2 )  Faces    = 4  ( 2 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 292  ( 292 )   Summary  = 1707  ( 1707 )
 STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 292  ( 292 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 718  ( 718 )
-TOLERANCE   : MaxTol   =   0.0920060456  (  0.09527501758 )  AvgTol   =  0.0008900560691  (  0.0009327436335 )
+TOLERANCE   : MaxTol   =   0.0920060456  (  0.09527501816 )  AvgTol   =  0.0008900555475  (  0.0009327432451 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 19  ( 19 )  N2Labels = 0  ( 0 )   TotalLabels = 20  ( 20 )   NameLabels = 1  ( 1 )   ColorLabels = 20  ( 20 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 1  ( 1 )  Volume   = 1  ( 1 )  Area     = 1  ( 1 )
 NCOLORS     : NColors  = 2  ( 2 )

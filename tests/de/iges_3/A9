@@ -1,24 +1,17 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO ?CR23096 ALL: TPSTAT : Faulty" 
-puts "TODO ?CR23096 ALL: NBSHAPES : Faulty" 
-puts "TODO ?CR23096 ALL: LABELS : Faulty" 
-puts "TODO ??CR23096 ALL: CHECKSHAPE : Faulty" 
-puts "TODO ?CR23096 ALL: Error : 5 differences with reference data found"
-puts "TODO ?OCC24048 ALL: Error : 3 differences with reference data found"
-puts "TODO DEBUG_OCC24121 Debian60-64 Windows: Warning: Exception in Segment()"
-puts "TODO ?DEBUG_OCC24121 Debian60-64: Process killed by CPU limit"
-puts "TODO ?DEBUG_OCC24121 Debian60-64: TEST INCOMPLETE"
+puts "TODO CR23096 ALL: LABELS : Faulty" 
+
 
 set filename BUC60291.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 26  ( 0 )  Warnings = 12567  ( 31118 )  Summary  = 12593  ( 31118 )
-CHECKSHAPE  : Wires    = 0  ( 31 )  Faces    = 10  ( 32 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 6500  ( 6500 )   Summary  = 157935  ( 158228 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 6500  ( 6500 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 72576  ( 72654 )
-TOLERANCE   : MaxTol   =   0.9560441943  (    20.83020595 )  AvgTol   =   0.00212746714  (  0.003335685994 )
-LABELS      : N0Labels = 6500  ( 6500 )  N1Labels = 0  ( 25534 )  N2Labels = 0  ( 0 )   TotalLabels = 6500  ( 32034 )   NameLabels = 6500  ( 6500 )   ColorLabels = 6500  ( 32034 )   LayerLabels = 6500  ( 32034 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 5745  ( 31066 )  Summary  = 5745  ( 31066 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 6500  ( 6500 )   Summary  = 158092  ( 158092 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 6500  ( 6500 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 72654  ( 72654 )
+TOLERANCE   : MaxTol   =   0.9560441943  (   0.9560441934 )  AvgTol   =   0.00182443883  (  0.001822190978 )
+LABELS      : N0Labels = 6500  ( 6500 )  N1Labels = 0  ( 25582 )  N2Labels = 0  ( 0 )   TotalLabels = 6500  ( 32082 )   NameLabels = 6500  ( 6500 )   ColorLabels = 6500  ( 32082 )   LayerLabels = 6500  ( 32082 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 1  ( 1 )
 COLORS      : Colors   = YELLOW  ( YELLOW )
