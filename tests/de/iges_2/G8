@@ -1,19 +1,20 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
+puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
+puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 puts "TODO CR23096 ALL: COLORS : Faulty" 
-puts "TODO DEBUG_OCC24121 Debian60-64 Windows: Warning: Exception in Segment()"
+
 
 set filename PRO5236.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 2 )  Warnings = 114  ( 1590 )  Summary  = 114  ( 1592 )
-CHECKSHAPE  : Wires    = 138  ( 48 )  Faces    = 155  ( 142 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 253  ( 253 )   Summary  = 6121  ( 5360 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 253  ( 253 )   FreeWire = 7  ( 10 )   FreeEdge  = 78 ( 78 )   SharedEdge = 2405  ( 2405 )
-TOLERANCE   : MaxTol   =  0.03236463118  (    43.42228938 )  AvgTol   =  0.0002035797479  (   0.04107558874 )
-LABELS      : N0Labels = 8  ( 8 )  N1Labels = 269  ( 2762 )  N2Labels = 0  ( 0 )   TotalLabels = 277  ( 2770 )   NameLabels = 277  ( 476 )   ColorLabels = 272  ( 2768 )   LayerLabels = 272  ( 2768 )
+TPSTAT      : Faulties = 0  ( 2 )  Warnings = 145  ( 1619 )  Summary  = 145  ( 1621 )
+CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 253  ( 253 )   Summary  = 5360  ( 5363 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 253  ( 253 )   FreeWire = 7  ( 10 )   FreeEdge  = 78 ( 78 )   SharedEdge = 2412  ( 2412 )
+TOLERANCE   : MaxTol   =  0.04061865832  (  0.03139483949 )  AvgTol   =  0.0003212756237  (  0.0002830654529 )
+LABELS      : N0Labels = 8  ( 8 )  N1Labels = 269  ( 2698 )  N2Labels = 0  ( 0 )   TotalLabels = 277  ( 2706 )   NameLabels = 277  ( 384 )   ColorLabels = 272  ( 2704 )   LayerLabels = 272  ( 2704 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 3  ( 4 )
 COLORS      : Colors   = BLUE1 WHITE YELLOW  ( BLUE1 GREEN WHITE YELLOW )

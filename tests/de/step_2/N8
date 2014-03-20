@@ -6,11 +6,11 @@ set filename id_exhaust-B.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 3  ( 0 )  Summary  = 3  ( 0 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 5  ( 1 )  Summary  = 5  ( 1 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 273  ( 273 )   Summary  = 1611  ( 1585 )
 STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 273  ( 273 )   FreeWire = 0  ( 0 )   FreeEdge  = 25 ( 25 )   SharedEdge = 634  ( 634 )
-TOLERANCE   : MaxTol   = 0.009439063586  ( 0.009438969195 )  AvgTol   =   0.00145020325  (  0.001450203871 )
+TOLERANCE   : MaxTol   = 0.009439063586  ( 0.009438969195 )  AvgTol   =  0.001453682176  (  0.001448938515 )
 LABELS      : N0Labels = 3  ( 3 )  N1Labels = 400  ( 400 )  N2Labels = 0  ( 0 )   TotalLabels = 403  ( 403 )   NameLabels = 5  ( 5 )   ColorLabels = 399  ( 399 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 3  ( 3 )

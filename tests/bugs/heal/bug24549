@@ -1,0 +1,25 @@
+puts "============"
+puts "OCC24549"
+puts "============"
+puts ""
+#######################################################################
+## Faulty shape after IGES translation with xstep.cascade.unit set to M
+#######################################################################
+
+pload DATAEXCHANGEKERNEL
+
+param xstep.cascade.unit M
+
+igesread [locate_data_file bug24549_Hull_B.igs] result *
+
+regexp {Tolerance +MAX=([-0-9.+eE]+)} [tolerance result] full MaxTol_1
+
+puts "MaxTolerance = $MaxTol_1"
+
+set MaxTol 0.001
+
+if { ${MaxTol_1} > ${MaxTol} } {
+    puts "Faulty : bad tolerance"
+} else {
+    puts "OK : good tolerance"
+}

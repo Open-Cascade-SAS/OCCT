@@ -7,11 +7,11 @@ set filename 919-001-T02-04-CP-VL.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 103  ( 1391 )  Summary  = 103  ( 1391 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 98  ( 1376 )  Summary  = 98  ( 1376 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 899  ( 899 )   Summary  = 24050  ( 24038 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 899  ( 899 )   FreeWire = 366  ( 366 )   FreeEdge  = 3783 ( 3783 )   SharedEdge = 9394  ( 9388 )
-TOLERANCE   : MaxTol   =   0.3151652209  (    25.96160352 )  AvgTol   =  0.0007644147922  (  0.005247869155 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 899  ( 899 )   Summary  = 24042  ( 24038 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 899  ( 899 )   FreeWire = 366  ( 366 )   FreeEdge  = 3783 ( 3783 )   SharedEdge = 9390  ( 9388 )
+TOLERANCE   : MaxTol   =   0.3151652209  (   0.3151652209 )  AvgTol   =  0.0006858150184  (  0.000729734612 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 3581  ( 9378 )  N2Labels = 0  ( 0 )   TotalLabels = 3582  ( 9379 )   NameLabels = 3582  ( 4454 )   ColorLabels = 3581  ( 9378 )   LayerLabels = 3581  ( 9378 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 1  ( 2 )

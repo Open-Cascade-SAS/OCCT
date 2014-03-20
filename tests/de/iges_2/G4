@@ -1,7 +1,9 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO ?CR23096 ALL: STATSHAPE : Faulty" 
+puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
-puts "TODO CR23096 Mandriva2010: Error : 4 differences with reference data found :"
+
+
+puts "TODO CR23096 Mandriva2010: Error : 4 differences with reference data found :" 
 
 set LinuxDiff 4
 set filename y306351f.igs

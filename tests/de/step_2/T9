@@ -3,11 +3,11 @@ set filename trj7_b1-ec-214.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 2 )  Warnings = 3  ( 33 )  Summary  = 3  ( 35 )
+TPSTAT      : Faulties = 0  ( 2 )  Warnings = 2  ( 28 )  Summary  = 2  ( 30 )
 CHECKSHAPE  : Wires    = 2  ( 2 )  Faces    = 2  ( 2 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 414  ( 414 )   Summary  = 2776  ( 2776 )
 STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 414  ( 414 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 1197  ( 1197 )
-TOLERANCE   : MaxTol   =   0.1776286449  (   0.1776286449 )  AvgTol   =  0.002128401911  (  0.002129708287 )
+TOLERANCE   : MaxTol   =  0.01929292821  (  0.01929292821 )  AvgTol   =  0.001937877906  (  0.001939205772 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 28  ( 28 )  N2Labels = 0  ( 0 )   TotalLabels = 29  ( 29 )   NameLabels = 1  ( 1 )   ColorLabels = 29  ( 29 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 1  ( 1 )  Volume   = 1  ( 1 )  Area     = 1  ( 1 )
 NCOLORS     : NColors  = 2  ( 2 )

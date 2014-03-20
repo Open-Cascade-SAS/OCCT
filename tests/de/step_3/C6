@@ -6,11 +6,11 @@ set filename trj3_pm1-ug-203.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 51  ( 499 )  Summary  = 51  ( 499 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 23  ( 499 )  Summary  = 23  ( 499 )
 CHECKSHAPE  : Wires    = 1  ( 0 )  Faces    = 2  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 98  ( 98 )  Shell    = 98  ( 98 )  Face     = 3829  ( 3829 )   Summary  = 22282  ( 22282 )
 STATSHAPE   : Solid    = 116  ( 116 )  Shell    = 116  ( 116 )  Face     = 4144  ( 4144 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 8833  ( 8833 )
-TOLERANCE   : MaxTol   = 0.0002435409967  ( 0.0004303985328 )  AvgTol   =  6.880316188e-07  (  2.455976875e-06 )
+TOLERANCE   : MaxTol   = 0.0002435409967  (  0.06761346589 )  AvgTol   =  7.737752126e-007  (  3.401316374e-005 )
 LABELS      : N0Labels = 14  ( 14 )  N1Labels = 25  ( 25 )  N2Labels = 0  ( 0 )   TotalLabels = 39  ( 39 )   NameLabels = 39  ( 39 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

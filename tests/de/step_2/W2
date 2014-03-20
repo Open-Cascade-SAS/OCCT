@@ -8,10 +8,10 @@ set filename bm4_sd_eye_c.stp
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 7  ( 1 )  Summary  = 7  ( 1 )
-CHECKSHAPE  : Wires    = 0  ( 3 )  Faces    = 0  ( 3 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+CHECKSHAPE  : Wires    = 0  ( 1 )  Faces    = 0  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 82  ( 82 )   Summary  = 472  ( 476 )
 STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 82  ( 82 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 197  ( 199 )
-TOLERANCE   : MaxTol   =    2.828596832  (    2.828738262 )  AvgTol   =    0.2801192577  (    0.3313547178 )
+TOLERANCE   : MaxTol   =    2.828738262  (    2.828738262 )  AvgTol   =    0.2828527659  (    0.3313547178 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 1  ( 1 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 1  ( 1 )

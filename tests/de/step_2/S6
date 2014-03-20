@@ -6,11 +6,11 @@ set filename trj4_pm2-ct-203.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 137  ( 44 )  Summary  = 137  ( 44 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 139  ( 48 )  Summary  = 139  ( 48 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 762  ( 762 )   Summary  = 5219  ( 5151 )
 STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 1  ( 1 )  Face     = 762  ( 762 )   FreeWire = 0  ( 0 )   FreeEdge  = 68 ( 68 )   SharedEdge = 2111  ( 2111 )
-TOLERANCE   : MaxTol   =  0.06547014744  (  0.06547014744 )  AvgTol   =  0.0009821382874  (  0.0009804662929 )
+TOLERANCE   : MaxTol   =  0.06547014744  (  0.06547014744 )  AvgTol   =  0.0009764552867  (  0.0009747825774 )
 LABELS      : N0Labels = 3  ( 3 )  N1Labels = 2  ( 2 )  N2Labels = 0  ( 0 )   TotalLabels = 5  ( 5 )   NameLabels = 5  ( 5 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

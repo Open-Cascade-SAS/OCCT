@@ -1,15 +1,16 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
 
+
 set filename gehaeuse_surface.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 218  ( 1131 )  Summary  = 218  ( 1131 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 222  ( 1131 )  Summary  = 222  ( 1131 )
 CHECKSHAPE  : Wires    = 8  ( 8 )  Faces    = 8  ( 8 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 3067  ( 0 )  Face     = 3070  ( 3067 )   Summary  = 38193  ( 35102 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 3550  ( 0 )  Face     = 3553  ( 3550 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 14468  ( 14457 )
-TOLERANCE   : MaxTol   =  0.08182775785  (  0.08182775785 )  AvgTol   =  9.392984542e-005  (  8.050559104e-005 )
+TOLERANCE   : MaxTol   =  0.08182775785  (  0.08182775785 )  AvgTol   =  9.399148298e-005  (  8.050559104e-005 )
 LABELS      : N0Labels = 17  ( 17 )  N1Labels = 46  ( 46 )  N2Labels = 0  ( 0 )   TotalLabels = 63  ( 63 )   NameLabels = 63  ( 63 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

@@ -1,6 +1,6 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 puts "TODO CR23096 ALL: TPSTAT : Faulty" 
-puts "TODO ?CR23096 ALL: CHECKSHAPE : Faulty" 
+puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
 puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
 
 
@@ -8,11 +8,11 @@ set filename trj3_pm1-ct-203.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 126  ( 81 )  Summary  = 126  ( 81 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 127  ( 100 )  Summary  = 127  ( 100 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 1  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 45  ( 44 )  Face     = 803  ( 803 )   Summary  = 5321  ( 5318 )
 STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 45  ( 44 )  Face     = 803  ( 803 )   FreeWire = 0  ( 6 )   FreeEdge  = 6 ( 6 )   SharedEdge = 2214  ( 2211 )
-TOLERANCE   : MaxTol   =  0.03600909588  (  0.03600909508 )  AvgTol   =  0.0006563566874  (  0.0006544230247 )
+TOLERANCE   : MaxTol   =  0.03600909588  (  0.03600909508 )  AvgTol   =   0.00065440753  (  0.0006525648269 )
 LABELS      : N0Labels = 5  ( 5 )  N1Labels = 4  ( 4 )  N2Labels = 0  ( 0 )   TotalLabels = 9  ( 9 )   NameLabels = 9  ( 9 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

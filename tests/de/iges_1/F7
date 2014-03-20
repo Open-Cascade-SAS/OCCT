@@ -3,7 +3,7 @@ set filename UK1.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 0  ( 87 )  Summary  = 0  ( 87 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 1  ( 87 )  Summary  = 1  ( 87 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 65  ( 65 )   Summary  = 981  ( 974 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 65  ( 65 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 425  ( 419 )

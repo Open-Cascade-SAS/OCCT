@@ -11,11 +11,11 @@ set filename PRO11641.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 68  ( 1653 )  Summary  = 68  ( 1653 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 56  ( 1653 )  Summary  = 56  ( 1653 )
 CHECKSHAPE  : Wires    = 21  ( 14 )  Faces    = 7  ( 7 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1424  ( 1424 )   Summary  = 25258  ( 24523 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1424  ( 1424 )   FreeWire = 23  ( 23 )   FreeEdge  = 461 ( 461 )   SharedEdge = 11200  ( 10738 )
-TOLERANCE   : MaxTol   =  0.01698924283  (  0.04210111627 )  AvgTol   =  0.0004756358901  (   0.00051218143 )
+TOLERANCE   : MaxTol   =  0.01698924283  (  0.04210111627 )  AvgTol   =  0.0004756190331  (   0.00051218143 )
 LABELS      : N0Labels = 1784  ( 1784 )  N1Labels = 0  ( 2192 )  N2Labels = 0  ( 0 )   TotalLabels = 1784  ( 3976 )   NameLabels = 1784  ( 1784 )   ColorLabels = 1761  ( 3976 )   LayerLabels = 1761  ( 1784 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 7  ( 8 )

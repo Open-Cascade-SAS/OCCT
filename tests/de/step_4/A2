@@ -3,11 +3,11 @@ set filename 1084837_solide.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 5  ( 10 )  Summary  = 5  ( 10 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 7  ( 10 )  Summary  = 7  ( 10 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 96  ( 96 )  Shell    = 96  ( 96 )  Face     = 1550  ( 1550 )   Summary  = 9569  ( 9569 )
 STATSHAPE   : Solid    = 157  ( 157 )  Shell    = 157  ( 157 )  Face     = 2165  ( 2165 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 3746  ( 3746 )
-TOLERANCE   : MaxTol   =    0.064063078  (    0.064063078 )  AvgTol   =  0.0001589348744  (  0.0001589296429 )
+TOLERANCE   : MaxTol   =    0.064063078  (    0.064063078 )  AvgTol   =  0.0001743918382  (  0.0001589314923 )
 LABELS      : N0Labels = 112  ( 112 )  N1Labels = 170  ( 170 )  N2Labels = 0  ( 0 )   TotalLabels = 282  ( 282 )   NameLabels = 282  ( 282 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

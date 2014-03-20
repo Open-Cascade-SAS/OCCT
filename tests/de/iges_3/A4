@@ -10,11 +10,11 @@ set filename BUC40132.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 238 )  Warnings = 483  ( 2531 )  Summary  = 483  ( 2769 )
+TPSTAT      : Faulties = 0  ( 238 )  Warnings = 482  ( 2532 )  Summary  = 482  ( 2770 )
 CHECKSHAPE  : Wires    = 3  ( 3 )  Faces    = 3  ( 3 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1346  ( 1345 )   Summary  = 22207  ( 22290 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1346  ( 1345 )   FreeWire = 96  ( 170 )   FreeEdge  = 1061 ( 1061 )   SharedEdge = 9265  ( 9275 )
-TOLERANCE   : MaxTol   =   0.8630766579  (    1.367916315 )  AvgTol   =  0.008034943314  (  0.008258022117 )
+TOLERANCE   : MaxTol   =   0.8630766579  (    1.367916315 )  AvgTol   =  0.008032623547  (  0.008257993798 )
 LABELS      : N0Labels = 27  ( 27 )  N1Labels = 2100  ( 6099 )  N2Labels = 0  ( 0 )   TotalLabels = 2127  ( 6126 )   NameLabels = 2127  ( 2596 )   ColorLabels = 2114  ( 6125 )   LayerLabels = 2114  ( 6125 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 11  ( 12 )

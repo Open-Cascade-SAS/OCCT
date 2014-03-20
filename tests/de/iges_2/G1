@@ -2,8 +2,11 @@
 puts "TODO CR23096 ALL: TPSTAT : Faulty" 
 puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
-puts "TODO CR23096 Mandriva2010: Error : 2 differences with reference data found :"
-puts "TODO CR23096 Mandriva2010: STATSHAPE : Faulty"
+
+
+puts "TODO CR23096 Mandriva2010: STATSHAPE : Faulty " 
+
+puts "TODO CR23096 Mandriva2010: Error : 2 differences with reference data found :" 
 
 set LinuxDiff 2
 set LinuxFaulties {STATSHAPE}
@@ -12,10 +15,10 @@ set filename Henri.igs
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 65  ( 41 )  Summary  = 65  ( 41 )
-CHECKSHAPE  : Wires    = 11  ( 9 )  Faces    = 11  ( 9 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 3592  ( 2318 )   Summary  = 112066  ( 71749 )
-STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 3592  ( 3592 )   FreeWire = 4024  ( 4024 )   FreeEdge  = 28849 ( 28849 )   SharedEdge = 44969  ( 28776 )
-TOLERANCE   : MaxTol   =   0.9133008153  (   0.9133008813 )  AvgTol   =  0.005628736259  (  0.005903817889 )
+CHECKSHAPE  : Wires    = 8  ( 6 )  Faces    = 8  ( 6 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 3592  ( 2318 )   Summary  = 112063  ( 71748 )
+STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 3592  ( 3592 )   FreeWire = 4024  ( 4024 )   FreeEdge  = 28849 ( 28849 )   SharedEdge = 44966  ( 28775 )
+TOLERANCE   : MaxTol   =   0.9133008153  (   0.9133008813 )  AvgTol   =  0.005629101951  (  0.005904201197 )
 LABELS      : N0Labels = 24  ( 24 )  N1Labels = 5153  ( 6559 )  N2Labels = 0  ( 0 )   TotalLabels = 5177  ( 6583 )   NameLabels = 5177  ( 6583 )   ColorLabels = 5153  ( 6559 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 6  ( 6 )

@@ -2,18 +2,20 @@
 puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
 puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
-puts "TODO CR23096 Mandriva2010: Error : 1 differences with reference data found :"
+
+
+puts "TODO CR23096 Mandriva2010: Error : 1 differences with reference data found :" 
 
 set LinuxDiff 1
 set filename 919-004-T03-04-CP-VL.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 2 )  Warnings = 283  ( 2087 )  Summary  = 283  ( 2089 )
+TPSTAT      : Faulties = 0  ( 2 )  Warnings = 277  ( 2065 )  Summary  = 277  ( 2067 )
 CHECKSHAPE  : Wires    = 0  ( 3 )  Faces    = 0  ( 3 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1457  ( 1455 )   Summary  = 38865  ( 38834 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1457  ( 1455 )   FreeWire = 516  ( 528 )   FreeEdge  = 6208 ( 6208 )   SharedEdge = 15328  ( 15304 )
-TOLERANCE   : MaxTol   =   0.7947997475  (   0.4653265785 )  AvgTol   =  0.001020056527  (  0.0008404120484 )
+TOLERANCE   : MaxTol   =   0.7947997475  (   0.4653265785 )  AvgTol   =  0.001017262894  (  0.0008404073573 )
 LABELS      : N0Labels = 5  ( 5 )  N1Labels = 5689  ( 14457 )  N2Labels = 0  ( 0 )   TotalLabels = 5694  ( 14462 )   NameLabels = 5694  ( 7040 )   ColorLabels = 5689  ( 14461 )   LayerLabels = 5689  ( 14461 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 2  ( 2 )

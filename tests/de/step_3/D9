@@ -1,8 +1,5 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 ALL: TPSTAT : Faulty" 
-puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
-puts "TODO CR23096 ALL: TOLERANCE : Faulty" 
 
 
 puts "TODO CR23096 Mandriva2010: Error : 3 differences with reference data found :" 
@@ -12,11 +9,11 @@ set filename 53921163S0.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 45  ( 34 )  Summary  = 45  ( 34 )
-CHECKSHAPE  : Wires    = 0  ( 14 )  Faces    = 9  ( 14 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
-NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 3  ( 3 )  Face     = 566  ( 564 )   Summary  = 3692  ( 3701 )
-STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 3  ( 3 )  Face     = 566  ( 564 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 1535  ( 1542 )
-TOLERANCE   : MaxTol   =    61.30318124  (    60.87483475 )  AvgTol   =     1.466585036  (     1.651570456 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 17  ( 27 )  Summary  = 17  ( 27 )
+CHECKSHAPE  : Wires    = 6  ( 7 )  Faces    = 6  ( 9 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
+NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 3  ( 3 )  Face     = 558  ( 556 )   Summary  = 3668  ( 3661 )
+STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 3  ( 3 )  Face     = 558  ( 556 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 1527  ( 1526 )
+TOLERANCE   : MaxTol   =    60.79282309  (    60.87483475 )  AvgTol   =     1.272227708  (     1.266017009 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

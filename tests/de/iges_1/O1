@@ -6,7 +6,7 @@ set filename TibTray_Size3.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 115  ( 261 )  Summary  = 115  ( 261 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 166  ( 312 )  Summary  = 166  ( 312 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 212  ( 212 )   Summary  = 2920  ( 2920 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 212  ( 212 )   FreeWire = 6  ( 6 )   FreeEdge  = 43 ( 43 )   SharedEdge = 1243  ( 1243 )

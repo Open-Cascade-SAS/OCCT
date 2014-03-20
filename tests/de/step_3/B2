@@ -7,7 +7,7 @@ set filename trj7_pm5-pe-214.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 7  ( 4 )  Summary  = 7  ( 4 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 7  ( 2 )  Summary  = 7  ( 2 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 4  ( 4 )  Shell    = 4  ( 4 )  Face     = 1067  ( 1067 )   Summary  = 7192  ( 7192 )
 STATSHAPE   : Solid    = 6  ( 6 )  Shell    = 6  ( 6 )  Face     = 1083  ( 1083 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 3028  ( 3028 )

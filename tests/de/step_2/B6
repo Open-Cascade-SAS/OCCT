@@ -7,11 +7,11 @@ set filename PRO20364.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 119  ( 100 )  Summary  = 119  ( 100 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 120  ( 100 )  Summary  = 120  ( 100 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 1  ( 1 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 3  ( 3 )  Shell    = 4  ( 4 )  Face     = 457  ( 457 )   Summary  = 2948  ( 2947 )
 STATSHAPE   : Solid    = 3  ( 3 )  Shell    = 4  ( 4 )  Face     = 457  ( 457 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 1203  ( 1203 )
-TOLERANCE   : MaxTol   = 0.005476437308  ( 0.005476492073 )  AvgTol   =  0.0003181718251  (  0.0003179903324 )
+TOLERANCE   : MaxTol   = 0.005476437308  ( 0.005476492073 )  AvgTol   =  0.0003181744877  (  0.0003186393874 )
 LABELS      : N0Labels = 6  ( 6 )  N1Labels = 5  ( 7 )  N2Labels = 0  ( 2 )   TotalLabels = 11  ( 15 )   NameLabels = 11  ( 11 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

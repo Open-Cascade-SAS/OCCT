@@ -1,11 +1,12 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
+
 
 set filename CTS18542-2.igs
-puts "TODO ?CR23096 ALL: TPSTAT : Faulty" 
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 130  ( 131 )  Summary  = 130  ( 131 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 133  ( 131 )  Summary  = 133  ( 131 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1071  ( 1071 )   Summary  = 14484  ( 14484 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 1071  ( 1071 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 6154  ( 6154 )

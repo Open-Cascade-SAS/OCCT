@@ -3,7 +3,7 @@ set filename Table20.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 1 )  Summary  = 0  ( 1 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 4  ( 202 )  Summary  = 4  ( 202 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 8  ( 206 )  Summary  = 8  ( 206 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 309  ( 309 )   Summary  = 7205  ( 7205 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 309  ( 309 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 3274  ( 3274 )

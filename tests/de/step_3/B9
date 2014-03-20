@@ -1,6 +1,8 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
-puts "TODO CR23096 Mandriva2010: Error : 2 differences with reference data found :"
+
+
+puts "TODO CR23096 Mandriva2010: Error : 2 differences with reference data found :" 
 
 set LinuxDiff 2
 set filename wgehaeuse_surface.stp
@@ -11,7 +13,7 @@ TPSTAT      : Faulties = 0  ( 0 )  Warnings = 167  ( 910 )  Summary  = 167  ( 91
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 2823  ( 0 )  Face     = 2823  ( 2823 )   Summary  = 35044  ( 32219 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 3347  ( 0 )  Face     = 3347  ( 3347 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 13235  ( 13233 )
-TOLERANCE   : MaxTol   =  0.07507769847  (  0.07507769847 )  AvgTol   =  9.972036078e-005  (  0.0001063011758 )
+TOLERANCE   : MaxTol   =  0.07507769847  (  0.07507769847 )  AvgTol   =  9.526144643e-005  (  0.000106301461 )
 LABELS      : N0Labels = 37  ( 37 )  N1Labels = 76  ( 76 )  N2Labels = 0  ( 0 )   TotalLabels = 113  ( 113 )   NameLabels = 113  ( 113 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

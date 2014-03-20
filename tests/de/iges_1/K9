@@ -1,11 +1,14 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO CR23096 Windows: CHECKSHAPE : Faulty" 
+puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
 puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
-puts "TODO CR23096 Mandriva2010: Error : 3 differences with reference data found :"
-puts "TODO CR23096 Mandriva2010: STATSHAPE : Faulty" 
-puts "TODO CR23096 Mandriva2010: TOLERANCE : Faulty"
-puts "TODO ?CR23096 ALL: CHECKSHAPE : Faulty"
+
+
+puts "TODO CR23096 Mandriva2010: STATSHAPE : Faulty " 
+
+puts "TODO CR23096 Mandriva2010: TOLERANCE : Faulty " 
+
+puts "TODO CR23096 Mandriva2010: Error : 3 differences with reference data found :" 
 
 set LinuxDiff 3
 set LinuxFaulties {STATSHAPE TOLERANCE}
@@ -13,11 +16,11 @@ set filename Inner.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 17  ( 867 )  Summary  = 17  ( 867 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 17  ( 869 )  Summary  = 17  ( 869 )
 CHECKSHAPE  : Wires    = 1  ( 0 )  Faces    = 1  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 392  ( 392 )   Summary  = 10888  ( 10908 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 392  ( 392 )   FreeWire = 97  ( 121 )   FreeEdge  = 1546 ( 1546 )   SharedEdge = 4314  ( 4310 )
-TOLERANCE   : MaxTol   =   0.9393822539  (   0.9393822539 )  AvgTol   =   0.01467424646  (   0.01255966391 )
+TOLERANCE   : MaxTol   =   0.9393822539  (   0.9393822539 )  AvgTol   =   0.01467424621  (   0.01255966366 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 1695  ( 3509 )  N2Labels = 0  ( 0 )   TotalLabels = 1696  ( 3510 )   NameLabels = 1696  ( 1972 )   ColorLabels = 1695  ( 3509 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 4  ( 4 )

@@ -1,6 +1,8 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
 puts "TODO CR23096 ALL: LABELS : Faulty" 
-puts "TODO CR23096 Mandriva2010: Error : 2 differences with reference data found :"
+
+
+puts "TODO CR23096 Mandriva2010: Error : 2 differences with reference data found :" 
 
 set LinuxDiff 2
 set filename SurfW_fix.igs
@@ -11,7 +13,7 @@ TPSTAT      : Faulties = 0  ( 0 )  Warnings = 3  ( 183 )  Summary  = 3  ( 183 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 98  ( 98 )   Summary  = 2690  ( 2687 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 98  ( 98 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 1244  ( 1243 )
-TOLERANCE   : MaxTol   = 0.009955692634  ( 0.009955692464 )  AvgTol   =  0.0008509893811  (  0.0008531527756 )
+TOLERANCE   : MaxTol   = 0.009955692634  ( 0.009955692464 )  AvgTol   =  0.0008509893784  (  0.0008531522552 )
 LABELS      : N0Labels = 97  ( 97 )  N1Labels = 2  ( 102 )  N2Labels = 0  ( 0 )   TotalLabels = 99  ( 199 )   NameLabels = 97  ( 97 )   ColorLabels = 98  ( 199 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 1  ( 1 )

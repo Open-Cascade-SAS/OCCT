@@ -3,7 +3,7 @@ set filename Inventor_AdjustableBracket.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 33  ( 33 )  Summary  = 33  ( 33 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 33  ( 35 )  Summary  = 33  ( 35 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 9  ( 9 )  Shell    = 9  ( 9 )  Face     = 256  ( 256 )   Summary  = 1594  ( 1594 )
 STATSHAPE   : Solid    = 9  ( 9 )  Shell    = 9  ( 9 )  Face     = 256  ( 256 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 631  ( 631 )

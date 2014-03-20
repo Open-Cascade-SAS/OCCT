@@ -10,10 +10,10 @@ set filename trj4_k1_geo-tu-214.stp
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
 TPSTAT      : Faulties = 0  ( 0 )  Warnings = 5  ( 10 )  Summary  = 5  ( 10 )
-CHECKSHAPE  : Wires    = 0  ( 1 )  Faces    = 0  ( 2 )  Shells   = 0  ( 2 )   Solids   = 0 ( 0 )
+CHECKSHAPE  : Wires    = 1  ( 1 )  Faces    = 1  ( 1 )  Shells   = 0  ( 2 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 51  ( 2 )  Face     = 51  ( 48 )   Summary  = 584  ( 569 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 51  ( 2 )  Face     = 51  ( 48 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 220  ( 218 )
-TOLERANCE   : MaxTol   =   0.4289319635  ( 0.007688098235 )  AvgTol   =   0.01229028917  (  0.0002401295371 )
+TOLERANCE   : MaxTol   =   0.4289319668  ( 0.007688098235 )  AvgTol   =    0.0122902841  (  0.0002401295385 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 44  ( 44 )  N2Labels = 0  ( 0 )   TotalLabels = 45  ( 45 )   NameLabels = 1  ( 1 )   ColorLabels = 44  ( 44 )   LayerLabels = 0  ( 44 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 1  ( 1 )

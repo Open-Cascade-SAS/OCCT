@@ -154,7 +154,7 @@ if { $mist < 1} {
     # Get shape for standard analysis
     puts ""
     if { [catch { XGetOneShape res_1 D_First } catch_result] } {
-       	set err_msg ""Error : First - cannot get shape from document - exception"
+       	set err_msg "Error : First - cannot get shape from document - exception"
 	puts $err_msg
 	append todo_msg $todo_mask $err_msg $end_line
        	set mist 1

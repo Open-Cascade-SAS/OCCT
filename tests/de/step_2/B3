@@ -7,11 +7,11 @@ set filename welle_surface.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 488  ( 384 )  Summary  = 488  ( 384 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 392  ( 384 )  Summary  = 392  ( 384 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 469  ( 0 )  Face     = 469  ( 469 )   Summary  = 5735  ( 5266 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 469  ( 0 )  Face     = 469  ( 469 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 2160  ( 2160 )
-TOLERANCE   : MaxTol   = 0.003303397777  ( 0.003303824773 )  AvgTol   =  0.0002407323402  (  0.0002515673781 )
+TOLERANCE   : MaxTol   = 0.003303397777  ( 0.003303824773 )  AvgTol   =  0.0002306033612  (  0.0002463792868 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 0  ( 0 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 0  ( 0 )

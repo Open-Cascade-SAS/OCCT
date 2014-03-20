@@ -2,11 +2,12 @@
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 puts "TODO OCC24156 MacOS: Error : 1 differences with reference data found"
 
+
 set filename FRA62468-1.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 299  ( 5224 )  Summary  = 299  ( 5224 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 299  ( 5226 )  Summary  = 299  ( 5226 )
 CHECKSHAPE  : Wires    = 12  ( 18 )  Faces    = 16  ( 16 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 5163  ( 5163 )   Summary  = 68418  ( 68418 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 5163  ( 5163 )   FreeWire = 10  ( 10 )   FreeEdge  = 283 ( 283 )   SharedEdge = 29071  ( 29075 )

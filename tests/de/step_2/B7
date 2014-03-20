@@ -6,11 +6,11 @@ set filename trj9_b2-id-214.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 46  ( 48 )  Summary  = 46  ( 48 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 47  ( 49 )  Summary  = 47  ( 49 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 1  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 1  ( 1 )  Shell    = 3  ( 3 )  Face     = 231  ( 231 )   Summary  = 1450  ( 1449 )
 STATSHAPE   : Solid    = 1  ( 1 )  Shell    = 3  ( 3 )  Face     = 231  ( 231 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 594  ( 594 )
-TOLERANCE   : MaxTol   =   0.0061882807  ( 0.006188280702 )  AvgTol   =  0.0004159499273  (  0.0004163256817 )
+TOLERANCE   : MaxTol   =   0.0061882807  ( 0.006188280702 )  AvgTol   =  0.0004160092031  (  0.0004163610707 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 0  ( 0 )  N2Labels = 0  ( 0 )   TotalLabels = 1  ( 1 )   NameLabels = 1  ( 1 )   ColorLabels = 1  ( 1 )   LayerLabels = 0  ( 0 )
 PROPS       : Centroid = 1  ( 1 )  Volume   = 1  ( 1 )  Area     = 1  ( 1 )
 NCOLORS     : NColors  = 1  ( 1 )

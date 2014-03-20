@@ -7,7 +7,7 @@ set filename CTS17805.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 19 )  Warnings = 33  ( 193 )  Summary  = 33  ( 212 )
+TPSTAT      : Faulties = 0  ( 19 )  Warnings = 34  ( 193 )  Summary  = 34  ( 212 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 56  ( 56 )   Summary  = 2106  ( 2106 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 56  ( 56 )   FreeWire = 38  ( 38 )   FreeEdge  = 418 ( 418 )   SharedEdge = 856  ( 856 )

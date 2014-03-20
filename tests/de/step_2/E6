@@ -1,19 +1,21 @@
 # !!!! This file is generated automatically, do not edit manually! See end script
-puts "TODO ?CR23096 ALL: TPSTAT : Faulty" 
+puts "TODO CR23096 ALL: TPSTAT : Faulty" 
 puts "TODO CR23096 ALL: STATSHAPE : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 
-puts "TODO CR23096 Mandriva2010: Error : 3 differences with reference data found :"
+
+puts "TODO CR23096 Mandriva2010: Error : 3 differences with reference data found :" 
+
 set LinuxDiff 3
 set filename trj3_s1-al-214.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 102  ( 101 )  Summary  = 102  ( 101 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 102  ( 95 )  Summary  = 102  ( 95 )
 CHECKSHAPE  : Wires    = 12  ( 12 )  Faces    = 12  ( 12 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 5  ( 5 )  Shell    = 18  ( 14 )  Face     = 94  ( 94 )   Summary  = 630  ( 627 )
 STATSHAPE   : Solid    = 5  ( 5 )  Shell    = 18  ( 14 )  Face     = 94  ( 94 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 255  ( 255 )
-TOLERANCE   : MaxTol   =    5.454654424  (    20.45495409 )  AvgTol   =    0.1582231883  (    0.5084163389 )
+TOLERANCE   : MaxTol   =    5.454654424  (    20.45495409 )  AvgTol   =    0.1582231883  (    0.5075249428 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 18  ( 17 )  N2Labels = 0  ( 0 )   TotalLabels = 19  ( 18 )   NameLabels = 1  ( 1 )   ColorLabels = 18  ( 17 )   LayerLabels = 7  ( 8 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 2  ( 2 )

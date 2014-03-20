@@ -3,11 +3,11 @@ set filename trj12_pm10-ac-214.stp
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 56  ( 93 )  Summary  = 56  ( 93 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 57  ( 95 )  Summary  = 57  ( 95 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 20  ( 20 )  Shell    = 20  ( 20 )  Face     = 1441  ( 1441 )   Summary  = 9567  ( 9567 )
 STATSHAPE   : Solid    = 40  ( 40 )  Shell    = 40  ( 40 )  Face     = 2036  ( 2036 )   FreeWire = 0  ( 0 )   FreeEdge  = 0 ( 0 )   SharedEdge = 3936  ( 3936 )
-TOLERANCE   : MaxTol   = 0.004932484407  ( 0.004932484407 )  AvgTol   =  2.753902385e-005  (  2.773770773e-005 )
+TOLERANCE   : MaxTol   = 0.004932484407  ( 0.004932484407 )  AvgTol   =  2.75392155e-005  (  2.77391027e-005 )
 LABELS      : N0Labels = 41  ( 41 )  N1Labels = 50  ( 50 )  N2Labels = 0  ( 0 )   TotalLabels = 91  ( 91 )   NameLabels = 91  ( 91 )   ColorLabels = 20  ( 20 )   LayerLabels = 20  ( 20 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 15  ( 15 )

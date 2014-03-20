@@ -9,11 +9,11 @@ set filename ims002.igs
 
 set ref_data {
 DATA        : Faulties = 0  ( 0 )  Warnings = 0  ( 0 )  Summary  = 0  ( 0 )
-TPSTAT      : Faulties = 0  ( 0 )  Warnings = 20  ( 256 )  Summary  = 20  ( 256 )
+TPSTAT      : Faulties = 0  ( 0 )  Warnings = 20  ( 257 )  Summary  = 20  ( 257 )
 CHECKSHAPE  : Wires    = 0  ( 0 )  Faces    = 0  ( 0 )  Shells   = 0  ( 0 )   Solids   = 0 ( 0 )
 NBSHAPES    : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 78  ( 78 )   Summary  = 5036  ( 5295 )
 STATSHAPE   : Solid    = 0  ( 0 )  Shell    = 0  ( 0 )  Face     = 78  ( 78 )   FreeWire = 75  ( 334 )   FreeEdge  = 1251 ( 1251 )   SharedEdge = 1965  ( 1965 )
-TOLERANCE   : MaxTol   =   0.2578298329  (   0.2578045038 )  AvgTol   =  0.001390575043  (  0.001647287642 )
+TOLERANCE   : MaxTol   =   0.2578298329  (   0.2578045038 )  AvgTol   =  0.001358353951  (   0.00164678188 )
 LABELS      : N0Labels = 1  ( 1 )  N1Labels = 880  ( 1523 )  N2Labels = 0  ( 0 )   TotalLabels = 881  ( 1524 )   NameLabels = 881  ( 1008 )   ColorLabels = 880  ( 1523 )   LayerLabels = 858  ( 1496 )
 PROPS       : Centroid = 0  ( 0 )  Volume   = 0  ( 0 )  Area     = 0  ( 0 )
 NCOLORS     : NColors  = 5  ( 7 )

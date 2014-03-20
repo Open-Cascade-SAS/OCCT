@@ -981,35 +981,6 @@ Standard_Boolean ShapeConstruct_ProjectCurveOnSurface::PerformAdvanced (Handle(G
     c2d = new Geom2d_Line(P0, aDir2d);
   }
 
-  if(c2d.IsNull()) {
-    // try create line using pnt2d
-    Standard_Boolean IsLine = Standard_True;
-    Standard_Integer NbPnt2d = pnt2d.Length();
-    if(NbPnt2d >1) {
-      Standard_Real dist = pnt2d(1).SquareDistance(pnt2d(NbPnt2d));
-      Standard_Real dPreci = Precision::PConfusion()*Precision::PConfusion();
-      if(dist >= dPreci) {
-        gp_Vec2d avec (pnt2d(1),pnt2d(NbPnt2d));
-        gp_Dir2d adir (avec);
-        gp_Lin2d alin (pnt2d(1),adir);
-        for(i = 2; i < NbPnt2d; i++) {
-          Standard_Real devia = alin.SquareDistance(pnt2d(i));
-          Standard_Real dist2 = pnt2d(1).SquareDistance(pnt2d(i));
-          Standard_Real step = pnt2d(1).Distance(pnt2d(NbPnt2d))/(NbPnt2d-1);
-          Standard_Real ddist = Abs(pnt2d(1).Distance(pnt2d(i))-step*(i-1));
-          if( devia>dPreci || (dist2-dist)>dPreci || ddist>1.e-3*step ) {
-            IsLine = Standard_False;
-            i = NbPnt2d;
-          }
-        }
-        if(IsLine) {
-          Handle(Geom2d_Line) g2l = new Geom2d_Line(alin);
-          c2d = new Geom2d_TrimmedCurve(g2l,0,pnt2d(1).Distance(pnt2d(NbPnt2d)));
-        }
-      }  
-    }
-  }
-  
   return isDone;
 }
 
