@@ -2116,169 +2116,292 @@ static int VDisplayAll (Draw_Interpretor& ,
   return 0;
 }
 
-//#######################################################################################################
-
-//##     VTexture
-
-//#######################################################################################################
-
-Standard_Integer VTexture (Draw_Interpretor& di,Standard_Integer argc, const char** argv )
+//==============================================================================
+//function : VTexture
+//purpose  :
+//==============================================================================
+Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, const char** theArgv)
 {
-  Standard_Integer command = (strcasecmp(argv[0],"vtexture")==0)? 1:
-    (strcasecmp(argv[0],"vtexscale")==0) ? 2 :
-      (strcasecmp(argv[0],"vtexorigin")==0) ? 3 :
-	(strcasecmp(argv[0],"vtexrepeat")==0) ? 4 :
-	  (strcasecmp(argv[0],"vtexdefault")==0) ? 5 : -1;
+  TCollection_AsciiString aCommandName (theArgv[0]);
 
-  Handle(AIS_InteractiveContext) myAISContext = ViewerTest::GetAISContext();
-  if(myAISContext.IsNull())
-    {
-      di << "use 'vinit' command before " << argv[0] << "\n";
-      return 1;
-    }
-
-  Handle(AIS_InteractiveObject) TheAisIO;
-  Handle(AIS_TexturedShape) myShape;
-  Standard_Integer myPreviousMode = 0;
-
-  if (argc<2 || !argv[1])
-    {
-      di << argv[0] <<" syntax error - Type 'help vtex'"<<"\n";
-      return 1;
-    }
-
-  TCollection_AsciiString name = argv[1];
-  ViewerTest::CurrentView()->SetSurfaceDetail(V3d_TEX_ALL);
-
-  if (GetMapOfAIS().IsBound2(name))
-    TheAisIO = Handle(AIS_InteractiveObject)::DownCast
-      (GetMapOfAIS().Find2(name));
-  if (TheAisIO.IsNull())
+  NCollection_DataMap<TCollection_AsciiString, TColStd_SequenceOfAsciiString> aMapOfArgs;
+  if (aCommandName == "vtexture")
   {
-    di <<"shape "<<name.ToCString()<<" doesn\'t exist"<<"\n";
+    if (theArgsNb < 2)
+    {
+      std::cout << theArgv[0] << ": " << " invalid arguments.\n";
+      std::cout << "Type help for more information.\n";
+      return 1;
+    }
+
+    // look for options of vtexture command
+    TCollection_AsciiString aParseKey;
+    for (Standard_Integer anArgIt = 2; anArgIt < theArgsNb; ++anArgIt)
+    {
+      TCollection_AsciiString anArg (theArgv [anArgIt]);
+
+      anArg.UpperCase();
+      if (anArg.Value (1) == '-' && !anArg.IsRealValue())
+      {
+        aParseKey = anArg;
+        aParseKey.Remove (1);
+        aParseKey.UpperCase();
+        aMapOfArgs.Bind (aParseKey, TColStd_SequenceOfAsciiString());
+        continue;
+      }
+
+      if (aParseKey.IsEmpty())
+      {
+        continue;
+      }
+
+      aMapOfArgs.ChangeFind (aParseKey).Append (anArg);
+    }
+  }
+  else if (aCommandName == "vtexscale"
+        || aCommandName == "vtexorigin"
+        || aCommandName == "vtexrepeat")
+  {
+    // scan for parameters of vtexscale, vtexorigin, vtexrepeat commands
+    // equal to -scale, -origin, -repeat options of vtexture command
+    if (theArgsNb < 2 || theArgsNb > 4)
+    {
+      std::cout << theArgv[0] << ": " << " invalid arguments.\n";
+      std::cout << "Type help for more information.\n";
+      return 1;
+    }
+
+    TColStd_SequenceOfAsciiString anArgs;
+    if (theArgsNb == 2)
+    {
+      anArgs.Append ("OFF");
+    }
+    else if (theArgsNb == 4)
+    {
+      anArgs.Append (TCollection_AsciiString (theArgv[2]));
+      anArgs.Append (TCollection_AsciiString (theArgv[3]));
+    }
+
+    TCollection_AsciiString anArgKey;
+    if (aCommandName == "vtexscale")
+    {
+      anArgKey = "SCALE";
+    }
+    else if (aCommandName == "vtexorigin")
+    {
+      anArgKey = "ORIGIN";
+    }
+    else
+    {
+      anArgKey = "REPEAT";
+    }
+
+    aMapOfArgs.Bind (anArgKey, anArgs);
+  }
+  else if (aCommandName == "vtexdefault")
+  {
+    // scan for parameters of vtexdefault command
+    // equal to -default option of vtexture command
+    aMapOfArgs.Bind ("DEFAULT", TColStd_SequenceOfAsciiString());
+  }
+
+  // Check arguments for validity
+  NCollection_DataMap<TCollection_AsciiString, TColStd_SequenceOfAsciiString>::Iterator aMapIt (aMapOfArgs);
+  for (; aMapIt.More(); aMapIt.Next())
+  {
+    const TCollection_AsciiString& aKey = aMapIt.Key();
+    const TColStd_SequenceOfAsciiString& anArgs = aMapIt.Value();
+
+    // -scale, -origin, -repeat: one argument "off", or two real values
+    if ((aKey.IsEqual ("SCALE") || aKey.IsEqual ("ORIGIN") || aKey.IsEqual ("REPEAT"))
+      && ((anArgs.Length() == 1 && anArgs (1) == "OFF")
+       || (anArgs.Length() == 2 && anArgs (1).IsRealValue() && anArgs (2).IsRealValue())))
+    {
+      continue;
+    }
+
+    // -modulate: single argument "on" / "off"
+    if (aKey.IsEqual ("MODULATE") && anArgs.Length() == 1 && (anArgs (1) == "OFF" || anArgs (1) == "ON"))
+    {
+      continue;
+    }
+
+    // -default: no arguments
+    if (aKey.IsEqual ("DEFAULT") && anArgs.IsEmpty())
+    {
+      continue;
+    }
+
+    TCollection_AsciiString aLowerKey;
+    aLowerKey  = "-";
+    aLowerKey += aKey;
+    aLowerKey.LowerCase();
+    std::cout << theArgv[0] << ": " << aLowerKey << " is unknown option, or the arguments are unacceptable.\n";
+    std::cout << "Type help for more information.\n";
     return 1;
   }
 
-  if (TheAisIO->IsKind(STANDARD_TYPE(AIS_TexturedShape)) && !TheAisIO.IsNull())
-    {
-      myShape = Handle(AIS_TexturedShape)::DownCast(TheAisIO);
-      myPreviousMode = myShape->DisplayMode() ;
-    }
+  Handle(AIS_InteractiveContext) anAISContext = ViewerTest::GetAISContext();
+  if (anAISContext.IsNull())
+  {
+    std::cout << aCommandName << ": " << " please use 'vinit' command to initialize view.\n";
+    return 1;
+  }
+
+  Standard_Integer aPreviousMode = 0;
+
+  ViewerTest::CurrentView()->SetSurfaceDetail (V3d_TEX_ALL);
+
+  TCollection_AsciiString aShapeName (theArgv[1]);
+  Handle(AIS_InteractiveObject) anIO;
+
+  const ViewerTest_DoubleMapOfInteractiveAndName& aMapOfIO = GetMapOfAIS();
+  if (aMapOfIO.IsBound2 (aShapeName))
+  {
+    anIO = Handle(AIS_InteractiveObject)::DownCast (aMapOfIO.Find2 (aShapeName));
+  }
+
+  if (anIO.IsNull())
+  {
+    std::cout << aCommandName << ": shape " << aShapeName << " does not exists.\n";
+    return 1;
+  }
+
+  Handle(AIS_TexturedShape) aTexturedIO;
+  if (anIO->IsKind (STANDARD_TYPE (AIS_TexturedShape)))
+  {
+    aTexturedIO = Handle(AIS_TexturedShape)::DownCast (anIO);
+    aPreviousMode = aTexturedIO->DisplayMode();
+  }
   else
+  {
+    anAISContext->Clear (anIO, Standard_False);
+    aTexturedIO = new AIS_TexturedShape (DBRep::Get (theArgv[1]));
+    GetMapOfAIS().UnBind1 (anIO);
+    GetMapOfAIS().UnBind2 (aShapeName);
+    GetMapOfAIS().Bind (aTexturedIO, aShapeName);
+  }
+
+  // -------------------------------------------
+  //  Turn texturing on/off - only for vtexture
+  // -------------------------------------------
+
+  if (aCommandName == "vtexture")
+  {
+    TCollection_AsciiString aTextureArg (theArgsNb > 2 ? theArgv[2] : "");
+
+    if (aTextureArg.IsEmpty())
     {
-      myAISContext->Clear(TheAisIO,Standard_False);
-      myShape = new AIS_TexturedShape (DBRep::Get(argv[1]));
-      GetMapOfAIS().UnBind1(TheAisIO);
-      GetMapOfAIS().UnBind2(name);
-      GetMapOfAIS().Bind(myShape, name);
+      std::cout << aCommandName << ": " << " Texture mapping disabled.\n";
+      std::cout << "To enable it, use 'vtexture NameOfShape NameOfTexture'\n" << "\n";
+
+      anAISContext->SetDisplayMode (aTexturedIO, AIS_Shaded, Standard_False);
+      if (aPreviousMode == 3)
+      {
+        anAISContext->RecomputePrsOnly (aTexturedIO);
+      }
+
+      anAISContext->Display (aTexturedIO, Standard_True);
+      return 0;
     }
-  switch (command)
+    else if (aTextureArg.Value(1) != '-') // "-option" on place of texture argument
     {
-    case 1: // vtexture : we only map a texture on the shape
-      if(argc<=1)
-	{
-	  di << argv[0] <<" syntax error - Type 'help vtex'" << "\n";
-	  return 1;
-	}
-      if (argc>2 && argv[2])
-	{
-	  if(strcasecmp(argv[2],"?")==0)
-	    {
-	      TCollection_AsciiString monPath = Graphic3d_TextureRoot::TexturesFolder();
-	      di<<"\n Files in current directory : \n"<<"\n";
-	      TCollection_AsciiString Cmnd ("glob -nocomplain *");
-	      di.Eval(Cmnd.ToCString());
+      if (aTextureArg == "?")
+      {
+        TCollection_AsciiString aTextureFolder = Graphic3d_TextureRoot::TexturesFolder();
 
-	      Cmnd = TCollection_AsciiString("glob -nocomplain ") ;
-	      Cmnd += monPath ;
-	      Cmnd += "/* " ;
-	      di<<"Files in "<<monPath.ToCString()<<" : \n"<<"\n";
-	      di.Eval(Cmnd.ToCString());
+        theDi << "\n Files in current directory : \n" << "\n";
+        theDi.Eval ("glob -nocomplain *");
 
-	      return 0;
-	    }
-	  else
-	    myShape->SetTextureFileName(argv[2]);
-	}
+        TCollection_AsciiString aCmnd ("glob -nocomplain ");
+        aCmnd += aTextureFolder;
+        aCmnd += "/* ";
+
+        theDi << "Files in " << aTextureFolder.ToCString() << " : \n" << "\n";
+        theDi.Eval (aCmnd.ToCString());
+        return 0;
+      }
       else
-	{
-	  di <<"Texture mapping disabled \n \
-                  To enable it, use 'vtexture NameOfShape NameOfTexture' \n"<<"\n";
-
-	  myAISContext->SetDisplayMode(myShape,1,Standard_False);
-	  if (myPreviousMode == 3 )
-	    myAISContext->RecomputePrsOnly(myShape);
-	  myAISContext->Display(myShape, Standard_True);
-	  return 0;
-	}
-      break;
-
-    case 2: // vtexscale : we change the scaling factor of the texture
-
-      if(argc<2)
-	{
-	  di << argv[0] <<" syntax error - Type 'help vtex'" << "\n";
-	  return 1;
-	}
-
-      myShape->SetTextureScale (( argv[2] ? Standard_True    : Standard_False ),
-				( argv[2] ? Draw::Atof(argv[2])    : 1.0 ),
-				( argv[2] ? Draw::Atof(argv[argc-1]) : 1.0 ) );
-      break;
-
-    case 3: // vtexorigin : we change the origin of the texture on the shape
-      if(argc<2)
-	{
-	  di << argv[0] <<" syntax error - Type 'help vtex'" << "\n";
-	  return 1;
-	}
-      myShape->SetTextureOrigin (( argv[2] ? Standard_True    : Standard_False ),
-				 ( argv[2] ? Draw::Atof(argv[2])    : 0.0 ),
-				 ( argv[2] ? Draw::Atof(argv[argc-1]) : 0.0 ));
-      break;
-
-    case 4: // vtexrepeat : we change the number of occurences of the texture on the shape
-      if(argc<2)
-	{
-	  di << argv[0] <<" syntax error - Type 'help vtex'" << "\n";
-	  return 1;
-	}
-      if (argc>2 && argv[2])
-	{
-	  di <<"Texture repeat enabled"<<"\n";
-	  myShape->SetTextureRepeat(Standard_True, Draw::Atof(argv[2]), Draw::Atof(argv[argc-1]) );
-	}
-      else
-	{
-	  di <<"Texture repeat disabled"<<"\n";
-	  myShape->SetTextureRepeat(Standard_False);
-	}
-      break;
-
-    case 5: // vtexdefault : default texture mapping
-      // ScaleU = ScaleV = 100.0
-      // URepeat = VRepeat = 1.0
-      // Uorigin = VOrigin = 0.0
-
-      if(argc<2)
-	{
-	  di << argv[0] <<" syntax error - Type 'help vtex'" << "\n";
-	  return 1;
-	}
-      myShape->SetTextureRepeat(Standard_False);
-      myShape->SetTextureOrigin(Standard_False);
-      myShape->SetTextureScale (Standard_False);
-      break;
+      {
+        aTexturedIO->SetTextureFileName (aTextureArg);
+      }
     }
+  }
 
-  if ((myShape->DisplayMode() == 3) || (myPreviousMode == 3 ))
-    myAISContext->RecomputePrsOnly(myShape);
+  // ------------------------------------
+  //  Process other options and commands
+  // ------------------------------------
+
+  TColStd_SequenceOfAsciiString aValues;
+  if (aMapOfArgs.Find ("DEFAULT", aValues))
+  {
+    aTexturedIO->SetTextureRepeat (Standard_False);
+    aTexturedIO->SetTextureOrigin (Standard_False);
+    aTexturedIO->SetTextureScale  (Standard_False);
+    aTexturedIO->EnableTextureModulate();
+  }
   else
+  {
+    if (aMapOfArgs.Find ("SCALE", aValues))
     {
-      myAISContext->SetDisplayMode(myShape,3,Standard_False);
-      myAISContext->Display(myShape, Standard_True);
-      myAISContext->Update(myShape,Standard_True);
+      if (aValues (1) != "OFF")
+      {
+        aTexturedIO->SetTextureScale (Standard_True, aValues (1).RealValue(), aValues (2).RealValue());
+      }
+      else
+      {
+        aTexturedIO->SetTextureScale (Standard_False);
+      }
     }
+
+    if (aMapOfArgs.Find ("ORIGIN", aValues))
+    {
+      if (aValues (1) != "OFF")
+      {
+        aTexturedIO->SetTextureOrigin (Standard_True, aValues (1).RealValue(), aValues (2).RealValue());
+      }
+      else
+      {
+        aTexturedIO->SetTextureOrigin (Standard_False);
+      }
+    }
+
+    if (aMapOfArgs.Find ("REPEAT", aValues))
+    {
+      if (aValues (1) != "OFF")
+      {
+        aTexturedIO->SetTextureRepeat (Standard_True, aValues (1).RealValue(), aValues (2).RealValue());
+      }
+      else
+      {
+        aTexturedIO->SetTextureRepeat (Standard_False);
+      }
+    }
+
+    if (aMapOfArgs.Find ("MODULATE", aValues))
+    {
+      if (aValues (1) == "ON")
+      {
+        aTexturedIO->EnableTextureModulate();
+      }
+      else
+      {
+        aTexturedIO->DisableTextureModulate();
+      }
+    }
+  }
+
+  if (aTexturedIO->DisplayMode() == 3 || aPreviousMode == 3)
+  {
+    anAISContext->RecomputePrsOnly (aTexturedIO);
+  }
+  else
+  {
+    anAISContext->SetDisplayMode (aTexturedIO, 3, Standard_False);
+    anAISContext->Display (aTexturedIO, Standard_True);
+    anAISContext->Update (aTexturedIO,Standard_True);
+  }
+
   return 0;
 }
 
@@ -3831,12 +3954,27 @@ void ViewerTest::Commands(Draw_Interpretor& theCommands)
 		  "vunsetshading :vunsetshading name ",
 		  __FILE__,VShading,group);
 
-  theCommands.Add("vtexture",
-		  "'vtexture NameOfShape TextureFile' \n \
-                  or 'vtexture NameOfShape' if you want to disable texture mapping \n \
-                  or 'vtexture NameOfShape ?' to list available textures\n \
-                  or 'vtexture NameOfShape IdOfTexture' (0<=IdOfTexture<=20)' to use predefined  textures\n ",
-		  __FILE__,VTexture,group);
+  theCommands.Add ("vtexture",
+                   "\n'vtexture NameOfShape [TextureFile | IdOfTexture]\n"
+                   "                         [-scale u v]  [-scale off]\n"
+                   "                         [-origin u v] [-origin off]\n"
+                   "                         [-repeat u v] [-repeat off]\n"
+                   "                         [-modulate {on | off}]"
+                   "                         [-default]'\n"
+                   " The texture can be specified by filepath or as ID (0<=IdOfTexture<=20)\n"
+                   " specifying one of the predefined textures.\n"
+                   " The options are: \n"
+                   "  -scale u v : enable texture scaling and set scale factors\n"
+                   "  -scale off : disable texture scaling\n"
+                   "  -origin u v : enable texture origin positioning and set the origin\n"
+                   "  -origin off : disable texture origin positioning\n"
+                   "  -repeat u v : enable texture repeat and set texture coordinate scaling\n"
+                   "  -repeat off : disable texture repeat\n"
+                   "  -modulate {on | off} : enable or disable texture modulation\n"
+                   "  -default : sets texture mapping default parameters\n"
+                   "or 'vtexture NameOfShape' if you want to disable texture mapping\n"
+                   "or 'vtexture NameOfShape ?' to list available textures\n",
+                    __FILE__, VTexture, group);
 
   theCommands.Add("vtexscale",
 		  "'vtexscale  NameOfShape ScaleU ScaleV' \n \

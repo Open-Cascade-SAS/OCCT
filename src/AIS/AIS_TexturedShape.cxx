@@ -244,6 +244,11 @@ void AIS_TexturedShape::updateAttributes (const Handle(Prs3d_Presentation)& theP
     return;
   }
 
+  if (myModulate)
+    myTexture->EnableModulate();
+  else
+    myTexture->DisableModulate();
+
   if (myToShowTriangles)
     myAspect->SetEdgeOn();
   else

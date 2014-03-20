@@ -1,0 +1,44 @@
+puts "============"
+puts "CR24725"
+puts "============"
+puts ""
+
+########################################################
+#  Test texture color modulation for AIS_TexturedShape
+########################################################
+
+set aV "Driver1/Viewer1/View1"
+vinit name=$aV l=32 t=32 w=400 h=400
+vactivate $aV
+vclear
+
+box b 1 2 3
+vdisplay b
+vsetdispmode 1
+vtexture b 0
+vlight clear
+vlight add ambient color white
+vfit
+
+set check_x 142
+set check_y 352
+
+vtexture b -modulate off
+
+checkcolor $check_x $check_y 1 1 1
+
+if { $stat != 1 } {
+  puts "Error : color of non-modulated texture is incorrect"
+}
+
+vdump $imagedir/${casename}_1.png
+
+vtexture b -modulate on
+
+checkcolor $check_x $check_y 0.329 0.224 0.027
+
+if { $stat != 1 } {
+  puts "Error : color of modulated texture is incorrect"
+}
+
+vdump $imagedir/${casename}_2.png
