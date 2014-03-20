@@ -33,8 +33,9 @@ IMPLEMENT_STANDARD_RTTIEXT(OpenGl_ShaderManager, Standard_Transient)
 // purpose  : Creates new empty shader manager
 // =======================================================================
 OpenGl_ShaderManager::OpenGl_ShaderManager (OpenGl_Context* theContext)
-: myContext (theContext),
-  myIsPP    (Standard_False)
+: myContext  (theContext),
+  myIsPP     (Standard_False),
+  myLastView (NULL)
 {
   //
 }

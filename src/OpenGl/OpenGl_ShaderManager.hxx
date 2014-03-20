@@ -25,6 +25,8 @@
 #include <OpenGl_ShaderProgram.hxx>
 #include <OpenGl_ShaderStates.hxx>
 
+class OpenGl_View;
+
 //! List of shader programs.
 typedef NCollection_Sequence<Handle(OpenGl_ShaderProgram)> OpenGl_ShaderProgramList;
 
@@ -165,6 +167,19 @@ public:
     myContext = theCtx;
   }
 
+  //! Sets last view manger used with.
+  //! Helps to handle matrix states in multi-view configurations.
+  void SetLastView (const OpenGl_View* theLastView)
+  {
+    myLastView = theLastView;
+  }
+
+  //! Returns true when provided view is the same as cached one.
+  bool IsSameView (const OpenGl_View* theView) const
+  {
+    return myLastView == theView;
+  }
+
 protected:
 
   OpenGl_ShaderProgramList myProgramList;  //!< The list of shader programs
@@ -173,7 +188,7 @@ protected:
 private:
 
   Standard_Boolean         myIsPP;         //!< Is any program object bound (programmable pipeline)?
-
+  const OpenGl_View*       myLastView;     //!< Pointer to the last view shader manager used with.
 };
 
 #endif // _OpenGl_ShaderManager_HeaderFile

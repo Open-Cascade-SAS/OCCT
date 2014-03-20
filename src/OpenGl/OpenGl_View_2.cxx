@@ -421,6 +421,19 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
     }
   }
 
+  if (!aManager.IsNull())
+  {
+    if (!aManager->IsSameView (this))
+    {
+      // Force update camera states
+      myProjectionState = myCamera->ProjectionState();
+      aManager->UpdateProjectionStateTo ((const Tmatrix3*)myCamera->ProjectionMatrixF().GetData());
+
+      myModelViewState = myCamera->ModelViewState();
+      aManager->UpdateWorldViewStateTo ((const Tmatrix3*)myCamera->OrientationMatrixF().GetData());
+    }
+  }
+
   // ====================================
   //      Step 2: Redraw background
   // ====================================
@@ -624,6 +637,15 @@ void OpenGl_View::Render (const Handle(OpenGl_PrinterContext)& thePrintContext,
   }
 
   delete[] aOldPlanes;
+
+  // ==============================================================
+  //      Step 8: Keep shader manager informed about last View
+  // ==============================================================
+
+  if (!aManager.IsNull())
+  {
+    aManager->SetLastView (this);
+  }
 }
 
 /*----------------------------------------------------------------------*/
