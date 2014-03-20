@@ -948,6 +948,25 @@ void OpenGl_View::DisplayStructure (const OpenGl_Structure *theStructure,
 }
 
 //=======================================================================
+//function : DisplayImmediateStructure
+//purpose  :
+//=======================================================================
+
+void OpenGl_View::DisplayImmediateStructure (const OpenGl_Structure* theStructure)
+{
+  for (OpenGl_SequenceOfStructure::Iterator anIter (myImmediateList);
+       anIter.More(); anIter.Next())
+  {
+    if (anIter.Value() == theStructure)
+    {
+      return;
+    }
+  }
+
+  myImmediateList.Append (theStructure);
+}
+
+//=======================================================================
 //function : EraseStructure
 //purpose  :
 //=======================================================================
@@ -956,6 +975,24 @@ void OpenGl_View::EraseStructure (const OpenGl_Structure *theStructure)
 {
   Standard_Integer aZLayer = theStructure->GetZLayer ();
   myZLayers.RemoveStructure (theStructure, aZLayer);
+}
+
+//=======================================================================
+//function : EraseImmediateStructure
+//purpose  :
+//=======================================================================
+
+void OpenGl_View::EraseImmediateStructure (const OpenGl_Structure* theStructure)
+{
+  for (OpenGl_SequenceOfStructure::Iterator anIter (myImmediateList);
+       anIter.More(); anIter.Next())
+  {
+    if (anIter.Value() == theStructure)
+    {
+      myImmediateList.Remove (anIter);
+      return;
+    }
+  }
 }
 
 //=======================================================================

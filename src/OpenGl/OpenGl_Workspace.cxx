@@ -26,11 +26,12 @@
 #include <OpenGl_AspectMarker.hxx>
 #include <OpenGl_AspectText.hxx>
 #include <OpenGl_Context.hxx>
+#include <OpenGl_Element.hxx>
 #include <OpenGl_FrameBuffer.hxx>
+#include <OpenGl_Structure.hxx>
 #include <OpenGl_Texture.hxx>
 #include <OpenGl_View.hxx>
 #include <OpenGl_Workspace.hxx>
-#include <OpenGl_Element.hxx>
 
 #include <Graphic3d_TextureParams.hxx>
 
@@ -145,14 +146,13 @@ OpenGl_Workspace::OpenGl_Workspace (const Handle(OpenGl_Display)& theDisplay,
   NamedStatus (0),
   HighlightColor (&THE_WHITE_COLOR),
   //
-  myIsTransientOpen (Standard_False),
-  myRetainMode (Standard_False),
   myTransientDrawToFront (Standard_True),
+  myBackBufferRestored   (Standard_False),
+  myIsImmediateDrawn     (Standard_False),
   myUseTransparency (Standard_False),
   myUseZBuffer (Standard_False),
   myUseDepthTest (Standard_True),
   myUseGLLight (Standard_True),
-  myBackBufferRestored (Standard_False),
   //
   AspectLine_set (&myDefaultAspectLine),
   AspectLine_applied (NULL),
@@ -571,10 +571,11 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
   if (!theCView.IsRaytracing || myComputeInitStatus == OpenGl_CLIS_FAIL)
   {
 #endif
-    Redraw1 (theCView, theCUnderLayer, theCOverLayer, toSwap);
-    if (aFrameBuffer == NULL || !myTransientDrawToFront)
+    const Standard_Boolean isImmediate = !myView->ImmediateStructures().IsEmpty();
+    redraw1 (theCView, theCUnderLayer, theCOverLayer, isImmediate ? 0 : toSwap);
+    if (isImmediate)
     {
-      RedrawImmediatMode();
+      RedrawImmediate (theCView, theCUnderLayer, theCOverLayer, Standard_True);
     }
 
     theCView.WasRedrawnGL = Standard_True;
@@ -598,7 +599,7 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
     glViewport (aViewPortBack[0], aViewPortBack[1], aViewPortBack[2], aViewPortBack[3]);
   }
 
-#if (defined(_WIN32) || defined(__WIN32__)) && defined(HAVE_VIDEOCAPTURE)
+#if defined(_WIN32) && defined(HAVE_VIDEOCAPTURE)
   if (OpenGl_AVIWriter_AllowWriting (theCView.DefWindow.XWindow))
   {
     GLint params[4];
@@ -618,4 +619,211 @@ void OpenGl_Workspace::Redraw (const Graphic3d_CView& theCView,
 
   // reset render mode state
   aGlCtx->FetchState();
+}
+
+// =======================================================================
+// function : redraw1
+// purpose  :
+// =======================================================================
+void OpenGl_Workspace::redraw1 (const Graphic3d_CView& theCView,
+                                const Aspect_CLayer2d& theCUnderLayer,
+                                const Aspect_CLayer2d& theCOverLayer,
+                                const int              theToSwap)
+{
+  if (myDisplay.IsNull() || myView.IsNull())
+  {
+    return;
+  }
+
+  // request reset of material
+  NamedStatus |= OPENGL_NS_RESMAT;
+
+  // GL_DITHER on/off pour le background
+  if (myBackDither)
+  {
+    glEnable (GL_DITHER);
+  }
+  else
+  {
+    glDisable (GL_DITHER);
+  }
+
+  GLbitfield toClear = GL_COLOR_BUFFER_BIT;
+  if (myUseZBuffer)
+  {
+    glDepthFunc (GL_LEQUAL);
+    glDepthMask (GL_TRUE);
+    if (myUseDepthTest)
+    {
+      glEnable (GL_DEPTH_TEST);
+    }
+    else
+    {
+      glDisable (GL_DEPTH_TEST);
+    }
+
+    glClearDepth (1.0);
+    toClear |= GL_DEPTH_BUFFER_BIT;
+  }
+  else
+  {
+    glDisable (GL_DEPTH_TEST);
+  }
+
+  if (NamedStatus & OPENGL_NS_WHITEBACK)
+  {
+    // set background to white
+    glClearColor (1.0f, 1.0f, 1.0f, 1.0f);
+    toClear |= GL_DEPTH_BUFFER_BIT;
+  }
+  else
+  {
+    glClearColor (myBgColor.rgb[0], myBgColor.rgb[1], myBgColor.rgb[2], 0.0f);
+  }
+  glClear (toClear);
+
+  Handle(OpenGl_Workspace) aWS (this);
+  myView->Render (myPrintContext, aWS, theCView, theCUnderLayer, theCOverLayer);
+
+  // swap the buffers
+  if (theToSwap)
+  {
+    GetGlContext()->SwapBuffers();
+    myBackBufferRestored = Standard_False;
+    myIsImmediateDrawn   = Standard_False;
+  }
+  else
+  {
+    glFlush();
+    myBackBufferRestored = Standard_True;
+    myIsImmediateDrawn   = Standard_False;
+  }
+}
+
+// =======================================================================
+// function : copyBackToFront
+// purpose  :
+// =======================================================================
+void OpenGl_Workspace::copyBackToFront()
+{
+  glMatrixMode (GL_PROJECTION);
+  glPushMatrix();
+  glLoadIdentity();
+  gluOrtho2D (0.0, (GLdouble )myWidth, 0.0, (GLdouble )myHeight);
+  glMatrixMode (GL_MODELVIEW);
+  glPushMatrix();
+  glLoadIdentity();
+
+  DisableFeatures();
+
+  glDrawBuffer (GL_FRONT);
+  glReadBuffer (GL_BACK);
+
+  glRasterPos2i (0, 0);
+  glCopyPixels  (0, 0, myWidth + 1, myHeight + 1, GL_COLOR);
+
+  EnableFeatures();
+
+  glMatrixMode (GL_PROJECTION);
+  glPopMatrix();
+  glMatrixMode (GL_MODELVIEW);
+  glPopMatrix();
+
+  glDrawBuffer (GL_BACK);
+
+  myIsImmediateDrawn = Standard_False;
+}
+
+// =======================================================================
+// function : DisplayCallback
+// purpose  :
+// =======================================================================
+void OpenGl_Workspace::DisplayCallback (const Graphic3d_CView& theCView,
+                                        Standard_Integer       theReason)
+{
+  if (theCView.GDisplayCB == NULL)
+  {
+    return;
+  }
+
+  Aspect_GraphicCallbackStruct aCallData;
+  aCallData.reason    = theReason;
+  aCallData.glContext = GetGlContext();
+  aCallData.wsID      = theCView.WsId;
+  aCallData.viewID    = theCView.ViewId;
+  theCView.GDisplayCB (theCView.DefWindow.XWindow, theCView.GClientData, &aCallData);
+}
+
+// =======================================================================
+// function : RedrawImmediate
+// purpose  :
+// =======================================================================
+void OpenGl_Workspace::RedrawImmediate (const Graphic3d_CView& theCView,
+                                        const Aspect_CLayer2d& theCUnderLayer,
+                                        const Aspect_CLayer2d& theCOverLayer,
+                                        const Standard_Boolean theToForce)
+{
+  if (!Activate())
+  {
+    return;
+  }
+
+  GLboolean isDoubleBuffer = GL_FALSE;
+  glGetBooleanv (GL_DOUBLEBUFFER, &isDoubleBuffer);
+  if (myView->ImmediateStructures().IsEmpty())
+  {
+    if (theToForce
+     || !myIsImmediateDrawn)
+    {
+      myIsImmediateDrawn = Standard_False;
+      return;
+    }
+
+    if (myBackBufferRestored
+     && isDoubleBuffer)
+    {
+      copyBackToFront();
+    }
+    else
+    {
+      Redraw (theCView, theCUnderLayer, theCOverLayer);
+    }
+    return;
+  }
+
+  if (isDoubleBuffer && myTransientDrawToFront)
+  {
+    if (!myBackBufferRestored)
+    {
+      Redraw (theCView, theCUnderLayer, theCOverLayer);
+      return;
+    }
+    copyBackToFront();
+    MakeFrontBufCurrent();
+  }
+  else
+  {
+    myBackBufferRestored = Standard_False;
+  }
+  myIsImmediateDrawn = Standard_True;
+
+  NamedStatus |= OPENGL_NS_IMMEDIATE;
+  ///glDisable (GL_LIGHTING);
+  glDisable (GL_DEPTH_TEST);
+
+  Handle(OpenGl_Workspace) aWS (this);
+  for (OpenGl_SequenceOfStructure::Iterator anIter (myView->ImmediateStructures());
+       anIter.More(); anIter.Next())
+  {
+    const OpenGl_Structure* aStructure = anIter.Value();
+    aStructure->Render (aWS);
+  }
+
+  NamedStatus &= ~OPENGL_NS_IMMEDIATE;
+
+  if (isDoubleBuffer && myTransientDrawToFront)
+  {
+    glFlush();
+    MakeBackBufCurrent();
+  }
 }

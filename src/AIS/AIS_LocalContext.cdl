@@ -230,13 +230,12 @@ is
     AutomaticHilight(me) returns Boolean;
     ---C++: inline
 
-
-
                     ---Category: THE SELECTION PROCESS
 
-
-    MoveTo(me:mutable;Xpix,Ypix : Integer from Standard;
-                         aview : View from V3d)
+    MoveTo (me                   : mutable;
+            theXpix, theYpix     : Integer from Standard;
+            theView              : View from V3d;
+            theToRedrawImmediate : Boolean from Standard)
     returns StatusOfDetection from AIS;
 
 
@@ -245,15 +244,18 @@ is
     ---Purpose: returns True if more than one entity
     --          was detected at the last Mouse position.
     
-    HilightNextDetected(me:mutable;aView:View from V3d)
+    HilightNextDetected (me      : mutable;
+                         theView : View from V3d;
+                         theToRedrawImmediate : Boolean from Standard)
     returns Integer from Standard;
     ---Purpose: returns True if  last detected. the next detected will
     --          be first one (endless loop)
 
-    HilightPreviousDetected(me:mutable;aView:View from V3d)
+    HilightPreviousDetected (me                   : mutable;
+                             theView              : View from V3d;
+                             theToRedrawImmediate : Boolean from Standard)
     returns Integer from Standard;
 
-    
     UnhilightLastDetected(me:mutable;aView:View from V3d) returns Boolean from Standard;
     ---Purpose: returns True if something was done...
 
@@ -474,24 +476,29 @@ is
                         ---Category: IMMEDIATE MODE
 
 
-    BeginImmediateDraw (me:mutable)  returns Boolean from Standard;
-    ---Purpose: initializes the list of presentations to be displayed
-    --          returns False if No Local COnte
-
-    ImmediateAdd (me:mutable;anIObj:InteractiveObject from AIS;aMode:Integer from Standard=0)
+    BeginImmediateDraw (me : mutable)
     returns Boolean from Standard;
-    ---Purpose: returns True if <anIObj> has been stored in the list.
+    ---Purpose: Resets the transient list of presentations previously displayed in immediate mode
+    -- and begins accumulation of new list by following AddToImmediateList()/Color()/Highlight() calls.
 
-    ImmediateRemove (me:mutable;anIObj:InteractiveObject from AIS;aMode:Integer from Standard=0)
+    ClearImmediateDraw (me : mutable) is virtual;
+    ---Purpose: Resets the transient list of presentations previously displayed in immediate mode.
+
+    ImmediateAdd (me : mutable;
+                  theObj  : InteractiveObject from AIS;
+                  theMode : Integer from Standard = 0)
     returns Boolean from Standard;
-    ---Purpose: returns True if <anIObj> has been removed from the list.
+    ---Purpose: Stores presentation theMode of object theObj in the transient list of presentations to be displayed in immediate mode.
+    -- Will be taken in account in EndImmediateDraw method.
 
-    EndImmediateDraw(me:mutable;aView : View from V3d;DoubleBuf:Boolean from Standard=Standard_False)
+    EndImmediateDraw (me      : mutable;
+                      theView : View from V3d)
     returns Boolean from Standard;
-    ---Purpose: returns True if the immediate display has been done.
+    ---Purpose: Allows rapid drawing of the view theView by avoiding an update of the whole background.
 
-    IsImmediateModeOn(me) returns Boolean from Standard;
-            
+    IsImmediateModeOn (me) returns Boolean from Standard;
+    ---Purpose: Returns true if Presentation Manager is accumulating transient list of presentations to be displayed in immediate mode.
+
                             ---Category: INTERNAL METHODS;
 
     UpdateConversion(me:mutable);
@@ -523,9 +530,10 @@ is
     ActivateStandardModes(me:mutable;anObject: SelectableObject from SelectMgr;
             WithProj: Boolean from Standard = Standard_True)  is  static  private;
 
-    ManageDetected(me:mutable;
-                   aPickOwner : EntityOwner from SelectMgr;
-                   aview      : View  from  V3d) is static  private;
+    manageDetected (me                   : mutable;
+                    thePickOwner         : EntityOwner from SelectMgr;
+                    theView              : View from V3d;
+                    theToRedrawImmediate : Boolean from Standard) is static private;
 
     DetectedIndex(me:mutable) returns Integer from Standard is static private;
     ---C++: inline
@@ -568,16 +576,9 @@ is
     
     ClearSensitive(me:mutable;aView:View from V3d) is static;
 
-
-        
     MainSelector(me) returns any ViewerSelector3d from StdSelect;
     ---C++: inline
     ---C++: return const&
-
-
-    HilightTriangle(me:mutable;Rank:Integer from Standard;aViou:View from V3d) is static private;
-    ---Level: Internal 
-
 
     FindSelectedOwnerFromIO(me;anIObj:InteractiveObject from AIS)
     returns EntityOwner from SelectMgr;

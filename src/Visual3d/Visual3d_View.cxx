@@ -136,8 +136,8 @@
 #include <Visual3d_Light.hxx>
 #include <Visual3d_SetOfLight.hxx>
 #include <Visual3d_HSetOfLight.hxx>
+#include <Visual3d_HSetOfView.hxx>
 #include <Visual3d_SetIteratorOfSetOfLight.hxx>
-
 #include <Visual3d_SetIteratorOfSetOfView.hxx>
 
 #include <Graphic3d_TextureEnv.hxx>
@@ -1021,130 +1021,115 @@ void Visual3d_View::Deactivate () {
 
 }
 
-void Visual3d_View::Redraw () {
-
-        Redraw (MyViewManager->UnderLayer (), MyViewManager->OverLayer ());
-
+void Visual3d_View::Redraw()
+{
+  Redraw (MyViewManager->UnderLayer(), MyViewManager->OverLayer(), 0, 0, 0, 0);
 }
 
-void Visual3d_View::Redraw (const Standard_Integer x, const Standard_Integer y, const Standard_Integer width, const Standard_Integer height) {
-
-        Redraw (MyViewManager->UnderLayer (), MyViewManager->OverLayer (), x, y, width, height);
+void Visual3d_View::Redraw (const Standard_Integer theX,
+                            const Standard_Integer theY,
+                            const Standard_Integer theWidth,
+                            const Standard_Integer theHeight)
+{
+  Redraw (MyViewManager->UnderLayer(), MyViewManager->OverLayer(),
+          theX, theY, theWidth, theHeight);
 }
 
-void Visual3d_View::Redraw (const Handle(Visual3d_Layer)& AnUnderLayer, const Handle(Visual3d_Layer)& AnOverLayer) {
-
-        if (IsDeleted ()) return;
-
-        if ((! IsDefined ()) || (! IsActive ())) return;
-
-        if (! MyWindow->IsMapped ()) return;
-
-        // san - 14/04/2004 - set up Z buffer state before redrawing
-       // If the activation/desactivation of ZBuffer should be automatic
-        // depending on the presence or absence of facets.
-        if (MyViewManager->ZBufferAuto ()) {
-                Standard_Boolean BContainsFacet = ContainsFacet ();
-                Standard_Boolean BZBuffer       = ZBufferIsActivated ();
-                // If the view contains facets
-                // and if ZBuffer is not active
-                if (BContainsFacet && ! BZBuffer)
-                        SetZBufferActivity (1);
-                // If the view contains only facets
-                // and if ZBuffer is active
-                if (! BContainsFacet && BZBuffer)
-                        SetZBufferActivity (0);
-        }
-
-        Aspect_CLayer2d OverCLayer;
-        Aspect_CLayer2d UnderCLayer;
-        OverCLayer.ptrLayer = UnderCLayer.ptrLayer = NULL;
-        if (! AnOverLayer.IsNull ()) OverCLayer = AnOverLayer->CLayer ();
-        if (! AnUnderLayer.IsNull ()) UnderCLayer = AnUnderLayer->CLayer ();
-        MyGraphicDriver->Redraw (MyCView, UnderCLayer, OverCLayer);
-
+void Visual3d_View::Redraw (const Handle(Visual3d_Layer)& theUnderLayer,
+                            const Handle(Visual3d_Layer)& theOverLayer)
+{
+  Redraw (theUnderLayer, theOverLayer, 0, 0, 0, 0);
 }
 
-void Visual3d_View::Redraw (const Handle(Visual3d_Layer)& AnUnderLayer, const Handle(Visual3d_Layer)& AnOverLayer, const Standard_Integer x, const Standard_Integer y, const Standard_Integer width, const Standard_Integer height) {
+void Visual3d_View::Redraw (const Handle(Visual3d_Layer)& theUnderLayer,
+                            const Handle(Visual3d_Layer)& theOverLayer,
+                            const Standard_Integer        theX,
+                            const Standard_Integer        theY,
+                            const Standard_Integer        theWidth,
+                            const Standard_Integer        theHeight)
+{
+  if (IsDeleted()
+   || !IsDefined()
+   || !IsActive()
+   || !MyWindow->IsMapped())
+  {
+    return;
+  }
 
-        if (IsDeleted ()) return;
+  if (MyGraphicDriver->IsDeviceLost())
+  {
+    MyViewManager->RecomputeStructures();
+    MyViewManager->RecomputeStructures (myImmediateStructures);
+    MyGraphicDriver->ResetDeviceLostFlag();
+  }
 
-        if ((! IsDefined ()) || (! IsActive ())) return;
+  // set up Z buffer state before redrawing
+  if (MyViewManager->ZBufferAuto())
+  {
+    const Standard_Boolean hasFacet   = ContainsFacet();
+    const Standard_Boolean hasZBuffer = ZBufferIsActivated();
+    // if the view contains facets and if ZBuffer is not active
+    if (hasFacet && !hasZBuffer)
+    {
+      SetZBufferActivity (1);
+    }
+    // if the view contains only facets and if ZBuffer is active
+    if (!hasFacet && hasZBuffer)
+    {
+      SetZBufferActivity (0);
+    }
+  }
 
-        if (! MyWindow->IsMapped ()) return;
-
-        // san - 14/04/2004 - set up Z buffer state before redrawing
-          // If activation/desactivation of ZBuffer should be automatic
-        // depending on the presence or absence of facets.
-        if (MyViewManager->ZBufferAuto ()) {
-        Standard_Boolean BContainsFacet = ContainsFacet ();
-        Standard_Boolean BZBuffer       = ZBufferIsActivated ();
-                // If the view contains facets
-                // and if ZBuffer is not active
-                if (BContainsFacet && ! BZBuffer)
-                        SetZBufferActivity (1);
-                // If the view contains only facets
-                // and if ZBuffer is active
-                if (! BContainsFacet && BZBuffer)
-                        SetZBufferActivity (0);
-        }
-
-        Aspect_CLayer2d OverCLayer;
-        Aspect_CLayer2d UnderCLayer;
-        OverCLayer.ptrLayer = UnderCLayer.ptrLayer = NULL;
-        if (! AnOverLayer.IsNull ()) OverCLayer = AnOverLayer->CLayer ();
-        if (! AnUnderLayer.IsNull ()) UnderCLayer = AnUnderLayer->CLayer ();
-        MyGraphicDriver->Redraw (MyCView, UnderCLayer, OverCLayer, x, y, width, height);
-
+  Aspect_CLayer2d anOverCLayer, anUnderCLayer;
+  anOverCLayer.ptrLayer = anUnderCLayer.ptrLayer = NULL;
+  if (!theOverLayer .IsNull()) anOverCLayer  = theOverLayer ->CLayer();
+  if (!theUnderLayer.IsNull()) anUnderCLayer = theUnderLayer->CLayer();
+  MyGraphicDriver->Redraw (MyCView, anUnderCLayer, anOverCLayer, theX, theY, theWidth, theHeight);
 }
 
-void Visual3d_View::Update () 
+void Visual3d_View::RedrawImmediate()
+{
+  RedrawImmediate (MyViewManager->UnderLayer(), MyViewManager->OverLayer());
+}
+
+void Visual3d_View::RedrawImmediate (const Handle(Visual3d_Layer)& theUnderLayer,
+                                     const Handle(Visual3d_Layer)& theOverLayer)
+{
+  if (IsDeleted()
+   || !IsDefined()
+   || !IsActive()
+   || !MyWindow->IsMapped())
+  {
+    return;
+  }
+
+  Aspect_CLayer2d anOverCLayer, anUnderCLayer;
+  anOverCLayer.ptrLayer = anUnderCLayer.ptrLayer = NULL;
+  if (!theOverLayer .IsNull()) anOverCLayer  = theOverLayer ->CLayer();
+  if (!theUnderLayer.IsNull()) anUnderCLayer = theUnderLayer->CLayer();
+  MyGraphicDriver->RedrawImmediate (MyCView, anUnderCLayer, anOverCLayer);
+}
+
+void Visual3d_View::Invalidate()
+{
+  MyGraphicDriver->Invalidate (MyCView);
+}
+
+void Visual3d_View::Update()
 {
   IsInitialized = Standard_True;
-
   Compute ();
 
-  Update (MyViewManager->UnderLayer (), MyViewManager->OverLayer ());
+  Redraw (MyViewManager->UnderLayer(), MyViewManager->OverLayer(), 0, 0, 0, 0);
 }
 
-void Visual3d_View::Update (const Handle(Visual3d_Layer)& AnUnderLayer, const Handle(Visual3d_Layer)& AnOverLayer) {
+void Visual3d_View::Update (const Handle(Visual3d_Layer)& theUnderLayer,
+                            const Handle(Visual3d_Layer)& theOverLayer)
+{
+  IsInitialized = Standard_True;
+  Compute ();
 
-        if (IsDeleted ()) return;
-
-        if ((! IsDefined ()) || (! IsActive ())) return;
-
-        if (! MyWindow->IsMapped ()) return;
-
-        if (MyGraphicDriver->IsDeviceLost())
-        {
-          MyViewManager->RecomputeStructures();
-          MyGraphicDriver->ResetDeviceLostFlag();
-        }
-
-        // If activation/desactivation of ZBuffer should be automatic
-        // depending on the presence or absence of facets.
-        if (MyViewManager->ZBufferAuto ()) {
-Standard_Boolean BContainsFacet = ContainsFacet ();
-Standard_Boolean BZBuffer       = ZBufferIsActivated ();
-                // If the view contains facets
-                // and if ZBuffer is not active
-                        if (BContainsFacet && ! BZBuffer)
-                        SetZBufferActivity (1);
-                   // If the view does not contain facets
-                // and if ZBuffer is active
-                if (! BContainsFacet && BZBuffer)
-                        SetZBufferActivity (0);
-        }
-
-Aspect_CLayer2d OverCLayer;
-Aspect_CLayer2d UnderCLayer;
-        OverCLayer.ptrLayer = UnderCLayer.ptrLayer = NULL;
-        if (! AnUnderLayer.IsNull ()) UnderCLayer = AnUnderLayer->CLayer ();
-        if (! AnOverLayer.IsNull ()) OverCLayer = AnOverLayer->CLayer ();
-        //OSD::SetSignal (Standard_False);
-        MyGraphicDriver->Update (MyCView, UnderCLayer, OverCLayer);
-        //OSD::SetSignal (Standard_True);
-
+  Redraw (theUnderLayer, theOverLayer, 0, 0, 0, 0);
 }
 
 Visual3d_TypeOfAnswer Visual3d_View::AcceptDisplay (const Handle(Graphic3d_Structure)& AStructure) const {
@@ -1309,6 +1294,56 @@ Standard_Integer IndexD = IsComputed (ADaughter);
                 MyCOMPUTEDSequence.Value (IndexM)->GraphicDisconnect (MyCOMPUTEDSequence.Value (IndexD));
         }
 
+}
+
+Standard_Boolean Visual3d_View::DisplayImmediate (const Handle(Graphic3d_Structure)& theStructure,
+                                                  const Standard_Boolean             theIsSingleView)
+{
+  if (!myImmediateStructures.Add (theStructure))
+  {
+    return Standard_False;
+  }
+
+  if (theIsSingleView)
+  {
+    Handle_Visual3d_HSetOfView aViews = MyViewManager->DefinedView();
+    for (Visual3d_SetIteratorOfSetOfView aViewIter (aViews->Set()); aViewIter.More(); aViewIter.Next())
+    {
+      if (aViewIter.Value().Access() != this)
+      {
+        aViewIter.Value()->EraseImmediate (theStructure);
+      }
+    }
+  }
+
+  MyGraphicDriver->DisplayImmediateStructure (MyCView, *theStructure->CStructure());
+  return Standard_True;
+}
+
+Standard_Boolean Visual3d_View::EraseImmediate (const Handle(Graphic3d_Structure)& theStructure)
+{
+  const Standard_Boolean isErased = myImmediateStructures.Remove (theStructure);
+  if (isErased)
+  {
+    MyGraphicDriver->EraseImmediateStructure (MyCView, *theStructure->CStructure());
+  }
+
+  return isErased;
+}
+
+Standard_Boolean Visual3d_View::ClearImmediate()
+{
+  if (myImmediateStructures.IsEmpty())
+  {
+    return Standard_False;
+  }
+
+  for (Graphic3d_MapIteratorOfMapOfStructure anIter (myImmediateStructures); anIter.More(); anIter.Next())
+  {
+    MyGraphicDriver->EraseImmediateStructure (MyCView, *anIter.Key()->CStructure());
+  }
+  myImmediateStructures.Clear();
+  return Standard_True;
 }
 
 void Visual3d_View::Display (const Handle(Graphic3d_Structure)& AStructure) {

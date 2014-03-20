@@ -70,6 +70,9 @@ public:
   //! Highlight structure using boundary box
   virtual void HighlightWithBndBox (const Standard_Boolean theToCreate);
 
+  //! Create shadow link to this structure
+  virtual Handle(Graphic3d_CStructure) ShadowLink (const Handle(Graphic3d_StructureManager)& theManager) const;
+
 public:
 
   //! Access graphic driver
@@ -120,7 +123,7 @@ public:
   void ReleaseGlResources (const Handle(OpenGl_Context)& theGlCtx);
 
   //! Returns list of OpenGL groups.
-  const OpenGl_ListOfGroup& Groups() const { return myGroups; }
+  virtual const OpenGl_ListOfGroup& Groups() const { return myGroups; }
 
   //! Returns list of connected OpenGL structures.
   const OpenGl_ListOfStructure& ConnectedStructures() const { return myConnected; }

@@ -21,7 +21,7 @@
 class Presentation3d from PrsMgr inherits Presentation from PrsMgr
 
 uses
-    PresentationManager3d from PrsMgr,
+    PresentationManager from PrsMgr,
     Presentation from Prs3d,
     NameOfColor from Quantity,
     Transformation from Geom,
@@ -35,7 +35,7 @@ uses
     Projector from Prs3d,
     KindOfPrs from PrsMgr
 is
-    Create(aPresentationManager: PresentationManager3d from PrsMgr;
+    Create(aPresentationManager: PresentationManager from PrsMgr;
            aPresentableObject: PresentableObject from PrsMgr)
     returns mutable Presentation3d  from  PrsMgr
     is private;
@@ -167,7 +167,7 @@ fields
     myDisplayReason: Boolean from Standard;
     myPresentableObject: PresentableObjectPointer from PrsMgr;
 friends 
-    class PresentationManager3d from PrsMgr,
+    class PresentationManager from PrsMgr,
     class PresentableObject from PrsMgr,
     class Prs from PrsMgr
 end Presentation3d from PrsMgr;

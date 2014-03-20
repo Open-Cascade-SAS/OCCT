@@ -25,7 +25,6 @@
 --   GG  : 25/05/00 BUC60688 Add SetSensitivity() methods 
 --   VSV : 22/05/01 Add Selection by polygon
 --   SAV :  Add DisplayFromCollector() method
---   GG  : IMP150501 CADPAK_V2 Add Drag() method
 --   ZSV : IMP160701 Add InitDetected(),MoreDetected(),NextDetected(),
 --	   	         DetectedCurrentShape(),DetectedCurrentObject()
 --			 methods
@@ -1090,20 +1089,23 @@ is
 
 	    ---Category: GRAPHIC DETECTION  / SELECTION
 
-
-    MoveTo(me:mutable;XPix,YPix:Integer from Standard;aView:View from V3d)
+    MoveTo (me                  : mutable;
+            theXPix, theYPix    : Integer from Standard;
+            theView             : View from V3d;
+            theToRedrawOnUpdate : Boolean from Standard = Standard_True)
     returns StatusOfDetection from AIS;
----Purpose: Relays mouse position in pixels XPix and YPix to the
--- interactive context selectors. This is done by the view
--- aView passing this position to the main viewer and updating it.
--- Functions in both Neutral Point and local contexts.
-
+    ---Purpose: Relays mouse position in pixels theXPix and theYPix to the interactive context selectors.
+    -- This is done by the view theView passing this position to the main viewer and updating it.
+    -- Functions in both Neutral Point and local contexts.
+    -- If theToRedrawOnUpdate is set to false, callee should call RedrawImmediate() to highlight detected object.
 
     HasNextDetected(me) returns Boolean from Standard;
     ---Purpose: returns True  if other entities  were detected  in the
     --          last mouse detection
 
-    HilightNextDetected(me:mutable;aView:View from V3d) 
+    HilightNextDetected (me                   : mutable;
+                         theView              : View from V3d;
+                         theToRedrawImmediate : Boolean from Standard = Standard_True)
     returns Integer from Standard;
     ---Purpose: if more than 1 object is detected by the selector,
     --          only the "best" owner is hilighted at the mouse position.
@@ -1116,7 +1118,9 @@ is
     --                    have been hilighted , the next call will hilight
     --                    the first one again 
 
-    HilightPreviousDetected(me:mutable;aView:View from V3d)
+    HilightPreviousDetected (me                   : mutable;
+                             theView              : View from V3d;
+                             theToRedrawImmediate : Boolean from Standard = Standard_True)
     returns Integer from Standard;
     ---Purpose: Same as previous methods in reverse direction...
 
@@ -1633,51 +1637,30 @@ is
         --           4.EndImmediateDraw()      draws all the stored objects...
         --           
 
-    BeginImmediateDraw (me:mutable)  returns Boolean from Standard;
+    BeginImmediateDraw (me : mutable)
+    returns Boolean from Standard;
     ---Purpose: initializes the list of presentations to be displayed
     --          returns False if No Local COnte
 
-    ImmediateAdd (me:mutable;anIObj:InteractiveObject from AIS;aMode:Integer from Standard=0)
+    ImmediateAdd (me      : mutable;
+                  theObj  : InteractiveObject from AIS;
+                  theMode : Integer from Standard = 0)
     returns Boolean from Standard;
     ---Purpose: returns True if <anIObj> has been stored in the list.
 
-    ImmediateRemove (me:mutable;anIObj:InteractiveObject from AIS;aMode:Integer from Standard=0)
-    returns Boolean from Standard;
-    ---Purpose: returns True if <anIObj> has been removed from the list.
-
-    EndImmediateDraw(me:mutable;aView : View from V3d;DoubleBuf:Boolean from Standard=Standard_False)
+    EndImmediateDraw (me      : mutable;
+                      theView : View from V3d)
     returns Boolean from Standard;
     ---Purpose: returns True if the immediate display has been done.
-    EndImmediateDraw(me:mutable;DoubleBuf:Boolean from Standard=Standard_False)
+
+    EndImmediateDraw (me : mutable)
     returns Boolean from Standard;
-    ---Purpose: Uses the First Active View of Main Viewer!!!
+    ---Purpose: Uses the First Active View of Main Viewer!
     --          returns True if the immediate display has been done.
 
     IsImmediateModeOn(me) returns Boolean from Standard;
 
-    Drag ( me : mutable;
-                aView: View from V3d;
-                anObject: InteractiveObject from AIS;
-                aTranformation: Transformation from Geom;
-                postConcatenate: Boolean from Standard = Standard_False;
-                update: Boolean from Standard = Standard_False;
-                zBuffer: Boolean from Standard = Standard_False)
-    is static;
-    ---Level: Public
-    ---Purpose: Transforms the current presentation of the object <anObject>
-    --          using the transient graphic space of the view <aView> in
-    --          immediat mode graphics.
-    ---Warning: When  <update> is TRUE, then the view is redrawn with ALL
-    --          transformed presentations.
-    --          When <zBuffer> is TRUE  all transient graphic are drawn
-    --          using zbuffer activity.
-    --          Note that when <update> is TRUE the view is cleared and redrawn
-    --          and soforth the Z buffer is always activated therefore the <zBuffer>
-    --          parameter is ignored in this case.
-
-
 	    ---Category: Activation/Deactivation of Selection Modes.
-
 
     SetAutomaticHilight(me:mutable;aStatus:Boolean);
 ---Purpose:

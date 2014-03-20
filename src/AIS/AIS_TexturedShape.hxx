@@ -29,10 +29,6 @@
 
 class Graphic3d_AspectFillArea3d;
 class Graphic3d_Texture2Dmanual;
-class TopoDS_Shape;
-class TCollection_AsciiString;
-class PrsMgr_PresentationManager3d;
-class Prs3d_Presentation;
 
 //! This class allows to map textures on shapes.
 //! Presentations modes AIS_WireFrame (0) and AIS_Shaded (1) behave in the same manner as in AIS_Shape,

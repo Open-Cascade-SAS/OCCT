@@ -126,6 +126,26 @@ void OpenGl_GraphicDriver::Redraw (const Graphic3d_CView& ACView,
   }
 }
 
+void OpenGl_GraphicDriver::RedrawImmediate (const Graphic3d_CView& theCView,
+                                            const Aspect_CLayer2d& theCUnderLayer,
+                                            const Aspect_CLayer2d& theCOverLayer)
+{
+  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
+  if (aCView != NULL)
+  {
+    aCView->WS->RedrawImmediate (theCView, theCUnderLayer, theCOverLayer);
+  }
+}
+
+void OpenGl_GraphicDriver::Invalidate (const Graphic3d_CView& theCView)
+{
+  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
+  if (aCView != NULL)
+  {
+    aCView->WS->Invalidate (theCView);
+  }
+}
+
 Graphic3d_PtrFrameBuffer OpenGl_GraphicDriver::FBOCreate (const Graphic3d_CView& ACView, const Standard_Integer theWidth, const Standard_Integer theHeight)
 {
   const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
@@ -439,13 +459,6 @@ void OpenGl_GraphicDriver::Transparency (const Graphic3d_CView& ACView, const St
   const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
   if (aCView)
     aCView->WS->UseTransparency(AFlag);
-}
-
-void OpenGl_GraphicDriver::Update (const Graphic3d_CView& ACView, const Aspect_CLayer2d& ACUnderLayer, const Aspect_CLayer2d& ACOverLayer)
-{
-  const OpenGl_CView *aCView = (const OpenGl_CView *)ACView.ptrView;
-  if (aCView)
-    aCView->WS->Update(ACView,ACUnderLayer,ACOverLayer);
 }
 
 Standard_Boolean OpenGl_GraphicDriver::View (Graphic3d_CView& theCView)

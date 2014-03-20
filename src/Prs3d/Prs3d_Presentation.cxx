@@ -50,39 +50,53 @@ static void MakeGraphicTrsf (const Handle(Geom_Transformation)& aGeomTrsf,
 
 //=======================================================================
 //function : Prs3d_Presentation
-//purpose  : 
+//purpose  :
 //=======================================================================
-Prs3d_Presentation::Prs3d_Presentation 
-  (const Handle(Graphic3d_StructureManager)& aViewer,
-   const Standard_Boolean                    Init):
-  Graphic3d_Structure(aViewer) 
+Prs3d_Presentation::Prs3d_Presentation (const Handle(Graphic3d_StructureManager)& theViewer,
+                                        const Standard_Boolean                    theToInit)
+: Graphic3d_Structure (theViewer)
 {
-  if (Init) {
-    Graphic3d_MaterialAspect aMat (Graphic3d_NOM_BRASS);
-    Quantity_Color Col;
-    // Ceci permet de recuperer la couleur associee
-    // au materiau defini par defaut.
-//POP pour K4L
-    Col = aMat.AmbientColor ();
-//    Col = aMat.Color ();
-
-    // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
-    // It is necessary to set default polygon offsets for a new presentation
-    Handle(Graphic3d_AspectFillArea3d) aDefAspect = 
-      new Graphic3d_AspectFillArea3d (Aspect_IS_SOLID,
-                                      Col,
-                                      Col,
-                                      Aspect_TOL_SOLID,
-                                      1.0,
-                                      Graphic3d_NOM_BRASS,
-                                      Graphic3d_NOM_BRASS);
-    aDefAspect->SetPolygonOffsets( Aspect_POM_Fill, 1., 0. );
-    SetPrimitivesAspect( aDefAspect );
-    // OCC4895 SAN 22/03/04 High-level interface for controlling polygon offsets 
+  if (!theToInit)
+  {
+    return;
   }
 
-//  myStruct = Handle(Graphic3d_Structure)::DownCast(This ());
-//  myCurrentGroup = new Graphic3d_Group(myStruct);
+  Graphic3d_MaterialAspect aMat (Graphic3d_NOM_BRASS);
+  Quantity_Color aColor = aMat.AmbientColor();
+  // It is necessary to set default polygon offsets for a new presentation
+  Handle(Graphic3d_AspectFillArea3d) aDefAspect =
+    new Graphic3d_AspectFillArea3d (Aspect_IS_SOLID,
+                                    aColor,
+                                    aColor,
+                                    Aspect_TOL_SOLID,
+                                    1.0,
+                                    Graphic3d_NOM_BRASS,
+                                    Graphic3d_NOM_BRASS);
+  aDefAspect->SetPolygonOffsets (Aspect_POM_Fill, 1.0f, 0.0f);
+  SetPrimitivesAspect (aDefAspect);
+}
+
+//=======================================================================
+//function : Prs3d_Presentation
+//purpose  :
+//=======================================================================
+Prs3d_Presentation::Prs3d_Presentation (const Handle(Graphic3d_StructureManager)& theViewer,
+                                        const Handle(Prs3d_Presentation)&         thePrs)
+: Graphic3d_Structure (theViewer, thePrs)
+{
+  Graphic3d_MaterialAspect aMat (Graphic3d_NOM_BRASS);
+  Quantity_Color aColor = aMat.AmbientColor();
+  // It is necessary to set default polygon offsets for a new presentation
+  Handle(Graphic3d_AspectFillArea3d) aDefAspect =
+    new Graphic3d_AspectFillArea3d (Aspect_IS_SOLID,
+                                    aColor,
+                                    aColor,
+                                    Aspect_TOL_SOLID,
+                                    1.0,
+                                    Graphic3d_NOM_BRASS,
+                                    Graphic3d_NOM_BRASS);
+  aDefAspect->SetPolygonOffsets (Aspect_POM_Fill, 1.0f, 0.0f);
+  SetPrimitivesAspect (aDefAspect);
 }
 
 //=======================================================================

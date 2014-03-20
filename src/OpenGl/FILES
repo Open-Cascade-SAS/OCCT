@@ -38,7 +38,6 @@ Handle_OpenGl_Workspace.hxx
 OpenGl_Workspace.hxx
 OpenGl_Workspace.cxx
 OpenGl_Workspace_2.cxx
-OpenGl_Workspace_3.cxx
 OpenGl_Workspace_5.cxx
 Handle_OpenGl_View.hxx
 OpenGl_View.hxx

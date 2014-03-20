@@ -151,6 +151,14 @@ is
         --            all the views of the Viewer are exposed, as for
         --           example in a global DeIconification.
 
+        RedrawImmediate ( me );
+        ---Level: Public
+        ---Purpose: Updates layer of immediate presentations.
+
+        Invalidate ( me );
+        ---Level: Public
+        ---Purpose: Invalidates viewer content but does not redraw it.
+
         Remove (me:mutable);
         ---Level: Public
         ---Purpose: Suppresses the Viewer.
@@ -624,11 +632,16 @@ is
         IsActive(me; aView: View from V3d)
         returns Boolean from Standard is private;
 
-        ShowGridEcho(me : mutable;
-                        aView: View from V3d;
-                        aPoint: Vertex from Graphic3d) is private;
+        ShowGridEcho (me       : mutable;
+                      theView  : View   from V3d;
+                      thePoint : Vertex from Graphic3d);
         ---Purpose:
         -- Display grid echo at requested point in the view.
+
+        HideGridEcho (me      : mutable;
+                      theView : View from V3d);
+        ---Purpose:
+        -- Temporarly hide grid echo.
 
         AddZLayer ( me : mutable;
                     theLayerId : in out Integer from Standard )
@@ -708,6 +721,7 @@ fields
         myGridEchoStructure: Structure from Graphic3d;
         myGridEchoGroup: Group from Graphic3d;
         myGridEchoAspect : AspectMarker3d from Graphic3d;
+        myGridEchoLastVert : Vertex from Graphic3d;
 friends
 
         class View from V3d,

@@ -116,12 +116,15 @@ public:
                const Aspect_CLayer2d& theCUnderLayer,
                const Aspect_CLayer2d& theCOverLayer);
 
-  //! Deprecated. Simply calls Redraw().
-  void Update (const Graphic3d_CView& theCView,
-               const Aspect_CLayer2d& theCUnderLayer,
-               const Aspect_CLayer2d& theCOverLayer)
+  Standard_Boolean SetImmediateModeDrawToFront (const Standard_Boolean theDrawToFrontBuffer);
+  void RedrawImmediate (const Graphic3d_CView& theCView,
+                        const Aspect_CLayer2d& theCUnderLayer,
+                        const Aspect_CLayer2d& theCOverLayer,
+                        const Standard_Boolean theToForce = Standard_False);
+
+  void Invalidate (const Graphic3d_CView& /*theCView*/)
   {
-    Redraw (theCView, theCUnderLayer, theCOverLayer);
+    myBackBufferRestored = Standard_False;
   }
 
   //! Special method to perform printing.
@@ -142,18 +145,6 @@ public:
   }
 
   void DisplayCallback (const Graphic3d_CView& theCView, int theReason);
-
-  Standard_Boolean SetImmediateModeDrawToFront (const Standard_Boolean theDrawToFrontBuffer);
-  Standard_Boolean BeginAddMode();
-  void EndAddMode();
-  void ClearImmediatMode (const Graphic3d_CView& theCView,
-                          const Standard_Boolean theToFlush);
-  void RedrawImmediatMode();
-  Standard_Boolean BeginImmediatMode (const Graphic3d_CView& theCView,
-                                      const Standard_Boolean theUseDepthTest,
-                                      const Standard_Boolean theRetainMode);
-  void EndImmediatMode();
-  void DrawStructure (const OpenGl_Structure* theStructure);
 
   Graphic3d_PtrFrameBuffer FBOCreate (const Standard_Integer theWidth, const Standard_Integer theHeight);
   void FBORelease (Graphic3d_PtrFrameBuffer theFBOPtr);
@@ -227,15 +218,15 @@ public:
 
 protected:
 
-  void CopyBuffers (const Standard_Boolean theFrontToBack);
+  //! Copy content of Back buffer to the Front buffer
+  void copyBackToFront();
 
   virtual Standard_Boolean Activate();
 
-  // TEMPORARY!!!
-  void Redraw1 (const Graphic3d_CView& theCView,
+  void redraw1 (const Graphic3d_CView& theCView,
                 const Aspect_CLayer2d& theCUnderLayer,
                 const Aspect_CLayer2d& theCOverLayer,
-                const int theToSwap);
+                const int              theToSwap);
 
   void updateMaterial (const int theFlag);
 
@@ -423,17 +414,13 @@ protected: //! @name protected fields
 
   Handle(OpenGl_PrinterContext) myPrintContext;
   Handle(OpenGl_View)    myView;            // WSViews - now just one view is supported
-  Standard_Boolean       myIsTransientOpen; // transientOpen
-  Standard_Boolean       myRetainMode;
   Standard_Boolean       myTransientDrawToFront; //!< optimization flag for immediate mode (to render directly to the front buffer)
-
-  NCollection_Sequence<const OpenGl_Structure*> myTransientList;
-
+  Standard_Boolean       myBackBufferRestored;
+  Standard_Boolean       myIsImmediateDrawn;     //!< flag indicates that immediate mode buffer contains some data
   Standard_Boolean       myUseTransparency;
   Standard_Boolean       myUseZBuffer;
   Standard_Boolean       myUseDepthTest;
   Standard_Boolean       myUseGLLight;
-  Standard_Boolean       myBackBufferRestored;
 
 protected: //! @name fields related to status
 

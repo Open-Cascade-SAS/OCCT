@@ -14,200 +14,285 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-deferred class PresentationManager from PrsMgr  
+class PresentationManager from PrsMgr
 inherits TShared from MMgt
 
-    	---Purpose: This class represents any kind of entity able to collect
-    	--          representations of an object, to show or erase them.
-    	--          Example: StructureManager from Graphic3d
-    	--                   View from Graphic2d
+  ---Purpose: A framework to manage 3D displays, graphic entities and their updates.
+  -- Used in the AIS package (Application Interactive Services), to enable the advanced user to define the
+  -- default display mode of a new interactive object which extends the list of signatures and types.
+  -- Definition of new display types is handled by calling the presentation algorithms provided by the StdPrs package.
 
 uses 
-    Presentation from PrsMgr,
-    PresentableObject from PrsMgr,
-    View from V3d,
-    ListOfTransient from TColStd
-    
 
-raises 
-    NoSuchObject from Standard
+  StructureManager    from Graphic3d,
+  PresentableObject   from PrsMgr,
+  ListOfPresentations from PrsMgr,
+  Length,NameOfColor  from Quantity,
+  Transformation      from Geom,
+  NameOfMaterial      from Graphic3d,
+  Presentation        from PrsMgr,
+  Presentation3d      from PrsMgr,
+  View                from V3d,
+  ShadingAspect       from Prs3d,
+  Presentation        from Prs3d
+
+raises
+
+  NoSuchObject from Standard
+
 is
 
-    Initialize;
+  Create (theStructureManager : StructureManager from Graphic3d)
+  returns mutable PresentationManager from PrsMgr;
+  ---Purpose:
+  -- Creates a framework to manage displays and graphic entities with the 3D view theStructureManager.
 
-    Is3D(me) returns Boolean from Standard is deferred;
+  Display (me           : mutable;
+           thePrsObject : mutable PresentableObject from PrsMgr;
+           theMode      : Integer from Standard = 0)
+  ---Purpose: Displays the presentation of the object in the given Presentation manager with the given mode.
+  --          The mode should be enumerated by the object which inherits PresentableObject.
+  is static;
 
-    Display(me: mutable; aPresentableObject: mutable PresentableObject from PrsMgr;
-                aMode: Integer from Standard = 0)
-    	---Purpose: Displays the presentation of the object in the given
-    	--          Presentation manager with the given mode.
-    	--          The mode should be enumerated by the object which
-    	--          inherits PresentableObject.
-    is static;
-    
-    Erase(me:mutable; aPresentableObject: PresentableObject from PrsMgr;
-                aMode: Integer from Standard = 0)
-    	---Level: public
-    	---Purpose: erases the presentation of the object in the given
-    	--          Presentation manager with the given mode.
-    is static;
+  Erase (me           : mutable;
+         thePrsObject : PresentableObject from PrsMgr;
+         theMode      : Integer from Standard = 0)
+  ---Level: public
+  ---Purpose: erases the presentation of the object in the given
+  --          Presentation manager with the given mode.
+  is static;
 
-    Clear(me:mutable; aPresentableObject: PresentableObject from PrsMgr;
-                aMode: Integer from Standard = 0)
-    is virtual;
-	---Purpose:
-	-- Clears the presentation of the presentable object
-	-- aPresentableObject in this framework with the
-	-- display mode aMode.
+  Clear (me           : mutable;
+         thePrsObject : PresentableObject from PrsMgr;
+         theMode      : Integer from Standard = 0)
+  is virtual;
+  ---Purpose:
+  -- Clears the presentation of the presentable object thePrsObject in this framework with the display mode theMode.
 
-    SetVisibility (me: mutable; thePresentableObject: PresentableObject from PrsMgr;
-                   theMode: Integer from Standard;
-                   theValue: Boolean from Standard);
-    ---Purpose: Sets the visibility of presentable object.
+  SetVisibility (me           : mutable;
+                 thePrsObject : PresentableObject from PrsMgr;
+                 theMode      : Integer from Standard;
+                 theValue     : Boolean from Standard);
+  ---Purpose: Sets the visibility of presentable object.
 
-    Highlight(me: mutable; aPresentableObject: mutable PresentableObject from PrsMgr;
-                  aMode: Integer from Standard = 0)
-	---Purpose: Highlights the presentation of the presentable object
-	-- aPresentableObject in this framework with the display mode aMode.
-    is static;
-    
-    Unhighlight(me:mutable; aPresentableObject: PresentableObject from PrsMgr;
-                aMode: Integer from Standard = 0)
-        ---Purpose: Removes highlighting from the presentation of the
-	-- presentable object aPresentableObject in this
-	-- framework with the display mode aMode.
-    is static;
+  Highlight (me           : mutable;
+             thePrsObject : mutable PresentableObject from PrsMgr;
+             theMode      : Integer from Standard = 0)
+  ---Purpose: Highlights the presentation of the presentable object
+  -- thePrsObject in this framework with the display mode theMode.
+  is static;
 
-    SetDisplayPriority(me;aPresentableObject: PresentableObject from PrsMgr; 
-    	    	    	  amode:Integer from Standard;
-    	    	          aNewPrior:Integer from Standard);
-	---Purpose:
-	-- Sets the display priority aNewPrior   of the
-	-- presentable object aPresentableObject in this
-	-- framework with the display mode aMode.
-        
-    DisplayPriority(me;aPresentableObject: PresentableObject from PrsMgr; 
-    	    	    	  amode:Integer from Standard)
-    returns Integer from Standard;
-	---Purpose:
-	-- Returns the display priority of the presentable object
-	-- aPresentableObject in this framework with the
-	-- display mode aMode.
-    
-    SetZLayer ( me                   : mutable;
-                thePresentableObject : PresentableObject from PrsMgr;
-                theLayerId           : Integer from Standard )
-      is static;
-    ---Purpose: Set Z layer ID for all presentations of the object.
+  Unhighlight (me           : mutable;
+               thePrsObject : PresentableObject from PrsMgr;
+               theMode      : Integer from Standard = 0)
+  ---Purpose: Removes highlighting from the presentation of the
+  -- presentable object thePrsObject in this framework with the display mode theMode.
+  is static;
 
-    GetZLayer ( me;
-                thePresentableObject : PresentableObject from PrsMgr )
-      returns Integer from Standard is static;
-    ---Purpose: Get Z layer ID assigned to all presentations of the object.
-    -- Method returns -1 value if object has no presentations and is
-    -- impossible to get layer index.
-    
-    IsDisplayed(me;aPresentableObject: PresentableObject from PrsMgr;
-                aMode: Integer from Standard = 0) 
-        ---Purpose: Returns true if the presentation of the presentable
-	-- object aPresentableObject in this framework with the
-	-- display mode aMode is displayed.
-    returns Boolean from Standard
-    is static;
+  SetDisplayPriority (me;
+                      thePrsObject : PresentableObject from PrsMgr;
+                      theMode      : Integer from Standard;
+                      theNewPrior  : Integer from Standard);
+  ---Purpose:
+  -- Sets the display priority theNewPrior of the
+  -- presentable object thePrsObject in this framework with the display mode theMode.
 
-    IsHighlighted(me;aPresentableObject: PresentableObject from PrsMgr;
-                aMode: Integer from Standard = 0) 
-        ---Purpose: Returns true if the presentation of the presentable
-	-- object aPresentableObject in this framework with the
-	-- display mode aMode is highlighted.
-    returns Boolean from Standard
-    is static;
+  DisplayPriority (me;
+                   thePrsObject : PresentableObject from PrsMgr;
+                   theMode      : Integer from Standard)
+  returns Integer from Standard;
+  ---Purpose:
+  -- Returns the display priority of the presentable object
+  -- thePrsObject in this framework with the display mode theMode.
 
+  SetZLayer (me           : mutable;
+             thePrsObject : PresentableObject from PrsMgr;
+             theLayerId   : Integer from Standard)
+  is static;
+  ---Purpose: Set Z layer ID for all presentations of the object.
 
-    Update(me; aPresentableObject: PresentableObject from PrsMgr;
-    	      aMode: Integer from Standard = 0)
-        ---Purpose: Updates the presentation of the presentable object
-        -- aPresentableObject in this framework with the display mode aMode.
-    is static;
-    
-    	---Category: Immediate display methods.
+  GetZLayer (me;
+             thePrsObject : PresentableObject from PrsMgr)
+  returns Integer from Standard is static;
+  ---Purpose: Get Z layer ID assigned to all presentations of the object.
+  -- Method returns -1 value if object has no presentations and is
+  -- impossible to get layer index.
 
-    BeginDraw(me: mutable) is virtual;
-        ---Purpose: initializes the list of Prs to be displayed in transient mode
+  IsDisplayed (me;
+               thePrsObject : PresentableObject from PrsMgr;
+               theMode: Integer from Standard = 0)
+  --Purpose: Returns true if the presentation of the presentable
+  -- object thePrsObject in this framework with the display mode theMode is displayed.
+  returns Boolean from Standard
+  is static;
 
-    Add(me: mutable ; aPresentableObject: PresentableObject from PrsMgr;
-    	    	      aMode: Integer from Standard = 0);
-        ---Purpose: Performs an iteration of the transient objects to look
-	-- for the presentable objects with the display mode aMode.
-	-- Appends the presentation of the presentable object
-	-- aPresentableObject with the mode aMode to the list
-	-- of objects in immediate mode.
+  IsHighlighted (me;
+                 thePrsObject : PresentableObject from PrsMgr;
+                 theMode: Integer from Standard = 0)
+  ---Purpose: Returns true if the presentation of the presentable
+  -- object thePrsObject in this framework with the display mode theMode is highlighted.
+  returns Boolean from Standard
+  is static;
 
-    Remove(me: mutable ; aPresentableObject: PresentableObject from PrsMgr;
-    	    	      aMode: Integer from Standard = 0);
-        ---Purpose: Performs an iteration of the transient objects to look
-	-- for the presentable objects with the display mode aMode.
-	-- Removes the presentation of the presentable object
-	-- aPresentableObject with the mode aMode from the
-	-- list of objects in immediate mode.
+  Update (me;
+          thePrsObject : PresentableObject from PrsMgr;
+          theMode      : Integer from Standard = 0)
+  ---Purpose: Updates the presentation of the presentable object
+  -- thePrsObject in this framework with the display mode theMode.
+  is static;
 
-    EndDraw(me: mutable; aView: View from V3d; DoubleBuffer: Boolean from Standard = Standard_False)
-        ---Purpose:  Allows rapid drawing of the view aView by avoiding
-	-- an update of the whole background. If DoubleBuffer
-	-- is true, the background is drawn.
-    is deferred;
+---Category: Immediate display methods.
 
-    IsImmediateModeOn(me) returns Boolean from Standard;
-        ---C++: inline
-        ---Purpose: Returns true if immediate (transient) mode is on.
+  BeginImmediateDraw (me : mutable);
+  ---Purpose: Resets the transient list of presentations previously displayed in immediate mode
+  -- and begins accumulation of new list by following AddToImmediateList()/Color()/Highlight() calls.
 
+  ClearImmediateDraw (me : mutable);
+  ---Purpose: Resets the transient list of presentations previously displayed in immediate mode.
 
+  AddToImmediateList (me     : mutable;
+                      thePrs : Presentation from Prs3d);
+  ---Purpose: Stores thePrs in the transient list of presentations to be displayed in immediate mode.
+  -- Will be taken in account in EndImmediateDraw method.
 
-           ---Category: Private & deferred methods.
-           
-    HasPresentation (me;
-                    aPresentableObject: PresentableObject from PrsMgr;
-		    aMode: Integer from Standard = 0)
-    returns Boolean from Standard
-    is static;
-    	---Purpose: Returns true if there is a presentation of the
-    	-- presentable object aPresentableObject in this
-    	-- framework, aPresentableObject having the display mode aMode.
-        
-    Presentation (me;
-                    aPresentableObject: PresentableObject from PrsMgr;
-		    aMode: Integer from Standard = 0)
-    returns mutable Presentation from PrsMgr 
-    raises NoSuchObject from Standard
-    is static;
-    	---Purpose: Returns the presentation Presentation of the
-    	-- presentable object aPresentableObject in this
-    	-- framework. aPresentableObject has the display mode aMode.
-        
-    AddPresentation(me: mutable;
-                    aPresentableObject: PresentableObject from PrsMgr;
-		    aMode: Integer from Standard = 0)
-	---Purpose: Adds a presentation of the presentable object
-    	-- aPresentableObject to this framework.
-    	-- aPresentableObject has the display mode aMode.
-    is protected;
+  EndImmediateDraw (me      : mutable;
+                    theView : View from V3d);
+  ---Purpose: Allows rapid drawing of the view theView by avoiding an update of the whole background.
 
-    RemovePresentation(me: mutable;
-                       aPresentableObject: PresentableObject from PrsMgr;
-		       aMode: Integer from Standard = 0)
-	---Purpose: Removes a presentation of the presentable object
-    	-- aPresentableObject to this framework.
-    	-- aPresentableObject has the display mode aMode.
-    is protected;
+  IsImmediateModeOn (me) returns Boolean from Standard;
+  ---C++: inline
+  ---Purpose: Returns true if Presentation Manager is accumulating transient list of presentations to be displayed in immediate mode.
 
-    newPresentation(me: mutable; aPresentableObject: PresentableObject from PrsMgr)
-    returns mutable Presentation from PrsMgr
-	---Level: Internal 
-    	---Purpose: Creates a new presentation in the presentation manager.
-    is deferred private;
+---Category: Hilighting methods.
+
+  Color (me           : mutable;
+         thePrsObject : mutable PresentableObject from PrsMgr;
+         theColor     : NameOfColor from Quantity = Quantity_NOC_YELLOW;
+         theMode      : Integer from Standard = 0)
+  ---Purpose: Highlights the graphic object thePrsObject in the color theColor.
+  -- thePrsObject has the display mode theMode;
+  -- this has the default value of 0, that is, the wireframe display mode.
+  is static;
+
+  BoundBox (me           : mutable;
+            thePrsObject : mutable PresentableObject from PrsMgr;
+            theMode      : Integer from Standard = 0)
+  ---Purpose: highlights the boundbox of the presentation
+  is static;
+
+---Category: references to other presentation.
+
+  Connect (me             : mutable;
+           thePrsObject   : PresentableObject from PrsMgr;
+           theOtherObject : mutable PresentableObject from PrsMgr;
+           theMode        : Integer from Standard = 0;
+           theOtherMode   : Integer from Standard = 0)
+  is static;
+
+---Category: Transformation methods.
+
+  Transform (me                : mutable;
+             thePrsObject      : PresentableObject from PrsMgr;
+             theTransformation : Transformation from Geom;
+             theMode           : Integer from Standard = 0)
+  ---Purpose:
+  -- Sets the transformation theTransformation for the presentable object thePrsObject.
+  -- thePrsObject has the display mode theMode; this has the default value of 0, that is, the wireframe display mode.
+  is static;
+
+  Place (me           : mutable;
+         thePrsObject : PresentableObject from PrsMgr;
+         X, Y, Z      : Length from Quantity;
+         theMode      : Integer from Standard = 0)
+  ---Purpose:
+  -- Sets a position to move the presentable object
+  -- aPresentableObject to. This position is defined by the
+  -- lengths along the x, y and z axes: X, Y and Z respectively.
+  -- aPresentableObject has the display mode aMode;
+  -- this has the default value of 0, that is, the wireframe display mode.
+  is static;
+
+  Multiply  (me                : mutable;
+             thePrsObject      : PresentableObject from PrsMgr;
+             theTransformation : Transformation from Geom;
+             theMode           : Integer from Standard = 0)
+  ---Purpose:
+  -- Defines the transformation theTransformation for the presentable object thePrsObject.
+  -- thePrsObject has the display mode aMode; this has the default value of 0, that is, the wireframe display mode.
+  is static;
+
+  Move (me           : mutable;
+        thePrsObject : PresentableObject from PrsMgr;
+        X, Y, Z      : Length from Quantity;
+        theMode      : Integer from Standard = 0)
+  ---Purpose:
+  -- Sets a position to move the presentable object thePrsObject to. This position is defined by the lengths along the x, y and z axes: X, Y and Z respectively.
+  -- thePrsObject has the display mode aMode; this has the default value of 0, that is, the wireframe display mode.
+  is static;
+
+  StructureManager (me) returns mutable StructureManager from Graphic3d
+  is static;
+  ---C++: inline
+  ---C++: return const&
+  ---Purpose: Returns the structure manager.
+
+  SetShadingAspect (me           : mutable;
+                    thePrsObject : PresentableObject from PrsMgr;
+                    theColor     : NameOfColor from Quantity;
+                    theMaterial  : NameOfMaterial from Graphic3d;
+                    theMode      : Integer from Standard = 0)
+  ---Purpose: this method will change the color and the aspect of the presentations containing shaded structures.
+  is static;
+
+  SetShadingAspect (me               : mutable;
+                    thePrsObject     : PresentableObject from PrsMgr;
+                    theShadingAspect : ShadingAspect from Prs3d;
+                    theMode          : Integer from Standard = 0)
+  ---Purpose: this method will change the color and the aspect of the presentations containing shaded structures.
+  is static;
+
+  CastPresentation (me;
+                    thePrsObject : PresentableObject from PrsMgr;
+                    theMode      : Integer from Standard = 0)
+  returns mutable Presentation3d from PrsMgr
+  is static;
+
+---Category: Private & deferred methods.
+
+  HasPresentation (me;
+                   thePrsObject : PresentableObject from PrsMgr;
+                   theMode      : Integer from Standard = 0)
+  returns Boolean from Standard
+  is static;
+  ---Purpose: Returns true if there is a presentation of the
+  -- presentable object thePrsObject in this framework, thePrsObject having the display mode theMode.
+
+  Presentation (me;
+                thePrsObject : PresentableObject from PrsMgr;
+                theMode      : Integer from Standard = 0)
+  returns mutable Presentation from PrsMgr
+  raises NoSuchObject from Standard
+  is static;
+  ---Purpose: Returns the presentation Presentation of the presentable object thePrsObject in this framework. thePrsObject has the display mode theMode.
+
+  AddPresentation (me           : mutable;
+                   thePrsObject : PresentableObject from PrsMgr;
+                   theMode      : Integer from Standard = 0)
+  ---Purpose: Adds a presentation of the presentable object thePrsObject to this framework.
+  -- thePrsObject has the display mode theMode.
+  is protected;
+
+  RemovePresentation (me           : mutable;
+                      thePrsObject : PresentableObject from PrsMgr;
+                      theMode      : Integer from Standard = 0)
+  ---Purpose: Removes a presentation of the presentable object thePrsObject to this framework. thePrsObject has the display mode theMode.
+  is protected;
 
 fields
-    myImmediateMode: Boolean from Standard is protected;
-    myImmediateList: ListOfTransient from TColStd is protected;
-    
+
+  myStructureManager : StructureManager    from Graphic3d is protected;
+  myImmediateModeOn  : Integer             from Standard  is protected;
+  myImmediateList    : ListOfPresentations from PrsMgr    is protected;
+  myImmediateView    : View                from V3d       is protected;
+
 end PresentationManager from PrsMgr;

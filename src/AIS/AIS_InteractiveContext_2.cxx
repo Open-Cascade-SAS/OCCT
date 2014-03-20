@@ -773,82 +773,71 @@ Standard_Integer AIS_InteractiveContext::PurgeViewer(const Handle(V3d_Viewer)& V
   return NbCleared;
 }
 
-
 //=======================================================================
 //function : IsImmediateModeOn
-//purpose  : 
+//purpose  :
 //=======================================================================
+
 Standard_Boolean AIS_InteractiveContext::IsImmediateModeOn()  const 
 {
   if(!HasOpenedContext()) return Standard_False;
   return myLocalContexts(myCurLocalIndex)->IsImmediateModeOn();
 }
 
-Standard_Boolean  AIS_InteractiveContext::BeginImmediateDraw()
+//=======================================================================
+//function : BeginImmediateDraw
+//purpose  :
+//=======================================================================
+
+Standard_Boolean AIS_InteractiveContext::BeginImmediateDraw()
 {
-  if(HasOpenedContext())
-    return myLocalContexts(myCurLocalIndex)->BeginImmediateDraw();
-  return Standard_False;
+  return HasOpenedContext()
+      && myLocalContexts (myCurLocalIndex)->BeginImmediateDraw();
 }
 
 //=======================================================================
 //function : ImmediateAdd
-//purpose  : 
+//purpose  :
 //=======================================================================
 
-Standard_Boolean AIS_InteractiveContext::ImmediateAdd(const Handle(AIS_InteractiveObject)& anIObj,
-                                                      const Standard_Integer AMode)
-{ 
-  if(HasOpenedContext()){
-    return myLocalContexts(myCurLocalIndex)->ImmediateAdd(anIObj,AMode);}
-  return Standard_False;
-}
-
-//=======================================================================
-//function : ImmediateRemove
-//purpose  : 
-//=======================================================================
-
-Standard_Boolean AIS_InteractiveContext::ImmediateRemove(const Handle(AIS_InteractiveObject)& anIObj,
-                                                         const Standard_Integer aMode)
+Standard_Boolean AIS_InteractiveContext::ImmediateAdd (const Handle(AIS_InteractiveObject)& theObj,
+                                                       const Standard_Integer               theMode)
 {
-  if(HasOpenedContext())
-    return myLocalContexts(myCurLocalIndex)->ImmediateRemove(anIObj,aMode);
-  return Standard_False;
+  return HasOpenedContext()
+      && myLocalContexts (myCurLocalIndex)->ImmediateAdd (theObj, theMode);
 }
 
 //=======================================================================
 //function : EndImmediateDraw
-//purpose  : 
+//purpose  :
 //=======================================================================
 
-Standard_Boolean AIS_InteractiveContext::EndImmediateDraw(const Handle(V3d_View)& aView,
-                                                          const Standard_Boolean DoubleBuf)
+Standard_Boolean AIS_InteractiveContext::EndImmediateDraw (const Handle(V3d_View)& theView)
 {
-  if(HasOpenedContext())
-    return myLocalContexts(myCurLocalIndex)->EndImmediateDraw(aView,DoubleBuf);
-  return Standard_False;
-  
+  return HasOpenedContext()
+      && myLocalContexts (myCurLocalIndex)->EndImmediateDraw (theView);
 }
 
 //=======================================================================
 //function : EndImmediateDraw
-//purpose  : 
+//purpose  :
 //=======================================================================
 
-Standard_Boolean AIS_InteractiveContext::EndImmediateDraw(const Standard_Boolean DoubleBuf)
+Standard_Boolean AIS_InteractiveContext::EndImmediateDraw()
 {
-  if(HasOpenedContext()){
-    Handle(V3d_View) V ;
-    myMainVwr->InitActiveViews();
-    if(myMainVwr->MoreActiveViews()){
-      V = myMainVwr->ActiveView();
-      
-      return myLocalContexts(myCurLocalIndex)->EndImmediateDraw(V,DoubleBuf);
-    }
+  if (!HasOpenedContext())
+  {
+    return Standard_False;
   }
-  return Standard_False;
-  
+
+  myMainVwr->InitActiveViews();
+  if (!myMainVwr->MoreActiveViews())
+  {
+    return Standard_False;
+  }
+
+  Handle(V3d_View) aView = myMainVwr->ActiveView();
+  return myLocalContexts (myCurLocalIndex)->EndImmediateDraw (aView);
 }
 
 

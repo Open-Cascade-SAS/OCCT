@@ -40,7 +40,6 @@ class gp_Pnt;
 class TopoDS_Edge;
 class TopoDS_Shape;
 class Geom_Plane;
-class PrsMgr_PresentationManager3d;
 class Prs3d_Presentation;
 class Prs3d_Projector;
 class Geom_Transformation;

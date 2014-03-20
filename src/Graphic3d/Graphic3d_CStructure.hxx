@@ -73,6 +73,9 @@ public:
   //! Highlight structure using boundary box
   virtual void HighlightWithBndBox (const Standard_Boolean theToCreate) = 0;
 
+  //! Create shadow link to this structure
+  virtual Handle(Graphic3d_CStructure) ShadowLink (const Handle(Graphic3d_StructureManager)& theManager) const = 0;
+
 public:
 
   int   Id;

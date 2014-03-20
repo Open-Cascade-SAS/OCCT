@@ -132,6 +132,13 @@ public: // Methods for graphical structures
   Standard_EXPORT void RemoveStructure (Handle(Graphic3d_CStructure)& theCStructure);
   Standard_EXPORT Handle(Graphic3d_CStructure) Structure (const Handle(Graphic3d_StructureManager)& theManager);
 
+  Standard_EXPORT Standard_Boolean SetImmediateModeDrawToFront (const Graphic3d_CView& theCView,
+                                                                const Standard_Boolean theDrawToFrontBuffer);
+  Standard_EXPORT void DisplayImmediateStructure (const Graphic3d_CView&      theCView,
+                                                  const Graphic3d_CStructure& theCStructure);
+  Standard_EXPORT void EraseImmediateStructure (const Graphic3d_CView&      theCView,
+                                                const Graphic3d_CStructure& theCStructure);
+
 public:
 
   Standard_EXPORT void ActivateView (const Graphic3d_CView& ACView);
@@ -145,14 +152,23 @@ public:
   Standard_EXPORT void DeactivateView (const Graphic3d_CView& ACView);
   Standard_EXPORT void DepthCueing (const Graphic3d_CView& ACView, const Standard_Boolean AFlag);
   Standard_EXPORT void RatioWindow (const Graphic3d_CView& ACView);
-  Standard_EXPORT void Redraw (const Graphic3d_CView& ACView, const Aspect_CLayer2d& ACUnderLayer, const Aspect_CLayer2d& ACOverLayer, const Standard_Integer x = 0, const Standard_Integer y = 0, const Standard_Integer width = 0, const Standard_Integer height = 0);
+  Standard_EXPORT void Redraw (const Graphic3d_CView& theCView,
+                               const Aspect_CLayer2d& theCUnderLayer,
+                               const Aspect_CLayer2d& theCOverLayer,
+                               const Standard_Integer theX = 0,
+                               const Standard_Integer theY = 0,
+                               const Standard_Integer theWidth  = 0,
+                               const Standard_Integer theHeight = 0);
+  Standard_EXPORT void RedrawImmediate (const Graphic3d_CView& theCView,
+                                        const Aspect_CLayer2d& theCUnderLayer,
+                                        const Aspect_CLayer2d& theCOverLayer);
+  Standard_EXPORT void Invalidate (const Graphic3d_CView& theCView);
   Standard_EXPORT void RemoveView (const Graphic3d_CView& ACView);
   Standard_EXPORT void SetLight (const Graphic3d_CView& ACView);
   Standard_EXPORT void SetClipPlanes (const Graphic3d_CView& theCView);
   Standard_EXPORT void SetCamera (const Graphic3d_CView& theCView);
   Standard_EXPORT void SetVisualisation (const Graphic3d_CView& ACView);
   Standard_EXPORT void Transparency (const Graphic3d_CView& ACView, const Standard_Boolean AFlag);
-  Standard_EXPORT void Update (const Graphic3d_CView& ACView, const Aspect_CLayer2d& ACUnderLayer, const Aspect_CLayer2d& ACOverLayer);
   Standard_EXPORT Standard_Boolean View (Graphic3d_CView& ACView);
   Standard_EXPORT void Environment (const Graphic3d_CView& ACView);
   Standard_EXPORT void SetStencilTestOptions (const Graphic3d_CGroup& theCGroup, const Standard_Boolean theIsEnabled);
@@ -169,14 +185,6 @@ public:
   Standard_EXPORT void GraduatedTrihedronDisplay (const Graphic3d_CView& view, const Graphic3d_CGraduatedTrihedron& cubic);
   Standard_EXPORT void GraduatedTrihedronErase (const Graphic3d_CView& view);
   Standard_EXPORT void GraduatedTrihedronMinMaxValues (const Standard_ShortReal xmin, const Standard_ShortReal ymin, const Standard_ShortReal zmin, const Standard_ShortReal xmax, const Standard_ShortReal ymax, const Standard_ShortReal zmax);
-  Standard_EXPORT Standard_Boolean SetImmediateModeDrawToFront (const Graphic3d_CView& theCView,
-                                                                const Standard_Boolean theDrawToFrontBuffer);
-  Standard_EXPORT Standard_Boolean BeginAddMode (const Graphic3d_CView& ACView);
-  Standard_EXPORT void EndAddMode ();
-  Standard_EXPORT Standard_Boolean BeginImmediatMode(const Graphic3d_CView& ACView, const Aspect_CLayer2d& ACUnderLayer, const Aspect_CLayer2d& ACOverLayer, const Standard_Boolean DoubleBuffer, const Standard_Boolean RetainMode);
-  Standard_EXPORT void ClearImmediatMode (const Graphic3d_CView& ACView,const Standard_Boolean aFlush = Standard_True);
-  Standard_EXPORT void DrawStructure (const Graphic3d_CStructure& ACStructure);
-  Standard_EXPORT void EndImmediatMode (const Standard_Integer Synchronize);
   Standard_EXPORT void Layer (Aspect_CLayer2d& ACLayer);
   Standard_EXPORT void RemoveLayer (const Aspect_CLayer2d& ACLayer);
   Standard_EXPORT void BeginLayer (const Aspect_CLayer2d& ACLayer);
@@ -339,7 +347,6 @@ private:
   NCollection_DataMap<Standard_Integer, Handle(OpenGl_View)>      myMapOfView;
   NCollection_DataMap<Standard_Integer, Handle(OpenGl_Workspace)> myMapOfWS;
   NCollection_DataMap<Standard_Integer, OpenGl_Structure*>        myMapOfStructure;
-  Handle(OpenGl_Workspace)                                        myImmediateWS;
   mutable Handle(OpenGl_PrinterContext)                           myPrintContext;
   OpenGl_UserDrawCallback_t                                       myUserDrawCallback;
   OpenGl_Text*                                                    myTempText;         //!< variable for compatibility (drawing text in layers)

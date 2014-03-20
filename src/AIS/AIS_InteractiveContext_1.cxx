@@ -21,12 +21,6 @@
 
 #define BUC60814	//GG_300101	Idem UKI60826
 
-#define IMP150501       //GG_150501     CADPAK_V2 Add Drag() method
-
-#define IMP160701   	//ZSV  Add InitDetected(),MoreDetected(),NextDetected(),
-//                       DetectedCurrentShape(),DetectedCurrentObject()
-//                       methods
-
 #define OCC138          //VTN Avoding infinit loop in AddOrRemoveCurrentObject method.
 
 #define OCC9657
@@ -42,6 +36,8 @@
 #include <AIS_GlobalStatus.hxx>
 #include <AIS_Shape.hxx>
 
+#include <Aspect_Grid.hxx>
+
 #include <V3d_Light.hxx>
 #include <V3d_PositionalLight.hxx>
 #include <V3d_SpotLight.hxx>
@@ -52,10 +48,7 @@
 #include <SelectMgr_Selection.hxx>
 #include <SelectBasics_SensitiveEntity.hxx>
 
-#ifdef IMP150501
-#include <Visual3d_TransientManager.hxx>
 #include <Prs3d_Presentation.hxx>
-#endif
 
 #ifdef OCC9657
 #include <AIS_MapOfInteractive.hxx>
@@ -128,81 +121,66 @@ static void InfoOnLight(const Handle(V3d_View) aView)
 }
 #endif
 */
+
 //=======================================================================
 //function : MoveTo
-//purpose  : 
+//purpose  :
 //=======================================================================
-
-AIS_StatusOfDetection AIS_InteractiveContext::MoveTo(const Standard_Integer XPix, 
-				   const Standard_Integer YPix, 
-				   const Handle(V3d_View)& aView)
+AIS_StatusOfDetection AIS_InteractiveContext::MoveTo (const Standard_Integer  theXPix,
+                                                      const Standard_Integer  theYPix,
+                                                      const Handle(V3d_View)& theView,
+                                                      const Standard_Boolean  theToRedrawOnUpdate)
 {
-  if(HasOpenedContext()){
+  if (HasOpenedContext())
+  {
     myWasLastMain = Standard_True;
-    return myLocalContexts(myCurLocalIndex)->MoveTo(XPix,YPix,aView);
+    return myLocalContexts (myCurLocalIndex)->MoveTo (theXPix, theYPix, theView, theToRedrawOnUpdate);
   }
 
-#ifdef IMP160701
-    //Nullify class members storing information about detected AIS objects.
   myAISCurDetected = 0;
   myAISDetectedSeq.Clear();
-#endif
 
-  // OCC11904 - local variables made non-static - it looks and works better like this
-  Handle (PrsMgr_PresentationManager3d) pmgr ;
-  Handle (StdSelect_ViewerSelector3d) selector;
-  Standard_Boolean ismain = Standard_True,UpdVwr = Standard_False;
-  
-  // Preliminaires
-  if(aView->Viewer()== myMainVwr) {
-    pmgr = myMainPM;
-    selector=myMainSel;
-    myLastPicked = myLastinMain;
-    myWasLastMain = Standard_True;
-  }
-  else 
+  if (theView->Viewer() != myMainVwr)
+  {
     return AIS_SOD_Error;
-  
-  AIS_StatusOfDetection TheStat(AIS_SOD_Nothing);
-  
-  
-  // allonzy
-  selector->Pick(XPix, YPix, aView);
-
-#ifdef IMP160701
-  //filling of myAISDetectedSeq sequence storing information about detected AIS objects
-  // (the objects must be AIS_Shapes).
-  Handle(SelectMgr_EntityOwner) anEntityOwner;
-  const Standard_Integer NbDetected = selector->NbPicked();
-  for(Standard_Integer i_detect = 1;i_detect<=NbDetected;i_detect++)
-  {
-    anEntityOwner = selector->Picked(i_detect);
-    if(!anEntityOwner.IsNull())
-      if(myFilters->IsOk(anEntityOwner))
-      {
-        Handle(AIS_InteractiveObject) anObj = 
-		Handle(AIS_InteractiveObject)::DownCast(anEntityOwner->Selectable());
-        if(!Handle(AIS_Shape)::DownCast(anObj).IsNull())
-          myAISDetectedSeq.Append(anObj);
-      }
   }
-#endif
 
-  selector->Init();
-  if ( selector->More() )
+  // preliminaires
+  myLastPicked  = myLastinMain;
+  myWasLastMain = Standard_True;
+  AIS_StatusOfDetection aStatus        = AIS_SOD_Nothing;
+  Standard_Boolean      toUpdateViewer = Standard_False;
+
+  // allonzy
+  myMainSel->Pick (theXPix, theYPix, theView);
+
+  // filling of myAISDetectedSeq sequence storing information about detected AIS objects
+  // (the objects must be AIS_Shapes)
+  const Standard_Integer aDetectedNb = myMainSel->NbPicked();
+  for (Standard_Integer aDetIter = 1; aDetIter <= aDetectedNb; ++aDetIter)
   {
-    if ( HasOpenedContext() ) 
+    Handle(SelectMgr_EntityOwner) anOwner = myMainSel->Picked (aDetIter);
+    if (anOwner.IsNull()
+     || !myFilters->IsOk (anOwner))
     {
-      if ( !myFilters->IsOk( selector->OnePicked() ) ) 
-        return AIS_SOD_AllBad;
-      else
-        if ( !myLocalContexts( myCurLocalIndex )->Filter()->IsOk( selector->OnePicked() ) )
-          return AIS_SOD_AllBad;
+      continue;
     }
- 
-    // Does nothing if previously detected object is equal to the current one
-    if ( selector->OnePicked()->Selectable() == myLastPicked )
+
+    Handle(AIS_InteractiveObject) anObj = Handle(AIS_InteractiveObject)::DownCast (anOwner->Selectable());
+    if (!Handle(AIS_Shape)::DownCast (anObj).IsNull())
+    {
+      myAISDetectedSeq.Append (anObj);
+    }
+  }
+
+  myMainSel->Init();
+  if (myMainSel->More())
+  {
+    // does nothing if previously detected object is equal to the current one
+    if (myMainSel->OnePicked()->Selectable() == myLastPicked)
+    {
       return AIS_SOD_OnlyOneDetected;
+    }
  
     // Previously detected object is unhilighted if it is not selected or hilighted 
     // with selection color if it is selected. Such highlighting with selection color 
@@ -211,69 +189,77 @@ AIS_StatusOfDetection AIS_InteractiveContext::MoveTo(const Standard_Integer XPix
     // method call. As result it is necessary to rehighligt it with mySelectionColor.
     if (!myLastPicked.IsNull())
     {
-      Standard_Integer aHiMod = myLastPicked->HasHilightMode() ? myLastPicked->HilightMode() : 0;
+      const Standard_Integer aHiMod = myLastPicked->HasHilightMode() ? myLastPicked->HilightMode() : 0;
       if (myLastPicked->State() != 1)
       {
-        pmgr->Unhighlight (myLastPicked, aHiMod);
-        UpdVwr = Standard_True;
+        myMainPM->Unhighlight (myLastPicked, aHiMod);
+        toUpdateViewer = Standard_True;
       }
       else if (myToHilightSelected)
       {
-        pmgr->Color (myLastPicked, mySelectionColor, aHiMod);
-        UpdVwr = Standard_True;
+        myMainPM->Color (myLastPicked, mySelectionColor, aHiMod);
+        toUpdateViewer = Standard_True;
       }
     }
 
-    // Initialize myLastPicked field with currently detected object
-    myLastPicked = Handle(AIS_InteractiveObject)::DownCast (selector->OnePicked()->Selectable());
+    // initialize myLastPicked field with currently detected object
+    myLastPicked = Handle(AIS_InteractiveObject)::DownCast (myMainSel->OnePicked()->Selectable());
+    myLastinMain = myLastPicked;
 
-    if ( ismain )
-      myLastinMain = myLastPicked;
-
-    // Highlight detected object if it is not selected or myToHilightSelected flag is true
-    if (!myLastPicked.IsNull()
-     && (myLastPicked->State()!= 1 || myToHilightSelected))
+    // highlight detected object if it is not selected or myToHilightSelected flag is true
+    if (!myLastPicked.IsNull())
     {
-      Standard_Integer aHiMod = myLastPicked->HasHilightMode() ? myLastPicked->HilightMode() : 0;
-      pmgr->Color (myLastPicked, myHilightColor, aHiMod);
-      UpdVwr = Standard_True;
-    }
+      if (myLastPicked->State() != 1 || myToHilightSelected)
+      {
+        const Standard_Integer aHiMod = myLastPicked->HasHilightMode() ? myLastPicked->HilightMode() : 0;
+        myMainPM->Color (myLastPicked, myHilightColor, aHiMod);
+        toUpdateViewer = Standard_True;
+      }
 
-    if (!myLastPicked.IsNull()
-      && myLastPicked->State() == 1)
-    {
-      TheStat = AIS_SOD_Selected;
+      if (myLastPicked->State() == 1)
+      {
+        aStatus = AIS_SOD_Selected;
+      }
     }
   }
   else 
   {
-    // Previously detected object is unhilighted if it is not selected or hilighted
-    // with selection color if it is selected.
-    TheStat = AIS_SOD_Nothing;
+    // previously detected object is unhilighted if it is not selected or hilighted
+    // with selection color if it is selected
+    aStatus = AIS_SOD_Nothing;
     if (!myLastPicked.IsNull())
     {
       Standard_Integer aHiMod = myLastPicked->HasHilightMode() ? myLastPicked->HilightMode() : 0;
       if (myLastPicked->State() != 1)
       {
-        pmgr->Unhighlight (myLastPicked, aHiMod);
-        UpdVwr = Standard_True;
+        myMainPM->Unhighlight (myLastPicked, aHiMod);
+        toUpdateViewer = Standard_True;
       }
       else if (myToHilightSelected)
       {
-        pmgr->Color (myLastPicked, mySelectionColor, aHiMod);
-        UpdVwr = Standard_True;
+        myMainPM->Color (myLastPicked, mySelectionColor, aHiMod);
+        toUpdateViewer = Standard_True;
       }
     }
 
-    if ( ismain )
-      myLastinMain.Nullify();
+    myLastinMain.Nullify();
   }
-  
-  if(UpdVwr) aView->Viewer()->Update();
+
+  if (toUpdateViewer)
+  {
+    if (theToRedrawOnUpdate)
+    {
+      theView->Viewer()->Update();
+    }
+    else
+    {
+      theView->Viewer()->Invalidate();
+    }
+  }
+
   myLastPicked.Nullify();
-  
-  mylastmoveview = aView;
-  return TheStat;
+  mylastmoveview = theView;
+  return aStatus;
 }
 
 //=======================================================================
@@ -1310,56 +1296,30 @@ Handle(SelectMgr_EntityOwner) AIS_InteractiveContext::DetectedOwner() const
 
 //=======================================================================
 //function : HilightNextDetected
-//purpose  : 
+//purpose  :
 //=======================================================================
-Standard_Integer AIS_InteractiveContext::HilightNextDetected(const Handle(V3d_View)& V)
+Standard_Integer AIS_InteractiveContext::HilightNextDetected (const Handle(V3d_View)& theView,
+                                                              const Standard_Boolean  theToRedrawImmediate)
 {
-  if(!HasOpenedContext())
-    return 0;
-  return myLocalContexts(myCurLocalIndex)->HilightNextDetected(V);
+  return HasOpenedContext()
+       ? myLocalContexts (myCurLocalIndex)->HilightNextDetected (theView, theToRedrawImmediate)
+       : 0;
     
 }
 
 //=======================================================================
 //function : HilightNextDetected
-//purpose  : 
+//purpose  :
 //=======================================================================
-Standard_Integer AIS_InteractiveContext::HilightPreviousDetected(const Handle(V3d_View)& V)
+Standard_Integer AIS_InteractiveContext::HilightPreviousDetected (const Handle(V3d_View)& theView,
+                                                                  const Standard_Boolean  theToRedrawImmediate)
 {
-  if(!HasOpenedContext())
-    return 0;
-  return myLocalContexts(myCurLocalIndex)->HilightPreviousDetected(V);
+  return HasOpenedContext()
+       ? myLocalContexts (myCurLocalIndex)->HilightPreviousDetected (theView, theToRedrawImmediate)
+       : 0;
     
 }
 
-#ifdef IMP150501
-void AIS_InteractiveContext::Drag(
-                                const Handle(V3d_View)& aView,
-                                const Handle(AIS_InteractiveObject)& anObject,
-                                const Handle(Geom_Transformation)& aTrsf,
-                                const Standard_Boolean postConcatenate,
-                                const Standard_Boolean update,
-                                const Standard_Boolean zBuffer) {
-
-  if( anObject.IsNull() || aView.IsNull() ) return;
-
-  if( update ) {
-    anObject->SetTransformation(aTrsf,postConcatenate,Standard_True);
-    aView->Update();
-  } else if( Visual3d_TransientManager::BeginDraw(aView->View(),
-                                        zBuffer,Standard_False) ) {
-    Handle(Prs3d_Presentation) P = anObject->Presentation();
-    if( !P.IsNull() ) {
-      if( postConcatenate ) P->Multiply(aTrsf);
-      else                  P->Transform(aTrsf);
-      Visual3d_TransientManager::DrawStructure(P);
-    }
-    Visual3d_TransientManager::EndDraw(Standard_True);
-  }
-}
-#endif
-
-#ifdef IMP160701
 //=======================================================================
 //function : InitDetected
 //purpose  :
@@ -1439,4 +1399,3 @@ Handle(AIS_InteractiveObject) AIS_InteractiveContext::DetectedCurrentObject() co
   else
     return aBad;
 }
-#endif

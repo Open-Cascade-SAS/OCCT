@@ -31,7 +31,6 @@
 #include <SelectMgr_SelectableObject.hxx>
 #include <SelectMgr_DataMapIteratorOfDataMapOfIntegerSensitive.hxx>
 #include <SelectBasics_ListOfBox2d.hxx>
-#include <Visual3d_TransientManager.hxx>
 #include <TColgp_HArray1OfPnt.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_HArray1OfPnt2d.hxx>
@@ -49,6 +48,7 @@
 #include <Select3D_ListIteratorOfListOfSensitiveTriangle.hxx>
 
 #include <SelectMgr_DataMapIteratorOfDataMapOfSelectionActivation.hxx>
+#include <Aspect_Grid.hxx>
 #include <Aspect_TypeOfMarker.hxx>
 #include <Graphic3d_AspectMarker3d.hxx>
 #include <Graphic3d_ArrayOfPoints.hxx>
@@ -61,8 +61,8 @@
 #include <OSD_Environment.hxx>
 #include <V3d.hxx>
 #include <V3d_View.hxx>
+#include <V3d_Viewer.hxx>
 #include <TColgp_SequenceOfPnt.hxx>
-
 
 static Standard_Integer StdSel_NumberOfFreeEdges (const Handle(Poly_Triangulation)& Trg)
 {
@@ -196,15 +196,14 @@ void StdSelect_ViewerSelector3d::Pick (const Standard_Integer theXPix,
 {
   SetClipping (theView->GetClipPlanes());
   UpdateProj (theView);
+  Standard_Real aPnt3d[3];
+  theView->Convert (theXPix, theYPix,
+                    aPnt3d[0], aPnt3d[1], aPnt3d[2]);
 
-  Standard_Real aXr3d = 0.0;
-  Standard_Real aYr3d = 0.0;
-  Standard_Real aZr3d = 0.0;
-  gp_Pnt2d aP2d;
-  theView->Convert (theXPix, theYPix, aXr3d, aYr3d, aZr3d);
-  myProjector->Project (gp_Pnt (aXr3d, aYr3d, aZr3d), aP2d);
+  gp_Pnt2d aPnt2d;
+  myProjector->Project (gp_Pnt (aPnt3d[0], aPnt3d[1], aPnt3d[2]), aPnt2d);
 
-  InitSelect (aP2d.X(), aP2d.Y());
+  InitSelect (aPnt2d.X(), aPnt2d.Y());
 }
 
 //=======================================================================
@@ -373,15 +372,7 @@ void StdSelect_ViewerSelector3d::DisplayAreas (const Handle(V3d_View)& theView)
   myareagroup->Structure()->SetDisplayPriority (10);
   myareagroup->Structure()->Display();
 
-  if (theView->TransientManagerBeginDraw())
-  {
-    Visual3d_TransientManager::DrawStructure (mystruct);
-    Visual3d_TransientManager::EndDraw();
-  }
-  else
-  {
-    theView->Update();
-  }
+  theView->Update();
 }
 
 //=======================================================================
@@ -397,16 +388,7 @@ void StdSelect_ViewerSelector3d::ClearAreas (const Handle(V3d_View)& theView)
 
   myareagroup->Clear();
 
-  if (theView.IsNull())
-  {
-    return;
-  }
-
-  if (theView->TransientManagerBeginDraw())
-  {
-    Visual3d_TransientManager::EndDraw();
-  }
-  else
+  if (!theView.IsNull())
   {
     theView->Update();
   }
@@ -588,15 +570,7 @@ void StdSelect_ViewerSelector3d::DisplaySensitive (const Handle(V3d_View)& theVi
   mysensgroup->Structure()->SetDisplayPriority (10);
   mystruct->Display();
 
-  if (theView->TransientManagerBeginDraw())
-  {
-    Visual3d_TransientManager::DrawStructure (mystruct);
-    Visual3d_TransientManager::EndDraw();
-  }
-  else if (!theView.IsNull())
-  {
-    theView->Update();
-  }
+  theView->Update();
 }
 
 //=======================================================================
@@ -617,14 +591,7 @@ void StdSelect_ViewerSelector3d::ClearSensitive (const Handle(V3d_View)& theView
     return;
   }
 
-  if (theView->TransientManagerBeginDraw())
-  {
-    Visual3d_TransientManager::EndDraw();
-  }
-  else
-  {
-    theView->Update();
-  }
+  theView->Update();
 }
 
 //=======================================================================
@@ -661,15 +628,8 @@ void StdSelect_ViewerSelector3d::DisplaySensitive (const Handle(SelectMgr_Select
 
   mystruct->SetDisplayPriority (10);
   mystruct->Display();
-  if (theView->TransientManagerBeginDraw())
-  {
-    Visual3d_TransientManager::DrawStructure (mystruct);
-    Visual3d_TransientManager::EndDraw();
-  }
-  else if(!theView.IsNull())
-  {
-    theView->Update();
-  }
+
+  theView->Update();
 }
 
 //=======================================================================
@@ -702,15 +662,7 @@ void StdSelect_ViewerSelector3d::DisplayAreas (const Handle(SelectMgr_Selection)
   mystruct->SetDisplayPriority (10);
   mystruct->Display();
 
-  if(theView->TransientManagerBeginDraw())
-  {
-    Visual3d_TransientManager::DrawStructure (mystruct);
-    Visual3d_TransientManager::EndDraw();
-  }
-  else
-  {
-    theView->Update();
-  }
+  theView->Update();
 }
 
 //=======================================================================

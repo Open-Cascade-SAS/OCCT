@@ -172,6 +172,11 @@ is
 	---Purpose: Updates screen in all cases.
 	---Category: Methods to modify the class definition
 
+  RedrawImmediate ( me : mutable )
+  is static;
+  ---Level: Public
+  ---Purpose: Updates layer of immediate presentations.
+
 	Redraw ( me	: mutable; x,y,width,height: Integer from Standard )
 		is static;
 	---Level: Public
@@ -186,6 +191,18 @@ is
 	---Level: Internal
 	---Purpose: Updates screen in all cases.
 	---Category: Methods to modify the class definition
+
+  RedrawImmediate ( me            : mutable;
+                    theUnderLayer : Layer from Visual3d;
+                    theOverLayer  : Layer from Visual3d )
+  is static;
+  ---Level: Public
+  ---Purpose: Updates layer of immediate presentations.
+
+  Invalidate ( me : mutable )
+  is static;
+  ---Level: Public
+  ---Purpose: Invalidates view content but does not redraw it.
 
 	Redraw ( me	: mutable;
 		 AnUnderLayer	: Layer from Visual3d;
@@ -839,6 +856,30 @@ is
 	---Purpose: Display the structure <AStructure> to the view <me>.
 	---Category: Private methods
 
+  DisplayImmediate ( me : mutable;
+                     theStructure    : Structure from Graphic3d;
+                     theIsSingleView : Boolean   from Standard = Standard_True)
+  returns Boolean from Standard
+  is static;
+  ---Level: Internal
+  ---Purpose: Add structure to the list of immediate presentations.
+  -- @return true if structure has not been registered in this view
+
+  EraseImmediate ( me : mutable;
+                   theStructure : Structure from Graphic3d )
+  returns Boolean from Standard
+  is static;
+  ---Level: Internal
+  ---Purpose: Removes the structure from the list of immediate presentations.
+  -- @return true if structure has been registered in view
+
+  ClearImmediate ( me : mutable )
+  returns Boolean from Standard
+  is static;
+  ---Level: Internal
+  ---Purpose: Clears list of immediate presentations.
+  -- @return true if list was not empty
+
 	Erase ( me		: mutable;
 		AStructure	: Structure from Graphic3d )
 		is static private;
@@ -1138,52 +1179,53 @@ is
 fields
 
 --
--- Classe	:	Visual3d_View
+-- Classe: Visual3d_View
 --
--- Purpose	:	Declaration of the variables specific to views.
+-- Purpose: Declaration of the variables specific to views.
 --
--- Reminder	:	A view is defined by:
---			- a ViewManager
---			- a ContextView
+-- Reminder: A view is defined by:
+-- - a ViewManager
+-- - a ContextView
 
-	-- the associated C structure
-	MyCView			:	CView from Graphic3d;
+  -- the associated C structure
+  MyCView   : CView from Graphic3d;
 
-	-- the context of the view : Aliasing, Depth-Cueing, Lights ...
-	MyContext		:	ContextView from Visual3d;
+  -- the context of the view : Aliasing, Depth-Cueing, Lights ...
+  MyContext : ContextView from Visual3d;
 
-	-- the associated window
-	MyWindow		:	Window from Aspect;
+  -- the associated window
+  MyWindow  : Window from Aspect;
 
-	-- association Structure_COMPUTE and Structure_Computed
-	MyTOCOMPUTESequence	:	SequenceOfStructure from Graphic3d;
-	MyCOMPUTEDSequence	:	SequenceOfStructure from Graphic3d;
+  -- association Structure_COMPUTE and Structure_Computed
+  MyTOCOMPUTESequence : SequenceOfStructure from Graphic3d;
+  MyCOMPUTEDSequence  : SequenceOfStructure from Graphic3d;
 
-	-- the graphic driver used
-	MyGraphicDriver		:	GraphicDriver from Graphic3d;
+  -- the graphic driver used
+  MyGraphicDriver : GraphicDriver from Graphic3d;
 
-	-- the background of the associated window
-	MyBackground		:	Background from Aspect;
+  -- the background of the associated window
+  MyBackground    : Background from Aspect;
 
-	-- the gradient background of the associated window
-	MyGradientBackground	:	GradientBackground from Aspect;
+  -- the gradient background of the associated window
+  MyGradientBackground  : GradientBackground from Aspect;
 
-	-- the displayed structures in the view
-	MyDisplayedStructure	:	MapOfStructure from Graphic3d;
+  -- the displayed structures in the view
+  MyDisplayedStructure  : MapOfStructure from Graphic3d;
 
-	-- the ViewManager associated with the view
---	MyPtrViewManager	:	Address from Standard;
-	MyPtrViewManager	:	ViewManagerPtr from Visual3d;
+  myImmediateStructures : MapOfStructure from Graphic3d;
 
-	-- Booleans
-	MyCBitFields		:	CBitFields8 from Graphic3d;
+  -- the ViewManager associated with the view
+  MyPtrViewManager : ViewManagerPtr from Visual3d;
 
-	MyGTrihedron        :   CGraduatedTrihedron from Graphic3d;
+  -- Booleans
+  MyCBitFields     : CBitFields8 from Graphic3d;
 
-    myDefaultCamera     :   Camera_Handle from Graphic3d;
+  MyGTrihedron     : CGraduatedTrihedron from Graphic3d;
+
+  myDefaultCamera  : Camera_Handle from Graphic3d;
 
 friends
 
-	class ViewManager from Visual3d
+  class ViewManager from Visual3d
 
 end View;

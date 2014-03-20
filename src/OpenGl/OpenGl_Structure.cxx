@@ -75,7 +75,7 @@ public:
     const Handle(OpenGl_Texture) aPrevTexture = theWorkspace->DisableTexture();
 
     glDisable (GL_LIGHTING);
-    if ((theWorkspace->NamedStatus & (OPENGL_NS_ADD | OPENGL_NS_IMMEDIATE)) != 0)
+    if ((theWorkspace->NamedStatus & OPENGL_NS_IMMEDIATE) != 0)
     {
       glDepthMask (GL_FALSE);
     }
@@ -655,7 +655,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
   AWorkspace->NamedStatus |= myNamedStatus;
 
   // Is rendering in ADD or IMMEDIATE mode?
-  const Standard_Boolean isImmediate = (AWorkspace->NamedStatus & (OPENGL_NS_ADD | OPENGL_NS_IMMEDIATE)) != 0;
+  const Standard_Boolean isImmediate = (AWorkspace->NamedStatus & OPENGL_NS_IMMEDIATE) != 0;
 
   const Handle(OpenGl_Context)& aCtx = AWorkspace->GetGlContext();
 
@@ -775,7 +775,8 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
   }
 
   // Render groups
-  OpenGl_ListOfGroup::Iterator itg(myGroups);
+  const OpenGl_ListOfGroup& aGroups = Groups();
+  OpenGl_ListOfGroup::Iterator itg (aGroups);
   while (itg.More())
   {
     itg.Value()->Render(AWorkspace);
@@ -785,7 +786,7 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
   // Render capping for structure groups
   if (!aContext->Clipping().Planes().IsEmpty())
   {
-    OpenGl_CappingAlgo::RenderCapping (AWorkspace, myGroups);
+    OpenGl_CappingAlgo::RenderCapping (AWorkspace, aGroups);
   }
 
   // Revert structure clippings
@@ -915,4 +916,63 @@ void OpenGl_Structure::SetZLayer (const Standard_Integer theLayerIndex)
 Standard_Integer OpenGl_Structure::GetZLayer () const
 {
   return myZLayer;
+}
+
+class OpenGl_StructureShadow : public OpenGl_Structure
+{
+
+public:
+
+  //! Create empty structure
+  OpenGl_StructureShadow (const Handle(Graphic3d_StructureManager)& theManager,
+                          const Handle(OpenGl_Structure)&           theStructure);
+
+  virtual const OpenGl_ListOfGroup& Groups() const { return myParent->Groups(); }
+
+private:
+
+  Handle(OpenGl_Structure) myParent;
+
+public:
+
+  DEFINE_STANDARD_RTTI(OpenGl_Structure) // Type definition
+
+};
+
+DEFINE_STANDARD_HANDLE(OpenGl_StructureShadow, OpenGl_Structure)
+
+IMPLEMENT_STANDARD_HANDLE (OpenGl_StructureShadow, OpenGl_Structure)
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_StructureShadow, OpenGl_Structure)
+
+OpenGl_StructureShadow::OpenGl_StructureShadow (const Handle(Graphic3d_StructureManager)& theManager,
+                                                const Handle(OpenGl_Structure)&           theStructure)
+: OpenGl_Structure (theManager)
+{
+  Handle(OpenGl_StructureShadow) aShadow = Handle(OpenGl_StructureShadow)::DownCast (theStructure);
+  myParent = aShadow.IsNull() ? theStructure : aShadow->myParent;
+
+
+  Composition   = myParent->Composition;
+  ContainsFacet = myParent->ContainsFacet;
+  IsInfinite    = myParent->IsInfinite;
+  for (Standard_Integer i = 0; i <= 3; ++i)
+  {
+    for (Standard_Integer j = 0; j <= 3; ++j)
+    {
+      Graphic3d_CStructure::Transformation[i][j] = myParent->Graphic3d_CStructure::Transformation[i][j];
+    }
+  }
+
+  TransformPersistence.IsSet = myParent->TransformPersistence.IsSet;
+  TransformPersistence.Flag  = myParent->TransformPersistence.Flag;
+  TransformPersistence.Point = myParent->TransformPersistence.Point;
+}
+
+//=======================================================================
+//function : ShadowLink
+//purpose  :
+//=======================================================================
+Handle(Graphic3d_CStructure) OpenGl_Structure::ShadowLink (const Handle(Graphic3d_StructureManager)& theManager) const
+{
+  return new OpenGl_StructureShadow (theManager, this);
 }

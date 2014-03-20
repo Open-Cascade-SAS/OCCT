@@ -53,12 +53,13 @@ is
     	--   removal mode, where every new point of view
     	--   entails recalculation of the display.
 
-    deferred class PresentationManager;
+    class PresentationManager;
+    alias PresentationManager3d is PresentationManager;
     deferred class Presentation;
     deferred class PresentableObject;
-    
-    class PresentationManager3d;
-    
+
+    imported ListOfPresentations;
+
     class Prs;
     class Presentation3d;
 

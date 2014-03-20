@@ -862,15 +862,6 @@ void OpenGl_Window::MakeBackBufCurrent() const
 }
 
 // =======================================================================
-// function : MakeFrontAndBackBufCurrent
-// purpose  : TelMakeFrontAndBackBufCurrent
-// =======================================================================
-void OpenGl_Window::MakeFrontAndBackBufCurrent() const
-{
-  glDrawBuffer (GL_FRONT_AND_BACK);
-}
-
-// =======================================================================
 // function : GetGContext
 // purpose  :
 // =======================================================================

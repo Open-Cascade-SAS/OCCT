@@ -275,16 +275,27 @@ is
     ---Purpose: call_togl_ratio_window
 
     Redraw ( me             : mutable;
-             ACView         : CView from Graphic3d;
-             ACUnderLayer   : CLayer2d from Aspect;
-             ACOverLayer    : CLayer2d from Aspect;
-             x              : Integer = 0;
-             y              : Integer = 0;
-             width              : Integer = 0;
-             height     : Integer = 0 )
-        is deferred;
-    ---Purpose: call_togl_redraw
-    --  Warning: when the redraw area has a null size, the full view is redrawn
+             theCView       : CView from Graphic3d;
+             theCUnderLayer : CLayer2d from Aspect;
+             theCOverLayer  : CLayer2d from Aspect;
+             theX           : Integer = 0;
+             theY           : Integer = 0;
+             theWidth       : Integer = 0;
+             theHeight      : Integer = 0 )
+    is deferred;
+    ---Purpose: Redraw content of the view
+
+    RedrawImmediate ( me               : mutable;
+                      theCView         : CView from Graphic3d;
+                      theCUnderLayer   : CLayer2d from Aspect;
+                      theCOverLayer    : CLayer2d from Aspect )
+    is deferred;
+    ---Purpose: Redraw layer of immediate presentations
+
+    Invalidate ( me       : mutable;
+                 theCView : CView from Graphic3d )
+    is deferred;
+    ---Purpose: Invalidates content of the view but does not redraw it
 
     RemoveView ( me     : mutable;
                 ACView  : CView from Graphic3d )
@@ -313,13 +324,6 @@ is
                    AFlag    : Boolean from Standard )
         is deferred;
     ---Purpose: call_togl_transparency
-
-    Update ( me             : mutable;
-             ACView         : CView from Graphic3d;
-             ACUnderLayer   : CLayer2d from Aspect;
-             ACOverLayer    : CLayer2d from Aspect )
-            is deferred;
-    ---Purpose: call_togl_update
 
     View ( me   : mutable;
            ACView   : in out CView from Graphic3d )
@@ -485,21 +489,7 @@ is
     is deferred;
 
     ----------------------------------
-    -- Category: Ajout mode methods
-    ----------------------------------
-
-    BeginAddMode ( me   : mutable;
-                ACView      : CView from Graphic3d)
-        returns Boolean from Standard
-        is deferred;
-    ---Purpose: call_togl_begin_ajout_mode
-
-    EndAddMode ( me     : mutable)
-        is deferred;
-    ---Purpose: call_togl_end_ajout_mode
-
-    ----------------------------------
-    -- Category: Immediat mode methods
+    -- Category: Immediate mode methods
     ----------------------------------
 
     SetImmediateModeDrawToFront (me                   : mutable;
@@ -519,30 +509,17 @@ is
     --    But it works in any case and is especially useful for view dump because the dump image is read from the back buffer.
     -- @return previous mode.
 
-    BeginImmediatMode ( me              : mutable;
-                        ACView          : CView from Graphic3d;
-                        ACUnderLayer    : CLayer2d from Aspect;
-                        ACOverLayer     : CLayer2d from Aspect;
-                        DoubleBuffer    : Boolean from Standard;
-                        RetainMode      : Boolean from Standard)
-        returns Boolean from Standard
-        is deferred;
-    ---Purpose: call_togl_begin_immediat_mode
+    DisplayImmediateStructure ( me            : mutable;
+                                theCView      : CView      from Graphic3d;
+                                theCStructure : CStructure from Graphic3d )
+    is deferred;
+    ---Purpose: Display structure in immediate mode on top of general presentation
 
-    ClearImmediatMode ( me  : mutable; ACView       : CView from Graphic3d;
-                  aFlush        : Boolean from Standard = Standard_True)
-        is deferred;
-    ---Purpose: call_togl_clear_immediat_mode
-
-    DrawStructure ( me          : mutable;
-                    ACStructure : CStructure from Graphic3d )
-        is deferred;
-    ---Purpose: call_togl_draw_structure
-
-    EndImmediatMode ( me            : mutable;
-                      Synchronize   : Integer from Standard )
-        is deferred;
-    ---Purpose: call_togl_end_immediat_mode
+    EraseImmediateStructure ( me            : mutable;
+                              theCView      : CView      from Graphic3d;
+                              theCStructure : CStructure from Graphic3d )
+    is deferred;
+    ---Purpose: Erases immediate structure
 
     -------------------------------
     -- Category: Layer mode methods

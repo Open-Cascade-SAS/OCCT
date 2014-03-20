@@ -40,12 +40,17 @@ uses
     ShadingAspect        from Prs3d
     
 is
-    Create (aStructureManager: StructureManager from Graphic3d;
-    	    Init:              Boolean          from Standard = Standard_True) 
-    	---Purpose: Constructs a presentation object
-    	-- if <Init> is false, no color initialization is done.
-    returns mutable Presentation from Prs3d;
 
+  Create (theStructManager : StructureManager from Graphic3d;
+          theToInit        : Boolean          from Standard = Standard_True)
+  ---Purpose: Constructs a presentation object
+  -- if <Init> is false, no color initialization is done.
+  returns mutable Presentation from Prs3d;
+
+  Create (theStructManager : StructureManager from Graphic3d;
+          thePrs           : Presentation     from Prs3d)
+  ---Purpose: Constructs a presentation object.
+  returns mutable Presentation from Prs3d;
 
     Compute(me : mutable; aProjector: DataStructureManager from Graphic3d)
     returns Structure from Graphic3d
@@ -120,18 +125,11 @@ is
     NewGroup(me:mutable) returns mutable Group from Graphic3d is static private;
 
 fields
-    myStruct      : Structure from Graphic3d;
-    myCurrentGroup: Group     from Graphic3d;
---
-friends 
-    	class Root from Prs3d
+
+  myCurrentGroup : Group from Graphic3d;
+
+friends
+
+  class Root from Prs3d
 
 end Presentation;
-
-
-
-
-
-
-
-

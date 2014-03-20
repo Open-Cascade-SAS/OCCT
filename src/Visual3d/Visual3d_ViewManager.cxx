@@ -388,61 +388,76 @@ void Visual3d_ViewManager::UnHighlight (const Handle(Graphic3d_Structure)& AStru
 
 }
 
-void Visual3d_ViewManager::Redraw () const {
+void Visual3d_ViewManager::Redraw() const
+{
+  // redraw all activated views
+  if (MyDefinedView.Extent() == 0)
+  {
+    return;
+  }
 
-Standard_Integer MaxDx, MaxDy;
-Standard_Integer Dx, Dy;
-	MaxDx = MaxDy = IntegerFirst ();
+  if (!MyUnderLayer.IsNull() || !MyOverLayer.IsNull())
+  {
+    Standard_Integer aWidth = 0, aHeight = 0;
+    Standard_Integer aWidthMax  = 0;
+    Standard_Integer aHeightMax = 0;
+    for (Visual3d_SetIteratorOfSetOfView anIter (MyDefinedView);
+         anIter.More(); anIter.Next())
+    {
+      anIter.Value()->Window()->Size (aWidth, aHeight);
+      aWidthMax  = Max (aWidthMax,  aWidth);
+      aHeightMax = Max (aHeightMax, aWidth);
+    }
+    if (!MyUnderLayer.IsNull())
+    {
+      MyUnderLayer->SetViewport (aWidthMax, aHeightMax);
+    }
+    if (!MyOverLayer.IsNull())
+    {
+      MyOverLayer->SetViewport (aWidthMax, aHeightMax);
+    }
+  }
 
-	//
-	// Redraw all activated views
-	//
-	Standard_Integer j = MyDefinedView.Extent ();
-	if (j == 0) return;
-	Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
-
-	if (! MyUnderLayer.IsNull () || ! MyOverLayer.IsNull ()) {
-	    while (MyIterator.More ()) {
-		(MyIterator.Value ())->Window ()->Size (Dx, Dy);
-		if (Dx > MaxDx) MaxDx = Dx;
-		if (Dy > MaxDy) MaxDy = Dy;
-
-		// MyIterator.Next () is located on the next view
-		MyIterator.Next ();
-	    }
-	    if (! MyUnderLayer.IsNull ())
-		MyUnderLayer->SetViewport (MaxDx, MaxDy);
-	    if (! MyOverLayer.IsNull ())
-		MyOverLayer->SetViewport (MaxDx, MaxDy);
+  for (Visual3d_SetIteratorOfSetOfView anIter (MyDefinedView);
+       anIter.More(); anIter.Next())
+  {
+    anIter.Value()->Redraw (MyUnderLayer, MyOverLayer);
 	}
-
-	if (! MyUnderLayer.IsNull () || ! MyOverLayer.IsNull ())
-	    MyIterator.Initialize (MyDefinedView);
-	while (MyIterator.More ()) {
-	    (MyIterator.Value ())->Redraw (MyUnderLayer, MyOverLayer);
-
-	    // MyIterator.Next () is located on the next view
-	    MyIterator.Next ();
-	}
-
 }
 
-void Visual3d_ViewManager::Update () const {
+void Visual3d_ViewManager::Update() const
+{
+  Redraw();
+}
 
-	//
-	// Update all activated views
-	//
-	Standard_Integer j = MyDefinedView.Extent ();
-	if (j == 0) return;
-	Visual3d_SetIteratorOfSetOfView MyIterator(MyDefinedView);
+void Visual3d_ViewManager::RedrawImmediate() const
+{
+  if (MyDefinedView.Extent() == 0)
+  {
+    return;
+  }
 
-	while (MyIterator.More ()) {
-		(MyIterator.Value ())->Update (MyUnderLayer, MyOverLayer);
+  // update all activated views
+  for (Visual3d_SetIteratorOfSetOfView anIter (MyDefinedView);
+       anIter.More(); anIter.Next())
+  {
+    anIter.Value()->RedrawImmediate (MyUnderLayer, MyOverLayer);
+  }
+}
 
-		// MyIterator.Next () is located on the next view
-		MyIterator.Next ();
-	}
+void Visual3d_ViewManager::Invalidate() const
+{
+  if (MyDefinedView.Extent() == 0)
+  {
+    return;
+  }
 
+  // update all activated views
+  for (Visual3d_SetIteratorOfSetOfView anIter (MyDefinedView);
+       anIter.More(); anIter.Next())
+  {
+    anIter.Value()->Invalidate();
+  }
 }
 
 Handle(Visual3d_HSetOfView) Visual3d_ViewManager::ActivatedView () const {

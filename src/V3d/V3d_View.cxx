@@ -116,7 +116,6 @@ To solve the problem (for lack of a better solution) I make 2 passes.
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_DivideByZero.hxx>
 
-#include <Visual3d_TransientManager.hxx>
 #include <Visual3d_ViewManager.hxx>
 #include <Visual3d_Light.hxx>
 #include <Visual3d_Layer.hxx>
@@ -413,6 +412,30 @@ void V3d_View::Update() const
 void V3d_View::Redraw() const
 {
   if( MyView->IsDefined() ) MyView->Redraw() ;
+}
+
+//=============================================================================
+//function : RedrawImmediate
+//purpose  :
+//=============================================================================
+void V3d_View::RedrawImmediate() const
+{
+  if (MyView->IsDefined())
+  {
+    MyView->RedrawImmediate();
+  }
+}
+
+//=============================================================================
+//function : Invalidate
+//purpose  :
+//=============================================================================
+void V3d_View::Invalidate() const
+{
+  if (MyView->IsDefined())
+  {
+    MyView->Invalidate();
+  }
 }
 
 //=============================================================================
@@ -2974,37 +2997,6 @@ V3d_TypeOfBackfacingModel V3d_View::BackFacingModel() const
   return V3d_TypeOfBackfacingModel(MyView -> BackFacingModel ());
 }
 
-//=============================================================================
-//function : TransientManagerBeginDraw
-//purpose  :
-//=============================================================================
-Standard_Boolean V3d_View::TransientManagerBeginDraw(const Standard_Boolean DoubleBuffer,const Standard_Boolean RetainMode) const
-{
-  return Visual3d_TransientManager::BeginDraw(MyView,DoubleBuffer,RetainMode);
-}
-
-//=============================================================================
-//function : TransientManagerClearDraw
-//purpose  :
-//=============================================================================
-void V3d_View::TransientManagerClearDraw() const
-{
-  Visual3d_TransientManager::ClearDraw(MyView);
-}
-
-//=============================================================================
-//function : TransientManagerBeginAddDraw
-//purpose  :
-//=============================================================================
-Standard_Boolean V3d_View::TransientManagerBeginAddDraw() const
-{
-  return Visual3d_TransientManager::BeginAddDraw(MyView);
-}
-
-//=============================================================================
-//function : Init
-//purpose  :
-//=============================================================================
 void V3d_View::Init()
 {
   myComputedMode = MyViewer->ComputedMode();
@@ -3131,7 +3123,14 @@ Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
     }
   }
 
+  // render immediate structures into back buffer rather than front
+  Handle(Graphic3d_GraphicDriver) aDriver = Handle(Graphic3d_GraphicDriver)::DownCast (MyView->GraphicDriver());
+  const Standard_Boolean aPrevImmediateMode = aDriver.IsNull() ? Standard_True : aDriver->SetImmediateModeDrawToFront (*cView, Standard_False);
+
+  const Standard_Boolean toAutoUpdate = myImmediateUpdate;
+  myImmediateUpdate = Standard_False;
   AutoZFit();
+  myImmediateUpdate = toAutoUpdate;
 
   if (theToKeepAspect)
   {
@@ -3144,9 +3143,6 @@ Standard_Boolean V3d_View::ToPixMap (Image_PixMap&               theImage,
     MyLayerMgr->Compute();
   }
 
-  // render immediate structures into back buffer rather than front
-  Handle(Graphic3d_GraphicDriver) aDriver = Handle(Graphic3d_GraphicDriver)::DownCast (MyView->GraphicDriver());
-  const Standard_Boolean aPrevImmediateMode = aDriver.IsNull() ? Standard_True : aDriver->SetImmediateModeDrawToFront (*cView, Standard_False);
   Redraw();
 
   if (!aDriver.IsNull())

@@ -123,7 +123,6 @@ uses
         Coordinate                        from V3d,
         Array2OfReal                      from TColStd,
         ViewerPointer                     from V3d,
-        TransientManager                  from Visual3d,
         TypeOfTriedronEcho                from Aspect,
         TypeOfTriedronPosition            from Aspect,
         RenderingContext                  from Aspect,
@@ -204,6 +203,14 @@ is
         --          been any modification.
         --          Must be called if the view is shown.
         --          (Ex: DeIconification ) .
+
+        RedrawImmediate ( me );
+        ---Level: Public
+        ---Purpose: Updates layer of immediate presentations.
+
+        Invalidate ( me );
+        ---Level: Public
+        ---Purpose: Invalidates view content but does not redraw it.
 
         Redraw ( me ;x,y,width,height: Integer from Standard);
         ---Level: Public
@@ -1030,18 +1037,19 @@ is
         --           in the reference frame of the view corresponding
         --           to the intersection with the projection plane
         --           of the eye/view point vector and display the grid marker.
-    --  Warning: When the grid is not active the result is identical
-    --     to the above Convert() method.
-    -- How to use :
+    --  Warning: When the grid is not active the result is identical to the above Convert() method.
+    -- How to use:
     -- 1) Enable the grid echo display
     --    myViewer->SetGridEcho(Standard_True);
-    -- 2) When application receive a move event :
+    -- 2) When application receive a move event:
     --   2.1) Check if any object is detected
     --     if( myInteractiveContext->MoveTo(x,y) == AIS_SOD_Nothing ) {
     --   2.2) Check if the grid is active
         --     if( myViewer->Grid()->IsActive() ) {
     --   2.3) Display the grid echo and gets the grid point
         --       myView->ConvertToGrid(x,y,X,Y,Z);
+        --       myView->Viewer()->ShowGridEcho (myView, Graphic3d_Vertex (X,Y,Z));
+        --       myView->RedrawImmediate();
     --   2.4) Else this is the standard case
         --     } else myView->Convert(x,y,X,Y,Z);
         raises UnMapped from V3d;
@@ -1342,42 +1350,6 @@ is
         
         ImmediateUpdate (me) is static protected;
     	  ---Purpose: 
-
-        -----------------------------------------
-        ---Category: TransientManager methods
-        -----------------------------------------
-
-         TransientManagerBeginDraw(me; DoubleBuffer: Boolean = Standard_False;
-                                       RetainMode  : Boolean = Standard_False)
-        ---Level: Public
-        ---Purpose: Begins any graphics in the view <aView>
-        --          Redraw any structured graphics in the back buffer before
-        --          if <DoubleBuffer> is TRUE.
-        --          Restore the front buffer from the back before
-        --          if <DoubleBuffer> is FALSE.
-        --          if <RetainMode> is TRUE.
-        --          the graphic managed itself exposure,resizing ...
-        --          if <RetainMode> is FALSE.
-        --          the application must managed itself exposure,resizing ...
-        --
-                returns Boolean from Standard;
-
-         TransientManagerClearDraw(me);
-        ---Level: Public
-        ---Purpose: Clear all transient graphics in the view <aView>
-
-
-         TransientManagerBeginAddDraw(me)
-        ---Level: Public
-        ---Purpose: Begins any add graphics in the view <aView>
-        --          Redraw any structured graphics in the back buffer before
-        --          the application must managed itself exposure,resizing ...
-        --  Warning: Returns TRUE if transient drawing is enabled in
-        --         the associated view.
-        --          Returns FALSE ,if nothing works because something
-        --         is wrong for the transient principle :
-        --
-                returns Boolean from Standard;
 
         SetComputedMode ( me : mutable; aMode : Boolean from Standard )
         is static;

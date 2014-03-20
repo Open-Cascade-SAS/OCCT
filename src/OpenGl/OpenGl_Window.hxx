@@ -87,9 +87,6 @@ protected:
   //! Draw to BACK buffer. Normal and default state.
   void MakeBackBufCurrent() const;
 
-  //! Draw simultaneously to BACK and FRONT buffers. Abnormal usage.
-  void MakeFrontAndBackBufCurrent() const;
-
 protected:
 
   Handle(OpenGl_Display) myDisplay;

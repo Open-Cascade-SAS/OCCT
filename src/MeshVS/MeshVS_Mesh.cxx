@@ -1128,8 +1128,10 @@ void MeshVS_Mesh::HilightOwnerWithColor ( const Handle(PrsMgr_PresentationManage
     }    
   }
 
-  if( PM->IsImmediateModeOn() )
-    PM->AddToImmediateList( aHilightPrs );
+  if (PM->IsImmediateModeOn())
+  {
+    PM->AddToImmediateList (aHilightPrs);
+  }
   myHilighter->SetDrawer ( 0 );
 }
 

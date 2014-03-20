@@ -88,11 +88,21 @@ is
 	--	    visualiser <me>.
 	---Category: Methods to modify the class definition
 
-	Redraw ( me )
-		is static;
-	---Level: Public
-	---Purpose: Redraws all the displayed structures.
-	---Category: Methods to modify the class definition
+  Redraw ( me )
+  is static;
+  ---Level: Public
+  ---Purpose: Redraws all the displayed structures.
+  ---Category: Methods to modify the class definition
+
+  RedrawImmediate ( me )
+  is static;
+  ---Level: Public
+  ---Purpose: Updates layer of immediate presentations.
+
+  Invalidate ( me )
+  is static;
+  ---Level: Public
+  ---Purpose: Invalidates viewer content but does not redraw it.
 
 	Remove ( me	: mutable )
 		is static;
@@ -100,13 +110,11 @@ is
 	---Purpose: Deletes and erases the 3D visualiser <me>.
 	---Category: Methods to modify the class definition
 
-	Update ( me )
-		is redefined static;
-	---Level: Public
-	---Purpose: Updates screen in function of modifications of
-	--	    the structures.
-	--  Category: Methods to modify the class definition
-	--  Warning: Not necessary if the update mode is TOU_ASAP.
+  Update ( me )
+  is redefined static;
+  ---Level: Public
+  ---Purpose: Updates screen in function of modifications of the structures.
+  --  Category: Methods to modify the class definition
 
 	----------------------------
 	-- Category: Inquire methods

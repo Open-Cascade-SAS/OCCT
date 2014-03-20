@@ -87,15 +87,19 @@ is
 	-- Category: Constructor
 	------------------------
 
-	Create ( AManager	: StructureManager from Graphic3d )
-		returns mutable Structure from Graphic3d;
-	---Level: Public
-	---Purpose: Creates a graphic object in the manager <AManager>.
-	--	    It will appear in all the views of the visualiser.
-	--  Warning: The default values AspectLine, AspectFillArea,
-	--	    AspectText and AspectMarker are NOT applied to the
-	--	    structure.
-	--	    The structure is not displayed when it is created.
+  Create (theManager : StructureManager from Graphic3d)
+  returns mutable Structure from Graphic3d;
+  ---Level: Public
+  ---Purpose: Creates a graphic object in the manager theManager.
+  -- It will appear in all the views of the visualiser.
+  -- Warning: The default values AspectLine, AspectFillArea, AspectText and AspectMarker are NOT applied to the structure.
+  -- The structure is not displayed when it is created.
+
+  Create (theManager : StructureManager from Graphic3d;
+          thePrs     : Structure        from Graphic3d)
+  returns mutable Structure from Graphic3d;
+  ---Level: Public
+  ---Purpose: Creates a shadow link to existing graphic object.
 
 	---------------------------------------------------
 	-- Category: Methods to modify the class definition

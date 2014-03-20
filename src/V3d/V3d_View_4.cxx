@@ -11,32 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-/***********************************************************************
- 
-     FONCTION :
-     ----------
-        Classe V3d_View :
- 
-     HISTORIQUE DES MODIFICATIONS   :
-     --------------------------------
-      16-08-98 : CAL ; S3892. Ajout grilles 3d.
-      16-09-98 : BGN ; Points d'entree du Triedre (S3819, Phase 1)
-      21-09-98 : CAL ; Activation de l'echo que si CSF_GraphicEcho est definie.
-      22-09-98 : BGN ; S3989 (anciennement S3819)
-                       TypeOfTriedron* from Aspect (pas V3d)
-      02.15.100 : JR : Clutter
-      28/05/02 :  VSV: ZBUFFER mode of Trihedron
-
-************************************************************************/
-
-#define IMP240100       //GG
-//			-> In Compute() method call MyViewer->ShowGridEcho()
-
-
-/*----------------------------------------------------------------------*/
-/*
- * Includes
- */
 #include <V3d_View.jxx>
 
 #include <TColStd_Array2OfReal.hxx>
@@ -47,14 +21,6 @@
 
 #include <V3d_RectangularGrid.hxx>
 #include <V3d_CircularGrid.hxx>
-
-// For the echo of the chosen point
-#include <Visual3d_TransientManager.hxx>
-
-/*----------------------------------------------------------------------*/
-/*
- * Constant
- */
 
 #define MYEPSILON1 0.0001		// Comparison with 0.0
 #define MYEPSILON2 M_PI / 180.	// Delta between 2 angles
@@ -176,9 +142,6 @@ Graphic3d_Vertex V3d_View::Compute (const Graphic3d_Vertex & AVertex) const
   // are perpendicular to MYEPSILON2 close radians
   if (Abs (VPN.Angle (GPN) - M_PI / 2.) < MYEPSILON2) {
     NewPoint.SetCoord (X1, Y1, Z1);
-#ifdef IMP240100
-    MyViewer->ShowGridEcho(this,NewPoint);
-#endif	//IMP240100
     return NewPoint;
   }
 
@@ -279,9 +242,6 @@ Graphic3d_Vertex V3d_View::Compute (const Graphic3d_Vertex & AVertex) const
     NewPoint.SetCoord (aResult.X(), aResult.Y(), aResult.Z());
   }
 
-#ifdef IMP240100
-  MyViewer->ShowGridEcho(this,NewPoint);
-#endif	//IMP240100
   return NewPoint;
 }
 

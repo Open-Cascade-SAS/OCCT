@@ -11,32 +11,6 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-/***********************************************************************
- 
-     FONCTION :
-     ----------
-        Classe V3d_Viewer :
- 
-     HISTORIQUE DES MODIFICATIONS   :
-     --------------------------------
-      00-09-92 : GG  ; Creation.
-      15-11-97 : FMN ; Ajout texture mapping
-      02-02-98 : FMN ; Mise a niveau WNT
-      23-02-98 : FMN ; Remplacement PI par Standard_PI
-      16-07-98 : CAL ; S3892. Ajout grilles 3d.
-
-************************************************************************/
-
-//GER61351	//GG_15/12/99 Adds SetDefaultBackgroundColor() and DefaultBackgroundColor() methods
-
-#define IMP240100	//GG 
-//			Initalize grid echo fields
-
-/*----------------------------------------------------------------------*/
-/*
- * Includes
- */
-
 #include <V3d.hxx>
 #include <Visual3d_View.hxx>
 #include <Visual3d_Light.hxx>
@@ -75,10 +49,9 @@ myComputedMode (theComputedMode),
 myDefaultComputedMode (theDefaultComputedMode),
 myPrivilegedPlane (gp_Ax3 (gp_Pnt (0.,0.,0), gp_Dir (0.,0.,1.), gp_Dir (1.,0.,0.))),
 myDisplayPlane (Standard_False),
-myDisplayPlaneLength (theViewSize)
-#ifdef IMP240100
-,myGridEcho (Standard_True), myGridEchoStructure(), myGridEchoGroup()
-#endif 
+myDisplayPlaneLength (theViewSize),
+myGridEcho (Standard_True),
+myGridEchoLastVert (ShortRealLast(), ShortRealLast(), ShortRealLast())
 {
   MyViewer = new Visual3d_ViewManager (theDriver);
   // san (16/09/2010): It has been decided to turn depth test ON
@@ -156,14 +129,24 @@ Standard_Boolean V3d_Viewer::DefaultComputedMode() const {
   return myDefaultComputedMode;
 }
 
-void V3d_Viewer::Update() {
-
+void V3d_Viewer::Update()
+{
   MyViewer->Update();
 }
 
-void V3d_Viewer::Redraw()const  {
-
+void V3d_Viewer::Redraw()const
+{
   MyViewer->Redraw();
+}
+
+void V3d_Viewer::RedrawImmediate() const
+{
+  MyViewer->RedrawImmediate();
+}
+
+void V3d_Viewer::Invalidate() const
+{
+  MyViewer->Invalidate();
 }
 
 void V3d_Viewer::Remove() {

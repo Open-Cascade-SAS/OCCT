@@ -58,6 +58,34 @@ Graphic3d_Structure::Graphic3d_Structure (const Handle(Graphic3d_StructureManage
 }
 
 //=============================================================================
+//function : Graphic3d_Structure
+//purpose  :
+//=============================================================================
+Graphic3d_Structure::Graphic3d_Structure (const Handle(Graphic3d_StructureManager)& theManager,
+                                          const Handle(Graphic3d_Structure)&        thePrs)
+: myStructureManager      (theManager.operator->()),
+  myFirstStructureManager (theManager.operator->()),
+  myComputeVisual         (thePrs->myComputeVisual),
+  myHighlightColor        (thePrs->myHighlightColor),
+  myHighlightMethod       (thePrs->myHighlightMethod),
+  myOwner                 (thePrs->myOwner),
+  myVisual                (thePrs->myVisual)
+{
+  myCStructure = thePrs->myCStructure->ShadowLink (theManager);
+
+  // default aspects
+  Handle(Graphic3d_AspectLine3d)     aAspectLine3d     = new Graphic3d_AspectLine3d();
+  Handle(Graphic3d_AspectText3d)     aAspectText3d     = new Graphic3d_AspectText3d();
+  Handle(Graphic3d_AspectMarker3d)   aAspectMarker3d   = new Graphic3d_AspectMarker3d();
+  Handle(Graphic3d_AspectFillArea3d) aAspectFillArea3d = new Graphic3d_AspectFillArea3d();
+  theManager->PrimitivesAspect (aAspectLine3d, aAspectText3d, aAspectMarker3d, aAspectFillArea3d);
+  aAspectFillArea3d->SetPolygonOffsets (Aspect_POM_Fill, 1.0, 0.0);
+
+  // update the associated CStructure
+  UpdateStructure (aAspectLine3d, aAspectText3d, aAspectMarker3d, aAspectFillArea3d);
+}
+
+//=============================================================================
 //function : Destroy
 //purpose  :
 //=============================================================================
@@ -284,7 +312,10 @@ void Graphic3d_Structure::Highlight (const Aspect_TypeOfHighlightMethod theMetho
   SetDisplayPriority (Structure_MAX_PRIORITY - 1);
 
   GraphicHighlight (theMethod);
-  myStructureManager->Highlight (this, theMethod);
+  if (myCStructure->stick)
+  {
+    myStructureManager->Highlight (this, theMethod);
+  }
 
   Update();
 }

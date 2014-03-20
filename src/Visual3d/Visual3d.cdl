@@ -95,9 +95,6 @@ is
     exception ZClippingDefinitionError inherits OutOfRange;
     ---Category: The exceptions
 
-    exception TransientDefinitionError inherits OutOfRange;
-    ---Category: The exceptions
-
     exception LayerDefinitionError inherits OutOfRange;
     ---Category: The exceptions
 
@@ -257,10 +254,6 @@ is
 
     class ViewManager;
     ---Purpose: 3D Visualiser
-    ---Category: The classes
-
-    class TransientManager;
-    ---Purpose: 3D Transient Visualiser
     ---Category: The classes
 
     class Layer;

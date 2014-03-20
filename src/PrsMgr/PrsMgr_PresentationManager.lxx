@@ -15,4 +15,11 @@
 // commercial license or contractual agreement.
 
 inline Standard_Boolean PrsMgr_PresentationManager::IsImmediateModeOn() const
-{return myImmediateMode;}
+{
+  return myImmediateModeOn > 0;
+}
+
+inline const Handle(Graphic3d_StructureManager)& PrsMgr_PresentationManager::StructureManager() const
+{
+  return myStructureManager;
+}

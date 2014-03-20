@@ -462,11 +462,10 @@ is
   -- resources after the last view has been closed without removing objects.
 
   RecomputeStructures (me: mutable;
-                       theStructures : MapOfStructure from Graphic3d)
-  is private;
+                       theStructures : MapOfStructure from Graphic3d);
   ---Purpose: Recomputes all structures from theStructures.
 
---
+--
 
 fields
 

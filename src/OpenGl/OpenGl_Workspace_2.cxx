@@ -38,8 +38,6 @@
 #include <OpenGl_View.hxx>
 #include <OpenGl_Display.hxx>
 
-//10-05-96 : CAL ; Ajout d'un nouveau delta dans les copies de pixels (voir CALL_DEF_DELTA)
-#define CALL_DEF_DELTA 10
 
 #ifdef _WIN32
 
@@ -577,11 +575,11 @@ Standard_Boolean OpenGl_Workspace::Print
     myPrintContext->SetScale ((GLfloat )aFrameWidth /viewWidth,
                               (GLfloat )aFrameHeight/viewHeight);
     aFrameBuffer->SetupViewport (GetGlContext());
-    Redraw1(ACView, ACUnderLayer, ACOverLayer, 0);
+    redraw1 (ACView, ACUnderLayer, ACOverLayer, 0);
     if (!myTransientDrawToFront)
     {
       // render to FBO only if allowed to render to back buffer
-      RedrawImmediatMode();
+      RedrawImmediate (ACView, ACUnderLayer, ACOverLayer, Standard_True);
     }
     glReadPixels (0, 0, aFrameWidth, aFrameHeight,
                   GL_BGR_EXT, GL_UNSIGNED_BYTE, (GLvoid* )aViewBuffer);
@@ -688,11 +686,11 @@ Standard_Boolean OpenGl_Workspace::Print
 
         // draw to the offscreen buffer and capture the result
         aFrameBuffer->SetupViewport (GetGlContext());
-        Redraw1(ACView, ACUnderLayer, ACOverLayer, 0);
+        redraw1 (ACView, ACUnderLayer, ACOverLayer, 0);
         if (!myTransientDrawToFront)
         {
           // render to FBO only if forces to render to back buffer
-          RedrawImmediatMode();
+          RedrawImmediate (ACView, ACUnderLayer, ACOverLayer, Standard_True);
         }
         glReadPixels (0, 0, aFrameWidth, aFrameHeight,
                       GL_BGR_EXT, GL_UNSIGNED_BYTE, (GLvoid* )aViewBuffer);
@@ -774,125 +772,3 @@ Standard_Boolean OpenGl_Workspace::Print
   return Standard_False;
 #endif
 }
-
-/*----------------------------------------------------------------------*/
-
-//redrawView
-void OpenGl_Workspace::Redraw1 (const Graphic3d_CView& ACView,
-                                const Aspect_CLayer2d& ACUnderLayer,
-                                const Aspect_CLayer2d& ACOverLayer,
-                                const int aswap)
-{
-  if (myDisplay.IsNull() || myView.IsNull())
-    return;
-
-  // Request reset of material
-  NamedStatus |= OPENGL_NS_RESMAT;
-
-  /* GL_DITHER on/off pour le background */
-  if (myBackDither)
-    glEnable (GL_DITHER);
-  else
-    glDisable (GL_DITHER);
-
-  GLbitfield toClear = GL_COLOR_BUFFER_BIT;
-  if ( myUseZBuffer )
-  {
-    glDepthFunc(GL_LEQUAL);
-    glDepthMask(GL_TRUE);
-
-    // SAV checking if depth test was deprecated somewhere outside
-    if ( myUseDepthTest )
-      glEnable(GL_DEPTH_TEST);
-    else
-      glDisable(GL_DEPTH_TEST);
-
-    glClearDepth(1.0);
-    toClear |= GL_DEPTH_BUFFER_BIT;
-  }
-  else
-  {
-    glDisable(GL_DEPTH_TEST);
-  }
-
-  if ( NamedStatus & OPENGL_NS_WHITEBACK )
-  {
-    // Set background to white
-    glClearColor (1.F, 1.F, 1.F, 1.F);
-    toClear |= GL_DEPTH_BUFFER_BIT;
-  }
-  else
-  {
-    glClearColor (myBgColor.rgb[0], myBgColor.rgb[1], myBgColor.rgb[2], 0.F);
-  }
-  glClear (toClear);
-
-  Handle(OpenGl_Workspace) aWS(this);
-  myView->Render (myPrintContext, aWS, ACView, ACUnderLayer, ACOverLayer);
-
-  // Swap the buffers
-  if ( aswap )
-  {
-    GetGlContext()->SwapBuffers();
-    myBackBufferRestored = Standard_False;
-  }
-  else
-    glFlush();
-}
-
-/*----------------------------------------------------------------------*/
-
-//TelCopyBuffers
-void OpenGl_Workspace::CopyBuffers (const Standard_Boolean theFrontToBack)
-{
-  if (theFrontToBack)
-  {
-    myBackBufferRestored = Standard_False;
-  }
-
-  glMatrixMode (GL_PROJECTION);
-  glPushMatrix ();
-  glLoadIdentity ();
-  gluOrtho2D ((GLdouble) 0., (GLdouble) myWidth, 0., (GLdouble) myHeight);
-  glMatrixMode (GL_MODELVIEW);
-  glPushMatrix ();
-  glLoadIdentity ();
-
-  DisableFeatures();
-
-  glDrawBuffer (theFrontToBack ? GL_BACK  : GL_FRONT);
-  glReadBuffer (theFrontToBack ? GL_FRONT : GL_BACK);
-
-  glRasterPos2i (0, 0);
-  glCopyPixels  (0, 0, myWidth  + 1, myHeight + 1, GL_COLOR);
-
-  EnableFeatures();
-
-  glMatrixMode (GL_PROJECTION);
-  glPopMatrix ();
-  glMatrixMode (GL_MODELVIEW);
-  glPopMatrix ();
-
-  glDrawBuffer (GL_BACK);
-}
-
-/*----------------------------------------------------------------------*/
-
-//call_subr_displayCB
-void OpenGl_Workspace::DisplayCallback (const Graphic3d_CView& theCView,
-                                        int theReason)
-{
-  if (theCView.GDisplayCB == NULL)
-  {
-    return;
-  }
-
-  Aspect_GraphicCallbackStruct aCallData;
-  aCallData.reason    = theReason;
-  aCallData.glContext = GetGlContext();
-  aCallData.wsID      = theCView.WsId;
-  aCallData.viewID    = theCView.ViewId;
-  theCView.GDisplayCB (theCView.DefWindow.XWindow, theCView.GClientData, &aCallData);
-}
-
-/*----------------------------------------------------------------------*/

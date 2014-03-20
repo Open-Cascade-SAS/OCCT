@@ -135,11 +135,17 @@ class OpenGl_View : public MMgt_TShared
   //! The structure will be added to associated with it z layer.
   //! If the z layer is not presented in the view, the structure will
   //! be displayed in default bottom-level z layer.
-  void DisplayStructure (const OpenGl_Structure *theStructure,
+  void DisplayStructure (const OpenGl_Structure* theStructure,
                          const Standard_Integer  thePriority);
 
   //! Erase structure from display list.
-  void EraseStructure (const OpenGl_Structure *theStructure);
+  void EraseStructure (const OpenGl_Structure* theStructure);
+
+  //! Add structure to the list of immediate structures.
+  void DisplayImmediateStructure (const OpenGl_Structure* theStructure);
+
+  //! Erase structure from display list.
+  void EraseImmediateStructure (const OpenGl_Structure* theStructure);
 
   //! Insert a new top-level z layer with ID <theLayerId>
   void AddZLayer (const Standard_Integer theLayerId);
@@ -182,16 +188,18 @@ class OpenGl_View : public MMgt_TShared
   void GetMatrices (TColStd_Array2OfReal&  theMatOrient,
                     TColStd_Array2OfReal&  theMatMapping) const;
 
+  //! Returns list of immediate structures rendered on top of main presentation
+  const OpenGl_SequenceOfStructure& ImmediateStructures() const
+  {
+    return myImmediateList;
+  }
+
 #ifdef HAVE_OPENCL
   //! Returns modification state for ray-tracing.
   Standard_Size ModificationState() const { return myModificationState; }
 #endif
 
-public:
-
-  DEFINE_STANDARD_RTTI(OpenGl_View) // Type definition
-
- protected:
+protected:
 
   void RenderStructs (const Handle(OpenGl_Workspace) &AWorkspace);
   void RedrawLayer2d (const Handle(OpenGl_PrinterContext)& thePrintContext,
@@ -242,7 +250,8 @@ public:
 
   //View_LABDepthCueing - fixed index used
 
-  OpenGl_LayerList myZLayers;
+  OpenGl_LayerList           myZLayers;       //!< main list of displayed structure, sorted by layers
+  OpenGl_SequenceOfStructure myImmediateList; //!< list of immediate structures rendered on top of main presentation
 
   const TEL_TRANSFORM_PERSISTENCE *myTransPers;
   Standard_Boolean myIsTransPers;
@@ -264,8 +273,11 @@ public:
   Standard_Size myModificationState;
 #endif
 
- public:
+public:
+
   DEFINE_STANDARD_ALLOC
+  DEFINE_STANDARD_RTTI(OpenGl_View) // Type definition
+
 };
 
-#endif //_OpenGl_View_Header
+#endif // _OpenGl_View_Header

@@ -200,103 +200,39 @@ Standard_Boolean OpenGl_GraphicDriver::GetOpenClDeviceInfo (const Graphic3d_CVie
 #endif
 
 // =======================================================================
-// function : BeginAddMode
+// function : DisplayImmediateStructure
 // purpose  :
 // =======================================================================
-Standard_Boolean OpenGl_GraphicDriver::BeginAddMode (const Graphic3d_CView& theCView)
+void OpenGl_GraphicDriver::DisplayImmediateStructure (const Graphic3d_CView&      theCView,
+                                                      const Graphic3d_CStructure& theCStructure)
 {
-  if (theCView.ViewId == -1)
-  {
-    return Standard_False;
-  }
-
-  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
-  if (aCView != NULL && aCView->WS->BeginAddMode())
-  {
-    myImmediateWS = aCView->WS;
-    return Standard_True;
-  }
-
-  return Standard_False;
-}
-
-// =======================================================================
-// function : EndAddMode
-// purpose  :
-// =======================================================================
-void OpenGl_GraphicDriver::EndAddMode()
-{
-  if (!myImmediateWS.IsNull())
-  {
-    myImmediateWS->EndAddMode();
-    myImmediateWS.Nullify();
-  }
-}
-
-// =======================================================================
-// function : BeginImmediatMode
-// purpose  :
-// =======================================================================
-Standard_Boolean OpenGl_GraphicDriver::BeginImmediatMode (const Graphic3d_CView& theCView,
-                                                          const Aspect_CLayer2d& /*theCUnderLayer*/,
-                                                          const Aspect_CLayer2d& /*theCOverLayer*/,
-                                                          const Standard_Boolean theDoubleBuffer,
-                                                          const Standard_Boolean theRetainMode)
-{
-  if (theCView.ViewId == -1)
-  {
-    return Standard_False;
-  }
-
-  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
-  if (aCView != NULL && aCView->WS->BeginImmediatMode (theCView, theDoubleBuffer, theRetainMode))
-  {
-    myImmediateWS = aCView->WS;
-    return Standard_True;
-  }
-
-  return Standard_False;
-}
-
-// =======================================================================
-// function : ClearImmediatMode
-// purpose  :
-// =======================================================================
-void OpenGl_GraphicDriver::ClearImmediatMode (const Graphic3d_CView& theCView,
-                                              const Standard_Boolean theToFlush)
-{
-  const OpenGl_CView* aCView = (const OpenGl_CView* )theCView.ptrView;
-  if (aCView != NULL)
-  {
-    aCView->WS->ClearImmediatMode (theCView, theToFlush);
-  }
-}
-
-// =======================================================================
-// function : DrawStructure
-// purpose  :
-// =======================================================================
-void OpenGl_GraphicDriver::DrawStructure (const Graphic3d_CStructure& theCStructure)
-{
+  OpenGl_CView*     aCView     = (OpenGl_CView*     )theCView.ptrView;
   OpenGl_Structure* aStructure = (OpenGl_Structure* )&theCStructure;
-  if (!myImmediateWS.IsNull())
+  if (aCView == NULL)
   {
-    myImmediateWS->DrawStructure (aStructure);
+    return;
   }
+
+  aCView->View->DisplayImmediateStructure (aStructure);
 }
 
 // =======================================================================
-// function : EndImmediatMode
+// function : EraseImmediateStructure
 // purpose  :
 // =======================================================================
-void OpenGl_GraphicDriver::EndImmediatMode (const Standard_Integer )
+void OpenGl_GraphicDriver::EraseImmediateStructure (const Graphic3d_CView&      theCView,
+                                                    const Graphic3d_CStructure& theCStructure)
 {
-  if (!myImmediateWS.IsNull())
+  OpenGl_CView*     aCView     = (OpenGl_CView*     )theCView.ptrView;
+  OpenGl_Structure* aStructure = (OpenGl_Structure* )&theCStructure;
+  if (aCView == NULL)
   {
-    myImmediateWS->EndImmediatMode();
-    myImmediateWS.Nullify();
+    return;
   }
+
+  aCView->View->EraseImmediateStructure (aStructure);
 }
+
 
 // =======================================================================
 // function : Print
