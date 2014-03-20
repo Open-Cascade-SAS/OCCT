@@ -132,14 +132,22 @@ is
     is protected; 
     ---Purpose: 
     -- Looking for the rough intersection ranges
+ 
+    FindSolutions(me:out;  
+        theRanges1 : out SequenceOfRanges from IntTools;
+        theRanges2 : out SequenceOfRanges from IntTools)
+    is protected; 
+    ---Purpose:
+    -- Looking for solutions
 
     FindSolutions(me:out;  
         theR1, theR2 : Range from IntTools;
+        theBC        : Box from Bnd;
         theRanges1   : out SequenceOfRanges from IntTools;
         theRanges2   : out SequenceOfRanges from IntTools)
     is protected; 
     ---Purpose:
-    -- Looking fot the exact intersection ranges
+    -- Looking for the exact intersection ranges
     
     MergeSolutions(me:out; 
         theRanges1, theRanges2 : SequenceOfRanges from IntTools)
