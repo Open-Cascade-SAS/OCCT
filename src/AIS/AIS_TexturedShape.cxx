@@ -225,6 +225,11 @@ void AIS_TexturedShape::UpdateAttributes()
     return;
   }
 
+  if (myModulate)
+    myTexture->EnableModulate();
+  else
+    myTexture->DisableModulate();
+
   if (myToShowTriangles)
     myAspect->SetEdgeOn();
   else
