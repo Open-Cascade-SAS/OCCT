@@ -49,10 +49,10 @@
 #include <Geom_Surface.hxx>
 
 #include <Interface_Macros.hxx>
+#include <Message.hxx>
 #include <Message_Messenger.hxx>
 
 #include <Draw_Appli.hxx>
-#include <Draw_Printer.hxx>
 #include <DrawTrSurf.hxx>
 #include <DBRep.hxx>
 //#include <GeometryTest.hxx>  essai CKY 4-AUT-1998
@@ -586,15 +586,11 @@ static Standard_Integer XSDRAWIGES_tplosttrim (Draw_Interpretor& di, Standard_In
       case 3:
 	di << "Face: " << "\n"; break;
       }
-      Handle(Message_Messenger) aDIMessenger = 
-	new Message_Messenger (new Draw_Printer(di));
+
       TColStd_MapIteratorOfMapOfTransient itmap;
       for(itmap.Initialize(aMap); itmap.More(); itmap.Next()) {
-	//XSDRAW::Model()->Print(itmap.Key(),cout);
-	Standard_SStream aSStream;
-	XSDRAW::Model()->Print(itmap.Key(),aDIMessenger);
-	di << aSStream;
-	di<<"  ";
+        XSDRAW::Model()->Print (itmap.Key(), Message::DefaultMessenger());
+        di << "  ";
       }
       di << "\n";
       di << "\n" << "Number:"<< nbFaces << "\n";

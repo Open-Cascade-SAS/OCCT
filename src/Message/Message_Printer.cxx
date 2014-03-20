@@ -19,25 +19,41 @@
 #include <TCollection_ExtendedString.hxx>
 
 //=======================================================================
-//function : Send
-//purpose  : 
+//function : Constructor
+//purpose  :
 //=======================================================================
 
-void Message_Printer::Send (const Standard_CString theString,
-			    const Message_Gravity theGravity,
-			    const Standard_Boolean putEndl) const
+Message_Printer::Message_Printer()
+: myTraceLevel (Message_Info)
 {
-  Send ( TCollection_ExtendedString(theString), theGravity, putEndl );
 }
 
 //=======================================================================
 //function : Send
-//purpose  : 
+//purpose  :
+//=======================================================================
+
+void Message_Printer::Send (const Standard_CString theString,
+                            const Message_Gravity  theGravity,
+                            const Standard_Boolean theToOutEol) const
+{
+  if (theGravity >= myTraceLevel)
+  {
+    Send (TCollection_ExtendedString (theString), theGravity, theToOutEol);
+  }
+}
+
+//=======================================================================
+//function : Send
+//purpose  :
 //=======================================================================
 
 void Message_Printer::Send (const TCollection_AsciiString& theString,
-			    const Message_Gravity theGravity,
-			    const Standard_Boolean putEndl) const
+                            const Message_Gravity          theGravity,
+                            const Standard_Boolean         theToOutEol) const
 {
-  Send ( TCollection_ExtendedString(theString), theGravity, putEndl );
+  if (theGravity >= myTraceLevel)
+  {
+    Send (TCollection_ExtendedString (theString), theGravity, theToOutEol);
+  }
 }

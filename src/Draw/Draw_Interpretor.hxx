@@ -209,6 +209,9 @@ public:
   //! Eval the content on the file and returns status
   Standard_EXPORT Standard_Integer EvalFile (const Standard_CString theFileName);
 
+  //! Eval the script "help command_name"
+  Standard_EXPORT Standard_Integer PrintHelp (const Standard_CString theCommandName);
+
   //! Returns True if the script is complete, no pending closing braces. (})
   Standard_EXPORT static Standard_Boolean Complete (const Standard_CString theScript);
 

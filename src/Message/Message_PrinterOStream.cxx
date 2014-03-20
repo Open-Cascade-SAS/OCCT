@@ -26,10 +26,12 @@
 //purpose  : Empty constructor, defaulting to cerr
 //=======================================================================
 
-Message_PrinterOStream::Message_PrinterOStream (const Message_Gravity theTraceLevel) 
-: myTraceLevel(theTraceLevel), myStream(&cout), 
-  myIsFile(Standard_False), myUseUtf8(Standard_False)
+Message_PrinterOStream::Message_PrinterOStream (const Message_Gravity theTraceLevel)
+: myStream  (&cout),
+  myIsFile  (Standard_False),
+  myUseUtf8 (Standard_False)
 {
+  myTraceLevel = theTraceLevel;
 }
 
 //=======================================================================
@@ -38,10 +40,12 @@ Message_PrinterOStream::Message_PrinterOStream (const Message_Gravity theTraceLe
 //           for specific file names standard streams are created
 //=======================================================================
 Message_PrinterOStream::Message_PrinterOStream (const Standard_CString theFileName,
-						const Standard_Boolean doAppend,
-						const Message_Gravity theTraceLevel)
-: myTraceLevel(theTraceLevel), myStream(&cout), myIsFile(Standard_False)
+                                                const Standard_Boolean theToAppend,
+                                                const Message_Gravity  theTraceLevel)
+: myStream (&cout),
+  myIsFile (Standard_False)
 {
+  myTraceLevel = theTraceLevel;
   if ( strcasecmp(theFileName, "cout") == 0 ) 
     myStream = &cerr;
   else if ( strcasecmp(theFileName, "cerr") == 0 ) 
@@ -49,15 +53,15 @@ Message_PrinterOStream::Message_PrinterOStream (const Standard_CString theFileNa
   else 
   {
     TCollection_AsciiString aFileName (theFileName);
-#ifdef WNT
+#ifdef _WIN32
     aFileName.ChangeAll ('/', '\\');
 #endif
 
     ofstream *ofile = new ofstream (aFileName.ToCString(),
 #ifdef USE_STL_STREAMS
-				 (doAppend ? (std::ios_base::app | std::ios_base::out) : std::ios_base::out ) );
+                                    (theToAppend ? (std::ios_base::app | std::ios_base::out) : std::ios_base::out ) );
 #else
-				 (doAppend ? ios::app : ios::out ) );
+                                    (theToAppend ? ios::app : ios::out ) );
 #endif
     if ( ofile ) {
       myStream = (Standard_OStream*)ofile;

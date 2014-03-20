@@ -46,17 +46,6 @@ is
     	---Purpose: Flushes the output stream and destroys it if it has been
     	--          specified externally with option doFree (or if it is internal
         --          file stream)
-	
-    GetTraceLevel (me) returns Gravity from Message;
-    	---C++: inline
-    	---Purpose: Return trace level used for filtering messages;
-	--          messages with lover gravity will be ignored.
-
-    SetTraceLevel (me: mutable; theTraceLevel: Gravity from Message);
-    	---C++: inline
-    	---Purpose: Set trace level used for filtering messages.
-    	--          By default, trace level is Message_Info, so that 
-    	--          all messages are output
 
     GetUseUtf8 (me) returns Boolean;
     	---Purpose: Returns option to convert non-Ascii symbols to UTF8 encoding
@@ -95,7 +84,6 @@ is
 	      
 fields
 
-    myTraceLevel: Gravity from Message;
     myStream:     Address from Standard; -- pointer to OStream 
     myIsFile:     Boolean from Standard;
     myUseUtf8:    Boolean from Standard;

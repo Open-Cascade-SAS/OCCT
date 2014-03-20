@@ -4,8 +4,8 @@
 //
 // This file is part of Open CASCADE Technology software library.
 //
-// This library is free software; you can redistribute it and/or modify it under
-// the terms of the GNU Lesser General Public License version 2.1 as published
+// This library is free software; you can redistribute it and / or modify it
+// under the terms of the GNU Lesser General Public version 2.1 as published
 // by the Free Software Foundation, with special exception defined in the file
 // OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
 // distribution for complete text of the license and disclaimer of any warranty.
@@ -13,34 +13,24 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Message_PrinterOStream.hxx>
+#include <Message_Printer.hxx>
 
 //=======================================================================
-//function : GetUseUtf8
-//purpose  : 
+//function : GetTraceLevel
+//purpose  :
 //=======================================================================
 
-inline Standard_Boolean Message_PrinterOStream::GetUseUtf8() const
+inline Message_Gravity Message_Printer::GetTraceLevel() const
 {
-  return myUseUtf8;
+  return myTraceLevel;
 }
 
 //=======================================================================
-//function : SetUseUtf8
-//purpose  : 
+//function : SetTraceLevel
+//purpose  :
 //=======================================================================
 
-inline void Message_PrinterOStream::SetUseUtf8 (const Standard_Boolean useUtf8)
+inline void Message_Printer::SetTraceLevel (const Message_Gravity theTraceLevel)
 {
-  myUseUtf8 = useUtf8;
-}
-
-//=======================================================================
-//function : GetStream
-//purpose  : 
-//=======================================================================
-
-inline Standard_OStream& Message_PrinterOStream::GetStream () const
-{
-  return *(Standard_OStream*)myStream;
+  myTraceLevel = theTraceLevel;
 }

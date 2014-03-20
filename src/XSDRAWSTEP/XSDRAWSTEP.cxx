@@ -23,7 +23,7 @@
 
 #include <Draw_Appli.hxx>
 #include <Draw_Interpretor.hxx>
-#include <Draw_Printer.hxx>
+#include <Message.hxx>
 #include <Message_Messenger.hxx>
 
 #include <DBRep.hxx>
@@ -165,15 +165,13 @@ static Standard_Integer stepread (Draw_Interpretor& di/*theCommands*/, Standard_
   //   nom = "." -> fichier deja lu
   Standard_Integer i, num, nbs, modepri = 1;
   if (fromtcl) modepri = 4;
-  Handle(Message_Messenger) aDIMessenger = 
-    new Message_Messenger (new Draw_Printer(di));
   while (modepri) {
     num = sr.NbRootsForTransfer();
     if (!fromtcl) {
       di<<"NbRootsForTransfer="<<num<<" :\n";
       for (i = 1; i <= num; i ++) {
         di<<"Root."<<i<<", Ent. ";
-        sr.Model()->Print(sr.RootForTransfer(i),aDIMessenger);
+        sr.Model()->Print (sr.RootForTransfer(i), Message::DefaultMessenger());
         di<<" Type:"<<sr.RootForTransfer(i)->DynamicType()->Name()<<"\n";
       }
 

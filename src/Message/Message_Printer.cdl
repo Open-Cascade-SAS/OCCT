@@ -15,42 +15,59 @@
 
 deferred class Printer from Message inherits TShared from MMgt
 
-    ---Purpose: Abstract interface class defining printer as output context for 
-    --          text messages
-    --          
-    --          The message, besides being text string, has associated gravity
-    --          level, which can be used by printer to decide either to process 
-    --          a message or ignore it. 
+  ---Purpose: Abstract interface class defining printer as output context for text messages
+  --
+  --          The message, besides being text string, has associated gravity
+  --          level, which can be used by printer to decide either to process a message or ignore it.
 
 uses
 
-    Gravity from Message,
-    AsciiString from TCollection,
-    ExtendedString from TCollection
-    
+  Gravity from Message,
+  AsciiString from TCollection,
+  ExtendedString from TCollection
+
 is
 
-    Send (me; theString: ExtendedString from TCollection;
-              theGravity: Gravity from Message;
-	      putEndl: Boolean) is deferred;
-	---Purpose: Send a string message with specified trace level.
-	--          The parameter putEndl specified whether end-of-line
-	--          should be added to the end of the message.
-	--          This method must be redefined in descentant.
+  Initialize returns Printer from Message;
+  ---Purpose: Empty constructor with Message_Info trace level
 
-    Send (me; theString: CString; theGravity: Gravity from Message;
-	      putEndl: Boolean) is virtual;
-	---Purpose: Send a string message with specified trace level.
-	--          The parameter putEndl specified whether end-of-line
-	--          should be added to the end of the message.
-	--          Default implementation calls first method Send().
+  GetTraceLevel (me) returns Gravity from Message;
+  ---C++: inline
+  ---Purpose: Return trace level used for filtering messages;
+  --          messages with lover gravity will be ignored.
 
-    Send (me; theString: AsciiString from TCollection;
-              theGravity: Gravity from Message;
-	      putEndl: Boolean) is virtual;
-	---Purpose: Send a string message with specified trace level.
-	--          The parameter putEndl specified whether end-of-line
-	--          should be added to the end of the message.
-	--          Default implementation calls first method Send().
+  SetTraceLevel (me : mutable;
+                 theTraceLevel : Gravity from Message);
+  ---C++: inline
+  ---Purpose: Set trace level used for filtering messages.
+  --          By default, trace level is Message_Info, so that all messages are output
+
+  Send (me;
+        theString   : ExtendedString from TCollection;
+        theGravity  : Gravity from Message;
+        theToPutEol : Boolean) is deferred;
+  ---Purpose: Send a string message with specified trace level.
+  --          The parameter theToPutEol specified whether end-of-line should be added to the end of the message.
+  --          This method must be redefined in descentant.
+
+  Send (me;
+        theString   : CString;
+        theGravity  : Gravity from Message;
+        theToPutEol : Boolean) is virtual;
+  ---Purpose: Send a string message with specified trace level.
+  --          The parameter theToPutEol specified whether end-of-line should be added to the end of the message.
+  --          Default implementation calls first method Send().
+
+  Send (me;
+        theString   : AsciiString from TCollection;
+        theGravity  : Gravity from Message;
+        theToPutEol : Boolean) is virtual;
+  ---Purpose: Send a string message with specified trace level.
+  --          The parameter theToPutEol specified whether end-of-line should be added to the end of the message.
+  --          Default implementation calls first method Send().
+
+fields
+
+  myTraceLevel : Gravity from Message is protected;
 
 end Printer;

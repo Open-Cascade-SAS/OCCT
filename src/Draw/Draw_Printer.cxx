@@ -30,51 +30,66 @@ Draw_Printer::Draw_Printer (const Draw_Interpretor& theTcl)
 
 //=======================================================================
 //function : Send
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void Draw_Printer::Send (const TCollection_ExtendedString& theString,
-			 const Message_Gravity /*theGravity*/,
-			 const Standard_Boolean putEndl) const
+                         const Message_Gravity             theGravity,
+                         const Standard_Boolean            theToPutEol) const
 {
-  if ( ! myTcl )
+  if (!myTcl
+   || theGravity < myTraceLevel)
+  {
     return;
+  }
+
   (*(Draw_Interpretor*)myTcl) << theString;
-  if ( putEndl ){
+  if (theToPutEol)
+  {
     (*(Draw_Interpretor*)myTcl) << "\n";
   }
 }
 
 //=======================================================================
 //function : Send
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void Draw_Printer::Send (const Standard_CString theString,
-			 const Message_Gravity /*theGravity*/,
-			 const Standard_Boolean putEndl) const
+                         const Message_Gravity  theGravity,
+                         const Standard_Boolean theToPutEol) const
 {
-  if ( ! myTcl )
+  if (!myTcl
+   || theGravity < myTraceLevel)
+  {
     return;
+  }
+
   (*(Draw_Interpretor*)myTcl) << theString;
-  if ( putEndl ){
+  if (theToPutEol)
+  {
     (*(Draw_Interpretor*)myTcl) << "\n";
   }
 }
 
 //=======================================================================
 //function : Send
-//purpose  : 
+//purpose  :
 //=======================================================================
 
 void Draw_Printer::Send (const TCollection_AsciiString& theString,
-			 const Message_Gravity /*theGravity*/,
-			 const Standard_Boolean putEndl) const
+                         const Message_Gravity          theGravity,
+                         const Standard_Boolean         theToPutEol) const
 {
-  if ( ! myTcl )
+  if (!myTcl
+   || theGravity < myTraceLevel)
+  {
     return;
+  }
+
   (*(Draw_Interpretor*)myTcl) << theString;
-  if ( putEndl ){
+  if (theToPutEol)
+  {
     (*(Draw_Interpretor*)myTcl) << "\n";
   }
 }

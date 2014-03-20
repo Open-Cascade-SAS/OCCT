@@ -577,6 +577,18 @@ Standard_Integer Draw_Interpretor::EvalFile(const Standard_CString fname)
 }
 
 //=======================================================================
+//function : PrintHelp
+//purpose  :
+//=======================================================================
+
+Standard_Integer Draw_Interpretor::PrintHelp (const Standard_CString theCommandName)
+{
+  TCollection_AsciiString aCmd     = TCollection_AsciiString ("help ") + theCommandName;
+  Standard_PCharacter     aLinePtr = (Standard_PCharacter )aCmd.ToCString();
+  return Tcl_Eval (myInterp, aLinePtr);
+}
+
+//=======================================================================
 //function :Complete
 //purpose  : 
 //=======================================================================
