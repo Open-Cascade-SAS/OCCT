@@ -23,7 +23,5 @@
 #include <NCollection_IndexedDataMap.hxx>
 
 typedef NCollection_IndexedDataMap<TopoDS_Shape, BOPCol_ListOfShape, TopTools_ShapeMapHasher> BOPCol_IndexedDataMapOfShapeListOfShape; 
-#undef _NCollection_MapHasher
-
 
 #endif

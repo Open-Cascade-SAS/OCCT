@@ -14,52 +14,17 @@
 #ifndef _BRepExtrema_DistShapeShape_HeaderFile
 #define _BRepExtrema_DistShapeShape_HeaderFile
 
-#ifndef _Standard_HeaderFile
-#include <Standard.hxx>
-#endif
-#ifndef _Standard_DefineAlloc_HeaderFile
-#include <Standard_DefineAlloc.hxx>
-#endif
-#ifndef _Standard_Macro_HeaderFile
-#include <Standard_Macro.hxx>
-#endif
-
-#ifndef _Standard_Integer_HeaderFile
-#include <Standard_Integer.hxx>
-#endif
-#ifndef _Standard_Real_HeaderFile
-#include <Standard_Real.hxx>
-#endif
-#ifndef _Standard_Boolean_HeaderFile
-#include <Standard_Boolean.hxx>
-#endif
-#ifndef _BRepExtrema_SeqOfSolution_HeaderFile
 #include <BRepExtrema_SeqOfSolution.hxx>
-#endif
-#ifndef _BRepExtrema_SolutionElem_HeaderFile
 #include <BRepExtrema_SolutionElem.hxx>
-#endif
-#ifndef _TopoDS_Shape_HeaderFile
 #include <TopoDS_Shape.hxx>
-#endif
-#ifndef _TopTools_IndexedMapOfShape_HeaderFile
 #include <TopTools_IndexedMapOfShape.hxx>
-#endif
-#ifndef _Extrema_ExtFlag_HeaderFile
 #include <Extrema_ExtFlag.hxx>
-#endif
-#ifndef _Extrema_ExtAlgo_HeaderFile
 #include <Extrema_ExtAlgo.hxx>
-#endif
-#ifndef _BRepExtrema_SupportType_HeaderFile
 #include <BRepExtrema_SupportType.hxx>
-#endif
-#ifndef _Standard_OStream_HeaderFile
-#include <Standard_OStream.hxx>
-#endif
-#ifndef _gp_Pnt_HeaderFile
 #include <gp_Pnt.hxx>
-#endif
+#include <Standard_OStream.hxx>
+#include <Standard_DefineAlloc.hxx>
+
 class TopoDS_Shape;
 class TopTools_IndexedMapOfShape;
 class Bnd_SeqOfBox;

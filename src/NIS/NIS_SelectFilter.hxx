@@ -23,14 +23,11 @@ class NIS_InteractiveObject;
 class Handle_Standard_Type;
 
 /**
- * Interface for selection filters. It can be used in NIS_InteractiveContext
- * by methods SetFilter and GetFilter.<br>
- * Unlike in AIS, only one filter can be installed in InteractiveContext. If
- * you need more than one filter instance to work together, create a composite
- * NIS_SelectFilter specialization that would hold a list of simpler Filter
- * instances.
+ * Interface for selection filters. It can be used in NIS_InteractiveContext by methods SetFilter and GetFilter.
+ * Unlike in AIS, only one filter can be installed in InteractiveContext.
+ * If you need more than one filter instance to work together, create a composite
+ * NIS_SelectFilter specialization that would hold a list of simpler Filter instances.
  */
-
 class NIS_SelectFilter : public Standard_Transient
 {
  public:

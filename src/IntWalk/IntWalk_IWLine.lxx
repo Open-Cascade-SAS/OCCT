@@ -12,18 +12,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef Standard_DomainError_HeaderFile
 #include <Standard_DomainError.hxx>
-#endif
-#ifndef IntSurf_LineOn2S_HeaderFile
 #include <IntSurf_LineOn2S.hxx>
-#endif
-#ifndef IntSurf_Couple_HeaderFile
 #include <IntSurf_Couple.hxx>
-#endif
-#ifndef IntSurf_SequenceOfCouple_HeaderFile
 #include <IntSurf_SequenceOfCouple.hxx>
-#endif
 
 inline void IntWalk_IWLine::Cut(const Standard_Integer Index)
 {

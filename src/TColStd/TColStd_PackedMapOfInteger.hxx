@@ -20,10 +20,8 @@
 #include <TCollection_BasicMap.hxx>
 
 /**
- *  Optimized Map of integer values. Each block of 32 integers is stored in
- *  8 bytes in memory.
+ * Optimized Map of integer values. Each block of 32 integers is stored in 8 bytes in memory.
  */
-
 class TColStd_PackedMapOfInteger : private TCollection_BasicMap
 {
  public:
@@ -80,25 +78,20 @@ class TColStd_PackedMapOfInteger : private TCollection_BasicMap
 public:
   //!@name Boolean operations with maps as sets of integers
   //!@{
-  
+
   /**
-   * Sets this Map to be the result of union (aka addition, fuse, merge, 
-   * boolean OR) operation between two given Maps.
-   * The new Map contains the values that are contained either in the
-   * first map or in the second map or in both.<br>
-   * All previous contents of this Map is cleared. This map (result of the
-   * boolean operation) can also be passed as one of operands.<br>
+   * Sets this Map to be the result of union (aka addition, fuse, merge, boolean OR) operation between two given Maps.
+   * The new Map contains the values that are contained either in the first map or in the second map or in both.
+   * All previous contents of this Map is cleared. This map (result of the boolean operation) can also be passed as one of operands.
    */
   Standard_EXPORT void Union (const TColStd_PackedMapOfInteger&,
                               const TColStd_PackedMapOfInteger&);
 
   /**
-   * Apply to this Map the boolean operation union (aka addition, fuse, merge,
-   * boolean OR) with another (given) Map.
-   * The result contains the values that were previously contained in
-   * this map or contained in the given (operand) map.<br>
+   * Apply to this Map the boolean operation union (aka addition, fuse, merge, boolean OR) with another (given) Map.
+   * The result contains the values that were previously contained in this map or contained in the given (operand) map.
    * This algorithm is similar to method Union().
-   * Returns True if contents of this map is changed.
+   * @return True if content of this map is changed
    */
   Standard_EXPORT Standard_Boolean Unite (const TColStd_PackedMapOfInteger&);
 
@@ -109,25 +102,19 @@ public:
   { Unite(MM); return *this; }
 
   /**
-   * Sets this Map to be the result of intersection (aka multiplication, common, 
-   * boolean AND) operation between two given Maps.
-   * The new Map contains only the values that are contained in both map
-   * operands.<br>
-   * All previous contents of this Map is cleared. This same map (result of the
-   * boolean operation) can also be used as one of operands.<br>
-   * The order of operands makes no difference; the method minimizes internally
-   * the number of iterations using the smallest map for the loop.
+   * Sets this Map to be the result of intersection (aka multiplication, common, boolean AND) operation between two given Maps.
+   * The new Map contains only the values that are contained in both map operands.
+   * All previous contents of this Map is cleared. This same map (result of the boolean operation) can also be used as one of operands.
+   * The order of operands makes no difference; the method minimizes internally the number of iterations using the smallest map for the loop.
    */
   Standard_EXPORT void Intersection (const TColStd_PackedMapOfInteger&,
                                      const TColStd_PackedMapOfInteger&);
 
   /**
-   * Apply to this Map the intersection operation (aka multiplication, common, 
-   * boolean AND) with another (given) Map.
-   * The result contains only the values that are contained in both this and
-   * the given maps.<br>
+   * Apply to this Map the intersection operation (aka multiplication, common,  boolean AND) with another (given) Map.
+   * The result contains only the values that are contained in both this and the given maps.
    * This algorithm is similar to method Intersection().
-   * Returns True if contents of this map is changed.
+   * @return True if content of this map is changed
    */
   Standard_EXPORT Standard_Boolean Intersect (const TColStd_PackedMapOfInteger&);
 
@@ -138,23 +125,20 @@ public:
   { Intersect(MM); return *this; }
 
   /**
-   * Sets this Map to be the result of subtraction (aka set-theoretic difference, 
-   * relative complement, exclude, cut, boolean NOT) operation between two given Maps.
-   * The new Map contains only the values that are contained in the first map
-   * operands and not contained in the second one.<br>
-   * All previous contents of this Map is cleared. This map (result of the
-   * boolean operation) can also be used as the first operand.<br>
+   * Sets this Map to be the result of subtraction
+   * (aka set-theoretic difference, relative complement, exclude, cut, boolean NOT) operation between two given Maps.
+   * The new Map contains only the values that are contained in the first map operands and not contained in the second one.
+   * All previous contents of this Map is cleared.
+   * This map (result of the boolean operation) can also be used as the first operand.
    */
   Standard_EXPORT void Subtraction (const TColStd_PackedMapOfInteger&,
                                     const TColStd_PackedMapOfInteger&);
 
   /**
-   * Apply to this Map the subtraction (aka set-theoretic difference, relative 
-   * complement, exclude, cut, boolean NOT) operation with another (given) Map.
-   * The result contains only the values that were previously contained in
-   * this map and not contained in this map.<br>
+   * Apply to this Map the subtraction (aka set-theoretic difference, relative complement, exclude, cut, boolean NOT) operation with another (given) Map.
+   * The result contains only the values that were previously contained in this map and not contained in this map.
    * This algorithm is similar to method Subtract() with two operands.
-   * Returns True if contents of this map is changed.
+   * @return True if contents of this map is changed
    */
   Standard_EXPORT Standard_Boolean Subtract (const TColStd_PackedMapOfInteger&);
 
@@ -165,23 +149,19 @@ public:
   { Subtract(MM); return *this; }
 
   /**
-   * Sets this Map to be the result of symmetric difference (aka exclusive 
-   * disjunction, boolean XOR) operation between two given Maps.
-   * The new Map contains the values that are contained only in the 
-   * first or the second operand maps but not in both.<br>
-   * All previous contents of this Map is cleared. This map (result of the
-   * boolean operation) can also be used as one of operands.<br>
+   * Sets this Map to be the result of symmetric difference (aka exclusive disjunction, boolean XOR) operation between two given Maps.
+   * The new Map contains the values that are contained only in the first or the second operand maps but not in both.
+   * All previous contents of this Map is cleared.
+   * This map (result of the boolean operation) can also be used as one of operands.
    */
   Standard_EXPORT void Difference (const TColStd_PackedMapOfInteger&,
                                    const TColStd_PackedMapOfInteger&);
 
   /**
-   * Apply to this Map the symmetric difference (aka exclusive 
-   * disjunction, boolean XOR) operation with another (given) Map.
-   * The result contains the values that are contained only in this
-   * or the operand map, but not in both.<br>
+   * Apply to this Map the symmetric difference (aka exclusive disjunction, boolean XOR) operation with another (given) Map.
+   * The result contains the values that are contained only in this or the operand map, but not in both.
    * This algorithm is similar to method Difference().
-   * Returns True if contents of this map is changed.
+   * @return True if contents of this map is changed
    */
   Standard_EXPORT Standard_Boolean Differ (const TColStd_PackedMapOfInteger&);
 

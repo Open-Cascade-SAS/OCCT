@@ -15,13 +15,6 @@
 #ifndef BOPCol_ListOfInteger_HeaderFile
 #define BOPCol_ListOfInteger_HeaderFile
 
-#ifndef _Standard_HeaderFile
-#include <Standard.hxx>
-#endif
-#ifndef _Standard_Macro_HeaderFile
-#include <Standard_Macro.hxx>
-#endif
-
 #include <NCollection_List.hxx>   
 
 typedef NCollection_List<Standard_Integer> BOPCol_ListOfInteger; 

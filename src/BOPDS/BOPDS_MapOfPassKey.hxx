@@ -15,7 +15,6 @@
 #ifndef BOPDS_MapOfPassKey_HeaderFile
 #define BOPDS_MapOfPassKey_HeaderFile
 
-#define _NCollection_MapHasher
 #include <NCollection_Map.hxx>   
 #include <BOPDS_PassKeyMapHasher.hxx>
 #include <BOPDS_PassKey.hxx>
@@ -23,8 +22,5 @@
 
 typedef NCollection_Map<BOPDS_PassKey, BOPDS_PassKeyMapHasher> BOPDS_MapOfPassKey; 
 typedef BOPDS_MapOfPassKey::Iterator BOPDS_MapIteratorMapOfPassKey;  
-
-#undef _NCollection_MapHasher
-
 
 #endif

@@ -16,13 +16,14 @@
 #ifndef _BRepMesh_Status_HeaderFile
 #define _BRepMesh_Status_HeaderFile
 
-//! Discribes the wires discretisation. <br>
-enum BRepMesh_Status {
-BRepMesh_NoError              = 0x0,
-BRepMesh_OpenWire             = 0x1,
-BRepMesh_SelfIntersectingWire = 0x2,
-BRepMesh_Failure              = 0x4,
-BRepMesh_ReMesh               = 0x8
+//! Discribes the wires discretisation.
+enum BRepMesh_Status
+{
+  BRepMesh_NoError              = 0x0,
+  BRepMesh_OpenWire             = 0x1,
+  BRepMesh_SelfIntersectingWire = 0x2,
+  BRepMesh_Failure              = 0x4,
+  BRepMesh_ReMesh               = 0x8
 };
 
 #endif

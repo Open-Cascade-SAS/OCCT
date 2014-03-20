@@ -14,36 +14,16 @@
 #ifndef _BRepSweep_NumLinearRegularSweep_HeaderFile
 #define _BRepSweep_NumLinearRegularSweep_HeaderFile
 
-#ifndef _BRepSweep_Builder_HeaderFile
 #include <BRepSweep_Builder.hxx>
-#endif
-#ifndef _TopoDS_Shape_HeaderFile
 #include <TopoDS_Shape.hxx>
-#endif
-#ifndef _Sweep_NumShape_HeaderFile
 #include <Sweep_NumShape.hxx>
-#endif
-#ifndef _BRepSweep_Tool_HeaderFile
 #include <BRepSweep_Tool.hxx>
-#endif
-#ifndef _Sweep_NumShapeTool_HeaderFile
 #include <Sweep_NumShapeTool.hxx>
-#endif
-#ifndef _BRepSweep_Array2OfShapesOfNumLinearRegularSweep_HeaderFile
 #include <BRepSweep_Array2OfShapesOfNumLinearRegularSweep.hxx>
-#endif
-#ifndef _TColStd_Array2OfBoolean_HeaderFile
 #include <TColStd_Array2OfBoolean.hxx>
-#endif
-#ifndef _Handle_BRepSweep_SequenceNodeOfSequenceOfShapesOfNumLinearRegularSweep_HeaderFile
 #include <BRepSweep_SequenceNodeOfSequenceOfShapesOfNumLinearRegularSweep.hxx>
-#endif
-#ifndef _TopAbs_Orientation_HeaderFile
 #include <TopAbs_Orientation.hxx>
-#endif
-#ifndef _Standard_Boolean_HeaderFile
-#include <Standard_Boolean.hxx>
-#endif
+
 class Standard_NoMoreObject;
 class Standard_NoSuchObject;
 class Standard_RangeError;

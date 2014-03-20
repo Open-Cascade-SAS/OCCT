@@ -14,18 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Standard_Integer_HeaderFile
-#include <Standard_Integer.hxx>
-#endif
-#ifndef _Standard_Real_HeaderFile
-#include <Standard_Real.hxx>
-#endif
-#ifndef _Standard_PrimitiveTypes_HeaderFile
-#include <Standard_PrimitiveTypes.hxx>
-#endif
-
 #ifndef AdvApp2Var_EvaluatorFunc2Var_HeaderFile
 #define AdvApp2Var_EvaluatorFunc2Var_HeaderFile
+
+#include <Standard_Integer.hxx>
+#include <Standard_Real.hxx>
+#include <Standard_PrimitiveTypes.hxx>
 
 // History - the C function pointer converted to a virtual class
 // in order to get rid of usage of static functions and static data

@@ -20,18 +20,9 @@
 #ifndef _Handle_Standard_Persistent_HeaderFile
 #define _Handle_Standard_Persistent_HeaderFile
 
-#ifndef _Standard_DefineAlloc_HeaderFile
 #include <Standard_DefineAlloc.hxx>
-#endif
-#ifndef _Standard_Macro_HeaderFile
-#include <Standard_Macro.hxx>
-#endif
-#ifndef _Standard_PrimitiveTypes_HeaderFile
-#include <Standard_PrimitiveTypes.hxx>
-#endif
-#ifndef _Standard_Persistent_proto_HeaderFile
+#include <Standard_TypeDef.hxx>
 #include <Standard_Persistent_proto.hxx>
-#endif
 
 #ifdef _WIN32
 // Disable the warning "conversion from 'unsigned int' to Standard_Persistent *"

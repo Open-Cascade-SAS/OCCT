@@ -16,22 +16,11 @@
 #ifndef _BRepBuilderAPI_VertexInspector_Header
 #define _BRepBuilderAPI_VertexInspector_Header
 
-#ifndef _TColStd_ListOfInteger_HeaderFile
 #include <TColStd_ListOfInteger.hxx>
-#endif
-#ifndef NCollection_Vector_HeaderFile
 #include <NCollection_Vector.hxx>
-#endif
-#ifndef _gp_XY_HeaderFile
 #include <gp_XY.hxx>
-#endif
-#ifndef _gp_XYZ_HeaderFile
 #include <gp_XYZ.hxx>
-#endif
-
-#ifndef NCollection_CellFilter_HeaderFile
 #include <NCollection_CellFilter.hxx>
-#endif
 
 typedef NCollection_Vector<gp_XYZ> VectorOfPoint;
 

@@ -21,10 +21,6 @@
 
 #include <NCollection_IndexedDataMap.hxx>
 
-
 typedef NCollection_IndexedDataMap<TopoDS_Shape, Bnd_Box, TopTools_ShapeMapHasher> BOPCol_IndexedDataMapOfShapeBox; 
  
-#undef _NCollection_MapHasher
-
-
 #endif

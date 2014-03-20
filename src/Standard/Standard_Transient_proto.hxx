@@ -15,15 +15,9 @@
 #ifndef _Standard_Transient_proto_HeaderFile
 #define _Standard_Transient_proto_HeaderFile
 
-#ifndef _Standard_DefineAlloc_HeaderFile
 #include <Standard_DefineAlloc.hxx>
-#endif
-#ifndef _Standard_Macro_HeaderFile
 #include <Standard_Macro.hxx>
-#endif
-#ifndef _Standard_HeaderFile
 #include <Standard.hxx>
-#endif
 
 class Handle_Standard_Transient;
 class Standard_Type;

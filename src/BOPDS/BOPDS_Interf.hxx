@@ -15,24 +15,11 @@
 #ifndef BOPDS_Interf_HeaderFile
 #define BOPDS_Interf_HeaderFile
 
-#ifndef _Standard_HeaderFile
-#include <Standard.hxx>
-#endif
-#ifndef _Standard_Macro_HeaderFile
-#include <Standard_Macro.hxx>
-#endif
-
-#ifndef _Standard_Integer_HeaderFile
-#include <Standard_Integer.hxx>
-#endif
-
-#ifndef _IntTools_CommonPrt_HeaderFile
 #include <IntTools_CommonPrt.hxx>
-#endif
-
 #include <NCollection_BaseAllocator.hxx>
 #include <BOPDS_VectorOfCurve.hxx>
 #include <BOPDS_VectorOfPoint.hxx>
+
 /**
  * The class BOPDS_Interf is is to store the information about
  * the interference between two shapes. 

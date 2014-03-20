@@ -17,15 +17,7 @@
 #ifndef _BSplCLib_EvaluatorFunction_HeaderFile
 #define _BSplCLib_EvaluatorFunction_HeaderFile
 
-#ifndef _Standard_Integer_HeaderFile
-#include <Standard_Integer.hxx>
-#endif
-#ifndef _Standard_Real_HeaderFile
-#include <Standard_Real.hxx>
-#endif
-#ifndef _Standard_PrimitiveTypes_HeaderFile
-#include <Standard_PrimitiveTypes.hxx>
-#endif
+#include <Standard_TypeDef.hxx>
 
 // History - C function pointer converted to a virtual class
 // in order to get rid of usage of static functions and static data

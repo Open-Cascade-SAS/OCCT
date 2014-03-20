@@ -73,15 +73,12 @@ class BOPAlgo_EdgeInfo {
 typedef NCollection_List<BOPAlgo_EdgeInfo> BOPAlgo_ListOfEdgeInfo; 
 typedef BOPAlgo_ListOfEdgeInfo::Iterator BOPAlgo_ListIteratorOfListOfEdgeInfo;  
 
-#define _NCollection_MapHasher
 #include <NCollection_IndexedDataMap.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 
 typedef NCollection_IndexedDataMap<TopoDS_Shape, \
   BOPAlgo_ListOfEdgeInfo, \
   TopTools_ShapeMapHasher> BOPAlgo_IndexedDataMapOfShapeListOfEdgeInfo; 
-#undef _NCollection_MapHasher
-
 
 //=======================================================================
 //function : MakeWire

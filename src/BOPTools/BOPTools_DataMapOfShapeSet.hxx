@@ -18,13 +18,9 @@
 #include <TopoDS_Shape.hxx>  
 #include <TopTools_ShapeMapHasher.hxx>
   
-#define _NCollection_MapHasher
 #include <NCollection_DataMap.hxx>
 
 typedef NCollection_DataMap<TopoDS_Shape, BOPTools_Set, TopTools_ShapeMapHasher> BOPTools_DataMapOfShapeSet; 
 typedef BOPTools_DataMapOfShapeSet::Iterator BOPCol_DataMapIteratorOfDataMapOfShapeSet; 
- 
-#undef _NCollection_MapHasher
-
 
 #endif

@@ -16,25 +16,8 @@
 #ifndef _Standard_MMgrOpt_HeaderFile
 #define _Standard_MMgrOpt_HeaderFile
 
-#ifndef _Standard_Address_HeaderFile
-#include <Standard_Address.hxx>
-#endif
-#ifndef _Standard_Integer_HeaderFile
-#include <Standard_Integer.hxx>
-#endif
-#ifndef _Standard_Boolean_HeaderFile
-#include <Standard_Boolean.hxx>
-#endif
-#ifndef _Standard_Macro_HeaderFile
-#include <Standard_Macro.hxx>
-#endif
-#ifndef _Standard_MMgrRoot_HeaderFile
 #include <Standard_MMgrRoot.hxx>
-#endif
-#ifndef _Standard_Mutex_HeaderFile
 #include <Standard_Mutex.hxx>
-#endif
-#include <Standard_Size.hxx>
 
 /**
 * @brief Open CASCADE memory manager optimized for speed.
@@ -76,7 +59,6 @@
 * blocks is usually less costly than directly by malloc since allocation is made
 * once (when allocating a pool) and overheads induced by malloc are minimized.
 */
-
 class Standard_MMgrOpt : public Standard_MMgrRoot
 {
  public:
@@ -111,13 +93,11 @@ class Standard_MMgrOpt : public Standard_MMgrRoot
   //! Returns number of actually freed blocks
   Standard_EXPORT virtual Standard_Integer Purge(Standard_Boolean isDestroyed);
 
-  //! Declaration of a type pointer to the callback function that
-  //! should accept the following arguments: <br>
-  //! theIsAlloc - true if the data is allocated, false if it is freed; <br>
-  //! theStorage - address of the allocated/freed block <br>
-  //! theRoundSize - the real rounded size of the block <br>
-  //! theSize - the size of the block that was requested by application
-  //!           (this value is correct only if theIsAlloc is true)
+  //! Declaration of a type pointer to the callback function that should accept the following arguments:
+  //! @param theIsAlloc   true if the data is allocated, false if it is freed
+  //! @param theStorage   address of the allocated/freed block
+  //! @param theRoundSize the real rounded size of the block
+  //! @param theSize      the size of the block that was requested by application (this value is correct only if theIsAlloc is true)
   typedef void (*TPCallBackFunc)(const Standard_Boolean theIsAlloc,
                                  const Standard_Address theStorage,
                                  const Standard_Size theRoundSize,

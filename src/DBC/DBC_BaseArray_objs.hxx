@@ -15,24 +15,11 @@
 #ifndef _DBC_BaseArray_HeaderFile
 #define _DBC_BaseArray_HeaderFile
 
-#ifndef _Standard_Integer_HeaderFile
-#include <Standard_Integer.hxx>
-#endif
-#ifndef _DBC_DBVArray_HeaderFile
 #include <DBC_DBVArray.hxx>
-#endif
-#ifndef _Standard_Storable_HeaderFile
 #include <Standard_Storable.hxx>
-#endif
-#ifndef _Standard_Address_HeaderFile
-#include <Standard_Address.hxx>
-#endif
-#ifndef _Standard_OStream_HeaderFile
 #include <Standard_OStream.hxx>
-#endif
-#ifndef _Standard_PrimitiveTypes_HeaderFile
-#include <Standard_PrimitiveTypes.hxx>
-#endif
+#include <Standard_TypeDef.hxx>
+
 class Standard_NullObject;
 class Standard_NegativeValue;
 class Standard_DimensionMismatch;

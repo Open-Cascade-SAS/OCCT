@@ -17,28 +17,13 @@
 #define _BRepMesh_VertexInspector_HeaderFile
 
 #include <BRepMesh_ListOfInteger.hxx> 
-#ifndef _Precision_HeaderFile
 #include <Precision.hxx>
-#endif
-#ifndef _gp_XY_HeaderFile
 #include <gp_XY.hxx>
-#endif
-#ifndef _gp_XYZ_HeaderFile
 #include <gp_XYZ.hxx>
-#endif
-
-#ifndef NCollection_CellFilter_HeaderFile
 #include <NCollection_CellFilter.hxx>
-#endif
-#ifndef _BRepMesh_Vertex_HeaderFile
 #include <BRepMesh_Vertex.hxx>
-#endif
-#ifndef _BRepMesh_VectorOfVertex_HeaderFile
 #include <BRepMesh_VectorOfVertex.hxx>
-#endif
-#ifndef _TColStd_Array1OfReal_HeaderFile
 #include <TColStd_Array1OfReal.hxx>
-#endif
 #include <BRepMesh_BaseAllocator.hxx>
 
 //=======================================================================

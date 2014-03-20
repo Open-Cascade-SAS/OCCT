@@ -69,13 +69,13 @@ public:
                               Quantity_Parameter& theC,
                               Quantity_Parameter& theD) const;
 
-  //! Returns TRUE when the plane representation is displayed <br>
+  //! Returns TRUE when the plane representation is displayed.
   Standard_EXPORT Standard_Boolean IsDisplayed() const;
 
   //! Use this method to pass clipping plane implementation for
   //! standard clipping workflow.
   //! @return clipping plane implementation handle.
-  Standard_EXPORT const Handle(Graphic3d_ClipPlane)& ClipPlane() const
+  const Handle(Graphic3d_ClipPlane)& ClipPlane() const
   {
     return myPlane;
   }

@@ -26,8 +26,4 @@ enum BRepExtrema_SupportType
   BRepExtrema_IsInFace
 };
 
-#ifndef _Standard_PrimitiveTypes_HeaderFile
-#include <Standard_PrimitiveTypes.hxx>
-#endif
-
 #endif

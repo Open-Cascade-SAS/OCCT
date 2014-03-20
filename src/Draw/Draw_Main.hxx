@@ -24,10 +24,7 @@
 #ifndef Draw_Main_HeaderFile
 #define Draw_Main_HeaderFile
 
-#ifndef _Standard_TypeDef_HeaderFile
 #include <Standard_TypeDef.hxx>
-#endif
-
 #include <Draw_Appli.hxx>
 #include <Standard_PCharacter.hxx>
 

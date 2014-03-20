@@ -23,6 +23,4 @@
 typedef NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> BOPCol_MapOfShape; 
 typedef BOPCol_MapOfShape::Iterator BOPCol_MapIteratorOfMapOfShape;  
 
-#undef _NCollection_MapHasher
-
 #endif

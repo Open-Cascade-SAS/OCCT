@@ -24,6 +24,4 @@
 typedef NCollection_DataMap<Standard_Integer, BOPCol_MapOfInteger, TColStd_MapIntegerHasher> BOPCol_DataMapOfIntegerMapOfInteger; 
 typedef BOPCol_DataMapOfIntegerMapOfInteger::Iterator BOPCol_DataMapIteratorOfDataMapOfIntegerMapOfInteger;
  
-#undef _NCollection_MapHasher
-
 #endif

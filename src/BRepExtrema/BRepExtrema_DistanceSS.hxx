@@ -14,34 +14,12 @@
 #ifndef _BRepExtrema_DistanceSS_HeaderFile
 #define _BRepExtrema_DistanceSS_HeaderFile
 
-#ifndef _Standard_HeaderFile
-#include <Standard.hxx>
-#endif
-#ifndef _Standard_DefineAlloc_HeaderFile
-#include <Standard_DefineAlloc.hxx>
-#endif
-#ifndef _Standard_Macro_HeaderFile
-#include <Standard_Macro.hxx>
-#endif
-
-#ifndef _BRepExtrema_SeqOfSolution_HeaderFile
 #include <BRepExtrema_SeqOfSolution.hxx>
-#endif
-#ifndef _Standard_Real_HeaderFile
-#include <Standard_Real.hxx>
-#endif
-#ifndef _Standard_Boolean_HeaderFile
-#include <Standard_Boolean.hxx>
-#endif
-#ifndef _Extrema_ExtFlag_HeaderFile
 #include <Extrema_ExtFlag.hxx>
-#endif
-#ifndef _Extrema_ExtAlgo_HeaderFile
 #include <Extrema_ExtAlgo.hxx>
-#endif
-#ifndef _Precision_HeaderFile
 #include <Precision.hxx>
-#endif
+#include <Standard_DefineAlloc.hxx>
+
 class TopoDS_Shape;
 class Bnd_Box;
 class TopoDS_Vertex;

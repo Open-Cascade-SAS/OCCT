@@ -15,16 +15,11 @@
 #ifndef BOPDS_MapOfPave_HeaderFile
 #define BOPDS_MapOfPave_HeaderFile
 
-#define _NCollection_MapHasher
 #include <NCollection_Map.hxx>   
 #include <BOPDS_PaveMapHasher.hxx>
 #include <BOPDS_Pave.hxx>
 
-
 typedef NCollection_Map<BOPDS_Pave, BOPDS_PaveMapHasher> BOPDS_MapOfPave; 
 typedef BOPDS_MapOfPave::Iterator BOPDS_MapIteratorMapOfPave;  
-
-#undef _NCollection_MapHasher
-
 
 #endif

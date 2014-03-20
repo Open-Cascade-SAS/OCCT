@@ -20,6 +20,4 @@
 
 typedef NCollection_IndexedMap<Standard_Integer, TColStd_MapIntegerHasher> BOPCol_IndexedMapOfInteger; 
  
-#undef _NCollection_MapHasher
-
 #endif

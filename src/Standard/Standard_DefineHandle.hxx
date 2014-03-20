@@ -15,9 +15,7 @@
 #ifndef _Standard_DefineHandle_HeaderFile
 #define _Standard_DefineHandle_HeaderFile
 
-#ifndef _Standard_Macro_HeaderFile
 #include <Standard_Macro.hxx>
-#endif
 
 class Standard_Transient;
 class Standard_Persistent;

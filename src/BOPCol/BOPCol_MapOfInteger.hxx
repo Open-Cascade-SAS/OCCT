@@ -15,21 +15,10 @@
 #ifndef BOPCol_MapOfInteger_HeaderFile
 #define BOPCol_MapOfInteger_HeaderFile
 
-
-#ifndef _Standard_HeaderFile
-#include <Standard.hxx>
-#endif
-#ifndef _Standard_Macro_HeaderFile
-#include <Standard_Macro.hxx>
-#endif
-
 #include <TColStd_MapIntegerHasher.hxx>
-
 #include <NCollection_Map.hxx>   
 
 typedef NCollection_Map<Standard_Integer, TColStd_MapIntegerHasher> BOPCol_MapOfInteger; 
 typedef BOPCol_MapOfInteger::Iterator BOPCol_MapIteratorOfMapOfInteger;  
-
-#undef _NCollection_MapHasher
 
 #endif

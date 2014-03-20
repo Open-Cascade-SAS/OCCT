@@ -15,8 +15,6 @@
 #ifndef BOPDS_DataMapOfPassKeyListOfPaveBlock_HeaderFile
 #define BOPDS_DataMapOfPassKeyListOfPaveBlock_HeaderFile
 
-
-#define _NCollection_MapHasher
 #include <NCollection_DataMap.hxx>
 
 #include <BOPDS_PassKey.hxx>
@@ -26,6 +24,4 @@
 typedef NCollection_DataMap<BOPDS_PassKey, BOPDS_ListOfPaveBlock, BOPDS_PassKeyMapHasher> BOPDS_DataMapOfPassKeyListOfPaveBlock; 
 typedef BOPDS_DataMapOfPassKeyListOfPaveBlock::Iterator BOPDS_DataMapIteratorOfDataMapOfPassKeyListOfPaveBlock;
  
-#undef _NCollection_MapHasher
-
 #endif

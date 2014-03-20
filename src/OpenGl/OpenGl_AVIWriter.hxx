@@ -30,9 +30,9 @@
  * The following tasks are supported:
  * <ol>
  *
- * <li> Creation of AVI data stream: launched by the constructor.<br>
+ * <li>Creation of AVI data stream: launched by the constructor.
  * The constructor accepts the filename, FOURCC video code and the frame rate
- * setting as parameters.<br>
+ * setting as parameters.
  * The default codec name used here is MPG4. To use a different codec, pass
  * its FOURCC value as the input parameter for dwCodec.
  * For example,
@@ -43,7 +43,7 @@
  * Also, you can pass just 0 to avoid the codecs altogether. In that case,
  * the frames would be saved as they are without any compression; However,
  * the output movie file size would be very huge in that case.
- * <br>
+ *
  * Finally, make sure you have the codec installed on the machine before
  * passing its Fourcc here.
  * </li>

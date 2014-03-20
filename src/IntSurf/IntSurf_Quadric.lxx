@@ -12,22 +12,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef gp_Pln_HeaderFile
 #include <gp_Pln.hxx>
-#endif
-#ifndef gp_Sphere_HeaderFile
 #include <gp_Sphere.hxx>
-#endif
-#ifndef gp_Cylinder_HeaderFile
 #include <gp_Cylinder.hxx>
-#endif
-#ifndef gp_Cone_HeaderFile
 #include <gp_Cone.hxx>
-#endif
-#ifndef GeomAbs_SurfaceType_HeaderFile
 #include <GeomAbs_SurfaceType.hxx>
-#endif
-
 
 inline GeomAbs_SurfaceType IntSurf_Quadric::TypeQuadric () const {
 

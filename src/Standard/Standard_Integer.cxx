@@ -16,12 +16,8 @@
 #include <Standard_Integer.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_RangeError.hxx>
-#ifndef _Standard_Stream_HeaderFile
 #include <Standard_Stream.hxx>
-#endif
-#ifndef _Standard_OStream_HeaderFile
 #include <Standard_OStream.hxx>
-#endif
 
 // ------------------------------------------------------------------
 // CharToInt : Converts a character in an integer value

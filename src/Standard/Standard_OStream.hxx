@@ -15,12 +15,8 @@
 #ifndef _Standard_OStream_HeaderFile
 #define _Standard_OStream_HeaderFile
 
-#ifndef _Standard_Macro_HeaderFile
 #include <Standard_TypeDef.hxx>
-#endif
-#ifndef _Standard_Stream_HeaderFile
 #include <Standard_Stream.hxx>
-#endif
 
 class Handle_Standard_Type;
 

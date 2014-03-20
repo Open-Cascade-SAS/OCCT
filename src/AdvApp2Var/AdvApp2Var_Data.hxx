@@ -14,10 +14,7 @@
 #ifndef AdvApp2Var_Data_HeaderFile
 #define AdvApp2Var_Data_HeaderFile
 
-#ifndef _Standard_Macro_HeaderFile
 #include <Standard_Macro.hxx>
-#endif
-
 #include <AdvApp2Var_Data_f2c.hxx>
 //
 struct mdnombr_1_ {

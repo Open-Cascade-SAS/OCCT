@@ -5,6 +5,3 @@ WNT_WOKUMake.edl
 WNT_Dword.hxx
 WNT_Uint.hxx
 WNT_WindowData.hxx
-WNT_Dword.cxx
-WNT_Uint.cxx
-WNT_WindowData.cxx

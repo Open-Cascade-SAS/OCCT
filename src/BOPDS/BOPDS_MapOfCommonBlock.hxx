@@ -15,15 +15,11 @@
 #ifndef BOPDS_MapOfCommonBlock_HeaderFile
 #define BOPDS_MapOfCommonBlock_HeaderFile
 
-#define _NCollection_MapHasher
 #include <NCollection_Map.hxx>   
 #include <TColStd_MapTransientHasher.hxx>
 #include <BOPDS_CommonBlock.hxx>   
 
 typedef NCollection_Map<Handle(BOPDS_CommonBlock), TColStd_MapTransientHasher> BOPDS_MapOfCommonBlock; 
 typedef BOPDS_MapOfCommonBlock::Iterator BOPDS_MapIteratorOfMapOfCommonBlock;  
-
-#undef _NCollection_MapHasher
-
 
 #endif

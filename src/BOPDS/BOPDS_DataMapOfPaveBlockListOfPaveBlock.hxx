@@ -15,7 +15,6 @@
 #ifndef BOPDS_DataMapOfPaveBlockListOfPaveBlock_HeaderFile
 #define BOPDS_DataMapOfPaveBlockListOfPaveBlock_HeaderFile
 
-#define _NCollection_MapHasher
 #include <NCollection_DataMap.hxx>
 #include <TColStd_MapTransientHasher.hxx>
 #include <BOPDS_PaveBlock.hxx>   
@@ -24,7 +23,4 @@
 typedef NCollection_DataMap<Handle(BOPDS_PaveBlock), BOPDS_ListOfPaveBlock, TColStd_MapTransientHasher> BOPDS_DataMapOfPaveBlockListOfPaveBlock; 
 typedef BOPDS_DataMapOfPaveBlockListOfPaveBlock::Iterator BOPDS_DataMapIteratorOfDataMapOfPaveBlockListOfPaveBlock; 
  
-#undef _NCollection_MapHasher
-
-
 #endif

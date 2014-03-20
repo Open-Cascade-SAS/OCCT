@@ -21,11 +21,7 @@
 
 #include <NCollection_DataMap.hxx>
 
-
-
 typedef NCollection_DataMap<TopoDS_Shape, BOPCol_ListOfShape, TopTools_ShapeMapHasher> BOPCol_DataMapOfShapeListOfShape; 
 typedef BOPCol_DataMapOfShapeListOfShape::Iterator BOPCol_DataMapIteratorOfDataMapOfShapeListOfShape; 
  
-#undef _NCollection_MapHasher
-
 #endif

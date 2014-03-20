@@ -14,12 +14,8 @@
 
 #include <Standard_Boolean.hxx>
 #include <Standard_RangeError.hxx>
-#ifndef _Standard_Stream_HeaderFile
 #include <Standard_Stream.hxx>
-#endif
-#ifndef _Standard_OStream_HeaderFile
 #include <Standard_OStream.hxx>
-#endif
 
 const Handle_Standard_Type& Standard_Boolean_Type_() 
 {

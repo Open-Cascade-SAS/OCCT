@@ -15,13 +15,6 @@
 #ifndef BOPCol_DataMapOfShapeAddress_HeaderFile
 #define BOPCol_DataMapOfShapeAddress_HeaderFile
 
-#ifndef _Standard_HeaderFile
-#include <Standard.hxx>
-#endif
-#ifndef _Standard_Macro_HeaderFile
-#include <Standard_Macro.hxx>
-#endif
-
 #include <TopoDS_Shape.hxx>  
 #include <TopTools_ShapeMapHasher.hxx>
   
@@ -30,7 +23,4 @@
 typedef NCollection_DataMap<TopoDS_Shape, Standard_Address, TopTools_ShapeMapHasher> BOPCol_DataMapOfShapeAddress; 
 typedef BOPCol_DataMapOfShapeAddress::Iterator BOPCol_DataMapIteratorOfDataMapOfShapeAddress; 
  
-#undef _NCollection_MapHasher
-
-
 #endif

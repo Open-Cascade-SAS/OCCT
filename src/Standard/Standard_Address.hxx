@@ -26,15 +26,7 @@
 # include <string.h>
 //typedef void* Standard_Address;
 
-
-#ifndef _Standard_TypeDef_HeaderFile
-#include <Standard_TypeDef.hxx>
-#endif
-
-#ifndef _Standard_Integer_HeaderFile
 #include <Standard_Integer.hxx>
-#endif
-
 
 class Handle_Standard_Type;
 

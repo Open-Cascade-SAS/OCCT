@@ -22,10 +22,7 @@
 #ifndef _Standard_ExtString_HeaderFile
 #define _Standard_ExtString_HeaderFile
 
-
-#ifndef _Standard_TypeDef_HeaderFile
 #include <Standard_TypeDef.hxx>
-#endif
 
 class Handle_Standard_Type;
 

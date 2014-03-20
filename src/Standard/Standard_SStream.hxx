@@ -17,9 +17,7 @@
 #ifndef _Standard_SStream_HeaderFile
 #define _Standard_SStream_HeaderFile
 
-#ifndef _Standard_Stream_HeaderFile
 #include <Standard_Stream.hxx>
-#endif
 
 #ifdef USE_STL_STREAM
 

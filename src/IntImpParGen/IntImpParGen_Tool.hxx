@@ -17,26 +17,11 @@
 #ifndef IntImpParGen_Tool_HeaderFile
 #define IntImpParGen_Tool_HeaderFile
 
-#ifndef IntRes2d_Domain_HeaderFile
 #include <IntRes2d_Domain.hxx>
-#endif
-
-#ifndef IntRes2d_Position_HeaderFile
 #include <IntRes2d_Position.hxx>
-#endif
-
-#ifndef IntRes2d_Transition_HeaderFile
 #include <IntRes2d_Transition.hxx>
-#endif
-
-#ifndef gp_Vec2d_HeaderFile
 #include <gp_Vec2d.hxx>
-#endif
-
-#ifndef gp_Pnt2d_HeaderFile
 #include <gp_Pnt2d.hxx>
-#endif
-
  
 Standard_Real NormalizeOnDomain(Standard_Real&,const IntRes2d_Domain&);
 

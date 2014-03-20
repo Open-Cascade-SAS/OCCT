@@ -14,28 +14,16 @@
 #ifndef _BRepExtrema_Poly_HeaderFile
 #define _BRepExtrema_Poly_HeaderFile
 
-#ifndef _Standard_HeaderFile
 #include <Standard.hxx>
-#endif
-#ifndef _Standard_Macro_HeaderFile
-#include <Standard_Macro.hxx>
-#endif
 
-#ifndef _Standard_Boolean_HeaderFile
-#include <Standard_Boolean.hxx>
-#endif
-#ifndef _Standard_Real_HeaderFile
-#include <Standard_Real.hxx>
-#endif
 class TopoDS_Shape;
 class gp_Pnt;
-
 
 class BRepExtrema_Poly
 {
  public:
 
-  //! returns Standard_True if OK. <br>
+  //! returns Standard_True if OK.
   Standard_EXPORT static Standard_Boolean Distance(const TopoDS_Shape& S1,const TopoDS_Shape& S2,gp_Pnt& P1,gp_Pnt& P2,Standard_Real& dist);
 };
 

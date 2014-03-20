@@ -18,12 +18,9 @@
 #include <BOPTools_Set.hxx>  
 #include <BOPTools_SetMapHasher.hxx>
 
-#define _NCollection_MapHasher
 #include <NCollection_Map.hxx>   
 
 typedef NCollection_Map<BOPTools_Set, BOPTools_SetMapHasher> BOPTools_MapOfSet; 
 typedef BOPTools_MapOfSet::Iterator BOPTools_MapIteratorOfMapOfSet;
-
-#undef _NCollection_MapHasher
 
 #endif

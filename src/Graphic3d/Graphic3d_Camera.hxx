@@ -185,7 +185,7 @@ public:
     return myUp;
   }
 
-  //! Set camera axial scale.<br>
+  //! Set camera axial scale.
   //! @param theAxialScale [in] the axial scale vector.
   Standard_EXPORT void SetAxialScale (const gp_XYZ& theAxialScale);
 

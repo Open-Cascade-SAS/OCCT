@@ -15,14 +15,10 @@
 #ifndef BOPDS_IndexedDataMapOfPaveBlockListOfInteger_HeaderFile
 #define BOPDS_IndexedDataMapOfPaveBlockListOfInteger_HeaderFile
 
-#define _NCollection_MapHasher
 #include <NCollection_IndexedDataMap.hxx>
 #include <TColStd_MapTransientHasher.hxx>
 #include <BOPCol_ListOfInteger.hxx>
 
 typedef NCollection_IndexedDataMap<Handle(BOPDS_PaveBlock), BOPCol_ListOfInteger, TColStd_MapTransientHasher> BOPDS_IndexedDataMapOfPaveBlockListOfInteger; 
- 
-#undef _NCollection_MapHasher
-
 
 #endif

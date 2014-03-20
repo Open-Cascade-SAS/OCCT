@@ -16,13 +16,6 @@
 #ifndef IntPolyh_ArrayOfTangentZones_HeaderFile
 #define IntPolyh_ArrayOfTangentZones_HeaderFile
 
-#ifndef _Standard_HeaderFile
-#include <Standard.hxx>
-#endif
-#ifndef _Standard_Macro_HeaderFile
-#include <Standard_Macro.hxx>
-#endif
-
 #include <IntPolyh_Array.hxx>
 #include <IntPolyh_StartPoint.hxx>
 

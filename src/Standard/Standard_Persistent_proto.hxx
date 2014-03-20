@@ -15,18 +15,9 @@
 #ifndef _Standard_Persistent_proto_HeaderFile
 #define _Standard_Persistent_proto_HeaderFile
 
-#ifndef _Standard_Macro_HeaderFile
-#include <Standard_Macro.hxx>
-#endif
-#ifndef _Standard_DefineAlloc_HeaderFile
-#include <Standard_DefineAlloc.hxx>
-#endif
-#ifndef _Standard_PrimitiveTypes_HeaderFile
-#include <Standard_PrimitiveTypes.hxx>
-#endif
-#ifndef _Standard_HeaderFile
 #include <Standard.hxx>
-#endif
+#include <Standard_TypeDef.hxx>
+#include <Standard_OStream.hxx>
 
 class Standard_Type;
 class Handle_Standard_Type;

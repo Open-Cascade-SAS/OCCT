@@ -17,14 +17,9 @@
 
 #include <float.h>
 #include <math.h>
-#ifndef _Standard_values_HeaderFile
-# include <Standard_values.h>
-#endif
 
-
-#ifndef _Standard_TypeDef_HeaderFile
+#include <Standard_values.h>
 #include <Standard_TypeDef.hxx>
-#endif
 
 class Handle_Standard_Type;
 

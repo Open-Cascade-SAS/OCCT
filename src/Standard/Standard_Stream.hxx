@@ -23,9 +23,7 @@
 #ifndef _Standard_Stream_HeaderFile
 #define _Standard_Stream_HeaderFile
 
-#ifndef _Standard_Macro_HeaderFile
 #include <Standard_Macro.hxx>
-#endif
 
 #ifdef USE_STL_STREAM
 #undef USE_STL_STREAM

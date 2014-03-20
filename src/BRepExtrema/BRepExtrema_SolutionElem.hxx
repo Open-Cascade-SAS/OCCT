@@ -19,130 +19,137 @@
 #ifndef _BRepExtrema_SolutionElem_HeaderFile
 #define _BRepExtrema_SolutionElem_HeaderFile
 
-#ifndef _Standard_HeaderFile
-#include <Standard.hxx>
-#endif
-#ifndef _Standard_DefineAlloc_HeaderFile
-#include <Standard_DefineAlloc.hxx>
-#endif
-#ifndef _Standard_Macro_HeaderFile
-#include <Standard_Macro.hxx>
-#endif
-
-#ifndef _Standard_Real_HeaderFile
-#include <Standard_Real.hxx>
-#endif
-#ifndef _gp_Pnt_HeaderFile
 #include <gp_Pnt.hxx>
-#endif
-#ifndef _BRepExtrema_SupportType_HeaderFile
 #include <BRepExtrema_SupportType.hxx>
-#endif
-#ifndef _TopoDS_Vertex_HeaderFile
 #include <TopoDS_Vertex.hxx>
-#endif
-#ifndef _TopoDS_Edge_HeaderFile
 #include <TopoDS_Edge.hxx>
-#endif
-#ifndef _TopoDS_Face_HeaderFile
 #include <TopoDS_Face.hxx>
-#endif
-class gp_Pnt;
-class TopoDS_Vertex;
-class TopoDS_Edge;
-class TopoDS_Face;
 
-
-//! This class is used to store information relative to the <br>
-//! minimum distance between two shapes. <br>
+//! This class is used to store information relative to the minimum distance between two shapes.
 class BRepExtrema_SolutionElem
 {
  public:
 
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT BRepExtrema_SolutionElem()
-  : myDist(0.), myPoint(0.,0.,0.), mySupType(BRepExtrema_IsVertex), myPar1(0.), myPar2(0.)
+  //! Empty constructor
+  BRepExtrema_SolutionElem()
+  : myDist    (0.0),
+    myPoint   (0.0, 0.0, 0.0),
+    mySupType (BRepExtrema_IsVertex),
+    myPar1    (0.0),
+    myPar2    (0.0)
   {
   }
-  //! initialisation of the fields <br>
-  //! This constructor is used when the solution of a distance is a Vertex. <br>
-  //! The different initialized fields are: <br>
-  //!            _ the distance d <br>
-  //!            _ the solution point <br>
-  //!            _ the type of solution <br>
-  //!            _ and the Vertex. <br>
-  Standard_EXPORT BRepExtrema_SolutionElem(const Standard_Real d,const gp_Pnt& Pt,const BRepExtrema_SupportType SolType,const TopoDS_Vertex& vertex)
-  : myDist(d), myPoint(Pt), mySupType(SolType), myVertex(vertex), myPar1(0.), myPar2(0.)
-  {
-  }
-  //! initialisation of  the fiels. <br>
-  //! This constructor is used when the  solution of distance is on an Edge. <br>
-  //! The different initialized fields are: <br>
-  //!            _ the distance d, <br>
-  //!            _ the solution point, <br>
-  //!            _ the type of solution, <br>
-  //!            _ the Edge, <br>
-  //!            _ and the parameter t to locate the solution. <br>
-  Standard_EXPORT BRepExtrema_SolutionElem(const Standard_Real d,const gp_Pnt& Pt,const BRepExtrema_SupportType SolType,const TopoDS_Edge& edge,const Standard_Real t)
-  : myDist(d), myPoint(Pt), mySupType(SolType), myEdge(edge), myPar1(t), myPar2(0.)
-  {
-  }
-  //! initialisation of the fields <br>
-  //! This constructor is used when the  solution of distance is in <br>
-  //! a Face. The different initialized fields are: <br>
-  //!            _ the distance d, <br>
-  //!            _ the solution point, <br>
-  //!            _ the type of solution, <br>
-  //!            _ the Face, <br>
-  //!            _ and the parameter u et v to locate the solution. <br>
-  Standard_EXPORT BRepExtrema_SolutionElem(const Standard_Real d,const gp_Pnt& Pt,const BRepExtrema_SupportType SolType,const TopoDS_Face& face,const Standard_Real u,const Standard_Real v)
-  : myDist(d), myPoint(Pt), mySupType(SolType), myFace(face), myPar1(u), myPar2(v)
-  {
-  }
-  //! returns the value of the minimum distance. <br>
-  Standard_EXPORT Standard_Real Dist() const
+
+  //! This constructor is used when the solution of a distance is a Vertex.
+  //! The different initialized fields are:
+  //! @param theDist    the distance
+  //! @param thePoint   the solution point
+  //! @param theSolType the type of solution
+  //! @param theVertex  and the Vertex
+  BRepExtrema_SolutionElem (const Standard_Real           theDist,
+                            const gp_Pnt&                 thePoint,
+                            const BRepExtrema_SupportType theSolType,
+                            const TopoDS_Vertex&          theVertex)
+  : myDist    (theDist),
+    myPoint   (thePoint),
+    mySupType (theSolType),
+    myVertex  (theVertex),
+    myPar1    (0.0),
+    myPar2    (0.0) {}
+
+  //! This constructor is used when the  solution of distance is on an Edge.
+  //! The different initialized fields are:
+  //! @param theDist    the distance
+  //! @param thePoint   the solution point
+  //! @param theSolType the type of solution
+  //! @param theEdge    the Edge
+  //! @param theParam   the parameter to locate the solution
+  BRepExtrema_SolutionElem (const Standard_Real           theDist,
+                            const gp_Pnt&                 thePoint,
+                            const BRepExtrema_SupportType theSolType,
+                            const TopoDS_Edge&            theEdge,
+                            const Standard_Real           theParam)
+  : myDist    (theDist),
+    myPoint   (thePoint),
+    mySupType (theSolType),
+    myEdge    (theEdge),
+    myPar1    (theParam),
+    myPar2    (0.0) {}
+
+  //! This constructor is used when the  solution of distance is in a Face.
+  //! The different initialized fields are:
+  //! @param theDist    the distance
+  //! @param thePoint   the solution point
+  //! @param theSolType the type of solution
+  //! @param theFace    the Face
+  //! @param theU       U parameter to locate the solution
+  //! @param theV       V parameter to locate the solution
+  BRepExtrema_SolutionElem (const Standard_Real           theDist,
+                            const gp_Pnt&                 thePoint,
+                            const BRepExtrema_SupportType theSolType,
+                            const TopoDS_Face&            theFace,
+                            const Standard_Real           theU,
+                            const Standard_Real           theV)
+  : myDist    (theDist),
+    myPoint   (thePoint),
+    mySupType (theSolType),
+    myFace    (theFace),
+    myPar1    (theU),
+    myPar2    (theV) {}
+
+  //! Returns the value of the minimum distance.
+  Standard_Real Dist() const
   {
     return myDist;
   }
-  //! returns the solution point. <br>
-  Standard_EXPORT const gp_Pnt & Point() const
+
+  //! Returns the solution point.
+  const gp_Pnt& Point() const
   {
     return myPoint;
   }
-  //! returns the Support type : <br>
-  //!	    IsVertex => The solution is a vertex. <br>
-  //! 	    IsOnEdge => The solution belongs to an Edge. <br>
-  //! 	    IsInFace => The solution is inside a Face. <br>
-  Standard_EXPORT BRepExtrema_SupportType SupportKind() const
+
+  //! Returns the Support type:
+  //!   IsVertex => The solution is a vertex.
+  //!   IsOnEdge => The solution belongs to an Edge.
+  //!   IsInFace => The solution is inside a Face.
+  BRepExtrema_SupportType SupportKind() const
   {
     return mySupType;
   }
-  //! returns the vertex if the solution is a Vertex. <br>
-  Standard_EXPORT const TopoDS_Vertex & Vertex() const
+
+  //! Returns the vertex if the solution is a Vertex.
+  const TopoDS_Vertex& Vertex() const
   {
     return myVertex;
   }
-  //! returns the vertex if the solution is an Edge. <br>
-  Standard_EXPORT const TopoDS_Edge & Edge() const
+
+  //! Returns the vertex if the solution is an Edge.
+  const TopoDS_Edge& Edge() const
   {
     return myEdge;
   }
-  //! returns the vertex if the solution is an Face. <br>
-  Standard_EXPORT const TopoDS_Face & Face() const
+
+  //! Returns the vertex if the solution is an Face.
+  const TopoDS_Face& Face() const
   {
     return myFace;
   }
-  //! returns the parameter t if the solution is on Edge. <br>
-  Standard_EXPORT void EdgeParameter(Standard_Real& par1) const
+
+  //! Returns the parameter value if the solution is on Edge.
+  void EdgeParameter (Standard_Real& theParam) const
   {
-    par1 = myPar1;
+    theParam = myPar1;
   }
-  //! returns the parameters u et v if the solution is in a Face. <br>
-  Standard_EXPORT void FaceParameter(Standard_Real& par1,Standard_Real& par2) const
+
+  //! Returns the parameters U and V if the solution is in a Face.
+  void FaceParameter (Standard_Real& theU,
+                      Standard_Real& theV) const
   {
-    par1 = myPar1;
-    par2 = myPar2;
+    theU = myPar1;
+    theV = myPar2;
   }
 
  private:
@@ -155,6 +162,7 @@ class BRepExtrema_SolutionElem
   TopoDS_Face myFace;
   Standard_Real myPar1;
   Standard_Real myPar2;
+
 };
 
 #endif

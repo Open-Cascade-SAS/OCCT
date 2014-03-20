@@ -14,16 +14,9 @@
 
 #include <StdFail_UndefinedDerivative.hxx>
 
-#ifndef gp_Pnt_HeaderFile
 #include <gp_Pnt.hxx>
-#endif
-#ifndef gp_Dir2d_HeaderFile
 #include <gp_Dir2d.hxx>
-#endif
-#ifndef gp_Dir_HeaderFile
 #include <gp_Dir.hxx>
-#endif
-
 
 inline Standard_Real IntImp_ZerParFunc::Root() const {
 

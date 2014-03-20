@@ -18,21 +18,10 @@
 #ifndef IntAna2d_Outil_HeaderFile
 #define IntAna2d_Outil_HeaderFile
 
-#ifndef math_DirectPolynomialRoots_HeaderFile
 #include <math_DirectPolynomialRoots.hxx>
-#endif
-
-#ifndef math_TrigonometricFunctionRoots_HeaderFile
 #include <math_TrigonometricFunctionRoots.hxx>
-#endif
-
-#ifndef IntAna2d_IntPoint_HeaderFile
 #include <IntAna2d_IntPoint.hxx>
-#endif
-
-#ifndef gp_Ax2d_HeaderFile
 #include <gp_Ax2d.hxx>
-#endif
 
 class MyDirectPolynomialRoots { 
 public:

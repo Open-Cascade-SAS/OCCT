@@ -26,36 +26,9 @@
 
 #include <stdio.h>
 
-#ifndef _Storage_BaseDriver_HeaderFile
 #include <Storage_BaseDriver.hxx>
-#endif
-#ifndef _Storage_Error_HeaderFile
 #include <Storage_Error.hxx>
-#endif
-#ifndef _Storage_OpenMode_HeaderFile
 #include <Storage_OpenMode.hxx>
-#endif
-#ifndef _Standard_Boolean_HeaderFile
-#include <Standard_Boolean.hxx>
-#endif
-#ifndef _Standard_Integer_HeaderFile
-#include <Standard_Integer.hxx>
-#endif
-#ifndef _Standard_Character_HeaderFile
-#include <Standard_Character.hxx>
-#endif
-#ifndef _Standard_ExtCharacter_HeaderFile
-#include <Standard_ExtCharacter.hxx>
-#endif
-#ifndef _Standard_Real_HeaderFile
-#include <Standard_Real.hxx>
-#endif
-#ifndef _Standard_ShortReal_HeaderFile
-#include <Standard_ShortReal.hxx>
-#endif
-#ifndef _Standard_CString_HeaderFile
-#include <Standard_CString.hxx>
-#endif
 #include <Storage_Position.hxx>
 
 class Storage_StreamTypeMismatchError;

@@ -160,10 +160,10 @@ class NIS_InteractiveObject : public Standard_Transient
 
   /**
    * Replace the drawer. This method must not be called for Object that
-   * has not yet been added to a Context (thus has empty drawer).<br>
+   * has not yet been added to a Context (thus has empty drawer).
    * It is possible to have unassigned myDrawer or a DefaultDrawer as the
    * parameter value (but not both). The Context where we work is taken
-   * from theDrawer first, then (if NULL) -- from myDrawer.<br>
+   * from theDrawer first, then (if NULL) -- from myDrawer.
    * This method matches theDrawer with the available Drawers in the Context
    * and adds if no match is found.
    * @return
@@ -291,8 +291,7 @@ class NIS_InteractiveObject : public Standard_Transient
    * Intersect the InteractiveObject geometry with an oriented box.
    * The default implementation (in this abstract class) always returns True,
    * signalling that every object pre-selected by its bounding box is
-   * automatically selected. The specializations should define a more correct
-   * behaviour.<br>
+   * automatically selected. The specializations should define a more correct behaviour.
    * The algorithm should transform the InteractiveObject geometry using the
    * parameter theTrf and then reject it with box theBox, like:
    * @code
@@ -320,8 +319,7 @@ class NIS_InteractiveObject : public Standard_Transient
    * Intersect the InteractiveObject geometry with a selection polygon.
    * The default implementation (in this abstract class) always returns True,
    * signalling that every object pre-selected by its bounding box is
-   * automatically selected. The specializations should define a more correct
-   * behaviour.<br>
+   * automatically selected. The specializations should define a more correct behaviour.
    * The algorithm should transform the InteractiveObject geometry using the
    * parameter theTrf and then reject it with polygon.
    * @param thePolygon

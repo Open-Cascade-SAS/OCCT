@@ -15,16 +15,8 @@
 #ifndef BOPCol_VectorOfInteger_HeaderFile
 #define BOPCol_VectorOfInteger_HeaderFile
 
-#ifndef _Standard_HeaderFile
-#include <Standard.hxx>
-#endif
-#ifndef _Standard_Macro_HeaderFile
-#include <Standard_Macro.hxx>
-#endif
-
 #include <BOPCol_Array1.hxx>
 
 typedef BOPCol_Array1<Standard_Integer> BOPDS_VectorOfInteger;
-
 
 #endif

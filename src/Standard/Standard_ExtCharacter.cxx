@@ -21,14 +21,9 @@
 #include <Standard_ExtCharacter.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_RangeError.hxx>
-
 #include <Standard_Type.hxx>
-#ifndef _Standard_Stream_HeaderFile
 #include <Standard_Stream.hxx>
-#endif
-#ifndef _Standard_OStream_HeaderFile
 #include <Standard_OStream.hxx>
-#endif
 
 const Handle_Standard_Type& Standard_ExtCharacter_Type_() 
 {

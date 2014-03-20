@@ -16,13 +16,6 @@
 #ifndef IntPolyh_ArrayOfSectionLines_HeaderFile
 #define IntPolyh_ArrayOfSectionLines_HeaderFile
 
-#ifndef _Standard_HeaderFile
-#include <Standard.hxx>
-#endif
-#ifndef _Standard_Macro_HeaderFile
-#include <Standard_Macro.hxx>
-#endif
-
 #include <IntPolyh_Array.hxx>
 #include <IntPolyh_SectionLine.hxx>
 

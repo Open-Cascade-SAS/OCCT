@@ -15,21 +15,10 @@
 #ifndef BOPCol_DataMapOfTransientAddress_HeaderFile
 #define BOPCol_DataMapOfTransientAddress_HeaderFile
 
-#ifndef _Standard_HeaderFile
-#include <Standard.hxx>
-#endif
-#ifndef _Standard_Macro_HeaderFile
-#include <Standard_Macro.hxx>
-#endif
-
- 
 #include <NCollection_DataMap.hxx>
 #include <TColStd_MapTransientHasher.hxx>
 
 typedef NCollection_DataMap<Handle(Standard_Transient), Standard_Address, TColStd_MapTransientHasher> BOPCol_DataMapOfTransientAddress; 
 typedef BOPCol_DataMapOfTransientAddress::Iterator BOPCol_DataMapIteratorOfDataMapOfTransientAddress; 
  
-#undef _NCollection_MapHasher
-
-
 #endif

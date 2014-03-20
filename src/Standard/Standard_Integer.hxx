@@ -15,13 +15,8 @@
 #ifndef _Standard_Integer_HeaderFile
 #define _Standard_Integer_HeaderFile
 
-#ifndef _Standard_TypeDef_HeaderFile
 #include <Standard_TypeDef.hxx>
-#endif
-
-#ifndef _Standard_values_HeaderFile
 # include <Standard_values.h>
-#endif
 
 class Handle_Standard_Type;
 

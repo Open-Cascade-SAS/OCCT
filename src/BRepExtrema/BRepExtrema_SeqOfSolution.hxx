@@ -19,12 +19,8 @@
 #ifndef _BRepExtrema_SeqOfSolution_HeaderFile
 #define _BRepExtrema_SeqOfSolution_HeaderFile
 
-#ifndef _NCollection_Sequence_HeaderFile
 #include <NCollection_Sequence.hxx>
-#endif
-#ifndef _BRepExtrema_SolutionElem_HeaderFile
 #include <BRepExtrema_SolutionElem.hxx>
-#endif
 
 typedef NCollection_Sequence<BRepExtrema_SolutionElem> BRepExtrema_SeqOfSolution;
 

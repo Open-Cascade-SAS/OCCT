@@ -14,33 +14,14 @@
 #ifndef _BRepPrim_OneAxis_HeaderFile
 #define _BRepPrim_OneAxis_HeaderFile
 
-#ifndef _BRepPrim_Builder_HeaderFile
 #include <BRepPrim_Builder.hxx>
-#endif
-#ifndef _gp_Ax2_HeaderFile
 #include <gp_Ax2.hxx>
-#endif
-#ifndef _Standard_Real_HeaderFile
-#include <Standard_Real.hxx>
-#endif
-#ifndef _TopoDS_Shell_HeaderFile
 #include <TopoDS_Shell.hxx>
-#endif
-#ifndef _Standard_Boolean_HeaderFile
-#include <Standard_Boolean.hxx>
-#endif
-#ifndef _TopoDS_Vertex_HeaderFile
 #include <TopoDS_Vertex.hxx>
-#endif
-#ifndef _TopoDS_Edge_HeaderFile
 #include <TopoDS_Edge.hxx>
-#endif
-#ifndef _TopoDS_Wire_HeaderFile
 #include <TopoDS_Wire.hxx>
-#endif
-#ifndef _TopoDS_Face_HeaderFile
 #include <TopoDS_Face.hxx>
-#endif
+
 class Standard_DomainError;
 class Standard_OutOfRange;
 class TopoDS_Shell;

@@ -16,18 +16,7 @@
 #ifndef _BRepBuilderAPI_CellFilter_HeaderFile
 #define _BRepBuilderAPI_CellFilter_HeaderFile
 
-#ifndef _gp_XYZ_HeaderFile
-#include <gp_XYZ.hxx>
-#endif
-#ifndef _gp_XY_HeaderFile
-#include <gp_XY.hxx>
-#endif
-#ifndef NCollection_CellFilter_HeaderFile
-#include <NCollection_CellFilter.hxx>
-#endif
-#ifndef _BRepBuilderAPI_VertexInspector_HeaderFile
 #include <BRepBuilderAPI_VertexInspector.hxx>
-#endif
 
 typedef NCollection_CellFilter<BRepBuilderAPI_VertexInspector> BRepBuilderAPI_CellFilter;
 

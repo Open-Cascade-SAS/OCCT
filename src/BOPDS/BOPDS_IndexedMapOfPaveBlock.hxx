@@ -15,14 +15,10 @@
 #ifndef BOPDS_IndexedMapOfPaveBlock_HeaderFile
 #define BOPDS_IndexedMapOfPaveBlock_HeaderFile
 
-#define _NCollection_MapHasher
 #include <NCollection_IndexedMap.hxx>   
 #include <TColStd_MapTransientHasher.hxx>
 #include <BOPDS_PaveBlock.hxx>   
 
-typedef NCollection_IndexedMap<Handle(BOPDS_PaveBlock), TColStd_MapTransientHasher> BOPDS_IndexedMapOfPaveBlock; 
-
-#undef _NCollection_MapHasher
-
+typedef NCollection_IndexedMap<Handle(BOPDS_PaveBlock), TColStd_MapTransientHasher> BOPDS_IndexedMapOfPaveBlock;
 
 #endif

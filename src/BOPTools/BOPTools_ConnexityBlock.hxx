@@ -15,13 +15,6 @@
 #ifndef BOPTools_ConnexityBlock_HeaderFile
 #define BOPTools_ConnexityBlock_HeaderFile
 
-#ifndef _Standard_HeaderFile
-#include <Standard.hxx>
-#endif
-#ifndef _Standard_Macro_HeaderFile
-#include <Standard_Macro.hxx>
-#endif
-
 #include <NCollection_BaseAllocator.hxx>
 #include <BOPCol_ListOfShape.hxx>
 

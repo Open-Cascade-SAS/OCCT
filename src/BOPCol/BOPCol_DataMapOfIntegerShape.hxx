@@ -15,22 +15,12 @@
 #ifndef BOPCol_DataMapOfIntegerShape_HeaderFile
 #define BOPCol_DataMapOfIntegerShape_HeaderFile
 
-#ifndef _Standard_HeaderFile
-#include <Standard.hxx>
-#endif
-#ifndef _Standard_Macro_HeaderFile
-#include <Standard_Macro.hxx>
-#endif
-
 #include <TopoDS_Shape.hxx>  
 #include <TColStd_MapIntegerHasher.hxx>
   
 #include <NCollection_DataMap.hxx>
 
-
 typedef NCollection_DataMap<Standard_Integer, TopoDS_Shape, TColStd_MapIntegerHasher> BOPCol_DataMapOfIntegerShape; 
 typedef BOPCol_DataMapOfIntegerShape::Iterator BOPCol_DataMapIteratorOfDataMapOfIntegerShape; 
  
-#undef _NCollection_MapHasher
-
 #endif

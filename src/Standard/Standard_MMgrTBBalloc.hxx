@@ -16,18 +16,7 @@
 #ifndef _Standard_MMgrTBBalloc_HeaderFile
 #define _Standard_MMgrTBBalloc_HeaderFile
 
-#ifndef _Standard_Address_HeaderFile
-#include <Standard_Address.hxx>
-#endif
-#ifndef _Standard_Integer_HeaderFile
-#include <Standard_Integer.hxx>
-#endif
-#ifndef _Standard_Macro_HeaderFile
-#include <Standard_Macro.hxx>
-#endif
-#ifndef _Standard_MMgrRoot_HeaderFile
 #include <Standard_MMgrRoot.hxx>
-#endif
 
 //!
 //! Implementation of OCC memory manager which uses Intel TBB

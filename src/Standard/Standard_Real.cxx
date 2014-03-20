@@ -17,12 +17,8 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_NumericError.hxx>
 #include <Standard_NullValue.hxx>
-#ifndef _Standard_Stream_HeaderFile
 #include <Standard_Stream.hxx>
-#endif
-#ifndef _Standard_OStream_HeaderFile
 #include <Standard_OStream.hxx>
-#endif
 
 const Handle_Standard_Type& Standard_Real_Type_() 
 {

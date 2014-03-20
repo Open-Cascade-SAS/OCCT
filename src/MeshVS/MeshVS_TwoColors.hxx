@@ -13,15 +13,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef MeshVS_TWOCOLORSHXX
-#define MeshVS_TWOCOLORSHXX
-
-#ifndef _Standard_HeaderFile
-#include <Standard.hxx>
-#endif
-#ifndef _Standard_Macro_HeaderFile
-#include <Standard_Macro.hxx>
-#endif
+#ifndef MeshVS_TwoColors_HeaderFile
+#define MeshVS_TwoColors_HeaderFile
 
 #include <Quantity_Color.hxx>
 

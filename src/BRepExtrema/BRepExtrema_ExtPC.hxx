@@ -14,31 +14,10 @@
 #ifndef _BRepExtrema_ExtPC_HeaderFile
 #define _BRepExtrema_ExtPC_HeaderFile
 
-#ifndef _Standard_HeaderFile
-#include <Standard.hxx>
-#endif
-#ifndef _Standard_DefineAlloc_HeaderFile
-#include <Standard_DefineAlloc.hxx>
-#endif
-#ifndef _Standard_Macro_HeaderFile
-#include <Standard_Macro.hxx>
-#endif
-
-#ifndef _Extrema_ExtPC_HeaderFile
 #include <Extrema_ExtPC.hxx>
-#endif
-#ifndef _Handle_BRepAdaptor_HCurve_HeaderFile
 #include <BRepAdaptor_HCurve.hxx>
-#endif
-#ifndef _Standard_Boolean_HeaderFile
-#include <Standard_Boolean.hxx>
-#endif
-#ifndef _Standard_Integer_HeaderFile
-#include <Standard_Integer.hxx>
-#endif
-#ifndef _Standard_Real_HeaderFile
-#include <Standard_Real.hxx>
-#endif
+#include <Standard_DefineAlloc.hxx>
+
 class BRepAdaptor_HCurve;
 class TopoDS_Vertex;
 class TopoDS_Edge;

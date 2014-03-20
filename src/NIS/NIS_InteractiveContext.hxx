@@ -24,10 +24,9 @@
 #include <NIS_Drawer.hxx>
 #include <NIS_SelectFilter.hxx>
 
-#ifdef WNT
+// undefine WinAPI macros
 #ifdef GetObject
-#undef GetObject
-#endif
+  #undef GetObject
 #endif
 
 class NIS_View;
@@ -36,13 +35,11 @@ class Bnd_B2f;
 
 /**
  * InteractiveContext is the central NIS structure that stores and manages
- * all NIS_InteractiveObject instances as well as the Drawers for their
- * visualisation.
+ * all NIS_InteractiveObject instances as well as the Drawers for their visualisation.
  * There may be one or more Views referred by an InteractiveContext instance.
- * Also there may be one or more InteractiveContext instances referring the same
- * View. However the latter case is not typical (see NIS_View description).<br>
- * To add or remove a View in a Context, use methods AttachView() and
- * DetachView().
+ * Also there may be one or more InteractiveContext instances referring the same View.
+ * However the latter case is not typical (see NIS_View description).
+ * To add or remove a View in a Context, use methods AttachView() and DetachView().
  *
  * @section nis_interactivecontext_mgtobjects Management of objects
  * The main purpose of class NIS_InteractiveContext is allocation and
@@ -50,13 +47,10 @@ class Bnd_B2f;
  * <p>An InteractiveObject should be added to the Context by a call to method
  * Display() or DisplayOnTop(). After that (not before) it becomes possible to:
  * <ul>
- * <li>change the presentation of the InteractiveObject (e.g., modify the color)
- *     </li>
- * <li>make the InteractiveObject visible or invisible, selectable or
- *     unselectable;</li>
+ * <li>change the presentation of the InteractiveObject (e.g., modify the color)</li>
+ * <li>make the InteractiveObject visible or invisible, selectable or unselectable;</li>
  * <li>set Transparency;</li>
- * <li>select InteractiveObject interactively, including the hilighting and
- *     the dynamic hilighting.</li>
+ * <li>select InteractiveObject interactively, including the hilighting and the dynamic hilighting.</li>
  * </ul>
  * Methods that add/remove/display/hide NIS_InteractiveObject instances have
  * the optional parameter 'isUpdateViews'. When it is set to True (default),
@@ -348,14 +342,11 @@ class NIS_InteractiveContext : public Standard_Transient
   { mySelectionMode = theMode; }
 
   /**
-   * Set or unset the selected state of the object, also changing its
-   * hilight status.<br>
-   * If mySelectionMode == Mode_NoSelection this method does nothing (returns
-   * False always).<br>
+   * Set or unset the selected state of the object, also changing its hilight status.
+   * If mySelectionMode == Mode_NoSelection this method does nothing (returns False always).
    * If the given object is NULL (e.g., if the mouse was clicked on empty area),
-   * then the current selection is cleared (modes Normal and Additive only).<br>
-   * The selection algorithm with respect to the given object is defined by
-   * the current selection mode :
+   * then the current selection is cleared (modes Normal and Additive only).
+   * The selection algorithm with respect to the given object is defined by the current selection mode:
    * <ul>
    * <li>Mode_Normal    - the selection state is toggled</li>
    * <li>Mode_Additive  - the object is always added to the selection</li>
@@ -388,8 +379,7 @@ class NIS_InteractiveContext : public Standard_Transient
                                             = Standard_False);
 
   /**
-   * Set or unset the selected state of the object, also changing its
-   * hilight status.<br>
+   * Set or unset the selected state of the object, also changing its hilight status.
    * This method does not update the views.
    * @param theObj
    *   Object to be selected or deselected
@@ -607,7 +597,7 @@ private:
    *  - #1 - top objects
    *  - #2 - hilighted objects (i.e., selected)
    *  - #3 - transparent objects
-   * <br>Each object can have only one entry in these maps.
+   * Each object can have only one entry in these maps.
    */
   TColStd_PackedMapOfInteger                        myMapObjects[4];
 

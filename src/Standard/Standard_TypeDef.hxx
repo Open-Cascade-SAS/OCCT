@@ -52,9 +52,7 @@
 #define Standard_False (Standard_Boolean)0
 #define Standard_True  (Standard_Boolean)1
 
-#ifndef _Standard_Macro_HeaderFile
 #include <Standard_Macro.hxx>
-#endif
 
 typedef int           Standard_Integer;
 typedef double        Standard_Real;

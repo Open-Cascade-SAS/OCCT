@@ -23,6 +23,4 @@
 
 typedef NCollection_IndexedDataMap<Standard_Integer, BOPCol_ListOfInteger, TColStd_MapIntegerHasher> BOPCol_IndexedDataMapOfIntegerListOfInteger; 
  
-#undef _NCollection_MapHasher
-
 #endif

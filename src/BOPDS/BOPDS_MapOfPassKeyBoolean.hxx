@@ -15,14 +15,11 @@
 #ifndef BOPDS_MapOfPassKeyBoolean_HeaderFile
 #define BOPDS_MapOfPassKeyBoolean_HeaderFile
 
-#define _NCollection_MapHasher
 #include <NCollection_Map.hxx>   
 #include <BOPDS_PassKeyMapHasher.hxx>
 #include <BOPDS_PassKeyBoolean.hxx>
 
 typedef NCollection_Map<BOPDS_PassKeyBoolean, BOPDS_PassKeyMapHasher> BOPDS_MapOfPassKeyBoolean; 
 typedef BOPDS_MapOfPassKeyBoolean::Iterator BOPDS_MapIteratorMapOfPassKeyBoolean;  
-
-#undef _NCollection_MapHasher
 
 #endif

@@ -19,33 +19,12 @@
 //Version	Date		Purpose
 //		0.0	Feb 16 1998	Creation
 
-
-#ifndef _TDF_Attribute_HeaderFile
-#include <TDF_Attribute.hxx>
-#endif
-#ifndef _TDF_Label_HeaderFile
-#include <TDF_Label.hxx>
-#endif
-
 #ifndef TDF_AttributeIterator_HeaderFile
 #define TDF_AttributeIterator_HeaderFile
 
-#ifndef _Handle_TDF_Attribute_HeaderFile
 #include <TDF_Attribute.hxx>
-#endif
-#ifndef _Standard_Boolean_HeaderFile
-#include <Standard_Boolean.hxx>
-#endif
-#ifndef _TDF_LabelNodePtr_HeaderFile
+#include <TDF_Label.hxx>
 #include <TDF_LabelNodePtr.hxx>
-#endif
-class TDF_Attribute;
-class TDF_Label;
-
-
-#ifndef _Standard_Macro_HeaderFile
-#include <Standard_Macro.hxx>
-#endif
 
 // This class provides a way to iterates on the
 // up-to-date (current) valid attributes of a label.
