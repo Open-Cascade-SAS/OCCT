@@ -145,18 +145,16 @@ void AIS_AngleDimension::SetMeasuredGeometry (const TopoDS_Edge& theFirstEdge,
 {
   gp_Pln aComputedPlane;
 
-  myFirstShape   = theFirstEdge;
-  mySecondShape  = theSecondEdge;
-  myThirdShape   = TopoDS_Shape();
-  myGeometryType = GeometryType_Edges;
-  myIsValid      = InitTwoEdgesAngle (aComputedPlane);
+  myFirstShape      = theFirstEdge;
+  mySecondShape     = theSecondEdge;
+  myThirdShape      = TopoDS_Shape();
+  myGeometryType    = GeometryType_Edges;
+  myIsGeometryValid = InitTwoEdgesAngle (aComputedPlane);
 
-  if (myIsValid && !myIsPlaneCustom)
+  if (myIsGeometryValid && !myIsPlaneCustom)
   {
     ComputePlane();
   }
-
-  myIsValid &= CheckPlane (myPlane);
 
   SetToUpdate();
 }
@@ -176,14 +174,12 @@ void AIS_AngleDimension::SetMeasuredGeometry (const gp_Pnt& theFirstPoint,
   mySecondShape   = BRepLib_MakeVertex (myCenterPoint);
   myThirdShape    = BRepLib_MakeVertex (mySecondPoint);
   myGeometryType  = GeometryType_Points;
-  myIsValid       = IsValidPoints (myFirstPoint, myCenterPoint, mySecondPoint);
+  myIsGeometryValid       = IsValidPoints (myFirstPoint, myCenterPoint, mySecondPoint);
 
-  if (myIsValid && !myIsPlaneCustom)
+  if (myIsGeometryValid && !myIsPlaneCustom)
   {
     ComputePlane();
   }
-
-  myIsValid &= CheckPlane (myPlane);
 
   SetToUpdate();
 }
@@ -196,21 +192,19 @@ void AIS_AngleDimension::SetMeasuredGeometry (const TopoDS_Vertex& theFirstVerte
                                               const TopoDS_Vertex& theSecondVertex,
                                               const TopoDS_Vertex& theThirdVertex)
 {
-  myFirstShape   = theFirstVertex;
-  mySecondShape  = theSecondVertex;
-  myThirdShape   = theThirdVertex;
-  myFirstPoint   = BRep_Tool::Pnt (theFirstVertex);
-  myCenterPoint  = BRep_Tool::Pnt (theSecondVertex);
-  mySecondPoint  = BRep_Tool::Pnt (theThirdVertex);
-  myGeometryType = GeometryType_Points;
-  myIsValid      = IsValidPoints (myFirstPoint, myCenterPoint, mySecondPoint);
+  myFirstShape      = theFirstVertex;
+  mySecondShape     = theSecondVertex;
+  myThirdShape      = theThirdVertex;
+  myFirstPoint      = BRep_Tool::Pnt (theFirstVertex);
+  myCenterPoint     = BRep_Tool::Pnt (theSecondVertex);
+  mySecondPoint     = BRep_Tool::Pnt (theThirdVertex);
+  myGeometryType    = GeometryType_Points;
+  myIsGeometryValid = IsValidPoints (myFirstPoint, myCenterPoint, mySecondPoint);
 
-  if (myIsValid && !myIsPlaneCustom)
+  if (myIsGeometryValid && !myIsPlaneCustom)
   {
     ComputePlane();
   }
-
-  myIsValid &= CheckPlane (myPlane);
 
   SetToUpdate();
 }
@@ -221,18 +215,16 @@ void AIS_AngleDimension::SetMeasuredGeometry (const TopoDS_Vertex& theFirstVerte
 //=======================================================================
 void AIS_AngleDimension::SetMeasuredGeometry (const TopoDS_Face& theCone)
 {
-  myFirstShape   = theCone;
-  mySecondShape  = TopoDS_Shape();
-  myThirdShape   = TopoDS_Shape();
-  myGeometryType = GeometryType_Face;
-  myIsValid      = InitConeAngle();
+  myFirstShape      = theCone;
+  mySecondShape     = TopoDS_Shape();
+  myThirdShape      = TopoDS_Shape();
+  myGeometryType    = GeometryType_Face;
+  myIsGeometryValid = InitConeAngle();
 
-  if (myIsValid && !myIsPlaneCustom)
+  if (myIsGeometryValid && !myIsPlaneCustom)
   {
     ComputePlane();
   }
-
-  myIsValid &= CheckPlane (myPlane);
 
   SetToUpdate();
 }
@@ -244,18 +236,16 @@ void AIS_AngleDimension::SetMeasuredGeometry (const TopoDS_Face& theCone)
 void AIS_AngleDimension::SetMeasuredGeometry (const TopoDS_Face& theFirstFace,
                                               const TopoDS_Face& theSecondFace)
 {
-  myFirstShape   = theFirstFace;
-  mySecondShape  = theSecondFace;
-  myThirdShape   = TopoDS_Shape();
-  myGeometryType = GeometryType_Faces;
-  myIsValid      = InitTwoFacesAngle();
+  myFirstShape      = theFirstFace;
+  mySecondShape     = theSecondFace;
+  myThirdShape      = TopoDS_Shape();
+  myGeometryType    = GeometryType_Faces;
+  myIsGeometryValid = InitTwoFacesAngle();
 
-  if (myIsValid && !myIsPlaneCustom)
+  if (myIsGeometryValid && !myIsPlaneCustom)
   {
     ComputePlane();
   }
-
-  myIsValid &= CheckPlane (myPlane);
 
   SetToUpdate();
 }
@@ -268,18 +258,16 @@ void AIS_AngleDimension::SetMeasuredGeometry (const TopoDS_Face& theFirstFace,
                                               const TopoDS_Face& theSecondFace,
                                               const gp_Pnt& thePoint)
 {
-  myFirstShape   = theFirstFace;
-  mySecondShape  = theSecondFace;
-  myThirdShape   = TopoDS_Shape();
-  myGeometryType = GeometryType_Faces;
-  myIsValid      = InitTwoFacesAngle (thePoint);
+  myFirstShape      = theFirstFace;
+  mySecondShape     = theSecondFace;
+  myThirdShape      = TopoDS_Shape();
+  myGeometryType    = GeometryType_Faces;
+  myIsGeometryValid = InitTwoFacesAngle (thePoint);
 
-  if (myIsValid && !myIsPlaneCustom)
+  if (myIsGeometryValid && !myIsPlaneCustom)
   {
     ComputePlane();
   }
-
-  myIsValid &= CheckPlane (myPlane);
 
   SetToUpdate();
 }
@@ -518,7 +506,7 @@ Standard_Boolean AIS_AngleDimension::CheckPlane (const gp_Pln& thePlane)const
 //=======================================================================
 void AIS_AngleDimension::ComputePlane()
 {
-  if (!IsValid())
+  if (!myIsGeometryValid)
   {
     return;
   }
@@ -626,7 +614,7 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
 
   if (IsTextPositionCustom())
   {
-    AdjustParameters (myFixedTextPosition,anExtensionSize, aHorisontalTextPos);
+    AdjustParameters (myFixedTextPosition,anExtensionSize, aHorisontalTextPos, myFlyout);
   }
 
   // Handle user-defined and automatic arrow placement
@@ -810,7 +798,7 @@ void AIS_AngleDimension::Compute (const Handle(PrsMgr_PresentationManager3d)& /*
     Prs3d_Root::CurrentGroup (thePresentation)->AddPrimitiveArray (aPrimSegments);
   }
 
-  myIsComputed = Standard_True;
+  mySelectionGeom.IsComputed = Standard_True;
 }
 
 //=======================================================================
@@ -1243,12 +1231,13 @@ void AIS_AngleDimension::SetTextPosition (const gp_Pnt& theTextPos)
 }
 
 //=======================================================================
-//function : AdjustAspectParameters
+//function : AdjustParameters
 //purpose  : 
 //=======================================================================
 void AIS_AngleDimension::AdjustParameters (const gp_Pnt& theTextPos,
                                            Standard_Real& theExtensionSize,
-                                           Prs3d_DimensionTextHorizontalPosition& theAlignment)
+                                           Prs3d_DimensionTextHorizontalPosition& theAlignment,
+                                           Standard_Real& theFlyout) const
 {
   Handle(Prs3d_DimensionAspect) aDimensionAspect = myDrawer->DimensionAspect();
   Standard_Real anArrowLength = aDimensionAspect->ArrowAspect()->Length();
@@ -1290,9 +1279,7 @@ void AIS_AngleDimension::AdjustParameters (const gp_Pnt& theTextPos,
   // Horizontal center
   if (aTextPar > aParamBeg && aTextPar < aParamEnd)
   {
-    myFlyout = aRadius;
-
-    SetToUpdate();
+    theFlyout = aRadius;
     return;
   }
 
@@ -1302,9 +1289,7 @@ void AIS_AngleDimension::AdjustParameters (const gp_Pnt& theTextPos,
 
   if (aTextPar > aParamBeg  && aTextPar < aParamEnd)
   {
-    myFlyout = -aRadius;
-
-    SetToUpdate();
+    theFlyout = -aRadius;
     return;
   }
 
@@ -1326,7 +1311,7 @@ void AIS_AngleDimension::AdjustParameters (const gp_Pnt& theTextPos,
 
     gp_Vec aPosFlyoutDir = gp_Vec (myCenterPoint, myFirstPoint).Normalized().Scaled (aRadius);
 
-    myFlyout = aFirstTextProj.Distance (myCenterPoint.Translated (aPosFlyoutDir)) > Precision::Confusion()
+    theFlyout = aFirstTextProj.Distance (myCenterPoint.Translated (aPosFlyoutDir)) > Precision::Confusion()
                 ? -aRadius : aRadius;
   }
   else
@@ -1341,7 +1326,7 @@ void AIS_AngleDimension::AdjustParameters (const gp_Pnt& theTextPos,
 
     gp_Vec aPosFlyoutDir = gp_Vec (myCenterPoint, mySecondPoint).Normalized().Scaled (aRadius);
 
-    myFlyout = aSecondTextProj.Distance (myCenterPoint.Translated (aPosFlyoutDir)) > Precision::Confusion()
+    theFlyout = aSecondTextProj.Distance (myCenterPoint.Translated (aPosFlyoutDir)) > Precision::Confusion()
                 ? -aRadius : aRadius;
   }
 }

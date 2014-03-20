@@ -106,7 +106,7 @@ AIS_Dimension::AIS_Dimension (const AIS_KindOfDimension theType)
   myGeometryType (GeometryType_UndefShapes),
   myIsPlaneCustom (Standard_False),
   myFlyout (0.0),
-  myIsValid (Standard_False),
+  myIsGeometryValid (Standard_False),
   myKindOfDimension (theType)
 {
 }
@@ -156,13 +156,12 @@ void AIS_Dimension::SetCustomPlane (const gp_Pln& thePlane)
   myPlane = thePlane;
   myIsPlaneCustom = Standard_True;
 
-  // Disable fixed text position
+  // Disable fixed (custom) text position
   UnsetFixedTextPosition();
 
   // Check validity if geometry has been set already.
-  if (myIsValid)
+  if (IsValid())
   {
-    myIsValid &= CheckPlane (myPlane);
     SetToUpdate();
   }
 }
@@ -650,9 +649,11 @@ void AIS_Dimension::DrawLinearDimension (const Handle(Prs3d_Presentation)& thePr
   Prs3d_DimensionTextHorizontalPosition aHorisontalTextPos = aDimensionAspect->TextHorizontalPosition();
   if (IsTextPositionCustom())
   {
-    AdjustParametersForLinear (myFixedTextPosition, theFirstPoint, theSecondPoint,
-                               anExtensionSize, aHorisontalTextPos);
-
+    if (!AdjustParametersForLinear (myFixedTextPosition, theFirstPoint, theSecondPoint,
+                                    anExtensionSize, aHorisontalTextPos, myFlyout, myPlane, myIsPlaneCustom))
+    {
+      Standard_ProgramError::Raise ("Can not adjust plane to the custom label position.");
+    }
   }
 
   FitTextAlignmentForLinear (theFirstPoint, theSecondPoint, theIsOneSide, aHorisontalTextPos,
@@ -961,7 +962,7 @@ void AIS_Dimension::DrawLinearDimension (const Handle(Prs3d_Presentation)& thePr
     Prs3d_Root::CurrentGroup (thePresentation)->AddPrimitiveArray (aPrimSegments);
   }
 
-  myIsComputed = Standard_True;
+  mySelectionGeom.IsComputed = Standard_True;
 }
 
 //=======================================================================
@@ -1187,7 +1188,7 @@ Standard_Boolean AIS_Dimension::InitCircularDimension (const TopoDS_Shape& theSh
 void AIS_Dimension::ComputeSelection (const Handle(SelectMgr_Selection)& theSelection,
                                       const Standard_Integer theMode)
 {
-  if (!myIsComputed)
+  if (!mySelectionGeom.IsComputed)
   {
     return;
   }
@@ -1350,7 +1351,7 @@ gp_Pnt AIS_Dimension::GetTextPositionForLinear (const gp_Pnt& theFirstPoint,
                                                 const gp_Pnt& theSecondPoint,
                                                 const Standard_Boolean theIsOneSide) const
 {
-  if (!myIsValid)
+  if (!IsValid())
   {
     return gp::Origin();
   }
@@ -1418,29 +1419,42 @@ gp_Pnt AIS_Dimension::GetTextPositionForLinear (const gp_Pnt& theFirstPoint,
 }
 
 //=======================================================================
-//function : AdjustAspectParameters
+//function : AdjustParametersForLinear
 //purpose  : 
 //=======================================================================
-void AIS_Dimension::AdjustParametersForLinear (const gp_Pnt& theTextPos,
-                                               const gp_Pnt& theFirstPoint,
-                                               const gp_Pnt& theSecondPoint,
-                                               Standard_Real& theExtensionSize,
-                                               Prs3d_DimensionTextHorizontalPosition& theAlignment)
+Standard_Boolean AIS_Dimension::AdjustParametersForLinear (const gp_Pnt& theTextPos,
+                                                           const gp_Pnt& theFirstPoint,
+                                                           const gp_Pnt& theSecondPoint,
+                                                           Standard_Real& theExtensionSize,
+                                                           Prs3d_DimensionTextHorizontalPosition& theAlignment,
+                                                           Standard_Real& theFlyout,
+                                                           gp_Pln& thePlane,
+                                                           Standard_Boolean& theIsPlaneOld) const
 {
   Handle(Prs3d_DimensionAspect) aDimensionAspect = myDrawer->DimensionAspect();
   Standard_Real anArrowLength = aDimensionAspect->ArrowAspect()->Length();
 
-  //Set new automatic plane.
-  myPlane = gce_MakePln (theTextPos, theFirstPoint, theSecondPoint);
-  myIsPlaneCustom = Standard_False;
-
-  // Compute dimension line points.
-  gp_Dir aPlaneNormal = GetPlane().Axis().Direction();
   gp_Dir aTargetPointsDir = gce_MakeDir (theFirstPoint, theSecondPoint);
   gp_Vec aTargetPointsVec (theFirstPoint, theSecondPoint);
 
+  // Don't set new plane if the text position lies on the attachment points line.
+  gp_Lin aTargetPointsLin (theFirstPoint, aTargetPointsDir);
+  if (!aTargetPointsLin.Contains (theTextPos, Precision::Confusion()))
+  {
+    //Set new automatic plane.
+    thePlane = gce_MakePln (theTextPos, theFirstPoint, theSecondPoint);
+    theIsPlaneOld = Standard_False;
+  }
+
   // Compute flyout direction vector.
+  gp_Dir aPlaneNormal = GetPlane().Axis().Direction();
   gp_Dir aPositiveFlyout = aPlaneNormal ^ aTargetPointsDir;
+
+  // Additional check of collinearity of the plane normal and attachment points vector.
+  if (aPlaneNormal.IsParallel (aTargetPointsDir, Precision::Angular()))
+  {
+    return Standard_False;
+  }
 
   // Set flyout.
   gp_Vec aFirstToTextVec (theFirstPoint, theTextPos);
@@ -1453,15 +1467,19 @@ void AIS_Dimension::AdjustParametersForLinear (const gp_Pnt& theTextPos,
   // Compute flyout value and direction.
   gp_Vec aFlyoutVector = gp_Vec (aTextPosProj, theTextPos);
 
-  myFlyout = gp_Dir (aFlyoutVector).IsOpposite (aPositiveFlyout, Precision::Angular())
-              ? -aFlyoutVector.Magnitude()
-              :  aFlyoutVector.Magnitude();
-
+  theFlyout = 0.0;
+  if (aFlyoutVector.Magnitude() > Precision::Confusion())
+  {
+    theFlyout = gp_Dir (aFlyoutVector).IsOpposite (aPositiveFlyout, Precision::Angular())
+                ? -aFlyoutVector.Magnitude()
+                :  aFlyoutVector.Magnitude();
+  }
+  
   // Compute attach points (through which main dimension line passes).
   gp_Pnt aFirstAttach  = theFirstPoint.Translated (aFlyoutVector);
   gp_Pnt aSecondAttach = theSecondPoint.Translated (aFlyoutVector);
 
-  // Set horisontal text alignment.
+  // Set horizontal text alignment.
   if (aCos < 0.0)
   {
     theAlignment = Prs3d_DTHP_Left;
@@ -1480,6 +1498,7 @@ void AIS_Dimension::AdjustParametersForLinear (const gp_Pnt& theTextPos,
   {
     theAlignment = Prs3d_DTHP_Center;
   }
+  return Standard_True;
 }
 
 //=======================================================================

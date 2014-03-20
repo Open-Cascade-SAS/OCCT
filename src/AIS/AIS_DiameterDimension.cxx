@@ -109,13 +109,13 @@ gp_Pnt AIS_DiameterDimension::AnchorPoint()
 //=======================================================================
 void AIS_DiameterDimension::SetMeasuredGeometry (const gp_Circ& theCircle)
 {
-  myCircle       = theCircle;
-  myGeometryType = GeometryType_Edge;
-  myShape        = BRepLib_MakeEdge (theCircle);
-  myAnchorPoint  = gp::Origin();
-  myIsValid      = IsValidCircle (myCircle);
+  myCircle          = theCircle;
+  myGeometryType    = GeometryType_Edge;
+  myShape           = BRepLib_MakeEdge (theCircle);
+  myAnchorPoint     = gp::Origin();
+  myIsGeometryValid = IsValidCircle (myCircle);
 
-  if (myIsValid && myIsPlaneCustom)
+  if (myIsGeometryValid && myIsPlaneCustom)
   {
     ComputeAnchorPoint();
   }
@@ -124,8 +124,6 @@ void AIS_DiameterDimension::SetMeasuredGeometry (const gp_Circ& theCircle)
     ComputePlane();
     myAnchorPoint = ElCLib::Value (0.0, myCircle);
   }
-
-  myIsValid &= CheckPlane (myPlane);
 
   SetToUpdate();
 }
@@ -139,14 +137,14 @@ void AIS_DiameterDimension::SetMeasuredGeometry (const TopoDS_Shape& theShape)
   gp_Pnt aDummyPnt (gp::Origin());
   Standard_Boolean isClosed = Standard_False;
 
-  myGeometryType = GeometryType_UndefShapes;
-  myShape        = theShape;
-  myAnchorPoint  = gp::Origin();
-  myIsValid      = InitCircularDimension (theShape, myCircle, aDummyPnt, isClosed)
-                 && IsValidCircle (myCircle)
-                 && isClosed;
+  myGeometryType    = GeometryType_UndefShapes;
+  myShape           = theShape;
+  myAnchorPoint     = gp::Origin();
+  myIsGeometryValid = InitCircularDimension (theShape, myCircle, aDummyPnt, isClosed)
+                      && IsValidCircle (myCircle)
+                      && isClosed;
 
-  if (myIsValid && myIsPlaneCustom)
+  if (myIsGeometryValid && myIsPlaneCustom)
   {
     ComputeAnchorPoint();
   }
@@ -155,8 +153,6 @@ void AIS_DiameterDimension::SetMeasuredGeometry (const TopoDS_Shape& theShape)
     ComputePlane();
     myAnchorPoint = ElCLib::Value (0.0, myCircle);
   }
-
-  myIsValid &= CheckPlane (myPlane);
 
   SetToUpdate();
 }
@@ -182,7 +178,7 @@ Standard_Boolean AIS_DiameterDimension::CheckPlane (const gp_Pln& thePlane) cons
 //=======================================================================
 void AIS_DiameterDimension::ComputePlane()
 {
-  if (!IsValid())
+  if (!myIsGeometryValid)
   {
     return;
   }
@@ -202,7 +198,7 @@ void AIS_DiameterDimension::ComputeAnchorPoint()
   GeomAPI_IntCS anIntersector (aCircle, aPlane);
   if (!anIntersector.IsDone())
   {
-    myIsValid = Standard_False;
+    myIsGeometryValid = Standard_False;
     return;
   }
 
@@ -210,7 +206,7 @@ void AIS_DiameterDimension::ComputeAnchorPoint()
   if (anIntersector.NbPoints() != 2)
   {
     myAnchorPoint = ElCLib::Value (0.0, myCircle);
-    myIsValid = Standard_True;
+    myIsGeometryValid = Standard_True;
     return;
   }
 
@@ -379,7 +375,7 @@ const gp_Pnt AIS_DiameterDimension::GetTextPosition() const
 //=======================================================================
 void AIS_DiameterDimension::SetTextPosition (const gp_Pnt& theTextPos)
 {
-  if (!myIsValid)
+  if (!IsValid())
   {
     return;
   }

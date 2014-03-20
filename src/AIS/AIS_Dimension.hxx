@@ -370,9 +370,9 @@ public:
   //! Check that the input geometry for dimension is valid and the
   //! presentation can be successfully computed.
   //! @return TRUE if dimension geometry is ok.
-  Standard_Boolean IsValid() const
+  virtual Standard_Boolean IsValid() const
   {
-    return myIsValid;
+    return myIsGeometryValid && CheckPlane (GetPlane());
   }
 
 public:
@@ -506,26 +506,31 @@ protected:
   //! @param theIsArrowExternal [out] is the arrows external,
   //! if arrow orientation in the dimension aspect is Prs3d_DAO_Fit, it fits arrow
   //! orientation automatically.
-  void FitTextAlignmentForLinear (const gp_Pnt& theFirstPoint,
-                                  const gp_Pnt& theSecondPoint,
-                                  const Standard_Boolean theIsOneSide,
-                                  const Prs3d_DimensionTextHorizontalPosition& theHorizontalTextPos,
-                                  Standard_Integer& theLabelPosition,
-                                  Standard_Boolean& theIsArrowsExternal) const;
+  Standard_EXPORT void FitTextAlignmentForLinear (const gp_Pnt& theFirstPoint,
+                                                  const gp_Pnt& theSecondPoint,
+                                                  const Standard_Boolean theIsOneSide,
+                                                  const Prs3d_DimensionTextHorizontalPosition& theHorizontalTextPos,
+                                                  Standard_Integer& theLabelPosition,
+                                                  Standard_Boolean& theIsArrowsExternal) const;
 
   //! Adjusts aspect parameters according the text position:
   //! extension size, vertical text alignment and flyout.
-  //! It changes working plane and flyout of linear dimension.
   //! @param theTextPos [in] the user defined 3d point of text position
   //! @param theFirstPoint [in] the first point of linear measurement.
   //! @param theSecondPoint [in] the second point of linear measurement.
   //! @param theExtensionSize [out] the adjusted extension size
   //! @param theAlignment [out] the horizontal label alignment.
-  void AdjustParametersForLinear (const gp_Pnt& theTextPos,
-                                  const gp_Pnt& theFirstPoint,
-                                  const gp_Pnt& theSecondPoint,
-                                  Standard_Real& theExtensionSize,
-                                  Prs3d_DimensionTextHorizontalPosition& theAlignment);
+  //! @param theFlyout [out] the adjusted value of flyout.
+  //! @param thePlane [out] the new plane that contains theTextPos and attachment points.
+  //! @param theIsPlaneOld [out] shows if new plane is computed.
+  Standard_EXPORT Standard_Boolean AdjustParametersForLinear (const gp_Pnt& theTextPos,
+                                                              const gp_Pnt& theFirstPoint,
+                                                              const gp_Pnt& theSecondPoint,
+                                                              Standard_Real& theExtensionSize,
+                                                              Prs3d_DimensionTextHorizontalPosition& theAlignment,
+                                                              Standard_Real& theFlyout,
+                                                              gp_Pln& thePlane,
+                                                              Standard_Boolean& theIsPlaneOld) const;
 
 protected: //! @name Behavior to implement
 
@@ -587,6 +592,7 @@ protected: //! @name Selection geometry
     Standard_Real    TextHeight;         //!< Height of text label.
     SeqOfCurves      DimensionLine;      //!< Sequence of points for composing the segments of dimension line.
     SeqOfArrows      Arrows;             //!< Sequence of arrow geometries.
+    Standard_Boolean IsComputed;         //!< Shows if the selection geometry was filled.
 
   public:
 
@@ -607,6 +613,8 @@ protected: //! @name Selection geometry
         TextWidth  = 0.0;
         TextHeight = 0.0;
       }
+
+      IsComputed = Standard_False;
     }
 
     //! Add new curve entry and return the reference to populate it.
@@ -627,7 +635,6 @@ protected: //! @name Selection geometry
   } mySelectionGeom;
 
   Standard_Real mySelToleranceForText2d; //!< Sensitive point tolerance for 2d text selection.
-  Standard_Boolean myIsComputed;         //!< Shows if the presentation and selection was computed.
 
 protected: //! @name Value properties
 
@@ -648,10 +655,10 @@ protected: //! @name Geometrical properties
 
   GeometryType myGeometryType;  //!< defines type of shapes on which the dimension is to be built. 
 
-  gp_Pln           myPlane;         //!< Plane where dimension will be built (computed or user defined).
-  Standard_Boolean myIsPlaneCustom; //!< Is plane defined by user (otherwise it will be computed automatically).
-  Standard_Real    myFlyout;        //!< Flyout distance.
-  Standard_Boolean myIsValid;       //!< Is dimension geometry properly defined.
+  gp_Pln           myPlane;           //!< Plane where dimension will be built (computed or user defined).
+  Standard_Boolean myIsPlaneCustom;   //!< Is plane defined by user (otherwise it will be computed automatically).
+  Standard_Real    myFlyout;          //!< Flyout distance.
+  Standard_Boolean myIsGeometryValid; //!< Is dimension geometry properly defined.
 
 private:
 
