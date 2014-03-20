@@ -272,13 +272,14 @@ protected:
 
   //! Adjusts aspect parameters according the text position:
   //! extension size, vertical text alignment and flyout.
-  //! It changes flyout of the dimension.
   //! @param theTextPos [in] the user defined 3d point of text position.
   //! @param theExtensionSize [out] the adjusted extension size.
   //! @param theAlignment [out] the horizontal label alignment.
+  //! @param theFlyout [out] the adjusted value of flyout.
   Standard_EXPORT void AdjustParameters (const gp_Pnt& theTextPos,
                                          Standard_Real& theExtensionSize,
-                                         Prs3d_DimensionTextHorizontalPosition& theAlignment);
+                                         Prs3d_DimensionTextHorizontalPosition& theAlignment,
+                                         Standard_Real& theFlyout) const;
 
 protected:
 
