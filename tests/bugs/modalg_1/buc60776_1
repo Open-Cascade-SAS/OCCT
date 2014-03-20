@@ -1,15 +1,13 @@
-
 puts "========================"
 puts "BUC60776"
 puts "========================"
-puts "TODO OCC12345 ALL: Error : The square of result shape is"
 restore [locate_data_file buc60776a.brep] a
 checkshape a
 restore [locate_data_file buc60776b.brep] b
 checkshape b
 bfuse result a b
 
-set square 60771.3
+set square 61626.2
 
 set 2dviewer 1
 
