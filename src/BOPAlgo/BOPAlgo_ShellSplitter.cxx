@@ -12,9 +12,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// File:	BOPAlgo_ShellSplitter.cxx
-// Created:	Thu Jan 16 08:33:50 2014
-//		<pkv@PETREX>
+// File: BOPAlgo_ShellSplitter.cxx
+// Created: Thu Jan 16 08:33:50 2014
+// <pkv@PETREX>
 
 #include <BOPAlgo_ShellSplitter.ixx>
 //
@@ -45,7 +45,7 @@ static
   Standard_Boolean IsClosedShell(const TopoDS_Shell& );
 static
   void MakeShell(const BOPCol_ListOfShape& , 
-		 TopoDS_Shell& );
+                 TopoDS_Shell& );
 
 //=======================================================================
 //function : 
@@ -148,8 +148,8 @@ void BOPAlgo_ShellSplitter::MakeConnexityBlocks()
     if (!aMEP.Contains(aSE)) {
       aMEP.Add(aSE);
       BOPTools::MapShapesAndAncestors(aSE, 
-				      TopAbs_EDGE, TopAbs_FACE, 
-				      aMEF);
+                                      TopAbs_EDGE, TopAbs_FACE, 
+                                      aMEF);
     }
     else {
       aMER.Add(aSE);
@@ -187,7 +187,7 @@ void BOPAlgo_ShellSplitter::MakeConnexityBlocks()
         for (; aIt.More(); aIt.Next()) {
           const TopoDS_Shape& aF=aIt.Value();
           if (aMFC.Add(aF)) {
-	    aExpF.Init(aF, TopAbs_EDGE);
+            aExpF.Init(aF, TopAbs_EDGE);
             for (; aExpF.More(); aExpF.Next()) {
               const TopoDS_Shape& aEF=aExpF.Current();
               if (aMES.Add(aEF)) {
@@ -236,8 +236,8 @@ void BOPAlgo_ShellSplitter::MakeConnexityBlocks()
       //
       if (bRegular) {
         BOPTools::MapShapesAndAncestors(aFR,
-					TopAbs_EDGE, TopAbs_FACE, 
-					aMEFR);
+                                        TopAbs_EDGE, TopAbs_FACE, 
+                                        aMEFR);
       }
     }
     //
@@ -306,8 +306,8 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
     //
     aMEFP.Clear();
     BOPTools::MapShapesAndAncestors(aFF, 
-				    TopAbs_EDGE, TopAbs_FACE, 
-				    aMEFP);
+                                    TopAbs_EDGE, TopAbs_FACE, 
+                                    aMEFP);
     //
     // loop on faces added to Shell; 
     // add their neighbor faces to Shell and so on
@@ -382,14 +382,14 @@ void BOPAlgo_ShellSplitter::SplitBlock(BOPTools_ConnexityBlock& aCB)
         }
         else if (aNbOff>1){
           BOPTools_AlgoTools::GetFaceOff(aE, aF, 
-					 aLCSOff, aSelF, aContext);
+                                         aLCSOff, aSelF, aContext);
         }
         //
         if (!aSelF.IsNull() && AddedFacesMap.Add(aSelF)) { 
           aBB.Add(aShell, aSelF);
           BOPTools::MapShapesAndAncestors(aSelF, 
-					  TopAbs_EDGE, TopAbs_FACE, 
-					  aMEFP);
+                                          TopAbs_EDGE, TopAbs_FACE, 
+                                          aMEFP);
         }
       } // for (; aEdgeExp.More(); aEdgeExp.Next()) { 
     } //for (; aItAddedF.More(); aItAddedF.Next()) {
@@ -476,6 +476,7 @@ void BOPAlgo_ShellSplitter::MakeShells()
       //
       const BOPCol_ListOfShape& aLF=aCB.Shapes();
       MakeShell(aLF, aShell);
+      aShell.TShape()->Closed(Standard_True);
       myShells.Append(aShell);
     }
     else {
@@ -493,6 +494,7 @@ void BOPAlgo_ShellSplitter::MakeShells()
     aIt.Initialize(aLS);
     for (; aIt.More(); aIt.Next()) {
       const TopoDS_Shape& aShell=aIt.Value();
+      aShell.TShape()->Closed(Standard_True);
       myShells.Append(aShell);
     }
   }
@@ -540,7 +542,7 @@ Standard_Boolean IsClosedShell(const TopoDS_Shell& theShell)
 //purpose  : 
 //=======================================================================
 void MakeShell(const BOPCol_ListOfShape& aLS, 
-	       TopoDS_Shell& aShell)
+               TopoDS_Shell& aShell)
 {
   BRep_Builder aBB;
   BOPCol_ListIteratorOfListOfShape aIt;
