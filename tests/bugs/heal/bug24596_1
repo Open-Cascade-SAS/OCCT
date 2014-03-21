@@ -9,13 +9,13 @@ puts ""
 pload QAcommands
 
 if { [regexp {Debug mode} [dversion]] } {
-  cpulimit 7500
+  cpulimit 8500
   if { [regexp {Windows} [dversion]] } {
-    set max_time 2000
-    set max_time2 1300
+    set max_time 3000
+    set max_time2 2300
   } else {
-    set max_time 4500
-    set max_time2 3000
+    set max_time 5500
+    set max_time2 4000
   }
 } else {
   cpulimit 2600

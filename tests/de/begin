@@ -2,7 +2,7 @@ pload DCAF
 pload TOPTEST
 pload XDE
 
-cpulimit 1500
+cpulimit 2500
 
 # Create a new document and set UndoLimit
 NewDocument D MDTV-XCAF
