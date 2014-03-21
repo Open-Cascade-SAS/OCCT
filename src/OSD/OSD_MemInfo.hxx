@@ -16,7 +16,6 @@
 #ifndef _OSD_MemInfo_H__
 #define _OSD_MemInfo_H__
 
-#include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
 
 //! This class provide information about memory utilized by current process.
@@ -47,7 +46,7 @@
 //!
 //! This also means that these values should not be used for intellectual
 //! memory management by application itself.
-class OSD_MemInfo : public Standard_Transient
+class OSD_MemInfo
 {
 
 public:
