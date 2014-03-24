@@ -42,30 +42,50 @@
   myErrorStatus=1;
 }
 //=======================================================================
+//function : ~
+//purpose  : 
+//=======================================================================
+BOPInt_ShrunkRange::~BOPInt_ShrunkRange () 
+{
+}
+//=======================================================================
 //function : SetData
 //purpose  : 
 //=======================================================================
-  void BOPInt_ShrunkRange::SetData(const TopoDS_Edge& aE,
-                                   const Standard_Real aT1,
-                                   const Standard_Real aT2,
-                                   const TopoDS_Vertex& aV1,
-                                   const TopoDS_Vertex& aV2,
-                                   const Handle(BOPInt_Context)& aCtx)
+void BOPInt_ShrunkRange::SetData(const TopoDS_Edge& aE,
+                                 const Standard_Real aT1,
+                                 const Standard_Real aT2,
+                                 const TopoDS_Vertex& aV1,
+                                 const TopoDS_Vertex& aV2)
 {
   myEdge=aE;
   myV1=aV1;
   myV2=aV2;
   myT1=aT1;
   myT2=aT2;
-  //myRange=aR;
-  myCtx=aCtx;
   myErrorStatus=1;
+}
+//=======================================================================
+//function : SetContext
+//purpose  : 
+//=======================================================================
+void BOPInt_ShrunkRange::SetContext(const Handle(BOPInt_Context)& aCtx)
+{
+  myCtx=aCtx;
+}
+//=======================================================================
+//function : Context
+//purpose  : 
+//=======================================================================
+const Handle(BOPInt_Context)& BOPInt_ShrunkRange::Context()const
+{
+  return myCtx;
 }
 //=======================================================================
 //function : Edge
 //purpose  : 
 //=======================================================================
-  const TopoDS_Edge& BOPInt_ShrunkRange::Edge() const
+const TopoDS_Edge& BOPInt_ShrunkRange::Edge() const
 {
   return myEdge;
 }
@@ -73,8 +93,8 @@
 //function : ShrunkRange
 //purpose  : 
 //=======================================================================
-  void BOPInt_ShrunkRange::ShrunkRange(Standard_Real& aT1,
-                                       Standard_Real& aT2) const
+void BOPInt_ShrunkRange::ShrunkRange(Standard_Real& aT1,
+                                     Standard_Real& aT2) const
 {
   aT1=myTS1;
   aT2=myTS2;
@@ -83,7 +103,7 @@
 //function : BndBox
 //purpose  : 
 //=======================================================================
-  const Bnd_Box& BOPInt_ShrunkRange::BndBox() const
+const Bnd_Box& BOPInt_ShrunkRange::BndBox() const
 {
   return myBndBox;
 }
@@ -91,7 +111,7 @@
 //function : ErrorStatus
 //purpose  : 
 //=======================================================================
-  Standard_Integer BOPInt_ShrunkRange::ErrorStatus() const
+Standard_Integer BOPInt_ShrunkRange::ErrorStatus() const
 {
   return myErrorStatus;
 }
@@ -100,8 +120,8 @@
 //function : SetShrunkRange
 //purpose  : 
 //=======================================================================
-  void BOPInt_ShrunkRange::SetShrunkRange(const Standard_Real aT1,
-                                          const Standard_Real aT2) 
+void BOPInt_ShrunkRange::SetShrunkRange(const Standard_Real aT1,
+                                        const Standard_Real aT2) 
 {
   myTS1=aT1;
   myTS2=aT2;
@@ -114,9 +134,10 @@
 //function : Perform
 //purpose  : 
 //=======================================================================
-  void BOPInt_ShrunkRange::Perform()
+void BOPInt_ShrunkRange::Perform()
 {
-  Standard_Real aCF, aCL, aTolE, aTolV1, aTolV2, t1, t11, t1C, t2, t12, t2C;
+  Standard_Real aCF, aCL, aTolE, aTolV1;
+  Standard_Real aTolV2, t1, t11, t1C, t2, t12, t2C;
   Standard_Real aCoeff1, aCoeff2, aTol1, aTol2, dt1, dt2, aR, anEps;
   Standard_Integer pri;
   Standard_Boolean bInf1, bInf2, bAppr;
@@ -155,7 +176,7 @@
     return;
   }
   //
-  bAppr = (fabs(t2 - t1) > 100) ? Standard_False : Standard_True;
+  bAppr = !(fabs(t2 - t1) > 100);
   if (fabs(t2 - t1) < anEps) {
     myErrorStatus=7;
     return;
@@ -426,8 +447,7 @@
       }
     }
   } // else {
-
-
+  //
   if (t1C>t2){
     t1C=0.5*(t2+t1);
     t2C=t1C+0.1*(t2-t1C);

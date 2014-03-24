@@ -20,7 +20,8 @@ class PaveFiller from BOPAlgo
     ---Purpose: 
 
 uses 
-    Pnt from gp,   
+    Pnt from gp,  
+    ShapeEnum from TopAbs,  
     Vertex from TopoDS,
     Face from TopoDS, 
     Edge from TopoDS,
@@ -139,7 +140,12 @@ is
     FillShrunkData(me:out; 
         thePB:out PaveBlock from BOPDS) 
       is protected;   
-	 
+ 
+    FillShrunkData(me:out; 
+        theType1: ShapeEnum from TopAbs; 
+        theType2: ShapeEnum from TopAbs) 
+      is protected; 	 
+ 
     PerformVerticesEE(me:out; 
         theMVCPB:out IndexedDataMapOfShapeCoupleOfPaveBlocks from BOPDS; 
         theAllocator:out BaseAllocator from BOPCol) 

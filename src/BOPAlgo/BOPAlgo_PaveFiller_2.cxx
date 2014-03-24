@@ -21,6 +21,9 @@
 #include <TopoDS_Edge.hxx>
 #include <BRep_Tool.hxx>
 
+#include <BOPCol_NCVector.hxx>
+#include <BOPCol_TBB.hxx>
+
 #include <BOPInt_Context.hxx>
 
 #include <BOPDS_Iterator.hxx>
@@ -31,20 +34,110 @@
 #include <BRepBndLib.hxx>
 #include <BRep_Builder.hxx>
 
-
+//=======================================================================
+//class    : BOPAlgo_VertexEdgeEdge
+//purpose  : 
+//=======================================================================
+class BOPAlgo_VertexEdge {
+ public:
+  BOPAlgo_VertexEdge()
+    : myIV(-1), myIE(-1), myIVx(-1), myFlag(-1), myT(-1.) {
+  };
+  //
+  ~BOPAlgo_VertexEdge(){
+  };
+  //
+  void SetIndices(const Standard_Integer nV,
+                  const Standard_Integer nE,
+                  const Standard_Integer nVx) {
+    myIV=nV;
+    myIE=nE;
+    myIVx=nVx;
+  }
+  //
+  void Indices(Standard_Integer& nV,
+               Standard_Integer& nE,
+               Standard_Integer& nVx) const {
+    nV=myIV;
+    nE=myIE;
+    nVx=myIVx;
+  }
+  //
+  void SetVertex(const TopoDS_Vertex& aV) {
+    myV=aV;
+  }
+  //
+  const TopoDS_Vertex& Vertex()const {
+    return myV;
+  }
+  //
+  void SetEdge(const TopoDS_Edge& aE) {
+    myE=aE;
+  }
+  //
+  const TopoDS_Edge& Edge()const {
+    return myE;
+  }
+  //
+  Standard_Integer Flag()const {
+    return myFlag;
+  }
+  //
+  Standard_Real Parameter()const {
+    return myT;
+  }
+  //
+  void SetContext(const Handle(BOPInt_Context)& aContext) {
+    myContext=aContext;
+  }
+  //
+  const Handle(BOPInt_Context)& Context()const {
+    return myContext;
+  }
+  //
+  void Perform() {
+    myFlag=myContext->ComputeVE (myV, myE, myT);
+  };
+  //
+ protected:
+  Standard_Integer myIV;
+  Standard_Integer myIE;
+  Standard_Integer myIVx;
+  Standard_Integer myFlag;
+  Standard_Real myT;
+  TopoDS_Vertex myV;
+  TopoDS_Edge myE;
+  Handle(BOPInt_Context) myContext;
+};
+//=======================================================================
+typedef BOPCol_NCVector
+  <BOPAlgo_VertexEdge> BOPAlgo_VectorOfVertexEdge; 
+//
+typedef BOPCol_TBBContextFunctor 
+  <BOPAlgo_VertexEdge,
+  BOPAlgo_VectorOfVertexEdge,
+  Handle_BOPInt_Context, 
+  BOPInt_Context> BOPAlgo_VertexEdgeFunctor;
+//
+typedef BOPCol_TBBContextCnt 
+  <BOPAlgo_VertexEdgeFunctor,
+  BOPAlgo_VectorOfVertexEdge,
+  Handle_BOPInt_Context> BOPAlgo_VertexEdgeCnt;
+//
 //=======================================================================
 // function: PerformVE
 // purpose: 
 //=======================================================================
-  void BOPAlgo_PaveFiller::PerformVE()
+void BOPAlgo_PaveFiller::PerformVE()
 {
   Standard_Boolean bJustAdd;
-  Standard_Integer iSize, nV, nE, nVSD, iFlag, nVx, i;
+  Standard_Integer iSize, nV, nE, nVSD, iFlag, nVx, i, k, aNbVE;;
   Standard_Real aT, aTolE, aTolV;
   BOPDS_Pave aPave;
   BOPDS_PassKey aPK;
   BOPDS_MapOfPassKey aMPK;
   BRep_Builder aBB;
+  BOPAlgo_VectorOfVertexEdge aVVE;
   //
   myErrorStatus=0;
   //
@@ -92,8 +185,27 @@
     const TopoDS_Edge& aE=(*(TopoDS_Edge *)(&aSIE.Shape())); 
     const TopoDS_Vertex& aV=(*(TopoDS_Vertex *)(&myDS->Shape(nVx))); 
     //
-    iFlag=myContext->ComputeVE (aV, aE, aT);
+    BOPAlgo_VertexEdge& aVESolver=aVVE.Append1();
+    //
+    aVESolver.SetIndices(nV, nE, nVx);
+    aVESolver.SetVertex(aV);
+    aVESolver.SetEdge(aE);
+    //
+  }// myIterator->Initialize(TopAbs_VERTEX, TopAbs_EDGE);
+  //
+  aNbVE=aVVE.Extent();
+  //=============================================================
+  BOPAlgo_VertexEdgeCnt::Perform(myRunParallel, aVVE, myContext);
+  //=============================================================
+  //
+  for (k=0; k < aNbVE; ++k) {
+    const BOPAlgo_VertexEdge& aVESolver=aVVE(k);
+    iFlag=aVESolver.Flag();
     if (!iFlag) {
+      aVESolver.Indices(nV, nE, nVx);
+      aT=aVESolver.Parameter();
+      const TopoDS_Vertex& aV=aVESolver.Vertex();
+      const TopoDS_Edge& aE=aVESolver.Edge();
       // 1
       i=aVEs.Append()-1;
       BOPDS_InterfVE& aVE=aVEs(i);
@@ -117,5 +229,5 @@
         BRepBndLib::Add(aV, aBoxDS);
       }
     }
-  }//for (; myIterator->More(); myIterator->Next()) {
+  }//for (k=0; k < aNbVE; ++k) {
 } 
