@@ -98,60 +98,18 @@ class BOPAlgo_EdgeEdge : public IntTools_EdgeEdge {
   Handle(BOPDS_PaveBlock) myPB2;
 };
 //
-typedef BOPCol_NCVector<BOPAlgo_EdgeEdge> BOPAlgo_VectorOfEdgeEdge; 
+//=======================================================================
+typedef BOPCol_NCVector
+  <BOPAlgo_EdgeEdge> BOPAlgo_VectorOfEdgeEdge; 
 //
+typedef BOPCol_TBBFunctor 
+  <BOPAlgo_EdgeEdge,
+  BOPAlgo_VectorOfEdgeEdge> BOPAlgo_EdgeEdgeFunctor;
 //
-//=======================================================================
-//class    : BOPAlgo_EdgeEdgeFunctor
-//purpose  : 
-//=======================================================================
-class BOPAlgo_EdgeEdgeFunctor {
- protected:
-  BOPAlgo_VectorOfEdgeEdge* myPVEE;
-  //
- public:
-  //
-  BOPAlgo_EdgeEdgeFunctor(BOPAlgo_VectorOfEdgeEdge& aVEE) 
-    : myPVEE(&aVEE) {
-  }
-  //
-  void operator()( const flexible_range<Standard_Integer>& aBR ) const{
-    Standard_Integer i, iBeg, iEnd;
-    //
-    BOPAlgo_VectorOfEdgeEdge& aVEE=*myPVEE;
-    //
-    iBeg=aBR.begin();
-    iEnd=aBR.end();
-    for(i=iBeg; i!=iEnd; ++i) {
-      BOPAlgo_EdgeEdge& aEE=aVEE(i);
-      //
-      aEE.Perform();
-    }
-  }
-};
-//=======================================================================
-//class    : BOPAlgo_EdgeEdgeCnt
-//purpose  : 
-//=======================================================================
-class BOPAlgo_EdgeEdgeCnt {
- public:
-  //-------------------------------
-  // Perform
-  Standard_EXPORT 
-    static void Perform(const Standard_Boolean bRunParallel,
-                        BOPAlgo_VectorOfEdgeEdge& aVEdgeEdge) {
-    //
-    BOPAlgo_EdgeEdgeFunctor aEEF(aVEdgeEdge);
-    Standard_Integer aNbEE=aVEdgeEdge.Extent();
-    //
-    if (bRunParallel) {
-      flexible_for(flexible_range<Standard_Integer>(0,aNbEE), aEEF);
-    }
-    else {
-      aEEF.operator()(flexible_range<Standard_Integer>(0,aNbEE));
-    }
-  }
-};
+typedef BOPCol_TBBCnt 
+  <BOPAlgo_EdgeEdgeFunctor,
+  BOPAlgo_VectorOfEdgeEdge> BOPAlgo_EdgeEdgeCnt;
+//
 //=======================================================================
 // function: PerformEE
 // purpose: 
@@ -161,6 +119,8 @@ void BOPAlgo_PaveFiller::PerformEE()
   Standard_Integer iSize;
   //
   myErrorStatus=0;
+  //
+  FillShrunkData(TopAbs_EDGE, TopAbs_EDGE);
   //
   myIterator->Initialize(TopAbs_EDGE, TopAbs_EDGE);
   iSize=myIterator->ExpectedLength();
@@ -214,10 +174,7 @@ void BOPAlgo_PaveFiller::PerformEE()
       //
       Handle(BOPDS_PaveBlock)& aPB1=aIt1.ChangeValue();
       if (!aPB1->HasShrunkData()) {
-        FillShrunkData(aPB1);
-        if (myWarningStatus) {
-          continue;
-        }
+        continue;
       }
       aPB1->ShrunkData(aTS11, aTS12, aBB1);
       //
@@ -227,10 +184,7 @@ void BOPAlgo_PaveFiller::PerformEE()
         //
         Handle(BOPDS_PaveBlock)& aPB2=aIt2.ChangeValue();
         if (!aPB2->HasShrunkData()) {
-          FillShrunkData(aPB2);
-          if (myWarningStatus) {
-            continue;
-          }
+          continue;
         }
         aPB2->ShrunkData(aTS21, aTS22, aBB2);
         //
@@ -744,7 +698,8 @@ void BOPAlgo_PaveFiller::FillShrunkData(Handle(BOPDS_PaveBlock)& thePB)
   nE=thePB->OriginalEdge();
   const TopoDS_Edge& aE=(*(TopoDS_Edge *)(&myDS->Shape(nE))); 
   //
-  aSR.SetData(aE, aT1, aT2, aV1, aV2, myContext);
+  aSR.SetContext(myContext);
+  aSR.SetData(aE, aT1, aT2, aV1, aV2);
   //
   aSR.Perform();
   iErr=aSR.ErrorStatus();

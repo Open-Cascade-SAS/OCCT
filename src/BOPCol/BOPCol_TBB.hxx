@@ -43,7 +43,7 @@ using namespace tbb;
 template <class Type> class serial_range {
  public:
   serial_range(const Type& aBegin,
-	       const Type& aEnd)
+               const Type& aEnd)
     : myBegin(aBegin), myEnd(aEnd) {
   }
   //
@@ -72,5 +72,149 @@ static void serial_for( const Range& range, const Body& body ) {
   body.operator()(range);
 };
 #endif // not HAVE_TBB
+//
+// 2. Implementation of Functors/Starters
+//
+// 2.1. Pure version
+//
+//=======================================================================
+//class    : BOPCol_TBBFunctor
+//purpose  : 
+//=======================================================================
+template <class TypeSolver, 
+          class TypeSolverVector> class BOPCol_TBBFunctor {
+ 
+ public:
+  BOPCol_TBBFunctor(TypeSolverVector& aV) 
+    : myPV(&aV) {
+  }
+  //
+  ~BOPCol_TBBFunctor() {
+  }
+  //
+  void operator()( const flexible_range<Standard_Size>& aBR ) const{
+    Standard_Size i, iBeg, iEnd;
+    //
+    TypeSolverVector& aV=*myPV;
+    //
+    iBeg=aBR.begin();
+    iEnd=aBR.end();
+    for(i=iBeg; i!=iEnd; ++i) {
+      TypeSolver& aSolver=aV(i);
+      //
+      aSolver.Perform();
+    }
+  }
+  //
+ protected:
+  TypeSolverVector* myPV;
+};
+//=======================================================================
+//class    : BOPCol_TBBCnt
+//purpose  : 
+//=======================================================================
+template <class TypeFunctor, 
+          class TypeSolverVector> class BOPCol_TBBCnt {
+ public:
+  //-------------------------------
+  // Perform
+  Standard_EXPORT 
+    static void Perform(const Standard_Boolean bRunParallel,
+                        TypeSolverVector& aV) {
+    //
+    TypeFunctor aFunctor(aV);
+    Standard_Size aNb=aV.Extent();
+    //
+    if (bRunParallel) {
+      flexible_for(flexible_range<Standard_Size>(0,aNb), aFunctor);
+    }
+    else {
+      aFunctor.operator()(flexible_range<Standard_Size>(0,aNb));
+    }
+  }
+};
+//
+// 2.2. Context dependent version
+//
+#include <Standard_Macro.hxx>
+
+//=======================================================================
+//class    : BOPCol_TBBContextFunctor
+//purpose  : 
+//=======================================================================
+template <class TypeSolver, 
+          class TypeSolverVector,
+          class TypeContext, 
+          typename TN> class BOPCol_TBBContextFunctor  {
+ 
+ public:
+  BOPCol_TBBContextFunctor(TypeSolverVector& aV) 
+    : myPV(&aV) {
+  }
+  //
+  ~BOPCol_TBBContextFunctor() {
+  }
+  //
+  void SetContext(TypeContext& aCtx) {
+    myContext=aCtx;
+  }
+  //
+  void operator()( const flexible_range<Standard_Size>& aBR ) const{
+    Standard_Size i, iBeg, iEnd;
+    TypeContext aCtx;
+    //
+    if (myContext.IsNull()) {
+      aCtx=new TN
+        (NCollection_BaseAllocator::CommonBaseAllocator());
+    }
+    else {
+      aCtx=myContext;
+    }
+    //
+    TypeSolverVector& aV=*myPV;
+    //
+    iBeg=aBR.begin();
+    iEnd=aBR.end();
+    for(i=iBeg; i!=iEnd; ++i) {
+      TypeSolver& aSolver=aV(i);
+      //
+      aSolver.SetContext(aCtx);
+      aSolver.Perform();
+    }
+  }
+  //
+ protected:
+  TypeSolverVector* myPV;
+  TypeContext myContext;
+  //
+};
+
+//=======================================================================
+//class    : BOPCol_TBBContextCnt
+//purpose  : 
+//=======================================================================
+template <class TypeFunctor, 
+          class TypeSolverVector,
+          class TypeContext> class BOPCol_TBBContextCnt {
+ public:
+  //-------------------------------
+  // Perform
+  Standard_EXPORT 
+    static void Perform(const Standard_Boolean bRunParallel,
+                        TypeSolverVector& aV,
+                        TypeContext& aCtx) {
+    //
+    TypeFunctor aFunctor(aV);
+    Standard_Size aNb=aV.Extent();
+    //
+    if (bRunParallel) {
+      flexible_for(flexible_range<Standard_Size>(0,aNb), aFunctor);
+    }
+    else {
+      aFunctor.SetContext(aCtx);
+      aFunctor.operator()(flexible_range<Standard_Size>(0,aNb));
+    }
+  }
+};
 
 #endif

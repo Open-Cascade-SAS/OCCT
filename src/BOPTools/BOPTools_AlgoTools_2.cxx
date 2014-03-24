@@ -40,8 +40,9 @@ static
 // function: UpdateVertex
 // purpose: 
 //=======================================================================
-  void BOPTools_AlgoTools::UpdateVertex (const TopoDS_Vertex& aVF,
-                                     const TopoDS_Vertex& aNewVertex)
+void BOPTools_AlgoTools::UpdateVertex
+  (const TopoDS_Vertex& aVF,
+   const TopoDS_Vertex& aNewVertex)
 {
   Standard_Real aTolVF, aTolNewVertex, aDist, aDTol=1.e-12, aNewTol;
   //
@@ -63,9 +64,9 @@ static
 // function: UpdateVertex
 // purpose: 
 //=======================================================================
-  void BOPTools_AlgoTools::UpdateVertex (const TopoDS_Edge& aE,
-                                     const Standard_Real  aT,
-                                     const TopoDS_Vertex& aV)
+void BOPTools_AlgoTools::UpdateVertex (const TopoDS_Edge& aE,
+                                       const Standard_Real  aT,
+                                       const TopoDS_Vertex& aV)
 {
   Standard_Real aTolV, aDist, aDTol=1.e-12, aFirst, aLast;
   gp_Pnt  aPc; 
@@ -86,9 +87,9 @@ static
 // function: UpdateVertex
 // purpose: 
 //=======================================================================
-  void BOPTools_AlgoTools::UpdateVertex (const IntTools_Curve& aC,
-                                     const Standard_Real  aT,
-                                     const TopoDS_Vertex& aV)
+void BOPTools_AlgoTools::UpdateVertex (const IntTools_Curve& aC,
+                                       const Standard_Real  aT,
+                                       const TopoDS_Vertex& aV)
 {
   Standard_Real aTolV, aDist, aDTol=1.e-12;
   gp_Pnt  aPc; 
@@ -108,12 +109,12 @@ static
 // function: MakeSectEdge
 // purpose: 
 //=======================================================================
-  void BOPTools_AlgoTools::MakeSectEdge(const IntTools_Curve& aIC,
-                                     const TopoDS_Vertex& aV1,
-                                     const Standard_Real  aP1,
-                                     const TopoDS_Vertex& aV2,
-                                     const Standard_Real  aP2,
-                                     TopoDS_Edge& aNewEdge)
+void BOPTools_AlgoTools::MakeSectEdge(const IntTools_Curve& aIC,
+                                      const TopoDS_Vertex& aV1,
+                                      const Standard_Real  aP1,
+                                      const TopoDS_Vertex& aV2,
+                                      const Standard_Real  aP2,
+                                      TopoDS_Edge& aNewEdge)
 {
   Handle(Geom_Curve) aC=aIC.Curve ();
   
@@ -133,23 +134,19 @@ static
 // function: MakeSplitEdge
 // purpose: 
 //=======================================================================
-  void BOPTools_AlgoTools::MakeSplitEdge(const TopoDS_Edge&   aE,
-                                     const TopoDS_Vertex& aV1,
-                                     const Standard_Real  aP1,
-                                     const TopoDS_Vertex& aV2,
-                                     const Standard_Real  aP2,
-                                     TopoDS_Edge& aNewEdge)
+void BOPTools_AlgoTools::MakeSplitEdge(const TopoDS_Edge&   aE,
+                                       const TopoDS_Vertex& aV1,
+                                       const Standard_Real  aP1,
+                                       const TopoDS_Vertex& aV2,
+                                       const Standard_Real  aP2,
+                                       TopoDS_Edge& aNewEdge)
 {
-  Standard_Real f, l, aTol;
-  Handle(Geom_Curve) aC=BRep_Tool::Curve (aE, f, l);
+  Standard_Real aTol;//f, l, 
   aTol=BRep_Tool::Tolerance(aE);
   //
-  // MakeEdge is used for chechking all input data only 
-  BRepBuilderAPI_MakeEdge aMakeEdge(aC, aV1, aV2, aP1, aP2);
-  //ZZ const TopoDS_Edge& E1=TopoDS::Edge(aMakeEdge.Shape());
   TopoDS_Edge E=aE;
   E.EmptyCopy();
-
+  //
   BRep_Builder BB;
   BB.Add  (E, aV1);
   BB.Add  (E, aV2);
@@ -162,9 +159,9 @@ static
 // function: MakeNewVertex
 // purpose: 
 //=======================================================================
-  void BOPTools_AlgoTools::MakeNewVertex(const TopoDS_Vertex& aV1,
-                                     const TopoDS_Vertex& aV2,
-                                     TopoDS_Vertex& aNewVertex)
+void BOPTools_AlgoTools::MakeNewVertex(const TopoDS_Vertex& aV1,
+                                       const TopoDS_Vertex& aV2,
+                                       TopoDS_Vertex& aNewVertex)
 {
   gp_Pnt aPnt1=BRep_Tool::Pnt(aV1);
   Standard_Real aTol1=BRep_Tool::Tolerance(aV1);
@@ -190,9 +187,9 @@ static
 // function: MakeNewVertex
 // purpose: 
 //=======================================================================
-  void BOPTools_AlgoTools::MakeNewVertex(const gp_Pnt& aP,
-                                     const Standard_Real aTol,
-                                     TopoDS_Vertex& aNewVertex)
+void BOPTools_AlgoTools::MakeNewVertex(const gp_Pnt& aP,
+                                       const Standard_Real aTol,
+                                       TopoDS_Vertex& aNewVertex)
 {
   BRep_Builder aBB;
   aBB.MakeVertex (aNewVertex, aP, aTol);
@@ -202,11 +199,11 @@ static
 // function: MakeNewVertex
 // purpose: 
 //=======================================================================
-  void BOPTools_AlgoTools::MakeNewVertex(const TopoDS_Edge& aE1,
-                                     const Standard_Real aParm1,
-                                     const TopoDS_Edge& aE2,
-                                     const Standard_Real aParm2,
-                                     TopoDS_Vertex& aNewVertex)
+void BOPTools_AlgoTools::MakeNewVertex(const TopoDS_Edge& aE1,
+                                       const Standard_Real aParm1,
+                                       const TopoDS_Edge& aE2,
+                                       const Standard_Real aParm2,
+                                       TopoDS_Vertex& aNewVertex)
 {
   Standard_Real aTol1, aTol2, aMaxTol, aDist; 
   gp_Pnt aPnt1, aPnt2;
@@ -233,10 +230,10 @@ static
 // function: MakeNewVertex
 // purpose: 
 //=======================================================================
-  void BOPTools_AlgoTools::MakeNewVertex(const TopoDS_Edge& aE1,
-                                     const Standard_Real aParm1,
-                                     const TopoDS_Face& aF1,
-                                     TopoDS_Vertex& aNewVertex)
+void BOPTools_AlgoTools::MakeNewVertex(const TopoDS_Edge& aE1,
+                                       const Standard_Real aParm1,
+                                       const TopoDS_Face& aF1,
+                                       TopoDS_Vertex& aNewVertex)
 {
   Standard_Real aTol1, aTol2, aMaxTol, delta=1.e-12; 
   gp_Pnt aPnt;
@@ -257,9 +254,9 @@ static
 // function: PointOnEdge
 // purpose: 
 //=======================================================================
-  void BOPTools_AlgoTools::PointOnEdge(const TopoDS_Edge& aE,
-                                   const Standard_Real aParm,
-                                   gp_Pnt& aPnt)
+void BOPTools_AlgoTools::PointOnEdge(const TopoDS_Edge& aE,
+                                     const Standard_Real aParm,
+                                     gp_Pnt& aPnt)
 {
   Standard_Real f, l;
   Handle(Geom_Curve) C1=BRep_Tool::Curve(aE, f, l);
@@ -270,10 +267,10 @@ static
 //function : CorrectRange
 //purpose  : 
 //=======================================================================
-  void BOPTools_AlgoTools::CorrectRange(const TopoDS_Edge& aE1,
-                                    const TopoDS_Edge& aE2,
-                                    const IntTools_Range& aSR,
-                                    IntTools_Range& aNewSR)
+void BOPTools_AlgoTools::CorrectRange(const TopoDS_Edge& aE1,
+                                      const TopoDS_Edge& aE2,
+                                      const IntTools_Range& aSR,
+                                      IntTools_Range& aNewSR)
 {
   Standard_Integer i;
   Standard_Real aRes, aTolE1, aTolE2, aTF, aTL, dT;
@@ -342,10 +339,10 @@ static
 //function : CorrectRange
 //purpose  : 
 //=======================================================================
-  void BOPTools_AlgoTools::CorrectRange(const TopoDS_Edge& aE,
-                                    const TopoDS_Face& aF,
-                                    const IntTools_Range& aSR,
-                                    IntTools_Range& aNewSR)
+void BOPTools_AlgoTools::CorrectRange(const TopoDS_Edge& aE,
+                                      const TopoDS_Face& aF,
+                                      const IntTools_Range& aSR,
+                                      IntTools_Range& aNewSR)
 {
   Standard_Integer i;
   Standard_Real aRes, aTolF, aTF, aTL, dT;
@@ -408,7 +405,7 @@ static
 //function : Dimension
 //purpose  : 
 //=======================================================================
-  Standard_Integer BOPTools_AlgoTools::Dimension(const TopoDS_Shape& theS)
+Standard_Integer BOPTools_AlgoTools::Dimension(const TopoDS_Shape& theS)
 {
   Standard_Integer i, iRet, iRx0 = 0, iRx = 0;
   TopAbs_ShapeEnum aTS;
@@ -462,8 +459,8 @@ static
 //function : TreatCompound
 //purpose  : 
 //=======================================================================
-  void TreatCompound(const TopoDS_Shape& theC1, 
-                     BOPCol_ListOfShape& theLSX)
+void TreatCompound(const TopoDS_Shape& theC1, 
+                   BOPCol_ListOfShape& theLSX)
 {
   Standard_Integer aNbC1;
   TopAbs_ShapeEnum aType;
