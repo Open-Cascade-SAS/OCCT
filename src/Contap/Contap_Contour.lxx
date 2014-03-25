@@ -1,4 +1,4 @@
-// Created on: 1993-03-04
+// Created on: 1993-02-05
 // Created by: Jacques GOUSSARD
 // Copyright (c) 1993-1999 Matra Datavision
 // Copyright (c) 1999-2014 OPEN CASCADE SAS
@@ -14,14 +14,35 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-Contap_Point::Contap_Point ():
-       onarc(Standard_False),isvtx(Standard_False),ismult(Standard_False),
-       myInternal(Standard_False)
-{}
+#include <StdFail_NotDone.hxx>
 
-Contap_Point::Contap_Point (const gp_Pnt& Pt,
-			    const Standard_Real U,
-			    const Standard_Real V):
-       pt(Pt),uparam(U),vparam(V),onarc(Standard_False),isvtx(Standard_False),
-       ismult(Standard_False),myInternal(Standard_False)
-{}
+inline Standard_Boolean Contap_Contour::IsDone () const
+{
+  return done;
+}
+
+inline Standard_Boolean Contap_Contour::IsEmpty () const
+{
+  return NbLines()==0;
+}
+
+inline Standard_Integer Contap_Contour::NbLines () const
+{
+  if (!done) {StdFail_NotDone::Raise();}
+  return slin.Length();
+}
+
+inline const Contap_Line & 
+Contap_Contour::Line (const Standard_Integer Index) const
+{
+  if (!done) {StdFail_NotDone::Raise();}
+  return slin(Index);
+}
+
+inline Contap_SurfFunction & 
+Contap_Contour::SurfaceFunction ()
+{
+  if (!done) {StdFail_NotDone::Raise();}
+  return mySFunc;
+}
+

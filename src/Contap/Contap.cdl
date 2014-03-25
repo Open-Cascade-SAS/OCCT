@@ -16,72 +16,82 @@
 
 package Contap
 
-	---Purpose: 
+    ---Purpose: 
 
 uses Standard,StdFail,MMgt, GeomAbs, TopAbs, TCollection, gp, TColgp,
      math, IntSurf, IntStart, IntWalk,
      Geom2d, TColStd, Geom, Adaptor3d,  Adaptor2d
 
+
 is
-    
-    generic class Point;
 
-    generic class Line;
 
-    generic class SurfFunction;
-    
-    generic class ArcFunction;
-    
-    generic class SurfProps;
+    class Point;
 
-    generic class ContourGen, ThePoint,TheSequenceOfPoint,TheHSequenceOfPoint,
-                              TheLine, TheSequenceOfLine,
-			      TheSurfProps, TheSurfFunction, TheArcFunction,
-                              TheSearch, TheIWalking, TheSearchInside;
-    	    	    	      ---TheLineConstructor;
+    class Line;
 
-    class ContAna;		   
+    class SurfFunction;
+
+    class ArcFunction;
+
+    class SurfProps;
+
+    class Contour;
+
+    class TheSequenceOfPoint instantiates Sequence from TCollection (Point from Contap);
+
+    class TheHSequenceOfPoint instantiates HSequence from TCollection
+        (Point              from Contap,
+         TheSequenceOfPoint from Contap);
+
+    class TheSequenceOfLine instantiates Sequence from TCollection(Line from Contap);
+
+    class TheSearch instantiates SearchOnBoundaries from IntStart
+        (HVertex      from Adaptor3d,
+         HCurve2d     from Adaptor2d,
+         HCurve2dTool from Contap,
+         HContTool    from Contap,
+         TopolTool    from Adaptor3d,
+         ArcFunction  from Contap);
+
+    class TheIWalking instantiates IWalking from IntWalk
+        (PathPoint               from IntSurf,
+         PathPointTool           from IntSurf,
+         SequenceOfPathPoint     from IntSurf,
+         InteriorPoint           from IntSurf,
+         InteriorPointTool       from IntSurf,
+         SequenceOfInteriorPoint from IntSurf,
+         HSurface                from Adaptor3d,
+         HSurfaceTool            from Adaptor3d,
+         SurfFunction            from Contap);
+
+    class TheSearchInside instantiates SearchInside from IntStart
+        (HSurface     from Adaptor3d,
+         HSurfaceTool from Adaptor3d,
+         TopolTool    from Adaptor3d,
+         HContTool    from Contap,
+         SurfFunction from Contap);
+
+         
+    class ContAna;
 
     enumeration TFunction is
-    	ContourStd,
-	ContourPrs,
-	DraftStd,
-	DraftPrs
-    end TFunction;	
+        ContourStd,
+        ContourPrs,
+        DraftStd,
+        DraftPrs
+    end TFunction;
 
     enumeration IType is  -- a replacer dans IntSurf et fusionner avec IntPatch
     -- type of the line of contour
-
-    	Lin,       -- pour conflit avec deferred class Line
-    	Circle,
+        Lin,       -- pour conflit avec deferred class Line
+        Circle,
         Walking,
-    	Restriction
+        Restriction
     end IType;
-	
-    generic class HContToolGen;
-    
-    generic class HCurve2dToolGen;
-    
-    class HCurve2dTool instantiates 
-    	HCurve2dToolGen from Contap ( 
-	    HCurve2d from Adaptor2d);
 
-    class HContTool instantiates 
-        HContToolGen from Contap (
-    	 HVertex       from Adaptor3d,
-	 HCurve2d      from Adaptor2d,
-	 HSurface      from Adaptor3d,
-    	 HCurve2dTool  from Contap,
-	 HSurfaceTool  from Adaptor3d);
-	 
-    class Contour instantiates ContourGen from Contap
-    	(HVertex       from Adaptor3d,
-	 HCurve2d      from Adaptor2d,
-	 HSurface      from Adaptor3d,
-	 HCurve2dTool  from Contap,
-	 HSurfaceTool  from Adaptor3d,
-	 HContTool     from Contap,
-	 TopolTool     from Adaptor3d);
-
+    class HContTool;
+    
+    class HCurve2dTool;
 
 end Contap;

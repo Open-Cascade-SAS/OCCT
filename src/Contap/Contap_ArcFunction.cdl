@@ -14,25 +14,21 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class ArcFunction from Contap 
-    (TheArc          as any;
-     TheSurface      as any;
-     TheArcTool      as any;
-     TheSurfaceTool  as any;
-     TheSurfProps    as any; -- as SurfProps from Contap(TheSurface,
-                             --                          TheSurfaceTool)
-     TheContTool     as any) -- as ContTool from Contap()
-
-
-inherits FunctionWithDerivative from math
+class ArcFunction from Contap inherits FunctionWithDerivative from math
 
 uses Pnt           from gp,
      Dir           from gp,
      SequenceOfPnt from TColgp,
      TFunction     from Contap, 
     --modified by NIZNHY-PKV Thu Mar 29 16:52:28 2001  f
-     Quadric       from IntSurf 
-    --modified by NIZNHY-PKV Thu Mar 29 16:52:31 2001  t
+     Quadric       from IntSurf,
+    --modified by NIZNHY-PKV Thu Mar 29 16:52:31 2001
+     HCurve2d      from Adaptor2d,
+     HSurface      from Adaptor3d,
+     HCurve2dTool  from Contap,
+     HSurfaceTool  from Adaptor3d,
+     SurfProps     from Contap,
+     HContTool     from Contap
 
 
 is
@@ -42,7 +38,7 @@ is
     	returns ArcFunction from Contap;
 
 
-    Set(me: in out; S: TheSurface)
+    Set(me: in out; S: HSurface from Adaptor3d)
     
     	is static;
 
@@ -70,7 +66,7 @@ is
     	is static;
 
 
-    Set(me: in out; A: TheArc)
+    Set(me: in out; A: HCurve2d from Adaptor2d)
     
 	---C++: inline
     	is static;
@@ -121,8 +117,8 @@ is
 
 fields
 
-    myArc    : TheArc;
-    mySurf   : TheSurface;
+    myArc    : HCurve2d from Adaptor2d;
+    mySurf   : HSurface from Adaptor3d;
     myMean   : Real          from Standard;
     myType   : TFunction     from Contap;
     myDir    : Dir           from gp;

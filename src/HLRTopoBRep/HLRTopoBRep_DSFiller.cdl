@@ -26,7 +26,7 @@ uses
     Face              from TopoDS,
     Edge              from TopoDS,
     Vertex            from TopoDS,
-    ThePointOfContour from Contap,
+    Point             from Contap,
     Contour           from Contap,
     Data              from HLRTopoBRep,
     MapOfShapeTool    from BRepTopAdaptor
@@ -52,7 +52,7 @@ is
     is private;
     
     MakeVertex(myclass;
-    	       P   :        ThePointOfContour from Contap;
+    	       P   :        Point from Contap;
 	       tol :        Real              from Standard;
 	       DS  : in out Data              from HLRTopoBRep)
     returns Vertex from TopoDS
@@ -61,7 +61,7 @@ is
     is private;
     
     InsertVertex(myclass;
-    	         P   :        ThePointOfContour from Contap;
+    	         P   :        Point from Contap;
                  tol :        Real              from Standard;
 		 E   :        Edge              from TopoDS;
 	         DS  : in out Data              from HLRTopoBRep)

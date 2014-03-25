@@ -14,22 +14,22 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class HCurve2dToolGen from Contap (
-     CurveGen  as any)
+class HCurve2dTool from Contap
 
 uses 
-     Array1OfReal    from TColStd,
-     Shape           from GeomAbs,
-     CurveType       from GeomAbs,
-     Vec2d             from gp,
-     Pnt2d             from gp,
-     Circ2d            from gp,
-     Elips2d           from gp,
-     Hypr2d            from gp,
-     Parab2d           from gp,
-     Lin2d             from gp,
-     BezierCurve     from Geom2d,
-     BSplineCurve    from Geom2d
+     Array1OfReal   from TColStd,
+     Shape          from GeomAbs,
+     CurveType      from GeomAbs,
+     Vec2d          from gp,
+     Pnt2d          from gp,
+     Circ2d         from gp,
+     Elips2d        from gp,
+     Hypr2d         from gp,
+     Parab2d        from gp,
+     Lin2d          from gp,
+     BezierCurve    from Geom2d,
+     BSplineCurve   from Geom2d,
+     HCurve2d       from Adaptor2d
      
 raises
     
@@ -43,12 +43,12 @@ is
     --     Global methods - Apply to the whole curve.
     --     
     
-    FirstParameter(myclass; C: CurveGen) returns Real
+    FirstParameter(myclass; C: HCurve2d from Adaptor2d) returns Real
     	---C++: inline
     ;
     
 
-    LastParameter(myclass; C: CurveGen) returns Real
+    LastParameter(myclass; C: HCurve2d from Adaptor2d) returns Real
     	---C++: inline    
     ;
 
@@ -72,18 +72,18 @@ is
     -- use the method Trim().
 
     
-    Continuity(myclass; C: CurveGen) returns Shape from GeomAbs
+    Continuity(myclass; C: HCurve2d from Adaptor2d) returns Shape from GeomAbs
 	---Purpose: 
 	---C++: inline
     ;
     
-    NbIntervals(myclass; C: CurveGen; S : Shape from GeomAbs) returns Integer
+    NbIntervals(myclass; C: HCurve2d from Adaptor2d; S : Shape from GeomAbs) returns Integer
 	---Purpose: Returns  the number  of  intervals for  continuity
 	--          <S>. May be one if Continuity(myclass) >= <S>
 	---C++: inline
     ;
     
-    Intervals(myclass; C: CurveGen; T : in out Array1OfReal from TColStd; 
+    Intervals(myclass; C: HCurve2d from Adaptor2d; T : in out Array1OfReal from TColStd; 
     	          S : Shape from GeomAbs)
 	---Purpose: Stores in <T> the  parameters bounding the intervals
 	--          of continuity <S>.
@@ -95,31 +95,31 @@ is
     ---C++: inline
     ;
     
-    IsClosed(myclass; C: CurveGen) returns Boolean
+    IsClosed(myclass; C: HCurve2d from Adaptor2d) returns Boolean
     ---C++: inline    
     ;
      
-    IsPeriodic(myclass; C: CurveGen) returns Boolean
+    IsPeriodic(myclass; C: HCurve2d from Adaptor2d) returns Boolean
     ---C++: inline
     ;
     
-    Period(myclass; C: CurveGen) returns Real
+    Period(myclass; C: HCurve2d from Adaptor2d) returns Real
     raises
     	DomainError from Standard -- if the curve is not periodic
     ---C++: inline	
     ;
      
-    Value(myclass; C: CurveGen; U : Real) returns Pnt2d from gp
+    Value(myclass; C: HCurve2d from Adaptor2d; U : Real) returns Pnt2d from gp
          --- Purpose : Computes the point of parameter U on the curve.
     ---C++: inline
     ;
     
-    D0 (myclass; C: CurveGen; U : Real; P : out Pnt2d from gp)
+    D0 (myclass; C: HCurve2d from Adaptor2d; U : Real; P : out Pnt2d from gp)
          --- Purpose : Computes the point of parameter U on the curve.
     ---C++: inline
     ;
     
-    D1 (myclass; C: CurveGen; U : Real; P : out Pnt2d from gp ; V : out Vec2d from gp)
+    D1 (myclass; C: HCurve2d from Adaptor2d; U : Real; P : out Pnt2d from gp ; V : out Vec2d from gp)
          --- Purpose : Computes the point of parameter U on the curve with its
          --  first derivative.
      raises 
@@ -129,7 +129,7 @@ is
     ---C++: inline
     ;
     
-    D2 (myclass; C: CurveGen; U : Real; P : out Pnt2d from gp; V1, V2 : out Vec2d from gp)
+    D2 (myclass; C: HCurve2d from Adaptor2d; U : Real; P : out Pnt2d from gp; V1, V2 : out Vec2d from gp)
         --- Purpose :
         --  Returns the point P of parameter U, the first and second
         --  derivatives V1 and V2.
@@ -140,7 +140,7 @@ is
     ---C++: inline
      ;
 
-    D3 (myclass; C: CurveGen; U : Real; P : out Pnt2d from gp; V1, V2, V3 : out Vec2d from gp)
+    D3 (myclass; C: HCurve2d from Adaptor2d; U : Real; P : out Pnt2d from gp; V1, V2, V3 : out Vec2d from gp)
         --- Purpose :
         --  Returns the point P of parameter U, the first, the second 
         --  and the third derivative.
@@ -151,7 +151,7 @@ is
     ---C++: inline
      ;
         
-    DN (myclass; C: CurveGen; U : Real; N : Integer)   returns Vec2d from gp
+    DN (myclass; C: HCurve2d from Adaptor2d; U : Real; N : Integer)   returns Vec2d from gp
         --- Purpose :
         --  The returned vector gives the value of the derivative for the 
         --  order of derivation N.
@@ -164,13 +164,13 @@ is
     ---C++: inline
      ;
 
-    Resolution(myclass; C: CurveGen; R3d : Real) returns Real
+    Resolution(myclass; C: HCurve2d from Adaptor2d; R3d : Real) returns Real
          ---Purpose :  Returns the parametric  resolution corresponding
          --         to the real space resolution <R3d>.
     ---C++: inline
     ;   
         
-    GetType(myclass; C: CurveGen) returns CurveType from GeomAbs
+    GetType(myclass; C: HCurve2d from Adaptor2d) returns CurveType from GeomAbs
 	---Purpose: Returns  the  type of the   curve  in the  current
 	--          interval :   Line,   Circle,   Ellipse, Hyperbola,
 	--          Parabola, BezierCurve, BSplineCurve, OtherCurve.
@@ -182,43 +182,43 @@ is
     --     the corresponding type.
     --     
 
-     Line(myclass; C: CurveGen) returns Lin2d from gp
+     Line(myclass; C: HCurve2d from Adaptor2d) returns Lin2d from gp
      raises 
     	NoSuchObject from Standard
     ---C++: inline
      ;
      
-     Circle(myclass; C: CurveGen) returns Circ2d from gp
+     Circle(myclass; C: HCurve2d from Adaptor2d) returns Circ2d from gp
      raises 
     	NoSuchObject from Standard
     ---C++: inline
      ;
      
-     Ellipse(myclass; C: CurveGen) returns Elips2d from gp
+     Ellipse(myclass; C: HCurve2d from Adaptor2d) returns Elips2d from gp
      raises 
     	NoSuchObject from Standard
     ---C++: inline
      ;
      
-     Hyperbola(myclass; C: CurveGen) returns  Hypr2d from gp
+     Hyperbola(myclass; C: HCurve2d from Adaptor2d) returns  Hypr2d from gp
      raises 
     	NoSuchObject from Standard
     ---C++: inline
      ;
      
-     Parabola(myclass; C: CurveGen) returns Parab2d from gp
+     Parabola(myclass; C: HCurve2d from Adaptor2d) returns Parab2d from gp
      raises 
     	NoSuchObject from Standard
     ---C++: inline
      ;
      
-     Bezier(myclass; C: CurveGen) returns BezierCurve from Geom2d
+     Bezier(myclass; C: HCurve2d from Adaptor2d) returns BezierCurve from Geom2d
      raises 
     	NoSuchObject from Standard
     ---C++: inline
      ;
     
-     BSpline(myclass; C: CurveGen) returns BSplineCurve from Geom2d
+     BSpline(myclass; C: HCurve2d from Adaptor2d) returns BSplineCurve from Geom2d
      raises 
     	NoSuchObject from Standard
     ---C++: inline
@@ -228,7 +228,7 @@ is
 
 
 
-    NbSamples(myclass; C: CurveGen; U0,U1: Real from Standard) 
+    NbSamples(myclass; C: HCurve2d from Adaptor2d; U0,U1: Real from Standard) 
     returns Integer from Standard;
 
-end HCurve2dToolGen;
+end HCurve2dTool;

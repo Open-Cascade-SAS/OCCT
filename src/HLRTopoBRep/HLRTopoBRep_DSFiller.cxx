@@ -44,7 +44,7 @@
 #include <BRepTopAdaptor_HVertex.hxx>
 #include <BRepTopAdaptor_TopolTool.hxx>
 #include <BRepTopAdaptor_Tool.hxx>
-#include <Contap_TheLineOfContour.hxx>
+#include <Contap_Line.hxx>
 #include <Extrema_LocateExtPC.hxx>
 #include <Standard_ProgramError.hxx>
 #include <Precision.hxx>
@@ -197,7 +197,7 @@ void  HLRTopoBRep_DSFiller::InsertFace (const Standard_Integer /*FI*/,
   Standard_Integer CurLine;
   for (CurLine = 1; CurLine <= NbLines; CurLine++)
   {
-    const Contap_TheLineOfContour& Line = FO.Line(CurLine);
+    const Contap_Line& Line = FO.Line(CurLine);
     const Standard_Integer NbPoints = Line.NbVertex();
     Standard_Integer CurPoint;
     if (Line.TypeContour() == Contap_Restriction)
@@ -209,7 +209,7 @@ void  HLRTopoBRep_DSFiller::InsertFace (const Standard_Integer /*FI*/,
       // insert the Internal points.
 
       for (CurPoint = 1; CurPoint <= NbPoints; CurPoint++) {
-        Contap_ThePointOfContour P = Line.Vertex(CurPoint);
+        Contap_Point P = Line.Vertex(CurPoint);
         if (P.IsInternal()) {
           if (P.Value().IsEqual(BRep_Tool::Pnt(VF),BRep_Tool::Tolerance(VF))) {
             if (P.Value().IsEqual(BRep_Tool::Pnt(VL),BRep_Tool::Tolerance(VL))) {
@@ -223,7 +223,7 @@ void  HLRTopoBRep_DSFiller::InsertFace (const Standard_Integer /*FI*/,
     {
       for (CurPoint = 1; CurPoint <= NbPoints; CurPoint++) {
 
-        const Contap_ThePointOfContour PF = Line.Vertex(CurPoint);
+        const Contap_Point PF = Line.Vertex(CurPoint);
         if (PF.IsInternal() && CurPoint != 1)
           VF = VL;
         else
@@ -231,7 +231,7 @@ void  HLRTopoBRep_DSFiller::InsertFace (const Standard_Integer /*FI*/,
         const Standard_Real parF = PF.ParameterOnLine();
 
         if (CurPoint < NbPoints) {
-          const Contap_ThePointOfContour PL = Line.Vertex(CurPoint+1);
+          const Contap_Point PL = Line.Vertex(CurPoint+1);
           VL = MakeVertex(PL,tol,DS);
           const Standard_Real parL = PL.ParameterOnLine();
 
@@ -284,7 +284,7 @@ void  HLRTopoBRep_DSFiller::InsertFace (const Standard_Integer /*FI*/,
 /*
 		else if(ipL-ipF < 6) { 
 		  // compute the tangents
-		  Contap_TheSurfFunctionOfContour& SFunc =
+		  Contap_SurfFunction& SFunc =
 		    FO.SurfaceFunction();
 		  
 		  Standard_Boolean isTg1,isTg2;
@@ -553,7 +553,7 @@ void  HLRTopoBRep_DSFiller::InsertFace (const Standard_Integer /*FI*/,
 //=======================================================================
 
 TopoDS_Vertex
-HLRTopoBRep_DSFiller::MakeVertex (const Contap_ThePointOfContour& P,
+HLRTopoBRep_DSFiller::MakeVertex (const Contap_Point& P,
 				  const Standard_Real tol,
 				  HLRTopoBRep_Data& DS)
 {
@@ -611,7 +611,7 @@ HLRTopoBRep_DSFiller::MakeVertex (const Contap_ThePointOfContour& P,
 //=======================================================================
 
 void
-HLRTopoBRep_DSFiller::InsertVertex (const Contap_ThePointOfContour& P,
+HLRTopoBRep_DSFiller::InsertVertex (const Contap_Point& P,
 				    const Standard_Real tol,
 				    const TopoDS_Edge& E,
 				    HLRTopoBRep_Data& DS)

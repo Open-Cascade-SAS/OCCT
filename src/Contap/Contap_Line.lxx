@@ -21,7 +21,8 @@
 #include <IntSurf_PntOn2S.hxx>
 #include <IntSurf_LineOn2S.hxx>
 
-#include TheHSequenceOfPoint_hxx
+#include <Contap_Point.hxx>
+#include <Contap_TheHSequenceOfPoint.hxx>
 
 inline const Handle(IntSurf_LineOn2S)& Contap_Line::LineOn2S () const
 {
@@ -38,7 +39,7 @@ inline Standard_Integer Contap_Line::NbVertex () const
   return svtx->Length();
 }
 
-inline ThePoint& Contap_Line::Vertex (const Standard_Integer Index) const
+inline Contap_Point& Contap_Line::Vertex (const Standard_Integer Index) const
 {
   return svtx->ChangeSequence()(Index);
 }

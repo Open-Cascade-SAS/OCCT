@@ -1,4 +1,4 @@
-// Created on: 1993-02-05
+// Created on: 1993-03-04
 // Created by: Jacques GOUSSARD
 // Copyright (c) 1993-1999 Matra Datavision
 // Copyright (c) 1999-2014 OPEN CASCADE SAS
@@ -14,18 +14,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <ElCLib.hxx>
+#include <Contap_Point.ixx>
 
-#include <gp_Pln.hxx>
-#include <gp_Sphere.hxx>
-#include <gp_Cylinder.hxx>
-#include <gp_Cone.hxx>
-#include <gp_Lin.hxx>
-#include <gp_Circ.hxx>
-#include <Contap_ContAna.hxx>
-#include <math_FunctionSetRoot.hxx>
-#include <IntSurf.hxx>
+Contap_Point::Contap_Point ():
+  onarc(Standard_False),isvtx(Standard_False),ismult(Standard_False),
+  myInternal(Standard_False)
+{}
 
-#include <Contap_ContourGen_1.gxx>
-#include <Contap_ContourGen_2.gxx>
-#include <Contap_ContourGen_3.gxx>
+Contap_Point::Contap_Point (const gp_Pnt& Pt,
+                            const Standard_Real U,
+                            const Standard_Real V):
+pt(Pt),uparam(U),vparam(V),onarc(Standard_False),isvtx(Standard_False),
+ismult(Standard_False),myInternal(Standard_False)
+{}

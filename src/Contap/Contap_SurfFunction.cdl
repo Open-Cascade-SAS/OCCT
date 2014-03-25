@@ -14,27 +14,23 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class SurfFunction from Contap 
-    (TheSurface as any;
-     TheSurfaceTool as any;
-     TheSurfProps   as any; -- as SurfProps from Contap(TheSurface,
-                            --                          TheSurfaceTool)
-     TheContTool    as any)
-
-inherits FunctionSetWithDerivatives from math			       
+class SurfFunction from Contap inherits FunctionSetWithDerivatives from math
     
 	---Purpose: This class describes the function on a parametric surface.
 	--          the form of the function is F(u,v) = 0 where u and v are
 	--          the parameteric coordinates of a point on the surface,
 	--          to compute the contours of the surface.
 
-uses Vector    from math,
-     Matrix    from math,
-     Pnt       from gp,
-     Vec       from gp,
-     Dir       from gp,
-     Dir2d     from gp,
-     TFunction from Contap
+uses Vector       from math,
+     Matrix       from math,
+     Pnt          from gp,
+     Vec          from gp,
+     Dir          from gp,
+     Dir2d        from gp,
+     TFunction    from Contap,
+     HSurface     from Adaptor3d,
+     HSurfaceTool from Adaptor3d,
+     HContTool    from Contap
 
 
 raises UndefinedDerivative from StdFail
@@ -46,7 +42,7 @@ is
     	returns SurfFunction from Contap;
 
 
-    Set(me: in out; S: TheSurface)
+    Set(me: in out; S: HSurface  from Adaptor3d)
 
     	is static;
 
@@ -203,7 +199,7 @@ is
 
     Surface(me)
     
-    	returns any TheSurface
+    	returns any HSurface  from Adaptor3d
 	---C++: return const&
 	---C++: inline
 	is static;
@@ -212,7 +208,7 @@ is
 
 fields
 
-    mySurf   : TheSurface;
+    mySurf   : HSurface  from Adaptor3d;
     myMean   : Real      from Standard;
     myType   : TFunction from Contap;
     myDir    : Dir       from gp;

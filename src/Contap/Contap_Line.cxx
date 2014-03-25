@@ -14,16 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Contap_Line.ixx>
+
 Contap_Line::Contap_Line () {
-  svtx = new TheHSequenceOfPoint ();
+  svtx = new Contap_TheHSequenceOfPoint ();
   Trans = IntSurf_Undecided;
 }
 
 void Contap_Line::ResetSeqOfVertex() {
-  svtx = new TheHSequenceOfPoint ();
+  svtx = new Contap_TheHSequenceOfPoint ();
 }
 
-void Contap_Line::Add(const ThePoint& P) {
+void Contap_Line::Add(const Contap_Point& P) {
   Standard_Integer n = svtx->Length();
   if(n==0) { 
     svtx->Append(P);
@@ -35,10 +37,10 @@ void Contap_Line::Add(const ThePoint& P) {
     }
     else { 
       for(Standard_Integer i=n-1;i>0;i--) { 
-	if(prm> svtx->Value(i).ParameterOnLine()) { 
-	  svtx->InsertBefore(i+1,P);
-	  return;
-	}
+        if(prm> svtx->Value(i).ParameterOnLine()) { 
+          svtx->InsertBefore(i+1,P);
+          return;
+        }
       }
       svtx->Prepend(P);
     }
@@ -48,7 +50,7 @@ void Contap_Line::Add(const ThePoint& P) {
 void Contap_Line::Clear () {
   if(!curv.IsNull()) 
     curv->Clear();
-  svtx = new TheHSequenceOfPoint ();
+  svtx = new Contap_TheHSequenceOfPoint ();
   typL = Contap_Walking;
 }
 
@@ -68,7 +70,7 @@ void Contap_Line::SetValue(const gp_Circ& C)
   typL = Contap_Circle;
 }
 
-void Contap_Line::SetValue(const TheArc& A)
+void Contap_Line::SetValue(const Handle(Adaptor2d_HCurve2d)& A)
 {
   thearc = A;
   typL = Contap_Restriction;
@@ -87,7 +89,7 @@ IntSurf_TypeTrans Contap_Line::TransitionOnS() const {
   return(Trans);
 }
 
-const TheArc& Contap_Line::Arc () const
+const Handle(Adaptor2d_HCurve2d)& Contap_Line::Arc () const
 {
   if (typL != Contap_Restriction) {Standard_DomainError::Raise();}
   return thearc;

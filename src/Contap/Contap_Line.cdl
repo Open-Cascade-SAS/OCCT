@@ -14,12 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class Line from Contap
-    (TheVertex           as any;
-     TheArc              as any;
-     ThePoint            as any;       --as Point from Contap(TheVertex,TheArc)
-     TheHSequenceOfPoint as Transient) --as HSequence from TCollection
-                                       --     (ThePoint)
+class Line from Contap
 
 	---Purpose: 
 
@@ -30,7 +25,11 @@ uses Pnt            from gp,
      Lin            from gp,
      Circ           from gp,
      Dir            from gp,
-     IType          from Contap -- duplique IntPatch_IType. Mettre ds  IntSurf
+     IType          from Contap, -- duplique IntPatch_IType. Mettre ds  IntSurf
+     HVertex        from Adaptor3d,
+     HCurve2d       from Adaptor2d,
+     Point          from Contap,
+     TheHSequenceOfPoint from Contap
 
 raises DomainError from Standard,
        OutOfRange  from Standard
@@ -76,12 +75,12 @@ is
     	is static;
 
 
-    SetValue(me: in out; A: TheArc)
+    SetValue(me: in out; A: HCurve2d from Adaptor2d)
     
     	is static;
 
 
-    Add(me: in out; P: ThePoint)
+    Add(me: in out; P: Point from Contap)
     
     	is static;
 
@@ -96,7 +95,7 @@ is
 
     Vertex(me; Index: Integer from Standard)
     
-    	returns ThePoint
+    	returns Point from Contap
 	---C++: return &
 	---C++: inline
 
@@ -171,7 +170,7 @@ is
 
     Arc(me)
     
-    	returns any TheArc
+    	returns any HCurve2d from Adaptor2d
 	---C++: return const&
 	
 	raises DomainError from Standard
@@ -203,8 +202,8 @@ fields
 
     Trans   : TypeTrans            from IntSurf;
     curv    : LineOn2S             from IntSurf;
-    svtx    : TheHSequenceOfPoint;
-    thearc  : TheArc;
+    svtx    : TheHSequenceOfPoint  from Contap;
+    thearc  : HCurve2d             from Adaptor2d;
     typL    : IType                from Contap;
     pt      : Pnt                  from gp;
     dir1    : Dir                  from gp;

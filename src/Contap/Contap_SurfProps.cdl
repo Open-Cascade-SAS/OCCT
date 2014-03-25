@@ -14,19 +14,19 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class SurfProps from Contap 
-    (TheSurface     as any;
-     TheSurfaceTool as any)
+class SurfProps from Contap 
 
 	---Purpose: Internal tool used  to compute the  normal and its
 	--          derivatives. 
 
-uses Pnt from gp,
-     Vec from gp
+uses Pnt          from gp,
+     Vec          from gp,
+     HSurface     from Adaptor3d,
+     HSurfaceTool from Adaptor3d
 
 is
 
-    Normale(myclass; S: TheSurface; U,V: Real from Standard;
+    Normale(myclass; S: HSurface from Adaptor3d; U,V: Real from Standard;
                      P: out Pnt from gp;
 		     N: out Vec from gp);
 
@@ -35,7 +35,7 @@ is
 
 
 
-    DerivAndNorm(myclass; S: TheSurface; U,V: Real from Standard;
+    DerivAndNorm(myclass; S: HSurface from Adaptor3d; U,V: Real from Standard;
                           P      : out Pnt from gp;
 			  d1u,d1v: out Vec from gp;
 		          N      : out Vec from gp);
@@ -45,7 +45,7 @@ is
 
 
 
-    NormAndDn(myclass; S: TheSurface; U,V: Real from Standard;
+    NormAndDn(myclass; S: HSurface from Adaptor3d; U,V: Real from Standard;
                        P        : out Pnt from gp;
 		       N,Dnu,Dnv: out Vec from gp);
 

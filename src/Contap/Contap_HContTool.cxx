@@ -14,33 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Contap_HContTool.ixx>
+
 #include <Extrema_EPCOfExtPC2d.hxx>
 #include <Extrema_POnCurv2d.hxx>
 
-#include <GeomAbs_SurfaceType.hxx>
-#include <Standard_OutOfRange.hxx>
-
-#include <Geom_BezierSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <Geom2d_BezierCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-
-#include <Geom_BezierSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
-#include <Geom2d_BezierCurve.hxx>
-#include <Geom2d_BSplineCurve.hxx>
-
 static Standard_Real uinf,vinf,usup,vsup;
 
-#include TheHSurface_hxx
-#include TheHCurve2d_hxx
-#include TheHVertex_hxx
-
-
-Standard_Integer Contap_HContToolGen::NbSamplesV
-  (const TheHSurface& S,
-   const Standard_Real ,
-   const Standard_Real )
+Standard_Integer Contap_HContTool::NbSamplesV
+(const Handle(Adaptor3d_HSurface)& S,
+ const Standard_Real ,
+ const Standard_Real )
 {
   Standard_Integer nbs;
   GeomAbs_SurfaceType typS = S->GetType();
@@ -61,7 +45,7 @@ Standard_Integer Contap_HContToolGen::NbSamplesV
       nbs = S->NbVKnots();
       nbs*= S->VDegree();
       if(nbs < 2) nbs=2;
-      
+
     }
     break;
   case GeomAbs_Cylinder:
@@ -74,7 +58,7 @@ Standard_Integer Contap_HContToolGen::NbSamplesV
       nbs = 15;
     }
     break;
-    
+
   default: 
     {
       nbs = 10;
@@ -84,10 +68,10 @@ Standard_Integer Contap_HContToolGen::NbSamplesV
   return(nbs);
 }
 
-Standard_Integer Contap_HContToolGen::NbSamplesU
-  (const TheHSurface& S,
-   const Standard_Real ,
-   const Standard_Real )
+Standard_Integer Contap_HContTool::NbSamplesU
+(const Handle(Adaptor3d_HSurface)& S,
+ const Standard_Real ,
+ const Standard_Real )
 {
   Standard_Integer nbs;
   GeomAbs_SurfaceType typS = S->GetType();
@@ -108,7 +92,7 @@ Standard_Integer Contap_HContToolGen::NbSamplesU
       nbs = S->NbUKnots();
       nbs*= S->UDegree();
       if(nbs < 2) nbs=2;
-      
+
     }
     break;
   case GeomAbs_Torus: 
@@ -125,7 +109,7 @@ Standard_Integer Contap_HContToolGen::NbSamplesU
       nbs = 10;
     }
     break;
-    
+
   default: 
     {
       nbs = 10;
@@ -135,8 +119,8 @@ Standard_Integer Contap_HContToolGen::NbSamplesU
   return(nbs);
 }
 
-Standard_Integer Contap_HContToolGen::NbSamplePoints
-  (const TheHSurface& S)
+Standard_Integer Contap_HContTool::NbSamplePoints
+(const Handle(Adaptor3d_HSurface)& S)
 {
   uinf = S->FirstUParameter();
   usup = S->LastUParameter();
@@ -147,8 +131,8 @@ Standard_Integer Contap_HContToolGen::NbSamplePoints
     Standard_Real temp = uinf;
     uinf = usup;
     usup = temp;
-    }
-    if (vsup < vinf) {
+  }
+  if (vsup < vinf) {
     Standard_Real temp = vinf;
     vinf = vsup;
     vsup = temp;
@@ -163,7 +147,7 @@ Standard_Integer Contap_HContToolGen::NbSamplePoints
   else if (usup == RealLast()) {
     usup = uinf + 2.e5;
   }
-  
+
   if (vinf == RealFirst() && vsup == RealLast()) {
     vinf = -1.e5;
     vsup =  1.e5;
@@ -183,10 +167,10 @@ Standard_Integer Contap_HContToolGen::NbSamplePoints
     return 5;
 }
 
-void Contap_HContToolGen::SamplePoint (const TheHSurface& S,
-				     const Standard_Integer Index,
-				     Standard_Real& U,
-				     Standard_Real& V )
+void Contap_HContTool::SamplePoint (const Handle(Adaptor3d_HSurface)& S,
+                                    const Standard_Integer Index,
+                                    Standard_Real& U,
+                                    Standard_Real& V )
 {
   if(S->GetType() ==   GeomAbs_BSplineSurface) {
     Standard_Integer nbIntU = NbSamplesU(S,uinf,usup)/3;
@@ -194,17 +178,17 @@ void Contap_HContToolGen::SamplePoint (const TheHSurface& S,
     if(nbIntU * nbIntV >5) { 
       Standard_Integer indU = (Index-1)/nbIntU;                  //----   0 --> nbIntV
       Standard_Integer indV = (Index-1) - indU*nbIntU;           //----   0 --> nbIntU
-      
+
       U = uinf + ((usup-uinf)/((Standard_Real)(nbIntU+1)))*(Standard_Real)(indU+1);
       V = vinf + ((vsup-vinf)/((Standard_Real)(nbIntV+2)))*(Standard_Real)(indV+1);
-      
+
       //-- cout<<"Index :"<<Index<<"  uinf:"<<uinf<<"  usup:"<<usup<<"  vinf:"<<vinf<<" vsup:"<<vsup<<"  ";
       //-- cout<<"  ("<<indU<<"/"<<nbIntU<<" ->U:"<<U<<"  ";
       //-- cout<<"  ("<<indV<<"/"<<nbIntV<<" ->V:"<<V<<endl;
       return;
     }
   }
-  
+
   switch (Index) {
   case 1:
     U = 0.75*uinf + 0.25*usup; //0.25;
@@ -229,8 +213,8 @@ void Contap_HContToolGen::SamplePoint (const TheHSurface& S,
 }
 
 
-Standard_Integer Contap_HContToolGen::NbSamplesOnArc
-  (const TheHCurve2d& A) { 
+Standard_Integer Contap_HContTool::NbSamplesOnArc
+(const Handle(Adaptor2d_HCurve2d)& A) { 
 
   GeomAbs_CurveType CurveType  = A->GetType();
 
@@ -252,7 +236,7 @@ Standard_Integer Contap_HContToolGen::NbSamplesOnArc
     //-- Handle_Geom2d_BSplineCurve& BSC=A->BSpline();
     nbsOnC = 2 + A->NbKnots() * A->Degree();
     break;
-  }
+                             }
   default:
     nbsOnC = 10;
   } 
@@ -260,19 +244,19 @@ Standard_Integer Contap_HContToolGen::NbSamplesOnArc
 }
 
 
-void Contap_HContToolGen::Bounds(const TheHCurve2d& A,
-			       Standard_Real& Ufirst,
-			       Standard_Real& Ulast)
+void Contap_HContTool::Bounds(const Handle(Adaptor2d_HCurve2d)& A,
+                              Standard_Real& Ufirst,
+                              Standard_Real& Ulast)
 {
   Ufirst = A->FirstParameter();
   Ulast  = A->LastParameter();
 }
 
 
-Standard_Boolean Contap_HContToolGen::Project (const TheHCurve2d& C,
-						 const gp_Pnt2d& P,
-						 Standard_Real& Paramproj,
-						 gp_Pnt2d& Ptproj)
+Standard_Boolean Contap_HContTool::Project (const Handle(Adaptor2d_HCurve2d)& C,
+                                            const gp_Pnt2d& P,
+                                            Standard_Real& Paramproj,
+                                            gp_Pnt2d& Ptproj)
 
 {
 
@@ -303,80 +287,80 @@ Standard_Boolean Contap_HContToolGen::Project (const TheHCurve2d& C,
 }
 
 
-Standard_Real Contap_HContToolGen::Tolerance (const TheHVertex& V,
-					    const TheHCurve2d& C)
+Standard_Real Contap_HContTool::Tolerance (const Handle(Adaptor3d_HVertex)& V,
+                                           const Handle(Adaptor2d_HCurve2d)& C)
 {
-//  return BRepAdaptor2d_Curve2dTool::Resolution(C,BRep_Tool::Tolerance(V));
+  //  return BRepAdaptor2d_Curve2dTool::Resolution(C,BRep_Tool::Tolerance(V));
   return V->Resolution(C);
 }
 
-Standard_Real Contap_HContToolGen::Parameter (const TheHVertex& V,
-					    const TheHCurve2d& C)
+Standard_Real Contap_HContTool::Parameter (const Handle(Adaptor3d_HVertex)& V,
+                                           const Handle(Adaptor2d_HCurve2d)& C)
 {
-//  return BRep_Tool::Parameter(V,C.Edge());
+  //  return BRep_Tool::Parameter(V,C.Edge());
   return V->Parameter(C);
 }
 
 
 
-Standard_Boolean Contap_HContToolGen::HasBeenSeen
-  (const TheHCurve2d&)
+Standard_Boolean Contap_HContTool::HasBeenSeen
+(const Handle(Adaptor2d_HCurve2d)&)
 {
   return Standard_False;
 }
 
-Standard_Integer Contap_HContToolGen::NbPoints(const TheHCurve2d&)
+Standard_Integer Contap_HContTool::NbPoints(const Handle(Adaptor2d_HCurve2d)&)
 {
   return 0;
 }
 
-void Contap_HContToolGen::Value(const TheHCurve2d&,
-			      const Standard_Integer,
-			      gp_Pnt&,
-			      Standard_Real&,
-			      Standard_Real&)
+void Contap_HContTool::Value(const Handle(Adaptor2d_HCurve2d)&,
+                             const Standard_Integer,
+                             gp_Pnt&,
+                             Standard_Real&,
+                             Standard_Real&)
 {
   Standard_OutOfRange::Raise();
 }
 
-Standard_Boolean Contap_HContToolGen::IsVertex(const TheHCurve2d&,
-					     const Standard_Integer)
+Standard_Boolean Contap_HContTool::IsVertex(const Handle(Adaptor2d_HCurve2d)&,
+                                            const Standard_Integer)
 {
   return Standard_False;
 }
 
-void Contap_HContToolGen::Vertex(const TheHCurve2d&,
-			       const Standard_Integer,
-			       TheHVertex&)
+void Contap_HContTool::Vertex(const Handle(Adaptor2d_HCurve2d)&,
+                              const Standard_Integer,
+                              Handle(Adaptor3d_HVertex)&)
 {
   Standard_OutOfRange::Raise();
 }
 
-Standard_Integer Contap_HContToolGen::NbSegments(const TheHCurve2d&)
+Standard_Integer Contap_HContTool::NbSegments(const Handle(Adaptor2d_HCurve2d)&)
 {
   return 0;
 }
 
-Standard_Boolean Contap_HContToolGen::HasFirstPoint
-  (const TheHCurve2d&,
-   const Standard_Integer,
-   Standard_Integer&)
+Standard_Boolean Contap_HContTool::HasFirstPoint
+(const Handle(Adaptor2d_HCurve2d)&,
+ const Standard_Integer,
+ Standard_Integer&)
 {
   Standard_OutOfRange::Raise();
-    return Standard_False;
+  return Standard_False;
 }
 
-Standard_Boolean Contap_HContToolGen::HasLastPoint
-  (const TheHCurve2d&,
-   const Standard_Integer,
-   Standard_Integer&)
+Standard_Boolean Contap_HContTool::HasLastPoint
+(const Handle(Adaptor2d_HCurve2d)&,
+ const Standard_Integer,
+ Standard_Integer&)
 {
   Standard_OutOfRange::Raise();
-    return Standard_False;
+  return Standard_False;
 }
 
-Standard_Boolean Contap_HContToolGen::IsAllSolution
-  (const TheHCurve2d&)
+Standard_Boolean Contap_HContTool::IsAllSolution
+(const Handle(Adaptor2d_HCurve2d)&)
 
 {
   return Standard_False;

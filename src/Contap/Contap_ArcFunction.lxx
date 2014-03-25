@@ -42,7 +42,7 @@ inline void Contap_ArcFunction::Set(const gp_Pnt& Eye)
   myEye  = Eye;
 }
 
-inline void Contap_ArcFunction::Set(const TheArc& A)
+inline void Contap_ArcFunction::Set(const Handle(Adaptor2d_HCurve2d)& A)
 {
   myArc = A;
   seqpt.Clear();

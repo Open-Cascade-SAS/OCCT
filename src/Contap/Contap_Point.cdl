@@ -14,9 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class Point from Contap
-    (TheVertex as any;
-     TheArc    as any)
+class Point from Contap
 
 
 	---Purpose: Definition of a vertex on the contour line.
@@ -28,7 +26,9 @@ generic class Point from Contap
 
 
 uses Pnt        from gp,
-     Transition from IntSurf
+     Transition from IntSurf,
+     HVertex    from Adaptor3d,
+     HCurve2d   from Adaptor2d
      
      
 raises DomainError from Standard
@@ -68,7 +68,7 @@ is
     	is static;
 
 
-    SetVertex(me: in out; V: TheVertex)
+    SetVertex(me: in out; V: HVertex from Adaptor3d)
 
 	---Purpose: Sets the values of a point which is a vertex on
 	--          the initial facet of restriction of one
@@ -79,7 +79,7 @@ is
     	is static;
 
 
-    SetArc(me: in out; A: TheArc; Param: Real from Standard;
+    SetArc(me: in out; A: HCurve2d from Adaptor2d; Param: Real from Standard;
                        TLine,TArc: Transition from IntSurf)
 
 	---Purpose: Sets the value of the arc and of the parameter on
@@ -151,7 +151,7 @@ is
 	---Purpose: Returns the arc of restriction containing the
 	--          vertex.
 
-    	returns any TheArc
+    	returns any HCurve2d from Adaptor2d
 	---C++: return const&
 	---C++: inline
 	
@@ -221,7 +221,7 @@ is
     	--          IsVertex returns True.
     	--          Otherwise, an exception is raised.
     
-    	returns any TheVertex
+    	returns any HVertex from Adaptor3d
 	---C++: return const&
 	---C++: inline
 
@@ -259,12 +259,12 @@ fields
     vparam     : Real        from Standard;
     paraline   : Real        from Standard;
     onarc      : Boolean     from Standard;
-    arc        : TheArc;
+    arc        : HCurve2d    from Adaptor2d;
     traline    : Transition  from IntSurf;
     traarc     : Transition  from IntSurf;
     prmarc     : Real        from Standard;
     isvtx      : Boolean     from Standard;
-    vtx        : TheVertex;
+    vtx        : HVertex     from Adaptor3d;
     ismult     : Boolean     from Standard;
     myInternal : Boolean     from Standard;
     
