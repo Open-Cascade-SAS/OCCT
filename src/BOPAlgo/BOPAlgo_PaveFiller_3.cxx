@@ -115,8 +115,8 @@ class BOPAlgo_EdgeEdgeFunctor {
     : myPVEE(&aVEE) {
   }
   //
-  void operator()( const flexible_range<Standard_Size>& aBR ) const{
-    Standard_Size i, iBeg, iEnd;
+  void operator()( const flexible_range<Standard_Integer>& aBR ) const{
+    Standard_Integer i, iBeg, iEnd;
     //
     BOPAlgo_VectorOfEdgeEdge& aVEE=*myPVEE;
     //
@@ -142,13 +142,13 @@ class BOPAlgo_EdgeEdgeCnt {
                         BOPAlgo_VectorOfEdgeEdge& aVEdgeEdge) {
     //
     BOPAlgo_EdgeEdgeFunctor aEEF(aVEdgeEdge);
-    Standard_Size aNbEE=aVEdgeEdge.Extent();
+    Standard_Integer aNbEE=aVEdgeEdge.Extent();
     //
     if (bRunParallel) {
-      flexible_for(flexible_range<Standard_Size>(0,aNbEE), aEEF);
+      flexible_for(flexible_range<Standard_Integer>(0,aNbEE), aEEF);
     }
     else {
-      aEEF.operator()(flexible_range<Standard_Size>(0,aNbEE));
+      aEEF.operator()(flexible_range<Standard_Integer>(0,aNbEE));
     }
   }
 };

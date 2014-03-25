@@ -14,6 +14,7 @@
 // commercial license or contractual agreement.
 
 #include <DBRep.hxx>
+#include <Draw_Interpretor.hxx>
 
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
