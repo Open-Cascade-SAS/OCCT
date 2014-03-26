@@ -28,7 +28,7 @@
 #include <TopLoc_Location.hxx>
 #include <TopTools_HArray1OfShape.hxx>
 #include <TColStd_HArray1OfTransient.hxx>
-#include <TColStd_SequenceOfAsciiString.hxx>
+#include <TColStd_HSequenceOfAsciiString.hxx>
 #include <OSD_Timer.hxx>
 #include <Geom_Axis2Placement.hxx>
 #include <Geom_Axis1Placement.hxx>
@@ -2124,7 +2124,7 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
 {
   TCollection_AsciiString aCommandName (theArgv[0]);
 
-  NCollection_DataMap<TCollection_AsciiString, TColStd_SequenceOfAsciiString> aMapOfArgs;
+  NCollection_DataMap<TCollection_AsciiString, Handle(TColStd_HSequenceOfAsciiString)> aMapOfArgs;
   if (aCommandName == "vtexture")
   {
     if (theArgsNb < 2)
@@ -2146,7 +2146,7 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
         aParseKey = anArg;
         aParseKey.Remove (1);
         aParseKey.UpperCase();
-        aMapOfArgs.Bind (aParseKey, TColStd_SequenceOfAsciiString());
+        aMapOfArgs.Bind (aParseKey, new TColStd_HSequenceOfAsciiString);
         continue;
       }
 
@@ -2155,7 +2155,7 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
         continue;
       }
 
-      aMapOfArgs.ChangeFind (aParseKey).Append (anArg);
+      aMapOfArgs(aParseKey)->Append (anArg);
     }
   }
   else if (aCommandName == "vtexscale"
@@ -2171,15 +2171,15 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
       return 1;
     }
 
-    TColStd_SequenceOfAsciiString anArgs;
+    Handle(TColStd_HSequenceOfAsciiString) anArgs = new TColStd_HSequenceOfAsciiString;
     if (theArgsNb == 2)
     {
-      anArgs.Append ("OFF");
+      anArgs->Append ("OFF");
     }
     else if (theArgsNb == 4)
     {
-      anArgs.Append (TCollection_AsciiString (theArgv[2]));
-      anArgs.Append (TCollection_AsciiString (theArgv[3]));
+      anArgs->Append (TCollection_AsciiString (theArgv[2]));
+      anArgs->Append (TCollection_AsciiString (theArgv[3]));
     }
 
     TCollection_AsciiString anArgKey;
@@ -2202,32 +2202,32 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
   {
     // scan for parameters of vtexdefault command
     // equal to -default option of vtexture command
-    aMapOfArgs.Bind ("DEFAULT", TColStd_SequenceOfAsciiString());
+    aMapOfArgs.Bind ("DEFAULT", new TColStd_HSequenceOfAsciiString);
   }
 
   // Check arguments for validity
-  NCollection_DataMap<TCollection_AsciiString, TColStd_SequenceOfAsciiString>::Iterator aMapIt (aMapOfArgs);
+  NCollection_DataMap<TCollection_AsciiString, Handle(TColStd_HSequenceOfAsciiString)>::Iterator aMapIt (aMapOfArgs);
   for (; aMapIt.More(); aMapIt.Next())
   {
     const TCollection_AsciiString& aKey = aMapIt.Key();
-    const TColStd_SequenceOfAsciiString& anArgs = aMapIt.Value();
+    const Handle(TColStd_HSequenceOfAsciiString)& anArgs = aMapIt.Value();
 
     // -scale, -origin, -repeat: one argument "off", or two real values
     if ((aKey.IsEqual ("SCALE") || aKey.IsEqual ("ORIGIN") || aKey.IsEqual ("REPEAT"))
-      && ((anArgs.Length() == 1 && anArgs (1) == "OFF")
-       || (anArgs.Length() == 2 && anArgs (1).IsRealValue() && anArgs (2).IsRealValue())))
+      && ((anArgs->Length() == 1 && anArgs->Value(1) == "OFF")
+       || (anArgs->Length() == 2 && anArgs->Value(1).IsRealValue() && anArgs->Value(2).IsRealValue())))
     {
       continue;
     }
 
     // -modulate: single argument "on" / "off"
-    if (aKey.IsEqual ("MODULATE") && anArgs.Length() == 1 && (anArgs (1) == "OFF" || anArgs (1) == "ON"))
+    if (aKey.IsEqual ("MODULATE") && anArgs->Length() == 1 && (anArgs->Value(1) == "OFF" || anArgs->Value(1) == "ON"))
     {
       continue;
     }
 
     // -default: no arguments
-    if (aKey.IsEqual ("DEFAULT") && anArgs.IsEmpty())
+    if (aKey.IsEqual ("DEFAULT") && anArgs->IsEmpty())
     {
       continue;
     }
@@ -2332,7 +2332,7 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
   //  Process other options and commands
   // ------------------------------------
 
-  TColStd_SequenceOfAsciiString aValues;
+  Handle(TColStd_HSequenceOfAsciiString) aValues;
   if (aMapOfArgs.Find ("DEFAULT", aValues))
   {
     aTexturedIO->SetTextureRepeat (Standard_False);
@@ -2344,9 +2344,9 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
   {
     if (aMapOfArgs.Find ("SCALE", aValues))
     {
-      if (aValues (1) != "OFF")
+      if (aValues->Value(1) != "OFF")
       {
-        aTexturedIO->SetTextureScale (Standard_True, aValues (1).RealValue(), aValues (2).RealValue());
+        aTexturedIO->SetTextureScale (Standard_True, aValues->Value(1).RealValue(), aValues->Value(2).RealValue());
       }
       else
       {
@@ -2356,9 +2356,9 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
 
     if (aMapOfArgs.Find ("ORIGIN", aValues))
     {
-      if (aValues (1) != "OFF")
+      if (aValues->Value(1) != "OFF")
       {
-        aTexturedIO->SetTextureOrigin (Standard_True, aValues (1).RealValue(), aValues (2).RealValue());
+        aTexturedIO->SetTextureOrigin (Standard_True, aValues->Value(1).RealValue(), aValues->Value(2).RealValue());
       }
       else
       {
@@ -2368,9 +2368,9 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
 
     if (aMapOfArgs.Find ("REPEAT", aValues))
     {
-      if (aValues (1) != "OFF")
+      if (aValues->Value(1) != "OFF")
       {
-        aTexturedIO->SetTextureRepeat (Standard_True, aValues (1).RealValue(), aValues (2).RealValue());
+        aTexturedIO->SetTextureRepeat (Standard_True, aValues->Value(1).RealValue(), aValues->Value(2).RealValue());
       }
       else
       {
@@ -2380,7 +2380,7 @@ Standard_Integer VTexture (Draw_Interpretor& theDi, Standard_Integer theArgsNb, 
 
     if (aMapOfArgs.Find ("MODULATE", aValues))
     {
-      if (aValues (1) == "ON")
+      if (aValues->Value(1) == "ON")
       {
         aTexturedIO->EnableTextureModulate();
       }

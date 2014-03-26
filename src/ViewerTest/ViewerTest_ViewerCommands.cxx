@@ -58,7 +58,7 @@
 #include <Image_AlienPixMap.hxx>
 #include <OpenGl_GraphicDriver.hxx>
 #include <OSD_Timer.hxx>
-#include <TColStd_SequenceOfAsciiString.hxx>
+#include <TColStd_HSequenceOfAsciiString.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
 #include <TColStd_HSequenceOfReal.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
@@ -1658,6 +1658,7 @@ void ProcessZClipMotion()
 //purpose  : Zoom
 //==============================================================================
 
+#if defined(_WIN32) || ! defined(__APPLE__) || defined(MACOSX_USE_GLX)
 static void ProcessControlButton1Motion()
 {
   ViewerTest::CurrentView()->Zoom( X_ButtonPress, Y_ButtonPress, X_Motion, Y_Motion);
@@ -1665,6 +1666,7 @@ static void ProcessControlButton1Motion()
   X_ButtonPress = X_Motion;
   Y_ButtonPress = Y_Motion;
 }
+#endif
 
 //==============================================================================
 //function : VT_ProcessControlButton2Motion
@@ -4420,7 +4422,7 @@ static int VViewParams (Draw_Interpretor& theDi, Standard_Integer theArgsNb, con
   //  Parse options and values
   // -------------------------
 
-  NCollection_DataMap<TCollection_AsciiString, TColStd_SequenceOfAsciiString> aMapOfKeysByValues;
+  NCollection_DataMap<TCollection_AsciiString, Handle(TColStd_HSequenceOfAsciiString)> aMapOfKeysByValues;
   TCollection_AsciiString aParseKey;
   for (Standard_Integer anArgIt = 1; anArgIt < theArgsNb; ++anArgIt)
   {
@@ -4431,7 +4433,7 @@ static int VViewParams (Draw_Interpretor& theDi, Standard_Integer theArgsNb, con
       aParseKey = anArg;
       aParseKey.Remove (1);
       aParseKey.UpperCase();
-      aMapOfKeysByValues.Bind (aParseKey, TColStd_SequenceOfAsciiString());
+      aMapOfKeysByValues.Bind (aParseKey, new TColStd_HSequenceOfAsciiString);
       continue;
     }
 
@@ -4442,7 +4444,7 @@ static int VViewParams (Draw_Interpretor& theDi, Standard_Integer theArgsNb, con
       return 1;
     }
 
-    aMapOfKeysByValues.ChangeFind (aParseKey).Append (anArg);
+    aMapOfKeysByValues(aParseKey)->Append (anArg);
   }
 
   // ---------------------------------------------
@@ -4450,19 +4452,19 @@ static int VViewParams (Draw_Interpretor& theDi, Standard_Integer theArgsNb, con
   // ---------------------------------------------
 
   // Check arguments for validity
-  NCollection_DataMap<TCollection_AsciiString, TColStd_SequenceOfAsciiString>::Iterator aMapIt (aMapOfKeysByValues);
+  NCollection_DataMap<TCollection_AsciiString, Handle(TColStd_HSequenceOfAsciiString)>::Iterator aMapIt (aMapOfKeysByValues);
   for (; aMapIt.More(); aMapIt.Next())
   {
     const TCollection_AsciiString& aKey = aMapIt.Key();
-    const TColStd_SequenceOfAsciiString& aValues = aMapIt.Value();
+    const Handle(TColStd_HSequenceOfAsciiString)& aValues = aMapIt.Value();
 
-    if (!(aKey.IsEqual ("SCALE")  && (aValues.Length() == 1 || aValues.IsEmpty()))
-     && !(aKey.IsEqual ("SIZE")   && (aValues.Length() == 1 || aValues.IsEmpty()))
-     && !(aKey.IsEqual ("EYE")    && (aValues.Length() == 3 || aValues.IsEmpty()))
-     && !(aKey.IsEqual ("AT")     && (aValues.Length() == 3 || aValues.IsEmpty()))
-     && !(aKey.IsEqual ("UP")     && (aValues.Length() == 3 || aValues.IsEmpty()))
-     && !(aKey.IsEqual ("PROJ")   && (aValues.Length() == 3 || aValues.IsEmpty()))
-     && !(aKey.IsEqual ("CENTER") &&  aValues.Length() == 2))
+    if (!(aKey.IsEqual ("SCALE")  && (aValues->Length() == 1 || aValues->IsEmpty()))
+     && !(aKey.IsEqual ("SIZE")   && (aValues->Length() == 1 || aValues->IsEmpty()))
+     && !(aKey.IsEqual ("EYE")    && (aValues->Length() == 3 || aValues->IsEmpty()))
+     && !(aKey.IsEqual ("AT")     && (aValues->Length() == 3 || aValues->IsEmpty()))
+     && !(aKey.IsEqual ("UP")     && (aValues->Length() == 3 || aValues->IsEmpty()))
+     && !(aKey.IsEqual ("PROJ")   && (aValues->Length() == 3 || aValues->IsEmpty()))
+     && !(aKey.IsEqual ("CENTER") &&  aValues->Length() == 2))
     {
       TCollection_AsciiString aLowerKey;
       aLowerKey  = "-";
@@ -4474,23 +4476,23 @@ static int VViewParams (Draw_Interpretor& theDi, Standard_Integer theArgsNb, con
     }
   }
 
-  TColStd_SequenceOfAsciiString aValues;
+  Handle(TColStd_HSequenceOfAsciiString) aValues;
 
   // Change view parameters in proper order
   if (aMapOfKeysByValues.Find ("SCALE", aValues))
   {
-    if (aValues.IsEmpty())
+    if (aValues->IsEmpty())
     {
       theDi << "Scale: " << anAISView->Scale() << "\n";
     }
     else
     {
-      anAISView->SetScale (aValues (1).RealValue());
+      anAISView->SetScale (aValues->Value(1).RealValue());
     }
   }
   if (aMapOfKeysByValues.Find ("SIZE", aValues))
   {
-    if (aValues.IsEmpty())
+    if (aValues->IsEmpty())
     {
       Standard_Real aSizeX = 0.0;
       Standard_Real aSizeY = 0.0;
@@ -4499,12 +4501,12 @@ static int VViewParams (Draw_Interpretor& theDi, Standard_Integer theArgsNb, con
     }
     else
     {
-      anAISView->SetSize (aValues (1).RealValue());
+      anAISView->SetSize (aValues->Value(1).RealValue());
     }
   }
   if (aMapOfKeysByValues.Find ("EYE", aValues))
   {
-    if (aValues.IsEmpty())
+    if (aValues->IsEmpty())
     {
       Standard_Real anEyeX = 0.0;
       Standard_Real anEyeY = 0.0;
@@ -4514,12 +4516,12 @@ static int VViewParams (Draw_Interpretor& theDi, Standard_Integer theArgsNb, con
     }
     else
     {
-      anAISView->SetEye (aValues (1).RealValue(), aValues (2).RealValue(), aValues (3).RealValue());
+      anAISView->SetEye (aValues->Value(1).RealValue(), aValues->Value(2).RealValue(), aValues->Value(3).RealValue());
     }
   }
   if (aMapOfKeysByValues.Find ("AT", aValues))
   {
-    if (aValues.IsEmpty())
+    if (aValues->IsEmpty())
     {
       Standard_Real anAtX = 0.0;
       Standard_Real anAtY = 0.0;
@@ -4529,12 +4531,12 @@ static int VViewParams (Draw_Interpretor& theDi, Standard_Integer theArgsNb, con
     }
     else
     {
-      anAISView->SetAt (aValues (1).RealValue(), aValues (2).RealValue(), aValues (3).RealValue());
+      anAISView->SetAt (aValues->Value(1).RealValue(), aValues->Value(2).RealValue(), aValues->Value(3).RealValue());
     }
   }
   if (aMapOfKeysByValues.Find ("PROJ", aValues))
   {
-    if (aValues.IsEmpty())
+    if (aValues->IsEmpty())
     {
       Standard_Real aProjX = 0.0;
       Standard_Real aProjY = 0.0;
@@ -4544,12 +4546,12 @@ static int VViewParams (Draw_Interpretor& theDi, Standard_Integer theArgsNb, con
     }
     else
     {
-      anAISView->SetProj (aValues (1).RealValue(), aValues (2).RealValue(), aValues (3).RealValue());
+      anAISView->SetProj (aValues->Value(1).RealValue(), aValues->Value(2).RealValue(), aValues->Value(3).RealValue());
     }
   }
   if (aMapOfKeysByValues.Find ("UP", aValues))
   {
-    if (aValues.IsEmpty())
+    if (aValues->IsEmpty())
     {
       Standard_Real anUpX = 0.0;
       Standard_Real anUpY = 0.0;
@@ -4559,12 +4561,12 @@ static int VViewParams (Draw_Interpretor& theDi, Standard_Integer theArgsNb, con
     }
     else
     {
-      anAISView->SetUp (aValues (1).RealValue(), aValues (2).RealValue(), aValues (3).RealValue());
+      anAISView->SetUp (aValues->Value(1).RealValue(), aValues->Value(2).RealValue(), aValues->Value(3).RealValue());
     }
   }
   if (aMapOfKeysByValues.Find ("CENTER", aValues))
   {
-    anAISView->SetCenter (aValues (1).IntegerValue(), aValues (2).IntegerValue());
+    anAISView->SetCenter (aValues->Value(1).IntegerValue(), aValues->Value(2).IntegerValue());
   }
 
   return 0;
