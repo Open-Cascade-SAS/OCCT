@@ -224,8 +224,8 @@ void TDocStd_Document::Update(const Handle(CDM_Document)& /*aToDocument*/,
 			       const Standard_Integer aReferenceIdentifier,
 			       const Standard_Address aModifContext) 
 {
-  const TDocStd_Context CC = *((TDocStd_Context *)&aModifContext);
-  if (CC.ModifiedReferences() || !IsUpToDate(aReferenceIdentifier)) {
+  const TDocStd_Context* CC = static_cast<TDocStd_Context*> (aModifContext);
+  if (CC->ModifiedReferences() || !IsUpToDate(aReferenceIdentifier)) {
     TCollection_AsciiString aDocEntry(aReferenceIdentifier);
     UpdateReferences(aDocEntry);
     SetIsUpToDate(aReferenceIdentifier);
