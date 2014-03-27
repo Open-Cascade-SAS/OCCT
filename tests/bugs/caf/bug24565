@@ -1,0 +1,25 @@
+puts "=========="
+puts "OCC24565"
+puts "=========="
+puts ""
+###################################################
+# MgtBRep persistence bug
+###################################################
+
+pload QAcommands
+
+set igs_file [locate_data_file bug24565_N60E.igs]
+
+set output_file ${imagedir}/bug24565_output.stor
+catch { file delete ${output_file} }
+
+dlog reset
+dlog on
+OCC24565 ${igs_file} ${output_file}
+set info [dlog get]
+
+if { [regexp "Exception" ${info} ] != 1 } {
+    puts "OK : persistence is good"
+} else {
+    puts "Error : persistence is bad"
+}
