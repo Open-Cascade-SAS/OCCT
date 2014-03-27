@@ -14,6 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Geom2dLProp_NumericCurInf2d.ixx>
+
+#include <Geom2dLProp_FuncCurExt.hxx>
+#include <Geom2dLProp_FuncCurNul.hxx>
+
+#include <Geom2dLProp_Curve2dTool.hxx>
 #include <math_FunctionRoots.hxx>
 #include <math_BracketedRoot.hxx>
 #include <Precision.hxx>
@@ -22,26 +28,26 @@
 //function : 
 //purpose  : 
 //=======================================================================
-LProp_NumericCurInf::LProp_NumericCurInf()
+Geom2dLProp_NumericCurInf2d::Geom2dLProp_NumericCurInf2d()
 {
 }
 //=======================================================================
 //function : PerformCurExt
 //purpose  : 
 //=======================================================================
-void LProp_NumericCurInf::PerformCurExt (const Curve& C,LProp_CurAndInf& Result)
+void Geom2dLProp_NumericCurInf2d::PerformCurExt (const Handle(Geom2d_Curve)& C,LProp_CurAndInf& Result)
 {
-  PerformCurExt(C,Tool::FirstParameter(C),Tool::LastParameter(C),Result);
+  PerformCurExt(C,Geom2dLProp_Curve2dTool::FirstParameter(C),Geom2dLProp_Curve2dTool::LastParameter(C),Result);
 }
 
 //=======================================================================
 //function : PerformCurExt
 //purpose  : 
 //=======================================================================
-void LProp_NumericCurInf::PerformCurExt (const Curve&        C,
-					 const Standard_Real UMin,
-					 const Standard_Real UMax,
-					 LProp_CurAndInf&    Result)
+void Geom2dLProp_NumericCurInf2d::PerformCurExt (const Handle(Geom2d_Curve)& C,
+                                                 const Standard_Real UMin,
+                                                 const Standard_Real UMax,
+                                                 LProp_CurAndInf&    Result)
 {
   isDone = Standard_True;
 
@@ -51,7 +57,7 @@ void LProp_NumericCurInf::PerformCurExt (const Curve&        C,
   // la premiere recherce se fait avec une tolerance assez grande
   // car la derivee de la fonction est estimee assez grossierement.
 
-  LProp_FCurExt    F(C,EpsH);
+  Geom2dLProp_FuncCurExt    F(C,EpsH);
   Standard_Integer NbSamples = 100;
   Standard_Boolean SolType;
 
@@ -62,9 +68,9 @@ void LProp_NumericCurInf::PerformCurExt (const Curve&        C,
       Standard_Real Param = SolRoot.Value(j);
       // la solution est affinee.
       math_BracketedRoot BS (F,
-			     Param - EpsH,
-			     Param + EpsH,
-			     Tol);
+        Param - EpsH,
+        Param + EpsH,
+        Tol);
       if (BS.IsDone()) {Param = BS.Root();}
       SolType = F.IsMinKC(Param);
       Result.AddExtCur(Param,SolType);
@@ -79,22 +85,22 @@ void LProp_NumericCurInf::PerformCurExt (const Curve&        C,
 //function : PerformInf
 //purpose  : 
 //=======================================================================
-void LProp_NumericCurInf::PerformInf(const Curve& C,LProp_CurAndInf& Result)
+void Geom2dLProp_NumericCurInf2d::PerformInf(const Handle(Geom2d_Curve)& C,LProp_CurAndInf& Result)
 {  
-  PerformInf(C,Tool::FirstParameter(C),Tool::LastParameter(C),Result);
+  PerformInf(C,Geom2dLProp_Curve2dTool::FirstParameter(C),Geom2dLProp_Curve2dTool::LastParameter(C),Result);
 }
 
 //=======================================================================
 //function : PerformInf
 //purpose  : 
 //=======================================================================
-void LProp_NumericCurInf::PerformInf(const Curve& C,					 
-				     const Standard_Real UMin,
-				     const Standard_Real UMax,
-				     LProp_CurAndInf& Result)
+void Geom2dLProp_NumericCurInf2d::PerformInf(const Handle(Geom2d_Curve)& C,					 
+                                             const Standard_Real UMin,
+                                             const Standard_Real UMax,
+                                             LProp_CurAndInf& Result)
 {
   isDone = Standard_True;
-  LProp_FCurNul    F(C);
+  Geom2dLProp_FuncCurNul    F(C);
   Standard_Real    EpsX = 1.e-6;
   Standard_Real    EpsF = 1.e-6;
   Standard_Integer NbSamples = 30;
@@ -115,7 +121,7 @@ void LProp_NumericCurInf::PerformInf(const Curve& C,
 //function : IsDone
 //purpose  : 
 //=======================================================================
-Standard_Boolean LProp_NumericCurInf::IsDone() const
+Standard_Boolean Geom2dLProp_NumericCurInf2d::IsDone() const
 {
   return isDone;
 }

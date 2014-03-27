@@ -14,13 +14,8 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class Wedge from Primitives(
-    TheShell           as any;
-    TheFace            as any;
-    TheWire            as any;
-    TheEdge            as any;
-    TheVertex          as any;
-    TheBuilder         as any)
+class GWedge from BRepPrim
+
 
 	---Purpose: A wedge is defined by  :
 	--          
@@ -45,21 +40,27 @@ generic class Wedge from Primitives(
 
 uses
     
-    Direction from Primitives,
+    Direction from BRepPrim,
     
-    Ax2 from gp,
-    Pln from gp,
-    Lin from gp,
-    Pnt from gp
+    Ax2     from gp,
+    Pln     from gp,
+    Lin     from gp,
+    Pnt     from gp,
+    Shell   from TopoDS,
+    Face    from TopoDS,
+    Wire    from TopoDS,
+    Edge    from TopoDS,
+    Vertex  from TopoDS,
+    Builder from BRepPrim
 
 raises
     DomainError,
     OutOfRange
 
 is
-    Create(B : TheBuilder; Axes : Ax2 from gp; dx, dy, dz : Real)
-    returns Wedge from Primitives
-	---Purpose: Creates a  Wedge  algorithm.   <Axes> is  the axis
+    Create(B : Builder from BRepPrim; Axes : Ax2 from gp; dx, dy, dz : Real)
+    returns GWedge from BRepPrim
+	---Purpose: Creates a  GWedge  algorithm.   <Axes> is  the axis
 	--          system for the primitive.
 	--          
 	--          XMin, YMin, ZMin are set to 0
@@ -72,9 +73,9 @@ is
 	--          dx,dy,dz should be positive
 	raises DomainError;
 
-    Create(B : TheBuilder; Axes : Ax2 from gp; dx, dy, dz, ltx : Real)
-    returns Wedge from Primitives
-	---Purpose: Creates  a Wedge  primitive. <Axes> is   the  axis
+    Create(B : Builder from BRepPrim; Axes : Ax2 from gp; dx, dy, dz, ltx : Real)
+    returns GWedge from BRepPrim
+	---Purpose: Creates  a GWedge  primitive. <Axes> is   the  axis
 	--          system for the primitive.
 	--          
 	--          XMin, YMin, ZMin are set to 0
@@ -88,10 +89,10 @@ is
 	--          ltx should not be negative
 	raises DomainError;
 
-    Create(B : TheBuilder; Axes : Ax2 from gp; xmin, ymin, zmin, z2min, x2min,
+    Create(B : Builder from BRepPrim; Axes : Ax2 from gp; xmin, ymin, zmin, z2min, x2min,
                                    xmax, ymax, zmax, z2max, x2max : Real)
-    returns Wedge from Primitives
-	---Purpose: Create  a Wedge primitive.   <Axes>  is  the  axis
+    returns GWedge from BRepPrim
+	---Purpose: Create  a GWedge primitive.   <Axes>  is  the  axis
 	--          system for the primitive.
 	--          
 	--          all the fields are set to the corresponding value
@@ -143,80 +144,80 @@ is
 	---Purpose: Returns X2Max value from <me>.
     is static;
 
-    Open(me : in out; d1 : Direction from Primitives)
+    Open(me : in out; d1 : Direction from BRepPrim)
 	---Purpose: Opens <me> in <d1> direction. A face and its edges
 	--          or vertices are said nonexistant.
     raises DomainError
     is static;
 
-    Close(me : in out; d1 : Direction from Primitives)
+    Close(me : in out; d1 : Direction from BRepPrim)
 	---Purpose: Closes   <me>  in <d1>  direction.  A face and its
 	--          edges or vertices are said existant.
     raises DomainError
     is static;
 
-    IsInfinite(me; d1 : Direction from Primitives)
+    IsInfinite(me; d1 : Direction from BRepPrim)
 	---Purpose: Returns True if <me> is open in <d1> direction.
     returns Boolean;
     
-    Shell(me : in out) returns TheShell
+    Shell(me : in out) returns Shell from TopoDS
 	---Purpose: Returns the Shell containing the Faces of <me>.
 	--          
 	---C++: return const &
     is static;
 
-    HasFace(me; d1 : Direction from Primitives)
+    HasFace(me; d1 : Direction from BRepPrim)
 	---Purpose: Returns True if <me> has a Face in <d1> direction.
     returns Boolean;
 
-    Face(me : in out; d1 : Direction from Primitives) returns TheFace
+    Face(me : in out; d1 : Direction from BRepPrim) returns Face from TopoDS
 	---Purpose: Returns the Face of <me> located in <d1> direction.
 	--          
 	---C++: return const &
     raises DomainError
     is static;
     
-    Plane(me : in out; d1 : Direction from Primitives) returns Pln from  gp
+    Plane(me : in out; d1 : Direction from BRepPrim) returns Pln from  gp
 	---Purpose: Returns the plane  of the Face  of <me> located in
 	--          <d1> direction.
     raises DomainError
     is static;
     
-    HasWire(me; d1 : Direction from Primitives)
+    HasWire(me; d1 : Direction from BRepPrim)
 	---Purpose: Returns True if <me> has a Wire in <d1> direction.
     returns Boolean;
 
-    Wire(me : in out; d1 : Direction from Primitives) returns TheWire
+    Wire(me : in out; d1 : Direction from BRepPrim) returns Wire from TopoDS
 	---Purpose: Returns the Wire of <me> located in <d1> direction.
 	--          
 	---C++: return const &
     raises DomainError
     is static;
 
-    HasEdge(me; d1, d2 : Direction from Primitives)
+    HasEdge(me; d1, d2 : Direction from BRepPrim)
 	---Purpose: Returns True if <me> has an Edge in <d1><d2> direction.
     returns Boolean;
 
-    Edge(me : in out; d1, d2 : Direction from Primitives) returns TheEdge
+    Edge(me : in out; d1, d2 : Direction from BRepPrim) returns Edge from TopoDS
 	---Purpose: Returns the Edge of <me> located in <d1><d2> direction.
 	--          
 	---C++: return const &
     raises DomainError
     is static;
 
-    Line(me : in out; d1, d2 : Direction from Primitives) returns Lin from gp
+    Line(me : in out; d1, d2 : Direction from BRepPrim) returns Lin from gp
 	---Purpose: Returns the line of  the Edge of <me>  located  in
 	--          <d1><d2> direction.
     raises DomainError
     is static;
 
-    HasVertex(me; d1, d2, d3 : Direction from Primitives)
+    HasVertex(me; d1, d2, d3 : Direction from BRepPrim)
 	---Purpose: Returns True if <me> has a  Vertex in <d1><d2><d3>
 	--          direction.
     returns Boolean;
 
-    Vertex(me : in out; d1, d2, d3 : Direction from Primitives)
-    returns TheVertex
+    Vertex(me : in out; d1, d2, d3 : Direction from BRepPrim)
+    returns Vertex from TopoDS
 	---Purpose: Returns the Vertex of <me> located in <d1><d2><d3>
 	--          direction.
 	--          
@@ -224,7 +225,7 @@ is
     raises DomainError
     is static;
     
-    Point(me : in out; d1, d2, d3 : Direction from Primitives)
+    Point(me : in out; d1, d2, d3 : Direction from BRepPrim)
     returns Pnt from gp
 	---Purpose: Returns the point of the Vertex of <me> located in
 	--          <d1><d2><d3> direction.
@@ -232,7 +233,7 @@ is
     is static;
     
 fields
-    myBuilder : TheBuilder;
+    myBuilder : Builder from BRepPrim;
 
     myAxes : Ax2 from gp;
     XMin : Real;
@@ -248,10 +249,10 @@ fields
     
     -- the Topology
 
-    myShell : TheShell;
+    myShell : Shell from TopoDS;
     ShellBuilt : Boolean;
     
-    myVertices : TheVertex [8];
+    myVertices : Vertex from TopoDS [8];
     -- 0 : xmin ymin zmin
     -- 1 : xmax ymin zmin
     -- 2 : xmin ymax zmin
@@ -262,7 +263,7 @@ fields
     -- 7 : xmax ymax zmax
     VerticesBuilt : Boolean [8];
     
-    myEdges : TheEdge [12];
+    myEdges : Edge from TopoDS [12];
     -- 0  : xmin ymin
     -- 1  : xmax ymin
     -- 2  : xmin ymax
@@ -277,7 +278,7 @@ fields
     -- 11 : zmax xmax
     EdgesBuilt : Boolean [12];
     
-    myWires : TheWire [6];
+    myWires : Wire from TopoDS [6];
     -- 0 : xmin
     -- 1 : xmax
     -- 2 : ymin
@@ -286,7 +287,7 @@ fields
     -- 5 : zmax
     WiresBuilt : Boolean [6];
     
-    myFaces : TheFace [6];
+    myFaces : Face from TopoDS [6];
     -- 0 : xmin
     -- 1 : xmax
     -- 2 : ymin
@@ -303,4 +304,4 @@ fields
     -- 4 : zmin
     -- 5 : zmax
 
-end Wedge;
+end GWedge;

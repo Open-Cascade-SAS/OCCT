@@ -14,7 +14,17 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepPrim_OneAxis.ixx>
+
 #include <Precision.hxx>
+
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <BRepPrim_Builder.hxx>
+#include <BRepPrim_Direction.hxx>
 
 #include <gp_Pln.hxx>
 #include <gp_Lin2d.hxx>
@@ -68,11 +78,11 @@
 #define FEND        4
 
 //=======================================================================
-//function : Primitives_OneAxis_Check
+//function : BRepPrim_OneAxis_Check
 //purpose  : raise Standard_DomainError if something was built
 //=======================================================================
 
-static void Primitives_OneAxis_Check(const Standard_Boolean V[],
+static void BRepPrim_OneAxis_Check(const Standard_Boolean V[],
 				     const Standard_Boolean E[],
 				     const Standard_Boolean W[],
 				     const Standard_Boolean F[])
@@ -89,11 +99,11 @@ static void Primitives_OneAxis_Check(const Standard_Boolean V[],
 }
 
 //=======================================================================
-//function : Primitives_OneAxis
+//function : BRepPrim_OneAxis
 //purpose  : 
 //=======================================================================
 
-Primitives_OneAxis::Primitives_OneAxis(const TheBuilder& B,
+BRepPrim_OneAxis::BRepPrim_OneAxis(const BRepPrim_Builder& B,
 				       const gp_Ax2& A,
 				       const Standard_Real VMin,
 				       const Standard_Real VMax) :
@@ -119,7 +129,7 @@ Primitives_OneAxis::Primitives_OneAxis(const TheBuilder& B,
 
 }
 
-void Primitives_OneAxis::Delete()
+void BRepPrim_OneAxis::Delete()
 {}
 
 //=======================================================================
@@ -127,7 +137,7 @@ void Primitives_OneAxis::Delete()
 //purpose  : 
 //=======================================================================
 
-void Primitives_OneAxis::SetMeridianOffset(const Standard_Real O)
+void BRepPrim_OneAxis::SetMeridianOffset(const Standard_Real O)
 {
   myMeridianOffset = O;
 }
@@ -137,47 +147,47 @@ void Primitives_OneAxis::SetMeridianOffset(const Standard_Real O)
 //purpose  : 
 //=======================================================================
 
-const gp_Ax2&  Primitives_OneAxis::Axes     () const 
+const gp_Ax2&  BRepPrim_OneAxis::Axes     () const 
 { 
   return myAxes;
 }
 
-void Primitives_OneAxis::Axes     (const gp_Ax2& A)
+void BRepPrim_OneAxis::Axes     (const gp_Ax2& A)
 { 
-  Primitives_OneAxis_Check(VerticesBuilt,EdgesBuilt,WiresBuilt,FacesBuilt);
+  BRepPrim_OneAxis_Check(VerticesBuilt,EdgesBuilt,WiresBuilt,FacesBuilt);
   myAxes = A;
 }
 
-Standard_Real Primitives_OneAxis::Angle () const
+Standard_Real BRepPrim_OneAxis::Angle () const
 {
   return myAngle;
 }
 
-void Primitives_OneAxis::Angle (const Standard_Real A)
+void BRepPrim_OneAxis::Angle (const Standard_Real A)
 {
-  Primitives_OneAxis_Check(VerticesBuilt,EdgesBuilt,WiresBuilt,FacesBuilt);
+  BRepPrim_OneAxis_Check(VerticesBuilt,EdgesBuilt,WiresBuilt,FacesBuilt);
   myAngle = A;
 }
 
-Standard_Real Primitives_OneAxis::VMin () const
+Standard_Real BRepPrim_OneAxis::VMin () const
 {
   return myVMin;
 }
 
-void Primitives_OneAxis::VMin (const Standard_Real V)
+void BRepPrim_OneAxis::VMin (const Standard_Real V)
 {
-  Primitives_OneAxis_Check(VerticesBuilt,EdgesBuilt,WiresBuilt,FacesBuilt);
+  BRepPrim_OneAxis_Check(VerticesBuilt,EdgesBuilt,WiresBuilt,FacesBuilt);
   myVMin = V;
 }
 
-Standard_Real Primitives_OneAxis::VMax () const
+Standard_Real BRepPrim_OneAxis::VMax () const
 {
   return myVMax;
 }
 
-void Primitives_OneAxis::VMax (const Standard_Real V)
+void BRepPrim_OneAxis::VMax (const Standard_Real V)
 {
-  Primitives_OneAxis_Check(VerticesBuilt,EdgesBuilt,WiresBuilt,FacesBuilt);
+  BRepPrim_OneAxis_Check(VerticesBuilt,EdgesBuilt,WiresBuilt,FacesBuilt);
   myVMax = V;
 }
 
@@ -186,7 +196,7 @@ void Primitives_OneAxis::VMax (const Standard_Real V)
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean Primitives_OneAxis::MeridianOnAxis
+Standard_Boolean BRepPrim_OneAxis::MeridianOnAxis
   (const Standard_Real V) const
 {
   return Abs(MeridianValue(V).X()) < Precision::Confusion();
@@ -197,7 +207,7 @@ Standard_Boolean Primitives_OneAxis::MeridianOnAxis
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean Primitives_OneAxis::MeridianClosed() const
+Standard_Boolean BRepPrim_OneAxis::MeridianClosed() const
 {
   if (VMaxInfinite()) return Standard_False;
   if (VMinInfinite()) return Standard_False;
@@ -210,7 +220,7 @@ Standard_Boolean Primitives_OneAxis::MeridianClosed() const
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean Primitives_OneAxis::VMaxInfinite() const
+Standard_Boolean BRepPrim_OneAxis::VMaxInfinite() const
 {
   return Precision::IsPositiveInfinite(myVMax);
 }
@@ -220,7 +230,7 @@ Standard_Boolean Primitives_OneAxis::VMaxInfinite() const
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean Primitives_OneAxis::VMinInfinite() const
+Standard_Boolean BRepPrim_OneAxis::VMinInfinite() const
 {
   return Precision::IsNegativeInfinite(myVMin);
 }
@@ -230,7 +240,7 @@ Standard_Boolean Primitives_OneAxis::VMinInfinite() const
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean Primitives_OneAxis::HasTop() const
+Standard_Boolean BRepPrim_OneAxis::HasTop() const
 {
   if (VMaxInfinite())         return Standard_False;
   if (MeridianClosed())       return Standard_False;
@@ -243,7 +253,7 @@ Standard_Boolean Primitives_OneAxis::HasTop() const
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean Primitives_OneAxis::HasBottom() const
+Standard_Boolean BRepPrim_OneAxis::HasBottom() const
 {
   if (VMinInfinite())         return Standard_False;
   if (MeridianClosed())       return Standard_False;
@@ -256,7 +266,7 @@ Standard_Boolean Primitives_OneAxis::HasBottom() const
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean Primitives_OneAxis::HasSides() const
+Standard_Boolean BRepPrim_OneAxis::HasSides() const
 {
   return 2*M_PI - myAngle > Precision::Angular();
 }
@@ -266,7 +276,7 @@ Standard_Boolean Primitives_OneAxis::HasSides() const
 //purpose  : 
 //=======================================================================
 
-const TheShell& Primitives_OneAxis::Shell()
+const TopoDS_Shell& BRepPrim_OneAxis::Shell()
 {
   if (!ShellBuilt) {
     myBuilder.MakeShell(myShell);
@@ -292,7 +302,7 @@ const TheShell& Primitives_OneAxis::Shell()
 //purpose  : build the lateral face
 //=======================================================================
 
-const TheFace& Primitives_OneAxis::LateralFace ()
+const TopoDS_Face& BRepPrim_OneAxis::LateralFace ()
 {
   // do it if not done
   if (!FacesBuilt[FLATERAL]) {
@@ -365,13 +375,13 @@ const TheFace& Primitives_OneAxis::LateralFace ()
 //purpose  : build and return the TopFace
 //=======================================================================
 
-const TheFace& Primitives_OneAxis::TopFace ()
+const TopoDS_Face& BRepPrim_OneAxis::TopFace ()
 {
   // do it if not done
   if (!FacesBuilt[FTOP]) {
 
     Standard_DomainError_Raise_if(!HasTop(),
-				  "Primitives_OneAxis::TopFace:No top face");
+				  "BRepPrim_OneAxis::TopFace:No top face");
     
     // make the empty face by translating the axes
     Standard_Real z = MeridianValue(myVMax).Y();
@@ -405,13 +415,13 @@ const TheFace& Primitives_OneAxis::TopFace ()
 //purpose  : 
 //=======================================================================
 
-const TheFace& Primitives_OneAxis::BottomFace ()
+const TopoDS_Face& BRepPrim_OneAxis::BottomFace ()
 {
   // do it if not done
   if (!FacesBuilt[FBOTTOM]) {
 
     Standard_DomainError_Raise_if(!HasBottom(),
-				  "Primitives_OneAxis::BottomFace:No bottom face");
+				  "BRepPrim_OneAxis::BottomFace:No bottom face");
     
     // make the empty face by translating the axes
     Standard_Real z = MeridianValue(myVMin).Y();
@@ -446,13 +456,13 @@ const TheFace& Primitives_OneAxis::BottomFace ()
 //purpose  : 
 //=======================================================================
 
-const TheFace& Primitives_OneAxis::StartFace ()
+const TopoDS_Face& BRepPrim_OneAxis::StartFace ()
 {
   // do it if not done
   if (!FacesBuilt[FSTART]) {
 
     Standard_DomainError_Raise_if(!HasSides(),
-				  "Primitives_OneAxes::StartFace:No side faces");
+				  "BRepPrim_OneAxes::StartFace:No side faces");
 
     // build the empty face, perpendicular to myTool.Axes()
     gp_Ax2 axes(myAxes.Location(),myAxes.YDirection().Reversed(),myAxes.XDirection());
@@ -489,13 +499,13 @@ const TheFace& Primitives_OneAxis::StartFace ()
 //purpose  : 
 //=======================================================================
 
-const TheFace& Primitives_OneAxis::EndFace ()
+const TopoDS_Face& BRepPrim_OneAxis::EndFace ()
 {
   // do it if not done
   if (!FacesBuilt[FEND]) {
 
     Standard_DomainError_Raise_if(!HasSides(),
-				  "Primitives_OneAxes::EndFace:No side faces");
+				  "BRepPrim_OneAxes::EndFace:No side faces");
 
     // build the empty face, perpendicular to myTool.Axes()
     gp_Ax2 axes(myAxes.Location(),myAxes.YDirection().Reversed(),myAxes.XDirection());
@@ -533,7 +543,7 @@ const TheFace& Primitives_OneAxis::EndFace ()
 //purpose  : 
 //=======================================================================
 
-const TheWire& Primitives_OneAxis::LateralWire ()
+const TopoDS_Wire& BRepPrim_OneAxis::LateralWire ()
 {
   // do it if not done
   if (!WiresBuilt[WLATERAL]) {
@@ -560,7 +570,7 @@ const TheWire& Primitives_OneAxis::LateralWire ()
 //purpose  : 
 //=======================================================================
 
-const TheWire& Primitives_OneAxis::LateralStartWire ()
+const TopoDS_Wire& BRepPrim_OneAxis::LateralStartWire ()
 {
   // do it if not done
   if (!WiresBuilt[WLATERALSTART]) {
@@ -582,7 +592,7 @@ const TheWire& Primitives_OneAxis::LateralStartWire ()
 //purpose  : 
 //=======================================================================
 
-const TheWire& Primitives_OneAxis::LateralEndWire ()
+const TopoDS_Wire& BRepPrim_OneAxis::LateralEndWire ()
 {
   // do it if not done
   if (!WiresBuilt[WLATERALEND]) {
@@ -603,13 +613,13 @@ const TheWire& Primitives_OneAxis::LateralEndWire ()
 //purpose  : 
 //=======================================================================
 
-const TheWire& Primitives_OneAxis::TopWire ()
+const TopoDS_Wire& BRepPrim_OneAxis::TopWire ()
 {
   // do it if not done
   if (!WiresBuilt[WTOP]) {
 
     Standard_DomainError_Raise_if(!HasTop(),
-				  "Primitives_OneAxis::TopWire: no top");
+				  "BRepPrim_OneAxis::TopWire: no top");
 
     myBuilder.MakeWire(myWires[WTOP]);
   
@@ -630,13 +640,13 @@ const TheWire& Primitives_OneAxis::TopWire ()
 //purpose  : 
 //=======================================================================
 
-const TheWire& Primitives_OneAxis::BottomWire ()
+const TopoDS_Wire& BRepPrim_OneAxis::BottomWire ()
 {
   // do it if not done
   if (!WiresBuilt[WBOTTOM]) {
 
     Standard_DomainError_Raise_if(!HasBottom(),
-				  "Primitives_OneAxis::BottomWire: no bottom");
+				  "BRepPrim_OneAxis::BottomWire: no bottom");
 
     myBuilder.MakeWire(myWires[WBOTTOM]);
   
@@ -658,13 +668,13 @@ const TheWire& Primitives_OneAxis::BottomWire ()
 //purpose  : 
 //=======================================================================
 
-const TheWire& Primitives_OneAxis::StartWire ()
+const TopoDS_Wire& BRepPrim_OneAxis::StartWire ()
 {
   // do it if not done
   if (!WiresBuilt[WSTART]) {
 
     Standard_DomainError_Raise_if(!HasSides(),
-				  "Primitives_OneAxes::StartWire:no sides");
+				  "BRepPrim_OneAxes::StartWire:no sides");
   
     myBuilder.MakeWire(myWires[WSTART]);
   
@@ -692,22 +702,22 @@ const TheWire& Primitives_OneAxis::StartWire ()
 //purpose  : 
 //=======================================================================
 
-const TheWire& Primitives_OneAxis::AxisStartWire ()
+const TopoDS_Wire& BRepPrim_OneAxis::AxisStartWire ()
 {
   // do it if not done
   if (!WiresBuilt[WAXISSTART]) {
 
     Standard_DomainError_Raise_if
       (!HasSides(),
-       "Primitives_OneAxes::AxisStartWire:no sides");
+       "BRepPrim_OneAxes::AxisStartWire:no sides");
   
     Standard_DomainError_Raise_if
       (!VMaxInfinite() || !VMinInfinite(),
-       "Primitives_OneAxes::AxisStartWire:not infinite");
+       "BRepPrim_OneAxes::AxisStartWire:not infinite");
 
     Standard_DomainError_Raise_if
       (MeridianClosed(),
-       "Primitives_OneAxes::AxisStartWire:meridian closed");
+       "BRepPrim_OneAxes::AxisStartWire:meridian closed");
   
     myBuilder.MakeWire(myWires[WAXISSTART]);
   
@@ -725,13 +735,13 @@ const TheWire& Primitives_OneAxis::AxisStartWire ()
 //purpose  : 
 //=======================================================================
 
-const TheWire& Primitives_OneAxis::EndWire ()
+const TopoDS_Wire& BRepPrim_OneAxis::EndWire ()
 {
   // do it if not done
   if (!WiresBuilt[WEND]) {
 
     Standard_DomainError_Raise_if(!HasSides(),
-				  "Primitives_OneAxes::EndWire:no sides");
+				  "BRepPrim_OneAxes::EndWire:no sides");
   
     myBuilder.MakeWire(myWires[WEND]);
     
@@ -757,22 +767,22 @@ const TheWire& Primitives_OneAxis::EndWire ()
 //purpose  : 
 //=======================================================================
 
-const TheWire& Primitives_OneAxis::AxisEndWire ()
+const TopoDS_Wire& BRepPrim_OneAxis::AxisEndWire ()
 {
   // do it if not done
   if (!WiresBuilt[WAXISEND]) {
 
     Standard_DomainError_Raise_if
       (!HasSides(),
-       "Primitives_OneAxes::AxisEndWire:no sides");
+       "BRepPrim_OneAxes::AxisEndWire:no sides");
   
     Standard_DomainError_Raise_if
       (!VMaxInfinite() || !VMinInfinite(),
-       "Primitives_OneAxes::AxisEndWire:not infinite");
+       "BRepPrim_OneAxes::AxisEndWire:not infinite");
 
     Standard_DomainError_Raise_if
       (MeridianClosed(),
-       "Primitives_OneAxes::AxisEndWire:meridian closed");
+       "BRepPrim_OneAxes::AxisEndWire:meridian closed");
   
     myBuilder.MakeWire(myWires[WAXISEND]);
     
@@ -789,15 +799,15 @@ const TheWire& Primitives_OneAxis::AxisEndWire ()
 //purpose  : make the edge on the axis, oriented +Z
 //=======================================================================
 
-const TheEdge& Primitives_OneAxis::AxisEdge ()
+const TopoDS_Edge& BRepPrim_OneAxis::AxisEdge ()
 {
   // do it if not done
   if (!EdgesBuilt[EAXIS]) {
 
     Standard_DomainError_Raise_if(!HasSides(),
-				  "Primitives_OneAxis::AxisEdge:no sides");
+				  "BRepPrim_OneAxis::AxisEdge:no sides");
     Standard_DomainError_Raise_if(MeridianClosed(),
-				  "Primitives_OneAxis::AxisEdge:closed");
+				  "BRepPrim_OneAxis::AxisEdge:closed");
 
     // build the empty edge.
     myBuilder.MakeEdge(myEdges[EAXIS],gp_Lin(myAxes.Axis()));
@@ -821,7 +831,7 @@ const TheEdge& Primitives_OneAxis::AxisEdge ()
 //purpose  : 
 //=======================================================================
 
-const TheEdge& Primitives_OneAxis::StartEdge ()
+const TopoDS_Edge& BRepPrim_OneAxis::StartEdge ()
 {
   // do it if not done
   if (!EdgesBuilt[ESTART]) {
@@ -871,7 +881,7 @@ const TheEdge& Primitives_OneAxis::StartEdge ()
 //purpose  : 
 //=======================================================================
 
-const TheEdge& Primitives_OneAxis::EndEdge ()
+const TopoDS_Edge& BRepPrim_OneAxis::EndEdge ()
 {
   // do it if not done
   if (!EdgesBuilt[EEND]) {
@@ -921,14 +931,14 @@ const TheEdge& Primitives_OneAxis::EndEdge ()
 //purpose  : 
 //=======================================================================
 
-const TheEdge& Primitives_OneAxis::StartTopEdge ()
+const TopoDS_Edge& BRepPrim_OneAxis::StartTopEdge ()
 {
   // do it if not done
   if (!EdgesBuilt[ETOPSTART]) {
 
     Standard_DomainError_Raise_if
       (!HasTop() || !HasSides(),
-       "Primitives_OneAxis::StartTopEdge:no sides or no top");
+       "BRepPrim_OneAxis::StartTopEdge:no sides or no top");
 
     // build the empty Edge
     gp_Vec V = myAxes.Direction();
@@ -953,14 +963,14 @@ const TheEdge& Primitives_OneAxis::StartTopEdge ()
 //purpose  : 
 //=======================================================================
 
-const TheEdge& Primitives_OneAxis::StartBottomEdge ()
+const TopoDS_Edge& BRepPrim_OneAxis::StartBottomEdge ()
 {
   // do it if not done
   if (!EdgesBuilt[EBOTSTART]) {
 
     Standard_DomainError_Raise_if
       (!HasBottom() || !HasSides(),
-       "Primitives_OneAxis::StartBottomEdge:no sides or no top");
+       "BRepPrim_OneAxis::StartBottomEdge:no sides or no top");
 
     // build the empty Edge
     gp_Vec V = myAxes.Direction();
@@ -985,14 +995,14 @@ const TheEdge& Primitives_OneAxis::StartBottomEdge ()
 //purpose  : 
 //=======================================================================
 
-const TheEdge& Primitives_OneAxis::EndTopEdge ()
+const TopoDS_Edge& BRepPrim_OneAxis::EndTopEdge ()
 {
   // do it if not done
   if (!EdgesBuilt[ETOPEND]) {
 
     Standard_DomainError_Raise_if
       (!HasTop() || !HasSides(),
-       "Primitives_OneAxis::EndTopEdge:no sides or no top");
+       "BRepPrim_OneAxis::EndTopEdge:no sides or no top");
 
     // build the empty Edge
     gp_Vec V = myAxes.Direction();
@@ -1019,7 +1029,7 @@ const TheEdge& Primitives_OneAxis::EndTopEdge ()
 //purpose  : 
 //=======================================================================
 
-const TheEdge& Primitives_OneAxis::EndBottomEdge ()
+const TopoDS_Edge& BRepPrim_OneAxis::EndBottomEdge ()
 {
   // do it if not done
   if (!EdgesBuilt[EBOTEND]) {
@@ -1027,7 +1037,7 @@ const TheEdge& Primitives_OneAxis::EndBottomEdge ()
 
     Standard_DomainError_Raise_if
       (!HasBottom() || !HasSides(),
-       "Primitives_OneAxis::EndBottomEdge:no sides or no bottom");
+       "BRepPrim_OneAxis::EndBottomEdge:no sides or no bottom");
 
     // build the empty Edge
     gp_Vec V = myAxes.Direction();
@@ -1054,7 +1064,7 @@ const TheEdge& Primitives_OneAxis::EndBottomEdge ()
 //purpose  : 
 //=======================================================================
 
-const TheEdge& Primitives_OneAxis::TopEdge ()
+const TopoDS_Edge& BRepPrim_OneAxis::TopEdge ()
 {
   // do it if not done
   if (!EdgesBuilt[ETOP]) {
@@ -1108,7 +1118,7 @@ const TheEdge& Primitives_OneAxis::TopEdge ()
 //purpose  : 
 //=======================================================================
 
-const TheEdge& Primitives_OneAxis::BottomEdge ()
+const TopoDS_Edge& BRepPrim_OneAxis::BottomEdge ()
 {
   // do it if not done
   if (!EdgesBuilt[EBOTTOM]) {
@@ -1163,7 +1173,7 @@ const TheEdge& Primitives_OneAxis::BottomEdge ()
 //purpose  : 
 //=======================================================================
 
-const TheVertex& Primitives_OneAxis::AxisTopVertex ()
+const TopoDS_Vertex& BRepPrim_OneAxis::AxisTopVertex ()
 {
   // do it if not done
   if (!VerticesBuilt[VAXISTOP]) {
@@ -1177,9 +1187,9 @@ const TheVertex& Primitives_OneAxis::AxisTopVertex ()
     
     else {
       Standard_DomainError_Raise_if(MeridianClosed(),
-				    "Primitives_OneAxis::AxisTopVertex");
+				    "BRepPrim_OneAxis::AxisTopVertex");
       Standard_DomainError_Raise_if(VMaxInfinite(),
-				    "Primitives_OneAxis::AxisTopVertex");
+				    "BRepPrim_OneAxis::AxisTopVertex");
       
       gp_Vec V = myAxes.Direction();
       V.Multiply(MeridianValue(myVMax).Y());
@@ -1198,7 +1208,7 @@ const TheVertex& Primitives_OneAxis::AxisTopVertex ()
 //purpose  : 
 //=======================================================================
 
-const TheVertex& Primitives_OneAxis::AxisBottomVertex ()
+const TopoDS_Vertex& BRepPrim_OneAxis::AxisBottomVertex ()
 {
   // do it if not done
   if (!VerticesBuilt[VAXISBOT]) {
@@ -1212,9 +1222,9 @@ const TheVertex& Primitives_OneAxis::AxisBottomVertex ()
     
     else {
       Standard_DomainError_Raise_if(MeridianClosed(),
-				    "Primitives_OneAxis::AxisBottomVertex");
+				    "BRepPrim_OneAxis::AxisBottomVertex");
       Standard_DomainError_Raise_if(VMinInfinite(),
-				    "Primitives_OneAxis::AxisBottomVertex");
+				    "BRepPrim_OneAxis::AxisBottomVertex");
       
       gp_Vec V = myAxes.Direction();
       V.Multiply(MeridianValue(myVMin).Y());
@@ -1233,7 +1243,7 @@ const TheVertex& Primitives_OneAxis::AxisBottomVertex ()
 //purpose  : 
 //=======================================================================
 
-const TheVertex& Primitives_OneAxis::TopStartVertex ()
+const TopoDS_Vertex& BRepPrim_OneAxis::TopStartVertex ()
 {
   // do it if not done
   if (!VerticesBuilt[VTOPSTART]) {
@@ -1270,7 +1280,7 @@ const TheVertex& Primitives_OneAxis::TopStartVertex ()
 //purpose  : 
 //=======================================================================
 
-const TheVertex& Primitives_OneAxis::TopEndVertex ()
+const TopoDS_Vertex& BRepPrim_OneAxis::TopEndVertex ()
 {
   // do it if not done
   if (!VerticesBuilt[VTOPEND]) {
@@ -1309,7 +1319,7 @@ const TheVertex& Primitives_OneAxis::TopEndVertex ()
 //purpose  : 
 //=======================================================================
 
-const TheVertex& Primitives_OneAxis::BottomStartVertex ()
+const TopoDS_Vertex& BRepPrim_OneAxis::BottomStartVertex ()
 {
   // do it if not done
   if (!VerticesBuilt[VBOTSTART]) {
@@ -1346,7 +1356,7 @@ const TheVertex& Primitives_OneAxis::BottomStartVertex ()
 //purpose  : 
 //=======================================================================
 
-const TheVertex& Primitives_OneAxis::BottomEndVertex ()
+const TopoDS_Vertex& BRepPrim_OneAxis::BottomEndVertex ()
 {
   // do it if not done
   if (!VerticesBuilt[VBOTEND]) {

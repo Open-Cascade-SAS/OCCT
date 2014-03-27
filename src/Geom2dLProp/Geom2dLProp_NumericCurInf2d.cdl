@@ -14,34 +14,33 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class NumericCurInf from LProp (Curve as any;
-    	    	    	    	        Vec   as any; -- as Vec or Vec2d
-		     	                Pnt   as any; -- as Pnt or Pnt2d
-		   	                Dir   as any; -- as Dir or Dir2d Vec  
-    	    	    	    	    	Tool  as any) -- as Tool(Curve, Pnt, Vec) 
-					
-	---Purpose: Computes the locals extremas of curvature and the 
-    	--          inflections of a bounded curve in 2d. 
+class NumericCurInf2d from Geom2dLProp
+
+    ---Purpose: Computes the locals extremas of curvature and the 
+        --          inflections of a bounded curve in 2d. 
 
 uses
-    CurAndInf from LProp
+    CurAndInf from LProp,
+    Curve from Geom2d,
+    Vec2d from gp,
+    Pnt2d from gp,
+    Dir2d from gp,
+    Curve2dTool from Geom2dLProp
     
-private class FCurExt instantiates FuncCurExt from LProp (Curve,Vec,Pnt,Dir,Tool); 
-private class FCurNul instantiates FuncCurNul from LProp (Curve,Vec,Pnt,Dir,Tool);
-
 is
+
     Create;
     
-    PerformCurExt (me : in out; C : Curve; Result : in out CurAndInf) 
+    PerformCurExt (me : in out; C : Curve from Geom2d; Result : in out CurAndInf) 
     	---Purpose: Computes the locals extremas of curvature.
     is static;
     
-    PerformInf    (me : in out; C : Curve; Result : in out CurAndInf)
+    PerformInf    (me : in out; C : Curve from Geom2d; Result : in out CurAndInf)
        	---Purpose: Computes the inflections.
     is static;
     
     PerformCurExt (me     : in out; 
-    	           C      : Curve ; 
+    	           C      : Curve from Geom2d ; 
                    UMin   : Real;
     	    	   UMax   : Real;
     	    	   Result : in out CurAndInf) 
@@ -50,7 +49,7 @@ is
     is static;
     
     PerformInf    (me     : in out;
-        	   C      : Curve ; 
+        	   C      : Curve from Geom2d ; 
                    UMin   : Real;
     	    	   UMax   : Real;
     	    	   Result : in out CurAndInf)
@@ -65,4 +64,4 @@ is
 fields
     isDone : Boolean from Standard;
 
-end NumericCurInf;
+end NumericCurInf2d;

@@ -28,11 +28,6 @@ uses
 
 is
     
-    deferred generic class LinearRegularSweep,
-    	Array2OfShapes,
-        SequenceOfShapes;
-	
-	
     --
     --     The following classes provides a directing topology for the
     --     LinearRegularSweep. This  is  the  topology of an  open  or

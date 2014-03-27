@@ -41,20 +41,18 @@ uses
     gp,
     Geom2d,
     Geom,
-    Primitives,
     TopoDS,
     BRep
 
 is
+    enumeration Direction is 
+    ---Purpose: 
+        XMin, XMax, YMin, YMax, ZMin, ZMax
+    end Direction;
+    
     class Builder;
-
-    deferred class OneAxis instantiates OneAxis from Primitives(
-    	Shell   from TopoDS,
-	Face    from TopoDS,
-	Wire    from TopoDS,
-	Edge    from TopoDS,
-	Vertex  from TopoDS,
-	Builder from BRepPrim);
+    
+    deferred class OneAxis;
 	
     class Revolution;
     
@@ -66,13 +64,7 @@ is
     
     class Torus;
     
-    class GWedge instantiates Wedge from Primitives(
-    	Shell   from TopoDS,
-	Face    from TopoDS,
-	Wire    from TopoDS,
-	Edge    from TopoDS,
-	Vertex  from TopoDS,
-	Builder from BRepPrim);
+    class GWedge;
 	
     class Wedge;
 	

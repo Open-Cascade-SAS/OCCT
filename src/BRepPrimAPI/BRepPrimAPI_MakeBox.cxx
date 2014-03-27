@@ -17,7 +17,7 @@
 #include <BRepPrimAPI_MakeBox.ixx>
 #include <BRepBuilderAPI.hxx>
 #include <TopoDS.hxx>
-#include <Primitives_Direction.hxx>
+#include <BRepPrim_Direction.hxx>
 
 
 inline gp_Pnt pmin(const gp_Pnt& p, 
@@ -171,7 +171,7 @@ BRepPrimAPI_MakeBox::operator TopoDS_Solid()
 
 const TopoDS_Face& BRepPrimAPI_MakeBox::BottomFace () {
 
- return myWedge.Face (Primitives_ZMin);
+ return myWedge.Face (BRepPrim_ZMin);
 }
 
 
@@ -183,7 +183,7 @@ const TopoDS_Face& BRepPrimAPI_MakeBox::BottomFace () {
 
 const TopoDS_Face& BRepPrimAPI_MakeBox::BackFace () {
 
- return myWedge.Face (Primitives_XMin);
+ return myWedge.Face (BRepPrim_XMin);
 }
 
 
@@ -194,7 +194,7 @@ const TopoDS_Face& BRepPrimAPI_MakeBox::BackFace () {
 
 const TopoDS_Face& BRepPrimAPI_MakeBox::FrontFace () {
 
- return myWedge.Face (Primitives_XMax);
+ return myWedge.Face (BRepPrim_XMax);
 }
 
 
@@ -205,7 +205,7 @@ const TopoDS_Face& BRepPrimAPI_MakeBox::FrontFace () {
 
 const TopoDS_Face& BRepPrimAPI_MakeBox::LeftFace () {
 
- return myWedge.Face (Primitives_YMin);
+ return myWedge.Face (BRepPrim_YMin);
 }
 
 
@@ -216,7 +216,7 @@ const TopoDS_Face& BRepPrimAPI_MakeBox::LeftFace () {
 
 const TopoDS_Face& BRepPrimAPI_MakeBox::RightFace () {
 
- return myWedge.Face (Primitives_YMax);
+ return myWedge.Face (BRepPrim_YMax);
 }
 
 
@@ -227,7 +227,7 @@ const TopoDS_Face& BRepPrimAPI_MakeBox::RightFace () {
 
 const TopoDS_Face& BRepPrimAPI_MakeBox::TopFace () {
 
- return myWedge.Face (Primitives_ZMax);
+ return myWedge.Face (BRepPrim_ZMax);
 }
 
 

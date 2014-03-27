@@ -14,12 +14,22 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepPrim_GWedge.ixx>
+
 #include <Precision.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Lin.hxx>
 #include <ElSLib.hxx>
 #include <ElCLib.hxx>
+
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Wire.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <BRepPrim_Builder.hxx>
+#include <BRepPrim_Direction.hxx>
 
 #include <Standard_DomainError.hxx>
 #include <Standard_OutOfRange.hxx>
@@ -45,41 +55,41 @@ static const Standard_Integer tab[6][6] = {{-1,-1, 0, 1, 8, 9},
 					   { 9,11, 5, 7,-1,-1}};
 
 //=======================================================================
-//function : Primitives_Wedge_NumDir1
+//function : BRepPrim_Wedge_NumDir1
 //purpose  : when giving a direction return the range of the face
 //=======================================================================
 
-static Standard_Integer Primitives_Wedge_NumDir1
-  (const Primitives_Direction d1) { return num[d1]; }
+static Standard_Integer BRepPrim_Wedge_NumDir1
+  (const BRepPrim_Direction d1) { return num[d1]; }
 
 //=======================================================================
-//function : Primitives_Wedge_NumDir2
+//function : BRepPrim_Wedge_NumDir2
 //purpose  : when giving two directions return the range of the edge
 //=======================================================================
 
-static Standard_Integer Primitives_Wedge_NumDir2
-  (const Primitives_Direction d1,
-   const Primitives_Direction d2)
+static Standard_Integer BRepPrim_Wedge_NumDir2
+  (const BRepPrim_Direction d1,
+   const BRepPrim_Direction d2)
 {
-  Standard_Integer i1 = Primitives_Wedge_NumDir1(d1);
-  Standard_Integer i2 = Primitives_Wedge_NumDir1(d2);
+  Standard_Integer i1 = BRepPrim_Wedge_NumDir1(d1);
+  Standard_Integer i2 = BRepPrim_Wedge_NumDir1(d2);
   if ( i1/2 == i2/2 ) Standard_DomainError::Raise();
   return tab[i1][i2];
 }
 
 //=======================================================================
-//function : Primitives_Wedge_NumDir3
+//function : BRepPrim_Wedge_NumDir3
 //purpose  : when giving three directions return the range of the vertex
 //=======================================================================
 
-static Standard_Integer Primitives_Wedge_NumDir3
-  (const Primitives_Direction d1,
-   const Primitives_Direction d2,
-   const Primitives_Direction d3)
+static Standard_Integer BRepPrim_Wedge_NumDir3
+  (const BRepPrim_Direction d1,
+   const BRepPrim_Direction d2,
+   const BRepPrim_Direction d3)
 {
-  Standard_Integer i1 = Primitives_Wedge_NumDir1(d1);
-  Standard_Integer i2 = Primitives_Wedge_NumDir1(d2);
-  Standard_Integer i3 = Primitives_Wedge_NumDir1(d3);
+  Standard_Integer i1 = BRepPrim_Wedge_NumDir1(d1);
+  Standard_Integer i2 = BRepPrim_Wedge_NumDir1(d2);
+  Standard_Integer i3 = BRepPrim_Wedge_NumDir1(d3);
   if (( i1/2 == i2/2 ) ||
       ( i2/2 == i3/2 ) ||
       ( i3/2 == i1/2 )) Standard_DomainError::Raise();
@@ -87,11 +97,11 @@ static Standard_Integer Primitives_Wedge_NumDir3
 }
 
 //=======================================================================
-//function : Primitives_Wedge_Check
+//function : BRepPrim_Wedge_Check
 //purpose  : raise Standard_DomainError if something was built
 //=======================================================================
 
-static void Primitives_Wedge_Check(const Standard_Boolean V[],
+static void BRepPrim_Wedge_Check(const Standard_Boolean V[],
 				   const Standard_Boolean E[],
 				   const Standard_Boolean W[],
 				   const Standard_Boolean F[])
@@ -108,11 +118,11 @@ static void Primitives_Wedge_Check(const Standard_Boolean V[],
 }
 
 //=======================================================================
-//function : Primitives_Wedge_Init
+//function : BRepPrim_Wedge_Init
 //purpose  : Set arrays to Standard_False
 //=======================================================================
 
-static void Primitives_Wedge_Init(Standard_Boolean& S,
+static void BRepPrim_Wedge_Init(Standard_Boolean& S,
 				  Standard_Boolean V[],
 				  Standard_Boolean E[],
 				  Standard_Boolean W[],
@@ -131,11 +141,11 @@ static void Primitives_Wedge_Init(Standard_Boolean& S,
 }
 
 //=======================================================================
-//function : Primitives_Wedge
+//function : BRepPrim_GWedge
 //purpose  : build a box
 //=======================================================================
 
-Primitives_Wedge::Primitives_Wedge (const TheBuilder& B,
+BRepPrim_GWedge::BRepPrim_GWedge (const BRepPrim_Builder& B,
 				    const gp_Ax2& Axes,
 				    const Standard_Real dx,
 				    const Standard_Real dy,
@@ -158,16 +168,16 @@ Primitives_Wedge::Primitives_Wedge (const TheBuilder& B,
        ( dy <= Precision::Confusion() ) ||
        ( dz <= Precision::Confusion() ) )
     Standard_DomainError::Raise();
-  Primitives_Wedge_Init(ShellBuilt,VerticesBuilt,EdgesBuilt,
+  BRepPrim_Wedge_Init(ShellBuilt,VerticesBuilt,EdgesBuilt,
 			WiresBuilt,FacesBuilt);
 }
 
 //=======================================================================
-//function : Primitives_Wedge
+//function : BRepPrim_GWedge
 //purpose  : build a STEP wedge
 //=======================================================================
 
-Primitives_Wedge::Primitives_Wedge (const TheBuilder& B,
+BRepPrim_GWedge::BRepPrim_GWedge (const BRepPrim_Builder& B,
 				    const gp_Ax2& Axes,
 				    const Standard_Real dx,
 				    const Standard_Real dy,
@@ -192,16 +202,16 @@ Primitives_Wedge::Primitives_Wedge (const TheBuilder& B,
        ( dz <= Precision::Confusion() ) ||
        ( ltx < 0 ) )
     Standard_DomainError::Raise();
-  Primitives_Wedge_Init(ShellBuilt,VerticesBuilt,EdgesBuilt,
+  BRepPrim_Wedge_Init(ShellBuilt,VerticesBuilt,EdgesBuilt,
 			WiresBuilt,FacesBuilt);
 }
 
 //=======================================================================
-//function : Primitives_Wedge
+//function : BRepPrim_GWedge
 //purpose  : build a wedge by giving all the fields
 //=======================================================================
 
-Primitives_Wedge::Primitives_Wedge (const TheBuilder& B,
+BRepPrim_GWedge::BRepPrim_GWedge (const BRepPrim_Builder& B,
 				    const gp_Ax2& Axes,
 				    const Standard_Real xmin,
 				    const Standard_Real ymin,
@@ -233,7 +243,7 @@ Primitives_Wedge::Primitives_Wedge (const TheBuilder& B,
        ( Z2Max-Z2Min < 0 ) ||
        ( X2Max-X2Min < 0 ) )
     Standard_DomainError::Raise();
-  Primitives_Wedge_Init(ShellBuilt,VerticesBuilt,EdgesBuilt,
+  BRepPrim_Wedge_Init(ShellBuilt,VerticesBuilt,EdgesBuilt,
 			WiresBuilt,FacesBuilt);
 }
 
@@ -244,27 +254,27 @@ Primitives_Wedge::Primitives_Wedge (const TheBuilder& B,
 //purpose  : trivial
 //=======================================================================
 
-gp_Ax2 Primitives_Wedge::Axes     () const { return myAxes; }
-Standard_Real   Primitives_Wedge::GetXMin  () const { return XMin;   }
-Standard_Real   Primitives_Wedge::GetYMin  () const { return YMin;   }
-Standard_Real   Primitives_Wedge::GetZMin  () const { return ZMin;   }
-Standard_Real   Primitives_Wedge::GetZ2Min () const { return Z2Min;  }
-Standard_Real   Primitives_Wedge::GetX2Min () const { return X2Min;  }
-Standard_Real   Primitives_Wedge::GetXMax  () const { return XMax;   }
-Standard_Real   Primitives_Wedge::GetYMax  () const { return YMax;   }
-Standard_Real   Primitives_Wedge::GetZMax  () const { return ZMax;   }
-Standard_Real   Primitives_Wedge::GetZ2Max () const { return Z2Max;  }
-Standard_Real   Primitives_Wedge::GetX2Max () const { return X2Max;  }
+gp_Ax2 BRepPrim_GWedge::Axes     () const { return myAxes; }
+Standard_Real   BRepPrim_GWedge::GetXMin  () const { return XMin;   }
+Standard_Real   BRepPrim_GWedge::GetYMin  () const { return YMin;   }
+Standard_Real   BRepPrim_GWedge::GetZMin  () const { return ZMin;   }
+Standard_Real   BRepPrim_GWedge::GetZ2Min () const { return Z2Min;  }
+Standard_Real   BRepPrim_GWedge::GetX2Min () const { return X2Min;  }
+Standard_Real   BRepPrim_GWedge::GetXMax  () const { return XMax;   }
+Standard_Real   BRepPrim_GWedge::GetYMax  () const { return YMax;   }
+Standard_Real   BRepPrim_GWedge::GetZMax  () const { return ZMax;   }
+Standard_Real   BRepPrim_GWedge::GetZ2Max () const { return Z2Max;  }
+Standard_Real   BRepPrim_GWedge::GetX2Max () const { return X2Max;  }
 
 //=======================================================================
 //function : Open
 //purpose  : trivial
 //=======================================================================
 
-void Primitives_Wedge::Open (const Primitives_Direction d1)
+void BRepPrim_GWedge::Open (const BRepPrim_Direction d1)
 {
-  Primitives_Wedge_Check(VerticesBuilt,EdgesBuilt,WiresBuilt,FacesBuilt);
-  myInfinite[Primitives_Wedge_NumDir1(d1)] = Standard_True;
+  BRepPrim_Wedge_Check(VerticesBuilt,EdgesBuilt,WiresBuilt,FacesBuilt);
+  myInfinite[BRepPrim_Wedge_NumDir1(d1)] = Standard_True;
 }
 
 //=======================================================================
@@ -272,10 +282,10 @@ void Primitives_Wedge::Open (const Primitives_Direction d1)
 //purpose  : trivial
 //=======================================================================
 
-void Primitives_Wedge::Close (const Primitives_Direction d1)
+void BRepPrim_GWedge::Close (const BRepPrim_Direction d1)
 {
-  Primitives_Wedge_Check(VerticesBuilt,EdgesBuilt,WiresBuilt,FacesBuilt);
-  myInfinite[Primitives_Wedge_NumDir1(d1)] = Standard_False;
+  BRepPrim_Wedge_Check(VerticesBuilt,EdgesBuilt,WiresBuilt,FacesBuilt);
+  myInfinite[BRepPrim_Wedge_NumDir1(d1)] = Standard_False;
 }
 
 //=======================================================================
@@ -283,30 +293,30 @@ void Primitives_Wedge::Close (const Primitives_Direction d1)
 //purpose  : true if it is open in the given direction
 //=======================================================================
 
-Standard_Boolean Primitives_Wedge::IsInfinite (const Primitives_Direction d1) const
-{ return myInfinite[Primitives_Wedge_NumDir1(d1)]; }
+Standard_Boolean BRepPrim_GWedge::IsInfinite (const BRepPrim_Direction d1) const
+{ return myInfinite[BRepPrim_Wedge_NumDir1(d1)]; }
 
 //=======================================================================
 //function : Shell
 //purpose  : 
 //=======================================================================
 
-const TheShell& Primitives_Wedge::Shell() {
+const TopoDS_Shell& BRepPrim_GWedge::Shell() {
   if (!ShellBuilt) {
     myBuilder.MakeShell(myShell);
 
-    if (HasFace(Primitives_XMin))
-      myBuilder.AddShellFace(myShell,Face(Primitives_XMin));
-    if (HasFace(Primitives_XMax))
-      myBuilder.AddShellFace(myShell,Face(Primitives_XMax));
-    if (HasFace(Primitives_YMin))
-      myBuilder.AddShellFace(myShell,Face(Primitives_YMin));
-    if (HasFace(Primitives_YMax))
-      myBuilder.AddShellFace(myShell,Face(Primitives_YMax));
-    if (HasFace(Primitives_ZMin))
-      myBuilder.AddShellFace(myShell,Face(Primitives_ZMin));
-    if (HasFace(Primitives_ZMax))
-      myBuilder.AddShellFace(myShell,Face(Primitives_ZMax));
+    if (HasFace(BRepPrim_XMin))
+      myBuilder.AddShellFace(myShell,Face(BRepPrim_XMin));
+    if (HasFace(BRepPrim_XMax))
+      myBuilder.AddShellFace(myShell,Face(BRepPrim_XMax));
+    if (HasFace(BRepPrim_YMin))
+      myBuilder.AddShellFace(myShell,Face(BRepPrim_YMin));
+    if (HasFace(BRepPrim_YMax))
+      myBuilder.AddShellFace(myShell,Face(BRepPrim_YMax));
+    if (HasFace(BRepPrim_ZMin))
+      myBuilder.AddShellFace(myShell,Face(BRepPrim_ZMin));
+    if (HasFace(BRepPrim_ZMax))
+      myBuilder.AddShellFace(myShell,Face(BRepPrim_ZMax));
 
     myBuilder.CompleteShell(myShell);
     ShellBuilt = Standard_True;
@@ -319,10 +329,10 @@ const TheShell& Primitives_Wedge::Shell() {
 //purpose  : true if the face exist in one direction
 //=======================================================================
 
-Standard_Boolean Primitives_Wedge::HasFace (const Primitives_Direction d1) const
+Standard_Boolean BRepPrim_GWedge::HasFace (const BRepPrim_Direction d1) const
 { 
-  Standard_Boolean state = !myInfinite[Primitives_Wedge_NumDir1(d1)]; 
-  if ( d1 == Primitives_YMax ) state = state && ( Z2Max != Z2Min )
+  Standard_Boolean state = !myInfinite[BRepPrim_Wedge_NumDir1(d1)]; 
+  if ( d1 == BRepPrim_YMax ) state = state && ( Z2Max != Z2Min )
                                              && ( X2Max != X2Min );
   return state;
 }
@@ -332,10 +342,10 @@ Standard_Boolean Primitives_Wedge::HasFace (const Primitives_Direction d1) const
 //purpose  : 
 //=======================================================================
 
-gp_Pln Primitives_Wedge::Plane(const Primitives_Direction d1)
+gp_Pln BRepPrim_GWedge::Plane(const BRepPrim_Direction d1)
 {
 
-  Standard_Integer i = Primitives_Wedge_NumDir1(d1);
+  Standard_Integer i = BRepPrim_Wedge_NumDir1(d1);
 
   gp_Dir D;
   gp_Vec VX = myAxes.XDirection();
@@ -422,11 +432,11 @@ gp_Pln Primitives_Wedge::Plane(const Primitives_Direction d1)
 //purpose  : the face in one direction
 //=======================================================================
 
-const TheFace& Primitives_Wedge::Face 
-       (const Primitives_Direction d1)
+const TopoDS_Face& BRepPrim_GWedge::Face 
+       (const BRepPrim_Direction d1)
 {
 
-  Standard_Integer i = Primitives_Wedge_NumDir1(d1);
+  Standard_Integer i = BRepPrim_Wedge_NumDir1(d1);
 
   if (!FacesBuilt[i]) {
     gp_Pln P = Plane(d1);
@@ -436,33 +446,33 @@ const TheFace& Primitives_Wedge::Face
 
     // pcurves
 
-    Primitives_Direction dd1 = Primitives_ZMin, dd2 = Primitives_YMax, 
-    dd3 = Primitives_ZMax,dd4 = Primitives_YMin;
+    BRepPrim_Direction dd1 = BRepPrim_ZMin, dd2 = BRepPrim_YMax, 
+    dd3 = BRepPrim_ZMax,dd4 = BRepPrim_YMin;
 
     switch (i/2) {
       
     case 0 :
       // XMin XMax
-      dd1 = Primitives_ZMin;
-      dd2 = Primitives_YMax;
-      dd3 = Primitives_ZMax;
-      dd4 = Primitives_YMin;
+      dd1 = BRepPrim_ZMin;
+      dd2 = BRepPrim_YMax;
+      dd3 = BRepPrim_ZMax;
+      dd4 = BRepPrim_YMin;
       break;
       
     case 1 :
       // YMin YMax
-      dd1 = Primitives_XMin;
-      dd2 = Primitives_ZMax;
-      dd3 = Primitives_XMax;
-      dd4 = Primitives_ZMin;
+      dd1 = BRepPrim_XMin;
+      dd2 = BRepPrim_ZMax;
+      dd3 = BRepPrim_XMax;
+      dd4 = BRepPrim_ZMin;
       break;
       
     case 2 :
       // ZMin ZMax
-      dd1 = Primitives_YMin;
-      dd2 = Primitives_XMax;
-      dd3 = Primitives_YMax;
-      dd4 = Primitives_XMin;
+      dd1 = BRepPrim_YMin;
+      dd2 = BRepPrim_XMax;
+      dd3 = BRepPrim_YMax;
+      dd4 = BRepPrim_XMin;
       break;
       
     };
@@ -476,7 +486,7 @@ const TheFace& Primitives_Wedge::Face
     ElSLib::Parameters(P,L.Location(),U,V);
       DU = L.Direction() * DX;
       DV = L.Direction() * DY;
-      myBuilder.SetPCurve(myEdges[Primitives_Wedge_NumDir2(d1,dd4)],
+      myBuilder.SetPCurve(myEdges[BRepPrim_Wedge_NumDir2(d1,dd4)],
 			  myFaces[i],
 			  gp_Lin2d(gp_Pnt2d(U,V),gp_Dir2d(DU,DV)));
     }
@@ -485,7 +495,7 @@ const TheFace& Primitives_Wedge::Face
     ElSLib::Parameters(P,L.Location(),U,V);
       DU = L.Direction() * DX;
       DV = L.Direction() * DY;
-      myBuilder.SetPCurve(myEdges[Primitives_Wedge_NumDir2(d1,dd3)],
+      myBuilder.SetPCurve(myEdges[BRepPrim_Wedge_NumDir2(d1,dd3)],
 			  myFaces[i],
 			  gp_Lin2d(gp_Pnt2d(U,V),gp_Dir2d(DU,DV)));
     }
@@ -495,7 +505,7 @@ const TheFace& Primitives_Wedge::Face
     ElSLib::Parameters(P,L.Location(),U,V);
       DU = L.Direction() * DX;
       DV = L.Direction() * DY;
-      myBuilder.SetPCurve(myEdges[Primitives_Wedge_NumDir2(d1,dd2)],
+      myBuilder.SetPCurve(myEdges[BRepPrim_Wedge_NumDir2(d1,dd2)],
 			  myFaces[i],
 			  gp_Lin2d(gp_Pnt2d(U,V),gp_Dir2d(DU,DV)));
     }
@@ -505,7 +515,7 @@ const TheFace& Primitives_Wedge::Face
     ElSLib::Parameters(P,L.Location(),U,V);
       DU = L.Direction() * DX;
       DV = L.Direction() * DY;
-      myBuilder.SetPCurve(myEdges[Primitives_Wedge_NumDir2(d1,dd1)],
+      myBuilder.SetPCurve(myEdges[BRepPrim_Wedge_NumDir2(d1,dd1)],
 			  myFaces[i],
 			  gp_Lin2d(gp_Pnt2d(U,V),gp_Dir2d(DU,DV)));
     }
@@ -524,37 +534,37 @@ const TheFace& Primitives_Wedge::Face
 //purpose  : trivial
 //=======================================================================
 
-Standard_Boolean Primitives_Wedge::HasWire (const Primitives_Direction d1) const
+Standard_Boolean BRepPrim_GWedge::HasWire (const BRepPrim_Direction d1) const
 {
-  Standard_Integer i = Primitives_Wedge_NumDir1(d1);
+  Standard_Integer i = BRepPrim_Wedge_NumDir1(d1);
 
   if (myInfinite[i]) return Standard_False;
-  Primitives_Direction dd1 = Primitives_XMin,dd2 = Primitives_YMax,dd3 = Primitives_XMax ,dd4 = Primitives_ZMin;
+  BRepPrim_Direction dd1 = BRepPrim_XMin,dd2 = BRepPrim_YMax,dd3 = BRepPrim_XMax ,dd4 = BRepPrim_ZMin;
 
   switch (i/2) {
     
   case 0 :
     // XMin XMax
-    dd1 = Primitives_ZMin;
-    dd2 = Primitives_YMax;
-    dd3 = Primitives_ZMax;
-    dd4 = Primitives_YMin;
+    dd1 = BRepPrim_ZMin;
+    dd2 = BRepPrim_YMax;
+    dd3 = BRepPrim_ZMax;
+    dd4 = BRepPrim_YMin;
     break;
     
   case 1 :
     // YMin YMax
-    dd1 = Primitives_XMin;
-    dd2 = Primitives_ZMax;
-    dd3 = Primitives_XMax;
-    dd4 = Primitives_ZMin;
+    dd1 = BRepPrim_XMin;
+    dd2 = BRepPrim_ZMax;
+    dd3 = BRepPrim_XMax;
+    dd4 = BRepPrim_ZMin;
     break;
     
   case 2 :
     // ZMin ZMax
-    dd1 = Primitives_YMin;
-    dd2 = Primitives_XMax;
-    dd3 = Primitives_YMax;
-    dd4 = Primitives_XMin;
+    dd1 = BRepPrim_YMin;
+    dd2 = BRepPrim_XMax;
+    dd3 = BRepPrim_YMax;
+    dd4 = BRepPrim_XMin;
     break;
 #ifndef DEB
   default:
@@ -571,12 +581,12 @@ Standard_Boolean Primitives_Wedge::HasWire (const Primitives_Direction d1) const
 //purpose  : trivial
 //=======================================================================
 
-const TheWire& Primitives_Wedge::Wire
-       (const Primitives_Direction d1)
+const TopoDS_Wire& BRepPrim_GWedge::Wire
+       (const BRepPrim_Direction d1)
 {
-  Standard_Integer i = Primitives_Wedge_NumDir1(d1);
+  Standard_Integer i = BRepPrim_Wedge_NumDir1(d1);
 
-  Primitives_Direction dd1 = Primitives_XMin,dd2 = Primitives_YMax,dd3 = Primitives_XMax ,dd4 = Primitives_ZMin;
+  BRepPrim_Direction dd1 = BRepPrim_XMin,dd2 = BRepPrim_YMax,dd3 = BRepPrim_XMax ,dd4 = BRepPrim_ZMin;
 
   if (!WiresBuilt[i]) {
 
@@ -584,26 +594,26 @@ const TheWire& Primitives_Wedge::Wire
       
     case 0 :
       // XMin XMax
-      dd1 = Primitives_ZMin;
-      dd2 = Primitives_YMax;
-      dd3 = Primitives_ZMax;
-      dd4 = Primitives_YMin;
+      dd1 = BRepPrim_ZMin;
+      dd2 = BRepPrim_YMax;
+      dd3 = BRepPrim_ZMax;
+      dd4 = BRepPrim_YMin;
       break;
       
     case 1 :
       // YMin YMax
-      dd1 = Primitives_XMin;
-      dd2 = Primitives_ZMax;
-      dd3 = Primitives_XMax;
-      dd4 = Primitives_ZMin;
+      dd1 = BRepPrim_XMin;
+      dd2 = BRepPrim_ZMax;
+      dd3 = BRepPrim_XMax;
+      dd4 = BRepPrim_ZMin;
       break;
       
     case 2 :
       // ZMin ZMax
-      dd1 = Primitives_YMin;
-      dd2 = Primitives_XMax;
-      dd3 = Primitives_YMax;
-      dd4 = Primitives_XMin;
+      dd1 = BRepPrim_YMin;
+      dd2 = BRepPrim_XMax;
+      dd3 = BRepPrim_YMax;
+      dd4 = BRepPrim_XMin;
       break;
     default:
       break;
@@ -633,12 +643,12 @@ const TheWire& Primitives_Wedge::Wire
 //purpose  : trivial
 //=======================================================================
 
-Standard_Boolean Primitives_Wedge::HasEdge (const Primitives_Direction d1,
-				   const Primitives_Direction d2) const
+Standard_Boolean BRepPrim_GWedge::HasEdge (const BRepPrim_Direction d1,
+				   const BRepPrim_Direction d2) const
 { 
-  Standard_Boolean state = !(myInfinite[Primitives_Wedge_NumDir1(d1)] ||
-	            myInfinite[Primitives_Wedge_NumDir1(d2)]); 
-  Standard_Integer i = Primitives_Wedge_NumDir2(d1,d2);
+  Standard_Boolean state = !(myInfinite[BRepPrim_Wedge_NumDir1(d1)] ||
+	            myInfinite[BRepPrim_Wedge_NumDir1(d2)]); 
+  Standard_Integer i = BRepPrim_Wedge_NumDir2(d1,d2);
   if      ( i == 6 || i == 7 ) state = state && ( X2Max != X2Min );
   else if ( i == 1 || i == 3 ) state = state && ( Z2Max != Z2Min );
   return state;
@@ -649,13 +659,13 @@ Standard_Boolean Primitives_Wedge::HasEdge (const Primitives_Direction d1,
 //purpose  : trivial
 //=======================================================================
 
-gp_Lin Primitives_Wedge::Line
-  (const Primitives_Direction d1,
-   const Primitives_Direction d2)
+gp_Lin BRepPrim_GWedge::Line
+  (const BRepPrim_Direction d1,
+   const BRepPrim_Direction d2)
 {
   if (!HasEdge(d1,d2)) Standard_DomainError::Raise();
 
-  Standard_Integer i = Primitives_Wedge_NumDir2(d1,d2);
+  Standard_Integer i = BRepPrim_Wedge_NumDir2(d1,d2);
 
   Standard_Real X =0., Y =0., Z =0.;
 
@@ -790,33 +800,33 @@ gp_Lin Primitives_Wedge::Line
 //purpose  : trivial
 //=======================================================================
 
-const TheEdge& Primitives_Wedge::Edge
-       (const Primitives_Direction d1,
-	const Primitives_Direction d2)
+const TopoDS_Edge& BRepPrim_GWedge::Edge
+       (const BRepPrim_Direction d1,
+	const BRepPrim_Direction d2)
 {
   if (!HasEdge(d1,d2)) Standard_DomainError::Raise();
 
-  Standard_Integer i = Primitives_Wedge_NumDir2(d1,d2);
+  Standard_Integer i = BRepPrim_Wedge_NumDir2(d1,d2);
 
   if (!EdgesBuilt[i]) {
 
-    Primitives_Direction dd1 = Primitives_XMin ,dd2 = Primitives_XMax;
+    BRepPrim_Direction dd1 = BRepPrim_XMin ,dd2 = BRepPrim_XMax;
 
     switch (i/4) {
     
     case 0 :
-      dd1 = Primitives_ZMin;
-      dd2 = Primitives_ZMax;
+      dd1 = BRepPrim_ZMin;
+      dd2 = BRepPrim_ZMax;
       break;
     
     case 1 :
-      dd1 = Primitives_XMin;
-      dd2 = Primitives_XMax;
+      dd1 = BRepPrim_XMin;
+      dd2 = BRepPrim_XMax;
       break;
     
     case 2 :
-      dd1 = Primitives_YMin;
-      dd2 = Primitives_YMax;
+      dd1 = BRepPrim_YMin;
+      dd2 = BRepPrim_YMax;
       break;
 
     default:
@@ -871,27 +881,27 @@ const TheEdge& Primitives_Wedge::Edge
 //purpose  : trivial
 //=======================================================================
 
-Standard_Boolean Primitives_Wedge::HasVertex
-  (const Primitives_Direction d1,
-   const Primitives_Direction d2,
-   const Primitives_Direction d3) const
-{ return !(myInfinite[Primitives_Wedge_NumDir1(d1)] ||
-	   myInfinite[Primitives_Wedge_NumDir1(d2)] ||
-	   myInfinite[Primitives_Wedge_NumDir1(d3)]); }
+Standard_Boolean BRepPrim_GWedge::HasVertex
+  (const BRepPrim_Direction d1,
+   const BRepPrim_Direction d2,
+   const BRepPrim_Direction d3) const
+{ return !(myInfinite[BRepPrim_Wedge_NumDir1(d1)] ||
+	   myInfinite[BRepPrim_Wedge_NumDir1(d2)] ||
+	   myInfinite[BRepPrim_Wedge_NumDir1(d3)]); }
 
 //=======================================================================
 //function : Point
 //purpose  : trivial
 //=======================================================================
 
-gp_Pnt  Primitives_Wedge::Point
-  (const Primitives_Direction d1,
-   const Primitives_Direction d2,
-   const Primitives_Direction d3)
+gp_Pnt  BRepPrim_GWedge::Point
+  (const BRepPrim_Direction d1,
+   const BRepPrim_Direction d2,
+   const BRepPrim_Direction d3)
 {
   if (!HasVertex(d1,d2,d3)) Standard_DomainError::Raise();
 
-  Standard_Integer i = Primitives_Wedge_NumDir3(d1,d2,d3);
+  Standard_Integer i = BRepPrim_Wedge_NumDir3(d1,d2,d3);
 
   Standard_Real X =0., Y =0., Z =0.;
 
@@ -959,14 +969,14 @@ gp_Pnt  Primitives_Wedge::Point
 //purpose  : trivial
 //=======================================================================
 
-const TheVertex& Primitives_Wedge::Vertex 
-       (const Primitives_Direction d1,
-	const Primitives_Direction d2,
-	const Primitives_Direction d3)
+const TopoDS_Vertex& BRepPrim_GWedge::Vertex 
+       (const BRepPrim_Direction d1,
+	const BRepPrim_Direction d2,
+	const BRepPrim_Direction d3)
 {
   if (!HasVertex(d1,d2,d3)) Standard_DomainError::Raise();
 
-  Standard_Integer i = Primitives_Wedge_NumDir3(d1,d2,d3);
+  Standard_Integer i = BRepPrim_Wedge_NumDir3(d1,d2,d3);
 
   if (!VerticesBuilt[i]) {
 

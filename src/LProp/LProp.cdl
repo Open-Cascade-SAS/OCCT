@@ -72,12 +72,6 @@ is
     class AnalyticCurInf;
     	---Purpose: Computes the locals extremas of curvature of a gp curve.
 
-    private generic class FuncCurExt;
-    private generic class FuncCurNul;
-    generic class NumericCurInf, FCurExt, FCurNul;    	
-    	---Purpose: Computes the locals extremas of curvature and the 
-    	--          inflections of a bounded curve in 2d.
-
     private class SequenceOfCIType instantiates Sequence from TCollection 
 						        (CIType  from  LProp); 
     

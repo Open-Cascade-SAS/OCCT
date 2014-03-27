@@ -14,16 +14,17 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-private generic class FuncCurExt from LProp (Curve as any;
-                                             Vec   as any; -- as Vec or Vec2d
-		     	                     Pnt   as any; -- as Pnt or Pnt2d
-		   	                     Dir   as any; -- as Dir or Dir2d Vec  
-    	    	    	    	    	     Tool  as any) -- as Tool(Curve, Pnt, Vec) 
-inherits FunctionWithDerivative from math
+private class FuncCurExt from Geom2dLProp inherits FunctionWithDerivative from math
 	---Purpose: Function used to find the extremas of curvature in 2d.
-
+    
+uses Curve from Geom2d,
+     Vec2d from gp,
+     Pnt2d from gp,
+     Dir2d from gp,
+     Curve2dTool from Geom2dLProp
+    
 is
-    Create ( C : Curve ; Tol : Real) returns FuncCurExt from LProp;
+    Create ( C : Curve from Geom2d ; Tol : Real) returns FuncCurExt from Geom2dLProp;
     
     Value (me : in out; X : Real; F : out Real)
     	---Purpose: Returns the value for the variable <X>.
@@ -44,7 +45,7 @@ is
     returns Boolean;
 
 fields
-    theCurve : Curve;
+    theCurve : Curve from Geom2d;
     epsX     : Real from Standard;
 	    
 end FuncCurExt;

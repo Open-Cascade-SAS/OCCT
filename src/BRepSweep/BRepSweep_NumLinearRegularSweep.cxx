@@ -14,23 +14,34 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepSweep_NumLinearRegularSweep.ixx>
+
 #include <Standard_RangeError.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NoMoreObject.hxx>
 #include <Standard_DomainError.hxx>
 
+#include <TopoDS_Shape.hxx>
+#include <Sweep_NumShape.hxx>
+#include <BRepSweep_Builder.hxx>
+#include <BRepSweep_Tool.hxx>
+#include <Sweep_NumShapeTool.hxx>
+#include <BRepSweep_Iterator.hxx>
+#include <Sweep_NumShapeIterator.hxx>
+#include <TopTools_SequenceOfShape.hxx>
+
 #include <TopAbs_Orientation.hxx>
 #include <TopAbs.hxx>
 
 //=======================================================================
-//function : Sweep_LinearRegularSweep
+//function : BRepSweep_NumLinearRegularSweep
 //purpose  : Create a Regular Sweep.
 //=======================================================================
 
-Sweep_LinearRegularSweep::Sweep_LinearRegularSweep
-  (const TheBuilder& aBuilder,
-   const TheGenShape& aGenShape,
-   const TheDirShape& aDirShape):
+BRepSweep_NumLinearRegularSweep::BRepSweep_NumLinearRegularSweep
+  (const BRepSweep_Builder& aBuilder,
+   const TopoDS_Shape& aGenShape,
+   const Sweep_NumShape& aDirShape):
 
   myBuilder(aBuilder),
   myGenShape(aGenShape),
@@ -51,7 +62,7 @@ Sweep_LinearRegularSweep::Sweep_LinearRegularSweep
   myBuiltShapes.Init(Standard_False); 
 }
 
-void Sweep_LinearRegularSweep::Delete()
+void BRepSweep_NumLinearRegularSweep::Delete()
 {}
 
 //=======================================================================
@@ -59,11 +70,11 @@ void Sweep_LinearRegularSweep::Delete()
 //purpose  : Returns the global Shape.
 //=======================================================================
 
-TheShape Sweep_LinearRegularSweep::Shape () 
+TopoDS_Shape BRepSweep_NumLinearRegularSweep::Shape () 
 {
   if (HasShape(myGenShape,myDirWire)) return Shape(myGenShape,myDirWire);
   else {
-    TheShape bidon;
+    TopoDS_Shape bidon;
     return bidon;
   }
 }
@@ -74,12 +85,12 @@ TheShape Sweep_LinearRegularSweep::Shape ()
 //purpose  : Returns the Shape generated with aGenS.
 //=======================================================================
 
-TheShape Sweep_LinearRegularSweep::Shape (const TheGenShape& aGenS) 
+TopoDS_Shape BRepSweep_NumLinearRegularSweep::Shape (const TopoDS_Shape& aGenS) 
 {
   if (myGenShapeTool.Index(aGenS) != 0 &&
       HasShape(aGenS,myDirWire)) return Shape(aGenS,myDirWire);
   else {
-    TheShape bidon;
+    TopoDS_Shape bidon;
     return bidon;
   }
 }
@@ -90,18 +101,18 @@ TheShape Sweep_LinearRegularSweep::Shape (const TheGenShape& aGenS)
 //purpose  : Returns the Shape indexed by the arguments.
 //=======================================================================
 
-TheShape Sweep_LinearRegularSweep::Shape (const TheGenShape& aGenS, 
-					  const TheDirShape& aDirS)
+TopoDS_Shape BRepSweep_NumLinearRegularSweep::Shape (const TopoDS_Shape& aGenS, 
+					  const Sweep_NumShape& aDirS)
 {
   Standard_Integer iGenS = myGenShapeTool.Index(aGenS);
   Standard_Integer iDirS = myDirShapeTool.Index(aDirS);
   if (!myBuiltShapes(iGenS,iDirS)){
-    TheShape newShape;
-    TheGenShape bGenS,cGenS,subGenS,subsubGenS;
-    TheDirShape bDirS,subDirS;
-    TheGenShapeIterator It;
-    TheDirShapeIterator Kt;
-    TheShapeIterator Lt;
+    TopoDS_Shape newShape;
+    TopoDS_Shape bGenS,cGenS,subGenS,subsubGenS;
+    Sweep_NumShape bDirS,subDirS;
+    BRepSweep_Iterator It;
+    Sweep_NumShapeIterator Kt;
+    BRepSweep_Iterator Lt;
     TopAbs_Orientation Or,Pr;
     if (myDirShapeTool.Type(aDirS)==TopAbs_VERTEX){
       //Ici on construit les "planchers" du Shape.
@@ -162,14 +173,14 @@ TheShape Sweep_LinearRegularSweep::Shape (const TheGenShape& aGenS,
 			  aGenS,subGenS,aDirS,Or);
 	      }	    
 	      else if(subGenSType==TopAbs_WIRE){
-		TheGenShapeIterator Jt;
+		BRepSweep_Iterator Jt;
 		cGenS = subGenS;
 		myGenShapeTool.SetOrientation(cGenS,TopAbs_FORWARD);
 		for (Jt.Init(cGenS);Jt.More();Jt.Next()){
 		  subsubGenS = Jt.Value();
 		  Pr = Jt.Orientation();
 		  if(HasShape(subsubGenS,aDirS)){
-		    TheShape newsubEdge = Shape(subsubGenS,aDirS);
+		    TopoDS_Shape newsubEdge = Shape(subsubGenS,aDirS);
 		    SetPCurve(myShapes(iGenS,iDirS),newsubEdge,
 			      aGenS,subsubGenS,aDirS,Pr);
 		  }
@@ -187,8 +198,8 @@ TheShape Sweep_LinearRegularSweep::Shape (const TheGenShape& aGenS,
     else if (myDirShapeTool.Type(aDirS)==TopAbs_EDGE){
       //Ici on construit les murs du Shape.
       TopAbs_ShapeEnum aGenSType = myGenShapeTool.Type(aGenS);
-      TheShape newWire,newShell;
-      Sweep_SequenceOfShapes WireSeq;
+      TopoDS_Shape newWire,newShell;
+      TopTools_SequenceOfShape WireSeq;
       Standard_Boolean sepwires = Standard_False;
       switch (aGenSType){
       case TopAbs_VERTEX : 
@@ -242,7 +253,7 @@ TheShape Sweep_LinearRegularSweep::Shape (const TheGenShape& aGenS,
 	      if (SeparatedWires(myShapes(iGenS,iDirS),newShape,
 				 aGenS,subGenS,aDirS)){
 		sepwires = Standard_True;
-		TheShape wi;
+		TopoDS_Shape wi;
 		myBuilder.MakeWire(wi);
 		myBuilder.Add(wi,newShape,Or);
 		WireSeq.Append(wi);
@@ -326,7 +337,7 @@ TheShape Sweep_LinearRegularSweep::Shape (const TheGenShape& aGenS,
 	SetContinuity(aGenS,aDirS);
       }	
       if (aGenSType==TopAbs_FACE){
-	TheShape temp = SplitShell(newShell);
+	TopoDS_Shape temp = SplitShell(newShell);
 	TopAbs_Orientation Or = DirectSolid(aGenS,aDirS);
 	Lt.Init(temp);
 	if(Lt.More()) Lt.Next();
@@ -390,9 +401,9 @@ TheShape Sweep_LinearRegularSweep::Shape (const TheGenShape& aGenS,
 //purpose  : Returns the Shape indexed by the arguments.
 //=======================================================================
 
-TheShape Sweep_LinearRegularSweep::FirstShape ()
+TopoDS_Shape BRepSweep_NumLinearRegularSweep::FirstShape ()
 {
-  TheShape result;
+  TopoDS_Shape result;
   if (myDirShapeTool.HasFirstVertex()){
     if(HasShape(myGenShape,myDirShapeTool.FirstVertex()))
       result = Shape(myGenShape,myDirShapeTool.FirstVertex());
@@ -406,9 +417,9 @@ TheShape Sweep_LinearRegularSweep::FirstShape ()
 //purpose  : Returns the Shape indexed by the arguments.
 //=======================================================================
 
-TheShape Sweep_LinearRegularSweep::LastShape ()
+TopoDS_Shape BRepSweep_NumLinearRegularSweep::LastShape ()
 {
-  TheShape result;
+  TopoDS_Shape result;
   if (myDirShapeTool.HasLastVertex()){
     if(HasShape(myGenShape,myDirShapeTool.LastVertex()))
       result = Shape(myGenShape,myDirShapeTool.LastVertex());
@@ -422,9 +433,9 @@ TheShape Sweep_LinearRegularSweep::LastShape ()
 //purpose  : Returns the Shape indexed by the arguments.
 //=======================================================================
 
-TheShape Sweep_LinearRegularSweep::FirstShape (const TheGenShape& aGenS)
+TopoDS_Shape BRepSweep_NumLinearRegularSweep::FirstShape (const TopoDS_Shape& aGenS)
 {
-  TheShape result;
+  TopoDS_Shape result;
   if (myDirShapeTool.HasFirstVertex()){
     if(HasShape(aGenS,myDirShapeTool.FirstVertex()))
       result = Shape(aGenS,myDirShapeTool.FirstVertex());
@@ -438,9 +449,9 @@ TheShape Sweep_LinearRegularSweep::FirstShape (const TheGenShape& aGenS)
 //purpose  : Returns the Shape indexed by the arguments.
 //=======================================================================
 
-TheShape Sweep_LinearRegularSweep::LastShape (const TheGenShape& aGenS)
+TopoDS_Shape BRepSweep_NumLinearRegularSweep::LastShape (const TopoDS_Shape& aGenS)
 {
-  TheShape result;
+  TopoDS_Shape result;
   if (myDirShapeTool.HasLastVertex()){
     if(HasShape(aGenS,myDirShapeTool.LastVertex()))
       result = Shape(aGenS,myDirShapeTool.LastVertex());
@@ -453,7 +464,7 @@ TheShape Sweep_LinearRegularSweep::LastShape (const TheGenShape& aGenS)
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean Sweep_LinearRegularSweep::Closed()const 
+Standard_Boolean BRepSweep_NumLinearRegularSweep::Closed()const 
 {
   return myDirWire.Closed();
 }
@@ -463,9 +474,9 @@ Standard_Boolean Sweep_LinearRegularSweep::Closed()const
 //purpose  : 
 //=======================================================================
 
-TheShape Sweep_LinearRegularSweep::SplitShell(const TheShape& aNewShape)const 
+TopoDS_Shape BRepSweep_NumLinearRegularSweep::SplitShell(const TopoDS_Shape& aNewShape)const 
 {
-  TheShape comp;
+  TopoDS_Shape comp;
   myBuilder.MakeCompound(comp);
   myBuilder.Add(comp,aNewShape);
   return comp;

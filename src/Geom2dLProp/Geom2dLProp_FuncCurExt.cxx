@@ -14,6 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Geom2dLProp_FuncCurExt.ixx>
+
+#include <gp_Pnt2d.hxx>
+#include <Geom2dLProp_Curve2dTool.hxx>
+
 #include <gp.hxx>
 #include <Precision.hxx>
 
@@ -21,9 +26,9 @@
 //function :
 // purpose :
 //=============================================================================
-LProp_FuncCurExt::LProp_FuncCurExt(const Curve&  C,
-				   const Standard_Real Tol)
-:theCurve(C)
+Geom2dLProp_FuncCurExt::Geom2dLProp_FuncCurExt(const Handle(Geom2d_Curve)&  C,
+                                               const Standard_Real Tol)
+                                               :theCurve(C)
 {
   epsX  = Tol;
 }
@@ -33,13 +38,13 @@ LProp_FuncCurExt::LProp_FuncCurExt(const Curve&  C,
 // purpose : KC = (V1^V2.Z) / ||V1||^3  avec V1 tangente etV2 derivee seconde.
 //           F  = d KC/ dU.
 //=============================================================================
-Standard_Boolean  LProp_FuncCurExt::Value (const Standard_Real  X,
-					         Standard_Real& F)
+Standard_Boolean  Geom2dLProp_FuncCurExt::Value (const Standard_Real  X,
+                                                 Standard_Real& F)
 {
-  Pnt            P1;
-  Vec            V1,V2,V3;
+  gp_Pnt2d            P1;
+  gp_Vec2d            V1,V2,V3;
 
-  Tool::D3(theCurve,X,P1,V1,V2,V3);
+  Geom2dLProp_Curve2dTool::D3(theCurve,X,P1,V1,V2,V3);
   Standard_Real CPV1V2 = V1.Crossed(V2);
   Standard_Real CPV1V3 = V1.Crossed(V3);
   Standard_Real V1V2   = V1.Dot(V2);
@@ -60,8 +65,8 @@ Standard_Boolean  LProp_FuncCurExt::Value (const Standard_Real  X,
 //function : Derivative
 // purpose :
 //=============================================================================
-Standard_Boolean LProp_FuncCurExt::Derivative(const Standard_Real  X,
-					            Standard_Real& D)
+Standard_Boolean Geom2dLProp_FuncCurExt::Derivative(const Standard_Real  X,
+                                                    Standard_Real& D)
 {  
   Standard_Real F;
   return Values (X,F,D) ;
@@ -71,14 +76,14 @@ Standard_Boolean LProp_FuncCurExt::Derivative(const Standard_Real  X,
 //function : Values
 // purpose :
 //=============================================================================
-Standard_Boolean LProp_FuncCurExt::Values (const Standard_Real  X,
-					         Standard_Real& F,
-					         Standard_Real& D)
+Standard_Boolean Geom2dLProp_FuncCurExt::Values (const Standard_Real  X,
+                                                 Standard_Real& F,
+                                                 Standard_Real& D)
 {
   Standard_Real F2;
   Standard_Real Dx= epsX/100.;
 
-  if (X+Dx > Tool::LastParameter(theCurve)) {Dx = - Dx;}
+  if (X+Dx > Geom2dLProp_Curve2dTool::LastParameter(theCurve)) {Dx = - Dx;}
 
   Value (X,F);
   Value (X+Dx,F2);
@@ -93,14 +98,14 @@ Standard_Boolean LProp_FuncCurExt::Values (const Standard_Real  X,
 // purpose : Teste si le parametere coorespond a un minimum du rayon de courbure
 //           par comparaison avec un point voisin.
 //=============================================================================
-Standard_Boolean LProp_FuncCurExt::IsMinKC (const Standard_Real  X) const
+Standard_Boolean Geom2dLProp_FuncCurExt::IsMinKC (const Standard_Real  X) const
 {
-  Pnt            P1;
-  Vec            V1,V2,V3;
+  gp_Pnt2d            P1;
+  gp_Vec2d            V1,V2,V3;
   Standard_Real  Dx= epsX;
   Standard_Real  KC,KP;
 
-  Tool::D3(theCurve,X,P1,V1,V2,V3);
+  Geom2dLProp_Curve2dTool::D3(theCurve,X,P1,V1,V2,V3);
   Standard_Real CPV1V2 = V1.Crossed(V2);
   Standard_Real V1V1   = V1.SquareMagnitude();
   Standard_Real NV1    = Sqrt(V1V1);
@@ -110,14 +115,14 @@ Standard_Boolean LProp_FuncCurExt::IsMinKC (const Standard_Real  X) const
 
   KC = CPV1V2/V13;
 
-  if (X+Dx > Tool::LastParameter(theCurve)) {Dx = - Dx;}
+  if (X+Dx > Geom2dLProp_Curve2dTool::LastParameter(theCurve)) {Dx = - Dx;}
 
-  Tool::D3(theCurve,X+Dx,P1,V1,V2,V3);
+  Geom2dLProp_Curve2dTool::D3(theCurve,X+Dx,P1,V1,V2,V3);
   CPV1V2 = V1.Crossed(V2);
   V1V1   = V1.SquareMagnitude();
   NV1    = Sqrt(V1V1);
   V13    = V1V1*NV1;
-   
+
   if (V13 < gp::Resolution()) { return Standard_False;}
   KP = CPV1V2/V13;
 

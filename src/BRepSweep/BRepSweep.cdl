@@ -46,19 +46,8 @@ is
 	
     class Iterator;
 	---Purpose: Iterator on the subShapes of a shape.
-	
 
-    deferred class NumLinearRegularSweep
-    	instantiates LinearRegularSweep from Sweep(
-    	Shape              from TopoDS,     -- Resulting topological objects.
-    	Shape              from TopoDS,     -- Generating Shape.
-    	NumShape           from Sweep,      -- Directing Wire.
-    	Builder            from BRepSweep,
-    	Tool               from BRepSweep,  -- GenTool
-	NumShapeTool       from Sweep,      -- DirTool
-    	Iterator           from BRepSweep,  -- Resulting objects Iterator
-    	Iterator           from BRepSweep,  -- GenIterator
-	NumShapeIterator   from Sweep);     -- DirSubEdgeIterator
+    deferred class NumLinearRegularSweep;
 
     deferred class Trsf;
     --- This class is inherited  from LinearRegularSweep to  implement

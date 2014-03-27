@@ -171,7 +171,6 @@ p MAT
 p MAT2d
 p NLPlate
 p Plate
-p Primitives
 p ShapeAlgo
 p ShapeAnalysis
 p ShapeBuild

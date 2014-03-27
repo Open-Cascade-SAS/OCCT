@@ -30,22 +30,21 @@ is
     
     class Curve2dTool;
     
-    class CLProps2d from Geom2dLProp 
-            instantiates CLProps from LProp(Curve         from Geom2d,
-	                                    Vec2d         from gp,
-					    Pnt2d         from gp,
-					    Dir2d         from gp,
-					    Curve2dTool   from Geom2dLProp); 
+    class CLProps2d from Geom2dLProp instantiates
+                    CLProps from LProp(Curve       from Geom2d,
+                                       Vec2d       from gp,
+                                       Pnt2d       from gp,
+                                       Dir2d       from gp,
+                                       Curve2dTool from Geom2dLProp);
     class CurAndInf2d; 
-    
-    private class NumericCurInf2d instantiates NumericCurInf from LProp( 
-    	    	    	    	    	       Curve         from Geom2d,
-	                                       Vec2d         from gp,
-					       Pnt2d         from gp,
-					       Dir2d         from gp,
-					       Curve2dTool   from Geom2dLProp); 
-					    
-end Geom2dLProp;    
+
+    private class FuncCurExt;
+    private class FuncCurNul;
+    class NumericCurInf2d;
+        ---Purpose: Computes the locals extremas of curvature and the 
+        --          inflections of a bounded curve in 2d.
+
+end Geom2dLProp;
 
 
 

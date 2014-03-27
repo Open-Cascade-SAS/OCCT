@@ -14,13 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-deferred generic class OneAxis from Primitives(
-    TheShell           as any;
-    TheFace            as any;
-    TheWire            as any;
-    TheEdge            as any;
-    TheVertex          as any;
-    TheBuilder         as any)
+deferred class OneAxis from BRepPrim
     
 	---Purpose: Algorithm to  build  primitives with  one  axis of
 	--          revolution. 
@@ -59,8 +53,14 @@ deferred generic class OneAxis from Primitives(
 
 
 uses
-    Ax2   from gp,
-    Pnt2d from gp
+    Ax2     from gp,
+    Pnt2d   from gp,
+    Shell   from TopoDS,
+    Face    from TopoDS,
+    Wire    from TopoDS,
+    Edge    from TopoDS,
+    Vertex  from TopoDS,
+    Builder from BRepPrim
     
 raises
     DomainError,
@@ -70,7 +70,7 @@ is
     Delete(me:out) is virtual ;
     ---C++: alias ~
     
-    Initialize(B : TheBuilder; 
+    Initialize(B : Builder from BRepPrim; 
     	       A : Ax2 from gp; 
     	       VMin, VMax : Real from  Standard);
 	---Purpose: Creates a OneAxis algorithm.  <B> is used to build
@@ -120,7 +120,7 @@ is
     --     They should be redefined in inherited classes
     --     
     
-    MakeEmptyLateralFace(me) returns TheFace
+    MakeEmptyLateralFace(me) returns Face from TopoDS
 	---Purpose: Returns a face with  no edges.  The surface is the
 	--          lateral surface with normals pointing outward. The
 	--          U parameter is the angle with the  origin on the X
@@ -128,13 +128,13 @@ is
 	--          meridian.
     is deferred;
     
-    MakeEmptyMeridianEdge(me; Ang : Real) returns TheEdge
+    MakeEmptyMeridianEdge(me; Ang : Real) returns Edge from TopoDS
 	---Purpose: Returns  an  edge with  a 3D curve   made from the
 	--          meridian  in the XZ  plane rotated by <Ang> around
 	--          the Z-axis. Ang may be 0 or myAngle.
     is deferred;
     
-    SetMeridianPCurve(me; E : in out TheEdge; F : TheFace)
+    SetMeridianPCurve(me; E : in out Edge from TopoDS; F : Face from TopoDS)
 	---Purpose: Sets the  parametric curve of the  edge <E> in the
 	--          face  <F> to be  the   2d representation  of   the
 	--          meridian.
@@ -199,7 +199,7 @@ is
     -- 
 
     -- the shell
-    Shell(me : in out) returns TheShell
+    Shell(me : in out) returns Shell from TopoDS
 	---Purpose: Returns the Shell containing all the  Faces of the
 	--          primitive.
 	--          
@@ -208,14 +208,14 @@ is
 
     -- the Faces
 
-    LateralFace(me : in out) returns TheFace
+    LateralFace(me : in out) returns Face from TopoDS
 	---Purpose: Returns  the lateral Face.   It is oriented toward
 	--          the outside of the primitive.
 	--          
 	---C++: return const &
     is static;
 
-    TopFace(me : in out) returns TheFace
+    TopFace(me : in out) returns Face from TopoDS
 	---Purpose: Returns the   top planar  Face.    It  is Oriented
 	--          toward the +Z axis (outside).
 	--          
@@ -223,7 +223,7 @@ is
     raises DomainError -- if !HasTop()
     is static;
     
-    BottomFace(me : in out) returns TheFace
+    BottomFace(me : in out) returns Face from TopoDS
 	---Purpose: Returns  the Bottom planar Face.   It is  Oriented
 	--          toward the -Z axis (outside).
 	--          
@@ -231,7 +231,7 @@ is
     raises DomainError -- if !HasBottom()
     is static;
     
-    StartFace(me : in out) returns TheFace
+    StartFace(me : in out) returns Face from TopoDS
 	---Purpose: Returns  the  Face   starting   the slice, it   is
 	--          oriented toward the exterior of the primitive.
 	--          
@@ -239,7 +239,7 @@ is
     raises DomainError -- if !HasSides()
     is static;
 
-    EndFace(me : in out) returns TheFace
+    EndFace(me : in out) returns Face from TopoDS
 	---Purpose: Returns the Face ending the slice, it  is oriented
 	--          toward the exterior of the primitive.
 	--          
@@ -249,14 +249,14 @@ is
     
     -- Wires
 
-    LateralWire(me : in out) returns TheWire
+    LateralWire(me : in out) returns Wire from TopoDS
 	---Purpose: Returns  the wire in the lateral face.
 	--          
 	---C++: return const &
     raises DomainError -- if VMinInfinite() && VMaxInfinite()
     is static;
     
-    LateralStartWire(me : in out) returns TheWire
+    LateralStartWire(me : in out) returns Wire from TopoDS
 	---Purpose: Returns the   wire in the   lateral  face with the
 	--          start edge.
 	--          
@@ -264,7 +264,7 @@ is
     raises DomainError -- if ! (VMinInfinite() && VMaxInfinite())
     is static;
     
-    LateralEndWire(me : in out) returns TheWire
+    LateralEndWire(me : in out) returns Wire from TopoDS
 	---Purpose: Returns the wire with in lateral face with the end
 	--          edge.
 	--          
@@ -272,28 +272,28 @@ is
     raises DomainError -- if ! (VMinInfinite() && VMaxInfinite())
     is static;
     
-    TopWire(me : in out) returns TheWire
+    TopWire(me : in out) returns Wire from TopoDS
 	---Purpose: Returns the wire in the top face.
 	--          
 	---C++: return const &
     raises DomainError -- if !HasTop()
     is static;
      
-    BottomWire(me : in out) returns TheWire
+    BottomWire(me : in out) returns Wire from TopoDS
 	---Purpose: Returns the wire in the bottom face.
 	--          
 	---C++: return const &
     raises DomainError -- if !HasBottom()
     is static;
     
-    StartWire(me : in out) returns TheWire
+    StartWire(me : in out) returns Wire from TopoDS
 	---Purpose: Returns the wire  in the  start face.
 	--          
 	---C++: return const &
     raises DomainError -- if !HasSides()
     is static;
 
-    AxisStartWire(me : in out) returns TheWire
+    AxisStartWire(me : in out) returns Wire from TopoDS
 	---Purpose: Returns  the wire   in the  start   face  with the
 	--          AxisEdge.
 	--          
@@ -301,14 +301,14 @@ is
     raises DomainError -- if !HasSides() ! (VMinInfinite() && VMaxInfinite())
     is static;
 
-    EndWire(me : in out) returns TheWire
+    EndWire(me : in out) returns Wire from TopoDS
 	---Purpose: Returns the Wire in   the end face.
 	--          
 	---C++: return const &
     raises DomainError -- if !HasSides()
     is static;
 
-    AxisEndWire(me : in out) returns TheWire
+    AxisEndWire(me : in out) returns Wire from TopoDS
 	---Purpose: Returns  the Wire  in  the   end   face  with  the
 	--          AxisEdge. 
 	--          
@@ -319,7 +319,7 @@ is
 
     -- Edges
 
-    AxisEdge(me : in out) returns TheEdge
+    AxisEdge(me : in out) returns Edge from TopoDS
 	---Purpose: Returns the Edge built along the Axis and oriented
 	--          on +Z of the Axis.
 	--          
@@ -327,20 +327,20 @@ is
     raises DomainError -- if ! (MeridianOnAxis(VMin) || MeridianOnAxis(VMax))
     is static;
     
-    StartEdge(me : in out) returns TheEdge
+    StartEdge(me : in out) returns Edge from TopoDS
 	---Purpose: Returns the   Edge at angle 0.
 	--          
 	---C++: return const &
     is static;
 
-    EndEdge(me : in out) returns TheEdge
+    EndEdge(me : in out) returns Edge from TopoDS
 	---Purpose: Returns the  Edge at  angle Angle.  If !HasSides()
 	--          the StartEdge and the EndEdge are the same edge.
 	--          
 	---C++: return const &
     is static;
 
-    StartTopEdge(me : in out) returns TheEdge
+    StartTopEdge(me : in out) returns Edge from TopoDS
 	---Purpose: Returns the linear Edge between start Face and top
 	--          Face.
 	--          
@@ -348,7 +348,7 @@ is
     raises DomainError -- if ! (HasTop() && HasSides())
     is static;
 
-    StartBottomEdge(me : in out) returns TheEdge
+    StartBottomEdge(me : in out) returns Edge from TopoDS
 	---Purpose: Returns the linear  Edge between  start  Face  and
 	--          bottom Face.
 	--          
@@ -356,7 +356,7 @@ is
      raises DomainError -- if ! (HasBottom() && HasSides())
     is static;
 
-    EndTopEdge(me : in out) returns TheEdge
+    EndTopEdge(me : in out) returns Edge from TopoDS
 	---Purpose: Returns the linear Edge  between end Face and  top
 	--          Face.
 	--          
@@ -364,7 +364,7 @@ is
     raises DomainError -- if ! (HasTop() && HasSides())
     is static;
 
-    EndBottomEdge(me : in out) returns TheEdge
+    EndBottomEdge(me : in out) returns Edge from TopoDS
 	---Purpose: Returns  the  linear  Edge  between end  Face  and
 	--          bottom Face.
 	--          
@@ -372,7 +372,7 @@ is
      raises DomainError -- if ! (HasBottom() && HasSides())
     is static;
 
-    TopEdge(me : in out) returns TheEdge
+    TopEdge(me : in out) returns Edge from TopoDS
 	---Purpose: Returns the edge at VMax. If  MeridianClosed() the
 	--          TopEdge and the BottomEdge are the same edge.
 	--          
@@ -380,7 +380,7 @@ is
     raises DomainError -- if VMaxInfinite()
     is static;
 
-    BottomEdge(me : in out) returns TheEdge
+    BottomEdge(me : in out) returns Edge from TopoDS
 	---Purpose: Returns the edge  at VMin. If MeridianClosed() the
 	--          TopEdge and the BottomEdge are the same edge.
 	--          
@@ -390,14 +390,14 @@ is
 
     -- Vertices
 
-    AxisTopVertex(me : in out) returns TheVertex
+    AxisTopVertex(me : in out) returns Vertex from TopoDS
 	---Purpose: Returns the Vertex at the Top altitude on the axis.
 	--          
 	---C++: return const &
     raises DomainError -- if !MeridianOnAxis(VMax)
     is static;
 
-    AxisBottomVertex(me : in out) returns TheVertex
+    AxisBottomVertex(me : in out) returns Vertex from TopoDS
 	---Purpose: Returns the Vertex  at the Bottom  altitude on the
 	--          axis.
 	--          
@@ -405,28 +405,28 @@ is
     raises DomainError -- if !MeridianOnAxis(VMin)
     is static;
 
-    TopStartVertex(me : in out) returns TheVertex
+    TopStartVertex(me : in out) returns Vertex from TopoDS
 	---Purpose: Returns the vertex (0,VMax)
 	--          
 	---C++: return const &
     raises DomainError -- if VMaxInfinite()
     is static;
 
-    TopEndVertex(me : in out) returns TheVertex
+    TopEndVertex(me : in out) returns Vertex from TopoDS
 	---Purpose: Returns the vertex (angle,VMax)
 	--          
 	---C++: return const &
     raises DomainError -- if VMaxInfinite()
     is static;
 
-    BottomStartVertex(me : in out) returns TheVertex
+    BottomStartVertex(me : in out) returns Vertex from TopoDS
 	---Purpose: Returns the vertex (0,VMin)
 	--          
 	---C++: return const &
     raises DomainError -- if VMinInfinite()
     is static;
 
-    BottomEndVertex(me : in out) returns TheVertex
+    BottomEndVertex(me : in out) returns Vertex from TopoDS
 	---Purpose: Returns the vertex (angle,VMax)
 	--          
 	---C++: return const &
@@ -434,7 +434,7 @@ is
     is static;
 
 fields
-    myBuilder  : TheBuilder   is protected;  
+    myBuilder  : Builder from BRepPrim   is protected;  
     myAxes     : Ax2 from gp;
 
     myAngle    : Real from Standard;
@@ -444,10 +444,10 @@ fields
 
     -- the Topology
 
-    myShell    : TheShell;
+    myShell    : Shell from TopoDS;
     ShellBuilt : Boolean;
 
-    myVertices : TheVertex [6];
+    myVertices : Vertex from TopoDS [6];
     -- 0 : Vertex on top    of the axis
     -- 1 :        on bottom of the axis
     -- 2 :        top, start
@@ -456,7 +456,7 @@ fields
     -- 5 :        bottom, end
     VerticesBuilt : Boolean [6];
     
-    myEdges : TheEdge [9];
+    myEdges : Edge from TopoDS [9];
     -- 0 : Edge on the Axis
     -- 1 :        Start Edge
     -- 2 :        End Edge
@@ -468,7 +468,7 @@ fields
     -- 8 :        Bottom
     EdgesBuilt : Boolean [9];
     
-    myWires : TheWire [9];
+    myWires : Wire from TopoDS [9];
     -- 0 : wire     Lateral
     -- 1 :          Lateral Start
     -- 2 :          Lateral End
@@ -480,7 +480,7 @@ fields
     -- 8 :          Axis End
     WiresBuilt : Boolean [9];
     
-    myFaces : TheFace [5];
+    myFaces : Face from TopoDS [5];
     -- 0 : Lateral Face
     -- 1 : Top
     -- 2 : Bottom
