@@ -272,8 +272,6 @@ p ObjMgt
 p PBRep
 p PCDM
 p PCDMShape
-p PColPGeom
-p PColPGeom2d
 p PColStd
 p PColgp
 p PCollection

@@ -63,24 +63,6 @@ exception UndefinedValue inherits DomainError from  Standard;
     class HSequenceOfBSplineSurface 
     	instantiates HSequence from TCollection (BSplineSurface from Geom,
     	    	    	    	SequenceOfBSplineSurface from Geom);
---    class SequenceOfBoundedSurface 
---    	instantiates Sequence from TCollection (BoundedSurface from Geom); 
-
-    class SequenceOfSurface 
-    	instantiates Sequence from TCollection (Surface from Geom);
-	
-    class HSequenceOfSurface 
-    	instantiates HSequence from TCollection (Surface from Geom,
-    	    	    	    	SequenceOfSurface from Geom);
-				
---    class HSequenceOfBoundedSurface 
---    	instantiates HSequence from TCollection (BoundedSurface from Geom,
---    	    	    	    	SequenceOfBoundedSurface from Geom);
---  class SequenceNodeOfSequenceOfSurface
---    	instantiates SeqNode from TCollection (Surface from Geom);
---  class HSequenceOfSurface 
---    	instantiates HSequence from TCollection (Surface from Geom,
---    	    	    	    	SequenceOfSurface from Geom);
 
         ---Group: Geometric entities 
 

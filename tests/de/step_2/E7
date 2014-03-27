@@ -2,8 +2,9 @@
 puts "TODO CR23096 ALL: CHECKSHAPE : Faulty" 
 puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
+
+
 puts "TODO CR23096 Mandriva2010: Error : 3 differences with reference data found :" 
-puts "TODO DEBUG_OCC24121 Debian60-64 Windows: Warning: StepToGeom_MakeSurface"
 
 set LinuxDiff 3
 set filename r76sy.stp

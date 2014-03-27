@@ -5,8 +5,6 @@ PGeom2d
 PPoly
 PColgp
 PTopLoc
-PColPGeom
-PColPGeom2d
 MgtBRep
 MgtGeom
 MgtGeom2d

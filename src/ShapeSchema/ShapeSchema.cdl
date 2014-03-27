@@ -27,8 +27,6 @@ is
     package PColgp;
     package PGeom2d;
     package PGeom;
-    package PColPGeom;
-    package PColPGeom2d;
     package PPoly;
     package PTopoDS;
     package PBRep;

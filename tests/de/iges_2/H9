@@ -3,9 +3,11 @@ puts "TODO CR23096 ALL: CHECKSHAPE : Faulty"
 puts "TODO CR23096 ALL: NBSHAPES : Faulty" 
 puts "TODO CR23096 ALL: LABELS : Faulty" 
 puts "TODO CR23096 ALL: COLORS : Faulty" 
+
+
 puts "TODO CR23096 Mandriva2010: STATSHAPE : Faulty " 
+
 puts "TODO CR23096 Mandriva2010: Error : 4 differences with reference data found :" 
-puts "TODO DEBUG_OCC24121 Debian60-64 Windows: Warning: ShapeAnalysis_Surface"
 
 set LinuxDiff 4
 set LinuxFaulties {STATSHAPE}
