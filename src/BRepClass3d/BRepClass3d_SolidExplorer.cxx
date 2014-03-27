@@ -174,7 +174,7 @@ Standard_Boolean BRepClass3d_SolidExplorer::FindAPointInTheFace
       }
     }
 
-    if (APointExist)
+    while (APointExist)
     { 
       ParamInit *= 0.41234;
       u_ = P.X() + ParamInit* T.X();
@@ -190,7 +190,12 @@ Standard_Boolean BRepClass3d_SolidExplorer::FindAPointInTheFace
       BRepAdaptor_Surface s;
       s.Initialize (face, Standard_False);
       s.D1 (u_, v_, APoint_, theVecD1U, theVecD1V);
-      return Standard_True;
+
+      if(theVecD1U.CrossMagnitude(theVecD1V) > gp::Resolution())
+        return Standard_True;
+
+      if(ParamInit < Precision::PConfusion())
+        return Standard_False;
     }
   }
   return Standard_False;

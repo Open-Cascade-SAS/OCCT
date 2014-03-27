@@ -1,0 +1,29 @@
+puts "============"
+puts "OCC24684"
+puts "============"
+puts ""
+############################################################################
+# Command fixshape hangs up on the attached shape
+############################################################################
+
+pload XSDRAW
+
+restore [locate_data_file bug24684_r.brep] a
+
+cpulimit 60
+
+fixshape result a
+
+set square 337959
+
+set nb_v_good 300
+set nb_e_good 443
+set nb_w_good 171
+set nb_f_good 149
+set nb_sh_good 85
+set nb_sol_good 15
+set nb_compsol_good 0
+set nb_compound_good 3
+set nb_shape_good 1166
+
+set 2dviewer 1
