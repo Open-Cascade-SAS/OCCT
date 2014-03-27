@@ -24,6 +24,7 @@
 #include <BRepClass_FaceClassifier.hxx>
 #include <gp_Pnt2d.hxx>
 #include <BRepAdaptor_Surface.hxx>
+#include <Precision.hxx>
 
 //=======================================================================
 //function : BRepExtrema_ExtPF
@@ -48,12 +49,15 @@ void BRepExtrema_ExtPF::Initialize(const TopoDS_Face& TheFace,
   // cette surface doit etre en champ. Extrema ne fait
   // pas de copie et prend seulement un pointeur dessus.
   mySurf.Initialize(TheFace, Standard_False); 
-  const Standard_Real Tol = BRep_Tool::Tolerance(TheFace);
+  Standard_Real Tol = Min(BRep_Tool::Tolerance(TheFace), Precision::Confusion());
+  Standard_Real aTolU, aTolV;
+  aTolU = Max(mySurf.UResolution(Tol), Precision::PConfusion());
+  aTolV = Max(mySurf.VResolution(Tol), Precision::PConfusion()); 
   Standard_Real U1, U2, V1, V2;
   BRepTools::UVBounds(TheFace, U1, U2, V1, V2);
   myExtPS.SetFlag(TheFlag);
   myExtPS.SetAlgo(TheAlgo);
-  myExtPS.Initialize(mySurf, U1, U2, V1, V2, Tol, Tol);
+  myExtPS.Initialize(mySurf, U1, U2, V1, V2, aTolU, aTolV);
 }
 
 //=======================================================================

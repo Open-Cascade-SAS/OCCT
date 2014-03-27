@@ -44,8 +44,10 @@ void BRepExtrema_ExtPC::Initialize(const TopoDS_Edge& E)
   Standard_Real U1,U2;
   BRepAdaptor_Curve Curv(E);
   myHC = new BRepAdaptor_HCurve(Curv);
+  Standard_Real Tol = Min(BRep_Tool::Tolerance(E), Precision::Confusion());
+  Tol = Max(Curv.Resolution(Tol), Precision::PConfusion());
   BRep_Tool::Range(E,U1,U2);
-  myExtPC.Initialize(myHC->Curve(),U1,U2);
+  myExtPC.Initialize(myHC->Curve(),U1,U2,Tol);
 }
 
 //=======================================================================

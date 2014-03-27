@@ -33,7 +33,7 @@
 
 BRepExtrema_ExtCF::BRepExtrema_ExtCF(const TopoDS_Edge& E, const TopoDS_Face& F)
 {
-  Initialize(F);
+  Initialize(E, F);
   Perform(E, F);
 }
 
@@ -42,14 +42,24 @@ BRepExtrema_ExtCF::BRepExtrema_ExtCF(const TopoDS_Edge& E, const TopoDS_Face& F)
 //purpose  : 
 //=======================================================================
 
-void BRepExtrema_ExtCF::Initialize(const TopoDS_Face& F2)
+void BRepExtrema_ExtCF::Initialize(const TopoDS_Edge& E, const TopoDS_Face& F)
 {
-  BRepAdaptor_Surface Surf(F2);
+  BRepAdaptor_Surface Surf(F);
+  BRepAdaptor_Curve aC(E);
   myHS = new BRepAdaptor_HSurface(Surf);
-  const Standard_Real Tol = BRep_Tool::Tolerance(F2);
+  Standard_Real aTolC, aTolS;
+  //
+  aTolS = Min(BRep_Tool::Tolerance(F), Precision::Confusion());
+  aTolS = Min(Surf.UResolution(aTolS), Surf.VResolution(aTolS));
+  aTolS = Max(aTolS, Precision::PConfusion());
+  //
+  aTolC = Min(BRep_Tool::Tolerance(E), Precision::Confusion());
+  aTolC = aC.Resolution(aTolC);
+  aTolC = Max(aTolC, Precision::PConfusion());
+  //
   Standard_Real U1, U2, V1, V2;
-  BRepTools::UVBounds(F2, U1, U2, V1, V2);
-  myExtCS.Initialize(myHS->Surface(), U1, U2, V1, V2, Tol, Tol);
+  BRepTools::UVBounds(F, U1, U2, V1, V2);
+  myExtCS.Initialize(myHS->Surface(), U1, U2, V1, V2, aTolC, aTolS);
 }
 
 //=======================================================================
