@@ -1435,13 +1435,17 @@ static TopoDS_Edge BuildEdge(const Handle(Geom_Surface)& S,
   // Associate 2d
   Handle(Geom2d_Line) L;
   TopLoc_Location Loc;
+  Standard_Real Umin, Umax, Vmin, Vmax;
+  S->Bounds(Umin, Umax, Vmin, Vmax);
   if (isUiso) {
-    gp_Pnt2d P(ValIso, 0);
+    //gp_Pnt2d P(ValIso, 0);
+    gp_Pnt2d P( ValIso, Vmin - Iso->FirstParameter() );
     gp_Vec2d V(0., 1.);
     L = new (Geom2d_Line) (P, V);
   }
   else {
-    gp_Pnt2d P(0., ValIso);
+    //gp_Pnt2d P(0., ValIso);
+    gp_Pnt2d P( Umin -Iso->FirstParameter() , ValIso );
     gp_Vec2d V(1., 0.);
     L = new (Geom2d_Line) (P, V);
   }
