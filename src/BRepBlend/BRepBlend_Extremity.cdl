@@ -14,20 +14,16 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class Extremity from Blend 
-    (TheVertex               as any;
-     TheArc                  as any;
-     ThePointOnRst           as any; -- as PointOnRst from Blend(TheArc)
-     TheSequenceOfPointOnRst as any)
-
-
-
+class Extremity from BRepBlend
 	---Purpose: 
 
 uses Pnt from gp, 
      Vec from  gp,
-     Transition from IntSurf
-
+     Transition from IntSurf,
+     HVertex from Adaptor3d,
+     HCurve2d from Adaptor2d,
+     PointOnRst from BRepBlend,
+     SequenceOfPointOnRst from BRepBlend
 
 raises DomainError from Standard,
        OutOfRange  from Standard
@@ -36,28 +32,28 @@ is
 
     Create
     
-    	returns Extremity from Blend;
+    	returns Extremity from BRepBlend;
 
 
     Create(P: Pnt from gp; 
            U,V,Param: Real from Standard; Tol: Real from Standard)
 	---Purpose: Creates an extremity on a surface
-    	returns Extremity from Blend;
+    	returns Extremity from BRepBlend;
 
 
     Create(P: Pnt from gp; 
            U,V,Param: Real from Standard; Tol: Real from Standard;
-           Vtx: TheVertex)
+           Vtx: HVertex from Adaptor3d)
 	---Purpose: Creates an extremity on a surface. This extremity matches
 	--          the vertex <Vtx>.
 
-    	returns Extremity from Blend;
+    	returns Extremity from BRepBlend;
 
 
     Create(P: Pnt from gp; 
            W,  Param: Real from Standard; Tol: Real from Standard)
 	---Purpose: Creates an extremity on a curve
-    	returns Extremity from Blend;
+    	returns Extremity from BRepBlend;
 
 
     SetValue(me: in out; P: Pnt from gp; 
@@ -69,7 +65,7 @@ is
 
     SetValue(me: in out; P: Pnt from gp; 
                          U,V,Param: Real from Standard;
-                         Tol: Real from Standard; Vtx: TheVertex)
+                         Tol: Real from Standard; Vtx: HVertex from Adaptor3d)
 	---Purpose: Set the values for an extremity on a surface.This
 	--          extremity matches the vertex <Vtx>.
     	is static;
@@ -132,12 +128,12 @@ is
 
 -- methods for an extremity on a surface
 
-    SetVertex(me: in out; V: TheVertex)
+    SetVertex(me: in out; V: HVertex from Adaptor3d)
 	---Purpose: Set the values for an extremity on a curve.
     	is static;
 
 
-    AddArc(me: in out; A: TheArc; Param: Real from Standard;
+    AddArc(me: in out; A: HCurve2d from Adaptor2d; Param: Real from Standard;
                        TLine, TArc: Transition from IntSurf)
 
 	---Purpose: Sets the values of a point which is on the arc
@@ -171,7 +167,7 @@ is
     
 	---Purpose: Returns the vertex when IsVertex returns Standard_True.
     
-    	returns any TheVertex
+    	returns any HVertex from Adaptor3d
 	---C++: inline
 	---C++: return const&
 
@@ -200,7 +196,7 @@ is
     
 	---Purpose: 
     
-    	returns any ThePointOnRst
+    	returns any PointOnRst from BRepBlend
 	---C++: inline
 	---C++: return const&
 
@@ -225,8 +221,8 @@ is
 	is static;  
 
 fields
-    vtx    : TheVertex;
-    seqpt  : TheSequenceOfPointOnRst;
+    vtx    : HVertex from Adaptor3d;
+    seqpt  : SequenceOfPointOnRst from BRepBlend;
     pt     : Pnt     from gp;   
     tang   : Vec     from gp;
     param  : Real    from Standard;

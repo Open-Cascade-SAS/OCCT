@@ -14,33 +14,35 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepApprox_ApproxLine.ixx>
+
 #include <gp_Pnt2d.hxx>
 
 //=======================================================================
-//function : BRepApprox_ApproxLineGen
+//function : BRepApprox_ApproxLine
 //purpose  : 
 //=======================================================================
 
-BRepApprox_ApproxLineGen::BRepApprox_ApproxLineGen
-   (const TheCurve&    CurveXYZ,
-    const TheCurve2d&  CurveUV1,
-    const TheCurve2d&  CurveUV2) 
+BRepApprox_ApproxLine::BRepApprox_ApproxLine
+   (const Handle(Geom_BSplineCurve)&    CurveXYZ,
+    const Handle(Geom2d_BSplineCurve)&  CurveUV1,
+    const Handle(Geom2d_BSplineCurve)&  CurveUV2) 
 { 
-  curvxyz = CurveXYZ;
-  curvuv1 = CurveUV1;
-  curvuv2 = CurveUV2;
+  myCurveXYZ = CurveXYZ;
+  myCurveUV1 = CurveUV1;
+  myCurveUV2 = CurveUV2;
 }
 
 
 //=======================================================================
-//function : BRepApprox_ApproxLineGen
+//function : BRepApprox_ApproxLine
 //purpose  : 
 //=======================================================================
 
-BRepApprox_ApproxLineGen::BRepApprox_ApproxLineGen
+BRepApprox_ApproxLine::BRepApprox_ApproxLine
     (const Handle(IntSurf_LineOn2S)& lin,
      const Standard_Boolean ) 
-     :linon2s(lin) 
+     :myLineOn2S(lin) 
 { 
 }
 
@@ -49,15 +51,15 @@ BRepApprox_ApproxLineGen::BRepApprox_ApproxLineGen
 //purpose  : 
 //=======================================================================
 
-Standard_Integer BRepApprox_ApproxLineGen::NbPnts() const 
+Standard_Integer BRepApprox_ApproxLine::NbPnts() const 
 {
-  if(!curvxyz.IsNull())
-    return(curvxyz->NbPoles());
-  if(!curvuv1.IsNull())
-    return(curvuv1->NbPoles());
-  if(!curvuv2.IsNull())
-    return(curvuv2->NbPoles());
-  return(linon2s->NbPoints());
+  if(!myCurveXYZ.IsNull())
+    return(myCurveXYZ->NbPoles());
+  if(!myCurveUV1.IsNull())
+    return(myCurveUV1->NbPoles());
+  if(!myCurveUV2.IsNull())
+    return(myCurveUV2->NbPoles());
+  return(myLineOn2S->NbPoints());
 }
 
 //=======================================================================
@@ -65,27 +67,24 @@ Standard_Integer BRepApprox_ApproxLineGen::NbPnts() const
 //purpose  : 
 //=======================================================================
 
-IntSurf_PntOn2S BRepApprox_ApproxLineGen::Point
-   (const Standard_Integer Index)
+IntSurf_PntOn2S BRepApprox_ApproxLine::Point(const Standard_Integer Index)
 {
-  if(!linon2s.IsNull()) { 
-    if(linon2s->NbPoints()) { 
-      return(linon2s->Value(Index));
+  if(!myLineOn2S.IsNull()) { 
+    if(myLineOn2S->NbPoints()) { 
+      return(myLineOn2S->Value(Index));
     }
   }
   gp_Pnt2d P1,P2;
   gp_Pnt   P;
-  if(!curvxyz.IsNull()) 
-    P = curvxyz->Pole(Index);
-  if(!curvuv1.IsNull())
-    P1 = curvuv1->Pole(Index);
-  if(!curvuv2.IsNull())
-    P2 = curvuv2->Pole(Index);
+  if(!myCurveXYZ.IsNull()) 
+    P = myCurveXYZ->Pole(Index);
+  if(!myCurveUV1.IsNull())
+    P1 = myCurveUV1->Pole(Index);
+  if(!myCurveUV2.IsNull())
+    P2 = myCurveUV2->Pole(Index);
 
-  pnton2s.SetValue(P,
-		   P1.X(),
-		   P1.Y(),
-		   P2.X(),
-		   P2.Y());
-  return(pnton2s);
+  IntSurf_PntOn2S aPntOn2S;
+  aPntOn2S.SetValue(P, P1.X(), P1.Y(), P2.X(), P2.Y());
+
+  return aPntOn2S;
 }

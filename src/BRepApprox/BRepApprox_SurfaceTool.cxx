@@ -14,27 +14,26 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include TheSurface_hxx
+#include "BRepApprox_SurfaceTool.ixx"
 
-
-Standard_Integer  BRepApprox_SurfaceToolGen::NbSamplesU (const TheSurface&) 
+Standard_Integer  BRepApprox_SurfaceTool::NbSamplesU (const BRepAdaptor_Surface&) 
 {
   return(10);
 }
 
-Standard_Integer  BRepApprox_SurfaceToolGen::NbSamplesV (const TheSurface&) 
+Standard_Integer  BRepApprox_SurfaceTool::NbSamplesV (const BRepAdaptor_Surface&) 
 {
   return(10);
 }
 
-Standard_Integer  BRepApprox_SurfaceToolGen::NbSamplesU (const TheSurface&,
+Standard_Integer  BRepApprox_SurfaceTool::NbSamplesU (const BRepAdaptor_Surface&,
                                                          const Standard_Real,
                                                          const Standard_Real) 
 {
   return(10);
 }
 
-Standard_Integer  BRepApprox_SurfaceToolGen::NbSamplesV (const TheSurface&,
+Standard_Integer  BRepApprox_SurfaceTool::NbSamplesV (const BRepAdaptor_Surface&,
                                                          const Standard_Real,
                                                          const Standard_Real) 
 {

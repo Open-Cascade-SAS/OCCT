@@ -14,42 +14,40 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class ApproxLineGen from BRepApprox
-    (TheCurve        as any;
-     TheCurve2d      as any)
-inherits TShared from MMgt
-    
-   
+class ApproxLine from BRepApprox inherits TShared from MMgt
+                                       
 uses
 
     PntOn2S           from IntSurf,
-    LineOn2S          from IntSurf
+    LineOn2S          from IntSurf,
+    BSplineCurve      from Geom,
+    BSplineCurve      from Geom2d
      
 is 
      
-    Create(CurveXYZ: TheCurve;
-      	   CurveUV1: TheCurve2d;
-    	   CurveUV2: TheCurve2d)
-    returns mutable ApproxLineGen from BRepApprox;
+    Create(CurveXYZ: BSplineCurve from Geom;
+      	   CurveUV1: BSplineCurve from Geom2d;
+    	   CurveUV2: BSplineCurve from Geom2d)
+    returns mutable ApproxLine from BRepApprox;
 
     Create(lin: LineOn2S from IntSurf; Tang: Boolean from Standard)
-    returns mutable ApproxLineGen from BRepApprox;
+    returns mutable ApproxLine from BRepApprox;
 	 
     NbPnts(me) 
     returns Integer from Standard
     is static;
 	 
     Point(me: mutable; Index: Integer from Standard)
+
     returns PntOn2S from IntSurf
     is static;
 	 
 fields 
 
-    curvxyz  : TheCurve;
-    curvuv1  : TheCurve2d;
-    curvuv2  : TheCurve2d;
-    pnton2s  : PntOn2S    from IntSurf;
-    linon2s  : LineOn2S   from IntSurf;
+    myCurveXYZ  : BSplineCurve from Geom;
+    myCurveUV1  : BSplineCurve from Geom2d;
+    myCurveUV2  : BSplineCurve from Geom2d;
+    myLineOn2S  : LineOn2S   from IntSurf;
 
-end ApproxLineGen from BRepApprox;
+end ApproxLine from BRepApprox;
 

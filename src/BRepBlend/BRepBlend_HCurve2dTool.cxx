@@ -14,17 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include CurveGen_hxx
+#include <BRepBlend_HCurve2dTool.ixx>
+
 #include <GeomAbs_CurveType.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <Geom_BezierCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
+#include <Geom2d_BezierCurve.hxx>
+#include <Geom2d_BSplineCurve.hxx>
 
 #include <TColStd_Array1OfReal.hxx>
 
 
 //============================================================
-Standard_Integer BRepBlend_HCurveToolGen::NbSamples (const CurveGen& C,
+Standard_Integer BRepBlend_HCurve2dTool::NbSamples (const Handle(Adaptor2d_HCurve2d)& C,
 						       const Standard_Real U0,
 						       const Standard_Real U1) {
   GeomAbs_CurveType typC = C->GetType();
@@ -36,7 +37,7 @@ Standard_Integer BRepBlend_HCurveToolGen::NbSamples (const CurveGen& C,
   else if(typC == GeomAbs_BezierCurve) 
     nbs = 3 + C->Bezier()->NbPoles();
   else if(typC == GeomAbs_BSplineCurve) { 
-    Handle(Geom_BSplineCurve) BSC = C->BSpline();
+    Handle(Geom2d_BSplineCurve) BSC = C->BSpline();
     nbs = BSC->NbKnots();
     nbs*= BSC->Degree();
     nbs*= BSC->LastParameter()- BSC->FirstParameter();

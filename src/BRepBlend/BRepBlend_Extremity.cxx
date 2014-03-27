@@ -12,7 +12,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-Blend_Extremity::Blend_Extremity (): 
+#include <BRepBlend_Extremity.ixx>
+#include <BRepBlend_PointOnRst.hxx>
+
+BRepBlend_Extremity::BRepBlend_Extremity (): 
        pt(gp_Pnt(0,0,0)),
        tang(gp_Vec(0,0,0)),
        param(0.0),  u(0.0), v(0.0), tol(0.0),
@@ -20,7 +23,7 @@ Blend_Extremity::Blend_Extremity ():
 {
 }
 
-Blend_Extremity::Blend_Extremity (const gp_Pnt& P,
+BRepBlend_Extremity::BRepBlend_Extremity (const gp_Pnt& P,
 				  const Standard_Real U,
 				  const Standard_Real V,
 				  const Standard_Real Param,
@@ -33,12 +36,12 @@ Blend_Extremity::Blend_Extremity (const gp_Pnt& P,
 }
 
 
-Blend_Extremity::Blend_Extremity (const gp_Pnt& P,
+BRepBlend_Extremity::BRepBlend_Extremity (const gp_Pnt& P,
 				  const Standard_Real U,
 				  const Standard_Real V,
 				  const Standard_Real Param,
 				  const Standard_Real Tol,
-				  const TheVertex& Vtx) :
+				  const Handle(Adaptor3d_HVertex)& Vtx) :
        vtx(Vtx),pt(P),
        tang(gp_Vec(0,0,0)),
        param(Param),u(U),v(V),tol(Tol),isvtx(Standard_True),
@@ -46,7 +49,7 @@ Blend_Extremity::Blend_Extremity (const gp_Pnt& P,
 {}
 
 
-Blend_Extremity::Blend_Extremity (const gp_Pnt& P,
+BRepBlend_Extremity::BRepBlend_Extremity (const gp_Pnt& P,
 				  const Standard_Real W,
 				  const Standard_Real Param,
 				  const Standard_Real Tol) :
@@ -57,7 +60,7 @@ Blend_Extremity::Blend_Extremity (const gp_Pnt& P,
 {}
 
 
-void Blend_Extremity::SetValue (const gp_Pnt& P,
+void BRepBlend_Extremity::SetValue (const gp_Pnt& P,
 				const Standard_Real U,
 				const Standard_Real V,
 				const Standard_Real Param,
@@ -73,12 +76,12 @@ void Blend_Extremity::SetValue (const gp_Pnt& P,
 }
 
 
-void Blend_Extremity::SetValue (const gp_Pnt& P,
+void BRepBlend_Extremity::SetValue (const gp_Pnt& P,
 				const Standard_Real U,
 				const Standard_Real V,
 				const Standard_Real Param,
 				const Standard_Real Tol,
-				const TheVertex& Vtx)
+				const Handle(Adaptor3d_HVertex)& Vtx)
 {
   pt    = P;
   u     = U;
@@ -90,7 +93,7 @@ void Blend_Extremity::SetValue (const gp_Pnt& P,
   seqpt.Clear();
 }
 
-void Blend_Extremity::SetValue (const gp_Pnt& P,
+void BRepBlend_Extremity::SetValue (const gp_Pnt& P,
 				const Standard_Real W,
 				const Standard_Real Param,
 				const Standard_Real Tol)
@@ -104,17 +107,17 @@ void Blend_Extremity::SetValue (const gp_Pnt& P,
 }
 
 
-void Blend_Extremity::SetVertex (const TheVertex& V)
+void BRepBlend_Extremity::SetVertex (const Handle(Adaptor3d_HVertex)& V)
 {
   isvtx = Standard_True;
   vtx   = V;
 }
 
-void Blend_Extremity::AddArc (const TheArc& A,
+void BRepBlend_Extremity::AddArc (const Handle(Adaptor2d_HCurve2d)& A,
 			      const Standard_Real Param,
 			      const IntSurf_Transition& TLine,
 			      const IntSurf_Transition& TArc)
 {
-  seqpt.Append(ThePointOnRst(A,Param,TLine,TArc));
+  seqpt.Append(BRepBlend_PointOnRst(A,Param,TLine,TArc));
 }
 

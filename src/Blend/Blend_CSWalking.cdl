@@ -25,15 +25,10 @@ generic class CSWalking from Blend
      TheCurveTool     as any;
      TheTopolTool     as Transient;
      TheBlendTool     as any;
-     ThePointOnRst    as any; -- as PointOnRst from Blend(TheArc)
+     ThePointOnRst    as any;
      TheSeqPointOnRst as any;
-     TheExtremity     as any; -- as Extremity from Blend(TheVertex,TheArc,
-                              --    ThePointOnRst,TheSeqPointOnRst)
-     TheLine          as Transient) -- as Line from Blend(TheVertex,TheArc,
-                                    --   ThePointOnRst,TheSeqPointOnRst,
-                                    --   TheExtremity)
- 
-
+     TheExtremity     as any;
+     TheLine          as Transient)
 
 	---Purpose: 
 

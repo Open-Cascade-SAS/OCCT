@@ -14,22 +14,22 @@
 
 #include <Standard_DomainError.hxx>
 
-inline const TheArc& Blend_PointOnRst::Arc () const
+inline const Handle_Adaptor2d_HCurve2d& BRepBlend_PointOnRst::Arc () const
 {
   return arc;
 }
 
-inline const IntSurf_Transition& Blend_PointOnRst::TransitionOnLine () const
+inline const IntSurf_Transition& BRepBlend_PointOnRst::TransitionOnLine () const
 {
   return traline;
 }
 
-inline const IntSurf_Transition& Blend_PointOnRst::TransitionOnArc () const
+inline const IntSurf_Transition& BRepBlend_PointOnRst::TransitionOnArc () const
 {
   return traarc;
 }
 
-inline Standard_Real Blend_PointOnRst::ParameterOnArc () const
+inline Standard_Real BRepBlend_PointOnRst::ParameterOnArc () const
 {
   return prm;
 }

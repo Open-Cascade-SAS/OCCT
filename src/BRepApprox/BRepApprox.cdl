@@ -36,16 +36,9 @@ uses
     
 is
 
-    generic class ApproxLineGen;
-    
-    class ApproxLine instantiates ApproxLineGen from BRepApprox
-    	(BSplineCurve from Geom,
-     	 BSplineCurve from Geom2d);
-
-    generic class SurfaceToolGen;
-
-    class SurfaceTool instantiates SurfaceToolGen from BRepApprox 
-    	(Surface from BRepAdaptor);
+    class ApproxLine;
+	
+    class SurfaceTool;
     
     class Approx instantiates Approx from ApproxInt
     	(Surface                 from BRepAdaptor,

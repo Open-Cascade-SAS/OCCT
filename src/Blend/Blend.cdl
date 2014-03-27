@@ -19,7 +19,7 @@ package Blend
 uses IntSurf, 
     TColgp, 
     TColStd, 
-    Adaptor2d, 
+    Adaptor2d,
     gp, 
     TopAbs, 
     math, 
@@ -54,12 +54,6 @@ is
 
 
     class Point;
-    
-    generic class Extremity;
-    
-    generic class PointOnRst;
-    
-    generic class Line;
 
     generic class Walking;
 
