@@ -16,7 +16,8 @@
 #define _Graphic3d_CStructure_HeaderFile
 
 #include <Graphic3d_CStructure_Handle.hxx>
-#include <Graphic3d_CGroup.hxx>
+#include <Graphic3d_Group.hxx>
+#include <Graphic3d_SequenceOfGroup.hxx>
 #include <Graphic3d_SequenceOfHClipPlane.hxx>
 #include <Graphic3d_TypeOfComposition.hxx>
 #include <Graphic3d_Vec3.hxx>
@@ -35,6 +36,12 @@ public:
   const Handle(Graphic3d_GraphicDriver)& GraphicDriver() const
   {
     return myGraphicDriver;
+  }
+
+  //! @return graphic groups
+  const Graphic3d_SequenceOfGroup& Groups() const
+  {
+    return myGroups;
   }
 
   //! @return associated clip planes
@@ -71,10 +78,17 @@ public:
                                     const Standard_Boolean theToCreate) = 0;
 
   //! Highlight structure using boundary box
-  virtual void HighlightWithBndBox (const Standard_Boolean theToCreate) = 0;
+  virtual void HighlightWithBndBox (const Handle(Graphic3d_Structure)& theStruct,
+                                    const Standard_Boolean             theToCreate) = 0;
 
   //! Create shadow link to this structure
   virtual Handle(Graphic3d_CStructure) ShadowLink (const Handle(Graphic3d_StructureManager)& theManager) const = 0;
+
+  //! Create new group within this structure
+  virtual Handle(Graphic3d_Group) NewGroup (const Handle(Graphic3d_Structure)& theStruct) = 0;
+
+  //! Remove group from this structure
+  virtual void RemoveGroup (const Handle(Graphic3d_Group)& theGroup) = 0;
 
 public:
 
@@ -111,6 +125,7 @@ protected:
 protected:
 
   Handle(Graphic3d_GraphicDriver) myGraphicDriver;
+  Graphic3d_SequenceOfGroup       myGroups;
   Graphic3d_SequenceOfHClipPlane  myClipPlanes;
 
 public:

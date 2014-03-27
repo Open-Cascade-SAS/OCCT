@@ -12,23 +12,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Graphic3d_CGroup_HeaderFile
-#define _Graphic3d_CGroup_HeaderFile
+#ifndef _Graphic3d_CAspectFillArea_HeaderFile
+#define _Graphic3d_CAspectFillArea_HeaderFile
 
-#include <Aspect_TypeOfMarker.hxx>
 #include <InterfaceGraphic_Visual3d.hxx>
 #include <Graphic3d_CTexture.hxx>
-#include <Graphic3d_MarkerImage_Handle.hxx>
 #include <Graphic3d_ShaderProgram_Handle.hxx>
 
-class Graphic3d_CStructure;
-
-class CALL_DEF_CONTEXTFILLAREA
+class Graphic3d_CAspectFillArea
 {
 
 public:
 
-  CALL_DEF_CONTEXTFILLAREA()
+  Graphic3d_CAspectFillArea()
   : IsDef (0),
     IsSet (0),
     Style (0),
@@ -42,19 +38,17 @@ public:
     PolygonOffsetFactor (0.0f),
     PolygonOffsetUnits  (0.0f)
   {
-    memset(&IntColor,0,sizeof(IntColor));
-	memset(&BackIntColor,0,sizeof(BackIntColor));
-	memset(&EdgeColor,0,sizeof(EdgeColor));
-	memset(&Front,0,sizeof(Front));
-	memset(&Back,0,sizeof(Back));
+    memset (&IntColor,     0, sizeof(IntColor));
+    memset (&BackIntColor, 0, sizeof(BackIntColor));
+    memset (&EdgeColor,    0, sizeof(EdgeColor));
+    memset (&Front,        0, sizeof(Front));
+    memset (&Back,         0, sizeof(Back));
   }
 
 public:
 
   int IsDef;
-
   int IsSet;
-
   int Style;
 
   CALL_DEF_COLOR IntColor;
@@ -82,52 +76,9 @@ public:
   float PolygonOffsetUnits;
 
   Handle(Graphic3d_ShaderProgram) ShaderProgram;
-};
-
-class CALL_DEF_CONTEXTMARKER
-{
-public:
-
-  CALL_DEF_CONTEXTMARKER()
-  : IsDef (0),
-    IsSet (0),
-    MarkerType (Aspect_TOM_POINT),
-    Scale (0),
-    MarkerImage (NULL)
-  {
-	  memset(&Color,0,sizeof(Color));
-  }
-
-public:
-
-  Standard_Integer IsDef;
-  Standard_Integer IsSet;
-  CALL_DEF_COLOR Color;
-  Aspect_TypeOfMarker MarkerType;
-  Standard_ShortReal Scale;
-  Handle(Graphic3d_MarkerImage) MarkerImage;
-  Handle(Graphic3d_ShaderProgram) ShaderProgram;
 
 };
 
-class Graphic3d_CGroup
-{
+typedef Graphic3d_CAspectFillArea CALL_DEF_CONTEXTFILLAREA;
 
-public:
-
-  void* ptrGroup;
-
-  CALL_DEF_CONTEXTLINE     ContextLine;
-  CALL_DEF_CONTEXTFILLAREA ContextFillArea;
-  CALL_DEF_CONTEXTMARKER   ContextMarker;
-  CALL_DEF_CONTEXTTEXT     ContextText;
-
-  Graphic3d_CStructure* Struct;
-
-  CALL_DEF_PICKID PickId;
-
-};
-
-const Handle(Standard_Type)& TYPE(Graphic3d_CGroup);
-
-#endif // Graphic3d_CGroup_HeaderFile
+#endif // _Graphic3d_CAspectFillArea_HeaderFile

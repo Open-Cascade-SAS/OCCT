@@ -230,11 +230,15 @@ void V3d_DirectionalLight::Display( const Handle(V3d_View)& aView,
       MyGraphicStructure1 = snopick;
     }
   
-  Handle(Graphic3d_Group) glight  = new Graphic3d_Group(MyGraphicStructure);
+  Handle(Graphic3d_Group) glight  = MyGraphicStructure->NewGroup();
   Handle(Graphic3d_Group) gsphere;
-  if (Pres == V3d_COMPLETE || Pres == V3d_PARTIAL) gsphere = new Graphic3d_Group(MyGraphicStructure);
+  if (Pres == V3d_COMPLETE
+   || Pres == V3d_PARTIAL)
+  {
+    gsphere = MyGraphicStructure->NewGroup();
+  }
   
-  Handle(Graphic3d_Group) gnopick = new Graphic3d_Group(MyGraphicStructure1);
+  Handle(Graphic3d_Group) gnopick = MyGraphicStructure1->NewGroup();
   MyGraphicStructure1->SetPick(Standard_False);
   
   X0 = MyTarget.X();

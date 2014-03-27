@@ -273,89 +273,6 @@ Standard_Boolean OpenGl_GraphicDriver::Print (const Graphic3d_CView& theCView,
   return isPrinted;
 }
 
-void OpenGl_GraphicDriver::SetStencilTestOptions (const Graphic3d_CGroup& theCGroup,
-                                                  const Standard_Boolean theIsEnabled)
-{
-  OpenGl_StencilTest* aStencilTest = new OpenGl_StencilTest();
-  aStencilTest->SetOptions (theIsEnabled);
-  ((OpenGl_Group* )theCGroup.ptrGroup)->AddElement (aStencilTest);
-}
-
-// =======================================================================
-// function : Text
-// purpose  :
-// =======================================================================
-void OpenGl_GraphicDriver::Text (const Graphic3d_CGroup&                 theCGroup,
-                                 const TCollection_ExtendedString&       theText,
-                                 const Graphic3d_Vertex&                 thePoint,
-                                 const Standard_Real                     theHeight,
-                                 const Quantity_PlaneAngle               /*theAngle*/,
-                                 const Graphic3d_TextPath                /*theTp*/,
-                                 const Graphic3d_HorizontalTextAlignment theHta,
-                                 const Graphic3d_VerticalTextAlignment   theVta,
-                                 const Standard_Boolean                  /*theToEvalMinMax*/)
-{
-  if (theCGroup.ptrGroup == NULL)
-  {
-    return;
-  }
-
-  OpenGl_TextParam aParams;
-  aParams.Height = int ((theHeight < 2.0) ? DefaultTextHeight() : theHeight);
-  aParams.HAlign = theHta;
-  aParams.VAlign = theVta;
-  const OpenGl_Vec3 aPoint (thePoint.X(), thePoint.Y(), thePoint.Z());
-  OpenGl_Text* aText = new OpenGl_Text (theText, aPoint, aParams);
-  ((OpenGl_Group* )theCGroup.ptrGroup)->AddElement (aText);
-}
-
-// =======================================================================
-// function : Text
-// purpose  : Wrapper CString -> TCollection_ExtendedString
-// =======================================================================
-void OpenGl_GraphicDriver::Text (const Graphic3d_CGroup&                 theCGroup,
-                                 const Standard_CString                  theText,
-                                 const Graphic3d_Vertex&                 thePoint,
-                                 const Standard_Real                     theHeight,
-                                 const Quantity_PlaneAngle               theAngle,
-                                 const Graphic3d_TextPath                theTp,
-                                 const Graphic3d_HorizontalTextAlignment theHta,
-                                 const Graphic3d_VerticalTextAlignment   theVta,
-                                 const Standard_Boolean                  theToEvalMinMax)
-{
-  OpenGl_GraphicDriver::Text (theCGroup, TCollection_ExtendedString (theText),
-                              thePoint, theHeight, theAngle, theTp, theHta, theVta, theToEvalMinMax);
-}
-
-// =======================================================================
-// function : Text
-// purpose  : Wrapper CString -> TCollection_ExtendedString
-// =======================================================================
-void OpenGl_GraphicDriver::Text (const Graphic3d_CGroup& theCGroup,
-                                 const Standard_CString  theText,
-                                 const Graphic3d_Vertex& thePoint,
-                                 const Standard_Real     theHeight,
-                                 const Standard_Boolean  theToEvalMinMax)
-{
-  OpenGl_GraphicDriver::Text (theCGroup, TCollection_ExtendedString (theText), thePoint, theHeight, theToEvalMinMax);
-}
-
-// =======================================================================
-// function : Text
-// purpose  : Wrapper with default values
-// =======================================================================
-void OpenGl_GraphicDriver::Text (const Graphic3d_CGroup&           theCGroup,
-                                 const TCollection_ExtendedString& theText,
-                                 const Graphic3d_Vertex&           thePoint,
-                                 const Standard_Real               theHeight,
-                                 const Standard_Boolean            theToEvalMinMax)
-{
-  OpenGl_GraphicDriver::Text (theCGroup,
-                              theText, thePoint, theHeight, 0.0,
-                              Graphic3d_TP_RIGHT, Graphic3d_HTA_LEFT, Graphic3d_VTA_BOTTOM,
-                              theToEvalMinMax);
-}
-
 // =======================================================================
 // function : ZBufferTriedronSetup
 // purpose  :
@@ -508,17 +425,4 @@ void OpenGl_GraphicDriver::GraduatedTrihedronMinMaxValues (const Standard_ShortR
                                                            const Standard_ShortReal theMaxZ)
 {
   OpenGl_GraduatedTrihedron::SetMinMax (theMinX, theMinY, theMinZ, theMaxX, theMaxY, theMaxZ);
-}
-
-// =======================================================================
-// function : SetFlippingOptions
-// purpose  : Enable or disable flipping option for the given group
-// =======================================================================
-void OpenGl_GraphicDriver::SetFlippingOptions (const Graphic3d_CGroup& theCGroup,
-                                               const Standard_Boolean  theIsEnabled,
-                                               const gp_Ax2&           theRefPlane)
-{
-  OpenGl_Flipper* aFlipper = new OpenGl_Flipper (theRefPlane);
-  aFlipper->SetOptions (theIsEnabled);
-  ((OpenGl_Group* )theCGroup.ptrGroup)->AddElement (aFlipper);
 }

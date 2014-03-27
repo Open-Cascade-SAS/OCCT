@@ -1,5 +1,7 @@
-Graphic3d_CGroup.cxx
-Graphic3d_CGroup.hxx
+Graphic3d_CAspectFillArea.hxx
+Graphic3d_CAspectLine.hxx
+Graphic3d_CAspectMarker.hxx
+Graphic3d_CAspectText.hxx
 Graphic3d_CStructure.cxx
 Graphic3d_CStructure.hxx
 Graphic3d_CStructure_Handle.hxx
@@ -25,12 +27,7 @@ Graphic3d_CView.cxx
 Graphic3d_CView.hxx
 Graphic3d_CGraduatedTrihedron.cxx
 Graphic3d_CGraduatedTrihedron.hxx
-Graphic3d_Structure.pxx
-Graphic3d_Group.pxx
-Graphic3d_Group_1.cxx
-Graphic3d_Group_2.cxx
-Graphic3d_Group_8.cxx
-Graphic3d_Group_10.cxx
+Graphic3d_Structure.lxx
 Graphic3d_Structure.pxx
 Graphic3d_ShaderObject.hxx
 Graphic3d_ShaderObject.cxx
@@ -49,7 +46,6 @@ Graphic3d.edl
 Graphic3d_CMPLRS.edl
 Graphic3d_WOKSteps.edl
 Graphic3d_PrimitiveArray.hxx
-Graphic3d_Group_13.cxx
 Graphic3d_TransModeFlags.hxx
 Graphic3d_CTransPersStruct.hxx
 Graphic3d_CTransPersStruct.cxx
@@ -71,6 +67,7 @@ Graphic3d_MarkerImage_Handle.hxx
 Graphic3d_ClipPlane.hxx
 Graphic3d_ClipPlane.cxx
 Graphic3d_ClipPlane_Handle.hxx
+Graphic3d_SequenceOfGroup.hxx
 Graphic3d_SequenceOfHClipPlane.hxx
 Graphic3d_SequenceOfHClipPlane_Handle.hxx
 Graphic3d_Camera.cxx

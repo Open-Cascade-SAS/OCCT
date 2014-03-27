@@ -42,6 +42,4 @@
 // /2 pour eviter les problemes d'overflow
 #define Structure_IDMAX INT_MAX/2
 
-#include <Graphic3d_Group.pxx>
-
 #endif

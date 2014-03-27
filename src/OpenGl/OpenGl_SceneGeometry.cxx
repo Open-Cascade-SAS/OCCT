@@ -370,12 +370,12 @@ namespace OpenGl_Raytrace
   // function : IsRaytracedStructure
   // purpose  : Checks to see if the structure contains ray-trace geometry
   // =======================================================================
-  Standard_Boolean IsRaytracedStructure (const OpenGl_Structure *theStructure)
+  Standard_Boolean IsRaytracedStructure (const OpenGl_Structure* theStructure)
   {
-    for (OpenGl_ListOfGroup::Iterator anItg (theStructure->Groups());
-         anItg.More(); anItg.Next())
+    for (OpenGl_Structure::GroupIterator aGroupIter (theStructure->DrawGroups());
+         aGroupIter.More(); aGroupIter.Next())
     {
-      if (anItg.Value()->IsRaytracable())
+      if (aGroupIter.Value()->IsRaytracable())
         return Standard_True;
     }
     for (OpenGl_ListOfStructure::Iterator anIts (theStructure->ConnectedStructures());

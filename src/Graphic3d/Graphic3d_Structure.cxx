@@ -105,15 +105,10 @@ void Graphic3d_Structure::Clear (const Standard_Boolean theWithDestruction)
 {
   if (IsDeleted()) return;
 
-  myCStructure->ContainsFacet = 0;
-
   // clean groups in graphics driver at first
   GraphicClear (theWithDestruction);
 
-  // only then remove group references
-  if (theWithDestruction)
-    myGroups.Clear();
-
+  myCStructure->ContainsFacet = 0;
   myStructureManager->Clear (this, theWithDestruction);
 
   Update();
@@ -132,27 +127,27 @@ void Graphic3d_Structure::Remove()
   // Pass Standard_False to Clear(..) method to avoid updating in
   // structure manager, it isn't necessary, besides of it structure manager
   // could be already destroyed and invalid pointers used in structure;
-  Standard_Integer Length = myGroups.Length();
-  for (Standard_Integer aGrId = 1; aGrId <= Length; ++aGrId)
-    myGroups.ChangeValue (aGrId)->Clear (Standard_False);
+  for (Graphic3d_SequenceOfGroup::Iterator aGroupIter (myCStructure->Groups()); aGroupIter.More(); aGroupIter.Next())
+  {
+    aGroupIter.ChangeValue()->Clear (Standard_False);
+  }
 
-  //        Standard_Address APtr = (void *) This ().operator->();
   Standard_Address APtr = (void *) this;
   // It is necessary to remove the eventual pointer on the structure
   // that can be destroyed, in the list of descendants
-  // of ancesters of this structure and in the list of ancesters
+  // of ancestors of this structure and in the list of ancestors
   // of descendants of the same structure.
 
-  Length = myDescendants.Length();
-  for (Standard_Integer i = 1; i <= Length; ++i)
+  const Standard_Integer aNbDesc = myDescendants.Length();
+  for (Standard_Integer aStructIter = 1; aStructIter <= aNbDesc; ++aStructIter)
   {
-    ((Graphic3d_Structure *)(myDescendants.Value (i)))->Remove (APtr, Graphic3d_TOC_ANCESTOR);
+    ((Graphic3d_Structure *)(myDescendants.ChangeValue (aStructIter)))->Remove (APtr, Graphic3d_TOC_ANCESTOR);
   }
 
-  Length = myAncestors.Length();
-  for (Standard_Integer i = 1; i <= Length; ++i)
+  const Standard_Integer aNbAnces = myAncestors.Length();
+  for (Standard_Integer aStructIter = 1; aStructIter <= aNbAnces; ++aStructIter)
   {
-    ((Graphic3d_Structure *)(myAncestors.Value (i)))->Remove (APtr, Graphic3d_TOC_DESCENDANT);
+    ((Graphic3d_Structure *)(myAncestors.ChangeValue (aStructIter)))->Remove (APtr, Graphic3d_TOC_DESCENDANT);
   }
 
   myCStructure->ContainsFacet = 0;
@@ -519,7 +514,7 @@ Standard_Boolean Graphic3d_Structure::ContainsFacet() const
   const Standard_Integer aNbDesc = myDescendants.Length();
   for (Standard_Integer aStructIter = 1; aStructIter <= aNbDesc; ++aStructIter)
   {
-    if (((Graphic3d_Structure *)(myDescendants.Value (aStructIter)))->ContainsFacet())
+    if (((const Graphic3d_Structure *)(myDescendants.Value (aStructIter)))->ContainsFacet())
     {
       return Standard_True;
     }
@@ -542,10 +537,9 @@ Standard_Boolean Graphic3d_Structure::IsEmpty() const
   // - if all these groups are empty
   // - or if all groups are empty and all their descendants are empty
   // - or if all its descendants are empty
-  const Standard_Integer aNbGroups = myGroups.Length();
-  for (Standard_Integer aGrpIter = 1; aGrpIter <= aNbGroups; ++aGrpIter)
+  for (Graphic3d_SequenceOfGroup::Iterator aGroupIter (myCStructure->Groups()); aGroupIter.More(); aGroupIter.Next())
   {
-    if (!myGroups.Value (aGrpIter)->IsEmpty())
+    if (!aGroupIter.Value()->IsEmpty())
     {
       return Standard_False;
     }
@@ -555,7 +549,7 @@ Standard_Boolean Graphic3d_Structure::IsEmpty() const
   const Standard_Integer aNbDesc = myDescendants.Length();
   for (Standard_Integer aDescIter = 1; aDescIter <= aNbDesc; ++aDescIter)
   {
-    if (!((Graphic3d_Structure* )(myDescendants.Value (aDescIter)))->IsEmpty())
+    if (!((const Graphic3d_Structure* )(myDescendants.Value (aDescIter)))->IsEmpty())
     {
       return Standard_False;
     }
@@ -685,23 +679,27 @@ Standard_Boolean Graphic3d_Structure::IsInfinite() const
 //=============================================================================
 void Graphic3d_Structure::GraphicClear (const Standard_Boolean theWithDestruction)
 {
+  if (myCStructure.IsNull())
+  {
+    return;
+  }
+
   // clean and empty each group
-  const Standard_Integer aLength = myGroups.Length();
-  for (Standard_Integer aGrId = 1; aGrId <= aLength; ++aGrId)
+  for (Graphic3d_SequenceOfGroup::Iterator aGroupIter (myCStructure->Groups()); aGroupIter.More(); aGroupIter.Next())
   {
-    myGroups.ChangeValue (aGrId)->Clear();
+    aGroupIter.ChangeValue()->Clear();
+  }
+  if (!theWithDestruction)
+  {
+    return;
   }
 
-  if (theWithDestruction)
+  while (!myCStructure->Groups().IsEmpty())
   {
-    while (!myGroups.IsEmpty())
-    {
-      Handle(Graphic3d_Group) aGroup = myGroups.First();
-      aGroup->Remove();
-    }
-
-    myCStructure->Clear();
+    Handle(Graphic3d_Group) aGroup = myCStructure->Groups().First();
+    aGroup->Remove();
   }
+  myCStructure->Clear();
 }
 
 //=============================================================================
@@ -945,7 +943,7 @@ Handle(Graphic3d_AspectFillArea3d) Graphic3d_Structure::FillArea3dAspect() const
 //=============================================================================
 const Graphic3d_SequenceOfGroup& Graphic3d_Structure::Groups() const
 {
-  return myGroups;
+  return myCStructure->Groups();
 }
 
 //=============================================================================
@@ -954,7 +952,7 @@ const Graphic3d_SequenceOfGroup& Graphic3d_Structure::Groups() const
 //=============================================================================
 Standard_Integer Graphic3d_Structure::NumberOfGroups() const
 {
-  return myGroups.Length();
+  return myCStructure->Groups().Length();
 }
 
 //=============================================================================
@@ -1783,17 +1781,6 @@ gp_Pnt Graphic3d_Structure::TransformPersistencePoint() const
 }
 
 //=============================================================================
-//function : Add
-//purpose  :
-//=============================================================================
-void Graphic3d_Structure::Add (const Handle(Graphic3d_Group)& theGroup)
-{
-  // Method called only by the constructor of Graphic3d_Group
-  // It is easy to check presence of <theGroup> in sequence myGroups.
-  myGroups.Append (theGroup);
-}
-
-//=============================================================================
 //function : Remove
 //purpose  :
 //=============================================================================
@@ -1832,20 +1819,28 @@ void Graphic3d_Structure::Remove (const Standard_Address           thePtr,
 }
 
 //=============================================================================
+//function : NewGroup
+//purpose  :
+//=============================================================================
+Handle(Graphic3d_Group) Graphic3d_Structure::NewGroup()
+{
+  return myCStructure->NewGroup (this);
+}
+
+//=============================================================================
 //function : Remove
 //purpose  :
 //=============================================================================
 void Graphic3d_Structure::Remove (const Handle(Graphic3d_Group)& theGroup)
 {
-  const Standard_Integer aNbGroups = myGroups.Length();
-  for (Standard_Integer aGrpIter = 1; aGrpIter <= aNbGroups; ++aGrpIter)
+  if (theGroup.IsNull()
+   || theGroup->myStructure != this)
   {
-    if (myGroups.Value (aGrpIter) == theGroup)
-    {
-      myGroups.Remove (aGrpIter);
-      return;
-    }
+    return;
   }
+
+  myCStructure->RemoveGroup (theGroup);
+  theGroup->myStructure = NULL;
 }
 
 //=============================================================================
@@ -1886,10 +1881,9 @@ void Graphic3d_Structure::MinMaxCoord (Standard_Real& theXMin,
   Standard_Real aYMax = RealFirst();
   Standard_Real aZMax = RealFirst();
   Standard_Real aGroupXMin, aGroupYMin, aGroupZMin, aGroupXMax, aGroupYMax, aGroupZMax;
-  for (Standard_Integer aGroupIt = 1; aGroupIt <= myGroups.Length(); aGroupIt++)
+  for (Graphic3d_SequenceOfGroup::Iterator aGroupIter (myCStructure->Groups()); aGroupIter.More(); aGroupIter.Next())
   {
-    const Handle(Graphic3d_Group)& aGroup = myGroups.Value (aGroupIt);
-
+    const Handle(Graphic3d_Group)& aGroup = aGroupIter.Value();
     if (aGroup->IsEmpty())
     {
       continue;
@@ -2409,7 +2403,7 @@ void Graphic3d_Structure::GraphicHighlight (const Aspect_TypeOfHighlightMethod t
       myCStructure->BoundBox.Color.r = float (anRGB[0]);
       myCStructure->BoundBox.Color.g = float (anRGB[1]);
       myCStructure->BoundBox.Color.b = float (anRGB[2]);
-      myCStructure->HighlightWithBndBox (Standard_True);
+      myCStructure->HighlightWithBndBox (this, Standard_True);
       break;
     }
   }
@@ -2445,7 +2439,7 @@ void Graphic3d_Structure::GraphicUnHighlight()
       myCStructure->UpdateNamedStatus();
       break;
     case Aspect_TOHM_BOUNDBOX:
-      myCStructure->HighlightWithBndBox (Standard_False);
+      myCStructure->HighlightWithBndBox (this, Standard_False);
       myCStructure->UpdateNamedStatus();
       break;
   }
@@ -2503,15 +2497,6 @@ Standard_Boolean Graphic3d_Structure::HLRValidation() const
   // 2/ they are not invalid.
   return myOwner != NULL
       && myCStructure->HLRValidation != 0;
-}
-
-//=======================================================================
-//function : CStructure
-//purpose  :
-//=======================================================================
-const Handle(Graphic3d_CStructure)& Graphic3d_Structure::CStructure() const
-{
-  return myCStructure;
 }
 
 //=======================================================================

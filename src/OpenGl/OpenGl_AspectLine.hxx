@@ -20,6 +20,7 @@
 
 #include <InterfaceGraphic_Graphic3d.hxx>
 #include <Aspect_TypeOfLine.hxx>
+#include <Graphic3d_CAspectLine.hxx>
 
 #include <Handle_OpenGl_ShaderProgram.hxx>
 

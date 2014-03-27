@@ -94,9 +94,6 @@ is
     exception MaterialDefinitionError inherits OutOfRange;
     ---Category: Exceptions
 
-    exception PickIdDefinitionError inherits OutOfRange;
-    ---Category: Exceptions
-
     exception PlotterDefinitionError inherits OutOfRange;
     ---Category: The exceptions
 
@@ -358,13 +355,16 @@ is
     ---Purpose: Defines the C structure
     ---Category: Imported types
 
-    imported CGroup;
-    ---Purpose: Defines the C structure <agroup>
-    ---Category: Imported types
+    imported CAspectFillArea;
+    imported CAspectMarker;
+    imported CAspectLine;
+    imported CAspectText;
 
     imported CStructure;
     ---Purpose: Defines the C structure <astructure>
     ---Category: Imported types
+
+    pointer CStructurePtr to CStructure from Graphic3d;
 
     imported CStructure_Handle;
 
@@ -474,7 +474,7 @@ is
     ---Purpose: Grouping text attributes.
     ---Category: Classes
 
-    class Group;
+    deferred class Group;
     ---Purpose: For grouping together primitives in a structure
     ---Category: Classes
 
@@ -485,6 +485,8 @@ is
     class Structure;
     ---Purpose: Graphic object.
     ---Category: Classes
+
+    pointer StructurePtr to Structure from Graphic3d;
 
     deferred class GraphicDriver;
     ---Purpose: Defines a graphic driver for 3d interface
@@ -524,23 +526,8 @@ is
             (Address from Standard);
     ---Category: Instantiated classes
 
-    class SetOfGroup instantiates
-            Set from TCollection (Group from Graphic3d);
-    ---Category: Instantiated classes
+    imported SequenceOfGroup;
 
-    class HSetOfGroup instantiates
-            HSet from TCollection
-            (Group from Graphic3d, SetOfGroup);
-    ---Category: Instantiated classes
-
-    class SequenceOfGroup instantiates
-                Sequence from TCollection (Group from Graphic3d);
-
-    ---Category: Instantiated classes
-
-    class HSequenceOfGroup instantiates
-            HSequence from TCollection
-        (Group from Graphic3d, SequenceOfGroup from Graphic3d);
     ---Category: Instantiated classes
 
     class MapOfStructure instantiates

@@ -244,20 +244,6 @@ void Prs3d_Presentation::Move  (const Quantity_Length X,
   SetTransform(Array, Graphic3d_TOC_POSTCONCATENATE);
 }
 
-
-//=======================================================================
-//function : Clear
-//purpose  : 
-//=======================================================================
-void Prs3d_Presentation::Clear(const Standard_Boolean WithDestruction)
-{
-  Graphic3d_Structure::Clear(WithDestruction);
-  // myCurrentGroup.Nullify();
-  myCurrentGroup = NULL;
-
-}
-
-
 //=======================================================================
 //function : Connect
 //purpose  : 
@@ -294,34 +280,12 @@ void Prs3d_Presentation::RemoveAll ()
 //=======================================================================
 Handle(Graphic3d_Group) Prs3d_Presentation::CurrentGroup () const 
 {
-  if(myCurrentGroup.IsNull()){
-    void *ptr = (void*) this;
-    Prs3d_Presentation* p = (Prs3d_Presentation *)ptr;
-    p->NewGroup();
+  if (Groups().IsEmpty())
+  {
+    return const_cast<Prs3d_Presentation* >(this)->NewGroup();
   }
-  return myCurrentGroup;
+  return Groups().Last();
 }
-
-
-//=======================================================================
-//function : NewGroup
-//purpose  : 
-//=======================================================================
-Handle(Graphic3d_Group) Prs3d_Presentation::NewGroup ()
-{
-  myCurrentGroup = new Graphic3d_Group(this);
-  return myCurrentGroup;
-}
-
-//=======================================================================
-//function : Display
-//purpose  : 
-//=======================================================================
-void Prs3d_Presentation::Display ()
-{
-  Graphic3d_Structure::Display();
-}
-
 
 //=======================================================================
 //function : Compute

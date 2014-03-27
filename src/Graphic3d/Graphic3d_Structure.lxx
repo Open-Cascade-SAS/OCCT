@@ -1,5 +1,6 @@
-// Copyright (c) 1995-1999 Matra Datavision
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Created on: 2014-03-23
+// Created by: Kirill Gavrilov
+// Copyright (c) 2014 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -12,21 +13,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef GROUP_PXX_INCLUDED
-#define GROUP_PXX_INCLUDED
-
-#include <Graphic3d_Structure.pxx>
-
-// groups identifiers : possible range
-#define Group_IDMIN 100
-// /2 pour eviter les problemes d'overflow
-#define Group_IDMAX INT_MAX/2
-
-#define MyIsEmpty			MyCBitFields.bool1
-#define MyContainsFacet			MyCBitFields.bool2
-#define MyNotUsed1			MyCBitFields.bool3
-#define MyNotUsed2			MyCBitFields.bool4
-
-#define MyStructure	((Graphic3d_Structure *) MyPtrStructure)
-
-#endif
+// =======================================================================
+// function : CStructure
+// purpose  : Returns the low-level structure
+// =======================================================================
+inline const Handle(Graphic3d_CStructure)& Graphic3d_Structure::CStructure() const
+{
+  return myCStructure;
+}

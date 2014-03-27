@@ -65,8 +65,8 @@ void V3d_Plane::Display (const Handle(V3d_View)& theView,
   }
 
   myGraphicStructure = new Graphic3d_Structure (aViewer->Viewer());
-  Handle(Graphic3d_Group) aGroup = new Graphic3d_Group (myGraphicStructure);
-  Handle(Graphic3d_AspectFillArea3d) anAsp = new Graphic3d_AspectFillArea3d();
+  Handle(Graphic3d_Group)            aGroup = myGraphicStructure->NewGroup();
+  Handle(Graphic3d_AspectFillArea3d) anAsp  = new Graphic3d_AspectFillArea3d();
   Graphic3d_MaterialAspect aPlastic (Graphic3d_NOM_PLASTIC);
   aPlastic.SetColor (theColor);
   aPlastic.SetTransparency (0.5);

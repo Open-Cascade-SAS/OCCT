@@ -65,6 +65,11 @@ void PrsMgr_Presentation3d::Display(const Standard_Boolean theIsHighlight)
 
 void PrsMgr_Presentation3d::Erase ()
 {
+  if (myStructure.IsNull())
+  {
+    return;
+  }
+
   // Erase structure from structure manager
   myStructure->Erase();
   myStructure->Clear();
@@ -95,9 +100,13 @@ void PrsMgr_Presentation3d::Clear() {
   //    2. The speed for animation is constant
   //myPresentableObject = NULL;
   SetUpdateStatus(Standard_True);
+  if (myStructure.IsNull())
+  {
+    return;
+  }
+
   myStructure->Clear(Standard_True);
   //  myStructure->Clear(Standard_False);
-
   myStructure->RemoveAll();
 }
 

@@ -61,28 +61,3 @@ Standard_Boolean OpenGl_GraphicDriver::IsGLLightEnabled( const Graphic3d_CView& 
     return aCView->WS->UseGLLight();
   return Standard_False;
 }
-
-void OpenGl_GraphicDriver::PrimitiveArray( const Graphic3d_CGroup& ACGroup,
-                                          const Graphic3d_PrimitiveArray& parray,
-                                          const Standard_Boolean /*EvalMinMax*/ )
-{
-  if ( ACGroup.ptrGroup && parray )
-  {
-    OpenGl_PrimitiveArray *aparray = new OpenGl_PrimitiveArray( (CALL_DEF_PARRAY *) parray );
-    ((OpenGl_Group *)ACGroup.ptrGroup)->AddElement (aparray);
-  }
-}
-
-void OpenGl_GraphicDriver::UserDraw (const Graphic3d_CGroup&    theCGroup,
-                                     const Graphic3d_CUserDraw& theUserDraw)
-{
-  if (theCGroup.ptrGroup != NULL
-   && myUserDrawCallback != NULL)
-  {
-    OpenGl_Element* aUserDraw = myUserDrawCallback(&theUserDraw);
-    if (aUserDraw != NULL)
-    {
-      ((OpenGl_Group* )theCGroup.ptrGroup)->AddElement (aUserDraw);
-    }
-  }
-}

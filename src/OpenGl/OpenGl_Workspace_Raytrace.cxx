@@ -379,17 +379,16 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceStructure (const OpenGl_Structure*
     myRaytraceGeometry.Materials.push_back (aStructMaterial);
   }
 
-  for (OpenGl_ListOfGroup::Iterator anItg (theStructure->Groups()); anItg.More(); anItg.Next())
+  for (OpenGl_Structure::GroupIterator aGroupIter (theStructure->DrawGroups()); aGroupIter.More(); aGroupIter.Next())
   {
     // Get group material
     Standard_Integer aGroupMatID = -1;
-
-    if (anItg.Value()->AspectFace() != NULL)
+    if (aGroupIter.Value()->AspectFace() != NULL)
     {
       aGroupMatID = static_cast<Standard_Integer> (myRaytraceGeometry.Materials.size());
 
       OpenGl_RaytraceMaterial aGroupMaterial;
-      CreateMaterial (anItg.Value()->AspectFace()->IntFront(), aGroupMaterial);
+      CreateMaterial (aGroupIter.Value()->AspectFace()->IntFront(), aGroupMaterial);
 
       myRaytraceGeometry.Materials.push_back (aGroupMaterial);
     }
@@ -404,7 +403,7 @@ Standard_Boolean OpenGl_Workspace::AddRaytraceStructure (const OpenGl_Structure*
     }
 
     // Add OpenGL elements from group (extract primitives arrays and aspects)
-    for (const OpenGl_ElementNode* aNode = anItg.Value()->FirstNode(); aNode != NULL; aNode = aNode->next)
+    for (const OpenGl_ElementNode* aNode = aGroupIter.Value()->FirstNode(); aNode != NULL; aNode = aNode->next)
     {
       OpenGl_AspectFace* anAspect = dynamic_cast<OpenGl_AspectFace*> (aNode->elem);
       if (anAspect != NULL)

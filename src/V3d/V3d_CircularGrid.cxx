@@ -69,7 +69,7 @@
 V3d_CircularGrid::V3d_CircularGrid (const V3d_ViewerPointer& aViewer, const Quantity_Color& aColor, const Quantity_Color& aTenthColor)
 : Aspect_CircularGrid (1.,8),
   myStructure (new Graphic3d_Structure (aViewer->Viewer ())),
-  myGroup (new Graphic3d_Group (myStructure)),
+  myGroup (myStructure->NewGroup()),
   myViewer (aViewer),
   myCurAreDefined (Standard_False)
 {

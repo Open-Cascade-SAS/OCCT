@@ -307,7 +307,7 @@ void StdSelect_ViewerSelector3d::DisplayAreas (const Handle(V3d_View)& theView)
 
   if (myareagroup.IsNull())
   {
-    myareagroup  = new Graphic3d_Group (mystruct);
+    myareagroup  = mystruct->NewGroup();
   }
 
   SelectMgr_DataMapIteratorOfDataMapOfIntegerSensitive anIt (myentities);
@@ -545,7 +545,7 @@ void StdSelect_ViewerSelector3d::DisplaySensitive (const Handle(V3d_View)& theVi
 
   if (mysensgroup.IsNull())
   {
-    mysensgroup = new Graphic3d_Group (mystruct);
+    mysensgroup = mystruct->NewGroup();
   }
 
   Quantity_Color aColor (Quantity_NOC_INDIANRED3);
@@ -609,7 +609,7 @@ void StdSelect_ViewerSelector3d::DisplaySensitive (const Handle(SelectMgr_Select
 
   if (mysensgroup.IsNull())
   {
-    mysensgroup = new Graphic3d_Group (mystruct);
+    mysensgroup = mystruct->NewGroup();
     Quantity_Color aColor (Quantity_NOC_INDIANRED3);
     Handle(Graphic3d_AspectMarker3d) aMarkerAspect =
       new Graphic3d_AspectMarker3d (Aspect_TOM_O_PLUS, aColor, 2.0);
@@ -647,9 +647,8 @@ void StdSelect_ViewerSelector3d::DisplayAreas (const Handle(SelectMgr_Selection)
 
   if (mysensgroup.IsNull())
   {
-    myareagroup = new Graphic3d_Group (mystruct);
-    myareagroup->SetGroupPrimitivesAspect (
-      new Graphic3d_AspectLine3d (Quantity_NOC_AQUAMARINE1, Aspect_TOL_DASH, 1.0));
+    myareagroup = mystruct->NewGroup();
+    myareagroup->SetGroupPrimitivesAspect (new Graphic3d_AspectLine3d (Quantity_NOC_AQUAMARINE1, Aspect_TOL_DASH, 1.0));
   }
 
   if (theToClearOthers)

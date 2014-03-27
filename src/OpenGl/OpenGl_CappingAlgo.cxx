@@ -19,6 +19,7 @@
 #include <OpenGl_PrimitiveArray.hxx>
 #include <OpenGl_CappingPlaneResource.hxx>
 #include <OpenGl_Vec.hxx>
+#include <OpenGl_Structure.hxx>
 
 IMPLEMENT_STANDARD_HANDLE(OpenGl_CappingAlgoFilter, OpenGl_RenderFilter)
 IMPLEMENT_STANDARD_RTTIEXT(OpenGl_CappingAlgoFilter, OpenGl_RenderFilter)
@@ -63,8 +64,8 @@ namespace
 // function : RenderCapping
 // purpose  :
 // =======================================================================
-void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)& theWorkspace,
-                                        const OpenGl_ListOfGroup& theGroups)
+void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)&  theWorkspace,
+                                        const Graphic3d_SequenceOfGroup& theGroups)
 {
   const Handle(OpenGl_Context)& aContext = theWorkspace->GetGlContext();
 
@@ -134,8 +135,7 @@ void OpenGl_CappingAlgo::RenderCapping (const Handle(OpenGl_Workspace)& theWorks
     glStencilFunc (GL_ALWAYS, 1, 0x01);
     glStencilOp (GL_KEEP, GL_INVERT, GL_INVERT);
 
-    OpenGl_ListOfGroup::Iterator aGroupIt (theGroups);
-    for (; aGroupIt.More(); aGroupIt.Next())
+    for (OpenGl_Structure::GroupIterator aGroupIt (theGroups); aGroupIt.More(); aGroupIt.Next())
     {
       aGroupIt.Value()->Render (theWorkspace);
     }

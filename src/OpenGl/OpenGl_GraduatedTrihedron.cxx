@@ -198,9 +198,9 @@ void OpenGl_GraduatedTrihedron::Release (const Handle(OpenGl_Context)& theCtx)
 }
 
 OpenGl_GraduatedTrihedron::OpenGl_GraduatedTrihedron (const Graphic3d_CGraduatedTrihedron& theData)
-: myLabelX (theData.xname, OpenGl_Vec3(1.0f, 0.0f, 0.0f), THE_LABEL_PARAMS),
-  myLabelY (theData.yname, OpenGl_Vec3(0.0f, 1.0f, 0.0f), THE_LABEL_PARAMS),
-  myLabelZ (theData.zname, OpenGl_Vec3(0.0f, 0.0f, 1.0f), THE_LABEL_PARAMS),
+: myLabelX (NCollection_String ((Standard_Utf16Char* )theData.xname.ToExtString()).ToCString(), OpenGl_Vec3(1.0f, 0.0f, 0.0f), THE_LABEL_PARAMS),
+  myLabelY (NCollection_String ((Standard_Utf16Char* )theData.yname.ToExtString()).ToCString(), OpenGl_Vec3(0.0f, 1.0f, 0.0f), THE_LABEL_PARAMS),
+  myLabelZ (NCollection_String ((Standard_Utf16Char* )theData.zname.ToExtString()).ToCString(), OpenGl_Vec3(0.0f, 0.0f, 1.0f), THE_LABEL_PARAMS),
   myToDrawXName (theData.xdrawname == Standard_True),
   myToDrawYName (theData.ydrawname == Standard_True),
   myToDrawZName (theData.zdrawname == Standard_True),

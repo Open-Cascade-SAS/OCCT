@@ -61,16 +61,6 @@ void Graphic3d_GraphicDriver::PrintBoolean (const Standard_CString AComment, con
 
 }
 
-void Graphic3d_GraphicDriver::PrintCGroup (const Graphic3d_CGroup& ACGroup, const Standard_Integer AField) const {
-
-  if (AField) {
-    cout << "\tstruct id " << ACGroup.Struct->Id << "\n";
-    cout << "\tgroup\n";
-    cout << flush;
-  }
-
-}
-
 void Graphic3d_GraphicDriver::PrintCLight (const Graphic3d_CLight& theCLight,
                                            const Standard_Integer  theField) const
 {

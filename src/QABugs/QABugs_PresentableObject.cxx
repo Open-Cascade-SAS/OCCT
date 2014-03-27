@@ -35,7 +35,7 @@ void QABugs_PresentableObject::Compute(const Handle(PrsMgr_PresentationManager3d
 				const Standard_Integer theMode)
 {
   Handle(Graphic3d_Structure) aStructure = Handle(Graphic3d_Structure)::DownCast (thePrs);
-  Handle(Graphic3d_Group) aGroup = new Graphic3d_Group (aStructure);
+  Handle(Graphic3d_Group)     aGroup     = aStructure->NewGroup();
   Handle_Prs3d_ShadingAspect anAspect = myDrawer->ShadingAspect();
   Graphic3d_MaterialAspect aMat = anAspect->Aspect()->FrontMaterial();
   aMat.SetReflectionModeOff (Graphic3d_TOR_AMBIENT);

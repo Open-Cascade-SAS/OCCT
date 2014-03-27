@@ -14,12 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
---      27/09/97 ; PCT : add manual control of  textures
---              11/97 ; CAL : ajout polyline par 2 points
---      16/06/2000 : ATS: Study G005 - Group store presentations of it's objects in field
---                        MyListOfPArray to avoid deletion of handle-manipulating 
---                        primitives.
-class Group from Graphic3d inherits TShared
+deferred class Group from Graphic3d inherits TShared
     
         ---Version:
 
@@ -73,11 +68,16 @@ class Group from Graphic3d inherits TShared
         AspectMarker3d              from Graphic3d,
         AspectText3d                from Graphic3d,
         AspectFillArea3d            from Graphic3d,
+        CAspectLine                 from Graphic3d,
+        CAspectFillArea             from Graphic3d,
+        CAspectMarker               from Graphic3d,
+        CAspectText                 from Graphic3d,
+        CStructurePtr               from Graphic3d,
         HorizontalTextAlignment     from Graphic3d,
         CBitFields4                 from Graphic3d,
-        CGroup                      from Graphic3d,
         GraphicDriver               from Graphic3d,
         Structure                   from Graphic3d,
+        StructurePtr                from Graphic3d,
         TextPath                    from Graphic3d,
         Vector                      from Graphic3d,
         Array1OfVertex              from Graphic3d,
@@ -91,13 +91,13 @@ class Group from Graphic3d inherits TShared
         Ax2                         from gp
     
     raises
-    
+
         GroupDefinitionError        from Graphic3d,
-        PickIdDefinitionError       from Graphic3d,
+
     OutOfRange          from Standard
     
     is
-        Create ( AStructure : Structure from Graphic3d )
+        Initialize (theStructure : Structure from Graphic3d)
             returns mutable Group from Graphic3d;
         ---Level: Public
         ---Purpose: Creates a group in the structure <AStructure>.
@@ -108,7 +108,7 @@ class Group from Graphic3d inherits TShared
     
         Clear ( me  : mutable;
                 theUpdateStructureMgr : Boolean from Standard = Standard_True )
-            is static;
+        is virtual;
         ---Level: Public
         ---Purpose: Supress all primitives and attributes of <me>.
         --          To clear group without update in Graphic3d_StructureManager
@@ -118,7 +118,23 @@ class Group from Graphic3d inherits TShared
         --          already released (pointers are used here to avoid handle 
         --          cross-reference);
         ---Category: Methods to modify the class definition
-    
+
+        UpdateAspectLine ( me          : mutable;
+                           theIsGlobal : Boolean from Standard )
+        is deferred;
+
+        UpdateAspectFace ( me          : mutable;
+                           theIsGlobal : Boolean from Standard )
+        is deferred;
+
+        UpdateAspectMarker ( me          : mutable;
+                             theIsGlobal : Boolean from Standard )
+        is deferred;
+
+        UpdateAspectText ( me          : mutable;
+                           theIsGlobal : Boolean from Standard )
+        is deferred;
+
         Destroy ( me    : mutable )
             is static;
         ---Level: Public
@@ -264,7 +280,7 @@ class Group from Graphic3d inherits TShared
             AHta    : HorizontalTextAlignment from Graphic3d;
             AVta    : VerticalTextAlignment from Graphic3d;
             EvalMinMax  : Boolean from Standard = Standard_True )
-            is static;
+        is virtual;
         ---Level: Public
         ---Purpose: Creates the string <AText> at position <APoint>.
         --      The 3D point of attachment is projected. The text is
@@ -277,7 +293,7 @@ class Group from Graphic3d inherits TShared
         --      AAngle  : Orientation of the text
         --            (with respect to the horizontal).
         ---Category: Methods to create Text
-    
+
         Text ( me   : mutable;
                AText    : CString from Standard;
                APoint   : Vertex from Graphic3d;
@@ -350,9 +366,9 @@ class Group from Graphic3d inherits TShared
         ---------------------------------------
 
     AddPrimitiveArray( me      : mutable;
-                       elem    : ArrayOfPrimitives from Graphic3d;
-          EvalMinMax: Boolean from Standard = Standard_True );
-        ---Level: Public
+                       thePrim : ArrayOfPrimitives from Graphic3d;
+                       theToEvalMinMax : Boolean from Standard = Standard_True ) is virtual;
+    ---Level: Public
     ---Purpose: Adds an array of primitives for display
 
     Marker ( me              : mutable;
@@ -362,24 +378,23 @@ class Group from Graphic3d inherits TShared
     ---Level: Public
     ---Purpose: Creates a primitive array with single marker using AddPrimitiveArray().
 
-    UserDraw ( me           : mutable;
-               AnObject     : Address from Standard; 
-               EvalMinMax   : Boolean from Standard = Standard_True; 
-               ContainsFacet: Boolean from Standard = Standard_False
-    )
+    UserDraw ( me               : mutable;
+               theObject        : Address from Standard;
+               theToEvalMinMax  : Boolean from Standard = Standard_True;
+               theContainsFacet : Boolean from Standard = Standard_False )
+    is virtual;
     ---Level: Public
-    ---Purpose: Creates an UserDraw primitive
-    --  Category: Methods to create UserDraw
-    --  Warning: Raises GroupDefinitionError if ...
-    raises GroupDefinitionError from Graphic3d is static;
+    ---Purpose: Creates a UserDraw primitive using obsolete API.
 
     SetStencilTestOptions (me          : mutable;
-                           theIsEnabled: Boolean from Standard);
+                           theIsEnabled: Boolean from Standard)
+    is deferred;
     ---Purpose: sets the stencil test to theIsEnabled state;
 
     SetFlippingOptions (me           : mutable;
                         theIsEnabled : Boolean from Standard;
-                        theRefPlane  : Ax2 from gp);
+                        theRefPlane  : Ax2 from gp)
+    is deferred;
     ---Purpose: sets the flipping to theIsEnabled state.
 
         ----------------------------
@@ -493,31 +508,26 @@ class Group from Graphic3d inherits TShared
     --
     -- Reminder :   A group is defined in a structure
     --          It acts as the smallest editable entity.
-    
-        -- the associated C structure 
-        MyCGroup        :   CGroup from Graphic3d;
-    
-        -- the graphic driver used
-        MyGraphicDriver     :   GraphicDriver from Graphic3d;
-    
-        -- the state of the different contexts for primitives
-        MyCBitFields        :   CBitFields4 from Graphic3d;
-    
-        -- the structure contains the group
-        MyPtrStructure      :   Address from Standard;
-    
-        -- the min-max
-    MyBounds                :       CBounds from Graphic3d;
 
-    MyListOfPArray          :   ListOfPArray from Graphic3d;
+  -- the state of the different contexts for primitives
+  myCBitFields   : CBitFields4 from Graphic3d is protected;
 
-    MyMarkArray             :       HArray1OfByte from TColStd;
-    MyMarkWidth             :       Integer from Standard;
-    MyMarkHeight            :       Integer from Standard;
+  -- the structure contains the group
+  myStructure    : StructurePtr from Graphic3d is protected;
 
-    friends
-    
-        Remove from class Structure from Graphic3d
-            ( me : mutable; AGroup : Group from Graphic3d )
-    
-    end Group;
+  -- the min-max
+  myBounds       : CBounds from Graphic3d is protected;
+
+  ContextLine     : CAspectLine     from Graphic3d is protected;
+  ContextFillArea : CAspectFillArea from Graphic3d is protected;
+  ContextMarker   : CAspectMarker   from Graphic3d is protected;
+  ContextText     : CAspectText     from Graphic3d is protected;
+
+  -- temporary field - to be removed
+  myListOfPArray : ListOfPArray from Graphic3d is protected;
+
+friends
+
+  class Structure from Graphic3d
+
+end Group;

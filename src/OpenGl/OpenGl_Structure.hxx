@@ -36,44 +36,76 @@ class OpenGl_GraphicDriver;
 
 typedef NCollection_List<const OpenGl_Structure* > OpenGl_ListOfStructure;
 
+//! Implementation of low-level graphic structure.
 class OpenGl_Structure : public Graphic3d_CStructure
 {
   friend class OpenGl_Group;
 
 public:
 
-  //! Create empty structure
-  OpenGl_Structure (const Handle(Graphic3d_StructureManager)& theManager);
+  //! Auxiliary wrapper to iterate OpenGl_Group sequence.
+  class GroupIterator
+  {
 
-  //! Setup structure graphic state
-  virtual void UpdateNamedStatus();
+  public:
+    GroupIterator (const Graphic3d_SequenceOfGroup& theGroups) : myIter (theGroups) {}
+    Standard_Boolean More() const     { return myIter.More(); }
+    void Next()                       { myIter.Next(); }
+    const OpenGl_Group* Value() const { return (const OpenGl_Group* )(myIter.Value().operator->()); }
+    OpenGl_Group*       ChangeValue() { return (OpenGl_Group* )(myIter.ChangeValue().operator->()); }
 
-  //! Clear graphic data
-  virtual void Clear();
+  private:
+    Graphic3d_SequenceOfGroup::Iterator myIter;
 
-  //! Connect other structure to this one
-  virtual void Connect    (Graphic3d_CStructure& theStructure);
-
-  //! Disconnect other structure to this one
-  virtual void Disconnect (Graphic3d_CStructure& theStructure);
-
-  //! Synchronize structure aspects
-  virtual void UpdateAspects();
-
-  //! Synchronize structure transformation
-  virtual void UpdateTransformation();
-
-  //! Highlight entire structure with color
-  virtual void HighlightWithColor  (const Graphic3d_Vec3&  theColor,
-                                    const Standard_Boolean theToCreate);
-
-  //! Highlight structure using boundary box
-  virtual void HighlightWithBndBox (const Standard_Boolean theToCreate);
-
-  //! Create shadow link to this structure
-  virtual Handle(Graphic3d_CStructure) ShadowLink (const Handle(Graphic3d_StructureManager)& theManager) const;
+  };
 
 public:
+
+  //! Create empty structure
+  Standard_EXPORT OpenGl_Structure (const Handle(Graphic3d_StructureManager)& theManager);
+
+  //! Setup structure graphic state
+  Standard_EXPORT virtual void UpdateNamedStatus();
+
+  //! Clear graphic data
+  Standard_EXPORT virtual void Clear();
+
+  //! Connect other structure to this one
+  Standard_EXPORT virtual void Connect    (Graphic3d_CStructure& theStructure);
+
+  //! Disconnect other structure to this one
+  Standard_EXPORT virtual void Disconnect (Graphic3d_CStructure& theStructure);
+
+  //! Synchronize structure aspects
+  Standard_EXPORT virtual void UpdateAspects();
+
+  //! Synchronize structure transformation
+  Standard_EXPORT virtual void UpdateTransformation();
+
+  //! Highlight entire structure with color
+  Standard_EXPORT virtual void HighlightWithColor (const Graphic3d_Vec3&  theColor,
+                                                   const Standard_Boolean theToCreate);
+
+  //! Highlight structure using boundary box
+  Standard_EXPORT virtual void HighlightWithBndBox (const Handle(Graphic3d_Structure)& theStruct,
+                                                    const Standard_Boolean             theToCreate);
+
+  //! Create shadow link to this structure
+  Standard_EXPORT virtual Handle(Graphic3d_CStructure) ShadowLink (const Handle(Graphic3d_StructureManager)& theManager) const;
+
+  //! Create new group within this structure
+  Standard_EXPORT virtual Handle(Graphic3d_Group) NewGroup (const Handle(Graphic3d_Structure)& theStruct);
+
+  //! Remove group from this structure
+  Standard_EXPORT virtual void RemoveGroup (const Handle(Graphic3d_Group)& theGroup);
+
+public:
+
+  //! @return graphic groups
+  virtual const Graphic3d_SequenceOfGroup& DrawGroups() const
+  {
+    return myGroups;
+  }
 
   //! Access graphic driver
   OpenGl_GraphicDriver* GlDriver() const
@@ -88,28 +120,22 @@ public:
   void SetAspectMarker (const CALL_DEF_CONTEXTMARKER& theAspect);
   void SetAspectText   (const CALL_DEF_CONTEXTTEXT &theAspect);
 
-  void SetHighlightBox (const Handle(OpenGl_Context)& theGlCtx,
-                        const CALL_DEF_BOUNDBOX& theBoundBox);
+  void clearHighlightBox (const Handle(OpenGl_Context)& theGlCtx);
 
-  void ClearHighlightBox (const Handle(OpenGl_Context)& theGlCtx);
-
-  void SetHighlightColor (const Handle(OpenGl_Context)& theGlCtx,
+  void setHighlightColor (const Handle(OpenGl_Context)& theGlCtx,
                           const Graphic3d_Vec3&         theColor);
 
-  void ClearHighlightColor (const Handle(OpenGl_Context)& theGlCtx);
+  void clearHighlightColor (const Handle(OpenGl_Context)& theGlCtx);
 
   Standard_Boolean IsVisible() const { return !(myNamedStatus & OPENGL_NS_HIDE); }
 
-  OpenGl_Group* AddGroup();
-  void RemoveGroup (const Handle(OpenGl_Context)& theGlCtx,
-                    const OpenGl_Group*           theGroup);
-  void Clear (const Handle(OpenGl_Context)& theGlCtx);
+  Standard_EXPORT void Clear (const Handle(OpenGl_Context)& theGlCtx);
 
   //! Set z layer ID to display the structure in specified layer
-  void SetZLayer (const Standard_Integer theLayerIndex);
+  Standard_EXPORT void SetZLayer (const Standard_Integer theLayerIndex);
 
   //! Get z layer ID
-  Standard_Integer GetZLayer () const;
+  Standard_EXPORT Standard_Integer GetZLayer() const;
 
   virtual void Render  (const Handle(OpenGl_Workspace)& theWorkspace) const;
   virtual void Release (const Handle(OpenGl_Context)&   theGlCtx);
@@ -120,10 +146,7 @@ public:
   //!
   //! Notice however that reusage of this structure after calling this method is incorrect
   //! and will lead to broken visualization due to loosed data.
-  void ReleaseGlResources (const Handle(OpenGl_Context)& theGlCtx);
-
-  //! Returns list of OpenGL groups.
-  virtual const OpenGl_ListOfGroup& Groups() const { return myGroups; }
+  Standard_EXPORT void ReleaseGlResources (const Handle(OpenGl_Context)& theGlCtx);
 
   //! Returns list of connected OpenGL structures.
   const OpenGl_ListOfStructure& ConnectedStructures() const { return myConnected; }
@@ -152,7 +175,7 @@ public:
 
 protected:
 
-  virtual ~OpenGl_Structure();
+  Standard_EXPORT virtual ~OpenGl_Structure();
 
 #ifdef HAVE_OPENCL
 
@@ -185,14 +208,13 @@ protected:
   OpenGl_AspectMarker*       myAspectMarker;
   OpenGl_AspectText*         myAspectText;
 
-  OpenGl_Group*              myHighlightBox;
+  Handle(OpenGl_Group)       myHighlightBox;
   TEL_COLOUR*                myHighlightColor;
 
   int                        myNamedStatus;
   int                        myZLayer;
 
   OpenGl_ListOfStructure           myConnected;
-  OpenGl_ListOfGroup               myGroups;
 
 #ifdef HAVE_OPENCL
   mutable OpenGl_ListOfStructure   myAncestorStructures;

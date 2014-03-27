@@ -43,7 +43,6 @@
 #include <gp_Ax2.hxx>
 #include <Graphic3d_CView.hxx>
 #include <Graphic3d_CStructure.hxx>
-#include <Graphic3d_CGroup.hxx>
 #include <Graphic3d_TypeOfPrimitive.hxx>
 #include <Graphic3d_CPick.hxx>
 #include <Graphic3d_TextPath.hxx>
@@ -108,20 +107,6 @@ public:
   Standard_EXPORT Standard_Integer InquireLightLimit ();
   Standard_EXPORT Standard_Integer InquireViewLimit ();
 
-public: // Methods for graphical groups
-
-  Standard_EXPORT void ClearGroup (const Graphic3d_CGroup& ACGroup);
-  Standard_EXPORT void FaceContextGroup (const Graphic3d_CGroup& theCGroup,
-                                         const Standard_Integer  theNoInsert);
-  Standard_EXPORT void Group (Graphic3d_CGroup& theCGroup);
-  Standard_EXPORT void LineContextGroup (const Graphic3d_CGroup& theCGroup,
-                                         const Standard_Integer  theNoInsert);
-  Standard_EXPORT void MarkerContextGroup (const Graphic3d_CGroup& theCGroup,
-                                           const Standard_Integer  theNoInsert);
-  Standard_EXPORT void RemoveGroup (const Graphic3d_CGroup& theCGroup);
-  Standard_EXPORT void TextContextGroup (const Graphic3d_CGroup& theCGroup,
-                                         const Standard_Integer  theNoInsert);
-
 public: // Methods for graphical structures
 
   Standard_EXPORT void DisplayStructure (const Graphic3d_CView& theCView,
@@ -171,13 +156,6 @@ public:
   Standard_EXPORT void Transparency (const Graphic3d_CView& ACView, const Standard_Boolean AFlag);
   Standard_EXPORT Standard_Boolean View (Graphic3d_CView& ACView);
   Standard_EXPORT void Environment (const Graphic3d_CView& ACView);
-  Standard_EXPORT void SetStencilTestOptions (const Graphic3d_CGroup& theCGroup, const Standard_Boolean theIsEnabled);
-  Standard_EXPORT void Text (const Graphic3d_CGroup& ACGroup, const Standard_CString AText, const Graphic3d_Vertex& APoint, const Standard_Real AHeight, const Quantity_PlaneAngle AAngle, const Graphic3d_TextPath ATp, const Graphic3d_HorizontalTextAlignment AHta, const Graphic3d_VerticalTextAlignment AVta, const Standard_Boolean EvalMinMax = Standard_True);
-  Standard_EXPORT void Text (const Graphic3d_CGroup& ACGroup, const Standard_CString AText, const Graphic3d_Vertex& APoint, const Standard_Real AHeight, const Standard_Boolean EvalMinMax = Standard_True);
-  Standard_EXPORT void Text (const Graphic3d_CGroup& ACGroup, const TCollection_ExtendedString& AText, const Graphic3d_Vertex& APoint, const Standard_Real AHeight, const Quantity_PlaneAngle AAngle, const Graphic3d_TextPath ATp, const Graphic3d_HorizontalTextAlignment AHta, const Graphic3d_VerticalTextAlignment AVta, const Standard_Boolean EvalMinMax = Standard_True);
-  Standard_EXPORT void Text (const Graphic3d_CGroup& ACGroup, const TCollection_ExtendedString& AText, const Graphic3d_Vertex& APoint, const Standard_Real AHeight, const Standard_Boolean EvalMinMax = Standard_True);
-  Standard_EXPORT void PrimitiveArray (const Graphic3d_CGroup& ACGroup,const Graphic3d_PrimitiveArray& parray,const Standard_Boolean EvalMinMax = Standard_True);
-  Standard_EXPORT void UserDraw (const Graphic3d_CGroup& ACGroup,const Graphic3d_CUserDraw& AUserDraw);
   Standard_EXPORT void ZBufferTriedronSetup (const Quantity_NameOfColor XColor = Quantity_NOC_RED, const Quantity_NameOfColor YColor = Quantity_NOC_GREEN, const Quantity_NameOfColor ZColor = Quantity_NOC_BLUE1, const Standard_Real SizeRatio = 0.8, const Standard_Real AxisDiametr = 0.05, const Standard_Integer NbFacettes = 12);
   Standard_EXPORT void TriedronDisplay (const Graphic3d_CView& ACView, const Aspect_TypeOfTriedronPosition APosition = Aspect_TOTP_CENTER, const Quantity_NameOfColor AColor = Quantity_NOC_WHITE, const Standard_Real AScale = 0.02, const Standard_Boolean AsWireframe = Standard_True);
   Standard_EXPORT void TriedronErase (const Graphic3d_CView& ACView);
@@ -202,7 +180,6 @@ public:
   Standard_EXPORT void SetTransparency (const Standard_ShortReal ATransparency);
   Standard_EXPORT void UnsetTransparency ();
   Standard_EXPORT void SetLineAttributes (const Standard_Integer Type,const Standard_ShortReal Width);
-  Standard_EXPORT void SetFlippingOptions (const Graphic3d_CGroup& theCGroup, const Standard_Boolean theIsEnabled, const gp_Ax2& theRefPlane);
 
   //! Set text attributes for under-/overlayer.
   //! @param theFontName the name of the font to be used

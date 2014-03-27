@@ -58,7 +58,6 @@ uses
 	GraphicDriver		from Graphic3d,
 	Group			from Graphic3d,
 	SequenceOfGroup		from Graphic3d,
-	HSequenceOfGroup	from Graphic3d,
 	SequenceOfStructure	from Graphic3d,
 	HSequenceOfStructure	from Graphic3d,
 	MapOfStructure		from Graphic3d,
@@ -457,6 +456,17 @@ is
 	--	    structure <me>.
 	---Category: Inquire methods
 
+  NewGroup ( me : mutable ) returns Group from Graphic3d
+  is static;
+  ---Level: Public
+  ---Purpose: Append new group to this structure.
+
+  Remove ( me : mutable;
+           theGroup : Group from Graphic3d )
+  is static private;
+  ---Purpose: Suppress in the structure <me>, the group theGroup.
+  -- It will be erased at the next screen update.
+
 	HighlightColor ( me )
 		returns Color from Quantity
 		is static;
@@ -805,14 +815,6 @@ is
 	-- Category: Private methods
 	----------------------------
 
-	Add ( me	: mutable;
-	      AGroup	: Group from Graphic3d )
-		is static private;
-	---Level: Internal
-	---Purpose: Inserts in the structure <me>, the group <G>.
-	--	    It will be erased at the next screen update.
-	---Category: Private methods
-
 	ComputeVisual ( me )
 		returns TypeOfStructure from Graphic3d
 		is static;
@@ -923,14 +925,6 @@ is
 	--	    of descendants or in the list of ancestors.
 	---Category: Private methods
 
-	Remove ( me	: mutable;
-		 AGroup	: Group from Graphic3d )
-		is static private;
-	---Level: Internal
-	---Purpose: Suppress in the structure <me>, the group <AGroup>.
-	--	    It will be erased at the next screen update.
-	---Category: Private methods
-
 	SetComputeVisual ( me		: mutable;
 			   AVisual	: TypeOfStructure from Graphic3d )
 		is static;
@@ -994,11 +988,12 @@ is
 	---Purpose: Updates the c structure associated to <me>.
 	---Category: Private methods
 
-    CStructure (me)
-    returns CStructure_Handle from Graphic3d
-    is static;
-    ---Purpose: Returns the c structure associated to <me>.
-	---C++: return const &
+  CStructure (me)
+  returns CStructure_Handle from Graphic3d
+  is static;
+  ---Purpose: Returns the low-level structure
+  ---C++: return const &
+  ---C++: inline
 
 fields
 
@@ -1012,16 +1007,13 @@ fields
 --
 
 	-- the associated low-level structure
-    myCStructure : CStructure_Handle from Graphic3d;
+  myCStructure : CStructure_Handle from Graphic3d;
 
 	-- the structures to which the structure is attached
 	myAncestors		:	SequenceOfAddress from TColStd;
 
 	-- the structures attached to the structure
 	myDescendants		:	SequenceOfAddress from TColStd;
-
-	-- the sequence of groups
-	myGroups		:	SequenceOfGroup from Graphic3d;
 
 	-- the highlight method of the structure
 	myHighlightColor	:	Color from Quantity;

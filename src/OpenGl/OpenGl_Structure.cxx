@@ -143,7 +143,6 @@ OpenGl_Structure::OpenGl_Structure (const Handle(Graphic3d_StructureManager)& th
   myAspectFace(NULL),
   myAspectMarker(NULL),
   myAspectText(NULL),
-  myHighlightBox(NULL),
   myHighlightColor(NULL),
   myNamedStatus(0),
   myZLayer(0)
@@ -283,44 +282,15 @@ void OpenGl_Structure::SetAspectText (const CALL_DEF_CONTEXTTEXT &theAspect)
 }
 
 // =======================================================================
-// function : SetHighlightBox
+// function : clearHighlightBox
 // purpose  :
 // =======================================================================
-void OpenGl_Structure::SetHighlightBox (const Handle(OpenGl_Context)& theGlCtx,
-                                        const CALL_DEF_BOUNDBOX&      theBoundBox)
+void OpenGl_Structure::clearHighlightBox (const Handle(OpenGl_Context)& theGlCtx)
 {
-  if (myHighlightBox != NULL)
+  if (!myHighlightBox.IsNull())
   {
     myHighlightBox->Release (theGlCtx);
-  }
-  else
-  {
-#ifndef HAVE_OPENCL
-    myHighlightBox = new OpenGl_Group();
-#else
-    myHighlightBox = new OpenGl_Group (this);
-#endif
-  }
-
-  CALL_DEF_CONTEXTLINE aContextLine;
-  aContextLine.Color    = theBoundBox.Color;
-  aContextLine.LineType = Aspect_TOL_SOLID;
-  aContextLine.Width    = 1.0f;
-  myHighlightBox->SetAspectLine (aContextLine);
-
-  OpenGl_BndBoxPrs* aBndBoxPrs = new OpenGl_BndBoxPrs (theBoundBox);
-  myHighlightBox->AddElement (aBndBoxPrs);
-}
-
-// =======================================================================
-// function : ClearHighlightBox
-// purpose  :
-// =======================================================================
-void OpenGl_Structure::ClearHighlightBox (const Handle(OpenGl_Context)& theGlCtx)
-{
-  if (myHighlightBox != NULL)
-  {
-    OpenGl_Element::Destroy (theGlCtx, myHighlightBox);
+    myHighlightBox.Nullify();
   }
 }
 
@@ -333,32 +303,53 @@ void OpenGl_Structure::HighlightWithColor (const Graphic3d_Vec3&  theColor,
 {
   const Handle(OpenGl_Context)& aCtx = GlDriver()->GetSharedContext();
   if (theToCreate)
-    SetHighlightColor   (aCtx, theColor);
+    setHighlightColor   (aCtx, theColor);
   else
-    ClearHighlightColor (aCtx);
+    clearHighlightColor (aCtx);
 }
 
 // =======================================================================
 // function : HighlightWithBndBox
 // purpose  :
 // =======================================================================
-void OpenGl_Structure::HighlightWithBndBox (const Standard_Boolean theToCreate)
+void OpenGl_Structure::HighlightWithBndBox (const Handle(Graphic3d_Structure)& theStruct,
+                                            const Standard_Boolean             theToCreate)
 {
   const Handle(OpenGl_Context)& aCtx = GlDriver()->GetSharedContext();
-  if (theToCreate)
-    SetHighlightBox   (aCtx, BoundBox);
+  if (!theToCreate)
+  {
+    clearHighlightBox (aCtx);
+    return;
+  }
+
+  if (!myHighlightBox.IsNull())
+  {
+    myHighlightBox->Release (aCtx);
+  }
   else
-    ClearHighlightBox (aCtx);
+  {
+    myHighlightBox = new OpenGl_Group (theStruct);
+  }
+
+  CALL_DEF_CONTEXTLINE& aContextLine = myHighlightBox->ChangeContextLine();
+  aContextLine.IsDef    = 1;
+  aContextLine.Color    = BoundBox.Color;
+  aContextLine.LineType = Aspect_TOL_SOLID;
+  aContextLine.Width    = 1.0f;
+  myHighlightBox->UpdateAspectLine (Standard_True);
+
+  OpenGl_BndBoxPrs* aBndBoxPrs = new OpenGl_BndBoxPrs (BoundBox);
+  myHighlightBox->AddElement (aBndBoxPrs);
 }
 
 // =======================================================================
-// function : SetHighlightColor
+// function : setHighlightColor
 // purpose  :
 // =======================================================================
-void OpenGl_Structure::SetHighlightColor (const Handle(OpenGl_Context)& theGlCtx,
+void OpenGl_Structure::setHighlightColor (const Handle(OpenGl_Context)& theGlCtx,
                                           const Graphic3d_Vec3&         theColor)
 {
-  ClearHighlightBox (theGlCtx);
+  clearHighlightBox (theGlCtx);
   if (myHighlightColor == NULL)
   {
     myHighlightColor = new TEL_COLOUR();
@@ -371,12 +362,12 @@ void OpenGl_Structure::SetHighlightColor (const Handle(OpenGl_Context)& theGlCtx
 }
 
 // =======================================================================
-// function : ClearHighlightColor
+// function : clearHighlightColor
 // purpose  :
 // =======================================================================
-void OpenGl_Structure::ClearHighlightColor (const Handle(OpenGl_Context)& theGlCtx)
+void OpenGl_Structure::clearHighlightColor (const Handle(OpenGl_Context)& theGlCtx)
 {
-  ClearHighlightBox(theGlCtx);
+  clearHighlightBox(theGlCtx);
   delete myHighlightColor;
   myHighlightColor = NULL;
 }
@@ -555,46 +546,43 @@ void OpenGl_Structure::Disconnect (Graphic3d_CStructure& theStructure)
 }
 
 // =======================================================================
-// function : AddGroup
+// function : NewGroup
 // purpose  :
 // =======================================================================
-OpenGl_Group * OpenGl_Structure::AddGroup()
+Handle(Graphic3d_Group) OpenGl_Structure::NewGroup (const Handle(Graphic3d_Structure)& theStruct)
 {
-  // Create new group
-#ifndef HAVE_OPENCL
-  OpenGl_Group *g = new OpenGl_Group();
-#else
-  OpenGl_Group *g = new OpenGl_Group (this);
-#endif
-
-  myGroups.Append(g);
-  return g;
+  Handle(OpenGl_Group) aGroup = new OpenGl_Group (theStruct);
+  myGroups.Append (aGroup);
+  return aGroup;
 }
 
 // =======================================================================
 // function : RemoveGroup
 // purpose  :
 // =======================================================================
-void OpenGl_Structure::RemoveGroup (const Handle(OpenGl_Context)& theGlCtx,
-                                    const OpenGl_Group*           theGroup)
+void OpenGl_Structure::RemoveGroup (const Handle(Graphic3d_Group)& theGroup)
 {
-  for (OpenGl_ListOfGroup::Iterator anIter (myGroups); anIter.More(); anIter.Next())
+  if (theGroup.IsNull())
+  {
+    return;
+  }
+
+  for (Graphic3d_SequenceOfGroup::Iterator aGroupIter (myGroups); aGroupIter.More(); aGroupIter.Next())
   {
     // Check for the given group
-    if (anIter.Value() == theGroup)
+    if (aGroupIter.Value() == theGroup)
     {
-      myGroups.Remove (anIter);
+      theGroup->Clear (Standard_False);
 
-#ifdef HAVE_OPENCL
-      if (theGroup->IsRaytracable())
+    #ifdef HAVE_OPENCL
+      if (((OpenGl_Group* )theGroup.operator->())->IsRaytracable())
       {
         UpdateStateWithAncestorStructures();
         UpdateRaytracableWithAncestorStructures();
       }
-#endif
+    #endif
 
-      // Delete object
-      OpenGl_Element::Destroy (theGlCtx, const_cast<OpenGl_Group*& > (theGroup));
+      myGroups.Remove (aGroupIter);
       return;
     }
   }
@@ -620,14 +608,14 @@ void OpenGl_Structure::Clear (const Handle(OpenGl_Context)& theGlCtx)
 #endif
 
   // Release groups
-  for (OpenGl_ListOfGroup::Iterator anIter (myGroups); anIter.More(); anIter.Next())
+  for (OpenGl_Structure::GroupIterator aGroupIter (myGroups); aGroupIter.More(); aGroupIter.Next())
   {
-#ifdef HAVE_OPENCL
-    aRaytracableGroupDeleted |= anIter.Value()->IsRaytracable();
-#endif
+  #ifdef HAVE_OPENCL
+    aRaytracableGroupDeleted |= aGroupIter.Value()->IsRaytracable();
+  #endif
 
     // Delete objects
-    OpenGl_Element::Destroy (theGlCtx, const_cast<OpenGl_Group*& > (anIter.ChangeValue()));
+    aGroupIter.ChangeValue()->Release (theGlCtx);
   }
   myGroups.Clear();
 
@@ -719,8 +707,10 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
     AWorkspace->SetAspectText(myAspectText);
 
   // Apply highlight box
-  if (myHighlightBox)
-    myHighlightBox->Render( AWorkspace );
+  if (!myHighlightBox.IsNull())
+  {
+    myHighlightBox->Render (AWorkspace);
+  }
 
   // Apply highlight color
   const TEL_COLOUR *highlight_color = AWorkspace->HighlightColor;
@@ -775,12 +765,10 @@ void OpenGl_Structure::Render (const Handle(OpenGl_Workspace) &AWorkspace) const
   }
 
   // Render groups
-  const OpenGl_ListOfGroup& aGroups = Groups();
-  OpenGl_ListOfGroup::Iterator itg (aGroups);
-  while (itg.More())
+  const Graphic3d_SequenceOfGroup& aGroups = DrawGroups();
+  for (OpenGl_Structure::GroupIterator aGroupIter (aGroups); aGroupIter.More(); aGroupIter.Next())
   {
-    itg.Value()->Render(AWorkspace);
-    itg.Next();
+    aGroupIter.Value()->Render (AWorkspace);
   }
 
   // Render capping for structure groups
@@ -856,7 +844,7 @@ void OpenGl_Structure::Release (const Handle(OpenGl_Context)& theGlCtx)
   OpenGl_Element::Destroy (theGlCtx, myAspectFace);
   OpenGl_Element::Destroy (theGlCtx, myAspectMarker);
   OpenGl_Element::Destroy (theGlCtx, myAspectText);
-  ClearHighlightColor (theGlCtx);
+  clearHighlightColor (theGlCtx);
 
 #ifdef HAVE_OPENCL
   // Remove from connected list of ancestor
@@ -870,13 +858,9 @@ void OpenGl_Structure::Release (const Handle(OpenGl_Context)& theGlCtx)
 // =======================================================================
 void OpenGl_Structure::ReleaseGlResources (const Handle(OpenGl_Context)& theGlCtx)
 {
-  for (OpenGl_ListOfGroup::Iterator anIter (myGroups); anIter.More(); anIter.Next())
+  for (OpenGl_Structure::GroupIterator aGroupIter (myGroups); aGroupIter.More(); aGroupIter.Next())
   {
-    OpenGl_Group* aGroup = const_cast<OpenGl_Group*& > (anIter.ChangeValue());
-    if (aGroup != NULL)
-    {
-      aGroup->Release (theGlCtx);
-    }
+    aGroupIter.ChangeValue()->Release (theGlCtx);
   }
   if (myAspectLine != NULL)
   {
@@ -894,7 +878,7 @@ void OpenGl_Structure::ReleaseGlResources (const Handle(OpenGl_Context)& theGlCt
   {
     myAspectText->Release (theGlCtx);
   }
-  if (myHighlightBox != NULL)
+  if (!myHighlightBox.IsNull())
   {
     myHighlightBox->Release (theGlCtx);
   }
@@ -927,7 +911,7 @@ public:
   OpenGl_StructureShadow (const Handle(Graphic3d_StructureManager)& theManager,
                           const Handle(OpenGl_Structure)&           theStructure);
 
-  virtual const OpenGl_ListOfGroup& Groups() const { return myParent->Groups(); }
+  virtual const Graphic3d_SequenceOfGroup& DrawGroups() const { return myParent->DrawGroups(); }
 
 private:
 

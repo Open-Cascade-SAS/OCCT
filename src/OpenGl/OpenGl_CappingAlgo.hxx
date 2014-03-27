@@ -19,6 +19,8 @@
 #include <OpenGl_RenderFilter.hxx>
 #include <OpenGl_Group.hxx>
 
+#include <Graphic3d_SequenceOfGroup.hxx>
+
 // Forward declaration
 class Handle(OpenGl_Workspace);
 class Handle(Graphic3d_ClipPlane);
@@ -35,8 +37,8 @@ public:
   //! for the passed groups.
   //! @param theWorkspace [in] the GL workspace, context state.
   //! @param theGroups [in] the group of primitives to be capped.
-  Standard_EXPORT static void RenderCapping (const Handle(OpenGl_Workspace)& theWorkspace,
-                                             const OpenGl_ListOfGroup& theGroups);
+  Standard_EXPORT static void RenderCapping (const Handle(OpenGl_Workspace)&  theWorkspace,
+                                             const Graphic3d_SequenceOfGroup& theGroups);
 
   //! Render infinite capping plane.
   //! @param theWorkspace [in] the GL workspace, context state.

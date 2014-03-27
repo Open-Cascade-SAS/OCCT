@@ -158,16 +158,16 @@ OpenGl_Text::OpenGl_Text()
 // function : OpenGl_Text
 // purpose  :
 // =======================================================================
-OpenGl_Text::OpenGl_Text (const TCollection_ExtendedString& theText,
-                          const OpenGl_Vec3&                thePoint,
-                          const OpenGl_TextParam&           theParams)
+OpenGl_Text::OpenGl_Text (const Standard_Utf8Char* theText,
+                          const OpenGl_Vec3&       thePoint,
+                          const OpenGl_TextParam&  theParams)
 : myWinX (0.0f),
   myWinY (0.0f),
   myWinZ (0.0f),
   myScaleHeight  (1.0f),
   myExportHeight (1.0f),
   myParams (theParams),
-  myString ((Standard_Utf16Char* )theText.ToExtString()),
+  myString (theText),
   myPoint  (thePoint),
   myIs2d   (false)
 {

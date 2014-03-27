@@ -256,7 +256,7 @@ void V3d_Viewer::SetGridEcho (const Handle(Graphic3d_AspectMarker3d)& theMarker)
   if (myGridEchoStructure.IsNull())
   {
     myGridEchoStructure = new Graphic3d_Structure (Viewer());
-    myGridEchoGroup     = new Graphic3d_Group (myGridEchoStructure);
+    myGridEchoGroup     = myGridEchoStructure->NewGroup();
   }
 
   myGridEchoAspect = theMarker;
@@ -287,7 +287,7 @@ void V3d_Viewer::ShowGridEcho (const Handle(V3d_View)& theView,
   if (myGridEchoStructure.IsNull())
   {
     myGridEchoStructure = new Graphic3d_Structure (Viewer());
-    myGridEchoGroup     = new Graphic3d_Group (myGridEchoStructure);
+    myGridEchoGroup     = myGridEchoStructure->NewGroup();
 
     myGridEchoAspect    = new Graphic3d_AspectMarker3d (Aspect_TOM_STAR, Quantity_Color (Quantity_NOC_GRAY90), 3.0);
     myGridEchoGroup->SetPrimitivesAspect (myGridEchoAspect);

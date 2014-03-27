@@ -18,31 +18,42 @@
 #endif
 
 #include <OpenGl_Group.hxx>
+
+#include <OpenGl_GraphicDriver.hxx>
+#include <OpenGl_Flipper.hxx>
 #include <OpenGl_PrimitiveArray.hxx>
+#include <OpenGl_StencilTest.hxx>
 #include <OpenGl_Structure.hxx>
+#include <OpenGl_Text.hxx>
 #include <OpenGl_Workspace.hxx>
+
+#include <Graphic3d_ArrayOfPrimitives.hxx>
+#include <Graphic3d_CUserDraw.hxx>
+#include <Graphic3d_GroupDefinitionError.hxx>
+
+IMPLEMENT_STANDARD_HANDLE (OpenGl_Group, Graphic3d_Group)
+IMPLEMENT_STANDARD_RTTIEXT(OpenGl_Group, Graphic3d_Group)
 
 // =======================================================================
 // function : OpenGl_Group
 // purpose  :
 // =======================================================================
-#ifndef HAVE_OPENCL
-OpenGl_Group::OpenGl_Group()
-#else
-OpenGl_Group::OpenGl_Group (const OpenGl_Structure* theAncestorStructure)
-#endif
-: myAspectLine(NULL),
+OpenGl_Group::OpenGl_Group (const Handle(Graphic3d_Structure)& theStruct)
+: Graphic3d_Group (theStruct),
+  myAspectLine(NULL),
   myAspectFace(NULL),
   myAspectMarker(NULL),
   myAspectText(NULL),
   myFirst(NULL),
-  myLast(NULL)
+  myLast(NULL),
+  myIsRaytracable (Standard_False),
+  myModificationState (0)
 {
-#ifdef HAVE_OPENCL
-  myAncestorStructure = theAncestorStructure;
-  myIsRaytracable = Standard_False;
-  myModificationState = 0; // initial state
-#endif
+  Handle(OpenGl_Structure) aStruct = Handle(OpenGl_Structure)::DownCast (myStructure->CStructure());
+  if (aStruct == NULL)
+  {
+    Graphic3d_GroupDefinitionError::Raise ("OpenGl_Group should be created by OpenGl_Structure!");
+  }
 }
 
 // =======================================================================
@@ -55,107 +66,225 @@ OpenGl_Group::~OpenGl_Group()
 }
 
 // =======================================================================
-// function : SetAspectLine
+// function : UpdateAspectLine
 // purpose  :
 // =======================================================================
-void OpenGl_Group::SetAspectLine (const CALL_DEF_CONTEXTLINE& theAspect,
-                                  const Standard_Boolean theIsGlobal)
+void OpenGl_Group::UpdateAspectLine (const Standard_Boolean theIsGlobal)
 {
+  if (!ContextLine.IsDef)
+  {
+    return;
+  }
+
   if (theIsGlobal || myFirst == NULL)
   {
     if (myAspectLine == NULL)
     {
       myAspectLine = new OpenGl_AspectLine();
     }
-    myAspectLine->SetAspect (theAspect);
+    myAspectLine->SetAspect (ContextLine);
   }
   else
   {
     OpenGl_AspectLine* anAspectLine = new OpenGl_AspectLine();
-    anAspectLine->SetAspect (theAspect);
+    anAspectLine->SetAspect (ContextLine);
     AddElement (anAspectLine);
   }
 }
 
 // =======================================================================
-// function : SetAspectFace
+// function : UpdateAspectFace
 // purpose  :
 // =======================================================================
-void OpenGl_Group::SetAspectFace (const CALL_DEF_CONTEXTFILLAREA& theAspect,
-                                  const Standard_Boolean          theIsGlobal)
+void OpenGl_Group::UpdateAspectFace (const Standard_Boolean theIsGlobal)
 {
+  if (!ContextFillArea.IsDef)
+  {
+    return;
+  }
+
   if (theIsGlobal || myFirst == NULL)
   {
     if (myAspectFace == NULL)
     {
       myAspectFace = new OpenGl_AspectFace();
     }
-    myAspectFace->SetAspect (theAspect);
+    myAspectFace->SetAspect (ContextFillArea);
   }
   else
   {
     OpenGl_AspectFace* anAspectFace = new OpenGl_AspectFace();
-    anAspectFace->SetAspect (theAspect);
+    anAspectFace->SetAspect (ContextFillArea);
     AddElement (anAspectFace);
   }
 
 #ifdef HAVE_OPENCL
   if (myIsRaytracable)
   {
-    myModificationState++;
-
-    if (myAncestorStructure != NULL)
+    ++myModificationState;
+    OpenGl_Structure* aStruct = GlStruct();
+    if (aStruct != NULL)
     {
-      myAncestorStructure->UpdateStateWithAncestorStructures();
+      aStruct->UpdateStateWithAncestorStructures();
     }
   }
 #endif
 }
 
 // =======================================================================
-// function : SetAspectMarker
+// function : UpdateAspectMarker
 // purpose  :
 // =======================================================================
-void OpenGl_Group::SetAspectMarker (const CALL_DEF_CONTEXTMARKER& theAspect,
-                                    const Standard_Boolean theIsGlobal)
+void OpenGl_Group::UpdateAspectMarker (const Standard_Boolean theIsGlobal)
 {
+  if (!ContextMarker.IsDef)
+  {
+    return;
+  }
+
   if (theIsGlobal || myFirst == NULL)
   {
     if (myAspectMarker == NULL)
     {
       myAspectMarker = new OpenGl_AspectMarker();
     }
-    myAspectMarker->SetAspect (theAspect);
+    myAspectMarker->SetAspect (ContextMarker);
   }
   else
   {
     OpenGl_AspectMarker* anAspectMarker = new OpenGl_AspectMarker();
-    anAspectMarker->SetAspect (theAspect);
+    anAspectMarker->SetAspect (ContextMarker);
     AddElement (anAspectMarker);
   }
 }
 
 // =======================================================================
-// function : SetAspectText
+// function : UpdateAspectText
 // purpose  :
 // =======================================================================
-void OpenGl_Group::SetAspectText (const CALL_DEF_CONTEXTTEXT& theAspect,
-                                  const Standard_Boolean theIsGlobal)
+void OpenGl_Group::UpdateAspectText (const Standard_Boolean theIsGlobal)
 {
+  if (!ContextText.IsDef)
+  {
+    return;
+  }
+
   if (theIsGlobal || myFirst == NULL)
   {
     if (myAspectText == NULL)
     {
       myAspectText = new OpenGl_AspectText();
     }
-    myAspectText->SetAspect (theAspect);
+    myAspectText->SetAspect (ContextText);
   }
   else
   {
     OpenGl_AspectText* anAspectText = new OpenGl_AspectText();
-    anAspectText->SetAspect (theAspect);
+    anAspectText->SetAspect (ContextText);
     AddElement (anAspectText);
   }
+}
+
+// =======================================================================
+// function : AddPrimitiveArray
+// purpose  :
+// =======================================================================
+void OpenGl_Group::AddPrimitiveArray (const Handle(Graphic3d_ArrayOfPrimitives)& thePrim,
+                                      const Standard_Boolean                     theToEvalMinMax)
+{
+  if (IsDeleted()
+  || !thePrim->IsValid())
+  {
+    return;
+  }
+
+  OpenGl_PrimitiveArray* anArray = new OpenGl_PrimitiveArray ((CALL_DEF_PARRAY *)thePrim->Array());
+  AddElement (anArray);
+
+  Graphic3d_Group::AddPrimitiveArray (thePrim, theToEvalMinMax);
+}
+
+// =======================================================================
+// function : Text
+// purpose  :
+// =======================================================================
+void OpenGl_Group::Text (const Standard_CString                  theTextUtf,
+                         const Graphic3d_Vertex&                 thePoint,
+                         const Standard_Real                     theHeight,
+                         const Quantity_PlaneAngle               theAngle,
+                         const Graphic3d_TextPath                theTp,
+                         const Graphic3d_HorizontalTextAlignment theHta,
+                         const Graphic3d_VerticalTextAlignment   theVta,
+                         const Standard_Boolean                  theToEvalMinMax)
+{
+  if (IsDeleted())
+  {
+    return;
+  }
+
+  OpenGl_TextParam  aParams;
+  OpenGl_Structure* aStruct = GlStruct();
+  aParams.Height = int ((theHeight < 2.0) ? aStruct->GlDriver()->DefaultTextHeight() : theHeight);
+  aParams.HAlign = theHta;
+  aParams.VAlign = theVta;
+  const OpenGl_Vec3 aPoint (thePoint.X(), thePoint.Y(), thePoint.Z());
+  OpenGl_Text* aText = new OpenGl_Text (theTextUtf, aPoint, aParams);
+  AddElement (aText);
+  Graphic3d_Group::Text (theTextUtf, thePoint, theHeight, theAngle,
+                         theTp, theHta, theVta, theToEvalMinMax);
+}
+
+// =======================================================================
+// function : UserDraw
+// purpose  :
+// =======================================================================
+void OpenGl_Group::UserDraw (const Standard_Address theObject,
+                             const Standard_Boolean theToEvalMinMax,
+                             const Standard_Boolean theContainsFacet)
+{
+  if (IsDeleted())
+  {
+    return;
+  }
+
+  OpenGl_Structure* aStruct = GlStruct();
+  if (aStruct->GlDriver()->UserDrawCallback() == NULL)
+  {
+    return;
+  }
+
+  Graphic3d_CUserDraw aUserDraw;
+  aUserDraw.Data   = theObject;
+  aUserDraw.Bounds = theToEvalMinMax ? &myBounds : NULL;
+  OpenGl_Element* aUserDrawElem = aStruct->GlDriver()->UserDrawCallback()(&aUserDraw);
+  if (aUserDrawElem != NULL)
+  {
+    AddElement (aUserDrawElem);
+  }
+  Graphic3d_Group::UserDraw (theObject, theToEvalMinMax, theContainsFacet);
+}
+
+// =======================================================================
+// function : SetFlippingOptions
+// purpose  :
+// =======================================================================
+void OpenGl_Group::SetFlippingOptions (const Standard_Boolean theIsEnabled,
+                                       const gp_Ax2&          theRefPlane)
+{
+  OpenGl_Flipper* aFlipper = new OpenGl_Flipper (theRefPlane);
+  aFlipper->SetOptions (theIsEnabled);
+  AddElement (aFlipper);
+}
+
+// =======================================================================
+// function : SetStencilTestOptions
+// purpose  :
+// =======================================================================
+void OpenGl_Group::SetStencilTestOptions (const Standard_Boolean theIsEnabled)
+{
+  OpenGl_StencilTest* aStencilTest = new OpenGl_StencilTest();
+  aStencilTest->SetOptions (theIsEnabled);
+  AddElement (aStencilTest);
 }
 
 // =======================================================================
@@ -177,10 +306,11 @@ void OpenGl_Group::AddElement (OpenGl_Element* theElem)
     myModificationState++;
     myIsRaytracable = Standard_True;
 
-    if (myAncestorStructure != NULL)
+    OpenGl_Structure* aStruct = GlStruct();
+    if (aStruct != NULL)
     {
-      myAncestorStructure->UpdateStateWithAncestorStructures();
-      myAncestorStructure->SetRaytracableWithAncestorStructures();
+      aStruct->UpdateStateWithAncestorStructures();
+      aStruct->SetRaytracableWithAncestorStructures();
     }
   }
 #endif
@@ -220,6 +350,24 @@ void OpenGl_Group::Render (const Handle(OpenGl_Workspace)& theWorkspace) const
     theWorkspace->SetAspectMarker (aBackAspectMarker);
   if (isTextSet)
     theWorkspace->SetAspectText (aBackAspectText);
+}
+
+// =======================================================================
+// function : Clear
+// purpose  :
+// =======================================================================
+void OpenGl_Group::Clear (const Standard_Boolean theToUpdateStructureMgr)
+{
+  if (IsDeleted())
+  {
+    return;
+  }
+
+  OpenGl_Structure* aStruct = GlStruct();
+  const Handle(OpenGl_Context)& aCtx = aStruct->GlDriver()->GetSharedContext();
+
+  Release (aCtx);
+  Graphic3d_Group::Clear (theToUpdateStructureMgr);
 }
 
 // =======================================================================

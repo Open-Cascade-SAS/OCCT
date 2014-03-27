@@ -85,6 +85,15 @@ const Handle(Graphic3d_MarkerImage)& Graphic3d_AspectMarker3d::GetMarkerImage() 
 }
 
 // =======================================================================
+// function : SetMarkerImage
+// purpose  :
+// =======================================================================
+void Graphic3d_AspectMarker3d::SetMarkerImage (const Handle(Graphic3d_MarkerImage)& theImage)
+{
+  myMarkerImage = theImage;
+}
+
+// =======================================================================
 // function : SetBitMap
 // purpose  :
 // =======================================================================

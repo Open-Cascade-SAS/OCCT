@@ -36,9 +36,9 @@ class OpenGl_Text : public OpenGl_Element
 public:
 
   //! Main constructor
-  Standard_EXPORT OpenGl_Text (const TCollection_ExtendedString& theText,
-                               const OpenGl_Vec3&                thePoint,
-                               const OpenGl_TextParam&           theParams);
+  Standard_EXPORT OpenGl_Text (const Standard_Utf8Char* theText,
+                               const OpenGl_Vec3&       thePoint,
+                               const OpenGl_TextParam&  theParams);
 
   //! Setup new string and position
   Standard_EXPORT void Init (const Handle(OpenGl_Context)& theCtx,

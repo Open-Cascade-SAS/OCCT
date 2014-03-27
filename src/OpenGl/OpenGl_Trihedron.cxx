@@ -596,9 +596,9 @@ OpenGl_Trihedron::OpenGl_Trihedron (const Aspect_TypeOfTriedronPosition thePosit
 : myPos (thePosition),
   myScale (theScale),
   myIsWireframe (theAsWireframe),
-  myLabelX (TCollection_ExtendedString ("X"), OpenGl_Vec3(1.0f, 0.0f, 0.0f), THE_LABEL_PARAMS),
-  myLabelY (TCollection_ExtendedString ("Y"), OpenGl_Vec3(0.0f, 1.0f, 0.0f), THE_LABEL_PARAMS),
-  myLabelZ (TCollection_ExtendedString ("Z"), OpenGl_Vec3(0.0f, 0.0f, 1.0f), THE_LABEL_PARAMS)
+  myLabelX ("X", OpenGl_Vec3(1.0f, 0.0f, 0.0f), THE_LABEL_PARAMS),
+  myLabelY ("Y", OpenGl_Vec3(0.0f, 1.0f, 0.0f), THE_LABEL_PARAMS),
+  myLabelZ ("Z", OpenGl_Vec3(0.0f, 0.0f, 1.0f), THE_LABEL_PARAMS)
 {
   Standard_Real R,G,B;
   Quantity_Color aColor (theColor);

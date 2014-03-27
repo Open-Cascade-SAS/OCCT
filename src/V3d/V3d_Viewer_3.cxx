@@ -116,7 +116,7 @@ void V3d_Viewer::DisplayPrivilegedPlane(const Standard_Boolean OnOff, const Quan
     else
       myPlaneStructure->Clear();
 
-    Handle(Graphic3d_Group) Group = new Graphic3d_Group(myPlaneStructure);
+    Handle(Graphic3d_Group) Group = myPlaneStructure->NewGroup();
 
     Handle(Graphic3d_AspectLine3d) LineAttrib = new Graphic3d_AspectLine3d() ;
     LineAttrib->SetColor(Quantity_Color(Quantity_NOC_GRAY60));

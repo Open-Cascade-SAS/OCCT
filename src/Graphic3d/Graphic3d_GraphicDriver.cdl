@@ -59,7 +59,7 @@ uses
     AspectFillArea3d    from Graphic3d,
     HorizontalTextAlignment from Graphic3d,
     CBitFields20        from Graphic3d,
-    CGroup              from Graphic3d,
+    Group               from Graphic3d,
     CLight              from Graphic3d,
     CPick               from Graphic3d,
     CPlane              from Graphic3d,
@@ -134,49 +134,6 @@ is
         returns Integer from Standard
         is deferred;
     ---Purpose: call_togl_inquireview
-
-    -------------------------------------
-    -- Category: Group management methods
-    -------------------------------------
-
-    ClearGroup ( me     : mutable;
-             ACGroup    : CGroup from Graphic3d )
-        is deferred;
-    ---Purpose: call_togl_cleargroup
-
-    FaceContextGroup ( me       : mutable;
-                       ACGroup  : CGroup from Graphic3d;
-                       NoInsert : Integer from Standard )
-        is deferred;
-    ---Purpose: call_togl_facecontextgroup
-
-    Group ( me  : mutable;
-        ACGroup : in out CGroup from Graphic3d )
-        is deferred;
-    ---Purpose: call_togl_group
-
-    LineContextGroup ( me       : mutable;
-                       ACGroup  : CGroup from Graphic3d;
-                       NoInsert : Integer from Standard )
-        is deferred;
-    ---Purpose: call_togl_linecontextgroup
-
-    MarkerContextGroup ( me         : mutable;
-                         ACGroup    : CGroup from Graphic3d;
-                         NoInsert   : Integer from Standard )
-        is deferred;
-    ---Purpose: call_togl_markercontextgroup
-
-    RemoveGroup ( me        : mutable;
-                  ACGroup   : CGroup from Graphic3d )
-        is deferred;
-    ---Purpose: call_togl_removegroup
-
-    TextContextGroup ( me       : mutable;
-                       ACGroup  : CGroup from Graphic3d;
-                       NoInsert : Integer from Standard )
-        is deferred;
-    ---Purpose: call_togl_textcontextgroup
 
     -----------------------------------------
     -- Category: Structure management methods
@@ -336,85 +293,10 @@ is
         is deferred;
     ---Purpose:
 
-    SetStencilTestOptions ( me          : mutable;
-                            theCGroup   : CGroup from Graphic3d;
-                            theIsEnabled: Boolean from Standard)
-    is deferred;
-    ---Purpose: sets the stencil test to theIsEnabled state;
-    
-    SetFlippingOptions (me          : mutable;
-                        theCGroup   : CGroup from Graphic3d;
-                        theIsEnabled: Boolean from Standard;
-                        theRefPlane : Ax2 from gp)
-    is deferred;
-    ---Purpose: sets the flipping to theIsEnabled state for the given graphic group.
-
-    ----------------------------------------
-    -- Category: Methods to create Text
-    -- for Purpose : see Graphic3d_Group.cdl
-    ----------------------------------------
-
-    Text ( me   : mutable;
-           ACGroup  : CGroup from Graphic3d;
-           AText    : CString from Standard;
-           APoint   : Vertex from Graphic3d;
-           AHeight  : Real from Standard;
-           AAngle   : PlaneAngle from Quantity;
-           ATp  : TextPath from Graphic3d;
-           AHta : HorizontalTextAlignment from Graphic3d;
-           AVta : VerticalTextAlignment from Graphic3d;
-           EvalMinMax   : Boolean from Standard = Standard_True )
-        is deferred;
-    ---Purpose: call_togl_text
-
-    Text ( me   : mutable;
-           ACGroup  : CGroup from Graphic3d;
-           AText    : CString from Standard;
-           APoint   : Vertex from Graphic3d;
-           AHeight  : Real from Standard;
-           EvalMinMax   : Boolean from Standard = Standard_True )
-        is deferred;
-    ---Purpose: call_togl_text
-
-    Text ( me   : mutable;
-           ACGroup  : CGroup from Graphic3d;
-           AText    : ExtendedString from TCollection;
-           APoint   : Vertex from Graphic3d;
-           AHeight  : Real from Standard;
-           AAngle   : PlaneAngle from Quantity;
-           ATp  : TextPath from Graphic3d;
-           AHta : HorizontalTextAlignment from Graphic3d;
-           AVta : VerticalTextAlignment from Graphic3d;
-           EvalMinMax   : Boolean from Standard = Standard_True )
-        is deferred;
-    ---Purpose: call_togl_text
-
-    Text ( me   : mutable;
-           ACGroup  : CGroup from Graphic3d;
-           AText    : ExtendedString from TCollection;
-           APoint   : Vertex from Graphic3d;
-           AHeight  : Real from Standard;
-           EvalMinMax   : Boolean from Standard = Standard_True )
-        is deferred;
-    ---Purpose: call_togl_text
-
     ----------------------------------------
     ---Category: Methods to create Triangle
     -- for Purpose : see Graphic3d_Group.cdl
     ----------------------------------------
-
-    PrimitiveArray( me          : mutable;
-                    ACGroup     : CGroup from Graphic3d;
-                    parray      : PrimitiveArray from Graphic3d;
-                    EvalMinMax  : Boolean from Standard = Standard_True )
-        is deferred;
-        ---Purpose: call_togl_parray
-
-    UserDraw( me          : mutable;
-              ACGroup     : CGroup from Graphic3d;
-              AUserDraw   : CUserDraw from Graphic3d )
-        is deferred;
-        ---Purpose: call_togl_userdraw
 
     EnableVBO( me       : mutable;
                status   : Boolean from Standard )
@@ -813,10 +695,6 @@ is
     PrintBoolean ( me;
                    AComment : CString from Standard;
                    AValue   : Boolean from Standard );
-
-    PrintCGroup ( me;
-                  ACGroup   : CGroup from Graphic3d;
-                  AField    : Integer from Standard );
 
     PrintCLight ( me;
                   ACLight   : CLight from Graphic3d;

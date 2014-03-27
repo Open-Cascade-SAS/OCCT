@@ -80,6 +80,11 @@ is
   --- default type of marker.
   ---C++: return const &
 
+  SetMarkerImage (me       : mutable;
+                  theImage : MarkerImage_Handle from Graphic3d);
+  ---Level: Public
+  ---Purpose: Set marker's image texture.
+
   SetBitMap (me: mutable;
              theWidth  : Integer from Standard;
              theHeight : Integer from Standard;
