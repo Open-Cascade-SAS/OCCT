@@ -19,6 +19,7 @@
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
@@ -88,6 +89,8 @@ TopoDS_Edge HLRBRep::MakeEdge (const HLRBRep_Curve& ec,
     TopoDS_Edge anEdge = ec.GetCurve().Edge();
     Standard_Real fpar, lpar;
     Handle(Geom_Curve) aCurve = BRep_Tool::Curve(anEdge, fpar, lpar);
+    if (aCurve->DynamicType() == STANDARD_TYPE(Geom_TrimmedCurve))
+      aCurve = (Handle(Geom_TrimmedCurve)::DownCast(aCurve))->BasisCurve();
     const Handle(Geom_BSplineCurve)& BSplCurve = Handle(Geom_BSplineCurve)::DownCast(aCurve);
     Handle(Geom_BSplineCurve) theCurve = Handle(Geom_BSplineCurve)::DownCast(BSplCurve->Copy());
     if (theCurve->IsPeriodic() && !GAcurve.IsClosed())
