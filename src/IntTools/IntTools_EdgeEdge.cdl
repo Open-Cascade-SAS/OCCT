@@ -125,17 +125,7 @@ is
     ---Purpose:
     -- Computes Line/Line intersection.  
  
-    FindRoughRanges(me:out;
-        theR1, theR2 : Range from IntTools; 
-        theSegments1 : out SequenceOfRanges from IntTools)
-    returns Integer from Standard 
-    is protected; 
-    ---Purpose: 
-    -- Looking for the rough intersection ranges
- 
-    FindSolutions(me:out;  
-        theRanges1 : out SequenceOfRanges from IntTools;
-        theRanges2 : out SequenceOfRanges from IntTools)
+    FindSolutions(me:out)
     is protected; 
     ---Purpose:
     -- Looking for solutions

@@ -14,8 +14,6 @@
 
 #include <IntTools_EdgeEdge.ixx> 
 
-#include <NCollection_UBTreeFiller.hxx>
-
 #include <gp_Dir.hxx>
 #include <gp_Lin.hxx>
 
@@ -31,11 +29,9 @@
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 
-#include <BOPCol_MapOfInteger.hxx>
-#include <BOPCol_BoxBndTree.hxx>
-
 #include <IntTools_Tools.hxx>
 #include <IntTools_CommonPrt.hxx>
+
 
 static
   Standard_Boolean BndCommon(const Bnd_Box& theB1,
@@ -47,16 +43,15 @@ static
                    const Standard_Real aT2,
                    const Standard_Real theTol,
                    Bnd_Box& theBox);
+static
+  Standard_Real PointBoxDistance(const Bnd_Box& aB,
+                                 const gp_Pnt& aP);
 static 
-  Standard_Boolean SplitRangeOnSegments(const Standard_Real aT1, 
-                                        const Standard_Real aT2,
-                                        const Standard_Real theResolution,
-                                        const Standard_Integer theNbSeg,
-                                        IntTools_SequenceOfRanges& theSegments);
-static 
-  void SplitRangeOnTwo(const Standard_Real aT1, 
-                       const Standard_Real aT2,
-                       IntTools_SequenceOfRanges& theSegments);
+  void SplitRangeOnSegments(const Standard_Real aT1, 
+                            const Standard_Real aT2,
+                            const Standard_Real theResolution,
+                            const Standard_Integer theNbSeg,
+                            IntTools_SequenceOfRanges& theSegments);
 static
  Standard_Integer DistPC(const Standard_Real aT1, 
                          const Handle(Geom_Curve)& theC1,
@@ -126,11 +121,12 @@ void IntTools_EdgeEdge::Prepare()
       gp_Vec aV1, aV2;
       gp_Pnt aP;
       //
-      Standard_Real aC1(0.), aC2(0.);
+      Standard_Real aC1(10.), aC2(10.);
       for (i = 0; i < 2; ++i) {
-        Standard_Real &aC = !i ? aC1 : aC2;
-        IntTools_Range aR = !i ? myRange1 : myRange2;
-        const BRepAdaptor_Curve& aBAC = !i ? myCurve1 : myCurve2;
+        Standard_Real &aC = !i ? aC2 : aC1;
+        aC = 0;
+        IntTools_Range aR = !i ? myRange2 : myRange1;
+        const BRepAdaptor_Curve& aBAC = !i ? myCurve2 : myCurve1;
         aR.Range(aT1, aT2);
         aDt = (aT2 - aT1) / 10.;
         aT = aT1;
@@ -144,6 +140,10 @@ void IntTools_EdgeEdge::Prepare()
             aC += aD1.Angle(aD2);
           }
           aV1 = aV2;
+        }
+        //
+        if (aC < Precision::Confusion()) {
+          break;
         }
       }
       //
@@ -206,22 +206,16 @@ void IntTools_EdgeEdge::Perform()
   }
   //
   //3.2. Find solutions
-  IntTools_SequenceOfRanges aRanges1, aRanges2;
-  //
-  FindSolutions(aRanges1, aRanges2);
-  //
-  //4. Merge solutions and save common parts
-  MergeSolutions(aRanges1, aRanges2);
+  FindSolutions();
 }
 
 //=======================================================================
 //function : FindSolutions
 //purpose  : 
 //=======================================================================
-void IntTools_EdgeEdge::FindSolutions(IntTools_SequenceOfRanges& theRanges1,
-                                      IntTools_SequenceOfRanges& theRanges2)
+void IntTools_EdgeEdge::FindSolutions()
 {
-  // According to the common box of the edges decide which method to use
+  //1. Build common box for edges
   Standard_Real aT11, aT12, aT21, aT22;
   Bnd_Box aB1, aB2, aBC;
   //
@@ -236,30 +230,13 @@ void IntTools_EdgeEdge::FindSolutions(IntTools_SequenceOfRanges& theRanges1,
     return;
   }
   //
-  if (aBC.IsThin(10*myTol)) {
-    // As soon as the common box of the edges is thin,
-    // find exact solution at once
-    FindSolutions(myRange1, myRange2, aBC, theRanges1, theRanges2);
-  }
-  else {
-    // First find the rough ranges containing solutions, 
-    // than find exact ranges
-    IntTools_SequenceOfRanges aSegments1;
-    Standard_Integer i, aNb;
-    //
-    // Find rough ranges
-    FindRoughRanges(myRange1, myRange2, aSegments1);
-    aNb = aSegments1.Length();
-    // Find exact ranges
-    for (i = 1; i <= aNb; ++i) {
-      const IntTools_Range& aR1 = aSegments1(i);
-      aR1.Range(aT11, aT12);
-      BndBuildBox(myCurve1, aT11, aT12, myTol1, aB1);
-      if (BndCommon(aB1, aB2, aBC)) {
-        FindSolutions(aR1, myRange2, aBC, theRanges1, theRanges2);
-      }
-    }
-  }
+  IntTools_SequenceOfRanges aRanges1, aRanges2;
+  //
+  //2. Find ranges containig solutions
+  FindSolutions(myRange1, myRange2, aBC, aRanges1, aRanges2);
+  //
+  //3. Merge solutions and save common parts
+  MergeSolutions(aRanges1, aRanges2);
 }
 
 //=======================================================================
@@ -363,8 +340,8 @@ void IntTools_EdgeEdge::FindSolutions(const IntTools_Range& theR1,
       aT1 = IntTools_Tools::IntermediatePoint(aT11, aT12);
       aT2 = IntTools_Tools::IntermediatePoint(aT21, aT22);
       //
-      aP1 = myGeom1->Value(aT1);
-      aP2 = myGeom2->Value(aT2);
+      myGeom1->D0(aT1, aP1);
+      myGeom2->D0(aT2, aP2);
       //
       aDist = aP1.Distance(aP2);
       if (aDist > myTol) {
@@ -416,8 +393,8 @@ Standard_Boolean IntTools_EdgeEdge::FindParameters(const BRepAdaptor_Curve& theB
 {
   Standard_Boolean bRet;
   Standard_Integer aC, i, k;
-  Standard_Real aCf, aDiff, aDt, aT, aTB, aTOut, aTIn, aPTol, aTol,
-                aDist, aDistP;
+  Standard_Real aCf, aDiff, aDt, aT, aTB, aTOut, aTIn;
+  Standard_Real aDist, aDistP, aDistTol, aPTol, aTol;
   gp_Pnt aP;
   Bnd_Box aCBx;
   //
@@ -427,6 +404,7 @@ Standard_Boolean IntTools_EdgeEdge::FindParameters(const BRepAdaptor_Curve& theB
   aPTol = theRes * 0.001;
   aTol = theBAC.Tolerance();
   aDistP = 0.;
+  aDistTol = Precision::PConfusion();
   aCBx = theCBox;
   aCBx.Enlarge(aTol);
   //
@@ -438,13 +416,15 @@ Standard_Boolean IntTools_EdgeEdge::FindParameters(const BRepAdaptor_Curve& theB
     k = 0;
     //looking for the point on the edge which is in the box;
     while (aC*(aT-aTB) >= 0) {
-      aP = theBAC.Value(aTB);
-      Bnd_Box aBP;
-      aBP.Add(aP);
-      aDist = aBP.Distance(theCBox);
-      k = (fabs(aDist - aDistP) < Precision::PConfusion()) ? k+1 : 0;
+      theBAC.D0(aTB, aP);
+      aDist = PointBoxDistance(theCBox, aP);
       if (aDist > aTol) {
-        aDt = theBAC.Resolution(aDist*Max(k, 1));
+        if (fabs(aDist - aDistP) < aDistTol) {
+          aDt = theBAC.Resolution((++k)*aDist);
+        } else {
+          k = 0;
+          aDt = theBAC.Resolution(aDist);
+        }
         aTB += aC*aDt;
       } else {
         bRet = Standard_True;
@@ -472,7 +452,7 @@ Standard_Boolean IntTools_EdgeEdge::FindParameters(const BRepAdaptor_Curve& theB
       aDiff = aTIn - aTOut;
       while (fabs(aDiff) > aPTol) {
         aTB = aTOut + aDiff*aCf;
-        aP = theBAC.Value(aTB);
+        theBAC.D0(aTB, aP);
         if (aCBx.IsOut(aP)) {
           aTOut = aTB;
         } else {
@@ -603,7 +583,7 @@ void IntTools_EdgeEdge::FindBestSolution(const Standard_Real aT11,
   //
   aDMin = 100.;
   aD = 100.;
-  aCrit = 1.e-16;
+  aCrit = 0.;//1.e-16;
   aMinStep = 5.e-13;
   aTMax = Max(fabs(aT11), fabs(aT12));
   if (aTMax > 999.) {
@@ -625,7 +605,7 @@ void IntTools_EdgeEdge::FindBestSolution(const Standard_Real aT11,
       aT1 = aT1p;
       aT2 = aT2p;
       aDMin = aD;
-      if (aDMin < aCrit) {
+      if (aDMin <= aCrit) {
         break;
       }
     }
@@ -768,112 +748,6 @@ void IntTools_EdgeEdge::ComputeLineLine()
 }
 
 //=======================================================================
-//function : FindRoughRanges
-//purpose  : 
-//=======================================================================
-Standard_Integer IntTools_EdgeEdge::FindRoughRanges(const IntTools_Range& theR1,
-                                                    const IntTools_Range& theR2,
-                                                    IntTools_SequenceOfRanges& theSegments1)
-{
-  Standard_Integer iRet, i, j, aNbi, aNbj, aNbSD;
-  Standard_Real aTi1, aTi2, aTj1, aTj2, aDi, aDj;
-  IntTools_SequenceOfRanges aSi, aSj, aNewSi, aNewSj;
-  BOPCol_MapOfInteger aMj;
-  BOPCol_ListIteratorOfListOfInteger aItLI;
-  Bnd_Box aBi, aBj;
-  BOPCol_BoxBndTreeSelector aSelector;
-  BOPCol_BoxBndTree aBBTree;
-  NCollection_UBTreeFiller <Standard_Integer, Bnd_Box> aTreeFiller(aBBTree);
-  //
-  theR1.Range(aTi1, aTi2);
-  theR2.Range(aTj1, aTj2);
-  aDi = (aTi2 - aTi1) / 2.;
-  aDj = (aTj2 - aTj1) / 2.;
-  aNbi = 2;
-  aNbj = 2;
-  //
-  SplitRangeOnTwo(aTi1, aTi2, aSi);
-  SplitRangeOnTwo(aTj1, aTj2, aSj);
-  //
-  while (aDi > myRes1 || aDj > myRes2) {
-    aDi /= 2.;
-    aDj /= 2.;
-    //
-    aBBTree.Clear();
-    aTreeFiller.Reset();
-    for (j = 1; j <= aNbj; ++j) {
-      const IntTools_Range& aRj = aSj(j);
-      aRj.Range(aTj1, aTj2);
-      //
-      BndBuildBox(myCurve2, aTj1, aTj2, myTol2, aBj);
-      //
-      aTreeFiller.Add(j, aBj);
-    }
-    //
-    aTreeFiller.Fill();
-    //
-    for (i = 1; i <= aNbi; ++i) {
-      const IntTools_Range& aRi = aSi(i);
-      aRi.Range(aTi1, aTi2);
-      //
-      BndBuildBox(myCurve1, aTi1, aTi2, myTol1, aBi);
-      //
-      aSelector.Clear();
-      aSelector.SetBox(aBi);
-      //
-      aNbSD = aBBTree.Select(aSelector);
-      if (!aNbSD){
-        continue;
-      }
-      //
-      SplitRangeOnTwo(aTi1, aTi2, aNewSi);
-      //
-      const BOPCol_ListOfInteger& aLI = aSelector.Indices();
-      aItLI.Initialize(aLI);
-      for (; aItLI.More(); aItLI.Next()) {
-        j = aItLI.Value();
-        if (aMj.Add(j)) {
-          const IntTools_Range& aRj = aSj(j);
-          aRj.Range(aTj1, aTj2);
-          SplitRangeOnTwo(aTj1, aTj2, aNewSj);
-        }
-      }
-    }
-    //
-    aSi.Assign(aNewSi);
-    aSj.Assign(aNewSj);
-    aNbi = aSi.Length();
-    aNbj = aSj.Length();
-    //
-    if ((aNbi == 0) || (aNbj == 0) || (aNbi > 500) || (aNbj > 500)) {
-      break;
-    }
-    //
-    aNewSi.Clear();
-    aNewSj.Clear();
-    aMj.Clear();
-  }
-  //
-  iRet = (aNbi && aNbj) ? 1 : 0;
-  if (iRet) {
-    //collect ranges
-    IntTools_Range aRi1 = aSi(1), aRi2;
-    Standard_Real aT1 = aRi1.First();
-    for (i = 2; i <= aNbi; ++i) {
-      aRi2 = aSi(i);
-      if ((aRi2.First() - aRi1.Last()) > myRes1) {
-        theSegments1.Append(IntTools_Range(aT1, aRi1.Last()));
-        aT1 = aRi2.First();
-      }
-      aRi1 = aRi2;
-    }
-    theSegments1.Append(IntTools_Range(aT1, aRi2.Last()));
-  }
-  //
-  return iRet;
-}
-
-//=======================================================================
 //function : IsIntersection
 //purpose  : 
 //=======================================================================
@@ -961,8 +835,7 @@ Standard_Integer IntTools_EdgeEdge::CheckCoincidence(const Standard_Real aT11,
                                                      const Standard_Real theCriteria,
                                                      const Standard_Real theCurveRes1)
 {
-  Standard_Boolean bSmall;
-  Standard_Integer iErr, aNb, i;
+  Standard_Integer iErr, aNb, aNb1, i;
   Standard_Real aT1A, aT1B, aT1max, aT2max, aDmax;
   GeomAPI_ProjectPointOnCurve aProjPC;
   IntTools_SequenceOfRanges aSeg1;
@@ -973,9 +846,9 @@ Standard_Integer IntTools_EdgeEdge::CheckCoincidence(const Standard_Real aT11,
   //
   // 1. Express evaluation
   aNb = 10; // Number of intervals on the curve #1
-  bSmall = !SplitRangeOnSegments(aT11, aT12, theCurveRes1, aNb, aSeg1);
-  aNb = aSeg1.Length();
-  for (i = 1; i < aNb; ++i) {
+  SplitRangeOnSegments(aT11, aT12, theCurveRes1, aNb, aSeg1);
+  aNb1 = aSeg1.Length();
+  for (i = 1; i < aNb1; ++i) {
     const IntTools_Range& aR1 = aSeg1(i);
     aR1.Range(aT1A, aT1B);
     //
@@ -987,12 +860,12 @@ Standard_Integer IntTools_EdgeEdge::CheckCoincidence(const Standard_Real aT11,
   //
   // if the ranges in aSeg1 are less than theCurveRes1,
   // there is no need to do step 2 (deep evaluation)
-  if (bSmall) {
+  if (aNb1 < aNb) {
     return iErr;
   }
   //
   // 2. Deep evaluation
-  for (i = 2; i < aNb; ++i) {
+  for (i = 2; i < aNb1; ++i) {
     const IntTools_Range& aR1 = aSeg1(i);
     aR1.Range(aT1A, aT1B);
     //
@@ -1155,37 +1028,32 @@ Standard_Integer DistPC(const Standard_Real aT1,
 //function : SplitRangeOnSegments
 //purpose  : 
 //=======================================================================
-Standard_Boolean SplitRangeOnSegments(const Standard_Real aT1, 
-                                      const Standard_Real aT2,
-                                      const Standard_Real theResolution,
-                                      const Standard_Integer theNbSeg,
-                                      IntTools_SequenceOfRanges& theSegments)
+void SplitRangeOnSegments(const Standard_Real aT1, 
+                          const Standard_Real aT2,
+                          const Standard_Real theResolution,
+                          const Standard_Integer theNbSeg,
+                          IntTools_SequenceOfRanges& theSegments)
 {
-  if ((aT2 - aT1) < theResolution) {
+  Standard_Real aDiff = aT2 - aT1;
+  if (aDiff < theResolution) {
     theSegments.Append(IntTools_Range(aT1, aT2));
-    return Standard_False;
+    return;
   }
   //
   Standard_Real aDt, aT1x, aT2x, aSeg;
   Standard_Integer aNbSegments, i;
-  Standard_Boolean bRet;
   //
-  bRet = Standard_True;
   aNbSegments = theNbSeg;
-  aDt = (aT2 - aT1) / aNbSegments;
+  aDt = aDiff / aNbSegments;
   if (aDt < theResolution) {
-    aSeg = (aT2 - aT1) / theResolution;
+    aSeg = aDiff / theResolution;
     aNbSegments = Standard_Integer(aSeg) + 1;
-    bRet = Standard_False;
+    aDt = aDiff / aNbSegments;
   }
   //
-  aDt /= aNbSegments;
   aT1x = aT1;
-  for (i = 1; i <= aNbSegments; ++i) {
+  for (i = 1; i < aNbSegments; ++i) {
     aT2x = aT1x + aDt;
-    if (i==aNbSegments) {
-      aT2x = aT2;
-    }
     //
     IntTools_Range aR(aT1x, aT2x);
     theSegments.Append(aR);
@@ -1193,26 +1061,8 @@ Standard_Boolean SplitRangeOnSegments(const Standard_Real aT1,
     aT1x = aT2x;
   }
   //
-  return bRet;
-}
-
-//=======================================================================
-//function : SplitRangeOnTwo
-//purpose  : 
-//=======================================================================
-void SplitRangeOnTwo(const Standard_Real aT1, 
-                     const Standard_Real aT2,
-                     IntTools_SequenceOfRanges& theSegments)
-{
-  Standard_Real aCf, aT;
-  //
-  aCf=0.5;
-  aT = aT1 + (aT2-aT1)*aCf;
-  //
-  IntTools_Range aR1(aT1, aT), aR2(aT, aT2);
-  //
-  theSegments.Append(aR1);
-  theSegments.Append(aR2);
+  IntTools_Range aR(aT1x, aT2);
+  theSegments.Append(aR);
 }
 
 //=======================================================================
@@ -1256,6 +1106,40 @@ void BndBuildBox(const BRepAdaptor_Curve& theBAC,
   Bnd_Box aB;
   BndLib_Add3dCurve::Add(theBAC, aT1, aT2, theTol, aB);
   theBox = aB;
+}
+
+//=======================================================================
+//function : PointBoxDistance
+//purpose  : 
+//=======================================================================
+Standard_Real PointBoxDistance(const Bnd_Box& aB,
+                               const gp_Pnt& aP)
+{
+  Standard_Real aPCoord[3];
+  Standard_Real aBMinCoord[3], aBMaxCoord[3];
+  Standard_Real aDist, aR1, aR2;
+  Standard_Integer i;
+  //
+  aP.Coord(aPCoord[0], aPCoord[1], aPCoord[2]);
+  aB.Get(aBMinCoord[0], aBMinCoord[1], aBMinCoord[2], 
+         aBMaxCoord[0], aBMaxCoord[1], aBMaxCoord[2]);
+  //
+  aDist = 0.;
+  for (i = 0; i < 3; ++i) {
+    aR1 = aBMinCoord[i] - aPCoord[i];
+    if (aR1 > 0.) {
+      aDist += aR1*aR1;
+      continue;
+    }
+    //
+    aR2 = aPCoord[i] - aBMaxCoord[i];
+    if (aR2 > 0.) {
+      aDist += aR2*aR2;
+    }
+  }
+  //
+  aDist = Sqrt(aDist);
+  return aDist;
 }
 
 //=======================================================================
