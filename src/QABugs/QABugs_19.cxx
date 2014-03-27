@@ -1613,6 +1613,232 @@ static Standard_Integer OCC24667 (Draw_Interpretor& di, Standard_Integer n, cons
   return 0;
 }
 
+#include <IGESControl_Reader.hxx>
+#include <IGESControl_Controller.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <BRepCheck_Analyzer.hxx>
+#include <PTColStd_TransientPersistentMap.hxx>
+#include <PTopoDS_HShape.hxx>
+#include <Storage_Data.hxx>
+#include <TopExp_Explorer.hxx>
+#include <MgtBRep.hxx>
+#include <FSD_File.hxx>
+#include <ShapeSchema.hxx>
+#include <TColStd_HSequenceOfTransient.hxx>
+#include <PTColStd_PersistentTransientMap.hxx>
+#include <Storage_Root.hxx>
+
+static Standard_Integer OCC24565 (Draw_Interpretor& di, Standard_Integer argc, const char** argv)
+{
+  if (argc != 3) {
+    di << "Usage : " << argv[0] << " FileNameIGS FileNameSTOR";
+    return 1;
+  }
+
+  Standard_CString sFileNameIGS = argv[1];
+  Standard_CString sFileNameSTOR = argv[2];
+
+  IGESControl_Reader ICReader;
+
+  /* * * * * * *
+   * Read the IGES file and make sure it is valid
+   *
+   * * * * * * */
+  IGESControl_Controller::Init();
+
+  if (!ICReader.ReadFile(sFileNameIGS)) {
+    printf("%s:%d - Error reading '%s'\n",__FUNCTION__,__LINE__,sFileNameIGS);fflush(stdout);
+    return -1;
+  }
+
+  int nbShapes = ICReader.NbShapes();
+
+  printf("%s:%d - nbShapes = '%d'\n",__FUNCTION__,__LINE__,nbShapes);fflush(stdout);
+
+  TopoDS_Shape Shape;
+  if(nbShapes == 0)
+    {
+      Handle(TColStd_HSequenceOfTransient) faces=ICReader.GiveList("iges-faces");
+      Handle(TColStd_HSequenceOfTransient) surfaceList=ICReader.GiveList("xst-transferrable-roots",faces);
+
+      if (surfaceList.IsNull())
+	{
+	  printf("%s:%d - surfaceList.IsNull()\n",__FUNCTION__,__LINE__);fflush(stdout);
+	  return -1;
+	}
+      BRep_Builder builder;
+      TopoDS_Compound* pC = new TopoDS_Compound();
+      builder.MakeCompound(*pC);
+
+      for (int j=1;j<=surfaceList->Length();j++)
+	{
+	  Handle(IGESData_IGESEntity) igesEntity=Handle(IGESData_IGESEntity)::DownCast(surfaceList->Value(j));
+	  if (igesEntity.IsNull()) continue;
+	  ICReader.ClearShapes();
+	  Standard_Boolean rv;
+	  try {
+	    rv=ICReader.TransferEntity(igesEntity);
+	  }
+	  catch (...) {
+	    rv=Standard_False;
+	  }
+	  if (!rv) {
+	    printf("%s:%d - Error transferring IGES entity\n",__FUNCTION__,__LINE__);fflush(stdout);
+	    printf("%s:%d - FormNumber = %d, TypeNumber = %d\n",__FUNCTION__,__LINE__,igesEntity->FormNumber(),igesEntity->TypeNumber());fflush(stdout);
+	    return -1;
+	  }
+
+	  TopoDS_Shape S;
+	  try {
+	    S=ICReader.Shape();
+	  }
+	  catch(...) {
+	    printf("%s:%d - Error reading IGES entity\n",__FUNCTION__,__LINE__);fflush(stdout);
+	    printf("%s:%d - FormNumber = %d, TypeNumber = %d\n",__FUNCTION__,__LINE__,igesEntity->FormNumber(),igesEntity->TypeNumber());fflush(stdout);
+	    return -1;
+	  }
+	  if (S.IsNull()) {
+	    printf("%s:%d - NULL Surface encountered\n",__FUNCTION__,__LINE__);
+	    return -1;
+	  }
+
+	  try
+	    {
+	      builder.Add(*pC,S);
+	    }
+	  catch(...)
+	    {
+	      printf("%s: Exception adding face.\n",__FUNCTION__);
+	    }
+	}
+      Shape = TopoDS_Shape(*pC);
+    }
+  else
+    {
+      Shape = ICReader.OneShape();
+    }
+  {
+    BRepCheck_Analyzer brca(Shape);
+
+    if(!brca.IsValid())
+      {
+	printf("%s: Invalid shape after reading IGES file.\n",__FUNCTION__);
+      }
+  }
+
+  /* * * * * * *
+   * Write the contents of the Shape to a STOR file
+   *
+   * * * * * * */
+  PTColStd_TransientPersistentMap aMapTP;
+  Handle(PTopoDS_HShape) aPShape_write;
+  Handle(Storage_Data) d_write=new Storage_Data;
+  char Name[32];
+
+  TopExp_Explorer Ex;
+  int i;
+  int max_i = 0;
+
+  for (i=0,Ex.Init(Shape,TopAbs_FACE);Ex.More();i++,Ex.Next())
+    {
+
+      max_i = i;
+      try {
+	aPShape_write=MgtBRep::Translate(Ex.Current(),aMapTP,MgtBRep_WithoutTriangle);
+      }
+      catch (...) {
+	printf("%s: Error translating surface '%d'\n",__FUNCTION__,i);
+      }
+		
+      sprintf(Name,"S%010d",i);
+		
+      {
+	BRepCheck_Analyzer brca(Ex.Current());
+	if(!brca.IsValid())
+	  {
+	    printf("INVALID face '%s' in the shape, which will be written to the STOR file.\n",Name);
+	  }
+      }
+      try {
+	d_write->AddRoot(Name,aPShape_write);
+      }
+      catch (...) {
+	printf("%s: Error adding surface '%d', RootName = '%s'\n",__FUNCTION__,i,Name);
+      }
+    }
+  printf("%s: Going to write %d surfaces.\n",__FUNCTION__,max_i+1);
+
+  FSD_File f_write;
+  if(f_write.Open(sFileNameSTOR, Storage_VSWrite)!=Storage_VSOk)
+    {
+      printf("%s: Error opening file: %s\n", __FUNCTION__,sFileNameSTOR);
+      return -1;
+    }
+  Handle(ShapeSchema) s_write=new ShapeSchema;
+  s_write->Write(f_write,d_write);
+  f_write.Close();
+  printf("%s: Wrote to the STOR file.\n",__FUNCTION__);
+
+  /* * * * * * *
+   * Read the contents of the Shape from a STOR file
+   *
+   * * * * * * */
+  FSD_File f_read;
+  if(f_read.Open(sFileNameSTOR, Storage_VSRead)!=Storage_VSOk)
+    {
+      printf("%s: Error opening file: %s\n", __FUNCTION__,sFileNameSTOR);
+      return -1;
+    }
+  Handle(ShapeSchema) s_read=new ShapeSchema;
+  Handle(Storage_Data) d_read=s_read->Read(f_read);
+
+  Handle(Standard_Persistent) p;
+  Handle(Storage_Root) r;
+  Handle(PTopoDS_HShape) aPShape_read;
+  PTColStd_PersistentTransientMap aMapPT;
+  TopoDS_Shape S_read;
+
+  printf("%s: Extracting %d faces from the STOR file.\n",__FUNCTION__,max_i+1);
+  for(int i = 0; i <= max_i; ++i)
+    {
+      sprintf(Name,"S%010d",i);
+      r=d_read->Find(Name);
+      if(r.IsNull())
+	{
+	  printf("%s:%d '%s' IsNull().\n",__FUNCTION__,__LINE__,Name);fflush(stdout);
+	  continue;
+	}
+      p=r->Object();
+      aPShape_read = Handle(PTopoDS_HShape)::DownCast(p);
+      try {
+	MgtBRep::Translate(aPShape_read,aMapPT,S_read,MgtBRep_WithoutTriangle);
+      }
+      catch (Standard_Failure) {
+	Handle(Standard_Failure) E=Standard_Failure::Caught();
+	std::string str;
+	str="Exception: ";
+	str+=E->DynamicType()->Name();
+	str+=" => ";
+	str+=E->GetMessageString();
+	printf("%s(1): %s: %s\n",__FUNCTION__,Name,str.c_str());fflush(stdout);
+      }
+      catch (...) {
+	printf("%s(1): Unhandled exception in MgtBRep::Translate\n",__FUNCTION__);
+      }
+
+      BRepCheck_Analyzer brca(S_read);
+
+      if(!brca.IsValid())
+	{
+	  printf("%s: Read INVALID face (%s)!\n",__FUNCTION__,Name);
+	}
+    }
+
+  printf("Completed.\n");fflush(stdout);
+
+  return 0;
+}
+
 void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   const char *group = "QABugs";
 
@@ -1639,5 +1865,6 @@ void QABugs::Commands_19(Draw_Interpretor& theCommands) {
   theCommands.Add ("OCC24370", "OCC24370 edge pcurve surface prec", __FILE__, OCC24370, group);
   theCommands.Add ("OCC24622", "OCC24622 texture={1D|2D}\n Tests sourcing of 1D/2D pixmaps for AIS_TexturedShape", __FILE__, OCC24622, group);
   theCommands.Add ("OCC24667", "OCC24667 result Wire_spine Profile [Mode [Approx]], no args to get help", __FILE__, OCC24667, group);
+  theCommands.Add ("OCC24565", "OCC24565 FileNameIGS FileNameSTOR", __FILE__, OCC24565, group);
   return;
 }
