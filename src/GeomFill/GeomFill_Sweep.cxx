@@ -31,6 +31,7 @@
 #include <gp_GTrsf.hxx>
 #include <gp_Mat.hxx>
 #include <gp_Ax2.hxx>
+#include <gp_Sphere.hxx>
 
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array2OfPnt.hxx>
@@ -59,6 +60,7 @@
 #include <Geom_SphericalSurface.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_TrimmedCurve.hxx>
 
 #include <Approx_SweepApproximation.hxx>
 #include <AdvApprox_PrefAndRec.hxx>
@@ -67,6 +69,7 @@
 
 #include <Precision.hxx>
 #include <ElCLib.hxx>
+#include <ElSLib.hxx>
 
 //=======================================================================
 //class : GeomFill_Sweep_Eval
@@ -843,25 +846,33 @@ static Standard_Boolean IsSweepParallelSpine (const Handle(GeomFill_LocationLaw)
 	    Standard_Real f = UFirst , l =  ULast;
 	    SError = error;
 	    Centre.BaryCenter(1.0, C.Location(), 1.0); 
-	    gp_Ax3 AxisOfSphere(Centre, DN, DS);  
-	    S = new (Geom_SphericalSurface) 
-	      (AxisOfSphere, (RotRadius + C.Radius())/2 );
+	    gp_Ax3 AxisOfSphere(Centre, DN, DS);
+            gp_Sphere theSphere( AxisOfSphere, (RotRadius + C.Radius())/2 );
+	    S = new Geom_SphericalSurface(theSphere);
 	    // Pour les spheres on ne peut pas controler le parametre
             // V (donc U car  myExchUV = Standard_True)
             // Il faut donc modifier UFirst, ULast...
-	    if (C.Position().Direction().
-		IsOpposite(AxisOfSphere.YDirection(), 0.1) ) {
+            Standard_Real fpar = AC.FirstParameter();
+            Standard_Real lpar = AC.LastParameter();
+            Handle(Geom_Curve) theSection = new Geom_TrimmedCurve(Section, fpar, lpar);
+            theSection->Transform(Tf2);
+            gp_Pnt FirstPoint = theSection->Value(theSection->FirstParameter());
+            gp_Pnt LastPoint  = theSection->Value(theSection->LastParameter());
+            Standard_Real UfirstOnSec, VfirstOnSec, UlastOnSec, VlastOnSec;
+            ElSLib::Parameters(theSphere, FirstPoint, UfirstOnSec, VfirstOnSec);
+            ElSLib::Parameters(theSphere, LastPoint, UlastOnSec, VlastOnSec);
+            if (VfirstOnSec < VlastOnSec)
+            {
+              f = VfirstOnSec;
+              l = VlastOnSec;
+            }
+            else
+            {
 	      // L'orientation parametrique est inversee
-	      l = 2*M_PI - UFirst;
-	      f = 2*M_PI - ULast;
+              f = VlastOnSec;
+              l = VfirstOnSec;
 	      isUReversed = Standard_True;
 	    }
-	    // On calcul le "glissement" parametrique.
-	    Standard_Real rot; 
-	    rot = C.Position().XDirection().AngleWithRef
-	      (AxisOfSphere.XDirection(), AxisOfSphere.YDirection());
-	    f -= rot;
-	    l  -= rot;
 
 	    if ( (f >= -M_PI/2) && (l <= M_PI/2)) {
 	      Ok = Standard_True;
