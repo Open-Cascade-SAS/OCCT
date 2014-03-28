@@ -29,8 +29,6 @@ uses
 
 is
 
-    Create returns PointGeomTool from TopOpeBRep;
-
     MakePoint(myclass; IP : VPointInter from TopOpeBRep)
     returns Point from TopOpeBRepDS;
 
