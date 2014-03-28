@@ -1,5 +1,5 @@
--- Created on: 1992-01-09
--- Created by: Remi GILET
+-- Created on: 1992-02-20
+-- Created by: Remy GILET
 -- Copyright (c) 1992-1999 Matra Datavision
 -- Copyright (c) 1999-2014 OPEN CASCADE SAS
 --
@@ -14,20 +14,23 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class FunctionTanObl from GccIter (
-    TheCurve     as any;
-    TheCurveTool as any) -- as CurvePGTool from GccInt (TheCurve)
+private class FunctionTanCuPnt from Geom2dGcc
 
 inherits FunctionWithDerivative from math
-    ---Purpose: This class describe a function of a single variable.
 
-uses Dir2d from gp     
+    ---Purpose: This abstract class describes a Function of 1 Variable 
+    --          used to find a line tangent to a curve and passing 
+    --          through a point.
 
-     
+uses
+    Pnt2d     from gp,
+    Curve     from Geom2dAdaptor,
+    CurveTool from Geom2dGcc
+
 is
 
-Create (Curve : TheCurve      ;
-    	Dir   : Dir2d from gp ) returns FunctionTanObl from GccIter;
+Create (C      : Curve from Geom2dAdaptor         ;
+        Point  : Pnt2d    from gp ) returns FunctionTanCuPnt from Geom2dGcc;
 
 Value (me : in out      ;
        X  :        Real ;
@@ -54,13 +57,7 @@ Values (me    : in out      ;
 
 fields
 
-TheCurv      : TheCurve        ;
-TheDirection : Dir2d    from gp;
+TheCurv      : Curve from Geom2dAdaptor;
+ThePoint     : Pnt2d from gp;
 
-end FunctionTanObl;
-
-
-
-
-
-
+end FunctionTanCuPnt;

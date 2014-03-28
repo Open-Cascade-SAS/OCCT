@@ -39,11 +39,11 @@ uses Lin2d            from gp,
      Position         from GccEnt,
      Array1OfPosition from GccEnt,
      Curve            from Geom2dAdaptor,
-     MyL2dTanObl      from Geom2dGcc
+     Lin2dTanOblIter  from Geom2dGcc
 
 raises BadQualifier from GccEnt,
        NotDone      from StdFail,
-       IsParallel   from GccIter,
+       IsParallel   from Geom2dGcc,
        OutOfRange   from Standard
 
 is
@@ -151,7 +151,7 @@ Intersection2 (me                                     ;
                Index         :   Integer from Standard;
                ParSol,ParArg : out Real  from Standard;
                PntSol        : out Pnt2d from gp      )
-raises NotDone from StdFail, IsParallel from GccIter, OutOfRange from Standard
+raises NotDone from StdFail, IsParallel from Geom2dGcc, OutOfRange from Standard
 is static;
     	---Purpose: Returns the point of intersection PntSol between the
     	-- solution of index Index and the second argument (the line) of this algorithm.
@@ -159,7 +159,7 @@ is static;
     	-- solution. ParArg is the parameter of the point PntSol on the second argument (the line).
     	-- Exceptions
     	-- StdFail_NotDone if the construction fails.
-    	-- GccIter_IsParallel if the solution and the second
+    	-- Geom2dGcc_IsParallel if the solution and the second
     	-- argument (the line) are parallel.
     	-- Standard_OutOfRange if Index is less than zero or
     	-- greater than the number of solutions computed by this algorithm.
@@ -174,7 +174,7 @@ is static;
 
 -- Modified by Sergey KHROMOV - Wed Oct 16 12:04:52 2002  Begin 
     Add(me:  in  out;  theIndex:  Integer      from  Standard; 
-                       theLin  :  MyL2dTanObl  from  Geom2dGcc; 
+                       theLin  :  Lin2dTanOblIter  from  Geom2dGcc; 
                        theTol  :  Real         from  Standard; 
     	    	       theC1   :  Curve        from  Geom2dAdaptor) 
     returns  Boolean  from  Standard 

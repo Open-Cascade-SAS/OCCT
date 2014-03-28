@@ -14,11 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class Circ2d3Tan from GccIter (
-    TheCurve          as any;
-    TheCurveTool      as any; -- as CurveTool from GccInt (TheCurve)
-    TheQualifiedCurve as any) -- as QualifiedCurve from GccEnt
-    	    	      	      --                  (TheCurve)
+class Circ2d3TanIter from Geom2dGcc
 
 	---Purpose: This class implements the algorithms used to 
 	--          create 2d circles tangent to 3 points/lines/circles/
@@ -36,119 +32,120 @@ uses Pnt2d            from gp,
      Circ2d           from gp,
      QualifiedCirc    from GccEnt,
      QualifiedLin     from GccEnt,
-     Position         from GccEnt
+     Position         from GccEnt,
+     Curve            from Geom2dAdaptor,
+     CurveTool        from Geom2dGcc,
+     QCurve           from Geom2dGcc
 
 raises NotDone    from StdFail
 
-private class FuncTCuCuCu instantiates FunctionTanCuCuCu from GccIter (
-    	    	    	    	    	    TheCurve,TheCurveTool);
 is
 
 Create(Qualified1 : QualifiedCirc from GccEnt ;
        Qualified2 : QualifiedCirc from GccEnt ;
-       Qualified3 : TheQualifiedCurve            ;
+       Qualified3 : QCurve from Geom2dGcc;
        Param1     : Real                         ;
        Param2     : Real                         ;
        Param3     : Real                         ;
        Tolerance  : Real                         ) 
-returns Circ2d3Tan from GccIter;
+returns Circ2d3TanIter from Geom2dGcc;
 	---Purpose: This method implements the algorithms used to 
 	--          create 2d circles tangent to 2 circles and a curve.
 
 Create(Qualified1 : QualifiedCirc from GccEnt ;
-       Qualified2 : TheQualifiedCurve            ;
-       Qualified3 : TheQualifiedCurve            ;
+       Qualified2 : QCurve from Geom2dGcc;
+       Qualified3 : QCurve from Geom2dGcc;
        Param1     : Real                         ;
        Param2     : Real                         ;
        Param3     : Real                         ;
        Tolerance  : Real                         )
-returns Circ2d3Tan from GccIter;
+returns Circ2d3TanIter from Geom2dGcc;
 	---Purpose: This method implements the algorithms used to 
 	--          create 2d circles tangent to a circle and 2 curves.
 
 Create(Qualified1 : QualifiedCirc from GccEnt ;
        Qualified2 : QualifiedLin  from GccEnt ;
-       Qualified3 : TheQualifiedCurve            ;
+       Qualified3 : QCurve from Geom2dGcc;
        Param1     : Real                         ;
        Param2     : Real                         ;
        Param3     : Real                         ;
        Tolerance  : Real                         ) 
-returns Circ2d3Tan from GccIter;
+returns Circ2d3TanIter from Geom2dGcc;
 	---Purpose: This method implements the algorithms used to 
 	--          create 2d circles tangent to a circle and a line and
 	--          a curve.
 
 Create(Qualified1 : QualifiedCirc     from GccEnt ;
-       Qualified2 : TheQualifiedCurve                ;
+       Qualified2 : QCurve from Geom2dGcc;
        Point3     : Pnt2d                            ;
        Param1     : Real                             ;
        Param2     : Real                             ;
        Tolerance  : Real                             ) 
-returns Circ2d3Tan from GccIter;
+returns Circ2d3TanIter from Geom2dGcc;
 	---Purpose: This method implements the algorithms used to 
 	--          create 2d circles tangent to a circle and a point and
 	--          a curve.
 
 Create(Qualified1 : QualifiedLin      from GccEnt ;
        Qualified2 : QualifiedLin      from GccEnt ;
-       Qualified3 : TheQualifiedCurve                ;
+       Qualified3 : QCurve from Geom2dGcc;
        Param1     : Real                             ;
        Param2     : Real                             ;
        Param3     : Real                             ;
        Tolerance  : Real                             ) 
-returns Circ2d3Tan from GccIter;
+returns Circ2d3TanIter from Geom2dGcc;
 	---Purpose: This method implements the algorithms used to 
 	--          create 2d circles tangent to 2 lines and a curve.
 
 Create(Qualified1 : QualifiedLin      from GccEnt ;
-       Qualified2 : TheQualifiedCurve                ;
-       Qualified3 : TheQualifiedCurve                ;
+       Qualified2 : QCurve from Geom2dGcc;
+       Qualified3 : QCurve from Geom2dGcc;
        Param1     : Real                             ;
        Param2     : Real                             ;
        Param3     : Real                             ;
        Tolerance  : Real                             ) 
-returns Circ2d3Tan from GccIter;
+returns Circ2d3TanIter from Geom2dGcc;
 	---Purpose: This method implements the algorithms used to 
 	--          create 2d circles tangent to a line and 2 curves.
 
 Create(Qualified1 : QualifiedLin      from GccEnt ;
-       Qualified2 : TheQualifiedCurve                ;
+       Qualified2 : QCurve from Geom2dGcc;
        Point3     : Pnt2d                            ;
        Param1     : Real                             ;
        Param2     : Real                             ;
        Tolerance  : Real                             ) 
-returns Circ2d3Tan from GccIter;
+returns Circ2d3TanIter from Geom2dGcc;
 	---Purpose: This method implements the algorithms used to 
 	--          create 2d circles tangent to a line and a curve 
 	--          and a point.
 
-Create(Qualified1 : TheQualifiedCurve ;
+Create(Qualified1 : QCurve from Geom2dGcc;
        Point1     : Pnt2d             ;
        Point2     : Pnt2d             ;
        Param1     : Real              ;
        Tolerance  : Real              ) 
-returns Circ2d3Tan from GccIter;
+returns Circ2d3TanIter from Geom2dGcc;
 	---Purpose: This method implements the algorithms used to 
 	--          create 2d circles tangent to a curve and 2 points.
 
-Create(Qualified1 : TheQualifiedCurve ;
-       Qualified2 : TheQualifiedCurve ;
+Create(Qualified1 : QCurve from Geom2dGcc ;
+       Qualified2 : QCurve from Geom2dGcc ;
        Point2     : Pnt2d             ;
        Param1     : Real              ;
        Param2     : Real              ;
        Tolerance  : Real              ) 
-returns Circ2d3Tan from GccIter;
+returns Circ2d3TanIter from Geom2dGcc;
 	---Purpose: This method implements the algorithms used to 
 	--          create 2d circles tangent to 2 curves and a point.
 
-Create(Qualified1 : TheQualifiedCurve ;
-       Qualified2 : TheQualifiedCurve ;
-       Qualified3 : TheQualifiedCurve ;
+Create(Qualified1 : QCurve from Geom2dGcc ;
+       Qualified2 : QCurve from Geom2dGcc ;
+       Qualified3 : QCurve from Geom2dGcc ;
        Param1     : Real              ;
        Param2     : Real              ;
        Param3     : Real              ;
        Tolerance  : Real              ) 
-returns Circ2d3Tan from GccIter;
+returns Circ2d3TanIter from Geom2dGcc;
 	---Purpose: This method implements the algorithms used to 
 	--          create 2d circles tangent to 3 curves.
 
@@ -315,4 +312,4 @@ fields
     ---Purpose: The parameter of the tangency point between the solution 
     --          and the third argument on the second argument.
 
-end Circ2d3Tan;
+end Circ2d3TanIter;

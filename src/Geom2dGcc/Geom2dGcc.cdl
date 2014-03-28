@@ -33,7 +33,6 @@ package Geom2dGcc
 
 uses GccEnt,
      GccAna,
-     GccIter,
      StdFail,
      Geom2dInt,
      Geom2d,
@@ -45,7 +44,8 @@ uses GccEnt,
      Adaptor3d,
      Adaptor2d,
      TColgp,
-     gp
+     gp,
+     math
 
 is
 
@@ -79,25 +79,29 @@ class Circ2dTanCenGeo;
 
 class Circ2dTanOnRadGeo;
 
-class MyC2d3Tan instantiates Circ2d3Tan from GccIter
-    	    (Curve          from Geom2dAdaptor,
-	     CurveTool      from Geom2dGcc,
-	     QCurve         from Geom2dGcc);
-	     
-class MyC2d2TanOn instantiates Circ2d2TanOn from GccIter
-    	    (Curve          from Geom2dAdaptor,
-	     CurveTool      from Geom2dGcc,
-	     QCurve         from Geom2dGcc);
+class Circ2d3TanIter;
+private class FunctionTanCuCuCu;
 
-class MyL2dTanObl instantiates Lin2dTanObl from GccIter
-    	    (Curve          from Geom2dAdaptor,
-	     CurveTool      from Geom2dGcc,
-	     QCurve         from Geom2dGcc);
-	     
-class MyL2d2Tan instantiates Lin2d2Tan from GccIter
-        (Curve          from Geom2dAdaptor,
-         CurveTool      from Geom2dGcc,
-         QCurve         from Geom2dGcc);
+class Circ2d2TanOnIter;
+private class FunctionTanCuCuOnCu;
+
+class Lin2dTanOblIter;
+private class FunctionTanObl;
+
+class Lin2d2TanIter;
+private class FunctionTanCuCu;
+private class FunctionTanCuPnt;
+private class FunctionTanCirCu;
+
+enumeration Type1 is CuCuCu,CiCuCu,CiCiCu,CiLiCu,LiLiCu,LiCuCu;
+
+enumeration Type2 is CuCuOnCu,CiCuOnCu,LiCuOnCu,CuPtOnCu,
+                     CuCuOnLi,CiCuOnLi,LiCuOnLi,CuPtOnLi,
+                     CuCuOnCi,CiCuOnCi,LiCuOnCi,CuPtOnCi;
+
+enumeration Type3 is CuCu,CiCu;
+
+exception IsParallel inherits DomainError from Standard;
 
 Unqualified(Obj : Curve from Geom2dAdaptor) returns QualifiedCurve;
     	---Purpose: Constructs such a qualified curve that the relative

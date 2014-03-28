@@ -43,7 +43,7 @@ uses Pnt2d            from gp,
      Array1OfLin2d    from TColgp,
      Position         from GccEnt,
      Array1OfPosition from GccEnt,
-     MyL2d2Tan        from Geom2dGcc,
+     Lin2d2TanIter    from Geom2dGcc,
      Curve            from Geom2dAdaptor
 
 raises NotDone      from StdFail,
@@ -187,7 +187,7 @@ is static;
     
 -- Modified by Sergey KHROMOV - Wed Oct 16 12:04:52 2002  Begin 
     Add(me:  in  out;  theIndex:  Integer    from  Standard; 
-                       theLin  :  MyL2d2Tan  from  Geom2dGcc; 
+                       theLin  :  Lin2d2TanIter  from  Geom2dGcc; 
                        theTol  :  Real       from  Standard; 
     	    	       theC1   :  Curve      from  Geom2dAdaptor; 
     	    	       theC2   :  Curve      from  Geom2dAdaptor) 

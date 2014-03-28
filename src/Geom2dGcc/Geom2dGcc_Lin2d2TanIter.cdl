@@ -14,11 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class Lin2d2Tan from GccIter (
-    TheCurve          as any;
-    TheCurveTool      as any;
-    TheQualifiedCurve as any) -- as QualifiedCurve from GccEnt
-    	    	      	      --                  (TheCurve)
+class Lin2d2TanIter from Geom2dGcc
 
 	---Purpose: This class implements the algorithms used to 
 	--          create 2d lines tangent to 2 other elements which
@@ -33,26 +29,20 @@ generic class Lin2d2Tan from GccIter (
 uses Pnt2d            from gp,
      Lin2d            from gp,
      QualifiedCirc    from GccEnt,
-     Position         from GccEnt
+     Position         from GccEnt,
+     Curve            from Geom2dAdaptor,
+     CurveTool        from Geom2dGcc,
+     QCurve           from Geom2dGcc
 
 raises BadQualifier from GccEnt,
        NotDone      from StdFail
 
-
-private class FuncTCuCu instantiates FunctionTanCuCu from GccIter(
-    	    	    	    	    	    TheCurve,TheCurveTool);
-
-private class FuncTCuPt instantiates FunctionTanCuPnt from GccIter(
-    	    	    	    	    	    TheCurve,TheCurveTool);
-
-private class FuncTCirCu instantiates FunctionTanCirCu from GccIter(
-    	    	    	    	    	    TheCurve,TheCurveTool);
 is
 
-Create (Qualified1 : TheQualifiedCurve ;
+Create (Qualified1 : QCurve from Geom2dGcc ;
     	ThePoint   : Pnt2d             ;
         Param1     : Real              ;
-    	Tolang     : Real              ) returns Lin2d2Tan from GccIter
+    	Tolang     : Real              ) returns Lin2d2TanIter from Geom2dGcc
     ---Purpose: This class implements the algorithms used to create 2d 
     --          lines passing thrue a point and tangent to a curve.
     --          Tolang is used to determine the tolerance for the 
@@ -61,9 +51,9 @@ Create (Qualified1 : TheQualifiedCurve ;
 raises BadQualifier from GccEnt;
 
 Create (Qualified1 : QualifiedCirc     ;
-        Qualified2 : TheQualifiedCurve ;
+        Qualified2 : QCurve from Geom2dGcc ;
     	Param2     : Real              ;
-    	Tolang     : Real              ) returns Lin2d2Tan from GccIter
+    	Tolang     : Real              ) returns Lin2d2TanIter from Geom2dGcc
 raises BadQualifier from GccEnt;
     ---Purpose: This class implements the algorithms used to create 2d 
     --          line tangent to a circle and to a cuve.
@@ -73,11 +63,11 @@ raises BadQualifier from GccEnt;
     --          Exception BadQualifier is raised in the case of 
     --          EnclosedCirc
 
-Create (Qualified1 : TheQualifiedCurve ;
-        Qualified2 : TheQualifiedCurve ;
+Create (Qualified1 : QCurve from Geom2dGcc ;
+        Qualified2 : QCurve from Geom2dGcc ;
     	Param1     : Real              ;
     	Param2     : Real              ;
-    	Tolang     : Real              ) returns Lin2d2Tan from GccIter
+    	Tolang     : Real              ) returns Lin2d2TanIter from Geom2dGcc
 raises BadQualifier from GccEnt;
     ---Purpose: This class implements the algorithms used to create 2d 
     --          line tangent to two curves.
@@ -171,4 +161,4 @@ fields
     -- The parameter of the tangency point between the solution and the second 
     -- argument on the second argument.
 
-end Lin2d2Tan;
+end Lin2d2TanIter;

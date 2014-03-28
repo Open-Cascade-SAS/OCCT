@@ -43,7 +43,7 @@
 #include <Geom2d_Circle.hxx>
 #include <Geom2dGcc_QCurve.hxx>
 #include <GccEnt_QualifiedCirc.hxx>
-#include <Geom2dGcc_MyL2d2Tan.hxx>
+#include <Geom2dGcc_Lin2d2TanIter.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -156,7 +156,7 @@ static Standard_Integer BUC60843 (Draw_Interpretor& di, Standard_Integer argc,co
     Geom2dAdaptor_Curve acur(aCur2d2);
     Geom2dGcc_QCurve qcur(acur, GccEnt_unqualified);
     GccEnt_QualifiedCirc qfromcur(aCir2d->Circ2d(), GccEnt_unqualified);
-    Geom2dGcc_MyL2d2Tan lintan(qfromcur, qcur , par1, tol); 
+    Geom2dGcc_Lin2d2TanIter lintan(qfromcur, qcur , par1, tol); 
     if (lintan.IsDone()) {
       gp_Lin2d lin = lintan.ThisSolution(); 
       Handle(Geom2d_Line) glin = new Geom2d_Line(lin); 
@@ -170,7 +170,7 @@ static Standard_Integer BUC60843 (Draw_Interpretor& di, Standard_Integer argc,co
     Geom2dAdaptor_Curve acur2(aCur2d2);
     Geom2dGcc_QCurve qcur1(acur1, GccEnt_unqualified);
     Geom2dGcc_QCurve qcur2(acur2, GccEnt_unqualified);
-    Geom2dGcc_MyL2d2Tan lintan(qcur1, qcur2 , par1, par2, tol); 
+    Geom2dGcc_Lin2d2TanIter lintan(qcur1, qcur2 , par1, par2, tol); 
     if (lintan.IsDone()) {
       gp_Lin2d lin = lintan.ThisSolution(); 
       Handle(Geom2d_Line) glin = new Geom2d_Line(lin); 

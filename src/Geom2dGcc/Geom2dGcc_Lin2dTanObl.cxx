@@ -17,7 +17,7 @@
 #include <Geom2dGcc_Lin2dTanObl.ixx>
 #include <Geom2dGcc_QCurve.hxx>
 #include <GccAna_Lin2dTanObl.hxx>
-#include <Geom2dGcc_MyL2dTanObl.hxx>
+#include <Geom2dGcc_Lin2dTanOblIter.hxx>
 #include <Geom2d_Circle.hxx>
 #include <GccEnt_QualifiedCirc.hxx>
 #include <StdFail_NotDone.hxx>
@@ -75,7 +75,7 @@ Geom2dGcc_Lin2dTanObl::
     Standard_Integer   i;
     
     for (i = 0; i <= aNbSamples && NbrSol < 2; i++) {
-      Geom2dGcc_MyL2dTanObl Lin(Qc1,TheLine,Param1,TolAng,Angle);
+      Geom2dGcc_Lin2dTanOblIter Lin(Qc1,TheLine,Param1,TolAng,Angle);
 
       if (Lin.IsDone()) {
 	if (Add(NbrSol + 1, Lin, TolAng, C1))
@@ -132,7 +132,7 @@ Geom2dGcc_Lin2dTanObl::
   }
   else {
     Geom2dGcc_QCurve Qc1(C1,Qualified1.Qualifier());
-    Geom2dGcc_MyL2dTanObl Lin(Qc1,TheLine,TolAng,Param1,Angle);
+    Geom2dGcc_Lin2dTanOblIter Lin(Qc1,TheLine,TolAng,Param1,Angle);
     WellDone = Lin.IsDone();
     if(WellDone) { 
       linsol(1)    = Lin.ThisSolution();
@@ -195,7 +195,7 @@ void Geom2dGcc_Lin2dTanObl::
 
 Standard_Boolean Geom2dGcc_Lin2dTanObl::Add
                            (const Standard_Integer       theIndex,
-			    const Geom2dGcc_MyL2dTanObl &theLin,
+			    const Geom2dGcc_Lin2dTanOblIter &theLin,
 			    const Standard_Real          theTol,
 			    const Geom2dAdaptor_Curve   &theC1)
 {

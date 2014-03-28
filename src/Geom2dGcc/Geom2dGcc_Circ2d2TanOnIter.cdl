@@ -14,11 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class Circ2d2TanOn from GccIter (
-    TheCurve          as any;
-    TheCurveTool      as any;  
-    TheQualifiedCurve as any) -- as QualifiedCurve from GccEnt
-    	    	      	      --                  (TheCurve)
+class Circ2d2TanOnIter from Geom2dGcc
 
 	---Purpose: This class implements the algorithms used to 
 	--          create 2d circles TANgent to 2 entities and 
@@ -39,23 +35,24 @@ uses Pnt2d            from gp,
      Circ2d           from gp,  
      QualifiedCirc    from GccEnt,
      QualifiedLin     from GccEnt,
-     Position         from GccEnt
+     Position         from GccEnt,
+     Curve            from Geom2dAdaptor,
+     CurveTool        from Geom2dGcc,
+     QCurve           from Geom2dGcc
      
 raises NotDone    from StdFail
 
-private class FuncTCuCuOnCu instantiates FunctionTanCuCuOnCu from GccIter (
-    	    	    	    	    	    	 TheCurve,TheCurveTool);
 is
 
 -- On a 2d line ..........................................................
 
 Create(Qualified1 : QualifiedCirc     ;
-       Qualified2 : TheQualifiedCurve ;
+       Qualified2 : QCurve from Geom2dGcc;
        OnLine     : Lin2d             ;
        Param1     : Real              ;
        Param2     : Real              ;
        Param3     : Real              ;
-       Tolerance  : Real              ) returns Circ2d2TanOn from GccIter ;
+       Tolerance  : Real              ) returns Circ2d2TanOnIter from Geom2dGcc ;
     ---Purpose: This method implements the algorithms used to 
     --          create 2d circles TANgent to a 2d circle and a curve and 
     --          having the center ON a 2d line.
@@ -63,25 +60,25 @@ Create(Qualified1 : QualifiedCirc     ;
     --          Tolerance is used for the limit cases.
 
 Create(Qualified1 : QualifiedLin      ;
-       Qualified2 : TheQualifiedCurve ;
+       Qualified2 : QCurve from Geom2dGcc;
        OnLine     : Lin2d             ;
        Param1     : Real              ;
        Param2     : Real              ;
        Param3     : Real              ;
-       Tolerance  : Real              ) returns Circ2d2TanOn from GccIter ;
+       Tolerance  : Real              ) returns Circ2d2TanOnIter from Geom2dGcc ;
     ---Purpose: This method implements the algorithms used to 
     --          create 2d circles TANgent to a 2d line and a curve and 
     --          having the center ON a 2d line.
     --          Param2 is the initial guess on the curve QualifiedCurv.
     --          Tolerance is used for the limit cases.
 
-Create(Qualified1 : TheQualifiedCurve ;
-       Qualified2 : TheQualifiedCurve ;
+Create(Qualified1 : QCurve from Geom2dGcc;
+       Qualified2 : QCurve from Geom2dGcc;
        OnLine     : Lin2d             ;
        Param1     : Real              ;
        Param2     : Real              ;
        Param3     : Real              ;
-       Tolerance  : Real              ) returns Circ2d2TanOn from GccIter ;
+       Tolerance  : Real              ) returns Circ2d2TanOnIter from Geom2dGcc ;
     ---Purpose: This method implements the algorithms used to 
     --          create 2d circles TANgent to two curves and 
     --          having the center ON a 2d line.
@@ -89,12 +86,12 @@ Create(Qualified1 : TheQualifiedCurve ;
     --          Param2 is the initial guess on the first QualifiedCurv.
     --          Tolerance is used for the limit cases.
 
-Create(Qualified1 : TheQualifiedCurve ;
+Create(Qualified1 : QCurve from Geom2dGcc;
        Point2     : Pnt2d             ;
        OnLine     : Lin2d             ;
        Param1     : Real              ;
        Param2     : Real              ;
-       Tolerance  : Real              ) returns Circ2d2TanOn from GccIter ;
+       Tolerance  : Real              ) returns Circ2d2TanOnIter from Geom2dGcc ;
     ---Purpose: This method implements the algorithms used to 
     --          create 2d circles TANgent to a 2d point and a curve and 
     --          having the center ON a 2d line.
@@ -105,12 +102,12 @@ Create(Qualified1 : TheQualifiedCurve ;
 -- -- On a 2d Circle .....................................................
 
 Create(Qualified1 : QualifiedCirc     ;
-       Qualified2 : TheQualifiedCurve ;
+       Qualified2 : QCurve from Geom2dGcc;
        OnCirc     : Circ2d            ;
        Param1     : Real              ;
        Param2     : Real              ;
        Param3     : Real              ;
-       Tolerance  : Real              ) returns Circ2d2TanOn from GccIter ;
+       Tolerance  : Real              ) returns Circ2d2TanOnIter from Geom2dGcc ;
     ---Purpose: This method implements the algorithms used to 
     --          create 2d circles TANgent to a 2d circle and a curve and 
     --          having the center ON a 2d circle.
@@ -118,25 +115,25 @@ Create(Qualified1 : QualifiedCirc     ;
     --          Tolerance is used for the limit cases.
 
 Create(Qualified1 : QualifiedLin      ;
-       Qualified2 : TheQualifiedCurve ;
+       Qualified2 : QCurve from Geom2dGcc;
        OnCirc     : Circ2d            ;
        Param1     : Real              ;
        Param2     : Real              ;
        Param3     : Real              ;
-       Tolerance  : Real              ) returns Circ2d2TanOn from GccIter ;
+       Tolerance  : Real              ) returns Circ2d2TanOnIter from Geom2dGcc ;
     ---Purpose: This method implements the algorithms used to 
     --          create 2d circles TANgent to a 2d line and a curve and 
     --          having the center ON a 2d circle.
     --          Param2 is the initial guess on the curve QualifiedCurv.
     --          Tolerance is used for the limit cases.
 
-Create(Qualified1 : TheQualifiedCurve ;
-       Qualified2 : TheQualifiedCurve ;
+Create(Qualified1 : QCurve from Geom2dGcc;
+       Qualified2 : QCurve from Geom2dGcc;
        OnCirc     : Circ2d            ;
        Param1     : Real              ;
        Param2     : Real              ;
        Param3     : Real              ;
-       Tolerance  : Real              ) returns Circ2d2TanOn from GccIter ;
+       Tolerance  : Real              ) returns Circ2d2TanOnIter from Geom2dGcc ;
     ---Purpose: This method implements the algorithms used to 
     --          create 2d circles TANgent to two curves and 
     --          having the center ON a 2d circle.
@@ -144,12 +141,12 @@ Create(Qualified1 : TheQualifiedCurve ;
     --          Param2 is the initial guess on the first QualifiedCurv.
     --          Tolerance is used for the limit cases.
 
-Create(Qualified1 : TheQualifiedCurve ;
+Create(Qualified1 : QCurve from Geom2dGcc;
        Point2     : Pnt2d             ;
        OnCirc     : Circ2d            ;
        Param1     : Real              ;
        Param2     : Real              ;
-       Tolerance  : Real              ) returns Circ2d2TanOn from GccIter ;
+       Tolerance  : Real              ) returns Circ2d2TanOnIter from Geom2dGcc ;
     ---Purpose: This method implements the algorithms used to 
     --          create 2d circles TANgent to a 2d point and a curve and 
     --          having the center ON a 2d circle.
@@ -159,12 +156,12 @@ Create(Qualified1 : TheQualifiedCurve ;
 -- -- On a curve .....................................................
 
 Create(Qualified1 : QualifiedCirc     ;
-       Qualified2 : TheQualifiedCurve ;
-       OnCurv     : TheCurve          ;
+       Qualified2 : QCurve from Geom2dGcc;
+       OnCurv     : Curve from Geom2dAdaptor;
        Param1     : Real              ;
        Param2     : Real              ;
        ParamOn    : Real              ;
-       Tolerance  : Real              ) returns Circ2d2TanOn from GccIter ;
+       Tolerance  : Real              ) returns Circ2d2TanOnIter from Geom2dGcc ;
     ---Purpose: This method implements the algorithms used to 
     --          create 2d circles TANgent to a 2d circle and a curve and 
     --          having the center ON a 2d curve.
@@ -173,12 +170,12 @@ Create(Qualified1 : QualifiedCirc     ;
     --          Tolerance is used for the limit cases.
 
 Create(Qualified1 : QualifiedLin      ;
-       Qualified2 : TheQualifiedCurve ;
-       OnCurve    : TheCurve          ;
+       Qualified2 : QCurve from Geom2dGcc;
+       OnCurve    : Curve from Geom2dAdaptor;
        Param1     : Real              ;
        Param2     : Real              ;
        ParamOn    : Real              ;
-       Tolerance  : Real              ) returns Circ2d2TanOn from GccIter ;
+       Tolerance  : Real              ) returns Circ2d2TanOnIter from Geom2dGcc ;
     ---Purpose: This method implements the algorithms used to 
     --          create 2d circles TANgent to a 2d line and a curve and 
     --          having the center ON a 2d curve.
@@ -186,12 +183,12 @@ Create(Qualified1 : QualifiedLin      ;
     --          ParamOn is the initial guess on the center curve OnCurv.
     --          Tolerance is used for the limit cases.
 
-Create(Qualified1 : TheQualifiedCurve ;
+Create(Qualified1 : QCurve from Geom2dGcc;
        Point2     : Pnt2d             ;
-       OnCurve    : TheCurve          ;
+       OnCurve    : Curve from Geom2dAdaptor;
        Param1     : Real              ;
        ParamOn    : Real              ;
-       Tolerance  : Real              ) returns Circ2d2TanOn from GccIter ;
+       Tolerance  : Real              ) returns Circ2d2TanOnIter from Geom2dGcc ;
     ---Purpose: This method implements the algorithms used to 
     --          create 2d circles TANgent to a 2d Point and a curve and 
     --          having the center ON a 2d curve.
@@ -199,13 +196,13 @@ Create(Qualified1 : TheQualifiedCurve ;
     --          ParamOn is the initial guess on the center curve OnCurv.
     --          Tolerance is used for the limit cases.
 
-Create(Qualified1 : TheQualifiedCurve ;
-       Qualified2 : TheQualifiedCurve ;
-       OnCurve    : TheCurve          ;
+Create(Qualified1 : QCurve from Geom2dGcc;
+       Qualified2 : QCurve from Geom2dGcc;
+       OnCurve    : Curve from Geom2dAdaptor;
        Param1     : Real              ;
        Param2     : Real              ;
        ParamOn    : Real              ;
-       Tolerance  : Real              ) returns Circ2d2TanOn from GccIter ;
+       Tolerance  : Real              ) returns Circ2d2TanOnIter from Geom2dGcc ;
     ---Purpose: This method implements the algorithms used to 
     --          create 2d circles TANgent to two curves and 
     --          having the center ON a 2d curve.
@@ -346,4 +343,4 @@ fields
     ---Purpose: The parameter of the center point of the solution 
     --          on the second argument.
 
-end Circ2d2TanOn;
+end Circ2d2TanOnIter;

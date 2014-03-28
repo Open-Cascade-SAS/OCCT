@@ -14,11 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class FunctionTanCuCu from GccIter (
-    TheCurve     as any;
-    TheCurveTool as any) -- as CurvePGTool from GccInt (TheCurve)
-
-inherits FunctionSetWithDerivatives from math 
+private class FunctionTanCuCu from Geom2dGcc inherits FunctionSetWithDerivatives from math 
 
     ---Purpose: This abstract class describes a Function of 1 Variable 
     --          used to find a line tangent to two curves.
@@ -28,18 +24,20 @@ uses Vector from math,
      Circ2d from gp,
      Pnt2d  from gp,
      Vec2d  from gp,
-     Type3  from GccIter
+     Type3  from Geom2dGcc,
+     Curve  from Geom2dAdaptor,
+     CurveTool from Geom2dGcc
 
      
 raises ConstructionError
 
 is
 
-Create (Curv1 : TheCurve ;
-        Curv2 : TheCurve ) returns FunctionTanCuCu from GccIter;
+Create (Curv1 : Curve from Geom2dAdaptor ;
+        Curv2 : Curve from Geom2dAdaptor ) returns FunctionTanCuCu from Geom2dGcc;
 
 Create (Circ1 : Circ2d   from gp ;
-        Curv2 : TheCurve         ) returns FunctionTanCuCu from GccIter;
+        Curv2 : Curve from Geom2dAdaptor         ) returns FunctionTanCuCu from Geom2dGcc;
 
 InitDerivative(me                   : in out                      ;
     	       X                    :        Vector from math     ;
@@ -79,10 +77,10 @@ Values (me    : in out                 ;
 
 fields
 
-TheCurve1     : TheCurve               ;
-TheCurve2     : TheCurve               ;
+TheCurve1     : Curve from Geom2dAdaptor               ;
+TheCurve2     : Curve from Geom2dAdaptor               ;
 TheCirc1      : Circ2d   from gp       ;
-TheType       : Type3    from GccIter  ;
+TheType       : Type3    from Geom2dGcc  ;
 
 end FunctionTanCuCu;
 

@@ -43,7 +43,7 @@ uses Curve            from Geom2dAdaptor,
      Circ2d           from gp,
      Circ2d2TanOn     from GccAna,
      Circ2d2TanOnGeo from Geom2dGcc,
-     MyC2d2TanOn      from Geom2dGcc,
+     Circ2d2TanOnIter from Geom2dGcc,
      Position         from GccEnt,
      Array1OfPosition from GccEnt
      
@@ -285,7 +285,7 @@ fields
 
 --    CircAna  : Circ2d2TanOn from GccAna;
 --    CircGeo  : Circ2d2TanOnGeo from Geom2dGcc;
---    CircIter : MyC2d2TanOn from Geom2dGcc;
+--    CircIter : Circ2d2TanOnIter from Geom2dGcc;
 --    TypeAna  : Boolean;
 
 end Circ2d2TanOn;

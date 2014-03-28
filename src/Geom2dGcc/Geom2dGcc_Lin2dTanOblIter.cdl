@@ -14,35 +14,31 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class Lin2dTanObl from GccIter (
-    TheCurve          as any;
-    TheCurveTool      as any; 
-    TheQualifiedCurve as any) -- as QualifiedCurve from GccEnt
-    	    	      	      --                  (TheCurve)
+class Lin2dTanOblIter from Geom2dGcc
 
 	---Purpose: This class implements the algorithms used to 
 	--          create 2d line tangent to a curve QualifiedCurv and 
 	--          doing an angle Angle with a line TheLin.
 	--          The angle must be in Radian.
 
-uses Lin2d    from gp,
-     Pnt2d    from gp,
-     Position from GccEnt
+uses Lin2d     from gp,
+     Pnt2d     from gp,
+     Position  from GccEnt,
+     Curve     from Geom2dAdaptor,
+     CurveTool from Geom2dGcc,
+     QCurve    from Geom2dGcc
 
 raises BadQualifier from GccEnt,
        NotDone      from StdFail,
-       IsParallel   from GccIter
-
-private class FuncTObl instantiates FunctionTanObl from GccIter(
-    	    	    	    	    	    TheCurve,TheCurveTool);
+       IsParallel   from Geom2dGcc
 
 is
 
-Create (Qualified1 : TheQualifiedCurve ;
+Create (Qualified1 : QCurve from Geom2dGcc ;
     	TheLin     : Lin2d             ;
     	Param1     : Real              ;
     	TolAng     : Real              ;
-        Angle      : Real = 0          ) returns Lin2dTanObl from GccIter
+        Angle      : Real = 0          ) returns Lin2dTanOblIter from Geom2dGcc
 raises BadQualifier from GccEnt;
 	---Purpose: This class implements the algorithm used to 
 	--          create 2d line tangent to a curve and doing an 
@@ -88,7 +84,7 @@ is static;
 Intersection2 (me                       ;
                ParSol,ParArg : out Real ;
                PntSol        : out Pnt2d)
-raises NotDone from StdFail, IsParallel from GccIter
+raises NotDone from StdFail, IsParallel from Geom2dGcc
 is static;
     -- Returns informations about the center (on the curv) of the
     -- result and the third argument.
@@ -137,4 +133,4 @@ fields
     -- The parameter of the intersection point between the solution and 
     -- the second argument on the second argument.
 
-end Lin2dTanObl;
+end Lin2dTanOblIter;

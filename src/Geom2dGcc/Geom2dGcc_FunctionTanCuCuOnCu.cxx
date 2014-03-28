@@ -14,10 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Geom2dGcc_FunctionTanCuCuOnCu.ixx>
+
 #include <Standard_ConstructionError.hxx>
 #include <ElCLib.hxx>
 
-void GccIter_FunctionTanCuCuOnCu::
+#include <Geom2dGcc_CurveTool.hxx>
+
+void Geom2dGcc_FunctionTanCuCuOnCu::
   InitDerivative(const math_Vector&  X,
 		       gp_Pnt2d&     Point1,
 		       gp_Pnt2d&     Point2,
@@ -29,96 +33,96 @@ void GccIter_FunctionTanCuCuOnCu::
 		       gp_Vec2d&     D22,
 		       gp_Vec2d&     D23) {
   switch (TheType) {
-  case GccIter_CuCuOnCu:
+  case Geom2dGcc_CuCuOnCu:
     {
-      TheCurveTool::D2(Curv1,X(1),Point1,Tan1,D21);
-      TheCurveTool::D2(Curv2,X(2),Point2,Tan2,D22);
-      TheCurveTool::D2(Curvon,X(3),Point3,Tan3,D23);
+      Geom2dGcc_CurveTool::D2(Curv1,X(1),Point1,Tan1,D21);
+      Geom2dGcc_CurveTool::D2(Curv2,X(2),Point2,Tan2,D22);
+      Geom2dGcc_CurveTool::D2(Curvon,X(3),Point3,Tan3,D23);
     }
     break;
-  case GccIter_CiCuOnCu:
+  case Geom2dGcc_CiCuOnCu:
     {
       ElCLib::D2(X(1),Circ1,Point1,Tan1,D21);
-      TheCurveTool::D2(Curv2,X(2),Point2,Tan2,D22);
-      TheCurveTool::D2(Curvon,X(3),Point3,Tan3,D23);
+      Geom2dGcc_CurveTool::D2(Curv2,X(2),Point2,Tan2,D22);
+      Geom2dGcc_CurveTool::D2(Curvon,X(3),Point3,Tan3,D23);
     }
     break;
-  case GccIter_LiCuOnCu:
+  case Geom2dGcc_LiCuOnCu:
     {
       ElCLib::D1(X(1),Lin1,Point1,Tan1);
       D21 = gp_Vec2d(0.,0.);
-      TheCurveTool::D2(Curv2,X(2),Point2,Tan2,D22);
-      TheCurveTool::D2(Curvon,X(3),Point3,Tan3,D23);
+      Geom2dGcc_CurveTool::D2(Curv2,X(2),Point2,Tan2,D22);
+      Geom2dGcc_CurveTool::D2(Curvon,X(3),Point3,Tan3,D23);
     }
     break;
-  case GccIter_CuPtOnCu:
+  case Geom2dGcc_CuPtOnCu:
     {
-      TheCurveTool::D2(Curv1,X(1),Point1,Tan1,D21);
-      TheCurveTool::D2(Curvon,X(3),Point3,Tan3,D23);
+      Geom2dGcc_CurveTool::D2(Curv1,X(1),Point1,Tan1,D21);
+      Geom2dGcc_CurveTool::D2(Curvon,X(3),Point3,Tan3,D23);
       Point2 = Pnt2;
       Tan2 = gp_Vec2d(0.,0.);
       D22 = gp_Vec2d(0.,0.);
     }
     break;
-  case GccIter_CuCuOnCi:
+  case Geom2dGcc_CuCuOnCi:
     {
-      TheCurveTool::D2(Curv1,X(1),Point1,Tan1,D21);
-      TheCurveTool::D2(Curv2,X(2),Point2,Tan2,D22);
+      Geom2dGcc_CurveTool::D2(Curv1,X(1),Point1,Tan1,D21);
+      Geom2dGcc_CurveTool::D2(Curv2,X(2),Point2,Tan2,D22);
       ElCLib::D2(X(3),Circon,Point3,Tan3,D23);
     }
     break;
-  case GccIter_CiCuOnCi:
+  case Geom2dGcc_CiCuOnCi:
     {
       ElCLib::D2(X(1),Circ1,Point1,Tan1,D21);
-      TheCurveTool::D2(Curv2,X(2),Point2,Tan2,D22);
+      Geom2dGcc_CurveTool::D2(Curv2,X(2),Point2,Tan2,D22);
       ElCLib::D2(X(3),Circon,Point3,Tan3,D23);
     }
     break;
-  case GccIter_LiCuOnCi:
+  case Geom2dGcc_LiCuOnCi:
     {
       ElCLib::D1(X(1),Lin1,Point1,Tan1);
       D21 = gp_Vec2d(0.,0.);
-      TheCurveTool::D2(Curv2,X(2),Point2,Tan2,D22);
+      Geom2dGcc_CurveTool::D2(Curv2,X(2),Point2,Tan2,D22);
       ElCLib::D2(X(3),Circon,Point3,Tan3,D23);
     }
     break;
-  case GccIter_CuPtOnCi:
+  case Geom2dGcc_CuPtOnCi:
     {
-      TheCurveTool::D2(Curv1,X(1),Point1,Tan1,D21);
+      Geom2dGcc_CurveTool::D2(Curv1,X(1),Point1,Tan1,D21);
       Point2 = Pnt2;
       Tan2 = gp_Vec2d(0.,0.);
       D22 = gp_Vec2d(0.,0.);
       ElCLib::D2(X(3),Circon,Point3,Tan3,D23);
     }
     break;
-  case GccIter_CuCuOnLi:
+  case Geom2dGcc_CuCuOnLi:
     {
-      TheCurveTool::D2(Curv1,X(1),Point1,Tan1,D21);
-      TheCurveTool::D2(Curv2,X(2),Point2,Tan2,D22);
+      Geom2dGcc_CurveTool::D2(Curv1,X(1),Point1,Tan1,D21);
+      Geom2dGcc_CurveTool::D2(Curv2,X(2),Point2,Tan2,D22);
       ElCLib::D1(X(3),Linon,Point3,Tan3);
       D23 = gp_Vec2d(0.,0.);
     }
     break;
-  case GccIter_CiCuOnLi:
+  case Geom2dGcc_CiCuOnLi:
     {
       ElCLib::D2(X(1),Circ1,Point1,Tan1,D21);
-      TheCurveTool::D2(Curv2,X(2),Point2,Tan2,D22);
+      Geom2dGcc_CurveTool::D2(Curv2,X(2),Point2,Tan2,D22);
       ElCLib::D1(X(3),Linon,Point3,Tan3);
       D23 = gp_Vec2d(0.,0.);
     }
     break;
-  case GccIter_LiCuOnLi:
+  case Geom2dGcc_LiCuOnLi:
     {
       ElCLib::D1(X(1),Lin1,Point1,Tan1);
-      TheCurveTool::D2(Curv2,X(2),Point2,Tan2,D22);
+      Geom2dGcc_CurveTool::D2(Curv2,X(2),Point2,Tan2,D22);
       D21 = gp_Vec2d(0.,0.);
       ElCLib::D1(X(3),Linon,Point3,Tan3);
       D23 = gp_Vec2d(0.,0.);
     }
     break;
-  case GccIter_CuPtOnLi:
+  case Geom2dGcc_CuPtOnLi:
     {
-      TheCurveTool::D2(Curv1,X(1),Point1,Tan1,D21);
+      Geom2dGcc_CurveTool::D2(Curv1,X(1),Point1,Tan1,D21);
       Point2 = Pnt2;
       Tan2 = gp_Vec2d(0.,0.);
       D22 = gp_Vec2d(0.,0.);
@@ -133,92 +137,92 @@ void GccIter_FunctionTanCuCuOnCu::
   }
 }
 
-GccIter_FunctionTanCuCuOnCu::
-  GccIter_FunctionTanCuCuOnCu(const TheCurve&     C1  ,
-			     const TheCurve&     C2  ,
-			     const TheCurve&     C3  ,
+Geom2dGcc_FunctionTanCuCuOnCu::
+  Geom2dGcc_FunctionTanCuCuOnCu(const Geom2dAdaptor_Curve&     C1  ,
+			     const Geom2dAdaptor_Curve&     C2  ,
+			     const Geom2dAdaptor_Curve&     C3  ,
 			     const Standard_Real Rad ) {
   Curv1  = C1;
   Curv2  = C2;
   Curvon = C3;
   FirstRad = Rad;
-  TheType = GccIter_CuCuOnCu;
+  TheType = Geom2dGcc_CuCuOnCu;
 }
 
-GccIter_FunctionTanCuCuOnCu::
-  GccIter_FunctionTanCuCuOnCu(const gp_Circ2d&    C1  ,
-			     const TheCurve&     C2  ,
-			     const TheCurve&     C3  ,
+Geom2dGcc_FunctionTanCuCuOnCu::
+  Geom2dGcc_FunctionTanCuCuOnCu(const gp_Circ2d&    C1  ,
+			     const Geom2dAdaptor_Curve&     C2  ,
+			     const Geom2dAdaptor_Curve&     C3  ,
 			     const Standard_Real Rad ) {
   Circ1  = C1;
   Curv2  = C2;
   Curvon = C3;
   FirstRad = Rad;
-  TheType = GccIter_CiCuOnCu;
+  TheType = Geom2dGcc_CiCuOnCu;
 }
 
-GccIter_FunctionTanCuCuOnCu::
-  GccIter_FunctionTanCuCuOnCu(const gp_Lin2d&     L1  ,
-			     const TheCurve&     C2  ,
-			     const TheCurve&     C3  ,
+Geom2dGcc_FunctionTanCuCuOnCu::
+  Geom2dGcc_FunctionTanCuCuOnCu(const gp_Lin2d&     L1  ,
+			     const Geom2dAdaptor_Curve&     C2  ,
+			     const Geom2dAdaptor_Curve&     C3  ,
 			     const Standard_Real Rad ) {
   Lin1  = L1;
   Curv2  = C2;
   Curvon = C3;
   FirstRad = Rad;
-  TheType = GccIter_LiCuOnCu;
+  TheType = Geom2dGcc_LiCuOnCu;
 }
 
-GccIter_FunctionTanCuCuOnCu::
-  GccIter_FunctionTanCuCuOnCu(const TheCurve& C1  ,
+Geom2dGcc_FunctionTanCuCuOnCu::
+  Geom2dGcc_FunctionTanCuCuOnCu(const Geom2dAdaptor_Curve& C1  ,
 			     const gp_Pnt2d&  P2  ,
-			     const TheCurve&  C3  ,
+			     const Geom2dAdaptor_Curve&  C3  ,
 			     const Standard_Real       Rad ) {
   Curv1  = C1;
   Pnt2  = P2;
   Curvon = C3;
   FirstRad = Rad;
-  TheType = GccIter_CuPtOnCu;
+  TheType = Geom2dGcc_CuPtOnCu;
 }
 
-GccIter_FunctionTanCuCuOnCu::
-  GccIter_FunctionTanCuCuOnCu(const TheCurve& C1   ,
-			     const TheCurve&  C2   ,
+Geom2dGcc_FunctionTanCuCuOnCu::
+  Geom2dGcc_FunctionTanCuCuOnCu(const Geom2dAdaptor_Curve& C1   ,
+			     const Geom2dAdaptor_Curve&  C2   ,
 			     const gp_Lin2d&  OnLi ,
 			     const Standard_Real       Rad  ) {
   Curv1  = C1;
   Curv2  = C2;
   Linon = OnLi;
   FirstRad = Rad;
-  TheType = GccIter_CuCuOnLi;
+  TheType = Geom2dGcc_CuCuOnLi;
 }
 
-GccIter_FunctionTanCuCuOnCu::
-  GccIter_FunctionTanCuCuOnCu(const gp_Circ2d&           C1   ,
-			       const TheCurve& C2   ,
+Geom2dGcc_FunctionTanCuCuOnCu::
+  Geom2dGcc_FunctionTanCuCuOnCu(const gp_Circ2d&           C1   ,
+			       const Geom2dAdaptor_Curve& C2   ,
 			       const gp_Lin2d&            OnLi ,
 			       const Standard_Real                 Rad  ) {
   Circ1  = C1;
   Curv2  = C2;
   Linon = OnLi;
   FirstRad = Rad;
-  TheType = GccIter_CiCuOnLi;
+  TheType = Geom2dGcc_CiCuOnLi;
 }
 
-GccIter_FunctionTanCuCuOnCu::
-  GccIter_FunctionTanCuCuOnCu(const gp_Lin2d& L1  ,
-			       const TheCurve&  C2  ,
+Geom2dGcc_FunctionTanCuCuOnCu::
+  Geom2dGcc_FunctionTanCuCuOnCu(const gp_Lin2d& L1  ,
+			       const Geom2dAdaptor_Curve&  C2  ,
 			       const gp_Lin2d&  OnLi ,
 			       const Standard_Real       Rad ) {
   Lin1  = L1;
   Curv2  = C2;
   Linon = OnLi;
   FirstRad = Rad;
-  TheType = GccIter_LiCuOnLi;
+  TheType = Geom2dGcc_LiCuOnLi;
 }
 
-GccIter_FunctionTanCuCuOnCu::
-  GccIter_FunctionTanCuCuOnCu(const TheCurve& C1  ,
+Geom2dGcc_FunctionTanCuCuOnCu::
+  Geom2dGcc_FunctionTanCuCuOnCu(const Geom2dAdaptor_Curve& C1  ,
 			       const gp_Pnt2d&            P2  ,
 			       const gp_Lin2d&            OnLi ,
 			       const Standard_Real                 Rad ) {
@@ -226,47 +230,47 @@ GccIter_FunctionTanCuCuOnCu::
   Pnt2  = P2;
   Linon = OnLi;
   FirstRad = Rad;
-  TheType = GccIter_CuPtOnLi;
+  TheType = Geom2dGcc_CuPtOnLi;
 }
 
-GccIter_FunctionTanCuCuOnCu::
-  GccIter_FunctionTanCuCuOnCu(const TheCurve& C1   ,
-			       const TheCurve& C2   ,
+Geom2dGcc_FunctionTanCuCuOnCu::
+  Geom2dGcc_FunctionTanCuCuOnCu(const Geom2dAdaptor_Curve& C1   ,
+			       const Geom2dAdaptor_Curve& C2   ,
 			       const gp_Circ2d&           OnCi ,
 			       const Standard_Real                 Rad  ) {
   Curv1  = C1;
   Curv2  = C2;
   Circon = OnCi;
   FirstRad = Rad;
-  TheType = GccIter_CuCuOnCi;
+  TheType = Geom2dGcc_CuCuOnCi;
 }
 
-GccIter_FunctionTanCuCuOnCu::
-  GccIter_FunctionTanCuCuOnCu(const gp_Circ2d&           C1  ,
-			       const TheCurve& C2  ,
+Geom2dGcc_FunctionTanCuCuOnCu::
+  Geom2dGcc_FunctionTanCuCuOnCu(const gp_Circ2d&           C1  ,
+			       const Geom2dAdaptor_Curve& C2  ,
 			       const gp_Circ2d&           OnCi ,
 			       const Standard_Real                 Rad ) {
   Circ1  = C1;
   Curv2  = C2;
   Circon = OnCi;
   FirstRad = Rad;
-  TheType = GccIter_CuCuOnCi;
+  TheType = Geom2dGcc_CuCuOnCi;
 }
 
-GccIter_FunctionTanCuCuOnCu::
-  GccIter_FunctionTanCuCuOnCu(const gp_Lin2d& L1  ,
-			       const TheCurve&  C2  ,
+Geom2dGcc_FunctionTanCuCuOnCu::
+  Geom2dGcc_FunctionTanCuCuOnCu(const gp_Lin2d& L1  ,
+			       const Geom2dAdaptor_Curve&  C2  ,
 			       const gp_Circ2d& OnCi ,
 			       const Standard_Real       Rad ) {
   Lin1  = L1;
   Curv2  = C2;
   Circon = OnCi;
   FirstRad = Rad;
-  TheType = GccIter_LiCuOnCi;
+  TheType = Geom2dGcc_LiCuOnCi;
 }
 
-GccIter_FunctionTanCuCuOnCu::
-  GccIter_FunctionTanCuCuOnCu(const TheCurve& C1  ,
+Geom2dGcc_FunctionTanCuCuOnCu::
+  Geom2dGcc_FunctionTanCuCuOnCu(const Geom2dAdaptor_Curve& C1  ,
 			       const gp_Pnt2d&            P2  ,
 			       const gp_Circ2d&           OnCi ,
 			       const Standard_Real                 Rad ) {
@@ -274,16 +278,16 @@ GccIter_FunctionTanCuCuOnCu::
   Pnt2  = P2;
   Circon = OnCi;
   FirstRad = Rad;
-  TheType = GccIter_CuPtOnCi;
+  TheType = Geom2dGcc_CuPtOnCi;
 }
 
-Standard_Integer GccIter_FunctionTanCuCuOnCu::
+Standard_Integer Geom2dGcc_FunctionTanCuCuOnCu::
   NbVariables () const { return 4; }
 
-Standard_Integer GccIter_FunctionTanCuCuOnCu::
+Standard_Integer Geom2dGcc_FunctionTanCuCuOnCu::
   NbEquations () const { return 4; }
 
-Standard_Boolean GccIter_FunctionTanCuCuOnCu::
+Standard_Boolean Geom2dGcc_FunctionTanCuCuOnCu::
   Value (const math_Vector& X    ,
 	       math_Vector& Fval ) {
   gp_Pnt2d Point1,Point2,Point3;
@@ -310,7 +314,7 @@ Standard_Boolean GccIter_FunctionTanCuCuOnCu::
   return Standard_True;
 }
 
-Standard_Boolean GccIter_FunctionTanCuCuOnCu::
+Standard_Boolean Geom2dGcc_FunctionTanCuCuOnCu::
   Derivatives (const math_Vector& X     ,
 	             math_Matrix& Deriv ) {
   gp_Pnt2d Point1,Point2,Point3;
@@ -355,7 +359,7 @@ Standard_Boolean GccIter_FunctionTanCuCuOnCu::
   return Standard_True;
 }
 
-Standard_Boolean GccIter_FunctionTanCuCuOnCu::
+Standard_Boolean Geom2dGcc_FunctionTanCuCuOnCu::
   Values (const math_Vector& X     ,
 	        math_Vector& Fval  ,
 	        math_Matrix& Deriv ) {

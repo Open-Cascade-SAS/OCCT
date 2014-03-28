@@ -47,7 +47,7 @@ uses QualifiedCurve  from Geom2dGcc,
      Array1OfReal    from TColStd,
      Circ2d3Tan      from GccAna,
      Point           from Geom2d,
-     MyC2d3Tan       from Geom2dGcc,
+     Circ2d3TanIter   from Geom2dGcc,
      Position         from GccEnt,
      Array1OfPosition from GccEnt
 
@@ -315,10 +315,5 @@ fields
     pararg3   : Array1OfReal from TColStd;
     	---Purpose: The parameter of the tangency point between the solution and the third
     	-- argument on the second argument.
-
-
---    CircAna  : Circ2d2TanOn from GccAna;
---    CircIter : Circ2d2TanOn from GccIter;
---    TypeAna  : Boolean;
 
 end Circ2d3Tan;

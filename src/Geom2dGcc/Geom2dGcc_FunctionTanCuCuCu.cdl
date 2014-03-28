@@ -14,11 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class FunctionTanCuCuCu from GccIter(
-    TheCurve     as any;
-    TheCurveTool as any) -- as CurvePGTool from GccInt (TheCurve)
-     
-inherits FunctionSetWithDerivatives from math
+private class FunctionTanCuCuCu from Geom2dGcc inherits FunctionSetWithDerivatives from math
      
     ---Purpose: This abstract class describes a set on N Functions of 
     --          M independant variables.
@@ -29,47 +25,49 @@ uses Vector from math,
      Lin2d  from gp,
      Pnt2d  from gp,
      Vec2d  from gp,
-     Type1  from GccIter 
+     Type1  from Geom2dGcc,
+     Curve  from Geom2dAdaptor,
+     CurveTool from Geom2dGcc
 
 raises ConstructionError
 
 is
 
-    Create (C1  : TheCurve ;
-    	    C2  : TheCurve ;
-    	    C3  : TheCurve ) returns FunctionTanCuCuCu from GccIter;
+    Create (C1  : Curve from Geom2dAdaptor ;
+    	    C2  : Curve from Geom2dAdaptor ;
+    	    C3  : Curve from Geom2dAdaptor ) returns FunctionTanCuCuCu from Geom2dGcc;
 
     Create (C1  : Circ2d    from gp ;
-    	    C2  : TheCurve          ;
-    	    C3  : TheCurve          ) returns FunctionTanCuCuCu from GccIter;
+    	    C2  : Curve from Geom2dAdaptor          ;
+    	    C3  : Curve from Geom2dAdaptor          ) returns FunctionTanCuCuCu from Geom2dGcc;
 
     Create (C1  : Circ2d    from gp ;
     	    C2  : Circ2d    from gp ;
-    	    C3  : TheCurve          ) returns FunctionTanCuCuCu from GccIter;
+    	    C3  : Curve from Geom2dAdaptor          ) returns FunctionTanCuCuCu from Geom2dGcc;
 
     Create (C1  : Circ2d    from gp ;
     	    L2  : Lin2d     from gp ;
-    	    C3  : TheCurve          ) returns FunctionTanCuCuCu from GccIter;
+    	    C3  : Curve from Geom2dAdaptor          ) returns FunctionTanCuCuCu from Geom2dGcc;
 
     Create (L1  : Lin2d     from gp ;
     	    L2  : Lin2d     from gp ;
-    	    C3  : TheCurve          ) returns FunctionTanCuCuCu from GccIter;
+    	    C3  : Curve from Geom2dAdaptor          ) returns FunctionTanCuCuCu from Geom2dGcc;
 
     Create (L1  : Lin2d     from gp ;
-    	    C2  : TheCurve          ;
-    	    C3  : TheCurve          ) returns FunctionTanCuCuCu from GccIter;
+    	    C2  : Curve from Geom2dAdaptor          ;
+    	    C3  : Curve from Geom2dAdaptor          ) returns FunctionTanCuCuCu from Geom2dGcc;
 
     Create (C1  : Circ2d    from gp ;
-    	    C2  : TheCurve          ;
-    	    P3  : Pnt2d     from gp ) returns FunctionTanCuCuCu from GccIter;
+    	    C2  : Curve from Geom2dAdaptor          ;
+    	    P3  : Pnt2d     from gp ) returns FunctionTanCuCuCu from Geom2dGcc;
 
     Create (L1  : Lin2d     from gp ;
-    	    C2  : TheCurve          ;
-    	    P3  : Pnt2d     from gp ) returns FunctionTanCuCuCu from GccIter;
+    	    C2  : Curve from Geom2dAdaptor          ;
+    	    P3  : Pnt2d     from gp ) returns FunctionTanCuCuCu from Geom2dGcc;
 
-    Create (C1  : TheCurve          ;
+    Create (C1  : Curve from Geom2dAdaptor          ;
     	    P2  : Pnt2d     from gp ;
-    	    P3  : Pnt2d     from gp ) returns FunctionTanCuCuCu from GccIter;
+    	    P3  : Pnt2d     from gp ) returns FunctionTanCuCuCu from Geom2dGcc;
 
 InitDerivative(me                         : in out                   ;
     	       X                          :        Vector from math  ;
@@ -103,14 +101,14 @@ is static;
     
 fields
 
-Curv1   : TheCurve             ;
-Curv2   : TheCurve             ;
-Curv3   : TheCurve             ;
+Curv1   : Curve from Geom2dAdaptor             ;
+Curv2   : Curve from Geom2dAdaptor             ;
+Curv3   : Curve from Geom2dAdaptor             ;
 Circ1   : Circ2d   from gp     ;
 Circ2   : Circ2d   from gp     ;
 Lin1    : Lin2d    from gp     ;
 Lin2    : Lin2d    from gp     ;
-TheType : Type1    from GccIter;
+TheType : Type1    from Geom2dGcc;
 
 end FunctionTanCuCuCu;
 

@@ -17,7 +17,7 @@
 #include <Geom2dGcc_Lin2d2Tan.ixx>
 #include <Geom2dGcc_QCurve.hxx>
 #include <GccAna_Lin2d2Tan.hxx>
-#include <Geom2dGcc_MyL2d2Tan.hxx>
+#include <Geom2dGcc_Lin2d2TanIter.hxx>
 #include <Geom2d_Circle.hxx>
 #include <GccEnt_QualifiedCirc.hxx>
 #include <StdFail_NotDone.hxx>
@@ -93,7 +93,7 @@ Geom2dGcc_Lin2d2Tan::
       Param2 = a2FPar;
 
       for (j = 0; j <= aNbSamples2 && NbrSol < 4; j++) {
-	Geom2dGcc_MyL2d2Tan Lin(Qc1,Qc2,Param1,Param2,Tolang);
+	Geom2dGcc_Lin2d2TanIter Lin(Qc1,Qc2,Param1,Param2,Tolang);
 
 	if (Lin.IsDone()) {
 	  if (Add(NbrSol + 1, Lin, Tolang, C1, C2))
@@ -158,7 +158,7 @@ Geom2dGcc_Lin2d2Tan::
     Standard_Integer   i;
     
     for (i = 0; i <= aNbSamples && NbrSol < 2; i++) {
-      Geom2dGcc_MyL2d2Tan Lin(Qc1,ThePoint,Param1,Tolang);
+      Geom2dGcc_Lin2d2TanIter Lin(Qc1,ThePoint,Param1,Tolang);
 
       if (Lin.IsDone()) {
 	if (Add(NbrSol + 1, Lin, Tolang, C1, Geom2dAdaptor_Curve()))
@@ -226,7 +226,7 @@ Geom2dGcc_Lin2d2Tan::
   else {
     Geom2dGcc_QCurve Qc1(C1,Qualified1.Qualifier());
     Geom2dGcc_QCurve Qc2(C2,Qualified2.Qualifier());
-    Geom2dGcc_MyL2d2Tan Lin(Qc1,Qc2,Param1,Param2,Tolang);
+    Geom2dGcc_Lin2d2TanIter Lin(Qc1,Qc2,Param1,Param2,Tolang);
     WellDone = Lin.IsDone();
 //  Modified by Sergey KHROMOV - Thu Apr  5 17:51:59 2001 Begin
     if (WellDone) {
@@ -284,7 +284,7 @@ Geom2dGcc_Lin2d2Tan::
   }
   else {
     Geom2dGcc_QCurve Qc1(C1,Qualified1.Qualifier());
-    Geom2dGcc_MyL2d2Tan Lin(Qc1,ThePoint,Param1,Tolang);
+    Geom2dGcc_Lin2d2TanIter Lin(Qc1,ThePoint,Param1,Tolang);
     WellDone = Lin.IsDone();
 //  Modified by Sergey KHROMOV - Thu Apr  5 17:53:01 2001 Begin
     if (WellDone) {
@@ -355,7 +355,7 @@ void Geom2dGcc_Lin2d2Tan::
 }
 
 Standard_Boolean Geom2dGcc_Lin2d2Tan::Add(const Standard_Integer     theIndex,
-					  const Geom2dGcc_MyL2d2Tan &theLin,
+					  const Geom2dGcc_Lin2d2TanIter &theLin,
 					  const Standard_Real        theTol,
 					  const Geom2dAdaptor_Curve &theC1,
 					  const Geom2dAdaptor_Curve &theC2)

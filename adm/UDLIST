@@ -134,7 +134,6 @@ p FilletSurf
 p GccAna
 p GccEnt
 p GccInt
-p GccIter
 p Geom2dAPI
 p Geom2dGcc
 p Geom2dHatch

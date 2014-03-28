@@ -14,102 +14,100 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class FunctionTanCuCuOnCu from GccIter (
-    TheCurve     as any;
-    TheCurveTool as any) -- as CurvePGTool from GccInt (TheCurve)
-
-inherits FunctionSetWithDerivatives from math
+private class FunctionTanCuCuOnCu from Geom2dGcc inherits FunctionSetWithDerivatives from math
 
     ---Purpose: This abstract class describes a set on N Functions of 
     --          M independant variables.
 
-uses Vector from math,
-     Matrix from math,
-     Circ2d from gp,
-     Lin2d  from gp,
-     Pnt2d  from gp,
-     Vec2d  from gp,
-     Type2  from GccIter
+uses Vector    from math,
+     Matrix    from math,
+     Circ2d    from gp,
+     Lin2d     from gp,
+     Pnt2d     from gp,
+     Vec2d     from gp,
+     Type2     from Geom2dGcc,
+     Curve     from Geom2dAdaptor,
+     CurveTool from Geom2dGcc
 
 raises ConstructionError
 
 is
 
-    Create (C1    : TheCurve               ;
-    	    C2    : TheCurve               ;
+    Create (C1    : Curve from Geom2dAdaptor;
+    	    C2    : Curve from Geom2dAdaptor;
     	    OnCi  : Circ2d   from gp       ;
     	    Rad   : Real     from Standard ) 
-returns FunctionTanCuCuOnCu from GccIter;
+returns FunctionTanCuCuOnCu from Geom2dGcc;
 
     Create (C1    : Circ2d   from gp       ;
-    	    C2    : TheCurve               ;
+    	    C2    : Curve from Geom2dAdaptor;
     	    OnCi  : Circ2d   from gp       ;
     	    Rad   : Real     from Standard ) 
-returns FunctionTanCuCuOnCu from GccIter;
+returns FunctionTanCuCuOnCu from Geom2dGcc;
 
     Create (L1    : Lin2d    from gp       ;
-    	    C2    : TheCurve               ;
+    	    C2    : Curve from Geom2dAdaptor;
     	    OnCi  : Circ2d   from gp       ;
     	    Rad   : Real     from Standard ) 
-returns FunctionTanCuCuOnCu from GccIter;
+returns FunctionTanCuCuOnCu from Geom2dGcc;
 
-    Create (C1    : TheCurve               ;
+    Create (C1    : Curve from Geom2dAdaptor;
     	    P2    : Pnt2d    from gp       ;
     	    OnCi  : Circ2d   from gp       ;
     	    Rad   : Real     from Standard ) 
-returns FunctionTanCuCuOnCu from GccIter;
+returns FunctionTanCuCuOnCu from Geom2dGcc;
 
 ------------------------------------------------------------------------
 
-    Create (C1    : TheCurve               ;
-    	    C2    : TheCurve               ;
+    Create (C1    : Curve from Geom2dAdaptor;
+    	    C2    : Curve from Geom2dAdaptor;
     	    OnLi  : Lin2d    from gp       ;
     	    Rad   : Real     from Standard ) 
-returns FunctionTanCuCuOnCu from GccIter;
+returns FunctionTanCuCuOnCu from Geom2dGcc;
 
     Create (C1    : Circ2d   from gp       ;
-    	    C2    : TheCurve               ;
+    	    C2    : Curve from Geom2dAdaptor;
     	    OnLi  : Lin2d    from gp       ;
     	    Rad   : Real     from Standard ) 
-returns FunctionTanCuCuOnCu from GccIter;
+returns FunctionTanCuCuOnCu from Geom2dGcc;
 
     Create (L1    : Lin2d    from gp       ;
-    	    C2    : TheCurve               ;
+    	    C2    : Curve from Geom2dAdaptor;
     	    OnLi  : Lin2d    from gp       ;
     	    Rad   : Real     from Standard ) 
-returns FunctionTanCuCuOnCu from GccIter;
+returns FunctionTanCuCuOnCu from Geom2dGcc;
 
-    Create (C1    : TheCurve               ;
+    Create (C1    : Curve from Geom2dAdaptor;
     	    P2    : Pnt2d    from gp       ;
     	    OnLi  : Lin2d    from gp       ;
     	    Rad   : Real     from Standard ) 
-returns FunctionTanCuCuOnCu from GccIter;
+returns FunctionTanCuCuOnCu from Geom2dGcc;
 
 -----------------------------------------------------------------------
 
-    Create (C1    : TheCurve               ;
-    	    C2    : TheCurve               ;
-    	    OnCu  : TheCurve               ;
+    Create (C1    : Curve from Geom2dAdaptor;
+    	    C2    : Curve from Geom2dAdaptor;
+    	    OnCu  : Curve from Geom2dAdaptor;
     	    Rad   : Real     from Standard ) 
-returns FunctionTanCuCuOnCu from GccIter;
+returns FunctionTanCuCuOnCu from Geom2dGcc;
 
     Create (C1    : Circ2d   from gp       ;
-    	    C2    : TheCurve               ;
-    	    OnCu  : TheCurve               ;
+    	    C2    : Curve from Geom2dAdaptor;
+    	    OnCu  : Curve from Geom2dAdaptor;
     	    Rad   : Real     from Standard ) 
-returns FunctionTanCuCuOnCu from GccIter;
+returns FunctionTanCuCuOnCu from Geom2dGcc;
 
     Create (L1    : Lin2d    from gp       ;
-    	    C2    : TheCurve               ;
-    	    OnCu  : TheCurve               ;
+    	    C2    : Curve from Geom2dAdaptor;
+    	    OnCu  : Curve from Geom2dAdaptor;
     	    Rad   : Real     from Standard ) 
-returns FunctionTanCuCuOnCu from GccIter;
+returns FunctionTanCuCuOnCu from Geom2dGcc;
 
-    Create (C1    : TheCurve               ;
+    Create (C1    : Curve from Geom2dAdaptor;
     	    P1    : Pnt2d    from gp       ;
-    	    OnCu  : TheCurve               ;
+    	    OnCu  : Curve from Geom2dAdaptor;
     	    Rad   : Real     from Standard ) 
-returns FunctionTanCuCuOnCu from GccIter;
+returns FunctionTanCuCuOnCu from Geom2dGcc;
 
 InitDerivative(me                         : in out                      ;
     	       X                          :        Vector from math     ;
@@ -143,16 +141,16 @@ is static;
     
 fields
 
-Curv1    : TheCurve               ;
-Curv2    : TheCurve               ;
+Curv1    : Curve from Geom2dAdaptor;
+Curv2    : Curve from Geom2dAdaptor;
 Circ1    : Circ2d   from gp       ;
 Lin1     : Lin2d    from gp       ;
 Pnt2     : Pnt2d    from gp       ;
 Circon   : Circ2d   from gp       ;
 Linon    : Lin2d    from gp       ;
-Curvon   : TheCurve               ;
+Curvon   : Curve from Geom2dAdaptor;
 FirstRad : Real     from Standard ;
-TheType  : Type2    from GccIter  ;
+TheType  : Type2    from Geom2dGcc  ;
 
 end FunctionTanCuCuOnCu;
 
