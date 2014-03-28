@@ -82,40 +82,16 @@ enumeration ValueType
            --- Purpose :
            --  Computes the global properties of a set of points in 3d.
            --  This class inherits GProps.
-       
-         
-       generic class CGProps;
-           ---Purpose :
-           --   Computes the global properties  of a bounded
-           --   curve in 3d. This class inherits GProps.
 
        class CelGProps;
            ---Purpose :
            --   Computes the global properties  of a gp curve in 3d 
            --   This class inherits GProps.
 
-       generic class SGProps;
-           ---Purpose :
-           --   Computes the global properties and the area of a bounded
-           --   surface in 3d. This class inherits GProps.
-
-
        class SelGProps;
            ---Purpose :
            --   Computes the global properties and the area of a bounded
            --   elementary surface in 3d. This class inherits GProps.
-       
-       generic class VGProps;
-           ---Purpose :
-           --   Computes the global properties and the volume of a region
-           --   of space. This class inherits GProps.
-
-       generic class VGPropsGK, UFunction, TFunction;
-           ---Purpose :
-           --   Computes the global properties and the volume of a region
-           --   of space by adaptive Gauss-Kronrod integration.  
-           --   This class inherits GProps.
-
 
        class VelGProps;
            ---Purpose :

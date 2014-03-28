@@ -17,10 +17,7 @@
 --		Jean-Claude VAUTHIER January 1992
 
 
-generic class VGProps from GProp (Arc as any;
-                                  Face as any;
-    	    	    	    	  Domain as any)
-inherits GProps
+class Vinert from BRepGProp inherits GProps from GProp
 
         --- Purpose :
         --  Computes the global properties of a geometric solid 
@@ -37,12 +34,15 @@ inherits GProps
         --  are defined in the template SurfaceTool from package GProp.
 
 uses   	Pnt      from gp,
-        Pln      from gp
+        Pln      from gp,
+        Edge     from TopoDS,
+        Face     from BRepGProp,
+        Domain   from BRepGProp
 is
 
-  Create returns VGProps;
+  Create returns Vinert;
   
-  Create (S: Face; VLocation: Pnt from gp) returns VGProps;
+  Create (S: Face from BRepGProp; VLocation: Pnt from gp) returns Vinert;
         --- Purpose : 
         --  Computes the global properties of a region of 3D space
         --  delimited with the surface <S> and the point VLocation. S can be closed 
@@ -52,7 +52,7 @@ is
 	--  is used. Numbers of points depend on types of surfaces and  curves.
     	--  Errror of the computation is not calculated. 
 	
-  Create (S: in out Face; VLocation: Pnt from gp; Eps: Real) returns VGProps; 
+  Create (S: in out Face from BRepGProp; VLocation: Pnt from gp; Eps: Real) returns Vinert; 
         --- Purpose : 
         --  Computes the global properties of a region of 3D space
         --  delimited with the surface <S> and the point VLocation. S can be closed 
@@ -61,7 +61,7 @@ is
 	--  Error is calculated as Abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values 
 	--  for two successive steps of adaptive integration. 
 
-  Create (S: Face; O: Pnt from gp; VLocation: Pnt from gp) returns VGProps;
+  Create (S: Face from BRepGProp; O: Pnt from gp; VLocation: Pnt from gp) returns Vinert;
         --- Purpose :  
         --  Computes the global properties of the region of 3D space
         --  delimited with the surface <S> and the point VLocation.
@@ -71,7 +71,7 @@ is
 	--  is used. Numbers of points depend on types of surfaces and  curves.
     	--  Error of the computation is not calculated. 
 	
-  Create (S: in out Face; O: Pnt from gp; VLocation: Pnt from gp; Eps: Real) returns VGProps;
+  Create (S: in out Face from BRepGProp; O: Pnt from gp; VLocation: Pnt from gp; Eps: Real) returns Vinert;
         --- Purpose :  
         --  Computes the global properties of the region of 3D space
         --  delimited with the surface <S> and the point VLocation.
@@ -81,7 +81,7 @@ is
 	--  for two successive steps of adaptive integration. 
 	--          WARNING: if Eps > 0.001 algorithm performs non-adaptive integration.	  
      
-  Create (S: Face; Pl: Pln from gp; VLocation: Pnt from gp) returns VGProps;
+  Create (S: Face from BRepGProp; Pl: Pln from gp; VLocation: Pnt from gp) returns Vinert;
         --- Purpose :  
         --  Computes the global properties of the region of 3D space
         --  delimited with the surface <S> and the plane Pln.
@@ -91,7 +91,7 @@ is
 	--  is used. Numbers of points depend on types of surfaces and  curves.
     	--  Error of the computation is not calculated. 
 	
-  Create (S: in out Face; Pl: Pln from gp; VLocation: Pnt from gp; Eps: Real) returns VGProps;
+  Create (S: in out Face from BRepGProp; Pl: Pln from gp; VLocation: Pnt from gp; Eps: Real) returns Vinert;
         --- Purpose :  
         --  Computes the global properties of the region of 3D space
         --  delimited with the surface <S> and the plane Pln.
@@ -101,9 +101,9 @@ is
 	--  for two successive steps of adaptive integration. 
 	--          WARNING: if Eps > 0.001 algorithm performs non-adaptive integration.	  
 
-    	--  With  Domain  -- 
+    	--  With  Domain from BRepGProp  -- 
 
-  Create (S: in out Face; D : in out Domain; VLocation: Pnt from gp) returns VGProps;
+  Create (S: in out Face from BRepGProp; D : in out Domain from BRepGProp; VLocation: Pnt from gp) returns Vinert;
         --- Purpose : 
         --  Computes the global properties of a region of 3D space
         --  delimited with the surface <S> and the point VLocation. S can be closed 
@@ -113,7 +113,7 @@ is
 	--  is used. Numbers of points depend on types of surfaces and  curves.
     	--  Errror of the computation is not calculated. 
 	
-  Create (S: in out Face; D : in out Domain; VLocation: Pnt from gp; Eps: Real) returns VGProps; 
+  Create (S: in out Face from BRepGProp; D : in out Domain from BRepGProp; VLocation: Pnt from gp; Eps: Real) returns Vinert; 
         --- Purpose : 
         --  Computes the global properties of a region of 3D space
         --  delimited with the surface <S> and the point VLocation. S can be closed 
@@ -122,7 +122,7 @@ is
 	--  Error is calculated as Abs((M(i+1)-M(i))/M(i+1)), M(i+1) and M(i) are values 
 	--  for two successive steps of adaptive integration. 
 
-  Create (S: in out Face; D : in out Domain; O: Pnt from gp; VLocation: Pnt from gp) returns VGProps;
+  Create (S: in out Face from BRepGProp; D : in out Domain from BRepGProp; O: Pnt from gp; VLocation: Pnt from gp) returns Vinert;
         --- Purpose :  
         --  Computes the global properties of the region of 3D space
         --  delimited with the surface <S> and the point VLocation.
@@ -132,7 +132,7 @@ is
 	--  is used. Numbers of points depend on types of surfaces and  curves.
     	--  Error of the computation is not calculated. 
 	
-  Create (S: in out Face; D : in out Domain; O: Pnt from gp; VLocation: Pnt from gp; Eps: Real) returns VGProps;
+  Create (S: in out Face from BRepGProp; D : in out Domain from BRepGProp; O: Pnt from gp; VLocation: Pnt from gp; Eps: Real) returns Vinert;
         --- Purpose :  
         --  Computes the global properties of the region of 3D space
         --  delimited with the surface <S> and the point VLocation.
@@ -142,7 +142,7 @@ is
 	--  for two successive steps of adaptive integration. 
 	--          WARNING: if Eps > 0.001 algorithm performs non-adaptive integration.	  
      
-  Create (S: in out Face; D : in out Domain; Pl: Pln from gp; VLocation: Pnt from gp) returns VGProps;
+  Create (S: in out Face from BRepGProp; D : in out Domain from BRepGProp; Pl: Pln from gp; VLocation: Pnt from gp) returns Vinert;
         --- Purpose :  
         --  Computes the global properties of the region of 3D space
         --  delimited with the surface <S> and the plane Pln.
@@ -152,7 +152,7 @@ is
 	--  is used. Numbers of points depend on types of surfaces and  curves.
     	--  Error of the computation is not calculated. 
 	
-  Create (S: in out Face; D : in out Domain; Pl: Pln from gp; VLocation: Pnt from gp; Eps: Real) returns VGProps;
+  Create (S: in out Face from BRepGProp; D : in out Domain from BRepGProp; Pl: Pln from gp; VLocation: Pnt from gp; Eps: Real) returns Vinert;
         --- Purpose :  
         --  Computes the global properties of the region of 3D space
         --  delimited with the surface <S> and the plane Pln.
@@ -164,23 +164,23 @@ is
 
   SetLocation(me: in out; VLocation: Pnt from gp);
   
-  Perform(me: in out; S: Face);
-  Perform(me: in out; S: in out Face; Eps: Real) returns Real;
+  Perform(me: in out; S: Face from BRepGProp);
+  Perform(me: in out; S: in out Face from BRepGProp; Eps: Real) returns Real;
 
-  Perform(me: in out; S: Face; O : Pnt from gp);
-  Perform(me: in out; S: in out Face; O : Pnt from gp; Eps: Real) returns Real;
+  Perform(me: in out; S: Face from BRepGProp; O : Pnt from gp);
+  Perform(me: in out; S: in out Face from BRepGProp; O : Pnt from gp; Eps: Real) returns Real;
 
-  Perform(me: in out; S: Face; Pl : Pln from gp);
-  Perform(me: in out; S: in out Face; Pl : Pln from gp; Eps: Real) returns Real;
+  Perform(me: in out; S: Face from BRepGProp; Pl : Pln from gp);
+  Perform(me: in out; S: in out Face from BRepGProp; Pl : Pln from gp; Eps: Real) returns Real;
 
-  Perform(me: in out; S: in out  Face; D : in out Domain);
-  Perform(me: in out; S: in out Face; D : in out Domain;  Eps: Real) returns Real;
+  Perform(me: in out; S: in out  Face from BRepGProp; D : in out Domain from BRepGProp);
+  Perform(me: in out; S: in out Face from BRepGProp; D : in out Domain from BRepGProp;  Eps: Real) returns Real;
 
-  Perform(me: in out; S: in out Face; D : in out Domain;  O : Pnt from gp);
-  Perform(me: in out; S: in out Face; D : in out Domain;  O : Pnt from gp; Eps: Real) returns Real;
+  Perform(me: in out; S: in out Face from BRepGProp; D : in out Domain from BRepGProp;  O : Pnt from gp);
+  Perform(me: in out; S: in out Face from BRepGProp; D : in out Domain from BRepGProp;  O : Pnt from gp; Eps: Real) returns Real;
 
-  Perform(me: in out; S: in out Face; D : in out Domain;  Pl : Pln from gp);
-  Perform(me: in out; S: in out Face; D : in out Domain;  Pl : Pln from gp; Eps: Real) returns Real;
+  Perform(me: in out; S: in out Face from BRepGProp; D : in out Domain from BRepGProp;  Pl : Pln from gp);
+  Perform(me: in out; S: in out Face from BRepGProp; D : in out Domain from BRepGProp;  Pl : Pln from gp; Eps: Real) returns Real;
 
   GetEpsilon(me: out) returns Real;
         --- Purpose :  
@@ -190,6 +190,6 @@ fields
  
     myEpsilon: Real from Standard;
 
-end VGProps;
+end Vinert;
 
 

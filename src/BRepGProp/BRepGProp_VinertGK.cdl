@@ -1,0 +1,244 @@
+-- Created on: 2005-12-21
+-- Created by: Sergey KHROMOV
+-- Copyright (c) 2005-2014 OPEN CASCADE SAS
+--
+-- This file is part of Open CASCADE Technology software library.
+--
+-- This library is free software; you can redistribute it and/or modify it under
+-- the terms of the GNU Lesser General Public License version 2.1 as published
+-- by the Free Software Foundation, with special exception defined in the file
+-- OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+-- distribution for complete text of the license and disclaimer of any warranty.
+--
+-- Alternatively, this file may be used under the terms of Open CASCADE
+-- commercial license or contractual agreement.
+
+class VinertGK from BRepGProp inherits GProps from GProp
+
+        ---Purpose: Computes the global properties of a geometric solid 
+        --          (3D closed region of space) delimited with :
+        --            -  a point and a surface
+        --            -  a plane and a surface
+        --  
+        --          The surface can be :
+        --            -  a surface limited with its parametric values U-V, 
+        --               (naturally restricted)
+        --            -  a surface limited in U-V space with its boundary 
+        --               curves.
+        --  
+        --          The surface's requirements to evaluate the global 
+        --          properties are defined in the template FaceTool class from 
+        --          the package GProp. 
+	--  
+	--          The adaptive 2D algorithm of Gauss-Kronrod integration of 
+        --          double integral is used. 
+        --  
+        --          The inner integral is computed along U parameter of 
+        --          surface. The integrand function is encapsulated in the 
+        --          support class UFunction that is defined below. 
+	--  
+	--          The outer integral is computed along T parameter of a 
+        --          bounding curve. The integrand function is encapsulated in 
+        --          the support class TFunction that is defined below.
+
+uses 
+ 
+    Pnt     from gp, 
+    XYZ     from gp, 
+    Pln     from gp, 
+    Address from Standard, 
+    Boolean from Standard, 
+    Real    from Standard,
+    Edge    from TopoDS,
+    Face    from BRepGProp,
+    Domain  from BRepGProp
+
+
+--  Template class functions. Used for integration. Begin
+
+is
+
+    Create
+        ---Purpose: Empty constructor. 
+	---C++: inline 
+    returns VinertGK; 
+
+    Create(theSurface  : in out Face from BRepGProp; 
+           theLocation :        Pnt  from gp; 
+           theTolerance:        Real from Standard = 0.001; 
+           theCGFlag: Boolean from Standard = Standard_False;  
+           theIFlag: Boolean from Standard = Standard_False)
+        ---Purpose: Constructor. Computes the global properties of a region of 
+        --          3D space delimited with the naturally restricted surface 
+        --          and the point VLocation.
+    returns VinertGK; 
+
+    Create(theSurface  : in out Face from BRepGProp; 
+           thePoint    :        Pnt  from gp;
+           theLocation :        Pnt  from gp; 
+           theTolerance:        Real from Standard = 0.001; 
+           theCGFlag: Boolean from Standard = Standard_False;  
+           theIFlag: Boolean from Standard = Standard_False)
+
+        ---Purpose: Constructor. Computes the global properties of a region of 
+        --          3D space delimited with the naturally restricted surface 
+        --          and the point VLocation. The inertia is computed with 
+        --          respect to thePoint.
+    returns VinertGK; 
+
+    Create(theSurface  : in out Face from BRepGProp; 
+           theDomain   : in out Domain from BRepGProp; 
+           theLocation :        Pnt  from gp; 
+           theTolerance:        Real from Standard = 0.001; 
+           theCGFlag: Boolean from Standard = Standard_False;  
+           theIFlag: Boolean from Standard = Standard_False)
+	   
+        ---Purpose: Constructor. Computes the global properties of a region of 
+        --          3D space delimited with the surface bounded by the domain 
+        --          and the point VLocation.
+    returns VinertGK; 
+
+    Create(theSurface  : in out Face from BRepGProp; 
+           theDomain   : in out Domain from BRepGProp; 
+           thePoint    :        Pnt  from gp; 
+           theLocation :        Pnt  from gp; 
+           theTolerance:        Real from Standard = 0.001;
+           theCGFlag: Boolean from Standard = Standard_False;  
+           theIFlag: Boolean from Standard = Standard_False)
+        ---Purpose: Constructor. Computes the global properties of a region of 
+        --          3D space delimited with the surface bounded by the domain 
+        --          and the point VLocation. The inertia is computed with 
+        --          respect to thePoint.
+    returns VinertGK; 
+
+    Create(theSurface  : in out Face from BRepGProp; 
+           thePlane    :        Pln  from gp; 
+           theLocation :        Pnt  from gp; 
+           theTolerance:        Real from Standard = 0.001; 
+           theCGFlag: Boolean from Standard = Standard_False;  
+           theIFlag: Boolean from Standard = Standard_False)
+	   
+        ---Purpose: Constructor. Computes the global properties of a region of 
+        --          3D space delimited with the naturally restricted surface 
+        --          and the plane.
+    returns VinertGK; 
+
+    Create(theSurface  : in out Face from BRepGProp; 
+           theDomain   : in out Domain from BRepGProp; 
+           thePlane    :        Pln  from gp; 
+           theLocation :        Pnt  from gp; 
+           theTolerance:        Real from Standard = 0.001; 
+           theCGFlag: Boolean from Standard = Standard_False;  
+           theIFlag: Boolean from Standard = Standard_False)
+	   
+        ---Purpose: Constructor. Computes the global properties of a region of 
+        --          3D space delimited with the surface bounded by the domain 
+        --          and the plane.
+    returns VinertGK; 
+
+    SetLocation(me: in out; theLocation: Pnt from gp);
+        ---Purpose:  Sets the vertex that delimit 3D closed region of space.
+	---C++: inline 
+
+    Perform(me: in out; theSurface  : in out Face from BRepGProp; 
+                        theTolerance:        Real from Standard = 0.001; 
+                        theCGFlag: Boolean from Standard = Standard_False;  
+                        theIFlag: Boolean from Standard = Standard_False)
+			
+        ---Purpose: Computes the global properties of a region of 3D space 
+        --          delimited with the naturally restricted surface and the 
+        --          point VLocation.
+    returns Real from Standard; 
+
+    Perform(me: in out; theSurface  : in out Face from BRepGProp; 
+			thePoint    :        Pnt  from gp;
+                        theTolerance:        Real from Standard = 0.001; 
+                        theCGFlag: Boolean from Standard = Standard_False;  
+                        theIFlag: Boolean from Standard = Standard_False)
+			
+        ---Purpose: Computes the global properties of a region of 3D space 
+        --          delimited with the naturally restricted surface and the 
+        --          point VLocation. The inertia is computed with respect to 
+        --          thePoint.
+    returns Real from Standard; 
+
+    Perform(me: in out; theSurface  : in out Face from BRepGProp; 
+                        theDomain   : in out Domain from BRepGProp; 
+                        theTolerance:        Real from Standard = 0.001; 
+                        theCGFlag: Boolean from Standard = Standard_False;  
+                        theIFlag: Boolean from Standard = Standard_False)
+			
+        ---Purpose: Computes the global properties of a region of 3D space 
+        --          delimited with the surface bounded by the domain and the 
+        --          point VLocation.
+    returns Real from Standard; 
+
+    Perform(me: in out; theSurface  : in out Face from BRepGProp; 
+                        theDomain   : in out Domain from BRepGProp; 
+			thePoint    :        Pnt  from gp;
+                        theTolerance:        Real from Standard = 0.001; 
+                        theCGFlag: Boolean from Standard = Standard_False;  
+                        theIFlag: Boolean from Standard = Standard_False)
+        ---Purpose: Computes the global properties of a region of 3D space 
+        --          delimited with the surface bounded by the domain and the 
+        --          point VLocation. The inertia is computed with respect to 
+        --          thePoint.
+    returns Real from Standard; 
+
+    Perform(me: in out; theSurface  : in out Face from BRepGProp; 
+                        thePlane    :        Pln  from gp;
+                        theTolerance:        Real from Standard = 0.001; 
+                        theCGFlag: Boolean from Standard = Standard_False;  
+                        theIFlag: Boolean from Standard = Standard_False)
+			
+        ---Purpose: Computes the global properties of a region of 3D space 
+        --          delimited with the naturally restricted surface and the 
+        --          plane.
+    returns Real from Standard; 
+
+    Perform(me: in out; theSurface  : in out Face from BRepGProp; 
+                        theDomain   : in out Domain from BRepGProp; 
+                        thePlane    :        Pln  from gp;
+                        theTolerance:        Real from Standard = 0.001; 
+                        theCGFlag: Boolean from Standard = Standard_False;  
+                        theIFlag: Boolean from Standard = Standard_False)
+			
+        ---Purpose: Computes the global properties of a region of 3D space 
+        --          delimited with the surface bounded by the domain and the 
+        --          plane.
+    returns Real from Standard; 
+
+    GetErrorReached(me)
+        ---Purpose: Returns the relative reached computation error. 
+	---C++: inline 
+    returns Real from Standard;
+
+    GetAbsolutError(me)
+        ---Purpose: Returns the absolut reached computation error. 
+	---C++: inline 
+    returns Real from Standard;
+  
+-----------------------
+--  Private methods  --
+-----------------------
+
+    PrivatePerform(me: in out; 
+           theSurface  : in out Face from BRepGProp;
+           thePtrDomain:        Address from Standard; --  pointer to Domain from BRepGProp.
+           IsByPoint   :        Boolean from Standard;
+           theCoeffs   :        Address from Standard;
+           theTolerance:        Real    from Standard;
+           theCGFlag   :        Boolean from Standard; 
+           theIFlag    :        Boolean from Standard)
+
+        ---Purpose: Main method for computation of the global properties that
+        --          is invoked by each Perform method.
+    returns Real from Standard
+    is private;
+
+fields
+ 
+    myErrorReached: Real from Standard;
+    myAbsolutError: Real from Standard;
+
+end VinertGK;

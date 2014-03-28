@@ -13,32 +13,33 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepGProp_TFunction.ixx>
+
 #include <TColStd_HArray1OfReal.hxx>
 #include <math_KronrodSingleIntegration.hxx>
 #include <Precision.hxx>
-#include <math.hxx>
 
 //=======================================================================
 //function : Constructor.
 //purpose  : 
 //=======================================================================
 
-GProp_TFunction::GProp_TFunction(const Face             &theSurface,
-				 const gp_Pnt           &theVertex,
-				 const Standard_Boolean  IsByPoint,
-				 const Standard_Address  theCoeffs,
-				 const Standard_Real     theUMin,
-				 const Standard_Real     theTolerance)
-     : mySurface(theSurface),
-       myUFunction(mySurface, theVertex, IsByPoint, theCoeffs),
-       myUMin(theUMin),
-       myTolerance(theTolerance),
-       myTolReached(0.),
-       myErrReached(0.),
-       myAbsError(0.),
-       myValueType(GProp_Unknown),
-       myIsByPoint(IsByPoint),
-       myNbPntOuter(3)
+BRepGProp_TFunction::BRepGProp_TFunction(const BRepGProp_Face   &theSurface,
+                                         const gp_Pnt           &theVertex,
+                                         const Standard_Boolean  IsByPoint,
+                                         const Standard_Address  theCoeffs,
+                                         const Standard_Real     theUMin,
+                                         const Standard_Real     theTolerance):
+  mySurface(theSurface),
+  myUFunction(mySurface, theVertex, IsByPoint, theCoeffs),
+  myUMin(theUMin),
+  myTolerance(theTolerance),
+  myTolReached(0.),
+  myErrReached(0.),
+  myAbsError(0.),
+  myValueType(GProp_Unknown),
+  myIsByPoint(IsByPoint),
+  myNbPntOuter(3)
 {
 }
 
@@ -47,7 +48,7 @@ GProp_TFunction::GProp_TFunction(const Face             &theSurface,
 //purpose  : 
 //=======================================================================
 
-void GProp_TFunction::Init() 
+void BRepGProp_TFunction::Init() 
 {
   myTolReached = 0.;
   myErrReached = 0.;
@@ -59,10 +60,9 @@ void GProp_TFunction::Init()
 //purpose  : 
 //=======================================================================
 
-Standard_Boolean GProp_TFunction::Value(const Standard_Real  X,
-					      Standard_Real &F)
+Standard_Boolean BRepGProp_TFunction::Value(const Standard_Real X,
+                                            Standard_Real &F)
 {
-
   const Standard_Real tolU = 1.e-9;
 
   gp_Pnt2d                      aP2d;
@@ -73,10 +73,11 @@ Standard_Boolean GProp_TFunction::Value(const Standard_Real  X,
   mySurface.D12d(X, aP2d, aV2d);
   aUMax = aP2d.X();
 
-  if(aUMax - myUMin < tolU) {
+  if(aUMax - myUMin < tolU)
+  {
     F = 0.;
     return Standard_True;
-  } 
+  }
 
   mySurface.GetUKnots(myUMin, aUMax, anUKnots);
   myUFunction.SetVParam(aP2d.Y());
@@ -94,18 +95,18 @@ Standard_Boolean GProp_TFunction::Value(const Standard_Real  X,
     if (myIsByPoint)
       aCoeff /= 3.;
   } else if (myValueType == GProp_CenterMassX ||
-	     myValueType == GProp_CenterMassY ||
-	     myValueType == GProp_CenterMassZ) {
-    if (myIsByPoint)
-      aCoeff *= 0.25;
+    myValueType == GProp_CenterMassY ||
+    myValueType == GProp_CenterMassZ) {
+      if (myIsByPoint)
+        aCoeff *= 0.25;
   } else if (myValueType == GProp_InertiaXX ||
-	     myValueType == GProp_InertiaYY ||
-	     myValueType == GProp_InertiaZZ ||
-	     myValueType == GProp_InertiaXY ||
-	     myValueType == GProp_InertiaXZ ||
-	     myValueType == GProp_InertiaYZ) {
-    if (myIsByPoint)
-      aCoeff *= 0.2;
+    myValueType == GProp_InertiaYY ||
+    myValueType == GProp_InertiaZZ ||
+    myValueType == GProp_InertiaXY ||
+    myValueType == GProp_InertiaXZ ||
+    myValueType == GProp_InertiaYZ) {
+      if (myIsByPoint)
+        aCoeff *= 0.2;
   } else
     return Standard_False;
 
@@ -129,12 +130,12 @@ Standard_Boolean GProp_TFunction::Value(const Standard_Real  X,
 
   i            = anUKnots->Lower();
   F            = 0.;
- 
+
   // Epmirical criterion
   aNbPntsStart = Min(15, mySurface.UIntegrationOrder()/(anUKnots->Length() - 1)+1);
   aNbPntsStart = Max(5, aNbPntsStart);
 
-   while (i < iU) {
+  while (i < iU) {
     Standard_Real aU1 = anUKnots->Value(i++);
     Standard_Real aU2 = anUKnots->Value(i);
 
@@ -169,14 +170,14 @@ Standard_Boolean GProp_TFunction::Value(const Standard_Real  X,
 //purpose  : 
 //=======================================================================
 
-Standard_Integer GProp_TFunction::GetStateNumber()
+Standard_Integer BRepGProp_TFunction::GetStateNumber()
 {
   //myErrReached  = myTolReached;
   //myTolReached  = 0.;
   //myNbPntOuter += RealToInt(0.5*myNbPntOuter);
 
   //if (myNbPntOuter%2 == 0)
-    //myNbPntOuter++;
+  //myNbPntOuter++;
 
   return 0;
 }

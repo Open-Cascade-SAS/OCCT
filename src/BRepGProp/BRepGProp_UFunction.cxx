@@ -13,21 +13,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepGProp_UFunction.ixx>
+
 //=======================================================================
 //function : Constructor.
 //purpose  : 
 //=======================================================================
 
-GProp_UFunction::GProp_UFunction(const Face             &theSurface,
-				 const gp_Pnt           &theVertex,
-				 const Standard_Boolean  IsByPoint,
-				 const Standard_Address  theCoeffs)
-     : mySurface(theSurface),
-       myVertex(theVertex),
-       myCoeffs(theCoeffs),
-       myVParam(0.),
-       myValueType(GProp_Unknown),
-       myIsByPoint(IsByPoint)
+BRepGProp_UFunction::BRepGProp_UFunction(const BRepGProp_Face   &theSurface,
+                                         const gp_Pnt           &theVertex,
+                                         const Standard_Boolean  IsByPoint,
+                                         const Standard_Address  theCoeffs)
+                                         : mySurface(theSurface),
+                                         myVertex(theVertex),
+                                         myCoeffs(theCoeffs),
+                                         myVParam(0.),
+                                         myValueType(GProp_Unknown),
+                                         myIsByPoint(IsByPoint)
 {
 }
 
@@ -36,8 +38,8 @@ GProp_UFunction::GProp_UFunction(const Face             &theSurface,
 //purpose  : Returns a value of the function.
 //=======================================================================
 
-Standard_Boolean GProp_UFunction::Value(const Standard_Real  X,
-					      Standard_Real &F)
+Standard_Boolean BRepGProp_UFunction::Value(const Standard_Real  X,
+                                            Standard_Real &F)
 {
   // Volume computation
   if (myValueType == GProp_Mass) {
@@ -52,17 +54,17 @@ Standard_Boolean GProp_UFunction::Value(const Standard_Real  X,
 
   // Center of mass computation
   if (myValueType == GProp_CenterMassX ||
-      myValueType == GProp_CenterMassY ||
-      myValueType == GProp_CenterMassZ)
+    myValueType == GProp_CenterMassY ||
+    myValueType == GProp_CenterMassZ)
     return CenterMassValue(X, F);
 
   // Inertia computation
   if (myValueType == GProp_InertiaXX ||
-      myValueType == GProp_InertiaYY ||
-      myValueType == GProp_InertiaZZ ||
-      myValueType == GProp_InertiaXY ||
-      myValueType == GProp_InertiaXZ ||
-      myValueType == GProp_InertiaYZ)
+    myValueType == GProp_InertiaYY ||
+    myValueType == GProp_InertiaZZ ||
+    myValueType == GProp_InertiaXY ||
+    myValueType == GProp_InertiaXZ ||
+    myValueType == GProp_InertiaYZ)
     return InertiaValue(X, F);
 
   return Standard_False;
@@ -73,10 +75,10 @@ Standard_Boolean GProp_UFunction::Value(const Standard_Real  X,
 //purpose  : Returns the value for volume computation.
 //=======================================================================
 
-Standard_Real GProp_UFunction::VolumeValue(const Standard_Real  X,
-					         gp_XYZ        &thePMP0,
-					         Standard_Real &theS,
-					         Standard_Real &theD1)
+Standard_Real BRepGProp_UFunction::VolumeValue(const Standard_Real  X,
+                                               gp_XYZ        &thePMP0,
+                                               Standard_Real &theS,
+                                               Standard_Real &theD1)
 {
   gp_Pnt aPnt;
   gp_Vec aNorm;
@@ -94,7 +96,7 @@ Standard_Real GProp_UFunction::VolumeValue(const Standard_Real  X,
 
   theS  =   aNorm.X()*aCoeff[0] + aNorm.Y()*aCoeff[1] + aNorm.Z()*aCoeff[2];
   theD1 =   thePMP0.X()*aCoeff[0] + thePMP0.Y()*aCoeff[1]
-          + thePMP0.Z()*aCoeff[2] - aCoeff[3];
+  + thePMP0.Z()*aCoeff[2] - aCoeff[3];
 
   return theS*theD1;
 }
@@ -104,8 +106,8 @@ Standard_Real GProp_UFunction::VolumeValue(const Standard_Real  X,
 //purpose  : Returns a value for the center of mass computation.
 //=======================================================================
 
-Standard_Boolean GProp_UFunction::CenterMassValue(const Standard_Real  X,
-						        Standard_Real &F)
+Standard_Boolean BRepGProp_UFunction::CenterMassValue(const Standard_Real  X,
+                                                      Standard_Real &F)
 {
   gp_XYZ        aPmP0;
   Standard_Real aS;
@@ -145,8 +147,8 @@ Standard_Boolean GProp_UFunction::CenterMassValue(const Standard_Real  X,
 //purpose  : Compute the value of intertia.
 //=======================================================================
 
-Standard_Boolean GProp_UFunction::InertiaValue(const Standard_Real  X,
-					             Standard_Real &F)
+Standard_Boolean BRepGProp_UFunction::InertiaValue(const Standard_Real  X,
+                                                   Standard_Real &F)
 {
   gp_XYZ        aPmP0;
   Standard_Real aS;
@@ -180,8 +182,8 @@ Standard_Boolean GProp_UFunction::InertiaValue(const Standard_Real  X,
     }
 
     if (myValueType == GProp_InertiaXX ||
-	myValueType == GProp_InertiaYY ||
-	myValueType == GProp_InertiaZZ)
+      myValueType == GProp_InertiaYY ||
+      myValueType == GProp_InertiaZZ)
       F *=  aParam1*aParam1 + aParam2*aParam2;
     else
       F *= -aParam1*aParam2;
@@ -199,67 +201,67 @@ Standard_Boolean GProp_UFunction::InertiaValue(const Standard_Real  X,
 
   // Inertia computation for XX, YY and ZZ.
   if (myValueType == GProp_InertiaXX ||
-      myValueType == GProp_InertiaYY ||
-      myValueType == GProp_InertiaZZ) {
+    myValueType == GProp_InertiaYY ||
+    myValueType == GProp_InertiaZZ) {
 
-    if (myValueType == GProp_InertiaXX) {
-      aPPar1  = aPmP0.Y();
-      aPPar2  = aPmP0.Z();
-      aCoeff1 = aCoeffs[1];
-      aCoeff2 = aCoeffs[2];
-    } else if (myValueType == GProp_InertiaYY) {
-      aPPar1  = aPmP0.X();
-      aPPar2  = aPmP0.Z();
-      aCoeff1 = aCoeffs[0];
-      aCoeff2 = aCoeffs[2];
-    } else { // myValueType == GProp_InertiaZZ
-      aPPar1  = aPmP0.X();
-      aPPar2  = aPmP0.Y();
-      aCoeff1 = aCoeffs[0];
-      aCoeff2 = aCoeffs[1];
-    }
+      if (myValueType == GProp_InertiaXX) {
+        aPPar1  = aPmP0.Y();
+        aPPar2  = aPmP0.Z();
+        aCoeff1 = aCoeffs[1];
+        aCoeff2 = aCoeffs[2];
+      } else if (myValueType == GProp_InertiaYY) {
+        aPPar1  = aPmP0.X();
+        aPPar2  = aPmP0.Z();
+        aCoeff1 = aCoeffs[0];
+        aCoeff2 = aCoeffs[2];
+      } else { // myValueType == GProp_InertiaZZ
+        aPPar1  = aPmP0.X();
+        aPPar2  = aPmP0.Y();
+        aCoeff1 = aCoeffs[0];
+        aCoeff2 = aCoeffs[1];
+      }
 
-    aPPar1  -= aCoeff1*aD1;
-    aPPar2  -= aCoeff2*aD1;
-    aParam1  = aPPar1*aPPar1*aD1 + aPPar1*aCoeff1*aD2 + aCoeff1*aCoeff1*aD3;
-    aParam2  = aPPar2*aPPar2*aD1 + aPPar2*aCoeff2*aD2 + aCoeff2*aCoeff2*aD3;
+      aPPar1  -= aCoeff1*aD1;
+      aPPar2  -= aCoeff2*aD1;
+      aParam1  = aPPar1*aPPar1*aD1 + aPPar1*aCoeff1*aD2 + aCoeff1*aCoeff1*aD3;
+      aParam2  = aPPar2*aPPar2*aD1 + aPPar2*aCoeff2*aD2 + aCoeff2*aCoeff2*aD3;
 
-    F = (aParam1 + aParam2)*aS;
+      F = (aParam1 + aParam2)*aS;
 
-    return Standard_True;
+      return Standard_True;
   }
 
   // Inertia computation for XY, YZ and XZ.
   if (myValueType == GProp_InertiaXY ||
-      myValueType == GProp_InertiaYZ ||
-      myValueType == GProp_InertiaXZ) {
+    myValueType == GProp_InertiaYZ ||
+    myValueType == GProp_InertiaXZ) {
 
-    if (myValueType == GProp_InertiaXY) {
-      aPPar1  = aPmP0.X();
-      aPPar2  = aPmP0.Y();
-      aCoeff1 = aCoeffs[0];
-      aCoeff2 = aCoeffs[1];
-    } else if (myValueType == GProp_InertiaYZ) {
-      aPPar1  = aPmP0.Y();
-      aPPar2  = aPmP0.Z();
-      aCoeff1 = aCoeffs[1];
-      aCoeff2 = aCoeffs[2];
-    } else { // myValueType == GProp_InertiaXZ
-      aPPar1  = aPmP0.X();
-      aPPar2  = aPmP0.Z();
-      aCoeff1 = aCoeffs[0];
-      aCoeff2 = aCoeffs[2];
-    }
+      if (myValueType == GProp_InertiaXY) {
+        aPPar1  = aPmP0.X();
+        aPPar2  = aPmP0.Y();
+        aCoeff1 = aCoeffs[0];
+        aCoeff2 = aCoeffs[1];
+      } else if (myValueType == GProp_InertiaYZ) {
+        aPPar1  = aPmP0.Y();
+        aPPar2  = aPmP0.Z();
+        aCoeff1 = aCoeffs[1];
+        aCoeff2 = aCoeffs[2];
+      } else { // myValueType == GProp_InertiaXZ
+        aPPar1  = aPmP0.X();
+        aPPar2  = aPmP0.Z();
+        aCoeff1 = aCoeffs[0];
+        aCoeff2 = aCoeffs[2];
+      }
 
-    aD2     *=   0.5;
-    aPPar1  -=   aCoeff1*aD1;
-    aPPar2  -=   aCoeff2*aD1;
-    aParam1  =   aPPar1*aPPar2*aD1
-               + (aPPar1*aCoeff2 + aPPar2*aCoeff1)*aD2 + aCoeff1*aCoeff2*aD3;
+      aD2     *=   0.5;
+      aPPar1  -=   aCoeff1*aD1;
+      aPPar2  -=   aCoeff2*aD1;
+      aParam1  =   aPPar1*aPPar2*aD1
+        + (aPPar1*aCoeff2 + aPPar2*aCoeff1)*aD2 + aCoeff1*aCoeff2*aD3;
 
-    F = -aParam1*aS;
+      F = -aParam1*aS;
 
-    return Standard_True;
+      return Standard_True;
   }
 
   return Standard_False;

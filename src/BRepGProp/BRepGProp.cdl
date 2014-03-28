@@ -45,26 +45,23 @@ is
     class EdgeTool;
 
     class Face;
-    
-    class Domain;
-    
-    class Cinert instantiates CGProps from GProp( Curve from BRepAdaptor,
-    	    	    	    	    	    	  EdgeTool from BRepGProp);
-    
-    class Sinert instantiates SGProps from GProp( Edge from TopoDS,
-    	    	    	    	                  Face from BRepGProp ,
-				                  Domain from BRepGProp);
 
-    class Vinert instantiates VGProps from GProp( Edge from TopoDS,
-    	    	    	    	                  Face from BRepGProp,
-				                  Domain from BRepGProp);
- 
-    class VinertGK instantiates VGPropsGK from GProp( Edge from TopoDS,
-    	    	    	    	                      Face from BRepGProp,
-				                      Domain from BRepGProp);
+    class Domain;
+
+    class Cinert;
+    
+    class Sinert;
+
+    class Vinert;
+
+    class VinertGK;
+
+    class UFunction;
+    class TFunction;
+
     --
     --  Package methods to compute global properties.
-    --  
+    --
 
     LinearProperties(S : Shape from TopoDS; LProps : in out GProps from GProp);
 	---Purpose: Computes the linear global properties of the shape S,
@@ -232,8 +229,4 @@ is
      returns Real;
 	
 end BRepGProp;
-
-
-
-
 

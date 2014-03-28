@@ -12,14 +12,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <Standard_NotImplemented.hxx>
-#include <math_Vector.hxx>
-#include <math.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Vec2d.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
+#include <BRepGProp_Sinert.ixx>
 
+#include <math.hxx>
 #include <TColStd_Array1OfReal.hxx>
 #include <Precision.hxx>
 
@@ -267,8 +262,8 @@ static Standard_Integer UFillIntervalBounds(Standard_Real               A,
   return FillIntervalBounds(A, B, Knots, U1, U2);
 }
 
-static Standard_Real CCompute(Face&                  S,
-                              Domain&                D,
+static Standard_Real CCompute(BRepGProp_Face&                  S,
+                              BRepGProp_Domain&                D,
                               const gp_Pnt&          loc,
                               Standard_Real&         Dim,
                               gp_Pnt&                g,
@@ -292,7 +287,7 @@ static Standard_Real CCompute(Face&                  S,
   Standard_Real x, y, z;
   //boundary curve parametrization
   Standard_Real l1, l2, lm, lr, l;   
-  //Face parametrization in U and V direction
+  //BRepGProp_Face parametrization in U and V direction
   Standard_Real BV1, BV2, v;         
   Standard_Real BU1, BU2, u1, u2, um, ur, u;
   S.Bounds (BU1, BU2, BV1, BV2);
@@ -311,7 +306,7 @@ static Standard_Real CCompute(Face&                  S,
   loc.Coord (xloc, yloc, zloc); // use member of parent class
   //Jacobien (x, y, z) -> (u, v) = ||n||
   Standard_Real ds;                  
-  //On the Face
+  //On the BRepGProp_Face
   gp_Pnt Ps;                    
   gp_Vec VNor;
   //On the boundary curve u-v
@@ -657,17 +652,17 @@ static Standard_Real CCompute(Face&                  S,
     return Eps;
 }
 
-static Standard_Real Compute(Face& S, const gp_Pnt& loc, Standard_Real& Dim, gp_Pnt& g, gp_Mat& inertia, 
+static Standard_Real Compute(BRepGProp_Face& S, const gp_Pnt& loc, Standard_Real& Dim, gp_Pnt& g, gp_Mat& inertia, 
                              Standard_Real EpsDim) 
 {
   Standard_Boolean isErrorCalculation  = 0.0 > EpsDim || EpsDim < 0.001? 1: 0;
   Standard_Boolean isVerifyComputation = 0.0 < EpsDim && EpsDim < 0.001? 1: 0;
   EpsDim = Abs(EpsDim);
-  Domain D;
+  BRepGProp_Domain D;
   return CCompute(S,D,loc,Dim,g,inertia,EpsDim,isErrorCalculation,isVerifyComputation);
 }
 
-static Standard_Real Compute(Face& S, Domain& D, const gp_Pnt& loc, Standard_Real& Dim, gp_Pnt& g, gp_Mat& inertia, 
+static Standard_Real Compute(BRepGProp_Face& S, BRepGProp_Domain& D, const gp_Pnt& loc, Standard_Real& Dim, gp_Pnt& g, gp_Mat& inertia, 
                              Standard_Real EpsDim) 
 {
   Standard_Boolean isErrorCalculation  = 0.0 > EpsDim || EpsDim < 0.001? 1: 0;
@@ -676,7 +671,7 @@ static Standard_Real Compute(Face& S, Domain& D, const gp_Pnt& loc, Standard_Rea
   return CCompute(S,D,loc,Dim,g,inertia,EpsDim,isErrorCalculation,isVerifyComputation);
 }
 
-static void Compute(Face& S, Domain& D, const gp_Pnt& loc, Standard_Real& dim, gp_Pnt& g, gp_Mat& inertia)
+static void Compute(BRepGProp_Face& S, BRepGProp_Domain& D, const gp_Pnt& loc, Standard_Real& dim, gp_Pnt& g, gp_Mat& inertia)
 {
   Standard_Real  (*FuncAdd)(Standard_Real, Standard_Real);
   Standard_Real  (*FuncMul)(Standard_Real, Standard_Real);
@@ -691,11 +686,11 @@ static void Compute(Face& S, Domain& D, const gp_Pnt& loc, Standard_Real& dim, g
   Standard_Integer NbCGaussgp_Pnts = 0;
 
   Standard_Real l1, l2, lm, lr, l;   //boundary curve parametrization
-  Standard_Real v1, v2,         v;   //Face parametrization in v direction
+  Standard_Real v1, v2,         v;   //BRepGProp_Face parametrization in v direction
   Standard_Real u1, u2, um, ur, u;
   Standard_Real ds;                  //Jacobien (x, y, z) -> (u, v) = ||n||
 
-  gp_Pnt P;                    //On the Face
+  gp_Pnt P;                    //On the BRepGProp_Face
   gp_Vec VNor;
 
   gp_Pnt2d Puv;                //On the boundary curve u-v
@@ -724,7 +719,7 @@ static void Compute(Face& S, Domain& D, const gp_Pnt& loc, Standard_Real& dim, g
   Standard_Integer NbGaussgp_Pnts = Max(NbUGaussgp_Pnts, NbVGaussgp_Pnts);
 
   //Number of Gauss points for the integration
-  //on the Face
+  //on the BRepGProp_Face
   math_Vector GaussSPV (1, NbGaussgp_Pnts);
   math_Vector GaussSWV (1, NbGaussgp_Pnts);
   math::GaussPoints  (NbGaussgp_Pnts,GaussSPV);
@@ -836,7 +831,7 @@ static void Compute(Face& S, Domain& D, const gp_Pnt& loc, Standard_Real& dim, g
                     gp_XYZ (-Ixz, -Iyz, Izz));
 }
 
-static void Compute(const Face& S,
+static void Compute(const BRepGProp_Face& S,
                     const gp_Pnt& loc,
                     Standard_Real& dim,
                     gp_Pnt& g,
@@ -967,9 +962,9 @@ static void Compute(const Face& S,
                     gp_XYZ (-Ixz, -Iyz,  Izz));
 }
 
-GProp_SGProps::GProp_SGProps(){}
+BRepGProp_Sinert::BRepGProp_Sinert(){}
 
-GProp_SGProps::GProp_SGProps (const Face&   S,
+BRepGProp_Sinert::BRepGProp_Sinert (const BRepGProp_Face&   S,
                               const gp_Pnt& SLocation
                               ) 
 {
@@ -977,8 +972,8 @@ GProp_SGProps::GProp_SGProps (const Face&   S,
   Perform(S);
 }
 
-GProp_SGProps::GProp_SGProps (Face&   S,
-                              Domain& D,
+BRepGProp_Sinert::BRepGProp_Sinert (BRepGProp_Face&   S,
+                              BRepGProp_Domain& D,
                               const gp_Pnt& SLocation
                               ) 
 {
@@ -986,41 +981,41 @@ GProp_SGProps::GProp_SGProps (Face&   S,
   Perform(S,D);
 }
 
-GProp_SGProps::GProp_SGProps(Face& S, const gp_Pnt& SLocation, const Standard_Real Eps){
+BRepGProp_Sinert::BRepGProp_Sinert(BRepGProp_Face& S, const gp_Pnt& SLocation, const Standard_Real Eps){
   SetLocation(SLocation);
   Perform(S, Eps);
 }
 
-GProp_SGProps::GProp_SGProps(Face& S, Domain& D, const gp_Pnt& SLocation, const Standard_Real Eps){
+BRepGProp_Sinert::BRepGProp_Sinert(BRepGProp_Face& S, BRepGProp_Domain& D, const gp_Pnt& SLocation, const Standard_Real Eps){
   SetLocation(SLocation);
   Perform(S, D, Eps);
 }
 
-void GProp_SGProps::SetLocation(const gp_Pnt& SLocation){
+void BRepGProp_Sinert::SetLocation(const gp_Pnt& SLocation){
   loc = SLocation;
 }
 
-void GProp_SGProps::Perform(const Face& S){
+void BRepGProp_Sinert::Perform(const BRepGProp_Face& S){
   Compute(S,loc,dim,g,inertia);
   myEpsilon = 1.0;
   return;
 }
 
-void GProp_SGProps::Perform(Face& S, Domain& D){
+void BRepGProp_Sinert::Perform(BRepGProp_Face& S, BRepGProp_Domain& D){
   Compute(S,D,loc,dim,g,inertia);
   myEpsilon = 1.0;
   return;
 }
 
-Standard_Real GProp_SGProps::Perform(Face& S, const Standard_Real Eps){
+Standard_Real BRepGProp_Sinert::Perform(BRepGProp_Face& S, const Standard_Real Eps){
   return myEpsilon = Compute(S,loc,dim,g,inertia,Eps);
 }
 
-Standard_Real GProp_SGProps::Perform(Face& S, Domain& D, const Standard_Real Eps){
+Standard_Real BRepGProp_Sinert::Perform(BRepGProp_Face& S, BRepGProp_Domain& D, const Standard_Real Eps){
   return myEpsilon = Compute(S,D,loc,dim,g,inertia,Eps);
 }
 
 
-Standard_Real GProp_SGProps::GetEpsilon(){
+Standard_Real BRepGProp_Sinert::GetEpsilon(){
   return myEpsilon;
 }

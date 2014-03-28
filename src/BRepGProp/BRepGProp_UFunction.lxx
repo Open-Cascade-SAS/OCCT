@@ -18,7 +18,7 @@
 //purpose  : Setting the type of the value to be returned.
 //=======================================================================
 
-inline void GProp_UFunction::SetValueType(const GProp_ValueType theType)
+inline void BRepGProp_UFunction::SetValueType(const GProp_ValueType theType)
 {
   myValueType = theType;
 }
@@ -29,7 +29,7 @@ inline void GProp_UFunction::SetValueType(const GProp_ValueType theType)
 //           integral computation.
 //=======================================================================
 
-inline void GProp_UFunction::SetVParam(const Standard_Real theVParam)
+inline void BRepGProp_UFunction::SetVParam(const Standard_Real theVParam)
 {
   myVParam = theVParam;
 }

@@ -13,23 +13,24 @@
 // commercial license or contractual agreement.
 
 #include <BRepGProp_Face.ixx>
-#include <BRep_Tool.hxx>
+
 #include <TopoDS.hxx>
-#include <GeomAdaptor_Surface.hxx>
-#include <Geom_Surface.hxx>
-#include <Geom_BezierSurface.hxx>
-#include <Geom_BSplineSurface.hxx>
+
+#include <Geom2d_Line.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_BezierSurface.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_SurfaceOfLinearExtrusion.hxx>
+
 #include <math.hxx>
+
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <Geom_BSplineCurve.hxx>
+
 #include <Precision.hxx>
-#include <TColStd_SequenceOfReal.hxx>
-#include <Geom_SurfaceOfLinearExtrusion.hxx>
-#include <Geom2d_Line.hxx>
 
 //=======================================================================
 //function : UIntegrationOrder
@@ -37,32 +38,33 @@
 //=======================================================================
 
 Standard_Integer BRepGProp_Face::UIntegrationOrder() const {
-       
- Standard_Integer Nu;
- switch (mySurface.GetType()) {
 
- case GeomAbs_Plane :
-   Nu =4;
-   break;
+  Standard_Integer Nu;
+  switch (mySurface.GetType())
+  {
 
- case GeomAbs_BezierSurface :
-   {
-   Nu = (*((Handle(Geom_BezierSurface)*)&((mySurface.Surface()).Surface())))->UDegree()+1;
-   Nu = Max(4,Nu);
-   }
-   break;
- case GeomAbs_BSplineSurface :
-   {
-   Standard_Integer a = (*((Handle(Geom_BSplineSurface)*)&((mySurface.Surface()).Surface())))->UDegree()+1;
-   Standard_Integer b = (*((Handle(Geom_BSplineSurface)*)&((mySurface.Surface()).Surface())))->NbUKnots()-1;
-   Nu = Max(4,a*b);
-   }
-   break;
+  case GeomAbs_Plane :
+    Nu =4;
+    break;
 
-   default :
-     Nu = 9;
-   break;
- }
+  case GeomAbs_BezierSurface :
+    {
+      Nu = (*((Handle(Geom_BezierSurface)*)&((mySurface.Surface()).Surface())))->UDegree()+1;
+      Nu = Max(4,Nu);
+    }
+    break;
+  case GeomAbs_BSplineSurface :
+    {
+      Standard_Integer a = (*((Handle(Geom_BSplineSurface)*)&((mySurface.Surface()).Surface())))->UDegree()+1;
+      Standard_Integer b = (*((Handle(Geom_BSplineSurface)*)&((mySurface.Surface()).Surface())))->NbUKnots()-1;
+      Nu = Max(4,a*b);
+    }
+    break;
+
+  default :
+    Nu = 9;
+    break;
+  }
  return Max(8,2*Nu);
 }
 

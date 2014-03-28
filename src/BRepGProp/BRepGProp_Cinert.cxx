@@ -12,33 +12,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <BRepGProp_Cinert.ixx>
+
 #include <math.hxx>
-#include <math_Vector.hxx>
-#include <gp.hxx>
-#include <gp_Vec.hxx>
-#include <Standard_NotImplemented.hxx>
-
 #include <TColStd_Array1OfReal.hxx>
+#include <BRepGProp_EdgeTool.hxx>
 
+BRepGProp_Cinert::BRepGProp_Cinert(){}
 
-GProp_CGProps::GProp_CGProps(){}
-
-void GProp_CGProps::SetLocation(const gp_Pnt& CLocation)
+void BRepGProp_Cinert::SetLocation(const gp_Pnt& CLocation)
 {
   loc = CLocation;
 }
 
-void GProp_CGProps::Perform (const Curve& C)
+void BRepGProp_Cinert::Perform (const BRepAdaptor_Curve& C)
 {
 
   Standard_Real Ix, Iy, Iz, Ixx, Iyy, Izz, Ixy, Ixz, Iyz;
   dim = Ix = Iy = Iz = Ixx = Iyy = Izz = Ixy = Ixz = Iyz = 0.0;
 
-  Standard_Real Lower    = Tool::FirstParameter  (C);
-  Standard_Real Upper    = Tool::LastParameter   (C);
-  Standard_Integer Order = Min(Tool::IntegrationOrder (C),
-			       math::GaussPointsMax());
-  
+  Standard_Real Lower    = BRepGProp_EdgeTool::FirstParameter  (C);
+  Standard_Real Upper    = BRepGProp_EdgeTool::LastParameter   (C);
+  Standard_Integer Order = Min(BRepGProp_EdgeTool::IntegrationOrder (C),
+    math::GaussPointsMax());
+
   gp_Pnt P;    //value on the curve
   gp_Vec V1;   //first derivative on the curve
   Standard_Real ds;  //curvilign abscissae
@@ -48,18 +45,18 @@ void GProp_CGProps::Perform (const Curve& C)
 
   math_Vector GaussP (1, Order);
   math_Vector GaussW (1, Order);
-  
+
   //Recuperation des points de Gauss dans le fichier GaussPoints.
   math::GaussPoints  (Order,GaussP);
   math::GaussWeights (Order,GaussW);
 
   // modified by NIZHNY-MKK  Thu Jun  9 12:13:21 2005.BEGIN
-  Standard_Integer nbIntervals = Tool::NbIntervals(C, GeomAbs_CN);
+  Standard_Integer nbIntervals = BRepGProp_EdgeTool::NbIntervals(C, GeomAbs_CN);
   Standard_Boolean bHasIntervals = (nbIntervals > 1);
   TColStd_Array1OfReal TI(1, nbIntervals + 1);
 
   if(bHasIntervals) {
-    Tool::Intervals(C, TI, GeomAbs_CN);
+    BRepGProp_EdgeTool::Intervals(C, TI, GeomAbs_CN);
   }
   else {
     nbIntervals = 1;
@@ -67,7 +64,7 @@ void GProp_CGProps::Perform (const Curve& C)
   Standard_Integer nIndex = 0;
   Standard_Real UU1 = Min(Lower, Upper);
   Standard_Real UU2 = Max(Lower, Upper);
-  
+
   for(nIndex = 1; nIndex <= nbIntervals; nIndex++) {
     if(bHasIntervals) {
       Lower = Max(TI(nIndex), UU1);
@@ -80,7 +77,7 @@ void GProp_CGProps::Perform (const Curve& C)
 
     Standard_Real dimLocal, IxLocal, IyLocal, IzLocal, IxxLocal, IyyLocal, IzzLocal, IxyLocal, IxzLocal, IyzLocal;
     dimLocal = IxLocal = IyLocal = IzLocal = IxxLocal = IyyLocal = IzzLocal = IxyLocal = IxzLocal = IyzLocal = 0.0;
-  // modified by NIZHNY-MKK  Thu Jun  9 12:13:32 2005.END
+    // modified by NIZHNY-MKK  Thu Jun  9 12:13:32 2005.END
 
     loc.Coord (xloc, yloc, zloc);
 
@@ -92,7 +89,7 @@ void GProp_CGProps::Perform (const Curve& C)
 
     for (i = 1; i <= Order; i++) {
       u   = um + ur * GaussP (i);
-      Tool::D1 (C,u, P, V1); 
+      BRepGProp_EdgeTool::D1 (C,u, P, V1); 
       ds  = V1.Magnitude();
       P.Coord (x, y, z);
       x   -= xloc;
@@ -139,8 +136,8 @@ void GProp_CGProps::Perform (const Curve& C)
   // modified by NIZHNY-MKK  Thu Jun  9 12:13:55 2005.END
 
   inertia = gp_Mat (gp_XYZ (Ixx, -Ixy, -Ixz),
-		    gp_XYZ (-Ixy, Iyy, -Iyz),
-		    gp_XYZ (-Ixz, -Iyz, Izz));
+    gp_XYZ (-Ixy, Iyy, -Iyz),
+    gp_XYZ (-Ixz, -Iyz, Izz));
 
   if (Abs(dim) < gp::Resolution())
     g = P;
@@ -149,8 +146,8 @@ void GProp_CGProps::Perform (const Curve& C)
 }
 
 
-GProp_CGProps::GProp_CGProps (const Curve& C, 
-			      const gp_Pnt&   CLocation)
+BRepGProp_Cinert::BRepGProp_Cinert (const BRepAdaptor_Curve& C, 
+                                    const gp_Pnt&   CLocation)
 {
   SetLocation(CLocation);
   Perform(C);

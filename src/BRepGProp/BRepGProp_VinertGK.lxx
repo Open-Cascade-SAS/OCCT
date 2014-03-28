@@ -18,7 +18,7 @@
 //           Empty constructor.
 //==========================================================================
 
-inline GProp_VGPropsGK::GProp_VGPropsGK()
+inline BRepGProp_VinertGK::BRepGProp_VinertGK()
      : myErrorReached(0.),
      myAbsolutError(0.)
 {
@@ -29,7 +29,7 @@ inline GProp_VGPropsGK::GProp_VGPropsGK()
 //           Sets the vertex that delimit 3D closed region of space.
 //==========================================================================
 
-inline void GProp_VGPropsGK::SetLocation(const gp_Pnt &theVertex)
+inline void BRepGProp_VinertGK::SetLocation(const gp_Pnt &theVertex)
 {
   loc = theVertex;
 }
@@ -39,7 +39,7 @@ inline void GProp_VGPropsGK::SetLocation(const gp_Pnt &theVertex)
 //           Returns the reached Error.
 //==========================================================================
 
-inline Standard_Real GProp_VGPropsGK::GetErrorReached() const
+inline Standard_Real BRepGProp_VinertGK::GetErrorReached() const
 {
   return myErrorReached;
 }

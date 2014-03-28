@@ -18,7 +18,7 @@
 //purpose  : 
 //=======================================================================
 
-inline void GProp_TFunction::SetNbKronrodPoints
+inline void BRepGProp_TFunction::SetNbKronrodPoints
                    (const Standard_Integer theNbPoints)
 {
   myNbPntOuter = (theNbPoints%2 == 0) ? theNbPoints + 1 : theNbPoints;
@@ -29,7 +29,7 @@ inline void GProp_TFunction::SetNbKronrodPoints
 //purpose  : 
 //=======================================================================
 
-inline void GProp_TFunction::SetValueType(const GProp_ValueType theType)
+inline void BRepGProp_TFunction::SetValueType(const GProp_ValueType theType)
 {
   myValueType = theType;
   myUFunction.SetValueType(myValueType);
@@ -40,7 +40,7 @@ inline void GProp_TFunction::SetValueType(const GProp_ValueType theType)
 //purpose  : 
 //=======================================================================
 
-inline void GProp_TFunction::SetTolerance(const Standard_Real theTolerance)
+inline void BRepGProp_TFunction::SetTolerance(const Standard_Real theTolerance)
 {
   myTolerance = theTolerance;
 }
@@ -50,7 +50,7 @@ inline void GProp_TFunction::SetTolerance(const Standard_Real theTolerance)
 //purpose  : 
 //=======================================================================
 
-inline Standard_Real GProp_TFunction::ErrorReached() const
+inline Standard_Real BRepGProp_TFunction::ErrorReached() const
 {
   return myErrReached;
 }
@@ -60,7 +60,7 @@ inline Standard_Real GProp_TFunction::ErrorReached() const
 //purpose  : 
 //=======================================================================
 
-inline Standard_Real GProp_TFunction::AbsolutError() const
+inline Standard_Real BRepGProp_TFunction::AbsolutError() const
 {
   return myAbsError;
 }
