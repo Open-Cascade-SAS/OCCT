@@ -14,22 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class Circ2d2TanOn from GccGeo (
-    TheCurve         as any; --
-    TheTool          as any; --
-    TheQCurve        as any; -- as QualifiedCurve from GccEnt
-    	    	             --                  (TheCurve)
-    TheParGenCurve   as any; -- as ParGenCurve from GccGeo 
-    	    	    	     --               (TheCurve)
-    TheHParGenCurve  as Transient;
-    TheCurvePGTool   as any; -- as CurvePGTool from GccGeo 
-    	    	    	     --               (Thecurve,
-    	    	       	     --                TheTool,
-    	    	       	     --                TheParGenCurve)
-    TheIntConicCurve as any) -- as TheIntConicCurveOfGOffsetInter from IntCurve
-    	    	    	     --                            (TheParGenCurve,
-    	    	    	     --                             TheCurvePGTool)
-
+class Circ2d2TanOnGeo from Geom2dGcc
 
 	---Purpose: This class implements the algorithms used to 
 	--          create 2d circles TANgent to 2 entities and 
@@ -55,7 +40,14 @@ uses Pnt2d            from gp,
      Array1OfInteger  from TColStd,
      Array1OfReal     from TColStd,
      Position         from GccEnt,
-     Array1OfPosition from GccEnt
+     Array1OfPosition from GccEnt,
+     Curve            from Geom2dAdaptor,
+     CurveTool        from Geom2dGcc,
+     QCurve           from Geom2dGcc,
+     OffsetCurve      from Adaptor3d,
+     HCurve           from Geom2dAdaptor,
+     CurveToolGeo     from Geom2dGcc,
+     TheIntConicCurveOfGInter from Geom2dInt
      
 raises NotDone      from StdFail,
        BadQualifier from GccEnt,
@@ -65,8 +57,8 @@ is
 
 Create(Qualified1 :        QualifiedCirc from GccEnt  ;
        Qualified2 :        QualifiedCirc from GccEnt  ;
-       OnCurv     :        TheCurve                   ;
-       Tolerance  :        Real          from Standard) returns Circ2d2TanOn
+       OnCurv     :        Curve from Geom2dAdaptor                   ;
+       Tolerance  :        Real          from Standard) returns Circ2d2TanOnGeo
     ---Purpose: This method implements the algorithms used to 
     --          create 2d circles TANgent to two 2d circles and 
     --          having the center ON a curve.
@@ -74,8 +66,8 @@ raises BadQualifier from GccEnt;
 
 Create(Qualified1 :        QualifiedCirc from GccEnt  ;
        Qualified2 :        QualifiedLin  from GccEnt  ;
-       OnCurv     :        TheCurve                   ;
-       Tolerance  :        Real          from Standard) returns Circ2d2TanOn
+       OnCurv     :        Curve from Geom2dAdaptor                   ;
+       Tolerance  :        Real          from Standard) returns Circ2d2TanOnGeo
     ---Purpose: This method implements the algorithms used to 
     --          create 2d circles TANgent to a 2d circle and a 2d line
     --          having the center ON a curve.
@@ -83,8 +75,8 @@ raises BadQualifier from GccEnt;
 
 Create(Qualified1 :        QualifiedCirc from GccEnt  ;
        Point2     :        Pnt2d         from gp      ;
-       OnCurv     :        TheCurve                   ;
-       Tolerance  :        Real          from Standard) returns Circ2d2TanOn
+       OnCurv     :        Curve from Geom2dAdaptor                   ;
+       Tolerance  :        Real          from Standard) returns Circ2d2TanOnGeo
     ---Purpose: This method implements the algorithms used to 
     --          create 2d circles TANgent to a 2d circle and a point
     --          having the center ON a curve.
@@ -92,8 +84,8 @@ raises BadQualifier from GccEnt;
 
 Create(Qualified1 :        QualifiedLin  from GccEnt  ;
        Qualified2 :        QualifiedLin  from GccEnt  ;
-       OnCurv     :        TheCurve                   ;
-       Tolerance  :        Real          from Standard) returns Circ2d2TanOn
+       OnCurv     :        Curve from Geom2dAdaptor                   ;
+       Tolerance  :        Real          from Standard) returns Circ2d2TanOnGeo
     ---Purpose: This method implements the algorithms used to 
     --          create 2d circles TANgent to two 2d lines
     --          having the center ON a curve.
@@ -101,8 +93,8 @@ raises BadQualifier from GccEnt;
 
 Create(Qualified1 :        QualifiedLin  from GccEnt  ;
        Qualified2 :        Pnt2d         from gp      ;
-       OnCurv     :        TheCurve                   ;
-       Tolerance  :        Real          from Standard) returns Circ2d2TanOn
+       OnCurv     :        Curve from Geom2dAdaptor                   ;
+       Tolerance  :        Real          from Standard) returns Circ2d2TanOnGeo
     ---Purpose: This method implements the algorithms used to 
     --          create 2d circles TANgent to a 2d line and a point
     --          having the center ON a 2d line.
@@ -110,8 +102,8 @@ raises BadQualifier from GccEnt;
 
 Create(Point1     :        Pnt2d         from gp      ;
        Point2     :        Pnt2d         from gp      ;
-       OnCurv     :        TheCurve                   ;
-       Tolerance  :        Real          from Standard) returns Circ2d2TanOn ;
+       OnCurv     :        Curve from Geom2dAdaptor                   ;
+       Tolerance  :        Real          from Standard) returns Circ2d2TanOnGeo ;
     ---Purpose: This method implements the algorithms used to 
     --          create 2d circles TANgent to two points
     --          having the center ON a 2d line.
@@ -298,4 +290,4 @@ fields
     ---Purpose: The parameter of the center point of the solution on the 
     --          second argument.
 
-end Circ2d2TanOn;
+end Circ2d2TanOnGeo;

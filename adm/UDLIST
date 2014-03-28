@@ -133,7 +133,6 @@ p FairCurve
 p FilletSurf
 p GccAna
 p GccEnt
-p GccGeo
 p GccInt
 p GccIter
 p Geom2dAPI

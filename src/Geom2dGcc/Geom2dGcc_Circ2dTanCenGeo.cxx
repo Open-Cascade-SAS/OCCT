@@ -12,6 +12,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Geom2dGcc_Circ2dTanCenGeo.ixx>
+
 #include <StdFail_NotDone.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <Standard_Failure.hxx>
@@ -22,26 +24,28 @@
 #include <TColStd_Array1OfReal.hxx>
 #include <Extrema_POnCurv2d.hxx>
 
+#include <Geom2dGcc_CurveTool.hxx>
+#include <Extrema_ExtPC2d.hxx>
+
 //=========================================================================
 //   Creation d un cercle tangent a une courbe centre en un point.        +
 //=========================================================================
 
-GccGeo_Circ2dTanCen::
-   GccGeo_Circ2dTanCen (const TheQualifiedCurve& Qualified1,
-                        const gp_Pnt2d&          Pcenter   ,
-			const Standard_Real      Tolerance ):
+Geom2dGcc_Circ2dTanCenGeo::
+Geom2dGcc_Circ2dTanCenGeo (const Geom2dGcc_QCurve&  Qualified1,
+                           const gp_Pnt2d&          Pcenter   ,
+                           const Standard_Real      Tolerance ):
 
 //========================================================================
 //   Initialisation des champs.                                          +
 //========================================================================
 
-   cirsol(1,2)    ,
-   qualifier1(1,2),
-   pnttg1sol(1,2) ,
-   par1sol(1,2)   ,
-   pararg1(1,2)   
+  cirsol(1,2)    ,
+  qualifier1(1,2),
+  pnttg1sol(1,2) ,
+  par1sol(1,2)   ,
+  pararg1(1,2)   
 {
-
   Standard_Real Tol = Abs(Tolerance);
   TColgp_Array1OfPnt2d pTan(1,2);
   TColStd_Array1OfInteger Index(1,2);
@@ -53,27 +57,27 @@ GccGeo_Circ2dTanCen::
   Standard_Integer nbsol = 0;
   gp_Dir2d dirx(1.0,0.0);
   Standard_Real thePar;
-  TheCurve curve = Qualified1.Qualified();
-  TheExtPC distmin(Pcenter,curve,TheCurveTool::NbSamples(curve),
-		   TheCurveTool::EpsX(curve,Tol),Tol);
+  Geom2dAdaptor_Curve curve = Qualified1.Qualified();
+  Extrema_ExtPC2d distmin(Pcenter,curve,Geom2dGcc_CurveTool::NbSamples(curve),
+    Geom2dGcc_CurveTool::EpsX(curve,Tol),Tol);
   if (!distmin.IsDone() ) { Standard_Failure::Raise(); }
   Standard_Integer nbext = distmin.NbExt();
   if(nbext==0) { Standard_Failure::Raise(); }
   while (i<=nbext) {
     thePar = distmin.Point(i).Parameter();
     if (distmin.SquareDistance(i)<theDist2(1) && 
-	thePar>=TheCurveTool::FirstParameter(curve) && 
-	thePar <= TheCurveTool::LastParameter(curve)) {
-      theDist2(1) = distmin.SquareDistance(i);
-      theParam(1) = thePar;
-      pTan(1) = distmin.Point(i).Value();
+      thePar>=Geom2dGcc_CurveTool::FirstParameter(curve) && 
+      thePar <= Geom2dGcc_CurveTool::LastParameter(curve)) {
+        theDist2(1) = distmin.SquareDistance(i);
+        theParam(1) = thePar;
+        pTan(1) = distmin.Point(i).Value();
     }
     if (distmin.SquareDistance(i)>theDist2(2) && 
-	thePar>=TheCurveTool::FirstParameter(curve) && 
-	thePar <= TheCurveTool::LastParameter(curve)) {
-      theDist2(2) = distmin.SquareDistance(i);
-      theParam(2) = thePar;
-      pTan(2) = distmin.Point(i).Value();
+      thePar>=Geom2dGcc_CurveTool::FirstParameter(curve) && 
+      thePar <= Geom2dGcc_CurveTool::LastParameter(curve)) {
+        theDist2(2) = distmin.SquareDistance(i);
+        theParam(2) = thePar;
+        pTan(2) = distmin.Point(i).Value();
     }
     i++;
   }
@@ -82,7 +86,7 @@ GccGeo_Circ2dTanCen::
   for (i = 1 ; i <= nbsol; i++) {
     gp_Pnt2d point1;
     gp_Vec2d Tan1;
-    TheCurveTool::D1(curve,theParam(i),point1,Tan1);
+    Geom2dGcc_CurveTool::D1(curve,theParam(i),point1,Tan1);
     Standard_Real normetan1 = Tan1.Magnitude();
     gp_Vec2d Vec1(point1,Pcenter);
     Standard_Real normevec1 = Vec1.Magnitude();
@@ -95,16 +99,16 @@ GccGeo_Circ2dTanCen::
     if (dot1 <= Tol) {
       Standard_Real Angle1 = Vec1.Angle(Tan1);
       if (Qualified1.IsUnqualified()||
-	  (Qualified1.IsEnclosing()&&Angle1<=0.)||
-	  (Qualified1.IsOutside() && Angle1 >= 0.) ||
-	  (Qualified1.IsEnclosed() && Angle1 <= 0.)) {
-	NbrSol++;
-	cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Pcenter,dirx),sqrt (theDist2(i)));
-	qualifier1(NbrSol) = Qualified1.Qualifier();
-	pararg1(NbrSol) = theParam(i);
-	par1sol(NbrSol) = 0.;
-	pnttg1sol(NbrSol) = pTan(i);
-	WellDone = Standard_True;
+        (Qualified1.IsEnclosing()&&Angle1<=0.)||
+        (Qualified1.IsOutside() && Angle1 >= 0.) ||
+        (Qualified1.IsEnclosed() && Angle1 <= 0.)) {
+          NbrSol++;
+          cirsol(NbrSol) = gp_Circ2d(gp_Ax2d(Pcenter,dirx),sqrt (theDist2(i)));
+          qualifier1(NbrSol) = Qualified1.Qualifier();
+          pararg1(NbrSol) = theParam(i);
+          par1sol(NbrSol) = 0.;
+          pnttg1sol(NbrSol) = pTan(i);
+          WellDone = Standard_True;
       }
     }
   }
@@ -115,23 +119,23 @@ GccGeo_Circ2dTanCen::
 //=========================================================================
 
 
-Standard_Boolean GccGeo_Circ2dTanCen::
-   IsDone () const { return WellDone; }
+Standard_Boolean Geom2dGcc_Circ2dTanCenGeo::
+IsDone () const { return WellDone; }
 
-Standard_Integer GccGeo_Circ2dTanCen::
-   NbSolutions () const { return NbrSol; }
+Standard_Integer Geom2dGcc_Circ2dTanCenGeo::
+NbSolutions () const { return NbrSol; }
 
-gp_Circ2d GccGeo_Circ2dTanCen::
-   ThisSolution (const Standard_Integer Index) const 
+gp_Circ2d Geom2dGcc_Circ2dTanCenGeo::
+ThisSolution (const Standard_Integer Index) const 
 {
   if (Index > NbrSol || Index <= 0) Standard_OutOfRange::Raise();
 
   return cirsol(Index);
 }
 
-void GccGeo_Circ2dTanCen::
-  WhichQualifier(const Standard_Integer Index   ,
-		       GccEnt_Position& Qualif1 ) const
+void Geom2dGcc_Circ2dTanCenGeo::
+WhichQualifier(const Standard_Integer Index   ,
+               GccEnt_Position& Qualif1 ) const
 {
   if (!WellDone) { StdFail_NotDone::Raise(); }
   else if (Index <= 0 ||Index > NbrSol) { Standard_OutOfRange::Raise(); }
@@ -140,21 +144,21 @@ void GccGeo_Circ2dTanCen::
   }
 }
 
-void GccGeo_Circ2dTanCen::
-   Tangency1 (const Standard_Integer Index,
-                    Standard_Real&   ParSol,
-                    Standard_Real&   ParArg,
-              gp_Pnt2d& PntSol) const{
-   if (!WellDone) {
-     StdFail_NotDone::Raise();
-   }
-   else if (Index <= 0 ||Index > NbrSol) {
-     Standard_OutOfRange::Raise();
-   }
-   else {
-     PntSol = gp_Pnt2d(pnttg1sol(Index));
-     ParSol = par1sol(Index);
-     ParArg = pararg1(Index);
-   }
- }
+void Geom2dGcc_Circ2dTanCenGeo::
+Tangency1 (const Standard_Integer Index,
+           Standard_Real&   ParSol,
+           Standard_Real&   ParArg,
+           gp_Pnt2d& PntSol) const{
+             if (!WellDone) {
+               StdFail_NotDone::Raise();
+             }
+             else if (Index <= 0 ||Index > NbrSol) {
+               Standard_OutOfRange::Raise();
+             }
+             else {
+               PntSol = gp_Pnt2d(pnttg1sol(Index));
+               ParSol = par1sol(Index);
+               ParArg = pararg1(Index);
+             }
+}
 

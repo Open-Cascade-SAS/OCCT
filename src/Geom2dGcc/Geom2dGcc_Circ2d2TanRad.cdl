@@ -51,7 +51,7 @@ uses QualifiedCurve   from Geom2dGcc,
      Array1OfInteger  from TColStd,
      Array1OfReal     from TColStd,
      Circ2d2TanRad    from GccAna,
-     MyCirc2d2TanRad  from Geom2dGcc,
+     Circ2d2TanRadGeo from Geom2dGcc,
      Position         from GccEnt,
      Array1OfPosition from GccEnt
      
@@ -113,7 +113,7 @@ Results(me   : in out                         ;
 is static;
 
 Results(me   : in out                              ;
-    	Circ :        MyCirc2d2TanRad from Geom2dGcc)
+    	Circ :        Circ2d2TanRadGeo from Geom2dGcc)
 is static;
 
 IsDone(me) returns Boolean from Standard

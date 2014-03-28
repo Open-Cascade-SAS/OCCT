@@ -17,7 +17,7 @@
 #include <Geom2dGcc_Circ2d2TanOn.ixx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <GccAna_Circ2d2TanOn.hxx>
-#include <Geom2dGcc_MyCirc2d2TanOn.hxx>
+#include <Geom2dGcc_Circ2d2TanOnGeo.hxx>
 #include <Geom2dGcc_MyC2d2TanOn.hxx>
 #include <Geom2dGcc_QCurve.hxx>
 #include <GccEnt_BadQualifier.hxx>
@@ -210,7 +210,7 @@ Geom2dGcc_Circ2d2TanOn::
 	  gp_Circ2d c2(CCC2->Circ2d());
 	  GccEnt_QualifiedCirc Qc2 =
 	    GccEnt_QualifiedCirc(c2,Qualified2.Qualifier());
-	  Geom2dGcc_MyCirc2d2TanOn CircGeo(Qc1,Qc2,OnCurve,Tolerance);
+	  Geom2dGcc_Circ2d2TanOnGeo CircGeo(Qc1,Qc2,OnCurve,Tolerance);
 	  WellDone = CircGeo.IsDone();
 	  NbrSol = CircGeo.NbSolutions();
 	  for(Standard_Integer i=1; i<=NbrSol; i++) {
@@ -223,7 +223,7 @@ Geom2dGcc_Circ2d2TanOn::
 	  gp_Lin2d l2(LL2->Lin2d());
 	  GccEnt_QualifiedLin Ql2 =
 	    GccEnt_QualifiedLin(l2,Qualified2.Qualifier());
-	  Geom2dGcc_MyCirc2d2TanOn CircGeo(Qc1,Ql2,OnCurve,Tolerance);
+	  Geom2dGcc_Circ2d2TanOnGeo CircGeo(Qc1,Ql2,OnCurve,Tolerance);
 	  WellDone = CircGeo.IsDone();
 	  NbrSol = CircGeo.NbSolutions();
 	  for(Standard_Integer i=1; i<=NbrSol; i++) {
@@ -242,7 +242,7 @@ Geom2dGcc_Circ2d2TanOn::
 	  gp_Circ2d c2(CCC2->Circ2d());
 	  GccEnt_QualifiedCirc Qc2 =
 	    GccEnt_QualifiedCirc(c2,Qualified2.Qualifier());
-	  Geom2dGcc_MyCirc2d2TanOn CircGeo(Qc2,Ql1,OnCurve,Tolerance);
+	  Geom2dGcc_Circ2d2TanOnGeo CircGeo(Qc2,Ql1,OnCurve,Tolerance);
 	  WellDone = CircGeo.IsDone();
 	  NbrSol = CircGeo.NbSolutions();
 	  for(Standard_Integer i=1; i<=NbrSol; i++) {
@@ -256,7 +256,7 @@ Geom2dGcc_Circ2d2TanOn::
 	  gp_Lin2d l2(LL2->Lin2d());
 	  GccEnt_QualifiedLin Ql2 =
 	    GccEnt_QualifiedLin(l2,Qualified2.Qualifier());
-	  Geom2dGcc_MyCirc2d2TanOn CircGeo(Ql1,Ql2,OnCurve,Tolerance);
+	  Geom2dGcc_Circ2d2TanOnGeo CircGeo(Ql1,Ql2,OnCurve,Tolerance);
 	  WellDone = CircGeo.IsDone();
 	  NbrSol = CircGeo.NbSolutions();
 	  for(Standard_Integer i=1; i<=NbrSol; i++) {
@@ -417,7 +417,7 @@ Geom2dGcc_Circ2d2TanOn::
 	Handle(Geom2d_Circle) CCC1 = Handle(Geom2d_Circle)::DownCast(CC1);
 	gp_Circ2d c1(CCC1->Circ2d());
 	GccEnt_QualifiedCirc Qc1(c1,Qualified1.Qualifier());
-	Geom2dGcc_MyCirc2d2TanOn CircGeo(Qc1,Point->Pnt2d(),OnCurve,Tolerance);
+	Geom2dGcc_Circ2d2TanOnGeo CircGeo(Qc1,Point->Pnt2d(),OnCurve,Tolerance);
 	WellDone = CircGeo.IsDone();
 	NbrSol = CircGeo.NbSolutions();
 	for(Standard_Integer i=1; i<=NbrSol; i++) {
@@ -429,7 +429,7 @@ Geom2dGcc_Circ2d2TanOn::
 	Handle(Geom2d_Line) LLL1 = Handle(Geom2d_Line)::DownCast(CC1);
 	gp_Lin2d l1(LLL1->Lin2d());
 	GccEnt_QualifiedLin Ql1(l1,Qualified1.Qualifier());
-	Geom2dGcc_MyCirc2d2TanOn CircGeo(Ql1,Point->Pnt2d(),OnCurve,Tolerance);
+	Geom2dGcc_Circ2d2TanOnGeo CircGeo(Ql1,Point->Pnt2d(),OnCurve,Tolerance);
 	WellDone = CircGeo.IsDone();
 	NbrSol = CircGeo.NbSolutions();
 	for(Standard_Integer i=1; i<=NbrSol; i++) {
@@ -550,7 +550,7 @@ Geom2dGcc_Circ2d2TanOn::
 //=============================================================================
 
   else {
-    Geom2dGcc_MyCirc2d2TanOn CircGeo(Point1->Pnt2d(),Point2->Pnt2d(),
+    Geom2dGcc_Circ2d2TanOnGeo CircGeo(Point1->Pnt2d(),Point2->Pnt2d(),
 				     OnCurve,Tolerance);
     WellDone = CircGeo.IsDone();
     NbrSol = CircGeo.NbSolutions();
@@ -576,7 +576,7 @@ void Geom2dGcc_Circ2d2TanOn::Results(const GccAna_Circ2d2TanOn& Circ)
   }
 }
 
-void Geom2dGcc_Circ2d2TanOn::Results(const Geom2dGcc_MyCirc2d2TanOn& Circ)
+void Geom2dGcc_Circ2d2TanOn::Results(const Geom2dGcc_Circ2d2TanOnGeo& Circ)
 {
   for (Standard_Integer j = 1; j <= NbrSol; j++) {
     cirsol(j)   = Circ.ThisSolution(j);

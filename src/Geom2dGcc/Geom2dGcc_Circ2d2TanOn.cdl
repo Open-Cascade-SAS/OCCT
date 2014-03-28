@@ -42,7 +42,7 @@ uses Curve            from Geom2dAdaptor,
      Point            from Geom2d,
      Circ2d           from gp,
      Circ2d2TanOn     from GccAna,
-     MyCirc2d2TanOn   from Geom2dGcc,
+     Circ2d2TanOnGeo from Geom2dGcc,
      MyC2d2TanOn      from Geom2dGcc,
      Position         from GccEnt,
      Array1OfPosition from GccEnt
@@ -100,7 +100,7 @@ Results(me   : in out                         ;
 is static;
 
 Results(me   : in out                              ;
-    	Circ :        MyCirc2d2TanOn from Geom2dGcc)
+    	Circ :        Circ2d2TanOnGeo from Geom2dGcc)
 is static;
 
 IsDone(me) returns Boolean
@@ -284,7 +284,7 @@ fields
     Invert   : Boolean from Standard;
 
 --    CircAna  : Circ2d2TanOn from GccAna;
---    CircGeo  : MyCirc2d2TanOn from Geom2dGcc;
+--    CircGeo  : Circ2d2TanOnGeo from Geom2dGcc;
 --    CircIter : MyC2d2TanOn from Geom2dGcc;
 --    TypeAna  : Boolean;
 

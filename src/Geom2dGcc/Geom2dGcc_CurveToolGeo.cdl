@@ -14,11 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class CurvePGTool from GccGeo (
-    TheCurve        as any;
-    TheCurveTool    as any; -- as CurveTool(TheCurve) from GccInt
-    TheParGenCurve  as any) -- as ParGenCurve(TheCurve) from GccGeo
-	---Purpose: 
+class CurveToolGeo from Geom2dGcc
 
 uses Pnt2d        from gp,
      Vec2d        from gp,
@@ -28,38 +24,41 @@ uses Pnt2d        from gp,
      Parab2d      from gp,
      Hypr2d       from gp,
      CurveType    from GeomAbs,
-     Shape        from GeomAbs
+     Shape        from GeomAbs,
+     Curve        from Geom2dAdaptor,
+     CurveTool    from Geom2dGcc,
+     OffsetCurve  from Adaptor3d
 
 is
 
-    TheType(myclass; C: TheParGenCurve ) 
+    TheType(myclass; C: OffsetCurve from Adaptor3d ) 
     	returns CurveType from GeomAbs;
 
-    Line(myclass; C: TheParGenCurve)
+    Line(myclass; C: OffsetCurve from Adaptor3d)
     	---Purpose: Returns the Lin2d from gp corresponding to the curve C.
 	--          This method is called only when TheType returns
 	--          IntCurve_Lin.
     	returns Lin2d from gp;
 
-    Circle(myclass; C: TheParGenCurve)
+    Circle(myclass; C: OffsetCurve from Adaptor3d)
     	---Purpose: Returns the Circ2d from gp corresponding to the curve C.
 	--          This method is called only when TheType returns
 	--          IntCurve_Cir.
     	returns Circ2d from gp;
 
-    Ellipse(myclass; C: TheParGenCurve)
+    Ellipse(myclass; C: OffsetCurve from Adaptor3d)
 	---Purpose: Returns the Elips2d from gp corresponding to the curve C.
 	--          This method is called only when TheType returns
 	--          IntCurve_Eli.
     	returns Elips2d from gp;
 
-    Parabola(myclass; C: TheParGenCurve)
+    Parabola(myclass; C: OffsetCurve from Adaptor3d)
 	---Purpose: Returns the Parab2d from gp corresponding to the curve C.
 	--          This method is called only when TheType returns
 	--          IntCurve_Prb.
     	returns Parab2d from gp;
 
-    Hyperbola(myclass; C: TheParGenCurve)
+    Hyperbola(myclass; C: OffsetCurve from Adaptor3d)
 	---Purpose: Returns the Hypr2d from gp corresponding to the curve C.
 	--          This method is called only when TheType returns
 	--          IntCurve_Hpr.
@@ -67,61 +66,61 @@ is
 
 -- The following method are used only when TheType returns  IntCurve_Other.
 
-    FirstParameter(myclass;C: TheParGenCurve)
+    FirstParameter(myclass;C: OffsetCurve from Adaptor3d)
     	returns Real;
 
-    LastParameter(myclass;C: TheParGenCurve)
+    LastParameter(myclass;C: OffsetCurve from Adaptor3d)
     	returns Real;
 
     EpsX (myclass                     ; 
-    	  C       : TheParGenCurve    ;
+    	  C       : OffsetCurve from Adaptor3d    ;
     	  Tol     : Real from Standard)
     	returns Real;
 
     NbSamples(myclass                 ;
-    	      C       : TheParGenCurve)
+    	      C       : OffsetCurve from Adaptor3d)
     	returns Integer;
 
     Value (myclass                 ;
-    	   C       : TheParGenCurve;
+    	   C       : OffsetCurve from Adaptor3d;
     	   X       : Real          )
     	returns Pnt2d from gp;
 
-    D1 (myclass; C :     TheParGenCurve ;
+    D1 (myclass; C :     OffsetCurve from Adaptor3d ;
     	    	 U :     Real           ;  
                  P : out Pnt2d          ;
     	    	 T : out Vec2d          );
 
-    D2 (myclass; C   :     TheParGenCurve ;
+    D2 (myclass; C   :     OffsetCurve from Adaptor3d ;
     	    	 U   :     Real           ; 
                  P   : out Pnt2d          ;
     	    	 T,N : out Vec2d          );
 
-    IsComposite(myclass; C:TheParGenCurve)
+    IsComposite(myclass; C:OffsetCurve from Adaptor3d)
    
     	returns Boolean from Standard;
 
 -- The following methods are used only when IsComposite returns True.
 
 	
-    GetIntervals(myclass ; C:TheParGenCurve) returns Integer from Standard;
+    GetIntervals(myclass ; C:OffsetCurve from Adaptor3d) returns Integer from Standard;
         ---Purpose : Outputs the number of interval of continuity C1 of 
         --           the curve
         --           used if Type == Composite.
 
-    GetInterval (myclass; C      :     TheParGenCurve
+    GetInterval (myclass; C      :     OffsetCurve from Adaptor3d
                        ; Index  :     Integer  from Standard
     	    	       ; U1, U2 : out Real     from Standard);
         ---Purpose : Outputs the bounds of interval of index <Index>
         --           used if Type == Composite.
 
-    SetCurrentInterval (myclass; C: in out TheParGenCurve
+    SetCurrentInterval (myclass; C: in out OffsetCurve from Adaptor3d
                               ; Index : Integer from Standard);
         ---Purpose : Set the current valid interval of index <Index>
         --           inside which the computations will be done
         --           (used if Type == Composite).
 
-end CurvePGTool;
+end CurveToolGeo;
 
 
 

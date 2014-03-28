@@ -41,20 +41,20 @@ class Circ2dTanOnRad from Geom2dGcc
 
 -- inherits Entity from Standard
 
-uses Lin2d            from gp, 
-     Circ2d           from gp,  
-     Pnt2d            from gp,
-     Point            from Geom2d,
-     Array1OfCirc2d   from TColgp,
-     Array1OfPnt2d    from TColgp,
-     Curve            from Geom2dAdaptor,
-     QualifiedCurve   from Geom2dGcc,
-     Array1OfReal     from TColStd,
-     Array1OfInteger  from TColStd,
-     Circ2dTanOnRad   from GccAna,
-     MyCirc2dTanOnRad from Geom2dGcc,
-     Position         from GccEnt,
-     Array1OfPosition from GccEnt
+uses Lin2d             from gp, 
+     Circ2d            from gp,  
+     Pnt2d             from gp,
+     Point             from Geom2d,
+     Array1OfCirc2d    from TColgp,
+     Array1OfPnt2d     from TColgp,
+     Curve             from Geom2dAdaptor,
+     QualifiedCurve    from Geom2dGcc,
+     Array1OfReal      from TColStd,
+     Array1OfInteger   from TColStd,
+     Circ2dTanOnRad    from GccAna,
+     Circ2dTanOnRadGeo from Geom2dGcc,
+     Position          from GccEnt,
+     Array1OfPosition  from GccEnt
      
 raises NegativeValue from Standard,
        OutOfRange    from Standard,
@@ -115,7 +115,7 @@ Results(me   : in out                         ;
 is static;
 
 Results(me   : in out                              ;
-    	Circ :        MyCirc2dTanOnRad from Geom2dGcc)
+    	Circ :        Circ2dTanOnRadGeo from Geom2dGcc)
 is static;
 
 IsDone(me) returns Boolean from Standard

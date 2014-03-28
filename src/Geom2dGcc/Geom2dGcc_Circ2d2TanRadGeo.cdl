@@ -14,23 +14,8 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class Circ2d2TanRad from GccGeo (
-    TheCurve          as any;
-    TheTool           as any;
-    TheQCurve         as any; -- as QualifiedCurve from GccEnt
-    	    	    	      --                  (TheCurve)
-    TheParGenCurve    as any; -- as ParGenCurve from GccGeo 
-    	    	    	      --               (TheCurve)
-    TheHParGenCurve   as Transient;
-    TheCurvePGTool    as any; -- as CurvePGTool from GccGeo 
-    	    	    	      --               (Thecurve,
-    	    	       	      --                TheTool,
-    	    	       	      --                TheParGenCurve)
-    TheIntConicCurve  as any; -- as IntConicCurveOfGOffsetInter
-    TheIntCurveCurve  as any) -- as GOffsetInter from Geom2dInt
-    	    	    	      --                (TheParGenCurve,
-    	    	    	      --                 TheCurvePGTool)
-
+class Circ2d2TanRadGeo from Geom2dGcc
+    
 	---Purpose: This class implements the algorithms used to 
 	--          create 2d circles tangent to one curve and a
 	--          point/line/circle/curv and with a given radius.
@@ -64,7 +49,15 @@ uses Pnt2d            from gp,
      Array1OfReal     from TColStd,
      Array1OfInteger  from TColStd,
      Position         from GccEnt,
-     Array1OfPosition from GccEnt
+     Array1OfPosition from GccEnt,
+     Curve            from Geom2dAdaptor,
+     CurveTool        from Geom2dGcc,
+     QCurve           from Geom2dGcc,
+     OffsetCurve      from Adaptor3d,
+     HCurve           from Geom2dAdaptor,
+     CurveToolGeo     from Geom2dGcc,
+     TheIntConicCurveOfGInter from Geom2dInt,
+     GInter           from Geom2dInt
 
 raises OutOfRange    from Standard,
        BadQualifier  from GccEnt,
@@ -73,40 +66,40 @@ raises OutOfRange    from Standard,
 
 is
 
-Create(Qualified1 :        QualifiedCirc from GccEnt  ;
-       Qualified2 :        TheQCurve                  ;
+Create(Qualified1 :        QualifiedCirc from GccEnt;
+       Qualified2 :        QCurve        from Geom2dGcc;
        Radius     :        Real          from Standard;
-       Tolerance  :        Real          from Standard) returns Circ2d2TanRad
+       Tolerance  :        Real          from Standard) returns Circ2d2TanRadGeo
     ---Purpose: This method implements the algorithms used to 
     --          create 2d circles TANgent to a 2d circle and a curve
     --          with a radius of Radius.
 raises NegativeValue, BadQualifier;
     ---Purpose: It raises NegativeValue if Radius is lower than zero.
 
-Create(Qualified1 :        QualifiedLin  from GccEnt  ;
-       Qualified2 :        TheQCurve                  ;
+Create(Qualified1 :        QualifiedLin  from GccEnt;
+       Qualified2 :        QCurve from Geom2dGcc;
        Radius     :        Real          from Standard;
-       Tolerance  :        Real          from Standard) returns Circ2d2TanRad
+       Tolerance  :        Real          from Standard) returns Circ2d2TanRadGeo
     ---Purpose: This method implements the algorithms used to 
     --          create 2d circles TANgent to a 2d line and a curve
     --          with a radius of Radius.
 raises NegativeValue, BadQualifier;
     ---Purpose: It raises NegativeValue if Radius is lower than zero.
 
-Create(Qualified1 :        TheQCurve              ;
-       Qualified2 :        TheQCurve              ;
+Create(Qualified1 :        QCurve from Geom2dGcc;
+       Qualified2 :        QCurve from Geom2dGcc;
        Radius     :        Real      from Standard;
-       Tolerance  :        Real      from Standard) returns Circ2d2TanRad
+       Tolerance  :        Real      from Standard) returns Circ2d2TanRadGeo
     ---Purpose: This method implements the algorithms used to 
     --          create 2d circles TANgent to two curves with 
     --          a radius of Radius.
 raises NegativeValue, BadQualifier;
     ---Purpose: It raises NegativeValue if Radius is lower than zero.
 
-Create(Qualified1 :        TheQCurve              ;
+Create(Qualified1 :        QCurve    from Geom2dGcc;
        Point2     :        Pnt2d     from gp      ;
        Radius     :        Real      from Standard;
-       Tolerance  :        Real      from Standard) returns Circ2d2TanRad
+       Tolerance  :        Real      from Standard) returns Circ2d2TanRadGeo
     ---Purpose: This method implements the algorithms used to 
     --          create 2d circles TANgent to a curve and a point
     --          with a radius of Radius.
@@ -265,4 +258,4 @@ fields
     ---Purpose: The parameter of the tangency point between the solution 
     --          and the second argument on the second argument.
 
-end Circ2d2TanRad;
+end Circ2d2TanRadGeo;

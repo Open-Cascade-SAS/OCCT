@@ -17,7 +17,7 @@
 #include <Geom2dGcc_Circ2dTanOnRad.ixx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <GccAna_Circ2dTanOnRad.hxx>
-#include <Geom2dGcc_MyCirc2dTanOnRad.hxx>
+#include <Geom2dGcc_Circ2dTanOnRadGeo.hxx>
 #include <Geom2dGcc_QCurve.hxx>
 #include <GccEnt_BadQualifier.hxx>
 #include <Geom2d_Circle.hxx>
@@ -114,7 +114,7 @@ Geom2dGcc_Circ2dTanOnRad::
 	gp_Circ2d c1(CCC1->Circ2d());
 	GccEnt_QualifiedCirc Qc1=GccEnt_QualifiedCirc(c1,
 						      Qualified1.Qualifier());
-	Geom2dGcc_MyCirc2dTanOnRad CircGeo(Qc1,OnCurve,Radius,Tolerance);
+	Geom2dGcc_Circ2dTanOnRadGeo CircGeo(Qc1,OnCurve,Radius,Tolerance);
 	WellDone = CircGeo.IsDone();
 	NbrSol = CircGeo.NbSolutions();
 	Results(CircGeo);
@@ -123,14 +123,14 @@ Geom2dGcc_Circ2dTanOnRad::
 	Handle(Geom2d_Line) LL1 = Handle(Geom2d_Line)::DownCast(CC1);
 	gp_Lin2d l1(LL1->Lin2d());
 	GccEnt_QualifiedLin Ql1=GccEnt_QualifiedLin(l1,Qualified1.Qualifier());
-	Geom2dGcc_MyCirc2dTanOnRad CircGeo(Ql1,OnCurve,Radius,Tolerance);
+	Geom2dGcc_Circ2dTanOnRadGeo CircGeo(Ql1,OnCurve,Radius,Tolerance);
 	WellDone = CircGeo.IsDone();
 	NbrSol = CircGeo.NbSolutions();
 	Results(CircGeo);
       }
       else {
 	Geom2dGcc_QCurve Qc1(C1,Qualified1.Qualifier());
-	Geom2dGcc_MyCirc2dTanOnRad CircGeo(Qc1,OnCurve,Radius,Tolerance);
+	Geom2dGcc_Circ2dTanOnRadGeo CircGeo(Qc1,OnCurve,Radius,Tolerance);
 	WellDone = CircGeo.IsDone();
 	NbrSol = CircGeo.NbSolutions();
 	Results(CircGeo);
@@ -190,7 +190,7 @@ Geom2dGcc_Circ2dTanOnRad::
 //=============================================================================
 
     else {
-      Geom2dGcc_MyCirc2dTanOnRad CircGeo(point1,OnCurve,Radius,Tolerance);
+      Geom2dGcc_Circ2dTanOnRadGeo CircGeo(point1,OnCurve,Radius,Tolerance);
       WellDone = CircGeo.IsDone();
       NbrSol = CircGeo.NbSolutions();
       Results(CircGeo);
@@ -210,7 +210,7 @@ void Geom2dGcc_Circ2dTanOnRad::Results(const GccAna_Circ2dTanOnRad& Circ)
   }
 }
 
-void Geom2dGcc_Circ2dTanOnRad::Results(const Geom2dGcc_MyCirc2dTanOnRad& Circ)
+void Geom2dGcc_Circ2dTanOnRad::Results(const Geom2dGcc_Circ2dTanOnRadGeo& Circ)
 {
   for (Standard_Integer j = 1; j <= NbrSol; j++) {
     cirsol(j)   = Circ.ThisSolution(j);

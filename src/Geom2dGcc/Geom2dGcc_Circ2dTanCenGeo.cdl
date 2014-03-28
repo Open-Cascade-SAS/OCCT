@@ -14,13 +14,8 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class Circ2dTanCen from GccGeo
-    (TheCurve          as any; -- 
-     TheCurveTool      as any; -- as CurveTool(TheCurve) from GccInt
-     TheExtPC          as any; -- as ExtPC(TheCurve,TheCurveTool) from Extrema
-     TheQualifiedCurve as any) -- as QCurve from GccInt
-       	    	    	       --          (TheCurve)
-
+class Circ2dTanCenGeo from Geom2dGcc
+     
 	---Purpose: This class implements the algorithms used to 
 	--          create 2d circles tangent to a curve and 
 	--          centered on a point. 
@@ -48,7 +43,11 @@ uses Pnt2d            from gp,
      Array1OfReal     from TColStd,
      Array1OfInteger  from TColStd,
      Position         from GccEnt,
-     Array1OfPosition from GccEnt
+     Array1OfPosition from GccEnt,
+     Curve            from Geom2dAdaptor,
+     CurveTool        from Geom2dGcc,
+     ExtPC2d          from Extrema,
+     QCurve           from Geom2dGcc
 
 raises OutOfRange   from Standard,
        BadQualifier from GccEnt,
@@ -56,9 +55,9 @@ raises OutOfRange   from Standard,
 
 is
 
-Create( Qualified1 : TheQualifiedCurve              ;
-        Pcenter    : Pnt2d             from gp      ;
-        Tolerance  : Real              from Standard) returns Circ2dTanCen
+Create( Qualified1 : QCurve from Geom2dGcc;
+        Pcenter    : Pnt2d             from gp;
+        Tolerance  : Real              from Standard) returns Circ2dTanCenGeo
     ---Purpose: This method implements the algorithms used to 
     --          create 2d circles tangent to a circle and 
     --          centered on a point. 
@@ -148,4 +147,4 @@ fields
     -- The parameter of the tangency point between the solution and the first 
     -- argument on the first argument.
 
-end Circ2dTanCen;
+end Circ2dTanCenGeo;

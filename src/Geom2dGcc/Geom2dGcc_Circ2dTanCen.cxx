@@ -17,7 +17,7 @@
 #include <Geom2dGcc_Circ2dTanCen.ixx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <GccAna_Circ2dTanCen.hxx>
-#include <Geom2dGcc_MyCirc2dTanCen.hxx>
+#include <Geom2dGcc_Circ2dTanCenGeo.hxx>
 #include <Geom2dGcc_QCurve.hxx>
 #include <GccEnt_BadQualifier.hxx>
 #include <Geom2d_Circle.hxx>
@@ -85,7 +85,7 @@ Geom2dGcc_Circ2dTanCen::
 
   else {
     Geom2dGcc_QCurve Qc1(C1,Qualified1.Qualifier());
-    Geom2dGcc_MyCirc2dTanCen Circ(Qc1,pcenter,Tolerance);
+    Geom2dGcc_Circ2dTanCenGeo Circ(Qc1,pcenter,Tolerance);
     WellDone = Circ.IsDone();
     NbrSol = Circ.NbSolutions();
     for (Standard_Integer j = 1; j <= NbrSol; j++) {

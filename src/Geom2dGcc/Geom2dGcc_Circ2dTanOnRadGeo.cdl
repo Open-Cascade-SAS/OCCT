@@ -14,21 +14,7 @@
 -- Alternatively, this file may be used under the terms of Open CASCADE
 -- commercial license or contractual agreement.
 
-generic class Circ2dTanOnRad from GccGeo (
-    TheCurve         as any; --
-    TheTool          as any; --
-    TheQCurve        as any; -- as QualifiedCurv from GccEnt (TheCurve)
-    TheParGenCurve   as any; -- as ParGenCurve from GccGeo 
-    	    	             --               (TheCurve)
-    TheHParGenCurve  as Transient;
-    TheCurvePGTool   as any; -- as CurvePGTool from GccGeo 
-    	    	             --               (Thecurve,
-    	    	             --                TheTool,
-    	    	             --                TheParGenCurve)
-    TheIntConicCurve as any; -- as IntConicCurveOfGOffsetInter
-    TheIntCurveCurve as any) -- as GOffSetInter from Geom2dInt
-    	    	    	     --                (TheParGenCurve,
-    	    	    	     --                 TheCurvePGTool)
+class Circ2dTanOnRadGeo from Geom2dGcc
 
 	---Purpose: This class implements the algorithms used to 
 	--          create a 2d circle tangent to a 2d entity, 
@@ -65,7 +51,15 @@ uses Lin2d            from gp,
      Array1OfReal     from TColStd,
      Array1OfInteger  from TColStd,
      Position         from GccEnt,
-     Array1OfPosition from GccEnt
+     Array1OfPosition from GccEnt,
+     Curve            from Geom2dAdaptor,
+     CurveTool        from Geom2dGcc,
+     QCurve           from Geom2dGcc,
+     OffsetCurve      from Adaptor3d,
+     HCurve           from Geom2dAdaptor,
+     CurveToolGeo     from Geom2dGcc,
+     TheIntConicCurveOfGInter from Geom2dInt,
+     GInter           from Geom2dInt
      
 raises NegativeValue from Standard,
        OutOfRange    from Standard,
@@ -76,10 +70,10 @@ is
 
 -- On a line .............................................................
 
-Create(Qualified1 :        TheQCurve              ;
-       OnLine     :        Lin2d     from gp      ;
+Create(Qualified1 :        QCurve from Geom2dGcc;
+       OnLine     :        Lin2d     from gp;
        Radius     :        Real      from Standard;
-       Tolerance  :        Real      from Standard) returns Circ2dTanOnRad 
+       Tolerance  :        Real      from Standard) returns Circ2dTanOnRadGeo 
     ---Purpose: This methods implements the algorithms used to create 
     --          2d Circles tangent to a curve and centered on a 2d Line 
     --          with a given radius.
@@ -89,10 +83,10 @@ raises NegativeValue, BadQualifier;
 
 -- -- On a circle ...........................................................
 
-Create(Qualified1 :        TheQCurve              ;
-       OnCirc     :        Circ2d    from gp      ;
+Create(Qualified1 :        QCurve from Geom2dGcc;
+       OnCirc     :        Circ2d    from gp;
        Radius     :        Real      from Standard;
-       Tolerance  :        Real      from Standard) returns Circ2dTanOnRad 
+       Tolerance  :        Real      from Standard) returns Circ2dTanOnRadGeo 
     ---Purpose: This methods implements the algorithms used to create 
     --          2d Circles tangent to a curve and centered on a 2d Circle 
     --          with a given radius.
@@ -103,9 +97,9 @@ raises NegativeValue, BadQualifier;
 -- On a curve ............................................................
 
 Create(Qualified1 :        QualifiedCirc from GccEnt  ;
-       OnCurv     :        TheCurve                   ;
+       OnCurv     :        Curve from Geom2dAdaptor                   ;
        Radius     :        Real          from Standard;
-       Tolerance  :        Real          from Standard) returns Circ2dTanOnRad 
+       Tolerance  :        Real          from Standard) returns Circ2dTanOnRadGeo 
     ---Purpose: This methods implements the algorithms used to create 
     --          2d Circles tangent to a circle and centered on a 2d curve 
     --          with a given radius.
@@ -114,9 +108,9 @@ raises NegativeValue, BadQualifier;
     ---Purpose: raises NegativeValue in case of NegativeRadius.
 
 Create(Qualified1 :        QualifiedLin  from GccEnt  ;
-       OnCurv     :        TheCurve                   ;
+       OnCurv     :        Curve from Geom2dAdaptor                   ;
        Radius     :        Real          from Standard;
-       Tolerance  :        Real          from Standard) returns Circ2dTanOnRad 
+       Tolerance  :        Real          from Standard) returns Circ2dTanOnRadGeo 
     ---Purpose: This methods implements the algorithms used to create 
     --          2d Circles tangent to a 2d Line and centered on a 2d curve 
     --          with a given radius.
@@ -124,10 +118,10 @@ Create(Qualified1 :        QualifiedLin  from GccEnt  ;
 raises NegativeValue, BadQualifier;
     ---Purpose: raises NegativeValue in case of NegativeRadius.
 
-Create(Qualified1 :        TheQCurve              ;
-       OnCurv     :        TheCurve               ;
+Create(Qualified1 :        QCurve from Geom2dGcc;
+       OnCurv     :        Curve from Geom2dAdaptor;
        Radius     :        Real      from Standard;
-       Tolerance  :        Real      from Standard) returns Circ2dTanOnRad 
+       Tolerance  :        Real      from Standard) returns Circ2dTanOnRadGeo 
     ---Purpose: This methods implements the algorithms used to create 
     --          2d Circles tangent to a 2d curve and centered on a 2d curve 
     --          with a given radius.
@@ -136,9 +130,9 @@ raises NegativeValue, BadQualifier;
     ---Purpose: raises NegativeValue in case of NegativeRadius.
 
 Create(Point1     :        Pnt2d    from gp      ;
-       OnCurv     :        TheCurve              ;
+       OnCurv     :        Curve from Geom2dAdaptor              ;
        Radius     :        Real     from Standard;
-       Tolerance  :        Real     from Standard) returns Circ2dTanOnRad 
+       Tolerance  :        Real     from Standard) returns Circ2dTanOnRadGeo 
     ---Purpose: This methods implements the algorithms used to create 
     --          2d Circles passing through a 2d point and centered on a 
     --          2d curve with a given radius.
@@ -270,4 +264,4 @@ fields
     ---Purpose: The parameter of the center point of the solution on the 
     --          second argument.
 
-end Circ2dTanOnRad;
+end Circ2dTanOnRadGeo;
