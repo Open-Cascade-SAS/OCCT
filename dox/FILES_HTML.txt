@@ -18,13 +18,14 @@ user_guides/user_guides.md
 user_guides/foundation_classes/foundation_classes.md
 user_guides/modeling_data/modeling_data.md
 user_guides/modeling_algos/modeling_algos.md
+user_guides/boolean_operations/boolean_operations.md
+user_guides/shape_healing/shape_healing.md
 user_guides/visualization/visualization.md
 user_guides/iges/iges.md
 user_guides/step/step.md
 user_guides/xde/xde.md
 user_guides/ocaf/ocaf.md
 user_guides/tobj/tobj.md
-user_guides/shape_healing/shape_healing.md
 user_guides/draw_test_harness.md
 user_guides/brep_wp/brep_wp.md
 user_guides/ocaf_functionmechanism_wp/ocaf_functionmechanism_wp.md

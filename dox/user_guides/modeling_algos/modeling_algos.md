@@ -1869,6 +1869,7 @@ TopoDS_Solid R2 = BRepPrimAPI_MakeRevol(F,axis,ang);
 @section occt_modalg_5 Boolean  Operations
 
 Boolean operations are  used to create new shapes from the combinations of two shapes. 
+See @ref occt_user_guides__boolean_operations "Boolean Operations" for detailed documentation.
 
 | Operation | Result |
 | :---- | :------ |

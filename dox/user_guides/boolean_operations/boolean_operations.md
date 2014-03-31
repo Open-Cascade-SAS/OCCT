@@ -1,0 +1,1892 @@
+Boolean Operations {#occt_user_guides__boolean_operations}
+=========================
+
+@tableofcontents
+
+@section occt_algorithms_1 Introduction
+
+This document provides comprehensive description of the Boolean Operation Algorithm (BOA) as implemented in Open CASCADE Technology. 
+Boolean Operation Algorithm is based on General Fuse Algorithm (GFA) which is also described by this document.
+General Fuse Algorithm is also a basis of the Partition Algorithm (PA) implemented in SALOME and described in SALOME documentation.
+
+General Fuse Algorithm has a history-based architecture designed to allow using OCAF naming functionality.
+The architecture of General Fuse Algorithm is expandable, that allows creating new algorithms basing on it.
+  
+@section occt_algorithms_2 Overview 
+
+@subsection occt_algorithms_2_1 Operators
+
+@subsubsection occt_algorithms_2_1_1 Boolean operator
+
+The Boolean operator provides the operations (Common, Fuse, Cut) between two arguments in terms of *TopoDS_Shape*.
+
+The operator can be represented as:
+
+<i>R<sub>B</sub>=B<sub>j</sub> (S<sub>1</sub>, S<sub>2</sub>),</i>	
+
+where:
+* *B<sub>j</sub>* - operation of type j (Common, Fuse, Cut),
+* *R<sub>B</sub>* - result of the operation,
+* *S<sub>1</sub>* and *S<sub>2</sub>* - arguments of the operation.
+
+@subsubsection occt_algorithms_2_1_2 General Fuse operator
+
+The General fuse operator can be applied to an arbitrary number of arguments in terms of *TopoDS_Shape*.
+
+The GFA operator can be represented as:
+
+<i>R<sub>GF</sub> = GF (S<sub>1</sub>, S<sub>2</sub> ... S<sub>n</sub>), </i>	
+
+where
+* *R<sub>GF</sub>* - result of the operation,
+* *S<sub>1</sub>, S<sub>2</sub> ... S<sub>n</sub>* - arguments of the operation,
+* *n* - number of arguments.
+
+The result of the Boolean operator, *R<sub>B</sub>*, can be obtained from *R<sub>GF</sub>*.
+
+For example, for two arguments *S<sub>1</sub>* and *S<sub>2</sub>* the result *R<sub>GF</sub>* is
+
+<i>R<sub>GF</sub> = GF (S<sub>1</sub>, S<sub>2</sub>) = S<sub>p1</sub> + S<sub>p2</sub> + S<sub>p12</sub></i>	
+
+@figure{/user_guides/boolean_operations/images/operations_image001.svg,  "Operators"}
+
+This Figure shows that 
+* <i>B<sub>common</sub> (S<sub>1</sub>, S<sub>2</sub>) = S<sub>p12</sub>;</i>
+* <i>B<sub>cut12</sub> (S<sub>1</sub>, S<sub>2</sub>) = S<sub>p1</sub>;</i>
+* <i>B<sub>cut21</sub> (S<sub>1</sub>, S<sub>2</sub>) = S<sub>p2</sub>;</i>
+* <i>B<sub>fuse</sub> (S<sub>1</sub>, S<sub>2</sub>) = S<sub>p1</sub>+S<sub>p2</sub>+S<sub>p12</sub>= R<sub>p</sub>;</i>
+
+<i>R<sub>GF</sub>=GF (S<sub>1</sub>, S<sub>2</sub>) = B<sub>fuse</sub> = B<sub>common</sub>+ B<sub>cut12</sub>+ B<sub>cut21</sub>.</i>
+
+The fact that *R<sub>GF</sub>* contains the components of *R<sub>B</sub>* allows considering GFA as the general case of BOA. So it is possible to implement BOA as a subclass of GFA.
+
+@subsubsection occt_algorithms_2_1_3 Partition operator 
+
+The Partition operator can be applied to an arbitrary number of arguments in terms of *TopoDS_Shape*. The arguments are divided on two groups: Objects, Tools. The result of PA contains all parts belonging to the Objects but does not contain the parts that belongs to the Tools only.
+
+The PA operator can be represented as follows:
+
+<i>R<sub>P</sub>=PA (S<sub>1o</sub>, S<sub>2o</sub> … S<sub>no</sub>, S<sub>1T</sub>, S<sub>2T</sub> … S<sub>nT</sub>),</i>
+where:
+* <i>R<sub>P</sub></i> - is the result of the operation; 
+* <i>S<sub>1O</sub>, S<sub>2O</sub> … S<sub>nO</sub></i> - Arguments of the operation [Objects];
+* <i>S<sub>1T</sub>, S<sub>2T</sub> … S<sub>nT</sub></i> - Arguments of the operation [Tools];
+* *nO* - Number of arguments [Objects];
+* *nT* - Number of arguments [Tools].
+
+The result *R<sub>P</sub>* can be obtained from *R<sub>GF</sub>* .
+
+For example, for two arguments *S<sub>1O</sub>* and  *S<sub>2T</sub>* the result *R<sub>P</sub>* is
+
+<i>R<sub>P</sub>=PA(S<sub>1O</sub>,S<sub>2T</sub>)=S<sub>p1</sub>+S<sub>p12</sub>.</i>      
+
+In case when all arguments of the PA are Objects (no Tools), the result of PA is equivalent to the result of GFA. 
+
+For example, for two arguments *S<sub>1O</sub>* and *S<sub>2O</sub>* the result *R<sub>P</sub>* is
+
+<i>R<sub>P</sub>=PA(S<sub>1O</sub>, S<sub>2O</sub>) = S<sub>p1</sub> + S<sub>p2</sub> + S<sub>p12</sub> = GF (S<sub>1</sub>, S<sub>2</sub>)</i>
+
+The fact that the *R<sub>GF</sub>* contains the components of *R<sub>P</sub>* allows considering GFA as the general case of PA. Thus, it is possible to implement PA as a subclass of GFA.
+
+@subsection occt_algorithms_2_2 Parts of algorithms 
+
+GFA, BOA and PA have the same Data Structure (DS). The main goal of the Data Structure is to store all necessary information for input data and intermediate results.
+
+GFA, BOA and PA consist of two main parts:
+*	Intersection Part (IP). The main goal of IP is to compute the interferences between sub-shapes of arguments. The IP uses DS to retrieve input data and store the results of intersections.
+*	Building Part (BP). The main goal of BP is to build required result of an operation. This part also uses DS to retrieve data and store the results.
+
+As it follows from the definition of *R<sub>GF</sub>* and *R<sub>P</sub>* the main differences between GFA, BOA and PA are in the Building Part. The Intersection Part is the same for the algorithms.
+
+@section occt_algorithms_3 Terms and Definitions
+
+This chapter provides the background terms and definitions that are necessary to understand how the algorithms work. 
+
+@subsection occt_algorithms_3_1 Interferences
+
+Each shape having a boundary representation (vertex, edge, face) contains an internal value of geometrical tolerance. The shapes interferes between each other in terms of theirs tolerances.
+
+The shapes are interfered when there is a part of 3D space where the distance between the underlying geometry of shapes is less or equal to the sum of tolerances of the shapes. For the three types of shapes (vertex, edge, face) there are six types of interferences. 
+
+@subsubsection occt_algorithms_3_1_1 Vertex/Vertex interference
+
+Two vertices *Vi* and *Vj* have the distance between corresponding 3D points that is less then sum of the tolerances *Tol(Vi)* and *Tol(Vj)* of the vertices.
+
+@figure{/user_guides/boolean_operations/images/operations_image002.svg,  "Vertex/vertex interference"}
+
+
+
+The result is a new vertex Vn with 3D point Pn and tolerance value Tol(Vn) that are computed by the formulas:
+
+~~~~~
+Pn = 0.5 * (Pi + Pj)
+Tol(Vn) = max (Tol(Vi), Tol(Vj)) + 0.5 * D
+~~~~~
+
+where <i>D = distance (Pi, Pj)</i>
+
+@subsubsection occt_algorithms_3_1_2	Vertex/Edge interference
+
+For a vertex *Vi* and an edge *Ej* the distance *D* between 3D point of the vertex and its projection on the 3D curve of the edge *Ej* is less or equal than sum of tolerances of the vertex *Tol(Vi)* and the edge *Tol(Ej)*.
+
+@figure{/user_guides/boolean_operations/images/operations_image003.svg,  "Vertex/edge interference"}
+
+
+The result is vertex *Vi* with the corresponding tolerance value
+~~~~~
+Tol(Vi) = max (Tol(Vi), Tol(Ej)) + 0.5 • D
+~~~~~
+where <i>D = distance (Pi, PPi)</i>;
+
+and parameter *t<sub>i</sub>* of the projected point *PPi* on 3D curve *Cj* of edge *Ej*.
+
+@subsubsection occt_algorithms_3_1_3	Vertex/Face interference
+
+For a vertex *Vi* and a face *Fj* the distance *D* between 3D point of the vertex and its projection on the surface of the face is less or equal than sum of tolerances of the vertex *Tol(Vi)* and the face *Tol(Fj)*. 
+
+@figure{/user_guides/boolean_operations/images/operations_image004.svg,  "Vertex/face interference"}
+
+The result is vertex *Vi* with the corresponding tolerance value:
+~~~~~
+Tol(Vi) = max (Tol(Vi), Tol(Ej)) + 0.5 • D
+~~~~~
+where <i>D = distance (Pi, PPi)</i>
+
+and parameters u<sub>i</sub>, v<sub>i</sub> of the projected point PPi on surface Sj of face Fj.
+
+@subsubsection occt_algorithms_3_1_4	Edge/Edge interference
+
+For two edges *Ei* and *Ej* (with the corresponding 3D curves *Ci* and *Cj*) there are some places where the distance between the curves is less than (or equal to) sum of tolerances of the edges. 
+
+Let us examine two cases:
+
+In  the first case two edges have one or several common parts of 3D curves in terms of tolerance.
+
+@figure{/user_guides/boolean_operations/images/operations_image005.svg,  "Edge/edge interference: common parts"}
+
+The results are: 
+* Parametric range <i>[t<sub>i1</sub>, t<sub>i2</sub> ]</i> for 3D curve *Ci* of edge *Ei*.
+* Parametric range <i>[t<sub>j1</sub>, t<sub>j2</sub> ]</i> for 3D curve *Cj* of edge *Ej*. 
+
+In the second case two edges have one or several common points in terms of tolerance.
+
+@image html /user_guides/boolean_operations/images/operations_image006.svg  "Edge/edge interference: common points"
+@image latex /user_guides/boolean_operations/images/operations_image006.svg  "Edge/edge interference: common points"
+
+The results are as follows:
+
+* one or several new vertices *Vn* with 3D point *Pn* and tolerance value *Tol(Vn)* that are calculated by the formulas:
+  @code 
+  Pn = 0.5 • (Pi + Pj) 
+  Tol(Vn) = max (Tol(Ei), Tol(Ej)) + 0.5 • D 
+  @endcode
+  where:
+  * <i>D = distance (Pi, Pj)</i>
+  * *Pi* and *Pj* are the nearest 3D points for curves *Ci* and *Cj*.
+
+* Parameter *t<sub>i</sub>* of *Pi* for the 3D curve *Ci*.
+* Parameter *t<sub>j</sub>* of *Pj* for the 3D curve *Cj*.
+
+@subsubsection occt_algorithms_3_1_5	Edge/Face interference
+
+For an edge *Ei* (with the corresponding 3D curve *Ci*) and a face *Fj* (with the corresponding 3D surface *Sj*) there are some places in 3D space, where the distance between *Ci* and surface *Sj* is less than (or equal to) the sum of tolerances of edge *Ei* and face *Fj*.
+
+Let us examine two cases:
+
+In the first case Edge *Ei* and Face *Fj* have one or several common parts in terms of tolerance. 
+
+@figure{/user_guides/boolean_operations/images/operations_image007.svg, "Edge/face interference: common parts"}
+
+The result is a parametric range <i>[t<sub>i1</sub>, t<sub>i2</sub>]</i> for the 3D curve *Ci* of the edge *Ei*.
+
+In the second case Edge *Ei* and Face *Fj* have one or several common points in terms of tolerance.
+
+@figure{/user_guides/boolean_operations/images/operations_image008.svg,  "Edge/face interference: common points"}
+
+The results are as follows:
+* one or several new vertices *Vn* with 3D point *Pn* and tolerance value *Tol(Vn)* that are calculated by the formulas @code Pn = 0.5 • (Pi + Pj) @endcode and @code  Tol(Vn) = max (Tol(Ei), Tol(Fj)) + 0.5 • D @endcode	where:
+	* <i>D = distance (Pi, Pj)</i>,
+	* *Pi* and *Pj* are nearest 3D points for the curve *Ci* and surface *Sj*.
+
+*	Parameter *t<sub>i</sub>* of *Pi* for the 3D curve *Ci*.
+*	Parameters *u<sub>i</sub>* and *v<sub>i</sub>* of the projected point *PPi* on the surface *Sj* of the face *Fj*.
+
+@subsubsection occt_algorithms_3_1_6	Face/Face Interference
+
+For a face *Fi* and a face *Fj* (with the corresponding surfaces *Si* and *Sj*) there are some places in 3D space, where the distance between the surfaces is less than (or equal to) sum of tolerances of the faces.
+
+In the first case Face *Fi* and face *Fj* have one or several common curves <i>C<sub>ijk</sub> (k = 0, 1, 2…k<sub>N</sub>)</i> in terms of tolerance.
+
+@figure{/user_guides/boolean_operations/images/operations_image009.svg,  "Face/face interference: common curves"}
+
+The result is an intersection of curves *C<sub>ijk</sub> (k = 0, 1, 2…k<sub>N</sub>,* where *k<sub>N</sub>* is the number of intersection curves) with corresponding values of tolerances *Tol(C<sub>ijk</sub>)*.
+
+In the second case Face *Fi* and face *Fj* have one or several common points in terms of tolerance 
+
+@figure{/user_guides/boolean_operations/images/operations_image010.svg, "Face/face interference: common points"}
+
+The results are as follows:
+
+* one or several new vertices *V<sub>ijm</sub>* with 3D point *Pn* and tolerance value *Tol(Vn)* that are calculated by the formulas @code 	Pn = 0.5 • (Pi + Pj) @endcode and @code Tol(Vijm) = max (Tol(Fi), Tol(Fj)) + 0.5 • D @endcode	where:
+	* <i>D = distance (Pi, Pj)</i>,
+	* *Pi* and *Pj* are nearest 3D points for surfaces *Si* and *Sj*.
+
+* Parameters *u<sub>j</sub>*, *v<sub>j</sub>* of the projected point *PPj* on surface *Sj* of face *Fj*;
+* Parameters *u<sub>i</sub>* and *v<sub>i</sub>* of the projected point *PPi* on surface *Si* of face *Fi*. 
+
+@subsubsection occt_algorithms_3_1_7 Computation Order
+
+The interferences between shapes are computed on the basis of increasing of the dimension value of the shape in the following order: 
+* Vertex/Vertex, 
+* Vertex/Edge, 
+* Edge/Edge, 
+* Vertex/Face, 
+* Edge/Face, 
+* Face/Face. 
+
+This order allows avoiding the computation of redundant interferences between upper-level shapes *Si* and  *Sj* when there are interferences between lower sub-shapes *Sik* and *Sjm*.
+
+@subsubsection occt_algorithms_3_1_8	Results
+
+* The result of the interference is a shape that can be either interfered shape itself (or its part) or a new shape.
+* The result of the interference is a shape with the dimension value that is less or equal to the minimal dimension value of interfered shapes. For example, the result of Vertex/Edge interference is a vertex, but not an edge.
+* The result of the interference splits the source shapes on the parts each time as it can do that.
+
+@subsection occt_algorithms_3_2	Paves
+
+The result of interferences of the type Vertex/Edge, Edge/Edge and Edge/Face in most cases is a vertex (new or old) lying on an edge.
+
+The result of interferences of the type Face/Face in most cases is intersection curves, which go through some vertices lying on the faces.
+
+The position of vertex *Vi* on curve *C* can be defined by a value of parameter <i>t<sub>i</sub></i> of the 3D point of the vertex on the curve.
+Pave *PVi* on curve *C* is a structure containing the vertex *Vi* and correspondent value of the parameter  <i>t<sub>i</sub></i> of the 3D point of the vertex on the curve. Curve *C* can be a 3D or a 2D curve.
+
+@figure{/user_guides/boolean_operations/images/operations_image011.svg,  "Paves"}
+
+Two paves *PV1* and *PV2* on the same curve *C* can be compared using the parameter value @code PV1 > PV2 if t1 > t2 @endcode  
+
+The usage of paves allows binding of the vertex to the curve (or any structure that contains a curve: edge, intersection curve).
+
+
+@subsection occt_algorithms_3_3	Pave Blocks
+
+A set of paves *PVi (i=1, 2...nPV)*, where *nPV* is the number of paves] of curve *C* can be sorted in the increasing order using the value of parameter *t* on curve *C*.
+
+A pave block *PBi* is a part of the object (edge, intersection curve) between neighboring paves. 
+
+@figure{/user_guides/boolean_operations/images/operations_image012.svg, "Pave Blocks"}
+
+Any finite source edge *E* has at least one pave block that contains two paves *PVb* and *PVe*:
+* Pave *PVb* corresponds to the vertex *Vb* with minimal parameter <i>t<sub>b</sub></i> on the curve of the edge.
+* Pave *PVe* corresponds to the vertex *Ve* with maximal parameter <i>t<sub>e</sub></i> on the curve of the edge.
+
+@subsection occt_algorithms_3_4 Shrunk Range
+
+Pave block *PV* of curve *C* is bounded by vertices *V1* and *V2* with tolerance values *Tol(V1)* and *Tol(V2)*. Curve *C* has own value of tolerance *Tol(C)*:
+* In case of edge, the value of this tolerance is tolerance of the edge.
+* In case of intersection curve, the value of the tolerance is tolerance obtained from an intersection algorithm.
+
+@figure{/user_guides/boolean_operations/images/operations_image013.svg, "Shrunk Range"}
+
+The theoretical parametric range of the pave block is <i>[t1C, t2C]</i>.
+
+The positions of the vertices *V1* and *V2* of the pave block can be different. The positions are determined by the following conditions:
+~~~~
+Distance (P1, P1c) ≤ Tol(V1) + Tol(C)
+Distance (P2, P2c) ≤ Tol(V2) + Tol(C)
+~~~~
+The Figure shows that each tolerance sphere of a vertex can reduce the parametric range of the pave block to a range <i>[t1S, t2S]</i>. The range <i>[t1S, t2S]</i> is the shrunk range of the pave block. 
+
+The shrunk range of the pave block is the part of 3D curve that can interfere with other shapes.
+
+@subsection occt_algorithms_3_5 Common Blocks
+
+The interferences of the type Edge/Edge, Edge/Face produce results as common parts.
+
+In case of Edge/Edge interference the common parts are pave blocks that have different base edges. 
+
+@figure{/user_guides/boolean_operations/images/operations_image014.svg, "Common Blocks: Edge/Edge interference"}
+
+If the pave blocks <i>PB<sub>1</sub>, PB<sub>2</sub>…PB<sub>NbPB</sub></i> , where *NbPB* is the number of pave blocks have the same bounding vertices and geometrically coincide, the pave blocks form common block *CB*.
+	
+
+In case of Edge/Face interference the common parts are pave blocks lying on a face(s).
+
+@figure{/user_guides/boolean_operations/images/operations_image015.svg, "Common Blocks: Edge/Face interference"}
+
+If the pave blocks *PBi* geometrically coincide with a face *Fj*, the pave blocks form common block *CB*.
+
+In general case a common block *CB* contains:
+* Pave blocks *PBi (i=0,1,2, 3… NbPB)*.
+* A set of faces *Fj (j=0,1... NbF), NbF* - number of faces.
+
+
+@subsection occt_algorithms_3_6 FaceInfo
+
+The structure *FaceInfo* contains the following information:
+* Pave blocks that have state **In** for the face;
+* Vertices that have state **In** for the face;
+* Pave blocks that have state **On** for the face;
+* Vertices that have state **On** for the face;
+* Pave blocks built up from intersection curves for the face;
+* Vertices built up from intersection points for the face.
+
+@figure{/user_guides/boolean_operations/images/operations_image016.svg,  "Face Info"}
+
+In the figure, for face *F1*:
+* Pave blocks that have state **In** for the face: *PB<sub>in1</sub>*.
+* Vertices that have state **In** for the face: *V<sub>in1</sub>*.
+* Pave blocks that have state **On** for the face: *PB<sub>on11</sub>*,  *PB<sub>on12</sub>*, *PB<sub>on2</sub>*, *PB<sub>on31</sub>*, *PB<sub>on32</sub>*, *PB<sub>on4</sub>*.
+* Vertices that have state **On** for the face: *V1, V2, V3, V4, V5, V6*.
+* Pave blocks built up from intersection curves for the face: *PB<sub>sc1</sub>*.
+* Vertices built up from intersection points for the face: none
+
+
+@section occt_algorithms_4 Data Structure
+
+Data Structure (DS) is used to:
+* Store information about input data and intermediate results;
+* Provide the access to the information;
+* Provide the links between the chunks of information.
+
+This information includes:
+* Arguments;
+* Shapes (and sub-shapes);
+* Interferences;
+* Pave Blocks;
+* Common Blocks.
+
+Data Structure is implemented in the class *BOPDS_DS*.
+
+@subsection occt_algorithms_4_1	Arguments
+
+The arguments are shapes (in terms of *TopoDS_Shape*):
+* Number of arguments is unlimited.
+* Each argument is a valid shape (in terms of *BRepCheck_Analyzer*).
+* Each argument can be of one of the following types (see the Table):
+
+| No	| Type	| Index of Type |
+| :----- | :----- | :----- |
+| 1	| COMPOUND	| 0 |
+| 2	| COMPSOLID	| 1 |
+| 3	| SOLID	| 2 |
+| 4	| SHELL | 3 |
+| 5	| FACE	| 4 |
+| 6	| WIRE	| 5 | 
+| 7	| EDGE	| 6 | 
+| 8	| VERTEX | 7 | 
+
+* The argument of type *0 (COMPOUND)* can include any number of shapes of an arbitrary type (0, 1…7).
+* The argument should not be self-interfered, i.e. all sub-shapes of the argument that have geometrical coincidence through any topological entities (vertices, edges, faces) must share these entities.
+* There are no restrictions on the type of underlying geometry of the shapes. The faces or edges of arguments *S<sub>i</sub>* can have underlying geometry of any type supported by Open CASCADE Technology modeling algorithms (in terms of *GeomAbs_CurveType* and *GeomAbs_SurfaceType*). 
+
+@subsection occt_algorithms_4_2 Shapes
+The information about  Shapes is stored in  structure *BOPDS_ShapeInfo*. The objects of type *BOPDS_ShapeInfo* are stored in the container of array type. The array allows getting the access to the information by an index (DS index).
+The structure *BOPDS_ShapeInfo* has the following contents:
+
+
+| Name	| Contents |
+| :-------- | :----- |
+| *myShape* | 	Shape itself |
+| *myType* |	Type of shape |
+| *myBox* |	3D bounding box of the shape |
+| *mySubShapes* | List of DS indices of sub-shapes |
+| *myReference* | Storage for some auxiliary information |
+| *myFlag* | Storage for some auxiliary information |
+
+@subsection occt_algorithms_4_3 Interferences 
+
+The information about interferences is stored in the instances of classes that are inherited from class <i>BOPDS_Interf</i>. 
+
+| Name  | Contents |
+| :----- | :----- | 
+| *BOPDS_Interf* |	Root class for interference |
+| *Index1*	| DS index of the shape 1 |
+| *Index2*	| DS index of the shape 2 |
+| *BOPDS_InterfVV* | Storage for Vertex/Vertex interference |
+| *BOPDS_InterfVE* | Storage for Vertex/Edge interference |
+| *myParam* | The value of parameter of the point of the vertex on the curve of the edge |
+| *BOPDS_InterfVF* | Storage for Vertex/Face interference |
+| *myU, myV* |	The value of parameters of the point of the vertex on the surface of the face |
+| *BOPDS_InterfEE* | Storage for Edge/Edge interference |
+| *myCommonPart* | Common part (in terms of *IntTools_CommonPart* ) |
+| *BOPDS_InterfEF* | Storage for Edge/Face interference |
+| *myCommonPart	| Common part (in terms of *IntTools_CommonPart* ) | 
+| *BOPDS_InterfFF* | Storage for Face/Face interference |
+| *myTolR3D, myTolR2D* | The value of tolerances of curves (points) reached in 3D and 2D |
+| *myCurves* | Intersection Curves (in terms of *BOPDS_Curve*) |
+| *myPoints* | Intersection Points (in terms of *BOPDS_Point*) |
+
+
+The Figure shows inheritance diagram for *BOPDS_Interf* classes.
+
+@figure{/user_guides/boolean_operations/images/operations_image017.svg,  "BOPDS_Interf classes"}
+
+
+@subsection occt_algorithms_4_4	Pave, PaveBlock and CommonBlock
+
+The information about the pave is stored in objects of type *BOPDS_Pave*.
+
+| Name | Contents |
+| :--- | :------ |
+| *BOPDS_Pave*	| |
+| *myIndex1* |	DS index of the vertex |
+| *myParam* |	Value of the parameter of the 3D point of vertex on curve. |
+
+The information about pave blocks is stored in objects of type *BOPDS_PaveBlock*.
+
+| Name	| Contents |
+| :--- | :------ |
+| *BOPDS_PaveBlock*	| |
+| *myEdge* | DS index of the edge produced from the pave block |
+| *myOriginalEdge* | DS index of the source edge |
+| *myPave1* | Pave 1 (in terms of *BOPDS_Pave*) |
+| *myPave2* | Pave 2 (in terms of *BOPDS_Pave*) |
+| *myExtPaves* | The list of paves (in terms of *BOPDS_Pave*) that is used to store paves lying inside the pave block during intersection process |
+| *myCommonBlock* | The reference to common block (in terms of *BOPDS_CommonBlock*) if  the pave block is a common block |
+| *myShrunkData* | The shrunk range of the pave block |
+
+* To be bound to an edge (or intersection curve) the structures of type *BOPDS_PaveBlock* are stored in one container of list type <i>(BOPDS_ListOfPaveBlock)</i>.
+* In case of edge, all the lists of pave blocks above are stored in one container of array type. The array allows getting the access to the information by index of the list of pave blocks for the edge. This index (if exists) is stored in the field *myReference*.
+
+The information about common block is stored in objects of type *BOPDS_CommonBlock*.
+
+| Name	| Contents |
+| :---- | :------ |
+| *BOPDS_CommonBlock* | | 	
+| *myPaveBlocks* | The list of pave blocks that are common in terms of @ref occt_algorithms_3_5 "Common Blocks" |
+| *myFaces* | The list of DS indices of the faces, on which the pave blocks lie. |
+
+
+@subsection occt_algorithms_4_5	Points and Curves
+The information about intersection point is stored in objects of type *BOPDS_Point*. 
+
+| Name	| Contents |
+| :---- | :----- |
+| *BOPDS_Point* | |	
+| *myPnt* |	3D point |
+| *myPnt2D1* |	2D point on the face1 |
+| *myPnt2D2* | 2D point on the face2 |
+
+The information about intersection curve is stored in objects of type *BOPDS_Curve*.
+
+| Name	| Contents |
+| :---- | :----- | 
+| *BOPDS_Curve*	| |
+| *myCurve* | The intersection curve (in terms of *IntTools_Curve* ) |
+| *myPaveBlocks* | The list of pave blocks that belong to the curve | 
+| *myBox* | The bounding box of the curve (in terms of *Bnd_Box* ) |
+
+@subsection occt_algorithms_4_6	FaceInfo
+The information about *FaceInfo* is stored in a structure *BOPDS_FaceInfo*. 
+The structure *BOPDS_FaceInfo* has the following contents.
+
+| Name	| Contents |
+| :---- | :----- |
+| *BOPDS_FaceInfo* | |	
+| *myPaveBlocksIn* | Pave blocks that have state In for the face |
+| *myVerticesIn* | Vertices that have state In for the face | 
+| *myPaveBlocksOn* | Pave blocks that have state On for the face |
+| *myVerticesOn* | Vertices that have state On for the face | 
+| *myPaveBlocksSc* | Pave blocks built up from intersection curves for the face |
+| *myVerticesSc* | Vertices built up from intersection points for the face +
+
+The objects of type *BOPDS_FaceInfo* are stored in one container of array type. The array allows getting the access to the information by index. This index (if exists) is stored in the field *myReference*.
+
+@section occt_algorithms_5	Intersection Part
+
+Intersection Part (IP) is used to
+* Initialize the Data Structure;
+* Compute interferences between the arguments (or their sub-shapes);
+* Compute same domain vertices, edges;
+* Build split edges;
+* Build section edges;
+* Build p-curves;
+* Store all obtained information in DS.
+IP uses DS as input data. IP is implemented in the class *BOPAlgo_PaveFiller*.
+The description provided in the next paragraphs is coherent with the implementation of the method *BOPAlgo_PaveFiller::Perform()*.
+
+@subsection occt_algorithms_5_1	Initialization
+The input data for the step is the Arguments. The description of initialization step is shown in the Table.
+
+| No	| Contents |	Implementation |
+| :--- | :----- | :----- |
+| 1	| Initialization the array of shapes (in terms of @ref occt_algorithms_4_2 "Shapes"). Filling the array of shapes. | *BOPDS_DS::Init()* |
+| 2	| Initialization the array pave blocks (in terms of @ref occt_algorithms_4_4 "Pave, PaveBlock, CommonBlock") | *BOPDS_DS::Init()* |
+| 3	| Initialization of intersection Iterator. The intersection Iterator is the object that computes intersections between BRep sub-shapes of the arguments in terms of bounding boxes. The intersection Iterator provides approximate number of the interferences for given type (in terms of @ref occt_algorithms_3_1 "Interferences") | *BOPDS_Iterator* |
+| 4	| Initialization of intersection Context. The intersection Context is an object that contains geometrical and topological toolkit (classifiers, projectors, etc). The intersection Context is used to cache the tools to increase the algorithm performance. | *BOPInt_Context* |
+
+
+@subsection occt_algorithms_5_2	Compute Vertex/Vertex Interferences
+
+The input data for this step is the DS after the @ref occt_algorithms_5_1 "Initialization". The description of this step is shown in the table :
+
+
+| No | Contents	| Implementation |
+| :--- | :---- | :----- | 
+| 1 | Initialize array of Vertex/Vertex interferences. | *BOPAlgo_PaveFiller::PerformVV()* |
+| 2 | Access to the pairs of interfered shapes <i>(nVi, nVj)k, k=0, 1…nk,</i> where *nVi* and *nVj* are DS indices of vertices *Vi* and *Vj* and *nk* is the number of pairs. | *BOPDS_Iterator* |
+| 3 | Compute the connexity chains of interfered vertices *nV1C, nV2C… nVnC)k, C=0, 1…nCs*, where *nCs* is the number of the connexity chains |	*BOPAlgo_Tools::MakeBlocksCnx()* |
+| 4	| Build new vertices from the chains *VNc. C=0, 1…nCs.* |	*BOPAlgo_PaveFiller::PerformVV()* |
+| 5	| Append new vertices in DS. |	*BOPDS_DS::Append()* |
+| 6	| Append same domain vertices in DS. | *BOPDS_DS::AddShapeSD()* |
+| 7 | Append Vertex/Vertex interferences  in DS. | *BOPDS_DS::AddInterf()* |
+
+* The pairs of interfered vertices are: <i>(nV11, nV12), (nV11, nV13), (nV12, nV13), (nV13, nV15), (nV13, nV14), (nV14, nV15), (nV21, nV22), (nV21, nV23), (nV22, nV23);</i> 
+* These pairs produce two chains: <i>(nV11, nV12, nV13, nV14, nV15)</i> and <i>(nV21, nV22, nV23);</i>
+* Each chain is used to create a new vertex,  *VN1* and *VN2*, correspondingly.
+
+The example of connexity chains of interfered vertices is given in the image:
+
+@figure{/user_guides/boolean_operations/images/operations_image018.svg, "Connexity chains of interfered vertices"}
+
+
+@subsection occt_algorithms_5_3	Compute Vertex/Edge Interferences
+
+The input data for this step is the DS after computing Vertex/Vertex interferences.
+
+| No | Contents | Implementation  | 
+| :--- | :--- | :--- |
+| 1	| Initialize array of Vertex/Edge interferences | *BOPAlgo_PaveFiller::PerformVE()* |
+| 2	| Access to the pairs of interfered shapes <i>(nVi, nEj)k k=0, 1…nk,</i> where *nVi* is DS index of vertex *Vi*, *nEj* is DS index of edge *Ej* and *nk* is the number of pairs. |	*BOPDS_Iterator* |
+| 3	| Compute paves. See  @ref occt_algorithms_3_1_2 "Vertex/Edge Interference" | *BOPInt_Context::ComputeVE()* | 
+| 4	| Initialize pave blocks for the edges *Ej* involved in the interference | *BOPDS_DS:: ChangePaveBlocks()* |
+| 5	| Append the paves into the pave blocks in terms of @ref occt_algorithms_4_4 "Pave, PaveBlock and CommonBlock" | *BOPDS_PaveBlock:: AppendExtPave()* |
+| 6	| Append Vertex/Edge interferences in DS | *BOPDS_DS::AddInterf()* |
+
+@subsection occt_algorithms_5_4 Update Pave Blocks
+The input data for this step is the DS after computing Vertex/Edge Interferences.
+
+| No | Contents | Implementation | 
+| :--- | :---- | :--- | 
+| 1	| Each pave block PB containing internal paves is split by internal paves into new pave blocks *PBN1, PBN2… PBNn*. PB is replaced by new pave blocks *PBN1, PBN2… PBNn* in the DS. |	*BOPDS_DS:: UpdatePaveBlocks()* | 
+
+@subsection occt_algorithms_5_5	Compute Edge/Edge Interferences
+
+The input data for this step is the DS after updating Pave Blocks. 
+
+| No | Contents | Implementation  | 
+| :---- | :---- | :----- | 
+| 1 | Initialize array of Edge/Edge interferences | *BOPAlgo_PaveFiller::PerformEE()* |
+| 2	| Access to the pairs of interfered shapes <i>(nEi, nEj)k, k=0, 1…nk,</i> where *nEi* is DS index of the edge *Ei*, *nEj* is  DS index of the edge *Ej* and *nk* is the number of pairs. | *BOPDS_Iterator* |
+| 3	| Initialize pave blocks for the edges involved in the interference, if it is necessary. |	*BOPDS_DS:: ChangePaveBlocks()* |
+| 4	| Access to the pave blocks of interfered shapes: <i>(PBi1, PBi2…PBiNi)</i> for edge *Ei* and <i>(PBj1, PBj2…PBjNj)</i> for  edge *Ej* | *BOPAlgo_PaveFiller::PerformEE()* |
+| 5	| Compute shrunk data for pave blocks in terms of @ref occt_algorithms_4_4 "Pave, PaveBlock and CommonBlock", if it is necessary. | *BOPAlgo_PaveFiller::FillShrunkData()* |
+| 6	| Compute Edge/Edge interference for pave blocks *PBix* and *PBiy*. The result of the computation is a set of objects of type *IntTools_CommonPart* | *IntTools_EdgeEdge* |
+| 7.1 | For each *CommonPart* of type *VERTEX:*	Create new vertices *VNi (i =1, 2…,NbVN),* where *NbVN* is the number of new vertices. Intersect the vertices *VNi* using the steps Initialization and compute Vertex/Vertex interferences as follows: a) create a new object *PFn* of type *BOPAlgo_PaveFiller* with its own DS; b) use new vertices *VNi (i=1, 2…,NbVN), NbVN* as arguments (in terms of *TopoDs_Shape*) of *PFn*; c) invoke method *Perform()* for *PFn*. The resulting vertices *VNXi (i=1, 2…,NbVNX)*, where *NbVNX* is the number of vertices, are obtained via mapping between *VNi* and the results of *PVn*. | *BOPTools_Tools::MakeNewVertex()* |
+| 7.2 |	For each *CommonPart* of type *EDGE:*	Compute the coinciding connexity chains of  pave blocks <i>(PB1C, PB2C… PNnC)k, C=0, 1…nCs,</i> where *nCs* is the number of the connexity chains. Create common blocks <i>(CBc. C=0, 1…nCs)</i> from the chains. Attach the common blocks to the pave blocks. |	*BOPAlgo_Tools::PerformCommonBlocks()* |
+| 8	| Post-processing. Append the paves of *VNXi* into the corresponding pave blocks in terms of @ref occt_algorithms_4_4 "Pave, PaveBlock and CommonBlock" | *BOPDS_PaveBlock:: AppendExtPave()* |
+| 9	| Split common blocks CBc by the paves. | *BOPDS_DS:: UpdateCommonBlock()* |
+| 10 | Append Edge/Edge interferences in the DS. |	*BOPDS_DS::AddInterf()* |
+
+The example of coinciding chains of pave blocks is given in the image:
+
+@figure{/user_guides/boolean_operations/images/operations_image019.png,  "Coinciding chains of pave blocks"}
+
+* The pairs of coincided pave blocks are: <i>(PB11, PB12), (PB11, PB13), (PB12, PB13), (PB21, PB22), (PB21, PB23), (PB22, PB23).</i>
+* The pairs produce  two chains: <i>(PB11, PB12, PB13)</i> and <i>(PB21, PB22, PB23).</i>
+
+@subsection occt_algorithms_5_6	Compute Vertex/Face Interferences
+
+The input data for this step is the DS after computing Edge/Edge interferences.
+
+| No | Contents | Implementation  |
+| :---- | :--- | :---- |
+| 1	| Initialize array of Vertex/Face interferences | *BOPAlgo_PaveFiller::PerformVF()* |
+| 2	| Access to the pairs of interfered shapes <i>(nVi, nFj)k, k=0, 1…nk,</i> where *nVi* is DS index of the vertex *Vi*, *nFj* is DS index of the edge *Fj* and *nk* is the number of  pairs. |	*BOPDS_Iterator* |
+| 3	| Compute interference  See  @ref occt_algorithms_3_1_3 "Vertex/Face Interference" | *BOPInt_Context::ComputeVF()* |
+| 4	| Append Vertex/Edge interferences in the DS |	*BOPDS_DS::AddInterf()* |
+| 5	| Repeat steps 2-4 for each new vertex *VNXi (i=1, 2…,NbVNX),* where *NbVNX* is the number of vertices. | *BOPAlgo_PaveFiller::TreatVerticesEE()* |
+
+@subsection occt_algorithms_5_7	Compute Edge/Face Interferences
+The input data for this step is the DS after computing Vertex/Face Interferences. 
+
+| No | Contents	| Implementation |
+| :---- | :---- | :---- | 
+| 1	| Initialize array of Edge/Face interferences | *BOPAlgo_PaveFiller::PerformEF()* |
+| 2	| Access to the pairs of interfered shapes <i>(nEi, nFj)k, k=0, 1…nk,</i> where *nEi* is DS index of edge *Ei*, *nFj* is DS index of face *Fj* and *nk* is the number of pairs. |	*BOPDS_Iterator* |
+| 3	| Initialize pave blocks for the edges involved in the interference, if it is necessary. | *BOPDS_DS::ChangePaveBlocks()* |
+| 4	| Access to the pave blocks of interfered edge <i>(PBi1, PBi2…PBiNi)</i> for edge *Ei*	| *BOPAlgo_PaveFiller::PerformEF()* |
+| 5	| Compute shrunk data for pave blocks (in terms of @ref occt_algorithms_4_4 "Pave, PaveBlock and CommonBlock") if it is necessary. |	*BOPAlgo_PaveFiller::FillShrunkData()* |
+| 6	| Compute Edge/Face interference for pave block *PBix*, and face *nFj*. The result of the computation is a set of objects of type *IntTools_CommonPart* | *IntTools_EdgeFace* |
+| 7.1 |	For each *CommonPart* of type *VERTEX:* Create new vertices *VNi (i=1, 2…,NbVN),* where *NbVN* is the number of new vertices. Merge vertices *VNi* as follows: a) create new object *PFn* of type *BOPAlgo_PaveFiller* with its own DS; b) use new vertices *VNi (i=1, 2…,NbVN), NbVN* as arguments (in terms of *TopoDs_Shape*) of *PFn*; c) invoke method *Perform()* for *PFn*. The resulting vertices *VNXi (i=1, 2…,NbVNX)*, where *NbVNX* is the number of vertices, are obtained via mapping between *VNi* and the results of *PVn*. | *BOPTools_Tools::MakeNewVertex()* and *BOPAlgo_PaveFiller::PerformVertices1()* |
+| 7.2 | For each *CommonPart* of type *EDGE:* Create common blocks <i>(CBc. C=0, 1…nCs)</i> from pave blocks that lie on the faces. Attach the common blocks to the pave blocks. | *BOPAlgo_Tools::PerformCommonBlocks()* |
+| 8	| Post-processing. Append the paves of *VNXi* into the corresponding pave blocks in terms of @ref occt_algorithms_4_4 "Pave, PaveBlock and CommonBlock". | *BOPDS_PaveBlock:: AppendExtPave()* |
+| 9	| Split pave blocks and common blocks *CBc* by the paves. |	*BOPAlgo_PaveFiller::PerformVertices1()*, *BOPDS_DS:: UpdatePaveBlock()* and *BOPDS_DS:: UpdateCommonBlock()* |
+| 10 | Append Edge/Face interferences in the DS	| *BOPDS_DS::AddInterf()* |
+| 11 | Update *FaceInfo*  for all faces having EF common parts. | *BOPDS_DS:: UpdateFaceInfoIn()* |
+
+
+@subsection occt_algorithms_5_8	Build Split Edges
+
+The input data for this step is the DS after computing Edge/Face Interferences.
+
+For each pave block *PB* take the following steps: 
+	
+| No | Contents | Implementation |
+| :--- | :--- | :--- | 
+| 1	| Get the real pave block *PBR*, which is equal to *PB* if *PB* is not a common block and to *PB<sub>1</sub>* if *PB* is a common block. *PB<sub>1</sub>* is the first pave block in the pave blocks list of the common block.  See  @ref occt_algorithms_4_4 "Pave, PaveBlock and CommonBlock". | *BOPAlgo_PaveFiller::MakeSplitEdges()* | 
+| 2	| Build the split edge *Esp* using the information from *DS* and *PBR*.	| *BOPTools_Tools::MakeSplitEdge()* |
+| 3	| Compute *BOPDS_ShapeInfo* contents for Esp | *BOPAlgo_PaveFiller::MakeSplitEdges()* |
+| 4	| Append *BOPDS_ShapeInfo* contents to the DS | *BOPDS_DS::Append()* |
+
+@subsection occt_algorithms_5_9	Compute Face/Face Interferences
+
+The input data for this step is DS after building Split Edges. 
+
+| No | Contents | Implementation |
+| :--- | :--- | :--- | 
+| 1 | Initialize array of Edge/Face interferences | *BOPAlgo_PaveFiller::PerformFF()* |
+| 2	| Access to the pairs of interfered shapes <i>(nFi, nFj)k, k=0, 1…nk,</i> where *nFi* is DS index of edge *Fi*, *nFj* is  DS index of face *Fj* and *nk* is the number of pairs. | *BOPDS_Iterator* |
+| 3	| Compute Face/Face interference | *IntTools_FaceFace* |
+| 4	| Append Face/Face interferences in the DS. | *BOPDS_DS::AddInterf()* |
+
+@subsection occt_algorithms_5_10	Build Section Edges
+
+The input data for this step is the DS after building Split Edges.
+
+| No | Contents	| Implementation  |
+| :---- | :---- | :---- |
+| 1 | For each Face/Face interference *nFi, nFj*, retrieve @ref occt_algorithms_4_6 "FaceInfo". Create draft vertices from intersection points *VPk (k=1, 2…, NbVP)*, where *NbVP* is the number of new vertices, and the draft vertex *VPk* is created from an intersection point if *VPk ≠ Vm (m = 0, 1, 2… NbVm)*, where *Vm* is an existing vertex for the faces *nFi* and *nF,j* (*On* or *In* in terms of *TopoDs_Shape*),  *NbVm* is the number of vertices existing on faces *nFi* and *nF,j* and ≠ - means non-coincidence in terms of @ref occt_algorithms_3_1_1 "Vertex/Vertex interference". | *BOPAlgo_PaveFiller::MakeBlocks()* |
+| 2	| For each intersection curve *Cijk* | |	
+| 2.1 | Create paves PVc for the curve using existing vertices, i.e. vertices On or In (in terms of *FaceInfo*) for faces *nFi* and *nFj*. Append the paves *PVc* | *BOPAlgo_PaveFiller::PutPaveOnCurve()* and *BOPDS_PaveBlock::AppendExtPave()* |
+| 2.2 |	Create technological vertices *Vt*, which are the bounding points of an intersection curve (with the value of tolerance *Tol(Cijk)*). Each vertex *Vt* with parameter *Tt* on curve *Cijk* forms pave *PVt* on curve *Cijk*. Append technological paves. | *BOPAlgo_PaveFiller::PutBoundPaveOnCurve()* |
+| 2.3 |	Create pave blocks *PBk* for the curve using paves <i>(k=1, 2…, NbPB)</i>, where *NbPB* is the number of pave blocks |	*BOPAlgo_PaveFiller::MakeBlocks()* |
+| 2.4 |	Build draft section edges *ESk* using the pave blocks <i>(k=1, 2…, NbES)</i>, where *NbES* is the number of draft section edges	The draft section edge is created from a pave block *PBk* if *PBk* has state *In* or *On* for both faces *nFi* and *nF,j* and *PBk ≠ PBm (m=0, 1, 2… NbPBm)*, where *PBm* is an existing pave block for faces *nFi* and *nF,j* (*On* or *In* in terms of *FaceInfo*), *NbVm* is the number of existing pave blocks for faces *nFi* and *nF,j* and ≠ - means non-coincidence (in terms of @ref occt_algorithms_3_1_3 "Vertex/Face interference"). | *BOPTools_Tools::MakeEdge()* |
+| 3	| Intersect the draft vertices *VPk (k=1, 2…, NbVP)* and the draft section edges *ESk (k=1, 2…, NbES)*. For this: a) create new object *PFn* of type *BOPAlgo_PaveFiller* with its own DS; b) use vertices *VPk* and edges *ESk* as arguments (in terms of @ref occt_algorithms_4_1 "Arguments") of *PFn*; c) invoke	method *Perform()* for *PFn*. Resulting vertices *VPXk (k=1, 2… NbVPX)* and edges *ESXk (k=1, 2… NbESX)* are obtained via mapping between *VPk, ESk* and the results of *PVn*. | *BOPAlgo_PaveFiller::PostTreatFF()* |
+| 4	| Update face info (sections about pave blocks and vertices) | *BOPAlgo_PaveFiller::PerformFF()* |
+
+@subsection occt_algorithms_5_11 Build P-Curves
+The input data for this step is the DS after building section edges.
+
+| No | Contents	| Implementation |
+| :---- | :---- | :---- |
+| 1	| For each Face/Face interference *nFi* and *nFj* build p-Curves on *nFi* and *nFj* for each section edge *ESXk*. |	*BOPAlgo_PaveFiller::MakePCurves()* |
+| 2	| For each pave block that is common for faces *nFi* and *nFj* build p-Curves on *nFi* and *nFj*. |	*BOPAlgo_PaveFiller::MakePCurves()* |
+
+@subsection occt_algorithms_5_12	Process Degenerated Edges
+The input data for this step is the DS  after building P-curves.
+
+| No | Contents | Implementation |
+| :---- | :---- | :---- |
+| | For each degenerated edge *ED* having vertex *VD* | BOPAlgo_PaveFiller::ProcessDE() |
+| 1	| Find pave blocks *PBi (i=1,2… NbPB)*, where *NbPB* is the number of pave blocks, that go through vertex *VD*. | *BOPAlgo_PaveFiller::FindPaveBlocks()* |
+| 2	| Compute paves for the degenerated edge *ED* using a 2D curve of *ED* and a 2D curve of *PBi*. Form pave blocks *PBDi (i=1,2… NbPBD)*, where *NbPBD* is the number of the pave blocks for the degenerated edge *ED* | *BOPAlgo_PaveFiller::FillPaves()* |
+| 3	| Build split edges *ESDi (i=1,2…NbESD)*, where *ESD* is the number of split edges, using the pave blocks *PBDi* |	*BOPAlgo_PaveFiller:: MakeSplitEdge()* |
+
+@section occt_algorithms_6	General description of the Building Part
+
+Building Part (BP) is used to 
+* Build the result of the operation 
+* Provide history information (in terms of <i>\::Generated(), \::Modified()</i> and <i>\::IsDeleted()</i>)
+BP uses the DS prepared by *BOPAlgo_PaveFiller* described at chapter 5 as input data.
+BP is implemented in the following classes:
+* *BOPAlgo_Builder* - for the General Fuse Algorithm (GFA).
+* *BOPAlgo_BOP* - for the Boolean Operation Algorithm (BOA).
+
+@figure{/user_guides/boolean_operations/images/operations_image020.svg, "Diagram for BP classes"}
+
+The class *BOPAlgo_Algo* provides the base interface for all algorithms:
+* Error status;
+* Warning status;
+* Checking data;
+* Checking the result;
+* Memory allocator.
+The class *BOPAlgo_BuilderShape* provides the interface for algorithms that have:
+* A Shape as the result;
+* History information (in terms of <i>\::Generated(), \::Modified()</i> and <i>\::IsDeleted()).</i>
+
+@section occt_algorithms_7	General Fuse Algorithm
+@subsection occt_algorithms_7_1	Arguments
+The arguments of the algorithm are shapes (in terms of *TopoDS_Shape*). The main requirements for the arguments are described in @ref occt_algorithms_4_1 "Algorithms" chapter.
+
+@subsection occt_algorithms_7_2	Results
+
+During the operation argument *Si* can be split into several parts *Si1, Si2… Si1NbSp*, where *NbSp* is the number of parts. The set <i>(Si1, Si2… Si1NbSp)</i> is an image of argument *Si*.
+* The result of the General Fuse (GF) operation is a compound. Each sub-shape of the compound (resulting shape) corresponds to the certain argument shape S1, S2…Sn and has shared sub-shapes in accordance with interferences between the arguments.
+* For the arguments of the type EDGE, FACE, SOLID the result contains split parts of the argument.
+* For the arguments of the type WIRE, SHELL, COMPSOLID, COMPOUND the result contains the image of the shape of the corresponding type (i.e. WIRE, SHELL, COMPSOLID or COMPOUND).
+The types of resulting shapes depend on the type of the corresponding argument participating in the operation. See the table below:
+
+| No | Type of argument | Type of resulting shape | Comments |
+| :--- | :---- | :--- | :--- |
+| 1 | COMPOUND | COMPOUND | The resulting COMPOUND is built from images of sub-shapes of type COMPOUND COMPSOLID, SHELL, WIRE and VERTEX. Sets of split sub-shapes of type SOLID, FACE, EDGE. | 
+| 2	| COMPSOLID	| COMPSOLID	| The resulting COMPSOLID is built from split SOLIDs. |
+| 3	| SOLID | Set of split SOLIDs | |
+| 4	| SHELL | SHELL | The resulting SHELL is built from split FACEs |
+| 5	| FACE	| Set of split FACEs | |
+| 6	| WIRE | WIRE | The resulting WIRE is built from split EDGEs |
+| 7	| EDGE	| Set of split EDGEs	| |
+| 8	| VERTEX | VERTEX | |
+
+@subsection occt_algorithms_7_3 Examples
+
+Please, have a look at the examples of compounds, which can help to better understand the definitions.
+
+@subsubsection occt_algorithms_7_3_1	Example 1: Three edges intersecting at a point 
+
+Let us consider three edges: *E1, E2* and *E3* that intersect in one 3D point.
+
+@figure{/user_guides/boolean_operations/images/operations_image021.svg, "Three Intersecting Edges"}
+
+The result of the GFA operation is a compound containing 6 new edges: *E11, E12, E21, E22, E31*, and *E32*. These edges have one shared vertex *Vn1*.
+
+In this case:
+* The argument edge *E1* has resulting split edges *E11* and *E12* (image of *E1*).
+* The argument edge *E2* has resulting split edges *E21* and *E22* (image of *E2*).
+* The argument edge *E3* has resulting split edges *E31* and *E32* (image of *E3*).
+
+@subsubsection occt_algorithms_7_3_2 Example 2: Two wires and an edge
+
+Let us consider two wires *W1 (Ew11, Ew12, Ew13)* and *W2 (Ew21, Ew22, Ew23)* and edge *E1*.
+
+@figure{/user_guides/boolean_operations/images/operations_image022.svg,  "Two wires and an edge"}
+
+The result of the GF operation is a compound consisting of 2 wires: *Wn1 (Ew11, En1, En2, En3, Ew13)* and *Wn2 (Ew21, En2, En3, En4, Ew23)* and two edges: *E11* and *E12*. 
+
+In this case :
+* The argument *W1* has image *Wn1*.
+* The argument *W2* has image *Wn2*.
+* The argument edge *E1* has split edges *E11* and *E12*. (image of *E1*).
+The edges *En1, En2, En3, En4* and vertex *Vn1* are new shapes created during the operation. Edge *Ew12* has split edges *En1, En2* and *En3* and edge *Ew22* has split edges *En2, En3* and *En4*.
+
+@subsubsection occt_algorithms_7_3_3 Example 3: An edge intersecting with a face
+
+Let us consider edge *E1* and face *F2*:
+
+@figure{/user_guides/boolean_operations/images/operations_image023.svg,  "An edge intersecting with a face"}
+
+The result of the GF operation is a compound consisting of 3 shapes: 
+* Split edge parts *E11* and *E12* (image of *E1*).
+* New face *F21* with internal edge *E12* (image of *F2*).
+
+@subsubsection occt_algorithms_7_3_4 Example 4: An edge lying on a face
+
+Let us consider edge *E1* and face *F2*:
+
+@figure{/user_guides/boolean_operations/images/operations_image024.svg,  "An edge lying on a face"}
+
+The result of the GF operation is a compound consisting of 5 shapes: 
+* Split edge parts *E11, E12* and *E13* (image of *E1*).
+* Split face parts  *F21* and *F22* (image of *F2*).
+
+
+@subsubsection occt_algorithms_7_3_5 Example 5: An edge and a shell
+
+Let us consider edge *E1* and shell *Sh2* that consists of 2 faces: *F21* and *F22*
+
+@figure{/user_guides/boolean_operations/images/operations_image025.svg, "An edge and a shell"}
+
+The result of the GF operation is a compound consisting of 5 shapes: 
+* Split edge parts *E11, E12 , E13* and *E14* (image of *E1*).
+* Image shell *Sh21* (that contains split face parts  *F211, F212, F221* and *F222*).
+
+@subsubsection occt_algorithms_7_3_6 Example 6: A wire and a shell
+
+Let us consider  wire *W1 (E1, E2, E3, E4)* and  shell *Sh2 (F21, F22)*. 
+@figure{/user_guides/boolean_operations/images/operations_image026.svg,  "A wire and a shell"}
+
+The result of the GF operation is a compound consisting of 2 shapes: 
+
+* Image wire *W11* that consists of split edge parts from wire *W1: E11, E12, E13* and *E14*.
+* Image shell *Sh21* that contains split face parts: *F211, F212, F213, F221, F222* and *F223*.
+
+@subsubsection occt_algorithms_7_3_7 Example 7: Three faces
+
+Let us consider 3 faces: *F1, F2* and *F3*. @figure{/user_guides/boolean_operations/images/operations_image027.png,  "Three faces"}
+
+The result of the GF operation is a compound consisting of 7 shapes:
+* Split face parts: *Fn1, Fn2, Fn3, Fn4, Fn5, Fn6* and *Fn7*.
+
+@subsubsection occt_algorithms_7_3_8 Example 8: A face and a shell
+
+Let us consider shell *Sh1 (F11, F12, F13)* and face *F2*.
+@figure{/user_guides/boolean_operations/images/operations_image028.png,  "A face and a shell"}
+
+The result of the GF operation is a compound consisting of 4 shapes:
+* Image shell *Sh11* that consists of split face parts from shell *Sh1: Fn1, Fn2, Fn3, Fn4, Fn5* and *Fn6*.
+* Split parts of face *F2: Fn3, Fn6* and *Fn7*.
+
+@subsubsection occt_algorithms_7_3_9	Example 9: A shell and a solid
+
+Let us consider shell *Sh1 (F11, F12…F16)* and solid *So2*. @figure{/user_guides/boolean_operations/images/operations_image029.png,  "A shell and a solid: arguments"}
+
+The result of the GF operation is a compound consisting of 2 shapes:
+* Image shell *Sh11* consisting of split face parts of *Sh1: Fn1, Fn2 ... Fn8.*
+* Solid *So21* with internal shell. (image of *So2*).
+@figure{/user_guides/boolean_operations/images/operations_image030.png,  "A shell and a solid: results"}
+
+@subsubsection occt_algorithms_7_3_10 Example 10: A compound and a solid
+
+Let us consider compound *Cm1* consisting of 2 solids *So11* and *So12*) and solid *So2*.
+@figure{/user_guides/boolean_operations/images/operations_image031.png, "A compound and a solid: arguments"}
+
+The result of the GF operation is a compound consisting of 4 shapes:
+* Image compound *Cm11* consisting of split solid parts from *So11* and *So12 (Sn1, Sn2, Sn3, Sn4)*.
+* Split parts of solid *So2 (Sn2, Sn3, Sn5)*.
+
+@figure{/user_guides/boolean_operations/images/operations_image032.png, "A compound and a solid: results"}
+
+@subsection occt_algorithms_7_4	Class BOPAlgo_Builder
+
+GFA is implemented in the class *BOPAlgo_Builder*.
+
+@subsubsection occt_algorithms_7_4_1 Fields
+
+The main fields of the class are described in the Table: 
+
+| Name | Contents |
+| :---- | :---- |
+| *myPaveFiller* |	Pointer to the *BOPAlgo_PaveFiller* object |
+| *myDS* |	Pointer to the *BOPDS_DS* object |
+| *myContext* | Pointer to the intersection Context |
+| *myImages* | The Map between the source shape and its images | 
+| *myShapesSD* |	The Map between the source shape (or split part of source shape) and the shape (or part of shape) that will be used in result due to same domain property. |
+
+@subsubsection occt_algorithms_7_4_2 Initialization
+
+The input data for this step is a *BOPAlgo_PaveFiller* object (in terms of @ref  occt_algorithms_5 "Intersection") at the state after @ref occt_algorithms_5_12 "Processing of degenerated edges"  with the corresponding DS.
+
+| No | Contents	| Implementation |
+| :---- | :---- | :---- |
+| 1	| Check the readiness of the DS and *BOPAlgo_PaveFiller*. | *BOPAlgo_Builder::CheckData()* | 
+| 2	| Build an empty result of type Compound. | *BOPAlgo_Builder::Prepare()* |
+
+@subsubsection occt_algorithms_7_4_3 Build Images for Vertices
+
+The input data for this step is *BOPAlgo_Builder* object  after Initialisation.
+
+| No | Contents | Implementation  |
+| :--- | :--- | :--- | 
+| 1	| Fill *myShapesSD*  by SD vertices using the information from the DS. |	*BOPAlgo_Builder::FillImagesVertices()* |
+
+@subsubsection occt_algorithms_7_4_4 Build Result of Type Vertex
+
+The input data for this step is *BOPAlgo_Builder* object  after building images for vertices and *Type*, which is the shape type (*TopAbs_VERTEX*).
+
+| No | Contents | Implementation |
+| :--- | :--- | :----- |
+| 1 | 	For the arguments of type *Type*.	If there is an image for the argument: add the image to the result. If there is no image for the argument: add the argument to the result. | *BOPAlgo_Builder::BuildResult()* |
+
+@subsubsection occt_algorithms_7_4_5 Build Images for Edges
+
+The input data for this step is *BOPAlgo_Builder object* after building result of type vertex.
+
+| No | Contents | Implementation |
+| :---- | :---- | :----- | 
+| 1	| For all pave blocks in the DS. Fill *myImages*  for the original edge *E* by split edges *ESPi* from pave blocks. In case of common blocks on edges, use edge *ESPSDj* that corresponds to the leading pave block and fill *myShapesSD* by the pairs *ESPi/ESPSDj*. | *BOPAlgo_Builder::FillImagesEdges()* |
+
+@subsubsection occt_algorithms_7_4_6 Build Result of Type Edge
+
+This step is the same as @ref occt_algorithms_7_4_4 "Building Result of Type Vertex", but for the type *Edge*.
+
+@subsubsection occt_algorithms_7_4_7 Build Images for Wires
+
+The input data for this step is: 
+* *BOPAlgo_Builder* object after building result of type *Edge*;
+* Original Shape - Wire
+* *Type* - the shape type <i>(TopAbs_WIRE).</i>
+
+| No | Contents | Implementation |
+| :---- | :---- | :----- | 
+| 1	| For all arguments of the type *Type*. Create a container C of the type *Type*. | *BOPAlgo_Builder::FillImagesContainers()* |
+| 2	| Add to C the images or non-split parts of the *Original Shape*, taking into account its orientation. | *BOPAlgo_Builder::FillImagesContainers()* *BOPTools_Tools::IsSplitToReverse()* |
+| 3	| Fill *myImages*  for the *Original Shape* by the information above. | *BOPAlgo_Builder::FillImagesContainers()* | 
+
+@subsubsection occt_algorithms_7_4_8	Build Result of Type Wire
+
+This step is the same as @ref occt_algorithms_7_4_4 "Building Result of Type Vertex" but for the type *Wire*.
+
+@subsubsection occt_algorithms_7_4_9	Build Images for Faces
+
+The input data for this step is *BOPAlgo_Builder* object after building result of type *Wire*.
+ 
+| No | Contents	| Implementation |
+| :--- | :--- | :--- |
+| 1	| Build Split Faces	for all interfered DS shapes *Fi* of type *FACE*. | |  	
+| 1.1 | Collect all edges or their images of *Fi(ESPij)*. |	*BOPAlgo_Builder::BuildSplitFaces()* |
+| 1.2 |	Impart to ESPij the orientation to be coherent with the original one. |	*BOPAlgo_Builder::BuildSplitFaces()* |
+| 1.3 | Collect all section edges *SEk* for *Fi*. | *BOPAlgo_Builder::BuildSplitFaces()* |
+| 1.4 |	Build split faces for *Fi (Fi1, Fi2…FiNbSp)*, where *NbSp* is the number of split parts (see @ref occt_algorithms_7_2 "Building faces from a set of edges" for more details). | *BOPAlgo_BuilderFace* | 
+| 1.5 |	Impart to <i>(Fi1, Fi2…FiNbSp)</i> the orientation coherent with the original face *Fi*. | *BOPAlgo_Builder::BuildSplitFaces()* | 
+| 1.6 |	Fill the map mySplits with *Fi/(Fi1, Fi2…FiNbSp)* | *BOPAlgo_Builder::BuildSplitFaces()* |
+| 2 | Fill Same Domain faces | *BOPAlgo_Builder::FillSameDomainFaces* | 
+| 2.1 |  Find and collect in the contents of *mySplits* the pairs of same domain split faces <i>(Fij, Fkl)m</i>, where *m* is the number of pairs. | *BOPAlgo_Builder::FillSameDomainFaces* *BOPTools_Tools::AreFacesSameDomain()* |
+| 2.2 |	Compute the connexity chains 1) of same domain faces <i>(F1C, F2C… FnC)k, C=0, 1…nCs,</i> where *nCs* is the number of connexity chains. | *BOPAlgo_Builder::FillSameDomainFaces()* | 
+| 2.3 |	Fill *myShapesSD* using the chains <i>(F1C, F2C… FnC)k</i> |	*BOPAlgo_Builder::FillSameDomainFaces()* |
+| 2.4 | Add internal vertices to split faces. | *BOPAlgo_Builder::FillSameDomainFaces()* |
+| 2.5 |	Fill *myImages* using *myShapesSD* and *mySplits*.	| *BOPAlgo_Builder::FillSameDomainFaces()* |
+
+
+The example of chains of same domain faces is given in the image:
+
+@figure{/user_guides/boolean_operations/images/operations_image033.svg,  "Chains of same domain faces"}
+
+* The pairs of same domain faces are: <i>(F11, F21), (F22, F31), (F41, F51) , (F41, F6)</i> and <i>(F51, F6)</i>.
+* The pairs produce the three chains: <i>(F11, F21), (F22, F31)</i> and <i>(F41, F51, F6)</i>.
+
+@subsubsection occt_algorithms_7_4_10	Build Result of Type Face
+This step is the same as @ref occt_algorithms_7_4_4 "Building Result of Type Vertex" but for the type *Face*.
+
+@subsubsection occt_algorithms_7_4_11	Build Images for Shells
+The input data for this step is:
+* *BOPAlgo_Builder* object  after building result of type face;
+* *Original Shape* - Shell;
+* *Type* - the type of the shape <i>(TopAbs_SHELL)</i>.
+
+The procedure is the same as for building images for wires. 
+
+@subsubsection occt_algorithms_7_4_12	Build Result of Type Shell
+This step is the same as @ref occt_algorithms_7_4_4 "Building Result of Type Vertex" but for the type *Shell*.
+
+@subsubsection occt_algorithms_7_4_13 Build Images for Solids
+
+The input data for this step is *BOPAlgo_Builder* object after building result of type *Shell*. 
+
+The following procedure is executed for all interfered DS shapes *Si* of type *SOLID*.  
+
+| No | Contents | Implementation | 
+| :--- | :--- | :--- | 
+| 1	| Collect all images or non-split parts for all faces <i>(FSPij)</i> that have 3D state *In Si*. | *BOPAlgo_Builder::FillIn3DParts ()* | 
+| 2	| Collect all images or non-split parts for all faces of *Si* |	*BOPAlgo_Builder::BuildSplitSolids()* |
+| 3	| Build split solids for *Si -> (Si1, Si2…SiNbSp)*, where *NbSp* is the number of split parts (see @ref occt_algorithms_7_2 "Building faces from a set of edges" for more details) | *BOPAlgo_BuilderSolid* |
+| 4	| Fill the map Same Domain solids *myShapesSD* | *BOPAlgo_Builder::BuildSplitSolids()* |
+| 5	| Fill the map *myImages* |  *BOPAlgo_Builder::BuildSplitSolids()* |
+| 6	| Add internal vertices to split solids	| *BOPAlgo_Builder::FillInternalShapes()* |
+
+@subsubsection occt_algorithms_7_4_14 Build Result of Type Solid
+This step is the same as @ref occt_algorithms_7_4_4 "Building Result of Type Vertex", but for the type Solid.
+
+@subsubsection occt_algorithms_7_4_15 Build Images for Type CompSolid
+
+The input data for this step is:
+* *BOPAlgo_Builder* object after building result of type solid;
+* *Original Shape* - Compsolid;
+* *Type* - the type of the shape <i>(TopAbs_COMPSOLID)</i>.
+
+The procedure is the same as for building images for wires. 
+
+@subsubsection occt_algorithms_7_4_16 Build Result of Type Compsolid
+This step is the same as @ref occt_algorithms_7_4_4 "Building Result of Type Vertex", but for the type Compsolid.
+
+@subsubsection occt_algorithms_7_4_17 Build Images for Compounds
+The input data for this step is as follows:
+* *BOPAlgo_Builder* object after building results of type compsolid;
+* *Original Shape* - Compound;
+* *Type* - the type of the shape <i>(TopAbs_COMPOUND)</i>.
+
+The procedure is the same as for building images for wires. 
+
+@subsubsection occt_algorithms_7_4_18 Build Result of Type Compound
+
+This step is the same as @ref occt_algorithms_7_4_4 "Building Result of Type Vertex", but for the type Compound.
+
+@subsubsection occt_algorithms_7_4_19 Post-Processing
+The purpose of the step is to correct tolerances of the result to provide its validity in terms of *BRepCheck_Analyzer.*
+
+The input data for this step is a *BOPAlgo_Builder* object after building result of type compound.
+
+| No |	Contents | Implementation  |
+| :---- | :---- | :----- |
+| 1	| Correct tolerances of vertices on curves | *BOPTools_Tools::CorrectPointOnCurve()* |
+| 2	| Correct tolerances of edges on faces | *BOPTools_Tools::CorrectCurveOnSurface()* |
+
+
+@section occt_algorithms_9	Boolean Operations Algorithm
+
+@subsection occt_algorithms_9_1	Arguments
+
+* The arguments of BOA are shapes in terms of *TopoDS_Shape*. The main requirements for the arguments are described in @ref occt_algorithms_4_1 "Algorithms"
+* There are only two  arguments in BOA @ref occt_algorithms_2_1 "Operators":
+	* Object (S1);
+	* Tool (S2).
+* Each argument should contain objects of a single dimension (see the Table).
+
+| No | Type of Argument	| Index of Type | Dimension |
+| :---- | :---- | :----- | :---- |
+| 1 | COMPOUND | 0 | One of 0, 1, 2, 3 |
+| 2	| COMPSOLID	| 1	| 3 |
+| 3	| SOLID	| 2	| 3 |
+| 4	| SHELL	| 3	| 2 |
+| 5	| FACE | 4 | 2 |
+| 6	| WIRE | 5 | 1 |
+| 7 | EDGE | 6 | 1 |
+| 8 | VERTEX | 7 | 0 |
+
+* For Boolean operation Fuse the arguments should have equal dimensions.
+* For Boolean operation Cut the dimension of *S1* should not be less then the dimension of *S2*.
+
+@subsection occt_algorithms_9_2 Results
+
+During the operation the argument *Si* can be spited into parts *Si1, Si2 ... Si1NbSp*, where *NbSp* is the number of parts. The set <i>(Si1, Si2… Si1NbSp)</i> is an image of the argument *Si*.
+
+@subsection occt_algorithms_9_3	General Rules
+
+* The result of the BOA operation is a compound (if defined). Each sub-shape of the compound corresponds to the concrete argument *S1* and *S2* and has shared sub-shapes in accordance with interferences between the arguments. 
+* The content of the result depends on the type of the operation (Common, Fuse, Cut12, Cut21) and the dimensions of the arguments. 
+* The result of the operation Fuse is defined for arguments *S1* and *S2* that have the same dimension value : *Dim(S1)=Dim(S2)*. If the arguments have different dimension values the result of the operation Fuse is not defined. The dimension of the result is equal to the dimension of the arguments. For example, it is impossible to fuse an edge and a face.
+* The result of the operation Fuse for arguments *S1* and *S2* contains the parts of arguments that have states **OUT** relative to the opposite arguments.
+* The result of the operation Fuse for arguments *S1* and *S2* having dimension value 3 (Solids) is refined by removing all possible internal faces to provide minimal number of solids.
+* The result of the operation Common for arguments *S1* and *S2* is defined for all values of the dimensions of the arguments. The dimension of the result is equal to the lower dimension of the arguments. For example, the result of the operation Common between edges can not be a vertex. 
+* The result of the operation Common for the arguments *S1* and *S2* contains the parts of the argument that have states **IN** and **ON** relative to the opposite argument.
+* The result of the operation *Cut12[Cut21]* is defined for arguments *S1* and *S2* that have values of dimensions *Dim(S1)≤Dim(S2) [Dim(S1)≥Dim(S2)]*. The dimension of the result is equal to the lower dimension of the arguments. The result of the operation *Cut12[Cut21]* is not defined for other cases. For example, it is impossible to cut a solid from an edge, because such shape type as a solid without an edge is not defined. 
+* The result of the operation *Cut12* for arguments *S1* and *S2* contains the parts of argument *S1* that have state **OUT** relative to the opposite argument *S2*.
+* The result of the operation *Cut21* for arguments *S1* and *S2* contains the parts of argument *S2* that have state **OUT** relative to the opposite argument *S1*.
+
+@subsection occt_algorithms_9_4 Examples
+
+@subsubsection occt_algorithms_9_4_1	Case 1: Two Vertices
+
+Let us consider two interfering vertices *V1* and *V2*:
+
+@figure{/user_guides/boolean_operations/images/boolean_image001.svg}
+
+* The result of *Fuse* operation is the compound that contains new vertex *V*.
+
+@figure{/user_guides/boolean_operations/images/boolean_image002.svg}
+
+* The result of *Common* operation is a compound containing new vertex *V*.
+This compound is identical to the result of *Fuse* operation. 
+
+* The result of *Cut12* operation is an empty compound.
+* The result of *Cut21* operation is an empty compound.
+
+@subsubsection occt_algorithms_9_4_2	Case 2: A Vertex and an Edge
+
+Let us consider vertex *V1* and the edge *E2*, that intersect in a 3D point:
+
+@figure{/user_guides/boolean_operations/images/boolean_image004.png}
+
+* The result of *Fuse* operation is result is not defined because the dimension of the vertex (0) is not equal to the dimension of the edge (1).
+
+* The result of *Common* operation is a compound containing a new vertex *V<sub>1</sub>* as the argument *V<sub>1</sub>* has a common part with edge *E2*.
+
+@figure{/user_guides/boolean_operations/images/boolean_image005.png}
+
+* The result of *Cut12* operation is an empty compound.
+* The result of *Cut21* operation is not defined because the dimension of the vertex (0) is less than the dimension of the edge (1).
+
+@subsubsection occt_algorithms_9_4_3	Case 3: A Vertex and a Face
+
+Let us consider  vertex *V1* and face *F2*, that intersect in a 3D point:
+
+@figure{/user_guides/boolean_operations/images/boolean_image006.png}
+
+* The result of *Fuse* operation is not defined because the dimension of the vertex (0) is not equal to the dimension of the face (2).
+
+* The result of *Common* operation is a compound containing a new vertex *V<sub>1</sub>* as the argument *V<sub>1</sub>* has a common part with face *F2*.
+
+@figure{/user_guides/boolean_operations/images/boolean_image007.png}
+
+* The result of *Cut12* operation is an empty compound.
+* The result of *Cut21* operation is not defined because the dimension of the vertex (0) is less than the dimension of the face (2).
+
+@subsubsection occt_algorithms_9_4_4	Case 4: A Vertex abd a Solid
+
+Let us consider  vertex *V1* and solid *S2*, that intersect in a 3D point:
+
+@figure{/user_guides/boolean_operations/images/boolean_image008.png}
+
+* The result of *Fuse* operation is not defined because the dimension of the vertex (0) is not equal to the dimension of the solid (3).
+
+* The result of *Common* operation is a compound containing a new vertex *V<sub>1</sub>* as the argument *V<sub>1</sub>* has a common part with solid *S2*.
+
+@figure{/user_guides/boolean_operations/images/boolean_image009.png}
+
+* The result of *Cut12* operation is an empty compound.
+* The result of *Cut21* operation is not defined because the dimension of the vertex (0) is less than the dimension of the solid (3).
+
+@subsubsection occt_algorithms_9_4_5	Case 5: Two edges intersecting at one point
+
+Let us consider edges *E1* and *E2*, that intersect in a 3D point:
+
+@figure{/user_guides/boolean_operations/images/boolean_image010.svg}
+
+* The result of *Fuse* operation is a compound containing split parts of arguments i.e. 4 new edges *E11, E12, E21*, and *E22*. These edges have one shared vertex *Vn1*. 
+In this case: 
+	* argument edge *E1* has resulting split edges *E11* and *E12* (image of *E1*);
+	* argument edge *E2* has resulting split edges *E21* and *E22* (image of *E2*).
+	
+@figure{/user_guides/boolean_operations/images/boolean_image011.svg}	
+
+* The result of *Common* operation is an empty compound because the dimension (0) of the common part between the edges (vertex) is less than the dimension of the arguments (1).
+
+* The result of *Cut12* operation is a compound containing split parts of the argument  *E1*, i.e. 2 new edges *E11* and *E12*. These edges have one shared vertex *Vn1*. 
+
+In this case the argument edge *E1* has resulting split edges *E11* and *E12 (image of *E1*).
+
+@figure{/user_guides/boolean_operations/images/boolean_image012.svg}	
+
+* The result of *Cut21* operation is a compound containing split parts of the argument  *E2*, i.e. 2 new edges *E21* and *E12*. These edges have one shared vertex *Vn1*. 
+
+In this case the argument edge *E2* has resulting split edges *E21* and *E22* (image of *E2*).
+
+@figure{/user_guides/boolean_operations/images/boolean_image013.svg}	
+
+@subsubsection occt_algorithms_9_4_6	Case 6: Two edges having a common block
+
+Let us consider edges *E1* and *E2*, that have a common block:
+
+@figure{/user_guides/boolean_operations/images/boolean_image014.svg}
+
+* The result of *Fuse* operation is a compound containing split parts of arguments i.e. 3 new edges *E11, E12 and *E22*. These edges have two shared vertices. 
+In this case: 
+	* argument edge *E1* has resulting split edges *E11* and *E12* (image of *E1*);
+	* argument edge *E2* has resulting split edges *E21* and *E22* (image of *E2*);
+	* edge *E12* is common for the images of *E1* and *E2*.
+	
+@figure{/user_guides/boolean_operations/images/boolean_image015.svg}	
+
+* The result of *Common* operation is an empty compound containing split parts of arguments i.e. 1 new edge *E12*. In this case edge *E12* is common for the images of *E1* and *E2*. 
+The common part between the edges (edge) has the same dimension (1) as the dimension of the arguments (1).
+
+@figure{/user_guides/boolean_operations/images/boolean_image016.svg}	
+
+* The result of *Cut12* operation is a compound containing a split part of argument  *E1*, i.e. new edge *E11*. 
+
+@figure{/user_guides/boolean_operations/images/boolean_image017.svg}	
+
+* The result of *Cut21* operation is a compound containing a split part of argument  *E2*, i.e. new edge *E22*.
+
+@figure{/user_guides/boolean_operations/images/boolean_image018.svg}	
+
+
+@subsubsection occt_algorithms_9_4_7	Case 7: An Edge and a Face intersecting at a point
+
+Let us consider edge *E1* and face *F2*, that intersect at a 3D point:
+
+@figure{/user_guides/boolean_operations/images/boolean_image019.png}
+
+* The result of *Fuse* operation is not defined because the dimension of the edge (1) is not equal to the dimension of the face (2).
+	
+* The result of *Common* operation is an empty compound because the dimension (0) of the common part between the edge and face (vertex) is less than the dimension of the arguments (1).
+
+* The result of *Cut12* operation is a compound containing split parts of the argument  *E1*, i.e. 2 new edges *E11* and *E12*.  
+
+In this case the argument edge *E1* has no common parts with the face *F2* so the whole image of *E1* is in the result.
+
+@figure{/user_guides/boolean_operations/images/boolean_image020.png}	
+
+* The result of *Cut21* operation is not defined because the dimension of the edge (1) is less than the dimension of the face (2).
+
+@subsubsection occt_algorithms_9_4_8	Case 8: A Face and an Edge that have a common block
+
+Let us consider edge *E1* and face *F2*, that have a common block:
+
+@figure{/user_guides/boolean_operations/images/boolean_image021.png}
+
+* The result of *Fuse* operation is not defined because the dimension of the edge (1) is not equal to the dimension of the face (2).
+	
+* The result of *Common* operation is a compound containing a split part of the argument  *E1*, i.e. new edge *E12*. 
+
+In this case the argument edge *E1* has a common part with face *F2* so the corresponding part of the image of *E1* is in the result. The yellow square is not a part of the result. It only shows the place of *F2*.
+
+@figure{/user_guides/boolean_operations/images/boolean_image022.png}
+
+* The result of *Cut12* operation is a compound containing split part of the argument  *E1*, i.e. new edge *E11*.  
+
+In this case the argument edge *E1* has a common part with face *F2* so the corresponding part is not included into the result. The yellow square is not a part of the result. It only shows the place of F2.
+
+@figure{/user_guides/boolean_operations/images/boolean_image023.png}	
+
+* The result of *Cut21* operation is not defined because the dimension of the edge (1) is less than the dimension of the face (2).
+
+@subsubsection occt_algorithms_9_4_9	Case 9: An Edge and a Solid intersecting at a point 
+
+Let us consider edge *E1* and solid *S2*, that intersect at a point:
+
+@figure{/user_guides/boolean_operations/images/boolean_image024.png}
+
+* The result of *Fuse* operation is not defined because the dimension of the edge (1) is not equal to the dimension of the solid (3).
+	
+* The result of *Common* operation is a compound containing a split part of the argument  *E1*, i.e. new edge *E12*. 
+
+In this case the argument edge *E1* has a common part with solid *S2* so the corresponding part of the image of *E1* is in the result. The yellow square is not a part of the result. It only shows the place of *S2*.
+
+@figure{/user_guides/boolean_operations/images/boolean_image025.png}
+
+* The result of *Cut12* operation is a compound containing split part of the argument *E1*, i.e. new edge *E11*.  
+
+In this case the argument edge *E1* has a common part with solid *S2* so the corresponding part is not included into the result. The yellow square is not a part of the result. It only shows the place of *S2*.
+
+@figure{/user_guides/boolean_operations/images/boolean_image071.png}	
+
+* The result of *Cut21* operation is not defined because the dimension of the edge (1) is less than the dimension of the solid (3).
+
+@subsubsection occt_algorithms_9_4_10	Case 10: An Edge and a Solid that have a common block 
+
+Let us consider edge *E1* and solid *S2*, that have a common block:
+
+@figure{/user_guides/boolean_operations/images/boolean_image072.png}
+
+* The result of *Fuse* operation is not defined because the dimension of the edge (1) is not equal to the dimension of the solid (3).
+	
+* The result of *Common* operation is a compound containing a split part of the argument  *E1*, i.e. new edge *E12*. 
+
+In this case the argument edge *E1* has a common part with solid *S2* so the corresponding part of the image of *E1* is in the result. The yellow square is not a part of the result. It only shows the place of *S2*.
+
+@figure{/user_guides/boolean_operations/images/boolean_image073.png}
+
+* The result of *Cut12* operation is a compound containing split part of the argument *E1*, i.e. new edge *E11*.  
+
+In this case the argument edge *E1* has has a common part with solid *S2* so the corresponding part is not included into the result. The yellow square is not a part of the result. It only shows the place of *S2*.
+
+@figure{/user_guides/boolean_operations/images/boolean_image026.png}	
+
+* The result of *Cut21* operation is not defined because the dimension of the edge (1) is less than the dimension of the solid (3).
+
+@subsubsection occt_algorithms_9_4_11	Case 11: Two intersecting faces 
+
+Let us consider two intersecting faces *F1* and *F2*:
+
+@figure{/user_guides/boolean_operations/images/boolean_image027.png}
+
+* The result of *Fuse* operation is an empty compound containing split parts of arguments  i.e. 2 new faces *F11* and *F21*. These faces have one shared edge *En1*.
+
+@figure{/user_guides/boolean_operations/images/boolean_image028.png}
+
+
+* The result of *Common* operation is an empty compound because the dimension (1) of the common part between *F1* and *F2* (edge) is less than the dimension of arguments (2).
+
+* The result of *Cut12* operation is a compound containing split part of the argument *F1*, i.e. new face *F11*.  
+
+@figure{/user_guides/boolean_operations/images/boolean_image029.png}	
+
+* The result of *Cut21* operation is a compound containing split parts of the argument  *F2*, i.e. 1 new face *F21*.
+
+@figure{/user_guides/boolean_operations/images/boolean_image030.png}
+	
+@subsubsection occt_algorithms_9_4_12	Case 12: Two faces that have a common part
+
+Let us consider two faces *F1* and *F2* that have a common planar part:
+
+@figure{/user_guides/boolean_operations/images/boolean_image031.png}
+
+* The result of *Fuse* operation is a compound containing split parts of arguments, i.e. 3 new faces: *F11*, *F12* and *F22*. These faces are shared through edges In this case: 
+	* the argument edge *F1* has resulting split faces *F11* and *F12* (image of *F1*)
+	* the argument face *F2* has resulting split faces *F12* and *F22* (image of *F2*)
+	* the face *F12* is common for the images of *F1* and *F2*.
+	
+@figure{/user_guides/boolean_operations/images/boolean_image032.png}
+
+* The result of *Common* operation is a compound containing split parts of arguments i.e. 1 new face *F12*. 
+In this case: face *F12* is common for the images of *F1* and *F2*.
+The common part between the faces (face) has the same dimension (2) as the dimension of the arguments (2).
+
+
+@figure{/user_guides/boolean_operations/images/boolean_image033.png}
+
+* The result of *Cut12* operation is a compound containing split part of the argument *F1*, i.e. new face *F11*.  
+	
+@figure{/user_guides/boolean_operations/images/boolean_image034.png}	
+	
+* The result of *Cut21* operation is a compound containing split parts of the argument  *F2*, i.e. 1 new face *F21*.
+
+@figure{/user_guides/boolean_operations/images/boolean_image035.png}
+
+@subsubsection occt_algorithms_9_4_13	Case 13: Two faces that have a common edge
+
+Let us consider two faces *F1* and *F2* that have a common edge:
+
+@figure{/user_guides/boolean_operations/images/boolean_image036.png}
+
+* The result of *Fuse* operation is a compound containing split parts of arguments, i.e. 2 new faces: *F11* and *F21*. These faces have one shared edge *En1*.
+	
+@figure{/user_guides/boolean_operations/images/boolean_image037.png}
+
+* The result of *Common* operation is an empty compound because the dimension (1) of the common part between *F1* and *F2* (edge)is less than the dimension of the arguments (2)
+
+* The result of *Cut12* operation is a compound containing split part of the argument *F1*, i.e. new face *F11*.  The vertices are shown just to clarify the fact that the edges are spitted.
+	
+@figure{/user_guides/boolean_operations/images/boolean_image038.png}	
+	
+* The result of *Cut21* operation is a compound containing split parts of the argument  *F2*, i.e. 1 new face *F21*.  The vertices are shown just to clarify the fact that the edges are spitted.
+
+@figure{/user_guides/boolean_operations/images/boolean_image039.png}
+
+@subsubsection occt_algorithms_9_4_14	Case 14: Two faces that have a common vertex
+
+Let us consider two faces *F1* and *F2* that have a common vertex:
+
+@figure{/user_guides/boolean_operations/images/boolean_image040.png}
+
+* The result of *Fuse* operation is a compound containing split parts of arguments, i.e. 2 new faces: *F11* and *F21*. These faces have one shared edge *Vn1*.
+	
+@figure{/user_guides/boolean_operations/images/boolean_image041.png}
+
+* The result of *Common* operation is an empty compound because the dimension (0) of the common part between *F1* and *F2* (vertex) is less than the dimension of the arguments (2)
+
+* The result of *Cut12* operation is a compound containing split part of the argument *F1*, i.e. new face *F11*.  
+	
+@figure{/user_guides/boolean_operations/images/boolean_image042.png}	
+	
+* The result of *Cut21* operation is a compound containing split parts of the argument  *F2*, i.e. 1 new face *F21*. 
+
+@figure{/user_guides/boolean_operations/images/boolean_image043.png}
+
+
+@subsubsection occt_algorithms_9_4_15	Case 15: A Face and a Solid that have an intersection curve.
+
+Let us consider face *F1* and solid *S2* that have an intersection curve:
+
+@figure{/user_guides/boolean_operations/images/boolean_image044.png}
+
+* The result of *Fuse* operation is not defined because the dimension of the face (2) is not equal to the dimension of the solid (3).
+	
+* The result of *Common* operation is a compound contain split part of the argument  *F1*. In this case the argument face *F1* has a common part with solid *S2*, so the corresponding part of the image of *F1* is in the result. The yellow contour is not a part of the result. It only shows the place of *S2*.
+
+@figure{/user_guides/boolean_operations/images/boolean_image045.png}
+
+* The result of *Cut12* operation is a compound containing split part of the argument *F1*. In this case  argument face *F1* has a common part with solid *S2* so the corresponding part is not included into the result. The yellow contour is not a part of the result. It only shows the place of *S2*.
+  	
+@figure{/user_guides/boolean_operations/images/boolean_image046.png}	
+	
+* The result of *Cut21* operation is is not defined because the dimension of the face (2) is less than the dimension of the solid (3).
+
+@subsubsection occt_algorithms_9_4_16	Case 16: A Face and a Solid that have a common face.
+
+Let us consider face *F1* and solid *S2* that have a common part on face:
+
+@figure{/user_guides/boolean_operations/images/boolean_image047.png}
+
+* The result of *Fuse* operation is not defined because the dimension of the face (2) is not equal to the dimension of the solid (3).
+
+* The result of *Common* operation is a compound contain split part of the argument  *F1*. In this case the argument face *F1* has a common part with solid *S2*, so the corresponding part of the image of *F1* is in the result. The yellow contour is not a part of the result. It only shows the place of *S2*.
+
+@figure{/user_guides/boolean_operations/images/boolean_image048.png}
+
+* The result of *Cut12* operation is a compound containing split part of the argument *F1*. In this case  argument face *F1* has a common part with solid *S2* so the corresponding part is not included into the result. The yellow contour is not a part of the result. It only shows the place of *S2*.
+  	
+@figure{/user_guides/boolean_operations/images/boolean_image049.png}	
+	
+* The result of *Cut21* operation is is not defined because the dimension of the face (2) is less than the dimension of the solid (3).
+
+
+@subsubsection occt_algorithms_9_4_17	Case 17: A Face and a Solid that have a common edge.
+
+Let us consider face *F1* and solid *S2* that have a common part on edge:
+
+@figure{/user_guides/boolean_operations/images/boolean_image050.png}
+
+* The result of *Fuse* operation is not defined because the dimension of the face (2) is not equal to the dimension of the solid (3).
+	
+* The result of *Common* operation is an empty compound because the dimension (1) of the common part between *F1* and *S2* (edge) is less than the lower dimension of the arguments (2).
+
+* The result of *Cut12* operation is a compound containing split part of the argument *F1*. In this case  argument face *F1* has a common part with solid *S2* so the corresponding part is not included into the result. The yellow contour is not a part of the result. It only shows the place of *S2*.
+  	
+@figure{/user_guides/boolean_operations/images/boolean_image051.png}	
+	
+* The result of *Cut21* operation is is not defined because the dimension of the face (2) is less than the dimension of the solid (3).
+
+@subsubsection occt_algorithms_9_4_18	Case 18: A Face and a Solid that have a common vertex.
+
+Let us consider face *F1* and solid *S2* that have a common part on vertex:
+
+@figure{/user_guides/boolean_operations/images/boolean_image052.png}
+
+* The result of *Fuse* operation is not defined because the dimension of the face (2) is not equal to the dimension of the solid (3).
+	
+* The result of *Common* operation is an empty compound because the dimension (1) of the common part between *F1* and *S2* (vertex) is less than the lower dimension of the arguments (2).
+
+* The result of *Cut12* operation is a compound containing split part of the argument *F1*. In this case  argument face *F1* has a common part with solid *S2* so the corresponding part is not included into the result. The yellow contour is not a part of the result. It only shows the place of *S2*.
+  	
+@figure{/user_guides/boolean_operations/images/boolean_image053.png}	
+	
+* The result of *Cut21* operation is is not defined because the dimension of the face (2) is less than the dimension of the solid (3).
+
+@subsubsection occt_algorithms_9_4_19	Case 19: Two intersecting Solids.
+
+Let us consider two intersecting solids *S1* and *S2*:
+
+@figure{/user_guides/boolean_operations/images/boolean_image054.png}
+
+* The result of *Fuse* operation is a compound composed from the split parts of arguments *S11, S12* and *S22* *(Cut12, Common, Cut21)*. All inner webs are removed, so the result is one new solid *R*. 
+	
+@figure{/user_guides/boolean_operations/images/boolean_image055.png}	
+	
+* The result of *Common* operation is a compound containing split parts of arguments i.e. one new solid *S12*.  In this case solid *S12* is common for the images of *S1* and *S2*. The common part between the solids (solid) has the same dimension (3) as the dimension of the arguments (3). The yellow contour is not a part of the result. It only shows the place of *S1*. 
+
+@figure{/user_guides/boolean_operations/images/boolean_image056.png}	
+
+* The result of *Cut12* operation is a compound containing split part of the argument *S1*, i.e. 1 new solid *S11*.
+  	
+@figure{/user_guides/boolean_operations/images/boolean_image057.png}	
+	
+* The result of *Cut21* operation is a compound containing split part of the argument *S2*, i.e. 1 new solid *S21*.
+
+@figure{/user_guides/boolean_operations/images/boolean_image058.png}
+
+@subsubsection occt_algorithms_9_4_20	Case 20: Two Solids that have a shared face.
+
+Let us consider two solids *S1* and *S2* that have a common part on face:
+
+@figure{/user_guides/boolean_operations/images/boolean_image059.png}
+
+* The result of *Fuse* operation is a compound composed from the split parts of arguments *S11, S12* and *S22* *(Cut12, Common, Cut21)*. All inner webs are removed, so the result is one new solid *R*. 
+	
+@figure{/user_guides/boolean_operations/images/boolean_image060.png}	
+	
+* The result of *Common* operation is an  empty compound because the dimension (2) of the common part between *S1* and *S2* (face) is less than the lower dimension of the arguments (3). 
+
+* The result of *Cut12* operation is a compound containing split part of the argument *S1*, i.e. 1 new solid *S11*.
+  	
+@figure{/user_guides/boolean_operations/images/boolean_image061.png}	
+	
+* The result of *Cut21* operation is a compound containing split part of the argument *S2*, i.e. 1 new solid *S21*.
+@figure{/user_guides/boolean_operations/images/boolean_image062.png}
+
+
+@subsubsection occt_algorithms_9_4_21	Case 21: Two Solids that have a shared edge.
+
+Let us consider two solids *S1* and *S2* that have a shared edge:
+
+@figure{/user_guides/boolean_operations/images/boolean_image063.png}
+
+* The result of *Fuse* operation is a compound composed from the split parts of arguments i.e. 2 new solids *S11* and *S21*. These solids have one shared edge *En1*.
+ 	
+@figure{/user_guides/boolean_operations/images/boolean_image064.png}	
+	
+* The result of *Common* operation is an  empty compound because the dimension (1) of the common part between *S1* and *S2* (edge) is less than the lower dimension of the arguments (3). 
+
+* The result of *Cut12* operation is a compound containing split part of the argument *S1*. In this case 
+argument *S1* has a common part with solid *S2* so the corresponding part is not included into the result.
+  	
+@figure{/user_guides/boolean_operations/images/boolean_image065.png}	
+	
+* The result of *Cut21* operation is a  compound containing split part of the argument *S2*. In this case 
+argument *S2* has a common part with solid *S1* so the corresponding part is not included into the result.
+@figure{/user_guides/boolean_operations/images/boolean_image066.png}
+
+@subsubsection occt_algorithms_9_4_22	Case 22: Two Solids that have a shared vertex.
+
+Let us consider two solids *S1* and *S2* that have a shared vertex:
+
+@figure{/user_guides/boolean_operations/images/boolean_image067.png}
+
+* The result of *Fuse* operation is a compound composed from the split parts of arguments i.e. 2 new solids *S11* and *S21*. These solids have one shared edge *Vn1*.
+ 	
+@figure{/user_guides/boolean_operations/images/boolean_image068.png}	
+	
+* The result of *Common* operation is an  empty compound because the dimension (1) of the common part between *S1* and *S2* (vertex) is less than the lower dimension of the arguments (3). 
+
+* The result of *Cut12* operation is a compound containing split part of the argument *S1*. In this case 
+argument *S1* has a common part with solid *S2* so the corresponding part is not included into the result.
+  	
+@figure{/user_guides/boolean_operations/images/boolean_image069.png}	
+	
+* The result of *Cut21* operation is a  compound containing split part of the argument *S2*. In this case 
+argument *S2* has a common part with solid *S1* so the corresponding part is not included into the result.
+
+@figure{/user_guides/boolean_operations/images/boolean_image070.png}
+
+
+@subsection occt_algorithms_9_5 Class BOPAlgo_BOP
+
+BOA is implemented in the class *BOPAlgo_BOP*. The main fields of this class are described in the Table:
+
+| Name | Contents |
+| :---- | :--- |	
+| *myOperation* | The type of the Boolean operation (Common, Fuse, Cut) |
+| *myArgs[2]* |	The arguments |
+| *myDims[2]* | The values of the dimensions of the arguments |
+| *myRC* | The draft result (shape) |
+
+The main steps of the *BOPAlgo_BOP* are the same as of @ref occt_algorithms_7_4 "BOPAlgo_Builder" except for some aspects described in the next paragraphs.
+
+@subsection occt_algorithms_9_6	Building Draft Result
+
+The input data for this step is as follows:
+* *BOPAlgo_BOP* object after building result of type *Compound*;
+* *Type* of the Boolean operation.
+
+| No | Contents	| Implementation |
+| :---- | :----- | :----- | 
+| 1 | 	For the Boolean operation *Fuse* add to *myRC* all images of arguments. | *BOPAlgo_BOP::BuildRC()* |
+| 2 |	For the Boolean operation *Common* or *Cut* add to *myRC* all images of argument *S1* that are
+*Common* for the Common operation and are *Not Common* for the Cut operation |	*BOPAlgo_BOP::BuildRC()* |
+ 
+@subsection occt_algorithms_9_7	Building the Result
+
+The input data for this step is as follows:
+* *BOPAlgo_BOP* object the state after building draft result. 
+
+| No | Contents	| Implementation |
+| :---- | :---- | :------ |
+| 1 | For the Type of the Boolean operation Common, Cut and *myDim[0] < 3* | |
+| 1.1 |	Compute minimal dimension *Dmin = min(myDim[0], myDim[1])*	| *BOPAlgo_BOP:: BuildShape()* |
+| 1.2 |	Make connexity blocks from sub-shapes of *myRS*, taking into account the value of *Dmin* |	*BOPTools_Tools::MakeConnexityBlocks()* |
+| 1.3 |	Build the result from shapes made from the connexity blocks | *BOPAlgo_BOP:: BuildShape()* |
+| 2	| For the Type of the Boolean operation Common, Cut and *myDim[0] = 3* | |	
+| 2.1 | *myShape = myRC* | BOPAlgo_BOP::BuildShape () |
+| 3	| For the Type of the Boolean operation Fuse and *myDim[0] = 3* | |	
+| 3.1 |	Find internal faces <i>(FWi)</i> in *myRC* | *BOPAlgo_BOP::BuildSolid()* |
+| 3.2 |	Collect all faces of *myRC* except for internal faces <i>(FWi) -> SFS</i> | *BOPAlgo_BOP::BuildSolid ()* |
+| 3.3 |	Build solids <i>(SDi)</i> from *SFS*. |	*BOPAlgo_BuilderSolid* |
+| 3.4 |	Add the solids <i>(SDi)</i> to the result	| |
+
+@section occt_algorithms_10	Algorithm Limitations 
+
+The chapter describes the problems that are considered as Algorithm limitations. In most cases an Algorithm failure is caused by a combination of various factors, such as self-interfered arguments, inappropriate or ungrounded values of the argument tolerances, adverse mutual position of the arguments, tangency, etc.
+
+A lot of bugs and failures of GFA algorithm can be caused by problems in low-level algorithms: Intersection Algorithm, Projection Algorithm, Approximation Algorithm, Classification Algorithm, etc.
+* The Intersection, Projection and Approximation Algorithms are mostly used at the Intersection step. Their bugs directly cause wrong section results (i.e. incorrect section edges, section points, missing section edges or micro edges). It is not possible to obtain a correct final result of the GFA if a section result is wrong.
+* The Projection Algorithm is used at the Intersection step. The purpose of Projection Algorithm is to compute 2D-curves on surfaces. Wrong results here lead to incorrect or missing faces in the final GFA result. 
+* The Classification Algorithm is used at the Building step. The bugs in the Classification Algorithm lead to errors in selecting shape parts (edges, faces, solids) and ultimately to a wrong final GFA result.
+
+The description below illustrates some known GFA limitations. It does not enumerate exhaustively all problems that can arise in practice. Please, address cases of Algorithm failure to the OCCT Maintenance Service.
+
+
+@subsection occt_algorithms_10_1	Arguments
+
+@subsubsection occt_algorithms_10_1_1	Common requirements 
+
+Each argument should be valid (in terms of *BRepCheck_Analyzer*), or conversely, if the argument is considered as non-valid (in terms of *BRepCheck_Analyzer*), it cannot be used as an argument of the algorithm.
+
+The class *BRepCheck_Analyzer* is used to check the overall validity of a shape. In OCCT a Shape (or its sub-shapes) is considered valid if it meets certain criteria. If the shape is found as invalid, it can be fixed by tools from *ShapeAnalysis, ShapeUpgrade* and *ShapeFix* packages.
+
+However, it is important to note that class *BRepCheck_Analyzer* is just a tool that can have its own problems; this means that due to a specific factor(s) this tool can sometimes provide a wrong result.
+
+Let us consider the following example:
+
+The Analyzer checks distances between couples of 3D check-points <i>(Pi, PSi)</i> of edge *E* on face *F*. Point *Pi* is obtained from the 3D-curve (at the parameter *ti*) of the edge. *PSi* is obtained from 2D-curve (at the parameter *ti*) of the edge on surface *S* of face *F*. To be valid the distance should be less than *Tol(E)* for all couples of check-points. The number of these check-points is a pre-defined value (e.g. 23). 
+
+Let us consider the case when edge *E* is recognized valid (in terms of *BRepCheck_Analyzer*).
+
+Further, after some operation, edge *E* is split into two edges *E1* and *E2*. Each split edge has the same 3D-curve and 2D-curve as the original edge *E*. 
+
+Let us check *E1* (or E2). The Analyzer again checks the distances between the couples of check-points points <i>(Pi, PSi)</i>. The number of these check-points is the same constant value (23), but there is no guarantee that the distances will be less than *Tol(E)*, because the points chosen for *E1* are not the same as for *E*. 
+
+Thus, if *E1* is recognized by the Analyzer as non-valid, edge *E*  should also be non-valid. However *E* has been recognized as valid. Thus the Analyzer gives a wrong result for *E*.
+
+The fact that the argument is a valid shape (in terms of *BRepCheck_Analyzer*) is a necessary but insufficient requirement to produce a valid result of the Algorithms.
+
+@subsubsection occt_algorithms_10_1_3	Pure self-interference
+
+The argument should not be self-interfered, i.e. all sub-shapes of the argument that have geometrical coincidence through any topological entities (vertices, edges, faces) should share these entities.
+
+#### Example 1: Compound of two edges
+The compound of two edges *E1* and *E2* is a self-interfered shape and cannot be used as the argument of the Algorithms.
+
+@figure{/user_guides/boolean_operations/images/operations_image036.svg, "Compound of two edges"}
+
+#### Example 2: Self-interfered Edge
+The edge *E* is a self-interfered shape and cannot be used as an argument of the Algorithms.
+
+@figure{/user_guides/boolean_operations/images/operations_image037.svg, "Self-interfered Edge"}
+ 
+#### Example 3: Self-interfered Face
+The face *F* is a self-interfered shape and cannot be used as an argument of the Algorithms.
+
+@figure{/user_guides/boolean_operations/images/operations_image038.svg, "Self-interfered Face"}
+ 
+####	Example 4: Face of Revolution
+The face *F* has been obtained by revolution of edge *E* around line *L*.
+
+@figure{/user_guides/boolean_operations/images/operations_image039a.png, "Face of Revolution: Arguments"} 
+@figure{/user_guides/boolean_operations/images/operations_image039b.png, "Face of Revolution: Result"} 
+
+In spite of the fact that face *F* is valid (in terms of *BRepCheck_Analyzer*) it is a self-interfered shape and cannot be used as the argument of the Algorithms.
+
+@subsubsection occt_algorithms_10_1_4	Self-interferences due to tolerances
+#### Example 1: Non-closed Edge
+
+Let us consider edge *E* based on a non-closed circle. @figure{/user_guides/boolean_operations/images/operations_image040.png, "Edge based on a non-closed circle"}
+
+The distance between the vertices of *E* is *D=0.69799*. The values of the tolerances *Tol(V1)=Tol(V2)=0.5*.
+@figure{/user_guides/boolean_operations/images/operations_image041.png,  "Distance and Tolerances"}
+ 
+In spite of the fact that the edge *E* is valid in terms of *BRepCheck_Analyzer*, it is a self-interfered shape because its vertices are interfered. Thus, edge *E* cannot be used as an argument of the Algorithms.
+
+#### Example 2: Solid containing an interfered vertex
+
+Let us consider solid *S* containing vertex V. @figure{/user_guides/boolean_operations/images/operations_image042.png,  "Solid containing an interfered vertex"}
+
+The value of  tolerance Tol(V)= 50.000075982061.
+
+@figure{/user_guides/boolean_operations/images/operations_image043.png,  "Tolerance"}
+
+In spite of the fact that solid *S* is valid in terms of *BRepCheck_Analyzer* it is a self-interfered shape because vertex *V* is interfered with a lot of sub-shapes from *S* without any topological connection with them. Thus solid *S* cannot be used as an argument of the Algorithms.
+
+@subsubsection occt_algorithms_10_1_5 Parametric representation
+The parameterization of some surfaces (cylinder, cone, surface of revolution) can be the cause of limitation.
+
+####	Example 1: Cylindrical surface
+The parameterization range for cylindrical surface is:
+
+~~~~
+U: [0, 2π], V: ]-∞, + ∞[
+~~~~
+
+The range of *U* coordinate is always restricted while the range of *V* coordinate is non-restricted.
+
+Let us consider a cylinder-based *Face 1* with radii *R=3* and *H=6*. 
+
+@figure{/user_guides/boolean_operations/images/operations_image044.png, "Face 1"}
+
+@figure{/user_guides/boolean_operations/images/operations_image045.png, "P-Curves for Face 1"}
+
+Let us also consider a cylinder-based *Face 2* with radii *R=3000* and *H=6000* (resulting from scaling Face 1 with scale factor *ScF=1000*). 
+
+@figure{/user_guides/boolean_operations/images/operations_image046.png, "Face 2"}
+
+@figure{/user_guides/boolean_operations/images/operations_image047.png, "P-Curves for Face 2"}
+
+Please, pay attention to the Zoom value of the Figures.
+
+It is obvious that starting with some value of *ScF*, e.g. *ScF>1000000*, all sloped p-Curves on *Face 2*  will be almost vertical. At least, there will be no difference between the values of angles computed by standard C Run-Time Library functions, such as *double acos(double x)*. The loss of accuracy in computation of angles can cause failure of some BP sub-algorithms, such as building faces from a set of edges or building solids from a set of faces.
+
+
+@subsubsection occt_algorithms_10_1_6	How to fix gaps using tolerance
+
+It is possible to create shapes that use sub-shapes of lower order to avoid gaps in the tolerance-based data model.
+
+Let us consider the following example:
+
+@figure{/user_guides/boolean_operations/images/operations_image048.png, "Example"}
+
+* Face *F* has two edges *E1* and *E2* and two vertices, the base plane is <i>{0,0,0, 0,0,1}</i>;
+* Edge *E1* is based on line <i>{0,0,0, 1,0,0}, Tol(E1) = 1.e-7; </i>
+* Edge *E2* is based on line <i>{0,1,0, 1,0,0}, Tol(E2) = 1.e-7;</i>
+* Vertex *V1*, point <i>{0,0.5,0}, Tol(V1) = 1;</i>
+* Vertex *V2*, point <i>{10,0.5,0}, Tol(V2) = 1;</i>
+* Face *F* is valid (in terms of *BRepCheck_Analyzer*).
+ 
+The values of tolerances *Tol(V1)* and *Tol(V2)* are big enough to fix the gaps between the ends of the edges, but the vertices *V1* and *V2* do not contain any information about the trajectories connecting the corresponding ends of the edges. Thus, the trajectories are undefined. This will cause failure of some sub-algorithms of BP. For example, the sub-algorithms for building faces from a set of edges use the information about all edges connected in a vertex. The situation when a vertex has several pairs of edges such as above will not be solved in a right way. 
+
+
+@subsection occt_algorithms_11_1	Intersection problems
+@subsubsection occt_algorithms_11_1_1 Pure intersections and common zones 
+
+#### Example: Intersecting Edges
+
+Let us consider the intersection between two edges:
+* *E1* is based on a line: <i>{0,-10,0, 1,0,0}, Tol(E1)=2.</i>
+* *E2* is based on a circle: <i>{0,0,0, 0,0,1}, R=10, Tol(E2)=2.</i>
+
+@figure{/user_guides/boolean_operations/images/operations_image049.png, "Intersecting Edges"} 
+
+The result of pure intersection between *E1* and *E2* is vertex *Vx {0,-10,0}*.
+
+The result of intersection taking into account tolerances is the common zone *CZ* (part of 3D-space where the distance between the curves is less than or equals to the sum of edge tolerances. 
+
+The Intersection Part of Algorithms uses the result of pure intersection *Vx* instead of *CZ* for the following reasons: 
+* The Algorithms do not produce Common Blocks between edges based on underlying curves of explicitly different type (e.g. Line / Circle). If the curves have different types, the rule of thumb is that the produced result is of type **vertex**. This rule does not work for non-analytic curves (Bezier, B-Spline) and their combinations with analytic curves.
+* The algorithm of intersection between two surfaces *IntPatch_Intersection* does not compute *CZ* of the intersection between curves and points. So even if *CZ* is computed by Edge/Edge intersection algorithm, its result cannot be treated by Face/Face intersection algorithm.
+
+@subsubsection occt_algorithms_11_2_2 Tolerances and inaccuracies
+
+The following limitations result from modeling errors or inaccuracies.
+
+#### Example: Intersection of planar faces
+
+Let us consider two planar rectangular faces *F1* and *F2*.
+
+The intersection curve between the planes is curve *C12*. The curve produces a new intersection edge *EC12*. The edge goes through vertices *V1* and *V2* thanks to big tolerance values of vertices *Tol(V1)* and *Tol(V2)*. So, two straight edges *(E12, EC12)* go through two vertices, which is  impossible in this case.
+
+@figure{/user_guides/boolean_operations/images/operations_image050.svg, "Intersecting Faces"} 
+
+
+The problem cannot be solved in general, because the length of *E12* can be infinite and the values of *Tol(V1)* and *Tol(V2)* theoretically can be infinite too.
+
+In a particular case the problem can be solved in several ways:
+* Reduce, if possible, the values of *Tol(V1)* and *Tol(V2)* (refinement of *F1*).
+* Analyze the value of *Tol(EC12)* and increase *Tol(EC12)* to get a common part between the edges *EC12* and *E12*. Then the common part will be rejected as there is an already existing edge *E12* for face *F1*.
+
+It is easy to see that if *C12* is slightly above the tolerance spheres of *V1* and *V2* the problem does not appear. 
+
+#### Example: Intersection of two edges
+
+Let us consider two edges *E1* and *E2*, which have common vertices *V1* and *V2*. The edges *E1* and *E2* have 3D-curves *C1* and *C2. Tol(E1)=1.e<sup>-7</sup>, Tol(E2)=1.e<sup>-7</sup>.*
+
+*C1* practically coincides in 3D with *C2*. The value of deflection is *Dmax* (e.g. *Dmax=1.e<sup>-6</sup>*). 
+
+@figure{/user_guides/boolean_operations/images/operations_image051.svg, "Intersecting Edges"} 
+
+The evident and prospective result should be the Common Block between *E1* and *E2*. However, the result of intersection differs. 
+
+@figure{/user_guides/boolean_operations/images/operations_image052.svg, "Result of Intersection"} 
+
+However, the result contains three new vertices *Vx1, Vx2* and *Vx3*, 8 new edges *(V1, Vx1, Vx2, Vx3, V2)* and no Common Blocks. This is correct due to the source data: *Tol(E1)=1.e<sup>-7</sup>, Tol(E2)=1.e<sup>-7</sup>* and *Dmax=1.e<sup>-6</sup>.
+
+In this particular case the problem can be solved by several ways:
+* Increase, if possible, the values *Tol(E1)* and *Tol(E2)* to get coincidence in 3D between *E1* and *E2* in terms of tolerance.
+* Replace *E1* by a more accurate model.
+
+The example can be extended from 1D (edges) to 2D (faces).
+
+@figure{/user_guides/boolean_operations/images/operations_image053.svg, "Intersecting Faces"} 
+
+The comments and recommendations are the same as for 1D case above.
+
+
+@subsubsection occt_algorithms_11_2_3 Acquired Self-interferences
+####	Example 1: Vertex and edge
+
+Let us consider vertex *V1* and edge *E2*. 
+
+@figure{/user_guides/boolean_operations/images/operations_image054.svg, "Vertex and Edge"} 
+
+Vertex *V1* interferes with vertices *V12* and *V22*.
+So vertex *V21* should interfere with vertex *V22*, which is impossible because vertices *V21* and *V22* are the vertices of edge *E2*, thus *V21* is not equal to *V22*.
+
+The problem cannot be solved in general, because the length can be as small as possible to provide validity of *E2* (in the extreme case: *Length (E2) = Tol(V21) + Tol(V22) + E,* where *e-> 0*).
+
+In a particular case the problem can be solved by refinement of arguments, i.e. by decreasing the values of *Tol(V21)*, *Tol(V22)* and  *Tol(V1)*.
+
+It is easy to see that if *E2* is slightly above than tolerance sphere of *V1* the problem does not appear at all.
+
+#### Example 2: Vertex and wire
+  
+Let us consider vertex *V2* and wire consisting of edges *E11* and *E12*. 
+
+@figure{/user_guides/boolean_operations/images/operations_image055.svg, "Vertex and Wire"} 
+
+The arguments themselves are not self-intersected.
+Vertex *V2* interferes with edges *E11* and *E12*. Thus, edge *E11* should interfere with edge *E22*, but it is impossible because edges *E11* and *E12* cannot interfere by the condition.
+ 
+The cases when a non-self-interfered argument (or its sub-shapes) become interfered due to the intersections with other arguments (or their sub-shapes) are considered as limitations for the Algorithms.
+
+@section occt_algorithms_12	Appendix
+
+@subsection occt_algorithms_12_1	Building faces from set of edges 
+
+The algorithm builds a set of faces from a surface and a set of edges having p-curves on the surface. 
+
+@subsubsection occt_algorithms_12_1_1	Terms and definitions
+
+* **Original Face** - the source face *F* having an underlying surface *S* that is used as 2D domain.
+* **ES** - a set of source edges having p-curves on surface *S*.
+* **Contour** - a set of edges that is subset of *ES*.
+* **Loop** - a closed Contour (in 2D).
+* **Hole** - a Loop that has a negative mass property.
+* **Growth** - a Loop that has a positive mass property.
+* **Area** - a set of Loops within the one Growth and a number of Holes that are inside the Growth.
+* **Deadlock** - a Contour that cannot be used as a Loop.
+* **Result** - a set of faces LFR.
+
+See the illustration for the terms in the image:
+
+@figure{/user_guides/boolean_operations/images/operations_image056.svg, "Terms and definitions"}
+
+ 
+@subsubsection occt_algorithms_12_1_2	Class BOPAlgo_BuilderArea
+The class *BOPAlgo_BuilderArea* is a root class for implementations of algorithms to build areas (faces, solids) from a set of components (edges, faces).
+
+@figure{/user_guides/boolean_operations/images/operations_image057.svg, "Class inheritance diagram"}
+
+The main fields of the class *BOPAlgo_BuilderArea* are described in the Table: 
+
+| Name | Contents |
+| :---- | :---- |
+| *myContext* | Pointer to the intersection Context |
+| *myShapes* | Container for source shapes (edges, faces) |
+| *myLoops*	| Container for Loops | 
+| *myAreas* | Container for Areas |
+| *myShapesToAvoid* | Container for Deadlocks |
+
+@subsubsection occt_algorithms_12_1_3	Class BOPAlgo_BuilderFace
+
+The class *BOPAlgo_BuilderFace* implements the algorithm to build faces from a set of edges. 
+
+The main fields of the class BOPAlgo_BuilderFace are described in the Table:
+
+| Name	| Contents |
+| :---- | :----- |
+| *myFace* | Original face |
+
+The main steps of the algorithm are described in the Table:
+
+| No | Contents | Implementation  |
+| :---- | :---- | :----- |
+| 1	| Collect the Deadlocks <i>(myShapesToAvoid)</i>. | *BOPAlgo_BuilderFace::PerformShapesToAvoid()* | 
+| 2	| Build Loops <i>(myLoops)</i>.  | *BOPAlgo_BuilderFace::PerformLoops()*, *BOPAlgo_WireSplitter* |
+| 3	| Classify the Loops and build Areas <i>(myAreas)</i> | *BOPAlgo_BuilderFace::PerformAreas()* |
+| 4	| Add internal shapes to the Areas | *BOPAlgo_BuilderFace::PerformInternalShapes()* |
+| 5	| Build the Result using the Areas and *myFace*. |	*BOPAlgo_BuilderFace::PerformInternalShapes()* |
+
+@subsubsection occt_algorithms_12_1_4	Class BOPAlgo_WireSplitter
+
+The class *BOPAlgo_WireSplitter* implements the algorithm to build Loops from a set of edges *ES* and face *F*.
+ 
+The main idea is to trace paths (in 2D) along the edges from the ES using the following conditions:
+* Connectivity of the edges through vertices.
+* Minimal clockwise angle (in 2D) between adjacent edges.
+* Loop is closed.
+
+See the illustration in the figure:
+
+@figure{/user_guides/boolean_operations/images/operations_image058.svg}
+
+The input edges are *E1, E2...E16*. The edges in parentheses <i>(E11, E15), (E12, E16), (E9, E13), (E10, E14)</i> are the same with different orientations.
+
+The angles <i>βij</i> are computed in the node *k* between the direction of the edge that enters in the node *Ei* and all directions of the edges *j* that leave the node.
+* Let us start from edge *E3*;
+* For node *A* and entering edge *E3* there are 3 leaving edges *E10, E15* and *E4* and three angles: 
+	* <i>β<sub>3,10</sub>=angle(E3, E10),</i>
+	* <i>β<sub>3,15</sub>=angle(E3, E15),</i> 
+	* <i>β<sub>3,4</sub>=angle(E3, E4).</i>
+* The minimal clockwise angle is <i>β<sub>3,10</sub>,</i> so:
+	* edge *E10* will be next to edge *E3*;
+	* edge *E2* will be next to edge *E10*.
+* The edges *E3, E10* and *E2* form Loop *L1*.
+* Let us start from the next non-processed edge (e.g. for *E4*).
+* ... and so on
+
+The  main steps of the algorithm are as follows:
+
+| No | Contents	| Implementation |
+| :---- | :---- | :----- |
+| 1	| Build connexity blocks *CBi(i=1,2…NbCB)*, where *NbCB* is the number of connexity blocks from the ES. |	*BOPAlgo_WireSplitter::MakeConnexityBlocks()* |  
+| 2	| For each connexity block *CBi*: a) Compute angles <i>βij</i> for each node (for entering and leaving edges); b) Compute Loops | 	*BOPAlgo_WireSplitter::SplitBlock()* |
+
+
+@subsection occt_algorithms_12_2	Building solids from set of faces
+The algorithm is to build a set of solids from a set of faces.
+
+@subsubsection occt_algorithms_12_2_1	Terms and definitions
+
+* **FS** - a set of source faces.
+* **Contour** - a set of faces that is subset of FS.
+* **Loop** - a closed Contour (in 3D).
+* **Hole** - a Loop that has a negative mass property.
+* **Growth** - a Loop that has a positive mass property.
+* **Area** - a set of Loops within the one Growth and a number of Holes that are inside the Growth.
+* **Deadlock** - a Contour that cannot be used as a Loop.
+* **Result** - a set of solids *LSo*.
+
+@subsubsection occt_algorithms_12_2_2	Class BOPAlgo_BuilderSolid
+
+The class *BOPAlgo_BuilderSolid* contains the implementation of the algorithm to build solids from a set of faces.
+The content of the main steps of the algorithm is described in the Table.
+
+| No | Contents | Implementation |
+| :--- | :--- | :---- | 
+| 1 | Collect the Deadlocks <i>(myShapesToAvoid)</i>. | *BOPAlgo_BuilderSolid::PerformShapesToAvoid()* |
+| 2 | Build Loops <i>(myLoops)</i>. | *BOPAlgo_BuilderSolid::PerformLoops()* |
+| 3	| Classify the Loops and build Areas <i>(myAreas)</i>. | *BOPAlgo_BuilderSolid::PerformAreas()* |
+| 4	| Add to Areas the internal shapes. | *BOPAlgo_BuilderSolid::PerformInternalShapes()* |
+| 5	| Build the Result using the Areas and *myFace*. | *BOPAlgo_BuilderSolid::PerformInternalShapes()* |
+
+@subsection occt_algorithms_12_3	Packaging
+
+The following packages contain the implementation of the algorithm:
+
+| No | Name	| Contents |
+| :---- | :---- | :---- |
+| 1	| *BOPCol* | Collection classes for all algorithms |
+| 2	| *BOPInt* | Auxiliary classes for IP |
+| 3	| *BOPDS* |	DS and a set of auxiliary classes for DS |
+| 4	| *BOPTools* | Auxiliary classes for BP |
+| 5	| *BOPAlgo* | IP, BP |
+| 6	| *BOPTest* | Testing commands for Draw application |
+
+
+
+
+
+
+
+
+
+
+
