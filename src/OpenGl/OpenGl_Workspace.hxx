@@ -242,6 +242,14 @@ protected:
     OpenGl_RT_FAIL
   };
 
+  //! Describes update mode (state).
+  enum GeomUpdateMode
+  {
+    OpenGl_GUM_CHECK,   //!< check if geometry update is necessary
+    OpenGl_GUM_PREPARE, //!< collect unchanged objects
+    OpenGl_GUM_UPDATE   //!< update raytracing data, rebuild changed objects
+  };
+
   //! Defines frequently used shader variables.
   enum ShaderVariableIndex
   {
@@ -272,6 +280,8 @@ protected:
     OpenGl_RT_uOffsetY,
     OpenGl_RT_uSamples,
 
+    OpenGl_RT_uEnvironmentEnable,
+
     OpenGl_RT_NbVariables // special field
   };
 
@@ -295,7 +305,9 @@ protected:
     OpenGl_RT_RaytraceMaterialTexture = 10,
     OpenGl_RT_RaytraceLightSrcTexture = 11,
 
-    OpenGl_RT_FSAAInputTexture = 12
+    OpenGl_RT_FSAAInputTexture = 12,
+
+    OpenGl_RT_SceneTransformTexture = 13
   };
 
   //! Tool class for management of shader sources.
@@ -348,7 +360,7 @@ protected:
 protected: //! @name methods related to ray-tracing
 
   //! Updates 3D scene geometry for ray-tracing.
-  Standard_Boolean UpdateRaytraceGeometry (Standard_Boolean theCheck);
+  Standard_Boolean UpdateRaytraceGeometry (GeomUpdateMode theMode);
 
   //! Checks to see if the structure is modified.
   Standard_Boolean CheckRaytraceStructure (const OpenGl_Structure* theStructure);
@@ -365,7 +377,7 @@ protected: //! @name methods related to ray-tracing
 
   //! Adds OpenGL primitive array to ray-traced scene geometry.
   OpenGl_TriangleSet* AddRaytracePrimitiveArray (
-    const CALL_DEF_PARRAY* theArray, int theMatID, const Standard_ShortReal* theTrans);
+    const OpenGl_PrimitiveArray* theArray, int theMatID, const Standard_ShortReal* theTrans);
 
   //! Adds vertex indices from OpenGL primitive array to ray-traced scene geometry.
   Standard_Boolean AddRaytraceVertexIndices (OpenGl_TriangleSet* theSet,
@@ -475,6 +487,8 @@ protected: //! @name fields related to ray-tracing
   Handle(OpenGl_TextureBufferArb) mySceneMinPointTexture;
   //! Texture buffer of maximum points of high-level BVH nodes.
   Handle(OpenGl_TextureBufferArb) mySceneMaxPointTexture;
+  //! Texture buffer of transformations of high-level BVH nodes.
+  Handle(OpenGl_TextureBufferArb) mySceneTransformTexture;
 
   //! Texture buffer of data records of bottom-level BVH nodes.
   Handle(OpenGl_TextureBufferArb) myObjectNodeInfoTexture;
@@ -510,6 +524,9 @@ protected: //! @name fields related to ray-tracing
 
   //! State of OpenGL structures reflected to ray-tracing.
   std::map<const OpenGl_Structure*, Standard_Size> myStructureStates;
+
+  //! PrimitiveArray to TriangleSet map for scene partial update.
+  std::map<const OpenGl_PrimitiveArray*, OpenGl_TriangleSet*> myArrayToTrianglesMap;
 
   //! Cached locations of frequently used uniform variables.
   Standard_Integer myUniformLocations[2][OpenGl_RT_NbVariables];

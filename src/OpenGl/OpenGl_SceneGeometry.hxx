@@ -122,22 +122,71 @@ class OpenGl_TriangleSet : public BVH_Triangulation<Standard_ShortReal, 4>
 {
 public:
 
-  BVH_Array4f Normals; //!< Array of vertex normals
+  //! Value of invalid material index to return in case of errors.
+  static const Standard_Integer INVALID_MATERIAL = -1;
 
 public:
 
   //! Creates new OpenGL element triangulation.
-  OpenGl_TriangleSet()
-  : BVH_Triangulation<Standard_ShortReal, 4>()
-  {
-    //
-  }
+  OpenGl_TriangleSet (const OpenGl_PrimitiveArray* theArray = NULL)
+  : BVH_Triangulation<Standard_ShortReal, 4>(),
+    myArray (theArray)
+   {
+     //
+   }
 
   //! Releases resources of OpenGL element triangulation.
   ~OpenGl_TriangleSet()
   {
     //
   }
+
+  //! Returns associated OpenGl structure.
+  const OpenGl_PrimitiveArray* AssociatedPArray() const
+  {
+    return myArray;
+  }
+
+  //! Returns material index of triangle set.
+  Standard_Integer MaterialIndex() const
+  {
+    if (Elements.size() == 0)
+      return INVALID_MATERIAL;
+
+    return Elements.front().w();
+  }
+
+  //! Sets material index for entire triangle set.
+  void SetMaterialIndex (Standard_Integer aMatID)
+  {
+    for (Standard_Size anIdx = 0; anIdx < Elements.size(); ++anIdx)
+      Elements[anIdx].w() = aMatID;
+  }
+
+  //! Returns AABB of primitive set.
+  BVH_BoxNt Box() const
+  {
+    const BVH_Transform<Standard_ShortReal, 4>* aTransform = 
+      dynamic_cast<const BVH_Transform<Standard_ShortReal, 4>* > (Properties().operator->());
+ 
+    BVH_BoxNt aBox = BVH_PrimitiveSet<Standard_ShortReal, 4>::Box(); 
+ 
+    if (aTransform)
+    {
+      return aTransform->Apply (aBox);
+    }
+ 
+    return aBox;
+  }
+
+public:
+
+  BVH_Array4f Normals; //!< Array of vertex normals.
+ 
+private:
+
+  const OpenGl_PrimitiveArray* myArray; //!< Reference to associated OpenGl structure.
+
 };
 
 //! Stores geometry of ray-tracing scene.
@@ -180,6 +229,15 @@ public:
 
   //! Clears ray-tracing geometry.
   void Clear();
+
+  //! Clears only ray-tracing materials.
+  void ClearMaterials()
+  {
+    std::vector<OpenGl_RaytraceMaterial,
+      NCollection_StdAllocator<OpenGl_RaytraceMaterial> > anEmptyMaterials;
+ 
+    Materials.swap (anEmptyMaterials);
+  }
 
 public:
 

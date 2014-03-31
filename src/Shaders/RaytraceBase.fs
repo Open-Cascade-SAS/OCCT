@@ -25,6 +25,8 @@ uniform isamplerBuffer uSceneNodeInfoTexture;
 uniform samplerBuffer uSceneMinPointTexture;
 //! Texture buffer of maximum points of high-level BVH nodes.
 uniform samplerBuffer uSceneMaxPointTexture;
+//! Texture buffer of transformations of high-level BVH nodes.
+uniform samplerBuffer uSceneTransformTexture;
 
 //! Texture buffer of data records of bottom-level BVH nodes.
 uniform isamplerBuffer uObjectNodeInfoTexture;
@@ -99,6 +101,38 @@ struct SIntersect
 #define AXIS_Y vec3 (0.f, 1.f, 0.f)
 #define AXIS_Z vec3 (0.f, 0.f, 1.f)
 
+
+// =======================================================================
+// function : MatrixRowMultiply
+// purpose  : Multiplies a vector by matrix
+// =======================================================================
+vec3 MatrixRowMultiply (in vec4 v,
+                        in vec4 m0,
+                        in vec4 m1,
+                        in vec4 m2,
+                        in vec4 m3)
+{
+  return vec3 (dot (m0, v),
+               dot (m1, v),
+               dot (m2, v));
+}
+
+
+// =======================================================================
+// function : MatrixColMultiply
+// purpose  : Multiplies a vector by matrix
+// =======================================================================
+vec3 MatrixColMultiply (in vec4 v,
+                        in vec4 m0,
+                        in vec4 m1,
+                        in vec4 m2,
+                        in vec4 m3)
+{
+  return vec3 (m0[0] * v.x + m1[0] * v.y + m2[0] * v.z + m3[0] * v.w,
+               m0[1] * v.x + m1[1] * v.y + m2[1] * v.z + m3[1] * v.w,
+               m0[2] * v.x + m1[2] * v.y + m2[2] * v.z + m3[2] * v.w);
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////
 // Functions for compute ray-object intersection
 
@@ -171,11 +205,11 @@ float IntersectTriangle (in SRay theRay,
                int(theUV.x + theUV.y <= 1.f)) ? aTime : MAXFLOAT;
 }
 
-//! Global stack shared between traversal functions.
-int Stack[STACK_SIZE];
-
 //! Identifies the absence of intersection.
 #define INALID_HIT ivec4 (-1)
+
+//! Global stack shared between traversal functions.
+int Stack[STACK_SIZE];
 
 // =======================================================================
 // function : ObjectNearestHit
@@ -251,7 +285,7 @@ ivec4 ObjectNearestHit (in int theBVHOffset, in int theVrtOffset, in int theTrgO
     {
       vec3 aNormal;
       vec2 aParams;
-            
+
       for (int anIdx = aData.y; anIdx <= aData.z; ++anIdx)
       {
         ivec4 aTriangle = texelFetch (uGeometryTriangTexture, anIdx + theTrgOffset);
@@ -391,7 +425,7 @@ float ObjectAnyHit (in int theBVHOffset, in int theVrtOffset, in int theTrgOffse
 // function : SceneNearestHit
 // purpose  : Finds intersection with nearest scene triangle
 // =======================================================================
-ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theHit)
+ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theHit, out int theObjectId)
 {
   int aHead = -1; // stack pointer
   int aNode =  0; // node to visit
@@ -418,8 +452,29 @@ ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theH
       
       if (max (aTimes.x, max (aTimes.y, aTimes.z)) < theHit.Time)
       {
+        // fetch object transformation
+        int anObjectId = aData.x - 1;
+        vec4 aInvTransf0 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 0);
+        vec4 aInvTransf1 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 1);
+        vec4 aInvTransf2 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 2);
+        vec4 aInvTransf3 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 3);
+
+        SRay aNewRay;
+
+        aNewRay.Origin = MatrixColMultiply (vec4 (theRay.Origin, 1.f), 
+          aInvTransf0, aInvTransf1, aInvTransf2, aInvTransf3);
+
+        aNewRay.Direct = MatrixColMultiply (vec4 (theRay.Direct, 0.f), 
+          aInvTransf0, aInvTransf1, aInvTransf2, aInvTransf3);
+
+        vec3 aNewInverse = 1.f / max (abs (aNewRay.Direct), SMALL);
+        
+        aNewInverse.x = aNewRay.Direct.x < 0.f ? -aNewInverse.x : aNewInverse.x;
+        aNewInverse.y = aNewRay.Direct.y < 0.f ? -aNewInverse.y : aNewInverse.y;
+        aNewInverse.z = aNewRay.Direct.z < 0.f ? -aNewInverse.z : aNewInverse.z;
+
         ivec4 aTriIndex = ObjectNearestHit (
-          aData.y, aData.z, aData.w, theRay, theInverse, theHit, aHead);
+          aData.y, aData.z, aData.w, aNewRay, aNewInverse, theHit, aHead);
 
         if (aTriIndex.x != -1)
         {
@@ -427,6 +482,8 @@ ivec4 SceneNearestHit (in SRay theRay, in vec3 theInverse, inout SIntersect theH
                               aTriIndex.y + aData.z,  // vertex 1
                               aTriIndex.z + aData.z,  // vertex 2
                               aTriIndex.w);           // material
+
+          theObjectId = anObjectId;
         }
       }
       
@@ -509,8 +566,29 @@ float SceneAnyHit (in SRay theRay, in vec3 theInverse, in float theDistance)
 
     if (aData.x != 0) // if leaf node
     {
+      // fetch object transformation
+      int anObjectId = aData.x - 1;
+      vec4 aInvTransf0 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 0);
+      vec4 aInvTransf1 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 1);
+      vec4 aInvTransf2 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 2);
+      vec4 aInvTransf3 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 3);
+
+      SRay aNewRay;
+
+      aNewRay.Origin = MatrixColMultiply (vec4 (theRay.Origin, 1.f), 
+        aInvTransf0, aInvTransf1, aInvTransf2, aInvTransf3);
+
+      aNewRay.Direct = MatrixColMultiply (vec4 (theRay.Direct, 0.f), 
+        aInvTransf0, aInvTransf1, aInvTransf2, aInvTransf3);
+
+      vec3 aNewInverse = 1.f / max (abs (aNewRay.Direct), SMALL);
+      
+      aNewInverse.x = aNewRay.Direct.x < 0.f ? -aNewInverse.x : aNewInverse.x;
+      aNewInverse.y = aNewRay.Direct.y < 0.f ? -aNewInverse.y : aNewInverse.y;
+      aNewInverse.z = aNewRay.Direct.z < 0.f ? -aNewInverse.z : aNewInverse.z;
+
       bool isShadow = 0.f == ObjectAnyHit (
-        aData.y, aData.z, aData.w, theRay, theInverse, theDistance, aHead);
+        aData.y, aData.z, aData.w, aNewRay, aNewInverse, theDistance, aHead);
         
       if (aHead < 0 || isShadow)
         return isShadow ? 0.f : 1.f;
@@ -624,12 +702,14 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
 {
   vec3 aResult = vec3 (0.f);
   vec4 aWeight = vec4 (1.f);
+
+  int anObjectId;
   
   for (int aDepth = 0; aDepth < 5; ++aDepth)
   {
     SIntersect aHit = SIntersect (MAXFLOAT, vec2 (ZERO), ZERO);
     
-    ivec4 aTriIndex = SceneNearestHit (theRay, theInverse, aHit);
+    ivec4 aTriIndex = SceneNearestHit (theRay, theInverse, aHit, anObjectId);
 
     if (aTriIndex.x == -1)
     {
@@ -667,6 +747,14 @@ vec4 Radiance (in SRay theRay, in vec3 theInverse)
       uRaytraceMaterialTexture, MATERIAL_TRAN (aTriIndex.w)));
       
     vec3 aNormal = SmoothNormal (aHit.UV, aTriIndex);
+
+    vec4 aInvTransf0 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 0);
+    vec4 aInvTransf1 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 1);
+    vec4 aInvTransf2 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 2);
+    vec4 aInvTransf3 = texelFetch (uSceneTransformTexture, anObjectId * 4 + 3);
+
+    aNormal = MatrixRowMultiply (vec4 (aNormal, 0.f), aInvTransf0, aInvTransf1, aInvTransf2, aInvTransf3);
+    aNormal = normalize (aNormal);
     
     aHit.Normal = normalize (aHit.Normal);
     
