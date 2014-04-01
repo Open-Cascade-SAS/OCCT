@@ -14,8 +14,13 @@ http://www.opencascade.org/getocc/require/.
 
 There are two types of third-party products, which are  necessary to build OCCT: 
   
-* Mandatory  products: Tcl/Tk 8.5 - 8.6 and  FreeType 2.4.10 - 2.4.11
-* Optional  products: TBB 3.x - 4.x, gl2ps 1.3.5 - 1.3.8, FreeImage 3.14.1 - 3.15.4
+* Mandatory  products: 
+	* Tcl/Tk 8.5 - 8.6;  
+	* FreeType 2.4.10 - 2.4.11;
+* Optional  products: 
+	* TBB 3.x - 4.x;
+	* gl2ps 1.3.5 - 1.3.8;
+	* FreeImage 3.14.1 - 3.15.4.
 
 @section dev_guides__building_3rdparty_linux_2 Building Mandatory Third-party Products
 
@@ -28,37 +33,37 @@ Tcl/Tk is required for DRAW test harness.
 It is possible to download ready-to-install binaries from 
 http://www.activestate.com/activetcl/downloads
 
-1. Download the binaries archive and unpack them to some  TCL_SRC_DIR. 
-2. Enter the directory TCL_SRC_DIR.
+1. Download the binaries archive and unpack them to a directory, which is further referred to as *TCL_SRC_DIR*. 
+2. Enter the directory *TCL_SRC_DIR*.
 
        cd TCL_SRC_DIR
 
-3. Run the install command 
+3. Run the install command:
 
        install.sh
     
-   and follow instructions. 
+   and follow the instructions. 
 
 @subsubsection dev_guides__building_3rdparty_linux_2_1_2 Installation from sources: Tcl
   
 Download the necessary archive from http://www.tcl.tk/software/tcltk/download.html and unpack it. 
   
-1. Enter the unix sub-directory of the directory where the source  files of Tcl are located (TCL_SRC_DIR). 
+1. Enter the unix sub-directory of the directory where the Tcl source  files are located <i>(TCL_SRC_DIR)</i>. 
 
        cd TCL_SRC_DIR/unix   
 
-2. Run the configure command
+2. Run the *configure* command:
 
        configure --enable-gcc  --enable-shared --enable-threads --prefix=TCL_INSTALL_DIR   
 
-   For a 64 bit platform also add --enable-64bit option to the  command line. 
+   For a 64 bit platform also add <i>--enable-64bit</i> option to the command line. 
   
-3. If the configure command has finished successfully, start  the building process 
+3. If the configure command has finished successfully, start  the building process:
   
        make   
 
 4. If building is finished successfully, start the installation of Tcl. 
-   All binary and service files of the product will be copied to the directory defined by TCL_INSTALL_DIR 
+   All binary and service files of the product will be copied to the directory defined by *TCL_INSTALL_DIR* 
 
        make install   
 
@@ -66,49 +71,47 @@ Download the necessary archive from http://www.tcl.tk/software/tcltk/download.ht
   
 Download the necessary archive from http://www.tcl.tk/software/tcltk/download.html and unpack it. 
   
-1. Enter the unix sub-directory of the directory where the source  files of Tk are located (TK_SRC_DIR). 
+1. Enter the unix sub-directory of the directory where the Tk source files are located <i>(TK_SRC_DIR)</i> 
 
        cd TK_SRC_DIR/unix   
 
-2. Run the configure command, where TCL_LIB_DIR is  TCL_INSTALL_DIR/lib 
+2. Run the configure command, where <i>TCL_LIB_DIR</i> is *TCL_INSTALL_DIR/lib*.
 
        configure --enable-gcc  --enable-shared --enable-threads --with-tcl=TCL_LIB_DIR  --prefix=TK_INSTALL_DIR   
 
-   where TCL_LIB_DIR is TCL_INSTALL_DIR/lib 
+   For a 64 bit platform also add <i>--enable-64bit</i> option to the  command line. 
 
-   For a 64 bit platform also add --enable-64bit option to the  command line. 
-
-3. If the configure command has finished successfully, start  the building process 
+3. If the configure command has finished successfully, start the building process: 
 
        make   
 
-4. If building has finished successfully, start the installation of Tk. 
+4. If the building has finished successfully, start the installation of Tk. 
    All binary and service files of the product will be copied 
-   to the directory defined by TK_INSTALL_DIR (usually  TK_INSTALL_DIR is TCL_INSTALL_DIR) 
+   to the directory defined by *TK_INSTALL_DIR* (usually it is *TCL_INSTALL_DIR*) 
 
        make install   
 
 @subsection dev_guides__building_3rdparty_linux_2_2 FreeType
 
-FreeType is required for display of text in 3D viewer. 
+FreeType is required for text display in the 3D viewer. 
 Download the necessary archive from http://sourceforge.net/projects/freetype/files/ and unpack it. 
   
-1. Enter the directory where the source files of FreeType  are located (FREETYPE_SRC_DIR). 
+1. Enter the directory where the source files of FreeType  are located <i>(FREETYPE_SRC_DIR)</i>. 
 
        cd FREETYPE_SRC_DIR   
 
-2. Run the configure command 
+2. Run the *configure* command: 
   
        configure  --prefix=FREETYPE_INSTALL_DIR   
 
-   For a 64 bit platform also add CFLAGS='-m64 -fPIC'  CPPFLAGS='-m64 -fPIC' option to the command line. 
+   For a 64 bit platform also add <i>CFLAGS='-m64 -fPIC'  CPPFLAGS='-m64 -fPIC'</i> option to the command line. 
     
-3. If the configure command has finished successfully, start  the building process 
+3. If the *configure* command has finished successfully, start  the building process: 
 
        make   
 
-4. If building has finished successfully, start the installation of FreeType. 
-   All binary and service files of the product will be copied to the directory defined by FREETYPE_INSTALL_DIR 
+4. If the building has finished successfully, start the installation of FreeType. 
+   All binary and service files of the product will be copied to the directory defined by *FREETYPE_INSTALL_DIR* 
     
        make install   
 
@@ -117,46 +120,46 @@ Download the necessary archive from http://sourceforge.net/projects/freetype/fil
 @subsection dev_guides__building_3rdparty_linux_3_1 TBB
 
 This third-party product is  installed with binaries from the archive that can be downloaded from http://threadingbuildingblocks.org. 
-Go to \"Downloads page\", find the  release version you need and pick the archive for Linux  platform. 
+Go to the **Download** page, find the  release version you need and pick the archive for Linux  platform. 
 To install, unpack the downloaded archive of TBB product.
 
 @subsection dev_guides__building_3rdparty_linux_3_2 gl2ps
 
 Download the necessary archive from http://geuz.org/gl2ps/ and unpack it.
   
-1. Install or build cmake product from source file. 
-2. Start cmake in GUI mode with the directory where the source files of gl2ps are located:
+1. Install or build *cmake* product from the source file. 
+2. Start *cmake* in GUI mode with the directory where the source files of gl2ps are located:
 
        ccmake GL2PS_SRC_DIR   
 
-   a. Press [c] to make the  initial configuration 
-   b. Define the necessary options  CMAKE_INSTALL_PREFIX 
-   c. Press [c] to make the final  configuration 
-   d. Press [g] to generate  Makefile and exit 
+   * Press <i>[c]</i> to make the  initial configuration; 
+   * Define the necessary options in *CMAKE_INSTALL_PREFIX* 
+   * Press <i>[c]</i> to make the final  configuration 
+   * Press <i>[g]</i> to generate  Makefile and exit 
 
    or just run the following command: 
 
        cmake  –DCMAKE_INSTALL_PREFIX=GL2PS_INSTALL_DIR –DCMAKE_BUILD_TYPE=Release   
 
-3. Start building of gl2ps 
+3. Start the building of gl2ps: 
 
        make   
 
-4. Start the installation of gl2ps. Binaries will be  installed according to the CMAKE_INSTALL_PREFIX option 
+4. Start the installation of gl2ps. Binaries will be  installed according to the *CMAKE_INSTALL_PREFIX* option. 
 
        make install   
 
 @subsection dev_guides__building_3rdparty_linux_3_3 FreeImage
 
 Download the necessary archive from http://sourceforge.net/projects/freeimage/files/Source%20Distribution/
-and unpack it. The directory with unpacked sources is  further referred to as FREEIMAGE_SRC_DIR. 
+and unpack it. The directory with unpacked sources is  further referred to as *FREEIMAGE_SRC_DIR*. 
   
-1. Modify FREEIMAGE_SRC_DIR/Source/OpenEXR/Imath/ImathMatrix.h: 
+1. Modify *FREEIMAGE_SRC_DIR/Source/OpenEXR/Imath/ImathMatrix.h*: 
    In line 60 insert the following: 
 
        #include string.h   
 
-2. Enter the directory where the source files of FreeImage are located (FREEIMAGE_SRC_DIR). 
+2. Enter the directory where the source files of FreeImage are located <i>(FREEIMAGE_SRC_DIR)</i>. 
   
        cd FREEIMAGE_SRC_DIR   
 
@@ -166,11 +169,10 @@ and unpack it. The directory with unpacked sources is  further referred to as FR
 
 4. Run the installation process 
 
-   a. If you have permissions to write to /usr/include and /usr/lib directories then run the following command: 
+   a. If you have the permission to write into directories <i>/usr/include</i> and <i>/usr/lib</i>, run the following command: 
 
           make install   
-   b. If you don’t have permissions to write to /usr/include and 
-       /usr/lib directories then you need to modify the file FREEIMAGE_SRC_DIR/Makefile.gnu: 
+   b. If you do not have this permission, you need to modify file *FREEIMAGE_SRC_DIR/Makefile.gnu*: 
   
       Change lines 7-9 from:
   
@@ -208,7 +210,7 @@ and unpack it. The directory with unpacked sources is  further referred to as FR
 
         make DESTDIR=FREEIMAGE_INSTALL_DIR  install   
 
-5. Clean the temporary files
+5. Clean temporary files
   
         make clean   
 
@@ -226,15 +228,15 @@ ICD Loader version 1.2.11.0.
    Khronos OpenCL Registry
    http://www.khronos.org/registry/cl/
 
-2. Unpack the archive and put headers in **inc/CL** sub-folder
+2. Unpack the archive and put headers in *inc/CL* sub-folder
 
-3. Print **make** in root of unpacked archive to compile OpenCL libraries.
+3. Print *make* in the root of the unpacked archive to compile OpenCL libraries.
 
 4. Create installation folder for OpenCL IDL Loader package and put there:
 
-    1. OpenCL header files in **include/CL** subfolder
+    1. OpenCL header files in *include/CL* subfolder
 
-    2. **libOpenCL.so** (generated in **bin** subfolder of source package) in **lib** subfolder
+    2. *libOpenCL.so* (generated in *bin* subfolder of source package) in *lib* subfolder
 
 @section dev_guides__building_3rdparty_linux_4 Installation From Official Repositories
 
@@ -252,13 +254,13 @@ from official repositories. You may install them from  console using apt-get uti
     libtbb-dev \   
     libgl2ps-dev   
   
-To launch WOK-prebuilt binaries you need install C shell and  32-bit libraries on x86_64 distributives: 
+To launch binaries built with WOK  you need to install C shell and 32-bit libraries on x86_64 distributives: 
   
     sudo apt-get install \   
     csh \   
     libstdc++5:i386 libxt6:i386   
 
-Any compliant C++ compiler is required for building anyway: 
+Building is possible with any C++  compliant compiler : 
   
     sudo apt-get install \   
     g++

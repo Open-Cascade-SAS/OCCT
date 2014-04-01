@@ -4,24 +4,21 @@
 
 @section dev_guides__building_3rdparty_win_1 Introduction
 
-This document presents guidelines for building third-party products 
-used by Open CASCADE Technology (OCCT) and samples on Windows platform. 
+This document presents guidelines for building third-party products used by Open CASCADE Technology (OCCT) and samples on Windows platform. It is assumed that you are already familiar with MS Visual Studio / Visual C++. 
 
-This guide assumfamiliar with MS Visual Studio / Visual C++. 
+You need to use the same version of MS Visual Studio for building all third-party products and OCCT itself, in order to receive a consistent set of run-time binaries. 
 
-You need to use the same version of MS Visual Studio for building 
-all third-party products and OCCT itself, in order to receive a consistent set of run-time binaries. 
+The links for downloading the third-party products are available on the web site of OPEN CASCADE SAS at http://www.opencascade.org/getocc/require/. There are two types of third-party products used  by OCCT: 
 
-The links for downloading the third-party products are available on the web site 
-of OPEN CASCADE SAS at http://www.opencascade.org/getocc/require/. 
-There are two types of third-party products which are used  by OCCT: 
+* Mandatory  products: 
+	* Tcl/Tk 8.5 - 8.6;
+	* FreeType 2.4.10 - 2.4.11.
+* Optional  products:
+	* TBB 3.x - 4.x;
+	* gl2ps 1.3.5 - 1.3.8;
+	* FreeImage 3.14.1 -3.15.4.
 
-* Mandatory  products: Tcl/Tk 8.5 - 8.6 and  FreeType 2.4.10 - 2.4.11
-* Optional  products: TBB 3.x - 4.x, gl2ps 1.3.5 - 1.3.8, FreeImage 3.14.1 -3.15.4
-
-It is recommended to create a separate new folder on your workstation where 
-you will unpack the downloaded archives of the third-party  products, 
-and where you will build these products (for example, *c:\\occ3rdparty*). 
+It is recommended to create a separate new folder on your workstation, where you will unpack the downloaded archives of the third-party  products, and where you will build these products (for example, *c:\\occ3rdparty*). 
 
 Further in this document, this folder is referred to as *3rdparty*. 
 
@@ -29,39 +26,37 @@ Further in this document, this folder is referred to as *3rdparty*.
 
 @subsection dev_guides__building_3rdparty_win_2_1 Tcl/Tk
 
-Tcl/Tk is required for DRAW test harness.We recommend installing a binary distribution that could 
-be downloaded from http://www.activestate.com/activetcl.
+Tcl/Tk is required for DRAW test harness. We recommend installing a binary distribution that can be downloaded from http://www.activestate.com/activetcl.
 
 Go to \"Free Downloads\" and pick the version of the Install Wizard 
 that matches your target platform – 32 bit (x86) or 64 bit (x64). 
 The version of Visual Studio you use is irrelevant when choosing the Install Wizard. 
 
-Run the Install Wizard you  downloaded, and install Tcl/Tk products 
+Run the downloaded Install Wizard and install Tcl/Tk products :
 
-* to 3rdparty\\tcltk-win32 folder (for 32-bit platform) or 
-* to 3rdparty\\tcltk-win64 folder (for 64-bit platform). 
+* to *3rdparty\\tcltk-win32* folder (for 32-bit platform) or 
+* to *3rdparty\\tcltk-win64* folder (for 64-bit platform). 
 
 Further in this document,  this folder is referred to as *tcltk*. 
 
 @subsection dev_guides__building_3rdparty_win_2_2 FreeType
 
-FreeType is required for display of text in 3D viewer. 
-You can download its sources from http://sourceforge.net/projects/freetype/files/   
+FreeType is required for text display in a 3D viewer. You can download its sources from http://sourceforge.net/projects/freetype/files/   
 
-The building process is the following:
+### The building procedure
 
-1. Unpack the  downloaded archive of FreeType product into the *3rdparty*  folder. 
+1. Unpack the downloaded archive of FreeType product into the *3rdparty*  folder. As a result, you will get a folder named, for example, *3rdparty\\freetype-2.4.10*.  Further in this document, this folder is referred to as *freetype*. 
+   
+2. Open the solution file *freetype\\builds\\win32\\vc20xx\\freetype.sln*  in Visual Studio. Here *vc20xx* stands for your version of Visual Studio. 
 
-   As a result, you should have a folder named for example, *3rdparty\\freetype-2.4.10*.  Further in this document, this folder is referred to as *freetype*. 
+3. Select the configuration to build: either Debug or Release. 
 
-2. Open the  solution file *freetype\\builds\\win32\\vc20xx\\freetype.sln*  in Visual Studio, where vc20xx stands for the version of Visual Studio you are  using. 
-3. Select a  configuration to build: either Debug or Release. 
 4. Build  the *freetype* project. 
 
-   As a result, you will get a  freetype import library (.lib) in the *freetype\\obj\\win32\\vc20xx*  folder. 
+   As a result, you will get a  freetype import library (.lib) in the *freetype\\obj\\win32\\vc20xx*  folder.  
 
-5. If you are  building for 64 bit platform, start the Configuration Manager (Build - Configuration Manager), 
-   and add *x64* platform to the solution configuration by copying the  settings from Win32 platform: 
+
+5. If you build FreeType for a 64 bit platform, select in the main menu **Build - Configuration Manager**  and add *x64* platform to the solution configuration by copying the settings from Win32 platform: 
 
    @image html /dev_guides/building/3rdparty/images/3rdparty_image001.png 
    @image latex /dev_guides/building/3rdparty/images/3rdparty_image001.png 
@@ -73,63 +68,59 @@ The building process is the following:
 
    Build the *freetype* project. 
 
-   As a result, you should obtain a 64  bit import library (.lib) file in the *freetype\\x64\\vc20xx*  folder. 
+   As a result, you will obtain a 64 bit import library (.lib) file in the *freetype\\x64\\vc20xx*  folder. 
 
-   If you want to build freetype as a dynamic library (.dll) follow items 6, 7 and 8 of this list. 
+   To build FreeType as a dynamic library (.dll) follow steps 6, 7 and 8 of this procedure. 
 
-6. Open Project-Properties-Configuration  Properties-General and change option 'Configuration Type' to \"*Dynamic  Library (.dll)*\". 
+6. Open menu Project-> Properties-> Configuration  Properties-> General and change option **Configuration Type** to *Dynamic  Library (.dll)*. 
 7. Edit file *freetype\\include\\freetype\\config\\ftoption.h*:  
   
-   in line 255, uncomment the definition of macro FT_EXPORT and change it as follows: 
+   in line 255, uncomment the definition of macro *FT_EXPORT* and change it as follows: 
 
        #define FT_EXPORT(x)   __declspec(dllexport) x 
 
 8. Build  the *freetype* project. 
 
-   As a result, you should obtain import  library (.lib) and dynamic library (.dll) 
-   files in *freetype  \\objs\\release or \\objs\\debug folders.* 
-   If you are building for a 64 bit  platform, follow item 5 of this list. 
+   As a result, you will obtain the files of the import  library (.lib) and the dynamic library (.dll)   in folders <i>freetype  \\objs\\release</i> or <i>\\objs\\debug </i>. 
+   
+   If you build for a 64 bit platform, follow step 5 of the procedure. 
 
-   In order to facilitate use of the  FreeType libraries in OCCT with minimal adjustment of its build procedures, 
-   it is recommended to copy the include files and libraries of FreeType to a separate folder, named according to the pattern: 
-   *freetype-compiler-bitness-building  mode*  
-   where 
+   To facilitate the use of FreeType libraries in OCCT with minimal adjustment of build procedures, it is recommended to copy the include files and libraries of FreeType into a separate folder, named according to the pattern: *freetype-compiler-bitness-building mode*, where: 
+   * **compiler** is *vc8* or *vc9* or *vc10* or *vc11*; 
+   * **bitness**  is *32* or *64*;
+   * **building mode** is *opt* (for Release) or *deb* (for Debug). 
     
-   * compiler  is vc8 or vc9 or vc10 or vc11; 
-   * bitness  is 32 or 64; 
-   * building  mode is opt (for Release) or deb (for Debug) 
-    
-   The include subfolder should be copied as is, while libraries should be renamed to 
-   *freetype.lib* and *freetype.dll* (suffixes removed) and placed to subdirectories 
-   *lib *and  *bin*, respectively. If Debug configuration is built, 
-   the Debug libraries should be put in subdirectories *libd* and *bind*. 
+   The *include* subfolder should be copied as is, while libraries should be renamed to *freetype.lib* and *freetype.dll* (suffixes removed) and placed to subdirectories *lib *and  *bin*, respectively. If the Debug configuration is built, the Debug libraries should be put into subdirectories *libd* and *bind*. 
 
 @section dev_guides__building_3rdparty_win_3 Building Optional Third-party Products
 
 @subsection dev_guides__building_3rdparty_win_3_1 TBB
 
-This third-party product is  installed with binaries 
+This third-party product is installed with binaries 
 from the archive that can be downloaded from http://threadingbuildingblocks.org/. 
-Go to \"Downloads page\", find the  release version you need  (e.g. tbb30_018oss) and pick the archive for Windows  platform. 
+Go to the **Download** page, find the  release version you need  (e.g. *tbb30_018oss*) and pick the archive for Windows  platform. 
+
 Unpack the downloaded  archive of TBB product into the *3rdparty* folder. 
+
 Further in this document,  this folder is referred to as *tbb*. 
 
 @subsection dev_guides__building_3rdparty_win_3_2  gl2ps
 
 This third-party product should be built as a dynamically loadable library (dll file). 
-You can download its sources from  http://geuz.org/gl2ps/src/ 
+You can download its sources from  http://geuz.org/gl2ps/src/. 
 
-The building process is the following: 
+### The building procedure
 
 1. Unpack the downloaded  archive of gl2ps product (e.g. *gl2ps-1.3.5.tgz*) into the *3rdparty*  folder. 
 
-   As a result, you should  have a folder named for example, *3rdparty\\gl2ps-1.3.5-source*. 
+   As a result, you will get a folder named, for example, *3rdparty\\gl2ps-1.3.5-source*. 
 
-   Rename it according to the  rule: gl2ps-platform-compiler-building mode, where 
-
-   * platform is win32  or win64; 
-   * compiler is vc8 or  vc9 or vc10; 
-   * building mode - opt  (for release) or deb (for debug) 
+   Rename it into <i>gl2ps-platform-compiler-building mode</i>, where 
+   * **platform** is *win32*  or *win64*; 
+   * **compiler** is *vc8*, *vc9* or *vc10*; 
+   * **building mode** - *opt*  (for release) or *deb* (for debug). 
+   
+   For example, <i>gl2ps-win64-vc10-deb</i>
 
    Further in this document,  this folder is referred to as *gl2ps*. 
 
@@ -138,7 +129,7 @@ The building process is the following:
 
 3. Edit the file *gl2ps\\CMakeLists.txt*. 
 
-   After line 113 in CMakeLists.txt: 
+   After line 113 in *CMakeLists.txt*: 
 
        set_target_properties(shared PROPERTIES  COMPILE_FLAGS \"-DGL2PSDLL -DGL2PSDLL_EXPORTS\")
     
@@ -146,10 +137,9 @@ The building process is the following:
     
        add_definitions(-D_USE_MATH_DEFINES)  
 
-   Attention: If cygwin was installed on  your computer make sure that there is no path 
-   to the latter in the PATH variable in order to avoid possible conflicts during  the configuration. 
+   Attention: If Cygwin was installed on  your computer, make sure that there is no path to it in the *PATH* variable to avoid possible conflicts during the configuration. 
 
-4. Launch CMake (cmake-gui.exe) using  the Program menu. 
+4. Launch CMake <i>(cmake-gui.exe)</i> using  the Program menu. 
 
    In CMake: 
   
@@ -161,39 +151,41 @@ The building process is the following:
      (for example, *gl2ps\\bin*). 
      Further in this document, this folder is referred to as *gl2ps_bin*.
 
-   * Press the \"Configure\" button. 
+   * Press  **Configure** button. 
+   
      @image html /dev_guides/building/3rdparty/images/3rdparty_image004.png 
      @image latex /dev_guides/building/3rdparty/images/3rdparty_image004.png 
 
    * Select the generator (the compiler  and the target platform - 32 or 64 bit) in the pop-up window. 
+   
      @image html /dev_guides/building/3rdparty/images/3rdparty_image005.png 
      @image latex /dev_guides/building/3rdparty/images/3rdparty_image005.png 
 
-   * Then press the \"Finish\" button to  return to the main CMake window. 
+   * Press **Finish** button to  return to the main CMake window. 
      Expand the ENABLE group and uncheck  ENABLE_PNG and ENABLE_ZLIB check boxes. 
+	 
      @image html /dev_guides/building/3rdparty/images/3rdparty_image006.png 
      @image latex /dev_guides/building/3rdparty/images/3rdparty_image006.png 
 
-   * Expand the CMAKE group and define CMAKE_INSTALL_PREFIX 
-     (path where you want to install the build results, for example, *c:\\occ3rdparty\\gl2ps-1.3.5*). 
+   * Expand the CMAKE group and define *CMAKE_INSTALL_PREFIX* which is the path where you want to install the build results, for example, *c:\\occ3rdparty\\gl2ps-1.3.5*. 
+   
      @image html /dev_guides/building/3rdparty/images/3rdparty_image007.png 
      @image latex /dev_guides/building/3rdparty/images/3rdparty_image007.png 
 
-   * Press the  \"Configure\" button again, and then the \"Generate\" button in order to generate 
-       Visual Studio projects. After completion, close CMake application. 
+   * Press **Configure** button again, then press **Generate** button to generate Visual Studio projects. After completion, close CMake application. 
 
 5. Open the solution file *gl2ps_bin\\gl2ps.sln* in Visual Studio. 
 
-   * Select a  configuration to build 
-     * Choose \"*Release*\" if you are building Release binaries. 
-     * Choose \"*Debug*\" if you are building Debug binaries. 
-   * Select  a platform to build. 
-     * Choose \"*Win32*\" if you are building for a 32 bit  platform. 
-     * Choose \"*x64*\" if you are building for a 64 bit  platform. 
+   * Select a configuration to build 
+     * Choose **Release** to build Release binaries. 
+     * Choose **Debug** to build Debug binaries. 
+   * Select a platform to build. 
+     * Choose **Win32** to build for a 32 bit platform. 
+     * Choose **x64** to build for a 64 bit platform. 
    * Build the solution. 
    * Build the *INSTALL* project. 
     
-As a  result, you should have the installed gl2ps product in the *CMAKE_INSTALL_PREFIX*  path. 
+As a  result, you should have the installed gl2ps product in the *CMAKE_INSTALL_PREFIX* path. 
 
 @subsection dev_guides__building_3rdparty_win_3_3 FreeImage
 
@@ -201,73 +193,70 @@ This third-party product should be built as a dynamically loadable library (.dll
 You can download its sources from 
 http://sourceforge.net/projects/freeimage/files/Source%20Distribution/
 
-The building process is the following: 
+### The building procedure: 
 
 1. Unpack the  downloaded archive of FreeImage product into *3rdparty* folder. 
   
-   As a result,  you should have a folder named *3rdparty\\FreeImage*. 
+   As a result, you should have a folder named *3rdparty\\FreeImage*. 
   
-   Rename it  according to the rule: freeimage-platform-compiler-building  mode, where 
+   Rename it according to the rule: *freeimage-platform-compiler-building  mode*, where 
    
-   * platform  is win32 or win64; 
-   * compiler  is vc8 or vc9 or vc10 or vc11; 
-   * building  mode is opt (for release) or deb (for debug) 
+   * **platform**  is *win32* or *win64*; 
+   * **compiler**  is *vc8* or *vc9* or *vc10* or *vc11*; 
+   * **building  mode** is *opt* (for release) or *deb* (for debug) 
 
    Further in this  document, this folder is referred to as *freeimage*. 
 
-2. Open the  solution file *freeimage\\FreeImage.*.sln* in Visual Studio  that corresponds to the version of Visual Studio you use. 
+2. Open the solution file *freeimage\\FreeImage.*.sln* in your Visual Studio. 
   
-   Since the  version of Visual Studio you use is higher than VC++ 2008, apply conversion of the workspace. 
+   If you use a Visual Studio version higher than VC++ 2008, apply conversion of the workspace. 
    Such conversion should be suggested automatically by Visual  Studio. 
     
 3. Select a  configuration to build. 
 
-   - Choose \" *Release* \"  if you are building Release binaries. 
-   - Choose \" *Debug* \" if you are building  Debug binaries. 
+   - Choose **Release**  if you are building Release binaries. 
+   - Choose **Debug** if you are building  Debug binaries. 
 
    *Note:* 
 
-   If you want to  build a debug version of FreeImage binaries then you must rename 
-   the following  files for projects FreeImage and FreeimagePlus:
+   If you want to  build a debug version of FreeImage binaries then you need to rename the following files in FreeImage and FreeimagePlus projects:
+   
+   Project -> Properties -> Configuration Properties -> Linker -> General -> Output File
 
-   Project-Properties-Configuration Properties-Linker-General-Output File
+       FreeImage*d*.dll  to FreeImage.dll 
+       FreeImagePlus*d*.dll to FreeImagePlus.dll 
 
-       from FreeImage*d*.dll  to FreeImage.dll 
-       from  FreeImagePlus*d*.dll to FreeImagePlus.dll 
+   Project -> Properties -> Configuration Properties -> Linker -> Debugging-> Generate Program Database File
 
-   Project-Properties-Configuration Properties-Linker-Debugging-Generate Program Database File
+       FreeImage*d*.pdb  to FreeImage.pdb 
+       FreeImagePlus*d*.pdb to FreeImagePlus.pdb 
 
-       from FreeImage*d*.pdb  to FreeImage.pdb 
-       from  FreeImagePlus*d*.pdb to FreeImagePlus.pdb 
+   Project -> Properties -> Configuration Properties -> Linker -> Advanced-Import Library
 
-   Project-Properties-Configuration Properties-Linker-Advanced-Import Library
+       FreeImage*d*.lib  to FreeImage.lib 
+       FreeImagePlus*d*.lib  to FreeImagePlus.lib 
 
-       from FreeImage*d*.lib  to FreeImage.lib 
-       from FreeImagePlus*d*.lib  to FreeImagePlus.lib 
+   Project -> Properties -> Configuration Properties -> Build Events -> Post -> Build Event -> Command Line 
 
-   Project-Properties-Configuration Properties-Build Events-Post-Build Event-Comand Line 
+       FreeImage*d*.dll     to FreeImage.dll 
+       FreeImage*d*.lib     to FreeImage.lib 
+       FreeImagePlus*d*.dll to FreeImagePlus.dll 
+       FreeImagePlus*d*.lib to FreeImagePlus.lib 
 
-       from FreeImage*d*.dll     to FreeImage.dll 
-       from FreeImage*d*.lib     to FreeImage.lib 
-       from FreeImagePlus*d*.dll to FreeImagePlus.dll 
-       from FreeImagePlus*d*.lib to FreeImagePlus.lib 
-
-   Additionally, for project FreeImagePlus rename: 
-   Project-Properties-Configuration  Properties-Linker-Input-Additional Dependencies 
+   Additionally, rename in project FreeImagePlus 
+   
+   Project -> Properties -> Configuration  Properties -> Linker -> Input -> Additional Dependencies 
 
        from FreeImage*d*.lib to FreeImage.lib 
 
 4. Select a platform to build. 
 
-   - Choose \" *Win32* \" if you are building for a 32 bit platform. 
-   - Choose \" *x64* \" if you are building for a 64 bit platform. 
+   - Choose *Win32* if you are building for a 32 bit platform. 
+   - Choose *x64* if you are building for a 64 bit platform. 
 
 5. Start the building process. 
 
-   As a result, you should have the  library files of FreeImage product in the 
-   *freeimage\\Dist* folder (FreeImage.dll and FreeImage.lib files) and in the 
-   *freeimage\\Wrapper\\FreeImagePlus\\dist* folder (FreeImagePlus.dll and 
-   FreeImagePlus.lib files).
+   As a result, you should have the  library files of FreeImage product  in *freeimage\\Dist* folder (*FreeImage.dll* and *FreeImage.lib*) and in *freeimage\\Wrapper\\FreeImagePlus\\dist* folder (*FreeImagePlus.dll* and *FreeImagePlus.lib*).
 
 @subsection dev_guides__building_3rdparty_win_opencl OpenCL ICD Loader
 
@@ -283,29 +272,21 @@ ICD Loader version 1.2.11.0.
    Khronos OpenCL Registry
    http://www.khronos.org/registry/cl/
 
-2. Unpack the archive and put headers in **inc/CL** sub-folder
+2. Unpack the archive and put headers in *inc/CL* sub-folder
 
 3. Use CMake to generate VS projects for building the library:
-   - Start CMake-GUI and select OpenCL ICD Loader folder as source path,
-     and the folder of your choice for VS project and intermediate build data
-   - Click Generate
-   - Select VS version to be used (among the one you have installed; we
-     recommend using VS 2010), and architecture (32- or 64-bit)
+   - Start CMake-GUI and select OpenCL ICD Loader folder as source path, and the folder of your choice for VS project and intermediate build data;
+   - Click **Generate**;
+   - Select the VS version to be used from the ones you have installed (we recommend using VS 2010) and the architecture (32- or 64-bit).
 
-4. Open solution **OPENCL_ICD_LOADER.sln** generated in the build folder.
-   Though not strictly necessary, we recommend making two changes in generated 
-   projects:
-   - Add file **OpenCL.rc** to project OpenCL, to have version and Khronos 
-     copyright correctly embedded in DLL
-   - In properties of OpenCL project, on "C/C++ / Code Generation" page,
-     for Release configuration, change "Runtime library" to "Multi-threaded 
-     (/MT)", to avoid dependency on run-time DLL. 
+4. Open solution *OPENCL_ICD_LOADER.sln* generated in the build folder.
+   Though not strictly necessary, we recommend making two changes in the generated projects:
+   - Add file *OpenCL.rc* to project OpenCL, to have version and Khronos copyright correctly embedded in DLL;
+   - Change **Runtime library** to **Multi-threaded(/MT)** in the properties of OpenCL project, on **C/C++ / Code Generation** page for Release configuration, to avoid dependency on run-time DLL. 
   
 5. Build project OpenCL in Release mode
 
-6. Create installation folder for OpenCL IDL Loader package and put there:
-   - OpenCL header files in **include/CL** subfolder
-   - OpenCL.dll (generated in **bin/Release** subfolder of source package)
-     in **bin** subfolder
-   - OpenCL.lib (generated in **Release** subfolder of build directory)
-     in **lib** subfolder
+6. Create the installation folder for OpenCL IDL Loader package and put there:
+   - OpenCL header files in *include/CL* subfolder;
+   - *OpenCL.dll* (generated in *bin/Release* subfolder of the source package) in *bin* subfolder;
+   - *OpenCL.lib* (generated in *Release* subfolder of the build directory) in *lib* subfolder.
