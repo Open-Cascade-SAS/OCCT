@@ -5,13 +5,11 @@ Workshop Organisation Kit  {#occt_dev_guides__wok}
 
 @section occt_wok_0 DEPRECATION WARNING
 
-Please note that this document describes use of WOK as comprehensive
-build system. This use is outdated, and WOK is to be removed in
-one of future releases of OCCT.
+Please note that this document describes use of WOK as comprehensive build system. This use is outdated, and WOK is to be removed in one of the future OCCT  releases.
 
-Currently only small subset of WOK capabilities described in this document
-are actually necessary for building OCCT. See @ref occt_dev_guides__building_wok
-for more practical guide.
+Currently only a small subset of WOK capabilities described in this document
+is actually necessary for building OCCT. See @ref occt_dev_guides__building_wok
+for a more practical guide.
 
 @section occt_wok_1_ Introduction Glossary
 

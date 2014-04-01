@@ -17,6 +17,9 @@ Version 8.5 or 8.6: http://www.tcl.tk/software/tcltk/download.html
 **Doxygen**
 Version 1.8.4 or above: http://www.stack.nl/~dimitri/doxygen/download.html
 
+**Dot**
+Part of Graphviz software, used by Doxygen for generation of class diagrams in Reference Manual: http://www.graphviz.org/Download..php
+
 **MiKTeX** or other package providing **pdflatex** command (only needed for generation of PDF documents): http://miktex.org/download
 
 **Inkscape** (only needed for generation of PDF documents containing SVG images): http://www.inkscape.org/download
